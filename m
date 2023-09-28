@@ -2,329 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD407B1F9B
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F1B7B1F7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231675AbjI1OeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:34:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
+        id S232489AbjI1Odl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:33:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232604AbjI1OeJ (ORCPT
+        with ESMTP id S232201AbjI1Odi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:34:09 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1781B4;
-        Thu, 28 Sep 2023 07:34:00 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38SEGNIg022118;
-        Thu, 28 Sep 2023 14:33:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : date : subject :
- mime-version : content-type : content-transfer-encoding : message-id :
- references : in-reply-to : to : cc; s=pp1;
- bh=I5AWqN4OSuucaaUZyzTWZgZxubpRK5rOOUlzsWX4m34=;
- b=lW2pEAvqIq2U56CAuyZZ30EgGbNtgIhCsbT4wckhR5eoOxCriFetzpYmN+5THgrGvqkh
- U3Qgfx3JNP4TuuqCwiyVa00oKRcMrQ6a2H6PdqvhjHVIX2XQ0c7aOCxGyC2zQ5oS/xOl
- qPgbo4QHMO+pywnqKIHVLnfDYYCWi6L1cebFU/au43s1hjrSvg4CLC7f//r5MKjMkXFR
- O2/UMdNLKYsJbPOyZAYEbo9ul3DWDz7gqFmQLMKKG/edWTiWDZku8qt3WWPiJF+mqCtZ
- NfrwrDfVX7i3o15nCZQ5nuud0ULl+m7BRgTb7ZccVK3Jqp6WBnCfhRr+T0FCM54WlM1t Qw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3td9we2u7s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Sep 2023 14:33:15 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38SEHbB1025175;
-        Thu, 28 Sep 2023 14:32:59 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3td9we2tmh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Sep 2023 14:32:59 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38SDcYOg008192;
-        Thu, 28 Sep 2023 14:32:41 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tabbnn36r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 28 Sep 2023 14:32:41 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38SEWbxU721478
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 28 Sep 2023 14:32:37 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C9C2820043;
-        Thu, 28 Sep 2023 14:32:37 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E52E02004B;
-        Thu, 28 Sep 2023 14:32:36 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 28 Sep 2023 14:32:36 +0000 (GMT)
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-Date:   Thu, 28 Sep 2023 16:31:40 +0200
-Subject: [PATCH v13 6/6] iommu/dma: Use a large flush queue and timeout for
- shadow_on_flush
+        Thu, 28 Sep 2023 10:33:38 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A308B1A2;
+        Thu, 28 Sep 2023 07:33:35 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38SDggo3004395;
+        Thu, 28 Sep 2023 14:33:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-03-30;
+ bh=q9fNMo0R4pivifen1BXVxhC1xCvDeSt9A8mMomRXbbc=;
+ b=PlJ7IapFu2FE8JcbFfb9lc7iqM20b/AxTb4cuHXDu3Jas0nYz5SKT0mw7BXPdA81zwbw
+ FZ9rd4SFrpEgJUHxe0z7CiPgsmYNVSX365Jnty3ljw6Npt+mtwaZh/fs2zzY8Kz4lUJk
+ RsJk3SiySKaRSN0ZXKN0bluGVP+Ihr4LMdICcdJJbAymeiuD1kq1Kh1wjAbQao9fxexP
+ 4Wkb3WonPE71FgaeZAIGUTF1DHG57zHJ2XUZAila+B9w4LtzKqzxsjPjciF1Wlp++M8q
+ GZ7p5VjO+UPu6/l4sii/B1fqQb9+ns9S6GA5Ec+vFCyh693g7tl1wojbmN2nhUDwZFNn iw== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9rjummnm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Sep 2023 14:33:25 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38SE8idc037395;
+        Thu, 28 Sep 2023 14:33:24 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2173.outbound.protection.outlook.com [104.47.73.173])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pfa6d7w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Sep 2023 14:33:24 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UjDTt+wT4KNYJdmdJbSdatbdY/8OVo90YgtJmCe3rTGw/otxYaAj8aBJlki/tc24WZOiM2PWMajVx6Hed0XcGLOiwZ7WfBD0UxEXFjsAZlkvtx77I6M4H3NvZTcz3B+8jMQXq2P9Az9piKuB6f39GkHeLAPA8yuZ2eKmGYsuEOQjehhoGk9RYWj2yOWDEJc1U+qT6VqCHncD/7uyEmwpIKU6SB8Jq8opVQlIT1YNC83sQY8ML54yAU8J9qa1oMFuMmgkujQ2YATse3oHZY60jhz39uNaOFLGi6ZxLrUDQ6BTIYeND1N3JKE5hHXGs5PEEcfbE5ttvKiVYcPz8FQJvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=q9fNMo0R4pivifen1BXVxhC1xCvDeSt9A8mMomRXbbc=;
+ b=LhRSyj5u16mYSXyJNz8Pj6gM2hx3KhyZUoYNp4Bb1MyhWpI+jiZMq59vkj10MdUkosMwjkidHPi0K9TEXEP9i/bSBzvP3dikrMFbCR8ygsijq0Oa6MZYi+90HvxWNSNjc6Z9hnIeK1ZL32+BM/DH7ou0At6NGoQq7l3bzr4Asqal8ttxvAqrqXxLxf1u/SvuqjIUtTy/oZ8nglMheAWyBiLdXQRPC5Cjx4t/SdbU+hsmP4Gx6MOJRKD1bnY5muBA7LF3UCxXw3X6QDWbNlZuN/FTd0eSU8AP1piTyFUVxFFAdVXwU8zgIisC0nN1pl8WGMRj9rMhY+mcdpGHf8eQPw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=q9fNMo0R4pivifen1BXVxhC1xCvDeSt9A8mMomRXbbc=;
+ b=icgA4GZYWorrNBKPKqAZ/MyT0i/sv4LscfbN17KXpIaBokCFdV82JNJb8hgtuX34r+JvNTfb/Ap7loIGub+X5PgfknwF07vDCujWPpNisxmEEqbtuLlEGVfY5he8JA/cFkYs7b1PyRnSzCyHoIqTnbPmlz+95FlG2+6GCJTJUbc=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by DM4PR10MB6136.namprd10.prod.outlook.com (2603:10b6:8:b8::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25; Thu, 28 Sep
+ 2023 14:33:19 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::bffc:4f39:2aa8:6144]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::bffc:4f39:2aa8:6144%5]) with mapi id 15.20.6813.027; Thu, 28 Sep 2023
+ 14:33:19 +0000
+Date:   Thu, 28 Sep 2023 10:33:16 -0400
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 51/87] fs/nfsd: convert to new inode {a,m}time accessors
+Message-ID: <ZRWOrJ+XmbiAxJ7z@tissot.1015granger.net>
+References: <20230928110300.32891-1-jlayton@kernel.org>
+ <20230928110413.33032-1-jlayton@kernel.org>
+ <20230928110413.33032-50-jlayton@kernel.org>
+ <ZRWGBGqYe3rF5CRY@tissot.1015granger.net>
+ <c908f4e65777b15e4574f27df97630b3033804a3.camel@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c908f4e65777b15e4574f27df97630b3033804a3.camel@kernel.org>
+X-ClientProxiedBy: CH5P223CA0003.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:610:1f3::19) To BN0PR10MB5128.namprd10.prod.outlook.com
+ (2603:10b6:408:117::24)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230928-dma_iommu-v13-6-9e5fc4dacc36@linux.ibm.com>
-References: <20230928-dma_iommu-v13-0-9e5fc4dacc36@linux.ibm.com>
-In-Reply-To: <20230928-dma_iommu-v13-0-9e5fc4dacc36@linux.ibm.com>
-To:     Joerg Roedel <joro@8bytes.org>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Wenjia Zhang <wenjia@linux.ibm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Gerd Bayer <gbayer@linux.ibm.com>,
-        Julian Ruess <julianr@linux.ibm.com>,
-        Pierre Morel <pmorel@linux.ibm.com>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Hector Martin <marcan@marcan.st>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Yong Wu <yong.wu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        iommu@lists.linux.dev, asahi@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-        linux-doc@vger.kernel.org
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6202;
- i=schnelle@linux.ibm.com; h=from:subject:message-id;
- bh=4PLrVGKVmJm/qlVAFXas/tczy6T+AoG75pq6YPmRiXM=;
- b=owGbwMvMwCH2Wz534YHOJ2GMp9WSGFJF+yrTnOT3fb5+OOLqTQYjh8w1zXebDx1tLDwiG9A1/
- d+O245POkpZGMQ4GGTFFFkWdTn7rSuYYronqL8DZg4rE8gQBi5OAZjI815GhoXH/j3ykn8YvOav
- Q9W0FQHTJFvXFRY1dx/lPy8hVNK9eSPD/3ShAruymbZtpy/Oep1qEvZM96Xd3P8PNTfvcjnM/WN
- hPSMA
-X-Developer-Key: i=schnelle@linux.ibm.com; a=openpgp;
- fpr=9DB000B2D2752030A5F72DDCAFE43F15E8C26090
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Zp6JyqZqz9xJHxZ8VS_yVSiOeikaWzND
-X-Proofpoint-ORIG-GUID: OziLHK563MojiA2BYbPn4z6EVzkRyrWM
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|DM4PR10MB6136:EE_
+X-MS-Office365-Filtering-Correlation-Id: a3077ae3-6910-4d96-e5ff-08dbc02fdc74
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NIEo/+WYNZg/riE8qIUQYVSrpR+CgZxjMvNcrndSZuSaEIyap1usK/QOGwTXu1dpOshFSOIXxFzfJS3mscOrPpmHUFyZpT4XeNPtXHQVO0wKWut8EiWJaTnRw5SlxuzzrbK4/j/cZiJ47W8YdjMJ+dM2H+PXISjvWnQbij31JMdRiDISv3XKy3UrjQmQeKB5oI2gtOOJdUySdj6/NDKgLcn1UPMpVECxKa2gacM6Hx8TLrtt41Jft5rbR7+ZQ4W01IWG9IaIPBL/lHacudA9KpK7fdiaunCqn7TedaLUCKXhaCFHKQzav7YjEqDAIp5WoMr/qMMOvZ6nqRQwPwmn/dXq8L2gjFvxGWVEY85XNA70+IMEK9tB82ern/DDXZf89YJvxZgMEUQsxubKU/M3PWcROI0QG2dQslttBfulCaVhQ57QjswFqFtwmTRZsNWAJFK95vVpvPvtZunDzz6Z7z0zcqf23tlHfbfEi3NvV9EAauA16rKKFJQrGpvtDQd85fAIvr42+A/N9lr3633SqWXbIMRvvkP9CocuO3Y1Pj3UA7Qlq2T7ImVCTqDEx+56JsPAkOQ3KMOh98QcK5KHCw/Qc6U7sjw/Q15T+1eE+50=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(376002)(396003)(366004)(346002)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(2906002)(4326008)(41300700001)(316002)(8676002)(8936002)(44832011)(5660300002)(66946007)(66476007)(66556008)(54906003)(478600001)(86362001)(6506007)(6512007)(6666004)(9686003)(38100700002)(26005)(83380400001)(6916009)(6486002)(67856001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PUYCh2hYRZbWUmYo6zOxecaBK4cGDMm4QSMXMXj7pZDgCRGjlu+2JF6PRarw?=
+ =?us-ascii?Q?IYENq5Fs5XvS8mdAbUZR0VtWq2+1fkMBQUmDwXxc5ZoaAjoB4t4hQXCIyJyl?=
+ =?us-ascii?Q?ZlTKhOAxqgBnsbioWF+8nxERdbUO7BBwefk8ImYwOMNow2prBD6SSOba8sZv?=
+ =?us-ascii?Q?nrOMK3EXWapELEXBcdkSWBVUclH1gCBwvVGeZg5rcGqMiBMcoGUdk4bUjadu?=
+ =?us-ascii?Q?CiX830QMF+aQ124FaCl5ctkydPQPSsyikeb9fzJt9YQ4/f8o9ABjtmEjw5FB?=
+ =?us-ascii?Q?5NoLpu6AbtdDc3VdzPhiHQjY77AQ+PK00vcTXj8+O4j1Au3lqAOgciA3v3lp?=
+ =?us-ascii?Q?sEM025nAqv16a04HTuaKoA/8XS0kLsl5dMCrBIvr9khAaRw8RWCxruqcvVEP?=
+ =?us-ascii?Q?c2soIPyYR1IEXvj7dUYbooD662u6SLniPyUJUYiNVPdw081u1GOvjPXNBbqE?=
+ =?us-ascii?Q?QgYiqTrF8b20Bt18Ey8/oFsBMnzUXUrJdKROIAkXOvgcXJJ2ouVTXgcAgCWo?=
+ =?us-ascii?Q?NNYnGQXF350pbPwFb9QzjP1yozR60IX4JA+DUXZ0XLvVuXDlJ+vIhelXJSqV?=
+ =?us-ascii?Q?fYlrAFuC2Gx4Ht52InoFQJL/kBoi7NsmB8m7/mlD9k43HDTvzbm9uhqLEuVJ?=
+ =?us-ascii?Q?b5h9h+kztFo/cGchuSVpUjMrw6ks6NSzdj3nuP8Szt3j/Ay0uCwamJPR71kt?=
+ =?us-ascii?Q?mhV/ezxpr2U8u4WHNIw8xXusObG0jDuPgor31r0L6B63h4fK2ZTP7Xz7pa0f?=
+ =?us-ascii?Q?xN4m7q7sebXHV1lAUJ5U4YzfvJ3J9IlwzioqVfSVH54OnA2bEiCmAnHH9Iuq?=
+ =?us-ascii?Q?STicmK4Ws+SlvxCa1htNygFmhH0fhP71iatK3OufZp7e19iQuEDWYjemvq9H?=
+ =?us-ascii?Q?I6dcsVudR1LlEnMRI7fvvDNi8I5ZndH83VoU8g45FK6ZZmUqETrXc/ymXFaH?=
+ =?us-ascii?Q?WT/18QtiwbVcfsTi7bmULakXHrZtR6fhN3Pn1Uj6go7CzMffSKnLmG5omiwy?=
+ =?us-ascii?Q?kKS2zuNqi++0qPWy/CKApFJtWc/pHjsCl+nJAFSuHq/w7vX0kFH2IziO7sy9?=
+ =?us-ascii?Q?h+t7yYz+PU+QdwlpYODjQKfMAPAbmbozY7rterNmwLNReAWWXoYyZ3yNu5EW?=
+ =?us-ascii?Q?A8v7zPXdKErFC2e1IE6ajmb1QZeis2NFfkwmzY/7g77xxJT6Mtv2zvq9t9mq?=
+ =?us-ascii?Q?BoA26znAIn7aNDgtPZdFT/pSMY0jgWpJ9aqNfPtY5OVmvzeLyJy2vtEzAAPQ?=
+ =?us-ascii?Q?gfaSA/OubdumsL8bLR4Vxi29OTIqxe2P3NQOZgOtEpAAN4NvFmjM7JU5glnP?=
+ =?us-ascii?Q?etk0zY0omJghtzZTYfUmHm1CVlX9qesw4Robm1/jPSqBIboXNG3PZYhriRu0?=
+ =?us-ascii?Q?VnjsDf4a+uJOzR03kfr882Hfc8b0zUXrwiDMAee9a+uMU/a8pzwLcTkGSBKB?=
+ =?us-ascii?Q?Y2WMOH3ys/VttgK+XRGoJ+1NkPaFe3jAZ+JmDXrvtZHTndLBoMsDCr0uSwvt?=
+ =?us-ascii?Q?ZqMw/aN6QM8E4WrjCnxeSWeEVnqzkUtSnZ+tZ6zq4tYROHmUM82vb8p6DucP?=
+ =?us-ascii?Q?sZeC3obs7RimWN3T8QYF25Rdw9ZWjcomreeCuAfYhZ6SjpZP5zpK4aPXDf1J?=
+ =?us-ascii?Q?sw=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: Xkg5DDO0Prnj3QVQuY5NqxPsbi8asCaEgP00xZv3+dDaZluwo8lPPm8SQrY1QJIS41yN98xwOIgxvAMXrEMVTVgkp9BZ9qZwTS8qf9iCt+Y13kvYyrFSWecsqX4i3k1PbR1j21WwHebA83NWb9KQG1xdUlpD3Noyi2dLQmw1RsIfNlhWxP1T+84ba2/NX4K8jYlFaam84lgx+X/D99u9tGqsrdiyVKC0bypGP/EyLRHoXWnYFrHqR5IfN78ZGemgAtBCBQvbGucHF71QR8AdcFisUf7enpKeYs8zglURfVY5IF6YHI8DXrQ9fPCmOGp8otsIZ28W2R8W5qTi9wcb8iuF9ndlXxCGhmJWwvtAy7biCVPbPPmSpVt2gXtXw261/W9PGKRu7cp+jpCoGMLuqMI8siIkU1dBdZ/+XcvnVS9S0bt59ryIOx6NN/hECVnda3bEwVWJCBvhSb0tSq5wNf+NmKOA6fyNx46F/HTbF62mwx4iGPrkXSmvkkEa1+jC/CBYxEcuN6G6nVYl3YgvwwZWJdfiMMmDP2ViP/x+bLvBLfKNdNmbWwY4ZDBnezZRL+CuEpXZ7qfjWh5bCjkGiBwBsv58TkukZEFELJyMSb6NlSiRAiP5UBE+domYVbA9rEuzPJtg+zSwlKjCu2fuefhEmFv0ULJpCDPNdM1CKY2gcLTecRR7UwgsYNIW0M/ilM+HjKEK1dPFalilnoSEnok2r3RcIXEgvm+nyqT6MRCebC8i4FJZKL2TEkcbVIM1dZhwTYq/sQqB4qUaDuDnoDWZX0R6oBsTdOS2R28y+i3guGKSfiUV0enw9EfdysPRU+WmyDlYOXtZrWZUQbtvyrz2v06u+eOWt/q4kDmFmIfDwYI1mDAPwvyz3wi7BsSP3Bbt5N5ogf71XshSmPz3s1pLrOikT6blZVok85iWlvU=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3077ae3-6910-4d96-e5ff-08dbc02fdc74
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 14:33:19.8767
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aDQr9lKdSd8IWasMGVqKfPbJwNryFCa8KT1E4CEuXeQ4Wm8utIYu6z6LfawkAoeEQlT+Cz/E3Vt0b5xlz3Rgeg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR10MB6136
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-09-28_13,2023-09-28_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- lowpriorityscore=0 spamscore=0 malwarescore=0 suspectscore=0
- priorityscore=1501 mlxlogscore=999 clxscore=1015 adultscore=0 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309280126
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 mlxlogscore=894 suspectscore=0 malwarescore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309280126
+X-Proofpoint-ORIG-GUID: o_BSE48eARl1DEIoq0Vh01omzGj1JUiO
+X-Proofpoint-GUID: o_BSE48eARl1DEIoq0Vh01omzGj1JUiO
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Flush queues currently use a fixed compile time size of 256 entries.
-This being a power of 2 allows the compiler to use shift and mask
-instead of more expensive modulo operations. With per-CPU flush queues
-larger queue sizes would hit per-CPU allocation limits, with a single
-flush queue these limits do not apply however. Also with single queues
-being particularly suitable for virtualized environments with expensive
-IOTLB flushes these benefit especially from larger queues and thus fewer
-flushes.
+On Thu, Sep 28, 2023 at 10:09:19AM -0400, Jeff Layton wrote:
+> On Thu, 2023-09-28 at 09:56 -0400, Chuck Lever wrote:
+> > On Thu, Sep 28, 2023 at 07:03:00AM -0400, Jeff Layton wrote:
+> > > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > > ---
+> > >  fs/nfsd/blocklayout.c | 3 ++-
+> > >  fs/nfsd/nfs3proc.c    | 4 ++--
+> > >  fs/nfsd/nfs4proc.c    | 8 ++++----
+> > >  fs/nfsd/nfsctl.c      | 2 +-
+> > >  4 files changed, 9 insertions(+), 8 deletions(-)
+> > > 
+> > > diff --git a/fs/nfsd/blocklayout.c b/fs/nfsd/blocklayout.c
+> > > index 01d7fd108cf3..bdc582777738 100644
+> > > --- a/fs/nfsd/blocklayout.c
+> > > +++ b/fs/nfsd/blocklayout.c
+> > > @@ -119,10 +119,11 @@ nfsd4_block_commit_blocks(struct inode *inode, struct nfsd4_layoutcommit *lcp,
+> > >  {
+> > >  	loff_t new_size = lcp->lc_last_wr + 1;
+> > >  	struct iattr iattr = { .ia_valid = 0 };
+> > > +	struct timespec64 mtime = inode_get_mtime(inode);
+> > 
+> > Nit: Please use reverse Christmas tree for new variable declarations.
+> > 
+> 
+> Ok
+> 
+> > 
+> > >  	int error;
+> > >  
+> > >  	if (lcp->lc_mtime.tv_nsec == UTIME_NOW ||
+> > > -	    timespec64_compare(&lcp->lc_mtime, &inode->i_mtime) < 0)
+> > > +	    timespec64_compare(&lcp->lc_mtime, &mtime) < 0)
+> > >  		lcp->lc_mtime = current_time(inode);
+> > >  	iattr.ia_valid |= ATTR_ATIME | ATTR_CTIME | ATTR_MTIME;
+> > >  	iattr.ia_atime = iattr.ia_ctime = iattr.ia_mtime = lcp->lc_mtime;
+> > > diff --git a/fs/nfsd/nfs3proc.c b/fs/nfsd/nfs3proc.c
+> > > index 268ef57751c4..b1c90a901d3e 100644
+> > > --- a/fs/nfsd/nfs3proc.c
+> > > +++ b/fs/nfsd/nfs3proc.c
+> > > @@ -294,8 +294,8 @@ nfsd3_create_file(struct svc_rqst *rqstp, struct svc_fh *fhp,
+> > >  			status = nfserr_exist;
+> > >  			break;
+> > >  		case NFS3_CREATE_EXCLUSIVE:
+> > > -			if (d_inode(child)->i_mtime.tv_sec == v_mtime &&
+> > > -			    d_inode(child)->i_atime.tv_sec == v_atime &&
+> > > +			if (inode_get_mtime(d_inode(child)).tv_sec == v_mtime &&
+> > > +			    inode_get_atime(d_inode(child)).tv_sec == v_atime &&
+> > 
+> > "inode_get_atime(yada).tv_sec" seems to be a frequently-repeated
+> > idiom, at least in this patch. Would it be helpful to have an
+> > additional helper that extracted just the seconds field, and one
+> > that extracts just the nsec field?
+> > 
+> 
+> I don't know that extra helpers will make that any clearer.
 
-To this end re-order struct iova_fq so we can use a dynamic array and
-introduce the flush queue size and timeouts as new options in the
-iommu_dma_options struct. So as not to lose the shift and mask
-optimization, use a power of 2 for the length and use explicit shift and
-mask instead of letting the compiler optimize this.
+To clarify my review comment:
 
-A large queue size and 1 second timeout is then set for the shadow on
-flush case set by s390 paged memory guests. This then brings performance
-on par with the previous s390 specific DMA API implementation.
+I understand that eventually the timestamps stored in the inode will
+be a single scalar value that is to be converted to a timespec64
+structure.
 
-Acked-by: Robin Murphy <robin.murphy@arm.com>
-Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com> #s390
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
----
- drivers/iommu/dma-iommu.c | 50 ++++++++++++++++++++++++++++++-----------------
- 1 file changed, 32 insertions(+), 18 deletions(-)
+So for accessors who want only one of the tv_sec or tv_nsec fields:
 
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index a85ff75ad531..85163a83df2f 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -50,6 +50,8 @@ enum iommu_dma_queue_type {
- 
- struct iommu_dma_options {
- 	enum iommu_dma_queue_type qt;
-+	size_t		fq_size;
-+	unsigned int	fq_timeout;
- };
- 
- struct iommu_dma_cookie {
-@@ -98,10 +100,12 @@ static int __init iommu_dma_forcedac_setup(char *str)
- early_param("iommu.forcedac", iommu_dma_forcedac_setup);
- 
- /* Number of entries per flush queue */
--#define IOVA_FQ_SIZE	256
-+#define IOVA_DEFAULT_FQ_SIZE	256
-+#define IOVA_SINGLE_FQ_SIZE	32768
- 
- /* Timeout (in ms) after which entries are flushed from the queue */
--#define IOVA_FQ_TIMEOUT	10
-+#define IOVA_DEFAULT_FQ_TIMEOUT	10
-+#define IOVA_SINGLE_FQ_TIMEOUT	1000
- 
- /* Flush queue entry for deferred flushing */
- struct iova_fq_entry {
-@@ -113,18 +117,19 @@ struct iova_fq_entry {
- 
- /* Per-CPU flush queue structure */
- struct iova_fq {
--	struct iova_fq_entry entries[IOVA_FQ_SIZE];
--	unsigned int head, tail;
- 	spinlock_t lock;
-+	unsigned int head, tail;
-+	unsigned int mod_mask;
-+	struct iova_fq_entry entries[];
- };
- 
- #define fq_ring_for_each(i, fq) \
--	for ((i) = (fq)->head; (i) != (fq)->tail; (i) = ((i) + 1) % IOVA_FQ_SIZE)
-+	for ((i) = (fq)->head; (i) != (fq)->tail; (i) = ((i) + 1) & (fq)->mod_mask)
- 
- static inline bool fq_full(struct iova_fq *fq)
- {
- 	assert_spin_locked(&fq->lock);
--	return (((fq->tail + 1) % IOVA_FQ_SIZE) == fq->head);
-+	return (((fq->tail + 1) & fq->mod_mask) == fq->head);
- }
- 
- static inline unsigned int fq_ring_add(struct iova_fq *fq)
-@@ -133,7 +138,7 @@ static inline unsigned int fq_ring_add(struct iova_fq *fq)
- 
- 	assert_spin_locked(&fq->lock);
- 
--	fq->tail = (idx + 1) % IOVA_FQ_SIZE;
-+	fq->tail = (idx + 1) & fq->mod_mask;
- 
- 	return idx;
- }
-@@ -155,7 +160,7 @@ static void fq_ring_free_locked(struct iommu_dma_cookie *cookie, struct iova_fq
- 			       fq->entries[idx].iova_pfn,
- 			       fq->entries[idx].pages);
- 
--		fq->head = (fq->head + 1) % IOVA_FQ_SIZE;
-+		fq->head = (fq->head + 1) & fq->mod_mask;
- 	}
- }
- 
-@@ -240,7 +245,7 @@ static void queue_iova(struct iommu_dma_cookie *cookie,
- 	if (!atomic_read(&cookie->fq_timer_on) &&
- 	    !atomic_xchg(&cookie->fq_timer_on, 1))
- 		mod_timer(&cookie->fq_timer,
--			  jiffies + msecs_to_jiffies(IOVA_FQ_TIMEOUT));
-+			  jiffies + msecs_to_jiffies(cookie->options.fq_timeout));
- }
- 
- static void iommu_dma_free_fq_single(struct iova_fq *fq)
-@@ -279,27 +284,29 @@ static void iommu_dma_free_fq(struct iommu_dma_cookie *cookie)
- 		iommu_dma_free_fq_percpu(cookie->percpu_fq);
- }
- 
--static void iommu_dma_init_one_fq(struct iova_fq *fq)
-+static void iommu_dma_init_one_fq(struct iova_fq *fq, size_t fq_size)
- {
- 	int i;
- 
- 	fq->head = 0;
- 	fq->tail = 0;
-+	fq->mod_mask = fq_size - 1;
- 
- 	spin_lock_init(&fq->lock);
- 
--	for (i = 0; i < IOVA_FQ_SIZE; i++)
-+	for (i = 0; i < fq_size; i++)
- 		INIT_LIST_HEAD(&fq->entries[i].freelist);
- }
- 
- static int iommu_dma_init_fq_single(struct iommu_dma_cookie *cookie)
- {
-+	size_t fq_size = cookie->options.fq_size;
- 	struct iova_fq *queue;
- 
--	queue = vmalloc(sizeof(*queue));
-+	queue = vmalloc(struct_size(queue, entries, fq_size));
- 	if (!queue)
- 		return -ENOMEM;
--	iommu_dma_init_one_fq(queue);
-+	iommu_dma_init_one_fq(queue, fq_size);
- 	cookie->single_fq = queue;
- 
- 	return 0;
-@@ -307,15 +314,17 @@ static int iommu_dma_init_fq_single(struct iommu_dma_cookie *cookie)
- 
- static int iommu_dma_init_fq_percpu(struct iommu_dma_cookie *cookie)
- {
-+	size_t fq_size = cookie->options.fq_size;
- 	struct iova_fq __percpu *queue;
- 	int cpu;
- 
--	queue = alloc_percpu(struct iova_fq);
-+	queue = __alloc_percpu(struct_size(queue, entries, fq_size),
-+			       __alignof__(*queue));
- 	if (!queue)
- 		return -ENOMEM;
- 
- 	for_each_possible_cpu(cpu)
--		iommu_dma_init_one_fq(per_cpu_ptr(queue, cpu));
-+		iommu_dma_init_one_fq(per_cpu_ptr(queue, cpu), fq_size);
- 	cookie->percpu_fq = queue;
- 	return 0;
- }
-@@ -635,11 +644,16 @@ static bool dev_use_sg_swiotlb(struct device *dev, struct scatterlist *sg,
- static void iommu_dma_init_options(struct iommu_dma_options *options,
- 				   struct device *dev)
- {
--	/* Shadowing IOTLB flushes do better with a single queue */
--	if (dev->iommu->shadow_on_flush)
-+	/* Shadowing IOTLB flushes do better with a single large queue */
-+	if (dev->iommu->shadow_on_flush) {
- 		options->qt = IOMMU_DMA_OPTS_SINGLE_QUEUE;
--	else
-+		options->fq_timeout = IOVA_SINGLE_FQ_TIMEOUT;
-+		options->fq_size = IOVA_SINGLE_FQ_SIZE;
-+	} else {
- 		options->qt = IOMMU_DMA_OPTS_PER_CPU_QUEUE;
-+		options->fq_size = IOVA_DEFAULT_FQ_SIZE;
-+		options->fq_timeout = IOVA_DEFAULT_FQ_TIMEOUT;
-+	}
- }
- 
- /**
+   scalar -> timespec64 -> tv_sec
+
+It might be more efficient to skip extracting the tv_nsec field when
+that value isn't going to be used. Perhaps the compiler might
+observe that the tv_nsec result isn't used and remove that dead
+code. But IMO it would be easier for humans to understand and more
+dependably optimized to write the helpers so the tv_nsec part of the
+computation wasn't even in there in these cases.
+
+
+> > >  			    d_inode(child)->i_size == 0) {
+> > >  				break;
+> > >  			}
+> > > diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
+> > > index 4199ede0583c..b17309aac0d5 100644
+> > > --- a/fs/nfsd/nfs4proc.c
+> > > +++ b/fs/nfsd/nfs4proc.c
+> > > @@ -322,8 +322,8 @@ nfsd4_create_file(struct svc_rqst *rqstp, struct svc_fh *fhp,
+> > >  			status = nfserr_exist;
+> > >  			break;
+> > >  		case NFS4_CREATE_EXCLUSIVE:
+> > > -			if (d_inode(child)->i_mtime.tv_sec == v_mtime &&
+> > > -			    d_inode(child)->i_atime.tv_sec == v_atime &&
+> > > +			if (inode_get_mtime(d_inode(child)).tv_sec == v_mtime &&
+> > > +			    inode_get_atime(d_inode(child)).tv_sec == v_atime &&
+> > >  			    d_inode(child)->i_size == 0) {
+> > >  				open->op_created = true;
+> > >  				break;		/* subtle */
+> > > @@ -331,8 +331,8 @@ nfsd4_create_file(struct svc_rqst *rqstp, struct svc_fh *fhp,
+> > >  			status = nfserr_exist;
+> > >  			break;
+> > >  		case NFS4_CREATE_EXCLUSIVE4_1:
+> > > -			if (d_inode(child)->i_mtime.tv_sec == v_mtime &&
+> > > -			    d_inode(child)->i_atime.tv_sec == v_atime &&
+> > > +			if (inode_get_mtime(d_inode(child)).tv_sec == v_mtime &&
+> > > +			    inode_get_atime(d_inode(child)).tv_sec == v_atime &&
+> > >  			    d_inode(child)->i_size == 0) {
+> > >  				open->op_created = true;
+> > >  				goto set_attr;	/* subtle */
+> > > diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
+> > > index 7ed02fb88a36..846559e4769b 100644
+> > > --- a/fs/nfsd/nfsctl.c
+> > > +++ b/fs/nfsd/nfsctl.c
+> > > @@ -1132,7 +1132,7 @@ static struct inode *nfsd_get_inode(struct super_block *sb, umode_t mode)
+> > >  	/* Following advice from simple_fill_super documentation: */
+> > >  	inode->i_ino = iunique(sb, NFSD_MaxReserved);
+> > >  	inode->i_mode = mode;
+> > > -	inode->i_atime = inode->i_mtime = inode_set_ctime_current(inode);
+> > > +	simple_inode_init_ts(inode);
+> > 
+> > An observation about the whole series: Should these helpers use the
+> > usual naming convention of:
+> > 
+> >   <subsystem>-<subject>-<verb>
+> > 
+> > So we get:
+> > 
+> >   simple_inode_ts_init(inode);
+> > 
+> >   inode_atime_get(inode)
+> > 
+> 
+> This was already bikeshedded during the ctime series, and the near
+> universal preference at the time was to go with inode_set_ctime and
+> inode_get_ctime. I'm just following suit with the new accessors.
+
+When this was reviewed before, there were only ctime accessors. Now
+we have two more sets of accessor utilities. Just an observation. I
+can drop it here.
+
+
+> > >  	switch (mode & S_IFMT) {
+> > >  	case S_IFDIR:
+> > >  		inode->i_fop = &simple_dir_operations;
+> > > -- 
+> > > 2.41.0
+> > > 
+> > 
+> > Otherwise, for the patch(es) touching nfsd:
+> > 
+> > Acked-by: Chuck Lever <chuck.lever@oracle.com>
+> > 
+> 
+> Thanks!
+> -- 
+> Jeff Layton <jlayton@kernel.org>
 
 -- 
-2.39.2
-
+Chuck Lever
