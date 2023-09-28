@@ -2,140 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA867B1C93
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:36:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112F57B1CA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 14:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbjI1MgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 08:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58474 "EHLO
+        id S232562AbjI1Mho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 08:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231752AbjI1MgA (ORCPT
+        with ESMTP id S232521AbjI1Mhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 08:36:00 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD858180
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:35:57 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-317c3ac7339so12317697f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:35:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1695904556; x=1696509356; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OPk2ZzrID8Ruy/e6ubyOdQXDCXqUez+jUlvGZE9CHoc=;
-        b=DI6SzCmC+ik1/3gGJtZaaEQEZeBEH2IzH7xEn3xfdfCkGFJnUqILygvEr79HM2pY6W
-         n0ATXu30vKju6aYcfvas+ex9CBs/pyIN90PELqPIYlKxbx12rqdqFSJ2nJFM7aiHCNYX
-         ld/UMYHGLcsR2veCA1tEFrzC1YBJyn/nxygpi/vmC3sAdVtyyzNwydlxlZdrd4JNdYXB
-         uRapu+NpaTRv7Zu2FRiMV1Xwess9RIjl9oIGvWlsyWA32PJVa2ScA+KDlqjOd0wk8+Lc
-         sswWC1nEhS0ZmnKdMj83SoMJRbMjdTnxC9rDg0BUB0forlhaNErN7d2+kuOvIteyFuVq
-         qrYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695904556; x=1696509356;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OPk2ZzrID8Ruy/e6ubyOdQXDCXqUez+jUlvGZE9CHoc=;
-        b=F1xJYpDh2EvttVsKfP8/0a48ybeP0K41wbH4yhYIBF6FanMc7PS+9WvSBfHs2+RRRC
-         4ZbNxE2sKnpC/dYc3bR7gsBJk89HKVmSlCCfKz8InObkKXEiUwXV0eecFMEwt1ux/Aj/
-         M5W4BTXXByJAiBoCFUrClV1lM60LvmzRR12qb+13kA8hebbjI2u8U8eh7iE107YpkJiT
-         KvxL071+N6O52mQLhp4z6VMrDecQE4QYVRQI0TxYIM3h8jQhv8SrZ9Byhg29exbm1HnM
-         4Jv+iHeys1arg7KnFyVihzV+3p458M3KfrEiURzU4sAKkGzYZBK/79a+oZhRL8UHzpl3
-         kV0Q==
-X-Gm-Message-State: AOJu0YzBvHa3KropTXgKRP1iP2/FR7OvX/47CswB//dkgW5EG67c3nOK
-        hsr1zYT8A1PYlto0UVBe5HAgkzEUc5kRfPoYly7WUg==
-X-Google-Smtp-Source: AGHT+IG+ptZJRlwen4reypsH0+PwYcAGCXwddHDZkmlJP4KAaSG4l2LCo5phyY7HK5it2f8kKzCUsw==
-X-Received: by 2002:a05:6000:985:b0:320:9e7:d525 with SMTP id by5-20020a056000098500b0032009e7d525mr1391079wrb.46.1695904555860;
-        Thu, 28 Sep 2023 05:35:55 -0700 (PDT)
-Received: from [192.168.0.105] (haunt.prize.volia.net. [93.72.109.136])
-        by smtp.gmail.com with ESMTPSA id iw7-20020a05600c54c700b003fc16ee2864sm18319287wmb.48.2023.09.28.05.35.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 05:35:55 -0700 (PDT)
-Message-ID: <2c985516-88a3-9fee-dbd1-134aecd323e5@blackwall.org>
-Date:   Thu, 28 Sep 2023 15:35:53 +0300
+        Thu, 28 Sep 2023 08:37:38 -0400
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A31B139
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 05:37:37 -0700 (PDT)
+Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+        by mail11.truemail.it (Postfix) with ESMTPA id 933D220A04;
+        Thu, 28 Sep 2023 14:37:32 +0200 (CEST)
+From:   Francesco Dolcini <francesco@dolcini.it>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     Stefan Eichenberger <stefan.eichenberger@toradex.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: [PATCH v1 1/4] power: reset: gpio-poweroff: use a struct to store the module variables
+Date:   Thu, 28 Sep 2023 14:37:25 +0200
+Message-Id: <20230928123728.21901-1-francesco@dolcini.it>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230928123204.20345-1-francesco@dolcini.it>
+References: <20230928123204.20345-1-francesco@dolcini.it>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.0
-Subject: Re: [PATCH] bridge: MTU auto tuning ignores IFLA_MTU on NEWLINK
-Content-Language: en-US
-From:   Nikolay Aleksandrov <razor@blackwall.org>
-To:     Trent Lloyd <trent.lloyd@canonical.com>,
-        Roopa Prabhu <roopa@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
-References: <20230927075713.1253681-1-trent.lloyd@canonical.com>
- <3dccacd8-4249-87f8-690c-6083374dc9d1@blackwall.org>
-In-Reply-To: <3dccacd8-4249-87f8-690c-6083374dc9d1@blackwall.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/23 11:10, Nikolay Aleksandrov wrote:
-> On 9/27/23 10:57, Trent Lloyd wrote:
->> Commit 804b854d374e ("net: bridge: disable bridge MTU auto tuning if it
->> was set manually") disabled auto-tuning of the bridge MTU when the MTU
->> was explicitly set by the user, however that would only happen when the
->> MTU was set after creation. This commit ensures auto-tuning is also
->> disabled when the MTU is set during bridge creation.
->>
->> Currently when the br_netdev_ops br_change_mtu function is called, the
->> flag BROPT_MTU_SET_BY_USER is set. However this function is only called
->> when the MTU is changed after interface creation and is not called if
->> the MTU is specified during creation with IFLA_MTU (br_dev_newlink).
->>
->> br_change_mtu also does not get called if the MTU is set to the same
->> value it currently has, which makes it difficult to work around this
->> issue (especially for the default MTU of 1500) as you have to first
->> change the MTU to some other value and then back to the desired value.
->>
-> 
-> Yep, I think I also described this in the commit message of my patch.
-> 
->> Add new selftests to ensure the bridge MTU is handled correctly:
->>   - Bridge created with user-specified MTU (1500)
->>   - Bridge created with user-specified MTU (2000)
->>   - Bridge created without user-specified MTU
->>   - Bridge created with user-specified MTU set after creation (2000)
->>
->> Regression risk: Any workload which erroneously specified an MTU during
->> creation but accidentally relied upon auto-tuning to a different value
->> may be broken by this change.
->>
-> 
-> Hmm, you're right. There's a risk of regression. Also it acts 
-> differently when set to 1500 as you've mentioned. I think they should 
-> act the same, also bridge's fake rtable RTAX_MTU is not set.
-> 
->> Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2034099
->> Fixes: 804b854d374e ("net: bridge: disable bridge MTU auto tuning if 
->> it was set manually")
->> Signed-off-by: Trent Lloyd <trent.lloyd@canonical.com>
->> ---
-> 
+From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
 
-So I've been thinking about this and to elaborate - my concerns are two
-first is inconsistency between setting MTU at create vs later when it's 
-the default (i.e. this way disables auto-tuning, while later it doesn't)
-and second is potential breakage as some network managers always set the 
-mtu when creating devices. That would suddenly start disabling 
-auto-tuning and that will surprise some people which expect it to work.
+Use a struct to store the module variables. This is required to later
+move to notifier_blocks where we can have several instances.
 
-I think if you make them both act the same and leave out that case with 
-a big comment why, this would be good for -net. To fully solve the 
-problem without breaking anyone I think we should add control over the 
-autotuning flag so it can be turned on/off by the users. That would be 
-explicit and will work for all cases, but that is net-next material.
+Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+---
+ drivers/power/reset/gpio-poweroff.c | 48 +++++++++++++++++++----------
+ 1 file changed, 31 insertions(+), 17 deletions(-)
 
-Thanks,
-  Nik
+diff --git a/drivers/power/reset/gpio-poweroff.c b/drivers/power/reset/gpio-poweroff.c
+index b28f24da1b3c..dea550e422f3 100644
+--- a/drivers/power/reset/gpio-poweroff.c
++++ b/drivers/power/reset/gpio-poweroff.c
+@@ -17,32 +17,37 @@
+ #include <linux/module.h>
+ 
+ #define DEFAULT_TIMEOUT_MS 3000
++
++struct gpio_poweroff {
++	struct gpio_desc *reset_gpio;
++	u32 timeout_ms;
++	u32 active_delay_ms;
++	u32 inactive_delay_ms;
++};
++
+ /*
+  * Hold configuration here, cannot be more than one instance of the driver
+  * since pm_power_off itself is global.
+  */
+-static struct gpio_desc *reset_gpio;
+-static u32 timeout = DEFAULT_TIMEOUT_MS;
+-static u32 active_delay = 100;
+-static u32 inactive_delay = 100;
++static struct gpio_poweroff *gpio_poweroff;
+ 
+ static void gpio_poweroff_do_poweroff(void)
+ {
+-	BUG_ON(!reset_gpio);
++	BUG_ON(!gpio_poweroff);
+ 
+ 	/* drive it active, also inactive->active edge */
+-	gpiod_direction_output(reset_gpio, 1);
+-	mdelay(active_delay);
++	gpiod_direction_output(gpio_poweroff->reset_gpio, 1);
++	mdelay(gpio_poweroff->active_delay_ms);
+ 
+ 	/* drive inactive, also active->inactive edge */
+-	gpiod_set_value_cansleep(reset_gpio, 0);
+-	mdelay(inactive_delay);
++	gpiod_set_value_cansleep(gpio_poweroff->reset_gpio, 0);
++	mdelay(gpio_poweroff->inactive_delay_ms);
+ 
+ 	/* drive it active, also inactive->active edge */
+-	gpiod_set_value_cansleep(reset_gpio, 1);
++	gpiod_set_value_cansleep(gpio_poweroff->reset_gpio, 1);
+ 
+ 	/* give it some time */
+-	mdelay(timeout);
++	mdelay(gpio_poweroff->timeout_ms);
+ 
+ 	WARN_ON(1);
+ }
+@@ -60,20 +65,29 @@ static int gpio_poweroff_probe(struct platform_device *pdev)
+ 		return -EBUSY;
+ 	}
+ 
++	gpio_poweroff = devm_kzalloc(&pdev->dev, sizeof(*gpio_poweroff), GFP_KERNEL);
++	if (!gpio_poweroff)
++		return -ENOMEM;
++
+ 	input = device_property_read_bool(&pdev->dev, "input");
+ 	if (input)
+ 		flags = GPIOD_IN;
+ 	else
+ 		flags = GPIOD_OUT_LOW;
+ 
+-	device_property_read_u32(&pdev->dev, "active-delay-ms", &active_delay);
++
++	gpio_poweroff->active_delay_ms = 100;
++	gpio_poweroff->inactive_delay_ms = 100;
++	gpio_poweroff->timeout_ms = DEFAULT_TIMEOUT_MS;
++
++	device_property_read_u32(&pdev->dev, "active-delay-ms", &gpio_poweroff->active_delay_ms);
+ 	device_property_read_u32(&pdev->dev, "inactive-delay-ms",
+-				 &inactive_delay);
+-	device_property_read_u32(&pdev->dev, "timeout-ms", &timeout);
++				 &gpio_poweroff->inactive_delay_ms);
++	device_property_read_u32(&pdev->dev, "timeout-ms", &gpio_poweroff->timeout_ms);
+ 
+-	reset_gpio = devm_gpiod_get(&pdev->dev, NULL, flags);
+-	if (IS_ERR(reset_gpio))
+-		return PTR_ERR(reset_gpio);
++	gpio_poweroff->reset_gpio = devm_gpiod_get(&pdev->dev, NULL, flags);
++	if (IS_ERR(gpio_poweroff->reset_gpio))
++		return PTR_ERR(gpio_poweroff->reset_gpio);
+ 
+ 	pm_power_off = &gpio_poweroff_do_poweroff;
+ 	return 0;
+-- 
+2.25.1
 
