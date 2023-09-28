@@ -2,78 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3A47B0FEB
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:24:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0146F7B0FED
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbjI1AYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 20:24:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46204 "EHLO
+        id S229806AbjI1AZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 20:25:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjI1AYk (ORCPT
+        with ESMTP id S229493AbjI1AZK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 20:24:40 -0400
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979FABF
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 17:24:39 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id C761632002D8;
-        Wed, 27 Sep 2023 20:24:38 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 27 Sep 2023 20:24:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.org; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1695860678; x=1695947078; bh=UZsdvMhzyA
-        6QvPkUPhas+SEiSuLod/Pr9jY7SWB1/7Y=; b=iGaFaHDk3j+Q1lqh6df3AG0wSw
-        lRRLbyEzonfxTo/IjcCIN0mu6Y0XWcObg+L6eQK+KHbjCNkh+XYGB2zN5aPtgHP6
-        NAgsgBt8Wfv6sputjVwEIVM42mY2Qcoi+RGqMhVrza8JFpnT7CxM6qE4rziTufwq
-        tqi59u4g4FLS8O8mTyNR1r9N3lLwoM8Id0qCIgghqsT2z2qrM1MugheCxGTnxuhV
-        JsbJuh4eBS2yGzhoAS6ns5fTxL6FrzMexorY7vMZJZjKyBeBYwLS9IrEQNqqyBrc
-        MhYtPydIC7xt7PCTDkZnZ3QQE3S/6W+6CoXabRI3SE5hVEaLwDsAfVN1+YYw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695860678; x=1695947078; bh=UZsdvMhzyA6Qv
-        PkUPhas+SEiSuLod/Pr9jY7SWB1/7Y=; b=bRXrvbKBMp2Iq0phBBtZ1CclS7M3b
-        zOutbjqZ2XXPs02lPFScyNeWD/a3B87W7W4kvzcHV/Tdaa6I7oqCuchYkt6tp10y
-        FZ0KnKQFKCIEYSxqpqALA+VmYp3RtL4sY3vsVUZdReOAghuZRyYcjglSJHMF5c0P
-        eXwVVgJ/BM7G8IMNMVYSOspVagr4dAlHe98p8I+eHcRhpd4kHxD76t50ChKKFsNX
-        8cY+CqTn8KIXQpJQyYz7kSvhVKoZ79b1Al80XGKh8BNHAakxJVJrIDxUOdrSVSUg
-        Gy5J3Kb2sqCO+C/0jpt0bGxYGNZQn+uJX46Qd+B1ywNBaa9odiczC/Uaw==
-X-ME-Sender: <xms:xscUZeEJV4_jc2o8PsXAGJCve-iVuf6mNhUC6SeLX2nNQWxX4FNaKg>
-    <xme:xscUZfV2UbyZEs0tY_MzRzwbcrkR0B3tbQmjiMfaeEWqCjfulyVzAmxy26BBbU0gz
-    3tB3iMjJRt1jGNcBZs>
-X-ME-Received: <xmr:xscUZYIczHZj4ypUpeZ26R0makL3cSI96cj7ffXPGosaxEGSJbaqtsn6B7kYekhRc5tepCf0VBS5SEM1LJH_g-2Ki6OumS-xygYk6tpqeko>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvjedrtdehgdefgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
-    dttdenucfhrhhomhepifgrrhihucftohhokhgrrhguuceoghgrrhihrhhoohhkrghruges
-    fhgrshhtmhgrihhlrdhorhhgqeenucggtffrrghtthgvrhhnpeelgefffffghefhjeegje
-    ehiedvgfelfeehueeuteektdffiefhveelhfegvedvveenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrghrhihrohhokhgrrhgusehfrghsth
-    hmrghilhdrohhrgh
-X-ME-Proxy: <xmx:xscUZYFbQD9ExpUy-p487SelNpwBrhYmUz9N9klK1E0Iou7AxmS1uw>
-    <xmx:xscUZUWgzDWc4xSSUgAy-T3atpssEefmEnQfzRt2QNQFLI0DSOWLMQ>
-    <xmx:xscUZbPXoNYVQ9pZdA6jDkwWPIkidhPXNE69CXAiOEARIonmwsl-oQ>
-    <xmx:xscUZRiRr8j45bLExy8DdmYaLxZvBHapUHeeTRZDm9YcoTGfY39-7A>
-Feedback-ID: ifd194980:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 27 Sep 2023 20:24:37 -0400 (EDT)
-From:   Gary Rookard <garyrookard@fastmail.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Gary Rookard <garyrookard@fastmail.org>
-Subject: [PATCH] staging: rtl8192u: ieee80211: renamed (3) variables
-Date:   Wed, 27 Sep 2023 20:23:56 -0400
-Message-ID: <20230928002356.28607-1-garyrookard@fastmail.org>
-X-Mailer: git-send-email 2.41.0
+        Wed, 27 Sep 2023 20:25:10 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C9FBF;
+        Wed, 27 Sep 2023 17:25:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1695860707;
+        bh=WNfoadDuufEuRBv0tZgBUq317Tu+fzjqQuaRCyQaqoY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=YSU+ECyvLmZHO74h3p72tRoPFUA8WxxG7KMqJG+/XI7u5i+2edS5umBotQHPTLlAW
+         zPymgKN85Q4+eh+s6eA8mqaiUzoGzlUmULJXqudXODxIVMxW4tt+aZMUdj8wx+g/UM
+         pURT8irwJ88xnE6goBZqAM8SCauaYCU3jjJMj+sCbIGepO70xxOVCM4dkSgJJOpoXM
+         8uArPrsRCDhTkGoKmCCTH4mzgfM1xSaJUojLSMCrFRsuUCfqNtV05wBFAzwuyBLmCb
+         Qd1RYgqbTus1/XXm9Baf1ENh0wjb5AB4ZukD5Z133MuvhwG+7bVsENKjq7sdET5Na9
+         bzma44nz2UbNw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RwvPs6KFKz4x3F;
+        Thu, 28 Sep 2023 10:25:05 +1000 (AEST)
+Date:   Thu, 28 Sep 2023 10:25:04 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <brauner@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Jan Kara <jack@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: linux-next: manual merge of the vfs-brauner tree with the mm tree
+Message-ID: <20230928102504.5c751249@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; boundary="Sig_/SMcVosCLCqUTMl3H.Dxy.HK";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,62 +53,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch renames the variable in staging/rtl8192u
-HTUpdateDefaultSetting -> ht_update_default_setting
-in (3) files of staging/rtl8219u
-1) ieee80211.h
-2) ieee80211_module.c
-3) rtl819x_HtProc.c
+--Sig_/SMcVosCLCqUTMl3H.Dxy.HK
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Linux Kernel coding Style "cleanup", no change in runtime,
-staging/rtl8192u builds before and after.
+Hi all,
 
-Signed-off-on: Gary Rookard <garyrookard@fastmail.org>
----
- drivers/staging/rtl8192u/ieee80211/ieee80211.h        | 2 +-
- drivers/staging/rtl8192u/ieee80211/ieee80211_module.c | 2 +-
- drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c   | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+Today's linux-next merge of the vfs-brauner tree got a conflict in:
 
-diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211.h b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
-index 694d1b18f81c..4e598c7f0d31 100644
---- a/drivers/staging/rtl8192u/ieee80211/ieee80211.h
-+++ b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
-@@ -2293,7 +2293,7 @@ void HTDebugHTInfo(u8 *InfoIE, u8 *TitleString);
- 
- void HTSetConnectBwMode(struct ieee80211_device *ieee,
- 			enum ht_channel_width Bandwidth, enum ht_extension_chan_offset Offset);
--void HTUpdateDefaultSetting(struct ieee80211_device *ieee);
-+void ht_update_default_setting(struct ieee80211_device *ieee);
- void HTConstructCapabilityElement(struct ieee80211_device *ieee, u8 *posHTCap,
- 				  u8 *len, u8 isEncrypt);
- void HTConstructInfoElement(struct ieee80211_device *ieee, u8 *posHTInfo,
-diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c b/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
-index 3f93939bc4ee..6f6813899e31 100644
---- a/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
-+++ b/drivers/staging/rtl8192u/ieee80211/ieee80211_module.c
-@@ -146,7 +146,7 @@ struct net_device *alloc_ieee80211(int sizeof_priv)
- 		ieee80211_networks_free(ieee);
- 		goto failed;
- 	}
--	HTUpdateDefaultSetting(ieee);
-+	ht_update_default_setting(ieee);
- 	HTInitializeHTInfo(ieee); /* may move to other place. */
- 	TSInitialize(ieee);
- 
-diff --git a/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c b/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
-index a93f09033d9d..cf9400859700 100644
---- a/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
-+++ b/drivers/staging/rtl8192u/ieee80211/rtl819x_HTProc.c
-@@ -56,7 +56,7 @@ static u8 CISCO_BROADCOM[3] = {0x00, 0x17, 0x94};
-  *  return:  none
-  *  notice:  These value need be modified if any changes.
-  */
--void HTUpdateDefaultSetting(struct ieee80211_device *ieee)
-+void ht_update_default_setting(struct ieee80211_device *ieee)
- {
- 	PRT_HIGH_THROUGHPUT	pHTInfo = ieee->pHTInfo;
- 	//const typeof( ((struct ieee80211_device *)0)->pHTInfo ) *__mptr = &pHTInfo;
--- 
-2.41.0
+  fs/xfs/xfs_buf.c
 
+between commit:
+
+  5c7b459f9f1d ("xfs: dynamically allocate the xfs-buf shrinker")
+
+from the mm tree and commit:
+
+  176ccb99e207 ("xfs: Convert to bdev_open_by_path()")
+
+from the vfs-brauner tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/xfs/xfs_buf.c
+index 9e7ba04572db,003e157241da..000000000000
+--- a/fs/xfs/xfs_buf.c
++++ b/fs/xfs/xfs_buf.c
+@@@ -1943,9 -1945,7 +1943,7 @@@ voi
+  xfs_free_buftarg(
+  	struct xfs_buftarg	*btp)
+  {
+- 	struct block_device	*bdev =3D btp->bt_bdev;
+-=20
+ -	unregister_shrinker(&btp->bt_shrinker);
+ +	shrinker_free(btp->bt_shrinker);
+  	ASSERT(percpu_counter_sum(&btp->bt_io_count) =3D=3D 0);
+  	percpu_counter_destroy(&btp->bt_io_count);
+  	list_lru_destroy(&btp->bt_lru);
+
+--Sig_/SMcVosCLCqUTMl3H.Dxy.HK
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUUx+AACgkQAVBC80lX
+0GwEGQgAo9qwNqhpNWmvZNqJFQ13fHE2YhTPOEVqTkSle/ksWeaiz7hChiXk9iUY
+YYTKMzpBplapPKsWy6UWJ1Gely7Q5HHMmDs8ZVFUqiZ7o6daPT4uFCpcEKCo4Sgl
+rn1+Ng96iKpKwEqS1ESL/7QlYoj1ffMo+0a8dQSHc9xhKkaSkSmt6n8130gqIvOH
+uM+lDV/duHeLblRP1x5ic2XddEFKEk4M8t40dlw8F6vGplbDSS2+lahrCpV5LmRC
+2Ex/YNwjDnMl40UinvNzvdCUQV5LyWv5Ht8fVczc2A2xqSkVDHqqpjQA4wdMmkHr
+JLdTjjLAeDR2IumGut+DiGSignVo6g==
+=zbYj
+-----END PGP SIGNATURE-----
+
+--Sig_/SMcVosCLCqUTMl3H.Dxy.HK--
