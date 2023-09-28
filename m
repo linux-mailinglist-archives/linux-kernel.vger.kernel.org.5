@@ -2,151 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5D877B231D
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7C97B237C
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 19:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbjI1RCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 13:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49662 "EHLO
+        id S231392AbjI1RPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 13:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231377AbjI1RCi (ORCPT
+        with ESMTP id S229581AbjI1RO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 13:02:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4014199
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:01:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695920509;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wJ8io9iHoGzKxYz4jGoEUkvynxWv0l6wFHeyVvwW4Xw=;
-        b=cwBoikPg6DKO57iM/2Xc3EDNQkXfz1egyH622EFwMeC8LQgbjRjOGruLTz6e6U6X3Lb4lf
-        hToh0l6eghMxvtAHvFcKBRHcMHysAk1j4KhaCsc5Y79IYO9bTja9qbO1VOj294roCCQyql
-        fNwnYv+5Fw8aTwZ5AUDJ7FUpKArjnmk=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-361-MCMkA_hXNRqYgnqsDbrFsA-1; Thu, 28 Sep 2023 13:01:47 -0400
-X-MC-Unique: MCMkA_hXNRqYgnqsDbrFsA-1
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-6561167f0eeso220682826d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 10:01:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695920507; x=1696525307;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wJ8io9iHoGzKxYz4jGoEUkvynxWv0l6wFHeyVvwW4Xw=;
-        b=D1Rxkh+Q1+X7HdCvjT/jUH/H/uPuXW1eOgRkFFwrAEVWOmUlfulznT6snSSIPtz5/H
-         PhXSXS4Z6jDmbPCTf7ngCoSTNAhw84V4fjaK07TsxdJDYnG9Zl+pOGV2B9j69kN5mFub
-         qQLgMdPxyb2nNgxM600t+3N0DaPBJ0g8N7sN51u+fafW6AghsN3ytaODznLBoUdIu1hB
-         GrZ9j0KPEM/kfFhWL/P+9yAyTrntE48X6X2bA0499DWh74tBHzQ9f0ERqmMOA0DjwrJI
-         4/gb4bnUTnenfZnHIUkNo/WjphlQIyZv+VJbwh3DC+dvUenqOrUoE9nAABz2LbGBpy8a
-         AKdA==
-X-Gm-Message-State: AOJu0Ywy51Q1ggLUXnUTtRgb8FxY+N4p2jTdyudQSTsnJ2ANge8Jod09
-        PWMpjZUprS+ltgvpwn7mXOq7mSDEkBs3aXvIVkTi1dJix2bjWjAFHCzPDtuspTBhn/YwgAFivfv
-        iIynY0qP8miFFY/EFdKE1HhcbgSrl8+s=
-X-Received: by 2002:a0c:aa5b:0:b0:63c:fa7d:74ee with SMTP id e27-20020a0caa5b000000b0063cfa7d74eemr1743934qvb.50.1695920506986;
-        Thu, 28 Sep 2023 10:01:46 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGsw2oRoFy1oQmAIXh2N4nE+hC646Q49c8ueDG7gmcOgzziSULGO8ra5bgxuXtCOEBTO2n6mQ==
-X-Received: by 2002:a0c:aa5b:0:b0:63c:fa7d:74ee with SMTP id e27-20020a0caa5b000000b0063cfa7d74eemr1743912qvb.50.1695920506746;
-        Thu, 28 Sep 2023 10:01:46 -0700 (PDT)
-Received: from [192.168.9.16] (net-2-34-30-58.cust.vodafonedsl.it. [2.34.30.58])
-        by smtp.gmail.com with ESMTPSA id j12-20020a0cf30c000000b0065b0a3ae7c7sm3770646qvl.113.2023.09.28.10.01.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Sep 2023 10:01:46 -0700 (PDT)
-Message-ID: <b12cc469-a885-223b-c16f-2cd346e8d8ba@redhat.com>
-Date:   Thu, 28 Sep 2023 19:01:43 +0200
+        Thu, 28 Sep 2023 13:14:59 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7750BE5;
+        Thu, 28 Sep 2023 10:14:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8808C433C7;
+        Thu, 28 Sep 2023 17:14:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695921298;
+        bh=Tw/MBuqJbVhiahwI6Oee4TQln3rp94ykoKAprce0/ro=;
+        h=From:To:Cc:Subject:Date:From;
+        b=r5qCzk+rPVHtWc/EEbQL6oIpiG4dGv8t1ICFQP1GjEdl7w+TfNkQd0M73Qus8ngV+
+         NmUYHbyaoI2aX48wzQaW+kCrJezTfySz10bY+QqY7r+mlAyRe5wkwUFy3q7xYM85lX
+         eObkO0OVHsq76nyhuRG1E7fQqJV3TZ3Qd2HtQId0yYqSPHAS/vj+Z30gAu78VFrfu7
+         IQxRurbNS/cr1mP6hX9fksfEziEcRqFlsDnh5o4DHnX8tRd7YlwD9w/LhPHrpDgd+F
+         ciR2097/18ttEoKMuh9wtx543l9wtIlfV1nSCSZYkpremZ+6d+/gj/VYt9JNk7lK+E
+         VJGSEQ62PEQ2w==
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, linux-riscv@lists.infradead.org
+Subject: [PATCH 0/2] pwm: add driver for T-THEAD TH1520 SoC
+Date:   Fri, 29 Sep 2023 01:02:52 +0800
+Message-Id: <20230928170254.413-1-jszhang@kernel.org>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/4] fpga: add helpers for the FPGA KUnit test suites.
-Content-Language: en-US
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org
-References: <20230926163911.66114-1-marpagan@redhat.com>
- <20230926163911.66114-2-marpagan@redhat.com>
- <ZRWjVkMYNosNvlt3@yilunxu-OptiPlex-7050>
-From:   Marco Pagani <marpagan@redhat.com>
-In-Reply-To: <ZRWjVkMYNosNvlt3@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+T-HEAD SoCs such as the TH1520 contain a PWM controller used
+among other things to control the LCD backlight, fan and so on.
+Add the PWM driver support for it.
 
+Since the clk part isn't mainlined, so SoC dts(i) changes are not
+included in this series. However, it can be tested by using fixed-clock.
 
-On 2023-09-28 18:01, Xu Yilun wrote:
-> On 2023-09-26 at 18:39:08 +0200, Marco Pagani wrote:
->> Add helpers to facilitate the registration of minimal platform drivers
->> to support the parent platform devices used for testing.
->>
->> Signed-off-by: Marco Pagani <marpagan@redhat.com>
->> ---
->>  drivers/fpga/tests/fpga-test-helpers.h | 29 ++++++++++++++++++++++++++
->>  1 file changed, 29 insertions(+)
->>  create mode 100644 drivers/fpga/tests/fpga-test-helpers.h
->>
->> diff --git a/drivers/fpga/tests/fpga-test-helpers.h b/drivers/fpga/tests/fpga-test-helpers.h
->> new file mode 100644
->> index 000000000000..fcad3249be68
->> --- /dev/null
->> +++ b/drivers/fpga/tests/fpga-test-helpers.h
->> @@ -0,0 +1,29 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * KUnit test for the FPGA Manager
->> + *
->> + * Copyright (C) 2023 Red Hat, Inc.
->> + *
->> + * Author: Marco Pagani <marpagan@redhat.com>
->> + */
->> +
->> +#ifndef FPGA_KUNIT_HELPERS_
->> +#define FPGA_KUNIT_HELPERS_
-> 
-> How about _FPGA_KUNIT_HELPERS_H
+Jisheng Zhang (2):
+  dt-bindings: pwm: Add T-HEAD PWM controller
+  pwm: add T-HEAD PWM driver
 
-That's fine with me. I will change it in v2.
+ .../devicetree/bindings/pwm/pwm-thead.yaml    |  44 +++
+ MAINTAINERS                                   |   1 +
+ drivers/pwm/Kconfig                           |  11 +
+ drivers/pwm/Makefile                          |   1 +
+ drivers/pwm/pwm-thead.c                       | 289 ++++++++++++++++++
+ 5 files changed, 346 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pwm/pwm-thead.yaml
+ create mode 100644 drivers/pwm/pwm-thead.c
 
-> Others LGTM for this series.
-> 
-> Thanks,
-> Yilun
-> 
->> +
->> +#define TEST_PDEV_NAME	"fpga-test-pdev"
->> +
->> +#define TEST_PLATFORM_DRIVER(__drv_name)			\
->> +	__TEST_PLATFORM_DRIVER(__drv_name, TEST_PDEV_NAME)
->> +/*
->> + * Helper macro for defining a minimal platform driver that can
->> + * be registered to support the parent platform devices used for
->> + * testing.
->> + */
->> +#define __TEST_PLATFORM_DRIVER(__drv_name, __dev_name)		\
->> +static struct platform_driver __drv_name = {			\
->> +	.driver = {						\
->> +		.name = __dev_name,				\
->> +	},							\
->> +}
->> +
->> +#endif	/* FPGA_KUNIT_HELPERS_ */
->> -- 
->> 2.41.0
->>
-> 
-
-Thanks,
-Marco
+-- 
+2.40.1
 
