@@ -2,125 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE2E7B21C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7096C7B21CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 17:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232116AbjI1Pwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 11:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42286 "EHLO
+        id S231878AbjI1Pxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 11:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232045AbjI1Pwa (ORCPT
+        with ESMTP id S231985AbjI1Pxq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 11:52:30 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 774F11A7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:52:28 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-405361bb9f7so135087615e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:52:28 -0700 (PDT)
+        Thu, 28 Sep 2023 11:53:46 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87EEE136
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:53:43 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59f6902dc8bso189685817b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 08:53:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695916346; x=1696521146; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=foVf5TV1MmYsP7PedGF8V/NHFqHve2xNubfmQ3LV2g4=;
-        b=tvWQEmqFxsVIS/BF4LzTeA7treVv5t5yHUyTzUkEeOrM3tFnq/GkYbgB+CX2NYjSik
-         bO2hjgim4OaZ2hxJZFWReBkqr2pixgFlSYjpZrnm6rUodBXPrBulAgLWAImCe3+vxTCM
-         CFHrhtW+UnncxkFXBa6QBkaaLvk92fVf1mIWYJAp3Wik/cRJeFSlwWqRPJOQ6jv+9qou
-         btpfiyvf5NlXvlca+kOQHG4vnrGHUGuVWnOAtydmqpyaI+jWY0numxgAjW7YDM6+hgbd
-         mRqTWtdY/hoc6Mbo/J1QN/FyL4LKcgW6eT9QPVRvibXWcfqKjo+aQkur9n6g53z0vPsp
-         3WhQ==
+        d=google.com; s=20230601; t=1695916423; x=1696521223; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9+KF8Dx6gkORPNY9sE+tILxrgD0oMG3WrnAvRuzUSWM=;
+        b=vjUXxPWdABhEn1cB7ZsLXG9cMuCqnHfWSwfycC4D8nCslWOZrUsf+qZ0UT9teCjak4
+         9IDKbYRa95uJvTIeiqynJksLkMsWaW8iNzd3zmxvjRIc38j/hqkl2SYyDQgY2uUJRnpg
+         e4dE1+Oo7rM5cOmVNPPiE5vv8jpycovwmnZnfwTzx1EF75dnHZymyylszSJcQ/nWaaY0
+         w0ke4c6roSdzkewdzHrCNGFsJQ4IGb0gzTfVZYxNvTvIptYOkO+8sd77zP4nxMIzDOom
+         DWgvo5txG3DqsRcdk/d8d0IbBFw449lJ4YUwRTVUbaMdFVkXDJmn5GsdZv62b/GaDSw9
+         gFbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695916346; x=1696521146;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=foVf5TV1MmYsP7PedGF8V/NHFqHve2xNubfmQ3LV2g4=;
-        b=tQo1Jycz6UrG4RfCZxRNoIsxqyl2T2AXm9kp7jdBiJLQypS0c/FkkB2Abl6BALbHjs
-         f+rjIVb+QMiSD03SA4GgQ//qsQjWU0OCDJcmBW6VI5gc2WZfIWHVssslILgL32L9EnTr
-         KkmcR12tvYjVYiWPDxH4PDaFey4RM8qZ74gzBQvkKTBMlby4XKNKLXwL0WXMEUqBPCEr
-         zdO7/yRV5/PTZD6IEYPTJYtPEqQT0Y1XYuyiVtPwqAbgTQMVi1xWqsKbZAopOkGKL6Uf
-         dpQCaZfIzSrBp/C8+kkhq2N4g5cKmIxjJer/DvmiN1RAoqL+kJgzl2RE/7ZmCuMiG0Z9
-         8Ofw==
-X-Gm-Message-State: AOJu0YwNSFUPEKJV0zUb5uKrET11wEWgUib5M0KrQkleVAAmEyOGIC9I
-        5qUy/oG/REjDW1JqmsaenWCPCLIbCm3aIpFGr45JVA==
-X-Google-Smtp-Source: AGHT+IFZjhxkEjiaXp2zigCJ7tc2I6455jijXEKgoD9JgTP2Y0UEY5UScbCjY5Sj4DCn07iZsNn312ihcg5GHjZeZXE=
-X-Received: by 2002:adf:f108:0:b0:313:f783:262b with SMTP id
- r8-20020adff108000000b00313f783262bmr1652155wro.26.1695916346402; Thu, 28 Sep
- 2023 08:52:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com>
- <5707f3bef3ecd8220a8bf7c8b72c72c53e65b666.camel@perches.com>
- <CAFhGd8rtnvipRVAKRQAEcyGqCknVmx+bd2NMT7mCuTZjhrqULA@mail.gmail.com> <137a309b313cc8a295f3affc704f0da049f233aa.camel@perches.com>
-In-Reply-To: <137a309b313cc8a295f3affc704f0da049f233aa.camel@perches.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 28 Sep 2023 08:52:15 -0700
-Message-ID: <CAKwvOdnGzTvSXf7VeyG8tPEONpqSgkDiBTmgJbUUWsRHzbc5JQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] get_maintainer: add patch-only keyword matching
-To:     Joe Perches <joe@perches.com>,
-        Justin Stitt <justinstitt@google.com>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        geert@linux-m68k.org, gregkh@linuxfoundation.org,
-        workflows@vger.kernel.org, mario.limonciello@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1695916423; x=1696521223;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9+KF8Dx6gkORPNY9sE+tILxrgD0oMG3WrnAvRuzUSWM=;
+        b=QFIaBKYJGRz6hX/mU3AsNWpTUbXQSI0GmysL/4UfUkp8OaZInTqBHdEnjj3EQHMmqh
+         hhrfT970rii8xAg1LKw+g6pLhmWWBov/Rk0cFP2Q1pjI/a/ya7Xq3gnU18/df4yxC0sj
+         GLsu+aSp7gsCJaTF/Ics0Rfk1PgVPj8Q8KViuohC2bq7/5me54cHGHCIe41O30cLohjB
+         Qew/+dBVRgDzcIBiIM7hCkWS6/WL29mnVDDNGj00Ivq7l32KD7eQZ4yWwdyfnguMurWq
+         FiTrs54oTGYJ7HfbkfI7pjqSu3K6amCJByIPDXH+DBLaQvpwnQzYlcHhUvJz+S45OeDU
+         6b1A==
+X-Gm-Message-State: AOJu0Yw+Rvn/QqGElHfc8n9PSolNWvB2BXDtsfsWn7djmP1jVSLzqyGC
+        25smNRgqLh/teXT5QfDxyW7GxmztipU=
+X-Google-Smtp-Source: AGHT+IH4A7qKg2XydOJbmIvwuoLA9BPXAXOV4ldgBhSu0+Vajy3UmXpajmDHZC2VBSfPhVz068mClgDbRP0=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:bc05:0:b0:59b:f138:c843 with SMTP id
+ a5-20020a81bc05000000b0059bf138c843mr31557ywi.3.1695916422752; Thu, 28 Sep
+ 2023 08:53:42 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 08:53:41 -0700
+In-Reply-To: <20230928150428.199929-2-mlevitsk@redhat.com>
+Mime-Version: 1.0
+References: <20230928150428.199929-1-mlevitsk@redhat.com> <20230928150428.199929-2-mlevitsk@redhat.com>
+Message-ID: <ZRWhhTvQuE2MN9KB@google.com>
+Subject: Re: [PATCH 1/5] x86: KVM: SVM: fix for x2avic CVE-2023-5090
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>, x86@kernel.org,
+        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <joro@8bytes.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 11:09=E2=80=AFPM Joe Perches <joe@perches.com> wrot=
-e:
->
-> On Thu, 2023-09-28 at 14:31 +0900, Justin Stitt wrote:
-> > On Thu, Sep 28, 2023 at 2:01=E2=80=AFPM Joe Perches <joe@perches.com> w=
-rote:
-> > >
-> > > On Thu, 2023-09-28 at 04:23 +0000, Justin Stitt wrote:
-> > > > Changes in v2:
-> > > > - remove formatting pass (thanks Joe) (but seriously the formatting=
- is
-> > > >   bad, is there opportunity to get a formatting pass in here at som=
-e
-> > > >   point?)
-> > >
-> > > Why?  What is it that makes you believe the formatting is bad?
-> > >
-> >
-> > Investigating further, it looked especially bad in my editor. There is
-> > a mixture of
-> > tabs and spaces and my vim tabstop is set to 4 for pl files. Setting th=
-is to
-> > 8 is a whole lot better. But I still see some weird spacing
-> >
->
-> Yes, it's a bit odd indentation.
-> It's emacs default perl format.
-> 4 space indent with 8 space tabs, maximal tab fill.
->
+KVM: SVM: for the shortlog scope
 
-Oh! What?! That's the most surprising convention I've ever heard of
-(after the GNU C coding style).  Yet another thing to hold against
-perl I guess. :P
+And my preference is to have the shortlog explain the code change and leave the
+CVE reference to a line in the changelog.  CVE numbers are meaningless without
+context, e.g. listing the CVE isn't going to be at all helpful for future readers
+that look at shortlogs.
 
-I have my editor setup to highlight tabs vs spaces via visual cues, so
-that I don't mess up kernel coding style. (`git clang-format HEAD~`
-after a commit helps).  scripts/get_maintainer.pl has some serious
-inconsistencies to the point where I'm not sure what it should or was
-meant to be.  Now that you mention it, I see it, and it does seem
-consistent in that regard.
+E.g.
 
-Justin, is your formatter configurable to match that convention?
-Maybe it's still useful, as long as you configure it to stick to the
-pre-existing convention.
---=20
-Thanks,
-~Nick Desaulniers
+  KVM: SVM: Always refresh x2APIC MSR intercepts when x2AVIC is enabled
+
+or 
+
+  KVM: SVM: Update MSR intercepts for x2AVIC when guest disables x2APIC
+
+On Thu, Sep 28, 2023, Maxim Levitsky wrote:
+> The following problem exists since the x2avic was enabled in the KVM:
+
+Just "x2avic"
+
+> svm_set_x2apic_msr_interception is called to enable the interception of
+
+() after functions
+
+> the x2apic msrs.
+> 
+> In particular it is called at the moment the guest resets its apic.
+> 
+> Assuming that the guest's apic was in x2apic mode, the reset will bring
+> it back to the xapic mode.
+> 
+> The svm_set_x2apic_msr_interception however has an erroneous check for
+> '!apic_x2apic_mode()' which prevents it from doing anything in this case.
+> 
+> As a result of this, all x2apic msrs are left unintercepted, and that
+> exposes the bare metal x2apic (if enabled) to the guest.
+> Oops.
+> 
+> Remove the erroneous '!apic_x2apic_mode()' check to fix that.
+> 
+> Cc: stable@vger.kernel.org
+
+Fixes: 4d1d7942e36a ("KVM: SVM: Introduce logic to (de)activate x2AVIC mode")
+
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  arch/x86/kvm/svm/svm.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 9507df93f410a63..acdd0b89e4715a3 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -913,8 +913,7 @@ void svm_set_x2apic_msr_interception(struct vcpu_svm *svm, bool intercept)
+>  	if (intercept == svm->x2avic_msrs_intercepted)
+>  		return;
+>  
+> -	if (!x2avic_enabled ||
+> -	    !apic_x2apic_mode(svm->vcpu.arch.apic))
+> +	if (!x2avic_enabled)
+>  		return;
+>  
+>  	for (i = 0; i < MAX_DIRECT_ACCESS_MSRS; i++) {
+> -- 
+> 2.26.3
+> 
