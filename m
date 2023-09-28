@@ -2,66 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C6FC7B1B66
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:47:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FFB7B1B68
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 13:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232030AbjI1Lrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 07:47:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
+        id S231964AbjI1LsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 07:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231964AbjI1Lrv (ORCPT
+        with ESMTP id S232052AbjI1Lr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 07:47:51 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88422122
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 04:47:47 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 53CC540E01AE;
-        Thu, 28 Sep 2023 11:47:45 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id dFpUkaN31vNv; Thu, 28 Sep 2023 11:47:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1695901663; bh=GD8sQRiGfznYgyokYz6mYypmrdkYeCX92OoBRtvmk1c=;
+        Thu, 28 Sep 2023 07:47:56 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39BF2BF;
+        Thu, 28 Sep 2023 04:47:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A614C433CA;
+        Thu, 28 Sep 2023 11:47:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695901673;
+        bh=6ffAfHbytTsNdmlLHrNIA44Bup6fwjTt6W3tUOSKgaM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iq9bJ8TOEgUSwHQVW6USp++ya+9LFjbrMudK4g/mo8v/UXGSxhblINxdXPafWMeTP
-         Om/AE3+ZBRPcf2Dl57kaNbCnZrgB8InJ1JUm9nz3z3jZiaklatNjnbgb/wMP7NIvIR
-         s6P3OW6KTcpDTqyo3wKm5pHGjk6eqC2zyFSRJ8HbVuL7+9eD18aK4KpyamdZW35M/b
-         7o0vtLBrCK+pTV0FWYAHo7hWgQILsz+VazIQK7Ta+qCj51hp61H9IOIz47qMy0zRcJ
-         h51qpkcE3yalLNmkza0NxVVcG0eRgbK2aouIVjvIXqrq2fRUuEwcuvzNIV5cP+YB7I
-         XDsE98MeGdRVvneIrYJ1oZkEdSFqbgcYXmEcVfp0s+rrg90ZH4qWqinErsWCAC76Oh
-         UpGxw/SEhS4B2ZGZXxgu3aWN2Kz2OlynlfmCqaEXCCCCWa/ZiuSz0TG7R9n6YEjwD6
-         78XSnA62q7P3coTepDH36DhXWryv9ieWmu1LpYqeY42ogVtHvmj+pmCbUOfyq6SwVq
-         sSyc7pr+bwA6tvWWR2XQOpLFctmUrfpBEcmnTmIYGvCamJQhRr6WELRhMEYvVLT7Yh
-         jtmzjSfGm3AUgpj55UKZ/VSLSo4WjfDCLrtECFWGIyjuTreOm4HlWQ/70hSkufw2kj
-         8ZYXs3OS2EgOZMf8PvfZ6EFE=
-Received: from nazgul.tnic (unknown [2.247.242.78])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E74CC40E0176;
-        Thu, 28 Sep 2023 11:47:36 +0000 (UTC)
-Date:   Thu, 28 Sep 2023 13:47:33 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [patch V3 29/30] x86/microcode: Prepare for minimal revision
- check
-Message-ID: <20230928114733.GAZRVn1R4wvnS6AXIW@fat_crate.local>
-References: <20230912065249.695681286@linutronix.de>
- <20230912065502.568284573@linutronix.de>
+        b=W0EO8zyEEW16H9lVMy+eOLO1IpcUt8T0MpdJd+U3pcuk7m0R9vkMlKY8X01X8bKHU
+         Toy5XwhNroQ8LgAL8j747cDs1DP8jGOp8IUWu8qHRXEMMUAn2jdh/TYsQyRvm5DHJm
+         q0f5Ncca2ea7Zn0agtzxM4Va7hJ8l1GmI8lx+HeaR3Z5jdtf4wD2G0QcXBYz9N5BQA
+         IIU/AyqVTcxbOIaqJun/7pi6NcBgISORIFMd/KT0g4fGnr6u3XKEx7tCvY0H9vTeI7
+         X2SftrXWQQskrkbxKHnAuc7WkD67Ku3d9+ERhO7GUIo1cJbKsTxxHSGf5crM+va5dx
+         IoiI6ub7al7yA==
+Date:   Thu, 28 Sep 2023 07:47:52 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 6.4, 6.5] ASoC: cs35l56: Disable low-power hibernation
+ mode
+Message-ID: <ZRVn6B6kFnuyjAcM@sashalap>
+References: <20230925151443.28956-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20230912065502.568284573@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <20230925151443.28956-1-rf@opensource.cirrus.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,20 +50,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 12, 2023 at 09:58:30AM +0200, Thomas Gleixner wrote:
-> --- a/arch/x86/kernel/cpu/microcode/core.c
-> +++ b/arch/x86/kernel/cpu/microcode/core.c
-> @@ -46,6 +46,9 @@
->  static struct microcode_ops	*microcode_ops;
->  static bool dis_ucode_ldr = true;
->  
-> +bool force_minrev = IS_ENABLED(CONFIG_MICROCODE_LATE_FORCE_MINREV);
-> +module_param(force_minrev, bool, S_IRUSR | S_IWUSR);
+On Mon, Sep 25, 2023 at 04:14:43PM +0100, Richard Fitzgerald wrote:
+>commit 18789be8e0d9fbb78b2290dcf93f500726ed19f0 upstream.
+>Please apply to 6.4 and 6.5.
+>
+>Do not allow the CS35L56 to be put into its lowest power
+>"hibernation" mode. This only affects I2C because "hibernation"
+>is already disabled on SPI and SoundWire.
+>
+>Recent firmwares need a different wake-up sequence. Until
+>that sequence has been specified, the chip "hibernation" mode
+>must be disabled otherwise it can intermittently fail to wake.
+>
+>Backport note: This is the same change as upstream commit, to delete
+>one line, but the upstream commit would not apply cleanly on older
+>branches because of minor differences to the surrounding code.
 
-Yeah, it's not a module anymore.
+Queued up for 6.5. 6.4 is EOL.
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Sasha
