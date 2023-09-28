@@ -2,66 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6678A7B17D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5077B17D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbjI1JrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 05:47:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34960 "EHLO
+        id S231749AbjI1Jtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 05:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231371AbjI1Jq6 (ORCPT
+        with ESMTP id S231669AbjI1Jti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 05:46:58 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91491122
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 02:46:57 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 080072188C;
-        Thu, 28 Sep 2023 09:46:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1695894416; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Thu, 28 Sep 2023 05:49:38 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD0D122;
+        Thu, 28 Sep 2023 02:49:37 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695894576;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=u1m5a3QBPquEtABFzJZnp0P/n4AzBqVnoHBwO07SKZA=;
-        b=w4KjglXY59PT3pqFYhHgL9hFgBd2fxznPl7Ws5hk8sMIvsuNFrvVgpncF0GwdLX2wOHbJF
-        56khlr8224wJNWGUTkRnJuUwOfHLk8AHLMGGhuHYhxPjkivDROM8e+ws2b+/UalRJgEm7C
-        bk/kkKOMztwYnR5ONmMB2OVp/QmcPhQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1695894416;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        bh=cwnfLlNEFXntJd663pl0BMeaT9w2sLT/CHutGXpU3Nw=;
+        b=2gcSdO9WC57MnMIy+RBiWphp569I6Uh8vvVSAyG2kDwkr5oRWKE/2X/kXBhpvxsualMGjX
+        oKxYedwMRWId7Z5v6pIB5mglz7JD4VETLU6q1/OFw6GVyzUbGsX+0g/TTs44yxAB8IbL0a
+        DpKq+0s/rMjgWVkq03fr0jvZjgKIIhE1kvQGTiMSG5pdMGx1u0uVAW0NmvrGsRGCwVQABg
+        IUr85WUvBe3n7/D5LZfLhaawdheJE5rRiKaDG+KAnyBhYPL86glUgr1rypUYzlsSGXVDk7
+        qlNds8fajtVMmjPFaOBGDEiLZYJK1j0uA1vE7b1hQo6TTuY4kfNWR1pK2uRcVQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695894576;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=u1m5a3QBPquEtABFzJZnp0P/n4AzBqVnoHBwO07SKZA=;
-        b=JPU2dVMxHiNoXVQZQg3EDYaY6G6Mb742RLXGuG3phX0QBs1/dkrlRvVJixUs8uxmJLVir8
-        i0lspZrPBqw+OiDw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DA0B413581;
-        Thu, 28 Sep 2023 09:46:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id aY7PM49LFWXMeAAAMHmgww
-        (envelope-from <aherrmann@suse.de>); Thu, 28 Sep 2023 09:46:55 +0000
-Date:   Thu, 28 Sep 2023 11:48:31 +0200
-From:   Andreas Herrmann <aherrmann@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     liming.wu@jaguarmicro.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] genirq/debugfs: Fix a typo of irq debugfs
-Message-ID: <20230928094831.GD7895@alberich>
-References: <20230927022925.751-1-liming.wu@jaguarmicro.com>
- <875y3ufxa2.ffs@tglx>
+        bh=cwnfLlNEFXntJd663pl0BMeaT9w2sLT/CHutGXpU3Nw=;
+        b=IN6NhWgQxgvkaS0koremfj2dASj7Hj37MXvle3TsZwgQp2E+2aNLCSOA7lCaLdhHFEW6q+
+        0YwQERzGTxkjhPCw==
+To:     Mark Brown <broonie@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        John Stultz <jstultz@google.com>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 0/3] selftests: timers: Convert some more of the timers
+ tests to KTAP
+In-Reply-To: <20230927-ktap-posix-timers-v1-0-399de1cbfbea@kernel.org>
+References: <20230927-ktap-posix-timers-v1-0-399de1cbfbea@kernel.org>
+Date:   Thu, 28 Sep 2023 11:49:35 +0200
+Message-ID: <8734yyfx00.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <875y3ufxa2.ffs@tglx>
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -71,31 +57,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 11:43:33AM +0200, Thomas Gleixner wrote:
-> On Wed, Sep 27 2023 at 10:29, liming wu wrote:
-> > From: Liming Wu <liming.wu@jaguarmicro.com>
-> >
-> > Correct the spelling of effective.
-> 
-> That spelling is on purpose to have tabular output, which you break with
-> that change.
+On Wed, Sep 27 2023 at 12:18, Mark Brown wrote:
 
-Hi Thomas,
+> KTAP is the standard output format for selftests, providing a method for
+> systems running the selftests to get results from individual tests
+> rather than just a pass/fail for the test program as a whole.  While
+> many of the timers tests use KTAP some have custom output formats, let's
+> convert a few more to KTAP to make them work better in automation.
+>
+> The posix_timers test made use of perror(), I've added a generic helper
+> to kselftest.h for that since it seems like it'll be useful elsewhere.
+>
+> There are more tests that don't use KTAP, several of them just run a
+> single test so don't really benefit from KTAP and there were a couple
+> where the conversion was a bit more complex so I've left them for now.
 
-I've received this email twice.
-
-There seem to be many duplicate emails today (LKML, maybe other vger
-lists as well).
-Not sure what is causing this.
-
-Do others observe this as well?
-
-
--- 
-Regards,
-Andreas
-
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nürnberg, Germany
-GF: Ivo Totev, Andrew McDonald, Werner Knoblich
-(HRB 36809, AG Nürnberg)
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
