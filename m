@@ -2,182 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 933717B17A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81447B17AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 11:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbjI1Jjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 05:39:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60334 "EHLO
+        id S231831AbjI1Jjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 05:39:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231925AbjI1JjX (ORCPT
+        with ESMTP id S231842AbjI1Jj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 05:39:23 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C2ACE7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 02:39:06 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3226b8de467so10837743f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 02:39:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linbit-com.20230601.gappssmtp.com; s=20230601; t=1695893945; x=1696498745; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RUAvpHbZIlJDAymrC3wO69unj3kyTMzvS96nKCkH42g=;
-        b=QCw8itSkMqpC5Prk0VPaoql/XSrWr14r5OHinGiKdig7dubkSVYoFamSqilNgisdx5
-         0kwunV7CjHNNCPp56sMJiFlODTk0YUjN4yLCCMGo4D2RRGj8i/AzGjyPzUOqt/BwuUJ/
-         VxplwlXtJGxeBvOzNhI45xMl3X8NQVWZirvU6d3UfK5PKV3JrbQZU19luk2vuaykZQcc
-         TQIkgJgOEgByhapcL+g6gH2pENMFUmOSkETV2uIDUTrZJ3HWIqTt+WyHMGB39mRarVdq
-         z3lSMzh5Igj3YBPngkprUem45GgW/L8CFwfeZdGfSaialid5MLfNktX8kNGezalImPwc
-         qHQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695893945; x=1696498745;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RUAvpHbZIlJDAymrC3wO69unj3kyTMzvS96nKCkH42g=;
-        b=vJ1Q8oBDf5A9JjD9euKEKg8WuK48LPB2xGAY+f3CVvhA72bodfn44MkSPkDWXqiEbk
-         Yb4zAVp6PzHNXDQ0zh210c8UKXrSriLeOlGifKannKwb5oAkonb/PXKbEAFq0oJ944a9
-         TepAfWem7L9Fjhlr0MV/Iy2AUByI5VyhFWrDH8/xqCTpmtNR0xhBRP7YJ+e5Px/ht2yU
-         YIxr8y/9lxF279uhzkBkzryI7g/cTsbmPFitutVu/YKR1/msA7ijLiqp73+W+r3bER6N
-         ydjX3cy6SY+0kgRC6adkcMtbGK07mF1h9oixGFVk4ZL8eoPaCyLkht2ullocrKr0d0D+
-         DUCA==
-X-Gm-Message-State: AOJu0YxPYnx9cni1TKn34B7ql5Vl21JeT4dMpGiA4vp7TRyuQQtcj5mT
-        ao1o/XAsgTO2qeZp35bi1FDbGik3XnE2UNJvfzBTvg==
-X-Google-Smtp-Source: AGHT+IFOh1UVdUIHYK2shBxIs9apOwc+4FRG5zqxR/3bZCY1dSSV3c0K6NkS/zzqRscr/ae10XfuIw==
-X-Received: by 2002:a5d:4985:0:b0:320:10c:37a4 with SMTP id r5-20020a5d4985000000b00320010c37a4mr712514wrq.21.1695893944947;
-        Thu, 28 Sep 2023 02:39:04 -0700 (PDT)
-Received: from localhost.localdomain (213-225-13-130.nat.highway.a1.net. [213.225.13.130])
-        by smtp.gmail.com with ESMTPSA id f4-20020a5d50c4000000b0031fa870d4b3sm18931449wrt.60.2023.09.28.02.39.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 02:39:04 -0700 (PDT)
-From:   =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars@linbit.com>, drbd-dev@lists.linbit.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>,
-        Joel Colledge <joel.colledge@linbit.com>,
-        =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>
-Subject: [PATCH 5/5] drbd: Get rid of conn_reconfig_start() and conn_reconfig_done()
-Date:   Thu, 28 Sep 2023 11:38:52 +0200
-Message-ID: <20230928093852.676786-6-christoph.boehmwalder@linbit.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230928093852.676786-1-christoph.boehmwalder@linbit.com>
-References: <20230928093852.676786-1-christoph.boehmwalder@linbit.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Thu, 28 Sep 2023 05:39:27 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2016.outbound.protection.outlook.com [40.92.22.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D551AE;
+        Thu, 28 Sep 2023 02:39:23 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Da/+E1qRQwnGVRCkPKGDK2WmXJ/xe4stZFQQl0VZr5DXbERXBTZxksv4LDLl8B0KVUY7LVnZZRFsibaqXETxpy33cvfsFYxk19HG0T2MI1+81rsOSEfrvk4pFl5pg/vF9jVr2AWV2fFOnUY3f6i/B9aszpWx5hCXFub0yHgMwLRY2vYvtji+s26/CMSeg5uaaDdAz2slyOhLrgu80uRXzai7K97Q8ZO5jFXYxiP3zDq4zL6eI2WXHC1u2qa3SQ9xfqy8YQNAl+4iYYmhZikJ+7NM/LwLZfnc3p9iPZwq0PVC02b/QMb0R4msSXZdjpBX0o6XbEmivooUCp938PZNzQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=asy85TjLQLQiIwfF7+PJRbXx4xn708tpJi+3YHvlIxQ=;
+ b=hI58V2ZxYVR1KGCeUroZ6+UNDHXekkaOG5xETww8Kgm0JYjGKJD8HTw72GErdVX39u3kGyNKsWKulZ0LdwJDAAOdloS/TrwHVQOJ2MAuw12aWoVSV5uTC6VdE0K1WP+ZOnfkhvQiFUrrlUNwjlTa7VVXGA4tXKPlRrnrqbam74XNomSkoGqh2Utu3okKga8stADwuzxWVMTHR0NoadDW53k7cMAHMKlA6DL7QplWz/5+U4JLXN32zi9q9Htu777sqUAYjpHsl23Zo1Ef/OtGCu/9ljHiDeoGZgR5smKqTMev0yUxQKalre3/RESiuYVfAM4jphfOYWWMJ3RkLASMKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=asy85TjLQLQiIwfF7+PJRbXx4xn708tpJi+3YHvlIxQ=;
+ b=U2NP8E2/yURp07wEzdzV+jcgKOPJOBhQEyDENV5T5EbLoiIgud4CHLUm5TpcXWH7YOxRg7DkEeeTL+T+sUy8qry7pAwNpv2/uNlLDU5M+MpptiamguHnyXcXLAtn8a7AIgOk61WLaAEpyxycNsWR5bRqCvitMb4+qnBdWwNFbaAypRUGsAJw0qPLk5ug8bPCbMeg9dF5TRHjYQ8+qAkwqzJYJj8CiWRQszs1FWo97iec/DBgZk4oBSEwm6dtRx8CIaKSmpFLyOeBwAhm8xCaCbatSpB1Mi051l4hGT61C7l2t41Yin/4rQyPln6kKev0V+We1XpVZW+B8yo+xNQMHA==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by SJ1PR20MB4785.namprd20.prod.outlook.com (2603:10b6:a03:45c::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.21; Thu, 28 Sep
+ 2023 09:39:21 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::d050:882f:a8a7:8263]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::d050:882f:a8a7:8263%5]) with mapi id 15.20.6813.017; Thu, 28 Sep 2023
+ 09:39:21 +0000
+From:   Inochi Amaoto <inochiama@outlook.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     aou@eecs.berkeley.edu, chao.wei@sophgo.com,
+        devicetree@vger.kernel.org, emil.renner.berthing@canonical.com,
+        guoren@kernel.org, jszhang@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, robh+dt@kernel.org,
+        xiaoguang.xing@sophgo.com, Anup Patel <apatel@ventanamicro.com>,
+        Chen Wang <wangchen20@iscas.ac.cn>,
+        Inochi Amaoto <inochiama@outlook.com>
+Subject: Re: [PATCH v3 06/11] dt-bindings: timer: Add Sophgo sg2042 CLINT timer
+Date:   Thu, 28 Sep 2023 17:39:17 +0800
+Message-ID: <IA1PR20MB495373BAA77A74C5EEB7BE49BBC1A@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230928-winter-uranium-cc07496a49e3@wendy>
+References: <20230928-winter-uranium-cc07496a49e3@wendy>
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TMN:  [PaxYHsbg2F6f7Iggom2JRKGQol/5SVdOT1ACplAsioE=]
+X-ClientProxiedBy: TYAPR01CA0035.jpnprd01.prod.outlook.com
+ (2603:1096:404:28::23) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID: <20230928093917.149074-1-inochiama@outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|SJ1PR20MB4785:EE_
+X-MS-Office365-Filtering-Correlation-Id: bfadf014-0b5b-4a2a-16f0-08dbc006caee
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: k/s3rUu3Mho8zYM8UWCBLSWeIGR7Lj2yNqlvZ7zgPpBZav6fd64Fxl+fgRmiXAgUbwinEgj05XO8iN5SNsk13gIv9s9t8VOj+h0XfjvT2jZdI8wErpc1F2ZbhGtSyfpiiYz8q3+li3OoZAiFbZdIHK3iin7wuVvupn9rokLU5P3lNZMhC6xFaOkk6LhlNRlTCD7cA0wcfMvSdFk6d3Y++m/yQgPGbgp/E8azGlg+b3voHe9IhpI+RW8xzOl34PrN+TQ51J/kg4Y9n4bXW45jYxc1M+W+IJsY59Y9oGWv35xeIrqdvS4Ndtj4mlSd64HUArwjxQ/18PKDqkY3dlhQYeG+TtMO+Kl1cquDvtIpaWKlrSI6yA8+nS+fMqlmhy+0Ta/l95wde38PA8ZSBtrhrKoJS2bpxwHDuPkBDrrftFpUuNnNUGmrR9EoBAe2tCcQympTmnXrsPHfSB5jX7YWmpKvqgjc+DFUVmFPQdd7LVOgrEludfUECO/bvUovR3xviNf/+fbmvqXDphIwKKVbzu2X0LYr+S0BUdKEKIP9uXxjLIcF1Qnz7MKUhpVVzq1RkMGv1U4qCxg46BBQRlDuqeOfHCPVrZiBCgCE7Ol9YcA=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RLzEc4aKq0mqNZszuUgddc1kD85MTROSxjqPU/7pmjwLqRw/8XfRccZrdXiH?=
+ =?us-ascii?Q?opCstgK27iEaS6XL+b6XZOIv0Z65ADtMiNy+ND93/wiOOqiNZCKni6dKvM8M?=
+ =?us-ascii?Q?Ef+b3iOnb/ud9t86bL4Jlv4bjLfIYYdh/q4gOTRY8ugWuWmRIG1iPT7ePKXp?=
+ =?us-ascii?Q?yV4cScBYirqbeXVLuGyDvofZda6Pb6GL+Jua5LcLFZh/R4i8vUYFOjOrJgQ3?=
+ =?us-ascii?Q?VPkTJwdNjRm3J/QEqPGXitS4wnm2jD9KUGdQGUrQZnL2hjM+azQbas41vKro?=
+ =?us-ascii?Q?H418RKVou/S8MRdylM7Ya5ibFZacBN9NbhyQcYxOBKtzoKZTrFADo1KcFb3x?=
+ =?us-ascii?Q?zig4f05rbLQg54v8U+xp3fMSfa9uuEMpqgdifBrzZEwp6ZDR8YTJ2k8NwdsQ?=
+ =?us-ascii?Q?lXWUTwoLkKv51yK6DLsrHzAdM8fZp2XQF8gr41ZK0h1zyfOrALj6+lyuE9Dk?=
+ =?us-ascii?Q?KhZyFX6qW6cwIM4zG71RkMh5vHEOdHZ4JE+b40FqkomgXBdehqx208x7mTlk?=
+ =?us-ascii?Q?BsuFjZ+1kcmIVFbq1Paa3l07o5LwY98wbCAp0qrDBIPBplRmd0y6lSEkrm9a?=
+ =?us-ascii?Q?gVPoRT1UQmczGtTEGVhtSvwL7XF1DvlqXDh1f2bWVypBM9rROpm7uAJhT4uE?=
+ =?us-ascii?Q?TyRwlenoREBrsq3/OBTQPWX7MLFG+yICDPIvKLUA99rOF5YDTYS0B9K9h/4e?=
+ =?us-ascii?Q?cV/jmH7CIGqT6JdVQ59+2wCDAy2j49zXerwTFDn+SXWTOg/DN5Iz2BScldsa?=
+ =?us-ascii?Q?61l7/eBYMZl0eoFMdQ+upkWqPuW9h8ClEr9iDbwh5u3Ks7J8+AyNJ6XcShxr?=
+ =?us-ascii?Q?Ja+0Ki8obmRFqa/IqRCiAWlN9YWL6gDXMXpEPcJH45750QYOTajgjo9pOKJc?=
+ =?us-ascii?Q?f3S9NQnanQmVgZRrg/CNqW5VH03ha2St2NdKMf+OPuLsQY5r9qBDirpjr5dz?=
+ =?us-ascii?Q?SeieQ4OnWNh6lsdtJZ3pCTObl6I21K6dp4tgsAx+OHtYkIs0UghoLee/OvjT?=
+ =?us-ascii?Q?W9U5UpngV93ZWKHgQVOfcHCrAHn2rL3j6VdzG0lUBeySpHnFSLkyTaZeu2Or?=
+ =?us-ascii?Q?fLN7YBi6xqiXK1edQfhT6NSiOWOeSihrwiJEJ8KlscAgEUfSvGzHP5Dai62x?=
+ =?us-ascii?Q?xmUrZ0NrvEEq6VfEzj0fhiRzwWoeD6wh5UWM/iqHl+uZ6Vyb8PyR9mmS4CEh?=
+ =?us-ascii?Q?DsMvHvDdilMsfIvriAbqyPHXrAQfH5YIBT/rKwcHTQETIuzzV3jtDEHb2R4?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bfadf014-0b5b-4a2a-16f0-08dbc006caee
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Sep 2023 09:39:21.2489
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR20MB4785
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Originally-from: Andreas Gruenbacher <agruen@kernel.org>
-Reviewed-by: Joel Colledge <joel.colledge@linbit.com>
-Signed-off-by: Christoph Böhmwalder <christoph.boehmwalder@linbit.com>
----
- drivers/block/drbd/drbd_nl.c | 34 +++-------------------------------
- 1 file changed, 3 insertions(+), 31 deletions(-)
+>>>> If so, whether we should replace the "thead,c900-clint" with these separate
+>>>> DT to describe the thead clint?
+>>>
+>>> No, since that's a different device, right?
+>>>
+>>
+>> Yes. It seems sophgo defined these by themselves, but the T-HEAD. Sorry
+>> for my mistake.
+>
+>I'm sorry, I don't quite understand this. Do you mean that the IP is not
+>T-Head, but rather designed by Sophgo? If the IP is made by T-Head, then
+>I would expect to see something like
+>
+>compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
+>
+>in the dts.
+>
 
-diff --git a/drivers/block/drbd/drbd_nl.c b/drivers/block/drbd/drbd_nl.c
-index 85ab6f0f9d87..5de8a6641253 100644
---- a/drivers/block/drbd/drbd_nl.c
-+++ b/drivers/block/drbd/drbd_nl.c
-@@ -1349,28 +1349,6 @@ void drbd_reconsider_queue_parameters(struct drbd_device *device, struct drbd_ba
- 	drbd_setup_queue_param(device, bdev, new, o);
- }
- 
--/* Starts the sender thread */
--static void conn_reconfig_start(struct drbd_connection *connection)
--{
--	drbd_thread_start(&connection->sender);
--	drbd_flush_workqueue(&connection->sender_work);
--}
--
--/* if still unconfigured, stops sender again. */
--static void conn_reconfig_done(struct drbd_connection *connection)
--{
--	bool stop_threads;
--	spin_lock_irq(&connection->resource->req_lock);
--	stop_threads = connection->cstate == C_STANDALONE;
--	spin_unlock_irq(&connection->resource->req_lock);
--	if (stop_threads) {
--		/* ack_receiver thread and ack_sender workqueue are implicitly
--		 * stopped by receiver in conn_disconnect() */
--		drbd_thread_stop(&connection->receiver);
--		drbd_thread_stop(&connection->sender);
--	}
--}
--
- /* Make sure IO is suspended before calling this function(). */
- static void drbd_suspend_al(struct drbd_device *device)
- {
-@@ -2382,7 +2360,7 @@ int drbd_adm_net_opts(struct sk_buff *skb, struct genl_info *info)
- 		goto out;
- 	}
- 
--	conn_reconfig_start(connection);
-+	drbd_flush_workqueue(&connection->sender_work);
- 
- 	mutex_lock(&connection->data.mutex);
- 	mutex_lock(&connection->resource->conf_update);
-@@ -2461,15 +2439,13 @@ int drbd_adm_net_opts(struct sk_buff *skb, struct genl_info *info)
- 			drbd_send_sync_param(peer_device);
- 	}
- 
--	goto done;
-+	goto out;
- 
-  fail:
- 	mutex_unlock(&connection->resource->conf_update);
- 	mutex_unlock(&connection->data.mutex);
- 	free_crypto(&crypto);
- 	kfree(new_net_conf);
-- done:
--	conn_reconfig_done(connection);
-  out:
- 	mutex_unlock(&adm_ctx.resource->adm_mutex);
-  finish:
-@@ -2548,7 +2524,6 @@ int drbd_adm_connect(struct sk_buff *skb, struct genl_info *info)
- 
- 	mutex_lock(&adm_ctx.resource->adm_mutex);
- 	connection = first_connection(adm_ctx.resource);
--	conn_reconfig_start(connection);
- 
- 	if (connection->cstate > C_STANDALONE) {
- 		retcode = ERR_NET_CONFIGURED;
-@@ -2581,8 +2556,6 @@ int drbd_adm_connect(struct sk_buff *skb, struct genl_info *info)
- 
- 	((char *)new_net_conf->shared_secret)[SHARED_SECRET_MAX-1] = 0;
- 
--	drbd_flush_workqueue(&connection->sender_work);
--
- 	mutex_lock(&adm_ctx.resource->conf_update);
- 	old_net_conf = connection->net_conf;
- 	if (old_net_conf) {
-@@ -2631,7 +2604,7 @@ int drbd_adm_connect(struct sk_buff *skb, struct genl_info *info)
- 
- 	rv = conn_request_state(connection, NS(conn, C_UNCONNECTED), CS_VERBOSE);
- 
--	conn_reconfig_done(connection);
-+	drbd_thread_start(&connection->sender);
- 	mutex_unlock(&adm_ctx.resource->adm_mutex);
- 	drbd_adm_finish(&adm_ctx, info, rv);
- 	return 0;
-@@ -2640,7 +2613,6 @@ int drbd_adm_connect(struct sk_buff *skb, struct genl_info *info)
- 	free_crypto(&crypto);
- 	kfree(new_net_conf);
- 
--	conn_reconfig_done(connection);
- 	mutex_unlock(&adm_ctx.resource->adm_mutex);
- out:
- 	drbd_adm_finish(&adm_ctx, info, retcode);
--- 
-2.41.0
-
+AFAIK, the clint IP is designed by T-HEAD, not Sophgo. Sophgo change this
+IP layout to fit its weird cpu design. But in my test, the timer and mswi
+of clint is compatible with the T-HEAD one. So we should treat this as
+T-HEAD IP, not Sophgo?
