@@ -2,60 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 603527B112F
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 05:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468D47B1130
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 05:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbjI1D3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 23:29:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47188 "EHLO
+        id S229437AbjI1DaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 23:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjI1D3j (ORCPT
+        with ESMTP id S229854AbjI1D37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 27 Sep 2023 23:29:39 -0400
-Received: from jari.cn (unknown [218.92.28.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C79EB94
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 20:29:37 -0700 (PDT)
-Received: from wangkailong$jari.cn ( [182.148.12.64] ) by
- ajax-webmail-localhost.localdomain (Coremail) ; Thu, 28 Sep 2023 11:28:18
- +0800 (GMT+08:00)
-X-Originating-IP: [182.148.12.64]
-Date:   Thu, 28 Sep 2023 11:28:18 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   "KaiLong Wang" <wangkailong@jari.cn>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/gup: Clean up errors in gup.c
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.1-cmXT6 build
- 20230419(ff23bf83) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 27 Sep 2023 23:29:59 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F24122
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 20:29:58 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id af79cd13be357-7742da399a2so536436785a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 20:29:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1695871797; x=1696476597; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KuGpzWUz7WllqNPIiFw60y239AVC+GmSn3mdK28s17Q=;
+        b=MrUXHCgF6csYJaZtGtqH9CzwM3OyIVjou75BAKkQ7RG2fYn2Cc9EUExWhuAg9AaqqR
+         IxcdMpfsdTMEwpxA6MyixWsZJz396U9tPOM1dg5AT7p36t+J4XmG0BUqLjmNsQ5fOcrC
+         PYRbQsy5jvQJs8oKb3IbAn8fEgTdHwkaHo/Z8JLNd/eFE1Yzofz5R0O5MzyTgRL7WN6K
+         lr/Xk7dE+nbHRB9CUNW7Lca8J0UfWHSp8NmbIVx+ZkSn0D1CNyAKiM5P/M3NzJm08L1y
+         +MlOaRW4Baqwy/LOo+9oMwJnDCGh1Nj1bXVswS3HcFUPWDrD+6TDC6HeEZWdt7deUhYP
+         y1wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695871797; x=1696476597;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=KuGpzWUz7WllqNPIiFw60y239AVC+GmSn3mdK28s17Q=;
+        b=DSSir+JGmu0hZiD2LCm66yYJfIiMnOgK3qqhlXhLnMfAyZlXvwGcIzWZ31Mk6ug17v
+         6Ua3vRC8u2JBdKU2Ok9kZTO3PnujD/dznBB1xLVxce7J4iFOteMzzPgCTxD6gfNwuCZd
+         GDKoz4zEKF1xUVVKvIvyGVEMtrT0bMGouO0sa9NM1mog5/80BFePnDO2T+i8ZRT1h8R6
+         9e+QPM45f+nP87pLwDVnKnoXy02i98hPtdO9OxMy40acXTabkONvWHzJWLZoBFHnaKdq
+         rr704EOyCcLLrI02Ej9HbYFc7Ct5ZdJHU3c8Hyd2G2Wa7r76TF6wsYLKyVyBKFynLxAP
+         pGGw==
+X-Gm-Message-State: AOJu0YxSALd5s1u5Kfo7mk9pn6Y9B7X1P8jUgNdHPJpH/v7JO5XHHEwW
+        OthzRPV35vngeGWYq8jzVnKG76iDj/cAw59wjic=
+X-Google-Smtp-Source: AGHT+IEyfMhyk45JsD3Dgb9LYtD3L+aE0Fq7RIPQuBa2iSA5NwdKFkK0qzCUM/UGwHr0VcmesJoAGA==
+X-Received: by 2002:a05:620a:221a:b0:774:f7b:f0a with SMTP id m26-20020a05620a221a00b007740f7b0f0amr44046qkh.76.1695871797184;
+        Wed, 27 Sep 2023 20:29:57 -0700 (PDT)
+Received: from [10.255.173.165] ([139.177.225.224])
+        by smtp.gmail.com with ESMTPSA id j17-20020aa78dd1000000b0068c1ac1784csm12541842pfr.59.2023.09.27.20.29.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 20:29:56 -0700 (PDT)
+Message-ID: <716adfa5-bd5d-3fe2-108c-ff24b2e81420@bytedance.com>
+Date:   Thu, 28 Sep 2023 11:29:51 +0800
 MIME-Version: 1.0
-Message-ID: <1748b504.8b0.18ad9d487ae.Coremail.wangkailong@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwDXaD7S8hRl2YK+AA--.587W
-X-CM-SenderInfo: 5zdqwypdlo00nj6mt2flof0/1tbiAQAIB2UT+K8AFwAPs3
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_PBL,RDNS_NONE,T_SPF_HELO_PERMERROR,T_SPF_PERMERROR
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH bpf-next v3 3/7] bpf: Introduce task open coded iterator
+ kfuncs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230925105552.817513-1-zhouchuyi@bytedance.com>
+ <20230925105552.817513-4-zhouchuyi@bytedance.com>
+ <CAEf4BzZFBFPMBs6t4GM7GRt-c-Po9KkQqxQ_Zo9vuG=KuqeLzQ@mail.gmail.com>
+From:   Chuyi Zhou <zhouchuyi@bytedance.com>
+In-Reply-To: <CAEf4BzZFBFPMBs6t4GM7GRt-c-Po9KkQqxQ_Zo9vuG=KuqeLzQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rml4IHRoZSBmb2xsb3dpbmcgZXJyb3JzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2g6CgpFUlJPUjog
-ZWxzZSBzaG91bGQgZm9sbG93IGNsb3NlIGJyYWNlICd9JwoKU2lnbmVkLW9mZi1ieTogS2FpTG9u
-ZyBXYW5nIDx3YW5na2FpbG9uZ0BqYXJpLmNuPgotLS0KIG1tL2d1cC5jIHwgMyArLS0KIDEgZmls
-ZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9t
-bS9ndXAuYyBiL21tL2d1cC5jCmluZGV4IDJmOGEyZDg5ZmRlMS4uYWVkMzI3NDUwMjUwIDEwMDY0
-NAotLS0gYS9tbS9ndXAuYworKysgYi9tbS9ndXAuYwpAQCAtMTQ4MCw4ICsxNDgwLDcgQEAgc3Rh
-dGljIF9fYWx3YXlzX2lubGluZSBsb25nIF9fZ2V0X3VzZXJfcGFnZXNfbG9ja2VkKHN0cnVjdCBt
-bV9zdHJ1Y3QgKm1tLAogCQkJcmV0dXJuIC1FQUdBSU47CiAJCW11c3RfdW5sb2NrID0gdHJ1ZTsK
-IAkJKmxvY2tlZCA9IDE7Ci0JfQotCWVsc2UKKwl9IGVsc2UKIAkJbW1hcF9hc3NlcnRfbG9ja2Vk
-KG1tKTsKIAogCWlmIChmbGFncyAmIEZPTExfUElOKQotLSAKMi4xNy4xCg==
+Hello,
+
+在 2023/9/28 07:20, Andrii Nakryiko 写道:
+> On Mon, Sep 25, 2023 at 3:56 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
+>>
+>> This patch adds kfuncs bpf_iter_task_{new,next,destroy} which allow
+>> creation and manipulation of struct bpf_iter_task in open-coded iterator
+>> style. BPF programs can use these kfuncs or through bpf_for_each macro to
+>> iterate all processes in the system.
+>>
+>> The API design keep consistent with SEC("iter/task"). bpf_iter_task_new()
+>> accepts a specific task and iterating type which allows:
+>> 1. iterating all process in the system
+>>
+>> 2. iterating all threads in the system
+>>
+>> 3. iterating all threads of a specific task
+>> Here we also resuse enum bpf_iter_task_type and rename BPF_TASK_ITER_TID
+>> to BPF_TASK_ITER_THREAD, rename BPF_TASK_ITER_TGID to BPF_TASK_ITER_PROC.
+>>
+>> The newly-added struct bpf_iter_task has a name collision with a selftest
+>> for the seq_file task iter's bpf skel, so the selftests/bpf/progs file is
+>> renamed in order to avoid the collision.
+>>
+>> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+>> ---
+>>   include/linux/bpf.h                           |  8 +-
+>>   kernel/bpf/helpers.c                          |  3 +
+>>   kernel/bpf/task_iter.c                        | 96 ++++++++++++++++---
+>>   .../testing/selftests/bpf/bpf_experimental.h  |  5 +
+>>   .../selftests/bpf/prog_tests/bpf_iter.c       | 18 ++--
+>>   .../{bpf_iter_task.c => bpf_iter_tasks.c}     |  0
+>>   6 files changed, 106 insertions(+), 24 deletions(-)
+>>   rename tools/testing/selftests/bpf/progs/{bpf_iter_task.c => bpf_iter_tasks.c} (100%)
+>>
+> 
+> [...]
+> 
+>> @@ -692,9 +692,9 @@ static int bpf_iter_fill_link_info(const struct bpf_iter_aux_info *aux, struct b
+>>   static void bpf_iter_task_show_fdinfo(const struct bpf_iter_aux_info *aux, struct seq_file *seq)
+>>   {
+>>          seq_printf(seq, "task_type:\t%s\n", iter_task_type_names[aux->task.type]);
+>> -       if (aux->task.type == BPF_TASK_ITER_TID)
+>> +       if (aux->task.type == BPF_TASK_ITER_THREAD)
+>>                  seq_printf(seq, "tid:\t%u\n", aux->task.pid);
+>> -       else if (aux->task.type == BPF_TASK_ITER_TGID)
+>> +       else if (aux->task.type == BPF_TASK_ITER_PROC)
+>>                  seq_printf(seq, "pid:\t%u\n", aux->task.pid);
+>>   }
+>>
+>> @@ -856,6 +856,80 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bpf_iter_css_task *it)
+>>          bpf_mem_free(&bpf_global_ma, kit->css_it);
+>>   }
+>>
+>> +struct bpf_iter_task {
+>> +       __u64 __opaque[2];
+>> +       __u32 __opaque_int[1];
+> 
+> this should be __u64 __opaque[3], because struct takes full 24 bytes
+> 
+>> +} __attribute__((aligned(8)));
+>> +
+>> +struct bpf_iter_task_kern {
+>> +       struct task_struct *task;
+>> +       struct task_struct *pos;
+>> +       unsigned int type;
+>> +} __attribute__((aligned(8)));
+>> +
+>> +__bpf_kfunc int bpf_iter_task_new(struct bpf_iter_task *it, struct task_struct *task, unsigned int type)
+> 
+> nit: type -> flags, so we can add a bit more stuff, if necessary
+> 
+>> +{
+>> +       struct bpf_iter_task_kern *kit = (void *)it;
+> 
+> empty line after variable declarations
+> 
+>> +       BUILD_BUG_ON(sizeof(struct bpf_iter_task_kern) != sizeof(struct bpf_iter_task));
+>> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_task_kern) !=
+>> +                                       __alignof__(struct bpf_iter_task));
+> 
+> and I'd add empty line here to keep BUILD_BUG_ON block separate
+> 
+>> +       kit->task = kit->pos = NULL;
+>> +       switch (type) {
+>> +       case BPF_TASK_ITER_ALL:
+>> +       case BPF_TASK_ITER_PROC:
+>> +       case BPF_TASK_ITER_THREAD:
+>> +               break;
+>> +       default:
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       if (type == BPF_TASK_ITER_THREAD)
+>> +               kit->task = task;
+>> +       else
+>> +               kit->task = &init_task;
+>> +       kit->pos = kit->task;
+>> +       kit->type = type;
+>> +       return 0;
+>> +}
+>> +
+>> +__bpf_kfunc struct task_struct *bpf_iter_task_next(struct bpf_iter_task *it)
+>> +{
+>> +       struct bpf_iter_task_kern *kit = (void *)it;
+>> +       struct task_struct *pos;
+>> +       unsigned int type;
+>> +
+>> +       type = kit->type;
+>> +       pos = kit->pos;
+>> +
+>> +       if (!pos)
+>> +               goto out;
+>> +
+>> +       if (type == BPF_TASK_ITER_PROC)
+>> +               goto get_next_task;
+>> +
+>> +       kit->pos = next_thread(kit->pos);
+>> +       if (kit->pos == kit->task) {
+>> +               if (type == BPF_TASK_ITER_THREAD) {
+>> +                       kit->pos = NULL;
+>> +                       goto out;
+>> +               }
+>> +       } else
+>> +               goto out;
+>> +
+>> +get_next_task:
+>> +       kit->pos = next_task(kit->pos);
+>> +       kit->task = kit->pos;
+>> +       if (kit->pos == &init_task)
+>> +               kit->pos = NULL;
+> 
+> I can't say I completely follow the logic (e.g., for
+> BPF_TASK_ITER_PROC, why do we do next_task() on first next() call)?
+> Can you elabore the expected behavior for various combinations of
+> types and starting task argument?
+> 
+
+Thanks for the review.
+
+The expected behavior of current implementation is:
+
+BPF_TASK_ITER_PROC:
+
+init_task->first_process->second_process->...->last_process->init_task
+
+We would exit before visiting init_task again.
+
+BPF_TASK_ITER_THREAD:
+
+group_task->first_thread->second_thread->...->last_thread->group_task
+
+We would exit before visiting group_task again.
+
+BPF_TASK_ITER_ALL:
+
+init_task -> first_process -> second_process -> ...
+                 |                    |
+		-> first_thread..    |
+				     -> first_thread
+
+Actually, every next() call, we would return the "pos" which was 
+prepared by previous next() call, and use next_task()/next_thread() to 
+update kit->pos. Once we meet the exit condition (next_task() return 
+init_task or next_thread() return group_task), we would update kit->pos 
+to NULL. In this way, when next() is called again, we will terminate the 
+iteration.
+
+Here "kit->pos = NULL;" means we would return the last valid "pos" and 
+will return NULL in next call to exit from the iteration.
+
+Am I miss something important?
+
+Thanks.
+
+
+
