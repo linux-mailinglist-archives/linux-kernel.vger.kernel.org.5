@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9B27B1010
+	by mail.lfdr.de (Postfix) with ESMTP id 3B9B97B100F
 	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 02:30:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230024AbjI1AaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 27 Sep 2023 20:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34156 "EHLO
+        id S230087AbjI1AaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 27 Sep 2023 20:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjI1AaI (ORCPT
+        with ESMTP id S229945AbjI1AaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 27 Sep 2023 20:30:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECE29BF;
-        Wed, 27 Sep 2023 17:30:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 006A8C433CC;
-        Thu, 28 Sep 2023 00:30:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D40511F;
+        Wed, 27 Sep 2023 17:30:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0D7BC433C8;
+        Thu, 28 Sep 2023 00:30:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695861006;
-        bh=8HtluV5jLpdAwDnUm4rU53vr0pQvMWbab4SsGNGI/28=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Cm/bTcnAd32yQGYxdqEjkp+3SrUmYwg6NjpW1P3BQtXoJgL6E2NUo0nqtO2CBNpKL
-         qsFlOZ22Bj1EefYxOhayxc3KvjsEEfw2AksEIacNb3vs0UT4/4kTESqacMEkPcZ73O
-         MZ7+PrA8ByPhxtbXCakYmbFW5dAXCZj2gALqZSe5aJGur8cGoupQBHd16aMMLUaIwk
-         ahK98liYMRMIQ1m4pelQ38Ev5FU022ymsIK8xqjdoC1iut8Wy8hPs1QXCUsYCeJ/7r
-         PJ9R1VeVufllU+kuwkZzdnsqf6IJNKlsY7TkTQJmt4LlM3wdvpSEY56EAI+pRKMxWf
-         VTMi13JO/tUFQ==
+        s=k20201202; t=1695861007;
+        bh=0k+eI+Gw38M0qYVrDonrZDI7ENLrygBXyK4wdkKYoIM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gJKNQ9QzxA6g5H9FkV7CK1+VWtwCNfWftUclPa+Lsffv2aA+qnAcP8VKZUkIe36+Q
+         QowciZzooIDr/utrZc5FWRKV+79gbZUStIqGFGcUrFIviU8A58lLrFEUfkcdKReNCT
+         9DYLWkDaW/FiFb/D4Wy0NeS/AmOOD9BrCZkgxOVOpM+jpR17EkJtblTHpjWYX7PYsE
+         c1KIxhNmSc7Rb/NR1QVX14pzi1ZXeM2KKnPOnrhX/gKkGhGTPoXNZBLJ7zZ82bF2xt
+         6lO3oR7eN2O0of7YJMTDIvMUAFwNpuho7OVhgUnG4tBhxRkRpoeBkTqSpCb7U8ypaN
+         P1ObCCVXRnGVA==
 From:   Bjorn Andersson <andersson@kernel.org>
-To:     Andy Gross <agross@kernel.org>,
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     Andy Gross <agross@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@quicinc.com,
-        Unnathi Chalicheemala <quic_uchalich@quicinc.com>
-Subject: Re: [PATCH] soc: qcom: Switch to EXPORT_SYMBOL_GPL()
-Date:   Wed, 27 Sep 2023 17:34:11 -0700
-Message-ID: <169586125036.1226038.11477463747029420099.b4-ty@kernel.org>
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: apq8016-sbc: Add missing ADV7533 regulators
+Date:   Wed, 27 Sep 2023 17:34:12 -0700
+Message-ID: <169586125031.1226038.4446511866663817791.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230922184817.5183-1-quic_uchalich@quicinc.com>
-References: <20230922184817.5183-1-quic_uchalich@quicinc.com>
+In-Reply-To: <20230922-db410c-adv7533-regulators-v1-1-68aba71e529b@gerhold.net>
+References: <20230922-db410c-adv7533-regulators-v1-1-68aba71e529b@gerhold.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -52,15 +53,22 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Fri, 22 Sep 2023 11:48:17 -0700, Unnathi Chalicheemala wrote:
-> Switch to GPL version of EXPORT_SYMBOL for Qualcomm SoC drivers.
+On Fri, 22 Sep 2023 12:49:55 +0200, Stephan Gerhold wrote:
+> Add the missing regulator supplies to the ADV7533 HDMI bridge to fix
+> the following dtbs_check warnings. They are all also supplied by
+> pm8916_l6 so there is no functional difference.
 > 
+> apq8016-sbc.dtb: bridge@39: 'dvdd-supply' is a required property
+> apq8016-sbc.dtb: bridge@39: 'pvdd-supply' is a required property
+> apq8016-sbc.dtb: bridge@39: 'a2vdd-supply' is a required property
+>         from schema display/bridge/adi,adv7533.yaml
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] soc: qcom: Switch to EXPORT_SYMBOL_GPL()
-      commit: 9b09c0f289c5a8fc5e9b0c1f3cd2766d33b910dc
+[1/1] arm64: dts: qcom: apq8016-sbc: Add missing ADV7533 regulators
+      commit: 33e9032a1875bb1aee3c68a4540f5a577ff44130
 
 Best regards,
 -- 
