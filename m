@@ -2,201 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF597B1F74
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1FD37B1FA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232308AbjI1Oa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:30:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39472 "EHLO
+        id S231283AbjI1OeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:34:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231480AbjI1Oay (ORCPT
+        with ESMTP id S232657AbjI1OeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:30:54 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2043.outbound.protection.outlook.com [40.107.220.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0D7F5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:30:51 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i8Krt9bHv6rysnyy0z9b1Ssz+ppdUnZW1lWS7HVILrulC4J99g+ffL5ZlT6UkiAy4GcnGPYjc0IX798bljPwIEe8Ap8pkdV1TMeMZi/MDUm62Rsm0VIP8bmFOpgV+71potHEviMgm1yXylYB1urJ3iyA4NsFil9dH0mWm3zYMfZOK3ZtKo80pwPLZngb+w+8u+yo6VW0ANu8Rn8ABYqPp/L48vuDoyzPPmoOwkpxu+xPn0RD3qyaZff6Yvf0jbdjZbk/SjwslPd1WrP/bvRcVUMxUrTyFBZl0o01qF3ieT/MqjGktZfAgnZqe96aTsSNXDX74TlRjyWpUnF/O6fvAQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=85wjYwr3Ns/UtT7dhip8QiITG+sFDnmNg9IuixAWdog=;
- b=RQ9T5LhQUMp40hMEpa4T011OtvvGMXC22YfOtGP0YBQP6fP/TEba/FitmndumLAT6BB/69YW0p9FHqAnsKFlwLkj9X9go4jyLn+mwW9o9Vph3DCmsVPmdMx0so2FYMCw+A1FEOd9cM0kJnjTfwSWo9YJaHCglDWpPlPluy6BhD1++I+M4vtcSP/h5/5njCt0BgB8QQLXQzFfpEbKR1WztUDaJnl5TZRbQ9uO/GkncZmmF2EERrufSegnmb3GFnP7oVc7CUdEgl6TbZ09unZuvvHT6JU45Cgk3k3egRxCDVhLnRzEGRG+n6tFDwXzG6Pu0EE5NGcSdpKmIzlkhiKEuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=85wjYwr3Ns/UtT7dhip8QiITG+sFDnmNg9IuixAWdog=;
- b=IXeq7qaMPxFaULmXVEol9OpLSmJtzfgGA3jGNMTW728puYRb/zUL2o/mYNJjhT+HxLkrGvsmygU1FEKeQZnzs6xk3LPl/Fw53pJHejMLZZ4ld0JhNT1y8a5MOozUBDkajLenFoppbXeMHgFf02ec8DClbe6AXOsXbItYYGW7FcA=
-Received: from DM4PR12MB6445.namprd12.prod.outlook.com (2603:10b6:8:bd::20) by
- MN0PR12MB5788.namprd12.prod.outlook.com (2603:10b6:208:377::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6792.28; Thu, 28 Sep 2023 14:30:47 +0000
-Received: from DM4PR12MB6445.namprd12.prod.outlook.com
- ([fe80::ee5c:5153:5f01:6a00]) by DM4PR12MB6445.namprd12.prod.outlook.com
- ([fe80::ee5c:5153:5f01:6a00%5]) with mapi id 15.20.6813.024; Thu, 28 Sep 2023
- 14:30:47 +0000
-From:   "Joshi, Mukul" <Mukul.Joshi@amd.com>
-To:     "Yadav, Arvind" <Arvind.Yadav@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Sharma, Shashank" <Shashank.Sharma@amd.com>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>
-CC:     "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>
-Subject: RE: [PATCH v2 1/1] drm/amdkfd: Fix unaligned doorbell absolute offset
- for gfx8
-Thread-Topic: [PATCH v2 1/1] drm/amdkfd: Fix unaligned doorbell absolute
- offset for gfx8
-Thread-Index: AQHZ8fHg0eQZm//2TkudphXmbY2wz7AwSZIQ
-Date:   Thu, 28 Sep 2023 14:30:47 +0000
-Message-ID: <DM4PR12MB6445548E05C8E3B29AAEAFCAEEC1A@DM4PR12MB6445.namprd12.prod.outlook.com>
-References: <20230928095427.4337-1-Arvind.Yadav@amd.com>
- <20230928095427.4337-2-Arvind.Yadav@amd.com>
-In-Reply-To: <20230928095427.4337-2-Arvind.Yadav@amd.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=1dc08773-f74e-4a9a-b97c-14478189a0ec;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2023-09-28T14:19:02Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM4PR12MB6445:EE_|MN0PR12MB5788:EE_
-x-ms-office365-filtering-correlation-id: 80a7d418-e197-48ef-81f2-08dbc02f8173
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3OQSQU0Wg9a7Ni9s5RKDZ/Z4+0pTkQTbPOcvyvH3M1vuWlgibYOqNEP/Wph+oH26L57JeugmK+n3zqpNok9iINbGJe6Vh8S7EaHeUUV0VF4O1O/XqOk7Epd2NRtu1mEGQf8BHVORWWPNDizATVIU/Rxy6Pn25ZP9OhzVpBPUF0JwwN9OnNwvqOr2Kn3UzKExIEFjIlIcBHAE8eetI81IZLUGG5ZEqYYaZip028UsmpLP4Nb/KQ41z92D/G+ORNs8WhVyjQic/HF4441kOevquxJ85kT5KrfGwLLZutOaD/Ul0MtNn0fjTyH7oBj2x241H0ici/QfF/H8Q6hlm/ePaPL6LBP3lgpgWyGL+7V9AoMFK8NshG8QoOP3BosEdyHNuTy1i30EXmui1rNiuTAOQkLvK4KmqU7VonwdUzUX3D7hXWjcGJt05+NDUtXGcoXxTBgdYSmvEWArMZJ91NHZN56dI2g4Tuo9ZGwGFZ9YJZVRLzIPp/JA4mghjiWd3UUyRIb65gdNKsHgvhm4mijQfgI+xbyeajAxv4haM/04631Z44pDLjNH4GT2fqcMK+EnJs9C2O94F3tqMMocmxqrRUQcfBMdaP1c2klh65QMa5XrebmarayUZAmh4Yu8D7wSa0dRQWdCWhXxDIzU8Sr28Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6445.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(346002)(376002)(396003)(136003)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(2906002)(9686003)(33656002)(6506007)(86362001)(53546011)(7696005)(478600001)(55016003)(71200400001)(8676002)(4326008)(8936002)(41300700001)(38070700005)(38100700002)(83380400001)(122000001)(26005)(5660300002)(921005)(52536014)(76116006)(110136005)(66556008)(66446008)(66946007)(66476007)(316002)(54906003)(64756008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?d/HmNdaYYVeW6PilqtfQ9PbwBAlvfWWnDP4POHkA4hegwNYMww6/KSqGUTjD?=
- =?us-ascii?Q?DiLa96P2jKmjXdV2Q9mUWduVpOxNLXoTL6S+ksU/IBMWcuFgmmewNcpw+FQr?=
- =?us-ascii?Q?37rlwFJ9fFADhb+9MBgy0+cqd5RqSWaIwQXW30DQhyVnf40Y7NuLDLpd6hjJ?=
- =?us-ascii?Q?GMU7Q4ZdEyLTGJT/b0dWjeLbXVqcXByRc5p+EUNRsAOm8ubfxteS3aVFvIOL?=
- =?us-ascii?Q?G0SqZfAW6xULdjnZy4gwxUEBrpKEIDLCfgkkKbnpM9iIUUlFuD8iGbcGTC+c?=
- =?us-ascii?Q?5VDGxA5M0YB+h0LMO3BCJVEqNbch3qcGeWBn9UbQbatwFGftw9gJ9Za0vB6V?=
- =?us-ascii?Q?JQSytMxBPg+oaZ+ssMs6Bfz/AQu4kF2uvdQkCTo78UnnqewYVjbpQQa1AHiq?=
- =?us-ascii?Q?dWbNjo//5QeQL5NgWxeiYo0XW9eofBobSEDfwUKe4vUm+FfqTtx/7fK4nseP?=
- =?us-ascii?Q?3xWpR6d98luAMV2z93DqqGegGADlmmFJV1lJwJTSevU81aaLfVcqR7EDBGmo?=
- =?us-ascii?Q?gxMS/0z5Y1Tr77DV7VjxBLBAK0OiHOHM0wGYxrLk+4N27Q0Lx6wYchxiV0B9?=
- =?us-ascii?Q?xDmuWShOulaeXhphjQl4xYiJANDxIw8j9s+sVLu3k6dr3A7KQsrarPaInUFC?=
- =?us-ascii?Q?hA0+t/xAQfZPqoBFaeWsm7r0MEyrHep3v3FKelCBDMEfc/7fygF78VjcYYo7?=
- =?us-ascii?Q?qJ+NoC3FstX3PM8LWzygMAiogRBkBNPvkbcyob6U5Er+U5/VOxab+G245b0f?=
- =?us-ascii?Q?n0OxgUPx2tVtCvqxLyW39/1K75hTVY/wBCtewTa0AggI70LkrntKspYKLzPD?=
- =?us-ascii?Q?QQNousugb2vRjI0qHvuTFsk6jg0+7xBPyXo/HQ1GqpBEvvWie2JGyS+zD5wD?=
- =?us-ascii?Q?cXQPiOzqAvLGDVeX7U7/5yimlcuu3POYZSy3w/u1bZSn17YGiUPNrPwyrcJq?=
- =?us-ascii?Q?VML59JEKL6HrYdQHBZLVZD2ttLbtvq/DaVp9daerrVNh8xfsjqk5GK81DvbD?=
- =?us-ascii?Q?lQzXSNG/tbq0DdspEaSxhUVwi0JLcVcqomHwZsKoJXpRwJ/L6///Y/zX2r17?=
- =?us-ascii?Q?nB7BwrcH4i9cgdUkRHDm7tgciFGWJ7bnrBrUwFu2G3UEqOBuP4akpIBzSulD?=
- =?us-ascii?Q?sWqS+taz2affBZ60cfxQYiC4/NzNPYwDIabXUPr7qIvtqG1TdhXhzXlHoNGj?=
- =?us-ascii?Q?zCf+IF6Td20finpViF5y2UEse0qR9E8hidh+mP/t/vM48mz4pls/oCZ1ETR8?=
- =?us-ascii?Q?L9tprSJwymooiz5gS1GIxVkp9Xo1RUYae2+8qfEhnTDRe55YMi5cRHSsPDvR?=
- =?us-ascii?Q?ScjwucIgzpD1FwB1SrrHi+Ye5PH7yzxdHKy/krwDRZ8Htybf/TnzEi/j5PI2?=
- =?us-ascii?Q?20yXfTkPFoGkg+mRppBibLVGeRkO+E6tctFt18dR2VtJUSALRdIneFdPC0da?=
- =?us-ascii?Q?mcj/qED2PUM0f9yA8NM8Ku35pdco2+HHOXPJmzuDnvLYlaM42AG/DA9jCZBX?=
- =?us-ascii?Q?0L0BpgKbxZbrJOZi8OQBe5DCACXceLyZG1sVaIXn1TujJr7QoGSpG1muysha?=
- =?us-ascii?Q?Uv3EZAjGRyTbzg3rRAk=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 28 Sep 2023 10:34:10 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF80CDA;
+        Thu, 28 Sep 2023 07:34:05 -0700 (PDT)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38SEGpgm023352;
+        Thu, 28 Sep 2023 14:33:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : subject : date :
+ message-id : content-type : to : cc : content-transfer-encoding :
+ mime-version; s=pp1; bh=+AelF5EobKHqnSr8zhepxLBd8WeHZTYUkZ4i4D+QY1o=;
+ b=kxBoyzMI+i9QbAURxp04TY1v51iWVEEc93pEKyUtZmeX3h4lCupu8qQ7DeOnhf3iT99S
+ WDG2Yf6xruPiOFMGLSeKXTzom5SS43Kpma9qZIWFa8RXWgh9w4j9ZTSJV15kSKfMIW0X
+ 5w60HtLcABxnf3fr34TkRSfAhXhh8QTo1XagbYUfRgFNJ9UcAbJPyyRrL4QMK/0BBcGN
+ J3L/zBOS3pYQYD35uiwtDppffgBOuVPQ2BQiQrLE7UBYX18Un5q9COSFplpQfxe7Wu9u
+ Qmq8GRIcPY7k+EpvVCK3rqadjJLhc4HWRc9eYpnfmLIpZoY/cKQ3LX281BIhn6jGrjPA cQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3td9we2u4q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Sep 2023 14:33:10 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38SEHCuW024068;
+        Thu, 28 Sep 2023 14:32:57 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3td9we2tg2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Sep 2023 14:32:56 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38SCoA2J008464;
+        Thu, 28 Sep 2023 14:32:35 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3taabt5fj3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Sep 2023 14:32:35 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38SEWW6645810006
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 28 Sep 2023 14:32:32 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 446A120043;
+        Thu, 28 Sep 2023 14:32:32 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 549E820040;
+        Thu, 28 Sep 2023 14:32:31 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 28 Sep 2023 14:32:31 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: [PATCH v13 0/6] iommu/dma: s390 DMA API conversion and optimized
+ IOTLB flushing
+Date:   Thu, 28 Sep 2023 16:31:34 +0200
+Message-Id: <20230928-dma_iommu-v13-0-9e5fc4dacc36@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"
+X-B4-Tracking: v=1; b=H4sIAEaOFWUC/3XQS2rDMBAG4KsEryujZyR31XuUUvQY1QJLLnJsU
+ oLv3nE2JsHRbkb6Zn50ayaoCabm/XRrKixpSmPBgom3U+N7W36ApICNhlMuqGCUhGy/05jzTBR
+ QabwS5ix1g++dnYC4aovvUZR5GLD5WyGm633D5xfWsY6ZXPoKdh/LOWWK42mZYUZISRiZfF9gG
+ OBjSGW+tsnl1o95W9On6TLWv3vkxWxzj8IthlDChdQhOgjaxqdBW5ale6k71GflnIEQuAN3pBl
+ 9ybGiJLLogsEbo+ShZ7vXTD94ht5qS50RXijlDz3fveHqwXP0kuFXKtV10upnv67rP1exi9L8A
+ QAA
+To:     Joerg Roedel <joro@8bytes.org>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Wenjia Zhang <wenjia@linux.ibm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Gerd Bayer <gbayer@linux.ibm.com>,
+        Julian Ruess <julianr@linux.ibm.com>,
+        Pierre Morel <pmorel@linux.ibm.com>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Hector Martin <marcan@marcan.st>,
+        Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Yong Wu <yong.wu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev, asahi@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
+        linux-doc@vger.kernel.org
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=7652;
+ i=schnelle@linux.ibm.com; h=from:subject:message-id;
+ bh=7rAyl/igFDFap60SA/wflrborrZguzM/XaJiNUpgzNU=;
+ b=owGbwMvMwCH2Wz534YHOJ2GMp9WSGFJF+zy9peevV/h5amtX6X+1qIkLj7P25jAX/yw1Yebqi
+ zV3fsPeUcrCIMbBICumyLKoy9lvXcEU0z1B/R0wc1iZQIYwcHEKwESWnmT4X/74Xbi0QNHHeQ7f
+ VdYqxlbL/jMwjxc5ecKrNP9kkH3cCYa/4s5rGU9fZmfd/diP4edcNT6tc0UNi2MOuYjdYvoW2xL
+ HCAA=
+X-Developer-Key: i=schnelle@linux.ibm.com; a=openpgp;
+ fpr=9DB000B2D2752030A5F72DDCAFE43F15E8C26090
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 9rSMrLf11VgDIp-qxrzVelAu3ZsETmgE
+X-Proofpoint-ORIG-GUID: Ib-sQeZOpRA54CuzRakeuvLJsOTMZfeC
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6445.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 80a7d418-e197-48ef-81f2-08dbc02f8173
-X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Sep 2023 14:30:47.0702
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: vDXhjIngrSZlWm40Xq35Qoo9wjDkKz6MrSjyWjE9T7wELin6Lh/Gkl8lnI3xd4+wFIqbobkuFiZcwbib6XcpuQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB5788
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-28_13,2023-09-28_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 malwarescore=0 suspectscore=0
+ priorityscore=1501 mlxlogscore=999 clxscore=1015 adultscore=0 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309280126
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only - General]
+Hi All,
 
-> -----Original Message-----
-> From: Yadav, Arvind <Arvind.Yadav@amd.com>
-> Sent: Thursday, September 28, 2023 5:54 AM
-> To: Koenig, Christian <Christian.Koenig@amd.com>; Deucher, Alexander
-> <Alexander.Deucher@amd.com>; Sharma, Shashank
-> <Shashank.Sharma@amd.com>; Kuehling, Felix <Felix.Kuehling@amd.com>;
-> Joshi, Mukul <Mukul.Joshi@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>;
-> airlied@gmail.com; daniel@ffwll.ch
-> Cc: amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux=
--
-> kernel@vger.kernel.org; Yadav, Arvind <Arvind.Yadav@amd.com>; Koenig,
-> Christian <Christian.Koenig@amd.com>
-> Subject: [PATCH v2 1/1] drm/amdkfd: Fix unaligned doorbell absolute offse=
-t
-> for gfx8
->
-> This patch is to adjust the absolute doorbell offset against the doorbell=
- id
-> considering the doorbell size of 32/64 bit.
->
-> v2:
-> - Addressed the review comment from Felix.
->
-> Cc: Christian Koenig <christian.koenig@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Signed-off-by: Shashank Sharma <shashank.sharma@amd.com>
-> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
-> ---
->  drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> index 0d3d538b64eb..c54c4392d26e 100644
-> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
-> @@ -407,7 +407,14 @@ static int allocate_doorbell(struct
-> qcm_process_device *qpd,
->
->       q->properties.doorbell_off =3D amdgpu_doorbell_index_on_bar(dev-
-> >adev,
->                                                                 qpd-
-> >proc_doorbells,
-> -                                                               q-
-> >doorbell_id);
-> +                                                               0);
-> +
+This patch series converts s390's PCI support from its platform specific DMA
+API implementation in arch/s390/pci/pci_dma.c to the common DMA IOMMU layer.
+The conversion itself is done in patches 3-4 with patch 2 providing the final
+necessary IOMMU driver improvement to handle s390's special IOTLB flush
+out-of-resource indication in virtualized environments. The conversion
+itself only touches the s390 IOMMU driver and s390 arch code moving over
+remaining functions from the s390 DMA API implementation. No changes to
+common code are necessary.
 
-It looks like amdgpu_doorbell_index_on_bar() works only for 64-bit doorbell=
-s.
-Shouldn't it work for both 32-bit and 64-bit doorbells considering this is =
-common
-doorbell manager code?
+After patch 4 the basic conversion is done and on our partitioning
+machine hypervisor LPAR performance matches the previous implementation.
+When running under z/VM or KVM however, performance plummets to about
+half of the existing code due to a much higher rate of IOTLB flushes for
+unmapped pages. Due to the hypervisors use of IOTLB flushes to
+synchronize their shadow tables these are very expensive and minimizing
+them is key for regaining the performance loss.
 
-Thanks,
-Mukul
+To this end patches 5-6 add a new, single queue, IOTLB flushing scheme
+as an alternative to the existing per-CPU flush queues. Introducing an
+alternative scheme was suggested by Robin Murphy[1]. The single queue
+mode is introduced in patch 4 together with a new .shadow_on_flush flag
+bit in struct dev_iommu. This allows IOMMU drivers to indicate that
+their IOTLB flushes do the extra work of shadowing. This then lets the
+dma-iommu code use a single queue.
 
-> +     /* Adjust the absolute doorbell offset against the doorbell id
-> considering
-> +      * the doorbell size of 32/64 bit.
-> +      */
-> +     q->properties.doorbell_off +=3D q->doorbell_id *
-> +                                   dev->kfd->device_info.doorbell_size /=
- 4;
-> +
->       return 0;
->  }
->
-> --
-> 2.34.1
+Then patch 6 enables variable queue sizes using power of 2 values and
+shift/mask to keep performance as close to the fixed size queue code as
+possible. A larger queue size and timeout is used by dma-iommu when
+shadow_on_flush is set. This same scheme may also be used by other IOMMU
+drivers with similar requirements. Particularly virtio-iommu may be
+a candidate.
+
+I tested this code on s390x with LPAR, z/VM and KVM hypervisors on an
+AMD Ryzen x86 system with native IOMMU and a guest with a modified
+virtio-iommu[4] that set .shadow_on_flush = true.
+
+This code is also available in the b4/dma_iommu topic branch of my
+git.kernel.org repository[3] with tags matching the version sent.
+
+NOTE: Due to the large drop in performance I think we should not merge
+the DMA API conversion (patch 4) until we have a more suited IOVA
+flushing scheme with similar improvements as the proposed changes.
+
+NOTE: With the DMA API converted mlx5_core is broken on s390x since commit
+06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and reload
+routines"). A fix for the breakage has been proposed[5].
+
+Best regards,
+Niklas
+
+[0] https://lore.kernel.org/linux-iommu/20221109142903.4080275-1-schnelle@linux.ibm.com/
+[1] https://lore.kernel.org/linux-iommu/3e402947-61f9-b7e8-1414-fde006257b6f@arm.com/
+[2] https://lore.kernel.org/linux-iommu/a8e778da-7b41-a6ba-83c3-c366a426c3da@arm.com/
+[3] https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/
+[4] https://lore.kernel.org/lkml/20230726111433.1105665-1-schnelle@linux.ibm.com/
+[5] https://lore.kernel.org/netdev/20230928-mlx5_init_fix-v1-1-79749d45ce60@linux.ibm.com/
+
+---
+Changes in v13:
+- Rebase on iommu/core which requires removing the platform domain
+  handling with.
+- Moved setting iommu_dma_forcedac = true to s390_iommu_init() so it
+  happens before the call to iommu_dma_set_pci_32bit_workaround()
+- Link to v12: https://lore.kernel.org/r/20230825-dma_iommu-v12-0-4134455994a7@linux.ibm.com
+
+Changes in v12:
+- Rebased on v6.5-rc7
+- Changed queue type flag to an enum
+- Incorporated feedback from Robin Murphy
+  - Set options centrally and only once in iommu_dma_init_domain() with
+    new helper iommu_dma_init_options()
+  - Do not reset options of failing to init FQ
+  - Fixed rebase mishap that partially rolled back patch 2
+  - Simplified patch 4 by simply no claiming the deferred flush
+    capability for ISM
+  - Inlined and removed fq_flush_percpu()
+  - Changed vzalloc() to vmalloc() for queue
+- Added Acked-by's from Robin Murphy
+- Link to v11: https://lore.kernel.org/r/20230717-dma_iommu-v11-0-a7a0b83c355c@linux.ibm.com
+
+Changes in v11:
+- Rebased on v6.5-rc2
+- Added patch to force IOMMU_DOMAIN_DMA on s390 specific ISM devices
+- Dropped the patch to properly set DMA mask on ISM devices which went upstream separately.
+- s390 IOMMU driver now uses IOMMU_CAP_DEFERRED_FLUSH to enable DMA-FQ
+  leaving no uses of IOMMU_DOMAIN_DMA_FQ in the driver.
+- Link to v10: https://lore.kernel.org/r/20230310-dma_iommu-v10-0-f1fbd8310854@linux.ibm.com
+
+Changes in v10:
+- Rebased on v6.4-rc3
+- Removed the .tune_dma_iommu() op in favor of a .shadow_on_flush flag
+  in struct dev_iommu which then let's the dma-iommu choose a single
+  queue and larger timeouts and IOVA counts. This leaves the dma-iommu
+  with full responsibility for the settings.
+- The above change affects patches 5 and 6 and lead to a new subject for
+  patch 6 since the flush queue size and timeout is no longer driver
+  controlled
+- Link to v9: https://lore.kernel.org/r/20230310-dma_iommu-v9-0-65bb8edd2beb@linux.ibm.com
+
+Changes in v9:
+- Rebased on v6.4-rc2
+- Re-ordered iommu_group_store_type() to allow passing the device to
+  iommu_dma_init_fq()
+- Link to v8: https://lore.kernel.org/r/20230310-dma_iommu-v8-0-2347dfbed7af@linux.ibm.com
+
+---
+Niklas Schnelle (6):
+      iommu: Allow .iotlb_sync_map to fail and handle s390's -ENOMEM return
+      s390/pci: prepare is_passed_through() for dma-iommu
+      s390/pci: Use dma-iommu layer
+      iommu/s390: Disable deferred flush for ISM devices
+      iommu/dma: Allow a single FQ in addition to per-CPU FQs
+      iommu/dma: Use a large flush queue and timeout for shadow_on_flush
+
+ Documentation/admin-guide/kernel-parameters.txt |   9 +-
+ arch/s390/include/asm/pci.h                     |   7 -
+ arch/s390/include/asm/pci_clp.h                 |   3 +
+ arch/s390/include/asm/pci_dma.h                 | 119 +---
+ arch/s390/pci/Makefile                          |   2 +-
+ arch/s390/pci/pci.c                             |  22 +-
+ arch/s390/pci/pci_bus.c                         |   5 -
+ arch/s390/pci/pci_debug.c                       |  12 +-
+ arch/s390/pci/pci_dma.c                         | 735 ------------------------
+ arch/s390/pci/pci_event.c                       |  17 +-
+ arch/s390/pci/pci_sysfs.c                       |  19 +-
+ drivers/iommu/Kconfig                           |   4 +-
+ drivers/iommu/amd/iommu.c                       |   5 +-
+ drivers/iommu/apple-dart.c                      |   5 +-
+ drivers/iommu/dma-iommu.c                       | 200 +++++--
+ drivers/iommu/intel/iommu.c                     |   5 +-
+ drivers/iommu/iommu.c                           |  20 +-
+ drivers/iommu/msm_iommu.c                       |   5 +-
+ drivers/iommu/mtk_iommu.c                       |   5 +-
+ drivers/iommu/s390-iommu.c                      | 434 ++++++++++++--
+ drivers/iommu/sprd-iommu.c                      |   5 +-
+ drivers/iommu/sun50i-iommu.c                    |   6 +-
+ include/linux/iommu.h                           |   6 +-
+ 23 files changed, 634 insertions(+), 1016 deletions(-)
+---
+base-commit: ccb76c5751634541bfd2222374f46e1dea83d525
+change-id: 20230310-dma_iommu-5e048c538647
+
+Best regards,
+-- 
+Niklas Schnelle
+Linux on Z Development
+
+IBM Deutschland Research & Development GmbH
+Vorsitzender des Aufsichtsrats: Gregor Pillen
+Geschäftsführung: David Faller
+Sitz der Gesellschaft: Böblingen / Registergericht: Amtsgericht Stuttgart, HRB 243294
+IBM Data Privacy Statement - https://www.ibm.com/privacy 
 
