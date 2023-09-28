@@ -2,276 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE94C7B11E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE12E7B11E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 07:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbjI1FER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 01:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
+        id S230211AbjI1FGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 01:06:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbjI1FEO (ORCPT
+        with ESMTP id S229920AbjI1FGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 01:04:14 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B29122
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:04:10 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99bf3f59905so1571436066b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:04:10 -0700 (PDT)
+        Thu, 28 Sep 2023 01:06:45 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F2098
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:06:42 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9b0168a9e05so1321445266b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 27 Sep 2023 22:06:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695877449; x=1696482249; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IMt3VDFkV8v21xpyS36v/wPorubRh0WtZEJ/4wI1WC4=;
-        b=WD7FtNpGWztgyXdP/zVeiTvntgHqIHr7hdfIcSfrtkcisvtjUWn+yNMc5B+XL/t/W2
-         Z2jCIcgfz2R8DApmtNpmoFsQpSAwJ0Oda1FWPhXg7SIKu5xnSRkH4gBbDR+RIH1x+vnh
-         dXZ5gqeNxbOn+JOyJ/eoiCoY3W5GGMH61qT5NwNmvZE5CSeP5fwY0kaSaW5EedL9F1we
-         01z6bsfehFLrxee7aA6ckQqc2bFzMElTgcie7TnuYDtilnmrF5U6AkQ/DFBku7M49b0y
-         UuGfXRmjUgZRupI2UO9WFK2xpHe6sI51KAgdgkUUdUORtqqVbQ4rVLahuk8vg8hrPxdd
-         T96w==
+        d=linaro.org; s=google; t=1695877601; x=1696482401; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=iharTJU5Bifx1z2hCCj9/iXAdTatfSCs/y5PbcRu+IM=;
+        b=sWr71T7pFZo3K8OcRiwpkV2oFin7sxz7OKPMhYrXHaa7idk9azLCU9Byl/bZ9C1AJu
+         JQAXIeYddMvbBG/0NrmbmEjeS2J8e2sPdVmBzzXzvCsmM8TlHOatgbD81MZM8QSiNptn
+         x+MMq/62922lqMzYCNYPjWA2Vl6e2fnPJkB4wgOQIGeKHv8VVjDyFDo9lFpFYcmAlycX
+         4KiQhIDVU6jMxIFjTkwjeWLb3feZMws5oTzUYc6fGPT625ki42qkzXG9YEflnNPNAq43
+         m+nqRJEbWugJC4M6fdIS0a+VHXJ5VgNIxIjgx4HmRDuFsDh6fAlOoMxk8HmNSz2vunib
+         9yfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695877449; x=1696482249;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IMt3VDFkV8v21xpyS36v/wPorubRh0WtZEJ/4wI1WC4=;
-        b=HBYb6dwK62O6WZvskUf9/G3vZsY+NMM1Luc0xysf6swyhoPq3Jul2rLw5IL44J5QXi
-         PzH3RJxSyHBrf9LEtcDqapp2A8Us/+QTB/tiv3hzbW0uR2W31ULFDPQLVo20sWRyYG6K
-         Zus8m0LdQJbaIQ94OtBj1YQ1Y1Uci1V1hQYLvHV9c5CfKrQs20/jIXeWre9fs7A6lsqb
-         oTo6aonKAKz+Ula/jAvaLbsug0cKqO3InB3izCPYD4a4znda0p16rElge+1s7hHGlddl
-         U6x2m4hgQeHHfZuyqFncGKJSr25OQvsZfJLG2fTo6ETEuDOVw/9u4nin47t0yEI/rxKw
-         6gYg==
-X-Gm-Message-State: AOJu0YwqjpMrSYBL7bjNhH15DmDvpABLKmx0fmcYQT72cG/FuaPtyj6t
-        Jp0dsYQ3nBBsWFATPZd8mFYHIJgIwSr/nITHDdlOfA==
-X-Google-Smtp-Source: AGHT+IHsbDNwZygpDuT8nX6B5NMlbaklBzWjXfydWD5M8zeH1vBPpsNN38cIuIC0s484UMYxn+RCte3D4iaMMnjmMbY=
-X-Received: by 2002:a17:907:1dcc:b0:9ae:406c:3425 with SMTP id
- og12-20020a1709071dcc00b009ae406c3425mr221236ejc.0.1695877449159; Wed, 27 Sep
- 2023 22:04:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695877601; x=1696482401;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iharTJU5Bifx1z2hCCj9/iXAdTatfSCs/y5PbcRu+IM=;
+        b=hOMo5RruBwvZpJB2KeO93/BaSF9uWwEeRdPyEE/TVyYTFUeIPdHJHhz+LtrV+uWAdM
+         prD61ElJmqJ7+qCgOa4PZohv7Za1R4XEKtqb+6lXpgk5+NztJmT4ihTpE7z+v+wh+98A
+         I6tjVEPGNQVhU4k5pSxtYFJutLcIRpnVCKZlJUPM1xhGu3pH7svfvWoNYFnbTP8YTX13
+         l+QfBh2dKgibuwGJL/2xOIAI+h7nO1lFEfn/v659KMT2ERiMkPuY+guHVRFuMqkW+NMn
+         a5MdQkWXYM1RHKiaYB7S0iSBPVXZS43BbZFsp4nE9APyUM9XFRTPzW9e6quhL6yMts/J
+         +PSw==
+X-Gm-Message-State: AOJu0YymivZm7o/2rsDOhaQrIB7dCuzQjpKFDV3tULwhA2IhYp6Y5TPg
+        afnDDRyAwKQrW+Q0WOpVpJXnwg==
+X-Google-Smtp-Source: AGHT+IHm4Hmj6e1ivjaB7U7Kxwz/xFnJzV8t3jVK2uGEt7Z0KcVA/lqHKWO0FGXzY1GCZIVYlWgQpg==
+X-Received: by 2002:a17:906:3152:b0:9b2:89ec:d701 with SMTP id e18-20020a170906315200b009b289ecd701mr197205eje.27.1695877601314;
+        Wed, 27 Sep 2023 22:06:41 -0700 (PDT)
+Received: from [192.168.1.234] (host-87-4-82-94.retail.telecomitalia.it. [87.4.82.94])
+        by smtp.gmail.com with ESMTPSA id gx10-20020a170906f1ca00b0099cb349d570sm10279642ejb.185.2023.09.27.22.06.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 27 Sep 2023 22:06:40 -0700 (PDT)
+Message-ID: <45abc9ec-1f7a-469c-bc0f-2a065499b0b4@linaro.org>
+Date:   Thu, 28 Sep 2023 07:06:38 +0200
 MIME-Version: 1.0
-References: <20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com>
- <20230928-get_maintainer_add_d-v2-1-8acb3f394571@google.com> <bf9200e2fc9c55187f2b7661a3b5043f56b0deff.camel@perches.com>
-In-Reply-To: <bf9200e2fc9c55187f2b7661a3b5043f56b0deff.camel@perches.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Thu, 28 Sep 2023 14:03:57 +0900
-Message-ID: <CAFhGd8o8ihYeML6WpiE1-=eeXC+k1yzSEdA-WJXjwB-f9VcHoA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] get_maintainer: add patch-only keyword-matching
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        geert@linux-m68k.org, gregkh@linuxfoundation.org,
-        workflows@vger.kernel.org, mario.limonciello@amd.com,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [EXT] Re: [PATCH v4 2/2] dt-bindings: media: imx-jpeg: Assign
+ slot for imx jpeg encoder/decoder
+Content-Language: en-US
+To:     Ming Qian <ming.qian@nxp.com>,
+        "Mirela Rabulea (OSS)" <mirela.rabulea@oss.nxp.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>
+Cc:     "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "festevam@gmail.com" <festevam@gmail.com>,
+        "X.H. Bao" <xiahong.bao@nxp.com>, Eagle Zhou <eagle.zhou@nxp.com>,
+        Tao Jiang <tao.jiang_2@nxp.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20230926101000.13392-1-ming.qian@nxp.com>
+ <20230926101000.13392-2-ming.qian@nxp.com>
+ <2c351ca0-cee4-4c1b-956b-6134ad101a9a@linaro.org>
+ <AM6PR04MB63415CF2EDCF0AF33F778774E7C2A@AM6PR04MB6341.eurprd04.prod.outlook.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <AM6PR04MB63415CF2EDCF0AF33F778774E7C2A@AM6PR04MB6341.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 1:46=E2=80=AFPM Joe Perches <joe@perches.com> wrote=
-:
->
-> On Thu, 2023-09-28 at 04:23 +0000, Justin Stitt wrote:
-> > Add the "D:" type which behaves the same as "K:" but will only match
-> > content present in a patch file.
-> >
-> > To illustrate:
-> >
-> > Imagine this entry in MAINTAINERS:
-> >
-> > NEW REPUBLIC
-> > M: Han Solo <hansolo@rebelalliance.co>
-> > W: https://www.jointheresistance.org
-> > D: \bstrncpy\b
-> >
-> > Our maintainer, Han, will only be added to the recipients if a patch
-> > file is passed to get_maintainer (like what b4 does):
-> > $ ./scripts/get_maintainer.pl 0004-some-change.patch
-> >
-> > If the above patch has a `strncpy` present in the subject, commit log o=
-r
-> > diff then Han will be to/cc'd.
-> >
-> > However, in the event of a file from the tree given like:
-> > $ ./scripts/get_maintainer.pl ./lib/string.c
-> >
-> > Han will not be noisily to/cc'd (like a K: type would in this
-> > circumstance)
-> >
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > ---
-> >  MAINTAINERS               |  5 +++++
-> >  scripts/get_maintainer.pl | 12 ++++++++++--
-> >  2 files changed, 15 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index b19995690904..94e431daa7c2 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -59,6 +59,11 @@ Descriptions of section entries and preferred order
-> >             matches patches or files that contain one or more of the wo=
-rds
-> >             printk, pr_info or pr_err
-> >          One regex pattern per line.  Multiple K: lines acceptable.
-> > +  D: *Diff content regex* (perl extended) pattern match that applies o=
-nly to
-> > +     patches and not entire files (e.g. when using the get_maintainers=
-.pl
-> > +     script).
-> > +     Usage same as K:.
-> > +
-> >
-> >  Maintainers List
-> >  ----------------
-> > diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-> > index ab123b498fd9..a3e697926ddd 100755
-> > --- a/scripts/get_maintainer.pl
-> > +++ b/scripts/get_maintainer.pl
-> > @@ -342,6 +342,7 @@ if ($tree && !top_of_kernel_tree($lk_path)) {
-> >
-> >  my @typevalue =3D ();
-> >  my %keyword_hash;
-> > +my %patch_keyword_hash;
-> >  my @mfiles =3D ();
-> >  my @self_test_info =3D ();
-> >
-> > @@ -369,8 +370,10 @@ sub read_maintainer_file {
-> >                   $value =3D~ s@([^/])$@$1/@;
-> >               }
-> >           } elsif ($type eq "K") {
-> > -             $keyword_hash{@typevalue} =3D $value;
-> > -         }
-> > +          $keyword_hash{@typevalue} =3D $value;
-> > +         } elsif ($type eq "D") {
-> > +          $patch_keyword_hash{@typevalue} =3D $value;
-> > +      }
-> >           push(@typevalue, "$type:$value");
-> >       } elsif (!(/^\s*$/ || /^\s*\#/)) {
-> >           push(@typevalue, $line);
-> > @@ -607,6 +610,11 @@ foreach my $file (@ARGV) {
-> >                       push(@keyword_tvi, $line);
-> >                   }
-> >               }
-> > +    foreach my $line(keys %patch_keyword_hash) {
-> > +      if ($patch_line =3D~ m/${patch_prefix}$patch_keyword_hash{$line}=
-/x) {
-> > +        push(@keyword_tvi, $line);
-> > +      }
-> > +    }
-> >           }
-> >       }
-> >       close($patch);
-> >
->
->
-> My opinion: Nack.
->
-> I think something like this would be better
-> as it avoids duplication of K and D content.
+On 27/09/2023 11:10, Ming Qian wrote:
+>> From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>> Sent: 2023年9月27日 16:06
+>> To: Ming Qian <ming.qian@nxp.com>; Mirela Rabulea (OSS)
+>> <mirela.rabulea@oss.nxp.com>; robh+dt@kernel.org; shawnguo@kernel.org
+>> Cc: krzysztof.kozlowski+dt@linaro.org; conor+dt@kernel.org;
+>> mchehab@kernel.org; hverkuil-cisco@xs4all.nl; s.hauer@pengutronix.de;
+>> kernel@pengutronix.de; festevam@gmail.com; X.H. Bao
+>> <xiahong.bao@nxp.com>; Eagle Zhou <eagle.zhou@nxp.com>; Tao Jiang
+>> <tao.jiang_2@nxp.com>; dl-linux-imx <linux-imx@nxp.com>;
+>> devicetree@vger.kernel.org; linux-media@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org
+>> Subject: [EXT] Re: [PATCH v4 2/2] dt-bindings: media: imx-jpeg: Assign slot for
+>> imx jpeg encoder/decoder
+>>
+>> Caution: This is an external email. Please take care when clicking links or
+>> opening attachments. When in doubt, report the message using the 'Report
+>> this email' button
+>>
+>>
+>> On 26/09/2023 12:10, Ming Qian wrote:
+>>> There are total 4 slots available in the IP, and we only need to use
+>>> one slot in one os, assign a single slot, configure interrupt and
+>>> power domain only for 1 slot, not for the all 4 slots.
+>>>
+>>> Signed-off-by: Ming Qian <ming.qian@nxp.com>
+>>> ---
+>>> v4
+>>> - improve commit message
+>>> - don't make an ABI break
+>>> v3
+>>> - add vender prefix, change property slot to nxp,slot
+>>> - add type for property slot
+>>>
+>>>  .../bindings/media/nxp,imx8-jpeg.yaml         | 45 +++++++++----------
+>>>  1 file changed, 21 insertions(+), 24 deletions(-)
+>>>
+>>> diff --git
+>>> a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+>>> b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+>>> index 3d9d1db37040..4bcfc815c894 100644
+>>> --- a/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+>>> +++ b/Documentation/devicetree/bindings/media/nxp,imx8-jpeg.yaml
+>>> @@ -32,19 +32,26 @@ properties:
+>>>      maxItems: 1
+>>>
+>>>    interrupts:
+>>> -    description: |
+>>> -      There are 4 slots available in the IP, which the driver may use
+>>> -      If a certain slot is used, it should have an associated interrupt
+>>> -      The interrupt with index i is assumed to be for slot i
+>>> -    minItems: 1               # At least one slot is needed by the driver
+>>> -    maxItems: 4               # The IP has 4 slots available for use
+>>> +    description:
+>>> +      Interrupt number for slot
+>>> +    maxItems: 1
+>>>
+>>>    power-domains:
+>>>      description:
+>>>        List of phandle and PM domain specifier as documented in
+>>>        Documentation/devicetree/bindings/power/power_domain.txt
+>>> -    minItems: 2               # Wrapper and 1 slot
+>>> -    maxItems: 5               # Wrapper and 4 slots
+>>> +    minItems: 1               # VPUMIX
+>>> +    maxItems: 2               # Wrapper and 1 slot
+>>> +
+>>> +  nxp,slot:
+>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>>> +    description:
+>>> +      Integer number of slot index used. There are 4 slots available in the IP,
+>>> +      and driver can use a certain slot, it should have an associated interrupt
+>>> +      and power-domain. In theory, it supports 4 os or vm. If not specified, 0
+>>> +      is used by default.
+>>> +    minimum: 0
+>>> +    maximum: 3
+>>
+>> NAK, you still did not answer concerns why this is needed and justified.
+>> I keep asking and you keep ignoring...
+>>
+>> Best regards,
+>> Krzysztof
+> 
+> Hi Krzysztof,
+> 
+>> Nothing explains what is a slot and nothing explains why do you need this property.
+> 
+> I thought I had answered that question, but seems you don't agree with that explanation. 
+> Would the following description be any better?
 
-If I understand correctly, this puts the onus on the get_maintainer users
-to select the right argument whereas adding "D:", albeit with some
-duplicate code, allows maintainers themselves to decide in exactly
-which context they receive mail.
+No, you didn't. I don't see any explanation in the commit msg. You just
+say you have "4 slots".
 
-Adding a command line flag means sometimes K: is treated one
-way and sometimes treated a different way depending on
-the specific incantation.
+Best regards,
+Krzysztof
 
-This could all be a moot point, though, as I believe Konstantin
-is trying to separate out the whole idea of a patch-sender needing
-to specify the recipients of a patch. Instead some middleware would
-capture mail and delegate automatically based on some queries
-set up by maintainers.
-
-Exciting idea, I wonder what the progress is on that?
-
-Cc: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-
-[1]: https://lore.kernel.org/all/20230726-june-mocha-ad6809@meerkat/
-
-> ---
->  scripts/get_maintainer.pl | 16 +++++++++-------
->  1 file changed, 9 insertions(+), 7 deletions(-)
->
-> diff --git a/scripts/get_maintainer.pl b/scripts/get_maintainer.pl
-> index ab123b498fd9..07e7d744cadb 100755
-> --- a/scripts/get_maintainer.pl
-> +++ b/scripts/get_maintainer.pl
-> @@ -57,6 +57,7 @@ my $subsystem =3D 0;
->  my $status =3D 0;
->  my $letters =3D "";
->  my $keywords =3D 1;
-> +my $keywords_in_file =3D 0;
->  my $sections =3D 0;
->  my $email_file_emails =3D 0;
->  my $from_filename =3D 0;
-> @@ -272,6 +273,7 @@ if (!GetOptions(
->                 'letters=3Ds' =3D> \$letters,
->                 'pattern-depth=3Di' =3D> \$pattern_depth,
->                 'k|keywords!' =3D> \$keywords,
-> +               'kf|keywords-in-file!' =3D> \$keywords_in_file,
->                 'sections!' =3D> \$sections,
->                 'fe|file-emails!' =3D> \$email_file_emails,
->                 'f|file' =3D> \$from_filename,
-> @@ -318,6 +320,7 @@ if ($sections || $letters ne "") {
->      $subsystem =3D 0;
->      $web =3D 0;
->      $keywords =3D 0;
-> +    $keywords_in_file =3D 0;
->      $interactive =3D 0;
->  } else {
->      my $selections =3D $email + $scm + $status + $subsystem + $web;
-> @@ -548,16 +551,14 @@ foreach my $file (@ARGV) {
->         $file =3D~ s/^\Q${cur_path}\E//;  #strip any absolute path
->         $file =3D~ s/^\Q${lk_path}\E//;   #or the path to the lk tree
->         push(@files, $file);
-> -       if ($file ne "MAINTAINERS" && -f $file && $keywords) {
-> +       if ($file ne "MAINTAINERS" && -f $file && $keywords && $keywords_=
-in_file) {
->             open(my $f, '<', $file)
->                 or die "$P: Can't open $file: $!\n";
->             my $text =3D do { local($/) ; <$f> };
->             close($f);
-> -           if ($keywords) {
-> -               foreach my $line (keys %keyword_hash) {
-> -                   if ($text =3D~ m/$keyword_hash{$line}/x) {
-> -                       push(@keyword_tvi, $line);
-> -                   }
-> +           foreach my $line (keys %keyword_hash) {
-> +               if ($text =3D~ m/$keyword_hash{$line}/x) {
-> +                   push(@keyword_tvi, $line);
->                 }
->             }
->         }
-> @@ -1076,6 +1077,7 @@ Output type options:
->  Other options:
->    --pattern-depth =3D> Number of pattern directory traversals (default: =
-0 (all))
->    --keywords =3D> scan patch for keywords (default: $keywords)
-> +  --keywords-in-file =3D> scan file for keywords (default: $keywords_in_=
-file)
->    --sections =3D> print all of the subsystem sections with pattern match=
-es
->    --letters =3D> print all matching 'letter' types from all matching sec=
-tions
->    --mailmap =3D> use .mailmap file (default: $email_use_mailmap)
-> @@ -1086,7 +1088,7 @@ Other options:
->
->  Default options:
->    [--email --tree --nogit --git-fallback --m --r --n --l --multiline
-> -   --pattern-depth=3D0 --remove-duplicates --rolestats]
-> +   --pattern-depth=3D0 --remove-duplicates --rolestats --keywords]
->
->  Notes:
->    Using "-f directory" may give unexpected results:
->
