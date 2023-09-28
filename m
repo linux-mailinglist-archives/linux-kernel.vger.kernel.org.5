@@ -2,70 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 384417B1585
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 413E47B1587
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 10:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbjI1ICb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 04:02:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48214 "EHLO
+        id S230507AbjI1ICf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 04:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbjI1IC2 (ORCPT
+        with ESMTP id S231134AbjI1ICc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 04:02:28 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 410F59F;
-        Thu, 28 Sep 2023 01:02:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eZZIRmbykj6lZJFrbafxkvsz7c/SMH/v8aop+Z7+jMI=; b=fgWGkPITWVxOArycgApDVciz+J
-        K+kGiKtzVvqr13NT/4KeBp6eSnk+4zwrLXPlS8y8olVjeRz2tOVD/G8rXlg8u2jPaW3NKJmyNakAr
-        dW6He/jfIr4d3LGIjOD93zUXrLgXjXlBpFmY2OF+QfbTotElEM9Bzj+5hRwVqM5xCQbjXoy9+/gla
-        avFWxdcxkVV99b946W6m9D+YKh9/mZC4X2/OPIQVxqCMeLAlacaQ3b9lMiaVc+QW6ECI5wD/OtSJ2
-        c0+ay2QBfHl/6fKxw5oP7AUWHlmvdIUdBKSIejgXWpnbArmNZRpsfaSEM64gbWaJzt68fDdG68DnP
-        pwSpuWZQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qllyQ-001JlQ-2B; Thu, 28 Sep 2023 08:02:14 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B8B433002E3; Thu, 28 Sep 2023 10:02:13 +0200 (CEST)
-Date:   Thu, 28 Sep 2023 10:02:13 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Xiaobing Li <xiaobing.li@samsung.com>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, axboe@kernel.dk,
-        asml.silence@gmail.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, io-uring@vger.kernel.org,
-        kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
-        kundan.kumar@samsung.com, wenwen.chen@samsung.com,
-        ruyi.zhang@samsung.com
-Subject: Re: [PATCH 1/3] SCHEDULER: Add an interface for counting real
- utilization.
-Message-ID: <20230928080213.GD9829@noisy.programming.kicks-ass.net>
-References: <20230928022228.15770-1-xiaobing.li@samsung.com>
- <CGME20230928023007epcas5p276b6e029a67001a6ed8ab28c05b2be9c@epcas5p2.samsung.com>
- <20230928022228.15770-2-xiaobing.li@samsung.com>
+        Thu, 28 Sep 2023 04:02:32 -0400
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 886B2BE;
+        Thu, 28 Sep 2023 01:02:30 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 47DE240004;
+        Thu, 28 Sep 2023 08:02:23 +0000 (UTC)
+Message-ID: <d0f12692-f0df-9535-922a-f0578c713547@ghiti.fr>
+Date:   Thu, 28 Sep 2023 10:02:22 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230928022228.15770-2-xiaobing.li@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] riscv: fix out of bounds in walk_stackframe
+To:     Edward AD <twuufnxlz@gmail.com>, conor@kernel.org
+Cc:     syzbot+8d2757d62d403b2d9275@syzkaller.appspotmail.com,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, guoren@kernel.org,
+        alexghiti@rivosinc.com, liushixin2@huawei.com,
+        linux-riscv@lists.infradead.org
+References: <0000000000000170df0605ccf91a@google.com>
+ <20230926114343.1061739-2-twuufnxlz@gmail.com>
+Content-Language: en-US
+From:   Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20230926114343.1061739-2-twuufnxlz@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alex@ghiti.fr
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 10:22:26AM +0800, Xiaobing Li wrote:
-> +	for (int i = 0; i < MAX_SQ_NUM; i++) {
-> +		if (sqstat[i] && (task_cpu(sqstat[i]) != task_cpu(p)
-> +		|| sqstat[i]->__state == TASK_DEAD))
-> +			sqstat[i] = NULL;
-> +	}
+Hi Edward,
 
-This coding style is horrific, please don't ever use that again.
+On 26/09/2023 13:43, Edward AD wrote:
+> Increase the check on the frame after assigning its value. This is to prevent
+> frame access from crossing boundaries.
+>
+> Closes: https://lore.kernel.org/all/20230926105949.1025995-2-twuufnxlz@gmail.com/
+> Fixes: 5d8544e2d007 ("RISC-V: Generic library routines and assembly")
+> Reported-and-tested-by: syzbot+8d2757d62d403b2d9275@syzkaller.appspotmail.com
+> Link: https://lore.kernel.org/all/0000000000000170df0605ccf91a@google.com/T/
+> Signed-off-by: Edward AD <twuufnxlz@gmail.com>
+> ---
+>   arch/riscv/kernel/stacktrace.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
+> index 64a9c093aef9..53bd18672329 100644
+> --- a/arch/riscv/kernel/stacktrace.c
+> +++ b/arch/riscv/kernel/stacktrace.c
+> @@ -54,6 +54,8 @@ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
+>   			break;
+>   		/* Unwind stack frame */
+>   		frame = (struct stackframe *)fp - 1;
+> +		if (!virt_addr_valid(frame))
+> +			break;
+>   		sp = fp;
+>   		if (regs && (regs->epc == pc) && (frame->fp & 0x7)) {
+>   			fp = frame->ra;
+
+
+virt_addr_valid() works on kernel linear addresses, not on vmalloc 
+addresses, which is the case here  (0xff20000006d37c38 belongs to the 
+vmalloc region: see 
+https://elixir.bootlin.com/linux/latest/source/Documentation/riscv/vm-layout.rst#L125). 
+So this fix can't work.
+
+I'm a bit surprised though of this out-of-bounds access since 
+CONFIG_FRAME_POINTER is enabled, so there may be a real issue here (the 
+console output is horrible, lots of backtraces, which is weird), so it 
+may be worth digging into that.
+
+Thanks,
+
+Alex
+
+
