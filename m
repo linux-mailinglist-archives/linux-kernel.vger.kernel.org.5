@@ -2,90 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A4A7B1FE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:43:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 376237B1FEE
+	for <lists+linux-kernel@lfdr.de>; Thu, 28 Sep 2023 16:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbjI1Ond (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 10:43:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
+        id S230338AbjI1OoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 10:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229605AbjI1Onb (ORCPT
+        with ESMTP id S230202AbjI1OoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 10:43:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02BE9F9;
-        Thu, 28 Sep 2023 07:43:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B98C8C433C8;
-        Thu, 28 Sep 2023 14:43:24 +0000 (UTC)
-Date:   Thu, 28 Sep 2023 10:43:21 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        linux-api@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
-        Florian Weimer <fw@deneb.enyo.de>, David.Laight@aculab.com,
-        carlos@redhat.com, Peter Oskolkov <posk@posk.io>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
-        libc-alpha@sourceware.org, Jonathan Corbet <corbet@lwn.net>,
-        Noah Goldstein <goldstein.w.n@gmail.com>,
-        Daniel Colascione <dancol@google.com>, longman@redhat.com,
-        Florian Weimer <fweimer@redhat.com>
-Subject: Re: [RFC PATCH v2 1/4] rseq: Add sched_state field to struct rseq
-Message-ID: <20230928104321.490782a7@rorschach.local.home>
-In-Reply-To: <20230928103926.GI9829@noisy.programming.kicks-ass.net>
-References: <20230529191416.53955-1-mathieu.desnoyers@efficios.com>
-        <20230529191416.53955-2-mathieu.desnoyers@efficios.com>
-        <20230928103926.GI9829@noisy.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 28 Sep 2023 10:44:20 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7900319E
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:44:19 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c6052422acso157345ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 07:44:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695912259; x=1696517059; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9qvi2mkKPCAws2hfkWmM7tfPaBJGsA62IYTCfBAyQTE=;
+        b=mBlb0mORjrI8zgKBJUp/nqVn2IxlkdEoH0SsETqnqgwjX2FyS1Hbl2VGfiiqHPVSE0
+         cDYApN5UNG0eneQkVtzNVfoMW9D124v6IpaAOf309tLIrWkRD4dsSNEUAhhwpKhABdj/
+         AyJPhtYfMqnpUlTcbxrnXs2o01BP0X0cewnsfiCmcqGrNxpjogf4VX478lNN2vM2hSXU
+         EmkB0PTagYZimJB8li5MA1/mdFE/35asF5uvGFpCiIt4wicmi+paLgns4GxtuNBD1o0B
+         1a6M4N3P1mX1buyiCyyVXOoiT321pCeSkzZ/1JL6CsJuZIbVZL4WtULYvuN+855WSUoI
+         L0cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695912259; x=1696517059;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9qvi2mkKPCAws2hfkWmM7tfPaBJGsA62IYTCfBAyQTE=;
+        b=VZjzYAVxKPO5UXv/S/h5bj0cSIrNUIrBOi/CZm6lOApxEqgTlFoxmQWxaa2a/ypEdv
+         Fm/H0zZrsm039Jlhtu0Hpn4FTPs0EzZfCPFogxL+eNkNrkzIGmNPdLIbnjr9mB3eWhWW
+         DsGsFAMPE5BHweRjPX7zBoQVZI7YI2GIM0MXIiUO3ojyJpUAielEhyrYgSbBUzUsRycd
+         uzVjbr/YHZxNEoyfQltDfTmYkRYwRY+OLbquNY/VrBTdlh49qpvtegL46I5REypeSweB
+         ESDjOmQyI1YMvcumfqTLGFsb1hqncg5tCKAFz6+AI16XpvUiPtByfFSU2JzllmkNfoUA
+         hGjA==
+X-Gm-Message-State: AOJu0YyJXwTll/fkzMmhw1Mi77I8CBugvBfRi/8OyyQKqZ7yXYrMy0YT
+        SE8WgyCpqbXo524MDkjmAwHD6w6X95VnTlpvLNWupnkuf/0dzjCtAFbtZg==
+X-Google-Smtp-Source: AGHT+IHNVH8eIpIeXF8BSMRijlmgWijQPUek08k5OnwkliBTC9hDO4zqY1E2fjrhmT60W3kssnGULoeyjCmg+QFWfww=
+X-Received: by 2002:a17:902:e751:b0:1c6:112f:5ceb with SMTP id
+ p17-20020a170902e75100b001c6112f5cebmr678306plf.25.1695912258487; Thu, 28 Sep
+ 2023 07:44:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230926162228.68666-1-mjguzik@gmail.com> <CAHk-=wjUCLfuKks-VGTG9hrFAORb5cuzqyC0gRXptYGGgL=YYg@mail.gmail.com>
+ <CAGudoHGej+gmmv0OOoep2ENkf7hMBib-KL44Fu=Ym46j=r6VEA@mail.gmail.com>
+ <20230927-kosmetik-babypuppen-75bee530b9f0@brauner> <CAHk-=whLadznjNKZPYUjxVzAyCH-rRhb24_KaGegKT9E6A86Kg@mail.gmail.com>
+ <CAGudoHH2mvfjfKt+nOCEOfvOrQ+o1pqX63tN2r_1+bLZ4OqHNA@mail.gmail.com>
+ <CAHk-=wjmgord99A-Gwy3dsiG1YNeXTCbt+z6=3RH_je5PP41Zw@mail.gmail.com>
+ <ZRR1Kc/dvhya7ME4@f> <CAHk-=wibs_xBP2BGG4UHKhiP2B=7KJnx_LL18O0bGK8QkULLHg@mail.gmail.com>
+ <20230928-kulleraugen-restaurant-dd14e2a9c0b0@brauner> <20230928-themen-dilettanten-16bf329ab370@brauner>
+In-Reply-To: <20230928-themen-dilettanten-16bf329ab370@brauner>
+From:   Jann Horn <jannh@google.com>
+Date:   Thu, 28 Sep 2023 16:43:42 +0200
+Message-ID: <CAG48ez2d5CW=CDi+fBOU1YqtwHfubN3q6w=1LfD+ss+Q1PWHgQ@mail.gmail.com>
+Subject: Re: [PATCH v2] vfs: shave work on failed file open
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mateusz Guzik <mjguzik@gmail.com>, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Sep 2023 12:39:26 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+On Thu, Sep 28, 2023 at 4:05=E2=80=AFPM Christian Brauner <brauner@kernel.o=
+rg> wrote:
+>
+> > So I spent a good chunk of time going through this patch.
+>
+> The main thing that makes me go "we shouldn't do this" is that KASAN
+> isn't able to detect UAF issues as Jann pointed out so I'm getting
+> really nervous about this.
 
-> As always, are syscalls really *that* expensive? Why can't we busy wait
-> in the kernel instead?
+(FWIW there is an in-progress patch to address this that I sent a few
+weeks ago but that is not landed yet,
+<https://lore.kernel.org/linux-mm/20230825211426.3798691-1-jannh@google.com=
+/>.
+So currently KASAN can only detect UAF in SLAB_TYPESAFE_BY_RCU slabs
+when the slab allocator has given them back to the page allocator.)
 
-Yes syscalls are that expensive. Several years ago I had a good talk
-with Robert Haas (one of the PostgreSQL maintainers) at Linux Plumbers,
-and I asked him if they used futexes. His answer was "no". He told me
-how they did several benchmarks and it was a huge performance hit (and
-this was before Spectre/Meltdown made things much worse). He explained
-to me that most locks are taken just to flip a few bits. Going into the
-kernel and coming back was orders of magnitude longer than the critical
-sections. By going into the kernel, it caused a ripple effect and lead
-to even more contention. There answer was to implement their locking
-completely in user space without any help from the kernel.
+> And Jann also pointed out some potential issues with
+> __fget_files_rcu() as well...
 
-This is when I thought that having an adaptive spinner that could get
-hints from the kernel via memory mapping would be extremely useful.
+The issue I see with the current __fget_files_rcu() is that the
+"file->f_mode & mask" is no longer effective in its current position,
+it would have to be moved down below the get_file_rcu() call.
+That's a semantic difference between manually RCU-freeing and
+SLAB_TYPESAFE_BY_RCU - we no longer have the guarantee that an object
+can't be freed and reallocated within a single RCU grace period.
+With the current patch, we could race like this:
 
-The obvious problem with their implementation is that if the owner is
-sleeping, there's no point in spinning. Worse, the owner may even be
-waiting for the spinner to get off the CPU before it can run again. But
-according to Robert, the gain in the general performance greatly
-outweighed the few times this happened in practice.
+```
+static inline struct file *__fget_files_rcu(struct files_struct *files,
+        unsigned int fd, fmode_t mask)
+{
+        for (;;) {
+                struct file *file;
+                struct fdtable *fdt =3D rcu_dereference_raw(files->fdt);
+                struct file __rcu **fdentry;
 
-But still, if userspace could figure out if the owner is running on
-another CPU or not, to act just like the adaptive mutexes in the
-kernel, that would prevent the problem of a spinner keeping the owner
-from running.
+                if (unlikely(fd >=3D fdt->max_fds))
+                        return NULL;
 
--- Steve
+                fdentry =3D fdt->fd + array_index_nospec(fd, fdt->max_fds);
+                file =3D rcu_dereference_raw(*fdentry);
+                if (unlikely(!file))
+                        return NULL;
+
+                if (unlikely(file->f_mode & mask))
+                        return NULL;
+
+                [in another thread:]
+                [file is removed from fd table and freed]
+                [file is reallocated as something like an O_PATH file,
+                 which the check above would not permit]
+                [reallocated file is inserted in the fd table in the
+same position]
+
+                /*
+                 * Ok, we have a file pointer. However, because we do
+                 * this all locklessly under RCU, we may be racing with
+                 * that file being closed.
+                 *
+                 * Such a race can take two forms:
+                 *
+                 *  (a) the file ref already went down to zero,
+                 *      and get_file_rcu() fails. Just try again:
+                 */
+                if (unlikely(!get_file_rcu(file))) [succeeds]
+                        continue;
+
+                /*
+                 *  (b) the file table entry has changed under us.
+                 *       Note that we don't need to re-check the 'fdt->fd'
+                 *       pointer having changed, because it always goes
+                 *       hand-in-hand with 'fdt'.
+                 *
+                 * If so, we need to put our ref and try again.
+                 */
+                [recheck succeeds because the new file was inserted in
+the same position]
+                if (unlikely(rcu_dereference_raw(files->fdt) !=3D fdt) ||
+                    unlikely(rcu_dereference_raw(*fdentry) !=3D file)) {
+                        fput(file);
+                        continue;
+                }
+
+                /*
+                 * Ok, we have a ref to the file, and checked that it
+                 * still exists.
+                 */
+                [a file incompatible with the supplied mask is returned]
+                return file;
+        }
+}
+```
+
+There are also some weird get_file_rcu() users in other places like
+BPF's task_file_seq_get_next and in gfs2_glockfd_next_file that do
+weird stuff without the recheck, especially gfs2_glockfd_next_file
+even looks at the inodes of files without taking a reference (which
+seems a little dodgy but maybe actually currently works because inodes
+are also RCU-freed?). So I think you'd have to clean all of that up
+before you can make this change.
+
+Similar thing with get_mm_exe_file(), that relies on get_file_rcu()
+success meaning that the file was not reallocated. And tid_fd_mode()
+in procfs assumes that task_lookup_fd_rcu() returns a file* whose mode
+can be inspected under RCU.
+
+As Linus already mentioned, release_empty_file() is also broken now,
+because it assumes that nobody will grab references to unopened files,
+but actually that can now happen spuriously when a concurrent fget()
+has called get_file_rcu() on a recycled file and not yet hit the
+recheck fput(). Kinda like the thing with "struct page" where GUP can
+randomly spuriously bump up the refcount of any page including ones
+that are not mapped into userspace. So that would have to go through
+the same fput() path as every other file freeing.
+
+We also now rely on the "f_count" initialization in init_file()
+happening after the point of no return, which is currently the case,
+but that'd have to be documented to avoid someone adding a later
+bailout in the future, and maybe could be clarified by actually moving
+the count initialization after the bailout?
+
+Heh, I grepped for `__rcu.*file`, and BPF has a thing in
+kernel/bpf/verifier.c that seems to imply it would be safe for some
+types of BPF programs to follow the mm->exe_file reference solely
+protected by RCU, which already seems a little dodgy now but more
+after this change:
+
+```
+/* RCU trusted: these fields are trusted in RCU CS and can be NULL */
+BTF_TYPE_SAFE_RCU_OR_NULL(struct mm_struct) {
+        struct file __rcu *exe_file;
+};
+```
+
+(To be clear: This is not intended to be an exhaustive list.)
+
+
+So I think conceptually this is something you can do but it would
+require a bit of cleanup all around the kernel to make sure you really
+just have one or two central functions that make use of the limited
+RCU-ness of "struct file", and that nothing else relies on that or
+makes assumptions about how non-zero refcounts move.
