@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88EFC7B2A46
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 04:20:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419627B2A4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 04:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230429AbjI2CUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 22:20:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44420 "EHLO
+        id S229654AbjI2CVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 22:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjI2CUM (ORCPT
+        with ESMTP id S231172AbjI2CVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 22:20:12 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DDB19F
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:20:09 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f7d109926so168616657b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:20:09 -0700 (PDT)
+        Thu, 28 Sep 2023 22:21:32 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA4F19F
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:21:30 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c73d9a850dso8769515ad.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:21:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695954008; x=1696558808; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695954090; x=1696558890; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=K0+exT2Vigr26I9k2jO7yGhZG3qMq/s7Ri07pEtuZwI=;
-        b=ZsD7T4KgZsC20XieTIjf159uwQdTTbELh9ugPBhiAx0nrSnvgoiYem00h1OHitzYm/
-         nEBE1HHnccquKx2E37P/h/fcAqZHZLV3H66/58d4KjJHQAQJ+KnFClxjmiz7ZPeyKjsT
-         J6LE+I5zX4FKSFtNhsrLBEfFtXK8R66DeR+7ddWvjq5S5wGofgq5X8VzFLf3bV4C/TIN
-         kc8ta96IcJJku+gQfl2W27oldzdczFHSJTBSWnzKxiJKatUrfD00yLobqEJqopJMxE7Q
-         j73mxyBcZ1Lt6iHrdgW51YOiY9v4zRJ8kXd4xmlWMauviCz3wCeoCYZJYgn4iMAi28GA
-         tnhA==
+        bh=Z9zoN6a421MlDMvreAhrHw4b6Jgrx9b02kcGtCdvOkI=;
+        b=sRaiZ/i77eX+Tng+f2pnY9Z9xCxNE237q+20gABY7XKx3So2Nkezaa2Sbf7iHwV3F1
+         jjj5tPjza9jiaPEyXN2c8sSQGkw0c2oCzWv3jL7+IChUoUD+iKRD8qhTA5u+xOEboXRB
+         hSSBmQUE0PeF89QThxlLpw4lxUKb+W7oSaNeERiuXR2W2alFJoKbdHrCuBistPhqBEcF
+         zmSUbXN1o79S2++j8KGn3IEFoqeRv+e9XhjXAnYSRM79Bi89fxQsrgUF2mtnI6jdSFIS
+         8nJ40f91Gh6C7YKQM3uu06FgS570eM2IzSHfbaQ2YFKq2yDsKP5oQNAXqCebWBIuvISk
+         r/JQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695954008; x=1696558808;
+        d=1e100.net; s=20230601; t=1695954090; x=1696558890;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K0+exT2Vigr26I9k2jO7yGhZG3qMq/s7Ri07pEtuZwI=;
-        b=RqRUb01YdFitNOFOoxRUyJpXgOfkfBCx/ApkyUECcwQY11ZKOQhHgSiPlTb5ZG2tHl
-         GMxdZUKSmaswqR+hKGdJbwY11uoM07iyBQ+KauqfNR5fDMacDpVGHYms+08ZtsyPJo82
-         9zMppxQBvbpDzr5CHLBBRzaj7fvRS/eBE0OdZkQuTWgAe6ncU4bJvqS6viHIMN9iUijr
-         NqyOYJpdGHekrsLcdoCKzgeppw7ME1mvok5DPVA+KR0lUobQVGbimCCJaveg4Gm7vVN/
-         Y95306kHClag2lmuN5lCaYEvhMf1+oaUTLqX2t3VnSH5mCZ6AcjE9u2VcMNLHQM+wivW
-         srfg==
-X-Gm-Message-State: AOJu0YxIwLirgdeNJjaIcY+RutjXyrNohFhjXSdeWWKV8eeARgWIO7wM
-        M/xXOXvEjdBibfIDneVxxHMk21kpJYA=
-X-Google-Smtp-Source: AGHT+IFZ3z8GazvOmhxU8dpXuC24cIstyReKmh5R2PFxeModk3iRSNi4k5IHowWukNy4M+lp6WTZMMQP7hE=
+        bh=Z9zoN6a421MlDMvreAhrHw4b6Jgrx9b02kcGtCdvOkI=;
+        b=h/dkrb6t8eZeOu5FBdVq+h9ZsD2zroO1ysIVlCycFWyST2NIf1bnwMChpNbzZOyd/2
+         Drty8IOLKoKQm/MEOy8vE4Y6K9nGD37jkDVQ3tdUf/h8lQuDMDmDwzQU82w9wOeMWQAl
+         lN2BuO6LaHrBO+Jpr4WsJb887bkr4hpp6Bj/ssaVg3u1VfJM3ZJ5KLGDeVmDOipXINdE
+         imNnImS0DvfWfHyjyuFA9NFZLL4H4ANkzDqcyc9jgB4XQmkLolN5hdRx5iQRmOVI12e+
+         OPZVRdgl1OPzh5MEc/xXZ9GBcByjcAxPH1dqTTHtCk6fZBKpEmhMXYnuqRCiTt8Qpmgo
+         EGSw==
+X-Gm-Message-State: AOJu0YwdbIc1tJnIzor6FeH4CeoO5yGVw4npn8/HQpwYFyREqCwchkoV
+        5EpjusRt2vECpEWGbYHdSnSmXse51DM=
+X-Google-Smtp-Source: AGHT+IHnY3PM0N9nXkzTID7pmOvxbshX9bpM4LV5jr3yfP+ll/piv6IfuVpFGkrfmCMVy9vHPXNpcljhxAQ=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:af47:0:b0:59b:c811:a702 with SMTP id
- x7-20020a81af47000000b0059bc811a702mr41223ywj.6.1695954007753; Thu, 28 Sep
- 2023 19:20:07 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 19:20:01 -0700
-In-Reply-To: <20230913000215.478387-1-hshan@google.com>
+ (user=seanjc job=sendgmr) by 2002:a17:902:f54e:b0:1c5:de4a:5b44 with SMTP id
+ h14-20020a170902f54e00b001c5de4a5b44mr43203plf.0.1695954089709; Thu, 28 Sep
+ 2023 19:21:29 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 19:21:20 -0700
+In-Reply-To: <CAPm50aKwbZGeXPK5uig18Br8CF1hOS71CE2j_dLX+ub7oJdpGg@mail.gmail.com>
 Mime-Version: 1.0
-References: <20230913000215.478387-1-hshan@google.com>
+References: <CAPm50aKwbZGeXPK5uig18Br8CF1hOS71CE2j_dLX+ub7oJdpGg@mail.gmail.com>
 X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <169592156740.1035449.1039175365762233349.b4-ty@google.com>
-Subject: Re: [PATCH v3] KVM: x86: Fix lapic timer interrupt lost after loading
- a snapshot.
+Message-ID: <169592099261.2962597.3938666115023271118.b4-ty@google.com>
+Subject: Re: [PATCH RESEND] KVM: X86: Reduce size of kvm_vcpu_arch structure
+ when CONFIG_KVM_XEN=n
 From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Haitao Shan <hshan@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+To:     Sean Christopherson <seanjc@google.com>, pbonzini@redhat.com,
+        Hao Peng <flyingpenghao@gmail.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Sep 2023 16:55:45 -0700, Haitao Shan wrote:
-> When running android emulator (which is based on QEMU 2.12) on
-> certain Intel hosts with kernel version 6.3-rc1 or above, guest
-> will freeze after loading a snapshot. This is almost 100%
-> reproducible. By default, the android emulator will use snapshot
-> to speed up the next launching of the same android guest. So
-> this breaks the android emulator badly.
-> 
-> [...]
+On Tue, 05 Sep 2023 09:07:09 +0800, Hao Peng wrote:
+> When CONFIG_KVM_XEN=n, the size of kvm_vcpu_arch can be reduced
+> from 5100+ to 4400+ by adding macro control.
 
-Applied to kvm-x86 apic, thanks!
+Applied to kvm-x86 misc.  Please fix whatever mail client you're using to send
+patches, the patch was heavily whitespace damaged.  I fixed up this one because
+it was easy to fix and a straightforward patch.
 
-[1/1] KVM: x86: Fix lapic timer interrupt lost after loading a snapshot.
-      https://github.com/kvm-x86/linux/commit/9cfec6d097c6
+[1/1] KVM: X86: Reduce size of kvm_vcpu_arch structure when CONFIG_KVM_XEN=n
+      https://github.com/kvm-x86/linux/commit/fd00e095a031
 
 --
 https://github.com/kvm-x86/linux/tree/next
