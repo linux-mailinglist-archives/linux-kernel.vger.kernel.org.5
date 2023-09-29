@@ -2,116 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A7B7B2E0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3A07B2E22
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232774AbjI2Ilp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 04:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44176 "EHLO
+        id S232830AbjI2InE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 04:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232630AbjI2Ill (ORCPT
+        with ESMTP id S231429AbjI2InB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 04:41:41 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56D01AC
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:41:39 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40651a72807so16151175e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:41:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695976898; x=1696581698; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=M1qa9MPXO3QkuATigdmsJ+7YJ61rWQy2j+JwMEZKO3Y=;
-        b=o6TPz/5CBu7SXr1j3rNH31VLcRQY8LPeiS8s2phtQWSG/TzyMAMNADW2e8yg7kyVTm
-         DD0U8k7Ts6v0fMxpI3qsJCYQsc5VYCoLy6/bKRrnAVqr9Aq3or4u8d34PcyifAbq7Cbb
-         R0hDRB0U8bdcmStxO7KmFSnZ76baZwaWHVeLwSav+6Vsk1Pi3xVUyCN1yo3Y/IQR+JBp
-         6BFgbrmEvmJlRqSHVFNia3IzqPSM41vhFar1WlRh01ChiG/BecC4/Eh74ow9sG8ahKzq
-         tGg6TV6TxBhTVnz5fdkKbxhI/ir7QUrlR9xPcHlD8f7i86f9VoJSL/QO1GRSmXF0qNTE
-         RWQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695976898; x=1696581698;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M1qa9MPXO3QkuATigdmsJ+7YJ61rWQy2j+JwMEZKO3Y=;
-        b=S2iY4LbWZ+qbFfGyS13+AmNGXtPU5MlYoV32gHT1+GUR9rK0vXCydIbAkE6Uz+r2Yc
-         AqfLYaNQF02xj10FKIHlz0fVTbpOkwADOn0M0Z7fcd7EMYmsLRh+tPR3/EF6tV8d3H4A
-         8iZ/PlcKEEZG8zmhRUjXAghKMtHZEoku61HKFiMztiqmXq23ahfXzxSxw5yHjPdMVZhE
-         DZ2uR6JTRioZulByFdO+33+LrrqTpNYvVTLs1C+YASB+9xTLU0+lU+/7USyxgFcWNxTn
-         54c6R5i+AZibG7omcO2dbR08pvRlsraC5MhR+KlSPKhRoQ6cFPRSSOccWHHyMS+y9bn9
-         2ZEQ==
-X-Gm-Message-State: AOJu0YyBARel92e4zBYINPxyhR9tcCstf+U5fOPy06hULeZzKckazNw8
-        82c/Q0pz8LbN1cVk/3U5weFv1g==
-X-Google-Smtp-Source: AGHT+IGoAq5YuKVMoGvdyZ7QMvGcwB5OFGA+8f2cwGQcecWyWkmY78FgzMH9ry9w/k10s4mUQpQonw==
-X-Received: by 2002:adf:ead1:0:b0:315:ad1a:5abc with SMTP id o17-20020adfead1000000b00315ad1a5abcmr3241388wrn.5.1695976898094;
-        Fri, 29 Sep 2023 01:41:38 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id z17-20020adfd0d1000000b00317a04131c5sm21032893wrh.57.2023.09.29.01.41.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 01:41:37 -0700 (PDT)
-Message-ID: <0523aa22-5a82-488a-b325-0cab6a4c95aa@linaro.org>
-Date:   Fri, 29 Sep 2023 09:41:36 +0100
+        Fri, 29 Sep 2023 04:43:01 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2691192;
+        Fri, 29 Sep 2023 01:42:59 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T8ePCd020771;
+        Fri, 29 Sep 2023 08:42:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=uSMLX75mWCZNaKWjpTPvmVN0X1WE4yDzVcF62/BNJ4Q=;
+ b=IwDDx3NANBUvWYjZ9poDz5ulec1XKS8AOT368aVE+ccbfcI4TfFe1tvqyGBkkoP7rWOe
+ +XWy2ia7PKZ8pLYkeFUVa/U7h/fusomXKoX2whDKcaohT3cCGPUgf/mvyNLTbv5DJqyL
+ xmOHrU9Bsz3Yb7xu2lrBqdCnhZW56xHYRHVh7dEjTBW2VQjhM9q/x/gYY0/Ubs3rWV+p
+ fZ2gVsHIBfIPtWMg6/i2hMTTJJdzFj/zil8h/5E/y1S1F6lqOziBBXO+pnWVm1Iln5BG
+ +h7G6nZxsq/UZ+gxvPct6YKDDfswTcEp1SIA5NI0/dqzCItJ+UEU3Z8OjlH2vjeJpPpE lQ== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3td24uaw07-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 08:42:34 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38T8gXpJ026997
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 08:42:33 GMT
+Received: from hu-ipkumar-blr.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 29 Sep 2023 01:42:23 -0700
+From:   Praveenkumar I <quic_ipkumar@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <p.zabel@pengutronix.de>,
+        <geert+renesas@glider.be>, <arnd@arndb.de>,
+        <neil.armstrong@linaro.org>, <nfraprado@collabora.com>,
+        <u-kumar1@ti.com>, <peng.fan@nxp.com>, <quic_wcheng@quicinc.com>,
+        <quic_varada@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <quic_kathirav@quicinc.com>, <quic_nsekar@quicinc.com>,
+        <quic_srichara@quicinc.com>
+Subject: [PATCH 0/8] Enable USB3 for Qualcomm IPQ5332
+Date:   Fri, 29 Sep 2023 14:12:01 +0530
+Message-ID: <20230929084209.3033093-1-quic_ipkumar@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] media: venus: core: Set up secure memory ranges for
- SC7280
-Content-Language: en-US
-To:     Luca Weiss <luca.weiss@fairphone.com>,
-        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20230929-sc7280-venus-pas-v1-0-9c6738cf157a@fairphone.com>
- <20230929-sc7280-venus-pas-v1-1-9c6738cf157a@fairphone.com>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20230929-sc7280-venus-pas-v1-1-9c6738cf157a@fairphone.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: zCnb6Lekb27uVrJ1pV3Nm1Ks_1SeRTRe
+X-Proofpoint-ORIG-GUID: zCnb6Lekb27uVrJ1pV3Nm1Ks_1SeRTRe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_07,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=15 clxscore=1011 malwarescore=0
+ suspectscore=0 impostorscore=0 lowpriorityscore=0 spamscore=15
+ priorityscore=1501 mlxscore=15 mlxlogscore=77 adultscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309290074
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/09/2023 09:38, Luca Weiss wrote:
-> Not all SC7280 devices ship with ChromeOS firmware. Other devices need
-> PAS for image authentication. That requires the predefined virtual
-> address ranges to be passed via scm calls. Define them to enable Venus
-> on non-CrOS SC7280 devices.
-> 
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
->   drivers/media/platform/qcom/venus/core.c | 4 ++++
->   1 file changed, 4 insertions(+)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
-> index 054b8e74ba4f..5c6baa0f4d45 100644
-> --- a/drivers/media/platform/qcom/venus/core.c
-> +++ b/drivers/media/platform/qcom/venus/core.c
-> @@ -881,6 +881,10 @@ static const struct venus_resources sc7280_res = {
->   	.vmem_size = 0,
->   	.vmem_addr = 0,
->   	.dma_mask = 0xe0000000 - 1,
-> +	.cp_start = 0,
-> +	.cp_size = 0x25800000,
-> +	.cp_nonpixel_start = 0x1000000,
-> +	.cp_nonpixel_size = 0x24800000,
->   	.fwname = "qcom/vpu-2.0/venus.mbn",
->   };
->   
-> 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Patch series adds Qualcomm 22ull Super-Speed USB UNIPHY driver
+support present in Qualcomm IPQ5332 SoC which is required to
+enable the USB3. This PHY is interfaced with SNPS DWC3 USB and
+SNPS DWC PCIe. Either one of the interface can use it via the
+mux selection present in the TCSR register. Current patch series
+adds the support for UNIPHY with DWC3 USB.
+
+Discards the first patch series as adding a new driver.
+https://lore.kernel.org/all/20230829135818.2219438-1-quic_ipkumar@quicinc.com/
+
+
+Praveenkumar I (8):
+  dt-bindings: phy: qcom,uniphy-usb: Document qcom,uniphy-usb phy
+  phy: qcom: Introduce Super-Speed USB UNIPHY driver
+  arm64: dts: qcom: ipq5332: Add USB Super-Speed PHY node
+  dt-bindings: usb: dwc3: Add clocks on Qualcomm IPQ5332
+  arm64: dts: qcom: ipq5332: Add clocks for USB Super-Speed
+  arm64: dts: qcom: ipq5332: Add Super-Speed UNIPHY in USB node
+  arm64: dts: qcom: ipq5332: Enable USB Super-Speed PHY
+  arm64: defconfig: Enable qcom USB UNIPHY driver
+
+ .../bindings/phy/qcom,ipq5332-usb-uniphy.yaml |  83 +++++
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    |  20 +-
+ arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts   |   6 +
+ arch/arm64/boot/dts/qcom/ipq5332.dtsi         |  40 ++-
+ arch/arm64/configs/defconfig                  |   1 +
+ drivers/phy/qualcomm/Kconfig                  |  11 +
+ drivers/phy/qualcomm/Makefile                 |   1 +
+ drivers/phy/qualcomm/phy-qcom-uniphy-usb.c    | 322 ++++++++++++++++++
+ 8 files changed, 476 insertions(+), 8 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/qcom,ipq5332-usb-uniphy.yaml
+ create mode 100644 drivers/phy/qualcomm/phy-qcom-uniphy-usb.c
+
+-- 
+2.34.1
+
