@@ -2,121 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3ACD7B2E08
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:41:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A7B7B2E0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbjI2IlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 04:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
+        id S232774AbjI2Ilp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 04:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbjI2IlU (ORCPT
+        with ESMTP id S232630AbjI2Ill (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 04:41:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2981A8;
-        Fri, 29 Sep 2023 01:41:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 956BCC433C8;
-        Fri, 29 Sep 2023 08:41:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695976879;
-        bh=6tI6GpGFhOTZiIWcylA1AhrCzVR0BgdK+4RztK5pLi0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aa5LXlJfvqf+lZEdlODQfYYyYKi57g4EvS0wKKoO8jsvbMQhklNodVvGQH/Ex0SCT
-         /K6XG35O7QS4qLqxsb33lWJCtyXc4IIfNFb9wD9bo1/Wyqx+gZykSi6amOuDEsNBKC
-         Z4WrMj1DYM9qndbLXDoW5qAu83q6i+URFet5maYvyjz3lSeVZ/PsMvgrnAU+M/jXho
-         V+jsqyvHnNiYst7kWI8vMGAvnAca8bzoNptW8nN0oYzuETQXYMIxH5JsJPvT5CH8rr
-         AZqWJ2LhXmC2MGcrWflEzwQCJQPRM1Ayf9W72jjAhx5QJJ9V1g7HkwdYKAK92wJcXU
-         s3+WYevGWETPQ==
-Date:   Fri, 29 Sep 2023 10:41:16 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Li Zetao <lizetao1@huawei.com>
-Cc:     khali@linux-fr.org, gregkh@suse.de, lizeta1@huawei.com,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] i2c: core: Fix possible memleak in
- i2c_register_adapter()
-Message-ID: <ZRaNrE3LZ/bl4OWZ@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Li Zetao <lizetao1@huawei.com>, khali@linux-fr.org, gregkh@suse.de,
-        lizeta1@huawei.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230928012709.1247208-1-lizetao1@huawei.com>
+        Fri, 29 Sep 2023 04:41:41 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B56D01AC
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:41:39 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40651a72807so16151175e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:41:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695976898; x=1696581698; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=M1qa9MPXO3QkuATigdmsJ+7YJ61rWQy2j+JwMEZKO3Y=;
+        b=o6TPz/5CBu7SXr1j3rNH31VLcRQY8LPeiS8s2phtQWSG/TzyMAMNADW2e8yg7kyVTm
+         DD0U8k7Ts6v0fMxpI3qsJCYQsc5VYCoLy6/bKRrnAVqr9Aq3or4u8d34PcyifAbq7Cbb
+         R0hDRB0U8bdcmStxO7KmFSnZ76baZwaWHVeLwSav+6Vsk1Pi3xVUyCN1yo3Y/IQR+JBp
+         6BFgbrmEvmJlRqSHVFNia3IzqPSM41vhFar1WlRh01ChiG/BecC4/Eh74ow9sG8ahKzq
+         tGg6TV6TxBhTVnz5fdkKbxhI/ir7QUrlR9xPcHlD8f7i86f9VoJSL/QO1GRSmXF0qNTE
+         RWQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695976898; x=1696581698;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=M1qa9MPXO3QkuATigdmsJ+7YJ61rWQy2j+JwMEZKO3Y=;
+        b=S2iY4LbWZ+qbFfGyS13+AmNGXtPU5MlYoV32gHT1+GUR9rK0vXCydIbAkE6Uz+r2Yc
+         AqfLYaNQF02xj10FKIHlz0fVTbpOkwADOn0M0Z7fcd7EMYmsLRh+tPR3/EF6tV8d3H4A
+         8iZ/PlcKEEZG8zmhRUjXAghKMtHZEoku61HKFiMztiqmXq23ahfXzxSxw5yHjPdMVZhE
+         DZ2uR6JTRioZulByFdO+33+LrrqTpNYvVTLs1C+YASB+9xTLU0+lU+/7USyxgFcWNxTn
+         54c6R5i+AZibG7omcO2dbR08pvRlsraC5MhR+KlSPKhRoQ6cFPRSSOccWHHyMS+y9bn9
+         2ZEQ==
+X-Gm-Message-State: AOJu0YyBARel92e4zBYINPxyhR9tcCstf+U5fOPy06hULeZzKckazNw8
+        82c/Q0pz8LbN1cVk/3U5weFv1g==
+X-Google-Smtp-Source: AGHT+IGoAq5YuKVMoGvdyZ7QMvGcwB5OFGA+8f2cwGQcecWyWkmY78FgzMH9ry9w/k10s4mUQpQonw==
+X-Received: by 2002:adf:ead1:0:b0:315:ad1a:5abc with SMTP id o17-20020adfead1000000b00315ad1a5abcmr3241388wrn.5.1695976898094;
+        Fri, 29 Sep 2023 01:41:38 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id z17-20020adfd0d1000000b00317a04131c5sm21032893wrh.57.2023.09.29.01.41.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 01:41:37 -0700 (PDT)
+Message-ID: <0523aa22-5a82-488a-b325-0cab6a4c95aa@linaro.org>
+Date:   Fri, 29 Sep 2023 09:41:36 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="N52PRuWBL1vaUBvj"
-Content-Disposition: inline
-In-Reply-To: <20230928012709.1247208-1-lizetao1@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] media: venus: core: Set up secure memory ranges for
+ SC7280
+Content-Language: en-US
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        Stanimir Varbanov <stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20230929-sc7280-venus-pas-v1-0-9c6738cf157a@fairphone.com>
+ <20230929-sc7280-venus-pas-v1-1-9c6738cf157a@fairphone.com>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20230929-sc7280-venus-pas-v1-1-9c6738cf157a@fairphone.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---N52PRuWBL1vaUBvj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Sep 28, 2023 at 09:27:09AM +0800, Li Zetao wrote:
-> There is a memory leak reported by kmemleak:
->=20
-> unreferenced object 0xffff88818be6dcb8 (size 8):
->   comm "modprobe", pid 1022129, jiffies 4363911608 (age 43.838s)
->     hex dump (first 8 bytes):
->       69 32 63 2d 30 00 6b a5                          i2c-0.k.
->     backtrace:
->       [<ffffffff812f588f>] __kmem_cache_alloc_node+0x2cf/0x4b0
->       [<ffffffff81283c43>] __kmalloc_node_track_caller+0x53/0x140
->       [<ffffffff81604b0a>] kvasprintf+0x6a/0xd0
->       [<ffffffff81604be7>] kvasprintf_const+0x77/0xa0
->       [<ffffffff81a00173>] kobject_set_name_vargs+0x23/0x90
->       [<ffffffff817bf743>] dev_set_name+0x53/0x70
->       [<ffffffffa023ebb2>] i2c_register_adapter+0x112/0x6c0 [i2c_core]
->       [<ffffffffa023f268>] i2c_add_adapter+0x78/0xc0 [i2c_core]
->       [<ffffffffa0300182>] piix4_add_adapter+0x132/0x210 [i2c_piix4]
->       [<ffffffffa0300535>] piix4_probe+0x2d5/0x5f4 [i2c_piix4]
->       ...
->=20
-> The root cause was traced to an error handing path in
-> i2c_register_adapter() when device_register() fails. After
-> calling dev_set_name() which called by i2c_register_adapter(),
-> the put_device() should be used to give up the device reference
-> in error handling path in order to free "kobj->name" alloced
-> in dev_set_name().
->=20
-> Fix it by calling put_device() when device_register() fails in
-> i2c_register_adapter(). In addition, when i2c_adapter device
-> is released, i2c_adapter_dev_release() is called, in which
-> "dev_released" must be initialized, otherwise a kernel bug
-> will be triggered.
->=20
-> Fixes: b119c6c952a0 ("i2c: __must_check fixes (core drivers)")
-> Signed-off-by: Li Zetao <lizetao1@huawei.com>
-
-Applied to for-next, thanks!
-
-
---N52PRuWBL1vaUBvj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUWjagACgkQFA3kzBSg
-KbaNGg/9GEd3StwttDVwiwQMhnpF/G4aB1sdIvxeNWwPV0H2eSPYT+oe/BP3YtB5
-NyY1MJZDtY7vGOxlb9OIb1wS00bMj+6i6mh8+h1Zxy88lKHZG9zrzegzJ/jEKh2R
-Z+1r5d++NRQnuNTRm3bWqZP3x564Kmal8EkBaaHYEh5khKesWKmxxBu9wgDZfvBI
-VQwa3n8XyA7lExRQeo2Sra+I8zWJeOls5P9Mr0HAYlnv2azJQ2VDDcq1omVON3s0
-I/aWOHgAFqhpQzVZD3l/UyrhAs4DK/Aasl2iwaExglFRU2Eh9rBlSCuDGOlf4MxR
-T6sT6VsNUeG/c7vv1FbM4VcH7CT+9hS2no8EG7QRryIvL2fexOXhrTs3qu7WoSfV
-H836VJwMUwwRFYVunfMCrCRuVZ9VbWJAtABLlNGjzgTHzTBzhQgezO2I5ffPYz03
-YCmzpvgQAhlYKJjqudWQJksfJAaKHwSbJ6n/abAWWWKT+ig9eUlskaLU248ZOLsV
-2IjFwmSAqHfJ5br9a5xT76f61k03za5SDZTX7XMcwKXcLSdZHunYgmgRFHC3Qlca
-GlhQP057BQ3vU10rEKzOBnq4aw8xBu8IwWIB+LeQ6RvTAKy1s25EH7CWKlaJlpfD
-ktWhXDWg/of9DZLwfJxvPmwbHJbcsZ028eyw5dDigmoTJqGnPfw=
-=1Cla
------END PGP SIGNATURE-----
-
---N52PRuWBL1vaUBvj--
+On 29/09/2023 09:38, Luca Weiss wrote:
+> Not all SC7280 devices ship with ChromeOS firmware. Other devices need
+> PAS for image authentication. That requires the predefined virtual
+> address ranges to be passed via scm calls. Define them to enable Venus
+> on non-CrOS SC7280 devices.
+> 
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> ---
+>   drivers/media/platform/qcom/venus/core.c | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> index 054b8e74ba4f..5c6baa0f4d45 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -881,6 +881,10 @@ static const struct venus_resources sc7280_res = {
+>   	.vmem_size = 0,
+>   	.vmem_addr = 0,
+>   	.dma_mask = 0xe0000000 - 1,
+> +	.cp_start = 0,
+> +	.cp_size = 0x25800000,
+> +	.cp_nonpixel_start = 0x1000000,
+> +	.cp_nonpixel_size = 0x24800000,
+>   	.fwname = "qcom/vpu-2.0/venus.mbn",
+>   };
+>   
+> 
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
