@@ -2,100 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B417B2CE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D547B2CE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232753AbjI2HMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 03:12:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59328 "EHLO
+        id S232761AbjI2HNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 03:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232679AbjI2HMV (ORCPT
+        with ESMTP id S232732AbjI2HNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 03:12:21 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E031A7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:12:19 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 640331F8C0;
-        Fri, 29 Sep 2023 07:12:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1695971538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=N/Tg5j9D4ppBv+Ggsbk8BrAxnQyhyY+REYUU5lZd8qA=;
-        b=VPvPyAeOI7bVg06EQVTCcJwsw1ATMt6K4oST5w1QHq8lck7wajE2wOcoJMS6uYUS6ZT8ks
-        hQKMOgEUKVMlD4J+ZNR3ICnz3rIoRY4EyQXz676R26TdeeQ4lnsP2Jj+eJIF2xsWc//UME
-        uFXDdrnMOTbR4zmrdMPZY9WxYzKDfZ8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1695971538;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=N/Tg5j9D4ppBv+Ggsbk8BrAxnQyhyY+REYUU5lZd8qA=;
-        b=8Nw6KG8NF5Xndne7jfC43MzM6yelWV7Ca6ZdxCDcqUckChrkyEVW4WaC9KO8GfnllLSqeg
-        OgoTjocxPR7Gg6BA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1E9091390A;
-        Fri, 29 Sep 2023 07:12:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id yAq/BNJ4FmVORQAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Fri, 29 Sep 2023 07:12:18 +0000
-Message-ID: <7148e50e-3233-4f52-b522-8a7c69e0a2c8@suse.de>
-Date:   Fri, 29 Sep 2023 09:12:17 +0200
+        Fri, 29 Sep 2023 03:13:12 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E1B1A7
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:13:09 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32320381a07so9422209f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:13:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695971588; x=1696576388; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VH2OdY8PA3jmJonW2IObtpUNilldFdxREyN9dCrnPck=;
+        b=O08yR5q7uARIzZc0TYz2aEmV6kBdKe2iUj3cIsTKIsg6Zf50r5q30sYJCRJKBvQ8sM
+         or4hVz5l/nxKJtJbbDa6ar4eZyxmbH+lBuv14KWp9DKX1XJ38/WPEB3SHnCid+VOsLwV
+         Y/P3W2Wr6HSuDekpC8oi7PRvEN72y4t3z29J/T9eJaiGzGAakXjjb5rrhg4o5syyBq5r
+         bNERoOuRqpysyrr5HOdsEIvmjy1BFfUL2qYyGARDiyLIvR08Bpl0vpK1Z/Ia7unhHr3d
+         NHJU5OONLppQF0GnJdUUcXy5g0j/IR1Uf342p4irlCeJDlV9J9HauSKcjdAOG7IgU2Y8
+         fcrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695971588; x=1696576388;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VH2OdY8PA3jmJonW2IObtpUNilldFdxREyN9dCrnPck=;
+        b=cE8Zsfq5kL92uCfewuLbV4oo7jcIrUBs+MR/3Do+3sOgB4O84ZgxvFh9oGgj2QJ4ja
+         Jv/ymvLLqwy6TkobNsUY11sCJcFy2xINHO+XbLsyvFMcqtfKdYEkZPadvJVfxBBbBX8G
+         gH8CqxrCP61s42StUh7Y5ksYOQ57Xobbw0mGb3zQAHcz/qnhirOjF5/A9WRZKwf4j4ly
+         i+J1AuX1fecnZnjyTvQMFY+niSTixKE1CigBASo+qSwZ5eWx8+RyAjo26may2dKHiNgl
+         qKb6e6Ii/V02YDeuAIZzf3N2EkNaVe1npkMpdIwPNDQgKBdplNjnGcIEynul/OgLU5xN
+         sFZg==
+X-Gm-Message-State: AOJu0YyJAG9wWPxDqA6McN3JBsJTv73+HaKk5HOKULkRmWE/BK7mwrE0
+        VMkFGXGaw/eEOxPMokAy4iHG6Q==
+X-Google-Smtp-Source: AGHT+IGjkS9K8wXRgIqCCc6VdHtVzo14jXkL+KJZtiHA+bwC8ttsQXbuB1lG9aNRhCIJgDpwvNHhCA==
+X-Received: by 2002:a5d:49c2:0:b0:322:5251:d798 with SMTP id t2-20020a5d49c2000000b003225251d798mr2805804wrs.70.1695971587877;
+        Fri, 29 Sep 2023 00:13:07 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id x15-20020adfcc0f000000b0032330e43590sm9387301wrh.22.2023.09.29.00.13.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 00:13:07 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 10:13:04 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     oe-kbuild@lists.linux.dev,
+        Stefan Binding <sbinding@opensource.cirrus.com>
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: sound/pci/hda/cs35l41_hda.c:304 cs35l41_request_firmware_files()
+ error: double free of '*wmfw_filename'
+Message-ID: <4fe6a89d-372c-45f7-a7d2-7b8f376d983f@kadam.mountain>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] drm: Spelling s/hardward/hardware/g
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <cover.1695903065.git.geert+renesas@glider.be>
- <17b8682bb30f15001afac754d5844194428df5af.1695903065.git.geert+renesas@glider.be>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <17b8682bb30f15001afac754d5844194428df5af.1695903065.git.geert+renesas@glider.be>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------vFGycXwKx23acqbwHqup1BZc"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -105,101 +69,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------vFGycXwKx23acqbwHqup1BZc
-Content-Type: multipart/mixed; boundary="------------dga0TSud0F0pzlLwB583pGhJ";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Andrzej Hajda <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Message-ID: <7148e50e-3233-4f52-b522-8a7c69e0a2c8@suse.de>
-Subject: Re: [PATCH 1/3] drm: Spelling s/hardward/hardware/g
-References: <cover.1695903065.git.geert+renesas@glider.be>
- <17b8682bb30f15001afac754d5844194428df5af.1695903065.git.geert+renesas@glider.be>
-In-Reply-To: <17b8682bb30f15001afac754d5844194428df5af.1695903065.git.geert+renesas@glider.be>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9ed22ae6be817d7a3f5c15ca22cbc9d3963b481d
+commit: cd40dad2ca9196631dcd48e1b991244ab3940d83 ALSA: hda: cs35l41: Ensure firmware/tuning pairs are always loaded
+config: x86_64-randconfig-161-20230929 (https://download.01.org/0day-ci/archive/20230929/202309291331.0JUUQnPT-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce: (https://download.01.org/0day-ci/archive/20230929/202309291331.0JUUQnPT-lkp@intel.com/reproduce)
 
---------------dga0TSud0F0pzlLwB583pGhJ
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202309291331.0JUUQnPT-lkp@intel.com/
 
-DQoNCkFtIDI4LjA5LjIzIHVtIDE0OjE2IHNjaHJpZWIgR2VlcnQgVXl0dGVyaG9ldmVuOg0K
-PiBGaXggbWlzc3BlbGxpbmdzIG9mICJoYXJkd2FyZSIuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5
-OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0K3JlbmVzYXNAZ2xpZGVyLmJlPg0KDQpSZXZp
-ZXdlZC1ieTogVGhvbWFzIFppbW1lcm1hbm4gPHR6aW1tZXJtYW5uQHN1c2UuZGU+DQoNCj4g
-LS0tDQo+ICAgaW5jbHVkZS9kcm0vZHJtX2JyaWRnZS5oICAgICAgICAgICAgICAgICB8IDIg
-Ky0NCj4gICBpbmNsdWRlL2RybS9kcm1fbW9kZXNldF9oZWxwZXJfdnRhYmxlcy5oIHwgNCAr
-Ky0tDQo+ICAgMiBmaWxlcyBjaGFuZ2VkLCAzIGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25z
-KC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9kcm0vZHJtX2JyaWRnZS5oIGIvaW5j
-bHVkZS9kcm0vZHJtX2JyaWRnZS5oDQo+IGluZGV4IGNmYjdkY2RiNjZjNGIwYjUuLjA1YjM2
-MGE0MzU3ZmVkMDEgMTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvZHJtL2RybV9icmlkZ2UuaA0K
-PiArKysgYi9pbmNsdWRlL2RybS9kcm1fYnJpZGdlLmgNCj4gQEAgLTEwNyw3ICsxMDcsNyBA
-QCBzdHJ1Y3QgZHJtX2JyaWRnZV9mdW5jcyB7DQo+ICAgCSAqIFNpbmNlIHRoaXMgZnVuY3Rp
-b24gaXMgYm90aCBjYWxsZWQgZnJvbSB0aGUgY2hlY2sgcGhhc2Ugb2YgYW4gYXRvbWljDQo+
-ICAgCSAqIGNvbW1pdCwgYW5kIHRoZSBtb2RlIHZhbGlkYXRpb24gaW4gdGhlIHByb2JlIHBh
-dGhzIGl0IGlzIG5vdCBhbGxvd2VkDQo+ICAgCSAqIHRvIGxvb2sgYXQgYW55dGhpbmcgZWxz
-ZSBidXQgdGhlIHBhc3NlZC1pbiBtb2RlLCBhbmQgdmFsaWRhdGUgaXQNCj4gLQkgKiBhZ2Fp
-bnN0IGNvbmZpZ3VyYXRpb24taW52YXJpYW50IGhhcmR3YXJkIGNvbnN0cmFpbnRzLiBBbnkg
-ZnVydGhlcg0KPiArCSAqIGFnYWluc3QgY29uZmlndXJhdGlvbi1pbnZhcmlhbnQgaGFyZHdh
-cmUgY29uc3RyYWludHMuIEFueSBmdXJ0aGVyDQo+ICAgCSAqIGxpbWl0cyB3aGljaCBkZXBl
-bmQgdXBvbiB0aGUgY29uZmlndXJhdGlvbiBjYW4gb25seSBiZSBjaGVja2VkIGluDQo+ICAg
-CSAqIEBtb2RlX2ZpeHVwLg0KPiAgIAkgKg0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9kcm0v
-ZHJtX21vZGVzZXRfaGVscGVyX3Z0YWJsZXMuaCBiL2luY2x1ZGUvZHJtL2RybV9tb2Rlc2V0
-X2hlbHBlcl92dGFibGVzLmgNCj4gaW5kZXggZTNjM2FjNjE1OTA5NDc0Yi4uYmJjNTE2ZjMx
-MzkxMzI1NCAxMDA2NDQNCj4gLS0tIGEvaW5jbHVkZS9kcm0vZHJtX21vZGVzZXRfaGVscGVy
-X3Z0YWJsZXMuaA0KPiArKysgYi9pbmNsdWRlL2RybS9kcm1fbW9kZXNldF9oZWxwZXJfdnRh
-Ymxlcy5oDQo+IEBAIC0xMzQsNyArMTM0LDcgQEAgc3RydWN0IGRybV9jcnRjX2hlbHBlcl9m
-dW5jcyB7DQo+ICAgCSAqIFNpbmNlIHRoaXMgZnVuY3Rpb24gaXMgYm90aCBjYWxsZWQgZnJv
-bSB0aGUgY2hlY2sgcGhhc2Ugb2YgYW4gYXRvbWljDQo+ICAgCSAqIGNvbW1pdCwgYW5kIHRo
-ZSBtb2RlIHZhbGlkYXRpb24gaW4gdGhlIHByb2JlIHBhdGhzIGl0IGlzIG5vdCBhbGxvd2Vk
-DQo+ICAgCSAqIHRvIGxvb2sgYXQgYW55dGhpbmcgZWxzZSBidXQgdGhlIHBhc3NlZC1pbiBt
-b2RlLCBhbmQgdmFsaWRhdGUgaXQNCj4gLQkgKiBhZ2FpbnN0IGNvbmZpZ3VyYXRpb24taW52
-YXJpYW50IGhhcmR3YXJkIGNvbnN0cmFpbnRzLiBBbnkgZnVydGhlcg0KPiArCSAqIGFnYWlu
-c3QgY29uZmlndXJhdGlvbi1pbnZhcmlhbnQgaGFyZHdhcmUgY29uc3RyYWludHMuIEFueSBm
-dXJ0aGVyDQo+ICAgCSAqIGxpbWl0cyB3aGljaCBkZXBlbmQgdXBvbiB0aGUgY29uZmlndXJh
-dGlvbiBjYW4gb25seSBiZSBjaGVja2VkIGluDQo+ICAgCSAqIEBtb2RlX2ZpeHVwIG9yIEBh
-dG9taWNfY2hlY2suDQo+ICAgCSAqDQo+IEBAIC01NTAsNyArNTUwLDcgQEAgc3RydWN0IGRy
-bV9lbmNvZGVyX2hlbHBlcl9mdW5jcyB7DQo+ICAgCSAqIFNpbmNlIHRoaXMgZnVuY3Rpb24g
-aXMgYm90aCBjYWxsZWQgZnJvbSB0aGUgY2hlY2sgcGhhc2Ugb2YgYW4gYXRvbWljDQo+ICAg
-CSAqIGNvbW1pdCwgYW5kIHRoZSBtb2RlIHZhbGlkYXRpb24gaW4gdGhlIHByb2JlIHBhdGhz
-IGl0IGlzIG5vdCBhbGxvd2VkDQo+ICAgCSAqIHRvIGxvb2sgYXQgYW55dGhpbmcgZWxzZSBi
-dXQgdGhlIHBhc3NlZC1pbiBtb2RlLCBhbmQgdmFsaWRhdGUgaXQNCj4gLQkgKiBhZ2FpbnN0
-IGNvbmZpZ3VyYXRpb24taW52YXJpYW50IGhhcmR3YXJkIGNvbnN0cmFpbnRzLiBBbnkgZnVy
-dGhlcg0KPiArCSAqIGFnYWluc3QgY29uZmlndXJhdGlvbi1pbnZhcmlhbnQgaGFyZHdhcmUg
-Y29uc3RyYWludHMuIEFueSBmdXJ0aGVyDQo+ICAgCSAqIGxpbWl0cyB3aGljaCBkZXBlbmQg
-dXBvbiB0aGUgY29uZmlndXJhdGlvbiBjYW4gb25seSBiZSBjaGVja2VkIGluDQo+ICAgCSAq
-IEBtb2RlX2ZpeHVwIG9yIEBhdG9taWNfY2hlY2suDQo+ICAgCSAqDQoNCi0tIA0KVGhvbWFz
-IFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdhcmUg
-U29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5MDQ2MSBOdWVy
-bmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywgQW5kcmV3IE1j
-RG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5iZXJnKQ0K
+smatch warnings:
+sound/pci/hda/cs35l41_hda.c:304 cs35l41_request_firmware_files() error: double free of '*wmfw_filename'
 
---------------dga0TSud0F0pzlLwB583pGhJ--
+vim +304 sound/pci/hda/cs35l41_hda.c
 
---------------vFGycXwKx23acqbwHqup1BZc
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+2e81e1fffd53ba Vitaly Rodionov 2022-06-30  238  static int cs35l41_request_firmware_files(struct cs35l41_hda *cs35l41,
+2e81e1fffd53ba Vitaly Rodionov 2022-06-30  239  					  const struct firmware **wmfw_firmware,
+2e81e1fffd53ba Vitaly Rodionov 2022-06-30  240  					  char **wmfw_filename,
+2e81e1fffd53ba Vitaly Rodionov 2022-06-30  241  					  const struct firmware **coeff_firmware,
+2e81e1fffd53ba Vitaly Rodionov 2022-06-30  242  					  char **coeff_filename)
+2e81e1fffd53ba Vitaly Rodionov 2022-06-30  243  {
+2e81e1fffd53ba Vitaly Rodionov 2022-06-30  244  	int ret;
+2e81e1fffd53ba Vitaly Rodionov 2022-06-30  245  
+cd40dad2ca9196 Stefan Binding  2023-02-13  246  	if (cs35l41->speaker_id > -1) {
+cd40dad2ca9196 Stefan Binding  2023-02-13  247  		ret = cs35l41_request_firmware_files_spkid(cs35l41, wmfw_firmware, wmfw_filename,
+63f4b99f0089a9 Stefan Binding  2022-06-30  248  							   coeff_firmware, coeff_filename);
+cd40dad2ca9196 Stefan Binding  2023-02-13  249  		goto out;
+cd40dad2ca9196 Stefan Binding  2023-02-13  250  
+cd40dad2ca9196 Stefan Binding  2023-02-13  251  	}
+63f4b99f0089a9 Stefan Binding  2022-06-30  252  
+bb6eb621f522d1 Stefan Binding  2022-06-30  253  	/* try cirrus/part-dspN-fwtype-sub<-ampname>.wmfw */
+2e81e1fffd53ba Vitaly Rodionov 2022-06-30  254  	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
+bb6eb621f522d1 Stefan Binding  2022-06-30  255  					    CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
+63f4b99f0089a9 Stefan Binding  2022-06-30  256  					    cs35l41->amp_name, -1, "wmfw");
+2e81e1fffd53ba Vitaly Rodionov 2022-06-30  257  	if (!ret) {
+bb6eb621f522d1 Stefan Binding  2022-06-30  258  		/* try cirrus/part-dspN-fwtype-sub<-ampname>.bin */
+cd40dad2ca9196 Stefan Binding  2023-02-13  259  		ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
+cd40dad2ca9196 Stefan Binding  2023-02-13  260  						    CS35L41_FIRMWARE_ROOT,
+cd40dad2ca9196 Stefan Binding  2023-02-13  261  						    cs35l41->acpi_subsystem_id, cs35l41->amp_name,
+cd40dad2ca9196 Stefan Binding  2023-02-13  262  						    -1, "bin");
+cd40dad2ca9196 Stefan Binding  2023-02-13  263  		goto out;
+bb6eb621f522d1 Stefan Binding  2022-06-30  264  	}
+bb6eb621f522d1 Stefan Binding  2022-06-30  265  
+bb6eb621f522d1 Stefan Binding  2022-06-30  266  	/* try cirrus/part-dspN-fwtype-sub.wmfw */
+bb6eb621f522d1 Stefan Binding  2022-06-30  267  	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
+bb6eb621f522d1 Stefan Binding  2022-06-30  268  					    CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
+63f4b99f0089a9 Stefan Binding  2022-06-30  269  					    NULL, -1, "wmfw");
+bb6eb621f522d1 Stefan Binding  2022-06-30  270  	if (!ret) {
+bb6eb621f522d1 Stefan Binding  2022-06-30  271  		/* try cirrus/part-dspN-fwtype-sub<-ampname>.bin */
+bb6eb621f522d1 Stefan Binding  2022-06-30  272  		ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
+bb6eb621f522d1 Stefan Binding  2022-06-30  273  						    CS35L41_FIRMWARE_ROOT,
+bb6eb621f522d1 Stefan Binding  2022-06-30  274  						    cs35l41->acpi_subsystem_id,
+63f4b99f0089a9 Stefan Binding  2022-06-30  275  						    cs35l41->amp_name, -1, "bin");
+bb6eb621f522d1 Stefan Binding  2022-06-30  276  		if (ret)
+bb6eb621f522d1 Stefan Binding  2022-06-30  277  			/* try cirrus/part-dspN-fwtype-sub.bin */
+cd40dad2ca9196 Stefan Binding  2023-02-13  278  			ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
+bb6eb621f522d1 Stefan Binding  2022-06-30  279  							    CS35L41_FIRMWARE_ROOT,
+cd40dad2ca9196 Stefan Binding  2023-02-13  280  							    cs35l41->acpi_subsystem_id, NULL, -1,
+cd40dad2ca9196 Stefan Binding  2023-02-13  281  							    "bin");
+bb6eb621f522d1 Stefan Binding  2022-06-30  282  	}
+bb6eb621f522d1 Stefan Binding  2022-06-30  283  
+cd40dad2ca9196 Stefan Binding  2023-02-13  284  out:
+cd40dad2ca9196 Stefan Binding  2023-02-13  285  	if (!ret)
+cd40dad2ca9196 Stefan Binding  2023-02-13  286  		return 0;
+cd40dad2ca9196 Stefan Binding  2023-02-13  287  
+cd40dad2ca9196 Stefan Binding  2023-02-13  288  	/* Handle fallback */
+cd40dad2ca9196 Stefan Binding  2023-02-13  289  	dev_warn(cs35l41->dev, "Falling back to default firmware.\n");
+cd40dad2ca9196 Stefan Binding  2023-02-13  290  
+cd40dad2ca9196 Stefan Binding  2023-02-13  291  	release_firmware(*wmfw_firmware);
+cd40dad2ca9196 Stefan Binding  2023-02-13  292  	kfree(*wmfw_filename);
 
------BEGIN PGP SIGNATURE-----
+Freed here.
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUWeNIFAwAAAAAACgkQlh/E3EQov+Cf
-mg/+Ls9FeVuU+cz4yzG9K9Y/2q+nWSKbTslhX0js9JWhzLi0u5JrSDnBdY13h3wWiKKAhemE8znL
-sEZyN5Nng5sXaSgnrNaTpNaV2NWi9BBHW7jHdZpVypIJ6JNBtympzPmEIFgyz1ZFilHu6e11CPaU
-VORp031Wr8I9zEhSQmDyqC65MgoY9IwbI361JFH2hdBoYF2/RgJG7r3Qu3saEUOLGSZ1wbxnd3JG
-tJZY3N5IHtl9agKngjCoFLeiyBF6eQz8gkcMWkbMHM4+Prr3dp/KKcMHp2XudINSTe2voZX0H8an
-ca9Txk9UQ46KnDhWb+fXnZ3R7nTD9g4XCExsxBE3YRrV/PVVNe7/4tAGx+kL+TjGeMxFRRbGXrMV
-UoEcNMAf54fWJHHscHzUO6/efJFb74meYtRQkyfH99enzumRxml01xzAsGMp0uZD8vX0LZ1FaUcM
-IiBXMbncLAI9CDKAAHPmBDKkECq0k0YNQCpM4fGkv0u2eGxlt9X2SFW5GXipyeoHM4Jd4HoK/1ti
-G1sIN1AdDs/ZnZ0sal2ZNEGOaq4HN8aye/VlXF+6ecrCzC50OLd32wcygkL0MFQEyH8bIconebIm
-v4SCTwWJX3l77KD9DnxE6wqxtG/JRmAUA6YLO2OImWZs1rxYHGod4Px2w+IGgJEH+R0oZYGIZBDo
-9aU=
-=C2Qt
------END PGP SIGNATURE-----
+cd40dad2ca9196 Stefan Binding  2023-02-13  293  
+bb6eb621f522d1 Stefan Binding  2022-06-30  294  	/* fallback try cirrus/part-dspN-fwtype.wmfw */
+bb6eb621f522d1 Stefan Binding  2022-06-30  295  	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
+63f4b99f0089a9 Stefan Binding  2022-06-30  296  					    CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "wmfw");
 
---------------vFGycXwKx23acqbwHqup1BZc--
+Assume this fails.
+
+cd40dad2ca9196 Stefan Binding  2023-02-13  297  	if (!ret)
+
+Better to flip this around:
+
+	if (ret)
+		return ret;
+
+bb6eb621f522d1 Stefan Binding  2022-06-30  298  		/* fallback try cirrus/part-dspN-fwtype.bin */
+cd40dad2ca9196 Stefan Binding  2023-02-13  299  		ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
+63f4b99f0089a9 Stefan Binding  2022-06-30  300  						    CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "bin");
+2e81e1fffd53ba Vitaly Rodionov 2022-06-30  301  
+cd40dad2ca9196 Stefan Binding  2023-02-13  302  	if (ret) {
+cd40dad2ca9196 Stefan Binding  2023-02-13  303  		release_firmware(*wmfw_firmware);
+cd40dad2ca9196 Stefan Binding  2023-02-13 @304  		kfree(*wmfw_filename);
+
+The zero day bot doesn't have cross function analysis so the
+kfree(*wmfw_filename); warning is a false positive, but the second
+release_firmware() is a double free if the kasprintf() in
+cs35l41_request_firmware_file() fails.  You would have to get pretty
+unlucky to hit this bug.
+
+cd40dad2ca9196 Stefan Binding  2023-02-13  305  		dev_warn(cs35l41->dev, "Unable to find firmware and tuning\n");
+cd40dad2ca9196 Stefan Binding  2023-02-13  306  	}
+2e81e1fffd53ba Vitaly Rodionov 2022-06-30  307  	return ret;
+2e81e1fffd53ba Vitaly Rodionov 2022-06-30  308  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
