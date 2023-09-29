@@ -2,98 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7C27B37C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7B147B37CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233589AbjI2QTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 12:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
+        id S233436AbjI2QUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 12:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233355AbjI2QTb (ORCPT
+        with ESMTP id S232878AbjI2QUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 12:19:31 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C475BE;
-        Fri, 29 Sep 2023 09:19:30 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1bf55a81eeaso109160315ad.0;
-        Fri, 29 Sep 2023 09:19:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696004369; x=1696609169; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0WpEnE1imZext9giY2eZ5FF+qNPYPUI0MpRn4yWIGAk=;
-        b=MLrzUTd0m1BclwwlSVdg0ZJQlKtXk0A3jBmrtWnSNSxy/66RVhhzoVIE8FjlFsmdd1
-         PdjV6VvFQGQRx78aWCjg/G1sLcEMqCVlxOkjuubn1KSPAyfjnIZVpYiDXJYHmHefcLYJ
-         tstMERcW1ymnF2B2pPrpZbJylf5EekWAsXCCGM1muFM0S5hZNBip3XpHljw25tmi4HzW
-         FhkszsG3QfbRBbTfQARcWMkm9Mch9abF0uduNHfeol82H92T14ijcDxMdOmIWVtbspHw
-         MVZSwo20gXunh1JdXIHK0enbWnBYwX8ZLD3NQYWOAPeXPXCEkRIalEi912mr2HIOMFL8
-         s52Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696004369; x=1696609169;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0WpEnE1imZext9giY2eZ5FF+qNPYPUI0MpRn4yWIGAk=;
-        b=IP4bL8BDAqyiqPTuDlXJyHxi88eJrgdhctryWKIgHSHaRWZ8ANbuUXMBTMiixEJUfA
-         oTg42D4OfoEn1cRq4OWX/U55QZoSNsr8rVXk5asE6N1uKs/t1NyhTi43k96fCnh4+oRO
-         OSS6DwKgdzlcaDIguzaHToYmwvhCYHY9yT5jQfLpm01nHkHLFYfeKioHooGZceXQ2Z7S
-         CwiISFWf+IvO7euAPETrLCx0kfeHox6KH0FwwdE40l66Jz2uy0PbiyCRGTE1Pa6DP37m
-         FaMbT1JjFdg2nO+WBwFOTISMH4htHxvZfjuHsp8g4uXiAe9hfb1kkN3Qoeptq9HyXnYf
-         ptJA==
-X-Gm-Message-State: AOJu0Yy0ijGcMItv6f/8tEtgmLC73EZxXq9WPiR4EDkGy+iQC+Pklnd3
-        YJHurBRYSFAKhTQAm2Q8nyhGSpCjeEs+C36r/Wg=
-X-Google-Smtp-Source: AGHT+IHCv69Ph+uWHMuegkaLLFRXFuCTE8PBWtTLTkK4H7h4cibsl+mkE6QssdnHToH8zvgYzjBvy/5gZoMtOv4AWsM=
-X-Received: by 2002:a17:90a:a78b:b0:26d:1eec:1fc4 with SMTP id
- f11-20020a17090aa78b00b0026d1eec1fc4mr4345004pjq.19.1696004369498; Fri, 29
- Sep 2023 09:19:29 -0700 (PDT)
+        Fri, 29 Sep 2023 12:20:14 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEA7BE;
+        Fri, 29 Sep 2023 09:20:11 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 6408D1000B2; Fri, 29 Sep 2023 17:20:09 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+        t=1696004409; bh=NO7U8jxZgUpWr0WrNZxuq6hy5u2FsN8FVLFZSQC6DGs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=io8J1gWqNgAp0oYQnqnXaZ0ODjPn8YiBFoeog8mMiW+afnyzuONlL0UGmD40NmA3x
+         b5dbj86ikrbxYLBjtnLZlcGCLLbaUEOikPOO6geNK+t5IjAJ1l6hrDJ9rf0LjnANGr
+         lCugOdBmh3Lj2GZdb2KblJRDuelBK7zEl/EOCmIQSCjuMUA8SFqDB50K9NJIEHtAGI
+         7V/wHYWH7/7o08N66Hk/Tmo+A2nQny1HqHn4rYPPbwj9bhcliogFb8J8OdH1fspeOC
+         YD2bpjXh0AGXNv4iwxaf92HcL7aiJ0I2FYvX28GRCQoGKc6EuXCeU0qxh+qsrjkUAB
+         F3HxtdV4skF5w==
+Date:   Fri, 29 Sep 2023 17:20:09 +0100
+From:   Sean Young <sean@mess.org>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Cc:     linux-media@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Timo Kokkonen <timo.t.kokkonen@iki.fi>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>,
+        "Sicelo A . Mhlongo" <absicsz@gmail.com>,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] media: rc: remove ir-rx51 in favour of generic
+ pwm-ir-tx
+Message-ID: <ZRb5OWvx3GxYWf9g@gofer.mess.org>
+References: <cover.1693577725.git.sean@mess.org>
+ <e5325e826935f0bd8566152b6a5fa799b2429d43.1693577725.git.sean@mess.org>
+ <99f0042f-538c-bcaf-96fd-bac24a87f88e@gmail.com>
+ <ZRKFUb1vRtn82bgn@gofer.mess.org>
+ <1715e2bf-5d02-4f20-1476-29a1fdf350b1@gmail.com>
+ <ZRM8iLORjKw3z/h5@gofer.mess.org>
+ <179c4674-aa5c-0573-6d1f-ea6f2694d156@gmail.com>
 MIME-Version: 1.0
-References: <20230928210525.1265958-1-robimarko@gmail.com> <20230928210525.1265958-4-robimarko@gmail.com>
- <fac9c693-5d50-428d-9ea6-83ebec7239c3@linaro.org>
-In-Reply-To: <fac9c693-5d50-428d-9ea6-83ebec7239c3@linaro.org>
-From:   Robert Marko <robimarko@gmail.com>
-Date:   Fri, 29 Sep 2023 18:19:18 +0200
-Message-ID: <CAOX2RU66J6XY_jJsBi+9djo6d8nmRmMsFbrBGeT7dCJe+MPh=g@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] ARM: dts: qcom: ipq8064: Add CPU OPP table
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     ilia.lin@kernel.org, vireshk@kernel.org, nm@ti.com,
-        sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org, rafael@kernel.org,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Christian Marangi <ansuelsmth@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <179c4674-aa5c-0573-6d1f-ea6f2694d156@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Sept 2023 at 15:57, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->
-> On 28.09.2023 23:04, Robert Marko wrote:
-> > From: Christian Marangi <ansuelsmth@gmail.com>
-> >
-> > Add CPU OPP table for IPQ8062, IPQ8064 and IPQ8065 SoC.
-> > Use opp-supported-hw binding to correctly enable and disable the
-> > frequency as IPQ8062 supports up to 1.0Ghz, IPQ8064 supports up to
-> > 1.4GHz with 1.2GHz as an additional frequency and IPQ8065 supports
-> > 1.7GHZ but doesn't have 1.2GHZ frequency and has to be disabled.
-> >
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> When resending somebody else's patches, you need to add your own
-> sign-off at the end.
+Hello Uwe,
 
-Yes, I spotted it only after sending and it did not make sense to
-resend immediately it.
-Will be part of v5 that has DT bindings sorted out.
+Just wanted to run an idea by you.
 
-Regards,
-Robert
->
-> Konrad
+On Fri, Sep 29, 2023 at 11:49:52AM +0300, Ivaylo Dimitrov wrote:
+> On 26.09.23 г. 23:18 ч., Sean Young wrote:
+> > I've never known of a solution to the pwm-ir-tx driver. If using hrtimers
+> > directly improves the situation even a bit, then that would be great.
+> 
+> The issue with hrtimers is that we cannot use them directly, as
+> pwm_apply_state() may sleep, but hrtimer function is called in atomic
+> context.
+
+I've also been looking at this problem and came to same conclusion: the
+fact that pwm_apply_state() sleeps is a huge problem.
+
+1) The vast majority of pwm drivers don't sleep, or could even be converted
+   to spinlocks (e.g pwm-sifive.c could use spinlocks, as far as I can see).
+
+2) Sure, some pwm devices are on i2c busses, so the driver needs to sleep.
+   Those devices aren't great for what we're trying to do here, since the
+   sleeping may cause delays and affect the generated signal.
+
+What would be ideal here is to have pwm-ir-tx work in atomic context if
+a non-sleeping pwm device is used, and another (non-optimal) code path
+for sleeping pwm drivers. We could even just refuse to run on sleeping pwm
+drivers.
+
+Uwe what do you think of this idea? The pwm api could have a
+bool pwm_may_sleep(struct pwm *pwm) function, and pwm_apply_state() does 
+not contain might_sleep() - only the driver-specific apply calls might_sleep().
+
+It would be nice if this could all be done at compile time through e.g. a
+device tree attribute.
+
+Thanks,
+
+Sean
