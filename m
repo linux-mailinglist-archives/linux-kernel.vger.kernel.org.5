@@ -2,108 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7DE7B377B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB597B3782
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbjI2QGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 12:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
+        id S233537AbjI2QJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 12:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232878AbjI2QGi (ORCPT
+        with ESMTP id S233141AbjI2QJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 12:06:38 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F50C195
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:06:36 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a1df5b7830so128920407b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:06:36 -0700 (PDT)
+        Fri, 29 Sep 2023 12:09:06 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B7D139;
+        Fri, 29 Sep 2023 09:09:04 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-505748580ceso51086e87.3;
+        Fri, 29 Sep 2023 09:09:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696003596; x=1696608396; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7748UyaRicB9vuLDG8lZI9y3UedmYNxjGs6THbhcXv4=;
-        b=RXNb67qu11jninh8BDYQXR5zj0hykn/FKs1CckBo9yx44BFcW2CmRH7zWbuT6kFmEL
-         iPoVyO7CXc4co3E8weYq8XPqWXfSvyRdRcJV2BRdGt7ApYhJEKiqDIrOm9Ix7JbeujVM
-         NBxmEg5UpRH1iNHRzxWPkH5Tc50sHpoyYN9hrDDknuTUNSv2/qFdGbU6nUnCwTrIEYQX
-         fuF5Y+UH4kMw3YvLW5wdKVAyvOu/JaUhB4KDIkF5+fY7iBZooD4Hc77u+ornlxfgWa11
-         g83/6YWS9R1cZpcH4DuLq+zPaArEJvYPbQ7Br0+oz7zXAbnuysMO1vBkY0clSNn8YAeU
-         jqEQ==
+        d=gmail.com; s=20230601; t=1696003742; x=1696608542; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qCN934VhabHlWJc9p5aUyxuMGd+S4iIxKk262wTizkQ=;
+        b=WXYTwTnP+PrU4HfGUzRVWDFTZ4E8jucN5WaPFMPEbJE/x864LMMfU8+gB7fXdUAApQ
+         7a0dLO0jgybjDpkPcljh6kokbDnvqM7cLP6g3/AktUIRkYwr4k7dDI2tuHsc8B/fXgDi
+         2JKup1yxhJU6nKzoCMds8n+2q278kh0ciXW2noYcrnZX0rBOC+Sn8XMLN1GGtKZlKgHq
+         LASv4ceQIVMMdztSJl1YGQ4rEnfKZTQoOj3eo8uRuRUWPdPzxTfSuwU88IHtCx9/Q3+D
+         ivW5bw1VQE/4K5z1v9tyy8rtgpWawGQZimUUW5QPMB1gWq6freupHY0PWspn3iU7zc8R
+         mEMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696003596; x=1696608396;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7748UyaRicB9vuLDG8lZI9y3UedmYNxjGs6THbhcXv4=;
-        b=Ln9zAmkpWhpD9O3MTWm29Q9PzQnihLVKGkb5JIp6JiM57+RxNuEeEbw+mmmTCPyHxU
-         l8wGlF0NBsEE5qpfwBcVdgldlEBjLpwK/bGG/XHph+B5d0SZwLqEGXf2ClDIfILScyV1
-         gXIu/bdjXjMlXVYh6/AZwIM1ahT/2oz7fD6Z8rdd5BK8LcEjsOZQ0OvJ7eUEID6/732A
-         Jehd7oLNuU8TNOArfHpe3gL841bmHl9M3PkqL0s0Z9gn/iQ+4xgETIbJn+afJJ6ZHOiy
-         ON3K4NeazWSgTP8KzwoIS46C0gBETw9uawww8nXJ9REB6jbSvprTlAXVzs8CtADA7Ngd
-         36bw==
-X-Gm-Message-State: AOJu0YwGiVKeL1JpZvFsCP2mqKAkB8VKvMP3liWCcJE9JWTacehn6qcS
-        TNiR0Bp+ransu5eaq4/DSwZiE6S4mFc=
-X-Google-Smtp-Source: AGHT+IHsLuz2yP+DLr1l3LAHJNofVqpdj+3qr9V+VXcf0rZX5bCoeLknAcYmDIAgg+yEvB5YVWisfrv0cgc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:aa8a:0:b0:d80:eb4:9ca with SMTP id
- t10-20020a25aa8a000000b00d800eb409camr74309ybi.0.1696003595874; Fri, 29 Sep
- 2023 09:06:35 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 09:06:34 -0700
-In-Reply-To: <ZRZeaP7W5SuereMX@infradead.org>
-Mime-Version: 1.0
-References: <20230911021637.1941096-1-stevensd@google.com> <ZRZeaP7W5SuereMX@infradead.org>
-Message-ID: <ZRb2CljPvHlUErwM@google.com>
-Subject: Re: [PATCH v9 0/6] KVM: allow mapping non-refcounted pages
-From:   Sean Christopherson <seanjc@google.com>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     David Stevens <stevensd@chromium.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696003742; x=1696608542;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qCN934VhabHlWJc9p5aUyxuMGd+S4iIxKk262wTizkQ=;
+        b=YvFdUn6cJIBt6izGvwyG4NYeyN7c5R1qtxgkH3MQb5hPb8hKq4mvcbrwAOzHO3HP9q
+         5GKpo4D927zJhfAJ3SFk0I7EsngLSQu1p6aVCqG3ml0qzQi26WJ0hm9ZWnnJuxTK8fuu
+         60jBQQ6VJpkXBTClTFvUJX6KRViYlq5SkyCZUNt0hOEl9e9tu1b22keZqH854621GZEO
+         Rycuoo9BxwxB8C6ogohIQi3HiQ/XZwU4PIxWHaWmynJ6s4lpz++/WOGNjUbl4f14U/wO
+         WotVbV+6yVOnzm+MwDomPeVg4HcKqdiiqY9h8L75BvfB8br0PpXfmr/tc7WTkjSSCEhU
+         AT0g==
+X-Gm-Message-State: AOJu0Yx4nbe4s4EaMxg+O+LTdcz22y9xMP4BOv80YkP3A99nPCg2mi6D
+        RIeLrqJWCFp/9IqzveqqGmU=
+X-Google-Smtp-Source: AGHT+IHOnFq1zeqSSK3P/A5O+MTaHM4TSDzr6YY7Q+M2Qa7yO9OEpAsyizPdPF7tKw/bdEsCGEwhIQ==
+X-Received: by 2002:a19:3817:0:b0:4ff:70d2:4512 with SMTP id f23-20020a193817000000b004ff70d24512mr3820036lfa.23.1696003741534;
+        Fri, 29 Sep 2023 09:09:01 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id h21-20020a056512221500b00502b04e2722sm1296268lfu.3.2023.09.29.09.09.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 09:09:00 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 19:08:57 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
+Cc:     linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        patches@amperecomputing.com, jarkko.nikula@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
+        jsd@semihalf.com, chuong@os.amperecomputing.com,
+        darren@os.amperecomputing.com, stable@vger.kernel.org
+Subject: Re: [PATCH v1] i2c: designware: Disable TX_EMPTY irq while waiting
+ for block length byte
+Message-ID: <avd7jhwexehgbvi6euzdwvf5zvqqgjx4ozo6uxu2qpmlarvva3@sgkce3rvovwk>
+References: <20230929035356.6435-1-tamnguyenchi@os.amperecomputing.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230929035356.6435-1-tamnguyenchi@os.amperecomputing.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023, Christoph Hellwig wrote:
-> On Mon, Sep 11, 2023 at 11:16:30AM +0900, David Stevens wrote:
-> > From: David Stevens <stevensd@chromium.org>
-> > 
-> > This patch series adds support for mapping VM_IO and VM_PFNMAP memory
-> > that is backed by struct pages that aren't currently being refcounted
-> > (e.g. tail pages of non-compound higher order allocations) into the
-> > guest.
-> > 
-> > Our use case is virtio-gpu blob resources [1], which directly map host
-> > graphics buffers into the guest as "vram" for the virtio-gpu device.
-> > This feature currently does not work on systems using the amdgpu driver,
-> > as that driver allocates non-compound higher order pages via
-> > ttm_pool_alloc_page.
-> > 
-> > First, this series replaces the __gfn_to_pfn_memslot API with a more
-> > extensible __kvm_faultin_pfn API. The updated API rearranges
-> > __gfn_to_pfn_memslot's args into a struct and where possible packs the
-> > bool arguments into a FOLL_ flags argument. The refactoring changes do
-> > not change any behavior.
+On Fri, Sep 29, 2023 at 10:53:56AM +0700, Tam Nguyen wrote:
+> During SMBus block data read process, we have seen high interrupt rate
+> because of TX_EMPTY irq status while waiting for block length byte (the
+> first data byte after the address phase). The interrupt handler does not
+> do anything because the internal state is kept as STATUS_WRITE_IN_PROGRESS.
+> Hence, we should disable TX_EMPTY irq until I2C DW receives first data
+> byte from I2C device, then re-enable it.
 > 
-> Instead of adding hacks to kvm you really should fix the driver / TTM
-> to not do weird memory allocations.
+> It takes 0.789 ms for host to receive data length from slave.
+> Without the patch, i2c_dw_isr is called 99 times by TX_EMPTY interrupt.
+> And it is none after applying the patch.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Chuong Tran <chuong@os.amperecomputing.com>
+> Signed-off-by: Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
+> ---
+>  drivers/i2c/busses/i2c-designware-master.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
+> index 55ea91a63382..2152b1f9b27c 100644
+> --- a/drivers/i2c/busses/i2c-designware-master.c
+> +++ b/drivers/i2c/busses/i2c-designware-master.c
+> @@ -462,6 +462,13 @@ i2c_dw_xfer_msg(struct dw_i2c_dev *dev)
 
-I agree that the driver/TTM behavior is nasty, but from a KVM perspective the vast
-majority of this series is long-overdue cleanups (at least, IMO).  All of those
-cleanups were my requirement for adding support for the behavior David and friends
-actually care about.
+>  		if (buf_len > 0 || flags & I2C_M_RECV_LEN) {
+>  			/* more bytes to be written */
+>  			dev->status |= STATUS_WRITE_IN_PROGRESS;
+> +			/*
+> +			 * In I2C_FUNC_SMBUS_BLOCK_DATA case, there is no data
+> +			 * to send before receiving data length from slave.
+> +			 * Disable TX_EMPTY while waiting for data length byte
+> +			 */
+> +			if (flags & I2C_M_RECV_LEN)
+> +				intr_mask &= ~DW_IC_INTR_TX_EMPTY;
 
-KVM needs to be aware of non-refcounted struct page memory no matter what; see
-CVE-2021-22543 and, commit f8be156be163 ("KVM: do not allow mapping valid but
-non-reference-counted pages").  I don't think it makes any sense whatsoever to
-remove that code and assume every driver in existence will do the right thing.
+Is it possible to reduce the indentations level? Like this:
 
-With the cleanups done, playing nice with non-refcounted paged instead of outright
-rejecting them is a wash in terms of lines of code, complexity, and ongoing
-maintenance cost.
+		/*
+		 * Because we don't know the buffer length in the
+		 * I2C_FUNC_SMBUS_BLOCK_DATA case, we can't stop the
+		 * transaction here. Also disable the TX_EMPTY IRQ
+		 * while waiting for the data length byte to avoid the
+		 * bogus interrupts flood.
+		 */
+		if (flags & I2C_M_RECV_LEN) {
+  			dev->status |= STATUS_WRITE_IN_PROGRESS;
+			intr_mask &= ~DW_IC_INTR_TX_EMPTY;
+			break;
+		} else if (buf_len > 0) {
+  			/* more bytes to be written */
+  			dev->status |= STATUS_WRITE_IN_PROGRESS;
+			break;
+		} else {
+			dev->status &= ~STATUS_WRITE_IN_PROGRESS;
+		}
+
+>  			break;
+>  		} else
+>  			dev->status &= ~STATUS_WRITE_IN_PROGRESS;
+> @@ -485,6 +492,7 @@ i2c_dw_recv_len(struct dw_i2c_dev *dev, u8 len)
+>  {
+>  	struct i2c_msg *msgs = dev->msgs;
+>  	u32 flags = msgs[dev->msg_read_idx].flags;
+
+> +	u32 intr_mask;
+>  
+>  	/*
+>  	 * Adjust the buffer length and mask the flag
+> @@ -495,6 +503,11 @@ i2c_dw_recv_len(struct dw_i2c_dev *dev, u8 len)
+>  	msgs[dev->msg_read_idx].len = len;
+>  	msgs[dev->msg_read_idx].flags &= ~I2C_M_RECV_LEN;
+>  
+> +	/* Re-enable TX_EMPTY interrupt. */
+> +	regmap_read(dev->map, DW_IC_INTR_MASK, &intr_mask);
+> +	intr_mask |= DW_IC_INTR_TX_EMPTY;
+> +	regmap_write(dev->map, DW_IC_INTR_MASK, intr_mask);
+
+1. What about just:
+	regmap_update_bits(dev->map, DW_IC_INTR_MASK, DW_IC_INTR_TX_EMPTY,
+			   DW_IC_INTR_TX_EMPTY);
+
+2. The in-situ comment is pointless because the statement already
+implies the IRQ re-enabling. I suggest to add more details of _why_
+the IRQ needs to be re-enabled (what is supposed to be done after it's
+re-enabled?).
+
+-Serge(y)
+
+> +
+>  	return len;
+>  }
+>  
+> -- 
+> 2.25.1
+> 
