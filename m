@@ -2,166 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E20CD7B2D92
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:15:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B32867B2D9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232831AbjI2IPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 04:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
+        id S232852AbjI2IRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 04:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232798AbjI2IPO (ORCPT
+        with ESMTP id S232663AbjI2IRu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 04:15:14 -0400
-Received: from mail-vk1-xa30.google.com (mail-vk1-xa30.google.com [IPv6:2607:f8b0:4864:20::a30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E051A7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:15:12 -0700 (PDT)
-Received: by mail-vk1-xa30.google.com with SMTP id 71dfb90a1353d-49ad8b76003so512320e0c.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:15:12 -0700 (PDT)
+        Fri, 29 Sep 2023 04:17:50 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD4A1AA
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:17:46 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-533edb5ac54so12684352a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:17:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695975311; x=1696580111; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QboF2qzgqtIeZzJ3xn9fVEEuaznoJ/3H4/aU31FTcJo=;
-        b=zu5Nv6tszucFpSDovhfdoWrehyTuVAYPNnzChIiFLtsZR3pjKEOohVbJ1SVYfFFavj
-         rM102WX+XVjQU+/gt7JYo7rXwNnX0VPrQwtcquMKUcz5l5QVM0jbreTnWIjv+uPhdhaH
-         BdtWHvf4QNGW365YEXjh+hsu3B8dP9GY5byiB2eKfE7Khoykee32/Zo4Kfw1vcZI7pP5
-         dvNmdItfwODZrhYDwhHUgzqe1w7zoskwRmCc1POT6sVOtsGeMYaMNtG+RipwGfdd3Lfy
-         G/Jtb3v5rG4hQNEJzXNwhNiqVekrrvCGhu6LC/gt5ZtwrtXjp0gb8No6EVyndHE7VFpq
-         /rIQ==
+        d=fairphone.com; s=fair; t=1695975465; x=1696580265; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=66rvkY6nt3zzF0mpqUIENHQMbB23JKE+nvkcL4m8tVA=;
+        b=Hb9M4+i3bpVk9jMVMtYvxuidJL2C+MXI0PHKs4puyWKeSDXwpjrvVG3uyBJzIkS6j7
+         rpBuWLQCdqt4WMUyMsfetASiUJSKfRsCV2rvlFa3xwnKTxngmTvlhKE6PEPEM9DozRwb
+         W5dhXC44sw0ENjNtkV0i2+tR5Ms3xIKNbDCxPJtlFsyZP0/NaRDyInG1k6Lx6AeiGCBA
+         zqkC3HbOAjbzFmmGIsuv9Y09QtEhyGrgKmugPfOTaxGf595v0KePZBVM1Xge+WbN8y21
+         OYhsoEcYcAyGhKkbjb5cqwesGPhS9MIgWt4Og2lrIYr3fhnRKtrujrvxiKGUtEoDIHpL
+         tMeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695975311; x=1696580111;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QboF2qzgqtIeZzJ3xn9fVEEuaznoJ/3H4/aU31FTcJo=;
-        b=KPDb6+XRlsW2NILhT/CXpb+TYkx6vR2m4tHngW68yrX6W21Cuw/VTe4BkmbmV6dOS+
-         zZwHNajXG0xR+HXEM9jKwHd3mxCfMACLMWxWMrC7GqoOBofLy1CGgVF05pFDgrOcdYvh
-         TOnOHoPnDyBBdOSe7wX6qODRGThwNtmg7jFGN65ZBOnTjEuCc5ca2p15BK+GfUTW0T7y
-         f8p7G2eClV3ti8EpouEHUqCnOz8JGpi8T82OODRxXSQM/iLwo2YZPNVn4iazhqxRo6/N
-         7am2etVLbPdEWb+Fv/ALJqR/e3sHmGqcZWb4Qyw7VnTUDwlAvNmkSQ7iYot8zknNghT2
-         A+gg==
-X-Gm-Message-State: AOJu0YxLkuNjjIQwCTgg7b88yxY9D8L1NhMYPhDeznj6Jiy7D+CsAKmX
-        BsWgccTnmmfZxob37kyQbH0iVuSef8F/oTK7rj1/kQ==
-X-Google-Smtp-Source: AGHT+IHP0SVmQPWEpAkwmu297wB0/o5mIfkN7y1TRcb/nwe4bmndkyrosbLgTUy1jSx/gupLVdnAKMxHIMohG4p8PqQ=
-X-Received: by 2002:a1f:ec43:0:b0:495:cace:d59c with SMTP id
- k64-20020a1fec43000000b00495caced59cmr3496382vkh.0.1695975311330; Fri, 29 Sep
- 2023 01:15:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695975465; x=1696580265;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=66rvkY6nt3zzF0mpqUIENHQMbB23JKE+nvkcL4m8tVA=;
+        b=EEh3PJGBKuAyj5+8D1KrsuvWv7epkkLLgmSu354O3rFAzRLgzXQw8TQunvBRbtgUfV
+         kRxHjFlLeMvYCc6sx5zNc33JSemTDtnw5ALqFMAoF31TZ2C7aNNvpX2Wx/HoWqi3xv9G
+         hYa6bRt328ji5VilG2dZOVnxuD/EYzL6BmG/SIQyxV1PHVRKlBr9F00mTvtKj3qG8C7I
+         k2N+++gyVNFKJgfTzlb6sL3gjOkTC41mgfiF6Iaq2ryKZsRmDxz78ZfdlOgWby3IoV2M
+         76a9MHitL5yNoeZGW5mwDT5W6UJI6rUaOJdMigSeHs6s+7OhPnliWQdQuc3GzbtAA4YE
+         pqkQ==
+X-Gm-Message-State: AOJu0Yx+hKb1rw0O3pBfKAYJVIu+HEm5+ga2TRtatrRIw5gkOuG0bKp5
+        OcsXIwpL9xDP93oLx+swkmNwQQ==
+X-Google-Smtp-Source: AGHT+IEsowCAPiGmVll0HBC1o9aqBDNau907j51HRKt0KOCTcIMRKiOvbnzOQIQ53bXBnmcS9Tvceg==
+X-Received: by 2002:a17:906:2243:b0:9a9:e4f8:3501 with SMTP id 3-20020a170906224300b009a9e4f83501mr2597811ejr.43.1695975465197;
+        Fri, 29 Sep 2023 01:17:45 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id y22-20020a170906449600b009adc77fe165sm11873803ejo.118.2023.09.29.01.17.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 01:17:44 -0700 (PDT)
+From:   Luca Weiss <luca.weiss@fairphone.com>
+Subject: [PATCH 0/2] Small updates / fixups for PMIC spmi-gpio
+Date:   Fri, 29 Sep 2023 10:17:37 +0200
+Message-Id: <20230929-pm7250b-gpio-fixup-v1-0-ef68543c1d3b@fairphone.com>
 MIME-Version: 1.0
-References: <20230928092040.9420-1-brgl@bgdev.pl> <20230928092040.9420-4-brgl@bgdev.pl>
-In-Reply-To: <20230928092040.9420-4-brgl@bgdev.pl>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 29 Sep 2023 10:15:00 +0200
-Message-ID: <CAMRc=MfBoekf_5gjF13Acj+zS9H81pA=7=MVYys3E70qvEzUQw@mail.gmail.com>
-Subject: Re: [PATCH v2 03/11] firmware: qcom: scm: switch to using the SCM allocator
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACGIFmUC/x2MywqAIBAAf0X23IJthdmvRIceW+0hFaUIon9PO
+ g7DzAOJo3CCTj0Q+ZIk3mUoCwXzPrqNUZbMQJoqbcliOAw1esItiMdV7jPgWmvDbNuamhFyGCJ
+ n8U/74X0/es02eWQAAAA=
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 11:21=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
->
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> We need to allocate, map and pass a buffer to the trustzone if we have
-> more than 4 arguments for a given SCM calls. Let's use the new SCM
-> allocator for that memory and shrink the code in process.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  drivers/firmware/qcom/qcom_scm-smc.c | 21 ++++-----------------
->  1 file changed, 4 insertions(+), 17 deletions(-)
->
-> diff --git a/drivers/firmware/qcom/qcom_scm-smc.c b/drivers/firmware/qcom=
-/qcom_scm-smc.c
-> index 16cf88acfa8e..0d5554df1321 100644
-> --- a/drivers/firmware/qcom/qcom_scm-smc.c
-> +++ b/drivers/firmware/qcom/qcom_scm-smc.c
-> @@ -2,6 +2,7 @@
->  /* Copyright (c) 2015,2019 The Linux Foundation. All rights reserved.
->   */
->
-> +#include <linux/cleanup.h>
->  #include <linux/io.h>
->  #include <linux/errno.h>
->  #include <linux/delay.h>
-> @@ -152,8 +153,7 @@ int __scm_smc_call(struct device *dev, const struct q=
-com_scm_desc *desc,
->  {
->         int arglen =3D desc->arginfo & 0xf;
->         int i, ret;
-> -       dma_addr_t args_phys =3D 0;
-> -       void *args_virt =3D NULL;
-> +       void *args_virt __free(qcom_scm_mem) =3D NULL;
->         size_t alloc_len;
->         gfp_t flag =3D atomic ? GFP_ATOMIC : GFP_KERNEL;
->         u32 smccc_call_type =3D atomic ? ARM_SMCCC_FAST_CALL : ARM_SMCCC_=
-STD_CALL;
-> @@ -173,7 +173,7 @@ int __scm_smc_call(struct device *dev, const struct q=
-com_scm_desc *desc,
->
->         if (unlikely(arglen > SCM_SMC_N_REG_ARGS)) {
->                 alloc_len =3D SCM_SMC_N_EXT_ARGS * sizeof(u64);
-> -               args_virt =3D kzalloc(PAGE_ALIGN(alloc_len), flag);
-> +               args_virt =3D qcom_scm_mem_alloc(PAGE_ALIGN(alloc_len), f=
-lag);
+Update the schema to use plural _gpios label in the example. And fix a
+dtbs_check warning in pm7250b.dtsi.
 
-Ah, I realized the PAGE_ALIGN() here can be dropped when switching to
-the new allocator.
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+Luca Weiss (2):
+      dt-bindings: mfd: qcom,spmi-pmic: Update gpio example
+      arm64: dts: qcom: pm7250b: Use correct node name for gpios
 
-There'll be a v3 anyway so I'll drop it then.
+ Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 4 ++--
+ arch/arm64/boot/dts/qcom/pm7250b.dtsi                     | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+---
+base-commit: df964ce9ef9fea10cf131bf6bad8658fde7956f6
+change-id: 20230929-pm7250b-gpio-fixup-f407ee98425a
 
-Bart
+Best regards,
+-- 
+Luca Weiss <luca.weiss@fairphone.com>
 
->
->                 if (!args_virt)
->                         return -ENOMEM;
-> @@ -192,25 +192,12 @@ int __scm_smc_call(struct device *dev, const struct=
- qcom_scm_desc *desc,
->                                                       SCM_SMC_FIRST_EXT_I=
-DX]);
->                 }
->
-> -               args_phys =3D dma_map_single(dev, args_virt, alloc_len,
-> -                                          DMA_TO_DEVICE);
-> -
-> -               if (dma_mapping_error(dev, args_phys)) {
-> -                       kfree(args_virt);
-> -                       return -ENOMEM;
-> -               }
-> -
-> -               smc.args[SCM_SMC_LAST_REG_IDX] =3D args_phys;
-> +               smc.args[SCM_SMC_LAST_REG_IDX] =3D qcom_scm_mem_to_phys(a=
-rgs_virt);
->         }
->
->         /* ret error check follows after args_virt cleanup*/
->         ret =3D __scm_smc_do(dev, &smc, &smc_res, atomic);
->
-> -       if (args_virt) {
-> -               dma_unmap_single(dev, args_phys, alloc_len, DMA_TO_DEVICE=
-);
-> -               kfree(args_virt);
-> -       }
-> -
->         if (ret)
->                 return ret;
->
-> --
-> 2.39.2
->
