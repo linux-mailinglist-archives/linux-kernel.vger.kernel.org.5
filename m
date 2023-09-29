@@ -2,248 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C0A7B36A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A037B36BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbjI2PYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50620 "EHLO
+        id S233593AbjI2PZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233633AbjI2PX5 (ORCPT
+        with ESMTP id S233581AbjI2PY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:23:57 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 122C51B4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:23:52 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so17797064a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:23:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696001030; x=1696605830; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2fI3NjIu6ibVXMaxV4978aYW3D2t6y3JPV/QUFnUxmo=;
-        b=ZPQ9VYJ+15VPxsnTR09neqcsHSnXZcCc+Jb6CH0ODjvpUJjoOmlsYG5Hg+gWxvtKRe
-         5N8YtNCWtNJA6dCN4bySrCC7DVuIyUzjfC1ZiPXJs1mq/VEmQP4aOW57QSmiQ6GlL6lx
-         h+ZW6V7TdfkXEqQLlqEi3AoZ9FofWgZj7rEAZPfGkBFXagpsSf/xlnzUvMG/5J7NvC8A
-         umWl+TViQU7DcOm4CDfIx010zT5zQG37LEY7tA/DFl9h8B0sTG0zmb9ndEIr7FviA3V6
-         H92fI7ESikNs/Nxat7/u2Qmcrsz87i41AmsbHGTGQBqvv2D4SKCjuuLqZC1CMJYK7D0e
-         9liA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696001030; x=1696605830;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2fI3NjIu6ibVXMaxV4978aYW3D2t6y3JPV/QUFnUxmo=;
-        b=v56KzeiVi/RUrGlhfKQUV3QCASYOR6gRzAC74BOu714IMl5bSGqbXXUdZA6NDofcqd
-         DZsdtC0y/uKTrsyMPMPNwVJTK6zrk9dJ7s8H83HtapnBbbGckrwZx3cIozpTti9gqcEJ
-         CCUhQYmBeugyQL+HxCN3KLiw/ffc54IDZ+iGdu2/lGCbliOeJTPasWZPuUUbGe7+TcUm
-         Y9mtVpkqmbSgO7S7KfwvyLkhTcRg9IwWiyH2fBnT4mZyCrQQ5WlFiF2Owwp8Rt4I88at
-         9bzejRW2ffwYGNWKTtOlDYJYY6CpcbEXAqbZ3/lXTny4bnJi7q08Bw1a/MyPpZD+d9DC
-         cOBw==
-X-Gm-Message-State: AOJu0YxDjdUmrwv7uHlMqHrCmR5JUySkSM84C/x1Kt2IclnsOtqyi8Bt
-        G662qekWU0gkFHZ2y1j4MYgScg==
-X-Google-Smtp-Source: AGHT+IHqjsMK8Y/1artQAJrs2qGFuOW/UMoC3/PfEtSCGEWb9tEWh7FxqAROm23llsdyFcJ72ozYwA==
-X-Received: by 2002:a17:906:3117:b0:9b2:be4e:4940 with SMTP id 23-20020a170906311700b009b2be4e4940mr4620126ejx.61.1696001030407;
-        Fri, 29 Sep 2023 08:23:50 -0700 (PDT)
-Received: from [192.168.33.189] (178235177217.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.217])
-        by smtp.gmail.com with ESMTPSA id s2-20020a170906354200b0098ec690e6d7sm12604845eja.73.2023.09.29.08.23.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 08:23:49 -0700 (PDT)
-Message-ID: <1610f135-f1a0-4c0a-8776-3e56371b58cc@linaro.org>
-Date:   Fri, 29 Sep 2023 17:23:46 +0200
+        Fri, 29 Sep 2023 11:24:58 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2056.outbound.protection.outlook.com [40.107.93.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35E09F7;
+        Fri, 29 Sep 2023 08:24:56 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MX9iVYiwo9Y6EKwO+OM0gqxmNuv3xcZB19ZNf9bxoSl7SDa6+xEAIefY67dTopy6pY06V4DvAXDIVg/3geCp7nXfN88o18bBgjaxp811w9NiOO2iGiaZd/cdyaJPW6ZJVzpBDVZR12SIkNlcUCZsaN3oIazwMPljDsqBAxS7sxi18R4cAq4tXjbHr6SMkw7iEWUNzB1VemzPWVPLAN3bMA1QUs/TGqIKiTftFRXHSoxflDD4BqL+VY/JwovZIlh3cgqla0Il93kYtksvOCUr35idkud4FNhftm4+iKSAOJbwA9RePqNK7k8gUoJ4cZ2mgE+I8cwEsPGs7b9HE5eYIA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rxKOqgoYX+l07AbQ7me0Tz0PO/aWIQICOogrrgut+BU=;
+ b=iefMBdppRVhcw0pxyCvtsDYE672wLeBm+OPPdLWByjF6ghISrLtpTCOC/REoI0mX4bBG8MUrqXB+Egu5uT4hkJ/riCjtHhHnHK2zIVFDduhMhqDA0D941D71RWIsLdXX1OjDGkGFxskRAt92ZBcCotPcz/zSL5mCDHxCQR2j9wWpjiTP2Mj+VYKm1pEVOjTG6lqKU21dpbcXqaDkeFiyMR6R3NJsTltlnjk0zWMCgjcfAWM24jUSlEXZIX6ZVudk55u0kMDHmyEumoxjjkOBfV9fC7e4BonY0iPDpS4lkei8MJjRebk4vmO6866kh/Kg6p864ixG1fIoGCcNZx1jHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rxKOqgoYX+l07AbQ7me0Tz0PO/aWIQICOogrrgut+BU=;
+ b=KluEeZ8g95yfk9syyMsKKSm6YZ+m1RP8lg+ugPkpA7C608l3+k0seqsRUIBkD5duVJBrVBmTEZovCJdt2J9KPAhAaijI0K2isAABq/biJTxKcYXexTyR+8Vg8MrYmCdnaUYz/sOv8ajGs4d+qBdLQxVtT9vpPp8PpDwjCv5OCHY=
+Received: from SN4PR0501CA0105.namprd05.prod.outlook.com
+ (2603:10b6:803:42::22) by SA1PR12MB7441.namprd12.prod.outlook.com
+ (2603:10b6:806:2b9::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.24; Fri, 29 Sep
+ 2023 15:24:54 +0000
+Received: from SN1PEPF00026367.namprd02.prod.outlook.com
+ (2603:10b6:803:42:cafe::82) by SN4PR0501CA0105.outlook.office365.com
+ (2603:10b6:803:42::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6863.15 via Frontend
+ Transport; Fri, 29 Sep 2023 15:24:54 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SN1PEPF00026367.mail.protection.outlook.com (10.167.241.132) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Fri, 29 Sep 2023 15:24:53 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 29 Sep
+ 2023 10:24:52 -0500
+Received: from [172.19.74.144] (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
+ Transport; Fri, 29 Sep 2023 10:24:52 -0500
+Message-ID: <3641d9be-140d-ab19-aec7-6c38d7d5d144@amd.com>
+Date:   Fri, 29 Sep 2023 08:24:47 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/7] dt-bindings: interconnect: qcom: Introduce
- qcom,rpm-common
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH V5 0/1] AMD QDMA driver
 Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Georgi Djakov <djakov@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230721-topic-icc_bindings-v2-0-e33d5acbf3bd@linaro.org>
- <20230721-topic-icc_bindings-v2-1-e33d5acbf3bd@linaro.org>
- <20230811164814.GA3587580-robh@kernel.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230811164814.GA3587580-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+To:     Vinod Koul <vkoul@kernel.org>
+CC:     <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <nishad.saraf@amd.com>, <sonal.santan@amd.com>, <max.zhen@amd.com>
+References: <1695402939-28924-1-git-send-email-lizhi.hou@amd.com>
+ <ZRVd4yodNiwhqO9R@matsya>
+From:   Lizhi Hou <lizhi.hou@amd.com>
+In-Reply-To: <ZRVd4yodNiwhqO9R@matsya>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF00026367:EE_|SA1PR12MB7441:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2d2ff20e-c347-480c-125e-08dbc1003b2c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: k736WsbFA2rrSU4F1HUw7Nxq0Jji+dACRPW8IY9vPQ3NGyRVsHZykL350qthqolyeYviZ5vO3VIVORyoGfQ7OBbYjeZ4Jtuxt3fA4J7wuOVBv4srxiuq2EWzjrPaOSI7eNijmizx+ftBwXHRBHrBQ7MXeWqEFNeJgkasw0DvuA9vlP565nr9DnRi26j2emvDMgIQjR4ci1N0oiOpHt29bceNbOfv1HbkMXv/JdsHhH6Pzfjlyox7aMxwrE9jtNoBYFuvPhX0hXF57day2kNhLo3nAYd7ewCFQGGz3kxXNFxDzariXCuXnc1Z9n5YKyqQ1OLbLvHfjjC45zuajfWkfqFKYSpa6WG/vprrJZZW35t+U3LZiQK3R6ZpOLuKVsPxM9NbDFxofF3RBg0JX+8qRNrGiTMPftVeHS/xo7c5TgEmUhO0Vn6zaNgRMvb3FJ+VP3BuE0GOafxa5OSCA7SisG/vdpaLGLPUiWDsVtjRQuFviD7mzJS5bV59C/x8FenrI8Llsikf5V8l/8WVs64SyL5eVJ5MvTs+wXU1+WgLEKNVRZCARM+vXc1+ZZBV3c4fFULxUFzO8LphqIuWm9+oF+X918uNI/fpP8Jkvf5svJO+pfk6gkCqBGqQW3znsitbTOXn84RJls7WUYunAphu/XrEq07N6oVb9icwsNXviyqdQV7l2FGK9iEfNtk5p+mAbXBEGZ2oqsSz52akgg/WHIw/FaPMB1h14aUQNvyANthsg4whtfVdWSBkQwo8qxjSt7BFjLNH0YqFgBoHgGUj+uEVmif6LueKBiA5xVNBc9t7QIoz5yEiwNO7cO3iv5k28T3ZzRe1ihQvttzfNgV7uA==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(376002)(346002)(39860400002)(230922051799003)(64100799003)(1800799009)(186009)(82310400011)(451199024)(46966006)(40470700004)(36840700001)(40480700001)(356005)(81166007)(83380400001)(82740400003)(2616005)(8676002)(26005)(426003)(336012)(4326008)(36860700001)(36756003)(40460700003)(31696002)(2906002)(47076005)(44832011)(86362001)(966005)(478600001)(316002)(5660300002)(6916009)(70206006)(53546011)(6666004)(8936002)(16576012)(54906003)(31686004)(70586007)(41300700001)(36900700001)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 15:24:53.9336
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d2ff20e-c347-480c-125e-08dbc1003b2c
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF00026367.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7441
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.08.2023 18:48, Rob Herring wrote:
-> On Mon, Jul 24, 2023 at 04:06:27PM +0200, Konrad Dybcio wrote:
->> The current RPM interconnect bindings are messy. Start cleaning them
->> up with a common include.
+
+On 9/28/23 04:05, Vinod Koul wrote:
+> On 22-09-23, 10:15, Lizhi Hou wrote:
+>> Hello,
 >>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>  .../bindings/interconnect/qcom,qcm2290.yaml        | 18 +++++++-------
->>  .../bindings/interconnect/qcom,rpm-common.yaml     | 28 ++++++++++++++++++++++
->>  2 files changed, 36 insertions(+), 10 deletions(-)
+>> The QDMA subsystem is used in conjunction with the PCI Express IP block
+>> to provide high performance data transfer between host memory and the
+>> card's DMA subsystem.
 >>
->> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,qcm2290.yaml b/Documentation/devicetree/bindings/interconnect/qcom,qcm2290.yaml
->> index f65a2fe846de..df89f390a9b0 100644
->> --- a/Documentation/devicetree/bindings/interconnect/qcom,qcm2290.yaml
->> +++ b/Documentation/devicetree/bindings/interconnect/qcom,qcm2290.yaml
->> @@ -13,6 +13,9 @@ description: |
->>    The Qualcomm QCM2290 interconnect providers support adjusting the
->>    bandwidth requirements between the various NoC fabrics.
->>  
->> +allOf:
->> +  - $ref: qcom,rpm-common.yaml#
->> +
->>  properties:
->>    reg:
->>      maxItems: 1
->> @@ -23,9 +26,6 @@ properties:
->>        - qcom,qcm2290-cnoc
->>        - qcom,qcm2290-snoc
->>  
->> -  '#interconnect-cells':
->> -    const: 1
->> -
->>    clock-names:
->>      items:
->>        - const: bus
->> @@ -44,6 +44,9 @@ patternProperties:
->>        The interconnect providers do not have a separate QoS register space,
->>        but share parent's space.
->>  
->> +    allOf:
->> +      - $ref: qcom,rpm-common.yaml#
->> +
->>      properties:
->>        compatible:
->>          enum:
->> @@ -51,9 +54,6 @@ patternProperties:
->>            - qcom,qcm2290-mmrt-virt
->>            - qcom,qcm2290-mmnrt-virt
->>  
->> -      '#interconnect-cells':
->> -        const: 1
->> -
->>        clock-names:
->>          items:
->>            - const: bus
->> @@ -66,20 +66,18 @@ patternProperties:
->>  
->>      required:
->>        - compatible
->> -      - '#interconnect-cells'
->>        - clock-names
->>        - clocks
->>  
->> -    additionalProperties: false
->> +    unevaluatedProperties: false
->>  
->>  required:
->>    - compatible
->>    - reg
->> -  - '#interconnect-cells'
->>    - clock-names
->>    - clocks
->>  
->> -additionalProperties: false
->> +unevaluatedProperties: false
->>  
->>  examples:
->>    - |
->> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,rpm-common.yaml b/Documentation/devicetree/bindings/interconnect/qcom,rpm-common.yaml
->> new file mode 100644
->> index 000000000000..1ea52b091609
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/interconnect/qcom,rpm-common.yaml
->> @@ -0,0 +1,28 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/interconnect/qcom,rpm-common.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm RPMh Network-On-Chip Interconnect
->> +
->> +maintainers:
->> +  - Konrad Dybcio <konradybcio@kernel.org>
->> +
->> +description:
->> +  RPM interconnect providers support for managing system bandwidth requirements
->> +  through manual requests based on either predefined values or as indicated by
->> +  the bus monitor hardware. Each provider node represents a NoC bus master,
->> +  driven by a dedicated clock source.
->> +
->> +properties:
->> +  '#interconnect-cells':
->> +    oneOf:
->> +      - const: 2
->> +      - const: 1
->> +        deprecated: true
-> 
-> I think this is kind of questionable for a single property. Do you 
-> plan to add more properties here?
-My best answer is "we'll see". Not in the forseeable future, but
-this hardware has a never-ending queue of surprises..
+>>              +-------+       +-------+       +-----------+
+>>     PCIe     |       |       |       |       |           |
+>>     Tx/Rx    |       |       |       |  AXI  |           |
+>>   <=======>  | PCIE  | <===> | QDMA  | <====>| User Logic|
+>>              |       |       |       |       |           |
+>>              +-------+       +-------+       +-----------+
+> This should be in patch description as well
 
-I like this file for the broader description, but ultimately up to you.
+Sure. I will add this.
 
-(FWIW Georgi has queued this up for icc-dev (not icc-next) and I'd like
-to flush my icc patch queue, but that's just my lazy €0.05)
 
-> Also, if you add a new user of this 
-> schema, then it's going to allow the deprecated case when it could just 
-> start with 2 only.
-I see your point.
+Thanks,
 
-Speaking of this keyword, shouldn't the dt checker start spitting out
-warnings that would urge dts maintainers to update their trees?
+Lizhi
 
-Konrad
+>
+>> Comparing to AMD/Xilinx XDMA subsystem,
+>>      https://lore.kernel.org/lkml/Y+XeKt5yPr1nGGaq@matsya/
+>> the QDMA subsystem is a queue based, configurable scatter-gather DMA
+>> implementation which provides thousands of queues, support for multiple
+>> physical/virtual functions with single-root I/O virtualization (SR-IOV),
+>> and advanced interrupt support. In this mode the IP provides AXI4-MM and
+>> AXI4-Stream user interfaces which may be configured on a per-queue basis.
+>>
+>> The QDMA has been used for Xilinx Alveo PCIe devices.
+>>      https://www.xilinx.com/applications/data-center/v70.html
+>>
+>> This patch series is to provide the platform driver for AMD QDMA subsystem
+>> to support AXI4-MM DMA transfers. More functions, such as AXI4-Stream
+>> and SR-IOV, will be supported by future patches.
+>>
+>> The device driver for any FPGA based PCIe device which leverages QDMA can
+>> call the standard dmaengine APIs to discover and use the QDMA subsystem
+>> without duplicating the QDMA driver code in its own driver.
+>>
+>> Changes since v4:
+>> - Convert to use platform driver callback .remove_new()
+>>
+>> Changes since v3:
+>> - Minor changes in Kconfig description.
+>>
+>> Changes since v2:
+>> - A minor change from code review comments.
+>>
+>> Changes since v1:
+>> - Minor changes from code review comments.
+>> - Fixed kernel robot warning.
+>>
+>> Nishad Saraf (1):
+>>    dmaengine: amd: qdma: Add AMD QDMA driver
+>>
+>>   MAINTAINERS                            |    9 +
+>>   drivers/dma/Kconfig                    |   13 +
+>>   drivers/dma/Makefile                   |    1 +
+>>   drivers/dma/amd/Makefile               |    8 +
+>>   drivers/dma/amd/qdma-comm-regs.c       |   66 ++
+>>   drivers/dma/amd/qdma.c                 | 1187 ++++++++++++++++++++++++
+>>   drivers/dma/amd/qdma.h                 |  269 ++++++
+>>   include/linux/platform_data/amd_qdma.h |   36 +
+>>   8 files changed, 1589 insertions(+)
+>>   create mode 100644 drivers/dma/amd/Makefile
+>>   create mode 100644 drivers/dma/amd/qdma-comm-regs.c
+>>   create mode 100644 drivers/dma/amd/qdma.c
+>>   create mode 100644 drivers/dma/amd/qdma.h
+>>   create mode 100644 include/linux/platform_data/amd_qdma.h
+>>
+>> -- 
+>> 2.34.1
