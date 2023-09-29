@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 966387B3794
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8929C7B3796
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233647AbjI2QLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 12:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57098 "EHLO
+        id S233535AbjI2QL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 12:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233355AbjI2QL3 (ORCPT
+        with ESMTP id S229826AbjI2QL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 12:11:29 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2308EBE
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:11:27 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c73d9a850dso14661245ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:11:27 -0700 (PDT)
+        Fri, 29 Sep 2023 12:11:56 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2EAC1BF;
+        Fri, 29 Sep 2023 09:11:52 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31c5cac3ae2so13641068f8f.3;
+        Fri, 29 Sep 2023 09:11:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696003886; x=1696608686; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=A8QbwrIFTxbqqq2vXbxJ1NnvfDmnd7RNsGwPcc6N8j4=;
-        b=xxDqATO9Z+qBTCx5l2xg7BNExrcJBNcfftAvmmI5qWjTIFF7ssaXTGVUKlGlte/P1e
-         V3FuhJ1HFO7+jjOkgQrmq4fsQbAPrp+2fWUSzNaXDrHtGcD4cKOkeXW1aEZfMj5Ni7Gl
-         ek4PXo70+mmBsTPchbIoPdzKPdvvo0mJTAV1OrgOawZeVB4wCuifKm8eWkpWuuN+jwgS
-         KDnQrV0ho5Tpf4//lk2Nribav/MttG5AkdakWEhVPQFpui9dDM5AmJed7m13mffxCvZP
-         ohv68UihNejFNXSzrGon+lDU2hZxVHSBIR4xl7Tp58IDkIauwfo2JIXSPIb/LS+fL1ng
-         2mvQ==
+        d=gmail.com; s=20230601; t=1696003911; x=1696608711; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=NaHkOTL+tQCia4LZStB+bSdtNal7dOzIzYnNEYf4aiY=;
+        b=TMjq6p/sVuUQDrkIGzY9HeippcrffQGSuNzIrvhTeJ7gDv5xrsIBHoL2uMB1UfS2sf
+         GdQjUgDNyCYz4vcLMBIqM+vQzgiun8+5KwbtdC9lDjV/FIW/atMQDhnOaQbQ8/mlva+T
+         N96yLvJsDrUYfcNAg9fP6gisKwb2/60ans0oROTl8RkK4T96nyV7Kf64xd+nwZTo5L+w
+         QE0NO0X3q/ohHwytfpcMojEb7TF042Y+yHTEeJRsQamktIH8XiF17jm/xRppRF0TGWkr
+         DZOepIfr29C5PzogdSdPIZZApC2EYefeW5OxlLiFtohLC7Jc2FeV2pHNU4RAtBuYDv38
+         5Y2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696003886; x=1696608686;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A8QbwrIFTxbqqq2vXbxJ1NnvfDmnd7RNsGwPcc6N8j4=;
-        b=IQLoMTsBXczLdIVRpzPwEDOXUr10Y7JtEQEcg7APsceBFISSxSloYUuK/cA/mP+hCx
-         4zd0+M6sdRHRjR3e0qbjRUde+h6L5Ejcc2r5nmx+USA2ekLaZdwHjxT4/a3yc/IaypRZ
-         r+Nl8pVMOo1wbL5FWvf1FNKFtB7KEq9i+KaoaKD72EHLehP76RLoRkrJMEjtWI+ne3+a
-         ctCwErJdsOHn+7cTQxVL9oPeXp4kebt59IwUVyWzkLWaOzYZeQ4baAMSPAp/ZtRpWSoL
-         ZTU1umBJMsyhvj9A+i+WnsaPBmG6+XhcqUT6DEIzeq0a0UYBvHmV+2vXVKBwlQKUY2L+
-         P3Tw==
-X-Gm-Message-State: AOJu0YylB3YAn8LigJoeEGTtOjv77oZhj3PWrqX73jCzA8G2gaPkK90d
-        ASK9kWTPmdeNTK1S7mtAwUEAfxw3hmY=
-X-Google-Smtp-Source: AGHT+IHD6AUg0p6VK/8EBOOY8c6NQKVToNMSoeFWO59uM3v/3XOIxkH8Mjrl9FQhhyqHFfeW8tBwlqoZafM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:fac4:b0:1c0:d575:d25 with SMTP id
- ld4-20020a170902fac400b001c0d5750d25mr54205plb.11.1696003886668; Fri, 29 Sep
- 2023 09:11:26 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 09:11:25 -0700
-In-Reply-To: <20230928162959.1514661-2-pbonzini@redhat.com>
-Mime-Version: 1.0
-References: <20230928162959.1514661-1-pbonzini@redhat.com> <20230928162959.1514661-2-pbonzini@redhat.com>
-Message-ID: <ZRb3LX-tMKtycBjm@google.com>
-Subject: Re: [PATCH 1/3] KVM: x86/mmu: remove unnecessary "bool shared"
- argument from functions
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        d=1e100.net; s=20230601; t=1696003911; x=1696608711;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NaHkOTL+tQCia4LZStB+bSdtNal7dOzIzYnNEYf4aiY=;
+        b=S/Lxgx1Dc1y+yrF9lR74VtYqKuoTHyRhYZixn2o0l2cF6tWBt476CQgEODZqx+pIcU
+         joj1GdhlnWsaCXt3TJoLYbYr/YAC93PvAjmGdMXlLBaObpCF78s/CpjUjLl1znQB1oXW
+         IfYxUsMKXxHRKt7Ka9LpcZmQ+h7mV2G+cJbCcU/SHydZY9cb3m9MDuxo98MtUzI9k2AK
+         6f24vBtdkzut3S4w+9GDZy2+t98uyeQJRG1nxlGZSADKX3rL6428ryqldM0c9n7psZB2
+         fyMn9uTPnHaM3RJ0Tq1Bzy4Wx0FgccFLYAqHUjV+3kj1PXQ3ML2Zn0QwqeBgm5/gqxdE
+         YsEg==
+X-Gm-Message-State: AOJu0Yxgx0zs56boXOhxTMkiuxPlGyidv2jUi+rzvReeXSEdxuMyMOEh
+        WsW/y80kr2NHRLokannsNHbAR8Si0hTPoreNm7k=
+X-Google-Smtp-Source: AGHT+IHr+u+zOpGkaj570uRF+LqFXlnadavmg/yFmYYal/X/++0jDAu2jVvYAbklMdnfJUV8vCrR4DKl+qVPX2B5ciQ=
+X-Received: by 2002:adf:ead1:0:b0:315:ad1a:5abc with SMTP id
+ o17-20020adfead1000000b00315ad1a5abcmr4244415wrn.5.1696003910825; Fri, 29 Sep
+ 2023 09:11:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230928145401.32918-1-dg573847474@gmail.com> <b3a5e717-90ab-42f8-8fe1-4a24fff404c3@oracle.com>
+In-Reply-To: <b3a5e717-90ab-42f8-8fe1-4a24fff404c3@oracle.com>
+From:   Chengfeng Ye <dg573847474@gmail.com>
+Date:   Sat, 30 Sep 2023 00:11:39 +0800
+Message-ID: <CAAo+4rWXP7_bPw8LwvQMGtic_nWZfHFq-51HyiPATeQDpOTvpg@mail.gmail.com>
+Subject: Re: [PATCH] scsi: qla4xxx: fix potential deadlock on frwd/back lock
+To:     Mike Christie <michael.christie@oracle.com>
+Cc:     njavali@marvell.com, mrangankar@marvell.com,
+        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, lduncan@suse.com, cleech@redhat.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,32 +69,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023, Paolo Bonzini wrote:
-> Neither tdp_mmu_next_root nor kvm_tdp_mmu_put_root need to know
-> if the lock is taken for read or write.  Either way, protection
-> is achieved via RCU and tdp_mmu_pages_lock.  Remove the argument
-> and just assert that the lock is taken.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
-> +void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root)
->  {
-> -	kvm_lockdep_assert_mmu_lock_held(kvm, shared);
-> +	/*
-> +	 * Either read or write is okay, but the lock is needed because
-> +	 * writers might not take tdp_mmu_pages_lock.
-> +	 */
+Thanks for the explanation!
 
-Nit, I'd prefer to say mmu_lock instead of "the lock", and be very explicit about
-writers not needing to take tdp_mmu_pages_lock, e.g.
+I thought the two locks are the same so made this bogus patch,
+sorry for the confusion and thanks much for your time.
 
-	/*
-	 * Either read or write is okay, but mmu_lock must be held as writers
-	 * are not required to take tdp_mmu_pages_lock.
-	 */
-
-
-> +	lockdep_assert_held(&kvm->mmu_lock);
->  
->  	if (!refcount_dec_and_test(&root->tdp_mmu_root_count))
->  		return;
+Regards,
+Chengfeng
