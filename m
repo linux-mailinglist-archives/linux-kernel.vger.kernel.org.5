@@ -2,158 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33CA77B3288
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06A0D7B328A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233165AbjI2M04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 08:26:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
+        id S233203AbjI2M1V convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Sep 2023 08:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232896AbjI2M0y (ORCPT
+        with ESMTP id S232896AbjI2M1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:26:54 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C0A1B2;
-        Fri, 29 Sep 2023 05:26:51 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9a9f139cd94so1785970866b.2;
-        Fri, 29 Sep 2023 05:26:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695990410; x=1696595210; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IHoAEPMCBmD5aMTuTOMQUGoRQ/DwG8nyjqA0CqFXZA8=;
-        b=cBtrGcm1gSW3D5yZpE5S9ipHlov4hMB53uFxSz21NNvUhcpzXoJcP2eKRtCAec0vFY
-         pbOrYLi71tM9PabJgDsBb8hX3oInVP3QmRaSoHNLuIp1lezBRLuKLn8sw3WWZqjSvgvB
-         TXVR373p8pEra1cWmP/z8KdeS5PJEzvm6jQvByePAiNDiUXxqhyKj3Rm0yMhZpkEvYOx
-         I/OXq+h4OJKl3EhzqkLoM4J0FfZmizPkKC7O5AnNQigyjNAMpNPKuu9g3E4FH858xhIR
-         /zJaGb0xKMKPc692tPO8UoqtZJdrHqXXEgdvcg5cvkckRBdCy8HYbKDrWs+WNszJ5WxF
-         +3mw==
+        Fri, 29 Sep 2023 08:27:18 -0400
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044C31A4;
+        Fri, 29 Sep 2023 05:27:16 -0700 (PDT)
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-57bc11c197aso1220958eaf.1;
+        Fri, 29 Sep 2023 05:27:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695990410; x=1696595210;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1695990435; x=1696595235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IHoAEPMCBmD5aMTuTOMQUGoRQ/DwG8nyjqA0CqFXZA8=;
-        b=KnFzxNBXViVncOWqoaAJS/NtSChVZuAqUvr6AlaBIscA7J1Wgxy0hjeWqOrZ61QPs4
-         taBD6bIYkxc1e1d0F2opT9n8VUhq1EJi/nxx3s9jVOYXaOUTUBT9xvPb+MoUQKFOphP+
-         7w3AOZPvj5ivJaAFoBulx4ymktG4jhYNfg2pp5J7IOjn/eTEa90kjtKIbtU8SntRYWev
-         02aslksINq6BAuw2XO2VR59veO90adHLx3k/lvOnuy7H9k1XLOKImLLWVxYIVt/j7yyg
-         08twAEFtBBqoC8iZTv9j18dj77KsuylVL97vZEJ0xoDXmJoH6VMnu9+6Ue/K002/kQ1J
-         +ZRQ==
-X-Gm-Message-State: AOJu0YxnMAzChWCqrzkjRFFQLv/ddY8iWcVHJaeHX2k1pw+luGvwY344
-        6EBU+yRjK/Bm+CvXZhCv+i+VRntHgiE=
-X-Google-Smtp-Source: AGHT+IELJ/fg2a0kWjkmk34qx0atFZS8m8WxUNXyOz4SEPB51VqWdtBl30UHPjWv3JqCCJWgY9YIwA==
-X-Received: by 2002:a17:906:cd1:b0:9ae:5120:5147 with SMTP id l17-20020a1709060cd100b009ae51205147mr3368629ejh.38.1695990410032;
-        Fri, 29 Sep 2023 05:26:50 -0700 (PDT)
-Received: from orome.fritz.box (p200300e41f3f4900f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f3f:4900:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id n8-20020a1709061d0800b009a19701e7b5sm12442797ejh.96.2023.09.29.05.26.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 05:26:49 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 14:26:47 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Luca Ceresoli <luca.ceresoli@bootlin.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Prathamesh Shete <pshete@nvidia.com>, jonathanh@nvidia.com,
-        linux-gpio@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] pinctrl: tegra: Add support to display pin function
-Message-ID: <ZRbCh8F79WYvJ9Ni@orome.fritz.box>
-References: <0cf720bf-ae4b-5780-bda4-5c9bbb2d1d67@nvidia.com>
- <20230714113547.15384-1-pshete@nvidia.com>
- <20230925183049.10a40546@booty>
- <CACRpkdbZ0cxA_y=6j_QQpF1SQ1q4hw-qUyeOnEK-+cLBd=gjCg@mail.gmail.com>
- <20230928085319.0b09bf7d@booty>
+        bh=YtzJRowMW7e/E03q1lTUM5DVXc8/q+Drl19Zckr7ENQ=;
+        b=xLcibNgp0FRB9aYCsgGKj15qJqrxxZ+RFgtDg76lp9YaDs5DrtY/Mhy9RnTjB67qSq
+         hba/WKFUq/po/2UVoXiF63YUiyKflEcgPF6DwT3dJjTiowp05WdL+nj3bt4ikREDmx3n
+         vLqFqNbkjaQrGvXIVJDHws3He9WDs/MTtIQVV99aLvts37OUMUG6n/t4/Oq2SoIYgloc
+         1PAhBRr5MY0RWWBUyLYfECUXgoQU5i6v0aEFuo49PIX/wfYTRmzGuDrGQuzYabe05Os7
+         FS+P8t/9Pn2Ddjepqi8mz49QM4v8+ppf6r+QkKvAahp0m0MvuoBe1M+JDvP67VbTUDBc
+         f47g==
+X-Gm-Message-State: AOJu0YzfoEJX0h5w+t9SJLVp4a+teEW5AkaqogCb0Le2i1yb8eNs05+h
+        2w3PMHw2fusIU+gn6pTtFA8Zzd46Ec7hpcGfYvA=
+X-Google-Smtp-Source: AGHT+IEtWG6gWh2H8Sy+zC4ImyVW6S3AzZ5nzFhIapMQ4DfuepOZ6G4Rron/XwY+FxOvCAEaixm+lckahESotu0wlCw=
+X-Received: by 2002:a05:6820:629:b0:57b:7e31:c12 with SMTP id
+ e41-20020a056820062900b0057b7e310c12mr4488775oow.1.1695990435118; Fri, 29 Sep
+ 2023 05:27:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="0gWJLgNcozhyKN9n"
-Content-Disposition: inline
-In-Reply-To: <20230928085319.0b09bf7d@booty>
-User-Agent: Mutt/2.2.12 (2023-09-09)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230925081139.1305766-1-lukasz.luba@arm.com> <20230925081139.1305766-10-lukasz.luba@arm.com>
+ <CAJZ5v0gxjJRoZpGjs4qWy_CQbwnztgrQxHJpffdFHeEL7ikbYQ@mail.gmail.com> <e1b36a7b-0524-0559-7ae1-801bdda91e60@arm.com>
+In-Reply-To: <e1b36a7b-0524-0559-7ae1-801bdda91e60@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 29 Sep 2023 14:27:03 +0200
+Message-ID: <CAJZ5v0g1MYxABDEYJxjveWALV6yecuV1=Ly6REkR4eb1kS-cUA@mail.gmail.com>
+Subject: Re: [PATCH v4 09/18] PM: EM: Introduce runtime modifiable table
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dietmar.eggemann@arm.com, rui.zhang@intel.com,
+        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
+        qyousef@layalina.io, wvw@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 29, 2023 at 11:15 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+>
+>
+> On 9/26/23 20:12, Rafael J. Wysocki wrote:
+> > On Mon, Sep 25, 2023 at 10:11 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>
+> >> The new runtime table would be populated with a new power data to better
+> >> reflect the actual power. The power can vary over time e.g. due to the
+> >> SoC temperature change. Higher temperature can increase power values.
+> >> For longer running scenarios, such as game or camera, when also other
+> >> devices are used (e.g. GPU, ISP) the CPU power can change. The new
+> >> EM framework is able to addresses this issue and change the data
+> >> at runtime safely.
+> >>
+> >> The runtime modifiable EM data is used by the Energy Aware Scheduler (EAS)
+> >> for the task placement. All the other users (thermal, etc.) are still
+> >> using the default (basic) EM. This fact drove the design of this feature.
+> >>
+> >> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> >> ---
+> >>   include/linux/energy_model.h |  4 +++-
+> >>   kernel/power/energy_model.c  | 12 +++++++++++-
+> >>   2 files changed, 14 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> >> index 546dee90f716..740e7c25cfff 100644
+> >> --- a/include/linux/energy_model.h
+> >> +++ b/include/linux/energy_model.h
+> >> @@ -39,7 +39,7 @@ struct em_perf_state {
+> >>   /**
+> >>    * struct em_perf_table - Performance states table
+> >>    * @state:     List of performance states, in ascending order
+> >> - * @rcu:       RCU used for safe access and destruction
+> >> + * @rcu:       RCU used only for runtime modifiable table
+> >
+> > This still doesn't appear to be used anywhere, so why change it here?
+>
+> I will try to move this later in the series.
+>
+> >
+> >>    */
+> >>   struct em_perf_table {
+> >>          struct em_perf_state *state;
+> >> @@ -49,6 +49,7 @@ struct em_perf_table {
+> >>   /**
+> >>    * struct em_perf_domain - Performance domain
+> >>    * @default_table:     Pointer to the default em_perf_table
+> >> + * @runtime_table:     Pointer to the runtime modifiable em_perf_table
+> >
+> > "Pointer to em_perf_table that can be dynamically updated"
+>
+> OK
+>
+> >
+> >>    * @nr_perf_states:    Number of performance states
+> >>    * @flags:             See "em_perf_domain flags"
+> >>    * @cpus:              Cpumask covering the CPUs of the domain. It's here
+> >> @@ -64,6 +65,7 @@ struct em_perf_table {
+> >>    */
+> >>   struct em_perf_domain {
+> >>          struct em_perf_table *default_table;
+> >> +       struct em_perf_table __rcu *runtime_table;
+> >>          int nr_perf_states;
+> >>          unsigned long flags;
+> >>          unsigned long cpus[];
+> >> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+> >> index 797141638b29..5b40db38b745 100644
+> >> --- a/kernel/power/energy_model.c
+> >> +++ b/kernel/power/energy_model.c
+> >> @@ -251,6 +251,9 @@ static int em_create_pd(struct device *dev, int nr_states,
+> >>                  return ret;
+> >>          }
+> >>
+> >> +       /* Initialize runtime table as default table. */
+> >
+> > Redundant comment.
+>
+> I'll drop it.
+>
+> >
+> >> +       rcu_assign_pointer(pd->runtime_table, default_table);
+> >> +
+> >>          if (_is_cpu_device(dev))
+> >>                  for_each_cpu(cpu, cpus) {
+> >>                          cpu_dev = get_cpu_device(cpu);
+> >> @@ -448,6 +451,7 @@ EXPORT_SYMBOL_GPL(em_dev_register_perf_domain);
+> >>    */
+> >>   void em_dev_unregister_perf_domain(struct device *dev)
+> >>   {
+> >> +       struct em_perf_table __rcu *runtime_table;
+> >>          struct em_perf_domain *pd;
+> >>
+> >>          if (IS_ERR_OR_NULL(dev) || !dev->em_pd)
+> >> @@ -457,18 +461,24 @@ void em_dev_unregister_perf_domain(struct device *dev)
+> >>                  return;
+> >>
+> >>          pd = dev->em_pd;
+> >> -
+> >
+> > Unrelated change.
+>
+> ACK
+>
+> >
+> >>          /*
+> >>           * The mutex separates all register/unregister requests and protects
+> >>           * from potential clean-up/setup issues in the debugfs directories.
+> >>           * The debugfs directory name is the same as device's name.
+> >>           */
+> >>          mutex_lock(&em_pd_mutex);
+> >> +
+> >
+> > Same here.
+>
+> ACK
+>
+> >
+> >>          em_debug_remove_pd(dev);
+> >>
+> >> +       runtime_table = pd->runtime_table;
+> >> +
+> >> +       rcu_assign_pointer(pd->runtime_table, NULL);
+> >> +       synchronize_rcu();
+> >
+> > Is it really a good idea to call this under a mutex?
+>
+> This is the unregistration of the EM code path, so a thermal
+> driver which gets some IRQs might not be aware that the EM
+> is going to vanish. That's why those two code paths: update
+> & unregister are protected with the same lock.
+>
+> This synchronize_rcu() won't be long,
 
---0gWJLgNcozhyKN9n
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Are you sure?  This potentially waits for all of the CPUs in the
+system to go through a quiescent state which may take a while in
+principle.
 
-On Thu, Sep 28, 2023 at 08:53:19AM +0200, Luca Ceresoli wrote:
-> Hello Linus, Prathamesh,
->=20
-> On Wed, 27 Sep 2023 10:54:15 +0200
-> Linus Walleij <linus.walleij@linaro.org> wrote:
->=20
-> > On Mon, Sep 25, 2023 at 6:30=E2=80=AFPM Luca Ceresoli <luca.ceresoli@bo=
-otlin.com> wrote:
-> >=20
-> > > The symptom is that i2c3 is not working anymore, the I2C lines being
-> > > always high. No other known issues at the moment. =20
-> >=20
-> > Hm....
-> >=20
-> > >> +     {"nvidia,function",             TEGRA_PINCONF_PARAM_FUNCTION},=
- =20
-> > >
-> > > FYI, I reduced your patch to only this line plus the one in the
-> > > pinctrl-tegra.h and the problem appears as well. =20
-> >=20
-> > I think there is a conflict now, that the pinconf is "stealing" the fun=
-ction
-> > assignment from the pinmux call.
-> >=20
-> > It's just a debugprint, I will revert the patch, Luca can investigate a=
-nd you
->=20
-> Thanks for the quick revert Linus.
->=20
-> > can test a new patch then we will merge that.
->=20
-> Prathamesh, if you send a new patch it would be great if you can Cc: me s=
-o I
-> can test it.
+In any case, though, this effectively makes everyone waiting for the
+mutex also wait for the grace period to elapse and they may not care
+about it.
 
-I was able to reproduce this on tegra20-trimslice, and it looks indeed
-that the "shortcut" of supporting this through the pinconf "framework"
-doesn't work. In addition to the pinmux now no longer getting applied
-(exactly why that is I don't think I understand), it also leads to weird
-things in other parts of the debugfs output. For example the code now
-ends up trying to read a u32 from the nvidia,function property, which is
-actually a string. That seems to be fine, but obviously it doesn't yield
-the value that is expected for a function and messes up the config param
-which will then later on fail to properly display.
+> but makes sure that when we free(dev->em_pd) we don't leak runtime_table.
+>
+> >
+> >> +
+> >>          kfree(pd->default_table->state);
+> >>          kfree(pd->default_table);
+> >>          kfree(dev->em_pd);
+> >> +
+> >
+> > Unrelated change.
+>
+> ACK
+>
+> >
+> >>          dev->em_pd = NULL;
+> >>          mutex_unlock(&em_pd_mutex);
+> >>   }
+> >> --
+> >
+> > So this really adds a pointer to a table that can be dynamically
+> > updated to struct em_perf_domain without any users so far.  It is not
+> > used anywhere as of this patch AFAICS, which is not what the changelog
+> > is saying.
+>
+> Good catch. I will adjust the changlog in header and say:
+>
+> 'Add infrastructure and mechanisms for the new runtime table.
+> The runtime modifiable EM data is used by the Energy Aware Scheduler
+> (EAS)for the task placement.
 
-Anyway, turns out the correct implementation is even shorter. I've sent
-out a patch.
+I would make it more clear that this is going to happen after some
+other subsequent changes.
 
-Thierry
-
---0gWJLgNcozhyKN9n
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmUWwocACgkQ3SOs138+
-s6HhARAAmgbAGcjIr0Nac+ExNkH8nKRofmVJD97X/UkmeKRxRjQt5uBp5dl9qxHw
-6dcg5lnpYgpPfQPE4zfWIbyUKYoVFPrFCq42SUKp6UrarYL6Y7WTl2Ne/VMaAMpD
-Gn/MxecaWUZxKF2EGb7KgXHhoCU/qADJQuklfCYbwFNxvLbSdZKZbj40b2E+SObL
-dblvPOQZ2bfPgDg/xafu6iymziEaxL/BKIaKKp/R/R8GMUqormZ/ClqIV1bQfVsR
-ITdhhJbZcCBlgaycAc+ud2bkUDtJdSy9pc01bHMAWXCqjQB8apUaWy9yi1hwWWt3
-mwo5TMuHkLINXp8H/ZRMw1Y3yyaUy0xAixNbr5Ic0ZqKcABMyvMnWl+Qal9P2KNs
-l3KxfBOwGWzfP+49ghTCGiLG6GTRb9UErPmCIhOn9Kb6GlqIQy1u0v+z0Zw2g2YM
-CCRhXub7NHfvsgxI/4+3WnV8+lCvyuNZvbQ7Kmnj5w++nroR8Vnz8XlMD7tpNXkB
-QfqTC6vjxSQTYCadmLTfOXcl3smI9ghUEAS0pMTNu2gcwmARPfK8e781/N9C3Z+n
-mFZy0JHqp93pmpwlmZ1Rmr4UYUBEuUCyIdzWOvB4ze3Nv2LTiAqMKe+gD3qWXOwH
-qNOEkX8KDPYA/4msPdcReMemkvRNg/H1cZ04cryh8otPLFawMsg=
-=uu/I
------END PGP SIGNATURE-----
-
---0gWJLgNcozhyKN9n--
+> All the other users (thermal, etc.) are
+> still using the default (basic) EM. This fact drove the design of this
+> feature.'
