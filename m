@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7557B3B09
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:14:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0497B3B0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233545AbjI2UOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 16:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
+        id S233480AbjI2UOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 16:14:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233243AbjI2UNz (ORCPT
+        with ESMTP id S233365AbjI2UN5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 16:13:55 -0400
+        Fri, 29 Sep 2023 16:13:57 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97861DE;
-        Fri, 29 Sep 2023 13:13:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C10A1113;
+        Fri, 29 Sep 2023 13:13:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696018433; x=1727554433;
+  t=1696018434; x=1727554434;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=r9Y1nm7ako9u8ZWyJ5Uv1/Q78sCXkVFxKSkSwbn7zu4=;
-  b=afhx60Ejy0UL3Iwk+VdswT6uY6rynIVDHDwAcDoKmzOk220TGZBA9ZQG
-   0MDT+ZVzc3yogaVx8tr5N5u8MtC40jn8OymBKIyPdMLwE9h779qNWgbaB
-   qhL/lLTSd2MFOWQN3zXD12eA75evuXwrNAubLc+7TLYNFj2EcR9oMkbHv
-   6eA/uOs+5fg215bYX4NUPwslzg+3duisi/nK77geH83HzfIGPtwiJfHIW
-   qw/xiNGwPiBf8oTPtevUq6DUosqJpGAwnd1vTKurytqjUTBJrqvaVqq/i
-   btmHw6RVcrXru6Wvc6dy9qxWADcExXak2Ngd7dGOIjWZbSLFohJSUAk0V
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="362604245"
+  bh=44GGa5u85n68sCCpI9/I0KKYcCZytYXWstRVKtyBfx4=;
+  b=KRuYrD2HZEImA2YAzVeI/ytDV5FLUUfztUfaJE3Gx4/G5qUvhvKytBFY
+   346w5M8e3QJk67gWpCBE8C2qOMZpzSdqdFqRfM21sYo0pjFqJYQsg+TZl
+   o3MucD/3nrFgrAShcLWasI4HrqCDv40lZFMuqGZivfYd2krEf+BjIpqVU
+   Xdcczwnv5Jq0pcSdDNbYoV0D4CmjNsYBZDXTGOvPnCCH7weOgQB3STMvV
+   m3EERLFsKlck3pwtVkbTT8/H1bR6XlkDTzWgZ+KpKgWT9RwV/bV7CVA6c
+   Fdcw8jN4yrMxvP9+ZgdmF1tfj5GlIupfBWeWSoKttADGKsyJ1+sWXODaL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="362604250"
 X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
-   d="scan'208";a="362604245"
+   d="scan'208";a="362604250"
 Received: from fmviesa001.fm.intel.com ([10.60.135.141])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 11:16:35 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
-   d="scan'208";a="921798"
+   d="scan'208";a="921803"
 Received: from agluck-desk3.sc.intel.com ([172.25.222.74])
   by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 11:16:37 -0700
 From:   Tony Luck <tony.luck@intel.com>
@@ -45,9 +45,9 @@ Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
         dave.hansen@linux.intel.com, x86@kernel.org,
         linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
         patches@lists.linux.dev, Tony Luck <tony.luck@intel.com>
-Subject: [PATCH v8 2/3] x86/mce: Add per-bank CMCI storm mitigation
-Date:   Fri, 29 Sep 2023 11:16:25 -0700
-Message-ID: <20230929181626.210782-3-tony.luck@intel.com>
+Subject: [PATCH v8 3/3] x86/mce: Handle Intel threshold interrupt storms
+Date:   Fri, 29 Sep 2023 11:16:26 -0700
+Message-ID: <20230929181626.210782-4-tony.luck@intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230929181626.210782-1-tony.luck@intel.com>
 References: <20230718210813.291190-1-tony.luck@intel.com>
@@ -64,248 +64,326 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the core functionality to track CMCI storms at the
-machine check bank granularity. Subsequent patches will add
-the vendor specific hooks to supply input to the storm
-detection and take actions on the start/end of a storm.
+Add an Intel specific hook into machine_check_poll() to keep track
+of per-CPU, per-bank corrected error logs (with a stub for the
+CONFIG_MCE_INTEL=n case).
 
-Maintain a bitmap history for each bank showing whether the bank
-logged an corrected error or not each time it is polled.
+When a storm is observed the rate of interrupts is reduced by setting
+a large threshold value for this bank in IA32_MCi_CTL2. This bank is
+added to the bitmap of banks for this CPU to poll. The polling rate
+is increased to once per second.
 
-In normal operation the interval between polls of this banks
-determines how far to shift the history. The 64 bit width corresponds
-to about one second.
+When a storm ends reset the threshold in IA32_MCi_CTL2 back to 1, remove
+the bank from the bitmap for polling, and change the polling rate back
+to the default.
 
-When a storm is observed a CPU vendor specific action is taken to reduce
-or stop CMCI from the bank that is the source of the storm.  The bank
-is added to the bitmap of banks for this CPU to poll. The polling rate
-is increased to once per second.  During a storm each bit in the history
-indicates the status of the bank each time it is polled. Thus the history
-covers just over a minute.
+If a CPU with banks in storm mode is taken offline, the new CPU
+that inherits ownership of those banks takes over management of
+storm(s) in the inherited bank(s).
 
-Declare a storm for that bank if the number of corrected interrupts
-seen in that history is above some threshold (defined as 5 in this
-series, could be tuned later if there is data to suggest a better
-value).
-
-A storm on a bank ends if enough consecutive polls of the bank show
-no corrected errors (defined as 30, may also change). That calls the
-CPU vendor specific function to revert to normal operational mode,
-and changes the polling rate back to the default.
+The cmci_discover() function was already very large. These changes
+pushed it well over the top. Refactor with three helper functions
+to bring it back under control.
 
 Updated with review comments from Yazen.
-Link: https://lore.kernel.org/r/c76723df-f2f1-4888-9e05-61917145503c@amd.com
+Link: https://lore.kernel.org/r/6ae4df67-ba0b-4b50-8c1d-a5d382105ad2@amd.com
 
 Signed-off-by: Tony Luck <tony.luck@intel.com>
 ---
-
-Note that the storm begin/end warnings are now printed using
-printk_deferred(KERN_NOTICE ...) instead of pr_notice. This
-is my solution for a locking issue when in poll mode because
-of the "cmci_poll_lock" introduced by:
-
-commit c3629dd7e67d ("x86/mce: Prevent duplicate error records")
-
-Is this the right way to handle this?
-
-
- arch/x86/kernel/cpu/mce/internal.h  | 39 +++++++++++++-
- arch/x86/kernel/cpu/mce/core.c      | 25 ++++++---
- arch/x86/kernel/cpu/mce/threshold.c | 83 +++++++++++++++++++++++++++++
- 3 files changed, 138 insertions(+), 9 deletions(-)
+ arch/x86/kernel/cpu/mce/internal.h  |   2 +
+ arch/x86/kernel/cpu/mce/intel.c     | 207 +++++++++++++++++++++-------
+ arch/x86/kernel/cpu/mce/threshold.c |   3 +
+ 3 files changed, 161 insertions(+), 51 deletions(-)
 
 diff --git a/arch/x86/kernel/cpu/mce/internal.h b/arch/x86/kernel/cpu/mce/internal.h
-index 616732ec16f7..5e75f5f81464 100644
+index 5e75f5f81464..90a7bc3e1cb5 100644
 --- a/arch/x86/kernel/cpu/mce/internal.h
 +++ b/arch/x86/kernel/cpu/mce/internal.h
-@@ -54,7 +54,44 @@ static inline void intel_clear_lmce(void) { }
- static inline bool intel_filter_mce(struct mce *m) { return false; }
- #endif
+@@ -41,12 +41,14 @@ struct dentry *mce_get_debugfs_dir(void);
+ extern mce_banks_t mce_banks_ce_disabled;
  
--void mce_timer_kick(unsigned long interval);
-+void mce_timer_kick(bool storm);
-+void cmci_storm_begin(unsigned int bank);
-+void cmci_storm_end(unsigned int bank);
-+void mce_track_storm(struct mce *mce);
+ #ifdef CONFIG_X86_MCE_INTEL
++void mce_intel_handle_storm(int bank, bool on);
+ void cmci_disable_bank(int bank);
+ void intel_init_cmci(void);
+ void intel_init_lmce(void);
+ void intel_clear_lmce(void);
+ bool intel_filter_mce(struct mce *m);
+ #else
++static inline void mce_intel_handle_storm(int bank, bool on) { }
+ static inline void cmci_disable_bank(int bank) { }
+ static inline void intel_init_cmci(void) { }
+ static inline void intel_init_lmce(void) { }
+diff --git a/arch/x86/kernel/cpu/mce/intel.c b/arch/x86/kernel/cpu/mce/intel.c
+index b07656408f67..970c94240600 100644
+--- a/arch/x86/kernel/cpu/mce/intel.c
++++ b/arch/x86/kernel/cpu/mce/intel.c
+@@ -54,8 +54,27 @@ static DEFINE_RAW_SPINLOCK(cmci_discover_lock);
+  */
+ static DEFINE_SPINLOCK(cmci_poll_lock);
+ 
++/* Linux non-storm CMCI threshold (may be overridden by BIOS) */
+ #define CMCI_THRESHOLD		1
+ 
++/*
++ * MCi_CTL2 threshold for each bank when there is no storm.
++ * Default value for each bank may have been set by BIOS.
++ */
++static u16 cmci_threshold[MAX_NR_BANKS];
 +
 +/*
-+ * history:	bitmask tracking whether errors were seen or not seen in
-+ *		the most recent polls of a bank.
-+ * timestamp:	last time (in jiffies) that the bank was polled
-+ * storm:	Is this bank in storm mode?
++ * High threshold to limit CMCI rate during storms. Max supported is
++ * 0x7FFF. Use this slightly smaller value so it has a distinctive
++ * signature when some asks "Why am I not seeing all corrected errors?"
++ * A high threshold is used instead of just disabling CMCI for a
++ * bank because both corrected and uncorrected errors may be logged
++ * in the same bank and signalled with CMCI. The threshold only applies
++ * to corrected errors, so keeping CMCI enabled means that uncorrected
++ * errors will still be processed in a timely fashion.
 + */
-+struct storm_bank {
-+	u64 history;
-+	u64 timestamp;
-+	bool storm;
-+};
++#define CMCI_STORM_THRESHOLD	32749
 +
+ static int cmci_supported(int *banks)
+ {
+ 	u64 cap;
+@@ -110,6 +129,31 @@ static bool lmce_supported(void)
+ 	return tmp & FEAT_CTL_LMCE_ENABLED;
+ }
+ 
 +/*
-+ * banks:		per-cpu, per-bank details
-+ * stormy_bank_count:	count of MC banks in storm state
-+ * poll_mode:		CPU is in poll mode
++ * Set a new CMCI threshold value. Preserve the state of the
++ * MCI_CTL2_CMCI_EN bit in case this happens during a
++ * cmci_rediscover() operation.
 + */
-+struct mca_storm_desc {
-+	struct storm_bank	banks[MAX_NR_BANKS];
-+	u8			stormy_bank_count;
-+	bool			poll_mode;
-+};
-+DECLARE_PER_CPU(struct mca_storm_desc, storm_desc);
++static void cmci_set_threshold(int bank, int thresh)
++{
++	unsigned long flags;
++	u64 val;
 +
-+/* How many errors within the history buffer mark the start of a storm. */
-+#define STORM_BEGIN_THRESHOLD	5
++	raw_spin_lock_irqsave(&cmci_discover_lock, flags);
++	rdmsrl(MSR_IA32_MCx_CTL2(bank), val);
++	val &= ~MCI_CTL2_CMCI_THRESHOLD_MASK;
++	wrmsrl(MSR_IA32_MCx_CTL2(bank), val | thresh);
++	raw_spin_unlock_irqrestore(&cmci_discover_lock, flags);
++}
 +
++void mce_intel_handle_storm(int bank, bool on)
++{
++	if (on)
++		cmci_set_threshold(bank, CMCI_STORM_THRESHOLD);
++	else
++		cmci_set_threshold(bank, cmci_threshold[bank]);
++}
++
+ /*
+  * The interrupt handler. This is called on every event.
+  * Just call the poller directly to log any events.
+@@ -121,72 +165,130 @@ static void intel_threshold_interrupt(void)
+ 	machine_check_poll(MCP_TIMESTAMP, this_cpu_ptr(&mce_banks_owned));
+ }
+ 
 +/*
-+ * How many polls of machine check bank without an error before declaring
-+ * the storm is over. Since it is tracked by the bitmaks in the history
-+ * field of struct storm_bank the mask is 30 bits [0 ... 29].
++ * Check all the reasons why current CPU cannot claim
++ * ownership of a bank.
++ * 1: CPU already owns this bank
++ * 2: BIOS owns this bank
++ * 3: Some other CPU owns this bank
 + */
-+#define STORM_END_POLL_THRESHOLD	29
- 
- #ifdef CONFIG_ACPI_APEI
- int apei_write_mce(struct mce *m);
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index f6e87443b37a..fccbf4a7e783 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -680,6 +680,8 @@ bool machine_check_poll(enum mcp_flags flags, mce_banks_t *b)
- 		barrier();
- 		m.status = mce_rdmsrl(mca_msr_reg(i, MCA_STATUS));
- 
-+		mce_track_storm(&m);
++static bool cmci_skip_bank(int bank, u64 *val)
++{
++	unsigned long *owned = (void *)this_cpu_ptr(&mce_banks_owned);
 +
- 		/* If this entry is not valid, ignore it */
- 		if (!(m.status & MCI_STATUS_VAL))
- 			continue;
-@@ -1652,22 +1654,29 @@ static void mce_timer_fn(struct timer_list *t)
- 	else
- 		iv = min(iv * 2, round_jiffies_relative(check_interval * HZ));
- 
--	__this_cpu_write(mce_next_interval, iv);
--	__start_timer(t, iv);
-+	if (__this_cpu_read(storm_desc.poll_mode)) {
-+		__start_timer(t, HZ);
-+	} else {
-+		__this_cpu_write(mce_next_interval, iv);
-+		__start_timer(t, iv);
++	if (test_bit(bank, owned))
++		return true;
++
++	/* Skip banks in firmware first mode */
++	if (test_bit(bank, mce_banks_ce_disabled))
++		return true;
++
++	rdmsrl(MSR_IA32_MCx_CTL2(bank), *val);
++
++	/* Already owned by someone else? */
++	if (*val & MCI_CTL2_CMCI_EN) {
++		clear_bit(bank, owned);
++		__clear_bit(bank, this_cpu_ptr(mce_poll_banks));
++		return true;
 +	}
++
++	return false;
++}
++
++/*
++ * Decide which CMCI interrupt threshold to use:
++ * 1: If this bank is in storm mode from whichever CPU was
++ *    the previous owner, stay in storm mode.
++ * 2: If ignoring any threshold set by BIOS, set Linux default
++ * 3: Try to honor BIOS threshold (unless buggy BIOS set it at zero).
++ */
++static u64 cmci_pick_threshold(u64 val, int *bios_zero_thresh)
++{
++	if ((val & MCI_CTL2_CMCI_THRESHOLD_MASK) == CMCI_STORM_THRESHOLD)
++		return val;
++
++	if (!mca_cfg.bios_cmci_threshold) {
++		val &= ~MCI_CTL2_CMCI_THRESHOLD_MASK;
++		val |= CMCI_THRESHOLD;
++	} else if (!(val & MCI_CTL2_CMCI_THRESHOLD_MASK)) {
++		/*
++		 * If bios_cmci_threshold boot option was specified
++		 * but the threshold is zero, we'll try to initialize
++		 * it to 1.
++		 */
++		*bios_zero_thresh = 1;
++		val |= CMCI_THRESHOLD;
++	}
++
++	return val;
++}
++
++/*
++ * Try to claim ownership of a bank.
++ */
++static void cmci_claim_bank(int bank, u64 val, int bios_zero_thresh, int *bios_wrong_thresh)
++{
++	struct mca_storm_desc *storm = this_cpu_ptr(&storm_desc);
++
++	val |= MCI_CTL2_CMCI_EN;
++	wrmsrl(MSR_IA32_MCx_CTL2(bank), val);
++	rdmsrl(MSR_IA32_MCx_CTL2(bank), val);
++
++	/* If the enable bit did not stick, this bank should be polled. */
++	if (!(val & MCI_CTL2_CMCI_EN)) {
++		WARN_ON(!test_bit(bank, this_cpu_ptr(mce_poll_banks)));
++		return;
++	}
++
++	/* This CPU successfully set the enable bit. */
++	set_bit(bank, (void *)this_cpu_ptr(&mce_banks_owned));
++
++	if ((val & MCI_CTL2_CMCI_THRESHOLD_MASK) == CMCI_STORM_THRESHOLD) {
++		pr_notice("CPU%d BANK%d CMCI inherited storm\n", smp_processor_id(), bank);
++		storm->banks[bank].history = ~0ull;
++		storm->banks[bank].timestamp = jiffies;
++		cmci_storm_begin(bank);
++	} else {
++		__clear_bit(bank, this_cpu_ptr(mce_poll_banks));
++	}
++
++	/*
++	 * We are able to set thresholds for some banks that
++	 * had a threshold of 0. This means the BIOS has not
++	 * set the thresholds properly or does not work with
++	 * this boot option. Note down now and report later.
++	 */
++	if (mca_cfg.bios_cmci_threshold && bios_zero_thresh &&
++	    (val & MCI_CTL2_CMCI_THRESHOLD_MASK))
++		*bios_wrong_thresh = 1;
++
++	/* Save default threshold for each bank */
++	if (cmci_threshold[bank] == 0)
++		cmci_threshold[bank] = val & MCI_CTL2_CMCI_THRESHOLD_MASK;
++}
++
+ /*
+  * Enable CMCI (Corrected Machine Check Interrupt) for available MCE banks
+  * on this CPU. Use the algorithm recommended in the SDM to discover shared
+- * banks.
++ * banks. Called during initial bootstrap, and also for hotplug CPU operations
++ * to rediscover/reassign machine check banks.
+  */
+ static void cmci_discover(int banks)
+ {
+-	unsigned long *owned = (void *)this_cpu_ptr(&mce_banks_owned);
+-	unsigned long flags;
+-	int i;
+ 	int bios_wrong_thresh = 0;
++	unsigned long flags;
++	int i;
+ 
+ 	raw_spin_lock_irqsave(&cmci_discover_lock, flags);
+ 	for (i = 0; i < banks; i++) {
+ 		u64 val;
+ 		int bios_zero_thresh = 0;
+ 
+-		if (test_bit(i, owned))
++		if (cmci_skip_bank(i, &val))
+ 			continue;
+ 
+-		/* Skip banks in firmware first mode */
+-		if (test_bit(i, mce_banks_ce_disabled))
+-			continue;
+-
+-		rdmsrl(MSR_IA32_MCx_CTL2(i), val);
+-
+-		/* Already owned by someone else? */
+-		if (val & MCI_CTL2_CMCI_EN) {
+-			clear_bit(i, owned);
+-			__clear_bit(i, this_cpu_ptr(mce_poll_banks));
+-			continue;
+-		}
+-
+-		if (!mca_cfg.bios_cmci_threshold) {
+-			val &= ~MCI_CTL2_CMCI_THRESHOLD_MASK;
+-			val |= CMCI_THRESHOLD;
+-		} else if (!(val & MCI_CTL2_CMCI_THRESHOLD_MASK)) {
+-			/*
+-			 * If bios_cmci_threshold boot option was specified
+-			 * but the threshold is zero, we'll try to initialize
+-			 * it to 1.
+-			 */
+-			bios_zero_thresh = 1;
+-			val |= CMCI_THRESHOLD;
+-		}
+-
+-		val |= MCI_CTL2_CMCI_EN;
+-		wrmsrl(MSR_IA32_MCx_CTL2(i), val);
+-		rdmsrl(MSR_IA32_MCx_CTL2(i), val);
+-
+-		/* Did the enable bit stick? -- the bank supports CMCI */
+-		if (val & MCI_CTL2_CMCI_EN) {
+-			set_bit(i, owned);
+-			__clear_bit(i, this_cpu_ptr(mce_poll_banks));
+-			/*
+-			 * We are able to set thresholds for some banks that
+-			 * had a threshold of 0. This means the BIOS has not
+-			 * set the thresholds properly or does not work with
+-			 * this boot option. Note down now and report later.
+-			 */
+-			if (mca_cfg.bios_cmci_threshold && bios_zero_thresh &&
+-					(val & MCI_CTL2_CMCI_THRESHOLD_MASK))
+-				bios_wrong_thresh = 1;
+-		} else {
+-			WARN_ON(!test_bit(i, this_cpu_ptr(mce_poll_banks)));
+-		}
++		val = cmci_pick_threshold(val, &bios_zero_thresh);
++		cmci_claim_bank(i, val, bios_zero_thresh, &bios_wrong_thresh);
+ 	}
+ 	raw_spin_unlock_irqrestore(&cmci_discover_lock, flags);
+ 	if (mca_cfg.bios_cmci_threshold && bios_wrong_thresh) {
+@@ -225,6 +327,9 @@ static void __cmci_disable_bank(int bank)
+ 	val &= ~MCI_CTL2_CMCI_EN;
+ 	wrmsrl(MSR_IA32_MCx_CTL2(bank), val);
+ 	__clear_bit(bank, this_cpu_ptr(mce_banks_owned));
++
++	if ((val & MCI_CTL2_CMCI_THRESHOLD_MASK) == CMCI_STORM_THRESHOLD)
++		cmci_storm_end(bank);
  }
  
  /*
-- * Ensure that the timer is firing in @interval from now.
-+ * When a storm starts on any bank on this CPU, switch to polling
-+ * once per second. When the storm ends, revert to the default
-+ * polling interval.
-  */
--void mce_timer_kick(unsigned long interval)
-+void mce_timer_kick(bool storm)
- {
- 	struct timer_list *t = this_cpu_ptr(&mce_timer);
--	unsigned long iv = __this_cpu_read(mce_next_interval);
- 
--	__start_timer(t, interval);
-+	__this_cpu_write(storm_desc.poll_mode, storm);
- 
--	if (interval < iv)
--		__this_cpu_write(mce_next_interval, interval);
-+	if (storm)
-+		__start_timer(t, HZ);
-+	else
-+		__this_cpu_write(mce_next_interval, check_interval * HZ);
- }
- 
- /* Must not be called in IRQ context where del_timer_sync() can deadlock */
 diff --git a/arch/x86/kernel/cpu/mce/threshold.c b/arch/x86/kernel/cpu/mce/threshold.c
-index ef4e7bb5fd88..c9e32d92cf8f 100644
+index c9e32d92cf8f..1460259ad8b3 100644
 --- a/arch/x86/kernel/cpu/mce/threshold.c
 +++ b/arch/x86/kernel/cpu/mce/threshold.c
-@@ -29,3 +29,86 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_threshold)
- 	trace_threshold_apic_exit(THRESHOLD_APIC_VECTOR);
- 	apic_eoi();
+@@ -35,6 +35,9 @@ DEFINE_PER_CPU(struct mca_storm_desc, storm_desc);
+ static void mce_handle_storm(unsigned int bank, bool on)
+ {
+ 	switch (boot_cpu_data.x86_vendor) {
++	case X86_VENDOR_INTEL:
++		mce_intel_handle_storm(bank, on);
++		break;
+ 	}
  }
-+
-+DEFINE_PER_CPU(struct mca_storm_desc, storm_desc);
-+
-+static void mce_handle_storm(unsigned int bank, bool on)
-+{
-+	switch (boot_cpu_data.x86_vendor) {
-+	}
-+}
-+
-+void cmci_storm_begin(unsigned int bank)
-+{
-+	struct mca_storm_desc *storm = this_cpu_ptr(&storm_desc);
-+
-+	__set_bit(bank, this_cpu_ptr(mce_poll_banks));
-+	storm->banks[bank].storm = true;
-+
-+	/*
-+	 * If this is the first bank on this CPU to enter storm mode
-+	 * start polling.
-+	 */
-+	if (++storm->stormy_bank_count == 1)
-+		mce_timer_kick(true);
-+}
-+
-+void cmci_storm_end(unsigned int bank)
-+{
-+	struct mca_storm_desc *storm = this_cpu_ptr(&storm_desc);
-+
-+	__clear_bit(bank, this_cpu_ptr(mce_poll_banks));
-+	storm->banks[bank].history = 0;
-+	storm->banks[bank].storm = false;
-+
-+	/* If no banks left in storm mode, stop polling. */
-+	if (!this_cpu_dec_return(storm_desc.stormy_bank_count))
-+		mce_timer_kick(false);
-+}
-+
-+void mce_track_storm(struct mce *mce)
-+{
-+	struct mca_storm_desc *storm = this_cpu_ptr(&storm_desc);
-+	unsigned long now = jiffies, delta;
-+	unsigned int shift = 1;
-+	u64 history = 0;
-+
-+	/*
-+	 * When a bank is in storm mode it is polled once per second and
-+	 * the history mask will record about the last minute of poll results.
-+	 * If it is not in storm mode, then the bank is only checked when
-+	 * there is a CMCI interrupt. Check how long it has been since
-+	 * this bank was last checked, and adjust the amount of "shift"
-+	 * to apply to history.
-+	 */
-+	if (!storm->banks[mce->bank].storm) {
-+		delta = now - storm->banks[mce->bank].timestamp;
-+		shift = (delta + HZ) / HZ;
-+	}
-+
-+	/* If it has been a long time since the last poll, clear history. */
-+	if (shift < 64)
-+		history = storm->banks[mce->bank].history << shift;
-+
-+	storm->banks[mce->bank].timestamp = now;
-+
-+	/* History keeps track of corrected errors. VAL=1 && UC=0 */
-+	if ((mce->status & MCI_STATUS_VAL) && mce_is_correctable(mce))
-+		history |= 1;
-+
-+	storm->banks[mce->bank].history = history;
-+
-+	if (storm->banks[mce->bank].storm) {
-+		if (history & GENMASK_ULL(STORM_END_POLL_THRESHOLD, 0))
-+			return;
-+		printk_deferred(KERN_NOTICE "CPU%d BANK%d CMCI storm subsided\n", smp_processor_id(), mce->bank);
-+		mce_handle_storm(mce->bank, false);
-+		cmci_storm_end(mce->bank);
-+	} else {
-+		if (hweight64(history) < STORM_BEGIN_THRESHOLD)
-+			return;
-+		printk_deferred(KERN_NOTICE "CPU%d BANK%d CMCI storm detected\n", smp_processor_id(), mce->bank);
-+		mce_handle_storm(mce->bank, true);
-+		cmci_storm_begin(mce->bank);
-+	}
-+}
+ 
 -- 
 2.41.0
 
