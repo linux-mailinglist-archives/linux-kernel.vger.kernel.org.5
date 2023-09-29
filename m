@@ -2,104 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B04247B30E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 12:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6057B30F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 12:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233014AbjI2K4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 06:56:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56014 "EHLO
+        id S233129AbjI2K60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 06:58:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232630AbjI2K4h (ORCPT
+        with ESMTP id S233102AbjI2K6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 06:56:37 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D4811F
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 03:56:34 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A104AFF80D;
-        Fri, 29 Sep 2023 10:56:30 +0000 (UTC)
-Message-ID: <f8891c2f-38f9-f741-66ad-8c5fbe1e365f@ghiti.fr>
-Date:   Fri, 29 Sep 2023 12:56:30 +0200
+        Fri, 29 Sep 2023 06:58:23 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2D71726;
+        Fri, 29 Sep 2023 03:57:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F07BBC433C9;
+        Fri, 29 Sep 2023 10:57:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695985076;
+        bh=tBcW+9T0Szmsb/1uixa8Q/j6hm71o84nD60FwoEkhH8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VfED/xp0larnQprtl8/AJHIjIQ5WKq8CituNwRnF/ciSa1IXFip6G0sL55biLGAPX
+         phgZ1SBF2Mvp1nVHidSZH/yXV2mXqIY4ocGPwCoaUxBIwv8Ko3PS0YgUanPE8L/N81
+         YPsAFDouUVolZMv5A4STCfndiNg/Mn5rxIbS/Awt5hTP/oyk1P05QYTScO+bVZccrl
+         rFZZRI+Sxw4Cr5kd4xo2jaV5ERjDeOF3mtCxYcFUbfRDtzooXcQN1h+Z+QEaV2rV1f
+         fUiiNeD8hYMXqQBAcpCyii+rc6Kk0tsVnQQVz2EUIi4nULPbHooaa93slA1Jgy2ja3
+         5cfVAKnTQwaMA==
+Date:   Fri, 29 Sep 2023 12:57:53 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        linux-tip-commits@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH] tick/nohz: Update comments some more
+Message-ID: <ZRatsTz1mQRFJ0sW@lothringen>
+References: <20230912104406.312185-3-frederic@kernel.org>
+ <169582689118.27769.11953848930688373230.tip-bot2@tip-bot2>
+ <ZRVCNeMcSQcXS36N@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [syzbot] riscv/fixes test error: BUG: got no coverage: (3)
-To:     syzbot <syzbot+2ecff9714d050e3c3a88@syzkaller.appspotmail.com>,
-        aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, syzkaller-bugs@googlegroups.com
-References: <000000000000a8df0406061b76e6@google.com>
-Content-Language: en-US
-From:   Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <000000000000a8df0406061b76e6@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SORTED_RECIPS,SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRVCNeMcSQcXS36N@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/09/2023 16:14, syzbot wrote:
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    b06fab003ae1 riscv: kselftests: Fix mm build by removing t..
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git fixes
-> console output: https://syzkaller.appspot.com/x/log.txt?x=16388918680000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=89f0a88d4bc7f0f4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=2ecff9714d050e3c3a88
-> compiler:       riscv64-linux-gnu-gcc (Debian 12.2.0-13) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: riscv64
->
-> Downloadable assets:
-> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/a741b348759c/non_bootable_disk-b06fab00.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/d751d3ead63f/vmlinux-b06fab00.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/d72380bd99cc/Image-b06fab00.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+2ecff9714d050e3c3a88@syzkaller.appspotmail.com
->
-> executing program
-> executing program
-> executing program
-> executing program
-> 1970/01/01 00:05:53 SYZFATAL: BUG: got no coverage:
+On Thu, Sep 28, 2023 at 11:07:01AM +0200, Ingo Molnar wrote:
+> > + * infrastructure actually relies on the tick itself as a backend in
+> > + * low-resolution mode (see hrtimer_run_queues()).
+> > + *
+> > + * This low-resolution handler still makes use of some hrtimer APIs meanwhile
+> > + * for commodity with expiration calculation and forwarding.
+> 
+> commodity?
 
+I meant 'convenience', my usual frenglish issues...
 
-Not sure how to debug that, any idea what's wrong here?
+> 
+> >   */
+> >  static void tick_nohz_lowres_handler(struct clock_event_device *dev)
+> >  {
+> 
+> As well-deserved penace for my nitpicking, I've fixed these on top of
+> tip:timers/core, and have also done a full scan of kernel/time/tick-sched.c
+> for spelling, consistency of style and readability of comments - see
+> the patch below.
+> 
+> Thanks,
+> 
+> 	Ingo
+> 
+> ===========================>
+> From: Ingo Molnar <mingo@kernel.org>
+> Date: Thu, 28 Sep 2023 10:45:54 +0200
+> Subject: [PATCH] tick/nohz: Update comments some more
+> 
+> Inspired by recent enhancements to comments in kernel/time/tick-sched.c,
+> go through the entire file and fix/unify its comments:
+> 
+>  - Fix over a dozen typos, spelling mistakes & cases of bad grammar.
+> 
+>  - Re-phrase sentences that I needed to read three times to understand.
+> 
+>     [ I used the following arbitrary rule-of-thumb:
+>        - if I had to read a comment twice, it was usually my fault,
+>        - if I had to read it a third time, it was the comment's fault. ]
+> 
+>  - Comma updates:
+> 
+>     - Add commas where needed
+> 
+>     - Remove commas where not needed
+> 
+>     - In cases where a comma is optional, choose one variant and try to
+>       standardize it over similar sentences in the file.   
+> 
+>  - Standardize on standalone 'NOHZ' spelling in free-flowing comments:
+> 
+>       s/nohz/NOHZ
+>       s/no idle tick/NOHZ
+> 
+>    Still keep 'dynticks' as a popular synonym.
+> 
+>  - Standardize on referring to variable names within free-flowing
+>    comments with the "'var'" nomenclature, and function names as
+>    "function_name()".
+> 
+>  - Standardize on '64-bit' and '32-bit':
+>      s/32bit/32-bit
+>      s/64bit/64-bit
+> 
+>  - Standardize on 'IRQ work':
+>      s/irq work/IRQ work
+> 
+>  - A few other tidyups I probably missed to list.
+> 
+> No change in functionality intended - other than one small change to
+> a syslog output string.
+> 
+> Signed-off-by: Ingo Molnar <mingo@kernel.org>
 
-
-> loop exited with status 11
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
->
-> If the bug is already fixed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
->
-> If you want to overwrite bug's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
->
-> If the bug is a duplicate of another bug, reply with:
-> #syz dup: exact-subject-of-another-report
->
-> If you want to undo deduplication, reply with:
-> #syz undup
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Looks good, thanks!
