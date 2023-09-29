@@ -2,180 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC7EC7B364D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0FA7B3650
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233518AbjI2PFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:05:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37266 "EHLO
+        id S233478AbjI2PFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233610AbjI2PFM (ORCPT
+        with ESMTP id S233464AbjI2PFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:05:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3E361B0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:05:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 709F0C433C7;
-        Fri, 29 Sep 2023 15:05:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695999905;
-        bh=IvLxKbqu0MJgGbtWdNSigZb9rbYGAOtYXK50iU/aEPs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BFxxC1pPrNlbYvtFzBpbAcD4+6LoMtcr9+nAuoZy0+t0EpMWsm2UhfDbTbzMORVJO
-         3m2gT+1NH4ebANnLQq4MAACqQIeyHRQDazOZJz39dKaEB+RK9BBAwVjx6gG3Ac7eU3
-         Qwea7jAO9LOUszza6bK5Pqf3Xz4oK8wNIqmuq2e9PLri8X6xRPufmr0fIYGJzbOc/P
-         jKVD2ol3IC6jeYDjJTM93XWeu8LlgEe0c+v6yPg3bG2/G5acJAWmDsdizIfpek2Yyw
-         c/Oo8LfAlGwIEvnZAU1seLIkkVL9oqItcqZpOzgUZMl5Lum2DMvjO/f0CErD/f0xV3
-         WxR7HHGjB1tkA==
-Date:   Fri, 29 Sep 2023 16:04:59 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Oza Pawandeep <quic_poza@quicinc.com>
-Cc:     sudeep.holla@arm.com, catalin.marinas@arm.com, rafael@kernel.org,
-        lenb@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
-Subject: Re: [PATCH v8] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast
- timer
-Message-ID: <20230929150459.GA30623@willie-the-truck>
-References: <20230918172140.2825357-1-quic_poza@quicinc.com>
+        Fri, 29 Sep 2023 11:05:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90371B8;
+        Fri, 29 Sep 2023 08:05:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695999918; x=1727535918;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DelZcJpWUMjBxW0kniBQFBqsUl9nBj42W0wbOGMzgEg=;
+  b=Uat0SRcrzM+CQAGjhVRNGlowINnh88LxEJsTEcMG8o8kj7Za4AISe5Qp
+   gdymAJwBgrQa08ThaE4jjLACURb0BkpDLlBy/zwtYVXSuTni5DhdzZc84
+   D7IM+PBOzEzTOZHewRuBS20VL6wuMirap8MWxSUYQYxA49PcJMsb5vbta
+   6Z3B+q3wbzXcow/l6BXVD2eMmzr2oqH5MpAyjFL/J/khVZM2e3vJ1rstG
+   zimJDm7ZTt/3sr3JQBfkmnYLlMSKs/jglUV5gEf/CxCyXL/bgbFiN2vP0
+   SfRBYEMYFnbTxfgkDq/zyADDU6w/Xd6tTqnEIDji7TWxBOcBAkV30QKWX
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="361693914"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="361693914"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:05:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="865737509"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="865737509"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga002.fm.intel.com with SMTP; 29 Sep 2023 08:05:14 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 29 Sep 2023 18:05:13 +0300
+Date:   Fri, 29 Sep 2023 18:05:13 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Abdel Alkuor <alkuor@gmail.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
+        robh+dt@kernel.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>
+Subject: Re: [PATCH v8 08/14] USB: typec: tps6598x: Add interrupt support for
+ TPS25750
+Message-ID: <ZRbnqUpsoK3v1BRH@kuha.fi.intel.com>
+References: <20230929143055.31360-1-alkuor@gmail.com>
+ <20230929143055.31360-9-alkuor@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230918172140.2825357-1-quic_poza@quicinc.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230929143055.31360-9-alkuor@gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 10:21:40AM -0700, Oza Pawandeep wrote:
-> Arm® Functional Fixed Hardware Specification defines LPI states,
-> which provide an architectural context loss flags field that can
-> be used to describe the context that might be lost when an LPI
-> state is entered.
+On Fri, Sep 29, 2023 at 10:30:49AM -0400, Abdel Alkuor wrote:
+> From: Abdel Alkuor <abdelalkuor@geotab.com>
 > 
-> - Core context Lost
->         - General purpose registers.
->         - Floating point and SIMD registers.
->         - System registers, include the System register based
->         - generic timer for the core.
->         - Debug register in the core power domain.
->         - PMU registers in the core power domain.
->         - Trace register in the core power domain.
-> - Trace context loss
-> - GICR
-> - GICD
+> tps25750 event registers structure is different than tps6598x's,
+> tps25750 has 11 bytes of events which are read at once where
+> tps6598x has two event registers of 8 bytes each which are read
+> separately. Likewise MASK event registers. Also, not all events
+> are supported in both devices.
 > 
-> Qualcomm's custom CPUs preserves the architectural state,
-> including keeping the power domain for local timers active.
-> when core is power gated, the local timers are sufficient to
-> wake the core up without needing broadcast timer.
+> - Create a new handler to accommodate tps25750 interrupt
+> - Add device data to of_device_id
 > 
-> The patch fixes the evaluation of cpuidle arch_flags, and moves only to
-> broadcast timer if core context lost is defined in ACPI LPI.
-> 
-> Fixes: a36a7fecfe607 ("Add support for Low Power Idle(LPI) states")
-> Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
-> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-> Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
+> Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
 > ---
+> Changes in v8:
+>   - Populate of_device_id with device data
+>   - Change tps->cb to tps->data
+>   - Assign matched data to tps data
+> Changes in v7:
+>   - Add driver name to commit subject
+>   - Create tps25750 interrupt handler
+> Changes in v6:
+>   - Create tipd callbacks factory 
+> Changes in v5:
+>   - Incorporating tps25750 into tps6598x driver
 > 
-> Notes:
->     Will/Catalin: Rafael has acked and he prefers to take it via arm64 tree
+>  drivers/usb/typec/tipd/core.c | 109 +++++++++++++++++++++++++++++-----
+>  1 file changed, 95 insertions(+), 14 deletions(-)
 > 
-> diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-> index 4d537d56eb84..269d21209723 100644
-> --- a/arch/arm64/include/asm/acpi.h
-> +++ b/arch/arm64/include/asm/acpi.h
-> @@ -9,6 +9,7 @@
->  #ifndef _ASM_ACPI_H
->  #define _ASM_ACPI_H
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index 32e42798688f..9dc4c3ae5c60 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -18,6 +18,7 @@
+>  #include <linux/usb/role.h>
+>  #include <linux/workqueue.h>
+>  #include <linux/firmware.h>
+> +#include <linux/of_device.h>
 >  
-> +#include <linux/cpuidle.h>
->  #include <linux/efi.h>
->  #include <linux/memblock.h>
->  #include <linux/psci.h>
-> @@ -44,6 +45,23 @@
+>  #include "tps6598x.h"
+>  #include "trace.h"
+> @@ -101,6 +102,10 @@ static const char *const modes[] = {
+>  /* Unrecognized commands will be replaced with "!CMD" */
+>  #define INVALID_CMD(_cmd_)		(_cmd_ == 0x444d4321)
 >  
->  #define ACPI_MADT_GICC_TRBE  (offsetof(struct acpi_madt_generic_interrupt, \
->  	trbe_interrupt) + sizeof(u16))
-> +/*
-> + * Arm® Functional Fixed Hardware Specification Version 1.2.
-> + * Table 2: Arm Architecture context loss flags
-> + */
-> +#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
+> +struct tipd_data {
+> +	irq_handler_t irq_handler;
+> +};
 > +
-> +static __always_inline void _arch_update_idle_state_flags(u32 arch_flags,
-> +							unsigned int *sflags)
-
-Why can't this just be 'static inline'?
-
-> +{
-> +	if (arch_flags & CPUIDLE_CORE_CTXT)
-> +		*sflags |= CPUIDLE_FLAG_TIMER_STOP;
-> +}
-> +#define arch_update_idle_state_flags _arch_update_idle_state_flags
-
-Usually, the function and the macro have the same name for this pattern,
-so I think it would be more consistent to drop the leading underscore
-from the C function name.
-
-> +
-> +#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
-> +#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
-> +#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
+>  struct tps6598x {
+>  	struct device *dev;
+>  	struct regmap *regmap;
+> @@ -118,9 +123,11 @@ struct tps6598x {
+>  	enum power_supply_usb_type usb_type;
 >  
->  /* Basic configuration for ACPI */
->  #ifdef	CONFIG_ACPI
-> diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-> index dc615ef6550a..5c1d13eecdd1 100644
-> --- a/drivers/acpi/processor_idle.c
-> +++ b/drivers/acpi/processor_idle.c
-> @@ -1217,8 +1217,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
->  		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
->  		state->exit_latency = lpi->wake_latency;
->  		state->target_residency = lpi->min_residency;
-> -		if (lpi->arch_flags)
-> -			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
-> +		arch_update_idle_state_flags(lpi->arch_flags, &state->flags);
-
-Hmm, I know Rafael has Acked this, but I think this is pretending to be
-more generic than it really is. While passing in a pointer to the flags
-field allows the arch code to set and clear arbitrary flags, we're calling
-this before we've set CPUIDLE_FLAG_RCU_IDLE, so that cannot be changed.
-
-Why not just name it like it is and return the arch flags directly:
-
-	state->flags |= arch_get_idle_state_flags(lpi->arch_flags);
-
-?
-
->  		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
->  			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
->  		state->enter = acpi_idle_lpi_enter;
-> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-> index a73246c3c35e..07a825c76bab 100644
-> --- a/include/linux/acpi.h
-> +++ b/include/linux/acpi.h
-> @@ -1480,6 +1480,12 @@ static inline int lpit_read_residency_count_address(u64 *address)
+>  	int wakeup;
+> +	u32 status; /* status reg */
+>  	u16 pwr_status;
+>  	struct delayed_work	wq_poll;
+> -	irq_handler_t irq_handler;
+> +
+> +	const struct tipd_data *data;
+>  };
+>  
+>  static enum power_supply_property tps6598x_psy_props[] = {
+> @@ -545,6 +552,64 @@ static irqreturn_t cd321x_interrupt(int irq, void *data)
+>  	return IRQ_NONE;
 >  }
->  #endif
 >  
-> +#ifdef CONFIG_ACPI_PROCESSOR_IDLE
-> +#ifndef arch_update_idle_state_flags
-> +#define arch_update_idle_state_flags(af, sf)	do {} while (0)
+> +static bool tps6598x_has_role_changed(struct tps6598x *tps, u32 status)
+> +{
+> +	status ^= tps->status;
+> +
+> +	return status & (TPS_STATUS_PORTROLE | TPS_STATUS_DATAROLE);
+> +}
+> +
+> +static irqreturn_t tps25750_interrupt(int irq, void *data)
+> +{
+> +	struct tps6598x *tps = data;
+> +	u64 event[2] = { };
+> +	u32 status;
+> +	int ret;
+> +
+> +	mutex_lock(&tps->lock);
+> +
+> +	ret = tps6598x_block_read(tps, TPS_REG_INT_EVENT1, event, 11);
+> +	if (ret) {
+> +		dev_err(tps->dev, "%s: failed to read events\n", __func__);
+> +		goto err_unlock;
+> +	}
+> +
+> +	if (!(event[0] | event[1]))
+> +		goto err_unlock;
+> +
+> +	if (!tps6598x_read_status(tps, &status))
+> +		goto err_clear_ints;
+> +
+> +	if ((event[0] | event[1]) & TPS_REG_INT_POWER_STATUS_UPDATE)
+> +		if (!tps6598x_read_power_status(tps))
+> +			goto err_clear_ints;
+> +
+> +	if ((event[0] | event[1]) & TPS_REG_INT_DATA_STATUS_UPDATE)
+> +		if (!tps6598x_read_data_status(tps))
+> +			goto err_clear_ints;
+> +
+> +	/*
+> +	 * data/port roles could be updated independently after
+> +	 * a plug event. Therefore, we need to check
+> +	 * for pr/dr status change to set TypeC dr/pr accordingly.
+> +	 */
+> +	if ((event[0] | event[1]) & TPS_REG_INT_PLUG_EVENT ||
+> +	    tps6598x_has_role_changed(tps, status))
+> +		tps6598x_handle_plug_event(tps, status);
+> +
+> +	tps->status = status;
+> +
+> +err_clear_ints:
+> +	tps6598x_block_write(tps, TPS_REG_INT_CLEAR1, event, 11);
+> +
+> +err_unlock:
+> +	mutex_unlock(&tps->lock);
+> +
+> +	if (event[0] | event[1])
+> +		return IRQ_HANDLED;
+> +	return IRQ_NONE;
+> +}
+> +
+>  static irqreturn_t tps6598x_interrupt(int irq, void *data)
+>  {
+>  	struct tps6598x *tps = data;
+> @@ -600,7 +665,7 @@ static void tps6598x_poll_work(struct work_struct *work)
+>  	struct tps6598x *tps = container_of(to_delayed_work(work),
+>  					    struct tps6598x, wq_poll);
+>  
+> -	tps->irq_handler(0, tps);
+> +	tps->data->irq_handler(0, tps);
+>  	queue_delayed_work(system_power_efficient_wq,
+>  			   &tps->wq_poll, msecs_to_jiffies(POLL_INTERVAL));
+>  }
+> @@ -967,13 +1032,33 @@ static int tps25750_apply_patch(struct tps6598x *tps)
+>  	return 0;
+>  };
+>  
+> +static const struct tipd_data cd321x_data = {
+> +	.irq_handler = cd321x_interrupt,
+> +};
+> +
+> +static const struct tipd_data tps6598x_data = {
+> +	.irq_handler = tps6598x_interrupt,
+> +};
+> +
+> +static const struct tipd_data tps25750_data = {
+> +	.irq_handler = tps25750_interrupt,
+> +};
+> +
+> +static const struct of_device_id tps6598x_of_match[] = {
+> +	{ .compatible = "ti,tps6598x", &tps6598x_data},
+> +	{ .compatible = "apple,cd321x", &cd321x_data},
+> +	{ .compatible = "ti,tps25750", &tps25750_data},
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, tps6598x_of_match);
 
-I'd prefer defining this to point at an empty static inline function so
-that we get evaluation and type-checking of the arguments.
+There is no reason to move that here.
 
-> +#endif
-> +#endif /* CONFIG_ACPI_PROCESSOR_IDLE */
+Keep all of those below where tps6598x_of_match was originally.
 
-Why do you need the outer CONFIG_ guards here?
+>  static int tps6598x_probe(struct i2c_client *client)
+>  {
+> -	irq_handler_t irq_handler = tps6598x_interrupt;
+>  	struct device_node *np = client->dev.of_node;
+>  	struct typec_capability typec_cap = { };
+>  	struct tps6598x *tps;
+>  	struct fwnode_handle *fwnode;
+> +	const struct of_device_id *match;
+>  	u32 status;
+>  	u32 conf;
+>  	u32 vid;
+> @@ -1017,7 +1102,6 @@ static int tps6598x_probe(struct i2c_client *client)
+>  			APPLE_CD_REG_INT_DATA_STATUS_UPDATE |
+>  			APPLE_CD_REG_INT_PLUG_EVENT;
+>  
+> -		irq_handler = cd321x_interrupt;
+>  	} else {
+>  		/* Enable power status, data status and plug event interrupts */
+>  		mask1 = TPS_REG_INT_POWER_STATUS_UPDATE |
+> @@ -1025,7 +1109,12 @@ static int tps6598x_probe(struct i2c_client *client)
+>  			TPS_REG_INT_PLUG_EVENT;
+>  	}
+>  
+> -	tps->irq_handler = irq_handler;
+> +	match = of_match_device(tps6598x_of_match, tps->dev);
+> +	if (!match)
+> +		return -EINVAL;
+> +
+> +	tps->data = match->data;
 
-Will
+        tps->data = device_get_match_data(tps->dev);
+
+>  	/* Make sure the controller has application firmware running */
+>  	ret = tps6598x_check_mode(tps);
+>  	if (ret < 0)
+> @@ -1125,7 +1214,7 @@ static int tps6598x_probe(struct i2c_client *client)
+>  
+>  	if (client->irq) {
+>  		ret = devm_request_threaded_irq(&client->dev, client->irq, NULL,
+> -						irq_handler,
+> +						tps->data->irq_handler,
+>  						IRQF_SHARED | IRQF_ONESHOT,
+>  						dev_name(&client->dev), tps);
+>  	} else {
+> @@ -1231,14 +1320,6 @@ static const struct dev_pm_ops tps6598x_pm_ops = {
+>  	SET_SYSTEM_SLEEP_PM_OPS(tps6598x_suspend, tps6598x_resume)
+>  };
+>  
+> -static const struct of_device_id tps6598x_of_match[] = {
+> -	{ .compatible = "ti,tps6598x", },
+> -	{ .compatible = "apple,cd321x", },
+> -	{ .compatible = "ti,tps25750", },
+> -	{}
+> -};
+> -MODULE_DEVICE_TABLE(of, tps6598x_of_match);
+
+static const struct tipd_data cd321x_data = {
+	.irq_handler = cd321x_interrupt,
+};
+
+static const struct tipd_data tps6598x_data = {
+	.irq_handler = tps6598x_interrupt,
+};
+
+static const struct tipd_data tps25750_data = {
+	.irq_handler = tps25750_interrupt,
+};
+
+static const struct of_device_id tps6598x_of_match[] = {
+	{ .compatible = "apple,cd321x", &cd321x_data},
+	{ .compatible = "ti,tps25750", &tps25750_data},
+	{ .compatible = "ti,tps6598x", &tps6598x_data},
+	{}
+};
+MODULE_DEVICE_TABLE(of, tps6598x_of_match);
+
+>  static const struct i2c_device_id tps6598x_id[] = {
+>  	{ "tps6598x" },
+>  	{ }
+
+thanks,
+
+-- 
+heikki
