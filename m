@@ -2,123 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FC67B2CD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 834B97B2CE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbjI2HHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 03:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53514 "EHLO
+        id S232638AbjI2HLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 03:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbjI2HHC (ORCPT
+        with ESMTP id S229912AbjI2HLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 03:07:02 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48911AB
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:07:00 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so7303a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695971219; x=1696576019; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8VDhsG3RvqxurmnHIUU3NyMw2Ckx5kzAqe1lOg3jvtw=;
-        b=yqOdf/Xe738+uS/bdp7sa/4PaONqHb7OVBN4HkvAdt2ijif6Y4+bm7V9iAD0igjNZs
-         cONxpOdz/qUyZ9mlxY5Ckj6fFtCsMEWx98jqa6FmwoOy/RwkPI+leXv9N3RiQ1H21cQU
-         l6Z9APHuPqwGsn4re+yEqh9525Iiz9yA49UrF1bebORvtZa4K/jPm7IzPFFniMpYT2Q5
-         YMdEUHpkSs33IR3lo97OyCLZheebi7H3a+BQV6zAqViYxonj5rJuo2KjeYunod79Cov9
-         zd6+I2CX8rK1nLLWvYMqmB+nmEW6yYxWIPT7qFfsTId4bjF3G+JvNtjY9HcCXWNW3epU
-         pGnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695971219; x=1696576019;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8VDhsG3RvqxurmnHIUU3NyMw2Ckx5kzAqe1lOg3jvtw=;
-        b=Nbu2cZY4QZn+7GVlHSlFuX+osyWzC13kzLTh7dxZRVWmVafWJ4t+Nz1G0OQxAXYwM/
-         eJWKluyowP4blY0QxUhj0tBpfxoFe9LoSadws6vX5qDYVSyok3C2Z8p/z0NmsIyBDJJY
-         6mZqxyZduT/5BcaRPbbxYYf/9JDyjvWKIfpqDmEeKqdQiqPZ6pld9jZrEfRK0zy1u1Ms
-         SoQhWdG20L3ytehVfTnTHOR15LsMqPDr31/iIlS5RdJi5ykRXiBbXtUkZVEEkcP6cyB7
-         WtoD0U2U4ToEHQMaIWNtAgzNCzONfcNYm9igLbHQo4cY0sJilqITvuGJYPD1/VZ24yfM
-         Vauw==
-X-Gm-Message-State: AOJu0Yxkew9JVeNUHolLDZkMq8ppJzDu0n0HfCcF88SYMayUigUX5Nr4
-        aTbk6FOlpjUtbNksY4Uldn7l3krCXnJFBAK4I/DmpghKBKUq4mvfag==
-X-Google-Smtp-Source: AGHT+IFnfnJXkiewY/umtolhOz81iE67AbIHb6KpIZ6rJ1t3VwVdF7zYwbMSa8r53kwey8FGA0L57aj/oWvhXqVeODE=
-X-Received: by 2002:a50:aa93:0:b0:52e:f99a:b5f8 with SMTP id
- q19-20020a50aa93000000b0052ef99ab5f8mr493256edc.7.1695971219021; Fri, 29 Sep
- 2023 00:06:59 -0700 (PDT)
+        Fri, 29 Sep 2023 03:11:51 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF8C1A5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:11:44 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 8ADB6218F8;
+        Fri, 29 Sep 2023 07:11:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695971502; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=TKZwT6p3zDQkfDux4GmY1fwM4TtMwP4f9fyi2I9wF+E=;
+        b=UHF+VfWMlxaaHbVoRQBWDqJE4uqre/BRkMS+OJ5glC7D6d6awlnC9nxeT233YKO9jO/7wI
+        bnGzhaOmEv9c4hAYgOu3knFwccC0D3A9rDEAvZ+Gq4R9GzBwUal67/X5MNBmcsqzls7ZiI
+        UsPYELGE9oefCBU9o0JQ/wb+YS10kIE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695971502;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=TKZwT6p3zDQkfDux4GmY1fwM4TtMwP4f9fyi2I9wF+E=;
+        b=Y5fsi7AFoYj7LtV7gCzJKMf9zOI5TNdi85xUuuKkxasTPKTZ/g8Z9lpdfODgE/fDmgXErM
+        ciEsLs7YD5r0wUCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 54F271390A;
+        Fri, 29 Sep 2023 07:11:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id Sp36E654FmVORQAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Fri, 29 Sep 2023 07:11:42 +0000
+Message-ID: <9af0ab00-7afd-493b-848a-a433e9b9e182@suse.de>
+Date:   Fri, 29 Sep 2023 09:11:41 +0200
 MIME-Version: 1.0
-References: <20230929023737.1610865-1-maheshb@google.com> <CANDhNCqb5JzEDOdAnocanR2KFbokrpMOL=iNwY3fTxcn_ftuZQ@mail.gmail.com>
- <CAF2d9jgeGLCzbFZhptGzpUnmMgLaRysyzBmpZ+dK4sxWdmR5ZQ@mail.gmail.com> <CANDhNCro+AQum3eSmKK5OTNik2E0cFxV_reCQg0+_uTubHaDsA@mail.gmail.com>
-In-Reply-To: <CANDhNCro+AQum3eSmKK5OTNik2E0cFxV_reCQg0+_uTubHaDsA@mail.gmail.com>
-From:   John Stultz <jstultz@google.com>
-Date:   Fri, 29 Sep 2023 00:06:46 -0700
-Message-ID: <CANDhNCryn8TjJZRdCvVUj88pakHSUvtyN53byjmAcyowKj5mcA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] time: add ktime_get_cycles64() api
-To:     =?UTF-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS14KS+4KSwKQ==?= 
-        <maheshb@google.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Linux <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Don Hatchett <hatch@google.com>,
-        Yuliang Li <yuliangli@google.com>,
-        Mahesh Bandewar <mahesh@bandewar.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH/RFC 3/3] drm: Split drm_modeset_helper_vtables.h
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <cover.1695903065.git.geert+renesas@glider.be>
+ <0f0eae276da4f8ed44cd1a15ffa138879d27b148.1695903065.git.geert+renesas@glider.be>
+ <d9020d20-f512-42e6-8259-a7377c3d0d58@suse.de>
+ <CAMuHMdUXnT61Hj8JwPenD+x_0-k_wU3bUtj8k9wh7Dd+kN4_Dw@mail.gmail.com>
+Content-Language: en-US
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <CAMuHMdUXnT61Hj8JwPenD+x_0-k_wU3bUtj8k9wh7Dd+kN4_Dw@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------BAlIJVCg5U9UXIOFQeIhz795"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 11:56=E2=80=AFPM John Stultz <jstultz@google.com> w=
-rote:
-> On Thu, Sep 28, 2023 at 11:35=E2=80=AFPM Mahesh Bandewar (=E0=A4=AE=E0=A4=
-=B9=E0=A5=87=E0=A4=B6 =E0=A4=AC=E0=A4=82=E0=A4=A1=E0=A5=87=E0=A4=B5=E0=A4=
-=BE=E0=A4=B0)
-> <maheshb@google.com> wrote:
-> > On Thu, Sep 28, 2023 at 10:15=E2=80=AFPM John Stultz <jstultz@google.co=
-m> wrote:
-> > > 3) Nit: The interface is called ktime_get_cycles64 (timespec64
-> > > returning interfaces usually are postfixed with ts64).
-> > >
-> > Ah, thanks for the explanation. I can change to comply with the
-> > convention. Does ktime_get_cycles_ts64() make more sense?
->
-> Maybe a little (it at least looks consistent), but not really if
-> you're sticking raw cycles in the timespec :)
->
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------BAlIJVCg5U9UXIOFQeIhz795
+Content-Type: multipart/mixed; boundary="------------owaky2Mq3hZGJkzfaI9uXaTH";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Andrzej Hajda <andrzej.hajda@intel.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Message-ID: <9af0ab00-7afd-493b-848a-a433e9b9e182@suse.de>
+Subject: Re: [PATCH/RFC 3/3] drm: Split drm_modeset_helper_vtables.h
+References: <cover.1695903065.git.geert+renesas@glider.be>
+ <0f0eae276da4f8ed44cd1a15ffa138879d27b148.1695903065.git.geert+renesas@glider.be>
+ <d9020d20-f512-42e6-8259-a7377c3d0d58@suse.de>
+ <CAMuHMdUXnT61Hj8JwPenD+x_0-k_wU3bUtj8k9wh7Dd+kN4_Dw@mail.gmail.com>
+In-Reply-To: <CAMuHMdUXnT61Hj8JwPenD+x_0-k_wU3bUtj8k9wh7Dd+kN4_Dw@mail.gmail.com>
 
-Despite my concerns that it's a bad idea, If one was going to expose
-raw cycles from the timekeeping core, I'd suggest doing so directly as
-a u64 (`u64 ktime_get_cycles(void)`).
+--------------owaky2Mq3hZGJkzfaI9uXaTH
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-That may mean widening (or maybe using a union in) your PTP ioctl data
-structure to have a explicit cycles field.
-Or introducing a separate ioctl that deals with cycles instead of timespec6=
-4s.
+SGkNCg0KQW0gMjguMDkuMjMgdW0gMTc6MzIgc2NocmllYiBHZWVydCBVeXR0ZXJob2V2ZW46
+DQo+IEhpIFRob21hcywNCj4gDQo+IE9uIFRodSwgU2VwIDI4LCAyMDIzIGF0IDM6NTnigK9Q
+TSBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1hbm5Ac3VzZS5kZT4gd3JvdGU6DQo+PiBB
+bSAyOC4wOS4yMyB1bSAxNDoxNiBzY2hyaWViIEdlZXJ0IFV5dHRlcmhvZXZlbjoNCj4+PiA8
+ZHJtL2RybV9tb2Rlc2V0X2hlbHBlcl92dGFibGVzLmg+IGlzIHRoZSBzZWNvbmQgbGFyZ2Vz
+dCBoZWFkZXIgZmlsZSBpbg0KPj4+IHRoZSBEUk0gc3Vic3lzdGVtLCBhbmQgZGVjbGFyZXMg
+aGVscGVycyB2dGFibGVzIGZvciB2YXJpb3VzIERSTQ0KPj4+IGNvbXBvbmVudHMuICBTZXZl
+cmFsIHZ0YWJsZXMgY29udGFpbiBtZXRob2RzIHdpdGggdGhlIHNhbWUgbmFtZSwgYW5kIGFs
+bA0KPj4+IGJ1dCBvbmUgdnRhYmxlIGRvIG5vdCBmaXQgb24gdGhlIHNjcmVlbiwgbWFraW5n
+IGl0IGhhcmQgdG8gbmF2aWdhdGUgdG8NCj4+PiB0aGUgYWN0dWFsIG1ldGhvZCBvbmUgaXMg
+aW50ZXJlc3RlZCBpbi4NCj4+Pg0KPj4+IE1ha2UgaXQgZWFzaWVyIGZvciB0aGUgY2FzdWFs
+IHJldmlld2VyIHRvIGtlZXAgdHJhY2sgYnkgc3BsaXR0aW5nDQo+Pj4gPGRybS9kcm1fbW9k
+ZXNldF9oZWxwZXJfdnRhYmxlcy5oPiBpbiBtdWx0aXBsZSBoZWFkZXIgZmlsZXMsIG9uZSBw
+ZXIgRFJNDQo+Pj4gY29tcG9uZW50Lg0KPj4NCj4+IEkgbmV2ZXIgbGlrZWQgdGhpcyBoZWFk
+ZXIgZWl0aGVyLCBidXQgZG8gd2UgbmVlZCBuZXcgaGVhZGVyIGZpbGVzPyBFYWNoDQo+PiBz
+dHJ1Y3QgY291bGQgYmUgYXBwZW5kZWQgdG8gdGhlIGVuZCBvZiB0aGUgcmVndWxhciBoZWFk
+ZXI6IHN0cnVjdA0KPj4gZHJtX3BsYW5lX2hlbHBlcl9mdW5jcyB0byBkcm1fcGxhbmUuaCwg
+ZHJtX2Nvbm5lY3Rvcl9oZWxwZXJfZnVuYyB0bw0KPj4gZHJtX2Nvbm5lY3Rvci5oIGFuZCBz
+byBvbi4NCj4gDQo+IFRoYXQgd291bGQgd29yayBmb3IgbWUsIHRvby4gIEJ1dCBwZXJoYXBz
+IHdlIHdhbnQgdG8gbWFpbnRhaW4gYSBjbGVhcg0KPiBzZXBhcmF0aW9uIGJldHdlZW4gY29y
+ZSBhbmQgaGVscGVycz8NCj4gDQo+IE5vdGUgdGhhdCBtb3ZpbmcgdGhlIGNvbnRlbnRzIHRv
+ICpfaGVscGVyLmggd291bGQgYmUgYW5vdGhlciBvcHRpb24sDQo+IGRybV9jcnRjX2hlbHBl
+ci5oIGFuZCBkcm1fcGxhbmVfaGVscGVyLmggYWxyZWFkeSBleGlzdC4NCg0KSSd2ZSB0YWtl
+biBhIGNsb3NlciBsb29rIGF0IHRoZSB1c2VycyBvZiB0aGUgX3Z0YWJsZXMgaGVhZGVyLiBU
+aGVyZSdzIA0KY29kZSBpbiBkcm1fYXRvbWljX2hlbHBlci5jIG9yIGRybV9wcm9iZV9oZWxw
+ZXIuYyB0aGF0IGludm9rZXMgdGhlIA0KY2FsbGJhY2sgZnVuY3Rpb25zLg0KDQpUaGUgZHJp
+dmVycyBmaWxsIHRoZSBwb2ludGVycyB3aXRoIGNvZGUgdGhhdCBvZnRlbiBjb21lcyBmcm9t
+IG90aGVyIA0KaGVscGVyIG1vZHVsZXMuIFRoYXQgY29kZSBpcyBpbiBmaWxlcyBsaWtlIGRy
+bV9wbGFuZV9oZWxwZXIuYyBvciANCmRybV9jcnRjX2hlbHBlci5jLiBUaGVyZSBoZWFkZXIg
+ZmlsZXMgYXJlIGRybV9wbGFuZV9oZWxwZXIuaCwgZXRjLg0KDQpJbiB0aGF0IGNvbnRleHQs
+IHRoZSBfdnRhYmxlcyBoZWFkZXIgbWFrZXMgc2Vuc2UsIGFzIGl0IHNlcGFyYXRlcyB0aGUg
+DQpjYWxsZXJzIGZyb20gdGhlIGNhbGxlZXMuIFB1dHRpbmcgdGhlIHN0cnVjdHMgaW50byBo
+ZWFkZXJzIGxpa2UgDQpkcm1fcGxhbmVfaGVscGVyLmggd291bGQgbW92ZSBpdCB0byB0aGUg
+Y2FsbGVlIHNpZGUuDQoNCkkgc3VnZ2VzdCB0byBsZWF2ZSB0aGUgaGVhZGVyIGFzIGl0IGlz
+LiBUaGUgZmFsbG91dCB0byB0aGUgY29kZSBiYXNlIA0KZnJvbSByZWZhY3RvcmluZyBzZWVt
+cyB3b3JzZSB0aGFuIHRoZSBjdXJyZW50IHN0YXRlLg0KDQpCZXN0IHJlZ2FyZHMNClRob21h
+cw0KDQo+IA0KPj4+IFNpZ25lZC1vZmYtYnk6IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnQr
+cmVuZXNhc0BnbGlkZXIuYmU+DQo+Pj4gLS0tDQo+Pj4gUkZDLCBhIGZ1dHVyZSBwYXRjaCBj
+b3VsZCByZXBsYWNlIGluY2x1c2lvbiBvZg0KPj4+IDxkcm0vZHJtX21vZGVzZXRfaGVscGVy
+X3Z0YWJsZXMuaD4gYnkgaW5jbHVzaW9uIG9mIG9uZSBvciBtb3JlIG9mIHRoZQ0KPj4+IG5l
+dyBmaWxlcywgYW5kIHJlZHVjZSBjb21waWxhdGlvbiB0aW1lLg0KPj4+IC0tLQ0KPj4+ICAg
+IGluY2x1ZGUvZHJtL2RybV9jb25uZWN0b3JfaGVscGVyX3Z0YWJsZS5oICAgfCAgMzY0ICsr
+KysrDQo+Pj4gICAgaW5jbHVkZS9kcm0vZHJtX2NydGNfaGVscGVyX3Z0YWJsZS5oICAgICAg
+ICB8ICA0ODMgKysrKysrDQo+Pj4gICAgaW5jbHVkZS9kcm0vZHJtX2VuY29kZXJfaGVscGVy
+X3Z0YWJsZS5oICAgICB8ICAzODEgKysrKysNCj4+PiAgICBpbmNsdWRlL2RybS9kcm1fbW9k
+ZV9jb25maWdfaGVscGVyX3Z0YWJsZS5oIHwgICA5NyArKw0KPj4+ICAgIGluY2x1ZGUvZHJt
+L2RybV9tb2Rlc2V0X2hlbHBlcl92dGFibGVzLmggICAgfCAxNDY2ICstLS0tLS0tLS0tLS0t
+LS0tLS0NCj4+PiAgICBpbmNsdWRlL2RybS9kcm1fcGxhbmVfaGVscGVyX3Z0YWJsZS5oICAg
+ICAgIHwgIDI5NyArKysrDQo+Pj4gICAgNiBmaWxlcyBjaGFuZ2VkLCAxNjI3IGluc2VydGlv
+bnMoKyksIDE0NjEgZGVsZXRpb25zKC0pDQo+Pj4gICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGlu
+Y2x1ZGUvZHJtL2RybV9jb25uZWN0b3JfaGVscGVyX3Z0YWJsZS5oDQo+Pj4gICAgY3JlYXRl
+IG1vZGUgMTAwNjQ0IGluY2x1ZGUvZHJtL2RybV9jcnRjX2hlbHBlcl92dGFibGUuaA0KPj4+
+ICAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2RybS9kcm1fZW5jb2Rlcl9oZWxwZXJf
+dnRhYmxlLmgNCj4+PiAgICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kcm0vZHJtX21v
+ZGVfY29uZmlnX2hlbHBlcl92dGFibGUuaA0KPj4+ICAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBp
+bmNsdWRlL2RybS9kcm1fcGxhbmVfaGVscGVyX3Z0YWJsZS5oDQo+IA0KPiBHcntvZXRqZSxl
+ZXRpbmd9cywNCj4gDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICBHZWVydA0KPiANCg0K
+LS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVsb3Blcg0KU1VT
+RSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpGcmFua2Vuc3RyYXNzZSAxNDYs
+IDkwNDYxIE51ZXJuYmVyZywgR2VybWFueQ0KR0Y6IEl2byBUb3RldiwgQW5kcmV3IE15ZXJz
+LCBBbmRyZXcgTWNEb25hbGQsIEJvdWRpZW4gTW9lcm1hbg0KSFJCIDM2ODA5IChBRyBOdWVy
+bmJlcmcpDQo=
 
-Squeezing data into types that are canonically used for something else
-should always be avoided if possible (there are some cases where
-you're stuck with an existing interface, but that's not the case
-here).
+--------------owaky2Mq3hZGJkzfaI9uXaTH--
 
-But I still think we should avoid exporting the raw cycle values
-unless there is some extremely strong argument for it (and if we can,
-they should be abstracted into some sort of cookie value to avoid
-userland using it as a raw clock).
+--------------BAlIJVCg5U9UXIOFQeIhz795
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-thanks
--john
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUWeK0FAwAAAAAACgkQlh/E3EQov+Bl
+2Q//b87uErG+zx2PBsEto8obLBX32R70cG4wm2LtgZ0K5WERkqdtmglAgjBeGuf7NBZlNVs11C7o
+JoUDJdhCvmhK9vSYCGmmtilxFEbXyUSRguN/olcYgC+AvotEmh2d8ZAp4jGESAmHnlFQsnXeDo/1
++YQDJX+L6lIjak6XyEbeTPpqKcUppFODtbu4HCU3a/c0yMsBhKk7wJz5/LkVCnKRUYTh45N+f+Rg
+qdGV8a1Gmv44/XBzhJcrj5P/m/VQdS9AhEGkqob8BiPFH6QhNFxQnBdQ9NDDrmGfpv5S9cL4CI+C
+1weK7lwS5kSckfLc1sz4y7vgQ09DK65ZE2MBJxkEfNCybn9AAi00ppsWi2FxFqBcI/PxMBKB7i1N
+VsIJXq7QocM6rvX6JTfvHlfex5apvTN9j4m3uJMrcIi6zEwNVq9MG2CM0XREw/R/m0YfCcDIlIvc
+PW7fljHhUE/pbPBn9ieEqpdcAvPHKogCT+2r0tt3qlhh3hHGGDWho3nLTyMgulbY736vQK/oh5hI
+w0Ot/g7Ynk1ADooRNYwfUayRyWlQJsSpA+KSsmxIaUl4B26M+HGdezdNpR5asbllhNSWJjWxlK8q
+vo7haNOjp0CBGLu0uc8JfOTeUHyndODwtB1F/Y64EmdvCuTL3NgkIP4O1VI7bewitos9O+Y17jF+
+IXg=
+=P7kC
+-----END PGP SIGNATURE-----
+
+--------------BAlIJVCg5U9UXIOFQeIhz795--
