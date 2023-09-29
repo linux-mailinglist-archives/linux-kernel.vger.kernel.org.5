@@ -2,109 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8507B3BD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 23:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B377B3BE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 23:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233813AbjI2VOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 17:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
+        id S233829AbjI2VXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 17:23:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjI2VOV (ORCPT
+        with ESMTP id S229545AbjI2VXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 17:14:21 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FF01AB;
-        Fri, 29 Sep 2023 14:14:19 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9936b3d0286so1981309066b.0;
-        Fri, 29 Sep 2023 14:14:19 -0700 (PDT)
+        Fri, 29 Sep 2023 17:23:08 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF76C1AA;
+        Fri, 29 Sep 2023 14:23:05 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-57bb6b1f764so5950110eaf.2;
+        Fri, 29 Sep 2023 14:23:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696022058; x=1696626858; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dCiSP7da6dKIVaXYl+J/yofIbbMGcrO8k/37XWQQNwI=;
-        b=Crkf6RvAP6A5wQssikxRu8KClqvkX/3qwcQnf278xKA14/bPfOuTN+wcSUHWMbJgke
-         fzaBp/gYDosKsLQtH7GSJaBH2AgE+m2r0qbJfdVaNi7DupKGdLwKJ9Ky13reRuvNc5q5
-         nh8d9xXJ4tD0+Jsuuy0COq27X3jM9LMdNSTPwYxztotWeo+9qH4lP+VPfLG0tIyHGinT
-         08jMHXQIhfnOlo3dGO8VKhaSZkoW+NBclb+E4lJRhZQQZns0svZQE+A4QLAp74Kp8HVx
-         K+VqKSUt43t4c42VAA+PoYIbID+Cd8KiJen9waKv6GiVHbPKwxrbr1hAwxt89s8NVe5w
-         QhZg==
+        d=gmail.com; s=20230601; t=1696022585; x=1696627385; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :references:in-reply-to:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=giQVxRnSKY3QwiXLgUPf/Ch70Hbxs7OwhgAJkcsQUjA=;
+        b=FjzxfIxQT8pZDpS0Ej5dJSBpenrlTmqXe1dL3aXaZN8lze/8RkRfy1GSx/0ev271dj
+         pFlfS+TmzNWEuclt+ZGldSCYneVgNKzA/aXM0gNp20Frd7pSMQhbC9we3O3Bm3hFSsTq
+         fu0fTo9Ovy93JJxGg/CpPo2XyMcD5fjpUpMNDkGdQ5E5sfuc+WYZGA3GEPOkzXXascxz
+         vRWNCiug965iODUGryaonvcRaMLVfh/TL+1tS+LWseFI/u9HH5i2dP9ElIu3L4159CsO
+         jZflXcLKnbsRapOqO3kq+9/zELdJGU3+IcxnJe0HehEMj7MlKQrbf1qGumhGxC1EfDbB
+         5l+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696022058; x=1696626858;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696022585; x=1696627385;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :references:in-reply-to:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dCiSP7da6dKIVaXYl+J/yofIbbMGcrO8k/37XWQQNwI=;
-        b=UK01WDC8k5ulVCMwJz6FpCvWWvJRlfup40E2QnIADSkxhGR4IAk4S5MKBmBOB0RAFp
-         YU2XjB9wJy4iReXs5y7fU3lQmTdQYMAI1pyAPK7e4ORQNv8ghmk9UjD6JgwdiITLfwAz
-         XxLHTgagNsrDX5F/Dex8kD1vP0TaNmG/do8ltJl0O6VSK86W2x/3nwS0qb+cjEXeB/CK
-         vZreAhM0TZy7gAHI7lXWk1ACztrh+lhOJeYqAU29aMdkeHB7kcUys5Nx0t7L4tFvSBgd
-         G4hW571smxUUh2siaaBUGAgq8mLnDCoMAKuupHiKn5G2pEWAjP0gJt96MFZUMfyL6ikY
-         s3DQ==
-X-Gm-Message-State: AOJu0Yx3IIYk/mXvikFhymncg98mDOKRqMJaD8wiD6la0fz+1+D9ojHC
-        D2PR7BIOavyOTgG+Jv0ahMU=
-X-Google-Smtp-Source: AGHT+IFM1wsL2knvOz7Q0hswor0QTx2gj0akK4JwiiMBw6U8vA9MMI/AJosKPrLpN+4NkuTI6n+gxQ==
-X-Received: by 2002:a17:906:209e:b0:9ae:829e:d930 with SMTP id 30-20020a170906209e00b009ae829ed930mr5670424ejq.9.1696022057599;
-        Fri, 29 Sep 2023 14:14:17 -0700 (PDT)
-Received: from gmail.com (84-236-113-123.pool.digikabel.hu. [84.236.113.123])
-        by smtp.gmail.com with ESMTPSA id b10-20020aa7df8a000000b0052284228e3bsm11640256edy.8.2023.09.29.14.14.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 14:14:16 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Fri, 29 Sep 2023 23:14:14 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Justin Stitt <justinstitt@google.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] x86/tdx: refactor deprecated strncpy
-Message-ID: <ZRc+JqO7XvyHg/nB@gmail.com>
-References: <20230911-strncpy-arch-x86-coco-tdx-tdx-c-v1-1-4b38155727f3@google.com>
- <169601242377.3008066.9973846266706309040.b4-ty@chromium.org>
+        bh=giQVxRnSKY3QwiXLgUPf/Ch70Hbxs7OwhgAJkcsQUjA=;
+        b=S48+UFbAyaqeuGJ/UxbSfpdH9oo/X46eH+GBUtFttRgQR7TP1jG56vFNlOa74XBtdJ
+         CVlLNpmkPdktvuIk5oOsziGkjOPR43FIiLvONjZkuJek66nzGkIqW+uNbV+d8v6zsGzE
+         hre+0eKRStfXcDokSCmq4Al8OOG2NrtAADEALFidWVV5A/Qn/v1OeVh/EgaBP0HjBt7N
+         c34+mxDtnnQQ6rdIHt9s267gQJVDgEfybVB0cSWoEIW6vyKdeL3HwLJyoK2Ujmu0LpuH
+         HWhyiF6tn3PmHHSh60Ms7fR3HoEnh2qi8jSUfVBIbdo6afan8VPRhVEX2SJv3cfVvqTr
+         B5Jw==
+X-Gm-Message-State: AOJu0YwX0ybyIPamcK3dN0MzwrAsMtG9gb6c3KLIQo2RTO06oDbE5J9C
+        Sr9O26WOXzU4E6URVjITb1JT7UU2diFMoeVqdXo=
+X-Google-Smtp-Source: AGHT+IH5Et/yp4t4kN0h2nPyvLqfLtWEqtEjH/QKZuOxDswWLgWzHhcJafHLL+Q1AqHfVc0Q6f5IkcVF+nLz9+QWlb0=
+X-Received: by 2002:a4a:3948:0:b0:57b:a92a:ece9 with SMTP id
+ x8-20020a4a3948000000b0057ba92aece9mr5263570oog.6.1696022585053; Fri, 29 Sep
+ 2023 14:23:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <169601242377.3008066.9973846266706309040.b4-ty@chromium.org>
-X-Spam-Status: No, score=0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        FSL_HELO_FAKE,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Received: by 2002:a8a:108:0:b0:4f0:1250:dd51 with HTTP; Fri, 29 Sep 2023
+ 14:23:04 -0700 (PDT)
+In-Reply-To: <20230929-test-lauf-693fda7ae36b@brauner>
+References: <CAGudoHH2mvfjfKt+nOCEOfvOrQ+o1pqX63tN2r_1+bLZ4OqHNA@mail.gmail.com>
+ <CAHk-=wjmgord99A-Gwy3dsiG1YNeXTCbt+z6=3RH_je5PP41Zw@mail.gmail.com>
+ <ZRR1Kc/dvhya7ME4@f> <CAHk-=wibs_xBP2BGG4UHKhiP2B=7KJnx_LL18O0bGK8QkULLHg@mail.gmail.com>
+ <20230928-kulleraugen-restaurant-dd14e2a9c0b0@brauner> <20230928-themen-dilettanten-16bf329ab370@brauner>
+ <CAG48ez2d5CW=CDi+fBOU1YqtwHfubN3q6w=1LfD+ss+Q1PWHgQ@mail.gmail.com>
+ <CAHk-=wj-5ahmODDWDBVL81wSG-12qPYEw=o-iEo8uzY0HBGGRQ@mail.gmail.com>
+ <20230929-kerzen-fachjargon-ca17177e9eeb@brauner> <CAG48ez2cExy+QFHpT01d9yh8jbOLR0V8VsR8_==O_AB2fQ+h4Q@mail.gmail.com>
+ <20230929-test-lauf-693fda7ae36b@brauner>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Fri, 29 Sep 2023 23:23:04 +0200
+Message-ID: <CAGudoHHwvOMFqYoBQAoFwD9mMmtq12=EvEGQWeToYT0AMg9V0A@mail.gmail.com>
+Subject: Re: [PATCH v2] vfs: shave work on failed file open
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Jann Horn <jannh@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/29/23, Christian Brauner <brauner@kernel.org> wrote:
+> On Fri, Sep 29, 2023 at 03:31:29PM +0200, Jann Horn wrote:
+>> On Fri, Sep 29, 2023 at 11:20=E2=80=AFAM Christian Brauner <brauner@kern=
+el.org>
+>> wrote:
+>> > > But yes, that protection would be broken by SLAB_TYPESAFE_BY_RCU,
+>> > > since then the "f_count is zero" is no longer a final thing.
+>> >
+>> > I've tried coming up with a patch that is simple enough so the pattern
+>> > is easy to follow and then converting all places to rely on a pattern
+>> > that combine lookup_fd_rcu() or similar with get_file_rcu(). The
+>> > obvious
+>> > thing is that we'll force a few places to now always acquire a
+>> > reference
+>> > when they don't really need one right now and that already may cause
+>> > performance issues.
+>>
+>> (Those places are probably used way less often than the hot
+>> open/fget/close paths though.)
+>>
+>> > We also can't fully get rid of plain get_file_rcu() uses itself becaus=
+e
+>> > of users such as mm->exe_file. They don't go from one of the rcu
+>> > fdtable
+>> > lookup helpers to the struct file obviously. They rcu replace the file
+>> > pointer in their struct ofc so we could change get_file_rcu() to take =
+a
+>> > struct file __rcu **f and then comparing that the passed in pointer
+>> > hasn't changed before we managed to do atomic_long_inc_not_zero().
+>> > Which
+>> > afaict should work for such cases.
+>> >
+>> > But overall we would introduce a fairly big and at the same time subtl=
+e
+>> > semantic change. The idea is pretty neat and it was fun to do but I'm
+>> > just not convinced we should do it given how ubiquitous struct file is
+>> > used and now to make the semanics even more special by allowing
+>> > refcounts.
+>> >
+>> > I've kept your original release_empty_file() proposal in vfs.misc whic=
+h
+>> > I think is a really nice change.
+>> >
+>> > Let me know if you all passionately disagree. ;)
+>
+> So I'm appending the patch I had played with and a fix from Jann on top.
+> @Linus, if you have an opinion, let me know what you think.
+>
+> Also available here:
+> https://gitlab.com/brauner/linux/-/commits/vfs.file.rcu
+>
+> Might be interesting if this could be perfed to see if there is any real
+> gain for workloads with massive numbers of fds.
+>
 
-* Kees Cook <keescook@chromium.org> wrote:
+I would feel safer with a guaranteed way to tell that the file was realloca=
+ted.
 
-> On Mon, 11 Sep 2023 18:27:25 +0000, Justin Stitt wrote:
-> > `strncpy` is deprecated and we should prefer more robust string apis.
-> > 
-> > In this case, `message.str` is not expected to be NUL-terminated as it
-> > is simply a buffer of characters residing in a union which allows for
-> > named fields representing 8 bytes each. There is only one caller of
-> > `tdx_panic()` and they use a 59-length string for `msg`:
-> > |	const char *msg = "TD misconfiguration: SEPT_VE_DISABLE attribute must be set.";
-> > 
-> > [...]
-> 
-> This appears to be trivially correct, so I can take it via my tree.
-> 
-> Applied to for-next/hardening, thanks!
-> 
-> [1/1] x86/tdx: refactor deprecated strncpy
->       https://git.kernel.org/kees/c/e32c46753312
+I think this could track allocs/frees with a sequence counter embedded
+into the object, say odd means deallocated and even means allocated.
 
-Please don't apply - Dave had some reservations, plus after the
-change the comment would be now out of sync with the code ...
+Then you would know for a fact whether you raced with the file getting
+whacked and would never have to wonder if you double-checked
+everything you needed (like that f_mode) thing.
 
-Also, we generally carry such patches in the x86 tree.
+This would also mean that consumers which get away with poking around
+the file without getting a ref could still do it, this is at least
+true for tid_fd_mode. All of them would need patching though.
 
-Thanks,
+Extending struct file is not ideal by any means, but the good news is that:
+1. there is a 4 byte hole in there, if one is fine with an int-sized counte=
+r
+2. if one insists on 8 bytes, the struct is 232 bytes on my kernel
+(debian). still some room up to 256, so it may be tolerable?
 
-	Ingo
+--=20
+Mateusz Guzik <mjguzik gmail.com>
