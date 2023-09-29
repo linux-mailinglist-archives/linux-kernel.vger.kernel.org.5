@@ -2,61 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 247917B3315
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 157F87B3319
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233264AbjI2NJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 09:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
+        id S233066AbjI2NKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 09:10:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233269AbjI2NJM (ORCPT
+        with ESMTP id S232954AbjI2NKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 09:09:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB2B1AA
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 06:09:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695992950; x=1727528950;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=6V5japck0SWX1yaTl5Ga0Gzaj6/UKDYQF2nD3xY/dHA=;
-  b=Nl5o247Wro8sAxR3DdPctchOh3bFzXOyNlld5xHqN8BinlTxSkwHQOP+
-   8u8XIK4jdGpCIAKNzfgWAZfGbad1fv2y52o9me7MqllcUoD9WkJko5LQ9
-   0Q01C+IBVUpabilZEo+Sz98udYXG6yTZlGcLKPkPpGmpnQE7vAqN02x6s
-   NKZEMtQsCA0MjUV6QxlW+saYVS73UrxDDajkZuC4VPOY1YWtB9uZsZ/4P
-   fIy5oWHPajiW7WyNiLwv2ILnIX8z83N/XytZTtfKHsyDndBpEAiVVwAr1
-   RAMvgjgbAXm3U4HCNVQq7mAbVjMhFC8sPGN09su5vVg0FPr41jIWlhcew
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="367349375"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="367349375"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 06:09:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="826398"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 29 Sep 2023 06:08:32 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qmDEv-0002s5-07;
-        Fri, 29 Sep 2023 13:09:05 +0000
-Date:   Fri, 29 Sep 2023 21:08:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Lucas Tanure <tanureal@opensource.cirrus.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Lee Jones <lee@kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: drivers/soundwire/bus_type.c:126:30: error: implicit declaration of
- function 'irq_create_mapping'; did you mean 'irq_dispose_mapping'?
-Message-ID: <202309292102.R2ui2IV9-lkp@intel.com>
+        Fri, 29 Sep 2023 09:10:32 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C741AB
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 06:10:30 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c6052422acso135825ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 06:10:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695993029; x=1696597829; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GqsUDvMrMOqqFL7m1YQGMK07qbU6YXfwUB/IfzIJHSc=;
+        b=uALQWr75WlH8dBHzgjwAckyzMtvJs48jR/Ul6XNWr7bOqTN8TjKSYNweboyF7FCYL9
+         X76SVWPAtSH9pNBR4/AXYJ7M+AH2CCh8+BfjSt8b2JyiJaQvqrqXnvmjztbnc8x3p0qw
+         otc772fXV/x9haeTZrkFjpcfHnVrptE+MfRSWpPKReG2yaCJAArrCXm3tHHLeLtTOSa0
+         L/HBRpxAPwGu4s98FeZhcLFHwJdvHPNL2xGb9IsE779bGqgPR+PvN49w6RV8U4wQS2QT
+         oUvmZfwCy4U4lWpOlqkH3KA2kc9Y7NcPbWTpXuLy1rVBPYKxHI6LjDpanJoWKWrrq3D8
+         xIAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695993029; x=1696597829;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GqsUDvMrMOqqFL7m1YQGMK07qbU6YXfwUB/IfzIJHSc=;
+        b=daCmD4yXOEBla2/THHqlojccvr9h3tTPao2JGFeh1D7Ct5shGfFzMYoCMRYNxMISaF
+         qQXWfiDd3gCFEOhesGkRzdsMjDjnmf1iZjJBiVFmd7UM/CS5j0celgM24hVw4FqkAmOp
+         BK68C75sbAH2Mn6HOrNSq1PiSpiTiwsWYriC2558xrw0RqnBIUfUVtFZnzojAeippMXj
+         q69qpDfw3a+TzwxXm5/OFe10fHoQEkSNeKUHGGKDzQ+uqsNiHlZNTX8zFQleXzz9fMwJ
+         UPV2dtxFXYeGfGcJemlPc/MPlaFzP6nuODBkbxY9Rz4odeBxmTIzh7gjDk6lyrjbIW9y
+         pgrQ==
+X-Gm-Message-State: AOJu0Yzh6H070FiloL+kwsti1UDEI4GeDRbwN6KK1UgJQ4Wfcr191h/l
+        034TXOettlsqs7ovnsWKyO43n2HSmuZ1eZ6c45bOqg==
+X-Google-Smtp-Source: AGHT+IGa8YbOF0A0sMykEjT9fwajbe4gFnID97FG5oUvq2FBzNkVBTg2g/J63Q35Ro7fybey1Btr2vmzoE31FXbTm+k=
+X-Received: by 2002:a17:903:32d0:b0:1bc:29c3:5895 with SMTP id
+ i16-20020a17090332d000b001bc29c35895mr978436plr.0.1695993029313; Fri, 29 Sep
+ 2023 06:10:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230829234426.64421-1-tony.luck@intel.com> <20230928191350.205703-1-tony.luck@intel.com>
+ <20230928191350.205703-4-tony.luck@intel.com>
+In-Reply-To: <20230928191350.205703-4-tony.luck@intel.com>
+From:   Peter Newman <peternewman@google.com>
+Date:   Fri, 29 Sep 2023 15:10:18 +0200
+Message-ID: <CALPaoCgb35dGiC87e_cqTOXKKZ-nQcokWou+u=mC7m2gR36G8w@mail.gmail.com>
+Subject: Re: [PATCH v6 3/8] x86/resctrl: Prepare for different scope for
+ control/monitor operations
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,167 +81,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lucas,
+Hi Tony,
 
-FYI, the error/warning still remains.
+On Thu, Sep 28, 2023 at 9:14=E2=80=AFPM Tony Luck <tony.luck@intel.com> wro=
+te:
+>
+> @@ -352,7 +355,7 @@ struct rdt_domain *get_domain_from_cpu(int cpu, struc=
+t rdt_resource *r)
+>  {
+>         struct rdt_domain *d;
+>
+> -       list_for_each_entry(d, &r->domains, hdr.list) {
+> +       list_for_each_entry(d, &r->ctrl_domains, hdr.list) {
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   9ed22ae6be817d7a3f5c15ca22cbc9d3963b481d
-commit: 12a95123bfe1dd1a6020a35f5e67a560591bb02a soundwire: bus: Allow SoundWire peripherals to register IRQ handlers
-date:   6 weeks ago
-config: s390-randconfig-r031-20221019 (https://download.01.org/0day-ci/archive/20230929/202309292102.R2ui2IV9-lkp@intel.com/config)
-compiler: s390-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230929/202309292102.R2ui2IV9-lkp@intel.com/reproduce)
+If someone were to call get_domain_from_cpu() looking for a
+mon_domain, I don't think they'd be happy with the result.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309292102.R2ui2IV9-lkp@intel.com/
+This problem seems adequately addressed by the next patch where a type
+mismatch on the return value would result.
 
-All error/warnings (new ones prefixed by >>):
-
-   drivers/soundwire/bus_type.c: In function 'sdw_drv_probe':
->> drivers/soundwire/bus_type.c:126:30: error: implicit declaration of function 'irq_create_mapping'; did you mean 'irq_dispose_mapping'? [-Werror=implicit-function-declaration]
-     126 |                 slave->irq = irq_create_mapping(slave->bus->domain, slave->dev_num);
-         |                              ^~~~~~~~~~~~~~~~~~
-         |                              irq_dispose_mapping
-   drivers/soundwire/bus_type.c: In function 'sdw_drv_remove':
->> drivers/soundwire/bus_type.c:179:37: error: implicit declaration of function 'irq_find_mapping'; did you mean 'irq_dispose_mapping'? [-Werror=implicit-function-declaration]
-     179 |                 irq_dispose_mapping(irq_find_mapping(slave->bus->domain,
-         |                                     ^~~~~~~~~~~~~~~~
-         |                                     irq_dispose_mapping
-   cc1: some warnings being treated as errors
---
-   drivers/soundwire/bus.c: In function 'sdw_bus_master_add':
->> drivers/soundwire/bus.c:173:23: error: implicit declaration of function 'irq_domain_create_linear' [-Werror=implicit-function-declaration]
-     173 |         bus->domain = irq_domain_create_linear(fwnode, SDW_MAX_DEVICES,
-         |                       ^~~~~~~~~~~~~~~~~~~~~~~~
->> drivers/soundwire/bus.c:173:21: warning: assignment to 'struct irq_domain *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-     173 |         bus->domain = irq_domain_create_linear(fwnode, SDW_MAX_DEVICES,
-         |                     ^
-   drivers/soundwire/bus.c: In function 'sdw_bus_master_delete':
->> drivers/soundwire/bus.c:217:9: error: implicit declaration of function 'irq_domain_remove' [-Werror=implicit-function-declaration]
-     217 |         irq_domain_remove(bus->domain);
-         |         ^~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+In any case, perhaps the name could be updated to set expectations better.
 
 
-vim +126 drivers/soundwire/bus_type.c
+> @@ -549,44 +552,101 @@ static void domain_add_cpu(int cpu, struct rdt_res=
+ource *r)
+>
+>         rdt_domain_reconfigure_cdp(r);
+>
+> -       if (r->alloc_capable && domain_setup_ctrlval(r, d)) {
+> +       if (domain_setup_ctrlval(r, d)) {
+>                 domain_free(hw_dom);
+>                 return;
+>         }
+>
+> -       if (r->mon_capable && arch_domain_mbm_alloc(r->num_rmid, hw_dom))=
+ {
+> +       list_add_tail(&d->hdr.list, add_pos);
+> +
+> +       err =3D resctrl_online_ctrl_domain(r, d);
+> +       if (err) {
+> +               list_del(&d->hdr.list);
+>                 domain_free(hw_dom);
+> +       }
+> +}
+> +
+> +static void domain_add_cpu_mon(int cpu, struct rdt_resource *r)
+> +{
+> +       int id =3D get_domain_id_from_scope(cpu, r->mon_scope);
+> +       struct list_head *add_pos =3D NULL;
+> +       struct rdt_hw_domain *hw_mondom;
 
-    79	
-    80	static int sdw_drv_probe(struct device *dev)
-    81	{
-    82		struct sdw_slave *slave = dev_to_sdw_dev(dev);
-    83		struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
-    84		const struct sdw_device_id *id;
-    85		const char *name;
-    86		int ret;
-    87	
-    88		/*
-    89		 * fw description is mandatory to bind
-    90		 */
-    91		if (!dev->fwnode)
-    92			return -ENODEV;
-    93	
-    94		if (!IS_ENABLED(CONFIG_ACPI) && !dev->of_node)
-    95			return -ENODEV;
-    96	
-    97		id = sdw_get_device_id(slave, drv);
-    98		if (!id)
-    99			return -ENODEV;
-   100	
-   101		/*
-   102		 * attach to power domain but don't turn on (last arg)
-   103		 */
-   104		ret = dev_pm_domain_attach(dev, false);
-   105		if (ret)
-   106			return ret;
-   107	
-   108		ret = drv->probe(slave, id);
-   109		if (ret) {
-   110			name = drv->name;
-   111			if (!name)
-   112				name = drv->driver.name;
-   113	
-   114			dev_err(dev, "Probe of %s failed: %d\n", name, ret);
-   115			dev_pm_domain_detach(dev, false);
-   116			return ret;
-   117		}
-   118	
-   119		mutex_lock(&slave->sdw_dev_lock);
-   120	
-   121		/* device is probed so let's read the properties now */
-   122		if (drv->ops && drv->ops->read_prop)
-   123			drv->ops->read_prop(slave);
-   124	
-   125		if (slave->prop.use_domain_irq) {
- > 126			slave->irq = irq_create_mapping(slave->bus->domain, slave->dev_num);
-   127			if (!slave->irq)
-   128				dev_warn(dev, "Failed to map IRQ\n");
-   129		}
-   130	
-   131		/* init the sysfs as we have properties now */
-   132		ret = sdw_slave_sysfs_init(slave);
-   133		if (ret < 0)
-   134			dev_warn(dev, "Slave sysfs init failed:%d\n", ret);
-   135	
-   136		/*
-   137		 * Check for valid clk_stop_timeout, use DisCo worst case value of
-   138		 * 300ms
-   139		 *
-   140		 * TODO: check the timeouts and driver removal case
-   141		 */
-   142		if (slave->prop.clk_stop_timeout == 0)
-   143			slave->prop.clk_stop_timeout = 300;
-   144	
-   145		slave->bus->clk_stop_timeout = max_t(u32, slave->bus->clk_stop_timeout,
-   146						     slave->prop.clk_stop_timeout);
-   147	
-   148		slave->probed = true;
-   149	
-   150		/*
-   151		 * if the probe happened after the bus was started, notify the codec driver
-   152		 * of the current hardware status to e.g. start the initialization.
-   153		 * Errors are only logged as warnings to avoid failing the probe.
-   154		 */
-   155		if (drv->ops && drv->ops->update_status) {
-   156			ret = drv->ops->update_status(slave, slave->status);
-   157			if (ret < 0)
-   158				dev_warn(dev, "%s: update_status failed with status %d\n", __func__, ret);
-   159		}
-   160	
-   161		mutex_unlock(&slave->sdw_dev_lock);
-   162	
-   163		dev_dbg(dev, "probe complete\n");
-   164	
-   165		return 0;
-   166	}
-   167	
-   168	static int sdw_drv_remove(struct device *dev)
-   169	{
-   170		struct sdw_slave *slave = dev_to_sdw_dev(dev);
-   171		struct sdw_driver *drv = drv_to_sdw_driver(dev->driver);
-   172		int ret = 0;
-   173	
-   174		mutex_lock(&slave->sdw_dev_lock);
-   175	
-   176		slave->probed = false;
-   177	
-   178		if (slave->prop.use_domain_irq)
- > 179			irq_dispose_mapping(irq_find_mapping(slave->bus->domain,
-   180							     slave->dev_num));
-   181	
-   182		mutex_unlock(&slave->sdw_dev_lock);
-   183	
-   184		if (drv->remove)
-   185			ret = drv->remove(slave);
-   186	
-   187		dev_pm_domain_detach(dev, false);
-   188	
-   189		return ret;
-   190	}
-   191	
+It's still hw_dom in domain_add_cpu_ctrl(), so why hw_mondom here?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+> @@ -3711,16 +3711,16 @@ static void domain_destroy_mon_state(struct rdt_d=
+omain *d)
+>         kfree(d->mbm_local);
+>  }
+>
+> -void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d=
+)
+> +void resctrl_offline_ctrl_domain(struct rdt_resource *r, struct rdt_doma=
+in *d)
+>  {
+>         lockdep_assert_held(&rdtgroup_mutex);
+>
+>         if (supports_mba_mbps() && r->rid =3D=3D RDT_RESOURCE_MBA)
+>                 mba_sc_domain_destroy(r, d);
+> +}
+>
+> -       if (!r->mon_capable)
+> -               return;
+> -
+> +void resctrl_offline_mon_domain(struct rdt_resource *r, struct rdt_domai=
+n *d)
+> +{
+>         /*
+>          * If resctrl is mounted, remove all the
+>          * per domain monitor data directories.
+
+We did a lockdep_assert_held(&rdtgroup_mutex) for both types before.
+Should we continue to do so here?
+
+
+> --
+> 2.41.0
+>
+
+In the resctrl2 prototype I complained that resctrl_resource was
+awkwardly disjoint in its support for control and monitoring
+groups[1]. In this patch, you seem to have already done most of the
+hard work in separating the control and monitoring functionality, so
+taking the next step and using a different structure to represent
+control and monitoring resources would further improve the code by
+statically typing monitoring and control resources, which would be
+less error-prone than run-time checks on the alloc_capable and
+mon_capable fields, which seem easy to forget.
+
+I don't think this is necessary to complete SNC support, but it would
+give me confidence that there isn't a misplaced {alloc,mon}_capable
+check resulting in the wrong domain list being traversed. I will
+probably do this myself later if you don't.
+
+Thanks!
+-Peter
+
+[1] https://lore.kernel.org/all/CALPaoCj_oa=3DnATvOO_uysYvu+PdTQtd0pvssvm9_=
+M1+fP-Z8JA@mail.gmail.com/
