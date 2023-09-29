@@ -2,136 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8027B2E03
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3ACD7B2E08
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:41:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232991AbjI2IkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 04:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45538 "EHLO
+        id S232650AbjI2IlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 04:41:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233003AbjI2Ijm (ORCPT
+        with ESMTP id S232518AbjI2IlU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 04:39:42 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2076.outbound.protection.outlook.com [40.107.220.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194E510D1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:39:39 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jrznnKPd0zIqke7i7rsmY03eVPwNO8gz7Ev0qYX2vSmvlpHVLRcF1zFm+odI59qZNiwQiDFkacTZ2RMLrPfsr11q2YOypHj69xP6WCwLdxOEIO94oVctRPh5+2JhTKT8u1Ap3l9+ZcYTTF85gc5Z6TggcUblw4y3AgUKLY+FQP4YWcIM9yGU5oiCt03GYr3yPa5GhUii4U6tiac+fK9aS7wcHPIEt5ogqyclR6BmnHS1rLq5hDWkh4WxCnhaBO4m0U2LvLyQp5aI2h84vXQkjDzAld2D14kOdfxTdEHF/lhsOb2kbkI6677sTSZ/SaseAGpfPUwmcFRqiyVdbYY2Lw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vFBiZ8scAfNR38wE/hCuxIx6kSdJUYPAO3HVU92MY6c=;
- b=SL4T+NLs2LcqsX/ZVrn4hf03aF6x/97RqMTnV63Zu21/ynkQYt1ysTqRsZPoYem8WzlrY3FO0TGY6lzClA1uQ39E+plPyHlH5b7gPthy/MdcCK1VRHxLn3x+4khDLQMqQhoDeLO4YXFxWfgE7zivH4nAHsI2pE09EbfgiAYkqwp69B559VOXyHEZepnql6P05eYEMcirVuyZmVxMasckSkxIEa2zG2LJU00UfTnnSY7WvmfHECdV0roEb91QqWUtBp6XFOGfiXulzkNSCFiCwwxOsVBIH6H8ie5a8Njsr/IeC4gOiBYfJZ1pTND6kdSF7CwFmUK4OOrfeT6jA9PsaQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vFBiZ8scAfNR38wE/hCuxIx6kSdJUYPAO3HVU92MY6c=;
- b=s69O1BrAyUDpOSgSDdyHSKR0MtO8QH4WMwowD3xEV9O+q21snCWGzeEprvK77Ji91f3bB4rVa0qy3C4HE7ANIA1k4j9PIgaGESpOZuCY53Z3zMJtNLi8lBhtObdTz/wpRFwwyERA5QBSbkUDrdSX4QalWHU0rwIT+I7ALFCZ7Qw=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com (2603:10b6:303:18a::10)
- by CH3PR12MB8306.namprd12.prod.outlook.com (2603:10b6:610:12c::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25; Fri, 29 Sep
- 2023 08:39:37 +0000
-Received: from MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::76fc:3d1c:27c6:61da]) by MW4PR12MB5667.namprd12.prod.outlook.com
- ([fe80::76fc:3d1c:27c6:61da%4]) with mapi id 15.20.6838.024; Fri, 29 Sep 2023
- 08:39:37 +0000
-Message-ID: <e33eb526-c0b7-c404-72d2-390ce7fb0108@amd.com>
-Date:   Fri, 29 Sep 2023 10:39:28 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH v2 1/1] drm/amdkfd: Fix unaligned doorbell absolute offset
- for gfx8
-Content-Language: en-US
-To:     Felix Kuehling <felix.kuehling@amd.com>,
-        "Joshi, Mukul" <Mukul.Joshi@amd.com>,
-        "Yadav, Arvind" <Arvind.Yadav@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>
-Cc:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20230928095427.4337-1-Arvind.Yadav@amd.com>
- <20230928095427.4337-2-Arvind.Yadav@amd.com>
- <DM4PR12MB6445548E05C8E3B29AAEAFCAEEC1A@DM4PR12MB6445.namprd12.prod.outlook.com>
- <8cd0539d-5d5e-e670-9577-7db72393b784@amd.com>
- <8c9c3b5b-ba1e-ba07-3001-242eab9ca1a6@amd.com>
- <2f56333d-4549-3118-5cd0-3ad2be025b66@amd.com>
-From:   Shashank Sharma <shashank.sharma@amd.com>
-In-Reply-To: <2f56333d-4549-3118-5cd0-3ad2be025b66@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: BE1P281CA0445.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:81::14) To MW4PR12MB5667.namprd12.prod.outlook.com
- (2603:10b6:303:18a::10)
+        Fri, 29 Sep 2023 04:41:20 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A2981A8;
+        Fri, 29 Sep 2023 01:41:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 956BCC433C8;
+        Fri, 29 Sep 2023 08:41:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695976879;
+        bh=6tI6GpGFhOTZiIWcylA1AhrCzVR0BgdK+4RztK5pLi0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aa5LXlJfvqf+lZEdlODQfYYyYKi57g4EvS0wKKoO8jsvbMQhklNodVvGQH/Ex0SCT
+         /K6XG35O7QS4qLqxsb33lWJCtyXc4IIfNFb9wD9bo1/Wyqx+gZykSi6amOuDEsNBKC
+         Z4WrMj1DYM9qndbLXDoW5qAu83q6i+URFet5maYvyjz3lSeVZ/PsMvgrnAU+M/jXho
+         V+jsqyvHnNiYst7kWI8vMGAvnAca8bzoNptW8nN0oYzuETQXYMIxH5JsJPvT5CH8rr
+         AZqWJ2LhXmC2MGcrWflEzwQCJQPRM1Ayf9W72jjAhx5QJJ9V1g7HkwdYKAK92wJcXU
+         s3+WYevGWETPQ==
+Date:   Fri, 29 Sep 2023 10:41:16 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Li Zetao <lizetao1@huawei.com>
+Cc:     khali@linux-fr.org, gregkh@suse.de, lizeta1@huawei.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] i2c: core: Fix possible memleak in
+ i2c_register_adapter()
+Message-ID: <ZRaNrE3LZ/bl4OWZ@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Li Zetao <lizetao1@huawei.com>, khali@linux-fr.org, gregkh@suse.de,
+        lizeta1@huawei.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230928012709.1247208-1-lizetao1@huawei.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW4PR12MB5667:EE_|CH3PR12MB8306:EE_
-X-MS-Office365-Filtering-Correlation-Id: ec6c4ddd-b5a6-4791-62aa-08dbc0c79d06
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UqB77iaJn2PeSRj5d53wNrKeodsdMGePaUTTwv0MMHod1fHhDKO8sp1BmTIfkKIFdxrgRPuqDgbOJoML1ff3othtQsFt4dh4/gWrM/WE3nIMp8/+uuNoUJBvysI25dqJy5OZUwx5qdkgV8UQpR+HJqC5jBjczIzFrHzommpYNzgkOnnMRO1wDOgHdUqffYcS/oZfGoQjqUCZZIANWl06V36nL8EoEIUm7i/+NBr+RByNgWI+l7enoZVFHvwIcZ+3KF1KyBj/9UaV4doliOZaTI5HNqil5y+Y8NOjKsASL3lsUEnEKXijDwKdUQbTadjo5pPg3JwOGG8SJYTs6wa1Nyvcx0Y7TROvzn8zJb5Am5Lr/Q8fOIwmXvChEJXpPXW1Mcjm0Wxfoej1SHVa243CLyQmpIJMaHb+G0v1ZZukTJfbVTL3itL44n55LEMoM+AE5zTAD+CD91MzxLwCqS65LUfmj2XK+j7W71CY4qEMY+kbpKgQ+TC96TcVVwJFcNhM2gdsl7pzfHrgsu7UXZCB8DT5xkKUx1MzplPPtqRRHw7ajAcTZ6vyvif6e1KUTsCXQ4aVUQoUmpNaW6uthpj3oLn+Fpi5Yie94beNzElg3u05SWldvw1Tjyg2HsffYnU9Vkn8SytJw3QZepWk0svGCQk/b3NMKbEQG9n3o/jtny0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW4PR12MB5667.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(39860400002)(346002)(366004)(376002)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(6666004)(2906002)(53546011)(6486002)(6506007)(478600001)(36756003)(83380400001)(2616005)(6512007)(26005)(41300700001)(66476007)(8676002)(66946007)(66556008)(4326008)(8936002)(54906003)(316002)(5660300002)(31686004)(44832011)(110136005)(38100700002)(921005)(86362001)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MkM4aFkya050UzkxQk1Xa2FMTXZVN0F5SHViZThEdm12L2RGTmNkNlVHcTgw?=
- =?utf-8?B?VUVEWDlzMkwxVmFoVzdhamtnVlZET0lNeWF3M2F4UDZZMG1wZDdHU2EweXh0?=
- =?utf-8?B?V243SUVqNGFMWk5Fb1IrSmtwQVpRSTVGbXd1UUxsUVZMS2EweGNBSTV5VU5a?=
- =?utf-8?B?TVh1RkVEdXVJUUQrR05LWE9id1dqaG5qY1pIRks5Nk1qTGM0TFdhcHorOEJW?=
- =?utf-8?B?Z1l6VjhldGlaYmtmUjJoTVVoNjh3VnlwNFlSb3hkNEZQV01ZY1pNWjBPRmpu?=
- =?utf-8?B?NXlCWUZ6aXlNS3lOUXY0VXVWZnMrR1prWjlWUHhxQy9MYzNpeHhiYTlWUjlO?=
- =?utf-8?B?clA1dnNGOGhyTFQxcnpXQzFMb0N1NEF1R2hGZCtzeWF2UGdtL2FlRisyQVMx?=
- =?utf-8?B?dGxXVDYwQmtPYUZoNU9hNE1KYUs2enFITzc4KzJYYVZwaDJwYXcvbnZUNU40?=
- =?utf-8?B?d1F5L0dsUGsybEhsMkxVQSt4QVAxVUp0MzNNZmRibXkwcVNkN09rd3JYeEtl?=
- =?utf-8?B?THQ5alJ3cGtaTkwxek5ZMzJrZ3d4UFhQWWFqZHVKbVRaaDE4cE83RHNyeXlv?=
- =?utf-8?B?Mjk1dEJOVDlHbldER3JmajBIU083YUpLNUFPaElhOUNEdWV6NFFtSmtjdjVI?=
- =?utf-8?B?WDBSV1FJQVZiNHhTeU8vZVU0alQ3N0FJMm0rTzVCbkgvZGJWckY0d216M256?=
- =?utf-8?B?dSsrOWxTd0VEa3JPZkhrdFNOSUEwQTJHWld1OFdzeU80Y2hXZlBUamhSYWRz?=
- =?utf-8?B?cDVhd1RGajVVOURCMmk1S3lVTlFVNUk0ckpibWtQeHI5VkJVbHFzVjBIUDBm?=
- =?utf-8?B?TUorc2w5N1FqZGdLdldSZE5pdGpyTGM1NDJITTBPVUdEc211S2pELzBaRjBx?=
- =?utf-8?B?YlVYejVCeW9qeERnS0hPNVJLNlhjeGJsZjdRYTdMNy9Cdkw1ZDdzSTZUb0VE?=
- =?utf-8?B?VHZQODNXdGF4bURqYjhxOUVMaW5YVkV2b3RVZ3E1YmRCWCtoQUJHc09pdjd1?=
- =?utf-8?B?M2F4SWVyLytDQWJvL2pXM2c0MU0vRFFSNWtvSnVqMlR3K0ZGSkN1V0svQmZI?=
- =?utf-8?B?cnVGZ2xqMEtDWlRKdlc3Nnl6NUJjRHpQRlhMeWhuK1prb1BqMnV4VTdPRGpL?=
- =?utf-8?B?TzlZTFlGKzg1TTJnMld3MDNwYkJGL0cwRXNrYUxDOVVQQkpjU1h1dXAzZ3hw?=
- =?utf-8?B?ZzJZdmVpaEFicitJWXBDMWtYY09XVG5CVkdyaUFwUi90RUs4bjk4MlByVkRO?=
- =?utf-8?B?K0VjYVh1eU50Q0wza3QrblMzTi9LMFIrS256L3pVS3J0WkRNNytoZ2Roclh5?=
- =?utf-8?B?ZlU5NTRwbFJlakFiZVdmS3NZNlFpUjlTbXF5RW5YUzlpTDh2QjNMVDg4SEJK?=
- =?utf-8?B?ejJRL0JBUWpXN0RGOHZuNHlVNEZyaU42ZEV3WitlQmpIMXZuT21nc1lqMThY?=
- =?utf-8?B?VkNHWUVHdVpDZEg4YVRCSWE0dlgwR2JpWEZGdkEwOVljdjAyWXZ0UTNwUlJ4?=
- =?utf-8?B?SUR3dEdNUWZ6dmFJY3c2ZDdoeWw4YTBqRENRMHNRN2hJbVdOaldDb0ZNM3Mz?=
- =?utf-8?B?ajJLZ1hqMVl2SVV1NldlWHEyWWZDaHNjQzJLRS9hOWtOTCtVUGRHSGRMR0Ns?=
- =?utf-8?B?eGkwY1RsVDRLQkR2YzBkU1dkTW1tQUlEQVJLQ2FRSFg2YndzYTVWOHlYMTIx?=
- =?utf-8?B?aHllM1IvNiszc2dRZ09kS3JVcVE4bDMrT1Z3ZHF0T3JucUVIaGt1OFNaWHdN?=
- =?utf-8?B?RlMvci9sVGtna09xOUVTZHRzTFhoUXhpNEZJeHgrQ0V3QXRQaHRVUldYMjk4?=
- =?utf-8?B?KzN4eU9mMGl5bVNaZ3BZMlZwWVJETGhHY0ZBajhTSHB2Qm5peGM4QkZvc0Jh?=
- =?utf-8?B?QWsrdEljWnc4dmhBazVjR3BVWUMwZUZqV0VTODRWQVB4N3I0Qkw5dmdqd3lz?=
- =?utf-8?B?czIyMFhQamNVQlNsV1RtMzlJTFc4T3YxRllGdlVsRDRuK0REZXBlc2c2WlM1?=
- =?utf-8?B?eE9DeHgrbWVuVmxlYUVudTBadjF4MnROMnQxNjlRSGU0enNLUWpOQ2Jlbm9a?=
- =?utf-8?B?K3dpakdvY0tzMFVvbmFNcyt4WmhJZ1RJdUYyblBsdU1tVU5GQnMrclNnTWRE?=
- =?utf-8?Q?WlZoJt4HXkcOnCiEVZFIgNHBm?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ec6c4ddd-b5a6-4791-62aa-08dbc0c79d06
-X-MS-Exchange-CrossTenant-AuthSource: MW4PR12MB5667.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 08:39:37.2624
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zpI//NYFSx2C6k8aeH20V3IzpYeRNCK7KeXNwHLFlJgurpb/UbTcAj+LBytKX6zPMO3m6a4vtStIXVKr001udQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8306
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="N52PRuWBL1vaUBvj"
+Content-Disposition: inline
+In-Reply-To: <20230928012709.1247208-1-lizetao1@huawei.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -139,125 +55,68 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 28/09/2023 20:53, Felix Kuehling wrote:
-> On 2023-09-28 11:38, Shashank Sharma wrote:
->> Hello Felix, Mukul,
->>
->> On 28/09/2023 17:30, Felix Kuehling wrote:
->>> On 2023-09-28 10:30, Joshi, Mukul wrote:
->>>> [AMD Official Use Only - General]
->>>>
->>>>> -----Original Message-----
->>>>> From: Yadav, Arvind <Arvind.Yadav@amd.com>
->>>>> Sent: Thursday, September 28, 2023 5:54 AM
->>>>> To: Koenig, Christian <Christian.Koenig@amd.com>; Deucher, Alexander
->>>>> <Alexander.Deucher@amd.com>; Sharma, Shashank
->>>>> <Shashank.Sharma@amd.com>; Kuehling, Felix <Felix.Kuehling@amd.com>;
->>>>> Joshi, Mukul <Mukul.Joshi@amd.com>; Pan, Xinhui <Xinhui.Pan@amd.com>;
->>>>> airlied@gmail.com; daniel@ffwll.ch
->>>>> Cc: amd-gfx@lists.freedesktop.org; 
->>>>> dri-devel@lists.freedesktop.org; linux-
->>>>> kernel@vger.kernel.org; Yadav, Arvind <Arvind.Yadav@amd.com>; Koenig,
->>>>> Christian <Christian.Koenig@amd.com>
->>>>> Subject: [PATCH v2 1/1] drm/amdkfd: Fix unaligned doorbell 
->>>>> absolute offset
->>>>> for gfx8
->>>>>
->>>>> This patch is to adjust the absolute doorbell offset against the 
->>>>> doorbell id
->>>>> considering the doorbell size of 32/64 bit.
->>>>>
->>>>> v2:
->>>>> - Addressed the review comment from Felix.
->>>>>
->>>>> Cc: Christian Koenig <christian.koenig@amd.com>
->>>>> Cc: Alex Deucher <alexander.deucher@amd.com>
->>>>> Signed-off-by: Shashank Sharma <shashank.sharma@amd.com>
->>>>> Signed-off-by: Arvind Yadav <Arvind.Yadav@amd.com>
->>>>> ---
->>>>>   drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c | 9 ++++++++-
->>>>>   1 file changed, 8 insertions(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
->>>>> b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
->>>>> index 0d3d538b64eb..c54c4392d26e 100644
->>>>> --- a/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
->>>>> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_device_queue_manager.c
->>>>> @@ -407,7 +407,14 @@ static int allocate_doorbell(struct
->>>>> qcm_process_device *qpd,
->>>>>
->>>>>        q->properties.doorbell_off = amdgpu_doorbell_index_on_bar(dev-
->>>>>> adev,
->>>>>                                                                  qpd-
->>>>>> proc_doorbells,
->>>>> -                                                               q-
->>>>>> doorbell_id);
->>>>> +                                                               0);
->>>>> +
->>>> It looks like amdgpu_doorbell_index_on_bar() works only for 64-bit 
->>>> doorbells.
->>>> Shouldn't it work for both 32-bit and 64-bit doorbells considering 
->>>> this is common
->>>> doorbell manager code?
->>
->>
->> Yes, You are right that the calculations to find a particular 
->> doorbell in the doorbell page considers a doorbell width of 64-bit.
->>
->>>
->>> I could see this argument going either way. KFD is the only one that 
->>> cares about managing doorbells for user mode queues on GFXv8 GPUs. 
->>> This is not a use case that amdgpu cares about. So I'm OK with KFD 
->>> doing its own address calculations to make sure doorbells continue 
->>> to work on GFXv8.
->>>
->>> It may not be worth adding complexity to the common doorbell manager 
->>> code to support legacy GPUs with 32-bit doorbells.
->>
->>
->> I was thinking about adding an additional input parameter which will 
->> indicate if the doorbell width is 32-bit vs 64-bit (like 
->> is_doorbell_64_bit), and doorbell manager can alter the multiplier 
->> while calculating the final offset. Please let me know if that will 
->> work for both the cases.
->
-> Yes, that would work for KFD because we already have the doorbell size 
-> in our device-info structure. Instead of making it a boolean flag, you 
-> could make it a doorbell_size parameter, in byte or dword units to 
-> simplify the pointer math.
+--N52PRuWBL1vaUBvj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Sep 28, 2023 at 09:27:09AM +0800, Li Zetao wrote:
+> There is a memory leak reported by kmemleak:
+>=20
+> unreferenced object 0xffff88818be6dcb8 (size 8):
+>   comm "modprobe", pid 1022129, jiffies 4363911608 (age 43.838s)
+>     hex dump (first 8 bytes):
+>       69 32 63 2d 30 00 6b a5                          i2c-0.k.
+>     backtrace:
+>       [<ffffffff812f588f>] __kmem_cache_alloc_node+0x2cf/0x4b0
+>       [<ffffffff81283c43>] __kmalloc_node_track_caller+0x53/0x140
+>       [<ffffffff81604b0a>] kvasprintf+0x6a/0xd0
+>       [<ffffffff81604be7>] kvasprintf_const+0x77/0xa0
+>       [<ffffffff81a00173>] kobject_set_name_vargs+0x23/0x90
+>       [<ffffffff817bf743>] dev_set_name+0x53/0x70
+>       [<ffffffffa023ebb2>] i2c_register_adapter+0x112/0x6c0 [i2c_core]
+>       [<ffffffffa023f268>] i2c_add_adapter+0x78/0xc0 [i2c_core]
+>       [<ffffffffa0300182>] piix4_add_adapter+0x132/0x210 [i2c_piix4]
+>       [<ffffffffa0300535>] piix4_probe+0x2d5/0x5f4 [i2c_piix4]
+>       ...
+>=20
+> The root cause was traced to an error handing path in
+> i2c_register_adapter() when device_register() fails. After
+> calling dev_set_name() which called by i2c_register_adapter(),
+> the put_device() should be used to give up the device reference
+> in error handling path in order to free "kobj->name" alloced
+> in dev_set_name().
+>=20
+> Fix it by calling put_device() when device_register() fails in
+> i2c_register_adapter(). In addition, when i2c_adapter device
+> is released, i2c_adapter_dev_release() is called, in which
+> "dev_released" must be initialized, otherwise a kernel bug
+> will be triggered.
+>=20
+> Fixes: b119c6c952a0 ("i2c: __must_check fixes (core drivers)")
+> Signed-off-by: Li Zetao <lizetao1@huawei.com>
+
+Applied to for-next, thanks!
 
 
-Sounds good, will do that and send an update.
+--N52PRuWBL1vaUBvj
+Content-Type: application/pgp-signature; name="signature.asc"
 
-- Shashank
+-----BEGIN PGP SIGNATURE-----
 
->
-> Regards,
->   Felix
->
->
->>
->> - Shashank
->>
->>>
->>>
->>> Regards,
->>>   Felix
->>>
->>>
->>>>
->>>> Thanks,
->>>> Mukul
->>>>
->>>>> +     /* Adjust the absolute doorbell offset against the doorbell id
->>>>> considering
->>>>> +      * the doorbell size of 32/64 bit.
->>>>> +      */
->>>>> +     q->properties.doorbell_off += q->doorbell_id *
->>>>> + dev->kfd->device_info.doorbell_size / 4;
->>>>> +
->>>>>        return 0;
->>>>>   }
->>>>>
->>>>> -- 
->>>>> 2.34.1
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUWjagACgkQFA3kzBSg
+KbaNGg/9GEd3StwttDVwiwQMhnpF/G4aB1sdIvxeNWwPV0H2eSPYT+oe/BP3YtB5
+NyY1MJZDtY7vGOxlb9OIb1wS00bMj+6i6mh8+h1Zxy88lKHZG9zrzegzJ/jEKh2R
+Z+1r5d++NRQnuNTRm3bWqZP3x564Kmal8EkBaaHYEh5khKesWKmxxBu9wgDZfvBI
+VQwa3n8XyA7lExRQeo2Sra+I8zWJeOls5P9Mr0HAYlnv2azJQ2VDDcq1omVON3s0
+I/aWOHgAFqhpQzVZD3l/UyrhAs4DK/Aasl2iwaExglFRU2Eh9rBlSCuDGOlf4MxR
+T6sT6VsNUeG/c7vv1FbM4VcH7CT+9hS2no8EG7QRryIvL2fexOXhrTs3qu7WoSfV
+H836VJwMUwwRFYVunfMCrCRuVZ9VbWJAtABLlNGjzgTHzTBzhQgezO2I5ffPYz03
+YCmzpvgQAhlYKJjqudWQJksfJAaKHwSbJ6n/abAWWWKT+ig9eUlskaLU248ZOLsV
+2IjFwmSAqHfJ5br9a5xT76f61k03za5SDZTX7XMcwKXcLSdZHunYgmgRFHC3Qlca
+GlhQP057BQ3vU10rEKzOBnq4aw8xBu8IwWIB+LeQ6RvTAKy1s25EH7CWKlaJlpfD
+ktWhXDWg/of9DZLwfJxvPmwbHJbcsZ028eyw5dDigmoTJqGnPfw=
+=1Cla
+-----END PGP SIGNATURE-----
+
+--N52PRuWBL1vaUBvj--
