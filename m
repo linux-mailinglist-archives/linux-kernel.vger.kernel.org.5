@@ -2,64 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D547B2CE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A66AF7B2CEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232761AbjI2HNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 03:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57354 "EHLO
+        id S232773AbjI2HNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 03:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232732AbjI2HNM (ORCPT
+        with ESMTP id S232756AbjI2HNa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 03:13:12 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E1B1A7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:13:09 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32320381a07so9422209f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:13:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695971588; x=1696576388; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VH2OdY8PA3jmJonW2IObtpUNilldFdxREyN9dCrnPck=;
-        b=O08yR5q7uARIzZc0TYz2aEmV6kBdKe2iUj3cIsTKIsg6Zf50r5q30sYJCRJKBvQ8sM
-         or4hVz5l/nxKJtJbbDa6ar4eZyxmbH+lBuv14KWp9DKX1XJ38/WPEB3SHnCid+VOsLwV
-         Y/P3W2Wr6HSuDekpC8oi7PRvEN72y4t3z29J/T9eJaiGzGAakXjjb5rrhg4o5syyBq5r
-         bNERoOuRqpysyrr5HOdsEIvmjy1BFfUL2qYyGARDiyLIvR08Bpl0vpK1Z/Ia7unhHr3d
-         NHJU5OONLppQF0GnJdUUcXy5g0j/IR1Uf342p4irlCeJDlV9J9HauSKcjdAOG7IgU2Y8
-         fcrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695971588; x=1696576388;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VH2OdY8PA3jmJonW2IObtpUNilldFdxREyN9dCrnPck=;
-        b=cE8Zsfq5kL92uCfewuLbV4oo7jcIrUBs+MR/3Do+3sOgB4O84ZgxvFh9oGgj2QJ4ja
-         Jv/ymvLLqwy6TkobNsUY11sCJcFy2xINHO+XbLsyvFMcqtfKdYEkZPadvJVfxBBbBX8G
-         gH8CqxrCP61s42StUh7Y5ksYOQ57Xobbw0mGb3zQAHcz/qnhirOjF5/A9WRZKwf4j4ly
-         i+J1AuX1fecnZnjyTvQMFY+niSTixKE1CigBASo+qSwZ5eWx8+RyAjo26may2dKHiNgl
-         qKb6e6Ii/V02YDeuAIZzf3N2EkNaVe1npkMpdIwPNDQgKBdplNjnGcIEynul/OgLU5xN
-         sFZg==
-X-Gm-Message-State: AOJu0YyJAG9wWPxDqA6McN3JBsJTv73+HaKk5HOKULkRmWE/BK7mwrE0
-        VMkFGXGaw/eEOxPMokAy4iHG6Q==
-X-Google-Smtp-Source: AGHT+IGjkS9K8wXRgIqCCc6VdHtVzo14jXkL+KJZtiHA+bwC8ttsQXbuB1lG9aNRhCIJgDpwvNHhCA==
-X-Received: by 2002:a5d:49c2:0:b0:322:5251:d798 with SMTP id t2-20020a5d49c2000000b003225251d798mr2805804wrs.70.1695971587877;
-        Fri, 29 Sep 2023 00:13:07 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id x15-20020adfcc0f000000b0032330e43590sm9387301wrh.22.2023.09.29.00.13.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 00:13:07 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 10:13:04 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     oe-kbuild@lists.linux.dev,
-        Stefan Binding <sbinding@opensource.cirrus.com>
-Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: sound/pci/hda/cs35l41_hda.c:304 cs35l41_request_firmware_files()
- error: double free of '*wmfw_filename'
-Message-ID: <4fe6a89d-372c-45f7-a7d2-7b8f376d983f@kadam.mountain>
+        Fri, 29 Sep 2023 03:13:30 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804AD1A5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:13:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 18D0C218FD;
+        Fri, 29 Sep 2023 07:13:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695971607; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=nrYvTqJ5GJC1pGMtMTNLLaXDM5jdkE7aU1rD+pvKECc=;
+        b=y+V9jMKYN7bytgMu4iB/76TgpjZqzM5yhh8zMv2s3G15oIHv9JLsJ2WdhEJuJfQ+lj+pxD
+        3LbxqogTgVphW0WxOjZM08oH9N68qgbo6xGZQq/28CzVxMlVyT+9gVANIItUVNmTs3Vfc8
+        xVXnhA+UDq673v+DjM69N8lMf1IrSkE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695971607;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=nrYvTqJ5GJC1pGMtMTNLLaXDM5jdkE7aU1rD+pvKECc=;
+        b=/iqS1z9IFPtuEKxGPktmpo5AVJ9EjK0oG15LoEDBa5xaKrTpRjFzVRsK23wht3bi1lHYzm
+        9SNtORkontxr1oCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C946F1390A;
+        Fri, 29 Sep 2023 07:13:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id uADNLhZ5FmVORQAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Fri, 29 Sep 2023 07:13:26 +0000
+Message-ID: <acca8ad8-a0b4-4fda-ae9a-96463f87bbbb@suse.de>
+Date:   Fri, 29 Sep 2023 09:13:26 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] drm: Spelling s/preceeding/preceding/g
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <cover.1695903065.git.geert+renesas@glider.be>
+ <b88ab4501bad5494ea64a558a198d69798b83db8.1695903065.git.geert+renesas@glider.be>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <b88ab4501bad5494ea64a558a198d69798b83db8.1695903065.git.geert+renesas@glider.be>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------yNWH0lqu5uJWtpDgAjIjK0pw"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -69,116 +105,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   9ed22ae6be817d7a3f5c15ca22cbc9d3963b481d
-commit: cd40dad2ca9196631dcd48e1b991244ab3940d83 ALSA: hda: cs35l41: Ensure firmware/tuning pairs are always loaded
-config: x86_64-randconfig-161-20230929 (https://download.01.org/0day-ci/archive/20230929/202309291331.0JUUQnPT-lkp@intel.com/config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-reproduce: (https://download.01.org/0day-ci/archive/20230929/202309291331.0JUUQnPT-lkp@intel.com/reproduce)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------yNWH0lqu5uJWtpDgAjIjK0pw
+Content-Type: multipart/mixed; boundary="------------7QC8MZEjHWmlTQuWhU27dI7R";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Geert Uytterhoeven <geert+renesas@glider.be>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Andrzej Hajda <andrzej.hajda@intel.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Message-ID: <acca8ad8-a0b4-4fda-ae9a-96463f87bbbb@suse.de>
+Subject: Re: [PATCH 2/3] drm: Spelling s/preceeding/preceding/g
+References: <cover.1695903065.git.geert+renesas@glider.be>
+ <b88ab4501bad5494ea64a558a198d69798b83db8.1695903065.git.geert+renesas@glider.be>
+In-Reply-To: <b88ab4501bad5494ea64a558a198d69798b83db8.1695903065.git.geert+renesas@glider.be>
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202309291331.0JUUQnPT-lkp@intel.com/
+--------------7QC8MZEjHWmlTQuWhU27dI7R
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-smatch warnings:
-sound/pci/hda/cs35l41_hda.c:304 cs35l41_request_firmware_files() error: double free of '*wmfw_filename'
+DQoNCkFtIDI4LjA5LjIzIHVtIDE0OjE2IHNjaHJpZWIgR2VlcnQgVXl0dGVyaG9ldmVuOg0K
+PiBGaXggbWlzc3BlbGxpbmdzIG9mICJwcmVjZWRpbmciLg0KPiANCj4gU2lnbmVkLW9mZi1i
+eTogR2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydCtyZW5lc2FzQGdsaWRlci5iZT4NCg0KUmV2
+aWV3ZWQtYnk6IFRob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPg0KDQo+
+IC0tLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS9kcm1fYXRvbWljX2hlbHBlci5jICAgICAgfCA0
+ICsrLS0NCj4gICBpbmNsdWRlL2RybS9kcm1fbW9kZXNldF9oZWxwZXJfdnRhYmxlcy5oIHwg
+MiArLQ0KPiAgIDIgZmlsZXMgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9u
+cygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9kcm1fYXRvbWljX2hl
+bHBlci5jIGIvZHJpdmVycy9ncHUvZHJtL2RybV9hdG9taWNfaGVscGVyLmMNCj4gaW5kZXgg
+NzFkMzk5Mzk3MTA3NWVlYS4uMTBhYWRkMzI0Y2MzNzBlZSAxMDA2NDQNCj4gLS0tIGEvZHJp
+dmVycy9ncHUvZHJtL2RybV9hdG9taWNfaGVscGVyLmMNCj4gKysrIGIvZHJpdmVycy9ncHUv
+ZHJtL2RybV9hdG9taWNfaGVscGVyLmMNCj4gQEAgLTIzNzMsMTAgKzIzNzMsMTAgQEAgaW50
+IGRybV9hdG9taWNfaGVscGVyX3NldHVwX2NvbW1pdChzdHJ1Y3QgZHJtX2F0b21pY19zdGF0
+ZSAqc3RhdGUsDQo+ICAgRVhQT1JUX1NZTUJPTChkcm1fYXRvbWljX2hlbHBlcl9zZXR1cF9j
+b21taXQpOw0KPiAgIA0KPiAgIC8qKg0KPiAtICogZHJtX2F0b21pY19oZWxwZXJfd2FpdF9m
+b3JfZGVwZW5kZW5jaWVzIC0gd2FpdCBmb3IgcmVxdWlyZWQgcHJlY2VlZGluZyBjb21taXRz
+DQo+ICsgKiBkcm1fYXRvbWljX2hlbHBlcl93YWl0X2Zvcl9kZXBlbmRlbmNpZXMgLSB3YWl0
+IGZvciByZXF1aXJlZCBwcmVjZWRpbmcgY29tbWl0cw0KPiAgICAqIEBvbGRfc3RhdGU6IGF0
+b21pYyBzdGF0ZSBvYmplY3Qgd2l0aCBvbGQgc3RhdGUgc3RydWN0dXJlcw0KPiAgICAqDQo+
+IC0gKiBUaGlzIGZ1bmN0aW9uIHdhaXRzIGZvciBhbGwgcHJlY2VlZGluZyBjb21taXRzIHRo
+YXQgdG91Y2ggdGhlIHNhbWUgQ1JUQyBhcw0KPiArICogVGhpcyBmdW5jdGlvbiB3YWl0cyBm
+b3IgYWxsIHByZWNlZGluZyBjb21taXRzIHRoYXQgdG91Y2ggdGhlIHNhbWUgQ1JUQyBhcw0K
+PiAgICAqIEBvbGRfc3RhdGUgdG8gYm90aCBiZSBjb21taXR0ZWQgdG8gdGhlIGhhcmR3YXJl
+IChhcyBzaWduYWxsZWQgYnkNCj4gICAgKiBkcm1fYXRvbWljX2hlbHBlcl9jb21taXRfaHdf
+ZG9uZSgpKSBhbmQgZXhlY3V0ZWQgYnkgdGhlIGhhcmR3YXJlIChhcyBzaWduYWxsZWQNCj4g
+ICAgKiBieSBjYWxsaW5nIGRybV9jcnRjX3NlbmRfdmJsYW5rX2V2ZW50KCkgb24gdGhlICZk
+cm1fY3J0Y19zdGF0ZS5ldmVudCkuDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9kcm1f
+bW9kZXNldF9oZWxwZXJfdnRhYmxlcy5oIGIvaW5jbHVkZS9kcm0vZHJtX21vZGVzZXRfaGVs
+cGVyX3Z0YWJsZXMuaA0KPiBpbmRleCBiYmM1MTZmMzEzOTEzMjU0Li45MTg2MDM3MmJlNmMw
+NjRlIDEwMDY0NA0KPiAtLS0gYS9pbmNsdWRlL2RybS9kcm1fbW9kZXNldF9oZWxwZXJfdnRh
+Ymxlcy5oDQo+ICsrKyBiL2luY2x1ZGUvZHJtL2RybV9tb2Rlc2V0X2hlbHBlcl92dGFibGVz
+LmgNCj4gQEAgLTE0NjQsNyArMTQ2NCw3IEBAIHN0cnVjdCBkcm1fbW9kZV9jb25maWdfaGVs
+cGVyX2Z1bmNzIHsNCj4gICAJICogc3dhcHBlZCBpbnRvIHRoZSB2YXJpb3VzIHN0YXRlIHBv
+aW50ZXJzLiBUaGUgcGFzc2VkIGluIHN0YXRlDQo+ICAgCSAqIHRoZXJlZm9yZSBjb250YWlu
+cyBjb3BpZXMgb2YgdGhlIG9sZC9wcmV2aW91cyBzdGF0ZS4gVGhpcyBob29rIHNob3VsZA0K
+PiAgIAkgKiBjb21taXQgdGhlIG5ldyBzdGF0ZSBpbnRvIGhhcmR3YXJlLiBOb3RlIHRoYXQg
+dGhlIGhlbHBlcnMgaGF2ZQ0KPiAtCSAqIGFscmVhZHkgd2FpdGVkIGZvciBwcmVjZWVkaW5n
+IGF0b21pYyBjb21taXRzIGFuZCBmZW5jZXMsIGJ1dCBkcml2ZXJzDQo+ICsJICogYWxyZWFk
+eSB3YWl0ZWQgZm9yIHByZWNlZGluZyBhdG9taWMgY29tbWl0cyBhbmQgZmVuY2VzLCBidXQg
+ZHJpdmVycw0KPiAgIAkgKiBjYW4gYWRkIG1vcmUgd2FpdGluZyBjYWxscyBhdCB0aGUgc3Rh
+cnQgb2YgdGhlaXIgaW1wbGVtZW50YXRpb24sIGUuZy4NCj4gICAJICogdG8gd2FpdCBmb3Ig
+ZHJpdmVyLWludGVybmFsIHJlcXVlc3QgZm9yIGltcGxpY2l0IHN5bmNpbmcsIGJlZm9yZQ0K
+PiAgIAkgKiBzdGFydGluZyB0byBjb21taXQgdGhlIHVwZGF0ZSB0byB0aGUgaGFyZHdhcmUu
+DQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXIN
+ClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtlbnN0cmFzc2Ug
+MTQ2LCA5MDQ2MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYsIEFuZHJldyBN
+eWVycywgQW5kcmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcg
+TnVlcm5iZXJnKQ0K
 
-vim +304 sound/pci/hda/cs35l41_hda.c
+--------------7QC8MZEjHWmlTQuWhU27dI7R--
 
-2e81e1fffd53ba Vitaly Rodionov 2022-06-30  238  static int cs35l41_request_firmware_files(struct cs35l41_hda *cs35l41,
-2e81e1fffd53ba Vitaly Rodionov 2022-06-30  239  					  const struct firmware **wmfw_firmware,
-2e81e1fffd53ba Vitaly Rodionov 2022-06-30  240  					  char **wmfw_filename,
-2e81e1fffd53ba Vitaly Rodionov 2022-06-30  241  					  const struct firmware **coeff_firmware,
-2e81e1fffd53ba Vitaly Rodionov 2022-06-30  242  					  char **coeff_filename)
-2e81e1fffd53ba Vitaly Rodionov 2022-06-30  243  {
-2e81e1fffd53ba Vitaly Rodionov 2022-06-30  244  	int ret;
-2e81e1fffd53ba Vitaly Rodionov 2022-06-30  245  
-cd40dad2ca9196 Stefan Binding  2023-02-13  246  	if (cs35l41->speaker_id > -1) {
-cd40dad2ca9196 Stefan Binding  2023-02-13  247  		ret = cs35l41_request_firmware_files_spkid(cs35l41, wmfw_firmware, wmfw_filename,
-63f4b99f0089a9 Stefan Binding  2022-06-30  248  							   coeff_firmware, coeff_filename);
-cd40dad2ca9196 Stefan Binding  2023-02-13  249  		goto out;
-cd40dad2ca9196 Stefan Binding  2023-02-13  250  
-cd40dad2ca9196 Stefan Binding  2023-02-13  251  	}
-63f4b99f0089a9 Stefan Binding  2022-06-30  252  
-bb6eb621f522d1 Stefan Binding  2022-06-30  253  	/* try cirrus/part-dspN-fwtype-sub<-ampname>.wmfw */
-2e81e1fffd53ba Vitaly Rodionov 2022-06-30  254  	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
-bb6eb621f522d1 Stefan Binding  2022-06-30  255  					    CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
-63f4b99f0089a9 Stefan Binding  2022-06-30  256  					    cs35l41->amp_name, -1, "wmfw");
-2e81e1fffd53ba Vitaly Rodionov 2022-06-30  257  	if (!ret) {
-bb6eb621f522d1 Stefan Binding  2022-06-30  258  		/* try cirrus/part-dspN-fwtype-sub<-ampname>.bin */
-cd40dad2ca9196 Stefan Binding  2023-02-13  259  		ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-cd40dad2ca9196 Stefan Binding  2023-02-13  260  						    CS35L41_FIRMWARE_ROOT,
-cd40dad2ca9196 Stefan Binding  2023-02-13  261  						    cs35l41->acpi_subsystem_id, cs35l41->amp_name,
-cd40dad2ca9196 Stefan Binding  2023-02-13  262  						    -1, "bin");
-cd40dad2ca9196 Stefan Binding  2023-02-13  263  		goto out;
-bb6eb621f522d1 Stefan Binding  2022-06-30  264  	}
-bb6eb621f522d1 Stefan Binding  2022-06-30  265  
-bb6eb621f522d1 Stefan Binding  2022-06-30  266  	/* try cirrus/part-dspN-fwtype-sub.wmfw */
-bb6eb621f522d1 Stefan Binding  2022-06-30  267  	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
-bb6eb621f522d1 Stefan Binding  2022-06-30  268  					    CS35L41_FIRMWARE_ROOT, cs35l41->acpi_subsystem_id,
-63f4b99f0089a9 Stefan Binding  2022-06-30  269  					    NULL, -1, "wmfw");
-bb6eb621f522d1 Stefan Binding  2022-06-30  270  	if (!ret) {
-bb6eb621f522d1 Stefan Binding  2022-06-30  271  		/* try cirrus/part-dspN-fwtype-sub<-ampname>.bin */
-bb6eb621f522d1 Stefan Binding  2022-06-30  272  		ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-bb6eb621f522d1 Stefan Binding  2022-06-30  273  						    CS35L41_FIRMWARE_ROOT,
-bb6eb621f522d1 Stefan Binding  2022-06-30  274  						    cs35l41->acpi_subsystem_id,
-63f4b99f0089a9 Stefan Binding  2022-06-30  275  						    cs35l41->amp_name, -1, "bin");
-bb6eb621f522d1 Stefan Binding  2022-06-30  276  		if (ret)
-bb6eb621f522d1 Stefan Binding  2022-06-30  277  			/* try cirrus/part-dspN-fwtype-sub.bin */
-cd40dad2ca9196 Stefan Binding  2023-02-13  278  			ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-bb6eb621f522d1 Stefan Binding  2022-06-30  279  							    CS35L41_FIRMWARE_ROOT,
-cd40dad2ca9196 Stefan Binding  2023-02-13  280  							    cs35l41->acpi_subsystem_id, NULL, -1,
-cd40dad2ca9196 Stefan Binding  2023-02-13  281  							    "bin");
-bb6eb621f522d1 Stefan Binding  2022-06-30  282  	}
-bb6eb621f522d1 Stefan Binding  2022-06-30  283  
-cd40dad2ca9196 Stefan Binding  2023-02-13  284  out:
-cd40dad2ca9196 Stefan Binding  2023-02-13  285  	if (!ret)
-cd40dad2ca9196 Stefan Binding  2023-02-13  286  		return 0;
-cd40dad2ca9196 Stefan Binding  2023-02-13  287  
-cd40dad2ca9196 Stefan Binding  2023-02-13  288  	/* Handle fallback */
-cd40dad2ca9196 Stefan Binding  2023-02-13  289  	dev_warn(cs35l41->dev, "Falling back to default firmware.\n");
-cd40dad2ca9196 Stefan Binding  2023-02-13  290  
-cd40dad2ca9196 Stefan Binding  2023-02-13  291  	release_firmware(*wmfw_firmware);
-cd40dad2ca9196 Stefan Binding  2023-02-13  292  	kfree(*wmfw_filename);
+--------------yNWH0lqu5uJWtpDgAjIjK0pw
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-Freed here.
+-----BEGIN PGP SIGNATURE-----
 
-cd40dad2ca9196 Stefan Binding  2023-02-13  293  
-bb6eb621f522d1 Stefan Binding  2022-06-30  294  	/* fallback try cirrus/part-dspN-fwtype.wmfw */
-bb6eb621f522d1 Stefan Binding  2022-06-30  295  	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
-63f4b99f0089a9 Stefan Binding  2022-06-30  296  					    CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "wmfw");
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUWeRYFAwAAAAAACgkQlh/E3EQov+Bw
+1RAArHmZgJZ2O6J8fgMLNS5VKl79I0LnBXiGrSWoC5QuPASALxeWEFdxLIteG0/i6Rd+qXzq+DRp
+ZJQaZCQ+mJS6/n0hlvZSisK1MmtgtR35LdgOoxgEm8dVlJK8R0CXkmUVcNw7JpNc6xlWToCkaliX
+hgQ1DK+gK8clVbZruUej6ZSKynDoqdn2vfrg1Shkz0ZOKr8ZX8yAbhQhHkqLTkfTuXLCIhWlA1I8
+tmpsGKJLLJm5etRI4joYJ0/4VyP+jhzXv1o+IxyxaU3rRzIS0pkzc62wQl9WC/xBVmzjFJ6Hy0MU
+QeHDKITzniBMREQmwRu0hQw/XGhRRcL9CWRbOxFbFJ5MRpbVy7zXRGTXtLPDmFYFSpLepb6jPhJh
+bAjIjkab69dvqmhf1Nj7g2OKpHhDU4V1lrx6RU2P5Dtn7nz5F6GOPzUSPHYaRVDQ7u4qNx6fF9JW
+93PKut54XzWuqLRMiog3NzFaYMEWrLVfcqcN/hhVz0K9Lfv8vxsJDdYZ65oqgoEanX62dEwU4hHb
+syEQbaPVy/UfEE3dB9ENic83TkAhgFpBOROf2raz4QF1FALLm9xuRfmGgdV3ZenGPO6rF5zknW/y
+XlRwdLtooYzyCd3s/IfdQtxY3gU/LNxwDU0a44xy7QdQX1mOrLIe6cmMZghLnK6uBLXaEmvAbk6m
+uwc=
+=mr+o
+-----END PGP SIGNATURE-----
 
-Assume this fails.
-
-cd40dad2ca9196 Stefan Binding  2023-02-13  297  	if (!ret)
-
-Better to flip this around:
-
-	if (ret)
-		return ret;
-
-bb6eb621f522d1 Stefan Binding  2022-06-30  298  		/* fallback try cirrus/part-dspN-fwtype.bin */
-cd40dad2ca9196 Stefan Binding  2023-02-13  299  		ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
-63f4b99f0089a9 Stefan Binding  2022-06-30  300  						    CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "bin");
-2e81e1fffd53ba Vitaly Rodionov 2022-06-30  301  
-cd40dad2ca9196 Stefan Binding  2023-02-13  302  	if (ret) {
-cd40dad2ca9196 Stefan Binding  2023-02-13  303  		release_firmware(*wmfw_firmware);
-cd40dad2ca9196 Stefan Binding  2023-02-13 @304  		kfree(*wmfw_filename);
-
-The zero day bot doesn't have cross function analysis so the
-kfree(*wmfw_filename); warning is a false positive, but the second
-release_firmware() is a double free if the kasprintf() in
-cs35l41_request_firmware_file() fails.  You would have to get pretty
-unlucky to hit this bug.
-
-cd40dad2ca9196 Stefan Binding  2023-02-13  305  		dev_warn(cs35l41->dev, "Unable to find firmware and tuning\n");
-cd40dad2ca9196 Stefan Binding  2023-02-13  306  	}
-2e81e1fffd53ba Vitaly Rodionov 2022-06-30  307  	return ret;
-2e81e1fffd53ba Vitaly Rodionov 2022-06-30  308  }
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+--------------yNWH0lqu5uJWtpDgAjIjK0pw--
