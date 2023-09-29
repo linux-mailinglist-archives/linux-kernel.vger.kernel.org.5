@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D6B7B37D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5227F7B37D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbjI2QVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 12:21:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57586 "EHLO
+        id S233606AbjI2QVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 12:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233638AbjI2QVe (ORCPT
+        with ESMTP id S233608AbjI2QVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 12:21:34 -0400
+        Fri, 29 Sep 2023 12:21:33 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA731A5;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F43C199;
         Fri, 29 Sep 2023 09:21:30 -0700 (PDT)
 From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -22,21 +22,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Nt42eDWgbHQsvhLZmGV9oWzElNcW03JhQybQZEE68gw=;
-        b=XUHwgj+eJ0cgpvInKhzbG1rKfAcYjpg6gYDQVDcQHbUSNvh1CKN/i92hfZSZKNIK+dypDq
-        SG/m9AN4BLBicJOJoGmhG/e6n2mn16mmgxW5VMAM8Pw3T/qvNlRyjaH1VnojeKDDkj9vjW
-        r7czclW54JuaM5sAIyes0cgDXxvJmYphj9fZzAj7ScZ+Bf2WiFhifSMamtBgd3pGjjDwBr
-        Z1h65bXzs9FVx4LGu496HF1lFf3EcDopAsvEYv8u5D01YTwHdX1rQ70u7AHu1MwTnXQ+5u
-        MM1/4pI6mKwH98OgEp7qcvqvgvGGSnFWWg763bu3pZuLNji0Art4byU8j5redQ==
+        bh=oH1uS+2V/Ibq2G2ithVQNTHtD9Fj/zibRpTz9llRJ9E=;
+        b=miX5aQ2DbHHNMXI6G2+FgwDxi24Mm+sYKhCcD65i36jFqFi1PHRlpY13PXOEAHgFezrPeD
+        FPLp6cXPihqtJhJ3V6imspB9zgZA2T6V2jJcKTx81tgDsMYQMFpfdmiPNz8Q8v8qGPD1rc
+        r8wqAlG+L0ZHjSE5Ef8J/Ko3mqi1pXYK02AZyGiDEGs3J3ecGaO2Ukcl9yEvxF5fzOcZn5
+        P4PXvhFHatwGAkQI3QSd8fc5rHCay+OUopZ4hOIUDQA4poLiLmjdMShwaiG1YlMhtFIyEP
+        vSvx3fdXFr93w1iRhjBcpqBvDj3gZuMECUX0lRTYs+jm+D5MngnNlde0syKXbw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1696004488;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Nt42eDWgbHQsvhLZmGV9oWzElNcW03JhQybQZEE68gw=;
-        b=XKcu01VBkwupRzax72j/GM5UPBTKbgr+faCZWI+OaKlcBJdKhNpSTe0KQKlqDLtTEPhy2T
-        2y3lzz7ZsYo24CCA==
+        bh=oH1uS+2V/Ibq2G2ithVQNTHtD9Fj/zibRpTz9llRJ9E=;
+        b=eilRes0Gotk/U2IRQpQlhlTA7EjtupTl6tXNbLCHNtNSFQ1YXQ7edDCIgqARpN1DxpSaO2
+        OGqczZ5S0LTCfeBQ==
 To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Cc:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
@@ -46,9 +46,9 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         Thomas Gleixner <tglx@linutronix.de>,
         Wander Lairson Costa <hawk@kernel.org>,
         Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH net-next 1/2] net: Use SMP threads for backlog NAPI.
-Date:   Fri, 29 Sep 2023 18:20:19 +0200
-Message-ID: <20230929162121.1822900-2-bigeasy@linutronix.de>
+Subject: [PATCH net-next 2/2] net: Allow to use SMP threads for backlog NAPI.
+Date:   Fri, 29 Sep 2023 18:20:20 +0200
+Message-ID: <20230929162121.1822900-3-bigeasy@linutronix.de>
 In-Reply-To: <20230929162121.1822900-1-bigeasy@linutronix.de>
 References: <20230929162121.1822900-1-bigeasy@linutronix.de>
 MIME-Version: 1.0
@@ -110,9 +110,9 @@ requested on the local CPU. This restores the loopback throuput. The
 performance drops mostly to the same value after enabling RPS on the
 loopback comparing the IPI and the tread result.
 
-Create NAPI-threads for backlog. The thread runs the inner loop from
-napi_threaded_poll(), the wait part is different. It checks for
-NAPI_STATE_SCHED (the backlog NAPI can not be disabled).
+Create NAPI-threads for backlog if request during boot. The thread runs
+the inner loop from napi_threaded_poll(), the wait part is different. It
+checks for NAPI_STATE_SCHED (the backlog NAPI can not be disabled).
 Since there are now per-CPU threads for backlog the remote IPI for
 signaling is not needed and can be removed. The NAPI for backlog can
 always be scheduled as it ends in waking the corresponding thread.
@@ -121,58 +121,31 @@ the thread) if backlog is requested for the local CPU.
 Since "deferred skb free" use a similar IPI mechanism for signaling, it
 is also using the backlog threads.
 
-This makes NAPI threads mandatory for backlog and it can not be
-disabled. The other visibile part with RPS (or backlog usage in general)
-is that it becomes now visible in `top' if requested for a remote CPU
-while earlier it would remain unaccounted.
+This makes NAPI threads for backlog optional, it has to be enabled via
+the boot argument "thread_backlog_napi". It is mandatory for PREEMPT_RT
+to avoid the wakeup of ksoftirqd from the IPI.
 
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- include/linux/netdevice.h |   9 --
- net/core/dev.c            | 236 ++++++++++++++------------------------
- net/core/net-procfs.c     |   2 +-
+ include/linux/netdevice.h |   1 +
+ net/core/dev.c            | 173 ++++++++++++++++++++++++++++++--------
  net/core/skbuff.c         |   4 +-
- 4 files changed, 90 insertions(+), 161 deletions(-)
+ 3 files changed, 139 insertions(+), 39 deletions(-)
 
 diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 7e520c14eb8c6..aa6f0457cb5a5 100644
+index 7e520c14eb8c6..bcaa967b8ddf9 100644
 --- a/include/linux/netdevice.h
 +++ b/include/linux/netdevice.h
-@@ -3200,9 +3200,6 @@ struct softnet_data {
- 	/* stats */
- 	unsigned int		processed;
- 	unsigned int		time_squeeze;
--#ifdef CONFIG_RPS
--	struct softnet_data	*rps_ipi_list;
--#endif
+@@ -3288,6 +3288,7 @@ static inline void dev_xmit_recursion_dec(void)
+ 	__this_cpu_dec(softnet_data.xmit.recursion);
+ }
 =20
- 	bool			in_net_rx_action;
- 	bool			in_napi_threaded_poll;
-@@ -3231,12 +3228,8 @@ struct softnet_data {
- 	unsigned int		input_queue_head ____cacheline_aligned_in_smp;
++void net_trigger_defer_list_processing(unsigned int cpu);
+ void __netif_schedule(struct Qdisc *q);
+ void netif_schedule_queue(struct netdev_queue *txq);
 =20
- 	/* Elements below can be accessed between CPUs for RPS/RFS */
--	call_single_data_t	csd ____cacheline_aligned_in_smp;
--	struct softnet_data	*rps_ipi_next;
--	unsigned int		cpu;
- 	unsigned int		input_queue_tail;
- #endif
--	unsigned int		received_rps;
- 	unsigned int		dropped;
- 	struct sk_buff_head	input_pkt_queue;
- 	struct napi_struct	backlog;
-@@ -3244,9 +3237,7 @@ struct softnet_data {
- 	/* Another possibly contended cache line */
- 	spinlock_t		defer_lock ____cacheline_aligned_in_smp;
- 	int			defer_count;
--	int			defer_ipi_scheduled;
- 	struct sk_buff		*defer_list;
--	call_single_data_t	defer_csd;
- };
-=20
- static inline void input_queue_head_incr(struct softnet_data *sd)
 diff --git a/net/core/dev.c b/net/core/dev.c
-index 606a366cc2095..7732fd91d2fd5 100644
+index 606a366cc2095..ec319e5dcb086 100644
 --- a/net/core/dev.c
 +++ b/net/core/dev.c
 @@ -153,6 +153,7 @@
@@ -183,26 +156,65 @@ index 606a366cc2095..7732fd91d2fd5 100644
 =20
  #include "dev.h"
  #include "net-sysfs.h"
-@@ -4409,6 +4410,7 @@ EXPORT_SYMBOL(__dev_direct_xmit);
+@@ -4409,6 +4410,46 @@ EXPORT_SYMBOL(__dev_direct_xmit);
  /*************************************************************************
   *			Receiver routines
   *************************************************************************/
 +static DEFINE_PER_CPU(struct task_struct *, backlog_napi);
++
++#ifndef CONFIG_PREEMPT_RT
++
++static DEFINE_STATIC_KEY_FALSE(use_backlog_threads_key);
++
++static int __init setup_backlog_napi_threads(char *arg)
++{
++	static_branch_enable(&use_backlog_threads_key);
++	return 0;
++}
++early_param("thread_backlog_napi", setup_backlog_napi_threads);
++
++static bool use_backlog_threads(void)
++{
++	return static_branch_unlikely(&use_backlog_threads_key);
++}
++
++#else
++
++static bool use_backlog_threads(void)
++{
++	return true;
++}
++
++#endif
++
++void net_trigger_defer_list_processing(unsigned int cpu)
++{
++	struct softnet_data *sd;
++
++	sd =3D &per_cpu(softnet_data, cpu);
++	if (use_backlog_threads()) {
++		__napi_schedule(&sd->backlog);
++		return;
++	}
++
++	if (!cmpxchg(&sd->defer_ipi_scheduled, 0, 1))
++		smp_call_function_single_async(cpu, &sd->defer_csd);
++}
 =20
  int netdev_max_backlog __read_mostly =3D 1000;
  EXPORT_SYMBOL(netdev_max_backlog);
-@@ -4441,6 +4443,9 @@ static inline void ____napi_schedule(struct softnet_d=
+@@ -4441,6 +4482,9 @@ static inline void ____napi_schedule(struct softnet_d=
 ata *sd,
  		 */
  		thread =3D READ_ONCE(napi->thread);
  		if (thread) {
-+			if (thread =3D=3D raw_cpu_read(backlog_napi))
++			if (use_backlog_threads() && thread =3D=3D raw_cpu_read(backlog_napi))
 +				goto use_local_napi;
 +
  			/* Avoid doing set_bit() if the thread is in
  			 * INTERRUPTIBLE state, cause napi_thread_wait()
  			 * makes sure to proceed with napi polling
-@@ -4453,6 +4458,7 @@ static inline void ____napi_schedule(struct softnet_d=
+@@ -4453,6 +4497,7 @@ static inline void ____napi_schedule(struct softnet_d=
 ata *sd,
  		}
  	}
@@ -211,151 +223,49 @@ ata *sd,
  	list_add_tail(&napi->poll_list, &sd->poll_list);
  	WRITE_ONCE(napi->list_owner, smp_processor_id());
  	/* If not called from net_rx_action()
-@@ -4661,57 +4667,8 @@ bool rps_may_expire_flow(struct net_device *dev, u16=
- rxq_index,
- EXPORT_SYMBOL(rps_may_expire_flow);
-=20
- #endif /* CONFIG_RFS_ACCEL */
--
--/* Called from hardirq (IPI) context */
--static void rps_trigger_softirq(void *data)
--{
--	struct softnet_data *sd =3D data;
--
--	____napi_schedule(sd, &sd->backlog);
--	sd->received_rps++;
--}
--
- #endif /* CONFIG_RPS */
-=20
--/* Called from hardirq (IPI) context */
--static void trigger_rx_softirq(void *data)
--{
--	struct softnet_data *sd =3D data;
--
--	__raise_softirq_irqoff(NET_RX_SOFTIRQ);
--	smp_store_release(&sd->defer_ipi_scheduled, 0);
--}
--
--/*
-- * After we queued a packet into sd->input_pkt_queue,
-- * we need to make sure this queue is serviced soon.
-- *
-- * - If this is another cpu queue, link it to our rps_ipi_list,
-- *   and make sure we will process rps_ipi_list from net_rx_action().
-- *
-- * - If this is our own queue, NAPI schedule our backlog.
-- *   Note that this also raises NET_RX_SOFTIRQ.
-- */
--static void napi_schedule_rps(struct softnet_data *sd)
--{
--	struct softnet_data *mysd =3D this_cpu_ptr(&softnet_data);
--
--#ifdef CONFIG_RPS
--	if (sd !=3D mysd) {
--		sd->rps_ipi_next =3D mysd->rps_ipi_list;
--		mysd->rps_ipi_list =3D sd;
--
--		/* If not called from net_rx_action() or napi_threaded_poll()
--		 * we have to raise NET_RX_SOFTIRQ.
--		 */
--		if (!mysd->in_net_rx_action && !mysd->in_napi_threaded_poll)
--			__raise_softirq_irqoff(NET_RX_SOFTIRQ);
--		return;
--	}
--#endif /* CONFIG_RPS */
--	__napi_schedule_irqoff(&mysd->backlog);
--}
--
- #ifdef CONFIG_NET_FLOW_LIMIT
- int netdev_flow_limit_table_len __read_mostly =3D (1 << 12);
- #endif
-@@ -4784,7 +4741,7 @@ static int enqueue_to_backlog(struct sk_buff *skb, in=
-t cpu,
- 		 * We can use non atomic operation since we own the queue lock
- 		 */
- 		if (!__test_and_set_bit(NAPI_STATE_SCHED, &sd->backlog.state))
--			napi_schedule_rps(sd);
-+			__napi_schedule_irqoff(&sd->backlog);
- 		goto enqueue;
- 	}
- 	reason =3D SKB_DROP_REASON_CPU_BACKLOG;
-@@ -5899,63 +5856,12 @@ static void flush_all_backlogs(void)
- 	cpus_read_unlock();
- }
-=20
--static void net_rps_send_ipi(struct softnet_data *remsd)
--{
--#ifdef CONFIG_RPS
--	while (remsd) {
--		struct softnet_data *next =3D remsd->rps_ipi_next;
--
--		if (cpu_online(remsd->cpu))
--			smp_call_function_single_async(remsd->cpu, &remsd->csd);
--		remsd =3D next;
--	}
--#endif
--}
--
--/*
-- * net_rps_action_and_irq_enable sends any pending IPI's for rps.
-- * Note: called with local irq disabled, but exits with local irq enabled.
-- */
--static void net_rps_action_and_irq_enable(struct softnet_data *sd)
--{
--#ifdef CONFIG_RPS
--	struct softnet_data *remsd =3D sd->rps_ipi_list;
--
--	if (remsd) {
--		sd->rps_ipi_list =3D NULL;
--
--		local_irq_enable();
--
--		/* Send pending IPI's to kick RPS processing on remote cpus. */
--		net_rps_send_ipi(remsd);
--	} else
--#endif
--		local_irq_enable();
--}
--
--static bool sd_has_rps_ipi_waiting(struct softnet_data *sd)
--{
--#ifdef CONFIG_RPS
--	return sd->rps_ipi_list !=3D NULL;
--#else
--	return false;
--#endif
--}
--
- static int process_backlog(struct napi_struct *napi, int quota)
+@@ -4696,6 +4741,10 @@ static void napi_schedule_rps(struct softnet_data *s=
+d)
  {
- 	struct softnet_data *sd =3D container_of(napi, struct softnet_data, backl=
-og);
- 	bool again =3D true;
- 	int work =3D 0;
+ 	struct softnet_data *mysd =3D this_cpu_ptr(&softnet_data);
 =20
--	/* Check if we have pending ipi, its better to send them now,
--	 * not waiting net_rx_action() end.
--	 */
--	if (sd_has_rps_ipi_waiting(sd)) {
--		local_irq_disable();
--		net_rps_action_and_irq_enable(sd);
--	}
--
- 	napi->weight =3D READ_ONCE(dev_rx_weight);
- 	while (again) {
- 		struct sk_buff *skb;
-@@ -5980,7 +5886,7 @@ static int process_backlog(struct napi_struct *napi, =
++	if (use_backlog_threads()) {
++		__napi_schedule_irqoff(&sd->backlog);
++		return;
++	}
+ #ifdef CONFIG_RPS
+ 	if (sd !=3D mysd) {
+ 		sd->rps_ipi_next =3D mysd->rps_ipi_list;
+@@ -5921,7 +5970,7 @@ static void net_rps_action_and_irq_enable(struct soft=
+net_data *sd)
+ #ifdef CONFIG_RPS
+ 	struct softnet_data *remsd =3D sd->rps_ipi_list;
+=20
+-	if (remsd) {
++	if (!use_backlog_threads() && remsd) {
+ 		sd->rps_ipi_list =3D NULL;
+=20
+ 		local_irq_enable();
+@@ -5936,7 +5985,7 @@ static void net_rps_action_and_irq_enable(struct soft=
+net_data *sd)
+ static bool sd_has_rps_ipi_waiting(struct softnet_data *sd)
+ {
+ #ifdef CONFIG_RPS
+-	return sd->rps_ipi_list !=3D NULL;
++	return !use_backlog_threads() && sd->rps_ipi_list !=3D NULL;
+ #else
+ 	return false;
+ #endif
+@@ -5980,7 +6029,7 @@ static int process_backlog(struct napi_struct *napi, =
 int quota)
  			 * We can use a plain write instead of clear_bit(),
  			 * and we dont need an smp_mb() memory barrier.
  			 */
 -			napi->state =3D 0;
-+			napi->state =3D NAPIF_STATE_THREADED;
++			napi->state &=3D NAPIF_STATE_THREADED;
  			again =3D false;
  		} else {
  			skb_queue_splice_tail_init(&sd->input_pkt_queue,
-@@ -6650,40 +6556,42 @@ static void skb_defer_free_flush(struct softnet_dat=
+@@ -6650,40 +6699,42 @@ static void skb_defer_free_flush(struct softnet_dat=
 a *sd)
  	}
  }
@@ -428,60 +338,35 @@ a *sd)
  	return 0;
  }
 =20
-@@ -6717,8 +6625,6 @@ static __latent_entropy void net_rx_action(struct sof=
-tirq_action *h)
- 				 */
- 				if (!list_empty(&sd->poll_list))
- 					goto start;
--				if (!sd_has_rps_ipi_waiting(sd))
--					goto end;
- 			}
- 			break;
- 		}
-@@ -6747,8 +6653,7 @@ static __latent_entropy void net_rx_action(struct sof=
-tirq_action *h)
- 	else
- 		sd->in_net_rx_action =3D false;
-=20
--	net_rps_action_and_irq_enable(sd);
--end:;
-+	local_irq_enable();
- }
-=20
- struct netdev_adjacent {
-@@ -11187,7 +11092,7 @@ static int dev_cpu_dead(unsigned int oldcpu)
- 	struct sk_buff **list_skb;
- 	struct sk_buff *skb;
- 	unsigned int cpu;
--	struct softnet_data *sd, *oldsd, *remsd =3D NULL;
-+	struct softnet_data *sd, *oldsd;
-=20
- 	local_irq_disable();
- 	cpu =3D smp_processor_id();
-@@ -11220,7 +11125,7 @@ static int dev_cpu_dead(unsigned int oldcpu)
+@@ -11220,7 +11271,7 @@ static int dev_cpu_dead(unsigned int oldcpu)
 =20
  		list_del_init(&napi->poll_list);
  		if (napi->poll =3D=3D process_backlog)
 -			napi->state =3D 0;
-+			napi->state =3D NAPIF_STATE_THREADED;
++			napi->state &=3D NAPIF_STATE_THREADED;
  		else
  			____napi_schedule(sd, napi);
  	}
-@@ -11228,13 +11133,6 @@ static int dev_cpu_dead(unsigned int oldcpu)
+@@ -11228,12 +11279,14 @@ static int dev_cpu_dead(unsigned int oldcpu)
  	raise_softirq_irqoff(NET_TX_SOFTIRQ);
  	local_irq_enable();
 =20
--#ifdef CONFIG_RPS
++	if (!use_backlog_threads()) {
+ #ifdef CONFIG_RPS
 -	remsd =3D oldsd->rps_ipi_list;
 -	oldsd->rps_ipi_list =3D NULL;
--#endif
++		remsd =3D oldsd->rps_ipi_list;
++		oldsd->rps_ipi_list =3D NULL;
+ #endif
 -	/* send out pending IPI's on offline CPU */
 -	net_rps_send_ipi(remsd);
--
++		/* send out pending IPI's on offline CPU */
++		net_rps_send_ipi(remsd);
++	}
+=20
  	/* Process offline CPU's input_pkt_queue */
  	while ((skb =3D __skb_dequeue(&oldsd->process_queue))) {
- 		netif_rx(skb);
-@@ -11487,6 +11385,49 @@ static struct pernet_operations __net_initdata def=
+@@ -11487,6 +11540,49 @@ static struct pernet_operations __net_initdata def=
 ault_device_ops =3D {
   *
   */
@@ -532,42 +417,19 @@ ault_device_ops =3D {
  /*
   *       This is called single threaded during boot, so no need
   *       to take the rtnl semaphore.
-@@ -11527,17 +11468,14 @@ static int __init net_dev_init(void)
- #endif
- 		INIT_LIST_HEAD(&sd->poll_list);
- 		sd->output_queue_tailp =3D &sd->output_queue;
--#ifdef CONFIG_RPS
--		INIT_CSD(&sd->csd, rps_trigger_softirq, sd);
--		sd->cpu =3D i;
--#endif
--		INIT_CSD(&sd->defer_csd, trigger_rx_softirq, sd);
- 		spin_lock_init(&sd->defer_lock);
-=20
+@@ -11537,7 +11633,10 @@ static int __init net_dev_init(void)
  		init_gro_hash(&sd->backlog);
  		sd->backlog.poll =3D process_backlog;
  		sd->backlog.weight =3D weight_p;
 +		INIT_LIST_HEAD(&sd->backlog.poll_list);
  	}
-+	smpboot_register_percpu_thread(&backlog_threads);
++	if (use_backlog_threads())
++		smpboot_register_percpu_thread(&backlog_threads);
 =20
  	dev_boot_phase =3D 0;
 =20
-diff --git a/net/core/net-procfs.c b/net/core/net-procfs.c
-index 09f7ed1a04e8a..086283cc8d47b 100644
---- a/net/core/net-procfs.c
-+++ b/net/core/net-procfs.c
-@@ -180,7 +180,7 @@ static int softnet_seq_show(struct seq_file *seq, void =
-*v)
- 		   sd->processed, sd->dropped, sd->time_squeeze, 0,
- 		   0, 0, 0, 0, /* was fastroute */
- 		   0,	/* was cpu_collision */
--		   sd->received_rps, flow_limit_count,
-+		   0 /* was received_rps */, flow_limit_count,
- 		   input_qlen + process_qlen, (int)seq->index,
- 		   input_qlen, process_qlen);
- 	return 0;
 diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 2198979470ecf..166d0f300d170 100644
+index 2198979470ecf..30cdb008dd65c 100644
 --- a/net/core/skbuff.c
 +++ b/net/core/skbuff.c
 @@ -6844,8 +6844,8 @@ nodefer:	__kfree_skb(skb);
@@ -577,7 +439,7 @@ index 2198979470ecf..166d0f300d170 100644
 -	if (unlikely(kick) && !cmpxchg(&sd->defer_ipi_scheduled, 0, 1))
 -		smp_call_function_single_async(cpu, &sd->defer_csd);
 +	if (unlikely(kick))
-+		__napi_schedule(&sd->backlog);
++		net_trigger_defer_list_processing(cpu);
  }
 =20
  static void skb_splice_csum_page(struct sk_buff *skb, struct page *page,
