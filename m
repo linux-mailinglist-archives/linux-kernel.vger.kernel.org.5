@@ -2,318 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1787B3C89
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 00:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8AA7B3C8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 00:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233791AbjI2WNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 18:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53198 "EHLO
+        id S233824AbjI2WUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 18:20:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232748AbjI2WNF (ORCPT
+        with ESMTP id S232748AbjI2WUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 18:13:05 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF189EB
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 15:13:02 -0700 (PDT)
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 19034413B3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 22:13:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1696025581;
-        bh=akEQpjnSaOCmVyFO6/j4VdCn72p157hzBoWjA60czn0=;
-        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=W6hol19aUVXaHaEi6qQbM0IyUdjHnDwxaa067188rmpqqdtrE142rgC89xqD6bZcH
-         oVlj+R0oVBvSyRKn8VX6vqqEcvNoqf2vghsMmNHioVYg2CSR80+qh/DcvTFTATYrWE
-         rGZPo187Do5R8fdLKU2W/T4HScBAY6ZDtHeBvIZ2oDUy8AVPEkB85rmjcC8xMynOnj
-         KwzWePY9xYNpSdp+Mvk597uLunC/lvBu10I1+zxlVeVfYCzCsHQCWXdLb3ooWFNCGf
-         PX6ts6S2BzTbvpJZum2VdbpS9wxWgrVswgDou4Q7IK44MvlfXPg/Uhlz00ex5eU/Xx
-         N4VJPk8pmMK5g==
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-418134c43d7so8735001cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 15:13:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696025580; x=1696630380;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=akEQpjnSaOCmVyFO6/j4VdCn72p157hzBoWjA60czn0=;
-        b=HfCtnfcWggs/N4An8pwAABSlIWduHEvqUtRO5c0ZoPHpLh/DerhN05+XWCZ4qgsW+9
-         gL/rMogyU+ar25cHrjEtZ6jUJ6mxyMShglTOqxr9TFwEtjYxuTLIhiV7CUDL/pR/2Jp/
-         LHpoJHr7w1I3trzlpLGv4A9pqYKsOZ3F4is8/mkTtsRBnAmFu4aWM/A5YffebGHNZ6xs
-         lI0WIBYJS/INOAPN5y5+EUSK4VMAKbqURvVC58x3qii9mqTF1O7WrdBGJLHQ99b2i1XH
-         IPMYeaZe8L0iAGxOL6c988TIV5qP3WI2ppec5vJ7lhPAGUJ827h841H+kXSXwP3sqjGT
-         FC1A==
-X-Gm-Message-State: AOJu0YymEJQ0Y6HVkqOs3uwBs+PLQeihdYF/ztDO2yO2D3mgnF0vmRtK
-        SS1+LB06lL91uDudL0hs/2wmXcHYd8Q3BpDbp+e4fu0liyEeo8N0m2BRFXn65HcCfIeiH5aptQY
-        msFbc/3oa3SemzKO0LQ+QnhPFMT57GTwrlZVOGdiVQt/b5kgf4bmwoyA97Q==
-X-Received: by 2002:ac8:5b02:0:b0:418:11c9:ddb5 with SMTP id m2-20020ac85b02000000b0041811c9ddb5mr5685375qtw.25.1696025579742;
-        Fri, 29 Sep 2023 15:12:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEB4k+0zAFDt2sSwLYhrpY9z4bqBMrdow5w3FBKQoWQYu+kJM3gd7lbn/fBQ8vP2fJypw7YZZK5PghtHVTbwSw=
-X-Received: by 2002:ac8:5b02:0:b0:418:11c9:ddb5 with SMTP id
- m2-20020ac85b02000000b0041811c9ddb5mr5685358qtw.25.1696025579473; Fri, 29 Sep
- 2023 15:12:59 -0700 (PDT)
-Received: from 348282803490 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 29 Sep 2023 15:12:58 -0700
-From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
-In-Reply-To: <20230912072740.2544-1-jszhang@kernel.org>
-References: <20230912072740.2544-1-jszhang@kernel.org>
-Mime-Version: 1.0
-Date:   Fri, 29 Sep 2023 15:12:58 -0700
-Message-ID: <CAJM55Z9-+qFMAzXbDOX==bYhU92x0bgjbzJiYEHS_yL0wF-SbQ@mail.gmail.com>
-Subject: Re: [PATCH] riscv: errata: thead: use riscv_nonstd_cache_ops for CMO
-To:     Jisheng Zhang <jszhang@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 29 Sep 2023 18:20:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A7FF1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 15:20:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696026004; x=1727562004;
+  h=date:from:to:cc:subject:message-id;
+  bh=mDz1jPzGDcWRR0sgOnHKRSwl/dPLDGFjhj1Y06tAaKs=;
+  b=S73cBq1vgQPdvYLBo+QAyupNxI6dbVFuCYFmjr4tQwyHOqKdi6kLaaoj
+   u3iFVKxXKXSqGQRxBMsw5QAi5Wsc69PRovr+byxJFd5b7glpBoXcYxQX7
+   mJdXyUcBKLVG1QDJYptry5T4p9OGdwux0FblmM4A8mjo2XnJ10kqYCGhB
+   2OxaoUy23qhqatT5u8yiAZNVzzHLl5aNfud3v1LXctGEK3F0rPonpFobE
+   L1fg/rwEBW1h+QCeuWFtoXAKfs8gvi1uaQiDz8DUGWjG8jFn2qMyhWaa/
+   WTYn8DSEgXCMPe6xXJsUdWNUk28p5NxN30DryrG66v00wLvLrcPi0P0hW
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="448882288"
+X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
+   d="scan'208";a="448882288"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 15:20:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="699782463"
+X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
+   d="scan'208";a="699782463"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga003.jf.intel.com with ESMTP; 29 Sep 2023 15:20:02 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qmLq4-0003K1-1c;
+        Fri, 29 Sep 2023 22:20:00 +0000
+Date:   Sat, 30 Sep 2023 06:19:15 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/bugs] BUILD SUCCESS
+ 5c44836dd1451c754c58cea5179d2fa5cbd9fc85
+Message-ID: <202309300612.A7U7aWRG-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jisheng Zhang wrote:
-> Previously, we use alternative mechanism to dynamically patch
-> the CMO operations for THEAD C906/C910 during boot for performance
-> reason. But as pointed out by Arnd, "there is already a significant
-> cost in accessing the invalidated cache lines afterwards, which is
-> likely going to be much higher than the cost of an indirect branch".
-> And indeed, there's no performance difference with GMAC and EMMC per
-> my test on Sipeed Lichee Pi 4A board.
->
-> Use riscv_nonstd_cache_ops for THEAD C906/C910 CMO to simplify
-> the alternative code, and to acchieve Arnd's goal -- "I think
-> moving the THEAD ops at the same level as all nonstandard operations
-> makes sense, but I'd still leave CMO as an explicit fast path that
-> avoids the indirect branch. This seems like the right thing to do both
-> for readability and for platforms on which the indirect branch has a
-> noticeable overhead."
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/bugs
+branch HEAD: 5c44836dd1451c754c58cea5179d2fa5cbd9fc85  x86/srso: Remove unnecessary semicolon
 
-Hi Jisheng,
+elapsed time: 1484m
 
-Thank you for doing this! This boots fine on my Nezha board (Allwinner D1)
-running btrfs on the sd-card which was quick to find bugs when this code
-first went upstream.
+configs tested: 212
+configs skipped: 2
 
-Tested-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
->  arch/riscv/Kconfig.errata            |  1 +
->  arch/riscv/errata/thead/errata.c     | 76 +++++++++++++++++++++++++++-
->  arch/riscv/include/asm/errata_list.h | 50 +++---------------
->  3 files changed, 81 insertions(+), 46 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
-> index 566bcefeab50..d7972914f9de 100644
-> --- a/arch/riscv/Kconfig.errata
-> +++ b/arch/riscv/Kconfig.errata
-> @@ -78,6 +78,7 @@ config ERRATA_THEAD_CMO
->  	bool "Apply T-Head cache management errata"
->  	depends on ERRATA_THEAD && MMU
->  	select RISCV_DMA_NONCOHERENT
-> +	select RISCV_NONSTANDARD_CACHE_OPS
->  	default y
->  	help
->  	  This will apply the cache management errata to handle the
-> diff --git a/arch/riscv/errata/thead/errata.c b/arch/riscv/errata/thead/errata.c
-> index 0554ed4bf087..1c320abfe446 100644
-> --- a/arch/riscv/errata/thead/errata.c
-> +++ b/arch/riscv/errata/thead/errata.c
-> @@ -12,8 +12,10 @@
->  #include <asm/alternative.h>
->  #include <asm/cacheflush.h>
->  #include <asm/cpufeature.h>
-> +#include <asm/dma-noncoherent.h>
->  #include <asm/errata_list.h>
->  #include <asm/hwprobe.h>
-> +#include <asm/io.h>
->  #include <asm/patch.h>
->  #include <asm/vendorid_list.h>
->
-> @@ -33,6 +35,75 @@ static bool errata_probe_pbmt(unsigned int stage,
->  	return false;
->  }
->
-> +/*
-> + * dcache.ipa rs1 (invalidate, physical address)
-> + * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
-> + *   0000001    01010      rs1       000      00000  0001011
-> + * dache.iva rs1 (invalida, virtual address)
-> + *   0000001    00110      rs1       000      00000  0001011
-> + *
-> + * dcache.cpa rs1 (clean, physical address)
-> + * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
-> + *   0000001    01001      rs1       000      00000  0001011
-> + * dcache.cva rs1 (clean, virtual address)
-> + *   0000001    00101      rs1       000      00000  0001011
-> + *
-> + * dcache.cipa rs1 (clean then invalidate, physical address)
-> + * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
-> + *   0000001    01011      rs1       000      00000  0001011
-> + * dcache.civa rs1 (... virtual address)
-> + *   0000001    00111      rs1       000      00000  0001011
-> + *
-> + * sync.s (make sure all cache operations finished)
-> + * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
-> + *   0000000    11001     00000      000      00000  0001011
-> + */
-> +#define THEAD_inval_A0	".long 0x0265000b"
-> +#define THEAD_clean_A0	".long 0x0255000b"
-> +#define THEAD_flush_A0	".long 0x0275000b"
-> +#define THEAD_SYNC_S	".long 0x0190000b"
-> +
-> +#define THEAD_CMO_OP(_op, _start, _size, _cachesize)			\
-> +asm volatile("mv a0, %1\n\t"						\
-> +	     "j 2f\n\t"							\
-> +	     "3:\n\t"							\
-> +	     THEAD_##_op##_A0 "\n\t"					\
-> +	     "add a0, a0, %0\n\t"					\
-> +	     "2:\n\t"							\
-> +	     "bltu a0, %2, 3b\n\t"					\
-> +	     THEAD_SYNC_S						\
-> +	     : : "r"(_cachesize),					\
-> +		 "r"((unsigned long)(_start) & ~((_cachesize) - 1UL)),	\
-> +		 "r"((unsigned long)(_start) + (_size))			\
-> +	     : "a0")
-> +
-> +static void thead_errata_cache_inv(phys_addr_t paddr, size_t size)
-> +{
-> +	void *vaddr = phys_to_virt(paddr);
-> +
-> +	THEAD_CMO_OP(inval, vaddr, size, riscv_cbom_block_size);
-> +}
-> +
-> +static void thead_errata_cache_wback(phys_addr_t paddr, size_t size)
-> +{
-> +	void *vaddr = phys_to_virt(paddr);
-> +
-> +	THEAD_CMO_OP(clean, vaddr, size, riscv_cbom_block_size);
-> +}
-> +
-> +static void thead_errata_cache_wback_inv(phys_addr_t paddr, size_t size)
-> +{
-> +	void *vaddr = phys_to_virt(paddr);
-> +
-> +	THEAD_CMO_OP(flush, vaddr, size, riscv_cbom_block_size);
-> +}
-> +
-> +static const struct riscv_nonstd_cache_ops thead_errata_cmo_ops = {
-> +	.wback = &thead_errata_cache_wback,
-> +	.inv = &thead_errata_cache_inv,
-> +	.wback_inv = &thead_errata_cache_wback_inv,
-> +};
-> +
->  static bool errata_probe_cmo(unsigned int stage,
->  			     unsigned long arch_id, unsigned long impid)
->  {
-> @@ -48,6 +119,8 @@ static bool errata_probe_cmo(unsigned int stage,
->  	if (stage == RISCV_ALTERNATIVES_BOOT) {
->  		riscv_cbom_block_size = L1_CACHE_BYTES;
->  		riscv_noncoherent_supported();
-> +		if (IS_ENABLED(CONFIG_RISCV_NONSTANDARD_CACHE_OPS))
-> +			riscv_noncoherent_register_cache_ops(&thead_errata_cmo_ops);
->  	}
->
->  	return true;
-> @@ -77,8 +150,7 @@ static u32 thead_errata_probe(unsigned int stage,
->  	if (errata_probe_pbmt(stage, archid, impid))
->  		cpu_req_errata |= BIT(ERRATA_THEAD_PBMT);
->
-> -	if (errata_probe_cmo(stage, archid, impid))
-> -		cpu_req_errata |= BIT(ERRATA_THEAD_CMO);
-> +	errata_probe_cmo(stage, archid, impid);
->
->  	if (errata_probe_pmu(stage, archid, impid))
->  		cpu_req_errata |= BIT(ERRATA_THEAD_PMU);
-> diff --git a/arch/riscv/include/asm/errata_list.h b/arch/riscv/include/asm/errata_list.h
-> index b55b434f0059..ea33288f8a25 100644
-> --- a/arch/riscv/include/asm/errata_list.h
-> +++ b/arch/riscv/include/asm/errata_list.h
-> @@ -24,9 +24,8 @@
->
->  #ifdef CONFIG_ERRATA_THEAD
->  #define	ERRATA_THEAD_PBMT 0
-> -#define	ERRATA_THEAD_CMO 1
-> -#define	ERRATA_THEAD_PMU 2
-> -#define	ERRATA_THEAD_NUMBER 3
-> +#define	ERRATA_THEAD_PMU 1
-> +#define	ERRATA_THEAD_NUMBER 2
->  #endif
->
->  #ifdef __ASSEMBLY__
-> @@ -94,54 +93,17 @@ asm volatile(ALTERNATIVE(						\
->  #define ALT_THEAD_PMA(_val)
->  #endif
->
-> -/*
-> - * dcache.ipa rs1 (invalidate, physical address)
-> - * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
-> - *   0000001    01010      rs1       000      00000  0001011
-> - * dache.iva rs1 (invalida, virtual address)
-> - *   0000001    00110      rs1       000      00000  0001011
-> - *
-> - * dcache.cpa rs1 (clean, physical address)
-> - * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
-> - *   0000001    01001      rs1       000      00000  0001011
-> - * dcache.cva rs1 (clean, virtual address)
-> - *   0000001    00101      rs1       000      00000  0001011
-> - *
-> - * dcache.cipa rs1 (clean then invalidate, physical address)
-> - * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
-> - *   0000001    01011      rs1       000      00000  0001011
-> - * dcache.civa rs1 (... virtual address)
-> - *   0000001    00111      rs1       000      00000  0001011
-> - *
-> - * sync.s (make sure all cache operations finished)
-> - * | 31 - 25 | 24 - 20 | 19 - 15 | 14 - 12 | 11 - 7 | 6 - 0 |
-> - *   0000000    11001     00000      000      00000  0001011
-> - */
-> -#define THEAD_inval_A0	".long 0x0265000b"
-> -#define THEAD_clean_A0	".long 0x0255000b"
-> -#define THEAD_flush_A0	".long 0x0275000b"
-> -#define THEAD_SYNC_S	".long 0x0190000b"
-> -
->  #define ALT_CMO_OP(_op, _start, _size, _cachesize)			\
-> -asm volatile(ALTERNATIVE_2(						\
-> -	__nops(6),							\
-> +asm volatile(ALTERNATIVE(						\
-> +	__nops(5),							\
->  	"mv a0, %1\n\t"							\
->  	"j 2f\n\t"							\
->  	"3:\n\t"							\
->  	CBO_##_op(a0)							\
->  	"add a0, a0, %0\n\t"						\
->  	"2:\n\t"							\
-> -	"bltu a0, %2, 3b\n\t"						\
-> -	"nop", 0, RISCV_ISA_EXT_ZICBOM, CONFIG_RISCV_ISA_ZICBOM,	\
-> -	"mv a0, %1\n\t"							\
-> -	"j 2f\n\t"							\
-> -	"3:\n\t"							\
-> -	THEAD_##_op##_A0 "\n\t"						\
-> -	"add a0, a0, %0\n\t"						\
-> -	"2:\n\t"							\
-> -	"bltu a0, %2, 3b\n\t"						\
-> -	THEAD_SYNC_S, THEAD_VENDOR_ID,					\
-> -			ERRATA_THEAD_CMO, CONFIG_ERRATA_THEAD_CMO)	\
-> +	"bltu a0, %2, 3b\n\t",						\
-> +	0, RISCV_ISA_EXT_ZICBOM, CONFIG_RISCV_ISA_ZICBOM)		\
->  	: : "r"(_cachesize),						\
->  	    "r"((unsigned long)(_start) & ~((_cachesize) - 1UL)),	\
->  	    "r"((unsigned long)(_start) + (_size))			\
-> --
-> 2.40.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20230929   gcc  
+arc                   randconfig-001-20230930   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                       netwinder_defconfig   clang
+arm                          pxa168_defconfig   clang
+arm                   randconfig-001-20230929   gcc  
+arm                   randconfig-001-20230930   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+hexagon                          allyesconfig   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20230929   gcc  
+i386         buildonly-randconfig-001-20230930   gcc  
+i386         buildonly-randconfig-002-20230929   gcc  
+i386         buildonly-randconfig-002-20230930   gcc  
+i386         buildonly-randconfig-003-20230929   gcc  
+i386         buildonly-randconfig-003-20230930   gcc  
+i386         buildonly-randconfig-004-20230929   gcc  
+i386         buildonly-randconfig-004-20230930   gcc  
+i386         buildonly-randconfig-005-20230929   gcc  
+i386         buildonly-randconfig-005-20230930   gcc  
+i386         buildonly-randconfig-006-20230929   gcc  
+i386         buildonly-randconfig-006-20230930   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20230929   gcc  
+i386                  randconfig-001-20230930   gcc  
+i386                  randconfig-002-20230929   gcc  
+i386                  randconfig-002-20230930   gcc  
+i386                  randconfig-003-20230929   gcc  
+i386                  randconfig-003-20230930   gcc  
+i386                  randconfig-004-20230929   gcc  
+i386                  randconfig-004-20230930   gcc  
+i386                  randconfig-005-20230929   gcc  
+i386                  randconfig-005-20230930   gcc  
+i386                  randconfig-006-20230929   gcc  
+i386                  randconfig-006-20230930   gcc  
+i386                  randconfig-011-20230929   gcc  
+i386                  randconfig-011-20230930   gcc  
+i386                  randconfig-012-20230929   gcc  
+i386                  randconfig-012-20230930   gcc  
+i386                  randconfig-013-20230929   gcc  
+i386                  randconfig-013-20230930   gcc  
+i386                  randconfig-014-20230929   gcc  
+i386                  randconfig-014-20230930   gcc  
+i386                  randconfig-015-20230929   gcc  
+i386                  randconfig-015-20230930   gcc  
+i386                  randconfig-016-20230929   gcc  
+i386                  randconfig-016-20230930   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20230929   gcc  
+loongarch             randconfig-001-20230930   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        mvme16x_defconfig   gcc  
+m68k                           sun3_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                           ip22_defconfig   clang
+mips                           mtx1_defconfig   clang
+mips                        qi_lb60_defconfig   clang
+mips                          rb532_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc                 simple_smp_defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc                   currituck_defconfig   gcc  
+powerpc                    ge_imp3a_defconfig   clang
+powerpc                   microwatt_defconfig   clang
+powerpc                 xes_mpc85xx_defconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv             nommu_k210_sdcard_defconfig   gcc  
+riscv                 randconfig-001-20230929   gcc  
+riscv                 randconfig-001-20230930   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20230929   gcc  
+s390                  randconfig-001-20230930   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                        edosk7760_defconfig   gcc  
+sh                           se7619_defconfig   gcc  
+sh                           se7722_defconfig   gcc  
+sh                   secureedge5410_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20230929   gcc  
+sparc                 randconfig-001-20230930   gcc  
+sparc64                          alldefconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20230929   gcc  
+x86_64       buildonly-randconfig-001-20230930   gcc  
+x86_64       buildonly-randconfig-002-20230929   gcc  
+x86_64       buildonly-randconfig-002-20230930   gcc  
+x86_64       buildonly-randconfig-003-20230929   gcc  
+x86_64       buildonly-randconfig-003-20230930   gcc  
+x86_64       buildonly-randconfig-004-20230929   gcc  
+x86_64       buildonly-randconfig-004-20230930   gcc  
+x86_64       buildonly-randconfig-005-20230929   gcc  
+x86_64       buildonly-randconfig-005-20230930   gcc  
+x86_64       buildonly-randconfig-006-20230929   gcc  
+x86_64       buildonly-randconfig-006-20230930   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-001-20230929   gcc  
+x86_64                randconfig-001-20230930   gcc  
+x86_64                randconfig-002-20230929   gcc  
+x86_64                randconfig-002-20230930   gcc  
+x86_64                randconfig-003-20230929   gcc  
+x86_64                randconfig-003-20230930   gcc  
+x86_64                randconfig-004-20230929   gcc  
+x86_64                randconfig-004-20230930   gcc  
+x86_64                randconfig-005-20230929   gcc  
+x86_64                randconfig-005-20230930   gcc  
+x86_64                randconfig-006-20230929   gcc  
+x86_64                randconfig-006-20230930   gcc  
+x86_64                randconfig-011-20230929   gcc  
+x86_64                randconfig-011-20230930   gcc  
+x86_64                randconfig-012-20230929   gcc  
+x86_64                randconfig-012-20230930   gcc  
+x86_64                randconfig-013-20230929   gcc  
+x86_64                randconfig-013-20230930   gcc  
+x86_64                randconfig-014-20230929   gcc  
+x86_64                randconfig-014-20230930   gcc  
+x86_64                randconfig-015-20230929   gcc  
+x86_64                randconfig-015-20230930   gcc  
+x86_64                randconfig-016-20230929   gcc  
+x86_64                randconfig-016-20230930   gcc  
+x86_64                randconfig-071-20230929   gcc  
+x86_64                randconfig-071-20230930   gcc  
+x86_64                randconfig-072-20230929   gcc  
+x86_64                randconfig-072-20230930   gcc  
+x86_64                randconfig-073-20230929   gcc  
+x86_64                randconfig-073-20230930   gcc  
+x86_64                randconfig-074-20230929   gcc  
+x86_64                randconfig-074-20230930   gcc  
+x86_64                randconfig-075-20230929   gcc  
+x86_64                randconfig-075-20230930   gcc  
+x86_64                randconfig-076-20230929   gcc  
+x86_64                randconfig-076-20230930   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                    rhel-8.3-kselftests   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                           rhel-8.3-ltp   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa                              defconfig   gcc  
+xtensa                    xip_kc705_defconfig   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
