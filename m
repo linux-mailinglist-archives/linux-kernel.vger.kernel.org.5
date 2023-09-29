@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCFD7B38CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:26:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9657B38BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233826AbjI2R0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:26:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39788 "EHLO
+        id S233440AbjI2R0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233416AbjI2RZ4 (ORCPT
+        with ESMTP id S233392AbjI2RZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:25:56 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8441B3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:51 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-57b5ef5b947so7902204eaf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:51 -0700 (PDT)
+        Fri, 29 Sep 2023 13:25:54 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5F61B9
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:52 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-57ba2cd3507so5855924eaf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696008351; x=1696613151; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696008352; x=1696613152; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=b7PDmHSczFeqgAzbimbZilruGj50u/2gIL6ZrFf0Suo=;
-        b=tPqTfgr7eS8w94njpeNR2mA4fJMEkZl4vcBfgDwqGnY7WAt/hyF+JYt41g+LD1pjG2
-         +r2w+dszYB7Ks63dx5V6O9uP/HLESAEZOdXe3bPB7xfoCyVMUGmL6LAnMVoOr6a/vLLu
-         0tH1hmGkaGedT4jHw6xjH1rCqCTiaa5m6k1kesaRIS8LwFBHHkV1hoS/2JrJETGrpm/9
-         ae7ivzQNuhvmStWtZVFxFXzNQWpeQDi1v/91KqGis/OpFPby4ixe6H6TAwLM68div8mQ
-         msVXMafiXTHV691q71BE/bfySAr8eZJW0dCA9tRr0M8Iyu5xpdfKMoyUsObaNa87qztZ
-         jkJQ==
+        bh=Gkx5P/I+qjqJv4UaL/3S8ec+xgMfUSpu8JHr+ZyL9fM=;
+        b=qO0Ld7aZUFIP41AkqcMkH836Bw6dUV6LNLbPOBBRC9iWgyb4tgaitmR0FmhOio8aGs
+         fEilizl6C+cuFNqP5x/VfMiRBNZWEwYuV59whLDT3HfBE+UAbpwSSF9uA7HPjOeDx33K
+         rVpre+LrU/bOVpeVdKWvC4tLxKLAIX7ZfgLekG2w3o6SrfWOHwPtd/WOCG8U7I48bI5l
+         D/T18RaBW8U1exBE+xtr/WZ9gGuYOXotnUEsF5Lgig8yskWhhRlbrAIjmzNqZVJtXbxg
+         JODg4LODhZS+KheV8+nz5OcvksUFme36MjssjpaXCN3Efm3h36NdsQb196q3W7E71U+B
+         fMSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696008351; x=1696613151;
+        d=1e100.net; s=20230601; t=1696008352; x=1696613152;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=b7PDmHSczFeqgAzbimbZilruGj50u/2gIL6ZrFf0Suo=;
-        b=p1+A3/Zjcdn33npD/UKY7USmm9hY5NC3nQ0o+nAWp0jli38BPALhk+EfFyYV6fzpNP
-         OHb4h8tjULoFvWkaaUFiLa/4cY1bFtKSicPA8d8puHUGgkQFLFmAXGJte6CDgB1zuJvs
-         4QY8bvZXKae9yWmq8bOnZddQqcxs4YgAXq6508Dw5/lG+HI0UaCbXnrtxB7X2wLOKIG1
-         +cvIz6l032m0Kxht0l3gBhOvDRmV6fuI3kSZhZAc72wAjq+6dw+SfXjipeBeTcWPt91q
-         QBV9h1syGKjj8W+eWczHCnsQ387N7vWxYne3RJBmk93J199rCixVMEUc218zY+ltSupM
-         PVFA==
-X-Gm-Message-State: AOJu0YwdOibrNZT5voLxga5lEAiYXSqoocv4ElCGNyZITUfanc+MG5iZ
-        T5Ubgior4Cp5bPFXtKJdd2yOqCPDtuAZKnDaS4bV4g==
-X-Google-Smtp-Source: AGHT+IHxogutDZ1XLOIzr9/nOTx5KhbYFs+7hKsrWe7PtJOi6WwkLjfxiyyCL5MSgpTSmN6+IIr3og==
-X-Received: by 2002:a4a:7319:0:b0:57b:3a07:181c with SMTP id s25-20020a4a7319000000b0057b3a07181cmr4656794ooc.9.1696008351082;
+        bh=Gkx5P/I+qjqJv4UaL/3S8ec+xgMfUSpu8JHr+ZyL9fM=;
+        b=TZOy7Pxicz0fBNrehhN6uGuHsif3R5c1enadbL/6HyJq+Kms/10CO98i4I+epk903M
+         8Md3J90PjyNEn90+70Rzi214T88t1XDhWYBX5nXwsnh2TEc0jrVqGm0toCDEMVyOiGkR
+         DIy09xEZjNF5Bfc2pQXPy7IsSLHsJNqLgpFGnpj9yhnXEtPwHwPYLC18lF11B7IJo5Lw
+         D061S0lx+5KWEtCE2MwsXUiEB74LA+UX6DP6iSb92UxfSUmANuJkTrUZ5VqrUbfdInOG
+         4DMzkpTp7/Pgwk1zyy/Uw9YohwMDSxGd80GmOz3OBxh86WfDptpDB/xoN/TdcBHoSnAW
+         yy8Q==
+X-Gm-Message-State: AOJu0YyCOOBg1qtZywlOuvr91T0QlO35asQMwdqNripnzfadAHz3zUlR
+        9zbv0L2q/5s67MPJeZO+SX8kPw==
+X-Google-Smtp-Source: AGHT+IFxikc/8KvEMGZ+gJBnorvyfx+jDYYgmBwRwAiusDLE/tDFFURBfLomSTduLrTMqWfQBD006Q==
+X-Received: by 2002:a4a:3c07:0:b0:57b:6f5c:c90a with SMTP id d7-20020a4a3c07000000b0057b6f5cc90amr4717791ooa.8.1696008351927;
         Fri, 29 Sep 2023 10:25:51 -0700 (PDT)
 Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id f128-20020a4a5886000000b0057bb326cad4sm2272915oob.33.2023.09.29.10.25.50
+        by smtp.gmail.com with ESMTPSA id f128-20020a4a5886000000b0057bb326cad4sm2272915oob.33.2023.09.29.10.25.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 10:25:50 -0700 (PDT)
+        Fri, 29 Sep 2023 10:25:51 -0700 (PDT)
 From:   David Lechner <dlechner@baylibre.com>
 To:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-staging@lists.linux.dev
@@ -63,9 +63,9 @@ Cc:     David Lechner <david@lechnology.com>,
         Axel Haslam <ahaslam@baylibre.com>,
         Philip Molloy <pmolloy@baylibre.com>,
         linux-kernel@vger.kernel.org, David Lechner <dlechner@baylibre.com>
-Subject: [PATCH v3 05/27] staging: iio: resolver: ad2s1210: remove spi_set_drvdata()
-Date:   Fri, 29 Sep 2023 12:23:10 -0500
-Message-ID: <20230929-ad2s1210-mainline-v3-5-fa4364281745@baylibre.com>
+Subject: [PATCH v3 06/27] staging: iio: resolver: ad2s1210: sort imports
+Date:   Fri, 29 Sep 2023 12:23:11 -0500
+Message-ID: <20230929-ad2s1210-mainline-v3-6-fa4364281745@baylibre.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
 References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
@@ -86,31 +86,46 @@ From: David Lechner <david@lechnology.com>
 
 From: David Lechner <dlechner@baylibre.com>
 
-Since we never call spi_get_drvdata(), we can remove spi_set_drvdata().
+There are quite a few imports and we will be adding more so it will
+make it easier to read if they are sorted.
 
 Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
 
 v3 changes:
 * This is a new patch split out from "staging: iio: resolver: ad2s1210:
- fix probe"
+ use devicetree to get fclkin"
 
- drivers/staging/iio/resolver/ad2s1210.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/staging/iio/resolver/ad2s1210.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
-index b5e071d7c5fd..28015322f562 100644
+index 28015322f562..832f86bf15e5 100644
 --- a/drivers/staging/iio/resolver/ad2s1210.c
 +++ b/drivers/staging/iio/resolver/ad2s1210.c
-@@ -659,8 +659,6 @@ static int ad2s1210_probe(struct spi_device *spi)
- 		return -ENOMEM;
- 	st = iio_priv(indio_dev);
+@@ -4,16 +4,16 @@
+  *
+  * Copyright (c) 2010-2010 Analog Devices Inc.
+  */
+-#include <linux/types.h>
+-#include <linux/mutex.h>
++#include <linux/delay.h>
+ #include <linux/device.h>
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
+ #include <linux/of.h>
+-#include <linux/spi/spi.h>
+ #include <linux/slab.h>
++#include <linux/spi/spi.h>
+ #include <linux/sysfs.h>
+-#include <linux/delay.h>
+-#include <linux/gpio/consumer.h>
+-#include <linux/module.h>
++#include <linux/types.h>
  
--	spi_set_drvdata(spi, indio_dev);
--
- 	mutex_init(&st->lock);
- 	st->sdev = spi;
- 	st->hysteresis = true;
+ #include <linux/iio/iio.h>
+ #include <linux/iio/sysfs.h>
 
 -- 
 2.42.0
