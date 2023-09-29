@@ -2,69 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A5937B29F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 02:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 982F17B2A01
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 02:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232482AbjI2Ask (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 20:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
+        id S232430AbjI2Avo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 20:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232400AbjI2Asi (ORCPT
+        with ESMTP id S229799AbjI2Avl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 20:48:38 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2851A5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 17:48:35 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id 5614622812f47-3af5fcb5e37so1635846b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 17:48:35 -0700 (PDT)
+        Thu, 28 Sep 2023 20:51:41 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B32194
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 17:51:39 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c736b00639so11267045ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 17:51:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695948515; x=1696553315; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1695948699; x=1696553499; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tylYhPEWtThqOdjkF6waboL48MfnCro3UFLr0GQ9x28=;
-        b=UZWIoDN+hcGjhygGewIEpq4xMg4JXHsxf2/LJgBgM8CKcxjZimzaxqSIuI6MObyg8m
-         JFr2/ufJrONw4Uy0PSQ6+sX4cdP/kCY8wp1xGlODI3CXdALlFNTlX0ePltCbh1qo0QpG
-         N3ikzEyblLtERDrEjKqBp/SYk1OklRwzMu6kE=
+        bh=zAa4dlDzV3ROUKICn+wMYA02M0QPbIAkOWeP+0WwmYg=;
+        b=TAZhZ0senhzRFGWdAae18VQJeBKbNtb/8BK+3kCuDQ3m+sWGUmntjju5BqOUM68JKm
+         T/r/qJzQgDz+uv3CEitCjpi12sQHwYjfYwdhZQijSH7rAa5y8/1QWOPesij0qyeDOB8s
+         k6l6CpOEG+KxMp6YBsIqnQfjTZ8a06XTygAeA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695948515; x=1696553315;
+        d=1e100.net; s=20230601; t=1695948699; x=1696553499;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tylYhPEWtThqOdjkF6waboL48MfnCro3UFLr0GQ9x28=;
-        b=D0p2DVBNlXNqmJnOQGZccSzgZdE0FlfGvqqRQ/WI5AYi+ZGWQB/m3Iz1w+VxvwtzIW
-         PiQldMxG/8P7dHS4yPuMZ9IOLBPH0LmM/t/hbAvvvSET/sV6yRzEESrKn2in5ngmfhmv
-         M2/Ki+czGjA3CM7Uupo+F6Rp+lIrcAsq2B2SApvvVagDUdG5yIERC7nqx6wVyxNq5lyv
-         u5klBkX1AQ1qjCwcMazs9tnyam8o1YD8TRqvLcCCnzaTpP/XvlT7r/LSs6zy66NOPW1/
-         B0sDPxNhk/eV9ck96ZJCe1sW4O14pEkhfZGuoXdZFtKvHEnhJcFb2b0YGW8ZI3B7TkCp
-         Upbw==
-X-Gm-Message-State: AOJu0YwymWbSaOUPrx4C1U+1nwuO+lNfEB6UdXPog+ePT1piwRjg6sRQ
-        oYgOcncbtV5V8OI5pUtrxOL6BA==
-X-Google-Smtp-Source: AGHT+IEWHpwzSGA33eSq7rADLwnpRwf9x79Yvho2lnmUCGF45oywwNmstL7fJN9k86IblRlfWA/0BA==
-X-Received: by 2002:a05:6808:14d5:b0:3a7:36f9:51aa with SMTP id f21-20020a05680814d500b003a736f951aamr3226322oiw.17.1695948515082;
-        Thu, 28 Sep 2023 17:48:35 -0700 (PDT)
+        bh=zAa4dlDzV3ROUKICn+wMYA02M0QPbIAkOWeP+0WwmYg=;
+        b=WI94zRJ0mk0YR4y+KgYFQvAOh5+pZ9Oh0ZNcsiJbWWgrSa76WL2Irtq7AJx7dUih8m
+         s8HznJmIa3t7QnCVXvfkGoPUmMm6MKfZxGLBZpXkdQ+ITCeQb06RS9r/ZiJfgOlzqQaJ
+         G7IPOYmgjzZ7LTEstehFdoK+O0q3X4eYUf0bSRkWK7N6vpWKXL99P+UjcuPAgQHajW6H
+         HJ4rAhXb/Mm12otjjpi2Cal2gqnE2tQglU1zJ1C2hLYLJwqRHUQHrsxBY1oXn4hSrSaP
+         Lvk3AT5YSeWRiJGBsj02JHKKlCzqxvvTu1dHMk+G+V4AdQqS12p3r/diO22kKsRwt7cc
+         R6Pg==
+X-Gm-Message-State: AOJu0Yy7yEqkoDtFbP/siRC29IQAiLDL3HQKxRMQN07ETj64iXGRMLZj
+        DEyo+mFBHC0LjSgK6yKcdbj4si2bOowx/ctzxuQ=
+X-Google-Smtp-Source: AGHT+IHcWFs2TkSx+f0Jkn2x8NP6yZWHGkFhN2wwgs8oryhOp2AFBuTUWcH3Jbs0ZAENfsB6t4fwMw==
+X-Received: by 2002:a17:903:25d4:b0:1b9:e972:134d with SMTP id jc20-20020a17090325d400b001b9e972134dmr2381625plb.3.1695948699370;
+        Thu, 28 Sep 2023 17:51:39 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id q26-20020a62ae1a000000b00689f1ce7dacsm14033655pff.23.2023.09.28.17.48.34
+        by smtp.gmail.com with ESMTPSA id q20-20020a170902e31400b001c60ba709b7sm10434668plc.125.2023.09.28.17.51.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 17:48:34 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 17:48:34 -0700
+        Thu, 28 Sep 2023 17:51:38 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 17:51:38 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        Eric Biederman <ebiederm@xmission.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 2/2] selftests/exec: Convert execveat test to generate
- KTAP output
-Message-ID: <202309281748.7BAE187A@keescook>
-References: <20230928-ktap-exec-v1-0-1013a2db0426@kernel.org>
- <20230928-ktap-exec-v1-2-1013a2db0426@kernel.org>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Sebastian Ott <sebott@redhat.com>,
+        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Pedro Falcato <pedro.falcato@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] binfmt_elf: Provide prot bits as context for
+ padzero() errors
+Message-ID: <202309281750.FA45C0DBB@keescook>
+References: <20230927033634.make.602-kees@kernel.org>
+ <20230927034223.986157-3-keescook@chromium.org>
+ <87y1gr8j51.fsf@email.froward.int.ebiederm.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230928-ktap-exec-v1-2-1013a2db0426@kernel.org>
+In-Reply-To: <87y1gr8j51.fsf@email.froward.int.ebiederm.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,23 +76,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 04:38:12PM +0200, Mark Brown wrote:
-> Currently the execveat test does not produce KTAP output but rather a
-> custom format. This means that we only get a pass/fail for the suite, not
-> for each individual test that the suite does. Convert to using the standard
-> kselftest output functions which result in KTAP output being generated.
+On Wed, Sep 27, 2023 at 03:18:34PM -0500, Eric W. Biederman wrote:
+> Kees Cook <keescook@chromium.org> writes:
 > 
-> The main trick with this is that, being an exec() related test, the
-> program executes itself and returns specific exit codes to verify
-> success meaning that we need to only use the top level kselftest
-> header/summary functions when invoked directly rather than when run as
-> part of a test.
+> > Errors with padzero() should be caught unless we're expecting a
+> > pathological (non-writable) segment. Report -EFAULT only when PROT_WRITE
+> > is present.
+> >
+> > Additionally add some more documentation to padzero(), elf_map(), and
+> > elf_load().
 > 
-> Signed-off-by: Mark Brown <broonie@kernel.org>
+> I wonder if this might be easier to just perform the PROT_WRITE
+> test in elf_load, and to completely skip padzero of PROT_WRITE
+> is not present. 
 
-Yay! More KTAP! :)
+Yeah, actually, after moving load_elf_library() to elf_load(), there's
+only 1 caller of padzero... :P
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+I'll work on that.
+
+-Kees
+
+> 
+> Eric
+> 
+> > Cc: Eric Biederman <ebiederm@xmission.com>
+> > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> > Cc: Christian Brauner <brauner@kernel.org>
+> > Cc: linux-fsdevel@vger.kernel.org
+> > Cc: linux-mm@kvack.org
+> > Suggested-by: Eric Biederman <ebiederm@xmission.com>
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  fs/binfmt_elf.c | 33 +++++++++++++++++++++++----------
+> >  1 file changed, 23 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> > index 0214d5a949fc..b939cfe3215c 100644
+> > --- a/fs/binfmt_elf.c
+> > +++ b/fs/binfmt_elf.c
+> > @@ -110,19 +110,21 @@ static struct linux_binfmt elf_format = {
+> >  
+> >  #define BAD_ADDR(x) (unlikely((unsigned long)(x) >= TASK_SIZE))
+> >  
+> > -/* We need to explicitly zero any fractional pages
+> > -   after the data section (i.e. bss).  This would
+> > -   contain the junk from the file that should not
+> > -   be in memory
+> > +/*
+> > + * We need to explicitly zero any trailing portion of the page that follows
+> > + * p_filesz when it ends before the page ends (e.g. bss), otherwise this
+> > + * memory will contain the junk from the file that should not be present.
+> >   */
+> > -static int padzero(unsigned long elf_bss)
+> > +static int padzero(unsigned long address, int prot)
+> >  {
+> >  	unsigned long nbyte;
+> >  
+> > -	nbyte = ELF_PAGEOFFSET(elf_bss);
+> > +	nbyte = ELF_PAGEOFFSET(address);
+> >  	if (nbyte) {
+> >  		nbyte = ELF_MIN_ALIGN - nbyte;
+> > -		if (clear_user((void __user *) elf_bss, nbyte))
+> > +		/* Only report errors when the segment is writable. */
+> > +		if (clear_user((void __user *)address, nbyte) &&
+> > +		    prot & PROT_WRITE)
+> >  			return -EFAULT;
+> >  	}
+> >  	return 0;
+> > @@ -348,6 +350,11 @@ create_elf_tables(struct linux_binprm *bprm, const struct elfhdr *exec,
+> >  	return 0;
+> >  }
+> >  
+> > +/*
+> > + * Map "eppnt->p_filesz" bytes from "filep" offset "eppnt->p_offset"
+> > + * into memory at "addr". (Note that p_filesz is rounded up to the
+> > + * next page, so any extra bytes from the file must be wiped.)
+> > + */
+> >  static unsigned long elf_map(struct file *filep, unsigned long addr,
+> >  		const struct elf_phdr *eppnt, int prot, int type,
+> >  		unsigned long total_size)
+> > @@ -387,6 +394,11 @@ static unsigned long elf_map(struct file *filep, unsigned long addr,
+> >  	return(map_addr);
+> >  }
+> >  
+> > +/*
+> > + * Map "eppnt->p_filesz" bytes from "filep" offset "eppnt->p_offset"
+> > + * into memory at "addr". Memory from "p_filesz" through "p_memsz"
+> > + * rounded up to the next page is zeroed.
+> > + */
+> >  static unsigned long elf_load(struct file *filep, unsigned long addr,
+> >  		const struct elf_phdr *eppnt, int prot, int type,
+> >  		unsigned long total_size)
+> > @@ -405,7 +417,8 @@ static unsigned long elf_load(struct file *filep, unsigned long addr,
+> >  				eppnt->p_memsz;
+> >  
+> >  			/* Zero the end of the last mapped page */
+> > -			padzero(zero_start);
+> > +			if (padzero(zero_start, prot))
+> > +				return -EFAULT;
+> >  		}
+> >  	} else {
+> >  		map_addr = zero_start = ELF_PAGESTART(addr);
+> > @@ -712,7 +725,7 @@ static unsigned long load_elf_interp(struct elfhdr *interp_elf_ex,
+> >  	 * the file up to the page boundary, and zero it from elf_bss
+> >  	 * up to the end of the page.
+> >  	 */
+> > -	if (padzero(elf_bss)) {
+> > +	if (padzero(elf_bss, bss_prot)) {
+> >  		error = -EFAULT;
+> >  		goto out;
+> >  	}
+> > @@ -1407,7 +1420,7 @@ static int load_elf_library(struct file *file)
+> >  		goto out_free_ph;
+> >  
+> >  	elf_bss = eppnt->p_vaddr + eppnt->p_filesz;
+> > -	if (padzero(elf_bss)) {
+> > +	if (padzero(elf_bss, PROT_WRITE)) {
+> >  		error = -EFAULT;
+> >  		goto out_free_ph;
+> >  	}
 
 -- 
 Kees Cook
