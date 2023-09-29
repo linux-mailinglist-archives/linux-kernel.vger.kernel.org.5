@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CD17B3218
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89BE7B322F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233181AbjI2MM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 08:12:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45692 "EHLO
+        id S233244AbjI2MPE convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Sep 2023 08:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232818AbjI2MM1 (ORCPT
+        with ESMTP id S233207AbjI2MO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:12:27 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8661AB;
-        Fri, 29 Sep 2023 05:12:24 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-4526d872941so6692454137.1;
-        Fri, 29 Sep 2023 05:12:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695989544; x=1696594344; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=O6AGwXiXnrUMPXklIL5nmsijRotoMkC208+2TMbjvG0=;
-        b=RBxcuYGI1dv7jxQE9x20eY7D2XBeEyKX+eOQlUVeHfhGNW6j5272xeruDLqzWsxmcG
-         pNQdEYcS5YDWSA9tF5hlmxQzIWbjk6OHZAfbFyoZMUUC6OftT3x8RNUcXL46gfV0YPJh
-         iAUfGHY8WeZ43vGw9UPzRAKFDpQ2gATQ0UxlkFNry78m1MCTeeJ66YwUZdUqECNHsAKe
-         okxM5KVvCano5BNaPaeoLWwUdsj6y0MYYR63ocSsz76Kv0+QaU6o2JU8Lf9UqoNd8Jov
-         jpCFfNHGYp9fge/3fiKRHR07sNd70UXstiTEZMNP2EeckFTI/hvGOZ42YgxrMxjbZraG
-         ROng==
+        Fri, 29 Sep 2023 08:14:57 -0400
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2550519F;
+        Fri, 29 Sep 2023 05:14:55 -0700 (PDT)
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-57b68556d6dso6524895eaf.1;
+        Fri, 29 Sep 2023 05:14:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695989544; x=1696594344;
+        d=1e100.net; s=20230601; t=1695989694; x=1696594494;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=O6AGwXiXnrUMPXklIL5nmsijRotoMkC208+2TMbjvG0=;
-        b=ea0BYpCgOXTkmWQpSsv36usDuLbvdjnSuHkylz82SLVVG49eGjJ1wxBvLJEww/wCVw
-         xDwDDmbuj1RmU1oeEQ/D8/nLLSb7yM+UabBqXTvGWnhhF3Y7rPmg0rUPrxwMQ227Wys2
-         Pylg9nuMdtM1oHpntvtSQZmp+ol4oqeFGXN4aXH6VkNhiJPbczH+t/JoiDbgaJ1Z4C6t
-         HYzxjIO+n+FxcCY8jxXISYO8Y9Ru+iMdWKi4JKjetvl6+ZbtiAjXhTk8j5J5HcrX9rPK
-         +76xbX+lRFvX54uxc/HnN5d9vH5BLELzVSw7j9YQvkw5Nbb9EivJMrDwI5d84WfnkyQ7
-         lt/Q==
-X-Gm-Message-State: AOJu0Yyt0DYVsqbNcJ4pFuSsT9yi3Rj3T0Ou5491BbpbB9i7IukYba5G
-        gh/8E7XhQzUTyd5jPST8jzjgrE7h9DUdzot5bSU=
-X-Google-Smtp-Source: AGHT+IFL72KqbSIw/G7vE5rVtmiJ3L3ZrqYM/4H/e5qUq9cV909l+/PBvNa7N1kRqgXb9QMyFQV3Xm6Xw7VpBFtehK4=
-X-Received: by 2002:a67:ffc7:0:b0:44d:3bc0:f1bc with SMTP id
- w7-20020a67ffc7000000b0044d3bc0f1bcmr3884563vsq.18.1695989543918; Fri, 29 Sep
- 2023 05:12:23 -0700 (PDT)
+        bh=RuoH4Um95jPah+EhYg0BBr891Wv4izigjaMEWeAZDlE=;
+        b=wQRcmkjHrUfYn4EIqibb9B+ADh0HqBABsRdMGCsX+2tAhiq0cwrmOUEQULMYIa2yU/
+         vKkdSwnI+vPXeBewXlq1Y3J+bcHLf9ivPmzh5a5/Vmg0qJEgYjiS98ZTjroy12emptrE
+         4Da+7mXOepkvBwO4DueT7ifBlw7qA19fnCb9p4ARcQR/Pyg9NvzNzVUZCScvlUWzK/mI
+         zty88Gxnv98HIQC6UQ4Sn8O9SmYelpyVIVV9c4XfPAEgh4X5dMbs/XWvSEaWFVg3hD1c
+         2GywS7582+aB4rul6F7pph3F0ib9TKgALRIISHe9jLMmcR3rw8TrIwhhaoeyOwSnQW2S
+         sOXg==
+X-Gm-Message-State: AOJu0YxSIXwgD10YXZ6UIZFDbIK4uIgGcwcWPpAZj/yEqr9jHp7wqhgk
+        hYRgkPUs/+x+rc7SXJblabguwik4jGWLPFAr
+X-Google-Smtp-Source: AGHT+IFRj61fbWgq7CLJNKA93/V+zVCyq3LNqFBOZOAYeOf0HZJG+N7nBmPWn78HcLfzQFArbEO9Rg==
+X-Received: by 2002:a05:6358:7252:b0:135:a10e:1ed0 with SMTP id i18-20020a056358725200b00135a10e1ed0mr4127927rwa.23.1695989693864;
+        Fri, 29 Sep 2023 05:14:53 -0700 (PDT)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id o79-20020a254152000000b00d749a394c87sm4997381yba.16.2023.09.29.05.14.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 05:14:53 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d8afe543712so1356386276.0;
+        Fri, 29 Sep 2023 05:14:53 -0700 (PDT)
+X-Received: by 2002:a25:d4c5:0:b0:d4e:4103:7807 with SMTP id
+ m188-20020a25d4c5000000b00d4e41037807mr4110545ybf.60.1695989693529; Fri, 29
+ Sep 2023 05:14:53 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230929031716.it.155-kees@kernel.org> <20230929032435.2391507-4-keescook@chromium.org>
-In-Reply-To: <20230929032435.2391507-4-keescook@chromium.org>
-From:   Pedro Falcato <pedro.falcato@gmail.com>
-Date:   Fri, 29 Sep 2023 13:12:13 +0100
-Message-ID: <CAKbZUD1ojuNN_+x6gkxEMsmLOd5KbCs-wfJcMM==b8+k8_uD_w@mail.gmail.com>
-Subject: Re: [PATCH v4 4/6] binfmt_elf: Use elf_load() for library
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Eric Biederman <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Sebastian Ott <sebott@redhat.com>,
-        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20230925154548.27048-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20230925154548.27048-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 29 Sep 2023 14:14:41 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU690+e1SNVFsjMJHHdqQymwKMjGwuCe02Q2wYzMSNGEA@mail.gmail.com>
+Message-ID: <CAMuHMdU690+e1SNVFsjMJHHdqQymwKMjGwuCe02Q2wYzMSNGEA@mail.gmail.com>
+Subject: Re: [PATCH v3] pinctrl: renesas: pinctrl-rzg2l: Add validation of
+ GPIO pin in rzg2l_gpio_request()
+To:     Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 4:24=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
-rote:
+On Mon, Sep 25, 2023 at 5:46 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 >
-> While load_elf_library() is a libc5-ism, we can still replace most of
-> its contents with elf_load() as well, further simplifying the code.
+> Validate the GPIO pin request in rzg2l_gpio_request() callback using
+> rzg2l_validate_gpio_pin() function. This stops any accidental usage
+> of GPIO pins which are not supported by the SoCs.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> Tested-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
+> v2->v3
+> * Updated pin_data variable to be u32 instead of u64.
 
-While I understand you want to break as little as possible (as the ELF
-loader maintainer), I'm wondering if we could axe CONFIG_USELIB
-altogether? Since CONFIG_BINFMT_AOUT also got axed. Does this have
-users anywhere?
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-pinctrl-for-v6.7.
 
---=20
-Pedro
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
