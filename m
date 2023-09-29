@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B93E67B39BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2101C7B39C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:12:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233702AbjI2SL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 14:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42780 "EHLO
+        id S233764AbjI2SMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 14:12:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjI2SLx (ORCPT
+        with ESMTP id S233635AbjI2SL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 14:11:53 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B09D19F
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:11:51 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c434c33ec0so111750835ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:11:51 -0700 (PDT)
+        Fri, 29 Sep 2023 14:11:56 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB0651B3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:11:53 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c6219307b2so72504315ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:11:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696011111; x=1696615911; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1696011113; x=1696615913; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LelDNgIaKJAGv8m5QtAniz9H43KU5lbEctjO62ftcqY=;
-        b=c6JXIVj8+lpK/dfbLFSBBXWCRfw/iOqrSjbUE9h28HcY5xoTuqoUYrChI+t9ZpwZuU
-         JAWSdZxLk04I308cwN7stuS6ROcscZTvhh8N3J6jarqvnP4DwINMJ2qa3nC4A3CEi1Wd
-         J1Cfi7W5VK3YwrWjia9nk4/rIiDGc6c5uqCIs=
+        bh=vrmkuelEd3rJ28up92cyB2Np2I/dyvESECk2QEaqxqI=;
+        b=flTXVNpO4qOVZlBAJzuGgI/EHIohwpzeMy/6PZ4cuSEtEmEfrjO4f4/PxeSuhSCiHa
+         3KvLw0spqKmkQN4/Y08W1bR0V5YOWy4tm9t5IExSAqoN4qe0H89Clk55yFSaNHAORypn
+         hyXYnXAQbzSRbHtcuXGjARxMPEEEfuiVlkA74=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696011111; x=1696615911;
+        d=1e100.net; s=20230601; t=1696011113; x=1696615913;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LelDNgIaKJAGv8m5QtAniz9H43KU5lbEctjO62ftcqY=;
-        b=tfD2eo99BOHmGFApf73wIohCt0/XY65lBpbx6vL7BlpyRw4+qOlvMnh68RasRT68HI
-         mew8fi69TZvxzSr5U86b6g2bDVmGVRS1Xo7XLMQJZhTJDIN/AL45/A+pft8ONYXkU780
-         gXkBBaeA79cxhfs/GtuuMx0o2L6G+I+mHLKOZ8CpX9vP2brZ7KGGo0f6ZcDy0+Bss1/L
-         hSElPOfVHYVV1/82WiY8M6WN8uFBVyiaX5zGv8cL0zBIJLhnfdaFOVLGO3AEgGzGooAg
-         MMccTixoCxi8IlX5cy6b/dok8EDDLcS3HITzHPt9JDJePpKouop3bT+bFhrjjXGWOUxm
-         1DNA==
-X-Gm-Message-State: AOJu0YyrSHbp5USHgvlhqiEjhE4//8qbgyvMBbn2bpHbfq/RT/9iE/+j
-        mvJU/8CFxP2i1aIdkpqOQOGGpA==
-X-Google-Smtp-Source: AGHT+IFp3bhP+Nqbdbpr+lLgR4vtr77JK8lxcWx2zxMlaCWdtIt61fdrd8th89qUIyLgBpTfPNGTAg==
-X-Received: by 2002:a17:902:e545:b0:1c0:d17a:bfef with SMTP id n5-20020a170902e54500b001c0d17abfefmr4502026plf.30.1696011110955;
-        Fri, 29 Sep 2023 11:11:50 -0700 (PDT)
+        bh=vrmkuelEd3rJ28up92cyB2Np2I/dyvESECk2QEaqxqI=;
+        b=Um761PhGKe18oNlrT2bCCuPagKSupqB/IrXBKvdik1+oHEobe6srkqgScomv5WpDHd
+         JIZVCMfUej27DahVDviHVulMUK4IYvXhuc5Spegdwk6VwG57PsbVhDv+F6mmul9D2GYJ
+         SF83wp+ZJX543xfvBjOvPWLCTJ0/869umroxeJIXFebcGQR+2qzoRPkbFXLUeCKF81YW
+         bxK+RBs2UcNdyeX2KR00xZF5aw7ZkQkH9B0bQHPkxoG6oe1T956xGW+RDtHtueREaaNB
+         U3aprLiI3lBqHmUcrrsshTNpT5Pexzi7f6tbn7GqihdINbqWJqaVuZm9o6Rv5v1YyewB
+         tDaw==
+X-Gm-Message-State: AOJu0YwbHCobrwLef0U0X3odagCVktG/6Qc9qAC3mvoBIlvQCZw+eW2o
+        kzYIQZ4Er0R6tQsw5R1AVsJ6kg==
+X-Google-Smtp-Source: AGHT+IF0+llAWLKGd5tXXfz3AaZJWSIgRckzd/8+Cbfq0HsBzZOPCAEvp67CPVp2BmJIO5snh7SQug==
+X-Received: by 2002:a17:903:248:b0:1b8:8b72:fa28 with SMTP id j8-20020a170903024800b001b88b72fa28mr5257379plh.58.1696011113144;
+        Fri, 29 Sep 2023 11:11:53 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id g10-20020a1709026b4a00b001b8a2edab6asm17075217plt.244.2023.09.29.11.11.50
+        by smtp.gmail.com with ESMTPSA id u16-20020a170902e81000b001b898595be7sm17123630plg.291.2023.09.29.11.11.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 29 Sep 2023 11:11:50 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -59,26 +59,26 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
         linux-hardening@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH 2/5] cxgb4: Annotate struct clip_tbl with __counted_by
-Date:   Fri, 29 Sep 2023 11:11:46 -0700
-Message-Id: <20230929181149.3006432-2-keescook@chromium.org>
+Subject: [PATCH 3/5] cxgb4: Annotate struct cxgb4_tc_u32_table with __counted_by
+Date:   Fri, 29 Sep 2023 11:11:47 -0700
+Message-Id: <20230929181149.3006432-3-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230929181042.work.990-kees@kernel.org>
 References: <20230929181042.work.990-kees@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1345; i=keescook@chromium.org;
- h=from:subject; bh=1xjwdL5f1ZwQtlSjHraq4S6Ct1cTzMptk05f7F0Knyw=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlFxNkClAByZ2t2imOLxlyWRMjihvubRYuwVOju
- CbJdpqAEYiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRcTZAAKCRCJcvTf3G3A
- JmRDD/4xcFd2xErFHHO52g54sKzulxzUwaY7hKB/cJqB+eXbtFGgB2tt9GnWDUYTucvNWfGfrRO
- WefuPoFa1In2irZrcx0pjDUGznGE0qFXLd86FJtIOeSIEJq35TMjFQOnq6tqhTenU3znVkbQZev
- 64kT7WHWe+/WYF1syArYm5+LofMLkW1zctxLTdrpIRXBXpxbK9IzCd6gG7yQPGh/nCDZaZJR++k
- D/oSNxxnkr/cGbxRxhf5s/8qYKXv5Y8uzNPu2q5G9yzEf6e+8urdbYNlDIn4WGlWwpOVsGubTh+
- ef8O9z++/PzDHpk+g5s6fMxH3IM1sNyQbzRSblOMYA6ciGJzENjrSxqVZKJtIVk/gu4cEYIdRSC
- MZTZgdpN+v10komKMPQwIO/PiQ/38irV/eA1mWTw5lLAm8tqB6LPg6MgYOuOGXtFoI+neSJYPf/
- x5hWOqzImqqP2rxs3VchpeExsk3srsZJl6fPJKZxcRQ2K8rIR49s8wzZr3k3xKhPdYXoqMAu6lK
- whn/87qgrQShDDdmtGChdFZuoQ8jBLDXo1Y37dgkk0uN1pnVazzfaYydiESmJYIMAqDs7eiDSb+
- dMhc2XY+KeQ78Dvg0PDZtR//QWpS5+pG+iPfaLmlEqG6/1pQASs8+LUwdkJXtia2ClOU5W+qlcR fszdrCV9cNLMyTQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1483; i=keescook@chromium.org;
+ h=from:subject; bh=WNbLnqzZE+z+esp5efLnkGvq7OtgHHNunnfXU8ZF7oU=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlFxNk0t1kkwpfJqHrZx/YdrjBahRhU6dQg7Okx
+ u6FscRO6QeJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRcTZAAKCRCJcvTf3G3A
+ JidkD/9HX3Au2/63QgH0EK6PoLXEVxhxTyzFmm55RQkNUQ12mIdkyPQhXOdXdPaHOzINQkl3IxD
+ XtInCBrvYRQV2fX6pGVD1FzuCQ8SVPLSnzKPJ9MzkyBA8G85jQJa27qbc8nOjADf84SnqUCU3E7
+ abcFVVjUIDSZ0Ra/x92q32EPlOOmtGen8/5bd8oxADgtB1544tA/KdDiSkdx3YCXjN8VB3z7xqX
+ Wd/RfUFBxFKzvD04iU34CID25Fp2EVQpI9y40lIzMtT3PizWOSLDYoFQ3NMr9dd9j71i3jHRkhU
+ GaapzNg4UDQBfvv+ux2J5b6i+IAKJu0b+8a7tIfhhaKBNp2ISI4vIk9HqloOnQd+BWuluLKBpWj
+ hrNtFoV3awi1v4YzPnCKrK0MvAhSaBekPoVttFqzxYutyFR66bgQx8yWh+h1V8+PfuZXkEhqpbO
+ 716CDFdVDm5pX8SWdmfs34fHxXg7aaD0cbUiOzEgXBZdyIZfRo+jtvT7z3lSEKFowA6ob5zSrCQ
+ WRJT6MRTbvYTC5OtncSF65Ban2SQYBF3y7H8RvBQP4DCLG/hISKlxmIE/gCdL5musZW/gOJEyXx
+ pxcm/D9H08sb0IH4WQreDSfrwlrjgngkjeCI+ouNbR/ybBapAwLHlhNU8QpNMPwM/LW4Tu3f2aX RMyKWiztAyV60qQ==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -97,7 +97,7 @@ their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
 (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 functions).
 
-As found with Coccinelle[1], add __counted_by for struct clip_tbl.
+As found with Coccinelle[1], add __counted_by for struct cxgb4_tc_u32_table.
 
 [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
@@ -109,22 +109,21 @@ Cc: Paolo Abeni <pabeni@redhat.com>
 Cc: netdev@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- drivers/net/ethernet/chelsio/cxgb4/clip_tbl.h | 2 +-
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32_parse.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.h b/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.h
-index 290c1058069a..847c7fc2bbd9 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.h
-+++ b/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.h
-@@ -29,7 +29,7 @@ struct clip_tbl {
- 	atomic_t nfree;
- 	struct list_head ce_free_head;
- 	void *cl_list;
--	struct list_head hash_list[];
-+	struct list_head hash_list[] __counted_by(clipt_size);
- };
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32_parse.h b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32_parse.h
+index f59dd4b2ae6f..9050568a034c 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32_parse.h
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32_parse.h
+@@ -331,6 +331,6 @@ struct cxgb4_link {
  
- enum {
+ struct cxgb4_tc_u32_table {
+ 	unsigned int size;          /* number of entries in table */
+-	struct cxgb4_link table[]; /* Jump table */
++	struct cxgb4_link table[] __counted_by(size); /* Jump table */
+ };
+ #endif /* __CXGB4_TC_U32_PARSE_H */
 -- 
 2.34.1
 
