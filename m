@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CA47B3C2B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 23:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF457B3C2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 23:54:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbjI2VxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 17:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
+        id S233663AbjI2VyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 17:54:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjI2VxE (ORCPT
+        with ESMTP id S229508AbjI2VyE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 17:53:04 -0400
+        Fri, 29 Sep 2023 17:54:04 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 409FDB7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 14:53:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26865B7
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 14:54:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696024382; x=1727560382;
+  t=1696024442; x=1727560442;
   h=date:from:to:cc:subject:message-id;
-  bh=O9Tx+Wrh8b5eLkHJT+vug7dFPO4TN9Xn4gPBj2jEuzU=;
-  b=IfgH9EfJfYltikWZ6uJZ0PqPMivLh82gA4wS76ArgNVFti+zHH+zHGlr
-   fvKjFI4Szp7+CJTveIy6f60ZDTB8qlG6NWiUgayjJSHYjtOg44KKxY37W
-   AQvnzSJIVb+gOlUikl/pEM2CuHYVQKnlZZGcmL67O+l/EreiNvEoJouoH
-   eNeVrzPRFdYyKTLv5Ylttr3PchOJp8425jNAo50JQGTu+/T9kqRVtnvYw
-   6QZ3Gs1rCgU9mS1fqa5Sq8KVNNMrddCcukrLr9QZbQGW0hsmk7t7MuWxO
-   AAVdAk9M7Y34KXyjGCi8od2Ev51Kac9ebE09X8mgNh3CLnI95zscz5Rwg
+  bh=2i0phI475qyVebDpYPhPrIrTEkK68jxUp0lE68mj4fM=;
+  b=jRM81eldGcoYtDKDQ4ALKgw6uxFSdHqFwEBBBoeUijjJzEdGFRw3Fzb2
+   oFWESbIj+RKr0luoeJ2Ku2WBJ60e+iaYNE0YN22Du9Z61Cf+TydDKYlkp
+   AuW28HDAx6tgXmIompaO+/OymnZB687t1kVVNJelOBfLvDZsyYiXpiJN0
+   y0GSFLhed4tuhsj/EsmjFgcRlXxcL43xqijuNsj190T3u7yaeCUBB0HWN
+   c+Im54gpQISeb3E2s4sczRYwlgOAdEZ1J8JdT6XwaFtJrgXN1vv3QQbg8
+   jfYhOrbVNvQIfpQXRfFpmvdH3xcNA5tisryzf8kcE4Sjp5D0/ZBkB/okc
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="381267161"
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="381267235"
 X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
-   d="scan'208";a="381267161"
+   d="scan'208";a="381267235"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 14:53:01 -0700
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 14:54:01 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="815724336"
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="815724463"
 X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
-   d="scan'208";a="815724336"
+   d="scan'208";a="815724463"
 Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 29 Sep 2023 14:53:00 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 29 Sep 2023 14:54:00 -0700
 Received: from kbuild by c3b01524d57c with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qmLPu-0003IZ-1N;
-        Fri, 29 Sep 2023 21:52:58 +0000
-Date:   Sat, 30 Sep 2023 05:52:20 +0800
+        id 1qmLQs-0003Il-1X;
+        Fri, 29 Sep 2023 21:53:58 +0000
+Date:   Sat, 30 Sep 2023 05:53:26 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/mm] BUILD SUCCESS
- fbf6449f84bf5e4ad09f2c09ee70ed7d629b5ff6
-Message-ID: <202309300518.soYi6R4g-lkp@intel.com>
+Subject: [tip:sched/urgent] BUILD SUCCESS
+ fc09027786c900368de98d03d40af058bcb01ad9
+Message-ID: <202309300523.1BhLyGii-lkp@intel.com>
 User-Agent: s-nail v14.9.24
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
@@ -59,10 +59,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/mm
-branch HEAD: fbf6449f84bf5e4ad09f2c09ee70ed7d629b5ff6  x86/sev-es: Set x86_virt_bits to the correct value straight away, instead of a two-phase approach
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/urgent
+branch HEAD: fc09027786c900368de98d03d40af058bcb01ad9  sched/rt: Fix live lock between select_fallback_rq() and RT push
 
-elapsed time: 1457m
+elapsed time: 1458m
 
 configs tested: 212
 configs skipped: 2
