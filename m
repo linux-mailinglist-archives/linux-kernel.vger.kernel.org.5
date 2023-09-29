@@ -2,73 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FE7B7B3D0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 01:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF717B3D0E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 01:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233820AbjI2XoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 19:44:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
+        id S229508AbjI2XvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 19:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjI2Xn7 (ORCPT
+        with ESMTP id S229489AbjI2XvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 19:43:59 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE71DF3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 16:43:55 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c3d8fb23d9so112314905ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 16:43:55 -0700 (PDT)
+        Fri, 29 Sep 2023 19:51:21 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7ABF3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 16:51:19 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso1997804866b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 16:51:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696031035; x=1696635835; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XxXRgVO4X0oKRg65wlMjf/8hMDTc8L5/nBKtcjEkozU=;
-        b=Hmj/u6JX3APrdAtp+lWft1v2b2K7cwvLYfnu+z8b3s1WYhckbuHMr1IBmkzPir84R3
-         OAavnQIx9fgd/xcemBXRDE/upbNAdSLRlMyRXMsxKRzbg/ZLzjopNvNYTGqGeiPnE0in
-         MNE9wzIU6E9nvj8sf2u8oxRs7Br/+50ZuWb9U=
+        d=google.com; s=20230601; t=1696031478; x=1696636278; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M2wajKZDIvMciUg8xByXy694yXFOrkLdNS5AmqD12N8=;
+        b=M1GNPIvrdMjK5Hwth8nPOaaqJXdUMLtvHZSg3Wb7c47n9BtqwOuvIJvYmt/KB8e5UO
+         IK6m/grLGWWEdHX19Qt8YvSObK8MjFLgHEfgVqwhqBDnoeyrkDTJbSmWbJfbGb0EOuOg
+         z3EOmJ60grahBijemzbzpDPEuYYGCVFl0XYAxqS1D+yUUxdF0ayVRiAN/fbWeyocYwVv
+         MmVFuXDwbabdQsBfyrx87xwXWqyfCdG0G3bykV/o0/eKJmIW3ALEt4mVo/SOPJZalMzY
+         BSjEVokLXMpEtoGFW9n582ijt/wymWFgE1SstNfdQISV49lAvEz+3lyG4ZPrrhsx4kSk
+         WROQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696031035; x=1696635835;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XxXRgVO4X0oKRg65wlMjf/8hMDTc8L5/nBKtcjEkozU=;
-        b=ulb6O+uL9iuq69nM+c/Z/bmejDttbHODBA8FUj/rkMC7EkMwRhgjfkmWd9IPHqmg74
-         YfAxVLD3MjEpoVMClVYEAsucCgE5vEXGrhCAlPqa1G5GllD3qgx8x5pGms7NGOtQsaw4
-         ZNx21MniwKGdzZWWly6nKijcW3fX9iky8PEMYfY211if3+YmrtQj8Ooqr3Z6PF6flr3H
-         3/z9TAoOVWOAcztCJ3m71w5BcY4kG9NM3jBARQHj9tDa2JUF1ZdXxVWfRZCOtxE/bufj
-         RIVTnDf6APvKAF8gIOcNyYKJiAX6ExwUCGm9SzR4FQEQ6rgCGvc8tESQXlKMy21H5rYb
-         zGuw==
-X-Gm-Message-State: AOJu0Yz60ejuw7Mo8hEH+n+GZiaLpxHOV5BBO7nTC91o9Jg3dhES5w76
-        ldyAK33WJ3ZYdUl1vhsMBHrIzQ==
-X-Google-Smtp-Source: AGHT+IFoyjufbN/+tXciMnWrLm1gtDSKSS/anCouRumZaJShGMHHhX6IW7ptFVzMTxsQrVkg++m9jw==
-X-Received: by 2002:a17:903:25d4:b0:1c6:112f:5d02 with SMTP id jc20-20020a17090325d400b001c6112f5d02mr4765528plb.55.1696031035416;
-        Fri, 29 Sep 2023 16:43:55 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id f9-20020a170902ce8900b001c5076ae6absm17466616plg.126.2023.09.29.16.43.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 16:43:54 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 16:43:53 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Song Liu <song@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-raid@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] md/md-linear: Annotate struct linear_conf with
- __counted_by
-Message-ID: <202309291643.BF67044DA@keescook>
-References: <20230915200328.never.064-kees@kernel.org>
- <169601526973.3013632.16756928162777602693.b4-ty@chromium.org>
- <CAPhsuW6RfCryssufHjWHRdUGCh2DywnNNtidZ-UxEWvwo4gcbQ@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1696031478; x=1696636278;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M2wajKZDIvMciUg8xByXy694yXFOrkLdNS5AmqD12N8=;
+        b=PIS+CxU2o70MXBfHqFxEXR80hYLShJ61zSVAU4caWaCGwbir7DogmOIwAg6l5iBY3A
+         IlTJeJiv6fzfalKiSp3cR5+vWf3Wrb7iHxcQpCk5fuiP7QvFYdetP7i+OLiP+GNgmsC2
+         UeQ8tPP2fqO8FDQFLVJud/epciGPP0Fsit2B0WN635I+OVu0wpdkomrrPUyUDTWff8Vr
+         acfWZFpBwjXI0ldp3gTPqDLu2lVynUB2Sl7/YOriol2amiXO/HX7uwlLXSLOBmn1/C1V
+         urJGI+p5Pgrw1oSxKVkgyl52NPDxGdl+8ciaPQ1pZGyvaPwAA3Mwyi6K+dNRhPk9BdJT
+         5zcA==
+X-Gm-Message-State: AOJu0YxSc9/G5sgt67vBJ/SlCwfIqo8ktmi3rWCXjWH0rotLdQJglLmO
+        u2ye22eHCIwCjYgvOFcqNK6TaZTUeTxJJOhAIOu0jg==
+X-Google-Smtp-Source: AGHT+IEmFuWWbtxm0Y5UkJSA7NqsH73Vwu6P6ZHuEt8BdB70iZoIroQQ1XowS9SbFDIY6aGZoRGoBaUE26YmOWgZs64=
+X-Received: by 2002:a17:907:75ec:b0:99e:39d:4fa7 with SMTP id
+ jz12-20020a17090775ec00b0099e039d4fa7mr4805914ejc.22.1696031477774; Fri, 29
+ Sep 2023 16:51:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPhsuW6RfCryssufHjWHRdUGCh2DywnNNtidZ-UxEWvwo4gcbQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230913000215.478387-1-hshan@google.com> <169592156740.1035449.1039175365762233349.b4-ty@google.com>
+ <CAGD3tSxPDVb9sN1g+gTV5SykY57Szpx1SjEcmHJvK62u1fiXmA@mail.gmail.com> <ZRcFR6Tf-9QzfbnD@google.com>
+In-Reply-To: <ZRcFR6Tf-9QzfbnD@google.com>
+From:   Haitao Shan <hshan@google.com>
+Date:   Fri, 29 Sep 2023 16:51:06 -0700
+Message-ID: <CAGD3tSw0y=NYf7h1TvDW_w=yR0ckqwmt7cdaLM_26LNXJArXLQ@mail.gmail.com>
+Subject: Re: [PATCH v3] KVM: x86: Fix lapic timer interrupt lost after loading
+ a snapshot.
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,40 +75,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 04:40:13PM -0700, Song Liu wrote:
-> On Fri, Sep 29, 2023 at 12:21 PM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Fri, 15 Sep 2023 13:03:28 -0700, Kees Cook wrote:
-> > > Prepare for the coming implementation by GCC and Clang of the __counted_by
-> > > attribute. Flexible array members annotated with __counted_by can have
-> > > their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> > > (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> > > functions).
-> > >
-> > > As found with Coccinelle[1], add __counted_by for struct linear_conf.
-> > > Additionally, since the element count member must be set before accessing
-> > > the annotated flexible array member, move its initialization earlier.
-> > >
-> > > [...]
-> >
-> > Applied to for-next/hardening, thanks!
-> >
-> > [1/1] md/md-linear: Annotate struct linear_conf with __counted_by
-> >       https://git.kernel.org/kees/c/9add7681e09b
-> 
-> Hmm..
-> 
-> Jens pulled this into his for-next branch and for-6.7/block branch
-> earlier today:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/commit/?h=for-next&id=e887544d7620f1d3cef017e45df7bc625182caff
-> 
-> Do we need to do anything about this (drop one of them)?
+I understand now. Thanks!
 
-Whoops! Sorry, I hadn't seen it picked up. I'll drop it from my tree.
-Thanks!
+On Fri, Sep 29, 2023 at 10:11=E2=80=AFAM Sean Christopherson <seanjc@google=
+.com> wrote:
+>
+> On Fri, Sep 29, 2023, Haitao Shan wrote:
+> > Thank you very much.
+> >
+> > I do have one more question. Is this fix going to be backported to
+> > v6.3, v6.4, etc? Or perhaps that will be a decision made by other
+> > maintainers? The reason for such a question is to decide whether we
+> > have to keep the workaround for certain kernel versions.
+>
+> It's tagged for stable, so it'll get automatically selected/backported fo=
+r stable
+> kernels so long as the patch applies cleanly.  That won't include 6.3 or =
+6.4
+> because those are already end-of-life, i.e. not LTS kernels, and not the =
+most
+> recent release.
+>
+> If the patch doesn't apply cleanly, e.g. I highly doubt it'll apply as-is=
+ for 5.15,
+> then someone has to do a manual backport, where "someone" can be anyone. =
+ Sometimes
+> that's a maintainer, but just as often it's someone that really cares abo=
+ut fixing
+> something in a particular kernel.
 
--Kees
 
--- 
-Kees Cook
+
+--=20
+Haitao @Google
