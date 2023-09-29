@@ -2,191 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 912FA7B3ACE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 21:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2110B7B3AD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 21:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbjI2TxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 15:53:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54290 "EHLO
+        id S233061AbjI2T41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 15:56:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjI2Tw6 (ORCPT
+        with ESMTP id S232748AbjI2T40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 15:52:58 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999EBB4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 12:52:56 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 5B7C0320024A;
-        Fri, 29 Sep 2023 15:52:54 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Fri, 29 Sep 2023 15:52:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1696017173; x=1696103573; bh=Xnud7i5mgK2eh+mvhdn41o9zzX9PrdtiIrm
-        +V6iN9Ac=; b=LETLOekAVF6F970qHbuvW17gVSn4E4NspDqbmHAPksHJ5BNT2Xb
-        LhpfDpWBwiR+Ajjp0qexs2NtpACv2ACWbpdoIsOGRtZC1Y/lDrAkil/fiPT+ZHGf
-        nYGVVV/a80owmQKh0lWZnZLHM5ctBNa3XZdccmY9YpW3xYOi/gM6GZyuK1TRBVDm
-        8uwL2y2L1YKDFWozuyNWvXHijQYlNhYVDkhWiZIlIK9+CVdJRGzggGqMRS0BgfK6
-        OaNXBxv08HH9nzVt7cmszTD4rh6AQaoZOtJxmOsBCArTWI7M6gVsufPCOq3wS+fn
-        BCU+R8NqmNncsWhf9gE7Suis4WiAbFFkKcA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1696017173; x=1696103573; bh=Xnud7i5mgK2eh+mvhdn41o9zzX9PrdtiIrm
-        +V6iN9Ac=; b=Mq5thkXuxCuBCKOFim/mtAJSIub9suLEpKOAW5FnU6rofegxxfA
-        XbhKFW/7alwyo3OoaVWtCMbYslPoLrGDQAWHlkXt1wWP6kZuLuyJaJalX9fbxuYX
-        WLI3C33Wny7TJYjWRJ0KX3oQCfep/X4PjWkKJfvTUyMo3qaXqMfx5lspwjZsLTj+
-        +Z83LoETzZv+3iM3ovD1bDfFFXM/ua8Jkn7LwtMSztBy57iEy+rH+s7hSU3dBkYN
-        WktIuivEM3aLqEkh2Uki+iF3Vy36t3eHvU4DCJdCTDb8S7ASoA9CNEbMAiTAJvjv
-        4KsRjtSskVgnmnbYnS0OX1BUoUC/4QNzCMA==
-X-ME-Sender: <xms:FCsXZaDDQeGBSrz6rNVPDOnfQvoxmyTqOuS3Dt5bOib5fr20HSooQA>
-    <xme:FCsXZUgnOF7J_8lSM-SHSMW7VOCDQPUVa1-tGmtPv_IrM8AGWV1ngOucPebR4wdZA
-    Xi0Jxdc7OE1y3uqB3Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrtdefucetufdoteggodetrfdotffvucfrrh
-    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
-    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
-    epofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdetrhhnugcu
-    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
-    hnpefgkeeuleegieeghfduudeltdekfeffjeeuleehleefudettddtgfevueeffeeigeen
-    ucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:FCsXZdnB8y5M7xcddh9XInbhtgJjcMX_Vpb6C3VECfpMU3SgectvTA>
-    <xmx:FCsXZYzr4SSYAwr7mg5EzFYMW10qCKYceey8rcnDkd4y2afks6q59A>
-    <xmx:FCsXZfTWJHcpiHWDLOS-hMoFP9WaDhuHlto0s32-lqK9mYWdnRS6Pg>
-    <xmx:FSsXZQLGCvnayApJY9cqqbOLnoI2VxMMLqYIGWgh4dcN6p0MzVrwrg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 4952BB60089; Fri, 29 Sep 2023 15:52:52 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
+        Fri, 29 Sep 2023 15:56:26 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40AFC113
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 12:56:24 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-690d2e13074so11803911b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 12:56:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696017384; x=1696622184; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=a819MkWwG+HUW3DecPflS1GgW7AmRacZ2O8fhQTbwAc=;
+        b=dG8t6WDicmZpz6llDpNvlOD74K/eKRxsAGor2GpbtoofGpWQTCYvmYxLyymuh/Hmeo
+         ZOelb+e/SCk3pXGB4sOOfptG/xCMaqEZgxQi1JCtjDnzTpdpbW3wxn9MheEh0Q9pJE6a
+         7HIC4dNe01A9B3EIsOwm+BbQzOHEpQvB5f/HM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696017384; x=1696622184;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a819MkWwG+HUW3DecPflS1GgW7AmRacZ2O8fhQTbwAc=;
+        b=FcC3e+azvwzaekKWeciJl0bQoBZAULkX+7AT1u0Qm83In91JWOWx+S2fISfzO5Np5U
+         Wbmn4oR9IWPIUtDjz/HpLL/ba3cvwJ1I9/aHYcQiV3fd7m/Jn7snNo1qZn4+L7H0u3uv
+         AuXU4sfXJ8/Fslq/UzBCgeOOm+qnGgm27LzCovAz+h/IOwRTOS8Ry3vrAAZ+PHTCKsST
+         ASFUnbRtAPXjzgCLKGzTk/hPuUUxAWaBlNbUn+dd0km8al0RuGu0CLN4ZumkmFJ8z8vl
+         HFUKXerBkGo+vaqJdXNGttQLQn0pvA02uXyPTJDkyJ4cFuXtxllPCmdpR902ws428T0J
+         FUjg==
+X-Gm-Message-State: AOJu0Yxgq1pKYsX6K4wTFQkB+kQAI8k7G8zXsBCTj5pHAWIp9c7hfBWQ
+        bm+sxAKMExIs0m/PsIgoCMjV6A==
+X-Google-Smtp-Source: AGHT+IFmcOfiSdELEbLKd8ox6gsbRf6j5QyiZQ7r3SFlnve7gNT6GccQbgqvYKzrz4AZ0fNlmdapnQ==
+X-Received: by 2002:a05:6a00:1951:b0:68f:dd50:aef8 with SMTP id s17-20020a056a00195100b0068fdd50aef8mr5166207pfk.4.1696017383659;
+        Fri, 29 Sep 2023 12:56:23 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id x9-20020a056a00270900b00690fdeb5c07sm15830854pfv.13.2023.09.29.12.56.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 12:56:22 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 12:56:22 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Dean Luick <dean.luick@cornelisnetworks.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Justin Stitt <justinstitt@google.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] IB/hfi1: replace deprecated strncpy
+Message-ID: <202309291255.C5485E6811@keescook>
+References: <20230921-strncpy-drivers-infiniband-hw-hfi1-chip-c-v1-1-37afcf4964d9@google.com>
+ <169537858725.3339131.15264681410291677148.b4-ty@kernel.org>
+ <2f4bd46c-664e-4253-8d57-16bd46dd3be8@cornelisnetworks.com>
+ <202309232019.BE78A9C0@keescook>
+ <a3b6e914-7469-42d7-81c8-9775715b263e@cornelisnetworks.com>
 MIME-Version: 1.0
-Message-Id: <edc3a774-adc0-4873-8ebe-a346b51cb9ca@app.fastmail.com>
-In-Reply-To: <CA+-6iNwmkV0PagHehOhnYxOjwURhXZy-GnVzhkBL+9YaGMRmgQ@mail.gmail.com>
-References: <20230926175208.9298-1-james.quinlan@broadcom.com>
- <20230926175208.9298-2-james.quinlan@broadcom.com>
- <CACRpkdYGPpUUCqmJLT4t+6CNOOmRAh_vYPSPK1SWy+tNycnSqQ@mail.gmail.com>
- <CA+-6iNwkegPBxeksgNntrP1Cr5Edk5Q4o660NCZjKo9s8z3OOQ@mail.gmail.com>
- <ac1acda2-7d90-44e3-8931-f2a73fa16b15@app.fastmail.com>
- <CA+-6iNwj3qUPO99zTCimywyC9sV2aRYw3-TuVQTP8NYWD3LaLg@mail.gmail.com>
- <1f08bd12-0ac4-43ea-b058-7836521eec12@app.fastmail.com>
- <CA+-6iNwmkV0PagHehOhnYxOjwURhXZy-GnVzhkBL+9YaGMRmgQ@mail.gmail.com>
-Date:   Fri, 29 Sep 2023 15:52:17 -0400
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Jim Quinlan" <james.quinlan@broadcom.com>
-Cc:     "Linus Walleij" <linus.walleij@linaro.org>,
-        "Christoph Hellwig" <hch@lst.de>,
-        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
-        "Russell King" <linux@armlinux.org.uk>,
-        "Geert Uytterhoeven" <geert+renesas@glider.be>,
-        "Russell King" <rmk+kernel@armlinux.org.uk>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Sebastian Reichel" <sebastian.reichel@collabora.com>,
-        "Mike Rapoport" <rppt@kernel.org>,
-        "Eric DeVolder" <eric.devolder@oracle.com>,
-        "Nathan Chancellor" <nathan@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        "Christophe Leroy" <christophe.leroy@csgroup.eu>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        "open list" <linux-kernel@vger.kernel.org>,
-        "Claire Chang" <tientzu@chromium.org>,
-        "Robin Murphy" <robin.murphy@arm.com>
-Subject: Re: [PATCH v1 1/1] ARM: Select DMA_DIRECT_REMAP to fix restricted DMA
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a3b6e914-7469-42d7-81c8-9775715b263e@cornelisnetworks.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023, at 15:24, Jim Quinlan wrote:
-> On Thu, Sep 28, 2023 at 11:17=E2=80=AFAM Arnd Bergmann <arnd@arndb.de>=
- wrote:
->> On Thu, Sep 28, 2023, at 10:00, Jim Quinlan wrote:
->
-> Our RC is definitely not coherent with the ARM/ARM64 caches.
+On Tue, Sep 26, 2023 at 07:56:34AM -0500, Dean Luick wrote:
+> On 9/23/2023 10:20 PM, Kees Cook wrote:
+> > On Fri, Sep 22, 2023 at 09:25:39AM -0500, Dean Luick wrote:
+> >> On 9/22/2023 5:29 AM, Leon Romanovsky wrote:
+> >>>
+> >>> On Thu, 21 Sep 2023 07:17:47 +0000, Justin Stitt wrote:
+> >>>> `strncpy` is deprecated for use on NUL-terminated destination strings
+> >>>> [1] and as such we should prefer more robust and less ambiguous string
+> >>>> interfaces.
+> >>>>
+> >>>> We see that `buf` is expected to be NUL-terminated based on it's use
+> >>>> within a trace event wherein `is_misc_err_name` and `is_various_name`
+> >>>> map to `is_name` through `is_table`:
+> >>>> | TRACE_EVENT(hfi1_interrupt,
+> >>>> |        TP_PROTO(struct hfi1_devdata *dd, const struct is_table *is_entry,
+> >>>> |                 int src),
+> >>>> |        TP_ARGS(dd, is_entry, src),
+> >>>> |        TP_STRUCT__entry(DD_DEV_ENTRY(dd)
+> >>>> |                         __array(char, buf, 64)
+> >>>> |                         __field(int, src)
+> >>>> |                         ),
+> >>>> |        TP_fast_assign(DD_DEV_ASSIGN(dd);
+> >>>> |                       is_entry->is_name(__entry->buf, 64,
+> >>>> |                                         src - is_entry->start);
+> >>>> |                       __entry->src = src;
+> >>>> |                       ),
+> >>>> |        TP_printk("[%s] source: %s [%d]", __get_str(dev), __entry->buf,
+> >>>> |                  __entry->src)
+> >>>> | );
+> >>>>
+> >>>> [...]
+> >>>
+> >>> Applied, thanks!
+> >>
+> >> It is unfortunate that this and the qib patch was accepted so quickly.  The replacement is functionally correct.  However, I was going to suggest using strscpy() since the return value is never looked at and all use cases only require a NUL-terminated string.  Padding is not needed.
+> >
+> > Is the trace buffer already guaranteed to be zeroed? Since this is
+> > defined as a fixed-size string in the buffer, it made sense to me to be
+> > sure that the unused bytes were 0 before copying them to userspace.
+> 
+> I was not aware that binary trace records were exposed to user space.  If so, and the event records are not zeroed (either the buffer as a whole, or individual records), then strscpy_pad() is the correct solution.  My quick review of the tracing system suggests that nothing is zeroed and the record is embedded in a larger structure.  However, this begs the question for all users of tracing: Aren't alignment holes in the fast assign record a leak?
 
-Ok, thanks for the confirmation.
+I thought they were passed over direct to userspace somehow, but I
+haven't looked at the details in a long time. I could very well be
+misunderstanding it.
 
->> It's unlikely but not impossible, as the driver has some
->> unusual constructs, using a lot of coherent mappings that
->> might otherwise be streaming mappings, and relying on
->> dma_sync_single_for_device(..., DMA_BIDIRECTIONAL) for other
->> data, but without the corresponding dma_sync_single_for_cpu().
->> If all the testing happens on x86, this might easily lead
->> to a bug that only shows up on non-coherent systems but
->> is never seen during testing.
->>
->> If the problem is not the "dma-coherent" property, can you
->> double-check if using a different PCIe device works, or narrow
->> down which specific buffer you saw get corrupted?
->
-> I've done some testing, below are the results.  The new two devices, a
-> USB controller
-> and an M2 NVMe stick, behave the same as iwlwifi.
->
-> Note that I'm not advocating that "select DMA_DIRECT_REMAP" is the
-> anser, I'm just showing that it fixes my examples.
-
-Ok, so I think we can stop looking at the device drivers for
-bugs then.
-
-> VER      PCI-DEV                       <--------- RESTRICTED DMA -----=
----->
->                       ARM64    ARM     ARM64    ARM    ARM+DMA_DIRECT_=
-REMAP
-> 5.15     iwlwifi        P       P        P       F             P
-> 5.15     nvme           P       P        P       F             P
-> 5.15     usb            P       P        P       F             P
->
-> 6.1      iwlwifi        P       P        P       F             P
-> 6.1      nvme           P       P        P       F             P
-> 6.1      usb            P        P       P       F             P
->
-> Upstrm   iwlwifi        P       P        F       F             F
-> Upstrm   nvme           P       P        F       F             F
-> Upstrm   usb            P       P        F       F             F
->                       ARM64    ARM     ARM64    ARM    ARM+DMA_DIRECT_=
-REMAP
-> VER      PCI-DEV                       <--------- RESTRICTED DMA -----=
----->
->
-> LEGEND:
->   P       :=3D pass, driver probe and some functional test performed
->   F       :=3D fail, usually when probe is called; impossible to do
-> functional test
->   Upstrm  :=3D 633b47cb009d "Merge tag 'scsi-fixes' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi"
->
->   iwlwifi :=3D 7260 Wifi 8086:08b1
->   nvme    :=3D 1e95:1007
->   usb     :=3D Supahub, 1912:0014
-
-Thanks for the thorough testing, that looks very useful, even though
-I don't have an answer immediately. Maybe Robin can see something
-here that I don't.
-
-It's particularly interesting how arm64 only started failing
-on fairly recent kernels, so if nothing else helps you could
-always try bisecting the history between 6.1 and 633b47cb009d,
-hoping that the commit that broke it points us to the arm32
-problem.
-
-The only change I see in that time frame that seems related
-is 7bd6680b47fa ("Revert "Revert "arm64: dma: Drop cache
-invalidation from arch_dma_prep_coherent()"""), so you could
-start by reverting that. However, it's probably something
-else since this is for the coherent mappings, not the
-streaming ones.
-
-       Arnd
+-- 
+Kees Cook
