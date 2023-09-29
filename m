@@ -2,289 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2D17B2ED7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA96D7B2ED6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232906AbjI2JFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 05:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
+        id S232851AbjI2JFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 05:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232748AbjI2JFG (ORCPT
+        with ESMTP id S231774AbjI2JE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:05:06 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0FF1A5
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:05:03 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17B88C433C7;
-        Fri, 29 Sep 2023 09:05:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695978302;
-        bh=pr8p7EOkXa02e0yniOjEWTDShN7pEPVZkAF3BQVj6/w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MBdWRV8BDfLVCWP0zIXzuzJVo3HPrLR22jHQ/7BQuwQUJGs0RcKE/msuoXXS5Tlpn
-         rP6YAAy1ziNWjiBj87TjF5QC06hS/aoyV0/npUU9KzHFbKSvkKGshqXQM768p/GOf2
-         DLV00jN2DjlLutMn6PWqRYCwF8yCLD9i60VEgvY5G44ilv/xlbn7b0W/BOSj7LHkhE
-         KHdBxgBAJ3ea+tDQr52tvYUy0TmRMoykNxMJLRm/pEvvJeo7qIAzr+SElmJv/srHQv
-         ymnCss/Z8EEW6YMPQiuYmLP1awSwuWBfItnrFR0nfSwxthzbU4ee0kyKWNBeQ2I/K2
-         0AAxsWb2b8TZA==
-Date:   Fri, 29 Sep 2023 12:04:06 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memblock: don't run loop in memblock_add_range() twice
-Message-ID: <20230929090406.GV3303@kernel.org>
-References: <20230927013752.2515238-1-yajun.deng@linux.dev>
- <20230928061619.GS3303@kernel.org>
- <3ee9c8e4-870c-4ab0-906a-7d214031d1a6@linux.dev>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3ee9c8e4-870c-4ab0-906a-7d214031d1a6@linux.dev>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 29 Sep 2023 05:04:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3B71AA
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695978295; x=1727514295;
+  h=date:from:to:cc:subject:message-id;
+  bh=laaG1gsqR5iCK4PNN2sJ5FidmsA5hvfCYhzXs8ifLWA=;
+  b=Z2tidtKb9myu8bAwYpSv5Yt9rlf/JVRZ+eol2ACXUoh6k+2ty6OU8SHK
+   W5Y4cZTF4MwPogP/x9SFBydbimjPdZ1wzGyZVjRWXybfoh/4aCz+0frBb
+   VMg7sumP7Re6ebO563IiifhNOJYiwui7PiVuj2zoZPtdeWpm/QsgghKSj
+   7mWXOw9MQ26PcnFR6sba9+ZM2lfSnb71pwdZzpWTx2FK0f33F93+EpG+v
+   0GyLBkO2UAIIMkQLkM+Zm8lBEQjjkr6f7xpevJeY2NVf+PeQeXVE1Dgj1
+   7ZRRxdkVKz8/SybNsK/JtEi0Igs+LYPMYNXhxqn93TqL18KZjaOLn7ATo
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="362507899"
+X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
+   d="scan'208";a="362507899"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 02:04:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="865636843"
+X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
+   d="scan'208";a="865636843"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 29 Sep 2023 02:04:43 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qm9QP-0002h4-18;
+        Fri, 29 Sep 2023 09:04:41 +0000
+Date:   Fri, 29 Sep 2023 17:04:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/boot] BUILD SUCCESS
+ b3bee1e7c3f2b1b77182302c7b2131c804175870
+Message-ID: <202309291704.0alxWnzQ-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 04:47:59PM +0800, Yajun Deng wrote:
-> 
-> On 2023/9/28 14:16, Mike Rapoport wrote:
-> > On Wed, Sep 27, 2023 at 09:37:52AM +0800, Yajun Deng wrote:
-> > > There is round twice in memblock_add_range(). The first counts the number
-> > > of regions needed to accommodate the new area. The second actually inserts
-> > > them. But the first round isn't really needed, we just need to check the
-> > > counts before inserting them.
-> > > 
-> > > Check the count before calling memblock_insert_region(). If the count is
-> > > equal to the maximum value, it needs to resize the array. Otherwise,
-> > > insert it directly.
-> > > 
-> > > To avoid nested calls to memblock_add_range(), we need to call
-> > > memblock_reserve() out of memblock_double_array().
-> > memblock_add_range() does an extra loop once in a while, but I don't think
-> > removing it will have any actual effect on the boot time.
-> 
-> 
-> Yes, it has no obvious actual effect on the boot time,  but it does reduce
-> the number of unnecessary loop.
-> 
-> The actual effect on the boot time should not be the only criterion for
-> whether a patch is accepted or not.
-> 
-> Since the comment in the previous code, it tells the user that it would be
-> executed twice, this can be misleading to users.
-> 
-> So the new code will be simpler and clearer. It not just change the code,
-> but also remove the comment
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/boot
+branch HEAD: b3bee1e7c3f2b1b77182302c7b2131c804175870  x86/boot: Compile boot code with -std=gnu11 too
 
-Adding return-by-pointer parameters to memblock_double_array() and pulling
-memblock_reserve() out of this function  is in no way simpler and clearer
-that having an extra loop.
+elapsed time: 1467m
 
-If the comment is wrong, just fix the comment.
- 
-> about "executed twice",  it obviously tells the user only resize the array
-> if it is equal to the maximum value
-> 
-> and doesn't need to be executed twice.
-> 
-> > > Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> > > ---
-> > >   mm/memblock.c | 117 ++++++++++++++++++++++++--------------------------
-> > >   1 file changed, 57 insertions(+), 60 deletions(-)
-> > > 
-> > > diff --git a/mm/memblock.c b/mm/memblock.c
-> > > index 5a88d6d24d79..3f44c84f5d0b 100644
-> > > --- a/mm/memblock.c
-> > > +++ b/mm/memblock.c
-> > > @@ -400,6 +400,8 @@ void __init memblock_discard(void)
-> > >    * @type: memblock type of the regions array being doubled
-> > >    * @new_area_start: starting address of memory range to avoid overlap with
-> > >    * @new_area_size: size of memory range to avoid overlap with
-> > > + * @new_reserve_base: starting address of new array
-> > > + * @new_reserve_size: size of new array
-> > >    *
-> > >    * Double the size of the @type regions array. If memblock is being used to
-> > >    * allocate memory for a new reserved regions array and there is a previously
-> > > @@ -412,7 +414,9 @@ void __init memblock_discard(void)
-> > >    */
-> > >   static int __init_memblock memblock_double_array(struct memblock_type *type,
-> > >   						phys_addr_t new_area_start,
-> > > -						phys_addr_t new_area_size)
-> > > +						phys_addr_t new_area_size,
-> > > +						phys_addr_t *new_reserve_base,
-> > > +						phys_addr_t *new_reserve_size)
-> > >   {
-> > >   	struct memblock_region *new_array, *old_array;
-> > >   	phys_addr_t old_alloc_size, new_alloc_size;
-> > > @@ -490,11 +494,13 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
-> > >   		memblock_free(old_array, old_alloc_size);
-> > >   	/*
-> > > -	 * Reserve the new array if that comes from the memblock.  Otherwise, we
-> > > -	 * needn't do it
-> > > +	 * Keep the address and size if that comes from the memblock. Otherwise,
-> > > +	 * we needn't do it.
-> > >   	 */
-> > > -	if (!use_slab)
-> > > -		BUG_ON(memblock_reserve(addr, new_alloc_size));
-> > > +	if (!use_slab) {
-> > > +		*new_reserve_base = addr;
-> > > +		*new_reserve_size = new_alloc_size;
-> > > +	}
-> > >   	/* Update slab flag */
-> > >   	*in_slab = use_slab;
-> > > @@ -588,11 +594,12 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
-> > >   				phys_addr_t base, phys_addr_t size,
-> > >   				int nid, enum memblock_flags flags)
-> > >   {
-> > > -	bool insert = false;
-> > >   	phys_addr_t obase = base;
-> > >   	phys_addr_t end = base + memblock_cap_size(base, &size);
-> > > -	int idx, nr_new, start_rgn = -1, end_rgn;
-> > > +	phys_addr_t new_base = 0, new_size;
-> > > +	int idx, start_rgn = -1, end_rgn;
-> > >   	struct memblock_region *rgn;
-> > > +	unsigned long ocnt = type->cnt;
-> > >   	if (!size)
-> > >   		return 0;
-> > > @@ -608,25 +615,6 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
-> > >   		return 0;
-> > >   	}
-> > > -	/*
-> > > -	 * The worst case is when new range overlaps all existing regions,
-> > > -	 * then we'll need type->cnt + 1 empty regions in @type. So if
-> > > -	 * type->cnt * 2 + 1 is less than or equal to type->max, we know
-> > > -	 * that there is enough empty regions in @type, and we can insert
-> > > -	 * regions directly.
-> > > -	 */
-> > > -	if (type->cnt * 2 + 1 <= type->max)
-> > > -		insert = true;
-> > > -
-> > > -repeat:
-> > > -	/*
-> > > -	 * The following is executed twice.  Once with %false @insert and
-> > > -	 * then with %true.  The first counts the number of regions needed
-> > > -	 * to accommodate the new area.  The second actually inserts them.
-> > > -	 */
-> > > -	base = obase;
-> > > -	nr_new = 0;
-> > > -
-> > >   	for_each_memblock_type(idx, type, rgn) {
-> > >   		phys_addr_t rbase = rgn->base;
-> > >   		phys_addr_t rend = rbase + rgn->size;
-> > > @@ -644,15 +632,23 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
-> > >   			WARN_ON(nid != memblock_get_region_node(rgn));
-> > >   #endif
-> > >   			WARN_ON(flags != rgn->flags);
-> > > -			nr_new++;
-> > > -			if (insert) {
-> > > -				if (start_rgn == -1)
-> > > -					start_rgn = idx;
-> > > -				end_rgn = idx + 1;
-> > > -				memblock_insert_region(type, idx++, base,
-> > > -						       rbase - base, nid,
-> > > -						       flags);
-> > > -			}
-> > > +
-> > > +			/*
-> > > +			 * If type->cnt is equal to type->max, it means there's
-> > > +			 * not enough empty region and the array needs to be
-> > > +			 * resized. Otherwise, insert it directly.
-> > > +			 */
-> > > +			if ((type->cnt == type->max) &&
-> > > +			    memblock_double_array(type, obase, size,
-> > > +						  &new_base, &new_size))
-> > > +				return -ENOMEM;
-> > > +
-> > > +			if (start_rgn == -1)
-> > > +				start_rgn = idx;
-> > > +			end_rgn = idx + 1;
-> > > +			memblock_insert_region(type, idx++, base,
-> > > +					       rbase - base, nid,
-> > > +					       flags);
-> > >   		}
-> > >   		/* area below @rend is dealt with, forget about it */
-> > >   		base = min(rend, end);
-> > > @@ -660,33 +656,28 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
-> > >   	/* insert the remaining portion */
-> > >   	if (base < end) {
-> > > -		nr_new++;
-> > > -		if (insert) {
-> > > -			if (start_rgn == -1)
-> > > -				start_rgn = idx;
-> > > -			end_rgn = idx + 1;
-> > > -			memblock_insert_region(type, idx, base, end - base,
-> > > -					       nid, flags);
-> > > -		}
-> > > +		if ((type->cnt == type->max) &&
-> > > +		    memblock_double_array(type, obase, size,
-> > > +					  &new_base, &new_size))
-> > > +			return -ENOMEM;
-> > > +
-> > > +		if (start_rgn == -1)
-> > > +			start_rgn = idx;
-> > > +		end_rgn = idx + 1;
-> > > +		memblock_insert_region(type, idx, base, end - base,
-> > > +				       nid, flags);
-> > >   	}
-> > > -	if (!nr_new)
-> > > +	if (ocnt == type->cnt)
-> > >   		return 0;
-> > > -	/*
-> > > -	 * If this was the first round, resize array and repeat for actual
-> > > -	 * insertions; otherwise, merge and return.
-> > > -	 */
-> > > -	if (!insert) {
-> > > -		while (type->cnt + nr_new > type->max)
-> > > -			if (memblock_double_array(type, obase, size) < 0)
-> > > -				return -ENOMEM;
-> > > -		insert = true;
-> > > -		goto repeat;
-> > > -	} else {
-> > > -		memblock_merge_regions(type, start_rgn, end_rgn);
-> > > -		return 0;
-> > > -	}
-> > > +	memblock_merge_regions(type, start_rgn, end_rgn);
-> > > +
-> > > +	/* Reserve the new array */
-> > > +	if (new_base)
-> > > +		memblock_reserve(new_base, new_size);
-> > > +
-> > > +	return 0;
-> > >   }
-> > >   /**
-> > > @@ -755,6 +746,7 @@ static int __init_memblock memblock_isolate_range(struct memblock_type *type,
-> > >   					int *start_rgn, int *end_rgn)
-> > >   {
-> > >   	phys_addr_t end = base + memblock_cap_size(base, &size);
-> > > +	phys_addr_t new_base = 0, new_size;
-> > >   	int idx;
-> > >   	struct memblock_region *rgn;
-> > > @@ -764,10 +756,15 @@ static int __init_memblock memblock_isolate_range(struct memblock_type *type,
-> > >   		return 0;
-> > >   	/* we'll create at most two more regions */
-> > > -	while (type->cnt + 2 > type->max)
-> > > -		if (memblock_double_array(type, base, size) < 0)
-> > > +	if (type->cnt + 2 > type->max) {
-> > > +		if (memblock_double_array(type, base, size,
-> > > +					  &new_base, &new_size))
-> > >   			return -ENOMEM;
-> > > +		if (new_base)
-> > > +			memblock_reserve(new_base, new_size);
-> > > +	}
-> > > +
-> > >   	for_each_memblock_type(idx, type, rgn) {
-> > >   		phys_addr_t rbase = rgn->base;
-> > >   		phys_addr_t rend = rbase + rgn->size;
-> > > -- 
-> > > 2.25.1
-> > > 
+configs tested: 166
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20230928   gcc  
+arc                   randconfig-001-20230929   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20230929   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20230928   gcc  
+i386         buildonly-randconfig-001-20230929   gcc  
+i386         buildonly-randconfig-002-20230928   gcc  
+i386         buildonly-randconfig-002-20230929   gcc  
+i386         buildonly-randconfig-003-20230928   gcc  
+i386         buildonly-randconfig-003-20230929   gcc  
+i386         buildonly-randconfig-004-20230928   gcc  
+i386         buildonly-randconfig-004-20230929   gcc  
+i386         buildonly-randconfig-005-20230928   gcc  
+i386         buildonly-randconfig-005-20230929   gcc  
+i386         buildonly-randconfig-006-20230928   gcc  
+i386         buildonly-randconfig-006-20230929   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20230929   gcc  
+i386                  randconfig-002-20230929   gcc  
+i386                  randconfig-003-20230929   gcc  
+i386                  randconfig-004-20230929   gcc  
+i386                  randconfig-005-20230929   gcc  
+i386                  randconfig-006-20230929   gcc  
+i386                  randconfig-011-20230928   gcc  
+i386                  randconfig-011-20230929   gcc  
+i386                  randconfig-012-20230928   gcc  
+i386                  randconfig-012-20230929   gcc  
+i386                  randconfig-013-20230928   gcc  
+i386                  randconfig-013-20230929   gcc  
+i386                  randconfig-014-20230928   gcc  
+i386                  randconfig-014-20230929   gcc  
+i386                  randconfig-015-20230928   gcc  
+i386                  randconfig-015-20230929   gcc  
+i386                  randconfig-016-20230928   gcc  
+i386                  randconfig-016-20230929   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20230928   gcc  
+loongarch             randconfig-001-20230929   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        mvme16x_defconfig   gcc  
+m68k                           sun3_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                          ath79_defconfig   clang
+mips                        qi_lb60_defconfig   clang
+mips                          rb532_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc                   currituck_defconfig   gcc  
+powerpc                   microwatt_defconfig   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20230928   gcc  
+riscv                 randconfig-001-20230929   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20230928   gcc  
+s390                  randconfig-001-20230929   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                        edosk7760_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                 randconfig-001-20230929   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20230929   gcc  
+x86_64       buildonly-randconfig-002-20230929   gcc  
+x86_64       buildonly-randconfig-003-20230929   gcc  
+x86_64       buildonly-randconfig-004-20230929   gcc  
+x86_64       buildonly-randconfig-005-20230929   gcc  
+x86_64       buildonly-randconfig-006-20230929   gcc  
+x86_64                              defconfig   gcc  
+x86_64                                  kexec   gcc  
+x86_64                randconfig-001-20230929   gcc  
+x86_64                randconfig-002-20230929   gcc  
+x86_64                randconfig-003-20230929   gcc  
+x86_64                randconfig-004-20230929   gcc  
+x86_64                randconfig-005-20230929   gcc  
+x86_64                randconfig-006-20230929   gcc  
+x86_64                randconfig-011-20230929   gcc  
+x86_64                randconfig-012-20230929   gcc  
+x86_64                randconfig-013-20230929   gcc  
+x86_64                randconfig-014-20230929   gcc  
+x86_64                randconfig-015-20230929   gcc  
+x86_64                randconfig-016-20230929   gcc  
+x86_64                randconfig-071-20230929   gcc  
+x86_64                randconfig-072-20230929   gcc  
+x86_64                randconfig-073-20230929   gcc  
+x86_64                randconfig-074-20230929   gcc  
+x86_64                randconfig-075-20230929   gcc  
+x86_64                randconfig-076-20230929   gcc  
+x86_64                           rhel-8.3-bpf   gcc  
+x86_64                          rhel-8.3-func   gcc  
+x86_64                    rhel-8.3-kselftests   gcc  
+x86_64                         rhel-8.3-kunit   gcc  
+x86_64                           rhel-8.3-ltp   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
 
 -- 
-Sincerely yours,
-Mike.
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
