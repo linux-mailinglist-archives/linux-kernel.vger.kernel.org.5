@@ -2,173 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6261B7B34B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 908F87B34B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbjI2ORt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 10:17:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52304 "EHLO
+        id S233358AbjI2OR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 10:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233114AbjI2ORq (ORCPT
+        with ESMTP id S233179AbjI2ORy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 10:17:46 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 622211AC
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:17:44 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-5056ca2b6d1so900487e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:17:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695997061; x=1696601861; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wHZm/0dJ6cWlCinb/QJLx3AsO1RtLBLtwABzRD/dBUs=;
-        b=HD0hb8BlAHJ23ceWbtBIc9Qca9OHz9rsBoGrMC3R6t3VjVM1TVv3ESq0tWIGOzC5HO
-         bbrW3x+MegzfeocmCP0RdkxtkaFwpZAsahbMNpIaj10WLQZGBp4IriVg6477RvK/PeNm
-         m9Xk8w6D5WfasDLqbQU74h43UCQjdG5ce6FC8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695997061; x=1696601861;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wHZm/0dJ6cWlCinb/QJLx3AsO1RtLBLtwABzRD/dBUs=;
-        b=T7d9WB8BXFPbv7zVQU4z6624xa4kT+FPyoaUyNeJavAPQ6rZJq+/HahhHHDMRVuvZQ
-         EXkg0LwjabBcquEP/syc4Az6Tpo/BbHIR2Dz2ASfEHmOHnp1N3udEDp0U9T0XerLDQtO
-         fMwcJdEa7ldNr06nNkKcINHCMVFIaplztzqUzonAIXYAPfqec6ljf3iY0GUXr6CadnsU
-         rBkRFgRJHbpHQl9ee0Mk4knEe0uNr41CF94/rHSQUDmWIOW8h2wYc7JqvABUl36BVlUQ
-         djsle+aWkvkyAggXpOH42mG9u5KYTBdM1EWEh5RESUSq5n5BKpPSL1+oGB+mSlZ2W2if
-         AY1A==
-X-Gm-Message-State: AOJu0YwF532s0LTikbMUOKHER15yxsR7+32O0v3Bz8fvXKRlXcgxTRm1
-        pqDDs7TLgcpiUTS3Q2hdydOGE9apYzoKjOpRrOUr6zfA
-X-Google-Smtp-Source: AGHT+IHeWLY+8oysH/ERG1ejzZEhDV9yRDGEUyQ/MvHJY3T6R0oWwOklY7PolHw38xqV4YuJau91BQ==
-X-Received: by 2002:a05:6512:10d1:b0:501:be4d:6dc5 with SMTP id k17-20020a05651210d100b00501be4d6dc5mr3456114lfg.8.1695997061004;
-        Fri, 29 Sep 2023 07:17:41 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id s18-20020a197712000000b005041e5023f4sm1321131lfc.307.2023.09.29.07.17.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 07:17:39 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-502f29ed596so6391e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:17:39 -0700 (PDT)
-X-Received: by 2002:a19:c20f:0:b0:502:cdb6:f316 with SMTP id
- l15-20020a19c20f000000b00502cdb6f316mr285906lfc.3.1695997059452; Fri, 29 Sep
- 2023 07:17:39 -0700 (PDT)
+        Fri, 29 Sep 2023 10:17:54 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2045.outbound.protection.outlook.com [40.107.95.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73FF1B1;
+        Fri, 29 Sep 2023 07:17:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EZ3PkLGbyHzkGDycyOpZ/tK7HAnR1PwiTCnlbFaj4decv2VJ58zHr8mXRTQ5DoXaH0cDG6PTO2oU3jpCg9bmW1fu62+PUhFIxdZPavyA+xXyqF43I9YhPVRNGzYSN2pbD3T46w1ztkwTxpQ/4pynWbwDp+RRmVel0KsENL3GKylZkBfhajPvi/YLZM+g0Dr8WAWPaXcMHhRLDFmYPeEe3fsHyXoBmSj5y33XFuffZpNqk6E91NQZo77GmeNMiwHzLAHDPhHybSUdwHVU/m31CZ/jxlTHE2nd0LFEbI5w833spPkO+7wz/H9Yo/MwWHrCzRvEEbYVLfCxHPPfSxQCPw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=y8LJr8Gh6MefqP3lE6LajajUVw7+JKpymgM42hTbJjE=;
+ b=HHnYQbTT6eZjJmdcc8xU5aLV+RETnp0hI/CacCh9b05mgyE9O8x/NqvrUlMJlvmXB74cRWc3oeYpK0evUoygh79XBwS1j422AgqqGgd1aEQDRHoTBRQ/DE45VFx/LJPL2XV5afOnZ1zNAdVV3qassOOfB8aGy2LyKCLW+CHxvu/Vfc7H7F18CWpSGMTjarKnL3DNWqRiMwU00O+jrNjdsf26RyGtYDp0mP9iYaqD0wyaOkxrt09CuAYE8+pLTVpW8iCi4J3U0vvttVqJc+efpEYfZlGTaxZd4qRo8xOvUXHgJW47ZVQd8fcmta3y/BOQJ12Mdr2dBaigkWlXugqkfA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y8LJr8Gh6MefqP3lE6LajajUVw7+JKpymgM42hTbJjE=;
+ b=ELxk4z6gkMG9eUMISRba0VzcgtLn9J08NTwAUrrsLh6PR+yXypqPJT0BD1SPok7hAJnaqJB9h9jkxigH1Wa0YGL85u09auOrWvwuDtzSI9MlCAm4e4UoIs4XNUJrN6BIYAMEiBiY1rHQwRJ+EbCqh8uaIz0J3dfGGsMvLPcKew/wQ/73SzcKHluz5oYmHC0jcmuPLgh6mlA6QLFvaoiWT9bUrpOO2gUHi5yVA7z6kl4vMPfleIRypdCCPHw0RRpwi5AmSoILiyUyWEW8eEoYbR/qWdMZX3ZwkOWNDTqlp9s4ZqCoK6HAXSHZj8hei+E8zKO3f1jih82wINK/F1UDDA==
+Received: from CYXPR02CA0088.namprd02.prod.outlook.com (2603:10b6:930:ce::11)
+ by DS7PR12MB5885.namprd12.prod.outlook.com (2603:10b6:8:78::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Fri, 29 Sep
+ 2023 14:17:48 +0000
+Received: from CY4PEPF0000E9D2.namprd03.prod.outlook.com
+ (2603:10b6:930:ce:cafe::1d) by CYXPR02CA0088.outlook.office365.com
+ (2603:10b6:930:ce::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26 via Frontend
+ Transport; Fri, 29 Sep 2023 14:17:48 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CY4PEPF0000E9D2.mail.protection.outlook.com (10.167.241.145) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.19 via Frontend Transport; Fri, 29 Sep 2023 14:17:48 +0000
+Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 29 Sep
+ 2023 07:17:41 -0700
+Received: from [10.41.21.79] (10.126.230.35) by rnnvmail202.nvidia.com
+ (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 29 Sep
+ 2023 07:17:38 -0700
+Message-ID: <8cb33679-5056-8983-9334-3ab3d170568a@nvidia.com>
+Date:   Fri, 29 Sep 2023 19:47:35 +0530
 MIME-Version: 1.0
-References: <20230703-fix-boe-tv101wum-nl6-v3-0-bd6e9432c755@linaro.org>
- <CAD=FV=W2AKQSnWh02Lxbqi47M325JNCaEn1_B0xAW3PKPKKF7Q@mail.gmail.com>
- <CAD=FV=WZ+zX9jrwOhN_ZboSYSBomx2s5vifQEB6MzNFgj=g4Ow@mail.gmail.com> <CACRpkdZutdTDQkCSQoA0_0U=Qdf+xDWTu3PzvYRRz=cT18wHRA@mail.gmail.com>
-In-Reply-To: <CACRpkdZutdTDQkCSQoA0_0U=Qdf+xDWTu3PzvYRRz=cT18wHRA@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 29 Sep 2023 07:17:22 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XG1yFfbvAh9t6XiMNKBc3kHNZ8FqVjayboQjuTfxt-6A@mail.gmail.com>
-Message-ID: <CAD=FV=XG1yFfbvAh9t6XiMNKBc3kHNZ8FqVjayboQjuTfxt-6A@mail.gmail.com>
-Subject: Re: [PATCH v3 0/4] Fix up the boe-tv101wum-nl6 panel driver
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Ruihai Zhou <zhouruihai@huaqin.corp-partner.google.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Cong Yang <yangcong5@huaqin.corp-partner.google.com>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [Patch v2 1/2] cpufreq: tegra194: save CPU data to avoid repeated
+ SMP calls
+Content-Language: en-US
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <rafael@kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <treding@nvidia.com>, <jonathanh@nvidia.com>, <bbasu@nvidia.com>,
+        <amiettinen@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
+References: <20230901164113.29139-1-sumitg@nvidia.com>
+ <20230901164113.29139-2-sumitg@nvidia.com>
+ <20230928070545.b7l367qi2q4rynji@vireshk-i7>
+From:   Sumit Gupta <sumitg@nvidia.com>
+In-Reply-To: <20230928070545.b7l367qi2q4rynji@vireshk-i7>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.126.230.35]
+X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
+ rnnvmail202.nvidia.com (10.129.68.7)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D2:EE_|DS7PR12MB5885:EE_
+X-MS-Office365-Filtering-Correlation-Id: 295bcc0c-6032-4560-b356-08dbc0f6dbf6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3pjZuFSP9JZxl68Dsi/mntVHQITeRnOc6axX2tBwioAJYSzbEORgzmIwZw4sa3T98pc69+Kb5V5UbDJVbkq77iQJ5G+BcAvbYJ5090SOduCZdK3+KZiNBo16q2Ey+spN24FySBo53QySZTbVv+3tJuHFaCL7CQGZxYSlcEt9yr/C80TU4xbf6XarwMbQQXHkFKbwUP6xUImJBklqjPvPClzNxg0F315BuLiDJd0bgXYm5VzVeNBWya83YlsN4a+lK0HBfl8IkzGXPa75moKIeVHYcfhGEOJtuO6/laGlmrsQscdspEEjFoa1cEVG+v0ZalH9b3ws6nr1nXayh6wC66clZwv/CJ49VPk/zI8Y6LiOJrUEc/tewe42oVs39tqNN2qcX/r4yaw6dgc1PzTjVGYN8pOqSnimKd0fKnWh6ABBZIIsEdIcL7cxELNgZVBAeVtE5yu009cPf/hVUI0gtqPhpSK/blRnhkpXoPRhV8OFC3w7I4kcG5kPaqacwlduPezxtUO/9EK3EIDRB61l1zBCqc7GH+/EbotYL6yL5BNbQMSqTLUknzJ0BTaWed9mOrUE1Dk+RbJDJOArBuFsDHLI4IvOvFw/NRbLqpAIIPgh/02xq81H0lxAtC4Zr4u9sWOUFGjdInMYz2vlskrcMx7ANhIBu5hML504a3PK6lIaw+UDXGWwKZqP8VR24FsLwSzuxqduzm46DLEFnkkM5R17oe6vyyOg6XYt571IfD9TkMKqgf7E8rwJreELZmjTrxskFwL8dqiE9A2VRdEGfA==
+X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(39860400002)(136003)(346002)(230922051799003)(64100799003)(451199024)(186009)(82310400011)(1800799009)(40470700004)(46966006)(36840700001)(36756003)(478600001)(107886003)(356005)(36860700001)(2906002)(7636003)(5660300002)(82740400003)(16526019)(4326008)(2616005)(336012)(26005)(8676002)(31686004)(8936002)(53546011)(83380400001)(41300700001)(40460700003)(70586007)(426003)(6666004)(16576012)(54906003)(316002)(6916009)(70206006)(40480700001)(86362001)(31696002)(47076005)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 14:17:48.6516
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 295bcc0c-6032-4560-b356-08dbc0f6dbf6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D2.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5885
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Thu, Sep 28, 2023 at 2:42=E2=80=AFPM Linus Walleij <linus.walleij@linaro=
-.org> wrote:
->
-> On Tue, Sep 26, 2023 at 11:49=E2=80=AFPM Doug Anderson <dianders@chromium=
-.org> wrote:
->
-> > > I'm curious what the latest on this patch series is. Is it abandoned,
-> > > or is it still on your list to move forward with it? If it's
-> > > abandoned, does that mean we've abandoned the idea of breaking
-> > > ili9882t into a separate driver?
-> > >
-> > > From looking at things that have landed downstream in the ChromeOS
-> > > kernel trees it looks as if additional fixes are getting blocked from
-> > > being posted/landed because of the limbo state that this is in.
-> >
-> > I presume Linus is busy or otherwise indisposed.
->
-> Sorry I was looking for the branch with my patches and I have it
-> somewhere not ordinary :/
->
-> Originally I shelved it because I got requests to do additional
-> patches to the driver:
-> https://lore.kernel.org/dri-devel/CAD=3DFV=3DXkr3Qpd8m_6Xta_2jL_ezbxsmMya=
-rbKXTXL+UJLG9xNw@mail.gmail.com/
->
-> To do measurements about binary code size in object files, and if it does=
-,
-> then I need to invent new sequence macros (IIUC):
-> https://lore.kernel.org/dri-devel/CAD=3DFV=3DWju3WS45=3DEpXMUg7FjYDh3-=3D=
-mvm_jS7TF1tsaAzbb4Uw@mail.gmail.com/
->
-> So I just didn't have time for that extensive rework of the driver.
->
-> It's good feedback, but I just wanted to make the situation a little
-> bit better, and perfect is the enemy of good (TM).
->
-> > So I guess we have two options here:
-> >
-> > a) Cong Yang can post any relevant fixes to the existing "monolithic"
-> > panel driver so that we can get them landed and at least get things
-> > fixed.
-> >
-> > - or -
-> >
-> > b) Cong Yang could take over all or some of Linus's series and post
-> > new versions of it, addressing feedback.
->
-> Either works for me, I would prefer b), Cong is welcome to adopt
-> the patches if he/his employer want to. Go ahead!
->
-> We can't really let this one-size-fits-all driver go on like this.
->
-> My main concern with the "boe-tv101wum-nl6" driver is that it can
-> be renamed "cromeos-hackfest" at this point because it becomes
-> hard for any other system to reuse the panel drivers, the typical
-> example would be a system using say ili9882t but with
-> a different init sequence or something, why would they want
-> support for 9 unrelated panels compiled in? The condition that
-> these drivers should be related to the original panel that gave
-> name to the file has seemingly been dropped long ago.
->
-> It looks like the drivers only share the power lines (avdd, avee, pp3300,
-> pp1800) then this can be broken out to a helper library. But I am
-> sceptical about that too. I doubt that the vastly different panels
-> actually have exactly these these supply line names, I think it is
-> actually names of the rails on the chrome machine board. And that is
-> not how these regulators should be named, they should be named after
-> the input name on the component. This is really hard to catch in reviews =
-when
-> we don't have datasheets so I'm not blaming anyone, but is this something
-> that even needs fixing in the device tree bindings? (By deprecation
-> and addition...) can we look into this?
->
-> I would say can we at least agree that before we merge one more
-> driver into this file, break out to subdrivers those that clearly have
-> an identifiable display controller and is thus reusable? From my
-> point of view I can just see the ili9882t so that's a good start.
 
-This sounds like a reasonable plan to me. What if Cong posted patches
-that broke this up into a separate driver for the distinct controller
-but otherwise didn't substantially reorganize it? In other words both
-the old driver and the new one would keep the "struct panel_init_cmd"
-until we get some resolution about the binary size issue. That would
-at least let us move forward...
+On 28/09/23 12:35, Viresh Kumar wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> On 01-09-23, 22:11, Sumit Gupta wrote:
+>> @@ -131,19 +132,10 @@ static int tegra234_get_cpu_ndiv(u32 cpu, u32 cpuid, u32 clusterid, u64 *ndiv)
+>>   static void tegra234_set_cpu_ndiv(struct cpufreq_policy *policy, u64 ndiv)
+>>   {
+> 
+>> +     for_each_cpu_and(cpu, policy->cpus, cpu_online_mask)
+> 
+> (Yes this is existing code, but ..) you don't need to perform AND with
+> cpu_online_mask as policy->cpus should only contain currently online CPUs.
+> 
+> Please check if you ever see it differently.
+> 
 
--Doug
+I think this was kept to be safe.
+Should I removed the AND in v3 or send separate patch?
+
+>> +     data->cpu_data = devm_kcalloc(&pdev->dev, data->soc->num_clusters *
+>> +                                   data->soc->maxcpus_per_cluster,
+>> +                                   sizeof(struct tegra_cpu_data), GFP_KERNEL);
+> 
+> This should be: sizeof(*data->cpu_data) instead. Didn't checkpatch complain
+> about it ?
+> 
+> --
+> viresh
+
+Checkpatch didn't highlight it.
+Will do the change in v3.
+
+Thank you,
+Sumit Gupta
