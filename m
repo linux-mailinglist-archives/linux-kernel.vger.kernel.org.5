@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 126607B2EF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88CA7B2EF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbjI2JLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 05:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41450 "EHLO
+        id S232921AbjI2JLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 05:11:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbjI2JLf (ORCPT
+        with ESMTP id S232841AbjI2JLj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:11:35 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF3A1A5
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:11:33 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-65afc29277bso16302806d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:11:33 -0700 (PDT)
+        Fri, 29 Sep 2023 05:11:39 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60A4180
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:11:36 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-533d9925094so13948295a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:11:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695978692; x=1696583492; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=gmail.com; s=20230601; t=1695978695; x=1696583495; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=vrbxuiI+WNiNLwoGNSEuok9WNREFg61kxgWpjRA8C+Y=;
-        b=hjJHiN8tivg8dw6JvpXqrnKMins/uC9k1oQYA8mPUi7InVt+UvKkN4i9XCfQxqt07l
-         pGfenhkMbyk3Pdcar96tSH/q7iZ28sl6/WuQXEdJorQvWF2/rzLjYJXdNnmuNs/+ZnqU
-         7Oqu8qijrGlCNFQDCPycGkLcjGuDsjivI44qeaor3mww3VLjHv5QqTZMIMaCCkx2U+yz
-         hl8/il4jynxKD8EvDjMhecWEYNXYGvXSyNuuWZLpHiN+I5N8wfcfV8HPyx3vgLRwmpfn
-         SyB/hzoLi4IsfYWDoWNDiTz/Tf9BpVpKey1rBHnfeDQ72Im3L7LOJwidCIPeDxjl0L5v
-         RGXg==
+        bh=AgI7F1QkcpF3fuH0PAJshIndxiEkzxNkTkXPcD8K4PM=;
+        b=jyBdkwo+8PpHD+2XyZzUiYsQrQPM2a/3KmTpSgebVTYKo+cwDK57BTnAdn40sL3GXx
+         Ou1ONt2KmIMi1xUOpTS5YA6kuo68UTVoCxR+23ZI0awutpLpzD/JRuK3U7Hwn1ep8t/u
+         GSwksY5IFoqb0UHu4VsXyfsanm1pYWkfEjIH0XI02Qbp8IHWVZJUS8HOeU5EpN6fuqGk
+         /20jCkvnojbh5UCD4LOGzlUA50yqBugFwdgKLFVVSt7QIfbSqAad0gFAjg5KFnMdJHnV
+         2fgPHWGGUm3w75zEc3wsH3pwr+ZHyfVjrxiGQcyXKonpeQCaqlGMHxjfDNBTiFw8xQTX
+         c/sg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695978692; x=1696583492;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1695978695; x=1696583495;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=vrbxuiI+WNiNLwoGNSEuok9WNREFg61kxgWpjRA8C+Y=;
-        b=lccjwnSaVK3qF5CdiRpWaOaPtouAgplGZ1UKpul7NdEt410W7lRHviqwLOG57ePUmt
-         SjshNLH4WHGsXycu/A5Jx21dJwfIJyA3U6qgxL0ICeioBPG4lJ+woAG08PM/XLxUeExH
-         MWOoB6NgPWJO8XR3pHve2piBklYPbps5r6Jp4NHls7ErhBv2TRGR7oAtMBYO5tk2nag5
-         azyhgp/bM0KUj4x9WV7L5U+uHoivQnEZQ9ddveYJ552BYGW5WCGqRSizNczdjDKZuqbP
-         /HtcCDSV4mxz4knmzsrqYvsJWF+Ugt4Y8WWDFWj1vFqF79/8JADmCHWEhyN1Zb0UOR23
-         qKrQ==
-X-Gm-Message-State: AOJu0YzARhnsuP3tlGiJ5gPTuwt8znK83+7EG+OFvPBwRi1+PSRV+DV3
-        78DtpONzRfMS+6gbssAdD8rScg==
-X-Google-Smtp-Source: AGHT+IGxLW/VLhcBCCWUgpkR1DRUfIOLCTizvIG4WRlUOM3cdS0dZKKElW7RkFIaS/ndfq29KA74Lw==
-X-Received: by 2002:a05:6214:f26:b0:653:576d:1e8 with SMTP id iw6-20020a0562140f2600b00653576d01e8mr3796317qvb.1.1695978692179;
-        Fri, 29 Sep 2023 02:11:32 -0700 (PDT)
-Received: from [172.19.130.163] ([216.250.210.88])
-        by smtp.gmail.com with ESMTPSA id o8-20020a0cf4c8000000b0065b260eafd9sm2859274qvm.87.2023.09.29.02.11.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 02:11:31 -0700 (PDT)
-Message-ID: <808c8472-ba4d-466c-84ef-cff4746cfdc0@kernel.dk>
-Date:   Fri, 29 Sep 2023 03:11:25 -0600
+        bh=AgI7F1QkcpF3fuH0PAJshIndxiEkzxNkTkXPcD8K4PM=;
+        b=sV/4aSiYoVNSXFE5x3RdjJ4fj3IFMU4ThNwB8YLH7gJB1VrFkebA1JlpfXrU/fEMrp
+         jw51PXDbWv4gBipyB1k2s5QHKikoBovKTn6ZmlJAq6Y66MGNi58bXarzz4fehz2NsdR1
+         W7qAR9BfKU5mZoZLvagKjWV1v7JQDEf3FAjlCQLsvCw6JF5QmW5+4fT61xUyZ9MGC+79
+         LGDRe2f3WqKKfsDSbUJ8CSLYGdhM6uGq9tPKqotKYV8Yq9tXqYMDUvThAumn0uUk19Hr
+         gNCLAQkBTHJZZAWHmk9AgALMAk7vAGZ2uLWwQYzaj5Tud5JeVTKBLoZAq2h0tNbSSfWa
+         Apuw==
+X-Gm-Message-State: AOJu0YzluOJgaVz0a+L41iIEs9a989+rLgSz2rGkjAYybFOSu7fStevq
+        CAU6TOKKoIaLKi1H80BEXs8=
+X-Google-Smtp-Source: AGHT+IGUpgzpwOKPFY2JKtFJ+l50wMSXQjDknrZIh6/H04ein1uwwg8hHFjV/xjPNl8zx50IhY885A==
+X-Received: by 2002:a17:907:78da:b0:9ae:3d56:1ef1 with SMTP id kv26-20020a17090778da00b009ae3d561ef1mr3617835ejc.8.1695978695077;
+        Fri, 29 Sep 2023 02:11:35 -0700 (PDT)
+Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
+        by smtp.gmail.com with ESMTPSA id ck17-20020a170906c45100b00982a92a849asm12028566ejb.91.2023.09.29.02.11.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 02:11:34 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Fri, 29 Sep 2023 11:11:32 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [RESEND PATCH 2/2] locking/x86: Wire up sync_try_cmpxchg
+Message-ID: <ZRaUxDeQAuMy8UY0@gmail.com>
+References: <20230925150905.54842-1-ubizjak@gmail.com>
+ <20230925150905.54842-2-ubizjak@gmail.com>
+ <ZRXnu+8gQGVZVA79@gmail.com>
+ <CAFULd4Y6OUvscbDwBL2itM89pNbo3_Q2_mKR2G4DSSbyTdD1cQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHSET v6] Add io_uring futex/futexv support
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andres@anarazel.de, tglx@linutronix.de
-References: <20230928172517.961093-1-axboe@kernel.dk>
- <20230929075317.GA6282@noisy.programming.kicks-ass.net>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20230929075317.GA6282@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFULd4Y6OUvscbDwBL2itM89pNbo3_Q2_mKR2G4DSSbyTdD1cQ@mail.gmail.com>
+X-Spam-Status: No, score=0.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        FSL_HELO_FAKE,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/23 1:53 AM, Peter Zijlstra wrote:
-> On Thu, Sep 28, 2023 at 11:25:09AM -0600, Jens Axboe wrote:
-> 
->>  include/linux/io_uring_types.h |   5 +
->>  include/uapi/linux/io_uring.h  |   4 +
->>  io_uring/Makefile              |   1 +
->>  io_uring/cancel.c              |   5 +
->>  io_uring/cancel.h              |   4 +
->>  io_uring/futex.c               | 386 +++++++++++++++++++++++++++++++++
->>  io_uring/futex.h               |  36 +++
->>  io_uring/io_uring.c            |   7 +
->>  io_uring/opdef.c               |  34 +++
->>  kernel/futex/futex.h           |  20 ++
->>  kernel/futex/requeue.c         |   3 +-
->>  kernel/futex/syscalls.c        |  18 +-
->>  kernel/futex/waitwake.c        |  49 +++--
->>  13 files changed, 545 insertions(+), 27 deletions(-)
-> 
-> Thanks for bearing with us on the futex2 thing!
-> 
-> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-Thanks Peter! Going with the futex2 interface was the right choice, the
-old one was kinda wonky anyway. New one is definitely cleaner.
+* Uros Bizjak <ubizjak@gmail.com> wrote:
 
--- 
-Jens Axboe
+> On Thu, Sep 28, 2023 at 10:53 PM Ingo Molnar <mingo@kernel.org> wrote:
+> >
+> >
+> > * Uros Bizjak <ubizjak@gmail.com> wrote:
+> >
+> > > Implement target specific support for sync_try_cmpxchg.
+> >
+> > Could you please provide a before/after description of how
+> > this improves things exactly?
+> 
+> The improvement [1] was demonstrated in the original patch submission.
 
+What I'm saying: please integrate the required context & arguments into the 
+changelogs of the patches you submit.
+
+Patches that change code generation should demonstrate what they achieve.
+
+ - If existing code changes, then describe/demonstrate it with disassembly.
+
+ - If existing code generation is unchanged, then *declare that property in 
+   the changelog*, and mention that a future patch relies those changes.
+
+You can either include that future patch in this series, or you can 
+describe/demonstrate the benefits in the changelog while noting that those 
+changes will come in future patches.
+
+Your submission, as-is, provided no context whatsoever, it described only 
+the 'how', not the 'why'.
+
+Thanks,
+
+	Ingo
