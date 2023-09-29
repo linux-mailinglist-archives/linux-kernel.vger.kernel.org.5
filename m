@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E992A7B2DFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF3E7B2DFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbjI2Ijd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 04:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44544 "EHLO
+        id S232924AbjI2Ije (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 04:39:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232923AbjI2IjN (ORCPT
+        with ESMTP id S232968AbjI2IjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 29 Sep 2023 04:39:13 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46A8CD7;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA046CDB;
         Fri, 29 Sep 2023 01:39:03 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 08:39:00 -0000
+Date:   Fri, 29 Sep 2023 08:39:01 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695976741;
+        s=2020; t=1695976742;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pRW/hqRHf5LlVXHE8len/87TPg1FH9QryvIRGHSwRFI=;
-        b=O4Xx6GlsoST6ueBkLI0J+Gt+eAGyZpHIawWS0LQhzIgKQ6CzGMhZNJ457o5nLKJ4Fd3q6x
-        xNThyZ/G1G0CKW5Wr7SehJchHgaRwz744zFvbfMNqvdVlx3eN+CKQdDlACOzDkIl9JghGs
-        gPSwLhCIcZ6rBqUQaHCQZOOiR78R+1cUg6ixr9qCQ7OhfS61mVBpM3BqRnoYazNE2OV9SW
-        QB3SIAvjiO7sJ1yLxSpJRM0XxFOAiIsFFX5rgRerX+E9DlZhuqqBXf0CslPOkGyjE185jy
-        uegaBuVIq9D8r50o84Ybe6vibJssWoSAYkxmHZVi0r6TcNvpBSTh4iaRiZKVyQ==
+        bh=D4SoccUJ1iRFQ6pLoGlPK0NevgRuIS+B+21NT0IjnfA=;
+        b=lBH43LqDFtW9fUiABB8CX7BUow9C189hKV1Xfwa1839Bdv5KVcXbj8NAHfNNj4Bu57Wqby
+        1pr0OszTGvDwvyxNqzeWdvmGlZLHBhnsMk7QwkN9PbOPb4M/2JrX9zgtSwwIww6AgZ2JfI
+        ZI/7X0ujbMVs6+28+qMONO0Es/lBra0lEmfwQjQ36iK3EMFhru3PuDqTsyP8Gs70br9IJK
+        CfXrfusKMFL/4bD5QN7o1eu82R7aJ61c1xT+tP+BPDDLhd3dlmRt8UtaWrDzsR0JYlyvQA
+        l3EOsR4VUEOt+6+4OwgL/WDV0pGQ/3P2bGKQu/GI1BJbyMpVz7YmI+SqsL9MTQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695976741;
+        s=2020e; t=1695976742;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pRW/hqRHf5LlVXHE8len/87TPg1FH9QryvIRGHSwRFI=;
-        b=WAlnZPKiG6mEcVuM3g2czbc5gymC1kdQkqV9+ZKVfpILlMWVAlBtD2VFaHb0oYU4KZVCME
-        vsJgb07FqwAHaWDw==
+        bh=D4SoccUJ1iRFQ6pLoGlPK0NevgRuIS+B+21NT0IjnfA=;
+        b=+8f6XyEZcRgLZsK1KGPbpLBLTdVsxSpS49svnd2Bu0tEOY3uKfERN5i8vbEClDUmSoCOlS
+        nAKcBhzpveoM6FAA==
 From:   "tip-bot2 for Qais Yousef" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/debug: Add new tracepoint to track compute
- energy computation
+Subject: [tip: sched/core] sched/uclamp: Ignore (util == 0) optimization in
+ feec() when p_util_max = 0
 Cc:     "Qais Yousef (Google)" <qyousef@layalina.io>,
         Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20230916232955.2099394-4-qyousef@layalina.io>
-References: <20230916232955.2099394-4-qyousef@layalina.io>
+In-Reply-To: <20230916232955.2099394-3-qyousef@layalina.io>
+References: <20230916232955.2099394-3-qyousef@layalina.io>
 MIME-Version: 1.0
-Message-ID: <169597674098.27769.16189468145683453028.tip-bot2@tip-bot2>
+Message-ID: <169597674169.27769.13480580087727084162.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -69,76 +70,71 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     15874a3d27e6405e9d17595f83bd3ca1b6cab16d
-Gitweb:        https://git.kernel.org/tip/15874a3d27e6405e9d17595f83bd3ca1b6cab16d
+Commit-ID:     23c9519def98ee0fa97ea5871535e9b136f522fc
+Gitweb:        https://git.kernel.org/tip/23c9519def98ee0fa97ea5871535e9b136f522fc
 Author:        Qais Yousef <qyousef@layalina.io>
-AuthorDate:    Sun, 17 Sep 2023 00:29:55 +01:00
+AuthorDate:    Sun, 17 Sep 2023 00:29:54 +01:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 29 Sep 2023 10:29:18 +02:00
+CommitterDate: Fri, 29 Sep 2023 10:29:14 +02:00
 
-sched/debug: Add new tracepoint to track compute energy computation
+sched/uclamp: Ignore (util == 0) optimization in feec() when p_util_max = 0
 
-It was useful to track feec() placement decision and debug the spare
-capacity and optimization issues vs uclamp_max.
+find_energy_efficient_cpu() bails out early if effective util of the
+task is 0 as the delta at this point will be zero and there's nothing
+for EAS to do. When uclamp is being used, this could lead to wrong
+decisions when uclamp_max is set to 0. In this case the task is capped
+to performance point 0, but it is actually running and consuming energy
+and we can benefit from EAS energy calculations.
 
+Rework the condition so that it bails out when both util and uclamp_min
+are 0.
+
+We can do that without needing to use uclamp_task_util(); remove it.
+
+Fixes: d81304bc6193 ("sched/uclamp: Cater for uclamp in find_energy_efficient_cpu()'s early exit condition")
 Signed-off-by: Qais Yousef (Google) <qyousef@layalina.io>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20230916232955.2099394-4-qyousef@layalina.io
+Link: https://lore.kernel.org/r/20230916232955.2099394-3-qyousef@layalina.io
 ---
- include/trace/events/sched.h | 5 +++++
- kernel/sched/core.c          | 1 +
- kernel/sched/fair.c          | 7 ++++++-
- 3 files changed, 12 insertions(+), 1 deletion(-)
+ kernel/sched/fair.c | 18 +-----------------
+ 1 file changed, 1 insertion(+), 17 deletions(-)
 
-diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
-index fbb99a6..a13d5d0 100644
---- a/include/trace/events/sched.h
-+++ b/include/trace/events/sched.h
-@@ -735,6 +735,11 @@ DECLARE_TRACE(sched_update_nr_running_tp,
- 	TP_PROTO(struct rq *rq, int change),
- 	TP_ARGS(rq, change));
- 
-+DECLARE_TRACE(sched_compute_energy_tp,
-+	TP_PROTO(struct task_struct *p, int dst_cpu, unsigned long energy,
-+		 unsigned long max_util, unsigned long busy_time),
-+	TP_ARGS(p, dst_cpu, energy, max_util, busy_time));
-+
- #endif /* _TRACE_SCHED_H */
- 
- /* This part must be outside protection */
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 84881a5..324980e 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -114,6 +114,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
- EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_cfs_tp);
- EXPORT_TRACEPOINT_SYMBOL_GPL(sched_util_est_se_tp);
- EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
-+EXPORT_TRACEPOINT_SYMBOL_GPL(sched_compute_energy_tp);
- 
- DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
- 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 284b0ab..e2a69af 100644
+index 4ce949b..284b0ab 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -7600,11 +7600,16 @@ compute_energy(struct energy_env *eenv, struct perf_domain *pd,
- {
- 	unsigned long max_util = eenv_pd_max_util(eenv, pd_cpus, p, dst_cpu);
- 	unsigned long busy_time = eenv->pd_busy_time;
-+	unsigned long energy;
- 
- 	if (dst_cpu >= 0)
- 		busy_time = min(eenv->pd_cap, busy_time + eenv->task_busy_time);
- 
--	return em_cpu_energy(pd->em_pd, max_util, busy_time, eenv->cpu_cap);
-+	energy = em_cpu_energy(pd->em_pd, max_util, busy_time, eenv->cpu_cap);
-+
-+	trace_sched_compute_energy_tp(p, dst_cpu, energy, max_util, busy_time);
-+
-+	return energy;
+@@ -4558,22 +4558,6 @@ static inline unsigned long task_util_est(struct task_struct *p)
+ 	return max(task_util(p), _task_util_est(p));
  }
  
- /*
+-#ifdef CONFIG_UCLAMP_TASK
+-static inline unsigned long uclamp_task_util(struct task_struct *p,
+-					     unsigned long uclamp_min,
+-					     unsigned long uclamp_max)
+-{
+-	return clamp(task_util_est(p), uclamp_min, uclamp_max);
+-}
+-#else
+-static inline unsigned long uclamp_task_util(struct task_struct *p,
+-					     unsigned long uclamp_min,
+-					     unsigned long uclamp_max)
+-{
+-	return task_util_est(p);
+-}
+-#endif
+-
+ static inline void util_est_enqueue(struct cfs_rq *cfs_rq,
+ 				    struct task_struct *p)
+ {
+@@ -7695,7 +7679,7 @@ static int find_energy_efficient_cpu(struct task_struct *p, int prev_cpu)
+ 	target = prev_cpu;
+ 
+ 	sync_entity_load_avg(&p->se);
+-	if (!uclamp_task_util(p, p_util_min, p_util_max))
++	if (!task_util_est(p) && p_util_min == 0)
+ 		goto unlock;
+ 
+ 	eenv_task_busy_time(&eenv, p, prev_cpu);
