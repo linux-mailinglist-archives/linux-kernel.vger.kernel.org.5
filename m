@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA3E77B38C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E84C7B38CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233783AbjI2R0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
+        id S233522AbjI2R0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233353AbjI2RZ4 (ORCPT
+        with ESMTP id S233406AbjI2R0N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:25:56 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBFD11BC
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:53 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-57e3c2adbf0so288984eaf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:53 -0700 (PDT)
+        Fri, 29 Sep 2023 13:26:13 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D89ECCC1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:54 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-57b706f604aso7021443eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696008353; x=1696613153; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696008354; x=1696613154; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3mVPfJvq9odcQF/rUfj3o/6NyMJOAJ6+IQlyYMebtjw=;
-        b=gSv16dBX8P/ZsC7lNkev8mTFmIzBYdjV2+cIC1qQuR/Kzz9xMY5dqmOtvX1fKuxgES
-         DMG+CuptnuOCrvdsyGJWBA7eIvHB7YTZAB4CnxZ2XJF08a352MfxQpsp0jqVOq5HTVzt
-         jk4qanpJE/1wglGCIWTu8Wl485W5WpbUY594/g/0Ji6xMN2DjDU0TpFkJJKRtWf698rV
-         k6l7zdqT/f/NsnS7seNJ9b9xPA+OyFwdO5fQzJC1LteezW3WQfBLuD73cFxpo2cKb99c
-         n+WeAvRYIqa8ddmnI3l2mGPTrX7ArSG5sD6u2CtsovwRZLvdkglmHNx6ozm2GGwaJYwj
-         RfDA==
+        bh=28jJJTis54b3wmpIVJwL9RF7C6DVS3KioTbcI+7oS24=;
+        b=3PFkbdyxbMZwlZeXWoI2d1QtPAsODCvqtmGPRR+Ney0eMDNlVeJlmpTPUQgNZtlipl
+         JU5/FFJyEXHzZ516M31k1EYLkRpFnDstuWKiA1tNeCnpKGEpAyFQSA5yTt1Bw160PA+Z
+         tzTwh2W08wQaDF+0fXVCWIcqpjkkOQbDde+zzVw8wkNbG8kDCNMZY47L9ATj8qua2PBA
+         pC0ZMqvx8iASdH49rrNBYrgq1qZnIg0hBJPN2sxEKQP7dhKliAn8RPHjL7myDM8ymqbU
+         t8r5DTBhgSe9euMuO71HLXYhNpmWOCbPT074K/wD+wWGgqoCJ1zGhYs39gyPPZlNeHJ6
+         99nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696008353; x=1696613153;
+        d=1e100.net; s=20230601; t=1696008354; x=1696613154;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3mVPfJvq9odcQF/rUfj3o/6NyMJOAJ6+IQlyYMebtjw=;
-        b=f4lusNVK1/DuNIVOMDCmBNxV/A1+XJ8gctzRHsGbbpEJ46xGmqFdywdHSqmMOC6fzr
-         lWt4Zxs54csWRNf/Z8adx8urZjHUB3hBEzpemMT2aCBPmZC/4fKeyeTIUddYppLPGEYt
-         gjJFyEXe3qcun1ImwX5GwdCUxiRKZyZEL3RLgdFwWQpekPQ1iuZ47lvTeZUnOq6IDSan
-         n5A/7p6YFAXQobGJHu1OpEmKYVNOCp1fbnyb/Dua4PWdZrYwOV/isrsaWM6q3sXb+sP/
-         iCzBpCF9W70PFZar1P2Z7r8LApR5hPOaQOxYgjCytPMqNSwVIN99PeS9g7fuKPlLJVxU
-         bmuQ==
-X-Gm-Message-State: AOJu0Ywy+fKgUujz4I51d8FiV5xCgEn0Zy7M7n0tkmJ1SGpk6LxnfCFW
-        kdIoQjKkAOYPTJ0oxTwTco0eFg==
-X-Google-Smtp-Source: AGHT+IGYCuERA7WzD2qHaKxxWRtK4iNVH6r1bESs4G+AGKirbGiiIRExnVEUMypzycdoX+A2Kfy1xg==
-X-Received: by 2002:a4a:9d14:0:b0:57b:8c6b:c99b with SMTP id w20-20020a4a9d14000000b0057b8c6bc99bmr4828635ooj.9.1696008353269;
-        Fri, 29 Sep 2023 10:25:53 -0700 (PDT)
+        bh=28jJJTis54b3wmpIVJwL9RF7C6DVS3KioTbcI+7oS24=;
+        b=xMICwzmifmmb28ue6em54kj9qxwPVmlwsbS6/FnE4A0mgYmWgFABdDV6TiRZlVANy3
+         dzQ6QhkeLhiiMpwpU4wCyt48Ts+T5B/Fm4jig1lZiS2BliR5AN0xAoTPCF1De82gjH8g
+         Cc+nrE6k6XZ9RWiCkWuCZMODHaY3OUtuglKR1xRIEUBG+H1blksdtoy4QX8C+6gtZwFC
+         RxqKuRAQBJoUKEP/n6FM/uYGs0xI3jDGm+mrxy9VLQRBeH+7bnasPZQXfBuxjro4UltE
+         v5f5gWOr6BeBjY2eHIy9afvGxu4QLmLGxRejfLlFMAyOywssuUREmge3yrf2lq/QzAau
+         z3bg==
+X-Gm-Message-State: AOJu0YyKqkjwjTPiMVSkAtR5wZESeD06VRsoc8eE0q8Fij4C4/d83Ujv
+        U33D+eMDG3gVWeV87qbdlg1tlQ==
+X-Google-Smtp-Source: AGHT+IG6QmUCiM9xhfcEn2UE7ttPOZ69R5Dzu9UBXrdUUMo4iJAI90PE/xg3KBZxsjTwj0v9W0j4JQ==
+X-Received: by 2002:a05:6820:295:b0:57b:e345:43ad with SMTP id q21-20020a056820029500b0057be34543admr4992821ood.4.1696008354146;
+        Fri, 29 Sep 2023 10:25:54 -0700 (PDT)
 Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id f128-20020a4a5886000000b0057bb326cad4sm2272915oob.33.2023.09.29.10.25.52
+        by smtp.gmail.com with ESMTPSA id f128-20020a4a5886000000b0057bb326cad4sm2272915oob.33.2023.09.29.10.25.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 10:25:52 -0700 (PDT)
+        Fri, 29 Sep 2023 10:25:53 -0700 (PDT)
 From:   David Lechner <dlechner@baylibre.com>
 To:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-staging@lists.linux.dev
@@ -63,9 +63,9 @@ Cc:     David Lechner <david@lechnology.com>,
         Axel Haslam <ahaslam@baylibre.com>,
         Philip Molloy <pmolloy@baylibre.com>,
         linux-kernel@vger.kernel.org, David Lechner <dlechner@baylibre.com>
-Subject: [PATCH v3 07/27] staging: iio: resolver: ad2s1210: always use 16-bit value for raw read
-Date:   Fri, 29 Sep 2023 12:23:12 -0500
-Message-ID: <20230929-ad2s1210-mainline-v3-7-fa4364281745@baylibre.com>
+Subject: [PATCH v3 08/27] staging: iio: resolver: ad2s1210: implement IIO_CHAN_INFO_SCALE
+Date:   Fri, 29 Sep 2023 12:23:13 -0500
+Message-ID: <20230929-ad2s1210-mainline-v3-8-fa4364281745@baylibre.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
 References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
@@ -86,83 +86,103 @@ From: David Lechner <david@lechnology.com>
 
 From: David Lechner <dlechner@baylibre.com>
 
-This removes the special handling for resolutions lower than 16 bits.
-This will allow us to use a fixed scale independent of the resolution.
-
-A new sample field is added to store the raw data instead of reusing
-the config mode rx buffer so that we don't have to do a cast or worry
-about unaligned access.
-
-Also, for the record, according to the datasheet, the logic for the
-special handling based on hysteresis that was removed was incorrect.
+This adds an implementation of IIO_CHAN_INFO_SCALE to the ad2s1210
+resolver driver. This allows userspace to get the scale factor for the
+raw values.
 
 Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
 
 v3 changes:
-* Added __be16 sample field to state struct and use instead of rx buffer.
+* Split ad2s1210_read_raw() into two functions to reduce complexity.
+* Use early return instead of break in switch statements.
 
- drivers/staging/iio/resolver/ad2s1210.c | 24 ++++++++----------------
- 1 file changed, 8 insertions(+), 16 deletions(-)
+ drivers/staging/iio/resolver/ad2s1210.c | 53 ++++++++++++++++++++++++++++-----
+ 1 file changed, 45 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
-index 832f86bf15e5..f9774dff2df4 100644
+index f9774dff2df4..a710598a64f0 100644
 --- a/drivers/staging/iio/resolver/ad2s1210.c
 +++ b/drivers/staging/iio/resolver/ad2s1210.c
-@@ -95,7 +95,11 @@ struct ad2s1210_state {
- 	bool hysteresis;
- 	u8 resolution;
- 	enum ad2s1210_mode mode;
--	u8 rx[2] __aligned(IIO_DMA_MINALIGN);
-+	/** For reading raw sample value via SPI. */
-+	__be16 sample __aligned(IIO_DMA_MINALIGN);
-+	/** SPI transmit buffer. */
-+	u8 rx[2];
-+	/** SPI receive buffer. */
- 	u8 tx[2];
- };
+@@ -461,13 +461,10 @@ static ssize_t ad2s1210_store_reg(struct device *dev,
+ 	return ret < 0 ? ret : len;
+ }
  
-@@ -464,10 +468,7 @@ static int ad2s1210_read_raw(struct iio_dev *indio_dev,
- 			     long m)
+-static int ad2s1210_read_raw(struct iio_dev *indio_dev,
+-			     struct iio_chan_spec const *chan,
+-			     int *val,
+-			     int *val2,
+-			     long m)
++static int ad2s1210_single_conversion(struct ad2s1210_state *st,
++				      struct iio_chan_spec const *chan,
++				      int *val)
  {
- 	struct ad2s1210_state *st = iio_priv(indio_dev);
--	u16 negative;
+-	struct ad2s1210_state *st = iio_priv(indio_dev);
  	int ret = 0;
--	u16 pos;
--	s16 vel;
  
  	mutex_lock(&st->lock);
- 	gpiod_set_value(st->gpios[AD2S1210_SAMPLE], 0);
-@@ -487,26 +488,17 @@ static int ad2s1210_read_raw(struct iio_dev *indio_dev,
- 	}
- 	if (ret < 0)
- 		goto error_ret;
--	ret = spi_read(st->sdev, st->rx, 2);
-+	ret = spi_read(st->sdev, &st->sample, 2);
- 	if (ret < 0)
- 		goto error_ret;
+@@ -514,6 +511,44 @@ static int ad2s1210_read_raw(struct iio_dev *indio_dev,
+ 	return ret;
+ }
  
- 	switch (chan->type) {
- 	case IIO_ANGL:
--		pos = be16_to_cpup((__be16 *)st->rx);
--		if (st->hysteresis)
--			pos >>= 16 - st->resolution;
--		*val = pos;
-+		*val = be16_to_cpu(st->sample);
- 		ret = IIO_VAL_INT;
- 		break;
- 	case IIO_ANGL_VEL:
--		vel = be16_to_cpup((__be16 *)st->rx);
--		vel >>= 16 - st->resolution;
--		if (vel & 0x8000) {
--			negative = (0xffff >> st->resolution) << st->resolution;
--			vel |= negative;
--		}
--		*val = vel;
-+		*val = (s16)be16_to_cpu(st->sample);
- 		ret = IIO_VAL_INT;
- 		break;
- 	default:
++static const int ad2s1210_velocity_scale[] = {
++	17089132, /* 8.192MHz / (2*pi * 2500 / 2^15) */
++	42722830, /* 8.192MHz / (2*pi * 1000 / 2^15) */
++	85445659, /* 8.192MHz / (2*pi * 500 / 2^15) */
++	341782638, /* 8.192MHz / (2*pi * 125 / 2^15) */
++};
++
++static int ad2s1210_read_raw(struct iio_dev *indio_dev,
++			     struct iio_chan_spec const *chan,
++			     int *val,
++			     int *val2,
++			     long mask)
++{
++	struct ad2s1210_state *st = iio_priv(indio_dev);
++
++	switch (mask) {
++	case IIO_CHAN_INFO_RAW:
++		return ad2s1210_single_conversion(st, chan, val);
++	case IIO_CHAN_INFO_SCALE:
++		switch (chan->type) {
++		case IIO_ANGL:
++			/* approx 0.3 arc min converted to radians */
++			*val = 0;
++			*val2 = 95874;
++			return IIO_VAL_INT_PLUS_NANO;
++		case IIO_ANGL_VEL:
++			*val = st->fclkin;
++			*val2 = ad2s1210_velocity_scale[st->resolution];
++			return IIO_VAL_FRACTIONAL;
++		default:
++			return -EINVAL;
++		}
++
++	default:
++		return -EINVAL;
++	}
++}
++
+ static IIO_DEVICE_ATTR(fclkin, 0644,
+ 		       ad2s1210_show_fclkin, ad2s1210_store_fclkin, 0);
+ static IIO_DEVICE_ATTR(fexcit, 0644,
+@@ -552,12 +587,14 @@ static const struct iio_chan_spec ad2s1210_channels[] = {
+ 		.type = IIO_ANGL,
+ 		.indexed = 1,
+ 		.channel = 0,
+-		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
++		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
++				      BIT(IIO_CHAN_INFO_SCALE),
+ 	}, {
+ 		.type = IIO_ANGL_VEL,
+ 		.indexed = 1,
+ 		.channel = 0,
+-		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
++		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
++				      BIT(IIO_CHAN_INFO_SCALE),
+ 	}
+ };
+ 
 
 -- 
 2.42.0
