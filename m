@@ -2,447 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5227F7B37D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3F9D7B3820
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:52:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233606AbjI2QVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 12:21:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57574 "EHLO
+        id S233437AbjI2QwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 12:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233608AbjI2QVd (ORCPT
+        with ESMTP id S233215AbjI2QwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 12:21:33 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F43C199;
-        Fri, 29 Sep 2023 09:21:30 -0700 (PDT)
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696004488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oH1uS+2V/Ibq2G2ithVQNTHtD9Fj/zibRpTz9llRJ9E=;
-        b=miX5aQ2DbHHNMXI6G2+FgwDxi24Mm+sYKhCcD65i36jFqFi1PHRlpY13PXOEAHgFezrPeD
-        FPLp6cXPihqtJhJ3V6imspB9zgZA2T6V2jJcKTx81tgDsMYQMFpfdmiPNz8Q8v8qGPD1rc
-        r8wqAlG+L0ZHjSE5Ef8J/Ko3mqi1pXYK02AZyGiDEGs3J3ecGaO2Ukcl9yEvxF5fzOcZn5
-        P4PXvhFHatwGAkQI3QSd8fc5rHCay+OUopZ4hOIUDQA4poLiLmjdMShwaiG1YlMhtFIyEP
-        vSvx3fdXFr93w1iRhjBcpqBvDj3gZuMECUX0lRTYs+jm+D5MngnNlde0syKXbw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696004488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oH1uS+2V/Ibq2G2ithVQNTHtD9Fj/zibRpTz9llRJ9E=;
-        b=eilRes0Gotk/U2IRQpQlhlTA7EjtupTl6tXNbLCHNtNSFQ1YXQ7edDCIgqARpN1DxpSaO2
-        OGqczZ5S0LTCfeBQ==
-To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
+        Fri, 29 Sep 2023 12:52:09 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72307D6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:52:06 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bffc55af02so224947311fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:52:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1696006324; x=1696611124; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1jnYTA/sVS+Z8Orhdi2AQdhdCY0rlD66I6Sde9ZBPos=;
+        b=JgFwkCbFcYkH898cJ4YDLnN+2RGEPC2jGuFZFfQysQ2JkK3mWGFVUqXV2kFK6axJxA
+         o6Mfnd2mU+H451hB4ATBRwBoIlTGdLZFnmYmt0gGsoFridYOqC2HQUEUT76T1CAhXDRg
+         nUUvQXUrZcy3J4pGJa2Aly2/eQMnoyV2OUiHw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696006324; x=1696611124;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1jnYTA/sVS+Z8Orhdi2AQdhdCY0rlD66I6Sde9ZBPos=;
+        b=JfVlqLLUuUHG8b3DRhgFSJ2GPzm7nf5HW7m1uWmJvu7UQSWC132vupOeFXp2juPqFh
+         OVWLxNpBn/32L1PX1lWmASUhCNVM8ZD31hOIpTs1ZoWpNCK2TsycDu1opuP3+Ahwq80K
+         cznMPj0lngK1Ca17ZH98PmhtAnycbEQvKunU6ANlCdx1rQix4obV8/yic1CLqsejCb7/
+         wfs11RGDmJxdF86ekHO8ksZiFlU7zThLg509dmR/DCoF6EGP62yU+xZHLXnsq326BV9O
+         9rhIwtGHXkSrn9zUe0cicdGGz3eAMXdxzniCJWI/+bE41gGjQI6NwiRibz1ZCyRs5oiH
+         fc6w==
+X-Gm-Message-State: AOJu0YxvLJjhu00hjtlqTRRmtyNegYpFEL9uhoNIgYgjeXfRKHLGosBF
+        OK8JDR02MKTT8WBcev//4H9u1lKGkuBJCqxgtF/KTcuALoo=
+X-Google-Smtp-Source: AGHT+IEwxD2NHr6dgUswLIDoIoiBECd6qwjD8nBt+X8DB6647oODhtGCFVl7rFlTmtvRWeclfC47Cw==
+X-Received: by 2002:a05:651c:d4:b0:2c0:9bd:c6f with SMTP id 20-20020a05651c00d400b002c009bd0c6fmr4617772ljr.41.1696006324432;
+        Fri, 29 Sep 2023 09:52:04 -0700 (PDT)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com. [209.85.208.173])
+        by smtp.gmail.com with ESMTPSA id a14-20020a2e88ce000000b002c128e4524dsm4122515ljk.116.2023.09.29.09.52.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 09:52:04 -0700 (PDT)
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2c1886777d9so52638411fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:52:03 -0700 (PDT)
+X-Received: by 2002:a17:907:2722:b0:9a1:cdf1:ba3 with SMTP id
+ d2-20020a170907272200b009a1cdf10ba3mr4628345ejl.27.1696004552316; Fri, 29 Sep
+ 2023 09:22:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230928110554.34758-1-jlayton@kernel.org> <20230928110554.34758-2-jlayton@kernel.org>
+ <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com> <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
+ <20230928171943.GK11439@frogsfrogsfrogs> <6a6f37d16b55a3003af3f3dbb7778a367f68cd8d.camel@kernel.org>
+ <20230928212656.GC189345@mit.edu> <CAHk-=wjTynK9BdGbi+8eShU77nkPvipFwRxEd1TSBrw2+LiuDg@mail.gmail.com>
+ <CAOQ4uxg5ctY9yCjLOjN1nETAcEuNb2UERnYuDv7PoErdxX=WUw@mail.gmail.com>
+In-Reply-To: <CAOQ4uxg5ctY9yCjLOjN1nETAcEuNb2UERnYuDv7PoErdxX=WUw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 29 Sep 2023 09:22:14 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjTZ=6QkE_eksL+kzywj2cA_kiY-ydZKoz-+kBQwtNWwQ@mail.gmail.com>
+Message-ID: <CAHk-=wjTZ=6QkE_eksL+kzywj2cA_kiY-ydZKoz-+kBQwtNWwQ@mail.gmail.com>
+Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete integers
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, Jeff Layton <jlayton@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        David Sterba <dsterba@suse.cz>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
+        Todd Kjos <tkjos@android.com>,
+        Martijn Coenen <maco@android.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Carlos Llamas <cmllamas@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Mattia Dongili <malattia@linux.it>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Brad Warrum <bwarrum@linux.ibm.com>,
+        Ritu Agarwal <rituagar@linux.ibm.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Eric Van Hensbergen <ericvh@kernel.org>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        David Sterba <dsterba@suse.com>,
+        David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Ian Kent <raven@themaw.net>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Xiubo Li <xiubli@redhat.com>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>,
+        Chao Yu <chao@kernel.org>,
+        Yue Hu <huyue2@gl0jj8bn.sched.sma.tdnsstic1.cn>,
+        Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        Jan Kara <jack@suse.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Christoph Hellwig <hch@infradead.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Neil Brown <neilb@suse.de>,
+        Olga Kornievskaia <kolga@netapp.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        Anton Altaparmakov <anton@tuxera.com>,
+        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Bob Copeland <me@bobcopeland.com>,
+        Mike Marshall <hubcap@omnibond.com>,
+        Martin Brandenburg <martin@omnibond.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Anders Larsen <al@alarsen.net>,
+        Steve French <sfrench@samba.org>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Phillip Lougher <phillip@squashfs.org.uk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Evgeniy Dushistov <dushistov@mail.ru>,
+        Chandan Babu R <chandan.babu@oracle.com>,
+        Damien Le Moal <dlemoal@kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Johannes Thumshirn <jth@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wander Lairson Costa <hawk@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH net-next 2/2] net: Allow to use SMP threads for backlog NAPI.
-Date:   Fri, 29 Sep 2023 18:20:20 +0200
-Message-ID: <20230929162121.1822900-3-bigeasy@linutronix.de>
-In-Reply-To: <20230929162121.1822900-1-bigeasy@linutronix.de>
-References: <20230929162121.1822900-1-bigeasy@linutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        John Johansen <john.johansen@canonical.com>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Paris <eparis@parisplace.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
+        linux-afs@lists.infradead.org, autofs@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        codalist@telemann.coda.cs.cmu.edu, linux-efi@vger.kernel.org,
+        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev,
+        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
+        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
+        linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+        linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org,
+        linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        bpf@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
+        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
+        selinux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Backlog NAPI is a per-CPU NAPI struct only (with no device behind it)
-used by drivers which don't do NAPI them self, RPS and parts of the
-stack which need to avoid recursive deadlocks while processing a packet.
+On Thu, 28 Sept 2023 at 20:50, Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> OTOH, it is perfectly fine if the vfs wants to stop providing sub 100ns
+> services to filesystems. It's just going to be the fs problem and the
+> preserved pre-historic/fine-grained time on existing files would only
+> need to be provided in getattr(). It does not need to be in __i_mtime.
 
-The non-NAPI driver use the CPU local backlog NAPI. If RPS is enabled
-then a flow for the skb is computed and based on the flow the skb can be
-enqueued on a remote CPU. Scheduling/ raising the softirq (for backlog's
-NAPI) on the remote CPU isn't trivial because the softirq is only
-scheduled on the local CPU and performed after the hardirq is done.
-In order to schedule a softirq on the remote CPU, an IPI is sent to the
-remote CPU which schedules the backlog-NAPI on the then local CPU.
+Hmm. That sounds technically sane, but for one thing: if the aim is to try to do
 
-On PREEMPT_RT interrupts are force-threaded. The soft interrupts are
-raised within the interrupt thread and processed after the interrupt
-handler completed still within the context of the interrupt thread. The
-softirq is handled in the context where it originated.
+ (a) atomic timestamp access
 
-With force-threaded interrupts enabled, ksoftirqd is woken up if a
-softirq is raised from hardirq context. This is the case if it is raised
-from an IPI. Additionally there is a warning on PREEMPT_RT if the
-softirq is raised from the idle thread.
-This was done for two reasons:
-- With threaded interrupts the processing should happen in thread
-  context (where it originated) and ksoftirqd is the only thread for
-  this context if raised from hardirq. Using the currently running task
-  instead would "punish" a random task.
-- Once ksoftirqd is active it consumes all further softirqs until it
-  stops running. This changed recently and is no longer the case.
+ (b) shrink the inode
 
-Instead of keeping the backlog NAPI in ksoftirqd (in force-threaded/
-PREEMPT_RT setups) I am proposing NAPI-threads for backlog.
-The "proper" setup with threaded-NAPI is not doable because the threads
-are not pinned to an individual CPU and can be modified by the user.
-Additionally a dummy network device would have to be assigned. Also
-CPU-hotplug has to be considered if additional CPUs show up.
-All this can be probably done/ solved but the smpboot-threads already
-provide this infrastructure.
+then having the filesystem maintain its own timestamp for fine-grained
+data will break both of those goals.
 
-Sending UDP packets over loopback expects that the packet is processed
-within the call. Delaying it by handing it over to the thread hurts
-performance. It is not beneficial to the outcome if the context switch
-happens immediately after enqueue or after a while to process a few
-packets in a batch.
-There is no need to always use the thread if the backlog NAPI is
-requested on the local CPU. This restores the loopback throuput. The
-performance drops mostly to the same value after enabling RPS on the
-loopback comparing the IPI and the tread result.
+Yes, we'd make 'struct inode' smaller if we pack the times into one
+64-bit entity, but if btrfs responds by adding mtime fields to "struct
+btrfs_inode", we lost the size advantage and only made things worse.
 
-Create NAPI-threads for backlog if request during boot. The thread runs
-the inner loop from napi_threaded_poll(), the wait part is different. It
-checks for NAPI_STATE_SCHED (the backlog NAPI can not be disabled).
-Since there are now per-CPU threads for backlog the remote IPI for
-signaling is not needed and can be removed. The NAPI for backlog can
-always be scheduled as it ends in waking the corresponding thread.
-Add a shortcut to ____napi_schedule() to use local poll_list (instead of
-the thread) if backlog is requested for the local CPU.
-Since "deferred skb free" use a similar IPI mechanism for signaling, it
-is also using the backlog threads.
+And if ->getattr() then reads those fields without locking (and we
+definitely don't want locking in that path), then we lost the
+atomicity thing too.
 
-This makes NAPI threads for backlog optional, it has to be enabled via
-the boot argument "thread_backlog_napi". It is mandatory for PREEMPT_RT
-to avoid the wakeup of ksoftirqd from the IPI.
+So no. A "but the filesystem can maintain finer granularity" model is
+not acceptable, I think.
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/netdevice.h |   1 +
- net/core/dev.c            | 173 ++++++++++++++++++++++++++++++--------
- net/core/skbuff.c         |   4 +-
- 3 files changed, 139 insertions(+), 39 deletions(-)
+If we do require nanoseconds for compatibility, what we could possibly
+do is say "we guarantee nanosecond values for *legacy* dates", and say
+that future dates use 100ns resolution. We'd define "legacy dates" to
+be the traditional 32-bit signed time_t.
 
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 7e520c14eb8c6..bcaa967b8ddf9 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -3288,6 +3288,7 @@ static inline void dev_xmit_recursion_dec(void)
- 	__this_cpu_dec(softnet_data.xmit.recursion);
- }
-=20
-+void net_trigger_defer_list_processing(unsigned int cpu);
- void __netif_schedule(struct Qdisc *q);
- void netif_schedule_queue(struct netdev_queue *txq);
-=20
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 606a366cc2095..ec319e5dcb086 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -153,6 +153,7 @@
- #include <linux/prandom.h>
- #include <linux/once_lite.h>
- #include <net/netdev_rx_queue.h>
-+#include <linux/smpboot.h>
-=20
- #include "dev.h"
- #include "net-sysfs.h"
-@@ -4409,6 +4410,46 @@ EXPORT_SYMBOL(__dev_direct_xmit);
- /*************************************************************************
-  *			Receiver routines
-  *************************************************************************/
-+static DEFINE_PER_CPU(struct task_struct *, backlog_napi);
-+
-+#ifndef CONFIG_PREEMPT_RT
-+
-+static DEFINE_STATIC_KEY_FALSE(use_backlog_threads_key);
-+
-+static int __init setup_backlog_napi_threads(char *arg)
-+{
-+	static_branch_enable(&use_backlog_threads_key);
-+	return 0;
-+}
-+early_param("thread_backlog_napi", setup_backlog_napi_threads);
-+
-+static bool use_backlog_threads(void)
-+{
-+	return static_branch_unlikely(&use_backlog_threads_key);
-+}
-+
-+#else
-+
-+static bool use_backlog_threads(void)
-+{
-+	return true;
-+}
-+
-+#endif
-+
-+void net_trigger_defer_list_processing(unsigned int cpu)
-+{
-+	struct softnet_data *sd;
-+
-+	sd =3D &per_cpu(softnet_data, cpu);
-+	if (use_backlog_threads()) {
-+		__napi_schedule(&sd->backlog);
-+		return;
-+	}
-+
-+	if (!cmpxchg(&sd->defer_ipi_scheduled, 0, 1))
-+		smp_call_function_single_async(cpu, &sd->defer_csd);
-+}
-=20
- int netdev_max_backlog __read_mostly =3D 1000;
- EXPORT_SYMBOL(netdev_max_backlog);
-@@ -4441,6 +4482,9 @@ static inline void ____napi_schedule(struct softnet_d=
-ata *sd,
- 		 */
- 		thread =3D READ_ONCE(napi->thread);
- 		if (thread) {
-+			if (use_backlog_threads() && thread =3D=3D raw_cpu_read(backlog_napi))
-+				goto use_local_napi;
-+
- 			/* Avoid doing set_bit() if the thread is in
- 			 * INTERRUPTIBLE state, cause napi_thread_wait()
- 			 * makes sure to proceed with napi polling
-@@ -4453,6 +4497,7 @@ static inline void ____napi_schedule(struct softnet_d=
-ata *sd,
- 		}
- 	}
-=20
-+use_local_napi:
- 	list_add_tail(&napi->poll_list, &sd->poll_list);
- 	WRITE_ONCE(napi->list_owner, smp_processor_id());
- 	/* If not called from net_rx_action()
-@@ -4696,6 +4741,10 @@ static void napi_schedule_rps(struct softnet_data *s=
-d)
- {
- 	struct softnet_data *mysd =3D this_cpu_ptr(&softnet_data);
-=20
-+	if (use_backlog_threads()) {
-+		__napi_schedule_irqoff(&sd->backlog);
-+		return;
-+	}
- #ifdef CONFIG_RPS
- 	if (sd !=3D mysd) {
- 		sd->rps_ipi_next =3D mysd->rps_ipi_list;
-@@ -5921,7 +5970,7 @@ static void net_rps_action_and_irq_enable(struct soft=
-net_data *sd)
- #ifdef CONFIG_RPS
- 	struct softnet_data *remsd =3D sd->rps_ipi_list;
-=20
--	if (remsd) {
-+	if (!use_backlog_threads() && remsd) {
- 		sd->rps_ipi_list =3D NULL;
-=20
- 		local_irq_enable();
-@@ -5936,7 +5985,7 @@ static void net_rps_action_and_irq_enable(struct soft=
-net_data *sd)
- static bool sd_has_rps_ipi_waiting(struct softnet_data *sd)
- {
- #ifdef CONFIG_RPS
--	return sd->rps_ipi_list !=3D NULL;
-+	return !use_backlog_threads() && sd->rps_ipi_list !=3D NULL;
- #else
- 	return false;
- #endif
-@@ -5980,7 +6029,7 @@ static int process_backlog(struct napi_struct *napi, =
-int quota)
- 			 * We can use a plain write instead of clear_bit(),
- 			 * and we dont need an smp_mb() memory barrier.
- 			 */
--			napi->state =3D 0;
-+			napi->state &=3D NAPIF_STATE_THREADED;
- 			again =3D false;
- 		} else {
- 			skb_queue_splice_tail_init(&sd->input_pkt_queue,
-@@ -6650,40 +6699,42 @@ static void skb_defer_free_flush(struct softnet_dat=
-a *sd)
- 	}
- }
-=20
-+static void napi_threaded_poll_loop(struct napi_struct *napi)
-+{
-+	struct softnet_data *sd;
-+
-+	for (;;) {
-+		bool repoll =3D false;
-+		void *have;
-+
-+		local_bh_disable();
-+		sd =3D this_cpu_ptr(&softnet_data);
-+		sd->in_napi_threaded_poll =3D true;
-+
-+		have =3D netpoll_poll_lock(napi);
-+		__napi_poll(napi, &repoll);
-+		netpoll_poll_unlock(have);
-+
-+		sd->in_napi_threaded_poll =3D false;
-+		barrier();
-+
-+		skb_defer_free_flush(sd);
-+		local_bh_enable();
-+
-+		if (!repoll)
-+			break;
-+
-+		cond_resched();
-+	}
-+}
-+
- static int napi_threaded_poll(void *data)
- {
- 	struct napi_struct *napi =3D data;
--	struct softnet_data *sd;
--	void *have;
-=20
--	while (!napi_thread_wait(napi)) {
--		for (;;) {
--			bool repoll =3D false;
-+	while (!napi_thread_wait(napi))
-+		napi_threaded_poll_loop(napi);
-=20
--			local_bh_disable();
--			sd =3D this_cpu_ptr(&softnet_data);
--			sd->in_napi_threaded_poll =3D true;
--
--			have =3D netpoll_poll_lock(napi);
--			__napi_poll(napi, &repoll);
--			netpoll_poll_unlock(have);
--
--			sd->in_napi_threaded_poll =3D false;
--			barrier();
--
--			if (sd_has_rps_ipi_waiting(sd)) {
--				local_irq_disable();
--				net_rps_action_and_irq_enable(sd);
--			}
--			skb_defer_free_flush(sd);
--			local_bh_enable();
--
--			if (!repoll)
--				break;
--
--			cond_resched();
--		}
--	}
- 	return 0;
- }
-=20
-@@ -11220,7 +11271,7 @@ static int dev_cpu_dead(unsigned int oldcpu)
-=20
- 		list_del_init(&napi->poll_list);
- 		if (napi->poll =3D=3D process_backlog)
--			napi->state =3D 0;
-+			napi->state &=3D NAPIF_STATE_THREADED;
- 		else
- 			____napi_schedule(sd, napi);
- 	}
-@@ -11228,12 +11279,14 @@ static int dev_cpu_dead(unsigned int oldcpu)
- 	raise_softirq_irqoff(NET_TX_SOFTIRQ);
- 	local_irq_enable();
-=20
-+	if (!use_backlog_threads()) {
- #ifdef CONFIG_RPS
--	remsd =3D oldsd->rps_ipi_list;
--	oldsd->rps_ipi_list =3D NULL;
-+		remsd =3D oldsd->rps_ipi_list;
-+		oldsd->rps_ipi_list =3D NULL;
- #endif
--	/* send out pending IPI's on offline CPU */
--	net_rps_send_ipi(remsd);
-+		/* send out pending IPI's on offline CPU */
-+		net_rps_send_ipi(remsd);
-+	}
-=20
- 	/* Process offline CPU's input_pkt_queue */
- 	while ((skb =3D __skb_dequeue(&oldsd->process_queue))) {
-@@ -11487,6 +11540,49 @@ static struct pernet_operations __net_initdata def=
-ault_device_ops =3D {
-  *
-  */
-=20
-+static int backlog_napi_should_run(unsigned int cpu)
-+{
-+	struct softnet_data *sd =3D per_cpu_ptr(&softnet_data, cpu);
-+	struct napi_struct *napi =3D &sd->backlog;
-+
-+	if (READ_ONCE(sd->defer_list))
-+		return 1;
-+
-+	return test_bit(NAPI_STATE_SCHED, &napi->state);
-+}
-+
-+static void run_backlog_napi(unsigned int cpu)
-+{
-+	struct softnet_data *sd =3D per_cpu_ptr(&softnet_data, cpu);
-+
-+	napi_threaded_poll_loop(&sd->backlog);
-+}
-+
-+static void backlog_napi_setup(unsigned int cpu)
-+{
-+	struct softnet_data *sd =3D per_cpu_ptr(&softnet_data, cpu);
-+	struct napi_struct *napi =3D &sd->backlog;
-+
-+	napi->thread =3D this_cpu_read(backlog_napi);
-+	set_bit(NAPI_STATE_THREADED, &napi->state);
-+}
-+
-+static void backlog_napi_park(unsigned int cpu)
-+{
-+	struct softnet_data *sd =3D per_cpu_ptr(&softnet_data, cpu);
-+
-+	skb_defer_free_flush(sd);
-+}
-+
-+static struct smp_hotplug_thread backlog_threads =3D {
-+	.store			=3D &backlog_napi,
-+	.thread_should_run	=3D backlog_napi_should_run,
-+	.thread_fn		=3D run_backlog_napi,
-+	.thread_comm		=3D "backlog_napi/%u",
-+	.setup			=3D backlog_napi_setup,
-+	.park			=3D backlog_napi_park,
-+};
-+
- /*
-  *       This is called single threaded during boot, so no need
-  *       to take the rtnl semaphore.
-@@ -11537,7 +11633,10 @@ static int __init net_dev_init(void)
- 		init_gro_hash(&sd->backlog);
- 		sd->backlog.poll =3D process_backlog;
- 		sd->backlog.weight =3D weight_p;
-+		INIT_LIST_HEAD(&sd->backlog.poll_list);
- 	}
-+	if (use_backlog_threads())
-+		smpboot_register_percpu_thread(&backlog_threads);
-=20
- 	dev_boot_phase =3D 0;
-=20
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 2198979470ecf..30cdb008dd65c 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -6844,8 +6844,8 @@ nodefer:	__kfree_skb(skb);
- 	/* Make sure to trigger NET_RX_SOFTIRQ on the remote CPU
- 	 * if we are unlucky enough (this seems very unlikely).
- 	 */
--	if (unlikely(kick) && !cmpxchg(&sd->defer_ipi_scheduled, 0, 1))
--		smp_call_function_single_async(cpu, &sd->defer_csd);
-+	if (unlikely(kick))
-+		net_trigger_defer_list_processing(cpu);
- }
-=20
- static void skb_splice_csum_page(struct sk_buff *skb, struct page *page,
---=20
-2.42.0
+So with a 64-bit fstime_t, we'd have the "legacy format":
 
+ - top 32 bits are seconds, bottom 32 bits are ns
+
+which gives us that ns format.
+
+Then, because only 30 bits are needed for nanosecond resolution, we
+use the top two bits of that ns field as flags. '00' means that legacy
+format, and '01' would mean "we're not doing nanosecond resolution,
+we're doing 64ns resolution, and the low 6 bits of the ns field are
+actually bits 32-37 of the seconds field".
+
+That still gives us some extensibility (unless the multi-grain code
+still wants to use the other top bit), and it gives us 40 bits of
+seconds, which is quite a lot.
+
+And all the conversion functions will be simple bit field
+manipulations, so there are no expensive ops here.
+
+Anyway, I agree with the "let's introduce the accessor functions
+first, we can do the 'pack into one word' decisions later".
+
+                Linus
