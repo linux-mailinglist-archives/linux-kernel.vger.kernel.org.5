@@ -2,74 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E16D37B2A24
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 03:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432B27B2A25
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 03:21:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232432AbjI2BTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 21:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43194 "EHLO
+        id S230274AbjI2BV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 21:21:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229799AbjI2BTC (ORCPT
+        with ESMTP id S229799AbjI2BVY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 21:19:02 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73447195
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 18:19:00 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso1799870566b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 18:19:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695950339; x=1696555139; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZndDvjVADU6GuKHszhELnx+eP/DDe/5FgQazo+VWICo=;
-        b=z3FhmGKVgykolqgvdknTpN5/d4XISRQQLaLPzv1L9yZWRob6rNpwH9CdLWsXQqMeW7
-         ryWUIw7U4ygplh+FSVMYaUWk5OqtHnIzUw5N3jSfujcY13MOiwljnUgGBsB2E9fFRu/a
-         YssNxuYcigcypnlJmxx48dajhqT7WyJSiX/Nnur+dybbLGAM7F4S7fw4T9kshOKmABBP
-         G8wA7NnwK2qz3xMtQmA5XLf5AW+syuKlsKqCxT8aB3F4/j/PnbKmZ3ejh/VRsFv7nXVY
-         GJ8nxL4ecfqpLg467oSFBaCW+QFLZbMDcd3Fh7O1+d8yCKTVS2Hb7sfWtDaGUw2atGuE
-         uhuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695950339; x=1696555139;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZndDvjVADU6GuKHszhELnx+eP/DDe/5FgQazo+VWICo=;
-        b=gqCxxsjthkSQM5En4F8llZ5LBW8VKQcXqw86hibjtXFUui5S4TidNzU4eSm2II6Ck2
-         NKo1aTJXeWw/bx+bu11TtugqScz0zm4ekloOk6FRMZ2bSSyJiqSuvIvHWOqwE/6wvoti
-         JNUhfdW6kn5aeq2/yX+42Egq+ABEsEEFBcyRFeog98p16//ePWn9Y5rdEka3AyhIMdRG
-         jrvPtU1zrr6MT2fCJyylfuyCgF4yfMg95hu48CD8rES52LeVoNx4gT/SSoNKiENKa2ke
-         vfTxTM5gALdyoKHdzpG04h250LhdT3806Bqs2152yIgpX8AZfY8i/U2azq1bUXtADLrD
-         lmEA==
-X-Gm-Message-State: AOJu0YxVMqmizSkJ9AD0pa4DOY7FP6qviD/cosAaaFXdFkIjZqpfZjfD
-        9KbNkzsqvPK8LzeD5qenF/GFV7H2Vmvvtp7cqOexMQ==
-X-Google-Smtp-Source: AGHT+IFoqMyTpIfX6uaS77LPHDhJX8I+COqi1KAm9KTwagfqUaqSfprAUHibwy8HOVZyyMoMo2FVR53POoJHHT6q4hc=
-X-Received: by 2002:a17:906:209e:b0:9ae:829e:d930 with SMTP id
- 30-20020a170906209e00b009ae829ed930mr2742309ejq.9.1695950338777; Thu, 28 Sep
- 2023 18:18:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230928005723.1709119-1-nphamcs@gmail.com> <20230928005723.1709119-2-nphamcs@gmail.com>
- <CAJD7tkanr99d_Y=LefQTFsykyiO5oZpPUC=suD3P-L5eS=0SXA@mail.gmail.com>
- <CAKEwX=M=8KYqvBTz9z1csrsFUpGf2tgWj-oyu96dSpRjn3ZnUQ@mail.gmail.com> <CAKEwX=Npb4mwZ2ibJkmD5GyqXazr7PH8UGLu+YSDY8acf152Eg@mail.gmail.com>
-In-Reply-To: <CAKEwX=Npb4mwZ2ibJkmD5GyqXazr7PH8UGLu+YSDY8acf152Eg@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Thu, 28 Sep 2023 18:18:19 -0700
-Message-ID: <CAJD7tkaeDBTHC3UM91O56yrp8oCU-UBO6i_5HJMjVBDQAw0ipQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
- memory controller
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, riel@surriel.com, hannes@cmpxchg.org,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, linux-mm@kvack.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        Thu, 28 Sep 2023 21:21:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1800194
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 18:21:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 715BEC433C8;
+        Fri, 29 Sep 2023 01:21:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695950482;
+        bh=+xluoaRtd881mhnbMqR45ST1+JNC6xy+NKQlkNY/GIQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=j5adAD5V99j47hEbe9AhUblLVyJoZeun+NI4uuPi90VOUy3emX2UdMsWbjd2bAdtP
+         XSdsBAztHTov7eupg3dtF2BwhCLIPEOZDprzff4z2xjtmFmjOOQc+27TFdnvGJiJTu
+         bbskvrqvb8I4EHBZcQ08OnhLFYnOKOTCVZ1bGyZ5tAMfrWj5QTHagCXFyjc1g1F9cd
+         F/IfPN+qQBrYgK5AT9OHfew3W41MZgfy4ULWlxa/dpFD37E3pxMT15wK8HX0RAxcRg
+         NTfamK6HgCAoyj85OCgBUT/oriPRcrw20JZmx4K+jMVLj2EIub3CUORm+1lneMCD5M
+         xDmik0x6eXCNA==
+Date:   Fri, 29 Sep 2023 10:21:15 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v5 00/12] tracing: fprobe: rethook: Use ftrace_regs
+ instead of pt_regs
+Message-Id: <20230929102115.09c015b9af03e188f1fbb25c@kernel.org>
+In-Reply-To: <169556254640.146934.5654329452696494756.stgit@devnote2>
+References: <169556254640.146934.5654329452696494756.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,78 +65,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 6:07=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrote=
-:
->
-> On Thu, Sep 28, 2023 at 5:58=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wro=
-te:
-> >
-> > On Thu, Sep 28, 2023 at 5:38=E2=80=AFPM Yosry Ahmed <yosryahmed@google.=
-com> wrote:
-> > >
-> > > <snip>
-> > >
-> > > >
-> > > > +
-> > > > +/**
-> > > > + * mem_cgroup_hugetlb_charge_folio - Charge a newly allocated huge=
-tlb folio.
-> > > > + * @folio: folio to charge.
-> > > > + * @gfp: reclaim mode
-> > > > + *
-> > > > + * This function charges an allocated hugetlbf folio to the memcg =
-of the
-> > > > + * current task.
-> > > > + *
-> > > > + * Returns 0 on success. Otherwise, an error code is returned.
-> > > > + */
-> > > > +int mem_cgroup_hugetlb_charge_folio(struct folio *folio, gfp_t gfp=
-)
-> > > > +{
-> > > > +       struct mem_cgroup *memcg;
-> > > > +       int ret;
-> > > > +
-> > > > +       if (mem_cgroup_disabled() ||
-> > > > +               !(cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_HUGETLB_AC=
-COUNTING))
-> > >
-> > > What happens if the memory controller is mounted in a cgroup v1
-> > > hierarchy? It appears to me that we *will* go through with hugetlb
-> > > charging in this case?
-> >
-> > Ah right, cgroup v1. Does it not work with mount flag guarding?
-> > What's the behavior of cgroup v1 when it comes to memory
-> > recursive protection for e.g (which this mount flag is based on)?
-> >
-> > If it doesn't work, we'll have to add a separate knob for v1 -
-> > no biggies.
->
-> But to be clear, my intention is that we're not adding this
-> feature to v1 (which, to my understanding, has been
-> deprecated).
->
-> If it's added by virtue of it sharing infrastructure with v2,
-> then it's fine, but only if the mount option still works to
-> guard against unintentional enablement (if not we'll
-> also short-circuit v1, or add knobs if ppl really want
-> it in v1 as well).
->
-> If it's not added at all, then I don't have any complaints :)
->
-> >
-> > Other than this concern, I don't have anything against cgroup v1
-> > having this feature per se - everything should still work. But let
-> > I know if it can break cgroupv1 accounting otherwise :)
-> >
+Hi,
 
-My concern is the scenario where the memory controller is mounted in
-cgroup v1, and cgroup v2 is mounted with memory_hugetlb_accounting.
+While revising the LPC slides, I realized that this series is actually
+slightly going in the wrong direction.
 
-In this case it seems like the current code will only check whether
-memory_hugetlb_accounting was set on cgroup v2 or not, disregarding
-the fact that cgroup v1 did not enable hugetlb accounting.
+My goal is to unify "the shadow stack and the trampoline" for function exit
+tracing (function graph tracer and function return probe event), but not
+only unifying the internal interface.
 
-I obviously prefer that any features are also added to cgroup v1,
-because we still didn't make it to cgroup v2, especially when the
-infrastructure is shared. On the other hand, I am pretty sure the
-maintainers will not like what I am saying :)
+My original plan was to introduce an independent "interface" for the shadow
+stack and trampoline, which can switch the backend implementation. This was
+important because when I started that, there were kretprobe or function-
+graph tracer which hook the function exit.
+
+If kprobe depends on the function-graph tracer only for using the same shadow
+stack, that makes kprobe usability down. So I introduced "rethook" for the
+interface, which could be a wrapper interface of the shadow stacks and the
+trampolines. 
+One my misread was the "pt_regs" issue. So this series is for fixing it.
+
+However, when I introduced "fprobe" for function entry and exit probe, this
+assumption has changed. If we move from kprobe/kretprobe to fprobe for
+function entry/exit probing (= function entry/exit probe event on ftrace),
+we don't need to care about the dependency of kprobes, because if "fprobe"
+already depends on function tracer. Maybe it can depends on function-graph
+tracer too.
+
+Thus, what I need is to make fprobe to use function-graph tracer's shadow
+stack and trampoline instead of rethook. This may need to generalize its
+interface so that we can share it between fprobe and function-graph tracer,
+but we don't need to involve rethook and kretprobes anymore.
+
+Note that this plan still requires changing the fprobe interface to
+use ftrace_regs, because some architecture doesn't support pt_regs on
+ftrace.
+
+Thus, I will keep the following patches from this series.
+(first 3 patches are fixes so to be sent independently)
+
+>  - RISCV ftrace fix to save registers on struct ftrace_regs correctly.
+>  - Document fix for the current fprobe callback prototype.
+>  - Add a comment of requirement for the ftrace_regs.
+>  - Simply replace pt_regs in fprobe_entry_handler with ftrace_regs.
+      (this needs to be fixed)
+
+>  - Expose ftrace_regs even if CONFIG_FUNCTION_TRACER=n.
+>  - Introduce ftrace_partial_regs(). (This changes ARM64 which needs a custom
+>    implementation)
+>  - Introduce ftrace_fill_perf_regs() for perf pt_regs.
+
+>  - Update fprobe-events to use ftrace_regs natively.
+>  - Update bpf multi-kprobe handler use ftrace_partial_regs().
+
+And need to add patches
+
+ - Introduce a generized function exit hook interface for ftrace.
+ - Replace rethook in fprobe with the function exit hook interface.
+
+
+Thank you,
+
+On Sun, 24 Sep 2023 22:35:47 +0900
+"Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+
+> Hi,
+> 
+> Here is the 5th version of the series to use ftrace_regs instead of pt_regs
+> in fprobe.
+> The previous version is here;
+> 
+> https://lore.kernel.org/all/169280372795.282662.9784422934484459769.stgit@devnote2/
+> 
+> In this version, I decided to use perf's own per-cpu pt_regs array to
+> copy the required registers[8/12]. Thus this version adds a patch which
+> adds a new ftrace_fill_perf_regs() API. So the ftrace_partial_regs() will
+> be used for BPF and ftrace_fill_perf_regs() is used for perf events.
+> 
+> This also adds a fix for RISCV ftrace[1/12]. When kernel is built with
+> disabling CONFIG_DYNAMIC_FTRACE_WITH_REGS on RISCV, it stores partial
+> registers on the stack, but it doesn't make it fit to struct ftrace_regs.
+> But since the 4th argument of ftrace_func_t is ftrace_regs *, it breaks
+> the ABI. So fixing it to save registers on ftrace_regs (== pt_regs on RISCV).
+> 
+> Another new patch [3/12] is adding a comment about the requirements for
+> the ftrace_regs.
+> 
+>  - RISCV ftrace fix to save registers on struct ftrace_regs correctly.
+>  - Document fix for the current fprobe callback prototype.
+>  - Add a comment of requirement for the ftrace_regs.
+>  - Simply replace pt_regs in fprobe_entry_handler with ftrace_regs.
+>  - Expose ftrace_regs even if CONFIG_FUNCTION_TRACER=n.
+>  - Introduce ftrace_partial_regs(). (This changes ARM64 which needs a custom
+>    implementation)
+>  - Introduce ftrace_fill_perf_regs() for perf pt_regs.
+>  - Replace pt_regs in rethook and fprobe_exit_handler with ftrace_regs. This
+>    introduce a new HAVE_PT_REGS_TO_FTRACE_REGS_CAST which means ftrace_regs is
+>    just a wrapper of pt_regs (except for arm64, other architectures do this)
+>  - Update fprobe-events to use ftrace_regs natively.
+>  - Update bpf multi-kprobe handler use ftrace_partial_regs().
+>  - Update document for new fprobe callbacks.
+>  - Add notes for the $argN and $retval.
+> 
+> This series can be applied against the trace-v6.6-rc2 on linux-trace tree.
+> 
+> This series can also be found below branch.
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git/log/?h=topic/fprobe-ftrace-regs
+> 
+> Thank you,
+> 
+> ---
+> 
+> Masami Hiramatsu (Google) (12):
+>       riscv: ftrace: Fix to pass correct ftrace_regs to ftrace_func_t functions
+>       Documentation: probes: Add a new ret_ip callback parameter
+>       tracing: Add a comment about the requirements of the ftrace_regs
+>       fprobe: Use ftrace_regs in fprobe entry handler
+>       tracing: Expose ftrace_regs regardless of CONFIG_FUNCTION_TRACER
+>       fprobe: rethook: Use ftrace_regs in fprobe exit handler and rethook
+>       tracing: Add ftrace_partial_regs() for converting ftrace_regs to pt_regs
+>       tracing: Add ftrace_fill_perf_regs() for perf event
+>       tracing/fprobe: Enable fprobe events with CONFIG_DYNAMIC_FTRACE_WITH_ARGS
+>       bpf: Enable kprobe_multi feature if CONFIG_FPROBE is enabled
+>       Documentation: probes: Update fprobe document to use ftrace_regs
+>       Documentation: tracing: Add a note about argument and retval access
+> 
+> 
+>  Documentation/trace/fprobe.rst      |   18 +++--
+>  Documentation/trace/fprobetrace.rst |    8 ++
+>  Documentation/trace/kprobetrace.rst |    8 ++
+>  arch/Kconfig                        |    1 
+>  arch/arm64/include/asm/ftrace.h     |   18 +++++
+>  arch/loongarch/Kconfig              |    1 
+>  arch/loongarch/kernel/rethook.c     |   10 +--
+>  arch/loongarch/kernel/rethook.h     |    4 +
+>  arch/powerpc/include/asm/ftrace.h   |    7 ++
+>  arch/riscv/kernel/mcount-dyn.S      |   67 ++++++++----------
+>  arch/riscv/kernel/probes/rethook.c  |   12 ++-
+>  arch/riscv/kernel/probes/rethook.h  |    6 +-
+>  arch/s390/Kconfig                   |    1 
+>  arch/s390/include/asm/ftrace.h      |    9 ++
+>  arch/s390/kernel/rethook.c          |   10 ++-
+>  arch/s390/kernel/rethook.h          |    2 -
+>  arch/x86/Kconfig                    |    1 
+>  arch/x86/include/asm/ftrace.h       |    7 ++
+>  arch/x86/kernel/rethook.c           |   13 ++--
+>  include/linux/fprobe.h              |    4 +
+>  include/linux/ftrace.h              |  128 +++++++++++++++++++++++++++++------
+>  include/linux/rethook.h             |   11 ++-
+>  kernel/kprobes.c                    |   10 ++-
+>  kernel/trace/Kconfig                |    9 ++
+>  kernel/trace/bpf_trace.c            |   14 ++--
+>  kernel/trace/fprobe.c               |   10 +--
+>  kernel/trace/rethook.c              |   16 ++--
+>  kernel/trace/trace_fprobe.c         |   70 +++++++++++--------
+>  kernel/trace/trace_probe_tmpl.h     |    2 -
+>  lib/test_fprobe.c                   |   10 +--
+>  samples/fprobe/fprobe_example.c     |    4 +
+>  31 files changed, 327 insertions(+), 164 deletions(-)
+> 
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
