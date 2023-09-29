@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09BDD7B2CC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A64B7B2CC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:01:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232741AbjI2HBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 03:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54916 "EHLO
+        id S232769AbjI2HBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 03:01:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232519AbjI2HA5 (ORCPT
+        with ESMTP id S232731AbjI2HA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 03:00:57 -0400
+        Fri, 29 Sep 2023 03:00:59 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 170B61A7;
-        Fri, 29 Sep 2023 00:00:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A55F1AA;
+        Fri, 29 Sep 2023 00:00:56 -0700 (PDT)
 Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T6h76a007780;
-        Fri, 29 Sep 2023 07:00:52 GMT
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T6LQpC031501;
+        Fri, 29 Sep 2023 07:00:55 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=OahX4Qn4vZeug3KfmhdADRcSN6wDqgD8leeIgsbFbgY=;
- b=IbpttYbi3tcLQRne/VnutiOYeyatTIku65wiEpHBnlVbeRhzes17cG+FRzLW13gZ8qYc
- o9/QqO5xToZJznoCAn8JA0h3N6I8cwK29LC3giNfj81mR9nSdKCivmOZECNtEmkDiSPO
- lI916GKvIMLJFCUcnu4QAHA1Tk1TMQFQ6SbL+OYhBj2MiLg7z6cN5XFsSxKuZlkO/cQb
- J7efGHmsqZyXZqQHKru2pzRlqN0Py2LnvkP36VDh4kgPDEmgS49vZFN4IsqM76nbsgVR
- OJ/yjb+7mfrFEqJQbD4g6Rs4xHWI+iHmrpNTpp7acbQXl0v6ie+Ccxl3hcB/XGc1BGqQ Rg== 
+ bh=CtzVttFFO4WsgPwm00chtznBrZjPBlBPSxDaywJgnjU=;
+ b=jMMt/eoCEHO2bvaG6y/COq5FrKiZmfMGgN1UpOO18nvKs72BpMDF+OftJsIVfnjvRpQF
+ nVg50IWRuWXpDkEObPdgBXVDHOt6+vsAXahoUD3S3l4aXo5rOEgrkARUTGfGeVDvy3BB
+ hbxPCQ8Gg8OE6gWkKbV+BURbZGk5U+soOzItw9XMBr6ZCgvJZysw6Q0SSEqcJrb+Ac1A
+ qi4ezQUnArjSE3tJRIdoyS/iCGJVh7wIgoRizMhUHtIEO6OAVhjgMYmg1wCr5CJf9J6B
+ UecBcqPuIcS1fBhiSkN1m6NyFZjY0kH3IS/gZFRM3lAOouY4UTRuT2BTPI31lLlMklGR Eg== 
 Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3td24uaqv0-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3td24uaqv4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 07:00:51 +0000
+        Fri, 29 Sep 2023 07:00:54 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38T70o34025024
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38T70rMe025083
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 07:00:50 GMT
+        Fri, 29 Sep 2023 07:00:53 GMT
 Received: from ekangupt-linux.qualcomm.com (10.80.80.8) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 29 Sep 2023 00:00:47 -0700
+ 15.2.1118.36; Fri, 29 Sep 2023 00:00:50 -0700
 From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
 To:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
 CC:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
         <ekangupt@qti.qualcomm.com>, <gregkh@linuxfoundation.org>,
         <linux-kernel@vger.kernel.org>, <fastrpc.upstream@qti.qualcomm.com>
-Subject: [PATCH v1 1/4] misc: fastrpc: Add early wakeup support for fastRPC driver
-Date:   Fri, 29 Sep 2023 12:30:27 +0530
-Message-ID: <1695970830-12331-2-git-send-email-quic_ekangupt@quicinc.com>
+Subject: [PATCH v1 2/4] misc: fastrpc: Add polling mode support for fastRPC driver
+Date:   Fri, 29 Sep 2023 12:30:28 +0530
+Message-ID: <1695970830-12331-3-git-send-email-quic_ekangupt@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1695970830-12331-1-git-send-email-quic_ekangupt@quicinc.com>
 References: <1695970830-12331-1-git-send-email-quic_ekangupt@quicinc.com>
@@ -57,14 +57,14 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: v1XXwNpN15DqP__a_3o4GjJkFjmjB7T8
-X-Proofpoint-ORIG-GUID: v1XXwNpN15DqP__a_3o4GjJkFjmjB7T8
+X-Proofpoint-GUID: Tqtj4nlk3P3JxWNwEoPlwACPgPLPC4Az
+X-Proofpoint-ORIG-GUID: Tqtj4nlk3P3JxWNwEoPlwACPgPLPC4Az
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-09-29_04,2023-09-28_03,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
  suspectscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
- priorityscore=1501 mlxscore=0 mlxlogscore=999 adultscore=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=924 adultscore=0 bulkscore=0
  phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2309180000 definitions=main-2309290059
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -76,440 +76,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CPU wake up and context switch latency are significant in FastRPC
-overhead for remote calls. As part of this change, DSP sends early
-signal of completion to CPU and FastRPC driver detects early signal
-on the given context and starts polling on a memory for actual
-completion. Multiple different response flags are added to support
-DSP user early hint of approximate time of completion, early response
-from DSP user to wake up CPU and poll on memory for actual completion.
-Complete signal is also added which is sent by DSP user in case of
-timeout after early response is sent.
+For any remote call to DSP, after sending an invocation message,
+fastRPC driver waits for glink response and during this time the
+CPU can go into low power modes. Adding a polling mode support
+with which fastRPC driver will poll continuously on a memory
+after sending a message to remote subsystem which will eliminate
+CPU wakeup and scheduling latencies and reduce fastRPC overhead.
+With this change, DSP always sends a glink response which will
+get ignored if polling mode didn't time out.
 
 Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
 ---
- drivers/misc/fastrpc.c | 265 ++++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 251 insertions(+), 14 deletions(-)
+ drivers/misc/fastrpc.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
 
 diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 8023da4..3facffd 100644
+index 3facffd..b5f3734 100644
 --- a/drivers/misc/fastrpc.c
 +++ b/drivers/misc/fastrpc.c
-@@ -106,6 +106,19 @@
- #define USER_PD		(1)
- #define SENSORS_PD	(2)
+@@ -109,6 +109,8 @@
+ #define FASTRPC_RSP_VERSION2 2
+ /* Early wake up poll completion number received from remoteproc */
+ #define FASTRPC_EARLY_WAKEUP_POLL (0xabbccdde)
++/* Poll response number from remote processor for call completion */
++#define FASTRPC_POLL_RESPONSE (0xdecaf)
+ /* timeout in us for polling until memory barrier */
+ #define FASTRPC_POLL_TIME_MEM_UPDATE (500)
+ /* timeout in us for busy polling after early response from remoteproc */
+@@ -380,10 +382,14 @@ struct fastrpc_user {
+ 	struct fastrpc_buf *init_mem;
  
-+#define FASTRPC_RSP_VERSION2 2
-+/* Early wake up poll completion number received from remoteproc */
-+#define FASTRPC_EARLY_WAKEUP_POLL (0xabbccdde)
-+/* timeout in us for polling until memory barrier */
-+#define FASTRPC_POLL_TIME_MEM_UPDATE (500)
-+/* timeout in us for busy polling after early response from remoteproc */
-+#define FASTRPC_POLL_TIME (4000)
-+/* timeout in us for polling completion signal after user early hint */
-+#define FASTRPC_USER_EARLY_HINT_TIMEOUT (500)
-+/* CPU feature information to DSP */
-+#define FASTRPC_CPUINFO_DEFAULT (0)
-+#define FASTRPC_CPUINFO_EARLY_WAKEUP (1)
-+
- #define miscdev_to_fdevice(d) container_of(d, struct fastrpc_device, miscdev)
- 
- #define PERF_END ((void)0)
-@@ -129,6 +142,15 @@
- 			(uint64_t *)(perf_ptr + offset)\
- 				: (uint64_t *)NULL) : (uint64_t *)NULL)
- 
-+enum fastrpc_response_flags {
-+	NORMAL_RESPONSE = 0,
-+	EARLY_RESPONSE = 1,
-+	USER_EARLY_SIGNAL = 2,
-+	COMPLETE_SIGNAL = 3,
-+	STATUS_RESPONSE = 4,
-+	POLL_MODE = 5,
-+};
-+
- static const char *domains[FASTRPC_DEV_MAX] = { "adsp", "mdsp",
- 						"sdsp", "cdsp"};
- struct fastrpc_phy_page {
-@@ -206,6 +228,14 @@ struct fastrpc_invoke_rsp {
- 	int retval;		/* invoke return value */
- };
- 
-+struct fastrpc_invoke_rspv2 {
-+	u64 ctx;		/* invoke caller context */
-+	int retval;		/* invoke return value */
-+	u32 flags;		/* early response flags */
-+	u32 early_wake_time;	/* user hint in us */
-+	u32 version;		/* version number */
-+};
-+
- struct fastrpc_buf_overlap {
- 	u64 start;
- 	u64 end;
-@@ -272,11 +302,17 @@ struct fastrpc_invoke_ctx {
- 	int pid;
+ 	u32 profile;
++	/* Threads poll for specified timeout and fall back to glink wait */
++	u32 poll_timeout;
  	int tgid;
- 	u32 sc;
-+	/* user hint of completion time in us */
-+	u32 early_wake_time;
- 	u32 *crc;
- 	u64 *perf_kernel;
- 	u64 *perf_dsp;
- 	u64 ctxid;
- 	u64 msg_sz;
-+	/* work done status flag */
-+	bool is_work_done;
-+	/* response flags from remote processor */
-+	enum fastrpc_response_flags rsp_flags;
- 	struct kref refcount;
- 	struct list_head node; /* list of ctxs */
- 	struct completion work;
-@@ -321,7 +357,9 @@ struct fastrpc_channel_ctx {
- 	struct list_head invoke_interrupted_mmaps;
- 	bool secure;
- 	bool unsigned_support;
-+	bool cpuinfo_status;
- 	u64 dma_mask;
-+	u64 cpuinfo_todsp;
- };
- 
- struct fastrpc_device {
-@@ -352,13 +390,21 @@ struct fastrpc_user {
- 	struct mutex mutex;
- };
- 
-+struct fastrpc_ctrl_latency {
-+	u32 enable;	/* latency control enable */
-+	u32 latency;	/* latency request in us */
-+};
-+
- struct fastrpc_ctrl_smmu {
- 	u32 sharedcb;	/* Set to SMMU share context bank */
- };
- 
- struct fastrpc_internal_control {
- 	u32 req;
--	struct fastrpc_ctrl_smmu smmu;
-+	union {
-+		struct fastrpc_ctrl_latency lp;
-+		struct fastrpc_ctrl_smmu smmu;
-+	};
- };
- 
- static inline int64_t getnstimediff(struct timespec64 *start)
-@@ -692,6 +738,8 @@ static struct fastrpc_invoke_ctx *fastrpc_context_alloc(
- 	ctx->pid = current->pid;
- 	ctx->tgid = user->tgid;
- 	ctx->cctx = cctx;
-+	ctx->rsp_flags = NORMAL_RESPONSE;
-+	ctx->is_work_done = false;
- 	init_completion(&ctx->work);
- 	INIT_WORK(&ctx->put_work, fastrpc_context_put_wq);
- 
-@@ -1300,6 +1348,115 @@ static int fastrpc_invoke_send(struct fastrpc_session_ctx *sctx,
- 
- }
- 
-+static int poll_for_remote_response(struct fastrpc_invoke_ctx *ctx, u32 timeout)
-+{
-+	int err = -EIO, ii = 0, jj = 0;
-+	u32 sc = ctx->sc;
-+	struct fastrpc_invoke_buf *list;
-+	struct fastrpc_phy_page *pages;
-+	u64 *fdlist = NULL;
-+	u32 *crclist = NULL, *poll = NULL;
-+	unsigned int inbufs, outbufs, handles;
-+
-+	/* calculate poll memory location */
-+	inbufs = REMOTE_SCALARS_INBUFS(sc);
-+	outbufs = REMOTE_SCALARS_OUTBUFS(sc);
-+	handles = REMOTE_SCALARS_INHANDLES(sc) + REMOTE_SCALARS_OUTHANDLES(sc);
-+	list = fastrpc_invoke_buf_start(ctx->rpra, ctx->nscalars);
-+	pages = fastrpc_phy_page_start(list, ctx->nscalars);
-+	fdlist = (u64 *)(pages + inbufs + outbufs + handles);
-+	crclist = (u32 *)(fdlist + FASTRPC_MAX_FDLIST);
-+	poll = (u32 *)(crclist + FASTRPC_MAX_CRCLIST);
-+
-+	/* poll on memory for DSP response. Return failure on timeout */
-+	for (ii = 0, jj = 0; ii < timeout; ii++, jj++) {
-+		if (*poll == FASTRPC_EARLY_WAKEUP_POLL) {
-+			/* Remote processor sent early response */
+ 	int pd;
+ 	bool is_secure_dev;
+ 	bool sharedcb;
++	/* If set, threads will poll for DSP response instead of glink wait */
++	bool poll_mode;
+ 	/* Lock for lists */
+ 	spinlock_t lock;
+ 	/* lock for allocations */
+@@ -1374,6 +1380,11 @@ static int poll_for_remote_response(struct fastrpc_invoke_ctx *ctx, u32 timeout)
+ 			/* Remote processor sent early response */
+ 			err = 0;
+ 			break;
++		} else if (*poll == FASTRPC_POLL_RESPONSE) {
 +			err = 0;
++			ctx->is_work_done = true;
++			ctx->retval = 0;
 +			break;
-+		}
-+		if (jj == FASTRPC_POLL_TIME_MEM_UPDATE) {
-+			/* Wait for DSP to finish updating poll memory */
-+			rmb();
-+			jj = 0;
-+		}
-+		udelay(1);
-+	}
-+	return err;
-+}
+ 		}
+ 		if (jj == FASTRPC_POLL_TIME_MEM_UPDATE) {
+ 			/* Wait for DSP to finish updating poll memory */
+@@ -1449,6 +1460,15 @@ static void fastrpc_wait_for_completion(struct fastrpc_invoke_ctx *ctx,
+ 			if (*ptr_interrupted || ctx->is_work_done)
+ 				return;
+ 			break;
++		case POLL_MODE:
++			err = poll_for_remote_response(ctx, ctx->fl->poll_timeout);
 +
-+static inline int fastrpc_wait_for_response(struct fastrpc_invoke_ctx *ctx,
-+						u32 kernel)
-+{
-+	int interrupted = 0;
-+
-+	if (kernel)
-+		wait_for_completion(&ctx->work);
-+	else
-+		interrupted = wait_for_completion_interruptible(&ctx->work);
-+
-+	return interrupted;
-+}
-+
-+static void fastrpc_wait_for_completion(struct fastrpc_invoke_ctx *ctx,
-+			int *ptr_interrupted, u32 kernel)
-+{
-+	int err = 0, jj = 0;
-+	bool wait_resp = false;
-+	u32 wTimeout = FASTRPC_USER_EARLY_HINT_TIMEOUT;
-+	u32 wakeTime = ctx->early_wake_time;
-+
-+	do {
-+		switch (ctx->rsp_flags) {
-+		/* try polling on completion with timeout */
-+		case USER_EARLY_SIGNAL:
-+			/* try wait if completion time is less than timeout */
-+			/* disable preempt to avoid context switch latency */
-+			preempt_disable();
-+			jj = 0;
-+			wait_resp = false;
-+			for (; wakeTime < wTimeout && jj < wTimeout; jj++) {
-+				wait_resp = try_wait_for_completion(&ctx->work);
-+				if (wait_resp)
-+					break;
-+				udelay(1);
-+			}
-+			preempt_enable();
-+			if (!wait_resp) {
-+				*ptr_interrupted = fastrpc_wait_for_response(ctx, kernel);
-+				if (*ptr_interrupted || ctx->is_work_done)
-+					return;
-+			}
++			/* If polling timed out, move to normal response state */
++			if (err)
++				ctx->rsp_flags = NORMAL_RESPONSE;
++			else
++				*ptr_interrupted = 0;
 +			break;
-+		/* busy poll on memory for actual job done */
-+		case EARLY_RESPONSE:
-+			err = poll_for_remote_response(ctx, FASTRPC_POLL_TIME);
-+			/* Mark job done if poll on memory successful */
-+			/* Wait for completion if poll on memory timeout */
-+			if (!err) {
-+				ctx->is_work_done = true;
-+				return;
-+			}
-+			if (!ctx->is_work_done) {
-+				*ptr_interrupted = fastrpc_wait_for_response(ctx, kernel);
-+				if (*ptr_interrupted || ctx->is_work_done)
-+					return;
-+			}
-+			break;
-+		case COMPLETE_SIGNAL:
-+		case NORMAL_RESPONSE:
-+			*ptr_interrupted = fastrpc_wait_for_response(ctx, kernel);
-+			if (*ptr_interrupted || ctx->is_work_done)
-+				return;
-+			break;
-+		default:
-+			*ptr_interrupted = -EBADR;
-+			dev_err(ctx->fl->sctx->dev, "unsupported response type:0x%x\n", ctx->rsp_flags);
-+			break;
-+		}
-+	} while (!ctx->is_work_done);
-+}
-+
- static void fastrpc_update_invoke_count(u32 handle, u64 *perf_counter,
- 					struct timespec64 *invoket)
- {
-@@ -1322,7 +1479,7 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
- 	struct fastrpc_invoke *inv = &invoke->inv;
- 	u32 handle, sc;
- 	u64 *perf_counter = NULL;
--	int err = 0, perferr = 0;
-+	int err = 0, perferr = 0, interrupted = 0;
- 	struct timespec64 invoket = {0};
- 
- 	if (fl->profile)
-@@ -1373,15 +1530,17 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
- 	PERF_END);
- 
- wait:
--	if (kernel) {
--		if (!wait_for_completion_timeout(&ctx->work, 10 * HZ))
--			err = -ETIMEDOUT;
--	} else {
--		err = wait_for_completion_interruptible(&ctx->work);
-+	fastrpc_wait_for_completion(ctx, &interrupted, kernel);
-+	if (interrupted != 0) {
-+		err = interrupted;
-+		goto bail;
- 	}
--
--	if (err)
-+	if (!ctx->is_work_done) {
-+		err = -ETIMEDOUT;
-+		dev_err(fl->sctx->dev, "Error: Invalid workdone state for handle 0x%x, sc 0x%x\n",
-+			handle, sc);
- 		goto bail;
-+	}
- 
- 	/* Check the response from remote dsp */
- 	err = ctx->retval;
-@@ -2046,6 +2205,36 @@ static int fastrpc_get_info_from_kernel(struct fastrpc_ioctl_capability *cap,
- 	return 0;
+ 		default:
+ 			*ptr_interrupted = -EBADR;
+ 			dev_err(ctx->fl->sctx->dev, "unsupported response type:0x%x\n", ctx->rsp_flags);
+@@ -2065,6 +2085,32 @@ static int fastrpc_invoke(struct fastrpc_user *fl, char __user *argp)
+ 	return err;
  }
  
-+static int fastrpc_send_cpuinfo_to_dsp(struct fastrpc_user *fl)
++static int fastrpc_manage_poll_mode(struct fastrpc_user *fl, u32 enable, u32 timeout)
 +{
-+	int err = 0;
-+	u64 cpuinfo = 0;
-+	struct fastrpc_invoke_args args[1];
-+	struct fastrpc_enhanced_invoke ioctl;
++	const unsigned int MAX_POLL_TIMEOUT_US = 10000;
 +
-+	if (!fl)
-+		return -EBADF;
-+
-+	cpuinfo = fl->cctx->cpuinfo_todsp;
-+	/* return success if already updated to remote processor */
-+	if (fl->cctx->cpuinfo_status)
-+		return 0;
-+
-+	args[0].ptr = (u64)(uintptr_t)&cpuinfo;
-+	args[0].length = sizeof(cpuinfo);
-+	args[0].fd = -1;
-+
-+	ioctl.inv.handle = FASTRPC_DSP_UTILITIES_HANDLE;
-+	ioctl.inv.sc = FASTRPC_SCALARS(1, 1, 0);
-+	ioctl.inv.args = (__u64)args;
-+
-+	err = fastrpc_internal_invoke(fl, true, &ioctl);
-+	if (!err)
-+		fl->cctx->cpuinfo_status = true;
-+
-+	return err;
++	if ((fl->cctx->domain_id != CDSP_DOMAIN_ID) || (fl->pd != USER_PD)) {
++		dev_err(&fl->cctx->rpdev->dev, "poll mode only allowed for dynamic CDSP process\n");
++		return -EPERM;
++	}
++	if (timeout > MAX_POLL_TIMEOUT_US) {
++		dev_err(&fl->cctx->rpdev->dev, "poll timeout %u is greater than max allowed value %u\n",
++			timeout, MAX_POLL_TIMEOUT_US);
++		return -EBADMSG;
++	}
++	spin_lock(&fl->lock);
++	if (enable) {
++		fl->poll_mode = true;
++		fl->poll_timeout = timeout;
++	} else {
++		fl->poll_mode = false;
++		fl->poll_timeout = 0;
++	}
++	spin_unlock(&fl->lock);
++	dev_info(&fl->cctx->rpdev->dev, "updated poll mode to %d, timeout %u\n", enable, timeout);
++	return 0;
 +}
 +
- static int fastrpc_get_dsp_info(struct fastrpc_user *fl, char __user *argp)
+ static int fastrpc_internal_control(struct fastrpc_user *fl,
+ 					struct fastrpc_internal_control *cp)
  {
- 	struct fastrpc_ioctl_capability cap = {0};
-@@ -2395,6 +2584,8 @@ static long fastrpc_device_ioctl(struct file *file, unsigned int cmd,
+@@ -2079,6 +2125,9 @@ static int fastrpc_internal_control(struct fastrpc_user *fl,
+ 	case FASTRPC_CONTROL_SMMU:
+ 		fl->sharedcb = cp->smmu.sharedcb;
  		break;
- 	case FASTRPC_IOCTL_INIT_ATTACH:
- 		err = fastrpc_init_attach(fl, ROOT_PD);
-+		if (!err)
-+			fastrpc_send_cpuinfo_to_dsp(fl);
- 		break;
- 	case FASTRPC_IOCTL_INIT_ATTACH_SNS:
- 		err = fastrpc_init_attach(fl, SENSORS_PD);
-@@ -2615,6 +2806,7 @@ static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
- 		err = fastrpc_device_register(rdev, data, secure_dsp, domains[domain_id]);
- 		if (err)
- 			goto fdev_error;
-+		data->cpuinfo_todsp = FASTRPC_CPUINFO_DEFAULT;
- 		break;
- 	case CDSP_DOMAIN_ID:
- 		data->unsigned_support = true;
-@@ -2626,6 +2818,7 @@ static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
- 		err = fastrpc_device_register(rdev, data, false, domains[domain_id]);
- 		if (err)
- 			goto fdev_error;
-+		data->cpuinfo_todsp = FASTRPC_CPUINFO_EARLY_WAKEUP;
- 		break;
++	case FASTRPC_CONTROL_RPC_POLL:
++		err = fastrpc_manage_poll_mode(fl, cp->lp.enable, cp->lp.latency);
++		break;
  	default:
- 		err = -EINVAL;
-@@ -2668,10 +2861,12 @@ static void fastrpc_notify_users(struct fastrpc_user *user)
- 	spin_lock(&user->lock);
- 	list_for_each_entry(ctx, &user->pending, node) {
- 		ctx->retval = -EPIPE;
-+		ctx->is_work_done = true;
- 		complete(&ctx->work);
- 	}
- 	list_for_each_entry(ctx, &user->interrupted, node) {
- 		ctx->retval = -EPIPE;
-+		ctx->is_work_done = true;
- 		complete(&ctx->work);
- 	}
- 	spin_unlock(&user->lock);
-@@ -2708,31 +2903,73 @@ static void fastrpc_rpmsg_remove(struct rpmsg_device *rpdev)
- 	fastrpc_channel_ctx_put(cctx);
- }
- 
-+static void fastrpc_notify_user_ctx(struct fastrpc_invoke_ctx *ctx, int retval,
-+		u32 rsp_flags, u32 early_wake_time)
-+{
-+	ctx->retval = retval;
-+	ctx->rsp_flags = (enum fastrpc_response_flags)rsp_flags;
-+	switch (rsp_flags) {
-+	case NORMAL_RESPONSE:
-+	case COMPLETE_SIGNAL:
-+		/* normal and complete response with return value */
-+		ctx->is_work_done = true;
-+		complete(&ctx->work);
-+		break;
-+	case USER_EARLY_SIGNAL:
-+		/* user hint of approximate time of completion */
-+		ctx->early_wake_time = early_wake_time;
-+		break;
-+	case EARLY_RESPONSE:
-+		/* rpc framework early response with return value */
-+		complete(&ctx->work);
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
- static int fastrpc_rpmsg_callback(struct rpmsg_device *rpdev, void *data,
- 				  int len, void *priv, u32 addr)
- {
- 	struct fastrpc_channel_ctx *cctx = dev_get_drvdata(&rpdev->dev);
- 	struct fastrpc_invoke_rsp *rsp = data;
-+	struct fastrpc_invoke_rspv2 *rspv2 = NULL;
- 	struct fastrpc_invoke_ctx *ctx;
- 	unsigned long flags;
- 	unsigned long ctxid;
-+	u32 rsp_flags = 0;
-+	u32 early_wake_time = 0;
- 
- 	if (len < sizeof(*rsp))
- 		return -EINVAL;
- 
-+	if (len >= sizeof(*rspv2)) {
-+		rspv2 = data;
-+		if (rspv2) {
-+			early_wake_time = rspv2->early_wake_time;
-+			rsp_flags = rspv2->flags;
-+		}
-+	}
- 	ctxid = ((rsp->ctx & FASTRPC_CTXID_MASK) >> 4);
- 
- 	spin_lock_irqsave(&cctx->lock, flags);
- 	ctx = idr_find(&cctx->ctx_idr, ctxid);
--	spin_unlock_irqrestore(&cctx->lock, flags);
- 
- 	if (!ctx) {
--		dev_err(&rpdev->dev, "No context ID matches response\n");
--		return -ENOENT;
-+		dev_info(&cctx->rpdev->dev, "Warning: No context ID matches response\n");
-+		spin_unlock_irqrestore(&cctx->lock, flags);
-+		return 0;
- 	}
- 
--	ctx->retval = rsp->retval;
--	complete(&ctx->work);
-+	if (rspv2) {
-+		if (rspv2->version != FASTRPC_RSP_VERSION2) {
-+			dev_err(&cctx->rpdev->dev, "Incorrect response version %d\n", rspv2->version);
-+			spin_unlock_irqrestore(&cctx->lock, flags);
-+			return -EINVAL;
-+		}
-+	}
-+	fastrpc_notify_user_ctx(ctx, rsp->retval, rsp_flags, early_wake_time);
-+	spin_unlock_irqrestore(&cctx->lock, flags);
- 
- 	/*
- 	 * The DMA buffer associated with the context cannot be freed in
+ 		err = -EBADRQC;
+ 		break;
 -- 
 2.7.4
 
