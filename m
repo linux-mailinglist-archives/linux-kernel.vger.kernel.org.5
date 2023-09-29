@@ -2,83 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B99497B3AC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 21:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912FA7B3ACE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 21:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbjI2Tp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 15:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38498 "EHLO
+        id S232968AbjI2TxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 15:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232985AbjI2TpZ (ORCPT
+        with ESMTP id S229508AbjI2Tw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 15:45:25 -0400
-Received: from mail-oa1-f69.google.com (mail-oa1-f69.google.com [209.85.160.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF43B4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 12:45:20 -0700 (PDT)
-Received: by mail-oa1-f69.google.com with SMTP id 586e51a60fabf-1d66b019a27so30652939fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 12:45:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696016719; x=1696621519;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uOUbdmuYhfXA8PXd4YARC5tF6kjo7P/y7HVDRuq7ymQ=;
-        b=VO5aehqLYa5nzHmoTnh8DZVd1pfVI6BaCdWy0t26JI8ADpWTvrkurx1zQUJS9jtKqn
-         MwYepwVd8+w/r7D5YsR+cD47JiOEAdtlgnfbTGRlg6CybHFOLsk4zS2+Uf2+1v9ycWRW
-         v4B+nzw4gPCy0orlx5FO+EcIVQtpINVowM1Qbmva1mKrQyKnIaaSGIKSvk/BLA1IiRtG
-         g0PJD4xIgopaH3RG9TzDRkwUSfWqnr5WViVsw4zpVhIZ1fNosdEgWXbcxSmiYfvbWqRx
-         PyXp/AXD/bi24imC6YEA4YrWZYgjRCsy3mXuGOat6cS2yAypYYZ5Tl/VURTI7LGF33Qx
-         ZedA==
-X-Gm-Message-State: AOJu0Yy6ym75koutkfBKAfBuTM9BaQox4Ju6R5S9bQ+QlcpIrOC8Hjik
-        a054V0Lds2l+NyLH+3DKm2MN/+/GEbJZ3byCP+yf1IO5azey
-X-Google-Smtp-Source: AGHT+IFYMqItjJEVGHOIHmUPeuMNaMxy8KqwKD+rwjOwwTOlXsRSXiwCv6oua1+5pQPktR4BQVSd+yRH6/cIOImXUzqYibBfr/5x
+        Fri, 29 Sep 2023 15:52:58 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999EBB4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 12:52:56 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id 5B7C0320024A;
+        Fri, 29 Sep 2023 15:52:54 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Fri, 29 Sep 2023 15:52:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1696017173; x=1696103573; bh=Xnud7i5mgK2eh+mvhdn41o9zzX9PrdtiIrm
+        +V6iN9Ac=; b=LETLOekAVF6F970qHbuvW17gVSn4E4NspDqbmHAPksHJ5BNT2Xb
+        LhpfDpWBwiR+Ajjp0qexs2NtpACv2ACWbpdoIsOGRtZC1Y/lDrAkil/fiPT+ZHGf
+        nYGVVV/a80owmQKh0lWZnZLHM5ctBNa3XZdccmY9YpW3xYOi/gM6GZyuK1TRBVDm
+        8uwL2y2L1YKDFWozuyNWvXHijQYlNhYVDkhWiZIlIK9+CVdJRGzggGqMRS0BgfK6
+        OaNXBxv08HH9nzVt7cmszTD4rh6AQaoZOtJxmOsBCArTWI7M6gVsufPCOq3wS+fn
+        BCU+R8NqmNncsWhf9gE7Suis4WiAbFFkKcA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1696017173; x=1696103573; bh=Xnud7i5mgK2eh+mvhdn41o9zzX9PrdtiIrm
+        +V6iN9Ac=; b=Mq5thkXuxCuBCKOFim/mtAJSIub9suLEpKOAW5FnU6rofegxxfA
+        XbhKFW/7alwyo3OoaVWtCMbYslPoLrGDQAWHlkXt1wWP6kZuLuyJaJalX9fbxuYX
+        WLI3C33Wny7TJYjWRJ0KX3oQCfep/X4PjWkKJfvTUyMo3qaXqMfx5lspwjZsLTj+
+        +Z83LoETzZv+3iM3ovD1bDfFFXM/ua8Jkn7LwtMSztBy57iEy+rH+s7hSU3dBkYN
+        WktIuivEM3aLqEkh2Uki+iF3Vy36t3eHvU4DCJdCTDb8S7ASoA9CNEbMAiTAJvjv
+        4KsRjtSskVgnmnbYnS0OX1BUoUC/4QNzCMA==
+X-ME-Sender: <xms:FCsXZaDDQeGBSrz6rNVPDOnfQvoxmyTqOuS3Dt5bOib5fr20HSooQA>
+    <xme:FCsXZUgnOF7J_8lSM-SHSMW7VOCDQPUVa1-tGmtPv_IrM8AGWV1ngOucPebR4wdZA
+    Xi0Jxdc7OE1y3uqB3Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrtdefucetufdoteggodetrfdotffvucfrrh
+    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
+    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
+    epofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdetrhhnugcu
+    uegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtthgvrh
+    hnpefgkeeuleegieeghfduudeltdekfeffjeeuleehleefudettddtgfevueeffeeigeen
+    ucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:FCsXZdnB8y5M7xcddh9XInbhtgJjcMX_Vpb6C3VECfpMU3SgectvTA>
+    <xmx:FCsXZYzr4SSYAwr7mg5EzFYMW10qCKYceey8rcnDkd4y2afks6q59A>
+    <xmx:FCsXZfTWJHcpiHWDLOS-hMoFP9WaDhuHlto0s32-lqK9mYWdnRS6Pg>
+    <xmx:FSsXZQLGCvnayApJY9cqqbOLnoI2VxMMLqYIGWgh4dcN6p0MzVrwrg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 4952BB60089; Fri, 29 Sep 2023 15:52:52 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:98ae:b0:1b0:9643:6f69 with SMTP id
- eg46-20020a05687098ae00b001b096436f69mr1969651oab.4.1696016719665; Fri, 29
- Sep 2023 12:45:19 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 12:45:19 -0700
-In-Reply-To: <00000000000021dc2806031ad901@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001be691060684aa2c@google.com>
-Subject: Re: [syzbot] [wireguard?] INFO: rcu detected stall in
- wg_ratelimiter_gc_entries (2)
-From:   syzbot <syzbot+c1cc0083f159b67cb192@syzkaller.appspotmail.com>
-To:     Jason@zx2c4.com, daniel.wippermann@resol.de, davem@davemloft.net,
-        edumazet@google.com, hdanton@sina.com, jason@zx2c4.com,
-        jhs@mojatatu.com, jiri@nvidia.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, pctammela@mojatatu.com,
-        syzkaller-bugs@googlegroups.com, victor@mojatatu.com,
-        vladimir.oltean@nxp.com, wireguard@lists.zx2c4.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Message-Id: <edc3a774-adc0-4873-8ebe-a346b51cb9ca@app.fastmail.com>
+In-Reply-To: <CA+-6iNwmkV0PagHehOhnYxOjwURhXZy-GnVzhkBL+9YaGMRmgQ@mail.gmail.com>
+References: <20230926175208.9298-1-james.quinlan@broadcom.com>
+ <20230926175208.9298-2-james.quinlan@broadcom.com>
+ <CACRpkdYGPpUUCqmJLT4t+6CNOOmRAh_vYPSPK1SWy+tNycnSqQ@mail.gmail.com>
+ <CA+-6iNwkegPBxeksgNntrP1Cr5Edk5Q4o660NCZjKo9s8z3OOQ@mail.gmail.com>
+ <ac1acda2-7d90-44e3-8931-f2a73fa16b15@app.fastmail.com>
+ <CA+-6iNwj3qUPO99zTCimywyC9sV2aRYw3-TuVQTP8NYWD3LaLg@mail.gmail.com>
+ <1f08bd12-0ac4-43ea-b058-7836521eec12@app.fastmail.com>
+ <CA+-6iNwmkV0PagHehOhnYxOjwURhXZy-GnVzhkBL+9YaGMRmgQ@mail.gmail.com>
+Date:   Fri, 29 Sep 2023 15:52:17 -0400
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Jim Quinlan" <james.quinlan@broadcom.com>
+Cc:     "Linus Walleij" <linus.walleij@linaro.org>,
+        "Christoph Hellwig" <hch@lst.de>,
+        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
+        "Russell King" <linux@armlinux.org.uk>,
+        "Geert Uytterhoeven" <geert+renesas@glider.be>,
+        "Russell King" <rmk+kernel@armlinux.org.uk>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Sebastian Reichel" <sebastian.reichel@collabora.com>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        "Eric DeVolder" <eric.devolder@oracle.com>,
+        "Nathan Chancellor" <nathan@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        "Christophe Leroy" <christophe.leroy@csgroup.eu>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "Claire Chang" <tientzu@chromium.org>,
+        "Robin Murphy" <robin.murphy@arm.com>
+Subject: Re: [PATCH v1 1/1] ARM: Select DMA_DIRECT_REMAP to fix restricted DMA
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Fri, Sep 29, 2023, at 15:24, Jim Quinlan wrote:
+> On Thu, Sep 28, 2023 at 11:17=E2=80=AFAM Arnd Bergmann <arnd@arndb.de>=
+ wrote:
+>> On Thu, Sep 28, 2023, at 10:00, Jim Quinlan wrote:
+>
+> Our RC is definitely not coherent with the ARM/ARM64 caches.
 
-commit da71714e359b64bd7aab3bd56ec53f307f058133
-Author: Jamal Hadi Salim <jhs@mojatatu.com>
-Date:   Tue Aug 22 10:12:31 2023 +0000
+Ok, thanks for the confirmation.
 
-    net/sched: fix a qdisc modification with ambiguous command request
+>> It's unlikely but not impossible, as the driver has some
+>> unusual constructs, using a lot of coherent mappings that
+>> might otherwise be streaming mappings, and relying on
+>> dma_sync_single_for_device(..., DMA_BIDIRECTIONAL) for other
+>> data, but without the corresponding dma_sync_single_for_cpu().
+>> If all the testing happens on x86, this might easily lead
+>> to a bug that only shows up on non-coherent systems but
+>> is never seen during testing.
+>>
+>> If the problem is not the "dma-coherent" property, can you
+>> double-check if using a different PCIe device works, or narrow
+>> down which specific buffer you saw get corrupted?
+>
+> I've done some testing, below are the results.  The new two devices, a
+> USB controller
+> and an M2 NVMe stick, behave the same as iwlwifi.
+>
+> Note that I'm not advocating that "select DMA_DIRECT_REMAP" is the
+> anser, I'm just showing that it fixes my examples.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=129c464e680000
-start commit:   8a519a572598 net: veth: Page pool creation error handling ..
-git tree:       net
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3e670757e16affb
-dashboard link: https://syzkaller.appspot.com/bug?extid=c1cc0083f159b67cb192
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=129f8553a80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1205baada80000
+Ok, so I think we can stop looking at the device drivers for
+bugs then.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+> VER      PCI-DEV                       <--------- RESTRICTED DMA -----=
+---->
+>                       ARM64    ARM     ARM64    ARM    ARM+DMA_DIRECT_=
+REMAP
+> 5.15     iwlwifi        P       P        P       F             P
+> 5.15     nvme           P       P        P       F             P
+> 5.15     usb            P       P        P       F             P
+>
+> 6.1      iwlwifi        P       P        P       F             P
+> 6.1      nvme           P       P        P       F             P
+> 6.1      usb            P        P       P       F             P
+>
+> Upstrm   iwlwifi        P       P        F       F             F
+> Upstrm   nvme           P       P        F       F             F
+> Upstrm   usb            P       P        F       F             F
+>                       ARM64    ARM     ARM64    ARM    ARM+DMA_DIRECT_=
+REMAP
+> VER      PCI-DEV                       <--------- RESTRICTED DMA -----=
+---->
+>
+> LEGEND:
+>   P       :=3D pass, driver probe and some functional test performed
+>   F       :=3D fail, usually when probe is called; impossible to do
+> functional test
+>   Upstrm  :=3D 633b47cb009d "Merge tag 'scsi-fixes' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi"
+>
+>   iwlwifi :=3D 7260 Wifi 8086:08b1
+>   nvme    :=3D 1e95:1007
+>   usb     :=3D Supahub, 1912:0014
 
-#syz fix: net/sched: fix a qdisc modification with ambiguous command request
+Thanks for the thorough testing, that looks very useful, even though
+I don't have an answer immediately. Maybe Robin can see something
+here that I don't.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+It's particularly interesting how arm64 only started failing
+on fairly recent kernels, so if nothing else helps you could
+always try bisecting the history between 6.1 and 633b47cb009d,
+hoping that the commit that broke it points us to the arm32
+problem.
+
+The only change I see in that time frame that seems related
+is 7bd6680b47fa ("Revert "Revert "arm64: dma: Drop cache
+invalidation from arch_dma_prep_coherent()"""), so you could
+start by reverting that. However, it's probably something
+else since this is for the coherent mappings, not the
+streaming ones.
+
+       Arnd
