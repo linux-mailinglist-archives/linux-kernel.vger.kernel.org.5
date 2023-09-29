@@ -2,173 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5B07B32D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9577B32DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233116AbjI2MyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 08:54:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37190 "EHLO
+        id S233197AbjI2Myb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 08:54:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232779AbjI2MyA (ORCPT
+        with ESMTP id S232779AbjI2Mya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:54:00 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 204DC94;
-        Fri, 29 Sep 2023 05:53:59 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id d2e1a72fcca58-692c02adeefso8807529b3a.3;
-        Fri, 29 Sep 2023 05:53:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695992038; x=1696596838; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=76gM6BDUUWAlgjRd9QMQTyUL0C7Q49QbZ5DAn9QkE6g=;
-        b=bzr1WQ5oRYwSU7xEjtnNtHQKpsZHkP7fBgz7RA+3dMh9uy18f2xMoV58zaLiK50gDk
-         e09O1AsS2aXJ6f895NO9rXdJYaf1krHDtcxKeTbjfaz8XH6aE+Gg9qIqfPzgvPMlRsU5
-         rX9aG8Y+nirg/SANdDZ+tPs/W+++U8OuCOVprpW2bFXg2GU9P00F5X+WMy3szh4GzVrB
-         F3uuwfxiZ4689xZapQTDkxosn5w/e+IPqxfFJFIt6nUJvNl4PezfWTglJFKH2BfZnWcu
-         ZL0ZNiS6ByBtYw64Kzqy4pYka+dlsZuffBI40mcNGG78LlzfqIn7CkJsWbeT/EuegYzS
-         Hk9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695992038; x=1696596838;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=76gM6BDUUWAlgjRd9QMQTyUL0C7Q49QbZ5DAn9QkE6g=;
-        b=FOfbSKO0aYLZs9o0Nk1TEmsViqUHirjNdQpyBjq5hAMFKbfQOZkWMScgEHvwwotRI2
-         uM4Ro1PNGxyyjSJFEnddyiiP8Ww+l+Mli2BaocRoMsNKDjHYXkttjvbsGQxC7DJt58Cn
-         u2M/ko4D3eycX00f0U/eOCVeIyugdmpm798U2tBMOHb1XXcie85ySXPpLdyDSyOqKTOv
-         PBf/LL7f4bLX40KhbRS5/ySK6fslqgyqZOyCm2Rno2xAFBamz8VASR0JkjnIlxemRrVx
-         Y3M0fd6BtvpiCM/76ne4Q2j2A8T1jthVY5J7lvOfxPk5qMB3VG40M97bX3tAYDfS/hCy
-         ZUKg==
-X-Gm-Message-State: AOJu0YwXKuBHwAHqOih3aHh3glWa5YR9ayj54YWoc5j2afwSRr4bvojp
-        pm9LXHzgRFBWtr5wJRIg4fI=
-X-Google-Smtp-Source: AGHT+IE2N53vnfZ9QHFbyMOxxgoiNewsUxoq53+ellAryOcJ/cfMO0iR6bshi22LSzmRUbusGzGTFQ==
-X-Received: by 2002:a05:6a00:22c3:b0:68e:2822:fb36 with SMTP id f3-20020a056a0022c300b0068e2822fb36mr4011566pfj.8.1695992038070;
-        Fri, 29 Sep 2023 05:53:58 -0700 (PDT)
-Received: from swarup-virtual-machine.localdomain ([171.76.87.78])
-        by smtp.gmail.com with ESMTPSA id do17-20020a056a004a1100b00692b0d413c8sm12473465pfb.197.2023.09.29.05.53.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 05:53:57 -0700 (PDT)
-From:   Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
-To:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        swarupkotikalapudi@gmail.com
-Subject: [PATCH] selftests: capabilities: namespace create varies for root and normal user
-Date:   Fri, 29 Sep 2023 18:23:48 +0530
-Message-Id: <20230929125348.13302-1-swarupkotikalapudi@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 29 Sep 2023 08:54:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4089D1A4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:54:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C57D9C433C7;
+        Fri, 29 Sep 2023 12:54:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695992067;
+        bh=tRnpRfGBeMRp6IfZrKTVrBAhPucr7GxiZi16rzQMy/U=;
+        h=From:Date:Subject:To:Cc:From;
+        b=PBdROqmNKMZivlZmtimCUCf3QH4ML15A21US8hDmDSA8l3sPo8OhWcyOmIvHxtck+
+         sVkggJOMiIkd5zHAyuu4dsAXwmrLX/83QkRcBentBUfci+nDzLYJG6tSwpoMFKNKi5
+         KLo1aqK+VR/WNaXsL6apyvth2QPLP9I4MprrHgoE/nuEhxkRsjbQd1303lSZvx8I7D
+         QVTSTk5AJO/TT1JUeQb+ml+hMyLtmR5LG8v6KsEPqCjRdeeEFUMhtwhntqcWj0gYC0
+         KDab9T8wZEj/s/2GmJaGXwyLiBKGnGtG/wfHtU9LVwT5ayyjFk/98RBJUZz/P967jh
+         bHMxlubh3ZaYw==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Fri, 29 Sep 2023 14:54:19 +0200
+Subject: [PATCH] drm/bridge: adv7511: Convert to use maple tree register
+ cache
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230929-drm-adv7511-v1-1-b871b28ee594@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAPrIFmUC/x2MQQqAIBAAvyJ7TtANKftKdJBcaw9ZKEgg/j3pO
+ AMzFTIlpgyLqJCocOY7dtCDgP108SDJvjOgwlFZtNKnSzpfJqO1RG+6Qh1mh9CLJ1Hg97+tW2s
+ fxMjI6l0AAAA=
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1372; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=tRnpRfGBeMRp6IfZrKTVrBAhPucr7GxiZi16rzQMy/U=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlFskAjFhsjZWz0XIa6I5wBGauk9FhkkAthyvLS
+ 3FzaycQku6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRbJAAAKCRAk1otyXVSH
+ 0JiyB/wOZy4CMdhPJKQhW70zxNq/FfxPnYM4DDO2HtKSVfAsdfz1uBuqw5FwWSuCHf4kMR3QEEY
+ /h2/b+kVBYuYe5xB7U7RVzOqJ3YAk7k78NjWKmqxByH+2iZfc3CmEhLLo04dir4ExdvOxmDiycA
+ t6QuZVirLXBkz2UDd0fVLEUUZ43BkUGylC2qrw66pz3BZt7tmju2fUrdJ0vGn5l4kbk75o+5AVl
+ 5lI4VLX2Lv9RsSFqgZe5lUk7YJ8IBTGLjvuuRkxjHrN7/hMz59MG9Bz/zDtk+NBq2ae/QKf6MgC
+ ldk+SwQuQ8+Z7VjaCQqAOFCAQmclsWyFQTJ0bMlU3WjAU+fT
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change namespace creation for root and non-root
-user differently in create_and_enter_ns() function
+The maple tree register cache is based on a much more modern data structure
+than the rbtree cache and makes optimisation choices which are probably
+more appropriate for modern systems than those made by the rbtree cache.
 
-Test result with root user:
-$sudo make  TARGETS="capabilities" kselftest
- ...
- TAP version 13
- 1..1
- timeout set to 45
- selftests: capabilities: test_execve
- TAP version 13
- 1..12
- [RUN]       +++ Tests with uid == 0 +++
- [NOTE]      Using global UIDs for tests
- [RUN]       Root => ep
- ...
- ok 12 Passed
- Totals: pass:12 fail:0 xfail:0 xpass:0 skip:0 error:0
- ==================================================
- TAP version 13
- 1..9
- [RUN]       +++ Tests with uid != 0 +++
- [NOTE]      Using global UIDs for tests
- [RUN]       Non-root => no caps
- ...
- ok 9 Passed
- Totals: pass:9 fail:0 xfail:0 xpass:0 skip:0 error:0
-
-Test result without root or normal user:
-$make  TARGETS="capabilities" kselftest
- ...
- timeout set to 45
- selftests: capabilities: test_execve
- TAP version 13
- 1..12
- [RUN]       +++ Tests with uid == 0 +++
- [NOTE]      Using a user namespace for tests
- [RUN]       Root => ep
- validate_cap:: Capabilities after execve were correct
- ok 1 Passed
- Check cap_ambient manipulation rules
- ok 2 PR_CAP_AMBIENT_RAISE failed on non-inheritable cap
- ok 3 PR_CAP_AMBIENT_RAISE failed on non-permitted cap
- ok 4 PR_CAP_AMBIENT_RAISE worked
- ok 5 Basic manipulation appears to work
- [RUN]       Root +i => eip
- validate_cap:: Capabilities after execve were correct
- ok 6 Passed
- [RUN]       UID 0 +ia => eipa
- validate_cap:: Capabilities after execve were correct
- ok 7 Passed
- ok 8 # SKIP SUID/SGID tests (needs privilege)
- Planned tests != run tests (12 != 8)
- Totals: pass:7 fail:0 xfail:0 xpass:0 skip:1 error:0
- ==================================================
- TAP version 13
- 1..9
- [RUN]       +++ Tests with uid != 0 +++
- [NOTE]      Using a user namespace for tests
- [RUN]       Non-root => no caps
- validate_cap:: Capabilities after execve were correct
- ok 1 Passed
- Check cap_ambient manipulation rules
- ok 2 PR_CAP_AMBIENT_RAISE failed on non-inheritable cap
- ok 3 PR_CAP_AMBIENT_RAISE failed on non-permitted cap
- ok 4 PR_CAP_AMBIENT_RAISE worked
- ok 5 Basic manipulation appears to work
- [RUN]       Non-root +i => i
- validate_cap:: Capabilities after execve were correct
- ok 6 Passed
- [RUN]       UID 1 +ia => eipa
- validate_cap:: Capabilities after execve were correct
- ok 7 Passed
- ok 8 # SKIP SUID/SGID tests (needs privilege)
- Planned tests != run tests (9 != 8)
- Totals: pass:7 fail:0 xfail:0 xpass:0 skip:1 error:0
-
-Signed-off-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- tools/testing/selftests/capabilities/test_execve.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/capabilities/test_execve.c b/tools/testing/selftests/capabilities/test_execve.c
-index df0ef02b4036..8236150d377e 100644
---- a/tools/testing/selftests/capabilities/test_execve.c
-+++ b/tools/testing/selftests/capabilities/test_execve.c
-@@ -96,11 +96,7 @@ static bool create_and_enter_ns(uid_t inner_uid)
- 	outer_uid = getuid();
- 	outer_gid = getgid();
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+index 2611afd2c1c1..d518de88b5c3 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
++++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+@@ -121,7 +121,7 @@ static const struct regmap_config adv7511_regmap_config = {
+ 	.val_bits = 8,
  
--	/*
--	 * TODO: If we're already root, we could skip creating the userns.
--	 */
--
--	if (unshare(CLONE_NEWNS) == 0) {
-+	if (outer_uid == 0 && unshare(CLONE_NEWNS) == 0) {
- 		ksft_print_msg("[NOTE]\tUsing global UIDs for tests\n");
- 		if (prctl(PR_SET_KEEPCAPS, 1, 0, 0, 0) != 0)
- 			ksft_exit_fail_msg("PR_SET_KEEPCAPS - %s\n",
+ 	.max_register = 0xff,
+-	.cache_type = REGCACHE_RBTREE,
++	.cache_type = REGCACHE_MAPLE,
+ 	.reg_defaults_raw = adv7511_register_defaults,
+ 	.num_reg_defaults_raw = ARRAY_SIZE(adv7511_register_defaults),
+ 
+@@ -1068,7 +1068,7 @@ static const struct regmap_config adv7511_cec_regmap_config = {
+ 	.val_bits = 8,
+ 
+ 	.max_register = 0xff,
+-	.cache_type = REGCACHE_RBTREE,
++	.cache_type = REGCACHE_MAPLE,
+ 	.volatile_reg = adv7511_cec_register_volatile,
+ };
+ 
+
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20230929-drm-adv7511-2d592921f8a2
+
+Best regards,
 -- 
-2.34.1
+Mark Brown <broonie@kernel.org>
 
