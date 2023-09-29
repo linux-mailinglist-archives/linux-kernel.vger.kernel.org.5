@@ -2,115 +2,376 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B25A37B2E57
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC18F7B2E59
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbjI2IsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 04:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40408 "EHLO
+        id S232621AbjI2ItI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 04:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbjI2IsS (ORCPT
+        with ESMTP id S231774AbjI2ItH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 04:48:18 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67DD3AC;
-        Fri, 29 Sep 2023 01:48:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695977296; x=1727513296;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=3M7aFFgj+OG/B4ua2iQPHy8g+N3GH2j+D8XnoTVg0ek=;
-  b=Zv2TUz9IjnJ0nLmVdkHDEt2VUyzYgHliYu+IjSjGSW0OtZPG6RLznTHh
-   gsBKdiaHJPFNIBf9ZBv12BjuFZjhWI4VbGQi2yRUO/ZvyVcHd8qiA0UJ6
-   E4+vTKDDtMDlOxa6CuGhfMLJXwebNVQUM5/N6QNuJQF0Y4/H8YSWbUVT5
-   Zn69Jj/NzQPb9auLG8SR26d0PbAkph62ImK4Po/2N42OuwrgqRuFVwL6+
-   xct5AtO/+C/jHxvvEziTGhJjA6FSkZnn3AmhgMw9XaK7SwVWkkQpusqjX
-   5VX54tiYZhyzzusp1vy/ESjJJ4md+VY+gaJm8LVT6+305LjU7oA2BL5Ml
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="448753071"
-X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
-   d="scan'208";a="448753071"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 01:48:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="1080861194"
-X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
-   d="scan'208";a="1080861194"
-Received: from mylly.fi.intel.com (HELO [10.237.72.66]) ([10.237.72.66])
-  by fmsmga005.fm.intel.com with ESMTP; 29 Sep 2023 01:48:11 -0700
-Message-ID: <1d56ceef-6573-43b9-a050-124c341a0698@linux.intel.com>
-Date:   Fri, 29 Sep 2023 11:48:10 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] i2c: designware: Fix corrupted memory seen in the ISR
-To:     Wolfram Sang <wsa@kernel.org>,
-        Jan Bottorff <janb@os.amperecomputing.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Yann Sionneau <ysionneau@kalrayinc.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Yann Sionneau <yann@sionneau.net>,
-        Will Deacon <will@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ZQl1zwVkx9n2MPvr@shikoro>
- <da400d3e-a357-1ae8-cb92-728cc4974b67@kalrayinc.com>
- <ZQm1UyZ0g7KxRW3a@arm.com>
- <cde7e2fc-2e13-4b82-98b3-3d3a52c4c185@os.amperecomputing.com>
- <p7wl7fk4cdyhvw2mfsa6sfc7dhfls3foplmzwj6pzstargt2oh@33zuuznup2gq>
- <ZQq2cT+/QCenR5gx@shikoro>
- <ba6d4378-b646-4514-3a45-4b6c951fbb9c@kalrayinc.com>
- <9219ad29-b9a3-4f07-81b5-43b4b6d9d178@os.amperecomputing.com>
- <d65lwrkji3rvw6r4jdcumo4zu3hbu6zpv6xq73hw6hcshvhtkw@jvuohb3f3loo>
- <3a305e74-2235-47ab-8564-0c594f24dc0a@os.amperecomputing.com>
- <ZRSEntqne/1y1ozq@shikoro>
+        Fri, 29 Sep 2023 04:49:07 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF7ABF
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:49:04 -0700 (PDT)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T8K5Hk021418;
+        Fri, 29 Sep 2023 08:48:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=hax/gXeddJZ69gYN/iUwd43/4stSZKTf2sElBWkn7J0=;
+ b=nOp5wae5FpjD/HUi4SQs167GyByI7i347tawIkZ4xvVtR6dmPc07Ouyffvr4I9QWZN+S
+ 828cqwohn6J4qxoPKLu0b8vYVVh3+GlSI9ag6dNfPdKapM2F8B/+xDbe2A3GJNuYD73K
+ XsuiH7Yxpn/BaDC/0DqlQFSnOK8lZx+RQ8qcjgvaDjDL7lGKWAEMYV/8BrBU7oj5H5uD
+ cKH8LjjtvV8qCcZ36/JB76bqHpTxd+QTl3J6z8cysVne3hRUChd/RC7YUAoIxqQ4eyFw
+ 6GY2cp34XqpsfI0HWlGVZDiH0CZGvmLzEhBIisHeT6zZD2nPsZq79pOtTUgC2/Rx0B3q AA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tdsj0trd3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 08:48:44 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38T8gI9O031866;
+        Fri, 29 Sep 2023 08:48:44 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tdsj0trcq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 08:48:44 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38T6YGmq011019;
+        Fri, 29 Sep 2023 08:48:43 GMT
+Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3tabum37v1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 08:48:43 +0000
+Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
+        by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 38T8mg6V918172
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 Sep 2023 08:48:42 GMT
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 488D258050;
+        Fri, 29 Sep 2023 08:48:42 +0000 (GMT)
+Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA9D958045;
+        Fri, 29 Sep 2023 08:48:21 +0000 (GMT)
+Received: from [9.171.6.196] (unknown [9.171.6.196])
+        by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Fri, 29 Sep 2023 08:48:21 +0000 (GMT)
+Message-ID: <3d62f900-7c2a-43ae-9451-254fb2517c10@linux.vnet.ibm.com>
+Date:   Fri, 29 Sep 2023 14:18:20 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4] sched/topology: change behaviour of sysctl
+ sched_energy_aware based on the platform
 Content-Language: en-US
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <ZRSEntqne/1y1ozq@shikoro>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+To:     Pierre Gondois <pierre.gondois@arm.com>
+Cc:     linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
+        srikar@linux.vnet.ibm.com, mgorman@techsingularity.net,
+        mingo@kernel.org, yu.c.chen@intel.com, tim.c.chen@linux.intel.com,
+        pauld@redhat.com, mingo@redhat.com, peterz@infradead.org,
+        vincent.guittot@linaro.org, vschneid@redhat.com,
+        qperret@google.com, Dietmar Eggemann <dietmar.eggemann@arm.com>
+References: <20230926100046.405188-1-sshegde@linux.vnet.ibm.com>
+ <caab4d10-3ed6-faa7-5435-3086f3878537@arm.com>
+ <d054e362-4a11-ee36-ddb6-870d88278e78@linux.vnet.ibm.com>
+ <8ac1576c-909b-ec6b-930d-0683ca288bf9@arm.com>
+ <46353945-fced-9b69-b334-3b7ae50c957c@linux.vnet.ibm.com>
+ <a226058c-5a14-fc57-c371-7db3d96f9b20@arm.com>
+ <4534b7b5-7127-27d9-8264-6703497dcb81@arm.com>
+From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+In-Reply-To: <4534b7b5-7127-27d9-8264-6703497dcb81@arm.com>
+Content-Type: text/plain; charset=UTF-8
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: H1QMIsU8XAvOOipx3AuC1X7VeAKEXjz4
+X-Proofpoint-GUID: O7MJH2u9Y3Kl_c6R3vEHnW-LvWKbXaXi
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_07,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ adultscore=0 clxscore=1015 priorityscore=1501 bulkscore=0 mlxlogscore=999
+ lowpriorityscore=0 spamscore=0 mlxscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309290073
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/23 22:38, Wolfram Sang wrote:
-> 
->> So my next question, is the change to dw_reg_write something that I should
->> write and submit, or should someone else submit something more generalized,
->> like option 2 above? I don't own the i2c driver, I'm just trying to fix one
->> issue on one processor with minimal risk of breaking something. I don't have
->> the broader view of what's optimal for the whole DesignWare i2c driver. I
->> also don't have any way to test changes on other models of processors.
-> 
-> Well, I guess this is a question for the designware maintainers: do we
-> want this one conversion from *_relaxed to non-relaxed. Or are we
-> playing safe by using non-relaxed all the time. I would suggest the
-> latter because the drivers I look after hardly write registers in a hot
-> path (and not many of them at a time). But you guys know your driver
-> better...
-> 
-Well I don't have any preference (read enough knowledge) either here and 
-I hardly think performance becomes issue in any configuration.
 
-Not a showstopper to this fix nor necessarily need to cover either but 
-one another memory barrier case might be in i2c-slave flows:
 
-1. I2C bus read/write from another host
-2. Interrupt to i2c-designware IP
-    i2c-designware-slave.c: i2c_dw_isr_slave()
-    i2c-core-slave.c: i2c_slave_event()
-    -> irq handler goes to slave backend like i2c-slave-eeprom
-    i2c-slave-eeprom.c: i2c_slave_eeprom_slave_cb()
-3. Shared data between irq handler and process context
-    struct eeprom_data is accessed both from irq handler via 
-i2c_slave_eeprom_slave_cb() and process context via sysfs node handlers 
-i2c_slave_eeprom_bin_read() and i2c_slave_eeprom_bin_write()
+On 9/28/23 3:24 PM, Pierre Gondois wrote:
+> 
+> 
+> On 9/28/23 11:25, Pierre Gondois wrote:
+>> Hello Shrikanth, Dietmar,
+>>
+>> On 9/27/23 19:08, Shrikanth Hegde wrote:
+>>>
+>>>
+>>> On 9/27/23 6:44 PM, Dietmar Eggemann wrote:
+>>>> Ah, BTW s/quentin.perret@arm.com/qperret@google.com
+>>>>
+>>>> On 27/09/2023 10:14, Shrikanth Hegde wrote:
+>>>>>
+>>>>>
+>>>>> On 9/27/23 2:59 AM, Dietmar Eggemann wrote:
+>>>>>> On 26/09/2023 12:00, Shrikanth Hegde wrote:
+>>>>
+>>>> [...]
+>>>>
+>>>>>>> At present, though platform doesn't support EAS, this sysctl
+>>>>>>> returns 1
+>>>>>>> and it ends up calling rebuild of sched domain on write to 1 and
+>>>>>>
+>>>>>> sched domains are not rebuild in this case, i.e.
+>>>>>> partition_sched_domains_locked() does not call
+>>>>>> detach_destroy_domains()
+>>>>>> or build_sched_domains(). Only build_perf_domains() is called which
+>>>>>> bails out if !sysctl_sched_energy_aware or one of the EAS
+>>>>>> conditions is
+>>>>>> not true.
+>>>>>>
+>>>>>
+>>>>> ok. that's because it goes to match1 and match2 right?
+>>>>
+>>>> yes.
+>>>>
+>>>> [...]
+>>>>
+>>>>>>> @@ -231,6 +289,14 @@ static int sched_energy_aware_handler(struct
+>>>>>>> ctl_table *table, int write,
+>>>>>>>            return -EPERM;
+>>>>>>>
+>>>>>>>        ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+>>>>>>> +    if (!sched_is_eas_possible(cpu_active_mask)) {
+>>>>>>
+>>>>>> This is using `cpu_active_mask` so EAS can only be disabled
+>>>>>> system-wide.
+>>>>>>
+>>>>>> So I experimented with an exclusive cpuset setup creating a symmetric
+>>>>>> (cs1) and an asymmetric (cs2) island on my Juno with its cpumask =
+>>>>>> [l B
+>>>>>> B l l l] (l - little CPU, B - Big CPU).
+>>>>>>
+>>>>>> root@juno:~# cd /sys/fs/cgroup/cpuset
+>>>>>> root@juno:/sys/fs/cgroup/cpuset# mkdir cs1
+>>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 1 > cs1/cpuset.cpu_exclusive
+>>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 0 > cs1/cpuset.mems
+>>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 4,5 > cs1/cpuset.cpus
+>>>>>> root@juno:/sys/fs/cgroup/cpuset# mkdir cs2
+>>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 1 > cs2/cpuset.cpu_exclusive
+>>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 0 > cs2/cpuset.mems
+>>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 0-3 > cs2/cpuset.cpus
+>>>>>> root@juno:/sys/fs/cgroup/cpuset# echo 0 > cpuset.sched_load_balance
+>>>>>>
+>>>>>> [ 3021.761278] root_domain 0-3: pd1:{ cpus=1-2 nr_pstate=5 } pd0:{
+>>>>>> cpus=0,3-5 nr_pstate=5 }
+>>>>>>
+>>>>>> root@juno:~# echo 0 > /proc/sys/kernel/sched_energy_aware
+>>>>>>
+>>>>>> log messages:
+>>>>>> ...
+>>>>>> [ 3143.538583] rd 4-5: Disabling EAS
+>>>>>> [ 3143.549569] rd 0-3: Disabling EAS
+>>>>>> [ 3143.560681] sched_energy_set: stopping EAS
+>>>>>> ...
+>>>>>>
+>>>>>> root@juno:~# echo 1 > /proc/sys/kernel/sched_energy_aware
+>>>>>>
+>>>>>> log messages:
+>>>>>> ...
+>>>>>> [ 3223.277521] root_domain 0-3: pd1:{ cpus=1-2 nr_pstate=5 } pd0:{
+>>>>>> cpus=0,3-5 nr_pstate=5 }
+>>>>>> [ 3223.293409] sched_energy_set: starting EAS
+>>>>>>
+>>>>>> Seems still to work correctly.
+>>>>>
+>>>>> I see that can be a issue. using first cpu here check to asymmetric
+>>>>> cpu capacity.
+>>>>> It would have worked here, since the first group had asymmetry. ( l
+>>>>> B B l ).
+>>>>> It wouldn't have worked if the first group had like ( l l ) and
+>>>>> second group has ( l B B l )
+>>>>
+>>>> Yeah, that's true.
+>>>>
+>>>>     sched_is_eas_possible(const struct cpumask *cpu_mask)
+>>>>
+>>>>       !per_cpu(sd_asym_cpucapacity, cpumask_first(cpu_mask));
+>>>>
+>>>> cpusets cs1=[0,5] and cs2=[1-4] as such an example.
+>>>>
+>>>
+>>> right.
+>>>
+>>>>
+>>>>> Instead of cpu_active_mask, I can make use of ndoms_cur and
+>>>>> doms_cur[i] logic to
+>>>>> traverse through possible doms, and if none of the domains have
+>>>>> asymmetric cpu capacity
+>>>>> return false.  Does that look right?
+>>>>
+>>>>     rebuild_sched_domains()
+>>>>
+>>>>       rebuild_sched_domains_locked()
+>>>>
+>>>>         ndoms = generate_sched_domains(&doms, &attr)
+>>>>
+>>>> You would need generate_sched_domains() in
+>>>> sched_energy_aware_handler()?
+>>>>
+>>>
+>>> clearly I didnt think through this. ndoms_cur and doms_cur are
+>>> updated at the end.
+>>> So If EAS is possible at boot, this would fail.
+>>>
+>>>
+>>> What  sched_is_eas_possible needs is if there is asymmetric cpu
+>>> topology.
+>>> Simpler loop of all CPU's and checking if there any of them have
+>>> sd_asym_cpucapacity might do,
+>>> though it goes through all CPU's, Since these functions are not in
+>>> hot path
+>>> So it should not affect any performance. Something like below would
+>>> work?
+>>>
+>>>     bool any_asym_capacity = false;
+>>>
+>>>           /* EAS is enabled for asymmetric CPU capacity topologies. */
+>>>           for_each_cpu(i, cpu_mask) {
+>>>                   if (per_cpu(sd_asym_cpucapacity, i)) {
+>>>                           any_asym_capacity = true;
+>>>                           break;
+>>>                   }
+>>>           }
+>>>           if (!any_asym_capacity) {
+>>>                   if (sched_debug()) {
+>>>                           pr_info("rd %*pbl: Checking EAS, CPUs do
+>>> not have asymmetric capacities\n",
+>>>                                   cpumask_pr_args(cpu_mask));
+>>>                   }
+>>>                   return false;
+>>>           }
+>>>
+>>
+>> FYIW I could reproduce the issue mentioned above, and the suggested bit
+>> seems to solve it.
+>>
+
+Thanks for trying this out. 
+
+>>>
+>>>
+>>>>>> [...]
+>>>>>>
+>>>>>>> @@ -458,6 +487,8 @@ static bool build_perf_domains(const struct
+>>>>>>> cpumask *cpu_map)
+>>>>>>>        return !!pd;
+>>>>>>>
+>>>>>>>    free:
+>>>>>>> +    if (sched_debug())
+>>>>>>> +        pr_warn("rd %*pbl: Disabling EAS",
+>>>>>>> cpumask_pr_args(cpu_map));
+>>>>>>
+>>>>>> Shouldn't this be used in condition `if
+>>>>>> (!sysctl_sched_energy_aware)`?
+>>>>>> Otherwise we have 2 warnings when the other conditions which leads to
+>>>>>> `goto free` aren't met.
+>>>>> Since sched_energy_set has the info messages about start and stop
+>>>>> of EAS, maybe
+>>>>> this debug is not needed. Will remove it. Doing it only `if
+>>>>> (!sysctl_sched_energy_aware)`
+>>>>
+>>>> OK.
+>>>>
+>>>>> also doesn't seem correct, as calling free in this function would
+>>>>> free the perf_domains.
+>>>>
+>>>> But !sched_is_eas_possible() also does `goto free` and in there we we
+>>>> emit pr_info's indicating why EAS isn't possible right now.
+>>>>
+>>>> When issuing a:
+>>>>
+>>>> # echo 0 > /proc/sys/kernel/sched_energy_aware
+>>>>
+>>>> we would see in the logs:
+>>>>
+>>>> ...
+>>>> [  416.325324] rd 0-5: sysctl_sched_energy_aware is N   <-- (*)
+>>>> [  416.337844] sched_energy_set: stopping EAS
+>>>> ...
+>>>>
+>>>> but maybe (*) is not necessary ...
+>>
+>> I m not sure I understand 100% the point, but it seems to me that when
+>> changing sysctl_sched_energy_aware's value, either:
+>> - EAS is not possible, and sched_is_eas_possible() will output the
+>> reason why
+>>     (i.e. "Checking EAS, [...]")
+>> - EAS was deactivated by the user, and it is possible to check the
+>> value of
+>>     sysctl_sched_energy_aware. So there would be no need to have an
+>> additional
+>>     message "Checking EAS, sysclt sched_energy_aware set to N"
+>>
+>> When build_perf_domains() is called while rebuilding the sched
+>> domains, it is also
+>> possible to check sched_energy_aware's value and understand why EAS is
+>> not enabled.
+>>
+>>>
+>>> ok. I think we can add similar info message in
+>>> if(!sysctl_sched_energy_aware) like below?
+>>> Would that be enough?
+>>>
+>>>           if (!sysctl_sched_energy_aware) {
+>>>                   if (sched_debug()) {
+>>>                           pr_info("rd %*pbl: Checking EAS, sysclt
+>>> sched_energy_aware set to N\n",
+>>>                                   cpumask_pr_args(cpu_map));
+>>>                   }
+>>
+>> (No need for brackets here, just in case)
+>>
+>>>                   goto free;
+>>>           }
+>>>
+>>> and remove the below one.
+>>>           if (sched_debug())
+>>>                   pr_warn("rd %*pbl: Disabling EAS",
+>>> cpumask_pr_args(cpu_map));
+>>>
+>>>
+>>> So there will be these "Checking EAS" and if possible, "starting EAS"
+>>> or "stopping EAS" message.
+>>
+>>
+>> I will rebase the patch removing the EM complexity and check it/resend
+>> it,
+>> like this the 2 patches could go together:
+>> https://lore.kernel.org/lkml/20221121094336.3250917-1-pierre.gondois@arm.com/
+> 
+> The patch actually seems to apply cleanly on v6.6-rc3, and the
+> complexity of
+> find_energy_efficient_cpu() seems to be the same as what it was when the
+> patch
+> was sent, so I believe you can:
+> - Rebase your patch on top of it
+> - Provide a pointer to it in the changelog to mention the dependency
+> - Remove this bit in the commit message of your patch:
+> "It takes most of the cases into account except one where EM complexity is
+> too high as the code was bit tricky to separate that."
+> 
+> Regards,
+> Pierre
+
+Ok. I should be able to do this and send out v5 soon. 
