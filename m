@@ -2,118 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1EF7B2D21
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70DD37B2D25
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232756AbjI2Hjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 03:39:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
+        id S232655AbjI2Hmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 03:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232774AbjI2Hjo (ORCPT
+        with ESMTP id S229754AbjI2Hmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 03:39:44 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EDA1A8;
-        Fri, 29 Sep 2023 00:39:41 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 527F2C433C8;
-        Fri, 29 Sep 2023 07:39:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695973180;
-        bh=yAYLz3ukdJtNvf42OO+RRKZ3YtBH+Khh5W18AjODGKs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EEV1O/OrowYxwsT7xTRih0qWIX7q1hjm5Ayp0pZO2vP6t9NZEYYSn2dIQZjBhoMyZ
-         YR49YoxePkb2gTXXgMb9TzBuAX6wuNqtQXG1Ye1TyTwuHU695VfqN97JaLxmBFmPBt
-         RtWcF3OkpBUAkeMc0TxS4r/iQBQSTD1cC61qFiXVg1d2ONNtYhZ5BeANSPE4/btAux
-         TVQCkjxUVDkfDThiGACVsn9i2umC77hcIrAWiuaIaZ8LYm1ZUd67fUVWIiIIm3lZj+
-         Uv7JhPU9Pp0RP15drIFjgKE4x2m8UhG2pKklx1E2DHGSZvG2bGG4RiCYjdHOuhDeLK
-         y8m6T9k/g4V+w==
-Date:   Fri, 29 Sep 2023 09:39:37 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Jian Zhang <zhangjian.3032@bytedance.com>
-Cc:     brendan.higgins@linux.dev, benh@kernel.crashing.org,
-        joel@jms.id.au, andrew@aj.id.au, zhangjian3032@gmail.com,
-        yulei.sh@bytedance.com, xiexinnan@bytedance.com,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Tommy Huang <tommy_huang@aspeedtech.com>,
-        "open list:ARM/ASPEED I2C DRIVER" <linux-i2c@vger.kernel.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] i2c: aspeed: Fix i2c bus hang in slave read
-Message-ID: <ZRZ/ObZmntMLw2r+@ninjato>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Jian Zhang <zhangjian.3032@bytedance.com>,
-        brendan.higgins@linux.dev, benh@kernel.crashing.org, joel@jms.id.au,
-        andrew@aj.id.au, zhangjian3032@gmail.com, yulei.sh@bytedance.com,
-        xiexinnan@bytedance.com, Andi Shyti <andi.shyti@kernel.org>,
-        Tommy Huang <tommy_huang@aspeedtech.com>,
-        "open list:ARM/ASPEED I2C DRIVER" <linux-i2c@vger.kernel.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20230927154244.3774670-1-zhangjian.3032@bytedance.com>
+        Fri, 29 Sep 2023 03:42:52 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482FE180;
+        Fri, 29 Sep 2023 00:42:50 -0700 (PDT)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T7DfW1028785;
+        Fri, 29 Sep 2023 07:42:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=Zz59mZdc5Pusdp8B04rBQ0gXnQBxG2lAxGu36E4tWrg=;
+ b=BC1Eo1LQv/2rtGVZK4yDnETXmeV7pl7bCz7gEPrQwXFRHtOc0DjjfyCn7lQW+hDak5Vt
+ u+CL+2w4w75gEQTlwiqphso3Vc+G+/i5G0et/EyxFEqTY7VvnrEMntJgWlNI3831atjA
+ OkBaJgBYNkxM0Z9k+7cr5t5wZIhBKkmPjzGFaDOhmQDxMb03oIRjabmM7IwuDAam78V4
+ ujzr0D1H7oeHJ1geVvB6MfG3jV2flPT/arbSGp6sw5Ioc+zDyN8dvxRnxfaZ8SlsHNGk
+ gzAj1u18wyDDnV3btu11d7f4Vt8F6Ye6m/DVoxaY/PWGZumPzrxyhDAce/lXoJ/6Lt/i +g== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3td24uast9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 07:42:48 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38T7glQV021063
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 07:42:47 GMT
+Received: from ekangupt-linux.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Fri, 29 Sep 2023 00:42:44 -0700
+From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
+To:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
+CC:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
+        <ekangupt@qti.qualcomm.com>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <fastrpc.upstream@qti.qualcomm.com>
+Subject: [PATCH v1 0/3] Add fixes for FastRPC driver
+Date:   Fri, 29 Sep 2023 13:12:37 +0530
+Message-ID: <1695973360-14369-1-git-send-email-quic_ekangupt@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+myms6uqEERuj8CP"
-Content-Disposition: inline
-In-Reply-To: <20230927154244.3774670-1-zhangjian.3032@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: SL3U3ePJ8NltjpQzUqSf-gSqcW-DcBvT
+X-Proofpoint-ORIG-GUID: SL3U3ePJ8NltjpQzUqSf-gSqcW-DcBvT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_05,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ suspectscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=799 adultscore=0 bulkscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309290064
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patchset carries the following fixes.
+- Reset metadata buffer to avoid incorrect fd getting freed
+- Free DMA handles for remote calls with no arguments
+- Clean buffers on remote call failures
 
---+myms6uqEERuj8CP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ekansh Gupta (3):
+  misc: fastrpc: Reset metadata buffer to avoid incorrect free
+  misc: fastrpc: Free DMA handles for RPC calls with no arguments
+  misc: fastrpc: Clean buffers on remote invocation failures
 
-On Wed, Sep 27, 2023 at 11:42:43PM +0800, Jian Zhang wrote:
-> When the `CONFIG_I2C_SLAVE` option is enabled and the device operates
-> as a slave, a situation arises where the master sends a START signal
-> without the accompanying STOP signal. This action results in a
-> persistent I2C bus timeout. The core issue stems from the fact that
-> the i2c controller remains in a slave read state without a timeout
-> mechanism. As a consequence, the bus perpetually experiences timeouts.
->=20
-> In this case, the i2c bus will be reset, but the slave_state reset is
-> missing.
->=20
-> Fixes: fee465150b45 ("i2c: aspeed: Reset the i2c controller when timeout =
-occurs")
-> Signed-off-by: Jian Zhang <zhangjian.3032@bytedance.com>
+ drivers/misc/fastrpc.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
-Somebody wants to add tags here? I think it should go to my pull request
-this week.
+-- 
+2.7.4
 
-
---+myms6uqEERuj8CP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUWfzkACgkQFA3kzBSg
-KbaStw/+P9lKIzk5K+HPzW686R3QSD4c9L86eK6C7qSbz3dR8WCLARees+FPn7KK
-SLQxjQzUToKNe8bfW9QnSs65v0koPIADF83FOloDj9+0R3+mbsqVohFn7wcPM5t4
-NtAzODYxDYOCQP84m25UZC5A+G7zDXxqHM0gE5Y+cbptMCaSVyzRK4/1gBIeuos/
-H++dJ0wJ86ozY69MUjCNA0lQPGooZKiuZ81F9NaGRx6yxHO0aKI6ZLkLHpZ/c2G1
-mNbtgy2zR1UbahtKUHmfwmT8XuCOOlpTVCnMfjXl1BaElI4unm3F52ZvaHg375eq
-7IDpAO5QC4LNEQEmDE90OgvLa3eS4SvEkHeZ4wgr/iTiBicMrqEYATxka4mnjdfV
-EyDQIIWgMMaZqpsf0ngjN978y32byRy+IiN47aY2Cn7IeXJxruZ76Cqj6T9Pq4bb
-Zeqe/xs5Zt2B2wRsxD/fLSbls6gxHRR8yn0mBZD4XgcCxxsxllP5yQ0pukP13v8F
-WPHGoob7CewyIijzwuI64R0I1dkBRecC7WkD2eRnzL0o33N7ct3VY62qgFX2xmIS
-AG39798UYyZ/Mecx/hp4/mMnOhXgcPPyYgbmqu9+MGNEG03eHsGumshUOxQIRSnI
-d9q4OxxEDFTj3/tEMhEtYDkwKnIwEkAnvKYQGmhfYMZOUXFGBII=
-=00HN
------END PGP SIGNATURE-----
-
---+myms6uqEERuj8CP--
