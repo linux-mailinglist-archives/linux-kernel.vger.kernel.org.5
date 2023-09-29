@@ -2,112 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF447B2EEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 126607B2EF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232917AbjI2JKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 05:10:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
+        id S232877AbjI2JLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 05:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232871AbjI2JKW (ORCPT
+        with ESMTP id S232841AbjI2JLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:10:22 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818151A5
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:10:18 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-530fa34ab80so965292a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:10:18 -0700 (PDT)
+        Fri, 29 Sep 2023 05:11:35 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF3A1A5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:11:33 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-65afc29277bso16302806d6.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:11:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google; t=1695978617; x=1696583417; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MH8m71qOsOYfTIlYbU2nLX0qZUlnksErh8AJml6gZsI=;
-        b=HJa/qFiCw51SAap8KA07eiWOzu4mdOeM9uhYqpP8HamJ2luEkNucgYbCSz2HYdLdbF
-         8sDc6a/3t1lwM4q7dOFO/fWzTTGb8RsO2yms0QUWnyQvW79xkf/LcOeufbFK+dw4CLiV
-         uzSEmbU/9ohgC4/8tCdblnqJ21HK+xWQu902o=
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1695978692; x=1696583492; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vrbxuiI+WNiNLwoGNSEuok9WNREFg61kxgWpjRA8C+Y=;
+        b=hjJHiN8tivg8dw6JvpXqrnKMins/uC9k1oQYA8mPUi7InVt+UvKkN4i9XCfQxqt07l
+         pGfenhkMbyk3Pdcar96tSH/q7iZ28sl6/WuQXEdJorQvWF2/rzLjYJXdNnmuNs/+ZnqU
+         7Oqu8qijrGlCNFQDCPycGkLcjGuDsjivI44qeaor3mww3VLjHv5QqTZMIMaCCkx2U+yz
+         hl8/il4jynxKD8EvDjMhecWEYNXYGvXSyNuuWZLpHiN+I5N8wfcfV8HPyx3vgLRwmpfn
+         SyB/hzoLi4IsfYWDoWNDiTz/Tf9BpVpKey1rBHnfeDQ72Im3L7LOJwidCIPeDxjl0L5v
+         RGXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695978617; x=1696583417;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MH8m71qOsOYfTIlYbU2nLX0qZUlnksErh8AJml6gZsI=;
-        b=SeRP54prJmq2cMGeNmSPGaEy/+VWnVbeaxWWhKvvLmziMpnI4WbztX1r2akIJ06bfP
-         +B3tAPJmKex95k8EzuUz9bE3UnapXtXT920MftwOZAkClOvI+20qfidf4I07klT24zSO
-         pm/m3GMQ5qomCB+XVy/z2hA2XRQM34XUBcDDfFD/vmSOIcKyxVlybOn1gT5gqsA8NlsN
-         XVMw7ueGCbMtLjqF0WjJFAuWNkYF8pu4n/esljt6ktS1ycDEhxavm1xihu3ySt3OyDlr
-         4YvFYqO7lG6N40ivHqwZGfg9YVnc8Ru8DZSUHUidIdPVMbA9J5WpFFzZQwlCEKvmBTae
-         MSYQ==
-X-Gm-Message-State: AOJu0Yz/6LDTEOqa1CSM2TQZY/MwHdjNjKHdQzoW0yGoHQbNbenHE3O9
-        O7WQZeZyBz68rsTlb26DMuXcPcb06KpJHMSWt0QcpQ==
-X-Google-Smtp-Source: AGHT+IHyl6jYqyOZcL8xPT3WtxUI5NbSnwKiR15P3UdBiaJSeqGvThML8eIxVJXSU+59W1w0fIIWjZ8R6AqpiVy0hmU=
-X-Received: by 2002:a17:907:1def:b0:9a9:e71b:cd65 with SMTP id
- og47-20020a1709071def00b009a9e71bcd65mr3433801ejc.6.1695978616584; Fri, 29
- Sep 2023 02:10:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695978692; x=1696583492;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vrbxuiI+WNiNLwoGNSEuok9WNREFg61kxgWpjRA8C+Y=;
+        b=lccjwnSaVK3qF5CdiRpWaOaPtouAgplGZ1UKpul7NdEt410W7lRHviqwLOG57ePUmt
+         SjshNLH4WHGsXycu/A5Jx21dJwfIJyA3U6qgxL0ICeioBPG4lJ+woAG08PM/XLxUeExH
+         MWOoB6NgPWJO8XR3pHve2piBklYPbps5r6Jp4NHls7ErhBv2TRGR7oAtMBYO5tk2nag5
+         azyhgp/bM0KUj4x9WV7L5U+uHoivQnEZQ9ddveYJ552BYGW5WCGqRSizNczdjDKZuqbP
+         /HtcCDSV4mxz4knmzsrqYvsJWF+Ugt4Y8WWDFWj1vFqF79/8JADmCHWEhyN1Zb0UOR23
+         qKrQ==
+X-Gm-Message-State: AOJu0YzARhnsuP3tlGiJ5gPTuwt8znK83+7EG+OFvPBwRi1+PSRV+DV3
+        78DtpONzRfMS+6gbssAdD8rScg==
+X-Google-Smtp-Source: AGHT+IGxLW/VLhcBCCWUgpkR1DRUfIOLCTizvIG4WRlUOM3cdS0dZKKElW7RkFIaS/ndfq29KA74Lw==
+X-Received: by 2002:a05:6214:f26:b0:653:576d:1e8 with SMTP id iw6-20020a0562140f2600b00653576d01e8mr3796317qvb.1.1695978692179;
+        Fri, 29 Sep 2023 02:11:32 -0700 (PDT)
+Received: from [172.19.130.163] ([216.250.210.88])
+        by smtp.gmail.com with ESMTPSA id o8-20020a0cf4c8000000b0065b260eafd9sm2859274qvm.87.2023.09.29.02.11.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 02:11:31 -0700 (PDT)
+Message-ID: <808c8472-ba4d-466c-84ef-cff4746cfdc0@kernel.dk>
+Date:   Fri, 29 Sep 2023 03:11:25 -0600
 MIME-Version: 1.0
-References: <20230928130147.564503-1-mszeredi@redhat.com> <20230928130147.564503-4-mszeredi@redhat.com>
- <5787bac5-b368-485a-f906-44e7049d4b8f@themaw.net>
-In-Reply-To: <5787bac5-b368-485a-f906-44e7049d4b8f@themaw.net>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 29 Sep 2023 11:10:04 +0200
-Message-ID: <CAJfpegt80_Tyto3QyD48V_yzHSghqg8AC_OPHEMPkDjEYCcisQ@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] add statmount(2) syscall
-To:     Ian Kent <raven@themaw.net>
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
-        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
-        David Howells <dhowells@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <christian@brauner.io>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Matthew House <mattlloydhouse@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHSET v6] Add io_uring futex/futexv support
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andres@anarazel.de, tglx@linutronix.de
+References: <20230928172517.961093-1-axboe@kernel.dk>
+ <20230929075317.GA6282@noisy.programming.kicks-ass.net>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230929075317.GA6282@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Sept 2023 at 02:42, Ian Kent <raven@themaw.net> wrote:
->
-> On 28/9/23 21:01, Miklos Szeredi wrote:
+On 9/29/23 1:53 AM, Peter Zijlstra wrote:
+> On Thu, Sep 28, 2023 at 11:25:09AM -0600, Jens Axboe wrote:
+> 
+>>  include/linux/io_uring_types.h |   5 +
+>>  include/uapi/linux/io_uring.h  |   4 +
+>>  io_uring/Makefile              |   1 +
+>>  io_uring/cancel.c              |   5 +
+>>  io_uring/cancel.h              |   4 +
+>>  io_uring/futex.c               | 386 +++++++++++++++++++++++++++++++++
+>>  io_uring/futex.h               |  36 +++
+>>  io_uring/io_uring.c            |   7 +
+>>  io_uring/opdef.c               |  34 +++
+>>  kernel/futex/futex.h           |  20 ++
+>>  kernel/futex/requeue.c         |   3 +-
+>>  kernel/futex/syscalls.c        |  18 +-
+>>  kernel/futex/waitwake.c        |  49 +++--
+>>  13 files changed, 545 insertions(+), 27 deletions(-)
+> 
+> Thanks for bearing with us on the futex2 thing!
+> 
+> Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-> > +static struct vfsmount *lookup_mnt_in_ns(u64 id, struct mnt_namespace *ns)
-> > +{
-> > +     struct mount *mnt;
-> > +     struct vfsmount *res = NULL;
-> > +
-> > +     lock_ns_list(ns);
-> > +     list_for_each_entry(mnt, &ns->list, mnt_list) {
-> > +             if (!mnt_is_cursor(mnt) && id == mnt->mnt_id_unique) {
-> > +                     res = &mnt->mnt;
-> > +                     break;
-> > +             }
-> > +     }
-> > +     unlock_ns_list(ns);
-> > +     return res;
-> > +}
->
-> Seems like we might need to consider making (struct mnt_namespace)->list
->
-> a hashed list.
+Thanks Peter! Going with the futex2 interface was the right choice, the
+old one was kinda wonky anyway. New one is definitely cleaner.
 
-Yes, linear search needs to go.  A hash table is probably the easiest solution.
+-- 
+Jens Axboe
 
-But I'd also consider replacing ns->list with an rbtree.  Not as
-trivial as adding a system hash table and probably also slightly
-slower, but it would have some advantages:
-
- - most space efficient (no overhead of hash buckets)
-
- - cursor can go away (f_pos can just contain last ID)
-
-Thanks,
-Miklos
