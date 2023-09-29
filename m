@@ -2,222 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B6747B2D30
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026C27B2D33
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232778AbjI2Hpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 03:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        id S232759AbjI2Hqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 03:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbjI2Hp1 (ORCPT
+        with ESMTP id S232613AbjI2Hqg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 03:45:27 -0400
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2081.outbound.protection.outlook.com [40.107.105.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B1E91A8;
-        Fri, 29 Sep 2023 00:45:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N+eXxXFxdGKMBC1WrS9sCYkiLizQuEDfyeWP1w0ukICqE9BpK5US7Rz7C9dvWNcaJKgaVamnCNGK7ySMaNyRY+9UnKGMbQzqj28um9Z9AyMrPrMs/UxAjdWxWHGp7MC3R8c8gQYLyW7cu9SfigWXvXM5kD84Gt0Ba+z0cP5X1ucxfUvS/qM1egUHA5vOlaz9GFOSDP7MVsdoAL1paRsSj/NhUs1uh+oPh64DMSdCef3udiEPpjXp+KwtY8E5x1XHPhCXdfkdt4DYeNqXP7k5QI27qlki4p+UkTgZHnMhuEHjOrChhzGNDkC0deQM3jG5e4ON68FWI2LJzRHj9+Z6GQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=XCkbBxXVt6OagbPZG0fqwWIlqmcUQmCg3s909KOvWZw=;
- b=MLOcMAqNOhgOPOei3zIlHnlwZ2jQxjULHEoha2A+ufwB5WimgbynAY6qK/tNcgaeKoil3c4MfINcPfDPlHncNA82foF6F7ibB5+UgfSAUEPJsuadMRUZOuXl5MygdsUxC5CI4O2TtykW9qniU9BPtI4abhgnm6sx79wzvyRlQ81895ZXRdPEk7PgQVcJ9ecLZy5CQEe9RhTvn6GmvfA1KJGGt73rBFeEog7vXAHPuBw0vVkz8IzJhK7+Z0f7YqFptTY6CRIZ2YwMd1LzqVqBPWnRQrISGmLHMwW0U1qkY2SIjGWPgQb8k1+Oar4ezab0vF1+akv4/tJ3hawpJbCKig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
- 195.60.68.100) smtp.rcpttodomain=linaro.org smtp.mailfrom=axis.com;
- dmarc=fail (p=none sp=none pct=100) action=none header.from=axis.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XCkbBxXVt6OagbPZG0fqwWIlqmcUQmCg3s909KOvWZw=;
- b=QP+71y8SiPK3PrkTVIFCRWOW0pfhhaGotKIoVNx4aCtMeS0oqPJUXRTbAxtLJFErK1Os0TWfxDoypd0fRNmZhJ5zRc9/cuI/rO6+ARaNDLTzhsPmTvrYhpwsDpJez3JY+yl9NgFr65MPOeU7dqSlfri3fM9twVyARmObLyJGFsE=
-Received: from AM6P192CA0086.EURP192.PROD.OUTLOOK.COM (2603:10a6:209:8d::27)
- by PAVPR02MB9643.eurprd02.prod.outlook.com (2603:10a6:102:300::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Fri, 29 Sep
- 2023 07:45:19 +0000
-Received: from AMS0EPF000001B0.eurprd05.prod.outlook.com
- (2603:10a6:209:8d:cafe::d) by AM6P192CA0086.outlook.office365.com
- (2603:10a6:209:8d::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26 via Frontend
- Transport; Fri, 29 Sep 2023 07:45:19 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 195.60.68.100)
- smtp.mailfrom=axis.com; dkim=none (message not signed)
- header.d=none;dmarc=fail action=none header.from=axis.com;
-Received-SPF: Fail (protection.outlook.com: domain of axis.com does not
- designate 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
- client-ip=195.60.68.100; helo=mail.axis.com;
-Received: from mail.axis.com (195.60.68.100) by
- AMS0EPF000001B0.mail.protection.outlook.com (10.167.16.164) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Fri, 29 Sep 2023 07:45:18 +0000
-Received: from se-mail01w.axis.com (10.20.40.7) by se-mail01w.axis.com
- (10.20.40.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Fri, 29 Sep
- 2023 09:45:18 +0200
-Received: from se-intmail01x.se.axis.com (10.0.5.60) by se-mail01w.axis.com
- (10.20.40.7) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
- Transport; Fri, 29 Sep 2023 09:45:18 +0200
-Received: from pc45945-2140.se.axis.com (pc45945-2140.se.axis.com [10.88.125.80])
-        by se-intmail01x.se.axis.com (Postfix) with ESMTP id 615A33071;
-        Fri, 29 Sep 2023 09:45:18 +0200 (CEST)
-Received: by pc45945-2140.se.axis.com (Postfix, from userid 10564)
-        id 5DB967124471; Fri, 29 Sep 2023 09:45:18 +0200 (CEST)
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-Date:   Fri, 29 Sep 2023 09:45:09 +0200
-Subject: [PATCH v2 2/2] mmc: debugfs: Allow host caps to be modified
+        Fri, 29 Sep 2023 03:46:36 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36BF91A7
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:46:34 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E236A1F8C0;
+        Fri, 29 Sep 2023 07:46:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1695973592; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=B5geqEnBYRzOW2twuca4kV8yYYvb+KJO+NtEndiCXHk=;
+        b=mR4GJ++9OG+xZbHo4EuYCLRQiSxIaumgeoETKwVzaMiHEX+LzRpqRI2Nw5bPvnUit6vAXG
+        I0fVIo9A01RBR3KUa7iFaD1JyruLw2ZWiG4xi8Ww5xHG6bZRYJFP6pmPOXY5z3G4uTg1sg
+        rsSafO9l+EKfvI6HFOvD82nWLrd37oc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1695973592;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=B5geqEnBYRzOW2twuca4kV8yYYvb+KJO+NtEndiCXHk=;
+        b=IXMtDIjbHfTYn17dAnwJIbxJ5OrgEGqt+2rb5pfbrBeg/QBh7Ylh9XY/Guas2LSdt1eha0
+        G72YQT+7Kv1ONZDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A37841390A;
+        Fri, 29 Sep 2023 07:46:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id DZ8VJtiAFmXGVQAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Fri, 29 Sep 2023 07:46:32 +0000
+Message-ID: <709a1b3d-a9fe-4b7e-a199-c5d9e27eefbe@suse.de>
+Date:   Fri, 29 Sep 2023 09:46:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230929-mmc-caps-v2-2-11a4c2d94f15@axis.com>
-References: <20230929-mmc-caps-v2-0-11a4c2d94f15@axis.com>
-In-Reply-To: <20230929-mmc-caps-v2-0-11a4c2d94f15@axis.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@axis.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>
-X-Mailer: b4 0.12.3
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AMS0EPF000001B0:EE_|PAVPR02MB9643:EE_
-X-MS-Office365-Filtering-Correlation-Id: cbc2c3fc-711a-4904-5e49-08dbc0c00717
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5CBtZNecg98ybzve50TUf3YGYjUdNLzqMFR/FKmIZ5iwH7efYbSBlo30byCbJgZ8+HIrw/nhNsCsZaUUJd5bN162dhpqVEAssCsF2DaodYocF+U191YDRrWmoN5eLXaCbG7+dWSJ3U+NRK7U5xW3/AdgZ+AN7w4V1O9dgZpHJB8Q5FN01aUBmtBedccQHWMqLZ2/iZTpMvlJSkNmiH4f0suh094peOJI541XjuU1cuzWC6WqepmWngiLhmiYihL8Ua2A1WsGggixGiFlbSW+zlZOq6u+/KAlLtvQgllA9G0j0WcBb/vMLq1WbekWEvKR2epHcDGSO3XQCEVJlN8DoWW+0mIN/zQPClWPE6oom0paZdWVn/L91R8GP3lm5+1j+LSC9cMoxHKXBQAdmXFO+OG7Jvp5bLpxFAmTYkO0Q2k1cxIIn0IosqUFnqbjY2yhIFZEwJHxmV9FhkAXGlKTK3V0sN52QURyPVt5YtQRvHYJgkwsKEwBTh481pP1DZQw+HlXhZznOLVWJYggxAReEDfLFSdOr+s1ASHRYW+bbQRkZUZaFslvVDInwkjWpor5oxiao0hIObXagY97hgaTCZ3MZIyKkEgjnA0Zod9v/0LWQsc4hmV28Cs6VRBj7az5Bo34qnx6LbFRcPIL1G/kptOQm+WPkrnqdfYf+0Nt2XsDBLGSjLdD+buwGc4X6bI8IcEl27RjxCkOiKUPxrdZI5Rcoqs5FMd+Jm2TYPa5eNkpAQp05F1NbsnjiOJuWUVC67NKj0usC03OjLwe26iyPQ==
-X-Forefront-Antispam-Report: CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(39860400002)(346002)(376002)(396003)(230922051799003)(82310400011)(451199024)(186009)(1800799009)(64100799003)(40470700004)(46966006)(36840700001)(336012)(426003)(2616005)(26005)(6266002)(6666004)(47076005)(107886003)(4326008)(83380400001)(2906002)(8676002)(70206006)(70586007)(42186006)(54906003)(8936002)(5660300002)(41300700001)(44832011)(6916009)(316002)(40480700001)(40460700003)(356005)(36860700001)(86362001)(36756003)(81166007)(82740400003)(478600001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: axis.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 07:45:18.7970
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbc2c3fc-711a-4904-5e49-08dbc0c00717
-X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
-X-MS-Exchange-CrossTenant-AuthSource: AMS0EPF000001B0.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAVPR02MB9643
-X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH/RFC 3/3] drm: Split drm_modeset_helper_vtables.h
+Content-Language: en-US
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>
+References: <cover.1695903065.git.geert+renesas@glider.be>
+ <0f0eae276da4f8ed44cd1a15ffa138879d27b148.1695903065.git.geert+renesas@glider.be>
+ <d9020d20-f512-42e6-8259-a7377c3d0d58@suse.de>
+ <CAMuHMdUXnT61Hj8JwPenD+x_0-k_wU3bUtj8k9wh7Dd+kN4_Dw@mail.gmail.com>
+ <9af0ab00-7afd-493b-848a-a433e9b9e182@suse.de>
+ <CAMuHMdXWRgL0uxLXt7geDCuHdQ=CDPhOzE7WCa4f4wRFvD50sw@mail.gmail.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <CAMuHMdXWRgL0uxLXt7geDCuHdQ=CDPhOzE7WCa4f4wRFvD50sw@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------tRSQAKWO04xfrYymuYJZ0ACJ"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During board verification, there is a need to test the various supported
-eMMC/SD speed modes.  However, since the framework chooses the best mode
-supported by the card and the host controller's caps, this currently
-necessitates changing the devicetree for every iteration.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------tRSQAKWO04xfrYymuYJZ0ACJ
+Content-Type: multipart/mixed; boundary="------------wtNtaA3FDa0dLGJJDEcGXM7E";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Robert Foss <rfoss@kernel.org>,
+ Jonas Karlman <jonas@kwiboo.se>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Andrzej Hajda <andrzej.hajda@intel.com>
+Message-ID: <709a1b3d-a9fe-4b7e-a199-c5d9e27eefbe@suse.de>
+Subject: Re: [PATCH/RFC 3/3] drm: Split drm_modeset_helper_vtables.h
+References: <cover.1695903065.git.geert+renesas@glider.be>
+ <0f0eae276da4f8ed44cd1a15ffa138879d27b148.1695903065.git.geert+renesas@glider.be>
+ <d9020d20-f512-42e6-8259-a7377c3d0d58@suse.de>
+ <CAMuHMdUXnT61Hj8JwPenD+x_0-k_wU3bUtj8k9wh7Dd+kN4_Dw@mail.gmail.com>
+ <9af0ab00-7afd-493b-848a-a433e9b9e182@suse.de>
+ <CAMuHMdXWRgL0uxLXt7geDCuHdQ=CDPhOzE7WCa4f4wRFvD50sw@mail.gmail.com>
+In-Reply-To: <CAMuHMdXWRgL0uxLXt7geDCuHdQ=CDPhOzE7WCa4f4wRFvD50sw@mail.gmail.com>
 
-Allow the various speed mode host capabilities to be modified via
-debugfs in order to allow easier hardware verification.  The values to
-be written are the raw MMC_CAP* values from include/linux/mmc/host.h.
-This is rather low-level, and these defines are not guaranteed to be
-stable, but it is perhaps good enough for the intended use case.
+--------------wtNtaA3FDa0dLGJJDEcGXM7E
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-MMC_CAP_AGGRESSIVE_PM can also be set, in order to be able to
-re-initialize the card without having to physically remove and re-insert
-it.
+SGkNCg0KQW0gMjkuMDkuMjMgdW0gMDk6MzMgc2NocmllYiBHZWVydCBVeXR0ZXJob2V2ZW46
+DQo+IEhpIFRob21hcywNCj4gDQo+IE9uIEZyaSwgU2VwIDI5LCAyMDIzIGF0IDk6MTHigK9B
+TSBUaG9tYXMgWmltbWVybWFubiA8dHppbW1lcm1hbm5Ac3VzZS5kZT4gd3JvdGU6DQo+PiBB
+bSAyOC4wOS4yMyB1bSAxNzozMiBzY2hyaWViIEdlZXJ0IFV5dHRlcmhvZXZlbjoNCj4+PiBP
+biBUaHUsIFNlcCAyOCwgMjAyMyBhdCAzOjU54oCvUE0gVGhvbWFzIFppbW1lcm1hbm4gPHR6
+aW1tZXJtYW5uQHN1c2UuZGU+IHdyb3RlOg0KPj4+PiBBbSAyOC4wOS4yMyB1bSAxNDoxNiBz
+Y2hyaWViIEdlZXJ0IFV5dHRlcmhvZXZlbjoNCj4+Pj4+IDxkcm0vZHJtX21vZGVzZXRfaGVs
+cGVyX3Z0YWJsZXMuaD4gaXMgdGhlIHNlY29uZCBsYXJnZXN0IGhlYWRlciBmaWxlIGluDQo+
+Pj4+PiB0aGUgRFJNIHN1YnN5c3RlbSwgYW5kIGRlY2xhcmVzIGhlbHBlcnMgdnRhYmxlcyBm
+b3IgdmFyaW91cyBEUk0NCj4+Pj4+IGNvbXBvbmVudHMuICBTZXZlcmFsIHZ0YWJsZXMgY29u
+dGFpbiBtZXRob2RzIHdpdGggdGhlIHNhbWUgbmFtZSwgYW5kIGFsbA0KPj4+Pj4gYnV0IG9u
+ZSB2dGFibGUgZG8gbm90IGZpdCBvbiB0aGUgc2NyZWVuLCBtYWtpbmcgaXQgaGFyZCB0byBu
+YXZpZ2F0ZSB0bw0KPj4+Pj4gdGhlIGFjdHVhbCBtZXRob2Qgb25lIGlzIGludGVyZXN0ZWQg
+aW4uDQo+Pj4+Pg0KPj4+Pj4gTWFrZSBpdCBlYXNpZXIgZm9yIHRoZSBjYXN1YWwgcmV2aWV3
+ZXIgdG8ga2VlcCB0cmFjayBieSBzcGxpdHRpbmcNCj4+Pj4+IDxkcm0vZHJtX21vZGVzZXRf
+aGVscGVyX3Z0YWJsZXMuaD4gaW4gbXVsdGlwbGUgaGVhZGVyIGZpbGVzLCBvbmUgcGVyIERS
+TQ0KPj4+Pj4gY29tcG9uZW50Lg0KPj4+Pg0KPj4+PiBJIG5ldmVyIGxpa2VkIHRoaXMgaGVh
+ZGVyIGVpdGhlciwgYnV0IGRvIHdlIG5lZWQgbmV3IGhlYWRlciBmaWxlcz8gRWFjaA0KPj4+
+PiBzdHJ1Y3QgY291bGQgYmUgYXBwZW5kZWQgdG8gdGhlIGVuZCBvZiB0aGUgcmVndWxhciBo
+ZWFkZXI6IHN0cnVjdA0KPj4+PiBkcm1fcGxhbmVfaGVscGVyX2Z1bmNzIHRvIGRybV9wbGFu
+ZS5oLCBkcm1fY29ubmVjdG9yX2hlbHBlcl9mdW5jIHRvDQo+Pj4+IGRybV9jb25uZWN0b3Iu
+aCBhbmQgc28gb24uDQo+Pj4NCj4+PiBUaGF0IHdvdWxkIHdvcmsgZm9yIG1lLCB0b28uICBC
+dXQgcGVyaGFwcyB3ZSB3YW50IHRvIG1haW50YWluIGEgY2xlYXINCj4+PiBzZXBhcmF0aW9u
+IGJldHdlZW4gY29yZSBhbmQgaGVscGVycz8NCj4+Pg0KPj4+IE5vdGUgdGhhdCBtb3Zpbmcg
+dGhlIGNvbnRlbnRzIHRvICpfaGVscGVyLmggd291bGQgYmUgYW5vdGhlciBvcHRpb24sDQo+
+Pj4gZHJtX2NydGNfaGVscGVyLmggYW5kIGRybV9wbGFuZV9oZWxwZXIuaCBhbHJlYWR5IGV4
+aXN0Lg0KPj4NCj4+IEkndmUgdGFrZW4gYSBjbG9zZXIgbG9vayBhdCB0aGUgdXNlcnMgb2Yg
+dGhlIF92dGFibGVzIGhlYWRlci4gVGhlcmUncw0KPj4gY29kZSBpbiBkcm1fYXRvbWljX2hl
+bHBlci5jIG9yIGRybV9wcm9iZV9oZWxwZXIuYyB0aGF0IGludm9rZXMgdGhlDQo+PiBjYWxs
+YmFjayBmdW5jdGlvbnMuDQo+Pg0KPj4gVGhlIGRyaXZlcnMgZmlsbCB0aGUgcG9pbnRlcnMg
+d2l0aCBjb2RlIHRoYXQgb2Z0ZW4gY29tZXMgZnJvbSBvdGhlcg0KPj4gaGVscGVyIG1vZHVs
+ZXMuIFRoYXQgY29kZSBpcyBpbiBmaWxlcyBsaWtlIGRybV9wbGFuZV9oZWxwZXIuYyBvcg0K
+Pj4gZHJtX2NydGNfaGVscGVyLmMuIFRoZXJlIGhlYWRlciBmaWxlcyBhcmUgZHJtX3BsYW5l
+X2hlbHBlci5oLCBldGMuDQo+Pg0KPj4gSW4gdGhhdCBjb250ZXh0LCB0aGUgX3Z0YWJsZXMg
+aGVhZGVyIG1ha2VzIHNlbnNlLCBhcyBpdCBzZXBhcmF0ZXMgdGhlDQo+PiBjYWxsZXJzIGZy
+b20gdGhlIGNhbGxlZXMuIFB1dHRpbmcgdGhlIHN0cnVjdHMgaW50byBoZWFkZXJzIGxpa2UN
+Cj4+IGRybV9wbGFuZV9oZWxwZXIuaCB3b3VsZCBtb3ZlIGl0IHRvIHRoZSBjYWxsZWUgc2lk
+ZS4NCj4+DQo+PiBJIHN1Z2dlc3QgdG8gbGVhdmUgdGhlIGhlYWRlciBhcyBpdCBpcy4gVGhl
+IGZhbGxvdXQgdG8gdGhlIGNvZGUgYmFzZQ0KPj4gZnJvbSByZWZhY3RvcmluZyBzZWVtcyB3
+b3JzZSB0aGFuIHRoZSBjdXJyZW50IHN0YXRlLg0KPiANCj4gVG8gY2xhcmlmeTogZG8geW91
+IG1lYW4ga2VlcGluZyB0aGUgc2luZ2xlIGJpZyBkcm1fbW9kZXNldF9oZWxwZXJfdnRhYmxl
+cy5oLA0KPiBvciB0aGUgc3BsaXQgZHJtXypfaGVscGVyX3Z0YWJsZS5oIHNldD8NCg0KSSBt
+ZWFudCB0byBrZWVwIHRoZSBzaW5nbGUgYmlnIGRybV9tb2Rlc2V0X2hlbHBlcl92dGFibGVz
+LmguIEl0J3Mgbm90IA0KbmljZSB0byBsb29rIGF0LCBidXQgSSB0aGluayB3ZSBtaWdodCBl
+YXNpbHkgbWVzcyB1cCB0aGUgaGVhZGVyIA0KZGVwZW5kZW5jaWVzIHdpdGggYW55IGNoYW5n
+ZXMuDQoNCkJlc3QgcmVnYXJkcw0KVGhvbWFzDQoNCj4gDQo+IFRoYW5rcyENCj4gDQo+Pj4+
+PiBTaWduZWQtb2ZmLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0K3JlbmVzYXNAZ2xp
+ZGVyLmJlPg0KPj4+Pj4gLS0tDQo+Pj4+PiBSRkMsIGEgZnV0dXJlIHBhdGNoIGNvdWxkIHJl
+cGxhY2UgaW5jbHVzaW9uIG9mDQo+Pj4+PiA8ZHJtL2RybV9tb2Rlc2V0X2hlbHBlcl92dGFi
+bGVzLmg+IGJ5IGluY2x1c2lvbiBvZiBvbmUgb3IgbW9yZSBvZiB0aGUNCj4+Pj4+IG5ldyBm
+aWxlcywgYW5kIHJlZHVjZSBjb21waWxhdGlvbiB0aW1lLg0KPj4+Pj4gLS0tDQo+Pj4+PiAg
+ICAgaW5jbHVkZS9kcm0vZHJtX2Nvbm5lY3Rvcl9oZWxwZXJfdnRhYmxlLmggICB8ICAzNjQg
+KysrKysNCj4+Pj4+ICAgICBpbmNsdWRlL2RybS9kcm1fY3J0Y19oZWxwZXJfdnRhYmxlLmgg
+ICAgICAgIHwgIDQ4MyArKysrKysNCj4+Pj4+ICAgICBpbmNsdWRlL2RybS9kcm1fZW5jb2Rl
+cl9oZWxwZXJfdnRhYmxlLmggICAgIHwgIDM4MSArKysrKw0KPj4+Pj4gICAgIGluY2x1ZGUv
+ZHJtL2RybV9tb2RlX2NvbmZpZ19oZWxwZXJfdnRhYmxlLmggfCAgIDk3ICsrDQo+Pj4+PiAg
+ICAgaW5jbHVkZS9kcm0vZHJtX21vZGVzZXRfaGVscGVyX3Z0YWJsZXMuaCAgICB8IDE0NjYg
+Ky0tLS0tLS0tLS0tLS0tLS0tLQ0KPj4+Pj4gICAgIGluY2x1ZGUvZHJtL2RybV9wbGFuZV9o
+ZWxwZXJfdnRhYmxlLmggICAgICAgfCAgMjk3ICsrKysNCj4+Pj4+ICAgICA2IGZpbGVzIGNo
+YW5nZWQsIDE2MjcgaW5zZXJ0aW9ucygrKSwgMTQ2MSBkZWxldGlvbnMoLSkNCj4+Pj4+ICAg
+ICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kcm0vZHJtX2Nvbm5lY3Rvcl9oZWxwZXJf
+dnRhYmxlLmgNCj4+Pj4+ICAgICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kcm0vZHJt
+X2NydGNfaGVscGVyX3Z0YWJsZS5oDQo+Pj4+PiAgICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGlu
+Y2x1ZGUvZHJtL2RybV9lbmNvZGVyX2hlbHBlcl92dGFibGUuaA0KPj4+Pj4gICAgIGNyZWF0
+ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2RybS9kcm1fbW9kZV9jb25maWdfaGVscGVyX3Z0YWJs
+ZS5oDQo+Pj4+PiAgICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvZHJtL2RybV9wbGFu
+ZV9oZWxwZXJfdnRhYmxlLmgNCj4gDQo+IEdye29ldGplLGVldGluZ31zLA0KPiANCj4gICAg
+ICAgICAgICAgICAgICAgICAgICAgIEdlZXJ0DQo+IA0KDQotLSANClRob21hcyBaaW1tZXJt
+YW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9u
+cyBHZXJtYW55IEdtYkgNCkZyYW5rZW5zdHJhc3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJnLCBH
+ZXJtYW55DQpHRjogSXZvIFRvdGV2LCBBbmRyZXcgTXllcnMsIEFuZHJldyBNY0RvbmFsZCwg
+Qm91ZGllbiBNb2VybWFuDQpIUkIgMzY4MDkgKEFHIE51ZXJuYmVyZykNCg==
 
- /sys/kernel/debug/mmc0# grep timing ios
- timing spec:	9 (mmc HS200)
+--------------wtNtaA3FDa0dLGJJDEcGXM7E--
 
- // Turn on MMC_CAP_AGGRESSIVE_PM and re-trigger runtime suspend
- /sys/kernel/debug/mmc0# echo $(($(cat caps) | (1 << 7))) > caps
- /sys/kernel/debug/mmc0# echo on > /sys/bus/mmc/devices/mmc0\:0001/power/control
- /sys/kernel/debug/mmc0# echo auto > /sys/bus/mmc/devices/mmc0\:0001/power/control
+--------------tRSQAKWO04xfrYymuYJZ0ACJ
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
- // MMC_CAP2_HS200_1_8V_SDR
- /sys/kernel/debug/mmc0# echo $(($(cat caps2) & ~(1 << 5))) > caps2
- /sys/kernel/debug/mmc0# echo on > /sys/bus/mmc/devices/mmc0\:0001/power/control
- /sys/kernel/debug/mmc0# grep timing ios
- timing spec:	8 (mmc DDR52)
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
----
- drivers/mmc/core/debugfs.c | 51 ++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 49 insertions(+), 2 deletions(-)
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmUWgNgFAwAAAAAACgkQlh/E3EQov+Cz
+kA/8C9Sziy/bNtmP26QnpV6IUDER+g3qU/UgrkEnXrix+AFRRrWyhM21isIYNdsEuZf6fVXkGW4X
+RKlA5RYn+FNc7vtYkTIwL0X5oij8itpYNpNBnXKO8keqpaW0ZPx6p4YOzVyA3Ro2/3XElnCK9xa4
+wfFitzIUuVR9dmHCaFN4IeLSVw9PUd8XpreD84vTfVI4tnfTioXhHNLTXfUxW5OdPGODzrx8MuLf
+VkNRwmlCloPrIKW0XzWZzOMu8W88cQ79OySh+mL1SdPF6lvgRxs3bdzo9wjwfMgu+BP1TozFeamQ
+HofXjc1BTUIg8glVxHDtm0Wjxo71+GovdaUKGpu+pm5pe21sPm8DbRfwW1dL4TSRSEmbGNz8bBo2
+FJMNOIwc/9I1GacEykOjiUv+y0jaQ/ijXLyU7tCzZMybDCj8OWQm+3LipDW8VTlXi7vkiW09muG0
+oWZjdC5GRrjmvoAMUOgmZLQTPrLNwj9pIIIIbE9RbjaRQaKd5wCwjIQ3Z9+UGAmy8g5reUmy7xVH
+orfNPL4jFy3R93YtlxVHkgH6uuT3oDtlomOE24rZjceMry5KrZnlDpLnrRdCZBupruRZM9EwUDF5
+ZeE4ir50luMIx8VNtEE4b3MgKFsW1IZbgYv7um3GaHywOdLSYXktGWtcjiKPdIXxPrh93Gy2XzLP
+G6Q=
+=HTUQ
+-----END PGP SIGNATURE-----
 
-diff --git a/drivers/mmc/core/debugfs.c b/drivers/mmc/core/debugfs.c
-index 2c97b94aab23..1642ea72d22c 100644
---- a/drivers/mmc/core/debugfs.c
-+++ b/drivers/mmc/core/debugfs.c
-@@ -12,9 +12,12 @@
- #include <linux/slab.h>
- #include <linux/stat.h>
- #include <linux/fault-inject.h>
-+#include <linux/time.h>
- 
- #include <linux/mmc/card.h>
- #include <linux/mmc/host.h>
-+#include <linux/mmc/mmc.h>
-+#include <linux/mmc/sd.h>
- 
- #include "core.h"
- #include "card.h"
-@@ -298,6 +301,49 @@ static const struct file_operations mmc_err_stats_fops = {
- 	.release = single_release,
- };
- 
-+static int mmc_caps_get(void *data, u64 *val)
-+{
-+	*val = *(u32 *)data;
-+	return 0;
-+}
-+
-+static int mmc_caps_set(void *data, u64 val)
-+{
-+	u32 *caps = data;
-+	u32 diff = *caps ^ val;
-+	u32 allowed = MMC_CAP_AGGRESSIVE_PM |
-+		      MMC_CAP_SD_HIGHSPEED |
-+		      MMC_CAP_MMC_HIGHSPEED |
-+		      MMC_CAP_UHS |
-+		      MMC_CAP_DDR;
-+
-+	if (diff & ~allowed)
-+		return -EINVAL;
-+
-+	*caps = val;
-+
-+	return 0;
-+}
-+
-+static int mmc_caps2_set(void *data, u64 val)
-+{
-+	u32 allowed = MMC_CAP2_HSX00_1_8V | MMC_CAP2_HSX00_1_2V;
-+	u32 *caps = data;
-+	u32 diff = *caps ^ val;
-+
-+	if (diff & ~allowed)
-+		return -EINVAL;
-+
-+	*caps = val;
-+
-+	return 0;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(mmc_caps_fops, mmc_caps_get, mmc_caps_set,
-+			 "0x%08llx\n");
-+DEFINE_DEBUGFS_ATTRIBUTE(mmc_caps2_fops, mmc_caps_get, mmc_caps2_set,
-+			 "0x%08llx\n");
-+
- void mmc_add_host_debugfs(struct mmc_host *host)
- {
- 	struct dentry *root;
-@@ -306,8 +352,9 @@ void mmc_add_host_debugfs(struct mmc_host *host)
- 	host->debugfs_root = root;
- 
- 	debugfs_create_file("ios", S_IRUSR, root, host, &mmc_ios_fops);
--	debugfs_create_x32("caps", S_IRUSR, root, &host->caps);
--	debugfs_create_x32("caps2", S_IRUSR, root, &host->caps2);
-+	debugfs_create_file("caps", 0600, root, &host->caps, &mmc_caps_fops);
-+	debugfs_create_file("caps2", 0600, root, &host->caps2,
-+			    &mmc_caps2_fops);
- 	debugfs_create_file_unsafe("clock", S_IRUSR | S_IWUSR, root, host,
- 				   &mmc_clock_fops);
- 
-
--- 
-2.34.1
-
+--------------tRSQAKWO04xfrYymuYJZ0ACJ--
