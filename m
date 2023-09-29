@@ -2,153 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D207B2F91
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC347B2F93
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232887AbjI2JwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 05:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59702 "EHLO
+        id S232876AbjI2JxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 05:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbjI2JwW (ORCPT
+        with ESMTP id S232813AbjI2JxJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:52:22 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5F8195;
-        Fri, 29 Sep 2023 02:52:20 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3768D1F390;
-        Fri, 29 Sep 2023 09:52:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695981139; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SMsbfT1iiLhFJ5psMInzAT4e3IKJNDrYEthOLA4QNSg=;
-        b=iZMe9PNqSNqDN3zSXu4MrqLTDaM7SqOWPzC08rCOaeEPRJgrQdkF23t78ewCO/+mcq55ks
-        tVSiWGfdhD+76CYgKzCmsoI7dZZjaV5U3KW3AIvcrWeBQPn1oBNE+nFoczytB2tNV7z1Jx
-        gdQ3kEabRbYS/Atu10H9/zvZzy9j670=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695981139;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SMsbfT1iiLhFJ5psMInzAT4e3IKJNDrYEthOLA4QNSg=;
-        b=ZD4JJm3tY1+IR60rXfQV2pYyXFKLAo6biPwYRbaYhWylrlC8pJ1G6Xwam5mhpxEcQEC6o5
-        A0gOv02lW1BL0ABA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1471D1390A;
-        Fri, 29 Sep 2023 09:52:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id XLluBFOeFmVYFgAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 29 Sep 2023 09:52:19 +0000
-Message-ID: <1c8488e1-1776-f21e-bafd-3892f0894392@suse.cz>
-Date:   Fri, 29 Sep 2023 11:52:18 +0200
+        Fri, 29 Sep 2023 05:53:09 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EDAD1A5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:53:06 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-533df112914so13038751a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:53:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1695981185; x=1696585985; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zcabyV/ntBQljUCLvUhOeWEh6aipQODXnykgj24wk+U=;
+        b=f5AzrhcWu8q2UPT/JgsQlNgE+QNKroGP/TNlZRRC0LWovDx+xhf6Fu7L5mFUou0fWH
+         t4eq72dUMhLN/t2uCv8mTQTTNGWN1I209Gdw7LGAUiNHnocz4rSVxro5kV4g4Sm9oTS/
+         hcl14VHz/gFWKz6TFLTpl6jQpr9cvOIzXp9WiXV6iJb2SY2iDbBZyO7akIaYlNr4AHUR
+         vZptdOUeH/cdOc4fTVIwb4W7Zqb9d1uaqpL0YQpT627rEmg3mNUY+AfYezZmhYGv/l1+
+         kB9GsdoR7/New9AGDQkzVeba8Ie+oZ3DxWvH2F5sEZNv6yEiIEqCrBBWZg9pVMKts0pG
+         /DYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695981185; x=1696585985;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zcabyV/ntBQljUCLvUhOeWEh6aipQODXnykgj24wk+U=;
+        b=KgyJkG59QbrzxtoUww8NUIYORvAqr5YRDS9MdX1t6Zd9XBLU7VjrLMS4KqGwzeUwtt
+         QadEQ9eYNBoSuX2/Gp+H76P5d8gYRE4xXkMV4c1th5Rjz11wjlCczYxxoMKpTKq9t0G/
+         J069G+33sowTwR83ETt5ZGFEfMID4nlLTPSwyBW/7UjYnN3S2Zd+PJBGQ/c1u8uewkV3
+         YfYh+BomNtRqpKqB0Tj4kDFw92+YVuA0JnYL3V6QoK+/z2umI/mNMnz8YUgWWSY1By0x
+         CqO6MfQYpuXHYtuuaTioH0ft7nj4nYgEoTpX1nXG8PX/7mWNHBYqVkBM1MwczeRDJYzd
+         tU1Q==
+X-Gm-Message-State: AOJu0YySirLipxLrCiJXieMJvTzSla5z6tduVQNa1WQun5oXpivwg8wA
+        xKMUoY745C3vgUO5fEKmIB6WPQ==
+X-Google-Smtp-Source: AGHT+IEABpRwvS+iiXrZW7y7gBe7i8X3Nre76cQ+E3KUWZskMC/wFMBqv3YxleUQNJrF7fpO/K9THg==
+X-Received: by 2002:a05:6402:14cb:b0:533:c55f:582a with SMTP id f11-20020a05640214cb00b00533c55f582amr3132986edx.27.1695981184900;
+        Fri, 29 Sep 2023 02:53:04 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id cy23-20020a0564021c9700b005362c9905b2sm1967034edb.35.2023.09.29.02.53.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 02:53:04 -0700 (PDT)
+From:   Luca Weiss <luca.weiss@fairphone.com>
+Date:   Fri, 29 Sep 2023 11:52:59 +0200
+Subject: [PATCH] arm64: dts: qcom: qcm6490-fairphone-fp5: Enable UFS
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/3] mmap: Fix vma_iterator in error path of vma_merge()
-Content-Language: en-US
-To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>, stable@vger.kernel.org
-References: <20230927160746.1928098-1-Liam.Howlett@oracle.com>
- <20230927160746.1928098-2-Liam.Howlett@oracle.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20230927160746.1928098-2-Liam.Howlett@oracle.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-Id: <20230929-fp5-ufs-v1-1-122941e28b06@fairphone.com>
+X-B4-Tracking: v=1; b=H4sIAHqeFmUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDSyNL3bQCU93StGLdVKNkg1Qjw0QDQxMjJaDqgqLUtMwKsEnRsbW1AA7
+ SNQRZAAAA
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Nitin Rawat <quic_nitirawa@quicinc.com>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/27/23 18:07, Liam R. Howlett wrote:
-> When merging of the previous VMA fails after the vma iterator has been
-> moved to the previous entry, the vma iterator must be advanced to ensure
-> the caller takes the correct action on the next vma iterator event.  Fix
-> this by adding a vma_next() call to the error path.
-> 
-> Users may experience higher CPU usage, most likely in very low memory
-> situations.
+Enable the UFS phy and controller so that we can access the internal
+storage of the phone.
 
-Maybe we could say explicitly that before this fix, vma_merge will be called
-twice on the same vma, which to the best of our knowledge does not cause
-anything worse than some wasted cycles because vma == prev, but it's fragile?
+At the same time we need to bump the minimum voltage used for UFS VCC,
+otherwise it doesn't initialize properly. The new range is taken from
+the vcc-voltage-level property downstream.
 
-> Link: https://lore.kernel.org/linux-mm/CAG48ez12VN1JAOtTNMY+Y2YnsU45yL5giS-Qn=ejtiHpgJAbdQ@mail.gmail.com/
-> Closes: https://lore.kernel.org/linux-mm/CAG48ez12VN1JAOtTNMY+Y2YnsU45yL5giS-Qn=ejtiHpgJAbdQ@mail.gmail.com/
-> Fixes: 18b098af2890 ("vma_merge: set vma iterator to correct position.")
-> Cc: stable@vger.kernel.org
-> Cc: Jann Horn <jannh@google.com>
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-> ---
->  mm/mmap.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index b56a7f0c9f85..b5bc4ca9bdc4 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -968,14 +968,14 @@ struct vm_area_struct *vma_merge(struct vma_iterator *vmi, struct mm_struct *mm,
->  				vma_pgoff = curr->vm_pgoff;
->  				vma_start_write(curr);
->  				remove = curr;
-> -				err = dup_anon_vma(next, curr);
-> +				err = dup_anon_vma(next, curr, &anon_dup);
->  			}
->  		}
->  	}
->  
->  	/* Error in anon_vma clone. */
->  	if (err)
-> -		return NULL;
-> +		goto anon_vma_fail;
->  
->  	if (vma_start < vma->vm_start || vma_end > vma->vm_end)
->  		vma_expanded = true;
+See also the following link for more information about the VCCQ/VCCQ2:
+https://gerrit-public.fairphone.software/plugins/gitiles/kernel/msm-extra/devicetree/+/1590a3739e7dc29d2597307881553236d492f188/fp5/yupik-idp-pm7250b.dtsi#207
 
-The vma_iter_config() actions done in this part are something we don't need
-to undo?
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+I'm not 100% convinced about the regulator range change. For sure with
+the original voltage range the UFS fails to initialize, but looking at
+downstream kernel during runtime (debugfs) we see the VCC voltage
+switches between 2.4V (idle?) and 2.952V (active?). But even with this
+change in mainline the regulator would always stay at 2.504V which is
+for sure lower than the downstream operating voltage of 2.952V. Behavior
+wise I don't see a difference between ~2.5V and ~2.9V.
 
-> @@ -988,7 +988,7 @@ struct vm_area_struct *vma_merge(struct vma_iterator *vmi, struct mm_struct *mm,
->  	}
->  
->  	if (vma_iter_prealloc(vmi, vma))
-> -		return NULL;
-> +		goto prealloc_fail;
+Should I just constrain the regulator here to min=max=2.952V? Or just
+say it's okay as-is?
 
+Depends on: https://lore.kernel.org/linux-arm-msm/20230927081858.15961-1-quic_nitirawa@quicinc.com/
+---
+ arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 27 ++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
 
+diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+index 2de0b8c26c35..fea7639fc0bc 100644
+--- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
++++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
+@@ -182,8 +182,9 @@ vreg_l6b: ldo6 {
+ 		};
+ 
+ 		vreg_l7b: ldo7 {
+-			regulator-min-microvolt = <2400000>;
+-			regulator-max-microvolt = <3544000>;
++			/* Constrained for UFS VCC */
++			regulator-min-microvolt = <2504000>;
++			regulator-max-microvolt = <2952000>;
+ 			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
+ 		};
+ 
+@@ -632,6 +633,28 @@ bluetooth: bluetooth {
+ 	};
+ };
+ 
++&ufs_mem_hc {
++	reset-gpios = <&tlmm 175 GPIO_ACTIVE_LOW>;
++
++	vcc-supply = <&vreg_l7b>;
++	vcc-max-microamp = <800000>;
++	/*
++	 * Technically l9b enables an eLDO (supplied by s1b) which then powers
++	 * VCCQ2 of the UFS.
++	 */
++	vccq-supply = <&vreg_l9b>;
++	vccq-max-microamp = <900000>;
++
++	status = "okay";
++};
++
++&ufs_mem_phy {
++	vdda-phy-supply = <&vreg_l10c>;
++	vdda-pll-supply = <&vreg_l6b>;
++
++	status = "okay";
++};
++
+ &usb_1 {
+ 	status = "okay";
+ };
 
->  	init_multi_vma_prep(&vp, vma, adjust, remove, remove2);
->  	VM_WARN_ON(vp.anon_vma && adjust && adjust->anon_vma &&
-> @@ -1016,6 +1016,12 @@ struct vm_area_struct *vma_merge(struct vma_iterator *vmi, struct mm_struct *mm,
->  	vma_complete(&vp, vmi, mm);
->  	khugepaged_enter_vma(res, vm_flags);
->  	return res;
-> +
-> +prealloc_fail:
-> +anon_vma_fail:
-> +	if (merge_prev)
-> +		vma_next(vmi);
-> +	return NULL;
->  }
->  
->  /*
+---
+base-commit: d85348daa4407216e47198ed35a43a66883edab6
+change-id: 20230929-fp5-ufs-e2c0e21a0142
+
+Best regards,
+-- 
+Luca Weiss <luca.weiss@fairphone.com>
 
