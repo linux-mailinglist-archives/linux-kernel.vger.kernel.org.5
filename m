@@ -2,101 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 555CF7B3253
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C41A07B325A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233104AbjI2MTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 08:19:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42430 "EHLO
+        id S233161AbjI2MVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 08:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233118AbjI2MTf (ORCPT
+        with ESMTP id S232490AbjI2MVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:19:35 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB061DB
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:19:33 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c6193d6bb4so168145ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:19:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695989973; x=1696594773; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PLnTSnR7uTYwv5cSSHGvio2GQZKRL0FdjNM2CJ3aoLI=;
-        b=2BaKyLQmry4gd+zHcUfPa0f2FEhhjf2JUKI8tHLGNVFdM0VjJwAyhhyKYDINdElIh9
-         xUc42jzLRNYwg6VMA6ZvFuAhy5NcYlRN+imth4p2tH+vpfYvkSTTLt7zAVnJqB5/538G
-         gKFoSAd2lS1erTGJNNa9P/Cp9EEoXHTwqjW/gvLjnb5i4mlBDlJqTD0BmB5vWd6jFURy
-         opdIvEML6CZtDBoJHrUCttIJAf8Q9SmOIhDOKr0byLzkcjS2uuzhXHRLScCy9UFf7t4k
-         VbVAVUQZSHuHAje4eEi864hiD3bfgyq7Ohyxdk4U4+X9jXX2kwqq1htrq9mLMQadLNjD
-         Re2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695989973; x=1696594773;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PLnTSnR7uTYwv5cSSHGvio2GQZKRL0FdjNM2CJ3aoLI=;
-        b=iWHqSrKXOQE+s4XSxmPNfGzXeneVkzgpD9BoBwVr3avSm0gLfxpe4aoeOteqr9GHJU
-         3ds9KMi1aBZKiLHq1iNmkCXZs5DGdqWOnwQGpFsBcKAP9hcJ48FcThBfdArH3xNfAdyc
-         X0KojXYSrNpsfyboVW46818pnchaBFB4SQFL5f+LV5pWR7yGsTCtkyzlN2DgZOw2QWee
-         ZxdeW1wp/6ijEIEM3DrdvNr2gNfqFfb+I8948tO77BX3FP9yrGPlejhl/8GPJhULURXw
-         eEUwRjNhp47IUZC3PaEQjfpV48i4xCYWhiG5C+ZhlGcZ6Ozilc5qNqEDoe5pvDH72Mzx
-         v/0Q==
-X-Gm-Message-State: AOJu0YwM21Htd04RrT5G1HfvxdRCa2qsQjsx89TCnGbRj+FF0MHv9EtC
-        UIGq7v8riJFkIUb1BsrLCZM+Q7ktBovTPh7/XYET3w==
-X-Google-Smtp-Source: AGHT+IHK0oqlHr/4SkAVwSnoYFDhD0879DbB4ErNGUhs0U4worNdVRcdhOsKTjQ4Igq01cBWv+xbWUqPjPXdZzGdc40=
-X-Received: by 2002:a17:903:5cc:b0:1c4:36c:b917 with SMTP id
- kf12-20020a17090305cc00b001c4036cb917mr971296plb.6.1695989973149; Fri, 29 Sep
- 2023 05:19:33 -0700 (PDT)
+        Fri, 29 Sep 2023 08:21:53 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74247DB;
+        Fri, 29 Sep 2023 05:21:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+ t=1695990078; x=1696594878; i=linosanfilippo@gmx.de;
+ bh=6tA43t+0McW2N+YumW2QFVQxDcUMGT+JFpeDldo/TWU=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=Sz/VIzyGecB4r1WZcdaaq3iWtCgH05hqHwAKbs1Y0PvJS4G4M8BkjK2GLAhhsT5iyzCM+tCPhw+
+ nIZ1NQIjj0hPsB3KrrSEzb53lIweH1j9QGkECiFTEQnF4MbM9hVPklSRfHKJVLHQ9ITu/mUV3LNEG
+ vxlk9RZgwXlPs7FxcksCAjtm2z0bpAwOpifX2Em4/PQz/509hXvPht2GD21+hFKrhqXSVsn6IBrap
+ uzyxX+uoSoRpAOrXAw0YxG6ZH3zC208Eq7YL/Is7wkwLiY7DddEHcsSqLezlmmZFg/xDgdshdgNSP
+ r3w02wYF+w83GirMRyASzLs6LmcOD9QPCocg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.2.42] ([84.162.21.41]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MRCOE-1qyFj80fe0-00NDWK; Fri, 29
+ Sep 2023 14:21:18 +0200
+Message-ID: <a3ff9fad-4939-bf94-4f92-c2072bc3955b@gmx.de>
+Date:   Fri, 29 Sep 2023 14:21:16 +0200
 MIME-Version: 1.0
-References: <20230829234426.64421-1-tony.luck@intel.com> <20230928191350.205703-1-tony.luck@intel.com>
- <20230928191350.205703-3-tony.luck@intel.com>
-In-Reply-To: <20230928191350.205703-3-tony.luck@intel.com>
-From:   Peter Newman <peternewman@google.com>
-Date:   Fri, 29 Sep 2023 14:19:22 +0200
-Message-ID: <CALPaoCiLRA9NnP_rynYi60F_USW0zi_NWqRd702RJC_E2SeCFw@mail.gmail.com>
-Subject: Re: [PATCH v6 2/8] x86/resctrl: Prepare to split rdt_domain structure
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 1/6] serial: Do not hold the port lock when setting
+ rx-during-tx GPIO
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     jirislaby@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        ilpo.jarvinen@linux.intel.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, l.sanfilippo@kunbus.com,
+        lukas@wunner.de, p.rosenberger@kunbus.com, stable@vger.kernel.org
+References: <20230928221246.13689-1-LinoSanfilippo@gmx.de>
+ <20230928221246.13689-2-LinoSanfilippo@gmx.de>
+ <2023092906-untainted-entangled-4d17@gregkh>
+Content-Language: en-US
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+In-Reply-To: <2023092906-untainted-entangled-4d17@gregkh>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Provags-ID: V03:K1:6NnLCV4rQAXsipSpGiNlG5Iy3kiV5k1mK5GvR/Lt8U4qzsviCmC
+ wciUdaP979o62SspPQThVJe0sNDG1bLHMEXDRTe7A9MVGYYZAMsd7AZhqoN1eNY/tyNIHer
+ AkmgOFzkD/sDcnCD5Djvx10cmnxarHtY3kTjzWOK2P/liLlfKl6lNtV3KudQhQO64r8sw/0
+ DrgnaJg8oad2CUpDVly2w==
+UI-OutboundReport: notjunk:1;M01:P0:7qz8JAbq7I4=;ZTl02IzFRSn26NlMNPUe2SD2M8l
+ D3CLrHge81T0pi08lBI2JIijTrR9mIt1LRwpwnNTx2ySfzuRyB5vWPV1PFjdKOoDb5VSXAo99
+ +pqm7cMdRQeSnAJR6v4M7FHc3gVaxnI3bIzBCrXFe+d5gHcYFoLmcZluZrvCA75Xts57ry71q
+ na5kh9luUqOlDBm6LzB0c1+dvSVkWyS/njlBtZ30tPJA9lPv6RFF4+LSuSzEcRRgGGR28Sd+y
+ GpRkwDakJJIsQ4eDsMXX0vLdhtW5BVOSY1xHXb4dxuZkKCBbWJ5ZM+GZrBpZQcbjtHwJs/b+c
+ 9sfbx352OczoNp5zo9DaRgcV8zFCfvCCtbmXBisO4HFskGO+BYrljFc9czUt0iZIpJCdvTxUd
+ XlN9qxxknMzmLMr0ENyOmThQk8Qu+snb7CSCLAE8uQbmRlyuvjijPRe7Naruc6/RxGY/VH4fb
+ CPCQfL7x7WxBGt7FlIQxsDFklJ1ONw96s5mmirBArySusMPDfQMSNKKyCZ9rp/hvpr/OfNZZw
+ BlK2Vke6gQX0NHbvsNmI7Nc/hvQRwxqbiEIYsTGa6dExwPNzS284Y27Xha2+L9/Ae9jeRcDS/
+ scxnkdUoOzDNylsXyd7KMh8tYSjRYb/L2gcUq7QDOKKIxsEA+VZxy2m+F2D+TIJaVnaqCFvcj
+ 9NxJbfHb/cgDxMjzQ8ZZtMev772sZSkpO6zbSxv9S1X3aFC452LPo0wvVmDoNLwRSeIgde2Fn
+ rcnYGyIvCxO+k7d/v1hR7F1Je1xBBZl/7zsGAsSt6ALmm0j2fcXquECATOlqaEX2qrNcPr7+M
+ 8K7h/J+m5AaUiEsdV4BvDq3A3zIBWDflvWJ/LR+wUYd4gxyYp71WZtiv9SsRV+rf9kY7+b0Ou
+ t0DpX/0roRV6sNSyrecEFwlnlbS1AThRtl/A4XBycHfLkQEdfsDGyJcyG+WQUQzVKYGPFM7vc
+ LNZpy+Cbh5tT1+X38Z+mWCE3dQo=
+X-Spam-Status: No, score=-6.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+Hi,
 
-On Thu, Sep 28, 2023 at 9:14=E2=80=AFPM Tony Luck <tony.luck@intel.com> wro=
-te:
+On 29.09.23 07:50, Greg KH wrote:
+> On Fri, Sep 29, 2023 at 12:12:41AM +0200, Lino Sanfilippo wrote:
+>> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+>>
+>> Both the imx and stm32 driver set the rx-during-tx GPIO in the
+>> rs485_config() function by means of gpiod_set_value(). Since rs485_conf=
+ig()
+>> is called with the port lock held, this can be an problem in case that
+>> setting the GPIO line can sleep (e.g. if a GPIO expander is used which =
+is
+>> connected via SPI or I2C).
+>>
+>> Avoid this issue by setting the GPIO outside of the port lock in the se=
+rial
+>> core and by using gpiod_set_value_cansleep() instead of gpiod_set_value=
+().
+>>
+>> Since now both the term and the rx-during-tx GPIO are set within the se=
+rial
+>> core use a common function uart_set_rs485_gpios() to set both.
+>>
+>> With moving it into the serial core setting the rx-during-tx GPIO is no=
+w
+>> automatically done for all drivers that support such a GPIO.
+>>
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
 >
-> The rdt_domain structure is used for both control and monitor features.
-> It is about to be split into separate structures for these two usages
-> because the scope for control and monitoring features for a resource
-> will be different for future resources.
+> You cc: stable on many of these, but do not provide a "Fixes:" tag
+> showing just how far back they should go.  Can you do that so that we
+> have a hint as to what to do here?
 >
-> To allow for common code that scans a list of domains looking for a
-> specific domain id, move the "list" and "id" fields into their own
-> structure within the rdt_domain structure.
 
-On this one I think you can say "No functional change"
+Yes, will do so in the next version.
 
-Reviewed-by: Peter Newman <peternewman@google.com>
+BR,
+Lino
 
-Thanks!
--Peter
+> thanks,
+>
+> greg k-h
