@@ -2,225 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9E47B3A19
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A54D7B3A24
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:42:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233476AbjI2Se3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 14:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58140 "EHLO
+        id S233141AbjI2Sl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 14:41:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233472AbjI2Se1 (ORCPT
+        with ESMTP id S233617AbjI2Sl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 14:34:27 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5977D19F
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:34:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1696012462;
-        bh=AlRztrkqyKUOFkQYVS+dl2vFj7Ffobpd8WDcQyWDybc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZxI5MF+6gaoCDzGJJbN6lgPMdDS2d6nd2t5VfOqglCfgRqz2pjQVJZ4V5xn9I7XJW
-         tFC1i16fXHgZvZqViBS09fHpsgGH62+HHa/eWHCJilw4akAc3Scnux7g8rtBlEuL9y
-         zCIo5i12gzrspNL4bVIup9IUPJaQBYbvNfAJduOV41diEfwfKScoI5XP7QLyu/huZ8
-         3IEHOY2cnXtQ/QlSt7STb3MreW0//BTzXBkF6W/90yPdCvjag4enw7CrDOqo37v+03
-         ++26pbKhgS9vOLFQ1SgZldb5G+fba2RMdam5qYZNxSwamfP8mN9lDkrRDygFcAOB/9
-         kMiIXBI/HuX7Q==
-Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RxzXG4p6zz1Rdc;
-        Fri, 29 Sep 2023 14:34:22 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, Chen Yu <yu.c.chen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
-Subject: [RFC PATCH] sched/fair: Bias runqueue selection towards almost idle prev CPU
-Date:   Fri, 29 Sep 2023 14:33:50 -0400
-Message-Id: <20230929183350.239721-1-mathieu.desnoyers@efficios.com>
-X-Mailer: git-send-email 2.39.2
+        Fri, 29 Sep 2023 14:41:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231AC19F
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:40:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696012835;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZBk17Zm5TcRZSPAJIt6L6fahmLzkpIUYt8FtZjTtkgw=;
+        b=OxFL3CxMD1QRpn2b8vzbXszQY4Q31Wz36Oxlj1dtHo9wpNM6ScWY/klOi3HZIlFaRCcByg
+        EtEv+sJ1ZmDD8yByP5tv2aTIKzt5ZJWQ2tT+oBsUmL7exIrdWcavswEVBSC10wKiGej0UQ
+        q68WRK5+fGhhGf+GBDzvIj5tpfwMyyw=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-614-5avktyzmNEeDg947-6ZUDg-1; Fri, 29 Sep 2023 14:40:33 -0400
+X-MC-Unique: 5avktyzmNEeDg947-6ZUDg-1
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4197fa36adaso7939041cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:40:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696012833; x=1696617633;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZBk17Zm5TcRZSPAJIt6L6fahmLzkpIUYt8FtZjTtkgw=;
+        b=gFzFy55W7kPYqRXKY0/vcD/ROLMAaFBefozIZP1H+0V63aPsaQzWYVNvPiYvMj4+1Y
+         DGnqy87xxeLg9vLqqKQyCSD4Qyj1n5wIF1U7Avm6qFWNSefnpYwcNlfiGmOvoKg8Lfk3
+         Jb0V3QtbI5KCUG4nMvAdngM1fgtY3fabNKQQK9IS3fgPVuv4IfxFezT8JNXsTn4QIyHK
+         OlWu9Z9UFAW67DCa1h+1QX2GG8SWaQY1pi2M6RdFRvTLgKq4Mu8915YqXQbXnkyz0n6e
+         CMLY+OSLtXsIiowzel6S8NkjhUW7MCsywlFCjZJfbHkIEfHORxYsvFHDxYjVNkVbktDC
+         SxOA==
+X-Gm-Message-State: AOJu0Yym3uLq+KUUG1vbXUxTC6StQLYROjzAqjmuzPGpwgPZbXD4NsDO
+        auNDyW9xDcc/IJWsLJryF2s0nB4hZxuMCFFz5Mr6cuuiMEOefINFCJXvkaWJRPpo+t5N8h7EqhJ
+        VHnoqNyKzAWHnv63Jw8dGKn6t
+X-Received: by 2002:ac8:7d91:0:b0:419:4f1e:7ea9 with SMTP id c17-20020ac87d91000000b004194f1e7ea9mr6172379qtd.3.1696012833048;
+        Fri, 29 Sep 2023 11:40:33 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHwASWCl5cZ1JPkXdR7F8OEtFHMXuQkyf5k8zTIL92lAUzma1wamU3ODUvk5iZJIg+H+IXjAg==
+X-Received: by 2002:ac8:7d91:0:b0:419:4f1e:7ea9 with SMTP id c17-20020ac87d91000000b004194f1e7ea9mr6172362qtd.3.1696012832708;
+        Fri, 29 Sep 2023 11:40:32 -0700 (PDT)
+Received: from fedora ([107.171.218.122])
+        by smtp.gmail.com with ESMTPSA id g11-20020ac8124b000000b004181234dd1dsm955698qtj.96.2023.09.29.11.40.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 11:40:32 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 14:40:30 -0400
+From:   Adrien Thierry <athierry@redhat.com>
+To:     Deepti Jaggi <quic_djaggi@quicinc.com>
+Cc:     james.morse@arm.com, mchehab@kernel.org, rric@kernel.org,
+        bp@alien8.de, tony.luck@intel.com, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@quicinc.com,
+        quic_psodagud@quicinc.com
+Subject: Re: [PATCH] EDAC/device: Add sysfs notification for UE,CE count
+ change
+Message-ID: <ZRcaHl9QBQzYoQaa@fedora>
+References: <20230731220059.28474-1-quic_djaggi@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230731220059.28474-1-quic_djaggi@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce the WAKEUP_BIAS_PREV_IDLE scheduler feature. It biases
-select_task_rq towards the previous CPU if it was almost idle
-(avg_load <= 0.1%). It eliminates frequent task migrations from almost
-idle CPU to completely idle CPUs. This is achieved by using the CPU
-load of the previously used CPU as "almost idle" criterion in
-wake_affine_idle() and select_idle_sibling().
+Hi Deepti,
 
-The following benchmarks are performed on a v6.5.5 kernel with
-mitigations=off.
+On Mon, Jul 31, 2023 at 03:00:59PM -0700, Deepti Jaggi wrote:
+> A daemon running in user space collects information on correctable
+> and uncorrectable errors from EDAC driver by reading corresponding
+> sysfs entries and takes appropriate action.
+> This patch adds support for user space daemon to wait on poll() until
+> the sysfs entries for UE count and CE count change and then read updated
+> counts instead of continuously monitoring the sysfs entries for
+> any changes.
+> 
+> Signed-off-by: Deepti Jaggi <quic_djaggi@quicinc.com>
+> ---
+>  drivers/edac/edac_device.c       | 16 ++++++++++++++++
+>  drivers/edac/edac_device.h       |  8 ++++++++
+>  drivers/edac/edac_device_sysfs.c | 20 ++++++++++++++++++++
+>  3 files changed, 44 insertions(+)
+> 
+> diff --git a/drivers/edac/edac_device.c b/drivers/edac/edac_device.c
+> index 8c4d947fb848..7b7aec4da6b9 100644
+> --- a/drivers/edac/edac_device.c
+> +++ b/drivers/edac/edac_device.c
+> @@ -587,12 +587,20 @@ void edac_device_handle_ce_count(struct edac_device_ctl_info *edac_dev,
+>  	if (instance->nr_blocks > 0) {
+>  		block = instance->blocks + block_nr;
+>  		block->counters.ce_count += count;
+> +
+> +		/* Notify block sysfs attribute change */
+> +		if (block->kn_ce)
+> +			sysfs_notify_dirent(block->kn_ce);
+>  	}
+>  
+>  	/* Propagate the count up the 'totals' tree */
+>  	instance->counters.ce_count += count;
+>  	edac_dev->counters.ce_count += count;
+>  
+> +	/* Notify instance sysfs attribute change */
+> +	if (instance->kn_ce)
+> +		sysfs_notify_dirent(instance->kn_ce);
+> +
+>  	if (edac_device_get_log_ce(edac_dev))
+>  		edac_device_printk(edac_dev, KERN_WARNING,
+>  				   "CE: %s instance: %s block: %s count: %d '%s'\n",
+> @@ -633,12 +641,20 @@ void edac_device_handle_ue_count(struct edac_device_ctl_info *edac_dev,
+>  	if (instance->nr_blocks > 0) {
+>  		block = instance->blocks + block_nr;
+>  		block->counters.ue_count += count;
+> +
+> +		/* Notify block sysfs attribute change */
+> +		if (block->kn_ue)
+> +			sysfs_notify_dirent(block->kn_ue);
+>  	}
+>  
+>  	/* Propagate the count up the 'totals' tree */
+>  	instance->counters.ue_count += count;
+>  	edac_dev->counters.ue_count += count;
+>  
+> +	/* Notify instance sysfs attribute change */
+> +	if (instance->kn_ue)
+> +		sysfs_notify_dirent(instance->kn_ue);
+> +
+>  	if (edac_device_get_log_ue(edac_dev))
+>  		edac_device_printk(edac_dev, KERN_EMERG,
+>  				   "UE: %s instance: %s block: %s count: %d '%s'\n",
+> diff --git a/drivers/edac/edac_device.h b/drivers/edac/edac_device.h
+> index fc2d2c218064..459514ea549e 100644
+> --- a/drivers/edac/edac_device.h
+> +++ b/drivers/edac/edac_device.h
+> @@ -127,6 +127,10 @@ struct edac_device_block {
+>  
+>  	/* edac sysfs device control */
+>  	struct kobject kobj;
+> +
+> +	/* kern fs node for block ue_count and ce count attributes*/
+> +	struct kernfs_node *kn_ue;
+> +	struct kernfs_node *kn_ce;
+>  };
+>  
+>  /* device instance control structure */
+> @@ -141,6 +145,10 @@ struct edac_device_instance {
+>  
+>  	/* edac sysfs device control */
+>  	struct kobject kobj;
+> +
+> +	/* kern fs node for block ue_count and ce count attributes*/
+> +	struct kernfs_node *kn_ue;
+> +	struct kernfs_node *kn_ce;
+>  };
+>  
+>  
+> diff --git a/drivers/edac/edac_device_sysfs.c b/drivers/edac/edac_device_sysfs.c
+> index 5e7593753799..d1e04a9296c7 100644
+> --- a/drivers/edac/edac_device_sysfs.c
+> +++ b/drivers/edac/edac_device_sysfs.c
+> @@ -562,6 +562,13 @@ static int edac_device_create_block(struct edac_device_ctl_info *edac_dev,
+>  	}
+>  	kobject_uevent(&block->kobj, KOBJ_ADD);
+>  
+> +	/*
+> +	 * Save kernfs pointer for ue count and ce count
+> +	 * to notify from any context when attributes change
+> +	 */
+> +	block->kn_ue = sysfs_get_dirent(block->kobj.sd, "ue_count");
+> +	block->kn_ce = sysfs_get_dirent(block->kobj.sd, "ce_count");
+> +
+>  	return 0;
+>  
+>  	/* Error unwind stack */
+> @@ -594,6 +601,9 @@ static void edac_device_delete_block(struct edac_device_ctl_info *edac_dev,
+>  		}
+>  	}
+>  
+> +	block->kn_ue = NULL;
+> +	block->kn_ce = NULL;
+> +
 
-This speeds up the following hackbench workload on a 192 cores AMD EPYC
-9654 96-Core Processor (over 2 sockets):
+Isn't there a possibility for a race condition here? It seems to me that
+between the moment the attribute files are removed with
+sysfs_remove_file() a few lines above, and the moment block->kn_ue and
+block->kn_ce are nulled, sysfs_notify_dirent() can be called from
+edac_device_handle_ce_count() with an block->kn_ce that refers to a
+deleted file.
 
-hackbench -g 32 -f 20 --threads --pipe -l 480000 -s 100
+>  	/* unregister this block's kobject, SEE:
+>  	 *	edac_device_ctrl_block_release() callback operation
+>  	 */
+> @@ -660,6 +670,13 @@ static int edac_device_create_instance(struct edac_device_ctl_info *edac_dev,
+>  	edac_dbg(4, "Registered instance %d '%s' kobject\n",
+>  		 idx, instance->name);
+>  
+> +	/*
+> +	 * Save kernfs pointer for ue count and ce count
+> +	 * to notify from any context when attributes change
+> +	 */
+> +	instance->kn_ue = sysfs_get_dirent(instance->kobj.sd, "ue_count");
+> +	instance->kn_ce = sysfs_get_dirent(instance->kobj.sd, "ce_count");
+> +
+>  	return 0;
+>  
+>  	/* error unwind stack */
+> @@ -682,6 +699,9 @@ static void edac_device_delete_instance(struct edac_device_ctl_info *edac_dev,
+>  
+>  	instance = &edac_dev->instances[idx];
+>  
+> +	instance->kn_ue = NULL;
+> +	instance->kn_ce = NULL;
+> +
+>  	/* unregister all blocks in this instance */
+>  	for (i = 0; i < instance->nr_blocks; i++)
+>  		edac_device_delete_block(edac_dev, &instance->blocks[i]);
+> -- 
+> 2.31.1
+>
 
-from 49s to 32s. (34% speedup)
-
-We can observe that the number of migrations is reduced significantly
-(-94%) with this patch, which may explain the speedup:
-
-Baseline:      118M cpu-migrations  (9.286 K/sec)
-With patch:      7M cpu-migrations  (0.709 K/sec)
-
-As a consequence, the stalled-cycles-backend are reduced:
-
-Baseline:     8.16% backend cycles idle
-With patch:   6.70% backend cycles idle
-
-Interestingly, the rate of context switch increases with the patch, but
-it does not appear to be an issue performance-wise:
-
-Baseline:     454M context-switches (35.677 K/sec)
-With patch:   654M context-switches (62.290 K/sec)
-
-This was developed as part of the investigation into a weird regression
-reported by AMD where adding a raw spinlock in the scheduler context
-switch accelerated hackbench. It turned out that changing this raw
-spinlock for a loop of 10000x cpu_relax within do_idle() had similar
-benefits.
-
-This patch achieves a similar effect without the busy-waiting by
-allowing select_task_rq to favor almost idle previously used CPUs based
-on the CPU load of that CPU. The threshold of 0.1% avg_load for almost
-idle CPU load has been identified empirically using the hackbench
-workload.
-
-Feedback is welcome. I am especially interested to learn whether this
-patch has positive or detrimental effects on performance of other
-workloads.
-
-Link: https://lore.kernel.org/r/09e0f469-a3f7-62ef-75a1-e64cec2dcfc5@amd.com
-Link: https://lore.kernel.org/lkml/20230725193048.124796-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230810140635.75296-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/f6dc1652-bc39-0b12-4b6b-29a2f9cd8484@amd.com/
-Link: https://lore.kernel.org/lkml/20230822113133.643238-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/20230823060832.454842-1-aaron.lu@intel.com/
-Link: https://lore.kernel.org/lkml/20230905171105.1005672-1-mathieu.desnoyers@efficios.com/
-Link: https://lore.kernel.org/lkml/cover.1695704179.git.yu.c.chen@intel.com/
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <vschneid@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
-Cc: Aaron Lu <aaron.lu@intel.com>
-Cc: Chen Yu <yu.c.chen@intel.com>
-Cc: Tim Chen <tim.c.chen@intel.com>
-Cc: K Prateek Nayak <kprateek.nayak@amd.com>
-Cc: Gautham R . Shenoy <gautham.shenoy@amd.com>
-Cc: x86@kernel.org
----
- kernel/sched/fair.c     | 18 +++++++++++++-----
- kernel/sched/features.h |  6 ++++++
- 2 files changed, 19 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 1d9c2482c5a3..65a7d923ea61 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6599,6 +6599,14 @@ static int wake_wide(struct task_struct *p)
- 	return 1;
- }
- 
-+static bool
-+almost_idle_cpu(int cpu, struct task_struct *p)
-+{
-+	if (!sched_feat(WAKEUP_BIAS_PREV_IDLE))
-+		return false;
-+	return cpu_load_without(cpu_rq(cpu), p) <= LOAD_AVG_MAX / 1000;
-+}
-+
- /*
-  * The purpose of wake_affine() is to quickly determine on which CPU we can run
-  * soonest. For the purpose of speed we only consider the waking and previous
-@@ -6612,7 +6620,7 @@ static int wake_wide(struct task_struct *p)
-  *			  for the overloaded case.
-  */
- static int
--wake_affine_idle(int this_cpu, int prev_cpu, int sync)
-+wake_affine_idle(int this_cpu, int prev_cpu, int sync, struct task_struct *p)
- {
- 	/*
- 	 * If this_cpu is idle, it implies the wakeup is from interrupt
-@@ -6632,7 +6640,7 @@ wake_affine_idle(int this_cpu, int prev_cpu, int sync)
- 	if (sync && cpu_rq(this_cpu)->nr_running == 1)
- 		return this_cpu;
- 
--	if (available_idle_cpu(prev_cpu))
-+	if (available_idle_cpu(prev_cpu) || almost_idle_cpu(prev_cpu, p))
- 		return prev_cpu;
- 
- 	return nr_cpumask_bits;
-@@ -6687,7 +6695,7 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
- 	int target = nr_cpumask_bits;
- 
- 	if (sched_feat(WA_IDLE))
--		target = wake_affine_idle(this_cpu, prev_cpu, sync);
-+		target = wake_affine_idle(this_cpu, prev_cpu, sync, p);
- 
- 	if (sched_feat(WA_WEIGHT) && target == nr_cpumask_bits)
- 		target = wake_affine_weight(sd, p, this_cpu, prev_cpu, sync);
-@@ -7139,7 +7147,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	 */
- 	lockdep_assert_irqs_disabled();
- 
--	if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
-+	if ((available_idle_cpu(target) || sched_idle_cpu(target) || (prev == target && almost_idle_cpu(target, p))) &&
- 	    asym_fits_cpu(task_util, util_min, util_max, target))
- 		return target;
- 
-@@ -7147,7 +7155,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	 * If the previous CPU is cache affine and idle, don't be stupid:
- 	 */
- 	if (prev != target && cpus_share_cache(prev, target) &&
--	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
-+	    (available_idle_cpu(prev) || sched_idle_cpu(prev) || almost_idle_cpu(prev, p)) &&
- 	    asym_fits_cpu(task_util, util_min, util_max, prev))
- 		return prev;
- 
-diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index ee7f23c76bd3..b06d06c2b728 100644
---- a/kernel/sched/features.h
-+++ b/kernel/sched/features.h
-@@ -37,6 +37,12 @@ SCHED_FEAT(CACHE_HOT_BUDDY, true)
-  */
- SCHED_FEAT(WAKEUP_PREEMPTION, true)
- 
-+/*
-+ * Bias runqueue selection towards previous runqueue if it is almost
-+ * idle.
-+ */
-+SCHED_FEAT(WAKEUP_BIAS_PREV_IDLE, true)
-+
- SCHED_FEAT(HRTICK, false)
- SCHED_FEAT(HRTICK_DL, false)
- SCHED_FEAT(DOUBLE_TICK, false)
--- 
-2.39.2
+Best,
+Adrien
 
