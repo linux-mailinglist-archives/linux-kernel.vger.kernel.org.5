@@ -2,225 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5627B2F40
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:33:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C06A7B2F4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233011AbjI2Jdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 05:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
+        id S232952AbjI2JeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 05:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232932AbjI2Jdf (ORCPT
+        with ESMTP id S233014AbjI2JeG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:33:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39543195;
-        Fri, 29 Sep 2023 02:33:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D9F8C433C8;
-        Fri, 29 Sep 2023 09:32:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695980011;
-        bh=5rEQjJQmUmhQcZE/S/zbC0z+O4aP1HcivNZvR+uMTdw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j3Z7MPGXgH3qxJhUlGKswKaevoMz5lRlYfLKv517rB572Uft036HOzVnh6y+Fta2y
-         IoP7pRk6lJWa27fv+jFujIlmXsGfS+YQww12NsbvPCYDl6f8XCPE+CtURkcHaeicsG
-         yrkS/+0BXoBXAhDuBIWkGS4iWyGcgZc4uj5K1I6XTsFJQGfVSUCd06bbdxYUiSeitY
-         kWvaORdHP4IXSdIX2Ck5PihMbYV+j7YqPan4YQc6tbETcfSrUPTc518VDuKuEt3jeG
-         gYpsCzcJzJ2TfBOID0I9Ah10OPTMXVGJPcaLChcuIuOHlJVeXlo8F4Hi+JnhGg6W4h
-         6HAwcZKgDftHQ==
-Date:   Fri, 29 Sep 2023 11:32:49 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        David Sterba <dsterba@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?utf-8?B?SGrDuG5uZXbDpWc=?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Mattia Dongili <malattia@linux.it>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Brad Warrum <bwarrum@linux.ibm.com>,
-        Ritu Agarwal <rituagar@linux.ibm.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Sterba <dsterba@suse.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Ian Kent <raven@themaw.net>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Christoph Hellwig <hch@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Bob Copeland <me@bobcopeland.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Anders Larsen <al@alarsen.net>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Evgeniy Dushistov <dushistov@mail.ru>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
-        linux-afs@lists.infradead.org, autofs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, linux-efi@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev,
-        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
-        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
-        linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org,
-        linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Subject: Re: [PATCH 87/87] fs: move i_blocks up a few places in struct inode
-Message-ID: <20230929-keimt-umspannen-bfd12d2c2033@brauner>
-References: <20230928110554.34758-1-jlayton@kernel.org>
- <20230928110554.34758-3-jlayton@kernel.org>
- <CAHk-=wij_42Q9WHY898r-gugmT5c-1JJKRh3C+nTUd1hc1aeqQ@mail.gmail.com>
+        Fri, 29 Sep 2023 05:34:06 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2075.outbound.protection.outlook.com [40.107.244.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF622CD2;
+        Fri, 29 Sep 2023 02:33:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HX9E8xIM/cQirPMu+ERb/wXABIz/YADue1EV+sWM4mApJ5iuvpYWKL5eZrz5W3IgLOktOy+j1O5+1nnjOWTWVSOZ4sac/PEU9gPXA/9Niw2hrA9lvaI8NrtBv5xdNS7AVKbuxN5wA4oo7ZBLFeuQ6zSiXDsCzV8qWb0wRFtSxc0pGrVwC1FRM6SPjFh2IfdTOBQp4CFH6Ms8e3DwS8yGs2QbEEo6CO5EOhk8SPqVY4F+xugGpA2I40mVuxagFq4vz1lXz5liQbmXpGd55MIhkCoXj6pTN+9kG7FZU7DxRKhDO75pY5rQbFHV4loxBM/vGBuZfvmSsdnp6UERlqHvzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Gq2mO3S0PU0fNKldEbNaK82ZdC2QgXy10Vy2cwzha5U=;
+ b=Sbi+SsjmZLuzvCi4DEFB4OvZQ9nyXwtEi6Y8mYoa9Ehg4fMo0bKlhVbhus67UGJZe5ZYaG5jWBZjMxZz9UO6F4b8vDCzREhz9kzHtstHOve0/yZ44ldx3ZotPf/1beDsS4QgTyuU+pxcm6g8MA4GhXKKKEvGK0ntet+WkWWQ/dzNf6SeuqwiIyTJrSFxz81nO9ztYCguG1ebsrihSdoy967y5YM60o3HJGYC0dQyRnPs4o0kbn72oZcETILEO5s35srvtKClJtgaI+lbD8QBZIDDWPWf3tzw2FtnPg4cFr+jFdr5Gb2cEw/8DgqhMeejGbccA1UfvoBhbypQc8pI/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Gq2mO3S0PU0fNKldEbNaK82ZdC2QgXy10Vy2cwzha5U=;
+ b=WkIdwVjn5XI4IenYXTzU4z/6wqDMIlqwPszR8bldSv4i23pVvrLqC68TohlaP0L7Ve7iAn4t+w4q/bngsLemzyD4bIy7I9UVOd94yiP5Nct/h/LuHrWGbNkKsvEvH0ByxjbdADS6CzuSk8iDav16RLEa4LSWQ8sqqavwxiPtdzA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5827.namprd12.prod.outlook.com (2603:10b6:208:396::19)
+ by CH2PR12MB4168.namprd12.prod.outlook.com (2603:10b6:610:a8::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26; Fri, 29 Sep
+ 2023 09:33:49 +0000
+Received: from BL1PR12MB5827.namprd12.prod.outlook.com
+ ([fe80::3b23:4df3:c8f4:4585]) by BL1PR12MB5827.namprd12.prod.outlook.com
+ ([fe80::3b23:4df3:c8f4:4585%4]) with mapi id 15.20.6813.017; Fri, 29 Sep 2023
+ 09:33:49 +0000
+Message-ID: <f89afd2c-8870-077c-b4b4-368784f6d54c@amd.com>
+Date:   Fri, 29 Sep 2023 15:03:35 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/5] PCI: endpoint: pci-epf-test: add doorbell test
+Content-Language: en-US
+To:     Frank Li <Frank.Li@nxp.com>, manivannan.sadhasivam@linaro.org
+Cc:     aisheng.dong@nxp.com, bhelgaas@google.com,
+        devicetree@vger.kernel.org, festevam@gmail.com,
+        imx@lists.linux.dev, jdmason@kudzu.us, kernel@pengutronix.de,
+        kishon@kernel.org, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
+References: <20230911220920.1817033-1-Frank.Li@nxp.com>
+ <20230911220920.1817033-4-Frank.Li@nxp.com>
+From:   Kishon Vijay Abraham I <kvijayab@amd.com>
+In-Reply-To: <20230911220920.1817033-4-Frank.Li@nxp.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0125.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:96::11) To BL1PR12MB5827.namprd12.prod.outlook.com
+ (2603:10b6:208:396::19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wij_42Q9WHY898r-gugmT5c-1JJKRh3C+nTUd1hc1aeqQ@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5827:EE_|CH2PR12MB4168:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5540b74b-189c-4a73-351c-08dbc0cf2fad
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Pz7EsmQK5HkHVsQ3FA/R6+IvDvWyV24jfUbAbpPVfkhdP/5RD4HZ5DBT1xpq6fEgSaDi7Mdxwoewkky22aRH9wDahFxR9GCCV2qNY+l2fykU/cxGyNceojPZOu4e7KH/fAtQwJxNdPTZWSJNwWC5a9kFzy3iDESib2Wg+CmYSKA4VkxffprbOhKq9GXaLau4W0J7Mn23RqjcmtUzjaN6UH8H84tAlNXlHykRBWrSCwM2j7LKyugqEhV3W0OPPH3hi1xJGvCnLkymAzDHs9evaL7hJHutf+CE+5crfP5CjY/x+8ZllUuhct8cuZ/Al2XGAvS8ssnIiQEwofaXBKxZ9OJvmWND4Yflln88ZpiKZnYDzcqYwrL3YqU+Wc+IzIjEj0DYp5dh7vuCxSvdCJVpz0E2MJ6vZIniPrmvUJHkcVQOJ5GECbffcBzj7m8VbfafEX1kbFeIIoZdDbgA3AjwLdDnYO0UuG4M1vE8AWYdYR4EDCTr4KYyEEzTy704Xeg4cAIkPsDtf6m7Nkbt2jtNLzWaM+OWEAdLVog4L4N9rTy/I2ryiN7q6RSv7ZPWIMJ50+7HpwHB1ZkbnvTpZ62YpUVLyNBbHJa5ePtm75eMPsoycMGPo9jWX9V27vbu8b+P3AmU/LVLFQbQIxWWXUNfNA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5827.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(136003)(376002)(39860400002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(6506007)(6486002)(6666004)(6512007)(53546011)(2616005)(26005)(66556008)(66946007)(31696002)(478600001)(38100700002)(66476007)(83380400001)(2906002)(7416002)(8936002)(8676002)(4326008)(316002)(41300700001)(5660300002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aGVxS1FrWTc3TVBtMjNnb2dGU2cvbzM1MEVsL3lJdW5hS1BDbFIyWXNrRjA3?=
+ =?utf-8?B?MG5MSGpEamkxMWl5SVJValF2UG9ZbHBTT0h0T0FwNlJGTWVpRy95UzUrMkhT?=
+ =?utf-8?B?Y1lnbWt6M0loVzBTeTFoNTBVRGFCT0RTY0MvMmFnTlY0N2c4aEk3M2NObkx0?=
+ =?utf-8?B?N2VOOEt0aUJRVEpHVTJOcmszaXdEOXg0djZzZ1Y4WEVOWE9FalhwK3FmNG5k?=
+ =?utf-8?B?djJ2bzNSdzhtaHlOanl4S0tqcUtaTVdFRTJycWZ4QW9QV3pNci9kZCtDdUwr?=
+ =?utf-8?B?T3JoV3h6Tmpjdnk4TmJudmp1eG5lamo1MnRxeldlSzVXd2tDSFJ1RjJHbjFH?=
+ =?utf-8?B?ZkxCbFFZVXpMUmRKSFJWQWxjdU9hRXhFRTcyNjUvRmYzSC9odmhwQkVOMVFC?=
+ =?utf-8?B?dEMrVjlvQ2EwNHV4cDZ2cFQ5Y0VXR1FmMGVqN2dLVXlhQ0NYK0lvK0l1dXJu?=
+ =?utf-8?B?anFrczF0bWVBajQ3YzdVNUczUEFTSFNNdjJJSkZEWEdBelFJNlpaTkd6Y2Q2?=
+ =?utf-8?B?cy8xUEN4ZTd6cGtsWUpvZFNPVnIxNUlpZ2tvQmNiYTdMY3NxbURSRnoxSmJU?=
+ =?utf-8?B?UnJtVnpnZnBkQzBqS1NCMll0dkFzeS9VZ1NGd3dGRk50Ym96S3RHcGN6NGFj?=
+ =?utf-8?B?eEZ2VU8ya3dBNkZmNFB4QTM4cEc1NlNYOXk5YTk2MmJWVm92cER2R1orZXpC?=
+ =?utf-8?B?YnIraWphY290YllzaVlzeW5NOW0rcldYZmZlR2NGVjNsUVhzSlpzaEg3SFhy?=
+ =?utf-8?B?QVpQZE9mcUVLR29tTlZKSWtWUVZOYjBHM0dGcG5vOFZmdUtqNjlIb0dnSXpF?=
+ =?utf-8?B?TFhyakZET3JIS3IvVmgwWGZYVW1jekhYUkZSU3F5SE8xRDd1dng5V0RTSzVJ?=
+ =?utf-8?B?WW84czVqM0wxWjBwS3o1alR6aVMzQUdvYmExanRvOU5uUTZUVlpiM05KNzdO?=
+ =?utf-8?B?R2lYWXluVHNsQnJLa1QrYjVabStHeDg0Y1V2NFJQbXJJTERYeU5rODZNazV0?=
+ =?utf-8?B?N3ROMW53TTJtRXFVZFJyenY1YzU0K21wK2NYUkd2a25BejkrQmxFc0ZHUytI?=
+ =?utf-8?B?VXdOV3VJeC9BNmJ0a04zQkdZSUpKK3RBZ1dnNFFwMmorSEpPcDVBME4yMkRI?=
+ =?utf-8?B?dWxwdDNmSUViYTk2LzA4VEt4SEhsVFl3M0Q0eGpjbnR0U0g2dDlZSWJnYXFP?=
+ =?utf-8?B?T2FXT3J2OE9HN0Y2U2ZhS3lHbVJ1WHdsb284YzBuQkdWZDRvamxtQlhHc0Vp?=
+ =?utf-8?B?WHZIMGdtakNhdDcyQ0p4RmxBcXdmbk9YajJabVhiTXRsTmxWa2xzanpoektK?=
+ =?utf-8?B?cm55dHNRNlF4cGtURitiRVlIK0xCSU1KanExc0JCUUNiWFBCWEVNZTVYUjdZ?=
+ =?utf-8?B?TzRDUlJBMHdMa1h1ZDJTcWpTcFZ5U2VBeWZlWEFoT2VkczJDcmxnbEJKOFVa?=
+ =?utf-8?B?dE50UXltdlY0K2d2NmF4U0JwdmpSV0tUcjBJQkRQWG9CbUhlR0hjTm9mTXJs?=
+ =?utf-8?B?ZE5FRkV1T2ZNSjhIQ0wrWHU4UDFNTEg0cHV1N3ljeWdCNFZzaWxyS215Mi9Y?=
+ =?utf-8?B?bk4xZVV0Szg5WEVpOUlRbGFDaWIrUmtNOWVuWE1sdDh1NS9Sayt3aktONnpp?=
+ =?utf-8?B?dElxSkliUmxUQjNFbjMrSnJLeXY4OGNURWk0dFpyVllkcFU0TlV3N2VDVlhz?=
+ =?utf-8?B?SWlsUUFxY3NlR2VjYkcvMzZ5ZjM2dmJjaXJBQmxEaitmNEkvQkNQNnJLV091?=
+ =?utf-8?B?UFdiSk1FMnNrbFF1TUFUUjNBQ1RiVE9mOHJBNENLdGg5UXBnejIwRHAzUmZR?=
+ =?utf-8?B?SDNqMXlJcU1vN2E0ZW9ZTVVudkY2VEZxZ0RVSS90d2ZPeFBEa3pKQ1JxODEx?=
+ =?utf-8?B?OXBiemd4TU5Ya1VNeStqTEV1VnBUVnhzemxzRGlQaUlyVzlWdHFVbjZxaGlE?=
+ =?utf-8?B?UGF5RVJWUUdwTXFWaWU5d3BMNHJUMU5YeXAyRDVyVHREQUhXUHFhMnlaanRx?=
+ =?utf-8?B?RTVlQjFJZStVY1Y4RjZSTzZJeHkyMXhVaVJtdEZjS2JiOVdjZFJIcXMvWmZE?=
+ =?utf-8?B?OXlTY1BBZmM1aDlrU0RyUzZzYnQ0dXhyRnVDR2pFekNWYkE4QmhBckRpekhB?=
+ =?utf-8?Q?rUsJOspAVYoSn3aDDC68iHQ4o?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5540b74b-189c-4a73-351c-08dbc0cf2fad
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5827.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 09:33:49.7563
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: r8cizK8KvZHzEGPewKL33g9OhnHbHX3LK81+yZQ1jY37edWxF0cDvOSttlh8RptAAxws7bJzA1DhWwWoY2RGaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4168
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 10:41:34AM -0700, Linus Torvalds wrote:
-> On Thu, 28 Sept 2023 at 04:06, Jeff Layton <jlayton@kernel.org> wrote:
-> >
-> > Move i_blocks up above the i_lock, which moves the new 4 byte hole to
-> > just after the timestamps, without changing the size of the structure.
-> 
-> I'm sure others have mentioned this, but 'struct inode' is marked with
-> __randomize_layout, so the actual layout may end up being very
-> different.
-> 
-> I'm personally not convinced the whole structure randomization is
-> worth it - it's easy enough to figure out for any distro kernel since
-> the seed has to be the same across machines for modules to work, so
-> even if the seed isn't "public", any layout is bound to be fairly
-> easily discoverable.
-> 
-> So the whole randomization only really works for private kernel
-> builds, and it adds this kind of pain where "optimizing" the structure
-> layout is kind of pointless depending on various options.
-> 
-> I certainly *hope* no distro enables that pointless thing, but it's a worry.
+Hi Frank,
 
-They don't last we checked. Just last cycle we moved stuff in struct
-file around to optimize things and we explicitly said we don't give a
-damn about struct randomization. Anyone who enables this will bleed
-performance pretty badly, I would reckon.
+On 9/12/2023 3:39 AM, Frank Li wrote:
+> Add three register: doorbell_bar, doorbell_addr, doorbell_data,
+> doorbell_done. Call pci_epf_alloc_doorbell() all a doorbell address space.
+> 
+> Root complex(RC) side driver can trigger pci-epc-test's doorbell callback
+> handler by write doorbell_data to mapped doorbell_bar's address space.
+> 
+> pci-epc-test will set doorbell_done in doorbell callback.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>   drivers/pci/endpoint/functions/pci-epf-test.c | 59 ++++++++++++++++++-
+>   1 file changed, 58 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+> index 1f0d2b84296a3..566549919b87b 100644
+> --- a/drivers/pci/endpoint/functions/pci-epf-test.c
+> +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+> @@ -11,6 +11,7 @@
+>   #include <linux/dmaengine.h>
+>   #include <linux/io.h>
+>   #include <linux/module.h>
+> +#include <linux/msi.h>
+>   #include <linux/slab.h>
+>   #include <linux/pci_ids.h>
+>   #include <linux/random.h>
+> @@ -39,17 +40,21 @@
+>   #define STATUS_IRQ_RAISED		BIT(6)
+>   #define STATUS_SRC_ADDR_INVALID		BIT(7)
+>   #define STATUS_DST_ADDR_INVALID		BIT(8)
+> +#define STATUS_DOORBELL_SUCCESS		BIT(9)
+>   
+>   #define FLAG_USE_DMA			BIT(0)
+>   
+>   #define TIMER_RESOLUTION		1
+>   
+> +#define MAGIC_VERSION_MASK		GENMASK(7, 0)
+> +
+>   static struct workqueue_struct *kpcitest_workqueue;
+>   
+>   struct pci_epf_test {
+>   	void			*reg[PCI_STD_NUM_BARS];
+>   	struct pci_epf		*epf;
+>   	enum pci_barno		test_reg_bar;
+> +	enum pci_barno		doorbell_bar;
+>   	size_t			msix_table_offset;
+>   	struct delayed_work	cmd_handler;
+>   	struct dma_chan		*dma_chan_tx;
+> @@ -74,6 +79,9 @@ struct pci_epf_test_reg {
+>   	u32	irq_type;
+>   	u32	irq_number;
+>   	u32	flags;
+> +	u32	doorbell_bar;
+
+You could extend test_reg_bar for doorbell to avoid using additional BAR.
+
+
+> +	u32	doorbell_addr;
+> +	u32	doorbell_data;
+>   } __packed;
+>   
+
+Thanks,
+Kishon
