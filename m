@@ -2,149 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 695B57B39E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0ECC7B39E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:17:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233874AbjI2SQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 14:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52240 "EHLO
+        id S233777AbjI2SR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 14:17:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233538AbjI2SQi (ORCPT
+        with ESMTP id S233804AbjI2SR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 14:16:38 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9AAD1AE;
-        Fri, 29 Sep 2023 11:16:33 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2a02:8010:65b5:0:1ac0:4dff:feee:236a])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: alarumbe)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C49A66607349;
-        Fri, 29 Sep 2023 19:16:30 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696011390;
-        bh=DJoaVMy8ENkNzQozP+tziMFSLiEKCxJ8BZ8mfkcAcBE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IgTDB7VaTVIFK/yXJgy3tq2tI1RvDZ/RInfcINl5Amjr4uecWiS/EbWOxKMc+Aw/m
-         QaaqDnCQElS4qTfkeCFuh7/WuWQUEJK1HEL6H7Wx5I1vhCcaqkCjy5enMbxKycjRA9
-         iiJ6HiUmQUqEgtw5OXVlUwSPa+gVAkHIqPeBx6an+ewWA9IJQg/Xz8PzEXB22No7MD
-         gtUx4Cib0xlnHpX48z6jmlfJew5gTJuOOsXnwyYqL3UrZU4ejMZoyyXsPP1bMwk2/6
-         6NcCAeNSu/uh+sEepmekIRYbn5HjDjXnxSiH8FsgWc2cXduUU6memnuK0DIJptzxnN
-         Xd4pwJ/W4x9ww==
-From:   =?UTF-8?q?Adri=C3=A1n=20Larumbe?= <adrian.larumbe@collabora.com>
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        robdclark@gmail.com, quic_abhinavk@quicinc.com,
-        dmitry.baryshkov@linaro.org, sean@poorly.run,
-        marijn.suijten@somainline.org, robh@kernel.org,
-        steven.price@arm.com
-Cc:     adrian.larumbe@collabora.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, healych@amazon.com,
-        kernel@collabora.com, tvrtko.ursulin@linux.intel.com,
-        boris.brezillon@collabora.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v8 5/5] drm/panfrost: Implement generic DRM object RSS reporting function
-Date:   Fri, 29 Sep 2023 19:14:31 +0100
-Message-ID: <20230929181616.2769345-6-adrian.larumbe@collabora.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230929181616.2769345-1-adrian.larumbe@collabora.com>
-References: <20230929181616.2769345-1-adrian.larumbe@collabora.com>
+        Fri, 29 Sep 2023 14:17:26 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9331A5;
+        Fri, 29 Sep 2023 11:17:14 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-69101022969so12987633b3a.3;
+        Fri, 29 Sep 2023 11:17:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696011434; x=1696616234; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S4L3CyM2KD+Bhc4bJOeMsRzzCpxEuAkcHebE0BFIhjE=;
+        b=jnNjkUJX9fh3CAyx9b9KmbLqYFBKyPxAkIp0FGPkfk1lzXdROpbxnonWzKIpQzJM5i
+         0e2GZWxBfyfYetWxBG3Oiwcg1V+7xYVoYTeLLPWfY+r4I3OSKWIPpoXjy3n8VZT87U3T
+         PxIX9fn2jHKUePJGki7Qx2aUvW4r+X8eDX5b08IsNnfTWgf7pVVzl+aKhH8ZDZfBJzoj
+         DjoWIRQXX4jWKfiIl3e2wj4n2rWYBxxSWeEjVEgEmQFkwC8MN5P6L2Q1lRradRXQ6kNA
+         jeY1AJzJusqBhVHuorSLjrgl3V4Yns2NlzaW0uG1KjwJ3xGTygByteasf3M53tre4UNv
+         51Rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696011434; x=1696616234;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=S4L3CyM2KD+Bhc4bJOeMsRzzCpxEuAkcHebE0BFIhjE=;
+        b=vmyJ68qED6d6yozaxQfhRFDzagWFAFX7X8z5YQDsLSCO9g6PGRbvSuX34W3i9wTTkO
+         w/tJra8SPVLqMEgf0voU1jFfXDOw6LBnpy7lN2ew5CajW5XcQsMH6FIvj2+cpcCBvhoY
+         u4Ca+OeEDD7sU9ffeQjcJeXtsD3cVe1KEMWEhJ7nZ2oLChrOOehtV5DPKZqqvt5tHjbN
+         EJ/rTHKl9POqPLCvMfHTKyKx3vpFtjAl1wm6LP4Qv+lWczQzOkFJ8QzdhTW3GUzLtafq
+         vrq//N0PNXDC1Jf/m5kGr1Y5yUMZAPUKBNpohmBKYE8vs+/vUhOiPE40zPl7wVBezPCh
+         BNNw==
+X-Gm-Message-State: AOJu0Ywkgm+5PaJqsP8bcVC2//hWzCc/gwCR79t510z/EOJ8RTsaajwa
+        swYcphrqQEvs64lzpiPJ9JQ=
+X-Google-Smtp-Source: AGHT+IHRn9NtuT89nl3ZXIHaQZ4qLfOhCqEnsf7Txzjq31uEbwhnFHCeEyskUB/5E4VwIq1/0vHdrg==
+X-Received: by 2002:a05:6a00:852:b0:691:da6:47a with SMTP id q18-20020a056a00085200b006910da6047amr5678328pfk.31.1696011433596;
+        Fri, 29 Sep 2023 11:17:13 -0700 (PDT)
+Received: from localhost (fwdproxy-prn-006.fbsv.net. [2a03:2880:ff:6::face:b00c])
+        by smtp.gmail.com with ESMTPSA id i14-20020aa787ce000000b006900cb919b8sm15326753pfo.53.2023.09.29.11.17.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 11:17:13 -0700 (PDT)
+From:   Nhat Pham <nphamcs@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     riel@surriel.com, hannes@cmpxchg.org, mhocko@kernel.org,
+        roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in memory controller (fix)
+Date:   Fri, 29 Sep 2023 11:17:12 -0700
+Message-Id: <20230929181712.3723495-1-nphamcs@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230928005723.1709119-2-nphamcs@gmail.com>
+References: <20230928005723.1709119-2-nphamcs@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BO's RSS is updated every time new pages are allocated on demand and mapped
-for the object at GPU page fault's IRQ handler, but only for heap buffers.
-The reason this is unnecessary for non-heap buffers is that they are mapped
-onto the GPU's VA space and backed by physical memory in their entirety at
-BO creation time.
+This fixlet disables the hugetlb memcg accounting behavior in cgroup v1.
 
-This calculation is unnecessary for imported PRIME objects, since heap
-buffers cannot be exported by our driver, and the actual BO RSS size is the
-one reported in its attached dmabuf structure.
-
-Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-Reviewed-by: Steven Price <steven.price@arm.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 ---
- drivers/gpu/drm/panfrost/panfrost_gem.c | 15 +++++++++++++++
- drivers/gpu/drm/panfrost/panfrost_gem.h |  5 +++++
- drivers/gpu/drm/panfrost/panfrost_mmu.c |  1 +
- 3 files changed, 21 insertions(+)
+ mm/memcontrol.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.c b/drivers/gpu/drm/panfrost/panfrost_gem.c
-index de238b71b321..0cf64456e29a 100644
---- a/drivers/gpu/drm/panfrost/panfrost_gem.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_gem.c
-@@ -209,6 +209,20 @@ static enum drm_gem_object_status panfrost_gem_status(struct drm_gem_object *obj
- 	return res;
- }
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d5dfc9b36acb..de6bd8ca87f5 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7081,6 +7081,7 @@ int mem_cgroup_hugetlb_charge_folio(struct folio *folio, gfp_t gfp)
+ 	int ret;
  
-+static size_t panfrost_gem_rss(struct drm_gem_object *obj)
-+{
-+	struct panfrost_gem_object *bo = to_panfrost_bo(obj);
-+
-+	if (bo->is_heap) {
-+		return bo->heap_rss_size;
-+	} else if (bo->base.pages) {
-+		WARN_ON(bo->heap_rss_size);
-+		return bo->base.base.size;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct drm_gem_object_funcs panfrost_gem_funcs = {
- 	.free = panfrost_gem_free_object,
- 	.open = panfrost_gem_open,
-@@ -221,6 +235,7 @@ static const struct drm_gem_object_funcs panfrost_gem_funcs = {
- 	.vunmap = drm_gem_shmem_object_vunmap,
- 	.mmap = drm_gem_shmem_object_mmap,
- 	.status = panfrost_gem_status,
-+	.rss = panfrost_gem_rss,
- 	.vm_ops = &drm_gem_shmem_vm_ops,
- };
- 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_gem.h b/drivers/gpu/drm/panfrost/panfrost_gem.h
-index ad2877eeeccd..13c0a8149c3a 100644
---- a/drivers/gpu/drm/panfrost/panfrost_gem.h
-+++ b/drivers/gpu/drm/panfrost/panfrost_gem.h
-@@ -36,6 +36,11 @@ struct panfrost_gem_object {
- 	 */
- 	atomic_t gpu_usecount;
- 
-+	/*
-+	 * Object chunk size currently mapped onto physical memory
-+	 */
-+	size_t heap_rss_size;
-+
- 	bool noexec		:1;
- 	bool is_heap		:1;
- };
-diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-index d54d4e7b2195..846dd697c410 100644
---- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-@@ -522,6 +522,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
- 		   IOMMU_WRITE | IOMMU_READ | IOMMU_NOEXEC, sgt);
- 
- 	bomapping->active = true;
-+	bo->heap_rss_size += SZ_2M;
- 
- 	dev_dbg(pfdev->dev, "mapped page fault @ AS%d %llx", as, addr);
+ 	if (mem_cgroup_disabled() ||
++		!cgroup_subsys_on_dfl(memory_cgrp_subsys) ||
+ 		!(cgrp_dfl_root.flags & CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING))
+ 		return 0;
  
 -- 
-2.42.0
-
+2.34.1
