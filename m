@@ -2,158 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E227B3AB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 21:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 200847B3ABD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 21:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233327AbjI2Th1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 15:37:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
+        id S233765AbjI2Thi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 15:37:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232985AbjI2Th0 (ORCPT
+        with ESMTP id S233392AbjI2Thd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 15:37:26 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD7FE7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 12:37:23 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id B55F5320030E;
-        Fri, 29 Sep 2023 15:37:22 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Fri, 29 Sep 2023 15:37:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1696016242; x=1696102642; bh=/r
-        nZ43krlTnKGjYuvqhBAItQLnGBofJgdfA6Jy4XxRE=; b=ZXTRiFHeE8YsIOex3R
-        ikNNS92U0h8K+/2JL0C7JTwZ+VWBkEbcGdCwCMcY+Ul1anNIvmTYBjqu5g5neLMT
-        M6iD/AdbrWVKtiBTCJbbJwlbWKN4rfV+nl+uatQpzy6uljYXQkwi7FUCFlP6bGOa
-        U7Q8oHWNTsOSMqrqBFnuV0JW2r168jjjDKY1VsVrhrLuenz+ZYZxD5w7UwmIqO7k
-        aN6a1MmX76TbzlZuo8CIiYMhzs7OMEtep2vjIq0cFh9t9dgEUYUvsxTfB+EE2n0u
-        2gyqdX/WWbW8XTRtzx0SE+837OtUJfgmDEQDIt6LVv5FZIJrlw69JmLPWi0Ve3Sd
-        HafQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1696016242; x=1696102642; bh=/rnZ43krlTnKG
-        jYuvqhBAItQLnGBofJgdfA6Jy4XxRE=; b=FTye3nUqUs9CxedjMOCorVMmR9bv+
-        6NpUjHhhBJZFlQcyKm0d5rMpsO+YximgVZHVzND9IWPIk54GOvTxemhM6+xJsMJy
-        9ZZP8bfT9SSNH2Bup/9TwuJdn4BTWAoQCA0/FdmrNfPHuQXH6rq/OviO22jz/GLZ
-        Fqotv7E+hCszhRCgR1dO/M8/sIXOPRFLuQoa6xXivZdodGzBL3ID32AnF0eoJUMB
-        SDOWiyjjjIcK7dn22mMQe6M2n+YLlpJwTWZTEtBvpT8zes6Z/jKSeH5uPZjWFQGx
-        CAQ8nw0HAfFyWEy4KYfyocAR+BV41+uPuXE5vZjErMeKyDO8QAE8CT4Dg==
-X-ME-Sender: <xms:cScXZegZSCNhyuxyl7xPChMRzWBjwY-T_BDIVczrpv9RUpQqOQ9SCA>
-    <xme:cScXZfCTzyb3VjRVQSOsRu1hUClW6u3Wt7GN-FrPCaaSCbEdNp5J02MlqzUq8gytg
-    BSUeXDbCiBAbqGucSg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrtddvgddufeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
-    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:cScXZWH1633Ct5-DhBZIcAiu3p4yFW0TcsGGOB6I5l8NkP8MLjWLCg>
-    <xmx:cScXZXQMPDSDPs9bO9xJQW3Jot5cRpgR1qWcuJDiIu5nzel7SQvfNw>
-    <xmx:cScXZbxJ9X_ev-B51klxQlO4vYKI3Rg4j_8hACJawrcvKLufgj4l6A>
-    <xmx:cicXZSnJD-4qY4ueVe43ZXE0e4ParBgTew_zKmlNPZxaU6NxztYz2w>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id B231AB60089; Fri, 29 Sep 2023 15:37:21 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
+        Fri, 29 Sep 2023 15:37:33 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1F61B2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 12:37:29 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-692d2e8c003so765029b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 12:37:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696016248; x=1696621048; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pz6XxrokHS8tD3oX5YP+XUhcoroypZl9efJWa+Ud3No=;
+        b=i5UNO6IicrDU38SjFqnx8ZSKG8LC+34CX3yvrdXgpLQ/GZkqJKAHlsWIqAJJMMAK2l
+         9LgOSriZcDVECFjg+6DSX14LWYALdrPyTwHCVM4Pgavlah6DsislwFVwPNboVJGsVCvI
+         GN9Ojr3nO8VtQ476zOqxJFNzVuavvmxegsRGA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696016248; x=1696621048;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pz6XxrokHS8tD3oX5YP+XUhcoroypZl9efJWa+Ud3No=;
+        b=Xo/ylM8xfTjLhAdWGddaIMGIYCsNFoA09CQ3kxHBfEp4a8+LrwtlbNJm9rfOicGe/p
+         oDh+MGHUKx9MLlatPmm1Fi6gfXDKSrBCvmN6G4s9i7iOP+CO9luXYQywYcWUvAj7JXBX
+         Ua+S79OfgqCdX8EPAKX1iCqUk+UO9Xq2wdU0qErQzn6y1CCwl7+Q74IQOdaL0MPKrPk/
+         sIxRd4G19U4Rsd7Wyvhfaz8Lkaacw5itJEgur+lUMefPo8c6efSVEc+KDk26vDMcQ16P
+         NI/F99sXfm00QSAbUBToIosNq7pucLGi3Dn/VeUTTppO/DQjXi3CN808ySwZzbb7oovx
+         Ncpw==
+X-Gm-Message-State: AOJu0YwSQV96zfQscRivjTe8zCeSUmIgLtWaUKjzt/0F6IX3v16Us1+6
+        2Sx2rxJc7X/3pFAun6X79+EbEw==
+X-Google-Smtp-Source: AGHT+IEnN6bxYqpGvl9ktJGtLQQ5mwKyJ3TeMFdfpa66gryjMY4jCfgv/JejeF1KEVIKsl05FW+Sew==
+X-Received: by 2002:a05:6a20:4420:b0:13e:debc:3657 with SMTP id ce32-20020a056a20442000b0013edebc3657mr7894820pzb.30.1696016248658;
+        Fri, 29 Sep 2023 12:37:28 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id i17-20020aa78b51000000b0066a4e561beesm15931376pfd.173.2023.09.29.12.37.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 12:37:28 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Karsten Keil <isdn@linux-pingi.de>,
+        Justin Stitt <justinstitt@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] isdn: kcapi: replace deprecated strncpy with strscpy_pad
+Date:   Fri, 29 Sep 2023 12:37:25 -0700
+Message-Id: <169601624548.3016093.6534786691169747871.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230922-strncpy-drivers-isdn-capi-kcapi-c-v1-1-55fcf8b075fb@google.com>
+References: <20230922-strncpy-drivers-isdn-capi-kcapi-c-v1-1-55fcf8b075fb@google.com>
 MIME-Version: 1.0
-Message-Id: <84b2de54-8337-42a3-a25c-a95cf2f3349f@app.fastmail.com>
-In-Reply-To: <20230929082009.71843-1-angelogioacchino.delregno@collabora.com>
-References: <20230929082009.71843-1-angelogioacchino.delregno@collabora.com>
-Date:   Fri, 29 Sep 2023 15:36:57 -0400
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "AngeloGioacchino Del Regno" 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-Cc:     =?UTF-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-        <nfraprado@collabora.com>, wenst@chromium.org,
-        "Matthias Brugger" <matthias.bgg@gmail.com>,
-        "Rob Herring" <robh@kernel.org>, amergnat@baylibre.com,
-        "Stephen Rothwell" <sfr@canb.auug.org.au>
-Subject: Re: [PATCH] MAINTAINERS: Add Angelo as MediaTek SoC co-maintainer
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023, at 04:20, AngeloGioacchino Del Regno wrote:
-> I am a top reviewer mainly for MediaTek SoC related patches in most
-> subsystems and I've also been upstreaming both improvements, fixes
-> and new drivers and devicetrees when required.
->
-> The MediaTek scene saw a generous increase in number of patches that
-> are sent to the lists every week, increasing the amount of required
-> efforts to maintain the MTK bits overall, and we will possibly see
-> even more of that.
->
-> For this reason, and also because of suggestions and encouragement
-> coming from the community, I'm stepping up to be a co-maintainer of
-> MediaTek SoCs support.
->
-> Signed-off-by: AngeloGioacchino Del Regno 
-> <angelogioacchino.delregno@collabora.com>
-> ---
->
-> P.S.: I tried to reach to Matthias for almost two months, but I couldn't
-> find any way to talk to him and he has been unresponsive on the mailing
-> lists as well.
->
-> P.P.S.: This also comes after Rob Herring's suggestion to have myself as
-> a MediaTek SoC co-maintainer [1] and support from other people.
->
-> [1]: https://lore.kernel.org/all/20230804225813.12493-1-robh@kernel.org/
+On Fri, 22 Sep 2023 11:49:14 +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> `buf` is used in this context as a data buffer with 64 bytes of memory
+> to be occupied by capi_manufakturer.
+> 
+> [...]
 
-Thanks for volunteering for this!
+Applied to for-next/hardening, thanks!
 
-I have no information on what Mattias is doing, but I see that he
-has not merged any patches since June, and that he never sent a 
-pull request for your patches that are still in his for-next
-branch.
+[1/1] isdn: kcapi: replace deprecated strncpy with strscpy_pad
+      https://git.kernel.org/kees/c/69cee158c9b0
 
-I hope he's going to be ok, but let's plan for you to take over
-for the moment, at least until Matthias is again able to keep
-maintaining the platform in the near future.
+Take care,
 
-Here is my suggestion for how to continue from here:
+-- 
+Kees Cook
 
-- Please send your MAINTAINERS file update to soc@kernel.org
-  along  with any urgent bugfixes you may have, so I can forward
-  them for 6.7. I'm wrapping up the current set of fixes at
-  the moment, so this would be for next week's rc
-
-- Create a git tree with the ususal branches (drivers, soc, dt,
-  fixes, for-next) and ask Stephen Rothwell (on Cc) to add
-  the combined for-next branch  to linux-next for integration testing
-
-- Start each branch on 6.6-rc2 (usually we use rc1, but this time
-  rc2 is a better candidate because of the last-minute
-  drivers/pmdomain rename), and merge the corresponding branches
-  from git://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git
-  into those to avoids conflicts with his tree
-
-- Add any further patches you want in 6.7 on top
-
-- Send a first set of pull requests to soc@kernel.org for whatever
-  you have merged as soon as you are confident about them,
-  ideally by the end of next week.
-
-- Send additional pull requests for fixups or late features in
-  the weeks after that as you see fit.
-
-See Documentation/process/maintainer-soc.rst for more details
-on the above. When Mattias comes back, you can work out a new
-process together with him.
-
-       Arnd
