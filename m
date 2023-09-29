@@ -2,63 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E48B7B3B8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2F67B3B8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233712AbjI2Uqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 16:46:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
+        id S233630AbjI2Uqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 16:46:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233892AbjI2Uq3 (ORCPT
+        with ESMTP id S233923AbjI2Uqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 16:46:29 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D8991706
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 13:46:12 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99bf3f59905so1955172666b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 13:46:12 -0700 (PDT)
+        Fri, 29 Sep 2023 16:46:31 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8114170E
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 13:46:13 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-533e7d127d4so14453283a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 13:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1696020371; x=1696625171; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1696020372; x=1696625172; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CAV11pr0FuTWro/Eu3mGKqA2HN52biLtrB5f4YzdMgg=;
-        b=D3iXwv3w+2L9obmire2V3YackUOqnhydAfzMfc/a5AB7YlpHs1oi4D46DxTBbCz8fb
-         BHTjpdJBfCR30KGdr/fh5pTc2SKWIGdeUiD1fiqgedy23Apc6BwH2RKj9BE7eougSP6b
-         lFA9qkEQLp7oyzkooUdJHs/1+VjHBxqq+raWNs6raDq2PFKQqRxysWEbaa94L5CTGbsI
-         7G5dM/Z2QxTs8u4FaqUbbWNWN4zUywqoKPinot7UYPXEWkkzaunvcz7QjjHTLWTBSgN2
-         Oc1PmhN85eYpABqP8+BoCxrBl4JuSmeOykZvDml0Sl3qtoIS2lIsqbS81x2aP+KV3ytV
-         e75A==
+        bh=A+z394u1icTlUvm5Wt49UZrjbdFkyO1xfSo9ivxRNHc=;
+        b=OwA5g9vHzaGucmbi2nFxkhlgKIkqqT68Q2bUqsH1nWmTeGNRPYtvDC2WgSmVsDmQ1o
+         Kq1H02PSmDkIdpLuqlwW6Gg6eoZZLGSzEf79pmOV2cbw33uBNBsqu4BONUD4Qdu1H0Go
+         xryiH+cJJlYxaek4ZO6DErPYtM1Y2GwiLqUMMwh7WNh5A1xv6LrBDPLWzVU3tXZlHspV
+         8PAyznmvvgyX86aAGfkk/iNGYF1bnpzr/Vpn2Q6+f5ctF2ubr1VfWE6gI5TYbSK8y/SW
+         9qBtEfWiHIR7R0ARc0uvtpj8ebJI41I36H9+cez3bNLIDpVA12/MW3iHXC0bFN8m6bdf
+         fO1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696020371; x=1696625171;
+        d=1e100.net; s=20230601; t=1696020372; x=1696625172;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CAV11pr0FuTWro/Eu3mGKqA2HN52biLtrB5f4YzdMgg=;
-        b=hw1t78oCEWwpuinUxHq0vtounZOiIgGk6yip0OeQEi7jYhpfAaG7d1R/DcqQgRt1D5
-         lkG23X7p5k3ymJC44l6TO0ErtAnSNmsLNOWfv7G5fkod9I2+rkuzMqskaBO+txogcgBT
-         +nzInjFLv0S4mNHIGjp9LWVKw9kfFYttTfoEzUx19AxWdvpY4amSgZRrkULWVwjjJMAB
-         tXTvNxx89paD74Q0Heap/hqknIW3TG6+KP8i2wBLXt8gQe0wGKoNuiugVDo/8SpdA5tz
-         zVfRIDNCTxZsueS6xnjbXslKABg8J/Akl8AhceMHoInwRhWRyphbnJLHultH8jeK6IRV
-         0Wbg==
-X-Gm-Message-State: AOJu0YxD1WcaWkdShCDaNPAoWEOcQAxdUCpIXEvaOo5ht6wjOhYom2bw
-        nWeJLS7ProWTB6FO6PUDVPbNlw==
-X-Google-Smtp-Source: AGHT+IHddVCMf+n0g1If6ZthNNUAYbTRnlAKbt0CGe+MASvKtulcrRNaXqAJY+2ZyBIhuY4ToD7RJg==
-X-Received: by 2002:a17:907:b609:b0:9ae:5f51:2e4a with SMTP id vl9-20020a170907b60900b009ae5f512e4amr5122349ejc.36.1696020370735;
-        Fri, 29 Sep 2023 13:46:10 -0700 (PDT)
+        bh=A+z394u1icTlUvm5Wt49UZrjbdFkyO1xfSo9ivxRNHc=;
+        b=MYLWrot5jYfhZQD3N08MsyYxMpXOLfVmTHG/tm7FUp0/eHny3WjLX0EobDsgY/vTBd
+         kbob/D61X2M2kP+effBB9h/lUCz+rkNVMR7hdbk0Y4sdaDyL64TsUKHreYH8K0zo8cFP
+         LmtDfA2wWL35KmdRKqcmz4Kbi4FfpzVfcKRJUzNfifklZmoB+CTBg0Ek0f8WBpQdEWGC
+         Y0ZHWbFaIbHjcbqPFWyvvJGg8osrFiT7RvKjyexjreC30vjDcXmcJ8vQvUUsy/TpRo08
+         4kYAClLCAUTPawAWugp6pUgIdGx0H/JEB3XpznLUa+KZuvsZt/AEzgpAvmhi7ALx9HC4
+         Chfw==
+X-Gm-Message-State: AOJu0YxKtfoY/gnOaauwl+vZtRczJBVMQIkXXrLiduCfIygKMi09ya47
+        FG1wQWYzvhAWDxeI0yLdUSgP4A==
+X-Google-Smtp-Source: AGHT+IFsKi0kj5q9t/Gq/FHaYVnQTOjnhlReVoCABP+l9pbNqlcDeN/X/7o5DYC8YrJCAchJOqaB6g==
+X-Received: by 2002:aa7:df93:0:b0:526:9cfb:c12 with SMTP id b19-20020aa7df93000000b005269cfb0c12mr5189114edy.38.1696020372252;
+        Fri, 29 Sep 2023 13:46:12 -0700 (PDT)
 Received: from cloudflare.com (79.184.153.47.ipv4.supernova.orange.pl. [79.184.153.47])
-        by smtp.gmail.com with ESMTPSA id lf11-20020a170907174b00b009ad81554c1bsm12898558ejc.55.2023.09.29.13.46.10
+        by smtp.gmail.com with ESMTPSA id ee9-20020a056402290900b0053498aa4f41sm4350298edb.48.2023.09.29.13.46.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 13:46:10 -0700 (PDT)
+        Fri, 29 Sep 2023 13:46:11 -0700 (PDT)
 From:   Jakub Sitnicki <jakub@cloudflare.com>
 To:     virtualization@lists.linux-foundation.org
 Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
         Jason Wang <jasowang@redhat.com>,
         Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
         linux-kernel@vger.kernel.org, kernel-team@cloudflare.com
-Subject: [PATCH 1/2] virtio-mmio: Parse a range of IRQ numbers passed on the command line
-Date:   Fri, 29 Sep 2023 22:46:03 +0200
-Message-ID: <20230929-jakub-os-90-trim-v1-1-a3af0c08f812@cloudflare.com>
+Subject: [PATCH 2/2] virtio-mmio: Support multiple interrupts per device
+Date:   Fri, 29 Sep 2023 22:46:04 +0200
+Message-ID: <20230929-jakub-os-90-trim-v1-2-a3af0c08f812@cloudflare.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230929-jakub-os-90-trim-v1-0-a3af0c08f812@cloudflare.com>
 References: <20230929-jakub-os-90-trim-v1-0-a3af0c08f812@cloudflare.com>
@@ -75,157 +75,226 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-virtio-mmio devices in theory can use multiple interrupts. However, the
-existing virtio-mmio command line configuration format does not provide a
-way to express it.
+Some virtual devices, such as the virtio network device, can use multiple
+virtqueues (or multiple pairs of virtqueues in the case of a vNIC). In such
+case, when there are multiple vCPUs present, it is possible to process
+virtqueue events in parallel. Each vCPU can service a subset of all
+virtqueues when notified that there is work to carry out.
 
-Extend the configuration format so that the user can specify an IRQ
-range. This prepares ground for registering multiple IRQs per device.
+However, the current virtio-mmio transport implementation poses a
+limitation. Only one vCPU can service notifications from any of the
+virtqueues of a single virtio device. This is because a virtio-mmio device
+driver supports registering just one interrupt per device. With such setup
+we are not able to scale virtqueue event processing among vCPUs.
 
-Because we need to stay backward compatible with VMMs which don't yet use
-the new format, fall back to the old one if we fail to find an IRQ range in
-the passed parameters.
+Now, with more than one IRQ resource registered for a virtio-mmio platform
+device, we can address this limitation.
+
+First, we request multiple IRQs when creating virtqueues for a device.
+
+Then, map each virtqueue to one of the IRQs assigned to the device. The
+mapping is done in a device type specific manner. For instance, a network
+device will want each RX/TX virtqueue pair mapped to a different IRQ
+line. Other device types might require a different mapping scheme. We
+currently provide a mapping for virtio-net device type.
+
+Finally, when handling an interrupt, we service only the virtqueues
+associated with the IRQ line that triggered the event.
 
 Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
- drivers/virtio/virtio_mmio.c | 77 ++++++++++++++++++++++++++++++--------------
- 1 file changed, 52 insertions(+), 25 deletions(-)
+ drivers/virtio/virtio_mmio.c | 102 +++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 83 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-index 97760f611295..06a587b23542 100644
+index 06a587b23542..180c51c27704 100644
 --- a/drivers/virtio/virtio_mmio.c
 +++ b/drivers/virtio/virtio_mmio.c
-@@ -39,11 +39,12 @@
-  * 3. Kernel module (or command line) parameter. Can be used more than once -
-  *    one device will be created for each one. Syntax:
-  *
-- *		[virtio_mmio.]device=<size>@<baseaddr>:<irq>[:<id>]
-+ *		[virtio_mmio.]device=<size>@<baseaddr>:<irq>[-<irq last>][:<id>]
-  *    where:
-  *		<size>     := size (can use standard suffixes like K, M or G)
-  *		<baseaddr> := physical base address
-- *		<irq>      := interrupt number (as passed to request_irq())
-+ *		<irq>      := first interrupt number (as passed to request_irq())
-+ *		<irq last> := (optional) last interrupt number
-  *		<id>       := (optional) platform device id
-  *    eg.:
-  *		virtio_mmio.device=0x100@0x100b0000:48 \
-@@ -712,36 +713,38 @@ static int vm_cmdline_set(const char *device,
- 		const struct kernel_param *kp)
+@@ -69,6 +69,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/virtio.h>
+ #include <linux/virtio_config.h>
++#include <uapi/linux/virtio_ids.h>
+ #include <uapi/linux/virtio_mmio.h>
+ #include <linux/virtio_ring.h>
+ 
+@@ -93,6 +94,10 @@ struct virtio_mmio_device {
+ 	/* a list of queues so we can dispatch IRQs */
+ 	spinlock_t lock;
+ 	struct list_head virtqueues;
++
++	/* IRQ range allocated to the device */
++	unsigned int irq_base;
++	unsigned int num_irqs;
+ };
+ 
+ struct virtio_mmio_vq_info {
+@@ -101,6 +106,9 @@ struct virtio_mmio_vq_info {
+ 
+ 	/* the list node for the virtqueues list */
+ 	struct list_head node;
++
++	/* IRQ mapped to virtqueue */
++	unsigned int irq;
+ };
+ 
+ 
+@@ -297,7 +305,7 @@ static bool vm_notify_with_data(struct virtqueue *vq)
+ 	return true;
+ }
+ 
+-/* Notify all virtqueues on an interrupt. */
++/* Notify all or some virtqueues on an interrupt. */
+ static irqreturn_t vm_interrupt(int irq, void *opaque)
  {
- 	int err;
--	struct resource resources[2] = {};
- 	char *str;
- 	long long base, size;
--	unsigned int irq;
-+	unsigned int irq, irq_last;
- 	int processed, consumed = 0;
- 	struct platform_device *pdev;
-+	struct resource *resources, *res;
-+	size_t num_resources;
+ 	struct virtio_mmio_device *vm_dev = opaque;
+@@ -308,20 +316,31 @@ static irqreturn_t vm_interrupt(int irq, void *opaque)
  
- 	/* Consume "size" part of the command line parameter */
- 	size = memparse(device, &str);
+ 	/* Read and acknowledge interrupts */
+ 	status = readl(vm_dev->base + VIRTIO_MMIO_INTERRUPT_STATUS);
+-	writel(status, vm_dev->base + VIRTIO_MMIO_INTERRUPT_ACK);
  
--	/* Get "@<base>:<irq>[:<id>]" chunks */
--	processed = sscanf(str, "@%lli:%u%n:%d%n",
--			&base, &irq, &consumed,
--			&vm_cmdline_id, &consumed);
-+	/* Get "@<base>:<irq>-<irq last>[:<id>]" chunks */
-+	processed = sscanf(str, "@%lli:%u-%u%n:%d%n",
-+			   &base, &irq, &irq_last, &consumed,
-+			   &vm_cmdline_id, &consumed);
-+	/* Fall back to "@<base>:<irq>[:<id>]" */
-+	if (processed < 3) {
-+		processed = sscanf(str, "@%lli:%u%n:%d%n",
-+				   &base, &irq, &consumed,
-+				   &vm_cmdline_id, &consumed);
-+		irq_last = irq;
-+	}
- 
- 	/*
- 	 * sscanf() must process at least 2 chunks; also there
- 	 * must be no extra characters after the last chunk, so
- 	 * str[consumed] must be '\0'
- 	 */
--	if (processed < 2 || str[consumed] || irq == 0)
-+	if (processed < 2 || str[consumed] ||
-+	    irq == 0 || irq_last == 0 || irq > irq_last)
- 		return -EINVAL;
- 
--	resources[0].flags = IORESOURCE_MEM;
--	resources[0].start = base;
--	resources[0].end = base + size - 1;
--
--	resources[1].flags = IORESOURCE_IRQ;
--	resources[1].start = resources[1].end = irq;
--
- 	if (!vm_cmdline_parent_registered) {
- 		err = device_register(&vm_cmdline_parent);
- 		if (err) {
-@@ -752,16 +755,34 @@ static int vm_cmdline_set(const char *device,
- 		vm_cmdline_parent_registered = 1;
+ 	if (unlikely(status & VIRTIO_MMIO_INT_CONFIG)) {
++		writel(status & VIRTIO_MMIO_INT_CONFIG, vm_dev->base + VIRTIO_MMIO_INTERRUPT_ACK);
+ 		virtio_config_changed(&vm_dev->vdev);
+ 		ret = IRQ_HANDLED;
  	}
  
--	pr_info("Registering device virtio-mmio.%d at 0x%llx-0x%llx, IRQ %d.\n",
--		       vm_cmdline_id,
--		       (unsigned long long)resources[0].start,
--		       (unsigned long long)resources[0].end,
--		       (int)resources[1].start);
-+	num_resources = 1; /* mem */
-+	num_resources += irq_last - irq + 1;
-+	resources = devm_kcalloc(&vm_cmdline_parent, num_resources,
-+				 sizeof(*resources), GFP_KERNEL);
-+	if (!resources)
-+		return -ENOMEM;
-+
-+	resources[0].flags = IORESOURCE_MEM;
-+	resources[0].start = base;
-+	resources[0].end = base + size - 1;
-+
-+	for (res = &resources[1]; irq <= irq_last; irq++, res++) {
-+		res->flags = IORESOURCE_IRQ;
-+		res->start = irq;
-+		res->end = irq;
+ 	if (likely(status & VIRTIO_MMIO_INT_VRING)) {
++		writel(status & VIRTIO_MMIO_INT_VRING, vm_dev->base + VIRTIO_MMIO_INTERRUPT_ACK);
+ 		spin_lock_irqsave(&vm_dev->lock, flags);
+ 		list_for_each_entry(info, &vm_dev->virtqueues, node)
+ 			ret |= vring_interrupt(irq, info->vq);
+ 		spin_unlock_irqrestore(&vm_dev->lock, flags);
+ 	}
+ 
++	/* Notify only affected vrings if device uses multiple interrupts */
++	if (vm_dev->num_irqs > 1) {
++		spin_lock_irqsave(&vm_dev->lock, flags);
++		list_for_each_entry(info, &vm_dev->virtqueues, node) {
++			if (info->irq == irq)
++				ret |= vring_interrupt(irq, info->vq);
++		}
++		spin_unlock_irqrestore(&vm_dev->lock, flags);
 +	}
 +
-+	pr_info("Registering device virtio-mmio.%d at 0x%llx-0x%llx, IRQs %u-%u.\n",
-+		vm_cmdline_id,
-+		(unsigned long long)resources[0].start,
-+		(unsigned long long)resources[0].end,
-+		irq, irq_last);
- 
- 	pdev = platform_device_register_resndata(&vm_cmdline_parent,
- 			"virtio-mmio", vm_cmdline_id++,
--			resources, ARRAY_SIZE(resources), NULL, 0);
-+			resources, num_resources, NULL, 0);
- 
-+	devm_kfree(&vm_cmdline_parent, resources);
- 	return PTR_ERR_OR_ZERO(pdev);
+ 	return ret;
  }
  
-@@ -770,12 +791,18 @@ static int vm_cmdline_get_device(struct device *dev, void *data)
- 	char *buffer = data;
- 	unsigned int len = strlen(buffer);
- 	struct platform_device *pdev = to_platform_device(dev);
-+	size_t nres = pdev->num_resources;
-+	bool irq_range = nres > 2;
+@@ -356,11 +375,15 @@ static void vm_del_vqs(struct virtio_device *vdev)
+ {
+ 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
+ 	struct virtqueue *vq, *n;
++	int i, irq;
++
++	for (i = 0; i < vm_dev->num_irqs; i++) {
++		irq = vm_dev->irq_base + i;
++		devm_free_irq(&vdev->dev, irq, vm_dev);
++	}
  
--	snprintf(buffer + len, PAGE_SIZE - len, "0x%llx@0x%llx:%llu:%d\n",
-+	len += snprintf(buffer + len, PAGE_SIZE - len, "0x%llx@0x%llx:%llu",
- 			pdev->resource[0].end - pdev->resource[0].start + 1ULL,
- 			(unsigned long long)pdev->resource[0].start,
--			(unsigned long long)pdev->resource[1].start,
--			pdev->id);
-+			(unsigned long long)pdev->resource[1].start);
-+	if (irq_range)
-+		len += snprintf(buffer + len, PAGE_SIZE - len, "-%llu",
-+				(unsigned long long)pdev->resource[nres - 1].start);
-+	snprintf(buffer + len, PAGE_SIZE - len, ":%d\n", pdev->id);
+ 	list_for_each_entry_safe(vq, n, &vdev->vqs, list)
+ 		vm_del_vq(vq);
+-
+-	free_irq(platform_get_irq(vm_dev->pdev, 0), vm_dev);
+ }
+ 
+ static void vm_synchronize_cbs(struct virtio_device *vdev)
+@@ -488,6 +511,18 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
+ 	return ERR_PTR(err);
+ }
+ 
++/* Map virtqueue to zero-based interrupt number */
++static unsigned int vq2irq(const struct virtqueue *vq)
++{
++	switch (vq->vdev->id.device) {
++	case VIRTIO_ID_NET:
++		/* interrupt shared by rx/tx virtqueue pair */
++		return vq->index / 2;
++	default:
++		return 0;
++	}
++}
++
+ static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+ 		       struct virtqueue *vqs[],
+ 		       vq_callback_t *callbacks[],
+@@ -496,19 +531,9 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+ 		       struct irq_affinity *desc)
+ {
+ 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
+-	int irq = platform_get_irq(vm_dev->pdev, 0);
+-	int i, err, queue_idx = 0;
+-
+-	if (irq < 0)
+-		return irq;
+-
+-	err = request_irq(irq, vm_interrupt, IRQF_SHARED,
+-			dev_name(&vdev->dev), vm_dev);
+-	if (err)
+-		return err;
+-
+-	if (of_property_read_bool(vm_dev->pdev->dev.of_node, "wakeup-source"))
+-		enable_irq_wake(irq);
++	struct virtio_mmio_vq_info *info;
++	int i, err, irq, nirqs, queue_idx = 0;
++	unsigned int irq_base = UINT_MAX;
+ 
+ 	for (i = 0; i < nvqs; ++i) {
+ 		if (!names[i]) {
+@@ -519,12 +544,51 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
+ 		vqs[i] = vm_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
+ 				     ctx ? ctx[i] : false);
+ 		if (IS_ERR(vqs[i])) {
+-			vm_del_vqs(vdev);
+-			return PTR_ERR(vqs[i]);
++			err = PTR_ERR(vqs[i]);
++			goto fail_vq;
+ 		}
+ 	}
+ 
++	nirqs = platform_irq_count(vm_dev->pdev);
++	if (nirqs < 0) {
++		err = nirqs;
++		goto fail_vq;
++	}
++
++	for (i = 0; i < nirqs; i++) {
++		irq = platform_get_irq(vm_dev->pdev, i);
++		if (irq < 0)
++			goto fail_irq;
++		if (irq < irq_base)
++			irq_base = irq;
++
++		err = devm_request_irq(&vdev->dev, irq, vm_interrupt,
++				       IRQF_SHARED, NULL, vm_dev);
++		if (err)
++			goto fail_irq;
++
++		if (of_property_read_bool(vm_dev->pdev->dev.of_node, "wakeup-source"))
++			enable_irq_wake(irq);
++	}
++
++	for (i = 0; i < nvqs; i++) {
++		irq = vq2irq(vqs[i]);
++		info = vqs[i]->priv;
++		info->irq = irq_base + (irq % nirqs);
++	}
++
++	vm_dev->irq_base = irq_base;
++	vm_dev->num_irqs = nirqs;
 +
  	return 0;
++
++fail_irq:
++	while (i--)
++		devm_free_irq(&vdev->dev, irq_base + i, vm_dev);
++fail_vq:
++	vm_del_vqs(vdev);
++
++	return err;
  }
  
+ static const char *vm_bus_name(struct virtio_device *vdev)
 
 -- 
 2.41.0
