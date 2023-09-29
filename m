@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D207B34AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599CA7B34AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:16:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233270AbjI2OQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 10:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48144 "EHLO
+        id S233374AbjI2OQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 10:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233160AbjI2OQG (ORCPT
+        with ESMTP id S233272AbjI2OQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 10:16:06 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B5A11B7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:16:03 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-405524e6769so4714145e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:16:02 -0700 (PDT)
+        Fri, 29 Sep 2023 10:16:17 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E818F1B6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:16:14 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4065f29e933so5735355e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:16:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nexus-software-ie.20230601.gappssmtp.com; s=20230601; t=1695996961; x=1696601761; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695996973; x=1696601773; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
         bh=00JIa3i2YsuwYBTn1xiPk8aPDl3kS4S8pu4PM2POaUI=;
-        b=ii2XP09kdIAgGjv8/mEcrLElJXeEzsrBBF+GqqhRu1dhciMnJOgNzsWOEcIeargaxR
-         NZiBx9aZ2GfaEghBrlmtG+zoVoW045c1zaXuu6KQE8Nz2OylJv6Yg/mSDWrrabGX1wst
-         gGgSqTSk8Dtl0nQ0mt8sNonpP9C/QMXj9lr7O8WuINhqIrebMVZh0P3oWqiDOI4x1KUH
-         1Xdef+0vLpCFdvGPLGv11GVIV43uBa5/BOWWqVs3Yd61QzZ6Lx0qkWufurWNAPxVlw3M
-         OMcn1Lyyy7aEsdV8i2YlFLAayIAaE+BZskfRJZ0OgGpOF4UYE6f4A8vbKAErdVpabZGI
-         mZ4w==
+        b=hrW7w7JlgqYDLBetKemNzjp7x4cVc2MXWIalfba5IePCjFNGq5u8kb9crDeEghFxka
+         W10sAS60DlA7JRIfVdbMJoDGSUxMw5ppzU80O2BZq1VUwzhC33oBHua0N7n2cCVZ7lrL
+         lcHP78i4Hy0nD50rrUNs8RpfSumHaIAOJHsG22QsK0P+lBMW2quYgWEot68PmyqzmzJi
+         cI2lLnIbKAamYmu2vkWAWrFUAlhU+Sr2QL+XBYnMtwaF1uUyFXFFEMoO+U4e/b0UrgEJ
+         8kJE0JuJ6RF1CMxA55wbWuKngtsq4uVBAqBNOohNaRPK3xpNauattMaK8SdTcJkQK3uZ
+         BWTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695996961; x=1696601761;
+        d=1e100.net; s=20230601; t=1695996973; x=1696601773;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
         bh=00JIa3i2YsuwYBTn1xiPk8aPDl3kS4S8pu4PM2POaUI=;
-        b=VR1KZ13xfq9S3FSqjDQ+qPjBPiWKVoaxLSLU5rE5JZC3Dr5R48JkrJZqywyv6wsMmU
-         xaWc0RR0bCWXIkiKfyOJj09k6JA6pDGSXISR+tgL+N4yuvbnAr1PV+R4fArST7u4IViQ
-         RuVJK7kQYJYhyTu0aOeNNI8Qy/t3N+C1CC/gONW37iPbcxepEkJa7m6pBq3n7CnURIL4
-         Ye57Zn6CSyW5cSvukABOPxHiEPgoEW3cW6Tf+DHatcCeLcIbse5JF7+Xd7dpZluCPrFu
-         3QXOur7+FLJos8PIpdMfhMT2Zks8TXeNdkb1rMafxUaFLcTrx+4XQFfW54ZgbEN9dhkl
-         e6Vw==
-X-Gm-Message-State: AOJu0Yw3XG4LFurSd6+dmcS3x9Iz0g7vauO2suiZ0pHwkH6KGSwUv0KP
-        uC+i1djoh6D9ThS3R/aiQTKMBw==
-X-Google-Smtp-Source: AGHT+IGupaz5r81Ti0rvQWeOc0Lhh8lSxqvscVDL1xvsH8kzwpVqJL8vHtFolRSxf76MRDlECmyZxw==
-X-Received: by 2002:a7b:cc95:0:b0:406:51a0:17ea with SMTP id p21-20020a7bcc95000000b0040651a017eamr3957651wma.10.1695996960715;
-        Fri, 29 Sep 2023 07:16:00 -0700 (PDT)
+        b=djGxthZj+J62mEtsWLXgz2l0+ieSunGREHFzS6UT79uc16bEM88jQGUpl9X5m5G8sV
+         vFuqx787Ccd+V1DQEFMObSD7aXEO35EJHF3/iKElovWtP/6xxIxr3fAz18IEEzs6kjQM
+         phYVooBb7RcrVSA6xaxhHo87/JNMjSToKhEgrNUztOWxzTfa+yf+JLfg3Jbsg1p1FNnz
+         sVdfdEKLBPYeZ49SJjwL71eIgYu16hIdNmaa90klrMPoZjOnAWEtQCuR2h3SH0WPNK+3
+         g+gLvtWMEnrNHkJJhxh672vAD33TFGilHuYKbavUQm71tH0P40aXRuQYkgyCo3GkJb7m
+         3FXw==
+X-Gm-Message-State: AOJu0YwsbPtcgYrwCnXeMiRM+s4a7G0gH+JqwtFUace9yZq7BYnDyC0+
+        BGMN1Xsvv+MMOFijxOgYlfi0Ng==
+X-Google-Smtp-Source: AGHT+IG61tSL0NxdNazcc9PmRAuQGFsDS5CNv2jnP9lZj6UbJ/936yH9/EvOEDuRV/yyAsqsm4f9Cg==
+X-Received: by 2002:a05:600c:211:b0:404:6ed9:98d1 with SMTP id 17-20020a05600c021100b004046ed998d1mr3845184wmi.41.1695996973349;
+        Fri, 29 Sep 2023 07:16:13 -0700 (PDT)
 Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id g12-20020a5d698c000000b0031c8a43712asm21607937wru.69.2023.09.29.07.15.59
+        by smtp.gmail.com with ESMTPSA id n24-20020a1c7218000000b003fefb94ccc9sm1520894wmc.11.2023.09.29.07.16.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 07:16:00 -0700 (PDT)
-Message-ID: <27778ef0-53db-453a-acde-ad81154c8dd0@nexus-software.ie>
-Date:   Fri, 29 Sep 2023 15:15:59 +0100
+        Fri, 29 Sep 2023 07:16:12 -0700 (PDT)
+Message-ID: <6b201582-4005-4d06-819d-356dd906b28c@linaro.org>
+Date:   Fri, 29 Sep 2023 15:16:11 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 1/3] dt-bindings: i2c: qcom-cci: Document SC7280
@@ -73,13 +73,14 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20230929-sc7280-cci-v1-0-16c7d386f062@fairphone.com>
  <20230929-sc7280-cci-v1-1-16c7d386f062@fairphone.com>
-From:   Bryan O'Donoghue <pure.logic@nexus-software.ie>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 In-Reply-To: <20230929-sc7280-cci-v1-1-16c7d386f062@fairphone.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
