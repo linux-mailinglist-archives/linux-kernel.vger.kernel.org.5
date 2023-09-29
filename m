@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEB77B2E35
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:43:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E525F7B2E3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232941AbjI2Ino (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 04:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34974 "EHLO
+        id S232943AbjI2IoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 04:44:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232911AbjI2In3 (ORCPT
+        with ESMTP id S232908AbjI2Inm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 04:43:29 -0400
+        Fri, 29 Sep 2023 04:43:42 -0400
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8907CE3;
-        Fri, 29 Sep 2023 01:43:27 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T7Urv3027510;
-        Fri, 29 Sep 2023 08:43:03 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2111A8;
+        Fri, 29 Sep 2023 01:43:39 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T6xeB7003083;
+        Fri, 29 Sep 2023 08:43:12 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=qcppdkim1;
- bh=nB0FggN8J+ivI3SuN9O6qu/MgW9HIfMXTdvR1pgz8BQ=;
- b=jkyZv/WcnQ6FbHJOs+UjTSd7MFQHW9oem+4HfoNr327tF7kSQPuBCvPgVyviZnIymvHS
- DSF5X9CWWS9zmi4IcfWoZxZewvjXLmH68o3IeOOp5t4tgpZw7moQHCj9siMKzjb9Oi1q
- /lUFOf5W6Q+NH7LtohBBlgdyhMi9+TQPKX4B2sob73J/bcan4N3QTqq0V4d1Ifgb5+dy
- fj3WBOyG46QS1DUhmvg7Wf5qKCLc6C49v3fY0nKgcc2dh7JuVByCAf73wB4llhKKbFDr
- tEPsVSAscCNEVi3gGPi0dumr+OAmq3kcXMJ8cmUKDKpfxhCSE6JHDPgXM/wEZZMs3edJ Ew== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tdqmv8d9b-1
+ bh=bjvskR0dMl3MN6jJkPzBP88qL9AVOezaPO2jraQbkIs=;
+ b=NjhDv9YBJV2d6JBO/GjVlbPATrzPgMYIDEMFichiizSyaSkWgXtQMoj81+ND/4u4OZ6P
+ N5KCI0ccNIPv2IiAPU5etbBJ1xstNclrIs9BbSaMpAp7aZE45n0uOHy6q4HH9sBWTfB0
+ Ku6efzQg1/o2aYxg+PcFnGxs6yYvBd44fZO1mD9tlCESif+oXF78Q+tGdWNYpOeyJvo/
+ QXeCVxSVIT7r+Bf3BqfuqYIFydYignmoQM7VcMkP17RRNv62qafSIoA0Ppsj0rAhiqlE
+ WhxCAAAexkjYs2mp6fPaUFGcG+tAzufjkivUQ1AFnb9Y0E+n8zDC3T/UDbB6aPd1cDGg vQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tct5gv3g4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 08:43:02 +0000
+        Fri, 29 Sep 2023 08:43:12 +0000
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38T8h2cC027673
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38T8hBKK001088
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 08:43:02 GMT
+        Fri, 29 Sep 2023 08:43:11 GMT
 Received: from hu-ipkumar-blr.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Fri, 29 Sep 2023 01:42:52 -0700
+ 15.2.1118.30; Fri, 29 Sep 2023 01:43:02 -0700
 From:   Praveenkumar I <quic_ipkumar@quicinc.com>
 To:     <agross@kernel.org>, <andersson@kernel.org>,
         <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
@@ -55,9 +55,9 @@ To:     <agross@kernel.org>, <andersson@kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
 CC:     <quic_kathirav@quicinc.com>, <quic_nsekar@quicinc.com>,
         <quic_srichara@quicinc.com>
-Subject: [PATCH 3/8] arm64: dts: qcom: ipq5332: Add USB Super-Speed PHY node
-Date:   Fri, 29 Sep 2023 14:12:04 +0530
-Message-ID: <20230929084209.3033093-4-quic_ipkumar@quicinc.com>
+Subject: [PATCH 4/8] dt-bindings: usb: dwc3: Add clocks on Qualcomm IPQ5332
+Date:   Fri, 29 Sep 2023 14:12:05 +0530
+Message-ID: <20230929084209.3033093-5-quic_ipkumar@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230929084209.3033093-1-quic_ipkumar@quicinc.com>
 References: <20230929084209.3033093-1-quic_ipkumar@quicinc.com>
@@ -69,16 +69,16 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 8jRScBPWSqRMlnJCF3T2QGnUlZKIeR1P
-X-Proofpoint-ORIG-GUID: 8jRScBPWSqRMlnJCF3T2QGnUlZKIeR1P
+X-Proofpoint-ORIG-GUID: 8tH2XLhxZZGsd95aT5c88-YoBwfrUzlG
+X-Proofpoint-GUID: 8tH2XLhxZZGsd95aT5c88-YoBwfrUzlG
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-09-29_07,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=519 spamscore=0
- bulkscore=0 mlxscore=0 priorityscore=1501 suspectscore=0 malwarescore=0
- impostorscore=0 clxscore=1015 adultscore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309290074
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 mlxlogscore=742 impostorscore=0 phishscore=0 adultscore=0
+ suspectscore=0 priorityscore=1501 mlxscore=0 bulkscore=0 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309290074
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -88,57 +88,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add USB Super-Speed UNIPHY node and populate the phandle on
-gcc node for the parent clock map.
+Add aux and lfps clocks in Qualcomm IPQ5332. These clocks are required
+for USB Super-Speed support.
 
 Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
 ---
- arch/arm64/boot/dts/qcom/ipq5332.dtsi | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    | 20 ++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-index d3fef2f80a81..b08ffd8c094e 100644
---- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-@@ -158,6 +158,29 @@ usbphy0: phy@7b000 {
- 			status = "disabled";
- 		};
+diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+index 67591057f234..18af2887b984 100644
+--- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
++++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+@@ -149,6 +149,25 @@ allOf:
+             - const: sleep
+             - const: mock_utmi
  
-+		usbphy1: phy@4b0000 {
-+			compatible = "qcom,ipq5332-usb-uniphy";
-+			reg = <0x4b0000 0x800>;
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - qcom,ipq5332-dwc3
++    then:
++      properties:
++        clocks:
++          maxItems: 6
++        clock-names:
++          items:
++            - const: core
++            - const: iface
++            - const: sleep
++            - const: mock_utmi
++            - const: aux
++            - const: lfps
 +
-+			clocks = <&gcc GCC_PCIE3X1_PHY_AHB_CLK>,
-+				 <&gcc GCC_USB0_PHY_CFG_AHB_CLK>,
-+				 <&gcc GCC_USB0_PIPE_CLK>;
-+			clock-names = "ahb",
-+				      "cfg_ahb",
-+				      "pipe";
-+
-+			resets =  <&gcc GCC_USB0_PHY_BCR>;
-+
-+			#clock-cells = <0>;
-+			clock-output-names = "usb0_pipe_clk_src";
-+
-+			qcom,phy-usb-mux-sel = <&tcsr 0x10540>;
-+
-+			#phy-cells = <0>;
-+
-+			status = "disabled";
-+		};
-+
- 		qfprom: efuse@a4000 {
- 			compatible = "qcom,ipq5332-qfprom", "qcom,qfprom";
- 			reg = <0x000a4000 0x721>;
-@@ -200,7 +223,7 @@ gcc: clock-controller@1800000 {
- 				 <&sleep_clk>,
- 				 <0>,
- 				 <0>,
--				 <0>;
-+				 <&usbphy1>;
- 		};
- 
- 		tcsr_mutex: hwlock@1905000 {
+   - if:
+       properties:
+         compatible:
+@@ -238,7 +257,6 @@ allOf:
+         compatible:
+           contains:
+             enum:
+-              - qcom,ipq5332-dwc3
+               - qcom,msm8994-dwc3
+               - qcom,qcs404-dwc3
+     then:
 -- 
 2.34.1
 
