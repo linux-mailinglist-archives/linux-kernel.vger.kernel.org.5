@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D52557B3840
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25ABA7B3841
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233571AbjI2RBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:01:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55390 "EHLO
+        id S233639AbjI2RBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:01:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233249AbjI2RA7 (ORCPT
+        with ESMTP id S233582AbjI2RBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:00:59 -0400
-Received: from out-193.mta0.migadu.com (out-193.mta0.migadu.com [IPv6:2001:41d0:1004:224b::c1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78333B4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:00:55 -0700 (PDT)
+        Fri, 29 Sep 2023 13:01:03 -0400
+Received: from out-190.mta0.migadu.com (out-190.mta0.migadu.com [91.218.175.190])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B001BC
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:01:01 -0700 (PDT)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696006853;
+        t=1696006860;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Me9MAVaSpVROGgcWoh0I/C8teSI+rjxEqbPFaHRKJ3g=;
-        b=FvBSnRodYA5Sd4A0oVj58qd5HlqzSeBDURpB/mlvfwRFHRyLlrl7vm/NnDAEcPFhQa48Na
-        e8gJYmZuAXMyu6jwCM3VxzQlsqbiFpwHn8ZPzhLwCaXYZd9pyk16PVxo1NyHSIm3GP10fQ
-        QQpz6jfvroz87aR+oRYbTstIZrxOk0Q=
+        bh=vyPpy7V4wE2Fq1thEJrKI/yAvrKJAgrKyO5PTWzt+c0=;
+        b=Xdo4RtH8KjUa1J1VtAZiBKj4mG+gMXTwbn84kOhAg/0zDdgYY8vacCk7XCm8fqr3VtGmH3
+        3ScYBlcAxQgNIIjSOtCgvV8cxL11kK6HGaRziMOdcpa9DwjFr1bRsjKRgzVo5wjy+jtE+/
+        /jvBjjLJse3UA9CW7O2465ciDuSfD2I=
 From:   Yajun Deng <yajun.deng@linux.dev>
 To:     akpm@linux-foundation.org, rppt@kernel.org
 Cc:     mike.kravetz@oracle.com, muchun.song@linux.dev,
         willy@infradead.org, david@redhat.com, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH v5 1/2] mm: allow optional initialization of page count and PG_reserved flag
-Date:   Sat, 30 Sep 2023 01:00:25 +0800
-Message-Id: <20230929170026.2520216-2-yajun.deng@linux.dev>
+Subject: [PATCH v5 2/2] mm: Init page count in reserve_bootmem_region when MEMINIT_EARLY
+Date:   Sat, 30 Sep 2023 01:00:26 +0800
+Message-Id: <20230929170026.2520216-3-yajun.deng@linux.dev>
 In-Reply-To: <20230929170026.2520216-1-yajun.deng@linux.dev>
 References: <20230929170026.2520216-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
@@ -48,147 +48,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__init_single_page() unconditionally resets page count which is
-unnecessary for reserved pages.
+memmap_init_range() would init page count of all pages, but the free
+pages count would be reset in __free_pages_core(). There are opposite
+operations. It's unnecessary and time-consuming when it's MEMINIT_EARLY
+context.
 
-To allow skipping page count initialization and marking a page reserved
-in one go add flags parameter to __init_single_page().
+Init page count in reserve_bootmem_region when in MEMINIT_EARLY context,
+and check the page count before reset it.
 
-No functional changes.
+At the same time, the INIT_LIST_HEAD in reserve_bootmem_region isn't
+need, as it already done in __init_single_page.
+
+The following data was tested on an x86 machine with 190GB of RAM.
+
+before:
+free_low_memory_core_early()    341ms
+
+after:
+free_low_memory_core_early()    285ms
 
 Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 ---
-v5: change the subject and commit.
-v4: remove the changes of __init_zone_device_page().
-v3: Introduce enum init_page_flags.
-v2: Introduce INIT_PAGE_COUNT and INIT_PAGE_RESERVED.
+v5: add flags in memmap_init_range.
+v4: same with v2.
+v3: same with v2.
+v2: check page count instead of check context before reset it.
 v1: https://lore.kernel.org/all/20230922070923.355656-1-yajun.deng@linux.dev/
 ---
- mm/hugetlb.c  |  2 +-
- mm/internal.h |  8 +++++++-
- mm/mm_init.c  | 24 +++++++++++++-----------
- 3 files changed, 21 insertions(+), 13 deletions(-)
+ mm/mm_init.c    | 20 +++++++++++++++-----
+ mm/page_alloc.c | 20 ++++++++++++--------
+ 2 files changed, 27 insertions(+), 13 deletions(-)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 32dbb4f82470..9c22297d9c57 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3064,7 +3064,7 @@ static void __init hugetlb_folio_init_tail_vmemmap(struct folio *folio,
- 	for (pfn = head_pfn + start_page_number; pfn < end_pfn; pfn++) {
- 		struct page *page = pfn_to_page(pfn);
- 
--		__init_single_page(page, pfn, zone, nid);
-+		__init_single_page(page, pfn, zone, nid, INIT_PAGE_COUNT);
- 		prep_compound_tail((struct page *)folio, pfn - head_pfn);
- 		ret = page_ref_freeze(page, 1);
- 		VM_BUG_ON(!ret);
-diff --git a/mm/internal.h b/mm/internal.h
-index d7916f1e9e98..536bbaa11be1 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -1209,8 +1209,14 @@ struct vma_prepare {
- 	struct vm_area_struct *remove2;
- };
- 
-+enum page_init_flags {
-+	INIT_PAGE_COUNT    = (1 << 0),
-+	INIT_PAGE_RESERVED = (1 << 1),
-+};
-+
- void __meminit __init_single_page(struct page *page, unsigned long pfn,
--				unsigned long zone, int nid);
-+				  unsigned long zone, int nid,
-+				  enum page_init_flags flags);
- 
- /* shrinker related functions */
- unsigned long shrink_slab(gfp_t gfp_mask, int nid, struct mem_cgroup *memcg,
 diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 06a72c223bce..0549e7c3d588 100644
+index 0549e7c3d588..f84f1ede57c6 100644
 --- a/mm/mm_init.c
 +++ b/mm/mm_init.c
-@@ -557,11 +557,11 @@ static void __init find_zone_movable_pfns_for_nodes(void)
- }
- 
- void __meminit __init_single_page(struct page *page, unsigned long pfn,
--				unsigned long zone, int nid)
-+				  unsigned long zone, int nid,
-+				  enum page_init_flags flags)
- {
- 	mm_zero_struct_page(page);
- 	set_page_links(page, zone, nid, pfn);
--	init_page_count(page);
- 	page_mapcount_reset(page);
- 	page_cpupid_reset_last(page);
- 	page_kasan_tag_reset(page);
-@@ -572,6 +572,10 @@ void __meminit __init_single_page(struct page *page, unsigned long pfn,
- 	if (!is_highmem_idx(zone))
- 		set_page_address(page, __va(pfn << PAGE_SHIFT));
- #endif
-+	if (flags & INIT_PAGE_COUNT)
-+		init_page_count(page);
-+	if (flags & INIT_PAGE_RESERVED)
-+		__SetPageReserved(page);
- }
- 
- #ifdef CONFIG_NUMA
-@@ -714,7 +718,7 @@ static void __meminit init_reserved_page(unsigned long pfn, int nid)
+@@ -718,7 +718,7 @@ static void __meminit init_reserved_page(unsigned long pfn, int nid)
  		if (zone_spans_pfn(zone, pfn))
  			break;
  	}
--	__init_single_page(pfn_to_page(pfn), pfn, zid, nid);
-+	__init_single_page(pfn_to_page(pfn), pfn, zid, nid, INIT_PAGE_COUNT);
+-	__init_single_page(pfn_to_page(pfn), pfn, zid, nid, INIT_PAGE_COUNT);
++	__init_single_page(pfn_to_page(pfn), pfn, zid, nid, 0);
  }
  #else
  static inline void pgdat_set_deferred_range(pg_data_t *pgdat) {}
-@@ -821,8 +825,8 @@ static void __init init_unavailable_range(unsigned long spfn,
- 			pfn = pageblock_end_pfn(pfn) - 1;
- 			continue;
- 		}
--		__init_single_page(pfn_to_page(pfn), pfn, zone, node);
--		__SetPageReserved(pfn_to_page(pfn));
-+		__init_single_page(pfn_to_page(pfn), pfn, zone, node,
-+				   INIT_PAGE_COUNT | INIT_PAGE_RESERVED);
- 		pgcnt++;
- 	}
+@@ -756,8 +756,11 @@ void __meminit reserve_bootmem_region(phys_addr_t start,
  
-@@ -884,7 +888,7 @@ void __meminit memmap_init_range(unsigned long size, int nid, unsigned long zone
+ 			init_reserved_page(start_pfn, nid);
+ 
+-			/* Avoid false-positive PageTail() */
+-			INIT_LIST_HEAD(&page->lru);
++			/*
++			 * We didn't init page count in memmap_init_range when
++			 * MEMINIT_EARLY, so it must init page count here.
++			 */
++			init_page_count(page);
+ 
+ 			/*
+ 			 * no need for atomic set_bit because the struct
+@@ -850,6 +853,7 @@ void __meminit memmap_init_range(unsigned long size, int nid, unsigned long zone
+ 		struct vmem_altmap *altmap, int migratetype)
+ {
+ 	unsigned long pfn, end_pfn = start_pfn + size;
++	enum page_init_flags flags = 0;
+ 	struct page *page;
+ 
+ 	if (highest_memmap_pfn < end_pfn - 1)
+@@ -888,9 +892,15 @@ void __meminit memmap_init_range(unsigned long size, int nid, unsigned long zone
  		}
  
  		page = pfn_to_page(pfn);
--		__init_single_page(page, pfn, zone, nid);
-+		__init_single_page(page, pfn, zone, nid, INIT_PAGE_COUNT);
+-		__init_single_page(page, pfn, zone, nid, INIT_PAGE_COUNT);
++
++		/* If the context is MEMINIT_EARLY, we will init page count and
++		 * mark page reserved in reserve_bootmem_region, the free region
++		 * wouldn't have page count and we will check the pages count
++		 * in __free_pages_core.
++		 */
  		if (context == MEMINIT_HOTPLUG)
- 			__SetPageReserved(page);
+-			__SetPageReserved(page);
++			flags = INIT_PAGE_COUNT | INIT_PAGE_RESERVED;
++		__init_single_page(page, pfn, zone, nid, flags);
  
-@@ -967,9 +971,6 @@ static void __ref __init_zone_device_page(struct page *page, unsigned long pfn,
- 					  unsigned long zone_idx, int nid,
- 					  struct dev_pagemap *pgmap)
- {
--
--	__init_single_page(page, pfn, zone_idx, nid);
--
+ 		/*
+ 		 * Usually, we want to mark the pageblock MIGRATE_MOVABLE,
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 7df77b58a961..bc68b5452d01 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1289,18 +1289,22 @@ void __free_pages_core(struct page *page, unsigned int order)
+ 	unsigned int loop;
+ 
  	/*
- 	 * Mark page reserved as it will need to wait for onlining
- 	 * phase for it to be fully associated with a zone.
-@@ -977,7 +978,8 @@ static void __ref __init_zone_device_page(struct page *page, unsigned long pfn,
- 	 * We can use the non-atomic __set_bit operation for setting
- 	 * the flag as we are still initializing the pages.
+-	 * When initializing the memmap, __init_single_page() sets the refcount
+-	 * of all pages to 1 ("allocated"/"not free"). We have to set the
+-	 * refcount of all involved pages to 0.
++	 * When initializing the memmap, memmap_init_range sets the refcount
++	 * of all pages to 1 ("reserved" and "free") in hotplug context. We
++	 * have to set the refcount of all involved pages to 0. Otherwise,
++	 * we don't do it, as reserve_bootmem_region only set the refcount on
++	 * reserve region ("reserved") in early context.
  	 */
--	__SetPageReserved(page);
-+	__init_single_page(page, pfn, zone_idx, nid,
-+			   INIT_PAGE_COUNT | INIT_PAGE_RESERVED);
- 
- 	/*
- 	 * ZONE_DEVICE pages union ->lru with a ->pgmap back pointer
-@@ -2058,7 +2060,7 @@ static unsigned long  __init deferred_init_pages(struct zone *zone,
- 		} else {
- 			page++;
- 		}
--		__init_single_page(page, pfn, zid, nid);
-+		__init_single_page(page, pfn, zid, nid, INIT_PAGE_COUNT);
- 		nr_pages++;
+-	prefetchw(p);
+-	for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
+-		prefetchw(p + 1);
++	if (page_count(page)) {
++		prefetchw(p);
++		for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
++			prefetchw(p + 1);
++			__ClearPageReserved(p);
++			set_page_count(p, 0);
++		}
+ 		__ClearPageReserved(p);
+ 		set_page_count(p, 0);
  	}
- 	return (nr_pages);
+-	__ClearPageReserved(p);
+-	set_page_count(p, 0);
+ 
+ 	atomic_long_add(nr_pages, &page_zone(page)->managed_pages);
+ 
 -- 
 2.25.1
 
