@@ -2,67 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66A497B38F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D988C7B3887
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233721AbjI2R1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:27:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
+        id S233239AbjI2RWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233838AbjI2R1c (ORCPT
+        with ESMTP id S232800AbjI2RWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:27:32 -0400
-X-Greylist: delayed 370 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 29 Sep 2023 10:26:34 PDT
-Received: from server.cesssrl.com (server.cesssrl.com [185.174.102.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A86B1700
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:26:34 -0700 (PDT)
-Received: from vps2693868.trouble-free.net (unknown [216.219.84.124])
-        by server.cesssrl.com (Postfix) with ESMTPSA id 5B225C266E
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 17:20:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cesssrl.com;
-        s=default; t=1696008023;
-        bh=Guec0eA/0HSVrMZZdlCE7gL88Kmn1sRVtMoxM72UwW0=; h=From:To:Subject;
-        b=GyljughY4KSymNCGVmGUjV8KO8WEpJqWp+Ee0hCJbJDj7bvgRORuQYzrkYKkaOl9v
-         TT541Z1Y1BLL7+WTVDUPJ/UdLw46MQN0MKKIuJTdwHq1dnpVOa1gsP5mOc5sgF3125
-         KroOOw9yc49LMx5fE24k0MIk1FYsbuGsSzks54ErH2r4Tj5X1EFgBAvwEfeFpjpbFQ
-         hokR66pN6uLZLa45HkMsRIHSvwsytRqpCwA3NwQuq16xkGn3bZnhS4eB/uzu/nIWcR
-         1jYulvjTUudnzmdSnmGVQfzKrmesewC5gw6g7D3ur2wlpkCmMtWdTmNNtOhlBmNw6R
-         xeNnGc9KWL/Ow==
-Authentication-Results: server.cesssrl.com;
-        spf=pass (sender IP is 216.219.84.124) smtp.mailfrom=inquiry@cesssrl.com smtp.helo=vps2693868.trouble-free.net
-Received-SPF: pass (server.cesssrl.com: connection is authenticated)
-Reply-To: "Eng. Don Walker" <don.walker@gfzenergyengineeringcorp.link>
-From:   "Eng. Don Walker" <inquiry@cesssrl.com>
-To:     linux-kernel@vger.kernel.org
-Subject: Inquiry M01wiizjc:Ref
-Date:   29 Sep 2023 10:20:21 -0700
-Message-ID: <20230929102020.0BBD0DA708E888E5@cesssrl.com>
+        Fri, 29 Sep 2023 13:22:34 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F34193;
+        Fri, 29 Sep 2023 10:22:31 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TAhRvD004977;
+        Fri, 29 Sep 2023 17:22:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=mo/Fmgs8ebIBJP4OfmoansQWGKkTUIXMnfyq+5Xah7A=;
+ b=b1EXqp5uU4pb5cOHsuEkYb+M5Boy6erCGlQNJITPFNOxJh5N3Lkx0s26Is2xKqCaJAhC
+ OaufbyHL3EcYVTU/9nLpiNLC4I//7QacMOws4BxtwXC8zVR6RSKa8D1yeyBCvDOHlRMw
+ U5U4lFs+4hx+RUk0vwZYIPTsIJ28/p/JvIRuSQ5Lz3/iqjve5PDfoYFlqEZpVCeXT29m
+ ZyTryKQfMO9GogjXdD+OyX+mWhj/P1HMHITUtc7WOThaxOxERRkrFnahO2hn6fuJRKd6
+ 5IL+gswWKqjfmYXp3SzY5FA8rtPOwTrZt32yX+kcbTCVLkBkC9kBsJg7guCY+EOa64Al Pw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tdqmv9u2v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 17:22:20 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38THMHEY027482
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 17:22:17 GMT
+Received: from [10.111.177.152] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 29 Sep
+ 2023 10:22:17 -0700
+Message-ID: <28233946-7b20-4a08-ba0f-253e5ca5ff62@quicinc.com>
+Date:   Fri, 29 Sep 2023 10:22:16 -0700
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-PPP-Message-ID: <169600802378.584903.7026536333620578905@server.cesssrl.com>
-X-PPP-Vhost: cesssrl.com
-X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_95,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 wireless-next 2/9] carl9170: remove unnecessary (void*)
+ conversions
+Content-Language: en-US
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+To:     Christian Lamparter <chunkeey@gmail.com>,
+        Linux Wireless <linux-wireless@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+CC:     Wu Yunchuan <yunchuan@nfschina.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Kalle Valo <kvalo@kernel.org>
+References: <20230919044916.523308-1-yunchuan@nfschina.com>
+ <e544d992-cddd-4ade-81ef-2eed4f3681e8@gmail.com> <87zg16iab3.fsf@kernel.org>
+ <0b7623f7-561c-4f3b-91c1-aaf1c44f1158@kadam.mountain>
+ <d41d0c98-82ef-40f6-8c5c-68a94b5a4655@kadam.mountain>
+ <c5611be9-ef4d-4e49-84de-7ce893e3c73c@gmail.com>
+ <597c6e87-2d1c-4a8d-ab9f-d0d22566b9ed@quicinc.com>
+In-Reply-To: <597c6e87-2d1c-4a8d-ab9f-d0d22566b9ed@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: WjXijJQP5TDQRwNntQxUx0Sw9faqvgVY
+X-Proofpoint-ORIG-GUID: WjXijJQP5TDQRwNntQxUx0Sw9faqvgVY
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_16,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=518 spamscore=0
+ bulkscore=0 mlxscore=0 priorityscore=1501 suspectscore=0 malwarescore=0
+ impostorscore=0 clxscore=1015 adultscore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309290150
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day,
-I will be in your Country from the 15th to the 30th November 2023=20
-with 7 other people and we need your services during our stay. 
+On 9/29/2023 9:10 AM, Jeff Johnson wrote:
+> On 9/29/2023 12:23 AM, Christian Lamparter wrote:
+>> I would like to take the chance to again point to this beauty:
+>> <https://lore.kernel.org/linux-wireless/TYAP286MB03154F9AAFD4C35BEEDE4A99BC4CA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM/T/#mf1b8919a000fe661803c17073f48b3c410888541>
+>> @Dan, @Jeff can you please comment on that too?
+> 
+> I had not seen that patch since it was posted while I was transitioning 
+> roles. It looks like a reasonable patch to me to handle FORTIFY_SOURCE 
+> restrictions.
 
-Kindly confirm availability and prices. 
-=20
-What credit card types do you accept for deposit?
-=20
-Don.
+Saw Dan's reply, and further looked at the patch and saw this wasn't 
+actually a typical FORTIFY_SOURCE patch, so presumably this change is 
+NOT needed.
 
-
-Message Ref: 01-uixtwkf
-Message Time Stamp: 9/29/2023 10:20:20 a.m.
