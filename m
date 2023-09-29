@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29CBA7B2ED3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:03:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802AE7B2ED5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232888AbjI2JDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 05:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42534 "EHLO
+        id S232903AbjI2JDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 05:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232833AbjI2JDO (ORCPT
+        with ESMTP id S232949AbjI2JD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:03:14 -0400
+        Fri, 29 Sep 2023 05:03:27 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99E31B2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:03:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4FECCF;
+        Fri, 29 Sep 2023 02:03:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695978191; x=1727514191;
+  t=1695978203; x=1727514203;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=JtSNJh/6iFRzjvSsEmFDTl3PNN/JVLrNJbMF8kuGwZk=;
-  b=jaQ1hdGO0nSLmwTH3Awme9rjBJRecao/hBMiauauGcSDRufdrMHl3h9A
-   qOvkN+VEuL9tLnjAQ4BPlTvsp1yl1B9wCF60xNi0mMvWU3vyUhoVR/JsT
-   SZrUXOJB1oqyFdWxKFfLNH/6nbH4+yfV9+rzL2LSXtpBj35oznaVgFmkd
-   f8oPnBWn6wys5i28/BE6hBYz1ecp3dABnPxVoYRMzIYcG5oWh6a5W37e0
-   9vkD5Apwl4EfhQWK/mMkyc+WbmG2G65RRc41+glEUNl88eNDZIqPyBUeF
-   ceGZbKNqfUGsQnrhVzPKu4+EQdILV7fWYuujVQ//3pzFIKAMioaeUlbKf
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="385078591"
+  bh=SQJ1HH+EmlLWGkXlFwryhI9PdvJ4Vt0JIMIVQYhXC9w=;
+  b=RAYdPUFq7Wh+vxI7FdbHE3mbSQeuOubGAzAIkMOCW8AELbvrtB0fMzl0
+   064s2JQx38H8XY5xKK7p8Oqjt5PhjmJ6Qc4gFBJOqSoTgs4qD2ucFLW2e
+   y/JDWV2baOiz1MH4ETpzUIAcJyltNZGgiMK7N1wrItqh05THDU846Cwc0
+   ewKk45bUj7e9kpYPZlLZa7ZbwaAqZQ/SJx963XW7c+UjUcm8hy8i5pEPU
+   hB6Xkyt83ksItISv6Xsp5S4QheCj3p3RG9lzhXAsoI26uiBSN90nhHeDi
+   EKkE7xvK87wo6xxZRvbp3hoLxg1gOpwz4/gl9PJcV+EijnE8l3F+Ek9ld
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="385078632"
 X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
-   d="scan'208";a="385078591"
+   d="scan'208";a="385078632"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 02:03:07 -0700
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 02:03:23 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="749904545"
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="749904566"
 X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
-   d="scan'208";a="749904545"
+   d="scan'208";a="749904566"
 Received: from tzebrows-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.26.85])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 02:03:03 -0700
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 02:03:19 -0700
 From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 To:     Fenghua Yu <fenghua.yu@intel.com>,
         Reinette Chatre <reinette.chatre@intel.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Peter Newman <peternewman@google.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 3/4] x86/resctrl: Add sparse_masks file in info
-Date:   Fri, 29 Sep 2023 11:02:17 +0200
-Message-ID: <46d7aa4948b4e669d35dc5b2b0b6b0167ec9c8d7.1695977733.git.maciej.wieczor-retman@intel.com>
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>
+Cc:     Peter Newman <peternewman@google.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH v3 4/4] Documentation/x86: Document resctrl's new sparse_masks
+Date:   Fri, 29 Sep 2023 11:02:18 +0200
+Message-ID: <c42f54af4790785dec25dd537aaea56bfba78a67.1695977733.git.maciej.wieczor-retman@intel.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1695977733.git.maciej.wieczor-retman@intel.com>
 References: <cover.1695977733.git.maciej.wieczor-retman@intel.com>
@@ -67,11 +68,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Fenghua Yu <fenghua.yu@intel.com>
 
-Add the interface in resctrl FS to show if sparse cache allocation
-bit masks are supported on the platform. Reading the file returns
-either a "1" if non-contiguous 1s are supported and "0" otherwise.
-The file path is /sys/fs/resctrl/info/{resource}/sparse_masks, where
-{resource} can be either "L2" or "L3".
+The documentation mentions that non-contiguous bit masks are not
+supported in Intel Cache Allocation Technology (CAT).
+
+Update the documentation on how to determine if sparse bit masks are
+allowed in L2 and L3 CAT.
+
+Mention the file with feature support information is located in
+the /sys/fs/resctrl/info/{resource}/ directories and enumerate what
+are the possible outputs on file read operation.
 
 Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
 Reviewed-by: Peter Newman <peternewman@google.com>
@@ -79,52 +84,50 @@ Tested-by: Peter Newman <peternewman@google.com>
 Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 ---
 Changelog v3:
-- Add Peter's tested-by and reviewed-by tags.
-- Reword patch message slightly. (Reinette)
+- Added Peter's tested-by and reviewed-by tags.
 
 Changelog v2:
 - Change bitmap naming convention to bit mask. (Reinette)
-- Change file name to "sparse_masks". (Reinette)
 
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ Documentation/arch/x86/resctrl.rst | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index 725344048f85..945801898a4d 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -895,6 +895,17 @@ static int rdt_shareable_bits_show(struct kernfs_open_file *of,
- 	return 0;
- }
- 
-+static int rdt_has_sparse_bitmasks_show(struct kernfs_open_file *of,
-+					struct seq_file *seq, void *v)
-+{
-+	struct resctrl_schema *s = of->kn->parent->priv;
-+	struct rdt_resource *r = s->res;
+diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
+index cb05d90111b4..4c6421e2aa31 100644
+--- a/Documentation/arch/x86/resctrl.rst
++++ b/Documentation/arch/x86/resctrl.rst
+@@ -124,6 +124,13 @@ related to allocation:
+ 			"P":
+ 			      Corresponding region is pseudo-locked. No
+ 			      sharing allowed.
++"sparse_masks":
++		Indicates if non-contiguous 1s value in CBM is supported.
 +
-+	seq_printf(seq, "%u\n", r->cache.arch_has_sparse_bitmasks);
-+
-+	return 0;
-+}
-+
- /**
-  * rdt_bit_usage_show - Display current usage of resources
-  *
-@@ -1839,6 +1850,13 @@ static struct rftype res_common_files[] = {
- 		.seq_show	= rdtgroup_size_show,
- 		.fflags		= RF_CTRL_BASE,
- 	},
-+	{
-+		.name		= "sparse_masks",
-+		.mode		= 0444,
-+		.kf_ops		= &rdtgroup_kf_single_ops,
-+		.seq_show	= rdt_has_sparse_bitmasks_show,
-+		.fflags		= RF_CTRL_INFO | RFTYPE_RES_CACHE,
-+	},
++			"0":
++			      Only contiguous 1s value in CBM is supported.
++			"1":
++			      Non-contiguous 1s value in CBM is supported.
  
- };
+ Memory bandwidth(MB) subdirectory contains the following files
+ with respect to allocation:
+@@ -445,12 +452,13 @@ For cache resources we describe the portion of the cache that is available
+ for allocation using a bitmask. The maximum value of the mask is defined
+ by each cpu model (and may be different for different cache levels). It
+ is found using CPUID, but is also provided in the "info" directory of
+-the resctrl file system in "info/{resource}/cbm_mask". Intel hardware
++the resctrl file system in "info/{resource}/cbm_mask". Some Intel hardware
+ requires that these masks have all the '1' bits in a contiguous block. So
+ 0x3, 0x6 and 0xC are legal 4-bit masks with two bits set, but 0x5, 0x9
+-and 0xA are not.  On a system with a 20-bit mask each bit represents 5%
+-of the capacity of the cache. You could partition the cache into four
+-equal parts with masks: 0x1f, 0x3e0, 0x7c00, 0xf8000.
++and 0xA are not. Check /sys/fs/resctrl/info/{resource}/sparse_masks
++if non-contiguous 1s value is supported. On a system with a 20-bit mask
++each bit represents 5% of the capacity of the cache. You could partition
++the cache into four equal parts with masks: 0x1f, 0x3e0, 0x7c00, 0xf8000.
  
+ Memory bandwidth Allocation and monitoring
+ ==========================================
 -- 
 2.42.0
 
