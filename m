@@ -2,171 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25ABA7B3841
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:01:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BC9D7B3842
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233639AbjI2RBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:01:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33302 "EHLO
+        id S233620AbjI2RBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233582AbjI2RBD (ORCPT
+        with ESMTP id S233691AbjI2RBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:01:03 -0400
-Received: from out-190.mta0.migadu.com (out-190.mta0.migadu.com [91.218.175.190])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B001BC
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:01:01 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696006860;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vyPpy7V4wE2Fq1thEJrKI/yAvrKJAgrKyO5PTWzt+c0=;
-        b=Xdo4RtH8KjUa1J1VtAZiBKj4mG+gMXTwbn84kOhAg/0zDdgYY8vacCk7XCm8fqr3VtGmH3
-        3ScYBlcAxQgNIIjSOtCgvV8cxL11kK6HGaRziMOdcpa9DwjFr1bRsjKRgzVo5wjy+jtE+/
-        /jvBjjLJse3UA9CW7O2465ciDuSfD2I=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     akpm@linux-foundation.org, rppt@kernel.org
-Cc:     mike.kravetz@oracle.com, muchun.song@linux.dev,
-        willy@infradead.org, david@redhat.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH v5 2/2] mm: Init page count in reserve_bootmem_region when MEMINIT_EARLY
-Date:   Sat, 30 Sep 2023 01:00:26 +0800
-Message-Id: <20230929170026.2520216-3-yajun.deng@linux.dev>
-In-Reply-To: <20230929170026.2520216-1-yajun.deng@linux.dev>
-References: <20230929170026.2520216-1-yajun.deng@linux.dev>
+        Fri, 29 Sep 2023 13:01:16 -0400
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB62A1BF
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:01:12 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-690d2441b95so684263b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:01:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696006872; x=1696611672;
+        h=user-agent:in-reply-to:content-transfer-encoding
+         :content-disposition:mime-version:references:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o7tb9qgExcfwx59wbYTBPGPiHmAF9mWFG0DnCJIrAMg=;
+        b=tgLPTWCqJnHoLsWgnivvVoXx3p8wYm/ea6DgoyLjeJJzXiMAbeOnpgBXeOfIAT248Z
+         fM6jfVrq8kWJPxwO92GX9m23q9JXZhQISQr0F5Cf/NqH8PrHykxKZ/MtxGnS1CX6JNVJ
+         aDpqC96wcd3VMvUOQh44riQNZ8ZQxyFg7ihbxXzCrMlyx6EVFIf8k4g0E44JIR+NvTTY
+         7JeSpAO1PB8y5mBZaRZIKn2EOTOntjliqt7NcEIvsPiJI2FUJCAFfAuGkSGvGgIVZm8c
+         SFNl+1r0Ozc4PtpcbRBkTFOSyYUY/d8UL2UsZw4uCayY0Fy1achPobeZpK+alYx/N29f
+         4AEA==
+X-Gm-Message-State: AOJu0YxjQ8nCSxVMwmHk7uEg5VenZ/749gaD3EYX9tpqdJW8sKdoZhaa
+        1SlkmknFH0rChxt+IJFZRr8=
+X-Google-Smtp-Source: AGHT+IEeuLvIv4d6/NR6+8aTjKQfcthJ23zRtpduZkG2fMYyZFUUeKUmkY5X8vAq3QLxFFbS+hhC9A==
+X-Received: by 2002:a05:6a00:2442:b0:690:f877:aa1e with SMTP id d2-20020a056a00244200b00690f877aa1emr7118463pfj.12.1696006871654;
+        Fri, 29 Sep 2023 10:01:11 -0700 (PDT)
+Received: from maniforge ([2620:10d:c090:400::4:4b85])
+        by smtp.gmail.com with ESMTPSA id z14-20020aa785ce000000b006933ea28070sm4392608pfn.12.2023.09.29.10.01.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 10:01:09 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 12:01:04 -0500
+From:   David Vernet <void@manifault.com>
+To:     K Prateek Nayak <kprateek.nayak@amd.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, tj@kernel.org,
+        roman.gushchin@linux.dev, gautham.shenoy@amd.com,
+        aaron.lu@intel.com, wuyun.abel@bytedance.com, kernel-team@meta.com
+Subject: Re: [RFC PATCH 3/3] sched/fair: Add a per-shard overload flag
+Message-ID: <20230929170104.GA78641@maniforge>
+References: <31aeb639-1d66-2d12-1673-c19fed0ab33a@amd.com>
+ <20230831104508.7619-1-kprateek.nayak@amd.com>
+ <20230831104508.7619-4-kprateek.nayak@amd.com>
+ <20230831191103.GC531917@maniforge>
+ <350639fb-a428-7d94-b13b-7a33e68b7b09@amd.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <350639fb-a428-7d94-b13b-7a33e68b7b09@amd.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-memmap_init_range() would init page count of all pages, but the free
-pages count would be reset in __free_pages_core(). There are opposite
-operations. It's unnecessary and time-consuming when it's MEMINIT_EARLY
-context.
+On Fri, Sep 01, 2023 at 01:53:12AM +0530, K Prateek Nayak wrote:
+> Hello David,
+> 
+> On 9/1/2023 12:41 AM, David Vernet wrote:
+> > On Thu, Aug 31, 2023 at 04:15:08PM +0530, K Prateek Nayak wrote:
+> > 
+> > Hi Prateek,
+> > 
+> >> Even with the two patches, I still observe the following lock
+> >> contention when profiling the tbench 128-clients run with IBS:
+> >>
+> >>   -   12.61%  swapper          [kernel.vmlinux]         [k] native_queued_spin_lock_slowpath
+> >>      - 10.94% native_queued_spin_lock_slowpath
+> >>         - 10.73% _raw_spin_lock
+> >>            - 9.57% __schedule
+> >>                 schedule_idle
+> >>                 do_idle
+> >>               + cpu_startup_entry
+> >>            - 0.82% task_rq_lock
+> >>                 newidle_balance
+> >>                 pick_next_task_fair
+> >>                 __schedule
+> >>                 schedule_idle
+> >>                 do_idle
+> >>               + cpu_startup_entry
+> >>
+> >> Since David mentioned rq->avg_idle check is probably not the right step
+> >> towards the solution, this experiment introduces a per-shard
+> >> "overload" flag. Similar to "rq->rd->overload", per-shard overload flag
+> >> notifies of the possibility of one or more rq covered in the shard's
+> >> domain having a queued task. shard's overload flag is set at the same
+> >> time as "rq->rd->overload", and is cleared when shard's list is found
+> >> to be empty.
+> > 
+> > I think this is an interesting idea, but I feel that it's still working
+> > against the core proposition of SHARED_RUNQ, which is to enable work
+> > conservation.
+> 
+> I don't think so! Work conservation is possible if there is an
+> imbalance. Consider the case where we 15 tasks in the shared_runq but we
+> have 16 CPUs, 15 of which are running these 15 tasks, and one going
 
-Init page count in reserve_bootmem_region when in MEMINIT_EARLY context,
-and check the page count before reset it.
+I'm not sure I'm fully following. Those 15 tasks would not be enqueued
+in the shared runq if they were being run. They would be dequeued from
+the shared_runq in __dequeue_entity(), which would be called from
+set_next_entity() before they were run. In this case, the
+shard->overload check should be equivalent to the
+!list_empty(&shard->list) check.
 
-At the same time, the INIT_LIST_HEAD in reserve_bootmem_region isn't
-need, as it already done in __init_single_page.
+Oh, or is the idea that we're not bothering to pull them from the
+shared_runq if they're being woken up and enqueued on an idle core that
+will immediately run them on the next resched path? If so, I wonder if
+we would instead just want to not enqueue the task in the shared_runq at
+all? Consider that if another task comes in on an rq with
+rq->nr_running >= 2, that we still wouldn't want to pull the tasks that
+were being woken up on idle cores (nor take the overhead of inserting
+and then immediately removing them from the shared_runq).
 
-The following data was tested on an x86 machine with 190GB of RAM.
+> idle. Work is conserved. What we need to worry about is tasks being in
+> the shared_runq that are queued on their respective CPU. This can only
+> happen if any one of the rq has nr_running >= 2, which is also the point
+> we are setting "shard->overload".
 
-before:
-free_low_memory_core_early()    341ms
+Assuming this is about the "wakeup / enqueue to idle core" case, ok,
+this makes sense. I still think it probably makes more sense to just not
+enqueue in the shared_runq for this case though, which would allow us to
+instead just rely on list_empty(&shard->list).
 
-after:
-free_low_memory_core_early()    285ms
+> Now situation can change later and all tasks in the shared_runq might be
+> running on respective CPUs but "shard->overload" is only cleared when
+> the shared_runq becomes empty. If this is too late, maybe we can clear
+> it if periodic load balancing finds no queuing (somewhere around the
+> time we update nr_idle_scan).
+> 
+> So the window where we do not go ahead with popping a task from the
+> shared_runq_shard->list is between the list being empty and at least one
+> of the CPU associated with the shard reporting nr_running >= 2, which is
+> when work conservation is needed.
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
-v5: add flags in memmap_init_range.
-v4: same with v2.
-v3: same with v2.
-v2: check page count instead of check context before reset it.
-v1: https://lore.kernel.org/all/20230922070923.355656-1-yajun.deng@linux.dev/
----
- mm/mm_init.c    | 20 +++++++++++++++-----
- mm/page_alloc.c | 20 ++++++++++++--------
- 2 files changed, 27 insertions(+), 13 deletions(-)
+So, I misread your patch the first time I reviewed it, and for some
+reason thought you were only setting shard->overload on the
+load_balance(). That's obviously not the case, and I now understand it
+better, modulo my points above being clarified.
 
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 0549e7c3d588..f84f1ede57c6 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -718,7 +718,7 @@ static void __meminit init_reserved_page(unsigned long pfn, int nid)
- 		if (zone_spans_pfn(zone, pfn))
- 			break;
- 	}
--	__init_single_page(pfn_to_page(pfn), pfn, zid, nid, INIT_PAGE_COUNT);
-+	__init_single_page(pfn_to_page(pfn), pfn, zid, nid, 0);
- }
- #else
- static inline void pgdat_set_deferred_range(pg_data_t *pgdat) {}
-@@ -756,8 +756,11 @@ void __meminit reserve_bootmem_region(phys_addr_t start,
- 
- 			init_reserved_page(start_pfn, nid);
- 
--			/* Avoid false-positive PageTail() */
--			INIT_LIST_HEAD(&page->lru);
-+			/*
-+			 * We didn't init page count in memmap_init_range when
-+			 * MEMINIT_EARLY, so it must init page count here.
-+			 */
-+			init_page_count(page);
- 
- 			/*
- 			 * no need for atomic set_bit because the struct
-@@ -850,6 +853,7 @@ void __meminit memmap_init_range(unsigned long size, int nid, unsigned long zone
- 		struct vmem_altmap *altmap, int migratetype)
- {
- 	unsigned long pfn, end_pfn = start_pfn + size;
-+	enum page_init_flags flags = 0;
- 	struct page *page;
- 
- 	if (highest_memmap_pfn < end_pfn - 1)
-@@ -888,9 +892,15 @@ void __meminit memmap_init_range(unsigned long size, int nid, unsigned long zone
- 		}
- 
- 		page = pfn_to_page(pfn);
--		__init_single_page(page, pfn, zone, nid, INIT_PAGE_COUNT);
-+
-+		/* If the context is MEMINIT_EARLY, we will init page count and
-+		 * mark page reserved in reserve_bootmem_region, the free region
-+		 * wouldn't have page count and we will check the pages count
-+		 * in __free_pages_core.
-+		 */
- 		if (context == MEMINIT_HOTPLUG)
--			__SetPageReserved(page);
-+			flags = INIT_PAGE_COUNT | INIT_PAGE_RESERVED;
-+		__init_single_page(page, pfn, zone, nid, flags);
- 
- 		/*
- 		 * Usually, we want to mark the pageblock MIGRATE_MOVABLE,
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 7df77b58a961..bc68b5452d01 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1289,18 +1289,22 @@ void __free_pages_core(struct page *page, unsigned int order)
- 	unsigned int loop;
- 
- 	/*
--	 * When initializing the memmap, __init_single_page() sets the refcount
--	 * of all pages to 1 ("allocated"/"not free"). We have to set the
--	 * refcount of all involved pages to 0.
-+	 * When initializing the memmap, memmap_init_range sets the refcount
-+	 * of all pages to 1 ("reserved" and "free") in hotplug context. We
-+	 * have to set the refcount of all involved pages to 0. Otherwise,
-+	 * we don't do it, as reserve_bootmem_region only set the refcount on
-+	 * reserve region ("reserved") in early context.
- 	 */
--	prefetchw(p);
--	for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
--		prefetchw(p + 1);
-+	if (page_count(page)) {
-+		prefetchw(p);
-+		for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
-+			prefetchw(p + 1);
-+			__ClearPageReserved(p);
-+			set_page_count(p, 0);
-+		}
- 		__ClearPageReserved(p);
- 		set_page_count(p, 0);
- 	}
--	__ClearPageReserved(p);
--	set_page_count(p, 0);
- 
- 	atomic_long_add(nr_pages, &page_zone(page)->managed_pages);
- 
--- 
-2.25.1
+> > 
+> >> With these changes, following are the results for tbench 128-clients:
+> > 
+> > Just to make sure I understand, this is to address the contention we're
+> > observing on tbench with 64 - 256 clients, right?  That's my
+> > understanding from Gautham's reply in [0].
+> > 
+> > [0]: https://lore.kernel.org/all/ZOc7i7wM0x4hF4vL@BLR-5CG11610CF.amd.com/
+> 
+> I'm not sure if Gautham saw a contention with IBS but he did see an
+> abnormal blowup in newidle_balance() counts which he suspected were the
+> cause for the regression. I noticed the rq lock contention after doing a
+> fair bit of surgery. Let me go check if that was the case with vanilla
+> v3 too.
+> 
+> > 
+> > If so, are we sure this change won't regress other workloads that would
+> > have benefited from the work conservation?
+> 
+> I don't think we'll regress any workloads as I explained above because
+> the "overload" flag being 0 almost (since update/access is not atomic)
+> always indicate a case where the tasks cannot be pulled. However, that
+> needs to be tested since there is a small behavior change in
+> shared_runq_pick_next_task(). Where previously if the task is running
+> on CPU, we would have popped it from shared_runq, did some lock
+> fiddling before finding out it is running, some more lock fiddling
+> before the function returned "-1", now with the changes here, it'll
+> simply return a "0" and although that is correct, we have seen some
+> interesting cases in past [1] where a random lock contention actually
+> helps certain benchmarks ¯\_(ツ)_/¯
 
+I don't think we need to worry about less lock contention possibly
+hurting benchmarks :-)
+
+> [1] https://lore.kernel.org/all/44428f1e-ca2c-466f-952f-d5ad33f12073@amd.com/ 
+> 
+> > 
+> > Also, I assume that you don't see the improved contention without this,
+> > even if you include your fix to the newidle_balance() that has us skip
+> > over the <= LLC domain?
+> 
+> No improvements! The lock is still very much contended for. I wonder if
+> it could be because of the unlocking and locking the rq again in
+> shared_runq_pick_next_task() even when task is on CPU. Also since it
+> return -1 for this case, pick_next_task_fair() will return RETRY_TASK
+> which can have further implications.
+
+Yeah, I could see it being an issue if we're essentially thrashing tasks
+in the shared_runq that are just temporarily enqueued in the shared_runq
+between activate and doing a resched pass on an idle core.
+
+Unfortunately, I don't think we have any choice but to drop and
+reacquire the rq lock. It's not safe to look at task_cpu(p) without
+pi_lock, and we can't safely acquire that without dropping the rq lock.
+
+Thanks,
+David
