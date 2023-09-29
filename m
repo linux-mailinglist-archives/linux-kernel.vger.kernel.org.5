@@ -2,49 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2E27B2CFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F6137B2CFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232788AbjI2HWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 03:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38684 "EHLO
+        id S232801AbjI2HXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 03:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbjI2HWu (ORCPT
+        with ESMTP id S232663AbjI2HXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 03:22:50 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 26628199;
-        Fri, 29 Sep 2023 00:22:48 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D06DF1FB;
-        Fri, 29 Sep 2023 00:23:24 -0700 (PDT)
-Received: from [192.168.1.13] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 07A033F6C4;
-        Fri, 29 Sep 2023 00:22:43 -0700 (PDT)
-Message-ID: <e028af69-5583-5378-9573-71e46314687d@arm.com>
-Date:   Fri, 29 Sep 2023 09:22:37 +0200
+        Fri, 29 Sep 2023 03:23:15 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9DEF1A7;
+        Fri, 29 Sep 2023 00:23:13 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T7IwHe007287;
+        Fri, 29 Sep 2023 07:23:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=7PhJ/1snztbIAvJzVIeW/P7/Qyzopbj/fqKd87GFOjI=;
+ b=JvWkNCdmW0gayqaeAt12E5fXacPwzAndTdKfTynixTBsBHnFWCZyPPwQV3k+pkhypmmX
+ 3qrN/PDXTwurSuVV2FTK1VHtweOjk9VLjEaP6d8UraQR2W2XEyfbSdArbaLxtQnrDuFX
+ EeDwN2RGhebG7NxjrD4VUq5aDtQD4ZJP2f5vkaBKhcbIkSxj9Pi3vpySh6FvYf1hh/Th
+ v+m+trK24qBinMSePRJFHl41Hehs0m943rMTHwIv/yyVc1zWr1X+uIXPjGvmqrk59a7g
+ jj4njaoE/HDfESOZMFuPJoj2dZWHly+L2zH4KqowAAe8RGs7/3WxDrnY/sKWUZ7m622x Lw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3td3ggav1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 07:23:09 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38T7N8RC026214
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 07:23:08 GMT
+Received: from [10.204.67.150] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 29 Sep
+ 2023 00:23:06 -0700
+Message-ID: <6e9200a1-cf3c-27ca-ceef-7d9b70297530@quicinc.com>
+Date:   Fri, 29 Sep 2023 12:53:02 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] cpufreq: Rebuild sched-domains when removing cpufreq
- driver
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org,
-        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
-        vschneid@redhat.com, "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-pm@vger.kernel.org
-References: <20230918112937.493352-1-pierre.gondois@arm.com>
- <20230928071810.hkdmuoaasrv4b2oq@vireshk-i7>
- <93262faa-7089-f2a2-3df7-058c338adfc6@arm.com>
- <20230929032743.6mjcyyx3cmjjxsix@vireshk-i7>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v1] misc: fastrpc: Reset metadata buffer to avoid
+ incorrect free
 Content-Language: en-US
-From:   Pierre Gondois <pierre.gondois@arm.com>
-In-Reply-To: <20230929032743.6mjcyyx3cmjjxsix@vireshk-i7>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <ekangupt@qti.qualcomm.com>, <linux-kernel@vger.kernel.org>,
+        <fastrpc.upstream@qti.qualcomm.com>
+References: <1693463723-16937-1-git-send-email-quic_ekangupt@quicinc.com>
+ <2023092840-balmy-proved-e337@gregkh>
+From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
+In-Reply-To: <2023092840-balmy-proved-e337@gregkh>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: TRkRo4syH3r5Z65fY3-QKNzkUsm3-fWc
+X-Proofpoint-ORIG-GUID: TRkRo4syH3r5Z65fY3-QKNzkUsm3-fWc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_05,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=806
+ priorityscore=1501 bulkscore=0 malwarescore=0 clxscore=1015
+ lowpriorityscore=0 suspectscore=0 mlxscore=0 spamscore=0 adultscore=0
+ phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2309290061
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,22 +84,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/29/23 05:27, Viresh Kumar wrote:
-> On 28-09-23, 14:49, Pierre Gondois wrote:
->> Another solution would be to call sched_cpufreq_governor_change()
->> from cpufreq_schedutil's init()/exit() callbacks. This would make
->> more sense as EAS/schedutil cpufreq are tightly bound, and it would
->> allow to cover all the possible paths.
+On 9/28/2023 6:38 PM, Greg KH wrote:
+> On Thu, Aug 31, 2023 at 12:05:23PM +0530, Ekansh Gupta wrote:
+>> Metadata buffer is allocated during get_args for any remote call.
+>> This buffer carries buffers, fdlists and other payload information
+>> for the call. If the buffer is not reset, put_args might find some
+>> garbage FDs in the fdlist which might have an existing mapping in
+>> the list. This could result in improper freeing of FD map when DSP
+>> might still be using the buffer. Added change to reset the metadata
+>> buffer after allocation.
 >>
->> When tried locally, it seems to cover all scenarios:
->> - insmod/rmmod a cpufreq driver
->> - changing the governor policy
->> - offlining all the CPUs of a pd
+>> Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
 > 
-> Right now it is done for all governors. We don't need that ? We just care about
-> schedutil here ?
+> What commit id does this fix?
 > 
+> And you sent 3 patches, but not in a list, what order are they to be
+> applied in?
+> 
+Thanks for reviewing the patches, Greg. I'll send the 3 patches as a 
+patch series for better understanding.
 
-Yes exact, EAS requires the schedutil governor to be used by all policies. The purpose
-of this function is to re-evaluate if EAS enablement conditions are met. I.e., if one
-policy changed from/to schedutil, if EAS must be [de|re]activated.
+-ekansh
+> thanks,
+> 
+> greg k-h
