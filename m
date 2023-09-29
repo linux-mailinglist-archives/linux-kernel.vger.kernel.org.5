@@ -2,224 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FED87B3776
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D227B3774
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233762AbjI2QER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 12:04:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233646AbjI2QEJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233723AbjI2QEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 29 Sep 2023 12:04:09 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9BF1A7;
-        Fri, 29 Sep 2023 09:04:06 -0700 (PDT)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TEiIXd005451;
-        Fri, 29 Sep 2023 16:03:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=tYSlLBZysxPl9F5Ti2T+9hJwF/EstlXSYZvP2/kbTsc=;
- b=e8jVfk2rMx72raNr/H7eu2wR8yTvOH3HqVkk6UWL5+K+Oh5BLAyyAzx3sgut4fH4/HQs
- FeSFqXPG6JbW5Aq8HTqorXrHDwSfz+dxtE9R38t/X8cfw3+PvMtrUQDNBImez3dNFcD/
- iRjNV6pPkXT6s+zZgKSgMPtnGUHW/KFfcoljSYbpB3Q8+ZDgy4z8papLlESzLutE/ANs
- 9KchhY0Wy3SP7dBD+qVjQ12TVpqsYCK0nwGP5eyy7cQbvpNQw+x6dxwZbBe2DZBcI3yl
- oqmpJQbz0Rrhkazp5uLRnTDuCeENxKRycgJVhvdqDBfJAFculxssAEvgFJ4nEtj4C0TC kA== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3t9peeex8e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Sep 2023 16:03:57 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38TENQcf040728;
-        Fri, 29 Sep 2023 16:03:57 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2044.outbound.protection.outlook.com [104.47.57.44])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3t9pfhsnv5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 29 Sep 2023 16:03:56 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=my85tzxAJV5ffLcq1ZnX0j5+EW1Kj9YOUdmJaJDItY3eHZ7N+ARVLASIwKPXEJozxYayvAVNEspyuGP3vYQkWgshe8YNVJiogigcSdSv62grl/sjNHVxYkfEaekNtW574/ncaRI7jtubQd86mhMSg9IUTQqg+e8jW3QOv301Lw1J2YFJmPqmfQYgLVDviMt+svzGijNw5MWqu1M0DsEmCFtPP9tI8hG9024vkIxPobkzvV4FUKpkwE7xOUivtXzeKzEGsOdyYcqKehVRZAXvG1OkDzDvXdRlbQw2MjXeH8QSqYPzdeVYFCSQti6SbQDsdym6KpDLmp0qBudrzwL12w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tYSlLBZysxPl9F5Ti2T+9hJwF/EstlXSYZvP2/kbTsc=;
- b=LV3+KpPAMgvaWrStCyjsoQnmxRAkWzH6Y8U6Cnm/bO7PRSHIKGYRBiJkeS5CfWNT2DQCzIZbDM7ouVZU2S8raCfcNaF71m52PZWL2VvHJieZhurTNyuvnx6br1BCKDKsLpBrd9dTpyET89UUGoiFEC3iENUtTEh9PGeIsVvn1ijLPtrIVBvZk/1MDDNmGoqrxNy4TttR+oeZu4QYp2FNXIupnksu5o4acE3nP4ny7sjSNDp2DFjsW9mAmPVXjtMvz/rlcl2KbvoYVKeKTnQwGQJf80VWXyZ7YmfIm+52eDxM7Yxdr09gg8GjUln3uK8Myqj2CT5PKbmg7x/5pJDsZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tYSlLBZysxPl9F5Ti2T+9hJwF/EstlXSYZvP2/kbTsc=;
- b=VdtrDuA6qRTF7jaavWWFEfZE54i2YiGcDlm1LhM+pIuwh5d0uD4553VHb5gYDt55MXLkmn6m+cwrWVVM1Dv12/551fN9dEOP5KiuQ4XF0fn6syIhaubBR9IvRPWUMe0+UTIj6YyzKbHohjXVbWlC75lpfqlENE71whdDe0wtX8U=
-Received: from CY8PR10MB7243.namprd10.prod.outlook.com (2603:10b6:930:7c::10)
- by PH7PR10MB7840.namprd10.prod.outlook.com (2603:10b6:510:2fd::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26; Fri, 29 Sep
- 2023 16:03:49 +0000
-Received: from CY8PR10MB7243.namprd10.prod.outlook.com
- ([fe80::37c3:3be:d433:74e8]) by CY8PR10MB7243.namprd10.prod.outlook.com
- ([fe80::37c3:3be:d433:74e8%6]) with mapi id 15.20.6813.017; Fri, 29 Sep 2023
- 16:03:49 +0000
-Message-ID: <b3a5e717-90ab-42f8-8fe1-4a24fff404c3@oracle.com>
-Date:   Fri, 29 Sep 2023 11:03:47 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] scsi: qla4xxx: fix potential deadlock on frwd/back lock
-To:     Chengfeng Ye <dg573847474@gmail.com>, njavali@marvell.com,
-        mrangankar@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, lduncan@suse.com,
-        cleech@redhat.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230928145401.32918-1-dg573847474@gmail.com>
-Content-Language: en-US
-From:   Mike Christie <michael.christie@oracle.com>
-In-Reply-To: <20230928145401.32918-1-dg573847474@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DS7PR03CA0134.namprd03.prod.outlook.com
- (2603:10b6:5:3b4::19) To CY8PR10MB7243.namprd10.prod.outlook.com
- (2603:10b6:930:7c::10)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233112AbjI2QEI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Sep 2023 12:04:08 -0400
+Received: from smtp-42a9.mail.infomaniak.ch (smtp-42a9.mail.infomaniak.ch [84.16.66.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08B2195
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:04:05 -0700 (PDT)
+Received: from smtp-3-0000.mail.infomaniak.ch (unknown [10.4.36.107])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4RxwBq0Mp2zMqF4w;
+        Fri, 29 Sep 2023 16:04:03 +0000 (UTC)
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4RxwBn61fdzr1;
+        Fri, 29 Sep 2023 18:04:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+        s=20191114; t=1696003442;
+        bh=CMlikyU4Judx0co7OWrQWMzjDIrDxc++8ElpfXH0CmQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Wkh0xDBBphMQb0NXKRnQh+8C7tCsaUGDFofPzCkUBaHES8bldLo2PGZs38Nx+SjOA
+         HnhNFgszNsOp4QDWoRcHTVykilOLYvZW1VXa0nXy6m03i/I8qLomRLuQ1YxFSQES8T
+         x7Vjm+7bub9l81NIXLEdxyiXBhnZDM4LY7Qw+T6o=
+Date:   Fri, 29 Sep 2023 18:04:00 +0200
+From:   =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To:     Jeff Xu <jeffxu@google.com>
+Cc:     Eric Paris <eparis@redhat.com>, James Morris <jmorris@namei.org>,
+        Paul Moore <paul@paul-moore.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Ben Scarlato <akhna@google.com>,
+        =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>,
+        Jorge Lucangeli Obes <jorgelo@google.com>,
+        Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
+        Shervin Oloumi <enlightened@google.com>, audit@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [RFC PATCH v1 5/7] landlock: Log file-related requests
+Message-ID: <20230929.Zausiachi5Eu@digikod.net>
+References: <20230921061641.273654-1-mic@digikod.net>
+ <20230921061641.273654-6-mic@digikod.net>
+ <CALmYWFubLv+yd9NWMMwt4FUdYnbghMC=GHeZm4oaSOctqnwbVA@mail.gmail.com>
+ <20230926.di9Esee2xahi@digikod.net>
+ <CALmYWFuerqvZ3HoUnc9xXYhR8vBgg9qAyA-ncHai4ksN-c-gGQ@mail.gmail.com>
+ <20230928.Haewoh8Aishe@digikod.net>
+ <CALmYWFvT8EBh+DwW0gw8yU36FKQxtsmO2s5sU6DD8_pfA9yxYg@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY8PR10MB7243:EE_|PH7PR10MB7840:EE_
-X-MS-Office365-Filtering-Correlation-Id: c9d88d0a-21a2-424e-fb72-08dbc105ab4b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ElQ6T5sDZNVQBkfTtAr0W0u2Cng89XGqyxitH5KtcWwC+jTFeHEJXF0jx98W6GEbazMkcgxbuywyBvOVsMl8UaLYul7z6zvGThxIkioD1+vBPZm3WJdoV3/zl58MDg+nwbPFzKJ3c+0eu8o/GG1AYgzXJsh2jiTgjifxOtKJDRxgQegyneSgmSA4Nh03p3cKMBv4AZjtyQPeYU3zY8XJJ7YY0D5Exee0zA+xaisW/RK29QMp3q4gz5c58hRzqRwg/fEVpMZWqZHpKJFjhDHlbR6sW8/Zb69bgfX2nqQwNZugyhwJhT+nEsOn4ACoC30DrFb2tCQ3X5weytio4M8NImyC3U6qdeAHpyFqfqWdz88pvrCbN/oDI3YfLEmLxABph/qRoZlhINB3/ALnEZ0req0RId9GrmC++9rUkbXzVmY3DnXqrXHwv1BXc5M4VfIuEdf1GRk8C8o8MfVnQhO+5t+gyBck7ucjeTmP0ZkKaHdidjbcdrQX7AE5DL8ghkJNJcr/HOE4f9L6R2EKUv33nqLNURkwOSoj31fp94FnSETZwD9NorR9rk07kKpi9yMmNMkeKFwHWXwd/ROBmHAVyfsVZuKi/D8IHJ1WjWf9aLejabzos2w4UT90Vmpfe5+kml6awTWcpDqSZWqR4gest/KzHyqdYi6fmih5FgBMExg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY8PR10MB7243.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(376002)(366004)(396003)(136003)(230922051799003)(1800799009)(64100799003)(186009)(451199024)(2616005)(53546011)(6486002)(6506007)(6512007)(478600001)(83380400001)(26005)(2906002)(5660300002)(66946007)(66556008)(316002)(8936002)(66476007)(41300700001)(8676002)(4326008)(36756003)(86362001)(38100700002)(31696002)(31686004)(32563001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?LytoaEpmUTFSRmxhdXZndUE4UGVIelpGUGEyRjh3YVdua2l4Mi9mZHJyZDhM?=
- =?utf-8?B?LzJwS3NtOGRhVUF3WGVnWWNWdjd2Ykh6blZpeXQvUndaMWxmckQwaDB6T1U5?=
- =?utf-8?B?WHpHOXBQT0VmMHFGZE8wM25aVUFjU2tZNGJHcnRLOERBN01PelhET0JPQzdi?=
- =?utf-8?B?dzZlREVHcVNFQS92WmFNaDM5a0w2YUY4ek9SV2FDZS9aM1g1UG5yMDhZdHV5?=
- =?utf-8?B?V0VHTDlVeTNxVGdPU2pvRS9kaEx1bWIra1JPSy9Jd3lwS2hMWTNGSVgwMUhS?=
- =?utf-8?B?eUNvM1lsZVd0blZsYytxRGQ1dmk1eDhCQ1RRQzlwOERUek5SclhUSTViWDIy?=
- =?utf-8?B?ZzdtQTFkS1NoUm1sR2pMbmpFcUZ1MnBYZGk3M2czeitkd1RPcU9BUGJadlRM?=
- =?utf-8?B?M1B4N3B3NEZzSng0Sm4wZzhaYXNyeWovV08wQlFqTlRFZElJYlh0dGJpUitK?=
- =?utf-8?B?M0VvZ1dXbVhWUTIyVldMZGNzYU0rSEJQaGRPc2VZQWlrdFh3eHhheHZTSWpz?=
- =?utf-8?B?RnBhNWlxNERyV3o1VXRSU3NvNDBpVzd6QkRKTEU4cnJkRlZIaEhyV3EyTm9H?=
- =?utf-8?B?bGJrOGlCMmZWQkJOT2RJMXdGYThoSjJ2Q3F5end6Z2NmS0tmdW1CNUhxWi9l?=
- =?utf-8?B?dHhHSUduOEY4R0t4emgvcDg4QzhCL0FON2VTL0RaUVBRV0ppV1VVaWNkK0Mx?=
- =?utf-8?B?RG1kTVBpME12MTJPQStTbGxhd3dYNUU2UzhtUXJnNlhTa1hUZUYvaUNnc1FX?=
- =?utf-8?B?cFdNSkd0b3dpMjkvU3BhWG1jL0hrWXk4OEI3bEZrWDZLM0dBZkE2UWRLYS8z?=
- =?utf-8?B?enVjY3lkb0dGZFkxOHJTbTljVzhmWWs1LzFlQTZFRzBsdTk1cGVYU0hORTZo?=
- =?utf-8?B?VEZKK2ZzZEh5L2hEbXFqWFYzc2FucHJqTnpnWW9rWEJRREpYR0psdTJ0QzRR?=
- =?utf-8?B?SEZzUHdISXg0MWs0LzNjU0huK0xIOEt2UElYb0NPVE9sUEJHSER2Uk15UmJZ?=
- =?utf-8?B?SmZ4Q3ZuRnFpTUVCYVJoR1N2V3hCYnFTV0p0VlRhZDJuTkxxWWtad2hIcjZD?=
- =?utf-8?B?WkJEQW1tcmFTRFNibXFacVRyRUlKdjVnRU9TcTdkd3E4Z1dBREdDd3B0VGZU?=
- =?utf-8?B?Yy9kaGlDblIyYlNWWTlvQ1pPV1BGdFJudWROKzI3Q2QrZHgzSmxHU2pFMmNy?=
- =?utf-8?B?YzhWeHZFMkEwK1RFVUpjVVQrajUwa1QxbWxlR2plenYyRFY5K294T0RTcHU1?=
- =?utf-8?B?M3dybWg1Nlg1cjNxMEw4RzlISnM4TFNzbWh5MUdLcmlGOTNEeldWTVoyWTg3?=
- =?utf-8?B?bXFWVGd2L1B4eW9FejVvNDFESytkV2Zob1dDOUZCUkErSUpXSGNoVUhkNHdM?=
- =?utf-8?B?cXNmZjlqR1NXdnM3KzFYQ0xSMW1TbFdDdlVxd1NUZm56VzNCSmdDVHBqZEVw?=
- =?utf-8?B?NXhlSlErMWpOU3RyOTJzL1JiaTlaYmhPeTVCb0dzNEh3V3ZtS013T1F1KzI3?=
- =?utf-8?B?SXA1cmpLcVVQUTlqZVMyWXQ4RUlka1BiUVRhR0tjRnRVc0tScEwzaGYwc1NW?=
- =?utf-8?B?OFEvRVNYd05jUVpjMlkvQ0tvMytGSm5GYVFNZ29vQXRMeVF2RXRFVUZwVnpP?=
- =?utf-8?B?dVoybjVhKzNVd1F0MWUyakRETkJUWTh1QkVyWlI1YWlvSXFsQ0R3bUM5ZHZR?=
- =?utf-8?B?SVplVDQ5eWpiQmtoL1FRc1dnYUd1RFcveWJYaXJOeW5SajY0S1lJMDRtUEh3?=
- =?utf-8?B?Vkh2WEtTdjg5ditWWnhJYktlZzJwN2Z1dEFrelZ3UUVoUzJ4VlRSdzhGRHVh?=
- =?utf-8?B?NkZyRlo5Ky8rdFFOTGVTZjRzVDdNdFRLV1lva0RlaklWOExhN1dsdlA5dFl0?=
- =?utf-8?B?bDBWZ21Ma0tIU1BsSkg3Q05HU05jZjNLYkV3ck44MEV2cU5SbTlmQ0N2NnRU?=
- =?utf-8?B?dVhtNy8weThYL3kxaUg3dlhiN3A0a1huWE1mVEpHakVNdHlLV0VRa1Y1NnpK?=
- =?utf-8?B?OCtSc01jVFhXRHFtaXRodGd3UTdwTEx0THpnVkk1T0JxMU92YnNIaGpoNHRL?=
- =?utf-8?B?MXRNUURBL3l4dHhEK0xnUUVjNjlUTHpBdm4rTFhiK2tGZ0FJMjRyVjd5Tk1J?=
- =?utf-8?B?M2ZlT2Z4eXhXaFpuMDJrSlpRSjJkYVhtSWxMdENTVld6Q2tSTFJKYkFacWZV?=
- =?utf-8?B?dlE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: XUtbcieJ0J6bX6jQi4LSrbjHv15SP6ibiaAeUosyb27VIiyWCPgMqOYbIePtEvp9KuiwJilEVBp0vVqjkeqCNjwbjCMx0MClOTqlL4JKo9g3TpXD3nsVRKfkEiQ9rx+crytpGUJoxkj7eOc519YIS4MLa6X9ntlO2eY4tE/YRl2wagvPV4UmCrcdyzLeDPN6kSVpxvu7Y6bl/3ug5I2x/X8N/Gx1ENXkZS4nN6trP24EhpSRlc8s3PTpXifDj+yVi+nZgK8bAmXVAKx/S3tCLDynFQWf+SIqNZQx2j1UGnf78GQ05dXCjqcaQaVYRo/ZL9J4tcENvcWQueT06Ia+BTz9RoWS5Y0llYD0jO54o8FYtoc+GgPU29BhCBM+9PXTNWCy/D3k9gKNKGMKKL8PEvoE/t++KHm5LHPvHdOUJ4xreOOjaBcCj87clyEbL5aIaRkjEdUhpoR3cpJ4vMk6YbUpoi4SZAkEJKPdjW6dSFXlESlzJAu6njMQslhbofeF8hzYenIwj91UZfeRlNK4dDOoCmVAiSuUtJkrdXrTaUw8CUGLQ9ymkHsaGBCV1lZh0RFNGV42ONpJEDjD7lL/Yw2lvK2/AGeV080g9xjZXcQ8R/Dg5HofKkF6k2VOgs83RqzZABFwMpKjZeT7sSRhC0wd5BLSGvvrlAsjb09TtSrW5Yf71TB1LjnyCyIDgitcAPZyYZe+IVHc1fX2v7C7YP8l11eoDQZ5wghiVnuZ7qSSWys+xNdyf5SneiNStlRVlOZx0Lu6u0u1RMtMAORcoBLSAwLceh0ufvMtcDNOFSyFL1+27Yl7rUUTpQj1k4robaFdyR/2uiiDC5631W6ppAyEPsFBPnZ7rSxs3F5ytynC8Im8eWfhnJZyBiDkB4FhNEe/OT4rYJ3WVWyyADhI2IaSZSll+AuS7w2kgCTbK00=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c9d88d0a-21a2-424e-fb72-08dbc105ab4b
-X-MS-Exchange-CrossTenant-AuthSource: CY8PR10MB7243.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 16:03:49.7684
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zIYkYOwHEq1rHSTFA8uTXgY8gZNP3Yo1QCNCYF7Sb/Lv1RynWdSg59E+3k7X84S0Mjc2J7+9m+XRTrHddm51uCoLh8XRugi0+3PFHMVvcF4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB7840
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-29_14,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
- suspectscore=0 adultscore=0 phishscore=0 mlxscore=0 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309290139
-X-Proofpoint-ORIG-GUID: yOX9BMqCr392VBK7c51FwXMGJTDCa8Pv
-X-Proofpoint-GUID: yOX9BMqCr392VBK7c51FwXMGJTDCa8Pv
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALmYWFvT8EBh+DwW0gw8yU36FKQxtsmO2s5sU6DD8_pfA9yxYg@mail.gmail.com>
+X-Infomaniak-Routing: alpha
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/28/23 9:54 AM, Chengfeng Ye wrote:
-> iscsi_complete_pdu() is called by several rx callback, under
-> softirq context. Thus the callsite of it inside qla4xxx_task_work()
-> should better disable bottom half, as work queue is executed under
-> process context, it needs to protect race with softirq context
-> locking to avoid deadlock.
+On Thu, Sep 28, 2023 at 01:04:01PM -0700, Jeff Xu wrote:
+> On Thu, Sep 28, 2023 at 8:16 AM Mickaël Salaün <mic@digikod.net> wrote:
+> >
+> > On Tue, Sep 26, 2023 at 02:19:51PM -0700, Jeff Xu wrote:
+> > > On Tue, Sep 26, 2023 at 6:35 AM Mickaël Salaün <mic@digikod.net> wrote:
+> > > >
+> > > > On Mon, Sep 25, 2023 at 06:26:28PM -0700, Jeff Xu wrote:
+> > > > > On Wed, Sep 20, 2023 at 11:17 PM Mickaël Salaün <mic@digikod.net> wrote:
+> > > > > >
+> > > > > > Add audit support for mkdir, mknod, symlink, unlink, rmdir, truncate,
+> > > > > > and open requests.
+> > > > > >
+> > > > > > Signed-off-by: Mickaël Salaün <mic@digikod.net>
+> > > > > > ---
+> > > > > >  security/landlock/audit.c | 114 ++++++++++++++++++++++++++++++++++++++
+> > > > > >  security/landlock/audit.h |  32 +++++++++++
+> > > > > >  security/landlock/fs.c    |  62 ++++++++++++++++++---
+> > > > > >  3 files changed, 199 insertions(+), 9 deletions(-)
+> > > > > >
+> > > >
+> > > > > > +static void
+> > > > > > +log_request(const int error, struct landlock_request *const request,
+> > > > > > +           const struct landlock_ruleset *const domain,
+> > > > > > +           const access_mask_t access_request,
+> > > > > > +           const layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCESS_FS])
+> > > > > > +{
+> > > > > > +       struct audit_buffer *ab;
+> > > > > > +
+> > > > > > +       if (WARN_ON_ONCE(!error))
+> > > > > > +               return;
+> > > > > > +       if (WARN_ON_ONCE(!request))
+> > > > > > +               return;
+> > > > > > +       if (WARN_ON_ONCE(!domain || !domain->hierarchy))
+> > > > > > +               return;
+> > > > > > +
+> > > > > > +       /* Uses GFP_ATOMIC to not sleep. */
+> > > > > > +       ab = audit_log_start(audit_context(), GFP_ATOMIC | __GFP_NOWARN,
+> > > > > > +                            AUDIT_LANDLOCK);
+> > > > > > +       if (!ab)
+> > > > > > +               return;
+> > > > > > +
+> > > > > > +       update_request(request, domain, access_request, layer_masks);
+> > > > > > +
+> > > > > > +       log_task(ab);
+> > > > > > +       audit_log_format(ab, " domain=%llu op=%s errno=%d missing-fs-accesses=",
+> > > > > > +                        request->youngest_domain,
+> > > > > > +                        op_to_string(request->operation), -error);
+> > > > > > +       log_accesses(ab, request->missing_access);
+> > > > > > +       audit_log_lsm_data(ab, &request->audit);
+> > > > > > +       audit_log_end(ab);
+> > > > > > +}
+> > > > > > +
+> > > > > > +// TODO: Make it generic, not FS-centric.
+> > > > > > +int landlock_log_request(
+> > > > > > +       const int error, struct landlock_request *const request,
+> > > > > > +       const struct landlock_ruleset *const domain,
+> > > > > > +       const access_mask_t access_request,
+> > > > > > +       const layer_mask_t (*const layer_masks)[LANDLOCK_NUM_ACCESS_FS])
+> > > > > > +{
+> > > > > > +       /* No need to log the access request, only the missing accesses. */
+> > > > > > +       log_request(error, request, domain, access_request, layer_masks);
+> > > > > > +       return error;
+> > > > > > +}
+> > > >
+> > > > > > @@ -636,7 +638,8 @@ static bool is_access_to_paths_allowed(
+> > > > > >  }
+> > > > > >
+> > > > > >  static int current_check_access_path(const struct path *const path,
+> > > > > > -                                    access_mask_t access_request)
+> > > > > > +                                    access_mask_t access_request,
+> > > > > > +                                    struct landlock_request *const request)
+> > > > > >  {
+> > > > > >         const struct landlock_ruleset *const dom =
+> > > > > >                 landlock_get_current_domain();
+> > > > > > @@ -650,7 +653,10 @@ static int current_check_access_path(const struct path *const path,
+> > > > > >                                        NULL, 0, NULL, NULL))
+> > > > > >                 return 0;
+> > > > > >
+> > > > > > -       return -EACCES;
+> > > > > > +       request->audit.type = LSM_AUDIT_DATA_PATH;
+> > > > > > +       request->audit.u.path = *path;
+> > > > > > +       return landlock_log_request(-EACCES, request, dom, access_request,
+> > > > > > +                                   &layer_masks);
+> > > > >
+> > > > > It might be more readable to let landlock_log_request return void.
+> > > > > Then the code will look like below.
+> > > > >
+> > > > > landlock_log_request(-EACCES, request, dom, access_request,  &layer_masks);
+> > > > > return -EACCES;
+> > > > >
+> > > > > The allow/deny logic will be in this function, i.e. reader
+> > > > > doesn't need to check landlock_log_request's implementation to find
+> > > > > out it never returns 0.
+> > > >
+> > > > I did that in an early version of this patch, but I finally choose to write
+> > > > 'return lanlock_log_request();` for mainly two reasons:
+> > > > * to help not forget to call this function at any non-zero return values
+> > > >   (which can easily be checked with grep),
+> > >
+> > > "grep -A 2 landlock_log_request" would serve the same purpose though.
+> >
+> > Yes, there is always a way to find a pattern, and the best tool might be
+> > Coccinelle, but I think it's harder to miss with such tail calls.
+> >
+> > >
+> > > > * to do tail calls.
+> > > >
+> > > > I guess compiler should be smart enough to do tail calls with a variable
+> > > > set indirection, but I'd like to check that.
+> > > >
+> > >
+> > > What are tail calls and what is the benefit of this code pattern ?
+> > > i.e. pass the return value into landlock_log_request() and make it a
+> > > single point of setting return value for all landlock hooks.
+> >
+> > landlock_log_request() should only be called at the end of LSM hooks.
+> > Tail calls is basically when you call a function at the end of the
+> > caller. This enables replacing "call" with "jmp" and save stack space.
+> > landlock_log_request() can fit with this pattern (if not using the
+> > caller's stack, which is not currently the case). See this tail call
+> > optimization example: https://godbolt.org/z/r88ofcW6x
+> >
+> Thanks for giving the context of the tail call.
+> Compile options are controlled by makefile, and can be customized. In
+> the past, I have had different projects setting different O levels for
+> various reasons, including disable optimization completely. Individual
+> Compiler implementation  also matters, gcc vs clang, etc. I think the
+> tail call is probably not essential to the discussion.
 > 
-> <potential deadlock #1>
-> qla4xxx_task_work()
-> --> iscsi_complete_pdu()
-> --> spin_lock(&conn->session->back_lock);
-> <interrupt>
->    --> iscsi_tcp_data_recv_done()
->    --> iscsi_complete_pdu()
->    --> spin_lock(&conn->session->back_lock) (deadlock)
-> 
+> > I find it less error prone to not duplicate the error code (once for
+> > landlock_log_request and another for the caller's returned value). I
+> > also don't really see the pro of using a variable only to share this
+> > value. In ptrace.c, an "err" variable is used to check if the error is 0
+> > or not, but that is handled differently for most hooks.
+> >
+> > Makeing landlock_log_request() return a value also encourages us (thanks
+> > to compiler warnings) to use this value and keep the error handling
+> > consistent (especially for future code).
+> >
+> One general assumption about logging function is that it is not part
+> of the main business logic, i.e. if the logging statement is
+> removed/commented out, it doesn't have side effects to the main
+> business logic. This is probably why most log functions return void.
 
-This will not happen, because qla4xxx does not use the libiscsi_tcp
-code. If you had a iscsi session with qla4xxx and another
-iscsi session with iscsi_tcp, then you could get an interrupt like
-this, but the "conn->session->back_lock" that's taken above would
-be for the iscsi_tcp session.
+I get it. We need to be careful not to add blind spots though. If audit
+is not compiled, the inline function call will just be removed.
+Otherwise, logging or not depends on the audit framework and the runtime
+configuration.
 
-So you would need to make sure that the above can't happen for
-iscsi_tcp an iscsi_tcp session. Same with the below analysis.
+Another thing to keep in mind is that for now, if the log failed somehow
+(e.g. because of not enough memory), it will not impact the decision
+(either accept or deny). However, I guess we may want to be able to
+control this behavior is some cases one day, and in this case the log
+function needs to return an error.
 
+> 
+> > Another feature that I'd like to add is to support a "permissive mode",
+> > that would enable to quickly see the impact of a sandbox without
+> > applying it for real. This might change some landlock_log_request()
+> > calls, so we'll see what fits best.
+> >
+> It is an excellent feature to have.
+> To implement that, I guess there will be a common function as a switch
+> to allow/deny, and logging the decision, depending on the permissive
+> setting.
 
-> <potential deadlock #2>
-> qla4xxx_task_work()
-> --> iscsi_complete_pdu()
-> --> __iscsi_complete_pdu()
-> --> spin_lock(&conn->session->frwd_lock)
-> <interrupt>
->    --> iscsi_tcp_data_recv_done()
->    --> iscsi_complete_pdu()
->    --> __iscsi_complete_pdu()
->    --> spin_lock(&conn->session->frwd_lock) (deadlock)
-> 
-> This flaw was found by an experimental static analysis tool I am
-> developing for irq-related deadlock.
-> 
-> To avoid the problem, disable bh inside qla4xxx_task_work() before
-> calling iscsi_complete_pdu().
-> 
-> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
-> ---
->  drivers/scsi/qla4xxx/ql4_os.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_os.c
-> index 675332e49a7b..c60781148e6c 100644
-> --- a/drivers/scsi/qla4xxx/ql4_os.c
-> +++ b/drivers/scsi/qla4xxx/ql4_os.c
-> @@ -3382,7 +3382,9 @@ static void qla4xxx_task_work(struct work_struct *wdata)
->  		hdr->itt = itt;
->  		data = task_data->resp_buffer + hdr_len;
->  		data_len = task_data->resp_len - hdr_len;
-> +		local_bh_disable();
->  		iscsi_complete_pdu(conn, hdr, data, data_len);
-> +		local_bh_enable();
->  		break;
->  	default:
->  		ql4_printk(KERN_ERR, ha, "Passthru failed status = 0x%x\n",
+Permissive mode will be per domain/sandbox, so it will add complexity to
+the current logging mechanism, but that is worth it.
 
+> From that point, preparing the code towards that goal makes sense.
+> 
+> > >
+> > > > To make it easier to read (and to not forget returning the error), the
+> > > > landlock_log_request() calls a void log_request() helper, and returns
+> > > > the error itself. It is then easy to review and know what's happening
+> > > > without reading log_request().
+> > > >
+> > > > I'd like the compiler to check itself that every LSM hook returned
+> > > > values are either 0 or comming from landlock_log_request() but I think
+> > > > it's not possible right now. Coccinelle might help here though.
+> > > >
+> > > > BTW, in a next version, we might have landlock_log_request() called even
+> > > > for allowed requests (i.e. returned value of 0).
+> When there is more business logic to landlock_log_request, it is
+> probably better to rename the function. Most devs might assume the log
+> function does nothing but logging.  Having some meaningful name, e.g.
+> check_permissive_and_audit_log,  will help with readability.
+
+As for the permissive mode, this would be per domain.
+
+I'd like to keep the audit.h functions with the same prefix.
+What about landlock_log_result()?
+
+> 
+> Thanks!
+> -Jeff
