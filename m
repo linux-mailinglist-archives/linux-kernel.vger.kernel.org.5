@@ -2,189 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B3B7B3903
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D657B3901
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbjI2RcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35724 "EHLO
+        id S233139AbjI2RcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232878AbjI2RcD (ORCPT
+        with ESMTP id S232878AbjI2Rb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:32:03 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B93E719F;
-        Fri, 29 Sep 2023 10:32:01 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TDsmLV010439;
-        Fri, 29 Sep 2023 17:31:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : to : cc; s=qcppdkim1;
- bh=8lU/UQ69xeMFBkB78iGN5mtYJs6+d6NVePKQlH6OXiM=;
- b=VCL3qw6CExphvFBbs6S5W/ULwH9Ws2WL4lu7LP69Wop+0VHytT85qp8kNDEsrL1SJ+tQ
- CU+HsiphMvSe++AdjUgmgo6zRc10gJ0kosTUbLicp22WBQ2e+GvPWeC/G0Y0yU8FDkjE
- qbnHIDv4e56GQJYqDO4sK28UxFFDZ5P+sgGYicyPzO1m4Q9Tcb7yE3KcH6iHeHZnz+kl
- LLfdy+VKdAetMKtOeUVtLTGwFDja8bRgySFeStsMoWoxSTDWBL5GLfYEAjrZWl7hgkRZ
- XsgdXMtSY/Xgtp/HnojJrHNoGbSCXQrsv6fT/0OOeFuXDCftf/OrsU+r3wPbbZPUw/JB 8g== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tdqmv9usk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 17:31:45 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38THVihv007930
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 17:31:44 GMT
-Received: from [10.213.108.6] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 29 Sep
- 2023 10:31:39 -0700
-From:   Pavankumar Kondeti <quic_pkondeti@quicinc.com>
-Date:   Fri, 29 Sep 2023 23:01:15 +0530
-Subject: [PATCH] PM: hibernate: Fix a bug in copying the zero bitmap to
- safe pages
+        Fri, 29 Sep 2023 13:31:59 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549BA19F
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:31:58 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-690fe10b6a4so12731556b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:31:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696008718; x=1696613518; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pjfe+9DAgkAH6WItI1dT6HVJUqUjV4pKi1IHzGz52K4=;
+        b=m2WXrXRaQPCdA/scxaXLlQNsCo82xzcYa/Ei+VPSsMzAfDxUSN9whgQWtCCiWbutTF
+         MNAwUMRgAuHHxDt7wnkzfJ0GM8dIIYtRsNb0M60MACp8iWH6athpGkhpvmG9/BPbmRfK
+         lSfVdiEdkDS8euU5XoAzmHX4gaj8GO6TOIvPM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696008718; x=1696613518;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Pjfe+9DAgkAH6WItI1dT6HVJUqUjV4pKi1IHzGz52K4=;
+        b=VZbp4NLprOp3Xcdy6p4Q1hRlcVdC1dgfyUtkr3lORqc/r4DH5nUa/Awnh9zmEqJFnN
+         QBUHtp9txv7XuYk9rpnNuKzcEkUbKo7Zv1y9ZwQuLpm11I8YOQ0p8N5QuJNsquqGIyAw
+         8mZcrywe923qhCnTEkTx4Wbltj4bSY9HHUmyh63s9RUXr5x1aweMOBHw47+Un91XY77k
+         1kMJltJ6XjMH21H5RTHZ/q9aRJopuTrZpvzPnFe9rcxJgL+9dTw1NbgDvRVlVf+retYK
+         9cLBJwwpg8w1nE3dcGzPpwRhI9Ej1b22O92TA65w3T6aDVZUcj7uouv0JunSJlpgfvei
+         +6aw==
+X-Gm-Message-State: AOJu0YxcbVUdbEE7nd8SbEKqnQV14lirmhENVQv0oVRMcvnrhRc0UIjh
+        XvAL/ktUFjl0pL8IZhTjQ0ULpA==
+X-Google-Smtp-Source: AGHT+IGfzsOOkJOPX9riY6Xxy/JU2BErzwzUVNeNoe1Yb+UlJJejoAy1cqSlz7xFqUqpsuSCjKY80g==
+X-Received: by 2002:a05:6a21:601:b0:15d:4a2b:b513 with SMTP id ll1-20020a056a21060100b0015d4a2bb513mr3838810pzb.36.1696008717818;
+        Fri, 29 Sep 2023 10:31:57 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id cm22-20020a17090afa1600b0026b6d0a68c5sm1751514pjb.18.2023.09.29.10.31.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 10:31:57 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 10:31:56 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 1/2] kselftest: Add a ksft_perror() helper
+Message-ID: <202309291031.1B2A2EE@keescook>
+References: <20230928-ktap-exec-v1-0-1013a2db0426@kernel.org>
+ <20230928-ktap-exec-v1-1-1013a2db0426@kernel.org>
+ <202309281747.594B3352@keescook>
+ <ZRaB3SfRaUFsP7XN@finisterre.sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230929-hib_zero_bitmap_fix-v1-1-6cfdcb785250@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIAOIJF2UC/x2MQQqAIBAAvyJ7TjArqL4SIWpb7SEVjYjCvycdZ
- 2DmhYSRMMHIXoh4USLvCtQVA7trtyGnpTBIIRsxyIHvZNSD0StD56GDWunmxnZ936LRQiOUMkQ
- s+r9Oc84fBRtEgWUAAAA=
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, "Len Brown" <len.brown@intel.com>
-CC:     Brian Geffon <bgeffon@google.com>, <kernel@quicinc.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Pavankumar Kondeti <quic_pkondeti@quicinc.com>
-X-Mailer: b4 0.13-dev-83828
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: T4PP3ooMOzJGZ1-EaZcFGOV1mScNnqgf
-X-Proofpoint-ORIG-GUID: T4PP3ooMOzJGZ1-EaZcFGOV1mScNnqgf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-29_16,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=814 spamscore=0
- bulkscore=0 mlxscore=0 priorityscore=1501 suspectscore=0 malwarescore=0
- impostorscore=0 clxscore=1011 adultscore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309290151
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRaB3SfRaUFsP7XN@finisterre.sirena.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following crash is observed 100% of the time during resume from
-the hibernation on a x86 QEMU system.
+On Fri, Sep 29, 2023 at 09:50:53AM +0200, Mark Brown wrote:
+> On Thu, Sep 28, 2023 at 05:48:22PM -0700, Kees Cook wrote:
+> 
+> > > nolibc doesn't have a strerror() and adding the table of strings required
+> > > doesn't seem like a good fit for what it's trying to do so when we're using
+> > > that only print the errno.
+> 
+> > Oh, interesting... what environment ends up without strerror()?
+> 
+> Like I say it's for nolibc - it's just some header files (all in the
+> kernel source), while it generally aims to be libc compatible it's
+> intentionally very small.
 
-[   12.931887]  ? __die_body+0x1a/0x60
-[   12.932324]  ? page_fault_oops+0x156/0x420
-[   12.932824]  ? search_exception_tables+0x37/0x50
-[   12.933389]  ? fixup_exception+0x21/0x300
-[   12.933889]  ? exc_page_fault+0x69/0x150
-[   12.934371]  ? asm_exc_page_fault+0x26/0x30
-[   12.934869]  ? get_buffer.constprop.0+0xac/0x100
-[   12.935428]  snapshot_write_next+0x7c/0x9f0
-[   12.935929]  ? submit_bio_noacct_nocheck+0x2c2/0x370
-[   12.936530]  ? submit_bio_noacct+0x44/0x2c0
-[   12.937035]  ? hib_submit_io+0xa5/0x110
-[   12.937501]  load_image+0x83/0x1a0
-[   12.937919]  swsusp_read+0x17f/0x1d0
-[   12.938355]  ? create_basic_memory_bitmaps+0x1b7/0x240
-[   12.938967]  load_image_and_restore+0x45/0xc0
-[   12.939494]  software_resume+0x13c/0x180
-[   12.939994]  resume_store+0xa3/0x1d0
+Right, I mean, how would one normally encounter this environment? Running
+the selftests on m68k userspace or something?
 
-The commit being fixed introduced a bug in copying the zero bitmap
-to safe pages. A temporary bitmap is allocated in prepare_image()
-to make a copy of zero bitmap after the unsafe pages are marked.
-Freeing this temporary bitmap later results in an inconsistent state
-of unsafe pages. Since free bit is left as is for this temporary bitmap
-after free, these pages are treated as unsafe pages when they are
-allocated again. This results in incorrect calculation of the number
-of pages pre-allocated for the image.
-
-nr_pages = (nr_zero_pages + nr_copy_pages) - nr_highmem - allocated_unsafe_pages;
-
-The allocate_unsafe_pages is estimated to be higher than the actual
-which results in running short of pages in safe_pages_list. Hence the
-crash is observed in get_buffer() due to NULL pointer access of
-safe_pages_list.
-
-Fixes: 005e8dddd497 ("PM: hibernate: don't store zero pages in the image file")
-Signed-off-by: Pavankumar Kondeti <quic_pkondeti@quicinc.com>
----
- kernel/power/snapshot.c | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-index 87e9f7e2bdc0..cb7341a71a21 100644
---- a/kernel/power/snapshot.c
-+++ b/kernel/power/snapshot.c
-@@ -2628,7 +2628,7 @@ static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm,
- 		struct memory_bitmap *zero_bm)
- {
- 	unsigned int nr_pages, nr_highmem;
--	struct memory_bitmap tmp;
-+	struct memory_bitmap tmp_zero_bm;
- 	struct linked_page *lp;
- 	int error;
- 
-@@ -2636,6 +2636,16 @@ static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm,
- 	free_image_page(buffer, PG_UNSAFE_CLEAR);
- 	buffer = NULL;
- 
-+	/*
-+	 * Allocate a temporary bitmap to create a copy of zero_bm in
-+	 * safe pages. This allocation needs to be done before marking
-+	 * unsafe pages below so that it can be freed without altering
-+	 * the state of unsafe pages.
-+	 */
-+	error = memory_bm_create(&tmp_zero_bm, GFP_ATOMIC, PG_ANY);
-+	if (error)
-+		goto Free;
-+
- 	nr_highmem = count_highmem_image_pages(bm);
- 	mark_unsafe_pages(bm);
- 
-@@ -2646,12 +2656,7 @@ static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm,
- 	duplicate_memory_bitmap(new_bm, bm);
- 	memory_bm_free(bm, PG_UNSAFE_KEEP);
- 
--	/* Make a copy of zero_bm so it can be created in safe pages */
--	error = memory_bm_create(&tmp, GFP_ATOMIC, PG_ANY);
--	if (error)
--		goto Free;
--
--	duplicate_memory_bitmap(&tmp, zero_bm);
-+	duplicate_memory_bitmap(&tmp_zero_bm, zero_bm);
- 	memory_bm_free(zero_bm, PG_UNSAFE_KEEP);
- 
- 	/* Recreate zero_bm in safe pages */
-@@ -2659,8 +2664,8 @@ static int prepare_image(struct memory_bitmap *new_bm, struct memory_bitmap *bm,
- 	if (error)
- 		goto Free;
- 
--	duplicate_memory_bitmap(zero_bm, &tmp);
--	memory_bm_free(&tmp, PG_UNSAFE_KEEP);
-+	duplicate_memory_bitmap(zero_bm, &tmp_zero_bm);
-+	memory_bm_free(&tmp_zero_bm, PG_UNSAFE_KEEP);
- 	/* At this point zero_bm is in safe pages and it can be used for restoring. */
- 
- 	if (nr_highmem > 0) {
-
----
-base-commit: 6465e260f48790807eef06b583b38ca9789b6072
-change-id: 20230929-hib_zero_bitmap_fix-bc5884eba0ae
-
-Best regards,
 -- 
-Pavankumar Kondeti <quic_pkondeti@quicinc.com>
-
+Kees Cook
