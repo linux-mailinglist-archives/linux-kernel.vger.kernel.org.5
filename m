@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0397B3648
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 501BA7B3649
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233487AbjI2PEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:04:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44906 "EHLO
+        id S233499AbjI2PEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233325AbjI2PDc (ORCPT
+        with ESMTP id S233507AbjI2PDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:03:32 -0400
+        Fri, 29 Sep 2023 11:03:36 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 40FA1CC6
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:03:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 184C1CD4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:03:31 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 830451063;
-        Fri, 29 Sep 2023 08:04:08 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 24D60106F;
+        Fri, 29 Sep 2023 08:04:10 -0700 (PDT)
 Received: from e103737-lin.cambridge.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2C19E3F5A1;
-        Fri, 29 Sep 2023 08:03:29 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5953C3F5A1;
+        Fri, 29 Sep 2023 08:03:30 -0700 (PDT)
 From:   Sudeep Holla <sudeep.holla@arm.com>
-Date:   Fri, 29 Sep 2023 16:03:02 +0100
-Subject: [PATCH v3 13/17] firmware: arm_ffa: Simplify the computation of
- transmit and fragment length
+Date:   Fri, 29 Sep 2023 16:03:03 +0100
+Subject: [PATCH v3 14/17] KVM: arm64: FFA: Remove access of endpoint memory
+ access descriptor array
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230929-ffa_v1-1_notif-v3-13-c8e4f15190c8@arm.com>
+Message-Id: <20230929-ffa_v1-1_notif-v3-14-c8e4f15190c8@arm.com>
 References: <20230929-ffa_v1-1_notif-v3-0-c8e4f15190c8@arm.com>
 In-Reply-To: <20230929-ffa_v1-1_notif-v3-0-c8e4f15190c8@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -38,21 +38,25 @@ To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Coboy Chen <coboy.chen@mediatek.com>,
         Lorenzo Pieralisi <lpieralisi@kernel.org>,
         Olivier Deprez <olivier.deprez@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3428; i=sudeep.holla@arm.com;
- h=from:subject:message-id; bh=Rg2XKzRPf8SFjG3ZX7rctW9KFXN9uruVnGqowukr10g=;
- b=owEBbQKS/ZANAwAIAQBBurwxfuKYAcsmYgBlFucwynFFqxvHjHWr3fQpCjnPEZhI6MOOZvWa3
- Vu9DXT+PxuJAjMEAAEIAB0WIQS6ceUSBvMeskPdk+EAQbq8MX7imAUCZRbnMAAKCRAAQbq8MX7i
- mH0vD/9TOnvx/MRuf4JrzUDS0qYwarst+XtR3YA98cDVMU8SMMO++DDxeULkEmoW+QL2OvtpWCZ
- 8d3lTmNKbLFKIYuhEzURoXfKBUF35MeyPXSz76xnHUEQeFVMkZIAESgR36OsOMQLTzrzc7nN9d7
- tcgtQD9modOPd0+6UzVfiVtrSykcD40pt5WHe2T6VHzFTK55owf95LIU7KvC/RC2X5cEW2rmzJn
- oY6Ja/kPJwEG95nzOKNGthIvx1TVkUeAE8Ddmvg8OQhCxVia1W155fGXV5awZjMQsI57RhafAWt
- 9ddvScF4rANyVsDwrNNgs5riRWtRr0puMtoSie1jLyYKrFkCdGDnLgITtlqseAFogwpb0qgy1uD
- 6CmbM8mZwNS9WRr++ufKCa6Ynmvott+IWrhJ3T9HCzV//d9dTlrngYy1lyM22EBDtc84xGEVtAi
- Cmao8jTeECdfRKgwaQjU2Bi7+iWI46p0qKrgfJahOtmn28QGaaFq2reFTUuHqpZL6e3hrZfzuSq
- mB+5RROSIdq8xfLzNtuBb2VuSIIseDUEPPgsI/Vba+/SaRcmjv0VNrnzwIcXQ60nRyMDTfHF9Mh
- g24xJTfJaxOVji9fNnczaH9U54X4vGsenurTg3yzOhRgawrk0kpbxeTbgUGv3uRwi3J+3YMU3Pu
- g0MMyU22hszKPMw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3159; i=sudeep.holla@arm.com;
+ h=from:subject:message-id; bh=64pcj+hQs1mQBRXTHk+OD4ILrYtlsf+Zd4SaIeIRqXs=;
+ b=owEBbQKS/ZANAwAIAQBBurwxfuKYAcsmYgBlFucwKh/Fe3GJay3phEMH0ENESU2rWfHbdYJMI
+ ySGRC8yREeJAjMEAAEIAB0WIQS6ceUSBvMeskPdk+EAQbq8MX7imAUCZRbnMAAKCRAAQbq8MX7i
+ mJJyD/9Q2noyk3D968ikUkQGfX8OZNm4vkic6pbl9zlMTAVy6rlNgkCcBRp20EGRHv7e8QJqHI7
+ mQCnJ/Jmj4EKCWzzKsb00YYxkLuPnJh6LlfuAdOpli7YBaL6yaUWT4hVXK+dbJsBzFvFu0mCPl4
+ pLT6oSO+0DRQbA28btZF7bH8xaUCajsqQ2wr3tiK4yQyY5kDxIWGVqDoN52w+nvki+F4JLLgR4w
+ KA0d8ojDpffbyZD5eES1TxyLuBZL8H7GijFgco+G5C2URDJ5BRS9LtI/8tfEz6LF3TZ34hN1D0z
+ UwzbVp+ZH3EUF/4cpcf2dniVBq2p1mdQPYmV8X18K8GCNNIFd3W2aIMNsOXAGChWnMbl6X2UTKr
+ vCFnvY1Y3wlc3x2+c/SjEUvQqXwWBT+pVJv47/6pwg4DFSyMQ4ZOWqM+6pohVKsSxGJdJD2zVPG
+ fs1eNYIqENGi4hLyYuZ8hzEJbetFPVrr4La9LaRtjQgGJKMDAqgYTMpob95l7sX1yTeXiwNZyV6
+ ihXZDcLQo3nZ5OAP22EuM5ljfJGwIDkEGvHGBtt5VMZwQpMLfD0pLJeOV7jhpUKgyCqltf6wuLV
+ zP+TB4ndSP/J7MyWfvnp1232pQRvR9pQiDts8CnilJtB3luJrNxf800Jq6gMESJYGCgrnYqNewD
+ GK1rKGoRX/DWBhg==
 X-Developer-Key: i=sudeep.holla@arm.com; a=openpgp;
  fpr=7360A21742ADF5A11767C1C139CFD4755FE2D5B4
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -64,86 +68,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The computation of endpoint memory access descriptor's composite memory
-region descriptor offset is using COMPOSITE_CONSTITUENTS_OFFSET which is
-unnecessary complicated. Composite memory region descriptor always follow
-the endpoint memory access descriptor array and hence it is computed
-accordingly. COMPOSITE_CONSTITUENTS_OFFSET is useless and wrong for any
-input other than endpoint memory access descriptor count.
+FF-A v1.1 removes the fixed location of endpoint memory access descriptor
+array within the memory transaction descriptor structure. In preparation
+to remove the ep_mem_access member from the ffa_mem_region structure,
+provide the accessor to fetch the offset and use the same in FF-A proxy
+implementation.
 
-Let us drop the usage of COMPOSITE_CONSTITUENTS_OFFSET to simplify the
-computation of total transmit and fragment length in the memory
-transactions.
+The accessor take the boolean argument that indicates if the memory access
+descriptor versions is v1(old format) or not. Currently it is set true as
+FF-A proxy supports only v1.0
 
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Oliver Upton <oliver.upton@linux.dev>
+Cc: Will Deacon <will@kernel.org>
+Cc: Quentin Perret <qperret@google.com>
 Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 ---
- drivers/firmware/arm_ffa/driver.c | 14 ++++++++------
- include/linux/arm_ffa.h           |  2 --
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ arch/arm64/kvm/hyp/nvhe/ffa.c | 8 ++++++--
+ include/linux/arm_ffa.h       | 6 ++++++
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/firmware/arm_ffa/driver.c b/drivers/firmware/arm_ffa/driver.c
-index 28bf345862d9..d9ff3ec4f1eb 100644
---- a/drivers/firmware/arm_ffa/driver.c
-+++ b/drivers/firmware/arm_ffa/driver.c
-@@ -443,23 +443,25 @@ ffa_setup_and_transmit(u32 func_id, void *buffer, u32 max_fragsize,
- {
- 	int rc = 0;
- 	bool first = true;
-+	u32 composite_offset;
- 	phys_addr_t addr = 0;
-+	struct ffa_mem_region *mem_region = buffer;
- 	struct ffa_composite_mem_region *composite;
- 	struct ffa_mem_region_addr_range *constituents;
- 	struct ffa_mem_region_attributes *ep_mem_access;
--	struct ffa_mem_region *mem_region = buffer;
- 	u32 idx, frag_len, length, buf_sz = 0, num_entries = sg_nents(args->sg);
+diff --git a/arch/arm64/kvm/hyp/nvhe/ffa.c b/arch/arm64/kvm/hyp/nvhe/ffa.c
+index 6e4dba9eadef..5f956f53e6bf 100644
+--- a/arch/arm64/kvm/hyp/nvhe/ffa.c
++++ b/arch/arm64/kvm/hyp/nvhe/ffa.c
+@@ -423,6 +423,7 @@ static __always_inline void do_ffa_mem_xfer(const u64 func_id,
+ 	DECLARE_REG(u32, fraglen, ctxt, 2);
+ 	DECLARE_REG(u64, addr_mbz, ctxt, 3);
+ 	DECLARE_REG(u32, npages_mbz, ctxt, 4);
++	struct ffa_mem_region_attributes *ep_mem_access;
+ 	struct ffa_composite_mem_region *reg;
+ 	struct ffa_mem_region *buf;
+ 	u32 offset, nr_ranges;
+@@ -452,7 +453,8 @@ static __always_inline void do_ffa_mem_xfer(const u64 func_id,
+ 	buf = hyp_buffers.tx;
+ 	memcpy(buf, host_buffers.tx, fraglen);
  
- 	mem_region->tag = args->tag;
- 	mem_region->flags = args->flags;
- 	mem_region->sender_id = drv_info->vm_id;
- 	mem_region->attributes = ffa_memory_attributes_get(func_id);
--	ep_mem_access = &mem_region->ep_mem_access[0];
-+	ep_mem_access = buffer + COMPOSITE_OFFSET(0);
-+	composite_offset = COMPOSITE_OFFSET(args->nattrs);
+-	offset = buf->ep_mem_access[0].composite_off;
++	ep_mem_access = (void *)buf + ffa_mem_desc_offset(buf, 0, true);
++	offset = ep_mem_access->composite_off;
+ 	if (!offset || buf->ep_count != 1 || buf->sender_id != HOST_FFA_ID) {
+ 		ret = FFA_RET_INVALID_PARAMETERS;
+ 		goto out_unlock;
+@@ -504,6 +506,7 @@ static void do_ffa_mem_reclaim(struct arm_smccc_res *res,
+ 	DECLARE_REG(u32, handle_lo, ctxt, 1);
+ 	DECLARE_REG(u32, handle_hi, ctxt, 2);
+ 	DECLARE_REG(u32, flags, ctxt, 3);
++	struct ffa_mem_region_attributes *ep_mem_access;
+ 	struct ffa_composite_mem_region *reg;
+ 	u32 offset, len, fraglen, fragoff;
+ 	struct ffa_mem_region *buf;
+@@ -528,7 +531,8 @@ static void do_ffa_mem_reclaim(struct arm_smccc_res *res,
+ 	len = res->a1;
+ 	fraglen = res->a2;
  
- 	for (idx = 0; idx < args->nattrs; idx++, ep_mem_access++) {
- 		ep_mem_access->receiver = args->attrs[idx].receiver;
- 		ep_mem_access->attrs = args->attrs[idx].attrs;
--		ep_mem_access->composite_off = COMPOSITE_OFFSET(args->nattrs);
-+		ep_mem_access->composite_off = composite_offset;
- 		ep_mem_access->flag = 0;
- 		ep_mem_access->reserved = 0;
- 	}
-@@ -468,13 +470,13 @@ ffa_setup_and_transmit(u32 func_id, void *buffer, u32 max_fragsize,
- 	mem_region->reserved_1 = 0;
- 	mem_region->ep_count = args->nattrs;
- 
--	composite = buffer + COMPOSITE_OFFSET(args->nattrs);
-+	composite = buffer + composite_offset;
- 	composite->total_pg_cnt = ffa_get_num_pages_sg(args->sg);
- 	composite->addr_range_cnt = num_entries;
- 	composite->reserved = 0;
- 
--	length = COMPOSITE_CONSTITUENTS_OFFSET(args->nattrs, num_entries);
--	frag_len = COMPOSITE_CONSTITUENTS_OFFSET(args->nattrs, 0);
-+	length = composite_offset + CONSTITUENTS_OFFSET(num_entries);
-+	frag_len = composite_offset + CONSTITUENTS_OFFSET(0);
- 	if (frag_len > max_fragsize)
- 		return -ENXIO;
- 
+-	offset = buf->ep_mem_access[0].composite_off;
++	ep_mem_access = (void *)buf + ffa_mem_desc_offset(buf, 0, true);
++	offset = ep_mem_access->composite_off;
+ 	/*
+ 	 * We can trust the SPMD to get this right, but let's at least
+ 	 * check that we end up with something that doesn't look _completely_
 diff --git a/include/linux/arm_ffa.h b/include/linux/arm_ffa.h
-index f6df81f14b6d..748d0a83a4bc 100644
+index 748d0a83a4bc..7be240e37f36 100644
 --- a/include/linux/arm_ffa.h
 +++ b/include/linux/arm_ffa.h
-@@ -356,8 +356,6 @@ struct ffa_mem_region {
- 	(offsetof(struct ffa_mem_region, ep_mem_access[x]))
+@@ -357,6 +357,12 @@ struct ffa_mem_region {
  #define CONSTITUENTS_OFFSET(x)	\
  	(offsetof(struct ffa_composite_mem_region, constituents[x]))
--#define COMPOSITE_CONSTITUENTS_OFFSET(x, y)	\
--	(COMPOSITE_OFFSET(x) + CONSTITUENTS_OFFSET(y))
  
++static inline u32
++ffa_mem_desc_offset(struct ffa_mem_region *buf, int count, bool mem_desc_v1)
++{
++	return COMPOSITE_OFFSET(0);
++}
++
  struct ffa_mem_ops_args {
  	bool use_txbuf;
+ 	u32 nattrs;
 
 -- 
 2.42.0
