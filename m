@@ -2,127 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E21687B32FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 825337B32F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233174AbjI2M7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 08:59:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57046 "EHLO
+        id S233093AbjI2M7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 08:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232732AbjI2M7l (ORCPT
+        with ESMTP id S232732AbjI2M7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:59:41 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551E51A4;
-        Fri, 29 Sep 2023 05:59:39 -0700 (PDT)
-Received: from [192.168.0.66] ([85.168.41.102]) by mrelayeu.kundenserver.de
- (mreue109 [213.165.67.119]) with ESMTPSA (Nemesis) id
- 1MekvT-1rKS2k0pe9-00aocR; Fri, 29 Sep 2023 14:59:27 +0200
-Message-ID: <eab8e74b-61e0-4ef4-bfb3-751047d879bc@green-communications.fr>
-Date:   Fri, 29 Sep 2023 14:59:26 +0200
+        Fri, 29 Sep 2023 08:59:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58BBAB7;
+        Fri, 29 Sep 2023 05:59:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TmHeRReypOC1/PTNYdEeOv0TmfOCqlGndNJrCadbeNo=; b=q5zVxBi33+Nmp9sMvNQxIi5Dum
+        dThXVAqNoC3JwqJ59jU8OZ0hV/jd6QMLq2riYYbdMzzXvmiJIGDeejnFdIyPOqik2nndUT8FLSXJB
+        /9PJEjlgqyxWOQ2vAaneH0kH00AXJ4tKkh5Z/uRANmE74ZU0ji1y7Flw3c8HQ/AQAEK6tjMKiEoIu
+        Dbtl+jfgoG+YDzkPkRLhApIwz+OzLPW/zV4oAuSc8C8oX6VDcEAcXwi3ZDFH/POsa4Fbu1dNn3zJ4
+        PCHwhz+bxClpQ4CevUPXhH4MHw3nx1KXUB7hvVas5h+7Af0zSCAIZ7IvmLrdVOXeS31P1qA+l0M+F
+        HNiCTCag==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qmD5e-008rPk-G8; Fri, 29 Sep 2023 12:59:30 +0000
+Date:   Fri, 29 Sep 2023 13:59:30 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     brauner@kernel.org, viro@zeniv.linux.org.uk,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        torvalds@linux-foundation.org
+Subject: Re: [PATCH v3] vfs: avoid delegating to task_work when cleaning up
+ failed open
+Message-ID: <ZRbKMmRm8i+/E88f@casper.infradead.org>
+References: <20230928102516.186008-1-mjguzik@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To:     Oleksandr Natalenko <oleksandr@natalenko.name>,
-        linux-wireless@vger.kernel.org
-Cc:     Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-References: <20230726091704.25795-1-nbd@nbd.name>
- <12289744.O9o76ZdvQC@natalenko.name>
-Content-Language: en-US
-From:   Nicolas Cavallari <Nicolas.Cavallari@green-communications.fr>
-Subject: Re: [PATCH 1/3] wifi: mt76: mt7915: remove VHT160 capability on
- MT7915
-In-Reply-To: <12289744.O9o76ZdvQC@natalenko.name>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:2HYlcBW+86/1S82W+ZndkYNpC8Tl20HTFU5mCcNv0DKMhs7q22t
- 4+tR+DFMJpLemjPKdl6/JFb2QaG9h1ZZjWSpcSlRPbJTFQ4a6ZEfctaIyCwAlfKCZGmrK53
- o25ndXAg+mORuMKS+aNhtzJUboxhNwcyXGlpGgW56WNsLUUGdx92HB1Al6/Q45kPWYrh9FC
- tzFkpeWa9j6CW0+lhgDDg==
-UI-OutboundReport: notjunk:1;M01:P0:KryucuwLa2g=;c17xto/1dxvPCftMFcBs8uTQcpl
- YpacGxpRyXWbEhnqZ9XfvUBs3t204lSp5GVGvhoEJCPvCnLLd2mQyymXIsYPsV0oty5G+JClO
- VRA10Ynxq9pBO/RYvoYQsDJbMkXQX7jJUODkqVVL/5n761HanlhM/TlzfPIgrxHDG0VBPazk3
- Z5Hx7orgKCKcsP/2LQxj8U0RUh7gmOtLtck6+pDvkTUpXaADtjXaQyzEu16tX3x9O3pVDzanC
- tbLmS8oOBm/Glz7UO5/a6Z3kJJwZkCnDBwLJkqIJYJnTbjN6svJq3ZVWuPKD9eEPrCe5SMDfq
- FcEgARa3XimtdZnsS2ySQeO9y3GTwJAP2VzjnHy191FZnoJOfYyQPlbB4VITiAnkRKfnFE8gp
- MPRcZu7LtcBzbnlm9LadPKWz++Xh9/imtQDCOdohsZB3kNADf9JxWOZioyAUYOKzQiqZf0xDc
- I9hPPd/kElecVQliTS/EAMm1hLZvHgaDy5XvTOTTVuLL1p8lVf20W0vmZeBbwuHbubzrP3jNf
- OSoAr/Y7raevvTDWGv5Utji3cWM7Erb/mLsQ3/eZyE0H4mf0oDvX5SJdyvhTyl34cWjjKPRXI
- UP9teDbaQozp1IrNTL+zPyvl4drsrRaJjDUr+B10BtakMMnJH3DWoOpgpvTmYBksiRW+id62Y
- J7Tvl97zn2nZeR12FyLIEMjrFIYTsvoRLm4OdytfWSoNK9Lp9V+aysWn7Kk99/UDZqbhDqC+2
- WmBDS8Wr1b8FRmBkS8uzX2oFnZIMkKSlt3pRIbMo/GqLMCuqq2o/pv8gmpHAUfNtwqJYGjUas
- zLYD6JcudylK3us37weRHeIMGyaNpDPM9FZ5GHpnBnqkQLoQ6pBvWhmCfAri28JM3Hm7BqR7X
- CYkIESnFeA1hpmA==
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928102516.186008-1-mjguzik@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/09/2023 07:02, Oleksandr Natalenko wrote:
-> Hello Felix.
-> 
-> On středa 26. července 2023 11:17:02 CEST Felix Fietkau wrote:
->> The IEEE80211_VHT_CAP_EXT_NSS_BW value already indicates support for half-NSS
->> 160 MHz support, so it is wrong to also advertise full 160 MHz support.
->>
->> Fixes: c2f73eacee3b ("wifi: mt76: mt7915: add back 160MHz channel width support for MT7915")
->> Signed-off-by: Felix Fietkau <nbd@nbd.name>
->> ---
->>   drivers/net/wireless/mediatek/mt76/mt7915/init.c | 1 -
->>   1 file changed, 1 deletion(-)
->>
->> diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/init.c b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
->> index ee976657bfc3..78552f10b377 100644
->> --- a/drivers/net/wireless/mediatek/mt76/mt7915/init.c
->> +++ b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
->> @@ -414,7 +414,6 @@ mt7915_init_wiphy(struct mt7915_phy *phy)
->>   			if (!dev->dbdc_support)
->>   				vht_cap->cap |=
->>   					IEEE80211_VHT_CAP_SHORT_GI_160 |
->> -					IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ |
->>   					FIELD_PREP(IEEE80211_VHT_CAP_EXT_NSS_BW_MASK, 1);
->>   		} else {
->>   			vht_cap->cap |=
->>
-> 
-> For some reason this got backported into the stable kernel:
-> 
-> ```
-> $ git log --oneline v6.5.2..v6.5.4 -- drivers/net/wireless/mediatek/mt76/mt7915/
-> c43017fbebcc3 wifi: mt76: mt7915: fix power-limits while chan_switch
-> edb1afe042c74 wifi: mt76: mt7915: fix tlv length of mt7915_mcu_get_chan_mib_info
-> 9ec0dec0baea3 wifi: mt76: mt7915: remove VHT160 capability on MT7915
-> 0e61f73e6ebc0 wifi: mt76: mt7915: fix capabilities in non-AP mode
-> 6bce28ce28390 wifi: mt76: mt7915: fix command timeout in AP stop period
-> 7af917d4864c6 wifi: mt76: mt7915: rework tx bytes counting when WED is active
-> feae00c6468ce wifi: mt76: mt7915: rework tx packets counting when WED is active
-> 70bbcc4ad6544 wifi: mt76: mt7915: fix background radar event being blocked
-> ```
-> 
-> and this broke my mt7915-based AP.
-> 
-> However, if I remove `[VT160]` capability from the hostapd config, things go back to normal. It does seem that 160 MHz still works even.
-> 
-> Is this expected?
+On Thu, Sep 28, 2023 at 12:25:16PM +0200, Mateusz Guzik wrote:
+> Below is my rebased patch + rewritten commit message with updated bench
+> results. I decided to stick to fput_badopen name because with your patch
+> it legitimately has to unref. Naming that "release_empty_file" or
+> whatever would be rather misleading imho.
 
-I would say it is expected.
+Do we still need fput_badopen()?  Couldn't we just make this part of
+regular fput() at this point?  ie:
 
-hostapd seems to solely rely on the VHT Supported Channel Width and does not 
-seem to support the VHT Extended NSS BW stuff.  So it only knows about full VHT 
-160 MHz support and not about half NSS VHT 160 MHz.
++++ b/fs/file_table.c
+@@ -435,6 +435,10 @@ void fput(struct file *file)
+        if (atomic_long_dec_and_test(&file->f_count)) {
+                struct task_struct *task = current;
+ 
++               if (!(file->f_mode & FMODE_OPENED)) {
++                       file_free(file);
++                       return;
++               }
+                if (likely(!in_interrupt() && !(task->flags & PF_KTHREAD))) {
+                        init_task_work(&file->f_rcuhead, ____fput);
+                        if (!task_work_add(task, &file->f_rcuhead, TWA_RESUME))
 
-The hardware does not actually support full 160 MHz (despite the driver 
-erroneously claiming support for it before this patch) so it make sense that 
-hostapd fails to start the AP if the config file requests (full) VHT 160 MHz.
-
-However, hostapd knows about half NSS HE 160 MHz and I suspect your 
-configuration also requests HE 160 MHz, so 160 MHz works fine in HE but not in VHT.
-
-In any case, it would help to know the hostapd version and your configuration file.
