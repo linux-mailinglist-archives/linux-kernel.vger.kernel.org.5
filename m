@@ -2,83 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B43CF7B34CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295997B34D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233430AbjI2OWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 10:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35322 "EHLO
+        id S233371AbjI2O0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 10:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233392AbjI2OWa (ORCPT
+        with ESMTP id S229545AbjI2O0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 10:22:30 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1164B1AC;
-        Fri, 29 Sep 2023 07:22:27 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T9q4fB011558;
-        Fri, 29 Sep 2023 14:22:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=uel0KbMalDjHMwSQ7GdbifduKXHuQtJEkwaFOppR4OA=;
- b=bExpVf4++NQPRGlhHJa1C/CT1WlKE0vjhknyaXaM1DYF46odSnz9irIrOEDI918IflLB
- 66OCrU2hp7oUMZ9kNiD55wyp9/be+fmmpHk7azs32RbRkBHHAg75EbR1+o9eANp5s+/A
- j1puJeGPskA7jhoD5/Yza0VVz23Z0wWm2MQ4O1FYv/Iul/lKEgDJ16mNTJLJoZ900wIN
- 5WNVwBK4AHPD9Qn0ZdwL8kBOi4ohetdja5iL8embj0qC+9qqSk6T/OIps2Re5St34K5w
- vKH0IDDnAsRiG8zqengQokVKfX6xvsJEIxiWMyI7PxHkAqApY8dINW7XrqUTrUlqSvLx nw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3td3ggbv2e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 14:22:15 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38TEME1W032607
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 14:22:15 GMT
-Received: from [10.218.45.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 29 Sep
- 2023 07:22:10 -0700
-Message-ID: <162b61dc-6304-353b-e9be-9ff941ab3e9b@quicinc.com>
-Date:   Fri, 29 Sep 2023 19:52:06 +0530
+        Fri, 29 Sep 2023 10:26:19 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C981A4;
+        Fri, 29 Sep 2023 07:26:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A74F3C433C7;
+        Fri, 29 Sep 2023 14:26:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695997578;
+        bh=KsSNZ/3pcClI6JWLRtjeqqaFMfgqGK3sBrnSG42ii28=;
+        h=From:Subject:Date:To:Cc:From;
+        b=ki792AsDeqafsGKRHaLPX/FhgHJKJPcuCrDc0nJXv3uCVX4i6Tnfuf2plv6FPsUEC
+         keN4/VwGFX6VXtUAs1U8ZjZBQNU4y8UwHLwJDxj6IB5lD76ej8KfWjzET+F457Mp49
+         5DNBuynb3fTqby1iWh8+4StW5yklJPi1zayrup6x1lkwAB2I3QP/+G1IE4uhe83yen
+         epzR3mh7FLhNRMOF+8ukXY5R6qsrSBgL5SkRuR7L12vBQd7vkEUkIHBUS3sdtGbnBy
+         GoP6fIofgursoTU1ggffUUJPVGK//SoBfDSKjXhru/TKruuMGUYYWPPOgOFPQubP+j
+         NiQXg7o6JE9xA==
+From:   Mark Brown <broonie@kernel.org>
+Subject: [PATCH 0/4] clk: versaclock: regmap modernisations
+Date:   Fri, 29 Sep 2023 16:26:04 +0200
+Message-Id: <20230929-clk-maple-versaclk-v1-0-24dd5b3d8689@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH V4 3/4] arm64: dts: qcom: sc7280: Add UFS nodes for sc7280
- IDP board
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <mani@kernel.org>,
-        <alim.akhtar@samsung.com>, <bvanassche@acm.org>,
-        <avri.altman@wdc.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20230929131936.29421-1-quic_nitirawa@quicinc.com>
- <20230929131936.29421-4-quic_nitirawa@quicinc.com>
- <ed61f6a1-a21d-cc23-b995-7692a2e8530a@linaro.org>
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-In-Reply-To: <ed61f6a1-a21d-cc23-b995-7692a2e8530a@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 1RUuwAXoNCMWU-LHXJ03zpttm34mrTy7
-X-Proofpoint-ORIG-GUID: 1RUuwAXoNCMWU-LHXJ03zpttm34mrTy7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-29_11,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=470
- priorityscore=1501 bulkscore=0 malwarescore=0 clxscore=1015
- lowpriorityscore=0 suspectscore=0 mlxscore=0 spamscore=0 adultscore=0
- phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2309290123
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+X-B4-Tracking: v=1; b=H4sIAHzeFmUC/x3MQQqAIBBA0avErBNyCsKuEi3MxhoyCwUJpLtnL
+ d/i/wyRAlOEocoQKHHk0xfIugKzab+S4KUYsMG2UaiEcbs49OVIJApRf5SorO7s3Eu0UMIrkOX
+ 7n47T87y3UiFZZAAAAA==
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        Alex Helms <alexander.helms.jy@renesas.com>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1075; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=KsSNZ/3pcClI6JWLRtjeqqaFMfgqGK3sBrnSG42ii28=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlFt6EKxU/IFy5CpEoIBiGgMRKNDgrQV2ACWdw3
+ dHdvgE3IhCJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRbehAAKCRAk1otyXVSH
+ 0KDbB/4p0wUMeG+qaPtEwghbVlW3q/oWwCeAhQUNBXYTvKfZ5LMQq1mT4gAyaPNOtDFW7KeDNu7
+ rE0KpM91MdGc5gIKqPqnuh0Gbff2Xpdi7MkcggxlH0O0CBQ2Uz9IM9BEi6oXPtGvPIPywK02T1U
+ RxdmFNB5gDqkE3R89MFNNnI/XYvZ+KEfqUBKYRyMgb6tY8rjcXAijnOUrZncXa5XkN8SuDcqH6G
+ vGb25A6/7OHxBH3KmsNG+9fqVBNH+J8uGGLj9i/8qYJ7YUYTxfkilXDgSE6Ehujx76vedvdygI5
+ aWtQeMpEuALJ6FmujSp4CPqETIag0g2gLMftN1rt3KogwNPH
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,24 +64,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The maple tree register cache is a more modern replacement for the
+rbtree cache which uses a more modern data structure and makes decisions
+likely to be better for more current hardware, update the versaclock
+drivers to use it.
 
+While looking at updating the cache types I noticed a minor optimisation
+opportunity with a redundant _is_writeable() operation in versaclock3 so
+I updated that too.
 
-On 9/29/2023 6:56 PM, Konrad Dybcio wrote:
-> 
-> 
-> On 9/29/23 15:19, Nitin Rawat wrote:
->> Add UFS host controller and PHY nodes for sc7280 IDP board.
->>
->> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
->> Acked-by: Manivannan Sadhasivam <mani@kernel.org>
->> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> Tested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> I did not add these tags to this patch, drop them.
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+Mark Brown (4):
+      clk: versaclock3: Remove redundant _is_writeable()
+      clk: versaclock3: Convert to use maple tree register cache
+      clk: versaclock5: Convert to use maple tree register cache
+      clk: versaclock7: Convert to use maple tree register cache
 
-My Apologies.Actually Patch 2 and Patch3 review tag got swapped.
-Will update and send new patchset
-> 
-> Konrad
+ drivers/clk/clk-versaclock3.c | 8 +-------
+ drivers/clk/clk-versaclock5.c | 2 +-
+ drivers/clk/clk-versaclock7.c | 2 +-
+ 3 files changed, 3 insertions(+), 9 deletions(-)
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20230929-clk-maple-versaclk-129fa4fb712f
 
-Thanks,
-Nitin
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
+
