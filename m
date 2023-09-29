@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4FD7B2CEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F2F77B2CED
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:15:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbjI2HO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 03:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49006 "EHLO
+        id S232787AbjI2HPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 03:15:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232672AbjI2HOz (ORCPT
+        with ESMTP id S232672AbjI2HO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 03:14:55 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFD4199;
-        Fri, 29 Sep 2023 00:14:53 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T6w0DL022589;
-        Fri, 29 Sep 2023 07:14:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=6YtU+0Lz8uDm5psqIY6d4cyYHrQVb3TayxFojbg2QP4=;
- b=oVjU1KM9yYEiMygGx1ukYbFeCbc6IbIdDxMFXfsqN9QNQ3JiY3zjn8yABIhM6DJ3Y6t1
- pvR3Ing+UVKZyX8lZr4vtRbbpXzaf/rYBaLEW4vaos0I+Wg3WUttYWEqWTROjXjTyDrY
- bXOX5vTPziXrGdFSzAvjXEHH3oKUjr00B2me+acc40NI/GDU3fkbF9tc5NDtcyc2PRDn
- RaTE6A2uLT2xHc/RBKxdfuwU0W41KXjG88rvi3JC81ipIAclmdTbgwJtl3NydQa/nhMR
- FPPKOGihb3xRSgIP9etGjdCrGBez1WfVfQBk016Etrn02kX3hM/NbqkTCIz2b7+zzqOE VQ== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tdfbrs1n0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 07:14:48 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38T7Em8m002698
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 07:14:48 GMT
-Received: from [10.204.67.150] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 29 Sep
- 2023 00:14:45 -0700
-Message-ID: <d5cc2254-6500-c4bb-3284-da397b6b3a5a@quicinc.com>
-Date:   Fri, 29 Sep 2023 12:44:42 +0530
+        Fri, 29 Sep 2023 03:14:58 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F426199
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:14:56 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso1835954166b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:14:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695971695; x=1696576495; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=V2OkkCi3457fhrun/Ka7gKdk+nLLGHEIhC9CyvKi8oA=;
+        b=zd4Z1l+ksB42Jc7yFORoQjJzeqXLh6nVfIiu8wi7b8krk1Q3nxSjHS/wugE+LbGyLI
+         F3hyRz+dVN9Q0e9k9CJcVpPo/Da/OUEHbMo893HACwp9KnRJJNcenamvOfcUAZMtQya0
+         ygJ5Mr9q+TPAAy3glwAeHldrP48BvFafYFIDSgqtcQOlJms5TkPX6154nUisTfSvRtqf
+         C/QWhVULgnshQHHgRuDVlV88z3XfE0KA2jkPXCFYfpVEpZg0Cde3Eb0YxCzV7snYLV3b
+         p7eYb5wRxL+VaMpnbgXR5lbtkDYdyYjeut2hbNhl4TRGw9bPN6F3J2R5ePl76CaRCwiA
+         6fDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695971695; x=1696576495;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V2OkkCi3457fhrun/Ka7gKdk+nLLGHEIhC9CyvKi8oA=;
+        b=SHVFbKvXgxP+3z+xHSpmfJwlyUgjmxehe6nWOUAzcTHa/dOgGdNXgnBk1s61G3dTuJ
+         vL1PPMMPBZZA/om1HZHbgfi2piUhPkz+VFZPFLGGTmmDUobVlXa9bEDfEdIO6E0eqsJ5
+         VBmunmBicis2eO/6wOZDKgmMIUw/wAQSIQ3uD4SNN81jqxWwRH101RTXG6pxsfPbSRG1
+         Jr/o6Y5I7vsiv3bbUhtj9vk9steb46///3haRfpWcR4tbe5CbdAqKZg+kOvVn6QasPFW
+         bwXFQ+DmLdry+X3eGVK7tDRSlD3cuciDBZkk9xSSFVYZfqVFmM1CR9cWuPx3BxtJKB7r
+         ICSA==
+X-Gm-Message-State: AOJu0YzOiNei4ipR1Lw26szEVs6lYMlvzf11HIIV0wJZAOL2JmWUoigJ
+        9y2zCPs0OourFg/Kg10BHwaNFsvVDz0z37hPzn8=
+X-Google-Smtp-Source: AGHT+IGZ/E7+G4cnfaB8C0RTqz4HpzEQLdCBnqk+eAgNYK3UAcdw1uetqgquWBvnEbokDk1wX/u06w==
+X-Received: by 2002:a17:906:28e:b0:9ae:552a:3d3f with SMTP id 14-20020a170906028e00b009ae552a3d3fmr3026696ejf.28.1695971695031;
+        Fri, 29 Sep 2023 00:14:55 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id o14-20020a05600c4fce00b004065d67c3c9sm709048wmq.8.2023.09.29.00.14.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 00:14:54 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 10:14:52 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Deepak R Varma <drv@mailo.com>
+Cc:     Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        gfs2@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Dan Carpenter <error27@gmail.com>
+Subject: Re: [PATCH] gfs2: Set error on error path
+Message-ID: <72de9c2e-7c60-4930-acfb-556a1f0fa4c4@kadam.mountain>
+References: <ZRZrUMzweaJeEJuD@runicha.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v1] misc: fastrpc: Free DMA handles for RPC calls with no
- arguments
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>,
-        <ekangupt@qti.qualcomm.com>, <linux-kernel@vger.kernel.org>,
-        <fastrpc.upstream@qti.qualcomm.com>
-References: <1693463029-9311-1-git-send-email-quic_ekangupt@quicinc.com>
- <2023092833-daylong-gecko-eb0e@gregkh>
-From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
-In-Reply-To: <2023092833-daylong-gecko-eb0e@gregkh>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 4DzaRapbyh3htRjn6VbSj6iseVWXIrJQ
-X-Proofpoint-GUID: 4DzaRapbyh3htRjn6VbSj6iseVWXIrJQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-29_05,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- malwarescore=0 impostorscore=0 mlxscore=0 suspectscore=0
- priorityscore=1501 lowpriorityscore=0 mlxlogscore=644 adultscore=0
- clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309290060
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRZrUMzweaJeEJuD@runicha.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/28/2023 6:35 PM, Greg KH wrote:
-> On Thu, Aug 31, 2023 at 11:53:49AM +0530, Ekansh Gupta wrote:
->> The FDs for DMA handles to be freed is updated in fdlist by DSP over
->> a remote call. This holds true even for remote calls with no
->> arguments. To handle this, get_args and put_args are needed to
->> be called for remote calls with no arguments also as fdlist
->> is allocated in get_args and FDs updated in fdlist is freed
->> in put_args.
->>
->> Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+On Fri, Sep 29, 2023 at 11:44:40AM +0530, Deepak R Varma wrote:
+> Set the error variable inside the error path on failure. Saves
+> unnecessary variable assignment during normal execution.
 > 
-> What commit id does this fix?  Or is this new functionality?
+> Signed-off-by: Deepak R Varma <drv@mailo.com>
+> ---
+>  fs/gfs2/bmap.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-I'll update the details in the next patch.
+> diff --git a/fs/gfs2/bmap.c b/fs/gfs2/bmap.c
+> index ef7017fb6951..93bd8ea34444 100644
+> --- a/fs/gfs2/bmap.c
+> +++ b/fs/gfs2/bmap.c
+> @@ -162,9 +162,10 @@ int gfs2_unstuff_dinode(struct gfs2_inode *ip)
+>  
+>  	down_write(&ip->i_rw_mutex);
+>  	page = grab_cache_page(inode->i_mapping, 0);
+> -	error = -ENOMEM;
+> -	if (!page)
+> +	if (!page) {
+> +		error = -ENOMEM;
+>  		goto out;
+> +	}
 
--ekansh
-> thanks,
-> 
-> greg k-h
+It used to be that the other way was faster?  I'm pretty sure the
+compiler can figure it out these days.  Please don't randomly start
+changing people's prefered style unless it's drivers/staging/ code.
+
+regards,
+dan carpenter
+
