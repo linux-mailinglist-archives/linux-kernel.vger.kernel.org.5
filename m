@@ -2,53 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB107B2DB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5117B2DD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232868AbjI2IVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 04:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40652 "EHLO
+        id S232844AbjI2Ibb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 04:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbjI2IVn (ORCPT
+        with ESMTP id S232663AbjI2Ib3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 04:21:43 -0400
-Received: from mail-oo1-f79.google.com (mail-oo1-f79.google.com [209.85.161.79])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07F541AA
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:21:42 -0700 (PDT)
-Received: by mail-oo1-f79.google.com with SMTP id 006d021491bc7-57b739e5637so23538865eaf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:21:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695975701; x=1696580501;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QncnMnDgdyL2pjjT0J+hO9DvAnqoe9HZBWwXyXogEv0=;
-        b=nfdap8xitzQA5LwVc7nqAoNrn7uxEFRkax3z3/TflSuGyTVTdso6uh0GHWbhZ+wco4
-         rycxHzoeJmFZb+dgCEWabu+eWxgd+DQ3IE8nYg4PqHi1sQEPlx+A+9mef41Z3r3AA4Aa
-         vtMWX1xQKGJ8d3d8Bv/wgNMTEeDtlMRUumCKnInC6ja84Qn43lzYvYl1etpzQx9/uJKS
-         2PQKOrabubZozhxAat9T7rAPb8kvpqFVkig2cACvumZQGLod1A7a5e90+5SOQlCmAFKS
-         v3C6x13FONSfmTnDon4Paa8kx+4vZmlYF5eh/7U+HNmUBtN65D28vWYA/ff1CDuT02AA
-         sxGg==
-X-Gm-Message-State: AOJu0YzR9VmVjv/hmFYVsO2ncNBeb+vQJF8NlRVRLUs8zazC045e5mj2
-        vSVdTZ2mqIxn0zoqJwgpFHkQw47d1QddR725ohdito7MUsXJ
-X-Google-Smtp-Source: AGHT+IGId2yjzzorKtGVzl2YpcTdBIqF3KFVR7yxef8YfkTk8dFRhGhe90zRQTIpFeGhynjjn/+STGIqCVQWsVOKH/7At4F3NmrT
+        Fri, 29 Sep 2023 04:31:29 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02C8C1A7;
+        Fri, 29 Sep 2023 01:31:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695976287; x=1727512287;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=E6Kx4UtEU9DgP25ZBND/clnbDPg65fa2ZP8121QiGAc=;
+  b=Lb5sO2K3Tb+IcM5I0OycfFUGje+Zu1QMFFCWx/xaL0WN1kU2iSfNq+2F
+   s5y9nc+N6wLbebMVY3YIbdOoe4FSOo2cfhn/pW4DTmUx5RH5MSSZhw6Tg
+   lG2QhqikRk7joWSLuk79zmQNU1PoKbZWTLaSCZGZcDuFCga9i9IIz1mVN
+   VCjyvcZX9da7/4CYmEaV8BpsVM5eyK1+CxANfhF0F8TiCPJIZ8kNlIcok
+   7dclH66rEkGGZAHX/cbWNWWjH5vSXsiEZAKgRsYGtVF0UuMION5fjVrUv
+   nrU/HSRPF1MGO3kSgjpCbWNVzyO6r0ajFwKvrEawcCzBVwjDWXBR9QEVE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="381144371"
+X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
+   d="scan'208";a="381144371"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 01:22:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="865622555"
+X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
+   d="scan'208";a="865622555"
+Received: from tzebrows-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.26.85])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 01:22:10 -0700
+From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v5 1/2] selftests/resctrl: Fix schemata write error check
+Date:   Fri, 29 Sep 2023 10:21:41 +0200
+Message-ID: <f1f8f4132d6e6cdb1438186cb40c5d78b94acd5f.1695975327.git.maciej.wieczor-retman@intel.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <cover.1695975327.git.maciej.wieczor-retman@intel.com>
+References: <cover.1695975327.git.maciej.wieczor-retman@intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a4a:3356:0:b0:56c:86f2:ae14 with SMTP id
- q83-20020a4a3356000000b0056c86f2ae14mr943396ooq.0.1695975701380; Fri, 29 Sep
- 2023 01:21:41 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 01:21:41 -0700
-In-Reply-To: <0000000000005697bd05fe4aea49@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003a874b06067b1d4d@google.com>
-Subject: Re: [syzbot] [ext4?] WARNING in ext4_iomap_begin (2)
-From:   syzbot <syzbot+307da6ca5cb0d01d581a@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,73 +64,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+Writing bitmasks to the schemata can fail when the bitmask doesn't
+adhere to constraints defined by what a particular CPU supports.
+Some example of constraints are max length or having contiguous bits.
+The driver should properly return errors when any rule concerning
+bitmask format is broken.
 
-HEAD commit:    9ed22ae6be81 Merge tag 'spi-fix-v6.6-rc3' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=126a50d6680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=12da82ece7bf46f9
-dashboard link: https://syzkaller.appspot.com/bug?extid=307da6ca5cb0d01d581a
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15eb672e680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16219bc6680000
+Resctrl FS returns error codes from fprintf() only when fclose() is
+called. Current error checking scheme allows invalid bitmasks to be
+written into schemata file and the selftest doesn't notice because the
+fclose() error code isn't checked.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/f059028ccc85/disk-9ed22ae6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/3b01e6cd5f62/vmlinux-9ed22ae6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/32202918d16c/bzImage-9ed22ae6.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/38533c948c72/mount_0.gz
+Substitute fopen(), flose() and fprintf() with open(), close() and
+write() to avoid error code buffering between fprintf() and fclose().
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+307da6ca5cb0d01d581a@syzkaller.appspotmail.com
+Remove newline character from the schema string after writing it to
+the schemata file so it prints correctly before function return.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5195 at fs/ext4/inode.c:3338 ext4_iomap_begin+0xa9b/0xd30
-Modules linked in:
-CPU: 0 PID: 5195 Comm: syz-executor392 Not tainted 6.6.0-rc3-syzkaller-00055-g9ed22ae6be81 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:ext4_iomap_begin+0xa9b/0xd30 fs/ext4/inode.c:3338
-Code: d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 ce 3d 4c ff 49 be 00 00 00 00 00 fc ff df 48 8b 5c 24 48 e9 65 ff ff ff e8 b5 3d 4c ff <0f> 0b 41 bc de ff ff ff e9 8f f6 ff ff 89 d9 80 e1 07 38 c1 0f 8c
-RSP: 0018:ffffc9000405f580 EFLAGS: 00010293
-RAX: ffffffff8241ccbb RBX: 0000000010000000 RCX: ffff88802234d940
-RDX: 0000000000000000 RSI: 00000000000000bc RDI: 0000000000000000
-RBP: ffffc9000405f6f0 R08: ffffffff8241c408 R09: 1ffff1100eff5b4a
-R10: dffffc0000000000 R11: ffffed100eff5b4b R12: 00000000000000bc
-R13: 1ffff1100eff5baf R14: 000000000000000b R15: 0000000000000016
-FS:  00007f68b788c6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f68b788cd58 CR3: 000000006b9c0000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- iomap_iter+0x677/0xec0 fs/iomap/iter.c:91
- __iomap_dio_rw+0xe2e/0x2370 fs/iomap/direct-io.c:658
- iomap_dio_rw+0x46/0xa0 fs/iomap/direct-io.c:748
- ext4_dio_write_iter fs/ext4/file.c:605 [inline]
- ext4_file_write_iter+0x165f/0x1ad0 fs/ext4/file.c:715
- call_write_iter include/linux/fs.h:1956 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x782/0xaf0 fs/read_write.c:584
- ksys_pwrite64 fs/read_write.c:699 [inline]
- __do_sys_pwrite64 fs/read_write.c:709 [inline]
- __se_sys_pwrite64 fs/read_write.c:706 [inline]
- __x64_sys_pwrite64+0x1aa/0x230 fs/read_write.c:706
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f68bfbf0b59
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f68b788c218 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
-RAX: ffffffffffffffda RBX: 00007f68b788c6c0 RCX: 00007f68bfbf0b59
-RDX: 0000000000000001 RSI: 0000000020000100 RDI: 0000000000000005
-RBP: 00007f68bfc796d8 R08: 00007ffd6a04dbc7 R09: 0000000000000000
-R10: 000000000000b114 R11: 0000000000000246 R12: ffffffffffffffb0
-R13: 00007f68bfc796d0 R14: 00007f68bfc45840 R15: 0030656c69662f2e
- </TASK>
+Pass the string generated with strerror() to the "reason" buffer so
+the error message is more verbose. Extend "reason" buffer so it can hold
+longer messages.
 
-
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Changelog v5:
+- Add Ilpo's reviewed-by tag.
+- Fix wrong open() error checking. (Reinette)
+- Add error checking to schema_len variable.
+
+Changelog v4:
+- Unify error checking between open() and write(). (Reinette)
+- Add fcntl.h for glibc backward compatiblitiy. (Reinette)
+
+Changelog v3:
+- Rename fp to fd. (Ilpo)
+- Remove strlen, strcspn and just use the snprintf value instead. (Ilpo)
+
+Changelog v2:
+- Rewrite patch message.
+- Double "reason" buffer size to fit longer error explanation.
+- Redo file interactions with syscalls instead of stdio functions.
+
+ tools/testing/selftests/resctrl/resctrlfs.c | 36 +++++++++++++--------
+ 1 file changed, 23 insertions(+), 13 deletions(-)
+
+diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
+index 3a8111362d26..342a3dbcdbb6 100644
+--- a/tools/testing/selftests/resctrl/resctrlfs.c
++++ b/tools/testing/selftests/resctrl/resctrlfs.c
+@@ -8,6 +8,7 @@
+  *    Sai Praneeth Prakhya <sai.praneeth.prakhya@intel.com>,
+  *    Fenghua Yu <fenghua.yu@intel.com>
+  */
++#include <fcntl.h>
+ #include <limits.h>
+ 
+ #include "resctrl.h"
+@@ -490,9 +491,8 @@ int write_bm_pid_to_resctrl(pid_t bm_pid, char *ctrlgrp, char *mongrp,
+  */
+ int write_schemata(char *ctrlgrp, char *schemata, int cpu_no, char *resctrl_val)
+ {
+-	char controlgroup[1024], schema[1024], reason[64];
+-	int resource_id, ret = 0;
+-	FILE *fp;
++	char controlgroup[1024], schema[1024], reason[128];
++	int resource_id, fd, schema_len = 0, ret = 0;
+ 
+ 	if (strncmp(resctrl_val, MBA_STR, sizeof(MBA_STR)) &&
+ 	    strncmp(resctrl_val, MBM_STR, sizeof(MBM_STR)) &&
+@@ -520,27 +520,37 @@ int write_schemata(char *ctrlgrp, char *schemata, int cpu_no, char *resctrl_val)
+ 
+ 	if (!strncmp(resctrl_val, CAT_STR, sizeof(CAT_STR)) ||
+ 	    !strncmp(resctrl_val, CMT_STR, sizeof(CMT_STR)))
+-		sprintf(schema, "%s%d%c%s", "L3:", resource_id, '=', schemata);
++		schema_len = snprintf(schema, sizeof(schema), "%s%d%c%s\n",
++				      "L3:", resource_id, '=', schemata);
+ 	if (!strncmp(resctrl_val, MBA_STR, sizeof(MBA_STR)) ||
+ 	    !strncmp(resctrl_val, MBM_STR, sizeof(MBM_STR)))
+-		sprintf(schema, "%s%d%c%s", "MB:", resource_id, '=', schemata);
++		schema_len = snprintf(schema, sizeof(schema), "%s%d%c%s\n",
++				      "MB:", resource_id, '=', schemata);
++	if (schema_len < 1) {
++		snprintf(reason, sizeof(reason),
++			 "snprintf() failed with return value : %d", schema_len);
++		ret = -1;
++		goto out;
++	}
+ 
+-	fp = fopen(controlgroup, "w");
+-	if (!fp) {
+-		sprintf(reason, "Failed to open control group");
++	fd = open(controlgroup, O_WRONLY);
++	if (fd < 0) {
++		snprintf(reason, sizeof(reason),
++			 "open() failed : %s", strerror(errno));
+ 		ret = -1;
+ 
+ 		goto out;
+ 	}
+-
+-	if (fprintf(fp, "%s\n", schema) < 0) {
+-		sprintf(reason, "Failed to write schemata in control group");
+-		fclose(fp);
++	if (write(fd, schema, schema_len) < 0) {
++		snprintf(reason, sizeof(reason),
++			 "write() failed : %s", strerror(errno));
++		close(fd);
+ 		ret = -1;
+ 
+ 		goto out;
+ 	}
+-	fclose(fp);
++	close(fd);
++	schema[schema_len - 1] = 0;
+ 
+ out:
+ 	ksft_print_msg("Write schema \"%s\" to resctrl FS%s%s\n",
+-- 
+2.42.0
+
