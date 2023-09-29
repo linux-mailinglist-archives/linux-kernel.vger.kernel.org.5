@@ -2,171 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B0A7B324E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555CF7B3253
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233238AbjI2MSY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Sep 2023 08:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
+        id S233104AbjI2MTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 08:19:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233219AbjI2MSW (ORCPT
+        with ESMTP id S233118AbjI2MTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:18:22 -0400
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02EBD1AA;
-        Fri, 29 Sep 2023 05:18:21 -0700 (PDT)
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-57bc11c197aso1219405eaf.1;
-        Fri, 29 Sep 2023 05:18:20 -0700 (PDT)
+        Fri, 29 Sep 2023 08:19:35 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB061DB
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:19:33 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c6193d6bb4so168145ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:19:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695989973; x=1696594773; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PLnTSnR7uTYwv5cSSHGvio2GQZKRL0FdjNM2CJ3aoLI=;
+        b=2BaKyLQmry4gd+zHcUfPa0f2FEhhjf2JUKI8tHLGNVFdM0VjJwAyhhyKYDINdElIh9
+         xUc42jzLRNYwg6VMA6ZvFuAhy5NcYlRN+imth4p2tH+vpfYvkSTTLt7zAVnJqB5/538G
+         gKFoSAd2lS1erTGJNNa9P/Cp9EEoXHTwqjW/gvLjnb5i4mlBDlJqTD0BmB5vWd6jFURy
+         opdIvEML6CZtDBoJHrUCttIJAf8Q9SmOIhDOKr0byLzkcjS2uuzhXHRLScCy9UFf7t4k
+         VbVAVUQZSHuHAje4eEi864hiD3bfgyq7Ohyxdk4U4+X9jXX2kwqq1htrq9mLMQadLNjD
+         Re2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695989900; x=1696594700;
+        d=1e100.net; s=20230601; t=1695989973; x=1696594773;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UkUCEKbP8HqOOiE0WgtqrpGwplsIgZxlbsQ4QxXPJXs=;
-        b=wD5IQP1Jskr8BXGu/Kt5xfiBIhbquua0ZVaSLi1wp6eeVcrt4qqV5CHrAKxBa8GJqI
-         ZuzYyFn1xrAzJurgHzENUxHoI63cxhbbJvPtvwhrlPSfAUFnRRDrQuVcvNoKp691BbXE
-         RSv1YtBc2MnhS6BkGk3WYd2MZKbkeBxXrDZhBHd2Bug/2zJkPduI0NrQszdqI0VqbM/3
-         jRzy74vuQUKxWI9MniXXvFLJe5NNHs/xOFFmejrG+MyO5AE6W+aHv2H1PQJnnUh5foCt
-         Yfm2y1zd9BP3ypfg8lD+vtsK0kRHDswYo5/j5wVW6wgROaeoMyQkO+WNETCib9GyENi9
-         u1vg==
-X-Gm-Message-State: AOJu0YyK+HaUHaEKFXSFOb7lLJ0S++/JjPfcjMOdqW6Sq9c/aeo/lJPc
-        LLYpNRtOgMoPt5RwJjQ3u5CWExQMOGWQaDB5jfw=
-X-Google-Smtp-Source: AGHT+IEx/75T/hzvBFoUXXwhQGu997npYkFXA2nC3oXdZavdBeCKxwxBtvBBpr0N7RpFpdgVnY6iAgSleay6DFyFHGc=
-X-Received: by 2002:a05:6820:629:b0:57b:7e31:c12 with SMTP id
- e41-20020a056820062900b0057b7e310c12mr4465454oow.1.1695989900147; Fri, 29 Sep
- 2023 05:18:20 -0700 (PDT)
+        bh=PLnTSnR7uTYwv5cSSHGvio2GQZKRL0FdjNM2CJ3aoLI=;
+        b=iWHqSrKXOQE+s4XSxmPNfGzXeneVkzgpD9BoBwVr3avSm0gLfxpe4aoeOteqr9GHJU
+         3ds9KMi1aBZKiLHq1iNmkCXZs5DGdqWOnwQGpFsBcKAP9hcJ48FcThBfdArH3xNfAdyc
+         X0KojXYSrNpsfyboVW46818pnchaBFB4SQFL5f+LV5pWR7yGsTCtkyzlN2DgZOw2QWee
+         ZxdeW1wp/6ijEIEM3DrdvNr2gNfqFfb+I8948tO77BX3FP9yrGPlejhl/8GPJhULURXw
+         eEUwRjNhp47IUZC3PaEQjfpV48i4xCYWhiG5C+ZhlGcZ6Ozilc5qNqEDoe5pvDH72Mzx
+         v/0Q==
+X-Gm-Message-State: AOJu0YwM21Htd04RrT5G1HfvxdRCa2qsQjsx89TCnGbRj+FF0MHv9EtC
+        UIGq7v8riJFkIUb1BsrLCZM+Q7ktBovTPh7/XYET3w==
+X-Google-Smtp-Source: AGHT+IHK0oqlHr/4SkAVwSnoYFDhD0879DbB4ErNGUhs0U4worNdVRcdhOsKTjQ4Igq01cBWv+xbWUqPjPXdZzGdc40=
+X-Received: by 2002:a17:903:5cc:b0:1c4:36c:b917 with SMTP id
+ kf12-20020a17090305cc00b001c4036cb917mr971296plb.6.1695989973149; Fri, 29 Sep
+ 2023 05:19:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230925081139.1305766-1-lukasz.luba@arm.com> <20230925081139.1305766-9-lukasz.luba@arm.com>
- <CAJZ5v0hM3DvEZSyDubd29bkEPDv6JUm8FaKM8+suaWOpKESp+w@mail.gmail.com> <516cb2e8-6b54-b17f-f275-1bebe908bf34@arm.com>
-In-Reply-To: <516cb2e8-6b54-b17f-f275-1bebe908bf34@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 29 Sep 2023 14:18:09 +0200
-Message-ID: <CAJZ5v0jSSrAMO9S1g49c6mH3DPYJOqfspV7EscQCDpkPgox+=Q@mail.gmail.com>
-Subject: Re: [PATCH v4 08/18] PM: EM: Add update_power() callback for runtime modifications
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dietmar.eggemann@arm.com, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
-        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
-        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
-        qyousef@layalina.io, wvw@google.com
+References: <20230829234426.64421-1-tony.luck@intel.com> <20230928191350.205703-1-tony.luck@intel.com>
+ <20230928191350.205703-3-tony.luck@intel.com>
+In-Reply-To: <20230928191350.205703-3-tony.luck@intel.com>
+From:   Peter Newman <peternewman@google.com>
+Date:   Fri, 29 Sep 2023 14:19:22 +0200
+Message-ID: <CALPaoCiLRA9NnP_rynYi60F_USW0zi_NWqRd702RJC_E2SeCFw@mail.gmail.com>
+Subject: Re: [PATCH v6 2/8] x86/resctrl: Prepare to split rdt_domain structure
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 10:59 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
-> On 9/26/23 19:59, Rafael J. Wysocki wrote:
-> > On Mon, Sep 25, 2023 at 10:11 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
-> >>
-> >> The Energy Model (EM) is going to support runtime modifications. This
-> >> new callback would be used in the upcoming EM changes. The drivers
-> >> or frameworks which want to modify the EM have to implement the
-> >> update_power() callback.
-> >>
-> >> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> >> ---
-> >>   include/linux/energy_model.h | 22 ++++++++++++++++++++++
-> >>   1 file changed, 22 insertions(+)
-> >>
-> >> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-> >> index d236e08e80dc..546dee90f716 100644
-> >> --- a/include/linux/energy_model.h
-> >> +++ b/include/linux/energy_model.h
-> >> @@ -168,6 +168,26 @@ struct em_data_callback {
-> >>           */
-> >>          int (*get_cost)(struct device *dev, unsigned long freq,
-> >>                          unsigned long *cost);
-> >> +
-> >> +       /**
-> >> +        * update_power() - Provide new power at the given performance state of
-> >> +        *              a device
-> >
-> > The meaning of the above is unclear to me.
->
-> I can try to rephrase this a bit:
-> ' Provide a new power value for the device at the given frequency. This
-> allows to reflect changed power profile in runtime.'
+Hi Tony,
 
-Maybe "Estimate power for a given device frequency"
+On Thu, Sep 28, 2023 at 9:14=E2=80=AFPM Tony Luck <tony.luck@intel.com> wro=
+te:
+>
+> The rdt_domain structure is used for both control and monitor features.
+> It is about to be split into separate structures for these two usages
+> because the scope for control and monitoring features for a resource
+> will be different for future resources.
+>
+> To allow for common code that scans a list of domains looking for a
+> specific domain id, move the "list" and "id" fields into their own
+> structure within the rdt_domain structure.
 
-> >
-> >> +        * @dev         : Device for which we do this operation (can be a CPU)
-> >
-> > It is unclear what "we" means in this context.  Maybe say "Target
-> > device (can be a CPU)"?
->
-> That sounds better indeed.
->
-> >
-> >> +        * @freq        : Frequency at the performance state in kHz
-> >
-> > What performance state does this refer to?  And the frequency of what?
->
-> We just call the entry in EM the 'performance state' (so frequency and
-> power). I will rephrase this as well:
-> 'Frequency of the @dev expressed in kHz'
+On this one I think you can say "No functional change"
 
-Or "Device frequency for which to estimate power"?
+Reviewed-by: Peter Newman <peternewman@google.com>
 
-> >
-> >> +        * @power       : New power value at the performance state
-> >> +        *              (modified)
-> >
-> > Similarly unclear as the above.
->
-> OK, it can be re-written as:
-> 'Power value of the @dev at the given @freq (modified)'
-
-This is not a power value, but a return pointer AFAICS.  So "location
-to store the return power value".
-
-> >
-> >> +        * @priv        : Pointer to private data useful for tracking context
-> >> +        *              during runtime modifications of EM.
-> >
-> > Who's going to set this pointer and use this data?
->
-> The driver or kernel module, which is aware about thermal events. Those
-> events might be coming from FW to kernel, but we need to maintain
-> the same 'context' for all OPPs when we start the EM update.
->
-> This 'priv' field is used for passing the 'context' back to the
-> caller, so the caller can consistently the update. The update might
-> be with some math formula which multiplies the power by some factor
-> value (based on thermal model and current temperature).
-
-I would say "Additional data for the callback function, provided by
-the entity setting the callback pointer".
-
-> >
-> >> +        *
-> >> +        * The update_power() is used by runtime modifiable EM. It aims to
-> >
-> > I would drop "The" from the above.
->
-> OK
->
-> >
-> >> +        * provide updated power value for a given frequency, which is stored
-> >> +        * in the performance state.
-> >
-> > A given frequency of what and the performance state of what does this refer to?
->
-> I will change that and add the '@dev' word to make this more precised.
-
-That would help.  Overall, I would say "is used by ... to obtain a new
-power value for a given frequency of @dev".
-
->
-> 'update_power() is used by runtime modifiable EM. It aims to update the
-> @dev EM power values for all registered frequencies.'
+Thanks!
+-Peter
