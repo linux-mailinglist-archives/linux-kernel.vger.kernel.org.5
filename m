@@ -2,163 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7E77B3768
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:01:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4993E7B3769
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbjI2QBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 12:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60036 "EHLO
+        id S233707AbjI2QBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 12:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233141AbjI2QBC (ORCPT
+        with ESMTP id S233141AbjI2QBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 12:01:02 -0400
-Received: from out01.mta.xmission.com (out01.mta.xmission.com [166.70.13.231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545D1139
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:01:00 -0700 (PDT)
-Received: from in02.mta.xmission.com ([166.70.13.52]:49814)
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qmFvG-008vng-VE; Fri, 29 Sep 2023 10:00:59 -0600
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:42582 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qmFvF-00H9Oh-8k; Fri, 29 Sep 2023 10:00:58 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Ricardo Ribalda <ribalda@google.com>,
-        Ross Zwisler <zwisler@google.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        kexec@lists.infradead.org
-References: <20230929021213.2364883-1-joel@joelfernandes.org>
-Date:   Fri, 29 Sep 2023 11:00:49 -0500
-In-Reply-To: <20230929021213.2364883-1-joel@joelfernandes.org> (Joel
-        Fernandes's message of "Fri, 29 Sep 2023 02:12:12 +0000")
-Message-ID: <87bkdl55qm.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Fri, 29 Sep 2023 12:01:23 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 13B9C139;
+        Fri, 29 Sep 2023 09:01:18 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D9A91FB;
+        Fri, 29 Sep 2023 09:01:56 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 752033F59C;
+        Fri, 29 Sep 2023 09:01:16 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 17:01:14 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Oza Pawandeep <quic_poza@quicinc.com>, catalin.marinas@arm.com,
+        Sudeep Holla <sudeep.holla@arm.com>, rafael@kernel.org,
+        lenb@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v8] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast
+ timer
+Message-ID: <20230929160114.eq5omxyauu27two7@bogus>
+References: <20230918172140.2825357-1-quic_poza@quicinc.com>
+ <20230929150459.GA30623@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1qmFvF-00H9Oh-8k;;;mid=<87bkdl55qm.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX19pIQoI2yAji5xXUZsxi83S5aP6GqyP94M=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230929150459.GA30623@willie-the-truck>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;"Joel Fernandes (Google)" <joel@joelfernandes.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1064 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 9 (0.9%), b_tie_ro: 8 (0.8%), parse: 1.50 (0.1%),
-        extract_message_metadata: 29 (2.7%), get_uri_detail_list: 4.2 (0.4%),
-        tests_pri_-2000: 14 (1.3%), tests_pri_-1000: 3.0 (0.3%),
-        tests_pri_-950: 1.29 (0.1%), tests_pri_-900: 1.05 (0.1%),
-        tests_pri_-200: 0.84 (0.1%), tests_pri_-100: 12 (1.2%), tests_pri_-90:
-        420 (39.5%), check_bayes: 392 (36.9%), b_tokenize: 10 (0.9%),
-        b_tok_get_all: 204 (19.2%), b_comp_prob: 5 (0.5%), b_tok_touch_all:
-        167 (15.7%), b_finish: 2.1 (0.2%), tests_pri_0: 480 (45.1%),
-        check_dkim_signature: 0.82 (0.1%), check_dkim_adsp: 7 (0.6%),
-        poll_dns_idle: 0.88 (0.1%), tests_pri_10: 54 (5.1%), tests_pri_500: 33
-        (3.1%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] kexec: Fix reboot race during device_shutdown()
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Joel Fernandes (Google)" <joel@joelfernandes.org> writes:
-
-> During kexec reboot, it is possible for a race to occur between
-> device_shutdown() and userspace.  This causes accesses to GPU after pm_runtime
-> suspend has already happened. Fix this by calling freeze_processes() before
-> device_shutdown().
-
-Is there any reason why this same race with between sys_kexec and the
-adreno_ioctl can not happen during a normal reboot?
-
-Is there any reason why there is not a .shutdown method to prevent the
-race?
-
-I would think the thing to do is to prevent this race in
-kernel_restart_prepare or in the GPUs .shutdown method.  As I don't see
-anything that would prevent this during a normal reboot.
-
+On Fri, Sep 29, 2023 at 04:04:59PM +0100, Will Deacon wrote:
+> On Mon, Sep 18, 2023 at 10:21:40AM -0700, Oza Pawandeep wrote:
+> > Arm® Functional Fixed Hardware Specification defines LPI states,
+> > which provide an architectural context loss flags field that can
+> > be used to describe the context that might be lost when an LPI
+> > state is entered.
+> > 
+> > - Core context Lost
+> >         - General purpose registers.
+> >         - Floating point and SIMD registers.
+> >         - System registers, include the System register based
+> >         - generic timer for the core.
+> >         - Debug register in the core power domain.
+> >         - PMU registers in the core power domain.
+> >         - Trace register in the core power domain.
+> > - Trace context loss
+> > - GICR
+> > - GICD
+> > 
+> > Qualcomm's custom CPUs preserves the architectural state,
+> > including keeping the power domain for local timers active.
+> > when core is power gated, the local timers are sufficient to
+> > wake the core up without needing broadcast timer.
+> > 
+> > The patch fixes the evaluation of cpuidle arch_flags, and moves only to
+> > broadcast timer if core context lost is defined in ACPI LPI.
+> > 
+> > Fixes: a36a7fecfe607 ("Add support for Low Power Idle(LPI) states")
+> > Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+> > Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> > Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
+> > ---
+> > 
+> > Notes:
+> >     Will/Catalin: Rafael has acked and he prefers to take it via arm64 tree
+> > 
+> > diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+> > index 4d537d56eb84..269d21209723 100644
+> > --- a/arch/arm64/include/asm/acpi.h
+> > +++ b/arch/arm64/include/asm/acpi.h
+> > @@ -9,6 +9,7 @@
+> >  #ifndef _ASM_ACPI_H
+> >  #define _ASM_ACPI_H
+> >  
+> > +#include <linux/cpuidle.h>
+> >  #include <linux/efi.h>
+> >  #include <linux/memblock.h>
+> >  #include <linux/psci.h>
+> > @@ -44,6 +45,23 @@
+> >  
+> >  #define ACPI_MADT_GICC_TRBE  (offsetof(struct acpi_madt_generic_interrupt, \
+> >  	trbe_interrupt) + sizeof(u16))
+> > +/*
+> > + * Arm® Functional Fixed Hardware Specification Version 1.2.
+> > + * Table 2: Arm Architecture context loss flags
+> > + */
+> > +#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
+> > +
+> > +static __always_inline void _arch_update_idle_state_flags(u32 arch_flags,
+> > +							unsigned int *sflags)
+> 
+> Why can't this just be 'static inline'?
+> 
+> > +{
+> > +	if (arch_flags & CPUIDLE_CORE_CTXT)
+> > +		*sflags |= CPUIDLE_FLAG_TIMER_STOP;
+> > +}
+> > +#define arch_update_idle_state_flags _arch_update_idle_state_flags
+> 
+> Usually, the function and the macro have the same name for this pattern,
+> so I think it would be more consistent to drop the leading underscore
+> from the C function name.
 >
-> Such freezing is already being done if kernel supports KEXEC_JUMP and
-> kexec_image->preserve_context is true. However, doing it if either of these are
-> not true prevents crashes/races.
 
-The KEXEC_JUMP case is something else entirely.  It is supposed to work
-like suspend to RAM.  Maybe reboot should as well, but I am
-uncomfortable making a generic device fix kexec specific.
+Sorry that's me telling him looking at some other example I think. I don't
+have a strong opinion, just referred examples doing this way I guess.
 
+Oza, please check it to as it was before I requested this.
 
-> This fixes the following crash during kexec reboot on an ARM64 device
-> with adreno GPU:
->
-> [  292.534314] Kernel panic - not syncing: Asynchronous SError Interrupt
-> [  292.534323] Hardware name: Google Lazor (rev3 - 8) with LTE (DT)
-> [  292.534326] Call trace:
-> [  292.534328]  dump_backtrace+0x0/0x1d4
-> [  292.534337]  show_stack+0x20/0x2c
-> [  292.534342]  dump_stack_lvl+0x60/0x78
-> [  292.534347]  dump_stack+0x18/0x38
-> [  292.534352]  panic+0x148/0x3b0
-> [  292.534357]  nmi_panic+0x80/0x94
-> [  292.534364]  arm64_serror_panic+0x70/0x7c
-> [  292.534369]  do_serror+0x0/0x7c
-> [  292.534372]  do_serror+0x54/0x7c
-> [  292.534377]  el1h_64_error_handler+0x34/0x4c
-> [  292.534381]  el1h_64_error+0x7c/0x80
-> [  292.534386]  el1_interrupt+0x20/0x58
-> [  292.534389]  el1h_64_irq_handler+0x18/0x24
-> [  292.534395]  el1h_64_irq+0x7c/0x80
-> [  292.534399]  local_daif_inherit+0x10/0x18
-> [  292.534405]  el1h_64_sync_handler+0x48/0xb4
-> [  292.534410]  el1h_64_sync+0x7c/0x80
-> [  292.534414]  a6xx_gmu_set_oob+0xbc/0x1fc
-> [  292.534422]  a6xx_get_timestamp+0x40/0xb4
-> [  292.534426]  adreno_get_param+0x12c/0x1e0
-> [  292.534433]  msm_ioctl_get_param+0x64/0x70
-> [  292.534440]  drm_ioctl_kernel+0xe8/0x158
-> [  292.534448]  drm_ioctl+0x208/0x320
-> [  292.534453]  __arm64_sys_ioctl+0x98/0xd0
-> [  292.534461]  invoke_syscall+0x4c/0x118
->
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ricardo Ribalda <ribalda@google.com>
-> Cc: Ross Zwisler <zwisler@google.com>
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Tested-by: Ricardo Ribalda <ribalda@google.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  kernel/kexec_core.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/kernel/kexec_core.c b/kernel/kexec_core.c
-> index e2f2574d8b74..6599f485e42d 100644
-> --- a/kernel/kexec_core.c
-> +++ b/kernel/kexec_core.c
-> @@ -1299,6 +1299,12 @@ int kernel_kexec(void)
->  	} else
->  #endif
->  	{
-> +		error = freeze_processes();
-> +		if (error) {
-> +			error = -EBUSY;
-> +			goto Unlock;
-> +		}
-> +
->  		kexec_in_progress = true;
->  		kernel_restart_prepare("kexec reboot");
->  		migrate_to_reboot_cpu();
-
-Eric
+--
+Regards,
+Sudeep
