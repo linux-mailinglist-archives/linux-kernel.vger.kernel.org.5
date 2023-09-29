@@ -2,256 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F1F7B2B3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 07:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA57E7B2B49
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 07:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbjI2Fiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 01:38:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44574 "EHLO
+        id S232617AbjI2Fj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 01:39:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjI2Fip (ORCPT
+        with ESMTP id S232600AbjI2FjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 01:38:45 -0400
-Received: from out-209.mta0.migadu.com (out-209.mta0.migadu.com [91.218.175.209])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35D8199
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 22:38:42 -0700 (PDT)
-Message-ID: <e25b5f3c-bd97-56f0-de86-b93a3172870d@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695965920;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2IylT7nMWAJTSHME82z6aOaySj3++vJi55n7xJOKKCw=;
-        b=qFZJ9Wlq8pgzkY2ebidjLO2sKDsFv5UgKFQXKm6YijrYJeteg/9Vq6raUELQsHnvbhLaEL
-        H/7kdOce/CH9ku/oCdYNAnlWS8gQa7mjPcTJIfppvrZiVQeCFkRrLpXNUYgcu9kNkkFr+C
-        bYQ/RUM0EXiahcapixUAdBUPEi7SwIE=
-Date:   Fri, 29 Sep 2023 13:38:33 +0800
+        Fri, 29 Sep 2023 01:39:24 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC921AA
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 22:39:21 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso1826905366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 22:39:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1695965959; x=1696570759; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hZ5ltUZdRq/zpSgjEvQ5Nn9MPK9gRZTRXdEHWtkmrGY=;
+        b=FlFMJ64xCehFzCSX78nGo8c8zhIAyECyEsK+CQA8965wUEKi5yHWKa2OTdmisnfLZH
+         w6JVJPBixeL28znQM3iMeVKRSWpEGHcki24G2ri0KYooFMUr7Gpl20V3Q2cJdtQ+Bmtl
+         GiOzU4hxzb2lB5ONZTg1j9zGYkhdVn5nPjxbkz0EAKE9ZEjOmHnmLTNvmwv7p6jei93e
+         D/RDu3YcaNny6nsXOU0S9lIW+tz8oEClFNYXLbPCaK+bqCKRhowsG+u+tO29FlfY3YHa
+         AUaNg9WgyAWwrXAzHlIb3EtUcH7xBFZCLF4p4ZQW1LAeJ/bSX3Mroehu6Wmh8gr8IZOt
+         zIUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695965959; x=1696570759;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hZ5ltUZdRq/zpSgjEvQ5Nn9MPK9gRZTRXdEHWtkmrGY=;
+        b=YKJV0RKrxHRKGEnCjCfdaNUFr9+NcnTyzeRF3WEGBE4z6VHPy/7FBF1CjdlMzXzqty
+         +YS6B6e1i0hdKl67SwuChZ/k6gx3LeBv4g5Dj7HklsfaDmchziGdddIrlHgIp4+6QczP
+         PzyuRuQwpmohZkDbjfpsWpX+RyxOgXxFTSUCFahQmOWuiWdu36ZyW4K2CECG17hNRh1Q
+         Ltia9T4ZLStdHOLcHxTEdYH8rONvjD3Rt1h4KfSR95e44gb+l/r3FwZa87jQOatW5zBA
+         pKczpbsEWbRuQJQ7FczbUMwIs9ek364F/i6bgyITbDUDeQGGaopNqhtFdP+CDNFQn4RF
+         EN1Q==
+X-Gm-Message-State: AOJu0Yx7Hyx+mzPONW+ePg8XbS8sZjrALOUOKhFzcRzMJJkPpqJ+w8vK
+        MCUImTcm6Aa0PxHemyfQEKMqVw==
+X-Google-Smtp-Source: AGHT+IFs1wtp/YcwJb7GfOCLwGjYtFOwNujKRuwlhMXrwiRQ2KA6NJFyO2UtmJ1jRYeZXgWwQfejdQ==
+X-Received: by 2002:a17:906:57c7:b0:9ad:e2c8:1741 with SMTP id u7-20020a17090657c700b009ade2c81741mr3186997ejr.58.1695965959245;
+        Thu, 28 Sep 2023 22:39:19 -0700 (PDT)
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.177])
+        by smtp.gmail.com with ESMTPSA id z19-20020a1709063ad300b009a1a653770bsm11971992ejd.87.2023.09.28.22.39.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 22:39:18 -0700 (PDT)
+From:   Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea@bp.renesas.com>
+To:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        magnus.damm@gmail.com, catalin.marinas@arm.com, will@kernel.org,
+        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
+        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com
+Cc:     linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH v2 00/28] Add new Renesas RZ/G3S SoC and RZ/G3S SMARC EVK
+Date:   Fri, 29 Sep 2023 08:38:47 +0300
+Message-Id: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Subject: Re: [PATCH v6] net/core: Introduce netdev_core_stats_inc()
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexander Lobakin <aleksander.lobakin@intel.com>
-References: <20230928100418.521594-1-yajun.deng@linux.dev>
- <CANn89iL9uy58ZrZRPEtrvQ7ckv5hVTq8shx3OesQA6SWoUOP=g@mail.gmail.com>
- <c43a3dde-fa4d-4a87-6f96-397813db5bd6@linux.dev>
- <CANn89i+iT11qzCidTrHHRMQiYR-nXtbPNAUJGaEg0NQMCq_8CA@mail.gmail.com>
- <5d8e302c-a28d-d4f4-eb91-4b54eb89490b@linux.dev>
- <CANn89i+XQ_LKvr5LHd2QUgTMfZh9Nd1yQTYfRORHUt2_BCkxcg@mail.gmail.com>
- <a94ca1e1-d29a-5d98-bf39-97c7a1f25372@linux.dev>
-In-Reply-To: <a94ca1e1-d29a-5d98-bf39-97c7a1f25372@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-On 2023/9/29 00:32, Yajun Deng wrote:
->
-> On 2023/9/29 00:23, Eric Dumazet wrote:
->> On Thu, Sep 28, 2023 at 6:16 PM Yajun Deng <yajun.deng@linux.dev> wrote:
->>>
->>> On 2023/9/28 23:44, Eric Dumazet wrote:
->>>> On Thu, Sep 28, 2023 at 5:40 PM Yajun Deng <yajun.deng@linux.dev> 
->>>> wrote:
->>>>> On 2023/9/28 22:18, Eric Dumazet wrote:
->>>>>> On Thu, Sep 28, 2023 at 12:04 PM Yajun Deng 
->>>>>> <yajun.deng@linux.dev> wrote:
->>>>>>> Although there is a kfree_skb_reason() helper function that can 
->>>>>>> be used to
->>>>>>> find the reason why this skb is dropped, but most callers didn't 
->>>>>>> increase
->>>>>>> one of rx_dropped, tx_dropped, rx_nohandler and 
->>>>>>> rx_otherhost_dropped.
->>>>>>>
->>>>>>> For the users, people are more concerned about why the dropped 
->>>>>>> in ip
->>>>>>> is increasing.
->>>>>>>
->>>>>>> Introduce netdev_core_stats_inc() for trace the caller of the 
->>>>>>> dropped
->>>>>>> skb. Also, add __code to netdev_core_stats_alloc(), as it's called
->>>>>>> unlinkly.
->>>>>>>
->>>>>>> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
->>>>>>> Suggested-by: Alexander Lobakin <aleksander.lobakin@intel.com>
->>>>>>> ---
->>>>>>> v6: merge netdev_core_stats and netdev_core_stats_inc together
->>>>>>> v5: Access the per cpu pointer before reach the relevant offset.
->>>>>>> v4: Introduce netdev_core_stats_inc() instead of export 
->>>>>>> dev_core_stats_*_inc()
->>>>>>> v3: __cold should be added to the netdev_core_stats_alloc().
->>>>>>> v2: use __cold instead of inline in dev_core_stats().
->>>>>>> v1: 
->>>>>>> https://lore.kernel.org/netdev/20230911082016.3694700-1-yajun.deng@linux.dev/
->>>>>>> ---
->>>>>>>     include/linux/netdevice.h | 21 ++++-----------------
->>>>>>>     net/core/dev.c            | 17 +++++++++++++++--
->>>>>>>     2 files changed, 19 insertions(+), 19 deletions(-)
->>>>>>>
->>>>>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
->>>>>>> index 7e520c14eb8c..eb1fa04fbccc 100644
->>>>>>> --- a/include/linux/netdevice.h
->>>>>>> +++ b/include/linux/netdevice.h
->>>>>>> @@ -4002,32 +4002,19 @@ static __always_inline bool 
->>>>>>> __is_skb_forwardable(const struct net_device *dev,
->>>>>>>            return false;
->>>>>>>     }
->>>>>>>
->>>>>>> -struct net_device_core_stats __percpu 
->>>>>>> *netdev_core_stats_alloc(struct net_device *dev);
->>>>>>> -
->>>>>>> -static inline struct net_device_core_stats __percpu 
->>>>>>> *dev_core_stats(struct net_device *dev)
->>>>>>> -{
->>>>>>> -       /* This READ_ONCE() pairs with the write in 
->>>>>>> netdev_core_stats_alloc() */
->>>>>>> -       struct net_device_core_stats __percpu *p = 
->>>>>>> READ_ONCE(dev->core_stats);
->>>>>>> -
->>>>>>> -       if (likely(p))
->>>>>>> -               return p;
->>>>>>> -
->>>>>>> -       return netdev_core_stats_alloc(dev);
->>>>>>> -}
->>>>>>> +void netdev_core_stats_inc(struct net_device *dev, u32 offset);
->>>>>>>
->>>>>>>     #define DEV_CORE_STATS_INC(FIELD) \
->>>>>>>     static inline void dev_core_stats_##FIELD##_inc(struct 
->>>>>>> net_device *dev)                \
->>>>>>> { \
->>>>>>> -       struct net_device_core_stats __percpu 
->>>>>>> *p;                               \
->>>>>>> - \
->>>>>>> -       p = dev_core_stats(dev); \
->>>>>>> -       if (p) \
->>>>>>> - this_cpu_inc(p->FIELD); \
->>>>>> Note that we were using this_cpu_inc() which implied :
->>>>>> - IRQ safety, and
->>>>>> - a barrier paired with :
->>>>>>
->>>>>> net/core/dev.c:10548: storage->rx_dropped +=
->>>>>> READ_ONCE(core_stats->rx_dropped);
->>>>>> net/core/dev.c:10549: storage->tx_dropped +=
->>>>>> READ_ONCE(core_stats->tx_dropped);
->>>>>> net/core/dev.c:10550: storage->rx_nohandler +=
->>>>>> READ_ONCE(core_stats->rx_nohandler);
->>>>>> net/core/dev.c:10551: storage->rx_otherhost_dropped
->>>>>> += READ_ONCE(core_stats->rx_otherhost_dropped);
->>>>>>
->>>>>>
->>>>>>> + netdev_core_stats_inc(dev, \
->>>>>>> +                       offsetof(struct net_device_core_stats, 
->>>>>>> FIELD));         \
->>>>>>>     }
->>>>>>>     DEV_CORE_STATS_INC(rx_dropped)
->>>>>>>     DEV_CORE_STATS_INC(tx_dropped)
->>>>>>>     DEV_CORE_STATS_INC(rx_nohandler)
->>>>>>>     DEV_CORE_STATS_INC(rx_otherhost_dropped)
->>>>>>> +#undef DEV_CORE_STATS_INC
->>>>>>>
->>>>>>>     static __always_inline int ____dev_forward_skb(struct 
->>>>>>> net_device *dev,
->>>>>>> struct sk_buff *skb,
->>>>>>> diff --git a/net/core/dev.c b/net/core/dev.c
->>>>>>> index 606a366cc209..88a32c392c1d 100644
->>>>>>> --- a/net/core/dev.c
->>>>>>> +++ b/net/core/dev.c
->>>>>>> @@ -10497,7 +10497,8 @@ void netdev_stats_to_stats64(struct 
->>>>>>> rtnl_link_stats64 *stats64,
->>>>>>>     }
->>>>>>>     EXPORT_SYMBOL(netdev_stats_to_stats64);
->>>>>>>
->>>>>>> -struct net_device_core_stats __percpu 
->>>>>>> *netdev_core_stats_alloc(struct net_device *dev)
->>>>>>> +static __cold struct net_device_core_stats __percpu 
->>>>>>> *netdev_core_stats_alloc(
->>>>>>> +               struct net_device *dev)
->>>>>>>     {
->>>>>>>            struct net_device_core_stats __percpu *p;
->>>>>>>
->>>>>>> @@ -10510,7 +10511,19 @@ struct net_device_core_stats __percpu 
->>>>>>> *netdev_core_stats_alloc(struct net_device
->>>>>>>            /* This READ_ONCE() pairs with the cmpxchg() above */
->>>>>>>            return READ_ONCE(dev->core_stats);
->>>>>>>     }
->>>>>>> -EXPORT_SYMBOL(netdev_core_stats_alloc);
->>>>>>> +
->>>>>>> +void netdev_core_stats_inc(struct net_device *dev, u32 offset)
->>>>>>> +{
->>>>>>> +       /* This READ_ONCE() pairs with the write in 
->>>>>>> netdev_core_stats_alloc() */
->>>>>>> +       struct net_device_core_stats __percpu *p = 
->>>>>>> READ_ONCE(dev->core_stats);
->>>>>>> +
->>>>>>> +       if (unlikely(!p))
->>>>>>> +               p = netdev_core_stats_alloc(dev);
->>>>>>> +
->>>>>>> +       if (p)
->>>>>>> +               (*(unsigned long *)((void *)this_cpu_ptr(p) + 
->>>>>>> offset))++;
->>>>>> While here you are using a ++ operation that :
->>>>>>
->>>>>> - is not irq safe
->>>>>> - might cause store-tearing.
->>>>>>
->>>>>> I would suggest a preliminary patch converting the "unsigned 
->>>>>> long" fields in
->>>>>> struct net_device_core_stats to local_t
->>>>> Do you mean it needs to revert the commit 6510ea973d8d ("net: Use
->>>>> this_cpu_inc() to increment
->>>>>
->>>>> net->core_stats") first? But it would allocate memory which breaks on
->>>>> PREEMPT_RT.
->>>> I think I provided an (untested) alternative.
->>>>
->>>> unsigned long __percpu *field = (__force unsigned long __percpu *)
->>>> ((__force u8 *)p + offset);
->>>> this_cpu_inc(field);
->>> unsigned long __percpu *field = (__force unsigned long __percpu *)
->>> ((__force u8 *)p + offset);
->>> this_cpu_inc(*(int *)field);
->>>
->>> This would compiler success. But I didn't test it.
->>> This cold look complex.
->> Why exactly ? Not very different from the cast you already had.
-> Okay, I'll test it.
+Hi,
 
+This patch series adds initial support for The Renesas RZ/G3S (R9A08G045{S33})
+SoC. The RZ/G3S device is a general-purpose microprocessor with a
+single-core Arm® Cortex®-A55 (1.1GHz) and a dual-core Arm® Cortex®-M33 (250MHz),
+perfect for an IOT gateway controller.
 
-It seems something wrong.
+This includes:
+- SoC identification;
+- clocks (core clocks, pin controller clock, serial interface, SD ch0
+  clock) and corresponding resets;
+- minimal device tree for SoM and carrier boards.
 
-"ip -s a" would see the 'dropped' is increasing. But I cann't trace 
-anything by the following cmd.
+With this series Linux can boot from eMMC or SD card. The eMMC and uSD
+interface are multiplexed on the SoM; selection is made using a hardware
+switch.
 
-"sudo  python3  /usr/share/bcc/tools/trace netdev_core_stats_inc"
+Patches are gouped as follows:
+- 01    documents scif support;
+- 02-05	contain fixes on clock drivers identified while adding RZ/G3S
+	support
+- 06	clock cleanups identifies while adding support for RZ/G3S
+- 07-13	clock changes needed by RZ/G3S
+- 14-21	pinctrl changes needed by RZ/G3S
+- 22-28 device tree support for RZ/G3S
 
-If I change back to "(*(unsigned long *)((void *)this_cpu_ptr(p) + 
-offset))++; ", I can trace the caller.
+Changes in v2:
+- addressed review comments
+- collected tags
+- removed from series patches that were already integrated
+- added patches:
+	- [PATCH v2 19/28] dt-bindings: pinctrl: renesas: set additionalProperties: false
+	- [PATCH v2 23/28] dt-bindings: arm: renesas: document RZ/G3S SMARC SoM
+	- [PATCH v2 26/28] dt-bindings: arm: renesas: document SMARC Carrier-II EVK
+- please see individual patches for detailed changes
 
-So the following code would accidentally change somthing.
+Claudiu Beznea (28):
+  dt-bindings: serial: renesas,scif: document r9a08g045 support
+  clk: renesas: rzg2l: wait for status bit of SD mux before continuing
+  clk: renesas: rzg2l: lock around writes to mux register
+  clk: renesas: rzg2l: trust value returned by hardware
+  clk: renesas: rzg2l: fix computation formula
+  clk: renesas: rzg2l: remove critical area
+  clk: renesas: rzg2l: add support for RZ/G3S PLL
+  clk: renesas: rzg2l: add struct clk_hw_data
+  clk: renesas: rzg2l: remove CPG_SDHI_DSEL from generic header
+  clk: renesas: rzg2l: refactor sd mux driver
+  clk: renesas: rzg2l: add a divider clock for RZ/G3S
+  dt-bindings: clock: renesas,rzg2l-cpg: document RZ/G3S SoC
+  clk: renesas: add minimal boot support for RZ/G3S SoC
+  pinctrl: renesas: rzg2l: index all registers based on port offset
+  pinctrl: renesas: rzg2l: adapt for different SD/PWPR register offsets
+  pinctrl: renesas: rzg2l: adapt function number for RZ/G3S
+  pinctrl: renesas: rzg2l: move ds and oi to SoC specific configuration
+  pinctrl: renesas: rzg2l: add support for different ds values on
+    different groups
+  dt-bindings: pinctrl: renesas: set additionalProperties: false
+  dt-bindings: pinctrl: renesas: document RZ/G3S SoC
+  pinctrl: renesas: rzg2l: add support for RZ/G3S SoC
+  arm64: dts: renesas: add initial DTSI for RZ/G3S SoC
+  dt-bindings: arm: renesas: document RZ/G3S SMARC SoM
+  arm64: dts: renesas: rzg3l-smarc-som: add initial support for RZ/G3S
+    SMARC SoM
+  arm64: dts: renesas: rzg3s-smarc: add initial device tree for RZ SMARC
+    Carrier-II Board
+  dt-bindings: arm: renesas: document SMARC Carrier-II EVK
+  arm64: dts: renesas: r9a08g045s33-smarc: add initial device tree for
+    RZ/G3S SMARC EVK board
+  arm64: defconfig: enable RZ/G3S (R9A08G045) SoC
 
-unsigned long __percpu *field = (__force unsigned long __percpu *) 
-((__force u8 *)p + offset);
+ .../bindings/clock/renesas,rzg2l-cpg.yaml     |   1 +
+ .../pinctrl/renesas,rzg2l-pinctrl.yaml        |  23 +-
+ .../bindings/serial/renesas,scif.yaml         |   1 +
+ .../bindings/soc/renesas/renesas.yaml         |  13 +
+ arch/arm64/boot/dts/renesas/Makefile          |   2 +
+ arch/arm64/boot/dts/renesas/r9a08g045.dtsi    | 139 ++++
+ .../boot/dts/renesas/r9a08g045s33-smarc.dts   |  17 +
+ arch/arm64/boot/dts/renesas/r9a08g045s33.dtsi |  14 +
+ .../boot/dts/renesas/rzg3s-smarc-som.dtsi     | 142 ++++
+ arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi  |  28 +
+ arch/arm64/configs/defconfig                  |   1 +
+ drivers/clk/renesas/Kconfig                   |   7 +-
+ drivers/clk/renesas/Makefile                  |   1 +
+ drivers/clk/renesas/r9a07g043-cpg.c           |  19 +-
+ drivers/clk/renesas/r9a07g044-cpg.c           |  19 +-
+ drivers/clk/renesas/r9a08g045-cpg.c           | 213 ++++++
+ drivers/clk/renesas/rzg2l-cpg.c               | 478 ++++++++++--
+ drivers/clk/renesas/rzg2l-cpg.h               |  33 +-
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c       | 705 ++++++++++++++----
+ include/dt-bindings/clock/r9a08g045-cpg.h     | 242 ++++++
+ 20 files changed, 1860 insertions(+), 238 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/renesas/r9a08g045.dtsi
+ create mode 100644 arch/arm64/boot/dts/renesas/r9a08g045s33-smarc.dts
+ create mode 100644 arch/arm64/boot/dts/renesas/r9a08g045s33.dtsi
+ create mode 100644 arch/arm64/boot/dts/renesas/rzg3s-smarc-som.dtsi
+ create mode 100644 arch/arm64/boot/dts/renesas/rzg3s-smarc.dtsi
+ create mode 100644 drivers/clk/renesas/r9a08g045-cpg.c
+ create mode 100644 include/dt-bindings/clock/r9a08g045-cpg.h
 
-this_cpu_inc(*field);
+-- 
+2.39.2
 
->>
->>> Shoud I base v3? Export dev_core_stats_*_inc() intead of introduce 
->>> netdev_core_stats_inc().
->>> That would be easy.
->> Well, you tell me, but this does not look incremental to me.
->>
->> I do not think we need 4 different (and maybe more to come if struct
->> net_device_core_stats
->> grows in the future) functions for some hardly used path.
