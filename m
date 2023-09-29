@@ -2,155 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 053BE7B2AB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 05:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6E47B2AB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 05:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232525AbjI2DtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 23:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35430 "EHLO
+        id S232622AbjI2DtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 23:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjI2Ds5 (ORCPT
+        with ESMTP id S232631AbjI2DtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 23:48:57 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0D819C
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:48:55 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59f8134eb83so176408567b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:48:55 -0700 (PDT)
+        Thu, 28 Sep 2023 23:49:09 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6371B1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:49:05 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-77575233633so256259585a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:49:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695959334; x=1696564134; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lK8fb8SVkX3dYfemv0Fs8dWHGfBfDbWTSi3SV9bwElg=;
-        b=ZrsGuLMk06Lc3eaVi8BWj6hl+veQ4o/+vkUWZdhrFEXtz6dwoWlrg/100aMAQkyK/L
-         RcZcAeExZ1fqwhZJzYI/Qe1xKv5jvGn1AYf3AQ+b6UYXZUtJn2CLqmuM8r5j/k82FIgZ
-         4x4za2v8TwjQzwvUykX5JPWp2XcLC0UQHjF1aTLOyLZpTuQDQLG/rngb22t8JZduEp0+
-         MWXMr5gb+m5tJlycxjFeQ9DPQJbX6AsekLNwy+N1wNJqrr82mUAyTyhNhfkxojo6Nls6
-         ONTUmAs+wxkU+Seiuc7CVCF08xEV+MKqpZ3UPGu7h9o07rOymJ8jUj8waY+N+MRFSfF+
-         PrVA==
+        d=chromium.org; s=google; t=1695959344; x=1696564144; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rNSXAAGAWzfjZ8B3Y6lB+Lau8VDFKMg7uOankBJ5jh4=;
+        b=eMxxIvxPl6uH0l2l1PuCY71Kpxo+7eZOgbGmVcl/vLk4upVmAdTmMocgMENFRCO3d2
+         LJxV21UaVHaHo+/RpvwPsOiiegxxd7I3nNykDQbCfQzEBu/pEKyRr350hIiiVl8AlLLW
+         qHotkpPRFBLJ9zYeyGnyAbSMFCw0IkRooy0YQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695959334; x=1696564134;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lK8fb8SVkX3dYfemv0Fs8dWHGfBfDbWTSi3SV9bwElg=;
-        b=sfW0nt/a2IMB5o00+e4UCCKv7Bf32+/hHuTgcVDYSOjXg+qE1CTdpkYGvP2S8YLK3d
-         kKDENAID4H+WTfbnUJUgSz+PopSkVrdYCnVqI8RhWmNnDLhTqVpwoyZ8oPuWvT1c5byh
-         tMmjRIsWOFF7jcxyKqq4+aBSSn5OFvUjc8/h9j3nspDoCRhcSUH9Kh65J4FMSFz19m4I
-         GETYvuatOL+sQ44RmRTWU3gqlt4CToAXOV+KjN7jxbt+wUBuwQZcAVCBEJjl5fkGJWnR
-         2VP1dR9SHUCn+bY7uxsdfdeg9qE2cvBXiXJAd1D9JvSchkW7A/5MIlMUCwwsDpIGLTz2
-         l1Rg==
-X-Gm-Message-State: AOJu0Ywhq8Okd4KqiXPLCxHCqC3p4OTLECA0CX0rIIQRZFoV5rvplgsQ
-        Q2zJNEEfWAsSeYOtiVr/xn08w/Pk2rsIvg==
-X-Google-Smtp-Source: AGHT+IGbcc9CvVBvC6LRxnef2I69dprSb2lh6bSib8bKP3bPs7uq+ucfBJ5uCswKLlG/+MfNBrKorhaFJNvfGw==
-X-Received: from xllamas.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5070])
- (user=cmllamas job=sendgmr) by 2002:a25:abe9:0:b0:d80:19e5:76c8 with SMTP id
- v96-20020a25abe9000000b00d8019e576c8mr38367ybi.12.1695959334231; Thu, 28 Sep
- 2023 20:48:54 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 03:48:17 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20230929034836.403735-1-cmllamas@google.com>
-Subject: [PATCH] scripts/decode_stacktrace.sh: optionally use LLVM utilities
-From:   Carlos Llamas <cmllamas@google.com>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Carlos Llamas <cmllamas@google.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Will Deacon <will@kernel.org>,
-        John Stultz <jstultz@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1695959344; x=1696564144;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rNSXAAGAWzfjZ8B3Y6lB+Lau8VDFKMg7uOankBJ5jh4=;
+        b=RKKErRh07J2xe85qSV/JQqmZKcyvHItrkw3sNjpfGbgYgykVXYadUXTjQ4iJSYtEO7
+         HhVBWxAO6S16KIgFV/PGb+qMpdYvGsPpQvM5FrpbnLuZ3dnOMh0kRBBmFoMjgC6ujdBc
+         9ZpsZRcP5+AzIWYe205tRTPK6cWMYwhhdKwJsavsH4+iKi0e7pKNd3jZM5M7nD0LS3vm
+         4aUOAdmZN/bcMEe0N/2lttU5u8TxEkXMgsaj7KcuVwfct3dNJNggLDrGm/gTR7reU3H9
+         l7uLNDB1Nl7TKRzMZ8FzYpqJGOt68XLfk+pqKbjfA9E3uuuQt/GDQ9yTUYPNiW0w7jtk
+         gOSg==
+X-Gm-Message-State: AOJu0YwruBYiz3B8dW9ZZ2T0CmFaAOjXHfupc2Hk9HapiefHOJ1H2k2B
+        z9oKSsv7hLxIjw/6x4J0k+Q8IA==
+X-Google-Smtp-Source: AGHT+IFe6RVd12uwV33Kq35S412L+c1W/V78fMpX9SCcxHSRycyjSn9RNdW6/qwMtOYovhyI14rnQA==
+X-Received: by 2002:a05:620a:12f1:b0:774:13e:71cd with SMTP id f17-20020a05620a12f100b00774013e71cdmr2766118qkl.56.1695959344459;
+        Thu, 28 Sep 2023 20:49:04 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id b20-20020aa78114000000b006930db1e6d1sm5622071pfi.203.2023.09.28.20.49.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 20:49:03 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 20:49:02 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Yuanhe Shu <xiangzao@linux.alibaba.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        tony.luck@intel.com, gpiccoli@igalia.com, shuah@kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 0/5] pstore: add tty frontend and multi-backend
+Message-ID: <202309282030.8CE179EBB@keescook>
+References: <20230928024244.257687-1-xiangzao@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928024244.257687-1-xiangzao@linux.alibaba.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GNU's addr2line can have problems parsing a vmlinux built with LLVM,
-particularly when LTO was used. In order to decode the traces correctly
-this patch adds the ability to switch to LLVM's utilities readelf and
-addr2line. The same approach is followed by Will in [1].
+On Thu, Sep 28, 2023 at 10:42:39AM +0800, Yuanhe Shu wrote:
+> In public cloud scenario, if kdump service works abnormally,
+> users cannot get vmcore. Without vmcore, user has no idea why the
+> kernel crashed. Meanwhile, there is no additional information
+> to find the reason why the kdump service is abnormal.
+> 
+> One way is to obtain console messages through VNC. The drawback 
+> is that VNC is real-time, if user missed the timing to get the VNC
+> output, the crash needs to be retriggered.
+> 
+> Another way is to enable the console frontend of pstore and record the
+> console messages to the pstore backend. On the one hand, the console
+> logs only contain kernel printk logs and does not cover
+> user-mode print logs. Although we can redirect user-mode logs to the
+> pmsg frontend provided by pstore, user-mode information related to
+> booting and kdump service vary from systemd, kdump.sh, and so on which
+> makes redirection troublesome. So we added a tty frontend and save all
+> logs of tty driver to the pstore backend.
 
-Before:
-  $ scripts/decode_stacktrace.sh vmlinux < kernel.log
-  [17716.240635] Call trace:
-  [17716.240646] skb_cow_data (??:?)
-  [17716.240654] esp6_input (ld-temp.o:?)
-  [17716.240666] xfrm_input (ld-temp.o:?)
-  [17716.240674] xfrm6_rcv (??:?)
-  [...]
+This is a clever solution!
 
-After:
-  $ LLVM=1 scripts/decode_stacktrace.sh vmlinux < kernel.log
-  [17716.240635] Call trace:
-  [17716.240646] skb_cow_data (include/linux/skbuff.h:2172 net/core/skbuff.c:4503)
-  [17716.240654] esp6_input (net/ipv6/esp6.c:977)
-  [17716.240666] xfrm_input (net/xfrm/xfrm_input.c:659)
-  [17716.240674] xfrm6_rcv (net/ipv6/xfrm6_input.c:172)
-  [...]
+> Another problem is that currently pstore only supports a single backend.
+> For debugging kdump problems, we hope to save the console logs and tty
+> logs to the ramoops backend of pstore, as it will not be lost after
+> rebooting. If the user has enabled another backend, the ramoops backend
+> will not be registered. To this end, we add the multi-backend function
+> to support simultaneous registration of multiple backends.
 
-Note that one could set CROSS_COMPILE=llvm- instead to hack around this
-issue. However, doing so can break the decodecode routine as it will
-force the selection of other LLVM utilities down the line e.g. llvm-as.
+Ah very cool; I really like this idea. I'd wanted to do it for a while
+just to make testing easier, but I hadn't had time to attempt it.
 
-[1] https://lore.kernel.org/all/20230914131225.13415-3-will@kernel.org/
+> Based on the above changes, we can enable pstore in the crashdump kernel
+> and save the console logs and tty logs to the ramoops backend of pstore.
+> After rebooting, we can view the relevant logs by mounting the pstore
+> file system.
 
-Cc: Will Deacon <will@kernel.org>
-Cc: John Stultz <jstultz@google.com>
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Carlos Llamas <cmllamas@google.com>
----
- scripts/decode_stacktrace.sh | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+So, before I do a line-at-a-time review of this code, I'd like to
+address some design issues first.
 
-diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
-index 564c5632e1a2..bfe5a4082d8e 100755
---- a/scripts/decode_stacktrace.sh
-+++ b/scripts/decode_stacktrace.sh
-@@ -16,6 +16,21 @@ elif type c++filt >/dev/null 2>&1 ; then
- 	cppfilt_opts=-i
- fi
- 
-+UTIL_SUFFIX=
-+if [[ -z ${LLVM:-} ]]; then
-+	UTIL_PREFIX=${CROSS_COMPILE:-}
-+else
-+	UTIL_PREFIX=llvm-
-+	if [[ ${LLVM} == */ ]]; then
-+		UTIL_PREFIX=${LLVM}${UTIL_PREFIX}
-+	elif [[ ${LLVM} == -* ]]; then
-+		UTIL_SUFFIX=${LLVM}
-+	fi
-+fi
-+
-+READELF=${UTIL_PREFIX}readelf${UTIL_SUFFIX}
-+ADDR2LINE=${UTIL_PREFIX}addr2line${UTIL_SUFFIX}
-+
- if [[ $1 == "-r" ]] ; then
- 	vmlinux=""
- 	basepath="auto"
-@@ -75,7 +90,7 @@ find_module() {
- 
- 	if [[ "$modpath" != "" ]] ; then
- 		for fn in $(find "$modpath" -name "${module//_/[-_]}.ko*") ; do
--			if readelf -WS "$fn" | grep -qwF .debug_line ; then
-+			if ${READELF} -WS "$fn" | grep -qwF .debug_line ; then
- 				echo $fn
- 				return
- 			fi
-@@ -169,7 +184,7 @@ parse_symbol() {
- 	if [[ $aarray_support == true && "${cache[$module,$address]+isset}" == "isset" ]]; then
- 		local code=${cache[$module,$address]}
- 	else
--		local code=$(${CROSS_COMPILE}addr2line -i -e "$objfile" "$address" 2>/dev/null)
-+		local code=$(${ADDR2LINE} -i -e "$objfile" "$address" 2>/dev/null)
- 		if [[ $aarray_support == true ]]; then
- 			cache[$module,$address]=$code
- 		fi
+I really don't want to make behavioral differences when we don't have
+to:
+
+- The multi-backend will enable _all possible_ backends, and that's a
+  big change that will do weird things for some pstore users. I would
+  prefer a pstore option to opt-in to enabling all backends. Perhaps
+  have "pstore.backend=" be parsed with commas, so a list of backends
+  can be provided, or "all" for the "all backends" behavior.
+
+- Moving the pstorefs files into a subdirectory will break userspace
+  immediately (e.g. systemd-pstore expects very specifically named
+  files). Using subdirectories seems like a good idea, but perhaps
+  we need hardlinks into the root pstorefs for the "first" backend,
+  or some other creative solution here.
+
+Then some technical thoughts about the TTY frontend's behavior:
+
+- That 2 pstore records are created for every line of TTY output
+  feels kind of inefficient, though I don't have a better idea.
+  This is really only doable as you have it because the ramoops
+  and zone backends treat the single prz as a circular buffer.
+  I wonder about supporting this on other backends like EFI, but
+  perhaps it's just not going to happen.
+
+- I'd like to check with the TTY folks to see if this is the "right"
+  place to hook to get a copy of what's being written.
+
+Thanks and let me know what you think!
+
+-Kees
+
 -- 
-2.42.0.582.g8ccd20d70d-goog
-
+Kees Cook
