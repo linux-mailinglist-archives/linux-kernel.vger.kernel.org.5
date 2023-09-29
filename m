@@ -2,253 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EA277B3696
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCC27B369C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233644AbjI2PWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58388 "EHLO
+        id S233609AbjI2PXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233592AbjI2PWN (ORCPT
+        with ESMTP id S233599AbjI2PWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:22:13 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207A21BB
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:22:10 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-406618d0992so3864895e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:22:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696000928; x=1696605728; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+JnHwM58QYMx5KAYuIRR4soj4Wvym3trDgG+7yy7IYc=;
-        b=Tgj/FJmfNgjHixtlKW+mSV/eTr2w9kabcGE6ECigKjfGAcdR4FX9qXfJpTqm96teMR
-         ckk4ap1wOFE7lGgjDPDlX+55SN+botgwAvzUZrtbWhDK2NuA7b/wORcyWmxSqUSlpz9h
-         fOxc3MOPeFAVP0ZSne0NKFaSzoQQsnv8XYkFFQ81T0BF7wcZ7D1RiNcbje9R7HK85thy
-         zi5Pc83MOis3NoNzHUYRWbiCAWW36vsWY0qkBfGRYd87rV2RFOV6fcQ+k0lGySlCJgTv
-         cmN+hSNsGSqnAscUKDHmeVbAl9E3NmbKLvXlRXfHUQ5Sy8sf/Rhe2R3UVliuBqCmljpY
-         wdag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696000928; x=1696605728;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+JnHwM58QYMx5KAYuIRR4soj4Wvym3trDgG+7yy7IYc=;
-        b=meXzKabfLTHbigRl4ReJg/IDLZjRsH6AaRH+SbEUWd/BBVyLwDa0LeISH3KjtEn0ov
-         x5CQ+2pux1ZBhwLuv5XRN7g/6PJuFT+ayzzI+KrQVAJhKXEDpnXZhGmOmxm4RUWm9uk3
-         eVaA+a7SPC/XSOb02fv+rIi+uWzlkKrxMGy8cXyswJYRCj0bxtXWoZs9TCp/km4D806S
-         mcG/PycBVPLnNSr8TE7fNkmgtfNn2CQC35o5ca1BjYbytwVXq7Y4Eutb9JCtt2kb7X22
-         fSNdrUTwdOAP0ZlAcRf3rQDVnURMsXFPEjjuoU5bWJYqtjUnPsRtjlbrnfI7aF74vABe
-         5c1g==
-X-Gm-Message-State: AOJu0YyuFIoZjIHMndcI6OmwTLEFtBW3CMurGiB+rzwPVEJwToKVwbHC
-        Do3RjqWwXKVJpIrvi7avryZFsA==
-X-Google-Smtp-Source: AGHT+IG07vHmV3KpBTNzAoYbqJrwxGGwCodtJJb0vTpZBD5IVXpgOb/iBVrM0Soa8DbJ9w5vhMoMSA==
-X-Received: by 2002:a05:600c:1d17:b0:406:545a:f8fe with SMTP id l23-20020a05600c1d1700b00406545af8femr4001499wms.29.1696000928477;
-        Fri, 29 Sep 2023 08:22:08 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id f7-20020a7bcc07000000b004053a2138bfsm1637486wmh.12.2023.09.29.08.22.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 08:22:08 -0700 (PDT)
-Message-ID: <db5d00b5-5d18-4144-88c2-ff6cfb8c176a@linaro.org>
-Date:   Fri, 29 Sep 2023 16:22:06 +0100
+        Fri, 29 Sep 2023 11:22:30 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32EC10D2;
+        Fri, 29 Sep 2023 08:22:26 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TEPGn0015894;
+        Fri, 29 Sep 2023 15:22:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=LxOVkqV6g+jQpN5bPhd9zKnvwGlEWf0RQgwNMVx6MWg=;
+ b=YVd6EteGFCTn7QQVQ/yMizKd2/QWhElH1kjIvu4IFSD0QwNMAv4uUnyQUznDcor8tj/4
+ D2yzqO69RH9dIHW0YsxhxIfsnrbqKoV/j224/LS+1uENUO78GqbpgetQj3naKo51Ce1p
+ HHyBrfW+0kDlG3ZjcAsiGdE3xPPCeCq3ZJ8IjFx9+pOEiZOrNoXMFJSZITa5w9j2jSig
+ S94D0z6dGsbeN0yO5tIm8s516FrxC8fcK4iYMGYfwz9Pvk2EIHH+zZTPXEEJ1Xubo+5Y
+ OyMw51JAY8GJA1lwDDrwxbbwKE7I+VTZ1MreAIC3y5Bfn0/OheSo1lAQLGpUxruZvNpo tw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3te0avr5nq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 15:22:21 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38TFMK1S025965
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 15:22:20 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 29 Sep
+ 2023 08:22:19 -0700
+Message-ID: <c30c9c68-bfe1-0cc5-c511-218f7d1da92d@quicinc.com>
+Date:   Fri, 29 Sep 2023 09:22:19 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: sc7280: Add Camera Control
- Interface busses
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH v2 1/2] bus: mhi: host: Add spinlock to protect WP access
+ when queueing TREs
 Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Luca Weiss <luca.weiss@fairphone.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230929-sc7280-cci-v1-0-16c7d386f062@fairphone.com>
- <20230929-sc7280-cci-v1-2-16c7d386f062@fairphone.com>
- <8dd470e5-ce33-3d33-98f1-e66935ca7b56@linaro.org>
- <1b5bd391-4bb0-44ac-88d1-e326bec4dd7d@nexus-software.ie>
- <acc606a6-c46c-43f5-86e0-84bf876001dd@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <acc606a6-c46c-43f5-86e0-84bf876001dd@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Qiang Yu <quic_qianyu@quicinc.com>, <mani@kernel.org>
+CC:     <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
+        <quic_mrana@quicinc.com>
+References: <1694594861-12691-1-git-send-email-quic_qianyu@quicinc.com>
+ <1694594861-12691-2-git-send-email-quic_qianyu@quicinc.com>
+ <af4fc816-d75b-997d-6d37-a774f5eb96ae@quicinc.com>
+ <dfeb6071-8ae4-38ba-5273-59478ea8e178@quicinc.com>
+From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <dfeb6071-8ae4-38ba-5273-59478ea8e178@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: XcW2_6Z0OPJGF239HwCIeJQsshMGH5oM
+X-Proofpoint-ORIG-GUID: XcW2_6Z0OPJGF239HwCIeJQsshMGH5oM
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_13,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 impostorscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 clxscore=1015 malwarescore=0 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309290132
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/09/2023 15:18, Konrad Dybcio wrote:
-> On 29.09.2023 16:15, Bryan O'Donoghue wrote:
->> On 29/09/2023 14:35, Konrad Dybcio wrote:
->>>
->>>
->>> On 9/29/23 10:01, Luca Weiss wrote:
->>>> Add the CCI busses found on sc7280 and their pinctrl states.
->>>>
->>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
->>>> ---
->>>>    arch/arm64/boot/dts/qcom/sc7280.dtsi | 136 +++++++++++++++++++++++++++++++++++
->>>>    1 file changed, 136 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>>> index 66f1eb83cca7..65550de2e4ff 100644
->>>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->>>> @@ -3793,6 +3793,86 @@ videocc: clock-controller@aaf0000 {
->>>>                #power-domain-cells = <1>;
->>>>            };
->>>> +        cci0: cci@ac4a000 {
->>>> +            compatible = "qcom,sc7280-cci", "qcom,msm8996-cci";
->>>> +            reg = <0 0x0ac4a000 0 0x1000>;
->>>> +            interrupts = <GIC_SPI 460 IRQ_TYPE_EDGE_RISING>;
->>>> +            power-domains = <&camcc CAM_CC_TITAN_TOP_GDSC>;
->>>> +
->>>> +            clocks = <&camcc CAM_CC_CAMNOC_AXI_CLK>,
->>>> +                 <&camcc CAM_CC_SLOW_AHB_CLK_SRC>,
->>>> +                 <&camcc CAM_CC_CPAS_AHB_CLK>,
->>>> +                 <&camcc CAM_CC_CCI_0_CLK>,
->>>> +                 <&camcc CAM_CC_CCI_0_CLK_SRC>;
->>>> +            clock-names = "camnoc_axi",
->>>> +                      "slow_ahb_src",
->>>> +                      "cpas_ahb",
->>>> +                      "cci",
->>>> +                      "cci_src";
->>> I guess this is more of a question to e.g. Bryan, but are all of these clocks actually necessary?
->>>
->>> Konrad
->> Hmm its a good question, we generally take the approach of adopting all of the downstream clocks for these camera interfaces verbatim.
->>
->> The clock plan for this part only calls out cci_X_clk and cci_x_clk_src for the CCI however we know that to be incomplete since we *absolutely* need to have the AXI for the block clocked to access those registers, same deal with the AHB bus.
->>
->> AXI: registers
->> AHB: data
->>
->> In the above list the only clock you might conceivably not need is CPAS_AHB_CLK.
->>
->> Let me zap that clock from sdm845 since I have an rb3 right in front of me and see what happens.
->>
->> Crash and reset
->>
->> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
->> @@ -4402,13 +4402,11 @@ cci: cci@ac4a000 {
->>                          clocks = <&clock_camcc CAM_CC_CAMNOC_AXI_CLK>,
->>                                  <&clock_camcc CAM_CC_SOC_AHB_CLK>,
->>                                  <&clock_camcc CAM_CC_SLOW_AHB_CLK_SRC>,
->> -                               <&clock_camcc CAM_CC_CPAS_AHB_CLK>,
->>                                  <&clock_camcc CAM_CC_CCI_CLK>,
->>                                  <&clock_camcc CAM_CC_CCI_CLK_SRC>;
->>                          clock-names = "camnoc_axi",
->>                                  "soc_ahb",
->>                                  "slow_ahb_src",
->> -                               "cpas_ahb",
->>                                  "cci",
->>                                  "cci_src";
->>
->>
->> I think the list is good tbh
-> WDYT about camcc consuming ahb, like dispcc does?
-> AXI, hmm.. not quite sure what to do with it
+On 9/24/2023 9:10 PM, Qiang Yu wrote:
 > 
-> Konrad
+> On 9/22/2023 10:44 PM, Jeffrey Hugo wrote:
+>> On 9/13/2023 2:47 AM, Qiang Yu wrote:
+>>> From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>>>
+>>> Protect WP accesses such that multiple threads queueing buffers for
+>>> incoming data do not race and access the same WP twice. Ensure read and
+>>> write locks for the channel are not taken in succession by dropping the
+>>> read lock from parse_xfer_event() such that a callback given to client
+>>> can potentially queue buffers and acquire the write lock in that 
+>>> process.
+>>> Any queueing of buffers should be done without channel read lock 
+>>> acquired
+>>> as it can result in multiple locks and a soft lockup.
+>>>
+>>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
+>>> ---
+>>>   drivers/bus/mhi/host/main.c | 11 ++++++++++-
+>>>   1 file changed, 10 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
+>>> index dcf627b..13c4b89 100644
+>>> --- a/drivers/bus/mhi/host/main.c
+>>> +++ b/drivers/bus/mhi/host/main.c
+>>> @@ -642,6 +642,7 @@ static int parse_xfer_event(struct mhi_controller 
+>>> *mhi_cntrl,
+>>>               mhi_del_ring_element(mhi_cntrl, tre_ring);
+>>>               local_rp = tre_ring->rp;
+>>>   +            read_unlock_bh(&mhi_chan->lock);
+>>
+>> This doesn't work due to the write_lock_irqsave(&mhi_chan->lock, 
+>> flags); on line 591.
+> Write_lock_irqsave(&mhi_chan->lock, flags) is used in case of ev_code >= 
+> MHI_EV_CC_OOB. We only read_lock/read_unlock the mhi_chan while ev_code 
+> < MHI_EV_CC_OOB.
 
-Hmm on which platform, camcc clock depds on sdm845 looks very sparse to me.
+Sorry.  OOB != EOB
 
-8550 OTOH
+>>
+>> I really don't like that we are unlocking the mhi_chan while still 
+>> using it.  It opens up a window where the mhi_chan state can be 
+>> updated between here and the client using the callback to queue a buf.
+>>
+>> Perhaps we need a new lock that just protects the wp, and needs to be 
+>> only grabbed while mhi_chan->lock is held?
+> 
+> Since we have employed mhi_chan lock to protect the channel and what we 
+> are concerned here is that client may queue buf to a disabled or stopped 
+> channel, can we check channel state after getting mhi_chan->lock like 
+> line 595.
+> 
+> We can add the check after getting write lock in mhi_gen_tre() and after 
+> getting read lock again here.
 
-dispcc: clock-controller@af00000 {
-        compatible = "qcom,sm8550-dispcc";
-        reg = <0 0x0af00000 0 0x20000>;
-        clocks = <&bi_tcxo_div2>,
-                 <&bi_tcxo_ao_div2>,
-                 <&gcc GCC_DISP_AHB_CLK>,
+I'm not sure that is sufficient.  After you unlock to notify the client, 
+MHI is going to manipulate the packet count and runtime_pm without the 
+lock (648-652).  It seems like that adds additional races which won't be 
+covered by the additional check you propose.
 
-videocc: clock-controller@aaf0000 {
-        compatible = "qcom,sm8550-videocc";
-        reg = <0 0x0aaf0000 0 0x10000>;
-        clocks = <&bi_tcxo_div2>,
-                 <&gcc GCC_VIDEO_AHB_CLK>;
+> 
+>>
+>>>               /* notify client */
+>>>               mhi_chan->xfer_cb(mhi_chan->mhi_dev, &result);
+>>>   @@ -667,6 +668,7 @@ static int parse_xfer_event(struct 
+>>> mhi_controller *mhi_cntrl,
+>>>                       kfree(buf_info->cb_buf);
+>>>                   }
+>>>               }
+>>> +            read_lock_bh(&mhi_chan->lock);
+>>>           }
+>>>           break;
+>>>       } /* CC_EOT */
+>>> @@ -1204,6 +1206,9 @@ int mhi_gen_tre(struct mhi_controller 
+>>> *mhi_cntrl, struct mhi_chan *mhi_chan,
+>>>       int eot, eob, chain, bei;
+>>>       int ret;
+>>>   +    /* Protect accesses for reading and incrementing WP */
+>>> +    write_lock_bh(&mhi_chan->lock);
+>>> +
+>>>       buf_ring = &mhi_chan->buf_ring;
+>>>       tre_ring = &mhi_chan->tre_ring;
+>>>   @@ -1221,8 +1226,10 @@ int mhi_gen_tre(struct mhi_controller 
+>>> *mhi_cntrl, struct mhi_chan *mhi_chan,
+>>>         if (!info->pre_mapped) {
+>>>           ret = mhi_cntrl->map_single(mhi_cntrl, buf_info);
+>>> -        if (ret)
+>>> +        if (ret) {
+>>> +            write_unlock_bh(&mhi_chan->lock);
+>>>               return ret;
+>>> +        }
+>>>       }
+>>>         eob = !!(flags & MHI_EOB);
+>>> @@ -1239,6 +1246,8 @@ int mhi_gen_tre(struct mhi_controller 
+>>> *mhi_cntrl, struct mhi_chan *mhi_chan,
+>>>       mhi_add_ring_element(mhi_cntrl, tre_ring);
+>>>       mhi_add_ring_element(mhi_cntrl, buf_ring);
+>>>   +    write_unlock_bh(&mhi_chan->lock);
+>>> +
+>>>       return 0;
+>>>   }
+>>
 
-sm8250
-
-camcc: clock-controller@ad00000 {
-         compatible = "qcom,sm8250-camcc";
-         reg = <0 0x0ad00000 0 0x10000>;
-         clocks = <&gcc GCC_CAMERA_AHB_CLK>,
-
-I think those DISP_AHB, VIDEO_AHB_CLK, CAMERA_AHB_CLKs should live in 
-the display, video and camss blocks i.e. they are not clocks that you 
-require to access the clock controller registers themselves...
-
-I'm seeing for the most part these MEDIAIPBLOCK_AHB_CLKs don't come from 
-the GCC AHB clock but from another root clock generator.
-
-bi_tcxo ->
-cam_cc_pll0_out_main ->
-cam_cc_pll0_out_even ->
-cam_cc_pll0_out_odd ->
-cam_cc_pll2_out_main ->
-                         cam_cc_slow_ahb_clk_src ->
-                                    camcc_bps_ahb_clk
-                                    camcc_ipe_0_ahb_clk
-                                    ...
-                                    camcc_core_ahb_clk
-
-Lets see what happens to sm8250 if we remove CAMERA_AHB_CLK from the 
-camera clock controller @ camcc: clock-controller@ad00000 {} I don't 
-believe that is required.
-
-...
-
-Yep.. does SFA
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi 
-b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-index 1efa07f2caff4..1e7d9ee25eeae 100644
---- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
-@@ -4172,11 +4172,10 @@ port@5 {
-                 camcc: clock-controller@ad00000 {
-                         compatible = "qcom,sm8250-camcc";
-                         reg = <0 0x0ad00000 0 0x10000>;
--                       clocks = <&gcc GCC_CAMERA_AHB_CLK>,
--                                <&rpmhcc RPMH_CXO_CLK>,
-+                       clocks = <&rpmhcc RPMH_CXO_CLK>,
-                                  <&rpmhcc RPMH_CXO_CLK_A>,
-                                  <&sleep_clk>;
--                       clock-names = "iface", "bi_tcxo", "bi_tcxo_ao", 
-"sleep_clk";
-+                       clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk";
-                         power-domains = <&rpmhpd SM8250_MMCX>;
-                         required-opps = <&rpmhpd_opp_low_svs>;
-                         status = "disabled";
-
-Not actually a required clock for the clock controller.
-
-I suspect the same is true for dispcc and videocc though it would also 
-mean the respective drivers would need to switch on <&gcc 
-DISPx_CAMERA_AHB_CLK> or <&gcc GCC_VIDEO_AHB_CLK> prior to accessing 
-registers inside the ip blocks which may not currently be the case.
-
-Feels like a bit of a contrary answer but my reading is the 
-GCC_IPBLOCK_AHB_CLK clocks belong in the drivers not the clock 
-controllers..  or at least that's true for sm8250/camcc
-
-ymmv
-
----
-bod
