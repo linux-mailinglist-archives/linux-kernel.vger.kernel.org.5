@@ -2,48 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B5F7B2F26
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 080F17B2F27
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbjI2J3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 05:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42992 "EHLO
+        id S232966AbjI2J31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 05:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232663AbjI2J3D (ORCPT
+        with ESMTP id S232663AbjI2J30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:29:03 -0400
+        Fri, 29 Sep 2023 05:29:26 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74221193;
-        Fri, 29 Sep 2023 02:29:02 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BEC3C433C7;
-        Fri, 29 Sep 2023 09:28:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9114E193
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:29:24 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 315D1C433C8;
+        Fri, 29 Sep 2023 09:29:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695979742;
-        bh=I3evYhopf4FBwIBsBJOYIcWYKXSYNLb1O/obNWVt13s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QsgXbrwCUElWOwaEkt8r08dBOAOv0HoiHP9eO9xDZ5LKYeF6M7/mE+DnLfqE8uTIf
-         BPegZjCVtTCR17yqHgWwWcU4hWrONzvZDt5ikQao4ypBWOJqHovx9Hl8KCrCdJtiSI
-         95CO1OSVn7e2UfQ0r67iTS0hUOxte+OM8SZ8GsX5dAomAzXuD0Fw8t1RlGgBbCzFDI
-         QG83BuHm1jANZuAJ6/MgAlxXvI3ttRv5yuNKxcQ1fsNQ6GR03lpKsBuvPBnUIfiDVe
-         aTSXsOenAOudDIkIBd21KDjxTG3hd8xn6GzYclWFKgvQAI9Am/K98PMQA+lxG0vvIl
-         IJsu0WPlhWs4A==
-Date:   Fri, 29 Sep 2023 11:28:56 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Mateusz Guzik <mjguzik@gmail.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH v2] fs: simplify misleading code to remove ambiguity
- regarding ihold()/iput()
-Message-ID: <20230929-verkraften-abblendlicht-b4b67ccd45f9@brauner>
-References: <20230928152341.303-1-lhenriques@suse.de>
- <20230928-zecken-werkvertrag-59ae5e5044de@brauner>
- <87il7tz5zt.fsf@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87il7tz5zt.fsf@suse.de>
+        s=k20201202; t=1695979764;
+        bh=aTVDfMrpvoQxbs2F2fAU74KL3jCAgxkyD3bdzXkB8OY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EGNOFHNQxdi/7IZ+eBiP70sWnzgRMvZzks5mXPosAhKT48iqDWBb7hc0ioxj+I9aT
+         Cceb364iuBebyiWYt+lp5tkLm0rpuUMSdsVIvRWDUFLTKMApB9ihLQ+4wPFN55O17e
+         EBxp+rm+YBnATNH15GnykmmeZVtRltixT8EbIPNZm5l6GvW8qhu6VL/0R7j1EERk5R
+         A239uflY9K3qCLcKVSXd3Pc9vLnXxboEVvaSbDzyMrdgBUDEu9TN+6DPhsJ4fc53GD
+         VQlBN4ipprpl/O/MxH0wGuOMAxgotbCvZBw7oodOfChLQ+T/Q5at3gkTyHzOhzCMsP
+         ON6x4eiNMG/8w==
+Received: from [85.255.233.37] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qm9oH-00HCg9-Rb;
+        Fri, 29 Sep 2023 10:29:22 +0100
+Date:   Fri, 29 Sep 2023 10:29:20 +0100
+Message-ID: <87fs2xmiof.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Kristina Martsenko <kristina.martsenko@arm.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>, kvmarm@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] KVM: arm64: Support for Arm v8.8 memcpy instructions in KVM guests
+In-Reply-To: <6687f58c-0da9-0583-2dc1-2089f292b745@arm.com>
+References: <20230922112508.1774352-1-kristina.martsenko@arm.com>
+        <ZRPE9OcB9ndgFxbs@linux.dev>
+        <6687f58c-0da9-0583-2dc1-2089f292b745@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 85.255.233.37
+X-SA-Exim-Rcpt-To: kristina.martsenko@arm.com, oliver.upton@linux.dev, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, vladimir.murzin@arm.com, coltonlewis@google.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -53,10 +70,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Could you please double-check this was indeed applied?  I can't see it
-> anywhere.  Maybe I'm looking at the wrong place, but since your scripts
-> seem to have messed-up my email address, something else may have went
-> wrong.
+On Thu, 28 Sep 2023 17:55:39 +0100,
+Kristina Martsenko <kristina.martsenko@arm.com> wrote:
+> 
+> On 27/09/2023 07:00, Oliver Upton wrote:
+> > Hi Kristina,
+> 
+> Hi Oliver,
+> 
+> > 
+> > On Fri, Sep 22, 2023 at 12:25:06PM +0100, Kristina Martsenko wrote:
+> >> Hi,
+> >>
+> >> This is v2 of the series to allow using the new Arm memory copy instructions
+> >> in KVM guests. See v1 for more information [1].
+> > 
+> > 
+> > Thanks for sending out the series. I've been thinking about what the
+> > architecture says for MOPS, and I wonder if what's currently in the
+> > Arm ARM is clear enough for EL1 software to be written robustly.
+> > 
+> > While HCRX_EL2.MCE2 allows the hypervisor to intervene on MOPS
+> > exceptions from EL1, there's no such control for EL0. So when vCPU
+> > migration occurs EL1 could get an unexpected MOPS exception, even for a
+> > process that was pinned to a single (virtual) CPU implementation.
+> > 
+> > Additionally, the wording of I_NXHPS seems to suggest that EL2 handling
+> > of MOPS exceptions is only expected in certain circumstances where EL1 is
+> > incapable of handling an exception. Is the unwritten expectation then
+> > that EL1 software should tolerate 'unexpected' MOPS exceptions from EL1
+> > and EL0, even if EL1 did not migrate the PE context?
+> > 
+> > Perhaps I'm being pedantic, but I'd really like for there to be some
+> > documentation that suggests MOPS exceptions can happen due to context
+> > migration done by a higher EL as that is the only option in the context
+> > of virtualization.
+> 
+> That's a good point. This shouldn't affect Linux guests as Linux is
+> always able to handle a MOPS exception coming from EL0. But it would
+> affect any non-Linux guest that pins all its EL0 tasks and doesn't
+> implement a handler. It's not clear to me what the expectation for
+> guests is, I'll ask the architects to clarify and get back to you.
 
-It was applied it's just not pushed out yet because of another patch
-discussion. It should show up in the next 30 minutes though.
+My understanding is that MCE2 should always be set if the hypervisor
+can migrate vcpus across implementations behind EL1's back, and that
+in this context, EL1 never sees such an exception.
+
+I guess the only case where we could let EL1 handle such exception is
+by only setting MCE2 on the first entry into the guest after a vcpu
+migration (and clear it after that). Is it worth the effort?
+Absolutely not.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
