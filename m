@@ -2,113 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF0A47B39AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8EF7B39B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233698AbjI2SGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 14:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
+        id S233728AbjI2SHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 14:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233233AbjI2SGw (ORCPT
+        with ESMTP id S232985AbjI2SHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 14:06:52 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2761B0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:06:50 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5347e657a11so7931253a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:06:50 -0700 (PDT)
+        Fri, 29 Sep 2023 14:07:50 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57CB91B3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:07:48 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c60cec8041so77448555ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:07:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1696010809; x=1696615609; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2+NzcmzL/mi2gPiTFAUFYkfHbta1h+i/9QHJGacVCRM=;
-        b=BZKNrOmSg1BH7CoL61tNBoDEDwQvSZi8Sza/jLsnR8XayIHxZOygi98si1PFY9sNro
-         C0a6bs4DRDLuoYjStNQFQSu0zqnfAUXLlBgyrfALemVvzdDtZ0E8/ZMt2h+2MySHtUnD
-         KbQN+t7BuUbxxxwgJOXqFoazCSgdCDDmt7485dZ6RgtKlxnD/1yofJcebiRIXSrdloer
-         JrMeTVftAtgAmdg2LFJtbA9ujEg003grUJK/WomgGwPzlDfpBCLydxmtenhlO8L27Vcu
-         ud1R/Hksl0o9h6d0+gQJIEfnJCwazZeF7KiVIUYv4FtGtGDccSItSYGbBnQQKmS3uhbe
-         9N0g==
+        d=chromium.org; s=google; t=1696010868; x=1696615668; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ytcIulEB3Bd0Lgb6X1DnmKvq+hrlwdq4lTgiyfurQ14=;
+        b=cuVBAaBIyghBmO81lSaXEHPxf8OVa6KMq/GYIsVSGifxEQocRaOx42pF+eNKaSQ5P5
+         rOypC71o23d2fU/MJpbwX6Qc9lGsWIcsdmt+ZZnPdnm7Vpw9PM7kxTd0gz3CCTlMoQco
+         QALsoJnrQ/HR713Uw99Y31d4+mOClc1OrG8jE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696010809; x=1696615609;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2+NzcmzL/mi2gPiTFAUFYkfHbta1h+i/9QHJGacVCRM=;
-        b=E4vuAgxFb+oXdCmVJqBmSujTaaN4zpNi1GFYHZ4o8XprMjpDquwAcUqpDU6eI0+TS/
-         V4EympTuotY5LuqXagNoklNgrCkoJil2eYtCnqC0BlRJWwZ+uuUg+CkwJxqdRNHIHgk9
-         0Tk4IWh5ytnSRZeA7TUaTlWoDpTBanZlZkz6x5Ic4uzuugRyqOJAoV3T0wY7/rXsY+Ev
-         oIZp5hiVnxvxyd/Z9qCcfsINDyWR7HZCpC7B6IHRSAR/rUttzkCA4Xo9XW/axXGwVxLf
-         cb/f/DuXoHE7SRGuhaCdzDXeYDPZcPd7EB7f8WqB0vW5yF2nyq/d9Ydbo8w2/7qnrVbV
-         pQYg==
-X-Gm-Message-State: AOJu0YxtEgbH/3Jm1lMBNeYt5GGRoEmq//U/j1d9K5TSSi4lE6ZqhRaQ
-        zK/utzvSl7odbjAxR3k7y6R/kA==
-X-Google-Smtp-Source: AGHT+IExPWQ+RwFB1vD0UeGPtfnIxlYQrpNuAp/izAsodjrWvv4TjZPjVZRtMzXuUq1PQZMEim+oTQ==
-X-Received: by 2002:aa7:c507:0:b0:530:be79:49e7 with SMTP id o7-20020aa7c507000000b00530be7949e7mr4640326edq.37.1696010808720;
-        Fri, 29 Sep 2023 11:06:48 -0700 (PDT)
-Received: from [192.168.32.2] ([82.78.167.190])
-        by smtp.gmail.com with ESMTPSA id m4-20020a056402430400b00536031525e5sm3607619edc.91.2023.09.29.11.06.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 11:06:48 -0700 (PDT)
-Message-ID: <81b39049-f78e-148c-c901-5733c4894c83@tuxon.dev>
-Date:   Fri, 29 Sep 2023 21:06:46 +0300
+        d=1e100.net; s=20230601; t=1696010868; x=1696615668;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ytcIulEB3Bd0Lgb6X1DnmKvq+hrlwdq4lTgiyfurQ14=;
+        b=jNLrokdfL4OzFh8NzFLg3NBb+XkkjM+z0Lxr4qbIazORogzEELvLSIJtCoi30MXMc5
+         kyu6bs20q7ZlyNx2BYrW/LMI8J0wVypdSaJUJb4rfqZN8lRQJTyOAHXk3+O8qCOJjG1J
+         L3lb6+ev2wNvjO56tqgyekhgQZOvfNMizJa40SCpfWaCKQSYPbQduQ7kDNoPCEfIKLUW
+         qsl6ukDY0L3uNbb6Zpti2rwaoUoVGlZiHT/FG0Bby/nkvOGOA7+l37NOKiZkQAuNikrE
+         AShei6zUuueLyZTSDUncbCs9nFS9UJcotuGphlnCaoSQL8YKKKjsuw2CMDzRCNiTFp34
+         ZxLQ==
+X-Gm-Message-State: AOJu0YwmvSrlaf/Z3WAkej0bzfc+n1JUaJiDyepOCXSqr7cssczYAsb0
+        OU+mwIw73TQpW/HK34I0Oz/UfA==
+X-Google-Smtp-Source: AGHT+IGMFNLTCNCtA/FqnKOTA460hZC6guf310Jbrn09vBZrg4EKduZUZHOzzcMy8xMUvOVnVjCeYQ==
+X-Received: by 2002:a17:902:ea8d:b0:1bb:94ed:20a with SMTP id x13-20020a170902ea8d00b001bb94ed020amr4663075plb.24.1696010867805;
+        Fri, 29 Sep 2023 11:07:47 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id jw13-20020a170903278d00b001c74876f018sm1605993plb.18.2023.09.29.11.07.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 11:07:46 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Ido Schimmel <idosch@nvidia.com>
+Cc:     Kees Cook <keescook@chromium.org>, Petr Machata <petrm@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-hardening@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: [PATCH 0/5] mlxsw: Annotate structs with __counted_by
+Date:   Fri, 29 Sep 2023 11:07:39 -0700
+Message-Id: <20230929180611.work.870-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] ARM: dts: at91: sam9x60_curiosity: Add mandatory dt
- property for RTT
-Content-Language: en-US
-To:     nicolas.ferre@microchip.com, linux-arm-kernel@lists.infradead.org
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Tudor Ambarus <tudor.ambarus@linaro.org>
-References: <20230928143644.208515-1-nicolas.ferre@microchip.com>
-From:   claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20230928143644.208515-1-nicolas.ferre@microchip.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1021; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=GMvcoJa22FgGaZ5PVgWxKg4zkvx6Wc5lsJ5JwJVw2fI=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlFxJvZx4KMD65V6zmNUdqeMe55R3rtiwTNYOc6
+ EZZ9t3itwqJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRcSbwAKCRCJcvTf3G3A
+ JilLD/9r7z+Y0akNEbzBq9UIK6u9F8wxjl2UhnrMWJV3dIfqBfLZuKWOV5DzIinJVsMdydRvZ7g
+ LzeVXCUcQ9Y5xtrOmqzuO7qt1YrYJ2ivzNReGQNY37w5stJlTgoQECYYskZmbIzKLLHbd2PmXEK
+ 5PVWAtEQ9fgKUA+34HyZ7QplTHvqrrEYeCLOmrKWHvPAW/l+gl0+fV+CF0uEgpKOCk8LCnFlODo
+ iBQDBo0ty6OqTWAItcqrMvAzf3DnS/LoznwCjVUtt8Qe4Z16eBkFFrrN09ptZlIGnVEZAI+CBEo
+ NiHxE5nHwqvZb4vVFLa37SLJC5Zn0V+W7engScEuW+vmsaIbzyEDWvueXrbFWXxC5L/BEVjt5jA
+ RLuI9pH223rzBSA/Fva1nt3P1MHUlopmO9ge7/lAZmSp5h6tYcdxQKOFSqgCmWRjHJttAjzx4k5
+ EjHejSkET+0kGXK4q1lm5OYkUUNT7RJBywxrTTVB0X+v1ZTIIYW3kS+jqMsfI3GL8pCXdKig8eW
+ lAVjor5R8hTWY5x35fn6Bn0ofB60JmP5BmukdqqVwACrrQ3tb5O0r6Uh/1YObqO5d7wbmd76Sn2
+ +NkqwfKsUKtD6BPbF0eEX7oywwTZaKrYh7KjFV3vlVlMy4Wpf6Pt0NkFeGDzTA2RXe0LVTQnGok
+ 9cFR6xv keo3z+2g==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+This annotates several mlxsw structures with the coming __counted_by attribute
+for bounds checking of flexible arrays at run-time. For more details, see
+commit dd06e72e68bc ("Compiler Attributes: Add __counted_by macro").
 
-On 28.09.2023 17:36, nicolas.ferre@microchip.com wrote:
-> From: Tudor Ambarus <tudor.ambarus@linaro.org>
-> 
-> atmel,rtt-rtc-time-reg is a mandatory property and encodes the GPBR
-> register used to store the time base when the RTT is used as an RTC.
-> Align the RTT with what's currently done for sam9x60ek and sama7g5ek,
-> and enable it by default even if RTC is also enabled.
-> 
-> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> [nicolas.ferre@microchip.com: adapt to newer kernel]
-> Signed-off-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Thanks!
 
-Reviewed-by: Claudiu Beznea <claudiu.beznea@tuxon.dev>
+-Kees
 
-> ---
->  arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts b/arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts
-> index cb86a3a170ce..83372c1f291b 100644
-> --- a/arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts
-> +++ b/arch/arm/boot/dts/microchip/at91-sam9x60_curiosity.dts
-> @@ -439,6 +439,10 @@ &pwm0 {
->  	status = "okay";
->  };
->  
-> +&rtt {
-> +	atmel,rtt-rtc-time-reg = <&gpbr 0x0>;
-> +};
-> +
->  &sdmmc0 {
->  	bus-width = <4>;
->  	pinctrl-names = "default";
+Kees Cook (5):
+  mlxsw: Annotate struct mlxsw_linecards with __counted_by
+  mlxsw: core: Annotate struct mlxsw_env with __counted_by
+  mlxsw: spectrum: Annotate struct mlxsw_sp_counter_pool with
+    __counted_by
+  mlxsw: spectrum_router: Annotate struct mlxsw_sp_nexthop_group_info
+    with __counted_by
+  mlxsw: spectrum_span: Annotate struct mlxsw_sp_span with __counted_by
+
+ drivers/net/ethernet/mellanox/mlxsw/core.h            | 2 +-
+ drivers/net/ethernet/mellanox/mlxsw/core_env.c        | 2 +-
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_cnt.c    | 2 +-
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c | 2 +-
+ drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c   | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+-- 
+2.34.1
+
