@@ -2,144 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9257B3784
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75A37B3785
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233367AbjI2QKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 12:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52930 "EHLO
+        id S233556AbjI2QKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 12:10:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232883AbjI2QK3 (ORCPT
+        with ESMTP id S233439AbjI2QKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 12:10:29 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6491ABE
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:10:27 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3231dff4343so559956f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:10:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696003826; x=1696608626; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rsosfGEshqIoKCDorpEdcceOnoGA7Z3Gi/jf7+l6H3o=;
-        b=T0+gcHKB+pVkYprBwVyFx8syY0qimTMhAUbYBsGdenN/tOAUS6K6V74Af28p0LiDy1
-         RJs7V3hAORCTcBdANkJHpntEP7y6QgxnMOmo/eC4HJSptiAfzkarlxPir5aqXmhzxHwo
-         kFDA45tT81w2cny+mS6LC3RGuni4iRqZU4zojIaxrGs8V7jm7eapAy9nRcxHPDCNhkjv
-         lx5hT8bm9LsipNRyV/xD9ij74JAyrTzKKeeEOkBSuTRxEw3b5p9CtqduvdubEEtYTe/s
-         BoA09oYqHSmpzwmYYyhwo1X6NuN6OAJu2+vbZ9dvgtctX6biNdFLfqbr8Vk1eKQ7s1/X
-         IvPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696003826; x=1696608626;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rsosfGEshqIoKCDorpEdcceOnoGA7Z3Gi/jf7+l6H3o=;
-        b=X33EkNS719pyw4T/m8gVF5GUl1/k72LUzcZFYLQl+8iBnCY/r1UTJE7MRD2Pxc2fA+
-         q1WsL57ntha0P+RuqYf79adT1P/XiGBD7nJ5DWLYEj27874YJVNH0vI6ZEMHhKUFk066
-         hjHZAHO5vZzKMfarKozo/HnMeUFf8hEdclmTt24GW7AMmnoSBSqMUYUT7KSr489c/3j8
-         m3XdTTNu8v7movXCidKCQmwySaLZPCWoWUEVSxmI0uyfXGajSTDFag3/kOCvuy77tCIp
-         uXt7gnKt3GqslpVZ6/IINyLHsWt2UQLvG9h1TDiPO1ANeJG2pfNI4ljI334rF5cPkvkW
-         J/6A==
-X-Gm-Message-State: AOJu0YyPxDqA3lzViws68LKmoAGK0QOBXbopgGlh/9IKId8rn95AYyZL
-        US2EVyMTVqgN4qk0b10BArgs6NA3ZDln6fbfiN667w==
-X-Google-Smtp-Source: AGHT+IGJVy4cn6wsfYJyybJLTpVzhBoLAsGq/mtGnVfwMtDc27EoHCRTJrLpDNvmF4nasPQGeqo5XBwkuq750bEZ3zY=
-X-Received: by 2002:a05:6000:1090:b0:31f:f8a7:a26c with SMTP id
- y16-20020a056000109000b0031ff8a7a26cmr4058353wrw.25.1696003825641; Fri, 29
- Sep 2023 09:10:25 -0700 (PDT)
+        Fri, 29 Sep 2023 12:10:30 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBBD199;
+        Fri, 29 Sep 2023 09:10:28 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TENOVh019863;
+        Fri, 29 Sep 2023 16:10:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=fb8toZ6tuqPpiZJje1NqF/MIAnwFghvaaqDaPJ0vxLk=;
+ b=YH6+CC8lNJF8AF3KXiH0L1KDYbWUHZAZ+CZ0pBxkWDJ8OVTCeDYtlJEz0lE5VFI1XhIk
+ ZlwwRqH8cOZykQr29fQ0YG6cwTWbQzYwtUvQhk5mqD0FrZwha5PGsmI0d6p0rK5Bkjy7
+ Lf9GX3BN3yyClfxrZeHYwomaz+Yq0MoBCmMP3408TPakUW89lqbakERqlXExYV8Is6PU
+ 41Rb0WkMblyGtnWvDDBLChrUMOXa693SHhrvYZe3UkpWX2XIrCa8/+yeRBepnk4EGlCO
+ 10SmcRh5Yu9zebb16VkP9WSkPcOBm0xobgzD2/dxzCTOpMiCaETZljAXKpzDifiQq1eI Rw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tda4c30c8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 16:10:16 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38TGAFp8028643
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 16:10:15 GMT
+Received: from [10.111.177.152] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 29 Sep
+ 2023 09:10:15 -0700
+Message-ID: <597c6e87-2d1c-4a8d-ab9f-d0d22566b9ed@quicinc.com>
+Date:   Fri, 29 Sep 2023 09:10:14 -0700
 MIME-Version: 1.0
-References: <20230920153819.2069869-1-andriy.shevchenko@linux.intel.com> <CAKwvOd=7vk2HKOpgVrRd2RtKSF9tXPqbVmN+5teLTNoBy4BWVg@mail.gmail.com>
-In-Reply-To: <CAKwvOd=7vk2HKOpgVrRd2RtKSF9tXPqbVmN+5teLTNoBy4BWVg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 29 Sep 2023 09:10:11 -0700
-Message-ID: <CAKwvOdkbcUh+tmsNcT4nCzFY37WbAUdjHJ62qNe=p8SetaQNTQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] device property: Replace custom implementation of COUNT_ARGS()
-To:     "Rafael J. Wysocki" <rafael@kernel.org>, tiwai@suse.com
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        llvm@lists.linux.dev, alsa-devel@alsa-project.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 wireless-next 2/9] carl9170: remove unnecessary (void*)
+ conversions
+Content-Language: en-US
+To:     Christian Lamparter <chunkeey@gmail.com>,
+        Linux Wireless <linux-wireless@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+CC:     Wu Yunchuan <yunchuan@nfschina.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Kalle Valo <kvalo@kernel.org>
+References: <20230919044916.523308-1-yunchuan@nfschina.com>
+ <e544d992-cddd-4ade-81ef-2eed4f3681e8@gmail.com> <87zg16iab3.fsf@kernel.org>
+ <0b7623f7-561c-4f3b-91c1-aaf1c44f1158@kadam.mountain>
+ <d41d0c98-82ef-40f6-8c5c-68a94b5a4655@kadam.mountain>
+ <c5611be9-ef4d-4e49-84de-7ce893e3c73c@gmail.com>
+From:   Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <c5611be9-ef4d-4e49-84de-7ce893e3c73c@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: We08OCyBftnLfMRjBATwgVxjDM1xVfUI
+X-Proofpoint-ORIG-GUID: We08OCyBftnLfMRjBATwgVxjDM1xVfUI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_13,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ mlxlogscore=677 lowpriorityscore=0 spamscore=0 adultscore=0 bulkscore=0
+ priorityscore=1501 clxscore=1011 mlxscore=0 impostorscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309290139
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 9:50=E2=80=AFAM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Wed, Sep 20, 2023 at 8:38=E2=80=AFAM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > Replace custom and non-portable implementation of COUNT_ARGS().
-> >
-> > Fixes: e64b674bc9d7 ("software node: implement reference properties")
-> > Reported-by: Nick Desaulniers <ndesaulniers@google.com>
-> > Closes: https://lore.kernel.org/r/ZQoILN6QCjzosCOs@google.com
->
-> Thanks for the patch!
-> Closes: https://github.com/ClangBuiltLinux/linux/issues/1935
-> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
->
-> Of course Linux would have a macro for this!  I should have known.
-> Trying to wrap my head around it. Awesome
+On 9/29/2023 12:23 AM, Christian Lamparter wrote:
+> I would like to take the chance to again point to this beauty:
+> <https://lore.kernel.org/linux-wireless/TYAP286MB03154F9AAFD4C35BEEDE4A99BC4CA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM/T/#mf1b8919a000fe661803c17073f48b3c410888541>
+> @Dan, @Jeff can you please comment on that too?
 
-(resending as text/plain)
+I had not seen that patch since it was posted while I was transitioning 
+roles. It looks like a reasonable patch to me to handle FORTIFY_SOURCE 
+restrictions.
 
-Can someone pick this up for linux-next?
+Can it (any any other ath folder patches) be reposted for review?
 
-CI for linux-next has been red for days over this.
+/jeff
 
->
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > ---
-> >  include/linux/property.h | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/include/linux/property.h b/include/linux/property.h
-> > index 1684fca930f7..55c2692ffa8c 100644
-> > --- a/include/linux/property.h
-> > +++ b/include/linux/property.h
-> > @@ -10,6 +10,7 @@
-> >  #ifndef _LINUX_PROPERTY_H_
-> >  #define _LINUX_PROPERTY_H_
-> >
-> > +#include <linux/args.h>
-> >  #include <linux/bits.h>
-> >  #include <linux/fwnode.h>
-> >  #include <linux/stddef.h>
-> > @@ -314,7 +315,7 @@ struct software_node_ref_args {
-> >  #define SOFTWARE_NODE_REFERENCE(_ref_, ...)                    \
-> >  (const struct software_node_ref_args) {                               =
- \
-> >         .node =3D _ref_,                                          \
-> > -       .nargs =3D ARRAY_SIZE(((u64[]){ 0, ##__VA_ARGS__ })) - 1, \
-> > +       .nargs =3D COUNT_ARGS(__VA_ARGS__),                       \
-> >         .args =3D { __VA_ARGS__ },                                \
-> >  }
-> >
-> > --
-> > 2.40.0.1.gaa8946217a0b
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
-
-
-
---=20
-Thanks,
-~Nick Desaulniers
