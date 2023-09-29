@@ -2,86 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B7297B2EE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CF447B2EEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232836AbjI2JIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 05:08:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
+        id S232917AbjI2JKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 05:10:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232519AbjI2JIi (ORCPT
+        with ESMTP id S232871AbjI2JKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:08:38 -0400
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B7B1B2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:08:35 -0700 (PDT)
-Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-57b5b51ea71so24119890eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:08:35 -0700 (PDT)
+        Fri, 29 Sep 2023 05:10:22 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818151A5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:10:18 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-530fa34ab80so965292a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:10:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1695978617; x=1696583417; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=MH8m71qOsOYfTIlYbU2nLX0qZUlnksErh8AJml6gZsI=;
+        b=HJa/qFiCw51SAap8KA07eiWOzu4mdOeM9uhYqpP8HamJ2luEkNucgYbCSz2HYdLdbF
+         8sDc6a/3t1lwM4q7dOFO/fWzTTGb8RsO2yms0QUWnyQvW79xkf/LcOeufbFK+dw4CLiV
+         uzSEmbU/9ohgC4/8tCdblnqJ21HK+xWQu902o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695978515; x=1696583315;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vNRH8WIfdTbVrWFPVazVnTDdpUDIwS2HaLsGOKKePxo=;
-        b=sJ5x2t+hY2LTE4NHkqgLnJhtB7mrbPCZXRi52VlGX+BmeD63C040FOYB/4asoc6M3o
-         3HftGWKaOIhuvY3F4qN1EsCCCbkqeb0DXWUKXTgS507r4SdAg8DEOcc8mMSUBulBb31F
-         hG9qpr633rUYfNy8bGcbMDnWSZq/N+mdCs0z2xcFiw5Ln1Gb12DMGTCxNGjBba9F4SSZ
-         2GGpV09vrA10G6qLdXT7IAJd1d20hYazs9CDL1ycDWixGGmhZbzUC8Cn5LSZ/A8e3/3v
-         DoPAeAERoGF6axV5hJk9/MxF8rojtjgppJvpLSOQYhZ1/iVtIiwq5M6GKjhDR5ajmeO5
-         JXLw==
-X-Gm-Message-State: AOJu0YxeOzCxQub5sW/kzC7CqMn8RjWIvIaGomRkx0VMR3hvdd3XKE/h
-        StE25UHGcp8YOstsIzLElDQ+J7hkiTr4tz+/MzbcWSwQfb3H
-X-Google-Smtp-Source: AGHT+IEyRGjMq5hM9bqfNe3TwgTrfo4G96HAtW7a3smQwOKFjVWdbnbjYTqz30GPp3on0O8h89zdGlid+yrsA3IFrtvu28gXkdq/
+        d=1e100.net; s=20230601; t=1695978617; x=1696583417;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MH8m71qOsOYfTIlYbU2nLX0qZUlnksErh8AJml6gZsI=;
+        b=SeRP54prJmq2cMGeNmSPGaEy/+VWnVbeaxWWhKvvLmziMpnI4WbztX1r2akIJ06bfP
+         +B3tAPJmKex95k8EzuUz9bE3UnapXtXT920MftwOZAkClOvI+20qfidf4I07klT24zSO
+         pm/m3GMQ5qomCB+XVy/z2hA2XRQM34XUBcDDfFD/vmSOIcKyxVlybOn1gT5gqsA8NlsN
+         XVMw7ueGCbMtLjqF0WjJFAuWNkYF8pu4n/esljt6ktS1ycDEhxavm1xihu3ySt3OyDlr
+         4YvFYqO7lG6N40ivHqwZGfg9YVnc8Ru8DZSUHUidIdPVMbA9J5WpFFzZQwlCEKvmBTae
+         MSYQ==
+X-Gm-Message-State: AOJu0Yz/6LDTEOqa1CSM2TQZY/MwHdjNjKHdQzoW0yGoHQbNbenHE3O9
+        O7WQZeZyBz68rsTlb26DMuXcPcb06KpJHMSWt0QcpQ==
+X-Google-Smtp-Source: AGHT+IHyl6jYqyOZcL8xPT3WtxUI5NbSnwKiR15P3UdBiaJSeqGvThML8eIxVJXSU+59W1w0fIIWjZ8R6AqpiVy0hmU=
+X-Received: by 2002:a17:907:1def:b0:9a9:e71b:cd65 with SMTP id
+ og47-20020a1709071def00b009a9e71bcd65mr3433801ejc.6.1695978616584; Fri, 29
+ Sep 2023 02:10:16 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a4a:5817:0:b0:57b:e125:36a9 with SMTP id
- f23-20020a4a5817000000b0057be12536a9mr1241851oob.1.1695978514927; Fri, 29 Sep
- 2023 02:08:34 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 02:08:34 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000edd89506067bc438@google.com>
-Subject: [syzbot] Monthly dccp report (Sep 2023)
-From:   syzbot <syzbot+listbf2fd281dcbd524a5041@syzkaller.appspotmail.com>
-To:     dccp@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20230928130147.564503-1-mszeredi@redhat.com> <20230928130147.564503-4-mszeredi@redhat.com>
+ <5787bac5-b368-485a-f906-44e7049d4b8f@themaw.net>
+In-Reply-To: <5787bac5-b368-485a-f906-44e7049d4b8f@themaw.net>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 29 Sep 2023 11:10:04 +0200
+Message-ID: <CAJfpegt80_Tyto3QyD48V_yzHSghqg8AC_OPHEMPkDjEYCcisQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] add statmount(2) syscall
+To:     Ian Kent <raven@themaw.net>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Matthew House <mattlloydhouse@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello dccp maintainers/developers,
+On Fri, 29 Sept 2023 at 02:42, Ian Kent <raven@themaw.net> wrote:
+>
+> On 28/9/23 21:01, Miklos Szeredi wrote:
 
-This is a 31-day syzbot report for the dccp subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/dccp
+> > +static struct vfsmount *lookup_mnt_in_ns(u64 id, struct mnt_namespace *ns)
+> > +{
+> > +     struct mount *mnt;
+> > +     struct vfsmount *res = NULL;
+> > +
+> > +     lock_ns_list(ns);
+> > +     list_for_each_entry(mnt, &ns->list, mnt_list) {
+> > +             if (!mnt_is_cursor(mnt) && id == mnt->mnt_id_unique) {
+> > +                     res = &mnt->mnt;
+> > +                     break;
+> > +             }
+> > +     }
+> > +     unlock_ns_list(ns);
+> > +     return res;
+> > +}
+>
+> Seems like we might need to consider making (struct mnt_namespace)->list
+>
+> a hashed list.
 
-During the period, 0 new issues were detected and 1 were fixed.
-In total, 4 issues are still open and 6 have been fixed so far.
+Yes, linear search needs to go.  A hash table is probably the easiest solution.
 
-Some of the still happening issues:
+But I'd also consider replacing ns->list with an rbtree.  Not as
+trivial as adding a system hash table and probably also slightly
+slower, but it would have some advantages:
 
-Ref Crashes Repro Title
-<1> 102     Yes   KASAN: use-after-free Read in ccid2_hc_tx_packet_recv
-                  https://syzkaller.appspot.com/bug?extid=554ccde221001ab5479a
-<2> 50      Yes   BUG: "hc->tx_t_ipi == NUM" holds (exception!) at net/dccp/ccids/ccid3.c:LINE/ccid3_update_send_interval()
-                  https://syzkaller.appspot.com/bug?extid=94641ba6c1d768b1e35e
-<3> 13      Yes   BUG: stored value of X_recv is zero at net/dccp/ccids/ccid3.c:LINE/ccid3_first_li() (3)
-                  https://syzkaller.appspot.com/bug?extid=2ad8ef335371014d4dc7
+ - most space efficient (no overhead of hash buckets)
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ - cursor can go away (f_pos can just contain last ID)
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Thanks,
+Miklos
