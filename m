@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6DD7B3262
+	by mail.lfdr.de (Postfix) with ESMTP id 579857B3263
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233235AbjI2MW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 08:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41796 "EHLO
+        id S233247AbjI2MW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 08:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232859AbjI2MWX (ORCPT
+        with ESMTP id S233183AbjI2MWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:22:23 -0400
+        Fri, 29 Sep 2023 08:22:25 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DF3CDB;
-        Fri, 29 Sep 2023 05:22:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0C77C433C7;
-        Fri, 29 Sep 2023 12:22:20 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0ED81AE;
+        Fri, 29 Sep 2023 05:22:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F813C433C9;
+        Fri, 29 Sep 2023 12:22:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695990142;
-        bh=onr4E2zy8QxxECg2mmeEJTSq+uZ+1e4V0MgwLNWcHJs=;
+        s=k20201202; t=1695990143;
+        bh=8vtoklAMKyM/uK4ucBw83Q5gp7Y+EKU5jK8pCBlbL8U=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=JdiLzkcwIC51Bph4LmLr+WWa03JuKQK75w7VlBv3VXi6/PfPN1i+7els4lWOuPrtA
-         Zok+pelr/yOooYK2rGKEBRpMdRt/YfYeLt2TdwqL1Y05znS/y2drW6JFOrM+1+0kGU
-         N0c/xtd/5ZJZorJ4hD6pd14WWAmMzyIOPEd9+XM0tNAUzIZaD9KCkgrIiUBB37KO4o
-         fgFnPBwh6yFraGRclOty/tzyC/7kve9gNbdVdSnGN30r1tT8DMJ9InYqtH6MtVoAvK
-         HyTopM9tm18c1Ci6DHdIB2giv9KjDshKyyjO7AB3mK7j9MGn4l81XWB8N/3XHAhKam
-         +51FVexN+6/fA==
+        b=LJkRBydTdEF8m6PJ6TAORWNuGdfY737RwaM9YQR+BiFwiduj9WKSTO0xGoTmkhXzg
+         ikkAt2TtVsx0ErhCJAZz+OTJxCUamFnqaS/CA1K9o7Uii7IQHc4fl3yJV7q691DKLB
+         YUxDmq4FvVI29cL2QcXqf9IVa3XyoYBg7a8TirUw9kZ46qpegcJ99LPXtby7QDQAdX
+         I0kaq9giaETMg9Y3M0mCHUFAunMso0xDIezCbh7y4PHJJyIilktOJE65vhovZ5jBD3
+         I6fxjpOwmPuym2i1Ub+yPQfez+/ZRBgaly2Tv9yDLQ09oUHk0aVOqQxyv/hE2YdFoO
+         208ep0sGid5lA==
 From:   Mark Brown <broonie@kernel.org>
-Date:   Fri, 29 Sep 2023 14:22:00 +0200
-Subject: [PATCH 2/5] clk: si5341: Convert to use maple tree register cache
+Date:   Fri, 29 Sep 2023 14:22:01 +0200
+Subject: [PATCH 3/5] clk: si5351: Convert to use maple tree register cache
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230929-clk-maple-si-v1-2-e26cfcaf27bd@kernel.org>
+Message-Id: <20230929-clk-maple-si-v1-3-e26cfcaf27bd@kernel.org>
 References: <20230929-clk-maple-si-v1-0-e26cfcaf27bd@kernel.org>
 In-Reply-To: <20230929-clk-maple-si-v1-0-e26cfcaf27bd@kernel.org>
 To:     Michael Turquette <mturquette@baylibre.com>,
@@ -41,15 +41,15 @@ To:     Michael Turquette <mturquette@baylibre.com>,
 Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
         Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=925; i=broonie@kernel.org;
- h=from:subject:message-id; bh=onr4E2zy8QxxECg2mmeEJTSq+uZ+1e4V0MgwLNWcHJs=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlFsF2bGoaSBH7Gym6qj1TRlnzpmwPi1Q6+wqZ2
- SxShjFgPI6JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRbBdgAKCRAk1otyXVSH
- 0HOKB/9Xpfpp0NXygXuNyeLnctDPY3e/Uyo183sMLbVmnLp6h4ZK9/yljjDueMY0hsmQLI51CXD
- XshkPCOOAv/ulaaSBgOSnzSpkBs4e/o5SaRUiUPoXwUHlmhPsgKLnhMnZ/SMEEi9XMRWMS3eiCo
- XetjC1rcDdZv/pHU4zI1/YxalJ7MA3PQU8cdOQYpD6Dv+A5AMt0BCjursR9X/FH53CpSIfuAGYG
- lsmONzufGfM9MgsZ8clHuojDq9jV5TLDm8jd5rSvicIhjGBfIGLW0hz8PUEBNaySSUfJoFTX1+s
- a8g3EJVN8iFbvBV50mKcPdKIEYsywsgPP2zNH63UbZ4Ywyx/
+X-Developer-Signature: v=1; a=openpgp-sha256; l=929; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=8vtoklAMKyM/uK4ucBw83Q5gp7Y+EKU5jK8pCBlbL8U=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlFsF3EDFMbNr3/tnRU+ZheBnfhZp8JxPFWy6Qr
+ RSKNv5N0BOJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRbBdwAKCRAk1otyXVSH
+ 0K1GB/40CgeJm4giC6VvFiIsCIhIjhNrO0Q5RLmTQNe4F5X/eqruj9pd8SPwD5Szrk+cLShVYne
+ yDPkh3dOBVhdHP+2JddNcjIjtERQnnA4lTlFcSE9EVRqThMlR7n4EYS+Hk7Vc9b/0FHu5+js2tu
+ e6ARmv7dE0ROhqhIB2zOhBhYNU8CiL6f501j8Rh+W4LTNDr7D6G0c8plA7Gqc6uQDotO7bZ8Wea
+ byULhNHBijIlKN3sIGTablPXsTMCL8RQX2vS11n+iu2uzs8paYDaEXBTc+QSSkd2zXQz895RK+O
+ 0E4WczOdOKWQCVoeAs3rowRqJ38CiZTec9vd2oPKS5N376TO
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -67,22 +67,22 @@ more appropriate for modern systems than those made by the rbtree cache.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/clk/clk-si5341.c | 2 +-
+ drivers/clk/clk-si5351.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
-index 9599857842c7..845b451511d2 100644
---- a/drivers/clk/clk-si5341.c
-+++ b/drivers/clk/clk-si5341.c
-@@ -1260,7 +1260,7 @@ static int si5341_wait_device_ready(struct i2c_client *client)
- static const struct regmap_config si5341_regmap_config = {
+diff --git a/drivers/clk/clk-si5351.c b/drivers/clk/clk-si5351.c
+index 00fb9b09e030..cbf7cde01157 100644
+--- a/drivers/clk/clk-si5351.c
++++ b/drivers/clk/clk-si5351.c
+@@ -206,7 +206,7 @@ static bool si5351_regmap_is_writeable(struct device *dev, unsigned int reg)
+ static const struct regmap_config si5351_regmap_config = {
  	.reg_bits = 8,
  	.val_bits = 8,
 -	.cache_type = REGCACHE_RBTREE,
 +	.cache_type = REGCACHE_MAPLE,
- 	.ranges = si5341_regmap_ranges,
- 	.num_ranges = ARRAY_SIZE(si5341_regmap_ranges),
- 	.max_register = SI5341_REGISTER_MAX,
+ 	.max_register = 187,
+ 	.writeable_reg = si5351_regmap_is_writeable,
+ 	.volatile_reg = si5351_regmap_is_volatile,
 
 -- 
 2.39.2
