@@ -2,204 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 649287B36DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34EE97B36DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233661AbjI2Pcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39034 "EHLO
+        id S233668AbjI2PdM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Sep 2023 11:33:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbjI2Pc3 (ORCPT
+        with ESMTP id S233517AbjI2PdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:32:29 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85B9B4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:32:26 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id e9e14a558f8ab-352308c0799so10516045ab.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:32:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google; t=1696001546; x=1696606346; darn=vger.kernel.org;
-        h=thread-index:content-language:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=tFDk6UrGoDPEHdabEQOO71J18seMwjl2IAh1g7oDA/c=;
-        b=YWmNA3BOwsl7h/eWQnclgu55KU/becx+x1WyVR2tNTnYz1TKeEBUJWmqfbksAhcwlu
-         hs8OhmSXRC+nnNjifFbWt7PJm6KNvqQwmf4dBlJd13RRrFv2ml40RasZgnoWY69sdRSG
-         bS+BiVs7v8Me8PCqMAkqw1zRjh6HoDik/cIzr463K1qwajJkziVIXxmu2zQvrTz5mWbq
-         EGkogogu7IfHvKi45nSwfek5JklSfu/Nct+HNeg8UDD2rGvGiqL3PAnkSont3+pg879X
-         p9VwvCl8ycqzrUIB0oteQyNiiDvP4etM1e6NmwJqLQlkzyg4FZBh2xz75vmG3FLm+QVD
-         +8UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696001546; x=1696606346;
-        h=thread-index:content-language:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tFDk6UrGoDPEHdabEQOO71J18seMwjl2IAh1g7oDA/c=;
-        b=CkzjnEEG1bl2/VfcasstPQBOqNbJN0ssYP88IB8sAYvTmkfhP8RvOqiLitBR2DA5vC
-         31zH4vVYBCf7yLZ+4+Jq1LXwydc/MK/yqzSE+DuWVnKJOmTP1RHnVdDaxt1IYPpHw2zB
-         bN78V7DFNzrwhmMVkfw/STwC0MKJEvGNULdkSWIu9GMwq04bZp8Z+t+6HiE45WQHoPlQ
-         ULgpD02RajpQNE8u60/1T1JCH/civBA76oIVWym6v27pqLg1cKKZxfmdeno4U7luY50l
-         euVgvOLW4up0VwWvKIKnndrF6tjnlcwcx2tTlctORO2HhyNs/3iUnECIuDmSsF8wHGIN
-         +uUA==
-X-Gm-Message-State: AOJu0YzAKEBV2sHAt8XksoWYNRsSGhFpLhUd97LFiXcZtqJyGorqPySB
-        wINdZGWTau0lY7PyYxQ/TGrRzF4Kk5bTrqLK/Aw=
-X-Google-Smtp-Source: AGHT+IG8wiJnaAVP43/dUw8kr4Sqc7PbdDu9QqB22PtoOw81ibOowDTtW5p9Ot4FRpHfABnKY22G1w==
-X-Received: by 2002:a92:d249:0:b0:352:609f:e4af with SMTP id v9-20020a92d249000000b00352609fe4afmr2132139ilg.24.1696001545989;
-        Fri, 29 Sep 2023 08:32:25 -0700 (PDT)
-Received: from DougS18 (s66-183-142-209.bc.hsia.telus.net. [66.183.142.209])
-        by smtp.gmail.com with ESMTPSA id a8-20020a637f08000000b0057d86bb613esm12393901pgd.45.2023.09.29.08.32.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 29 Sep 2023 08:32:25 -0700 (PDT)
-From:   "Doug Smythies" <dsmythies@telus.net>
-To:     "'Wyes Karny'" <wyes.karny@amd.com>
-Cc:     <lenb@kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230922092823.478042-1-wyes.karny@amd.com> <004501d9ed96$16af12f0$440d38d0$@telus.net> <ZRO6ofa9sHbKJBCv@BLR-5CG13462PL.amd.com>
-In-Reply-To: <ZRO6ofa9sHbKJBCv@BLR-5CG13462PL.amd.com>
-Subject: RE: [PATCH] tools/power turbostat: Increase the limit for fd opened
-Date:   Fri, 29 Sep 2023 08:32:26 -0700
-Message-ID: <001601d9f2ea$26ef3420$74cd9c60$@telus.net>
+        Fri, 29 Sep 2023 11:33:11 -0400
+Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E737B4;
+        Fri, 29 Sep 2023 08:33:09 -0700 (PDT)
+Received: from in01.mta.xmission.com ([166.70.13.51]:59108)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qmFUK-00FzWn-ET; Fri, 29 Sep 2023 09:33:08 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:57062 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qmFUI-009b5s-TR; Fri, 29 Sep 2023 09:33:08 -0600
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Pedro Falcato <pedro.falcato@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Sebastian Ott <sebott@redhat.com>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20230929031716.it.155-kees@kernel.org>
+        <20230929032435.2391507-4-keescook@chromium.org>
+        <CAKbZUD1ojuNN_+x6gkxEMsmLOd5KbCs-wfJcMM==b8+k8_uD_w@mail.gmail.com>
+Date:   Fri, 29 Sep 2023 10:32:59 -0500
+In-Reply-To: <CAKbZUD1ojuNN_+x6gkxEMsmLOd5KbCs-wfJcMM==b8+k8_uD_w@mail.gmail.com>
+        (Pedro Falcato's message of "Fri, 29 Sep 2023 13:12:13 +0100")
+Message-ID: <87y1gp6llg.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Content-Language: en-ca
-Thread-Index: AQLdRauO63O5kGzkuYXvBkOCK34JtgIw5XPgA4q3bG+t/WnRoA==
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-XM-SPF: eid=1qmFUI-009b5s-TR;;;mid=<87y1gp6llg.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX18dXVfN1YAEePbYpFJoWWbpYNcqcNqjTNI=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-Virus: No
+X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Pedro Falcato <pedro.falcato@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 939 ms - load_scoreonly_sql: 0.03 (0.0%),
+        signal_user_changed: 4.5 (0.5%), b_tie_ro: 3.0 (0.3%), parse: 1.18
+        (0.1%), extract_message_metadata: 11 (1.2%), get_uri_detail_list: 1.00
+        (0.1%), tests_pri_-2000: 9 (1.0%), tests_pri_-1000: 2.1 (0.2%),
+        tests_pri_-950: 1.09 (0.1%), tests_pri_-900: 0.82 (0.1%),
+        tests_pri_-200: 0.68 (0.1%), tests_pri_-100: 2.9 (0.3%),
+        tests_pri_-90: 47 (5.0%), check_bayes: 46 (4.9%), b_tokenize: 4.5
+        (0.5%), b_tok_get_all: 6 (0.7%), b_comp_prob: 1.43 (0.2%),
+        b_tok_touch_all: 31 (3.3%), b_finish: 0.59 (0.1%), tests_pri_0: 163
+        (17.4%), check_dkim_signature: 0.38 (0.0%), check_dkim_adsp: 4.9
+        (0.5%), poll_dns_idle: 683 (72.7%), tests_pri_10: 1.70 (0.2%),
+        tests_pri_500: 690 (73.5%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v4 4/6] binfmt_elf: Use elf_load() for library
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wyes,
+Pedro Falcato <pedro.falcato@gmail.com> writes:
 
-On 2023.09.26 10:16 Wyes Karny wrote:
-> On 22 Sep 13:48, Doug Smythies wrote:
-> > On 2023.09.22 02:28 Wyes Karny wrote:
-> >
-> > > When running turbostat, a system with 512 cpus reaches the limit for
-> >
-> > Suggest" ... reaches the default limit for..."
-> >
-> > > maximum number of file descriptors that can be opened. To solve this
-> > > problem, the limit is raised to 2^15, which is a large enough number.
-> > >
-> > > Below data is collected from AMD server systems while running turbostat:
-> > >
-> > > |-----------+-------------------------------|
-> > > | # of cpus | # of opened fds for turbostat |
-> > > |-----------+-------------------------------|
-> > > | 128       | 260                           |
-> > > |-----------+-------------------------------|
-> > > | 192       | 388                           |
-> > > |-----------+-------------------------------|
-> > > | 512       | 1028                          |
-> > > |-----------+-------------------------------|
-> >
-> > The number of open files is a function of what is being "show"ed or "hide"en.
-> > They can also increase beyond the above 2 X (# of CPUs) + 4 number
-> > via the --add directive.
-> > >
-> > > So, the new max limit would be sufficient up to 2^14 cpus.
-> >
-> > Well, not quiet, but the point is valid.
-> >
-> > Normally, I would assume that a server with a large number of
-> > CPUs would have set a much higher limit of the number of open
-> > files than the default. I use 131,072 and so this patch reduces the
-> > maximum.
+> On Fri, Sep 29, 2023 at 4:24 AM Kees Cook <keescook@chromium.org> wrote:
+>>
+>> While load_elf_library() is a libc5-ism, we can still replace most of
+>> its contents with elf_load() as well, further simplifying the code.
 >
-> I think below will fix the problem.
->
-> +#define MAX_NOFILE 0x8000
-> +
-> +void set_rlimit(void)
-> +{
-> +       struct rlimit limit;
-> +
-> +       if(getrlimit(RLIMIT_NOFILE, &limit) < 0) {
-> +               err(1, "Failed to get rlimit");
-> +       }
-> +
-> +       if (limit.rlim_max < MAX_NOFILE)
-> +               limit.rlim_max = MAX_NOFILE;
-> +       if (limit.rlim_cur < MAX_NOFILE)
-> +               limit.rlim_cur = MAX_NOFILE;
-> +
-> +       if (setrlimit(RLIMIT_NOFILE, &limit) < 0) {
-> +               err(1, "Failed to set rlimit");
-> +       }
-> +       return;
-> +}
->
-> Is this looks okay to you?
+> While I understand you want to break as little as possible (as the ELF
+> loader maintainer), I'm wondering if we could axe CONFIG_USELIB
+> altogether? Since CONFIG_BINFMT_AOUT also got axed. Does this have
+> users anywhere?
 
-Either the original or the above is fine.
-I was just being nit-picky and annoying is all.
-I still added a "Reviewed-by" below.
+As I recall:
+- libc4 was a.out and used uselib.
+- libc5 was elf and used uselib.
+- libc6 is elf and has never used uselib.
 
-... Doug
+Anything using libc5 is extremely rare.  It is an entire big process to
+see if there are any users in existence.
 
-> Thanks,
-> Wyes
-> >
-> > Unpatched:
-> > root@s19:~# cat /proc/47043/limits | grep "Max open files"
-> > Max open files            131072               131072               files
-> >
-> > Patched:
-> > root@s19:~# cat /proc/47032/limits | grep "Max open files"
-> > Max open files            32768                32768                files
-> >
-> > Anyway:
-> >
-> > Reviewed-by: Doug Smythies <dsmythies@telus.net>
-> > Tested-by: Doug Smythies <dsmythies@telus.net>
-> >
-> > >
-> > > Signed-off-by: Wyes Karny <wyes.karny@amd.com>
-> > > ---
-> > >  tools/power/x86/turbostat/turbostat.c | 15 +++++++++++++++
-> > >  1 file changed, 15 insertions(+)
-> > >
-> > > diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-> > > index 9a10512e3407..23f1fe58289a 100644
-> > > --- a/tools/power/x86/turbostat/turbostat.c
-> > > +++ b/tools/power/x86/turbostat/turbostat.c
-> > > @@ -6717,6 +6717,18 @@ void cmdline(int argc, char **argv)
-> > >       }
-> > >  }
-> > >
-> > > +void set_rlimit(void)
-> > > +{
-> > > +     struct rlimit limit;
-> > > +
-> > > +     limit.rlim_cur = 0x8000;
-> > > +     limit.rlim_max = 0x8000;
-> > > +
-> > > +     if (setrlimit(RLIMIT_NOFILE, &limit) < 0) {
-> > > +             err(1, "Failed to set rlimit");
-> > > +     }
-> > > +}
-> > > +
-> > >  int main(int argc, char **argv)
-> > >  {
-> > >       outf = stderr;
-> > > @@ -6729,6 +6741,9 @@ int main(int argc, char **argv)
-> > >
-> > >       probe_sysfs();
-> > >
-> > > +     if (!getuid())
-> > > +             set_rlimit();
-> > > +
-> > >       turbostat_init();
-> > >
-> > >       msr_sum_record();
-> > > --
-> > > 2.34.1
+In the meantime changing load_elf_library to use elf_load removes any
+maintenance burden.
 
+Eric
 
