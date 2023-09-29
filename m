@@ -2,212 +2,426 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D68CA7B2E85
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:55:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 028B37B2E98
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:56:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbjI2Izq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 04:55:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
+        id S232606AbjI2I4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 04:56:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbjI2Izm (ORCPT
+        with ESMTP id S231429AbjI2I4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 04:55:42 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C79180
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:55:40 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-65d5a6230fcso7186146d6.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:55:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695977740; x=1696582540; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0VeBEBUpncpaXfVVMzC6PEpAWTbScZL5Kaim95vVlaE=;
-        b=0vboW9H/LdW33pjFlXgLevJIkfQrV7dDjVGiP3w/VABWdqj9oQcr3NWXVolAL2GtOD
-         FBu3D2r0V5CgQY0cSybvjTTfY0kHPmHRx7PXMX19ANHODZWcLZrjl88TggDVN9sDbvCs
-         p1KNtwLhkmsHqee9cAC1KVs7tAyixbF/3HwRqdeceQMLOicKy85Ri8vgP2xTx/HoLjhq
-         lb/09L6pR3dNqn9wheWPQefquWRelBXlFS+hwHsHa94NID1K6ofDUGyiklpIze9hgD9C
-         Wz0+kawzzEm+EldJmNtTzwF2iOdQAOhIE//X7HcYfpYGLO3i+aDrynfL1HSXHYetoO3+
-         ac5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695977740; x=1696582540;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0VeBEBUpncpaXfVVMzC6PEpAWTbScZL5Kaim95vVlaE=;
-        b=vOqboGXkaFOfebYITf+TAWelnxt6YCNrtiBTQmd5qBPPbMl6qG7MteKMCZGhR+rKvn
-         mJQ0/ivD54ASM6BULFnGxcjDDM1FEXsdJBZUPylMjQ5qaMDrRn5Wj+bXM8J9j/Hk5Fe/
-         8ZzI7pgRqImVIAPPIKmKQlDkxavSavNNUuCjb/fNO3OxzKWaVl3Fel2NBSWjadB5T5rB
-         sAoXKbLQ3NnYvV9Hj9znoglUor8wblG0BQ9FK2aNs8k5Uv5EffRInq4uAP/T+T0FG/6d
-         5ROuI/8ltNM3jiL+MUkwb2tU0Do3N4uWawzSFn03918JD/yXJ5+SshL8r8uCzVs6v0B2
-         ZydA==
-X-Gm-Message-State: AOJu0Yzt3DQP8JEgOWrJMZpUDHsx+b8u+zO580hK79UkaXMewwQ0oJd8
-        rrKm1fDHnYKC5y08/lSyJKv6RAiiH5olmvM8zXK+HQ==
-X-Google-Smtp-Source: AGHT+IF74Bxju3fjrGbISzGXZFMYFknK4+t3Su3et1gEk0NEDQ2t5Igsp6X00eFeHkT7tGrV7wFkjtk+8rv18qA18fM=
-X-Received: by 2002:a0c:cb10:0:b0:65a:fa53:ed11 with SMTP id
- o16-20020a0ccb10000000b0065afa53ed11mr3442130qvk.65.1695977739910; Fri, 29
- Sep 2023 01:55:39 -0700 (PDT)
+        Fri, 29 Sep 2023 04:56:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EF394;
+        Fri, 29 Sep 2023 01:56:47 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDE2AC433CA;
+        Fri, 29 Sep 2023 08:56:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695977807;
+        bh=SD7l0nyVVmDJ7bIEVQuAI+9P3Ib1c0jw7RfKBKWMhno=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JXzGhWrV++4SaPX5VZXC3PQB/pv3rEAof8DomnOjhil8mjh7IdImqGgBJcFfVyZ2s
+         qXMQTj5MnWrY9bYEutrSGAHDwku/ci+PtOYSOkxmXzMLqjttzf+6gL6C8Gia5IRmRN
+         S0IO3GDaBfn+SFwqBwUlKDgVnYZ9e4t8CW04xz3gcyk4NaeNseTut1lN+1RblLRD1T
+         x03APGwrZgLJXw222u8t4Rdepc12Zzh7rJpoupZYik7wtNeaeOXOvik00XwQUqTU7a
+         EYipdhfOTIZoFGg0pDrb/jZgLD0SwMIJg8/4e0bNrnzAluJuG2G85DDuePQjqoB2k3
+         OdavWhcvGolSA==
+Date:   Fri, 29 Sep 2023 10:56:40 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
+        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
+        wei.liu@kernel.org, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
+        ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
+        daniel@iogearbox.net, john.fastabend@gmail.com,
+        bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
+        hawk@kernel.org, tglx@linutronix.de,
+        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net, 3/3] net: mana: Fix oversized sge0 for GSO packets
+Message-ID: <ZRaRSKQDyfkhxYmY@kernel.org>
+References: <1695519107-24139-1-git-send-email-haiyangz@microsoft.com>
+ <1695519107-24139-4-git-send-email-haiyangz@microsoft.com>
 MIME-Version: 1.0
-References: <20230922080848.1261487-1-glider@google.com> <20230922080848.1261487-3-glider@google.com>
- <CAG_fn=UeFoyhZvPJ7pGPrc5011D9h1e4ioffat4eUfVHP6Hd-Q@mail.gmail.com>
- <ZRF7r0ZjxcL9C8U8@smile.fi.intel.com> <CAG_fn=V8Mx89dOfKf88nEq9V9i_kMYaOdGjd3DQVOWnYrandyA@mail.gmail.com>
- <CAG_fn=WX+yAFHtbsxSvd41P61jjWtFEePqOs_1AKGJcgaWfVag@mail.gmail.com>
- <3bc8fda47dc04e3b8cfd0e3f6fc7bbee@AcuMS.aculab.com> <CAG_fn=XCXYZhC+ER5mhMyE2YD-__1oj+uvPB4pyz4X7tmiq=3w@mail.gmail.com>
- <CAAH8bW-9ZWB=i0RWAWBXguOkguLHZGp7fLg7An73NqFnVmtgFw@mail.gmail.com>
- <CAG_fn=UWJ30ATV0mruPm__+qcuqB9yieMsG_EiFcmty_MZyEqQ@mail.gmail.com> <ZRXbOoKHHafCWQCW@yury-ThinkPad>
-In-Reply-To: <ZRXbOoKHHafCWQCW@yury-ThinkPad>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 29 Sep 2023 10:54:59 +0200
-Message-ID: <CAG_fn=VYRdk0KV5tZaakjLLczdWTvGp2gfLjXqpYR2ifh4S4vA@mail.gmail.com>
-Subject: Re: [PATCH v5 2/5] lib/test_bitmap: add tests for bitmap_{read,write}()
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, pcc@google.com,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        eugenis@google.com, Syed Nayyar Waris <syednwaris@gmail.com>,
-        william.gray@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1695519107-24139-4-git-send-email-haiyangz@microsoft.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 10:02=E2=80=AFPM Yury Norov <yury.norov@gmail.com> =
-wrote:
->
-> On Thu, Sep 28, 2023 at 05:14:55PM +0200, Alexander Potapenko wrote:
-> >
-> > So e.g. for compressing something into a 16-byte buffer using bitmaps
-> > I'd need to:
-> >
-> > 1) Allocate the buffer: buf =3D kmem_cache_alloc(...)
-> > 2) Allocate the bitmap: bitmap =3D bitmap_alloc(16*8, ...)
-> > 3) Fill the bitmap: mte_compress_to_buf(..., bitmap, 16)
-> > 4) Copy the bitmap contents to the buffer: bitmap_to_arr64(buf, bitmap,=
- 16*8)
-> > 5) Deallocate the bitmap: bitmap_free(bitmap)
-> >
-> > instead of:
-> >
-> > buf =3D kmem_cache_alloc(...)
-> > mte_compress_to_buf(..., (unsigned long *)buf, 16)
-> >
-> > , correct?
-> >
-> > Given that the buffer contents are opaque and its size is aligned on 8
-> > bytes, could it be possible to somehow adopt the `buf` pointer
-> > instead?
->
-> I didn't find an explicit typecasting where you're using
-> mte_compress_to_buf(), but now after hard 2nd look I see...
->
-> Firstly, now that in the documentation you are explicitly describing the
-> return value of mte_compress() as 64-bit frame, the right way to go would
-> be declaring the function as: u64 mte_compress(u8 *tags).
+On Sat, Sep 23, 2023 at 06:31:47PM -0700, Haiyang Zhang wrote:
+> Handle the case when GSO SKB linear length is too large.
+> 
+> MANA NIC requires GSO packets to put only the header part to SGE0,
+> otherwise the TX queue may stop at the HW level.
+> 
+> So, use 2 SGEs for the skb linear part which contains more than the
+> packet header.
+> 
+> Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
 
-Ack.
+Hi Haiyang Zhang,
 
-> And the general pattern should be like this:
->
->   unsigned long mte_compress(u8 *tags)
->   {
->           DECLARE_BITMAP(tmp, MTECOMP_CACHES_MAXBITS);
->           void *storage;
->           ...
->           if (alloc_size < MTE_PAGE_TAG_STORAGE) {
->                   storage =3D kmem_cache_alloc(cache, GFP_KERNEL);
->                   mte_compress_to_buf(r_len, r_tags, r_sizes, tmp, alloc_=
-size);
->
->                   switch (alloc_size) {
->                   case 16:
->                           bitmap_to_arr16(storage, tmp, 16);
+thanks for your patch.
+Please find some feedback inline.
 
-I might be missing something, but why do we need the switch at all?
-The buffers we are allocating always contain a whole number of u64's -
-cannot we just always call bitmap_to_arr64()?
+> ---
+>  drivers/net/ethernet/microsoft/mana/mana_en.c | 186 ++++++++++++------
+>  include/net/mana/mana.h                       |   5 +-
+>  2 files changed, 134 insertions(+), 57 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> index 86e724c3eb89..0a3879163b56 100644
+> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
+> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
+> @@ -91,63 +91,136 @@ static unsigned int mana_checksum_info(struct sk_buff *skb)
+>  	return 0;
+>  }
+>  
+> +static inline void mana_add_sge(struct mana_tx_package *tp,
+> +				struct mana_skb_head *ash, int sg_i,
+> +				dma_addr_t da, int sge_len, u32 gpa_mkey)
 
-Note that for cases where alloc_size is > 8 we never make any
-assumptions about the contents of @storage, and don't care much about
-the byte order as long as swap decompression is done with the same
-endianness (which is always the case).
-(The case where alloc_size=3D=3D8 is somewhat special, and needs more
-accurate handling, because we do make assumptions about the bit layout
-there).
+Please don't use inline for code in .c files unless there
+is a demonstrable reason to do so: in general, the compiler should be
+left to inline code as it sees fit.
 
->                           break;
->                   case 32:
->                           bitmap_to_arr32(storage, tmp, 32);
->                           break;
->                   case 64:
->                           bitmap_to_arr64(storage, tmp, 64);
->                           break;
->                   default:
->                           pr_err("error\n");
->                   }
->                   result =3D ((u64)storage | cache_id) & MTE_HANDLE_MASK;
->                   goto ret;
->           }
->           ...
->   }
->
-> Yeah, it looks cumbersome, but this is the right way to go if you need a
-> reliable BE-compatible driver.
+> +{
+> +	ash->dma_handle[sg_i] = da;
+> +	ash->size[sg_i] = sge_len;
+> +
+> +	tp->wqe_req.sgl[sg_i].address = da;
+> +	tp->wqe_req.sgl[sg_i].mem_key = gpa_mkey;
+> +	tp->wqe_req.sgl[sg_i].size = sge_len;
+> +}
+> +
+>  static int mana_map_skb(struct sk_buff *skb, struct mana_port_context *apc,
+> -			struct mana_tx_package *tp)
+> +			struct mana_tx_package *tp, int gso_hs)
+>  {
+>  	struct mana_skb_head *ash = (struct mana_skb_head *)skb->head;
+> +	int hsg = 1; /* num of SGEs of linear part */
+>  	struct gdma_dev *gd = apc->ac->gdma_dev;
+> +	int skb_hlen = skb_headlen(skb);
+> +	int sge0_len, sge1_len = 0;
+>  	struct gdma_context *gc;
+>  	struct device *dev;
+>  	skb_frag_t *frag;
+>  	dma_addr_t da;
+> +	int sg_i;
+>  	int i;
+>  
+>  	gc = gd->gdma_context;
+>  	dev = gc->dev;
+> -	da = dma_map_single(dev, skb->data, skb_headlen(skb), DMA_TO_DEVICE);
+>  
+> +	if (gso_hs && gso_hs < skb_hlen) {
+> +		sge0_len = gso_hs;
+> +		sge1_len = skb_hlen - gso_hs;
+> +	} else {
+> +		sge0_len = skb_hlen;
+> +	}
+> +
+> +	da = dma_map_single(dev, skb->data, sge0_len, DMA_TO_DEVICE);
+>  	if (dma_mapping_error(dev, da))
+>  		return -ENOMEM;
+>  
+> -	ash->dma_handle[0] = da;
+> -	ash->size[0] = skb_headlen(skb);
+> +	mana_add_sge(tp, ash, 0, da, sge0_len, gd->gpa_mkey);
+>  
+> -	tp->wqe_req.sgl[0].address = ash->dma_handle[0];
+> -	tp->wqe_req.sgl[0].mem_key = gd->gpa_mkey;
+> -	tp->wqe_req.sgl[0].size = ash->size[0];
+> +	if (sge1_len) {
+> +		sg_i = 1;
+> +		da = dma_map_single(dev, skb->data + sge0_len, sge1_len,
+> +				    DMA_TO_DEVICE);
+> +		if (dma_mapping_error(dev, da))
+> +			goto frag_err;
+> +
+> +		mana_add_sge(tp, ash, sg_i, da, sge1_len, gd->gpa_mkey);
+> +		hsg = 2;
+> +	}
+>  
+>  	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
+> +		sg_i = hsg + i;
+> +
+>  		frag = &skb_shinfo(skb)->frags[i];
+>  		da = skb_frag_dma_map(dev, frag, 0, skb_frag_size(frag),
+>  				      DMA_TO_DEVICE);
+> -
+>  		if (dma_mapping_error(dev, da))
+>  			goto frag_err;
+>  
+> -		ash->dma_handle[i + 1] = da;
+> -		ash->size[i + 1] = skb_frag_size(frag);
+> -
+> -		tp->wqe_req.sgl[i + 1].address = ash->dma_handle[i + 1];
+> -		tp->wqe_req.sgl[i + 1].mem_key = gd->gpa_mkey;
+> -		tp->wqe_req.sgl[i + 1].size = ash->size[i + 1];
+> +		mana_add_sge(tp, ash, sg_i, da, skb_frag_size(frag),
+> +			     gd->gpa_mkey);
+>  	}
+>  
+>  	return 0;
+>  
+>  frag_err:
+> -	for (i = i - 1; i >= 0; i--)
+> -		dma_unmap_page(dev, ash->dma_handle[i + 1], ash->size[i + 1],
+> +	for (i = sg_i - 1; i >= hsg; i--)
+> +		dma_unmap_page(dev, ash->dma_handle[i], ash->size[i],
+>  			       DMA_TO_DEVICE);
+>  
+> -	dma_unmap_single(dev, ash->dma_handle[0], ash->size[0], DMA_TO_DEVICE);
+> +	for (i = hsg - 1; i >= 0; i--)
+> +		dma_unmap_single(dev, ash->dma_handle[i], ash->size[i],
+> +				 DMA_TO_DEVICE);
+>  
+>  	return -ENOMEM;
+>  }
+>  
+> +/* Handle the case when GSO SKB linear length is too large.
+> + * MANA NIC requires GSO packets to put only the packet header to SGE0.
+> + * So, we need 2 SGEs for the skb linear part which contains more than the
+> + * header.
+> + */
+> +static inline int mana_fix_skb_head(struct net_device *ndev,
+> +				    struct sk_buff *skb, int gso_hs,
+> +				    u32 *num_sge)
+> +{
+> +	int skb_hlen = skb_headlen(skb);
+> +
+> +	if (gso_hs < skb_hlen) {
+> +		*num_sge = 2 + skb_shinfo(skb)->nr_frags;
+> +	} else if (gso_hs > skb_hlen) {
+> +		if (net_ratelimit())
+> +			netdev_err(ndev,
+> +				   "TX nonlinear head: hs:%d, skb_hlen:%d\n",
+> +				   gso_hs, skb_hlen);
+> +
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
 
-What is the BE compatibility problem that you are anticipating here?
+nit: I think it would be slightly nicer if the num_sge parameter of this
+function was removed and it returned negative values on error (already
+the case) and positive values, representing the number f segments, on success.
 
-The issue that came up during testing was that on systems with
-different endianness we cannot treat unaligned buffers as bitmaps,
-because bitmap_write() might be touching memory past the allocation
-size.
-I agree therefore with the general approach of encapsulating all
-bitmap operations in bitmap.h and hiding the implementation details
-behind the API.
-But in this particular case it seems to complicate the otherwise
-trivial application of bitmap_read()/bitmap_write() to an external
-buffer with guaranteed 64-bit alignment: we'll end up allocating this
-temporary bitmap and doing a hard-to-optimize memcpy() between it and
-the final storage.
+> +}
+> +
+> +/* Get the GSO packet's header size */
+> +static inline int mana_get_gso_hs(struct sk_buff *skb)
+> +{
+> +	int gso_hs;
+> +
+> +	if (skb->encapsulation) {
+> +		gso_hs = skb_inner_tcp_all_headers(skb);
+> +	} else {
+> +		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
+> +			gso_hs = skb_transport_offset(skb) +
+> +				 sizeof(struct udphdr);
+> +		} else {
+> +			gso_hs = skb_tcp_all_headers(skb);
+> +		}
+> +	}
+> +
+> +	return gso_hs;
+> +}
+> +
+>  netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  {
+>  	enum mana_tx_pkt_format pkt_fmt = MANA_SHORT_PKT_FMT;
+>  	struct mana_port_context *apc = netdev_priv(ndev);
+> +	int gso_hs = 0; /* zero for non-GSO pkts */
+>  	u16 txq_idx = skb_get_queue_mapping(skb);
+>  	struct gdma_dev *gd = apc->ac->gdma_dev;
+>  	bool ipv4 = false, ipv6 = false;
+> @@ -159,7 +232,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  	struct mana_txq *txq;
+>  	struct mana_cq *cq;
+>  	int err, len;
+> -	u16 ihs;
+>  
+>  	if (unlikely(!apc->port_is_up))
+>  		goto tx_drop;
+> @@ -209,19 +281,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  	pkg.wqe_req.client_data_unit = 0;
+>  
+>  	pkg.wqe_req.num_sge = 1 + skb_shinfo(skb)->nr_frags;
+> -	WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
+> -
+> -	if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
+> -		pkg.wqe_req.sgl = pkg.sgl_array;
+> -	} else {
+> -		pkg.sgl_ptr = kmalloc_array(pkg.wqe_req.num_sge,
+> -					    sizeof(struct gdma_sge),
+> -					    GFP_ATOMIC);
+> -		if (!pkg.sgl_ptr)
+> -			goto tx_drop_count;
+> -
+> -		pkg.wqe_req.sgl = pkg.sgl_ptr;
+> -	}
 
-A straightforward solution for this would be to fork u64* versions of
-bitmap_read()/bitmap_write() implementations in mtecomp.c and apply
-them to u64* buffers allocated in that file.
-This would remove the need for the temporary bitmap (because there's
-no encapsulation that mandates using bitmap.h now) and the extra
-memcpy().
-But I don't like this either, because forking code that exists in
-headers is just wrong.
+It is unclear to me why this logic has moved from here to further
+down in this function. Is it to avoid some cases where
+alloation has to be unwond on error (when mana_fix_skb_head() fails) ?
+If so, this feels more like an optimisation than a fix.
 
-> I think it will be less scary if you wrap
-> the switch with a helper, and/or move it inside mte_compress_to_buf(),
-> so that the mte_compress will stay unchanged.
->
-> Anyways, hope the above helped.
->
-> Thanks,
-> Yury
+>  
+>  	if (skb->protocol == htons(ETH_P_IP))
+>  		ipv4 = true;
+> @@ -229,6 +288,23 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  		ipv6 = true;
+>  
+>  	if (skb_is_gso(skb)) {
+> +		gso_hs = mana_get_gso_hs(skb);
+> +
+> +		if (mana_fix_skb_head(ndev, skb, gso_hs, &pkg.wqe_req.num_sge))
+> +			goto tx_drop_count;
+> +
+> +		if (skb->encapsulation) {
+> +			u64_stats_update_begin(&tx_stats->syncp);
+> +			tx_stats->tso_inner_packets++;
+> +			tx_stats->tso_inner_bytes += skb->len - gso_hs;
+> +			u64_stats_update_end(&tx_stats->syncp);
+> +		} else {
+> +			u64_stats_update_begin(&tx_stats->syncp);
+> +			tx_stats->tso_packets++;
+> +			tx_stats->tso_bytes += skb->len - gso_hs;
+> +			u64_stats_update_end(&tx_stats->syncp);
+> +		}
 
+nit: I wonder if this could be slightly more succinctly written as:
 
---
-Alexander Potapenko
-Software Engineer
+		u64_stats_update_begin(&tx_stats->syncp);
+		if (skb->encapsulation) {
+			tx_stats->tso_inner_packets++;
+			tx_stats->tso_inner_bytes += skb->len - gso_hs;
+		} else {
+			tx_stats->tso_packets++;
+			tx_stats->tso_bytes += skb->len - gso_hs;
+		}
+		u64_stats_update_end(&tx_stats->syncp);
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+Also, it is unclear to me why the stats logic is moved here from
+futher down in the same block. It feels more like a clean-up than a fix
+(as, btw, is my suggestion immediately above).
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+> +
+>  		pkg.tx_oob.s_oob.is_outer_ipv4 = ipv4;
+>  		pkg.tx_oob.s_oob.is_outer_ipv6 = ipv6;
+>  
+> @@ -252,26 +328,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  						 &ipv6_hdr(skb)->daddr, 0,
+>  						 IPPROTO_TCP, 0);
+>  		}
+> -
+> -		if (skb->encapsulation) {
+> -			ihs = skb_inner_tcp_all_headers(skb);
+> -			u64_stats_update_begin(&tx_stats->syncp);
+> -			tx_stats->tso_inner_packets++;
+> -			tx_stats->tso_inner_bytes += skb->len - ihs;
+> -			u64_stats_update_end(&tx_stats->syncp);
+> -		} else {
+> -			if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
+> -				ihs = skb_transport_offset(skb) + sizeof(struct udphdr);
+> -			} else {
+> -				ihs = skb_tcp_all_headers(skb);
+> -			}
+> -
+> -			u64_stats_update_begin(&tx_stats->syncp);
+> -			tx_stats->tso_packets++;
+> -			tx_stats->tso_bytes += skb->len - ihs;
+> -			u64_stats_update_end(&tx_stats->syncp);
+> -		}
+> -
+>  	} else if (skb->ip_summed == CHECKSUM_PARTIAL) {
+>  		csum_type = mana_checksum_info(skb);
+>  
+> @@ -294,11 +350,25 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+>  		} else {
+>  			/* Can't do offload of this type of checksum */
+>  			if (skb_checksum_help(skb))
+> -				goto free_sgl_ptr;
+> +				goto tx_drop_count;
+>  		}
+>  	}
+>  
+> -	if (mana_map_skb(skb, apc, &pkg)) {
+> +	WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
+> +
+> +	if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
+> +		pkg.wqe_req.sgl = pkg.sgl_array;
+> +	} else {
+> +		pkg.sgl_ptr = kmalloc_array(pkg.wqe_req.num_sge,
+> +					    sizeof(struct gdma_sge),
+> +					    GFP_ATOMIC);
+> +		if (!pkg.sgl_ptr)
+> +			goto tx_drop_count;
+> +
+> +		pkg.wqe_req.sgl = pkg.sgl_ptr;
+> +	}
+> +
+> +	if (mana_map_skb(skb, apc, &pkg, gso_hs)) {
+>  		u64_stats_update_begin(&tx_stats->syncp);
+>  		tx_stats->mana_map_err++;
+>  		u64_stats_update_end(&tx_stats->syncp);
+> @@ -1255,12 +1325,18 @@ static void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc)
+>  {
+>  	struct mana_skb_head *ash = (struct mana_skb_head *)skb->head;
+>  	struct gdma_context *gc = apc->ac->gdma_dev->gdma_context;
+> +	int hsg = 1; /* num of SGEs of linear part */
+>  	struct device *dev = gc->dev;
+>  	int i;
+>  
+> -	dma_unmap_single(dev, ash->dma_handle[0], ash->size[0], DMA_TO_DEVICE);
+> +	if (skb_is_gso(skb) && skb_headlen(skb) > ash->size[0])
+> +		hsg = 2;
+
+nit: Maybe this is nicer?
+
+	/* num of SGEs of linear part */
+	hsg = (skb_is_gso(skb) && skb_headlen(skb) > ash->size[0]) ? 2 : 1;
+
+> +
+> +	for (i = 0; i < hsg; i++)
+> +		dma_unmap_single(dev, ash->dma_handle[i], ash->size[i],
+> +				 DMA_TO_DEVICE);
+>  
+> -	for (i = 1; i < skb_shinfo(skb)->nr_frags + 1; i++)
+> +	for (i = hsg; i < skb_shinfo(skb)->nr_frags + hsg; i++)
+>  		dma_unmap_page(dev, ash->dma_handle[i], ash->size[i],
+>  			       DMA_TO_DEVICE);
+>  }
+> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
+> index 9f70b4332238..4d43adf18606 100644
+> --- a/include/net/mana/mana.h
+> +++ b/include/net/mana/mana.h
+> @@ -103,9 +103,10 @@ struct mana_txq {
+>  
+>  /* skb data and frags dma mappings */
+>  struct mana_skb_head {
+> -	dma_addr_t dma_handle[MAX_SKB_FRAGS + 1];
+> +	/* GSO pkts may have 2 SGEs for the linear part*/
+> +	dma_addr_t dma_handle[MAX_SKB_FRAGS + 2];
+>  
+> -	u32 size[MAX_SKB_FRAGS + 1];
+> +	u32 size[MAX_SKB_FRAGS + 2];
+>  };
+>  
+>  #define MANA_HEADROOM sizeof(struct mana_skb_head)
+> -- 
+> 2.25.1
+> 
+> 
