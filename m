@@ -2,97 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA767B3A28
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7FF7B3A2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233628AbjI2SnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 14:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59532 "EHLO
+        id S233713AbjI2Sn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 14:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233573AbjI2SnJ (ORCPT
+        with ESMTP id S233573AbjI2SnY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 14:43:09 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE1AA1A5
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:43:06 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bf55a81eeaso110477875ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:43:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696012986; x=1696617786; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+SKmWQamCrtcixsJKT7MUrX2kj878IQ12Ed2N4hWoOk=;
-        b=g/mIIWsaRxUGnn5Oj+K9YynrHc6YDKNScDmyu1hQorVmOhOL7Fd4Opmk8biEIwCtrw
-         1egrO7NqJnt+fBFkDRKw43NnZ9e0LPlS7WeF9FINsv5S4KMAzPI1BP4U6ypSzbbnq8IC
-         zkj3/BD6z5S6AxXAPLbEEnA/kH7d7L2nsdemo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696012986; x=1696617786;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+SKmWQamCrtcixsJKT7MUrX2kj878IQ12Ed2N4hWoOk=;
-        b=TWVqMM3IFWasY37MIOHifCTiPeS5zRVHdxYuk0c5iGUkEzF2fJYYQnk70xrUtahkCt
-         g6HDeeMuzLB28AFxndFx1peV5mBvkbZXwpRJomRsqS7VWSfR/p5gaiKT/bbyPduORHpp
-         wOdrkH47N4uMQMTRYtDUUs+M/oP/r8DGWZZKCbSp48s9Q3eJFOJVe7sIw5IlikkTyCYS
-         Q3qsZor7UopxfxgZYvEeWN6oYaTacjuwjhUO0AK364lE2DmzgFCXDi1xb1H8pldRFbL5
-         3Jrm34LFXfIGuhMI4MMa0yVw7EXv69b7i2MiPdyau+FROOJBTOhkpBpUOkl0vyV+Fu4Y
-         s18w==
-X-Gm-Message-State: AOJu0YxM2NDQf8P4f+OG4qN/uKTL92In1ruTbvM088tDFBrnRyK/baMi
-        Y8uevuHeCaM47D51gnsCR42kUQ==
-X-Google-Smtp-Source: AGHT+IEsqB2xr3YnyNH2vhAdObEENgjLSpzITFNT2h3b7EvGsi8I2wkdjDwREM73j5bMAdEe3ejG6w==
-X-Received: by 2002:a17:902:ed44:b0:1c3:83e2:d0c6 with SMTP id y4-20020a170902ed4400b001c383e2d0c6mr4265781plb.52.1696012986336;
-        Fri, 29 Sep 2023 11:43:06 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id t9-20020a170902e84900b001c631236505sm7616465plg.228.2023.09.29.11.43.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 11:43:05 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Stuart Yoder <stuyoder@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Justin Stitt <justinstitt@google.com>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] bus: fsl-mc: refactor deprecated strncpy
-Date:   Fri, 29 Sep 2023 11:43:04 -0700
-Message-Id: <169601298358.3009007.4356114929314490764.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230912-strncpy-drivers-bus-fsl-mc-dprc-c-v1-1-cdb56aa3f4f4@google.com>
-References: <20230912-strncpy-drivers-bus-fsl-mc-dprc-c-v1-1-cdb56aa3f4f4@google.com>
+        Fri, 29 Sep 2023 14:43:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327E6199;
+        Fri, 29 Sep 2023 11:43:22 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E2C3C433C8;
+        Fri, 29 Sep 2023 18:43:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696013001;
+        bh=dsAIvonzMBGLzOUuzBkDUFs/z3RCTJBFMlCcN4lg03s=;
+        h=From:Date:Subject:To:Cc:From;
+        b=iy2Fa5Efgr5pPH4MAeONdFF4TfQpVLHXnSpzz5R76+UxzerMvFibEqDjCSqjnCifL
+         hkSxKGmzRTUaw7JLsKdW1NSrvgHA5Q6MDCJ4OJKCWt6pGsb2AG7nWJ9GUWv663GZUI
+         SzCyEZLvXyBUCZnoT3oJHM9NDZ+8MQlkDofdQhYjkY8QAwS7a/VM6/XiODh5RMTUtE
+         lXxfgQKyVL71XC2BgfkZx8mk5B1jMQHJMyLoSo259kU7Za29u7+PnRed/lv7ZJlxHa
+         wwTvkHdJ9zfz4UfFVQgm93nRYKPqWSJY5TtcCOZ2Jn+Bt0v2sTu4M7Q2eNaevKmbeS
+         M1Z4m8o7/pGQg==
+From:   Jeff Layton <jlayton@kernel.org>
+Date:   Fri, 29 Sep 2023 14:43:18 -0400
+Subject: [PATCH] xfs: reinstate the old i_version counter as
+ STATX_CHANGE_COOKIE
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230929-xfs-iversion-v1-1-38587d7b5a52@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAMUaF2UC/x2MQQqAIBAAvyJ7bkGNQPtKdBBbay8WCiKIf886D
+ sxMg0yJKcMqGiQqnPmOA9QkwF8unoR8DAYt9SyttlhDRi6UPhGNssFpr8xiFYzkSRS4/rtt7/0
+ FJgnIFV4AAAA=
+To:     Chandan Babu R <chandan.babu@oracle.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>
+Cc:     linux-nfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1452; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=dsAIvonzMBGLzOUuzBkDUFs/z3RCTJBFMlCcN4lg03s=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBlFxrIJqTwOBqvHLTbxU9WHv82mlhAnijBN26hv
+ xEApTHGyYOJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZRcayAAKCRAADmhBGVaC
+ FacDEACGYMZPWxXBQVmP5FluUddVXFbuLOvAXRerZfeMiOW3lubp4T9LRZEgMcHQTvkkGl7fIJu
+ F8x9p41Gq+C9GdcSVCwC/EoA5vnxY6o6S4fhNFwSJfGdiMwDkgziyQHuo7s5U/jz9xplAWbUMMs
+ CUBJxidfzuJRcPnPjy5QVQGly20SC2/qokGrBnUvZoMQSaj34ElcQlj+fS1hAYMgw0+3RYEZVsn
+ Ih4aYguNISs/enGzJvz8ANjW4+Vn0uN9YR+z9kApnLo1MdbJXC7LCpc6RYQ10GjZKOErmNJx43g
+ V2g1kQvYn0xTNBPXXkbQBo3Qz5HgMCp0Y4pXMIEtuIiy/qMA/yyJgV6RtTcRUGf+4pX9Jxj9tDi
+ W9jZ/lofYb4ho6xnk6QXLsscpic3UFvLS4e9Tl9Oqp37GRsh/iv+daDfxP2Ft12FZKz6OsdkEPQ
+ dKLYRQsNaQvKJLgw/dNMoOqXXHKK5udKm/Yfx3s7HVW3krQmhqZ4gXatgnzS1sIW+3rfjUR8e6a
+ AqK4giVYHXTW90tJM1Wdr9xqaX2khY8lb1zoUb5s4W/1hSycKgtpY4X5gDQEnCHFV507/RQ6pti
+ w8RKl9QVy6c7aEFmLHkDu9FFVd+X6A/dXcCEbm+wstOPEtUZsFGfsK9TkABK48+4ynzjUFOm8QS
+ AH/+l+iQW3TOJ1w==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 12 Sep 2023 22:52:04 +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings [1].
-> 
-> We need to prefer more robust and less ambiguous string interfaces.
-> 
-> `obj_desc->(type|label)` are expected to be NUL-terminated strings as
-> per "include/linux/fsl/mc.h +143"
-> | ...
-> |  * struct fsl_mc_obj_desc - Object descriptor
-> |  * @type: Type of object: NULL terminated string
-> | ...
-> 
-> [...]
+The handling of STATX_CHANGE_COOKIE was moved into generic_fillattr in
+commit 0d72b92883c6 (fs: pass the request_mask to generic_fillattr), but
+we didn't account for the fact that xfs doesn't call generic_fillattr at
+all.
 
-Applied to for-next/hardening, thanks!
+Make XFS report its i_version as the STATX_CHANGE_COOKIE.
 
-[1/1] bus: fsl-mc: refactor deprecated strncpy
-      https://git.kernel.org/kees/c/fafafc55eb30
+Fixes: 0d72b92883c6 (fs: pass the request_mask to generic_fillattr)
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+I had hoped to fix this in a better way with the multigrain patches, but
+it's taking longer than expected (if it even pans out at this point).
 
-Take care,
+Until then, make sure we use XFS's i_version as the STATX_CHANGE_COOKIE,
+even if it's bumped due to atime updates. Too many invalidations is
+preferable to not enough.
+---
+ fs/xfs/xfs_iops.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
+diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+index 1c1e6171209d..2b3b05c28e9e 100644
+--- a/fs/xfs/xfs_iops.c
++++ b/fs/xfs/xfs_iops.c
+@@ -584,6 +584,11 @@ xfs_vn_getattr(
+ 		}
+ 	}
+ 
++	if ((request_mask & STATX_CHANGE_COOKIE) && IS_I_VERSION(inode)) {
++		stat->change_cookie = inode_query_iversion(inode);
++		stat->result_mask |= STATX_CHANGE_COOKIE;
++	}
++
+ 	/*
+ 	 * Note: If you add another clause to set an attribute flag, please
+ 	 * update attributes_mask below.
+
+---
+base-commit: df964ce9ef9fea10cf131bf6bad8658fde7956f6
+change-id: 20230929-xfs-iversion-819fa2c18591
+
+Best regards,
 -- 
-Kees Cook
+Jeff Layton <jlayton@kernel.org>
 
