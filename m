@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA2A7B2C21
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 08:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB4B7B2C23
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 08:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbjI2GB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 02:01:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44526 "EHLO
+        id S232692AbjI2GDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 02:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjI2GBX (ORCPT
+        with ESMTP id S229577AbjI2GDh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 02:01:23 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF951A5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 23:01:21 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qm6Yu-00056R-GL; Fri, 29 Sep 2023 08:01:16 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qm6Yt-009kA5-25; Fri, 29 Sep 2023 08:01:15 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qm6Ys-005pya-PG; Fri, 29 Sep 2023 08:01:14 +0200
-Date:   Fri, 29 Sep 2023 08:01:14 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     kernel@pengutronix.de, soc@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Fix Florian Fainelli's email address
-Message-ID: <20230929060114.zbex7z4atuzojs45@pengutronix.de>
-References: <20230928070652.2290946-1-u.kleine-koenig@pengutronix.de>
- <a5aadd2b-6c88-4a7e-a0e5-580dfe604c68@broadcom.com>
+        Fri, 29 Sep 2023 02:03:37 -0400
+Received: from a.mx.secunet.com (a.mx.secunet.com [62.96.220.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BDD199;
+        Thu, 28 Sep 2023 23:03:35 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by a.mx.secunet.com (Postfix) with ESMTP id 493022089F;
+        Fri, 29 Sep 2023 08:03:34 +0200 (CEST)
+X-Virus-Scanned: by secunet
+Received: from a.mx.secunet.com ([127.0.0.1])
+        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jUWheq-XtF3e; Fri, 29 Sep 2023 08:03:28 +0200 (CEST)
+Received: from mailout2.secunet.com (mailout2.secunet.com [62.96.220.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by a.mx.secunet.com (Postfix) with ESMTPS id C3B0720861;
+        Fri, 29 Sep 2023 08:03:28 +0200 (CEST)
+Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
+        by mailout2.secunet.com (Postfix) with ESMTP id B476D80004A;
+        Fri, 29 Sep 2023 08:03:28 +0200 (CEST)
+Received: from mbx-essen-02.secunet.de (10.53.40.198) by
+ cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Fri, 29 Sep 2023 08:03:28 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-02.secunet.de
+ (10.53.40.198) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Fri, 29 Sep
+ 2023 08:03:28 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id BD4FB3182B50; Fri, 29 Sep 2023 08:03:27 +0200 (CEST)
+Date:   Fri, 29 Sep 2023 08:03:27 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Yue Haibing <yuehaibing@huawei.com>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <leon@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next] xfrm: Remove unused function declarations
+Message-ID: <ZRZorz8IUECFUaa1@gauss3.secunet.de>
+References: <20230729122858.25776-1-yuehaibing@huawei.com>
+ <de3b9e86-92c6-108b-272a-9480f9b91f21@huawei.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="buaieoofig252hiw"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <a5aadd2b-6c88-4a7e-a0e5-580dfe604c68@broadcom.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <de3b9e86-92c6-108b-272a-9480f9b91f21@huawei.com>
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-02.secunet.de (10.53.40.198)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Sep 28, 2023 at 03:26:28PM +0800, Yue Haibing wrote:
+> ping..
+> 
+> On 2023/7/29 20:28, Yue Haibing wrote:
+> > commit a269fbfc4e9f ("xfrm: state: remove extract_input indirection from xfrm_state_afinfo")
+> > left behind this.
+> > 
+> > Signed-off-by: Yue Haibing <yuehaibing@huawei.com>
 
---buaieoofig252hiw
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-On Thu, Sep 28, 2023 at 11:21:50PM +0200, Florian Fainelli wrote:
-> On 9/28/2023 9:06 AM, Uwe Kleine-K=F6nig wrote:
-> > Commit 31345a0f5901 ("MAINTAINERS: Replace my email address") added 13
-> > instances of ...@broadcom.com and one of only ...@broadcom. I didn't
-> > double check if Broadcom really owns that TLD, but git send-email
-> > doesn't accept it, so add ".com" to that one bogous(?) instance.
-> >=20
-> > Fixes: 31345a0f5901 ("MAINTAINERS: Replace my email address")
-> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
->=20
-> Embarrassing, thanks for fixing this Uwe!
->=20
-> Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
-
-Who picks this up? 31345a0f5901 went in via arm-soc. Arnd, will you?
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---buaieoofig252hiw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUWaCkACgkQj4D7WH0S
-/k5N9gf9FkIV2dZeRVasQHHxxUFvxnaqnNXX29fBo2bDLXQ1Jpn01s+0YpRBaq2m
-rF1ax4Gn1bZVjpq1El3Z4IAn+VR4oRgJtde/+6w3r//9Lz30tzNl3VG3L8sJZIhK
-YQotJ1nxMJ6oosnIi6sw3WgUaactU4+4s3acjvYcMBQRu6T7hV9zG/sEEPYJiDgt
-M4jzZCDhrvWA3TcHHARAznNthMhX0irb29NNyavwYTXiBwcJtK+NzhFJoEaeqDWG
-lEmMIZQFX41FW7IF7Di3S+qQ4O6nNTPtTTH0j7xi6eGsu5lGqVgkvIkg4AqUA6r/
-FcYjwQUNpMI79dd6xBl10cJL2my8bA==
-=uhmd
------END PGP SIGNATURE-----
-
---buaieoofig252hiw--
+Sorry, that one slipped through the cracks.
+Now applied to ipsec-next, thanks!
