@@ -2,299 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2F67B3B8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E68017B3B95
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233630AbjI2Uqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 16:46:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51936 "EHLO
+        id S233893AbjI2UsV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 16:48:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233923AbjI2Uqb (ORCPT
+        with ESMTP id S233753AbjI2UsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 16:46:31 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8114170E
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 13:46:13 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-533e7d127d4so14453283a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 13:46:13 -0700 (PDT)
+        Fri, 29 Sep 2023 16:48:17 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E0C1AE
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 13:48:16 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a1d0fee86aso107385647b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 13:48:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1696020372; x=1696625172; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1696020495; x=1696625295; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=A+z394u1icTlUvm5Wt49UZrjbdFkyO1xfSo9ivxRNHc=;
-        b=OwA5g9vHzaGucmbi2nFxkhlgKIkqqT68Q2bUqsH1nWmTeGNRPYtvDC2WgSmVsDmQ1o
-         Kq1H02PSmDkIdpLuqlwW6Gg6eoZZLGSzEf79pmOV2cbw33uBNBsqu4BONUD4Qdu1H0Go
-         xryiH+cJJlYxaek4ZO6DErPYtM1Y2GwiLqUMMwh7WNh5A1xv6LrBDPLWzVU3tXZlHspV
-         8PAyznmvvgyX86aAGfkk/iNGYF1bnpzr/Vpn2Q6+f5ctF2ubr1VfWE6gI5TYbSK8y/SW
-         9qBtEfWiHIR7R0ARc0uvtpj8ebJI41I36H9+cez3bNLIDpVA12/MW3iHXC0bFN8m6bdf
-         fO1A==
+        bh=0PB3in7uQxQJMooXEXWpiBaHwk+ekocGtELm1zz7ac4=;
+        b=U+3jJ0gKkYUho3gGmo88xldu9TJkA1CeWbLN6HTCIqW5mV1hQqFWK0XqN3lvN+ZMed
+         /03R+MVkn/T25onIUeUtupXjNBoRNrZad4lqXb8xl5FdLo6ryTLVF9sCvD2SVPqZO5MN
+         DvtFj4+5tFKF6OXQp6jzMKSOEV47nVCVnGqyFVjbOIbFksJQeyciKt+uKG53N6FZ0/iM
+         GDGifjx7/jNpVpPguiJqoN7a+dkqrlYPuf7EQIYEfi0TgRtbg2QkFTOyMOb2/OsTw5+M
+         DUhtfzEqqOyDKFmrVCw9W9Cjzea+6qYXomi4zNsvmCUXpnUAhozJ7r3qkw5bRhz06pty
+         l21g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696020372; x=1696625172;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696020495; x=1696625295;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=A+z394u1icTlUvm5Wt49UZrjbdFkyO1xfSo9ivxRNHc=;
-        b=MYLWrot5jYfhZQD3N08MsyYxMpXOLfVmTHG/tm7FUp0/eHny3WjLX0EobDsgY/vTBd
-         kbob/D61X2M2kP+effBB9h/lUCz+rkNVMR7hdbk0Y4sdaDyL64TsUKHreYH8K0zo8cFP
-         LmtDfA2wWL35KmdRKqcmz4Kbi4FfpzVfcKRJUzNfifklZmoB+CTBg0Ek0f8WBpQdEWGC
-         Y0ZHWbFaIbHjcbqPFWyvvJGg8osrFiT7RvKjyexjreC30vjDcXmcJ8vQvUUsy/TpRo08
-         4kYAClLCAUTPawAWugp6pUgIdGx0H/JEB3XpznLUa+KZuvsZt/AEzgpAvmhi7ALx9HC4
-         Chfw==
-X-Gm-Message-State: AOJu0YxKtfoY/gnOaauwl+vZtRczJBVMQIkXXrLiduCfIygKMi09ya47
-        FG1wQWYzvhAWDxeI0yLdUSgP4A==
-X-Google-Smtp-Source: AGHT+IFsKi0kj5q9t/Gq/FHaYVnQTOjnhlReVoCABP+l9pbNqlcDeN/X/7o5DYC8YrJCAchJOqaB6g==
-X-Received: by 2002:aa7:df93:0:b0:526:9cfb:c12 with SMTP id b19-20020aa7df93000000b005269cfb0c12mr5189114edy.38.1696020372252;
-        Fri, 29 Sep 2023 13:46:12 -0700 (PDT)
-Received: from cloudflare.com (79.184.153.47.ipv4.supernova.orange.pl. [79.184.153.47])
-        by smtp.gmail.com with ESMTPSA id ee9-20020a056402290900b0053498aa4f41sm4350298edb.48.2023.09.29.13.46.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 13:46:11 -0700 (PDT)
-From:   Jakub Sitnicki <jakub@cloudflare.com>
-To:     virtualization@lists.linux-foundation.org
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com
-Subject: [PATCH 2/2] virtio-mmio: Support multiple interrupts per device
-Date:   Fri, 29 Sep 2023 22:46:04 +0200
-Message-ID: <20230929-jakub-os-90-trim-v1-2-a3af0c08f812@cloudflare.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230929-jakub-os-90-trim-v1-0-a3af0c08f812@cloudflare.com>
-References: <20230929-jakub-os-90-trim-v1-0-a3af0c08f812@cloudflare.com>
+        bh=0PB3in7uQxQJMooXEXWpiBaHwk+ekocGtELm1zz7ac4=;
+        b=N9dBcca+xvLq4S4yhNwxUAoTbWY6RaYgyT87GTQa7wx3YYbF7+tGdRI1Lyka5gKrgt
+         7EFF1BzQFpqK6mu5TxzVBS+zrph57tpU1Yb9CtVpI3ch5+l1c2TJMmpkmUS1cs7g32au
+         wwnATsOqvfM/e9qmZLHm3EtLd4dJeWeOfShVTPzS7/Ejq2SdN9FaEnOwisBcSxEBLl9b
+         uLxdnOClbHzU5Qssb2Efvs9nWyFaM5f41H6L9f1H1hdg4+Izaanhg3sLJre9eXai9uis
+         Zdecyx7heUC0IqSOUDlIpGhHVoMdr5kmksZrKJuVPA9F4ei3F1U0GeuAWvhOa8aO7yhu
+         QAhw==
+X-Gm-Message-State: AOJu0Yz/czTpzpIcIcELU8miO9hA8FvuDn01pPZz4sXyHhfIBp4ZBWH6
+        96SY+yxn+7lBdKBSbYNXbEnPfQGLRvsBO8JY0E3ylQ==
+X-Google-Smtp-Source: AGHT+IGhNuagYdzoQaqD/8H7vq+7TA/IEUrISt5AV9Vh1CFU389coOm1p2xo8o1X5Amvawa/yVVBQqfrtYEIKvx1fl4=
+X-Received: by 2002:a05:690c:f8e:b0:5a2:4fd3:d05 with SMTP id
+ df14-20020a05690c0f8e00b005a24fd30d05mr2158753ywb.31.1696020495343; Fri, 29
+ Sep 2023 13:48:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230929-pxa-gpio-v3-0-af8d5e5d1f34@skole.hr> <20230929-pxa-gpio-v3-2-af8d5e5d1f34@skole.hr>
+In-Reply-To: <20230929-pxa-gpio-v3-2-af8d5e5d1f34@skole.hr>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 29 Sep 2023 22:48:04 +0200
+Message-ID: <CACRpkdbDVLZBku4VYK98VNDB5qdd-O5XtZsynT+d4MRf96ExXQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v3 2/6] ARM: pxa: Convert Spitz LEDs to GPIO descriptors
+To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some virtual devices, such as the virtio network device, can use multiple
-virtqueues (or multiple pairs of virtqueues in the case of a vNIC). In such
-case, when there are multiple vCPUs present, it is possible to process
-virtqueue events in parallel. Each vCPU can service a subset of all
-virtqueues when notified that there is work to carry out.
+Hi Duje,
 
-However, the current virtio-mmio transport implementation poses a
-limitation. Only one vCPU can service notifications from any of the
-virtqueues of a single virtio device. This is because a virtio-mmio device
-driver supports registering just one interrupt per device. With such setup
-we are not able to scale virtqueue event processing among vCPUs.
+thanks for your patch!
 
-Now, with more than one IRQ resource registered for a virtio-mmio platform
-device, we can address this limitation.
+On Fri, Sep 29, 2023 at 3:15=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovic=
+@skole.hr> wrote:
 
-First, we request multiple IRQs when creating virtqueues for a device.
+> Sharp's Spitz board still uses the legacy GPIO interface for configuring
+> its two onboard LEDs.
+>
+> Convert them to use the GPIO descriptor interface.
+>
+> Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
+(...)
+> +       .table =3D {
+> +               GPIO_LOOKUP_IDX("pxa-gpio", SPITZ_GPIO_LED_ORANGE, NULL, =
+0,
+> +                               GPIO_ACTIVE_HIGH),
+> +               GPIO_LOOKUP_IDX("pxa-gpio", SPITZ_GPIO_LED_GREEN, NULL, 1=
+,
+> +                               GPIO_ACTIVE_HIGH),
 
-Then, map each virtqueue to one of the IRQs assigned to the device. The
-mapping is done in a device type specific manner. For instance, a network
-device will want each RX/TX virtqueue pair mapped to a different IRQ
-line. Other device types might require a different mapping scheme. We
-currently provide a mapping for virtio-net device type.
+This looks right!
 
-Finally, when handling an interrupt, we service only the virtqueues
-associated with the IRQ line that triggered the event.
+> +       gpiod_add_lookup_table(&spitz_led_gpio_table);
+> +       spitz_gpio_leds[0].gpiod =3D gpiod_get_index(&spitz_led_device.de=
+v,
+> +                       NULL, 0, GPIOD_ASIS);
+> +       spitz_gpio_leds[1].gpiod =3D gpiod_get_index(&spitz_led_device.de=
+v,
+> +                       NULL, 1, GPIOD_ASIS);
+>         platform_device_register(&spitz_led_device);
 
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
----
- drivers/virtio/virtio_mmio.c | 102 +++++++++++++++++++++++++++++++++++--------
- 1 file changed, 83 insertions(+), 19 deletions(-)
+I missed this before, sorry.
 
-diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-index 06a587b23542..180c51c27704 100644
---- a/drivers/virtio/virtio_mmio.c
-+++ b/drivers/virtio/virtio_mmio.c
-@@ -69,6 +69,7 @@
- #include <linux/spinlock.h>
- #include <linux/virtio.h>
- #include <linux/virtio_config.h>
-+#include <uapi/linux/virtio_ids.h>
- #include <uapi/linux/virtio_mmio.h>
- #include <linux/virtio_ring.h>
- 
-@@ -93,6 +94,10 @@ struct virtio_mmio_device {
- 	/* a list of queues so we can dispatch IRQs */
- 	spinlock_t lock;
- 	struct list_head virtqueues;
-+
-+	/* IRQ range allocated to the device */
-+	unsigned int irq_base;
-+	unsigned int num_irqs;
- };
- 
- struct virtio_mmio_vq_info {
-@@ -101,6 +106,9 @@ struct virtio_mmio_vq_info {
- 
- 	/* the list node for the virtqueues list */
- 	struct list_head node;
-+
-+	/* IRQ mapped to virtqueue */
-+	unsigned int irq;
- };
- 
- 
-@@ -297,7 +305,7 @@ static bool vm_notify_with_data(struct virtqueue *vq)
- 	return true;
- }
- 
--/* Notify all virtqueues on an interrupt. */
-+/* Notify all or some virtqueues on an interrupt. */
- static irqreturn_t vm_interrupt(int irq, void *opaque)
- {
- 	struct virtio_mmio_device *vm_dev = opaque;
-@@ -308,20 +316,31 @@ static irqreturn_t vm_interrupt(int irq, void *opaque)
- 
- 	/* Read and acknowledge interrupts */
- 	status = readl(vm_dev->base + VIRTIO_MMIO_INTERRUPT_STATUS);
--	writel(status, vm_dev->base + VIRTIO_MMIO_INTERRUPT_ACK);
- 
- 	if (unlikely(status & VIRTIO_MMIO_INT_CONFIG)) {
-+		writel(status & VIRTIO_MMIO_INT_CONFIG, vm_dev->base + VIRTIO_MMIO_INTERRUPT_ACK);
- 		virtio_config_changed(&vm_dev->vdev);
- 		ret = IRQ_HANDLED;
- 	}
- 
- 	if (likely(status & VIRTIO_MMIO_INT_VRING)) {
-+		writel(status & VIRTIO_MMIO_INT_VRING, vm_dev->base + VIRTIO_MMIO_INTERRUPT_ACK);
- 		spin_lock_irqsave(&vm_dev->lock, flags);
- 		list_for_each_entry(info, &vm_dev->virtqueues, node)
- 			ret |= vring_interrupt(irq, info->vq);
- 		spin_unlock_irqrestore(&vm_dev->lock, flags);
- 	}
- 
-+	/* Notify only affected vrings if device uses multiple interrupts */
-+	if (vm_dev->num_irqs > 1) {
-+		spin_lock_irqsave(&vm_dev->lock, flags);
-+		list_for_each_entry(info, &vm_dev->virtqueues, node) {
-+			if (info->irq == irq)
-+				ret |= vring_interrupt(irq, info->vq);
-+		}
-+		spin_unlock_irqrestore(&vm_dev->lock, flags);
-+	}
-+
- 	return ret;
- }
- 
-@@ -356,11 +375,15 @@ static void vm_del_vqs(struct virtio_device *vdev)
- {
- 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
- 	struct virtqueue *vq, *n;
-+	int i, irq;
-+
-+	for (i = 0; i < vm_dev->num_irqs; i++) {
-+		irq = vm_dev->irq_base + i;
-+		devm_free_irq(&vdev->dev, irq, vm_dev);
-+	}
- 
- 	list_for_each_entry_safe(vq, n, &vdev->vqs, list)
- 		vm_del_vq(vq);
--
--	free_irq(platform_get_irq(vm_dev->pdev, 0), vm_dev);
- }
- 
- static void vm_synchronize_cbs(struct virtio_device *vdev)
-@@ -488,6 +511,18 @@ static struct virtqueue *vm_setup_vq(struct virtio_device *vdev, unsigned int in
- 	return ERR_PTR(err);
- }
- 
-+/* Map virtqueue to zero-based interrupt number */
-+static unsigned int vq2irq(const struct virtqueue *vq)
-+{
-+	switch (vq->vdev->id.device) {
-+	case VIRTIO_ID_NET:
-+		/* interrupt shared by rx/tx virtqueue pair */
-+		return vq->index / 2;
-+	default:
-+		return 0;
-+	}
-+}
-+
- static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
- 		       struct virtqueue *vqs[],
- 		       vq_callback_t *callbacks[],
-@@ -496,19 +531,9 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
- 		       struct irq_affinity *desc)
- {
- 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
--	int irq = platform_get_irq(vm_dev->pdev, 0);
--	int i, err, queue_idx = 0;
--
--	if (irq < 0)
--		return irq;
--
--	err = request_irq(irq, vm_interrupt, IRQF_SHARED,
--			dev_name(&vdev->dev), vm_dev);
--	if (err)
--		return err;
--
--	if (of_property_read_bool(vm_dev->pdev->dev.of_node, "wakeup-source"))
--		enable_irq_wake(irq);
-+	struct virtio_mmio_vq_info *info;
-+	int i, err, irq, nirqs, queue_idx = 0;
-+	unsigned int irq_base = UINT_MAX;
- 
- 	for (i = 0; i < nvqs; ++i) {
- 		if (!names[i]) {
-@@ -519,12 +544,51 @@ static int vm_find_vqs(struct virtio_device *vdev, unsigned int nvqs,
- 		vqs[i] = vm_setup_vq(vdev, queue_idx++, callbacks[i], names[i],
- 				     ctx ? ctx[i] : false);
- 		if (IS_ERR(vqs[i])) {
--			vm_del_vqs(vdev);
--			return PTR_ERR(vqs[i]);
-+			err = PTR_ERR(vqs[i]);
-+			goto fail_vq;
- 		}
- 	}
- 
-+	nirqs = platform_irq_count(vm_dev->pdev);
-+	if (nirqs < 0) {
-+		err = nirqs;
-+		goto fail_vq;
-+	}
-+
-+	for (i = 0; i < nirqs; i++) {
-+		irq = platform_get_irq(vm_dev->pdev, i);
-+		if (irq < 0)
-+			goto fail_irq;
-+		if (irq < irq_base)
-+			irq_base = irq;
-+
-+		err = devm_request_irq(&vdev->dev, irq, vm_interrupt,
-+				       IRQF_SHARED, NULL, vm_dev);
-+		if (err)
-+			goto fail_irq;
-+
-+		if (of_property_read_bool(vm_dev->pdev->dev.of_node, "wakeup-source"))
-+			enable_irq_wake(irq);
-+	}
-+
-+	for (i = 0; i < nvqs; i++) {
-+		irq = vq2irq(vqs[i]);
-+		info = vqs[i]->priv;
-+		info->irq = irq_base + (irq % nirqs);
-+	}
-+
-+	vm_dev->irq_base = irq_base;
-+	vm_dev->num_irqs = nirqs;
-+
- 	return 0;
-+
-+fail_irq:
-+	while (i--)
-+		devm_free_irq(&vdev->dev, irq_base + i, vm_dev);
-+fail_vq:
-+	vm_del_vqs(vdev);
-+
-+	return err;
- }
- 
- static const char *vm_bus_name(struct virtio_device *vdev)
+This will probably not work. You need to register the spitz_led_device
+first, then
+you can get the gpiod:s.
 
--- 
-2.41.0
+The lookup will use the device name to locate the device, and if the device
+isn't there it can't be found.
+
+Yours,
+Linus Walleij
