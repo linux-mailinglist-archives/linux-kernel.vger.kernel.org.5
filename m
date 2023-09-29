@@ -2,148 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B2B7B3733
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EEC7B3735
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233658AbjI2Ppu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:45:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34360 "EHLO
+        id S233664AbjI2PrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233257AbjI2Ppr (ORCPT
+        with ESMTP id S233280AbjI2PrB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:45:47 -0400
-Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BFDB4;
-        Fri, 29 Sep 2023 08:45:45 -0700 (PDT)
-Received: from in02.mta.xmission.com ([166.70.13.52]:44246)
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qmFgW-00G0cZ-8R; Fri, 29 Sep 2023 09:45:44 -0600
-Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:41658 helo=email.froward.int.ebiederm.org.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1qmFgU-00H7NY-Vb; Fri, 29 Sep 2023 09:45:43 -0600
-From:   "Eric W. Biederman" <ebiederm@xmission.com>
-To:     Sebastian Ott <sebott@redhat.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Pedro Falcato <pedro.falcato@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-hardening@vger.kernel.org
-References: <20230929031716.it.155-kees@kernel.org>
-        <7ddc633e-c724-ad8d-e7ca-62d6b012b9e9@redhat.com>
-Date:   Fri, 29 Sep 2023 10:45:35 -0500
-In-Reply-To: <7ddc633e-c724-ad8d-e7ca-62d6b012b9e9@redhat.com> (Sebastian
-        Ott's message of "Fri, 29 Sep 2023 13:33:50 +0200 (CEST)")
-Message-ID: <874jjd6l0g.fsf@email.froward.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1qmFgU-00H7NY-Vb;;;mid=<874jjd6l0g.fsf@email.froward.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
-X-XM-AID: U2FsdGVkX19qOgVaSfVR9pj3QS9bIi6xEj+LTb3sHKw=
-X-SA-Exim-Connect-IP: 68.227.168.167
-X-SA-Exim-Mail-From: ebiederm@xmission.com
+        Fri, 29 Sep 2023 11:47:01 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C4B9B4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:46:58 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81a47e12b5so22617772276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:46:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696002417; x=1696607217; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=G8/Q+35NLYw9HySOsQs1oSfJaoZjiMzWGb8dDgdqnZo=;
+        b=jziUi6xB8ypUEC0p4dqLf6jNxDlVcFw8Y3ol00ABDWcdJztVTkyBAdFpNM4XnbiGJP
+         yKfXTA11xFEcgRiMuaD3CpugnnRw8JxVNn17kt3GCVqEQKAejJO+ZYwpdsPvGWc6dKi8
+         OX4/PHUjGZkt3E4xQYIv+WCPJF4nVo36z+PEpMp9cKHCyaWfhvKArU79XXw56XmOS2jU
+         Bl/DRBrTFFKIfhOD5bc4pKUhO7mV+q58R3BH3dGdKxfwAHbAArF8fq6DXnYiB31vcK1H
+         WWhIqvCfElWbQpZmgLhsmzqDtu2I6YwbRjoEW8Lp2APzSYA10FCSNtm8iaZCyTE8xrcE
+         HUbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696002417; x=1696607217;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=G8/Q+35NLYw9HySOsQs1oSfJaoZjiMzWGb8dDgdqnZo=;
+        b=ANQlA0Lxn1EtQk51GXxsfR9EA7WWWsWptvKciS4muLUKAjzHaUeb6UQXcS9jJmI+O7
+         E40zoVDesqzebXTAFJNWiW3vzU891TQxM/tpW7t4MKlImSN1B7yftd5WO7Wr+2QwpcyN
+         OcU8veZe2ZBsFxBhGWpZnbm3aQCiWvWH0dwk16hRbp5Waez/ClE8fbz4WV27HAnMbSVF
+         ldrMHwXPHHuYjy/Kov4t8/bPpZ/Ntu+HjHER49XZ7GRO5aQk/10ZBMOGnR/1llWod7Ow
+         W9nUSOyuKA6svPX09t1y1ZOzjGTd+ZlQ4AhETJjbISsDkO7MFM06qVppphDbvWrrtKfv
+         iOTw==
+X-Gm-Message-State: AOJu0YwWPaxVnhdY7wu0We4ngs8rrtgepDB2q2GxeRysn0mfN3M9VRxJ
+        WGjd3S3E3HS17EukaJV1Nsbx33e4iic=
+X-Google-Smtp-Source: AGHT+IHDh7IMtzu+1PO3dzsxkepM97Irjo5ZMB5bFahEOwFsP/VFLFg0ZqcwQb0X5RS1iM09MPGH9tHQKXQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:730d:0:b0:d85:ac12:aadb with SMTP id
+ o13-20020a25730d000000b00d85ac12aadbmr71182ybc.9.1696002417694; Fri, 29 Sep
+ 2023 08:46:57 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 15:46:55 +0000
+In-Reply-To: <20230929115344.GE6282@noisy.programming.kicks-ass.net>
+Mime-Version: 1.0
+References: <20230927033124.1226509-1-dapeng1.mi@linux.intel.com>
+ <20230927033124.1226509-8-dapeng1.mi@linux.intel.com> <20230927113312.GD21810@noisy.programming.kicks-ass.net>
+ <ZRRl6y1GL-7RM63x@google.com> <20230929115344.GE6282@noisy.programming.kicks-ass.net>
+Message-ID: <ZRbxb15Opa2_AusF@google.com>
+Subject: Re: [Patch v4 07/13] perf/x86: Add constraint for guest perf metrics event
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Dapeng Mi <dapeng1.mi@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Like Xu <likexu@tencent.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Lv Zhiyuan <zhiyuan.lv@intel.com>,
+        Yang Weijiang <weijiang.yang@intel.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Dunn <daviddunn@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Sebastian Ott <sebott@redhat.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 654 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 10 (1.6%), b_tie_ro: 9 (1.4%), parse: 0.98 (0.1%),
-         extract_message_metadata: 15 (2.3%), get_uri_detail_list: 1.62 (0.2%),
-         tests_pri_-2000: 8 (1.2%), tests_pri_-1000: 2.6 (0.4%),
-        tests_pri_-950: 1.18 (0.2%), tests_pri_-900: 0.98 (0.1%),
-        tests_pri_-200: 0.79 (0.1%), tests_pri_-100: 6 (0.9%), tests_pri_-90:
-        306 (46.8%), check_bayes: 286 (43.8%), b_tokenize: 7 (1.1%),
-        b_tok_get_all: 18 (2.8%), b_comp_prob: 2.5 (0.4%), b_tok_touch_all:
-        254 (38.9%), b_finish: 1.18 (0.2%), tests_pri_0: 284 (43.4%),
-        check_dkim_signature: 0.61 (0.1%), check_dkim_adsp: 7 (1.0%),
-        poll_dns_idle: 0.48 (0.1%), tests_pri_10: 4.2 (0.6%), tests_pri_500:
-        11 (1.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v4 0/6] binfmt_elf: Support segments with 0 filesz and
- misaligned starts
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sebastian Ott <sebott@redhat.com> writes:
+On Fri, Sep 29, 2023, Peter Zijlstra wrote:
+> On Wed, Sep 27, 2023 at 10:27:07AM -0700, Sean Christopherson wrote:
+> > Jumping the gun a bit (we're in the *super* early stages of scraping together a
+> > rough PoC), but I think we should effectively put KVM's current vPMU support into
+> > maintenance-only mode, i.e. stop adding new features unless they are *very* simple
+> > to enable, and instead pursue an implementation that (a) lets userspace (and/or
+> > the kernel builder) completely disable host perf (or possibly just host perf usage
+> > of the hardware PMU) and (b) let KVM passthrough the entire hardware PMU when it
+> > has been turned off in the host.
+> 
+> I don't think you need to go that far, host can use PMU just fine as
+> long as it doesn't overlap with a vCPU. Basically, if you force
+> perf_attr::exclude_guest on everything your vCPU can haz the full thing.
 
-> Hello Kees,
->
-> On Thu, 28 Sep 2023, Kees Cook wrote:
->> This is the continuation of the work Eric started for handling
->> "p_memsz > p_filesz" in arbitrary segments (rather than just the last,
->> BSS, segment). I've added the suggested changes:
->>
->> - drop unused "elf_bss" variable
->> - refactor load_elf_interp() to use elf_load()
->> - refactor load_elf_library() to use elf_load()
->> - report padzero() errors when PROT_WRITE is present
->> - drop vm_brk()
->
-> While I was debugging the initial issue I stumbled over the following
-> - care to take it as part of this series?
->
-> ----->8
-> [PATCH] mm: vm_brk_flags don't bail out while holding lock
->
-> Calling vm_brk_flags() with flags set other than VM_EXEC
-> will exit the function without releasing the mmap_write_lock.
->
-> Just do the sanity check before the lock is acquired. This
-> doesn't fix an actual issue since no caller sets a flag other
-> than VM_EXEC.
+Complexity aside, my understanding is that the overhead of trapping and emulating
+all of the guest counter and MSR accesses results in unacceptably degraded functionality
+for the guest.  And we haven't even gotten to things like arch LBRs where context
+switching MSRs between the guest and host is going to be quite costly.
 
-That seems like a sensible patch.
+> > Note, a similar idea was floated and rejected in the past[*], but that failed
+> > proposal tried to retain host perf+PMU functionality by making the behavior dynamic,
+> > which I agree would create an awful ABI for the host.  If we make the "knob" a
+> > Kconfig 
+> 
+> Must not be Kconfig, distros would have no sane choice.
 
-Have you by any chance read this code enough to understand what is
-gained by calling vm_brk_flags rather than vm_mmap without a file?
+Or not only a Kconfig?  E.g. similar to how the kernel has
+CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS and nopku.
 
-Unless there is a real advantage it probably makes sense to replace
-the call of vm_brk_flags with vm_mmap(NULL, ...) as binfmt_elf_fdpic
-has already done.
+> > or kernel param, i.e. require the platform owner to opt-out of using perf
+> > no later than at boot time, then I think we can provide a sane ABI, keep the
+> > implementation simple, all without breaking existing users that utilize perf in
+> > the host to profile guests.
+> 
+> It's a shit choice to have to make. At the same time I'm not sure I have
+> a better proposal.
+> 
+> It does mean a host cannot profile one guest and have pass-through on the
+> other. Eg. have a development and production guest on the same box. This
+> is pretty crap.
+> 
+> Making it a guest-boot-option would allow that, but then the host gets
+> complicated again. I think I can make it trivially work for per-task
+> events, simply error the creation of events without exclude_guest for
+> affected vCPU tasks. But the CPU events are tricky.
+> 
+> 
+> I will firmly reject anything that takes the PMU away from the host
+> entirely through.
 
-That would allow removing vm_brk_flags and sys_brk would be the last
-caller of do_brk_flags.
+Why?  What is so wrong with supporting use cases where the platform owner *wants*
+to give up host PMU and NMI watchdog functionality?  If disabling host PMU usage
+were complex, highly invasive, and/or difficult to maintain, then I can understand
+the pushback.  
 
-Eric
+But if we simply allow hiding hardware PMU support, then isn't the cost to perf
+just a few lines in init_hw_perf_events()?  And if we put a stake in the ground
+and say that exposing "advanced" PMU features to KVM guests requires a passthrough
+PMU, i.e. the PMU to be hidden from the host, that will significantly reduce our
+maintenance and complexity.
 
-
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-mm@kvack.org
-> Signed-off-by: Sebastian Ott <sebott@redhat.com>
-> ---
->   mm/mmap.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index b56a7f0c9f85..7ed286662839 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -3143,13 +3143,13 @@ int vm_brk_flags(unsigned long addr, unsigned long request, unsigned long flags)
->   	if (!len)
->   		return 0;
->
-> -	if (mmap_write_lock_killable(mm))
-> -		return -EINTR;
-> -
->   	/* Until we need other flags, refuse anything except VM_EXEC. */
->   	if ((flags & (~VM_EXEC)) != 0)
->   		return -EINVAL;
->
-> +	if (mmap_write_lock_killable(mm))
-> +		return -EINTR;
-> +
->   	ret = check_brk_limits(addr, len);
->   	if (ret)
->   		goto limits_failed;
+The kernel allows disabling almost literally every other feature that is even
+remotely optional, I don't understand why the hardware PMU is special.
