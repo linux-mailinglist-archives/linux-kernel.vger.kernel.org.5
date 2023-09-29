@@ -2,197 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 490167B2FDC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 12:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5208C7B2FF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 12:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbjI2KRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 06:17:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
+        id S233016AbjI2KSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 06:18:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232786AbjI2KRP (ORCPT
+        with ESMTP id S233052AbjI2KR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 06:17:15 -0400
+        Fri, 29 Sep 2023 06:17:58 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C48C0;
-        Fri, 29 Sep 2023 03:17:13 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C55EAC433C7;
-        Fri, 29 Sep 2023 10:16:58 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC62CCC
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 03:17:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA7AAC433C8;
+        Fri, 29 Sep 2023 10:17:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695982632;
-        bh=P0eff07RhtpS5UOcz3JkNsf+Ld6yeT/W26VJM0WDCPo=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=XzS9mEvGo34Ng6IbV0phy7oFkBghevr6TXQtKuvgCZiNk6sipSIK1ybdV8fiZNmJi
-         ryG2oocKEqZZKJ0Qpanb9xZf3XPiR4Bq6wmT9EMmf0fleXLKV9fNEg9/bkdRQXUeb0
-         6CCRA5VO7ZThmTCkkfWYanznw4Z3cZqE/s5mMA3tjLRXwYn9bn1bqt+qj2Mv3mg9Lj
-         pTssK95Hwcb1T8QjlazVp2JhItPwZmMqN2Vq1pnJqTnlHDG5dK0bcBFAZ33vjsFaWl
-         leIqxKSfZkutf2lGQF/4jFFb0IVmQg0er/lH6TmX4JwaSuIbh4XkLnYFCd3nLSRRA6
-         40ODyX835zJVA==
-Message-ID: <d52b4330cd26e8ef9b2999281b05e50bd7106b3a.camel@kernel.org>
-Subject: Re: [PATCH 86/87] fs: switch timespec64 fields in inode to discrete
- integers
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        David Sterba <dsterba@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>, Jeremy Kerr <jk@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arve =?ISO-8859-1?Q?Hj=F8nnev=E5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Carlos Llamas <cmllamas@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Mattia Dongili <malattia@linux.it>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Brad Warrum <bwarrum@linux.ibm.com>,
-        Ritu Agarwal <rituagar@linux.ibm.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Christian Schoenebeck <linux_oss@crudebyte.com>,
-        David Sterba <dsterba@suse.com>,
-        David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Ian Kent <raven@themaw.net>,
-        Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki <salah.triki@gmail.com>,
-        "Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Xiubo Li <xiubli@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jan Harkes <jaharkes@cs.cmu.edu>, coda@cs.cmu.edu,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, Gao Xiang <xiang@kernel.org>,
-        Chao Yu <chao@kernel.org>, Yue Hu <huyue2@coolpad.com>,
-        Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Jan Kara <jack@suse.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Christoph Hellwig <hch@infradead.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>, Jan Kara <jack@suse.cz>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Dave Kleikamp <shaggy@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Neil Brown <neilb@suse.de>,
-        Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Anton Altaparmakov <anton@tuxera.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Bob Copeland <me@bobcopeland.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Anders Larsen <al@alarsen.net>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Evgeniy Dushistov <dushistov@mail.ru>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Damien Le Moal <dlemoal@kernel.org>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Johannes Thumshirn <jth@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        John Johansen <john.johansen@canonical.com>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-usb@vger.kernel.org, v9fs@lists.linux.dev,
-        linux-afs@lists.infradead.org, autofs@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        codalist@coda.cs.cmu.edu, linux-efi@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, gfs2@lists.linux.dev,
-        linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
-        jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
-        ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev,
-        linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
-        linux-unionfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        reiserfs-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org,
-        linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        bpf@vger.kernel.org, Netdev <netdev@vger.kernel.org>,
-        apparmor@lists.ubuntu.com, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-Date:   Fri, 29 Sep 2023 06:16:57 -0400
-In-Reply-To: <20230929-yuppie-unzweifelhaft-434bf13bc964@brauner>
-References: <20230928110554.34758-1-jlayton@kernel.org>
-         <20230928110554.34758-2-jlayton@kernel.org>
-         <6020d6e7-b187-4abb-bf38-dc09d8bd0f6d@app.fastmail.com>
-         <af047e4a1c6947c59d4a13d4ae221c784a5386b4.camel@kernel.org>
-         <20230929-yuppie-unzweifelhaft-434bf13bc964@brauner>
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
+        s=k20201202; t=1695982674;
+        bh=O/jIypGyxKwU2PaXQZ6VBzvqZw405EeEheox4gi/Mqw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=CXgN9g9LA/WdVpEUVE5cB99rBCQSU3bS5VpjpFZSU7g2ttN/PKxOBosPHmdO3u4oN
+         YT9NM032T1KSAcUPWLnMVHDwGLAYWLDFGDnAiBF5GFqFQa6qqptt0YEclBvM3V9L64
+         pU6wvpsSaOa5IslqhL4YJ+T+x6RtG4i/rMCJfHQLcBBv5dZC6Nu4Xfdlkzg5Lajbez
+         o30DFPFdnF5clQg67kiXq40Cea2veIAgQMX8MXX8WzUeX94xsG8VMBdyRUmmDB9A2Y
+         f8AGXmpACBbHnlZJcGi1OhmRFGHf4mfKECmGygMrjM30fC/Ea3CUfwtvWRla/6hrEo
+         mWHLrJ5lqbVjg==
+Received: from [85.255.233.37] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qmAZE-00HDJo-6E;
+        Fri, 29 Sep 2023 11:17:52 +0100
+Date:   Fri, 29 Sep 2023 11:17:49 +0100
+Message-ID: <87edihmgfm.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     James Clark <james.clark@arm.com>
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, broonie@kernel.org, suzuki.poulose@arm.com,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Jintack Lim <jintack.lim@linaro.org>,
+        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 3/5] arm64: KVM: Add interface to set guest value for TRFCR register
+In-Reply-To: <20230928151611.3042443-4-james.clark@arm.com>
+References: <20230928151611.3042443-1-james.clark@arm.com>
+        <20230928151611.3042443-4-james.clark@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 85.255.233.37
+X-SA-Exim-Rcpt-To: james.clark@arm.com, coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, broonie@kernel.org, suzuki.poulose@arm.com, oliver.upton@linux.dev, james.morse@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mike.leach@linaro.org, leo.yan@linaro.org, alexander.shishkin@linux.intel.com, anshuman.khandual@arm.com, robh@kernel.org, jintack.lim@linaro.org, joey.gouly@arm.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -202,36 +73,174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-09-29 at 11:44 +0200, Christian Brauner wrote:
-> > It is a lot of churn though.
->=20
-> I think that i_{a,c,m}time shouldn't be accessed directly by
-> filesystems same as no filesystem should really access i_{g,u}id which
-> we also provide i_{g,u}id_{read,write}() accessors for. The mode is
-> another example where really most often should use helpers because of all
-> the set*id stripping that we need to do (and the bugs that we had
-> because of this...).
->=20
-> The interdependency between ctime and mtime is enough to hide this in
-> accessors. The other big advantage is simply grepability. So really I
-> would like to see this change even without the type switch.
->=20
-> In other words, there's no need to lump the two changes together. Do the
-> conversion part and we can argue about the switch to discrete integers
-> separately.
->=20
-> The other adavantage is that we have a cycle to see any possible
-> regression from the conversion.
->=20
-> Thoughts anyone?
+On Thu, 28 Sep 2023 16:16:07 +0100,
+James Clark <james.clark@arm.com> wrote:
+> 
+> Add an interface for the Coresight driver to use to set the value of the
+> TRFCR register for the guest. This register controls the exclude
+> settings for trace at different exception levels, and is used to
+> honor the exclude_host and exclude_guest parameters from the Perf
+> session. This will be used to later write TRFCR_EL1 on nVHE at guest
+> switch. For VHE, TRFCR_EL1 is written immediately. Because guest writes
+> to the register are trapped, the value will persist and can't be
+> modified.
+> 
+> The settings must be copied to the vCPU before each run in the same
+> way that PMU events are because the per-cpu struct isn't accessible in
+> protected mode.
+> 
+> Now that both guest and host values are saved, rename trfcr_el1 to
+> host_trfcr_el1 to make it clear that's the value that should be restored
+> on return to the host.
+> 
+> Reviewed-by: Mark Brown <broonie@kernel.org> (sysreg)
+> Signed-off-by: James Clark <james.clark@arm.com>
+> ---
+>  arch/arm64/include/asm/kvm_host.h  |  6 +++++-
+>  arch/arm64/kvm/arm.c               |  1 +
+>  arch/arm64/kvm/debug.c             | 21 +++++++++++++++++++++
+>  arch/arm64/kvm/hyp/nvhe/debug-sr.c |  4 ++--
+>  arch/arm64/tools/sysreg            |  4 ++++
+>  5 files changed, 33 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 498f922f4f41..0e57827a0cf2 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -547,7 +547,8 @@ struct kvm_vcpu_arch {
+>  		/* Statistical profiling extension */
+>  		u64 pmscr_el1;
+>  		/* Self-hosted trace */
+> -		u64 trfcr_el1;
+> +		u64 host_trfcr_el1;
+> +		u64 guest_trfcr_el1;
+>  	} host_debug_state;
 
-That works for me, and sort of what I was planning anyway. I mostly just
-did the change to timestamp storage to see what it would look like
-afterward.
+I think it is high time we stop having *guest* state in a structure
+that is obviously for the host, starting by moving the breakpoint and
+watchpoint out, and into the sysreg array.
 
-FWIW, I'm planning to do a v2 patchbomb early next week, with the
-changes that Chuck suggested (specific helpers for fetching the _sec and
-_nsec fields). For now, I'll drop the change from timespec64 to discrete
-fields. We can do that in a separate follow-on set.
---=20
-Jeff Layton <jlayton@kernel.org>
+And then TRFCR_EL1 can join the fun. But it is pretty unclear whether
+that's actually the guest state.
+
+>  
+>  	/* VGIC state */
+> @@ -1097,6 +1098,8 @@ void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu);
+>  void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr);
+>  void kvm_clr_pmu_events(u32 clr);
+>  bool kvm_set_pmuserenr(u64 val);
+> +void kvm_etm_set_guest_trfcr(u64 trfcr_guest);
+> +void kvm_etm_update_vcpu_events(struct kvm_vcpu *vcpu);
+>  #else
+>  static inline void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr) {}
+>  static inline void kvm_clr_pmu_events(u32 clr) {}
+> @@ -1104,6 +1107,7 @@ static inline bool kvm_set_pmuserenr(u64 val)
+>  {
+>  	return false;
+>  }
+> +static inline void kvm_etm_set_guest_trfcr(u64 trfcr_guest) {}
+>  #endif
+>  
+>  void kvm_vcpu_load_sysregs_vhe(struct kvm_vcpu *vcpu);
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 1bfdd583b261..65e805dc1d7a 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -958,6 +958,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>  		kvm_vgic_flush_hwstate(vcpu);
+>  
+>  		kvm_pmu_update_vcpu_events(vcpu);
+> +		kvm_etm_update_vcpu_events(vcpu);
+>  
+>  		/*
+>  		 * Ensure we set mode to IN_GUEST_MODE after we disable
+> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
+> index 6a1bad1a921b..379d2677961f 100644
+> --- a/arch/arm64/kvm/debug.c
+> +++ b/arch/arm64/kvm/debug.c
+> @@ -22,6 +22,7 @@
+>  				DBG_MDSCR_MDE)
+>  
+>  static DEFINE_PER_CPU(u64, mdcr_el2);
+> +static DEFINE_PER_CPU(u64, guest_trfcr);
+
+Hold on a sec. Why is that global? I'd expect the tracing to be
+specific to a vcpu, and not to affect *everything*.
+
+>  
+>  /**
+>   * save/restore_guest_debug_regs
+> @@ -342,3 +343,23 @@ void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
+>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_SPE);
+>  	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
+>  }
+> +
+> +void kvm_etm_set_guest_trfcr(u64 trfcr_guest)
+> +{
+> +	if (has_vhe())
+> +		write_sysreg_s(trfcr_guest, SYS_TRFCR_EL12);
+> +	else
+> +		*this_cpu_ptr(&guest_trfcr) = trfcr_guest;
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_etm_set_guest_trfcr);
+
+In what context can this be called? What if we want to expose TRFCR to
+guests instead? It looks to me that this ultimately precludes such
+use.
+
+> +
+> +/*
+> + * Updates the vcpu's view of the etm events for this cpu. Must be
+> + * called before every vcpu run after disabling interrupts, to ensure
+> + * that an interrupt cannot fire and update the structure.
+> + */
+> +void kvm_etm_update_vcpu_events(struct kvm_vcpu *vcpu)
+> +{
+> +	if (!has_vhe() && vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRFCR))
+> +		vcpu->arch.host_debug_state.guest_trfcr_el1 = *this_cpu_ptr(&guest_trfcr);
+
+But what is the point of this per-vcpu field if all you care about is
+some per-CPU data?
+
+> +}
+> diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> index 89c208112eb7..55bc01e9808f 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
+> @@ -86,7 +86,7 @@ void __debug_save_host_buffers_nvhe(struct kvm_vcpu *vcpu)
+>  		__debug_save_spe(&vcpu->arch.host_debug_state.pmscr_el1);
+>  	/* Disable and flush Self-Hosted Trace generation */
+>  	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRFCR))
+> -		__debug_save_trace(&vcpu->arch.host_debug_state.trfcr_el1);
+> +		__debug_save_trace(&vcpu->arch.host_debug_state.host_trfcr_el1);
+>  }
+`<>
+>  void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
+> @@ -99,7 +99,7 @@ void __debug_restore_host_buffers_nvhe(struct kvm_vcpu *vcpu)
+>  	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_SPE))
+>  		__debug_restore_spe(vcpu->arch.host_debug_state.pmscr_el1);
+>  	if (vcpu_get_flag(vcpu, DEBUG_STATE_SAVE_TRFCR))
+> -		__debug_restore_trace(vcpu->arch.host_debug_state.trfcr_el1);
+> +		__debug_restore_trace(vcpu->arch.host_debug_state.host_trfcr_el1);
+>  }
+>  
+>  void __debug_switch_to_host(struct kvm_vcpu *vcpu)
+> diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
+> index 992722c0c23b..295a4a625b8b 100644
+> --- a/arch/arm64/tools/sysreg
+> +++ b/arch/arm64/tools/sysreg
+> @@ -2661,3 +2661,7 @@ EndSysreg
+>  Sysreg	TRFCR_EL2	3	4	1	2	1
+>  Fields	TRFCR_EL2
+>  EndSysreg
+> +
+> +Sysreg TRFCR_EL12	3	5	1	2	1
+> +Fields	TRFCR_ELx
+> +EndSysreg
+
+Please move this to the first patch.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
