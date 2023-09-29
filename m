@@ -2,151 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A34B77B38ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC4D7B3892
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbjI2R1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46170 "EHLO
+        id S233209AbjI2RZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233868AbjI2R00 (ORCPT
+        with ESMTP id S232800AbjI2RZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:26:26 -0400
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DDBE1BC
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:26:12 -0700 (PDT)
-Received: by mail-oo1-xc2f.google.com with SMTP id 006d021491bc7-57b6a7e0deeso7197773eaf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:26:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696008371; x=1696613171; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9FmPWGFXlzm/HpDO5LhkisvPrSRbK6I07Ofe/Ps9MCc=;
-        b=T7+ZOeJGFZ8QNiMdX3tgooVzkUHmRUu7PEEqFnfe32Jzxm8us/XFrDjHxwKbyooXqN
-         0FCDWa40QV9dDK1RV8gmldksG9DUHN7twRk6KBQWwAoFjb3Xu43GpKsa7hFBDOZB2sM8
-         5kIzBzaE1f39tlS2A3gsznRU5eeVnGAfh8v5jqsEXZjM2+5YQ8ELbTBh8eQ3ZSEhPZOB
-         3knqF3h2HPF2s7FYcQ930hWEnVmkHMCDsZtfTMb6GxwWfQ6wIjx7ESLCe2wEc0SnYW3G
-         TC/AIpMNzVcp88ZevCmnpBdD9cD4TsROuAUUHSnsEs8UaUTZ0K3MVOBZO4TlVP55EMjc
-         HRxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696008371; x=1696613171;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9FmPWGFXlzm/HpDO5LhkisvPrSRbK6I07Ofe/Ps9MCc=;
-        b=CdpECST6t2uAS/72OtorBZJIGkMYi+aMognDDc/3++xij4k0fTqWBhstOUzR98HTXi
-         GFredqcfKe+FNQ3dHLRHCiAAUx5fZVVd45BJRN1iwNaWW5CCrca0HmpfkePi8GvQIJNg
-         rB8yXbaZtk111YKtavhkIJi7ui19cPbB274tMNqbgnhgjM4k15gxtwnqiF83cLZwooDn
-         UZGebJpg04MoQTWh4jlEeQNNW9fWWAPl9oIXFf6n6OMO23O+72G5oRCO3EHvcXcOFtio
-         vxDJ0KZIushmbSug0zrQOc924br9bT9V5TwXlZF1RmmirGRwpqB/IKueG4mdI8pyfK6S
-         0Ing==
-X-Gm-Message-State: AOJu0Yy3gTTJE5XqjqGSUFgznwMclSCTHla87jVZwkhM3DCjp64ltH+C
-        MHL0SxrsfB8+LspqxN9brFHvaQ==
-X-Google-Smtp-Source: AGHT+IGo8C13uUAx61E4DnW+F1vNgvyWsHBigt0nkOjFX5gCz6fiLgXMlerkCV5kZCgq3+GpEGMKnA==
-X-Received: by 2002:a4a:ea28:0:b0:57b:eee7:4a40 with SMTP id y8-20020a4aea28000000b0057beee74a40mr5161864ood.7.1696008371561;
-        Fri, 29 Sep 2023 10:26:11 -0700 (PDT)
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id f128-20020a4a5886000000b0057bb326cad4sm2272915oob.33.2023.09.29.10.26.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 10:26:11 -0700 (PDT)
-From:   David Lechner <dlechner@baylibre.com>
-To:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Cc:     David Lechner <david@lechnology.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        linux-kernel@vger.kernel.org, David Lechner <dlechner@baylibre.com>
-Subject: [PATCH v3 27/27] staging: iio: resolver: ad2s1210: add label attribute support
-Date:   Fri, 29 Sep 2023 12:23:32 -0500
-Message-ID: <20230929-ad2s1210-mainline-v3-27-fa4364281745@baylibre.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
-References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
+        Fri, 29 Sep 2023 13:25:12 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2075.outbound.protection.outlook.com [40.107.243.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7B831AE;
+        Fri, 29 Sep 2023 10:25:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WtRkL51m4kKaBsaecttklG/puj3A4Y7XQ/Jc8S6uzJSsra2PzA8MKv72lDAB/Fgl7hqNeNyWjgnjHoJLHxAC3kj2C6zhsuiv3chiXS3JHm/uRkZLvWE+1rFiUNIuvTEHALRgexPbUpnW2rbLy3mt8VDdigX3eOXwb191cjH+XMUTvCsDj3iP1kaDAs1y1Ao/oYX8DDuULJiUPSlMdt2BpvavlJ929yvw+1O3NXCL7RdJAhIbL8RipNujy7ZDIKm6c18zr74lT2hGWGdg4GLRS6UCXNpSl7I5K1iXA28O6/aAq+UoaUEgtlyi8kIzfBIW8lFGJ9F/RxxGVCUoSGRb7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=B7X8HEcOsyvvKOimzaSf8XlGjNX4bzAWdtZ4/EzPTT0=;
+ b=OGqNvctzI3eoYpjBRlR6p+Ef4OPz9XILXqe8534WF0svPgPrAL5vI783Ha7/AWQepF4ISWgqoS2murz7eNA8ltRXtqCuYJw3xnIsfyq/55dCM2ouTJzOq6kXDk+U1y4qcOKmWpSf4bz8tErAjjX4gvxVWg4k8eDdt47AgjVv7KUIb45+gsZS89P4sMDz1thxF6Ifsi9oPpJFRChnz7vOPOwsxUWyBkXSdTrwmV+ZIog5l0p53uWz3qjl31rVWIkoBvmo7aDASHvPNGto5owheVxXv5Td+TZc5P94Lfx2dmrPmz2n27PFIW/n5zr2eJHFa1g02GBfW9KL7Cz5qoiKfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B7X8HEcOsyvvKOimzaSf8XlGjNX4bzAWdtZ4/EzPTT0=;
+ b=bRXarYaQp/Ubxtl9qdC0LgVZfascNqXFae+M8mqzginmgujDgTh+XqUo7FqzBFt+X8bafPzlPHEyr62YKcDQwQvG4TNWutA7ZfXb1m0yp3iLs2D/2fbyGhW9YnwewR2cM3C+7Itsy2zKhQA/BeN55zqyz7EyFfnhk0cfDUs/3zM=
+Received: from BYAPR07CA0035.namprd07.prod.outlook.com (2603:10b6:a02:bc::48)
+ by MN0PR12MB6365.namprd12.prod.outlook.com (2603:10b6:208:3c2::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.27; Fri, 29 Sep
+ 2023 17:25:05 +0000
+Received: from MWH0EPF000971E4.namprd02.prod.outlook.com
+ (2603:10b6:a02:bc:cafe::3e) by BYAPR07CA0035.outlook.office365.com
+ (2603:10b6:a02:bc::48) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.27 via Frontend
+ Transport; Fri, 29 Sep 2023 17:25:04 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
+Received: from SATLEXMB03.amd.com (165.204.84.17) by
+ MWH0EPF000971E4.mail.protection.outlook.com (10.167.243.72) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Fri, 29 Sep 2023 17:25:04 +0000
+Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 29 Sep
+ 2023 12:25:03 -0500
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
+ (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 29 Sep
+ 2023 12:25:03 -0500
+Received: from xsjlizhih40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.27 via Frontend
+ Transport; Fri, 29 Sep 2023 12:25:02 -0500
+From:   Lizhi Hou <lizhi.hou@amd.com>
+To:     <vkoul@kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Lizhi Hou <lizhi.hou@amd.com>, <nishad.saraf@amd.com>,
+        <sonal.santan@amd.com>, <max.zhen@amd.com>
+Subject: [PATCH V6 0/1] AMD QDMA driver
+Date:   Fri, 29 Sep 2023 10:24:22 -0700
+Message-ID: <1696008263-42937-1-git-send-email-lizhi.hou@amd.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.12.3
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWH0EPF000971E4:EE_|MN0PR12MB6365:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4a2ced39-9598-4891-e32b-08dbc11104c6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WVIXcMqoiBTYmwnD5YWz4sGC8UZoYZ8P4mrMEZBkESqOoxkbGtUB1/Vnr9LnboRrfZSyXdRDPdomAEm+4AUFqWlP5xmcwfjdzZugIl5a1HeCpvcdWvGSAbrrYQNrceLL2EuGJzrGMB7OZNj/R44cu/LCcaugm6aCQ/ItFShK3ZEXH1hFFsLrgsCb1HULxR3wercJSdEgrAxxg7DaZrwhKw3SAGSpMut9k6GIsaWPDdCNdqFMqxVz8uGj4mL3oyFxDx6VCJhOvMuS2TFaljFtGPecmV/u+Fz4beeOm15JsQNYTP3ZS0hZjEIjhCwhBF7wihgY8DhNgHKhyIlGcY6MccrKhBVMnw8McXqBTcWGGZ1daOr+mLstN7tpEVnkGy4k/7SW1yWZchxx5vLY57rMJrIgnoFDj2ksVQNXweP1aOl5Jovy3NzRsiYpFZcG2DrhIgwZpM3wBkcjx28I2+nCsqT9fM/Ie92W+V2sMxhpLIH/9U+XCf0RdDHnlFwAmY+AD97yFW/lt9luBjQL4renJKcCHoovqwofu2cQ0cOSCUuyODHQzrkVsW2BvLPkgwYGxWY581jva9o+0Z3g5i0iWcwUqtqWH8//hAIskkOeowWlY+BggfaR4oWzUd7lstULR26wRblolYROORWzoUItduIraO2AqBfLD0QkwwZM4ljmQd2rNVTj2JMBhBTvYJ0Bxyf38HRgTo4mxIMdch0gPAIgC5Xq6lNGU/EAGkh+wCBD5IinnLH6l8qr4Y1R1cw+vscN145hV80+b76nuFpOPyY+3wRlPyYl1xJfc2gAsP0=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39860400002)(376002)(136003)(230922051799003)(82310400011)(186009)(1800799009)(64100799003)(451199024)(46966006)(36840700001)(40470700004)(2616005)(47076005)(426003)(336012)(44832011)(5660300002)(4326008)(8676002)(8936002)(81166007)(82740400003)(356005)(26005)(36860700001)(83380400001)(478600001)(966005)(70206006)(70586007)(36756003)(316002)(54906003)(40480700001)(86362001)(6666004)(110136005)(2906002)(41300700001)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 17:25:04.0242
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a2ced39-9598-4891-e32b-08dbc11104c6
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: MWH0EPF000971E4.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6365
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Lechner <david@lechnology.com>
+Hello,
 
-From: David Lechner <dlechner@baylibre.com>
+The QDMA subsystem is used in conjunction with the PCI Express IP block
+to provide high performance data transfer between host memory and the
+card's DMA subsystem.
 
-The ad2s1210 resolver driver has quite a few channels, mostly for
-internal signals for event support. This makes it difficult to know
-which channel is which. This patch adds a label attribute to the
-channels to make it easier to identify them.
+            +-------+       +-------+       +-----------+
+   PCIe     |       |       |       |       |           |
+   Tx/Rx    |       |       |       |  AXI  |           |
+ <=======>  | PCIE  | <===> | QDMA  | <====>| User Logic|
+            |       |       |       |       |           |
+            +-------+       +-------+       +-----------+
 
-Signed-off-by: David Lechner <dlechner@baylibre.com>
----
+Comparing to AMD/Xilinx XDMA subsystem,
+    https://lore.kernel.org/lkml/Y+XeKt5yPr1nGGaq@matsya/
+the QDMA subsystem is a queue based, configurable scatter-gather DMA
+implementation which provides thousands of queues, support for multiple
+physical/virtual functions with single-root I/O virtualization (SR-IOV),
+and advanced interrupt support. In this mode the IP provides AXI4-MM and
+AXI4-Stream user interfaces which may be configured on a per-queue basis.
 
-v3 changes: This is a new patch in v3
+The QDMA has been used for Xilinx Alveo PCIe devices.
+    https://www.xilinx.com/applications/data-center/v70.html
 
- drivers/staging/iio/resolver/ad2s1210.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+This patch series is to provide the platform driver for AMD QDMA subsystem
+to support AXI4-MM DMA transfers. More functions, such as AXI4-Stream
+and SR-IOV, will be supported by future patches.
 
-diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
-index dc3cc3ab855e..a187fa07d315 100644
---- a/drivers/staging/iio/resolver/ad2s1210.c
-+++ b/drivers/staging/iio/resolver/ad2s1210.c
-@@ -1106,6 +1106,34 @@ static int ad2s1210_initial(struct ad2s1210_state *st)
- 	return ret;
- }
- 
-+static int ad2s1210_read_label(struct iio_dev *indio_dev,
-+			       struct iio_chan_spec const *chan,
-+			       char *label)
-+{
-+	if (chan->type == IIO_ANGL) {
-+		if (chan->channel == 0)
-+			return sprintf(label, "position\n");
-+		if (chan->channel == 1)
-+			return sprintf(label, "tracking error\n");
-+	}
-+	if (chan->type == IIO_ANGL_VEL)
-+		return sprintf(label, "velocity\n");
-+	if (chan->type == IIO_PHASE)
-+		return sprintf(label, "synthetic reference\n");
-+	if (chan->type == IIO_ALTVOLTAGE) {
-+		if (chan->output)
-+			return sprintf(label, "excitation\n");
-+		if (chan->channel == 0)
-+			return sprintf(label, "monitor signal\n");
-+		if (chan->channel == 1 && chan->channel2 == IIO_MOD_X)
-+			return sprintf(label, "cosine\n");
-+		if (chan->channel == 1 && chan->channel2 == IIO_MOD_Y)
-+			return sprintf(label, "sine\n");
-+	}
-+
-+	return -EINVAL;
-+}
-+
- static int ad2s1210_read_event_value(struct iio_dev *indio_dev,
- 				     const struct iio_chan_spec *chan,
- 				     enum iio_event_type type,
-@@ -1256,6 +1284,7 @@ static const struct iio_info ad2s1210_info = {
- 	.read_raw = ad2s1210_read_raw,
- 	.read_avail = ad2s1210_read_avail,
- 	.write_raw = ad2s1210_write_raw,
-+	.read_label = ad2s1210_read_label,
- 	.attrs = &ad2s1210_attribute_group,
- 	.read_event_value = ad2s1210_read_event_value,
- 	.write_event_value = ad2s1210_write_event_value,
+The device driver for any FPGA based PCIe device which leverages QDMA can
+call the standard dmaengine APIs to discover and use the QDMA subsystem
+without duplicating the QDMA driver code in its own driver.
+
+Changes since v5:
+- Add more in patch description.
+
+Changes since v4:
+- Convert to use platform driver callback .remove_new()
+
+Changes since v3:
+- Minor changes in Kconfig description.
+
+Changes since v2:
+- A minor change from code review comments.
+
+Changes since v1:
+- Minor changes from code review comments.
+- Fixed kernel robot warning.
+
+Nishad Saraf (1):
+  dmaengine: amd: qdma: Add AMD QDMA driver
+
+ MAINTAINERS                            |    9 +
+ drivers/dma/Kconfig                    |   13 +
+ drivers/dma/Makefile                   |    1 +
+ drivers/dma/amd/Makefile               |    8 +
+ drivers/dma/amd/qdma-comm-regs.c       |   66 ++
+ drivers/dma/amd/qdma.c                 | 1187 ++++++++++++++++++++++++
+ drivers/dma/amd/qdma.h                 |  269 ++++++
+ include/linux/platform_data/amd_qdma.h |   36 +
+ 8 files changed, 1589 insertions(+)
+ create mode 100644 drivers/dma/amd/Makefile
+ create mode 100644 drivers/dma/amd/qdma-comm-regs.c
+ create mode 100644 drivers/dma/amd/qdma.c
+ create mode 100644 drivers/dma/amd/qdma.h
+ create mode 100644 include/linux/platform_data/amd_qdma.h
 
 -- 
-2.42.0
+2.34.1
 
