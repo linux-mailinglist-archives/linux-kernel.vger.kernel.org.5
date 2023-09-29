@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 988247B3CDC
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 01:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB227B3CDF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 01:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233914AbjI2XDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 19:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
+        id S230381AbjI2XFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 19:05:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233820AbjI2XDA (ORCPT
+        with ESMTP id S229508AbjI2XFp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 19:03:00 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6524AF7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 16:02:58 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c6185cafb3so21135ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 16:02:58 -0700 (PDT)
+        Fri, 29 Sep 2023 19:05:45 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32AACDD;
+        Fri, 29 Sep 2023 16:05:43 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-577fff1cae6so895057a12.1;
+        Fri, 29 Sep 2023 16:05:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696028578; x=1696633378; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1696028742; x=1696633542; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Y9BzlJqBcof6n6pTueaTjw4kqspqP+j9P0b11XcgH9M=;
-        b=CnOULgSoeqtnG2DEUO92aN94BuTOfYs1ZZ+MDYf09bZOpvPdeCdrA2rdvSCOO8Nf0u
-         JtWyTEI9s+G11oI9c0tH8XsypgGgTTUHiPsn8KoJaTcdpRD69uWn7Ejb6vWll1+c3t4t
-         DH9u1UK3VGkxQILF97rWzZp0P+MBDLMAp5pZGQ10FnbeLFYnU5wVCluqW6Dy/OJQVyPM
-         iTakiENrf3f613oXHaeFewGif0PpP/7DifAz5tBRttkYFmo2W34jO94yaPPc5s26Pg8r
-         j5wDqFyFVxwPAcr+R/AQuDnvz+SHgBnaWc52SulMzzwmcON42aGd96z6NLTSVQo5cD1j
-         TCOw==
+        bh=tO/3fjY6V7NXsX7xew0hJBkgL5vxDhdDpy1c37B9zRs=;
+        b=IDvq+pIGg6ODRnzzyJJxfiZUf8iXVzBJkP9iJJdgU4wwi/QAKtHqO8DeLVUyerQP+l
+         ZLNgV5bhRGI/lGNZ1/uk44vXDpoa3w386DPv/ISjZixU+g20QMdwL/L1AEW3U+wfZPCE
+         gQNeN91xscqGXqtc4DmtPqxn4eP+q1gF/C0fL6cpj8LOkMZTxHwVKBSrwTp+W5pACcvw
+         FzYbfZZ6Qc12WbmiV9mpxrzXRx2b9o4tt09ARogY6VxiD+u4ZkKIxbUoDy68IuEA85gH
+         M9A+Ubr0TkadDYGXoG13KOzMCtRzOE/ZR+66gHNf9idCRlqFTFO2cD0dT99dLzuw73MK
+         QLJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696028578; x=1696633378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696028742; x=1696633542;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Y9BzlJqBcof6n6pTueaTjw4kqspqP+j9P0b11XcgH9M=;
-        b=YkCoEZXs7i6ROQmRhkQOJXYZtMyRyKnbjbQIoxM2ANQNXNaGV8KxcWzzJwQMwP7PVj
-         AyNnwloaSX7y4dLurJA7IYgFNhY8fbDu38UJQqL/cSnWe48jKIqRQjXQWVUSVU2JsTiV
-         r07HReUP/l+SygrcQhjp0liN1DZL/kqb/JS7D0WKhlS0F8QOGjuuvjQFdgoGQE1H1HF7
-         WNxj/pB/qnGMKRRo9NVv8NFLhzo4Qi9aMumTck/1BZzq878SrFW3fpU9xioK66+L9BnI
-         ds8SY3RjqOFqnOc6r4DyzGcAJytKon40zu2GruAa1PkBi4YLtCqaWeTFGHyufrlgYGtT
-         L5AA==
-X-Gm-Message-State: AOJu0YyZEP8GvB/ZFSy3J0hsPZ6Noj6hGyi4/FRBj3MRR1BTLOxpD5zE
-        sRDtn76wRAl48FoabloYB9tBW5IGEnfsRRpnX0jw6w==
-X-Google-Smtp-Source: AGHT+IHuzxCPFg+yAg7bNAEuuY0F4OlEqd2dJ6C3ksfq4ULTTVvrtLlyYBq/2idpo+DkjFeEVmfJs3J0t6+FOH+Q3Ag=
-X-Received: by 2002:a17:903:184:b0:1c2:446:5259 with SMTP id
- z4-20020a170903018400b001c204465259mr15735plg.19.1696028577492; Fri, 29 Sep
- 2023 16:02:57 -0700 (PDT)
+        bh=tO/3fjY6V7NXsX7xew0hJBkgL5vxDhdDpy1c37B9zRs=;
+        b=bEqqeWxJQSJKPzf1hrqCbtGzuHjbHEsj/4oFhUSnur5f2f7ycfDKqQM72cE/X2e3bV
+         8qmVwWI3xkD9YbTLWu9BCFBkLU85ccrg5S5L242pyGb3qIlUEwHEpQrBD3LrcVmgc2sO
+         U5t4frG0J72N/Q9DYkpDtqgowayin/gKYyHt9ARBW11aq0qPpmu3jSvP7V503soFfHp9
+         ggvIIrD8n9+7p9DUUoUUYxhUlrESzDoRNAgQVQIQdJPeXFRF2S4HkWQHIjDpj8JqqLqb
+         nrzcSzE2cPIIRqi1tAxrheEl4/JZ+V26sTcdGjVYHemYiu2X+nCYaRCVyEvk15TXgjDF
+         /7UA==
+X-Gm-Message-State: AOJu0Yzx09VdUEaKF6R8U4AC9p+OSXLmrRZ6uv+Hz8ZQwVw91V9YJO8A
+        8DQTwsWCmA1PulxKX3fa1Ac=
+X-Google-Smtp-Source: AGHT+IFrw1dPJE3cXJ1o6BoBTIGR8EtX662/Ps/RLmspptBTBu/hV6/hDvN+n6uvIda9Nqq5f2szqA==
+X-Received: by 2002:a17:90a:b396:b0:277:422d:3a0f with SMTP id e22-20020a17090ab39600b00277422d3a0fmr8751976pjr.17.1696028742549;
+        Fri, 29 Sep 2023 16:05:42 -0700 (PDT)
+Received: from pek-lxu-l1.wrs.com ([36.129.58.185])
+        by smtp.gmail.com with ESMTPSA id c7-20020a170902d48700b001c736746d3fsm3768151plg.271.2023.09.29.16.05.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 16:05:42 -0700 (PDT)
+From:   Edward AD <twuufnxlz@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     alex@ghiti.fr, alexghiti@rivosinc.com, aou@eecs.berkeley.edu,
+        conor@kernel.org, guoren@kernel.org, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-serial@vger.kernel.org, liushixin2@huawei.com,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        syzbot+8d2757d62d403b2d9275@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com, twuufnxlz@gmail.com
+Subject: [PATCH] Test for riscv fixes
+Date:   Sat, 30 Sep 2023 07:05:35 +0800
+Message-ID: <20230929230534.45142-2-twuufnxlz@gmail.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <2023092939-lagoon-punctual-e312@gregkh>
+References: <2023092939-lagoon-punctual-e312@gregkh>
 MIME-Version: 1.0
-References: <ZRR1Kc/dvhya7ME4@f> <CAHk-=wibs_xBP2BGG4UHKhiP2B=7KJnx_LL18O0bGK8QkULLHg@mail.gmail.com>
- <20230928-kulleraugen-restaurant-dd14e2a9c0b0@brauner> <20230928-themen-dilettanten-16bf329ab370@brauner>
- <CAG48ez2d5CW=CDi+fBOU1YqtwHfubN3q6w=1LfD+ss+Q1PWHgQ@mail.gmail.com>
- <CAHk-=wj-5ahmODDWDBVL81wSG-12qPYEw=o-iEo8uzY0HBGGRQ@mail.gmail.com>
- <20230929-kerzen-fachjargon-ca17177e9eeb@brauner> <CAG48ez2cExy+QFHpT01d9yh8jbOLR0V8VsR8_==O_AB2fQ+h4Q@mail.gmail.com>
- <20230929-test-lauf-693fda7ae36b@brauner> <CAGudoHHwvOMFqYoBQAoFwD9mMmtq12=EvEGQWeToYT0AMg9V0A@mail.gmail.com>
- <ZRdOkpXUva8UHfEJ@casper.infradead.org>
-In-Reply-To: <ZRdOkpXUva8UHfEJ@casper.infradead.org>
-From:   Jann Horn <jannh@google.com>
-Date:   Sat, 30 Sep 2023 01:02:21 +0200
-Message-ID: <CAG48ez3QA7arOtjsUR1FJ_yqyXibK+uftdyrrB3=E0FAYz9g3g@mail.gmail.com>
-Subject: Re: [PATCH v2] vfs: shave work on failed file open
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Mateusz Guzik <mjguzik@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,31 +77,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 12:24=E2=80=AFAM Matthew Wilcox <willy@infradead.or=
-g> wrote:
-> On Fri, Sep 29, 2023 at 11:23:04PM +0200, Mateusz Guzik wrote:
-> > Extending struct file is not ideal by any means, but the good news is t=
-hat:
-> > 1. there is a 4 byte hole in there, if one is fine with an int-sized co=
-unter
-> > 2. if one insists on 8 bytes, the struct is 232 bytes on my kernel
-> > (debian). still some room up to 256, so it may be tolerable?
->
-> 256 isn't quite the magic number for slabs ... at 256 bytes, we'd get 16
-> per 4kB page, but at 232 bytes we get 17 objects per 4kB page (or 35 per
-> 8kB pair of pages).
->
-> That said, I thik a 32-bit counter is almost certainly sufficient.
+On Fri, 29 Sep 2023 08:04:57 +0200 Greg KH wrote:
+> Where are you getting your odd cc: list from?  This has nothing to do
+> with serial drivers...
+https://lore.kernel.org/all/0000000000000170df0605ccf91a@google.com/raw
 
-I don't like the sequence number proposal because it seems to me like
-it's adding one more layer of complication, but if this does happen, I
-very much would want that number to be 64-bit. A computer doesn't take
-_that_ long to count to 2^32, and especially with preemptible RCU it's
-kinda hard to reason about how long a task might stay in the middle of
-an RCU grace period. Like, are we absolutely sure that there is no
-pessimal case where the scheduler will not schedule a runnable
-cpu-pinned idle-priority task for a few minutes? Either because we hit
-some pessimal case in the scheduler or because the task gets preempted
-by something that's spinning a very long time with preemption
-disabled?
-(And yes, I know, seqlocks...)
+Thanks,
+edward
