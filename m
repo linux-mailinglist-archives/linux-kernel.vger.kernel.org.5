@@ -2,66 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08EBE7B3B4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A13277B3B52
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233441AbjI2Uko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 16:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37282 "EHLO
+        id S233605AbjI2Uln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 16:41:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjI2Ukm (ORCPT
+        with ESMTP id S229508AbjI2Ull (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 16:40:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC521AA
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 13:39:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696019991;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=aTxHeJJZooLm0LnqykCD+3TI4+Q/DSXoZTkzlwvMAIE=;
-        b=Dox+kLslcU7jrHZX9zMdDtbjurmugBPNDQH9DhClECJ8/vHWAqTZRGoy0Lpkua0kO+ZJ+U
-        Vlx6pDQDV1pWl6tROBQQ5PTNdaZIihirP5tNsW7uS551qnAmr0w3dox02WIeQRqWW35zll
-        d+vAXcOqleEFKRGvvlmevVQUwMSy9u4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-687-vrCNtTJtPxik9U9WrzXkkQ-1; Fri, 29 Sep 2023 16:39:47 -0400
-X-MC-Unique: vrCNtTJtPxik9U9WrzXkkQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 68FFF185A797;
-        Fri, 29 Sep 2023 20:39:45 +0000 (UTC)
-Received: from localhost (unknown [10.22.10.252])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 94421170E9;
-        Fri, 29 Sep 2023 20:39:43 +0000 (UTC)
-Date:   Fri, 29 Sep 2023 17:39:42 -0300
-From:   "Luis Claudio R. Goncalves" <lgoncalv@redhat.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        stable-rt <stable-rt@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Jeff Brady <jeffreyjbrady@gmail.com>,
-        Wang Yong <wang.yong12@zte.com.cn>,
-        Luis Goncalves <lgoncalv@redhat.com>
-Subject: [ANNOUNCE] 5.10.194-rt95
-Message-ID: <ZRc2DtDvnsK7wVwR@uudg.org>
+        Fri, 29 Sep 2023 16:41:41 -0400
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2062.outbound.protection.outlook.com [40.107.94.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0751AA
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 13:41:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Am7JE/nvCSZjc3TbMWvb49Fkg5cdHDgK/TdSp3ZeZOMx7POzYIfzhkN/QvwHdKIeOwC3EYcP6LMjSGgd8VE3UuKGA9ng0HxfXYJgq8RGfilUqQ7mf11p3+8qIXDKdIhn4181nKsVWY1zBDXZ7JihMW+bpKdQtuC9Dla9T5mEzaZvgu7B8EJ9mjFslw24Nfa67fTNc5I0r254wxXo3wYOE5S74DH6xOlcySlug9qnQlFo/fgF8ZMX0upWoJT7aT2XgwdZ42x1boR3pKvbYZxg/WX7aPeNW39IS6Q7ZzXlUe1XT1ZKC+YU6Ex/24GQKWaISuYczEMMQ0pV2SyU0ofZkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Ha1fw9Mexrwi8cpyJyXk0/iIi8HzKohSwJdk8P1G9YA=;
+ b=UjpQFTd8T1WF65lSpROGxTm/hKBiAovAS0r0YwZGL8KUnpNQMHQVFSwx3PNBtpMJTLzOMU4AR0RvryYRd3576Y7lCM9fk1pFEBnhsmqADfC9ieT0Os9I9cT4776HywOglhA9186wMslrGS56rnLj4CVS4AYiB+u8r5VVy6exlltE4JvFvKC0bm3Ix5KecJdMgVYyAxwvXRrucOjjmCszf8kPUwAiqOxIIsOWsAzL2oNQG7uja11+VW1m7eoUZXdM1GmHfbEE/AKaG7BtiZm/nK1vrEsXUtupWiQOVxPQcE5BS/+b+3iaIF5dO+X4owcHtaSMRK1OIbEgsg6oQfG5pA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ha1fw9Mexrwi8cpyJyXk0/iIi8HzKohSwJdk8P1G9YA=;
+ b=k+pDajkqwFkxLB7RqCqKpr2Zq4QTOnO9f0hjXX4Wr7/y1ysw0mBeesLk21ErYwaB7zgVftv3lrTiCEusnHe5qBwpQWi5WsJx0ioNYNhncKE+l8CYXlJd1Ii49ixFIxiY+q9VHrs9hG4nxhk538CQDBdwkqJz3UXtxuwcpNUw1hM=
+Received: from DS7PR03CA0099.namprd03.prod.outlook.com (2603:10b6:5:3b7::14)
+ by PH7PR12MB7188.namprd12.prod.outlook.com (2603:10b6:510:204::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.22; Fri, 29 Sep
+ 2023 20:41:36 +0000
+Received: from DS2PEPF00003440.namprd02.prod.outlook.com
+ (2603:10b6:5:3b7:cafe::3) by DS7PR03CA0099.outlook.office365.com
+ (2603:10b6:5:3b7::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25 via Frontend
+ Transport; Fri, 29 Sep 2023 20:41:35 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS2PEPF00003440.mail.protection.outlook.com (10.167.18.43) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Fri, 29 Sep 2023 20:41:35 +0000
+Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 29 Sep
+ 2023 15:41:33 -0500
+From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
+To:     <amd-gfx@lists.freedesktop.org>
+CC:     =?UTF-8?q?Michel=20D=C3=A4nzer?= <mdaenzer@redhat.com>,
+        Ivan Lipski <ivlipski@amd.com>,
+        Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
+        Aurabindo Pillai <aurabindo.pillai@amd.com>,
+        Hersen Wu <hersenxs.wu@amd.com>, Alex Hung <alex.hung@amd.com>,
+        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+        Wayne Lin <wayne.lin@amd.com>,
+        Stylon Wang <stylon.wang@amd.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] Revert "drm/amd/display: Check all enabled planes in dm_check_crtc_cursor"
+Date:   Fri, 29 Sep 2023 16:41:17 -0400
+Message-ID: <20230929204120.120795-1-hamza.mahfooz@amd.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003440:EE_|PH7PR12MB7188:EE_
+X-MS-Office365-Filtering-Correlation-Id: 36324ba2-9d4c-4980-3f0c-08dbc12c7909
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3HPZGcGQd8932TC7/xetc8aHHKXOu3QylWDZOnsbLnrPaFJOTAyeFq6UlOvplwOS4+OE73qE6gt4HpWTVwTzCWfpLOUdHGog31PDx97L73NSMxugSYWGWzVt8jejumYu4rC7/cQtifIgYZwTSs2sclbNEQnVMcm3GR7CWg+IjpzOVpNu4/V8X3s32l6pEehvsd3HVhxMBHIfi03VWFoIUInsmg9ZQ2BM+YSJmgFY5WE47BCPhSBgkdFCav7tXj7e/a91iWLIOtQC9qQyPZyX9z6Flt21H4HwTx9fQd4bQg/4Zu6EQu4y7YN0C/sjhnGH3Q0UfZrTUcqzXS6nxp0owk5td9JpfsQ3nCAk2pY2Cyp8S63nJIqB8gDctxlj4ssXvx/w3hnJegCj3Mfwvj197yqWHdlAFGz87l80kn0RcfLeBEIYXecYzu1q/ahFR/VgZYdHyCPkOIw87ga49vFnojMKSedYz8p9sex4O3kgdqu0jS9S7O5a8tsDImY/jLMtPv5HZoudMQaEC/uY+I6L3FlIav4npynNQbYcZsYyG/ePlo9xX4ul5SBiCraVVIzBX/8tpzfKdK7kMoZ2ALkCfv/9+/eDaVRpTL9EINP6Y+y3zlf3EO+8hNeZHUMFyssOiHVRZ1G9/5kXeH2wBr7azy4xIqT6wDq4rO2Itlw6RyVmqEwuPhUxS+D6YTni/3zuD+80LrvWGGiSLdPMVagdG7RNUskV2OES/n7iXKxhiThSBO12fUT2FbaX/vpu7dmoAKFUid4K4AzLpWP5XG9CA2Iep9z0EYCFhluP6fpoTArKknnRTOMZOc+Fr1lswFkZ
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(396003)(136003)(376002)(230922051799003)(1800799009)(64100799003)(186009)(82310400011)(451199024)(40470700004)(46966006)(36840700001)(40460700003)(2906002)(8936002)(44832011)(2616005)(426003)(16526019)(336012)(54906003)(6916009)(26005)(36860700001)(47076005)(1076003)(70586007)(70206006)(316002)(83380400001)(8676002)(5660300002)(6666004)(478600001)(4326008)(40480700001)(36756003)(356005)(81166007)(82740400003)(41300700001)(86362001)(36900700001)(16060500005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 20:41:35.5646
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 36324ba2-9d4c-4980-3f0c-08dbc12c7909
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003440.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7188
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,96 +113,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+From: Ivan Lipski <ivlipski@amd.com>
 
-I'm pleased to announce the 5.10.194-rt95 stable release.
+This reverts commit 45e1ade04b4d60fe5df859076005779f27c4c9be.
 
-This release is an RT-only update. All the changes here are specific to RT.
+Since, it causes the following IGT tests to fail:
+kms_cursor_legacy@cursor-vs-flip.*
+kms_cursor_legacy@flip-vs-cursor.*
 
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v5.10-rt
-  Head SHA1: e9e1d0b892ed4e46c4d83b53f0f39880e37f8d92
-
-Or to build 5.10.194-rt95 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v5.x/linux-5.10.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v5.x/patch-5.10.194.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/5.10/older/patch-5.10.194-rt95.patch.xz
-
-Signing key fingerprint:
-
-  9354 0649 9972 8D31 D464  D140 F394 A423 F8E6 7C26
-
-All keys used for the above files and repositories can be found on the
-following git repository:
-
-   git://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git
-
-Enjoy!
-Luis
-
-Changes from v5.10.194-rt94:
+Signed-off-by: Ivan Lipski <ivlipski@amd.com>
+Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
 ---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 14 ++------------
+ 1 file changed, 2 insertions(+), 12 deletions(-)
 
-Luis Claudio R. Goncalves (1):
-      Linux 5.10.194-rt95
-
-Wang Yong (1):
-      arm64: signal: Use ARCH_RT_DELAYS_SIGNAL_SEND
----
-arch/arm64/include/asm/signal.h | 12 ++++++++++++
- arch/arm64/kernel/signal.c      |  9 +++++++++
- localversion-rt                 |  2 +-
- 3 files changed, 22 insertions(+), 1 deletion(-)
----
-diff --git a/arch/arm64/include/asm/signal.h b/arch/arm64/include/asm/signal.h
-new file mode 100644
-index 0000000000000..0fb418cf4c17a
---- /dev/null
-+++ b/arch/arm64/include/asm/signal.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __ARM64_ASM_SIGNAL_H
-+#define __ARM64_ASM_SIGNAL_H
-+
-+#include <uapi/asm/signal.h>
-+#include <uapi/asm/siginfo.h>
-+
-+#if defined(CONFIG_PREEMPT_RT)
-+#define ARCH_RT_DELAYS_SIGNAL_SEND
-+#endif
-+
-+#endif
-diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
-index 94eed0dc3afcd..5b08f55ec85d9 100644
---- a/arch/arm64/kernel/signal.c
-+++ b/arch/arm64/kernel/signal.c
-@@ -929,6 +929,15 @@ asmlinkage void do_notify_resume(struct pt_regs *regs,
- 		} else {
- 			local_daif_restore(DAIF_PROCCTX);
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index 32156609fbcf..49ffb4d6e9cc 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -10290,24 +10290,14 @@ static int dm_check_crtc_cursor(struct drm_atomic_state *state,
+ 	 * blending properties match the underlying planes'.
+ 	 */
  
-+#ifdef ARCH_RT_DELAYS_SIGNAL_SEND
-+			if (unlikely(current->forced_info.si_signo)) {
-+				struct task_struct *t = current;
-+
-+				force_sig_info(&t->forced_info);
-+				t->forced_info.si_signo = 0;
-+			}
-+#endif
-+
- 			if (thread_flags & _TIF_UPROBE)
- 				uprobe_notify_resume(regs);
+-	new_cursor_state = drm_atomic_get_plane_state(state, cursor);
+-	if (IS_ERR(new_cursor_state))
+-		return PTR_ERR(new_cursor_state);
+-
+-	if (!new_cursor_state->fb)
++	new_cursor_state = drm_atomic_get_new_plane_state(state, cursor);
++	if (!new_cursor_state || !new_cursor_state->fb)
+ 		return 0;
  
-diff --git a/localversion-rt b/localversion-rt
-index 8d02a9bac5002..5a28f0a65d160 100644
---- a/localversion-rt
-+++ b/localversion-rt
-@@ -1 +1 @@
---rt94
-+-rt95
+ 	dm_get_oriented_plane_size(new_cursor_state, &cursor_src_w, &cursor_src_h);
+ 	cursor_scale_w = new_cursor_state->crtc_w * 1000 / cursor_src_w;
+ 	cursor_scale_h = new_cursor_state->crtc_h * 1000 / cursor_src_h;
+ 
+-	/* Need to check all enabled planes, even if this commit doesn't change
+-	 * their state
+-	 */
+-	i = drm_atomic_add_affected_planes(state, crtc);
+-	if (i)
+-		return i;
+-
+ 	for_each_new_plane_in_state_reverse(state, underlying, new_underlying_state, i) {
+ 		/* Narrow down to non-cursor planes on the same CRTC as the cursor */
+ 		if (new_underlying_state->crtc != crtc || underlying == crtc->cursor)
+-- 
+2.42.0
 
