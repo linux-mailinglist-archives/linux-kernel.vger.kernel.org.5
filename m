@@ -2,113 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E970B7B3127
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 13:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783E07B312B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 13:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232833AbjI2LUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 07:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56636 "EHLO
+        id S232919AbjI2LUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 07:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbjI2LT5 (ORCPT
+        with ESMTP id S229754AbjI2LUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 07:19:57 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A9DB7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 04:19:55 -0700 (PDT)
+        Fri, 29 Sep 2023 07:20:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD663B7;
+        Fri, 29 Sep 2023 04:20:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1695986396; x=1727522396;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2wd8hNfqDmjF7C1js4hPPPyB77InnQk/OjtqUahMXdE=;
-  b=sYZsohgEvm/DdGnJOpSzfKL+aJUpFfdzZi/bTrIZ+GEwfFO1L8eBgclx
-   XWuhbaV3Xu+iwVn+WgkgnpujLeU2kec5DNxgRN5NR2ssJGXFb6nbCu3ZM
-   1eM1w8umj9KC0vPxdsNgMEUjpzFD/BAMEpYcI/c9NkyW2BaXO4F4fdmcV
-   GDsZXyZ/2OP/vg2JH+ZGe8GslRIVXx2jT+xEER4g2rEomIoKrExxF4/sx
-   0ZnDOVMQCUOm7cZsEqhaVPK439jj2p/5Hqo8DfdD83KTvQ2Ic73gueAxo
-   jgTNlvgpibpiZLFikFwQ/HIKtJre2cnVou9pAUjwGKytNbkUqXpJFRXfK
-   g==;
-X-CSE-ConnectionGUID: IYH1bGf2TOSQ6Juu165OUw==
-X-CSE-MsgGUID: uZW3FtkeQPCosKMKt797xA==
-X-ThreatScanner-Verdict: Negative
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695986451; x=1727522451;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QXUMqBfSGsGhYFch5ouPdVeZ7w7T5gbJgbet+vA/gDU=;
+  b=n31Kxup6vMg5NHYtgtwyeE1Dm2or0VT2yGk9eKQHm0eHJCl+yqaGQX3v
+   4oKupdjMRlM/crKrN6s6DFpPpVn8F0khqDQdjMaLKq4Z0JdO4jrwTCRTz
+   8EEugg49OyJPqohgxIm/pl4GDHKla9++m3RjVhYGstJGxOPjkQW72GbiE
+   f0fjLdMP+0sYdQSrTvOdhj89cRSk5ZSvxjqhCY7U3deONGrfToSw1vtyZ
+   6hUfmtc6NZzEMbdstXSjSqCC8WgP9kPsBi5MutaADDP8s2LYp+n/Jroib
+   OuF85gAwrPnh70M3NEywFSoGU/xSFGB08kkcWRqWDxVCFtXTf8H4xmeMB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="468558396"
 X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="asc'?scan'208";a="7236322"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 29 Sep 2023 04:19:54 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 29 Sep 2023 04:19:53 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Fri, 29 Sep 2023 04:19:50 -0700
-Date:   Fri, 29 Sep 2023 12:19:31 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Conor Dooley <conor@kernel.org>
-CC:     Evan Green <evan@rivosinc.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Marc Zyngier <maz@kernel.org>, <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        David Laight <David.Laight@aculab.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        <linux-riscv@lists.infradead.org>,
-        Andrew Jones <ajones@ventanamicro.com>
-Subject: Re: [PATCH v2] RISC-V: Probe misaligned access speed in parallel
-Message-ID: <20230929-swarm-overhear-d3c7f69c7235@wendy>
-References: <20230920193801.3035093-1-evan@rivosinc.com>
- <20230920-98a392b40f88c69e852e2c88@fedora>
- <CAOnJCUK7KTO0n_8wDYDxh2ULtEvMWF-re2dEX6nng_tX1AGgPw@mail.gmail.com>
- <CALs-HsuurXBZ2p=jYKvPq6ZMScugm5rBchttD6Wv9Mtupfx3NQ@mail.gmail.com>
- <20230920-0e2bce9821557cce8d022157@fedora>
+   d="scan'208";a="468558396"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 04:20:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="923571025"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="923571025"
+Received: from valeks2x-mobl.ger.corp.intel.com (HELO localhost) ([10.252.53.242])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 04:20:47 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        =?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v3 0/7] selftests/resctrl: Fixes to failing tests
+Date:   Fri, 29 Sep 2023 14:20:32 +0300
+Message-Id: <20230929112039.7488-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="s8A/BcJmznzPFheQ"
-Content-Disposition: inline
-In-Reply-To: <20230920-0e2bce9821557cce8d022157@fedora>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---s8A/BcJmznzPFheQ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Fix four issues with resctrl selftests.
 
-On Wed, Sep 20, 2023 at 11:25:02PM +0100, Conor Dooley wrote:
+The signal handling fix became necessary after the mount/umount fixes
+and the uninitialized member bug was discovered during the review.
 
-> Ahh great, thanks for the explanations!
+The other two came up when I ran resctrl selftests across the server
+fleet in our lab to validate the upcoming CAT test rewrite (the rewrite
+is not part of this series).
+
+These are developed and should apply cleanly at least on top the
+benchmark cleanup series (might apply cleanly also w/o the benchmark
+series, I didn't test).
+
+v3:
+- Add fix to uninitialized sa_flags
+- Handle ksft_exit_fail_msg() in per test functions
+- Make signal handler register fails to also exit
+- Improve changelogs
+
+v2:
+- Include patch to move _GNU_SOURCE to Makefile to allow normal #include
+  placement
+- Rework the signal register/unregister into patch to use helpers
+- Fixed incorrect function parameter description
+- Use return !!res to avoid confusing implicit boolean conversion
+- Improve MBA/MBM success bound patch's changelog
+- Tweak Cc: stable dependencies (make it a chain).
 
 
-Just to make it clear that the questions I had were answered,
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Ilpo Järvinen (7):
+  selftests/resctrl: Fix uninitialized .sa_flags
+  selftests/resctrl: Extend signal handler coverage to unmount on
+    receiving signal
+  selftests/resctrl: Remove duplicate feature check from CMT test
+  selftests/resctrl: Move _GNU_SOURCE define into Makefile
+  selftests/resctrl: Refactor feature check to use resource and feature
+    name
+  selftests/resctrl: Fix feature checks
+  selftests/resctrl: Reduce failures due to outliers in MBA/MBM tests
 
-Thanks,
-Conor.
+ tools/testing/selftests/resctrl/Makefile      |  2 +-
+ tools/testing/selftests/resctrl/cat_test.c    |  8 --
+ tools/testing/selftests/resctrl/cmt_test.c    |  3 -
+ tools/testing/selftests/resctrl/mba_test.c    |  2 +-
+ tools/testing/selftests/resctrl/mbm_test.c    |  2 +-
+ tools/testing/selftests/resctrl/resctrl.h     |  7 +-
+ .../testing/selftests/resctrl/resctrl_tests.c | 82 ++++++++++++-------
+ tools/testing/selftests/resctrl/resctrl_val.c | 24 +++---
+ tools/testing/selftests/resctrl/resctrlfs.c   | 69 ++++++----------
+ 9 files changed, 96 insertions(+), 103 deletions(-)
 
+-- 
+2.30.2
 
---s8A/BcJmznzPFheQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRaywwAKCRB4tDGHoIJi
-0jofAP0QFEyUKQAoRC/Kmp6Oy+LGwnwIo9OxX/4zFLNLLg3tHwEAvGw8jgsEPOcv
-UFHujmQbxa/tUHBXMXcLxBne6TpNVQw=
-=yL0v
------END PGP SIGNATURE-----
-
---s8A/BcJmznzPFheQ--
