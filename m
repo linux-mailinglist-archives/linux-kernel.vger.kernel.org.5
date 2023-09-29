@@ -2,122 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F8D7B3143
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 13:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F6F7B3150
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 13:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233037AbjI2LWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 07:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57626 "EHLO
+        id S232860AbjI2L0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 07:26:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233112AbjI2LWG (ORCPT
+        with ESMTP id S229508AbjI2L0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 07:22:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3F9CC3;
-        Fri, 29 Sep 2023 04:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695986525; x=1727522525;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=sp0x4fJkDtvf5U3jrcchNzXDHSx4PqVE55/imOH1bT4=;
-  b=KtqU73ntjdlMA8bbKymzsMKOI+2StQ5rHpXz7sQWr0sgC6Ywwywwd7eF
-   7eCDUlAy4KlGz7ZxBOpRXQMq2i40VDMbxp8M3R7iN8mxFou2gu7icVKvO
-   pfrc7uMunmsNpCKmfTwsW2pb/mwBIIXluQJUDfikog0mPsDC0o+nSIAvR
-   1FMw9T8LvwkeRc8hyynMXWpVkOnQnnFu+9Gytct3hHVlUZAhnHWUOLpeb
-   I7i2iV5Kho1rAfDpa+QVVLbpw1kEoTap7wg/Fr6xPqc6BGbUNBWyk0YWN
-   EpmLf8SN7m+5jk5nfaFZlY8kjG51WVd7Wel2T4K5TDR6bVds3EJDvRxJt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="468558553"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="468558553"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 04:22:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="923571201"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="923571201"
-Received: from valeks2x-mobl.ger.corp.intel.com (HELO localhost) ([10.252.53.242])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 04:22:01 -0700
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        =?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Subject: [PATCH v3 7/7] selftests/resctrl: Reduce failures due to outliers in MBA/MBM tests
-Date:   Fri, 29 Sep 2023 14:20:39 +0300
-Message-Id: <20230929112039.7488-8-ilpo.jarvinen@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20230929112039.7488-1-ilpo.jarvinen@linux.intel.com>
-References: <20230929112039.7488-1-ilpo.jarvinen@linux.intel.com>
+        Fri, 29 Sep 2023 07:26:12 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2426FB7;
+        Fri, 29 Sep 2023 04:26:10 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qmBdH-00016J-Jk; Fri, 29 Sep 2023 13:26:07 +0200
+Message-ID: <9c1b89af-4002-4275-88e5-59d6ae1f4bcd@leemhuis.info>
+Date:   Fri, 29 Sep 2023 13:26:06 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Subject: Re: [PATCH 1/3] wifi: mt76: mt7915: remove VHT160 capability on
+ MT7915
+Content-Language: en-US, de-DE
+To:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Ryder Lee <ryder.lee@mediatek.com>
+Cc:     linux-wireless@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20230726091704.25795-1-nbd@nbd.name>
+ <12289744.O9o76ZdvQC@natalenko.name> <2023092145-luxury-fender-d5b9@gregkh>
+ <4862789.31r3eYUQgx@natalenko.name>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+In-Reply-To: <4862789.31r3eYUQgx@natalenko.name>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1695986770;987ca405;
+X-HE-SMSGID: 1qmBdH-00016J-Jk
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The initial value of 5% chosen for the maximum allowed percentage
-difference between resctrl mbm value and IMC mbm value in commit
-06bd03a57f8c ("selftests/resctrl: Fix MBA/MBM results reporting
-format") was "randomly chosen value" (as admitted by the changelog).
+Seems nothing happened since this regression was reported more that a
+week ago. From a quick search on lore it seems Felix is not around
+currently; thus bringing the other mt76 maintainers in, maybe they can
+help out here to get this fixed rather sooner than later, as the culprit
+unfortunately made it to various stable trees. Ciao, Thorsten.
 
-When running tests in our lab across a large number platforms, 5%
-difference upper bound for success seems a bit on the low side for the
-MBA and MBM tests. Some platforms produce outliers that are slightly
-above that, typically 6-7%, which leads MBA/MBM test frequently
-failing.
+On 21.09.23 18:03, Oleksandr Natalenko wrote:
+> On čtvrtek 21. září 2023 9:19:58 CEST Greg Kroah-Hartman wrote:
+>> On Thu, Sep 21, 2023 at 07:02:41AM +0200, Oleksandr Natalenko wrote:
+>>>
+>>> On středa 26. července 2023 11:17:02 CEST Felix Fietkau wrote:
+>>>> The IEEE80211_VHT_CAP_EXT_NSS_BW value already indicates support for half-NSS
+>>>> 160 MHz support, so it is wrong to also advertise full 160 MHz support.
+>>>>
+>>>> Fixes: c2f73eacee3b ("wifi: mt76: mt7915: add back 160MHz channel width support for MT7915")
+>>>> Signed-off-by: Felix Fietkau <nbd@nbd.name>
+>>>> ---
+>>>>  drivers/net/wireless/mediatek/mt76/mt7915/init.c | 1 -
+>>>>  1 file changed, 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/net/wireless/mediatek/mt76/mt7915/init.c b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
+>>>> index ee976657bfc3..78552f10b377 100644
+>>>> --- a/drivers/net/wireless/mediatek/mt76/mt7915/init.c
+>>>> +++ b/drivers/net/wireless/mediatek/mt76/mt7915/init.c
+>>>> @@ -414,7 +414,6 @@ mt7915_init_wiphy(struct mt7915_phy *phy)
+>>>>  			if (!dev->dbdc_support)
+>>>>  				vht_cap->cap |=
+>>>>  					IEEE80211_VHT_CAP_SHORT_GI_160 |
+>>>> -					IEEE80211_VHT_CAP_SUPP_CHAN_WIDTH_160MHZ |
+>>>>  					FIELD_PREP(IEEE80211_VHT_CAP_EXT_NSS_BW_MASK, 1);
+>>>>  		} else {
+>>>>  			vht_cap->cap |=
+>>>>
+>>>
+>>> For some reason this got backported into the stable kernel:
+>>>
+>>> ```
+>>> $ git log --oneline v6.5.2..v6.5.4 -- drivers/net/wireless/mediatek/mt76/mt7915/
+>>> c43017fbebcc3 wifi: mt76: mt7915: fix power-limits while chan_switch
+>>> edb1afe042c74 wifi: mt76: mt7915: fix tlv length of mt7915_mcu_get_chan_mib_info
+>>> 9ec0dec0baea3 wifi: mt76: mt7915: remove VHT160 capability on MT7915
+>>> 0e61f73e6ebc0 wifi: mt76: mt7915: fix capabilities in non-AP mode
+>>> 6bce28ce28390 wifi: mt76: mt7915: fix command timeout in AP stop period
+>>> 7af917d4864c6 wifi: mt76: mt7915: rework tx bytes counting when WED is active
+>>> feae00c6468ce wifi: mt76: mt7915: rework tx packets counting when WED is active
+>>> 70bbcc4ad6544 wifi: mt76: mt7915: fix background radar event being blocked
+>>> ```
+>>>
+>>> and this broke my mt7915-based AP.
+>>>
+>>> However, if I remove `[VT160]` capability from the hostapd config, things go back to normal. It does seem that 160 MHz still works even.
+>>>
+>>> Is this expected?
+>>
+>> Is your device also broken in 6.6-rc2?
+> 
+> Yes, the same behaviour is observed with v6.6-rc2:
+> 
+> ```
+> hostapd[1316]: Configured VHT capability [VHT_CAP_SUPP_CHAN_WIDTH_MASK] exceeds max value supported by the driver (1 > 0)
+> ```
+> 
+> while having `[VT160]` in `vht_capab=`.
 
-Replace the "randomly chosen value" with a success bound that is based
-on those measurements across large number of platforms by relaxing the
-MBA/MBM success bound to 8%. The relaxed bound removes the failures due
-the frequent outliers.
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
 
-Fixes: 06bd03a57f8c ("selftests/resctrl: Fix MBA/MBM results reporting format")
-Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Tested-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-Reviewed-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-Cc: <stable@vger.kernel.org>
----
- tools/testing/selftests/resctrl/mba_test.c | 2 +-
- tools/testing/selftests/resctrl/mbm_test.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/resctrl/mba_test.c b/tools/testing/selftests/resctrl/mba_test.c
-index cf8284dadcb2..d3bf4368341e 100644
---- a/tools/testing/selftests/resctrl/mba_test.c
-+++ b/tools/testing/selftests/resctrl/mba_test.c
-@@ -12,7 +12,7 @@
- 
- #define RESULT_FILE_NAME	"result_mba"
- #define NUM_OF_RUNS		5
--#define MAX_DIFF_PERCENT	5
-+#define MAX_DIFF_PERCENT	8
- #define ALLOCATION_MAX		100
- #define ALLOCATION_MIN		10
- #define ALLOCATION_STEP		10
-diff --git a/tools/testing/selftests/resctrl/mbm_test.c b/tools/testing/selftests/resctrl/mbm_test.c
-index 1ae131a2e246..d3c0d30c676a 100644
---- a/tools/testing/selftests/resctrl/mbm_test.c
-+++ b/tools/testing/selftests/resctrl/mbm_test.c
-@@ -11,7 +11,7 @@
- #include "resctrl.h"
- 
- #define RESULT_FILE_NAME	"result_mbm"
--#define MAX_DIFF_PERCENT	5
-+#define MAX_DIFF_PERCENT	8
- #define NUM_OF_RUNS		5
- 
- static int
--- 
-2.30.2
-
+#regzbot introduced 3ec5ac12ac8a4e
+#regzbot ignore-activity
