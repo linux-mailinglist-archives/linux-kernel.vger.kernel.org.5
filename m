@@ -2,121 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F302F7B35F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 848D97B35FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232959AbjI2Oqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 10:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43962 "EHLO
+        id S233038AbjI2Or2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 10:47:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjI2Oqn (ORCPT
+        with ESMTP id S229508AbjI2Or1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 10:46:43 -0400
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C4ED6;
-        Fri, 29 Sep 2023 07:46:42 -0700 (PDT)
-Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-48feedb90d2so5189787e0c.1;
-        Fri, 29 Sep 2023 07:46:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695998801; x=1696603601; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=icHrBBDQRTeyt50Y1yLJwIMCK4gLih/YGVhUvYswbzQ=;
-        b=cpLXa4ZV8GHaZMHX4XaM3iSOzfZGvWK84GyuVZN7mc4qMKZiJ+pD1t78NJaS/gjRcE
-         PqKc3QaQ5qq2QpZGDO5VWcRK0RwTG42PIf2IaWEi6CSpz8ecR5Mgj7pxqS4YIZbL2+Y0
-         jZKMPQrnuQC6Xo8uaR+uVRv4TZbZrlwTykufKR+U9eB5LZM4BkFqVPWpJKYA1zjL5BCg
-         aaHnaBmxDiLBS7oSaTbLZRfd+KHXCGX7yj1ecMQjOleARrQuO/B/31oFqoqBqAA009gH
-         GfLPa5D1MW/awoXyGtrliZ/zFi8ClSrfObLtbylJ98p94jsTg1AnpoiBcY/zu+ewRYud
-         f1pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695998801; x=1696603601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=icHrBBDQRTeyt50Y1yLJwIMCK4gLih/YGVhUvYswbzQ=;
-        b=aQr5FuxDTYCQdM7SmMeNwk/x5aXQxwVBF1terWhcjGkdWyxCwsSlpb0zcPyJwpI0WJ
-         PRz+b6FTwrMoRrXFUyssYnLI/4eh+2VvXgeg7vqRZoMuSTPpQ11a5PrfFHMF6F1JbqZ7
-         RTl+bKcxXaJlfXyUlA9ZUo2PwyVrjrz28klMYThtO4nH5JErWnId3PlNUCPCHLAsxwAg
-         cI9iA4zvVNolgR7XtrJVhoSJRW6iX7ARbBXc1v+7t8FZyRja16xtqasRsrL9tUXHAOAX
-         OAyn4DcbzNto/31DZoaIFLV46WW9e9eMdptSHItVYlOcZ8g2V4N/swwPeiajij2GZ1Gv
-         9pdQ==
-X-Gm-Message-State: AOJu0Yzntm7yDDKnyWbfuFWSIhyB/XR2oN+kgGCnHdMIyEGdOV+SejY9
-        ueXBD0z+VryUQRG+wQAj67EBv4Jgs2zrTiv4HSM=
-X-Google-Smtp-Source: AGHT+IGl4VBrxQ+OTUhg9OTarf1b8pDfiWJf2T72xV+dm5qW9La2mo3E4I94FnnRzmaI3CV+sty2yxhSjGASAlAxU3U=
-X-Received: by 2002:a1f:d605:0:b0:49a:3537:881c with SMTP id
- n5-20020a1fd605000000b0049a3537881cmr4276555vkg.14.1695998800851; Fri, 29 Sep
- 2023 07:46:40 -0700 (PDT)
+        Fri, 29 Sep 2023 10:47:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1446F9
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:47:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695998845; x=1727534845;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=DkHNKJqK5QAoNV6GKSR8J2VRvWbtTnaGgSQV4oB/QVU=;
+  b=b9s2SQKL34lICkDeCLxpMDzxcfUvYwYqTdFh81YEQZQUwK3jV2Q+Oyg5
+   anHhNVhJpJ4m6SU0cQokJiivMpp5bgKd5oTQUwgj93h2Uz7tY4D4LYrXH
+   iRefM+O8qsxbwF92l4Fvbe1Hi/sU4hC6kfUoA6akTIafhVWew7gsLNvdL
+   qnZ9dPesTyZDu/dDRR8rq3bTjRTPcBtXDOaJRUJ1dEqa97ZRKeiyA4G3N
+   gAbf/qXdg0m1O9h7BOtMHX674v67To2KaH8CKPRUzhd1N7LjTEqClAjy8
+   RWRgaXiyd3U1X6veFqh5ry+YjDDV/sKUyW75uCUWwS/hoKbNp1pSCqrQ/
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="413212205"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="413212205"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 07:47:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="820227173"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="820227173"
+Received: from smorozov-mobl1.ger.corp.intel.com ([10.252.52.167])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 07:47:21 -0700
+Date:   Fri, 29 Sep 2023 17:47:18 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Newman <peternewman@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/4] x86/resctrl: Add sparse_masks file in info
+In-Reply-To: <46d7aa4948b4e669d35dc5b2b0b6b0167ec9c8d7.1695977733.git.maciej.wieczor-retman@intel.com>
+Message-ID: <6a7db4d1-fa76-1e12-e49a-ef865b33f8ff@linux.intel.com>
+References: <cover.1695977733.git.maciej.wieczor-retman@intel.com> <46d7aa4948b4e669d35dc5b2b0b6b0167ec9c8d7.1695977733.git.maciej.wieczor-retman@intel.com>
 MIME-Version: 1.0
-References: <20230929000704.53217-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20230929000704.53217-6-prabhakar.mahadev-lad.rj@bp.renesas.com> <20230929-professed-imperfect-4b2ed9073e04@spud>
-In-Reply-To: <20230929-professed-imperfect-4b2ed9073e04@spud>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 29 Sep 2023 15:45:53 +0100
-Message-ID: <CA+V-a8sXxzUPmV5LqGtYm2SYLHS+-VNo_jRsLNP4mUSAKxuoFw@mail.gmail.com>
-Subject: Re: [PATCH 5/5] riscv: configs: defconfig: Enable configs required
- for RZ/Five SoC
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-1618128138-1695998808=:1989"
+Content-ID: <3ab5c386-33e3-f0b1-97c2-abee0bdf27a@linux.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Thank  you for review.
+--8323329-1618128138-1695998808=:1989
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <ad79d6e0-71d5-a0b0-a5aa-dbea401c917a@linux.intel.com>
 
-On Fri, Sep 29, 2023 at 3:14=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> On Fri, Sep 29, 2023 at 01:07:04AM +0100, Prabhakar wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Enable the configs required by the below IP blocks which are
-> > present on RZ/Five SoC:
-> > * ADC
-> > * CANFD
-> > * DMAC
-> > * eMMC/SDHI
-> > * OSTM
-> > * RAVB (+ Micrel PHY)
-> > * RIIC
-> > * RSPI
-> > * SSI (Sound+WM8978 codec)
-> > * Thermal
-> > * USB (PHY/RESET/OTG)
-> >
-> > Along with the above some core configs are enabled too,
-> > -> CPU frequency scaling as RZ/Five does support this.
-> > -> MTD is enabled as RSPI can be connected to flash chips
-> > -> Enabled I2C chardev so that it enables userspace to read/write
-> >    i2c devices (similar to arm64)
-> > -> Thermal configs as RZ/Five SoC does have thermal unit
-> > -> GPIO regulator as we might have IP blocks for which voltage
-> >    levels are controlled by GPIOs
->
-> You might or you do?
->
-Yes we do use the gpio regulator for SDHI.
+On Fri, 29 Sep 2023, Maciej Wieczor-Retman wrote:
 
-Cheers,
-Prabhakar
+> From: Fenghua Yu <fenghua.yu@intel.com>
+> 
+> Add the interface in resctrl FS to show if sparse cache allocation
+> bit masks are supported on the platform. Reading the file returns
+> either a "1" if non-contiguous 1s are supported and "0" otherwise.
+> The file path is /sys/fs/resctrl/info/{resource}/sparse_masks, where
+> {resource} can be either "L2" or "L3".
+> 
+> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+> Reviewed-by: Peter Newman <peternewman@google.com>
+> Tested-by: Peter Newman <peternewman@google.com>
+> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+> ---
+> Changelog v3:
+> - Add Peter's tested-by and reviewed-by tags.
+> - Reword patch message slightly. (Reinette)
+> 
+> Changelog v2:
+> - Change bitmap naming convention to bit mask. (Reinette)
+> - Change file name to "sparse_masks". (Reinette)
+> 
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> index 725344048f85..945801898a4d 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -895,6 +895,17 @@ static int rdt_shareable_bits_show(struct kernfs_open_file *of,
+>  	return 0;
+>  }
+>  
+> +static int rdt_has_sparse_bitmasks_show(struct kernfs_open_file *of,
+> +					struct seq_file *seq, void *v)
+> +{
+> +	struct resctrl_schema *s = of->kn->parent->priv;
+> +	struct rdt_resource *r = s->res;
+> +
+> +	seq_printf(seq, "%u\n", r->cache.arch_has_sparse_bitmasks);
+> +
+> +	return 0;
+> +}
+> +
+>  /**
+>   * rdt_bit_usage_show - Display current usage of resources
+>   *
+> @@ -1839,6 +1850,13 @@ static struct rftype res_common_files[] = {
+>  		.seq_show	= rdtgroup_size_show,
+>  		.fflags		= RF_CTRL_BASE,
+>  	},
+> +	{
+> +		.name		= "sparse_masks",
+> +		.mode		= 0444,
+> +		.kf_ops		= &rdtgroup_kf_single_ops,
+> +		.seq_show	= rdt_has_sparse_bitmasks_show,
+> +		.fflags		= RF_CTRL_INFO | RFTYPE_RES_CACHE,
+> +	},
+>  
+>  };
+>  
+> 
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+-- 
+ i.
+--8323329-1618128138-1695998808=:1989--
