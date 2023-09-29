@@ -2,186 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39ACB7B32A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:34:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1553B7B32AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbjI2MeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 08:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58778 "EHLO
+        id S233241AbjI2MeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 08:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233257AbjI2MeQ (ORCPT
+        with ESMTP id S233274AbjI2MeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:34:16 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E3251BE
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:34:09 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <j.zink@pengutronix.de>)
-        id 1qmCgq-0008Sf-GH; Fri, 29 Sep 2023 14:33:52 +0200
-Received: from [2a0a:edc0:0:1101:1d::39] (helo=dude03.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <j.zink@pengutronix.de>)
-        id 1qmCgp-009oFT-HL; Fri, 29 Sep 2023 14:33:51 +0200
-Received: from localhost ([::1] helo=dude03.red.stw.pengutronix.de)
-        by dude03.red.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <j.zink@pengutronix.de>)
-        id 1qmCgp-009S7x-81; Fri, 29 Sep 2023 14:33:51 +0200
-From:   Johannes Zink <j.zink@pengutronix.de>
-Date:   Fri, 29 Sep 2023 14:33:33 +0200
-Subject: [PATCH v5 3/3] drm/panel-simple: allow LVDS format override
+        Fri, 29 Sep 2023 08:34:18 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95361BB
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:34:12 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qmCh1-0003Ck-Fq; Fri, 29 Sep 2023 14:34:03 +0200
+Message-ID: <908333ab-1cf2-4b72-b40f-fca4328e160f@leemhuis.info>
+Date:   Fri, 29 Sep 2023 14:34:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Bisected] PowerMac G5 fails booting kernel 6.6-rc3 (BUG: Unable
+ to handle kernel data access at 0xfeffbb62ffec65fe)
+Content-Language: en-US, de-DE
+To:     Erhard Furtner <erhard_f@mailbox.org>,
+        linuxppc-dev@lists.ozlabs.org
+Cc:     willy@infradead.org,
+        Linux kernel regressions list <regressions@lists.linux.dev>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20230929132750.3cd98452@yea>
+From:   "Linux regression tracking (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <20230929132750.3cd98452@yea>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230523-simplepanel_support_nondefault_datamapping-v5-3-0d7928edafab@pengutronix.de>
-References: <20230523-simplepanel_support_nondefault_datamapping-v5-0-0d7928edafab@pengutronix.de>
-In-Reply-To: <20230523-simplepanel_support_nondefault_datamapping-v5-0-0d7928edafab@pengutronix.de>
-To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Dan Carpenter <error27@gmail.com>,
-        patchwork-jzi@pengutronix.de, kernel@pengutronix.de,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Johannes Zink <j.zink@pengutronix.de>
-X-Mailer: b4 0.12.2
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: j.zink@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1695990852;ebb18628;
+X-HE-SMSGID: 1qmCh1-0003Ck-Fq
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some panels support multiple LVDS data mapping formats, which can be
-used e.g. run displays on jeida-18 format when only 3 LVDS lanes are
-available.
+[CCing the regression list, as it should be in the loop for regressions:
+https://docs.kernel.org/admin-guide/reporting-regressions.html]
 
-Add parsing of an optional data-mapping devicetree property, which also
-touches up the bits per color to match the bus format.
+[TLDR: I'm adding this report to the list of tracked Linux kernel
+regressions; the text you find below is based on a few templates
+paragraphs you might have encountered already in similar form.
+See link in footer if these mails annoy you.]
 
-Signed-off-by: Johannes Zink <j.zink@pengutronix.de>
+On 29.09.23 13:27, Erhard Furtner wrote:
+> Greetings!
+> 
+> Kernel 6.5.5 boots fine on my PowerMac G5 11,2 but kernel 6.6-rc3 fails to boot with following dmesg shown on the OpenFirmware console (transcribed screenshot):
+> 
+> [...]
+> SLUB: HWalign=128, Order=0-3, MinObjects=0, CPUs=2, Nodes=1
+> rcu: Hierarchical RCU implementation.
+>  Tracing variant of Tasks RCU enabled.
+> rcu: RCU calculated value of scheduler-enlistment delay is 30 jiffies.
+> NR_IRQS: 512, nr_irqs: 512, preallocated irqs: 16
+> mpic: Setting up MPIC " MPIC 1   " version 1.2 at f8040000, max 2 CPUs
+> mpic: ISU size: 124, shift: 7, mask: 7f
+> mpic: Initializing for 124 sources
+> mpic: Setting up HT PICs workarounds for U3/U4
+> BUG: Unable to handle kernel data access at 0xfeffbb62ffec65fe
+> Faulting instruction address: 0xc00000000005dc40
+> Oops: Kernel access of bad area, sig: 11 [#1]
+> BE PAGE_SIZE=4K MMU=Hash SMP NR_CPUS=2 PowerMac
+> Modules linked in:
+> CPU: 0 PID: 0 Comm: swapper/0 Tainted: G                T  6.6.0-rc3-PMacGS #1
+> Hardware name: PowerMac11,2 PPC970MP 0x440101 PowerMac
+> NIP:  c00000000005dc40 LR: c000000000066660 CTR: c000000000007730
+> REGS: c0000000022bf510 TRAP: 0380   Tainted: G                T (6.6.0-rc3-PMacGS)
+> MSR:  9000000000001032 <SF,HV,ME,IR,DR,RI>  CR: 44004242  XER: 00000000
+> IRQMASK: 3
+> GPR00: 0000000000000000 c0000000022bf7b0 c0000000010c0b00 00000000000001ac
+> GPR04: 0000000003c80000 0000000000000300 c0000000f20001ae 0000000000000300
+> GPR08: 0000000000000006 feffbb62ffec65ff 0000000000000001 0000000000000000
+> GPR12: 9000000000001032 c000000002362000 c000000000f76b80 000000000349ecd8
+> GPR16: 0000000002367ba8 0000000002367f08 0000000000000006 0000000000000000
+> GPR20: 00000000000001ac c000000000f6f920 c0000000022cd985 000000000000000c
+> GPR24: 0000000000000300 00000003b0a3691d c0003e008030000e 0000000000000000
+> GPR28: c00000000000000c c0000000f20001ee feffbb62ffec65fe 00000000000001ac
+> NIP [c00000000005dc40] hash_page_do_lazy_icache+0x50/0x100
+> LR [c000000000066660] __hash_page_4K+0x420/0x590
+> Call Trace:
+> [c0000000022bf7e0] [ffffffffffffffff] 0xffffffffffffffff
+> [c0000000022bf8c0] [c00000000005e164] hash_page_mm+0x364/0x6f0
+> [c0000000022bf990] [c00000000005e684] do_hash_fault+0x114/0x2b0
+> [c0000000022bf9c0] [c0000000000078e8] data_access_common_virt+0x198/0x1f0
+> --- interrupt: 300 at mpic_init+0x4bc/0x10c4
+> NIP:  c000000002020a5c LR: c000000002020a04 CTR: 0000000000000000
+> REGS: c0000000022bf9f0 TRAP: 0300   Tainted: G                T (6.6.0-rc3-PMacGS)
+> MSR:  9000000000001032 <SF,HV,ME,IR,DR,RI>  CR: 24004248  XER: 00000000
+> DAR: c0003e008030000e DSISR: 40000000 IRQMASK: 1
+> GPR00: 0000000000000000 c0000000022bfc90 c0000000010c0b00 c0003e0080300000
+> GPR04: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+> GPR08: 0000000000000000 221b80894c06df2f 0000000000000000 0000000000000000
+> GPR12: 0000000000000000 c000000002362000 c000000000f76b80 000000000349ecd8
+> GPR16: 0000000002367ba8 0000000002367f08 0000000002367c70 0000000000000000
+> GPR20: 567ce25e8c9202b7 c000000000f6f920 0000000000000001 c0003e0080300000
+> GPR24: c00000000226f348 0000000000000004 c00000000404c640 0000000000000000
+> GPR28: c0003e0080300000 c00000000404c000 45886d8559cb69b4 c0000000022bfc90
+> NIP [c00000000005dc40] mpic_init+0x4bc/0x10c4
+> LR [c000000000066660] mpic_init+0x464/0x10c4
+> ~~~ interrupt: 300
+> [c0000000022bfd90] [c000000002022ae4] pmac_setup_one_mpic+0x258/0x2dc
+> [c0000000022bf2e0] [c000000002022df4] pmac_pic_init+0x28c/0x3d8
+> [c0000000022bfef0] [c00000000200b750] init_IRQ+0x90/0x140
+> [c0000000022bff30] [c0000000020053c0] start_kernel+0x57c/0x78c
+> [c0000000022bffe0] [c00000000000cb48] start_here_common+0x1c/0x20
+> Code: 09290000 7c292040 4081007c fbc10020 3d220127 78843664 3929d700 ebc90000 7fde2214 e93e0000 712a0001 40820064 <e93e0000> 71232000 40820048 e93e0000
+> ---[ end trace 0000000000000000 ]---
+> 
+> Kernel panic - not syncing: Fatal exception
+> Rebooting in 40 seconds..
+> 
+> 
+> I bisected the issue and got 9fee28baa601f4dbf869b1373183b312d2d5ef3d as 1st bad commit:
+> 
+>  # git bisect good
+> 9fee28baa601f4dbf869b1373183b312d2d5ef3d is the first bad commit
+> commit 9fee28baa601f4dbf869b1373183b312d2d5ef3d
+> Author: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Date:   Wed Aug 2 16:13:49 2023 +0100
+> 
+>     powerpc: implement the new page table range API
+>     
+>     Add set_ptes(), update_mmu_cache_range() and flush_dcache_folio().  Change
+>     the PG_arch_1 (aka PG_dcache_dirty) flag from being per-page to per-folio.
+>     
+>     [willy@infradead.org: re-export flush_dcache_icache_folio()]
+>       Link: https://lkml.kernel.org/r/ZMx1daYwvD9EM7Cv@casper.infradead.org
+>     Link: https://lkml.kernel.org/r/20230802151406.3735276-22-willy@infradead.org
+>     Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+>     Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
+>     Cc: Michael Ellerman <mpe@ellerman.id.au>
+>     Cc: Nicholas Piggin <npiggin@gmail.com>
+>     Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+>     Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> 
+>  arch/powerpc/include/asm/book3s/32/pgtable.h |  5 ---
+>  arch/powerpc/include/asm/book3s/64/pgtable.h |  6 +---
+>  arch/powerpc/include/asm/book3s/pgtable.h    | 11 ++----
+>  arch/powerpc/include/asm/cacheflush.h        | 14 +++++---
+>  arch/powerpc/include/asm/kvm_ppc.h           | 10 +++---
+>  arch/powerpc/include/asm/nohash/pgtable.h    | 16 +++------
+>  arch/powerpc/include/asm/pgtable.h           | 12 +++++++
+>  arch/powerpc/mm/book3s64/hash_utils.c        | 11 +++---
+>  arch/powerpc/mm/cacheflush.c                 | 41 ++++++++-------------
+>  arch/powerpc/mm/nohash/e500_hugetlbpage.c    |  3 +-
+>  arch/powerpc/mm/pgtable.c                    | 53 ++++++++++++++++------------
+>  11 files changed, 89 insertions(+), 93 deletions(-)
+> 
+> 
+> And indeed when I revert commit 9fee28baa601f4dbf869b1373183b312d2d5ef3d I get a booting kernel again. I reverted the commit on top of 864609c6a0b5f0464f6ec7869cb2a45a529c35d7 (HEAD) as I get build issues when I revert it on top of 6.6-rc3.
+> 
+> dmesg of the successful boot with the reverted commit attached, also kernel .config and the bisect.log.
 
----
+Thanks for the report. To be sure the issue doesn't fall through the
+cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
+tracking bot:
 
-Changes:
+#regzbot ^introduced 9fee28baa601f4dbf869b1373183b312d
+#regzbot title powerpc: new page table range API causes PowerMac G5 to
+fail booting
+#regzbot ignore-activity
 
-  v4 -> v5: none
+This isn't a regression? This issue or a fix for it are already
+discussed somewhere else? It was fixed already? You want to clarify when
+the regression started to happen? Or point out I got the title or
+something else totally wrong? Then just reply and tell me -- ideally
+while also telling regzbot about it, as explained by the page listed in
+the footer of this mail.
 
-  v3 -> v4: - worked in Dan's feedback (thanks for reviewing my work):
-                - return with a proper error in case the call to
-		  panel_simple_override_nondefault_lvds_datamapping()
-		  fails
-                - drop the unneeded and ambiguous ret variable
+Developers: When fixing the issue, remember to add 'Link:' tags pointing
+to the report (the parent of this mail). See page linked in footer for
+details.
 
-  v2 -> v3: - worked in Laurent's review findings (thanks for reviewing
-              my work):
-	        - extract fixing up the bus format to separate
-		  function
-		- only call function on LVDS panels
-		- fix typos found by Laurent
-		- simplified error handling
-
-  v1 -> v2: - fix missing unwind goto found by test robot
-              Reported-by: kernel test robot <lkp@intel.com>
-              Reported-by: Dan Carpenter <error27@gmail.com>
-              Link: https://lore.kernel.org/r/202304160359.4LHmFOlU-lkp@intel.com/
----
- drivers/gpu/drm/panel/panel-simple.c | 53 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
-
-diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-index 857bc01591db..4195cf54934b 100644
---- a/drivers/gpu/drm/panel/panel-simple.c
-+++ b/drivers/gpu/drm/panel/panel-simple.c
-@@ -40,6 +40,7 @@
- #include <drm/drm_edid.h>
- #include <drm/drm_mipi_dsi.h>
- #include <drm/drm_panel.h>
-+#include <drm/drm_of.h>
- 
- /**
-  * struct panel_desc - Describes a simple panel.
-@@ -549,6 +550,51 @@ static void panel_simple_parse_panel_timing_node(struct device *dev,
- 		dev_err(dev, "Reject override mode: No display_timing found\n");
- }
- 
-+static int panel_simple_override_nondefault_lvds_datamapping(struct device *dev,
-+							     struct panel_simple *panel)
-+{
-+	int ret, bpc;
-+
-+	ret = drm_of_lvds_get_data_mapping(dev->of_node);
-+	if (ret < 0) {
-+		if (ret == -EINVAL)
-+			dev_warn(dev, "Ignore invalid data-mapping property\n");
-+
-+		/*
-+		 * Ignore non-existing or malformatted property, fallback to
-+		 * default data-mapping, and return 0.
-+		 */
-+		return 0;
-+	}
-+
-+	switch (ret) {
-+	default:
-+		WARN_ON(1);
-+		fallthrough;
-+	case MEDIA_BUS_FMT_RGB888_1X7X4_SPWG:
-+		fallthrough;
-+	case MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA:
-+		bpc = 8;
-+		break;
-+	case MEDIA_BUS_FMT_RGB666_1X7X3_SPWG:
-+		bpc = 6;
-+	}
-+
-+	if (panel->desc->bpc != bpc || panel->desc->bus_format != ret) {
-+		struct panel_desc *override_desc;
-+
-+		override_desc = devm_kmemdup(dev, panel->desc, sizeof(*panel->desc), GFP_KERNEL);
-+		if (!override_desc)
-+			return -ENOMEM;
-+
-+		override_desc->bus_format = ret;
-+		override_desc->bpc = bpc;
-+		panel->desc = override_desc;
-+	}
-+
-+	return 0;
-+}
-+
- static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
- {
- 	struct panel_simple *panel;
-@@ -601,6 +647,13 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
- 			panel_simple_parse_panel_timing_node(dev, panel, &dt);
- 	}
- 
-+	if (desc->connector_type == DRM_MODE_CONNECTOR_LVDS) {
-+		/* Optional data-mapping property for overriding bus format */
-+		err = panel_simple_override_nondefault_lvds_datamapping(dev, panel);
-+		if (err)
-+			goto free_ddc;
-+	}
-+
- 	connector_type = desc->connector_type;
- 	/* Catch common mistakes for panels. */
- 	switch (connector_type) {
-
--- 
-2.39.2
-
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
