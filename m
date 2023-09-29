@@ -2,255 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B60077B2DBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF0367B2DC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232674AbjI2IXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 04:23:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45346 "EHLO
+        id S232816AbjI2I0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 04:26:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbjI2IXW (ORCPT
+        with ESMTP id S232621AbjI2I0O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 04:23:22 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283431A7;
-        Fri, 29 Sep 2023 01:23:20 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 08:23:15 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1695975796;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qe51nWXzQO1uA4LEpD9VWuQ83YMo2vME02AfE+lfYRw=;
-        b=dWz4FWyDLISmtoyDyHGbxdgNTO1mK3NbqapC1sCkn4Kq4q2Kjyk5lEbT78bjnBllRH3IbS
-        XorNmOhEoI5RDooRS2yqZkYAbyszeByBrgZ+QGdN8PXeb0FsqqoiEdyCmvsSiTcCXXixId
-        CQFPBrNpCZDXs46N+iNr7wY4QBBWk7qjH/k2zBeDUEPHCWggJCMiPjWml1iLcObxAKckGF
-        FDvMfvZ2erVR7uI77yCG5drXSD2RkjBHD5DwIjHo0XJGSmdw8z5pdg4Eh/2pgb3QsToQ97
-        i14CyE5xdPn7+PFzwBjITh1E0EQ6xP27yn04mFstj7OqgCFYtDevt2P6zGdQQQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1695975796;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qe51nWXzQO1uA4LEpD9VWuQ83YMo2vME02AfE+lfYRw=;
-        b=Q0rOQo3UA0+GRZ63+2lqN9ht7n7fhpY4/TO0/fDT/6J45U/ztOKsslfxgtBsw6xIw1MYWL
-        6clv1eUJoYqQfrDQ==
-From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/deadline: Make dl_rq->pushable_dl_tasks
- update drive dl_rq->overloaded
-Cc:     Valentin Schneider <vschneid@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230928150251.463109-1-vschneid@redhat.com>
-References: <20230928150251.463109-1-vschneid@redhat.com>
+        Fri, 29 Sep 2023 04:26:14 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78791A8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:26:11 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-405361bb94eso141670565e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:26:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1695975970; x=1696580770; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WX41g5Ex2mgCQT3kQj51PYJPgefWmJ9XFZpouAvDF2A=;
+        b=FxW3KCsQo8txXpMWzi3zSezrX+Y8aSco5Gz1q5587lukO7eseyKJii5o8m7YwM5FTl
+         45ACBfxVNuovoQU3VTG+upg6xDZ7/s8I/dPHNBSaS/vitqLH/Q6zy8OHVBWunpeFbWe5
+         614xehgH9A+34nyBLiQzxV/1sG4GkayPtNSksBHvMRXZf5WpHhU+qcD/iv3pNpwqqbDo
+         OSaS3G8dXCgzcbzf3ij6yj2obTnJri3LIDsZl2oQYNUX4BAuX8P8WaZr9AuZIEt3KLbn
+         TNqTdbQjCKQxK/FZ4TVUDf/BKiOThm6wF81lDgckR8ObCvp3xqtFSKm/5PUVGqeTvEnb
+         QZDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695975970; x=1696580770;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WX41g5Ex2mgCQT3kQj51PYJPgefWmJ9XFZpouAvDF2A=;
+        b=TOkLMkpYVrMwj0nqxbZSKEk6ca+RLR0+MFP/+nXz24rbgQD/Jx1RzlTXUnCHJ01cIE
+         JsWgbQVwvxHAhSWVvZKQC4Y1unMJhDKHR11iPYjBL9IrwkZVaHTPzOdE46dRNcfYkr9E
+         Ai+W2EjnggulFssUJe+USOORJM5CZDjrFiSmisZT5FSRHfRAB7qVl7abU/BhWt0C9WXK
+         PnWLODCTwtkDqJxRmcv2jYn+JgQywV17wFu1n7pKbw6DEfPZzjG6DL6GKi7PaY/clk1F
+         6UuoPlVrtw7144uiNtVU947qxx5a5pfg5HH1lw1XeJkAt7SNSc5J4CknYAx8u68wonQ4
+         kgCA==
+X-Gm-Message-State: AOJu0YzzozM6wjcxMWfpIRNBfl7xFa++5rzwEBd6wT86bNHpTimy6PG4
+        M7XI5VsN3sipbnPyoSI6sIFB1b6pZTl0SJD5+cFr1Q==
+X-Google-Smtp-Source: AGHT+IFotf6XO1lJDjNVA9fLU3PZ+wvlEqKsBa8iaRjpXi7p8SNYxOKrZWD/2txCrOvhDZQYnkNiaXxU6mEtgFRW1Ho=
+X-Received: by 2002:a05:600c:3785:b0:401:b204:3b98 with SMTP id
+ o5-20020a05600c378500b00401b2043b98mr3941830wmr.19.1695975970106; Fri, 29 Sep
+ 2023 01:26:10 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <169597579563.27769.9947547101047504573.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <f74665d1-4d28-01a2-5694-b06fde202d39@ghiti.fr> <20230928231239.2144579-2-twuufnxlz@gmail.com>
+In-Reply-To: <20230928231239.2144579-2-twuufnxlz@gmail.com>
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+Date:   Fri, 29 Sep 2023 10:25:59 +0200
+Message-ID: <CAHVXubhG2c=ShFHF4hMMFm8=BYDTyDUduOizujbUWQBW+55wTw@mail.gmail.com>
+Subject: Re: [PATCH] riscv: fix out of bounds in walk_stackframe
+To:     Edward AD <twuufnxlz@gmail.com>
+Cc:     alex@ghiti.fr, aou@eecs.berkeley.edu, conor@kernel.org,
+        gregkh@linuxfoundation.org, guoren@kernel.org,
+        jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-serial@vger.kernel.org,
+        liushixin2@huawei.com, palmer@dabbelt.com,
+        paul.walmsley@sifive.com,
+        syzbot+8d2757d62d403b2d9275@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+Hi Edward,
 
-Commit-ID:     5fe7765997b139e2d922b58359dea181efe618f9
-Gitweb:        https://git.kernel.org/tip/5fe7765997b139e2d922b58359dea181efe618f9
-Author:        Valentin Schneider <vschneid@redhat.com>
-AuthorDate:    Thu, 28 Sep 2023 17:02:51 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 29 Sep 2023 10:20:21 +02:00
+On Fri, Sep 29, 2023 at 1:12=E2=80=AFAM Edward AD <twuufnxlz@gmail.com> wro=
+te:
+>
+> Add vmalloc and kernel addresses check to prevent invalid access.
+>
+> Closes: https://lore.kernel.org/all/20230926105949.1025995-2-twuufnxlz@gm=
+ail.com/
+> Fixes: 5d8544e2d007 ("RISC-V: Generic library routines and assembly")
+> Reported-and-test-by: syzbot+8d2757d62d403b2d9275@syzkaller.appspotmail.c=
+om
+> Link: https://lore.kernel.org/all/0000000000000170df0605ccf91a@google.com=
+/T/
+> Signed-off-by: Edward AD <twuufnxlz@gmail.com>
+> ---
+>  arch/riscv/kernel/stacktrace.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrac=
+e.c
+> index 64a9c093aef9..031a4a35c1d0 100644
+> --- a/arch/riscv/kernel/stacktrace.c
+> +++ b/arch/riscv/kernel/stacktrace.c
+> @@ -54,6 +54,9 @@ void notrace walk_stackframe(struct task_struct *task, =
+struct pt_regs *regs,
+>                         break;
+>                 /* Unwind stack frame */
+>                 frame =3D (struct stackframe *)fp - 1;
+> +               if ((is_vmalloc_addr(frame) && !pfn_valid(page_to_pfn(vma=
+lloc_to_page(frame)))) ||
+> +                    !virt_addr_valid(frame))
+> +                       break;
+>                 sp =3D fp;
+>                 if (regs && (regs->epc =3D=3D pc) && (frame->fp & 0x7)) {
+>                         fp =3D frame->ra;
+> --
+> 2.25.1
+>
 
-sched/deadline: Make dl_rq->pushable_dl_tasks update drive dl_rq->overloaded
-
-dl_rq->dl_nr_migratory is increased whenever a DL entity is enqueued and it has
-nr_cpus_allowed > 1. Unlike the pushable_dl_tasks tree, dl_rq->dl_nr_migratory
-includes a dl_rq's current task. This means a dl_rq can have a migratable
-current, N non-migratable queued tasks, and be flagged as overloaded and have
-its CPU set in the dlo_mask, despite having an empty pushable_tasks tree.
-
-Make an dl_rq's overload logic be driven by {enqueue,dequeue}_pushable_dl_task(),
-in other words make DL RQs only be flagged as overloaded if they have at
-least one runnable-but-not-current migratable task.
-
- o push_dl_task() is unaffected, as it is a no-op if there are no pushable
-   tasks.
-
- o pull_dl_task() now no longer scans runqueues whose sole migratable task is
-   their current one, which it can't do anything about anyway.
-   It may also now pull tasks to a DL RQ with dl_nr_running > 1 if only its
-   current task is migratable.
-
-Since dl_rq->dl_nr_migratory becomes unused, remove it.
-
-RT had the exact same mechanism (rt_rq->rt_nr_migratory) which was dropped
-in favour of relying on rt_rq->pushable_tasks, see:
-
-  612f769edd06 ("sched/rt: Make rt_rq->pushable_tasks updates drive rto_mask")
-
-Signed-off-by: Valentin Schneider <vschneid@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Juri Lelli <juri.lelli@redhat.com>
-Link: https://lore.kernel.org/r/20230928150251.463109-1-vschneid@redhat.com
----
- kernel/sched/deadline.c | 57 +++++++++-------------------------------
- kernel/sched/debug.c    |  1 +-
- kernel/sched/sched.h    |  1 +-
- 3 files changed, 14 insertions(+), 45 deletions(-)
-
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index fb1996a..d98408a 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -509,7 +509,6 @@ void init_dl_rq(struct dl_rq *dl_rq)
- 	/* zero means no -deadline tasks */
- 	dl_rq->earliest_dl.curr = dl_rq->earliest_dl.next = 0;
- 
--	dl_rq->dl_nr_migratory = 0;
- 	dl_rq->overloaded = 0;
- 	dl_rq->pushable_dl_tasks_root = RB_ROOT_CACHED;
- #else
-@@ -553,39 +552,6 @@ static inline void dl_clear_overload(struct rq *rq)
- 	cpumask_clear_cpu(rq->cpu, rq->rd->dlo_mask);
- }
- 
--static void update_dl_migration(struct dl_rq *dl_rq)
--{
--	if (dl_rq->dl_nr_migratory && dl_rq->dl_nr_running > 1) {
--		if (!dl_rq->overloaded) {
--			dl_set_overload(rq_of_dl_rq(dl_rq));
--			dl_rq->overloaded = 1;
--		}
--	} else if (dl_rq->overloaded) {
--		dl_clear_overload(rq_of_dl_rq(dl_rq));
--		dl_rq->overloaded = 0;
--	}
--}
--
--static void inc_dl_migration(struct sched_dl_entity *dl_se, struct dl_rq *dl_rq)
--{
--	struct task_struct *p = dl_task_of(dl_se);
--
--	if (p->nr_cpus_allowed > 1)
--		dl_rq->dl_nr_migratory++;
--
--	update_dl_migration(dl_rq);
--}
--
--static void dec_dl_migration(struct sched_dl_entity *dl_se, struct dl_rq *dl_rq)
--{
--	struct task_struct *p = dl_task_of(dl_se);
--
--	if (p->nr_cpus_allowed > 1)
--		dl_rq->dl_nr_migratory--;
--
--	update_dl_migration(dl_rq);
--}
--
- #define __node_2_pdl(node) \
- 	rb_entry((node), struct task_struct, pushable_dl_tasks)
- 
-@@ -594,6 +560,11 @@ static inline bool __pushable_less(struct rb_node *a, const struct rb_node *b)
- 	return dl_entity_preempt(&__node_2_pdl(a)->dl, &__node_2_pdl(b)->dl);
- }
- 
-+static inline int has_pushable_dl_tasks(struct rq *rq)
-+{
-+	return !RB_EMPTY_ROOT(&rq->dl.pushable_dl_tasks_root.rb_root);
-+}
-+
- /*
-  * The list of pushable -deadline task is not a plist, like in
-  * sched_rt.c, it is an rb-tree with tasks ordered by deadline.
-@@ -609,6 +580,11 @@ static void enqueue_pushable_dl_task(struct rq *rq, struct task_struct *p)
- 				 __pushable_less);
- 	if (leftmost)
- 		rq->dl.earliest_dl.next = p->dl.deadline;
-+
-+	if (!rq->dl.overloaded) {
-+		dl_set_overload(rq);
-+		rq->dl.overloaded = 1;
-+	}
- }
- 
- static void dequeue_pushable_dl_task(struct rq *rq, struct task_struct *p)
-@@ -625,11 +601,11 @@ static void dequeue_pushable_dl_task(struct rq *rq, struct task_struct *p)
- 		dl_rq->earliest_dl.next = __node_2_pdl(leftmost)->dl.deadline;
- 
- 	RB_CLEAR_NODE(&p->pushable_dl_tasks);
--}
- 
--static inline int has_pushable_dl_tasks(struct rq *rq)
--{
--	return !RB_EMPTY_ROOT(&rq->dl.pushable_dl_tasks_root.rb_root);
-+	if (!has_pushable_dl_tasks(rq) && rq->dl.overloaded) {
-+		dl_clear_overload(rq);
-+		rq->dl.overloaded = 0;
-+	}
- }
- 
- static int push_dl_task(struct rq *rq);
-@@ -1504,7 +1480,6 @@ void inc_dl_tasks(struct sched_dl_entity *dl_se, struct dl_rq *dl_rq)
- 	add_nr_running(rq_of_dl_rq(dl_rq), 1);
- 
- 	inc_dl_deadline(dl_rq, deadline);
--	inc_dl_migration(dl_se, dl_rq);
- }
- 
- static inline
-@@ -1518,7 +1493,6 @@ void dec_dl_tasks(struct sched_dl_entity *dl_se, struct dl_rq *dl_rq)
- 	sub_nr_running(rq_of_dl_rq(dl_rq), 1);
- 
- 	dec_dl_deadline(dl_rq, dl_se->deadline);
--	dec_dl_migration(dl_se, dl_rq);
- }
- 
- static inline bool __dl_less(struct rb_node *a, const struct rb_node *b)
-@@ -2291,9 +2265,6 @@ static int push_dl_task(struct rq *rq)
- 	struct rq *later_rq;
- 	int ret = 0;
- 
--	if (!rq->dl.overloaded)
--		return 0;
--
- 	next_task = pick_next_pushable_dl_task(rq);
- 	if (!next_task)
- 		return 0;
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index c4253bd..4580a45 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -745,7 +745,6 @@ void print_dl_rq(struct seq_file *m, int cpu, struct dl_rq *dl_rq)
- 
- 	PU(dl_nr_running);
- #ifdef CONFIG_SMP
--	PU(dl_nr_migratory);
- 	dl_bw = &cpu_rq(cpu)->rd->dl_bw;
- #else
- 	dl_bw = &dl_rq->dl_bw;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 41d760d..649eb9e 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -707,7 +707,6 @@ struct dl_rq {
- 		u64		next;
- 	} earliest_dl;
- 
--	unsigned int		dl_nr_migratory;
- 	int			overloaded;
- 
- 	/*
+I'm still not convinced this will fix the kasan out-of-bounds
+accesses, the page can be valid but the read can happen at an offset
+not initialized and trigger such errors right? I still think there is
+something weird about the stack frame, as to me this should not happen
+(but admittedly I don't know much about that).
