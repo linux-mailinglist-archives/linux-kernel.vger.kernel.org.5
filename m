@@ -2,88 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A18A67B2945
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 02:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AB07B294E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 02:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232300AbjI2ADh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 20:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38524 "EHLO
+        id S232130AbjI2AGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 20:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232262AbjI2ADe (ORCPT
+        with ESMTP id S229653AbjI2AGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 20:03:34 -0400
-Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com [209.85.160.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168551A5
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 17:03:30 -0700 (PDT)
-Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1dce4259823so23860444fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 17:03:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695945809; x=1696550609;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
-        b=fpeXhr30ePGrWQT1KcxPUcCU4f08P9nRC9v5mH52Pj6fcpZIW2eUQCHKRI8cO5mTbk
-         QpP0171p9togWpfolqmH9oqgow4m9rYdr3rxEzWBPz053wuEYCs+n43JyA9zP3R4g8uM
-         GacCrCgq5AKKy6i0mHUMQl4DEg0xxqTPreykls0KbvHPOFvSwaAFCownJo57lXnXvW4P
-         npBN8aALvDCiVSnns7QumVd0FBGRiPHAvte6zfjmmLSVnJpt5avwM7pQu7GBT7TGZUAl
-         Wa2F33FKO47m3LHBd9MowgRuGnKEMbADthQqk0m8kPFKXTm8hbi9lwIOuen7CO9Fi1ue
-         EMqw==
-X-Gm-Message-State: AOJu0YwkA98FIz0HQaZpqhGVuBNY3GX/Y0ZWdQnUr+IdRRYYTDQhbdbV
-        vCR6RVoZKxlc1WV6/F0+Gi6d7BtY9aZglBVSEJ+wmZSR5kfj
-X-Google-Smtp-Source: AGHT+IERkTanYl+6i8fZvmZqLio7FhKCgtIxa/JJCK2qCyQ3t0AROlbj5TW0NkJARvOIfScURyDm0HR0Tb/tFCcbx/PNb9gtLLgs
+        Thu, 28 Sep 2023 20:06:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 796A3F3;
+        Thu, 28 Sep 2023 17:06:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE1B9C433C8;
+        Fri, 29 Sep 2023 00:06:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695945997;
+        bh=kX49jEUPzZ2DjHCoxms5cPSwkraOJGucVyEvtCLUo8s=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SNwHhr7TvQVZxVRjtAtw3qsoqTS27o0XJTgtjIOFfSgUCj/0tTLoMmj+3n6bOS07a
+         Jfrq9oUBgRHdqKyyAR6g6WHStZl14TQhm0J8WsogR1mKar3QKLBPkjwHi2Er4/72j9
+         o/rAIF1IaKaw1+E6Yv0rS+6wjjH0yscCA9bPeWENK0MBYNc9xCl2/rMzyNHeVj/S3p
+         F8glDStJ2Ue2EsY3aBF5lG30AYj99+s1x1bvRnVriIsgIsWDL4+eFw1rGPPa3YWYcr
+         tUrBqnPOQ6OuIFu2+a4cjHza5PV9FGUhYRRG5ZGMd8CUnj1KM6MJRF0SyUPMpBC+3j
+         sdOpKoKE126FQ==
+From:   Stephen Boyd <sboyd@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] clk fixes for v6.6-rc3
+Date:   Thu, 28 Sep 2023 17:06:34 -0700
+Message-ID: <20230929000635.1480419-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:c784:b0:1dc:27f6:7a10 with SMTP id
- dy4-20020a056870c78400b001dc27f67a10mr1206014oab.10.1695945809369; Thu, 28
- Sep 2023 17:03:29 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 17:03:29 -0700
-In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000086a1dc0606742727@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
-From:   syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917d1d:
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
 
-#syz fix: exact-commit-title
+are available in the Git repository at:
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+  https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git tags/clk-fixes-for-linus
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
+for you to fetch changes up to a47b44fbb13f5e7a981b4515dcddc93a321ae89c:
 
----
-[1] I expect the commit to be present in:
+  clk: tegra: fix error return case for recalc_rate (2023-09-12 10:56:05 -0700)
 
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+----------------------------------------------------------------
+A bunch of clk driver fixes for issues found recently.
 
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+ - Fix the binding for versaclock3 that was introduced this merge window
+   so we know what the values are for clk consumers
+ - Fix a 64-bit division issue in the versaclock3 driver
+ - Avoid breakage in the versaclock3 driver by rejiggering the enums
+   used to layout clks
+ - Fix the parent name of a clk in the Spreadtrum ums512 clk driver
+ - Fix a suspend/resume issue in Skyworks Si521xx clk driver where
+   regmap restoration fails because writes are wedged
+ - Return zero from Tegra bpmp recalc_rate() implementation when an
+   error occurs so we don't consider an error as a large rate
 
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+----------------------------------------------------------------
+Biju Das (4):
+      dt-bindings: clock: versaclock3: Add description for #clock-cells property
+      clk: vc3: Fix 64 by 64 division
+      clk: vc3: Fix output clock mapping
+      clk: vc3: Make vc3_clk_mux enum values based on vc3_clk enum values
 
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+Marek Vasut (2):
+      clk: si521xx: Use REGCACHE_FLAT instead of NONE
+      clk: si521xx: Fix regmap write accessor
 
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+Timo Alho (1):
+      clk: tegra: fix error return case for recalc_rate
+
+Zhifeng Tang (1):
+      clk: sprd: Fix thm_parents incorrect configuration
+
+ .../devicetree/bindings/clock/renesas,5p35023.yaml |  11 +-
+ drivers/clk/clk-si521xx.c                          |   9 +-
+ drivers/clk/clk-versaclock3.c                      | 117 ++++++++++-----------
+ drivers/clk/sprd/ums512-clk.c                      |   2 +-
+ drivers/clk/tegra/clk-bpmp.c                       |   2 +-
+ 5 files changed, 72 insertions(+), 69 deletions(-)
+
+-- 
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
