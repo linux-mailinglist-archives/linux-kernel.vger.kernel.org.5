@@ -2,119 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AE87B3C1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 23:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C2677B3C20
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 23:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233442AbjI2Vuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 17:50:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47910 "EHLO
+        id S233516AbjI2VvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 17:51:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjI2Vuu (ORCPT
+        with ESMTP id S232834AbjI2VvG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 17:50:50 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609E9E6
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 14:50:48 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c724577e1fso46134535ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 14:50:48 -0700 (PDT)
+        Fri, 29 Sep 2023 17:51:06 -0400
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4265D1BB
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 14:51:03 -0700 (PDT)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-59bc956b029so176669607b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 14:51:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696024248; x=1696629048; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nG8l3KmiLJUoQAJEoFfRXqVxZP9ikMMyfFYzlsqPkOg=;
-        b=it+Yh6OVEOmZWjq5k6VvGtayvLGekUQU2USYgjkXiygYlODihzgWrPUOnjYXvFXpgo
-         RTzgAHQYffiaCJyruMjltP3BEXYjqbRY/3NrlNbkju5iJANheEEUVDa/G4mLVOyATMK8
-         Dm9OH0dGQhK3I5O/YWblBFpIay8Rkf/i0IoZE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696024248; x=1696629048;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1696024262; x=1696629062; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nG8l3KmiLJUoQAJEoFfRXqVxZP9ikMMyfFYzlsqPkOg=;
-        b=ODt+6zCM6PuQyOjCk8IClboeEP+ceh5n/juYCBWwZ7ucDQ/E3J4KqOxj5QB/b+bkoE
-         DWZTXa+k+heEpsTLO3qFZTrnSE2AhBdY3FoKlRRQ2FENhgKMePbRnEG9r28T0/WkAJ6C
-         +t0/FSLt4XXUfkhmHnMUiXmu+uvwsJ95kg3S8ygIsJJfvahCKhxDBhYuebxg3ULLUNQv
-         BqWWWGVyJ/Nw2/jUJoHerbLcON0mhv14gFf+XfFU7D293XCYShdZ+vG3df5m/MaC3lgv
-         unhZsrHRocHcY0jV5DpbYCeoMsRpQ5YTKe6CLf1ja1M1KGIIA/aey89MaNSZ5J0e6MB2
-         kPcw==
-X-Gm-Message-State: AOJu0YwwIr9vroZNrffH0GTjHtdnX6Gqa2IuiRMy2UJsHki6HtrgweA0
-        OMBZ5w7BiCfI+/b1TJx4a8greQ==
-X-Google-Smtp-Source: AGHT+IEep4U5eUTvZ2vvdTI5sayk+fxXL86fIIJEm0vaQsIdIR5u4n4IJv4dpYP1T65IKznGbt0Rhw==
-X-Received: by 2002:a17:902:9b8e:b0:1c6:845:27c5 with SMTP id y14-20020a1709029b8e00b001c6084527c5mr5158004plp.61.1696024247858;
-        Fri, 29 Sep 2023 14:50:47 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id w4-20020a170902d3c400b001c737387810sm3659271plb.31.2023.09.29.14.50.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 14:50:47 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 14:50:46 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Justin Stitt <justinstitt@google.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH] x86/tdx: refactor deprecated strncpy
-Message-ID: <202309291449.FC5C4AE27@keescook>
-References: <20230911-strncpy-arch-x86-coco-tdx-tdx-c-v1-1-4b38155727f3@google.com>
- <169601242377.3008066.9973846266706309040.b4-ty@chromium.org>
- <51164807-4860-b1cc-e3de-4230795808df@intel.com>
+        bh=Hskw88hLeAFbdhf2MCWNUtrnHOIlmXUQ4ZL1O7T/y0E=;
+        b=M2ygEO2xao9bi1LsQy8OB5+84c6hVswvmjJwxCoJHSHOM/pIbKXoenew8o0NL1JgGW
+         kxRUK8At0IKdWg2TuKHOrVi9ymb9Eeckmr211X/KOAYMMyfc2BuOyCkWnBdDxVs/c60r
+         m9FF3Q0Vz6Q8ZqFB+m5MxoSLqtg0PwzRA9arXKzXvO3KYW3enAZACmKI8MFDldD05HNl
+         Qd0ZDPm4RbB2K8CtconqBtn0QE/xeC2UiSp5KDOFODfrbEXgRUs/GU1BCMqnMEguarnd
+         4GZn0piAkt8redRma/jLzZza9yszARRsyaXGc/C03Phckc79/4p4X/pbUDWj+zqg6sPk
+         RpdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696024262; x=1696629062;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Hskw88hLeAFbdhf2MCWNUtrnHOIlmXUQ4ZL1O7T/y0E=;
+        b=l9i/VrB6nDqfwoh/+EbSt7G0vaEEY2UX03J8CmWnOtDQO4GTlbSBbgZThnrYSMOfLe
+         PH/TbHIqyFsxbcOpDpIc38vl/Urgp83O6q3yVWNK42dXk9kmlj9JJd2QAHE634l9KVoz
+         gKaS/r9oG7OBeZZVUelZhnKWOxRgkm8jGVUbP+hstE9fqvxkoxg5tcYXpoSiAKfeLM5P
+         mc31BrqLWgmShM6pytnfifRVm/323o8a5aiWiprvDPFsdQ9DCbdVB6p3sJFuM79BHvn5
+         1539IE4yaVy/v2V02fRztdFDLAXKKdZ9/r/arxmn0p3PShsOG81qzNMGYNg4A63aAUeq
+         /9FQ==
+X-Gm-Message-State: AOJu0Yy2tQA7MZdWMYXHma17bY7PS78Bd+TpRcS5+YULw0UimMxDupiA
+        WFaXmrf36d/JqNRvVH03J3k58e5wYJDrRx4sgBnt0w==
+X-Google-Smtp-Source: AGHT+IE63fBH+1dNUwDRNH6iqlkLqEfx/+NHRsl/1r9uDgfQ0bqotCuiv4a9l+YPI2jFuA031iE6BeH9RXt0OKpKTI8=
+X-Received: by 2002:a0d:dd11:0:b0:59b:e97e:f7ce with SMTP id
+ g17-20020a0ddd11000000b0059be97ef7cemr5210736ywe.22.1696024262418; Fri, 29
+ Sep 2023 14:51:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <51164807-4860-b1cc-e3de-4230795808df@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230929-pxa1908-lkml-v5-0-5aa5a1109c5f@skole.hr> <20230929-pxa1908-lkml-v5-2-5aa5a1109c5f@skole.hr>
+In-Reply-To: <20230929-pxa1908-lkml-v5-2-5aa5a1109c5f@skole.hr>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 29 Sep 2023 23:50:51 +0200
+Message-ID: <CACRpkdbgbu=1kD=+f83NUZwXZ80-yjGOdH2CR7Lbg4rhubaR0g@mail.gmail.com>
+Subject: Re: [PATCH RESEND v5 2/8] clk: mmp: Switch to use struct u32_fract
+ instead of custom one
+To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc:     Robert Jarzmik <robert.jarzmik@free.fr>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hardening@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        afaerber@suse.de, balejk@matfyz.cz,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 02:27:39PM -0700, Dave Hansen wrote:
-> On 9/29/23 11:33, Kees Cook wrote:
-> > On Mon, 11 Sep 2023 18:27:25 +0000, Justin Stitt wrote:
-> >> `strncpy` is deprecated and we should prefer more robust string apis.
-> >>
-> >> In this case, `message.str` is not expected to be NUL-terminated as it
-> >> is simply a buffer of characters residing in a union which allows for
-> >> named fields representing 8 bytes each. There is only one caller of
-> >> `tdx_panic()` and they use a 59-length string for `msg`:
-> >> |	const char *msg = "TD misconfiguration: SEPT_VE_DISABLE attribute must be set.";
-> >>
-> >> [...]
-> > This appears to be trivially correct, so I can take it via my tree.
-> 
-> Sorry about that, I was being clear as mud as to what I wanted to see
-> here.  I was hoping for another more clear changelog at least.
-> 
-> The changelog makes it sound like there's a problem with not
-> NULL-terminating 'message.str' when there isn't.  That makes it hard to
-> tell what the patch's goals are.
+On Fri, Sep 29, 2023 at 5:42=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovic=
+@skole.hr> wrote:
 
-Ah! Thanks, sorry. I thought it was resolved.
+> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>
+> The struct mmp_clk_factor_tbl repeats the generic struct u32_fract.
+> Kill the custom one and use the generic one instead.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Tested-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
+> Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
 
-> As far as I can tell, the code is 100% correct with either the existing
-> strncpy() or strtomem_pad(), even with a >64-byte string.  This _is_
-> unusual because the hypervisor is nice and doesn't require NULL termination.
-> 
-> Would there be anything wrong with a changelog like this?
-> 
-> 	strncpy() works perfectly here in all cases.  However, it _is_
-> 	deprecated and unsafe in other cases and there is an effort to
-> 	purge it from the code base to avoid problems elsewhere.
-> 
-> 	Replace strncpy() with an equivalent (in this case)
-> 	strtomem_pad() which is not deprecated.
-> 
-> In other words, this fixes no bug.  But we should do it anyway.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Sounds good; thanks! Justin, can you respin with these changes?
-
--Kees
-
--- 
-Kees Cook
+Yours,
+Linus Walleij
