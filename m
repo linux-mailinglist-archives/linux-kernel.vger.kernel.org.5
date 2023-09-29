@@ -2,50 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8000F7B3B93
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A5B07B3BAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233798AbjI2UsT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 16:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
+        id S233592AbjI2Uyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 16:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232748AbjI2UsQ (ORCPT
+        with ESMTP id S229508AbjI2Uyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 16:48:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCAA1A7;
-        Fri, 29 Sep 2023 13:48:14 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BF49C433C9;
-        Fri, 29 Sep 2023 20:48:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696020494;
-        bh=8Oeq2oyvclFb8e5vneLF5O4C3f3cxRlcpro2BcWHes4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=tdCCKVkwLs8N/mkl3LWPdO47xAroH163igwOK4121omnkF3zit2PjnHPyFyuQa3JJ
-         PXsc9FWOpRPA7HOdlwRviTYwenh/GaL1KGo187fLHcYs+ODFlYqgQy6DyDwA8ArVMG
-         RN03+3cjx2oII8/ai9bkeIUhqWiXxUiL0YQxGh2IrY1uXvWHNzSETDA1/+sWc+eQko
-         sHHJe1IdhYjKAuH/4c3WcsD4sixUmFxxxvqd+8ACcu6FykHqZJvjHzjnhnzijXhgqW
-         Jw4b5m9tjYtk+qVKdBM8IpY9Ao/h7xDouDu3E4E+ivoM7K3HbTEGV089tvuOI7ttJm
-         7IZEd8jF9V97A==
-Date:   Fri, 29 Sep 2023 15:48:12 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sricharan Ramabadhran <quic_srichara@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh@kernel.org, mani@kernel.org, lpieralisi@kernel.org,
-        bhelgaas@google.com, kw@linux.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        gregkh@linuxfoundation.org, dmitry.baryshkov@linaro.org,
-        stable@vger.kernel.org, robimarko@gmail.com
-Subject: Re: [PATCH V6] PCI: qcom: Fix broken pcie enumeration for 2_3_3
- configs ops
-Message-ID: <20230929204812.GA553836@bhelgaas>
+        Fri, 29 Sep 2023 16:54:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2175B1AA;
+        Fri, 29 Sep 2023 13:54:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696020889; x=1727556889;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=oTbiNGIXHhUIMdMlWMW1h6e4WlB0GQpl6q76DSW/M+w=;
+  b=DDOwPuLTgn2eupuXJcbd2kJSP7oZuNMRZwoQSLvEZme+4uihVxZfxfIX
+   7AzmHuVW1KxwoijyY3haxsKqPBnO6y80dDMCM/AciVhOZ4EE5IeYEudK/
+   6m6gv3zZ9IzC8KaEX10LB7wQ8rKkBDNvyRLdkJn3rS9akOCSZaFxfiody
+   xiBLW4RILsALwl26/O+WnuDbaPakfN17Zs9xfmXGlCnAvG3acNmWXvH5V
+   hYJ/F+ff4mUVeE+5NZzCU320z422X3HKA3k3UgoRuAEyHonqEpvnhxmIp
+   9QivpovMvD4svbKdsf1PIMRZKQUA2LlgcojMrBR8xWkScxjtmq51vnWjx
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="367433097"
+X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
+   d="scan'208";a="367433097"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 13:51:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="815704888"
+X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
+   d="scan'208";a="815704888"
+Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 13:51:39 -0700
+Date:   Fri, 29 Sep 2023 13:51:37 -0700
+From:   Tony Luck <tony.luck@intel.com>
+To:     Peter Newman <peternewman@google.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
+Subject: Re: [PATCH v6 8/8] x86/resctrl: Update documentation with Sub-NUMA
+ cluster changes
+Message-ID: <ZRc42bU3urj5wqP/@agluck-desk3>
+References: <20230829234426.64421-1-tony.luck@intel.com>
+ <20230928191350.205703-1-tony.luck@intel.com>
+ <20230928191350.205703-9-tony.luck@intel.com>
+ <CALPaoCgPXPF_fn9fh15rW0JWUhxth5wOO51n+oHqibP+a6Qjfg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230919102948.1844909-1-quic_srichara@quicinc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALPaoCgPXPF_fn9fh15rW0JWUhxth5wOO51n+oHqibP+a6Qjfg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,53 +75,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 19, 2023 at 03:59:48PM +0530, Sricharan Ramabadhran wrote:
-> PARF_SLV_ADDR_SPACE_SIZE_2_3_3 macro is used for qcom_pcie_post_init_2_3_3.
-> PCIe slave address space size register offset is 0x358, but was wrongly
-> changed to 0x16c as a part of commit 39171b33f652 ("PCI: qcom: Remove
-> PCIE20_ prefix from register definitions"). Fixing it, by using the right
-> macro and remove the unused PARF_SLV_ADDR_SPACE_SIZE_2_3_3.
+On Fri, Sep 29, 2023 at 04:54:21PM +0200, Peter Newman wrote:
+> Hi Tony,
 > 
-> Without this access to the registers of slave addr space like iATU etc
-> are broken leading to PCIe enumeration failure on IPQ8074.
+> On Thu, Sep 28, 2023 at 9:14 PM Tony Luck <tony.luck@intel.com> wrote:
+> > diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
+> > index cb05d90111b4..d6b6a4cfd967 100644
+> > --- a/Documentation/arch/x86/resctrl.rst
+> > +++ b/Documentation/arch/x86/resctrl.rst
+> > @@ -345,9 +345,15 @@ When control is enabled all CTRL_MON groups will also contain:
+> >  When monitoring is enabled all MON groups will also contain:
+> >
+> >  "mon_data":
+> > -       This contains a set of files organized by L3 domain and by
+> > -       RDT event. E.g. on a system with two L3 domains there will
+> > -       be subdirectories "mon_L3_00" and "mon_L3_01".  Each of these
+> > +       This contains a set of files organized by L3 domain or by NUMA
+> > +       node (depending on whether Sub-NUMA Cluster (SNC) mode is disabled
+> > +       or enabled respectively) and by RDT event. E.g. on a system with
+> > +       SNC mode disabled with two L3 domains there will be subdirectories
+> > +       "mon_L3_00" and "mon_L3_01". The numerical suffix refers to the
+> > +       L3 cache id.  With SNC enabled the directory names are the same,
+> > +       but the numerical suffix refers to the node id.
+> > +       Mappings from node ids to CPUs are available in the
+> > +       /sys/devices/system/node/node*/cpulist files. Each of these
 > 
-> Fixes: 39171b33f652 ("PCI: qcom: Remove PCIE20_ prefix from register definitions")
-> Cc: <Stable@vger.kernel.org>
-> Reviewed-by: Manivannan Sadhasivam <mani@kernel.org>
-> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Tested-by: Robert Marko <robimarko@gmail.com>
-> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
+> The explanation of mon_data seems overwhelmingly SNC-centric now.
+> Maybe the SNC section should be responsible for explaining its impact
+> on the mon_data directory. Mainly by reminding the reader that domain
+> ids in the mon_data directory are node ids in SNC mode.
 
-Applied to for-linus for v6.6, thanks!
+I cut out all the examples and just note that the numerical suffices
+are nodes instead of cache instances.
 
-> ---
->  [V6] Fixed subject and commit text as per Bjorn Helgaas
+This bit of the git diff now reads:
+
+-       This contains a set of files organized by L3 domain and by
+-       RDT event. E.g. on a system with two L3 domains there will
+-       be subdirectories "mon_L3_00" and "mon_L3_01".  Each of these
++       This contains a set of files organized by L3 domain or by NUMA
++       node (depending on whether Sub-NUMA Cluster (SNC) mode is disabled
++       or enabled respectively) and by RDT event.  Each of these
+
+
 > 
->  drivers/pci/controller/dwc/pcie-qcom.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index e2f29404c84e..64420ecc24d1 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -43,7 +43,6 @@
->  #define PARF_PHY_REFCLK				0x4c
->  #define PARF_CONFIG_BITS			0x50
->  #define PARF_DBI_BASE_ADDR			0x168
-> -#define PARF_SLV_ADDR_SPACE_SIZE_2_3_3		0x16c /* Register offset specific to IP ver 2.3.3 */
->  #define PARF_MHI_CLOCK_RESET_CTRL		0x174
->  #define PARF_AXI_MSTR_WR_ADDR_HALT		0x178
->  #define PARF_AXI_MSTR_WR_ADDR_HALT_V2		0x1a8
-> @@ -797,8 +796,7 @@ static int qcom_pcie_post_init_2_3_3(struct qcom_pcie *pcie)
->  	u16 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
->  	u32 val;
->  
-> -	writel(SLV_ADDR_SPACE_SZ,
-> -		pcie->parf + PARF_SLV_ADDR_SPACE_SIZE_2_3_3);
-> +	writel(SLV_ADDR_SPACE_SZ, pcie->parf + PARF_SLV_ADDR_SPACE_SIZE);
->  
->  	val = readl(pcie->parf + PARF_PHY_CTRL);
->  	val &= ~PHY_TEST_PWR_DOWN;
-> -- 
-> 2.34.1
+> >         directories have one file per event (e.g. "llc_occupancy",
+> >         "mbm_total_bytes", and "mbm_local_bytes"). In a MON group these
+> >         files provide a read out of the current value of the event for
+> > @@ -452,6 +458,28 @@ and 0xA are not.  On a system with a 20-bit mask each bit represents 5%
+> >  of the capacity of the cache. You could partition the cache into four
+> >  equal parts with masks: 0x1f, 0x3e0, 0x7c00, 0xf8000.
+> >
+> > +Notes on Sub-NUMA Cluster mode
+> > +==============================
+> > +When SNC mode is enabled the "llc_occupancy", "mbm_total_bytes", and
+> > +"mbm_local_bytes" will only give meaningful results for well behaved NUMA
+> > +applications. I.e. those that perform the majority of memory accesses
+> > +to memory on the local NUMA node to the CPU where the task is executing.
 > 
+> Not being specific about why the results aren't meaningful, this
+> sounds vague and alarming.
+
+Removed the trigger word "meaningful" and re-worded to just explain
+the increased liklihood that tasks will migrate between nodes, so users
+must collect data from all nodes. Technically this has always been true
+on multi-socket systems. But since there is a much higher barrier to
+task migration between sockets, users may find that simple measurements
+that used to work now behave differently.
+
+New version:
+
++Notes on Sub-NUMA Cluster mode
++==============================
++When SNC mode is enabled Linux may load balance tasks between Sub-NUMA
++nodes much more readily than between regular NUMA nodes since the CPUs
++on Sub-NUMA nodes share the same L3 cache and the system may report
++the NUMA distance between Sub-NUMA nodes with a lower value than used
++for regular NUMA nodes.  Users who do not bind tasks to the CPUs of a
++specific Sub-NUMA node must read the "llc_occupancy", "mbm_total_bytes",
++and "mbm_local_bytes" for all Sub-NUMA nodes where the tasks may execute
++to get the full view of traffic for which the tasks were the source.
++
++The cache allocation feature still provides the same number of
++bits in a mask to control allocation into the L3 cache. But each
++of those ways has its capacity reduced because the cache is divided
++between the SNC nodes. The values reported in the resctrl
++"size" files are adjusted accordingly.
+
+
+> 
+> > +Note that Linux may load balance tasks between Sub-NUMA nodes much
+> > +more readily than between regular NUMA nodes since the CPUs on SNC
+> > +share the same L3 cache and the system may report the NUMA distance
+> > +between SNC nodes with a lower value than used for regular NUMA nodes.
+> > +Tasks that migrate between nodes will have their traffic recorded by the
+> > +counters in different SNC nodes so a user will need to read mon_data
+> > +files from each node on which the task executed to get the full
+> > +view of traffic for which the task was the source.
+> > +
+> > +
+> > +The cache allocation feature still provides the same number of
+> > +bits in a mask to control allocation into the L3 cache. But each
+> > +of those ways has its capacity reduced because the cache is divided
+> > +between the SNC nodes. The values reported in the resctrl
+> > +"size" files are adjusted accordingly.
+> > +
+> >  Memory bandwidth Allocation and monitoring
+> >  ==========================================
+> >
+> > --
+> > 2.41.0
+> >
+> 
+> Reviewed-by: Peter Newman <peternewman@google.com>
