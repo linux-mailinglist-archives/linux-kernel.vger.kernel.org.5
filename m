@@ -2,112 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC397B33A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C417B33A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:32:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233343AbjI2NcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 09:32:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
+        id S233372AbjI2NcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 09:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232997AbjI2NcI (ORCPT
+        with ESMTP id S233346AbjI2NcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 09:32:08 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81FA1A8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 06:32:06 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c6185cafb3so146805ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 06:32:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695994326; x=1696599126; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3JpAg8YM6jt9gQGG+DHvh+bx869pbDpnmhQOP9SC7Nw=;
-        b=TUQGDGFfqWRdqjURtTlqua/uzeWTTSbzs5BzE8kC4qSAUwVjGWeVs0XmcVWsV8aMO4
-         s8AuYC2HouZo8djiIwv1UKuwGnuT92XpMN9w03Hoo7hQdTWJCEu7zv32aYQ8kFP03tzX
-         J4REkPtUNhBntnLeCWaBPX2VQ1xE7u72YhG90y3oUqpB8VZ27rMV9NFatp5twM2ri8So
-         5nJfDYiZNo4Zbq/mFH3HxCP2JX2O+RNWKCn3l7B5ZjrqEMZvY13ZmStu4TrYaFh/FscC
-         DQbXaf09MSOV/YbD4NwuBFID3CBh+1ZKiYQDh3ba6erCiaywJINP3eqxWAOkWjMGznlX
-         29Yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695994326; x=1696599126;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3JpAg8YM6jt9gQGG+DHvh+bx869pbDpnmhQOP9SC7Nw=;
-        b=FVHXtCBKsPdqdhPQn1sSOJcM52+GDUsrQ1di8KL944dp83dAfbUr+BRb24ye+15Nar
-         ub5b/8uFhyV1enY7E6A78/B5Ann1KKh7VmuoF6QGtsxHY3tX+c8HpT8HQ++LFwXJVqqG
-         meNKtmkKa9AJmAspbhZTsa2DSBt+DENHOdQYTDuTGvEUUTYejRsAg4X6kAtF92PS7WRZ
-         P8RKgxyyJLFO7lunWLEK5ceBAbiVWpAsCBqxOicM1HxxpYFH3eSBgVgNftzL+HVLtfMH
-         cVC6PnWUNQEEz6IGyZkFtLahKfCAwb0cjgJsmc2AjiMmaRzmIpL+gDG/Fhw8n6PKiFEq
-         hx/g==
-X-Gm-Message-State: AOJu0YyfyIhQPJpn96aKwnrbic70EAk1O8rZnVy4ZjB1ia3VjfRzmA34
-        iXNaGQQcwbgzPo9iqmepFxBHvpEAWy28KEsXNIZorg==
-X-Google-Smtp-Source: AGHT+IEfhzvp05rZI2EgO+WsnPYuDpm0/VSkqYGTXKnIYq9egiHcW//IfFP64+pro82zETRfU1gyzt/v+EPtiP8TN/0=
-X-Received: by 2002:a17:902:cec9:b0:1c5:dbc0:17e3 with SMTP id
- d9-20020a170902cec900b001c5dbc017e3mr988688plg.24.1695994326001; Fri, 29 Sep
- 2023 06:32:06 -0700 (PDT)
+        Fri, 29 Sep 2023 09:32:13 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B381A8;
+        Fri, 29 Sep 2023 06:32:11 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TAgi7p001220;
+        Fri, 29 Sep 2023 13:31:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=4psosez0s6ShH4sT2NTMtK8L6V23Vo6YOejUjTs9phE=;
+ b=PlDgoFITUbExyWTxlGnHb6CyvS9seUbgi/qUVJTUxHm0KQzTdtfgGEdU6CQcWCrzcfl3
+ +fsS2rdfd6zyOyUdu7o8RN+gntlmGPUfBPnfpeMuLtOvG18ZHKQ8VqH6RYIt85OHql9Z
+ 2g6i80d9GN/OuYU1eozDp1eooIgjRcA+a6t45aGzBieB+DbavvjvZrKOSXar5fcnTEgg
+ IEMQ4HcSEbDfGnigzr2TYFmtUVi3xPh92itOb62ukwf8kdVMMoCvhIen6A6OMn0MHeyJ
+ o1dC0dZ9hSpkm0atwUq5HlsIaurWSz1g7S6EDdREHw5lvEgcHvCw99mdIShVtbMVo+/A 5A== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tdfbrsxdp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 13:31:41 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38TDVek8026335
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 13:31:40 GMT
+Received: from [10.216.51.141] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 29 Sep
+ 2023 06:31:30 -0700
+Message-ID: <3f89e0b7-189e-4cf7-bec5-b03c903c46b5@quicinc.com>
+Date:   Fri, 29 Sep 2023 19:01:30 +0530
 MIME-Version: 1.0
-References: <20230927-kosmetik-babypuppen-75bee530b9f0@brauner>
- <CAHk-=whLadznjNKZPYUjxVzAyCH-rRhb24_KaGegKT9E6A86Kg@mail.gmail.com>
- <CAGudoHH2mvfjfKt+nOCEOfvOrQ+o1pqX63tN2r_1+bLZ4OqHNA@mail.gmail.com>
- <CAHk-=wjmgord99A-Gwy3dsiG1YNeXTCbt+z6=3RH_je5PP41Zw@mail.gmail.com>
- <ZRR1Kc/dvhya7ME4@f> <CAHk-=wibs_xBP2BGG4UHKhiP2B=7KJnx_LL18O0bGK8QkULLHg@mail.gmail.com>
- <20230928-kulleraugen-restaurant-dd14e2a9c0b0@brauner> <20230928-themen-dilettanten-16bf329ab370@brauner>
- <CAG48ez2d5CW=CDi+fBOU1YqtwHfubN3q6w=1LfD+ss+Q1PWHgQ@mail.gmail.com>
- <CAHk-=wj-5ahmODDWDBVL81wSG-12qPYEw=o-iEo8uzY0HBGGRQ@mail.gmail.com> <20230929-kerzen-fachjargon-ca17177e9eeb@brauner>
-In-Reply-To: <20230929-kerzen-fachjargon-ca17177e9eeb@brauner>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 29 Sep 2023 15:31:29 +0200
-Message-ID: <CAG48ez2cExy+QFHpT01d9yh8jbOLR0V8VsR8_==O_AB2fQ+h4Q@mail.gmail.com>
-Subject: Re: [PATCH v2] vfs: shave work on failed file open
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Mateusz Guzik <mjguzik@gmail.com>, viro@zeniv.linux.org.uk,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/8] arm64: dts: qcom: ipq5332: Add Super-Speed UNIPHY in
+ USB node
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <vkoul@kernel.org>, <kishon@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <gregkh@linuxfoundation.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <p.zabel@pengutronix.de>, <geert+renesas@glider.be>,
+        <arnd@arndb.de>, <neil.armstrong@linaro.org>,
+        <nfraprado@collabora.com>, <u-kumar1@ti.com>, <peng.fan@nxp.com>,
+        <quic_wcheng@quicinc.com>, <quic_varada@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+CC:     <quic_kathirav@quicinc.com>, <quic_nsekar@quicinc.com>,
+        <quic_srichara@quicinc.com>
+References: <20230929084209.3033093-1-quic_ipkumar@quicinc.com>
+ <20230929084209.3033093-7-quic_ipkumar@quicinc.com>
+ <618992fe-4c76-42ef-af47-ee66f74c5bb6@linaro.org>
+From:   Praveenkumar I <quic_ipkumar@quicinc.com>
+In-Reply-To: <618992fe-4c76-42ef-af47-ee66f74c5bb6@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: aQMf_Wmi_iMyp-ktWcW02lb7x-KBLhiL
+X-Proofpoint-GUID: aQMf_Wmi_iMyp-ktWcW02lb7x-KBLhiL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_11,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ malwarescore=0 impostorscore=0 mlxscore=0 suspectscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxlogscore=451 adultscore=0
+ clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309290116
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 11:20=E2=80=AFAM Christian Brauner <brauner@kernel.=
-org> wrote:
-> > But yes, that protection would be broken by SLAB_TYPESAFE_BY_RCU,
-> > since then the "f_count is zero" is no longer a final thing.
->
-> I've tried coming up with a patch that is simple enough so the pattern
-> is easy to follow and then converting all places to rely on a pattern
-> that combine lookup_fd_rcu() or similar with get_file_rcu(). The obvious
-> thing is that we'll force a few places to now always acquire a reference
-> when they don't really need one right now and that already may cause
-> performance issues.
 
-(Those places are probably used way less often than the hot
-open/fget/close paths though.)
 
-> We also can't fully get rid of plain get_file_rcu() uses itself because
-> of users such as mm->exe_file. They don't go from one of the rcu fdtable
-> lookup helpers to the struct file obviously. They rcu replace the file
-> pointer in their struct ofc so we could change get_file_rcu() to take a
-> struct file __rcu **f and then comparing that the passed in pointer
-> hasn't changed before we managed to do atomic_long_inc_not_zero(). Which
-> afaict should work for such cases.
+On 9/29/2023 6:44 PM, Konrad Dybcio wrote:
+> On 29.09.2023 10:42, Praveenkumar I wrote:
+>> Add UNIPHY node in USB to support Super-speed. As the SS PHY has
+>> pipe clock, removed "qcom,select-utmi-as-pipe-clk" flag.
+>>
+>> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+>> ---
+> Patches 6 and 7 should be swapped, otherwise you may get no
+> USB with this commit. Incremental patches must not break
+> functionality, unless it is truly inevitable.
+Understood. Will swap the 6 and 7 patches in the update.
+
+--
+Thanks,
+Praveenkumar
 >
-> But overall we would introduce a fairly big and at the same time subtle
-> semantic change. The idea is pretty neat and it was fun to do but I'm
-> just not convinced we should do it given how ubiquitous struct file is
-> used and now to make the semanics even more special by allowing
-> refcounts.
->
-> I've kept your original release_empty_file() proposal in vfs.misc which
-> I think is a really nice change.
->
-> Let me know if you all passionately disagree. ;)
+> Konrad
+
