@@ -2,112 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B43BB7B3A5E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 21:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A16137B3A63
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 21:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233633AbjI2TFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 15:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
+        id S233717AbjI2TGS convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Sep 2023 15:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233365AbjI2TE6 (ORCPT
+        with ESMTP id S233365AbjI2TGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 15:04:58 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7416199
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 12:04:55 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id A683732000E5;
-        Fri, 29 Sep 2023 15:04:54 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 29 Sep 2023 15:04:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jcline.org; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm2; t=1696014294; x=1696100694; bh=tl2+4CsKy4
-        eJf2x1H0MEhr2ez9lBgVPpFI/7ocetrG0=; b=HMksuo6NSjlz9VKe+j/jrBS021
-        w2C1jWc70y7WdOb/3yx9xx6hrh/GnqOjY+QzvTzndGVKt3xSsT1LAqKKYbTlb1YY
-        S/x8OQqTeZEpqLxhMkBUR3sseOYiH6y3qzXM9171dNuAK2Mqp6XTzxG2Z5yLHpVw
-        r14732TA4KbEFigbadTjHspvJlcTcGkuqPD/ofS80OQ+A/0HfMBvFLLNdNHAowul
-        3vivu2ISAiPCWj1+EATy/zPZ7F42P5jHnmZlBnVFQBky7Pm3opzCG28xJLCfLrwi
-        aU0EoCLTq8v/9ShiTsiYFTZnmbzNZ8vgkhyyZhwZBljaVHYmkI4GCaElmrSg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1696014294; x=1696100694; bh=tl2+4CsKy4eJf
-        2x1H0MEhr2ez9lBgVPpFI/7ocetrG0=; b=VDygIHyyb5jMFO+nwnAHprxexGgr9
-        Di6QuWfUL30TRRlVTdozC1A7v3EJjNF8BTuVEfFkjlQue1sxYRS3ZcYqU4p4l05+
-        HYTOxL7rQ5/mbTIDRZA1tqVB2PDEakAru6jQTb5BS64IeZ4JxNWw4AUjKJcd4Iur
-        ftrKAuL2rezceQIusqsuXy0z1DluJJ4pt2ez7V+LlJo9hFSqXoaOCvhka+oBGyNY
-        nQA9ytMoasR9WUBvZD2DQRUMHY0Y8pfqOT9hpbxIsrgcc9c79dx4DfZ95wqz1hw0
-        MQhazzSk5N5zN2zrv6Cf+QjSxaFg9+OfHs0Sh7li0FMPuEaxgUY1slxMA==
-X-ME-Sender: <xms:1R8XZWSQ18J46CvW0SMuEhFGQd-R1FqGZNOC1rILWBCCt0BWxVt-dw>
-    <xme:1R8XZbxuqL3zGwFyv8PyXkKQTGi1XknhT1VOjz5AbHtpyseDMB9Tych5Q05hKm4g_
-    _moVQigwwY5_bmRne0>
-X-ME-Received: <xmr:1R8XZT1m5ChYcVfe0rltVEoxYgjI9jb2p95AMbuQEe8rFTQB2TiJ7Szshj0n1xXz526ONLa-sgI4bLRcyYOfqxjkneUZSsKnWTiV>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrtddvgddufedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomheplfgvrhgvmhih
-    ucevlhhinhgvuceojhgvrhgvmhihsehjtghlihhnvgdrohhrgheqnecuggftrfgrthhtvg
-    hrnheptddufeeugeefheehvedufeduvddtgfdvtdfgudfftdelkeelfffhjeevhefhhfeg
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhgvrh
-    gvmhihsehjtghlihhnvgdrohhrgh
-X-ME-Proxy: <xmx:1R8XZSDCOQjCHz3Hedua8UdaS92B5v0viDy5YjO1bDD_Wg5FVV95Sg>
-    <xmx:1R8XZfgrxFY6titHWCkDp3oD6WCLN0RPmNwiB4mffvILlxPAZShhaQ>
-    <xmx:1R8XZeokjkp3wWILLSF9YFRFBQ8Q2byTjIObkC1e9cfeDAbg7X6Hww>
-    <xmx:1h8XZfeQI_SfB69q-YhszQ-iZqXUNZZokR80vl7oUhy9PVbWeJHXMQ>
-Feedback-ID: i7a7146c5:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 29 Sep 2023 15:04:53 -0400 (EDT)
-From:   Jeremy Cline <jeremy@jcline.org>
-To:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Tom Rix <trix@redhat.com>, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Jeremy Cline <jeremy@jcline.org>
-Subject: [PATCH] gen_compile_commands: use raw string when replacing \#
-Date:   Fri, 29 Sep 2023 15:04:46 -0400
-Message-ID: <20230929190446.113168-1-jeremy@jcline.org>
-X-Mailer: git-send-email 2.41.0
+        Fri, 29 Sep 2023 15:06:17 -0400
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA61C195;
+        Fri, 29 Sep 2023 12:06:14 -0700 (PDT)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-57bc11c197aso1279582eaf.1;
+        Fri, 29 Sep 2023 12:06:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696014374; x=1696619174;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xVer6uvPHCtf/HTMUWD6KTJ1ltbk7x4bE84VkT63hEQ=;
+        b=YMlso6DTv1jv1UNJvjSHifDgc6rfJ2cmmv3Ti+NElRPMLgHYXzdT18JfNQlNC1kFKS
+         08lPSNb4yMEiBKy5j4I1e4CvrtdDy1fCb3JIKlndtiI27rgFgfQL/xC5nVYUnwX4S3ws
+         OTChLYM7Cd1PBGDDS2NFeGQeMJb3LPsicAzBNCED8KGmxsJvUm8j4PPZuN9ThaqQ8UJP
+         W0HOg4BVjBijpx7aTJy17uBy/agm0SaCtOHP5IryI86zlPbE+7mOYUAm230q+oPGtcHx
+         YxvY27T1zMjzK7nP2pn9PSYgnTrgyxjFGdC25IyxkQD7TZ9sF0hdyb99VJSnmWNoSMLx
+         SFuw==
+X-Gm-Message-State: AOJu0YwRB64q5RORgRxoBAYeFKNtodwysO6ZgIrmOZVshExtNYjhWyLa
+        WSJ9rQsJL3YdfKT1AMZwI723B1GpRTXYgY0bdqM=
+X-Google-Smtp-Source: AGHT+IFAE7exkSvkEz769ZW360a8v7ReoFJMsoE/IfxftUeB0GmO+2TM0PqbKJx6ZFE+ijkVcHKoana+guEGrgnZlkM=
+X-Received: by 2002:a4a:ee1a:0:b0:56e:94ed:c098 with SMTP id
+ bd26-20020a4aee1a000000b0056e94edc098mr5644121oob.0.1696014374101; Fri, 29
+ Sep 2023 12:06:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230927202347.2795170-1-scott@os.amperecomputing.com> <20230928154720.GA462358@bhelgaas>
+In-Reply-To: <20230928154720.GA462358@bhelgaas>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 29 Sep 2023 21:06:02 +0200
+Message-ID: <CAJZ5v0j9hvhboyfmgs1CXkUqpmrMryNjwWGV+kJB-FCMfXaM_g@mail.gmail.com>
+Subject: Re: [PATCH] PCI: hotplug: Add extension driver for Ampere Altra
+ hotplug LED control
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     D Scott Phillips <scott@os.amperecomputing.com>,
+        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
+        Darren Hart <darren@os.amperecomputing.com>,
+        patches@amperecomputing.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I noticed this since I'm running Python 3.12-rc3, which emits
-"SyntaxWarning: invalid escape sequence '\#'" when running this script.
-According to the Python 3.12 release notes this will eventually become a
-SyntaxError.
+On Thu, Sep 28, 2023 at 5:47 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> On Wed, Sep 27, 2023 at 01:23:47PM -0700, D Scott Phillips wrote:
+> > On Ampere Altra, PCIe hotplug is handled through ACPI. A side interface is
+> > also present to request system firmware control of attention LEDs. Add an
+> > ACPI PCI Hotplug companion driver to support attention LED control.
+> >
+> > Signed-off-by: D Scott Phillips <scott@os.amperecomputing.com>
+> > ---
+> >  drivers/pci/hotplug/Kconfig                |  13 ++
+> >  drivers/pci/hotplug/Makefile               |   3 +-
+> >  drivers/pci/hotplug/acpiphp_ampere_altra.c | 141 +++++++++++++++++++++
+> >  3 files changed, 156 insertions(+), 1 deletion(-)
+> >  create mode 100644 drivers/pci/hotplug/acpiphp_ampere_altra.c
+> >
+> > diff --git a/drivers/pci/hotplug/Kconfig b/drivers/pci/hotplug/Kconfig
+> > index 48113b210cf93..9fde600a9ad3e 100644
+> > --- a/drivers/pci/hotplug/Kconfig
+> > +++ b/drivers/pci/hotplug/Kconfig
+> > @@ -61,6 +61,19 @@ config HOTPLUG_PCI_ACPI
+> >
+> >         When in doubt, say N.
+> >
+> > +config HOTPLUG_PCI_ACPI_AMPERE_ALTRA
+> > +     tristate "ACPI PCI Hotplug driver Ampere Altra extensions"
+> > +     depends on HOTPLUG_PCI_ACPI
+> > +     depends on HAVE_ARM_SMCCC_DISCOVERY
+> > +     depends on m
+>
+> Why is this restricted to being a module?  It's not unprecedented, but
+> unless this only works as a module for some reason, I would leave that
+> choice up to the user.
+>
+> > +     help
+> > +       Say Y here if you have an Ampere Altra system.
+> > +
+> > +       To compile this driver as a module, choose M here: the
+> > +       module will be called acpiphp_ampere_altra.
+> > +
+> > +       When in doubt, say N.
+> > +
+> >  config HOTPLUG_PCI_ACPI_IBM
+> >       tristate "ACPI PCI Hotplug driver IBM extensions"
+> >       depends on HOTPLUG_PCI_ACPI
+> > diff --git a/drivers/pci/hotplug/Makefile b/drivers/pci/hotplug/Makefile
+> > index 5196983220df6..29d7f6171b305 100644
+> > --- a/drivers/pci/hotplug/Makefile
+> > +++ b/drivers/pci/hotplug/Makefile
+> > @@ -21,8 +21,9 @@ obj-$(CONFIG_HOTPLUG_PCI_RPA_DLPAR) += rpadlpar_io.o
+> >  obj-$(CONFIG_HOTPLUG_PCI_ACPI)               += acpiphp.o
+> >  obj-$(CONFIG_HOTPLUG_PCI_S390)               += s390_pci_hpc.o
+> >
+> > -# acpiphp_ibm extends acpiphp, so should be linked afterwards.
+> > +# acpiphp_ibm extend acpiphp, so should be linked afterwards.
+> >
+> > +obj-$(CONFIG_HOTPLUG_PCI_ACPI_AMPERE_ALTRA)  += acpiphp_ampere_altra.o
+> >  obj-$(CONFIG_HOTPLUG_PCI_ACPI_IBM)   += acpiphp_ibm.o
+> >
+> >  pci_hotplug-objs     :=      pci_hotplug_core.o
+> > diff --git a/drivers/pci/hotplug/acpiphp_ampere_altra.c b/drivers/pci/hotplug/acpiphp_ampere_altra.c
+> > new file mode 100644
+> > index 0000000000000..8692b939dea78
+> > --- /dev/null
+> > +++ b/drivers/pci/hotplug/acpiphp_ampere_altra.c
+> > @@ -0,0 +1,141 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * ACPI PCI Hot Plug Ampere Altra Extension
+>
+> Would be helpful to include a hint about what this module *does*.
+> IIUC, it controls the attention indicator.
+>
+> > + *
+> > + * Copyright (C) 2023 Ampere Computing LLC
+> > + *
+>
+> Spurious blank line.
+>
+> > + */
+> > +
+> > +#define pr_fmt(fmt) "acpiphp_ampere_altra: " fmt
+> > +
+> > +#include <linux/init.h>
+> > +#include <linux/module.h>
+> > +#include <linux/pci.h>
+> > +#include <linux/pci_hotplug.h>
+> > +
+> > +#include "acpiphp.h"
+> > +
+> > +#define HANDLE_OPEN  0xb0200000
+> > +#define HANDLE_CLOSE 0xb0300000
+> > +#define REQUEST              0xf0700000
+> > +#define LED_CMD              0x00000004
+> > +#define LED_ATTENTION        0x00000002
+> > +#define LED_SET_ON   0x00000001
+> > +#define LED_SET_OFF  0x00000002
+> > +#define LED_SET_BLINK        0x00000003
+> > +
+> > +static const struct acpi_device_id acpi_ids[] = {
+> > +     {"AMPC0008", 0}, {}
+> > +};
+> > +MODULE_DEVICE_TABLE(acpi, acpi_ids);
+> > +
+> > +static u32 led_service_id[4];
+> > +
+> > +static int led_status(u8 status)
+> > +{
+> > +     switch (status) {
+> > +     case 1: return LED_SET_ON;
+> > +     case 2: return LED_SET_BLINK;
+> > +     default: return LED_SET_OFF;
+> > +     }
+> > +}
+> > +
+> > +static int set_attention_status(struct hotplug_slot *slot, u8 status)
+> > +{
+> > +     struct arm_smccc_res res;
+> > +     struct pci_bus *bus;
+> > +     struct pci_dev *root_port;
+> > +     unsigned long flags;
+> > +     u32 handle;
+> > +     int ret = 0;
+> > +
+> > +     bus = slot->pci_slot->bus;
+> > +     root_port = pcie_find_root_port(bus->self);
+> > +     if (!root_port)
+> > +             return -ENODEV;
+> > +
+> > +     local_irq_save(flags);
+> > +     arm_smccc_smc(HANDLE_OPEN, led_service_id[0], led_service_id[1],
+> > +                   led_service_id[2], led_service_id[3], 0, 0, 0, &res);
+> > +     if (res.a0) {
+> > +             ret = -ENODEV;
+> > +             goto out;
+> > +     }
+> > +     handle = res.a1 & 0xffff0000;
+> > +
+> > +     arm_smccc_smc(REQUEST, LED_CMD, led_status(status), LED_ATTENTION,
+> > +                   pci_domain_nr(bus) | ((root_port->devfn >> 3) << 4), 0, 0,
+>
+> PCI_SLOT(root_port->devfn)
+>
+> > +                   handle, &res);
+> > +     if (res.a0)
+> > +             ret = -ENODEV;
+> > +
+> > +     arm_smccc_smc(HANDLE_CLOSE, handle, 0, 0, 0, 0, 0, 0, &res);
+> > +
+> > + out:
+> > +     local_irq_restore(flags);
+> > +     return ret;
+> > +}
+> > +
+> > +static int get_attention_status(struct hotplug_slot *slot, u8 *status)
+> > +{
+> > +     return -EINVAL;
+> > +}
+> > +
+> > +static struct acpiphp_attention_info ampere_altra_attn = {
+> > +     .set_attn = set_attention_status,
+> > +     .get_attn = get_attention_status,
+> > +     .owner = THIS_MODULE,
+> > +};
+> > +
+> > +static acpi_status __init get_acpi_handle(acpi_handle handle, u32 level,
+> > +                                       void *context, void **return_value)
+> > +{
+> > +     *(acpi_handle *)return_value = handle;
+> > +     return AE_CTRL_TERMINATE;
+> > +}
+> > +
+> > +static int __init acpiphp_ampere_altra_init(void)
+> > +{
+> > +     struct fwnode_handle *fwnode;
+> > +     acpi_handle leds_handle = NULL;
+> > +     struct acpi_device *leds;
+> > +     acpi_status status;
+> > +     int ret;
+> > +
+> > +     status = acpi_get_devices("AMPC0008", get_acpi_handle, NULL,
+> > +                               &leds_handle);
+>
+> Rafael, can you comment on whether we should use acpi_get_devices(),
+> acpi_bus_register_driver(), acpi_acpi_scan_add_handler(), or something
+> else here?
 
-Based on the comment in the code, I believe the intention was to match
-the literal string "\#". Marking it as a raw string will stop Python
-from trying to treat it as an escape sequence and behave as intended.
+Personally, I would go for a platform driver, because the ACPI core
+should create a platform device for this object.
 
-Signed-off-by: Jeremy Cline <jeremy@jcline.org>
----
- scripts/clang-tools/gen_compile_commands.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+acpi_get_devices() carries out a namespace walk that is costly and
+entirely avoidable.
 
-diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-index a84cc5737c2c..bc005cac1944 100755
---- a/scripts/clang-tools/gen_compile_commands.py
-+++ b/scripts/clang-tools/gen_compile_commands.py
-@@ -170,7 +170,7 @@ def process_line(root_directory, command_prefix, file_path):
-     # escape the pound sign '#', either as '\#' or '$(pound)' (depending on the
-     # kernel version). The compile_commands.json file is not interepreted
-     # by Make, so this code replaces the escaped version with '#'.
--    prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
-+    prefix = command_prefix.replace(r'\#', '#').replace('$(pound)', '#')
- 
-     # Use os.path.abspath() to normalize the path resolving '.' and '..' .
-     abs_path = os.path.abspath(os.path.join(root_directory, file_path))
--- 
-2.41.0
+>  I try to avoid pci_get_device() because it subverts the
+> driver model (no hotplug support, no driver/device binding).
+>
+> I see Documentation/driver-api/acpi/scan_handlers.rst, but I'm not
+> clear on when to use acpi_bus_register_driver() vs
 
+Never.
+
+> acpi_acpi_scan_add_handler().
+
+When you don't want the ACPI core to create a platform device for your
+ACPI device object.  There are cases like that, but they are rare.
+
+> I guess the only ACPI connection here is to retrieve the "uuid"
+> property once, and there's no need for any ACPI services after that.
+
+That's in agreement with my understanding.
