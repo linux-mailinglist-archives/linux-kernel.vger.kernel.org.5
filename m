@@ -2,53 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE55C7B2F15
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4B17B2F16
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232947AbjI2JU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 05:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37298 "EHLO
+        id S232889AbjI2JYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 05:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbjI2JU6 (ORCPT
+        with ESMTP id S231774AbjI2JYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:20:58 -0400
+        Fri, 29 Sep 2023 05:24:00 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E8E019F;
-        Fri, 29 Sep 2023 02:20:56 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CCD19C433C8;
-        Fri, 29 Sep 2023 09:20:53 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B4E195
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:23:58 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C499C433C8;
+        Fri, 29 Sep 2023 09:23:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695979255;
-        bh=ixqemPBH+Yg3YxK8N4iZBEZPhv5OujAqEu9rexAdDbQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GIMtzk+H6WnoeyiP7YtkRG5RIlr6lMjdgpmFCmotRRSzhFSHDrnxt4AxfFTAxNYqn
-         wNuolRwkNNjaj2CqIEO2Ie20qub2K2zBxKnWbIpQ2RVPPri/JcDTBUxel/gwj6UlJj
-         xxWoeeQ2Y+AkyS8iwQ+klD7M9fIFbRNKcvqgRpKJu8JT2kTIaiEQGlBhanuf23D7KU
-         i6kLzgntHi9U0Q+ISvpVhh0l0dqtgxmN7fdvREQem0GoGwxHaoa1ICU9Ndida6u2Hf
-         TymisZxBVP1BDxajl2hVFG0NtME0Ljg8T4VZxEnr3dttIGRQOUUtNt3Stra5W8ZQDt
-         lyjU/Koh6J4vQ==
-Date:   Fri, 29 Sep 2023 11:20:48 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jann Horn <jannh@google.com>, Mateusz Guzik <mjguzik@gmail.com>,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2] vfs: shave work on failed file open
-Message-ID: <20230929-kerzen-fachjargon-ca17177e9eeb@brauner>
-References: <20230927-kosmetik-babypuppen-75bee530b9f0@brauner>
- <CAHk-=whLadznjNKZPYUjxVzAyCH-rRhb24_KaGegKT9E6A86Kg@mail.gmail.com>
- <CAGudoHH2mvfjfKt+nOCEOfvOrQ+o1pqX63tN2r_1+bLZ4OqHNA@mail.gmail.com>
- <CAHk-=wjmgord99A-Gwy3dsiG1YNeXTCbt+z6=3RH_je5PP41Zw@mail.gmail.com>
- <ZRR1Kc/dvhya7ME4@f>
- <CAHk-=wibs_xBP2BGG4UHKhiP2B=7KJnx_LL18O0bGK8QkULLHg@mail.gmail.com>
- <20230928-kulleraugen-restaurant-dd14e2a9c0b0@brauner>
- <20230928-themen-dilettanten-16bf329ab370@brauner>
- <CAG48ez2d5CW=CDi+fBOU1YqtwHfubN3q6w=1LfD+ss+Q1PWHgQ@mail.gmail.com>
- <CAHk-=wj-5ahmODDWDBVL81wSG-12qPYEw=o-iEo8uzY0HBGGRQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wj-5ahmODDWDBVL81wSG-12qPYEw=o-iEo8uzY0HBGGRQ@mail.gmail.com>
+        s=k20201202; t=1695979438;
+        bh=QecFZbeAzr1CUj1OPKHsPsEg7gSJ5EihrrYlTpFlMbI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=u+6w+2oo5XFnb1UTRpG9dHyJSRqqHYjtrGMU9i8qjgeVeQ+zRjIr3wlRj/3ZQFCLA
+         oMUR6yatFLC1puWfMi5iyy6SJpE9Ic1UUlb+/DK8grRrMhtnnUgx1B1bezmiQnhFeX
+         b3+dt18EZ26AEtU9i/JWOUQ/5HeNx0e+4bmv+3MlRqCUX050rN4rruLp101ebeWxzU
+         IX1vNSezAOWSJC8IWTQ0nBNPbwOOudxiG5q3UU/cbsKEm7Lh00y5MR4mO6wyxANvHW
+         bCGcFwj8DtLqeQ552SUSria/pGIIocV8HfK4eopDXalliouOL9s4GAuWHn+f7ZjaHQ
+         EVOKPILgo5iRQ==
+Received: from [85.255.233.37] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qm9j1-00HCbM-N5;
+        Fri, 29 Sep 2023 10:23:55 +0100
+Date:   Fri, 29 Sep 2023 10:23:54 +0100
+Message-ID: <87h6ndmixh.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     Kristina Martsenko <kristina.martsenko@arm.com>,
+        kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] KVM: arm64: Add handler for MOPS exceptions
+In-Reply-To: <ZRPnpHwiRhrYwfSM@linux.dev>
+References: <20230922112508.1774352-1-kristina.martsenko@arm.com>
+        <20230922112508.1774352-2-kristina.martsenko@arm.com>
+        <87sf734ofv.wl-maz@kernel.org>
+        <9f731870-ed36-d2e4-378b-f7fbf338ebd6@arm.com>
+        <ZRPnpHwiRhrYwfSM@linux.dev>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 85.255.233.37
+X-SA-Exim-Rcpt-To: oliver.upton@linux.dev, kristina.martsenko@arm.com, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, vladimir.murzin@arm.com, coltonlewis@google.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -58,31 +72,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> But yes, that protection would be broken by SLAB_TYPESAFE_BY_RCU,
-> since then the "f_count is zero" is no longer a final thing.
+On Wed, 27 Sep 2023 09:28:20 +0100,
+Oliver Upton <oliver.upton@linux.dev> wrote:
+> 
+> On Mon, Sep 25, 2023 at 04:16:06PM +0100, Kristina Martsenko wrote:
+> 
+> [...]
+> 
+> > > What is the rationale for advancing the state machine? Shouldn't we
+> > > instead return to the guest and immediately get the SS exception,
+> > > which in turn gets reported to userspace? Is it because we rollback
+> > > the PC to a previous instruction?
+> > 
+> > Yes, because we rollback the PC to the prologue instruction. We advance the
+> > state machine so that the SS exception is taken immediately upon returning to
+> > the guest at the prologue instruction. If we didn't advance it then we would
+> > return to the guest, execute the prologue instruction, and then take the SS
+> > exception on the middle instruction. Which would be surprising as userspace
+> > would see the middle and epilogue instructions executed multiple times but not
+> > the prologue.
+> 
+> I agree with Kristina that taking the SS exception on the prologue is
+> likely the best course of action. Especially since it matches the
+> behavior of single-stepping an EL0 MOPS sequence with an intervening CPU
+> migration.
+> 
+> This behavior might throw an EL1 that single-steps itself for a loop,
+> but I think it is impossible for a hypervisor to hide the consequences
+> of vCPU migration with MOPS in the first place.
+> 
+> Marc, I'm guessing you were most concerned about the former case where
+> the VMM was debugging the guest. Is there something you're concerned
+> about I missed?
 
-I've tried coming up with a patch that is simple enough so the pattern
-is easy to follow and then converting all places to rely on a pattern
-that combine lookup_fd_rcu() or similar with get_file_rcu(). The obvious
-thing is that we'll force a few places to now always acquire a reference
-when they don't really need one right now and that already may cause
-performance issues.
+My concern is not only the VMM, but any userspace that perform
+single-stepping. Imagine the debugger tracks PC by itself, and simply
+increments it by 4 on a non-branch, non-fault instruction.
 
-We also can't fully get rid of plain get_file_rcu() uses itself because
-of users such as mm->exe_file. They don't go from one of the rcu fdtable
-lookup helpers to the struct file obviously. They rcu replace the file
-pointer in their struct ofc so we could change get_file_rcu() to take a
-struct file __rcu **f and then comparing that the passed in pointer
-hasn't changed before we managed to do atomic_long_inc_not_zero(). Which
-afaict should work for such cases.
+Move the vcpu or the userspace around, rewind PC, and now the debugger
+is out of whack with what is executing. While I agree that there is
+not much a hypervisor can do about that, I'm a bit worried that we are
+going to break existing SW with this.
 
-But overall we would introduce a fairly big and at the same time subtle
-semantic change. The idea is pretty neat and it was fun to do but I'm
-just not convinced we should do it given how ubiquitous struct file is
-used and now to make the semanics even more special by allowing
-refcounts.
+Now the obvious solution is "don't do that"...
 
-I've kept your original release_empty_file() proposal in vfs.misc which
-I think is a really nice change.
+	M.
 
-Let me know if you all passionately disagree. ;)
+-- 
+Without deviation from the norm, progress is not possible.
