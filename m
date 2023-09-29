@@ -2,136 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3A97B3CCB
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 00:55:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988247B3CDC
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 01:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233843AbjI2Wzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 18:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
+        id S233914AbjI2XDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 19:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjI2Wzf (ORCPT
+        with ESMTP id S233820AbjI2XDA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 18:55:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A6CDD
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 15:55:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 942E1C433C8;
-        Fri, 29 Sep 2023 22:55:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1696028132;
-        bh=KNRUE/bqgzjbX6niCi2O3ojYnR3wGKaiurwRPiLMZgU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=H347bVg3Ycwc1wo6fcrd5Afmv52WRMyS8kXf5asP0Hop0dFWRmi9dccDtxsRfaMmr
-         beZRv2asIxXtXgsfyxef/3GiWLYzkObX9fg3zHh/V4JdY4gPbUHVu0w6DeGcUN0ej0
-         v1lvGNFIqjesuhlZ8VxDTlfZ0rzO1cdIF879OkVI=
-Date:   Fri, 29 Sep 2023 15:55:30 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v6 4/9] mm: thp: Introduce anon_orders and
- anon_always_mask sysfs files
-Message-Id: <20230929155530.a51e68e03e47a06b6b84c689@linux-foundation.org>
-In-Reply-To: <20230929114421.3761121-5-ryan.roberts@arm.com>
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
-        <20230929114421.3761121-5-ryan.roberts@arm.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 29 Sep 2023 19:03:00 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6524AF7
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 16:02:58 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c6185cafb3so21135ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 16:02:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696028578; x=1696633378; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y9BzlJqBcof6n6pTueaTjw4kqspqP+j9P0b11XcgH9M=;
+        b=CnOULgSoeqtnG2DEUO92aN94BuTOfYs1ZZ+MDYf09bZOpvPdeCdrA2rdvSCOO8Nf0u
+         JtWyTEI9s+G11oI9c0tH8XsypgGgTTUHiPsn8KoJaTcdpRD69uWn7Ejb6vWll1+c3t4t
+         DH9u1UK3VGkxQILF97rWzZp0P+MBDLMAp5pZGQ10FnbeLFYnU5wVCluqW6Dy/OJQVyPM
+         iTakiENrf3f613oXHaeFewGif0PpP/7DifAz5tBRttkYFmo2W34jO94yaPPc5s26Pg8r
+         j5wDqFyFVxwPAcr+R/AQuDnvz+SHgBnaWc52SulMzzwmcON42aGd96z6NLTSVQo5cD1j
+         TCOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696028578; x=1696633378;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y9BzlJqBcof6n6pTueaTjw4kqspqP+j9P0b11XcgH9M=;
+        b=YkCoEZXs7i6ROQmRhkQOJXYZtMyRyKnbjbQIoxM2ANQNXNaGV8KxcWzzJwQMwP7PVj
+         AyNnwloaSX7y4dLurJA7IYgFNhY8fbDu38UJQqL/cSnWe48jKIqRQjXQWVUSVU2JsTiV
+         r07HReUP/l+SygrcQhjp0liN1DZL/kqb/JS7D0WKhlS0F8QOGjuuvjQFdgoGQE1H1HF7
+         WNxj/pB/qnGMKRRo9NVv8NFLhzo4Qi9aMumTck/1BZzq878SrFW3fpU9xioK66+L9BnI
+         ds8SY3RjqOFqnOc6r4DyzGcAJytKon40zu2GruAa1PkBi4YLtCqaWeTFGHyufrlgYGtT
+         L5AA==
+X-Gm-Message-State: AOJu0YyZEP8GvB/ZFSy3J0hsPZ6Noj6hGyi4/FRBj3MRR1BTLOxpD5zE
+        sRDtn76wRAl48FoabloYB9tBW5IGEnfsRRpnX0jw6w==
+X-Google-Smtp-Source: AGHT+IHuzxCPFg+yAg7bNAEuuY0F4OlEqd2dJ6C3ksfq4ULTTVvrtLlyYBq/2idpo+DkjFeEVmfJs3J0t6+FOH+Q3Ag=
+X-Received: by 2002:a17:903:184:b0:1c2:446:5259 with SMTP id
+ z4-20020a170903018400b001c204465259mr15735plg.19.1696028577492; Fri, 29 Sep
+ 2023 16:02:57 -0700 (PDT)
+MIME-Version: 1.0
+References: <ZRR1Kc/dvhya7ME4@f> <CAHk-=wibs_xBP2BGG4UHKhiP2B=7KJnx_LL18O0bGK8QkULLHg@mail.gmail.com>
+ <20230928-kulleraugen-restaurant-dd14e2a9c0b0@brauner> <20230928-themen-dilettanten-16bf329ab370@brauner>
+ <CAG48ez2d5CW=CDi+fBOU1YqtwHfubN3q6w=1LfD+ss+Q1PWHgQ@mail.gmail.com>
+ <CAHk-=wj-5ahmODDWDBVL81wSG-12qPYEw=o-iEo8uzY0HBGGRQ@mail.gmail.com>
+ <20230929-kerzen-fachjargon-ca17177e9eeb@brauner> <CAG48ez2cExy+QFHpT01d9yh8jbOLR0V8VsR8_==O_AB2fQ+h4Q@mail.gmail.com>
+ <20230929-test-lauf-693fda7ae36b@brauner> <CAGudoHHwvOMFqYoBQAoFwD9mMmtq12=EvEGQWeToYT0AMg9V0A@mail.gmail.com>
+ <ZRdOkpXUva8UHfEJ@casper.infradead.org>
+In-Reply-To: <ZRdOkpXUva8UHfEJ@casper.infradead.org>
+From:   Jann Horn <jannh@google.com>
+Date:   Sat, 30 Sep 2023 01:02:21 +0200
+Message-ID: <CAG48ez3QA7arOtjsUR1FJ_yqyXibK+uftdyrrB3=E0FAYz9g3g@mail.gmail.com>
+Subject: Re: [PATCH v2] vfs: shave work on failed file open
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Mateusz Guzik <mjguzik@gmail.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Sep 2023 12:44:15 +0100 Ryan Roberts <ryan.roberts@arm.com> wrote:
+On Sat, Sep 30, 2023 at 12:24=E2=80=AFAM Matthew Wilcox <willy@infradead.or=
+g> wrote:
+> On Fri, Sep 29, 2023 at 11:23:04PM +0200, Mateusz Guzik wrote:
+> > Extending struct file is not ideal by any means, but the good news is t=
+hat:
+> > 1. there is a 4 byte hole in there, if one is fine with an int-sized co=
+unter
+> > 2. if one insists on 8 bytes, the struct is 232 bytes on my kernel
+> > (debian). still some room up to 256, so it may be tolerable?
+>
+> 256 isn't quite the magic number for slabs ... at 256 bytes, we'd get 16
+> per 4kB page, but at 232 bytes we get 17 objects per 4kB page (or 35 per
+> 8kB pair of pages).
+>
+> That said, I thik a 32-bit counter is almost certainly sufficient.
 
-> In preparation for adding support for anonymous large folios that are
-> smaller than the PMD-size, introduce 2 new sysfs files that will be used
-> to control the new behaviours via the transparent_hugepage interface.
-> For now, the kernel still only supports PMD-order anonymous THP, so when
-> reading back anon_orders, it will reflect that. Therefore there are no
-> behavioural changes intended here.
-
-powerpc strikes again.  ARCH=powerpc allmodconfig:
-
-
-In file included from ./include/linux/bits.h:6,
-                 from ./include/linux/ratelimit_types.h:5,
-                 from ./include/linux/printk.h:9,
-                 from ./include/asm-generic/bug.h:22,
-                 from ./arch/powerpc/include/asm/bug.h:116,
-                 from ./include/linux/bug.h:5,
-                 from ./include/linux/mmdebug.h:5,
-                 from ./include/linux/mm.h:6,
-                 from mm/huge_memory.c:8:
-./include/vdso/bits.h:7:33: error: initializer element is not constant
-    7 | #define BIT(nr)                 (UL(1) << (nr))
-      |                                 ^
-mm/huge_memory.c:77:47: note: in expansion of macro 'BIT'
-   77 | unsigned int huge_anon_orders __read_mostly = BIT(PMD_ORDER);
-      |                                               ^~~
-
-We keep tripping over this.  I wish there was a way to fix it.
-
-
-
-Style whine: an all-caps identifier is supposed to be a constant,
-dammit.
-
-	#define PTE_INDEX_SIZE  __pte_index_size
-
-Nope.
-
-
-
-I did this:
-
---- a/mm/huge_memory.c~mm-thp-introduce-anon_orders-and-anon_always_mask-sysfs-files-fix
-+++ a/mm/huge_memory.c
-@@ -74,7 +74,7 @@ static unsigned long deferred_split_scan
- static atomic_t huge_zero_refcount;
- struct page *huge_zero_page __read_mostly;
- unsigned long huge_zero_pfn __read_mostly = ~0UL;
--unsigned int huge_anon_orders __read_mostly = BIT(PMD_ORDER);
-+unsigned int huge_anon_orders __read_mostly;
- static unsigned int huge_anon_always_mask __read_mostly;
- 
- /**
-@@ -528,6 +528,9 @@ static int __init hugepage_init_sysfs(st
- {
- 	int err;
- 
-+	/* powerpc's PMD_ORDER isn't a compile-time constant */
-+	huge_anon_orders = BIT(PMD_ORDER);
-+
- 	*hugepage_kobj = kobject_create_and_add("transparent_hugepage", mm_kobj);
- 	if (unlikely(!*hugepage_kobj)) {
- 		pr_err("failed to create transparent hugepage kobject\n");
-_
-
-
-I assume this is set up early enough.
-
-I don't know why powerpc's PTE_INDEX_SIZE is variable.  Hopefully it
-has been set up by this time and it won't get altered.  
-
+I don't like the sequence number proposal because it seems to me like
+it's adding one more layer of complication, but if this does happen, I
+very much would want that number to be 64-bit. A computer doesn't take
+_that_ long to count to 2^32, and especially with preemptible RCU it's
+kinda hard to reason about how long a task might stay in the middle of
+an RCU grace period. Like, are we absolutely sure that there is no
+pessimal case where the scheduler will not schedule a runnable
+cpu-pinned idle-priority task for a few minutes? Either because we hit
+some pessimal case in the scheduler or because the task gets preempted
+by something that's spinning a very long time with preemption
+disabled?
+(And yes, I know, seqlocks...)
