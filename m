@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E727B33EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3D17B33EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbjI2Nnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 09:43:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46848 "EHLO
+        id S232997AbjI2NpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 09:45:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233266AbjI2Nna (ORCPT
+        with ESMTP id S233266AbjI2NpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 09:43:30 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D9A1AB;
-        Fri, 29 Sep 2023 06:43:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695995008; x=1727531008;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=96dT32PkgdFwEas9sw2UMEYPTGNvdBIo1204mmN2CYA=;
-  b=O0Drq6UWLC+lr0DAMdNeYwi8XHzyr1Aq8s14QF7ruCAKCfo9ss1TozBy
-   JMrmLA5XkhdeQksxvN4nQUGP0kASA3XKV6aY7OlH1YTbjMvbBPaAYgZgf
-   Yr8P3jLSTAHyrOwYDUuUYStw60yq5iCtXNaWD+QAbOx+txHVOOcrk0RcZ
-   kb4HE5XICflHG5rZoCDhQx23ZsdNI3F95chewb8HhrnF4vKcQPdbTnWnb
-   HOEZyvsz8flmjtKXJ+/inTjFNHzByTGKGsxsIYHFDEuSqcks04Io8cyul
-   o0H6qXpTlwNMHMw8Iy3c1oW6ML+2htwzSDEM0vvVxuqjqpttD5M50iG8U
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="385116918"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="385116918"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 06:43:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="699652390"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="699652390"
-Received: from mylly.fi.intel.com (HELO [10.237.72.66]) ([10.237.72.66])
-  by orsmga003.jf.intel.com with ESMTP; 29 Sep 2023 06:43:25 -0700
-Message-ID: <29e57ece-032b-4b04-bbfc-14383c1f3c9a@linux.intel.com>
-Date:   Fri, 29 Sep 2023 16:43:24 +0300
+        Fri, 29 Sep 2023 09:45:08 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6718DB
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 06:45:06 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-41958410e5cso374421cf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 06:45:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695995106; x=1696599906; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qkcij4M4qFmfPBJh0ZXRR+rqodBxc/HEVEHdtcfIjHY=;
+        b=kyME0vumcYlwgpnwUWzLizAHRLZSEMBT1zd29YG+l+tv2me2gnb5XIWEBSI8FoGKGJ
+         IYbUAX8xSkGcN7HIhXAjAUSu8YT4Z3YfVcxLB8KnJcGyRprwm3/FUbJ0A8DxKMURCKpS
+         YL6SfFRHOD4a4SlSkuT+CnQ/gV5Ujb3AOdOFs7GE+su0BvtdZ26BQx7QRYej+5RGfjYz
+         4/7LjfwahbqZbFXy+yXgvb0yoOIz5PIWNbzKq4w24UA8s5KGRdi/mOqpsKc7QCB1+Gp1
+         JhBwzLcM1el64UxYl7RGzrdzKYkmW3SKSq8L0zBBtd1uWwb03Ot07FSYzoEipCoZ2TUz
+         S50w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695995106; x=1696599906;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qkcij4M4qFmfPBJh0ZXRR+rqodBxc/HEVEHdtcfIjHY=;
+        b=sRLVa/du5tr7I2vAJNI9oEOlPVjq0h8zUprqz7kqPrfR0I6hmuDLmWKbRNgHHgnnv0
+         4QJUIz2cE5NmPSBeS1xe/XqEC7ewNMM88aTQbKL66Mn2euUZpGN7aJDkxd+Vj/1cRBpW
+         yXLyipBRncK3jiKw7o9rjQ4HLkvd4lAOmIjZ0vfbKAHSWdouCw9aYU8WBy+AIWjbWlUf
+         /ZumqGWP9bQxh0soUEA640UV8oUShV3gJW4y3i6axaEborNd+WidVuuBXxUqkr1bYF/f
+         0ZB4aSbZRFPr1+lqgsBSTA/mK2OIScxg4vlJgpJKkTspbex95FHjPWmHEtVfHg7o6r9M
+         7YFA==
+X-Gm-Message-State: AOJu0YxEx1XwI7ARDBr+nJC0JA03QWQOa314BaBbq+YaFObBNONE8k3B
+        3GamNO3wQ+BGivDw7aPR99gq7eoyh/bcdngKXKVH3g==
+X-Google-Smtp-Source: AGHT+IGqb7C2qGPVFGGU6qDXPjDw5ijpk93eWWclX0RnNuF3jfCQccabAV91wG1NS0ht9vqWAX+tBaD/0xVtgS9Gg0E=
+X-Received: by 2002:a05:622a:46:b0:40f:d1f4:aa58 with SMTP id
+ y6-20020a05622a004600b0040fd1f4aa58mr1209455qtw.8.1695995105901; Fri, 29 Sep
+ 2023 06:45:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] i2c: designware: Disable TX_EMPTY irq while waiting
- for block length byte
-Content-Language: en-US
-To:     Tam Nguyen <tamnguyenchi@os.amperecomputing.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org
-Cc:     patches@amperecomputing.com, andriy.shevchenko@linux.intel.com,
-        mika.westerberg@linux.intel.com, jsd@semihalf.com,
-        chuong@os.amperecomputing.com, darren@os.amperecomputing.com,
-        stable@vger.kernel.org
-References: <20230929035356.6435-1-tamnguyenchi@os.amperecomputing.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-In-Reply-To: <20230929035356.6435-1-tamnguyenchi@os.amperecomputing.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230829234426.64421-1-tony.luck@intel.com> <20230928191350.205703-1-tony.luck@intel.com>
+ <20230928191350.205703-5-tony.luck@intel.com>
+In-Reply-To: <20230928191350.205703-5-tony.luck@intel.com>
+From:   Peter Newman <peternewman@google.com>
+Date:   Fri, 29 Sep 2023 15:44:54 +0200
+Message-ID: <CALPaoCgN2PBQymAXK_f1ggs_JwyARBuWruP-sPA1QKJMxvv9ow@mail.gmail.com>
+Subject: Re: [PATCH v6 4/8] x86/resctrl: Split the rdt_domain and
+ rdt_hw_domain structures
+To:     Tony Luck <tony.luck@intel.com>
+Cc:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Babu Moger <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/23 06:53, Tam Nguyen wrote:
-> During SMBus block data read process, we have seen high interrupt rate
-> because of TX_EMPTY irq status while waiting for block length byte (the
-> first data byte after the address phase). The interrupt handler does not
-> do anything because the internal state is kept as STATUS_WRITE_IN_PROGRESS.
-> Hence, we should disable TX_EMPTY irq until I2C DW receives first data
-> byte from I2C device, then re-enable it.
-> 
-> It takes 0.789 ms for host to receive data length from slave.
-> Without the patch, i2c_dw_isr is called 99 times by TX_EMPTY interrupt.
-> And it is none after applying the patch.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Chuong Tran <chuong@os.amperecomputing.com>
-> Signed-off-by: Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
-> ---
->   drivers/i2c/busses/i2c-designware-master.c | 13 +++++++++++++
->   1 file changed, 13 insertions(+)
-> 
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Hi Tony,
+
+On Thu, Sep 28, 2023 at 9:14=E2=80=AFPM Tony Luck <tony.luck@intel.com> wro=
+te:
+>  /**
+> - * struct rdt_hw_domain - Arch private attributes of a set of CPUs that =
+share
+> - *                       a resource
+> + * struct rdt_hw_ctrl_domain - Arch private attributes of a set of CPUs =
+that share
+> + *                       a resource for a control function
+
+wrapped line not quite aligned anymore
+
+>   * @d_resctrl: Properties exposed to the resctrl file system
+>   * @ctrl_val:  array of cache or mem ctrl values (indexed by CLOSID)
+> + *
+> + * Members of this structure are accessed via helpers that provide abstr=
+action.
+> + */
+> +struct rdt_hw_ctrl_domain {
+> +       struct rdt_ctrl_domain          d_resctrl;
+> +       u32                             *ctrl_val;
+> +};
+> +
+> +/**
+> + * struct rdt_hw_mon_domain - Arch private attributes of a set of CPUs t=
+hat share
+> + *                       a resource for a monitor function
+
+wrapped line not quite aligned anymore
+
+
+> --
+> 2.41.0
+>
+
+Reviewed-by: Peter Newman <peternewman@google.com>
