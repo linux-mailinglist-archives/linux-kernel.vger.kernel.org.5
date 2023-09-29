@@ -2,144 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDC77B3668
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80E087B366B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:10:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbjI2PKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:10:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58224 "EHLO
+        id S233553AbjI2PKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjI2PKV (ORCPT
+        with ESMTP id S230104AbjI2PKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:10:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5565CD6;
-        Fri, 29 Sep 2023 08:10:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696000219; x=1727536219;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=rkTo6AiPcIDB8DOJ1mPkz97wz5dXCTcGhw15wnr9YiA=;
-  b=g7ipmiBXkyub8TFnv5oVyWzSntlTUqG1xAHmWKW0DDckXTzv7tdvDhVQ
-   6fVZFZ0gamjOD7Kk5BhtP+ZOnRr162VJvE29ARXdWX1RvAs9mT1Igqh1k
-   GRGJt0bw5waw4jSdxhx1aC+A0vsLXDlP6Fgb+y3fH3M8fQeW7meelK8F7
-   Dlzl7nbGd68slEFBYUXLmu2t1fQzWvv1uk0n5dl3Tbldh4VRt9TesCNbD
-   76Vz9JG0FVf+lRuqW5QNUEeDVsjYZHfeQ4sy+iVEb+W7MxXq/nUF9PawE
-   6TUKIC5vR3/6Ueto+QmQMpKrU+1D1tFPbIRZZJY8WFlVp4/JzXRY+lk8I
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="382224768"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="382224768"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:10:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="726624094"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="726624094"
-Received: from smorozov-mobl1.ger.corp.intel.com ([10.252.52.167])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:10:02 -0700
-Date:   Fri, 29 Sep 2023 18:09:59 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Babu Moger <babu.moger@amd.com>
-cc:     corbet@lwn.net, reinette.chatre@intel.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, fenghua.yu@intel.com,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        paulmck@kernel.org, akpm@linux-foundation.org,
-        quic_neeraju@quicinc.com, rdunlap@infradead.org,
-        damien.lemoal@opensource.wdc.com, songmuchun@bytedance.com,
-        peterz@infradead.org, jpoimboe@kernel.org, pbonzini@redhat.com,
-        chang.seok.bae@intel.com, pawan.kumar.gupta@linux.intel.com,
-        jmattson@google.com, daniel.sneddon@linux.intel.com,
-        sandipan.das@amd.com, tony.luck@intel.com, james.morse@arm.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bagasdotme@gmail.com, eranian@google.com,
-        christophe.leroy@csgroup.eu, jarkko@kernel.org,
-        adrian.hunter@intel.com, quic_jiles@quicinc.com,
-        peternewman@google.com
-Subject: Re: [PATCH v10 02/10] x86/resctrl: Simplify rftype flag
- definitions
-In-Reply-To: <20230915224227.1336967-3-babu.moger@amd.com>
-Message-ID: <cce19488-3c42-e782-279c-141e3912f8ce@linux.intel.com>
-References: <20230915224227.1336967-1-babu.moger@amd.com> <20230915224227.1336967-3-babu.moger@amd.com>
+        Fri, 29 Sep 2023 11:10:30 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA03CD6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:10:25 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32337a39009so1269965f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:10:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1696000224; x=1696605024; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MdqE1QXzZBxC4UvHDnV/0ctc/iRv4fmK/Ej1t0SOJgU=;
+        b=DmWx5Lby+OMEk7SnGUHSNC3ed3MDt6Apfo366825LLy8CRvgAfjc2pOri4jmH6VWTf
+         UmIAzZOPZ396gq+j2jfwi3qVkNsDACFxY8PDzjmcrEEhJzOyyOegzulIo1WWuwMKb98Y
+         yQR82eTlZrHhCOlkHDdLRTWGnY9e99ytWuVJexub5q4JRLYRQsV83mhYNhBqgLNLoLIi
+         MkTHYlxFTgtR+sQh4i1YCl42ipnC0R2YdossRZY1gW5m2l2SgQSOWjA2MkR8vk1jmtu4
+         87MN9qaZA5NtWC5aVN+lNHxv945QKOFuVy3209IYjkxAzzcs75SZpUr95SQmiJRqbqme
+         Alcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696000224; x=1696605024;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MdqE1QXzZBxC4UvHDnV/0ctc/iRv4fmK/Ej1t0SOJgU=;
+        b=hHSObZSmNybY6xSvfCjykgrXYIynayE0d1sobmXO8XRwQRJB+qRR9mQkJzT/YXrGs7
+         Jd/EK1oRuglj+nPP4VdOKo7ZTqoMbiynpv/KtFiQp+dO/bZz0WjGEo7fGVG0Yb+fIRIK
+         ZTnYBa6adz3LtBzmebvLkMuaqZ+ji2QOOiobJChulbziN5A1tGmW0Mm9qyg5gxpR6X2R
+         THy5qxgkf8cFAk36FnKkR25xruuKDKU2boZViRnheoAjJqAO+zmEQfWlmZiAvBhbhJHH
+         rgXrCaJXEJnDOJtoEwblc83OqiRMi+kcROlY9OTSjPKFA/zVFT6zKVC0Gw2hL+qbVShN
+         VU3g==
+X-Gm-Message-State: AOJu0Yx0Rkfuhw0Kw08gamPn82eKsJGw9SLgsTYMe+PHeP3ihgIVgkUN
+        C/0DZq9509F4JnRApY5ozKdtrg==
+X-Google-Smtp-Source: AGHT+IGGcLP1PmINnAnHm98jDP1pP2LDbsZIgncAOogwc4atMmnVWW9wyjgJkN/jTMLma/8YQVlsPA==
+X-Received: by 2002:adf:f9d1:0:b0:323:2b68:e0e0 with SMTP id w17-20020adff9d1000000b003232b68e0e0mr3467259wrr.0.1696000223437;
+        Fri, 29 Sep 2023 08:10:23 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:999:a3a0:4e67:5f1a:c933:c857? ([2a01:e0a:999:a3a0:4e67:5f1a:c933:c857])
+        by smtp.gmail.com with ESMTPSA id d29-20020adfa41d000000b003197869bcd7sm16622036wra.13.2023.09.29.08.10.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 08:10:22 -0700 (PDT)
+Message-ID: <d20981a4-cf46-4ee5-9f0f-b0aedb9b3d35@rivosinc.com>
+Date:   Fri, 29 Sep 2023 17:10:22 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-191885404-1696000210=:1989"
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] tracing: relax trace_event_eval_update() execution with
+ schedule()
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        Atish Patra <atishp@rivosinc.com>
+References: <20230929141348.248761-1-cleger@rivosinc.com>
+ <20230929110657.7a4b38ef@rorschach.local.home>
+From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
+In-Reply-To: <20230929110657.7a4b38ef@rorschach.local.home>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-191885404-1696000210=:1989
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
 
-On Fri, 15 Sep 2023, Babu Moger wrote:
-
-> The rftype flags are bitmaps used for adding files under resctrl
-> filesystem. Some of these bitmaps have one extra level of indirection
-> which is not necessary.
+On 29/09/2023 17:06, Steven Rostedt wrote:
+> On Fri, 29 Sep 2023 16:13:48 +0200
+> Clément Léger <cleger@rivosinc.com> wrote:
 > 
-> Make them all direct definition to be consistent and easier to read.
+>> When kernel is compiled without preemption, the eval_map_work_func()
+>> (which calls trace_event_eval_update()) will not be preempted up to its
+>> complete execution. This can actually cause a problem since if another
+>> CPU call stop_machine(), the call will have to wait for the
+>> eval_map_work_func() function to finish executing in the workqueue
+>> before being able to be scheduled. This problem was observe on a SMP
+>> system at boot time, when the CPU calling the initcalls executed
+>> clocksource_done_booting() which in the end calls stop_machine(). We
+>> observed a 1 second delay because one CPU was executing
+>> eval_map_work_func() and was not preempted by the stop_machine() task.
+>>
+>> Adding a call to schedule() in trace_event_eval_update() allows to let
+>> other tasks to be executed and thus continue working asynchronously like
+>> before without blocking any pending task at boot time.
+>>
+>> Signed-off-by: Clément Léger <cleger@rivosinc.com>
+>> ---
+>>  kernel/trace/trace_events.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+>> index 91951d038ba4..dbdf57a081c0 100644
+>> --- a/kernel/trace/trace_events.c
+>> +++ b/kernel/trace/trace_events.c
+>> @@ -2770,6 +2770,7 @@ void trace_event_eval_update(struct trace_eval_map **map, int len)
+>>  				update_event_fields(call, map[i]);
+>>  			}
+>>  		}
+>> +		schedule();
 > 
-> Reviewed-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-> Tested-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-> Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
-> ---
->  arch/x86/kernel/cpu/resctrl/internal.h | 9 +++------
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 6 +++++-
->  2 files changed, 8 insertions(+), 7 deletions(-)
+> The proper answer to this is "cond_resched()" but still, there's going
+> to be work to get rid of all that soon [1]. But I'll take a cond_resched()
+> now until that is implemented.
+
+Hi Steven,
+
+Thanks for the information, I'll update the patch and send a V2.
+
+Clément
+
 > 
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index 85ceaf9a31ac..62767774810d 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -243,12 +243,9 @@ struct rdtgroup {
->   */
->  #define RFTYPE_INFO			BIT(0)
->  #define RFTYPE_BASE			BIT(1)
-> -#define RF_CTRLSHIFT			4
-> -#define RF_MONSHIFT			5
-> -#define RF_TOPSHIFT			6
-> -#define RFTYPE_CTRL			BIT(RF_CTRLSHIFT)
-> -#define RFTYPE_MON			BIT(RF_MONSHIFT)
-> -#define RFTYPE_TOP			BIT(RF_TOPSHIFT)
-> +#define RFTYPE_CTRL			BIT(4)
-> +#define RFTYPE_MON			BIT(5)
-> +#define RFTYPE_TOP			BIT(6)
->  #define RFTYPE_RES_CACHE		BIT(8)
->  #define RFTYPE_RES_MB			BIT(9)
->  #define RF_CTRL_INFO			(RFTYPE_INFO | RFTYPE_CTRL)
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index f0d163950969..7ddfa4b470e6 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -3242,7 +3242,11 @@ static int mkdir_rdt_prepare(struct kernfs_node *parent_kn,
->  		goto out_destroy;
->  	}
->  
-> -	files = RFTYPE_BASE | BIT(RF_CTRLSHIFT + rtype);
-> +	if (rtype == RDTCTRL_GROUP)
-> +		files = RFTYPE_BASE | RFTYPE_CTRL;
-> +	else
-> +		files = RFTYPE_BASE | RFTYPE_MON;
-> +
->  	ret = rdtgroup_add_files(kn, files);
->  	if (ret) {
->  		rdt_last_cmd_puts("kernfs fill error\n");
+> -- Steve
 > 
-
-Reviewed-by: Ilpo J�rvinen <ilpo.jarvinen@linux.intel.com>
-
--- 
- i.
-
---8323329-191885404-1696000210=:1989--
+>>  	}
+>>  	up_write(&trace_event_sem);
+>>  }
+> 
+> [1] https://lore.kernel.org/all/87cyyfxd4k.ffs@tglx/
