@@ -2,111 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7A07B3409
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE637B340E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233045AbjI2N5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 09:57:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54400 "EHLO
+        id S232875AbjI2N6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 09:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232875AbjI2N5k (ORCPT
+        with ESMTP id S232748AbjI2N6j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 09:57:40 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601B7DB
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 06:57:38 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-533c92e65c9so14239340a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 06:57:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695995856; x=1696600656; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MqvODDBtWBNjtDJNYqGdOzftA4f4uyWFomekAFhFUiE=;
-        b=v7h7vASByDXZ0rTuVo6gxxsnCIlJtQARv4xoo0XSM5KUM1NWn8m4SuyVooTooLCfN5
-         iTi6bbMVuopcE3IiLecEMCqy1yoGxZw2XXOqWLj51qSlX/f08B2ERikIj91fBvpDIoS4
-         T84pIei9Gxhiw69Sl4RFOOR8Y6OkE3mZ1pJ51oRDaH3lcOAZrpjewcYB0hEU9f8bn7qG
-         O9JgaqBww11V/wTVB8zP3HsFraQCS+E/Q/FLlfdGl+NOrCaSTqnKvw67vCM7ncXm2WNu
-         z6xmGTiwmtPFwSl0GXGR5JnuL072mdySsGihrH5CPFgJjFawNwVoQE10nOEyc1hxS7FI
-         oZUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695995856; x=1696600656;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MqvODDBtWBNjtDJNYqGdOzftA4f4uyWFomekAFhFUiE=;
-        b=fPpv6fftbEOerRTux6BeFXnhe8N59TEhc6sRxiz0KLheo510CNvOVpxxivkpDp+KJ0
-         o+dCbN2wNauBgP2qGrHfw1tXnBr07UKA0Vy3Nvqea3HuECCsihyeLz2ydgxjJvA5y9do
-         Hs9CFXeaZj/4s+xy3HKB11MFnFE71ca1oNfXkxOAX5ZDC048ppcwoBSG7+yDHqxdvtqx
-         m7fIA++GCfk7YFhr0RSyhHVvMbaKbKgYKfpfmVeTX5VKIBqyNtGQ/4gzPK1dLwYmGtpE
-         u+y9d1sKQsKzsdDOzTJ9qZ+szDTirO0eViRXVSNA+1wP6iyh2ZKogDoEArHeGoKO9uub
-         ujCg==
-X-Gm-Message-State: AOJu0YwMFAIFXTxwL8hCvDkKfzQxv42rGUm9gTc3U+iDSwM65KQtJcVn
-        75t7ryYEeR6FYNW+l/18+Q9eRQ==
-X-Google-Smtp-Source: AGHT+IHL45cWVCGHfJIwgYAU+xiijTYw9hrymNHUt70vHNMBwYeV7RFCvC3L4yH2VGQn0Y6xgX6o5g==
-X-Received: by 2002:aa7:c582:0:b0:532:c08a:eac0 with SMTP id g2-20020aa7c582000000b00532c08aeac0mr3756236edq.26.1695995856608;
-        Fri, 29 Sep 2023 06:57:36 -0700 (PDT)
-Received: from [192.168.33.189] (178235177217.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.217])
-        by smtp.gmail.com with ESMTPSA id cy23-20020a0564021c9700b005362c9905b2sm2257462edb.35.2023.09.29.06.57.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 06:57:36 -0700 (PDT)
-Message-ID: <fac9c693-5d50-428d-9ea6-83ebec7239c3@linaro.org>
-Date:   Fri, 29 Sep 2023 15:57:33 +0200
+        Fri, 29 Sep 2023 09:58:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAD08DB;
+        Fri, 29 Sep 2023 06:58:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0392C433C8;
+        Fri, 29 Sep 2023 13:58:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695995917;
+        bh=CHEXPlpFmHD8rVxXqeAQGRdFG1pNx0Kk9AeUvrx4txE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jICsUAQdJA2wHFVYpRu0kl90yxId8Gfhtvm1Jl/X6SJ+/DXMq/vjzap5vOuFTtwjh
+         +QzG99dKnAyH85c+D0/GnH0CxZ4mdGim0f+7MsehocvKAFmSRnkmao0TU1hnCm3td7
+         wnznvXqRkOfqKzo6wDlV+xrDRrjmKlBSQnVla0W6zbK3aQ+GLbiNaMsqnjUuK0dT2l
+         EsIcZ7mC4cEw6wRZ3y4PcPckx75TRQDVLRrcrkE691z6isF1B9xWAnYOIRU73y1954
+         TkddNsCTIAjNYTDQuzD0ZFVdRS3WWXA6EMUhRQ/Q2xanFqKF+ovZKvS4hubVD62yld
+         y+ZdJ/cft3Q9w==
+Date:   Fri, 29 Sep 2023 14:58:31 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Moudy Ho =?utf-8?B?KOS9leWul+WOnyk=?= <Moudy.Ho@mediatek.com>,
+        "conor.dooley@microchip.com" <conor.dooley@microchip.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v6 12/16] dt-bindings: display: mediatek: color: add
+ compatible for MT8195
+Message-ID: <20230929-renewably-landing-3f5a1d2eb27c@spud>
+References: <20230922072116.11009-1-moudy.ho@mediatek.com>
+ <20230922072116.11009-13-moudy.ho@mediatek.com>
+ <20230922-zebra-modify-87ff23c70bb3@spud>
+ <20230922-overhung-deception-e9b461ba0372@spud>
+ <7c445195e17e15d5af5fcb30ae53f76c713e958b.camel@mediatek.com>
+ <20230927-crunching-prancing-36fe3eb79607@wendy>
+ <825ac03b692043d48563620ad9542a4ee43211e7.camel@mediatek.com>
+ <20230928-keep-attractor-1e7cd0df03b2@spud>
+ <7dbadd86-f408-bc94-92fc-22f460eebb43@collabora.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/4] ARM: dts: qcom: ipq8064: Add CPU OPP table
-Content-Language: en-US
-To:     Robert Marko <robimarko@gmail.com>, ilia.lin@kernel.org,
-        vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, agross@kernel.org, andersson@kernel.org,
-        rafael@kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Christian Marangi <ansuelsmth@gmail.com>
-References: <20230928210525.1265958-1-robimarko@gmail.com>
- <20230928210525.1265958-4-robimarko@gmail.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230928210525.1265958-4-robimarko@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="/VzKeb9rEqhIUOcg"
+Content-Disposition: inline
+In-Reply-To: <7dbadd86-f408-bc94-92fc-22f460eebb43@collabora.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,18 +78,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.09.2023 23:04, Robert Marko wrote:
-> From: Christian Marangi <ansuelsmth@gmail.com>
-> 
-> Add CPU OPP table for IPQ8062, IPQ8064 and IPQ8065 SoC.
-> Use opp-supported-hw binding to correctly enable and disable the
-> frequency as IPQ8062 supports up to 1.0Ghz, IPQ8064 supports up to
-> 1.4GHz with 1.2GHz as an additional frequency and IPQ8065 supports
-> 1.7GHZ but doesn't have 1.2GHZ frequency and has to be disabled.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> ---
-When resending somebody else's patches, you need to add your own
-sign-off at the end.
 
-Konrad
+--/VzKeb9rEqhIUOcg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Sep 29, 2023 at 10:42:58AM +0200, AngeloGioacchino Del Regno wrote:
+> Il 28/09/23 18:49, Conor Dooley ha scritto:
+> > On Thu, Sep 28, 2023 at 02:52:23AM +0000, Moudy Ho (=E4=BD=95=E5=AE=97=
+=E5=8E=9F) wrote:
+> > > On Wed, 2023-09-27 at 10:47 +0100, Conor Dooley wrote:
+> > > > On Wed, Sep 27, 2023 at 07:19:28AM +0000, Moudy Ho (=E4=BD=95=E5=AE=
+=97=E5=8E=9F) wrote:
+> > > > > On Fri, 2023-09-22 at 16:51 +0100, Conor Dooley wrote:
+> > > > > > On Fri, Sep 22, 2023 at 04:49:14PM +0100, Conor Dooley wrote:
+> > > > > > > On Fri, Sep 22, 2023 at 03:21:12PM +0800, Moudy Ho wrote:
+> > > > > > > > Add a compatible string for the COLOR block in MediaTek
+> > > > > > > > MT8195
+> > > > > > > > that
+> > > > > > > > is controlled by MDP3.
+> > > > > > > >=20
+> > > > > > > > Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+> > > > > > > > ---
+> > > > > > > >   .../devicetree/bindings/display/mediatek/mediatek,color.y=
+aml
+> > > > > > > >   | 1 +
+> > > > > > > >   1 file changed, 1 insertion(+)
+> > > > > > > >=20
+> > > > > > > > diff --git
+> > > > > > > > a/Documentation/devicetree/bindings/display/mediatek/mediat=
+ek
+> > > > > > > > ,col
+> > > > > > > > or.yaml
+> > > > > > > > b/Documentation/devicetree/bindings/display/mediatek/mediat=
+ek
+> > > > > > > > ,col
+> > > > > > > > or.yaml
+> > > > > > > > index f21e44092043..b886ca0d89ea 100644
+> > > > > > > > ---
+> > > > > > > > a/Documentation/devicetree/bindings/display/mediatek/mediat=
+ek
+> > > > > > > > ,col
+> > > > > > > > or.yaml
+> > > > > > > > +++
+> > > > > > > > b/Documentation/devicetree/bindings/display/mediatek/mediat=
+ek
+> > > > > > > > ,col
+> > > > > > > > or.yaml
+> > > > > > > > @@ -26,6 +26,7 @@ properties:
+> > > > > > > >             - mediatek,mt2701-disp-color
+> > > > > > > >             - mediatek,mt8167-disp-color
+> > > > > > > >             - mediatek,mt8173-disp-color
+> > > > > > > > +          - mediatek,mt8195-mdp3-color
+> > > > > > >=20
+> > > > > > > How come this one is a "mdp3" not a "disp"?
+> > > > > >=20
+> > > > > > I don't know what mdp3 means & googling gives me no answers.
+> > > > > > What's
+> > > > > > the
+> > > > > > "disp" one controlled by, since it isn't controlled by mdp3?
+> > > > > >=20
+> >=20
+> > > > > Mediatek's Media Data Path ver.3 (MDP3) is associated with MMSYS
+> > > > > and
+> > > > > acts as an independent driver that operates between VDEC and DISP.
+> > > > > By controlling multiple components, it carries out tasks like
+> > > > > converting color formats, resizing, and applying specific Picture
+> > > > > Quality (PQ) effects.
+> > > > > The driver can be found at "driver/media/platform/mediatek/mdp3".
+> > > > > Since the same hardware components are configured in both MDP3 and
+> > > > > DISP, considering previous discussions, I attemped to integrate
+> > > > > into a
+> > > > > single binding, named after the controlling user.
+> > > >=20
+> > > > I'm still kinda struggling to understand this. Do you mean that the
+> > > > hardware can be controlled by either of the disp and mdp3 drivers,
+> > > > and
+> > > > a compatible containing "disp" would use one driver, and one
+> > > > containing
+> > > > "mdp3" would use another?
+> > > >=20
+> >=20
+> > > Sorry for any confusion caused by the software information. In the
+> > > video pipeline, after decoding, the data flows sequentially through t=
+wo
+> > > subsystems: MDP and DISP. Each subsystems has multiple IPs, with some
+> > > serving the same functionality as COLOR mentioned here. However, these
+> > > IPs cannot be controlled by different subsystems. Therefore, I includ=
+ed
+> > > the name of the subsystem after SoC to identify the configuration's
+> > > location. Is this approach feasible?
+> >=20
+> > I'll have to leave things to the likes of Laurent to comment here I
+> > think. I don't understand this hardware well enough to have a useful
+> > opinion. It would seem like a different part of the datapath is a
+> > different device that should be documented separately, but I don't know
+> > enough to say for sure, sorry.
+>=20
+> Hardware speaking, it's not a different device: those all reside in the
+> same block, except they are configured to route their I/O *either* to the
+> display pipeline, *or* to the MDP3 pipeline.
+
+Is it runtime configurable?
+
+> I would agree though in that this could be more flexible, as in, not
+> having a requirement to say "mdp3" or "disp", and managing the COLOR
+> blocks generically and letting the drivers to choose the actual path
+> transparently from what the devicetree compatible is, but there's no
+> practical point in doing this in the end, because there is an enough
+> number of (for example, COLOR) blocks such that one can be completely
+> reserved to MDP3 and one completely reserved to DISP.
+>=20
+> So, we don't *need* this flexibility, but would be nice to have for
+> different (unexistant, basically) usecases...
+>=20
+> The thing is, if we go for the maximum flexibility, the drawback is
+> that we'd see a number of nodes like
+>=20
+> shared_block: something@somewhere {
+> 	compatible =3D "mediatek,something";
+> }
+>=20
+> mdp3: dma-controller@14001000 {
+> 	......
+> 	mediatek,color =3D <&color0>;
+> 	mediatek,stitch =3D <&stitch0>;
+> 	mediatek,hdr =3D <&hdr0>;
+> 	mediatek,aal =3D <&aal0>;
+> 	....
+> 	long list of another 10 components
+> }
+>=20
+> display: something@somewhere {
+> 	......
+> 	an even longer list than the MDP3 one
+> }
+>=20
+> ...or perhaps even a graph, which is even longer in the end.
+>=20
+> I'm not against this kind of structure, but I wonder if it's worth it.
+
+I have no idea, but it sounds like it isn't. Really what happened here,
+is not me having a particular thing I want to see, is getting a response
+that implied that there were two different compatibles for the same
+hardware, controlled by different drivers.
+It does seem to be that way at present, and this is not something I am
+willing to ack etc. That's not to say that I am _nacking_ it, just that
+I don't understand this enough to ack something that we usually tell
+people not to do.
+
+--/VzKeb9rEqhIUOcg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRbYBwAKCRB4tDGHoIJi
+0gDgAQD4uuPf+CMkS9i8umAoxxX46tlaJiF0ICduWocAJ7z4JwEAmoWZAI0hf7If
+KE6e8+SKB238W6F5JretaCDxsAbF5gU=
+=6dAo
+-----END PGP SIGNATURE-----
+
+--/VzKeb9rEqhIUOcg--
