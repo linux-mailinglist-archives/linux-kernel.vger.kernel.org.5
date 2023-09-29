@@ -2,157 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C49C7B33F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0207B33F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:47:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233407AbjI2Npf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 09:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47326 "EHLO
+        id S233425AbjI2NrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 09:47:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233383AbjI2Npe (ORCPT
+        with ESMTP id S233379AbjI2NrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 09:45:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96A61B1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 06:45:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695995132; x=1727531132;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=g+gHobaCyDXuYUdTfzKXdvua62/hwJqag4HhUq9dqwI=;
-  b=ZIGeqA9UW/g3H+vTusSAXYmQw8YfkprzaoK29QHWuCGTm2gwezIldR0x
-   jEg53KCrY3HS4OeNzxwpLHxih2nMl8ky/nNE+PqmckbWUZgBxB8hVZJMy
-   pAFHEnJ7mqkSDfZS8i65z1JLKTbt7VUJhTmHm/Ov6vcRBi+B1HZelinuL
-   T58/z+oPZ7+fpA6nXY2H5/6fH/1FUgnHEnlbbwFTvdYXsu9fUp3ap5IJf
-   1CfKjSmhDMZcvG82zNGqmucqkSw7t/Oe6Bo+hBoAQcnls+mXvGguwie4P
-   ioQ/fsfijJii48Q/eN+5ZC4C3sBGGxc4HqUb0SElxveZBXJ+9xhNIFMS9
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="382206430"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="382206430"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 06:45:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="996934729"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="996934729"
-Received: from mziotti-mobl4.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.34.13])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 06:45:27 -0700
-Received: by box.shutemov.name (Postfix, from userid 1000)
-        id A61F81095FB; Fri, 29 Sep 2023 16:45:24 +0300 (+03)
-Date:   Fri, 29 Sep 2023 16:45:24 +0300
-From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v6 2/9] mm: Non-pmd-mappable, large folios for
- folio_add_new_anon_rmap()
-Message-ID: <20230929134524.wwyykrxfikhle54k@box.shutemov.name>
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <20230929114421.3761121-3-ryan.roberts@arm.com>
+        Fri, 29 Sep 2023 09:47:14 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040841AB;
+        Fri, 29 Sep 2023 06:47:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+ t=1695995214; x=1696600014; i=linosanfilippo@gmx.de;
+ bh=J9h1C7mMFFEVucuVuABa2VPJxriIZ+QMbDLSt604QAg=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=LuVwkCVxShKxpuVmfK2vh1MpnI1xEN19lVRaYia7LPuKiQQGvQO95BSukEVdStfW6744og1rgIt
+ B0X6pbqEDkT9XUop8DUy8a9UxUha+Cwgt0HhCne6ibLiDH37N9Pc3+9B1Q0AHSSOgr1yiJGGlq6pB
+ +iFQvGPAIDdW9QNlCyNQpR2etxO0d3omIyFb6JF3JhrhIfnOr9GIT09UAdfhrVbJV1AR9mBlXTGkj
+ xtNbME8tHXpdSV2B/iOGn/KeI2kBMK7F2WQD5iVLlvCfPBqVVwciROgGVN9nCd8/UPUUDQGXY6TIh
+ tJi3i5auLGJGLBqK3dU6YN4TdopHFpKPYYhw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.2.42] ([84.162.21.41]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mi2Jn-1rH8jn2bw1-00e3S7; Fri, 29
+ Sep 2023 15:46:54 +0200
+Message-ID: <8fac0a79-cf0b-f35b-4e5e-e8f502bb5367@gmx.de>
+Date:   Fri, 29 Sep 2023 15:46:52 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230929114421.3761121-3-ryan.roberts@arm.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 6/6] serial: imx: do not set RS485 enabled if it is not
+ supported
+Content-Language: en-US
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Lino Sanfilippo <l.sanfilippo@kunbus.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de,
+        ilpo.jarvinen@linux.intel.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, lukas@wunner.de,
+        p.rosenberger@kunbus.com
+References: <20230928221246.13689-1-LinoSanfilippo@gmx.de>
+ <20230928221246.13689-7-LinoSanfilippo@gmx.de>
+ <20230929063942.qukemr4o7l5vdmud@pengutronix.de>
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+In-Reply-To: <20230929063942.qukemr4o7l5vdmud@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:VwXiyU2/W3O+MjSrCdfcHxCMWlRBcReFiYSjXHVBs3fR1SpPLUA
+ xgSQy2vr5a5a4wFI0AGsENjTxU7xo3lu5oMEH1X4mtWssGCL9d2LCJ/o3MB8ghZcZeJaSEs
+ 2qxxyfCuc+EIebFakAoRHr6bU1YiStSlagDhHh3VOHqeh+edoaSzXNIwyAUfDJWwzLs3wCx
+ 06Ajeu48JzN6aSrZwOjAw==
+UI-OutboundReport: notjunk:1;M01:P0:HXJNl3SCBe8=;pARrZ1ytb8liKtVw9iNoI01cxPG
+ I91ucI+TF92KhiXUVhQanCVdSVGK182fzBDki6OP5hJibVztMGuiSNITuig/ouJmp6K0L2B8R
+ 3GLUvAutC7TrcZRptEkRuAjTyjfJCX2814f4iMcVLO3beUnaHpTmdkWmk44dc16FxzyxFKCnM
+ Bqvo6y6i41IEhTDajfaR6broL/g9Pp7fXIxiMJUGm7/SC8U87HKXMtO8I8HGpALRuEQpDO+I1
+ cbj24ZI6HieWxoZr08CJIQlt6Cnun5E6oHRkBICUr/giLtW57BLzoT63su33CT6Hb1feBuZ+5
+ wG74m2ocKdNcHHNuexC3zmtkeuQHaS2iu3XRxx1CxHUGK3HnChifBb2P2Pusk/0K0A2UUPUqf
+ n/I2xKeX2jCizF3tEM8johM4cSFV10/oPLXG6kcglMNVkqEYBBCKY/RzMuRqfU88HdqkUUx5u
+ I2dyJeegDk7tG5/P5EGuo/x7+Q/00e1N+LiKywwXe789fH0RippyZpS2gymGY7qxYtUVfL+LS
+ gNX5AUOA96xozg155Px9ahwZIjsGt2VR4qUay0Q8BphlRtL1lQEj/GOwqtrIs4RSapOX9L5c7
+ hfhzhEs2kxc3HsYachhxJDpfVbtcLfkqpeoS8iGObLzeT0VNlpDhdXzpKv6ZR3YDcJaGQXpcy
+ X598g87P2KgXnA9j7m9lbMxt37VGbILtcS6ghGpCXG/SI9wXoDj0QryEnT2KwDNhi0wbCGXh0
+ A1LT7Nr7rHCcb8gjC0M2sF4azwkEYFp7ds4ft925SRIEwZhI0vswLkFbGzwV7jFEn3+xj+woL
+ m46qsy6vuHs8u5gyWeLCvoOaLX4SQWSvR08lrbC42zVlsSpK4rIH0fzoWqnohiAYCCZ5EK4cG
+ ZkccQe7ey2s9omyGCLBHrPDWehb6/XuweUGsCa2rEsSGVo6+a0QST/HYUvxlV9maxaodmCrsU
+ 8YHg0A==
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 12:44:13PM +0100, Ryan Roberts wrote:
-> In preparation for anonymous large folio support, improve
-> folio_add_new_anon_rmap() to allow a non-pmd-mappable, large folio to be
-> passed to it. In this case, all contained pages are accounted using the
-> order-0 folio (or base page) scheme.
-> 
-> Reviewed-by: Yu Zhao <yuzhao@google.com>
-> Reviewed-by: Yin Fengwei <fengwei.yin@intel.com>
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->  mm/rmap.c | 27 ++++++++++++++++++++-------
->  1 file changed, 20 insertions(+), 7 deletions(-)
-> 
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 8600bd029acf..106149690366 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1266,31 +1266,44 @@ void page_add_anon_rmap(struct page *page, struct vm_area_struct *vma,
->   * This means the inc-and-test can be bypassed.
->   * The folio does not have to be locked.
->   *
-> - * If the folio is large, it is accounted as a THP.  As the folio
-> + * If the folio is pmd-mappable, it is accounted as a THP.  As the folio
->   * is new, it's assumed to be mapped exclusively by a single process.
->   */
->  void folio_add_new_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
->  		unsigned long address)
->  {
-> -	int nr;
-> +	int nr = folio_nr_pages(folio);
->  
-> -	VM_BUG_ON_VMA(address < vma->vm_start || address >= vma->vm_end, vma);
-> +	VM_BUG_ON_VMA(address < vma->vm_start ||
-> +			address + (nr << PAGE_SHIFT) > vma->vm_end, vma);
->  	__folio_set_swapbacked(folio);
->  
-> -	if (likely(!folio_test_pmd_mappable(folio))) {
-> +	if (likely(!folio_test_large(folio))) {
->  		/* increment count (starts at -1) */
->  		atomic_set(&folio->_mapcount, 0);
-> -		nr = 1;
-> +		__page_set_anon_rmap(folio, &folio->page, vma, address, 1);
-> +	} else if (!folio_test_pmd_mappable(folio)) {
-> +		int i;
-> +
-> +		for (i = 0; i < nr; i++) {
-> +			struct page *page = folio_page(folio, i);
-> +
-> +			/* increment count (starts at -1) */
-> +			atomic_set(&page->_mapcount, 0);
-> +			__page_set_anon_rmap(folio, page, vma,
-> +					address + (i << PAGE_SHIFT), 1);
-> +		}
-> +
-> +		atomic_set(&folio->_nr_pages_mapped, nr);
+Hi,
 
-This code should work for !folio_test_large() case too, no?
+On 29.09.23 08:39, Uwe Kleine-K=C3=B6nig wrote:
+> On Fri, Sep 29, 2023 at 12:12:46AM +0200, Lino Sanfilippo wrote:
+>> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+>>
+>> If the imx driver cannot support RS485 it sets the UARTS rs485_supporte=
+d
+>> structure to NULL. But it still calls uart_get_rs485_mode() which may s=
+et
+>> the RS485_ENABLED flag.
+>> The flag however is evaluated by the serial core in uart_configure_port=
+()
+>
+> I wonder if this is the code location where this problem should be
+> addressed. Or alternatively don't let uart_get_rs485_mode() set
+> RS485_ENABLED (and other flags) if rs485_supported doesn't suggest that
+> this works?
+>
 
->  	} else {
->  		/* increment count (starts at -1) */
->  		atomic_set(&folio->_entire_mapcount, 0);
->  		atomic_set(&folio->_nr_pages_mapped, COMPOUND_MAPPED);
-> -		nr = folio_nr_pages(folio);
-> +		__page_set_anon_rmap(folio, &folio->page, vma, address, 1);
->  		__lruvec_stat_mod_folio(folio, NR_ANON_THPS, nr);
->  	}
->  
->  	__lruvec_stat_mod_folio(folio, NR_ANON_MAPPED, nr);
-> -	__page_set_anon_rmap(folio, &folio->page, vma, address, 1);
->  }
->  
->  /**
-> -- 
-> 2.25.1
-> 
+This is indeed the better solution. Especially since the check is then in =
+the serial
+core and all RS485 supporting drivers benefit from it. I will change this =
+for v2, thanks!
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+
+>> [...]
+>>
+>> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
+>
+> I don't know how picky Greg is here, but formally you missed to add an
+> S-o-b line for the sender of this patch (i.e. you with your gmx
+> address).
+>
+
+Hm, until now there have never been complaints about this. Is this really =
+an issue? Of
+course I can also S-o-b with my gmx address but adding two S-o-b's for the=
+ same person seems
+a bit odd to me...
+
+BR,
+Lino
+
+> Best regards
+> Uwe
+>
+
+
+
