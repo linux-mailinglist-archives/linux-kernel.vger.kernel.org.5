@@ -2,183 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1C27B2DD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:31:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E63907B2DDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232768AbjI2IbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 04:31:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
+        id S232900AbjI2IcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 04:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbjI2IbQ (ORCPT
+        with ESMTP id S232902AbjI2Ibw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 04:31:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EE61A7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:31:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18D03C433C7;
-        Fri, 29 Sep 2023 08:31:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695976275;
-        bh=KFYltfNMXJHEntrJupeguURYviSs9Hszmj5cJIerR6c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jw3M0Gcyy1R1Jeqr4D8XW2blUqxBUVDgrcNRH3+wBXk8F2GcYISbIZB3TO9G3b507
-         AAoEHo1aFevCX9KlX5EQujLQo4O7EXYpzwMZIBIcZuQ563Lxz+vZAMNHgjT63DSJvU
-         OhkYo5vDQuU2bGwarQcNlypnUOE3fN3gU7regX9LwbOmqQC3DMOKxw4yAfxRUyg9pM
-         98PkO+oa5pWeq+8xzhoNyNdLb7pdMRXsphK6ShFas1okkmZbpNngOa5JWrj+S5yhws
-         rh4LH9MQ7C1KslAQH7lJzBtKdoDbIzeSaWS7P7Z53THb34F6iz9rtwmzEmk3lwlY6Q
-         EGLKFcsXjOjeg==
-Date:   Fri, 29 Sep 2023 11:30:18 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Yajun Deng <yajun.deng@linux.dev>
-Cc:     akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, willy@infradead.org, david@redhat.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] mm: Init page count in reserve_bootmem_region
- when MEMINIT_EARLY
-Message-ID: <20230929083018.GU3303@kernel.org>
-References: <20230928083302.386202-1-yajun.deng@linux.dev>
- <20230928083302.386202-3-yajun.deng@linux.dev>
+        Fri, 29 Sep 2023 04:31:52 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 011BBCEC
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:31:43 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 83B3B218E9;
+        Fri, 29 Sep 2023 08:31:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1695976302; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VQ4i7GMFX0Wcbqf7uT/UkMLF7aH0vc6JCn27kk7fT1o=;
+        b=kOSb50xZLelbJ8FkUQIcqKkPi+P0Ft3h4cvJDz9Rt7AOrDj+xM84gphsAmvjRF+XtJxSz2
+        pLdFRNb3XiJz+cIk25rayru4CSNLaH9yfvDbaQHvmS7s3eYBdeplZ/V1gBfaTJ8t//3l0d
+        bxce4fIk7Q0IdfW0m1S7KxS+XQ8It3k=
+Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 1D4722C142;
+        Fri, 29 Sep 2023 08:31:42 +0000 (UTC)
+Date:   Fri, 29 Sep 2023 10:31:41 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH printk v2 11/11] lockdep: Add atomic write enforcement
+ for lockdep splats
+Message-ID: <ZRaLbUHStnPAGAjR@alley>
+References: <20230919230856.661435-1-john.ogness@linutronix.de>
+ <20230919230856.661435-12-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230928083302.386202-3-yajun.deng@linux.dev>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230919230856.661435-12-john.ogness@linutronix.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 04:33:02PM +0800, Yajun Deng wrote:
-> memmap_init_range() would init page count of all pages, but the free
-> pages count would be reset in __free_pages_core(). There are opposite
-> operations. It's unnecessary and time-consuming when it's MEMINIT_EARLY
-> context.
+On Wed 2023-09-20 01:14:56, John Ogness wrote:
+> Invoke the atomic write enforcement functions for lockdep
+> splats to ensure that the information gets out to the consoles.
 > 
-> Init page count in reserve_bootmem_region when in MEMINIT_EARLY context,
-> and check the page count before reset it.
-> 
-> At the same time, the INIT_LIST_HEAD in reserve_bootmem_region isn't
-> need, as it already done in __init_single_page.
-> 
-> The following data was tested on an x86 machine with 190GB of RAM.
-> 
-> before:
-> free_low_memory_core_early()    341ms
-> 
-> after:
-> free_low_memory_core_early()    285ms
-> 
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-> ---
-> v4: same with v2.
-> v3: same with v2.
-> v2: check page count instead of check context before reset it.
-> v1: https://lore.kernel.org/all/20230922070923.355656-1-yajun.deng@linux.dev/
-> ---
->  mm/mm_init.c    | 18 +++++++++++++-----
->  mm/page_alloc.c | 20 ++++++++++++--------
->  2 files changed, 25 insertions(+), 13 deletions(-)
-> 
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index 9716c8a7ade9..3ab8861e1ef3 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -718,7 +718,7 @@ static void __meminit init_reserved_page(unsigned long pfn, int nid)
->  		if (zone_spans_pfn(zone, pfn))
->  			break;
->  	}
-> -	__init_single_page(pfn_to_page(pfn), pfn, zid, nid, INIT_PAGE_COUNT);
-> +	__init_single_page(pfn_to_page(pfn), pfn, zid, nid, 0);
->  }
->  #else
->  static inline void pgdat_set_deferred_range(pg_data_t *pgdat) {}
-> @@ -756,8 +756,8 @@ void __meminit reserve_bootmem_region(phys_addr_t start,
->  
->  			init_reserved_page(start_pfn, nid);
->  
-> -			/* Avoid false-positive PageTail() */
-> -			INIT_LIST_HEAD(&page->lru);
-> +			/* Init page count for reserved region */
-
-Please add a comment that describes _why_ we initialize the page count here.
-
-> +			init_page_count(page);
->  
->  			/*
->  			 * no need for atomic set_bit because the struct
-> @@ -888,9 +888,17 @@ void __meminit memmap_init_range(unsigned long size, int nid, unsigned long zone
->  		}
->  
->  		page = pfn_to_page(pfn);
-> -		__init_single_page(page, pfn, zone, nid, INIT_PAGE_COUNT);
-> -		if (context == MEMINIT_HOTPLUG)
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -3967,9 +3968,13 @@ static void
+>  print_usage_bug(struct task_struct *curr, struct held_lock *this,
+>  		enum lock_usage_bit prev_bit, enum lock_usage_bit new_bit)
+>  {
+> +	enum nbcon_prio prev_prio;
 > +
-> +		/* If the context is MEMINIT_EARLY, we will init page count and
-> +		 * mark page reserved in reserve_bootmem_region, the free region
-> +		 * wouldn't have page count and we will check the pages count
-> +		 * in __free_pages_core.
-> +		 */
-> +		__init_single_page(page, pfn, zone, nid, 0);
-> +		if (context == MEMINIT_HOTPLUG) {
-> +			init_page_count(page);
->  			__SetPageReserved(page);
-
-Rather than calling init_page_count() and __SetPageReserved() for
-MEMINIT_HOTPLUG you can set flags to INIT_PAGE_COUNT | INIT_PAGE_RESERVED
-an call __init_single_page() after the check for MEMINIT_HOTPLUG.
-
-But more generally, I wonder if we have to differentiate HOTPLUG here at all.
-@David, can you comment please?
-
-> +		}
+>  	if (!debug_locks_off() || debug_locks_silent)
+>  		return;
 >  
->  		/*
->  		 * Usually, we want to mark the pageblock MIGRATE_MOVABLE,
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 06be8821d833..b868caabe8dc 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -1285,18 +1285,22 @@ void __free_pages_core(struct page *page, unsigned int order)
->  	unsigned int loop;
+> +	prev_prio = nbcon_atomic_enter(NBCON_PRIO_EMERGENCY);
+> +
+>  	pr_warn("\n");
+>  	pr_warn("================================\n");
+>  	pr_warn("WARNING: inconsistent lock state\n");
+> @@ -3998,6 +4003,8 @@ print_usage_bug(struct task_struct *curr, struct held_lock *this,
 >  
->  	/*
-> -	 * When initializing the memmap, __init_single_page() sets the refcount
-> -	 * of all pages to 1 ("allocated"/"not free"). We have to set the
-> -	 * refcount of all involved pages to 0.
-> +	 * When initializing the memmap, memmap_init_range sets the refcount
-> +	 * of all pages to 1 ("reserved" and "free") in hotplug context. We
-> +	 * have to set the refcount of all involved pages to 0. Otherwise,
-> +	 * we don't do it, as reserve_bootmem_region only set the refcount on
-> +	 * reserve region ("reserved") in early context.
->  	 */
+>  	pr_warn("\nstack backtrace:\n");
+>  	dump_stack();
+> +
+> +	nbcon_atomic_exit(NBCON_PRIO_EMERGENCY, prev_prio);
+>  }
 
-Again, why hotplug and early init should be different?
+The location of the emergency context looks good. I have just proposed
+another way for tracking the emergency context. It would allow to
+call nbcon_emergency_enter()/exit() without any parameter,
+see https://lore.kernel.org/r/ZRLBxsXPCym2NC5Q@alley
 
-> -	prefetchw(p);
-> -	for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
-> -		prefetchw(p + 1);
-> +	if (page_count(page)) {
-> +		prefetchw(p);
-> +		for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
-> +			prefetchw(p + 1);
-> +			__ClearPageReserved(p);
-> +			set_page_count(p, 0);
-> +		}
->  		__ClearPageReserved(p);
->  		set_page_count(p, 0);
->  	}
-> -	__ClearPageReserved(p);
-> -	set_page_count(p, 0);
->  
->  	atomic_long_add(nr_pages, &page_zone(page)->managed_pages);
->  
-> -- 
-> 2.25.1
-> 
-
--- 
-Sincerely yours,
-Mike.
+Best Regards,
+Petr
