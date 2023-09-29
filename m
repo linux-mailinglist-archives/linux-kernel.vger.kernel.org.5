@@ -2,90 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D837B3869
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A05F7B3879
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233696AbjI2RLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:11:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
+        id S232883AbjI2RSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233721AbjI2RLj (ORCPT
+        with ESMTP id S229545AbjI2RSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:11:39 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB481B4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:11:37 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-565ece76be4so17179060a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:11:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696007497; x=1696612297; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=20euwIYJH+DGbEnMSrsD3cdcsFe24zikSuEhIDKFhWA=;
-        b=TLJG9UWuiEASlWs4/pEcBQvXTjKH/kHHwaQC+EIXlQrhJOZWa1Vq4lTY6xy7p1nmY6
-         LxzDxpQgZ9v2UK8G1vtUPcDky0aDJkXqCSWjhKqixh4y1eHWmSLwLk9mrii+LMslYSGP
-         2S6koCvJhTnWe6TorhmiyE3/PQVwdE/C1W6v5rloBnIf010edFuwS7tLk5NpxEcl5e04
-         xW0ca6BSdyFQmzFbU1KtHZRIEV0emQjlIJyT4sW/uxTT/gAlazxVTqr3CjFB0CaWnarx
-         1UQMX6bQ41RKPe+xOpDRG1SKI/G7ahWfpO7CCtTIIxQHYPv+UlRaiODW1urGddZIX3RI
-         Hdjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696007497; x=1696612297;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=20euwIYJH+DGbEnMSrsD3cdcsFe24zikSuEhIDKFhWA=;
-        b=W+j14s82vxZHh9k78X2eCWs9CQxD+QBP8/JhTu1XbuNPkjNvd4HsW9Kc7TlpCOIxtv
-         LWwhqc2Ktv8K4/EyZzvGwsaQBpW/tsD4tGitJpOYfV5w5r42Sr77g2A7l6DwVKZc96+b
-         VToojOZl89o2I1bo1/xyoKObG8NtcEd1jSkFveVY2yKHLsAowwkVPtUZtvOYxT9AcAEq
-         eZhgQ8SBj3bFzvJoOsFZhzqVpunGOlWvRA4zEjUP3Znfzl0axrrGIuDm7f62XIFKb7TV
-         X4t+OTYF4dR3udFi/x6hKQDjn6oKJASYX3MiHoVfVFiosZCi+4WykJbGn9cnCV70dneX
-         XJRg==
-X-Gm-Message-State: AOJu0YwSkpR4ksUtvCkH9WjS9b3QvijWKHkzIZyHLpbczRky/eGC2IFW
-        s00k7RwCFPS0SeUfZQ3ebiLnUmx0yHM=
-X-Google-Smtp-Source: AGHT+IESWcvy7PGhStGPZMamrCN58SeRLjezVmLR//RjaC0b1cG7LEUuZb1rsJeooLxEYJjBDTx34dVdhVA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:e84d:b0:1c3:77cd:6520 with SMTP id
- t13-20020a170902e84d00b001c377cd6520mr64509plg.11.1696007496959; Fri, 29 Sep
- 2023 10:11:36 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 10:11:35 -0700
-In-Reply-To: <CAGD3tSxPDVb9sN1g+gTV5SykY57Szpx1SjEcmHJvK62u1fiXmA@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230913000215.478387-1-hshan@google.com> <169592156740.1035449.1039175365762233349.b4-ty@google.com>
- <CAGD3tSxPDVb9sN1g+gTV5SykY57Szpx1SjEcmHJvK62u1fiXmA@mail.gmail.com>
-Message-ID: <ZRcFR6Tf-9QzfbnD@google.com>
-Subject: Re: [PATCH v3] KVM: x86: Fix lapic timer interrupt lost after loading
- a snapshot.
-From:   Sean Christopherson <seanjc@google.com>
-To:     Haitao Shan <hshan@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Fri, 29 Sep 2023 13:18:31 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56952B4;
+        Fri, 29 Sep 2023 10:18:28 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8E05E240005;
+        Fri, 29 Sep 2023 17:18:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696007906;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HG2dvDUve3uTM4Z7g3W9DUMv+LMY4laZ6mDUP3Xm8vo=;
+        b=Skjkzz+JxZ//KdyFOwjlbpudULf17RSn+Xo2plOZ0ngc6NQJCu0WbnKP8RgTKcLNNy1M+x
+        +Bt19CM4S2WBesX60Wb8/wGMDigsV8Bw1TmVHEZd7h841smsgMoiLiHkIc8BE0NRlZUggu
+        KR3KpbD6L9ZjYZ26clUvHoROL//iB73zR7/dwxXedG6gnfjYqxO93x1Bv+TqWtl2KuAUcm
+        Ie3eW5lo6vgCOMX7lwBiVI84e+luInWx/9mgVb1r5rnMqkop/moXEXgK9Ay0eW9Cpfe/y7
+        6B1+nkZuFdwy6s1Ly/vGf8+90NVJrVFThSpROvskeLOxhqqTsfgnakQfNgGbOQ==
+Date:   Fri, 29 Sep 2023 19:18:24 +0200
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Lizhi Hou <lizhi.hou@amd.com>
+Cc:     <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <Jonathan.Cameron@Huawei.com>,
+        <bhelgaas@google.com>, <robh@kernel.org>
+Subject: Re: [PATCH v3] PCI: of: Fix memory leak when
+ of_changeset_create_node() failed
+Message-ID: <20230929191824.25ef93f1@bootlin.com>
+In-Reply-To: <1696007417-42059-1-git-send-email-lizhi.hou@amd.com>
+References: <1696007417-42059-1-git-send-email-lizhi.hou@amd.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023, Haitao Shan wrote:
-> Thank you very much.
+Hi Lizhi,
+
+On Fri, 29 Sep 2023 10:10:17 -0700
+Lizhi Hou <lizhi.hou@amd.com> wrote:
+
+> In function of_pci_make_dev_node(), the cset needs to be destroyed and
+> freed when of_changeset_create_node() returns null.
 > 
-> I do have one more question. Is this fix going to be backported to
-> v6.3, v6.4, etc? Or perhaps that will be a decision made by other
-> maintainers? The reason for such a question is to decide whether we
-> have to keep the workaround for certain kernel versions.
+> Fixes: 407d1a51921e ("PCI: Create device tree node for bridge")
+> Reported-by: Herve Codina <herve.codina@bootlin.com>
+> Closes: https://lore.kernel.org/all/20230911171319.495bb837@bootlin.com/
+> Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>
+> ---
+>  drivers/pci/of.c | 19 +++++++++++--------
+>  1 file changed, 11 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> index 2af64bcb7da3..51e3dd0ea5ab 100644
+> --- a/drivers/pci/of.c
+> +++ b/drivers/pci/of.c
+> @@ -657,30 +657,33 @@ void of_pci_make_dev_node(struct pci_dev *pdev)
+>  
+>  	cset = kmalloc(sizeof(*cset), GFP_KERNEL);
+>  	if (!cset)
+> -		goto failed;
+> +		goto out_free_name;
+>  	of_changeset_init(cset);
+>  
+>  	np = of_changeset_create_node(cset, ppnode, name);
+>  	if (!np)
+> -		goto failed;
+> -	np->data = cset;
+> +		goto out_destroy_cset;
+>  
+>  	ret = of_pci_add_properties(pdev, cset, np);
+>  	if (ret)
+> -		goto failed;
+> +		goto out_free_node;
+>  
+>  	ret = of_changeset_apply(cset);
+>  	if (ret)
+> -		goto failed;
+> +		goto out_free_node;
+>  
+> +	np->data = cset;
+>  	pdev->dev.of_node = np;
+>  	kfree(name);
+>  
+>  	return;
+>  
+> -failed:
+> -	if (np)
+> -		of_node_put(np);
+> +out_free_node:
+> +	of_node_put(np);
+> +out_destroy_cset:
+> +	of_changeset_destroy(cset);
+> +	kfree(cset);
+> +out_free_name:
+>  	kfree(name);
+>  }
+>  #endif
 
-It's tagged for stable, so it'll get automatically selected/backported for stable
-kernels so long as the patch applies cleanly.  That won't include 6.3 or 6.4
-because those are already end-of-life, i.e. not LTS kernels, and not the most
-recent release.
+Reviewed-by: Herve Codina <herve.codina@bootlin.com>
 
-If the patch doesn't apply cleanly, e.g. I highly doubt it'll apply as-is for 5.15,
-then someone has to do a manual backport, where "someone" can be anyone.  Sometimes
-that's a maintainer, but just as often it's someone that really cares about fixing
-something in a particular kernel.
+Best regards,
+Hervé
