@@ -2,221 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B717B369A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE287B36A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233600AbjI2PXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:23:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44896 "EHLO
+        id S233601AbjI2PXt convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Sep 2023 11:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233536AbjI2PXB (ORCPT
+        with ESMTP id S233556AbjI2PXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:23:01 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F165F9;
-        Fri, 29 Sep 2023 08:22:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696000978; x=1727536978;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=NlacZmizqV6T4MirzFGoCsXo3cO1zhZooZmKEx5tnxM=;
-  b=aYuTt/YDQ5XghZ2srE7aZOE3r6ruGpRDRhhvELiHKdfePBlWFxgnlf2D
-   6Bm4QQB1CEfCp/d0ewIlj60jaOVcFfnVXZaDvc2FyjDKq/Z5I4WuDjoh8
-   7aD1caoph9BiR12AglMf/ElM34T9gFU8a3dFFeB+rnyHukwX/9+JkiYsx
-   V79dx4G6hgVFHGX5tTaIVoZvMHSOmx5wk5LG7s6eneribjtJdWOyHUjDv
-   jE9LlJDOOtnxI0/fuDqvVmTNYeiiG3PHZatSBNNQIS/rS5u74Pqbn5L0F
-   +NFb+5NjKBNmEyyVgEUDTDmU6jRbfcuMDy2rgYtSsbJ3RTbyQyw0Ee56m
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="361699977"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="361699977"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:22:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="726626698"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="726626698"
-Received: from smorozov-mobl1.ger.corp.intel.com ([10.252.52.167])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:22:28 -0700
-Date:   Fri, 29 Sep 2023 18:22:26 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Babu Moger <babu.moger@amd.com>
-cc:     corbet@lwn.net, Reinette Chatre <reinette.chatre@intel.com>,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        fenghua.yu@intel.com, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, paulmck@kernel.org, akpm@linux-foundation.org,
-        quic_neeraju@quicinc.com, rdunlap@infradead.org,
-        damien.lemoal@opensource.wdc.com, songmuchun@bytedance.com,
-        peterz@infradead.org, jpoimboe@kernel.org, pbonzini@redhat.com,
-        chang.seok.bae@intel.com, pawan.kumar.gupta@linux.intel.com,
-        jmattson@google.com, daniel.sneddon@linux.intel.com,
-        sandipan.das@amd.com, tony.luck@intel.com, james.morse@arm.com,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        bagasdotme@gmail.com, eranian@google.com,
-        christophe.leroy@csgroup.eu, jarkko@kernel.org,
-        adrian.hunter@intel.com, quic_jiles@quicinc.com,
-        peternewman@google.com
-Subject: Re: [PATCH v10 05/10] x86/resctrl: Unwind the errors inside
- rdt_enable_ctx()
-In-Reply-To: <20230915224227.1336967-6-babu.moger@amd.com>
-Message-ID: <1f11b7d3-cb83-4e2b-a5c-11de87bb43b5@linux.intel.com>
-References: <20230915224227.1336967-1-babu.moger@amd.com> <20230915224227.1336967-6-babu.moger@amd.com>
+        Fri, 29 Sep 2023 11:23:47 -0400
+Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E481DD6;
+        Fri, 29 Sep 2023 08:23:44 -0700 (PDT)
+Received: from in01.mta.xmission.com ([166.70.13.51]:54204)
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qmFLC-00FymL-Go; Fri, 29 Sep 2023 09:23:43 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:54014 helo=email.froward.int.ebiederm.org.xmission.com)
+        by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1qmFLB-009ZoQ-44; Fri, 29 Sep 2023 09:23:42 -0600
+From:   "Eric W. Biederman" <ebiederm@xmission.com>
+To:     Pedro Falcato <pedro.falcato@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Sebastian Ott <sebott@redhat.com>,
+        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-hardening@vger.kernel.org
+References: <20230929031716.it.155-kees@kernel.org>
+        <20230929032435.2391507-1-keescook@chromium.org>
+        <CAKbZUD3E2if8Sncy+M2YKncc_Zh08-86W6U5wR0ZMazShxbHHA@mail.gmail.com>
+Date:   Fri, 29 Sep 2023 10:23:33 -0500
+In-Reply-To: <CAKbZUD3E2if8Sncy+M2YKncc_Zh08-86W6U5wR0ZMazShxbHHA@mail.gmail.com>
+        (Pedro Falcato's message of "Fri, 29 Sep 2023 13:06:38 +0100")
+Message-ID: <87o7hl80lm.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1669564657-1696000957=:1989"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-XM-SPF: eid=1qmFLB-009ZoQ-44;;;mid=<87o7hl80lm.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX18rmihOrcx0Q0L++mXAU7hLrmijYwsrwOA=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
+X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Pedro Falcato <pedro.falcato@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 794 ms - load_scoreonly_sql: 0.05 (0.0%),
+        signal_user_changed: 12 (1.5%), b_tie_ro: 10 (1.3%), parse: 1.28
+        (0.2%), extract_message_metadata: 53 (6.6%), get_uri_detail_list: 5
+        (0.7%), tests_pri_-2000: 59 (7.4%), tests_pri_-1000: 2.9 (0.4%),
+        tests_pri_-950: 1.40 (0.2%), tests_pri_-900: 1.11 (0.1%),
+        tests_pri_-200: 0.95 (0.1%), tests_pri_-100: 19 (2.4%), tests_pri_-90:
+        107 (13.4%), check_bayes: 90 (11.3%), b_tokenize: 15 (1.9%),
+        b_tok_get_all: 15 (1.9%), b_comp_prob: 4.6 (0.6%), b_tok_touch_all: 50
+        (6.3%), b_finish: 1.00 (0.1%), tests_pri_0: 518 (65.3%),
+        check_dkim_signature: 0.63 (0.1%), check_dkim_adsp: 6 (0.8%),
+        poll_dns_idle: 0.61 (0.1%), tests_pri_10: 2.1 (0.3%), tests_pri_500:
+        10 (1.3%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v4 1/6] binfmt_elf: Support segments with 0 filesz and
+ misaligned starts
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Pedro Falcato <pedro.falcato@gmail.com> writes:
 
---8323329-1669564657-1696000957=:1989
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+> On Fri, Sep 29, 2023 at 4:24 AM Kees Cook <keescook@chromium.org> wrote:
+>>
+>> From: "Eric W. Biederman" <ebiederm@xmission.com>
+>>
+>> Implement a helper elf_load() that wraps elf_map() and performs all
+>> of the necessary work to ensure that when "memsz > filesz" the bytes
+>> described by "memsz > filesz" are zeroed.
+>>
+>> An outstanding issue is if the first segment has filesz 0, and has a
+>> randomized location. But that is the same as today.
+>>
+>> In this change I replaced an open coded padzero() that did not clear
+>> all of the way to the end of the page, with padzero() that does.
+>>
+>> I also stopped checking the return of padzero() as there is at least
+>> one known case where testing for failure is the wrong thing to do.
+>> It looks like binfmt_elf_fdpic may have the proper set of tests
+>> for when error handling can be safely completed.
+>>
+>> I found a couple of commits in the old history
+>> https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git,
+>> that look very interesting in understanding this code.
+>>
+>> commit 39b56d902bf3 ("[PATCH] binfmt_elf: clearing bss may fail")
+>> commit c6e2227e4a3e ("[SPARC64]: Missing user access return value checks in fs/binfmt_elf.c and fs/compat.c")
+>> commit 5bf3be033f50 ("v2.4.10.1 -> v2.4.10.2")
+>>
+>> Looking at commit 39b56d902bf3 ("[PATCH] binfmt_elf: clearing bss may fail"):
+>> >  commit 39b56d902bf35241e7cba6cc30b828ed937175ad
+>> >  Author: Pavel Machek <pavel@ucw.cz>
+>> >  Date:   Wed Feb 9 22:40:30 2005 -0800
+>> >
+>> >     [PATCH] binfmt_elf: clearing bss may fail
+>> >
+>> >     So we discover that Borland's Kylix application builder emits weird elf
+>> >     files which describe a non-writeable bss segment.
+>> >
+>> >     So remove the clear_user() check at the place where we zero out the bss.  I
+>> >     don't _think_ there are any security implications here (plus we've never
+>> >     checked that clear_user() return value, so whoops if it is a problem).
+>> >
+>> >     Signed-off-by: Pavel Machek <pavel@suse.cz>
+>> >     Signed-off-by: Andrew Morton <akpm@osdl.org>
+>> >     Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+>>
+>> It seems pretty clear that binfmt_elf_fdpic with skipping clear_user() for
+>> non-writable segments and otherwise calling clear_user(), aka padzero(),
+>> and checking it's return code is the right thing to do.
+>>
+>> I just skipped the error checking as that avoids breaking things.
+>>
+>> And notably, it looks like Borland's Kylix died in 2005 so it might be
+>> safe to just consider read-only segments with memsz > filesz an error.
+>>
+>> Reported-by: Sebastian Ott <sebott@redhat.com>
+>> Reported-by: Thomas Weißschuh <linux@weissschuh.net>
+>> Closes: https://lkml.kernel.org/r/20230914-bss-alloc-v1-1-78de67d2c6dd@weissschuh.net
+>> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+>> Link: https://lore.kernel.org/r/87sf71f123.fsf@email.froward.int.ebiederm.org
+>> Signed-off-by: Kees Cook <keescook@chromium.org>
+>> ---
+>>  fs/binfmt_elf.c | 111 +++++++++++++++++++++---------------------------
+>>  1 file changed, 48 insertions(+), 63 deletions(-)
+>>
+>> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+>> index 7b3d2d491407..2a615f476e44 100644
+>> --- a/fs/binfmt_elf.c
+>> +++ b/fs/binfmt_elf.c
+>> @@ -110,25 +110,6 @@ static struct linux_binfmt elf_format = {
+>>
+>>  #define BAD_ADDR(x) (unlikely((unsigned long)(x) >= TASK_SIZE))
+>>
+>> -static int set_brk(unsigned long start, unsigned long end, int prot)
+>> -{
+>> -       start = ELF_PAGEALIGN(start);
+>> -       end = ELF_PAGEALIGN(end);
+>> -       if (end > start) {
+>> -               /*
+>> -                * Map the last of the bss segment.
+>> -                * If the header is requesting these pages to be
+>> -                * executable, honour that (ppc32 needs this).
+>> -                */
+>> -               int error = vm_brk_flags(start, end - start,
+>> -                               prot & PROT_EXEC ? VM_EXEC : 0);
+>> -               if (error)
+>> -                       return error;
+>> -       }
+>> -       current->mm->start_brk = current->mm->brk = end;
+>> -       return 0;
+>> -}
+>> -
+>>  /* We need to explicitly zero any fractional pages
+>>     after the data section (i.e. bss).  This would
+>>     contain the junk from the file that should not
+>> @@ -406,6 +387,51 @@ static unsigned long elf_map(struct file *filep, unsigned long addr,
+>>         return(map_addr);
+>>  }
+>>
+>> +static unsigned long elf_load(struct file *filep, unsigned long addr,
+>> +               const struct elf_phdr *eppnt, int prot, int type,
+>> +               unsigned long total_size)
+>> +{
+>> +       unsigned long zero_start, zero_end;
+>> +       unsigned long map_addr;
+>> +
+>> +       if (eppnt->p_filesz) {
+>> +               map_addr = elf_map(filep, addr, eppnt, prot, type, total_size);
+>> +               if (BAD_ADDR(map_addr))
+>> +                       return map_addr;
+>> +               if (eppnt->p_memsz > eppnt->p_filesz) {
+>> +                       zero_start = map_addr + ELF_PAGEOFFSET(eppnt->p_vaddr) +
+>> +                               eppnt->p_filesz;
+>> +                       zero_end = map_addr + ELF_PAGEOFFSET(eppnt->p_vaddr) +
+>> +                               eppnt->p_memsz;
+>> +
+>> +                       /* Zero the end of the last mapped page */
+>> +                       padzero(zero_start);
+>> +               }
+>> +       } else {
+>> +               map_addr = zero_start = ELF_PAGESTART(addr);
+>> +               zero_end = zero_start + ELF_PAGEOFFSET(eppnt->p_vaddr) +
+>> +                       eppnt->p_memsz;
+>
+> What happens if a previous segment has mapped ELF_PAGESTART(addr)?
+> Don't we risk mapping over that?
 
-On Fri, 15 Sep 2023, Babu Moger wrote:
+It is bug of whomever produced the ELF executable.
 
-> rdt_enable_ctx() enables the features provided during resctrl mount.
-> 
-> Additions to rdt_enable_ctx() are required to also modify error paths
-> of rdt_enable_ctx() callers to ensure correct unwinding if errors
-> are encountered after calling rdt_enable_ctx(). This is error prone.
-> 
-> Introduce rdt_disable_ctx() to refactor the error unwinding of
-> rdt_enable_ctx() to simplify future additions. This also simplifies
-> cleanup in rdt_kill_sb().
-> 
-> Remove cdp_disable_all() as it is not used anymore after the refactor.
-> 
-> Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
-> Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
-> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-> Signed-off-by: Babu Moger <babu.moger@amd.com>
-> ---
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 53 ++++++++++++++++----------
->  1 file changed, 32 insertions(+), 21 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index 35945b4bf196..3ea874c80c22 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -2290,14 +2290,6 @@ int resctrl_arch_set_cdp_enabled(enum resctrl_res_level l, bool enable)
->  	return 0;
->  }
->  
-> -static void cdp_disable_all(void)
-> -{
-> -	if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L3))
-> -		resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
-> -	if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L2))
-> -		resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
-> -}
-> -
->  /*
->   * We don't allow rdtgroup directories to be created anywhere
->   * except the root directory. Thus when looking for the rdtgroup
-> @@ -2377,19 +2369,42 @@ static int mkdir_mondata_all(struct kernfs_node *parent_kn,
->  			     struct rdtgroup *prgrp,
->  			     struct kernfs_node **mon_data_kn);
->  
-> +static void rdt_disable_ctx(void)
-> +{
-> +	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
-> +	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
-> +	set_mba_sc(false);
-> +}
-> +
->  static int rdt_enable_ctx(struct rdt_fs_context *ctx)
->  {
->  	int ret = 0;
->  
-> -	if (ctx->enable_cdpl2)
-> +	if (ctx->enable_cdpl2) {
->  		ret = resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, true);
-> +		if (ret)
-> +			goto out_done;
-> +	}
->  
-> -	if (!ret && ctx->enable_cdpl3)
-> +	if (ctx->enable_cdpl3) {
->  		ret = resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, true);
-> +		if (ret)
-> +			goto out_cdpl2;
-> +	}
->  
-> -	if (!ret && ctx->enable_mba_mbps)
-> +	if (ctx->enable_mba_mbps) {
->  		ret = set_mba_sc(true);
-> +		if (ret)
-> +			goto out_cdpl3;
-> +	}
-> +
-> +	return 0;
->  
-> +out_cdpl3:
-> +	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
-> +out_cdpl2:
-> +	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
-> +out_done:
->  	return ret;
->  }
->  
-> @@ -2497,13 +2512,13 @@ static int rdt_get_tree(struct fs_context *fc)
->  	}
->  
->  	ret = rdt_enable_ctx(ctx);
-> -	if (ret < 0)
-> -		goto out_cdp;
-> +	if (ret)
-> +		goto out;
->  
->  	ret = schemata_list_create();
->  	if (ret) {
->  		schemata_list_destroy();
-> -		goto out_mba;
-> +		goto out_ctx;
->  	}
->  
->  	closid_init();
-> @@ -2562,11 +2577,8 @@ static int rdt_get_tree(struct fs_context *fc)
->  	kernfs_remove(kn_info);
->  out_schemata_free:
->  	schemata_list_destroy();
-> -out_mba:
-> -	if (ctx->enable_mba_mbps)
-> -		set_mba_sc(false);
-> -out_cdp:
-> -	cdp_disable_all();
-> +out_ctx:
-> +	rdt_disable_ctx();
->  out:
->  	rdt_last_cmd_clear();
->  	mutex_unlock(&rdtgroup_mutex);
-> @@ -2798,12 +2810,11 @@ static void rdt_kill_sb(struct super_block *sb)
->  	cpus_read_lock();
->  	mutex_lock(&rdtgroup_mutex);
->  
-> -	set_mba_sc(false);
-> +	rdt_disable_ctx();
->  
->  	/*Put everything back to default values. */
->  	for_each_alloc_capable_rdt_resource(r)
->  		reset_all_ctrls(r);
-> -	cdp_disable_all();
->  	rmdir_all_sub();
->  	rdt_pseudo_lock_release();
->  	rdtgroup_default.mode = RDT_MODE_SHAREABLE;
-> 
+The architectural page size is known is part of the per architecture
+sysv ABI.  Typical it is the same or larger than the hardware page
+size.
 
-Reviewed-by: Ilpo J�rvinen <ilpo.jarvinen@linux.intel.com>
+ELF executables are always mmaped in page sized chunks.  Which makes a
+starting offset part-way through a page weird, and a bit awkward, but it
+is something the code already attempts to handle.
 
--- 
- i.
+> Whereas AFAIK old logic would just padzero the bss bytes.
 
---8323329-1669564657-1696000957=:1989--
+No.  The old logic would either map that region with elf_map, and then
+call padzero to zero out the bss bytes, or the old logic would fail if
+the file offset was not contained within the file.
+
+The updated logic if "filesz == 0" simply ignores the file offset
+and always mmaps /dev/zero instead.  This means that giving a bogus
+file offset does not unnecessarily cause an executable to fail.
+
+
+If the desired behavior is to have file contents and bss on the same
+page of data, the generator of the elf program header needs to
+have "memsz > filesz".  That is already well supported for everything
+except the elf interpreters.
+
+Eric
+
+
+
+
