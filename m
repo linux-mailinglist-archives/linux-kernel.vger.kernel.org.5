@@ -2,436 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC307B33B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1297B33B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbjI2Ndl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 09:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52908 "EHLO
+        id S233339AbjI2NeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 09:34:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233366AbjI2Ndi (ORCPT
+        with ESMTP id S233412AbjI2NeB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 09:33:38 -0400
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B8EB1B3;
-        Fri, 29 Sep 2023 06:33:35 -0700 (PDT)
+        Fri, 29 Sep 2023 09:34:01 -0400
+Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B18CD4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 06:33:59 -0700 (PDT)
+Received: by mail-vk1-xa2f.google.com with SMTP id 71dfb90a1353d-49d0ae5eb7bso554840e0c.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 06:33:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1695994415; x=1727530415;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=HlrtmjAYtMpD45GTi8Unvnne1C2hagAVywVHoYiGXmw=;
-  b=dgMVf7+Nka1DVmNNV/vgGfGGkNF5x1TXtLvqE8YtOkQDVeq02nQCV/N1
-   6NOIxxQktdbgsX3k/zURPImah0BSe21yb7nA7M5VeOnJY0e2xw/ffLCuT
-   N4bvRO8CpiiYvv+l3/l0pPx7oaQmi26fP9qrTdqNaJ6wmGWIn56g/qmDx
-   0=;
-X-IronPort-AV: E=Sophos;i="6.03,187,1694736000"; 
-   d="scan'208";a="32474738"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-1box-2bm6-32cf6363.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 13:33:32 +0000
-Received: from EX19MTAUWA002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-1box-2bm6-32cf6363.us-west-2.amazon.com (Postfix) with ESMTPS id 16639803BA;
-        Fri, 29 Sep 2023 13:33:32 +0000 (UTC)
-Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
- EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Fri, 29 Sep 2023 13:33:29 +0000
-Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
- EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Fri, 29 Sep 2023 13:33:27 +0000
-From:   Alexander Graf <graf@amazon.com>
-To:     <linux-crypto@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Olivia Mackall <olivia@selenic.com>,
-        "Petre Eftime" <petre.eftime@gmail.com>,
-        Erdem Meydanlli <meydanli@amazon.nl>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Subject: [PATCH v2 2/2] hwrng: Add support for Nitro Secure Module
-Date:   Fri, 29 Sep 2023 13:33:20 +0000
-Message-ID: <20230929133320.74848-3-graf@amazon.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230929133320.74848-1-graf@amazon.com>
-References: <20230929133320.74848-1-graf@amazon.com>
+        d=raspberrypi.com; s=google; t=1695994438; x=1696599238; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A+xdIamtWar0MYfhb0rDcSmv8dCB5Xt4XPVLRYRJ3b4=;
+        b=DfKq+khyi68MO5POorqL+w7FLTVw7kpOAkyb9ENUlnq6VS8kKM0LYG5LtaTNSXguI3
+         JxYAPv8jl3jDKY5JGwecfL28x+40ORzrGuakykh1C5iaSUZ5YwUEWRAEKsVUWdrp/8un
+         7pobgqgt4LEWomqMgDIogohzC0zxVwyg3IDE+zIIIsDti/6/xjXqBdt9jCr/Bi3S4Px5
+         0fQPctMzlZv+OTdeLVw/bGWVl7UFl660dcPlpYdfiOYwwAGKgN7izR7wTktMr6AUVurw
+         78MyioCleHY4Cd9aG2gYgZSrgwJ/UmYA3hO8TG8fJK1xMrJd/tTQpZrwdfyjwy/Wt36g
+         8Y1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695994438; x=1696599238;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A+xdIamtWar0MYfhb0rDcSmv8dCB5Xt4XPVLRYRJ3b4=;
+        b=Qyb+BP8KIOI41/X3Dq7QInuyfxvIQuvalrBc5MyjWgpLt/MMl0mamLxPw0KSiC9dJ5
+         LbHylZVuhPS7FxR1LQqw+TC3VfhvfvzlX2dvoCCUQmHEgV02E+jmK/lkFKJqi0ycw5Sq
+         K6a+VZ/cyrd9n15NWNfha+nol1aqwOvWGL+weaoUp5DO6F0MJQ/DK1ezAsmaYq8pFowk
+         1k4dBZdVgv7+I6udU0GRLDlSd33vQsn6gz4bLE+mxhHyo1YOQ8UaMAmG00z+heqaZ4hu
+         7FQloXwH+azua0KoJxUYp1H2mlAv1931Q2woCfbnhiWOGcHSBUHTjQcuOy+HjPk5KnWe
+         7PVQ==
+X-Gm-Message-State: AOJu0YxK427obqpgneJVwfUWQWgjEO4vNqx5tfwER214lG2xFjRYhWSV
+        W7WxRWMniwnUC2mXDnDdD0T8b+wQ7uuChVhZLFOO2g==
+X-Google-Smtp-Source: AGHT+IHHyhyo65ld9rgo3x3D0p/k9tLyqy8oiJ8aVd5/jh05D1feMiR8+2dvprSCCjc8uaoechR6+ou6NnvdxiYCR94=
+X-Received: by 2002:a1f:cc46:0:b0:48d:eaa:45c4 with SMTP id
+ c67-20020a1fcc46000000b0048d0eaa45c4mr3791108vkg.7.1695994438460; Fri, 29 Sep
+ 2023 06:33:58 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [10.253.83.51]
-X-ClientProxiedBy: EX19D040UWA001.ant.amazon.com (10.13.139.22) To
- EX19D020UWC004.ant.amazon.com (10.13.138.149)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <m3y1gpw8ri.fsf@t19.piap.pl>
+In-Reply-To: <m3y1gpw8ri.fsf@t19.piap.pl>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Fri, 29 Sep 2023 14:33:42 +0100
+Message-ID: <CAPY8ntASwh3AcRqE+2zF4Df=u+=wJ5K9icAeOrXTMJGDd1+caw@mail.gmail.com>
+Subject: Re: Sony IMX290/462 image sensors I2C xfer peculiarity
+To:     =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+Cc:     linux-media <linux-media@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running Linux inside a Nitro Enclave, the Nitro Secure Module
-provides a virtio message that can be used to receive entropy. This
-patch adds support to read that entropy on demand and expose it through
-the hwrng device.
+Hi Krzysztof
 
-Originally-by: Petre Eftime <petre.eftime@gmail.com>
-Signed-off-by: Alexander Graf <graf@amazon.com>
+On Fri, 29 Sept 2023 at 11:53, Krzysztof Ha=C5=82asa <khalasa@piap.pl> wrot=
+e:
+>
+> Hi,
+>
+> I am debugging certain IMX290 and IMX462 I2C failures on an NXP
+> i.MX6MP based board and there seem to be interesting "feature" here:
+> Sony IMX290 and IMX462 image sensors apparently terminate I2C transfers
+> after 2^18 of their master clock cycles. For example, with a typical
+> 37.125 MHz clock oscillator, this means about 7 ms. In practice, I'm
+> barely able to read a block of 128 registers (at I2C 400 kHz clock
+> rate).
+>
+> I think the sensors simply disconnect from the bus after 2^18 clock
+> cycles (starting from the first START condition, the repeated STARTs
+> don't reset the timeout). This means, in case of a READ operation, the
+> data read by the CPU after the timeout contains all bits set to 1.
+> i.MX8MP detects arbitration losses, so if the SDA change to 1 happens on
+> high clock value (but not on ACK bit), the whole transfer is aborted.
+> Otherwise, the ending bytes are simply set to FF (and the last non-FF
+> may be corrupted partially).
+>
+> The problem is 7 ms is a short time and on a non-real time system even
+> a simple non-DMA I2C register writes can take as much time. This causes
+> driver failures.
 
----
+What's your requirement to be able to read back so many registers at once?
 
-v1 -> v2:
+Whilst potentially useful during development, most sensor drivers
+write specific registers but never read anything other than
+potentially a model ID register during probe.
+Large block writes are generally not possible as at least the IMX290
+datasheet does state "Do not perform communication to addresses not
+listed in the Register Map", and there are numerous reserved blocks
+throughout the map.
+As far as I know there's no OTP on these sensors which would be about
+the only reason I can think of for needing to read large blocks.
 
-  - Remove boilerplate
----
- MAINTAINERS                      |   1 +
- drivers/char/hw_random/Kconfig   |  12 ++
- drivers/char/hw_random/Makefile  |   1 +
- drivers/char/hw_random/nsm-rng.c | 272 +++++++++++++++++++++++++++++++
- 4 files changed, 286 insertions(+)
- create mode 100644 drivers/char/hw_random/nsm-rng.c
+I currently can't see a reason for a sensor driver to be needing to do
+these big reads, so how can it cause a driver failure?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d54bf3ea2b9d..da9697639968 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15104,6 +15104,7 @@ L:	linux-kernel@vger.kernel.org
- L:	The AWS Nitro Enclaves Team <aws-nitro-enclaves-devel@amazon.com>
- S:	Supported
- W:	https://aws.amazon.com/ec2/nitro/nitro-enclaves/
-+F:	drivers/char/hw_random/nsm-rng.c
- F:	drivers/misc/nsm.c
- F:	include/linux/nsm.h
- F:	include/uapi/linux/nsm.h
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index 8de74dcfa18c..5d06e24cfdde 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -573,6 +573,18 @@ config HW_RANDOM_JH7110
- 	  To compile this driver as a module, choose M here.
- 	  The module will be called jh7110-trng.
- 
-+config HW_RANDOM_NSM
-+	tristate "Nitro (Enclaves) Security Module support"
-+	depends on NSM
-+	help
-+	  This driver provides support for the Nitro Security Module
-+	  in AWS EC2 Nitro based Enclaves. The driver enables support
-+	  for reading RNG data as well as a generic communication
-+	  mechanism with the hypervisor.
-+
-+	  To compile this driver as a module, choose M here.
-+	  The module will be called nsm_rng.
-+
- endif # HW_RANDOM
- 
- config UML_RANDOM
-diff --git a/drivers/char/hw_random/Makefile b/drivers/char/hw_random/Makefile
-index 32549a1186dc..7e33d1ed40f8 100644
---- a/drivers/char/hw_random/Makefile
-+++ b/drivers/char/hw_random/Makefile
-@@ -49,3 +49,4 @@ obj-$(CONFIG_HW_RANDOM_ARM_SMCCC_TRNG) += arm_smccc_trng.o
- obj-$(CONFIG_HW_RANDOM_CN10K) += cn10k-rng.o
- obj-$(CONFIG_HW_RANDOM_POLARFIRE_SOC) += mpfs-rng.o
- obj-$(CONFIG_HW_RANDOM_JH7110) += jh7110-trng.o
-+obj-$(CONFIG_HW_RANDOM_NSM) += nsm-rng.o
-diff --git a/drivers/char/hw_random/nsm-rng.c b/drivers/char/hw_random/nsm-rng.c
-new file mode 100644
-index 000000000000..7e6576d536e6
---- /dev/null
-+++ b/drivers/char/hw_random/nsm-rng.c
-@@ -0,0 +1,272 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Amazon Nitro Secure Module HWRNG driver.
-+ *
-+ * Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-+ */
-+
-+#include <linux/nsm.h>
-+#include <linux/hw_random.h>
-+#include <linux/module.h>
-+#include <linux/string.h>
-+#include <linux/virtio_ids.h>
-+
-+struct nsm_rng_info {
-+	struct hwrng hwrng;
-+	struct virtio_device *vdev;
-+};
-+
-+#define CBOR_TYPE_MASK  0xE0
-+#define CBOR_TYPE_MAP 0xA0
-+#define CBOR_TYPE_TEXT 0x60
-+#define CBOR_TYPE_ARRAY 0x40
-+#define CBOR_HEADER_SIZE_SHORT 1
-+
-+#define CBOR_SHORT_SIZE_MAX_VALUE 23
-+#define CBOR_LONG_SIZE_U8  24
-+#define CBOR_LONG_SIZE_U16 25
-+#define CBOR_LONG_SIZE_U32 26
-+#define CBOR_LONG_SIZE_U64 27
-+
-+#define CBOR_HEADER_SIZE_U8  (CBOR_HEADER_SIZE_SHORT + sizeof(u8))
-+#define CBOR_HEADER_SIZE_U16 (CBOR_HEADER_SIZE_SHORT + sizeof(u16))
-+#define CBOR_HEADER_SIZE_U32 (CBOR_HEADER_SIZE_SHORT + sizeof(u32))
-+#define CBOR_HEADER_SIZE_U64 (CBOR_HEADER_SIZE_SHORT + sizeof(u64))
-+
-+static bool cbor_object_is_array(const u8 *cbor_object, size_t cbor_object_size)
-+{
-+	if (cbor_object_size == 0 || cbor_object == NULL)
-+		return false;
-+
-+	return (cbor_object[0] & CBOR_TYPE_MASK) == CBOR_TYPE_ARRAY;
-+}
-+
-+static int cbor_object_get_array(u8 *cbor_object, size_t cbor_object_size, u8 **cbor_array)
-+{
-+	u8 cbor_short_size;
-+	u64 array_len;
-+	u64 array_offset;
-+
-+	if (!cbor_object_is_array(cbor_object, cbor_object_size))
-+		return -EFAULT;
-+
-+	if (cbor_array == NULL)
-+		return -EFAULT;
-+
-+	cbor_short_size = (cbor_object[0] & 0x1F);
-+
-+	/* Decoding byte array length */
-+	/* In short field encoding, the object header is 1 byte long and
-+	 * contains the type on the 3 MSB and the length on the LSB.
-+	 * If the length in the LSB is larger than 23, then the object
-+	 * uses long field encoding, and will contain the length over the
-+	 * next bytes in the object, depending on the value:
-+	 * 24 is u8, 25 is u16, 26 is u32 and 27 is u64.
-+	 */
-+	if (cbor_short_size <= CBOR_SHORT_SIZE_MAX_VALUE) {
-+		/* short encoding */
-+		array_len = cbor_short_size;
-+		array_offset = CBOR_HEADER_SIZE_SHORT;
-+	} else if (cbor_short_size == CBOR_LONG_SIZE_U8) {
-+		if (cbor_object_size < CBOR_HEADER_SIZE_U8)
-+			return -EFAULT;
-+		/* 1 byte */
-+		array_len = cbor_object[1];
-+		array_offset = CBOR_HEADER_SIZE_U8;
-+	} else if (cbor_short_size == CBOR_LONG_SIZE_U16) {
-+		if (cbor_object_size < CBOR_HEADER_SIZE_U16)
-+			return -EFAULT;
-+		/* 2 bytes */
-+		array_len = cbor_object[1] << 8 | cbor_object[2];
-+		array_offset = CBOR_HEADER_SIZE_U16;
-+	} else if (cbor_short_size == CBOR_LONG_SIZE_U32) {
-+		if (cbor_object_size < CBOR_HEADER_SIZE_U32)
-+			return -EFAULT;
-+		/* 4 bytes */
-+		array_len = cbor_object[1] << 24 |
-+			cbor_object[2] << 16 |
-+			cbor_object[3] << 8  |
-+			cbor_object[4];
-+		array_offset = CBOR_HEADER_SIZE_U32;
-+	} else if (cbor_short_size == CBOR_LONG_SIZE_U64) {
-+		if (cbor_object_size < CBOR_HEADER_SIZE_U64)
-+			return -EFAULT;
-+		/* 8 bytes */
-+		array_len = (u64) cbor_object[1] << 56 |
-+			  (u64) cbor_object[2] << 48 |
-+			  (u64) cbor_object[3] << 40 |
-+			  (u64) cbor_object[4] << 32 |
-+			  (u64) cbor_object[5] << 24 |
-+			  (u64) cbor_object[6] << 16 |
-+			  (u64) cbor_object[7] << 8  |
-+			  (u64) cbor_object[8];
-+		array_offset = CBOR_HEADER_SIZE_U64;
-+	}
-+
-+	if (cbor_object_size < array_offset)
-+		return -EFAULT;
-+
-+	if (cbor_object_size - array_offset < array_len)
-+		return -EFAULT;
-+
-+	if (array_len > INT_MAX)
-+		return -EFAULT;
-+
-+	*cbor_array = cbor_object + array_offset;
-+	return array_len;
-+}
-+
-+static int nsm_rng_read(struct hwrng *rng, void *data, size_t max, bool wait)
-+{
-+	struct nsm_rng_info *nsm_rng_info = (struct nsm_rng_info *)rng;
-+	struct nsm_kernel_message message = {};
-+	int rc = 0;
-+	u8 *resp_ptr = NULL;
-+	u64 resp_len = 0;
-+	u8 *rand_data = NULL;
-+	/*
-+	 * 69                          # text(9)
-+	 *     47657452616E646F6D      # "GetRandom"
-+	 */
-+	const u8 request[] = { CBOR_TYPE_TEXT + strlen("GetRandom"),
-+			       'G', 'e', 't', 'R', 'a', 'n', 'd', 'o', 'm' };
-+	/*
-+	 * A1                          # map(1)
-+	 *     69                      # text(9) - Name of field
-+	 *         47657452616E646F6D  # "GetRandom"
-+	 * A1                          # map(1) - The field itself
-+	 *     66                      # text(6)
-+	 *         72616E646F6D        # "random"
-+	 *	# The rest of the response should be a byte array
-+	 */
-+	const u8 response[] = { CBOR_TYPE_MAP + 1,
-+				CBOR_TYPE_TEXT + strlen("GetRandom"),
-+				'G', 'e', 't', 'R', 'a', 'n', 'd', 'o', 'm',
-+				CBOR_TYPE_MAP + 1,
-+				CBOR_TYPE_TEXT + strlen("random"),
-+				'r', 'a', 'n', 'd', 'o', 'm' };
-+
-+	/* NSM always needs to wait for a response */
-+	if (!wait)
-+		return 0;
-+
-+	/* Set request message */
-+	message.request.iov_len = sizeof(request);
-+	message.request.iov_base = kmalloc(message.request.iov_len, GFP_KERNEL);
-+	if (message.request.iov_base == NULL)
-+		goto out;
-+	memcpy(message.request.iov_base, request, sizeof(request));
-+
-+	/* Allocate space for response */
-+	message.response.iov_len = NSM_RESPONSE_MAX_SIZE;
-+	message.response.iov_base = kmalloc(message.response.iov_len, GFP_KERNEL);
-+	if (message.response.iov_base == NULL)
-+		goto out;
-+
-+	/* Send/receive message */
-+	rc = nsm_communicate_with_device(nsm_rng_info->vdev, &message);
-+	if (rc != 0)
-+		goto out;
-+
-+	resp_ptr = (u8 *) message.response.iov_base;
-+	resp_len = message.response.iov_len;
-+
-+	if (resp_len < sizeof(response) + 1) {
-+		pr_err("NSM RNG: Received short response from NSM: Possible error message or invalid response");
-+		rc = -EFAULT;
-+		goto out;
-+	}
-+
-+	if (memcmp(resp_ptr, response, sizeof(response)) != 0) {
-+		pr_err("NSM RNG: Invalid response header: Possible error message or invalid response");
-+		rc = -EFAULT;
-+		goto out;
-+	}
-+
-+	resp_ptr += sizeof(response);
-+	resp_len -= sizeof(response);
-+
-+	if (!cbor_object_is_array(resp_ptr, resp_len)) {
-+		/* not a byte array */
-+		pr_err("NSM RNG: Invalid response type: Expecting a byte array response");
-+		rc = -EFAULT;
-+		goto out;
-+	}
-+
-+	rc = cbor_object_get_array(resp_ptr, resp_len, &rand_data);
-+	if (rc < 0) {
-+		pr_err("NSM RNG: Invalid CBOR encoding\n");
-+		goto out;
-+	}
-+
-+	max = max > INT_MAX ? INT_MAX : max;
-+	rc = rc > max ? max : rc;
-+	memcpy(data, rand_data, rc);
-+
-+	pr_debug("NSM RNG: returning rand bytes = %d\n", rc);
-+out:
-+	kfree(message.request.iov_base);
-+	kfree(message.response.iov_base);
-+	return rc;
-+}
-+
-+static struct nsm_rng_info nsm_rng_info = {
-+	.hwrng = {
-+		.read = nsm_rng_read,
-+		.name = "nsm-hwrng",
-+		.quality = 1000,
-+	},
-+};
-+
-+static int nsm_rng_probe(struct virtio_device *vdev)
-+{
-+	int rc;
-+
-+	if (nsm_rng_info.vdev)
-+		return -EEXIST;
-+
-+	nsm_rng_info.vdev = vdev;
-+	rc = devm_hwrng_register(&vdev->dev, &nsm_rng_info.hwrng);
-+
-+	if (rc) {
-+		pr_err("NSM RNG initialization error: %d.\n", rc);
-+		return rc;
-+	}
-+
-+	return 0;
-+}
-+
-+static void nsm_rng_remove(struct virtio_device *vdev)
-+{
-+	hwrng_unregister(&nsm_rng_info.hwrng);
-+	nsm_rng_info.vdev = NULL;
-+}
-+
-+struct nsm_hwrng nsm_hwrng = {
-+	.probe = nsm_rng_probe,
-+	.remove = nsm_rng_remove,
-+};
-+
-+static int __init nsm_rng_init(void)
-+{
-+	return nsm_register_hwrng(&nsm_hwrng);
-+}
-+
-+static void __exit nsm_rng_exit(void)
-+{
-+	nsm_unregister_hwrng(&nsm_hwrng);
-+}
-+
-+module_init(nsm_rng_init);
-+module_exit(nsm_rng_exit);
-+
-+#ifdef MODULE
-+static const struct virtio_device_id nsm_id_table[] = {
-+	{ VIRTIO_ID_NITRO_SEC_MOD, VIRTIO_DEV_ANY_ID },
-+	{ 0 },
-+};
-+#endif
-+
-+MODULE_DEVICE_TABLE(virtio, nsm_id_table);
-+MODULE_DESCRIPTION("Virtio NSM RNG driver");
-+MODULE_LICENSE("GPL");
--- 
-2.40.1
+Scanning the IMX290 datasheet further, there is a slightly worrying
+paragraph in "Register Communication Timing (I2C)":
+"In I2C communication system, communication can be performed excluding
+during the period when communication is prohibited from the falling
+edge of XVS to 6H after (1H period)."
+and the diagram shows a 1 line period 6 lines after XVS which is
+marked "communication prohibited period". Ouch!
+I've never experienced issues with I2C comms to these modules, but is
+it possible that you're hitting this period with your longer I2C
+transactions? A logic analyser looking at XVS, XHS, and the I2C might
+give you some clues. Or are you not streaming when you're doing these
+transactions?
+IMX462 appears to list a similar restriction.
 
+  Dave
 
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+> Needless to say, the datasheets know nothing about the feature.
+>
+> Any thoughts?
+> --
+> Krzysztof "Chris" Ha=C5=82asa
+>
+> Sie=C4=87 Badawcza =C5=81ukasiewicz
+> Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+> Al. Jerozolimskie 202, 02-486 Warszawa
