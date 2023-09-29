@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D169E7B2968
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 02:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A91B57B296A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 02:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231485AbjI2AKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 20:10:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
+        id S232294AbjI2ALW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 20:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjI2AKH (ORCPT
+        with ESMTP id S229541AbjI2ALV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 20:10:07 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9C3F3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 17:10:05 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-4195fe5cf73so93421cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 17:10:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695946205; x=1696551005; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LzvTFN75+iA4NEl0LJCBH/BP6Z5NQCZHvtY+oNVE+gw=;
-        b=OjCFf9TOnkrLU/KswzCvSTiHaAwPyIWNJJ2EPe6dDqm+X5kAOzryroIiLCzfM8xmVr
-         YPCnE39m1D1V6DUzfZu8OBJcU25eGSp6gJjXyhqJvXDGbqdo8pBhvKEqzddTxevzcxIa
-         GZ/cNiIMCHi1a5JxJlFWZ2Kzn4ftofnKMyH057/K0hjQKxq2mxTWKwC9xmi74DP2fUfW
-         9wF3Qrw4n7YArj6sDmadA0ZyZGQ18m96hXrMp60KURbiQgIzuA/bxGqls40Hexe0Bn3O
-         E9NvZ9cKCD1hqsyypzt8CowKCH1/mpPiol56odkeYMSMbrI87cQ4seeXBzuLS2Um5v/T
-         igTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695946205; x=1696551005;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LzvTFN75+iA4NEl0LJCBH/BP6Z5NQCZHvtY+oNVE+gw=;
-        b=AidJFInv+7bSfUGQn/QdyWFhErdrbhb0jkv7xf/yyjOjEOlUxEFt3fv27M7ZM77OtO
-         IL5gbs+Yw89UaLAdze+tgTMuZBIxTk+QcVCYRxUbqN2iq0ycu3FJSyqeAJzaw/KFisEM
-         5b+W0s+1Xvv8OksHNm9aEEvGGIfkSz8yYTJkasAhs6nWMGgaYwX5xxW6YxKjGKTuj3cW
-         3l8OAhBNjon13L8EEmno32lakPdQgDk4jj/08JI6vz+9+WxEQDDsSIHiJGEO7x1I9aer
-         Cz1pUxuOeLbWYacvxE+5HwDZohZ24RprtVfzoVjPy5UtITT2QTC5JmTNtEnbl/yuG7sJ
-         saTw==
-X-Gm-Message-State: AOJu0YxmBpKKvl6cuKSsEzjG2P2xqauktN4sHL8fLgDTI2rvKZrQoGYm
-        1M22q9VzyhtaU1Nf3WbeemTMVWBBqsHQ26YYRK9ePQ==
-X-Google-Smtp-Source: AGHT+IH4jwtz94nsixUZlli6bJCxlt1xjILkhR2GybMC88NTjRXEj7Vlfpt7diniCxJex6zUjQlOAOBjKfTfS7/tbTc=
-X-Received: by 2002:a05:622a:100f:b0:417:9238:5a30 with SMTP id
- d15-20020a05622a100f00b0041792385a30mr1067632qte.29.1695946204321; Thu, 28
- Sep 2023 17:10:04 -0700 (PDT)
+        Thu, 28 Sep 2023 20:11:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC0F92;
+        Thu, 28 Sep 2023 17:11:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695946279; x=1727482279;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=gjkSVOUjK8t1WLURW1YR+vElGQY+naItEdlppoHYujM=;
+  b=Q4qCXFgV4Fa6QLjLwMj8GiSms2OFihc7O0WiLRcSzb7RlEcb0O+XbuBZ
+   IZQgsic/2hdibxe3Rz5wKI8PL7dZ1FQZbMU4svknDb+A6g/c4vx0SHC6q
+   ObFXVQfXEZEYivcZN9EUVuw+Q73TeaU9NtRxVuGWCGkx2iO8oNv4D0Wfu
+   xQApaNrZcZ/ar8QmZE0aXp9PXGu8mm23f4QS9jqL1FuoVCaQZ337xOOCz
+   KhdOZt4WcPLXuGGON4xg3gtEpi+MvcTq4toHFRPVBQ/xOvMGU8dRv3N2R
+   3Eczk2Aud+6wLUB9+ogZ9hUvLhQOi/ekQwqTbBW2u6bFF1TZZ7vHuedk3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="379475787"
+X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
+   d="scan'208";a="379475787"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 17:11:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="873486737"
+X-IronPort-AV: E=Sophos;i="6.03,185,1694761200"; 
+   d="scan'208";a="873486737"
+Received: from jveerasa-mobl.amr.corp.intel.com (HELO [10.255.231.134]) ([10.255.231.134])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 17:11:11 -0700
+Message-ID: <e24da7cd-fcfd-e4d3-16dd-9bb102adcab4@intel.com>
+Date:   Thu, 28 Sep 2023 17:11:11 -0700
 MIME-Version: 1.0
-References: <20230928061207.1841513-1-apatel@ventanamicro.com>
- <20230928061207.1841513-3-apatel@ventanamicro.com> <CAL_JsqL6LvfQQi4AqJpDPKwC76Xap4Re4o+bzviyb--dUOG7vQ@mail.gmail.com>
-In-Reply-To: <CAL_JsqL6LvfQQi4AqJpDPKwC76Xap4Re4o+bzviyb--dUOG7vQ@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 28 Sep 2023 17:09:27 -0700
-Message-ID: <CAGETcx_1sKjyMR4Vkx4maVy+jopHtjuzO7n8zzOnj9u9G5s1mw@mail.gmail.com>
-Subject: Re: [PATCH v9 02/15] of: property: Add fw_devlink support for msi-parent
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Anup Patel <apatel@ventanamicro.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Sunil V L <sunilvl@ventanamicro.com>,
-        Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6] x86/sgx: Resolves SECS reclaim vs. page fault for EAUG
+ race
+Content-Language: en-US
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        dave.hansen@linux.intel.com, kai.huang@intel.com,
+        jarkko@kernel.org, linux-kernel@vger.kernel.org,
+        linux-sgx@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     kristen@linux.intel.com, seanjc@google.com, stable@vger.kernel.org,
+        sohil.mehta@intel.com
+References: <20230728051024.33063-1-haitao.huang@linux.intel.com>
+ <f2b00069-e837-ff1e-2d03-b446df49bff0@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <f2b00069-e837-ff1e-2d03-b446df49bff0@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,20 +72,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 7:40=E2=80=AFAM Rob Herring <robh+dt@kernel.org> wr=
-ote:
->
-> On Thu, Sep 28, 2023 at 1:12=E2=80=AFAM Anup Patel <apatel@ventanamicro.c=
-om> wrote:
-> >
-> > This allows fw_devlink to create device links between consumers of
-> > a MSI and the supplier of the MSI.
-> >
-> > Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-> > ---
-> >  drivers/of/property.c | 2 ++
-> >  1 file changed, 2 insertions(+)
->
-> Acked-by: Rob Herring <robh@kernel.org>
+On 9/28/23 16:08, Reinette Chatre wrote:
+> I'd like to check in on the status of this patch. This two month old
+> patch looks to be a needed fix and has Jarkko and Kai's review tags,
+> but I am not able to find it queued or merged in tip or upstream.
+> Apologies if I did not look in the right spot, I just want to make
+> sure it did not fall through the cracks if deemed needed.
 
-Reviewed-by: Saravana Kannan <saravanak@google.com>
+It fell through the cracks.  Sorry about that.  It's in x86/urgent now.
