@@ -2,137 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F01F07B2A40
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 04:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771937B2A42
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 04:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229919AbjI2CII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 22:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
+        id S229516AbjI2CJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 22:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjI2CIG (ORCPT
+        with ESMTP id S229654AbjI2CJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 22:08:06 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248B719F
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:08:02 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9b275afb6abso37170866b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:08:02 -0700 (PDT)
+        Thu, 28 Sep 2023 22:09:05 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1878199
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:09:03 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d865f1447a2so18370270276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:09:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695953280; x=1696558080; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DpJvrW7U3xIffjqcwESsvsx+jvDlYI20BWsEDJIfKsE=;
-        b=2mEH4vX2MW9Muivxe5HnYD0D9xKlG7iFWifZZmlmkg61RvoSAI7p1LzGG0z0NZbX59
-         GhSigpX7EF2e6wrKBQBONwQtNBGW4a4IA5we4eeGeOI+bCcqEvOYbjOHChN8pSKOd2NJ
-         OQbUWVE810bKYvKkUoQQw8Xb1Dfy1r125Z2BfZbzDi/Yqvrra4Xjx1LPqvVxTHl6xaNE
-         2AAud50EfMp5Zaxq0ytKKqvL5oD9cOac1015NGFIGDwlz6XXN9FiVnhDOKvsD9bpgjFi
-         WAhP/yFPdcrL/+1yFMiqTtBPZWjIyt1mCSl6tL88ZOz1cNtWWoBOBihys4V/31JrytO1
-         YYdg==
+        d=google.com; s=20230601; t=1695953343; x=1696558143; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iRifG0kMrpXqEfz+mDuKDe9tCj6ju9DW+Z80pWDEPIg=;
+        b=Ql0HHBQLhgcpUkKbgk/2vuOqhG9q8eac3USq9Os02kpnxm2ipbpg2F6HSxUm/GTBXP
+         5jpzHu18ITCCXOLOWOu7a1WrSu1ez+HYkUo+D6SttorHUIDm5C1DePH8IpFQflyELCGE
+         bdm2vwmt8H5hAgRXzgk0uMqJ+50tE2C1ZzuHD/LxfbNNYEyq0TYcgnwINxGqvXDRf0LR
+         fSNi6fYLA0BgZy4tdc5tTcvrTHgvHuUOTfY0urwc8ha/aIjJphk4E9BnvMuNoPwXqdXo
+         BMSFY7vKiLxsHt8eLbt43Q2xjX6nn8NmiI5dexcUMHiLMImRSTTp3bMRgB6Z6lhkjArB
+         pRBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695953280; x=1696558080;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DpJvrW7U3xIffjqcwESsvsx+jvDlYI20BWsEDJIfKsE=;
-        b=IAVObkAwENeVbRDUC5DWFxc2ya1jnOBICHdqHQLd9OnBAFZEIJB5dOCphTxP3aq3zG
-         k9ZksCMqfe120wCEnSl2xGV4dLf2epN4T+byvZEwugt4o4SitYrqwPb+EfC2zT6ZejQq
-         a65DOAnZdm+c2426vKkjyBwC2SB20CbnTi4TEu6T3UDv7sgHJHH6Bxo+bmTTCaYNikRI
-         1X+YxjKOmLiFWjgf6Ugg3SjewUejnPs/tiEPml4biaadrLig7ygFJU3mRQJs1x1snraH
-         0P098qxGIhZ6AdQJrPiW5MB44W64tozq7IQHxJPbpLAqcg9bEQ31bvw4nnIya3ua3w3v
-         chow==
-X-Gm-Message-State: AOJu0Yw1r1MouOrJEyT6x22RVm913/TdO9mmDpjIeTQLFdlcVSl1rvOr
-        4ekAEB7atkdHU7nwS7pxoIBFSOOB8y6aY6siaIcBBg==
-X-Google-Smtp-Source: AGHT+IFyoQ45G0/xSiJVIsjcy4eWKEwZ/2vhbS/D95tXQxzUqaJAJuRIh3RZM++LVJ05Ro/8eSB9olgdUNOmkr0SiWg=
-X-Received: by 2002:a17:906:c146:b0:9a5:dc2b:6a5 with SMTP id
- dp6-20020a170906c14600b009a5dc2b06a5mr2604319ejc.35.1695953280532; Thu, 28
- Sep 2023 19:08:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com>
- <5707f3bef3ecd8220a8bf7c8b72c72c53e65b666.camel@perches.com>
- <CAFhGd8rtnvipRVAKRQAEcyGqCknVmx+bd2NMT7mCuTZjhrqULA@mail.gmail.com>
- <137a309b313cc8a295f3affc704f0da049f233aa.camel@perches.com> <CAKwvOdnGzTvSXf7VeyG8tPEONpqSgkDiBTmgJbUUWsRHzbc5JQ@mail.gmail.com>
-In-Reply-To: <CAKwvOdnGzTvSXf7VeyG8tPEONpqSgkDiBTmgJbUUWsRHzbc5JQ@mail.gmail.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Fri, 29 Sep 2023 11:07:48 +0900
-Message-ID: <CAFhGd8rrHp1V4NpExpdNwWV4FAdLYhixLMB5HGygNSe7NKPUMA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] get_maintainer: add patch-only keyword matching
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        geert@linux-m68k.org, gregkh@linuxfoundation.org,
-        workflows@vger.kernel.org, mario.limonciello@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1695953343; x=1696558143;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iRifG0kMrpXqEfz+mDuKDe9tCj6ju9DW+Z80pWDEPIg=;
+        b=UzGNfYVALaYYaCnccP7dO4hPydj1uATIezBdXl6iydstDpcaXolgzBvpi47ZwUzfgl
+         xdlESSx8yPrKF1VLn7WgOnPO5cK1ELG/zDDu463/sGy9w6UvuX7j6YJpHHLd5vmjbFfk
+         AeQaBNw0LtcZhzzYJo8RbUA5M5/CgRvqc024J4NMwfbzu09g+PcbiKHT2KCclU5yISms
+         YyBjOhCRYdnKGnD1ZWi9rHNBr7fLAX6yqzxePucRIjSnQ8FXGdsN1QgxDIWT1hlnEdKx
+         O5nLqokDSbcd/TgPzSYuIEX3/gKF5Se/AOLncbA9Hv6u7PNvncBxoft2680xU5tkIaDs
+         xW+g==
+X-Gm-Message-State: AOJu0YwVAJ6dfxQhcvDyO7yyAu4S16unB5scsr1OrY0iVEE6PQJuZE7u
+        eid4hPTHUkespXU/roYXiyw+P9zc4ZI=
+X-Google-Smtp-Source: AGHT+IHSABCyhHlqkH3QYwh23b9HPcWYdRzvnPf4l9PM6ESO2KCiEZOquFC+M7OxKxdHxatj23bPR+UdpeE=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:ad50:0:b0:d0e:e780:81b3 with SMTP id
+ l16-20020a25ad50000000b00d0ee78081b3mr37853ybe.2.1695953343145; Thu, 28 Sep
+ 2023 19:09:03 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 19:09:01 -0700
+In-Reply-To: <20230928173354.217464-1-mlevitsk@redhat.com>
+Mime-Version: 1.0
+References: <20230928173354.217464-1-mlevitsk@redhat.com>
+Message-ID: <ZRYxvdmHpjxr3QKp@google.com>
+Subject: Re: [PATCH v2 0/4] AVIC bugfixes and workarounds
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, iommu@lists.linux.dev,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
+        x86@kernel.org,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 12:52=E2=80=AFAM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Wed, Sep 27, 2023 at 11:09=E2=80=AFPM Joe Perches <joe@perches.com> wr=
-ote:
-> >
-> > On Thu, 2023-09-28 at 14:31 +0900, Justin Stitt wrote:
-> > > On Thu, Sep 28, 2023 at 2:01=E2=80=AFPM Joe Perches <joe@perches.com>=
- wrote:
-> > > >
-> > > > On Thu, 2023-09-28 at 04:23 +0000, Justin Stitt wrote:
-> > > > > Changes in v2:
-> > > > > - remove formatting pass (thanks Joe) (but seriously the formatti=
-ng is
-> > > > >   bad, is there opportunity to get a formatting pass in here at s=
-ome
-> > > > >   point?)
-> > > >
-> > > > Why?  What is it that makes you believe the formatting is bad?
-> > > >
-> > >
-> > > Investigating further, it looked especially bad in my editor. There i=
-s
-> > > a mixture of
-> > > tabs and spaces and my vim tabstop is set to 4 for pl files. Setting =
-this to
-> > > 8 is a whole lot better. But I still see some weird spacing
-> > >
-> >
-> > Yes, it's a bit odd indentation.
-> > It's emacs default perl format.
-> > 4 space indent with 8 space tabs, maximal tab fill.
-> >
->
-> Oh! What?! That's the most surprising convention I've ever heard of
-> (after the GNU C coding style).  Yet another thing to hold against
-> perl I guess. :P
->
-> I have my editor setup to highlight tabs vs spaces via visual cues, so
-> that I don't mess up kernel coding style. (`git clang-format HEAD~`
-> after a commit helps).  scripts/get_maintainer.pl has some serious
-> inconsistencies to the point where I'm not sure what it should or was
-> meant to be.  Now that you mention it, I see it, and it does seem
-> consistent in that regard.
->
-> Justin, is your formatter configurable to match that convention?
-> Maybe it's still useful, as long as you configure it to stick to the
-> pre-existing convention.
+On Thu, Sep 28, 2023, Maxim Levitsky wrote:
+> Maxim Levitsky (4):
+>   x86: KVM: SVM: always update the x2avic msr interception
+>   x86: KVM: SVM: add support for Invalid IPI Vector interception
+>   x86: KVM: SVM: refresh AVIC inhibition in svm_leave_nested()
 
-Negative, all the perl formatters I've tried will convert everything to spa=
-ces.
-The best I've seen is perltidy.
+Paolo, I assume you'll take the first three directly for 6.6?
 
-https://gist.github.com/JustinStitt/347385921c80a5212c2672075aa769b6
-
-> --
-> Thanks,
-> ~Nick Desaulniers
+>   x86: KVM: SVM: workaround for AVIC's errata #1235
