@@ -2,148 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5F17B360E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 295C67B3610
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233467AbjI2OwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 10:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
+        id S233463AbjI2Ow3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 10:52:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233410AbjI2Ovv (ORCPT
+        with ESMTP id S233663AbjI2OwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 10:51:51 -0400
-Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F33CD4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:51:49 -0700 (PDT)
-From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-To:     alsa-devel@alsa-project.org
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-Subject: [PATCH v5 09/12] ALSA: hda/intel: Move snd_hdac_i915_init to before probe_work.
-Date:   Fri, 29 Sep 2023 16:51:23 +0200
-Message-Id: <20230929145123.233838-10-maarten.lankhorst@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230929145123.233838-1-maarten.lankhorst@linux.intel.com>
-References: <20230929145123.233838-1-maarten.lankhorst@linux.intel.com>
+        Fri, 29 Sep 2023 10:52:20 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 22937172D
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:52:07 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2C5001FB;
+        Fri, 29 Sep 2023 07:52:45 -0700 (PDT)
+Received: from [10.57.66.29] (unknown [10.57.66.29])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 819193F5A1;
+        Fri, 29 Sep 2023 07:52:04 -0700 (PDT)
+Message-ID: <d0b0a7c3-1944-8758-7967-c981c343cea6@arm.com>
+Date:   Fri, 29 Sep 2023 15:51:32 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 0/2] KVM: arm64: Support for Arm v8.8 memcpy
+ instructions in KVM guests
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Oliver Upton <oliver.upton@linux.dev>, kvmarm@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-kernel@vger.kernel.org
+References: <20230922112508.1774352-1-kristina.martsenko@arm.com>
+ <ZRPE9OcB9ndgFxbs@linux.dev> <6687f58c-0da9-0583-2dc1-2089f292b745@arm.com>
+ <87fs2xmiof.wl-maz@kernel.org>
+From:   Kristina Martsenko <kristina.martsenko@arm.com>
+In-Reply-To: <87fs2xmiof.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we can use -EPROBE_DEFER, it's no longer required to spin off
-the snd_hdac_i915_init into a workqueue.
+On 29/09/2023 10:29, Marc Zyngier wrote:
+> On Thu, 28 Sep 2023 17:55:39 +0100,
+> Kristina Martsenko <kristina.martsenko@arm.com> wrote:
+>>
+>> On 27/09/2023 07:00, Oliver Upton wrote:
+>>>
+>>> On Fri, Sep 22, 2023 at 12:25:06PM +0100, Kristina Martsenko wrote:
+>>>> Hi,
+>>>>
+>>>> This is v2 of the series to allow using the new Arm memory copy instructions
+>>>> in KVM guests. See v1 for more information [1].
+>>>
+>>>
+>>> Thanks for sending out the series. I've been thinking about what the
+>>> architecture says for MOPS, and I wonder if what's currently in the
+>>> Arm ARM is clear enough for EL1 software to be written robustly.
+>>>
+>>> While HCRX_EL2.MCE2 allows the hypervisor to intervene on MOPS
+>>> exceptions from EL1, there's no such control for EL0. So when vCPU
+>>> migration occurs EL1 could get an unexpected MOPS exception, even for a
+>>> process that was pinned to a single (virtual) CPU implementation.
+>>>
+>>> Additionally, the wording of I_NXHPS seems to suggest that EL2 handling
+>>> of MOPS exceptions is only expected in certain circumstances where EL1 is
+>>> incapable of handling an exception. Is the unwritten expectation then
+>>> that EL1 software should tolerate 'unexpected' MOPS exceptions from EL1
+>>> and EL0, even if EL1 did not migrate the PE context?
+>>>
+>>> Perhaps I'm being pedantic, but I'd really like for there to be some
+>>> documentation that suggests MOPS exceptions can happen due to context
+>>> migration done by a higher EL as that is the only option in the context
+>>> of virtualization.
+>>
+>> That's a good point. This shouldn't affect Linux guests as Linux is
+>> always able to handle a MOPS exception coming from EL0. But it would
+>> affect any non-Linux guest that pins all its EL0 tasks and doesn't
+>> implement a handler. It's not clear to me what the expectation for
+>> guests is, I'll ask the architects to clarify and get back to you.
+> 
+> My understanding is that MCE2 should always be set if the hypervisor
+> can migrate vcpus across implementations behind EL1's back, and that
+> in this context, EL1 never sees such an exception.
 
-Use the -EPROBE_DEFER mechanism instead, which must be returned in the
-probe function.
+Notice that MCE2 only traps exceptions from EL1, not from EL0.
+Exceptions from EL0 always go to EL1. Even if MCE2 is always set, EL1
+will see the exception when the hypervisor migrates the vcpu while the
+vcpu is executing a MOPS instruction in EL0.
 
-Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/pci/hda/hda_intel.c | 59 ++++++++++++++++++++-------------------
- 1 file changed, 30 insertions(+), 29 deletions(-)
-
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index bfe6232bb0e0e..5cf7676114dc6 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2135,6 +2135,36 @@ static int azx_probe(struct pci_dev *pci,
- 
- 	pci_set_drvdata(pci, card);
- 
-+#ifdef CONFIG_SND_HDA_I915
-+	/* bind with i915 if needed */
-+	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
-+		err = snd_hdac_i915_init(azx_bus(chip), false);
-+		if (err < 0) {
-+			/* if the controller is bound only with HDMI/DP
-+			 * (for HSW and BDW), we need to abort the probe;
-+			 * for other chips, still continue probing as other
-+			 * codecs can be on the same link.
-+			 */
-+			if (HDA_CONTROLLER_IN_GPU(pci)) {
-+				dev_err_probe(card->dev, err,
-+					     "HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
-+
-+				goto out_free;
-+			} else {
-+				/* don't bother any longer */
-+				chip->driver_caps &= ~AZX_DCAPS_I915_COMPONENT;
-+			}
-+		}
-+
-+		/* HSW/BDW controllers need this power */
-+		if (HDA_CONTROLLER_IN_GPU(pci))
-+			hda->need_i915_power = true;
-+	}
-+#else
-+	if (HDA_CONTROLLER_IN_GPU(pci))
-+		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
-+#endif
-+
- 	err = register_vga_switcheroo(chip);
- 	if (err < 0) {
- 		dev_err(card->dev, "Error registering vga_switcheroo client\n");
-@@ -2162,11 +2192,6 @@ static int azx_probe(struct pci_dev *pci,
- 	}
- #endif /* CONFIG_SND_HDA_PATCH_LOADER */
- 
--#ifndef CONFIG_SND_HDA_I915
--	if (HDA_CONTROLLER_IN_GPU(pci))
--		dev_err(card->dev, "Haswell/Broadwell HDMI/DP must build in CONFIG_SND_HDA_I915\n");
--#endif
--
- 	if (schedule_probe)
- 		schedule_delayed_work(&hda->probe_work, 0);
- 
-@@ -2264,30 +2289,6 @@ static int azx_probe_continue(struct azx *chip)
- 	to_hda_bus(bus)->bus_probing = 1;
- 	hda->probe_continued = 1;
- 
--	/* bind with i915 if needed */
--	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
--		err = snd_hdac_i915_init(bus, true);
--		if (err < 0) {
--			/* if the controller is bound only with HDMI/DP
--			 * (for HSW and BDW), we need to abort the probe;
--			 * for other chips, still continue probing as other
--			 * codecs can be on the same link.
--			 */
--			if (HDA_CONTROLLER_IN_GPU(pci)) {
--				dev_err(chip->card->dev,
--					"HSW/BDW HD-audio HDMI/DP requires binding with gfx driver\n");
--				goto out_free;
--			} else {
--				/* don't bother any longer */
--				chip->driver_caps &= ~AZX_DCAPS_I915_COMPONENT;
--			}
--		}
--
--		/* HSW/BDW controllers need this power */
--		if (HDA_CONTROLLER_IN_GPU(pci))
--			hda->need_i915_power = true;
--	}
--
- 	/* Request display power well for the HDA controller or codec. For
- 	 * Haswell/Broadwell, both the display HDA controller and codec need
- 	 * this power. For other platforms, like Baytrail/Braswell, only the
--- 
-2.39.2
+Thanks,
+Kristina
 
