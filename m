@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC8D7B2A7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 05:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 993D77B2A77
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 05:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232649AbjI2DY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 23:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbjI2DYo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232558AbjI2DYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 28 Sep 2023 23:24:44 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD49C199
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:24:40 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-7742da399a2so624678185a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:24:40 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232321AbjI2DYl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Sep 2023 23:24:41 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D55D1AA
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:24:39 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-692d2e8c003so152778b3a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:24:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695957880; x=1696562680; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1695957879; x=1696562679; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7JCtI6Mw9jLbpCfzTWeYqaol0MCiq7teZQqSoN5bxO4=;
-        b=PAEZ/ez4XM+Nfd7IxqcYrATv76QfWiEkrKWgea+lJzL31QWfywvX55Hr196SMSWJv2
-         H+tdJI+HyacXvcIeNp6Xwg12Gxfp9T1WzOP7CBBIDiCRmh3z9klBb8Zqmb62ID6ugxzS
-         /Bxt6UgTKJOkP4uKTqSctiHKw+9ZTNqwBg3ts=
+        bh=95+jGh9HzPfjIjeeQbyhCMVgDdqV+t+zi0ml5yOYuB8=;
+        b=jxYfHi6UrmlN+2RUW3BFPUPF6/N0gHYlZIWZzjNHw7WzqWZzyCSQIRcCf7rXysywY3
+         s1yOxdFMqC5M6da9Zpq4ZD/D53DypziHPfjATX/sfflu3nUOB5j8/C0VJBMaHXLMRUrV
+         CLytRsuOuOhoJWKJqFJCuVH8yPGfPTe1n9hmw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695957880; x=1696562680;
+        d=1e100.net; s=20230601; t=1695957879; x=1696562679;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7JCtI6Mw9jLbpCfzTWeYqaol0MCiq7teZQqSoN5bxO4=;
-        b=EOS6qjUi2GYQ6ylOCxzkPgg1ZjHDgpnR9sd6cLj80UhymSWXvYCF9N0AJsyYRhP8pr
-         GVf0p//sUMOQn6aLtdHrzUmKFBAWpYx6dV66q7QeMUNEAdYt881RWt6wV9mz7x20nerw
-         JL16VYpa4rdeTGLFekw9JiEWInXztSK2aZED0fAhbkFIqy4LpkXQli7xNAOx3u6yX3OO
-         +35JkHl+jQVpWAnyXB1QBct1LJ9utL1m27DxbuB8I8vOtiuxr986ziMaODu0GF2bCId7
-         ouA6Uqze1upk9z6+fHtO1IRUVWlNlrncw4jbC5GQUdMQpVWw/M4phbmWZ7oi81S9wJR8
-         ks2Q==
-X-Gm-Message-State: AOJu0YzMiuY952OPr7pDw7JRd54k7AMHO7oc47yma7YFOWTOWV7izQ0v
-        KFkgjPrJWbFUDXaHkHtGUifORw==
-X-Google-Smtp-Source: AGHT+IELcqZMMKb1td/vncjB5sH12I54PHU5TdsvQyhNwOMv+fB/QBhAjEGhxQYK020wITjebfX9sQ==
-X-Received: by 2002:a05:620a:e9d:b0:772:6443:daf3 with SMTP id w29-20020a05620a0e9d00b007726443daf3mr2738735qkm.66.1695957879917;
-        Thu, 28 Sep 2023 20:24:39 -0700 (PDT)
+        bh=95+jGh9HzPfjIjeeQbyhCMVgDdqV+t+zi0ml5yOYuB8=;
+        b=fXNxYNXXC7ydaKD5S0tX+0IPGcSwKxp/i2UjcXgixYNgx8pidXvkZvaF4PJ4fkrOOm
+         I4HbLrRY3zEDK6Vo1oCoouPT/VbnrAsqEpx4v8+blyMvAjO0sQBBJJ6eMLCyzYiN9zD5
+         V10DZbIkGuDSGDA8JfITge1wYXWGTTtPDJ/GMdQFbkuf0FI05ElmvCNxfHp5+oG3SnAz
+         BVGC/Kljm1wPMJuz/RiuIObytDTSAfRvhGppHN7/7TgeCnpfuQ5QXPU4gNQ3zKcrZSmR
+         Msu7rOlwqhQmV4oBXSgq7eiXKpwa5+gdeAwett3b3OwQlhFWkHt7XFa+xb0BUiCcqSYr
+         iV5A==
+X-Gm-Message-State: AOJu0YxL/keAGbnEjoMaMCPpcGOQrEURuMlnDt35wMsf+AWIp+yL47h7
+        /wbfqxPftfcsDnY/0WWlqBkJoA==
+X-Google-Smtp-Source: AGHT+IENptQn7XIn+gHi7Xk/Rom3FrwjZlYNl2dbdfUf0uD5PWaNHfgd4GwUs3Rvuj8dtt6Ixw6ezw==
+X-Received: by 2002:a05:6a20:72a5:b0:153:4ea6:d12e with SMTP id o37-20020a056a2072a500b001534ea6d12emr5304382pzk.17.1695957878823;
+        Thu, 28 Sep 2023 20:24:38 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id du14-20020a056a002b4e00b00690fe1c928esm10256201pfb.91.2023.09.28.20.24.36
+        by smtp.gmail.com with ESMTPSA id b5-20020aa78705000000b0068ff267f094sm3481738pfo.158.2023.09.28.20.24.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 28 Sep 2023 20:24:36 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -53,31 +53,31 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Christian Brauner <brauner@kernel.org>,
         linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Pedro Falcato <pedro.falcato@gmail.com>,
         Sebastian Ott <sebott@redhat.com>,
         =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Pedro Falcato <pedro.falcato@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH v4 3/6] binfmt_elf: Use elf_load() for interpreter
-Date:   Thu, 28 Sep 2023 20:24:31 -0700
-Message-Id: <20230929032435.2391507-3-keescook@chromium.org>
+Subject: [PATCH v4 4/6] binfmt_elf: Use elf_load() for library
+Date:   Thu, 28 Sep 2023 20:24:32 -0700
+Message-Id: <20230929032435.2391507-4-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230929031716.it.155-kees@kernel.org>
 References: <20230929031716.it.155-kees@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2936; i=keescook@chromium.org;
- h=from:subject; bh=8mN64ZnApkL7mlS3J3j8M/PeeHjiU24xpvEFIwO52Sc=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlFkNyQ5p5E4Tg789OjEFFGvDw6hy8O/CboaqJO
- +gn/YtsP02JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRZDcgAKCRCJcvTf3G3A
- JlfrD/0UmFIiwvqM26CPsRIStoMfmoWWLE+1T0+B6VIpoHHYl6fxgrYIk1GMjuaGbD0RwF9QP+t
- BqcWROGSbE7jtsk5rW33lmv5P4kATjv1E8P0xTh6YLwy/qmxm1iBcqH7A7aIp5rT/ZZxmRWS7z/
- KaumFG9s9XzIzz7vNtyCpYAslNBn7Ct0D760d/KdyUyF0tRcwUZGbbqsCSJ3qDlqi9Oh48d8rqr
- zVrOdBbcoN0GFz2NFhwg1g0iypiVC72gYNSKuCVuYoSflzMWmk+MWWz+KoGHh8QQyufk09tUrRt
- 7e7QzVJPtxRfKGiVSBnbT7mPxw87BCa7B1z+sX5Sj7D4++z7rbKsnwJGiOeSn9hRsn3zwU/bHKg
- 2VugFFQ+5/llgN3z58QGPu56dO6ydWYCZeneBcrQoNc1xhZyz8M2IpA5m0iJS719hxg22R2fW1p
- xaQITu1kMm0y6BxdReD/XHhw3eM0HzXWV9ltG8nLrJXOVz5Ve3z1wcEusMGPOh07NsX6dEfXDJv
- XYtMF21/+UxnZ3eYxaWMHimE+Qo2DtB694DxSqJhwRK4FB4KUShHOAsbSQTcGSzXCx13gP3vhF0
- S8eSoWkYBz90zkFWSPCcyq4F9jfXjVmVgHQgU/leUKWz2vDzeEVdmX04CQNaCQPS6MFWyGJaKml bTMeDeMtwCCfvfQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1627; i=keescook@chromium.org;
+ h=from:subject; bh=HDRWJgiZi2B41NjfcoHun/GXVPB8PhMH+K8nRgD/QEY=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlFkNyd7onj53UAnvTrNuqjrOoqdzlhhnL6T0n4
+ waDipxrCuyJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRZDcgAKCRCJcvTf3G3A
+ JgqhEACQaxzh9TUbPcDbZo8niTtocmDdmljr+QUAo/kUcZsO7WwVGlruTUeAl3DsFH2PvI/7f8q
+ 6Gzf2F516CRNsoFBvkxeJHFWa21p4CjiRwEYH+rdFGIQwe4ZXPrdSrcJhWVB35JNjqR8CK/aRK2
+ NAJeh7WuuaTnpcDhFmPiXWQuRt1noAczm74SRZU8IZ06ucQ49FNFgl7FPCGA0RLuWRQDEc4zXaQ
+ BQktUi2h0of64YlxMdZfk+SQMGz2lOqO7a3F8Zy9PazbSnHb5k2NrkreHnNxtncdID9uE6SiKy+
+ JVJ8/BMveYU1W8I+asdhp8xe2CV19g1Qmlq4ZVCoeGxeV9OtFE+c8gjwaTlFdRjzRgfVqvqVmtp
+ OYM3ExS5b6+tEeavoEpUw88foXpj9yoZLMwL8pVfsXc2FYIlPsrtaFfUyacQhttqevffosf/oUf
+ bksChMr+i07cgy1L/yGOx/6wCfvU8HTwH+VMXDpSSowba7S7GbBmvxw9EtoVWjqJAGNdtQ6FvJZ
+ 6SXLe7ag42PtcuMWe8C14GuF1yYIcvu/o/vpy24R3zfZUovoJAGPuns5yKBok4/GV2c31zPoB/p
+ 5ZXXOtl28un+F7p/qF9lnnk6I8GbyO4YgCPqLeXph77PUUZfI4r38oOBt9/p+hKk0yQ+7nD6eH+ 8MpI/toIRLPKXkg==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -89,96 +89,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Handle arbitrary memsz>filesz in interpreter ELF segments, instead of
-only supporting it in the last segment (which is expected to be the
-BSS).
+While load_elf_library() is a libc5-ism, we can still replace most of
+its contents with elf_load() as well, further simplifying the code.
 
-Cc: Eric Biederman <ebiederm@xmission.com>
 Cc: Alexander Viro <viro@zeniv.linux.org.uk>
 Cc: Christian Brauner <brauner@kernel.org>
 Cc: linux-fsdevel@vger.kernel.org
 Cc: linux-mm@kvack.org
-Reported-by: Pedro Falcato <pedro.falcato@gmail.com>
-Closes: https://lore.kernel.org/lkml/20221106021657.1145519-1-pedro.falcato@gmail.com/
+Suggested-by: Eric Biederman <ebiederm@xmission.com>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- fs/binfmt_elf.c | 46 +---------------------------------------------
- 1 file changed, 1 insertion(+), 45 deletions(-)
+ fs/binfmt_elf.c | 23 ++++-------------------
+ 1 file changed, 4 insertions(+), 19 deletions(-)
 
 diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index 0214d5a949fc..db47cb802f89 100644
+index db47cb802f89..f8b4747f87ed 100644
 --- a/fs/binfmt_elf.c
 +++ b/fs/binfmt_elf.c
-@@ -622,8 +622,6 @@ static unsigned long load_elf_interp(struct elfhdr *interp_elf_ex,
- 	struct elf_phdr *eppnt;
- 	unsigned long load_addr = 0;
- 	int load_addr_set = 0;
--	unsigned long last_bss = 0, elf_bss = 0;
--	int bss_prot = 0;
- 	unsigned long error = ~0UL;
- 	unsigned long total_size;
- 	int i;
-@@ -660,7 +658,7 @@ static unsigned long load_elf_interp(struct elfhdr *interp_elf_ex,
- 			else if (no_base && interp_elf_ex->e_type == ET_DYN)
- 				load_addr = -vaddr;
+@@ -1351,30 +1351,15 @@ static int load_elf_library(struct file *file)
+ 		eppnt++;
  
--			map_addr = elf_map(interpreter, load_addr + vaddr,
-+			map_addr = elf_load(interpreter, load_addr + vaddr,
- 					eppnt, elf_prot, elf_type, total_size);
- 			total_size = 0;
- 			error = map_addr;
-@@ -686,51 +684,9 @@ static unsigned long load_elf_interp(struct elfhdr *interp_elf_ex,
- 				error = -ENOMEM;
- 				goto out;
- 			}
--
--			/*
--			 * Find the end of the file mapping for this phdr, and
--			 * keep track of the largest address we see for this.
--			 */
--			k = load_addr + eppnt->p_vaddr + eppnt->p_filesz;
--			if (k > elf_bss)
--				elf_bss = k;
--
--			/*
--			 * Do the same thing for the memory mapping - between
--			 * elf_bss and last_bss is the bss section.
--			 */
--			k = load_addr + eppnt->p_vaddr + eppnt->p_memsz;
--			if (k > last_bss) {
--				last_bss = k;
--				bss_prot = elf_prot;
--			}
- 		}
- 	}
+ 	/* Now use mmap to map the library into memory. */
+-	error = vm_mmap(file,
+-			ELF_PAGESTART(eppnt->p_vaddr),
+-			(eppnt->p_filesz +
+-			 ELF_PAGEOFFSET(eppnt->p_vaddr)),
++	error = elf_load(file, ELF_PAGESTART(eppnt->p_vaddr),
++			eppnt,
+ 			PROT_READ | PROT_WRITE | PROT_EXEC,
+ 			MAP_FIXED_NOREPLACE | MAP_PRIVATE,
+-			(eppnt->p_offset -
+-			 ELF_PAGEOFFSET(eppnt->p_vaddr)));
+-	if (error != ELF_PAGESTART(eppnt->p_vaddr))
+-		goto out_free_ph;
++			0);
  
--	/*
--	 * Now fill out the bss section: first pad the last page from
--	 * the file up to the page boundary, and zero it from elf_bss
--	 * up to the end of the page.
--	 */
+-	elf_bss = eppnt->p_vaddr + eppnt->p_filesz;
 -	if (padzero(elf_bss)) {
 -		error = -EFAULT;
--		goto out;
++	if (error != ELF_PAGESTART(eppnt->p_vaddr))
+ 		goto out_free_ph;
 -	}
--	/*
--	 * Next, align both the file and mem bss up to the page size,
--	 * since this is where elf_bss was just zeroed up to, and where
--	 * last_bss will end after the vm_brk_flags() below.
--	 */
--	elf_bss = ELF_PAGEALIGN(elf_bss);
--	last_bss = ELF_PAGEALIGN(last_bss);
--	/* Finally, if there is still more bss to allocate, do it. */
--	if (last_bss > elf_bss) {
--		error = vm_brk_flags(elf_bss, last_bss - elf_bss,
--				bss_prot & PROT_EXEC ? VM_EXEC : 0);
+ 
+-	len = ELF_PAGEALIGN(eppnt->p_filesz + eppnt->p_vaddr);
+-	bss = ELF_PAGEALIGN(eppnt->p_memsz + eppnt->p_vaddr);
+-	if (bss > len) {
+-		error = vm_brk(len, bss - len);
 -		if (error)
--			goto out;
+-			goto out_free_ph;
 -	}
--
- 	error = load_addr;
- out:
- 	return error;
+ 	error = 0;
+ 
+ out_free_ph:
 -- 
 2.34.1
 
