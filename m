@@ -2,212 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48D3C7B329D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:33:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2B87B32A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233170AbjI2MdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 08:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36954 "EHLO
+        id S233110AbjI2MeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 08:34:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232977AbjI2MdJ (ORCPT
+        with ESMTP id S232911AbjI2MeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:33:09 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4C42D1AE;
-        Fri, 29 Sep 2023 05:33:06 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3EA7D1FB;
-        Fri, 29 Sep 2023 05:33:44 -0700 (PDT)
-Received: from [10.57.66.194] (unknown [10.57.66.194])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6960C3F59C;
-        Fri, 29 Sep 2023 05:33:04 -0700 (PDT)
-Message-ID: <a140fb29-3b76-46b8-b7e8-0e89351ddfbd@arm.com>
-Date:   Fri, 29 Sep 2023 13:33:03 +0100
+        Fri, 29 Sep 2023 08:34:02 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2427E1AC
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:33:59 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qmCgq-0008Sc-Fg; Fri, 29 Sep 2023 14:33:52 +0200
+Received: from [2a0a:edc0:0:1101:1d::39] (helo=dude03.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qmCgp-009oFQ-GF; Fri, 29 Sep 2023 14:33:51 +0200
+Received: from localhost ([::1] helo=dude03.red.stw.pengutronix.de)
+        by dude03.red.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <j.zink@pengutronix.de>)
+        id 1qmCgp-009S7x-4i; Fri, 29 Sep 2023 14:33:51 +0200
+From:   Johannes Zink <j.zink@pengutronix.de>
+Subject: [PATCH v5 0/3] Support non-default LVDS data mapping for simple
+ panel
+Date:   Fri, 29 Sep 2023 14:33:30 +0200
+Message-Id: <20230523-simplepanel_support_nondefault_datamapping-v5-0-0d7928edafab@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: BUG: MADV_COLLAPSE doesn't work for XFS files
-To:     Zach O'Keefe <zokeefe@google.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux XFS <linux-xfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>
-References: <4d6c9b19-cdbb-4a00-9a40-5ed5c36332e5@arm.com>
- <ZRVbV6yJ-zFzRoas@debian.me> <54e5accf-1a56-495a-a4f5-d57504bc2fc8@arm.com>
- <CAAa6QmRbDbEamFgEDbgVhwKOf1GHNa90COuyz29BmduOAjbmyA@mail.gmail.com>
-Content-Language: en-GB
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CAAa6QmRbDbEamFgEDbgVhwKOf1GHNa90COuyz29BmduOAjbmyA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABrEFmUC/53OTW7DIBAF4KtErEuCAf+kq96jqqyxGWwkGxBgl
+ Cry3YuzqtSuvHwjzffek0QMBiN5vzxJwGyicbaE+u1CxhnshNSokglnXLCaCxrN6hf0YHHp4+a
+ 9C6m3zirUsC2pV5BgBe+NnWglRqE5Au90Rwo4QEQ6BLDjfJC5uYpbct6Mt18oHbZItQsrpOPHB
+ 9Tm8Rr4+VXybGJy4fu1N/Pjempa5pTRrq3ujWaKDY388GinLQVnzeOqkBxdWZz3RfHbDhWKViq
+ h7v/68rwvi48NtqyqtJBD/cff9/0HMNnJf90BAAA=
+To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     kernel test robot <lkp@intel.com>,
+        Dan Carpenter <error27@gmail.com>,
+        patchwork-jzi@pengutronix.de, kernel@pengutronix.de,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Johannes Zink <j.zink@pengutronix.de>,
+        Conor Dooley <conor.dooley@microchip.com>
+X-Mailer: b4 0.12.2
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: j.zink@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/09/2023 20:43, Zach O'Keefe wrote:
-> Hey Ryan,
-> 
-> Thanks for bringing this up.
-> 
-> On Thu, Sep 28, 2023 at 4:59 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
->>
->> On 28/09/2023 11:54, Bagas Sanjaya wrote:
->>> On Thu, Sep 28, 2023 at 10:55:17AM +0100, Ryan Roberts wrote:
->>>> Hi all,
->>>>
->>>> I've just noticed that when applied to a file mapping for a file on xfs, MADV_COLLAPSE returns EINVAL. The same test case works fine if the file is on ext4.
->>>>
->>>> I think the root cause is that the implementation bails out if it finds a (non-PMD-sized) large folio in the page cache for any part of the file covered by the region. XFS does readahead into large folios so we hit this issue. See khugepaged.h:collapse_file():
->>>>
->>>>              if (PageTransCompound(page)) {
->>>>                      struct page *head = compound_head(page);
->>>>
->>>>                      result = compound_order(head) == HPAGE_PMD_ORDER &&
->>>>                                      head->index == start
->>>>                                      /* Maybe PMD-mapped */
->>>>                                      ? SCAN_PTE_MAPPED_HUGEPAGE
->>>>                                      : SCAN_PAGE_COMPOUND;
->>>>                      goto out_unlock;
->>>>              }
->>>
-> 
-> Ya, non-PMD-sized THPs were just barely visible in my peripherals when
-> writing this, and I'm still woefully behind on your work on them now
-> (sorry!).
+Some LVDS panels, such as the innolux,g101ice-l01 support multiple LVDS
+data mapping modes, which can be configured by strapping a dataformat
+pin on the display to a specific voltage.
 
-Nothing to apologise for!
+This can be particularly useful for using the jeida-18 format, which
+requires only 3 instead of 4 LVDS lanes.
 
-Although, this issue has no relation to the work I've been doing for anonymous large folios; It shows up for large _file_ folios. And it looks like the kernel was capable of doing large file folios for XFS before the collapse implementation went in, so I guess this behavior has always been the case:
+This series moves the data-mapping property for LVDS panels in a
+separate file and optionally adds it to simple-panel when matching to
+the innolux,g101ice-l01 compatible. This property allows to override
+the default data mapping set in the panel description in simple-panel.
 
-git rev-list --no-walk=sorted --pretty=oneline \
-	793917d997df2e432f3e9ac126e4482d68256d01 \
-	6795801366da0cd3d99e27c37f020a8f16714886 \
-	8549a26308f945bddb39391643eb102da026f0ef \
-	e6687b89225ee9c817e6dcbadc873f6a4691e5c2 \
-	7d8faaf155454f8798ec56404faca29a82689c77
+The last patch in this series actually adds the driver support for
+parsing the data format override device tree property and modifying the
+corresponding values for bit per color and media bus format in the panel
+descriptor.
 
-7d8faaf155454f8798ec56404faca29a82689c77 mm/madvise: introduce MADV_COLLAPSE sync hugepage collapse
-793917d997df2e432f3e9ac126e4482d68256d01 mm/readahead: Add large folio readahead
-6795801366da0cd3d99e27c37f020a8f16714886 xfs: Support large folios
+Best regards
+Johannes
 
-So first, XFS supported it, then readahead actually started allocating large folios, then MADV_COLLAPSE came along.
+---
 
+Changelog:
 
-> 
-> I'd like to eventually make collapse (not just MADV_COLLAPSE, but
-> khugepaged too) support arbitrary-sized large folios in general, but
-> I'm very pressed for time right now. I think M. Wilcox is also
-> interested in this, given he left the TODO to support it :P
+v4 -> v5:  - no changes, but added the reviewed-by-tags from v3 that
+             were lost in v3/v4
+	   - Link to v4: https://lore.kernel.org/r/20230523-simplepanel_support_nondefault_datamapping-v4-0-e6e7011f34b5@pengutronix.de
 
-Yes, I think this could be a useful capability. I'm currently investigating use of MADV_COLLAPSE as a work-around to get executable sections into large folios for file systems that don't natively support them (ext4 mainly). On arm64, having executable memory in 64K folios means we can make better use of the iTLB and improve performance.
+v3 -> v4:  - driver: worked in Dan's Feedback:
+             - return with proper error in case the call into
+	       panel_simple_override_nondefault_lvds_datamapping()
+	       failed
+	     - drop the unneeded and ambiguous ret local value
+	    - Link to v3: https://lore.kernel.org/r/20230523-simplepanel_support_nondefault_datamapping-v3-0-78ede374d3d9@pengutronix.de
 
-> 
-> Thank you for the reproducer though! I haven't run it, but I'll
-> probably come back here to steal it when the time comes.
-> 
->>> I don't see any hint to -EINVAL above. Am I missing something?
->>
->> The SCAN_PAGE_COMPOUND result ends up back at madvise_collapse() where it
->> eventually gets converted to -EINVAL by madvise_collapse_errno().
->>
->>>
->>>>
->>>> I'm not sure if this is already a known issue? I don't have time to work on a fix for this right now, so thought I would highlight it at least. I might get around to it at some point in the future if nobody else tackles it.
-> 
-> My guess is Q1 2024 is when I'd be able to look into this, at the
-> current level of urgency. It doesn't sound like it's blocking anything
-> for your work right now -- lmk if that changes though!
+v2 -> v3:  - dt bindings: Worked in Conor's and Laurent's Feedback
+	     (thanks for your review): Drop the chomping indicator
+	   - dt bindings: Worked in Laurent's Feedback: fix typos
+	   - driver: worked in Laurent's review findings:
+	     - extract function for fixing up the bus format
+	     - only call this function on LVDS panels
+	     - fix typo
+           - Link to v2: https://lore.kernel.org/r/20230523-simplepanel_support_nondefault_datamapping-v2-0-87196f0d0b64@pengutronix.de
 
-No - its not a blocker for me. I just wanted to highlight the issue.
+v1 -> v2:  - dt bindings: Worked in Rob's review findings (thanks for your
+             review), refactored to use common include instead of duplication
+           - driver: added missing error unwinding goto, as found by Dan
+             Carpenter's test robot:
+             Reported-by: kernel test robot <lkp@intel.com>
+             Reported-by: Dan Carpenter <error27@gmail.com>
+             Link: https://lore.kernel.org/r/202304160359.4LHmFOlU-lkp@intel.com/
 
-> 
-> Thanks,
-> Zach
-> 
-> 
-> 
->>>>
->>>> Thanks,
->>>> Ryan
->>>>
->>>>
->>>> Test case I've been using:
->>>>
->>>> -->8--
->>>>
->>>> #include <stdio.h>
->>>> #include <stdlib.h>
->>>> #include <sys/mman.h>
->>>> #include <sys/types.h>
->>>> #include <sys/stat.h>
->>>> #include <fcntl.h>
->>>> #include <unistd.h>
->>>>
->>>> #ifndef MADV_COLLAPSE
->>>> #define MADV_COLLAPSE                25
->>>> #endif
->>>>
->>>> #define handle_error(msg)    do { perror(msg); exit(EXIT_FAILURE); } while (0)
->>>>
->>>> #define SZ_1K                        1024
->>>> #define SZ_1M                        (SZ_1K * SZ_1K)
->>>> #define ALIGN(val, align)    (((val) + ((align) - 1)) & ~((align) - 1))
->>>>
->>>> #if 1
->>>> // ext4
->>>> #define DATA_FILE            "/home/ubuntu/data.txt"
->>>> #else
->>>> // xfs
->>>> #define DATA_FILE            "/boot/data.txt"
->>>> #endif
->>>>
->>>> int main(void)
->>>> {
->>>>      int fd;
->>>>      char *mem;
->>>>      int ret;
->>>>
->>>>      fd = open(DATA_FILE, O_RDONLY);
->>>>      if (fd == -1)
->>>>              handle_error("open");
->>>>
->>>>      mem = mmap(NULL, SZ_1M * 4, PROT_READ | PROT_EXEC, MAP_PRIVATE, fd, 0);
->>>>      close(fd);
->>>>      if (mem == MAP_FAILED)
->>>>              handle_error("mmap");
->>>>
->>>>      printf("1: pid=%d, mem=%p\n", getpid(), mem);
->>>>      getchar();
->>>>
->>>>      mem = (char *)ALIGN((unsigned long)mem, SZ_1M * 2);
->>>>      ret = madvise(mem, SZ_1M * 2, MADV_COLLAPSE);
->>>>      if (ret)
->>>>              handle_error("madvise");
->>>>
->>>>      printf("2: pid=%d, mem=%p\n", getpid(), mem);
->>>>      getchar();
->>>>
->>>>      return 0;
->>>> }
->>>>
->>>> -->8--
->>>>
->>>
->>> Confused...
->>
->> This is a user space test case that shows the problem; data.txt needs to be at
->> least 4MB and on a mounted ext4 and xfs filesystem. By toggling the '#if 1' to
->> 0, you can see the different behaviours for ext4 and xfs -
->> handle_error("madvise") fires with EINVAL in the xfs case. The getchar()s are
->> leftovers from me looking at the smaps file.
->>
+To: David Airlie <airlied@gmail.com>
+To: Daniel Vetter <daniel@ffwll.ch>
+To: Rob Herring <robh+dt@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Thierry Reding <thierry.reding@gmail.com>
+To: Neil Armstrong <neil.armstrong@linaro.org>
+To: Sam Ravnborg <sam@ravnborg.org>
+Cc: patchwork-jzi@pengutronix.de
+Cc: kernel@pengutronix.de
+Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+Cc: dri-devel@lists.freedesktop.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Johannes Zink <j.zink@pengutronix.de>
+
+---
+
+---
+Johannes Zink (3):
+      dt-bindings: display: move LVDS data-mapping definition to separate file
+      dt-bindings: display: simple: support non-default data-mapping
+      drm/panel-simple: allow LVDS format override
+
+ .../bindings/display/lvds-data-mapping.yaml        | 84 ++++++++++++++++++++++
+ .../devicetree/bindings/display/lvds.yaml          | 77 +++-----------------
+ .../bindings/display/panel/panel-simple.yaml       | 26 ++++++-
+ drivers/gpu/drm/panel/panel-simple.c               | 53 ++++++++++++++
+ 4 files changed, 171 insertions(+), 69 deletions(-)
+---
+base-commit: 79fb229b8810071648b65c37382aea7819a5f935
+change-id: 20230523-simplepanel_support_nondefault_datamapping-13c3f2ea28f8
+
+Best regards,
+-- 
+Johannes Zink <j.zink@pengutronix.de>
 
