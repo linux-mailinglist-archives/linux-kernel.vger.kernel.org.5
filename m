@@ -2,110 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A13277B3B52
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C877B3B5A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233605AbjI2Uln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 16:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
+        id S233577AbjI2UnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 16:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjI2Ull (ORCPT
+        with ESMTP id S232748AbjI2UnS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 16:41:41 -0400
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2062.outbound.protection.outlook.com [40.107.94.62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0751AA
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 13:41:38 -0700 (PDT)
+        Fri, 29 Sep 2023 16:43:18 -0400
+Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020017.outbound.protection.outlook.com [52.101.56.17])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C4F1AA;
+        Fri, 29 Sep 2023 13:43:16 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Am7JE/nvCSZjc3TbMWvb49Fkg5cdHDgK/TdSp3ZeZOMx7POzYIfzhkN/QvwHdKIeOwC3EYcP6LMjSGgd8VE3UuKGA9ng0HxfXYJgq8RGfilUqQ7mf11p3+8qIXDKdIhn4181nKsVWY1zBDXZ7JihMW+bpKdQtuC9Dla9T5mEzaZvgu7B8EJ9mjFslw24Nfa67fTNc5I0r254wxXo3wYOE5S74DH6xOlcySlug9qnQlFo/fgF8ZMX0upWoJT7aT2XgwdZ42x1boR3pKvbYZxg/WX7aPeNW39IS6Q7ZzXlUe1XT1ZKC+YU6Ex/24GQKWaISuYczEMMQ0pV2SyU0ofZkQ==
+ b=ALJ+mWKhoXa4J4C4ng2WSfW/McOL3VSDN9mKgChRJsp/RUCQrzxbP9DlXhgoIGCAVzmAIhBPBP373iYTWX8EXXaK4T8l8IRIYr1ng+0f4NvJSs5AsKPkUkn8MAuEo953EFw4ARDkAAlT/oYRD4ej+S/2lIzj1xkt3H1yCyweIGlgzj17n+dEKw+r93eGLw9tkDtCL12Ihc94Mj1AAZFh5acx0WSbRtRS7iouzk8KHpg23tjf0ExX9JxIK6dJsqN6w91CA2kBkEOvggn6mUSg9CYK1V1n5FRSWog5X4CVeRfj66Ng4xWBDMNKmPmWJacjOIsoR1Znpx2Lf2r1Xry45A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ha1fw9Mexrwi8cpyJyXk0/iIi8HzKohSwJdk8P1G9YA=;
- b=UjpQFTd8T1WF65lSpROGxTm/hKBiAovAS0r0YwZGL8KUnpNQMHQVFSwx3PNBtpMJTLzOMU4AR0RvryYRd3576Y7lCM9fk1pFEBnhsmqADfC9ieT0Os9I9cT4776HywOglhA9186wMslrGS56rnLj4CVS4AYiB+u8r5VVy6exlltE4JvFvKC0bm3Ix5KecJdMgVYyAxwvXRrucOjjmCszf8kPUwAiqOxIIsOWsAzL2oNQG7uja11+VW1m7eoUZXdM1GmHfbEE/AKaG7BtiZm/nK1vrEsXUtupWiQOVxPQcE5BS/+b+3iaIF5dO+X4owcHtaSMRK1OIbEgsg6oQfG5pA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=dxT8qLiEFsyVUsdKnnu4mDC0v1cHYjdqSUmOxEJXQs8=;
+ b=CichUJnYcNuRUrM1an7WSeYUKyckXcqLQN9KzuTxF3xDBcWnqpbV4JWOccsbjCRQw6RJTH8C8++WLHgDJ5U9O2t2dPeIAZaa7hH+uOetEUs8vXwPGHjHPBPOvbrxa375A1st3MrI1eTkmKkEoeNXksdGKnskMJ/9powNUSdFz3O7u2AdNqse3GtR/bTf4XsEruWBICoha6WCa2I90t0CEcsJWHpxp7I/E3hdEttF+WK7f9/AKOoh/knNfehbyTohcBDleE0/Pq5x7ugQrc4Fa7KJS/WyE2kYK3aN+Zxdz1K37sHqp+2Q99bTkySRWLndGdsq9su7ow8StGlTPXpJeA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ha1fw9Mexrwi8cpyJyXk0/iIi8HzKohSwJdk8P1G9YA=;
- b=k+pDajkqwFkxLB7RqCqKpr2Zq4QTOnO9f0hjXX4Wr7/y1ysw0mBeesLk21ErYwaB7zgVftv3lrTiCEusnHe5qBwpQWi5WsJx0ioNYNhncKE+l8CYXlJd1Ii49ixFIxiY+q9VHrs9hG4nxhk538CQDBdwkqJz3UXtxuwcpNUw1hM=
-Received: from DS7PR03CA0099.namprd03.prod.outlook.com (2603:10b6:5:3b7::14)
- by PH7PR12MB7188.namprd12.prod.outlook.com (2603:10b6:510:204::15) with
+ bh=dxT8qLiEFsyVUsdKnnu4mDC0v1cHYjdqSUmOxEJXQs8=;
+ b=DDXdn6M9lI5ZJTi4E76/SRtzkn3tksmVu7WR4bb5UXPu1i56MFMyU4eERXHb4o+OYpAiD7dbjUNSzkSH3/i/YuCLiJiCQdYHv5hjWiww6zFCyr8ZWZMvkNCIxTATkiMrOwHhwb3CI91dQ9tZa65324lybQNt6/jWCg06iVcEHFc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com (2603:10b6:a03:21f::18)
+ by MW4PR21MB1969.namprd21.prod.outlook.com (2603:10b6:303:7c::5) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.22; Fri, 29 Sep
- 2023 20:41:36 +0000
-Received: from DS2PEPF00003440.namprd02.prod.outlook.com
- (2603:10b6:5:3b7:cafe::3) by DS7PR03CA0099.outlook.office365.com
- (2603:10b6:5:3b7::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25 via Frontend
- Transport; Fri, 29 Sep 2023 20:41:35 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS2PEPF00003440.mail.protection.outlook.com (10.167.18.43) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Fri, 29 Sep 2023 20:41:35 +0000
-Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 29 Sep
- 2023 15:41:33 -0500
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-To:     <amd-gfx@lists.freedesktop.org>
-CC:     =?UTF-8?q?Michel=20D=C3=A4nzer?= <mdaenzer@redhat.com>,
-        Ivan Lipski <ivlipski@amd.com>,
-        Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>, Alex Hung <alex.hung@amd.com>,
-        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-        Wayne Lin <wayne.lin@amd.com>,
-        Stylon Wang <stylon.wang@amd.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] Revert "drm/amd/display: Check all enabled planes in dm_check_crtc_cursor"
-Date:   Fri, 29 Sep 2023 16:41:17 -0400
-Message-ID: <20230929204120.120795-1-hamza.mahfooz@amd.com>
-X-Mailer: git-send-email 2.42.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.8; Fri, 29 Sep
+ 2023 20:43:13 +0000
+Received: from BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::1d4f:5006:aed7:78aa]) by BY5PR21MB1443.namprd21.prod.outlook.com
+ ([fe80::1d4f:5006:aed7:78aa%6]) with mapi id 15.20.6863.016; Fri, 29 Sep 2023
+ 20:43:13 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org
+Cc:     haiyangz@microsoft.com, decui@microsoft.com,
+        stephen@networkplumber.org, kys@microsoft.com,
+        paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
+        davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
+        longli@microsoft.com, ssengar@linux.microsoft.com,
+        linux-rdma@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
+        sharmaajay@microsoft.com, hawk@kernel.org, tglx@linutronix.de,
+        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org
+Subject: [PATCH net,v2, 0/3] net: mana: Fix some TX processing bugs
+Date:   Fri, 29 Sep 2023 13:42:24 -0700
+Message-Id: <1696020147-14989-1-git-send-email-haiyangz@microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
+X-ClientProxiedBy: MW4PR03CA0209.namprd03.prod.outlook.com
+ (2603:10b6:303:b8::34) To BY5PR21MB1443.namprd21.prod.outlook.com
+ (2603:10b6:a03:21f::18)
+MIME-Version: 1.0
+Sender: LKML haiyangz <lkmlhyz@microsoft.com>
+X-MS-Exchange-MessageSentRepresentingType: 2
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003440:EE_|PH7PR12MB7188:EE_
-X-MS-Office365-Filtering-Correlation-Id: 36324ba2-9d4c-4980-3f0c-08dbc12c7909
+X-MS-TrafficTypeDiagnostic: BY5PR21MB1443:EE_|MW4PR21MB1969:EE_
+X-MS-Office365-Filtering-Correlation-Id: 762f0d67-afce-4c13-f28f-08dbc12cb2d4
+X-LD-Processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3HPZGcGQd8932TC7/xetc8aHHKXOu3QylWDZOnsbLnrPaFJOTAyeFq6UlOvplwOS4+OE73qE6gt4HpWTVwTzCWfpLOUdHGog31PDx97L73NSMxugSYWGWzVt8jejumYu4rC7/cQtifIgYZwTSs2sclbNEQnVMcm3GR7CWg+IjpzOVpNu4/V8X3s32l6pEehvsd3HVhxMBHIfi03VWFoIUInsmg9ZQ2BM+YSJmgFY5WE47BCPhSBgkdFCav7tXj7e/a91iWLIOtQC9qQyPZyX9z6Flt21H4HwTx9fQd4bQg/4Zu6EQu4y7YN0C/sjhnGH3Q0UfZrTUcqzXS6nxp0owk5td9JpfsQ3nCAk2pY2Cyp8S63nJIqB8gDctxlj4ssXvx/w3hnJegCj3Mfwvj197yqWHdlAFGz87l80kn0RcfLeBEIYXecYzu1q/ahFR/VgZYdHyCPkOIw87ga49vFnojMKSedYz8p9sex4O3kgdqu0jS9S7O5a8tsDImY/jLMtPv5HZoudMQaEC/uY+I6L3FlIav4npynNQbYcZsYyG/ePlo9xX4ul5SBiCraVVIzBX/8tpzfKdK7kMoZ2ALkCfv/9+/eDaVRpTL9EINP6Y+y3zlf3EO+8hNeZHUMFyssOiHVRZ1G9/5kXeH2wBr7azy4xIqT6wDq4rO2Itlw6RyVmqEwuPhUxS+D6YTni/3zuD+80LrvWGGiSLdPMVagdG7RNUskV2OES/n7iXKxhiThSBO12fUT2FbaX/vpu7dmoAKFUid4K4AzLpWP5XG9CA2Iep9z0EYCFhluP6fpoTArKknnRTOMZOc+Fr1lswFkZ
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(39860400002)(396003)(136003)(376002)(230922051799003)(1800799009)(64100799003)(186009)(82310400011)(451199024)(40470700004)(46966006)(36840700001)(40460700003)(2906002)(8936002)(44832011)(2616005)(426003)(16526019)(336012)(54906003)(6916009)(26005)(36860700001)(47076005)(1076003)(70586007)(70206006)(316002)(83380400001)(8676002)(5660300002)(6666004)(478600001)(4326008)(40480700001)(36756003)(356005)(81166007)(82740400003)(41300700001)(86362001)(36900700001)(16060500005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 20:41:35.5646
+X-Microsoft-Antispam-Message-Info: U9SfSOUEzu8ckqbodITsATG1ND+A4+AVWU65gWf/c2JDjBAi4+umnOmZSiO1HLxyThL6nwavTClFQh/ztw2DPqWbMFtl7Yzv8SXnkEMEUzh8V70prv5kdvnaLG5ON1tXNwVUEEddjhA49HW7oixSBEBfMIJYp37U+Alot+pEmHXbog/r4UaHja8EtFHlRov9ilBjyGnq9DDQ0LRzOeUVFuJUVps6sgM+gD6lyk7kpFSicGli6j9AP6iLzYazx/cc/Aufk4Gq2jXq1ia5khXhzebvO1F8/NWlxkpNFJihCb/jhawUYeaPB3qSHTat1r54gzwDkHw/nDJLAOU/40qWvl4IW51eBaUoesFdMXBJJT38/rFIr3zhTFHX6cvEAwZBpAzAO/BsOzUBc1xdKLoI/BFpqO9wccEyg0SKyx4qaNEgUkqjdeEH4wfuHTXv3Hpxc+J/SpjT/vZ2NxzU3o2o4BIJNuJih3vIxbd6nkvFqL/99OoKh6e28+jSryRBrar1NSDHtPPC/tv7ZyHSRrkmAkeLs9msEhc+IdHM29JVzO3VKIzMYOOnqXdC736cL3B/4op4Zf76rONiEcgdY3faaH11FdTUD7CUxIlT+iLymN+vGGqi1uQJvllQg6QGFiHm9w17nWukmsgMb79atXQaP1dRPhgiRbGitUglWjQwv7g=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR21MB1443.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(366004)(396003)(346002)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(7416002)(4744005)(6512007)(2906002)(82960400001)(82950400001)(5660300002)(52116002)(6506007)(6486002)(7846003)(2616005)(26005)(83380400001)(36756003)(6666004)(478600001)(41300700001)(38350700002)(38100700002)(8936002)(8676002)(316002)(4326008)(10290500003)(66946007)(66476007)(66556008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?MAdgxnYgJKQzrAq0Epfrh2vBKUiafZOuC6hH43ypCDT9nFRQsAva0uAArE1V?=
+ =?us-ascii?Q?xU/tnGrqP7C94LArsHayqpxXB6HmHPAoCyCMiShRxnWgBuVGVdRvvBZuE69u?=
+ =?us-ascii?Q?2LsaJSULrysWoPbrhTa+VyvngH47BS863wT0Al0n8dqyyF29E3PTokW7ls39?=
+ =?us-ascii?Q?u43J95efKnW2hKJD9+GCYHoG6ICIT6mcN8u5IYUauQJcD64ev2qGoh5LJmbo?=
+ =?us-ascii?Q?eT2gLXxdu2gTAwmeKZD4Gz5mxKxD2ioia9haBPyfIllVtbrea0SXp2cA4nWJ?=
+ =?us-ascii?Q?Kqp0zMLKCuaDh6Gm3Y3A7rbqfCCif/qw9ckDebPlblADY8iv5GH7luonltEJ?=
+ =?us-ascii?Q?Ak4tZ3MCpVwO6NGUIWdnIe9wbdOt2BEGCz057nCiAfnbutBkdOsXyoVB7247?=
+ =?us-ascii?Q?YALWGjVekHiL7j6MMWKBGGNjlIfPNe+GpiG1Aaba6AIKMMBSmeoIrlsWVJwj?=
+ =?us-ascii?Q?0pFM78s4/sdTvCujKweGsIbgbi0mUiz6RL/OgIZKEDTjbDxruB1DOxpv+gJn?=
+ =?us-ascii?Q?0apE+Jxnkm2GPYSWXAwK0j68k+b8zmgOdZUc6jts8K6BwfeALioHq7oZRCry?=
+ =?us-ascii?Q?IITx7un54Wa8Jl0UnczWvPdVCAL0yKcH0kHFqtnu7i2BxJigH1gJOascyR2V?=
+ =?us-ascii?Q?Hirpo2N5U0SI2rA1Q1dSj7KpzHDDOLgWi55ZlPSlmOg3Mr/yJOTnQTkW08Cg?=
+ =?us-ascii?Q?FGGb32AKRoQhOMtrk3YCvqa+EN7/sjMr0vQwpUGOZRikoCMl4N1T0fsig9AB?=
+ =?us-ascii?Q?GQIWmWCRMHPvbSlTcQUrGRplDkOQa679AoqxkCVxwSpAOP96tHSbco++YxJq?=
+ =?us-ascii?Q?qoP3xEoCWT4pzQ2SvMYbgZZEP1CJtK5knoCrbvF8tyksgjPUgL1pn9/HN9kb?=
+ =?us-ascii?Q?nII45v6GUfa1kcH3qgzJBZ3SrLbGukKNYRqqYDIZ5QcZA+TLqALvStV370g1?=
+ =?us-ascii?Q?UO8X/7Td8zQAwEjKVTev3IQB2T0qliylzsBSk4QgVd9ALhh8rLVFLq9zYOaV?=
+ =?us-ascii?Q?JUr+FQbCmeyC4Ww1GqMkVoO0W6mPLdviYhDZE/cdSy//W/fiF15Uf6IcZ05z?=
+ =?us-ascii?Q?x5VIgtBK2RvaX6SLKZn23tE8l0iIp0r8Yr5mH2Za2pl3u2NnPgCw2t9lx3xD?=
+ =?us-ascii?Q?uCB6UKaqoMN5/3BFL8FY2JcIfbVEzpwmvMGOCr4Y7047GMf6s2noHgiOcf4o?=
+ =?us-ascii?Q?FeBmCmJc2VxN/Mg+GG1jsMEtlNV/ED1SguBzATOWD6f8TaErZLXN5K82O6Lx?=
+ =?us-ascii?Q?c2anfBkFLr71m3p/oKvKo5puzBuvEpB1sLm9twEQ1awpawbDev9wUtdkDzjI?=
+ =?us-ascii?Q?IXGig4NjwzmeFxdkVpsPHT2k9RZUvObbQ/KThvfmya9cxVGAiK9mzeiPp8sN?=
+ =?us-ascii?Q?DCKH7jScYTWR57IDHkGcJE4a2V6HpATHlx4mzgrNJ2KoySxUxEF9pmWYrxLu?=
+ =?us-ascii?Q?y0mVs5l6QRAKbyPMgTdGZ0Hn3sF4U/gXyIR81ZP/k3JyTZrf++y6nf85TTpv?=
+ =?us-ascii?Q?VptC4UBQ4IyjEGc9UAU/8KW2mTI9UatD59eAZCv2Xnzq7EcFEEouDClzGuhQ?=
+ =?us-ascii?Q?c57vsiqCb19jS1mnHrHy3IG5Wwnn9d7BSHLNDirP?=
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 762f0d67-afce-4c13-f28f-08dbc12cb2d4
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR21MB1443.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 20:43:13.3011
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 36324ba2-9d4c-4980-3f0c-08dbc12c7909
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003440.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB7188
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: /DG4CUhcZ7n4NKEoU9k9BX09IP1qFP6rzhQefoUTNc5VqFdUAHmsBQdHde/T7lrL+G4kAiErSVlDSA1ooK+iWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1969
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -113,51 +122,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ivan Lipski <ivlipski@amd.com>
+Fix TX processing bugs on error handling, tso_bytes calculation,
+and sge0 size.
 
-This reverts commit 45e1ade04b4d60fe5df859076005779f27c4c9be.
+Haiyang Zhang (3):
+  net: mana: Fix TX CQE error handling
+  net: mana: Fix the tso_bytes calculation
+  net: mana: Fix oversized sge0 for GSO packets
 
-Since, it causes the following IGT tests to fail:
-kms_cursor_legacy@cursor-vs-flip.*
-kms_cursor_legacy@flip-vs-cursor.*
+ drivers/net/ethernet/microsoft/mana/mana_en.c | 211 ++++++++++++------
+ include/net/mana/mana.h                       |   5 +-
+ 2 files changed, 149 insertions(+), 67 deletions(-)
 
-Signed-off-by: Ivan Lipski <ivlipski@amd.com>
-Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
----
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 32156609fbcf..49ffb4d6e9cc 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -10290,24 +10290,14 @@ static int dm_check_crtc_cursor(struct drm_atomic_state *state,
- 	 * blending properties match the underlying planes'.
- 	 */
- 
--	new_cursor_state = drm_atomic_get_plane_state(state, cursor);
--	if (IS_ERR(new_cursor_state))
--		return PTR_ERR(new_cursor_state);
--
--	if (!new_cursor_state->fb)
-+	new_cursor_state = drm_atomic_get_new_plane_state(state, cursor);
-+	if (!new_cursor_state || !new_cursor_state->fb)
- 		return 0;
- 
- 	dm_get_oriented_plane_size(new_cursor_state, &cursor_src_w, &cursor_src_h);
- 	cursor_scale_w = new_cursor_state->crtc_w * 1000 / cursor_src_w;
- 	cursor_scale_h = new_cursor_state->crtc_h * 1000 / cursor_src_h;
- 
--	/* Need to check all enabled planes, even if this commit doesn't change
--	 * their state
--	 */
--	i = drm_atomic_add_affected_planes(state, crtc);
--	if (i)
--		return i;
--
- 	for_each_new_plane_in_state_reverse(state, underlying, new_underlying_state, i) {
- 		/* Narrow down to non-cursor planes on the same CRTC as the cursor */
- 		if (new_underlying_state->crtc != crtc || underlying == crtc->cursor)
 -- 
-2.42.0
+2.25.1
 
