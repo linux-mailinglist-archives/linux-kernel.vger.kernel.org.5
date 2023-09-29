@@ -2,132 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 802AE7B2ED5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2D17B2ED7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232903AbjI2JDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 05:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
+        id S232906AbjI2JFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 05:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232949AbjI2JD1 (ORCPT
+        with ESMTP id S232748AbjI2JFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:03:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4FECCF;
-        Fri, 29 Sep 2023 02:03:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695978203; x=1727514203;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=SQJ1HH+EmlLWGkXlFwryhI9PdvJ4Vt0JIMIVQYhXC9w=;
-  b=RAYdPUFq7Wh+vxI7FdbHE3mbSQeuOubGAzAIkMOCW8AELbvrtB0fMzl0
-   064s2JQx38H8XY5xKK7p8Oqjt5PhjmJ6Qc4gFBJOqSoTgs4qD2ucFLW2e
-   y/JDWV2baOiz1MH4ETpzUIAcJyltNZGgiMK7N1wrItqh05THDU846Cwc0
-   ewKk45bUj7e9kpYPZlLZa7ZbwaAqZQ/SJx963XW7c+UjUcm8hy8i5pEPU
-   hB6Xkyt83ksItISv6Xsp5S4QheCj3p3RG9lzhXAsoI26uiBSN90nhHeDi
-   EKkE7xvK87wo6xxZRvbp3hoLxg1gOpwz4/gl9PJcV+EijnE8l3F+Ek9ld
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="385078632"
-X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
-   d="scan'208";a="385078632"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 02:03:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="749904566"
-X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
-   d="scan'208";a="749904566"
-Received: from tzebrows-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.26.85])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 02:03:19 -0700
-From:   Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Peter Newman <peternewman@google.com>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: [PATCH v3 4/4] Documentation/x86: Document resctrl's new sparse_masks
-Date:   Fri, 29 Sep 2023 11:02:18 +0200
-Message-ID: <c42f54af4790785dec25dd537aaea56bfba78a67.1695977733.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1695977733.git.maciej.wieczor-retman@intel.com>
-References: <cover.1695977733.git.maciej.wieczor-retman@intel.com>
+        Fri, 29 Sep 2023 05:05:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F0FF1A5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:05:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17B88C433C7;
+        Fri, 29 Sep 2023 09:05:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695978302;
+        bh=pr8p7EOkXa02e0yniOjEWTDShN7pEPVZkAF3BQVj6/w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MBdWRV8BDfLVCWP0zIXzuzJVo3HPrLR22jHQ/7BQuwQUJGs0RcKE/msuoXXS5Tlpn
+         rP6YAAy1ziNWjiBj87TjF5QC06hS/aoyV0/npUU9KzHFbKSvkKGshqXQM768p/GOf2
+         DLV00jN2DjlLutMn6PWqRYCwF8yCLD9i60VEgvY5G44ilv/xlbn7b0W/BOSj7LHkhE
+         KHdBxgBAJ3ea+tDQr52tvYUy0TmRMoykNxMJLRm/pEvvJeo7qIAzr+SElmJv/srHQv
+         ymnCss/Z8EEW6YMPQiuYmLP1awSwuWBfItnrFR0nfSwxthzbU4ee0kyKWNBeQ2I/K2
+         0AAxsWb2b8TZA==
+Date:   Fri, 29 Sep 2023 12:04:06 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memblock: don't run loop in memblock_add_range() twice
+Message-ID: <20230929090406.GV3303@kernel.org>
+References: <20230927013752.2515238-1-yajun.deng@linux.dev>
+ <20230928061619.GS3303@kernel.org>
+ <3ee9c8e4-870c-4ab0-906a-7d214031d1a6@linux.dev>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <3ee9c8e4-870c-4ab0-906a-7d214031d1a6@linux.dev>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fenghua Yu <fenghua.yu@intel.com>
+On Thu, Sep 28, 2023 at 04:47:59PM +0800, Yajun Deng wrote:
+> 
+> On 2023/9/28 14:16, Mike Rapoport wrote:
+> > On Wed, Sep 27, 2023 at 09:37:52AM +0800, Yajun Deng wrote:
+> > > There is round twice in memblock_add_range(). The first counts the number
+> > > of regions needed to accommodate the new area. The second actually inserts
+> > > them. But the first round isn't really needed, we just need to check the
+> > > counts before inserting them.
+> > > 
+> > > Check the count before calling memblock_insert_region(). If the count is
+> > > equal to the maximum value, it needs to resize the array. Otherwise,
+> > > insert it directly.
+> > > 
+> > > To avoid nested calls to memblock_add_range(), we need to call
+> > > memblock_reserve() out of memblock_double_array().
+> > memblock_add_range() does an extra loop once in a while, but I don't think
+> > removing it will have any actual effect on the boot time.
+> 
+> 
+> Yes, it has no obvious actual effect on the boot time,  but it does reduce
+> the number of unnecessary loop.
+> 
+> The actual effect on the boot time should not be the only criterion for
+> whether a patch is accepted or not.
+> 
+> Since the comment in the previous code, it tells the user that it would be
+> executed twice, this can be misleading to users.
+> 
+> So the new code will be simpler and clearer. It not just change the code,
+> but also remove the comment
 
-The documentation mentions that non-contiguous bit masks are not
-supported in Intel Cache Allocation Technology (CAT).
+Adding return-by-pointer parameters to memblock_double_array() and pulling
+memblock_reserve() out of this function  is in no way simpler and clearer
+that having an extra loop.
 
-Update the documentation on how to determine if sparse bit masks are
-allowed in L2 and L3 CAT.
-
-Mention the file with feature support information is located in
-the /sys/fs/resctrl/info/{resource}/ directories and enumerate what
-are the possible outputs on file read operation.
-
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Reviewed-by: Peter Newman <peternewman@google.com>
-Tested-by: Peter Newman <peternewman@google.com>
-Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
----
-Changelog v3:
-- Added Peter's tested-by and reviewed-by tags.
-
-Changelog v2:
-- Change bitmap naming convention to bit mask. (Reinette)
-
- Documentation/arch/x86/resctrl.rst | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
-index cb05d90111b4..4c6421e2aa31 100644
---- a/Documentation/arch/x86/resctrl.rst
-+++ b/Documentation/arch/x86/resctrl.rst
-@@ -124,6 +124,13 @@ related to allocation:
- 			"P":
- 			      Corresponding region is pseudo-locked. No
- 			      sharing allowed.
-+"sparse_masks":
-+		Indicates if non-contiguous 1s value in CBM is supported.
-+
-+			"0":
-+			      Only contiguous 1s value in CBM is supported.
-+			"1":
-+			      Non-contiguous 1s value in CBM is supported.
+If the comment is wrong, just fix the comment.
  
- Memory bandwidth(MB) subdirectory contains the following files
- with respect to allocation:
-@@ -445,12 +452,13 @@ For cache resources we describe the portion of the cache that is available
- for allocation using a bitmask. The maximum value of the mask is defined
- by each cpu model (and may be different for different cache levels). It
- is found using CPUID, but is also provided in the "info" directory of
--the resctrl file system in "info/{resource}/cbm_mask". Intel hardware
-+the resctrl file system in "info/{resource}/cbm_mask". Some Intel hardware
- requires that these masks have all the '1' bits in a contiguous block. So
- 0x3, 0x6 and 0xC are legal 4-bit masks with two bits set, but 0x5, 0x9
--and 0xA are not.  On a system with a 20-bit mask each bit represents 5%
--of the capacity of the cache. You could partition the cache into four
--equal parts with masks: 0x1f, 0x3e0, 0x7c00, 0xf8000.
-+and 0xA are not. Check /sys/fs/resctrl/info/{resource}/sparse_masks
-+if non-contiguous 1s value is supported. On a system with a 20-bit mask
-+each bit represents 5% of the capacity of the cache. You could partition
-+the cache into four equal parts with masks: 0x1f, 0x3e0, 0x7c00, 0xf8000.
- 
- Memory bandwidth Allocation and monitoring
- ==========================================
+> about "executed twice",  it obviously tells the user only resize the array
+> if it is equal to the maximum value
+> 
+> and doesn't need to be executed twice.
+> 
+> > > Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> > > ---
+> > >   mm/memblock.c | 117 ++++++++++++++++++++++++--------------------------
+> > >   1 file changed, 57 insertions(+), 60 deletions(-)
+> > > 
+> > > diff --git a/mm/memblock.c b/mm/memblock.c
+> > > index 5a88d6d24d79..3f44c84f5d0b 100644
+> > > --- a/mm/memblock.c
+> > > +++ b/mm/memblock.c
+> > > @@ -400,6 +400,8 @@ void __init memblock_discard(void)
+> > >    * @type: memblock type of the regions array being doubled
+> > >    * @new_area_start: starting address of memory range to avoid overlap with
+> > >    * @new_area_size: size of memory range to avoid overlap with
+> > > + * @new_reserve_base: starting address of new array
+> > > + * @new_reserve_size: size of new array
+> > >    *
+> > >    * Double the size of the @type regions array. If memblock is being used to
+> > >    * allocate memory for a new reserved regions array and there is a previously
+> > > @@ -412,7 +414,9 @@ void __init memblock_discard(void)
+> > >    */
+> > >   static int __init_memblock memblock_double_array(struct memblock_type *type,
+> > >   						phys_addr_t new_area_start,
+> > > -						phys_addr_t new_area_size)
+> > > +						phys_addr_t new_area_size,
+> > > +						phys_addr_t *new_reserve_base,
+> > > +						phys_addr_t *new_reserve_size)
+> > >   {
+> > >   	struct memblock_region *new_array, *old_array;
+> > >   	phys_addr_t old_alloc_size, new_alloc_size;
+> > > @@ -490,11 +494,13 @@ static int __init_memblock memblock_double_array(struct memblock_type *type,
+> > >   		memblock_free(old_array, old_alloc_size);
+> > >   	/*
+> > > -	 * Reserve the new array if that comes from the memblock.  Otherwise, we
+> > > -	 * needn't do it
+> > > +	 * Keep the address and size if that comes from the memblock. Otherwise,
+> > > +	 * we needn't do it.
+> > >   	 */
+> > > -	if (!use_slab)
+> > > -		BUG_ON(memblock_reserve(addr, new_alloc_size));
+> > > +	if (!use_slab) {
+> > > +		*new_reserve_base = addr;
+> > > +		*new_reserve_size = new_alloc_size;
+> > > +	}
+> > >   	/* Update slab flag */
+> > >   	*in_slab = use_slab;
+> > > @@ -588,11 +594,12 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
+> > >   				phys_addr_t base, phys_addr_t size,
+> > >   				int nid, enum memblock_flags flags)
+> > >   {
+> > > -	bool insert = false;
+> > >   	phys_addr_t obase = base;
+> > >   	phys_addr_t end = base + memblock_cap_size(base, &size);
+> > > -	int idx, nr_new, start_rgn = -1, end_rgn;
+> > > +	phys_addr_t new_base = 0, new_size;
+> > > +	int idx, start_rgn = -1, end_rgn;
+> > >   	struct memblock_region *rgn;
+> > > +	unsigned long ocnt = type->cnt;
+> > >   	if (!size)
+> > >   		return 0;
+> > > @@ -608,25 +615,6 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
+> > >   		return 0;
+> > >   	}
+> > > -	/*
+> > > -	 * The worst case is when new range overlaps all existing regions,
+> > > -	 * then we'll need type->cnt + 1 empty regions in @type. So if
+> > > -	 * type->cnt * 2 + 1 is less than or equal to type->max, we know
+> > > -	 * that there is enough empty regions in @type, and we can insert
+> > > -	 * regions directly.
+> > > -	 */
+> > > -	if (type->cnt * 2 + 1 <= type->max)
+> > > -		insert = true;
+> > > -
+> > > -repeat:
+> > > -	/*
+> > > -	 * The following is executed twice.  Once with %false @insert and
+> > > -	 * then with %true.  The first counts the number of regions needed
+> > > -	 * to accommodate the new area.  The second actually inserts them.
+> > > -	 */
+> > > -	base = obase;
+> > > -	nr_new = 0;
+> > > -
+> > >   	for_each_memblock_type(idx, type, rgn) {
+> > >   		phys_addr_t rbase = rgn->base;
+> > >   		phys_addr_t rend = rbase + rgn->size;
+> > > @@ -644,15 +632,23 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
+> > >   			WARN_ON(nid != memblock_get_region_node(rgn));
+> > >   #endif
+> > >   			WARN_ON(flags != rgn->flags);
+> > > -			nr_new++;
+> > > -			if (insert) {
+> > > -				if (start_rgn == -1)
+> > > -					start_rgn = idx;
+> > > -				end_rgn = idx + 1;
+> > > -				memblock_insert_region(type, idx++, base,
+> > > -						       rbase - base, nid,
+> > > -						       flags);
+> > > -			}
+> > > +
+> > > +			/*
+> > > +			 * If type->cnt is equal to type->max, it means there's
+> > > +			 * not enough empty region and the array needs to be
+> > > +			 * resized. Otherwise, insert it directly.
+> > > +			 */
+> > > +			if ((type->cnt == type->max) &&
+> > > +			    memblock_double_array(type, obase, size,
+> > > +						  &new_base, &new_size))
+> > > +				return -ENOMEM;
+> > > +
+> > > +			if (start_rgn == -1)
+> > > +				start_rgn = idx;
+> > > +			end_rgn = idx + 1;
+> > > +			memblock_insert_region(type, idx++, base,
+> > > +					       rbase - base, nid,
+> > > +					       flags);
+> > >   		}
+> > >   		/* area below @rend is dealt with, forget about it */
+> > >   		base = min(rend, end);
+> > > @@ -660,33 +656,28 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
+> > >   	/* insert the remaining portion */
+> > >   	if (base < end) {
+> > > -		nr_new++;
+> > > -		if (insert) {
+> > > -			if (start_rgn == -1)
+> > > -				start_rgn = idx;
+> > > -			end_rgn = idx + 1;
+> > > -			memblock_insert_region(type, idx, base, end - base,
+> > > -					       nid, flags);
+> > > -		}
+> > > +		if ((type->cnt == type->max) &&
+> > > +		    memblock_double_array(type, obase, size,
+> > > +					  &new_base, &new_size))
+> > > +			return -ENOMEM;
+> > > +
+> > > +		if (start_rgn == -1)
+> > > +			start_rgn = idx;
+> > > +		end_rgn = idx + 1;
+> > > +		memblock_insert_region(type, idx, base, end - base,
+> > > +				       nid, flags);
+> > >   	}
+> > > -	if (!nr_new)
+> > > +	if (ocnt == type->cnt)
+> > >   		return 0;
+> > > -	/*
+> > > -	 * If this was the first round, resize array and repeat for actual
+> > > -	 * insertions; otherwise, merge and return.
+> > > -	 */
+> > > -	if (!insert) {
+> > > -		while (type->cnt + nr_new > type->max)
+> > > -			if (memblock_double_array(type, obase, size) < 0)
+> > > -				return -ENOMEM;
+> > > -		insert = true;
+> > > -		goto repeat;
+> > > -	} else {
+> > > -		memblock_merge_regions(type, start_rgn, end_rgn);
+> > > -		return 0;
+> > > -	}
+> > > +	memblock_merge_regions(type, start_rgn, end_rgn);
+> > > +
+> > > +	/* Reserve the new array */
+> > > +	if (new_base)
+> > > +		memblock_reserve(new_base, new_size);
+> > > +
+> > > +	return 0;
+> > >   }
+> > >   /**
+> > > @@ -755,6 +746,7 @@ static int __init_memblock memblock_isolate_range(struct memblock_type *type,
+> > >   					int *start_rgn, int *end_rgn)
+> > >   {
+> > >   	phys_addr_t end = base + memblock_cap_size(base, &size);
+> > > +	phys_addr_t new_base = 0, new_size;
+> > >   	int idx;
+> > >   	struct memblock_region *rgn;
+> > > @@ -764,10 +756,15 @@ static int __init_memblock memblock_isolate_range(struct memblock_type *type,
+> > >   		return 0;
+> > >   	/* we'll create at most two more regions */
+> > > -	while (type->cnt + 2 > type->max)
+> > > -		if (memblock_double_array(type, base, size) < 0)
+> > > +	if (type->cnt + 2 > type->max) {
+> > > +		if (memblock_double_array(type, base, size,
+> > > +					  &new_base, &new_size))
+> > >   			return -ENOMEM;
+> > > +		if (new_base)
+> > > +			memblock_reserve(new_base, new_size);
+> > > +	}
+> > > +
+> > >   	for_each_memblock_type(idx, type, rgn) {
+> > >   		phys_addr_t rbase = rgn->base;
+> > >   		phys_addr_t rend = rbase + rgn->size;
+> > > -- 
+> > > 2.25.1
+> > > 
+
 -- 
-2.42.0
-
+Sincerely yours,
+Mike.
