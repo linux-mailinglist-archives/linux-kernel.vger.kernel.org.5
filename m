@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABA337B3269
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 843657B326B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233303AbjI2MWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 08:22:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40888 "EHLO
+        id S233099AbjI2MYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 08:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233227AbjI2MWm (ORCPT
+        with ESMTP id S232838AbjI2MX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:22:42 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5210510CC;
-        Fri, 29 Sep 2023 05:22:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
- t=1695990137; x=1696594937; i=linosanfilippo@gmx.de;
- bh=xXPMCQlQMHAN7z2B8m8BZwNfXtx90kosemQzOpKXnko=;
- h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
- b=cs4A75BpuZ7QCe11ccx/6XRbwZTfmxs/E/86ivB+7O6fvWndwZwZHI5vPiPQxTinH+eMQv3rtEA
- sItE21wioFA6iKLGYRF/FNNcPeNs6nKr7h+eiZYKbn6N74mPTFmrOEF54UXCCm8sNnQ73QvUTypao
- Kch4mJg18QavUotfhbzb0QJDMqLm4U7JoCIIfllHZt0GYWmtVLFAXTxrA8G13NSBvQLb4yuVZGFpw
- hOIV7L4bCywApJwVZkf5xcHUjTG+zaGEwnvSqTBYezKmAjFyer/E/vD9qXBmHj0r7P60SUT3+cxZU
- LVQxURb6SsUlV0SGYpn24IVSqaAoZDc/l1yQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.2.42] ([84.162.21.41]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MaJ7v-1r7MNg0biv-00WEdQ; Fri, 29
- Sep 2023 14:22:17 +0200
-Message-ID: <7ba24ee0-8e86-e8ed-3d54-0bc627b3d0f1@gmx.de>
-Date:   Fri, 29 Sep 2023 14:22:16 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 6/6] serial: imx: do not set RS485 enabled if it is not
- supported
-Content-Language: en-US
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     jirislaby@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        ilpo.jarvinen@linux.intel.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, l.sanfilippo@kunbus.com,
-        lukas@wunner.de, p.rosenberger@kunbus.com
-References: <20230928221246.13689-1-LinoSanfilippo@gmx.de>
- <20230928221246.13689-7-LinoSanfilippo@gmx.de>
- <2023092948-canteen-pushy-7f54@gregkh>
-From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
-In-Reply-To: <2023092948-canteen-pushy-7f54@gregkh>
-Content-Type: text/plain; charset=UTF-8
+        Fri, 29 Sep 2023 08:23:59 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A4E1AA
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:23:56 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9ad810be221so1902568066b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:23:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1695990235; x=1696595035; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sla6wmpD1DUPXq81GA+Qf96ZRYBJdn00BJ+JAxCtCQg=;
+        b=RDfYwL3iPdVBDnC8c57GDN+3kAlSFgn5Pk66grBMHHnzbWdvN2tFRo44knjhLxTt5C
+         9Uh5rBzShfr2JTTiOhbqy7JkGfDaU3aNlfBMuKTuPl1EzvdmLXOH8+Zve8niBcasOB6Q
+         4kWQNebEPoXfwLeYrGappNCQqgPnSyr5iG7/OVStx84oRhoPxGQ36W2o3TokPG/6hqBK
+         tKAnHHkhrLP1PRr7ScmXkrGstwguOGQRLax7wKx3qz8LCt/octdtupAdDbEjGypZ2tMb
+         n6bOIGxa1DTBEVa9t1U6r7hxFq5NPNFIlyMjc5f02hEjapJH3MumFYJKHUD3T92Pj1x7
+         /HIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695990235; x=1696595035;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=sla6wmpD1DUPXq81GA+Qf96ZRYBJdn00BJ+JAxCtCQg=;
+        b=GvJFDnjZD38miK6LId/YcxPo23Yd+E4I7JyoFymprOkTqEBbCq4egDBqd/u0VzQBbv
+         iFSkpyENu7L6/I6dNggM2ivHjsYG5qyV5tP1dyeF0uHaY4EHIGUjszro/b8vuciYF1Re
+         f2mChaVYiSLKLtnMFplZcjohXaX8xBl0Z2FuJY857GUq/XQUlqjgbfJVkF37v0HZyhG5
+         QOeo98kJdGtJ+QjqUnwIR4jv3lSki4riKQPZtCt3bR7YgM4dZ1strNrYV6ACB46orTnL
+         A4WfZjk5djvaQt8EouElMVeSkeB5w0wYR+R2OqZn6jJp2EG5sfPOeJoejr5SlqYIJG8v
+         vC7w==
+X-Gm-Message-State: AOJu0YzglasZkPD0zAOlVuXzp45MrNnqiJHC1Dzs8L1LLX9JoM73rCoR
+        kNZGwHxi2fNy1XWSRVYLJPpLlA==
+X-Google-Smtp-Source: AGHT+IG2kjzZLb1SdI6/JkmBGM33kigR2o+WpFZUGImV1UHmk2br8Y6U1scGw32/Vw2pa3JA1cAbFg==
+X-Received: by 2002:a17:906:217:b0:9ae:3210:22fd with SMTP id 23-20020a170906021700b009ae321022fdmr3509603ejd.48.1695990234936;
+        Fri, 29 Sep 2023 05:23:54 -0700 (PDT)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id mc1-20020a170906eb4100b009a5f1d1564dsm12209790ejb.126.2023.09.29.05.23.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 05:23:54 -0700 (PDT)
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:CqKy0l2F8rtf/u9MwFRpOZI8ZeFpKu7wuqN0TsJffBcSurCL6kb
- e1SRVIDNzV5uN8ZsP5cOcxlpq3o3ylmxYOf4F2agJtv+0vrO1PFGl1DWRTs1LwV3CHrxOLU
- AXwDsdPLtT1SF6UlKGok+XFSE/KmIRkDQ8kx2UITSbU6EVdC9G2IH05Jw78ewql9ngJGfXE
- r8FgCZ5TN+/S/thS/uXWQ==
-UI-OutboundReport: notjunk:1;M01:P0:8ynMcPUexjA=;y22yA5M1G9ntv/LRJ7G5piXoPsz
- LGpTaWrpD0VT/BBO2wYIAhjDxQmWccB6yNBztwMsNk+F3bvA7waUMNAMPRHhd7Z6q1L2u09la
- fW/Fj6QnJszld4QdKwnA5k1p03Zjd5WsUauYvOCBfnVeJ2JIOnUfxuBSPTYPzhtZDrpfPF6Jd
- uRT+PtSOeHWM3tTebnww9QOEXnqcnF/qLzpU1bs7QdR4bvcyQlVKdxyMk0KwjunB6kScC4aog
- RmMv3bxD25i1GRw3LwjU3M/Fx086UmkHJ0cd6rpOWwKAEfZS10zH/52+teXOjHumKmnJAKmg+
- q/vx3yLVSlvDBex0rUFaN7hqIVceoIEgL5xLlDNYjIcfrGoEIaKfTrWQDfAbzC2s7uAFx9y2Z
- 6PchrPMZ2Gscp00cb4nJ7BxIA83KiMGD1lq1Ry7dThEyNeDr5zzEbU8JBHzkXn3PYjWyGw5FT
- APSLvuWNvsVyLdIvzKhGodfG5gHg0GJ5xxAJHCbmGoyp+WhU0zYFid9pVaTpL2gLYfsx3VbtL
- WRvt3/yw/E4KMVGryBS+tajmS2gzwrYbsog7G00Mqo5Rd3iRBUIEbFWoItz5iGIEpYKGx3u9/
- pct47YSu2fe5eQHxTj5l45Pdjb+w6RK+3gSFlb+PoIG61609ey3QNbiyLhqeB5ZO6lAe9TVft
- x5iRqJ1QJrP7ykFhle36UaVkAXPge7VF8/NQoxPRbOPBxzdrGjS1ogaSH03QE0CdO7sWJj2Gj
- aH5ZlWX4/dt0AAl5jgi1bK69yhPiSYQA+llyQmI+Qnso+5W4wiuz9frTj8IBV678lPA2MX0dF
- YJ8K0wWzEBc6Ak3FdsmACt9UIXtpq5DxUqOn4oOWATNjxMlENhi5bZMITnvi44Fm/VE+Kzz72
- uMwtbDqhcvFNseuzdJgJJa8uwPESknIVoZ8jdKjuQ3WGjwHOADNwicNLYmjukvtLcnfN2dEee
- bbzqeX+IUd7f4IqltUHCdFoZil8=
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 29 Sep 2023 14:23:54 +0200
+Message-Id: <CVVED1K40NK5.1MFHLQH8YS4IY@otso>
+Cc:     <~postmarketos/upstreaming@lists.sr.ht>,
+        <phone-devel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm64: dts: qcom: sc7280: Add ports subnodes in usb/dp
+ qmpphy node
+From:   "Luca Weiss" <luca.weiss@fairphone.com>
+To:     "Konrad Dybcio" <konrad.dybcio@linaro.org>,
+        <cros-qcom-dts-watchers@chromium.org>,
+        "Andy Gross" <agross@kernel.org>,
+        "Bjorn Andersson" <andersson@kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20230929-sc7280-qmpphy-ports-v1-1-7532c11973af@fairphone.com>
+ <af19b32e-9e91-4829-8d77-9cf154e19bac@linaro.org>
+In-Reply-To: <af19b32e-9e91-4829-8d77-9cf154e19bac@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri Sep 29, 2023 at 1:44 PM CEST, Konrad Dybcio wrote:
+> On 29.09.2023 09:31, Luca Weiss wrote:
+> > Add the USB3+DP Combo QMP PHY port subnodes in the SC7280 SoC DTSI to
+> > avoid duplication in the devices DTs.
+> The rationale here is to make describing the connections between
+> certain hw blocks possible. Defining it in the soc dtsi gives us
+> a very cool side-effect of not having to repeat this, but it's not
+> the main point here
 
+Commit message is copy-pasted from sm8550 commit with has your R-b ;)
 
-On 29.09.23 07:51, Greg KH wrote:
-> On Fri, Sep 29, 2023 at 12:12:46AM +0200, Lino Sanfilippo wrote:
->> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
->>
->> If the imx driver cannot support RS485 it sets the UARTS rs485_supporte=
-d
->> structure to NULL. But it still calls uart_get_rs485_mode() which may s=
-et
->> the RS485_ENABLED flag.
->> The flag however is evaluated by the serial core in uart_configure_port=
-()
->> at port startup and thus may lead to an attempt to configure RS485 even=
- if
->> it is not supported.
->>
->> Avoid this by calling uart_get_rs485_mode() only if RS485 is actually
->> supported by the driver. Remove also a check for an error condition
->> that is not possible any more now.
->>
->> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
->> ---
->>  drivers/tty/serial/imx.c | 14 ++++++--------
->>  1 file changed, 6 insertions(+), 8 deletions(-)
+But I'll change it for this commit since your comment makes sense.
+
 >
-> Why is this patch not marked for stable?
+> With the commit msg amended:
 >
+> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>
+> Konrad
 
-Right, it should be, I will correct this, thanks!
