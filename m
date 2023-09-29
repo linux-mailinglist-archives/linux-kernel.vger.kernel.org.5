@@ -2,318 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B0FA7B3650
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79ABD7B3656
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233478AbjI2PFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:05:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55542 "EHLO
+        id S233469AbjI2PG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233464AbjI2PFV (ORCPT
+        with ESMTP id S233482AbjI2PGZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:05:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90371B8;
-        Fri, 29 Sep 2023 08:05:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695999918; x=1727535918;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DelZcJpWUMjBxW0kniBQFBqsUl9nBj42W0wbOGMzgEg=;
-  b=Uat0SRcrzM+CQAGjhVRNGlowINnh88LxEJsTEcMG8o8kj7Za4AISe5Qp
-   gdymAJwBgrQa08ThaE4jjLACURb0BkpDLlBy/zwtYVXSuTni5DhdzZc84
-   D7IM+PBOzEzTOZHewRuBS20VL6wuMirap8MWxSUYQYxA49PcJMsb5vbta
-   6Z3B+q3wbzXcow/l6BXVD2eMmzr2oqH5MpAyjFL/J/khVZM2e3vJ1rstG
-   zimJDm7ZTt/3sr3JQBfkmnYLlMSKs/jglUV5gEf/CxCyXL/bgbFiN2vP0
-   SfRBYEMYFnbTxfgkDq/zyADDU6w/Xd6tTqnEIDji7TWxBOcBAkV30QKWX
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="361693914"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="361693914"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:05:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="865737509"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="865737509"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga002.fm.intel.com with SMTP; 29 Sep 2023 08:05:14 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 29 Sep 2023 18:05:13 +0300
-Date:   Fri, 29 Sep 2023 18:05:13 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Abdel Alkuor <alkuor@gmail.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
-        robh+dt@kernel.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>
-Subject: Re: [PATCH v8 08/14] USB: typec: tps6598x: Add interrupt support for
- TPS25750
-Message-ID: <ZRbnqUpsoK3v1BRH@kuha.fi.intel.com>
-References: <20230929143055.31360-1-alkuor@gmail.com>
- <20230929143055.31360-9-alkuor@gmail.com>
+        Fri, 29 Sep 2023 11:06:25 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC811A7;
+        Fri, 29 Sep 2023 08:06:22 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id 5b1f17b1804b1-4060b623e64so5166795e9.0;
+        Fri, 29 Sep 2023 08:06:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695999981; x=1696604781; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=I+HDInQo6A1OIfSQ4kDLBbQAIE/uOQhrvXDem09PR3k=;
+        b=lupwsMhYhrKqD+UUkkiBkP2KN8oPDTsweMZGxSt0FI6jY71+XWypyyRABzACjaFuZc
+         gMh+IbK6iHqyvKr3DgpIMwQIcc5eEHS5A7e1UoNVP+pKHhMJqXfw293J4Qu4H73wuWK1
+         ssUpbX9Im+FNl+z2rthvk4b8+6q4yis0rB/PZtKJq5pDMmwBFEHDq7zQ1o+DP1tzd3dV
+         woknr0MvA+kSl66dtbhFgl4q4k3E9mZm2Kc7LBikzodaLIzG56PXEHU9yZ9NBhaN8Cjv
+         EMvXYeKE8O/8H3Wcb25qLAb2cXm0ZG5PefHdziSFO1Yq2wHaYXC9qlDcRnEIPxcI6aub
+         i69A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695999981; x=1696604781;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I+HDInQo6A1OIfSQ4kDLBbQAIE/uOQhrvXDem09PR3k=;
+        b=OPQj3w4Q2zQ7OBQUrsL/29dM8iL53ZjqxF7oS4m/NcS3RBnxrXByfBcBrT+UmLLu3C
+         LiX9LvXjKKqdFcqJFemk5x7STFSU+TNXl+4e49pHdkLo8CmmDNEHgj1qewWCof0UCEsz
+         aFGYGnzFKkrEm4SDeRjIlHrO+i30gQLHZN47PYua9kTgvCNd2z91ptKo6rWt6RzAJ8OO
+         v3I7MWXb8y6iVtEx1DAwXnBWJUqLCYpqvyCsKRbsSwKc2buHbhoL74qVggmFt0TtwF3i
+         +bAV3zDSr7Jw3F20EQF40QNalUq0fFIrzHYtZzSBqOZTbXTFaZIYCy0w+cSuaSW2bVT7
+         GyCw==
+X-Gm-Message-State: AOJu0YxXZhZK+DCUcXohq+GjefH2+VWXtYVdnFwYITLfU7awLd8L97Tv
+        hKNaTz/xFwsuWNu+QtNqWjt6/toJ4ZX/8g==
+X-Google-Smtp-Source: AGHT+IFajsTW5J93K/OzzdCwONkeonYv1BhbbEV7MBCbRDZMmPHOe8BVXYC6nzOe54XQkf98bAaeqA==
+X-Received: by 2002:a7b:cd85:0:b0:402:ebe1:7960 with SMTP id y5-20020a7bcd85000000b00402ebe17960mr4202891wmj.2.1695999980586;
+        Fri, 29 Sep 2023 08:06:20 -0700 (PDT)
+Received: from localhost ([2a02:810d:1640:10d8:9259:8ee2:26ea:3669])
+        by smtp.gmail.com with ESMTPSA id y19-20020a1c4b13000000b00405bbfd5d16sm1606110wma.7.2023.09.29.08.06.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 08:06:20 -0700 (PDT)
+From:   Joerg Schambacher <joerg.hifiberry@gmail.com>
+Cc:     a-krasser@ti.com, joerg@hifiberry.com,
+        Joerg Schambacher <joerg.hifiberry@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] ASoC: pcm512x: Adds bindings for TAS575x devices
+Date:   Fri, 29 Sep 2023 17:05:55 +0200
+Message-Id: <20230929150555.405388-1-joerg.hifiberry@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230929143055.31360-9-alkuor@gmail.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 10:30:49AM -0400, Abdel Alkuor wrote:
-> From: Abdel Alkuor <abdelalkuor@geotab.com>
-> 
-> tps25750 event registers structure is different than tps6598x's,
-> tps25750 has 11 bytes of events which are read at once where
-> tps6598x has two event registers of 8 bytes each which are read
-> separately. Likewise MASK event registers. Also, not all events
-> are supported in both devices.
-> 
-> - Create a new handler to accommodate tps25750 interrupt
-> - Add device data to of_device_id
-> 
-> Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
-> ---
-> Changes in v8:
->   - Populate of_device_id with device data
->   - Change tps->cb to tps->data
->   - Assign matched data to tps data
-> Changes in v7:
->   - Add driver name to commit subject
->   - Create tps25750 interrupt handler
-> Changes in v6:
->   - Create tipd callbacks factory 
-> Changes in v5:
->   - Incorporating tps25750 into tps6598x driver
-> 
->  drivers/usb/typec/tipd/core.c | 109 +++++++++++++++++++++++++++++-----
->  1 file changed, 95 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-> index 32e42798688f..9dc4c3ae5c60 100644
-> --- a/drivers/usb/typec/tipd/core.c
-> +++ b/drivers/usb/typec/tipd/core.c
-> @@ -18,6 +18,7 @@
->  #include <linux/usb/role.h>
->  #include <linux/workqueue.h>
->  #include <linux/firmware.h>
-> +#include <linux/of_device.h>
->  
->  #include "tps6598x.h"
->  #include "trace.h"
-> @@ -101,6 +102,10 @@ static const char *const modes[] = {
->  /* Unrecognized commands will be replaced with "!CMD" */
->  #define INVALID_CMD(_cmd_)		(_cmd_ == 0x444d4321)
->  
-> +struct tipd_data {
-> +	irq_handler_t irq_handler;
-> +};
-> +
->  struct tps6598x {
->  	struct device *dev;
->  	struct regmap *regmap;
-> @@ -118,9 +123,11 @@ struct tps6598x {
->  	enum power_supply_usb_type usb_type;
->  
->  	int wakeup;
-> +	u32 status; /* status reg */
->  	u16 pwr_status;
->  	struct delayed_work	wq_poll;
-> -	irq_handler_t irq_handler;
-> +
-> +	const struct tipd_data *data;
->  };
->  
->  static enum power_supply_property tps6598x_psy_props[] = {
-> @@ -545,6 +552,64 @@ static irqreturn_t cd321x_interrupt(int irq, void *data)
->  	return IRQ_NONE;
->  }
->  
-> +static bool tps6598x_has_role_changed(struct tps6598x *tps, u32 status)
-> +{
-> +	status ^= tps->status;
-> +
-> +	return status & (TPS_STATUS_PORTROLE | TPS_STATUS_DATAROLE);
-> +}
-> +
-> +static irqreturn_t tps25750_interrupt(int irq, void *data)
-> +{
-> +	struct tps6598x *tps = data;
-> +	u64 event[2] = { };
-> +	u32 status;
-> +	int ret;
-> +
-> +	mutex_lock(&tps->lock);
-> +
-> +	ret = tps6598x_block_read(tps, TPS_REG_INT_EVENT1, event, 11);
-> +	if (ret) {
-> +		dev_err(tps->dev, "%s: failed to read events\n", __func__);
-> +		goto err_unlock;
-> +	}
-> +
-> +	if (!(event[0] | event[1]))
-> +		goto err_unlock;
-> +
-> +	if (!tps6598x_read_status(tps, &status))
-> +		goto err_clear_ints;
-> +
-> +	if ((event[0] | event[1]) & TPS_REG_INT_POWER_STATUS_UPDATE)
-> +		if (!tps6598x_read_power_status(tps))
-> +			goto err_clear_ints;
-> +
-> +	if ((event[0] | event[1]) & TPS_REG_INT_DATA_STATUS_UPDATE)
-> +		if (!tps6598x_read_data_status(tps))
-> +			goto err_clear_ints;
-> +
-> +	/*
-> +	 * data/port roles could be updated independently after
-> +	 * a plug event. Therefore, we need to check
-> +	 * for pr/dr status change to set TypeC dr/pr accordingly.
-> +	 */
-> +	if ((event[0] | event[1]) & TPS_REG_INT_PLUG_EVENT ||
-> +	    tps6598x_has_role_changed(tps, status))
-> +		tps6598x_handle_plug_event(tps, status);
-> +
-> +	tps->status = status;
-> +
-> +err_clear_ints:
-> +	tps6598x_block_write(tps, TPS_REG_INT_CLEAR1, event, 11);
-> +
-> +err_unlock:
-> +	mutex_unlock(&tps->lock);
-> +
-> +	if (event[0] | event[1])
-> +		return IRQ_HANDLED;
-> +	return IRQ_NONE;
-> +}
-> +
->  static irqreturn_t tps6598x_interrupt(int irq, void *data)
->  {
->  	struct tps6598x *tps = data;
-> @@ -600,7 +665,7 @@ static void tps6598x_poll_work(struct work_struct *work)
->  	struct tps6598x *tps = container_of(to_delayed_work(work),
->  					    struct tps6598x, wq_poll);
->  
-> -	tps->irq_handler(0, tps);
-> +	tps->data->irq_handler(0, tps);
->  	queue_delayed_work(system_power_efficient_wq,
->  			   &tps->wq_poll, msecs_to_jiffies(POLL_INTERVAL));
->  }
-> @@ -967,13 +1032,33 @@ static int tps25750_apply_patch(struct tps6598x *tps)
->  	return 0;
->  };
->  
-> +static const struct tipd_data cd321x_data = {
-> +	.irq_handler = cd321x_interrupt,
-> +};
-> +
-> +static const struct tipd_data tps6598x_data = {
-> +	.irq_handler = tps6598x_interrupt,
-> +};
-> +
-> +static const struct tipd_data tps25750_data = {
-> +	.irq_handler = tps25750_interrupt,
-> +};
-> +
-> +static const struct of_device_id tps6598x_of_match[] = {
-> +	{ .compatible = "ti,tps6598x", &tps6598x_data},
-> +	{ .compatible = "apple,cd321x", &cd321x_data},
-> +	{ .compatible = "ti,tps25750", &tps25750_data},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, tps6598x_of_match);
+The TAS5754/6 power amplifiers use the same pcm512x driver with
+only minor restictions described in the bindings document.
 
-There is no reason to move that here.
+Signed-off-by: Joerg Schambacher <joerg.hifiberry@gmail.com>
+---
+ Documentation/devicetree/bindings/sound/pcm512x.txt | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-Keep all of those below where tps6598x_of_match was originally.
-
->  static int tps6598x_probe(struct i2c_client *client)
->  {
-> -	irq_handler_t irq_handler = tps6598x_interrupt;
->  	struct device_node *np = client->dev.of_node;
->  	struct typec_capability typec_cap = { };
->  	struct tps6598x *tps;
->  	struct fwnode_handle *fwnode;
-> +	const struct of_device_id *match;
->  	u32 status;
->  	u32 conf;
->  	u32 vid;
-> @@ -1017,7 +1102,6 @@ static int tps6598x_probe(struct i2c_client *client)
->  			APPLE_CD_REG_INT_DATA_STATUS_UPDATE |
->  			APPLE_CD_REG_INT_PLUG_EVENT;
->  
-> -		irq_handler = cd321x_interrupt;
->  	} else {
->  		/* Enable power status, data status and plug event interrupts */
->  		mask1 = TPS_REG_INT_POWER_STATUS_UPDATE |
-> @@ -1025,7 +1109,12 @@ static int tps6598x_probe(struct i2c_client *client)
->  			TPS_REG_INT_PLUG_EVENT;
->  	}
->  
-> -	tps->irq_handler = irq_handler;
-> +	match = of_match_device(tps6598x_of_match, tps->dev);
-> +	if (!match)
-> +		return -EINVAL;
-> +
-> +	tps->data = match->data;
-
-        tps->data = device_get_match_data(tps->dev);
-
->  	/* Make sure the controller has application firmware running */
->  	ret = tps6598x_check_mode(tps);
->  	if (ret < 0)
-> @@ -1125,7 +1214,7 @@ static int tps6598x_probe(struct i2c_client *client)
->  
->  	if (client->irq) {
->  		ret = devm_request_threaded_irq(&client->dev, client->irq, NULL,
-> -						irq_handler,
-> +						tps->data->irq_handler,
->  						IRQF_SHARED | IRQF_ONESHOT,
->  						dev_name(&client->dev), tps);
->  	} else {
-> @@ -1231,14 +1320,6 @@ static const struct dev_pm_ops tps6598x_pm_ops = {
->  	SET_SYSTEM_SLEEP_PM_OPS(tps6598x_suspend, tps6598x_resume)
->  };
->  
-> -static const struct of_device_id tps6598x_of_match[] = {
-> -	{ .compatible = "ti,tps6598x", },
-> -	{ .compatible = "apple,cd321x", },
-> -	{ .compatible = "ti,tps25750", },
-> -	{}
-> -};
-> -MODULE_DEVICE_TABLE(of, tps6598x_of_match);
-
-static const struct tipd_data cd321x_data = {
-	.irq_handler = cd321x_interrupt,
-};
-
-static const struct tipd_data tps6598x_data = {
-	.irq_handler = tps6598x_interrupt,
-};
-
-static const struct tipd_data tps25750_data = {
-	.irq_handler = tps25750_interrupt,
-};
-
-static const struct of_device_id tps6598x_of_match[] = {
-	{ .compatible = "apple,cd321x", &cd321x_data},
-	{ .compatible = "ti,tps25750", &tps25750_data},
-	{ .compatible = "ti,tps6598x", &tps6598x_data},
-	{}
-};
-MODULE_DEVICE_TABLE(of, tps6598x_of_match);
-
->  static const struct i2c_device_id tps6598x_id[] = {
->  	{ "tps6598x" },
->  	{ }
-
-thanks,
-
+diff --git a/Documentation/devicetree/bindings/sound/pcm512x.txt b/Documentation/devicetree/bindings/sound/pcm512x.txt
+index 3aae3b41bd8e..77006a4aec4a 100644
+--- a/Documentation/devicetree/bindings/sound/pcm512x.txt
++++ b/Documentation/devicetree/bindings/sound/pcm512x.txt
+@@ -1,12 +1,12 @@
+-PCM512x audio CODECs
++PCM512x and TAS575x audio CODECs/amplifiers
+ 
+ These devices support both I2C and SPI (configured with pin strapping
+-on the board).
++on the board). The TAS575x devices only support I2C.
+ 
+ Required properties:
+ 
+-  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141" or
+-                 "ti,pcm5142"
++  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141",
++                 "ti,pcm5142", "ti,tas5754" or "ti,tas5756"
+ 
+   - reg : the I2C address of the device for I2C, the chip select
+           number for SPI.
+@@ -25,6 +25,7 @@ Optional properties:
+     through <6>.  The device will be configured for clock input on the
+     given pll-in pin and PLL output on the given pll-out pin.  An
+     external connection from the pll-out pin to the SCLK pin is assumed.
++    Caution: the TAS-desvices only support gpios 1,2 and 3
+ 
+ Examples:
+ 
 -- 
-heikki
+2.34.1
+
