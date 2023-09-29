@@ -2,141 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E952B7B300F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 12:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D057B3050
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 12:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232939AbjI2K20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 06:28:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49832 "EHLO
+        id S233048AbjI2Kao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 06:30:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232997AbjI2K2V (ORCPT
+        with ESMTP id S233220AbjI2K3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 06:28:21 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF5C1AA
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 03:28:19 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bfea381255so229171361fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 03:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1695983297; x=1696588097; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aGIn5BggoZuhwKSBFZqt6i9KKk/NG6ZBgEVljtS3j30=;
-        b=Qn30jfrGnMd3Nsg/0SrWcnD5L1X5XqFm+COqyp+S3q3Mzax5IfRUhda8FTWDPJnV6x
-         DR2GKa9ePcWN6gh4nPTeHCiUl1M1RINi2gvqEC40Gc09c1yLYRI/LFsZcuY8izMn8hG0
-         8vDuOb8/tEs1mYAt/O8W5QPyFG4wxem+CzoLLnOpX/YYaxBMPaWUb9qbO4xCN0Cf1NG0
-         6/mUmmXSO4zRe6FHMFOT60rG1q3N6MR7wbwb3bNoj2vxyu951eaDop2m89OKjuUhR/t1
-         nRN2zHMuZRyiXXai1QPlns2nlUDVts7ej2MzJgnTuq7CR5/pLCQ+zb/rEYEEAeCD2yF9
-         rN+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695983297; x=1696588097;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aGIn5BggoZuhwKSBFZqt6i9KKk/NG6ZBgEVljtS3j30=;
-        b=kBeDUutvciHGCnxreosZJllLHMUjciMNH5KjSV9Sa1kGxtnQ/S7jzzgGgR+i5H8Ycp
-         4TuBDzEzIMtMPw/biGet9e+N6+ax7Ju0h2A5MZaIhW5FpKWHQP6Vh2uqQyFYjrUL/ruY
-         PtFfljLiEVc4oWCOm0Y3PgajP7lpQEzJxunBYqrXNngZXXwq6GOLX/rPwtDh68OhR+1I
-         /po+xgbzW/uI49NSZRlXZIXeuN9MjbSADDHsJJu7adaUq7zSoTaXYg8ocrRRn+1xH+jD
-         Du8tiXUia46MPnTKeVBWTTjeCOrAZdMzdwjx2TOkQVYU+7dK1HamcnlijkPyzCeIntOL
-         BXXQ==
-X-Gm-Message-State: AOJu0YwdUVO3xmIjmW7i/FoX8nDmoIHu4bizkGxVszBd3IgiAP9rh1uO
-        ZYKP0cOdvpp0ksrv9+pENpSJd+MMUMYanhe/YyhtH8NB
-X-Google-Smtp-Source: AGHT+IGGXxf9ux7KQnNBlakripYyXZ+c1ONN4+HqyLiaISzUtZ6brXVPSw8OOLHUQ0z7W6r5ecGl+g==
-X-Received: by 2002:a2e:6a02:0:b0:2c0:122a:322b with SMTP id f2-20020a2e6a02000000b002c0122a322bmr3220061ljc.48.1695983297307;
-        Fri, 29 Sep 2023 03:28:17 -0700 (PDT)
-Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id h13-20020a170906584d00b00992b8d56f3asm12165628ejs.105.2023.09.29.03.28.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 03:28:16 -0700 (PDT)
-From:   Luca Weiss <luca.weiss@fairphone.com>
-Date:   Fri, 29 Sep 2023 12:28:10 +0200
-Subject: [PATCH RFC] ASoC: codecs: aw88261: Remove non-existing reset gpio
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230929-aw88261-reset-v1-1-fcbce194a823@fairphone.com>
-X-B4-Tracking: v=1; b=H4sIALmmFmUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDSyNL3cRyCwsjM0PdotTi1BJd81QDgxTLVCNTS1MjJaCegqLUtMwKsHn
- RSkFuzkqxtbUA0iLZj2QAAAA=
-To:     Weidong Wang <wangweidong.a@awinic.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Fri, 29 Sep 2023 06:29:42 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EAEC19B4;
+        Fri, 29 Sep 2023 03:29:18 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TA7LfX019893;
+        Fri, 29 Sep 2023 10:29:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=ByGrroXOiJTfy8moAhWOIIoeCJ7aCJ2ajue+54ukm/8=;
+ b=XkBzTPjB7MZ1CkxB48pZT8ZHIZmQcQSdVobXdbS/rLO8jIuk1kHpsnXqyYGdzp6p/rrc
+ XVRSc+oCLoKU4O+PimtV1azUNU9CqiYVwsVqCRJMjYSyk4/At2ltA+zGzoIYNVE6xKqa
+ H/udWGoRI1EkRG1gSszixKgiO3pnvca37sMNhpeLHqpm8kqH0ni6anAiEaFKBJ8bC1ff
+ zY8HZw4FJf5t+yKaBXNvNf7jz20ySygi2U30q3hYK7UihN4famptlD9PZM8YTyp+gUcA
+ lhZGjkI8MwZtsJ0kerKV5dJeGYHc4Ojq8rN5ZDAiIToZHsOQCDqkUwkx1dBDgR7uyn2+ lQ== 
+Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tdqmv8kw6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 10:29:12 +0000
+Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 38TAT9vm021884;
+        Fri, 29 Sep 2023 10:29:09 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3t9s3m2yhp-1;
+        Fri, 29 Sep 2023 10:29:09 +0000
+Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38TAT9Ub021797;
+        Fri, 29 Sep 2023 10:29:09 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-sartgarg-hyd.qualcomm.com [10.213.105.147])
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 38TAT9ui021628;
+        Fri, 29 Sep 2023 10:29:09 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2339771)
+        id 24C4052E7BC; Fri, 29 Sep 2023 15:59:08 +0530 (+0530)
+From:   Sarthak Garg <quic_sartgarg@quicinc.com>
+To:     adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, quic_rampraka@quicinc.com,
+        quic_pragalla@quicinc.com, quic_sayalil@quicinc.com,
+        quic_nitirawa@quicinc.com, quic_sachgupt@quicinc.com,
+        quic_bhaskarv@quicinc.com, quic_narepall@quicinc.com,
+        Sarthak Garg <quic_sartgarg@quicinc.com>
+Subject: [PATCH V2 0/2] Add partial initialization support
+Date:   Fri, 29 Sep 2023 15:58:29 +0530
+Message-Id: <20230929102831.9702-1-quic_sartgarg@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: pJhYWoxOk-9NFm1COcYThX8roP1T4_z_
+X-Proofpoint-ORIG-GUID: pJhYWoxOk-9NFm1COcYThX8roP1T4_z_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_07,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=536 spamscore=0
+ bulkscore=0 mlxscore=0 priorityscore=1501 suspectscore=0 malwarescore=0
+ impostorscore=0 clxscore=1011 adultscore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309290090
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the AW88261 datasheet (V1.1) and device schematics I have
-access to, there is no reset gpio present on the AW88261. Remove it.
+Add the ability to partially initialize the MMC device by
+using device sleep/awake sequence (CMD5).
+Device will be sent to sleep state during mmc runtime/system suspend
+and will be woken up during mmc runtime/system resume.
+By using this sequence the device doesn't need full initialization
+which gives 25% time reduction in system/runtime resume path.
+Also enable this feature for qualcomm controllers.
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
-In case this looks okay, also to the driver author at Awinic, the
-binding doc also needs to be updated to include this change and not
-require (or even allow) the reset-gpios anymore.
+Sarthak Garg (2):
+  mmc: core: Add partial initialization support
+  mmc: sdhci-msm: Enable MMC_CAP2_SLEEP_AWAKE for Qualcomm controllers
 
-Therefore this is marked RFC for now.
----
- sound/soc/codecs/aw88261.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+ drivers/mmc/core/mmc.c       | 162 +++++++++++++++++++++++++++++++++--
+ drivers/mmc/host/sdhci-msm.c |   1 +
+ include/linux/mmc/card.h     |   4 +
+ include/linux/mmc/host.h     |   2 +
+ 4 files changed, 160 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/aw88261.c b/sound/soc/codecs/aw88261.c
-index 45eaf931a69c..e7683f70c2ef 100644
---- a/sound/soc/codecs/aw88261.c
-+++ b/sound/soc/codecs/aw88261.c
-@@ -10,7 +10,6 @@
- 
- #include <linux/i2c.h>
- #include <linux/firmware.h>
--#include <linux/of_gpio.h>
- #include <linux/regmap.h>
- #include <sound/soc.h>
- #include "aw88261.h"
-@@ -1175,14 +1174,6 @@ static const struct snd_soc_component_driver soc_codec_dev_aw88261 = {
- 	.remove = aw88261_codec_remove,
- };
- 
--static void aw88261_hw_reset(struct aw88261 *aw88261)
--{
--	gpiod_set_value_cansleep(aw88261->reset_gpio, 0);
--	usleep_range(AW88261_1000_US, AW88261_1000_US + 10);
--	gpiod_set_value_cansleep(aw88261->reset_gpio, 1);
--	usleep_range(AW88261_1000_US, AW88261_1000_US + 10);
--}
--
- static void aw88261_parse_channel_dt(struct aw88261 *aw88261)
- {
- 	struct aw_device *aw_dev = aw88261->aw_pa;
-@@ -1254,12 +1245,6 @@ static int aw88261_i2c_probe(struct i2c_client *i2c)
- 
- 	i2c_set_clientdata(i2c, aw88261);
- 
--	aw88261->reset_gpio = devm_gpiod_get_optional(&i2c->dev, "reset", GPIOD_OUT_LOW);
--	if (IS_ERR(aw88261->reset_gpio))
--		dev_info(&i2c->dev, "reset gpio not defined\n");
--	else
--		aw88261_hw_reset(aw88261);
--
- 	aw88261->regmap = devm_regmap_init_i2c(i2c, &aw88261_remap_config);
- 	if (IS_ERR(aw88261->regmap)) {
- 		ret = PTR_ERR(aw88261->regmap);
-
----
-base-commit: b216fb8946f819cf1b63dc12c7867cc501bda57e
-change-id: 20230929-aw88261-reset-7e00d9e25952
-
-Best regards,
--- 
-Luca Weiss <luca.weiss@fairphone.com>
+--
+2.17.1
 
