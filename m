@@ -2,155 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 287207B34C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43CF7B34CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233417AbjI2OWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 10:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57564 "EHLO
+        id S233430AbjI2OWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 10:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233293AbjI2OWH (ORCPT
+        with ESMTP id S233392AbjI2OWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 10:22:07 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C716D1B1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:22:05 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c6185cafb3so155895ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:22:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695997325; x=1696602125; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yYEFurrEEC58Pi6MuErcWJ3A1NxFP/ysymFeMwH4+H0=;
-        b=mMBB6A5LeNbzcZjewRwcSRWyKv/Ix9npFPNe56/IChsDgxIIKy9kUAZllIkUsFPfkX
-         HYFgGux5rx6NgVB1JLOhCi+MXERMWtvL8ImhPfO/viR0jCcwr6bEPnFAVfbK/5YPS0w4
-         6zsfu/U1Z6Fa3IYYmrzLfNmRXCSdjkFKYXsy/KzbY2LtklW/nI8J8VH7U3DOZQlbZAXa
-         4JJKFWug8DEn944qxSYVI/x585o1tEaw8+IAmTyhYx6e2em0ZIKVEDQnB66ef0u8/tCw
-         CTpLkvqIJWHtqO3zkKwaOMvr0FFrYgS8GOIg5B6NO9aW56R2iYbF7r+nnNZ4Rfix0nmW
-         E34w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695997325; x=1696602125;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yYEFurrEEC58Pi6MuErcWJ3A1NxFP/ysymFeMwH4+H0=;
-        b=DpxMC6wkD4l9rbqgEyaXxVj/AYLiU5zuzB2n343IAUiJqId8rARs2r4aqfALUCXFHU
-         7HcYj/gw9GhmWD7BsSA1JT92u6R0mC+jG0jcBzX9nXRN0bopqXbOlIK3vJOz4fLEgtts
-         wSIrYGgrD2uG2NSCneMo+OWMFxzpw48mN573YQBFoX7ApsFsfEMtdY8tKjzj0x9phDiL
-         MuWrpMadUwCAc23VJAYN/f8HoUssGSGBXqgvKDnyZhS+qbwDesFgeJLSwrs+63vQAKJK
-         uq2kd0k3VCTP+b8Rt17F7E5QQq53CXRe3I7qPFlsj8ieeo7aftX8/slM+nRBtiKEO1L9
-         IG8g==
-X-Gm-Message-State: AOJu0YwCmQxz9U2ebQ2sPO8q5hxv/9sGSXOw9YF11UIH3/OjDEAZ1R9r
-        dEH7GY4K0HHYnlUImd2sMTZTeS2FRmIuu+xr5dT+ww==
-X-Google-Smtp-Source: AGHT+IHONXaoBfwbXAGD+xhM6NPRFrExlJFSRqqfsw7iuwEyKFEv1rwMEELo7No+ciZsiAeOEkmQIOfvUjDaN2Qc5nA=
-X-Received: by 2002:a17:902:ab18:b0:1c4:21fe:2823 with SMTP id
- ik24-20020a170902ab1800b001c421fe2823mr930677plb.13.1695997324947; Fri, 29
- Sep 2023 07:22:04 -0700 (PDT)
+        Fri, 29 Sep 2023 10:22:30 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1164B1AC;
+        Fri, 29 Sep 2023 07:22:27 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T9q4fB011558;
+        Fri, 29 Sep 2023 14:22:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=uel0KbMalDjHMwSQ7GdbifduKXHuQtJEkwaFOppR4OA=;
+ b=bExpVf4++NQPRGlhHJa1C/CT1WlKE0vjhknyaXaM1DYF46odSnz9irIrOEDI918IflLB
+ 66OCrU2hp7oUMZ9kNiD55wyp9/be+fmmpHk7azs32RbRkBHHAg75EbR1+o9eANp5s+/A
+ j1puJeGPskA7jhoD5/Yza0VVz23Z0wWm2MQ4O1FYv/Iul/lKEgDJ16mNTJLJoZ900wIN
+ 5WNVwBK4AHPD9Qn0ZdwL8kBOi4ohetdja5iL8embj0qC+9qqSk6T/OIps2Re5St34K5w
+ vKH0IDDnAsRiG8zqengQokVKfX6xvsJEIxiWMyI7PxHkAqApY8dINW7XrqUTrUlqSvLx nw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3td3ggbv2e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 14:22:15 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38TEME1W032607
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 14:22:15 GMT
+Received: from [10.218.45.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 29 Sep
+ 2023 07:22:10 -0700
+Message-ID: <162b61dc-6304-353b-e9be-9ff941ab3e9b@quicinc.com>
+Date:   Fri, 29 Sep 2023 19:52:06 +0530
 MIME-Version: 1.0
-References: <20230829234426.64421-1-tony.luck@intel.com> <20230928191350.205703-1-tony.luck@intel.com>
- <20230928191350.205703-7-tony.luck@intel.com>
-In-Reply-To: <20230928191350.205703-7-tony.luck@intel.com>
-From:   Peter Newman <peternewman@google.com>
-Date:   Fri, 29 Sep 2023 16:21:54 +0200
-Message-ID: <CALPaoCh0dzx2T8-u5ZQXXM0XqaZgJbUAGnRVBmbzHmQiHjvWTA@mail.gmail.com>
-Subject: Re: [PATCH v6 6/8] x86/resctrl: Introduce snc_nodes_per_l3_cache
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [PATCH V4 3/4] arm64: dts: qcom: sc7280: Add UFS nodes for sc7280
+ IDP board
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <mani@kernel.org>,
+        <alim.akhtar@samsung.com>, <bvanassche@acm.org>,
+        <avri.altman@wdc.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <cros-qcom-dts-watchers@chromium.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <20230929131936.29421-1-quic_nitirawa@quicinc.com>
+ <20230929131936.29421-4-quic_nitirawa@quicinc.com>
+ <ed61f6a1-a21d-cc23-b995-7692a2e8530a@linaro.org>
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+In-Reply-To: <ed61f6a1-a21d-cc23-b995-7692a2e8530a@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 1RUuwAXoNCMWU-LHXJ03zpttm34mrTy7
+X-Proofpoint-ORIG-GUID: 1RUuwAXoNCMWU-LHXJ03zpttm34mrTy7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_11,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=470
+ priorityscore=1501 bulkscore=0 malwarescore=0 clxscore=1015
+ lowpriorityscore=0 suspectscore=0 mlxscore=0 spamscore=0 adultscore=0
+ phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2309180000 definitions=main-2309290123
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
-
-On Thu, Sep 28, 2023 at 9:14=E2=80=AFPM Tony Luck <tony.luck@intel.com> wro=
-te:
->
-> Intel Sub-NUMA Cluster (SNC) is a feature that subdivides the CPU cores
-> and memory controllers on a socket into two or more groups. These are
-> presented to the operating system as NUMA nodes.
->
-> This may enable some workloads to have slightly lower latency to memory
-> as the memory controller(s) in an SNC node are electrically closer to the
-> CPU cores on that SNC node. This cost may be offset by lower bandwidth
-> since the memory accesses for each core can only be interleaved between
-> the memory controllers on the same SNC node.
->
-> Resctrl monitoring on Intel system depends upon attaching RMIDs to tasks
-> to track L3 cache occupancy and memory bandwidth. There is an MSR that
-> controls how the RMIDs are shared between SNC nodes.
->
-> The default mode divides them numerically. E.g. when there are two SNC
-> nodes on a socket the lower number half of the RMIDs are given to the
-> first node, the remainder to the second node. This would be difficult
-> to use with the Linux resctrl interface as specific RMID values assigned
-> to resctrl groups are not visible to users.
->
-> The other mode divides the RMIDs and renumbers the ones on the second
-> SNC node to start from zero.
->
-> Even with this redumbering SNC mode requires several changes in resctrl
-> behavior for correct operation.
-
-redumbering? Harsh.
 
 
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu=
-/resctrl/rdtgroup.c
-> index b0901fb95aa9..a5404c412f53 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -1357,7 +1357,7 @@ unsigned int rdtgroup_cbm_to_size(struct rdt_resour=
-ce *r,
->                 }
->         }
->
-> -       return size;
-> +       return size / snc_nodes_per_l3_cache;
+On 9/29/2023 6:56 PM, Konrad Dybcio wrote:
+> 
+> 
+> On 9/29/23 15:19, Nitin Rawat wrote:
+>> Add UFS host controller and PHY nodes for sc7280 IDP board.
+>>
+>> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+>> Acked-by: Manivannan Sadhasivam <mani@kernel.org>
+>> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> Tested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> I did not add these tags to this patch, drop them.
 
-To confirm, the size represented by a bit goes down rather than the
-CBM mask shrinking in each sub-NUMA domain?
+My Apologies.Actually Patch 2 and Patch3 review tag got swapped.
+Will update and send new patchset
+> 
+> Konrad
 
-I would maybe have expected the CBM mask to already be allocating at
-the smallest granularity the hardware supports.
-
->  }
->
->  /**
-> @@ -2590,7 +2590,7 @@ static int rdt_parse_param(struct fs_context *fc, s=
-truct fs_parameter *param)
->                 ctx->enable_cdpl2 =3D true;
->                 return 0;
->         case Opt_mba_mbps:
-> -               if (!supports_mba_mbps())
-> +               if (!supports_mba_mbps() || snc_nodes_per_l3_cache > 1)
-
-Factor into supports_mba_mbps()?
-
->                         return -EINVAL;
->                 ctx->enable_mba_mbps =3D true;
->                 return 0;
-> --
-> 2.41.0
->
-
-Reviewed-by: Peter Newman <peternewman@google.com>
+Thanks,
+Nitin
