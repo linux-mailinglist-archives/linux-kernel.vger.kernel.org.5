@@ -2,221 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9378A7B3830
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1226E7B3837
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:58:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233551AbjI2Q4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 12:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56390 "EHLO
+        id S233391AbjI2Q6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 12:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbjI2Q4D (ORCPT
+        with ESMTP id S233135AbjI2Q6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 12:56:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0958C1BD;
-        Fri, 29 Sep 2023 09:56:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696006561; x=1727542561;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=2OugTR8LOwulU1rhalKydXvzy3pXnIdrs1D4Uzoza20=;
-  b=OVb/dlSnLYgqXPtQSL8HdhHwEfe4OQbe8n0+KQp29KNE0sroBSclPL/d
-   Vjxe/2uheQ92pMHPcbWOhMIqEuujY+dYxhYepyS3aZm5L075moy46QS7I
-   +RG8XZwe9afNna7UQN6lZeg0Z9TqwXacDmvzTeXVIfYvJkru5JPCTd1di
-   k30zTfgFqw6Ny5z1/wZ4GHr1Jn+K4VWN04S21uX7o/RHZFuEZwv34r/Nq
-   fKWyCwlxBSDr7Ra3m7DsqPGvHfwK2FWL9VZpzg0FojKn0qOZzSucpU1uj
-   sCXHMnP2QzHMx4QSKPCq7reNUhHKlzt45t7x45LfwLuotW0mdtY48+aE8
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="385162644"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="385162644"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 09:56:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="893477529"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="893477529"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 29 Sep 2023 09:54:47 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 29 Sep 2023 09:56:00 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Fri, 29 Sep 2023 09:55:59 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Fri, 29 Sep 2023 09:55:59 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.102)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Fri, 29 Sep 2023 09:55:59 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QfV3MdcoDrkRGk81tTjuhyIGLQC5hcsA99qHudOhQNTP7mv5jvn3oM60KMQS4+/fZvi6w9ecz7/qE/oFqN9Z+0jdZ9Na8xoz9MT4FTBk0K8KIZRMBE1CHJMaRTVqW/QNHN/U+5KZJX9RoCEFqf4C44OGk4zH1fuUS0Ps0xBnsC8Az4BrFaoVbNuxpFLrnsr0VbC5WzTq4aSsWyInoxTgBEWTimj/mjWkWjNzcWnssdMEKics2fjz7P7nok8kfExmm3L+WZimUkf7bdaxSTVMGi1nWdposEzeRHuGPv5YNN0VSPl34bS0S4u1CAsGmw+rqwT7g8x1+evIrfu1vXx/oQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Er1xSjeO+gvoS0gZmwC6mVO2HDTDF+CSSerNPThbAJo=;
- b=hv5U4LKppm9EdlDVa1ut/0nFRoFrKDfMc/cv4/ETMIMG8gJJqOMv6ACr8fbHr1C6OZxEu+Qxe+jbk2mOutL6B5z/naoQvWZFxbU0ADtQHB0nxO0RtgAf4Co7D1SKR4o8dlfpZzcVesLNYyYQcDSeYi4csdYY7LKhotvh2ASqvH8j/E1wremGTwnDb9pDZLmKisNqHSuiVKEEKZbAX/7Ne8VpFFHmATp7T6YxXUMj9yHmLfplhS5nfYMxyNr1kb1VeOrAzkpODvPE5G8S0r/wkBTJC+ORo6n7jYygWGXK3SNHzgs5rcHsGfWI+fD4Mti1Lcf6bvxQWNTKr3CUEKc67g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by DS0PR11MB6469.namprd11.prod.outlook.com (2603:10b6:8:c3::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.20; Fri, 29 Sep
- 2023 16:55:58 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6813.017; Fri, 29 Sep 2023
- 16:55:58 +0000
-Message-ID: <e15efa69-aa12-dfcb-da65-03b8a5ce76cd@intel.com>
-Date:   Fri, 29 Sep 2023 09:55:55 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [PATCH v3 2/7] selftests/resctrl: Extend signal handler coverage
- to unmount on receiving signal
-Content-Language: en-US
-To:     =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        <linux-kselftest@vger.kernel.org>, Shuah Khan <shuah@kernel.org>,
-        =?UTF-8?Q?Maciej_Wiecz=c3=b3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20230929112039.7488-1-ilpo.jarvinen@linux.intel.com>
- <20230929112039.7488-3-ilpo.jarvinen@linux.intel.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20230929112039.7488-3-ilpo.jarvinen@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: MW4P222CA0005.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:303:114::10) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Fri, 29 Sep 2023 12:58:19 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB131A7
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:58:16 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-573c62b3cd2so9233967a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:58:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696006696; x=1696611496; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NMqJFtytKcP8lUd+Bm9Yn0vug485IKuzeteN3fJyMJ8=;
+        b=YHNOBKfegl5vIN3StJTAxXd37e9It+sewIyEqwcUK34NcIIFmPX6CysM60rk37Xftx
+         PM46FlQjIE8zBJh4y9xu0jbcRzZnSoZ4CJ9zec76O6O/7TxGDRGjLHk2zXGmve3Fg+7e
+         cviByyUnak6tZNXNmAwZO0agXc2bGi+H8m50o+1+ffo+nhj2vz+1e3hLVCCNQEZWrevF
+         ndFAwEVPoYEvdwfBxrydJ8DLgQUstUoRNcP3yLYqAk06MbvI0etmRKDvfoMiyQ/FVCGi
+         ntO3Y25ShPEJDJ5DHMh3wjN63kHOw8FYtYYFYVTVBnyXoEKRvazMRTozOk2AQAwV0vN/
+         d70g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696006696; x=1696611496;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NMqJFtytKcP8lUd+Bm9Yn0vug485IKuzeteN3fJyMJ8=;
+        b=nv9taAoLt/4HCkX+/kOncUmwQjSWcXgTANvqDju/lNc4LYTq93OOYLPndzjQaWcDJ1
+         bOgsQ5hdXhUQ9b6wVGtt+CH9S7Lh9X/ICcEwPuiMncIfqNhhWJk/vQhPLoMH4AnBipsa
+         S7gvL2o/1coq1ClVHu55cASQye/lbZ2J5hggtvxj74QtMGobAoOcRs0eSpSbPBxf5bqp
+         PMrp864jlWs8e4UzsCoP81b1JqnAlR3UJOqy1uDZ3tJGNWwkp0VLbM3JJyo3NiSpsW6+
+         /4IWGPBD2CkyFg0SaF4m/HBCAzD5DJ1dwpO0o64I/bQAFfBA7zjtuwcyj41aGCR/rXT6
+         RzyA==
+X-Gm-Message-State: AOJu0Yx4V6d038s9JotniE5FBEQMK4xIOVYwaiyfDCni0kH0+1MAsr9V
+        d0EVwkfv6gpzs3D7z3MeTrzQ7w==
+X-Google-Smtp-Source: AGHT+IFYDdh+LIB4m9kIWN0rVKInvkNQerIgkvMPdRsEywsL347q8XFzZ5L+QEjwFYfmBYdr+a/Ndg==
+X-Received: by 2002:a17:90b:3b8a:b0:268:d456:123 with SMTP id pc10-20020a17090b3b8a00b00268d4560123mr4403232pjb.41.1696006695992;
+        Fri, 29 Sep 2023 09:58:15 -0700 (PDT)
+Received: from p14s ([2604:3d09:148c:c800:6039:c963:11ba:ad1b])
+        by smtp.gmail.com with ESMTPSA id v1-20020a17090abb8100b002777b8fc74bsm1685259pjr.21.2023.09.29.09.58.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 09:58:15 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 10:58:13 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Tanmay Shah <tanmay.shah@amd.com>
+Cc:     andersson@kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] remoteproc: zynqmp: change tcm address translation method
+Message-ID: <ZRcCJbbyW+g4yjgs@p14s>
+References: <20230925172648.2339048-1-tanmay.shah@amd.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DS0PR11MB6469:EE_
-X-MS-Office365-Filtering-Correlation-Id: c8661fd4-7299-4139-3a07-08dbc10cf3fc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cGES1rEpWCzvjmPJR+deD4YizO7i+POtyIKuFmPaa7MdaTOq2M03Xzrh7pEkKu2JjgnYzkeDc7KJL/KfLdLTS7bnSP4ODRhlm0LFlXgSjicS+gljt82S7a4AmGrCSM4KnxYJB7Tkb/quEFhjoBTAihDRpyf3EoayORf4TlvpFN9G9stFAEL6ZBolNRXU8rGbibm/KloGLCXfyXy+ZcN+eXqQmyT1XxUPefYoo+cmMh4kGZRnVChM+crNAxzxKPQUdRYxDk++Y/u/dOcoNsjWXMoUhUeV/hBIIwhp4UVLwCnPfRzgX2j7WGjSNjAe9nH8yn07NICf/+BFPtMXru2yJHiOuS4vI8OZIVLLfStqHHCTEkUKCDbUm1/HdefBshFhFjhlFjq9jZcVJcZWsG0plHqhHVzCgrJT24YNu1Wl7FrPCIyDTSTyeSC43Cis89PS86rZNAgqByInSCxZ/aPdpwKxMmYSuTuu04G6xNPtDHFmP5yM8gmFb7QlZgYbYUelfQ1o8ca1zsT+5rpGijv5iyApZM1Cf+UQRTQfT6lRbiS4sLnDzYQCpfVcnD8iAWy4CGgRNVzwRA1/2Uo7DTOsOxFI70Sd6y5HW2e0adZ/+iMkscFHvmUunDS6UJ3B1VyKPCOyTS7f3THtvcJhdEBEag==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(396003)(39860400002)(346002)(230922051799003)(186009)(64100799003)(451199024)(1800799009)(41300700001)(66476007)(4326008)(5660300002)(316002)(8676002)(8936002)(110136005)(31686004)(66946007)(66556008)(44832011)(2906002)(6512007)(82960400001)(6486002)(2616005)(53546011)(31696002)(6506007)(86362001)(6666004)(36756003)(26005)(38100700002)(478600001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OW9aZkg3dXBHYWUvaFRveXFTK3p4S3ZZanRSVlJabWl4eU5LS1hsOW1uZmky?=
- =?utf-8?B?Wk05T1VsUExIdGdjMWd5Nkl5R25CQUY5YmJ4SjdLa1lBTmxUdXgwZ2FVVHAy?=
- =?utf-8?B?Y0N5Q1IrT2RYa214eGJYRG9HMmdpejE0YXpWancxTnhLUkFHd3lGUG1JZGw5?=
- =?utf-8?B?bnE2YTJxbXgzeWpSU3QzbWg4KzJNa216ODJieUpCdlZZS2pVYllRb3NxdjVR?=
- =?utf-8?B?blFjK2R4QjhDZ2ZFamlzcHFjQVRmSDdaMXc4U2Rlbk1Kdlpxb3VyOTYzTzhy?=
- =?utf-8?B?MXJlVGZYNzFlZm1xU2hsTFBITFZtZXE5dDBEVkxPMXRoZnBZRkxLY0ZWeGsx?=
- =?utf-8?B?Z0FXYS9SWjFzWmRNSC9lZ3ZTMWg2L0lyakcySkI1aGJJUUxCeFBST2c5bUtO?=
- =?utf-8?B?eEVlenFhbXdDR0R6R3llRHNnTGlsTzVBY2VLMUZXT2sreVdTdkxhNStWZDQy?=
- =?utf-8?B?MkgyZ2xMTjhkRlpxak5weXVRWnZrdE13VnFqYVFqQlJzZU5VeTZxMStPREpW?=
- =?utf-8?B?YUtXR2VSUkQ4VjRyTldCdlc0OVN6MERWVkJjcUlxdllLL2dZc2xUTzZOWVlx?=
- =?utf-8?B?eDB0VDZnT0pmSmRWbUFtY0dhcDE0V1BBUUhnamFldUMwd0h0Y1AwL1ltZUV6?=
- =?utf-8?B?c09ZTFdiVytJenYrTndpbG9lZGlwTEFsRFllUHRJbk83b0JId3E5Qnp2ckx3?=
- =?utf-8?B?UlZxU2dnZHo4aXZzVlBjd1cvUkRmYmJYa3JUcHZUWHhWdG00d1ZmUjlmSURx?=
- =?utf-8?B?WDZXYWJ3aXB5eTNHYk9BVXRqNVlXNEVVaUJJSkw4OGNxcTVwdEtWVHoxS0V4?=
- =?utf-8?B?aGgyV081MTdKdHlMdjN6LzJQWTZ2eEpDeDVqNW9mdkFJT0QyQU91TG5OcTB2?=
- =?utf-8?B?RzNjQUpKclE2cURReVRnK1BubjRnT056VUkzdVZlcGZrRFVhNVplbndKd0Nl?=
- =?utf-8?B?dEczelNYakZYTFlLK1ZHMzBwYjRkdkt2bmh3R1lVbWlMRWlBK3dPVHlpRzdt?=
- =?utf-8?B?Zi9GMW9teDNZalNpTlk3RktEZk9qZ2VPV2JUQ2dyN2xqME9aZUgwYUx3Ui9C?=
- =?utf-8?B?WXhjTnJsTVJ1Qmd3anhFT2VIWGlxZEtVeGRnbVVXcm9WdHhleDBGOTdZQlFN?=
- =?utf-8?B?dkVESHNROG1paFR5KzhJT0FuOEFOamxsa0I2dzhoLzliUllwYzY3SEcxYlRo?=
- =?utf-8?B?QXh2ZEJiMk1SNE9jZStHWWk1Mk5HKzZzWXBhbTVjM0Q4bTMrenY2bWpob3Fq?=
- =?utf-8?B?UFR6blI5aDVxdkp6ck9UOTlVKzlSYnBxemUzSzM2WW1ndXp2cHo5WTZ0QWtS?=
- =?utf-8?B?NnZWa3c2d09lVkJVdnZJa0tSYXNUUnpYeENEdDlxenJjVnVYUWZUVW10SE5t?=
- =?utf-8?B?dWVQTW1ieXo1VzZGOURvVVZ2RVNCQ3V5ZUVCblFlemoyRzZ1VmkxZDA2YmdT?=
- =?utf-8?B?aDVPanNRMGxOdTlaYWVKd3BMWjJpUUZLUTRvb3BRcG9qZHR1c20wd29FeXI4?=
- =?utf-8?B?UjcrdkdjYjM5Wk05TTBTK3J0SFArNDNpZWFrVnhFYURkSUhjd1drS2s4QzZt?=
- =?utf-8?B?Y1BseVpiL2ZCNFhUc0lHY0ZML3VQaDh5NXN2K1kxZzhUQzE1N0tDQjVmVk04?=
- =?utf-8?B?ZlFDdDh5aTFONFdDenVGb3AvU3lOSHRMeUk3a1lvMTd0bDU2N0tyeTJvaHlu?=
- =?utf-8?B?b0tCWjdGa01GT0ZvOXJuOGVkQm1NYVBMSk9YVU5Nb3pJbGxicXE5VWlrMitY?=
- =?utf-8?B?ekZISmZtU0pVOHEwRjBxYUNvakhOYXhudWRERjdsSTJVV0ZRMEFLcTUrS2l2?=
- =?utf-8?B?MU14WUJsYlBLbEpMQkdsTlFpZnhaSlZxQWxMVDFCb1JCQ1lVNTZlaEdVT0dp?=
- =?utf-8?B?L0Z1UFBjQTdGOGsydE5EN3IwK0ZnbWx5WmtHZVZYQlVtM3grYUViTlZkcWtV?=
- =?utf-8?B?OUpCa21QUTJyOUtCVDcxQnVqVHM1c3g2SS83Y1BRczVPWHoyaFQ3dG1PWFRO?=
- =?utf-8?B?dEhoTFd0bXE3eStwTENSNU1mKzBDbFdnbDc1UlpnRzJRei9hUjdaUHJjY1dR?=
- =?utf-8?B?NDFzSzhwUW14UnRlT2RPSWFhQzdyUTFxK2FzWDlZZzZlT2RTZUxUQVRqa3ln?=
- =?utf-8?B?NXlhRGdKVzF2Y01iNE1nczIzdTJHUi9jUGJMMm9XWUNkQWM2SFFuT0pBZHBk?=
- =?utf-8?B?WEE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8661fd4-7299-4139-3a07-08dbc10cf3fc
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 16:55:58.1359
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Gf04EDB6K8Cj3RM+sIVxNHivEcUU0voXrPzhGlW2bLPEca2Nq+OVV7yBzkUr4cLNiYAiNAT2ui8rEHXgbO+AK1TmeDjhX+tWIwgHf0HhMz0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB6469
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230925172648.2339048-1-tanmay.shah@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ilpo,
+On Mon, Sep 25, 2023 at 10:26:48AM -0700, Tanmay Shah wrote:
+> Introduce device address in hardcode TCM table.
+> Device address is used for address translation.
+> Also, previous method(hack) to mask few bits from address
+> to achieve address translation is removed
+> 
+> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+> ---
+>  drivers/remoteproc/xlnx_r5_remoteproc.c | 58 +++++++++----------------
+>  1 file changed, 20 insertions(+), 38 deletions(-)
+>
 
-On 9/29/2023 4:20 AM, Ilpo Järvinen wrote:
-...
-> diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-> index 823672a20a43..4eab2fad97fb 100644
-> --- a/tools/testing/selftests/resctrl/resctrl_tests.c
-> +++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-> @@ -67,21 +67,45 @@ void tests_cleanup(void)
->  	cat_test_cleanup();
+Applied.
+
+Thanks,
+Mathieu
+
+> diff --git a/drivers/remoteproc/xlnx_r5_remoteproc.c b/drivers/remoteproc/xlnx_r5_remoteproc.c
+> index efd758c2f4ed..4395edea9a64 100644
+> --- a/drivers/remoteproc/xlnx_r5_remoteproc.c
+> +++ b/drivers/remoteproc/xlnx_r5_remoteproc.c
+> @@ -39,12 +39,14 @@ enum zynqmp_r5_cluster_mode {
+>   * struct mem_bank_data - Memory Bank description
+>   *
+>   * @addr: Start address of memory bank
+> + * @da: device address
+>   * @size: Size of Memory bank
+>   * @pm_domain_id: Power-domains id of memory bank for firmware to turn on/off
+>   * @bank_name: name of the bank for remoteproc framework
+>   */
+>  struct mem_bank_data {
+>  	phys_addr_t addr;
+> +	u32 da;
+>  	size_t size;
+>  	u32 pm_domain_id;
+>  	char *bank_name;
+> @@ -76,18 +78,18 @@ struct mbox_info {
+>   * accepted for system-dt specifications and upstreamed in linux kernel
+>   */
+>  static const struct mem_bank_data zynqmp_tcm_banks_split[] = {
+> -	{0xffe00000UL, 0x10000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 64KB each */
+> -	{0xffe20000UL, 0x10000UL, PD_R5_0_BTCM, "btcm0"},
+> -	{0xffe90000UL, 0x10000UL, PD_R5_1_ATCM, "atcm1"},
+> -	{0xffeb0000UL, 0x10000UL, PD_R5_1_BTCM, "btcm1"},
+> +	{0xffe00000UL, 0x0, 0x10000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 64KB each */
+> +	{0xffe20000UL, 0x20000, 0x10000UL, PD_R5_0_BTCM, "btcm0"},
+> +	{0xffe90000UL, 0x0, 0x10000UL, PD_R5_1_ATCM, "atcm1"},
+> +	{0xffeb0000UL, 0x20000, 0x10000UL, PD_R5_1_BTCM, "btcm1"},
+>  };
+>  
+>  /* In lockstep mode cluster combines each 64KB TCM and makes 128KB TCM */
+>  static const struct mem_bank_data zynqmp_tcm_banks_lockstep[] = {
+> -	{0xffe00000UL, 0x20000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 128KB each */
+> -	{0xffe20000UL, 0x20000UL, PD_R5_0_BTCM, "btcm0"},
+> -	{0, 0, PD_R5_1_ATCM, ""},
+> -	{0, 0, PD_R5_1_BTCM, ""},
+> +	{0xffe00000UL, 0x0, 0x20000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 128KB each */
+> +	{0xffe20000UL, 0x20000, 0x20000UL, PD_R5_0_BTCM, "btcm0"},
+> +	{0, 0, 0, PD_R5_1_ATCM, ""},
+> +	{0, 0, 0, PD_R5_1_BTCM, ""},
+>  };
+>  
+>  /**
+> @@ -534,30 +536,6 @@ static int tcm_mem_map(struct rproc *rproc,
+>  	/* clear TCMs */
+>  	memset_io(va, 0, mem->len);
+>  
+> -	/*
+> -	 * The R5s expect their TCM banks to be at address 0x0 and 0x2000,
+> -	 * while on the Linux side they are at 0xffexxxxx.
+> -	 *
+> -	 * Zero out the high 12 bits of the address. This will give
+> -	 * expected values for TCM Banks 0A and 0B (0x0 and 0x20000).
+> -	 */
+> -	mem->da &= 0x000fffff;
+> -
+> -	/*
+> -	 * TCM Banks 1A and 1B still have to be translated.
+> -	 *
+> -	 * Below handle these two banks' absolute addresses (0xffe90000 and
+> -	 * 0xffeb0000) and convert to the expected relative addresses
+> -	 * (0x0 and 0x20000).
+> -	 */
+> -	if (mem->da == 0x90000 || mem->da == 0xB0000)
+> -		mem->da -= 0x90000;
+> -
+> -	/* if translated TCM bank address is not valid report error */
+> -	if (mem->da != 0x0 && mem->da != 0x20000) {
+> -		dev_err(&rproc->dev, "invalid TCM address: %x\n", mem->da);
+> -		return -EINVAL;
+> -	}
+>  	return 0;
 >  }
 >  
-> -static void run_mbm_test(const char * const *benchmark_cmd, int cpu_no)
-> +static int test_prepare()
-
-Please change to test_prepare(void) (checkpatch error).
-
->  {
->  	int res;
+> @@ -579,6 +557,7 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
+>  	u32 pm_domain_id;
+>  	size_t bank_size;
+>  	char *bank_name;
+> +	u32 da;
 >  
-> -	ksft_print_msg("Starting MBM BW change ...\n");
-> +	res = signal_handler_register();
-> +	if (res) {
-> +		ksft_print_msg("Failed to register signal handler\n");
-> +		return res;
-> +	}
+>  	r5_core = rproc->priv;
+>  	dev = r5_core->dev;
+> @@ -591,6 +570,7 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
+>  	 */
+>  	for (i = 0; i < num_banks; i++) {
+>  		bank_addr = r5_core->tcm_banks[i]->addr;
+> +		da = r5_core->tcm_banks[i]->da;
+>  		bank_name = r5_core->tcm_banks[i]->bank_name;
+>  		bank_size = r5_core->tcm_banks[i]->size;
+>  		pm_domain_id = r5_core->tcm_banks[i]->pm_domain_id;
+> @@ -603,11 +583,11 @@ static int add_tcm_carveout_split_mode(struct rproc *rproc)
+>  			goto release_tcm_split;
+>  		}
 >  
->  	res = mount_resctrlfs();
->  	if (res) {
-> -		ksft_exit_fail_msg("Failed to mount resctrl FS\n");
-> +		signal_handler_unregister();
-> +		ksft_print_msg("Failed to mount resctrl FS\n");
-> +		return res;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static void test_cleanup()
-
-Please change to test_cleanup(void) (checkpatch error).
-
-> +{
-> +	umount_resctrlfs();
-> +	signal_handler_unregister();
-> +}
-> +
-
-With the above two reports addressed you can add:
-
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-
-Thank you.
-
-Reinette
+> -		dev_dbg(dev, "TCM carveout split mode %s addr=%llx, size=0x%lx",
+> -			bank_name, bank_addr, bank_size);
+> +		dev_dbg(dev, "TCM carveout split mode %s addr=%llx, da=0x%x, size=0x%lx",
+> +			bank_name, bank_addr, da, bank_size);
+>  
+>  		rproc_mem = rproc_mem_entry_init(dev, NULL, bank_addr,
+> -						 bank_size, bank_addr,
+> +						 bank_size, da,
+>  						 tcm_mem_map, tcm_mem_unmap,
+>  						 bank_name);
+>  		if (!rproc_mem) {
+> @@ -648,6 +628,7 @@ static int add_tcm_carveout_lockstep_mode(struct rproc *rproc)
+>  	struct device *dev;
+>  	u32 pm_domain_id;
+>  	char *bank_name;
+> +	u32 da;
+>  
+>  	r5_core = rproc->priv;
+>  	dev = r5_core->dev;
+> @@ -679,11 +660,12 @@ static int add_tcm_carveout_lockstep_mode(struct rproc *rproc)
+>  			continue;
+>  
+>  		bank_addr = r5_core->tcm_banks[i]->addr;
+> +		da = r5_core->tcm_banks[i]->da;
+>  		bank_name = r5_core->tcm_banks[i]->bank_name;
+>  
+>  		/* Register TCM address range, TCM map and unmap functions */
+>  		rproc_mem = rproc_mem_entry_init(dev, NULL, bank_addr,
+> -						 bank_size, bank_addr,
+> +						 bank_size, da,
+>  						 tcm_mem_map, tcm_mem_unmap,
+>  						 bank_name);
+>  		if (!rproc_mem) {
+> @@ -695,8 +677,8 @@ static int add_tcm_carveout_lockstep_mode(struct rproc *rproc)
+>  		/* If registration is success, add carveouts */
+>  		rproc_add_carveout(rproc, rproc_mem);
+>  
+> -		dev_dbg(dev, "TCM add carveout lockstep mode %s addr=0x%llx, size=0x%lx",
+> -			bank_name, bank_addr, bank_size);
+> +		dev_dbg(dev, "TCM carveout lockstep mode %s addr=0x%llx, da=0x%x, size=0x%lx",
+> +			bank_name, bank_addr, da, bank_size);
+>  	}
+>  
+>  	return 0;
+> 
+> base-commit: 1a93ced18d7b81be39beba26b1c168ef21c8d0ad
+> -- 
+> 2.25.1
+> 
