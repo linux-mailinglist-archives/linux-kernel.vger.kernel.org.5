@@ -2,136 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5767B2D09
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26FD7B2D12
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232731AbjI2Hbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 03:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41766 "EHLO
+        id S232733AbjI2Hcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 03:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232606AbjI2Hbt (ORCPT
+        with ESMTP id S232490AbjI2Hcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 03:31:49 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E85331AB
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:31:45 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53636f98538so2177813a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:31:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1695972704; x=1696577504; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rV15ONO1jUP4uYwgWL2R1qvHOr8y3WbaAo1W8izGcdQ=;
-        b=laGBfAL7WcgPorwVnTglqRU0w/mRB9oS2KN7F3zEx79TaDhf8XViEOMHYeANrsxIlp
-         tq8N2zuql5jIfCNxtp2uIYaakbV6MsFuajZkRkHz8whhtSHQIDjuxKBf+z657fw1Xp8W
-         ZRTdiLDAAM3afa4nMdDIIoK2FTYFmEx3TwkiHNZ8Z9dEmXizof/bIyu+V/DXlcpeC3Zv
-         pk15R78kZJBS6uMFTKMqKJ0uh8NZI0z4rKPRi+sS3DGYq3Efotd6n0P/ZBd4cjOfWEcX
-         jDXcoF3p5kbHZXoIJsPHta9mDIhodZza2iBG0YinNTFEBL9mPOZhHwvqAq7ysXMoRNKs
-         D1sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695972704; x=1696577504;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=rV15ONO1jUP4uYwgWL2R1qvHOr8y3WbaAo1W8izGcdQ=;
-        b=V3m0CVrHFtb1A3cgCYzQay1rlwzNi129WpFP/cGiaO+vtuA/JhDgQbRYyTgfa+XN5d
-         rPBPfoDcfvnzbtSAFDatBB4oGGNxPzdUmJ+qcsmn2eGTJYgLirRugs8Ae4UsTp7ntedo
-         PRDxETUW8emE6nXy88QzaDB0eH3gUfxY95MIirut3Hy+Sy+kzXOVIVsE18NEH5WThoRi
-         V516HUJOpfG/WakdHcrm5y2NdB+Jyxx06xiIxuLTjvnP0gMdIfmfyamG0cSO5ag/7M8v
-         ufa0MpLjd140TPiFXbzS93kS6THIgNZrCcqr30CaXpHg6w9o5Qmo4fW99yYQ3Q5Am8rV
-         gmog==
-X-Gm-Message-State: AOJu0YwZJmhqttK7l5zXMykeCCAD09BolmahVB/ImHNqzV7l2kqqwcFA
-        K28rQ7SHUfsH0szn3heEW5su9Y5mw9CSw5IMX1IsnAjx
-X-Google-Smtp-Source: AGHT+IElgd8TDrBOM4ypykT+b/lbz87g5gXWJ/ODkeUI+dDXsCHZcN5sByXbMgwX2PkFlH8v5Sauaw==
-X-Received: by 2002:aa7:cf0a:0:b0:533:4cee:e52b with SMTP id a10-20020aa7cf0a000000b005334ceee52bmr3335483edy.25.1695972704119;
-        Fri, 29 Sep 2023 00:31:44 -0700 (PDT)
-Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id v10-20020aa7cd4a000000b0052ff9bae873sm10724978edw.5.2023.09.29.00.31.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 00:31:43 -0700 (PDT)
-From:   Luca Weiss <luca.weiss@fairphone.com>
-Date:   Fri, 29 Sep 2023 09:31:41 +0200
-Subject: [PATCH] arm64: dts: qcom: sc7280: Add ports subnodes in usb/dp
- qmpphy node
+        Fri, 29 Sep 2023 03:32:45 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20DC1A7;
+        Fri, 29 Sep 2023 00:32:42 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T743Sl032337;
+        Fri, 29 Sep 2023 07:32:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=1DN22jsaJg5O2CBt7TjgYJ08jbMjYR7N9ig9ufUnkxQ=;
+ b=PiGjT8hfZnyU/ld7IbHtZ4Wg6Dzub1ICHd7S0R8WenDGhjYY9oYps/ovaJRhhFKgmfba
+ FM+hwv7CYDaPi3kdQ+ehiv1PDdhYKQZ2v6pqYo9sBy93DbncBk4zjCJuLV11TsLC++9a
+ fObWEDj3QrUyzBINfYKanf+bQjrWh3FtvlRNj7NYQGJ1E2CWijzEKtEBYXk29F0vaPs6
+ uEJv8rp6E+LjyDvA3zbtn29YghjvmJD7HST6wrpiW4X+gP998i6aGs7WfkATwOvef4UU
+ C5sD3PYKRk34VVGn6b5lZFJjtKi36OVvu/srx2NwlzdUnX8P4OnM0zUrGxEomY2eC/TE 3A== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tctcnkxcq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 07:32:28 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38T7WRRe002804
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 07:32:27 GMT
+Received: from varda-linux.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Fri, 29 Sep 2023 00:32:21 -0700
+Date:   Fri, 29 Sep 2023 13:02:17 +0530
+From:   Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+CC:     <ilia.lin@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
+        <rafael@kernel.org>, <viresh.kumar@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <quic_kathirav@quicinc.com>,
+        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>
+Subject: Re: [PATCH v1 04/10] clk: qcom: apss-ipq6018: ipq5332: add safe
+ source switch for a53pll
+Message-ID: <20230929073216.GB15001@varda-linux.qualcomm.com>
+References: <cover.1693996662.git.quic_varada@quicinc.com>
+ <5e3c29df2b42cceb8072b00546a78e1b99b2d374.1693996662.git.quic_varada@quicinc.com>
+ <b0508a69-130d-4b05-9dfc-399e482dc2ae@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230929-sc7280-qmpphy-ports-v1-1-7532c11973af@fairphone.com>
-X-B4-Tracking: v=1; b=H4sIAFx9FmUC/x3MTQ5AQAxA4atI15pUSfxcRSxkFF1gTEWIuLuJ5
- bd47wGToGLQJA8EOdV0WyOyNAE39+skqEM0MHFONddoruSKcF+8n2/0WzgMmfpxKDjjoiSIpQ8
- y6vVf2+59PwDWwzFlAAAA
-To:     cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
-X-Mailer: b4 0.12.3
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <b0508a69-130d-4b05-9dfc-399e482dc2ae@linaro.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: t8oLmcMdK30vg9q39g9Z7_94n6YfOXsV
+X-Proofpoint-ORIG-GUID: t8oLmcMdK30vg9q39g9Z7_94n6YfOXsV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_05,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 lowpriorityscore=0 phishscore=0 suspectscore=0
+ clxscore=1015 impostorscore=0 mlxlogscore=999 malwarescore=0 mlxscore=0
+ spamscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309290062
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the USB3+DP Combo QMP PHY port subnodes in the SC7280 SoC DTSI to
-avoid duplication in the devices DTs.
+On Thu, Sep 07, 2023 at 10:31:55AM +0200, Konrad Dybcio wrote:
+> On 7.09.2023 07:21, Varadarajan Narayanan wrote:
+> > Stromer Plus PLL found on IPQ53xx doesn't support dynamic
+> > frequency scaling. To achieve the same, we need to park the APPS
+> > PLL source to GPLL0, re configure the PLL and then switch the
+> > source to APSS_PLL_EARLY.
+> >
+> > To support this, register a clock notifier to get the PRE_RATE
+> > and POST_RATE notification. Change the APSS PLL source to GPLL0
+> > when PRE_RATE notification is received, then configure the PLL
+> > and then change back the source to APSS_PLL_EARLY.
+> >
+> > Signed-off-by: Kathiravan T <quic_kathirav@quicinc.com>
+> > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> > ---
+> >  drivers/clk/qcom/apss-ipq6018.c | 54 ++++++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 53 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/clk/qcom/apss-ipq6018.c b/drivers/clk/qcom/apss-ipq6018.c
+> > index 4e13a08..ffb6ab5 100644
+> > --- a/drivers/clk/qcom/apss-ipq6018.c
+> > +++ b/drivers/clk/qcom/apss-ipq6018.c
+> > @@ -9,8 +9,11 @@
+> >  #include <linux/clk-provider.h>
+> >  #include <linux/regmap.h>
+> >  #include <linux/module.h>
+> > +#include <linux/clk.h>
+> > +#include <linux/soc/qcom/smem.h>
+> >
+> >  #include <dt-bindings/clock/qcom,apss-ipq.h>
+> > +#include <dt-bindings/arm/qcom,ids.h>
+> >
+> >  #include "common.h"
+> >  #include "clk-regmap.h"
+> > @@ -84,15 +87,64 @@ static const struct qcom_cc_desc apss_ipq6018_desc = {
+> >  	.num_clks = ARRAY_SIZE(apss_ipq6018_clks),
+> >  };
+> >
+> > +static int cpu_clk_notifier_fn(struct notifier_block *nb, unsigned long action,
+> > +				void *data)
+> > +{
+> > +	u8 index;
+> > +	int err;
+> > +
+> > +	if (action == PRE_RATE_CHANGE)
+> > +		index = P_GPLL0;
+> > +	else if (action == POST_RATE_CHANGE)
+> > +		index = P_APSS_PLL_EARLY;
+> > +	else
+> > +		return 0;
+> > +
+> > +	err = clk_rcg2_mux_closest_ops.set_parent(&apcs_alias0_clk_src.clkr.hw,
+> > +						  index);
+> Adding a variable for clk_hw within the apcs_alias0 clock would
+> make this easier to digest, I think.
+>
+> And if we wanna be even less error-prone, you can reference the
+> ops of this clock in an indirect way.
 
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+Will change it as
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 66f1eb83cca7..4e34d00e246b 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -3399,6 +3399,32 @@ usb_1_qmpphy: phy@88e8000 {
- 
- 			#clock-cells = <1>;
- 			#phy-cells = <1>;
-+
-+			ports {
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+
-+				port@0 {
-+					reg = <0>;
-+
-+					usb_dp_qmpphy_out: endpoint {
-+					};
-+				};
-+
-+				port@1 {
-+					reg = <1>;
-+
-+					usb_dp_qmpphy_usb_ss_in: endpoint {
-+					};
-+				};
-+
-+				port@2 {
-+					reg = <2>;
-+
-+					usb_dp_qmpphy_dp_in: endpoint {
-+					};
-+				};
-+			};
- 		};
- 
- 		usb_2: usb@8cf8800 {
+	struct clk_hw *hw;
 
----
-base-commit: df964ce9ef9fea10cf131bf6bad8658fde7956f6
-change-id: 20230929-sc7280-qmpphy-ports-20afd4212470
+	hw = &apcs_alias0_clk_src.clkr.hw;
+	err = hw->init->ops->set_parent(hw, index);
 
-Best regards,
--- 
-Luca Weiss <luca.weiss@fairphone.com>
+> > +	return notifier_from_errno(err);
+> > +}
+> > +
+> > +static struct notifier_block cpu_clk_notifier = {
+> > +	.notifier_call = cpu_clk_notifier_fn,
+> > +};
+> > +
+> >  static int apss_ipq6018_probe(struct platform_device *pdev)
+> >  {
+> >  	struct regmap *regmap;
+> > +	u32 soc_id;
+> > +	int ret;
+> > +
+> > +	ret = qcom_smem_get_soc_id(&soc_id);
+> > +	if (ret)
+> > +		return ret;
+> >
+> >  	regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> >  	if (!regmap)
+> >  		return -ENODEV;
+> >
+> > -	return qcom_cc_really_probe(pdev, &apss_ipq6018_desc, regmap);
+> > +	ret = qcom_cc_really_probe(pdev, &apss_ipq6018_desc, regmap);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	switch (soc_id) {
+> > +	/*
+> > +	 * Only below variants of IPQ53xx support scaling
+> > +	 */
+> 1. /* Keep this in a 1-line comment */
 
+Ok
+
+> 2. why? explain the reasoning in the commit message
+
+Ok
+
+Thanks
+Varada
+
+> > +	case QCOM_ID_IPQ5332:
+> > +	case QCOM_ID_IPQ5322:
+> > +	case QCOM_ID_IPQ5300:
+> > +		ret = clk_notifier_register(apcs_alias0_clk_src.clkr.hw.clk,
+> > +						&cpu_clk_notifier);
+> > +		if (ret)
+> > +			return ret;
+> > +		break;
+> > +	default:
+> > +		break;
+> > +	}
+> > +
+> > +	return 0;
+> >  }
+> >
+> >  static struct platform_driver apss_ipq6018_driver = {
