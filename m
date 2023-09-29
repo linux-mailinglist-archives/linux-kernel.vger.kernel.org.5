@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D65207B3298
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF717B3296
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbjI2Mb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 08:31:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34914 "EHLO
+        id S233143AbjI2Mbx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Sep 2023 08:31:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233102AbjI2Mbx (ORCPT
+        with ESMTP id S232990AbjI2Mbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:31:53 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 155C91AB
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:31:50 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50437c618b4so19729878e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:31:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1695990708; x=1696595508; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/cakR+T0CtDHM2CcBQ8FRiuXJVwcIXPiPweVMCCUBlY=;
-        b=F9/5SgkuseLzsyl1LCDjmIPspdoX5PVSebAYbc5SFAl5a+laMkIjQX9KZBDXt3A+sl
-         ur7GeKYRWoqwnDPLyz9mr0M9AWK8ntvE9KFmMyqhf4enZo8vnJcsl5U1KTeEztXDMM5B
-         ah0j3ZgCyCTk9Lhh6MnBlFZpBmH+DtQzSCyknPEka4gZ36DmaXBwI6FcwPHuwZ48+QNY
-         jsTLSdCoiex4T9QyI5dRLGXwtwxlJ0ZgrYZVYp5buUaQcfJ0yw0NlyuhmqoVYTSVkc9A
-         +Ql4iMUEr7kOI2isBsN/w1BhJavv8usRTyHDJusqqUI2V7vB9/aUY+mc1w1B2yHzbUgx
-         P91Q==
+        Fri, 29 Sep 2023 08:31:51 -0400
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829871AA
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:31:48 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-59bc956b029so171029317b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:31:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695990708; x=1696595508;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/cakR+T0CtDHM2CcBQ8FRiuXJVwcIXPiPweVMCCUBlY=;
-        b=Tn5W2B58mbB09qjiaBkfQeLaxqhaqLgcrG1fFrKZHuZjp4BPAFPAPg8LHrQNZyzxNo
-         sLWWOnPkhk0EmLLWuWyQ9P8AbW6hvpDLtvLXvTgJhw70l3G7xy7LJs8AUrxsCHd+sO7e
-         SlB8s3pIe1+yoelidlsgLLwIUy7YLg/7J0dDe4ESTECbw+KEReqYd6NPUFpeKIZsnrmo
-         37Qqrr/wFa2qACtNdIDqnB4nQsPklpYzhyHqigUb7SROGWTFzg42jUNqIUiaLTovtTxb
-         7z40doQ3YXRNylIVwz35jZX/uJOjskPGgGeeXadbm3+jnXwIeuFaloeRiqTqjQ+0aGl0
-         xR4w==
-X-Gm-Message-State: AOJu0Yx9g1RxSE2eSz08uSXLo8W7diU62aQGUwsO3GVaMdQ1Bq0hHU4G
-        kcoeNu2N0fjpeiyP05zsEwu4YQAevWha9PovaCM=
-X-Google-Smtp-Source: AGHT+IGYozBPLaVVGV33pkxMveenWJHnuQ25Q9SshKY3WsROcIPox12GhZvT6tGSQdtknuzysErIUw==
-X-Received: by 2002:a05:600c:3785:b0:405:3803:558a with SMTP id o5-20020a05600c378500b004053803558amr3731380wmr.12.1695990687598;
-        Fri, 29 Sep 2023 05:31:27 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:325c:7f1d:7e44:c5b1])
-        by smtp.gmail.com with ESMTPSA id n16-20020a05600c3b9000b003fe29f6b61bsm1356244wms.46.2023.09.29.05.31.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 05:31:27 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [GIT PULL] gpio: fixes for v6.6-rc4
-Date:   Fri, 29 Sep 2023 14:31:24 +0200
-Message-Id: <20230929123124.19060-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20230601; t=1695990707; x=1696595507;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=08Bmlyyy2afgRFLgOmm2s4kS4kN9bybtesHt+WXogOI=;
+        b=RN65EHvIuPxv1+qO/0nn8CrrQjwT4WaMHLZdfr9xBgl0RydOfyLDKDgqmr00ZtwUAY
+         9IUm/gXmKyhMXm5XI+w8vaj4UzMqU7aq75gsq0OrWH8K0Tl7rh2jGYLP6N1eIOFnesf+
+         3b8CmYqe7CE55sjtQsSCn/Ltj9yB9XIjOd7Rxv2n1kXZcPwFGMUOSpv1yOUd5cNwYjos
+         jMVUSgo1d1xdYVkHvfRHp45XWsNUVxzMs3s8O9TvpY4ymEuKYtCBuQOq18ixWy/VRs84
+         QIQw8SfHT+2Bkkvjrcorwjs0Lf4B3hM601n8PYO0Yzh2zUQY3z6uzwMEmRIPZ3QYlkDG
+         qs3g==
+X-Gm-Message-State: AOJu0Yy1xfwXXyLqpS0ldrtc+WwVyililu1Q9YcTmwOSjLFaLsmpC2ce
+        vLEiE5qUgQqzMloqAz1Dk/tNf7PxSF71sw==
+X-Google-Smtp-Source: AGHT+IE2KhXsxMa084HzjOFLmObmDggUdZ3+8JLGY4jinRuPUsM5bb0Xqkk4BKJQdmqnWGm/t9xqVA==
+X-Received: by 2002:a81:5e0a:0:b0:59b:bed9:9a3a with SMTP id s10-20020a815e0a000000b0059bbed99a3amr3895877ywb.41.1695990707065;
+        Fri, 29 Sep 2023 05:31:47 -0700 (PDT)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id c188-20020a0df3c5000000b0059293c8d70csm5423860ywf.132.2023.09.29.05.31.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 05:31:46 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5a229ac185aso18241067b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:31:46 -0700 (PDT)
+X-Received: by 2002:a81:5246:0:b0:592:97c3:18d2 with SMTP id
+ g67-20020a815246000000b0059297c318d2mr4290848ywb.15.1695990706223; Fri, 29
+ Sep 2023 05:31:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230924094105.2361754-1-maz@kernel.org> <ZRXtYzIA5dK1iPVb@gmail.com>
+In-Reply-To: <ZRXtYzIA5dK1iPVb@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 29 Sep 2023 14:31:35 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdU7WuV6moiRWuChFzBr1n5pGxuEMeuoA1YWYw4v8QAN1w@mail.gmail.com>
+Message-ID: <CAMuHMdU7WuV6moiRWuChFzBr1n5pGxuEMeuoA1YWYw4v8QAN1w@mail.gmail.com>
+Subject: Re: [GIT PULL] irqchip fixes for 6.6, take #1
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Maulik Shah <quic_mkshah@quicinc.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Hi Ingo,
 
-Linus,
+On Thu, Sep 28, 2023 at 11:17 PM Ingo Molnar <mingo@kernel.org> wrote:
+> So the tags should be something like:
+>
+>   Fixes: 397ad94668c1 ("arm64: dts: qcom: sm8150: Add pdc interrupt controller node")
+>   Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>   Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>   Signed-off-by: Marc Zyngier <maz@kernel.org>
+>   Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>   Link: https://lore.kernel.org/r/20230905-topic-sm8x50-upstream-pdc-ver-v4-2-fc633c7df84b@linaro.org
+>
+> Ie. we generally sort the tags not chronologically (or whatever the original idea
+> was), but group them topically, sort the groups by importance, and only within
+> the group is there chronological order.
 
-Please pull the following set of driver fixes for the next RC.
+The tags should represent the order of the hand-off chain:
 
-Thanks,
-Bartosz
+https://elixir.bootlin.com/linux/v6.6-rc1/source/Documentation/process/submitting-patches.rst#L449
 
-The following changes since commit 6465e260f48790807eef06b583b38ca9789b6072:
+and chronological history:
 
-  Linux 6.6-rc3 (2023-09-24 14:31:13 -0700)
+https://elixir.bootlin.com/linux/v6.6-rc1/source/Documentation/process/submitting-patches.rst#L493
 
-are available in the Git repository at:
+Although current b4 seems to move tags around sometimes...
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio-fixes-for-v6.6-rc4
+Gr{oetje,eeting}s,
 
-for you to fetch changes up to 26d9e5640d2130ee16df7b1fb6a908f460ab004c:
+                        Geert
 
-  gpio: pmic-eic-sprd: Add can_sleep flag for PMIC EIC chip (2023-09-27 09:12:09 +0200)
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-----------------------------------------------------------------
-gpio fixes for v6.6-rc4
-
-- fix a potential spinlock deadlock in gpio-timberdale
-- mark the gpio-pmic-eic-sprd driver as one that can sleep
-
-----------------------------------------------------------------
-Chengfeng Ye (1):
-      gpio: timberdale: Fix potential deadlock on &tgpio->lock
-
-Wenhua Lin (1):
-      gpio: pmic-eic-sprd: Add can_sleep flag for PMIC EIC chip
-
- drivers/gpio/gpio-pmic-eic-sprd.c | 1 +
- drivers/gpio/gpio-timberdale.c    | 5 +++--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
