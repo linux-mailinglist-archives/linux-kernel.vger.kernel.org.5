@@ -2,111 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 752887B2C77
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 08:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B31B97B2C89
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 08:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbjI2GkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 02:40:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
+        id S232744AbjI2GnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 02:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbjI2Gj4 (ORCPT
+        with ESMTP id S232609AbjI2GnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 02:39:56 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DFF91A4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 23:39:54 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qm7A9-0001A2-2a; Fri, 29 Sep 2023 08:39:45 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qm7A7-009kiZ-1I; Fri, 29 Sep 2023 08:39:43 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qm7A6-005qWN-Nj; Fri, 29 Sep 2023 08:39:42 +0200
-Date:   Fri, 29 Sep 2023 08:39:42 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>,
-        Lino Sanfilippo <l.sanfilippo@kunbus.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de,
-        ilpo.jarvinen@linux.intel.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@foss.st.com, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, l.sanfilippo@kunbus.com,
-        lukas@wunner.de, p.rosenberger@kunbus.com
-Subject: Re: [PATCH 6/6] serial: imx: do not set RS485 enabled if it is not
- supported
-Message-ID: <20230929063942.qukemr4o7l5vdmud@pengutronix.de>
-References: <20230928221246.13689-1-LinoSanfilippo@gmx.de>
- <20230928221246.13689-7-LinoSanfilippo@gmx.de>
+        Fri, 29 Sep 2023 02:43:11 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580F61A4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 23:43:08 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32167a4adaaso13121736f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 23:43:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695969786; x=1696574586; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=c111TxV4LsaZkNFxtorudE/xiCMDuqLd7PyPIRPDzic=;
+        b=WLXk2l1am48w8W/AIcmZftEzunBVfCfZfJLEwgMC28hxsUU9DIHp+T72fpiw+VeVmL
+         lXGLqIYbFdqkibclddlgEOTTNwiBVEO7NsM7NX1tcYE1/vpdyncXl6Qiybr999izNb0q
+         kz91BLqA9iRecPMm4Sw3GMP6Ay1b6SFi1gTKdpuur0gl5wQ2Gb5e/Trj5o/BnlkhThuL
+         VkT3XtkomN7XCyKdx4tGFIt2YB3fCiiKx5wPb+4vkHPQGE22r68meozAgKF7k0Da4t8P
+         aV15uPrkl0nGJFe5z4vlWXZRm9Nu1iGTCbq2/dw7AKGOrEFNJxg3zcAQaoMmX7WGIVxY
+         cJIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695969786; x=1696574586;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c111TxV4LsaZkNFxtorudE/xiCMDuqLd7PyPIRPDzic=;
+        b=PGe2tej1aoIAosfWXuoHb7F9IUd/jV0TBBbbDrFV8hsXWVon3rQ9aj5JB5EXItMcNE
+         xabDYS+lhUhJeDrsZsv8+wykIMIicX+PzpWohu914EsZD8G6cbITUwunrRrQLZHmB3lg
+         9odpWIPOuUYD9t/G2YxldCQWyHjt8MFHfXKETeYqhjhelUl8+IdKZt5AZDPQ7Ie/NsED
+         3FUVLkmM1K7ftkewTZw0KH1ura5IKKPiVODKq0CMC3l4e1562cPXUm0zoneOiw0Wa5d5
+         Glxl6FpVQ85qyf96SwGRyEZ3DH6WZghr6f01S/lFgVztGycsva2G+4JZIqVY2WTJeH7S
+         l3Rg==
+X-Gm-Message-State: AOJu0Yz/6Sy2BFDE24ewaNCrzsL0qeVEwhopZ2OFzQxYj/ySsMkERVpZ
+        wBt+K09QgBEakOZzCZ8FINcE7A==
+X-Google-Smtp-Source: AGHT+IEDol4wmJM4q7PwQeoCPFVL1+bTQtJagyVB3S67aWJXbdjUevr+b3uO8jUY+r/CU2uIS4XipQ==
+X-Received: by 2002:a5d:6e53:0:b0:324:8353:940e with SMTP id j19-20020a5d6e53000000b003248353940emr2925201wrz.34.1695969786653;
+        Thu, 28 Sep 2023 23:43:06 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id g16-20020adfa490000000b003232380ffd5sm12868643wrb.106.2023.09.28.23.43.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Sep 2023 23:43:05 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 09:43:03 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     Christian Lamparter <chunkeey@gmail.com>,
+        Wu Yunchuan <yunchuan@nfschina.com>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH v2 wireless-next 2/9] carl9170: remove unnecessary
+ (void*) conversions
+Message-ID: <0b7623f7-561c-4f3b-91c1-aaf1c44f1158@kadam.mountain>
+References: <20230919044916.523308-1-yunchuan@nfschina.com>
+ <e544d992-cddd-4ade-81ef-2eed4f3681e8@gmail.com>
+ <87zg16iab3.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yu5mcexmqulaqvex"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230928221246.13689-7-LinoSanfilippo@gmx.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <87zg16iab3.fsf@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I don't know anything which would warn about this.  Generally, in the
+kernel we try to avoid casts but perhaps there was a static checker
+which likes casts?
 
---yu5mcexmqulaqvex
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+If removing these sorts of casts were an issue we would have known by
+now.
 
-On Fri, Sep 29, 2023 at 12:12:46AM +0200, Lino Sanfilippo wrote:
-> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
->=20
-> If the imx driver cannot support RS485 it sets the UARTS rs485_supported
-> structure to NULL. But it still calls uart_get_rs485_mode() which may set
-> the RS485_ENABLED flag.
-> The flag however is evaluated by the serial core in uart_configure_port()
+regards,
+dan carpenter
 
-I wonder if this is the code location where this problem should be
-addressed. Or alternatively don't let uart_get_rs485_mode() set
-RS485_ENABLED (and other flags) if rs485_supported doesn't suggest that
-this works?
-
-> [...]
->=20
-> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
-
-I don't know how picky Greg is here, but formally you missed to add an
-S-o-b line for the sender of this patch (i.e. you with your gmx
-address).
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---yu5mcexmqulaqvex
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmUWcS0ACgkQj4D7WH0S
-/k47wAgAniMRiA+dl7M7pf4WXvom8QfwhOuzi/ZJVgQr7Sj0ZAnIWPLIKiiaR0zP
-pNXr8qWggxnpYHw16JMLUsxCsPc5ZIudcgKzKBGQCbwG4TZreZJI7UGiV0UXoHku
-Owvhb7x76chV/Zp+pCusPHMZZiN1VlS90to/oc3FnAg4PH65vuyMvgxPAX3SSUhB
-qzHII257rxUIfET19HOFHKFyNgA4QNgme1XTyBxKbOB8tb+qLiMAFOpe+5XG/5Qq
-LxkfDfi1dV9UHpTY5JvlmwgODB04srgN2v5zsiZ+ghujB8T0RpR6aaTaMptqBCOy
-+Gusp1Hp79etQUN4XmNNMWn9ozjWqw==
-=Gvvs
------END PGP SIGNATURE-----
-
---yu5mcexmqulaqvex--
