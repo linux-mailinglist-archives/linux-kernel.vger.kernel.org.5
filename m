@@ -2,94 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF4A7B3CE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 01:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730787B3CEB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 01:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232303AbjI2XGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 19:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
+        id S230165AbjI2XOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 19:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjI2XGT (ORCPT
+        with ESMTP id S229508AbjI2XOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 19:06:19 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04A2CE5;
-        Fri, 29 Sep 2023 16:06:17 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5855333fbadso3430328a12.1;
-        Fri, 29 Sep 2023 16:06:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696028776; x=1696633576; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JS8hWFdIolHgfI50iM7ndmrsQjVMPHZC5aONoPIyZAA=;
-        b=CfBKlmgl+KVpyJDrsWOB29yivHL+JR8WDNZoXy8VesIGsC3yzGCeQfEEJQNyI2wSt1
-         3v1TocjqXfHi9HxlO+zEQwJeAqORp/c5ustAbh6HVvdSlIDBk291jmvVnRK5JCXg8yjs
-         nb0EDkhJZZ0Th8UrcPv6gy3YKdsU+/qFTUqta+OJ89DC5yZ5SbFMNAhtt5UiosbY9Q9t
-         Pb9wOZAC1L6dyRPO6m6wDZKvGFjOMzvv5FiyVBlQ/YhQZk8ZSKyxWeGFJuVW/UjbKFvZ
-         ok/18fGRxnWxpovVpluH9Fb4gf0AAxCWkDfmxvMtQnndyN6OTPAJsae7RJp9vPNWhgRb
-         5/Og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696028776; x=1696633576;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JS8hWFdIolHgfI50iM7ndmrsQjVMPHZC5aONoPIyZAA=;
-        b=JdnGEY52qwSCFB5kGpo5Je8WeVo+mmhV5iCnntLF4Udm34KB5tSeaGBAZYWP2OURrM
-         V0HTE4Gb2EeRYIklJ2lrSvlydrUQ3v9hAXHcqgXPnfFkdnkW3BZqW/NsGnXmDQ2OZ3qd
-         Wz+a3xwvCcDgZZ5/2litmvrZjQfDVy3xdSlBW0/I5eK7GFA77fFDn9ToW7qUwhosGOZR
-         lOcpuwT43VC+bU9sRHNcQvD185YlfD+M+42l8nwBaL4iol8w1Ql4269T+BKC2orqkZ6z
-         GH3Xt09KCy3X8nEvBwGIjArlUzkKPxa9kY5gNlMfJv8foG8NtIjahg4zMLlK4O5eTJaE
-         1DeA==
-X-Gm-Message-State: AOJu0Yytgz5Keu+GcXe0pRCHTPX4flqx5L0bbCuVIFTY8gwL7OrKWiXE
-        ShEgNfE7SCdjMd1mMg/bpGQ=
-X-Google-Smtp-Source: AGHT+IFfV8wZh0MisNVzSqo3/Gyg2t0pUDH20dbx9PffJOXhqMoMkk633+SsFUvK1DyB9oSWjLjjtw==
-X-Received: by 2002:a17:90a:f697:b0:277:298:deae with SMTP id cl23-20020a17090af69700b002770298deaemr5133437pjb.11.1696028776410;
-        Fri, 29 Sep 2023 16:06:16 -0700 (PDT)
-Received: from pek-lxu-l1.wrs.com ([36.129.58.185])
-        by smtp.gmail.com with ESMTPSA id t9-20020a17090a5d8900b002630c9d78aasm1967024pji.5.2023.09.29.16.06.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 16:06:16 -0700 (PDT)
-From:   Edward AD <twuufnxlz@gmail.com>
-To:     alexghiti@rivosinc.com
-Cc:     alex@ghiti.fr, aou@eecs.berkeley.edu, conor@kernel.org,
-        gregkh@linuxfoundation.org, guoren@kernel.org,
-        jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-serial@vger.kernel.org,
-        liushixin2@huawei.com, palmer@dabbelt.com,
-        paul.walmsley@sifive.com,
-        syzbot+8d2757d62d403b2d9275@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com, twuufnxlz@gmail.com
-Subject: [PATCH] Test for riscv fixes
-Date:   Sat, 30 Sep 2023 07:05:49 +0800
-Message-ID: <20230929230549.45206-2-twuufnxlz@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <CAHVXubhG2c=ShFHF4hMMFm8=BYDTyDUduOizujbUWQBW+55wTw@mail.gmail.com>
-References: <CAHVXubhG2c=ShFHF4hMMFm8=BYDTyDUduOizujbUWQBW+55wTw@mail.gmail.com>
+        Fri, 29 Sep 2023 19:14:15 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A8ADE6;
+        Fri, 29 Sep 2023 16:14:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696029253; x=1727565253;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GuguJlpMuR4ytblE3REIb1sY7chzBowLTZJy4y360dY=;
+  b=AGn2HpF7q/xgtWeA3WV5GR9NL5DU/og6tXJBCMTRcMChmbEptCzvp9ZA
+   PEDgXaRykAjK72Iiov6+MVHmOhTwFutL9C1N+shzZTGiTsPrSvDVIrYYe
+   Q3olDUGQ3+vh17gfdn2wCmrjSQBh0ug7ttjKGOc3Cl2XAGw5eL4wgQ1+i
+   Hj/O9AvWAbG+yzKNlnQXAPH6M0leeubc6QV9amdt1JK/4fxfLpwa3fb6v
+   ngT1QLW97SkqWwfRuyQOuKSonDtHYkSnUhB0D04v4nUTvMOVafQ8xNUWf
+   fTolUofxWJpeUho27REgTtddkA+D4crUCaEEjqlpn8BWaNEI+A62GZDIw
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="379682270"
+X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
+   d="scan'208";a="379682270"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 16:14:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="785232918"
+X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
+   d="scan'208";a="785232918"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 29 Sep 2023 16:14:06 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qmMgO-0003P5-0S;
+        Fri, 29 Sep 2023 23:14:04 +0000
+Date:   Sat, 30 Sep 2023 07:13:06 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Michael Kelley <mikelley@microsoft.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, luto@kernel.org,
+        peterz@infradead.org, thomas.lendacky@amd.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com,
+        kirill.shutemov@linux.intel.com, seanjc@google.com,
+        rick.p.edgecombe@intel.com, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, x86@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, mikelley@microsoft.com
+Subject: Re: [PATCH 3/5] x86/mm: Mark CoCo VM pages not present while
+ changing encrypted state
+Message-ID: <202309300620.S7uwOfcg-lkp@intel.com>
+References: <1696011549-28036-4-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1696011549-28036-4-git-send-email-mikelley@microsoft.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alexandre,
+Hi Michael,
 
-On Fri, 29 Sep 2023 10:25:59 +0200 Alexandre Ghiti <alexghiti@rivosinc.com> wrote:
-> I'm still not convinced this will fix the kasan out-of-bounds
-> accesses, the page can be valid but the read can happen at an offset
-> not initialized and trigger such errors right? I still think there is
-> something weird about the stack frame, as to me this should not happen
-> (but admittedly I don't know much about that).
-The added check can confirm that the physical page is invalid (whether it is a 
-vmalloc allocated page or a slab allocated page), and exit the for loop when it is invalid.
+kernel test robot noticed the following build errors:
 
-Perhaps we can trust the test results of syzbot.
+[auto build test ERROR on tip/master]
+[also build test ERROR on tip/auto-latest linus/master v6.6-rc3 next-20230929]
+[cannot apply to tip/x86/mm tip/x86/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks,
-edward
+url:    https://github.com/intel-lab-lkp/linux/commits/Michael-Kelley/x86-coco-Use-slow_virt_to_phys-in-page-transition-hypervisor-callbacks/20230930-041800
+base:   tip/master
+patch link:    https://lore.kernel.org/r/1696011549-28036-4-git-send-email-mikelley%40microsoft.com
+patch subject: [PATCH 3/5] x86/mm: Mark CoCo VM pages not present while changing encrypted state
+config: i386-tinyconfig (https://download.01.org/0day-ci/archive/20230930/202309300620.S7uwOfcg-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230930/202309300620.S7uwOfcg-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309300620.S7uwOfcg-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   arch/x86/mm/pat/set_memory.c: In function '__set_memory_enc_pgtable':
+>> arch/x86/mm/pat/set_memory.c:2200:16: error: implicit declaration of function 'set_memory_p'; did you mean 'set_memory_np'? [-Werror=implicit-function-declaration]
+    2200 |         return set_memory_p(&addr, numpages);
+         |                ^~~~~~~~~~~~
+         |                set_memory_np
+   cc1: some warnings being treated as errors
+
+
+vim +2200 arch/x86/mm/pat/set_memory.c
+
+  2132	
+  2133	/*
+  2134	 * __set_memory_enc_pgtable() is used for the hypervisors that get
+  2135	 * informed about "encryption" status via page tables.
+  2136	 */
+  2137	static int __set_memory_enc_pgtable(unsigned long addr, int numpages, bool enc)
+  2138	{
+  2139		pgprot_t empty = __pgprot(0);
+  2140		struct cpa_data cpa;
+  2141		int ret;
+  2142	
+  2143		/* Should not be working on unaligned addresses */
+  2144		if (WARN_ONCE(addr & ~PAGE_MASK, "misaligned address: %#lx\n", addr))
+  2145			addr &= PAGE_MASK;
+  2146	
+  2147		memset(&cpa, 0, sizeof(cpa));
+  2148		cpa.vaddr = &addr;
+  2149		cpa.numpages = numpages;
+  2150	
+  2151		/*
+  2152		 * The caller must ensure that the memory being transitioned between
+  2153		 * encrypted and decrypted is not being accessed.  But if
+  2154		 * load_unaligned_zeropad() touches the "next" page, it may generate a
+  2155		 * read access the caller has no control over. To ensure such accesses
+  2156		 * cause a normal page fault for the load_unaligned_zeropad() handler,
+  2157		 * mark the pages not present until the transition is complete.  We
+  2158		 * don't want a #VE or #VC fault due to a mismatch in the memory
+  2159		 * encryption status, since paravisor configurations can't cleanly do
+  2160		 * the load_unaligned_zeropad() handling in the paravisor.
+  2161		 *
+  2162		 * There's no requirement to do so, but for efficiency we can clear
+  2163		 * _PAGE_PRESENT and set/clr encryption attr as a single operation.
+  2164		 */
+  2165		cpa.mask_set = enc ? pgprot_encrypted(empty) : pgprot_decrypted(empty);
+  2166		cpa.mask_clr = enc ? pgprot_decrypted(__pgprot(_PAGE_PRESENT)) :
+  2167					pgprot_encrypted(__pgprot(_PAGE_PRESENT));
+  2168		cpa.pgd = init_mm.pgd;
+  2169	
+  2170		/* Must avoid aliasing mappings in the highmem code */
+  2171		kmap_flush_unused();
+  2172		vm_unmap_aliases();
+  2173	
+  2174		/* Flush the caches as needed before changing the encryption attr. */
+  2175		if (x86_platform.guest.enc_cache_flush_required())
+  2176			cpa_flush(&cpa, 1);
+  2177	
+  2178		ret = __change_page_attr_set_clr(&cpa, 1);
+  2179		if (ret)
+  2180			return ret;
+  2181	
+  2182		/*
+  2183		 * After clearing _PAGE_PRESENT and changing the encryption attribute,
+  2184		 * we need to flush TLBs to ensure no further accesses to the memory can
+  2185		 * be made with the old encryption attribute (but no need to flush caches
+  2186		 * again).  We could just use cpa_flush_all(), but in case TLB flushing
+  2187		 * gets optimized in the cpa_flush() path use the same logic as above.
+  2188		 */
+  2189		cpa_flush(&cpa, 0);
+  2190	
+  2191		/* Notify hypervisor that we have successfully set/clr encryption attr. */
+  2192		if (!x86_platform.guest.enc_status_change_finish(addr, numpages, enc))
+  2193			return -EIO;
+  2194	
+  2195		/*
+  2196		 * Now that the hypervisor is sync'ed with the page table changes
+  2197		 * made here, add back _PAGE_PRESENT. set_memory_p() does not flush
+  2198		 * the TLB.
+  2199		 */
+> 2200		return set_memory_p(&addr, numpages);
+  2201	}
+  2202	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
