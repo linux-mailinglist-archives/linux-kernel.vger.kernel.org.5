@@ -2,189 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCC27B369C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56B717B369A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233609AbjI2PXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34680 "EHLO
+        id S233600AbjI2PXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233599AbjI2PWa (ORCPT
+        with ESMTP id S233536AbjI2PXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:22:30 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A32EC10D2;
-        Fri, 29 Sep 2023 08:22:26 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TEPGn0015894;
-        Fri, 29 Sep 2023 15:22:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=LxOVkqV6g+jQpN5bPhd9zKnvwGlEWf0RQgwNMVx6MWg=;
- b=YVd6EteGFCTn7QQVQ/yMizKd2/QWhElH1kjIvu4IFSD0QwNMAv4uUnyQUznDcor8tj/4
- D2yzqO69RH9dIHW0YsxhxIfsnrbqKoV/j224/LS+1uENUO78GqbpgetQj3naKo51Ce1p
- HHyBrfW+0kDlG3ZjcAsiGdE3xPPCeCq3ZJ8IjFx9+pOEiZOrNoXMFJSZITa5w9j2jSig
- S94D0z6dGsbeN0yO5tIm8s516FrxC8fcK4iYMGYfwz9Pvk2EIHH+zZTPXEEJ1Xubo+5Y
- OyMw51JAY8GJA1lwDDrwxbbwKE7I+VTZ1MreAIC3y5Bfn0/OheSo1lAQLGpUxruZvNpo tw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3te0avr5nq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 15:22:21 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38TFMK1S025965
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 15:22:20 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 29 Sep
- 2023 08:22:19 -0700
-Message-ID: <c30c9c68-bfe1-0cc5-c511-218f7d1da92d@quicinc.com>
-Date:   Fri, 29 Sep 2023 09:22:19 -0600
+        Fri, 29 Sep 2023 11:23:01 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F165F9;
+        Fri, 29 Sep 2023 08:22:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696000978; x=1727536978;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=NlacZmizqV6T4MirzFGoCsXo3cO1zhZooZmKEx5tnxM=;
+  b=aYuTt/YDQ5XghZ2srE7aZOE3r6ruGpRDRhhvELiHKdfePBlWFxgnlf2D
+   6Bm4QQB1CEfCp/d0ewIlj60jaOVcFfnVXZaDvc2FyjDKq/Z5I4WuDjoh8
+   7aD1caoph9BiR12AglMf/ElM34T9gFU8a3dFFeB+rnyHukwX/9+JkiYsx
+   V79dx4G6hgVFHGX5tTaIVoZvMHSOmx5wk5LG7s6eneribjtJdWOyHUjDv
+   jE9LlJDOOtnxI0/fuDqvVmTNYeiiG3PHZatSBNNQIS/rS5u74Pqbn5L0F
+   +NFb+5NjKBNmEyyVgEUDTDmU6jRbfcuMDy2rgYtSsbJ3RTbyQyw0Ee56m
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="361699977"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="361699977"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:22:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="726626698"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="726626698"
+Received: from smorozov-mobl1.ger.corp.intel.com ([10.252.52.167])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:22:28 -0700
+Date:   Fri, 29 Sep 2023 18:22:26 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Babu Moger <babu.moger@amd.com>
+cc:     corbet@lwn.net, Reinette Chatre <reinette.chatre@intel.com>,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        fenghua.yu@intel.com, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, paulmck@kernel.org, akpm@linux-foundation.org,
+        quic_neeraju@quicinc.com, rdunlap@infradead.org,
+        damien.lemoal@opensource.wdc.com, songmuchun@bytedance.com,
+        peterz@infradead.org, jpoimboe@kernel.org, pbonzini@redhat.com,
+        chang.seok.bae@intel.com, pawan.kumar.gupta@linux.intel.com,
+        jmattson@google.com, daniel.sneddon@linux.intel.com,
+        sandipan.das@amd.com, tony.luck@intel.com, james.morse@arm.com,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        bagasdotme@gmail.com, eranian@google.com,
+        christophe.leroy@csgroup.eu, jarkko@kernel.org,
+        adrian.hunter@intel.com, quic_jiles@quicinc.com,
+        peternewman@google.com
+Subject: Re: [PATCH v10 05/10] x86/resctrl: Unwind the errors inside
+ rdt_enable_ctx()
+In-Reply-To: <20230915224227.1336967-6-babu.moger@amd.com>
+Message-ID: <1f11b7d3-cb83-4e2b-a5c-11de87bb43b5@linux.intel.com>
+References: <20230915224227.1336967-1-babu.moger@amd.com> <20230915224227.1336967-6-babu.moger@amd.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH v2 1/2] bus: mhi: host: Add spinlock to protect WP access
- when queueing TREs
-Content-Language: en-US
-To:     Qiang Yu <quic_qianyu@quicinc.com>, <mani@kernel.org>
-CC:     <mhi@lists.linux.dev>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_cang@quicinc.com>,
-        <quic_mrana@quicinc.com>
-References: <1694594861-12691-1-git-send-email-quic_qianyu@quicinc.com>
- <1694594861-12691-2-git-send-email-quic_qianyu@quicinc.com>
- <af4fc816-d75b-997d-6d37-a774f5eb96ae@quicinc.com>
- <dfeb6071-8ae4-38ba-5273-59478ea8e178@quicinc.com>
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <dfeb6071-8ae4-38ba-5273-59478ea8e178@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: XcW2_6Z0OPJGF239HwCIeJQsshMGH5oM
-X-Proofpoint-ORIG-GUID: XcW2_6Z0OPJGF239HwCIeJQsshMGH5oM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-29_13,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 impostorscore=0 bulkscore=0 mlxscore=0 mlxlogscore=999
- suspectscore=0 adultscore=0 clxscore=1015 malwarescore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309290132
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1669564657-1696000957=:1989"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/2023 9:10 PM, Qiang Yu wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-1669564657-1696000957=:1989
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+
+On Fri, 15 Sep 2023, Babu Moger wrote:
+
+> rdt_enable_ctx() enables the features provided during resctrl mount.
 > 
-> On 9/22/2023 10:44 PM, Jeffrey Hugo wrote:
->> On 9/13/2023 2:47 AM, Qiang Yu wrote:
->>> From: Bhaumik Bhatt <bbhatt@codeaurora.org>
->>>
->>> Protect WP accesses such that multiple threads queueing buffers for
->>> incoming data do not race and access the same WP twice. Ensure read and
->>> write locks for the channel are not taken in succession by dropping the
->>> read lock from parse_xfer_event() such that a callback given to client
->>> can potentially queue buffers and acquire the write lock in that 
->>> process.
->>> Any queueing of buffers should be done without channel read lock 
->>> acquired
->>> as it can result in multiple locks and a soft lockup.
->>>
->>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->>> Signed-off-by: Qiang Yu <quic_qianyu@quicinc.com>
->>> ---
->>>   drivers/bus/mhi/host/main.c | 11 ++++++++++-
->>>   1 file changed, 10 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/bus/mhi/host/main.c b/drivers/bus/mhi/host/main.c
->>> index dcf627b..13c4b89 100644
->>> --- a/drivers/bus/mhi/host/main.c
->>> +++ b/drivers/bus/mhi/host/main.c
->>> @@ -642,6 +642,7 @@ static int parse_xfer_event(struct mhi_controller 
->>> *mhi_cntrl,
->>>               mhi_del_ring_element(mhi_cntrl, tre_ring);
->>>               local_rp = tre_ring->rp;
->>>   +            read_unlock_bh(&mhi_chan->lock);
->>
->> This doesn't work due to the write_lock_irqsave(&mhi_chan->lock, 
->> flags); on line 591.
-> Write_lock_irqsave(&mhi_chan->lock, flags) is used in case of ev_code >= 
-> MHI_EV_CC_OOB. We only read_lock/read_unlock the mhi_chan while ev_code 
-> < MHI_EV_CC_OOB.
-
-Sorry.  OOB != EOB
-
->>
->> I really don't like that we are unlocking the mhi_chan while still 
->> using it.  It opens up a window where the mhi_chan state can be 
->> updated between here and the client using the callback to queue a buf.
->>
->> Perhaps we need a new lock that just protects the wp, and needs to be 
->> only grabbed while mhi_chan->lock is held?
+> Additions to rdt_enable_ctx() are required to also modify error paths
+> of rdt_enable_ctx() callers to ensure correct unwinding if errors
+> are encountered after calling rdt_enable_ctx(). This is error prone.
 > 
-> Since we have employed mhi_chan lock to protect the channel and what we 
-> are concerned here is that client may queue buf to a disabled or stopped 
-> channel, can we check channel state after getting mhi_chan->lock like 
-> line 595.
+> Introduce rdt_disable_ctx() to refactor the error unwinding of
+> rdt_enable_ctx() to simplify future additions. This also simplifies
+> cleanup in rdt_kill_sb().
 > 
-> We can add the check after getting write lock in mhi_gen_tre() and after 
-> getting read lock again here.
-
-I'm not sure that is sufficient.  After you unlock to notify the client, 
-MHI is going to manipulate the packet count and runtime_pm without the 
-lock (648-652).  It seems like that adds additional races which won't be 
-covered by the additional check you propose.
-
+> Remove cdp_disable_all() as it is not used anymore after the refactor.
 > 
->>
->>>               /* notify client */
->>>               mhi_chan->xfer_cb(mhi_chan->mhi_dev, &result);
->>>   @@ -667,6 +668,7 @@ static int parse_xfer_event(struct 
->>> mhi_controller *mhi_cntrl,
->>>                       kfree(buf_info->cb_buf);
->>>                   }
->>>               }
->>> +            read_lock_bh(&mhi_chan->lock);
->>>           }
->>>           break;
->>>       } /* CC_EOT */
->>> @@ -1204,6 +1206,9 @@ int mhi_gen_tre(struct mhi_controller 
->>> *mhi_cntrl, struct mhi_chan *mhi_chan,
->>>       int eot, eob, chain, bei;
->>>       int ret;
->>>   +    /* Protect accesses for reading and incrementing WP */
->>> +    write_lock_bh(&mhi_chan->lock);
->>> +
->>>       buf_ring = &mhi_chan->buf_ring;
->>>       tre_ring = &mhi_chan->tre_ring;
->>>   @@ -1221,8 +1226,10 @@ int mhi_gen_tre(struct mhi_controller 
->>> *mhi_cntrl, struct mhi_chan *mhi_chan,
->>>         if (!info->pre_mapped) {
->>>           ret = mhi_cntrl->map_single(mhi_cntrl, buf_info);
->>> -        if (ret)
->>> +        if (ret) {
->>> +            write_unlock_bh(&mhi_chan->lock);
->>>               return ret;
->>> +        }
->>>       }
->>>         eob = !!(flags & MHI_EOB);
->>> @@ -1239,6 +1246,8 @@ int mhi_gen_tre(struct mhi_controller 
->>> *mhi_cntrl, struct mhi_chan *mhi_chan,
->>>       mhi_add_ring_element(mhi_cntrl, tre_ring);
->>>       mhi_add_ring_element(mhi_cntrl, buf_ring);
->>>   +    write_unlock_bh(&mhi_chan->lock);
->>> +
->>>       return 0;
->>>   }
->>
+> Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
+> Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
+> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
+> ---
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 53 ++++++++++++++++----------
+>  1 file changed, 32 insertions(+), 21 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> index 35945b4bf196..3ea874c80c22 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -2290,14 +2290,6 @@ int resctrl_arch_set_cdp_enabled(enum resctrl_res_level l, bool enable)
+>  	return 0;
+>  }
+>  
+> -static void cdp_disable_all(void)
+> -{
+> -	if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L3))
+> -		resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
+> -	if (resctrl_arch_get_cdp_enabled(RDT_RESOURCE_L2))
+> -		resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
+> -}
+> -
+>  /*
+>   * We don't allow rdtgroup directories to be created anywhere
+>   * except the root directory. Thus when looking for the rdtgroup
+> @@ -2377,19 +2369,42 @@ static int mkdir_mondata_all(struct kernfs_node *parent_kn,
+>  			     struct rdtgroup *prgrp,
+>  			     struct kernfs_node **mon_data_kn);
+>  
+> +static void rdt_disable_ctx(void)
+> +{
+> +	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
+> +	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
+> +	set_mba_sc(false);
+> +}
+> +
+>  static int rdt_enable_ctx(struct rdt_fs_context *ctx)
+>  {
+>  	int ret = 0;
+>  
+> -	if (ctx->enable_cdpl2)
+> +	if (ctx->enable_cdpl2) {
+>  		ret = resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, true);
+> +		if (ret)
+> +			goto out_done;
+> +	}
+>  
+> -	if (!ret && ctx->enable_cdpl3)
+> +	if (ctx->enable_cdpl3) {
+>  		ret = resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, true);
+> +		if (ret)
+> +			goto out_cdpl2;
+> +	}
+>  
+> -	if (!ret && ctx->enable_mba_mbps)
+> +	if (ctx->enable_mba_mbps) {
+>  		ret = set_mba_sc(true);
+> +		if (ret)
+> +			goto out_cdpl3;
+> +	}
+> +
+> +	return 0;
+>  
+> +out_cdpl3:
+> +	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L3, false);
+> +out_cdpl2:
+> +	resctrl_arch_set_cdp_enabled(RDT_RESOURCE_L2, false);
+> +out_done:
+>  	return ret;
+>  }
+>  
+> @@ -2497,13 +2512,13 @@ static int rdt_get_tree(struct fs_context *fc)
+>  	}
+>  
+>  	ret = rdt_enable_ctx(ctx);
+> -	if (ret < 0)
+> -		goto out_cdp;
+> +	if (ret)
+> +		goto out;
+>  
+>  	ret = schemata_list_create();
+>  	if (ret) {
+>  		schemata_list_destroy();
+> -		goto out_mba;
+> +		goto out_ctx;
+>  	}
+>  
+>  	closid_init();
+> @@ -2562,11 +2577,8 @@ static int rdt_get_tree(struct fs_context *fc)
+>  	kernfs_remove(kn_info);
+>  out_schemata_free:
+>  	schemata_list_destroy();
+> -out_mba:
+> -	if (ctx->enable_mba_mbps)
+> -		set_mba_sc(false);
+> -out_cdp:
+> -	cdp_disable_all();
+> +out_ctx:
+> +	rdt_disable_ctx();
+>  out:
+>  	rdt_last_cmd_clear();
+>  	mutex_unlock(&rdtgroup_mutex);
+> @@ -2798,12 +2810,11 @@ static void rdt_kill_sb(struct super_block *sb)
+>  	cpus_read_lock();
+>  	mutex_lock(&rdtgroup_mutex);
+>  
+> -	set_mba_sc(false);
+> +	rdt_disable_ctx();
+>  
+>  	/*Put everything back to default values. */
+>  	for_each_alloc_capable_rdt_resource(r)
+>  		reset_all_ctrls(r);
+> -	cdp_disable_all();
+>  	rmdir_all_sub();
+>  	rdt_pseudo_lock_release();
+>  	rdtgroup_default.mode = RDT_MODE_SHAREABLE;
+> 
 
+Reviewed-by: Ilpo J�rvinen <ilpo.jarvinen@linux.intel.com>
+
+-- 
+ i.
+
+--8323329-1669564657-1696000957=:1989--
