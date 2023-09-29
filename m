@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 938F77B3B87
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36BBF7B3B88
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233920AbjI2Upr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 16:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54780 "EHLO
+        id S233979AbjI2Upu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 16:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233820AbjI2Up2 (ORCPT
+        with ESMTP id S233829AbjI2Up2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 29 Sep 2023 16:45:28 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D696E1AA;
-        Fri, 29 Sep 2023 13:45:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C0A1AB;
+        Fri, 29 Sep 2023 13:45:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696020324; x=1727556324;
+  t=1696020325; x=1727556325;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=EDSMQlWhSsxLzFyBq31WH4okGSdNULRVmIbq83ubD4s=;
-  b=h07fzZqOZXqSnSBiO1e0ijIVjUcHmmL1l6t/cljlNsuV7r9M+cs5S8Nc
-   HkGhEkak3d6NWmx01831l9QT7ci5M7u9/Hh9NHhbxB6+PLLRnQt17y96O
-   a+nOGJYA3KWIHJbv3T2jWGv+jQfzUCyysOdvezSZapm4KTEBcreeJTDlt
-   ioWkiVZWLxVlRG840kTEmZaU0LEHyCIOECPkBnPGnGxUGfma+cnFWtqAz
-   7qDFA2QK9k/8jV8axHRcTZUmnXyV+kHjAwTkKWrqrJCkAWqtjrmelWKRt
-   5SDNqi+Z7Y2lZUo3izyrSalElofqGk6QIi9pkGlgN4UIpjjWRdBuJCC/a
+  bh=c8ofPZQg6aJ0kE1jG7f82ai6elYHrz7FK0oJN2MLVaE=;
+  b=LnuOF7vQThmb+sMqmYLKQrUB0uve3SgmgQiyGiPmeyT/IUun61I+FYIy
+   QRyLZ/Pt3dKhI8mf/c5TBfalCy6VSbRFlUSjEUwLnRT5r9qmnLqpJzVl7
+   D51ciHADPxphMCOJagFa+Y9A8JIN4fWXargxLXTmPJ6fWdtu3hKJYIGL9
+   iQokc0DeZpbYCGtNnqyVIPPZvAF3HRpmH3tdZKyOcjVgIEoH1TBxbD8NW
+   n0rHCxr5ONGpDSJfj/ui7EGASZj093lhc6m/k5zI+kThAoZA0Nmes8P6q
+   O4OPKVt8Wm3J+DeiG5n1rPAEFxTrC/5D9baKWBC835G+LCrApKx9DcEmH
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="468654479"
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="468654487"
 X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
-   d="scan'208";a="468654479"
+   d="scan'208";a="468654487"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 13:28:44 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="893539256"
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="893539262"
 X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
-   d="scan'208";a="893539256"
+   d="scan'208";a="893539262"
 Received: from jithujos.sc.intel.com ([172.25.103.66])
   by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 13:27:30 -0700
 From:   Jithu Joseph <jithu.joseph@intel.com>
@@ -48,9 +48,9 @@ Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
         platform-driver-x86@vger.kernel.org, patches@lists.linux.dev,
         ravi.v.shankar@intel.com, pengfei.xu@intel.com,
         ilpo.jarvinen@linux.intel.com
-Subject: [PATCH v3 7/9] platform/x86/intel/ifs: Add new CPU support
-Date:   Fri, 29 Sep 2023 13:24:34 -0700
-Message-Id: <20230929202436.2850388-8-jithu.joseph@intel.com>
+Subject: [PATCH v3 8/9] platform/x86/intel/ifs: Add new error code
+Date:   Fri, 29 Sep 2023 13:24:35 -0700
+Message-Id: <20230929202436.2850388-9-jithu.joseph@intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230929202436.2850388-1-jithu.joseph@intel.com>
 References: <20230922232606.1928026-1-jithu.joseph@intel.com>
@@ -68,31 +68,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Granite Rapids(GNR) and Sierra Forest(SRF) cpuids to x86 match table
-so that IFS driver can be loaded for those.
+Make driver aware of a newly added error code so that it can provide a
+more appropriate error message.
 
 Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
 Reviewed-by: Tony Luck <tony.luck@intel.com>
 Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 ---
- drivers/platform/x86/intel/ifs/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/platform/x86/intel/ifs/runtest.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/platform/x86/intel/ifs/core.c b/drivers/platform/x86/intel/ifs/core.c
-index 4ff2aa4b484b..0c8927916373 100644
---- a/drivers/platform/x86/intel/ifs/core.c
-+++ b/drivers/platform/x86/intel/ifs/core.c
-@@ -18,6 +18,9 @@
- static const struct x86_cpu_id ifs_cpu_ids[] __initconst = {
- 	X86_MATCH(SAPPHIRERAPIDS_X),
- 	X86_MATCH(EMERALDRAPIDS_X),
-+	X86_MATCH(GRANITERAPIDS_X),
-+	X86_MATCH(GRANITERAPIDS_D),
-+	X86_MATCH(ATOM_CRESTMONT_X),
- 	{}
+diff --git a/drivers/platform/x86/intel/ifs/runtest.c b/drivers/platform/x86/intel/ifs/runtest.c
+index 925c30c79011..4fe544d79946 100644
+--- a/drivers/platform/x86/intel/ifs/runtest.c
++++ b/drivers/platform/x86/intel/ifs/runtest.c
+@@ -40,6 +40,8 @@ enum ifs_status_err_code {
+ 	IFS_UNASSIGNED_ERROR_CODE		= 7,
+ 	IFS_EXCEED_NUMBER_OF_THREADS_CONCURRENT	= 8,
+ 	IFS_INTERRUPTED_DURING_EXECUTION	= 9,
++	IFS_UNASSIGNED_ERROR_CODE_0xA		= 0xA,
++	IFS_CORRUPTED_CHUNK		= 0xB,
  };
- MODULE_DEVICE_TABLE(x86cpu, ifs_cpu_ids);
+ 
+ static const char * const scan_test_status[] = {
+@@ -55,6 +57,8 @@ static const char * const scan_test_status[] = {
+ 	[IFS_EXCEED_NUMBER_OF_THREADS_CONCURRENT] =
+ 	"Exceeded number of Logical Processors (LP) allowed to run Scan-At-Field concurrently",
+ 	[IFS_INTERRUPTED_DURING_EXECUTION] = "Interrupt occurred prior to SCAN start",
++	[IFS_UNASSIGNED_ERROR_CODE_0xA] = "Unassigned error code 0xA",
++	[IFS_CORRUPTED_CHUNK] = "Scan operation aborted due to corrupted image. Try reloading",
+ };
+ 
+ static void message_not_tested(struct device *dev, int cpu, union ifs_status status)
+@@ -123,6 +127,8 @@ static bool can_restart(union ifs_status status)
+ 	case IFS_MISMATCH_ARGUMENTS_BETWEEN_THREADS:
+ 	case IFS_CORE_NOT_CAPABLE_CURRENTLY:
+ 	case IFS_UNASSIGNED_ERROR_CODE:
++	case IFS_UNASSIGNED_ERROR_CODE_0xA:
++	case IFS_CORRUPTED_CHUNK:
+ 		break;
+ 	}
+ 	return false;
 -- 
 2.25.1
 
