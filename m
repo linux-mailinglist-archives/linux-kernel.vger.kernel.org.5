@@ -2,87 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0454C7B2B13
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 07:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1201D7B2B16
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 07:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232178AbjI2FOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 01:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54602 "EHLO
+        id S232570AbjI2FPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 01:15:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjI2FOh (ORCPT
+        with ESMTP id S229541AbjI2FPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 01:14:37 -0400
-Received: from mailo.com (msg-4.mailo.com [213.182.54.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567EE195
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 22:14:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1695964460; bh=5TrBxRkf8axAboRq5eJan1h4q+4K8csemq/WK/VP9ZA=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:MIME-Version:
-         Content-Type;
-        b=do/G6q9r/tlorBmTdac9FvUvIjtHyBXdJqg2ExEi6A3UgQ2kL1IuO8CIXkKPo4iVv
-         0Ih7El6ezPjRTCOtJ5bZol3iNCoIpDlBsXxUhxqGuqjI79z3y1UB08uD8TRI0/fOOW
-         UCai0Mi8pDHABqMbn1jj8VaW/OBcdNEVXteTkniQ=
-Received: by b221-5.in.mailobj.net [192.168.90.25] with ESMTP
-        via ip-20.mailobj.net [213.182.54.20]
-        Fri, 29 Sep 2023 07:14:20 +0200 (CEST)
-X-EA-Auth: tVqjOmq4lkR80hgPN1Q6rvpztdtUdTqm+kt5z3NoCdz7P1X7GYld++tOOVSzXEg4yFVPF8nuORj/+y7BiDt+O1Bd4GglWdfR
-Date:   Fri, 29 Sep 2023 10:44:16 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        gfs2@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Dan Carpenter <error27@gmail.com>,
-        Deepak R Varma <drv@mailo.com>
-Subject: [PATCH] gfs2: No need to be "extern" at the time of definition
-Message-ID: <ZRZdKAmDjrpCQLwE@runicha.com>
+        Fri, 29 Sep 2023 01:15:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80AE7195
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 22:15:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695964522; x=1727500522;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=M3sMrwkmX8QJJMLmVCYAN5+ZbVsGUOzDs56HnDkoTKE=;
+  b=IsPVrqLzTM5ESAlGGVvbK/QJqze5zpMrEUocskumCIxF9gWrDeHrSJ2r
+   KKCQSVErpG2lTKQY+/6XqoJdChAgTLbtWmLH8wpmWIg/Cz8NI12C6wLVt
+   gREl+RkhcDrhOU+rmmlp1ZufiCDp84liI2vw7tgA063h1ZXXlOxW3NCP9
+   TQbG6ZUqJ0RgFkevTG4Ltkty8gzGsa1ud8d9QzkkzgXiMcYqX614hKT7u
+   ZqkaOWABaY0Lo72DzJlNa3+eBeto+sWIq+0Z9IroJm2Ofim5oR3Jar8OX
+   g4xAZPGZ2tnK2pRtKRNYL7cjBWKY2kijLSFZJfS3U2dr7EsjRIe7f1DBQ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="840962"
+X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
+   d="scan'208";a="840962"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Sep 2023 22:15:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="726491817"
+X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
+   d="scan'208";a="726491817"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga006.jf.intel.com with ESMTP; 28 Sep 2023 22:15:19 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qm5qP-0002VI-1J;
+        Fri, 29 Sep 2023 05:15:17 +0000
+Date:   Fri, 29 Sep 2023 13:14:38 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>, Peng Fan <peng.fan@nxp.com>
+Subject: powerpc-linux-ld: warning: orphan section `.init.plt' from
+ `drivers/dma/fsl-edma-common.o' being placed in section `.init.plt'
+Message-ID: <202309291312.df4pP6Zb-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No need to for the extern keyword at the time of function definition.
-Remove it to silence the following Smatch warnings:
-fs/gfs2/super.c:1579:13: warning: function 'free_local_statfs_inodes' with external linkage has definition
-fs/gfs2/super.c:1594:21: warning: function 'find_local_statfs_inode' with external linkage has definition
+Hi Frank,
 
-Signed-off-by: Deepak R Varma <drv@mailo.com>
----
- fs/gfs2/super.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+FYI, the error/warning still remains.
 
-diff --git a/fs/gfs2/super.c b/fs/gfs2/super.c
-index 02d93da21b2b..fad36ed89853 100644
---- a/fs/gfs2/super.c
-+++ b/fs/gfs2/super.c
-@@ -1576,7 +1576,7 @@ static void gfs2_free_inode(struct inode *inode)
- 	kmem_cache_free(gfs2_inode_cachep, GFS2_I(inode));
- }
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9ed22ae6be817d7a3f5c15ca22cbc9d3963b481d
+commit: 66aac8ea0a6c79729f99087b1c5a596938e5d838 dmaengine: fsl-edma: clean up EXPORT_SYMBOL_GPL in fsl-edma-common.c
+date:   5 weeks ago
+config: powerpc-randconfig-001-20230929 (https://download.01.org/0day-ci/archive/20230929/202309291312.df4pP6Zb-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230929/202309291312.df4pP6Zb-lkp@intel.com/reproduce)
 
--extern void free_local_statfs_inodes(struct gfs2_sbd *sdp)
-+void free_local_statfs_inodes(struct gfs2_sbd *sdp)
- {
- 	struct local_statfs_inode *lsi, *safe;
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309291312.df4pP6Zb-lkp@intel.com/
 
-@@ -1591,8 +1591,7 @@ extern void free_local_statfs_inodes(struct gfs2_sbd *sdp)
- 	}
- }
+All warnings (new ones prefixed by >>):
 
--extern struct inode *find_local_statfs_inode(struct gfs2_sbd *sdp,
--					     unsigned int index)
-+struct inode *find_local_statfs_inode(struct gfs2_sbd *sdp, unsigned int index)
- {
- 	struct local_statfs_inode *lsi;
+>> powerpc-linux-ld: warning: orphan section `.init.plt' from `drivers/dma/fsl-edma-common.o' being placed in section `.init.plt'
+>> powerpc-linux-ld: warning: orphan section `.init.plt' from `drivers/dma/fsl-edma-common.o' being placed in section `.init.plt'
+>> powerpc-linux-ld: warning: orphan section `.init.plt' from `drivers/dma/fsl-edma-common.o' being placed in section `.init.plt'
 
---
-2.39.2
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for HOTPLUG_CPU
+   Depends on [n]: SMP [=y] && (PPC_PSERIES [=n] || PPC_PMAC [=n] || PPC_POWERNV [=n] || FSL_SOC_BOOKE [=n])
+   Selected by [y]:
+   - PM_SLEEP_SMP [=y] && SMP [=y] && (ARCH_SUSPEND_POSSIBLE [=n] || ARCH_HIBERNATION_POSSIBLE [=y]) && PM_SLEEP [=y]
 
-
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
