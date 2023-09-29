@@ -2,116 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 114E17B29CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 02:41:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2A317B29E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 02:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232603AbjI2Ajv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 20:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33362 "EHLO
+        id S232481AbjI2Am2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 20:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232481AbjI2Ajp (ORCPT
+        with ESMTP id S232303AbjI2AmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 20:39:45 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10ED319F;
-        Thu, 28 Sep 2023 17:39:42 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38SNun1a019827;
-        Fri, 29 Sep 2023 00:39:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=I9dx6LUsLUJSb1nV43JIBs0f9oI+YdzUawuhRAHsOUw=;
- b=CfhZvQmJJEKv+b7jKpbxzBc8Vs67IaEIk0LUW9aXgcGrKqcI7xCkIDkSntbA9R63KXir
- eq6iK6bHYSS2rWktUd4fo5fVl9zFvQ2mcDrxzll01tm0ECbiVjuHGNTHaMlmPTd0c7ER
- EevtCivlwJVUT5ZK/ZJiO7bAPif+FxN5tqKExkoWwOI9aOqjcASsxjEBSTVdBdMnEngN
- 2DrddXTk6utG7/o/sn3wEbQPdzNlrcW6WKuoyB6xILRmY6g2nVlT7U0/L34PWjGmzIAx
- y3kwusMcE7SvBmXEVXuk2nybRxMiNGeFUHnwVE3tg8vSeLRqENyfLm4SudgichDOfO7P Gg== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tdhru06dt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 00:39:34 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38T0dX1I025949
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 00:39:33 GMT
-Received: from hu-amelende-lv.qualcomm.com (10.49.16.6) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Thu, 28 Sep 2023 17:39:30 -0700
-From:   Anjelique Melendez <quic_amelende@quicinc.com>
-To:     <pavel@ucw.cz>, <lee@kernel.org>, <thierry.reding@gmail.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>
-CC:     <luca.weiss@fairphone.com>, <konrad.dybcio@linaro.org>,
-        <u.kleine-koenig@pengutronix.de>, <quic_subbaram@quicinc.com>,
-        <quic_gurus@quicinc.com>, <linux-leds@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-pwm@vger.kernel.org>,
-        <kernel@quicinc.com>,
-        Anjelique Melendez <quic_amelende@quicinc.com>
-Subject: [PATCH v5 7/7] leds: rgb: Update PM8350C lpg_data to support two-nvmem PPG Scheme
-Date:   Thu, 28 Sep 2023 17:39:00 -0700
-Message-ID: <20230929003901.15086-8-quic_amelende@quicinc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230929003901.15086-1-quic_amelende@quicinc.com>
-References: <20230929003901.15086-1-quic_amelende@quicinc.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: isK-hsiEQbyUlnLMdJ2HS70y2OGzor5j
-X-Proofpoint-GUID: isK-hsiEQbyUlnLMdJ2HS70y2OGzor5j
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-28_23,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0
- mlxlogscore=999 impostorscore=0 spamscore=0 bulkscore=0 adultscore=0
- clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309290002
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 28 Sep 2023 20:42:25 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ED4D194
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 17:42:23 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c61aafab45so102500185ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 17:42:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695948143; x=1696552943; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=LHnl2CsLxrfQz4bzbwJAj223y7XyxSn5JpaUfYsfSDE=;
+        b=rC1/WGQGD7SZLSycCz9NRY4e71edtsK2IX3bbn6OuMS8KtS3xBBxX+YbzEBoQx+WWI
+         yR1GtfF2TV8Lam5xWApyMqRy4O2Nec4K0Fyj+wWl5C3UcAaK7UtYRVvQBgInXGaHIon3
+         LMcwIF99+jHB/C1fChwXUfLb6EGQ3KC15/SI1hSs1X+T+tUYLVzY4DIk1JHnghsNlSts
+         qEL+AMNKgEe0iXvO9BKE3NR/in/dEvc8r1Zeof3kNcgyTLV1Ivi6w+RrCiIGOdZ9uKhu
+         4TSH/YkeswaD1yWzlmgZGIghpoW58KEC2rJKv6ye9+OcLcvCVNuEHFjTan+/Y8jNUHHs
+         PTfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695948143; x=1696552943;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LHnl2CsLxrfQz4bzbwJAj223y7XyxSn5JpaUfYsfSDE=;
+        b=GEijbvfc3Voj8nxjTrIaWFp1FnMrxYA6yS9PXTxBaDkqTWeTNnTEfzgNoMqM//3orr
+         uuSsXe2JzfTalRVfGh0IYaTj1daswGuhy9hEdJWDZADKrWC+5UrJD1iutohRU///2Xs7
+         f9Jye7ocPIlxM/qqeAQ7ubY82p/F8FHLyXRfZbli240sRi5bGJZlC8pdEYf5YGI8T3nt
+         JKzSkpjSkQMcFObYukAp//cL0Y4wwiKM4XScoNSE9QT0+tsiGfHP/cz/KA+SlG4Ilx3G
+         +8xzB8AuX+m2q94nPCfjdiKvyQjU7lGNzqyMETZqmZT1Ju4PuvoW/WpockZn9+b3FxFU
+         u0Iw==
+X-Gm-Message-State: AOJu0Yxp/i/4Ya+JCVg0a08LVv1hzfEyn7makf1WlOjyAf75pYnqswjm
+        WjqXuP9Nk947nFro3oXh37dpZ8F4w+4=
+X-Google-Smtp-Source: AGHT+IHUEPW3H4eE8hL9x01DrF8EV6/qXIdYZHJV+3Ch6SWg/Ia5upLk5S9Kq+TjsAHT50edQJbCK+giAKY=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e851:b0:1c6:2b9d:570b with SMTP id
+ t17-20020a170902e85100b001c62b9d570bmr34467plg.7.1695948142799; Thu, 28 Sep
+ 2023 17:42:22 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 17:42:20 -0700
+In-Reply-To: <20230928173354.217464-3-mlevitsk@redhat.com>
+Mime-Version: 1.0
+References: <20230928173354.217464-1-mlevitsk@redhat.com> <20230928173354.217464-3-mlevitsk@redhat.com>
+Message-ID: <ZRYdbJNY3ldYKgEk@google.com>
+Subject: Re: [PATCH v2 2/4] x86: KVM: SVM: add support for Invalid IPI Vector interception
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, iommu@lists.linux.dev,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
+        x86@kernel.org,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update the pm8350c lpg_data struct so that pm8350c devices are treated as
-PWM devices that support two-nvmem PPG scheme.
+On Thu, Sep 28, 2023, Maxim Levitsky wrote:
+> In later revisions of AMD's APM, there is a new 'incomplete IPI' exit code:
+> 
+> "Invalid IPI Vector - The vector for the specified IPI was set to an
+> illegal value (VEC < 16)"
+> 
+> Note that tests on Zen2 machine show that this VM exit doesn't happen and
+> instead AVIC just does nothing.
+> 
+> Add support for this exit code by doing nothing, instead of filling
+> the kernel log with errors.
+> 
+> Also replace an unthrottled 'pr_err()' if another unknown incomplete
+> IPI exit happens with vcpu_unimpl()
+> 
+> (e.g in case AMD adds yet another 'Invalid IPI' exit reason)
+> 
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
 
-Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
----
- drivers/leds/rgb/leds-qcom-lpg.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/leds/rgb/leds-qcom-lpg.c b/drivers/leds/rgb/leds-qcom-lpg.c
-index 910c7cf740cc..8962ea13df29 100644
---- a/drivers/leds/rgb/leds-qcom-lpg.c
-+++ b/drivers/leds/rgb/leds-qcom-lpg.c
-@@ -1800,11 +1800,13 @@ static const struct lpg_data pm8150l_lpg_data = {
- static const struct lpg_data pm8350c_pwm_data = {
- 	.triled_base = 0xef00,
- 
-+	.lut_size = 122,
-+
- 	.num_channels = 4,
- 	.channels = (const struct lpg_channel_data[]) {
--		{ .base = 0xe800, .triled_mask = BIT(7) },
--		{ .base = 0xe900, .triled_mask = BIT(6) },
--		{ .base = 0xea00, .triled_mask = BIT(5) },
-+		{ .base = 0xe800, .triled_mask = BIT(7), .sdam_offset = 0x48 },
-+		{ .base = 0xe900, .triled_mask = BIT(6), .sdam_offset = 0x56 },
-+		{ .base = 0xea00, .triled_mask = BIT(5), .sdam_offset = 0x64 },
- 		{ .base = 0xeb00 },
- 	},
- };
--- 
-2.41.0
-
+Reviewed-by: Sean Christopherson <seanjc@google.com>
