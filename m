@@ -2,320 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C08AD7B2A3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 04:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F01F07B2A40
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 04:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232263AbjI2CHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 22:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
+        id S229919AbjI2CII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 22:08:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbjI2CG6 (ORCPT
+        with ESMTP id S229516AbjI2CIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 22:06:58 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54BC19F
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:06:55 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a1eb48d346so110870137b3.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:06:55 -0700 (PDT)
+        Thu, 28 Sep 2023 22:08:06 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248B719F
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:08:02 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9b275afb6abso37170866b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:08:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695953214; x=1696558014; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UW0Dtv/KujpaOnqWiMzyb6swMLyUdZ8OkZzAylCLanI=;
-        b=EDaNVC+3rapcwQf8jLTtAk2Vs8tzyonAk4RHk0SN+afUgJchue4IvkPeSaRmBem7Hg
-         Y7+y3YQVqAR3agoUoK92qj5k5tdOxCxV0bEFlDEtsQXtO08mekuuvvH0ikx6uHF+wHzZ
-         U+bue+WHN/tzPjbnk8a9TDYDBxojUztnZLBoCaqf1vg3eJdW+NNqrWlBsRCjmwbS+yDf
-         cBKWHuZvJgvvo+lXBaN7QHj/acYNG3FR4dLwVVoRF3R0Eus03psp15dH5+uHAnUz0xWx
-         0wr4fKSj0RA/epJLunBedBb/8lEMeOsgwnZxgD3jWhAy+n5udDy479au7OhxzhfS5eV0
-         soPw==
+        d=google.com; s=20230601; t=1695953280; x=1696558080; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DpJvrW7U3xIffjqcwESsvsx+jvDlYI20BWsEDJIfKsE=;
+        b=2mEH4vX2MW9Muivxe5HnYD0D9xKlG7iFWifZZmlmkg61RvoSAI7p1LzGG0z0NZbX59
+         GhSigpX7EF2e6wrKBQBONwQtNBGW4a4IA5we4eeGeOI+bCcqEvOYbjOHChN8pSKOd2NJ
+         OQbUWVE810bKYvKkUoQQw8Xb1Dfy1r125Z2BfZbzDi/Yqvrra4Xjx1LPqvVxTHl6xaNE
+         2AAud50EfMp5Zaxq0ytKKqvL5oD9cOac1015NGFIGDwlz6XXN9FiVnhDOKvsD9bpgjFi
+         WAhP/yFPdcrL/+1yFMiqTtBPZWjIyt1mCSl6tL88ZOz1cNtWWoBOBihys4V/31JrytO1
+         YYdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695953214; x=1696558014;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UW0Dtv/KujpaOnqWiMzyb6swMLyUdZ8OkZzAylCLanI=;
-        b=uEkHq8Dzk2V+jB7NkEm07XmlCzEWnxG+l/9V5XtM+NJPnUzgvnox8/fgf3ohGop9aV
-         hAybvXyb+197ZS8Fo97BaFG5PILZOSZHnxZd3upzuc+knDlGWNcP5FCY97LpGuTaB7yL
-         IEaAMD97bMEIhXX6bolxP0f6cMIkYfKK0iyHWI2GZ13HrGqK8hlCdbyYqjXAdkBnh4CM
-         FK5PdN6ymZT+ZpAooO3V6IvOrbzMpVlWiu3ALSKX666brAcbKN1qiXw/pfBsF7lylltp
-         cO1n1xy5Ykvs1oJkT6mPpIPUmfUGfJ0TDgb2F0IwZD/dUmbehBxmQB3Lhq2p9fOpJj4+
-         yjLQ==
-X-Gm-Message-State: AOJu0YxtQEBb1JbkfZEuQsVUN0mJKy3yJI1rS43NPFdZY+HeMRwIVeUt
-        M+oK4vSx6eq+wh3R5FQbHwF/6ivrxoM=
-X-Google-Smtp-Source: AGHT+IFl9RIZrKlba27gL6pMdIc+x3vCcNzUyo88NqB7rbfbfTZAaTTweokWP1YforFZCvRwoJLoRbEaMgE=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:ce42:0:b0:d84:e73f:6f8c with SMTP id
- x63-20020a25ce42000000b00d84e73f6f8cmr38495ybe.6.1695953213803; Thu, 28 Sep
- 2023 19:06:53 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 19:06:52 -0700
-In-Reply-To: <20230928173354.217464-5-mlevitsk@redhat.com>
-Mime-Version: 1.0
-References: <20230928173354.217464-1-mlevitsk@redhat.com> <20230928173354.217464-5-mlevitsk@redhat.com>
-Message-ID: <ZRYxPNeq1rnp-M0f@google.com>
-Subject: Re: [PATCH v2 4/4] x86: KVM: SVM: workaround for AVIC's errata #1235
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, iommu@lists.linux.dev,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
-        x86@kernel.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Content-Type: multipart/mixed; charset="UTF-8"; boundary="3xcBp5v4/HRyz7Jb"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1695953280; x=1696558080;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DpJvrW7U3xIffjqcwESsvsx+jvDlYI20BWsEDJIfKsE=;
+        b=IAVObkAwENeVbRDUC5DWFxc2ya1jnOBICHdqHQLd9OnBAFZEIJB5dOCphTxP3aq3zG
+         k9ZksCMqfe120wCEnSl2xGV4dLf2epN4T+byvZEwugt4o4SitYrqwPb+EfC2zT6ZejQq
+         a65DOAnZdm+c2426vKkjyBwC2SB20CbnTi4TEu6T3UDv7sgHJHH6Bxo+bmTTCaYNikRI
+         1X+YxjKOmLiFWjgf6Ugg3SjewUejnPs/tiEPml4biaadrLig7ygFJU3mRQJs1x1snraH
+         0P098qxGIhZ6AdQJrPiW5MB44W64tozq7IQHxJPbpLAqcg9bEQ31bvw4nnIya3ua3w3v
+         chow==
+X-Gm-Message-State: AOJu0Yw1r1MouOrJEyT6x22RVm913/TdO9mmDpjIeTQLFdlcVSl1rvOr
+        4ekAEB7atkdHU7nwS7pxoIBFSOOB8y6aY6siaIcBBg==
+X-Google-Smtp-Source: AGHT+IFyoQ45G0/xSiJVIsjcy4eWKEwZ/2vhbS/D95tXQxzUqaJAJuRIh3RZM++LVJ05Ro/8eSB9olgdUNOmkr0SiWg=
+X-Received: by 2002:a17:906:c146:b0:9a5:dc2b:6a5 with SMTP id
+ dp6-20020a170906c14600b009a5dc2b06a5mr2604319ejc.35.1695953280532; Thu, 28
+ Sep 2023 19:08:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230928-get_maintainer_add_d-v2-0-8acb3f394571@google.com>
+ <5707f3bef3ecd8220a8bf7c8b72c72c53e65b666.camel@perches.com>
+ <CAFhGd8rtnvipRVAKRQAEcyGqCknVmx+bd2NMT7mCuTZjhrqULA@mail.gmail.com>
+ <137a309b313cc8a295f3affc704f0da049f233aa.camel@perches.com> <CAKwvOdnGzTvSXf7VeyG8tPEONpqSgkDiBTmgJbUUWsRHzbc5JQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdnGzTvSXf7VeyG8tPEONpqSgkDiBTmgJbUUWsRHzbc5JQ@mail.gmail.com>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Fri, 29 Sep 2023 11:07:48 +0900
+Message-ID: <CAFhGd8rrHp1V4NpExpdNwWV4FAdLYhixLMB5HGygNSe7NKPUMA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] get_maintainer: add patch-only keyword matching
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Joe Perches <joe@perches.com>, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        geert@linux-m68k.org, gregkh@linuxfoundation.org,
+        workflows@vger.kernel.org, mario.limonciello@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 29, 2023 at 12:52=E2=80=AFAM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Wed, Sep 27, 2023 at 11:09=E2=80=AFPM Joe Perches <joe@perches.com> wr=
+ote:
+> >
+> > On Thu, 2023-09-28 at 14:31 +0900, Justin Stitt wrote:
+> > > On Thu, Sep 28, 2023 at 2:01=E2=80=AFPM Joe Perches <joe@perches.com>=
+ wrote:
+> > > >
+> > > > On Thu, 2023-09-28 at 04:23 +0000, Justin Stitt wrote:
+> > > > > Changes in v2:
+> > > > > - remove formatting pass (thanks Joe) (but seriously the formatti=
+ng is
+> > > > >   bad, is there opportunity to get a formatting pass in here at s=
+ome
+> > > > >   point?)
+> > > >
+> > > > Why?  What is it that makes you believe the formatting is bad?
+> > > >
+> > >
+> > > Investigating further, it looked especially bad in my editor. There i=
+s
+> > > a mixture of
+> > > tabs and spaces and my vim tabstop is set to 4 for pl files. Setting =
+this to
+> > > 8 is a whole lot better. But I still see some weird spacing
+> > >
+> >
+> > Yes, it's a bit odd indentation.
+> > It's emacs default perl format.
+> > 4 space indent with 8 space tabs, maximal tab fill.
+> >
+>
+> Oh! What?! That's the most surprising convention I've ever heard of
+> (after the GNU C coding style).  Yet another thing to hold against
+> perl I guess. :P
+>
+> I have my editor setup to highlight tabs vs spaces via visual cues, so
+> that I don't mess up kernel coding style. (`git clang-format HEAD~`
+> after a commit helps).  scripts/get_maintainer.pl has some serious
+> inconsistencies to the point where I'm not sure what it should or was
+> meant to be.  Now that you mention it, I see it, and it does seem
+> consistent in that regard.
+>
+> Justin, is your formatter configurable to match that convention?
+> Maybe it's still useful, as long as you configure it to stick to the
+> pre-existing convention.
 
---3xcBp5v4/HRyz7Jb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Negative, all the perl formatters I've tried will convert everything to spa=
+ces.
+The best I've seen is perltidy.
 
-On Thu, Sep 28, 2023, Maxim Levitsky wrote:
-> diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-> index 4b74ea91f4e6bb6..28bb0e6b321660d 100644
-> --- a/arch/x86/kvm/svm/avic.c
-> +++ b/arch/x86/kvm/svm/avic.c
-> @@ -62,6 +62,9 @@ static_assert(__AVIC_GATAG(AVIC_VM_ID_MASK, AVIC_VCPU_ID_MASK) == -1u);
->  static bool force_avic;
->  module_param_unsafe(force_avic, bool, 0444);
->  
-> +static int avic_zen2_errata_workaround = -1;
-> +module_param(avic_zen2_errata_workaround, int, 0444);
-> +
->  /* Note:
->   * This hash table is used to map VM_ID to a struct kvm_svm,
->   * when handling AMD IOMMU GALOG notification to schedule in
-> @@ -276,7 +279,7 @@ static u64 *avic_get_physical_id_entry(struct kvm_vcpu *vcpu,
->  
->  static int avic_init_backing_page(struct kvm_vcpu *vcpu)
->  {
-> -	u64 *entry, new_entry;
-> +	u64 *entry;
->  	int id = vcpu->vcpu_id;
->  	struct vcpu_svm *svm = to_svm(vcpu);
->  
-> @@ -308,10 +311,10 @@ static int avic_init_backing_page(struct kvm_vcpu *vcpu)
->  	if (!entry)
->  		return -EINVAL;
->  
-> -	new_entry = __sme_set((page_to_phys(svm->avic_backing_page) &
-> -			      AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK) |
-> -			      AVIC_PHYSICAL_ID_ENTRY_VALID_MASK);
-> -	WRITE_ONCE(*entry, new_entry);
-> +	svm->avic_physical_id_entry = __sme_set((page_to_phys(svm->avic_backing_page) &
-> +						 AVIC_PHYSICAL_ID_ENTRY_BACKING_PAGE_MASK) |
-> +						 AVIC_PHYSICAL_ID_ENTRY_VALID_MASK);
-> +	WRITE_ONCE(*entry, svm->avic_physical_id_entry);
+https://gist.github.com/JustinStitt/347385921c80a5212c2672075aa769b6
 
-Aha!  Rather than deal with the dummy entry at runtime, simply point the pointer
-at the dummy entry during setup.
-
-And instead of adding a dedicated erratum param, let's piggyback VMX's enable_ipiv.
-It's not a true disable, but IMO it's close enough.  That will make the param
-much more self-documenting, and won't feel so awkward if someone wants to disable
-IPI virtualization for other reasons.
-
-Then we can do this in three steps:
-
-  1. Move enable_ipiv to common code
-  2. Let userspace disable enable_ipiv for SVM+AVIC
-  3. Disable enable_ipiv for affected CPUs
-
-The biggest downside to using enable_ipiv is that a the "auto" behavior for the
-erratum will be a bit ugly, but that's a solvable problem.
-
-If you've no objection to the above approach, I'll post the attached patches along
-with a massaged version of this patch.
-
-The attached patches apply on top of an AVIC clean[*], which (shameless plug)
-could use a review ;-)
-
-[*] https://lore.kernel.org/all/20230815213533.548732-1-seanjc@google.com
-
---3xcBp5v4/HRyz7Jb
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-KVM-VMX-Move-enable_ipiv-knob-to-common-x86.patch"
-
-From 4990d0e56b1e9bb8bf97502d525779b2a43d26d4 Mon Sep 17 00:00:00 2001
-From: Sean Christopherson <seanjc@google.com>
-Date: Thu, 28 Sep 2023 17:22:52 -0700
-Subject: [PATCH 1/2] KVM: VMX: Move enable_ipiv knob to common x86
-
-Move enable_ipiv to common x86 so that it can be reused by SVM to control
-IPI virtualization when AVIC is enabled.  SVM doesn't actually provide a
-way to truly disable IPI virtualization, but KVM can get close enough by
-skipping the necessary table programming.
-
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/include/asm/kvm_host.h | 1 +
- arch/x86/kvm/vmx/capabilities.h | 1 -
- arch/x86/kvm/vmx/vmx.c          | 2 --
- arch/x86/kvm/x86.c              | 3 +++
- 4 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index e9e69009789e..7239155213c7 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1806,6 +1806,7 @@ extern u32 __read_mostly kvm_nr_uret_msrs;
- extern u64 __read_mostly host_efer;
- extern bool __read_mostly allow_smaller_maxphyaddr;
- extern bool __read_mostly enable_apicv;
-+extern bool __read_mostly enable_ipiv;
- extern struct kvm_x86_ops kvm_x86_ops;
- 
- #define KVM_X86_OP(func) \
-diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
-index 41a4533f9989..8cbfef64ea75 100644
---- a/arch/x86/kvm/vmx/capabilities.h
-+++ b/arch/x86/kvm/vmx/capabilities.h
-@@ -15,7 +15,6 @@ extern bool __read_mostly enable_ept;
- extern bool __read_mostly enable_unrestricted_guest;
- extern bool __read_mostly enable_ept_ad_bits;
- extern bool __read_mostly enable_pml;
--extern bool __read_mostly enable_ipiv;
- extern int __read_mostly pt_mode;
- 
- #define PT_MODE_SYSTEM		0
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 72e3943f3693..f51dac6b21ae 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -104,8 +104,6 @@ static bool __read_mostly fasteoi = 1;
- module_param(fasteoi, bool, S_IRUGO);
- 
- module_param(enable_apicv, bool, S_IRUGO);
--
--bool __read_mostly enable_ipiv = true;
- module_param(enable_ipiv, bool, 0444);
- 
- /*
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 6573c89c35a9..ccf5aa4fbe73 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -235,6 +235,9 @@ EXPORT_SYMBOL_GPL(allow_smaller_maxphyaddr);
- bool __read_mostly enable_apicv = true;
- EXPORT_SYMBOL_GPL(enable_apicv);
- 
-+bool __read_mostly enable_ipiv = true;
-+EXPORT_SYMBOL_GPL(enable_ipiv);
-+
- u64 __read_mostly host_xss;
- EXPORT_SYMBOL_GPL(host_xss);
- 
-
-base-commit: ca3beed3b49348748201a2a35888b49858ce5d73
--- 
-2.42.0.582.g8ccd20d70d-goog
-
-
---3xcBp5v4/HRyz7Jb
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0002-KVM-SVM-Add-enable_ipiv-param-skip-physical-ID-progr.patch"
-
-From fb86a56d11eac07626ffd9defeff39b88dbf6406 Mon Sep 17 00:00:00 2001
-From: Sean Christopherson <seanjc@google.com>
-Date: Thu, 28 Sep 2023 17:25:48 -0700
-Subject: [PATCH 2/2] KVM: SVM: Add enable_ipiv param, skip physical ID
- programming if disabled
-
-Let userspace "disable" IPI virtualization via an enable_ipiv module param
-by programming a dummy entry instead of the vCPU's actual backing entry in
-the physical ID table.  SVM doesn't provide a way to actually disable IPI
-virtualization in hardware, but by leaving all entries blank, every IPI in
-the guest (except for self-IPIs) will generate a VM-Exit.
-
-Providing a way to effectively disable IPI virtualization will allow KVM
-to safely enable AVIC on hardware that is suseptible to erratum #1235,
-which causes hardware to sometimes fail to detect that the IsRunning bit
-has been cleared by software.
-
-All credit goes to Maxim for the idea!
-
-Suggested-by: Maxim Levitsky <mlevitsk@redhat.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/avic.c | 15 ++++++++++++++-
- arch/x86/kvm/svm/svm.c  |  3 +++
- arch/x86/kvm/svm/svm.h  |  1 +
- 3 files changed, 18 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-index fa87b6853f1d..fc804bb84394 100644
---- a/arch/x86/kvm/svm/avic.c
-+++ b/arch/x86/kvm/svm/avic.c
-@@ -310,7 +310,20 @@ static int avic_init_backing_page(struct kvm_vcpu *vcpu)
- 		    AVIC_PHYSICAL_ID_ENTRY_VALID_MASK;
- 	WRITE_ONCE(table[id], new_entry);
- 
--	svm->avic_physical_id_entry = &table[id];
-+	/*
-+	 * IPI virtualization is bundled with AVIC, but effectively can be
-+	 * disabled simply by never marking vCPUs as running in the physical ID
-+	 * table.  Use a dummy entry to avoid conditionals in the runtime code,
-+	 * and to keep the IOMMU coordination logic as simple as possible.  The
-+	 * entry in the table also needs to be valid (see above), otherwise KVM
-+	 * will ignore IPIs due to thinking the target doesn't exist.
-+	 */
-+	if (enable_ipiv) {
-+		svm->avic_physical_id_entry = &table[id];
-+	} else {
-+		svm->ipiv_disabled_backing_entry = table[id];
-+		svm->avic_physical_id_entry = &svm->ipiv_disabled_backing_entry;
-+	}
- 
- 	return 0;
- }
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index acdd0b89e471..bc40ffb5c47c 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -227,6 +227,8 @@ module_param(tsc_scaling, int, 0444);
- static bool avic;
- module_param(avic, bool, 0444);
- 
-+module_param(enable_ipiv, bool, 0444);
-+
- bool __read_mostly dump_invalid_vmcb;
- module_param(dump_invalid_vmcb, bool, 0644);
- 
-@@ -5252,6 +5254,7 @@ static __init int svm_hardware_setup(void)
- 	enable_apicv = avic = avic && avic_hardware_setup();
- 
- 	if (!enable_apicv) {
-+		enable_ipiv = false;
- 		svm_x86_ops.vcpu_blocking = NULL;
- 		svm_x86_ops.vcpu_unblocking = NULL;
- 		svm_x86_ops.vcpu_get_apicv_inhibit_reasons = NULL;
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 147516617f88..7a1fc9325d74 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -264,6 +264,7 @@ struct vcpu_svm {
- 
- 	u32 ldr_reg;
- 	u32 dfr_reg;
-+	u64 ipiv_disabled_backing_entry;
- 	u64 *avic_physical_id_entry;
- 
- 	/*
--- 
-2.42.0.582.g8ccd20d70d-goog
-
-
---3xcBp5v4/HRyz7Jb--
+> --
+> Thanks,
+> ~Nick Desaulniers
