@@ -2,142 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E34A97B30C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 12:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C457B30CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 12:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233094AbjI2Knm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 06:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43174 "EHLO
+        id S233046AbjI2KpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 06:45:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233009AbjI2Knk (ORCPT
+        with ESMTP id S232833AbjI2KpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 06:43:40 -0400
-Received: from mail-oo1-f80.google.com (mail-oo1-f80.google.com [209.85.161.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F308D1B1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 03:43:37 -0700 (PDT)
-Received: by mail-oo1-f80.google.com with SMTP id 006d021491bc7-57de452a64fso7704714eaf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 03:43:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695984217; x=1696589017;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k0ftxZRR5u+Fvflo+SQNZa7Ogy6FSoMC45kKGa40Oj0=;
-        b=w3OvNXZC1DDoWrTHa0R5bhHQfN8mRCwenMUYjf+ccwCfcCObsg7e7znboNbDQFMK+Z
-         T0ZK/Xc9jJQmcq4ypLxBBFI3Xlt7yW/9TNpX7q8TNKUA5nGaceXo0j+ReQvO38aD9bfo
-         AJxS8E5Pf/xIDUjRNs6PWe/laDkU1Ij8+Fj1NNttZWRx+LVsvuw3rhDISaTLnbkVh3ta
-         Eg3wcjTCS7Qxr0czyDjh3jCvozBrPPX5waqBP76pIoES/R4nquO/pkl7efGfGXPAZxnO
-         o3pn3lU/783XQlDRw5h6sQ0/IJVP+UPXewK/UzoU8c2sjfkxiq469+VZAFEqs1mz7Xnw
-         CIMw==
-X-Gm-Message-State: AOJu0YzJlbI+3s4LDuz3sdsOdeJq49CfNl+QB/y9BAZSuKKLQP0NLeCa
-        gXmQ58UYLtGBbuVjT9o0duT+KZtZStSLiv83+2mWOJQzUsUU
-X-Google-Smtp-Source: AGHT+IH4SU/YcrZppsDmDzIoAB+uZ0KZRE8blWJFXuH26oF5tBSz3yDBf4aQ0vtzx+us5clXTRW+zOJRamP298VftAUO7CE3c4Cv
+        Fri, 29 Sep 2023 06:45:15 -0400
+Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98313F9;
+        Fri, 29 Sep 2023 03:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1695984311; x=1727520311;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=FY4+uwILG++fulADx59B41wzoeVUtcBbdGx5sYnpP9w=;
+  b=iwpbPczeietjjPs24iFrMwDRjW648EhBBCuddVQh1J3rtXyYRu81Pihx
+   k1+zrQYD2QRzvHH3xyK5FmkFo+6bSL1dWI7U4W04+KvHzp30gI/8ixsLV
+   eNB+YgFps9ijdUjsNi1g07JIY3bL6ZTZ9yuP36ioTUF2v1DxZqB6QRs8e
+   M=;
+X-IronPort-AV: E=Sophos;i="6.03,187,1694736000"; 
+   d="scan'208";a="586353328"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 10:45:09 +0000
+Received: from EX19MTAUWA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-iad-1a-m6i4x-366646a6.us-east-1.amazon.com (Postfix) with ESMTPS id 69F83A526F;
+        Fri, 29 Sep 2023 10:45:05 +0000 (UTC)
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Fri, 29 Sep 2023 10:44:54 +0000
+Received: from [0.0.0.0] (10.253.83.51) by EX19D020UWC004.ant.amazon.com
+ (10.13.138.149) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Fri, 29 Sep
+ 2023 10:44:51 +0000
+Message-ID: <2ef7c657-eb7e-499e-9265-56fa57ccd86f@amazon.com>
+Date:   Fri, 29 Sep 2023 12:44:48 +0200
 MIME-Version: 1.0
-X-Received: by 2002:a4a:2c0f:0:b0:57b:7849:1a4d with SMTP id
- o15-20020a4a2c0f000000b0057b78491a4dmr1191984ooo.0.1695984217191; Fri, 29 Sep
- 2023 03:43:37 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 03:43:37 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cf826706067d18fd@google.com>
-Subject: [syzbot] [btrfs?] WARNING in btrfs_release_global_block_rsv
-From:   syzbot <syzbot+10e8dae9863cb83db623@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] misc: Add Nitro Secure Module driver
+Content-Language: en-GB
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Arnd Bergmann" <arnd@arndb.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Olivia Mackall" <olivia@selenic.com>,
+        Petre Eftime <petre.eftime@gmail.com>,
+        "Erdem Meydanlli" <meydanli@amazon.nl>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+References: <20230928224645.19768-1-graf@amazon.com>
+ <20230928224645.19768-2-graf@amazon.com>
+ <2023092906-strangle-pawing-16e2@gregkh>
+From:   Alexander Graf <graf@amazon.com>
+In-Reply-To: <2023092906-strangle-pawing-16e2@gregkh>
+X-Originating-IP: [10.253.83.51]
+X-ClientProxiedBy: EX19D033UWA004.ant.amazon.com (10.13.139.85) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+SGV5IEdyZWcsCgpPbiAyOS4wOS4yMyAwNzo0NCwgR3JlZyBLcm9haC1IYXJ0bWFuIHdyb3RlOgo+
+Cj4gT24gVGh1LCBTZXAgMjgsIDIwMjMgYXQgMTA6NDY6NDRQTSArMDAwMCwgQWxleGFuZGVyIEdy
+YWYgd3JvdGU6Cj4+IFdoZW4gcnVubmluZyBMaW51eCBpbnNpZGUgYSBOaXRybyBFbmNsYXZlLCB0
+aGUgaHlwZXJ2aXNvciBwcm92aWRlcyBhCj4+IHNwZWNpYWwgdmlydGlvIGRldmljZSBjYWxsZWQg
+Ik5TTSIuIFRoaXMgZGV2aWNlIGhhcyAyIG1haW4gZnVuY3Rpb25zOgo+Pgo+PiAgICAxKSBQcm92
+aWRlIGF0dGVzdGF0aW9uIHJlcG9ydHMKPj4gICAgMikgTW9kaWZ5IFBDUiBzdGF0ZQo+PiAgICAz
+KSBQcm92aWRlIGVudHJvcHkKPj4KPj4gVGhpcyBwYXRjaCBhZGRzIHRoZSBjb3JlIE5TTSBkcml2
+ZXIgdGhhdCBleHBvc2VzIGEgL2Rldi9uc20gZGV2aWNlIG5vZGUKPj4gd2hpY2ggdXNlciBzcGFj
+ZSBjYW4gdXNlIHRvIHJlcXVlc3QgYXR0ZXN0YXRpb24gZG9jdW1lbnRzIGFuZCBpbmZsdWVuY2UK
+Pj4gUENSIHN0YXRlcy4gQSBmb2xsb3cgdXAgcGF0Y2ggd2lsbCBhZGQgYSBod3JuZyBkcml2ZXIg
+dG8gZmVlZCBpdHMgZW50cm9weQo+PiBpbnRvIHRoZSBrZXJuZWwuCj4+Cj4+IE9yaWdpbmFsbHkt
+Ynk6IFBldHJlIEVmdGltZSA8cGV0cmUuZWZ0aW1lQGdtYWlsLmNvbT4KPiBIYXNuJ3QgdGhpcyBi
+ZWVuIHN1Ym1pdHRlZCBhIGxvbmcgdGltZSBhZ28/ICBXaGF0IGNoYW5nZWQgZnJvbSB0aGF0Cj4g
+c3VibWlzc2lvbj8gIE9yIGFtIEkgbWlzLXJlbWVtYmVyaW5nIHRoaW5ncz8KCgpXaXRoIE5pdHJv
+IEVuY2xhdmVzLCB0aGVyZSBhcmUgMiBwYXJ0aWVzOiBQYXJlbnQgYW5kIEVuY2xhdmUuCgpUaGUg
+cGFyZW50IGxhdW5jaGVzIHRoZSBFbmNsYXZlLiBUbyBkbyBzbywgaXQgY3JlYXRlcyBhIHNpYmxp
+bmcgVk0gdXNpbmcgCmEgc3BlY2lhbCBFbmNsYXZlcyBQQ0kgZGV2aWNlLiBUaGUgZHJpdmVyIGZv
+ciB0aGF0IGlzIGluIApkcml2ZXJzL3ZpcnQvbml0cm9fZW5jbGF2ZXMgYW5kIHlvdSBoZWxwZWQg
+dG8gdXBzdHJlYW0gdGhhdCBiYWNrIHRoZW4uCgpUaGUgZW5jbGF2ZSBpcyB3aGF0IGlzIHJ1bm5p
+bmcgaW5zaWRlIHRoZSBzaWJsaW5nIFZNLiBJdCBzZWVzIGEgCkZpcmVjcmFja2VyIGxpa2UgZGV2
+aWNlIG1vZGVsIHdpdGggdmlydGlvLXZzb2NrIHRvIGNvbW11bmljYXRlIHRvIHRoZSAKcGFyZW50
+IGFzIHdlbGwgYXMgYSBzcGVjaWFsIHZpcnRpby1tbWlvIGRldmljZSBjYWxsZWQgIk5TTSIgdG8g
+CmNvbW11bmljYXRlIHRvIHRoZSBoeXBlcnZpc29yLiBUaGlzIGRyaXZlciBpcyBmb3IgdGhlIGxh
+dHRlci4KCkknbSBub3cgYXdhcmUgb2YgcHJldmlvdXMgYXR0ZW1wdHMgdG8gdXBzdHJlYW0gaXQu
+CgoKPgo+PiAtLS0gL2Rldi9udWxsCj4+ICsrKyBiL2RyaXZlcnMvbWlzYy9uc20uYwo+PiBAQCAt
+MCwwICsxLDQ3MCBAQAo+PiArLy8gU1BEWC1MaWNlbnNlLUlkZW50aWZpZXI6IEdQTC0yLjAKPj4g
+Ky8qCj4+ICsgKiBBbWF6b24gTml0cm8gU2VjdXJlIE1vZHVsZSBkcml2ZXIuCj4+ICsgKgo+PiAr
+ICogQ29weXJpZ2h0IEFtYXpvbi5jb20sIEluYy4gb3IgaXRzIGFmZmlsaWF0ZXMuIEFsbCBSaWdo
+dHMgUmVzZXJ2ZWQuCj4+ICsgKgo+PiArICogVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7
+IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkgaXQKPj4gKyAqIHVuZGVyIHRo
+ZSB0ZXJtcyBhbmQgY29uZGl0aW9ucyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2Us
+Cj4+ICsgKiB2ZXJzaW9uIDIsIGFzIHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBGb3Vu
+ZGF0aW9uLgo+PiArICoKPj4gKyAqIFRoaXMgcHJvZ3JhbSBpcyBkaXN0cmlidXRlZCBpbiB0aGUg
+aG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAo+PiArICogYnV0IFdJVEhPVVQgQU5ZIFdBUlJB
+TlRZOyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKPj4gKyAqIE1FUkNIQU5U
+QUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gU2VlIHRoZQo+PiAr
+ICogR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KPj4gKyAqCj4+
+ICsgKiBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQ
+dWJsaWMgTGljZW5zZQo+PiArICogYWxvbmcgd2l0aCB0aGlzIHByb2dyYW07IGlmIG5vdCwgc2Vl
+IDxodHRwOi8vd3d3LmdudS5vcmcvbGljZW5zZXMvPi4KPiBQbGVhc2UgZHJvcCB0aGUgbGljZW5z
+ZSAiYm9pbGVyLXBsYXRlIiB0ZXh0LCB0aGUgU1BEWCBsaW5lIGlzCj4gc3VmZmljaWVudC4KCgpT
+dXJlLCBoYXBweSB0byEgOikKCgpBbGV4CgoKCgpBbWF6b24gRGV2ZWxvcG1lbnQgQ2VudGVyIEdl
+cm1hbnkgR21iSApLcmF1c2Vuc3RyLiAzOAoxMDExNyBCZXJsaW4KR2VzY2hhZWZ0c2Z1ZWhydW5n
+OiBDaHJpc3RpYW4gU2NobGFlZ2VyLCBKb25hdGhhbiBXZWlzcwpFaW5nZXRyYWdlbiBhbSBBbXRz
+Z2VyaWNodCBDaGFybG90dGVuYnVyZyB1bnRlciBIUkIgMTQ5MTczIEIKU2l0ejogQmVybGluClVz
+dC1JRDogREUgMjg5IDIzNyA4NzkKCgo=
 
-syzbot found the following issue on:
-
-HEAD commit:    8a511e7efc5a Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=133af832680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d594086f139d167
-dashboard link: https://syzkaller.appspot.com/bug?extid=10e8dae9863cb83db623
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/943dcd094ce2/disk-8a511e7e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/8647d59633ee/vmlinux-8a511e7e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9c6b0fed6523/bzImage-8a511e7e.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+10e8dae9863cb83db623@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5077 at fs/btrfs/block-rsv.c:451 btrfs_release_global_block_rsv+0x279/0x2e0 fs/btrfs/block-rsv.c:451
-Modules linked in:
-CPU: 0 PID: 5077 Comm: syz-executor.0 Not tainted 6.6.0-rc2-syzkaller-00414-g8a511e7efc5a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/04/2023
-RIP: 0010:btrfs_release_global_block_rsv+0x279/0x2e0 fs/btrfs/block-rsv.c:451
-Code: ff e8 bb ff ef fd 0f 0b e9 c9 fe ff ff e8 af ff ef fd 0f 0b e9 fe fe ff ff e8 a3 ff ef fd 0f 0b e9 33 ff ff ff e8 97 ff ef fd <0f> 0b e9 68 ff ff ff e8 8b ff ef fd 0f 0b 5b 5d e9 82 ff ef fd e8
-RSP: 0018:ffffc90003c7fb78 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff88807a310000 RCX: 0000000000000000
-RDX: ffff888026559dc0 RSI: ffffffff8397c729 RDI: 0000000000000007
-RBP: 000000000000e000 R08: 0000000000000007 R09: 0000000000000000
-R10: 000000000000e000 R11: 0000000000000001 R12: dffffc0000000000
-R13: 0000000000000001 R14: ffff888067b4a160 R15: ffff888067b4a000
-FS:  000055555730c480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005557ad94b4e8 CR3: 000000003865f000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- btrfs_free_block_groups+0xbb6/0x13d0 fs/btrfs/block-group.c:4380
- close_ctree+0x8c4/0xdd0 fs/btrfs/disk-io.c:4413
- generic_shutdown_super+0x161/0x3c0 fs/super.c:693
- kill_anon_super+0x3a/0x60 fs/super.c:1292
- btrfs_kill_super+0x3b/0x50 fs/btrfs/super.c:2144
- deactivate_locked_super+0x9a/0x170 fs/super.c:481
- deactivate_super+0xde/0x100 fs/super.c:514
- cleanup_mnt+0x222/0x3d0 fs/namespace.c:1254
- task_work_run+0x14d/0x240 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:49 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x215/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
- do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7faf3687de17
-Code: b0 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 0f 1f 44 00 00 31 f6 e9 09 00 00 00 66 0f 1f 84 00 00 00 00 00 b8 a6 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 01 c3 48 c7 c2 b0 ff ff ff f7 d8 64 89 02 b8
-RSP: 002b:00007ffe2bf9fec8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00007faf3687de17
-RDX: 0000000000000000 RSI: 000000000000000a RDI: 00007ffe2bf9ff80
-RBP: 00007ffe2bf9ff80 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 00007ffe2bfa1040
-R13: 00007faf368c73b9 R14: 00000000001a2e26 R15: 0000000000000018
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
