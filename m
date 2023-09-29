@@ -2,135 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5A4E7B3754
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B91A87B375F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:57:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233705AbjI2Pxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:53:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
+        id S233731AbjI2P5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233505AbjI2Pxk (ORCPT
+        with ESMTP id S233646AbjI2P5X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:53:40 -0400
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE68193
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:53:37 -0700 (PDT)
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1859B3F44E
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 15:53:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1696002816;
-        bh=Yz63+1IerqgOxssIJi97yKZjGDoqmA2Fx86PcxES4dE=;
-        h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-         Mime-Version:Content-Type;
-        b=mPdxYdrTOAgu0ysh7f1r5ndkT63cXyeyB4PTJd4yOOgma/5zQYpH8OvPZEtHCmCA8
-         LmIxX4rNr9eTqHGoSWQnfgoCI+YRZKBUj6CLNOASI+3d+wOsnTb3JUVzsYiDE1ceN2
-         yMHeyP8pLLTwzVyqvLUh0WOz85WeWjEtCsXrwBT8Aok2qRHVL+TVmbbmCTzHpvmFZE
-         /pJny8DNroXcRSrAiKxFfuFxwU4Yv3qtsvAWCuvR1tDxkMGvIM3Dg0S5lIlK3sYPl2
-         vkEyzCjUiYbqgUnAeQG+jyPBnLYU7g1le4trEDuVEzIFWusKCjOEqYDOHQIf7Bd18W
-         7nWHxhobtybmg==
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9a681c3470fso1186618166b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:53:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696002815; x=1696607615;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Yz63+1IerqgOxssIJi97yKZjGDoqmA2Fx86PcxES4dE=;
-        b=vo5TUHEMQWJi6LmYxg3tDEeiW3c8yfE8FB/XJ5Ep5LlansE3Wl6hqEDo21fTAYZJaU
-         KwjsMs9zsWr9rW3UU7ALVdQaKG26v0vllRDy1duFPCunP4z/SBYzE05VrdTYrkI8Sj9U
-         gDXfcOTqNfKtJq+VWlQp/zWAySzYSDnX0M2x1EqZGzki+jO7hTcGHBgcF3n4EbugmKzw
-         KKCzS2mZoc3m0wWMAi7+8iwHAnaz3+pvuM6bE7trk94fJ47lZW3McBZ2GmgSorOG7CwO
-         RdteywWkycrujmbuYyrQ+CsNupT5KesYyXCCJNzNQrE9G5G+Kn+so7H7g505k+1H27/3
-         hrCg==
-X-Gm-Message-State: AOJu0YzbPqsPsvaJI0RuN1IOgMcqt12etOkF+9sYKohfiItEQ1GfKxnA
-        gdPfXdnkM/feIvDfdMst3rIqnxIsOLsvxHvoRSeCZiPQqlITgZ3oO2Ppw3IpXT2WaLZs0cdw932
-        +uiP+90/Qp5a7RwPEhEuBSeANaHBfJLp92RxZZqWTOA==
-X-Received: by 2002:a17:906:8a43:b0:9a9:e525:8705 with SMTP id gx3-20020a1709068a4300b009a9e5258705mr3878961ejc.57.1696002815715;
-        Fri, 29 Sep 2023 08:53:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGyKWt/taLIaMrT+2uh0mXOaEz1vmvD+UNATJRDoNil2zUFB36Us0hF4Z65XN4bML7LDbXpAQ==
-X-Received: by 2002:a17:906:8a43:b0:9a9:e525:8705 with SMTP id gx3-20020a1709068a4300b009a9e5258705mr3878930ejc.57.1696002815388;
-        Fri, 29 Sep 2023 08:53:35 -0700 (PDT)
-Received: from amikhalitsyn (dslb-088-066-182-192.088.066.pools.vodafone-ip.de. [88.66.182.192])
-        by smtp.gmail.com with ESMTPSA id fy20-20020a170906b7d400b0099bccb03eadsm12485440ejb.205.2023.09.29.08.53.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 08:53:34 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 17:53:33 +0200
-From:   Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Cai Xinchen <caixinchen1@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [BUG?] fsconfig restart_syscall failed
-Message-Id: <20230929175333.31a7e9c608cb3b2425b7dd44@canonical.com>
-In-Reply-To: <20230922-drillen-muschel-c9bd03acfe00@brauner>
-References: <84e5fb5f-67c5-6d34-b93b-b307c6c9805c@huawei.com>
-        <20230922-drillen-muschel-c9bd03acfe00@brauner>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 29 Sep 2023 11:57:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7FB3195;
+        Fri, 29 Sep 2023 08:57:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696003040; x=1727539040;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=QuNwZ8GGaC1YVteAi2IZNrp5mEpQR8V4HvTYvdoFsDI=;
+  b=cq9f8kHNxsheRK5rI/AWRoYYv2SU/AlPY7SptZiZhY5N4223AFkFOq3S
+   0U/DrviyrMYb5aBZy6nZnxETYAW2GMBvqd9bg2Reb/5CFGogSZaArqAFI
+   S754bq0VuTeG23JhWV3k6Cz7yXscaHtlZsZ2cB9kGWxyCeozOu/owWGnp
+   aAXeDBQEhLKuSxbaw1BpsDG8DSppzjKZE4i1S41ypEaBdeyEu7JZFoRi3
+   4+1zRTq1uuX/X1ZN+98VnGrs6bhVX5c4+i6zzdhS/RdVG4D9JSM33+mvv
+   9roY+LgOPhhNUKIkZMuhH2cawHCRCj52GqIgRTuttWzuN2U3YS1N/KBhW
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="385149712"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="385149712"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:56:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="923633407"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="923633407"
+Received: from smorozov-mobl1.ger.corp.intel.com ([10.252.52.167])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:56:40 -0700
+Date:   Fri, 29 Sep 2023 18:56:37 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Babu Moger <babu.moger@amd.com>
+cc:     corbet@lwn.net, Reinette Chatre <reinette.chatre@intel.com>,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        fenghua.yu@intel.com, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, paulmck@kernel.org, akpm@linux-foundation.org,
+        quic_neeraju@quicinc.com, rdunlap@infradead.org,
+        damien.lemoal@opensource.wdc.com, songmuchun@bytedance.com,
+        peterz@infradead.org, jpoimboe@kernel.org, pbonzini@redhat.com,
+        chang.seok.bae@intel.com, pawan.kumar.gupta@linux.intel.com,
+        jmattson@google.com, daniel.sneddon@linux.intel.com,
+        sandipan.das@amd.com, tony.luck@intel.com, james.morse@arm.com,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        bagasdotme@gmail.com, eranian@google.com,
+        christophe.leroy@csgroup.eu, jarkko@kernel.org,
+        adrian.hunter@intel.com, quic_jiles@quicinc.com,
+        peternewman@google.com
+Subject: Re: [PATCH v10 10/10] x86/resctrl: Display RMID of resource group
+In-Reply-To: <20230915224227.1336967-11-babu.moger@amd.com>
+Message-ID: <0f97fcf-ee2e-f63f-1d98-8e11d30384c@linux.intel.com>
+References: <20230915224227.1336967-1-babu.moger@amd.com> <20230915224227.1336967-11-babu.moger@amd.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="8323329-894282230-1696003007=:1989"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 22 Sep 2023 10:08:36 +0200
-Christian Brauner <brauner@kernel.org> wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> On Fri, Sep 22, 2023 at 10:18:24AM +0800, Cai Xinchen wrote:
-> > Hello:
-> > =A0 I am doing some test for kernel 6.4, util-linux version:2.39.1.
-> > Have you encountered similar problems? If there is a fix, please
-> > let me know.
-> > Thank you very much
-> >=20
-> > --------------------------------------------------
-> >=20
-> > util-linux version 2.39.1 call mount use fsopen->fsconfig->fsmount->clo=
-se
-> > instead of mount syscall.
-> >=20
-> > And use this shell test:
-> >=20
-> > #!/bin/bash
-> > mkdir -p /tmp/cgroup/cgrouptest
-> > while true
-> > do
-> > =A0=A0=A0=A0=A0=A0=A0 mount -t cgroup -o none,name=3Dfoo cgroup /tmp/cg=
-roup/cgrouptest
->=20
->=20
-> > in mount syscall, no function will check fs->phase, and fc is recreate
-> > in monnt syscall. However, in fdconfig syscall, fc->phase is not initia=
-l as
-> > FS_CONTEXT_CREATE_PARAMS, restart_syscall will return -EBUSY. fc is cre=
-ated
-> > in fsopen syscall.
->=20
-> Mount api system calls aren't restartable so that doesn't work. cgroup2
-> doesn't have this issue, only cgroup1 has. So cgroup1_get_tree() should
-> probably be fixed if anyone cares.
->=20
+--8323329-894282230-1696003007=:1989
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
 
-Dear colleagues,
+On Fri, 15 Sep 2023, Babu Moger wrote:
 
-I've met the same issue a few years ago and tried to fix it:
-https://lore.kernel.org/all/20200923164637.13032-1-alexander.mikhalitsyn@vi=
-rtuozzo.com/
+> In x86, hardware uses RMID to identify a monitoring group. When a user
+> creates a monitor group these details are not visible. These details
+> can help resctrl debugging.
+> 
+> Add RMID(mon_hw_id) to the monitor groups display in resctrl interface.
+> Users can see these details when resctrl is mounted with "-o debug" option.
+> 
+> Other architectures do not use "RMID". Use the name mon_hw_id to refer
+> to "RMID" in an effort to keep the naming generic.
+> 
+> For example:
+>  $cat /sys/fs/resctrl/mon_groups/mon_grp1/mon_hw_id
+>  3
+> 
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
+> ---
+>  Documentation/arch/x86/resctrl.rst     |  4 ++++
+>  arch/x86/kernel/cpu/resctrl/internal.h |  5 +++++
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 23 +++++++++++++++++++++++
+>  3 files changed, 32 insertions(+)
+> 
+> diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
+> index 54691c8b832d..98b0eb509ed4 100644
+> --- a/Documentation/arch/x86/resctrl.rst
+> +++ b/Documentation/arch/x86/resctrl.rst
+> @@ -369,6 +369,10 @@ When monitoring is enabled all MON groups will also contain:
+>  	the sum for all tasks in the CTRL_MON group and all tasks in
+>  	MON groups. Please see example section for more details on usage.
+>  
+> +"mon_hw_id":
+> +	Available only with debug option. The identifier used by hardware
+> +	for the monitor group. On x86 this is the RMID.
+> +
+>  Resource allocation rules
+>  -------------------------
+>  
+> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+> index a07fa4329b65..b4910892b0a6 100644
+> --- a/arch/x86/kernel/cpu/resctrl/internal.h
+> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
+> @@ -296,6 +296,11 @@ struct rdtgroup {
+>   *	--> RFTYPE_BASE (Files common for both MON and CTRL groups)
+>   *	    Files: cpus, cpus_list, tasks
+>   *
+> + *		--> RFTYPE_MON (Files only for MON group)
+> + *
+> + *			--> RFTYPE_DEBUG (Files to help resctrl debugging)
+> + *			    File: mon_hw_id
+> + *
+>   *		--> RFTYPE_CTRL (Files only for CTRL group)
+>   *		    Files: mode, schemata, size
+>   *
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> index 55d1b90f460e..ef4b18091e5d 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -795,6 +795,22 @@ static int rdtgroup_closid_show(struct kernfs_open_file *of,
+>  	return ret;
+>  }
+>  
+> +static int rdtgroup_rmid_show(struct kernfs_open_file *of,
+> +			      struct seq_file *s, void *v)
+> +{
+> +	struct rdtgroup *rdtgrp;
+> +	int ret = 0;
+> +
+> +	rdtgrp = rdtgroup_kn_lock_live(of->kn);
+> +	if (rdtgrp)
+> +		seq_printf(s, "%u\n", rdtgrp->mon.rmid);
+> +	else
+> +		ret = -ENOENT;
+> +	rdtgroup_kn_unlock(of->kn);
+> +
+> +	return ret;
+> +}
+> +
+>  #ifdef CONFIG_PROC_CPU_RESCTRL
+>  
+>  /*
+> @@ -1856,6 +1872,13 @@ static struct rftype res_common_files[] = {
+>  		.seq_show	= rdtgroup_tasks_show,
+>  		.fflags		= RFTYPE_BASE,
+>  	},
+> +	{
+> +		.name		= "mon_hw_id",
+> +		.mode		= 0444,
+> +		.kf_ops		= &rdtgroup_kf_single_ops,
+> +		.seq_show	= rdtgroup_rmid_show,
+> +		.fflags		= RFTYPE_MON_BASE | RFTYPE_DEBUG,
+> +	},
+>  	{
+>  		.name		= "schemata",
+>  		.mode		= 0644,
+> 
 
-but didn't come into agreement about this.
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-Kind regards,
-Alex
+
+-- 
+ i.
+
+--8323329-894282230-1696003007=:1989--
