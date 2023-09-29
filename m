@@ -2,133 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 15B497B2D1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1EF7B2D21
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232694AbjI2Hjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 03:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
+        id S232756AbjI2Hjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 03:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbjI2Hjb (ORCPT
+        with ESMTP id S232774AbjI2Hjo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 03:39:31 -0400
-Received: from mailo.com (msg-4.mailo.com [213.182.54.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84046180
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:39:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1695973158; bh=jCXpnkD65gBL82o/dmwBwRzPh1cMJECkbSyB2ZedaOU=;
-        h=X-EA-Auth:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-         References:Content-Type:Content-Transfer-Encoding:MIME-Version;
-        b=jABpx6pjJbOoRCTDeUAFVzC32vkF7Vx+lrp3RpxHCCCs27wAfLOHe7CsRqNuCQsKU
-         uigTJYElqBhY6h+BV/nPzkwRzA5PPkAcpejkvMA6T+SsAY+BBMW/9hPhiD7LCCsYPw
-         b+as3MUdyGCG6iSJExvT9kThbGvGssJlG0Jem1Cc=
-Received: by b221-5.in.mailobj.net [192.168.90.25] with ESMTP
-        via ip-20.mailobj.net [213.182.54.20]
-        Fri, 29 Sep 2023 09:39:17 +0200 (CEST)
-X-EA-Auth: UlFkxK2sLNWRc9kMuK0MPizk6AYjvh9OiodH7TWZlBB6qMjIFdaikrp+ZyO5wfQccBmhJTUB1GHw/xXmuVpNPcUu6AVPBw/f
-Message-ID: <0c1ed836c5a306331e1b2a97217c3c9f7e1fb701.camel@mailo.com>
-Subject: Re: [PATCH] gfs2: fix 'passing zero to ERR_PTR()' warning
-From:   drv <drv@mailo.com>
-To:     Dan Carpenter <dan.carpenter@linaro.org>
-Cc:     Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        gfs2@lists.linux.dev, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Dan Carpenter <error27@gmail.com>
-Date:   Fri, 29 Sep 2023 13:09:11 +0530
-In-Reply-To: <a2d702b0-e819-47b0-a945-c2e38a162381@kadam.mountain>
-References: <ZRXA7n0wD83zhPxC@runicha.com>
-         <a2d702b0-e819-47b0-a945-c2e38a162381@kadam.mountain>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+        Fri, 29 Sep 2023 03:39:44 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EDA1A8;
+        Fri, 29 Sep 2023 00:39:41 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 527F2C433C8;
+        Fri, 29 Sep 2023 07:39:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695973180;
+        bh=yAYLz3ukdJtNvf42OO+RRKZ3YtBH+Khh5W18AjODGKs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EEV1O/OrowYxwsT7xTRih0qWIX7q1hjm5Ayp0pZO2vP6t9NZEYYSn2dIQZjBhoMyZ
+         YR49YoxePkb2gTXXgMb9TzBuAX6wuNqtQXG1Ye1TyTwuHU695VfqN97JaLxmBFmPBt
+         RtWcF3OkpBUAkeMc0TxS4r/iQBQSTD1cC61qFiXVg1d2ONNtYhZ5BeANSPE4/btAux
+         TVQCkjxUVDkfDThiGACVsn9i2umC77hcIrAWiuaIaZ8LYm1ZUd67fUVWIiIIm3lZj+
+         Uv7JhPU9Pp0RP15drIFjgKE4x2m8UhG2pKklx1E2DHGSZvG2bGG4RiCYjdHOuhDeLK
+         y8m6T9k/g4V+w==
+Date:   Fri, 29 Sep 2023 09:39:37 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Jian Zhang <zhangjian.3032@bytedance.com>
+Cc:     brendan.higgins@linux.dev, benh@kernel.crashing.org,
+        joel@jms.id.au, andrew@aj.id.au, zhangjian3032@gmail.com,
+        yulei.sh@bytedance.com, xiexinnan@bytedance.com,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Tommy Huang <tommy_huang@aspeedtech.com>,
+        "open list:ARM/ASPEED I2C DRIVER" <linux-i2c@vger.kernel.org>,
+        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] i2c: aspeed: Fix i2c bus hang in slave read
+Message-ID: <ZRZ/ObZmntMLw2r+@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Jian Zhang <zhangjian.3032@bytedance.com>,
+        brendan.higgins@linux.dev, benh@kernel.crashing.org, joel@jms.id.au,
+        andrew@aj.id.au, zhangjian3032@gmail.com, yulei.sh@bytedance.com,
+        xiexinnan@bytedance.com, Andi Shyti <andi.shyti@kernel.org>,
+        Tommy Huang <tommy_huang@aspeedtech.com>,
+        "open list:ARM/ASPEED I2C DRIVER" <linux-i2c@vger.kernel.org>,
+        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20230927154244.3774670-1-zhangjian.3032@bytedance.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,URIBL_BLACK autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+myms6uqEERuj8CP"
+Content-Disposition: inline
+In-Reply-To: <20230927154244.3774670-1-zhangjian.3032@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2023-09-29 at 10:06 +0300, Dan Carpenter wrote:
-> On Thu, Sep 28, 2023 at 11:37:42PM +0530, Deepak R Varma wrote:
-> > Resolve the following Smatch static checker warning:
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0fs/gfs2/acl.c:54 __gfs2=
-_get_acl() warn: passing zero to
-> > 'ERR_PTR'
-> >=20
-> > by returning NULL when an extended attribute length is zero,
-> > instead of
-> > passing on zero to the ERR_PTR().
-> >=20
-> > Signed-off-by: Deepak R Varma <drv@mailo.com>
-> > ---
->=20
-> Passing zero to ERR_PTR() is not a bug.
->=20
-> You're patch doesn't change how the code works at all, right?=C2=A0 So
-> it's
-> like a cleanup patch.=C2=A0 But the code was nicer in the original.
->=20
-> This is just a false positive.=C2=A0 Ignore static checker false
-> positives.
-> Fix the checker instead.=C2=A0 Although in this case, I can't think of an
-> easy way fix the checker.=C2=A0 Perhaps don't print a warning if the
-> callers
-> check for NULL?
->=20
-> The passing zero to ERR_PTR() warning is actually a pretty good
-> heuristic.=C2=A0 90% of the time in new code this is a real bug.=C2=A0 Bu=
-t in
-> old
-> code then probably it's 0% real bugs because we've been reviewing
-> these
-> warnings for over a decade.
->=20
-> I have a blog which might be useful.
-> https://staticthinking.wordpress.com/2022/08/01/mixing-error-pointers-and=
--null/
->=20
-> When I'm reviewing this patch I think:
-> 1) Does gfs2_xattr_acl_get() return zero?=C2=A0 And it does.
-> 2) Does that look intentional.=C2=A0 It's harder to tell because there
-> aren't
-> =C2=A0=C2=A0 comments and it looks like it might be a missing error code.=
-=C2=A0 But
-> =C2=A0=C2=A0 when you read it closely then actually it does look intentio=
-nal.
-> =C2=A0=C2=A0 In terms of Smatch, I consider it "intentional" if there is =
-an
-> =C2=A0=C2=A0 "error =3D 0;" within 5 lines for the goto.=C2=A0 (Other lan=
-guages like
-> Rust
-> =C2=A0=C2=A0 are better than C because they force everyone to follow the =
-rules.
-> =C2=A0=C2=A0 #trolling).
-> 3) Do the callers of __gfs2_get_acl() check for NULL and they do.
->=20
-> So this code is fine.
->=20
-> I hope this helps you in your review process.=C2=A0 1)=C2=A0 Ignore old
-> warnings.
-> 2)=C2=A0 Ignore false positives.=C2=A0 3)=C2=A0 If you think it is a bug,=
- then try
-> to
-> figure out how it will cause a crash.=C2=A0 Look at the caller etc.
->=20
-Hi Dan,
-Thank you for the review, feedback and guidance. This is really
-helpful.
 
-regards,
-deepak.
+--+myms6uqEERuj8CP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> regards,
-> dan carpenter
+On Wed, Sep 27, 2023 at 11:42:43PM +0800, Jian Zhang wrote:
+> When the `CONFIG_I2C_SLAVE` option is enabled and the device operates
+> as a slave, a situation arises where the master sends a START signal
+> without the accompanying STOP signal. This action results in a
+> persistent I2C bus timeout. The core issue stems from the fact that
+> the i2c controller remains in a slave read state without a timeout
+> mechanism. As a consequence, the bus perpetually experiences timeouts.
 >=20
+> In this case, the i2c bus will be reset, but the slave_state reset is
+> missing.
+>=20
+> Fixes: fee465150b45 ("i2c: aspeed: Reset the i2c controller when timeout =
+occurs")
+> Signed-off-by: Jian Zhang <zhangjian.3032@bytedance.com>
+
+Somebody wants to add tags here? I think it should go to my pull request
+this week.
 
 
+--+myms6uqEERuj8CP
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUWfzkACgkQFA3kzBSg
+KbaStw/+P9lKIzk5K+HPzW686R3QSD4c9L86eK6C7qSbz3dR8WCLARees+FPn7KK
+SLQxjQzUToKNe8bfW9QnSs65v0koPIADF83FOloDj9+0R3+mbsqVohFn7wcPM5t4
+NtAzODYxDYOCQP84m25UZC5A+G7zDXxqHM0gE5Y+cbptMCaSVyzRK4/1gBIeuos/
+H++dJ0wJ86ozY69MUjCNA0lQPGooZKiuZ81F9NaGRx6yxHO0aKI6ZLkLHpZ/c2G1
+mNbtgy2zR1UbahtKUHmfwmT8XuCOOlpTVCnMfjXl1BaElI4unm3F52ZvaHg375eq
+7IDpAO5QC4LNEQEmDE90OgvLa3eS4SvEkHeZ4wgr/iTiBicMrqEYATxka4mnjdfV
+EyDQIIWgMMaZqpsf0ngjN978y32byRy+IiN47aY2Cn7IeXJxruZ76Cqj6T9Pq4bb
+Zeqe/xs5Zt2B2wRsxD/fLSbls6gxHRR8yn0mBZD4XgcCxxsxllP5yQ0pukP13v8F
+WPHGoob7CewyIijzwuI64R0I1dkBRecC7WkD2eRnzL0o33N7ct3VY62qgFX2xmIS
+AG39798UYyZ/Mecx/hp4/mMnOhXgcPPyYgbmqu9+MGNEG03eHsGumshUOxQIRSnI
+d9q4OxxEDFTj3/tEMhEtYDkwKnIwEkAnvKYQGmhfYMZOUXFGBII=
+=00HN
+-----END PGP SIGNATURE-----
+
+--+myms6uqEERuj8CP--
