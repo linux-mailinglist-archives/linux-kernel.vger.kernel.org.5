@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 272F97B38BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FCFD7B38CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233497AbjI2R0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49222 "EHLO
+        id S233826AbjI2R0T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:26:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233139AbjI2RZw (ORCPT
+        with ESMTP id S233416AbjI2RZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:25:52 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E59DC1A7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:50 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-57ba5f05395so5984411eaf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:50 -0700 (PDT)
+        Fri, 29 Sep 2023 13:25:56 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8441B3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:51 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-57b5ef5b947so7902204eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696008350; x=1696613150; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696008351; x=1696613151; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VZs7RCyHEDyjwo9BM8JVP9aWGPKGhSjAg7KPK55tj0w=;
-        b=jWcHhfOsleOJfNNW0K3SQhI2r+yv+Ryh5Q5h8c6w1qEIqM0OOPC0fpet4vidV0wQHW
-         wM7Bn5y9FD1ehMufk1m0FEJGWEfauqpicIiIDOvdc+2DLHjP3j0SyYJbLCHo1Hz/mNZH
-         Tw33MXuDjCE0c83riFFl754mWZhwOsVwKqHzUm7pNTQiMG/1xvWbxH19EgGNOFRMbU9q
-         gE2aJFoyaciX/V9PiukCWEvgM4on1hWVG/7HodI88oIRjqo5gWTjN0sMtICTPD/In/HL
-         Y+NblSQZQyKkCX1LudXIOxvdrl6nU/flo1oeLlTuxoAL+pYsueFvUCg+CdALBYWSzhz/
-         oXwg==
+        bh=b7PDmHSczFeqgAzbimbZilruGj50u/2gIL6ZrFf0Suo=;
+        b=tPqTfgr7eS8w94njpeNR2mA4fJMEkZl4vcBfgDwqGnY7WAt/hyF+JYt41g+LD1pjG2
+         +r2w+dszYB7Ks63dx5V6O9uP/HLESAEZOdXe3bPB7xfoCyVMUGmL6LAnMVoOr6a/vLLu
+         0tH1hmGkaGedT4jHw6xjH1rCqCTiaa5m6k1kesaRIS8LwFBHHkV1hoS/2JrJETGrpm/9
+         ae7ivzQNuhvmStWtZVFxFXzNQWpeQDi1v/91KqGis/OpFPby4ixe6H6TAwLM68div8mQ
+         msVXMafiXTHV691q71BE/bfySAr8eZJW0dCA9tRr0M8Iyu5xpdfKMoyUsObaNa87qztZ
+         jkJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696008350; x=1696613150;
+        d=1e100.net; s=20230601; t=1696008351; x=1696613151;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VZs7RCyHEDyjwo9BM8JVP9aWGPKGhSjAg7KPK55tj0w=;
-        b=VETpIFbQdgjFpQpZkV9EharrUkWnrYtxlLOKv3YPZro9jet5yX/gzRbU9pcM/r43wT
-         5TYMRkjkG6/mMMRfAtnT4/cAlw0d9M9BdvK6LTzbR78X/S45u2k2SfDcOotBjPu17fcP
-         Ogloeh4udL5NofwS/ARW1xUHo3egAX/iEzTXPnukyeLHJbsQVeKD36XqPKcyrCXMMVI9
-         aQulOJqV2DvmHQWk7y76ep4Az5EshnbH8U5pBZbsXDxWdfhx0LiAUKkO/dR8Wil2fgAm
-         PTwdL72PRV0E1fdjnTDu7KX601A5sv1BzLx8syBHvrF1+cTnkjb+9prTCvzntZem9+00
-         vmig==
-X-Gm-Message-State: AOJu0YwL7fWilIZ3LGMWzS0GY1m2ECDtBwB4+2fzzSVFFmR7ha/zGtbJ
-        0SbxF8Is5poBeYtge//9Jrfgkg==
-X-Google-Smtp-Source: AGHT+IEV4b51ilWN++n/0+rU+iGp7VHyBLZBDmjeuTWYmnl26MZ3t8X5p2iE4s9s18GyLz1K/SQJLg==
-X-Received: by 2002:a4a:9257:0:b0:57b:63a6:306d with SMTP id g23-20020a4a9257000000b0057b63a6306dmr5249640ooh.6.1696008350202;
-        Fri, 29 Sep 2023 10:25:50 -0700 (PDT)
+        bh=b7PDmHSczFeqgAzbimbZilruGj50u/2gIL6ZrFf0Suo=;
+        b=p1+A3/Zjcdn33npD/UKY7USmm9hY5NC3nQ0o+nAWp0jli38BPALhk+EfFyYV6fzpNP
+         OHb4h8tjULoFvWkaaUFiLa/4cY1bFtKSicPA8d8puHUGgkQFLFmAXGJte6CDgB1zuJvs
+         4QY8bvZXKae9yWmq8bOnZddQqcxs4YgAXq6508Dw5/lG+HI0UaCbXnrtxB7X2wLOKIG1
+         +cvIz6l032m0Kxht0l3gBhOvDRmV6fuI3kSZhZAc72wAjq+6dw+SfXjipeBeTcWPt91q
+         QBV9h1syGKjj8W+eWczHCnsQ387N7vWxYne3RJBmk93J199rCixVMEUc218zY+ltSupM
+         PVFA==
+X-Gm-Message-State: AOJu0YwdOibrNZT5voLxga5lEAiYXSqoocv4ElCGNyZITUfanc+MG5iZ
+        T5Ubgior4Cp5bPFXtKJdd2yOqCPDtuAZKnDaS4bV4g==
+X-Google-Smtp-Source: AGHT+IHxogutDZ1XLOIzr9/nOTx5KhbYFs+7hKsrWe7PtJOi6WwkLjfxiyyCL5MSgpTSmN6+IIr3og==
+X-Received: by 2002:a4a:7319:0:b0:57b:3a07:181c with SMTP id s25-20020a4a7319000000b0057b3a07181cmr4656794ooc.9.1696008351082;
+        Fri, 29 Sep 2023 10:25:51 -0700 (PDT)
 Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id f128-20020a4a5886000000b0057bb326cad4sm2272915oob.33.2023.09.29.10.25.49
+        by smtp.gmail.com with ESMTPSA id f128-20020a4a5886000000b0057bb326cad4sm2272915oob.33.2023.09.29.10.25.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 10:25:49 -0700 (PDT)
+        Fri, 29 Sep 2023 10:25:50 -0700 (PDT)
 From:   David Lechner <dlechner@baylibre.com>
 To:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         linux-staging@lists.linux.dev
@@ -63,9 +63,9 @@ Cc:     David Lechner <david@lechnology.com>,
         Axel Haslam <ahaslam@baylibre.com>,
         Philip Molloy <pmolloy@baylibre.com>,
         linux-kernel@vger.kernel.org, David Lechner <dlechner@baylibre.com>
-Subject: [PATCH v3 04/27] staging: iio: resolver: ad2s1210: check return of ad2s1210_initial()
-Date:   Fri, 29 Sep 2023 12:23:09 -0500
-Message-ID: <20230929-ad2s1210-mainline-v3-4-fa4364281745@baylibre.com>
+Subject: [PATCH v3 05/27] staging: iio: resolver: ad2s1210: remove spi_set_drvdata()
+Date:   Fri, 29 Sep 2023 12:23:10 -0500
+Message-ID: <20230929-ad2s1210-mainline-v3-5-fa4364281745@baylibre.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
 References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
@@ -86,9 +86,7 @@ From: David Lechner <david@lechnology.com>
 
 From: David Lechner <dlechner@baylibre.com>
 
-This adds a check to the return value of ad2s1210_initial() since it
-can fail. The call is also moved before devm_iio_device_register() so
-that we don't have to unregister the device if it fails.
+Since we never call spi_get_drvdata(), we can remove spi_set_drvdata().
 
 Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
@@ -97,32 +95,22 @@ v3 changes:
 * This is a new patch split out from "staging: iio: resolver: ad2s1210:
  fix probe"
 
- drivers/staging/iio/resolver/ad2s1210.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/staging/iio/resolver/ad2s1210.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
-index 8fde08887f7f..b5e071d7c5fd 100644
+index b5e071d7c5fd..28015322f562 100644
 --- a/drivers/staging/iio/resolver/ad2s1210.c
 +++ b/drivers/staging/iio/resolver/ad2s1210.c
-@@ -672,6 +672,10 @@ static int ad2s1210_probe(struct spi_device *spi)
- 	if (ret < 0)
- 		return ret;
+@@ -659,8 +659,6 @@ static int ad2s1210_probe(struct spi_device *spi)
+ 		return -ENOMEM;
+ 	st = iio_priv(indio_dev);
  
-+	ret = ad2s1210_initial(st);
-+	if (ret < 0)
-+		return ret;
-+
- 	indio_dev->info = &ad2s1210_info;
- 	indio_dev->modes = INDIO_DIRECT_MODE;
- 	indio_dev->channels = ad2s1210_channels;
-@@ -683,7 +687,6 @@ static int ad2s1210_probe(struct spi_device *spi)
- 		return ret;
- 
- 	st->fclkin = spi->max_speed_hz;
--	ad2s1210_initial(st);
- 
- 	return 0;
- }
+-	spi_set_drvdata(spi, indio_dev);
+-
+ 	mutex_init(&st->lock);
+ 	st->sdev = spi;
+ 	st->hysteresis = true;
 
 -- 
 2.42.0
