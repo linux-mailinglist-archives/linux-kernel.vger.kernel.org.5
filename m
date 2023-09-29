@@ -2,102 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3A17B3912
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 704417B390E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233404AbjI2Rm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
+        id S233149AbjI2Rm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:42:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232954AbjI2Rm5 (ORCPT
+        with ESMTP id S232954AbjI2RmZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:42:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AD9195
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:42:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696009340;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mNuw9E3jfISKMJANhElE3yZ8P7q99O6Yz29XsBOWCUM=;
-        b=caAofMvlr1cthonJcSGkYY7mGlUL37xVTeuviQwmbi6tmgs+55F+PzZ0qKbqtw1XvX1wSG
-        fNdVUNK6yk57nJP7ZWzhdQOaOrD7QotULtZ/ixp4GtS+PkdvX6O6ODk7FNr1pU+Jx9ptYx
-        34N5lLy2WYVwnWaD4Pny26po9H5wvrs=
-Received: from mail-vs1-f70.google.com (mail-vs1-f70.google.com
- [209.85.217.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-377-mClT-RnmMXOvLi85S3Ab0g-1; Fri, 29 Sep 2023 13:42:18 -0400
-X-MC-Unique: mClT-RnmMXOvLi85S3Ab0g-1
-Received: by mail-vs1-f70.google.com with SMTP id ada2fe7eead31-452598c880aso8852346137.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:42:18 -0700 (PDT)
+        Fri, 29 Sep 2023 13:42:25 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5B51AE
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:42:22 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6c4a25f6390so7952527a34.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:42:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696009342; x=1696614142; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=68RQMIL3JGNleZxOiCoTPvaR9s9H/zQLkKem3fLlu88=;
+        b=L023O7TPbKyGZH7XkKEr0b6TA1gyPuqsGVHgy2y56RmAXGWTmJ6flfTK/vR9SwIR3U
+         maU3h4aby7r/wXqXrApkgAJo2tb/OkLCEz7Tg3v4nrSGw00AgLD0jMqT3u9IPY/+PYfp
+         MOXCqYIM7rzKVoYT5PWdEl9FnPRj/FLfYcgHOCtbh6hyWzD0fGrBCTDhtCRJRsdS4wD3
+         ogKhzPRIvXfVSI6ejPtACbPRIwuk9RrsEqh4bUS45OmRC5AttG27kR57BxaN9G3VLKmd
+         nIjh1ywEXoDZeTTH9vKhX81ZPboaKtqpYJJrKFjwkSNeeo9pkM7XKdUHYBV4yx0G/m27
+         0P6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696009338; x=1696614138;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mNuw9E3jfISKMJANhElE3yZ8P7q99O6Yz29XsBOWCUM=;
-        b=ZUVTmH+2m40Aktxcfwk00ScEgcGPXioQHBd4ZdNF1gxZccdsf4P2b0FTzgk0VvOnmE
-         vFXOdJjhs57PuYOs1gkTkzKu39FfTMxBZZCn7zHFyWYXZ/jc3D/t4lmQxg6I0VlGKJaf
-         gr550mhiMqqVCjmrpM6BfGhOKok9qZnpgrgsWpbabM+uw5HY/1EPdCX32QNb1Abqnxbn
-         iQKZAonZEQhB+1bEATYyRUKuchFHY9sQ55u4vSXRVT/tKeOAiGIMxBQ7JfN2VP8F5C8R
-         CekEpehBbFhXUCHfhf4PTt17/1r+gMvGPY835KZkekRFZOH4zmK7P8iJKpvQ0mswqnb0
-         3lwg==
-X-Gm-Message-State: AOJu0YwdIOHBQo33APc9GbOrae3bdDV+MqsOcEm96PlRveHNMuQOMkzA
-        xJLpq2f027ryW5TgUB/ip6XAy1ejPySWQgGW9N7u6wRxVj7cnXpm5JOvDJ+Wy9Z6wjT8A1wxc0j
-        jeMXOupHzyPYmrNReI5dB1VTbM83nkWBiRDpMaNSK
-X-Received: by 2002:a67:e210:0:b0:44d:5a92:ec43 with SMTP id g16-20020a67e210000000b0044d5a92ec43mr5037058vsa.24.1696009337903;
-        Fri, 29 Sep 2023 10:42:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHCp/AIdWPqEWbtC/9JPny903uCy02I1/BqXTOfQT6TzjBnF4NJ5GNkVAKN/E+OvugdC1agXXOcQyVdpUbSE60=
-X-Received: by 2002:a67:e210:0:b0:44d:5a92:ec43 with SMTP id
- g16-20020a67e210000000b0044d5a92ec43mr5037044vsa.24.1696009337587; Fri, 29
- Sep 2023 10:42:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696009342; x=1696614142;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=68RQMIL3JGNleZxOiCoTPvaR9s9H/zQLkKem3fLlu88=;
+        b=YIL3oB+uZaP1PfiODVpcKiaoF0MrMulq/TGWh3RKKcHDlgdrKyWs9VCmitdFPi/+do
+         TjmAy40k/79KD+6/Vh4kruUaNg1wMrL+2d1lRfzj+LbUFpXp5G2gknnygMbjcaH/nHrg
+         aI2KRM7G4zLWHFrsFzSIm71piWv3oN531orXJxYLaHEo4k8L8qDW9qR9aKDUOjSFh+F1
+         mp8VhHW0nSHvhWFAIPTwil+TMQFRNymeX4K+MTMaO4A4lnH8uBx5QdI8anQqLWkx4eqA
+         TSz/6Fql0dPLQUD/EQYZHfQy+g6I4/r6ggD2D9ZmqWJTCTuQQ3o0B4bZzc1ea5VqDJAt
+         Y/8w==
+X-Gm-Message-State: AOJu0YzU3g2yrtVSVhqGyvHHX9nelC6m1qBBQ58fPElZMpshgVC3BRDm
+        7OB84giAu5jddsi2SMwouLKy0Q==
+X-Google-Smtp-Source: AGHT+IGyNmo17+iWn2ufBJg0OO9ZbA7uNNp+MMG6j43QotDJLGPGN7FO5yVqQx6ARbvw+dVe+LWDYw==
+X-Received: by 2002:a05:6830:22d4:b0:6bd:603:797f with SMTP id q20-20020a05683022d400b006bd0603797fmr5130719otc.37.1696009342226;
+        Fri, 29 Sep 2023 10:42:22 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:400::5:a683])
+        by smtp.gmail.com with ESMTPSA id oj2-20020a056214440200b0065af4977ea3sm5680149qvb.24.2023.09.29.10.42.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 10:42:21 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 13:42:21 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        riel@surriel.com, mhocko@kernel.org, roman.gushchin@linux.dev,
+        shakeelb@google.com, muchun.song@linux.dev, tj@kernel.org,
+        lizefan.x@bytedance.com, shuah@kernel.org, mike.kravetz@oracle.com,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
+ memory controller
+Message-ID: <20230929174221.GA19137@cmpxchg.org>
+References: <20230928005723.1709119-1-nphamcs@gmail.com>
+ <20230928005723.1709119-2-nphamcs@gmail.com>
+ <CAJD7tkanr99d_Y=LefQTFsykyiO5oZpPUC=suD3P-L5eS=0SXA@mail.gmail.com>
+ <CAKEwX=M=8KYqvBTz9z1csrsFUpGf2tgWj-oyu96dSpRjn3ZnUQ@mail.gmail.com>
+ <CAKEwX=Npb4mwZ2ibJkmD5GyqXazr7PH8UGLu+YSDY8acf152Eg@mail.gmail.com>
+ <CAJD7tkaeDBTHC3UM91O56yrp8oCU-UBO6i_5HJMjVBDQAw0ipQ@mail.gmail.com>
+ <20230929150829.GA16353@cmpxchg.org>
+ <CAJD7tkZ1NiMMvQhxGSGzsPqYfBpwzP6svPe17s2FTDoHY6jYWQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230928173354.217464-1-mlevitsk@redhat.com> <ZRYxvdmHpjxr3QKp@google.com>
-In-Reply-To: <ZRYxvdmHpjxr3QKp@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Date:   Fri, 29 Sep 2023 19:42:05 +0200
-Message-ID: <CABgObfYhtHS3d4m07+qAxPzdR_jZ4Q9OC9K=Tf4sviH1Nn5cyw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] AVIC bugfixes and workarounds
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        iommu@lists.linux.dev, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
-        x86@kernel.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJD7tkZ1NiMMvQhxGSGzsPqYfBpwzP6svPe17s2FTDoHY6jYWQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 4:09=E2=80=AFAM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> On Thu, Sep 28, 2023, Maxim Levitsky wrote:
-> > Maxim Levitsky (4):
-> >   x86: KVM: SVM: always update the x2avic msr interception
-> >   x86: KVM: SVM: add support for Invalid IPI Vector interception
-> >   x86: KVM: SVM: refresh AVIC inhibition in svm_leave_nested()
->
-> Paolo, I assume you'll take the first three directly for 6.6?
+On Fri, Sep 29, 2023 at 08:11:54AM -0700, Yosry Ahmed wrote:
+> On Fri, Sep 29, 2023 at 8:08 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > On Thu, Sep 28, 2023 at 06:18:19PM -0700, Yosry Ahmed wrote:
+> > > My concern is the scenario where the memory controller is mounted in
+> > > cgroup v1, and cgroup v2 is mounted with memory_hugetlb_accounting.
+> > >
+> > > In this case it seems like the current code will only check whether
+> > > memory_hugetlb_accounting was set on cgroup v2 or not, disregarding
+> > > the fact that cgroup v1 did not enable hugetlb accounting.
+> > >
+> > > I obviously prefer that any features are also added to cgroup v1,
+> > > because we still didn't make it to cgroup v2, especially when the
+> > > infrastructure is shared. On the other hand, I am pretty sure the
+> > > maintainers will not like what I am saying :)
+> >
+> > I have a weak preference.
+> >
+> > It's definitely a little weird that the v1 controller's behavior
+> > changes based on the v2 mount flag. And that if you want it as an
+> > otherwise exclusive v1 user, you'd have to mount a dummy v2.
+> >
+> > But I also don't see a scenario where it would hurt, or where there
+> > would be an unresolvable conflict between v1 and v2 in expressing
+> > desired behavior, since the memory controller is exclusive to one.
+> >
+> > While we could eliminate this quirk with a simple
+> > !cgroup_subsys_on_dfl(memory_cgrp_subsys) inside the charge function,
+> > it would seem almost punitive to add extra code just to take something
+> > away that isn't really a problem and could be useful to some people.
+> >
+> > If Tejun doesn't object, I'd say let's just keep implied v1 behavior.
+> 
+> I agree that adding extra code to take a feature away from v1 is
+> probably too much, but I also think relying on a v2 mount option is
+> weird. Would it be too much to just have a v1-specific flag as well
+> and use cgroup_subsys_on_dfl(memory_cgrp_subsys) to decide which flag
+> to read?
 
-Yes.
+Yeah, let's not preemptively add explicit new features to cgroup1.
 
-Paolo
-
-> >   x86: KVM: SVM: workaround for AVIC's errata #1235
->
-
+Since we agree the incidental support is weird, let's filter hugetlb
+charging on cgroup_subsys_on_dfl(memory_cgrp_subsys) after all. If
+somebody wants this for v1 - and it doesn't sound like Google is even
+in that category according to Frank - they should send a separate
+patch and we can go through all the reasons why switching to v2 is not
+an option for them.
