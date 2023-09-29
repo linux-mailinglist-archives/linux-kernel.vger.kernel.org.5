@@ -2,117 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79ABD7B3656
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6548B7B3654
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233469AbjI2PG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55112 "EHLO
+        id S233394AbjI2PGS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:06:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233482AbjI2PGZ (ORCPT
+        with ESMTP id S232490AbjI2PGR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:06:25 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDC811A7;
-        Fri, 29 Sep 2023 08:06:22 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id 5b1f17b1804b1-4060b623e64so5166795e9.0;
-        Fri, 29 Sep 2023 08:06:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695999981; x=1696604781; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=I+HDInQo6A1OIfSQ4kDLBbQAIE/uOQhrvXDem09PR3k=;
-        b=lupwsMhYhrKqD+UUkkiBkP2KN8oPDTsweMZGxSt0FI6jY71+XWypyyRABzACjaFuZc
-         gMh+IbK6iHqyvKr3DgpIMwQIcc5eEHS5A7e1UoNVP+pKHhMJqXfw293J4Qu4H73wuWK1
-         ssUpbX9Im+FNl+z2rthvk4b8+6q4yis0rB/PZtKJq5pDMmwBFEHDq7zQ1o+DP1tzd3dV
-         woknr0MvA+kSl66dtbhFgl4q4k3E9mZm2Kc7LBikzodaLIzG56PXEHU9yZ9NBhaN8Cjv
-         EMvXYeKE8O/8H3Wcb25qLAb2cXm0ZG5PefHdziSFO1Yq2wHaYXC9qlDcRnEIPxcI6aub
-         i69A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695999981; x=1696604781;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I+HDInQo6A1OIfSQ4kDLBbQAIE/uOQhrvXDem09PR3k=;
-        b=OPQj3w4Q2zQ7OBQUrsL/29dM8iL53ZjqxF7oS4m/NcS3RBnxrXByfBcBrT+UmLLu3C
-         LiX9LvXjKKqdFcqJFemk5x7STFSU+TNXl+4e49pHdkLo8CmmDNEHgj1qewWCof0UCEsz
-         aFGYGnzFKkrEm4SDeRjIlHrO+i30gQLHZN47PYua9kTgvCNd2z91ptKo6rWt6RzAJ8OO
-         v3I7MWXb8y6iVtEx1DAwXnBWJUqLCYpqvyCsKRbsSwKc2buHbhoL74qVggmFt0TtwF3i
-         +bAV3zDSr7Jw3F20EQF40QNalUq0fFIrzHYtZzSBqOZTbXTFaZIYCy0w+cSuaSW2bVT7
-         GyCw==
-X-Gm-Message-State: AOJu0YxXZhZK+DCUcXohq+GjefH2+VWXtYVdnFwYITLfU7awLd8L97Tv
-        hKNaTz/xFwsuWNu+QtNqWjt6/toJ4ZX/8g==
-X-Google-Smtp-Source: AGHT+IFajsTW5J93K/OzzdCwONkeonYv1BhbbEV7MBCbRDZMmPHOe8BVXYC6nzOe54XQkf98bAaeqA==
-X-Received: by 2002:a7b:cd85:0:b0:402:ebe1:7960 with SMTP id y5-20020a7bcd85000000b00402ebe17960mr4202891wmj.2.1695999980586;
-        Fri, 29 Sep 2023 08:06:20 -0700 (PDT)
-Received: from localhost ([2a02:810d:1640:10d8:9259:8ee2:26ea:3669])
-        by smtp.gmail.com with ESMTPSA id y19-20020a1c4b13000000b00405bbfd5d16sm1606110wma.7.2023.09.29.08.06.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 08:06:20 -0700 (PDT)
-From:   Joerg Schambacher <joerg.hifiberry@gmail.com>
-Cc:     a-krasser@ti.com, joerg@hifiberry.com,
-        Joerg Schambacher <joerg.hifiberry@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] ASoC: pcm512x: Adds bindings for TAS575x devices
-Date:   Fri, 29 Sep 2023 17:05:55 +0200
-Message-Id: <20230929150555.405388-1-joerg.hifiberry@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 29 Sep 2023 11:06:17 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FFAF7;
+        Fri, 29 Sep 2023 08:06:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695999975; x=1727535975;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=qj0eh55UwGPngvSahx/UIAzAqFq0pQb7yzApIYUtOY4=;
+  b=BRE41RjQBTNMmwb8tpnOFwW1wWMpN7EvzwD/IELFxJ/G40jd57XdIUOz
+   +ANJbGasMNMTnMzJNssgEj4I2WDESrbfnFas54euY2K1vW8mxzsZj3KWp
+   GF8Ke+aoV8xDn/c9BWcduxph4RXNtiSWS0LEeF33AEdd/NJ0HMONhxnlZ
+   OtZbkmpPPpFnIv+YOOYblgcTi5p/Kkpma/y4gfuaaZl1OspWYiWRrcWdO
+   jvzaB8if4NDy5xwDK28v83s0Fvu7Zb/RhM+O7gQ69HQ2nuSYtr6DLyD79
+   AIssbRvQe728TXX5FSgNzXtWAJ8b9VCamMOnSuFS5Hu9yHW6eL4hiqm+H
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="385136058"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="385136058"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:06:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="840294789"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="840294789"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 29 Sep 2023 08:06:10 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>
+Subject: Re: [PATCH v5 09/18] x86/sgx: Store struct sgx_encl when allocating
+ new VA pages
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-10-haitao.huang@linux.intel.com>
+ <46fecb95ae2c4cd156ad7bda99522214fcfe5774.camel@intel.com>
+ <op.2bxr9aj7wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <fd2049b46a2e508a90006731a5d0cd2b90db9e45.camel@intel.com>
+Date:   Fri, 29 Sep 2023 10:06:09 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2b1f8j1bwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <fd2049b46a2e508a90006731a5d0cd2b90db9e45.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The TAS5754/6 power amplifiers use the same pcm512x driver with
-only minor restictions described in the bindings document.
+On Wed, 27 Sep 2023 16:21:19 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-Signed-off-by: Joerg Schambacher <joerg.hifiberry@gmail.com>
----
- Documentation/devicetree/bindings/sound/pcm512x.txt | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+> On Wed, 2023-09-27 at 10:35 -0500, Haitao Huang wrote:
+>> > > +
+>> > > +	/* Possible owner types */
+>> > > +	union {
+>> > > +		struct sgx_encl_page *encl_page;
+>> > > +		struct sgx_encl *encl;
+>> > > +	};
+>> >
+>> > Sadly for virtual EPC page the owner is set to the 'sgx_vepc'  
+>> instance it
+>> > belongs to.
+>> >
+>> > Given how sgx_{alloc|free}_epc_page() arbitrarily uses encl_page,>  
+>> perhaps we
+>> > should do below?
+>> >
+>> >  	union {
+>> >  		struct sgx_encl_page *encl_page;
+>> >  		struct sgx_encl *encl;
+>> >  		struct sgx_vepc *vepc;
+>> >  		void *owner;
+>> >  	};
+>> >
+>> > And in sgx_{alloc|free}_epc_page() we can use 'owner' instead.
+>> >
+>>
+>> As I mentioned in cover letter and change log in 11/18, this series does 
+>> not track virtual EPC.
+>
+> It's not about how does the cover letter says.  We cannot ignore the  
+> fact that
+> currently virtual EPC uses owner too.
+>
+> But given the virtual EPC code currently doesn't use the owner, I can  
+> live with
+> not having the 'vepc' member in the union now.
 
-diff --git a/Documentation/devicetree/bindings/sound/pcm512x.txt b/Documentation/devicetree/bindings/sound/pcm512x.txt
-index 3aae3b41bd8e..77006a4aec4a 100644
---- a/Documentation/devicetree/bindings/sound/pcm512x.txt
-+++ b/Documentation/devicetree/bindings/sound/pcm512x.txt
-@@ -1,12 +1,12 @@
--PCM512x audio CODECs
-+PCM512x and TAS575x audio CODECs/amplifiers
- 
- These devices support both I2C and SPI (configured with pin strapping
--on the board).
-+on the board). The TAS575x devices only support I2C.
- 
- Required properties:
- 
--  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141" or
--                 "ti,pcm5142"
-+  - compatible : One of "ti,pcm5121", "ti,pcm5122", "ti,pcm5141",
-+                 "ti,pcm5142", "ti,tas5754" or "ti,tas5756"
- 
-   - reg : the I2C address of the device for I2C, the chip select
-           number for SPI.
-@@ -25,6 +25,7 @@ Optional properties:
-     through <6>.  The device will be configured for clock input on the
-     given pll-in pin and PLL output on the given pll-out pin.  An
-     external connection from the pll-out pin to the SCLK pin is assumed.
-+    Caution: the TAS-desvices only support gpios 1,2 and 3
- 
- Examples:
- 
--- 
-2.34.1
+Ah, I forgot even though we don't use the owner field assigned by vepc, it  
+is still passed into sgx_alloc/free_epc_page().
 
+Will add back "void* owner" and use it for assignment inside  
+sgx_alloc/free_epc_page().
+
+Thanks
+
+Haitao
