@@ -2,124 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4887B374C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A4E7B3754
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:53:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233751AbjI2Pw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50010 "EHLO
+        id S233705AbjI2Pxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:53:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233731AbjI2Pw0 (ORCPT
+        with ESMTP id S233505AbjI2Pxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:52:26 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41314199
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:52:23 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40566f8a093so112003485e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:52:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696002742; x=1696607542; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IrS+nzD68lxpKLinSVXhSEs3fVhjvM8TXqXpQevNJBs=;
-        b=Sn3Ed8UGv5mdqPn4PA4bd7aTXYIJAfdgINOxGcha/NsfEnt1fkuvcyE8rZZS+K1pCe
-         e98JNYxp+IchJaQCx/+a3/hlB3AV+lkfrw3gWELwGc8y2l4c3AsCPpm7MxoKatG+5t5y
-         GrcQ11DSQSJutU2L5ZevyVdRum0BJvPzzHRyDMKQ6zFWXYKtQg4uRBADgay+fus0fNxy
-         Jqh+aHf5wF3Mm+vgkJXf4OU+6a5DpSCReWfp57vreLtoQiqvZGYVTGuwzK8/xcLDEG8T
-         fQoaaoZfo5mGZx9DpDa8aY9M9cAgwkXqMDU6vPXvx9NSdlGlzD7Q9ZQ+A4A6G3PWV8Dc
-         KOGQ==
+        Fri, 29 Sep 2023 11:53:40 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE68193
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:53:37 -0700 (PDT)
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com [209.85.218.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1859B3F44E
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 15:53:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1696002816;
+        bh=Yz63+1IerqgOxssIJi97yKZjGDoqmA2Fx86PcxES4dE=;
+        h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+         Mime-Version:Content-Type;
+        b=mPdxYdrTOAgu0ysh7f1r5ndkT63cXyeyB4PTJd4yOOgma/5zQYpH8OvPZEtHCmCA8
+         LmIxX4rNr9eTqHGoSWQnfgoCI+YRZKBUj6CLNOASI+3d+wOsnTb3JUVzsYiDE1ceN2
+         yMHeyP8pLLTwzVyqvLUh0WOz85WeWjEtCsXrwBT8Aok2qRHVL+TVmbbmCTzHpvmFZE
+         /pJny8DNroXcRSrAiKxFfuFxwU4Yv3qtsvAWCuvR1tDxkMGvIM3Dg0S5lIlK3sYPl2
+         vkEyzCjUiYbqgUnAeQG+jyPBnLYU7g1le4trEDuVEzIFWusKCjOEqYDOHQIf7Bd18W
+         7nWHxhobtybmg==
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9a681c3470fso1186618166b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:53:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696002742; x=1696607542;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IrS+nzD68lxpKLinSVXhSEs3fVhjvM8TXqXpQevNJBs=;
-        b=YeXjKnffDCPjePPfCpF9mjmaH8qcHGmwNtaX8RpIB2r3P/K7BxZ3LyIVtseOMZeMeT
-         bfjGNgN1SQshngF4ikG/Cph85m7HZtqqdkvUShtwGanbMqFx8Tl+sHrDzJj4KoYb6rXk
-         QUUeWtJ0CRXUBWLWsB+ozORqFPIEouiB40NIi1kBgdmsPN73D4wOFLsCFGSKIaeNuMV8
-         eKhwGkig/7uYiAV7YP1chRLmGDX0UuZPHw6ArXZ5ax4qGK3jHE/PmJofzIrjDDUngai9
-         aXcKKhhs4tZf3qbV444HqaaLbt8e8XAZvE48ahV+IWt3PLN/OA5PSh5dwKyNX7PvPjNH
-         l1YQ==
-X-Gm-Message-State: AOJu0YxDvEcfocgRG07gr7CopGGx0bVPGcneaMmKnmIiU26ZvKDFB0/q
-        MDbFLPDKsCqAE4AFU9l/awdP0Q==
-X-Google-Smtp-Source: AGHT+IGWszKKxw4TdMa+hddnqsHXs6q8yNQZry/GtgBQM82ugScktA6LHs1ViFFsbX/SAdDuPBryyw==
-X-Received: by 2002:a7b:c8d1:0:b0:405:3b92:2fed with SMTP id f17-20020a7bc8d1000000b004053b922fedmr3953096wml.26.1696002741647;
-        Fri, 29 Sep 2023 08:52:21 -0700 (PDT)
-Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
-        by smtp.gmail.com with ESMTPSA id y19-20020a1c4b13000000b00405bbfd5d16sm1685765wma.7.2023.09.29.08.52.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 08:52:21 -0700 (PDT)
-Message-ID: <b983e5e4-9a70-4e50-9d32-234cd5c47f66@linaro.org>
-Date:   Fri, 29 Sep 2023 16:52:20 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] arm64: dts: qcom: sc7280: Add Camera Control
- Interface busses
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Luca Weiss <luca.weiss@fairphone.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230929-sc7280-cci-v1-0-16c7d386f062@fairphone.com>
- <20230929-sc7280-cci-v1-2-16c7d386f062@fairphone.com>
- <8dd470e5-ce33-3d33-98f1-e66935ca7b56@linaro.org>
- <1b5bd391-4bb0-44ac-88d1-e326bec4dd7d@nexus-software.ie>
- <acc606a6-c46c-43f5-86e0-84bf876001dd@linaro.org>
- <db5d00b5-5d18-4144-88c2-ff6cfb8c176a@linaro.org>
- <b6f801fc-1d8b-420b-a439-ea0cdd12f7f6@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <b6f801fc-1d8b-420b-a439-ea0cdd12f7f6@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20230601; t=1696002815; x=1696607615;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Yz63+1IerqgOxssIJi97yKZjGDoqmA2Fx86PcxES4dE=;
+        b=vo5TUHEMQWJi6LmYxg3tDEeiW3c8yfE8FB/XJ5Ep5LlansE3Wl6hqEDo21fTAYZJaU
+         KwjsMs9zsWr9rW3UU7ALVdQaKG26v0vllRDy1duFPCunP4z/SBYzE05VrdTYrkI8Sj9U
+         gDXfcOTqNfKtJq+VWlQp/zWAySzYSDnX0M2x1EqZGzki+jO7hTcGHBgcF3n4EbugmKzw
+         KKCzS2mZoc3m0wWMAi7+8iwHAnaz3+pvuM6bE7trk94fJ47lZW3McBZ2GmgSorOG7CwO
+         RdteywWkycrujmbuYyrQ+CsNupT5KesYyXCCJNzNQrE9G5G+Kn+so7H7g505k+1H27/3
+         hrCg==
+X-Gm-Message-State: AOJu0YzbPqsPsvaJI0RuN1IOgMcqt12etOkF+9sYKohfiItEQ1GfKxnA
+        gdPfXdnkM/feIvDfdMst3rIqnxIsOLsvxHvoRSeCZiPQqlITgZ3oO2Ppw3IpXT2WaLZs0cdw932
+        +uiP+90/Qp5a7RwPEhEuBSeANaHBfJLp92RxZZqWTOA==
+X-Received: by 2002:a17:906:8a43:b0:9a9:e525:8705 with SMTP id gx3-20020a1709068a4300b009a9e5258705mr3878961ejc.57.1696002815715;
+        Fri, 29 Sep 2023 08:53:35 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGyKWt/taLIaMrT+2uh0mXOaEz1vmvD+UNATJRDoNil2zUFB36Us0hF4Z65XN4bML7LDbXpAQ==
+X-Received: by 2002:a17:906:8a43:b0:9a9:e525:8705 with SMTP id gx3-20020a1709068a4300b009a9e5258705mr3878930ejc.57.1696002815388;
+        Fri, 29 Sep 2023 08:53:35 -0700 (PDT)
+Received: from amikhalitsyn (dslb-088-066-182-192.088.066.pools.vodafone-ip.de. [88.66.182.192])
+        by smtp.gmail.com with ESMTPSA id fy20-20020a170906b7d400b0099bccb03eadsm12485440ejb.205.2023.09.29.08.53.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 08:53:34 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 17:53:33 +0200
+From:   Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     Cai Xinchen <caixinchen1@huawei.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, dhowells@redhat.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [BUG?] fsconfig restart_syscall failed
+Message-Id: <20230929175333.31a7e9c608cb3b2425b7dd44@canonical.com>
+In-Reply-To: <20230922-drillen-muschel-c9bd03acfe00@brauner>
+References: <84e5fb5f-67c5-6d34-b93b-b307c6c9805c@huawei.com>
+        <20230922-drillen-muschel-c9bd03acfe00@brauner>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/09/2023 16:25, Konrad Dybcio wrote:
->> Not actually a required clock for the clock controller.
->>
->> I suspect the same is true for dispcc and videocc though it would also mean the respective drivers would need to switch on <&gcc DISPx_CAMERA_AHB_CLK> or <&gcc GCC_VIDEO_AHB_CLK> prior to accessing registers inside the ip blocks which may not currently be the case.
->>
->> Feels like a bit of a contrary answer but my reading is the GCC_IPBLOCK_AHB_CLK clocks belong in the drivers not the clock controllers..  or at least that's true for sm8250/camcc
-> I believe the idea here would be that registering GCC_IP_AHB_CLK
-> as a pm_clk for the clock controller would make that clock turn
-> on when IPBLOCK_CC is accessed (e.g. when we turn on
-> IPBLOCK_CORE_CLK), so that it doesn't need to be duplicated in
-> each and every end device.
-> 
-> Konrad
+On Fri, 22 Sep 2023 10:08:36 +0200
+Christian Brauner <brauner@kernel.org> wrote:
 
-Yeah I mean I accept the logic - the core AHB clock is effectively gated 
-by the ipblockcc even though they originate from different places in 
-hardware - and _when_ do you want one clock without the other ? Never 
-except at probe() time for the ipblockcc.
+> On Fri, Sep 22, 2023 at 10:18:24AM +0800, Cai Xinchen wrote:
+> > Hello:
+> > =A0 I am doing some test for kernel 6.4, util-linux version:2.39.1.
+> > Have you encountered similar problems? If there is a fix, please
+> > let me know.
+> > Thank you very much
+> >=20
+> > --------------------------------------------------
+> >=20
+> > util-linux version 2.39.1 call mount use fsopen->fsconfig->fsmount->clo=
+se
+> > instead of mount syscall.
+> >=20
+> > And use this shell test:
+> >=20
+> > #!/bin/bash
+> > mkdir -p /tmp/cgroup/cgrouptest
+> > while true
+> > do
+> > =A0=A0=A0=A0=A0=A0=A0 mount -t cgroup -o none,name=3Dfoo cgroup /tmp/cg=
+roup/cgrouptest
+>=20
+>=20
+> > in mount syscall, no function will check fs->phase, and fc is recreate
+> > in monnt syscall. However, in fdconfig syscall, fc->phase is not initia=
+l as
+> > FS_CONTEXT_CREATE_PARAMS, restart_syscall will return -EBUSY. fc is cre=
+ated
+> > in fsopen syscall.
+>=20
+> Mount api system calls aren't restartable so that doesn't work. cgroup2
+> doesn't have this issue, only cgroup1 has. So cgroup1_get_tree() should
+> probably be fixed if anyone cares.
+>=20
 
-Then again if you can show the clock dependency tree of camera or disp 
-requires GCC_IP_AHB_CLK you could make the argument the dt requires the 
-clock dependency defined in that block.
+Dear colleagues,
 
-I'd say we should offline this from Luca's patches tho :) for me anyway 
-the first two are fine.
+I've met the same issue a few years ago and tried to fix it:
+https://lore.kernel.org/all/20200923164637.13032-1-alexander.mikhalitsyn@vi=
+rtuozzo.com/
 
-Agree #3 is verboten. No new empty nodes.
+but didn't come into agreement about this.
 
----
-bod
+Kind regards,
+Alex
