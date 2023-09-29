@@ -2,146 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDA57B2E66
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:52:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68CA7B2E85
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 10:55:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbjI2IwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 04:52:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
+        id S232613AbjI2Izq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 04:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbjI2IwQ (ORCPT
+        with ESMTP id S231429AbjI2Izm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 04:52:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF6794;
-        Fri, 29 Sep 2023 01:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695977535; x=1727513535;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bxjnnMTEfiYHjMl/VzP/xRuB60mcYj1DgtGGuQgN3Hs=;
-  b=g6yYQ+Iefg22lv5yGHgMwWGzRMjvI85SNfTiVUlqSYX70uBMLUwP/Vh0
-   06ryHpQmtlJBdNo2TAh+FP95WQBE09de2GZOgKCax3C7hItnN2oV9NNmr
-   qXOBSEjSmd4a/vGhLBGYagZaErbmFgPuiTZQv5xQrQ0/L3jpDQABLqRVc
-   rOLCvyg/D6p9KBTrLoHgqCQDo9tFcHWf9uRMiBdIXmstY+5ofgRsTuD5w
-   JiAEuPqBgJ44uLaV0R2LrsV3wfSSl+RjFnA0dIri8k/4tdbgrGfXkAHtp
-   9RvkgIRf2/37epaYcWdhmhPYJvQs9k8jcml6aIFxy3U6E3vO4TSX4MDCe
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="863667"
-X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
-   d="scan'208";a="863667"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 01:52:15 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="743396335"
-X-IronPort-AV: E=Sophos;i="6.03,186,1694761200"; 
-   d="scan'208";a="743396335"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by orsmga007.jf.intel.com with SMTP; 29 Sep 2023 01:52:09 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 29 Sep 2023 11:52:09 +0300
-Date:   Fri, 29 Sep 2023 11:52:09 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Abdel Alkuor <alkuor@gmail.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
-        robh+dt@kernel.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>
-Subject: Re: [PATCH v7 02/14] USB: typec: tsp6598x: Add cmd timeout and
- response delay
-Message-ID: <ZRaQObkJ5kQhhhYs@kuha.fi.intel.com>
-References: <20230927175348.18041-1-alkuor@gmail.com>
- <20230927175348.18041-3-alkuor@gmail.com>
+        Fri, 29 Sep 2023 04:55:42 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0C79180
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:55:40 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-65d5a6230fcso7186146d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 01:55:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1695977740; x=1696582540; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0VeBEBUpncpaXfVVMzC6PEpAWTbScZL5Kaim95vVlaE=;
+        b=0vboW9H/LdW33pjFlXgLevJIkfQrV7dDjVGiP3w/VABWdqj9oQcr3NWXVolAL2GtOD
+         FBu3D2r0V5CgQY0cSybvjTTfY0kHPmHRx7PXMX19ANHODZWcLZrjl88TggDVN9sDbvCs
+         p1KNtwLhkmsHqee9cAC1KVs7tAyixbF/3HwRqdeceQMLOicKy85Ri8vgP2xTx/HoLjhq
+         lb/09L6pR3dNqn9wheWPQefquWRelBXlFS+hwHsHa94NID1K6ofDUGyiklpIze9hgD9C
+         Wz0+kawzzEm+EldJmNtTzwF2iOdQAOhIE//X7HcYfpYGLO3i+aDrynfL1HSXHYetoO3+
+         ac5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695977740; x=1696582540;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0VeBEBUpncpaXfVVMzC6PEpAWTbScZL5Kaim95vVlaE=;
+        b=vOqboGXkaFOfebYITf+TAWelnxt6YCNrtiBTQmd5qBPPbMl6qG7MteKMCZGhR+rKvn
+         mJQ0/ivD54ASM6BULFnGxcjDDM1FEXsdJBZUPylMjQ5qaMDrRn5Wj+bXM8J9j/Hk5Fe/
+         8ZzI7pgRqImVIAPPIKmKQlDkxavSavNNUuCjb/fNO3OxzKWaVl3Fel2NBSWjadB5T5rB
+         sAoXKbLQ3NnYvV9Hj9znoglUor8wblG0BQ9FK2aNs8k5Uv5EffRInq4uAP/T+T0FG/6d
+         5ROuI/8ltNM3jiL+MUkwb2tU0Do3N4uWawzSFn03918JD/yXJ5+SshL8r8uCzVs6v0B2
+         ZydA==
+X-Gm-Message-State: AOJu0Yzt3DQP8JEgOWrJMZpUDHsx+b8u+zO580hK79UkaXMewwQ0oJd8
+        rrKm1fDHnYKC5y08/lSyJKv6RAiiH5olmvM8zXK+HQ==
+X-Google-Smtp-Source: AGHT+IF74Bxju3fjrGbISzGXZFMYFknK4+t3Su3et1gEk0NEDQ2t5Igsp6X00eFeHkT7tGrV7wFkjtk+8rv18qA18fM=
+X-Received: by 2002:a0c:cb10:0:b0:65a:fa53:ed11 with SMTP id
+ o16-20020a0ccb10000000b0065afa53ed11mr3442130qvk.65.1695977739910; Fri, 29
+ Sep 2023 01:55:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230927175348.18041-3-alkuor@gmail.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230922080848.1261487-1-glider@google.com> <20230922080848.1261487-3-glider@google.com>
+ <CAG_fn=UeFoyhZvPJ7pGPrc5011D9h1e4ioffat4eUfVHP6Hd-Q@mail.gmail.com>
+ <ZRF7r0ZjxcL9C8U8@smile.fi.intel.com> <CAG_fn=V8Mx89dOfKf88nEq9V9i_kMYaOdGjd3DQVOWnYrandyA@mail.gmail.com>
+ <CAG_fn=WX+yAFHtbsxSvd41P61jjWtFEePqOs_1AKGJcgaWfVag@mail.gmail.com>
+ <3bc8fda47dc04e3b8cfd0e3f6fc7bbee@AcuMS.aculab.com> <CAG_fn=XCXYZhC+ER5mhMyE2YD-__1oj+uvPB4pyz4X7tmiq=3w@mail.gmail.com>
+ <CAAH8bW-9ZWB=i0RWAWBXguOkguLHZGp7fLg7An73NqFnVmtgFw@mail.gmail.com>
+ <CAG_fn=UWJ30ATV0mruPm__+qcuqB9yieMsG_EiFcmty_MZyEqQ@mail.gmail.com> <ZRXbOoKHHafCWQCW@yury-ThinkPad>
+In-Reply-To: <ZRXbOoKHHafCWQCW@yury-ThinkPad>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 29 Sep 2023 10:54:59 +0200
+Message-ID: <CAG_fn=VYRdk0KV5tZaakjLLczdWTvGp2gfLjXqpYR2ifh4S4vA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/5] lib/test_bitmap: add tests for bitmap_{read,write}()
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, pcc@google.com,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        eugenis@google.com, Syed Nayyar Waris <syednwaris@gmail.com>,
+        william.gray@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 01:53:36PM -0400, Abdel Alkuor wrote:
-> From: Abdel Alkuor <abdelalkuor@geotab.com>
-> 
-> Some commands in tps25750 take longer than 1 second
-> to complete, and some responses need some delay before
-> the result becomes available.
-> 
-> Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
+On Thu, Sep 28, 2023 at 10:02=E2=80=AFPM Yury Norov <yury.norov@gmail.com> =
+wrote:
+>
+> On Thu, Sep 28, 2023 at 05:14:55PM +0200, Alexander Potapenko wrote:
+> >
+> > So e.g. for compressing something into a 16-byte buffer using bitmaps
+> > I'd need to:
+> >
+> > 1) Allocate the buffer: buf =3D kmem_cache_alloc(...)
+> > 2) Allocate the bitmap: bitmap =3D bitmap_alloc(16*8, ...)
+> > 3) Fill the bitmap: mte_compress_to_buf(..., bitmap, 16)
+> > 4) Copy the bitmap contents to the buffer: bitmap_to_arr64(buf, bitmap,=
+ 16*8)
+> > 5) Deallocate the bitmap: bitmap_free(bitmap)
+> >
+> > instead of:
+> >
+> > buf =3D kmem_cache_alloc(...)
+> > mte_compress_to_buf(..., (unsigned long *)buf, 16)
+> >
+> > , correct?
+> >
+> > Given that the buffer contents are opaque and its size is aligned on 8
+> > bytes, could it be possible to somehow adopt the `buf` pointer
+> > instead?
+>
+> I didn't find an explicit typecasting where you're using
+> mte_compress_to_buf(), but now after hard 2nd look I see...
+>
+> Firstly, now that in the documentation you are explicitly describing the
+> return value of mte_compress() as 64-bit frame, the right way to go would
+> be declaring the function as: u64 mte_compress(u8 *tags).
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Ack.
 
-> ---
-> Changes in v7:
->   - Add driver name to commit subject 
-> Changes in v6:
->   - Use tps6598x_exec_cmd as a wrapper
-> Changes in v5:
->   - Incorporating tps25750 into tps6598x driver
-> 
->  drivers/usb/typec/tipd/core.c | 19 +++++++++++++++----
->  1 file changed, 15 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-> index 37b56ce75f39..32420c61660d 100644
-> --- a/drivers/usb/typec/tipd/core.c
-> +++ b/drivers/usb/typec/tipd/core.c
-> @@ -282,9 +282,10 @@ static void tps6598x_disconnect(struct tps6598x *tps, u32 status)
->  	power_supply_changed(tps->psy);
->  }
->  
-> -static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
-> +static int tps6598x_exec_cmd_tmo(struct tps6598x *tps, const char *cmd,
->  			     size_t in_len, u8 *in_data,
-> -			     size_t out_len, u8 *out_data)
-> +			     size_t out_len, u8 *out_data,
-> +			     u32 cmd_timeout_ms, u32 res_delay_ms)
->  {
->  	unsigned long timeout;
->  	u32 val;
-> @@ -307,8 +308,7 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
->  	if (ret < 0)
->  		return ret;
->  
-> -	/* XXX: Using 1s for now, but it may not be enough for every command. */
-> -	timeout = jiffies + msecs_to_jiffies(1000);
-> +	timeout = jiffies + msecs_to_jiffies(cmd_timeout_ms);
->  
->  	do {
->  		ret = tps6598x_read32(tps, TPS_REG_CMD1, &val);
-> @@ -321,6 +321,9 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
->  			return -ETIMEDOUT;
->  	} while (val);
->  
-> +	/* some commands require delay for the result to be available */
-> +	mdelay(res_delay_ms);
-> +
->  	if (out_len) {
->  		ret = tps6598x_block_read(tps, TPS_REG_DATA1,
->  					  out_data, out_len);
-> @@ -345,6 +348,14 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
->  	return 0;
->  }
->  
-> +static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
-> +			     size_t in_len, u8 *in_data,
-> +			     size_t out_len, u8 *out_data)
-> +{
-> +	return tps6598x_exec_cmd_tmo(tps, cmd, in_len, in_data,
-> +				     out_len, out_data, 1000, 0);
-> +}
-> +
->  static int tps6598x_dr_set(struct typec_port *port, enum typec_data_role role)
->  {
->  	const char *cmd = (role == TYPEC_DEVICE) ? "SWUF" : "SWDF";
-> -- 
-> 2.34.1
+> And the general pattern should be like this:
+>
+>   unsigned long mte_compress(u8 *tags)
+>   {
+>           DECLARE_BITMAP(tmp, MTECOMP_CACHES_MAXBITS);
+>           void *storage;
+>           ...
+>           if (alloc_size < MTE_PAGE_TAG_STORAGE) {
+>                   storage =3D kmem_cache_alloc(cache, GFP_KERNEL);
+>                   mte_compress_to_buf(r_len, r_tags, r_sizes, tmp, alloc_=
+size);
+>
+>                   switch (alloc_size) {
+>                   case 16:
+>                           bitmap_to_arr16(storage, tmp, 16);
 
--- 
-heikki
+I might be missing something, but why do we need the switch at all?
+The buffers we are allocating always contain a whole number of u64's -
+cannot we just always call bitmap_to_arr64()?
+
+Note that for cases where alloc_size is > 8 we never make any
+assumptions about the contents of @storage, and don't care much about
+the byte order as long as swap decompression is done with the same
+endianness (which is always the case).
+(The case where alloc_size=3D=3D8 is somewhat special, and needs more
+accurate handling, because we do make assumptions about the bit layout
+there).
+
+>                           break;
+>                   case 32:
+>                           bitmap_to_arr32(storage, tmp, 32);
+>                           break;
+>                   case 64:
+>                           bitmap_to_arr64(storage, tmp, 64);
+>                           break;
+>                   default:
+>                           pr_err("error\n");
+>                   }
+>                   result =3D ((u64)storage | cache_id) & MTE_HANDLE_MASK;
+>                   goto ret;
+>           }
+>           ...
+>   }
+>
+> Yeah, it looks cumbersome, but this is the right way to go if you need a
+> reliable BE-compatible driver.
+
+What is the BE compatibility problem that you are anticipating here?
+
+The issue that came up during testing was that on systems with
+different endianness we cannot treat unaligned buffers as bitmaps,
+because bitmap_write() might be touching memory past the allocation
+size.
+I agree therefore with the general approach of encapsulating all
+bitmap operations in bitmap.h and hiding the implementation details
+behind the API.
+But in this particular case it seems to complicate the otherwise
+trivial application of bitmap_read()/bitmap_write() to an external
+buffer with guaranteed 64-bit alignment: we'll end up allocating this
+temporary bitmap and doing a hard-to-optimize memcpy() between it and
+the final storage.
+
+A straightforward solution for this would be to fork u64* versions of
+bitmap_read()/bitmap_write() implementations in mtecomp.c and apply
+them to u64* buffers allocated in that file.
+This would remove the need for the temporary bitmap (because there's
+no encapsulation that mandates using bitmap.h now) and the extra
+memcpy().
+But I don't like this either, because forking code that exists in
+headers is just wrong.
+
+> I think it will be less scary if you wrap
+> the switch with a helper, and/or move it inside mte_compress_to_buf(),
+> so that the mte_compress will stay unchanged.
+>
+> Anyways, hope the above helped.
+>
+> Thanks,
+> Yury
+
+
+--
+Alexander Potapenko
+Software Engineer
+
+Google Germany GmbH
+Erika-Mann-Stra=C3=9Fe, 33
+80636 M=C3=BCnchen
+
+Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
+Registergericht und -nummer: Hamburg, HRB 86891
+Sitz der Gesellschaft: Hamburg
