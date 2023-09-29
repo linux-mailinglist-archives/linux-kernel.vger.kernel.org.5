@@ -2,118 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 682907B366D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4AD7B366F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233495AbjI2PMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36092 "EHLO
+        id S233492AbjI2PNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:13:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjI2PMh (ORCPT
+        with ESMTP id S233362AbjI2PNe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:12:37 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9947D6
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:12:35 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-991c786369cso1827378866b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:12:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696000354; x=1696605154; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+iwwlqvaBxCwMsikVRLEIWQ+fldLakckoypjf/711hA=;
-        b=WLn70OIkQJ4NzM2XZdkBYl2Dm5pzEEW0+f8l3kQAoTtGd8Dt17uSrgo+uGDEpAcdyZ
-         B9hX0h1kdCG9eNCFLztk2dL1uJw+YdRik2l8AvFqcUnWJeaOPBZMG4/iCIphOxqVt92p
-         l8uDDXt8pfafAkhms1ULQoI110LXaBSui0FubtpWrd1PAya5oW7dC0rNPFza+Txsii6l
-         4RlQ6xbghic9bBAw6grFGbVHzaYZ7MKzTpV3iTUqvHBy/JZk/x8I53zR9wD3r3Tp5Hx6
-         YEi27K5FDKheHnjGLlLoMPbp+lnDf/FLdMY15XOTWWsCvQpS9nLKHXeewxQ0IWW62FsD
-         HoEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696000354; x=1696605154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+iwwlqvaBxCwMsikVRLEIWQ+fldLakckoypjf/711hA=;
-        b=OyjngFNzN5TUFkbx+FB3NvX2dC0E1NR91FtD4hQjmlUxLlWMCWteXHmnoUDlQqT6CL
-         vPeCQUGyaBQMd7ZXjCUJjX6ezjmnAFsEGHqY/ZwWwj2GHqhhw6JEYMC+9SXs6enmsZRq
-         wdgoE9ssFY/cExmAPO7aowKmRrjZSNEuK3S9OX/w3ePh/ZgSBP96MyGZYXNlPuQWNabc
-         M1B5fKV7aHv9BOnWbDiwCqOFNMmuEQ9spOCrMmgQSGdH2D66TWVsgjFylS3PYBA1jg4a
-         /ZBN/ELKrmwHRqDbIFyRb+Dw9BPDNjzk4BTHsgJCTz5vhyhF3O+d7wBU93tCtogwA/mf
-         1HOA==
-X-Gm-Message-State: AOJu0YzRVh4SnHZtHYikBt8Iy3vo3BbSwiZBnU8zhpbwsmslmoKcXN0j
-        nKkTdMgdPCC+y82U1htjm2VH/Z1XHsVXqgCufoTYzQ==
-X-Google-Smtp-Source: AGHT+IE9nhh5YAWBRdZlHuUBiW239B7WmIyskiK8JhYc35cNDZz3QR5wJYtEmks78PHXuV04TR5vMLHpPqOHtRE6jKo=
-X-Received: by 2002:a17:906:51db:b0:9b2:abda:2543 with SMTP id
- v27-20020a17090651db00b009b2abda2543mr4673191ejk.65.1696000354025; Fri, 29
- Sep 2023 08:12:34 -0700 (PDT)
+        Fri, 29 Sep 2023 11:13:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7587DD
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:13:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696000411; x=1727536411;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=I53SvhcrH4J2mJFhO6pxzxh9okkc+tFZV5xPDA23PJ4=;
+  b=F+4MDXf9bCb8dE3BSydZPyFDNY/FHjKbSRSSqlehWb0C4N/VPTFZ+vjc
+   c7qaLiB+cdIaQpmIQC7jaGIy6vDmSlJibQHDL6Oe84lUDwhuF9b/XCiPQ
+   zb7C3g77R4Fnz+2tHmHokwEPQzFIEWDBWLUIlccxPkCXpYTx1oyRy2xmp
+   FjMgoWOlYiI78Tw529ugEc9hc8cP/8ERdXyT/bShosyTeQZSvSR7jrJkV
+   TTPizu3IpI76jsufePL3cpDVn1euhRMNzVqZj8VXo+3lmFJHaGvYhqRS3
+   ufWjbQVQNDMTEUM5f60/+feAKZIv1KsT1iOcNPacGrYJ3LUorfs3YXWr5
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="385137478"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="385137478"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:13:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="852673"
+Received: from rhweight-mobl.amr.corp.intel.com (HELO rhweight-mobl.ra.intel.com) ([10.209.5.220])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:12:56 -0700
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mcgrof@kernel.org, gregkh@linuxfoundation.org, rafael@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     russ.weight@linux.dev, Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v2 1/1] firmware_loader: Update contact emails for ABI docs
+Date:   Fri, 29 Sep 2023 08:13:26 -0700
+Message-Id: <20230929151326.311959-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230928005723.1709119-1-nphamcs@gmail.com> <20230928005723.1709119-2-nphamcs@gmail.com>
- <CAJD7tkanr99d_Y=LefQTFsykyiO5oZpPUC=suD3P-L5eS=0SXA@mail.gmail.com>
- <CAKEwX=M=8KYqvBTz9z1csrsFUpGf2tgWj-oyu96dSpRjn3ZnUQ@mail.gmail.com>
- <CAKEwX=Npb4mwZ2ibJkmD5GyqXazr7PH8UGLu+YSDY8acf152Eg@mail.gmail.com>
- <CAJD7tkaeDBTHC3UM91O56yrp8oCU-UBO6i_5HJMjVBDQAw0ipQ@mail.gmail.com> <20230929150829.GA16353@cmpxchg.org>
-In-Reply-To: <20230929150829.GA16353@cmpxchg.org>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Fri, 29 Sep 2023 08:11:54 -0700
-Message-ID: <CAJD7tkZ1NiMMvQhxGSGzsPqYfBpwzP6svPe17s2FTDoHY6jYWQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
- memory controller
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-        riel@surriel.com, mhocko@kernel.org, roman.gushchin@linux.dev,
-        shakeelb@google.com, muchun.song@linux.dev, tj@kernel.org,
-        lizefan.x@bytedance.com, shuah@kernel.org, mike.kravetz@oracle.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 8:08=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
->
-> On Thu, Sep 28, 2023 at 06:18:19PM -0700, Yosry Ahmed wrote:
-> > My concern is the scenario where the memory controller is mounted in
-> > cgroup v1, and cgroup v2 is mounted with memory_hugetlb_accounting.
-> >
-> > In this case it seems like the current code will only check whether
-> > memory_hugetlb_accounting was set on cgroup v2 or not, disregarding
-> > the fact that cgroup v1 did not enable hugetlb accounting.
-> >
-> > I obviously prefer that any features are also added to cgroup v1,
-> > because we still didn't make it to cgroup v2, especially when the
-> > infrastructure is shared. On the other hand, I am pretty sure the
-> > maintainers will not like what I am saying :)
->
-> I have a weak preference.
->
-> It's definitely a little weird that the v1 controller's behavior
-> changes based on the v2 mount flag. And that if you want it as an
-> otherwise exclusive v1 user, you'd have to mount a dummy v2.
->
-> But I also don't see a scenario where it would hurt, or where there
-> would be an unresolvable conflict between v1 and v2 in expressing
-> desired behavior, since the memory controller is exclusive to one.
->
-> While we could eliminate this quirk with a simple
-> !cgroup_subsys_on_dfl(memory_cgrp_subsys) inside the charge function,
-> it would seem almost punitive to add extra code just to take something
-> away that isn't really a problem and could be useful to some people.
->
-> If Tejun doesn't object, I'd say let's just keep implied v1 behavior.
+Update the firmware_loader documentation and corresponding section
+in the MAINTAINERs file with a new email address.
 
-I agree that adding extra code to take a feature away from v1 is
-probably too much, but I also think relying on a v2 mount option is
-weird. Would it be too much to just have a v1-specific flag as well
-and use cgroup_subsys_on_dfl(memory_cgrp_subsys) to decide which flag
-to read?
+Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+---
+v2:
+  - Removed sign-off from new email account
+---
+ Documentation/ABI/testing/sysfs-class-firmware | 14 +++++++-------
+ MAINTAINERS                                    |  2 +-
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/Documentation/ABI/testing/sysfs-class-firmware b/Documentation/ABI/testing/sysfs-class-firmware
+index 978d3d500400..fba87a55f3ca 100644
+--- a/Documentation/ABI/testing/sysfs-class-firmware
++++ b/Documentation/ABI/testing/sysfs-class-firmware
+@@ -1,7 +1,7 @@
+ What: 		/sys/class/firmware/.../data
+ Date:		July 2022
+ KernelVersion:	5.19
+-Contact:	Russ Weight <russell.h.weight@intel.com>
++Contact:	Russ Weight <russ.weight@linux.dev>
+ Description:	The data sysfs file is used for firmware-fallback and for
+ 		firmware uploads. Cat a firmware image to this sysfs file
+ 		after you echo 1 to the loading sysfs file. When the firmware
+@@ -13,7 +13,7 @@ Description:	The data sysfs file is used for firmware-fallback and for
+ What: 		/sys/class/firmware/.../cancel
+ Date:		July 2022
+ KernelVersion:	5.19
+-Contact:	Russ Weight <russell.h.weight@intel.com>
++Contact:	Russ Weight <russ.weight@linux.dev>
+ Description:	Write-only. For firmware uploads, write a "1" to this file to
+ 		request that the transfer of firmware data to the lower-level
+ 		device be canceled. This request will be rejected (EBUSY) if
+@@ -23,7 +23,7 @@ Description:	Write-only. For firmware uploads, write a "1" to this file to
+ What: 		/sys/class/firmware/.../error
+ Date:		July 2022
+ KernelVersion:	5.19
+-Contact:	Russ Weight <russell.h.weight@intel.com>
++Contact:	Russ Weight <russ.weight@linux.dev>
+ Description:	Read-only. Returns a string describing a failed firmware
+ 		upload. This string will be in the form of <STATUS>:<ERROR>,
+ 		where <STATUS> will be one of the status strings described
+@@ -37,7 +37,7 @@ Description:	Read-only. Returns a string describing a failed firmware
+ What: 		/sys/class/firmware/.../loading
+ Date:		July 2022
+ KernelVersion:	5.19
+-Contact:	Russ Weight <russell.h.weight@intel.com>
++Contact:	Russ Weight <russ.weight@linux.dev>
+ Description:	The loading sysfs file is used for both firmware-fallback and
+ 		for firmware uploads. Echo 1 onto the loading file to indicate
+ 		you are writing a firmware file to the data sysfs node. Echo
+@@ -49,7 +49,7 @@ Description:	The loading sysfs file is used for both firmware-fallback and
+ What: 		/sys/class/firmware/.../remaining_size
+ Date:		July 2022
+ KernelVersion:	5.19
+-Contact:	Russ Weight <russell.h.weight@intel.com>
++Contact:	Russ Weight <russ.weight@linux.dev>
+ Description:	Read-only. For firmware upload, this file contains the size
+ 		of the firmware data that remains to be transferred to the
+ 		lower-level device driver. The size value is initialized to
+@@ -62,7 +62,7 @@ Description:	Read-only. For firmware upload, this file contains the size
+ What: 		/sys/class/firmware/.../status
+ Date:		July 2022
+ KernelVersion:	5.19
+-Contact:	Russ Weight <russell.h.weight@intel.com>
++Contact:	Russ Weight <russ.weight@linux.dev>
+ Description:	Read-only. Returns a string describing the current status of
+ 		a firmware upload. The string will be one of the following:
+ 		idle, "receiving", "preparing", "transferring", "programming".
+@@ -70,7 +70,7 @@ Description:	Read-only. Returns a string describing the current status of
+ What: 		/sys/class/firmware/.../timeout
+ Date:		July 2022
+ KernelVersion:	5.19
+-Contact:	Russ Weight <russell.h.weight@intel.com>
++Contact:	Russ Weight <russ.weight@linux.dev>
+ Description:	This file supports the timeout mechanism for firmware
+ 		fallback.  This file has no affect on firmware uploads. For
+ 		more information on timeouts please see the documentation
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6010aca09a7f..b97ee6f50679 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8147,7 +8147,7 @@ F:	include/linux/arm_ffa.h
+ 
+ FIRMWARE LOADER (request_firmware)
+ M:	Luis Chamberlain <mcgrof@kernel.org>
+-M:	Russ Weight <russell.h.weight@intel.com>
++M:	Russ Weight <russ.weight@linux.dev>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/firmware_class/
+-- 
+2.25.1
+
