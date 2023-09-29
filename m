@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4914E7B3549
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7645D7B3575
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233520AbjI2Oc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 10:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37070 "EHLO
+        id S233734AbjI2Ocy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 10:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233555AbjI2OcM (ORCPT
+        with ESMTP id S233602AbjI2OcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 10:32:12 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C00E1B7;
-        Fri, 29 Sep 2023 07:32:06 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-530fa34ab80so1644689a12.0;
-        Fri, 29 Sep 2023 07:32:06 -0700 (PDT)
+        Fri, 29 Sep 2023 10:32:14 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86498CCB;
+        Fri, 29 Sep 2023 07:32:08 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9a645e54806so1851066466b.0;
+        Fri, 29 Sep 2023 07:32:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695997924; x=1696602724; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1695997927; x=1696602727; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=uBJa+cb8dyEAQp6tCGjW9jEwVET1F9T3nDrDaidKVoA=;
-        b=nrv21yMlaN1PpwRLtiFYcA4mpXDsfAhOlmzc3IKC5PSawPInz4BvYFEBDtIw0tIQQv
-         B10FSk86/s4J/CAI+ANDTpQZk5AIcVeRq84XGEadDftI59ouwUqNP7YzUWSvc+jNBCAu
-         80PAwkiog6LGBd+VEa87tI1mLz9jqwyC+QgEuYbTHbAEm2fLQGvJYG4Z19ZM3Gx3nazz
-         6NeTGJq7Dwcr/8oDxIVmn6OoZkMgLEQu/aI4d88RL50E8KCPNQbB4QsToj8HAROes+Rc
-         UerEUvUbbKMkELjvbdJEacBh4d4ewbo0sCYDK3zm7XzA1LQrcn3k/k4Us5nszokdUpUe
-         IR3w==
+        bh=joW/9QyjDlkWvegamdHCGKd/54h9KZHWwQxT23h72Lg=;
+        b=YfpXYnbYjAdDZ1oP95tcnA0Lz2vZlBIWOy3+AuWbqhYSTBmp0452TK8fF90FMpqkK5
+         dRADwDVE16FRHsaYXrH0ooDTj5a8CAjC6rAeB2cnyfEwGYx9JPtdEZZAvX825kNM5tEs
+         4u+bd+SSdL1H7rACkOsQKf/lb4nu7TXdvjZFqy297z6tqCi8PWXtLC7/HT4hqT61q5Ky
+         Gu6RtXE4B9JV+pgM7ciDsK4NWDW+hagQLRk1xbq6P4VUzLdWj9/awZq/w9tKfJH6+6gw
+         48xb9oaG/fe7cjISpbbM8HdU6gdAmHIWsphT7NmriQp3udN0pBuxoFFm6FBoF5rWDSBj
+         EOGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695997924; x=1696602724;
+        d=1e100.net; s=20230601; t=1695997927; x=1696602727;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uBJa+cb8dyEAQp6tCGjW9jEwVET1F9T3nDrDaidKVoA=;
-        b=VvE2gOmPpB2BOT9BT8uwPbKvwIA0hJ39DJBQAHMT0DqWMPq74ia4e82F4inKtqWNw4
-         +89QyNCMJwgPDLatnh+48HzK6D9pzDQA/Xe1k6/qeHlSG1uG7nIuCJK6kzQleSPMrsD6
-         FyxAA6QdWLsNmJpeq8HZ3bpiF5+V9oXIOKv0Z08G78fTm3Lm74Ba7YRK+Vzav1ZAp/Pw
-         eMVAUBfTgM8HQkHqoHrJ70KjjZ6GdQyhwXy6it04Ow43knlWeyJaUFiZU7zO6D9SGvlK
-         Knf3cZ9Y4kitYNEsqBX55kN6bbQGD0LQijSfmqimyLJ/Qhcj4IO3JOGtU8UvuZjG2Sfq
-         RC1Q==
-X-Gm-Message-State: AOJu0YwSdZOVGctMBGd48XvvXvitDTSI32BAOf7brWB7Np2kzQZ+vKF+
-        TpQPJyHDjUrSYaP8nElXx4Y=
-X-Google-Smtp-Source: AGHT+IHVXofCweihH53NkLW8P8QMLjXZgMZ5bBgy1437QIkgkXX4ySTQOyMG/kkw12Zz9RQTHONblQ==
-X-Received: by 2002:a17:906:51c6:b0:9b2:b30f:deb with SMTP id v6-20020a17090651c600b009b2b30f0debmr4443817ejk.4.1695997924606;
-        Fri, 29 Sep 2023 07:32:04 -0700 (PDT)
+        bh=joW/9QyjDlkWvegamdHCGKd/54h9KZHWwQxT23h72Lg=;
+        b=TYRUXNwY5GxJjgPpYjLosGDpcyix/7AWfcOCnCxfPxVwAzT9GlyWVuyOId8JWKMuJ/
+         rC/eT1dQmlOenWlajk95avFhNSlO/aNJGImSO4FpNtbWYBOihX6oCGlaC/dkw9kBcLdn
+         xupEAvJi4qbv+qrJ3bCIfrZN+lmQuYx0696ggIzoSMOu72dn+g1oe7cKFbII9XWXweH6
+         dzIP89FC24gbczaeLbUOynHgkKHCn5pFuArFPRsXfjlRUaGILa1Y7TdWcFXaGReRE/90
+         hL/Lj0UI444TiDWCpOpl5cgeDyKpNESzX7gXkPGsaxKf8lq71P6fMBwLIX3I7E+5dYWI
+         w/jA==
+X-Gm-Message-State: AOJu0YzOgxSlzPZwCvwnFxEBzW05kj4Npb3ascc3JUIM/LDisRoeJHvp
+        UjbRyn3U+nAJZtPaLp2sWbk=
+X-Google-Smtp-Source: AGHT+IF3z1hh0ymZIoUwE2pKHQIhYEsl+sfty8Z0bNTIGRw/XyA65vxgTNxlveCM695MvfMHOuPJGQ==
+X-Received: by 2002:a17:906:454d:b0:9ae:4f64:6db with SMTP id s13-20020a170906454d00b009ae4f6406dbmr3950928ejq.55.1695997926631;
+        Fri, 29 Sep 2023 07:32:06 -0700 (PDT)
 Received: from primary.. ([212.34.12.50])
-        by smtp.gmail.com with ESMTPSA id a7-20020a170906670700b0099293cdbc98sm12660105ejp.145.2023.09.29.07.32.02
+        by smtp.gmail.com with ESMTPSA id a7-20020a170906670700b0099293cdbc98sm12660105ejp.145.2023.09.29.07.32.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 07:32:04 -0700 (PDT)
+        Fri, 29 Sep 2023 07:32:06 -0700 (PDT)
 From:   Abdel Alkuor <alkuor@gmail.com>
 To:     heikki.krogerus@linux.intel.com, krzysztof.kozlowski+dt@linaro.org,
         bryan.odonoghue@linaro.org
@@ -57,9 +57,9 @@ Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
         robh+dt@kernel.org, conor+dt@kernel.org,
         devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>
-Subject: [PATCH v8 05/14] USB: typec: tps6598x: Check for EEPROM present
-Date:   Fri, 29 Sep 2023 10:30:46 -0400
-Message-Id: <20230929143055.31360-6-alkuor@gmail.com>
+Subject: [PATCH v8 06/14] USB: typec: tps6598x: Clear dead battery flag
+Date:   Fri, 29 Sep 2023 10:30:47 -0400
+Message-Id: <20230929143055.31360-7-alkuor@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230929143055.31360-1-alkuor@gmail.com>
 References: <20230929143055.31360-1-alkuor@gmail.com>
@@ -67,7 +67,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,9 +77,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Abdel Alkuor <abdelalkuor@geotab.com>
 
-When an EEPROM is present, tps25750 loads the binary configuration from
-EEPROM. Hence, all we need to do is wait for the device to switch to APP
-mode
+Dead battery flag must be cleared after switching tps25750 to APP mode
+so the PD controller becomes fully functional.
 
 Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
 ---
@@ -87,64 +86,53 @@ Changes in v8:
   - No changes
 Changes in v7:
   - Add driver name to commit subject
-Changes in v6: 
-  - Update eeprom macro to use TPS instead
+Changes in v6:
+  - No changes
 Changes in v5:
   - Incorporating tps25750 into tps6598x driver
 
- drivers/usb/typec/tipd/core.c     | 13 +++++++++++++
- drivers/usb/typec/tipd/tps6598x.h |  3 +++
- 2 files changed, 16 insertions(+)
+ drivers/usb/typec/tipd/core.c     | 16 ++++++++++++++++
+ drivers/usb/typec/tipd/tps6598x.h |  1 +
+ 2 files changed, 17 insertions(+)
 
 diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index 2e7b9eafaf04..21b0ea2c9627 100644
+index 21b0ea2c9627..2598433a69cf 100644
 --- a/drivers/usb/typec/tipd/core.c
 +++ b/drivers/usb/typec/tipd/core.c
-@@ -37,6 +37,7 @@
- #define TPS_REG_STATUS			0x1a
- #define TPS_REG_SYSTEM_CONF		0x28
- #define TPS_REG_CTRL_CONF		0x29
-+#define TPS_REG_BOOT_STATUS		0x2D
- #define TPS_REG_POWER_STATUS		0x3f
- #define TPS_REG_RX_IDENTITY_SOP		0x48
- #define TPS_REG_DATA_STATUS		0x5f
-@@ -910,6 +911,17 @@ static int tps25750_apply_patch(struct tps6598x *tps)
- {
- 	int ret;
- 	unsigned long timeout;
-+	u64 status = 0;
-+
-+	ret = tps6598x_block_read(tps, TPS_REG_BOOT_STATUS, &status, 5);
-+	if (ret)
-+		return ret;
+@@ -946,6 +946,22 @@ static int tps25750_apply_patch(struct tps6598x *tps)
+ 
+ 	} while (ret != TPS_MODE_APP);
+ 
 +	/*
-+	 * Nothing to be done if the configuration
-+	 * is being loaded from EERPOM
++	 * The dead battery flag may be triggered when the controller
++	 * port is connected to a device that can source power and
++	 * attempts to power up both the controller and the board it is on.
++	 * To restore controller functionality, it is necessary to clear
++	 * this flag
 +	 */
-+	if (status & TPS_BOOT_STATUS_I2C_EEPROM_PRESENT)
-+		goto wait_for_app;
++	if (status & TPS_BOOT_STATUS_DEAD_BATTERY_FLAG) {
++		ret = tps6598x_exec_cmd(tps, "DBfg", 0, NULL, 0, NULL);
++		if (ret) {
++			dev_err(tps->dev,
++				"failed to clear dead battery %d\n", ret);
++			return ret;
++		}
++	}
++
+ 	dev_info(tps->dev, "controller switched to \"APP\" mode\n");
  
- 	ret = tps25750_start_patch_burst_mode(tps);
- 	if (ret) {
-@@ -921,6 +933,7 @@ static int tps25750_apply_patch(struct tps6598x *tps)
- 	if (ret)
- 		return ret;
- 
-+wait_for_app:
- 	timeout = jiffies + msecs_to_jiffies(1000);
- 
- 	do {
+ 	return 0;
 diff --git a/drivers/usb/typec/tipd/tps6598x.h b/drivers/usb/typec/tipd/tps6598x.h
-index 527857549d69..a80d0929f3ee 100644
+index a80d0929f3ee..c000170f4547 100644
 --- a/drivers/usb/typec/tipd/tps6598x.h
 +++ b/drivers/usb/typec/tipd/tps6598x.h
-@@ -199,4 +199,7 @@
- #define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_A    BIT(2)
+@@ -200,6 +200,7 @@
  #define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_B    (BIT(2) | BIT(1))
  
-+/* BOOT STATUS REG*/
-+#define TPS_BOOT_STATUS_I2C_EEPROM_PRESENT	BIT(3)
-+
+ /* BOOT STATUS REG*/
++#define TPS_BOOT_STATUS_DEAD_BATTERY_FLAG	BIT(2)
+ #define TPS_BOOT_STATUS_I2C_EEPROM_PRESENT	BIT(3)
+ 
  #endif /* __TPS6598X_H__ */
 -- 
 2.34.1
