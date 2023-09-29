@@ -2,138 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 303CF7B3602
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21C287B3604
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:50:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233114AbjI2OtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 10:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
+        id S233160AbjI2Ouy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 10:50:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232954AbjI2OtO (ORCPT
+        with ESMTP id S229545AbjI2Ouw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 10:49:14 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA6E1B1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:49:11 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40537481094so146204805e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:49:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1695998950; x=1696603750; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zXIX6Tilo9Gjx9RWl2BtStnv1ul2R/mNiwRxznI4chY=;
-        b=qHl7YQGQtZIDHiDEB7CrGWg9aUUmq0VB06fKfhJevUrEmBuqq9yvpL1n1mSjr/FnI+
-         /AQtViXnW2aWibpk5YeiGJdWA+ddLz8UMIRV3/L4Cs1CSrvD5GbPEaybjCyRUiCqlQAl
-         w9zINtu0gFFtPhM850tnM94ux3fIJyc4qVsyNOILceYHs/aHwjvX1mQZv30kICHQWQu4
-         mAKr8m36eKfT1eoTWR6Yz+DLk3z26gfiWKrmQpaWZ/bVojzJ6ePzPomNOb9LOhPl7OwQ
-         BdyUz5mn5sSKM6Z71OCcRxt/bmLFKjjfJKYJX3BbLK6eUhS8zXU9UqfkFbMdrTZcG5Zf
-         dMUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695998950; x=1696603750;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zXIX6Tilo9Gjx9RWl2BtStnv1ul2R/mNiwRxznI4chY=;
-        b=rhQxlK1Ibmtem1lqFB7fzBZeBySW42VXfNPaADybVstaxkqomm94YEhgwaoVJjxZMF
-         n8Fr0lsKN7AZGsPnkuTfLiOL6aSel2E1mUH9fazKyhRmIcb+Jd72WejQIBh3ZdMM9P6+
-         zORnIcxvq0h4hZ2YO0wo3PU2K46pboo/ctXQc+EKGqcas7XWclle9c5/0Kia7WuEtQSm
-         sssQEWDdDWr5+rSMH93RubhbNO2dCCKwcxpx2P0dvkovE3B3aIOSZF5sEfyhQSNm4IoB
-         5qSDw8K3t44jn+sJg7hSCGht/nTHUu8mZIPDyLSYukR45SB3F/sqU/6rtLG+VXqhl4mv
-         Cp1g==
-X-Gm-Message-State: AOJu0YwLN6bmSleu5DkUu4x9/1rd3wQaGq92XW1hqrZm0feSm6hHpvb1
-        E+QWR3YzSwa4Ivbz0DQWwGS9jQ==
-X-Google-Smtp-Source: AGHT+IEqbI2tfElGGztUmr9zivPQIXjUP4pmmtJGpHrCCxxjX9+d+aNuJYAjJH5TH7IX37Xx1HnEKA==
-X-Received: by 2002:adf:ee10:0:b0:319:71be:9248 with SMTP id y16-20020adfee10000000b0031971be9248mr4128645wrn.19.1695998950027;
-        Fri, 29 Sep 2023 07:49:10 -0700 (PDT)
-Received: from x1 ([193.52.24.5])
-        by smtp.gmail.com with ESMTPSA id z7-20020adfec87000000b0032179c4a46dsm4080161wrn.100.2023.09.29.07.49.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 07:49:09 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 16:49:07 +0200
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Peter Newman <peternewman@google.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Tony Luck <tony.luck@intel.com>, babu.moger@amd.com,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        Amit Singh Tomar <amitsinght@marvell.com>,
-        "Yu, Fenghua" <fenghua.yu@intel.com>,
-        George Cherian <gcherian@marvell.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Jon Masters <jonmasters@google.com>,
-        Stephane Eranian <eranian@google.com>, palmer@rivosinc.com,
-        atishp@atishpatra.org, ved@rivosinc.com,
-        Vasudevan Srinivasan <vasu@rivosinc.com>,
-        darren@os.amperecomputing.com
-Subject: Re: resctrl2 - status
-Message-ID: <ZRbj49fDIAt/gX13@x1>
-References: <ZOlRNTq3lE7VNHjU@agluck-desk3>
- <9742f177-a0ce-c5d3-5d92-90dda32f5d07@intel.com>
- <ZPjDHN0nvHz9kWFn@agluck-desk3>
- <18f3a209-8dbf-4837-6bcb-a71a1ee1abb3@amd.com>
- <SJ1PR11MB6083849D1AEF44806C4D669AFCEDA@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <09e2894e-eb2b-12a0-c4a2-5000b27bbded@amd.com>
- <ZPuqsupe+BevodqO@agluck-desk3>
- <ZQSY5P8R5Q+OuvXB@x1>
- <20230918114420.000058c3@Huawei.com>
- <CALPaoCiDrbfAYW1sHgozVUew2wdvuGgkATbO62Dj0BEiQf5cZg@mail.gmail.com>
+        Fri, 29 Sep 2023 10:50:52 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026B3D6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:50:48 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 8D11812000D;
+        Fri, 29 Sep 2023 17:50:47 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8D11812000D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1695999047;
+        bh=M/QssKuK81ff2bXIf5giRDIn4a4XRpqPj6u9hV8eVvY=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=Ml1eL0925sezq/FS9Ehqvn1EFuskIYcSTM3elNUuNWsmtIRjbb1YQW6K5h09HF4Gz
+         FFzlzycM3dvWJ2l+bwGwQZNjoUVbEE4dM+jQ2Q1eJBRhR6ZSgnBHBAAuZQkKh7rwvm
+         jPoyPXg+VRn3xhEKFrxjZo7dXwIMQ1HZxXa+SBZ1FTTeK1hpl9+K8djF91+6jviLVD
+         k1TD9VvM0Xt9ZuEeFSDRo9J0NuzDOeGKBHZ8aNKTqEsbd5pKS7YCdsUGPXPux1jt8v
+         9P9H5mnmpdYJaxYx0LjZ8qmN6DJaHfVLdYLdBiemcBV62kCcA0lvWEO1fcyoxmjQk+
+         6dEUE9DAsRaRA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Fri, 29 Sep 2023 17:50:46 +0300 (MSK)
+Received: from CAB-WSD-0004828.sigma.sbrf.ru (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 29 Sep 2023 17:50:46 +0300
+From:   Martin Kurbanov <mmkurbanov@salutedevices.com>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mario Kicherer <dev@kicherer.org>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        Dhruva Gole <d-gole@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <kernel@sberdevices.ru>,
+        Martin Kurbanov <mmkurbanov@salutedevices.com>
+Subject: [PATCH v1] mtd: spinand: add support for FORESEE F35SQA002G
+Date:   Fri, 29 Sep 2023 17:49:34 +0300
+Message-ID: <20230929144934.192649-1-mmkurbanov@salutedevices.com>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CALPaoCiDrbfAYW1sHgozVUew2wdvuGgkATbO62Dj0BEiQf5cZg@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 180242 [Sep 29 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;www.longsys.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/09/29 10:46:00
+X-KSMG-LinksScanning: Clean, bases: 2023/09/29 10:46:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/29 12:58:00 #22007106
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 10:47:22AM +0200, Peter Newman wrote:
-> On Mon, Sep 18, 2023 at 12:44 PM Jonathan Cameron
-> <Jonathan.Cameron@huawei.com> wrote:
-> > Drew Fustini <dfustini@baylibre.com> wrote:
-> > >
-> > > This reminds me that Linux Plumbers Conference [1] is in November and
-> > > I think resctrl2 could be a good topic. The CFP is still open for Birds
-> > > of a Feather (BoF) proposals [2]. These are free-form get-togethers for
-> > > people wishing to discuss a particular topic, and I have had success
-> > > hosting them in the past for topics like pinctrl and gpio.
-> > >
-> > > Anyone planning to attend Plumbers?
-> > >
-> > > I'll be going in person but the virtual option works really well in my
-> > > experience. I had developers and maintainers attending virtually
-> > > participate in my BoF sessions and I felt it was very productive.
-> >
-> > FWIW I'm keen and should be there in person.  However, I'm not on the must
-> > be available list for this one ;)   Agree that hybrid worked fine for BoF last
-> > year.
-> >
-> > Jonathan
-> 
-> I got us a BoF session to talk about resctrl and porting it to new
-> architectures:
-> 
-> https://lpc.events/event/17/contributions/1567/
-> 
-> To anyone planning to attend, while the schedule is still easy to
-> adjust, please let me know if the proposed time (Nov 15, 4:30-5:15pm)
-> doesn't work.
-> 
-> Also I got one registration code for scheduling this. Let me know if
-> you want it.
+Add support for FORESEE F35SQA002G SPI NAND.
+Datasheet:
+  https://www.longsys.com/uploads/LM-00006FORESEEF35SQA002GDatasheet_1650183701.pdf
 
-Great, thanks for setting up a session for resctrl. The only thing I
-need to attend is the RISC-V MC. Hopefully it will not be during that
-time. I've cc'd Atish and Palmer in case they know. They may also be
-interested in resctrl, too.
+Signed-off-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+---
+ drivers/mtd/nand/spi/Makefile  |   2 +-
+ drivers/mtd/nand/spi/core.c    |   1 +
+ drivers/mtd/nand/spi/foresee.c | 101 +++++++++++++++++++++++++++++++++
+ include/linux/mtd/spinand.h    |   1 +
+ 4 files changed, 104 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/mtd/nand/spi/foresee.c
 
-thanks,
-drew
+diff --git a/drivers/mtd/nand/spi/Makefile b/drivers/mtd/nand/spi/Makefile
+index cd8b66bf7740..19cc77288ebb 100644
+--- a/drivers/mtd/nand/spi/Makefile
++++ b/drivers/mtd/nand/spi/Makefile
+@@ -1,4 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
+-spinand-objs := core.o alliancememory.o ato.o esmt.o gigadevice.o macronix.o
++spinand-objs := core.o alliancememory.o ato.o esmt.o foresee.o gigadevice.o macronix.o
+ spinand-objs += micron.o paragon.o toshiba.o winbond.o xtx.o
+ obj-$(CONFIG_MTD_SPI_NAND) += spinand.o
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 393ff37f0d23..849ccfedbc72 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -940,6 +940,7 @@ static const struct spinand_manufacturer *spinand_manufacturers[] = {
+ 	&alliancememory_spinand_manufacturer,
+ 	&ato_spinand_manufacturer,
+ 	&esmt_c8_spinand_manufacturer,
++	&foresee_spinand_manufacturer,
+ 	&gigadevice_spinand_manufacturer,
+ 	&macronix_spinand_manufacturer,
+ 	&micron_spinand_manufacturer,
+diff --git a/drivers/mtd/nand/spi/foresee.c b/drivers/mtd/nand/spi/foresee.c
+new file mode 100644
+index 000000000000..55d4ff1f091a
+--- /dev/null
++++ b/drivers/mtd/nand/spi/foresee.c
+@@ -0,0 +1,101 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (c) 2023, SberDevices. All Rights Reserved.
++ *
++ * Author: Martin Kurbanov <mmkurbanov@salutedevices.com>
++ */
++
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/mtd/spinand.h>
++
++#define SPINAND_MFR_FORESEE		0xCD
++
++static SPINAND_OP_VARIANTS(read_cache_variants,
++		SPINAND_PAGE_READ_FROM_CACHE_X4_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_X2_OP(0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(true, 0, 1, NULL, 0),
++		SPINAND_PAGE_READ_FROM_CACHE_OP(false, 0, 1, NULL, 0));
++
++static SPINAND_OP_VARIANTS(write_cache_variants,
++		SPINAND_PROG_LOAD_X4(true, 0, NULL, 0),
++		SPINAND_PROG_LOAD(true, 0, NULL, 0));
++
++static SPINAND_OP_VARIANTS(update_cache_variants,
++		SPINAND_PROG_LOAD_X4(false, 0, NULL, 0),
++		SPINAND_PROG_LOAD(false, 0, NULL, 0));
++
++static int f35sqa002g_ooblayout_ecc(struct mtd_info *mtd, int section,
++				    struct mtd_oob_region *region)
++{
++	return -ERANGE;
++}
++
++static int f35sqa002g_ooblayout_free(struct mtd_info *mtd, int section,
++				     struct mtd_oob_region *region)
++{
++	/* XXX: It is not possible to partially write to this OOB area, as both
++	 * the main and OOB areas are protected by ECC. The user needs to
++	 * program both the main area and OOB area at one programming time,
++	 * so that the ECC parity code can be calculated properly.
++	 */
++
++	if (section)
++		return -ERANGE;
++
++	/* Reserve 2 bytes for the BBM. */
++	region->offset = 2;
++	region->length = 62;
++
++	return 0;
++}
++
++static const struct mtd_ooblayout_ops f35sqa002g_ooblayout = {
++	.ecc = f35sqa002g_ooblayout_ecc,
++	.free = f35sqa002g_ooblayout_free,
++};
++
++static int f35sqa002g_ecc_get_status(struct spinand_device *spinand, u8 status)
++{
++	struct nand_device *nand = spinand_to_nand(spinand);
++
++	switch (status & STATUS_ECC_MASK) {
++	case STATUS_ECC_NO_BITFLIPS:
++		return 0;
++
++	case STATUS_ECC_HAS_BITFLIPS:
++		return nanddev_get_ecc_conf(nand)->strength;
++
++	default:
++		break;
++	}
++
++	/* More than 1-bit error was detected in one or more sectors and
++	 * cannot be corrected.
++	 */
++	return -EBADMSG;
++}
++
++static const struct spinand_info foresee_spinand_table[] = {
++	SPINAND_INFO("F35SQA002G",
++		     SPINAND_ID(SPINAND_READID_METHOD_OPCODE_DUMMY, 0x72, 0x72),
++		     NAND_MEMORG(1, 2048, 64, 64, 2048, 40, 1, 1, 1),
++		     NAND_ECCREQ(1, 512),
++		     SPINAND_INFO_OP_VARIANTS(&read_cache_variants,
++					      &write_cache_variants,
++					      &update_cache_variants),
++		     SPINAND_HAS_QE_BIT,
++		     SPINAND_ECCINFO(&f35sqa002g_ooblayout,
++				     f35sqa002g_ecc_get_status)),
++};
++
++static const struct spinand_manufacturer_ops foresee_spinand_manuf_ops = {
++};
++
++const struct spinand_manufacturer foresee_spinand_manufacturer = {
++	.id = SPINAND_MFR_FORESEE,
++	.name = "FORESEE",
++	.chips = foresee_spinand_table,
++	.nchips = ARRAY_SIZE(foresee_spinand_table),
++	.ops = &foresee_spinand_manuf_ops,
++};
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index 3e285c09d16d..badb4c1ac079 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -263,6 +263,7 @@ struct spinand_manufacturer {
+ extern const struct spinand_manufacturer alliancememory_spinand_manufacturer;
+ extern const struct spinand_manufacturer ato_spinand_manufacturer;
+ extern const struct spinand_manufacturer esmt_c8_spinand_manufacturer;
++extern const struct spinand_manufacturer foresee_spinand_manufacturer;
+ extern const struct spinand_manufacturer gigadevice_spinand_manufacturer;
+ extern const struct spinand_manufacturer macronix_spinand_manufacturer;
+ extern const struct spinand_manufacturer micron_spinand_manufacturer;
+-- 
+2.40.0
+
