@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D62CC7B2F2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E8A7B2F30
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbjI2Jbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 05:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49864 "EHLO
+        id S232973AbjI2Jcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 05:32:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232915AbjI2Jbn (ORCPT
+        with ESMTP id S232915AbjI2Jcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:31:43 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0609195
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:31:39 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:e207:8adb:af22:7f1e])
-        by andre.telenet-ops.be with bizsmtp
-        id rlXd2A00H3w8i7m01lXdHu; Fri, 29 Sep 2023 11:31:37 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qm9q4-004qHj-7y;
-        Fri, 29 Sep 2023 11:31:37 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qm9qT-001eU7-65;
-        Fri, 29 Sep 2023 11:31:37 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Wentong Wu <wentong.wu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] media: ipu-bridge: Add missing acpi_dev_put() in ipu_bridge_get_ivsc_acpi_dev()
-Date:   Fri, 29 Sep 2023 11:31:33 +0200
-Message-Id: <0e8fa862e2d3da5897d0f895322d469e7d5aa052.1695979848.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.34.1
+        Fri, 29 Sep 2023 05:32:45 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D6FB195;
+        Fri, 29 Sep 2023 02:32:43 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 09:32:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1695979961;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3/uIN1it0W3Eg412WINyJjgbanaVu7oqFOS2ToQ1k1I=;
+        b=oPDlZe4EuEBJHu7RD8eXfYDqAq8Ky5aVJ4eAsVYD97sZNRueh6YGOwao7x8en3nuDXqUKU
+        KeTw9CLhRyMCuR/GxcqzJpstPluTSTUHsamrcIUPZrqUunlU9Z/7jJ6FJxIWj0HlaPRUID
+        tDDFhzI1iqHupi06YRMhJOv++cok1FUSJJhW1hybqNTMwagaMRVt3ds/XdClzg5rfXOIXm
+        ER2y86QFPElwmqtHqzJkTmKlvmgNzyx9ksRbJwcHGKdov7ISQ10bW+xgdLw1L1SUQcfgRP
+        1mrs7ot1GtPYg3xp9T6pmEVbtNxl9JLrVfkmN+osLYKFpdTSD9AvA4ex/9kP7Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1695979961;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3/uIN1it0W3Eg412WINyJjgbanaVu7oqFOS2ToQ1k1I=;
+        b=T0gwaieTwhQ1cUQJdwVlYJdqFCzQ/hiiqNyQBwRtFwFAHpn9ZzDVTl9BMmFls0QVVQ0bXS
+        VSEHqw15nSP+UsDw==
+From:   "tip-bot2 for Baolin Liu" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cpu] x86/cpu/amd: Remove redundant 'break' statement
+Cc:     Baolin Liu <liubaolin@kylinos.cn>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <396ba14d.2726.189d957b74b.Coremail.liubaolin12138@163.com>
+References: <396ba14d.2726.189d957b74b.Coremail.liubaolin12138@163.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169597996101.27769.5754143943416979953.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In ipu_bridge_get_ivsc_acpi_dev(), the "ivsc_adev" acpi_device pointer
-from the outer loop is handed over to the caller, which takes proper
-care of its reference count.
-However, the "consumer" acpi_device pointer from the inner loop is lost,
-without decrementing its reference count.
+The following commit has been merged into the x86/cpu branch of tip:
 
-Fix this by adding the missing call to acpi_dev_put().
+Commit-ID:     b5034c63858d8cb44587bb1ce5a0790a1b4e4a05
+Gitweb:        https://git.kernel.org/tip/b5034c63858d8cb44587bb1ce5a0790a1b4e4a05
+Author:        Baolin Liu <liubaolin@kylinos.cn>
+AuthorDate:    Wed, 09 Aug 2023 16:09:11 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Fri, 29 Sep 2023 11:24:09 +02:00
 
-Fixes: c66821f381aed2c7 ("media: pci: intel: Add IVSC support for IPU bridge driver")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+x86/cpu/amd: Remove redundant 'break' statement
+
+This break is after the return statement, so it is redundant & confusing,
+and should be deleted.
+
+Signed-off-by: Baolin Liu <liubaolin@kylinos.cn>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/396ba14d.2726.189d957b74b.Coremail.liubaolin12138@163.com
 ---
-Compile-tested only.
+ arch/x86/kernel/cpu/amd.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-This driver really likes nesting loops: the above inner loop is actually
-5 levels deep, of which 3 levels use for_each_acpi_*().  And all of that
-is done twice:
-
-ipu_bridge_init
-    ipu_bridge_ivsc_is_ready
-        for (i = 0; i < ARRAY_SIZE(ipu_supported_sensors); i++)
-            for_each_acpi_dev_match(sensor_adev, cfg->hid, NULL, -1)
-                for (i = 0; i < ARRAY_SIZE(ivsc_acpi_ids); i++)
-                    for_each_acpi_dev_match(ivsc_adev, acpi_id->id, NULL, -1)
-                        for_each_acpi_consumer_dev(ivsc_adev, consumer)
-
-    ipu_bridge_connect_sensors
-        for (i = 0; i < ARRAY_SIZE(ipu_supported_sensors); i++)
-                for_each_acpi_dev_match(adev, cfg->hid, NULL, -1)
-                    for (i = 0; i < ARRAY_SIZE(ivsc_acpi_ids); i++)
-                        for_each_acpi_dev_match(ivsc_adev, acpi_id->id, NULL, -1)
-                            for_each_acpi_consumer_dev(ivsc_adev, consumer)
----
- drivers/media/pci/intel/ipu-bridge.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/pci/intel/ipu-bridge.c b/drivers/media/pci/intel/ipu-bridge.c
-index 1bde8b6e0b1121a8..e38198e259c03ce9 100644
---- a/drivers/media/pci/intel/ipu-bridge.c
-+++ b/drivers/media/pci/intel/ipu-bridge.c
-@@ -107,8 +107,10 @@ static struct acpi_device *ipu_bridge_get_ivsc_acpi_dev(struct acpi_device *adev
- 		for_each_acpi_dev_match(ivsc_adev, acpi_id->id, NULL, -1)
- 			/* camera sensor depends on IVSC in DSDT if exist */
- 			for_each_acpi_consumer_dev(ivsc_adev, consumer)
--				if (consumer->handle == handle)
-+				if (consumer->handle == handle) {
-+					acpi_dev_put(consumer);
- 					return ivsc_adev;
-+				}
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 1011ce2..c3cb69e 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -1001,7 +1001,6 @@ static bool cpu_has_zenbleed_microcode(void)
+ 
+ 	default:
+ 		return false;
+-		break;
  	}
  
- 	return NULL;
--- 
-2.34.1
-
+ 	if (boot_cpu_data.microcode < good_rev)
