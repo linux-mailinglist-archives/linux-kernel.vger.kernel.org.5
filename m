@@ -2,38 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5077B3B41
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:32:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B53C7B3B35
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbjI2UaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 16:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34236 "EHLO
+        id S233219AbjI2UXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 16:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232748AbjI2UaR (ORCPT
+        with ESMTP id S231429AbjI2UXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 16:30:17 -0400
-X-Greylist: delayed 529 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 29 Sep 2023 13:30:14 PDT
-Received: from hosting.gsystem.sk (hosting.gsystem.sk [212.5.213.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DE4451B2;
-        Fri, 29 Sep 2023 13:30:14 -0700 (PDT)
-Received: from gsql.ggedos.sk (off-20.infotel.telecom.sk [212.5.213.20])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hosting.gsystem.sk (Postfix) with ESMTPSA id 168A07A00A5;
-        Fri, 29 Sep 2023 22:21:22 +0200 (CEST)
-From:   Ondrej Zary <linux@zary.sk>
-To:     "Rafael J . Wysocki" <rafael@kernel.org>
-Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] =?UTF-8?q?ACPI:=20video:=20Add=20acpi=5Fbacklight=3Dvendo?= =?UTF-8?q?r=20quirk=20for=20Toshiba=20Port=C3=A9g=C3=A9=20R100?=
-Date:   Fri, 29 Sep 2023 22:20:55 +0200
-Message-Id: <20230929202055.12724-1-linux@zary.sk>
-X-Mailer: git-send-email 2.20.1
+        Fri, 29 Sep 2023 16:23:15 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6FE5B4;
+        Fri, 29 Sep 2023 13:23:12 -0700 (PDT)
+Received: from [192.168.1.103] (178.176.72.58) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Fri, 29 Sep
+ 2023 23:23:07 +0300
+Subject: Re: [PATCH v4] net: ravb: Fix possible UAF bug in ravb_remove
+To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Zheng Wang <zyytlz.wz@163.com>
+CC:     "lee@kernel.org" <lee@kernel.org>,
+        "linyunsheng@huawei.com" <linyunsheng@huawei.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "geert+renesas@glider.be" <geert+renesas@glider.be>,
+        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        "wsa+renesas@sang-engineering.com" <wsa+renesas@sang-engineering.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "hackerzheng666@gmail.com" <hackerzheng666@gmail.com>,
+        "1395428693sheep@gmail.com" <1395428693sheep@gmail.com>,
+        "alex000young@gmail.com" <alex000young@gmail.com>
+References: <20230725030026.1664873-1-zyytlz.wz@163.com>
+ <20230725201952.2f23bb3b@kernel.org>
+ <9cfa70cca3cb1dd20bb2cab70a213e5a4dd28f89.camel@redhat.com>
+ <607f4fe4-5a59-39dd-71c2-0cf769b48187@omp.ru>
+ <OSYPR01MB53341CFDBB49A3BA41A6752CD8F9A@OSYPR01MB5334.jpnprd01.prod.outlook.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <e9eb099d-35df-6a9a-8eeb-5ef3e4f26c0b@omp.ru>
+Date:   Fri, 29 Sep 2023 23:23:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+In-Reply-To: <OSYPR01MB53341CFDBB49A3BA41A6752CD8F9A@OSYPR01MB5334.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.72.58]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 09/29/2023 19:57:32
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 180253 [Sep 29 2023]
+X-KSE-AntiSpam-Info: Version: 5.9.59.0
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: 178.176.72.58:7.4.1,7.7.3;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: {cloud_iprep_silent}
+X-KSE-AntiSpam-Info: FromAlignment: s
+X-KSE-AntiSpam-Info: {rdns complete}
+X-KSE-AntiSpam-Info: {fromrtbl complete}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.58
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 09/29/2023 20:03:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 9/29/2023 6:33:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -42,65 +103,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Toshiba Portégé R100 has both acpi_video and toshiba_acpi vendor
-backlight driver working. But none of them gets activated as it has
-a VGA with no kernel driver (Trident CyberBlade XP4m32).
+Hello!
 
-The DMI strings are very generic ("Portable PC") so add a custom
-callback function to check for Trident CyberBlade XP4m32 PCI device
-before enabling the vendor backlight driver (better than acpi_video
-as it has more brightness steps).
+On 9/20/23 5:37 AM, Yoshihiro Shimoda wrote:
 
-Fixes: 5aa9d943e9b6 ("ACPI: video: Don't enable fallback path for creating ACPI backlight by default")
-Signed-off-by: Ondrej Zary <linux@zary.sk>
----
- drivers/acpi/video_detect.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+   Sorry, I got ill that same day and still have subfebrile temperature,
+and I forgot about your mail. I'll try replying to it on this weekend...
 
-diff --git a/drivers/acpi/video_detect.c b/drivers/acpi/video_detect.c
-index 442396f6ed1f..31205fee59d4 100644
---- a/drivers/acpi/video_detect.c
-+++ b/drivers/acpi/video_detect.c
-@@ -130,6 +130,16 @@ static int video_detect_force_native(const struct dmi_system_id *d)
- 	return 0;
- }
- 
-+static int video_detect_portege_r100(const struct dmi_system_id *d)
-+{
-+	struct pci_dev *dev;
-+	/* Search for Trident CyberBlade XP4m32 to confirm Portégé R100 */
-+	dev = pci_get_device(PCI_VENDOR_ID_TRIDENT, 0x2100, NULL);
-+	if (dev)
-+		acpi_backlight_dmi = acpi_backlight_vendor;
-+	return 0;
-+}
-+
- static const struct dmi_system_id video_detect_dmi_table[] = {
- 	/*
- 	 * Models which should use the vendor backlight interface,
-@@ -270,6 +280,22 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
- 		},
- 	},
- 
-+	/*
-+	 * Toshiba Portégé R100 has working both acpi_video and toshiba_acpi
-+	 * vendor driver. But none of them gets activated as it has a VGA with
-+	 * no kernel driver (Trident CyberBlade XP4m32).
-+	 * The DMI strings are generic so check for the VGA chip in callback.
-+	 */
-+	{
-+	 .callback = video_detect_portege_r100,
-+	 .matches = {
-+		DMI_MATCH(DMI_SYS_VENDOR, "TOSHIBA"),
-+		DMI_MATCH(DMI_PRODUCT_NAME, "Portable PC"),
-+		DMI_MATCH(DMI_PRODUCT_VERSION, "Version 1.0"),
-+		DMI_MATCH(DMI_BOARD_NAME, "Portable PC")
-+		},
-+	},
-+
- 	/*
- 	 * Models which need acpi_video backlight control where the GPU drivers
- 	 * do not call acpi_video_register_backlight() because no internal panel
--- 
-Ondrej Zary
+[...]
 
+MBR, Sergey
