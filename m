@@ -2,247 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 322397B3BF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 23:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3467B3C00
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 23:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233602AbjI2V3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 17:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40012 "EHLO
+        id S233472AbjI2VgO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Sep 2023 17:36:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjI2V3Y (ORCPT
+        with ESMTP id S229508AbjI2VgN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 17:29:24 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17EF1AB;
-        Fri, 29 Sep 2023 14:29:21 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-533cbbd0153so15659975a12.0;
-        Fri, 29 Sep 2023 14:29:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696022960; x=1696627760; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Ulc+lDz0cmLjLptsbHUWL0O/uVNoSf1Xc1Or5n5xvRo=;
-        b=ZDR4Qq2pe40f0N34LNncp+9fMDtAh1Kxz3D1LbpJeLH8GEPtCRlp0hHfvess7gxAcx
-         oPb5NFOuoaca3pW91SvI53x86/d7phv6sNCAJ9gkRlQNp36IIc9gbtaxDprBibpnf4Vm
-         SQh209rtfNdbXJyKLhdP8rf50I22Yw40DfQWDC8lZ/LYn/ovW8myqkyW5nofSR1STujt
-         Dxv/cWYnqNPX7WzHAUHzU3XV2/NyFeAbp1A4VjvgBwEAjzLMBVtBSzOYq/QWU4gGcDGX
-         AE3eE5TUa4+Bdqof53vbEx+kPqGlxS/sLyPVg17e2TJd1axb6SVuuYRh8PwoJXEKQQdU
-         qbFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696022960; x=1696627760;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ulc+lDz0cmLjLptsbHUWL0O/uVNoSf1Xc1Or5n5xvRo=;
-        b=IgdhL2Fn2v6KIhEJjRRCaMvKloA/QdVGS30Oam+EGEeyrXuLXuuL/uoqTE4CJ3qtzd
-         /sFRnK1cgq1uuApIrEno4ZjNOnFRsYNpp7XQePwixJsKNgrNEhk1aZKjVV2fwHxpXQju
-         u1JpdC2Pma0HzXJUTw4X7gRqWv6Lf0fXWCyahIufnZbkU37kSwO6loUXxOL2IF+qOccQ
-         0pndltEMXa2JWrbPiQep9+Rrer1QQ4Lj3ACJ/aX9VUg0CBUgudzIqI31hKTZ1Ikpe71t
-         Bm3WeuixSYXmew7KfNRnqUR42jPHSnMp16mZVXqqggRT3YItkm5RkoZEVaecq2H1jjEM
-         g7lQ==
-X-Gm-Message-State: AOJu0YwFeERGoNkEf+PZlbeYPYR//5F0QQ5M4/mKrzBstWe7eGaMjj6j
-        oE5rKXtK2JMEnSwFqOW8UUUbKLjT5/hCnmmZE5w=
-X-Google-Smtp-Source: AGHT+IGlgptbueMHq7HzNbGa7p2NENix24xgxoIdRp14aXNwHNTx1rxfuqHRSLYlMCZxust4BW0Y2wD5VE2SKqePXtc=
-X-Received: by 2002:aa7:d648:0:b0:534:2e79:6b04 with SMTP id
- v8-20020aa7d648000000b005342e796b04mr4794500edr.14.1696022960015; Fri, 29 Sep
- 2023 14:29:20 -0700 (PDT)
+        Fri, 29 Sep 2023 17:36:13 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2861AB
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 14:36:11 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-95-t2b_ZynWOe24ksn49Kg4FA-1; Fri, 29 Sep 2023 22:36:08 +0100
+X-MC-Unique: t2b_ZynWOe24ksn49Kg4FA-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 29 Sep
+ 2023 22:36:06 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Fri, 29 Sep 2023 22:36:06 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joe Perches' <joe@perches.com>,
+        Matthew Maurer <mmaurer@google.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        "Wedson Almeida Filho" <wedsonaf@gmail.com>
+CC:     Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?iso-8859-1?Q?Bj=F6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        "Alice Ryhl" <aliceryhl@google.com>,
+        "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] rust: Use awk instead of recent xargs
+Thread-Topic: [PATCH] rust: Use awk instead of recent xargs
+Thread-Index: AQHZ8kr/VXhkUs4M10WbSSTh7+OPhLAyVEjw
+Date:   Fri, 29 Sep 2023 21:36:06 +0000
+Message-ID: <be10d55a785d4d9b983b2dae6ed65942@AcuMS.aculab.com>
+References: <20230928202116.2298150-1-mmaurer@google.com>
+ <106c8bdb960da1568d0b3879efa76cd2acec032e.camel@perches.com>
+In-Reply-To: <106c8bdb960da1568d0b3879efa76cd2acec032e.camel@perches.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20230925105552.817513-1-zhouchuyi@bytedance.com>
- <20230925105552.817513-5-zhouchuyi@bytedance.com> <CAEf4BzbYgf1t8tfQJ4xwfDH-o_3n+PRMBgC4AZRLbXGM=QJtzQ@mail.gmail.com>
- <27b57638-48db-7082-2b53-93d84e423350@bytedance.com>
-In-Reply-To: <27b57638-48db-7082-2b53-93d84e423350@bytedance.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 29 Sep 2023 14:29:08 -0700
-Message-ID: <CAEf4Bza68mRn0KpOX2k7PtbXvO-uYzKHhQ=C8J+zyNS6WTFPpA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 4/7] bpf: Introduce css open-coded iterator kfuncs
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 7:51=E2=80=AFPM Chuyi Zhou <zhouchuyi@bytedance.com=
-> wrote:
->
-> Hello,
->
-> =E5=9C=A8 2023/9/28 07:24, Andrii Nakryiko =E5=86=99=E9=81=93:
-> > On Mon, Sep 25, 2023 at 3:56=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance=
-.com> wrote:
-> >>
-> >> This Patch adds kfuncs bpf_iter_css_{new,next,destroy} which allow
-> >> creation and manipulation of struct bpf_iter_css in open-coded iterato=
-r
-> >> style. These kfuncs actually wrapps css_next_descendant_{pre, post}.
-> >> css_iter can be used to:
-> >>
-> >> 1) iterating a sepcific cgroup tree with pre/post/up order
-> >>
-> >> 2) iterating cgroup_subsystem in BPF Prog, like
-> >> for_each_mem_cgroup_tree/cpuset_for_each_descendant_pre in kernel.
-> >>
-> >> The API design is consistent with cgroup_iter. bpf_iter_css_new accept=
-s
-> >> parameters defining iteration order and starting css. Here we also reu=
-se
-> >> BPF_CGROUP_ITER_DESCENDANTS_PRE, BPF_CGROUP_ITER_DESCENDANTS_POST,
-> >> BPF_CGROUP_ITER_ANCESTORS_UP enums.
-> >>
-> >> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> >> ---
-> >>   kernel/bpf/cgroup_iter.c                      | 57 +++++++++++++++++=
-++
-> >>   kernel/bpf/helpers.c                          |  3 +
-> >>   .../testing/selftests/bpf/bpf_experimental.h  |  6 ++
-> >>   3 files changed, 66 insertions(+)
-> >>
-> >> diff --git a/kernel/bpf/cgroup_iter.c b/kernel/bpf/cgroup_iter.c
-> >> index 810378f04fbc..ebc3d9471f52 100644
-> >> --- a/kernel/bpf/cgroup_iter.c
-> >> +++ b/kernel/bpf/cgroup_iter.c
-> >> @@ -294,3 +294,60 @@ static int __init bpf_cgroup_iter_init(void)
-> >>   }
-> >>
-> >>   late_initcall(bpf_cgroup_iter_init);
-> >> +
-> >> +struct bpf_iter_css {
-> >> +       __u64 __opaque[2];
-> >> +       __u32 __opaque_int[1];
-> >> +} __attribute__((aligned(8)));
-> >> +
-> >
-> > same as before, __opaque[3] only
-> >
-> >
-> >> +struct bpf_iter_css_kern {
-> >> +       struct cgroup_subsys_state *start;
-> >> +       struct cgroup_subsys_state *pos;
-> >> +       int order;
-> >> +} __attribute__((aligned(8)));
-> >> +
-> >> +__bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
-> >> +               struct cgroup_subsys_state *start, enum bpf_cgroup_ite=
-r_order order)
-> >
-> > Similarly, I wonder if we should go for a more generic "flags" argument=
-?
-> >
-> >> +{
-> >> +       struct bpf_iter_css_kern *kit =3D (void *)it;
-> >
-> > empty line
-> >
-> >> +       kit->start =3D NULL;
-> >> +       BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) !=3D sizeof(stru=
-ct bpf_iter_css));
-> >> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) !=3D __alig=
-nof__(struct bpf_iter_css));
-> >
-> > please move this up before kit->start assignment, and separate by empty=
- lines
-> >
-> >> +       switch (order) {
-> >> +       case BPF_CGROUP_ITER_DESCENDANTS_PRE:
-> >> +       case BPF_CGROUP_ITER_DESCENDANTS_POST:
-> >> +       case BPF_CGROUP_ITER_ANCESTORS_UP:
-> >> +               break;
-> >> +       default:
-> >> +               return -EINVAL;
-> >> +       }
-> >> +
-> >> +       kit->start =3D start;
-> >> +       kit->pos =3D NULL;
-> >> +       kit->order =3D order;
-> >> +       return 0;
-> >> +}
-> >> +
-> >> +__bpf_kfunc struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_=
-iter_css *it)
-> >> +{
-> >> +       struct bpf_iter_css_kern *kit =3D (void *)it;
-> >
-> > empty line
-> >
-> >> +       if (!kit->start)
-> >> +               return NULL;
-> >> +
-> >> +       switch (kit->order) {
-> >> +       case BPF_CGROUP_ITER_DESCENDANTS_PRE:
-> >> +               kit->pos =3D css_next_descendant_pre(kit->pos, kit->st=
-art);
-> >> +               break;
-> >> +       case BPF_CGROUP_ITER_DESCENDANTS_POST:
-> >> +               kit->pos =3D css_next_descendant_post(kit->pos, kit->s=
-tart);
-> >> +               break;
-> >> +       default:
-> >
-> > we know it's BPF_CGROUP_ITER_ANCESTORS_UP, so why not have that here ex=
-plicitly?
-> >
-> >> +               kit->pos =3D kit->pos ? kit->pos->parent : kit->start;
-> >> +       }
-> >> +
-> >> +       return kit->pos;
-> >
-> > wouldn't this implementation never return the "start" css? is that inte=
-ntional?
-> >
->
-> Thanks for the review.
->
-> This implementation actually would return the "start" css.
->
-> 1. BPF_CGROUP_ITER_DESCENDANTS_PRE:
-> 1.1 when we first call next(), css_next_descendant_pre(NULL, kit->start)
-> will return kit->start.
-> 1.2 second call next(), css_next_descendant_pre(kit->start, kit->start)
-> would return a first valid child under kit->start with pre-order
-> 1.3 third call next, css_next_descendant_pre(last_valid_child,
-> kit->start) would return the next valid child
-> ...
-> util css_next_descendant_pre return a NULL pointer, which means we have
-> visited all valid child including "start" css itself.
->
-> The above logic is equal to macro 'css_for_each_descendant_pre' in kernel=
-.
->
-> Same, BPF_CGROUP_ITER_DESCENDANTS_POST is equal to macro
-> 'css_for_each_descendant_post' which would return 'start' css when we
-> have visited all valid child.
->
-> 2. BPF_CGROUP_ITER_ANCESTORS_UP
-> 2.1 when we fisrt call next(), kit->pos is NULL, and we would return
-> kit->start.
->
->
-> The selftest in patch7 whould check:
-> 1. when we use BPF_CGROUP_ITER_DESCENDANTS_PRE to iterate a cgroup tree,
-> the first cgroup we visted should be root('start') cgroup.
-> 2. when we use BPF_CGROUP_ITER_DESCENDANTS_POST to iterate a cgroup
-> tree, the last cgroup we visited should be root('start') cgroup.
->
->
-> Am I miss something important?
->
+From: Joe Perches
+> Sent: 28 September 2023 21:33
+> 
+> On Thu, 2023-09-28 at 20:21 +0000, Matthew Maurer wrote:
+> > `awk` is already required by the kernel build, and the `xargs` feature
+> > used in current Rust detection is not present in all `xargs` (notably,
+> > toybox based xargs, used in the Android kernel build).
+> []
+> > diff --git a/rust/Makefile b/rust/Makefile
+> []
+> > @@ -365,8 +365,7 @@ quiet_cmd_exports = EXPORTS $@
+> >        cmd_exports = \
+> >  	$(NM) -p --defined-only $< \
+> >  		| grep -E ' (T|R|D) ' | cut -d ' ' -f 3 \
+> > -		| xargs -Isymbol \
+> > -		echo 'EXPORT_SYMBOL_RUST_GPL(symbol);' > $@
+> > +		| awk 'NF {printf "EXPORT_SYMBOL_RUST_GPL(%s);\n",$$0}' > $@
+> 
+> Perhaps remove the cut as well and use $$3 instead of $$0 ?
+> Maybe integrate the grep as well.
 
-No, again, my bad, I didn't trace the logic completely before asking.
-All makes sense with kit->pos being initialized to NULL. Thanks for
-elaborating!
+Or keep the grep and use a shell loop?
+	grep -E ' (T|R|D) ' | while read val flag symbol; do \
+		echo "EXPORT_SYMBOL_RUST_GPL($symbol);"; done
 
->
-> Thanks.
->
->
->
+(The grep is typically much faster than a shell conditional.)
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
