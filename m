@@ -2,113 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF717B3296
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D2A7B329B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbjI2Mbx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Sep 2023 08:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34874 "EHLO
+        id S233027AbjI2MdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 08:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232990AbjI2Mbv (ORCPT
+        with ESMTP id S232977AbjI2MdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:31:51 -0400
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829871AA
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:31:48 -0700 (PDT)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-59bc956b029so171029317b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:31:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695990707; x=1696595507;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=08Bmlyyy2afgRFLgOmm2s4kS4kN9bybtesHt+WXogOI=;
-        b=RN65EHvIuPxv1+qO/0nn8CrrQjwT4WaMHLZdfr9xBgl0RydOfyLDKDgqmr00ZtwUAY
-         9IUm/gXmKyhMXm5XI+w8vaj4UzMqU7aq75gsq0OrWH8K0Tl7rh2jGYLP6N1eIOFnesf+
-         3b8CmYqe7CE55sjtQsSCn/Ltj9yB9XIjOd7Rxv2n1kXZcPwFGMUOSpv1yOUd5cNwYjos
-         jMVUSgo1d1xdYVkHvfRHp45XWsNUVxzMs3s8O9TvpY4ymEuKYtCBuQOq18ixWy/VRs84
-         QIQw8SfHT+2Bkkvjrcorwjs0Lf4B3hM601n8PYO0Yzh2zUQY3z6uzwMEmRIPZ3QYlkDG
-         qs3g==
-X-Gm-Message-State: AOJu0Yy1xfwXXyLqpS0ldrtc+WwVyililu1Q9YcTmwOSjLFaLsmpC2ce
-        vLEiE5qUgQqzMloqAz1Dk/tNf7PxSF71sw==
-X-Google-Smtp-Source: AGHT+IE2KhXsxMa084HzjOFLmObmDggUdZ3+8JLGY4jinRuPUsM5bb0Xqkk4BKJQdmqnWGm/t9xqVA==
-X-Received: by 2002:a81:5e0a:0:b0:59b:bed9:9a3a with SMTP id s10-20020a815e0a000000b0059bbed99a3amr3895877ywb.41.1695990707065;
-        Fri, 29 Sep 2023 05:31:47 -0700 (PDT)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id c188-20020a0df3c5000000b0059293c8d70csm5423860ywf.132.2023.09.29.05.31.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 05:31:46 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5a229ac185aso18241067b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:31:46 -0700 (PDT)
-X-Received: by 2002:a81:5246:0:b0:592:97c3:18d2 with SMTP id
- g67-20020a815246000000b0059297c318d2mr4290848ywb.15.1695990706223; Fri, 29
- Sep 2023 05:31:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230924094105.2361754-1-maz@kernel.org> <ZRXtYzIA5dK1iPVb@gmail.com>
-In-Reply-To: <ZRXtYzIA5dK1iPVb@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 29 Sep 2023 14:31:35 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU7WuV6moiRWuChFzBr1n5pGxuEMeuoA1YWYw4v8QAN1w@mail.gmail.com>
-Message-ID: <CAMuHMdU7WuV6moiRWuChFzBr1n5pGxuEMeuoA1YWYw4v8QAN1w@mail.gmail.com>
-Subject: Re: [GIT PULL] irqchip fixes for 6.6, take #1
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
+        Fri, 29 Sep 2023 08:33:00 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B55C61A4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 05:32:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FFC7C433C8;
+        Fri, 29 Sep 2023 12:32:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695990777;
+        bh=1Bo4FZNzqybjVrw58i9A7aUqAJ5AK5epSxmtyX6LO3Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=mp8Om77UtnPoeFBHs1iuvcmOn5u/zQUtgAuCvlYumujvVwP2RZcByMalV6vzeqcF2
+         sekzx0/SBomc+dE8UGDCskzK+T7mlg3E0ADdcesQ9614e+9E+3d3oLUfJrOvxXhHEW
+         gFvnmmvXClzQachJhaTCix4fUI1M1IILaIIol6Vh27M4jPZelGWeXLOWelMhmZRLw4
+         K77zZQWETq88pE3D5oIyVAPlVHF8r2lErC4XVdw5QOHGtL3E92PcH0iSrn3eDGeWRQ
+         WCJWDP5dLFDW9V5t6exraTcT6Oo6/do3Xob9Sl40rMe7eT2mRweWrmSRBIpL3+fUvc
+         bDcIlOEiK8Vag==
+Received: from [85.255.233.37] (helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qmCfu-00HFD4-CN;
+        Fri, 29 Sep 2023 13:32:54 +0100
+Date:   Fri, 29 Sep 2023 13:32:52 +0100
+Message-ID: <87bkdlma6j.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Anup Patel <apatel@ventanamicro.com>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Maulik Shah <quic_mkshah@quicinc.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v9 05/15] irqchip/sifive-plic: Convert PLIC driver into a platform driver
+In-Reply-To: <20230928061207.1841513-6-apatel@ventanamicro.com>
+References: <20230928061207.1841513-1-apatel@ventanamicro.com>
+        <20230928061207.1841513-6-apatel@ventanamicro.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 85.255.233.37
+X-SA-Exim-Rcpt-To: apatel@ventanamicro.com, palmer@dabbelt.com, paul.walmsley@sifive.com, tglx@linutronix.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, frowand.list@gmail.com, conor+dt@kernel.org, atishp@atishpatra.org, ajones@ventanamicro.com, sunilvl@ventanamicro.com, saravanak@google.com, anup@brainfault.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ingo,
-
-On Thu, Sep 28, 2023 at 11:17 PM Ingo Molnar <mingo@kernel.org> wrote:
-> So the tags should be something like:
+On Thu, 28 Sep 2023 07:11:57 +0100,
+Anup Patel <apatel@ventanamicro.com> wrote:
+> 
+> The PLIC driver does not require very early initialization so let
+> us convert it into a platform driver.
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> As part of the conversion, the PLIC probing undergoes the following
+> changes:
+> 1. Use dev_info(), dev_err() and dev_warn() instead of pr_info(),
+>    pr_err() and pr_warn()
+> 2. Use devm_xyz() APIs wherever applicable
+> 3. PLIC is now probed after CPUs are brought-up so we have to
+>    setup cpuhp state after context handler of all online CPUs
+>    are initialized otherwise we see crash on multi-socket systems
+> 
+> Signed-off-by: Anup Patel <apatel@ventanamicro.com>
+> ---
+>  drivers/irqchip/irq-sifive-plic.c | 242 +++++++++++++++++++-----------
+>  1 file changed, 154 insertions(+), 88 deletions(-)
 >
->   Fixes: 397ad94668c1 ("arm64: dts: qcom: sm8150: Add pdc interrupt controller node")
->   Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->   Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->   Signed-off-by: Marc Zyngier <maz@kernel.org>
->   Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->   Link: https://lore.kernel.org/r/20230905-topic-sm8x50-upstream-pdc-ver-v4-2-fc633c7df84b@linaro.org
->
-> Ie. we generally sort the tags not chronologically (or whatever the original idea
-> was), but group them topically, sort the groups by importance, and only within
-> the group is there chronological order.
 
-The tags should represent the order of the hand-off chain:
+[...]
 
-https://elixir.bootlin.com/linux/v6.6-rc1/source/Documentation/process/submitting-patches.rst#L449
+> +core_initcall(plic_init);
 
-and chronological history:
+Or not. There are only two choices: either you absolutely require
+early init, and you stick with the current situation, or you don't,
+and you can rely on dependencies.
 
-https://elixir.bootlin.com/linux/v6.6-rc1/source/Documentation/process/submitting-patches.rst#L493
+I'm not prepared to have a third option.
 
-Although current b4 seems to move tags around sometimes...
-
-Gr{oetje,eeting}s,
-
-                        Geert
+	M.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Without deviation from the norm, progress is not possible.
