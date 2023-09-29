@@ -2,54 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CEF7B2C13
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 07:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A79727B2C11
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 07:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232749AbjI2Fup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 01:50:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48588 "EHLO
+        id S232698AbjI2Fuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 01:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231894AbjI2Fuj (ORCPT
+        with ESMTP id S229577AbjI2Fui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 01:50:39 -0400
+        Fri, 29 Sep 2023 01:50:38 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0621A8;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F172199;
         Thu, 28 Sep 2023 22:50:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F9D2C433C8;
-        Fri, 29 Sep 2023 05:50:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695966637;
-        bh=pus409fnjAN68UJYHzl/i9nvZInBE9bOy7rWmKfcZaQ=;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03A46C433C9;
+        Fri, 29 Sep 2023 05:50:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1695966636;
+        bh=xkilN8k3NzbzqCiUgNbnaC7gB4bdBzFwDX8FoLrYssI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YnzzezIDV9y9njBOBu4WEU7VXwGaet+GAqx5L40g+cE4ubMOgW1W9zPamQI6ooo/X
-         1rP88VI7RIAA2LDupyoDY+r1cCAl9GtirC+BaxaEWPC65/Tc8VJ2/19D4JkTzadQl9
-         ITHDQPpGwIvKBufT4z8R0trDM6IStlmmgbnRw0J8JWnFdMQCo3TaBeVsQXTw46gKGw
-         a/By4+Xufq3qX90GtX7dZ1cePifaaxpjgE3I4eGtPdSzUNQPiL4dG+LaSOIx6U7u1S
-         5UV5kWwlfUG3fKkjtbDkpL4CJkduWXuxWVXv8vSseeaZc2EmbhbbsRYj0H6eLccC1I
-         /MLjSnWhO1N0A==
-Date:   Fri, 29 Sep 2023 07:50:30 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        decui@microsoft.com, kys@microsoft.com, paulros@microsoft.com,
-        olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net,
-        wei.liu@kernel.org, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, leon@kernel.org, longli@microsoft.com,
-        ssengar@linux.microsoft.com, linux-rdma@vger.kernel.org,
-        daniel@iogearbox.net, john.fastabend@gmail.com,
-        bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
-        hawk@kernel.org, tglx@linutronix.de,
-        shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH net, 1/3] net: mana: Fix TX CQE error handling
-Message-ID: <20230929055030.GS24230@kernel.org>
-References: <1695519107-24139-1-git-send-email-haiyangz@microsoft.com>
- <1695519107-24139-2-git-send-email-haiyangz@microsoft.com>
- <20230929054757.GQ24230@kernel.org>
+        b=uLveylxkRyMBmMOE4nSW0CWvAqcpVwt2iCZLV216Q8Bt+d/osFvWKiDptZ9yrAlRq
+         y/NdimLXgp/rPeUYElLldxpw4kieILWUEw6OWwjKLcKHZzpEbVlzqBUoOHUBb6boD5
+         +Da0JdeT691gQbZLeLn2yoksD4uToaSqfMKfzokQ=
+Date:   Fri, 29 Sep 2023 07:50:32 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     jirislaby@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        ilpo.jarvinen@linux.intel.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@foss.st.com, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, l.sanfilippo@kunbus.com,
+        lukas@wunner.de, p.rosenberger@kunbus.com, stable@vger.kernel.org
+Subject: Re: [PATCH 1/6] serial: Do not hold the port lock when setting
+ rx-during-tx GPIO
+Message-ID: <2023092906-untainted-entangled-4d17@gregkh>
+References: <20230928221246.13689-1-LinoSanfilippo@gmx.de>
+ <20230928221246.13689-2-LinoSanfilippo@gmx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230929054757.GQ24230@kernel.org>
+In-Reply-To: <20230928221246.13689-2-LinoSanfilippo@gmx.de>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -60,23 +51,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 07:47:57AM +0200, Simon Horman wrote:
-> On Sat, Sep 23, 2023 at 06:31:45PM -0700, Haiyang Zhang wrote:
-> > For an unknown TX CQE error type (probably from a newer hardware),
-> > still free the SKB, update the queue tail, etc., otherwise the
-> > accounting will be wrong.
-> > 
-> > Also, TX errors can be triggered by injecting corrupted packets, so
-> > replace the WARN_ONCE to ratelimited error logging, because we don't
-> > need stack trace here.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
-> > Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+On Fri, Sep 29, 2023 at 12:12:41AM +0200, Lino Sanfilippo wrote:
+> From: Lino Sanfilippo <l.sanfilippo@kunbus.com>
 > 
-> Reviewed-by: Simon Horman <horms@kernel.org>
+> Both the imx and stm32 driver set the rx-during-tx GPIO in the
+> rs485_config() function by means of gpiod_set_value(). Since rs485_config()
+> is called with the port lock held, this can be an problem in case that
+> setting the GPIO line can sleep (e.g. if a GPIO expander is used which is
+> connected via SPI or I2C).
+> 
+> Avoid this issue by setting the GPIO outside of the port lock in the serial
+> core and by using gpiod_set_value_cansleep() instead of gpiod_set_value().
+> 
+> Since now both the term and the rx-during-tx GPIO are set within the serial
+> core use a common function uart_set_rs485_gpios() to set both.
+> 
+> With moving it into the serial core setting the rx-during-tx GPIO is now
+> automatically done for all drivers that support such a GPIO.
+> 
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Lino Sanfilippo <l.sanfilippo@kunbus.com>
 
-Sorry, one latent question.
+You cc: stable on many of these, but do not provide a "Fixes:" tag
+showing just how far back they should go.  Can you do that so that we
+have a hint as to what to do here?
 
-The patch replaces WARN_ONCE with a net_ratelimit()'d netdev_err().
-But I do wonder if, as a fix, netdev_err_once() would be more appropriate.
+thanks,
+
+greg k-h
