@@ -2,166 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA237B2CAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 08:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4533C7B2CBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232625AbjI2G5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 02:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52722 "EHLO
+        id S232712AbjI2HAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 03:00:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229754AbjI2G5C (ORCPT
+        with ESMTP id S232519AbjI2HAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 02:57:02 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FC81AB
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 23:57:00 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4053f24c900so40335e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 23:57:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695970619; x=1696575419; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q5nybL4dvTURYZgr23LqoAjNxEI6cIl7C36UD+zafSo=;
-        b=MxK/gmz16h8Y7usf0+eDPOpOPRbUE6Q0xZHUBWDBBGZsfpsmtCRW5i9gInQPXkA0DT
-         v8ViqKLIlixp/TNp6PM4aTdvAFYVI7U43yTlm9V1VqFRukXumo8xBa8iT1bHcBZNClNi
-         RtNw0ORsjEqK743kggR9BP9B0vsQ67k14ZTI4cIEx+fo79e0W8DG2zOttpBdQCPNibkg
-         L1BZAXfk7irLt3Wi116JLDSmvfUowFBpsaA4t0gQ1Xk2SA3iInBSSesgm5QbjBd1pOYL
-         tE3VCHKcEBUq6k9Si9f8G1xhA//+SEsw0wIpKWWXibRIgwOI0wZJeAaxAr+VHG7Of9Hp
-         /CKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695970619; x=1696575419;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q5nybL4dvTURYZgr23LqoAjNxEI6cIl7C36UD+zafSo=;
-        b=FYwWdzPWbkFo0MveiqDOm8Ei4sTQvv0XVkFjZeEXfYNdcMC2VlNGJAxUd7Zt1khAYT
-         KHjg+HmAErBXLPtempgQfi/eXKEDMAf4OLpHN+vEYEbWd2ev6DG7vJJX/onc6h/FtbCl
-         CimMfv+6QBELAewP1tj+MaKt8Upbza8ev1gmXC+YOdDjrslvbxsrqRMz3If5a35fad2D
-         cguwPLUYxFxKaj4/BuLp8N6IzCTs6grlbd67dZi3DwZAcJntJ1dS7ptEqb+DQwsD/w89
-         tR7z2gkUDMFVwpg6EhREGvN4JznSEkmD25OvsDPp7Z/kqjr0DQgRwS0kMc6bnq3NQYFP
-         sCnA==
-X-Gm-Message-State: AOJu0YyGRslDMYUhwC4r4n/J4K6Lz2dUGWZp69L08G3fYSgzloPLP8wK
-        W00CBmk3DABsv8Ao1oIX/VJ44ys946uPFjmOtZin
-X-Google-Smtp-Source: AGHT+IESudEEHlPoiDYpwHnJVQRlH9wRebcTmOu/1slgAEgwniLCINMpXv2N40IrlQMDzNo0mmRUP1Bv2XbHYaM/5Ic=
-X-Received: by 2002:a05:600c:34c8:b0:405:38d1:e146 with SMTP id
- d8-20020a05600c34c800b0040538d1e146mr443186wmq.4.1695970618685; Thu, 28 Sep
- 2023 23:56:58 -0700 (PDT)
+        Fri, 29 Sep 2023 03:00:52 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED5591A5;
+        Fri, 29 Sep 2023 00:00:50 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T6knHI011069;
+        Fri, 29 Sep 2023 07:00:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=dzNv6I8ssnUHDK3cRH/+aA2ScM8TjKIX1N+wXRxSrGc=;
+ b=R+uJ/JlZbL+IshSSE3JgVJl3I9c2anhqnu6wTNb+LVepv81Yt9Sn1HRR4VEwrwiKlSWv
+ B4umEka9co8LXk7XsI4PzlTy9K1o9YgjUoID7CEErMe9WgxNaWpp7J7X8nyUPjkJ0u2n
+ 9R5SrKLwo3OW+6OppRMkeDxqFCySornIawy2FjpkY+Tk0OuD5FQkL79DkhiGp6+mmjbO
+ e7cSyD+U5Xr9UDHmtH0/dNWmMTtxSrEZ9ZJ3ram4UvLrsg6T8jhlCP2HPgAjnGQ3D76w
+ zcQzSRtYTLOJcuwiyhazlkRtJ8u5MbTU4H3jRdijDeaWngtvt9S+YDmhERADHoBzKEQd eQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tdhru0mg0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 07:00:48 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38T70lHX027229
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Sep 2023 07:00:47 GMT
+Received: from ekangupt-linux.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Fri, 29 Sep 2023 00:00:44 -0700
+From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
+To:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
+CC:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
+        <ekangupt@qti.qualcomm.com>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>, <fastrpc.upstream@qti.qualcomm.com>
+Subject: [PATCH v1 0/4] Add missing features to FastRPC driver
+Date:   Fri, 29 Sep 2023 12:30:26 +0530
+Message-ID: <1695970830-12331-1-git-send-email-quic_ekangupt@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <20230929023737.1610865-1-maheshb@google.com> <CANDhNCqb5JzEDOdAnocanR2KFbokrpMOL=iNwY3fTxcn_ftuZQ@mail.gmail.com>
- <CAF2d9jgeGLCzbFZhptGzpUnmMgLaRysyzBmpZ+dK4sxWdmR5ZQ@mail.gmail.com>
-In-Reply-To: <CAF2d9jgeGLCzbFZhptGzpUnmMgLaRysyzBmpZ+dK4sxWdmR5ZQ@mail.gmail.com>
-From:   John Stultz <jstultz@google.com>
-Date:   Thu, 28 Sep 2023 23:56:46 -0700
-Message-ID: <CANDhNCro+AQum3eSmKK5OTNik2E0cFxV_reCQg0+_uTubHaDsA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] time: add ktime_get_cycles64() api
-To:     =?UTF-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS14KS+4KSwKQ==?= 
-        <maheshb@google.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Linux <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Don Hatchett <hatch@google.com>,
-        Yuliang Li <yuliangli@google.com>,
-        Mahesh Bandewar <mahesh@bandewar.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: ilzxDUG-4gRh_M40ux0JNz4m4WDsh4qf
+X-Proofpoint-GUID: ilzxDUG-4gRh_M40ux0JNz4m4WDsh4qf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-29_04,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 lowpriorityscore=0 suspectscore=0 mlxscore=0
+ mlxlogscore=501 impostorscore=0 spamscore=0 bulkscore=0 adultscore=0
+ clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2309290059
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 11:35=E2=80=AFPM Mahesh Bandewar (=E0=A4=AE=E0=A4=
-=B9=E0=A5=87=E0=A4=B6 =E0=A4=AC=E0=A4=82=E0=A4=A1=E0=A5=87=E0=A4=B5=E0=A4=
-=BE=E0=A4=B0)
-<maheshb@google.com> wrote:
->
-> On Thu, Sep 28, 2023 at 10:15=E2=80=AFPM John Stultz <jstultz@google.com>=
- wrote:
-> >
-> >   Thanks for sending this out.  Unfortunately, I'm a bit confused by
-> > this. It might be helpful to further explain what this would be used
-> > for in more detail?
-> >
-> Thanks for looking at this John. I think my cover-letter wasn't sent
-> to all reviewers and that's my mistake.
+This patch series adds the listed features that have been missing
+in upstream fastRPC driver.
 
-No worries, I was able to find it on lore. Though it looks like your
-mail threading isn't quite right?
+- Add early wakeup support to allow DSP user to send early response
+  to CPU and improve fastrpc performance.
+- Add polling mode support with which driver polls on memory to avoid
+  CPU from going to low power modes.
+- Add notifications frameworks to provide users with the DSP PD status
+  notifications.
+- Add a control mechanism to allow users to clean up DSP user PD
 
+Ekansh Gupta (4):
+  misc: fastrpc: Add early wakeup support for fastRPC driver
+  misc: fastrpc: Add polling mode support for fastRPC driver
+  misc: fastrpc: Add DSP PD notification support
+  misc: fastrpc: Add support for users to clean up DSP user PD
 
-> > 2) Depending on your clocksource, this would have very strange
-> > wrapping behavior, so I'm not sure it is generally safe to use.
-> >
-> The uapi does provide other alternatives like sys, mono, mono-raw
-> along with raw-cycles and users can choose.
+ drivers/misc/fastrpc.c      | 463 ++++++++++++++++++++++++++++++++++++++++++--
+ include/uapi/misc/fastrpc.h |   8 +
+ 2 files changed, 456 insertions(+), 15 deletions(-)
 
-Sure, but how does userland know if it's safe to use raw cycles? How
-do we avoid userland applications written against raw cycles from
-breaking if they run on a different machine?
-To me this doesn't feel like the interface has been abstracted enough.
+-- 
+2.7.4
 
-> > 3) Nit: The interface is called ktime_get_cycles64 (timespec64
-> > returning interfaces usually are postfixed with ts64).
-> >
-> Ah, thanks for the explanation. I can change to comply with the
-> convention. Does ktime_get_cycles_ts64() make more sense?
-
-Maybe a little (it at least looks consistent), but not really if
-you're sticking raw cycles in the timespec :)
-
-> > I guess could you clarify why you need this instead of using
-> > CLOCK_MONOTONIC_RAW which tries to abstract raw cycles in a way that
-> > is safe and avoids wrapping across various clocksources?
-> >
-> My impression was that CLOCK_MONOTONIC_RAW (as the same suggests) does
-> provide you the raw / undisciplined cycles. However, code like below
-> does show that monotonic-raw is subjected to certain changes.
-> """
-> int do_adjtimex(struct __kernel_timex *txc)
-> {
->       [...]
-
-Err. The bit below is from tk_setup_internals() not do_adjtimex(), no?
-
->         /*
->          * The timekeeper keeps its own mult values for the currently
->          * active clocksource. These value will be adjusted via NTP
->          * to counteract clock drifting.
->          */
->         tk->tkr_mono.mult =3D clock->mult;
->         tk->tkr_raw.mult =3D clock->mult;
->         tk->ntp_err_mult =3D 0;
->         tk->skip_second_overflow =3D 0;
-
-So the comment is correct, except for the tkr_raw.mult value (I can
-see how that is confusing). The raw mult is set to the clocksource
-mult value and should not modified (unless the clocksource changes).
-
-> """
-> and that was the reason why I have added raw-cycles as another option.
-> Of course the user can always choose mono-raw if it satisfies their
-> use-case.
-
-Having raw monotonic as an option seems reasonable to me (as it was
-introduced to provide a generic abstraction for logic that was using
-raw TSC values in an unportable way).
-
-But the raw cycles interface still worries me, as I want to make sure
-we're not creating user visible interfaces that expose raw hardware
-details (making it very difficult to maintain long term).
-
-thanks
--john
