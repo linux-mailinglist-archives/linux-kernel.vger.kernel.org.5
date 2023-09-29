@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB1E7B3BD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 23:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5541E7B3BD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 23:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233310AbjI2VMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 17:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37562 "EHLO
+        id S233760AbjI2VME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 17:12:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjI2VMB (ORCPT
+        with ESMTP id S232985AbjI2VMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 17:12:01 -0400
+        Fri, 29 Sep 2023 17:12:02 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2551B1A7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 14:11:59 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d81a47e12b5so22936248276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 14:11:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B4C1A7
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 14:12:00 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d85fc6261ffso21294473276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 14:12:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696021918; x=1696626718; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qI6+evphp8TRNLDsXrgWEBj/E5cavHWN+P8xd8/8MDM=;
-        b=y/UdG2MqC5fvONoyKdRitZqNs15vbQ817qWjX4HOBdQJgESSeOOMmSBjA/onQo2GS0
-         eP1AfXZRsbFcCXkEzMPhXldDWlHGu4gOnZEemkqXmtU8DfFQg5Kn46Di+w14c39C3C8l
-         1tEQDjPST0Gbm5WXMPHT6ahp9+qgggG/lykFw48LHwBRZcwUxkNNz8g5Rf2F7NKPO4Av
-         nY9HZJ3Yw0wemkNts32PjdQ7r675gPFTgkcLHkN6NsthWWRQHPiqHYMkzfXJgnfVAUF6
-         9pgyluQW/14RDjOFPZBVGPLtG/BX0okXM+tCzsQUh76XcHCZbI6/fj5efpPrp7egJ/0v
-         j+vw==
+        d=google.com; s=20230601; t=1696021920; x=1696626720; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=FR1ZKwT/o63KmLhMDo8tUZzc0vKzUsUCbtQdapDGJGA=;
+        b=bf1EOsOuDJTQHfN+mIHHCC1FmaxjQbk+q6a+dHkaFwE7mFrm300htcxJdAnrxtZNGd
+         WZ7+4BLcYv+U5MeLcWFhYD5wMwHMSyTPj2qL6tfB29U1Y7UtKmKKUOfhBROhY22K1uAp
+         XinQzJrrlts0sSGRZL0HhqldQ2dXE4cps+upv5jq8qzpnB/v6sfI+4m6X/xrVlBCc808
+         8Ap+9jHGNfmZKtnxaNBMucN132MaX7kseHR0Gri2cvPMqTn885FgVP24lAsBSpWjq8Ea
+         Ks2+jgzjvZBU+5QdLtw+q/+KP5aaTjz1oClDwgpu8gi9dIgsUYPZsToyU7t8iwC0ya9v
+         5FKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696021918; x=1696626718;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qI6+evphp8TRNLDsXrgWEBj/E5cavHWN+P8xd8/8MDM=;
-        b=H7j14BebSF/1U0miTAGb0qkIaajwlFR2dx/rPeQ79r2gy3HfsGHJI/KMLRBBmxWQ12
-         dP3znhgkmpoEYuNUGma1xwo89O6xpVQFvWYU/XFzYd9Cf0DUynY2YZEWf/U97xk5IS/K
-         9Scg1cmLpg8qkc6xwqdqsmqOwr50M8DTUJoM+Fsf/LSqAAhlAt7jfvzKj51Q6Jidk28d
-         PxJYJ9Gc7jhqpAlrH6DlpOMOhehIGRlA19+sBOyJBjN2eFbFz63lyfXhopxANvXPM+pn
-         Y34MQ9FO0w5jXepZk8ZIRi/38gV1v1z9Kuoy+dnDUlAusq0aohQ7x5dYqWMM7iD+94Km
-         +lhg==
-X-Gm-Message-State: AOJu0YxZp2oYz64zoWXqqAfxwBrkZySiKj0qKBuJm9zAvM6YhCM7z1jO
-        6BhuxwAE0TS0fZnMmCZ0Xd4VJqHqRSmgKQrvRx4=
-X-Google-Smtp-Source: AGHT+IGjD5ILJnbbyCB0lpaKNSDkrgUS5mwaokgtSD8CjgjpWZhKS+xQi/ZyvDLcSGZs4gGR5Nixr3sWaAppp9HPVPc=
+        d=1e100.net; s=20230601; t=1696021920; x=1696626720;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FR1ZKwT/o63KmLhMDo8tUZzc0vKzUsUCbtQdapDGJGA=;
+        b=baoJ17LVjX1zDZKp8FXOgwmMAFhy9ZogkfFXH7IGHZm7ZK++16JMI/W7DYE3vYYk0f
+         ENbIQFwzMU0NZ577SYhEeDU3xlH6pu8XJVb8g3K8XGMSfvDUYhjl8OY3yKePynvL+W+z
+         qn9UWFHKxAomapuuvg7FvHzf/qpUT5PJ+SaWTaXIpI/h87lgn2f5WvS2uQSXgtCIUUSp
+         PVFHUcGPqnUwIpBUrmUs7UOXwzohAv148puTgqdsjFCBP2NkxcknVRWbCsV2yYMde+0c
+         68dktrecAp+ajP9jND2uekTsBXb6U3oG1F6x9u8z3qCsmh59IGNTXP9yTB0Sg7buco0l
+         YN6A==
+X-Gm-Message-State: AOJu0Ywln8LRN80JYTx9d1k4mSDojarbnUJtUHuctoMcpjosBnxbq3hz
+        k/jarm8QWufflEEx0Q838Swg0xQfcLHe70tFe5w=
+X-Google-Smtp-Source: AGHT+IHnDIypgcCWBxPESiB/yrBCpKXqORME3PWFhWMxCeyFk9cmGmraRzLwQcSrcYatS2Uvi9kN6m0eWCmXEF8Vfz0=
 X-Received: from samitolvanen.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:4f92])
- (user=samitolvanen job=sendgmr) by 2002:a25:ad0a:0:b0:d7b:8d0c:43f0 with SMTP
- id y10-20020a25ad0a000000b00d7b8d0c43f0mr85777ybi.11.1696021918263; Fri, 29
- Sep 2023 14:11:58 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 21:11:56 +0000
+ (user=samitolvanen job=sendgmr) by 2002:a25:6812:0:b0:d13:856b:c10a with SMTP
+ id d18-20020a256812000000b00d13856bc10amr77200ybc.3.1696021920090; Fri, 29
+ Sep 2023 14:12:00 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 21:11:57 +0000
+In-Reply-To: <20230929211155.3910949-4-samitolvanen@google.com>
 Mime-Version: 1.0
+References: <20230929211155.3910949-4-samitolvanen@google.com>
 X-Developer-Key: i=samitolvanen@google.com; a=openpgp; fpr=35CCFB63B283D6D3AEB783944CB5F6848BBC56EE
-X-Developer-Signature: v=1; a=openpgp-sha256; l=727; i=samitolvanen@google.com;
- h=from:subject; bh=Ko6nN36PGlYW1laUEIPPBze9YPFWfBooBOFzOjRaBRQ=;
- b=owEB7QES/pANAwAKAUy19oSLvFbuAcsmYgBlFz2b825e14pVS6UiwTyLbmjRM7MleUeCEvyhI
- HQ9Yi7cABWJAbMEAAEKAB0WIQQ1zPtjsoPW0663g5RMtfaEi7xW7gUCZRc9mwAKCRBMtfaEi7xW
- 7p9uC/9v8/6JNqB5Fbep/hRFQKiCO/kScjQBMmlHvInQfP3gwUfbFCkkKYSVRSOR4Pxeo+/um1b
- AFvQRu8TawGoy7GtfAlC2T/3RZQcj6xNwU/+K5WHsVdfqZNa6xsNhtBstdrsW91ELm7X4wBhnPs
- 9dYkZsrMXL8JtJvTDL1VQ3EjQ/tTab3SiJiqIF2J694+4vXbP83KGUAsC8z11QRsfCkb9V0cHNb
- qMaWfvoF2E3/MtrWUF/VlddoLs+4VfwsIz2eTQZm1X5Ll3CAeOMw8TmTQqQ3OT2OM1kJ1GKFGjs
- kpo/58zC+ziTSyL0rCbs4jrdHHMyEYwJ50108kvKlUuWGKE1joh0omULdtzfezNnIwzMPwuVnD+
- 4eCKnZSAXhZxbKFAC20jcgErpJusDmn0lx2CNHUYsVuPL58GkYaK49lTYq09WuoCRWjrP+iv4BO 5JlmAMEmM6FrNg93Mj3ALgwQi7uUk7LHPkg8Rs7a3cO1p1MoInq21V6B5zk6DfXYcBSdA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1359; i=samitolvanen@google.com;
+ h=from:subject; bh=ARqQmg1Q7FqF1vgF9dpD7yhcKdtd1MfRgn2maiynoVQ=;
+ b=owEB7QES/pANAwAKAUy19oSLvFbuAcsmYgBlFz2bINQRa9JuNqXpxYBQVzDJb/c0+7N1HB+sp
+ 2/Sm1UUS7iJAbMEAAEKAB0WIQQ1zPtjsoPW0663g5RMtfaEi7xW7gUCZRc9mwAKCRBMtfaEi7xW
+ 7vOOC/9tO/6MqlDPfjsiexFNXOEfW7Ar2H9OEVyVIE92EgZgm/mYuBlQqBRKkWvnSCUPZ+ktWxw
+ /8gD9WFejtTnKMje8tf/4wwgxbVQuClXmgi7zZQJvbJ2+SG6cp6B7JcXsMhPsJsbuh3NhTEQj/o
+ pgpvv9Uyv2mK/vRlud+N82dGqhUfLNAWNPfHmZmQ/tMcij5bpFL8VvhWPFF6Akufb6mjaM9D8vG
+ +cR914ZzFo93wp2YlrOemHXK7uUcqH8HHjkYtoFn7o8xhU+VQ7oy1yajipTLM7ewaa0tOrdIWqa
+ 08cpT5V8GX3uAGGuFOzPlMxeF7o/GIDLXMxDfovUqIRoGLzciTjGMCqRmRapZU6oY3GqWEqPSnx
+ GnCaN0xzRvU31sMOUQQkusxUC/3qLR05lv7v/sDAlG5Yah5czQB5w1+2ClKsbQ3sCX6HmpcfWsx r/VvM19V0Dekn+5QLhuwnCOlt6Hs+HBdn3kG1truvPJvtRa+QxsCoiBcfxXnVWnQrVOuI=
 X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20230929211155.3910949-4-samitolvanen@google.com>
-Subject: [PATCH 0/2] riscv: Increase mmap_rnd_bits_max on Sv48/57
+Message-ID: <20230929211155.3910949-5-samitolvanen@google.com>
+Subject: [PATCH 1/2] mm: Change mmap_rnd_bits_max to __ro_after_init
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
@@ -82,30 +84,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Allow mmap_rnd_bits_max to be updated on architectures that
+determine virtual address space size at runtime instead of relying
+on Kconfig options by changing it from const to __ro_after_init.
 
-We noticed that 64-bit RISC-V kernels limit mmap_rnd_bits to 24
-even if the hardware supports a larger virtual address space size
-[1]. These two patches allow mmap_rnd_bits_max to be changed during
-init, and bumps up the maximum randomness if we end up setting up
-4/5-level paging at boot.
+Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+---
+ include/linux/mm.h | 2 +-
+ mm/mmap.c          | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Sami
-
- [1] https://github.com/google/android-riscv64/issues/1
-
-
-Sami Tolvanen (2):
-  mm: Change mmap_rnd_bits_max to __ro_after_init
-  riscv: mm: Update mmap_rnd_bits_max
-
- arch/riscv/mm/init.c | 6 ++++++
- include/linux/mm.h   | 2 +-
- mm/mmap.c            | 2 +-
- 3 files changed, 8 insertions(+), 2 deletions(-)
-
-
-base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index bf5d0b1b16f4..72a98b2afaf9 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -86,7 +86,7 @@ extern int sysctl_legacy_va_layout;
+ 
+ #ifdef CONFIG_HAVE_ARCH_MMAP_RND_BITS
+ extern const int mmap_rnd_bits_min;
+-extern const int mmap_rnd_bits_max;
++extern int mmap_rnd_bits_max __ro_after_init;
+ extern int mmap_rnd_bits __read_mostly;
+ #endif
+ #ifdef CONFIG_HAVE_ARCH_MMAP_RND_COMPAT_BITS
+diff --git a/mm/mmap.c b/mm/mmap.c
+index b56a7f0c9f85..ed1b178b223a 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -64,7 +64,7 @@
+ 
+ #ifdef CONFIG_HAVE_ARCH_MMAP_RND_BITS
+ const int mmap_rnd_bits_min = CONFIG_ARCH_MMAP_RND_BITS_MIN;
+-const int mmap_rnd_bits_max = CONFIG_ARCH_MMAP_RND_BITS_MAX;
++int mmap_rnd_bits_max __ro_after_init = CONFIG_ARCH_MMAP_RND_BITS_MAX;
+ int mmap_rnd_bits __read_mostly = CONFIG_ARCH_MMAP_RND_BITS;
+ #endif
+ #ifdef CONFIG_HAVE_ARCH_MMAP_RND_COMPAT_BITS
 -- 
 2.42.0.582.g8ccd20d70d-goog
 
