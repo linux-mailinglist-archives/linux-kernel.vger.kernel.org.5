@@ -2,73 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A78C47B3603
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A726D7B3607
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233068AbjI2Oud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 10:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
+        id S233222AbjI2Ovm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 10:51:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjI2Oud (ORCPT
+        with ESMTP id S232954AbjI2Ovi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 10:50:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF238F9
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:49:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695998983;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4iEV8oFvPizxNdOETo7I2t4iuvcRcdG0B3tIl1ZjR10=;
-        b=M3up0P5baq6sD8jY3J7yrtIPGtgbpf269u3nAppp1ypKdCcIo525Zjp7/hjNu0iEDvRYfC
-        9Hz4wkVb4m6Bb6dpK7OzSVwT4urmu72FesH9xtp9fwlG8IZNRiNckJjMc+wTT67e9k4/EL
-        VOPkriOAvEI0SLzfO6kOtFhindfnzmU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-385-zONeOzhzP42S5FHpqpX7OA-1; Fri, 29 Sep 2023 10:49:38 -0400
-X-MC-Unique: zONeOzhzP42S5FHpqpX7OA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 023F885A5A8;
-        Fri, 29 Sep 2023 14:49:38 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.22.16.226])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C3D429A;
-        Fri, 29 Sep 2023 14:49:37 +0000 (UTC)
-Date:   Fri, 29 Sep 2023 10:49:36 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Masanari Iida <standby24x7@gmail.com>,
-        linux-kernel@vger.kernel.org, mingo@redhat.com, vschneid@redhat.com
-Subject: Re: [PATCH] sched/topology: Fix a spelling typo in message.
-Message-ID: <20230929144936.GA171062@lorien.usersys.redhat.com>
-References: <20230929133345.259360-1-standby24x7@gmail.com>
- <20230929134837.GG6282@noisy.programming.kicks-ass.net>
+        Fri, 29 Sep 2023 10:51:38 -0400
+Received: from mblankhorst.nl (lankhorst.se [141.105.120.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF9E6F7
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:51:35 -0700 (PDT)
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+Subject: [PATCH v5 00/12] sound: Use -EPROBE_DEFER instead of i915 module loading.
+Date:   Fri, 29 Sep 2023 16:51:14 +0200
+Message-Id: <20230929145123.233838-1-maarten.lankhorst@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230929134837.GG6282@noisy.programming.kicks-ass.net>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 03:48:37PM +0200 Peter Zijlstra wrote:
-> On Fri, Sep 29, 2023 at 10:33:45PM +0900, Masanari Iida wrote:
-> > This patch fixes a spelling typo in toloplogy.c
-> 
-> Please, google before sending patches, this is not a typo. Your spell
-> checker is broken for not including humour.
-             borken
+Explicitly loading i915 becomes a problem when upstreaming the new intel driver
+for Tiger Lake and higher graphics (xe). By loading i915, it doesn't wait for
+driver load of xe, and will fail completely before it loads.
 
+-EPROBE_DEFER has to be returned before any device is created in probe(),
+otherwise the removal of the device will cause EPROBE_DEFER to try again
+in an infinite loop.
+
+The conversion is done in gradual steps. First I add an argument to
+snd_hdac_i915_init to allow for -EPROBE_DEFER so I can convert each driver
+separately. Then I convert each driver to move snd_hdac_i915_init out of the
+workqueue. Finally I drop the ability to choose modprobe behavior after the
+last user is converted.
+
+Compared to previous version, I added a fix for sof_ops_free() missing call,
+renamed probe_no_wq and remove_no_wq to probe_early/probe_late, and fixed
+the resulting fallout.
+
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+Cc: sound-open-firmware@alsa-project.org
+
+Maarten Lankhorst (10):
+  ASoC/SOF/core: Ensure sof_ops_free() is still called when probe never
+    ran.
+  ALSA: hda/intel: Fix error handling in azx_probe()
+  ALSA: hda/i915: Allow override of gpu binding.
+  ALSA: hda/i915: Add an allow_modprobe argument to snd_hdac_i915_init
+  ALSA: hda/i915: Allow xe as match for i915_component_master_match
+  ASoC: Intel: avs: Move snd_hdac_i915_init to before probe_work.
+  ALSA: hda/intel: Move snd_hdac_i915_init to before probe_work.
+  ASoC: Intel: Skylake: Move snd_hdac_i915_init to before probe_work.
+  ASoC: SOF: Intel: Move binding to display driver outside of deferred
+    probe
+  ALSA: hda/i915: Remove extra argument from snd_hdac_i915_init
+
+Pierre-Louis Bossart (2):
+  ASoC: SOF: core: Add probe_early and remove_late callbacks
+  ASoC: SOF: Intel: hda: start splitting the probe
+
+ sound/hda/hdac_i915.c                | 24 ++++++-----
+ sound/pci/hda/hda_intel.c            | 60 ++++++++++++++--------------
+ sound/soc/intel/avs/core.c           | 13 ++++--
+ sound/soc/intel/skylake/skl.c        | 31 +++++---------
+ sound/soc/sof/core.c                 | 17 +++++++-
+ sound/soc/sof/intel/hda-common-ops.c |  2 +
+ sound/soc/sof/intel/hda.c            | 30 +++++++++-----
+ sound/soc/sof/intel/hda.h            |  2 +
+ sound/soc/sof/ops.h                  | 16 ++++++++
+ sound/soc/sof/sof-priv.h             |  2 +
+ 10 files changed, 119 insertions(+), 78 deletions(-)
 
 -- 
+2.39.2
 
