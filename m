@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D92D7B3853
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAAF7B385A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233572AbjI2RGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:06:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43924 "EHLO
+        id S233608AbjI2RHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233215AbjI2RGS (ORCPT
+        with ESMTP id S233429AbjI2RHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:06:18 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD1B193
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:06:16 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68fb85afef4so12257348b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:06:16 -0700 (PDT)
+        Fri, 29 Sep 2023 13:07:07 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C414B4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:07:05 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c61bde0b4bso86388595ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:07:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696007176; x=1696611976; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rxYI9ulX5XzPX5XOXonON+SMQGYguOvm0R6V5aclg6A=;
-        b=bu1AoD1MBVuaFoU4Kuqjuqz5JwkYDxAb/pFXZk9XNWc31UlGWoURxzrRJKID/C5YQq
-         GEenO95S0XOakk+8QV8UB7b5BzrBZ6AmxiUv10KSb1orI0GOiPELysEe8Wuk5eVnd8pN
-         qcXdvyBgGUXe5HqINyWSntdWcpSuTAG/sM+cA=
+        d=chromium.org; s=google; t=1696007225; x=1696612025; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AsjkU9sd/Uxf4RtLULirbDyU2qsyvP7kZCyEPcyynys=;
+        b=NCeltnBdboNqY3m4comfuM3gPNdZpKk70J0U63U5CxU9ofdtb+QgtlV7crt5UtkpZu
+         19p8+eukakv9kyKt1xbgJwenhrj1y51IBU0fMS3CSIfQQ7vP1SBOJ5asgtvaOSxS9LyA
+         0iO+ZBAjpfqtA6tUDDah1x6dVEgNaJc9SJURM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696007176; x=1696611976;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rxYI9ulX5XzPX5XOXonON+SMQGYguOvm0R6V5aclg6A=;
-        b=Dpq4yiDbA4OydnHqYEnK8j+wZQKdFheXxhTPV4GCY2phGRERtxftCyPdc766L4seMl
-         pPgcCKBOj8Fiktl1uNkgpBhiYcxAvxRxaqY+5yZbgCiNsyPRO9122JxnEv+FWqBSGSrK
-         Gm2Sbsl1cY4pLDnKn7/3ZtCFk9juiCTbNKJB+rcJm3UlN04IKRlWmuZFHmjMKt07UwBM
-         Esr2YU+T97wqFudAwb+VndAkRleZRq23CVvdp8WbT4lPOVtdPPljbeNhISDSCvd32XII
-         Mi1aXy+5gBX6kIrlITSL5DQaUcpG0K6JjNgbHgi42ZWZ0litm1vbpJtl8bhp72PkKROZ
-         7aOw==
-X-Gm-Message-State: AOJu0YyfgS/N2otpCGPSVCPQyV2/tIReYYDr+Bus8QWIryvg+ZbLmmbf
-        K/HayxVzb13GYyNHq/5qrU/JjA==
-X-Google-Smtp-Source: AGHT+IEEm0cgYM95RhBy+hVCohyjsNc4BHxivmWx4iHFGWyTUfY+kiazqEJ0Uju7DJ50x2sjMqjMDA==
-X-Received: by 2002:a05:6a20:3d04:b0:153:7978:4faa with SMTP id y4-20020a056a203d0400b0015379784faamr5859933pzi.37.1696007176255;
-        Fri, 29 Sep 2023 10:06:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696007225; x=1696612025;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AsjkU9sd/Uxf4RtLULirbDyU2qsyvP7kZCyEPcyynys=;
+        b=gFZo8H5p7DlCD+mGypwWClHAlNz1IN7bBDT2pNongXiJUpRY6eMnDPvXzabDwSAO2U
+         SKnLN/kN/sjVHj9joJeta9/5QreRqJzM/LjHVktuNI3zN1BQ9u9JZZ1KsVI5v4GuBBxY
+         yTZv6opUYBO1Ylw9YpFPPEOLIUwW781bU1uDxxh55VTBf54eL02Gqr4kiRyptv6ZiN+L
+         CwClb3El00WYfXDf7iney7L31HJ9b7ErfUE5pukURu7sHDsexfizTEn6D8uVltsQgkMl
+         qnpxxnjXs3pUAnBvbkPIokESKYApY7d3BVDgsGgJZqbvhO4TO97jQ+gq45IGkZ9/3Sgy
+         JYMQ==
+X-Gm-Message-State: AOJu0YyZsaRHvjOj+whudvCEFRZQP1YxXYjUVTp4SzHEmPu52YHLYqTe
+        LX4P5brM+s9A3MNYcLsT3yF0Jg==
+X-Google-Smtp-Source: AGHT+IGoHObC+sZwgjMlD4gRGJqzF6I88du7DuaXRNll+YfQeWUWgm8kyHo8H1I8fA8ubS/sIoCPug==
+X-Received: by 2002:a17:903:1ca:b0:1c3:e5bf:a9f8 with SMTP id e10-20020a17090301ca00b001c3e5bfa9f8mr6044483plh.19.1696007224586;
+        Fri, 29 Sep 2023 10:07:04 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id fk1-20020a056a003a8100b00682868714fdsm15810970pfb.95.2023.09.29.10.06.15
+        by smtp.gmail.com with ESMTPSA id iw15-20020a170903044f00b001c5d09e9437sm17218637plb.25.2023.09.29.10.07.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 10:06:15 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 10:06:14 -0700
+        Fri, 29 Sep 2023 10:07:04 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 10:07:03 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     Pedro Falcato <pedro.falcato@gmail.com>
 Cc:     Eric Biederman <ebiederm@xmission.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
         Sebastian Ott <sebott@redhat.com>,
         Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH v4 4/6] binfmt_elf: Use elf_load() for library
-Message-ID: <202309291005.80DD5F55E9@keescook>
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v4 0/6] binfmt_elf: Support segments with 0 filesz and
+ misaligned starts
+Message-ID: <202309291006.E9FB95D0B@keescook>
 References: <20230929031716.it.155-kees@kernel.org>
- <20230929032435.2391507-4-keescook@chromium.org>
- <CAKbZUD1ojuNN_+x6gkxEMsmLOd5KbCs-wfJcMM==b8+k8_uD_w@mail.gmail.com>
+ <CAKbZUD3dxYqb4RSnXFs9ehWymXe15pt8ra232WAD_msJsBF_BQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKbZUD1ojuNN_+x6gkxEMsmLOd5KbCs-wfJcMM==b8+k8_uD_w@mail.gmail.com>
+In-Reply-To: <CAKbZUD3dxYqb4RSnXFs9ehWymXe15pt8ra232WAD_msJsBF_BQ@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
@@ -79,24 +76,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 01:12:13PM +0100, Pedro Falcato wrote:
-> On Fri, Sep 29, 2023 at 4:24 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > While load_elf_library() is a libc5-ism, we can still replace most of
-> > its contents with elf_load() as well, further simplifying the code.
+On Fri, Sep 29, 2023 at 12:58:18PM +0100, Pedro Falcato wrote:
+> So on that end, you can take my
 > 
-> While I understand you want to break as little as possible (as the ELF
-> loader maintainer), I'm wondering if we could axe CONFIG_USELIB
-> altogether? Since CONFIG_BINFMT_AOUT also got axed. Does this have
-> users anywhere?
+> Tested-by: Pedro Falcato <pedro.falcato@gmail.com>
 
-I can't even find a libc5 image I can test. :P
-
-I made it non-default in '22:
-
-7374fa33dc2d ("init/Kconfig: remove USELIB syscall by default")
-
-I'm not sure we can drop it entirely, though.
+Thanks!
 
 -- 
 Kees Cook
