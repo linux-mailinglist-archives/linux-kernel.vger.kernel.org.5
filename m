@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FBC7B39A8
+	by mail.lfdr.de (Postfix) with ESMTP id 60F8C7B39A7
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233850AbjI2SFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 14:05:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33940 "EHLO
+        id S233789AbjI2SF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 14:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233878AbjI2SFG (ORCPT
+        with ESMTP id S233872AbjI2SFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 14:05:06 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65DFCF2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:04:36 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-277550774e5so7818817a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:04:36 -0700 (PDT)
+        Fri, 29 Sep 2023 14:05:05 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D03CEC
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:04:35 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-690f7bf73ddso11479930b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:04:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696010676; x=1696615476; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1696010674; x=1696615474; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=J1v3O8Y0CLFHcIVug6/xydUDIhYw4BbQ+Ux1bHhPShA=;
-        b=cbTOKtunlDcbaub/tWHdE6pCd5d3tSM1bl91q2hx3xWKEudWNUrov2insAI/zlAV32
-         jtQuwhYnYDt9ShE5SHmvd1z+cBIA57CUO39EXzIOb6kTX2BUMxVSpDuVdD+PqWp0mSrw
-         xS7OUaXrwasRnjtgKB+MPP6Yls3vT1d1uOqo0=
+        bh=vbdv0/nW296h6ChWMtIgFAyyvGlVNRpufvyfuyvShzQ=;
+        b=IW5AVcAkiaAj4s7fJRndl3MMjtUWjDjxTQlKnjnaHjAjwt+vUsYxz9JgvlYoaK3M6f
+         Ol9y9wATgMc/u+YmhVAdfTUrWxP1HZJ0oPNZltX2EtwlMLEg2h6mTN8CI/YTP0t0yyUe
+         dD46nq7X5i+JeJMH2faLvf889/DSNBnZtgr6M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696010676; x=1696615476;
+        d=1e100.net; s=20230601; t=1696010674; x=1696615474;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=J1v3O8Y0CLFHcIVug6/xydUDIhYw4BbQ+Ux1bHhPShA=;
-        b=dBeEM/DAQcv+e/bHsZzvuC8pRe+IKtJaMLT4SS/zLKNh7b9AOF44Mi2bWt7+my3sa3
-         dvGufKZtJBIFfM6z2+hKCvmTOv0jSPje83WrQfjSfjez9C1LwzxSpBrQxOyFy4dFaV7s
-         Nr75uXS0hTH6OHuz8k+aeS/u/ceAq6InllReSqEnxUXDLhdUBVhdnNJreXHKPqxYomdv
-         h14yfUuqW0k3a2W7qGHiR1BcGAyvH+gIzPx/9PkCvsVRKCsEiut0fASviEeqMZzQyzND
-         oUU0EO3eVJAMzNtkbWc+3g9oBFwQ2qfYLsOxtlut6mk1CiAV+VrBIY0tDQZH1wjlA+eP
-         XXFQ==
-X-Gm-Message-State: AOJu0Ywm/5YZcmvHtYSzFFaeTnL2Sl4N7Sa8KBQaekaDE/X4uNAm/uNN
-        Ka4DBxRflxvAYP1zGi4UlfVYCQ==
-X-Google-Smtp-Source: AGHT+IHKYAnhCdsp9/XUAjoT8AOVwZwLCEjfmC0BrAcjWZiOg0t25ONKgJp0Zm+bImAEicHDnkFA+Q==
-X-Received: by 2002:a17:90a:ca90:b0:26d:355a:47e3 with SMTP id y16-20020a17090aca9000b0026d355a47e3mr4692859pjt.38.1696010676160;
-        Fri, 29 Sep 2023 11:04:36 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id c9-20020a17090ab28900b00279163e52bbsm1786686pjr.17.2023.09.29.11.04.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        bh=vbdv0/nW296h6ChWMtIgFAyyvGlVNRpufvyfuyvShzQ=;
+        b=aM1emkDQa9hd2sO53wGTcxmtdIWrOEjPghZULgI4sUehr+UlzvK6HMcBjXc/d8in7S
+         mX2V/I0yvJnfkrwshYSudLzpjEUskvAZtg6hySJ8XF0+vdeEEKjfnXkWum6sDDmPc7AX
+         KNXRpAIWItCCvVO1lrMLLADSTiMspC1I+S3Tkp8tDAmA9zGHzzbWJt9dzYSlikkCeD5C
+         XpnB6LA4DWjm/4Ke7GLLNbuPdBQtOhnJ+wQh9hn87yv7tPPw0hLgCP3lBhx0sCAj4Akp
+         PGLz1uV6UyZzgudkNYmRO3CIeoAYvQpIfbSiY+joMx31Gejo0bvcwkSE86bUex1eMuZg
+         BdSQ==
+X-Gm-Message-State: AOJu0YzfpIgHQgP//jdPLNJJ2igA3sHoJSHWa9YB9kJ05OeWkcPDtWsm
+        KoVXMZgrY0Tshiua/iQhwXfttw==
+X-Google-Smtp-Source: AGHT+IGy74o21jxyozHb5het0OocJE/38B/v79t1GwFxGzhnGj1DFYoNecBZWdRxEDYr4YXo4bZcjg==
+X-Received: by 2002:a05:6a20:6a23:b0:159:cf93:9b50 with SMTP id p35-20020a056a206a2300b00159cf939b50mr5241500pzk.46.1696010674631;
         Fri, 29 Sep 2023 11:04:34 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id s2-20020a639242000000b0057825bd3448sm14577546pgn.51.2023.09.29.11.04.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 11:04:32 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Jason Gunthorpe <jgg@ziepe.ca>
 Cc:     Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leon@kernel.org>, linux-rdma@vger.kernel.org,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Leon Romanovsky <leon@kernel.org>,
         =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
         Avihai Horon <avihaih@nvidia.com>,
         Anand Khoje <anand.a.khoje@oracle.com>,
-        Mark Bloch <mbloch@nvidia.com>,
+        Mark Bloch <mbloch@nvidia.com>, linux-rdma@vger.kernel.org,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
         Christian Benvenuti <benve@cisco.com>,
         Nelson Escobar <neescoba@cisco.com>,
         Bernard Metzler <bmt@zurich.ibm.com>,
@@ -69,31 +69,32 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Tom Talpey <tom@talpey.com>,
         wangjianli <wangjianli@cdjrlc.com>, linux-kernel@vger.kernel.org,
         linux-hardening@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH 1/7] RDMA: Annotate struct rdma_hw_stats with __counted_by
-Date:   Fri, 29 Sep 2023 11:04:24 -0700
-Message-Id: <20230929180431.3005464-1-keescook@chromium.org>
+Subject: [PATCH 2/7] RDMA/core: Annotate struct ib_pkey_cache with __counted_by
+Date:   Fri, 29 Sep 2023 11:04:25 -0700
+Message-Id: <20230929180431.3005464-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230929180305.work.590-kees@kernel.org>
 References: <20230929180305.work.590-kees@kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1154; i=keescook@chromium.org;
- h=from:subject; bh=yQF+4e/aqHGB0srQ03GVNPOtQXH2kpsbv4fi3QGNdHI=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlFxGtgBLXF4g50iVq6EwmS+sUwzqICeThKMiiq
- qjLqq6vT+iJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRcRrQAKCRCJcvTf3G3A
- JmJbEACVWuoy65M7vBgTJIDcKZPUvKhfzgLipudCYXts5TRyUgUktR6iJw19uk3BoRwPxFocyM3
- ExfOcE8LBavCmfabOcJ39ktmgXtRjV58WqVSvO2/j5sSyvKRz7LGsfWAGZSR/DWCjHEAh+VMZhU
- Z8OPkNfIJj7YTE+E9jOGy/F04iicCdFqr8JQa2ewd1laq1+UWvf7EUi1hHFAZJnsJNQz+mmLi0F
- UzE8KI22713mH9lZvekZjD3P4XWexgfHDNfB5dN9IeQL64dQuNSTgKjXi24c05ztrn/fM5MbpUw
- pADkVjP2pObgLKlNZm2IBCmdiay5gjdGOEF6hVKkM6wctvZFLvaJR+C0hHLALyE8ETpnAlI11Pj
- LPkJY48XnA6eqip5rHG9dSFxp+AMmY3b5JwYyobAjt06jhz7rP84urhSYKpr8Yh6/hLBIGxo23u
- 70TdBMtN7JrvnKMZ4f9QVTMo7IA2bg+aTqPN5wpsGB9lnVXPRmROUU/uFp01np3OeFDtkP0klBD
- gZDscuQtcb6PUFOnZ0vTXaWFZ0B/BHfq//tDhTWm4Ld8cgX/z7d5/roVZ5Ff1aWEj5FykucrrJL
- vLwSQDrgsIHWx806Gkwz/89heSeoInGCh1noMh3fU8iXAxEfa7W0Vd8ey3taoQsTzjtgAvWSvWg zv8haP9PfQ1toZA==
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1301; i=keescook@chromium.org;
+ h=from:subject; bh=8qTIqTpqch+dyj739sghT5yZ5j+JjtWjxI1TdxYuFP8=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlFxGtnlN5Fv7CxLg4EAHhoDTEkyA2uohAKbEuJ
+ GpqdYgLKF6JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRcRrQAKCRCJcvTf3G3A
+ JsP9EAC0DgrjiUKiy5qvIIyWJvdycEGXOMygwychR18Ef+pgg5+zSsDS92qrEYrYtFz76UNEjXu
+ 17JwoDffv1yCBXGPdCC533oDBSgVr+TlqtP2MZGJpAFB2jDA29+Dh4hzGUwpMr/6MnWn0bTR+Vf
+ CpNLYII3OIAvmJ7tmaGaoHilX1gORNFvw6QXwwBjPqGo4OVFa8kBf1B0rtFRYcv3mAjY6/NICJX
+ SHYsUU4Ics30sqUiukI13sfP3+hBHWUsXPfxlfPua60GazyoI3Knfr67AHenGUpiY+IW4aLoKdS
+ o2kCcBAN7fkiUfZ1gZ78iamlNXXX0OSwijoe8XxuBtjfZazk6bZ+fvQocUBNAtcWA1GpKYkmzuD
+ WZM7ZiZAb+AikXlQapk0bMLGL+lDIHr8vZDe4wCguY0+c2vj7sF53jCbCxvyHROPFaIf6NOF8Sl
+ WgTV/v+kMTa9AYlUC/XwuF6+IkQA9oAN3SwwYjVJ8fIpCpFEr2BsgBBh3Ga0GVx1N+voyDpWY3G
+ F+h9MTIiqcG9+eMOkNDRxa/356g84qJQVkHabmIondLkPx4Fhxi4sl0Q/z0lMrXCKQWUEiD0CZ+
+ EyY/I2qS70/lsYtItOwfyhWLxUvHwRLNmkGx3T7/t7+KYvzbr3n9McTs1R8tzNlYTWrKwQ52ImD 13o2YAgRaZPedeg==
 X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -107,31 +108,35 @@ their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
 (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 functions).
 
-As found with Coccinelle[1], add __counted_by for struct rdma_hw_stats.
+As found with Coccinelle[1], add __counted_by for struct ib_pkey_cache.
 
 [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: Leon Romanovsky <leon@kernel.org>
+Cc: "Håkon Bugge" <haakon.bugge@oracle.com>
+Cc: Avihai Horon <avihaih@nvidia.com>
+Cc: Anand Khoje <anand.a.khoje@oracle.com>
+Cc: Mark Bloch <mbloch@nvidia.com>
 Cc: linux-rdma@vger.kernel.org
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- include/rdma/ib_verbs.h | 2 +-
+ drivers/infiniband/core/cache.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/rdma/ib_verbs.h b/include/rdma/ib_verbs.h
-index e36c0d9aad27..79bcdebbe228 100644
---- a/include/rdma/ib_verbs.h
-+++ b/include/rdma/ib_verbs.h
-@@ -607,7 +607,7 @@ struct rdma_hw_stats {
- 	const struct rdma_stat_desc *descs;
- 	unsigned long	*is_disabled;
- 	int		num_counters;
--	u64		value[];
-+	u64		value[] __counted_by(num_counters);
+diff --git a/drivers/infiniband/core/cache.c b/drivers/infiniband/core/cache.c
+index 7acc0f936dad..c02a96d3572a 100644
+--- a/drivers/infiniband/core/cache.c
++++ b/drivers/infiniband/core/cache.c
+@@ -46,7 +46,7 @@
+ 
+ struct ib_pkey_cache {
+ 	int             table_len;
+-	u16             table[];
++	u16             table[] __counted_by(table_len);
  };
  
- #define RDMA_HW_STATS_DEFAULT_LIFESPAN 10
+ struct ib_update_work {
 -- 
 2.34.1
 
