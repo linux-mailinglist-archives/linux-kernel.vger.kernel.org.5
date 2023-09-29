@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4FFF7B333A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6107B3340
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbjI2NPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 09:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40896 "EHLO
+        id S233186AbjI2NPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 09:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233280AbjI2NPN (ORCPT
+        with ESMTP id S233287AbjI2NPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 09:15:13 -0400
+        Fri, 29 Sep 2023 09:15:14 -0400
 Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE8611AE;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB58E7;
         Fri, 29 Sep 2023 06:15:09 -0700 (PDT)
 Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id 1860A8347F;
-        Fri, 29 Sep 2023 15:15:07 +0200 (CEST)
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 492B1826A9;
+        Fri, 29 Sep 2023 15:15:08 +0200 (CEST)
 From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Fri, 29 Sep 2023 15:14:00 +0200
-Subject: [PATCH RFC v3 2/6] ARM: pxa: Convert Spitz LEDs to GPIO
- descriptors
+Date:   Fri, 29 Sep 2023 15:14:01 +0200
+Subject: [PATCH RFC v3 3/6] ARM: pxa: Convert Spitz CF power control to
+ GPIO descriptors
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20230929-pxa-gpio-v3-2-af8d5e5d1f34@skole.hr>
+Message-Id: <20230929-pxa-gpio-v3-3-af8d5e5d1f34@skole.hr>
 References: <20230929-pxa-gpio-v3-0-af8d5e5d1f34@skole.hr>
 In-Reply-To: <20230929-pxa-gpio-v3-0-af8d5e5d1f34@skole.hr>
 To:     Daniel Mack <daniel@zonque.org>,
@@ -41,21 +41,21 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
         =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1770;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2214;
  i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=YWNiyCxNsU8MmTyH6WiBM69WsGVSRGwp1wU7bY9Kw6M=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlFs3X304DDyKC0uR3vS5VnlJD0Kr4pUR83cnSQ
- +onNw+6IouJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZRbN1wAKCRCaEZ6wQi2W
- 4cz7D/9dlWMHeVtBJISPMPBb2V0Fewc86D8PHtoymudyxNY/zXJorP8gXwAeLzFO5Wq98rmVydH
- JoJK5cRb80YmAYzv2bpZgngOTq35c0C9NsMMRHADjSdGJRuK2533R9i8vUkeAUnyMPD9FGWagpm
- b3iAMl5681X2j4N+ViX3U7yiFixVGh0nZ+vIlwr496uZnzORKwmyYHxtlmZQwhKSFeJw206QBny
- wp1LdI9yrKxUL1WG8Tm2hThodNRRetvVwpPJty3Ws0XrbeeKhKlre3tpES+9ZCSmRSMn3FZT/F1
- IPRcKg21Dya5uVmHGy1zMI6LuXgoP/SAJFmwByIQKnX7UMXm4NAQEhsXRdCYJFOHhk9yMwYGkW7
- R92Qo+TwviwPxdRrIf3KrUSWcr5BeoE2uQCakkb7y1scyQ1Jdm4yvrgVd/A7tiNMa7n/j9P4uU4
- n/wKY3RQbFC3qwQPhZcmc0PGJRUSNBtMBIzY3wzHP4639HvE+sFfDMb8/Eedp+wrhkZndOvTVLd
- 6k8TGYR5k8OwX5YbVr+fnpp/ldpv/7bwwxeRFVMm2359yd1ycnhtnT5O6//qWw4Tg9EbOXysQdg
- qcbhwoIrhwWH/+xaIxvRyWdfNUKAK/8DSQG06tv0gtDgnT+D3zVMUP6EwEgzxiDvo4NLgqAULXO
- Ph/GeU0YokOlDVA==
+ bh=Rp/bq67hwkJJrBFGSoz+RTRGHfxFwf+Ynos1++JoSzg=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlFs3XkJZo5x8yVshrw8dgNQ73fJfXKc5u2vtEQ
+ b9DqcIs3TqJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZRbN1wAKCRCaEZ6wQi2W
+ 4SHMD/9SnS+b2n0HYmaURspdYBfZY0j5eU5q7O8YCa5odWKNnYkAhJnUOU9fEHGepGyxeFJodV9
+ 6k1wC23nZqV74NSLMaBU2dSfKz7dSMQxeN29EKCulYyvAIeXwiNNBshzbcbonFCXuYDvwrZHnxt
+ MIkn/C4uvAow2GPLhFvkJO81vgfJ1iuXKLz7Vr5QisLmyV+Ru3jyal98sttQe2Cadho6ESF+0Ta
+ jFnPLa/5iFVUnU28pcPzmwRrOmI4bh8M90YGIpVC2jgCzbJBL5Rh0BtgHv0m3I3pH0xi5p1PqJs
+ o3TsIhXrAmeRY1qkEVBJ4JcXq9yFI2nVdZE22bIMXySmvCdK5iVy+wM5Zaf0Qmr9Frb4N0XEt5b
+ /w0mOHsvokEnDKYQc6rHvDiCBbrgLnsCpJJWnZurPCuQadwuAEXrWz4iyHekOa7bHYnWH1WXfwy
+ Zeb5qmHuoOqYdfS4FpHTwgfh5sdU0GMwx31v6wOJY8SfofwHrGtWd8S2ygAcxtR5l9V02Pc7I39
+ Wt9rmhPLKbyqEJ18+MGtyfIvNstZI/Fe2+N/nlBrvT7ljCp5cEYU2kfkCllmdj4BLEWciwN64AM
+ jrlxb8ZtJ9KfHOzDeuR4nhdexEfeii1tf1slQ9jiYfXnCmbd0trF1iH/d6AJCy3cifB4j0H/EtE
+ iCcsrH6q+rrMUHQ==
 X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
  fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -67,59 +67,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sharp's Spitz board still uses the legacy GPIO interface for configuring
-its two onboard LEDs.
+Sharp's Spitz board still uses the legacy GPIO interface for controlling
+the power supply to its CF and SD card slots.
 
-Convert them to use the GPIO descriptor interface.
+Convert it to use the GPIO descriptor interface.
 
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
- arch/arm/mach-pxa/spitz.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ arch/arm/mach-pxa/spitz.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
-index 535e2b2e997b..6aa4a3a9f7aa 100644
+index 6aa4a3a9f7aa..59a4a439e3d2 100644
 --- a/arch/arm/mach-pxa/spitz.c
 +++ b/arch/arm/mach-pxa/spitz.c
-@@ -452,16 +452,25 @@ static inline void spitz_keys_init(void) {}
-  * LEDs
+@@ -133,6 +133,10 @@ static unsigned long spitz_pin_config[] __initdata = {
+  * Scoop GPIO expander
   ******************************************************************************/
- #if defined(CONFIG_LEDS_GPIO) || defined(CONFIG_LEDS_GPIO_MODULE)
-+static struct gpiod_lookup_table spitz_led_gpio_table = {
-+	.dev_id = "leds-gpio",
-+	.table = {
-+		GPIO_LOOKUP_IDX("pxa-gpio", SPITZ_GPIO_LED_ORANGE, NULL, 0,
-+				GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP_IDX("pxa-gpio", SPITZ_GPIO_LED_GREEN, NULL, 1,
-+				GPIO_ACTIVE_HIGH),
-+		{ }
-+	}
-+};
+ #if defined(CONFIG_SHARP_SCOOP) || defined(CONFIG_SHARP_SCOOP_MODULE)
++GPIO_LOOKUP_SINGLE(spitz_card_pwr_ctrl_gpio_table, "pxa2xx-mci.0",
++		"sharp-scoop", SPITZ_GPIO_CF_POWER, "cf_power",
++		GPIO_ACTIVE_HIGH);
 +
- static struct gpio_led spitz_gpio_leds[] = {
- 	{
- 		.name			= "spitz:amber:charge",
- 		.default_trigger	= "sharpsl-charge",
--		.gpio			= SPITZ_GPIO_LED_ORANGE,
- 	},
- 	{
- 		.name			= "spitz:green:hddactivity",
- 		.default_trigger	= "disk-activity",
--		.gpio			= SPITZ_GPIO_LED_GREEN,
- 	},
- };
- 
-@@ -480,6 +489,11 @@ static struct platform_device spitz_led_device = {
- 
- static void __init spitz_leds_init(void)
+ /* SCOOP Device #1 */
+ static struct resource spitz_scoop_1_resources[] = {
+ 	[0] = {
+@@ -190,6 +194,7 @@ struct platform_device spitz_scoop_2_device = {
+ static void __init spitz_scoop_init(void)
  {
-+	gpiod_add_lookup_table(&spitz_led_gpio_table);
-+	spitz_gpio_leds[0].gpiod = gpiod_get_index(&spitz_led_device.dev,
-+			NULL, 0, GPIOD_ASIS);
-+	spitz_gpio_leds[1].gpiod = gpiod_get_index(&spitz_led_device.dev,
-+			NULL, 1, GPIOD_ASIS);
- 	platform_device_register(&spitz_led_device);
+ 	platform_device_register(&spitz_scoop_1_device);
++	gpiod_add_lookup_table(&spitz_card_pwr_ctrl_gpio_table);
+ 
+ 	/* Akita doesn't have the second SCOOP chip */
+ 	if (!machine_is_akita())
+@@ -201,9 +206,18 @@ static void __maybe_unused spitz_card_pwr_ctrl(uint8_t enable, uint8_t new_cpr)
+ {
+ 	unsigned short cpr;
+ 	unsigned long flags;
++	struct gpio_desc *cf_power;
++
++	cf_power = gpiod_get(&pxa_device_mci.dev, "cf_power", GPIOD_ASIS);
++	if (IS_ERR(cf_power)) {
++		dev_err(&pxa_device_mci.dev,
++				"failed to get power control GPIO with %ld\n",
++				PTR_ERR(cf_power));
++		return;
++	}
+ 
+ 	if (new_cpr & 0x7) {
+-		gpio_set_value(SPITZ_GPIO_CF_POWER, 1);
++		gpiod_direction_output(cf_power, 1);
+ 		mdelay(5);
+ 	}
+ 
+@@ -222,8 +236,10 @@ static void __maybe_unused spitz_card_pwr_ctrl(uint8_t enable, uint8_t new_cpr)
+ 
+ 	if (!(cpr & 0x7)) {
+ 		mdelay(1);
+-		gpio_set_value(SPITZ_GPIO_CF_POWER, 0);
++		gpiod_direction_output(cf_power, 0);
+ 	}
++
++	gpiod_put(cf_power);
  }
+ 
  #else
 
 -- 
