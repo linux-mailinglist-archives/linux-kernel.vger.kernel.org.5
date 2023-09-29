@@ -2,86 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 869817B2A80
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 05:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EBF97B2A83
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 05:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232677AbjI2DZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 23:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51396 "EHLO
+        id S232321AbjI2D1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 23:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232596AbjI2DYu (ORCPT
+        with ESMTP id S229799AbjI2D1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 23:24:50 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 368D219C
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:24:42 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-27752a1e184so7985881a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:24:42 -0700 (PDT)
+        Thu, 28 Sep 2023 23:27:49 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8575D199
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:27:47 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-691c05bc5aaso12019869b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:27:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1695957881; x=1696562681; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+wPEhWpvRY896Xnw5Ev1/y00zI5fAQGyVN5RsYugNn8=;
-        b=QIPJhQmPgqMaezjOXQu9ufOmTKlnJYeYRBnC/L59my/pZbXCnc0RWylCjiZ3ymcOkJ
-         LWZpFCY0T/PBct+kWcmVACzEjG/mtT3nN/shP/UZlrbjlVLQlJMukDG5/54WFFl1FZDM
-         XxJBi9w42no+IBnHSdFzxtp2hu5/Yd+gnBi8s=
+        d=linaro.org; s=google; t=1695958067; x=1696562867; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KtntkVvW66DKYrGtJ/jS2FGAG296faVgNeolyBQMZE4=;
+        b=Dl+CFExBKY00RhiYj3nXl3CeJr7DjSDLWJ3Dc5UtQ7qIrKWxHYNFSfpkNhQoPsYb7F
+         EPvFTLEPPgVTMGSmQpfm024rX907pyGDAdaRLTrHWOzYT1Lz/AWqKLmfPJkxPefodHb6
+         Vr1jJ8yv5L1k3VmX8qLHVvSSL6J/TtDPB5ESRToz+Ev79Z8nxy/fqdnD8+DGEVE9odaR
+         mhT8l0yVEvFGX3AY082t9N2AMXDmFZA91g/1vzZk1rZ0ovLiimWFX7stn2YS/WgypgoV
+         klEJ/DXNlI82mFJz3WnBegIfSiE7Xf06hj2z/+v6joh3quSgGfW3Vz/jfIFOInjMVMbp
+         UNAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695957881; x=1696562681;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+wPEhWpvRY896Xnw5Ev1/y00zI5fAQGyVN5RsYugNn8=;
-        b=cnjHQ+jo8FuEu0q9VB0UDznW3f4e0TnnqOdLtH88iVUW0DoXDpemaOlZpOVJqL/bdo
-         hiTTIX7imFXzanLsoX6s/v+MLkVja5geyLZgryqFwW803vUTzRMNEBs/uiZ36j6XL+ur
-         KXuJTxV4iGx24X3JRkBTH6wsWAgsnMH9hXRrqSOwFvL7KLAWWDHcja5MWkTRtuxjWeOV
-         VtIi6pI40FO95NRrckrPyIca6sUNACW+k4OLb0UUbWYdlqRFRjPUtmbQSnXCXdxAP1Ou
-         dfrv3SwhTsR8MRaAP5ffoz426rdNmnoqEgl0WAK8DpYA8gcx+TAulXQAwfU0jXLTvYAB
-         mx0g==
-X-Gm-Message-State: AOJu0YyVJPze0uV6Wjw3Tj4ICb8YPGFuk6pmjwZ2AHIMqueL93lDV1Om
-        gOWlj8mBWyriRLuIka8sW2TrDw==
-X-Google-Smtp-Source: AGHT+IGrJvdYK0UubFjOkgcsulZp4Iwd9Tt7tIAbT+bREXfQrb6kahqghubh3CtXHQN6f3Ye2DXCOA==
-X-Received: by 2002:a17:90a:ba92:b0:267:ffcf:e9e3 with SMTP id t18-20020a17090aba9200b00267ffcfe9e3mr3087478pjr.46.1695957881706;
-        Thu, 28 Sep 2023 20:24:41 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id x15-20020a17090a530f00b0027654d389casm297683pjh.54.2023.09.28.20.24.37
+        d=1e100.net; s=20230601; t=1695958067; x=1696562867;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KtntkVvW66DKYrGtJ/jS2FGAG296faVgNeolyBQMZE4=;
+        b=jr5s81wmwBOiceHAMxTwVyYEUORScxr7J81NCfv+3xVq1+65l7YAroJpHQFjQwIR6e
+         DHjLtCIszPNbXr4PX6JMUKA6JJFh3lC8rcuIQ0xwavix6/gMV1vWl8FdKlZ+NPge6CTZ
+         8BT4OIN9l+04YOV9sJGqjAc4ympJsSyCYe7phkYx0HfQlkRLo/BcxD2i8gaQe+kMH7gz
+         /WgWUt0sefVFbLRv5T7ioOmIoFi4Auc+rxCO8bptXGEfeIb8Tf0f0eUZ/oTxAG6kHfPw
+         BmrgFpyzenIOj73j0+pEbAEERZWZGB3cc8wylpe9+z43HUfZS2Z8v+3GiIcweTxLmLHh
+         U4/g==
+X-Gm-Message-State: AOJu0YzDldRNokZZbwYFzTND0gaI43QbMC+lwICM5x1wsacZ7aaEWpXd
+        puM8npUu05BGH7K/5ngWDTT1qg==
+X-Google-Smtp-Source: AGHT+IHA0pjq1wR/idEN/HmG6zHuyo1p8a1DhpezWwunN8VWYsqT4nn0S44N1xLcBNWCL8iKV/4ebg==
+X-Received: by 2002:a05:6a00:1394:b0:68f:edfd:2ac6 with SMTP id t20-20020a056a00139400b0068fedfd2ac6mr3817336pfg.0.1695958066695;
+        Thu, 28 Sep 2023 20:27:46 -0700 (PDT)
+Received: from localhost ([122.172.81.92])
+        by smtp.gmail.com with ESMTPSA id w18-20020aa78592000000b0068890c19c49sm2662332pfn.180.2023.09.28.20.27.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 20:24:39 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Eric Biederman <ebiederm@xmission.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Sebastian Ott <sebott@redhat.com>,
-        =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Pedro Falcato <pedro.falcato@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH v4 6/6] mm: Remove unused vm_brk()
-Date:   Thu, 28 Sep 2023 20:24:34 -0700
-Message-Id: <20230929032435.2391507-6-keescook@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230929031716.it.155-kees@kernel.org>
-References: <20230929031716.it.155-kees@kernel.org>
+        Thu, 28 Sep 2023 20:27:45 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 08:57:43 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Pierre Gondois <pierre.gondois@arm.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>,
+        vschneid@redhat.com, "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH] cpufreq: Rebuild sched-domains when removing cpufreq
+ driver
+Message-ID: <20230929032743.6mjcyyx3cmjjxsix@vireshk-i7>
+References: <20230918112937.493352-1-pierre.gondois@arm.com>
+ <20230928071810.hkdmuoaasrv4b2oq@vireshk-i7>
+ <93262faa-7089-f2a2-3df7-058c338adfc6@arm.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2050; i=keescook@chromium.org;
- h=from:subject; bh=qQgWJ2LfzVKqVSy79Ld0II87Ub3I62svbZlMXS8eqNU=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlFkNyozNMKFDP2i80754Px/+ZY/Cx7wBo4sXmZ
- GfAFEgqokWJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRZDcgAKCRCJcvTf3G3A
- JvugEAC1X9CtGDjUrVOsqG0t9TTnzkbAODtZErc43R+VjV7tM+wgC1YoBq1uGKg3kk/39J5ROiJ
- rUkABHj3UilMN33EplFoDi9bG/ErY91MQttOzzjtGtjVqWIrEJ/Vl9Txp0Lfb8zYFy9NsK/6FUL
- MtgFp5sk40k0qU96E6p96fB7SzEc44a33CLYYExFKVE2M08Bylw2aJ9Ee0dsno2XN3kwHuLByFf
- wcJ9XIEkkKA6ek8B7IuLsRGmbigeQnoNgTo87K5bPOqAGNyvV5AaKea9aX90W7XTFl3Mg767UDU
- QBSQvaLWv+t6WEIH+DBweDTKSOHJsyAOniUBtf5ZYA37xZuqPVJdtHMHNT5eperaA7H3rjw+UUz
- Jlq6iSEPSQzB/ur6ucWrK0s4O62amvSspv633OZXBOo6liFA9krixvk0n9DDIpK4izJk9sqIro1
- JU8Wshi103umj8FDzYRXujBj+g//VNypVJAxw30ltepS01lpNn33UpY/bazcxEBWtzAI6WzksOn
- OioMLo/fYEk9tr3WtHRgTsp7V0afPDYJ6aOpeBzZjAdyfqtuIfngMDD8ITow2mnQdSypEQ39K9p
- Rr6tuk/SEYKG3c/cQmyk7L+/cRTRAgeeYxAnZFNKbHqj7DeGYfmOdb6oTSlHNHgU9S+L8PRk5BL FEozwXjpMVEPE4w==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <93262faa-7089-f2a2-3df7-058c338adfc6@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -90,66 +77,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With fs/binfmt_elf.c fully refactored to use the new elf_load() helper,
-there are no more users of vm_brk(), so remove it.
+On 28-09-23, 14:49, Pierre Gondois wrote:
+> Another solution would be to call sched_cpufreq_governor_change()
+> from cpufreq_schedutil's init()/exit() callbacks. This would make
+> more sense as EAS/schedutil cpufreq are tightly bound, and it would
+> allow to cover all the possible paths.
+> 
+> When tried locally, it seems to cover all scenarios:
+> - insmod/rmmod a cpufreq driver
+> - changing the governor policy
+> - offlining all the CPUs of a pd
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Suggested-by: Eric Biederman <ebiederm@xmission.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- include/linux/mm.h | 3 +--
- mm/mmap.c          | 6 ------
- mm/nommu.c         | 5 -----
- 3 files changed, 1 insertion(+), 13 deletions(-)
+Right now it is done for all governors. We don't need that ? We just care about
+schedutil here ?
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index bf5d0b1b16f4..216dd0c6dcf8 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3308,8 +3308,7 @@ static inline void mm_populate(unsigned long addr, unsigned long len)
- static inline void mm_populate(unsigned long addr, unsigned long len) {}
- #endif
- 
--/* These take the mm semaphore themselves */
--extern int __must_check vm_brk(unsigned long, unsigned long);
-+/* This takes the mm semaphore itself */
- extern int __must_check vm_brk_flags(unsigned long, unsigned long, unsigned long);
- extern int vm_munmap(unsigned long, size_t);
- extern unsigned long __must_check vm_mmap(struct file *, unsigned long,
-diff --git a/mm/mmap.c b/mm/mmap.c
-index b56a7f0c9f85..34d2337ace59 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -3174,12 +3174,6 @@ int vm_brk_flags(unsigned long addr, unsigned long request, unsigned long flags)
- }
- EXPORT_SYMBOL(vm_brk_flags);
- 
--int vm_brk(unsigned long addr, unsigned long len)
--{
--	return vm_brk_flags(addr, len, 0);
--}
--EXPORT_SYMBOL(vm_brk);
--
- /* Release all mmaps. */
- void exit_mmap(struct mm_struct *mm)
- {
-diff --git a/mm/nommu.c b/mm/nommu.c
-index 7f9e9e5a0e12..23c43c208f2b 100644
---- a/mm/nommu.c
-+++ b/mm/nommu.c
-@@ -1531,11 +1531,6 @@ void exit_mmap(struct mm_struct *mm)
- 	mmap_write_unlock(mm);
- }
- 
--int vm_brk(unsigned long addr, unsigned long len)
--{
--	return -ENOMEM;
--}
--
- /*
-  * expand (or shrink) an existing mapping, potentially moving it at the same
-  * time (controlled by the MREMAP_MAYMOVE flag and available VM space)
 -- 
-2.34.1
-
+viresh
