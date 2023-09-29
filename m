@@ -2,131 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E087B366B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682907B366D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233553AbjI2PKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
+        id S233495AbjI2PMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbjI2PKa (ORCPT
+        with ESMTP id S230104AbjI2PMh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:10:30 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA03CD6
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:10:25 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32337a39009so1269965f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:10:25 -0700 (PDT)
+        Fri, 29 Sep 2023 11:12:37 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9947D6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:12:35 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-991c786369cso1827378866b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:12:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1696000224; x=1696605024; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=MdqE1QXzZBxC4UvHDnV/0ctc/iRv4fmK/Ej1t0SOJgU=;
-        b=DmWx5Lby+OMEk7SnGUHSNC3ed3MDt6Apfo366825LLy8CRvgAfjc2pOri4jmH6VWTf
-         UmIAzZOPZ396gq+j2jfwi3qVkNsDACFxY8PDzjmcrEEhJzOyyOegzulIo1WWuwMKb98Y
-         yQR82eTlZrHhCOlkHDdLRTWGnY9e99ytWuVJexub5q4JRLYRQsV83mhYNhBqgLNLoLIi
-         MkTHYlxFTgtR+sQh4i1YCl42ipnC0R2YdossRZY1gW5m2l2SgQSOWjA2MkR8vk1jmtu4
-         87MN9qaZA5NtWC5aVN+lNHxv945QKOFuVy3209IYjkxAzzcs75SZpUr95SQmiJRqbqme
-         Alcw==
+        d=google.com; s=20230601; t=1696000354; x=1696605154; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+iwwlqvaBxCwMsikVRLEIWQ+fldLakckoypjf/711hA=;
+        b=WLn70OIkQJ4NzM2XZdkBYl2Dm5pzEEW0+f8l3kQAoTtGd8Dt17uSrgo+uGDEpAcdyZ
+         B9hX0h1kdCG9eNCFLztk2dL1uJw+YdRik2l8AvFqcUnWJeaOPBZMG4/iCIphOxqVt92p
+         l8uDDXt8pfafAkhms1ULQoI110LXaBSui0FubtpWrd1PAya5oW7dC0rNPFza+Txsii6l
+         4RlQ6xbghic9bBAw6grFGbVHzaYZ7MKzTpV3iTUqvHBy/JZk/x8I53zR9wD3r3Tp5Hx6
+         YEi27K5FDKheHnjGLlLoMPbp+lnDf/FLdMY15XOTWWsCvQpS9nLKHXeewxQ0IWW62FsD
+         HoEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696000224; x=1696605024;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MdqE1QXzZBxC4UvHDnV/0ctc/iRv4fmK/Ej1t0SOJgU=;
-        b=hHSObZSmNybY6xSvfCjykgrXYIynayE0d1sobmXO8XRwQRJB+qRR9mQkJzT/YXrGs7
-         Jd/EK1oRuglj+nPP4VdOKo7ZTqoMbiynpv/KtFiQp+dO/bZz0WjGEo7fGVG0Yb+fIRIK
-         ZTnYBa6adz3LtBzmebvLkMuaqZ+ji2QOOiobJChulbziN5A1tGmW0Mm9qyg5gxpR6X2R
-         THy5qxgkf8cFAk36FnKkR25xruuKDKU2boZViRnheoAjJqAO+zmEQfWlmZiAvBhbhJHH
-         rgXrCaJXEJnDOJtoEwblc83OqiRMi+kcROlY9OTSjPKFA/zVFT6zKVC0Gw2hL+qbVShN
-         VU3g==
-X-Gm-Message-State: AOJu0Yx0Rkfuhw0Kw08gamPn82eKsJGw9SLgsTYMe+PHeP3ihgIVgkUN
-        C/0DZq9509F4JnRApY5ozKdtrg==
-X-Google-Smtp-Source: AGHT+IGGcLP1PmINnAnHm98jDP1pP2LDbsZIgncAOogwc4atMmnVWW9wyjgJkN/jTMLma/8YQVlsPA==
-X-Received: by 2002:adf:f9d1:0:b0:323:2b68:e0e0 with SMTP id w17-20020adff9d1000000b003232b68e0e0mr3467259wrr.0.1696000223437;
-        Fri, 29 Sep 2023 08:10:23 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:999:a3a0:4e67:5f1a:c933:c857? ([2a01:e0a:999:a3a0:4e67:5f1a:c933:c857])
-        by smtp.gmail.com with ESMTPSA id d29-20020adfa41d000000b003197869bcd7sm16622036wra.13.2023.09.29.08.10.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 08:10:22 -0700 (PDT)
-Message-ID: <d20981a4-cf46-4ee5-9f0f-b0aedb9b3d35@rivosinc.com>
-Date:   Fri, 29 Sep 2023 17:10:22 +0200
+        d=1e100.net; s=20230601; t=1696000354; x=1696605154;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+iwwlqvaBxCwMsikVRLEIWQ+fldLakckoypjf/711hA=;
+        b=OyjngFNzN5TUFkbx+FB3NvX2dC0E1NR91FtD4hQjmlUxLlWMCWteXHmnoUDlQqT6CL
+         vPeCQUGyaBQMd7ZXjCUJjX6ezjmnAFsEGHqY/ZwWwj2GHqhhw6JEYMC+9SXs6enmsZRq
+         wdgoE9ssFY/cExmAPO7aowKmRrjZSNEuK3S9OX/w3ePh/ZgSBP96MyGZYXNlPuQWNabc
+         M1B5fKV7aHv9BOnWbDiwCqOFNMmuEQ9spOCrMmgQSGdH2D66TWVsgjFylS3PYBA1jg4a
+         /ZBN/ELKrmwHRqDbIFyRb+Dw9BPDNjzk4BTHsgJCTz5vhyhF3O+d7wBU93tCtogwA/mf
+         1HOA==
+X-Gm-Message-State: AOJu0YzRVh4SnHZtHYikBt8Iy3vo3BbSwiZBnU8zhpbwsmslmoKcXN0j
+        nKkTdMgdPCC+y82U1htjm2VH/Z1XHsVXqgCufoTYzQ==
+X-Google-Smtp-Source: AGHT+IE9nhh5YAWBRdZlHuUBiW239B7WmIyskiK8JhYc35cNDZz3QR5wJYtEmks78PHXuV04TR5vMLHpPqOHtRE6jKo=
+X-Received: by 2002:a17:906:51db:b0:9b2:abda:2543 with SMTP id
+ v27-20020a17090651db00b009b2abda2543mr4673191ejk.65.1696000354025; Fri, 29
+ Sep 2023 08:12:34 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tracing: relax trace_event_eval_update() execution with
- schedule()
-Content-Language: en-US
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Atish Patra <atishp@rivosinc.com>
-References: <20230929141348.248761-1-cleger@rivosinc.com>
- <20230929110657.7a4b38ef@rorschach.local.home>
-From:   =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-In-Reply-To: <20230929110657.7a4b38ef@rorschach.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230928005723.1709119-1-nphamcs@gmail.com> <20230928005723.1709119-2-nphamcs@gmail.com>
+ <CAJD7tkanr99d_Y=LefQTFsykyiO5oZpPUC=suD3P-L5eS=0SXA@mail.gmail.com>
+ <CAKEwX=M=8KYqvBTz9z1csrsFUpGf2tgWj-oyu96dSpRjn3ZnUQ@mail.gmail.com>
+ <CAKEwX=Npb4mwZ2ibJkmD5GyqXazr7PH8UGLu+YSDY8acf152Eg@mail.gmail.com>
+ <CAJD7tkaeDBTHC3UM91O56yrp8oCU-UBO6i_5HJMjVBDQAw0ipQ@mail.gmail.com> <20230929150829.GA16353@cmpxchg.org>
+In-Reply-To: <20230929150829.GA16353@cmpxchg.org>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Fri, 29 Sep 2023 08:11:54 -0700
+Message-ID: <CAJD7tkZ1NiMMvQhxGSGzsPqYfBpwzP6svPe17s2FTDoHY6jYWQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
+ memory controller
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        riel@surriel.com, mhocko@kernel.org, roman.gushchin@linux.dev,
+        shakeelb@google.com, muchun.song@linux.dev, tj@kernel.org,
+        lizefan.x@bytedance.com, shuah@kernel.org, mike.kravetz@oracle.com,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 29, 2023 at 8:08=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> On Thu, Sep 28, 2023 at 06:18:19PM -0700, Yosry Ahmed wrote:
+> > My concern is the scenario where the memory controller is mounted in
+> > cgroup v1, and cgroup v2 is mounted with memory_hugetlb_accounting.
+> >
+> > In this case it seems like the current code will only check whether
+> > memory_hugetlb_accounting was set on cgroup v2 or not, disregarding
+> > the fact that cgroup v1 did not enable hugetlb accounting.
+> >
+> > I obviously prefer that any features are also added to cgroup v1,
+> > because we still didn't make it to cgroup v2, especially when the
+> > infrastructure is shared. On the other hand, I am pretty sure the
+> > maintainers will not like what I am saying :)
+>
+> I have a weak preference.
+>
+> It's definitely a little weird that the v1 controller's behavior
+> changes based on the v2 mount flag. And that if you want it as an
+> otherwise exclusive v1 user, you'd have to mount a dummy v2.
+>
+> But I also don't see a scenario where it would hurt, or where there
+> would be an unresolvable conflict between v1 and v2 in expressing
+> desired behavior, since the memory controller is exclusive to one.
+>
+> While we could eliminate this quirk with a simple
+> !cgroup_subsys_on_dfl(memory_cgrp_subsys) inside the charge function,
+> it would seem almost punitive to add extra code just to take something
+> away that isn't really a problem and could be useful to some people.
+>
+> If Tejun doesn't object, I'd say let's just keep implied v1 behavior.
 
-
-On 29/09/2023 17:06, Steven Rostedt wrote:
-> On Fri, 29 Sep 2023 16:13:48 +0200
-> Clément Léger <cleger@rivosinc.com> wrote:
-> 
->> When kernel is compiled without preemption, the eval_map_work_func()
->> (which calls trace_event_eval_update()) will not be preempted up to its
->> complete execution. This can actually cause a problem since if another
->> CPU call stop_machine(), the call will have to wait for the
->> eval_map_work_func() function to finish executing in the workqueue
->> before being able to be scheduled. This problem was observe on a SMP
->> system at boot time, when the CPU calling the initcalls executed
->> clocksource_done_booting() which in the end calls stop_machine(). We
->> observed a 1 second delay because one CPU was executing
->> eval_map_work_func() and was not preempted by the stop_machine() task.
->>
->> Adding a call to schedule() in trace_event_eval_update() allows to let
->> other tasks to be executed and thus continue working asynchronously like
->> before without blocking any pending task at boot time.
->>
->> Signed-off-by: Clément Léger <cleger@rivosinc.com>
->> ---
->>  kernel/trace/trace_events.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
->> index 91951d038ba4..dbdf57a081c0 100644
->> --- a/kernel/trace/trace_events.c
->> +++ b/kernel/trace/trace_events.c
->> @@ -2770,6 +2770,7 @@ void trace_event_eval_update(struct trace_eval_map **map, int len)
->>  				update_event_fields(call, map[i]);
->>  			}
->>  		}
->> +		schedule();
-> 
-> The proper answer to this is "cond_resched()" but still, there's going
-> to be work to get rid of all that soon [1]. But I'll take a cond_resched()
-> now until that is implemented.
-
-Hi Steven,
-
-Thanks for the information, I'll update the patch and send a V2.
-
-Clément
-
-> 
-> -- Steve
-> 
->>  	}
->>  	up_write(&trace_event_sem);
->>  }
-> 
-> [1] https://lore.kernel.org/all/87cyyfxd4k.ffs@tglx/
+I agree that adding extra code to take a feature away from v1 is
+probably too much, but I also think relying on a v2 mount option is
+weird. Would it be too much to just have a v1-specific flag as well
+and use cgroup_subsys_on_dfl(memory_cgrp_subsys) to decide which flag
+to read?
