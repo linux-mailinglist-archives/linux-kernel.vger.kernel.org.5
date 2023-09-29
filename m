@@ -2,102 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8707B3944
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED297B394D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233691AbjI2R7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:59:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36228 "EHLO
+        id S233655AbjI2SBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 14:01:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233353AbjI2R7T (ORCPT
+        with ESMTP id S232748AbjI2SBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:59:19 -0400
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA76E1AC;
-        Fri, 29 Sep 2023 10:59:17 -0700 (PDT)
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1e113555a47so1025267fac.2;
-        Fri, 29 Sep 2023 10:59:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696010357; x=1696615157;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fKmSy9nYMevIdhZdG3nCQj5JvLdfTswn5XDlCNJCRqs=;
-        b=eTDIl/GoeNWOsScZcrUFheR/thLjVMUTLjKWbTo+Fx9Fr+c+urm7uWT/N9EUPFbGJ5
-         Mwz3gpAF24pvBtwFpJ+rPS4U1ooJ+gt4EBCUIIHzeQDRxHEAIAjE2gTbLWbkizwKTeJa
-         A75CUCXWhzQeSFc9kxnGUmqoaast7CxUXOpa3R623H7BwFQ1s4r3XulcOys57LDU/HPE
-         R8U8i0B6NldAJGLdcXF0h1Aovima/gzHGACs9UF1GvdOVFm6Pa/8nsSNdRrqhbqQrXEf
-         HPj6Y524RB7hHocogYbUxrmUw9XNjFpLvgiGjyYAtOjP9ud+bJ5iBYHC28XjET/zYuak
-         N2+g==
-X-Gm-Message-State: AOJu0YzhlOe++pUtPMoS/yYg1mvWkR/IDWk43KoBnmFO32+vOmn3Wfqz
-        JeHTipTW0EyzPYPdZKnlXEMpiZc3w797TA==
-X-Google-Smtp-Source: AGHT+IFGOtUOVVnTjR70judkp2CAL1bg7IpOYVhdJtj/g+DmpMMTkZUqHC4hofJt5GNiQMWUQXGnOA==
-X-Received: by 2002:a05:6870:230d:b0:1bb:a912:9339 with SMTP id w13-20020a056870230d00b001bba9129339mr5301433oao.7.1696010356848;
-        Fri, 29 Sep 2023 10:59:16 -0700 (PDT)
-Received: from [192.168.51.14] (c-73-231-117-72.hsd1.ca.comcast.net. [73.231.117.72])
-        by smtp.gmail.com with ESMTPSA id x28-20020a63b21c000000b00564b313d526sm15006265pge.54.2023.09.29.10.59.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 10:59:16 -0700 (PDT)
-Message-ID: <2abb1fb8-88c6-401d-b65f-b7001b2203ec@acm.org>
-Date:   Fri, 29 Sep 2023 10:59:14 -0700
+        Fri, 29 Sep 2023 14:01:19 -0400
+Received: from out-195.mta0.migadu.com (out-195.mta0.migadu.com [91.218.175.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6E119F
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:01:17 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696010475;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=6tcTuWYRALIgJf3jd0QQAQe8tlt9e/aWb2Z4sY08mGQ=;
+        b=SkOuMpvSIJQsX1dDkYHCau3cvj0O3IYvhitbxnrKAG2QyDLxJyA2P4OufwQXTxcFl3Nqf1
+        hBwl2Nq2rZ+L+tq8JEqSRm6O9MoulQjBqZEZYio1AlRAkoXBirXAhyCeetKPYbHVW7NG0V
+        EW1XF9qCTWMH8bocXcrlnOOLzPABKJM=
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Rientjes <rientjes@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Subject: [PATCH v1 0/5] mm: improve performance of accounted kernel memory allocations
+Date:   Fri, 29 Sep 2023 11:00:50 -0700
+Message-ID: <20230929180056.1122002-1-roman.gushchin@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 19/21] scsi: sd: Add WRITE_ATOMIC_16 support
-Content-Language: en-US
-To:     John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
-        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chandan.babu@oracle.com, dchinner@redhat.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-api@vger.kernel.org
-References: <20230929102726.2985188-1-john.g.garry@oracle.com>
- <20230929102726.2985188-20-john.g.garry@oracle.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20230929102726.2985188-20-john.g.garry@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/23 03:27, John Garry wrote:
-> +static blk_status_t sd_setup_atomic_cmnd(struct scsi_cmnd *cmd,
-> +					sector_t lba, unsigned int nr_blocks,
-> +					unsigned char flags)
-> +{
-> +	cmd->cmd_len  = 16;
-> +	cmd->cmnd[0]  = WRITE_ATOMIC_16;
-> +	cmd->cmnd[1]  = flags;
-> +	put_unaligned_be64(lba, &cmd->cmnd[2]);
-> +	cmd->cmnd[10] = 0;
-> +	cmd->cmnd[11] = 0;
-> +	put_unaligned_be16(nr_blocks, &cmd->cmnd[12]);
-> +	cmd->cmnd[14] = 0;
-> +	cmd->cmnd[15] = 0;
-> +
-> +	return BLK_STS_OK;
-> +}
+This patchset improves the performance of accounted kernel memory allocations
+by ~30% as measured by a micro-benchmark [1]. The benchmark is very
+straightforward: 1M of 64 bytes-large kmalloc() allocations.
 
-Please store the 'dld' value in the GROUP NUMBER field. See e.g.
-sd_setup_rw16_cmnd().
+Below are results with the disabled kernel memory accounting, the original state
+and with this patchset applied.
 
-> @@ -1139,6 +1156,7 @@ static blk_status_t sd_setup_read_write_cmnd(struct scsi_cmnd *cmd)
->   	unsigned int nr_blocks = sectors_to_logical(sdp, blk_rq_sectors(rq));
->   	unsigned int mask = logical_to_sectors(sdp, 1) - 1;
->   	bool write = rq_data_dir(rq) == WRITE;
-> +	bool atomic_write = !!(rq->cmd_flags & REQ_ATOMIC) && write;
+|             | Kmem disabled | Original | Patched |  Delta |
+|-------------+---------------+----------+---------+--------|
+| User cgroup |         29764 |    84548 |   59078 | -30.0% |
+| Root cgroup |         29742 |    48342 |   31501 | -34.8% |
 
-Please leave out the superfluous "!!".
+As we can see, the patchset removes the majority of the overhead when there is
+no actual accounting (a task belongs to the root memory cgroup) and almost
+halves the accounting overhead otherwise.
 
-Thanks,
+The main idea is to get rid of unnecessary memcg to objcg conversions and switch
+to a scope-based protection of objcgs, which eliminates extra operations with
+objcg reference counters under a rcu read lock. More details are provided in
+individual commit descriptions.
 
-Bart.
+v1:
+	- made the objcg update fully lockless
+	- fixed !CONFIG_MMU build issues
+rfc:
+	https://lwn.net/Articles/945722/
+
+--
+[1]:
+
+static int memory_alloc_test(struct seq_file *m, void *v)
+{
+       unsigned long i, j;
+       void **ptrs;
+       ktime_t start, end;
+       s64 delta, min_delta = LLONG_MAX;
+
+       ptrs = kvmalloc(sizeof(void *) * 1000000, GFP_KERNEL);
+       if (!ptrs)
+               return -ENOMEM;
+
+       for (j = 0; j < 100; j++) {
+               start = ktime_get();
+               for (i = 0; i < 1000000; i++)
+                       ptrs[i] = kmalloc(64, GFP_KERNEL_ACCOUNT);
+               end = ktime_get();
+
+               delta = ktime_us_delta(end, start);
+               if (delta < min_delta)
+                       min_delta = delta;
+
+               for (i = 0; i < 1000000; i++)
+                       kfree(ptrs[i]);
+       }
+
+       kvfree(ptrs);
+       seq_printf(m, "%lld us\n", min_delta);
+
+       return 0;
+}
+
+--
+
+Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
+
+
+Roman Gushchin (5):
+  mm: kmem: optimize get_obj_cgroup_from_current()
+  mm: kmem: add direct objcg pointer to task_struct
+  mm: kmem: make memcg keep a reference to the original objcg
+  mm: kmem: scoped objcg protection
+  percpu: scoped objcg protection
+
+ include/linux/memcontrol.h |  24 ++++-
+ include/linux/sched.h      |   4 +
+ mm/memcontrol.c            | 184 ++++++++++++++++++++++++++++++++-----
+ mm/percpu.c                |   8 +-
+ mm/slab.h                  |  10 +-
+ 5 files changed, 192 insertions(+), 38 deletions(-)
+
+-- 
+2.42.0
+
