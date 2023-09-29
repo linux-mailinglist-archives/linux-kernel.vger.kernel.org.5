@@ -2,129 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4187B39C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AEC47B39CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 20:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233759AbjI2SML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 14:12:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
+        id S233635AbjI2SQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 14:16:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233709AbjI2SL5 (ORCPT
+        with ESMTP id S233481AbjI2SQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 14:11:57 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D28321B2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:11:54 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c5bbb205e3so130601875ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 11:11:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696011114; x=1696615914; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yrVonC05p6jOVhwUsfVJLWHka6sFzEOVBvIvQ8Q6DqQ=;
-        b=iam2DgOt+pc0XpODhJMdV7fFqweB00abGT6qzmh0ROiTggfKN/uA26owAG9Wr7gAfi
-         OVEYRh5M34c3svag3tP7qerBoaXgvjLFgEnzYiufn+X8t4y7Qo8W4+G0G7kPfTRnfHlg
-         NaRToJAUo9/nJSawNsR7QJ8ntC/8SaOLnKnNs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696011114; x=1696615914;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yrVonC05p6jOVhwUsfVJLWHka6sFzEOVBvIvQ8Q6DqQ=;
-        b=GehJVjRgC0qWQp3EKF9CAA9PafflggbL/NdYIYOzLwuGpKPnzXm5pERTW2uiFs3BPy
-         X4R72XyQ8oo/eY0ML7bLgllk7H7dj8mSZs/UVEVR92pqDUy/cDVlH3m34czEm2MYYc0q
-         /NaC7OPnyNdZgqkfOM6SyBYqLiPbjyVyjhuxa+3LLWLZogp9SiFATBGAHBHXM3qP6OMR
-         T8qaDS6qvfW7TJKqAPU6wUPFMPJqlrTa6AOhKy+XFKxI/GVkU5URMOEfrL8kKIcHaPVV
-         lakM9Q/I40WrN9NfYFnza4B73wHQkrjLVdVTtFff0bFmHz40CcxM0DygvA4zXE7ztYKy
-         tEXw==
-X-Gm-Message-State: AOJu0Yy7O8bdF0th7u6Uv3Vaquc4KNt84MoN65ATEKHtcr2LU40UDiYu
-        WQWGPvaF5i/bO5NvB/MPG8ddlQ==
-X-Google-Smtp-Source: AGHT+IFgn+YcX7y6H3lg00IXM/XrZra8mruPoKoixaSoCVKNNnq8jxU4+SgPqKTL8waGiLmnTcRybg==
-X-Received: by 2002:a17:902:d38c:b0:1c7:4ac4:8f45 with SMTP id e12-20020a170902d38c00b001c74ac48f45mr1746465pld.43.1696011114345;
-        Fri, 29 Sep 2023 11:11:54 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j1-20020a170902c3c100b001bc18e579aesm11121886plj.101.2023.09.29.11.11.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 11:11:53 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Raju Rangoju <rajur@chelsio.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH 5/5] cxgb4: Annotate struct smt_data with __counted_by
-Date:   Fri, 29 Sep 2023 11:11:49 -0700
-Message-Id: <20230929181149.3006432-5-keescook@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230929181042.work.990-kees@kernel.org>
-References: <20230929181042.work.990-kees@kernel.org>
+        Fri, 29 Sep 2023 14:16:35 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C9B4136;
+        Fri, 29 Sep 2023 11:16:31 -0700 (PDT)
+Received: from localhost.localdomain (unknown [IPv6:2a02:8010:65b5:0:1ac0:4dff:feee:236a])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: alarumbe)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 90C5B66072BC;
+        Fri, 29 Sep 2023 19:16:29 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696011389;
+        bh=mYgruaYpadF7TPyMvAY1L2JYW1reyXOIu0TzF0pl4zY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=V6uFILYX6fh9oL+rqIEC4qeD3cDc0b7j9CfVcetGRJICYMPd3g4w6iSi/LRy6VuSA
+         JaKjVqg5vTgmUEtKY6r1sESXH996IOTofHEiR0GD5jc79EBTTzNdXxfSPgpuDgCeMA
+         NG/I3fSEjPW0i9LrE+SBoSHIWSKP9KWQ/9ctvrnlqrNCpG9aTUVF2nruCGBFMDqAMg
+         rak8gdCOIkCXRj12c21WZj6Zt9S8G3tAyrklmKZgErk9kx/9Bre57e4ZhGgXkd037Q
+         M7GfrSlQXK6pX6+X+Z8c7PlcfiQje+/rmV0zXV9D9s7zyM08NAeRdNs/dlSzQ7yohk
+         LTTD8Cv7Nxlqw==
+From:   =?UTF-8?q?Adri=C3=A1n=20Larumbe?= <adrian.larumbe@collabora.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        robdclark@gmail.com, quic_abhinavk@quicinc.com,
+        dmitry.baryshkov@linaro.org, sean@poorly.run,
+        marijn.suijten@somainline.org, robh@kernel.org,
+        steven.price@arm.com
+Cc:     adrian.larumbe@collabora.com, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, healych@amazon.com,
+        kernel@collabora.com, tvrtko.ursulin@linux.intel.com,
+        boris.brezillon@collabora.com
+Subject: [PATCH v8 0/5]  Add fdinfo support to Panfrost
+Date:   Fri, 29 Sep 2023 19:14:26 +0100
+Message-ID: <20230929181616.2769345-1-adrian.larumbe@collabora.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1333; i=keescook@chromium.org;
- h=from:subject; bh=JLyOuNbsppgNQ4E7t00aHIOLLwYOPNO4180/z7PYk3s=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlFxNkFhFFrPwEa/QR03Eug35cqUa66za8zL4Yc
- tXAGq5NrJKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRcTZAAKCRCJcvTf3G3A
- JhyfEACGOow2LuF71Rl2/1+567N4njI1FCgglmine5Smin9dsg3gXEI6wm5z9CqGgrQaAxNKx4C
- zmoIQ01iI7Dv13ajsqLxuuxhsDJJi33Q5MjAQ6XbWMCN0LDUIiu2pR1Kfv9XKAWxKV7qn/Oahln
- sryf9SDc7OSHj/Wou2usLanxazxvNzODnuZReRlw705m4BdnO7+yoLKCd981sdmOohczCfAyMaA
- oq2HA/pt2OaGJpZg2cOkDnndqDHgTmlwxYRg0Q8EUMa1h7eclM4/txL2VR1E0E9Spgv5lPy3iIh
- 3rT+0yAVFoS8jrHSxABKSgNMRRP8AMKK3PkL5oHS1mqJDFYcbFBgjuKj6sKIbea4RtS0cYek06M
- hQv1Rk9XX6y//jV7kU22s0/ms+WqRZcuSyVxxmYgk+jwnAmAG3oONUwdDKAmPdMrChdWi+Vin4i
- 5OAqx9x/Eq7456qC3yfH/YvEbpgKV1sMnxV3Q8GGgxw0rrrhY2tk99LzQ1S/WTU0x5s4ke3c2t8
- Siui7ik4Owf/oSeTLtn0yvCObp0kqkPgm/SpI/ZFoRDeudgpA51AFk4mvoy4fWw7de2TLJv9xqE
- KgbrKJRdrPpV7PEwtt/iay1GE7okgsjLZngWqD5ddaUA0tA5o/C1aDYkNpJJyXLkAW8ZADALiFl qSiszCEru7ozwrA==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+This patch series adds fdinfo support to the Panfrost DRM driver. It will
+display a series of key:value pairs under /proc/pid/fdinfo/fd for render
+processes that open the Panfrost DRM file.
 
-As found with Coccinelle[1], add __counted_by for struct smt_data.
+The pairs contain basic drm gpu engine and memory region information that
+can either be cat by a privileged user or accessed with IGT's gputop
+utility.
 
-[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+Changelog:
 
-Cc: Raju Rangoju <rajur@chelsio.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <edumazet@google.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Cc: netdev@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/net/ethernet/chelsio/cxgb4/smt.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v1: https://lore.kernel.org/lkml/bb52b872-e41b-3894-285e-b52cfc849782@arm.com/T/
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/smt.h b/drivers/net/ethernet/chelsio/cxgb4/smt.h
-index 541249d78914..109c1dff563a 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/smt.h
-+++ b/drivers/net/ethernet/chelsio/cxgb4/smt.h
-@@ -66,7 +66,7 @@ struct smt_entry {
- struct smt_data {
- 	unsigned int smt_size;
- 	rwlock_t lock;
--	struct smt_entry smtab[];
-+	struct smt_entry smtab[] __counted_by(smt_size);
- };
- 
- struct smt_data *t4_init_smt(void);
+v2: https://lore.kernel.org/lkml/20230901084457.5bc1ad69@collabora.com/T/
+ - Changed the way gpu cycles and engine time are calculated, using GPU
+   registers and taking into account potential resets.
+ - Split render engine values into fragment and vertex/tiler ones.
+ - Added more fine-grained calculation of RSS size for BO's.
+ - Implemente selection of drm-memory region size units.
+ - Removed locking of shrinker's mutex in GEM obj status function.
+
+v3: https://lore.kernel.org/lkml/20230905184533.959171-1-adrian.larumbe@collabora.com/
+ - Changed fdinfo engine names to something more descriptive.;
+ - Mentioned GPU cycle counts aren't an exact measure.
+ - Handled the case when job->priv might be NULL.
+ - Handled 32 bit overflow of cycle register.
+ - Kept fdinfo drm memory stats size unit display within 10k times the
+   previous multiplier for more accurate BO size numbers.
+ - Removed special handling of Prime imported BO RSS.
+ - Use rss_size only for heap objects.
+ - Use bo->base.madv instead of specific purgeable flag.
+ - Fixed kernel test robot warnings.
+
+v4: https://lore.kernel.org/lkml/20230912084044.955864-1-adrian.larumbe@collabora.com/
+ - Move cycle counter get and put to panfrost_job_hw_submit and
+   panfrost_job_handle_{err,done} for more accuracy.
+ - Make sure cycle counter refs are released in reset path
+ - Drop the model param for toggling cycle counting and do
+   leave it down to the debugfs file.
+ - Don't disable cycle counter when togglint debugfs file,
+   let refcounting logic handle it instead.
+ - Remove fdinfo data nested structure definion and 'names' field
+ - When incrementing BO RSS size in GPU MMU page fault IRQ handler, assume
+   granuality of 2MiB for every successful mapping.
+ - drm-file picks an fdinfo memory object size unit that doesn't lose precision.
+
+v5: https://lore.kernel.org/lkml/20230914223928.2374933-1-adrian.larumbe@collabora.com/
+ - Removed explicit initialisation of atomic variable for profiling mode,
+   as it's allocated with kzalloc.
+ - Pass engine utilisation structure to jobs rather than the file context, to avoid
+   future misusage of the latter.
+ - Remove double reading of cycle counter register and ktime in job deqeueue function,
+   as the scheduler will make sure these values are read over in case of requeuing.
+ - Moved putting of cycle counting refcnt into panfrost job dequeue.
+   function to avoid repetition.
+
+v6: https://lore.kernel.org/lkml/c73ad42b-a8db-23c2-86c7-1a2939dba044@linux.intel.com/T/
+ - Fix wrong swapped-round engine time and cycle values in fdinfo
+   drm print statements.
+
+v7: https://lore.kernel.org/lkml/20230927213133.1651169-6-adrian.larumbe@collabora.com/T/
+ - Make sure an object's actual RSS size is added to the overall fdinfo's purgeable
+   and active size tally when it's both resident and purgeable or active.
+ - Create a drm/panfrost.rst documentation file with meaning of fdinfo strings.
+ - BUILD_BUG_ON checking the engine name array size for fdinfo.
+ - Added copyright notices for Amazon in Panfrost's new debugfs files.
+ - Discarded fdinfo memory stats unit size selection patch.
+
+v8:
+ - Style improvements and addressing nitpicks.         
+
+Adrián Larumbe (5):
+  drm/panfrost: Add cycle count GPU register definitions
+  drm/panfrost: Add fdinfo support GPU load metrics
+  drm/panfrost: Add fdinfo support for memory stats
+  drm/drm_file: Add DRM obj's RSS reporting function for fdinfo
+  drm/panfrost: Implement generic DRM object RSS reporting function
+
+ Documentation/gpu/drm-usage-stats.rst       |  1 +
+ Documentation/gpu/panfrost.rst              | 38 +++++++++++++
+ drivers/gpu/drm/drm_file.c                  |  8 +--
+ drivers/gpu/drm/panfrost/Makefile           |  2 +
+ drivers/gpu/drm/panfrost/panfrost_debugfs.c | 21 ++++++++
+ drivers/gpu/drm/panfrost/panfrost_debugfs.h | 14 +++++
+ drivers/gpu/drm/panfrost/panfrost_devfreq.c |  8 +++
+ drivers/gpu/drm/panfrost/panfrost_devfreq.h |  3 ++
+ drivers/gpu/drm/panfrost/panfrost_device.c  |  2 +
+ drivers/gpu/drm/panfrost/panfrost_device.h  | 13 +++++
+ drivers/gpu/drm/panfrost/panfrost_drv.c     | 60 ++++++++++++++++++++-
+ drivers/gpu/drm/panfrost/panfrost_gem.c     | 30 +++++++++++
+ drivers/gpu/drm/panfrost/panfrost_gem.h     |  5 ++
+ drivers/gpu/drm/panfrost/panfrost_gpu.c     | 41 ++++++++++++++
+ drivers/gpu/drm/panfrost/panfrost_gpu.h     |  4 ++
+ drivers/gpu/drm/panfrost/panfrost_job.c     | 24 +++++++++
+ drivers/gpu/drm/panfrost/panfrost_job.h     |  5 ++
+ drivers/gpu/drm/panfrost/panfrost_mmu.c     |  1 +
+ drivers/gpu/drm/panfrost/panfrost_regs.h    |  5 ++
+ include/drm/drm_gem.h                       |  9 ++++
+ 20 files changed, 290 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/gpu/panfrost.rst
+ create mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
+ create mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
+
+
+base-commit: f45acf7acf75921c0409d452f0165f51a19a74fd
 -- 
-2.34.1
+2.42.0
 
