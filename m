@@ -2,73 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 092AF7B31C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 13:54:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2DD7B31C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 13:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232936AbjI2Lya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 07:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49212 "EHLO
+        id S233040AbjI2LyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 07:54:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233074AbjI2Ly2 (ORCPT
+        with ESMTP id S232490AbjI2LyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 07:54:28 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161341B5;
-        Fri, 29 Sep 2023 04:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qKq2NzIPOMbXiw7EuwrhFYULUyJIGa2dMNFAahKM20Q=; b=BOJ60tkND/iuUdClWCA0nH3gUS
-        q9vz1KHPtQ2+lkb3uSJrd/2nvBwEy4M+CQky0AG+X/mANa/2ocLCW1PlYTOhcgVr2qJcY4FBxwjB1
-        pdkjp2wdi2eGh+Qhtrq+5MKYqhE80PZYuQHg0v6tyuCCCdWV2usaWsgClJx6E2ltMWXB6gFEAhwtq
-        AA/1O45BPaHv9C+bHsgVFBKrXV1MOJnJGlvVpjxi8bcD2h45g2j/847Qq7cTqNLoQtEyHVYd2yD7v
-        sRn9tMGvMoZCBRUpo9cfq1oZ73x+QY1kXfTLMxFrbMVBJFVi49UhMz8Fcf4vtbOUOU9HVwkEozM+/
-        8ozEJVFQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qmC3z-0067fO-31;
-        Fri, 29 Sep 2023 11:53:46 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0DFD930030F; Fri, 29 Sep 2023 13:53:45 +0200 (CEST)
-Date:   Fri, 29 Sep 2023 13:53:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <likexu@tencent.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Lv Zhiyuan <zhiyuan.lv@intel.com>,
-        Yang Weijiang <weijiang.yang@intel.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Dunn <daviddunn@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [Patch v4 07/13] perf/x86: Add constraint for guest perf metrics
- event
-Message-ID: <20230929115344.GE6282@noisy.programming.kicks-ass.net>
-References: <20230927033124.1226509-1-dapeng1.mi@linux.intel.com>
- <20230927033124.1226509-8-dapeng1.mi@linux.intel.com>
- <20230927113312.GD21810@noisy.programming.kicks-ass.net>
- <ZRRl6y1GL-7RM63x@google.com>
+        Fri, 29 Sep 2023 07:54:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EEA193;
+        Fri, 29 Sep 2023 04:54:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695988449; x=1727524449;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ISv2rSDawxjEuQmt6UgE2EEBy6745yQLVfXV6XeXgxA=;
+  b=Ip9WwZFaxVNPbNU6nlorzh4oaJhNoLDvJxyAF9bzEZbZZQZRw93IVEVa
+   6GZtMVGz9M/c3522VmX7ouwN2K7MSUM7baW+mGK1DgxsK0YlJuQgGbF2w
+   sJ7SB55IjWigz9Ilae/Z3krqpf7P/pL78mv9QeLo/sYXW8t4lw58nBrAU
+   7jyCmdvOyEjU5wGfFa1uXNFb7OnViswE9320OrERDVfEPS1Zu1u+KHdCl
+   eeWO1Np+quRzAZOJ/BQN5pN1WJvM9cOCpiNj3bWKC2/bcZYXAkA4wfofn
+   3qbOTQKDCqbFGk13TyAEsvA9m5h9ZfrWa0Arop3SM7nbT2+7T2xQ9nw/+
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="367338815"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="367338815"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 04:54:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="749936816"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="749936816"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 29 Sep 2023 04:54:04 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qmC4H-0002oj-2X;
+        Fri, 29 Sep 2023 11:54:01 +0000
+Date:   Fri, 29 Sep 2023 19:53:59 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sarthak Garg <quic_sartgarg@quicinc.com>, adrian.hunter@intel.com,
+        ulf.hansson@linaro.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        quic_rampraka@quicinc.com, quic_pragalla@quicinc.com,
+        quic_sayalil@quicinc.com, quic_nitirawa@quicinc.com,
+        quic_sachgupt@quicinc.com, quic_bhaskarv@quicinc.com,
+        quic_narepall@quicinc.com,
+        Sarthak Garg <quic_sartgarg@quicinc.com>,
+        Veerabhadrarao Badiganti <quic_vbadigan@quicinc.com>
+Subject: Re: [PATCH V2 1/2] mmc: core: Add partial initialization support
+Message-ID: <202309291907.0fApmbb7-lkp@intel.com>
+References: <20230929102831.9702-2-quic_sartgarg@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZRRl6y1GL-7RM63x@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+In-Reply-To: <20230929102831.9702-2-quic_sartgarg@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
         SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,102 +71,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 10:27:07AM -0700, Sean Christopherson wrote:
+Hi Sarthak,
 
-> I don't think it does work, at least not without a very, very carefully crafted
-> setup and a host userspace that knows it must not use certain aspects of perf.
-> E.g. for PEBS, if the guest virtual counters don't map 1:1 to the "real" counters
-> in hardware, KVM+perf simply disables the counter.
+kernel test robot noticed the following build warnings:
 
-I have distinct memories of there being patches to rewrite the PEBS
-buffer, but I really can't remember what we ended up doing. Like I said,
-I can't operate KVM in any meaningful way -- it's a monster :-(
+[auto build test WARNING on linus/master]
+[also build test WARNING on ulf-hansson-mmc-mirror/next v6.6-rc3 next-20230929]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-> And for top-down slots, getting anything remotely accurate requires pinning vCPUs
-> 1:1 with pCPUs and enumerating an accurate toplogy to the guest:
-> 
->   The count is distributed among unhalted logical processors (hyper-threads) who
->   share the same physical core, in processors that support Intel Hyper-Threading
->   Technology.
+url:    https://github.com/intel-lab-lkp/linux/commits/Sarthak-Garg/mmc-core-Add-partial-initialization-support/20230929-183238
+base:   linus/master
+patch link:    https://lore.kernel.org/r/20230929102831.9702-2-quic_sartgarg%40quicinc.com
+patch subject: [PATCH V2 1/2] mmc: core: Add partial initialization support
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230929/202309291907.0fApmbb7-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230929/202309291907.0fApmbb7-lkp@intel.com/reproduce)
 
-So IIRC slots is per logical CPU, it counts the actual pipeline stages
-going towards that logical CPU, this is required to make it work on SMT
-at all -- even for native.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309291907.0fApmbb7-lkp@intel.com/
 
-But it's been a long while since that was explained -- and because it
-was a call, I can't very well read it back, god how I hate calls :-(
+All warnings (new ones prefixed by >>):
 
-> Jumping the gun a bit (we're in the *super* early stages of scraping together a
-> rough PoC), but I think we should effectively put KVM's current vPMU support into
-> maintenance-only mode, i.e. stop adding new features unless they are *very* simple
-> to enable, and instead pursue an implementation that (a) lets userspace (and/or
-> the kernel builder) completely disable host perf (or possibly just host perf usage
-> of the hardware PMU) and (b) let KVM passthrough the entire hardware PMU when it
-> has been turned off in the host.
-
-I don't think you need to go that far, host can use PMU just fine as
-long as it doesn't overlap with a vCPU. Basically, if you force
-perf_attr::exclude_guest on everything your vCPU can haz the full thing.
-
-> Hardware vendors are pushing us in the direction whether we like it or not, e.g.
-> SNP and TDX want to disallow profiling the guest from the host, 
-
-Yeah, sekjoerity model etc.. bah.
-
-> ARM has an upcoming PMU model where (IIUC) it can't be virtualized
-> without a passthrough approach,
-
-:-(
-
-> Intel's hybrid CPUs are a complete trainwreck unless vCPUs are pinned,
-
-Anybodies hybrid things are a clusterfuck, hybrid vs virt doesn't work
-sanely on ARM either AFAIU.
-
-I intensely dislike hybrid (and virt ofc), but alas we get to live with
-that mess :/ And it's only going to get worse I fear..
-
-At least (for now) AMD hybrid is committed to identical ISA, including
-PMUs with their Zen4+Zen4c things. We'll have to wait and see how
-that'll end up.
-
-> and virtualizing things like top-down slots, PEBS, and LBRs in the shared model
-> requires an absurd amount of complexity throughout the kernel and userspace.
-
-I'm not sure about top-down, the other two, for sure.
-
-My main beef with top-down is the ludicrously bad hardware interface we
-have on big cores, I like the atom interface a *ton* better.
-
-> Note, a similar idea was floated and rejected in the past[*], but that failed
-> proposal tried to retain host perf+PMU functionality by making the behavior dynamic,
-> which I agree would create an awful ABI for the host.  If we make the "knob" a
-> Kconfig 
-
-Must not be Kconfig, distros would have no sane choice.
-
-> or kernel param, i.e. require the platform owner to opt-out of using perf
-> no later than at boot time, then I think we can provide a sane ABI, keep the
-> implementation simple, all without breaking existing users that utilize perf in
-> the host to profile guests.
-
-It's a shit choice to have to make. At the same time I'm not sure I have
-a better proposal.
-
-It does mean a host cannot profile one guest and have pass-through on the
-other. Eg. have a development and production guest on the same box. This
-is pretty crap.
-
-Making it a guest-boot-option would allow that, but then the host gets
-complicated again. I think I can make it trivially work for per-task
-events, simply error the creation of events without exclude_guest for
-affected vCPU tasks. But the CPU events are tricky.
+>> drivers/mmc/core/mmc.c:1975: warning: Function parameter or member 'host' not described in 'mmc_sleepawake'
 
 
-I will firmly reject anything that takes the PMU away from the host
-entirely through.
+vim +1975 drivers/mmc/core/mmc.c
 
-Also, NMI watchdog needs a solution.. Ideally hardware grows a second
-per-CPU timer we can program to NMI.
+8786b9922e6b87 Sarthak Garg    2023-09-29  1962  
+8786b9922e6b87 Sarthak Garg    2023-09-29  1963  /**
+8786b9922e6b87 Sarthak Garg    2023-09-29  1964   * mmc_sleepawake - function to sleep or awake the device
+8786b9922e6b87 Sarthak Garg    2023-09-29  1965   * @sleep: if true then sleep command is sent else awake
+8786b9922e6b87 Sarthak Garg    2023-09-29  1966   *
+8786b9922e6b87 Sarthak Garg    2023-09-29  1967   * This function first deselects the card and then sends the sleep command
+8786b9922e6b87 Sarthak Garg    2023-09-29  1968   * in case of sleep whereas in case of awake first awake command is send
+8786b9922e6b87 Sarthak Garg    2023-09-29  1969   * and then the card is selected.
+8786b9922e6b87 Sarthak Garg    2023-09-29  1970   *
+8786b9922e6b87 Sarthak Garg    2023-09-29  1971   * Returns 0 on success, non-zero value on failure
+8786b9922e6b87 Sarthak Garg    2023-09-29  1972   */
+8786b9922e6b87 Sarthak Garg    2023-09-29  1973  
+8786b9922e6b87 Sarthak Garg    2023-09-29  1974  static int mmc_sleepawake(struct mmc_host *host, bool sleep)
+07a682160866e3 Ulf Hansson     2013-04-19 @1975  {
+c7836d1593b87c Masahiro Yamada 2016-12-19  1976  	struct mmc_command cmd = {};
+07a682160866e3 Ulf Hansson     2013-04-19  1977  	struct mmc_card *card = host->card;
+cb962e04b04fb6 Ulf Hansson     2014-01-14  1978  	unsigned int timeout_ms = DIV_ROUND_UP(card->ext_csd.sa_timeout, 10000);
+e62f1e0b2384e2 Ulf Hansson     2021-05-04  1979  	bool use_r1b_resp;
+07a682160866e3 Ulf Hansson     2013-04-19  1980  	int err;
+07a682160866e3 Ulf Hansson     2013-04-19  1981  
+436f8daa6f5a29 Adrian Hunter   2015-05-07  1982  	/* Re-tuning can't be done once the card is deselected */
+436f8daa6f5a29 Adrian Hunter   2015-05-07  1983  	mmc_retune_hold(host);
+436f8daa6f5a29 Adrian Hunter   2015-05-07  1984  
+8786b9922e6b87 Sarthak Garg    2023-09-29  1985  	if (sleep) {
+07a682160866e3 Ulf Hansson     2013-04-19  1986  		err = mmc_deselect_cards(host);
+07a682160866e3 Ulf Hansson     2013-04-19  1987  		if (err)
+436f8daa6f5a29 Adrian Hunter   2015-05-07  1988  			goto out_release;
+8786b9922e6b87 Sarthak Garg    2023-09-29  1989  	}
+07a682160866e3 Ulf Hansson     2013-04-19  1990  
+07a682160866e3 Ulf Hansson     2013-04-19  1991  	cmd.opcode = MMC_SLEEP_AWAKE;
+07a682160866e3 Ulf Hansson     2013-04-19  1992  	cmd.arg = card->rca << 16;
+e62f1e0b2384e2 Ulf Hansson     2021-05-04  1993  	use_r1b_resp = mmc_prepare_busy_cmd(host, &cmd, timeout_ms);
+8786b9922e6b87 Sarthak Garg    2023-09-29  1994  	if (sleep)
+8786b9922e6b87 Sarthak Garg    2023-09-29  1995  		cmd.arg |= BIT(15);
+cb962e04b04fb6 Ulf Hansson     2014-01-14  1996  
+07a682160866e3 Ulf Hansson     2013-04-19  1997  	err = mmc_wait_for_cmd(host, &cmd, 0);
+07a682160866e3 Ulf Hansson     2013-04-19  1998  	if (err)
+436f8daa6f5a29 Adrian Hunter   2015-05-07  1999  		goto out_release;
+07a682160866e3 Ulf Hansson     2013-04-19  2000  
+07a682160866e3 Ulf Hansson     2013-04-19  2001  	/*
+6fa79651cc808f Ulf Hansson     2021-05-04  2002  	 * If the host does not wait while the card signals busy, then we can
+6fa79651cc808f Ulf Hansson     2021-05-04  2003  	 * try to poll, but only if the host supports HW polling, as the
+6fa79651cc808f Ulf Hansson     2021-05-04  2004  	 * SEND_STATUS cmd is not allowed. If we can't poll, then we simply need
+6fa79651cc808f Ulf Hansson     2021-05-04  2005  	 * to wait the sleep/awake timeout.
+07a682160866e3 Ulf Hansson     2013-04-19  2006  	 */
+6fa79651cc808f Ulf Hansson     2021-05-04  2007  	if (host->caps & MMC_CAP_WAIT_WHILE_BUSY && use_r1b_resp)
+6fa79651cc808f Ulf Hansson     2021-05-04  2008  		goto out_release;
+6fa79651cc808f Ulf Hansson     2021-05-04  2009  
+6fa79651cc808f Ulf Hansson     2021-05-04  2010  	if (!host->ops->card_busy) {
+cb962e04b04fb6 Ulf Hansson     2014-01-14  2011  		mmc_delay(timeout_ms);
+6fa79651cc808f Ulf Hansson     2021-05-04  2012  		goto out_release;
+6fa79651cc808f Ulf Hansson     2021-05-04  2013  	}
+6fa79651cc808f Ulf Hansson     2021-05-04  2014  
+1760fdb6fe9f79 Ulf Hansson     2022-03-04  2015  	err = __mmc_poll_for_busy(host, 0, timeout_ms, &mmc_sleep_busy_cb, host);
+07a682160866e3 Ulf Hansson     2013-04-19  2016  
+436f8daa6f5a29 Adrian Hunter   2015-05-07  2017  out_release:
+8786b9922e6b87 Sarthak Garg    2023-09-29  2018  	if (!sleep)
+8786b9922e6b87 Sarthak Garg    2023-09-29  2019  		err = mmc_select_card(card);
+8786b9922e6b87 Sarthak Garg    2023-09-29  2020  
+436f8daa6f5a29 Adrian Hunter   2015-05-07  2021  	mmc_retune_release(host);
+07a682160866e3 Ulf Hansson     2013-04-19  2022  	return err;
+07a682160866e3 Ulf Hansson     2013-04-19  2023  }
+07a682160866e3 Ulf Hansson     2013-04-19  2024  
 
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
