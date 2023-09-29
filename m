@@ -2,170 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E587B3A57
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 21:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43BB7B3A5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 21:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233433AbjI2TAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 15:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
+        id S233633AbjI2TFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 15:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233435AbjI2TAd (ORCPT
+        with ESMTP id S233365AbjI2TE6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 15:00:33 -0400
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 572E31AB
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 12:00:31 -0700 (PDT)
-Received: by mail-vs1-xe29.google.com with SMTP id ada2fe7eead31-4547322a756so941632137.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 12:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696014030; x=1696618830; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zy1nUobY7c45BmPf8DhI4WWAR3T7zbOP0wGZy7EraWU=;
-        b=AZD//jOGnQM+BHELAPEda7xOw6Nfoe2Rd+H9HtrBhyT32DMd6HWJJCeedapdw/Gkok
-         VlTkXiUubJDlyQbXOFMzrAUZlmkq/AOnvQHUPA74NwvHBxL29IYI6GhTujmhmmkdjTiW
-         P3xTjzG7kOPk7LYGB7G9V0uGwVhslmujrnAt5lOlCCTeFY1u69YEwsEnTp78zSG80NXR
-         gdWjF7+pa+atbQenRP5akx8Rj5FEFIdDNIvOyatuaEGdzYHfjGRuWLJnZLttJ7Wb539j
-         8hkM/8wzHtxLP/3faVDK40oRb5rGHu4qwI8EY8KwBZNalOcSfdqJysuoLyU4HhdsDtE0
-         q//g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696014030; x=1696618830;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zy1nUobY7c45BmPf8DhI4WWAR3T7zbOP0wGZy7EraWU=;
-        b=vEetWx6HmirR0dx5HV/auFpnCtStkV2vwkIKyhYRw2PYhjhpY/iL4kX4NWENlpnM5b
-         An0dQ+HclF86W4z1UJd/ftpoJD/cJ7gMqyu5d4KSprV3tbFKgpK/ymfMPt0NzKzN8MEt
-         +kM1UTEC3dxVxwTPqEAns5kFgKxQqZpDHqkP1ppnSj7oH9dlICKhpmD62Fa3diwemcLw
-         b8WM/aSU8vC43QMjvaFhohVKVqmWKvPWTNphSb3VKvkR057I9dCOrtcJVomxCRaWfeQg
-         pZVnrJ5Kz6P7pARLq62aH3kEDqvcaAkGc4V1A+XBRqZFPD0+sFnrcNXlYMozVSYeW5GP
-         xxrw==
-X-Gm-Message-State: AOJu0YxNx5osgLXhwPfIRDfd6mjYNNngJSP0XRcEO0ySJcn3n/8L8v7L
-        BMr4Iu906shJr1F9y5R1Df6KFemxlxu07+vN3ARiRV0TAgqOX+rw
-X-Google-Smtp-Source: AGHT+IHwtf45i8P95yaxIBktElpssTUgJ+uybtdODx0PXt2y9kXj+63SJ/vqSQbq1Hz4vPS1JK1mLyvD4enF4JkPWW4=
-X-Received: by 2002:a67:f296:0:b0:452:5e2e:a4e1 with SMTP id
- m22-20020a67f296000000b004525e2ea4e1mr4400477vsk.14.1696014030177; Fri, 29
- Sep 2023 12:00:30 -0700 (PDT)
+        Fri, 29 Sep 2023 15:04:58 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7416199
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 12:04:55 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id A683732000E5;
+        Fri, 29 Sep 2023 15:04:54 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Fri, 29 Sep 2023 15:04:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jcline.org; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1696014294; x=1696100694; bh=tl2+4CsKy4
+        eJf2x1H0MEhr2ez9lBgVPpFI/7ocetrG0=; b=HMksuo6NSjlz9VKe+j/jrBS021
+        w2C1jWc70y7WdOb/3yx9xx6hrh/GnqOjY+QzvTzndGVKt3xSsT1LAqKKYbTlb1YY
+        S/x8OQqTeZEpqLxhMkBUR3sseOYiH6y3qzXM9171dNuAK2Mqp6XTzxG2Z5yLHpVw
+        r14732TA4KbEFigbadTjHspvJlcTcGkuqPD/ofS80OQ+A/0HfMBvFLLNdNHAowul
+        3vivu2ISAiPCWj1+EATy/zPZ7F42P5jHnmZlBnVFQBky7Pm3opzCG28xJLCfLrwi
+        aU0EoCLTq8v/9ShiTsiYFTZnmbzNZ8vgkhyyZhwZBljaVHYmkI4GCaElmrSg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696014294; x=1696100694; bh=tl2+4CsKy4eJf
+        2x1H0MEhr2ez9lBgVPpFI/7ocetrG0=; b=VDygIHyyb5jMFO+nwnAHprxexGgr9
+        Di6QuWfUL30TRRlVTdozC1A7v3EJjNF8BTuVEfFkjlQue1sxYRS3ZcYqU4p4l05+
+        HYTOxL7rQ5/mbTIDRZA1tqVB2PDEakAru6jQTb5BS64IeZ4JxNWw4AUjKJcd4Iur
+        ftrKAuL2rezceQIusqsuXy0z1DluJJ4pt2ez7V+LlJo9hFSqXoaOCvhka+oBGyNY
+        nQA9ytMoasR9WUBvZD2DQRUMHY0Y8pfqOT9hpbxIsrgcc9c79dx4DfZ95wqz1hw0
+        MQhazzSk5N5zN2zrv6Cf+QjSxaFg9+OfHs0Sh7li0FMPuEaxgUY1slxMA==
+X-ME-Sender: <xms:1R8XZWSQ18J46CvW0SMuEhFGQd-R1FqGZNOC1rILWBCCt0BWxVt-dw>
+    <xme:1R8XZbxuqL3zGwFyv8PyXkKQTGi1XknhT1VOjz5AbHtpyseDMB9Tych5Q05hKm4g_
+    _moVQigwwY5_bmRne0>
+X-ME-Received: <xmr:1R8XZT1m5ChYcVfe0rltVEoxYgjI9jb2p95AMbuQEe8rFTQB2TiJ7Szshj0n1xXz526ONLa-sgI4bLRcyYOfqxjkneUZSsKnWTiV>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrtddvgddufedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomheplfgvrhgvmhih
+    ucevlhhinhgvuceojhgvrhgvmhihsehjtghlihhnvgdrohhrgheqnecuggftrfgrthhtvg
+    hrnheptddufeeugeefheehvedufeduvddtgfdvtdfgudfftdelkeelfffhjeevhefhhfeg
+    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhgvrh
+    gvmhihsehjtghlihhnvgdrohhrgh
+X-ME-Proxy: <xmx:1R8XZSDCOQjCHz3Hedua8UdaS92B5v0viDy5YjO1bDD_Wg5FVV95Sg>
+    <xmx:1R8XZfgrxFY6titHWCkDp3oD6WCLN0RPmNwiB4mffvILlxPAZShhaQ>
+    <xmx:1R8XZeokjkp3wWILLSF9YFRFBQ8Q2byTjIObkC1e9cfeDAbg7X6Hww>
+    <xmx:1h8XZfeQI_SfB69q-YhszQ-iZqXUNZZokR80vl7oUhy9PVbWeJHXMQ>
+Feedback-ID: i7a7146c5:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 29 Sep 2023 15:04:53 -0400 (EDT)
+From:   Jeremy Cline <jeremy@jcline.org>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Tom Rix <trix@redhat.com>, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Jeremy Cline <jeremy@jcline.org>
+Subject: [PATCH] gen_compile_commands: use raw string when replacing \#
+Date:   Fri, 29 Sep 2023 15:04:46 -0400
+Message-ID: <20230929190446.113168-1-jeremy@jcline.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230928092040.9420-1-brgl@bgdev.pl> <20230928092040.9420-12-brgl@bgdev.pl>
-In-Reply-To: <20230928092040.9420-12-brgl@bgdev.pl>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Fri, 29 Sep 2023 21:00:19 +0200
-Message-ID: <CAMRc=Md51N=zuJt0FVfNNvXbYbn-Gu7czU29dC-bsGrWiwOc8A@mail.gmail.com>
-Subject: Re: [PATCH v2 11/11] firmware: qcom: scm: enable SHM bridge
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 11:21=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl=
-> wrote:
->
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> Extens the SCM memory allocator with using the SHM Bridge feature if
-> available on the platform. This makes the trustzone only use dedicated
-> buffers for SCM calls. We map the entire SCM genpool as a bridge.
->
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  drivers/firmware/qcom/qcom_scm-mem.c | 42 ++++++++++++++++++++++++++--
->  1 file changed, 39 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/firmware/qcom/qcom_scm-mem.c b/drivers/firmware/qcom=
-/qcom_scm-mem.c
-> index eafecbe23770..12b12b15f46f 100644
-> --- a/drivers/firmware/qcom/qcom_scm-mem.c
-> +++ b/drivers/firmware/qcom/qcom_scm-mem.c
-> @@ -16,6 +16,8 @@
->
->  #include "qcom_scm.h"
->
-> +#define QCOM_SHM_BRIDGE_NUM_VM_SHIFT 9
-> +
->  static size_t qcom_scm_mem_pool_size =3D SZ_2M;
->  module_param_named(qcom_scm_mem_pool_size, qcom_scm_mem_pool_size,
->                    ulong, 0400);
-> @@ -108,8 +110,24 @@ phys_addr_t qcom_scm_mem_to_phys(void *vaddr)
->         return chunk->paddr;
->  }
->
-> +static int qcom_scm_mem_shm_bridge_create(void)
-> +{
-> +       uint64_t pfn_and_ns_perm, ipfn_and_s_perm, size_and_flags, ns_per=
-ms;
-> +
-> +       ns_perms =3D (QCOM_SCM_PERM_WRITE | QCOM_SCM_PERM_READ);
-> +       pfn_and_ns_perm =3D (u64)qcom_scm_mem.pbase | ns_perms;
-> +       ipfn_and_s_perm =3D (u64)qcom_scm_mem.pbase | ns_perms;
-> +       size_and_flags =3D qcom_scm_mem.size | (1 << QCOM_SHM_BRIDGE_NUM_=
-VM_SHIFT);
-> +
-> +       return qcom_scm_create_shm_bridge(qcom_scm_mem.dev, pfn_and_ns_pe=
-rm,
-> +                                         ipfn_and_s_perm, size_and_flags=
-,
-> +                                         QCOM_SCM_VMID_HLOS);
-> +}
-> +
->  int qcom_scm_mem_enable(struct device *dev)
->  {
-> +       int ret;
-> +
->         INIT_RADIX_TREE(&qcom_scm_mem.chunks, GFP_ATOMIC);
->         spin_lock_init(&qcom_scm_mem.lock);
->         qcom_scm_mem.dev =3D dev;
-> @@ -128,7 +146,25 @@ int qcom_scm_mem_enable(struct device *dev)
->
->         gen_pool_set_algo(qcom_scm_mem.pool, gen_pool_best_fit, NULL);
->
-> -       return gen_pool_add_virt(qcom_scm_mem.pool,
-> -                                (unsigned long)qcom_scm_mem.vbase,
-> -                                qcom_scm_mem.pbase, qcom_scm_mem.size, -=
-1);
-> +       ret =3D gen_pool_add_virt(qcom_scm_mem.pool,
-> +                               (unsigned long)qcom_scm_mem.vbase,
-> +                               qcom_scm_mem.pbase, qcom_scm_mem.size, -1=
-);
-> +       if (ret)
-> +               return ret;
-> +
-> +       ret =3D qcom_scm_enable_shm_bridge();
-> +       if (ret) {
-> +               if (ret =3D=3D EOPNOTSUPP)
+I noticed this since I'm running Python 3.12-rc3, which emits
+"SyntaxWarning: invalid escape sequence '\#'" when running this script.
+According to the Python 3.12 release notes this will eventually become a
+SyntaxError.
 
-FYI I noticed this is wrong, I will fix it in v3.
+Based on the comment in the code, I believe the intention was to match
+the literal string "\#". Marking it as a raw string will stop Python
+from trying to treat it as an escape sequence and behave as intended.
 
-Bart
+Signed-off-by: Jeremy Cline <jeremy@jcline.org>
+---
+ scripts/clang-tools/gen_compile_commands.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +                       dev_info(dev, "SHM Bridge not supported\n");
-> +               else
-> +                       return ret;
-> +       } else {
-> +               ret =3D qcom_scm_mem_shm_bridge_create();
-> +               if (ret)
-> +                       return ret;
-> +
-> +               dev_info(dev, "SHM Bridge enabled\n");
-> +       }
-> +
-> +       return 0;
->  }
-> --
-> 2.39.2
->
+diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
+index a84cc5737c2c..bc005cac1944 100755
+--- a/scripts/clang-tools/gen_compile_commands.py
++++ b/scripts/clang-tools/gen_compile_commands.py
+@@ -170,7 +170,7 @@ def process_line(root_directory, command_prefix, file_path):
+     # escape the pound sign '#', either as '\#' or '$(pound)' (depending on the
+     # kernel version). The compile_commands.json file is not interepreted
+     # by Make, so this code replaces the escaped version with '#'.
+-    prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
++    prefix = command_prefix.replace(r'\#', '#').replace('$(pound)', '#')
+ 
+     # Use os.path.abspath() to normalize the path resolving '.' and '..' .
+     abs_path = os.path.abspath(os.path.join(root_directory, file_path))
+-- 
+2.41.0
+
