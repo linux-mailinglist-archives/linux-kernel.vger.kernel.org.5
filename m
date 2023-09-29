@@ -2,124 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCB47B3B43
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA0C7B3B44
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 22:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233243AbjI2Uck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 16:32:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60524 "EHLO
+        id S233304AbjI2Ufg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 16:35:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232748AbjI2Ucj (ORCPT
+        with ESMTP id S229545AbjI2Ufe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 16:32:39 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 295D91A7;
-        Fri, 29 Sep 2023 13:32:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A629C433C7;
-        Fri, 29 Sep 2023 20:32:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696019556;
-        bh=4Y7NSZZJOmT/eG+oxY8xXIFK57w1o2IOQip+sUAH/DU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=l34TBrW2MrrwJcVoPI1pUTZfB1TH4C5SQMIgIOIk4QK4dBOLXKObws4rfJ8aVMJhf
-         NdFRUkZM9NzIcfLSywBOLIBkgVadAd6VOoAcdq+fC8mPPoxnY5vSO9FBPu2o2PQei2
-         Yc9Lia4ss7tXxwZ2z0K+GZjVYI+R/F1cNAOpcdk2u7zpjlbe/ms4ZxukwOjDhK2fpP
-         xB/LmaI3iUPMXwR5WxudA2wA64UN6ik6RxCtMLEKs5882z/kYFMhM9w5MG4ZMLmp+0
-         OQR1FsLod1Vqbbrmo/YU/+GlUpYm8j5Zy6Gu716ko2PhSmamJxEo/eO6zTJIJ3bMMO
-         somZ7DZyLOtkw==
-Date:   Fri, 29 Sep 2023 15:32:34 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     D Scott Phillips <scott@os.amperecomputing.com>,
-        linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
-        Darren Hart <darren@os.amperecomputing.com>,
-        patches@amperecomputing.com
-Subject: Re: [PATCH] PCI: hotplug: Add extension driver for Ampere Altra
- hotplug LED control
-Message-ID: <20230929203234.GA552475@bhelgaas>
+        Fri, 29 Sep 2023 16:35:34 -0400
+Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0871A7
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 13:35:30 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id mKCtqYUXuDYMSmKCuqSlsu; Fri, 29 Sep 2023 22:35:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1696019728;
+        bh=/omWOnUopIQaBLJ6GGrAgyTNWLTcb1siWJJxie6fb7w=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=CPJsKfL1f7BtX1obCd4opisP33OL0ev+Kbwz9LO4o6N+sFGSLvUQK3hMND7zA84gx
+         kjOSh/DEo0n2Bq9tPOeXbsurmszLL6JrsfXBNu6JMSnrD0QeDevQwmvfBHDcXHHWBi
+         nYWhG6bKwYB/6pmkybrAtvvzPD42XDMZ6wmcDJb+U7rPtrDPxqVRYnsJ1j7F3P6jxj
+         3oq94aPPd1QwnuB7psjsAXOxhAGAmA1rTwnEu0WeX2hgxZ1Gi80IQW11yRKltrEhfa
+         aZy5v8qZO49plOr3XGsTPy3wDsO9Tu3lpP5WQWKUMJIebn05MQsKvgaIOj+547rMI9
+         4J9Vpb80qqX7g==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 29 Sep 2023 22:35:28 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <0750d8b2-b624-3293-23ac-a034c88d8e0e@wanadoo.fr>
+Date:   Fri, 29 Sep 2023 22:35:27 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH V6 1/1] dmaengine: amd: qdma: Add AMD QDMA driver
+To:     Lizhi Hou <lizhi.hou@amd.com>, vkoul@kernel.org,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Nishad Saraf <nishads@amd.com>, nishad.saraf@amd.com,
+        sonal.santan@amd.com, max.zhen@amd.com
+References: <1696008263-42937-1-git-send-email-lizhi.hou@amd.com>
+ <1696008263-42937-2-git-send-email-lizhi.hou@amd.com>
+Content-Language: fr
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <1696008263-42937-2-git-send-email-lizhi.hou@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0j9hvhboyfmgs1CXkUqpmrMryNjwWGV+kJB-FCMfXaM_g@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 09:06:02PM +0200, Rafael J. Wysocki wrote:
-> On Thu, Sep 28, 2023 at 5:47 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Wed, Sep 27, 2023 at 01:23:47PM -0700, D Scott Phillips wrote:
-> > > On Ampere Altra, PCIe hotplug is handled through ACPI. A side interface is
-> > > also present to request system firmware control of attention LEDs. Add an
-> > > ACPI PCI Hotplug companion driver to support attention LED control.
-
-> > > +static int __init acpiphp_ampere_altra_init(void)
-> > > +{
-> > > +     struct fwnode_handle *fwnode;
-> > > +     acpi_handle leds_handle = NULL;
-> > > +     struct acpi_device *leds;
-> > > +     acpi_status status;
-> > > +     int ret;
-> > > +
-> > > +     status = acpi_get_devices("AMPC0008", get_acpi_handle, NULL,
-> > > +                               &leds_handle);
-> >
-> > Rafael, can you comment on whether we should use acpi_get_devices(),
-> > acpi_bus_register_driver(), acpi_acpi_scan_add_handler(), or something
-> > else here?
+Le 29/09/2023 à 19:24, Lizhi Hou a écrit :
+> From: Nishad Saraf <nishads@amd.com>
 > 
-> Personally, I would go for a platform driver, because the ACPI core
-> should create a platform device for this object.
+> Adds driver to enable PCIe board which uses AMD QDMA (the Queue-based
+> Direct Memory Access) subsystem. For example, Xilinx Alveo V70 AI
+> Accelerator devices.
+>      https://www.xilinx.com/applications/data-center/v70.html
 > 
-> acpi_get_devices() carries out a namespace walk that is costly and
-> entirely avoidable.
+> The QDMA subsystem is used in conjunction with the PCI Express IP block
+> to provide high performance data transfer between host memory and the
+> card's DMA subsystem.
 > 
-> >  I try to avoid pci_get_device() because it subverts the
-> > driver model (no hotplug support, no driver/device binding).
-> >
-> > I see Documentation/driver-api/acpi/scan_handlers.rst, but I'm not
-> > clear on when to use acpi_bus_register_driver() vs
-> 
-> Never.
-> 
-> > acpi_acpi_scan_add_handler().
-> 
-> When you don't want the ACPI core to create a platform device for your
-> ACPI device object.  There are cases like that, but they are rare.
 
-Ah, so none of the above (not acpi_get_devices(),
-acpi_bus_register_driver(), OR acpi_acpi_scan_add_handler()).
+...
 
-IIUC, what you propose would look something like this:
+> +static int amd_qdma_probe(struct platform_device *pdev)
+> +{
+> +	struct qdma_platdata *pdata = dev_get_platdata(&pdev->dev);
+> +	struct qdma_device *qdev;
+> +	struct resource *res;
+> +	void __iomem *regs;
+> +	int ret;
+> +
+> +	qdev = devm_kzalloc(&pdev->dev, sizeof(*qdev), GFP_KERNEL);
+> +	if (!qdev)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, qdev);
+> +	qdev->pdev = pdev;
+> +	mutex_init(&qdev->ctxt_lock);
 
-  static u32 led_service_id[4];
+If this was done later, it could simplify some error handling below.
 
-  static int altra_led_probe(struct platform_device *pdev)
-  {
-    struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
+> +	if (!res) {
+> +		qdma_err(qdev, "Failed to get IRQ resource");
+> +		ret = -ENODEV;
+> +		goto failed;
+> +	}
+> +	qdev->err_irq_idx = pdata->irq_index;
+> +	qdev->queue_irq_start = res->start + 1;
+> +	qdev->queue_irq_num = res->end - res->start;
+> +
+> +	regs = devm_platform_get_and_ioremap_resource(pdev, 0, NULL);
+> +	if (IS_ERR(regs)) {
+> +		ret = PTR_ERR(regs);
+> +		qdma_err(qdev, "Failed to map IO resource, err %d", ret);
+> +		goto failed;
+> +	}
+> +
+> +	qdev->regmap = devm_regmap_init_mmio(&pdev->dev, regs,
+> +					     &qdma_regmap_config);
+> +	if (IS_ERR(qdev->regmap)) {
+> +		ret = PTR_ERR(qdev->regmap);
+> +		qdma_err(qdev, "Regmap init failed, err %d", ret);
+> +		goto failed;
+> +	}
+> +
+> +	ret = qdma_device_verify(qdev);
+> +	if (ret)
+> +		goto failed;
+> +
+> +	ret = qdma_get_hw_info(qdev);
+> +	if (ret)
+> +		goto failed;
+> +
+> +	INIT_LIST_HEAD(&qdev->dma_dev.channels);
+> +
+> +	ret = qdma_device_setup(qdev);
+> +	if (ret)
+> +		goto failed;
+> +
+> +	ret = qdma_intr_init(qdev);
+> +	if (ret) {
+> +		qdma_err(qdev, "Failed to initialize IRQs %d", ret);
+> +		return ret;
 
-    fwnode_property_read_u32_array(fwnode, "uuid", led_service_id, 4);
-  }
+Should it be "goto failed"?
 
-  static const struct acpi_device_id altra_led_ids[] = {
-    {"AMPC0008", 0}, {}
-  };
-  MODULE_DEVICE_TABLE(acpi, altra_led_ids);
+> +	}
+> +	qdev->status |= QDMA_DEV_STATUS_INTR_INIT;
+> +
+> +	dma_cap_set(DMA_SLAVE, qdev->dma_dev.cap_mask);
+> +	dma_cap_set(DMA_PRIVATE, qdev->dma_dev.cap_mask);
 
-  static struct platform_driver altra_led_driver = {
-    .driver = {
-      .acpi_match_table = altra_led_ids,
-    },
-    .probe = altra_led_probe,
-  };
-  module_platform_driver(altra_led_driver);
+...
 
-Bjorn
+> +struct qdma_device {
+> +	struct platform_device		*pdev;
+> +	struct dma_device		dma_dev;
+> +	struct regmap			*regmap;
+> +	struct mutex			ctxt_lock; /* protect ctxt registers */
+> +	const struct qdma_reg_field	*rfields;
+> +	const struct qdma_reg		*roffs;
+> +	struct qdma_queue		*h2c_queues;
+> +	struct qdma_queue		*c2h_queues;
+> +	struct qdma_intr_ring		*qintr_rings;
+> +	u32				qintr_ring_num;
+> +	u32				qintr_ring_idx;
+> +	u32				chan_num;
+> +	u32				queue_irq_start;
+> +	u32				queue_irq_num;
+> +	u32				err_irq_idx;
+> +	u32				fid;
+> +	u32				status;
+
+Using such a mechanism with this 'status' in the probe and 
+amd_qdma_remove(), apparently only to simplify the error handling of the 
+probe looks really unusual to me.
+
+CJ
+
+> +};
+
+...
+
