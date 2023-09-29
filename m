@@ -2,75 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D62827B2A4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 04:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79ED7B2A50
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 04:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231362AbjI2CWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 22:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38996 "EHLO
+        id S232521AbjI2CWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 22:22:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229799AbjI2CWd (ORCPT
+        with ESMTP id S232544AbjI2CWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 22:22:33 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F9D1A1
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:22:32 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c73fb50da6so7276395ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:22:32 -0700 (PDT)
+        Thu, 28 Sep 2023 22:22:43 -0400
+Received: from mail-oi1-x24a.google.com (mail-oi1-x24a.google.com [IPv6:2607:f8b0:4864:20::24a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 226E41B2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:22:41 -0700 (PDT)
+Received: by mail-oi1-x24a.google.com with SMTP id 5614622812f47-3ae214a02a6so30313926b6e.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 19:22:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695954152; x=1696558952; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=yf316/XBVsR2rQNYINbFH1RghlbSg1M9+4PRNq27GR0=;
-        b=p/RwNQICuQErQpMcrhAXfCwwQPwLdS/m7+wrTFZtw0tuVksG5mwjDzTip9ddAJsEIM
-         Fk/xnM5ZjDsBuIjy3E/fj0ZU/hErSHQeFEex9+kyswPUcBcSIMGBKaMJfrp8edXeX1E5
-         OUSgMUfvml8w+9AVz1RzTFsW2bEDCYybd0fmbFFbrEjuoDIKWdSVl2UnnWJBKp7ambnf
-         BVn76rdAEilUKPT/wToZnm7PC0Zzv+T8Q/TIndLLRknVfSi9J02iRyR27kxUWFgkBYnr
-         cg8i2NLwUZEc0AjIk9VeTJSvyTUiHl3Ydg5KMBWx4cuQdwVMPnZD+zEjojHKx6ZFNgEy
-         mLWQ==
+        d=google.com; s=20230601; t=1695954160; x=1696558960; darn=vger.kernel.org;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dQuRf5Op91GMp6I64iOAOXyIxo9VVhezmhdMGR6LDIA=;
+        b=Aj+3h1dJriamurT5CdBXeuURZFiJt9SJ/RZTtyKY2aoLo7E0mra+JeE/U0cxEue71F
+         fDsCs6wDvoiXrN5Qe98YrLUey70354IHQBcWn/cU2/FgKsRjbwK00cFaIZoQFa3SysGH
+         ZNrrz8lX8nZbpXhwow+euDokoU2SC7consV5VxbbVjKzIV8Hbf5L++BbOqNjp/oJrhPe
+         UIDN+jv2O4ziOuzaqiQ45Ej53bGIWgYw92FQWTyodMMZn9oIGzgSclKwFDtwXB8nXpNG
+         X9/LvtbJHlCX7lg7Aern1dmX32pzcQ8qeLSHeb9LcufoG6/cJMO5145tqwyhTV1XczAG
+         YP1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695954152; x=1696558952;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yf316/XBVsR2rQNYINbFH1RghlbSg1M9+4PRNq27GR0=;
-        b=LmHFCt61yeQ7Bwx4BBdSFpmnv2v2d9M/l4rO9kvXFu6WxH4nluECXDNo6fxMD48czz
-         QXbnn4FHTysjbIRlmrcvoRJzndmtccfBnw7X4Xc2Z1fIdJPkINCi5hdK5uWHrj7qjVwn
-         hhCxVlzfP9vk7id5XRU1m9Kiwge5UeAS+5a2eJs5pLDRMqGVV8EB9CHcM8VcfHtmGkXQ
-         jDslTjbPqzM5mC8+MnF+8YDixc3uFUvZgQbATbB4ZYSGl7t3wNH0tNAmN4HTAlNqzB7m
-         dl7KX3nCqpW5/7/MSwB1i26rpd0SN6K5voc3xwW2b77AJadBLhOKhlotrbRTohOXVMrj
-         jjDA==
-X-Gm-Message-State: AOJu0YzCflV8FEKYvV6EH5Igc383hV0tnAvj8YwXwACaM8hpeHL0Mt9a
-        pIz9Fxxy+w7loUTh7FcOyuXzwNsvv3E=
-X-Google-Smtp-Source: AGHT+IGoCnhJr+jWjOXZIKjUlm/18Vs7CDf59VE0pa/+1DRGwwNlnGI+iJoyCFVb79rC5xZ6Afo79IEU3G4=
+        d=1e100.net; s=20230601; t=1695954160; x=1696558960;
+        h=to:from:subject:message-id:references:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dQuRf5Op91GMp6I64iOAOXyIxo9VVhezmhdMGR6LDIA=;
+        b=juWuf3NWR16owm9ztxRTEINA+vfLHOaozqnh/ELu0Kac+b6gVbd/hM9Nz9/9gKAt0Z
+         Y2vSh5TdDnPr6uThvQt3eS2uj1ElmNkSmI6vCBeU+FhGBdOoEiIBv0HvYbhHLNrGeuX2
+         InVM0va1eEpCv3ZRq+YTHP0veooAvpWqTn3RxLtRMWX4dphiHtlbIhvNm0HGujQ449Ui
+         Edix4Zu4IUHY1JO+IpB0M1zAjjIc/4geAO4eRovVx+p1zRCywwas5OTqHOmvsHAtm8BC
+         PblB329FVLL27O3H4kAAyrZuoNtcDLgsDRFgnx++ERVmsuc2MQJwovYuuw8zWZhZPibp
+         JSwQ==
+X-Gm-Message-State: AOJu0YwjX7XKaF8FczI5zgsK6IZVhXf0Ttu7kLscHBx7TnMzGXZKSy7J
+        PAl7GPxn+04idqYkGvOhA97WCVf0EVI=
+X-Google-Smtp-Source: AGHT+IGXd++pIhFgrpfD0VhryBP80o+/Kb3L6EDSBqqykBuRhqDzVj4g5FLySg/GxghI8EtVanGuF37DNhU=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:32d0:b0:1c5:7c07:e403 with SMTP id
- i16-20020a17090332d000b001c57c07e403mr37204plr.10.1695954151685; Thu, 28 Sep
- 2023 19:22:31 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 19:22:14 -0700
-In-Reply-To: <cover.1695327124.git.isaku.yamahata@intel.com>
+ (user=seanjc job=sendgmr) by 2002:a05:6808:10cd:b0:3ae:2024:837d with SMTP id
+ s13-20020a05680810cd00b003ae2024837dmr1407151ois.8.1695954160448; Thu, 28 Sep
+ 2023 19:22:40 -0700 (PDT)
+Date:   Thu, 28 Sep 2023 19:22:16 -0700
+In-Reply-To: <20230928180651.1525674-1-pbonzini@redhat.com>
 Mime-Version: 1.0
-References: <cover.1695327124.git.isaku.yamahata@intel.com>
+References: <20230928180651.1525674-1-pbonzini@redhat.com>
 X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <169595360998.1385400.14024912459890362663.b4-ty@google.com>
-Subject: Re: [RFC PATCH v2 0/6] KVM: gmem: Implement test cases for error_remove_page
+Message-ID: <169595365500.1386813.6579237770749312873.b4-ty@google.com>
+Subject: Re: [PATCH gmem FIXUP] kvm: guestmem: do not use a file system
 From:   Sean Christopherson <seanjc@google.com>
-To:     Sean Christopherson <seanjc@google.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, isaku.yamahata@intel.com
-Cc:     isaku.yamahata@gmail.com, Michael Roth <michael.roth@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        linux-coco@lists.linux.dev,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Yuan Yao <yuan.yao@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Quentin Perret <qperret@google.com>, wei.w.wang@intel.com,
-        Fuad Tabba <tabba@google.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
 Content-Type: text/plain; charset="utf-8"
 X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -82,21 +68,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 21 Sep 2023 13:14:33 -0700, isaku.yamahata@intel.com wrote:
-> From: Isaku Yamahata <isaku.yamahata@intel.com>
+On Thu, 28 Sep 2023 14:06:51 -0400, Paolo Bonzini wrote:
+> Use a run-of-the-mill anonymous inode, there is nothing useful
+> being provided by kvm_gmem_fs.
 > 
-> This patch series is to implement test cases for the KVM gmem error_remove_page
-> method.
-> - Update punch hole method to truncate pages
-> - Add a new ioctl KVM_GUEST_MEMORY_FAILURE to inject memory failure on
->   offset of gmem
 > 
-> [...]
 
-Applied the punch hole negative test to kvm-x86 guest_memfd, thanks!
+Applied to kvm-x86 guest_memfd, thanks!
 
-[2/6] KVM: selftests: Add negative test cases for punch hole for guest_memfd()
-      https://github.com/kvm-x86/linux/commit/e2bbfd5549be
+[1/1] kvm: guestmem: do not use a file system
+      https://github.com/kvm-x86/linux/commit/0f7e60a5f42a
 
 --
 https://github.com/kvm-x86/linux/tree/next
