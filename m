@@ -2,102 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D988C7B3887
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CD67B38BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbjI2RWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
+        id S233452AbjI2RZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232800AbjI2RWe (ORCPT
+        with ESMTP id S233280AbjI2RZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:22:34 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F34193;
-        Fri, 29 Sep 2023 10:22:31 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TAhRvD004977;
-        Fri, 29 Sep 2023 17:22:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=mo/Fmgs8ebIBJP4OfmoansQWGKkTUIXMnfyq+5Xah7A=;
- b=b1EXqp5uU4pb5cOHsuEkYb+M5Boy6erCGlQNJITPFNOxJh5N3Lkx0s26Is2xKqCaJAhC
- OaufbyHL3EcYVTU/9nLpiNLC4I//7QacMOws4BxtwXC8zVR6RSKa8D1yeyBCvDOHlRMw
- U5U4lFs+4hx+RUk0vwZYIPTsIJ28/p/JvIRuSQ5Lz3/iqjve5PDfoYFlqEZpVCeXT29m
- ZyTryKQfMO9GogjXdD+OyX+mWhj/P1HMHITUtc7WOThaxOxERRkrFnahO2hn6fuJRKd6
- 5IL+gswWKqjfmYXp3SzY5FA8rtPOwTrZt32yX+kcbTCVLkBkC9kBsJg7guCY+EOa64Al Pw== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tdqmv9u2v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 17:22:20 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38THMHEY027482
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 17:22:17 GMT
-Received: from [10.111.177.152] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 29 Sep
- 2023 10:22:17 -0700
-Message-ID: <28233946-7b20-4a08-ba0f-253e5ca5ff62@quicinc.com>
-Date:   Fri, 29 Sep 2023 10:22:16 -0700
+        Fri, 29 Sep 2023 13:25:51 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB8521B0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:47 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id 006d021491bc7-57b811a6ce8so6252546eaf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:25:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696008346; x=1696613146; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=MbPw3SdxVMOi5+mJx90LgQ0nJGAgyoL5GKfrPagHL7w=;
+        b=aEpg8rmUbCr9O2gBn+rRp/ldiywUmbLpBQBw49/21/OzYcY+REAv7VB26phufmm1qe
+         iXQJ889j7tOgCE7/2AA0n9jdRAQ/dT7cZQxzUtMlfpmCbs2JonO9poKqkncPcwX5gAJN
+         aW3md1mgDM408HQM0gkVuc90mvJZeYxV/WdDM7W0UlJQtlPgbbY/BOxumVRyBwznF8jZ
+         lNvb/7aVjZWWgHtV3KFUWkSrjuDiC3gO/Th9TYxnTvTRMJ+zqb2dQPJ+ZEAypqIGUlR7
+         1U1X/7B/tfxtfOZCVY25GWDtSqxF9e8bTxzYUwGWT+XrXjYFkppZBc0Qwszk/gkCNvkY
+         p3TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696008346; x=1696613146;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MbPw3SdxVMOi5+mJx90LgQ0nJGAgyoL5GKfrPagHL7w=;
+        b=S1Sbb14VX0hfJrzjdFTXmMSvMcxO0zZNAf0JmljyBN7Uwsf6Q4BhWU+UBGYhDBAs4e
+         ZQLRcKdCjEsOz7NC8WYFi5JifyD7tCi4Mrrp/WlUqicUIyjWy6h0AICFUYo2mer1LLzo
+         ZlqOdbm0d6nuvu6rPvPZwXGN9MkcQq9tDo+8i+wHCVdJOoArcO2OgQfdZ+RKnQD1l8VQ
+         1zVa0+2catB8DKMnKQiVg/R0MRUtVjXHBz47MjAr3JKrX+V78nNqo6qL6MHnW8ZmTcl5
+         rqLP7wT0ukDl1fbetkMptu5KNMCF07xahlf5IT/Tmv9BemV6KZB32GPl6ov+98Kgg2Ga
+         Zmag==
+X-Gm-Message-State: AOJu0YyOQkjdvXHF8GYir5O7pnNwHecUSVQ7m+e6SKJZi2BrID97DOPV
+        j9djOUnaWrmYX3HmRzR1jZmCLqFrpxnSwqxrUggc/w==
+X-Google-Smtp-Source: AGHT+IF0csG6N9BuFlyuHkB6djQxR9a22o1PRZ8iOj0V3U757910msJ+x86IgOQlTZKIfra/i+eHug==
+X-Received: by 2002:a4a:6f49:0:b0:57b:5e98:f733 with SMTP id i9-20020a4a6f49000000b0057b5e98f733mr4812352oof.3.1696008346626;
+        Fri, 29 Sep 2023 10:25:46 -0700 (PDT)
+Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
+        by smtp.gmail.com with ESMTPSA id f128-20020a4a5886000000b0057bb326cad4sm2272915oob.33.2023.09.29.10.25.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 10:25:46 -0700 (PDT)
+From:   David Lechner <dlechner@baylibre.com>
+To:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Cc:     David Lechner <david@lechnology.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        linux-kernel@vger.kernel.org,
+        David Lechner <dlechner@baylibre.com>,
+        Apelete Seketeli <aseketeli@baylibre.com>
+Subject: [PATCH v3 00/27] iio: resolver: move ad2s1210 out of staging
+Date:   Fri, 29 Sep 2023 12:23:05 -0500
+Message-ID: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 wireless-next 2/9] carl9170: remove unnecessary (void*)
- conversions
-Content-Language: en-US
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-To:     Christian Lamparter <chunkeey@gmail.com>,
-        Linux Wireless <linux-wireless@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     Wu Yunchuan <yunchuan@nfschina.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Kalle Valo <kvalo@kernel.org>
-References: <20230919044916.523308-1-yunchuan@nfschina.com>
- <e544d992-cddd-4ade-81ef-2eed4f3681e8@gmail.com> <87zg16iab3.fsf@kernel.org>
- <0b7623f7-561c-4f3b-91c1-aaf1c44f1158@kadam.mountain>
- <d41d0c98-82ef-40f6-8c5c-68a94b5a4655@kadam.mountain>
- <c5611be9-ef4d-4e49-84de-7ce893e3c73c@gmail.com>
- <597c6e87-2d1c-4a8d-ab9f-d0d22566b9ed@quicinc.com>
-In-Reply-To: <597c6e87-2d1c-4a8d-ab9f-d0d22566b9ed@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: WjXijJQP5TDQRwNntQxUx0Sw9faqvgVY
-X-Proofpoint-ORIG-GUID: WjXijJQP5TDQRwNntQxUx0Sw9faqvgVY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-29_16,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=518 spamscore=0
- bulkscore=0 mlxscore=0 priorityscore=1501 suspectscore=0 malwarescore=0
- impostorscore=0 clxscore=1015 adultscore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
- definitions=main-2309290150
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+X-Mailer: b4 0.12.3
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/2023 9:10 AM, Jeff Johnson wrote:
-> On 9/29/2023 12:23 AM, Christian Lamparter wrote:
->> I would like to take the chance to again point to this beauty:
->> <https://lore.kernel.org/linux-wireless/TYAP286MB03154F9AAFD4C35BEEDE4A99BC4CA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM/T/#mf1b8919a000fe661803c17073f48b3c410888541>
->> @Dan, @Jeff can you please comment on that too?
-> 
-> I had not seen that patch since it was posted while I was transitioning 
-> roles. It looks like a reasonable patch to me to handle FORTIFY_SOURCE 
-> restrictions.
+From: David Lechner <david@lechnology.com>
 
-Saw Dan's reply, and further looked at the patch and saw this wasn't 
-actually a typical FORTIFY_SOURCE patch, so presumably this change is 
-NOT needed.
+v3 changes:
+
+* Added description of A0/A1 lines in DT bindings.
+* Added power supply regulators to DT bindings.
+* Dropped "staging: iio: Documentation: document IIO resolver AD2S1210
+  sysfs attributes" (these attributes are being removed instead).
+* Dropped applied patches:
+  * "staging: iio: resolver: ad2s1210: fix ad2s1210_show_fault"
+  * "iio: adc: MCP3564: fix the static checker warning"
+* Split "staging: iio: resolver: ad2s1210: fix probe" into multiple patches.
+* Moved sorting imports to separate patch.
+* Renamed fclkin to clkin_hz.
+* Added __be16 sample field to state struct for reading raw samples.
+* Split out new function ad2s1210_single_conversion() from
+  ad2s1210_read_raw().
+* Split out new ad2s1210_get_hysteresis() and ad2s1210_set_hysteresis()
+  functions.
+* Fixed multi-line comment style.
+* Added notes about soft reset not resetting config registers.
+* Made use of FIELD_PREP() macro.
+* Added more explanation to regmap commit message.
+* Removed datasheet names from channel specs.
+* Replaced "staging: iio: resolver: ad2s1210: rename fexcit attribute"
+  with "staging: iio: resolver: ad2s1210: convert fexcit to channel
+  attribute".
+* Replaced "staging: iio: resolver: ad2s1210: add phase_lock_range
+  attributes" with "staging: iio: resolver: ad2s1210: add phase lock
+  range support"
+* Added additional patches to convert custom device attributes to event
+  attributes.
+* Added patch to add channel label attributes.
+
+v2 changes:
+* Address initial device tree patch feedback
+* Drop "iio: sysfs: add IIO_DEVICE_ATTR_NAMED_RW macro" (related cleanups
+  also dropped for now, will address in a future series if needed)
+* Apply improvements as a series of patches to the staging driver. It is
+  not quite ready for the move out of staging patch yet.
+
+This series has been tested on actual hardware using a EVAL-AD2S1210 evaluation
+board. (Note: not all device tree features have been implemented in the driver
+since the eval board doesn't support them out of the box. We plan to add them
+later if needed.)
+
+Most of the questions about dealing with faults from the v2 cover letter
+have been addressed. There is still the question about what to do with
+the current `fault` attribute (it is the only custom device attribute
+remaining from the original staging driver). It was suggested to split it
+out into multiple attributes in a subdirectory. Since we now have events
+for all of the faults, I'm wondering if this is something that is still needed.
+In the current implementation, it is possible to start listening to events,
+clear the faults and then read a sample to trigger events for any current
+faults so we have a way to get current faults already.
+
+There is also the matter of clearing faults. Writing the excitation
+frequency has a side-effect of clearing the faults, so we could use
+that as the reset. Or we could change the current fault attribute to
+write-only and rename it. Or is there a better way that I have overlooked?
+
+Once this last issue is addressed, I think this driver will be ready
+for consideration for moving out of staging.
+---
+David Lechner (27):
+      dt-bindings: iio: resolver: add devicetree bindings for ad2s1210
+      staging: iio: resolver: ad2s1210: fix use before initialization
+      staging: iio: resolver: ad2s1210: remove call to spi_setup()
+      staging: iio: resolver: ad2s1210: check return of ad2s1210_initial()
+      staging: iio: resolver: ad2s1210: remove spi_set_drvdata()
+      staging: iio: resolver: ad2s1210: sort imports
+      staging: iio: resolver: ad2s1210: always use 16-bit value for raw read
+      staging: iio: resolver: ad2s1210: implement IIO_CHAN_INFO_SCALE
+      staging: iio: resolver: ad2s1210: use devicetree to get CLKIN rate
+      staging: iio: resolver: ad2s1210: use regmap for config registers
+      staging: iio: resolver: ad2s1210: add debugfs reg access
+      staging: iio: resolver: ad2s1210: remove config attribute
+      staging: iio: resolver: ad2s1210: rework gpios
+      staging: iio: resolver: ad2s1210: implement hysteresis as channel attr
+      staging: iio: resolver: ad2s1210: refactor setting excitation frequency
+      staging: iio: resolver: ad2s1210: read excitation frequency from control register
+      staging: iio: resolver: ad2s1210: convert fexcit to channel attribute
+      staging: iio: resolver: ad2s1210: convert resolution to devicetree property
+      staging: iio: resolver: ad2s1210: add phase lock range support
+      staging: iio: resolver: ad2s1210: add triggered buffer support
+      staging: iio: resolver: ad2s1210: convert LOT threshold attrs to event attrs
+      staging: iio: resolver: ad2s1210: convert LOS threshold to event attr
+      staging: iio: resolver: ad2s1210: convert DOS overrange threshold to event attr
+      staging: iio: resolver: ad2s1210: convert DOS mismatch threshold to event attr
+      staging: iio: resolver: ad2s1210: rename DOS reset min/max attrs
+      staging: iio: resolver: ad2s1210: implement fault events
+      staging: iio: resolver: ad2s1210: add label attribute support
+
+ .../bindings/iio/resolver/adi,ad2s1210.yaml        |  177 +++
+ .../Documentation/sysfs-bus-iio-resolver-ad2s1210  |   27 +
+ drivers/staging/iio/resolver/Kconfig               |    1 +
+ drivers/staging/iio/resolver/ad2s1210.c            | 1583 +++++++++++++++-----
+ 4 files changed, 1391 insertions(+), 397 deletions(-)
+---
+base-commit: 5e99f692d4e32e3250ab18d511894ca797407aec
+change-id: 20230925-ad2s1210-mainline-2791ef75e386
 
