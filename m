@@ -2,86 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E287B3866
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D837B3869
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233656AbjI2RLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:11:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
+        id S233696AbjI2RLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233748AbjI2RL2 (ORCPT
+        with ESMTP id S233721AbjI2RLj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:11:28 -0400
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68B80193;
-        Fri, 29 Sep 2023 10:11:26 -0700 (PDT)
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-1dd26c41fc8so1086923fac.1;
-        Fri, 29 Sep 2023 10:11:26 -0700 (PDT)
+        Fri, 29 Sep 2023 13:11:39 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AB481B4
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:11:37 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-565ece76be4so17179060a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:11:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696007497; x=1696612297; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=20euwIYJH+DGbEnMSrsD3cdcsFe24zikSuEhIDKFhWA=;
+        b=TLJG9UWuiEASlWs4/pEcBQvXTjKH/kHHwaQC+EIXlQrhJOZWa1Vq4lTY6xy7p1nmY6
+         LxzDxpQgZ9v2UK8G1vtUPcDky0aDJkXqCSWjhKqixh4y1eHWmSLwLk9mrii+LMslYSGP
+         2S6koCvJhTnWe6TorhmiyE3/PQVwdE/C1W6v5rloBnIf010edFuwS7tLk5NpxEcl5e04
+         xW0ca6BSdyFQmzFbU1KtHZRIEV0emQjlIJyT4sW/uxTT/gAlazxVTqr3CjFB0CaWnarx
+         1UQMX6bQ41RKPe+xOpDRG1SKI/G7ahWfpO7CCtTIIxQHYPv+UlRaiODW1urGddZIX3RI
+         Hdjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696007485; x=1696612285;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fT0IvEjW9pOB399mZwHIpi03N7NApqiSsP0JLvXfp2c=;
-        b=BXPEf2Zsmyy5pJGEanpGF15+kjhzwsV7uYaxAIxs4qIINfKKzkLaY/YmS7XBP67dEm
-         OovgIzuagWT1cnWbD5MEr+zo707vtzT0h1gXZCateXIxPNulVZwLYjoPEYSNCWSgqKMT
-         v4QEpvtvEjKqBEEJqnLlGh7ItcYIeBKmuAQP6s2YmSvwDqYncI/wkfIADN5vtNd5JNJe
-         De8U0iBRC07U/ym+fB+eSpu4JHSazI2g/P8qxqtM9GxF3xvrMrsUd0dUprOA7u6IsoaV
-         cmt0bUAsRzj7KYNNBHt+NuL+fk1XaaYb60C9bSLa4LkMH3UP0AjGiSVM/XHHITa1D4gU
-         S1Zg==
-X-Gm-Message-State: AOJu0YzitSAQG/TanK/oqYYyEjiCo1E+W50dzDrOyUoLxhywKyE6CMNK
-        hAeGN6/kbzvqRI2e0NZhiE2qH4I6V0amR89g6xoaJS3ZtGM=
-X-Google-Smtp-Source: AGHT+IEW71uZHJyeRs33phgUykqwnwV3HVNs4Uo2etn84cIBDMEPdPFcmk4i3QHlIOG5G3XXm1FOJYPSxqa7fGayA7I=
-X-Received: by 2002:a05:6820:3c1:b0:57c:6e35:251e with SMTP id
- s1-20020a05682003c100b0057c6e35251emr4696907ooj.1.1696007485569; Fri, 29 Sep
- 2023 10:11:25 -0700 (PDT)
-MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 29 Sep 2023 19:11:13 +0200
-Message-ID: <CAJZ5v0gaw_5VdZBL2ZbqMkAXyFTMEAcq_nO3FQaQc7qGBZJi6w@mail.gmail.com>
-Subject: [GIT PULL] ACPI fix for v6.6-rc4
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696007497; x=1696612297;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=20euwIYJH+DGbEnMSrsD3cdcsFe24zikSuEhIDKFhWA=;
+        b=W+j14s82vxZHh9k78X2eCWs9CQxD+QBP8/JhTu1XbuNPkjNvd4HsW9Kc7TlpCOIxtv
+         LWwhqc2Ktv8K4/EyZzvGwsaQBpW/tsD4tGitJpOYfV5w5r42Sr77g2A7l6DwVKZc96+b
+         VToojOZl89o2I1bo1/xyoKObG8NtcEd1jSkFveVY2yKHLsAowwkVPtUZtvOYxT9AcAEq
+         eZhgQ8SBj3bFzvJoOsFZhzqVpunGOlWvRA4zEjUP3Znfzl0axrrGIuDm7f62XIFKb7TV
+         X4t+OTYF4dR3udFi/x6hKQDjn6oKJASYX3MiHoVfVFiosZCi+4WykJbGn9cnCV70dneX
+         XJRg==
+X-Gm-Message-State: AOJu0YwSkpR4ksUtvCkH9WjS9b3QvijWKHkzIZyHLpbczRky/eGC2IFW
+        s00k7RwCFPS0SeUfZQ3ebiLnUmx0yHM=
+X-Google-Smtp-Source: AGHT+IESWcvy7PGhStGPZMamrCN58SeRLjezVmLR//RjaC0b1cG7LEUuZb1rsJeooLxEYJjBDTx34dVdhVA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:e84d:b0:1c3:77cd:6520 with SMTP id
+ t13-20020a170902e84d00b001c377cd6520mr64509plg.11.1696007496959; Fri, 29 Sep
+ 2023 10:11:36 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 10:11:35 -0700
+In-Reply-To: <CAGD3tSxPDVb9sN1g+gTV5SykY57Szpx1SjEcmHJvK62u1fiXmA@mail.gmail.com>
+Mime-Version: 1.0
+References: <20230913000215.478387-1-hshan@google.com> <169592156740.1035449.1039175365762233349.b4-ty@google.com>
+ <CAGD3tSxPDVb9sN1g+gTV5SykY57Szpx1SjEcmHJvK62u1fiXmA@mail.gmail.com>
+Message-ID: <ZRcFR6Tf-9QzfbnD@google.com>
+Subject: Re: [PATCH v3] KVM: x86: Fix lapic timer interrupt lost after loading
+ a snapshot.
+From:   Sean Christopherson <seanjc@google.com>
+To:     Haitao Shan <hshan@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Sep 29, 2023, Haitao Shan wrote:
+> Thank you very much.
+> 
+> I do have one more question. Is this fix going to be backported to
+> v6.3, v6.4, etc? Or perhaps that will be a decision made by other
+> maintainers? The reason for such a question is to decide whether we
+> have to keep the workaround for certain kernel versions.
 
-Please pull from the tag
+It's tagged for stable, so it'll get automatically selected/backported for stable
+kernels so long as the patch applies cleanly.  That won't include 6.3 or 6.4
+because those are already end-of-life, i.e. not LTS kernels, and not the most
+recent release.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-6.6-rc4
-
-with top-most commit f4dcf06bc6e0161920b700ba3966411d716a321b
-
- ACPI: video: Fix NULL pointer dereference in acpi_video_bus_add()
-
-on top of commit 6465e260f48790807eef06b583b38ca9789b6072
-
- Linux 6.6-rc3
-
-to receive an ACPI fix for 6.6-rc4.
-
-This fixes a possible NULL pointer dereference in the error path of
-acpi_video_bus_add() resulting from recent changes (Dinghao Liu).
-
-Thanks!
-
-
----------------
-
-Dinghao Liu (1):
-      ACPI: video: Fix NULL pointer dereference in acpi_video_bus_add()
-
----------------
-
- drivers/acpi/acpi_video.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+If the patch doesn't apply cleanly, e.g. I highly doubt it'll apply as-is for 5.15,
+then someone has to do a manual backport, where "someone" can be anyone.  Sometimes
+that's a maintainer, but just as often it's someone that really cares about fixing
+something in a particular kernel.
