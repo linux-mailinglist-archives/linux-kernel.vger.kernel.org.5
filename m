@@ -2,71 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD507B37FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 902897B37FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233054AbjI2QbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 12:31:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53828 "EHLO
+        id S233355AbjI2Qbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 12:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232878AbjI2QbX (ORCPT
+        with ESMTP id S233112AbjI2Qbs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 12:31:23 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 107A1BE
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:31:21 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9adb9fa7200so195060366b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:31:20 -0700 (PDT)
+        Fri, 29 Sep 2023 12:31:48 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 263281A7
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:31:45 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-99c136ee106so1912822166b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:31:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696005079; x=1696609879; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LEESJxIPT4V2OdRKxrESII5B/xql/dGH8zhLSEdGpIA=;
-        b=S6Og3fNyFd2TxHwhG5si291ut1A1ehOF5eAwtpWinyP4aKgFGKoCK1M+x0anL5eu4c
-         7xm/L9EhHGtFI88+PIs5xjDwyCHJhVCM29ZLVxApvGd1rtRP37eYq577a3uDrPlZ3QKU
-         I0uc8hVMFPzZ2mZn1ntjLm9jCc2Uy7H5Ep/pZU8WftVRxI8OQiStjgnRxdfq70Ku31Mi
-         1p83wfqfCWLfnmXAiDKF2DwE4yInfmrBTVxPyFcnFqKOD2GGe40MgIwXIZu9U2jpY+0f
-         lXgjzZWLVaP7bZiJuNMwtYD9RwGdrvZwejGJm34fAABPe+ApT2R/FGlhGF6jfcq8XuDf
-         J2/g==
+        d=gmail.com; s=20230601; t=1696005103; x=1696609903; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MvOJgy48B1qqeyvTcx6jWjknArAYSXHsAq6fVEP2r78=;
+        b=TmiPjF85x5aBdt5hf8nnY+o/nIr+w1lu/XRU2whwrpDvReGLlMaYf8OyfMyPInQwGW
+         U3D2wHzmeWU+6OmKBtDpSzGdL6yxD+l2TDSFTjFU1d3CdpL7+mW/6fmapZLbTyMf9rKF
+         5URjTe1jKal5/bDca6VQQw/0TWDN7U3G1T4g89HRjuUe9GMrqhGeBcvpV2VbpsIkfBbQ
+         zCFkagRPnrBoj5JKIuTXiucPGB7J/9JeLDCjZ8rCD/ps5AfwXjUF3kR7x4Fv03Hc5JFU
+         n7bUeIs8fNhug/WtpwoAlIwKllK8YvkQvEsakWpQ4TqECxPbbcT9enKe4YGM2OkHjfhj
+         8agg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696005079; x=1696609879;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LEESJxIPT4V2OdRKxrESII5B/xql/dGH8zhLSEdGpIA=;
-        b=Fw8l8GzaSuOsug+mXbzPom03RttIP/hg3rA9qCbjDMdyKsdFZ7/zLEvNabt9AgSZIz
-         3s/usf8GqDfeMhrTb+XpwoKWIDFAJYgEs6LFpcdg1JYtm138gFxdFaBnrpAo9WhJxNKE
-         iH3MqkMU+nDhMjR5IYxeaPcj4eqi2g4wNLRnYO+0Gj8H2PgCXKeAs8Uc4x/b5gdykeB9
-         lavIs98vhIDBZ+p0KPBJPXJkEs2sp1sLYfnu1mQYRoHm4uqK4lakqNrODr1ky4qQJPqG
-         897UsfaEe16Z9NQZpNiPKL0XXftKYITV/a9s8isaY87I0SFilr9z2EoLTXQhggVkm/EL
-         jelQ==
-X-Gm-Message-State: AOJu0YyMlB69fLLeFtY0BSL2k6lmAcH7yx4/0ubxgv86sZRSXF7MYJPu
-        FGCiVsn39VQ7DgvXNmfesi8hj2TO9e/ASW0GOy7XJA==
-X-Google-Smtp-Source: AGHT+IF0Ai1B4fJBn3+wI8pP2599xK8wIqhyB1MbotRml5IPLYUjQjBC3iJ88z/IphmtRoFscQUVXfJbdr0K4/PjrTQ=
-X-Received: by 2002:a17:907:75c4:b0:9ae:6196:5094 with SMTP id
- jl4-20020a17090775c400b009ae61965094mr4491917ejc.30.1696005079337; Fri, 29
- Sep 2023 09:31:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696005103; x=1696609903;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MvOJgy48B1qqeyvTcx6jWjknArAYSXHsAq6fVEP2r78=;
+        b=S0dUqY9Zo6QHjt4hpmccZ5I02sPM28jVnQf5Wt0+PIAzMxCKuw66DrKyd3dqFuEZuC
+         bGqCOyQtb4AjldAXcn9NmiV0hzF6X/ck3O0DsKXxP28qNIB64+hOySeKCyb5xQ0KyKUn
+         AQjOEoOvVLoi0TAwlAyMrfG2yepA3zizZDN0eOMv+dazmcgx+1z57j/MR1UTaKElGUVL
+         lORYCJamZGieq4ZW9tTLbX1Et6UtBVQJkNA3dFwpV2g7fJ1/y7si87tdMRH+7H7J8bAH
+         tr8CnXJImwGjtdsls4Rk8LWX1kuitEkJoi3aTSLFWAFmjoM2wS1uVKBcmEUcpsSL5Unl
+         Qvpw==
+X-Gm-Message-State: AOJu0YyjV1UukGPte2opKa0ZrQNSDy5HVJ/aCd0b+HtTIq3YiFDe9Ikz
+        wmHRVeOkvnulDuoqOUfq7xu2vrlp2A==
+X-Google-Smtp-Source: AGHT+IHIs60N/9/ySSGKXc2pQdASzkqDIRJA0/kLlQOV6zk9MKVV8gXQcpH1O3lIOY9Z+8JoqGs7GQ==
+X-Received: by 2002:a17:907:1dcc:b0:9ae:406c:3425 with SMTP id og12-20020a1709071dcc00b009ae406c3425mr4817704ejc.0.1696005103256;
+        Fri, 29 Sep 2023 09:31:43 -0700 (PDT)
+Received: from p183 ([46.53.252.219])
+        by smtp.gmail.com with ESMTPSA id z11-20020a170906944b00b009a5f7fb51dcsm12595163ejx.42.2023.09.29.09.31.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 09:31:42 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 19:31:41 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] proc: save LOC by using while loop
+Message-ID: <82c8f8e7-8ded-46ca-8857-e60b991d6205@p183>
 MIME-Version: 1.0
-References: <20230913000215.478387-1-hshan@google.com> <169592156740.1035449.1039175365762233349.b4-ty@google.com>
-In-Reply-To: <169592156740.1035449.1039175365762233349.b4-ty@google.com>
-From:   Haitao Shan <hshan@google.com>
-Date:   Fri, 29 Sep 2023 09:31:07 -0700
-Message-ID: <CAGD3tSxPDVb9sN1g+gTV5SykY57Szpx1SjEcmHJvK62u1fiXmA@mail.gmail.com>
-Subject: Re: [PATCH v3] KVM: x86: Fix lapic timer interrupt lost after loading
- a snapshot.
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,36 +67,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you very much.
+Use while loop instead of infinite loop with "break;".
 
-I do have one more question. Is this fix going to be backported to
-v6.3, v6.4, etc? Or perhaps that will be a decision made by other
-maintainers? The reason for such a question is to decide whether we
-have to keep the workaround for certain kernel versions.
+Also move some variable to the inner scope where they belong.
 
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
-On Thu, Sep 28, 2023 at 7:20=E2=80=AFPM Sean Christopherson <seanjc@google.=
-com> wrote:
->
-> On Tue, 12 Sep 2023 16:55:45 -0700, Haitao Shan wrote:
-> > When running android emulator (which is based on QEMU 2.12) on
-> > certain Intel hosts with kernel version 6.3-rc1 or above, guest
-> > will freeze after loading a snapshot. This is almost 100%
-> > reproducible. By default, the android emulator will use snapshot
-> > to speed up the next launching of the same android guest. So
-> > this breaks the android emulator badly.
-> >
-> > [...]
->
-> Applied to kvm-x86 apic, thanks!
->
-> [1/1] KVM: x86: Fix lapic timer interrupt lost after loading a snapshot.
->       https://github.com/kvm-x86/linux/commit/9cfec6d097c6
->
-> --
-> https://github.com/kvm-x86/linux/tree/next
+ fs/proc/inode.c |   11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-
-
---=20
-Haitao @Google
+--- a/fs/proc/inode.c
++++ b/fs/proc/inode.c
+@@ -110,18 +110,15 @@ void __init proc_init_kmemcache(void)
+ 
+ void proc_invalidate_siblings_dcache(struct hlist_head *inodes, spinlock_t *lock)
+ {
+-	struct inode *inode;
+-	struct proc_inode *ei;
+ 	struct hlist_node *node;
+ 	struct super_block *old_sb = NULL;
+ 
+ 	rcu_read_lock();
+-	for (;;) {
++	while ((node = hlist_first_rcu(inodes))) {
++		struct proc_inode *ei = hlist_entry(node, struct proc_inode, sibling_inodes);
+ 		struct super_block *sb;
+-		node = hlist_first_rcu(inodes);
+-		if (!node)
+-			break;
+-		ei = hlist_entry(node, struct proc_inode, sibling_inodes);
++		struct inode *inode;
++
+ 		spin_lock(lock);
+ 		hlist_del_init_rcu(&ei->sibling_inodes);
+ 		spin_unlock(lock);
