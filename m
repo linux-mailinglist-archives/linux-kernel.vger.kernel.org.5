@@ -2,169 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FD87B3698
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA277B3696
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233672AbjI2PWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41566 "EHLO
+        id S233644AbjI2PWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233647AbjI2PWd (ORCPT
+        with ESMTP id S233592AbjI2PWN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:22:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356D01AE
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:21:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696000905;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4eFMXkTSJCSP/LuqcR7rWb5lOePf6Wh6Ne6wvaIuhIA=;
-        b=CCP+LNWcuUxPspuhkm3z/pccUJFLnv4ybLoHBPorBBoxATx1n4DzDrDviAOzboKWsSsDUQ
-        r0/3a5qM43qDTxMn2HADU+SvLkoXS9zIwpK8+uoSOIEAeKtCHk3UmNEa4b8g1yV18vXrsZ
-        JFuQbmQkFqmC9aK/E1PnmBZPQjVs1vA=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-128-IRYcF7uRMPO9KGexSBqlog-1; Fri, 29 Sep 2023 11:21:44 -0400
-X-MC-Unique: IRYcF7uRMPO9KGexSBqlog-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-65b0249818dso181670056d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:21:44 -0700 (PDT)
+        Fri, 29 Sep 2023 11:22:13 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207A21BB
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:22:10 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-406618d0992so3864895e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:22:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696000928; x=1696605728; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+JnHwM58QYMx5KAYuIRR4soj4Wvym3trDgG+7yy7IYc=;
+        b=Tgj/FJmfNgjHixtlKW+mSV/eTr2w9kabcGE6ECigKjfGAcdR4FX9qXfJpTqm96teMR
+         ckk4ap1wOFE7lGgjDPDlX+55SN+botgwAvzUZrtbWhDK2NuA7b/wORcyWmxSqUSlpz9h
+         fOxc3MOPeFAVP0ZSne0NKFaSzoQQsnv8XYkFFQ81T0BF7wcZ7D1RiNcbje9R7HK85thy
+         zi5Pc83MOis3NoNzHUYRWbiCAWW36vsWY0qkBfGRYd87rV2RFOV6fcQ+k0lGySlCJgTv
+         cmN+hSNsGSqnAscUKDHmeVbAl9E3NmbKLvXlRXfHUQ5Sy8sf/Rhe2R3UVliuBqCmljpY
+         wdag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696000903; x=1696605703;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4eFMXkTSJCSP/LuqcR7rWb5lOePf6Wh6Ne6wvaIuhIA=;
-        b=hcevS+HV4J7G7kOXpIPJiiYhzoeJ6IUmOSQaeyp6ACPWjL6SuYnybfOkYALvzSuR+2
-         ypDlnhKug/CtyrlvlZ8dtjwE+ex30j4QliIMet4YGc3TZtqx2qNPPR6VoEc/5gnX6ZWJ
-         LDpZZX6+T0YjhfibXRQkJOiHbKDL3y3X0RRERnqZX3z+Zmi3gWPs2ONiCjlGnTlrRr+Y
-         RmodCxn/CgK+7trvNU/CgGqL1pJwyhXnacuC2GmodKtuEUQJxqnqO8RaOQAmSdMpzkvj
-         ITrVixMnl2EIl2Ogi+xwXF/kgxt2EHnvmzQnxSAoONIb024IWhf4ADT0+wCRPJvb09Cm
-         qTFg==
-X-Gm-Message-State: AOJu0YxKeTeFob1UgjnziWPakYAWDqN8ZuE2PHCkVE6W/0YxhBEIgFpX
-        OU4yfkCglJepS7Q7UDSydoGzk/5Tft0fQkVcz4eRPk8WBH9e0U/mhWnCM5dPUjP2YVlVoQ7yn5/
-        1sadwm0tRn7LKo5IPM6i1LuM=
-X-Received: by 2002:ac8:5e0d:0:b0:412:1e4c:e858 with SMTP id h13-20020ac85e0d000000b004121e4ce858mr5611985qtx.36.1696000903601;
-        Fri, 29 Sep 2023 08:21:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFn58PBLwTq+THIqS9k7CeHslslS8Zkx9jdCHCLUBpRCxKtjNqsvILp9zhdNCpI8CYEa32WgQ==
-X-Received: by 2002:ac8:5e0d:0:b0:412:1e4c:e858 with SMTP id h13-20020ac85e0d000000b004121e4ce858mr5611964qtx.36.1696000903357;
-        Fri, 29 Sep 2023 08:21:43 -0700 (PDT)
-Received: from klayman.redhat.com (net-2-34-30-58.cust.vodafonedsl.it. [2.34.30.58])
-        by smtp.gmail.com with ESMTPSA id bq14-20020a05622a1c0e00b00419801b1094sm287053qtb.13.2023.09.29.08.21.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 08:21:43 -0700 (PDT)
-From:   Marco Pagani <marpagan@redhat.com>
-To:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>
-Cc:     Marco Pagani <marpagan@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org, Jinjie Ruan <ruanjinjie@huawei.com>
-Subject: [PATCH v2 4/4] fpga: add a platform driver to the FPGA Region test suite
-Date:   Fri, 29 Sep 2023 17:20:57 +0200
-Message-ID: <20230929152057.85047-5-marpagan@redhat.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230929152057.85047-1-marpagan@redhat.com>
-References: <20230929152057.85047-1-marpagan@redhat.com>
+        d=1e100.net; s=20230601; t=1696000928; x=1696605728;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+JnHwM58QYMx5KAYuIRR4soj4Wvym3trDgG+7yy7IYc=;
+        b=meXzKabfLTHbigRl4ReJg/IDLZjRsH6AaRH+SbEUWd/BBVyLwDa0LeISH3KjtEn0ov
+         x5CQ+2pux1ZBhwLuv5XRN7g/6PJuFT+ayzzI+KrQVAJhKXEDpnXZhGmOmxm4RUWm9uk3
+         eVaA+a7SPC/XSOb02fv+rIi+uWzlkKrxMGy8cXyswJYRCj0bxtXWoZs9TCp/km4D806S
+         mcG/PycBVPLnNSr8TE7fNkmgtfNn2CQC35o5ca1BjYbytwVXq7Y4Eutb9JCtt2kb7X22
+         fSNdrUTwdOAP0ZlAcRf3rQDVnURMsXFPEjjuoU5bWJYqtjUnPsRtjlbrnfI7aF74vABe
+         5c1g==
+X-Gm-Message-State: AOJu0YyuFIoZjIHMndcI6OmwTLEFtBW3CMurGiB+rzwPVEJwToKVwbHC
+        Do3RjqWwXKVJpIrvi7avryZFsA==
+X-Google-Smtp-Source: AGHT+IG07vHmV3KpBTNzAoYbqJrwxGGwCodtJJb0vTpZBD5IVXpgOb/iBVrM0Soa8DbJ9w5vhMoMSA==
+X-Received: by 2002:a05:600c:1d17:b0:406:545a:f8fe with SMTP id l23-20020a05600c1d1700b00406545af8femr4001499wms.29.1696000928477;
+        Fri, 29 Sep 2023 08:22:08 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id f7-20020a7bcc07000000b004053a2138bfsm1637486wmh.12.2023.09.29.08.22.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 08:22:08 -0700 (PDT)
+Message-ID: <db5d00b5-5d18-4144-88c2-ff6cfb8c176a@linaro.org>
+Date:   Fri, 29 Sep 2023 16:22:06 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: sc7280: Add Camera Control
+ Interface busses
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230929-sc7280-cci-v1-0-16c7d386f062@fairphone.com>
+ <20230929-sc7280-cci-v1-2-16c7d386f062@fairphone.com>
+ <8dd470e5-ce33-3d33-98f1-e66935ca7b56@linaro.org>
+ <1b5bd391-4bb0-44ac-88d1-e326bec4dd7d@nexus-software.ie>
+ <acc606a6-c46c-43f5-86e0-84bf876001dd@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <acc606a6-c46c-43f5-86e0-84bf876001dd@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Register a minimal platform driver associated with the parent platform
-device used for testing to prevent a null-ptr-deref when try_module_get()
-is called by fpga_region_get(). Also, fix a typo in the suite's name.
+On 29/09/2023 15:18, Konrad Dybcio wrote:
+> On 29.09.2023 16:15, Bryan O'Donoghue wrote:
+>> On 29/09/2023 14:35, Konrad Dybcio wrote:
+>>>
+>>>
+>>> On 9/29/23 10:01, Luca Weiss wrote:
+>>>> Add the CCI busses found on sc7280 and their pinctrl states.
+>>>>
+>>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+>>>> ---
+>>>>    arch/arm64/boot/dts/qcom/sc7280.dtsi | 136 +++++++++++++++++++++++++++++++++++
+>>>>    1 file changed, 136 insertions(+)
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>>> index 66f1eb83cca7..65550de2e4ff 100644
+>>>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>>> @@ -3793,6 +3793,86 @@ videocc: clock-controller@aaf0000 {
+>>>>                #power-domain-cells = <1>;
+>>>>            };
+>>>> +        cci0: cci@ac4a000 {
+>>>> +            compatible = "qcom,sc7280-cci", "qcom,msm8996-cci";
+>>>> +            reg = <0 0x0ac4a000 0 0x1000>;
+>>>> +            interrupts = <GIC_SPI 460 IRQ_TYPE_EDGE_RISING>;
+>>>> +            power-domains = <&camcc CAM_CC_TITAN_TOP_GDSC>;
+>>>> +
+>>>> +            clocks = <&camcc CAM_CC_CAMNOC_AXI_CLK>,
+>>>> +                 <&camcc CAM_CC_SLOW_AHB_CLK_SRC>,
+>>>> +                 <&camcc CAM_CC_CPAS_AHB_CLK>,
+>>>> +                 <&camcc CAM_CC_CCI_0_CLK>,
+>>>> +                 <&camcc CAM_CC_CCI_0_CLK_SRC>;
+>>>> +            clock-names = "camnoc_axi",
+>>>> +                      "slow_ahb_src",
+>>>> +                      "cpas_ahb",
+>>>> +                      "cci",
+>>>> +                      "cci_src";
+>>> I guess this is more of a question to e.g. Bryan, but are all of these clocks actually necessary?
+>>>
+>>> Konrad
+>> Hmm its a good question, we generally take the approach of adopting all of the downstream clocks for these camera interfaces verbatim.
+>>
+>> The clock plan for this part only calls out cci_X_clk and cci_x_clk_src for the CCI however we know that to be incomplete since we *absolutely* need to have the AXI for the block clocked to access those registers, same deal with the AHB bus.
+>>
+>> AXI: registers
+>> AHB: data
+>>
+>> In the above list the only clock you might conceivably not need is CPAS_AHB_CLK.
+>>
+>> Let me zap that clock from sdm845 since I have an rb3 right in front of me and see what happens.
+>>
+>> Crash and reset
+>>
+>> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+>> @@ -4402,13 +4402,11 @@ cci: cci@ac4a000 {
+>>                          clocks = <&clock_camcc CAM_CC_CAMNOC_AXI_CLK>,
+>>                                  <&clock_camcc CAM_CC_SOC_AHB_CLK>,
+>>                                  <&clock_camcc CAM_CC_SLOW_AHB_CLK_SRC>,
+>> -                               <&clock_camcc CAM_CC_CPAS_AHB_CLK>,
+>>                                  <&clock_camcc CAM_CC_CCI_CLK>,
+>>                                  <&clock_camcc CAM_CC_CCI_CLK_SRC>;
+>>                          clock-names = "camnoc_axi",
+>>                                  "soc_ahb",
+>>                                  "slow_ahb_src",
+>> -                               "cpas_ahb",
+>>                                  "cci",
+>>                                  "cci_src";
+>>
+>>
+>> I think the list is good tbh
+> WDYT about camcc consuming ahb, like dispcc does?
+> AXI, hmm.. not quite sure what to do with it
+> 
+> Konrad
 
-Fixes: 64a5f972c93d ("fpga: add an initial KUnit suite for the FPGA Region")
-Reported-by: Jinjie Ruan <ruanjinjie@huawei.com>
-Signed-off-by: Marco Pagani <marpagan@redhat.com>
+Hmm on which platform, camcc clock depds on sdm845 looks very sparse to me.
+
+8550 OTOH
+
+dispcc: clock-controller@af00000 {
+        compatible = "qcom,sm8550-dispcc";
+        reg = <0 0x0af00000 0 0x20000>;
+        clocks = <&bi_tcxo_div2>,
+                 <&bi_tcxo_ao_div2>,
+                 <&gcc GCC_DISP_AHB_CLK>,
+
+videocc: clock-controller@aaf0000 {
+        compatible = "qcom,sm8550-videocc";
+        reg = <0 0x0aaf0000 0 0x10000>;
+        clocks = <&bi_tcxo_div2>,
+                 <&gcc GCC_VIDEO_AHB_CLK>;
+
+sm8250
+
+camcc: clock-controller@ad00000 {
+         compatible = "qcom,sm8250-camcc";
+         reg = <0 0x0ad00000 0 0x10000>;
+         clocks = <&gcc GCC_CAMERA_AHB_CLK>,
+
+I think those DISP_AHB, VIDEO_AHB_CLK, CAMERA_AHB_CLKs should live in 
+the display, video and camss blocks i.e. they are not clocks that you 
+require to access the clock controller registers themselves...
+
+I'm seeing for the most part these MEDIAIPBLOCK_AHB_CLKs don't come from 
+the GCC AHB clock but from another root clock generator.
+
+bi_tcxo ->
+cam_cc_pll0_out_main ->
+cam_cc_pll0_out_even ->
+cam_cc_pll0_out_odd ->
+cam_cc_pll2_out_main ->
+                         cam_cc_slow_ahb_clk_src ->
+                                    camcc_bps_ahb_clk
+                                    camcc_ipe_0_ahb_clk
+                                    ...
+                                    camcc_core_ahb_clk
+
+Lets see what happens to sm8250 if we remove CAMERA_AHB_CLK from the 
+camera clock controller @ camcc: clock-controller@ad00000 {} I don't 
+believe that is required.
+
+...
+
+Yep.. does SFA
+
+diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi 
+b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+index 1efa07f2caff4..1e7d9ee25eeae 100644
+--- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+@@ -4172,11 +4172,10 @@ port@5 {
+                 camcc: clock-controller@ad00000 {
+                         compatible = "qcom,sm8250-camcc";
+                         reg = <0 0x0ad00000 0 0x10000>;
+-                       clocks = <&gcc GCC_CAMERA_AHB_CLK>,
+-                                <&rpmhcc RPMH_CXO_CLK>,
++                       clocks = <&rpmhcc RPMH_CXO_CLK>,
+                                  <&rpmhcc RPMH_CXO_CLK_A>,
+                                  <&sleep_clk>;
+-                       clock-names = "iface", "bi_tcxo", "bi_tcxo_ao", 
+"sleep_clk";
++                       clock-names = "bi_tcxo", "bi_tcxo_ao", "sleep_clk";
+                         power-domains = <&rpmhpd SM8250_MMCX>;
+                         required-opps = <&rpmhpd_opp_low_svs>;
+                         status = "disabled";
+
+Not actually a required clock for the clock controller.
+
+I suspect the same is true for dispcc and videocc though it would also 
+mean the respective drivers would need to switch on <&gcc 
+DISPx_CAMERA_AHB_CLK> or <&gcc GCC_VIDEO_AHB_CLK> prior to accessing 
+registers inside the ip blocks which may not currently be the case.
+
+Feels like a bit of a contrary answer but my reading is the 
+GCC_IPBLOCK_AHB_CLK clocks belong in the drivers not the clock 
+controllers..  or at least that's true for sm8250/camcc
+
+ymmv
+
 ---
- drivers/fpga/tests/fpga-region-test.c | 26 +++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/fpga/tests/fpga-region-test.c b/drivers/fpga/tests/fpga-region-test.c
-index 9f9d50ee7871..5ff688b394f9 100644
---- a/drivers/fpga/tests/fpga-region-test.c
-+++ b/drivers/fpga/tests/fpga-region-test.c
-@@ -15,6 +15,8 @@
- #include <linux/platform_device.h>
- #include <linux/types.h>
- 
-+#include "fpga-test-helpers.h"
-+
- struct mgr_stats {
- 	u32 write_count;
- };
-@@ -132,6 +134,18 @@ static void fpga_region_test_program_fpga(struct kunit *test)
- 	fpga_image_info_free(img_info);
- }
- 
-+TEST_PLATFORM_DRIVER(test_platform_driver);
-+
-+static int fpga_region_test_suite_init(struct kunit_suite *suite)
-+{
-+	return platform_driver_register(&test_platform_driver);
-+}
-+
-+static void fpga_region_test_suite_exit(struct kunit_suite *suite)
-+{
-+	platform_driver_unregister(&test_platform_driver);
-+}
-+
- /*
-  * The configuration used in this test suite uses a single bridge to
-  * limit the code under test to a single unit. The functions used by the
-@@ -146,14 +160,15 @@ static int fpga_region_test_init(struct kunit *test)
- 	ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
- 
--	ctx->mgr_pdev = platform_device_register_simple("mgr_pdev", PLATFORM_DEVID_AUTO, NULL, 0);
-+	ctx->mgr_pdev = platform_device_register_simple(TEST_PDEV_NAME, PLATFORM_DEVID_AUTO,
-+							NULL, 0);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->mgr_pdev);
- 
- 	ctx->mgr = devm_fpga_mgr_register(&ctx->mgr_pdev->dev, "Fake FPGA Manager", &fake_mgr_ops,
- 					  &ctx->mgr_stats);
- 	KUNIT_ASSERT_FALSE(test, IS_ERR_OR_NULL(ctx->mgr));
- 
--	ctx->bridge_pdev = platform_device_register_simple("bridge_pdev", PLATFORM_DEVID_AUTO,
-+	ctx->bridge_pdev = platform_device_register_simple(TEST_PDEV_NAME, PLATFORM_DEVID_AUTO,
- 							   NULL, 0);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->bridge_pdev);
- 
-@@ -163,7 +178,7 @@ static int fpga_region_test_init(struct kunit *test)
- 
- 	ctx->bridge_stats.enable = true;
- 
--	ctx->region_pdev = platform_device_register_simple("region_pdev", PLATFORM_DEVID_AUTO,
-+	ctx->region_pdev = platform_device_register_simple(TEST_PDEV_NAME, PLATFORM_DEVID_AUTO,
- 							   NULL, 0);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx->region_pdev);
- 
-@@ -195,12 +210,13 @@ static void fpga_region_test_exit(struct kunit *test)
- static struct kunit_case fpga_region_test_cases[] = {
- 	KUNIT_CASE(fpga_region_test_class_find),
- 	KUNIT_CASE(fpga_region_test_program_fpga),
--
- 	{}
- };
- 
- static struct kunit_suite fpga_region_suite = {
--	.name = "fpga_mgr",
-+	.name = "fpga_region",
-+	.suite_init = fpga_region_test_suite_init,
-+	.suite_exit = fpga_region_test_suite_exit,
- 	.init = fpga_region_test_init,
- 	.exit = fpga_region_test_exit,
- 	.test_cases = fpga_region_test_cases,
--- 
-2.41.0
-
+bod
