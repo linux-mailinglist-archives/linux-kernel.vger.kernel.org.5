@@ -2,127 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B60667B390A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D3A17B3912
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233325AbjI2Rkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
+        id S233404AbjI2Rm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:42:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233051AbjI2Rks (ORCPT
+        with ESMTP id S232954AbjI2Rm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:40:48 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5431B0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:40:44 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c6193d6bb4so1145ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:40:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696009244; x=1696614044; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=liTCdYbj1FVkuMGo6fO69hfA7Wsl1/IBO31+ywknd5c=;
-        b=j0zMxg24klXUUNmyYuRMJS0z1XElu3mMvF50e7DfCViWICEsg1rzK8dwiJrQPLS0yq
-         ia8KJnPjyLqj5hQhNYBn+yMdaN3L5oVT9igh3CJ5Cl2aXQnGCJx2/6uYBSeSu3Atde+S
-         zToUBzgrDhOLZ7l4Eg42RUhsozk+vPFNA5Q76FR3v44pxZqoGHyU+Zbhzsk2SnOxWxpL
-         hWLHc81GOt3/c+Wn0NxGOPPyB8YPkyCVeSt1Y3yxUJ7w5esRF/i/29BrBV8p7MvNnivr
-         pG51NSenTpY4cPBG1J0TQTBFyEfZ6GpV2s+K0xUEP3cS3wIWwZKMdWEEjYbN6rYexw6J
-         BAsA==
+        Fri, 29 Sep 2023 13:42:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05AD9195
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:42:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696009340;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mNuw9E3jfISKMJANhElE3yZ8P7q99O6Yz29XsBOWCUM=;
+        b=caAofMvlr1cthonJcSGkYY7mGlUL37xVTeuviQwmbi6tmgs+55F+PzZ0qKbqtw1XvX1wSG
+        fNdVUNK6yk57nJP7ZWzhdQOaOrD7QotULtZ/ixp4GtS+PkdvX6O6ODk7FNr1pU+Jx9ptYx
+        34N5lLy2WYVwnWaD4Pny26po9H5wvrs=
+Received: from mail-vs1-f70.google.com (mail-vs1-f70.google.com
+ [209.85.217.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-377-mClT-RnmMXOvLi85S3Ab0g-1; Fri, 29 Sep 2023 13:42:18 -0400
+X-MC-Unique: mClT-RnmMXOvLi85S3Ab0g-1
+Received: by mail-vs1-f70.google.com with SMTP id ada2fe7eead31-452598c880aso8852346137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:42:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696009244; x=1696614044;
+        d=1e100.net; s=20230601; t=1696009338; x=1696614138;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=liTCdYbj1FVkuMGo6fO69hfA7Wsl1/IBO31+ywknd5c=;
-        b=hpG+PER6uK/pJiIKtTu/t++Iw/Gxey3zkXpEAXTVG6KBPzKMzXg5uTsW1ikfODarDO
-         vhefFF2RoOb0lLIfX/Pr+OcjtwSyqgJyzmHbgW89S1mIILz5pH09kPpbb32nk37lllGF
-         9+Qaf+nM2oO9NgiXoVhj1gPJBZkNdj+LtlajXMlAeHvPWoDRO/27cgxMCeAc6DBr0m/5
-         zbyiLetg+Y/EHN6zwbIRRchqpz59TtQtjZ+ial2oKDH2NTMTD9amHLdKSFV2Ooty/bCU
-         TkAf0RCimC0W5TUXb9gVodvaHzhwYd14SdsOIkf2JEs1rKaNep8dkSmC1/ejPO6bnPWI
-         Ap2A==
-X-Gm-Message-State: AOJu0YxTI4OOAiuavYz1s3yCveAKtPHaqZdAWzogobBoSEmQ+LVxM0m1
-        ipGdof8DG+OWYzAgNfluNyRDiaBFvh6HAGlnpZZM4UV7Q6iWty9C070=
-X-Google-Smtp-Source: AGHT+IG8I6uaBrpHLsp0opKXQTpmS3lePr+15GdaosXyNMvMTOYnYBMFJsjMoiUol29+4CmIxCtKX8GDmFAxRmDFoU0=
-X-Received: by 2002:a17:903:41d2:b0:1c3:25c0:6dd7 with SMTP id
- u18-20020a17090341d200b001c325c06dd7mr21422ple.16.1696009243683; Fri, 29 Sep
- 2023 10:40:43 -0700 (PDT)
+        bh=mNuw9E3jfISKMJANhElE3yZ8P7q99O6Yz29XsBOWCUM=;
+        b=ZUVTmH+2m40Aktxcfwk00ScEgcGPXioQHBd4ZdNF1gxZccdsf4P2b0FTzgk0VvOnmE
+         vFXOdJjhs57PuYOs1gkTkzKu39FfTMxBZZCn7zHFyWYXZ/jc3D/t4lmQxg6I0VlGKJaf
+         gr550mhiMqqVCjmrpM6BfGhOKok9qZnpgrgsWpbabM+uw5HY/1EPdCX32QNb1Abqnxbn
+         iQKZAonZEQhB+1bEATYyRUKuchFHY9sQ55u4vSXRVT/tKeOAiGIMxBQ7JfN2VP8F5C8R
+         CekEpehBbFhXUCHfhf4PTt17/1r+gMvGPY835KZkekRFZOH4zmK7P8iJKpvQ0mswqnb0
+         3lwg==
+X-Gm-Message-State: AOJu0YwdIOHBQo33APc9GbOrae3bdDV+MqsOcEm96PlRveHNMuQOMkzA
+        xJLpq2f027ryW5TgUB/ip6XAy1ejPySWQgGW9N7u6wRxVj7cnXpm5JOvDJ+Wy9Z6wjT8A1wxc0j
+        jeMXOupHzyPYmrNReI5dB1VTbM83nkWBiRDpMaNSK
+X-Received: by 2002:a67:e210:0:b0:44d:5a92:ec43 with SMTP id g16-20020a67e210000000b0044d5a92ec43mr5037058vsa.24.1696009337903;
+        Fri, 29 Sep 2023 10:42:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHCp/AIdWPqEWbtC/9JPny903uCy02I1/BqXTOfQT6TzjBnF4NJ5GNkVAKN/E+OvugdC1agXXOcQyVdpUbSE60=
+X-Received: by 2002:a67:e210:0:b0:44d:5a92:ec43 with SMTP id
+ g16-20020a67e210000000b0044d5a92ec43mr5037044vsa.24.1696009337587; Fri, 29
+ Sep 2023 10:42:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZRbwU8Qnx28gpbuO@work> <202309291027.305751B8@keescook>
-In-Reply-To: <202309291027.305751B8@keescook>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 29 Sep 2023 19:40:07 +0200
-Message-ID: <CAG48ez1w_gBUF6qRmfO_wb+eYLTfrLs5csjEaPhE9iQxdqPj+Q@mail.gmail.com>
-Subject: Re: [PATCH][next] media: usb: siano: Fix undefined behavior bug in
- struct smsusb_urb_t
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
+References: <20230928173354.217464-1-mlevitsk@redhat.com> <ZRYxvdmHpjxr3QKp@google.com>
+In-Reply-To: <ZRYxvdmHpjxr3QKp@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Fri, 29 Sep 2023 19:42:05 +0200
+Message-ID: <CABgObfYhtHS3d4m07+qAxPzdR_jZ4Q9OC9K=Tf4sviH1Nn5cyw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] AVIC bugfixes and workarounds
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        iommu@lists.linux.dev, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <joro@8bytes.org>,
+        x86@kernel.org,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Will Deacon <will@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 7:29=E2=80=AFPM Kees Cook <keescook@chromium.org> w=
-rote:
-> On Fri, Sep 29, 2023 at 05:42:11PM +0200, Gustavo A. R. Silva wrote:
-> > `struct urb` is a flexible structure, which means that it contains a
-> > flexible-array member at the bottom. This could potentially lead to an
-> > overwrite of the object `wq` at run-time with the contents of `urb`.
-> >
-> > Fix this by placing object `urb` at the end of `struct smsusb_urb_t`.
-> >
-> > Fixes: dd47fbd40e6e ("[media] smsusb: don't sleep while atomic")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+On Fri, Sep 29, 2023 at 4:09=E2=80=AFAM Sean Christopherson <seanjc@google.=
+com> wrote:
 >
-> As Jann pointed out, it's unlikely there is a function bug here, but I
-> still think it's right to make sure this is robust and clears the way
-> for -Wflex-array-member-not-at-end.
+> On Thu, Sep 28, 2023, Maxim Levitsky wrote:
+> > Maxim Levitsky (4):
+> >   x86: KVM: SVM: always update the x2avic msr interception
+> >   x86: KVM: SVM: add support for Invalid IPI Vector interception
+> >   x86: KVM: SVM: refresh AVIC inhibition in svm_leave_nested()
+>
+> Paolo, I assume you'll take the first three directly for 6.6?
 
-But if this change makes the warning go away, that just means the
-warning is implemented badly, right?
+Yes.
 
-Like, before we had:
+Paolo
 
-struct urb {
-  ...
-  struct usb_iso_packet_descriptor iso_frame_desc[];
-};
-struct smsusb_urb_t {
-  ...
-  struct urb urb; // not last element
-  ...
-};
+> >   x86: KVM: SVM: workaround for AVIC's errata #1235
+>
 
-whereas afterwards we have:
-
-struct urb {
-  ...
-  struct usb_iso_packet_descriptor iso_frame_desc[];
-};
-struct smsusb_urb_t {
-  ...
-  struct urb urb;
-};
-struct smsusb_device_t {
-  ...
-  struct smsusb_urb_t surbs[MAX_URBS]; // array, and not last element
-  ...
-};
-
-That's basically the same pattern! Except that the new version has one
-more layer of indirection and there's an array involved.
-
-And you can't address that by moving struct members around because of
-the involvement of the array.
