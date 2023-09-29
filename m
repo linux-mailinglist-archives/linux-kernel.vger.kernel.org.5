@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8227B33CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C4567B33CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233306AbjI2NjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 09:39:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
+        id S233453AbjI2NjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 09:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233441AbjI2Ni6 (ORCPT
+        with ESMTP id S233473AbjI2NjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 09:38:58 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F3D2115;
-        Fri, 29 Sep 2023 06:38:49 -0700 (PDT)
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T27fDB021104;
-        Fri, 29 Sep 2023 06:38:37 -0700
+        Fri, 29 Sep 2023 09:39:05 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9930172E;
+        Fri, 29 Sep 2023 06:38:52 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TCPdig005320;
+        Fri, 29 Sep 2023 06:38:41 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=pfpt0220;
- bh=NByjmqhDn7cjvZxBL2CousB8PNAlV59A8D/N14Kb2s4=;
- b=fxeP2yGXdqDsORKFPIUh7fiCirysKYytmfRVkwInXR0hgTkjnP8nkxPiI/mvTf8tZ1cL
- WbB7/Um9XEiQKfFrdyZJZtDq2el1jrpU3fkiZ7rFSkIpgSr3J4IK3MCw54WEkzyUV7f+
- XnW1ZHpjM85DgyY2iY02zt548JJdvGw53h5ET9LJ+qNrGl7w/zN8Ck21r2jhq3VuQumo
- Oj6cqbJIHhPQy+aUkYCSa5AVmtulQaoKTNPvnlhFElXcqwllXXn7Pc05na31bbGlMvLN
- B52VErYifWRHIOBaz76asoBZdA3lJkfjKjQkAU4c9AU9Lx6J3sDvB1PE9/TD8KDHo2iG /A== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3tcrrs986n-1
+ bh=wBiVrXmkSOit9cr6Cd8FwgnRt5KotLj2dEmQTFzM9dw=;
+ b=hqgAjg4bmxv7/mPRYaoUkl2Mjqrcva2nNTAcuP9heLEoCADKU+uzDMUI0WlL9iW0h/l3
+ oDD/DgKJCRKzjBILXZSkz7ymgLfq/BrdPfOEz5yNwIahfflmBPsf/e50krFuW9vfUoaA
+ nlrOEDBUchNiMmhzHaf2FfX2Ecp7v6Ty5laB7O5SX0wh2GSTk9Lt9fCkndVpsd6LO8T3
+ FqYOq8XUSu8OgVMqOrBN0rrxqmdHS8RzXH+HfjRWd1mP8Ht9D2gTO3//zrl+YrbBYK5/
+ 3Bag9PoJI7r+1NsSNDmABLhVvs5bGMXHZVQqZtBfVvuoZ362falsK0g2gqRo3ufuzs6R BA== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3tdxk08ej7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 06:38:37 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 29 Sep
- 2023 06:38:34 -0700
+        Fri, 29 Sep 2023 06:38:41 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 29 Sep
+ 2023 06:38:39 -0700
 Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
  (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Fri, 29 Sep 2023 06:38:34 -0700
+ Transport; Fri, 29 Sep 2023 06:38:39 -0700
 Received: from virtx40.. (unknown [10.28.34.196])
-        by maili.marvell.com (Postfix) with ESMTP id EB3A05B6923;
-        Fri, 29 Sep 2023 06:38:30 -0700 (PDT)
+        by maili.marvell.com (Postfix) with ESMTP id 7DDC35B6946;
+        Fri, 29 Sep 2023 06:38:35 -0700 (PDT)
 From:   Linu Cherian <lcherian@marvell.com>
 To:     <suzuki.poulose@arm.com>, <mike.leach@linaro.org>,
         <james.clark@arm.com>, <leo.yan@linaro.org>
@@ -49,17 +49,17 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         <conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
         <sgoutham@marvell.com>, <gcherian@marvell.com>,
         Linu Cherian <lcherian@marvell.com>
-Subject: [PATCH 6/7] coresight: tmc: Stop trace capture on FlIn
-Date:   Fri, 29 Sep 2023 19:07:53 +0530
-Message-ID: <20230929133754.857678-7-lcherian@marvell.com>
+Subject: [PATCH 7/7] coresight: config: Add preloaded configuration
+Date:   Fri, 29 Sep 2023 19:07:54 +0530
+Message-ID: <20230929133754.857678-8-lcherian@marvell.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230929133754.857678-1-lcherian@marvell.com>
 References: <20230929133754.857678-1-lcherian@marvell.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: Y0r5B9J_lnH66d3b0nzLgs09zYKR9hFm
-X-Proofpoint-GUID: Y0r5B9J_lnH66d3b0nzLgs09zYKR9hFm
+X-Proofpoint-GUID: 2QJ9Jq1-IxtUhb-FTrbKce_ikX04zuCR
+X-Proofpoint-ORIG-GUID: 2QJ9Jq1-IxtUhb-FTrbKce_ikX04zuCR
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-09-29_11,2023-09-28_03,2023-05-22_02
@@ -72,87 +72,159 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Configure TMC ETR and ETF to flush and stop trace capture
-on FlIn event. As a side effect, do manual flush only if
-auto flush fails.
+Add a preloaded configuration for generating
+external trigger on address match. This can be
+used by CTI and ETR blocks to stop trace capture
+on kernel panic.
+
+Kernel address for panic function to be
+programmed as below.
+
+$cd /config/cs-syscfg/features/gen_etrig/params
+$echo <panic_address> > address/value
 
 Signed-off-by: Linu Cherian <lcherian@marvell.com>
 ---
- drivers/hwtracing/coresight/coresight-tmc-etf.c | 10 ++++++++--
- drivers/hwtracing/coresight/coresight-tmc-etr.c | 10 ++++++++--
- drivers/hwtracing/coresight/coresight-tmc.h     |  3 +++
- 3 files changed, 19 insertions(+), 4 deletions(-)
+ drivers/hwtracing/coresight/Makefile          |  2 +-
+ .../coresight/coresight-cfg-preload.c         |  2 +
+ .../coresight/coresight-cfg-preload.h         |  2 +
+ .../hwtracing/coresight/coresight-cfg-pstop.c | 83 +++++++++++++++++++
+ 4 files changed, 88 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/hwtracing/coresight/coresight-cfg-pstop.c
 
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-index 496b44aad56d..cc73cd1f4d11 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-@@ -34,7 +34,7 @@ static int __tmc_etb_enable_hw(struct tmc_drvdata *drvdata)
- 	writel_relaxed(TMC_MODE_CIRCULAR_BUFFER, drvdata->base + TMC_MODE);
- 	writel_relaxed(TMC_FFCR_EN_FMT | TMC_FFCR_EN_TI |
- 		       TMC_FFCR_FON_FLIN | TMC_FFCR_FON_TRIG_EVT |
--		       TMC_FFCR_TRIGON_TRIGIN,
-+		       TMC_FFCR_TRIGON_TRIGIN | TMC_FFCR_STOP_ON_FLUSH,
- 		       drvdata->base + TMC_FFCR);
- 
- 	writel_relaxed(drvdata->trigger_cntr, drvdata->base + TMC_TRG);
-@@ -613,7 +613,13 @@ static int tmc_panic_sync_etf(struct coresight_device *csdev)
- 	if (val != TMC_MODE_CIRCULAR_BUFFER)
- 		goto out;
- 
--	tmc_flush_and_stop(drvdata);
-+	val = readl(drvdata->base + TMC_FFSR);
-+	/* Do manual flush and stop only if its not auto-stopped */
-+	if (!(val & TMC_FFSR_FT_STOPPED)) {
-+		dev_info(&csdev->dev,
-+			 "%s: Triggering manual flush\n", __func__);
-+		tmc_flush_and_stop(drvdata);
-+	}
- 
- 	/* Sync registers from hardware to metadata region */
- 	tmc->sts = csdev_access_relaxed_read32(csa, TMC_STS);
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-index c31c71e02833..c84f24333ebc 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-@@ -1112,7 +1112,7 @@ static int __tmc_etr_enable_hw(struct tmc_drvdata *drvdata)
- 
- 	writel_relaxed(TMC_FFCR_EN_FMT | TMC_FFCR_EN_TI |
- 		       TMC_FFCR_FON_FLIN | TMC_FFCR_FON_TRIG_EVT |
--		       TMC_FFCR_TRIGON_TRIGIN,
-+		       TMC_FFCR_TRIGON_TRIGIN | TMC_FFCR_STOP_ON_FLUSH,
- 		       drvdata->base + TMC_FFCR);
- 	writel_relaxed(drvdata->trigger_cntr, drvdata->base + TMC_TRG);
- 	tmc_enable_hw(drvdata);
-@@ -1843,7 +1843,13 @@ static int tmc_panic_sync_etr(struct coresight_device *csdev)
- 	if (!(val & TMC_CTL_CAPT_EN))
- 		goto out;
- 
--	tmc_flush_and_stop(drvdata);
-+	val = readl(drvdata->base + TMC_FFSR);
-+	/* Do manual flush and stop only if its not auto-stopped */
-+	if (!(val & TMC_FFSR_FT_STOPPED)) {
-+		dev_info(&csdev->dev,
-+			 "%s: Triggering manual flush\n", __func__);
-+		tmc_flush_and_stop(drvdata);
-+	}
- 
- 	/* Sync registers from hardware to metadata region */
- 	tmc->size = csdev_access_relaxed_read32(csa, TMC_RSZ);
-diff --git a/drivers/hwtracing/coresight/coresight-tmc.h b/drivers/hwtracing/coresight/coresight-tmc.h
-index f8b79eaac0bd..0975afca1f95 100644
---- a/drivers/hwtracing/coresight/coresight-tmc.h
-+++ b/drivers/hwtracing/coresight/coresight-tmc.h
-@@ -76,6 +76,9 @@
- #define TMC_AXICTL_AXCACHE_OS	(0xf << 2)
- #define TMC_AXICTL_ARCACHE_OS	(0xf << 16)
- 
-+/* TMC_FFSR - 0x300 */
-+#define TMC_FFSR_FT_STOPPED	BIT(1)
+diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
+index 995d3b2c76df..68b15c8d9462 100644
+--- a/drivers/hwtracing/coresight/Makefile
++++ b/drivers/hwtracing/coresight/Makefile
+@@ -5,7 +5,7 @@
+ obj-$(CONFIG_CORESIGHT) += coresight.o
+ coresight-y := coresight-core.o  coresight-etm-perf.o coresight-platform.o \
+ 		coresight-sysfs.o coresight-syscfg.o coresight-config.o \
+-		coresight-cfg-preload.o coresight-cfg-afdo.o \
++		coresight-cfg-preload.o coresight-cfg-afdo.o coresight-cfg-pstop.o \
+ 		coresight-syscfg-configfs.o coresight-trace-id.o
+ obj-$(CONFIG_CORESIGHT_LINK_AND_SINK_TMC) += coresight-tmc.o
+ coresight-tmc-y := coresight-tmc-core.o coresight-tmc-etf.o \
+diff --git a/drivers/hwtracing/coresight/coresight-cfg-preload.c b/drivers/hwtracing/coresight/coresight-cfg-preload.c
+index e237a4edfa09..4980e68483c5 100644
+--- a/drivers/hwtracing/coresight/coresight-cfg-preload.c
++++ b/drivers/hwtracing/coresight/coresight-cfg-preload.c
+@@ -13,6 +13,7 @@
+ static struct cscfg_feature_desc *preload_feats[] = {
+ #if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
+ 	&strobe_etm4x,
++	&gen_etrig_etm4x,
+ #endif
+ 	NULL
+ };
+@@ -20,6 +21,7 @@ static struct cscfg_feature_desc *preload_feats[] = {
+ static struct cscfg_config_desc *preload_cfgs[] = {
+ #if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
+ 	&afdo_etm4x,
++	&pstop_etm4x,
+ #endif
+ 	NULL
+ };
+diff --git a/drivers/hwtracing/coresight/coresight-cfg-preload.h b/drivers/hwtracing/coresight/coresight-cfg-preload.h
+index 21299e175477..291ba530a6a5 100644
+--- a/drivers/hwtracing/coresight/coresight-cfg-preload.h
++++ b/drivers/hwtracing/coresight/coresight-cfg-preload.h
+@@ -10,4 +10,6 @@
+ #if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
+ extern struct cscfg_feature_desc strobe_etm4x;
+ extern struct cscfg_config_desc afdo_etm4x;
++extern struct cscfg_feature_desc gen_etrig_etm4x;
++extern struct cscfg_config_desc pstop_etm4x;
+ #endif
+diff --git a/drivers/hwtracing/coresight/coresight-cfg-pstop.c b/drivers/hwtracing/coresight/coresight-cfg-pstop.c
+new file mode 100644
+index 000000000000..037d6773fab8
+--- /dev/null
++++ b/drivers/hwtracing/coresight/coresight-cfg-pstop.c
+@@ -0,0 +1,83 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright(C) 2023  Marvell.
++ * Based on coresight-cfg-afdo.c
++ */
 +
- /* TMC_FFCR - 0x304 */
- #define TMC_FFCR_FLUSHMAN_BIT	6
- #define TMC_FFCR_EN_FMT		BIT(0)
++#include "coresight-config.h"
++
++/* ETMv4 includes and features */
++#if IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X)
++#include "coresight-etm4x-cfg.h"
++
++/* preload configurations and features */
++
++/* preload in features for ETMv4 */
++
++/* panic_stop feature */
++static struct cscfg_parameter_desc gen_etrig_params[] = {
++	{
++		.name = "address",
++		.value = 0x0,
++	},
++};
++
++static struct cscfg_regval_desc gen_etrig_regs[] = {
++	/* resource selector */
++	{
++		.type = CS_CFG_REG_TYPE_RESOURCE,
++		.offset = TRCRSCTLRn(2),
++		.hw_info = ETM4_CFG_RES_SEL,
++		.val32 = 0x40001,
++	},
++	/* single address comparator */
++	{
++		.type = CS_CFG_REG_TYPE_RESOURCE | CS_CFG_REG_TYPE_VAL_64BIT |
++			CS_CFG_REG_TYPE_VAL_PARAM,
++		.offset =  TRCACVRn(0),
++		.val32 = 0x0,
++	},
++	{
++		.type = CS_CFG_REG_TYPE_RESOURCE,
++		.offset = TRCACATRn(0),
++		.val64 = 0xf00,
++	},
++	/* Driver external output[0] with comparator out */
++	{
++		.type = CS_CFG_REG_TYPE_RESOURCE,
++		.offset = TRCEVENTCTL0R,
++		.val32 = 0x2,
++	},
++	/* end of regs */
++};
++
++struct cscfg_feature_desc gen_etrig_etm4x = {
++	.name = "gen_etrig",
++	.description = "Generate external trigger on address match\n"
++		       "parameter \'address\': address of kernel address\n",
++	.match_flags = CS_CFG_MATCH_CLASS_SRC_ETM4,
++	.nr_params = ARRAY_SIZE(gen_etrig_params),
++	.params_desc = gen_etrig_params,
++	.nr_regs = ARRAY_SIZE(gen_etrig_regs),
++	.regs_desc = gen_etrig_regs,
++};
++
++/* create a panic stop configuration */
++
++/* the total number of parameters in used features */
++#define PSTOP_NR_PARAMS	ARRAY_SIZE(gen_etrig_params)
++
++static const char *pstop_ref_names[] = {
++	"gen_etrig",
++};
++
++struct cscfg_config_desc pstop_etm4x = {
++	.name = "panicstop",
++	.description = "Stop ETM on kernel panic\n",
++	.nr_feat_refs = ARRAY_SIZE(pstop_ref_names),
++	.feat_ref_names = pstop_ref_names,
++	.nr_total_params = PSTOP_NR_PARAMS,
++};
++
++/* end of ETM4x configurations */
++#endif	/* IS_ENABLED(CONFIG_CORESIGHT_SOURCE_ETM4X) */
 -- 
 2.34.1
 
