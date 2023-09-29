@@ -2,140 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2167B34A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E35F7B34A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233227AbjI2OPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 10:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56112 "EHLO
+        id S233466AbjI2OPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 10:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233477AbjI2OPU (ORCPT
+        with ESMTP id S233344AbjI2OPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 10:15:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A37510C7;
-        Fri, 29 Sep 2023 07:15:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CFAF3C433C7;
-        Fri, 29 Sep 2023 14:15:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695996914;
-        bh=PrGEd+n3I9phoCJZQNjyU2lIksSp10nLF/ZgSuI2swc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RYzFpFqpLu2iW64GmDGSknW1Yg8vM6E1OvMKcmto2zqTCOxpw5jTs1TganR82f5Kp
-         Vi5dYEPzkDVoK8NHCpQ6YvJEwkwH41OXv3md4Q4WQ/QmD6jFqJnR6KD+N2Ski/WqKN
-         eCjgxUK2ipKQQRheaBEbKO2NI97YP/y8vT35HUCae4Vka+IrLmgCxPY7PrmA0CSiBw
-         hjbVFAkkrm9iC91ag8Ea5ezqf44U+dCkJg/Zyx/LYWsuc2yUZcCJyYwZ7geDMhNyOr
-         L3hLrkRibsCAw/IidOxaaUe5xQTO2i56gVvKUc1t5R6XyDGw6+wo2GsLrAoeLyYbxK
-         SRugZ0OekOFoA==
-Date:   Fri, 29 Sep 2023 15:15:09 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] scripts/faddr2line: Skip over mapping symbols in
- output from readelf
-Message-ID: <20230929141508.GA30367@willie-the-truck>
-References: <20230914131225.13415-1-will@kernel.org>
- <20230914131225.13415-4-will@kernel.org>
- <CAK7LNAQimVFOofEN5dNtPMWZ1m0Jh_3KawNU04kpmnSaUn3MKQ@mail.gmail.com>
+        Fri, 29 Sep 2023 10:15:21 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2610210CC
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:15:15 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-405497850dbso122077205e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:15:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nexus-software-ie.20230601.gappssmtp.com; s=20230601; t=1695996913; x=1696601713; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Fo/ZMhzFTF6G7gZ+jZPeOdnwccHM0rKzSSb1DVm0Tfg=;
+        b=p2glEL5fXsTtp1TuynekPMs2GvwJ289ScEdvRSWwnUCZiMKY7UvVR8Cd4M+VegASna
+         NiFoLbnigJC5/1oYnSoXFfE/hBk3teNcTdB8wWp+buUYT/r0hPyfhTfxxhL82V4hVWwS
+         5tgQPCbZ0Mnh3Q5QdNONzzuXBinAL9NI6Fuj7bKVjgl1j/hxbldugDjF4FmwmPIS/WlL
+         0HQZkD03uThpNKmB00Rjl3+Tv2nKK9MVL+W3lQwyTfkieQtiTCw5LSk+Rp4HbYN/leyc
+         Blk9AsV05zu1PvH21eqtuBS5dX+tTsg4mdBQtmrIdAba8ewANoHcCAAUR2noSBEEbNYi
+         khVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695996913; x=1696601713;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fo/ZMhzFTF6G7gZ+jZPeOdnwccHM0rKzSSb1DVm0Tfg=;
+        b=erwiNUQ8fYMmgOsMYgwn9Hw51XlcmKZ8WwbOqu/nRIOYaqt5+95g9bBHtBxyQpiyim
+         LFn8zCi1u8thh9ZwilYwLqI8n/JNbZN6VdrDojm2hfsjIKNjsFP/bYDBM2qw/rm4/PSs
+         Dv/UDJ0k2DkFLtNUervdkrS/oPJHrXnpfpBfY4uwIk58U0PYFwZr+Qae4zWe3s90lWFc
+         KLWV0Xgz75hJgGPFq5pDr2WXtrSFpk3iObCW0+aFShKm9zLbkVOFmZgTfILrIf4okkX+
+         hxnfKrpay7jTyfsCceTk5BotJqV97nSfHjUXPd7fi0kb0DVM76GojsxOE7xryjPPhzdV
+         0+8Q==
+X-Gm-Message-State: AOJu0Yy6XHRm5g7KnqgO+DuDlPQXpMJZas9C/XsnxK/+yqPt//piXvwm
+        IUREFW8KRvN/NO+ypATJHcbhoQ==
+X-Google-Smtp-Source: AGHT+IEl78aziYLAgqWttNqnKzEHEnL1N0JwuOtWG4yqhPkHV7j1lZtvyST9tZptWvOWNWme4fhXlw==
+X-Received: by 2002:a05:600c:2113:b0:405:1ba2:4fd1 with SMTP id u19-20020a05600c211300b004051ba24fd1mr4202922wml.24.1695996913089;
+        Fri, 29 Sep 2023 07:15:13 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id g12-20020a5d698c000000b0031c8a43712asm21607937wru.69.2023.09.29.07.15.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 07:15:12 -0700 (PDT)
+Message-ID: <1b5bd391-4bb0-44ac-88d1-e326bec4dd7d@nexus-software.ie>
+Date:   Fri, 29 Sep 2023 15:15:11 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: sc7280: Add Camera Control
+ Interface busses
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230929-sc7280-cci-v1-0-16c7d386f062@fairphone.com>
+ <20230929-sc7280-cci-v1-2-16c7d386f062@fairphone.com>
+ <8dd470e5-ce33-3d33-98f1-e66935ca7b56@linaro.org>
+From:   Bryan O'Donoghue <pure.logic@nexus-software.ie>
+In-Reply-To: <8dd470e5-ce33-3d33-98f1-e66935ca7b56@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNAQimVFOofEN5dNtPMWZ1m0Jh_3KawNU04kpmnSaUn3MKQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 01:50:20AM +0900, Masahiro Yamada wrote:
-> On Thu, Sep 14, 2023 at 10:12 PM Will Deacon <will@kernel.org> wrote:
-> >
-> > Mapping symbols emitted in the readelf output can confuse the
-> > 'faddr2line' symbol size calculation, resulting in the erroneous
-> > rejection of valid offsets. This is especially prevalent when building
-> > an arm64 kernel with CONFIG_CFI_CLANG=y, where most functions are
-> > prefixed with a 32-bit data value in a '$d.n' section. For example:
-> >
-> > 447538: ffff800080014b80   548 FUNC    GLOBAL DEFAULT    2 do_one_initcall
-> >    104: ffff800080014c74     0 NOTYPE  LOCAL  DEFAULT    2 $x.73
-> >    106: ffff800080014d30     0 NOTYPE  LOCAL  DEFAULT    2 $x.75
-> >    111: ffff800080014da4     0 NOTYPE  LOCAL  DEFAULT    2 $d.78
-> >    112: ffff800080014da8     0 NOTYPE  LOCAL  DEFAULT    2 $x.79
-> >     36: ffff800080014de0   200 FUNC    LOCAL  DEFAULT    2 run_init_process
-> >
-> > Adding a warning to do_one_initcall() results in:
-> >
-> >   | WARNING: CPU: 0 PID: 1 at init/main.c:1236 do_one_initcall+0xf4/0x260
-> >
-> > Which 'faddr2line' refuses to accept:
-> >
-> > $ ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
-> > skipping do_one_initcall address at 0xffff800080014c74 due to size mismatch (0x260 != 0x224)
-> > no match for do_one_initcall+0xf4/0x260
-> >
-> > Filter out these entries from readelf using a shell reimplementation of
-> > is_mapping_symbol(), so that the size of a symbol is calculated as a
-> > delta to the next symbol present in ksymtab.
-> >
-> > Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-> > Cc: John Stultz <jstultz@google.com>
-> > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> > Signed-off-by: Will Deacon <will@kernel.org>
-> > ---
-> >  scripts/faddr2line | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/scripts/faddr2line b/scripts/faddr2line
-> > index 6b8206802157..20d9b3d37843 100755
-> > --- a/scripts/faddr2line
-> > +++ b/scripts/faddr2line
-> > @@ -179,6 +179,11 @@ __faddr2line() {
-> >                         local cur_sym_elf_size=${fields[2]}
-> >                         local cur_sym_name=${fields[7]:-}
-> >
-> > +                       # is_mapping_symbol(cur_sym_name)
-> > +                       if [[ ${cur_sym_name} =~ ^((\.L)|(L0)|(\$[adtx](\.|$))) ]]; then
-> > +                               continue
-> > +                       fi
-> > +
+On 29/09/2023 14:35, Konrad Dybcio wrote:
 > 
 > 
-> Too many parentheses.
-
-Ha, well _that_ is subjective! I really think they help when it comes to
-regex syntax. However...
-
-> The latest include/linux/module_symbol.h looks like this.
+> On 9/29/23 10:01, Luca Weiss wrote:
+>> Add the CCI busses found on sc7280 and their pinctrl states.
+>>
+>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+>> ---
+>>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 136 
+>> +++++++++++++++++++++++++++++++++++
+>>   1 file changed, 136 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index 66f1eb83cca7..65550de2e4ff 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> @@ -3793,6 +3793,86 @@ videocc: clock-controller@aaf0000 {
+>>               #power-domain-cells = <1>;
+>>           };
+>> +        cci0: cci@ac4a000 {
+>> +            compatible = "qcom,sc7280-cci", "qcom,msm8996-cci";
+>> +            reg = <0 0x0ac4a000 0 0x1000>;
+>> +            interrupts = <GIC_SPI 460 IRQ_TYPE_EDGE_RISING>;
+>> +            power-domains = <&camcc CAM_CC_TITAN_TOP_GDSC>;
+>> +
+>> +            clocks = <&camcc CAM_CC_CAMNOC_AXI_CLK>,
+>> +                 <&camcc CAM_CC_SLOW_AHB_CLK_SRC>,
+>> +                 <&camcc CAM_CC_CPAS_AHB_CLK>,
+>> +                 <&camcc CAM_CC_CCI_0_CLK>,
+>> +                 <&camcc CAM_CC_CCI_0_CLK_SRC>;
+>> +            clock-names = "camnoc_axi",
+>> +                      "slow_ahb_src",
+>> +                      "cpas_ahb",
+>> +                      "cci",
+>> +                      "cci_src";
+> I guess this is more of a question to e.g. Bryan, but are all of these 
+> clocks actually necessary?
 > 
-> static inline int is_mapping_symbol(const char *str)
-> {
->         if (str[0] == '.' && str[1] == 'L')
->                 return true;
->         if (str[0] == 'L' && str[1] == '0')
->                 return true;
->         return str[0] == '$';
-> }
+> Konrad
+Hmm its a good question, we generally take the approach of adopting all 
+of the downstream clocks for these camera interfaces verbatim.
 
-...oh, nice, that got simplified a whole lot by ff09f6fd2972 ("modpost,
-kallsyms: Treat add '$'-prefixed symbols as mapping symbols") in the
-recent merge window, so I can definitely simplify the regex.
+The clock plan for this part only calls out cci_X_clk and cci_x_clk_src 
+for the CCI however we know that to be incomplete since we *absolutely* 
+need to have the AXI for the block clocked to access those registers, 
+same deal with the AHB bus.
 
-> Does this work?
-> 
-> if [[ ${cur_sym_name} =~ ^(\.L|L0|\$) ]]; then
->         continue
-> fi
+AXI: registers
+AHB: data
 
-Looks about right.
+In the above list the only clock you might conceivably not need is 
+CPAS_AHB_CLK.
 
-Will
+Let me zap that clock from sdm845 since I have an rb3 right in front of 
+me and see what happens.
+
+Crash and reset
+
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -4402,13 +4402,11 @@ cci: cci@ac4a000 {
+                         clocks = <&clock_camcc CAM_CC_CAMNOC_AXI_CLK>,
+                                 <&clock_camcc CAM_CC_SOC_AHB_CLK>,
+                                 <&clock_camcc CAM_CC_SLOW_AHB_CLK_SRC>,
+-                               <&clock_camcc CAM_CC_CPAS_AHB_CLK>,
+                                 <&clock_camcc CAM_CC_CCI_CLK>,
+                                 <&clock_camcc CAM_CC_CCI_CLK_SRC>;
+                         clock-names = "camnoc_axi",
+                                 "soc_ahb",
+                                 "slow_ahb_src",
+-                               "cpas_ahb",
+                                 "cci",
+                                 "cci_src";
+
+
+I think the list is good tbh
+
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
