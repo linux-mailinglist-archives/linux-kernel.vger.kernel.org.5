@@ -2,114 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B76D77B36DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A477B36F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233678AbjI2Pd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:33:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49358 "EHLO
+        id S233754AbjI2PgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233517AbjI2Pd5 (ORCPT
+        with ESMTP id S233700AbjI2Pfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:33:57 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE87B4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:33:55 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so18336622a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:33:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696001634; x=1696606434; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dk6zMaY1JI1EwfQXLCF2rqxZErCOZLkm102MXN7pBqY=;
-        b=J2ZE1J/EgQtVJERfnnXr8xf28MsEgCRujuvpvvytX4ilUnbQLZkDRGFlrBFJTWA/D0
-         8sJmQ8EJmG0X9ntFgW1ZoiLS9YFH/4I1UbaJkdy2ATvdXGI3Z28NkmysYsH0fXJOH+LF
-         XGAprIj/LS4VtSZimctY/PPjDxHwHicliXERt1lxBXpyReP9giCsyZsUEfY5y72MqrVB
-         hC7j53JMSPfrfrX+sEs3LHV39Z3+tNSIAWJS/nA8mvSzInsg5DXa3hO8BReBiJTXo6/T
-         yenUMnSTzuIpyl3GlWiTUPVfGM7Evj+NtAGCRhAAAWyKp3xOtzp8E0I2S+ysDoFhhbip
-         Rsmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696001634; x=1696606434;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Dk6zMaY1JI1EwfQXLCF2rqxZErCOZLkm102MXN7pBqY=;
-        b=HlQJsjeMI3HQ+dU1sZ/I7Hhx6yMC5vBC0LKdlNktC+0JzbqNUVq8bjM+markkBXvj6
-         s5Dden35TuF9ixCwmjgIU8p8nAMSXvXWCKsA1upI+bAp7RUFSzpuUDHjwJSHaNUo3YaX
-         VCpIkK6sVGfcmqSYMFgeJWw/jlCr5Gltom+gBgmaiMukSvNGs7GDqqBLFhF3STWcdV/r
-         FTumz/MOP87eqSRotf73CQ9JtNcEEL53ipTclPLkRBfVse1HjuNwmNy5j3x0zjYaNVlq
-         Shf+FreDiDZ56AR+J+E/6zAoC7jdOgKumJoIW9lZHZewGbq0uMMg3+HoNQxDrQEvuNla
-         6kHg==
-X-Gm-Message-State: AOJu0YwvU+09QY9At+3dEeR0Abb0x0T1gKvOukEBRz9DP3LxuNJ49XzN
-        An+Kr9+uasKVlsVmklb4hJRbkmJw8myo76QYiCP/4a0QwRE=
-X-Google-Smtp-Source: AGHT+IF2SnE9WoTsJGge/GfnYOAeYBbtrMuu+aFgwP4KNlmreEJCX/DMSy5jz2txnPdkqtHX5oRRXYwg8KVjfs7Rn4I=
-X-Received: by 2002:aa7:d481:0:b0:52f:a42a:85a3 with SMTP id
- b1-20020aa7d481000000b0052fa42a85a3mr4092902edr.0.1696001633814; Fri, 29 Sep
- 2023 08:33:53 -0700 (PDT)
+        Fri, 29 Sep 2023 11:35:36 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 077C3DB;
+        Fri, 29 Sep 2023 08:35:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAC20C433B6;
+        Fri, 29 Sep 2023 15:35:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696001734;
+        bh=ti/iY/I8rL5lxV45hGyYfqiTkZyE90nEyx2osM8ZrS4=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=LNMo1g0SUF0MshCK7LlJJbQzOUCYhoIrwB0l6YUZb0PbLJcbMcvwykPloDmyIsYoi
+         xeuehITcBmi1duzE7qO/Gf+8zjPBf4h/K12XsEQitc121OMB5jVeYkH3oXiLB7xWxu
+         kXUNZMRei9/6rqt0Q0FMOWrglBmLQ6sJLLP/YSybuNwXFYIlkJRtXU6iTpLssd7fwG
+         O22v6dCSsNK8eDTRkhxq5FT0KmsluuikuLnEg+u32nnRXryeQgN+oHyNvrBL5WohX2
+         f8izjKJFjvLfLIKunnmccRHUFUKTzmEt2CUc3FVbzHa8YcLJunWI1jUweUpca0UaXk
+         lp7u+svNF7Etg==
+Received: (nullmailer pid 3601357 invoked by uid 1000);
+        Fri, 29 Sep 2023 15:35:24 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Received: by 2002:a50:7f03:0:b0:235:af9d:fd1e with HTTP; Fri, 29 Sep 2023
- 08:33:53 -0700 (PDT)
-Reply-To: maryrosekomo2@gmail.com
-From:   Mary Rose <ddiarassouba31@gmail.com>
-Date:   Fri, 29 Sep 2023 17:33:53 +0200
-Message-ID: <CAFuvAEMY_8c_v7BTn6wi-ikk5nB5yis8rhXQThsen=P27r1z2w@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=4.8 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
+From:   Rob Herring <robh@kernel.org>
+To:     Gatien Chevallier <gatien.chevallier@foss.st.com>
+Cc:     ulf.hansson@linaro.org, Frank Rowand <frowand.list@gmail.com>,
+        edumazet@google.com, jic23@kernel.org, richardcochran@gmail.com,
+        krzysztof.kozlowski+dt@linaro.org, linux-iio@vger.kernel.org,
+        fabrice.gasnier@foss.st.com, linux-mmc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com, netdev@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, Oleksii_Moisieiev@epam.com,
+        hugues.fruchet@foss.st.com, linux-arm-kernel@lists.infradead.org,
+        linux-usb@vger.kernel.org, conor+dt@kernel.org,
+        linux-phy@lists.infradead.org, mchehab@kernel.org,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-i2c@vger.kernel.org, vkoul@kernel.org,
+        linux-spi@vger.kernel.org, olivier.moysan@foss.st.com,
+        linux-serial@vger.kernel.org, arnd@kernel.org,
+        alsa-devel@alsa-project.org, herbert@gondor.apana.org.au,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, dmaengine@vger.kernel.org,
+        alexandre.torgue@foss.st.com, lee@kernel.org, peng.fan@oss.nxp.com,
+        arnaud.pouliquen@foss.st.com, catalin.marinas@arm.com,
+        will@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
+        andi.shyti@kernel.org
+In-Reply-To: <20230929142852.578394-3-gatien.chevallier@foss.st.com>
+References: <20230929142852.578394-1-gatien.chevallier@foss.st.com>
+ <20230929142852.578394-3-gatien.chevallier@foss.st.com>
+Message-Id: <169600172300.3601265.2185363377386180804.robh@kernel.org>
+Subject: Re: [PATCH v5 02/11] dt-bindings: treewide: add access-controller
+ description
+Date:   Fri, 29 Sep 2023 10:35:24 -0500
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
+        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
-X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gott sch=C3=BCtze dich.
 
-Mein Name ist Frau Maryrose. Komo, ich war mit dem verstorbenen Herrn
-Kingsley verheiratet, der am 7. Januar 2019 von einem seiner Freunde
-in London vergiftet wurde.
+On Fri, 29 Sep 2023 16:28:43 +0200, Gatien Chevallier wrote:
+> access-controller is an optional property that allows a peripheral to
+> refer to one or more domain access controller(s).
+> 
+> Description of this property is added to all peripheral binding files of
+> the peripheral under the STM32 firewall controllers. It allows an accurate
+> representation of the hardware, where various peripherals are connected
+> to this firewall bus. The firewall can then check the peripheral accesses
+> before allowing it to probe.
+> 
+> Signed-off-by: Gatien Chevallier <gatien.chevallier@foss.st.com>
+> ---
+> 
+> Changes in V5:
+> 	- Discarded review tags as the content has changed
+> 	- Renamed feature-domains to access-controller
+> 	- Removed extra blank line in st,stm32-timers.yaml
+> 
+> Changes in V4:
+> 	- Added Jonathan's tag for IIO
+> 
+> Changes in V2:
+> 	- Add missing "feature-domains" property declaration
+> 	  in bosch,m_can.yaml and st,stm32-cryp.yaml files
+> 
+>  Documentation/devicetree/bindings/crypto/st,stm32-cryp.yaml   | 4 ++++
+>  Documentation/devicetree/bindings/crypto/st,stm32-hash.yaml   | 4 ++++
+>  Documentation/devicetree/bindings/dma/st,stm32-dma.yaml       | 4 ++++
+>  Documentation/devicetree/bindings/dma/st,stm32-dmamux.yaml    | 4 ++++
+>  Documentation/devicetree/bindings/i2c/st,stm32-i2c.yaml       | 4 ++++
+>  Documentation/devicetree/bindings/iio/adc/st,stm32-adc.yaml   | 4 ++++
+>  .../devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml       | 4 ++++
+>  Documentation/devicetree/bindings/iio/dac/st,stm32-dac.yaml   | 4 ++++
+>  Documentation/devicetree/bindings/media/cec/st,stm32-cec.yaml | 4 ++++
+>  Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml    | 4 ++++
+>  .../bindings/memory-controllers/st,stm32-fmc2-ebi.yaml        | 4 ++++
+>  Documentation/devicetree/bindings/mfd/st,stm32-lptimer.yaml   | 4 ++++
+>  Documentation/devicetree/bindings/mfd/st,stm32-timers.yaml    | 4 ++++
+>  Documentation/devicetree/bindings/mmc/arm,pl18x.yaml          | 4 ++++
+>  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml    | 4 ++++
+>  Documentation/devicetree/bindings/net/stm32-dwmac.yaml        | 4 ++++
+>  Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml  | 4 ++++
+>  .../devicetree/bindings/regulator/st,stm32-vrefbuf.yaml       | 4 ++++
+>  Documentation/devicetree/bindings/rng/st,stm32-rng.yaml       | 4 ++++
+>  Documentation/devicetree/bindings/serial/st,stm32-uart.yaml   | 4 ++++
+>  Documentation/devicetree/bindings/sound/st,stm32-i2s.yaml     | 4 ++++
+>  Documentation/devicetree/bindings/sound/st,stm32-sai.yaml     | 4 ++++
+>  Documentation/devicetree/bindings/sound/st,stm32-spdifrx.yaml | 4 ++++
+>  Documentation/devicetree/bindings/spi/st,stm32-qspi.yaml      | 4 ++++
+>  Documentation/devicetree/bindings/spi/st,stm32-spi.yaml       | 4 ++++
+>  Documentation/devicetree/bindings/usb/dwc2.yaml               | 4 ++++
+>  26 files changed, 104 insertions(+)
+> 
 
-Mein verstorbener Mann und ich waren jahrelang ohne Kinder
-verheiratet. Und nach seinem Tod beschloss ich, nicht wieder zu
-heiraten. Bei mir wurde Herzversagen diagnostiziert, was von den
-=C3=84rzten best=C3=A4tigt wurde. Der Arzt sagte mir, dass ich aufgrund die=
-ser
-gegenw=C3=A4rtigen Krankheit nicht mehr lange leben werde. Mein
-verstorbener Mann hat eine riesige Geldsumme bei einer Bank
-eingezahlt.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Gesamtguthaben auf der Bank: 4.500.000,00 $. W=C3=A4hrend ich Ihnen
-schreibe, ist das Geld auf der Bank. Aufgrund meines aktuellen
-Gesundheitszustands habe ich beschlossen, das Geld an das weniger
-privilegierte und mutterlose Babyheim zu spenden
+yamllint warnings/errors:
 
-Nachdem ich Ihr Profil im Internet =C3=BCberpr=C3=BCft hatte, beschloss ich=
-,
-Kontakt zu Ihnen aufzunehmen und Sie um Freundschaft und Hilfe bei der
-Spende meines Erbes zu bitten. Bitte mein lieber Freund, ich bin zu
-dir gekommen, um mir zu helfen, diesen letzten Wunsch auf Erden zu
-erf=C3=BCllen, denn ich bin zu schwach, um mich zu bewegen, und aufgrund
-meines Gesundheitszustands bin ich an einen Rollstuhl gebunden.
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/phy/phy-stm32-usbphyc.yaml: access-controller: missing type definition
 
-Es ist wahr, ich kenne dich nicht, aber Gott hat mir befohlen, dies zu
-tun. Wenn Sie mir helfen m=C3=B6chten, schreiben Sie mir zur=C3=BCck, damit=
- ich
-Ihnen sagen kann, wie Sie die Bank kontaktieren k=C3=B6nnen, um das Geld an
-Sie zu =C3=BCberweisen. Bitte teilen Sie mir Ihren Namen, Ihre Adresse,
-Ihren Beruf, Ihr Alter, Ihr Geschlecht, Ihren Familienstand und Ihre
-Kontaktdaten mit, damit ich den Betrag zur Freigabe an die Bank
-weiterleiten kann. Ich bin schwach und habe weniger Privilegien zu
-schreiben oder zu sprechen.
+doc reference errors (make refcheckdocs):
 
-Ich erwarte Ihre dringende Antwort.
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230929142852.578394-3-gatien.chevallier@foss.st.com
 
-Vielen Dank f=C3=BCr Ihre Freundlichkeit und Gottes Segen,
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-Dein
-Frau Maryrose Komo
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
