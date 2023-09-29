@@ -2,81 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 704417B390E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:42:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5127B3915
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 19:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233149AbjI2Rm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 13:42:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49828 "EHLO
+        id S233385AbjI2RpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 13:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232954AbjI2RmZ (ORCPT
+        with ESMTP id S232954AbjI2RpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 13:42:25 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5B51AE
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:42:22 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6c4a25f6390so7952527a34.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:42:22 -0700 (PDT)
+        Fri, 29 Sep 2023 13:45:03 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357E8195
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:45:02 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d8141d6fbe3so21407860276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 10:45:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696009342; x=1696614142; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=68RQMIL3JGNleZxOiCoTPvaR9s9H/zQLkKem3fLlu88=;
-        b=L023O7TPbKyGZH7XkKEr0b6TA1gyPuqsGVHgy2y56RmAXGWTmJ6flfTK/vR9SwIR3U
-         maU3h4aby7r/wXqXrApkgAJo2tb/OkLCEz7Tg3v4nrSGw00AgLD0jMqT3u9IPY/+PYfp
-         MOXCqYIM7rzKVoYT5PWdEl9FnPRj/FLfYcgHOCtbh6hyWzD0fGrBCTDhtCRJRsdS4wD3
-         ogKhzPRIvXfVSI6ejPtACbPRIwuk9RrsEqh4bUS45OmRC5AttG27kR57BxaN9G3VLKmd
-         nIjh1ywEXoDZeTTH9vKhX81ZPboaKtqpYJJrKFjwkSNeeo9pkM7XKdUHYBV4yx0G/m27
-         0P6A==
+        d=google.com; s=20230601; t=1696009501; x=1696614301; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=WeFol5pYV1Ko9ENqYbkHcdGhe+KDrfTUvOAiVPR/B44=;
+        b=FHIpozDpiouYwczBPoWT5uHw1RXkkh/vJ/fEXIuszeyAgDI7oLeBACZV39SvVqlncY
+         3WxeNmZeuizclZdRWgkL018ENmjgJixxi90mofv+CovFfkRRrymnoamShiOjU8xaqtYH
+         s44XrQ+vhg0D/7fmzsKPEZxCiK0RoV1kjF0xx+MUY6bnVEtSOI6B0WWHnIop0qT+u016
+         7WGQto0opBxK4+epdWwIZF5BwZnjrjZsbGVbI7hu2H6sPqVcH8Di5YWQNe83RvVLUsDT
+         dLChnd7PwtsfJuudZOJ8finXSJ+9wnoRTK+ckWCjb1tpfOdcAQyhMQWzG34QrrA3m03u
+         TkWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696009342; x=1696614142;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=68RQMIL3JGNleZxOiCoTPvaR9s9H/zQLkKem3fLlu88=;
-        b=YIL3oB+uZaP1PfiODVpcKiaoF0MrMulq/TGWh3RKKcHDlgdrKyWs9VCmitdFPi/+do
-         TjmAy40k/79KD+6/Vh4kruUaNg1wMrL+2d1lRfzj+LbUFpXp5G2gknnygMbjcaH/nHrg
-         aI2KRM7G4zLWHFrsFzSIm71piWv3oN531orXJxYLaHEo4k8L8qDW9qR9aKDUOjSFh+F1
-         mp8VhHW0nSHvhWFAIPTwil+TMQFRNymeX4K+MTMaO4A4lnH8uBx5QdI8anQqLWkx4eqA
-         TSz/6Fql0dPLQUD/EQYZHfQy+g6I4/r6ggD2D9ZmqWJTCTuQQ3o0B4bZzc1ea5VqDJAt
-         Y/8w==
-X-Gm-Message-State: AOJu0YzU3g2yrtVSVhqGyvHHX9nelC6m1qBBQ58fPElZMpshgVC3BRDm
-        7OB84giAu5jddsi2SMwouLKy0Q==
-X-Google-Smtp-Source: AGHT+IGyNmo17+iWn2ufBJg0OO9ZbA7uNNp+MMG6j43QotDJLGPGN7FO5yVqQx6ARbvw+dVe+LWDYw==
-X-Received: by 2002:a05:6830:22d4:b0:6bd:603:797f with SMTP id q20-20020a05683022d400b006bd0603797fmr5130719otc.37.1696009342226;
-        Fri, 29 Sep 2023 10:42:22 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:a683])
-        by smtp.gmail.com with ESMTPSA id oj2-20020a056214440200b0065af4977ea3sm5680149qvb.24.2023.09.29.10.42.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 10:42:21 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 13:42:21 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-        riel@surriel.com, mhocko@kernel.org, roman.gushchin@linux.dev,
-        shakeelb@google.com, muchun.song@linux.dev, tj@kernel.org,
-        lizefan.x@bytedance.com, shuah@kernel.org, mike.kravetz@oracle.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
- memory controller
-Message-ID: <20230929174221.GA19137@cmpxchg.org>
-References: <20230928005723.1709119-1-nphamcs@gmail.com>
- <20230928005723.1709119-2-nphamcs@gmail.com>
- <CAJD7tkanr99d_Y=LefQTFsykyiO5oZpPUC=suD3P-L5eS=0SXA@mail.gmail.com>
- <CAKEwX=M=8KYqvBTz9z1csrsFUpGf2tgWj-oyu96dSpRjn3ZnUQ@mail.gmail.com>
- <CAKEwX=Npb4mwZ2ibJkmD5GyqXazr7PH8UGLu+YSDY8acf152Eg@mail.gmail.com>
- <CAJD7tkaeDBTHC3UM91O56yrp8oCU-UBO6i_5HJMjVBDQAw0ipQ@mail.gmail.com>
- <20230929150829.GA16353@cmpxchg.org>
- <CAJD7tkZ1NiMMvQhxGSGzsPqYfBpwzP6svPe17s2FTDoHY6jYWQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJD7tkZ1NiMMvQhxGSGzsPqYfBpwzP6svPe17s2FTDoHY6jYWQ@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        d=1e100.net; s=20230601; t=1696009501; x=1696614301;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WeFol5pYV1Ko9ENqYbkHcdGhe+KDrfTUvOAiVPR/B44=;
+        b=TPKHCsYWhIrEgrCuIvVsnr+IdSkpIT9DWyBQG5azF1VvvB8kSxAOeY1fexNr3lg/98
+         /7cJNKYlhhsFg+Ss2+8B+OLGIEWyYpXJBUvii2/Xh6wRlYZ34ygBlhh4px6ZpPRUclUL
+         /jOuqqd0RfsAhGFqzA3/lDDCc9Y4SqY8onq9VCdrlvkO7qq2j1XxjUVOxkEwLuz0o0aO
+         vZ+buVq3J7TGVoTRapU+Sy/JbSmYzY36DRxkCJDsWjWV/3wGv9PYkhA/w6X4thIysPeL
+         6exBLHUuwSWxhwf7TPf4YiafR0DfOlpqO20kMXLVYVkDRWBy+J7TGMcxc+NHxRWafnaT
+         SX2Q==
+X-Gm-Message-State: AOJu0YziNhUtRwGfYPUG5p92Om/vmSdmHQYgLtR/F4/B4KNixe15Yzdu
+        iQUXo//oz7AcNmH+KzzoyWcZkLZafSG4
+X-Google-Smtp-Source: AGHT+IHKIT72vMk9HJY0OwCUd1WYkYptBpEbBznN2Ad7cY2/1+r3+ZHgx2VBvTiRMB8smhqc1oItalQ9wYNb
+X-Received: from bjg.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:415])
+ (user=bgeffon job=sendgmr) by 2002:a25:328c:0:b0:d77:8641:670c with SMTP id
+ y134-20020a25328c000000b00d778641670cmr68797yby.10.1696009501381; Fri, 29 Sep
+ 2023 10:45:01 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 13:44:42 -0400
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+Message-ID: <20230929174442.1635558-1-bgeffon@google.com>
+Subject: [PATCH] pid: Allow frozen userspace to reboot from non-init pid ns
+From:   Brian Geffon <bgeffon@google.com>
+To:     Christian Brauner <brauner@kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        linux-kernel@vger.kernel.org, Brian Geffon <bgeffon@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,50 +70,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 08:11:54AM -0700, Yosry Ahmed wrote:
-> On Fri, Sep 29, 2023 at 8:08 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Thu, Sep 28, 2023 at 06:18:19PM -0700, Yosry Ahmed wrote:
-> > > My concern is the scenario where the memory controller is mounted in
-> > > cgroup v1, and cgroup v2 is mounted with memory_hugetlb_accounting.
-> > >
-> > > In this case it seems like the current code will only check whether
-> > > memory_hugetlb_accounting was set on cgroup v2 or not, disregarding
-> > > the fact that cgroup v1 did not enable hugetlb accounting.
-> > >
-> > > I obviously prefer that any features are also added to cgroup v1,
-> > > because we still didn't make it to cgroup v2, especially when the
-> > > infrastructure is shared. On the other hand, I am pretty sure the
-> > > maintainers will not like what I am saying :)
-> >
-> > I have a weak preference.
-> >
-> > It's definitely a little weird that the v1 controller's behavior
-> > changes based on the v2 mount flag. And that if you want it as an
-> > otherwise exclusive v1 user, you'd have to mount a dummy v2.
-> >
-> > But I also don't see a scenario where it would hurt, or where there
-> > would be an unresolvable conflict between v1 and v2 in expressing
-> > desired behavior, since the memory controller is exclusive to one.
-> >
-> > While we could eliminate this quirk with a simple
-> > !cgroup_subsys_on_dfl(memory_cgrp_subsys) inside the charge function,
-> > it would seem almost punitive to add extra code just to take something
-> > away that isn't really a problem and could be useful to some people.
-> >
-> > If Tejun doesn't object, I'd say let's just keep implied v1 behavior.
-> 
-> I agree that adding extra code to take a feature away from v1 is
-> probably too much, but I also think relying on a v2 mount option is
-> weird. Would it be too much to just have a v1-specific flag as well
-> and use cgroup_subsys_on_dfl(memory_cgrp_subsys) to decide which flag
-> to read?
+When the system has a frozen userspace, for example, during hibernation
+the child reaper task will also be frozen. Attmepting to deliver a
+signal to it to handle the reboot(2) will ultimately lead to the system
+hanging unless userspace is thawed.
 
-Yeah, let's not preemptively add explicit new features to cgroup1.
+This change checks if the current task is the suspending task and if so
+it will allow it to proceed with a reboot from the non-init pid ns.
 
-Since we agree the incidental support is weird, let's filter hugetlb
-charging on cgroup_subsys_on_dfl(memory_cgrp_subsys) after all. If
-somebody wants this for v1 - and it doesn't sound like Google is even
-in that category according to Frank - they should send a separate
-patch and we can go through all the reasons why switching to v2 is not
-an option for them.
+Signed-off-by: Brian Geffon <bgeffon@google.com>
+Reported-by: Matthias Kaehlcke <mka@chromium.org>
+Tested-by: Matthias Kaehlcke <mka@chromium.org>
+---
+ kernel/pid_namespace.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
+index 0bf44afe04dd..4a93a5063eda 100644
+--- a/kernel/pid_namespace.c
++++ b/kernel/pid_namespace.c
+@@ -321,6 +321,15 @@ int reboot_pid_ns(struct pid_namespace *pid_ns, int cmd)
+ 	if (pid_ns == &init_pid_ns)
+ 		return 0;
+ 
++	if (current->flags & PF_SUSPEND_TASK) {
++		/*
++		 * Attempting to signal the child_reaper won't work if it's
++		 * frozen. In this case we shutdown the system as if we were in
++		 * the init_pid_ns.
++		 */
++		return 0;
++	}
++
+ 	switch (cmd) {
+ 	case LINUX_REBOOT_CMD_RESTART2:
+ 	case LINUX_REBOOT_CMD_RESTART:
+-- 
+2.42.0.582.g8ccd20d70d-goog
+
