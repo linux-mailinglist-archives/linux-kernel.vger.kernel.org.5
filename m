@@ -2,178 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60DD07B365F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88F3C7B3664
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 17:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233451AbjI2PIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 11:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44270 "EHLO
+        id S233527AbjI2PIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 11:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232490AbjI2PIS (ORCPT
+        with ESMTP id S233301AbjI2PIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 11:08:18 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FBE91A8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:08:16 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 5b1f17b1804b1-406618d0991so3638195e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 08:08:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696000095; x=1696604895; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=bR9UWtC1p3mwpIBD1ghImSIQPLTYUb8nPcgzl1u2x8Q=;
-        b=ID6OoioTsNwzZSOna7HcfvofmCkEQvKaBt7P4GhavTRjqd5qaA5FWnqWOUOYyFUpZg
-         UGERVXyhaO6mJgOvjcFtVMHSBHBlJMYAp7M73KT8N3zB3Dx2HHLKIRFTk3XGuftlmwd9
-         C0nejOhuh6ud/oLVPYmV6CYAk4YJD7cMXNrnV50Zf00bxBZSFz4vV0LvC7ruWucqIFiT
-         dOceBwuFfKVfHbGDuBJxtfZwWuTMHhVcnQdRYVtIJfjaQIM80tTBjqv+WX1Q/BStK6UN
-         5NNGll9zPpp5AD/0lQoMHATZJZmYEybKC19RKqEvL6aCGPrRUbDM+nDgJ4I5QwPIH+zZ
-         Nq1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696000095; x=1696604895;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=bR9UWtC1p3mwpIBD1ghImSIQPLTYUb8nPcgzl1u2x8Q=;
-        b=ZCdTQ/VPEZbZoExDJLSbdOuSXC8VUTFNc7li6EFXB7uQidyFZoLI+jA8JqPA8nkKwT
-         ka+FOZbcBVcaANrRXJNEtV6Mum1F/xh+eVoEpDBp7J6GFN2Rn4zUwLZFPbnFtavKiCyo
-         wkeNXjvUXozjXvGNBEcdTPz7TaaqZROIiNa51j8QgfpA7ycoSw1DYO43pnR1YJNTXXEF
-         E1qHD9iaOnSoMWGtsYyWGhXSZANtIRhgt4FmOQ04TnLpQjjJOiTzH/5CU7XISK8Oa12T
-         ugfDtUWPwDH8hBDYt55y1sodzqT6+HpgSt3wz5hMCYwCAgvR5++/bbdpcW50F4QwqpYF
-         FhCA==
-X-Gm-Message-State: AOJu0YxUe7MhyRLRfvf1LYURsnEvKlpwshbVw9xrBN6EHoVWLflHhJ/g
-        1f248sR2/SJJ2lY4D8wcuf4=
-X-Google-Smtp-Source: AGHT+IGHK+tbzpz8K/qw9KIsSxKt/JNBH2C6H1p5LbfKX/BA3YkbegQF5r7zhKiQCMdMtufOfJ1HxQ==
-X-Received: by 2002:a05:600c:220d:b0:405:3455:567e with SMTP id z13-20020a05600c220d00b004053455567emr3898215wml.5.1696000094652;
-        Fri, 29 Sep 2023 08:08:14 -0700 (PDT)
-Received: from localhost ([2a02:810d:1640:10d8:9259:8ee2:26ea:3669])
-        by smtp.gmail.com with ESMTPSA id r1-20020a05600c298100b0040586360a36sm1618613wmd.17.2023.09.29.08.08.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 08:08:14 -0700 (PDT)
-From:   Joerg Schambacher <joerg.hifiberry@gmail.com>
-Cc:     a-krasser@ti.com, joerg@hifiberry.com,
-        Joerg Schambacher <joerg.hifiberry@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Zhang Qilong <zhangqilong3@huawei.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] ASoC: Adds support for TAS575x to the pcm512x driver
-Date:   Fri, 29 Sep 2023 17:07:20 +0200
-Message-Id: <20230929150722.405415-1-joerg.hifiberry@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 29 Sep 2023 11:08:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C4ED6;
+        Fri, 29 Sep 2023 08:08:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696000114; x=1727536114;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=5RnBCSPEAzJPSAoQ/ZXC5vJGMkDh3xOlQXMwTkGu25w=;
+  b=Z+MdlnaCdZfi6P0QtP1T5Ero7PRPV6AMNyMcxxuTjif9BealwVGt1aEt
+   1S9wqfHCroWSDEHzzfq5n3nP4X0a0OeJ0LSwZhjU94hfierzDEm8o/LKb
+   3vVrVFCulorNTftVQFh+Nz94rCiutfya5obx7ofSnUjSyxRF6ZkYz614d
+   ZLEyDMZk3j4gNB/YRok1T7c3P4ZiLc7m6SS21ZyFcy1A7VWnFHMKatie5
+   Lh7lJF8mtSAXQedDlsmTjMBleGUyWJSIFrFx9OxhXgBmc8ennwmUXiwTm
+   lIggRetBni1k+xT845Jqg2VE9lS+qGTlvgEoECSm5TjvDzoCUglTjcgyi
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="3887367"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="3887367"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:08:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="743464516"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="743464516"
+Received: from smorozov-mobl1.ger.corp.intel.com ([10.252.52.167])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 08:08:14 -0700
+Date:   Fri, 29 Sep 2023 18:08:11 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Babu Moger <babu.moger@amd.com>
+cc:     corbet@lwn.net, Reinette Chatre <reinette.chatre@intel.com>,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        fenghua.yu@intel.com, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, paulmck@kernel.org, akpm@linux-foundation.org,
+        quic_neeraju@quicinc.com, rdunlap@infradead.org,
+        damien.lemoal@opensource.wdc.com, songmuchun@bytedance.com,
+        peterz@infradead.org, jpoimboe@kernel.org, pbonzini@redhat.com,
+        chang.seok.bae@intel.com, pawan.kumar.gupta@linux.intel.com,
+        jmattson@google.com, daniel.sneddon@linux.intel.com,
+        sandipan.das@amd.com, tony.luck@intel.com, james.morse@arm.com,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        bagasdotme@gmail.com, eranian@google.com,
+        christophe.leroy@csgroup.eu, jarkko@kernel.org,
+        adrian.hunter@intel.com, quic_jiles@quicinc.com,
+        peternewman@google.com
+Subject: Re: [PATCH v10 01/10] x86/resctrl: Add multiple tasks to the resctrl
+ group at once
+In-Reply-To: <20230915224227.1336967-2-babu.moger@amd.com>
+Message-ID: <46e4b492-f79d-fdda-9434-56f16e9443@linux.intel.com>
+References: <20230915224227.1336967-1-babu.moger@amd.com> <20230915224227.1336967-2-babu.moger@amd.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1993037258-1696000102=:1989"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enables the existing pcm512x driver to control the almost
-compatible TAS5754 and -76 amplifers. Both amplifiers support
-only an I2C interface and the internal PLL must be always
-on to provide necessary clocks to the amplifier section.
-Tested on TAS5756 with support from Andreas Arbesser-Krasser
-from Texas Instruments <a-krasser@ti.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by: Joerg Schambacher <joerg.hifiberry@gmail.com>
----
- sound/soc/codecs/pcm512x-i2c.c |  4 ++++
- sound/soc/codecs/pcm512x.c     | 36 +++++++++++++++++++++++++++++++---
- 2 files changed, 37 insertions(+), 3 deletions(-)
+--8323329-1993037258-1696000102=:1989
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
 
-diff --git a/sound/soc/codecs/pcm512x-i2c.c b/sound/soc/codecs/pcm512x-i2c.c
-index 5cd2b64b9337..4be476a280e1 100644
---- a/sound/soc/codecs/pcm512x-i2c.c
-+++ b/sound/soc/codecs/pcm512x-i2c.c
-@@ -39,6 +39,8 @@ static const struct i2c_device_id pcm512x_i2c_id[] = {
- 	{ "pcm5122", },
- 	{ "pcm5141", },
- 	{ "pcm5142", },
-+	{ "tas5754", },
-+	{ "tas5756", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, pcm512x_i2c_id);
-@@ -49,6 +51,8 @@ static const struct of_device_id pcm512x_of_match[] = {
- 	{ .compatible = "ti,pcm5122", },
- 	{ .compatible = "ti,pcm5141", },
- 	{ .compatible = "ti,pcm5142", },
-+	{ .compatible = "ti,tas5754", },
-+	{ .compatible = "ti,tas5756", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, pcm512x_of_match);
-diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
-index 89059a673cf0..aa8edf87b743 100644
---- a/sound/soc/codecs/pcm512x.c
-+++ b/sound/soc/codecs/pcm512x.c
-@@ -48,6 +48,7 @@ struct pcm512x_priv {
- 	int mute;
- 	struct mutex mutex;
- 	unsigned int bclk_ratio;
-+	int force_pll_on;
- };
- 
- /*
-@@ -1258,10 +1259,34 @@ static int pcm512x_hw_params(struct snd_pcm_substream *substream,
- 			return ret;
- 		}
- 
--		ret = regmap_update_bits(pcm512x->regmap, PCM512x_PLL_EN,
--					 PCM512x_PLLE, 0);
-+		if (!pcm512x->force_pll_on) {
-+			ret = regmap_update_bits(pcm512x->regmap,
-+						 PCM512x_PLL_EN, PCM512x_PLLE, 0);
-+		} else {
-+			/* provide minimum PLL config for TAS575x clocking
-+			 * and leave PLL enabled
-+			 */
-+			ret = regmap_write(pcm512x->regmap,
-+					   PCM512x_PLL_COEFF_0, 0x01);
-+			if (ret != 0) {
-+				dev_err(component->dev,
-+					"Failed to set pll coefficient: %d\n", ret);
-+				return ret;
-+			}
-+			ret = regmap_write(pcm512x->regmap,
-+					   PCM512x_PLL_COEFF_1, 0x04);
-+			if (ret != 0) {
-+				dev_err(component->dev,
-+					"Failed to set pll coefficient: %d\n", ret);
-+				return ret;
-+			}
-+			ret = regmap_write(pcm512x->regmap,
-+					   PCM512x_PLL_EN, 0x01);
-+			dev_dbg(component->dev, "Enabling PLL for TAS575x\n");
-+		}
-+
- 		if (ret != 0) {
--			dev_err(component->dev, "Failed to disable pll: %d\n", ret);
-+			dev_err(component->dev, "Failed to set pll mode: %d\n", ret);
- 			return ret;
- 		}
- 	}
-@@ -1659,6 +1684,11 @@ int pcm512x_probe(struct device *dev, struct regmap *regmap)
- 			ret = -EINVAL;
- 			goto err_pm;
- 		}
-+
-+		if (!strcmp(np->name, "tas5756") ||
-+		    !strcmp(np->name, "tas5754"))
-+			pcm512x->force_pll_on = 1;
-+		dev_dbg(dev, "Device ID: %s\n", np->name);
- 	}
- #endif
- 
+On Fri, 15 Sep 2023, Babu Moger wrote:
+
+> The resctrl task assignment for monitor or control group needs to be
+> done one at a time. For example:
+> 
+>   $mount -t resctrl resctrl /sys/fs/resctrl/
+>   $mkdir /sys/fs/resctrl/ctrl_grp1
+>   $echo 123 > /sys/fs/resctrl/ctrl_grp1/tasks
+>   $echo 456 > /sys/fs/resctrl/ctrl_grp1/tasks
+>   $echo 789 > /sys/fs/resctrl/ctrl_grp1/tasks
+> 
+> This is not user-friendly when dealing with hundreds of tasks.
+> 
+> Support multiple task assignment in one command with tasks ids separated
+> by commas. For example:
+>   $echo 123,456,789 > /sys/fs/resctrl/ctrl_grp1/tasks
+> 
+> Reviewed-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+> Tested-by: Tan Shaopeng <tan.shaopeng@jp.fujitsu.com>
+> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+> Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
+> Signed-off-by: Babu Moger <babu.moger@amd.com>
+> ---
+>  Documentation/arch/x86/resctrl.rst     |  9 ++++++++-
+>  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 25 ++++++++++++++++++++++---
+>  2 files changed, 30 insertions(+), 4 deletions(-)
+> 
+> diff --git a/Documentation/arch/x86/resctrl.rst b/Documentation/arch/x86/resctrl.rst
+> index cb05d90111b4..8154e9975d1e 100644
+> --- a/Documentation/arch/x86/resctrl.rst
+> +++ b/Documentation/arch/x86/resctrl.rst
+> @@ -299,7 +299,14 @@ All groups contain the following files:
+>  "tasks":
+>  	Reading this file shows the list of all tasks that belong to
+>  	this group. Writing a task id to the file will add a task to the
+> -	group. If the group is a CTRL_MON group the task is removed from
+> +	group. Multiple tasks can be added by separating the task ids
+> +	with commas. Tasks will be assigned sequentially. Multiple
+> +	failures are not supported. A single failure encountered while
+> +	attempting to assign a task will cause the operation to abort and
+> +	already added tasks before the failure will remain in the group.
+> +	Failures will be logged to /sys/fs/resctrl/info/last_cmd_status.
+> +
+> +	If the group is a CTRL_MON group the task is removed from
+>  	whichever previous CTRL_MON group owned the task and also from
+>  	any MON group that owned the task. If the group is a MON group,
+>  	then the task must already belong to the CTRL_MON parent of this
+> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> index 725344048f85..f0d163950969 100644
+> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+> @@ -696,11 +696,10 @@ static ssize_t rdtgroup_tasks_write(struct kernfs_open_file *of,
+>  				    char *buf, size_t nbytes, loff_t off)
+>  {
+>  	struct rdtgroup *rdtgrp;
+> +	char *pid_str;
+>  	int ret = 0;
+>  	pid_t pid;
+>  
+> -	if (kstrtoint(strstrip(buf), 0, &pid) || pid < 0)
+> -		return -EINVAL;
+>  	rdtgrp = rdtgroup_kn_lock_live(of->kn);
+>  	if (!rdtgrp) {
+>  		rdtgroup_kn_unlock(of->kn);
+> @@ -715,7 +714,27 @@ static ssize_t rdtgroup_tasks_write(struct kernfs_open_file *of,
+>  		goto unlock;
+>  	}
+>  
+> -	ret = rdtgroup_move_task(pid, rdtgrp, of);
+> +	while (buf && buf[0] != '\0' && buf[0] != '\n') {
+> +		pid_str = strim(strsep(&buf, ","));
+> +
+> +		if (kstrtoint(pid_str, 0, &pid)) {
+> +			rdt_last_cmd_printf("Task list parsing error pid %s\n", pid_str);
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +
+> +		if (pid < 0) {
+> +			rdt_last_cmd_printf("Invalid pid %d\n", pid);
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +
+> +		ret = rdtgroup_move_task(pid, rdtgrp, of);
+> +		if (ret) {
+> +			rdt_last_cmd_printf("Error while processing task %d\n", pid);
+> +			break;
+> +		}
+> +	}
+>  
+>  unlock:
+>  	rdtgroup_kn_unlock(of->kn);
+> 
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
 -- 
-2.34.1
+ i.
 
+--8323329-1993037258-1696000102=:1989--
