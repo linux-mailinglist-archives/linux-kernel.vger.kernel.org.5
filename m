@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C2D7B29B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 02:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC437B29BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 02:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232377AbjI2Ajn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 20:39:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+        id S232500AbjI2Ajq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 20:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbjI2Ajk (ORCPT
+        with ESMTP id S232303AbjI2Ajl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Sep 2023 20:39:40 -0400
+        Thu, 28 Sep 2023 20:39:41 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 420DD11F;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA5C199;
         Thu, 28 Sep 2023 17:39:39 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T0MqhG024992;
-        Fri, 29 Sep 2023 00:39:28 GMT
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38T0LeSF004291;
+        Fri, 29 Sep 2023 00:39:29 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=qcppdkim1;
- bh=kpE5sCFq3dmk4U1+LA8mrhI3/a/VConRpuJvlSn/PyE=;
- b=EBmMeZERHSg3+dyTQqX+2es9q/CJRrUCq/WUoV27QUck/SmQheR9znuC8Wqq0sJXyaFC
- v19VImIbqpJdQqO+BQm6s+9Z/h/aXWKplw1OhfLYV7z7hukR33KLeC2MMcAtNuYadQHt
- /4uR/2fNKWi16q653hJCjNGGSpkquoHurKeVp9QM3g0aB9qRiCg4RJ0LfyzmpxBd/BuF
- ClvsP4jlbmPGs/w4/P4H+okJlO6YWAjgCoJbUzTxSJTsLlVwnplp8+gooSukcRRBN+15
- NbyQ0vexZVWu/AFuTbUF73NbydfnShRsJlx1EgYr/brdckfRTxSXEiO7YUpDosrXGXuW wg== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tcvg9ay71-1
+ bh=HIjurGlTv0ZvYAR4Q8pB/LH3+AQ+59qEjHBWFY4T1H4=;
+ b=NOY/R61eHqO9pg5DjXg+s0yNZPPm+tBn+LIOMg2vaq6+RcRBV86nZoq2MtmMYIA+cYfF
+ N3X8DZ+lFK7VN1sRF63u8NOro4j5ZakzHsfW3PC57yL9KFoXgOj6CfAT9ibErwhnShZR
+ WT4F32DkfvekK+GRyClE6mFZ6SYZvUCGRG38AaRDH8u8n0U6Y1DEScwZFIA80mVX+1ug
+ M7xiTJdViojbKnG2+SsgnPZ8lUH2l6VohKfRflB0LAtslxX5iM0YWeCLdWK8EdZ0Y3dm
+ zsfcVclyqyI6x+bFTMurxO8psY1ylhyyrEJTyzgEcer29PSMaciLPm/NFmlbrDHze3Ff Vw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3td5se1v2q-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 00:39:28 +0000
+        Fri, 29 Sep 2023 00:39:29 +0000
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38T0dQWg025883
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38T0dSeF007736
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 00:39:26 GMT
+        Fri, 29 Sep 2023 00:39:28 GMT
 Received: from hu-amelende-lv.qualcomm.com (10.49.16.6) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Thu, 28 Sep 2023 17:39:24 -0700
+ 15.2.1118.36; Thu, 28 Sep 2023 17:39:25 -0700
 From:   Anjelique Melendez <quic_amelende@quicinc.com>
 To:     <pavel@ucw.cz>, <lee@kernel.org>, <thierry.reding@gmail.com>,
         <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
@@ -51,9 +51,9 @@ CC:     <luca.weiss@fairphone.com>, <konrad.dybcio@linaro.org>,
         <kernel@quicinc.com>,
         Anjelique Melendez <quic_amelende@quicinc.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v5 1/7] dt-bindings: soc: qcom: Add qcom,pbs bindings
-Date:   Thu, 28 Sep 2023 17:38:54 -0700
-Message-ID: <20230929003901.15086-2-quic_amelende@quicinc.com>
+Subject: [PATCH v5 2/7] dt-bindings: leds: leds-qcom-lpg: Add support for LPG PPG
+Date:   Thu, 28 Sep 2023 17:38:55 -0700
+Message-ID: <20230929003901.15086-3-quic_amelende@quicinc.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230929003901.15086-1-quic_amelende@quicinc.com>
 References: <20230929003901.15086-1-quic_amelende@quicinc.com>
@@ -65,15 +65,15 @@ X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: EzFopPYGVOMkDfi7c4JEmEuEOyU75hU4
-X-Proofpoint-GUID: EzFopPYGVOMkDfi7c4JEmEuEOyU75hU4
+X-Proofpoint-ORIG-GUID: J1LFDAHqKfChDh7WizdIhl1E6kS9GzrW
+X-Proofpoint-GUID: J1LFDAHqKfChDh7WizdIhl1E6kS9GzrW
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-09-28_23,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 adultscore=0
- bulkscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 suspectscore=0 impostorscore=0 malwarescore=0
+ priorityscore=1501 clxscore=1015 bulkscore=0 mlxlogscore=861 adultscore=0
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2309180000 definitions=main-2309290002
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -84,67 +84,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add binding for the Qualcomm Programmable Boot Sequencer device.
+Update leds-qcom-lpg binding to support LPG PPG.
 
 Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- .../bindings/soc/qcom/qcom,pbs.yaml           | 46 +++++++++++++++++++
- 1 file changed, 46 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml
+ .../bindings/leds/leds-qcom-lpg.yaml          | 89 ++++++++++++++++++-
+ 1 file changed, 88 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml
-new file mode 100644
-index 000000000000..b502ca72266a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/qcom/qcom,pbs.yaml
-@@ -0,0 +1,46 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/soc/qcom/qcom,pbs.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+index ea84ad426df1..590cd5ff9190 100644
+--- a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
++++ b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+@@ -11,7 +11,7 @@ maintainers:
+ 
+ description: >
+   The Qualcomm Light Pulse Generator consists of three different hardware blocks;
+-  a ramp generator with lookup table, the light pulse generator and a three
++  a ramp generator with lookup table (LUT), the light pulse generator and a three
+   channel current sink. These blocks are found in a wide range of Qualcomm PMICs.
+ 
+ properties:
+@@ -63,6 +63,29 @@ properties:
+         - description: dtest line to attach
+         - description: flags for the attachment
+ 
++  nvmem:
++    description: >
++      This property is required for PMICs that supports PPG, which is when a
++      PMIC stores LPG per-channel data and pattern LUT in SDAM modules instead
++      of in a LUT peripheral. For PMICs, such as PM8350C, per-channel data
++      and pattern LUT is separated into 2 SDAM modules. In that case, phandles
++      to both SDAM modules need to be specified.
++    minItems: 1
++    maxItems: 2
 +
-+title: Qualcomm Technologies, Inc. Programmable Boot Sequencer
-+
-+maintainers:
-+  - Anjelique Melendez <quic_amelende@quicinc.com>
-+
-+description: |
-+  The Qualcomm Technologies, Inc. Programmable Boot Sequencer (PBS)
-+  supports triggering power up and power down sequences for clients
-+  upon request.
-+
-+properties:
-+  compatible:
++  nvmem-names:
++    minItems: 1
 +    items:
-+      - enum:
-+          - qcom,pmi632-pbs
-+      - const: qcom,pbs
++      - const: lpg_chan_sdam
++      - const: lut_sdam
 +
-+  reg:
-+    maxItems: 1
++  qcom,pbs:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: >
++      Phandle of the Qualcomm Programmable Boot Sequencer node (PBS).
++      PBS node is used to trigger LPG pattern sequences for PMICs that support
++      single SDAM PPG.
 +
-+required:
-+  - compatible
-+  - reg
+   multi-led:
+     type: object
+     $ref: leds-class-multicolor.yaml#
+@@ -106,6 +129,39 @@ required:
+ 
+ additionalProperties: false
+ 
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: qcom,pmi632-lpg
++    then:
++      properties:
++        nvmem:
++          maxItems: 1
++        nvmem-names:
++          maxItems: 1
++      required:
++        - nvmem
++        - nvmem-names
++        - qcom,pbs
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - qcom,pm8350c-pwm
++              - qcom,pm8550-pwm
++    then:
++      properties:
++        nvmem:
++          minItems: 2
++        nvmem-names:
++          minItems: 2
++      required:
++        - nvmem
++        - nvmem-names
 +
-+additionalProperties: false
-+
-+examples:
+ examples:
+   - |
+     #include <dt-bindings/leds/common.h>
+@@ -191,4 +247,35 @@ examples:
+       compatible = "qcom,pm8916-pwm";
+       #pwm-cells = <2>;
+     };
 +  - |
-+    #include <dt-bindings/spmi/spmi.h>
++    #include <dt-bindings/leds/common.h>
 +
-+    pmic@0 {
-+      reg = <0x0 SPMI_USID>;
++    led-controller {
++      compatible = "qcom,pmi632-lpg";
 +      #address-cells = <1>;
 +      #size-cells = <0>;
++      #pwm-cells = <2>;
++      nvmem-names = "lpg_chan_sdam";
++      nvmem = <&pmi632_sdam_7>;
++      qcom,pbs = <&pmi632_pbs_client3>;
 +
-+      pbs@7400 {
-+        compatible = "qcom,pmi632-pbs", "qcom,pbs";
-+        reg = <0x7400>;
++      led@1 {
++        reg = <1>;
++        color = <LED_COLOR_ID_RED>;
++        label = "red";
++      };
++
++      led@2 {
++        reg = <2>;
++        color = <LED_COLOR_ID_GREEN>;
++        label = "green";
++      };
++
++      led@3 {
++        reg = <3>;
++        color = <LED_COLOR_ID_BLUE>;
++        label = "blue";
 +      };
 +    };
++
+ ...
 -- 
 2.41.0
 
