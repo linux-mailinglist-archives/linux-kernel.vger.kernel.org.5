@@ -2,149 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 908F87B34B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1775E7B34BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233358AbjI2OR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 10:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52390 "EHLO
+        id S233324AbjI2OTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 10:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233179AbjI2ORy (ORCPT
+        with ESMTP id S233279AbjI2OTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 10:17:54 -0400
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2045.outbound.protection.outlook.com [40.107.95.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73FF1B1;
-        Fri, 29 Sep 2023 07:17:50 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EZ3PkLGbyHzkGDycyOpZ/tK7HAnR1PwiTCnlbFaj4decv2VJ58zHr8mXRTQ5DoXaH0cDG6PTO2oU3jpCg9bmW1fu62+PUhFIxdZPavyA+xXyqF43I9YhPVRNGzYSN2pbD3T46w1ztkwTxpQ/4pynWbwDp+RRmVel0KsENL3GKylZkBfhajPvi/YLZM+g0Dr8WAWPaXcMHhRLDFmYPeEe3fsHyXoBmSj5y33XFuffZpNqk6E91NQZo77GmeNMiwHzLAHDPhHybSUdwHVU/m31CZ/jxlTHE2nd0LFEbI5w833spPkO+7wz/H9Yo/MwWHrCzRvEEbYVLfCxHPPfSxQCPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=y8LJr8Gh6MefqP3lE6LajajUVw7+JKpymgM42hTbJjE=;
- b=HHnYQbTT6eZjJmdcc8xU5aLV+RETnp0hI/CacCh9b05mgyE9O8x/NqvrUlMJlvmXB74cRWc3oeYpK0evUoygh79XBwS1j422AgqqGgd1aEQDRHoTBRQ/DE45VFx/LJPL2XV5afOnZ1zNAdVV3qassOOfB8aGy2LyKCLW+CHxvu/Vfc7H7F18CWpSGMTjarKnL3DNWqRiMwU00O+jrNjdsf26RyGtYDp0mP9iYaqD0wyaOkxrt09CuAYE8+pLTVpW8iCi4J3U0vvttVqJc+efpEYfZlGTaxZd4qRo8xOvUXHgJW47ZVQd8fcmta3y/BOQJ12Mdr2dBaigkWlXugqkfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y8LJr8Gh6MefqP3lE6LajajUVw7+JKpymgM42hTbJjE=;
- b=ELxk4z6gkMG9eUMISRba0VzcgtLn9J08NTwAUrrsLh6PR+yXypqPJT0BD1SPok7hAJnaqJB9h9jkxigH1Wa0YGL85u09auOrWvwuDtzSI9MlCAm4e4UoIs4XNUJrN6BIYAMEiBiY1rHQwRJ+EbCqh8uaIz0J3dfGGsMvLPcKew/wQ/73SzcKHluz5oYmHC0jcmuPLgh6mlA6QLFvaoiWT9bUrpOO2gUHi5yVA7z6kl4vMPfleIRypdCCPHw0RRpwi5AmSoILiyUyWEW8eEoYbR/qWdMZX3ZwkOWNDTqlp9s4ZqCoK6HAXSHZj8hei+E8zKO3f1jih82wINK/F1UDDA==
-Received: from CYXPR02CA0088.namprd02.prod.outlook.com (2603:10b6:930:ce::11)
- by DS7PR12MB5885.namprd12.prod.outlook.com (2603:10b6:8:78::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.28; Fri, 29 Sep
- 2023 14:17:48 +0000
-Received: from CY4PEPF0000E9D2.namprd03.prod.outlook.com
- (2603:10b6:930:ce:cafe::1d) by CYXPR02CA0088.outlook.office365.com
- (2603:10b6:930:ce::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26 via Frontend
- Transport; Fri, 29 Sep 2023 14:17:48 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CY4PEPF0000E9D2.mail.protection.outlook.com (10.167.241.145) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.19 via Frontend Transport; Fri, 29 Sep 2023 14:17:48 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 29 Sep
- 2023 07:17:41 -0700
-Received: from [10.41.21.79] (10.126.230.35) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 29 Sep
- 2023 07:17:38 -0700
-Message-ID: <8cb33679-5056-8983-9334-3ab3d170568a@nvidia.com>
-Date:   Fri, 29 Sep 2023 19:47:35 +0530
+        Fri, 29 Sep 2023 10:19:07 -0400
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003651AC
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:19:02 -0700 (PDT)
+Received: by mail-vk1-xa31.google.com with SMTP id 71dfb90a1353d-49a319c9e17so3982696e0c.1
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:19:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695997142; x=1696601942; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aeAmu5zRzHvoDH022+dw4lZnAM1RJWZc8yHpGYazk38=;
+        b=IAR2otZA0wOBAfulY51fm5VEDd7sQpNpQRLsH19GJyrgN0A6mKpe5s2Qg3Qa3eLTTs
+         4xHFLBHn8YT5dPvBfBWVGzsFvHhjZTrVerNAiPu1W0NIhjP75wJAIY/hA3Msh1AxNY+S
+         leUzg5FEf3NT/oUfXEYpIzM2GmA+zKF8DILIK17CKUOv0bov21+mugtYqNRhvCmGv+2s
+         K0olfdhSyI+W669SG5uPpfvA0/dGSdYXYXSXCTU/g5oPrG7Hmjm/KB1WkvbO6eSM/8AV
+         G8TnWG0Crek5TjyPZktdkuVciDMYx888Ii8hH8anI7JlDNU2SxNp0setm1a506+Upfjw
+         SCqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695997142; x=1696601942;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aeAmu5zRzHvoDH022+dw4lZnAM1RJWZc8yHpGYazk38=;
+        b=ZU5nlV12tKx1fdyqX8yoYFZh9cjewoALaDt576oZhH4JCbbOYUTmmZALg+00mVpokm
+         y3ZZK3efYQfq8n/89gHVuDvFVuDL8MFwFw/09YVzUSRqm544bWCERNqkjICrT88TzGvF
+         XnoJV1wQWnwgHpDvYtli5bmC9dwX2z72HN/xevSkozwIPrsq24gbbhpu79M28uhMt3vQ
+         7JPr0Kers8O/yyMarsJfe5N2tVkEOUm3INQoNKIyrFFBsIlzzw9nxcCQQmqQtIKEFqxd
+         3nB8W6XpB5gb6dVT1NwBE7lnPLqj5qyj02XHy6NkxmWQII57tDU19TX9GTpgJNybTwaC
+         Z3rA==
+X-Gm-Message-State: AOJu0YydJxSfs3gZIyT+NQRl4r5DUb/n9eauPYyj4EBibhE3ooFbyY0x
+        HPdcn3I6+holUFH6IfAMiOplBA==
+X-Google-Smtp-Source: AGHT+IG8PNXy1FiVTC84HeixjWp13xFTszyacFLiA9jqmSZuIb0y0MLVqqRjAZo1hAHWMru/kiHa3A==
+X-Received: by 2002:a1f:e641:0:b0:49a:850b:107b with SMTP id d62-20020a1fe641000000b0049a850b107bmr3260039vkh.5.1695997141781;
+        Fri, 29 Sep 2023 07:19:01 -0700 (PDT)
+Received: from [192.168.33.189] (178235177217.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.217])
+        by smtp.gmail.com with ESMTPSA id g27-20020ac5c5db000000b0049d1de0fa44sm102807vkl.28.2023.09.29.07.18.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Sep 2023 07:19:01 -0700 (PDT)
+Message-ID: <acc606a6-c46c-43f5-86e0-84bf876001dd@linaro.org>
+Date:   Fri, 29 Sep 2023 16:18:56 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [Patch v2 1/2] cpufreq: tegra194: save CPU data to avoid repeated
- SMP calls
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: sc7280: Add Camera Control
+ Interface busses
 Content-Language: en-US
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <rafael@kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <treding@nvidia.com>, <jonathanh@nvidia.com>, <bbasu@nvidia.com>,
-        <amiettinen@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
-References: <20230901164113.29139-1-sumitg@nvidia.com>
- <20230901164113.29139-2-sumitg@nvidia.com>
- <20230928070545.b7l367qi2q4rynji@vireshk-i7>
-From:   Sumit Gupta <sumitg@nvidia.com>
-In-Reply-To: <20230928070545.b7l367qi2q4rynji@vireshk-i7>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.126.230.35]
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail202.nvidia.com (10.129.68.7)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D2:EE_|DS7PR12MB5885:EE_
-X-MS-Office365-Filtering-Correlation-Id: 295bcc0c-6032-4560-b356-08dbc0f6dbf6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 3pjZuFSP9JZxl68Dsi/mntVHQITeRnOc6axX2tBwioAJYSzbEORgzmIwZw4sa3T98pc69+Kb5V5UbDJVbkq77iQJ5G+BcAvbYJ5090SOduCZdK3+KZiNBo16q2Ey+spN24FySBo53QySZTbVv+3tJuHFaCL7CQGZxYSlcEt9yr/C80TU4xbf6XarwMbQQXHkFKbwUP6xUImJBklqjPvPClzNxg0F315BuLiDJd0bgXYm5VzVeNBWya83YlsN4a+lK0HBfl8IkzGXPa75moKIeVHYcfhGEOJtuO6/laGlmrsQscdspEEjFoa1cEVG+v0ZalH9b3ws6nr1nXayh6wC66clZwv/CJ49VPk/zI8Y6LiOJrUEc/tewe42oVs39tqNN2qcX/r4yaw6dgc1PzTjVGYN8pOqSnimKd0fKnWh6ABBZIIsEdIcL7cxELNgZVBAeVtE5yu009cPf/hVUI0gtqPhpSK/blRnhkpXoPRhV8OFC3w7I4kcG5kPaqacwlduPezxtUO/9EK3EIDRB61l1zBCqc7GH+/EbotYL6yL5BNbQMSqTLUknzJ0BTaWed9mOrUE1Dk+RbJDJOArBuFsDHLI4IvOvFw/NRbLqpAIIPgh/02xq81H0lxAtC4Zr4u9sWOUFGjdInMYz2vlskrcMx7ANhIBu5hML504a3PK6lIaw+UDXGWwKZqP8VR24FsLwSzuxqduzm46DLEFnkkM5R17oe6vyyOg6XYt571IfD9TkMKqgf7E8rwJreELZmjTrxskFwL8dqiE9A2VRdEGfA==
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(39860400002)(136003)(346002)(230922051799003)(64100799003)(451199024)(186009)(82310400011)(1800799009)(40470700004)(46966006)(36840700001)(36756003)(478600001)(107886003)(356005)(36860700001)(2906002)(7636003)(5660300002)(82740400003)(16526019)(4326008)(2616005)(336012)(26005)(8676002)(31686004)(8936002)(53546011)(83380400001)(41300700001)(40460700003)(70586007)(426003)(6666004)(16576012)(54906003)(316002)(6916009)(70206006)(40480700001)(86362001)(31696002)(47076005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2023 14:17:48.6516
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 295bcc0c-6032-4560-b356-08dbc0f6dbf6
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D2.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB5885
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+To:     Bryan O'Donoghue <pure.logic@nexus-software.ie>,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230929-sc7280-cci-v1-0-16c7d386f062@fairphone.com>
+ <20230929-sc7280-cci-v1-2-16c7d386f062@fairphone.com>
+ <8dd470e5-ce33-3d33-98f1-e66935ca7b56@linaro.org>
+ <1b5bd391-4bb0-44ac-88d1-e326bec4dd7d@nexus-software.ie>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
+ BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
+ HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
+ TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
+ zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
+ MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
+ t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
+ UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
+ aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
+ kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
+ Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
+ R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
+ BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
+ yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
+ xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
+ 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
+ GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
+ mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
+ x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
+ BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
+ mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
+ Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
+ xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
+ AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
+ 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
+ jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
+ cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
+ jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
+ cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
+ bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
+ YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
+ bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
+ nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
+ izWDgYvmBE8=
+In-Reply-To: <1b5bd391-4bb0-44ac-88d1-e326bec4dd7d@nexus-software.ie>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 29.09.2023 16:15, Bryan O'Donoghue wrote:
+> On 29/09/2023 14:35, Konrad Dybcio wrote:
+>>
+>>
+>> On 9/29/23 10:01, Luca Weiss wrote:
+>>> Add the CCI busses found on sc7280 and their pinctrl states.
+>>>
+>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+>>> ---
+>>>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 136 +++++++++++++++++++++++++++++++++++
+>>>   1 file changed, 136 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> index 66f1eb83cca7..65550de2e4ff 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>>> @@ -3793,6 +3793,86 @@ videocc: clock-controller@aaf0000 {
+>>>               #power-domain-cells = <1>;
+>>>           };
+>>> +        cci0: cci@ac4a000 {
+>>> +            compatible = "qcom,sc7280-cci", "qcom,msm8996-cci";
+>>> +            reg = <0 0x0ac4a000 0 0x1000>;
+>>> +            interrupts = <GIC_SPI 460 IRQ_TYPE_EDGE_RISING>;
+>>> +            power-domains = <&camcc CAM_CC_TITAN_TOP_GDSC>;
+>>> +
+>>> +            clocks = <&camcc CAM_CC_CAMNOC_AXI_CLK>,
+>>> +                 <&camcc CAM_CC_SLOW_AHB_CLK_SRC>,
+>>> +                 <&camcc CAM_CC_CPAS_AHB_CLK>,
+>>> +                 <&camcc CAM_CC_CCI_0_CLK>,
+>>> +                 <&camcc CAM_CC_CCI_0_CLK_SRC>;
+>>> +            clock-names = "camnoc_axi",
+>>> +                      "slow_ahb_src",
+>>> +                      "cpas_ahb",
+>>> +                      "cci",
+>>> +                      "cci_src";
+>> I guess this is more of a question to e.g. Bryan, but are all of these clocks actually necessary?
+>>
+>> Konrad
+> Hmm its a good question, we generally take the approach of adopting all of the downstream clocks for these camera interfaces verbatim.
+> 
+> The clock plan for this part only calls out cci_X_clk and cci_x_clk_src for the CCI however we know that to be incomplete since we *absolutely* need to have the AXI for the block clocked to access those registers, same deal with the AHB bus.
+> 
+> AXI: registers
+> AHB: data
+> 
+> In the above list the only clock you might conceivably not need is CPAS_AHB_CLK.
+> 
+> Let me zap that clock from sdm845 since I have an rb3 right in front of me and see what happens.
+> 
+> Crash and reset
+> 
+> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+> @@ -4402,13 +4402,11 @@ cci: cci@ac4a000 {
+>                         clocks = <&clock_camcc CAM_CC_CAMNOC_AXI_CLK>,
+>                                 <&clock_camcc CAM_CC_SOC_AHB_CLK>,
+>                                 <&clock_camcc CAM_CC_SLOW_AHB_CLK_SRC>,
+> -                               <&clock_camcc CAM_CC_CPAS_AHB_CLK>,
+>                                 <&clock_camcc CAM_CC_CCI_CLK>,
+>                                 <&clock_camcc CAM_CC_CCI_CLK_SRC>;
+>                         clock-names = "camnoc_axi",
+>                                 "soc_ahb",
+>                                 "slow_ahb_src",
+> -                               "cpas_ahb",
+>                                 "cci",
+>                                 "cci_src";
+> 
+> 
+> I think the list is good tbh
+WDYT about camcc consuming ahb, like dispcc does?
+AXI, hmm.. not quite sure what to do with it
 
-
-On 28/09/23 12:35, Viresh Kumar wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On 01-09-23, 22:11, Sumit Gupta wrote:
->> @@ -131,19 +132,10 @@ static int tegra234_get_cpu_ndiv(u32 cpu, u32 cpuid, u32 clusterid, u64 *ndiv)
->>   static void tegra234_set_cpu_ndiv(struct cpufreq_policy *policy, u64 ndiv)
->>   {
-> 
->> +     for_each_cpu_and(cpu, policy->cpus, cpu_online_mask)
-> 
-> (Yes this is existing code, but ..) you don't need to perform AND with
-> cpu_online_mask as policy->cpus should only contain currently online CPUs.
-> 
-> Please check if you ever see it differently.
-> 
-
-I think this was kept to be safe.
-Should I removed the AND in v3 or send separate patch?
-
->> +     data->cpu_data = devm_kcalloc(&pdev->dev, data->soc->num_clusters *
->> +                                   data->soc->maxcpus_per_cluster,
->> +                                   sizeof(struct tegra_cpu_data), GFP_KERNEL);
-> 
-> This should be: sizeof(*data->cpu_data) instead. Didn't checkpatch complain
-> about it ?
-> 
-> --
-> viresh
-
-Checkpatch didn't highlight it.
-Will do the change in v3.
-
-Thank you,
-Sumit Gupta
+Konrad
