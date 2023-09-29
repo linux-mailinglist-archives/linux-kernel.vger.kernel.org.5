@@ -2,99 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E89BE7B322F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D13717B3224
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:14:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233244AbjI2MPE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Sep 2023 08:15:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47412 "EHLO
+        id S233201AbjI2MO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 08:14:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233207AbjI2MO5 (ORCPT
+        with ESMTP id S232964AbjI2MOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:14:57 -0400
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2550519F;
-        Fri, 29 Sep 2023 05:14:55 -0700 (PDT)
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-57b68556d6dso6524895eaf.1;
-        Fri, 29 Sep 2023 05:14:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695989694; x=1696594494;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RuoH4Um95jPah+EhYg0BBr891Wv4izigjaMEWeAZDlE=;
-        b=wQRcmkjHrUfYn4EIqibb9B+ADh0HqBABsRdMGCsX+2tAhiq0cwrmOUEQULMYIa2yU/
-         vKkdSwnI+vPXeBewXlq1Y3J+bcHLf9ivPmzh5a5/Vmg0qJEgYjiS98ZTjroy12emptrE
-         4Da+7mXOepkvBwO4DueT7ifBlw7qA19fnCb9p4ARcQR/Pyg9NvzNzVUZCScvlUWzK/mI
-         zty88Gxnv98HIQC6UQ4Sn8O9SmYelpyVIVV9c4XfPAEgh4X5dMbs/XWvSEaWFVg3hD1c
-         2GywS7582+aB4rul6F7pph3F0ib9TKgALRIISHe9jLMmcR3rw8TrIwhhaoeyOwSnQW2S
-         sOXg==
-X-Gm-Message-State: AOJu0YxSIXwgD10YXZ6UIZFDbIK4uIgGcwcWPpAZj/yEqr9jHp7wqhgk
-        hYRgkPUs/+x+rc7SXJblabguwik4jGWLPFAr
-X-Google-Smtp-Source: AGHT+IFRj61fbWgq7CLJNKA93/V+zVCyq3LNqFBOZOAYeOf0HZJG+N7nBmPWn78HcLfzQFArbEO9Rg==
-X-Received: by 2002:a05:6358:7252:b0:135:a10e:1ed0 with SMTP id i18-20020a056358725200b00135a10e1ed0mr4127927rwa.23.1695989693864;
-        Fri, 29 Sep 2023 05:14:53 -0700 (PDT)
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
-        by smtp.gmail.com with ESMTPSA id o79-20020a254152000000b00d749a394c87sm4997381yba.16.2023.09.29.05.14.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 05:14:53 -0700 (PDT)
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-d8afe543712so1356386276.0;
-        Fri, 29 Sep 2023 05:14:53 -0700 (PDT)
-X-Received: by 2002:a25:d4c5:0:b0:d4e:4103:7807 with SMTP id
- m188-20020a25d4c5000000b00d4e41037807mr4110545ybf.60.1695989693529; Fri, 29
- Sep 2023 05:14:53 -0700 (PDT)
+        Fri, 29 Sep 2023 08:14:54 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26DA195;
+        Fri, 29 Sep 2023 05:14:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695989693; x=1727525693;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=KNfatNXoG01pvqTGnOOrlsYSgYpTKa6jT4GBdzYHpH4=;
+  b=glaReEowGOTXDElaWMWFg9mdA6nVwbcMYtmdfmWcppCLtf4SGP71tmmk
+   mEQuHPFZE2bUXx85zeg48meH/Ij1OQNpBM8ejK2Dft8o8bM7k+UOXb9eh
+   wuTr1GnPKgCI+p89NquIoQFrdPPTMoqQhOgMiErvqLkjAR52CR4b+dGHr
+   i7pmzZfbfENCY/1qf9AxuSFvZhKBxz4aC2opA8tQ7ZN4FVDE8cbz3p+5F
+   +KbqtLUPZGGVFj5uDbuGyeSS+tRosDhq2mikCZLSw6pXu29uRaOLwA0+e
+   4E8hFCSoywXJqNO5PAyOmtLTtDir3nYESu0qVo4ppbg+KCSIjj5rRjc2+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="3857214"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="3857214"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 05:14:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="813536"
+Received: from smorozov-mobl1.ger.corp.intel.com ([10.252.52.167])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 05:14:15 -0700
+Date:   Fri, 29 Sep 2023 15:14:47 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] platform/x86: ISST: Use fuse enabled mask instead
+ of allowed levels
+In-Reply-To: <20230925194555.966743-2-srinivas.pandruvada@linux.intel.com>
+Message-ID: <6991c0fa-7b3c-b99a-4ac4-9c499d4d808b@linux.intel.com>
+References: <20230925194555.966743-1-srinivas.pandruvada@linux.intel.com> <20230925194555.966743-2-srinivas.pandruvada@linux.intel.com>
 MIME-Version: 1.0
-References: <20230925154548.27048-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20230925154548.27048-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 29 Sep 2023 14:14:41 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU690+e1SNVFsjMJHHdqQymwKMjGwuCe02Q2wYzMSNGEA@mail.gmail.com>
-Message-ID: <CAMuHMdU690+e1SNVFsjMJHHdqQymwKMjGwuCe02Q2wYzMSNGEA@mail.gmail.com>
-Subject: Re: [PATCH v3] pinctrl: renesas: pinctrl-rzg2l: Add validation of
- GPIO pin in rzg2l_gpio_request()
-To:     Prabhakar <prabhakar.csengg@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-renesas-soc@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 5:46 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Validate the GPIO pin request in rzg2l_gpio_request() callback using
-> rzg2l_validate_gpio_pin() function. This stops any accidental usage
-> of GPIO pins which are not supported by the SoCs.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> Tested-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
-> v2->v3
-> * Updated pin_data variable to be u32 instead of u64.
+On Mon, 25 Sep 2023, Srinivas Pandruvada wrote:
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-pinctrl-for-v6.7.
+> Allowed level mask is a mask of levels, which are currently allowed
+> to dynamically switch. But even dynamic switching is not allowed,
 
-Gr{oetje,eeting}s,
+even if ?
 
-                        Geert
+> user should be able to check all parameters for selection via BIOS.
+
+I think you're lacking a negation in the above paragraph because it sounds 
+like there's an internal contradiction in it. Can you please take a look.
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+ i.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+> So when passing the level mask for display to user space, use fuse
+> enabled mask, which has all levels.
+> 
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> ---
+>  drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
+> index 37f17e229419..48465636aadb 100644
+> --- a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
+> +++ b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
+> @@ -712,7 +712,7 @@ static int isst_if_get_perf_level(void __user *argp)
+>  		return -EINVAL;
+>  
+>  	perf_level.max_level = power_domain_info->max_level;
+> -	perf_level.level_mask = power_domain_info->pp_header.allowed_level_mask;
+> +	perf_level.level_mask = power_domain_info->pp_header.level_en_mask;
+>  	perf_level.feature_rev = power_domain_info->pp_header.feature_rev;
+>  	_read_pp_info("current_level", perf_level.current_level, SST_PP_STATUS_OFFSET,
+>  		      SST_PP_LEVEL_START, SST_PP_LEVEL_WIDTH, SST_MUL_FACTOR_NONE)
+> 
