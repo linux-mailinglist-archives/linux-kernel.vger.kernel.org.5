@@ -2,112 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C417B33A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:32:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9527B7B33AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 15:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233372AbjI2NcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 09:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
+        id S233312AbjI2Ndb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 09:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233346AbjI2NcN (ORCPT
+        with ESMTP id S233127AbjI2Nd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 09:32:13 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B381A8;
-        Fri, 29 Sep 2023 06:32:11 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38TAgi7p001220;
-        Fri, 29 Sep 2023 13:31:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=4psosez0s6ShH4sT2NTMtK8L6V23Vo6YOejUjTs9phE=;
- b=PlDgoFITUbExyWTxlGnHb6CyvS9seUbgi/qUVJTUxHm0KQzTdtfgGEdU6CQcWCrzcfl3
- +fsS2rdfd6zyOyUdu7o8RN+gntlmGPUfBPnfpeMuLtOvG18ZHKQ8VqH6RYIt85OHql9Z
- 2g6i80d9GN/OuYU1eozDp1eooIgjRcA+a6t45aGzBieB+DbavvjvZrKOSXar5fcnTEgg
- IEMQ4HcSEbDfGnigzr2TYFmtUVi3xPh92itOb62ukwf8kdVMMoCvhIen6A6OMn0MHeyJ
- o1dC0dZ9hSpkm0atwUq5HlsIaurWSz1g7S6EDdREHw5lvEgcHvCw99mdIShVtbMVo+/A 5A== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tdfbrsxdp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 13:31:41 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 38TDVek8026335
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 13:31:40 GMT
-Received: from [10.216.51.141] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Fri, 29 Sep
- 2023 06:31:30 -0700
-Message-ID: <3f89e0b7-189e-4cf7-bec5-b03c903c46b5@quicinc.com>
-Date:   Fri, 29 Sep 2023 19:01:30 +0530
+        Fri, 29 Sep 2023 09:33:29 -0400
+Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1A31AA;
+        Fri, 29 Sep 2023 06:33:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1695994408; x=1727530408;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=xambfgWWZgU+LtWtj7EW8T9Yc1SrUYVGEqTnYU67a1A=;
+  b=MMw1sRYPvBNuZAALLYnzAz3nqhgNOIwM1qrSXU8POTgB9/m39urMoZqA
+   x0Bhcz9WAzfIDdq7NtuE4qknoiq22czQcdx0JW1MH58Xh2iTHHFlkQkV9
+   neyJxniAs8XF6UD0aLjzO75qqdrdaV/XVUSIoz2z6xn/gDmgMB+QB41eP
+   Y=;
+X-IronPort-AV: E=Sophos;i="6.03,187,1694736000"; 
+   d="scan'208";a="32401400"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-f323d91c.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 13:33:26 +0000
+Received: from EX19MTAUWC001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
+        by email-inbound-relay-pdx-2b-m6i4x-f323d91c.us-west-2.amazon.com (Postfix) with ESMTPS id ACE9040D6A;
+        Fri, 29 Sep 2023 13:33:25 +0000 (UTC)
+Received: from EX19D020UWC004.ant.amazon.com (10.13.138.149) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Fri, 29 Sep 2023 13:33:24 +0000
+Received: from dev-dsk-graf-1a-5ce218e4.eu-west-1.amazon.com (10.253.83.51) by
+ EX19D020UWC004.ant.amazon.com (10.13.138.149) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Fri, 29 Sep 2023 13:33:22 +0000
+From:   Alexander Graf <graf@amazon.com>
+To:     <linux-crypto@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Olivia Mackall <olivia@selenic.com>,
+        "Petre Eftime" <petre.eftime@gmail.com>,
+        Erdem Meydanlli <meydanli@amazon.nl>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v2 0/2] Add Nitro Secure Module support
+Date:   Fri, 29 Sep 2023 13:33:18 +0000
+Message-ID: <20230929133320.74848-1-graf@amazon.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/8] arm64: dts: qcom: ipq5332: Add Super-Speed UNIPHY in
- USB node
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
-        <andersson@kernel.org>, <vkoul@kernel.org>, <kishon@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <gregkh@linuxfoundation.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <p.zabel@pengutronix.de>, <geert+renesas@glider.be>,
-        <arnd@arndb.de>, <neil.armstrong@linaro.org>,
-        <nfraprado@collabora.com>, <u-kumar1@ti.com>, <peng.fan@nxp.com>,
-        <quic_wcheng@quicinc.com>, <quic_varada@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-CC:     <quic_kathirav@quicinc.com>, <quic_nsekar@quicinc.com>,
-        <quic_srichara@quicinc.com>
-References: <20230929084209.3033093-1-quic_ipkumar@quicinc.com>
- <20230929084209.3033093-7-quic_ipkumar@quicinc.com>
- <618992fe-4c76-42ef-af47-ee66f74c5bb6@linaro.org>
-From:   Praveenkumar I <quic_ipkumar@quicinc.com>
-In-Reply-To: <618992fe-4c76-42ef-af47-ee66f74c5bb6@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+X-Originating-IP: [10.253.83.51]
+X-ClientProxiedBy: EX19D040UWA001.ant.amazon.com (10.13.139.22) To
+ EX19D020UWC004.ant.amazon.com (10.13.138.149)
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: aQMf_Wmi_iMyp-ktWcW02lb7x-KBLhiL
-X-Proofpoint-GUID: aQMf_Wmi_iMyp-ktWcW02lb7x-KBLhiL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-29_11,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- malwarescore=0 impostorscore=0 mlxscore=0 suspectscore=0
- priorityscore=1501 lowpriorityscore=0 mlxlogscore=451 adultscore=0
- clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2309290116
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We already have support for the Nitro Enclave kernel module in upstream
+Linux, which is needed to control a Nitro Enclave's lifecycle.
+
+However, users typically want to run Linux inside the Enclave as well. To
+do that well, they need the ability to communicate to the Nitro Secure
+Module: A virtio based PV device that provides access to PCRs, an attestation
+document as well as access to entropy.
+
+These patches add driver support for NSM. With them in place, upstream Linux
+has everything that's needed to run as a Nitro Enclave kernel.
 
 
-On 9/29/2023 6:44 PM, Konrad Dybcio wrote:
-> On 29.09.2023 10:42, Praveenkumar I wrote:
->> Add UNIPHY node in USB to support Super-speed. As the SS PHY has
->> pipe clock, removed "qcom,select-utmi-as-pipe-clk" flag.
->>
->> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
->> ---
-> Patches 6 and 7 should be swapped, otherwise you may get no
-> USB with this commit. Incremental patches must not break
-> functionality, unless it is truly inevitable.
-Understood. Will swap the 6 and 7 patches in the update.
+Alex
 
---
-Thanks,
-Praveenkumar
->
-> Konrad
+v1 -> v2:
+
+   - Remove boilerplate
+   - Add uapi header
+
+Alexander Graf (2):
+  misc: Add Nitro Secure Module driver
+  hwrng: Add support for Nitro Secure Module
+
+ MAINTAINERS                      |  11 +
+ drivers/char/hw_random/Kconfig   |  12 +
+ drivers/char/hw_random/Makefile  |   1 +
+ drivers/char/hw_random/nsm-rng.c | 272 +++++++++++++++++++
+ drivers/misc/Kconfig             |  11 +
+ drivers/misc/Makefile            |   1 +
+ drivers/misc/nsm.c               | 448 +++++++++++++++++++++++++++++++
+ include/linux/nsm.h              |  35 +++
+ include/uapi/linux/nsm.h         |  24 ++
+ 9 files changed, 815 insertions(+)
+ create mode 100644 drivers/char/hw_random/nsm-rng.c
+ create mode 100644 drivers/misc/nsm.c
+ create mode 100644 include/linux/nsm.h
+ create mode 100644 include/uapi/linux/nsm.h
+
+-- 
+2.40.1
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
 
