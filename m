@@ -2,192 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0BCD7B2F8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1499F7B2F8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbjI2Jux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 05:50:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37164 "EHLO
+        id S232849AbjI2Jvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 05:51:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232746AbjI2Juv (ORCPT
+        with ESMTP id S232490AbjI2Jvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:50:51 -0400
-Received: from out-193.mta1.migadu.com (out-193.mta1.migadu.com [95.215.58.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D578B195
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:50:48 -0700 (PDT)
-Message-ID: <a6a20ff9-385c-639f-75cf-ce73a01d97cf@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1695981046;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=f+8xZn9lal8sDVbp/H4rgA146h8k7jfbbszC/Xv6SYI=;
-        b=PPVs4qjtDI4aGqfp+RNb4ypDF4hrQHgPmROXrPiGgU3PqUC8lExbAfUTnBWesSsfiuJBMp
-        mZp/bKXDie5be33nHH1FnQXEYJdLoUgE0eCAddN6jX8LR542ksNQqj3qEQm/qtL2gyOvQU
-        Vz+PNeWF/laG3+sKLHu8BBhNU58F3hM=
-Date:   Fri, 29 Sep 2023 17:50:40 +0800
+        Fri, 29 Sep 2023 05:51:50 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E710F195
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:51:47 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id A0932218E6;
+        Fri, 29 Sep 2023 09:51:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1695981106;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=2mSvajXs/u299TQR/vl8udijxVbzNCOW2qMU41hxYb4=;
+        b=q50G3asbHmAzxja6JMjQdjtO2wfyPavrJh+sLjDYoAl3s6FzvR7pOLQ1ieptOKA897NJQ0
+        EGOmPa+8CXaGj4gKnz36/d4eWBV/ptrcKf/Df9D386W07YHHbsG0Kvl6UEU02D+1jJObwm
+        P/oMZH86ZxagOfSnj7XNbokaVVVOSbM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1695981106;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=2mSvajXs/u299TQR/vl8udijxVbzNCOW2qMU41hxYb4=;
+        b=tvpkGFUuvM/cGpi/g+GaNsZTzw85e+gKzLu6skn/+c1yVkb8iHr5iaBpxnPPaFsJVwFH7K
+        novooDOjzpxWN6CQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 371151390A;
+        Fri, 29 Sep 2023 09:51:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id AVg2CzKeFmUaFgAAMHmgww
+        (envelope-from <pvorel@suse.cz>); Fri, 29 Sep 2023 09:51:46 +0000
+Date:   Fri, 29 Sep 2023 11:51:44 +0200
+From:   Petr Vorel <pvorel@suse.cz>
+To:     ltp@lists.linux.it, linux-kernel@vger.kernel.org,
+        libc-alpha@sourceware.org
+Cc:     lwn@lwn.net, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, Cyril Hrubis <chrubis@suse.cz>
+Subject: The Linux Test Project has been released for SEPTEMBER 2023
+Message-ID: <20230929095144.GD364346@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 2/2] mm: Init page count in reserve_bootmem_region when
- MEMINIT_EARLY
-Content-Language: en-US
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, willy@infradead.org, david@redhat.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20230928083302.386202-1-yajun.deng@linux.dev>
- <20230928083302.386202-3-yajun.deng@linux.dev>
- <20230929083018.GU3303@kernel.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yajun Deng <yajun.deng@linux.dev>
-In-Reply-To: <20230929083018.GU3303@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Good news everyone,
 
-On 2023/9/29 16:30, Mike Rapoport wrote:
-> On Thu, Sep 28, 2023 at 04:33:02PM +0800, Yajun Deng wrote:
->> memmap_init_range() would init page count of all pages, but the free
->> pages count would be reset in __free_pages_core(). There are opposite
->> operations. It's unnecessary and time-consuming when it's MEMINIT_EARLY
->> context.
->>
->> Init page count in reserve_bootmem_region when in MEMINIT_EARLY context,
->> and check the page count before reset it.
->>
->> At the same time, the INIT_LIST_HEAD in reserve_bootmem_region isn't
->> need, as it already done in __init_single_page.
->>
->> The following data was tested on an x86 machine with 190GB of RAM.
->>
->> before:
->> free_low_memory_core_early()    341ms
->>
->> after:
->> free_low_memory_core_early()    285ms
->>
->> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
->> ---
->> v4: same with v2.
->> v3: same with v2.
->> v2: check page count instead of check context before reset it.
->> v1: https://lore.kernel.org/all/20230922070923.355656-1-yajun.deng@linux.dev/
->> ---
->>   mm/mm_init.c    | 18 +++++++++++++-----
->>   mm/page_alloc.c | 20 ++++++++++++--------
->>   2 files changed, 25 insertions(+), 13 deletions(-)
->>
->> diff --git a/mm/mm_init.c b/mm/mm_init.c
->> index 9716c8a7ade9..3ab8861e1ef3 100644
->> --- a/mm/mm_init.c
->> +++ b/mm/mm_init.c
->> @@ -718,7 +718,7 @@ static void __meminit init_reserved_page(unsigned long pfn, int nid)
->>   		if (zone_spans_pfn(zone, pfn))
->>   			break;
->>   	}
->> -	__init_single_page(pfn_to_page(pfn), pfn, zid, nid, INIT_PAGE_COUNT);
->> +	__init_single_page(pfn_to_page(pfn), pfn, zid, nid, 0);
->>   }
->>   #else
->>   static inline void pgdat_set_deferred_range(pg_data_t *pgdat) {}
->> @@ -756,8 +756,8 @@ void __meminit reserve_bootmem_region(phys_addr_t start,
->>   
->>   			init_reserved_page(start_pfn, nid);
->>   
->> -			/* Avoid false-positive PageTail() */
->> -			INIT_LIST_HEAD(&page->lru);
->> +			/* Init page count for reserved region */
-> Please add a comment that describes _why_ we initialize the page count here.
-Okay.
->
->> +			init_page_count(page);
->>   
->>   			/*
->>   			 * no need for atomic set_bit because the struct
->> @@ -888,9 +888,17 @@ void __meminit memmap_init_range(unsigned long size, int nid, unsigned long zone
->>   		}
->>   
->>   		page = pfn_to_page(pfn);
->> -		__init_single_page(page, pfn, zone, nid, INIT_PAGE_COUNT);
->> -		if (context == MEMINIT_HOTPLUG)
->> +
->> +		/* If the context is MEMINIT_EARLY, we will init page count and
->> +		 * mark page reserved in reserve_bootmem_region, the free region
->> +		 * wouldn't have page count and we will check the pages count
->> +		 * in __free_pages_core.
->> +		 */
->> +		__init_single_page(page, pfn, zone, nid, 0);
->> +		if (context == MEMINIT_HOTPLUG) {
->> +			init_page_count(page);
->>   			__SetPageReserved(page);
-> Rather than calling init_page_count() and __SetPageReserved() for
-> MEMINIT_HOTPLUG you can set flags to INIT_PAGE_COUNT | INIT_PAGE_RESERVED
-> an call __init_single_page() after the check for MEMINIT_HOTPLUG.
+the Linux Test Project test suite stable release for *September 2023* has been
+released.
 
-No, the following code would cost more time than the current code in 
-memmap_init().
+Since the last release 250 patches by 34 authors were merged, 14 authors were new.
 
-if (context == MEMINIT_HOTPLUG)
+Patch review is what most of the projects struggle with and LTP is no
+different. If you can spare some effort helping with the patch review is more
+than welcomed.
 
-	__init_single_page(page, pfn, zone, nid, INIT_PAGE_COUNT | INIT_PAGE_RESERVED);
-else
-	
-	__init_single_page(page, pfn, zone, nid, 0);
+The release notes were prepared by Cyril Hrubis.
 
-> But more generally, I wonder if we have to differentiate HOTPLUG here at all.
-> @David, can you comment please?
->
->> +		}
->>   
->>   		/*
->>   		 * Usually, we want to mark the pageblock MIGRATE_MOVABLE,
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index 06be8821d833..b868caabe8dc 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -1285,18 +1285,22 @@ void __free_pages_core(struct page *page, unsigned int order)
->>   	unsigned int loop;
->>   
->>   	/*
->> -	 * When initializing the memmap, __init_single_page() sets the refcount
->> -	 * of all pages to 1 ("allocated"/"not free"). We have to set the
->> -	 * refcount of all involved pages to 0.
->> +	 * When initializing the memmap, memmap_init_range sets the refcount
->> +	 * of all pages to 1 ("reserved" and "free") in hotplug context. We
->> +	 * have to set the refcount of all involved pages to 0. Otherwise,
->> +	 * we don't do it, as reserve_bootmem_region only set the refcount on
->> +	 * reserve region ("reserved") in early context.
->>   	 */
-> Again, why hotplug and early init should be different?
-I will add a comment that describes it will save boot time.
->
->> -	prefetchw(p);
->> -	for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
->> -		prefetchw(p + 1);
->> +	if (page_count(page)) {
->> +		prefetchw(p);
->> +		for (loop = 0; loop < (nr_pages - 1); loop++, p++) {
->> +			prefetchw(p + 1);
->> +			__ClearPageReserved(p);
->> +			set_page_count(p, 0);
->> +		}
->>   		__ClearPageReserved(p);
->>   		set_page_count(p, 0);
->>   	}
->> -	__ClearPageReserved(p);
->> -	set_page_count(p, 0);
->>   
->>   	atomic_long_add(nr_pages, &page_zone(page)->managed_pages);
->>   
->> -- 
->> 2.25.1
->>
+NOTABLE CHANGES
+===============
+
+* New tests
+  - epoll_wait07 for EPOLLONESHOT
+  - epoll_wait06 for EPOLLET
+  - epoll_wait05 for EPOLLRDHUP
+  - process_madvise01 for MADV_PAGEOUT
+  - faccessat201 basic faccessat2() test
+  - faccessat202 checks that the syscall fails correctly
+  - tcindex01 aka CVE-2023-1829
+  - mremap06 reproducer for
+    7e7757876f25 ("mm/mremap: fix vm_pgoff in vma_merge() case 3")
+  - starvation a simple test case for sched starvation
+    https://lwn.net/ml/linux-kernel/9fd2c37a05713c206dcbd5866f67ce779f315e9e.camel@gmx.de/
+  - pipe14 for end-of-file (read() returns 0) in a case the write end is closed
+  - statx12 basic test for STATX_ATTR_MOUNT_ROOT
+  - kvm_svm03 KVM test for CPU lockup through malicous SVM guest
+  - kvm_svm02 test that KVM correctly intercepts VMSAVE and VMLOAD instructions
+              in a nested virtual machine aka CVE-2021-3656
+  - statx11 a basic test for STATX_DIOALIGN on block device
+  - statx10 a basic test for STATX_DIOALIGN on regular file
+
+* Increased coverage
+  - fanotify13 added test variant for overalfs upper fs
+  - mmap05 increased coverage for EINVAL
+  - mmap06 increased coverage for EACCES
+  - bind03 now includes regression test for
+    c0c3b8d380a8 ("unix_bind_bsd(): unlink if we fail after successful mknod")
+  - stack_clash added test for mmap() minding gap
+
+* ebizzy benchmark counter increment races and overflows were fixed
+
+* A few more testcases were converted to guarded buffers
+  that is data passed by pointer to kernel are immediatelly
+  following a PROT_NONE page and followed by canaries
+  to catch off-by-one errors
+
+* Tests that modprobe kernel modules are now skipped when secure boot is
+  enabled on x86 and ppc64le
+
+* ioprio tests now use IOPRIO_PRIO_NUM instead of hardcoded value
+  to check for prio range
+
+* 35 testcases were converted to the new test library
+  - we finally got rid of the old and messy libclone library
+
++ The usual amount of fixes and cleanups
+
+KIRK (previously RUNLTP-NG)
+===========================
+
+* The new runltp-ng version is now called kirk
+  - The name was changed since kirk now supports different testsuites as well
+  - Apart from the name changes the internals were rewritten and cleaned up
+  - Prototype for parallel testruns is included as well
+  - https://github.com/linux-test-project/kirk/#readme
+
+* There is now experimental LTX support implemented
+  - Beware this is _VERY EXPERIMENTAL_ at the moment
+  - LTX is tiny binary that runs on system under test
+  - LTX communicates with kirk over serial using messages packed in msgpack
+  - LTX is going to be locked in memory and executed with realtime priority
+  - LTX allows advanced features such as running tests in parallel
+  - https://github.com/linux-test-project/ltx
+
+REMOVED TESTS
+=============
+
+* mmap07 (included in mmap06)
+* setgroups04 (included in setgroups03)
+
+DOWNLOAD AND LINKS
+==================
+
+The latest version of the test-suite contains 3000+ tests for the Linux
+and can be downloaded at:
+
+https://github.com/linux-test-project/ltp/releases/tag/YYYYMMDD
+
+The project pages as well as GIT repository are hosted on GitHub:
+
+https://github.com/linux-test-project/ltp
+http://linux-test-project.github.io/
+
+If you ever wondered how to write a LTP testcase, don't miss our developer
+documentation at:
+
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-API
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-Network-API
+
+https://github.com/linux-test-project/ltp/wiki/Shell-Test-API
+
+https://github.com/linux-test-project/ltp/wiki/C-Test-Case-Tutorial
+
+https://github.com/linux-test-project/ltp/wiki/Build-System
+
+Patches, new tests, bugs, comments or questions should go to to our mailing
+list at ltp@lists.linux.it.
+
+CREDITS
+=======
+
+Many thanks to the people contributing to this release:
+
+$ git shortlog -s -e -n 20230516..
+    71	Petr Vorel <pvorel@suse.cz>
+    32	Yang Xu <xuyang2018.jy@fujitsu.com>
+    26	Avinesh Kumar <akumar@suse.de>
+    22	Andrea Cervesato <andrea.cervesato@suse.com>
+    22	Martin Doucha <mdoucha@suse.cz>
+    13	Cyril Hrubis <chrubis@suse.cz>
+    13	Li Wang <liwang@redhat.com>
+     6	Wei Gao <wegao@suse.com>
+     5	Souta Kawahara <souta.kawahara@miraclelinux.com>
+     4	Amir Goldstein <amir73il@gmail.com>
+     4	Marius Kittler <mkittler@suse.de>
+     3	Richard Palethorpe <rpalethorpe@suse.com>
+     3	Ci Zhou <zhouci@ruijie.com.cn>
+     2	Damien Le Moal <dlemoal@kernel.org>
+     2	Jan Kara <jack@suse.cz>
+     2	Konstantin Khorenko <khorenko@virtuozzo.com>
+     2	Min Li <limin154@huawei.com>
+     2	Murphy Zhou <jencce.kernel@gmail.com>
+     2	Vishal Chourasia <vishalc@linux.ibm.com>
+     1	Ashwin Dayanand Kamat <kashwindayan@vmware.com>
+     1	Duncan.chu <wqhaicyj@163.com>
+     1	Dylan Jhong <dylan@andestech.com>
+     1	Edward Liaw <edliaw@google.com>
+     1	Hongchen Zhang <zhanghongchen@loongson.cn>
+     1	Jeff Layton <jlayton@kernel.org>
+     1	Leo Yu-Chi Liang <ycliang@andestech.com>
+     1	Nageswara R Sastry <rnsastry@linux.ibm.com>
+     1	Randolph <randolph@andestech.com>
+     1	Rick Edgecombe <rick.p.edgecombe@intel.com>
+     1	Shizhao Chen <shichen@redhat.com>
+     1	Takuya Wakazono <pastalian46@gmail.com>
+     1	Zachary Leaf <zachary.leaf@arm.com>
+     1	Li Qiang <liqiang64@huawei.com>
+     1	Ioannis Bonatakis <ybonatakis@suse.com>
+
+And also thanks to patch reviewers:
+
+$ git log 20230516.. | grep -Ei '(reviewed|acked)-by:' | sed 's/.*by: //' | sort | uniq -c | sort -n -r
+    104 Cyril Hrubis <chrubis@suse.cz>
+     66 Petr Vorel <pvorel@suse.cz>
+     46 Li Wang <liwang@redhat.com>
+     15 Martin Doucha <mdoucha@suse.cz>
+     14 Avinesh Kumar <akumar@suse.de>
+     14 Richard Palethorpe <rpalethorpe@suse.com>
+      8 Xiao Yang <yangx.jy@fujitsu.com>
+      3 Niklas Cassel <niklas.cassel@wdc.com>
+      3 Marius Kittler <mkittler@suse.de>
+      3 Damien Le Moal <dlemoal@kernel.org>
+      2 Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+      2 Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+      2 Linus Walleij <linus.walleij@linaro.org>
+      2 Amir Goldstein <amir73il@gmail.com>
+      1 Yang Xu <xuyang2018.jy@fujitsu.com>
+      1 Vlastimil Babka <vbabka@suse.cz>
+      1 Murphy Zhou <jencce.kernel@gmail.com>
+      1 Jeff Moyer <jmoyer@redhat.com>
+      1 Andrea Cervesato <andrea.cervesato@suse.com>
