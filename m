@@ -2,140 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE61A7B34C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CABD27B34C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 16:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233395AbjI2OVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 10:21:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39134 "EHLO
+        id S233411AbjI2OVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 10:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233364AbjI2OVX (ORCPT
+        with ESMTP id S233454AbjI2OVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 10:21:23 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477121B3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:21:22 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c6185cafb3so155705ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 07:21:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695997282; x=1696602082; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tIjMyRkvD4vXS0iKt2DZ+VffYOy0NMhKbaOoqihxMXc=;
-        b=Zr8S8KiZRNyyujON9N70qnnLVUQ+dBwqeskbQLlCxhPlOQzGVkKvppKYdfkKmy6Q0k
-         DLh6pHWf+4oWYEWTBSQ0IXB8P0SHG5aaec6ZjZHuSKV4uy23lM0xEVMnjNa1rIvnQAzc
-         T+COiifbwWAeKqqnO/Ry/Yf9eyvAdtTqxJPkK2OKksBn7Lb35gm98BP1OhyWpXlHPyeB
-         DqVwrT7Si44g11NFhX+FyrZCY2D16IkY5/BEyWVdIwRNZKrfQYVCBZA9GH38Dld7gUOd
-         5Iwnur9purhDp3ygAcufcKg5QqLuex0uC4qfxbNgjUtNDsou69dcBgW4SNTuhgi985Er
-         BN3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695997282; x=1696602082;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tIjMyRkvD4vXS0iKt2DZ+VffYOy0NMhKbaOoqihxMXc=;
-        b=a73EhO1o7h//7zJXRDj4nN9kk2kPLHCRcwBrKpa7bdPmclU489bC5WwI9GszHetUeS
-         vyQZL8PO/+JvbI0wf82y5pP2NwYoyTMxDT9Ifegcijvv0KvFDxJHEussVlxzV1EEH1Fb
-         VZgwUE2srbrHnBnJ04NIqm9UGlGu+mCLywE6z4a7uR6xUCwGDl7EQUeESxxJ+s4MjFuG
-         RVeu+JAr7fyVpPpPauZhUKM7cfM7VTzwfqNXap+3zxGbXGQOC999S8+FIVrVm1vERra1
-         HMtzh7q1ZevKGrG7TTOKi9l9AjoF0a93wmxSspY7G6m1gxQ98TU6/lpkR8A5L44X/GY3
-         OQyw==
-X-Gm-Message-State: AOJu0Yy7yOxJxUwFc0i8L9ZeuONcRfBumDKbsDZ/fqwJwRrc5KLbkX45
-        3x1o3Ld4xH8qBRHxOaA9bGSXm9XjQGTwvJe1f7BF0A==
-X-Google-Smtp-Source: AGHT+IHsG1ktZ0SAurPZ0QFRvK0fU8aHMiW++bixgCyT5nwhEB/N1BLwp8n50oH0IVEBUeadXQvjE9aoL/FG8TN+++0=
-X-Received: by 2002:a17:902:f54f:b0:1c7:1fbc:b9e8 with SMTP id
- h15-20020a170902f54f00b001c71fbcb9e8mr792263plf.10.1695997281453; Fri, 29 Sep
- 2023 07:21:21 -0700 (PDT)
+        Fri, 29 Sep 2023 10:21:33 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE85DB;
+        Fri, 29 Sep 2023 07:21:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695997291; x=1727533291;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=YLWrl7KU2ghuHqMWHl0Ai0ZSxj6kqlnsHwadzBYe/54=;
+  b=ASw0O87mwd9rb3U/4qn4Cji9Lj2d0VX92NWTMCHD1jU9TlbHk5Thb3ww
+   0V+iI5V2gxczpBot9l3PNWp5UaMoSt1P701lL7fe/S7MESGzDxDd9A3Ci
+   w2cIeojcj8G9KCXOLpSpSIIPzX4mLUs9S+chY2ZJ18jQdxq+tbP3lcqGy
+   gYrwKbnPuzDDZVxzdJBqNyxiLtEWohuvF4Selpzml/rspdveiDkqq3En9
+   3s8k7q1G85w3+tz55RRyAGOPlfmN1DvLeGpoWQkcy2dt2CKE9Lw54FE/Y
+   5h5sjAzlAwjh3L9hHpZXZeuDEK7KC7yaBZZOzb9hHf+xyDVpzfiHk6tUm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="367365274"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="367365274"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 07:21:30 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="743454993"
+X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
+   d="scan'208";a="743454993"
+Received: from smorozov-mobl1.ger.corp.intel.com ([10.252.52.167])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 07:21:28 -0700
+Date:   Fri, 29 Sep 2023 17:21:25 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] platform/x86: intel_speed_select_if: Remove
+ hardcoded map size
+In-Reply-To: <20230926175349.989618-1-srinivas.pandruvada@linux.intel.com>
+Message-ID: <44e9e292-694d-727e-858-328d22c5d11@linux.intel.com>
+References: <20230926175349.989618-1-srinivas.pandruvada@linux.intel.com>
 MIME-Version: 1.0
-References: <20230829234426.64421-1-tony.luck@intel.com> <20230928191350.205703-1-tony.luck@intel.com>
- <20230928191350.205703-6-tony.luck@intel.com>
-In-Reply-To: <20230928191350.205703-6-tony.luck@intel.com>
-From:   Peter Newman <peternewman@google.com>
-Date:   Fri, 29 Sep 2023 16:21:10 +0200
-Message-ID: <CALPaoCgJ2qcwvKOG2aUrkd=dwwPdGGtaJS43Tgs=DwXxMmwUhg@mail.gmail.com>
-Subject: Re: [PATCH v6 5/8] x86/resctrl: Add node-scope to the options for
- feature scope
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Babu Moger <babu.moger@amd.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1948979147-1695997290=:1989"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On Thu, Sep 28, 2023 at 9:14=E2=80=AFPM Tony Luck <tony.luck@intel.com> wro=
-te:
->
-> Currently supported resctrl features are all domain scoped the same as th=
-e
-> scope of the L2 or L3 caches.
->
-> Add RESCTRL_NODE as a new option for features that are scoped at the
-> same granularity as NUMA nodes. This is needed for Intel's Sub-NUMA
-> Cluster (SNC) feature where monitoring features are node scoped.
->
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
+--8323329-1948979147-1695997290=:1989
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+
+On Tue, 26 Sep 2023, Srinivas Pandruvada wrote:
+
+> The driver is using 256 as the size while calling devm_ioremap(). The
+> maximum offset can be obtained from isst_mmio_range. Add a field "size"
+> to the isst_mmio_range and use it instead of hardcoding.
+> 
+> No functional impact is expected.
+> 
+> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 > ---
->
-> Changes since v5:
->
-> Updates to commit message.
->
->  include/linux/resctrl.h            | 1 +
->  arch/x86/kernel/cpu/resctrl/core.c | 2 ++
->  2 files changed, 3 insertions(+)
->
-> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> index 1c925e3db2ea..18ed787f9798 100644
-> --- a/include/linux/resctrl.h
-> +++ b/include/linux/resctrl.h
-> @@ -165,6 +165,7 @@ struct resctrl_schema;
->  enum resctrl_scope {
->         RESCTRL_L2_CACHE =3D 2,
->         RESCTRL_L3_CACHE =3D 3,
-> +       RESCTRL_NODE,
+> Changes:
+> As per Andy's comments pre calculate size
+> 
+>  .../x86/intel/speed_select_if/isst_if_mmio.c     | 16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/speed_select_if/isst_if_mmio.c b/drivers/platform/x86/intel/speed_select_if/isst_if_mmio.c
+> index ff49025ec085..13e068c77d50 100644
+> --- a/drivers/platform/x86/intel/speed_select_if/isst_if_mmio.c
+> +++ b/drivers/platform/x86/intel/speed_select_if/isst_if_mmio.c
+> @@ -18,16 +18,17 @@
+>  struct isst_mmio_range {
+>  	int beg;
+>  	int end;
+> +	int size;
 >  };
->
->  /**
-> diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/res=
-ctrl/core.c
-> index 726f00c01079..e61bf919ac78 100644
-> --- a/arch/x86/kernel/cpu/resctrl/core.c
-> +++ b/arch/x86/kernel/cpu/resctrl/core.c
-> @@ -511,6 +511,8 @@ static int get_domain_id_from_scope(int cpu, enum res=
-ctrl_scope scope)
->         case RESCTRL_L2_CACHE:
->         case RESCTRL_L3_CACHE:
->                 return get_cpu_cacheinfo_id(cpu, scope);
-> +       case RESCTRL_NODE:
-> +               return cpu_to_node(cpu);
->         default:
->                 break;
->         }
-> --
-> 2.41.0
->
+>  
+>  static struct isst_mmio_range mmio_range_devid_0[] = {
+> -	{0x04, 0x14},
+> -	{0x20, 0xD0},
+> +	{0x04, 0x14, 0x18},
+> +	{0x20, 0xD0, 0xD4},
+>  };
+>  
+>  static struct isst_mmio_range mmio_range_devid_1[] = {
+> -	{0x04, 0x14},
+> -	{0x20, 0x11C},
+> +	{0x04, 0x14, 0x18},
+> +	{0x20, 0x11C, 0x120},
+>  };
+>  
+>  struct isst_if_device {
+> @@ -114,13 +115,16 @@ static int isst_if_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+>  
+>  	pcu_base &= GENMASK(10, 0);
+>  	base_addr = (u64)mmio_base << 23 | (u64) pcu_base << 12;
+> -	punit_dev->punit_mmio = devm_ioremap(&pdev->dev, base_addr, 256);
+> +
+> +	punit_dev->mmio_range = (struct isst_mmio_range *) ent->driver_data;
+> +
+> +	punit_dev->punit_mmio = devm_ioremap(&pdev->dev, base_addr,
+> +					     punit_dev->mmio_range[1].size);
+>  	if (!punit_dev->punit_mmio)
+>  		return -ENOMEM;
+>  
+>  	mutex_init(&punit_dev->mutex);
+>  	pci_set_drvdata(pdev, punit_dev);
+> -	punit_dev->mmio_range = (struct isst_mmio_range *) ent->driver_data;
+>  
+>  	memset(&cb, 0, sizeof(cb));
+>  	cb.cmd_size = sizeof(struct isst_if_io_reg);
+> 
 
-Looks fine.
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-Reviewed-by: Peter Newman <peternewman@google.com>
+-- 
+ i.
+
+--8323329-1948979147-1695997290=:1989--
