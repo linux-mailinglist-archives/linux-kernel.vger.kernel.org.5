@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEB597B3782
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C9257B3784
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233537AbjI2QJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 12:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
+        id S233367AbjI2QKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 12:10:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233141AbjI2QJG (ORCPT
+        with ESMTP id S232883AbjI2QK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 12:09:06 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79B7D139;
-        Fri, 29 Sep 2023 09:09:04 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-505748580ceso51086e87.3;
-        Fri, 29 Sep 2023 09:09:04 -0700 (PDT)
+        Fri, 29 Sep 2023 12:10:29 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6491ABE
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:10:27 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3231dff4343so559956f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:10:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696003742; x=1696608542; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qCN934VhabHlWJc9p5aUyxuMGd+S4iIxKk262wTizkQ=;
-        b=WXYTwTnP+PrU4HfGUzRVWDFTZ4E8jucN5WaPFMPEbJE/x864LMMfU8+gB7fXdUAApQ
-         7a0dLO0jgybjDpkPcljh6kokbDnvqM7cLP6g3/AktUIRkYwr4k7dDI2tuHsc8B/fXgDi
-         2JKup1yxhJU6nKzoCMds8n+2q278kh0ciXW2noYcrnZX0rBOC+Sn8XMLN1GGtKZlKgHq
-         LASv4ceQIVMMdztSJl1YGQ4rEnfKZTQoOj3eo8uRuRUWPdPzxTfSuwU88IHtCx9/Q3+D
-         ivW5bw1VQE/4K5z1v9tyy8rtgpWawGQZimUUW5QPMB1gWq6freupHY0PWspn3iU7zc8R
-         mEMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696003742; x=1696608542;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1696003826; x=1696608626; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qCN934VhabHlWJc9p5aUyxuMGd+S4iIxKk262wTizkQ=;
-        b=YvFdUn6cJIBt6izGvwyG4NYeyN7c5R1qtxgkH3MQb5hPb8hKq4mvcbrwAOzHO3HP9q
-         5GKpo4D927zJhfAJ3SFk0I7EsngLSQu1p6aVCqG3ml0qzQi26WJ0hm9ZWnnJuxTK8fuu
-         60jBQQ6VJpkXBTClTFvUJX6KRViYlq5SkyCZUNt0hOEl9e9tu1b22keZqH854621GZEO
-         Rycuoo9BxwxB8C6ogohIQi3HiQ/XZwU4PIxWHaWmynJ6s4lpz++/WOGNjUbl4f14U/wO
-         WotVbV+6yVOnzm+MwDomPeVg4HcKqdiiqY9h8L75BvfB8br0PpXfmr/tc7WTkjSSCEhU
-         AT0g==
-X-Gm-Message-State: AOJu0Yx4nbe4s4EaMxg+O+LTdcz22y9xMP4BOv80YkP3A99nPCg2mi6D
-        RIeLrqJWCFp/9IqzveqqGmU=
-X-Google-Smtp-Source: AGHT+IHOnFq1zeqSSK3P/A5O+MTaHM4TSDzr6YY7Q+M2Qa7yO9OEpAsyizPdPF7tKw/bdEsCGEwhIQ==
-X-Received: by 2002:a19:3817:0:b0:4ff:70d2:4512 with SMTP id f23-20020a193817000000b004ff70d24512mr3820036lfa.23.1696003741534;
-        Fri, 29 Sep 2023 09:09:01 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id h21-20020a056512221500b00502b04e2722sm1296268lfu.3.2023.09.29.09.09.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 09:09:00 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 19:08:57 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
-Cc:     linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        patches@amperecomputing.com, jarkko.nikula@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, mika.westerberg@linux.intel.com,
-        jsd@semihalf.com, chuong@os.amperecomputing.com,
-        darren@os.amperecomputing.com, stable@vger.kernel.org
-Subject: Re: [PATCH v1] i2c: designware: Disable TX_EMPTY irq while waiting
- for block length byte
-Message-ID: <avd7jhwexehgbvi6euzdwvf5zvqqgjx4ozo6uxu2qpmlarvva3@sgkce3rvovwk>
-References: <20230929035356.6435-1-tamnguyenchi@os.amperecomputing.com>
+        bh=rsosfGEshqIoKCDorpEdcceOnoGA7Z3Gi/jf7+l6H3o=;
+        b=T0+gcHKB+pVkYprBwVyFx8syY0qimTMhAUbYBsGdenN/tOAUS6K6V74Af28p0LiDy1
+         RJs7V3hAORCTcBdANkJHpntEP7y6QgxnMOmo/eC4HJSptiAfzkarlxPir5aqXmhzxHwo
+         kFDA45tT81w2cny+mS6LC3RGuni4iRqZU4zojIaxrGs8V7jm7eapAy9nRcxHPDCNhkjv
+         lx5hT8bm9LsipNRyV/xD9ij74JAyrTzKKeeEOkBSuTRxEw3b5p9CtqduvdubEEtYTe/s
+         BoA09oYqHSmpzwmYYyhwo1X6NuN6OAJu2+vbZ9dvgtctX6biNdFLfqbr8Vk1eKQ7s1/X
+         IvPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696003826; x=1696608626;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rsosfGEshqIoKCDorpEdcceOnoGA7Z3Gi/jf7+l6H3o=;
+        b=X33EkNS719pyw4T/m8gVF5GUl1/k72LUzcZFYLQl+8iBnCY/r1UTJE7MRD2Pxc2fA+
+         q1WsL57ntha0P+RuqYf79adT1P/XiGBD7nJ5DWLYEj27874YJVNH0vI6ZEMHhKUFk066
+         hjHZAHO5vZzKMfarKozo/HnMeUFf8hEdclmTt24GW7AMmnoSBSqMUYUT7KSr489c/3j8
+         m3XdTTNu8v7movXCidKCQmwySaLZPCWoWUEVSxmI0uyfXGajSTDFag3/kOCvuy77tCIp
+         uXt7gnKt3GqslpVZ6/IINyLHsWt2UQLvG9h1TDiPO1ANeJG2pfNI4ljI334rF5cPkvkW
+         J/6A==
+X-Gm-Message-State: AOJu0YyPxDqA3lzViws68LKmoAGK0QOBXbopgGlh/9IKId8rn95AYyZL
+        US2EVyMTVqgN4qk0b10BArgs6NA3ZDln6fbfiN667w==
+X-Google-Smtp-Source: AGHT+IGJVy4cn6wsfYJyybJLTpVzhBoLAsGq/mtGnVfwMtDc27EoHCRTJrLpDNvmF4nasPQGeqo5XBwkuq750bEZ3zY=
+X-Received: by 2002:a05:6000:1090:b0:31f:f8a7:a26c with SMTP id
+ y16-20020a056000109000b0031ff8a7a26cmr4058353wrw.25.1696003825641; Fri, 29
+ Sep 2023 09:10:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230929035356.6435-1-tamnguyenchi@os.amperecomputing.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230920153819.2069869-1-andriy.shevchenko@linux.intel.com> <CAKwvOd=7vk2HKOpgVrRd2RtKSF9tXPqbVmN+5teLTNoBy4BWVg@mail.gmail.com>
+In-Reply-To: <CAKwvOd=7vk2HKOpgVrRd2RtKSF9tXPqbVmN+5teLTNoBy4BWVg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 29 Sep 2023 09:10:11 -0700
+Message-ID: <CAKwvOdkbcUh+tmsNcT4nCzFY37WbAUdjHJ62qNe=p8SetaQNTQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] device property: Replace custom implementation of COUNT_ARGS()
+To:     "Rafael J. Wysocki" <rafael@kernel.org>, tiwai@suse.com
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        llvm@lists.linux.dev, alsa-devel@alsa-project.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,99 +76,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 10:53:56AM +0700, Tam Nguyen wrote:
-> During SMBus block data read process, we have seen high interrupt rate
-> because of TX_EMPTY irq status while waiting for block length byte (the
-> first data byte after the address phase). The interrupt handler does not
-> do anything because the internal state is kept as STATUS_WRITE_IN_PROGRESS.
-> Hence, we should disable TX_EMPTY irq until I2C DW receives first data
-> byte from I2C device, then re-enable it.
-> 
-> It takes 0.789 ms for host to receive data length from slave.
-> Without the patch, i2c_dw_isr is called 99 times by TX_EMPTY interrupt.
-> And it is none after applying the patch.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Chuong Tran <chuong@os.amperecomputing.com>
-> Signed-off-by: Tam Nguyen <tamnguyenchi@os.amperecomputing.com>
-> ---
->  drivers/i2c/busses/i2c-designware-master.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-> index 55ea91a63382..2152b1f9b27c 100644
-> --- a/drivers/i2c/busses/i2c-designware-master.c
-> +++ b/drivers/i2c/busses/i2c-designware-master.c
-> @@ -462,6 +462,13 @@ i2c_dw_xfer_msg(struct dw_i2c_dev *dev)
+On Wed, Sep 20, 2023 at 9:50=E2=80=AFAM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Wed, Sep 20, 2023 at 8:38=E2=80=AFAM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > Replace custom and non-portable implementation of COUNT_ARGS().
+> >
+> > Fixes: e64b674bc9d7 ("software node: implement reference properties")
+> > Reported-by: Nick Desaulniers <ndesaulniers@google.com>
+> > Closes: https://lore.kernel.org/r/ZQoILN6QCjzosCOs@google.com
+>
+> Thanks for the patch!
+> Closes: https://github.com/ClangBuiltLinux/linux/issues/1935
+> Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+>
+> Of course Linux would have a macro for this!  I should have known.
+> Trying to wrap my head around it. Awesome
 
->  		if (buf_len > 0 || flags & I2C_M_RECV_LEN) {
->  			/* more bytes to be written */
->  			dev->status |= STATUS_WRITE_IN_PROGRESS;
-> +			/*
-> +			 * In I2C_FUNC_SMBUS_BLOCK_DATA case, there is no data
-> +			 * to send before receiving data length from slave.
-> +			 * Disable TX_EMPTY while waiting for data length byte
-> +			 */
-> +			if (flags & I2C_M_RECV_LEN)
-> +				intr_mask &= ~DW_IC_INTR_TX_EMPTY;
+(resending as text/plain)
 
-Is it possible to reduce the indentations level? Like this:
+Can someone pick this up for linux-next?
 
-		/*
-		 * Because we don't know the buffer length in the
-		 * I2C_FUNC_SMBUS_BLOCK_DATA case, we can't stop the
-		 * transaction here. Also disable the TX_EMPTY IRQ
-		 * while waiting for the data length byte to avoid the
-		 * bogus interrupts flood.
-		 */
-		if (flags & I2C_M_RECV_LEN) {
-  			dev->status |= STATUS_WRITE_IN_PROGRESS;
-			intr_mask &= ~DW_IC_INTR_TX_EMPTY;
-			break;
-		} else if (buf_len > 0) {
-  			/* more bytes to be written */
-  			dev->status |= STATUS_WRITE_IN_PROGRESS;
-			break;
-		} else {
-			dev->status &= ~STATUS_WRITE_IN_PROGRESS;
-		}
+CI for linux-next has been red for days over this.
 
->  			break;
->  		} else
->  			dev->status &= ~STATUS_WRITE_IN_PROGRESS;
-> @@ -485,6 +492,7 @@ i2c_dw_recv_len(struct dw_i2c_dev *dev, u8 len)
->  {
->  	struct i2c_msg *msgs = dev->msgs;
->  	u32 flags = msgs[dev->msg_read_idx].flags;
+>
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > ---
+> >  include/linux/property.h | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/property.h b/include/linux/property.h
+> > index 1684fca930f7..55c2692ffa8c 100644
+> > --- a/include/linux/property.h
+> > +++ b/include/linux/property.h
+> > @@ -10,6 +10,7 @@
+> >  #ifndef _LINUX_PROPERTY_H_
+> >  #define _LINUX_PROPERTY_H_
+> >
+> > +#include <linux/args.h>
+> >  #include <linux/bits.h>
+> >  #include <linux/fwnode.h>
+> >  #include <linux/stddef.h>
+> > @@ -314,7 +315,7 @@ struct software_node_ref_args {
+> >  #define SOFTWARE_NODE_REFERENCE(_ref_, ...)                    \
+> >  (const struct software_node_ref_args) {                               =
+ \
+> >         .node =3D _ref_,                                          \
+> > -       .nargs =3D ARRAY_SIZE(((u64[]){ 0, ##__VA_ARGS__ })) - 1, \
+> > +       .nargs =3D COUNT_ARGS(__VA_ARGS__),                       \
+> >         .args =3D { __VA_ARGS__ },                                \
+> >  }
+> >
+> > --
+> > 2.40.0.1.gaa8946217a0b
+> >
+>
+>
+> --
+> Thanks,
+> ~Nick Desaulniers
 
-> +	u32 intr_mask;
->  
->  	/*
->  	 * Adjust the buffer length and mask the flag
-> @@ -495,6 +503,11 @@ i2c_dw_recv_len(struct dw_i2c_dev *dev, u8 len)
->  	msgs[dev->msg_read_idx].len = len;
->  	msgs[dev->msg_read_idx].flags &= ~I2C_M_RECV_LEN;
->  
-> +	/* Re-enable TX_EMPTY interrupt. */
-> +	regmap_read(dev->map, DW_IC_INTR_MASK, &intr_mask);
-> +	intr_mask |= DW_IC_INTR_TX_EMPTY;
-> +	regmap_write(dev->map, DW_IC_INTR_MASK, intr_mask);
 
-1. What about just:
-	regmap_update_bits(dev->map, DW_IC_INTR_MASK, DW_IC_INTR_TX_EMPTY,
-			   DW_IC_INTR_TX_EMPTY);
 
-2. The in-situ comment is pointless because the statement already
-implies the IRQ re-enabling. I suggest to add more details of _why_
-the IRQ needs to be re-enabled (what is supposed to be done after it's
-re-enabled?).
-
--Serge(y)
-
-> +
->  	return len;
->  }
->  
-> -- 
-> 2.25.1
-> 
+--=20
+Thanks,
+~Nick Desaulniers
