@@ -2,103 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B147B37CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B9E7B37CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 18:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233436AbjI2QUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 12:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38346 "EHLO
+        id S233420AbjI2QUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 12:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232878AbjI2QUO (ORCPT
+        with ESMTP id S232883AbjI2QUw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 12:20:14 -0400
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBEA7BE;
-        Fri, 29 Sep 2023 09:20:11 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 6408D1000B2; Fri, 29 Sep 2023 17:20:09 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1696004409; bh=NO7U8jxZgUpWr0WrNZxuq6hy5u2FsN8FVLFZSQC6DGs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=io8J1gWqNgAp0oYQnqnXaZ0ODjPn8YiBFoeog8mMiW+afnyzuONlL0UGmD40NmA3x
-         b5dbj86ikrbxYLBjtnLZlcGCLLbaUEOikPOO6geNK+t5IjAJ1l6hrDJ9rf0LjnANGr
-         lCugOdBmh3Lj2GZdb2KblJRDuelBK7zEl/EOCmIQSCjuMUA8SFqDB50K9NJIEHtAGI
-         7V/wHYWH7/7o08N66Hk/Tmo+A2nQny1HqHn4rYPPbwj9bhcliogFb8J8OdH1fspeOC
-         YD2bpjXh0AGXNv4iwxaf92HcL7aiJ0I2FYvX28GRCQoGKc6EuXCeU0qxh+qsrjkUAB
-         F3HxtdV4skF5w==
-Date:   Fri, 29 Sep 2023 17:20:09 +0100
-From:   Sean Young <sean@mess.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
-Cc:     linux-media@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Timo Kokkonen <timo.t.kokkonen@iki.fi>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>,
-        "Sicelo A . Mhlongo" <absicsz@gmail.com>,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v5 2/2] media: rc: remove ir-rx51 in favour of generic
- pwm-ir-tx
-Message-ID: <ZRb5OWvx3GxYWf9g@gofer.mess.org>
-References: <cover.1693577725.git.sean@mess.org>
- <e5325e826935f0bd8566152b6a5fa799b2429d43.1693577725.git.sean@mess.org>
- <99f0042f-538c-bcaf-96fd-bac24a87f88e@gmail.com>
- <ZRKFUb1vRtn82bgn@gofer.mess.org>
- <1715e2bf-5d02-4f20-1476-29a1fdf350b1@gmail.com>
- <ZRM8iLORjKw3z/h5@gofer.mess.org>
- <179c4674-aa5c-0573-6d1f-ea6f2694d156@gmail.com>
+        Fri, 29 Sep 2023 12:20:52 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3931EBE
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:20:47 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c60128d3f6so223005ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 09:20:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696004446; x=1696609246; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fJsy3U5P7JRkSbDtJdUi/rB+ipyk8l35yY9j6rGapyY=;
+        b=F1U9F+32hO0rW9qhk+zZrkBoHSMfCbzV66CmxrB0Hge//zXbupDCK97ltbdYSQ+xse
+         p6IKVnZv7gEFqEu1Y1Cbt4uTg6ZQrAX5CvIzFo10jGMqcmvRFlADOFtHfUR4mVjGroYw
+         OP4jTwY7Y0BVCRQQf9Vwq3Xto8l72CxuCTnG56hpMjI78/YIr9tM9ZjK4fZe+vQFIPS7
+         M7d0urUwYfj1XFiwVbFMG2epVhfj7/nbrCLshyVmNhp5TzjqHhAI1LEvDAtNpHZcF6He
+         d57iIp3FuPVIpK0eVw+qjRFbFJf9AgzvEuMKrObRVPAXGByv36oJ9NcnfIu3bQiGM5jP
+         Xs0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696004446; x=1696609246;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fJsy3U5P7JRkSbDtJdUi/rB+ipyk8l35yY9j6rGapyY=;
+        b=lpRenzaKQJe1phq5MBU152i7Rq8TKkUQA9+mDHWJXs8KnX2A28kPZrlaZMkTimuI3p
+         WcqEdl+XXoqW6EaZXsQ/GBlrfsLHSLCw8I2B0ZXPjjyR2+JrOyTcHab3jRtLt0XPb/l/
+         x4Y8B4K3BRxcfQ9ZRNDUtzprrgRkn8eRVYnnwnT3rBtiy7OAhsuKH9WkN87UqIZs6JLr
+         6DjGOkuTX4Lsdm61PUeANMjDxlC+YqcpSCIIsAtmc4GVnyPsdPY0YEZ1eXktK5Q2z6wY
+         PNgug/jrp98QQJIedgrCoXKGG1hF9iZNfijmARm5p/P0hG6LcvT/3TEVaOtminMSI92M
+         L66A==
+X-Gm-Message-State: AOJu0YyLf3QPyROJ/AlOFkKJX8/lxYSbPF8McYFMyPQg7hlhnuthdPqX
+        BTHF4aQCRY5fBcZoA9S8mc8DNtwZz3SSFsU75zVaR5UzALKWHEizrMs=
+X-Google-Smtp-Source: AGHT+IG7bJVACXPaJHWfeTFPOQqYslgg2MMLtTumeATk1ELGuLUrmmid3NcQWN+cuFswlozqETVEAyH8vagOlxW7bdE=
+X-Received: by 2002:a17:902:f54f:b0:1c7:1fbc:b9e8 with SMTP id
+ h15-20020a170902f54f00b001c71fbcb9e8mr820240plf.10.1696004446368; Fri, 29 Sep
+ 2023 09:20:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <179c4674-aa5c-0573-6d1f-ea6f2694d156@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <ZRbwU8Qnx28gpbuO@work>
+In-Reply-To: <ZRbwU8Qnx28gpbuO@work>
+From:   Jann Horn <jannh@google.com>
+Date:   Fri, 29 Sep 2023 18:20:10 +0200
+Message-ID: <CAG48ez2SJMJSYrJQ9RVC44hbj3uNYBZeN0yfxWa7pqX9Fp2L7g@mail.gmail.com>
+Subject: Re: [PATCH][next] media: usb: siano: Fix undefined behavior bug in
+ struct smsusb_urb_t
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB list <linux-usb@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Uwe,
+On Fri, Sep 29, 2023 at 5:42=E2=80=AFPM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+> `struct urb` is a flexible structure, which means that it contains a
+> flexible-array member at the bottom. This could potentially lead to an
+> overwrite of the object `wq` at run-time with the contents of `urb`.
+>
+> Fix this by placing object `urb` at the end of `struct smsusb_urb_t`.
 
-Just wanted to run an idea by you.
+Does this really change the situation? "struct smsusb_device_t"
+contains an array of "struct smsusb_urb_t", so it seems to be like
+you're just shifting the "VLA inside a non-final member of a struct"
+thing around so that there is one more layer of abstraction in
+between.
 
-On Fri, Sep 29, 2023 at 11:49:52AM +0300, Ivaylo Dimitrov wrote:
-> On 26.09.23 г. 23:18 ч., Sean Young wrote:
-> > I've never known of a solution to the pwm-ir-tx driver. If using hrtimers
-> > directly improves the situation even a bit, then that would be great.
-> 
-> The issue with hrtimers is that we cannot use them directly, as
-> pwm_apply_state() may sleep, but hrtimer function is called in atomic
-> context.
+Comments on "struct urb" say:
 
-I've also been looking at this problem and came to same conclusion: the
-fact that pwm_apply_state() sleeps is a huge problem.
+ * Isochronous URBs have a different data transfer model, in part because
+ * the quality of service is only "best effort".  Callers provide specially
+ * allocated URBs, with number_of_packets worth of iso_frame_desc structure=
+s
+ * at the end.
 
-1) The vast majority of pwm drivers don't sleep, or could even be converted
-   to spinlocks (e.g pwm-sifive.c could use spinlocks, as far as I can see).
+and:
 
-2) Sure, some pwm devices are on i2c busses, so the driver needs to sleep.
-   Those devices aren't great for what we're trying to do here, since the
-   sleeping may cause delays and affect the generated signal.
+/* (in) ISO ONLY */
 
-What would be ideal here is to have pwm-ir-tx work in atomic context if
-a non-sleeping pwm device is used, and another (non-optimal) code path
-for sleeping pwm drivers. We could even just refuse to run on sleeping pwm
-drivers.
+And it looks like smsusb only uses that URB as a bulk URB, so the flex
+array is unused and we can't have an overflow here?
 
-Uwe what do you think of this idea? The pwm api could have a
-bool pwm_may_sleep(struct pwm *pwm) function, and pwm_apply_state() does 
-not contain might_sleep() - only the driver-specific apply calls might_sleep().
+If this is intended to make it possible to enable some kinda compiler
+warning, it might be worth talking to the USB folks to figure out the
+right approach here.
 
-It would be nice if this could all be done at compile time through e.g. a
-device tree attribute.
-
-Thanks,
-
-Sean
+> Fixes: dd47fbd40e6e ("[media] smsusb: don't sleep while atomic")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/media/usb/siano/smsusb.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/media/usb/siano/smsusb.c b/drivers/media/usb/siano/s=
+msusb.c
+> index 9d9e14c858e6..2c048f8e8371 100644
+> --- a/drivers/media/usb/siano/smsusb.c
+> +++ b/drivers/media/usb/siano/smsusb.c
+> @@ -40,10 +40,10 @@ struct smsusb_urb_t {
+>         struct smscore_buffer_t *cb;
+>         struct smsusb_device_t *dev;
+>
+> -       struct urb urb;
+> -
+>         /* For the bottom half */
+>         struct work_struct wq;
+> +
+> +       struct urb urb;
+>  };
+>
+>  struct smsusb_device_t {
+> --
+> 2.34.1
+>
+>
