@@ -2,96 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0AAE7B2CCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E6E7B2CD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 09:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232693AbjI2HDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 03:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56478 "EHLO
+        id S232624AbjI2HGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 03:06:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjI2HDQ (ORCPT
+        with ESMTP id S232740AbjI2HGl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 03:03:16 -0400
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01391A5;
-        Fri, 29 Sep 2023 00:03:14 -0700 (PDT)
-Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 38T2OFY7007793;
-        Fri, 29 Sep 2023 09:02:54 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=2enBjh4tBxnFdWt6QZ9vWmJjW+oWmfOTuuCNhdQashs=; b=hA
-        LmJsmNvjtMnacnVyLmDwWZUqI0KctgUSXU5c0cyflFnB9t8e9OKJzASTKQuLYRMW
-        ac95QohIZpKntKaxv1fkgRbrpSeKjnlJw8UfBD4Qx8bhJpp1whbCwvtIyH2NH+fW
-        G9VhU/rYMXz/s40zvgm0tSB0hDZAMKuxcT0eOg5sC7kDkMfp5jGdiYw3PDfc9cHh
-        5pT0kcL3IO3gq4VqJwoCnw42+MFGDfh/Giq5pCKAhl7SDI8AZHwu3KNa/TCGujxB
-        QSwxQsPhomDmfsKAt7MIO8x5k3qJhzckt4fRWF5/CkMb2lub7eq5kSCwU66fxIch
-        eCiwj5HRvHH69B0lKnRg==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ta9k0qe0t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 29 Sep 2023 09:02:54 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D7433100058;
-        Fri, 29 Sep 2023 09:02:53 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id BF953226FBF;
-        Fri, 29 Sep 2023 09:02:53 +0200 (CEST)
-Received: from [10.201.21.122] (10.201.21.122) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 29 Sep
- 2023 09:02:53 +0200
-Message-ID: <74467a49-4218-f9f5-5f98-b43ea12fef2e@foss.st.com>
-Date:   Fri, 29 Sep 2023 09:02:52 +0200
+        Fri, 29 Sep 2023 03:06:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C34C1A5
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:05:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1695971153;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JHxqmj3tSTy2G5LiN/2ZAZO5W2ttNXDNevrvKcCTecU=;
+        b=N8G2TtEnRHv0Kau5+gSU3ofyBlq6R9PXJABzbInkHVXVgap+VFvG3D/LMD/xTOFIZ77i3T
+        zwekzWgEczVBgEgFgOH/XMpjsw8RUZkATPogjPwBjlONDGfxr5uZyl2+jYqcSpcNaG7SHQ
+        PHIKE2HAJ6S/6CrK7RFCxqGvBTqNwM8=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-622-6kJq8elIOiuJ43qDq9b96Q-1; Fri, 29 Sep 2023 03:05:51 -0400
+X-MC-Unique: 6kJq8elIOiuJ43qDq9b96Q-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-65afd7515aaso185079206d6.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 00:05:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695971151; x=1696575951;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JHxqmj3tSTy2G5LiN/2ZAZO5W2ttNXDNevrvKcCTecU=;
+        b=lW/Pny0q3dSsg6F1OaTcBfQWB+Bcx7YZd0+OLKzfZUcLHZy1d+Y9vC4SHnMeERpBiN
+         TxoIq1MjNZaehOCgZGuwi5NBSqHrYV4lQJwoZ8FNtCO5UsPuAhMw2Cp3JroU4/rh3QxT
+         nbXPGYWWXlT4DD82HvsgA1EAQPO3JV7GfRwDgKyVaODJcrqmaxo4bV9PPkyqEq18Znvx
+         bxbeIukD8oLhQEeNdWsnxXij4p2UHeUaSh3BqwvXFvnWxUF2ZIstXYg7McNOx3thKjbw
+         Uz14ORi5fmLrFPWZ5TeBnP0991HAF5+PUYXA/oHtE0fxXSXAzH3m9SryQ4wd6af8lj66
+         ggpA==
+X-Gm-Message-State: AOJu0YzV5z6ZTd8HmmftZKvHKwUyra/FSqLypjUC9Pr9dUkwoWfWPd8f
+        rxns6SUUdUsFnhUpxmFWM//s5oaKdHNMAZubXx5soCRGavJ4Ny0XmtUgsEd8AU3cJgQR2FXJJdy
+        MYRTHln3fcnK791IBcSRdPpID
+X-Received: by 2002:a0c:f5d0:0:b0:64f:82d2:26fe with SMTP id q16-20020a0cf5d0000000b0064f82d226femr3261805qvm.39.1695971151123;
+        Fri, 29 Sep 2023 00:05:51 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHpV34uuOwiqDHtRCy3NjMAqXIe8eDV4uS1J+UKz288VBSl5u5Qgf1gsxsy1aN+idzMTNWtZw==
+X-Received: by 2002:a0c:f5d0:0:b0:64f:82d2:26fe with SMTP id q16-20020a0cf5d0000000b0064f82d226femr3261792qvm.39.1695971150846;
+        Fri, 29 Sep 2023 00:05:50 -0700 (PDT)
+Received: from localhost.localdomain ([2a00:23c6:4a2f:8e01:cdb2:e442:d239:3933])
+        by smtp.gmail.com with ESMTPSA id a12-20020a0ce34c000000b0065b24c08994sm2786830qvm.128.2023.09.29.00.05.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 00:05:50 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 08:05:46 +0100
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Valentin Schneider <vschneid@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH] sched/deadline: Make dl_rq->pushable_dl_tasks updates
+ drive dl_rq->overloaded
+Message-ID: <ZRZ3SpS4MRWeSIrr@localhost.localdomain>
+References: <20230928150251.463109-1-vschneid@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH 0/2] Declare and enable watchdog on stm32mp25
-Content-Language: en-US
-To:     <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-kernel@vger.kernel.org>
-References: <20230922081055.6242-1-alexandre.torgue@foss.st.com>
-From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
-In-Reply-To: <20230922081055.6242-1-alexandre.torgue@foss.st.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.201.21.122]
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-09-29_04,2023-09-28_03,2023-05-22_02
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928150251.463109-1-vschneid@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/22/23 10:10, Alexandre Torgue wrote:
-> Secure ARM watchdog is used on stm32mp25 relying on SMC to configure
-> and kick the watchdog. It is set to 32 seconds on stm32mp257f-ev1
-> board.
-> 
-> Regards
-> Alex
-> 
-> Alexandre Torgue (2):
->    arm64: dts: st: add arm-wdt node for watchdog support on stm32mp251
->    arm64: dts: st: enable secure arm-wdt watchdog on stm32mp257f-ev1
-> 
->   arch/arm64/boot/dts/st/stm32mp251.dtsi     | 6 ++++++
->   arch/arm64/boot/dts/st/stm32mp257f-ev1.dts | 5 +++++
->   2 files changed, 11 insertions(+)
-> 
-Series applied on stm32-next.
+Hi,
 
-Regards
-Alex
+On 28/09/23 17:02, Valentin Schneider wrote:
+> dl_nr_migratory is increased whenever a DL entity is enqueued and it has
+> nr_cpus_allowed > 1. Unlike the pushable_dl_tasks tree, dl_nr_migratory
+> includes a dl_rq's current task. This means a dl_rq can have a migratable
+> current, N non-migratable queued tasks, and be flagged as overloaded and have
+> its CPU set in the dlo_mask, despite having an empty pushable_tasks tree.
+> 
+> Make an dl_rq's overload logic be driven by {enqueue,dequeue}_pushable_dl_task(),
+> in other words make DL RQs only be flagged as overloaded if they have at
+> least one runnable-but-not-current migratable task.
+> 
+> o push_dl_task() is unaffected, as it is a no-op if there are no pushable
+>   tasks.
+> o pull_dl_task() now no longer scans runqueues whose sole migratable task is
+>   their current one, which it can't do anything about anyway.
+>   It may also now pull tasks to a DL RQ with dl_nr_running > 1 if only its
+>   current task is migratable.
+> 
+> Since dl_rq->dl_nr_migratory becomes unused, remove it.
+> 
+> RT had the exact same mechanism (rt_rq->rt_nr_migratory) which was dropped
+> in favour of relying on rt_rq->pushable_tasks, see:
+>   612f769edd06 ("sched/rt: Make rt_rq->pushable_tasks updates drive rto_mask")
+> 
+> Link: https://lore.kernel.org/all/20230811112044.3302588-1-vschneid@redhat.com/
+> Signed-off-by: Valentin Schneider <vschneid@redhat.com>
+
+This looks good thanks!
+
+Acked-by: Juri Lelli <juri.lelli@redhat.com>
+
+Best,
+Juri
+
