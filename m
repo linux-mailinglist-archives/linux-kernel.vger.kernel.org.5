@@ -2,61 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 153957B2AAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 05:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0AD7B2AAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 05:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232623AbjI2DoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Sep 2023 23:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45424 "EHLO
+        id S232686AbjI2DoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Sep 2023 23:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232340AbjI2DoL (ORCPT
+        with ESMTP id S232178AbjI2DoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 28 Sep 2023 23:44:11 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5E71A4
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:44:08 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32483535e51so1559681f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:44:08 -0700 (PDT)
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBC4A19C
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:44:09 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-32336a30d18so5648891f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Sep 2023 20:44:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1695959047; x=1696563847; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1695959048; x=1696563848; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=acVWHIoiv/nOUoM6tOLhOb3p3m5yaBtAYAFv/urNSEs=;
-        b=mMIqMjU1z8MTfzpJQKHgqkLfFWSEPEodLrF1NNpMTkppRoBbu4/5P7U2Vj7zwXtASM
-         ykL16hQMkTfMG5dYoF1IwhdcASOqETtqZzNdcanjO7gXdYH3KL1elsbOmzCNIyrJEXWR
-         38Zet7xf5mZ0nr5+i6GvZ24r8b5wF4um5w2ZJD/kQ8dmBqv9OiaOd2ZmMEOphUhvEM4x
-         QYnzjq2vLhp7/JjwA1w1OXoBcR/BZDi627NF0G7MZGDD32P/Ee5roGGuoZE0kIH+4D88
-         BoGPaUFiNJmw60sw9IOJQC1/ZGtL3HWM2KHvUgHjZ8gYEjSJVXOGDFZ98YlmpsBotHhz
-         qRSw==
+        bh=0simBD6rQLXMPt0Y2N8ykn3CDbCGOnXOOhhxwHhlQgQ=;
+        b=vlmuy9OfsPkqRf0juU4qYOjCb503nz/vO0igEUQ6SL+oPoWXvOpJmZ7Ee2wJLCnPP4
+         dyfSgNSG/01Jlu+px0P0xHFepjgPOws0RFfDgLlzPtA0iXHmogTnkW4QisGzqUsQ1jG7
+         pIfCedgZ23tvLsDwsGGj/47uaVV5tjayj6UqRXSYOwFIn2hwdvORoU/k7vOrnf+zTwfJ
+         aG3NtLd/VwsX9Nm76CRi87qgz5g398J5UBv/zFHYVkU0FCv9BojXf4GaMhyBvITFz4SB
+         77mYQfxuFjJftB7IOW6yGeCzc1o+AEIrM3IS//il5t2tQScKgVBwrQVKYdCsPfS721ko
+         9/rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695959047; x=1696563847;
+        d=1e100.net; s=20230601; t=1695959048; x=1696563848;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=acVWHIoiv/nOUoM6tOLhOb3p3m5yaBtAYAFv/urNSEs=;
-        b=wACkR2YINduyVMDqKGZ1QIpWPyjt1GTTZKjWxiEPLwqHujk2PPYvXi3fNuYH/gcZxQ
-         I1Mkvsuc++mzPMmOFMVuOMirFKwCNtv/vioGqT74L+DAZm7Ni8+NTxtKoUC8SarsFwAr
-         hudjUWnFj8f5jVvp/N5H9D0g+djT5QpQ2wk6Ibk1X5GL5uVqVrkjDm73JJLA4+Lsf2rp
-         z/F7GV9FAvKfWY8WzDHCd82RbVqQnIXHaNH6Fm0L6j026wU84hLHYSP4pwgOY1js8bcU
-         8HRiDjyNQZ4Zx8r/YUzlzYNWRU1WYoZ0CoE9USW5By5wIwi34bkD1DW937M6yPulSirm
-         dTGA==
-X-Gm-Message-State: AOJu0Yxt7N/w2AG5C4TWo0WSF2gu/xiq0Dprc5rMTjdDiXm5M1CnIoEn
-        9Wf6N79VvD1gRKTP9F179mh1JA==
-X-Google-Smtp-Source: AGHT+IGXle48yuXTwdfLNOY2Q59PeDduwFqrcPVpV9EMUX2zfs+0NgzzIwaJhSELyHobD7wHJb3Y1A==
-X-Received: by 2002:a5d:6391:0:b0:313:f4e2:901d with SMTP id p17-20020a5d6391000000b00313f4e2901dmr2558635wru.22.1695959047138;
-        Thu, 28 Sep 2023 20:44:07 -0700 (PDT)
+        bh=0simBD6rQLXMPt0Y2N8ykn3CDbCGOnXOOhhxwHhlQgQ=;
+        b=Sn8J2fGq+3ycMPsDFT9XGh0O3y0tiKIoW5bkyoOX66iAI9CvqxFBm8nxJCS28esFu2
+         AzcIJwO0O8A38rcmiNn32t9pbpVgs5s7vA7BJuOxwl87A2cencaGJxz4l003l3QOe+zr
+         QJ/5VsVcpTF7W4SjxToZjtg1xve1jr8SfrLi7zZgJvh/3MYfceNFHTwD9hfQOr6e8I4U
+         hO2POzFJQdSkakH2OQ8uY884PiXP5Zvi/R5UekyGji4ZTmzrm6pDR2T8d7nfl9ulYMB2
+         ufoeiDt9D9SFer9hB19tpB5pl1h4YwAZW/pE4ipTYYkQ4HvgtmVNPslzARxKLtFn8q7L
+         L5sA==
+X-Gm-Message-State: AOJu0Yzv3TSQLUmQi1gDqYtnZqMTMaNPIluvl7AtWMT2/LOPX7p68u/U
+        1CwVOCdWfyKGcqnbJqxV9dnVaw==
+X-Google-Smtp-Source: AGHT+IG6g7pShCf6eVY0sCYibCGHTk9kPatZkhxOjKErJy9l86I0M+oerh+DrvDu3P9n+z31G/+QEQ==
+X-Received: by 2002:a5d:4682:0:b0:31f:e80a:33aa with SMTP id u2-20020a5d4682000000b0031fe80a33aamr2597930wrq.27.1695959048003;
+        Thu, 28 Sep 2023 20:44:08 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id c10-20020a5d4f0a000000b0031f3ad17b2csm20645177wru.52.2023.09.28.20.44.06
+        by smtp.gmail.com with ESMTPSA id c10-20020a5d4f0a000000b0031f3ad17b2csm20645177wru.52.2023.09.28.20.44.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 20:44:06 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Fri, 29 Sep 2023 05:44:00 +0200
-Subject: [PATCH v5 1/2] irqchip/qcom-pdc: Add support for v3.2 HW
+        Thu, 28 Sep 2023 20:44:07 -0700 (PDT)
+From:   neil.armstrong@linaro.org
+Date:   Fri, 29 Sep 2023 05:44:01 +0200
+Subject: [PATCH v5 2/2] arm64: dts: qcom: sm8150: extend the size of the
+ PDC resource
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230929-topic-sm8x50-upstream-pdc-ver-v5-1-800111572104@linaro.org>
+Message-Id: <20230929-topic-sm8x50-upstream-pdc-ver-v5-2-800111572104@linaro.org>
 References: <20230929-topic-sm8x50-upstream-pdc-ver-v5-0-800111572104@linaro.org>
 In-Reply-To: <20230929-topic-sm8x50-upstream-pdc-ver-v5-0-800111572104@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
@@ -69,20 +70,20 @@ Cc:     "Maulik Shah (mkshah)" <quic_mkshah@quicinc.com>,
         Neil Armstrong <neil.armstrong@linaro.org>,
         Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4795;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1064;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=6orSRP0NJTZLQP1EFMD8qpi/uGQjJ1PT/4dWzZv/274=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlFkgEM23mKD7GVUZMrhmFIMBFXUVV2ivFJ6gTTTsF
- +QMNTo+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZRZIBAAKCRB33NvayMhJ0ZkEEA
- CAPhgNPTi4z29rCKsy0U3EMHRGmyn9VeZnGTpkNZNNA5Uu/nfHlJLYDenrXZ0P7oMTuwWJ8DbMTMO4
- UqVOut8+GpnWBlWrITpMebrU3rwWApFrf2AR/nO95FQqX9otdLwdTwI7EWEG1yQpt9A6Jk3EqC/gtc
- aa2tYKv22jxx+vORRp/A+hl9v61b3eSMuLrnFKPgGw8HDHXOlJvbU3K8hb0LpVr7Zs1dQiPC5LZe+7
- LG0WTsJsuQtY1yteH/AoQiQFheX2ZWlSfeMbW8iU/cHUQgxk6Q8A0Tvz3HEvqnq+5Hosb6tNV1t0Zs
- IVDesPX+xELVmM11okNRhc/H+Zb81v5kzuAJhO7OYFjM0uFkuqckFDudqn7EbpN8bOpQkZy8L7L+cR
- gEzHvKyixkNRKPGxCgfVeWuZfW2nmC6pXNChv+BU2VfpvWLeINJtfiiRd1uxmkhLiQQKqYGAyj5zJR
- NNAcUswz8qU3C6/wtEkWjn7xFJmdoO9O3ANmxc0bj001uaeLm81hos0upNY7KEmXNI3bIHKIr3tajZ
- Ux7li/fXf1312HvR78GUOnIbLwCZkP8pC0u73aAgAdASxvRgNhZen82Gu3HLQCe8smZR0ou/bd3ZfQ
- HVMBfrQnc6XcARA6/1n3UM9kh0atBbGfCxFRpqJeCo9Onfj8pnsjwK/M6Yiw==
+ bh=sP+r4e04X8jecgSE+GdyYs6YDv2q2USTYBLqb/XeWBc=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlFkgE6Hat4o6gljT/wwjabnHx41yjh0M4fp+eFEZV
+ R9Llmj+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZRZIBAAKCRB33NvayMhJ0QirEA
+ Cd7dhmXO7B5MbxvUn1DThRdtFTqIQfglZ/bsMPwx0O2uHdI35FikKiKDwtVLUavDjNi1uyflj/2IOX
+ hXhJyUK8LV73Ar8G+bS4706y/f1l1LRKgIlJwlNkjsP6/tEBF4/MCXA6C4DeZva3JRuI7Ei5T4YwaA
+ IMNOXL924ahXGMxPSNEy/Juok/EIwo6StODJV62Or9CGxNe563AtBV3fTPGwwWGqdQvmCO2DtSgtl6
+ qmJWIPmbjy3ZP202NJfndcgFG4NeMlYwNd9lNqQQIumbjWo7dOChFQCnVEqNIpmCrUhx1OdPvrljtG
+ 4LjywL2ZjXgsU+HQDKzjpUflWMn0ks3xtUqrBeUSjJT/EHc2OvjlZlSL8pcAmsHVXcjUsY0Atbaw/d
+ 8l4qgo8RtVXXjp3ZSu9wqZOTYDukT5sFq38EA1Vy5hKuGWhAWSsu+mnMwnoWCpgwAKKUqfqBJVJhoj
+ QFo0kUCXw6ry1MEoWO/khc+CWBCHRFga3cwXoN9fAD1MBDzuNKDRGpDxqvckcw1j1su7+dOyms++VE
+ 3VMCbWqyPaJ+ZNc2slQrU3YhooRpXvfo/ZuICwyAnxv0JC4n5dXU6pOixqGBwSJm3digwGT7ViRThu
+ qbOK1/ZWpMUIP/eU23Ps7TgsPrrMopMIZkv1BU/Maasrz1OrYuIkn0dgnR5A==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -95,159 +96,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Starting from HW version 3.2 the IRQ_ENABLE bit has moved to the
-IRQ_i_CFG register and requires a change of the driver to avoid
-writing into an undefined register address.
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Get the HW version from registers and set the IRQ_ENABLE bit to the
-correct register depending on the HW version.
+Follow the example of other platforms and extend the PDC resource region
+to 0x30000, so that the PDC driver can read the PDC_VERSION register.
 
-Reviewed-by: Maulik Shah <quic_mkshah@quicinc.com>
-Acked-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+Fixes: 397ad94668c1 ("arm64: dts: qcom: sm8150: Add pdc interrupt controller node")
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
- drivers/irqchip/qcom-pdc.c | 69 ++++++++++++++++++++++++++++++++++------------
- 1 file changed, 51 insertions(+), 18 deletions(-)
+ arch/arm64/boot/dts/qcom/sm8150.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/qcom-pdc.c b/drivers/irqchip/qcom-pdc.c
-index a32c0d28d038..74b2f124116e 100644
---- a/drivers/irqchip/qcom-pdc.c
-+++ b/drivers/irqchip/qcom-pdc.c
-@@ -22,9 +22,20 @@
+diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+index a7c3020a5de4..06c53000bb74 100644
+--- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
++++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
+@@ -3958,7 +3958,7 @@ dispcc: clock-controller@af00000 {
  
- #define PDC_MAX_GPIO_IRQS	256
- 
-+/* Valid only on HW version < 3.2 */
- #define IRQ_ENABLE_BANK		0x10
- #define IRQ_i_CFG		0x110
- 
-+/* Valid only on HW version >= 3.2 */
-+#define IRQ_i_CFG_IRQ_ENABLE	3
-+
-+#define IRQ_i_CFG_TYPE_MASK	GENMASK(2, 0)
-+
-+#define PDC_VERSION_REG		0x1000
-+
-+/* Notable PDC versions */
-+#define PDC_VERSION_3_2		0x30200
-+
- struct pdc_pin_region {
- 	u32 pin_base;
- 	u32 parent_base;
-@@ -37,6 +48,7 @@ static DEFINE_RAW_SPINLOCK(pdc_lock);
- static void __iomem *pdc_base;
- static struct pdc_pin_region *pdc_region;
- static int pdc_region_cnt;
-+static unsigned int pdc_version;
- 
- static void pdc_reg_write(int reg, u32 i, u32 val)
- {
-@@ -48,20 +60,32 @@ static u32 pdc_reg_read(int reg, u32 i)
- 	return readl_relaxed(pdc_base + reg + i * sizeof(u32));
- }
- 
--static void pdc_enable_intr(struct irq_data *d, bool on)
-+static void __pdc_enable_intr(int pin_out, bool on)
- {
--	int pin_out = d->hwirq;
- 	unsigned long enable;
--	unsigned long flags;
--	u32 index, mask;
- 
--	index = pin_out / 32;
--	mask = pin_out % 32;
-+	if (pdc_version < PDC_VERSION_3_2) {
-+		u32 index, mask;
-+
-+		index = pin_out / 32;
-+		mask = pin_out % 32;
-+
-+		enable = pdc_reg_read(IRQ_ENABLE_BANK, index);
-+		__assign_bit(mask, &enable, on);
-+		pdc_reg_write(IRQ_ENABLE_BANK, index, enable);
-+	} else {
-+		enable = pdc_reg_read(IRQ_i_CFG, pin_out);
-+		__assign_bit(IRQ_i_CFG_IRQ_ENABLE, &enable, on);
-+		pdc_reg_write(IRQ_i_CFG, pin_out, enable);
-+	}
-+}
-+
-+static void pdc_enable_intr(struct irq_data *d, bool on)
-+{
-+	unsigned long flags;
- 
- 	raw_spin_lock_irqsave(&pdc_lock, flags);
--	enable = pdc_reg_read(IRQ_ENABLE_BANK, index);
--	__assign_bit(mask, &enable, on);
--	pdc_reg_write(IRQ_ENABLE_BANK, index, enable);
-+	__pdc_enable_intr(d->hwirq, on);
- 	raw_spin_unlock_irqrestore(&pdc_lock, flags);
- }
- 
-@@ -142,6 +166,7 @@ static int qcom_pdc_gic_set_type(struct irq_data *d, unsigned int type)
- 	}
- 
- 	old_pdc_type = pdc_reg_read(IRQ_i_CFG, d->hwirq);
-+	pdc_type |= (old_pdc_type & ~IRQ_i_CFG_TYPE_MASK);
- 	pdc_reg_write(IRQ_i_CFG, d->hwirq, pdc_type);
- 
- 	ret = irq_chip_set_type_parent(d, type);
-@@ -246,7 +271,6 @@ static const struct irq_domain_ops qcom_pdc_ops = {
- static int pdc_setup_pin_mapping(struct device_node *np)
- {
- 	int ret, n, i;
--	u32 irq_index, reg_index, val;
- 
- 	n = of_property_count_elems_of_size(np, "qcom,pdc-ranges", sizeof(u32));
- 	if (n <= 0 || n % 3)
-@@ -276,29 +300,38 @@ static int pdc_setup_pin_mapping(struct device_node *np)
- 		if (ret)
- 			return ret;
- 
--		for (i = 0; i < pdc_region[n].cnt; i++) {
--			reg_index = (i + pdc_region[n].pin_base) >> 5;
--			irq_index = (i + pdc_region[n].pin_base) & 0x1f;
--			val = pdc_reg_read(IRQ_ENABLE_BANK, reg_index);
--			val &= ~BIT(irq_index);
--			pdc_reg_write(IRQ_ENABLE_BANK, reg_index, val);
--		}
-+		for (i = 0; i < pdc_region[n].cnt; i++)
-+			__pdc_enable_intr(i + pdc_region[n].pin_base, 0);
- 	}
- 
- 	return 0;
- }
- 
-+#define QCOM_PDC_SIZE 0x30000
-+
- static int qcom_pdc_init(struct device_node *node, struct device_node *parent)
- {
- 	struct irq_domain *parent_domain, *pdc_domain;
-+	resource_size_t res_size;
-+	struct resource res;
- 	int ret;
- 
--	pdc_base = of_iomap(node, 0);
-+	/* compat with old sm8150 DT which had very small region for PDC */
-+	if (of_address_to_resource(node, 0, &res))
-+		return -EINVAL;
-+
-+	res_size = max_t(resource_size_t, resource_size(&res), QCOM_PDC_SIZE);
-+	if (res_size > resource_size(&res))
-+		pr_warn("%pOF: invalid reg size, please fix DT\n", node);
-+
-+	pdc_base = ioremap(res.start, res_size);
- 	if (!pdc_base) {
- 		pr_err("%pOF: unable to map PDC registers\n", node);
- 		return -ENXIO;
- 	}
- 
-+	pdc_version = pdc_reg_read(PDC_VERSION_REG, 0);
-+
- 	parent_domain = irq_find_host(parent);
- 	if (!parent_domain) {
- 		pr_err("%pOF: unable to find PDC's parent domain\n", node);
+ 		pdc: interrupt-controller@b220000 {
+ 			compatible = "qcom,sm8150-pdc", "qcom,pdc";
+-			reg = <0 0x0b220000 0 0x400>;
++			reg = <0 0x0b220000 0 0x30000>;
+ 			qcom,pdc-ranges = <0 480 94>, <94 609 31>,
+ 					  <125 63 1>;
+ 			#interrupt-cells = <2>;
 
 -- 
 2.34.1
