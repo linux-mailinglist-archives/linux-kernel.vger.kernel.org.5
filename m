@@ -2,214 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BAC97B2F04
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D3CA7B2F0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 11:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232942AbjI2JPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 05:15:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44028 "EHLO
+        id S232931AbjI2JSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 05:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232814AbjI2JPa (ORCPT
+        with ESMTP id S231774AbjI2JSV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 05:15:30 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5665619F;
-        Fri, 29 Sep 2023 02:15:28 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6A6341FB;
-        Fri, 29 Sep 2023 02:16:06 -0700 (PDT)
-Received: from [10.57.93.169] (unknown [10.57.93.169])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C319A3F5A1;
-        Fri, 29 Sep 2023 02:15:25 -0700 (PDT)
-Message-ID: <e1b36a7b-0524-0559-7ae1-801bdda91e60@arm.com>
-Date:   Fri, 29 Sep 2023 10:16:05 +0100
+        Fri, 29 Sep 2023 05:18:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C08411F
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 02:18:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E219C433C8;
+        Fri, 29 Sep 2023 09:18:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695979099;
+        bh=sSE2ufPYYysKrqreHDDK6x2F7lHFW9wHus1rU5Gyqa4=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=OL7Z9t0eGVsDSZPFGnlt09R/M6FKqLC+BNINqQyS273SmJtKHDd7hncmOQ3Hz2mm1
+         sqwfWYo2xUCS+ThqHPjVQ0z0OAXY7a++BMPrWZMWc6o59LGZfMDrPmB0V8SRh4LK6s
+         oWaE8PDlDyxGaFtH0kaMwOEczo26uNKrhypDbVhJPCQRtjeBZsK1885SpjhDB/M6qn
+         xJD5wi0NEQdSWtOzjoTpXqpUFO2TBzkaanViCpM8r7wDYPBTwHsuFKm/d87Bg4sMZJ
+         OxO38KYtoJBUHzxKxeKISDQ2OuGns38N9UKXP40dK0l2a55wrtqlF1nAgXoEn2sgfZ
+         s569bjJS3Y49A==
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Rob Herring <robh@kernel.org>
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230928194126.1146622-1-robh@kernel.org>
+References: <20230928194126.1146622-1-robh@kernel.org>
+Subject: Re: [PATCH] ASoC: dt-bindings: Simplify referencing
+ dai-params.yaml
+Message-Id: <169597910032.2796594.13616316041876097635.b4-ty@kernel.org>
+Date:   Fri, 29 Sep 2023 11:18:20 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4 09/18] PM: EM: Introduce runtime modifiable table
-Content-Language: en-US
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dietmar.eggemann@arm.com, rui.zhang@intel.com,
-        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
-        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
-        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
-        qyousef@layalina.io, wvw@google.com
-References: <20230925081139.1305766-1-lukasz.luba@arm.com>
- <20230925081139.1305766-10-lukasz.luba@arm.com>
- <CAJZ5v0gxjJRoZpGjs4qWy_CQbwnztgrQxHJpffdFHeEL7ikbYQ@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <CAJZ5v0gxjJRoZpGjs4qWy_CQbwnztgrQxHJpffdFHeEL7ikbYQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/26/23 20:12, Rafael J. Wysocki wrote:
-> On Mon, Sep 25, 2023 at 10:11 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> The new runtime table would be populated with a new power data to better
->> reflect the actual power. The power can vary over time e.g. due to the
->> SoC temperature change. Higher temperature can increase power values.
->> For longer running scenarios, such as game or camera, when also other
->> devices are used (e.g. GPU, ISP) the CPU power can change. The new
->> EM framework is able to addresses this issue and change the data
->> at runtime safely.
->>
->> The runtime modifiable EM data is used by the Energy Aware Scheduler (EAS)
->> for the task placement. All the other users (thermal, etc.) are still
->> using the default (basic) EM. This fact drove the design of this feature.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   include/linux/energy_model.h |  4 +++-
->>   kernel/power/energy_model.c  | 12 +++++++++++-
->>   2 files changed, 14 insertions(+), 2 deletions(-)
->>
->> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
->> index 546dee90f716..740e7c25cfff 100644
->> --- a/include/linux/energy_model.h
->> +++ b/include/linux/energy_model.h
->> @@ -39,7 +39,7 @@ struct em_perf_state {
->>   /**
->>    * struct em_perf_table - Performance states table
->>    * @state:     List of performance states, in ascending order
->> - * @rcu:       RCU used for safe access and destruction
->> + * @rcu:       RCU used only for runtime modifiable table
+On Thu, 28 Sep 2023 14:41:16 -0500, Rob Herring wrote:
+> There's generally no need to use definitions to reference from
+> individual properties. All the property names are the same, and all the
+> defined properties are used by all the users.
 > 
-> This still doesn't appear to be used anywhere, so why change it here?
-
-I will try to move this later in the series.
-
 > 
->>    */
->>   struct em_perf_table {
->>          struct em_perf_state *state;
->> @@ -49,6 +49,7 @@ struct em_perf_table {
->>   /**
->>    * struct em_perf_domain - Performance domain
->>    * @default_table:     Pointer to the default em_perf_table
->> + * @runtime_table:     Pointer to the runtime modifiable em_perf_table
-> 
-> "Pointer to em_perf_table that can be dynamically updated"
 
-OK
+Applied to
 
-> 
->>    * @nr_perf_states:    Number of performance states
->>    * @flags:             See "em_perf_domain flags"
->>    * @cpus:              Cpumask covering the CPUs of the domain. It's here
->> @@ -64,6 +65,7 @@ struct em_perf_table {
->>    */
->>   struct em_perf_domain {
->>          struct em_perf_table *default_table;
->> +       struct em_perf_table __rcu *runtime_table;
->>          int nr_perf_states;
->>          unsigned long flags;
->>          unsigned long cpus[];
->> diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
->> index 797141638b29..5b40db38b745 100644
->> --- a/kernel/power/energy_model.c
->> +++ b/kernel/power/energy_model.c
->> @@ -251,6 +251,9 @@ static int em_create_pd(struct device *dev, int nr_states,
->>                  return ret;
->>          }
->>
->> +       /* Initialize runtime table as default table. */
-> 
-> Redundant comment.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-I'll drop it.
+Thanks!
 
-> 
->> +       rcu_assign_pointer(pd->runtime_table, default_table);
->> +
->>          if (_is_cpu_device(dev))
->>                  for_each_cpu(cpu, cpus) {
->>                          cpu_dev = get_cpu_device(cpu);
->> @@ -448,6 +451,7 @@ EXPORT_SYMBOL_GPL(em_dev_register_perf_domain);
->>    */
->>   void em_dev_unregister_perf_domain(struct device *dev)
->>   {
->> +       struct em_perf_table __rcu *runtime_table;
->>          struct em_perf_domain *pd;
->>
->>          if (IS_ERR_OR_NULL(dev) || !dev->em_pd)
->> @@ -457,18 +461,24 @@ void em_dev_unregister_perf_domain(struct device *dev)
->>                  return;
->>
->>          pd = dev->em_pd;
->> -
-> 
-> Unrelated change.
+[1/1] ASoC: dt-bindings: Simplify referencing dai-params.yaml
+      commit: 967dad97757057dcd72ec27cdb3c14c1774f606c
 
-ACK
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-> 
->>          /*
->>           * The mutex separates all register/unregister requests and protects
->>           * from potential clean-up/setup issues in the debugfs directories.
->>           * The debugfs directory name is the same as device's name.
->>           */
->>          mutex_lock(&em_pd_mutex);
->> +
-> 
-> Same here.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-ACK
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> 
->>          em_debug_remove_pd(dev);
->>
->> +       runtime_table = pd->runtime_table;
->> +
->> +       rcu_assign_pointer(pd->runtime_table, NULL);
->> +       synchronize_rcu();
-> 
-> Is it really a good idea to call this under a mutex?
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-This is the unregistration of the EM code path, so a thermal
-driver which gets some IRQs might not be aware that the EM
-is going to vanish. That's why those two code paths: update
-& unregister are protected with the same lock.
+Thanks,
+Mark
 
-This synchronize_rcu() won't be long, but makes sure
-that when we free(dev->em_pd) we don't leak runtime_table.
-
-> 
->> +
->>          kfree(pd->default_table->state);
->>          kfree(pd->default_table);
->>          kfree(dev->em_pd);
->> +
-> 
-> Unrelated change.
-
-ACK
-
-> 
->>          dev->em_pd = NULL;
->>          mutex_unlock(&em_pd_mutex);
->>   }
->> --
-> 
-> So this really adds a pointer to a table that can be dynamically
-> updated to struct em_perf_domain without any users so far.  It is not
-> used anywhere as of this patch AFAICS, which is not what the changelog
-> is saying.
-
-Good catch. I will adjust the changlog in header and say:
-
-'Add infrastructure and mechanisms for the new runtime table.
-The runtime modifiable EM data is used by the Energy Aware Scheduler 
-(EAS)for the task placement. All the other users (thermal, etc.) are
-still using the default (basic) EM. This fact drove the design of this
-feature.'
