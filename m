@@ -2,134 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF647B3202
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF51C7B3208
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Sep 2023 14:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbjI2MFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 08:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45698 "EHLO
+        id S233167AbjI2MGx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 08:06:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjI2MFO (ORCPT
+        with ESMTP id S233038AbjI2MGw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 08:05:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D159193;
-        Fri, 29 Sep 2023 05:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695989112; x=1727525112;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=VJMaG13OJcHThIk080sju328yDFylyW8tGrNgtZsgxo=;
-  b=T99rugG+g/W0bpY6iMYXy67u/1mVaCtjZZ/Hng1VXZL9It94hZ+cX3gU
-   2MhJ5/BiQYrN/25WFytzL6uOkz3FTda2zjcsvgWQvg99oD+0jB/RVfJ2A
-   BECOPPbPPVysOMWuWlwDMu1lfIAYBS3f2Us5bsEB0Q26TDL9Vm4iarWwE
-   Ga+uCH8k6NfNIxLP/K+FJ8jr5JpDHb9MzjLS7voHYMVXcz1jOa8TIHDr5
-   5tOHCMpF5Qvouh71PhB8UhJ03RHo729MSf5jKBYiwQETHeaJhjTYGcJQG
-   iQQZJP3mAGfy8Uq0w1N7M/kaZd+Xwf4BNYXWk219bOxXWWL9b+0BZkG1C
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="385099129"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="385099129"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 05:05:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10847"; a="820192781"
-X-IronPort-AV: E=Sophos;i="6.03,187,1694761200"; 
-   d="scan'208";a="820192781"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 29 Sep 2023 05:05:05 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qmCEx-0002q2-0n;
-        Fri, 29 Sep 2023 12:05:03 +0000
-Date:   Fri, 29 Sep 2023 20:04:44 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Herve Codina <herve.codina@bootlin.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>,
-        Xiubo Li <Xiubo.Lee@gmail.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>
-Cc:     oe-kbuild-all@lists.linux.dev, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org,
-        Simon Horman <horms@kernel.org>
-Subject: Re: [PATCH v7 25/30] dt-bindings: net: Add the Lantiq PEF2256
- E1/T1/J1 framer
-Message-ID: <202309291924.OBfdyhXb-lkp@intel.com>
-References: <20230928070652.330429-26-herve.codina@bootlin.com>
+        Fri, 29 Sep 2023 08:06:52 -0400
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E52193;
+        Fri, 29 Sep 2023 05:06:50 -0700 (PDT)
+Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-7ae12c28776so2411162241.0;
+        Fri, 29 Sep 2023 05:06:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695989209; x=1696594009; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WklKxHvJ4lWh9tljSeh/U+ySuT04KyfAmm6d+l7zSl4=;
+        b=CK3fGtVS2+Ej5iStNIV6ZP21iddjgppxLiPbxk76P1AtfGsOdzKwq9QkKJM5bpxl4d
+         RH1DdnaW/wOUbi+kRMci6awoEA8PRSGrY+qfPCVx0I4qGEq5IXv+9+v1Sl6vEiTC0K0V
+         4r8g9gnvNRMxPBoyrSGRUQmyqAvDHuchyVOf7cVeK5Q2jIf60oa6jpx7zIxz6lo3EeZH
+         BFR5OEBInl/0Zll3XpY0qTfBsIgf9x54h0iN8qkDxm/Is4STI2Gj31P4r+u/qseiGwYi
+         /i93DhOrrLOwz/brccRGyfQ2sWBZNyVtR0VQCefim4wsEczs3Lzit+bNJYR9BMZlj9xD
+         j0oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1695989209; x=1696594009;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WklKxHvJ4lWh9tljSeh/U+ySuT04KyfAmm6d+l7zSl4=;
+        b=ABexkTOccNVmmzRwPjC+CXP1xc1J5Hw+JvjgmyZBpMymHLCbUZp3xrodw4tRdMNb40
+         9bNmGc37AoIHLwQPkSoUOEofWxVtw/u0q/QU9ZNHifhLxP/NoA/SfjnvuYcrWToD42p5
+         TkYn82ngoz2W90NcITDHEYmFNooFAV3bM7u8y+YEnZgsUfSN5ADVG4E0inylr3OJEIF6
+         Da8FpnWM7f14+9gK7zAboozx46uBLPsgmJq/hsWU5vDDbNxz71UqojiVnjnjz4/sJrJ2
+         qjdg02sWjJca7IdY5JXRJQvG94lzplpogZzfrorJR7UICZkqfxkLxgI5v7zZjY2NFaKe
+         ZzKA==
+X-Gm-Message-State: AOJu0YyNsa/KDKEzqJSU2GYecSJ+BmAgEeIaJJKxLzQhAgo4gOx5CX5s
+        mr0L60NtRTxySkAZ1o6thUecfk5XT6ffmohBDTc=
+X-Google-Smtp-Source: AGHT+IHPnnp9Tml6BPyPUla6wu4iber8g42aabZ9OhsBHrXPZZSJc8ot7WEgSaDN7oTUpTxc+9F3wRzKXu/a/+Psc84=
+X-Received: by 2002:a05:6102:d4:b0:452:94b8:2fe9 with SMTP id
+ u20-20020a05610200d400b0045294b82fe9mr2992035vsp.21.1695989209499; Fri, 29
+ Sep 2023 05:06:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230928070652.330429-26-herve.codina@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230929031716.it.155-kees@kernel.org> <20230929032435.2391507-1-keescook@chromium.org>
+In-Reply-To: <20230929032435.2391507-1-keescook@chromium.org>
+From:   Pedro Falcato <pedro.falcato@gmail.com>
+Date:   Fri, 29 Sep 2023 13:06:38 +0100
+Message-ID: <CAKbZUD3E2if8Sncy+M2YKncc_Zh08-86W6U5wR0ZMazShxbHHA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/6] binfmt_elf: Support segments with 0 filesz and
+ misaligned starts
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Eric Biederman <ebiederm@xmission.com>,
+        Sebastian Ott <sebott@redhat.com>,
+        =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herve,
+On Fri, Sep 29, 2023 at 4:24=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> From: "Eric W. Biederman" <ebiederm@xmission.com>
+>
+> Implement a helper elf_load() that wraps elf_map() and performs all
+> of the necessary work to ensure that when "memsz > filesz" the bytes
+> described by "memsz > filesz" are zeroed.
+>
+> An outstanding issue is if the first segment has filesz 0, and has a
+> randomized location. But that is the same as today.
+>
+> In this change I replaced an open coded padzero() that did not clear
+> all of the way to the end of the page, with padzero() that does.
+>
+> I also stopped checking the return of padzero() as there is at least
+> one known case where testing for failure is the wrong thing to do.
+> It looks like binfmt_elf_fdpic may have the proper set of tests
+> for when error handling can be safely completed.
+>
+> I found a couple of commits in the old history
+> https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git,
+> that look very interesting in understanding this code.
+>
+> commit 39b56d902bf3 ("[PATCH] binfmt_elf: clearing bss may fail")
+> commit c6e2227e4a3e ("[SPARC64]: Missing user access return value checks =
+in fs/binfmt_elf.c and fs/compat.c")
+> commit 5bf3be033f50 ("v2.4.10.1 -> v2.4.10.2")
+>
+> Looking at commit 39b56d902bf3 ("[PATCH] binfmt_elf: clearing bss may fai=
+l"):
+> >  commit 39b56d902bf35241e7cba6cc30b828ed937175ad
+> >  Author: Pavel Machek <pavel@ucw.cz>
+> >  Date:   Wed Feb 9 22:40:30 2005 -0800
+> >
+> >     [PATCH] binfmt_elf: clearing bss may fail
+> >
+> >     So we discover that Borland's Kylix application builder emits weird=
+ elf
+> >     files which describe a non-writeable bss segment.
+> >
+> >     So remove the clear_user() check at the place where we zero out the=
+ bss.  I
+> >     don't _think_ there are any security implications here (plus we've =
+never
+> >     checked that clear_user() return value, so whoops if it is a proble=
+m).
+> >
+> >     Signed-off-by: Pavel Machek <pavel@suse.cz>
+> >     Signed-off-by: Andrew Morton <akpm@osdl.org>
+> >     Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+>
+> It seems pretty clear that binfmt_elf_fdpic with skipping clear_user() fo=
+r
+> non-writable segments and otherwise calling clear_user(), aka padzero(),
+> and checking it's return code is the right thing to do.
+>
+> I just skipped the error checking as that avoids breaking things.
+>
+> And notably, it looks like Borland's Kylix died in 2005 so it might be
+> safe to just consider read-only segments with memsz > filesz an error.
+>
+> Reported-by: Sebastian Ott <sebott@redhat.com>
+> Reported-by: Thomas Wei=C3=9Fschuh <linux@weissschuh.net>
+> Closes: https://lkml.kernel.org/r/20230914-bss-alloc-v1-1-78de67d2c6dd@we=
+issschuh.net
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+> Link: https://lore.kernel.org/r/87sf71f123.fsf@email.froward.int.ebiederm=
+.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  fs/binfmt_elf.c | 111 +++++++++++++++++++++---------------------------
+>  1 file changed, 48 insertions(+), 63 deletions(-)
+>
+> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> index 7b3d2d491407..2a615f476e44 100644
+> --- a/fs/binfmt_elf.c
+> +++ b/fs/binfmt_elf.c
+> @@ -110,25 +110,6 @@ static struct linux_binfmt elf_format =3D {
+>
+>  #define BAD_ADDR(x) (unlikely((unsigned long)(x) >=3D TASK_SIZE))
+>
+> -static int set_brk(unsigned long start, unsigned long end, int prot)
+> -{
+> -       start =3D ELF_PAGEALIGN(start);
+> -       end =3D ELF_PAGEALIGN(end);
+> -       if (end > start) {
+> -               /*
+> -                * Map the last of the bss segment.
+> -                * If the header is requesting these pages to be
+> -                * executable, honour that (ppc32 needs this).
+> -                */
+> -               int error =3D vm_brk_flags(start, end - start,
+> -                               prot & PROT_EXEC ? VM_EXEC : 0);
+> -               if (error)
+> -                       return error;
+> -       }
+> -       current->mm->start_brk =3D current->mm->brk =3D end;
+> -       return 0;
+> -}
+> -
+>  /* We need to explicitly zero any fractional pages
+>     after the data section (i.e. bss).  This would
+>     contain the junk from the file that should not
+> @@ -406,6 +387,51 @@ static unsigned long elf_map(struct file *filep, uns=
+igned long addr,
+>         return(map_addr);
+>  }
+>
+> +static unsigned long elf_load(struct file *filep, unsigned long addr,
+> +               const struct elf_phdr *eppnt, int prot, int type,
+> +               unsigned long total_size)
+> +{
+> +       unsigned long zero_start, zero_end;
+> +       unsigned long map_addr;
+> +
+> +       if (eppnt->p_filesz) {
+> +               map_addr =3D elf_map(filep, addr, eppnt, prot, type, tota=
+l_size);
+> +               if (BAD_ADDR(map_addr))
+> +                       return map_addr;
+> +               if (eppnt->p_memsz > eppnt->p_filesz) {
+> +                       zero_start =3D map_addr + ELF_PAGEOFFSET(eppnt->p=
+_vaddr) +
+> +                               eppnt->p_filesz;
+> +                       zero_end =3D map_addr + ELF_PAGEOFFSET(eppnt->p_v=
+addr) +
+> +                               eppnt->p_memsz;
+> +
+> +                       /* Zero the end of the last mapped page */
+> +                       padzero(zero_start);
+> +               }
+> +       } else {
+> +               map_addr =3D zero_start =3D ELF_PAGESTART(addr);
+> +               zero_end =3D zero_start + ELF_PAGEOFFSET(eppnt->p_vaddr) =
++
+> +                       eppnt->p_memsz;
 
-kernel test robot noticed the following build warnings:
+What happens if a previous segment has mapped ELF_PAGESTART(addr)?
+Don't we risk mapping over that?
+Whereas AFAIK old logic would just padzero the bss bytes.
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.6-rc3 next-20230929]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Herve-Codina/soc-fsl-cpm1-tsa-Fix-__iomem-addresses-declaration/20230928-151746
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20230928070652.330429-26-herve.codina%40bootlin.com
-patch subject: [PATCH v7 25/30] dt-bindings: net: Add the Lantiq PEF2256 E1/T1/J1 framer
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20230929/202309291924.OBfdyhXb-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309291924.OBfdyhXb-lkp@intel.com/
-
-dtcheck warnings: (new ones prefixed by >>)
->> Documentation/devicetree/bindings/net/lantiq,pef2256.yaml: properties:lantiq,data-rate-bps: 'oneOf' conditional failed, one must be fixed:
-   	'type' is a required property
-   		hint: A vendor boolean property can use "type: boolean"
-   	Additional properties are not allowed ('default', 'enum' were unexpected)
-   		hint: A vendor boolean property can use "type: boolean"
-   	Additional properties are not allowed ('default' was unexpected)
-   		hint: A vendor string property with exact values has an implicit type
->> 	Documentation/devicetree/bindings/net/lantiq,pef2256.yaml: properties:lantiq,data-rate-bps: 'oneOf' conditional failed, one must be fixed:
-   		'$ref' is a required property
-   		'allOf' is a required property
-   		hint: A vendor property needs a $ref to types.yaml
-   		from schema $id: http://devicetree.org/meta-schemas/vendor-props.yaml#
-   	2048000 is not of type 'string'
-   		hint: A vendor string property with exact values has an implicit type
-   	4096000 is not of type 'string'
-   		hint: A vendor string property with exact values has an implicit type
-   	8192000 is not of type 'string'
-   		hint: A vendor string property with exact values has an implicit type
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+Pedro
