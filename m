@@ -2,101 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 848717B42E2
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 20:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BB67B42E6
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 20:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234585AbjI3SL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 14:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
+        id S234713AbjI3SMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 14:12:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbjI3SLY (ORCPT
+        with ESMTP id S230505AbjI3SMR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 14:11:24 -0400
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A3A7D3;
-        Sat, 30 Sep 2023 11:11:22 -0700 (PDT)
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-578a62c088cso1269945a12.1;
-        Sat, 30 Sep 2023 11:11:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696097482; x=1696702282;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6TXn5EVj6LatWgiRJOE6Q8kenZuC5VUG7hu5Ruisxfw=;
-        b=TdMqv/HRStG3ywdx/P+gTaMC0aFfAsY34S2YBMmZVnQLNeNbUtcwhxYhgtbc810Pnb
-         kEIPswTqx/HEoxzGJYWkVAe5hx1OpOnqy43G96xzyZhMKUz0Oqwy0ty2f5EvX41nXKPx
-         qxVcVrld21VMA0iGVf1zaUuSfafYc+KIojBw6HK7VO6g9NRw1XZVv7hsRHfdbdgO6EYp
-         U81zG/yC2SVXV8MswS5L5sLGFMXhrUwdE5lmC5r6P/jnwY2jyJohEbD4JypLy68JAFk5
-         Z0cJq0BSE3hnlTZlamh2Iohd05xtBMWj3OKr+qo2u9Zvu/NinFBK11RmH39rj0aAHIyp
-         F4EQ==
-X-Gm-Message-State: AOJu0Yxc6nm3AWtH9cgm/YS6R14wtJc4dMvjBerYoUSYyYEl9t01sEV0
-        sMnYA0IV85eChW1tWnZ2afw=
-X-Google-Smtp-Source: AGHT+IG8yfBEc/mvB02AlNeuIWF5R6nONr+MMMVd7OPW+QTH0f19znw98ZuhkzsbdpNX71Nf57LDPg==
-X-Received: by 2002:a17:90b:1982:b0:279:dae:2d3f with SMTP id mv2-20020a17090b198200b002790dae2d3fmr11586365pjb.22.1696097481748;
-        Sat, 30 Sep 2023 11:11:21 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id mu13-20020a17090b388d00b00256799877ffsm3398075pjb.47.2023.09.30.11.11.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 11:11:21 -0700 (PDT)
-Date:   Sat, 30 Sep 2023 18:11:19 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        haiyangz@microsoft.com, decui@microsoft.com,
-        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
-        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
-        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
-        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        will@kernel.org, catalin.marinas@arm.com
-Subject: Re: [PATCH v4 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Message-ID: <ZRhkxxBbxkeM4whg@liuwe-devbox-debian-v2>
-References: <1696010501-24584-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1696010501-24584-16-git-send-email-nunodasneves@linux.microsoft.com>
- <2023093004-evoke-snowbird-363b@gregkh>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023093004-evoke-snowbird-363b@gregkh>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        Sat, 30 Sep 2023 14:12:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE17D3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 11:12:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A83B4C433C9;
+        Sat, 30 Sep 2023 18:12:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696097534;
+        bh=rODG9meJvQQKVZQq3SEU3TKXsowFJwEyJ6gP61XYwFs=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=cheQi4FWKv6Gvd7ZNLn7/ad7lyo/FJ2C6BX9mgw/gf4CosD7aKbRGtPKqliWBvHNk
+         QGJTSgB/zDdIxeaSAmmiMGZaJKzuQFQ797U64TYDjx5ev1YAcg4mM8zqXpyrbt9tyN
+         GLjfUd3NvWTYYHYwUx3TkDEf0NGg6C2oNJRQmb4D7/MUy8kjZadogwP2U1thAOAdOY
+         1tbvHHYW6W560kRpFVvU3OhIgUD+PtK/OzRXloU4YnN4ihI4QyZPt6zui409qAhruX
+         pPhWB6jDjL5dkCwJrbYsrvbWJ0XoGWJ+IrYUP1c8N1BQac7oswIPFaBJ3rgmwPxO2q
+         mTcHoveuSPRNQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 94837C395E0;
+        Sat, 30 Sep 2023 18:12:14 +0000 (UTC)
+Subject: Re: [GIT PULL] dma-mapping fixes for Linux 6.6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZRhZrvxhAf78PgAt@infradead.org>
+References: <ZRhZrvxhAf78PgAt@infradead.org>
+X-PR-Tracked-List-Id: <iommu.lists.linux.dev>
+X-PR-Tracked-Message-Id: <ZRhZrvxhAf78PgAt@infradead.org>
+X-PR-Tracked-Remote: git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-6.6-2023-09-30
+X-PR-Tracked-Commit-Id: 2d5780bbef8dbe6375d481cbea212606a80e4453
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 3b517966c5616ac011081153482a5ba0e91b17ff
+Message-Id: <169609753459.20440.4990827339784432932.pr-tracker-bot@kernel.org>
+Date:   Sat, 30 Sep 2023 18:12:14 +0000
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux.dev
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 08:11:37AM +0200, Greg KH wrote:
-> On Fri, Sep 29, 2023 at 11:01:41AM -0700, Nuno Das Neves wrote:
-> > --- /dev/null
-> > +++ b/include/uapi/linux/mshv.h
-> > @@ -0,0 +1,306 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> 
-> Much better.
-> 
-> > +#ifndef _UAPI_LINUX_MSHV_H
-> > +#define _UAPI_LINUX_MSHV_H
-> > +
-> > +/*
-> > + * Userspace interface for /dev/mshv
-> > + * Microsoft Hypervisor root partition APIs
-> > + * NOTE: This API is not yet stable!
-> 
-> Sorry, that will not work for obvious reasons.
+The pull request you sent on Sat, 30 Sep 2023 19:23:58 +0200:
 
-This can be removed. For practical purposes, the API has been stable for
-the past three years.
+> git://git.infradead.org/users/hch/dma-mapping.git tags/dma-mapping-6.6-2023-09-30
 
-Thanks,
-Wei.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/3b517966c5616ac011081153482a5ba0e91b17ff
 
-> 
-> greg k-h
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
