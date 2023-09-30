@@ -2,137 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 910527B400E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 13:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4A87B4011
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 13:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234142AbjI3LIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 07:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47958 "EHLO
+        id S234155AbjI3LJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 07:09:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233237AbjI3LIT (ORCPT
+        with ESMTP id S229778AbjI3LJN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 07:08:19 -0400
-Received: from mail-oa1-x2b.google.com (mail-oa1-x2b.google.com [IPv6:2001:4860:4864:20::2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29BB5CA
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 04:08:16 -0700 (PDT)
-Received: by mail-oa1-x2b.google.com with SMTP id 586e51a60fabf-1dce0c05171so6748550fac.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 04:08:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696072094; x=1696676894; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=X0I0W5qW0c11Sb8x+pl/ECGExDC46VWx32XMabXW6vc=;
-        b=OEMN52853lYEssK2p8k65vQbUf6EavVt2WxVpN9jYZz8vJ99npIUojqBJsnstlcgil
-         yKJAljdYEg9KZ9vyOuvgkn15mTSOtSO0tTLFEo1U+S7RAouuT4qG52+bEipjF4g0zNp8
-         Hml670YyhnfdFcnW5FWtWF6di69Y7xhTqPUvfHKtBNxOMCnfJgQ+AKjx0IkwBEiUNEp7
-         Au/lqoR9Go6YQ8QukfzKWvM0XtvdDOD9JlKddL+wY3/F3lAXjB5zg/yU9h/b0zqu0w9I
-         g5rmMXbtELaAdsJCDQXR7uRtA8mH8JIlpegFTSURzQFYGQ/Q56WX0LL12+5D4ex+m7eM
-         FI+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696072094; x=1696676894;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X0I0W5qW0c11Sb8x+pl/ECGExDC46VWx32XMabXW6vc=;
-        b=YpNzOf+fhaVKa5BYPM1U8Ihw1oS54AYALJzlxZXlSHETma7kIC/+ILWgIZW27rAKwp
-         77Km+ro5sy+n7h7shVQm7B9KiBiF8VoW2ba8HbbGE3Z7h5qYQaf1SesweN/+lDtAuEr1
-         wUiFLVvvtvkKqN7cZH2aHZpoFys237KhWudW9Ev7ehPFiovVr/0C7OT4kreLFpbyHjG8
-         FhAUQ3h613TZFsGB/f4VfUAM4Le/T1yOr9gCCHWipU4AgWR0cY0dQtvl3OX7+ew1IhOB
-         gpfASCniEykH0y5xFZsPvp1P6IhAHbee3OYztG8H41NOaVBk+KWKUwoXAisKo8XlORf1
-         /mfA==
-X-Gm-Message-State: AOJu0YwGfejoG7Zo38k+pbZTXAJWm9uVopr3cPBoYtxCITMkh/WJK9jA
-        1VUuRxLfJl1HvttLXp3nL6sUHqFYZhI=
-X-Google-Smtp-Source: AGHT+IGQVpBys6fdWBt2peWQLH3tbAZdvAEk9mTeBAKp8n0KuxVdZdkhEzgnF91GmfYw3hVmQfhSUA==
-X-Received: by 2002:a05:6870:9711:b0:1bf:61d1:a4d4 with SMTP id n17-20020a056870971100b001bf61d1a4d4mr7996201oaq.6.1696072093764;
-        Sat, 30 Sep 2023 04:08:13 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id w16-20020a637b10000000b0057c44503835sm14318409pgc.65.2023.09.30.04.08.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 04:08:12 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 85D63835CB24; Sat, 30 Sep 2023 18:08:08 +0700 (WIB)
-Date:   Sat, 30 Sep 2023 18:08:08 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Adrian =?utf-8?B?V8O8dGhyaWNo?= <adrian.wuethrich@tu-berlin.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: Publication on communication structures
-Message-ID: <ZRgBmEzNZyK1dxdt@debian.me>
-References: <bc1fe3c5-d2bd-4071-af1e-28ca4b3a697c@tu-berlin.de>
+        Sat, 30 Sep 2023 07:09:13 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B670CA;
+        Sat, 30 Sep 2023 04:09:10 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1qmXqA-0003rY-Oh; Sat, 30 Sep 2023 13:08:54 +0200
+Date:   Sat, 30 Sep 2023 13:08:54 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Yan Zhai <yan@cloudflare.com>
+Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        David Ahern <dsahern@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Aya Levin <ayal@nvidia.com>,
+        Tariq Toukan <tariqt@nvidia.com>, linux-kernel@vger.kernel.org,
+        kernel-team@cloudflare.com
+Subject: Re: [PATCH net] ipv6: avoid atomic fragment on GSO packets
+Message-ID: <20230930110854.GA13787@breakpoint.cc>
+References: <ZRcOXJ0pkuph6fko@debian.debian>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rmBjhTEI1YaTwe+O"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bc1fe3c5-d2bd-4071-af1e-28ca4b3a697c@tu-berlin.de>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
+In-Reply-To: <ZRcOXJ0pkuph6fko@debian.debian>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Yan Zhai <yan@cloudflare.com> wrote:
+> GSO packets can contain a trailing segment that is smaller than
+> gso_size. When examining the dst MTU for such packet, if its gso_size
+> is too large, then all segments would be fragmented. However, there is a
+> good chance the trailing segment has smaller actual size than both
+> gso_size as well as the MTU, which leads to an "atomic fragment".
+> RFC-8021 explicitly recommend to deprecate such use case. An Existing
+> report from APNIC also shows that atomic fragments can be dropped
+> unexpectedly along the path [1].
+> 
+> Add an extra check in ip6_fragment to catch all possible generation of
+> atomic fragments. Skip atomic header if it is called on a packet no
+> larger than MTU.
+> 
+> Link: https://www.potaroo.net/presentations/2022-03-01-ipv6-frag.pdf [1]
+> Fixes: b210de4f8c97 ("net: ipv6: Validate GSO SKB before finish IPv6 processing")
+> Reported-by: David Wragg <dwragg@cloudflare.com>
+> Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> ---
+>  net/ipv6/ip6_output.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+> index 951ba8089b5b..42f5f68a6e24 100644
+> --- a/net/ipv6/ip6_output.c
+> +++ b/net/ipv6/ip6_output.c
+> @@ -854,6 +854,13 @@ int ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
+>  	__be32 frag_id;
+>  	u8 *prevhdr, nexthdr = 0;
+>  
+> +	/* RFC-8021 recommended atomic fragments to be deprecated. Double check
+> +	 * the actual packet size before fragment it.
+> +	 */
+> +	mtu = ip6_skb_dst_mtu(skb);
+> +	if (unlikely(skb->len <= mtu))
+> +		return output(net, sk, skb);
+> +
 
---rmBjhTEI1YaTwe+O
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This helper is also called for skbs where IP6CB(skb)->frag_max_size
+exceeds the MTU, so this check looks wrong to me.
 
-On Fri, Sep 29, 2023 at 09:16:27PM +0200, Adrian W=C3=BCthrich wrote:
-> Dear Linux Kernel Developers,
->=20
-> I am a researcher in history and philosophy of science at Technische
-> Universit=C3=A4t Berlin.
->=20
-> I would like to inform you about an upcoming publication in which I
-> include a very short, anonymized network analysis of messages from this
-> list. The main topic of the publication, however, is the communication
-> structure of the ATLAS collaboration at CERN, the particle physics
-> laboratory. A draft of the paper is available at
-> https://tubcloud.tu-berlin.de/s/N9noYEfHqBLDtQq
->=20
-> For the short analysis of the linux kernel mailing list, I used the
-> messages sent during the year 2012 as archived on https://lkml.org/.
+Same remark for dst_allfrag() check in __ip6_finish_output(),
+after this patch, it would be ignored.
 
-Use lore archive instead [1].
->=20
-> In the publication, I mention some global characteristics of the network
-> of messages and replies sent to the list =E2=80=93 its density, for insta=
-nce
-> (see p.=C2=A017). No email-addresses, nor names of persons, nor any conte=
-nt
-> of the messages will be published.
->=20
-> The paper will be published in "Synthese", a leading journal in the
-> philosophy of science, in the topical collection "Digital Studies of
-> Digital Science" [1].
->=20
-> If you have questions or comments concerning the publication, please
-> contact me at adrian.wuethrich@tu-berlin.de.
->=20
+I think you should consider to first refactor __ip6_finish_output to make
+the existing checks more readable (e.g. handle gso vs. non-gso in separate
+branches) and then add the check to last seg in
+ip6_finish_output_gso_slowpath_drop().
 
-Please follow the guidelines in
-Documentation/process/researcher-guidelines.rst.
+Alternatively you might be able to pass more info down to
+ip6_fragment and move decisions there.
 
-Thanks.
-
-[1]: https://lore.kernel.org/lkml
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---rmBjhTEI1YaTwe+O
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZRgBjwAKCRD2uYlJVVFO
-o9eoAP9cFmolcWFoGb+CTdjnjhbDnYhQl2RZ/w4eAv3ymGZTFAEAumR47k4xdPID
-7fszkIGSS5a/g2gm7yLtYGZ7Mdfnhw8=
-=Bwj2
------END PGP SIGNATURE-----
-
---rmBjhTEI1YaTwe+O--
+In any case we should make same frag-or-no-frag decisions,
+regardless of this being the orig skb or a segmented one,
