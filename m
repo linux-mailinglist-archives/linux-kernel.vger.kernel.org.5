@@ -2,77 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A03357B4354
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 21:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76AEB7B4358
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 21:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229540AbjI3TjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 15:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38988 "EHLO
+        id S229645AbjI3Tl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 15:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjI3TjG (ORCPT
+        with ESMTP id S229447AbjI3TlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 15:39:06 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470B6C6;
-        Sat, 30 Sep 2023 12:39:03 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2c131ddfc95so234756591fa.0;
-        Sat, 30 Sep 2023 12:39:03 -0700 (PDT)
+        Sat, 30 Sep 2023 15:41:24 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EF1E1;
+        Sat, 30 Sep 2023 12:41:22 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-69361132a60so394257b3a.1;
+        Sat, 30 Sep 2023 12:41:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696102741; x=1696707541; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=RpWaFzgkKm2rvTL1s71ooDabFhXZwOwJjSveMi3MRwQ=;
-        b=QNX4InvSaCpegpS/wZSQoGd6rF7t6lv8KBxWu7D3RXoMjYK+5C/V3VzSrGyVMiuUtI
-         nWlLShVWWnM7miWfUNPUbfOktpuhODT/stQ+9OE2AzvvT554IV0mwJl0uD7hyaEf3a1Q
-         bie6xbUx39wL3SbflPd3nAFEVjMc0Ei7WjkDzgdE1zMdkh8Ekvbpx6ThnEwZkG45TCun
-         FM9JBmCWE5kZExbJLY1M8nmYV2BkwEZ9kcsYjjfo23oLkAFEaP1RHPFAiHC9BTNlVbFN
-         qZwaJ5cqVnqnAnXpMe9stQYHd3aqPKIt+khJCqDollFpQv6E4/htAJ1r/x+3OpyM1HWo
-         6QHw==
+        d=gmail.com; s=20230601; t=1696102882; x=1696707682; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=DLeIJ/fAJFQuWgfN3SfqzLo+G0sfER2FPjENsdAZzLE=;
+        b=kUUXrxdjnDca3KTpyuzKcwxpgbg8m/S1YYkaMqpgebBMUgoBiMTYg2WsZBGwAlfhiW
+         SYAlke7cE9ksLudI9wyXKRcoKJ96goXN6c5vqVjLmqbwKZsoXEspJ+36Yzzgys9EFtao
+         3Zp7rn91Xu46uDSnSxOUBF6PyUSQsoFcLgYLaEi8KQJoovGkLqeP8EzM91LSlqOdAFq4
+         aGL8AHH6/bPfBC3M+ENzOE6wC0lrnhl9Yr4xXtC8XBfxDMByxdRSoPKDoJUH94mhh9wJ
+         FSn5+F9CG+yhVZhelj8SL8WcpyboWrB6MssEYyV8MOPMwO7ko/6GCYBiDP/Hzji2Z29G
+         feJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696102741; x=1696707541;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RpWaFzgkKm2rvTL1s71ooDabFhXZwOwJjSveMi3MRwQ=;
-        b=VcqQkuy0u5Mxs5NkfjiAY/31e9cijEUe0DUVdo+ElPKE1+yK1cAFtwupaZFaXrUREe
-         2hCNLbI3bUp/XXgAV+UOwvJYW+yA+6XQVnb1q8gqNQkLmTCmO52VRevybNWs1L5lxPeb
-         D/3w8LCeSMCcFQeT/qixa+9DQ6WuJrJuisokKekoMIbV9brHbhdeNvMkjpjka/xxY0UF
-         8rJ37uTSw+2ixTax5uisvRZhQYDP8vGYSWXpXrcEnyqpKBxRUvyBdtJ3HDHNqOWuV5hI
-         sNyde3QDu9ToTv9ywdw9ncDSTlX8aWT8i9oLgFHCZf71eayhFvw5KJhk0Mefi2TZEMWh
-         aRbw==
-X-Gm-Message-State: AOJu0YxE9yutPkbhCqV0B4tVM773XFGFVDUZPnLXIyddTR6jomWcF4R9
-        AVsw7AiYm/3SK+04zEI9+BM=
-X-Google-Smtp-Source: AGHT+IFrEyRrZpzJAwEpurrhffi5P5MXv7kPXIml3FzyBKf3JqRmt1wRZAZY+7+GPWKdrQeXADDvEQ==
-X-Received: by 2002:a19:790c:0:b0:500:8fcd:c3b5 with SMTP id u12-20020a19790c000000b005008fcdc3b5mr5400583lfc.12.1696102741074;
-        Sat, 30 Sep 2023 12:39:01 -0700 (PDT)
-Received: from [192.168.1.161] ([46.31.31.132])
-        by smtp.gmail.com with ESMTPSA id k2-20020ac24562000000b004fe2a7a2ee2sm3998853lfm.160.2023.09.30.12.38.59
+        d=1e100.net; s=20230601; t=1696102882; x=1696707682;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DLeIJ/fAJFQuWgfN3SfqzLo+G0sfER2FPjENsdAZzLE=;
+        b=AhdS1L24Bl2IBord+QKhaabKWD23XCX3F3NFHxJTcOuF+peClTclGe9QpaZSAMHQfx
+         c3t3NdrhvF/99TgOYdS8EHngsuNu8T5lbQgWqSSzkSdau0yz77Y3CzG21o2Qp+jWL2mq
+         +WCYD8uj9F8aiS5QVpDeEEe7JJeLfkSl9lZAbxREiCFn9/lmUzMmGMp0OvgBxdUbI0V7
+         n81S3C0/4QP1cyN0k+3MmK2WMWmQSw/yaa/34UWiC6ImSxmSegmimfm85zkq+oVVMw7L
+         00TeVZ+YDFNiry3lTFC6VMUg/+ZOuW2ZwbHDcZ4YTTPP03fR9GlqyxO1znPu5x2AbyCG
+         /YAw==
+X-Gm-Message-State: AOJu0YxlbdCooebWuxxxsi5TTXWUUtTYY89PPgyAIRGrrS7Q2N+pZaTm
+        MdwCBOEM2kF1t3vV9WUzaeALyDaIHhL2JTWS
+X-Google-Smtp-Source: AGHT+IFLX+X0bbprJYYxzfpMKb+uZKzOoBVsOhZSCU2aGF5m/fir3wpoVoZJzPPS/RknQ/D0E/cltQ==
+X-Received: by 2002:a05:6a21:33a0:b0:15a:4634:e4c with SMTP id yy32-20020a056a2133a000b0015a46340e4cmr8807395pzb.5.1696102881879;
+        Sat, 30 Sep 2023 12:41:21 -0700 (PDT)
+Received: from abhinav-IdeaPad-Slim-5-14ABR8.. ([103.75.161.211])
+        by smtp.googlemail.com with ESMTPSA id i14-20020aa787ce000000b006900cb919b8sm16969510pfo.53.2023.09.30.12.41.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 12:39:00 -0700 (PDT)
-Message-ID: <591e8c9a4018938df17cdfb55306813858904d9d.camel@gmail.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: adc: provide max34408/9 device tree
- binding document
-From:   Ivan Mikhaylov <fr0st61te@gmail.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Date:   Sat, 30 Sep 2023 22:38:58 +0300
-In-Reply-To: <20230930-lusty-antihero-f381434ab682@spud>
-References: <20230929200844.23316-1-fr0st61te@gmail.com>
-         <20230929200844.23316-2-fr0st61te@gmail.com>
-         <20230930-lusty-antihero-f381434ab682@spud>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 
+        Sat, 30 Sep 2023 12:41:21 -0700 (PDT)
+From:   Abhinav <singhabhinav9051571833@gmail.com>
+To:     shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Abhinav <singhabhinav9051571833@gmail.com>
+Subject: [PATCH] Added missing TARGETS in kselftest top level Makefile
+Date:   Sun,  1 Oct 2023 01:11:06 +0530
+Message-Id: <20230930194106.1379527-1-singhabhinav9051571833@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,179 +70,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2023-09-30 at 10:37 +0100, Conor Dooley wrote:
-> Hey,
->=20
-> On Fri, Sep 29, 2023 at 11:08:43PM +0300, Ivan Mikhaylov wrote:
-> > The hardware binding for i2c current monitoring device with
-> > overcurrent
-> > control.
-> >=20
-> > Signed-off-by: Ivan Mikhaylov <fr0st61te@gmail.com>
-> > ---
-> > =C2=A0.../bindings/iio/adc/maxim,max34408.yaml=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 | 101
-> > ++++++++++++++++++
-> > =C2=A01 file changed, 101 insertions(+)
-> > =C2=A0create mode 100644
-> > Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
-> >=20
-> > diff --git
-> > a/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
-> > b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
-> > new file mode 100644
-> > index 000000000000..cdf89fa4c80e
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
-> > @@ -0,0 +1,101 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/adc/maxim,max34408.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Two- and four-channel current monitors with overcurrent
-> > control
-> > +
-> > +maintainers:
-> > +=C2=A0 - Ivan Mikhaylov <fr0st61te@gmail.com>
-> > +
-> > +description: |
-> > +=C2=A0 The MAX34408/MAX34409 are two- and four-channel current monitor=
-s
-> > that are
-> > +=C2=A0 configured and monitored with a standard I2C/SMBus serial
-> > interface. Each
-> > +=C2=A0 unidirectional current sensor offers precision high-side
-> > operation with a
-> > +=C2=A0 low full-scale sense voltage. The devices automatically sequenc=
-e
-> > through
-> > +=C2=A0 two or four channels and collect the current-sense samples and
-> > average them
-> > +=C2=A0 to reduce the effect of impulse noise. The raw ADC samples are
-> > compared to
-> > +=C2=A0 user-programmable digital thresholds to indicate overcurrent
-> > conditions.
-> > +=C2=A0 Overcurrent conditions trigger a hardware output to provide an
-> > immediate
-> > +=C2=A0 indication to shut down any necessary external circuitry.
-> > +
-> > +=C2=A0 Specifications about the devices can be found at:
-> > +=C2=A0
-> > https://www.analog.com/media/en/technical-documentation/data-sheets/MAX=
-34408-MAX34409.pdf
-> > +
-> > +properties:
-> > +=C2=A0 compatible:
-> > +=C2=A0=C2=A0=C2=A0 enum:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - maxim,max34408
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - maxim,max34409
-> > +
-> > +=C2=A0 reg:
-> > +=C2=A0=C2=A0=C2=A0 maxItems: 1
-> > +
-> > +=C2=A0 interrupts:
-> > +=C2=A0=C2=A0=C2=A0 maxItems: 1
-> > +
-> > +=C2=A0 maxim,input1-rsense-val-micro-ohms:
-> > +=C2=A0=C2=A0=C2=A0 description:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Adjust the Rsense value to monitor high=
-er or lower current
-> > levels for
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 input 1.
-> > +=C2=A0=C2=A0=C2=A0 enum: [250, 500, 1000, 5000, 10000, 50000, 100000, =
-200000,
-> > 500000]
-> > +=C2=A0=C2=A0=C2=A0 default: 1000
-> > +
-> > +=C2=A0 maxim,input2-rsense-val-micro-ohms:
-> > +=C2=A0=C2=A0=C2=A0 description:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Adjust the Rsense value to monitor high=
-er or lower current
-> > levels for
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 input 2.
-> > +=C2=A0=C2=A0=C2=A0 enum: [250, 500, 1000, 5000, 10000, 50000, 100000, =
-200000,
-> > 500000]
-> > +=C2=A0=C2=A0=C2=A0 default: 1000
-> > +
-> > +=C2=A0 maxim,input3-rsense-val-micro-ohms:
-> > +=C2=A0=C2=A0=C2=A0 description:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Adjust the Rsense value to monitor high=
-er or lower current
-> > levels for
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 input 3.
-> > +=C2=A0=C2=A0=C2=A0 enum: [250, 500, 1000, 5000, 10000, 50000, 100000, =
-200000,
-> > 500000]
-> > +=C2=A0=C2=A0=C2=A0 default: 1000
-> > +
-> > +=C2=A0 maxim,input4-rsense-val-micro-ohms:
-> > +=C2=A0=C2=A0=C2=A0 description:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Adjust the Rsense value to monitor high=
-er or lower current
-> > levels for
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 input 4.
-> > +=C2=A0=C2=A0=C2=A0 enum: [250, 500, 1000, 5000, 10000, 50000, 100000, =
-200000,
-> > 500000]
-> > +=C2=A0=C2=A0=C2=A0 default: 1000
->=20
-> Having 4 almost identical properties makes it seem like this should
-> have
-> some channel nodes, each containing an rsense-micro-ohms type
-> property.
+Some TARGETS were missing in selftests top level Makefile.Added those.
+Signed-off-by: Abhinav <singhabhinav9051571833@gmail.com>
+---
+ tools/testing/selftests/Makefile | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Conor, I'll look through.
-
->=20
-> > +
-> > +=C2=A0 maxim,shtdn:
-> > +=C2=A0=C2=A0=C2=A0 description:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Shutdown Output. Open-drain output. Thi=
-s output transitions
-> > to high impedance
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 when any of the digital comparator thre=
-sholds are exceeded
-> > as long as the ENA
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pin is high.
-> > +=C2=A0=C2=A0=C2=A0 type: boolean
->=20
-> I don't understand what this property is used for. The description
-> here,
-> and below for "ena", read like they are the descriptions in the
-> datasheet for the pin, rather than how to use the property.
->=20
-> The drivers don't appear to contain users either - what is the point
-> of
-> these properties?
-
-ena and shtdn physical pins of hardware, in the previous version
-Jonathan asked about adding them into yaml even if it's not used in
-code. should I do it in some other way?
-
->=20
-> > +
-> > +=C2=A0 maxim,ena:
-> > +=C2=A0=C2=A0=C2=A0 description:
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SHTDN Enable Input. CMOS digital input.=
- Connect to GND to
-> > clear the latch and
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 unconditionally deassert (force low) th=
-e SHTDN output and
-> > reset the shutdown
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 delay. Connect to VDD to enable normal =
-latch operation of
-> > the SHTDN output.
-> > +=C2=A0=C2=A0=C2=A0 type: boolean
-> > +
-> > +=C2=A0 supply-vdd: true
->=20
-> As pointed out by the bot, this is not correct. You need to use a
-> -supply affix, not a supply-prefix.
-
-Oops.
-
-Thanks.
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index 8d9b2341b79a..14050f39cc5e 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -13,6 +13,7 @@ TARGETS += core
+ TARGETS += cpufreq
+ TARGETS += cpu-hotplug
+ TARGETS += damon
++TARGETS += dma
+ TARGETS += dmabuf-heaps
+ TARGETS += drivers/dma-buf
+ TARGETS += drivers/s390x/uvdevice
+@@ -22,6 +23,7 @@ TARGETS += dt
+ TARGETS += efivarfs
+ TARGETS += exec
+ TARGETS += fchmodat2
++TARGETS += filelock
+ TARGETS += filesystems
+ TARGETS += filesystems/binderfs
+ TARGETS += filesystems/epoll
+@@ -32,17 +34,21 @@ TARGETS += ftrace
+ TARGETS += futex
+ TARGETS += gpio
+ TARGETS += hid
++TARGETS += ia64
+ TARGETS += intel_pstate
+ TARGETS += iommu
+ TARGETS += ipc
+ TARGETS += ir
+ TARGETS += kcmp
+ TARGETS += kexec
++TARGETS += kmod
+ TARGETS += kvm
+ TARGETS += landlock
+ TARGETS += lib
+ TARGETS += livepatch
+ TARGETS += lkdtm
++TARGETS += locking
++TARGETS += media_tests
+ TARGETS += membarrier
+ TARGETS += memfd
+ TARGETS += memory-hotplug
+@@ -66,14 +72,18 @@ TARGETS += pid_namespace
+ TARGETS += powerpc
+ TARGETS += prctl
+ TARGETS += proc
++TARGETS += ptp
+ TARGETS += pstore
+ TARGETS += ptrace
++TARGETS += rcutorture
+ TARGETS += openat2
+ TARGETS += resctrl
+ TARGETS += riscv
+ TARGETS += rlimits
+ TARGETS += rseq
+ TARGETS += rtc
++TARGETS += safesetid
++TARGETS += sched
+ TARGETS += seccomp
+ TARGETS += sgx
+ TARGETS += sigaltstack
+@@ -99,6 +109,7 @@ TARGETS += user
+ TARGETS += user_events
+ TARGETS += vDSO
+ TARGETS += mm
++TARGETS += watchdog
+ TARGETS += x86
+ TARGETS += zram
+ #Please keep the TARGETS list alphabetically sorted
+-- 
+2.34.1
 
