@@ -2,116 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F42027B418B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 17:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D6E7B418E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 17:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234418AbjI3PRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 11:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
+        id S234429AbjI3PS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 11:18:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234403AbjI3PRO (ORCPT
+        with ESMTP id S234403AbjI3PS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 11:17:14 -0400
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930B3E1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:17:12 -0700 (PDT)
-Received: from fews01-sea.riseup.net (fews01-sea-pn.riseup.net [10.0.1.109])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mx1.riseup.net (Postfix) with ESMTPS id 4RyW6H75ZczDqPT;
-        Sat, 30 Sep 2023 15:17:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1696087032; bh=mGwncjVvn9Q1n/4UOt+Ol5PIuRTFGIsgWcj//XGPdsE=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=dKhv/SglRatkezq55mUaVG16r47J1XbLIdRTWYY6QL2h7ez7SM2CjR+umTlxsiqUF
-         AoaIUO5c+W5l/0tz1/6AoE5N5gIh2XgIiZ2Uc+9WUWJXOKkVQ8WwFNG00J97E8wIoJ
-         sH10kOGQnghB7nJcsPq/Q2R87b6Lof/1hBFJIElg=
-X-Riseup-User-ID: 3D6AA3F460CEDC86DC6B980F97D48256B19F6D666D86D7FF3B661C6FAC750E61
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews01-sea.riseup.net (Postfix) with ESMTPSA id 4RyW6D4ZJZzJnCB;
-        Sat, 30 Sep 2023 15:17:08 +0000 (UTC)
-Message-ID: <091e1c1c-3c96-5888-56c4-ec726e3f2bde@riseup.net>
-Date:   Sat, 30 Sep 2023 12:17:06 -0300
+        Sat, 30 Sep 2023 11:18:28 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA401E1;
+        Sat, 30 Sep 2023 08:18:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4092BC433C8;
+        Sat, 30 Sep 2023 15:18:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696087105;
+        bh=0N1E8fZbi3EOc7oE89IqS4UuU6uwG8LBAGm7h6axkfo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=O9+Vf1bFChwg1vq8lRPS3YcHI7T8ARQ7s3WYC3d9TICht54yv0jQhok3jDTxlPmXa
+         mWbaZl4s7gWyPN1cH5d9BQnpC6OvmbJsQeNyn+f7bbDA7yL+xb840ZCAo04aI8CF4l
+         VhGmffwBC4yr+1ZTkGztPX970ACgFmT4VAJEmTLtIsd+rJXn4oeoxb+WQM8QPj7TFu
+         LsKF5EdZv51rUkSJQ6ApQytlfT/0lFEodUSl+MvnIiLxfghvbqKKgMlcED7hwtd0Pt
+         GHQcvGOxpTYCDvlOAwQjbQnWbgXvY9a7YHIYBC15IilnYQJBzcCMjTVSqBGdEvLW0n
+         1dSSvwrO0oUsw==
+Date:   Sat, 30 Sep 2023 16:18:23 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        David Lechner <david@lechnology.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 19/27] staging: iio: resolver: ad2s1210: add phase
+ lock range support
+Message-ID: <20230930161823.7e78b2fc@jic23-huawei>
+In-Reply-To: <20230929-ad2s1210-mainline-v3-19-fa4364281745@baylibre.com>
+References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
+        <20230929-ad2s1210-mainline-v3-19-fa4364281745@baylibre.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/3] drm/tests: Fix kunit_release_action ctx argument
-Content-Language: en-US
-To:     Arthur Grillo <arthurgrillo@riseup.net>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maxime Ripard <mripard@kernel.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>
-Cc:     tales.aparecida@gmail.com, andrealmeid@riseup.net,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kunit-dev@googlegroups.com
-References: <20230920-kunit-kasan-fixes-v1-0-1a0fc261832d@riseup.net>
- <20230920-kunit-kasan-fixes-v1-1-1a0fc261832d@riseup.net>
- <771e3ddf-aa15-5ff9-9689-ec0e02bc803a@riseup.net>
- <8aab614e-1624-413d-693a-5934be6cdf8e@riseup.net>
-From:   Maira Canal <mairacanal@riseup.net>
-In-Reply-To: <8aab614e-1624-413d-693a-5934be6cdf8e@riseup.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arthur,
+On Fri, 29 Sep 2023 12:23:24 -0500
+David Lechner <dlechner@baylibre.com> wrote:
 
-On 9/27/23 19:52, Arthur Grillo wrote:
+> From: David Lechner <david@lechnology.com>
 > 
+> From: David Lechner <dlechner@baylibre.com>
 > 
-> On 27/09/23 19:47, Maira Canal wrote:
->> Hi Arthur,
->>
->> On 9/20/23 03:11, Arthur Grillo wrote:
->>> The kunit_action_platform_driver_unregister is added with
->>> &fake_platform_driver as ctx, but the kunit_release_action is called
->>> pdev as ctx. Fix that by replacing it with &fake_platform_driver.
->>>
->>> Fixes: 4f2b0b583baa ("drm/tests: helpers: Switch to kunit actions")
->>> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
->>
->> Reviewed-by: Maíra Canal <mairacanal@riseup.net>
->>
->> Do you need me to apply this patch to drm-misc-fixes?
+> The AD2S1210 chip has a phase lock range feature that allows selecting
+> the allowable phase difference between the excitation output and the
+> sine and cosine inputs. This can be set to either 44 degrees (default)
+> or 360 degrees.
 > 
-> Yes, please do, if possible.
+> This patch adds a new phase channel with a threshold event that can be
+> used to configure the phase lock range. Actually emitting the event
+> will be added in a subsequent patch.
+> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> ---
+Looks good to me.
 
-Applied to drm-misc/drm-misc-fixes!
-
-Thanks,
-- Maíra
-
-> 
-> Thanks,
-> ~Arthur Grillo
-> 
->>
->> Best Regards,
->> - Maíra
->>
->>> ---
->>>    drivers/gpu/drm/tests/drm_kunit_helpers.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/gpu/drm/tests/drm_kunit_helpers.c b/drivers/gpu/drm/tests/drm_kunit_helpers.c
->>> index 3d624ff2f651..3150dbc647ee 100644
->>> --- a/drivers/gpu/drm/tests/drm_kunit_helpers.c
->>> +++ b/drivers/gpu/drm/tests/drm_kunit_helpers.c
->>> @@ -118,7 +118,7 @@ void drm_kunit_helper_free_device(struct kunit *test, struct device *dev)
->>>          kunit_release_action(test,
->>>                     kunit_action_platform_driver_unregister,
->>> -                 pdev);
->>> +                 &fake_platform_driver);
->>>    }
->>>    EXPORT_SYMBOL_GPL(drm_kunit_helper_free_device);
->>>   
