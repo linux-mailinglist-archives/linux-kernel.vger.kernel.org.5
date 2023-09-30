@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A507B3F9D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E92837B3F9E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233998AbjI3JEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 05:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33850 "EHLO
+        id S233955AbjI3JFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 05:05:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231311AbjI3JEe (ORCPT
+        with ESMTP id S231436AbjI3JE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 05:04:34 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86201AE;
-        Sat, 30 Sep 2023 02:04:31 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bff776fe0bso238624431fa.0;
-        Sat, 30 Sep 2023 02:04:31 -0700 (PDT)
+        Sat, 30 Sep 2023 05:04:59 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B08BE1A7;
+        Sat, 30 Sep 2023 02:04:57 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50325ce89e9so24006819e87.0;
+        Sat, 30 Sep 2023 02:04:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696064670; x=1696669470; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696064696; x=1696669496; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Bjvj3wwShKStYd4Opu01OitMSwv/jQBV1HVJIIxyVUM=;
-        b=beH8rtf7kTT7aIYMGwheQWuq7U+n/9UmvTUTYZFjLYo58+SyiJxXjWyqpudOgyB9sK
-         SXal8G0mCP7XZfawav/77ZJbaU7lEAUMiCHFDS2MMsRLqfuUD+MLNEXOpkuRQ4MCYR40
-         yRyLB8Okm+UczNgTajRjHTpAnKAFiGy7FhuIoI2uaswCnQ1QnCSscttPYQDHzamKi641
-         K6HNsMv+ovZCDYrG69HOkNT6/Vfdppp4yFzaaAtf9IgrgfM+q+vpctQiVdYveW5qCBKp
-         AAdhADqalXF6SjnLq2qw+f1FemPQAGux6Kb9E5L3kqaJASmKu1kVJF8bkpgngcN5c7cJ
-         R2ug==
+        bh=xeGbiFzFYK1tREaSWy6nrxTkbPQlphBhH17z/+R52n4=;
+        b=R7POgiQfijlPptE0XKY9gH+g79bLPnXq9ECgwY8b/Hm8bmfSA6Can6fe9l1soSPPff
+         RGEGsZ8Ck6Lzb89YwQsyu4Ze8tRqe7Wl3DzA24lVrPDIdn8CugR2Sy/W/udL1jWZnypa
+         hgQuIL67FRDnSzNziGHTMz1oysebVWyoTB3Js39CasQs01j9XxhDnQ94BOF1yH3qZyv/
+         wVCLEbXjoOE8r76FVueWHLtXN4YKJUWNXJV6Fm6YrU19W8tD0XMSAGqRDWXKbWItHs5P
+         +3hitpkL1R6VRJlui5505xKV2Y5YiAss7UDKyaZIQ3ZY9XrdMrX84+XXVZltXnCBhnE+
+         U6Ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696064670; x=1696669470;
+        d=1e100.net; s=20230601; t=1696064696; x=1696669496;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Bjvj3wwShKStYd4Opu01OitMSwv/jQBV1HVJIIxyVUM=;
-        b=Rf303UWMUIgr5GSst+Pzj20d3/FqWl8u0FVP4EyEuK/geE/BIMMulsK6mgvAHcre9M
-         YXZYaMwCZrXjFk792nhEwdIVJbYwPRse6lYnlCLlu2mApwCVXq23FBa5OOrhr8/Fh/t3
-         YuTsxupJ+T6kq0cVmj/K7RG7q5MCOUA9TePKf73NAud+1vu1t7JolIT2K4pShDpk702l
-         4PDUL8iVL+z/QJTtHB7oGeCnem/It3KRCsRNy2YxY4c88XpWMNxE3F0L2aeAiFO0XACe
-         kBn2/k4m9qVKauDtbkYG8wM4AmXCqVtBeXjGPuecDeVtyfnJ3fEmjVlNejXbz+6m0ABz
-         Icaw==
-X-Gm-Message-State: AOJu0YwWTpNsnNPZjExMgzbWV2LdncGkEv5c3ImQoK1VFrH8fE4ZIgdG
-        bchofXLM8L+DaDWNZ24msknrpoqwk1LOmbes
-X-Google-Smtp-Source: AGHT+IGLB/o73aeMnlP+QKIKo5OqXRMyYGy1lwRE+yEN/rDnqkzDuoH0Mk89vCSo4ScJfUw7KLY9Pw==
-X-Received: by 2002:a2e:9856:0:b0:2bd:140c:6d0f with SMTP id e22-20020a2e9856000000b002bd140c6d0fmr5755544ljj.47.1696064669720;
-        Sat, 30 Sep 2023 02:04:29 -0700 (PDT)
+        bh=xeGbiFzFYK1tREaSWy6nrxTkbPQlphBhH17z/+R52n4=;
+        b=CCIRpMf330V2vjpy6CtOtnIbsMIjg5w2fV3vTTAXUu4NkHwBRLqdM079SGXK9JYkJs
+         ARAFkel4wCbzoX6ugTcS22mu4nYawBG80KdCKh3NSBa7Sbbzc3hkAT+9Rf8ogTBWggs8
+         rlJh0d/yBdysMKwQemhtHaPDwpc0wVvLuieN7N6jlyQbbYQrR1u84SAf1ueXhQ+pSEgw
+         hdoIdt3BHdwZXmWX/XIpuXJpdwncZbmYk5qJImA3nWi0POK2JcyH1LNIa0uAKkX05RJu
+         abzpQ8Dg8Q0DNp3sbbzPKN7nghtDnPj5EeWLylqGRraQHEaz8SI6hLX6UIxhGPOIl2Rc
+         KQyQ==
+X-Gm-Message-State: AOJu0Yy+Hyf9HZSjxZCzBZhInhahweaPzePrJ2OIU/NOSd4O5gT9Y2vi
+        vGPwKlu+jsYIf9LV80uRdzk=
+X-Google-Smtp-Source: AGHT+IGn+nHzoTYiaz/RWNzHb7S15bcM3hpPDOmyfCnU/j2V8HjHf6SKdEBgmZ8fINa26a9TRYjd4w==
+X-Received: by 2002:a05:6512:370a:b0:503:985:92c5 with SMTP id z10-20020a056512370a00b00503098592c5mr4791360lfr.42.1696064695892;
+        Sat, 30 Sep 2023 02:04:55 -0700 (PDT)
 Received: from HP-ENVY-Notebook.lan (81-229-94-10-no68.tbcn.telia.com. [81.229.94.10])
-        by smtp.googlemail.com with ESMTPSA id f4-20020a2e6a04000000b002b95eb96ab7sm4350164ljc.18.2023.09.30.02.04.28
+        by smtp.googlemail.com with ESMTPSA id u26-20020ac248ba000000b004fbb011c9bcsm3818321lfg.161.2023.09.30.02.04.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 02:04:29 -0700 (PDT)
+        Sat, 30 Sep 2023 02:04:55 -0700 (PDT)
 From:   Jonathan Bergh <bergh.jonathan@gmail.com>
 To:     rafael@kernel.org, lenb@kernel.org
 Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jonathan Bergh <bergh.jonathan@gmail.com>
-Subject: [PATCH 2/3] drivers: acpi: Remove parentheses where return value is not a function
-Date:   Sat, 30 Sep 2023 11:04:21 +0200
-Message-Id: <20230930090421.35831-1-bergh.jonathan@gmail.com>
+Subject: [PATCH 3/3] drivers: acpi: Fix missing newline after declarations
+Date:   Sat, 30 Sep 2023 11:04:36 +0200
+Message-Id: <20230930090436.35851-1-bergh.jonathan@gmail.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -69,46 +69,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed formatting issue where return value from a function is not a
-function but was wrapped in parentheses, causing checkpatch to flag
-an error.
+Fixed various instances where missing newlines after variable
+declarations were causing checkpatch warnings.
 
 Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
 ---
- drivers/acpi/osl.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/acpi/osl.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index 29e0005c30aa..dbbccb612277 100644
+index dbbccb612277..18a25429274c 100644
 --- a/drivers/acpi/osl.c
 +++ b/drivers/acpi/osl.c
-@@ -1578,7 +1578,7 @@ acpi_os_create_cache(char *name, u16 size, u16 depth, acpi_cache_t **cache)
- acpi_status acpi_os_purge_cache(acpi_cache_t *cache)
+@@ -1067,6 +1067,7 @@ acpi_status acpi_os_execute(acpi_execute_type type,
+ 	struct acpi_os_dpc *dpc;
+ 	struct workqueue_struct *queue;
+ 	int ret;
++
+ 	ACPI_DEBUG_PRINT((ACPI_DB_EXEC,
+ 			  "Scheduling function [%p(%p)] for deferred execution.\n",
+ 			  function, context));
+@@ -1522,6 +1523,7 @@ acpi_cpu_flags acpi_os_acquire_lock(acpi_spinlock lockp)
+ 	__acquires(lockp)
  {
- 	kmem_cache_shrink(cache);
--	return (AE_OK);
-+	return AE_OK;
+ 	acpi_cpu_flags flags;
++
+ 	spin_lock_irqsave(lockp, flags);
+ 	return flags;
  }
- 
- /*******************************************************************************
-@@ -1597,7 +1597,7 @@ acpi_status acpi_os_purge_cache(acpi_cache_t *cache)
- acpi_status acpi_os_delete_cache(acpi_cache_t *cache)
+@@ -1708,6 +1710,7 @@ acpi_status acpi_os_prepare_sleep(u8 sleep_state, u32 pm1a_control,
+ 				  u32 pm1b_control)
  {
- 	kmem_cache_destroy(cache);
--	return (AE_OK);
-+	return AE_OK;
- }
- 
- /*******************************************************************************
-@@ -1617,7 +1617,7 @@ acpi_status acpi_os_delete_cache(acpi_cache_t *cache)
- acpi_status acpi_os_release_object(acpi_cache_t *cache, void *object)
+ 	int rc = 0;
++
+ 	if (__acpi_os_prepare_sleep)
+ 		rc = __acpi_os_prepare_sleep(sleep_state,
+ 					     pm1a_control, pm1b_control);
+@@ -1730,6 +1733,7 @@ acpi_status acpi_os_prepare_extended_sleep(u8 sleep_state, u32 val_a,
+ 				  u32 val_b)
  {
- 	kmem_cache_free(cache, object);
--	return (AE_OK);
-+	return AE_OK;
- }
- #endif
- 
+ 	int rc = 0;
++
+ 	if (__acpi_os_prepare_extended_sleep)
+ 		rc = __acpi_os_prepare_extended_sleep(sleep_state,
+ 					     val_a, val_b);
 -- 
 2.34.1
 
