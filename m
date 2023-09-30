@@ -2,42 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB4A87B4011
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 13:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F22C37B401D
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 13:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234155AbjI3LJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 07:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57956 "EHLO
+        id S234133AbjI3L1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 07:27:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbjI3LJN (ORCPT
+        with ESMTP id S229778AbjI3L1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 07:09:13 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B670CA;
-        Sat, 30 Sep 2023 04:09:10 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1qmXqA-0003rY-Oh; Sat, 30 Sep 2023 13:08:54 +0200
-Date:   Sat, 30 Sep 2023 13:08:54 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Yan Zhai <yan@cloudflare.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>, linux-kernel@vger.kernel.org,
-        kernel-team@cloudflare.com
-Subject: Re: [PATCH net] ipv6: avoid atomic fragment on GSO packets
-Message-ID: <20230930110854.GA13787@breakpoint.cc>
-References: <ZRcOXJ0pkuph6fko@debian.debian>
+        Sat, 30 Sep 2023 07:27:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7BAECA;
+        Sat, 30 Sep 2023 04:27:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696073271; x=1727609271;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=uL+N1pJNzEJQPyW2JWtFPyNjmNId4HAagDTl+PkZMhc=;
+  b=CMNMgx/+cLVhyvQUtg1tFhTgiVCG0fZKzv4amCTzbub0j+gf8jqArud1
+   klDnHTyVw+AX2fqNVG2sS8Wsp5WBQrkrpzSPyCLCHaZeItKk8fDWzSd6Z
+   ZkfMppEaLHtAFAtPso1TCL0Kx2LJWca8eTOTX3vwxmxtAd+4j73HQTXLB
+   Cg2sp0zqSc+M5gdndiPJqV+hOZQyJPDq3jFfwcElB6MOFKsnge44tC4Ky
+   XM4q4Mj0CQwTILq/n74wf5AyG4XhIJgu796pMQbM8TEJAesPbYO/rouG4
+   ULo0gijfZLrY5EVaMFHeOjSG0vJT6n9W92U+UEZSiRHALyrhZ8L4BLONF
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="379722978"
+X-IronPort-AV: E=Sophos;i="6.03,190,1694761200"; 
+   d="scan'208";a="379722978"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2023 04:27:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="873926489"
+X-IronPort-AV: E=Sophos;i="6.03,190,1694761200"; 
+   d="scan'208";a="873926489"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 30 Sep 2023 04:27:43 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qmY8L-00045R-03;
+        Sat, 30 Sep 2023 11:27:41 +0000
+Date:   Sat, 30 Sep 2023 19:26:43 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        gregkh@linuxfoundation.org, haiyangz@microsoft.com,
+        decui@microsoft.com, apais@linux.microsoft.com,
+        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
+        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
+        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
+        catalin.marinas@arm.com
+Subject: Re: [PATCH v4 08/15] Drivers: hv: Introduce per-cpu event ring tail
+Message-ID: <202309301948.CyCE3Y0P-lkp@intel.com>
+References: <1696010501-24584-9-git-send-email-nunodasneves@linux.microsoft.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZRcOXJ0pkuph6fko@debian.debian>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+In-Reply-To: <1696010501-24584-9-git-send-email-nunodasneves@linux.microsoft.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,57 +76,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yan Zhai <yan@cloudflare.com> wrote:
-> GSO packets can contain a trailing segment that is smaller than
-> gso_size. When examining the dst MTU for such packet, if its gso_size
-> is too large, then all segments would be fragmented. However, there is a
-> good chance the trailing segment has smaller actual size than both
-> gso_size as well as the MTU, which leads to an "atomic fragment".
-> RFC-8021 explicitly recommend to deprecate such use case. An Existing
-> report from APNIC also shows that atomic fragments can be dropped
-> unexpectedly along the path [1].
-> 
-> Add an extra check in ip6_fragment to catch all possible generation of
-> atomic fragments. Skip atomic header if it is called on a packet no
-> larger than MTU.
-> 
-> Link: https://www.potaroo.net/presentations/2022-03-01-ipv6-frag.pdf [1]
-> Fixes: b210de4f8c97 ("net: ipv6: Validate GSO SKB before finish IPv6 processing")
-> Reported-by: David Wragg <dwragg@cloudflare.com>
-> Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> ---
->  net/ipv6/ip6_output.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-> index 951ba8089b5b..42f5f68a6e24 100644
-> --- a/net/ipv6/ip6_output.c
-> +++ b/net/ipv6/ip6_output.c
-> @@ -854,6 +854,13 @@ int ip6_fragment(struct net *net, struct sock *sk, struct sk_buff *skb,
->  	__be32 frag_id;
->  	u8 *prevhdr, nexthdr = 0;
->  
-> +	/* RFC-8021 recommended atomic fragments to be deprecated. Double check
-> +	 * the actual packet size before fragment it.
-> +	 */
-> +	mtu = ip6_skb_dst_mtu(skb);
-> +	if (unlikely(skb->len <= mtu))
-> +		return output(net, sk, skb);
-> +
+Hi Nuno,
 
-This helper is also called for skbs where IP6CB(skb)->frag_max_size
-exceeds the MTU, so this check looks wrong to me.
+kernel test robot noticed the following build warnings:
 
-Same remark for dst_allfrag() check in __ip6_finish_output(),
-after this patch, it would be ignored.
+[auto build test WARNING on arnd-asm-generic/master]
+[also build test WARNING on arm64/for-next/core linus/master v6.6-rc3 next-20230929]
+[cannot apply to tip/x86/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I think you should consider to first refactor __ip6_finish_output to make
-the existing checks more readable (e.g. handle gso vs. non-gso in separate
-branches) and then add the check to last seg in
-ip6_finish_output_gso_slowpath_drop().
+url:    https://github.com/intel-lab-lkp/linux/commits/Nuno-Das-Neves/hyperv-tlfs-Change-shared-HV_REGISTER_-defines-to-HV_MSR_/20230930-041305
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git master
+patch link:    https://lore.kernel.org/r/1696010501-24584-9-git-send-email-nunodasneves%40linux.microsoft.com
+patch subject: [PATCH v4 08/15] Drivers: hv: Introduce per-cpu event ring tail
+config: x86_64-randconfig-123-20230930 (https://download.01.org/0day-ci/archive/20230930/202309301948.CyCE3Y0P-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230930/202309301948.CyCE3Y0P-lkp@intel.com/reproduce)
 
-Alternatively you might be able to pass more info down to
-ip6_fragment and move decisions there.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309301948.CyCE3Y0P-lkp@intel.com/
 
-In any case we should make same frag-or-no-frag decisions,
-regardless of this being the orig skb or a segmented one,
+sparse warnings: (new ones prefixed by >>)
+>> drivers/hv/hv_common.c:98:21: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __percpu *__pdata @@     got unsigned char [noderef] [usertype] __percpu **extern [addressable] [toplevel] hv_synic_eventring_tail @@
+   drivers/hv/hv_common.c:98:21: sparse:     expected void [noderef] __percpu *__pdata
+   drivers/hv/hv_common.c:98:21: sparse:     got unsigned char [noderef] [usertype] __percpu **extern [addressable] [toplevel] hv_synic_eventring_tail
+>> drivers/hv/hv_common.c:349:41: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected unsigned char [noderef] [usertype] __percpu **extern [addressable] [assigned] [toplevel] hv_synic_eventring_tail @@     got unsigned char [usertype] *[noderef] __percpu * @@
+   drivers/hv/hv_common.c:349:41: sparse:     expected unsigned char [noderef] [usertype] __percpu **extern [addressable] [assigned] [toplevel] hv_synic_eventring_tail
+   drivers/hv/hv_common.c:349:41: sparse:     got unsigned char [usertype] *[noderef] __percpu *
+>> drivers/hv/hv_common.c:399:55: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected void const [noderef] __percpu *__vpp_verify @@     got unsigned char [noderef] [usertype] __percpu ** @@
+   drivers/hv/hv_common.c:399:55: sparse:     expected void const [noderef] __percpu *__vpp_verify
+   drivers/hv/hv_common.c:399:55: sparse:     got unsigned char [noderef] [usertype] __percpu **
+
+vim +98 drivers/hv/hv_common.c
+
+    74	
+    75	/*
+    76	 * Hyper-V specific initialization and shutdown code that is
+    77	 * common across all architectures.  Called from architecture
+    78	 * specific initialization functions.
+    79	 */
+    80	
+    81	void __init hv_common_free(void)
+    82	{
+    83		unregister_sysctl_table(hv_ctl_table_hdr);
+    84		hv_ctl_table_hdr = NULL;
+    85	
+    86		if (ms_hyperv.misc_features & HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE)
+    87			hv_kmsg_dump_unregister();
+    88	
+    89		kfree(hv_vp_index);
+    90		hv_vp_index = NULL;
+    91	
+    92		free_percpu(hyperv_pcpu_output_arg);
+    93		hyperv_pcpu_output_arg = NULL;
+    94	
+    95		free_percpu(hyperv_pcpu_input_arg);
+    96		hyperv_pcpu_input_arg = NULL;
+    97	
+  > 98		free_percpu(hv_synic_eventring_tail);
+    99		hv_synic_eventring_tail = NULL;
+   100	}
+   101	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
