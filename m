@@ -2,231 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D3987B3D25
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 02:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6967B3D27
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 02:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232748AbjI3AJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 20:09:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40260 "EHLO
+        id S233857AbjI3AL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 20:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjI3AJg (ORCPT
+        with ESMTP id S229489AbjI3ALz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 20:09:36 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEFFAC
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 17:09:34 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c6193d6bb4so63515ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 17:09:34 -0700 (PDT)
+        Fri, 29 Sep 2023 20:11:55 -0400
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2095.outbound.protection.outlook.com [40.107.96.95])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54D59AC;
+        Fri, 29 Sep 2023 17:11:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g/EVstZrWqFjmc/ljjSdqIS6ot04BYSZ/G1G0MRpTgUwRbbO0VWhy6g+MEuCh3YK5er1dXQeExImOZlg/oEYUcYEOS7V7etfEhu5YVrW7zElmJV1X+/LulPTPUC2n5KxrvtU4dRLc8yrfsgiETMD8pcvhZZ8kK1jZMNE1fUDyQ50LCfIClkO7nVOHfuJbE8yA392oR7J/v4k5Z9W0D/XrIAgtKDoc2KFLUWZmSoHpxOV9K7UrslS8aRWUqRiXCEVcuU50pbqfsjq8XVeU3dd7bgx5j8MQI0FKQF6DKIMvWvZf11hjwgBhLGt+hI4oGRWyzbBKMqvXDscyGndKoLZIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=r3ZBnqPsmIQkIvBFZ7uVdUS2mck0WDms3qyUARgh7ck=;
+ b=UMHO8+3K89+DLzDy2kTE7Sc6XICIH9hD6YDgw3ILobKp2edYw13H55Z9t5+I0U7ZYrAgoC843Qbq07P/oK9P0tca3MDpjP5HUEcYEVSft0gtSSA53yjA5M9Scud1hhR8v4aveU2JYLlcfMV3mbbdlf3fn5TLitiW/RvfzqhdcHKoDhMQECUHFNtl9GtQeY9lV9cx2Luyi1WUvgwXzRfxLa5x9cirHYVRqlZFluKUkrcr8uBoGDuQQwem9h50Sq6rPwEVw4+H70AorHGit2kUmlWLYs08Szmt3XF8aMvgY/mnvfu4Xg38Tho3gVSijVkuesVuRdA3YGYuKdMCUccgQQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696032573; x=1696637373; darn=vger.kernel.org;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XnkBwhBVdGH92DFEe08KUfWBiIIUHC8mm8r/BOxS7C0=;
-        b=kWWanQLwxAj90qwc1vMaPCjzdasEy/c4yL1b12GQ04X26gDr25dC4vMQMooI4NX9M5
-         Xu7tENYntbtcuUHl1BOUeas8ib26wRNeLh+RScZeT+S5CDPfwJdc8N9p1xxfiuR4mOW+
-         F8Y69OjI3+1/ZfxYaQWg4UBMoiuHDA8eE0UcJYtCLABrI7yH9ZAEMfrALnvjUP0+CkcW
-         AohHerJ6q85g6qSWdNh6ACyNqEM0YEgsyA1p93Q4R+fDqz7qSMuVrv0myH6ghxRic8YM
-         yb1bV6wSbMNrUikVazlWbRuBkErgNdAsAIem6+ZAd8q1+WstpWjRz0xYMuxsYrgza8fr
-         IAPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696032573; x=1696637373;
-        h=mime-version:user-agent:message-id:date:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XnkBwhBVdGH92DFEe08KUfWBiIIUHC8mm8r/BOxS7C0=;
-        b=Bf4ld2DNmZIbrIQLZGD/FiTPGpTaoiIwpUMof/FjDX8nPfqLfr5d8xBFEZpV0mcKBA
-         aeGnIDfiydQhSV/CXJqrkYUe0KmveWEnyUbq98uz6Nd0k8BuzHVbFr5Cs6UD3saIRFVq
-         dqTnDHGIdPMB0l6AfHHEJn6vqYOjZ+731HMUG8/45wNxTf6RNgI+4QZKe6UVor01MGsM
-         V5I+1OM7HK3YXX7T3aldNsiJWXxSYqEARAhklP7unyZHlQ2J8RaGvl/Yynx/dpoS+GNY
-         JMdvKewN1+ZnKWmNrr5D3H5UZom/B0rJqr3xoN2JrrmuZIZmbA9lCfmtqf7MwKkuwwPo
-         +B0g==
-X-Gm-Message-State: AOJu0YyCv7kyynOkUonq+YfOu/X5aRE21k+jkoo6zWcAWDVDcYlSeK11
-        nYdKoSd07WewMHtVRCvQZ+rj1A==
-X-Google-Smtp-Source: AGHT+IHo1+v7DzExvOBMHwkeKQsUftj+Pa0WAKVqvKbjFyD6IeBkhFE+GDjCP1o8Bn11hRN7Snqq0A==
-X-Received: by 2002:a17:902:ea06:b0:1c6:20ca:2cb8 with SMTP id s6-20020a170902ea0600b001c620ca2cb8mr33478plg.22.1696032573248;
-        Fri, 29 Sep 2023 17:09:33 -0700 (PDT)
-Received: from bsegall-glaptop.localhost (c-73-158-249-138.hsd1.ca.comcast.net. [73.158.249.138])
-        by smtp.gmail.com with ESMTPSA id jc4-20020a17090325c400b001bbdd44bbb6sm5850650plb.136.2023.09.29.17.09.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 17:09:32 -0700 (PDT)
-From:   Benjamin Segall <bsegall@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, vincent.guittot@linaro.org,
-        linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, mgorman@suse.de,
-        bristot@redhat.com, corbet@lwn.net, qyousef@layalina.io,
-        chris.hyser@oracle.com, patrick.bellasi@matbug.net, pjt@google.com,
-        pavel@ucw.cz, qperret@google.com, tim.c.chen@linux.intel.com,
-        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
-        yu.c.chen@intel.com, youssefesmat@chromium.org,
-        joel@joelfernandes.org, efault@gmx.de, tglx@linutronix.de
-Subject: [PATCH] sched/fair: fix pick_eevdf to always find the correct se
-In-Reply-To: <20230531124603.931005524@infradead.org> (Peter Zijlstra's
-        message of "Wed, 31 May 2023 13:58:44 +0200")
-References: <20230531115839.089944915@infradead.org>
-        <20230531124603.931005524@infradead.org>
-Date:   Fri, 29 Sep 2023 17:09:30 -0700
-Message-ID: <xm261qego72d.fsf_-_@google.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r3ZBnqPsmIQkIvBFZ7uVdUS2mck0WDms3qyUARgh7ck=;
+ b=Ap6AaYT+gh3jreUghgegdcb2G7uq06q22H6CiqMok9mgtBUToQ4ZHvxLmypzhVSwd74tIaZQGcTDXllue+3P48hlHsFBliq/p5We36VMA3pjQHfWNtiH1uDcAD6Pah0dQjGwjD2zbbbC/cFUWR8uZpeGgtTZZ4UbZr9BZrs6WI8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from MWHPR0101MB2893.prod.exchangelabs.com (2603:10b6:301:33::25) by
+ MW4PR01MB6433.prod.exchangelabs.com (2603:10b6:303:66::8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6813.30; Sat, 30 Sep 2023 00:11:49 +0000
+Received: from MWHPR0101MB2893.prod.exchangelabs.com
+ ([fe80::ac16:89d:a480:ed6e]) by MWHPR0101MB2893.prod.exchangelabs.com
+ ([fe80::ac16:89d:a480:ed6e%4]) with mapi id 15.20.6813.017; Sat, 30 Sep 2023
+ 00:11:49 +0000
+From:   D Scott Phillips <scott@os.amperecomputing.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Len Brown <lenb@kernel.org>, linux-kernel@vger.kernel.org,
+        Darren Hart <darren@os.amperecomputing.com>,
+        patches@amperecomputing.com
+Subject: Re: [PATCH] PCI: hotplug: Add extension driver for Ampere Altra
+ hotplug LED control
+In-Reply-To: <20230929203234.GA552475@bhelgaas>
+References: <20230929203234.GA552475@bhelgaas>
+Date:   Fri, 29 Sep 2023 17:11:47 -0700
+Message-ID: <86a5t4r03g.fsf@scott-ph-mail.amperecomputing.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: CH0P221CA0014.NAMP221.PROD.OUTLOOK.COM
+ (2603:10b6:610:11c::12) To MWHPR0101MB2893.prod.exchangelabs.com
+ (2603:10b6:301:33::25)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MWHPR0101MB2893:EE_|MW4PR01MB6433:EE_
+X-MS-Office365-Filtering-Correlation-Id: db8373d7-7125-42df-2c27-08dbc149d75c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RhjVlFwsWgq4XhCY9421Rr5HAYkIWyWyYWZrnV3oWR3iyVOxH1PQWS34uczO1h9LaCVOiZpLOVz9ENH5km1GVIPztKQrZF/5Kxa4eSAZFREn1B17Q7lqzklasXvODMpSOV0Kpoz24EgsO9M6cjHnuaYeDrR5erl/nkdcTfcfKv9OeZU/4qEjvqlYLR6Jz60fLW6L160kj9OOAvrYDA8D6O13esgKMnc90NoBwpOJRPd5g6Sh+7O4YXuIWoyiu+ING4B83/5ARJLhZMTyOwMGb8Cr26X7DYLVyQMHQoSXvwrFeQTGwiws7+6NaXEEjzDaR+GF7pjAInF2QU031SrD3/EMkD81FbogZ2OCkPpvdxoODjgtZOYNemCafXe7A3pB8tqlSUxsLRi/kk/ihZm13mpN7kb0aN4XHuKVT7uN05rA87UqYr1/6YfnRfV4ZOen1+vLYTY5SHAFMnQkfOkhNPdZLZJaQBQWCD5+8aQ48AXfIEGcNQVQELebTbPpHfWgbE7GxnxN+x+mFbAanK2T09Gr4cGKp0Gv5FZRJwcldWXBTZ8ND+MuLpOKAtZgPwtUWu4p3qJ70Q1/gFvuOThkbJiXG+7/AwlCRu0zbghmGSslqCZgplm3juL3xgfn9kKY
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR0101MB2893.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(39850400004)(376002)(396003)(230922051799003)(451199024)(186009)(1800799009)(64100799003)(66556008)(38350700002)(54906003)(86362001)(316002)(26005)(478600001)(2906002)(6512007)(52116002)(107886003)(83380400001)(66946007)(6486002)(66476007)(41300700001)(38100700002)(8676002)(6506007)(5660300002)(53546011)(4326008)(8936002)(110136005)(9686003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OHBBRFhveDRPRmdIRU1kNGdYYU1kVXhTTW8rSlZwbFhRaXJyM1IyNVI5cEJW?=
+ =?utf-8?B?dHk3RnpvRS9rR2JjQS9TZ1JvQnJZM2xqS3dBRWdXZjMxa2JSWUxER20vaWFZ?=
+ =?utf-8?B?bE1ZQ0FJYjBnWEdnVmoyVzk2dG4xUjdYYXFOeTFPWkxxWENzZmtXYzByQkpp?=
+ =?utf-8?B?RUlsckFMRzlTNXk3b3VYbWZ6R0I2UmJCV0U4SlVpVmVmbDVQU0dVZHZzbTF3?=
+ =?utf-8?B?c25XajVmemRkNXNlakE3OUhpbzdIdEFIbm5HaEF6cEl4MnQ4V2lrTFR0cnpY?=
+ =?utf-8?B?bWNiSHFuME5FdU5oaHRjK3k5K05lYW5ab2p4aUhjdG5UdEJ4NTdudzh3c1FI?=
+ =?utf-8?B?MDJwbFV1VklHS04xV2duaTlRWVJZcVVMM0ZWV0xwQjhQVzd6Nm40MTlkWVhj?=
+ =?utf-8?B?d21OV0tCaVR2V1lqcU5SZS8zQkJEMmwyOFJraHlrcEhZeklneGhwQVJNcDRC?=
+ =?utf-8?B?OWNHNG80Y041Wml1MC8vUWVTSmhGK1QrSjlZbHlPdW8zY3VTMkllWVQ4bllR?=
+ =?utf-8?B?Y05vbElDSTlCSyszQzYwaTUzTWxqckNKNS8wM1FIZC9Ob1BuVFI0NkFiN29F?=
+ =?utf-8?B?QlBXaGRXRVNUTXJzTDRldFlNSk15ZEFhc3F2NHBHVEtFaXVVNDRWbHpQeW54?=
+ =?utf-8?B?UGt1YmpoQ1VBdjA4dVZwZmhQTUZsbzBOcnJ0OXl2OFRyN2s1V01hTTVCUGJ5?=
+ =?utf-8?B?Z2xlWmZta2loMnQvT2JVdVNOZ25DMStTRUhoampUWnlHZko2Ky9mUTE0bmtj?=
+ =?utf-8?B?Wm5DSGNpOU9XT3VzVWRHdSt2SG1NbGRmVW13c1Jjb3N4dlBBc3Z6eVJnYk5n?=
+ =?utf-8?B?Zjd5VzYyNTlRbW5QZkQwSlNZNEpWazhMMk5lVHhLMGtPZ1I1dDg0T2V1amtF?=
+ =?utf-8?B?T1V1SFN5eXZTYW1PKzRhWEVDNytVMVJ1UFNmT2lZMnBoWDM5MGk5TGk1ODBE?=
+ =?utf-8?B?TzhZUGw3TWQwbDFYUFJNNFZCMVBoNDBhcTZTYWZmMUs0SnVhN3ZHMXJqVzU3?=
+ =?utf-8?B?eUxVTFN6eXRhRlRwUm9qOFlqN1owNHNiNEZWSS9IbGpFcnVrSDhoOE16WHhD?=
+ =?utf-8?B?eStSaGRDWGwwV25OKy9tQnJiQW4yRDNRSHdiNGVUS3hWN1huWWd0N0RJTmhI?=
+ =?utf-8?B?eE9ocSt3aWtVR203Rk0wZUY3bkV1ZHU5NkhBRG41Z3gzY3M0VGhrV1lBOXgv?=
+ =?utf-8?B?SlRTK1ZUcE9PaVo0eHFpUjlyK215UTd6b29DMGIvT3ptOEIxRHBSM1RpTEZp?=
+ =?utf-8?B?eGNtbTV0T1NWRnU4Q1d5NUlORnJqNlkzZmpYR0J6VHRlbnl4UXhMNExMZ0h5?=
+ =?utf-8?B?SjFpVTRHb3NRcDJSRm1GSXBFTTVJTE9VbVlSSVRuZi9SZitucEZFM0h4d29t?=
+ =?utf-8?B?alV2dk5neFBIeXBQQmd6Y0VRQUtEb3B6OTMvdUNBVDNyZVFrT3pxcEdKNXM1?=
+ =?utf-8?B?Zys2emhPcVkwZHovdFpReGdXUXl1ZnNqVzh3TGFVOTFvQlVHeGRNY2tyM3VI?=
+ =?utf-8?B?aEd0czdjZFUzN3pIZjl1a2xpa2xGZ1p4Ym5xWG84UThnZ1JlTW5LYWhVNmlh?=
+ =?utf-8?B?NDhneXY2Y21yejZrUDgxamtoM2M5NG42V0J4b0ZqczNWdVFnVWx5ZzkrZDU4?=
+ =?utf-8?B?NFA1TkFadjE0THRHNCtaRWZueFRkY0NNMklNRnpGNGJMWTJCTVpOM3VBRUMx?=
+ =?utf-8?B?WnBEK3JFSUF3QURpV3VpZEZqQ0REbDA5dFlKVWsxdG9qZURqR1l0L3dmNHhJ?=
+ =?utf-8?B?OU9YQTZ3V0dMNUk3KzdPMGhYMXg3ZUtOaFhkOTdPV3RodExMT2MwS1hjaExM?=
+ =?utf-8?B?azdVeTJ4bldYZEZUTnpjWVpadm9aS3pFTVZVKzlEeXNMbDNKbGVTRnljSFhG?=
+ =?utf-8?B?eHhYUEtvaGpRYnljdFlHWjlPYWd1SGo5Si81VlVqV082OG1OektMNUR3VFVj?=
+ =?utf-8?B?cWljZHNlbGc3OTZCSVU1R3Z6STAzUlorRmlwZ3pHL1NCYVRBRjUrRkpVYmNY?=
+ =?utf-8?B?Zzd1QVhUVjJ4Y1ZwZWJjYjcrUDd2dkVxMEFva2lvVFl0ZEU2dld5L1JZNjZQ?=
+ =?utf-8?B?NDlLNkNNbXZ6ZDJrTlJ3SnB2ZVJ4bW5mWWVRVUxFUGdaRkJpVFZBTFlocGQ1?=
+ =?utf-8?B?TkdOTjNxRHdDcU1lcFRTZ2M2RW0yQXMrdDhHbEVULys5NUNFZGo0QXVJalZh?=
+ =?utf-8?Q?FfEUNKMnV+ENmdloOHZT3jc=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: db8373d7-7125-42df-2c27-08dbc149d75c
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR0101MB2893.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2023 00:11:49.6593
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VLmi3y5nwGgqmlp31TlpX2VPUOwr/GAOMmBSnUxwyzWmq2I94cXyHrM0NRAi7K/x6Vcvco/IHLXqr3qKDUAv5kgvPOL1AjnwXxY6HeWYhCgTK3MjwNOvOrDqMe8jZUno
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR01MB6433
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The old pick_eevdf could fail to find the actual earliest eligible
-deadline when it descended to the right looking for min_deadline, but it
-turned out that that min_deadline wasn't actually eligible. In that case
-we need to go back and search through any left branches we skipped
-looking for the actual best _eligible_ min_deadline.
+Bjorn Helgaas <helgaas@kernel.org> writes:
 
-This is more expensive, but still O(log n), and at worst should only
-involve descending two branches of the rbtree.
+> On Fri, Sep 29, 2023 at 09:06:02PM +0200, Rafael J. Wysocki wrote:
+>> On Thu, Sep 28, 2023 at 5:47=E2=80=AFPM Bjorn Helgaas <helgaas@kernel.or=
+g> wrote:
+>> > On Wed, Sep 27, 2023 at 01:23:47PM -0700, D Scott Phillips wrote:
+>> > > On Ampere Altra, PCIe hotplug is handled through ACPI. A side interf=
+ace is
+>> > > also present to request system firmware control of attention LEDs. A=
+dd an
+>> > > ACPI PCI Hotplug companion driver to support attention LED control.
+>
+>> > > +static int __init acpiphp_ampere_altra_init(void)
+>> > > +{
+>> > > +     struct fwnode_handle *fwnode;
+>> > > +     acpi_handle leds_handle =3D NULL;
+>> > > +     struct acpi_device *leds;
+>> > > +     acpi_status status;
+>> > > +     int ret;
+>> > > +
+>> > > +     status =3D acpi_get_devices("AMPC0008", get_acpi_handle, NULL,
+>> > > +                               &leds_handle);
+>> >
+>> > Rafael, can you comment on whether we should use acpi_get_devices(),
+>> > acpi_bus_register_driver(), acpi_acpi_scan_add_handler(), or something
+>> > else here?
+>>=20
+>> Personally, I would go for a platform driver, because the ACPI core
+>> should create a platform device for this object.
+>>=20
+>> acpi_get_devices() carries out a namespace walk that is costly and
+>> entirely avoidable.
+>>=20
+>> >  I try to avoid pci_get_device() because it subverts the
+>> > driver model (no hotplug support, no driver/device binding).
+>> >
+>> > I see Documentation/driver-api/acpi/scan_handlers.rst, but I'm not
+>> > clear on when to use acpi_bus_register_driver() vs
+>>=20
+>> Never.
+>>=20
+>> > acpi_acpi_scan_add_handler().
+>>=20
+>> When you don't want the ACPI core to create a platform device for your
+>> ACPI device object.  There are cases like that, but they are rare.
+>
+> Ah, so none of the above (not acpi_get_devices(),
+> acpi_bus_register_driver(), OR acpi_acpi_scan_add_handler()).
+>
+> IIUC, what you propose would look something like this:
+>
+>   static u32 led_service_id[4];
+>
+>   static int altra_led_probe(struct platform_device *pdev)
+>   {
+>     struct fwnode_handle *fwnode =3D dev_fwnode(&pdev->dev);
+>
+>     fwnode_property_read_u32_array(fwnode, "uuid", led_service_id, 4);
+>   }
+>
+>   static const struct acpi_device_id altra_led_ids[] =3D {
+>     {"AMPC0008", 0}, {}
+>   };
+>   MODULE_DEVICE_TABLE(acpi, altra_led_ids);
+>
+>   static struct platform_driver altra_led_driver =3D {
+>     .driver =3D {
+>       .acpi_match_table =3D altra_led_ids,
+>     },
+>     .probe =3D altra_led_probe,
+>   };
+>   module_platform_driver(altra_led_driver);
 
-I've run this through a userspace stress test (thank you
-tools/lib/rbtree.c), so hopefully this implementation doesn't miss any
-corner cases.
-
-Fixes: 147f3efaa241 ("sched/fair: Implement an EEVDF-like scheduling policy")
-Signed-off-by: Ben Segall <bsegall@google.com>
----
- kernel/sched/fair.c | 72 ++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 58 insertions(+), 14 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 0c31cda0712f..77e9440b8ab3 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -864,18 +864,20 @@ struct sched_entity *__pick_first_entity(struct cfs_rq *cfs_rq)
-  *
-  *  se->min_deadline = min(se->deadline, se->{left,right}->min_deadline)
-  *
-  * Which allows an EDF like search on (sub)trees.
-  */
--static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
-+static struct sched_entity *__pick_eevdf(struct cfs_rq *cfs_rq)
- {
- 	struct rb_node *node = cfs_rq->tasks_timeline.rb_root.rb_node;
- 	struct sched_entity *curr = cfs_rq->curr;
- 	struct sched_entity *best = NULL;
-+	struct sched_entity *best_left = NULL;
- 
- 	if (curr && (!curr->on_rq || !entity_eligible(cfs_rq, curr)))
- 		curr = NULL;
-+	best = curr;
- 
- 	/*
- 	 * Once selected, run a task until it either becomes non-eligible or
- 	 * until it gets a new slice. See the HACK in set_next_entity().
- 	 */
-@@ -892,45 +894,87 @@ static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
- 			node = node->rb_left;
- 			continue;
- 		}
- 
- 		/*
--		 * If this entity has an earlier deadline than the previous
--		 * best, take this one. If it also has the earliest deadline
--		 * of its subtree, we're done.
-+		 * Now we heap search eligible trees for the best (min_)deadline
- 		 */
--		if (!best || deadline_gt(deadline, best, se)) {
-+		if (!best || deadline_gt(deadline, best, se))
- 			best = se;
--			if (best->deadline == best->min_deadline)
--				break;
--		}
- 
- 		/*
--		 * If the earlest deadline in this subtree is in the fully
--		 * eligible left half of our space, go there.
-+		 * Every se in a left branch is eligible, keep track of the
-+		 * branch with the best min_deadline
- 		 */
-+		if (node->rb_left) {
-+			struct sched_entity *left = __node_2_se(node->rb_left);
-+
-+			if (!best_left || deadline_gt(min_deadline, best_left, left))
-+				best_left = left;
-+
-+			/*
-+			 * min_deadline is in the left branch. rb_left and all
-+			 * descendants are eligible, so immediately switch to the second
-+			 * loop.
-+			 */
-+			if (left->min_deadline == se->min_deadline)
-+				break;
-+		}
-+
-+		/* min_deadline is at this node, no need to look right */
-+		if (se->deadline == se->min_deadline)
-+			break;
-+
-+		/* else min_deadline is in the right branch. */
-+		node = node->rb_right;
-+	}
-+
-+	/*
-+	 * We ran into an eligible node which is itself the best.
-+	 * (Or nr_running == 0 and both are NULL)
-+	 */
-+	if (!best_left || (s64)(best_left->min_deadline - best->deadline) > 0)
-+		return best;
-+
-+	/*
-+	 * Now best_left and all of its children are eligible, and we are just
-+	 * looking for deadline == min_deadline
-+	 */
-+	node = &best_left->run_node;
-+	while (node) {
-+		struct sched_entity *se = __node_2_se(node);
-+
-+		/* min_deadline is the current node */
-+		if (se->deadline == se->min_deadline)
-+			return se;
-+
-+		/* min_deadline is in the left branch */
- 		if (node->rb_left &&
- 		    __node_2_se(node->rb_left)->min_deadline == se->min_deadline) {
- 			node = node->rb_left;
- 			continue;
- 		}
- 
-+		/* else min_deadline is in the right branch */
- 		node = node->rb_right;
- 	}
-+	return NULL;
-+}
- 
--	if (!best || (curr && deadline_gt(deadline, best, curr)))
--		best = curr;
-+static struct sched_entity *pick_eevdf(struct cfs_rq *cfs_rq)
-+{
-+	struct sched_entity *se = __pick_eevdf(cfs_rq);
- 
--	if (unlikely(!best)) {
-+	if (!se) {
- 		struct sched_entity *left = __pick_first_entity(cfs_rq);
- 		if (left) {
- 			pr_err("EEVDF scheduling fail, picking leftmost\n");
- 			return left;
- 		}
- 	}
- 
--	return best;
-+	return se;
- }
- 
- #ifdef CONFIG_SCHED_DEBUG
- struct sched_entity *__pick_last_entity(struct cfs_rq *cfs_rq)
- {
--- 
-2.42.0.582.g8ccd20d70d-goog
-
+Ok, thanks Bjorn & Rafael, will do.
