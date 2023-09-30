@@ -2,286 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65D0D7B3DE4
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 05:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17F3B7B3DE5
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 05:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbjI3Dpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 23:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
+        id S233985AbjI3Dsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 23:48:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229649AbjI3Dpf (ORCPT
+        with ESMTP id S229649AbjI3Dsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 23:45:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D118F
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 20:44:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696045487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=zn4xqFs4rGY0oTQr3T07H0KV6gmXQ+zDOaROsq+w2v4=;
-        b=Gvzil7DReYlUo8XtDnwar61BAkbmv2sp9OK07ioWVtummsXYv8Ip99AQuWiMXFf8Ivo9jO
-        H/W7/6Bhg5onSAlvp0Up9W24NhxFfmwFYvA//WALmmLAU7EF44cOaddNXtYcj36eWdtg/r
-        tL4MfUnuVn++xpnfMA5oSJBBjFqhdq4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-530-3LdkRfShNZ-VxcbofFnY7g-1; Fri, 29 Sep 2023 23:44:44 -0400
-X-MC-Unique: 3LdkRfShNZ-VxcbofFnY7g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 60B71101A529;
-        Sat, 30 Sep 2023 03:44:43 +0000 (UTC)
-Received: from llong.com (unknown [10.22.10.177])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 950AB10F1BE7;
-        Sat, 30 Sep 2023 03:44:42 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Pierre Gondois <pierre.gondois@arm.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH-cgroup] cgroup/cpuset: Enable invalid to valid local partition transition
-Date:   Fri, 29 Sep 2023 23:44:02 -0400
-Message-Id: <20230930034402.2776278-1-longman@redhat.com>
+        Fri, 29 Sep 2023 23:48:32 -0400
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4238F
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 20:48:29 -0700 (PDT)
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6c61ada4178so10012035a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 20:48:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696045709; x=1696650509;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=heB+LOr9lTLVsEmNYhKSuirJy6vgj8eJ6KJThUAsCww=;
+        b=E1nl3rjP1EBoj/uTuQ6q0BOSl/Y66joSAcnRuctG2TXBsog+aq4rzzLInZ/Ak7D+Hp
+         PfNa1ONncZLOKBtF8D+RfhFOVEhBiFm2M85Q+/j0Sp2JrZ3xcHzO4SSugLXMwYBTdUJS
+         lZ5Ohj2b+pf8YQIoguu0SCd55oXjGBrwydoyRGUijq3zhgNMAx9qIerGtaI3uNxaAb3Q
+         LBgOzo8BFysYRBa1d09BvyTBOLakdihBQg5oJmuCKtywKYdWTROGFtOuEM3SGnrpdoq5
+         NQluO0vnkVbygjCy4KHhYqLuuEFEOBdtHjhOisFvflO4wPzfXtkh9SdyCptVwQt6+wfi
+         t2Tg==
+X-Gm-Message-State: AOJu0YyfW4xCHIJunv0h9MasXTpu7ZT1RjzMhpCR0DUM/TnOzkGwNadj
+        gyQN2VXdIyMwlW4etmouD4L+2GDWCcZ8ARCis4aEufo7a8PF
+X-Google-Smtp-Source: AGHT+IFj9xeU+eZTwEUXRy227rH2g68C4yX/7x8ZGMmVB0Uo3X5QpNjJDgT1IZpPPPBVxa9cBxalo7F+eYAf5GQurv5fnChPN1yC
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:74d9:0:b0:6c4:e41c:6e6a with SMTP id
+ a25-20020a9d74d9000000b006c4e41c6e6amr1717943otl.4.1696045709248; Fri, 29 Sep
+ 2023 20:48:29 -0700 (PDT)
+Date:   Fri, 29 Sep 2023 20:48:29 -0700
+In-Reply-To: <20230930033224.1393-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000005d75d06068b6a4c@google.com>
+Subject: Re: [syzbot] [net?] KASAN: slab-use-after-free Read in tls_encrypt_done
+From:   syzbot <syzbot+29c22ea2d6b2c5fd2eae@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a local partition becomes invalid, it won't transition back to
-valid partition automatically if a proper "cpuset.cpus.exclusive" or
-"cpuset.cpus" change is made. Instead, system administrators have to
-explicitly echo "root" or "isolated" into the "cpuset.cpus.partition"
-file at the partition root.
+Hello,
 
-This patch now enables the automatic transition of an invalid local
-partition back to valid when there is a proper "cpuset.cpus.exclusive"
-or "cpuset.cpus" change.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+KASAN: slab-use-after-free Read in tls_encrypt_done
 
-Automatic transition of an invalid remote partition to a valid one,
-however, is not covered by this patch. They still need an explicit
-write to "cpuset.cpus.partition" to become valid again.
+==================================================================
+BUG: KASAN: slab-use-after-free in debug_spin_unlock kernel/locking/spinlock_debug.c:99 [inline]
+BUG: KASAN: slab-use-after-free in do_raw_spin_unlock+0x1f7/0x230 kernel/locking/spinlock_debug.c:140
+Read of size 4 at addr ffff888021a7253c by task kworker/1:1/46
 
-The test_cpuset_prs.sh test script is updated to add new test cases to
-test this automatic state transition.
+CPU: 1 PID: 46 Comm: kworker/1:1 Not tainted 6.6.0-rc3-syzkaller-dirty #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Workqueue: pencrypt_serial padata_serial_worker
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ debug_spin_unlock kernel/locking/spinlock_debug.c:99 [inline]
+ do_raw_spin_unlock+0x1f7/0x230 kernel/locking/spinlock_debug.c:140
+ __raw_spin_unlock_bh include/linux/spinlock_api_smp.h:166 [inline]
+ _raw_spin_unlock_bh+0x1e/0x30 kernel/locking/spinlock.c:210
+ spin_unlock_bh include/linux/spinlock.h:396 [inline]
+ tls_encrypt_done+0x281/0x560 net/tls/tls_sw.c:488
+ padata_serial_worker+0x246/0x490 kernel/padata.c:378
+ process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
+ kthread+0x33c/0x440 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
 
-Reported-by: Pierre Gondois <pierre.gondois@arm.com>
-Link: https://lore.kernel.org/lkml/9777f0d2-2fdf-41cb-bd01-19c52939ef42@arm.com
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/cgroup/cpuset.c                        | 79 +++++++++++--------
- .../selftests/cgroup/test_cpuset_prs.sh       | 17 ++--
- 2 files changed, 59 insertions(+), 37 deletions(-)
+Allocated by task 5717:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa3/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:599 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ tls_set_sw_offload+0x12e0/0x1700 net/tls/tls_sw.c:2606
+ do_tls_setsockopt_conf net/tls/tls_main.c:667 [inline]
+ do_tls_setsockopt net/tls/tls_main.c:772 [inline]
+ tls_setsockopt+0x108c/0x1340 net/tls/tls_main.c:800
+ __sys_setsockopt+0x2cd/0x5b0 net/socket.c:2308
+ __do_sys_setsockopt net/socket.c:2319 [inline]
+ __se_sys_setsockopt net/socket.c:2316 [inline]
+ __x64_sys_setsockopt+0xbd/0x150 net/socket.c:2316
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 15f399153a2e..93facdab513c 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1806,17 +1806,28 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 		 *
- 		 * Compute add/delete mask to/from effective_cpus
- 		 *
--		 * addmask = effective_xcpus & ~newmask & parent->effective_xcpus
--		 * delmask = newmask & ~cs->effective_xcpus
--		 *		     & parent->effective_xcpus
-+		 * For valid partition:
-+		 *   addmask = exclusive_cpus & ~newmask
-+		 *			      & parent->effective_xcpus
-+		 *   delmask = newmask & ~exclusive_cpus
-+		 *		       & parent->effective_xcpus
-+		 *
-+		 * For invalid partition:
-+		 *   delmask = newmask & parent->effective_xcpus
- 		 */
--		cpumask_andnot(tmp->addmask, xcpus, newmask);
--		adding = cpumask_and(tmp->addmask, tmp->addmask,
--				     parent->effective_xcpus);
-+		if (is_prs_invalid(old_prs)) {
-+			adding = false;
-+			deleting = cpumask_and(tmp->delmask,
-+					newmask, parent->effective_xcpus);
-+		} else {
-+			cpumask_andnot(tmp->addmask, xcpus, newmask);
-+			adding = cpumask_and(tmp->addmask, tmp->addmask,
-+					     parent->effective_xcpus);
- 
--		cpumask_andnot(tmp->delmask, newmask, xcpus);
--		deleting = cpumask_and(tmp->delmask, tmp->delmask,
--				       parent->effective_xcpus);
-+			cpumask_andnot(tmp->delmask, newmask, xcpus);
-+			deleting = cpumask_and(tmp->delmask, tmp->delmask,
-+					       parent->effective_xcpus);
-+		}
- 		/*
- 		 * Make partition invalid if parent's effective_cpus could
- 		 * become empty and there are tasks in the parent.
-@@ -1910,9 +1921,11 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 
- 	/*
- 	 * Transitioning between invalid to valid or vice versa may require
--	 * changing CS_CPU_EXCLUSIVE.
-+	 * changing CS_CPU_EXCLUSIVE. In the case of partcmd_update,
-+	 * validate_change() has already been successfully called and
-+	 * CPU lists in cs haven't been updated yet. So defer it to later.
- 	 */
--	if (old_prs != new_prs) {
-+	if ((old_prs != new_prs) && (cmd != partcmd_update))  {
- 		int err = update_partition_exclusive(cs, new_prs);
- 
- 		if (err)
-@@ -1960,6 +1973,9 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 
- 	spin_unlock_irq(&callback_lock);
- 
-+	if ((old_prs != new_prs) && (cmd == partcmd_update))
-+		update_partition_exclusive(cs, new_prs);
-+
- 	if (adding || deleting) {
- 		update_tasks_cpumask(parent, tmp->addmask);
- 		update_sibling_cpumasks(parent, cs, tmp);
-@@ -2356,8 +2372,9 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
- 	if (alloc_cpumasks(NULL, &tmp))
- 		return -ENOMEM;
- 
--	if (is_partition_valid(cs)) {
--		if (cpumask_empty(trialcs->effective_xcpus)) {
-+	if (old_prs) {
-+		if (is_partition_valid(cs) &&
-+		    cpumask_empty(trialcs->effective_xcpus)) {
- 			invalidate = true;
- 			cs->prs_err = PERR_INVCPUS;
- 		} else if (prstate_housekeeping_conflict(old_prs, trialcs->effective_xcpus)) {
-@@ -2391,13 +2408,16 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
- 		 */
- 		invalidate = true;
- 		rcu_read_lock();
--		cpuset_for_each_child(cp, css, parent)
-+		cpuset_for_each_child(cp, css, parent) {
-+			struct cpumask *xcpus = fetch_xcpus(trialcs);
-+
- 			if (is_partition_valid(cp) &&
--			    cpumask_intersects(trialcs->effective_xcpus, cp->effective_xcpus)) {
-+			    cpumask_intersects(xcpus, cp->effective_xcpus)) {
- 				rcu_read_unlock();
- 				update_parent_effective_cpumask(cp, partcmd_invalidate, NULL, &tmp);
- 				rcu_read_lock();
- 			}
-+		}
- 		rcu_read_unlock();
- 		retval = 0;
- 	}
-@@ -2405,18 +2425,24 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
- 	if (retval < 0)
- 		goto out_free;
- 
--	if (is_partition_valid(cs)) {
-+	if (is_partition_valid(cs) ||
-+	   (is_partition_invalid(cs) && !invalidate)) {
-+		struct cpumask *xcpus = trialcs->effective_xcpus;
-+
-+		if (cpumask_empty(xcpus) && is_partition_invalid(cs))
-+			xcpus = trialcs->cpus_allowed;
-+
- 		/*
- 		 * Call remote_cpus_update() to handle valid remote partition
- 		 */
- 		if (is_remote_partition(cs))
--			remote_cpus_update(cs, trialcs->effective_xcpus, &tmp);
-+			remote_cpus_update(cs, xcpus, &tmp);
- 		else if (invalidate)
- 			update_parent_effective_cpumask(cs, partcmd_invalidate,
- 							NULL, &tmp);
- 		else
- 			update_parent_effective_cpumask(cs, partcmd_update,
--						trialcs->effective_xcpus, &tmp);
-+							xcpus, &tmp);
- 	} else if (!cpumask_empty(cs->exclusive_cpus)) {
- 		/*
- 		 * Use trialcs->effective_cpus as a temp cpumask
-@@ -2493,7 +2519,7 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
- 	if (retval)
- 		return retval;
- 
--	if (is_partition_valid(cs)) {
-+	if (old_prs) {
- 		if (cpumask_empty(trialcs->effective_xcpus)) {
- 			invalidate = true;
- 			cs->prs_err = PERR_INVCPUS;
-@@ -2927,19 +2953,10 @@ static int update_prstate(struct cpuset *cs, int new_prs)
- 		return 0;
- 
- 	/*
--	 * For a previously invalid partition root with valid partition root
--	 * parent, treat it as if it is a "member". Otherwise, reject it as
--	 * remote partition cannot currently self-recover from an invalid
--	 * state.
-+	 * Treat a previously invalid partition root as if it is a "member".
- 	 */
--	if (new_prs && is_prs_invalid(old_prs)) {
--		if (is_partition_valid(parent)) {
--			old_prs = PRS_MEMBER;
--		} else {
--			cs->partition_root_state = -new_prs;
--			return 0;
--		}
--	}
-+	if (new_prs && is_prs_invalid(old_prs))
-+		old_prs = PRS_MEMBER;
- 
- 	if (alloc_cpumasks(NULL, &tmpmask))
- 		return -ENOMEM;
-diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-index 0f4f4a57ae12..243c4c926964 100755
---- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-+++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-@@ -318,16 +318,18 @@ TEST_MATRIX=(
- 	" C0-3:S+ C1-3:S+  C2      .    X2-3   X2-3   T:P2:O2=0 O2=1 0 A1:0-3,A2:1-3,A3:2 A1:P0,A3:P-2"
- 
- 	# cpus.exclusive.effective clearing test
--	" C0-3:S+ C1-3:S+  C2      .   X2-3:X    .      .      .      0 A1:0-3,A2:1-3,A3:2,XA1:"
-+	" C0-3:S+ C1-3:S+  C2      .   X2-3:X    .      .      .     0 A1:0-3,A2:1-3,A3:2,XA1:"
- 
--	# Invalid to valid remote partition indirect transition test via member
--	" C0-3:S+   C1-3    .      .      .    X3:P2    .      .      0 A1:0-3,A2:1-3,XA2: A2:P-2"
-+	# Invalid to valid remote partition transition test
-+	" C0-3:S+   C1-3    .      .      .    X3:P2    .      .     0 A1:0-3,A2:1-3,XA2: A2:P-2"
- 	" C0-3:S+ C1-3:X3:P2
--			    .      .    X2-3   P0:P2    .      .      0 A1:0-2,A2:3,XA2:3 A2:P2 3"
-+			    .      .    X2-3    P2      .      .     0 A1:0-2,A2:3,XA2:3 A2:P2 3"
- 
- 	# Invalid to valid local partition direct transition tests
--	" C1-3:S+:P2 C2-3:X1:P2 .  .      .      .      .      .      0 A1:1-3,XA1:1-3,A2:2-3:XA2: A1:P2,A2:P-2 1-3"
--	" C1-3:S+:P2 C2-3:X1:P2 .  .      .    X3:P2    .      .      0 A1:1-2,XA1:1-3,A2:3:XA2:3 A1:P2,A2:P2 1-3"
-+	" C1-3:S+:P2 C2-3:X1:P2 .  .      .      .      .      .     0 A1:1-3,XA1:1-3,A2:2-3:XA2: A1:P2,A2:P-2 1-3"
-+	" C1-3:S+:P2 C2-3:X1:P2 .  .      .    X3:P2    .      .     0 A1:1-2,XA1:1-3,A2:3:XA2:3 A1:P2,A2:P2 1-3"
-+	"  C0-3:P2   .      .    C4-6   C0-4     .      .      .     0 A1:0-4,B1:4-6 A1:P-2,B1:P0"
-+	"  C0-3:P2   .      .    C4-6 C0-4:C0-3  .      .      .     0 A1:0-3,B1:4-6 A1:P2,B1:P0 0-3"
- 
- 	# Local partition invalidation tests
- 	" C0-3:X1-3:S+:P2 C1-3:X2-3:S+:P2 C2-3:X3:P2 \
-@@ -336,6 +338,9 @@ TEST_MATRIX=(
- 				   .      .     X4      .      .     0 A1:1-3,A2:1-3,A3:2-3,XA2:,XA3: A1:P2,A2:P-2,A3:P-2 1-3"
- 	" C0-3:X1-3:S+:P2 C1-3:X2-3:S+:P2 C2-3:X3:P2 \
- 				   .      .     C4      .      .     0 A1:1-3,A2:1-3,A3:2-3,XA2:,XA3: A1:P2,A2:P-2,A3:P-2 1-3"
-+	# Local partition CPU change tests
-+	" C0-5:S+:P2 C4-5:S+:P1 .  .      .    C3-5     .      .     0 A1:0-2,A2:3-5 A1:P2,A2:P1 0-2"
-+	" C0-5:S+:P2 C4-5:S+:P1 .  .    C1-5     .      .      .     0 A1:1-3,A2:4-5 A1:P2,A2:P1 1-3"
- 
- 	# cpus_allowed/exclusive_cpus update tests
- 	" C0-3:X2-3:S+ C1-3:X2-3:S+ C2-3:X2-3 \
--- 
-2.39.3
+Freed by task 5716:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x138/0x190 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ __cache_free mm/slab.c:3370 [inline]
+ __do_kmem_cache_free mm/slab.c:3557 [inline]
+ __kmem_cache_free+0xcc/0x2d0 mm/slab.c:3564
+ tls_sk_proto_close+0x4c3/0xb00 net/tls/tls_main.c:390
+ inet_release+0x132/0x270 net/ipv4/af_inet.c:433
+ inet6_release+0x4f/0x70 net/ipv6/af_inet6.c:484
+ __sock_release+0xae/0x260 net/socket.c:659
+ sock_close+0x1c/0x20 net/socket.c:1402
+ __fput+0x3f7/0xa70 fs/file_table.c:384
+ __fput_sync+0x47/0x50 fs/file_table.c:465
+ __do_sys_close fs/open.c:1572 [inline]
+ __se_sys_close fs/open.c:1557 [inline]
+ __x64_sys_close+0x87/0xf0 fs/open.c:1557
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Last potentially related work creation:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0x78/0x80 mm/kasan/generic.c:492
+ kvfree_call_rcu+0x70/0xbe0 kernel/rcu/tree.c:3372
+ mld_clear_delrec+0x134/0x660 net/ipv6/mcast.c:824
+ ipv6_mc_destroy_dev+0x49/0x680 net/ipv6/mcast.c:2788
+ addrconf_ifdown.isra.0+0x1597/0x1c50 net/ipv6/addrconf.c:3935
+ addrconf_notify+0x22d/0x1920 net/ipv6/addrconf.c:3715
+ notifier_call_chain+0xb6/0x3b0 kernel/notifier.c:93
+ call_netdevice_notifiers_info+0xb9/0x130 net/core/dev.c:1970
+ call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
+ call_netdevice_notifiers net/core/dev.c:2022 [inline]
+ unregister_netdevice_many_notify+0x85f/0x1a20 net/core/dev.c:10938
+ unregister_netdevice_many net/core/dev.c:10994 [inline]
+ default_device_exit_batch+0x584/0x740 net/core/dev.c:11453
+ ops_exit_list+0x125/0x170 net/core/net_namespace.c:175
+ cleanup_net+0x505/0xb20 net/core/net_namespace.c:614
+ process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
+ kthread+0x33c/0x440 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+Second to last potentially related work creation:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ __kasan_record_aux_stack+0x78/0x80 mm/kasan/generic.c:492
+ __call_rcu_common.constprop.0+0x9a/0x790 kernel/rcu/tree.c:2653
+ fib6_info_release include/net/ip6_fib.h:332 [inline]
+ fib6_info_release include/net/ip6_fib.h:329 [inline]
+ fixup_permanent_addr net/ipv6/addrconf.c:3533 [inline]
+ addrconf_permanent_addr net/ipv6/addrconf.c:3561 [inline]
+ addrconf_notify+0x149e/0x1920 net/ipv6/addrconf.c:3633
+ notifier_call_chain+0xb6/0x3b0 kernel/notifier.c:93
+ call_netdevice_notifiers_info+0xb9/0x130 net/core/dev.c:1970
+ call_netdevice_notifiers_extack net/core/dev.c:2008 [inline]
+ call_netdevice_notifiers net/core/dev.c:2022 [inline]
+ __dev_notify_flags+0x12d/0x2e0 net/core/dev.c:8636
+ dev_change_flags+0x122/0x170 net/core/dev.c:8674
+ do_setlink+0x1a2a/0x3fa0 net/core/rtnetlink.c:2880
+ __rtnl_newlink+0xc1d/0x1940 net/core/rtnetlink.c:3671
+ rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3718
+ rtnetlink_rcv_msg+0x3c4/0xdf0 net/core/rtnetlink.c:6444
+ netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2545
+ netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+ netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ sock_sendmsg+0xd9/0x180 net/socket.c:753
+ __sys_sendto+0x255/0x340 net/socket.c:2177
+ __do_sys_sendto net/socket.c:2189 [inline]
+ __se_sys_sendto net/socket.c:2185 [inline]
+ __x64_sys_sendto+0xe0/0x1b0 net/socket.c:2185
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+The buggy address belongs to the object at ffff888021a72400
+ which belongs to the cache kmalloc-512 of size 512
+The buggy address is located 316 bytes inside of
+ freed 512-byte region [ffff888021a72400, ffff888021a72600)
+
+The buggy address belongs to the physical page:
+page:ffffea0000869c80 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x21a72
+flags: 0xfff00000000800(slab|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0x4()
+raw: 00fff00000000800 ffff888012c40600 ffffea00006c3ed0 ffffea0000f39050
+raw: 0000000000000000 ffff888021a72000 0000000100000004 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x2420c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_COMP|__GFP_THISNODE), pid 1, tgid 1 (swapper/0), ts 18600299140, free_ts 18486327960
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2cf/0x340 mm/page_alloc.c:1536
+ prep_new_page mm/page_alloc.c:1543 [inline]
+ get_page_from_freelist+0xee0/0x2f20 mm/page_alloc.c:3170
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4426
+ __alloc_pages_node include/linux/gfp.h:237 [inline]
+ kmem_getpages mm/slab.c:1356 [inline]
+ cache_grow_begin+0x99/0x3a0 mm/slab.c:2550
+ cache_alloc_refill+0x294/0x3a0 mm/slab.c:2923
+ ____cache_alloc mm/slab.c:2999 [inline]
+ ____cache_alloc mm/slab.c:2982 [inline]
+ __do_cache_alloc mm/slab.c:3182 [inline]
+ slab_alloc_node mm/slab.c:3230 [inline]
+ __kmem_cache_alloc_node+0x3c5/0x470 mm/slab.c:3521
+ kmalloc_trace+0x25/0xe0 mm/slab_common.c:1114
+ kmalloc include/linux/slab.h:599 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ dev_pm_qos_constraints_allocate+0x87/0x4b0 drivers/base/power/qos.c:204
+ __dev_pm_qos_add_request+0x47b/0x570 drivers/base/power/qos.c:344
+ dev_pm_qos_add_request+0x3a/0x60 drivers/base/power/qos.c:394
+ usb_hub_create_port_device+0x474/0xe30 drivers/usb/core/port.c:727
+ hub_configure drivers/usb/core/hub.c:1685 [inline]
+ hub_probe+0x1e62/0x3070 drivers/usb/core/hub.c:1922
+ usb_probe_interface+0x307/0x930 drivers/usb/core/driver.c:396
+ call_driver_probe drivers/base/dd.c:579 [inline]
+ really_probe+0x234/0xc90 drivers/base/dd.c:658
+ __driver_probe_device+0x1de/0x4b0 drivers/base/dd.c:800
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:830
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1136 [inline]
+ free_unref_page_prepare+0x476/0xa40 mm/page_alloc.c:2312
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2405
+ vfree+0x181/0x7a0 mm/vmalloc.c:2842
+ delayed_vfree_work+0x56/0x70 mm/vmalloc.c:2763
+ process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
+ kthread+0x33c/0x440 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+Memory state around the buggy address:
+ ffff888021a72400: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888021a72480: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff888021a72500: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                        ^
+ ffff888021a72580: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888021a72600: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+==================================================================
+
+
+Tested on:
+
+commit:         6465e260 Linux 6.6-rc3
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=10436bda680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8d7d7928f78936aa
+dashboard link: https://syzkaller.appspot.com/bug?extid=29c22ea2d6b2c5fd2eae
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1004ea06680000
 
