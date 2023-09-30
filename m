@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A597B44AA
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 01:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 815D07B44AD
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 01:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234118AbjI3XoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 19:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
+        id S234174AbjI3XoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 19:44:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233997AbjI3XoD (ORCPT
+        with ESMTP id S233997AbjI3XoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 19:44:03 -0400
+        Sat, 30 Sep 2023 19:44:04 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F07BC;
-        Sat, 30 Sep 2023 16:44:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4ABD1C433C9;
-        Sat, 30 Sep 2023 23:44:00 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B79BC;
+        Sat, 30 Sep 2023 16:44:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B32DBC433C7;
+        Sat, 30 Sep 2023 23:44:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696117441;
-        bh=olNQkj8edqE39Hnx3Oj7nNyzlOiwbJE3qR/nV/hU2lU=;
+        s=k20201202; t=1696117442;
+        bh=gWdnyYXttxIjh88wfA/QmRjMof3T9So3DMxuvdVdIUQ=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=t9+0HeM8h0NMZd6L6BXOILF3oRLLelLqQKbHHtcpRexMa2pwibfuXvVMkz10D9l9g
-         zbi/cFZghVEhwQYSEwtYcvfsDs+l9W1sId6iqzVRafxdSvLgnwDfb6FsQA4A4ZZN4D
-         CzM9FR3w18Jd5MCQbr/ixGYJJJsYH1LROEhbXR/s8XkhUK53Mcx1/NmmWYMR8NIkcs
-         +JyQaD6RPJ/1EjJrvytF3lD5T2OqJRmr8QRn8HvZffwfsHu2EJPAKWIFwmUPxVAcR6
-         asRA1uOOAK/JWd4czR0bR2TW09ciZsfvjYDknDFFy0NnmqfeLRUIdiNIGebGmhLNXU
-         AB5LqdShpk0Mw==
+        b=VJtuRrycxQGWoNSXUGTCkRhEeCg5lX5JvxdNj8wVaN/6ubtt2Rt9m+QvUYrOcqhhl
+         kDchcEJ6ScCH7X4NYvhjLP13UMcUujADKfV2mBS10pgfGepFDOG+vW/gAvrq/1Pj2i
+         QckII3LthanX+9sFXcBm1tMPGpv0uSizTkbQx2/R+Dz7Nn+NmCMkin58Ov/+v2UGrE
+         NNk5l2StLvs50NwwwuD/Bm5KewJLZmQaCziKAryOqLZpkjv8DWaiXCfc/vFv5wvoLA
+         K8Ypr+1fBE/NopMO//WKG8DmP82Cf4WHPXcWRbTEVkS8tWHLS6tj0pIvtMN1jGGf8Y
+         9MD6qOESx2r4g==
 From:   Mark Brown <broonie@kernel.org>
-Date:   Sun, 01 Oct 2023 01:43:38 +0200
-Subject: [PATCH 1/3] Input: cap11xx - Cache hardware ID registers
+Date:   Sun, 01 Oct 2023 01:43:39 +0200
+Subject: [PATCH 2/3] Input: cap11xx - Convert to use maple tree register
+ cache
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231001-input-maple-v1-1-ed3716051431@kernel.org>
+Message-Id: <20231001-input-maple-v1-2-ed3716051431@kernel.org>
 References: <20231001-input-maple-v1-0-ed3716051431@kernel.org>
 In-Reply-To: <20231001-input-maple-v1-0-ed3716051431@kernel.org>
 To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
         Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1113; i=broonie@kernel.org;
- h=from:subject:message-id; bh=olNQkj8edqE39Hnx3Oj7nNyzlOiwbJE3qR/nV/hU2lU=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlGLK7yToUWh2XoyPoMn9R5B56M56wpY2OnXgw+
- uBZKOGIeFCJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRiyuwAKCRAk1otyXVSH
- 0D2QB/9GAhS5JfxpCk95gMbZGldAqZxfTAvpSdQoEzf9WjBmnX1dK12RB7ZhFt6eW1p+51vcO/o
- 8JwRaAYUsa87GdQ/+Xj02p6bDrU9RCwgykpIC5H2EddPswMHXm9NmJ/NRn0kttH1HaiU6p+Up9R
- oMrprnwBHfvCIeCBH9IUgQNymctk3Eq//BcbnCgS6QdzJPzRey9jUGr7byJdrjL7QwrTQzVnS7a
- C6gLXW3V3wXntawN6nkD4gBc2SIuDNA+cWl9jfmxz7vRjWyzTDrPYim5sA5namnQpuKkm2bDzql
- Q2DILJK67X2ZP7TXeOfRbKfddKaMvBVSpj1xT4jV+sIg7AXT
+X-Developer-Signature: v=1; a=openpgp-sha256; l=887; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=gWdnyYXttxIjh88wfA/QmRjMof3T9So3DMxuvdVdIUQ=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlGLK8phUcg9KoLSH9kT34IAkPQCetOyoMtXxGV
+ fMmWLgzFLWJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRiyvAAKCRAk1otyXVSH
+ 0OT7B/9Jgtz/re02rBFTuuXqFAw5agg5zLC7OM9Ge1yr6WEFqwfbqsh42MxBo/S2dsQGqnlSgCj
+ q8Q3Ve7Gmiv9zSWQDvB9Hcao7IY1DI3ZOgetJdZeODUoJHmLQxwBA0FZCwwCA3dFTvhIoZSeCU7
+ p5jcICAnRAvLA6VQTXfFgPpbEvIN3KT18QevJfjPipWwerUEFhxqMXXqOVUHmGFBQ2dFP2F3DoD
+ 5GJL5m63EHUxAFyzgZQcgIcQ2LCrq4+tFMJLazvMYmXkeQDsXxK7Pp9XF3NhfQnfDfeZs2QSQB/
+ Jz3+N+naNRdAFVuYCKNuBa1jivzbTpkv/Imj27GJlTK4A2Be
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -61,31 +62,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The cap11xx devices have three hardware identification registers which are
-currently marked as volatile, preventing caching of those registers. This
-is not ideal since the registers should never change at runtime, we should
-be able to cache the value after the first read. Stop marking the registers
-as volatile, we don't have register defaults specified in the driver so
-this will result in reading from the hardware on first use.
+The maple tree register cache is based on a much more modern data structure
+than the rbtree cache and makes optimisation choices which are probably
+more appropriate for modern systems than those made by the rbtree cache.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/input/keyboard/cap11xx.c | 3 ---
- 1 file changed, 3 deletions(-)
+ drivers/input/keyboard/cap11xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/input/keyboard/cap11xx.c b/drivers/input/keyboard/cap11xx.c
-index 1b4937dce672..39ed3b9ddc65 100644
+index 39ed3b9ddc65..77843ad15d4c 100644
 --- a/drivers/input/keyboard/cap11xx.c
 +++ b/drivers/input/keyboard/cap11xx.c
-@@ -160,9 +160,6 @@ static bool cap11xx_volatile_reg(struct device *dev, unsigned int reg)
- 	case CAP11XX_REG_SENOR_DELTA(3):
- 	case CAP11XX_REG_SENOR_DELTA(4):
- 	case CAP11XX_REG_SENOR_DELTA(5):
--	case CAP11XX_REG_PRODUCT_ID:
--	case CAP11XX_REG_MANUFACTURER_ID:
--	case CAP11XX_REG_REVISION:
- 		return true;
- 	}
+@@ -174,7 +174,7 @@ static const struct regmap_config cap11xx_regmap_config = {
+ 	.reg_defaults = cap11xx_reg_defaults,
+ 
+ 	.num_reg_defaults = ARRAY_SIZE(cap11xx_reg_defaults),
+-	.cache_type = REGCACHE_RBTREE,
++	.cache_type = REGCACHE_MAPLE,
+ 	.volatile_reg = cap11xx_volatile_reg,
+ };
  
 
 -- 
