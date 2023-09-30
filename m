@@ -2,93 +2,439 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4567B41E8
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 288D57B41EC
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbjI3QAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 12:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
+        id S234464AbjI3QAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 12:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231715AbjI3QAd (ORCPT
+        with ESMTP id S234460AbjI3QAv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 12:00:33 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F56B9;
-        Sat, 30 Sep 2023 09:00:31 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-279013f9875so4051104a91.2;
-        Sat, 30 Sep 2023 09:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696089631; x=1696694431; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gILmhzCOvJo6YdBgmybUBBwY7d2ScLP58BDF9B/fF+Y=;
-        b=fe0WXuPib0sEf5qUFQteyIARYW1Ps1XHtjdjBxfQo/txhQKozp3LpD+EkxTu42x0+G
-         om2JeApQxOgpXHnyS/d49cNpheoT5kHzks2NplmY4Kbtff55C4vk/ko17wdfC2AaNBPI
-         DirxdASYONuvI/TemcYirl/MitP5zHel+K/Sv1bNhodbzXTxiPCauRgPAf8mbCmY6pTa
-         R6YyjihjEROceLDsrU3iaZm4mPnvqZ2GtlT2U5Boy3gJeiSYzmGZrFCZSIZsaiUC+POE
-         5hXOgNtOTnwH23WCW0wGsdmRR1hXkcqbaVzp645MSVsTK0QflvUQRblWYqj4EdcoMOd5
-         Zbng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696089631; x=1696694431;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gILmhzCOvJo6YdBgmybUBBwY7d2ScLP58BDF9B/fF+Y=;
-        b=kgS8YSEj4ZPltWAVSfR016/oNKXHd+4dBE/5JykTDSTN+52D6o4hZAMBR8j0hsM8PU
-         CRndURPo7Jo7IzwX2hMncy5O3EyfrStxNXaCQVeEd3NDHvVLlyh4aR5bTJQaRENeqGG6
-         8xm/Z5t2cpWfygF9Gen9c6bdrWzEeV1RRE3s51zCQsv+hnaHxoKxyZNK4GNc3od2Ofy0
-         U7EDs59GL0yHbxogdXre2DKP5PZmUesXYrwLdYmX3XHrb8nBPgpbGXz47SbGdU4BNJgd
-         NpmR4BKy05VIr8SNa1B/8aPN6GINEN5HxTUCv3icuQgVoonE0+bRTjubAo96O/TnavXP
-         qa6g==
-X-Gm-Message-State: AOJu0YzOTbsUqgddb/PCwe3wp2TVx9qT/vZ1+WwxlP+TygFCxc6NMwxL
-        Uk0WwUZJ9kQbsOrf6zBbJ6BcTM01NC9W5L2fHUg=
-X-Google-Smtp-Source: AGHT+IFFEXIoF7kfOqEdM5wgbVRNXP9UlJONU8p47f9Q5/EZaebYx7vvZmq5aNqc0+fOqNUGQGn4aSfCCasDwnU85OI=
-X-Received: by 2002:a17:90b:4f47:b0:273:441a:dae6 with SMTP id
- pj7-20020a17090b4f4700b00273441adae6mr6900713pjb.19.1696089631380; Sat, 30
- Sep 2023 09:00:31 -0700 (PDT)
+        Sat, 30 Sep 2023 12:00:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FEC7EB;
+        Sat, 30 Sep 2023 09:00:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11892C433C7;
+        Sat, 30 Sep 2023 16:00:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696089647;
+        bh=GnDBtud2gOLs0KL+egFH2wAxcCUYgicSKPG1u0J6bFI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UoFsdHtr3HKzO4alyHJRv1nu+gt7fqTxEdx5hfy1nWv7dXqO23sPM9ZjMfz4s6H4T
+         S5dowidN4SvRX8mZdWCuq425h4gB/E1QCc4+56Cp7PtOPwCHIJiXA88xW20CYFkeNu
+         EUwuRVLcbA+ND/zZJpiCmAJL8Jbp5A2BUdqVweOvWTisGqDuUESYEHAJAYjicrJYiq
+         F33xdZQEBEETxySGxp1NME8xGe1ccgOp2FIiMkmlpdukRTWnIhMrj1QOkIEPc71MHz
+         SK1ybHWXMocM/BFMhZzSTY3OMNvQsWhEueaZvjLmeigyErep7YJior5oL5UGXH133d
+         +OWN0vZsEvfkA==
+Date:   Sat, 30 Sep 2023 17:00:46 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        David Lechner <david@lechnology.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 26/27] staging: iio: resolver: ad2s1210: implement
+ fault events
+Message-ID: <20230930170046.36637e9c@jic23-huawei>
+In-Reply-To: <20230929-ad2s1210-mainline-v3-26-fa4364281745@baylibre.com>
+References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
+        <20230929-ad2s1210-mainline-v3-26-fa4364281745@baylibre.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-From:   =?UTF-8?Q?Henrik_Lindstr=C3=B6m?= <lindstrom515@gmail.com>
-Date:   Sat, 30 Sep 2023 18:00:20 +0200
-Message-ID: <CAHkKap3sdN4wZm_euAZEyt3XB4bvr6cV-oAMGtrmrm5Z8biZ_Q@mail.gmail.com>
-Subject: macvtap performs IP defragmentation, causing MTU problems for virtual machines
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 29 Sep 2023 12:23:31 -0500
+David Lechner <dlechner@baylibre.com> wrote:
 
-We are trying to receive fragmented multicast traffic on a qemu/kvm VM
-using a macvtap NIC (e1000e model).
-Even though the traffic is properly fragmented by the sender, it's
-never received by the VM.
+> From: David Lechner <david@lechnology.com>
+> 
+> From: David Lechner <dlechner@baylibre.com>
+> 
+> When reading the position and velocity on the AD2S1210, there is also a
+> 3rd byte following the two data bytes that contains the fault flag bits.
+> This patch adds support for reading this byte and generating events when
+> faults occur.
+> 
+> The faults are mapped to various channels and event types in order to
+> have a unique event for each fault.
+> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
 
-The reason seems to be that the macvlan driver performs IP
-defragmentation for multicast traffic, causing e1001e to drop it for
-being too big.
-It works fine with a virtio NIC instead of e1000e, but that's not an
-option for us.
+Use of x and y modifiers is a little odd.  What was your reasoning?
+Was it just that there was a X_OR_Y modifier?  If so, don't use that!
+It seemed like a good idea at the time, but it's not nice to deal with
+and requires a channel with that modifier to hang the controls off
++ make sure userspace expects that event code.
 
-I found this old thread describing why macvlan does this:
-https://lore.kernel.org/netdev/4E8C89EE.3090600@candelatech.com/
-Interestingly, the problem described in that thread seems to be more
-general than macvlans, and i can still reproduce it by simply having
-multiple physical interfaces.
-So it looks like macvlans are being special-cased right now, as a
-workaround for a more general defragmentation problem?
+> ---
+> 
+> v3 changes: This is a new patch in v3
+> 
+>  drivers/staging/iio/resolver/ad2s1210.c | 175 +++++++++++++++++++++++++++++---
+>  1 file changed, 161 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
+> index e1c95ec73545..dc3cc3ab855e 100644
+> --- a/drivers/staging/iio/resolver/ad2s1210.c
+> +++ b/drivers/staging/iio/resolver/ad2s1210.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/types.h>
+>  
+>  #include <linux/iio/buffer.h>
+> +#include <linux/iio/events.h>
+>  #include <linux/iio/iio.h>
+>  #include <linux/iio/sysfs.h>
+>  #include <linux/iio/trigger_consumer.h>
+> @@ -35,6 +36,16 @@
+>  #define AD2S1210_SET_ENRES		GENMASK(3, 2)
+>  #define AD2S1210_SET_RES		GENMASK(1, 0)
+>  
+> +/* fault register flags */
+> +#define AD2S1210_FAULT_CLIP		BIT(7)
+> +#define AD2S1210_FAULT_LOS		BIT(6)
+> +#define AD2S1210_FAULT_DOS_OVR		BIT(5)
+> +#define AD2S1210_FAULT_DOS_MIS		BIT(4)
+> +#define AD2S1210_FAULT_LOT		BIT(3)
+> +#define AD2S1210_FAULT_VELOCITY		BIT(2)
+> +#define AD2S1210_FAULT_PHASE		BIT(1)
+> +#define AD2S1210_FAULT_CONFIG_PARITY	BIT(0)
+> +
+>  #define AD2S1210_REG_POSITION_MSB	0x80
+>  #define AD2S1210_REG_POSITION_LSB	0x81
+>  #define AD2S1210_REG_VELOCITY_MSB	0x82
+> @@ -71,6 +82,8 @@
+>  /* max voltage for threshold registers is 0x7F * 38 mV */
+>  #define THRESHOLD_RANGE_STR "[0 38 4826]"
+>  
+> +#define FAULT_ONESHOT(bit, new, old) (new & bit && !(old & bit))
+> +
+>  enum ad2s1210_mode {
+>  	MOD_POS = 0b00,
+>  	MOD_VEL = 0b01,
+> @@ -98,8 +111,13 @@ struct ad2s1210_state {
+>  	unsigned long clkin_hz;
+>  	/** The selected resolution */
+>  	enum ad2s1210_resolution resolution;
+> +	/** Copy of fault register from the previous read. */
+> +	u8 prev_fault_flags;
+>  	/** For reading raw sample value via SPI. */
+> -	__be16 sample __aligned(IIO_DMA_MINALIGN);
+> +	struct {
+> +		__be16 raw;
+> +		u8 fault;
+> +	} sample __aligned(IIO_DMA_MINALIGN);;
+>  	/** Scan buffer */
+>  	struct {
+>  		__be16 chan[2];
+> @@ -158,7 +176,15 @@ static int ad2s1210_regmap_reg_write(void *context, unsigned int reg,
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	return spi_sync_transfer(st->sdev, xfers, ARRAY_SIZE(xfers));
+> +	ret = spi_sync_transfer(st->sdev, xfers, ARRAY_SIZE(xfers));
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* soft reset also clears the fault register */
+> +	if (reg == AD2S1210_REG_SOFT_RESET)
+> +		st->prev_fault_flags = 0;
+> +
+> +	return 0;
+>  }
+>  
+>  /*
+> @@ -200,6 +226,10 @@ static int ad2s1210_regmap_reg_read(void *context, unsigned int reg,
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	/* reading the fault register also clears it */
+> +	if (reg == AD2S1210_REG_FAULT)
+> +		st->prev_fault_flags = 0;
+> +
+>  	/*
+>  	 * If the D7 bit is set on any read/write register, it indicates a
+>  	 * parity error. The fault register is read-only and the D7 bit means
+> @@ -283,14 +313,92 @@ static ssize_t ad2s1210_clear_fault(struct device *dev,
+>  	return ret < 0 ? ret : len;
+>  }
+>  
+> -static int ad2s1210_single_conversion(struct ad2s1210_state *st,
+> +static void ad2s1210_push_events(struct iio_dev *indio_dev,
+> +				 u8 flags, s64 timestamp)
+> +{
+> +	struct ad2s1210_state *st = iio_priv(indio_dev);
+> +
+> +	/* Sine/cosine inputs clipped */
+> +	if (FAULT_ONESHOT(AD2S1210_FAULT_CLIP, flags, st->prev_fault_flags))
+> +		iio_push_event(indio_dev,
+> +			       IIO_MOD_EVENT_CODE(IIO_ALTVOLTAGE, 1,
+> +			       			  IIO_MOD_X_OR_Y,
+Hmm. So this is a weird corner I'd forgotten about and explains your
+use of X and Y modifiers. 
+Long ago this was added to support a similar case to the one you have,
+but mixing and matching modifiers like this doesn't scale, so
+I think we'd be better just signally events on both channels.
+If nothing else, someone waiting for an event on a specific channel
+isn't looking for this weird modifier.
 
-A fix for our issue is to simply remove the `ip_check_defrag` call
-from `macvlan_handle_frame`, but that regresses the other issue..
-I'm not sure what a proper fix would look like, but it feels a bit
-unexpected that macvtaps would perform IP defragmentation.
+When it was used before we added a channel for MOD_X_OR_Y so events
+were enabled on that. It's horrible though so don't do that.
 
-Thanks,
-Henrik
+> +						  IIO_EV_TYPE_MAG,
+> +						  IIO_EV_DIR_NONE),
+> +			       timestamp);
+> +
+> +	/* Sine/cosine inputs below LOS threshold */
+> +	if (FAULT_ONESHOT(AD2S1210_FAULT_LOS, flags, st->prev_fault_flags))
+> +		iio_push_event(indio_dev,
+> +			       IIO_UNMOD_EVENT_CODE(IIO_ALTVOLTAGE, 0,
+> +						    IIO_EV_TYPE_THRESH,
+> +						    IIO_EV_DIR_FALLING),
+> +			       timestamp);
+> +
+> +	/* Sine/cosine inputs exceed DOS overrange threshold */
+> +	if (FAULT_ONESHOT(AD2S1210_FAULT_DOS_OVR, flags, st->prev_fault_flags))
+> +		iio_push_event(indio_dev,
+> +			       IIO_UNMOD_EVENT_CODE(IIO_ALTVOLTAGE, 0,
+> +						    IIO_EV_TYPE_THRESH,
+> +						    IIO_EV_DIR_RISING),
+> +			       timestamp);
+> +
+> +	/* Sine/cosine inputs exceed DOS mismatch threshold */
+> +	if (FAULT_ONESHOT(AD2S1210_FAULT_DOS_MIS, flags, st->prev_fault_flags))
+> +		iio_push_event(indio_dev,
+> +			       IIO_UNMOD_EVENT_CODE(IIO_ALTVOLTAGE, 0,
+> +						    IIO_EV_TYPE_MAG,
+> +						    IIO_EV_DIR_NONE),
+> +			       timestamp);
+> +
+> +	/* Tracking error exceeds LOT threshold */
+> +	if (FAULT_ONESHOT(AD2S1210_FAULT_LOT, flags, st->prev_fault_flags))
+> +		iio_push_event(indio_dev,
+> +			       IIO_UNMOD_EVENT_CODE(IIO_ANGL, 1,
+> +						    IIO_EV_TYPE_THRESH,
+> +						    IIO_EV_DIR_RISING),
+> +			       timestamp);
+> +
+> +	/* Velocity exceeds maximum tracking rate */
+> +	if (FAULT_ONESHOT(AD2S1210_FAULT_VELOCITY, flags, st->prev_fault_flags))
+> +		iio_push_event(indio_dev,
+> +			       IIO_UNMOD_EVENT_CODE(IIO_ANGL_VEL, 0,
+> +						    IIO_EV_TYPE_THRESH,
+> +						    IIO_EV_DIR_RISING),
+> +			       timestamp);
+> +
+> +	/* Phase error exceeds phase lock range */
+> +	if (FAULT_ONESHOT(AD2S1210_FAULT_PHASE, flags, st->prev_fault_flags))
+> +		iio_push_event(indio_dev,
+> +			       IIO_UNMOD_EVENT_CODE(IIO_PHASE, 0,
+> +						    IIO_EV_TYPE_MAG,
+> +						    IIO_EV_DIR_NONE),
+> +			       timestamp);
+> +
+> +	/* Configuration parity error */
+> +	if (FAULT_ONESHOT(AD2S1210_FAULT_CONFIG_PARITY, flags,
+> +			  st->prev_fault_flags))
+> +		/*
+> +		 * Userspace should also get notified of this via error return
+> +		 * when trying to write to any attribute that writes a register.
+> +		 */
+> +		dev_err_ratelimited(&indio_dev->dev,
+> +				    "Configuration parity error\n");
+> +
+> +	st->prev_fault_flags = flags;
+> +}
+> +
+> +static int ad2s1210_single_conversion(struct iio_dev *indio_dev,
+>  				      struct iio_chan_spec const *chan,
+>  				      int *val)
+>  {
+> +	struct ad2s1210_state *st = iio_priv(indio_dev);
+> +	s64 timestamp;
+>  	int ret;
+>  
+>  	mutex_lock(&st->lock);
+>  	gpiod_set_value(st->sample_gpio, 1);
+> +	timestamp = iio_get_time_ns(indio_dev);
+>  	/* delay (6 * tck + 20) nano seconds */
+>  	udelay(1);
+>  
+> @@ -307,17 +415,17 @@ static int ad2s1210_single_conversion(struct ad2s1210_state *st,
+>  	}
+>  	if (ret < 0)
+>  		goto error_ret;
+> -	ret = spi_read(st->sdev, &st->sample, 2);
+> +	ret = spi_read(st->sdev, &st->sample, 3);
+>  	if (ret < 0)
+>  		goto error_ret;
+>  
+>  	switch (chan->type) {
+>  	case IIO_ANGL:
+> -		*val = be16_to_cpu(st->sample);
+> +		*val = be16_to_cpu(st->sample.raw);
+>  		ret = IIO_VAL_INT;
+>  		break;
+>  	case IIO_ANGL_VEL:
+> -		*val = (s16)be16_to_cpu(st->sample);
+> +		*val = (s16)be16_to_cpu(st->sample.raw);
+>  		ret = IIO_VAL_INT;
+>  		break;
+>  	default:
+> @@ -325,6 +433,8 @@ static int ad2s1210_single_conversion(struct ad2s1210_state *st,
+>  		break;
+>  	}
+>  
+> +	ad2s1210_push_events(indio_dev, st->rx[2], timestamp);
+> +
+>  error_ret:
+>  	gpiod_set_value(st->sample_gpio, 0);
+>  	/* delay (2 * tck + 20) nano seconds */
+> @@ -608,7 +718,7 @@ static int ad2s1210_read_raw(struct iio_dev *indio_dev,
+>  
+>  	switch (mask) {
+>  	case IIO_CHAN_INFO_RAW:
+> -		return ad2s1210_single_conversion(st, chan, val);
+> +		return ad2s1210_single_conversion(indio_dev, chan, val);
+>  	case IIO_CHAN_INFO_SCALE:
+>  		switch (chan->type) {
+>  		case IIO_ANGL:
+> @@ -721,6 +831,14 @@ static const struct iio_event_spec ad2s1210_position_event_spec[] = {
+>  	},
+>  };
+>  
+> +static const struct iio_event_spec ad2s1210_velocity_event_spec[] = {
+> +	{
+> +		/* Velocity exceeds maximum tracking rate fault. */
+> +		.type = IIO_EV_TYPE_THRESH,
+> +		.dir = IIO_EV_DIR_RISING,
+> +	},
+> +};
+> +
+>  static const struct iio_event_spec ad2s1210_phase_event_spec[] = {
+>  	{
+>  		/* Phase error fault. */
+> @@ -754,6 +872,14 @@ static const struct iio_event_spec ad2s1210_monitor_signal_event_spec[] = {
+>  	},
+>  };
+>  
+> +static const struct iio_event_spec ad2s1210_sin_cos_event_spec[] = {
+> +	{
+> +		/* Sine/cosine clipping fault. */
+> +		.type = IIO_EV_TYPE_MAG,
+> +		.dir = IIO_EV_DIR_NONE,
+> +	},
+> +};
+> +
+>  static const struct iio_chan_spec ad2s1210_channels[] = {
+>  	{
+>  		.type = IIO_ANGL,
+> @@ -784,6 +910,8 @@ static const struct iio_chan_spec ad2s1210_channels[] = {
+>  		},
+>  		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+>  				      BIT(IIO_CHAN_INFO_SCALE),
+> +		.event_spec = ad2s1210_velocity_event_spec,
+> +		.num_event_specs = ARRAY_SIZE(ad2s1210_velocity_event_spec),
+>  	},
+>  	IIO_CHAN_SOFT_TIMESTAMP(2),
+>  	{
+> @@ -820,6 +948,26 @@ static const struct iio_chan_spec ad2s1210_channels[] = {
+>  		.scan_index = -1,
+>  		.event_spec = ad2s1210_monitor_signal_event_spec,
+>  		.num_event_specs = ARRAY_SIZE(ad2s1210_monitor_signal_event_spec),
+> +	}, {
+> +		/* sine input */
+> +		.type = IIO_ALTVOLTAGE,
+> +		.indexed = 1,
+> +		.channel = 1,
+> +		.modified = 1,
+> +		.channel2 = IIO_MOD_Y,
+A bit odd and I'm not sure it's beneficial over just using an index
+and a label for the channel. 
+
+If a modifier is necessary then we could add a new one for this.
+Another option might be to provide in_altvoltage0_phase 
+
+or... can we map this to i (inphase) and q (quadrature) phases?
+Sort of feels like we can, and those modifiers already exist.
+
+Note though that if we do that, we'll need to modify the various
+ABI docs etc to include the modifiers whenever it's about the sine
+and cosine channels.
+
+> +		.scan_index = -1,
+> +		.event_spec = ad2s1210_sin_cos_event_spec,
+> +		.num_event_specs = ARRAY_SIZE(ad2s1210_sin_cos_event_spec),
+> +	}, {
+> +		/* cosine input */
+> +		.type = IIO_ALTVOLTAGE,
+> +		.indexed = 1,
+> +		.channel = 1,
+> +		.modified = 1,
+> +		.channel2 = IIO_MOD_X,
+> +		.scan_index = -1,
+> +		.event_spec = ad2s1210_sin_cos_event_spec,
+> +		.num_event_specs = ARRAY_SIZE(ad2s1210_sin_cos_event_spec),
+>  	},
+>  };
+>  
+> @@ -936,7 +1084,7 @@ static const struct attribute_group ad2s1210_event_attribute_group = {
+>  
+>  static int ad2s1210_initial(struct ad2s1210_state *st)
+>  {
+> -	unsigned char data;
+> +	unsigned int data;
+>  	int ret;
+>  
+>  	mutex_lock(&st->lock);
+> @@ -1073,12 +1221,11 @@ static irqreturn_t ad2s1210_trigger_handler(int irq, void *p)
+>  		if (ret < 0)
+>  			goto error_ret;
+>  
+> -		/* REVIST: we can read 3 bytes here and also get fault flags */
+> -		ret = spi_read(st->sdev, st->rx, 2);
+> +		ret = spi_read(st->sdev, &st->sample, 3);
+>  		if (ret < 0)
+>  			goto error_ret;
+>  
+> -		memcpy(&st->scan.chan[chan++], st->rx, 2);
+> +		memcpy(&st->scan.chan[chan++], &st->sample.raw, 2);
+>  	}
+>  
+>  	if (test_bit(1, indio_dev->active_scan_mask)) {
+> @@ -1086,14 +1233,14 @@ static irqreturn_t ad2s1210_trigger_handler(int irq, void *p)
+>  		if (ret < 0)
+>  			goto error_ret;
+>  
+> -		/* REVIST: we can read 3 bytes here and also get fault flags */
+> -		ret = spi_read(st->sdev, st->rx, 2);
+> +		ret = spi_read(st->sdev, &st->sample, 3);
+>  		if (ret < 0)
+>  			goto error_ret;
+>  
+> -		memcpy(&st->scan.chan[chan++], st->rx, 2);
+> +		memcpy(&st->scan.chan[chan++], &st->sample.raw, 2);
+>  	}
+>  
+> +	ad2s1210_push_events(indio_dev, st->sample.fault, pf->timestamp);
+>  	iio_push_to_buffers_with_timestamp(indio_dev, &st->scan, pf->timestamp);
+>  
+>  error_ret:
+> 
+
