@@ -2,63 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E377B44B1
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 01:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AB57B44B3
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 01:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbjI3Xqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 19:46:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
+        id S234154AbjI3XrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 19:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234071AbjI3Xqt (ORCPT
+        with ESMTP id S233997AbjI3XrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 19:46:49 -0400
+        Sat, 30 Sep 2023 19:47:14 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5C9BC
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 16:46:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A23AC433C7;
-        Sat, 30 Sep 2023 23:46:43 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2D30AC
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 16:47:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11405C433C7;
+        Sat, 30 Sep 2023 23:47:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696117606;
-        bh=naZ2q9TcpVDyU3g9xJ/aULduq+CmltpgmFKv1yCFGIA=;
-        h=From:Date:Subject:To:Cc:From;
-        b=M9nY6SJPod7ayz+ilGfFa9BB19YMuXkkWULGO+TciDGh+GWDjJ6we+IUEm5lgC04g
-         3R07vQOUlU/eJJg+1r99b2+EgVTg2C37ogmYC0HG7xPyFv1hJKJNTlAwcWEJSKuY88
-         D1cMN6BMDg2f3Irm+IWZwMy3gOJ/ZkkhnB9z3DTmyUAIA6mlzfoDADFazU7v0UcST8
-         AzLnyyhzgD43trSztxB6mXYtUrADyYakEQs1o8wGrVNK0D/73aiu66pF9+qrYW2pK9
-         s3EljUvpXkk4nWsWu8mjYCtid2HWgbJtQVagd2yX7DbDtPab+bwE+CXJMHMheZGI1R
-         Wbto1i/G9uaQg==
+        s=k20201202; t=1696117632;
+        bh=5eppN813zFoKnPEbkiP4INNThJVSpE2PJsdODGQrVjQ=;
+        h=From:Subject:Date:To:Cc:From;
+        b=ZWlo+8ja/3Rmd40toQ8rz8Xk7MXvzU3YYPDyV7zfLyEGDIsiJWwOiYIyTIIwJN5nZ
+         95fGHhtM8Y6tBc7Pxmgwcm27xUpBbbg4PLf+ut4sPjIv1WxZIJpXACa1oBpZ1wJt23
+         6C48nS59BA0xUuvCibreXT/EjxqAh7dXiEkipxwIyVAd6DEiFCY0wVHYNX8urbaT/3
+         QI4HZ5S9VlMH13JtOQ/J1jzJU0t3f5zA7+xB6N0QKmSPbvK62w+3nlr0vZ4q0+IyTo
+         HCnlE029cI0/OUeCUr+S09aTHOf+CIhzzipFSLl3TGHarQ5TChxU1aeB/Fdl2Z+vuu
+         e4GzbK9PiJrOQ==
 From:   Mark Brown <broonie@kernel.org>
-Date:   Sun, 01 Oct 2023 00:46:38 +0100
-Subject: [PATCH] drm/bridge: icn6211: Convert to use maple tree register
- cache
+Subject: [PATCH 0/3] mfd: maxim: Convert to use maple tree cache
+Date:   Sun, 01 Oct 2023 00:47:04 +0100
+Message-Id: <20231001-mfd-maxim-maple-v1-0-cdfeb48a4d15@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231001-drm-chipone-maple-v1-1-fb3ce5a53710@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAF2zGGUC/x3MQQqAIBBG4avErBswI8KuEi1C/2ogTRQiCO+et
- PwW772UkQSZpualhFuyXKGiaxuyxxp2sLhq0kr3ymjDLnm2h8QrgP0aT3DnBvSjxQCnqHYxYZP
- nf85LKR+itdMTYwAAAA==
-To:     Jagan Teki <jagan@amarulasolutions.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAHizGGUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDSyNL3dy0FN3cxIrMXCBZkJOqm5RkkmaabJpoZmGSqATUVVCUmpZZATY
+ xOra2FgAsyiFbYQAAAA==
+To:     Lee Jones <lee@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1085; i=broonie@kernel.org;
- h=from:subject:message-id; bh=naZ2q9TcpVDyU3g9xJ/aULduq+CmltpgmFKv1yCFGIA=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlGLNhPqwqkDtYR95iPk4vE1lkhB3buvF4hr3LL
- mykF+mqFWeJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRizYQAKCRAk1otyXVSH
- 0KXlB/4+LDDBxjl7siW2vK2X1yQROcJJNkgcMovVFapGMcBiPGM7NYlVIVvEbFo+DJbISxPtRuI
- D6AI2GFqdj3fKCsfPTbK0S14iwLaVmk7xDfyTUvv/7RNH7rVWtGPhQrOOozw+Jpd4VjqUnuO6dQ
- MFGn8Au72bFQKWGf/I3821GCxBvBJ+m/SK98sFsO3jhtQvNc8E1fsRBoUEFeWsOJzilf5t3Kjwg
- 9/iD+FjsrPfSYyBYQEzMQokKMuf7HmSF6eQw0Mvu0c3JaU9J2y/Vlujz7BrTWpgwoxWkACFu/An
- z+yjCGTtahfvwN5J1eWw6cLL9YJ4noCEAFnlfjp8IIUrS7JR
+X-Developer-Signature: v=1; a=openpgp-sha256; l=784; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=5eppN813zFoKnPEbkiP4INNThJVSpE2PJsdODGQrVjQ=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlGLN7FwSJokF9F/NES7So41edjjnqeFKfPB95k
+ BhZF9lACmWJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRizewAKCRAk1otyXVSH
+ 0LSZB/99A+wflX2lHIemgg2lzrcG1461IsJc/A/+QG9yNy3DlBAu+am7bcQtY/d6yFe7n4pvCpT
+ 4yszg5zT8jM5ZMUeAXJxO7f0XkqxeNbpyPB71hGfklzx3cO9cvO5dUpxt/FQRkpW7rkcbxvD8pb
+ j+R4C/DGQPhwQlZdtlhfJIAL2zFFn57OYr5XdN2TI9UWqoV3CFec4jv/hBajd+I2Xj5+IwnqoyY
+ zOIMSUre+6CbP0wYPIhpyZ8YsUtvV8iyOsVFgetx7TavVRKCFhPT+ZTUWgx/efrUN4DrueigVZf
+ bDZWVoDpG1SlubTozt5/7I11R/0H46OjSI2ctVweoNS4nt5J
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -71,32 +62,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The maple tree register cache is based on a much more modern data structure
-than the rbtree cache and makes optimisation choices which are probably
-more appropriate for modern systems than those made by the rbtree cache.
+The maple tree register cache is a more modern replacement for the
+rbtree cache, the data structure and surrounding implementation
+decisions are more modern.  Convert the Maxim MFDs to use maple tree.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/gpu/drm/bridge/chipone-icn6211.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Mark Brown (3):
+      mfd: max77620: Convert to use maple tree register cache
+      mfd: max77686: Convert to use maple tree register cache
+      mfd: max8907: Convert to use maple tree register cache
 
-diff --git a/drivers/gpu/drm/bridge/chipone-icn6211.c b/drivers/gpu/drm/bridge/chipone-icn6211.c
-index d205e755e524..82d23e4df09e 100644
---- a/drivers/gpu/drm/bridge/chipone-icn6211.c
-+++ b/drivers/gpu/drm/bridge/chipone-icn6211.c
-@@ -197,7 +197,7 @@ static const struct regmap_config chipone_regmap_config = {
- 	.val_bits = 8,
- 	.rd_table = &chipone_dsi_readable_table,
- 	.wr_table = &chipone_dsi_writeable_table,
--	.cache_type = REGCACHE_RBTREE,
-+	.cache_type = REGCACHE_MAPLE,
- 	.max_register = MIPI_ATE_STATUS(1),
- };
- 
-
+ drivers/mfd/max77620.c | 6 +++---
+ drivers/mfd/max77686.c | 2 +-
+ drivers/mfd/max8907.c  | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 ---
 base-commit: 6465e260f48790807eef06b583b38ca9789b6072
-change-id: 20230929-drm-chipone-maple-1d5e37ce5ed0
+change-id: 20230929-mfd-maxim-maple-bb4f5c5a684a
 
 Best regards,
 -- 
