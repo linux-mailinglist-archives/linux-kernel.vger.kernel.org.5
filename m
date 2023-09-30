@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D4527B3FEB
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 12:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A91367B3FEC
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 12:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234143AbjI3KWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 06:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
+        id S234098AbjI3KYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 06:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234112AbjI3KWa (ORCPT
+        with ESMTP id S233030AbjI3KYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 06:22:30 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D93F1AB;
-        Sat, 30 Sep 2023 03:22:27 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5335725cf84so18277736a12.2;
-        Sat, 30 Sep 2023 03:22:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696069345; x=1696674145; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=upvkOshm+Utk6b+l4TjTOIuE/7SOxFRjndlDlP7Geug=;
-        b=BteT6fkt8qOUyo3MKGDOkg3c1DJnlHouFWbZo2Gefy1lAn4M+HjOVGxMOnyaS+CHaJ
-         eVf3bo+k6APFjoE01n3zfIDmA3C2eufCBHq0eXH83fxf5iPwp0U/lsE8NV6sI0OpRbNn
-         gksWQ16QAYKwtgsiSORC0JfpnJ2gI/22ax2FMJYN8pA5EkynaGpgBrreBJoxLGiK1W+3
-         YixP0iChf2jIKp9q6EEzdPC2YOENmPeV9RYvJCmJV1OYx/Lft1mFuO7SeiLiY6/qNWLF
-         2oNW//piN1W+vQLlP7o1MKk/73nhSyE97AntPTIgmbMpRU2RpdGJYSlPCMQV9gBwGIZt
-         /EgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696069345; x=1696674145;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=upvkOshm+Utk6b+l4TjTOIuE/7SOxFRjndlDlP7Geug=;
-        b=j9ULVqHQsoC/cyRI/1bcvN0tKfB5yEjsh2yi0micyjLBnUZhycNda6dhwtLPvXbBHH
-         tk/5wY/+wrmxtLfg3HpzbNn0yqsELHQ+WxN0kfmqbQHFdhpaqsLYrL/BMvlwubqgdeBg
-         UPDmHbtxM6/m0FrsLp7LKk7qgRwOfe1p2knURRRi7WfGHlO+J1ymdDb/BolNKWjpZgTX
-         eWDbiT6a2vhfdTV3KrC68sEZcEwL4tVBBkFp/brvrXvzwLubMTAzX6F/viFmBHi0r6dz
-         G5T/9pxXkzIyFkAkQYt/1D31TVMq3d6PhHyQaaKcZd2gXwGZqBEWpFzylzdFoFAwOwdz
-         K87A==
-X-Gm-Message-State: AOJu0YxRMimygFgMntGNIWBYLUs7//Q3UR35rGQOPxWB6LsWP0FoSA8I
-        a1nlzV3P8sZNmCAGukhgLNE=
-X-Google-Smtp-Source: AGHT+IGcDhCz//73gt6W6Dq+CQ+r80HKhSBIex7xtCKsHl3/kCHELm/j6qln6fyfhwhGnqQw8lC3aw==
-X-Received: by 2002:a17:907:77cf:b0:9b2:c2a9:356e with SMTP id kz15-20020a17090777cf00b009b2c2a9356emr6062679ejc.49.1696069345482;
-        Sat, 30 Sep 2023 03:22:25 -0700 (PDT)
-Received: from fedora.. (dh207-96-216.xnet.hr. [88.207.96.216])
-        by smtp.googlemail.com with ESMTPSA id j25-20020a170906255900b0099bcf1c07c6sm13716547ejb.138.2023.09.30.03.22.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 03:22:24 -0700 (PDT)
-From:   Robert Marko <robimarko@gmail.com>
-To:     ilia.lin@kernel.org, vireshk@kernel.org, nm@ti.com,
-        sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        rafael@kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Christian Marangi <ansuelsmth@gmail.com>,
-        Robert Marko <robimarko@gmail.com>
-Subject: [PATCH v5 4/4] ARM: dts: qcom: ipq8064: Add CPU OPP table
-Date:   Sat, 30 Sep 2023 12:21:19 +0200
-Message-ID: <20230930102218.229613-4-robimarko@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230930102218.229613-1-robimarko@gmail.com>
-References: <20230930102218.229613-1-robimarko@gmail.com>
+        Sat, 30 Sep 2023 06:24:50 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E20CDE5
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 03:24:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83A45C433C8
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 10:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696069488;
+        bh=ywUyJEuvnD0Kgh/Zdaq0tfehPoYx9KX55IzcG8hICEE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MxFwfYaOxaybirbDqia4s9Jeg1tkYSJOUnqURDXYpjT74rStmD3hwGIRwzZDzUYwq
+         WjBReF2NVj5yvBHquqzritT7CX/QYVE/0gMrnkFy+jvc8FYWTH/8nFkEvZc1jLpWYF
+         7d3yKt/4FpG8k2ceCgYnyDfx6z5uquwQcABLjNq3OqEu7gdavt3/zEqD3BVDlAnH4f
+         5YafvbpcNTY3DWmp7DtOQp4j9HprnZMPV4DbkUTKO79MfSz+WGmlNU7ucgl/87BmQr
+         I1Scgy1wCk9yXxia1B4dEp4/6TaucijUIeY1/cZC7ToUYpiaMWSD60THVjnnVceut+
+         S5iuyGbycaEDw==
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-1dc6195bf93so7993337fac.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 03:24:48 -0700 (PDT)
+X-Gm-Message-State: AOJu0YyktvmiILCrxNyYQabvdt8fzJ1CZIdD93lcyXN7uKKBZyA6BE7o
+        ikG7MOSnConUc3YA+8jfPNLGphwYbkswjEYKMGE=
+X-Google-Smtp-Source: AGHT+IFQY627N4XOGyg1zrHOyarFome//M5MMfUPvElHfYga63GM8cBT9gzNQaseQuRx+LxO0LDTMzT33lUgZv6xYM4=
+X-Received: by 2002:a05:6870:b4a1:b0:1d5:5660:3ae0 with SMTP id
+ y33-20020a056870b4a100b001d556603ae0mr7274199oap.20.1696069487933; Sat, 30
+ Sep 2023 03:24:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <CAKwvOd=4hBcU4fAkddU0b-GOZc9FzTZoj3PFW6ZZrX0jS8x+bg@mail.gmail.com>
+ <CAKwvOd=8LVU+iANkFx18Wm1jg7gYiAXovAmo9t5ZZaVdMULn-Q@mail.gmail.com>
+ <875y8ok9b5.fsf@rcn-XPS-13-9305.i-did-not-set--mail-host-address--so-tickle-me>
+ <CAKwvOdmJJibt6sHSp91v2s7BxUWBC6xG7F7+3C6gUxNMzZ2xRA@mail.gmail.com>
+ <87353ok78h.fsf@rcn-XPS-13-9305.i-did-not-set--mail-host-address--so-tickle-me>
+ <2023052247-bobtail-factsheet-d104@gregkh> <CAKwvOd=2zAV_mizvzLFdyHE_4OzBY5OVu6KLWuQPOMZK37vsmQ@mail.gmail.com>
+ <cff33e12-3d80-7e62-1993-55411ccabc01@collabora.com> <CAKwvOd=F29-UkNO7FtUWpVV=POOZLb6QgD=mhLMWtRfkRSSi2A@mail.gmail.com>
+ <a037a08c-44c4-24e8-1cba-7e4e8b21ffaa@collabora.com> <CAK7LNAS8Y9syCiHMO2r75D6hgCSsDDvJ_=VMKpYqjondnbSZjw@mail.gmail.com>
+ <267b73d6-8c4b-40d9-542d-1910dffc3238@leemhuis.info> <2833d0db-f122-eccd-7393-1f0169dc0741@collabora.com>
+ <26aa6f92-2376-51a4-bbdc-abbbd62c23d2@leemhuis.info> <859c6dde-37ad-492e-baa0-4ea100d8381f@leemhuis.info>
+ <b31cae57-89ab-eb8b-1085-1d7476735d58@collabora.com>
+In-Reply-To: <b31cae57-89ab-eb8b-1085-1d7476735d58@collabora.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 30 Sep 2023 19:24:11 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQCNVHg=brV-iPL__HAhoNtAKzCiiG2M3Q9jkMvTnrbog@mail.gmail.com>
+Message-ID: <CAK7LNAQCNVHg=brV-iPL__HAhoNtAKzCiiG2M3Q9jkMvTnrbog@mail.gmail.com>
+Subject: Re: [PATCH v4] Makefile.compiler: replace cc-ifversion with
+ compiler-specific macros
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Maksim Panchenko <maks@meta.com>,
+        =?UTF-8?Q?Ricardo_Ca=C3=B1uelo?= <ricardo.canuelo@collabora.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <llvm@lists.linux.dev>,
+        Bill Wendling <morbo@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "gustavo.padovan@collabora.com" <gustavo.padovan@collabora.com>,
+        Guillaume Charles Tucker <guillaume.tucker@collabora.com>,
+        denys.f@collabora.com, Nick Desaulniers <ndesaulniers@google.com>,
+        kernelci@lists.linux.dev,
+        Collabora Kernel ML <kernel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,228 +81,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christian Marangi <ansuelsmth@gmail.com>
+On Fri, Sep 15, 2023 at 6:33=E2=80=AFPM Shreeya Patel
+<shreeya.patel@collabora.com> wrote:
+>
+> On 11/09/23 15:35, Thorsten Leemhuis wrote:
+>
+> Hi Thorsten,
+>
+> > On 29.08.23 13:28, Linux regression tracking (Thorsten Leemhuis) wrote:
+> >> On 11.07.23 13:16, Shreeya Patel wrote:
+> >>> On 10/07/23 17:39, Linux regression tracking (Thorsten Leemhuis) wrot=
+e:
+> >>>> Hi, Thorsten here, the Linux kernel's regression tracker. Top-postin=
+g
+> >>>> for once, to make this easily accessible to everyone.
+> >>>>
+> >>>> Shreeya Patel, Masahiro Yamada: what's the status of this? Was any
+> >>>> progress made to address this? Or is this maybe (accidentally?) fixe=
+d
+> >>>> with 6.5-rc1?
+> >>> I still see the regression happening so it doesn't seem to be fixed.
+> >>> https://linux.kernelci.org/test/case/id/64ac675a8aebf63753bb2a8c/
+> >>>
+> >>> Masahiro had submitted a fix for this issue here.
+> >>>
+> >>> https://lore.kernel.org/lkml/ZJEni98knMMkU%2Fcl@buildd.core.avm.de/T/=
+#t
+> >>>
+> >>> But I don't see any movement there. Masahiro, are you planning to sen=
+d a
+> >>> v2 for it?
+> >> That was weeks ago and we didn't get a answer. :-/ Was this fixed in
+> >> between? Doesn't look like it from here, but I might be missing someth=
+ing.
+> > Still no reply. :-/
+> >
+> > Shreeya Patel, does the problem still happen with 6.6-rc1 and do you
+> > still want to see it fixed? In that case our only option to get things
+> > rolling again might be to involve Linus, unless someone in the CC list
+> > has a idea to resolve this. Might also be good to know if reverting the
+> > culprit fixes the problem.
+>
+>
+> I don't see this issue happening on 6.6-rc1 kernel and it was only last
+> seen in 6.5 kernel.
+> But there was no fix added to Kbuild in the meantime so not sure which
+> commit really fixed this issue.
+>
+> For now we can mark this as resolved and I'll keep an eye on the future
+> test results to see if this pops up again.
+>
+>
+> Thanks,
+> Shreeya Patel
+>
+> #regzbot resolve: Fixed in 6.6-rc1 kernel, fix commit is unknown.
 
-Add CPU OPP table for IPQ8062, IPQ8064 and IPQ8065 SoC.
-Use opp-supported-hw binding to correctly enable and disable the
-frequency as IPQ8062 supports up to 1.0Ghz, IPQ8064 supports up to
-1.4GHz with 1.2GHz as an additional frequency and IPQ8065 supports
-1.7GHZ but doesn't have 1.2GHZ frequency and has to be disabled.
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
-Changes v4:
-* Add OPP DTS patch for IPQ8064
 
- arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi | 30 +++++++++++
- arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi | 67 ++++++++++++++++++++++++
- arch/arm/boot/dts/qcom/qcom-ipq8065.dtsi | 65 +++++++++++++++++++++++
- 3 files changed, 162 insertions(+)
+Not fixed in 6.6-rc1.
 
-diff --git a/arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi b/arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi
-index 5d3ebd3e2e51..72d9782c3d6f 100644
---- a/arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi
-@@ -6,3 +6,33 @@ / {
- 	model = "Qualcomm Technologies, Inc. IPQ8062";
- 	compatible = "qcom,ipq8062", "qcom,ipq8064";
- };
-+
-+&opp_table_cpu {
-+	opp-384000000 {
-+		opp-microvolt-speed0-pvs0 = <1000000 950000 1050000>;
-+		opp-microvolt-speed0-pvs1 = <925000 878750 971250>;
-+		opp-microvolt-speed0-pvs2 = <875000 831250 918750>;
-+		opp-microvolt-speed0-pvs3 = <800000 760000 840000>;
-+	};
-+
-+	opp-600000000 {
-+		opp-microvolt-speed0-pvs0 = <1050000 997500 1102500>;
-+		opp-microvolt-speed0-pvs1 = <975000 926250 1023750>;
-+		opp-microvolt-speed0-pvs2 = <925000 878750 971250>;
-+		opp-microvolt-speed0-pvs3 = <850000 807500 892500>;
-+	};
-+
-+	opp-800000000 {
-+		opp-microvolt-speed0-pvs0 = <1100000 1045000 1155000>;
-+		opp-microvolt-speed0-pvs1 = <1025000 973750 1076250>;
-+		opp-microvolt-speed0-pvs2 = <995000 945250 1044750>;
-+		opp-microvolt-speed0-pvs3 = <900000 855000 945000>;
-+	};
-+
-+	opp-1000000000 {
-+		opp-microvolt-speed0-pvs0 = <1150000 1092500 1207500>;
-+		opp-microvolt-speed0-pvs1 = <1075000 1021250 1128750>;
-+		opp-microvolt-speed0-pvs2 = <1025000 973750 1076250>;
-+		opp-microvolt-speed0-pvs3 = <950000 902500 997500>;
-+	};
-+};
-diff --git a/arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi
-index 6198f42f6a9c..cbbd28b43dc4 100644
---- a/arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi
-@@ -30,6 +30,7 @@ cpu0: cpu@0 {
- 			next-level-cache = <&L2>;
- 			qcom,acc = <&acc0>;
- 			qcom,saw = <&saw0>;
-+			operating-points-v2 = <&opp_table_cpu>;
- 		};
- 
- 		cpu1: cpu@1 {
-@@ -40,6 +41,7 @@ cpu1: cpu@1 {
- 			next-level-cache = <&L2>;
- 			qcom,acc = <&acc1>;
- 			qcom,saw = <&saw1>;
-+			operating-points-v2 = <&opp_table_cpu>;
- 		};
- 
- 		L2: l2-cache {
-@@ -49,6 +51,71 @@ L2: l2-cache {
- 		};
- 	};
- 
-+	opp_table_cpu: opp-table-cpu {
-+		compatible = "operating-points-v2-kryo-cpu";
-+		nvmem-cells = <&speedbin_efuse>;
-+
-+		opp-384000000 {
-+			opp-hz = /bits/ 64 <384000000>;
-+			opp-microvolt-speed0-pvs0 = <1000000 950000 1050000>;
-+			opp-microvolt-speed0-pvs1 = <925000 878750 971250>;
-+			opp-microvolt-speed0-pvs2 = <875000 831250 918750>;
-+			opp-microvolt-speed0-pvs3 = <800000 760000 840000>;
-+			opp-supported-hw = <0x7>;
-+			clock-latency-ns = <100000>;
-+		};
-+
-+		opp-600000000 {
-+			opp-hz = /bits/ 64 <600000000>;
-+			opp-microvolt-speed0-pvs0 = <1050000 997500 1102500>;
-+			opp-microvolt-speed0-pvs1 = <975000 926250 1023750>;
-+			opp-microvolt-speed0-pvs2 = <925000 878750 971250>;
-+			opp-microvolt-speed0-pvs3 = <850000 807500 892500>;
-+			opp-supported-hw = <0x7>;
-+			clock-latency-ns = <100000>;
-+		};
-+
-+		opp-800000000 {
-+			opp-hz = /bits/ 64 <800000000>;
-+			opp-microvolt-speed0-pvs0 = <1100000 1045000 1155000>;
-+			opp-microvolt-speed0-pvs1 = <1025000 973750 1076250>;
-+			opp-microvolt-speed0-pvs2 = <995000 945250 1044750>;
-+			opp-microvolt-speed0-pvs3 = <900000 855000 945000>;
-+			opp-supported-hw = <0x7>;
-+			clock-latency-ns = <100000>;
-+		};
-+
-+		opp-1000000000 {
-+			opp-hz = /bits/ 64 <1000000000>;
-+			opp-microvolt-speed0-pvs0 = <1150000 1092500 1207500>;
-+			opp-microvolt-speed0-pvs1 = <1075000 1021250 1128750>;
-+			opp-microvolt-speed0-pvs2 = <1025000 973750 1076250>;
-+			opp-microvolt-speed0-pvs3 = <950000 902500 997500>;
-+			opp-supported-hw = <0x7>;
-+			clock-latency-ns = <100000>;
-+		};
-+
-+		opp-1200000000 {
-+			opp-hz = /bits/ 64 <1200000000>;
-+			opp-microvolt-speed0-pvs0 = <1200000 1140000 1260000>;
-+			opp-microvolt-speed0-pvs1 = <1125000 1068750 1181250>;
-+			opp-microvolt-speed0-pvs2 = <1075000 1021250 1128750>;
-+			opp-microvolt-speed0-pvs3 = <1000000 950000 1050000>;
-+			opp-supported-hw = <0x2>;
-+			clock-latency-ns = <100000>;
-+		};
-+
-+		opp-1400000000 {
-+			opp-hz = /bits/ 64 <1400000000>;
-+			opp-microvolt-speed0-pvs0 = <1250000 1187500 1312500>;
-+			opp-microvolt-speed0-pvs1 = <1175000 1116250 1233750>;
-+			opp-microvolt-speed0-pvs2 = <1125000 1068750 1181250>;
-+			opp-microvolt-speed0-pvs3 = <1050000 997500 1102500>;
-+			opp-supported-hw = <0x6>;
-+			clock-latency-ns = <100000>;
-+		};
-+	};
-+
- 	thermal-zones {
- 		sensor0-thermal {
- 			polling-delay-passive = <0>;
-diff --git a/arch/arm/boot/dts/qcom/qcom-ipq8065.dtsi b/arch/arm/boot/dts/qcom/qcom-ipq8065.dtsi
-index ea49f6cc416d..d9ead31b897b 100644
---- a/arch/arm/boot/dts/qcom/qcom-ipq8065.dtsi
-+++ b/arch/arm/boot/dts/qcom/qcom-ipq8065.dtsi
-@@ -6,3 +6,68 @@ / {
- 	model = "Qualcomm Technologies, Inc. IPQ8065";
- 	compatible = "qcom,ipq8065", "qcom,ipq8064";
- };
-+
-+&opp_table_cpu {
-+	opp-384000000 {
-+		opp-microvolt-speed0-pvs0 = <975000 926250 1023750>;
-+		opp-microvolt-speed0-pvs1 = <950000 902500 997500>;
-+		opp-microvolt-speed0-pvs2 = <925000 878750 971250>;
-+		opp-microvolt-speed0-pvs3 = <900000 855000 945000>;
-+		opp-microvolt-speed0-pvs4 = <875000 831250 918750>;
-+		opp-microvolt-speed0-pvs5 = <825000 783750 866250>;
-+		opp-microvolt-speed0-pvs6 = <775000 736250 813750>;
-+	};
-+
-+	opp-600000000 {
-+		opp-microvolt-speed0-pvs0 = <1000000 950000 1050000>;
-+		opp-microvolt-speed0-pvs1 = <975000 926250 1023750>;
-+		opp-microvolt-speed0-pvs2 = <950000 902500 997500>;
-+		opp-microvolt-speed0-pvs3 = <925000 878750 971250>;
-+		opp-microvolt-speed0-pvs4 = <900000 855000 945000>;
-+		opp-microvolt-speed0-pvs5 = <850000 807500 892500>;
-+		opp-microvolt-speed0-pvs6 = <800000 760000 840000>;
-+	};
-+
-+	opp-800000000 {
-+		opp-microvolt-speed0-pvs0 = <1050000 997500 1102500>;
-+		opp-microvolt-speed0-pvs1 = <1025000 973750 1076250>;
-+		opp-microvolt-speed0-pvs2 = <1000000 950000 1050000>;
-+		opp-microvolt-speed0-pvs3 = <975000 926250 1023750>;
-+		opp-microvolt-speed0-pvs4 = <950000 902500 997500>;
-+		opp-microvolt-speed0-pvs5 = <900000 855000 945000>;
-+		opp-microvolt-speed0-pvs6 = <850000 807500 892500>;
-+	};
-+
-+	opp-1000000000 {
-+		opp-microvolt-speed0-pvs0 = <1100000 1045000 1155000>;
-+		opp-microvolt-speed0-pvs1 = <1075000 1021250 1128750>;
-+		opp-microvolt-speed0-pvs2 = <1050000 997500 1102500>;
-+		opp-microvolt-speed0-pvs3 = <1025000 973750 1076250>;
-+		opp-microvolt-speed0-pvs4 = <1000000 950000 1050000>;
-+		opp-microvolt-speed0-pvs5 = <950000 902500 997500>;
-+		opp-microvolt-speed0-pvs6 = <900000 855000 945000>;
-+	};
-+
-+	opp-1400000000 {
-+		opp-microvolt-speed4-pvs0 = <1175000 1116250 1233750>;
-+		opp-microvolt-speed4-pvs1 = <1150000 1092500 1207500>;
-+		opp-microvolt-speed4-pvs2 = <1125000 1068750 1181250>;
-+		opp-microvolt-speed4-pvs3 = <1100000 1045000 1155000>;
-+		opp-microvolt-speed4-pvs4 = <1075000 1021250 1128750>;
-+		opp-microvolt-speed4-pvs5 = <1025000 973750 1076250>;
-+		opp-microvolt-speed4-pvs6 = <975000 926250 1023750>;
-+	};
-+
-+	opp-1725000000 {
-+		opp-hz = /bits/ 64 <1725000000>;
-+		opp-microvolt-speed0-pvs0 = <1262500 1199375 1325625>;
-+		opp-microvolt-speed0-pvs1 = <1225000 1163750 1286250>;
-+		opp-microvolt-speed0-pvs2 = <1200000 1140000 1260000>;
-+		opp-microvolt-speed0-pvs3 = <1175000 1116250 1233750>;
-+		opp-microvolt-speed0-pvs4 = <1150000 1092500 1207500>;
-+		opp-microvolt-speed0-pvs5 = <1100000 1045000 1155000>;
-+		opp-microvolt-speed0-pvs6 = <1050000 997500 1102500>;
-+		opp-supported-hw = <0x4>;
-+		clock-latency-ns = <100000>;
-+	};
-+};
--- 
-2.41.0
+I submitted a patch to shoot the root cause.
 
+https://lore.kernel.org/all/20230925110023.1796789-1-masahiroy@kernel.org/
+
+
+Now it is in Russell's patch tracker.
+
+
+
+
+--=20
+Best Regards
+Masahiro Yamada
