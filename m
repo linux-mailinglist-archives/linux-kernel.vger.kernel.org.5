@@ -2,54 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B58627B44AF
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 01:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2077B44B0
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 01:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234185AbjI3XoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 19:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60130 "EHLO
+        id S234096AbjI3Xoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 19:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234164AbjI3XoG (ORCPT
+        with ESMTP id S234101AbjI3Xoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 19:44:06 -0400
+        Sat, 30 Sep 2023 19:44:37 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64B1FAC;
-        Sat, 30 Sep 2023 16:44:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FBB5C433C8;
-        Sat, 30 Sep 2023 23:44:02 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF816FD
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 16:44:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABB7EC433C8;
+        Sat, 30 Sep 2023 23:44:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696117444;
-        bh=BEks8HaDvSubS8uxPTW2QSiBpwY7OijnnKFGqECTObg=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=KcDxKg5kNamfks/Id5aFchU30jWVqLW7FkC9wjYU5sZmr7XNqLQDSqgrOBxJwxVg+
-         9+HYvS4RoAZG4299WqKpp/NhNfbn42wxeM01bR+kaPKQvimovSV1qE1Huc4goTPo5f
-         uAAse1tZSUpDJrjeow1mnDqw36eoelabuZ0qXuZ/XjQhNjkGZ++EfLLA5oUhSEsVME
-         sepFI+VW0OCV/wk2luxOmuXxyhyp8xyfyFf2QNYBv+c4hF11kCkxhIye/MA731H2my
-         cHHQQnn8/Rw6ao5YrYjghk9m37ZRHuL4fMA3HI5wh/rejJHrJlDWDJlgwBbaSgx74Q
-         A79EuIzmRkIaQ==
+        s=k20201202; t=1696117469;
+        bh=WdTnvHIfE9Z+Cf7GFtMdGxS7MP/BA2t1PAoWsH1zAYg=;
+        h=From:Date:Subject:To:Cc:From;
+        b=MlCxd+y7kh2Bn2VFvMQ1aF/BrB3BLwISITRpYnAZpOiEbJh/1zU0EP+cnlbMbpP/o
+         t2cmyDOT/90RWBBTNOl6AbwhiZWUztf5Llj/B63X/SKU6abyssNr5nWzyLrIavmZSi
+         0QU2f25FgzM+GeFVQhZjbv3vEzjZF81WsYdkR5wY8iypZ+HqT7O44A3fof05tjW4BN
+         zlIDp9oyI8yWgiRVgkkmdtBdFOBgThGFfu5U+WE4jgxvVCWITKx5FQsy4v55tWy2Rp
+         Xw7FOa3KNPYOlIp1PN0cIdhTk8DUCfziOPh49PzfBzWEJQwk8YXG8jTYVbHJYo5kxC
+         jEpLgt9uZSIAg==
 From:   Mark Brown <broonie@kernel.org>
-Date:   Sun, 01 Oct 2023 01:43:40 +0200
-Subject: [PATCH 3/3] Input: qt1050 - Convert to use maple tree register
- cache
+Date:   Sun, 01 Oct 2023 00:44:22 +0100
+Subject: [PATCH] mfd: rk8xx: Convert to use maple tree register cache
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231001-input-maple-v1-3-ed3716051431@kernel.org>
-References: <20231001-input-maple-v1-0-ed3716051431@kernel.org>
-In-Reply-To: <20231001-input-maple-v1-0-ed3716051431@kernel.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
+Message-Id: <20231001-mfd-rk88x-maple-v1-1-90434cfb2f90@kernel.org>
+X-B4-Tracking: v=1; b=H4sIANWyGGUC/x3MSwqAMAwA0auUrA1oitp4FXEhGjX4Ky2IIN7d4
+ vItZh6IElQiNOaBIJdGPY+EIjMwLP0xC+qYDJSTzZkY92nEsDp34977TbCyNHDJtZBjSJUPMun
+ 9H9vufT8qJRtmYQAAAA==
+To:     Lee Jones <lee@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=863; i=broonie@kernel.org;
- h=from:subject:message-id; bh=BEks8HaDvSubS8uxPTW2QSiBpwY7OijnnKFGqECTObg=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlGLK9iJCL4tJTga+xDHMZqbKIe1TesSPnVwMtX
- ptSnTMjBc+JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRiyvQAKCRAk1otyXVSH
- 0LycB/9hXFah9KqbRqYjjcBLcSuJ2H9YxGyTHq4/1MfbwNz4ffTCn7OpFXofQtFcl8WxzAnUZdl
- Qa2jVj1X9wC7lHQZoV0Pcl4S6NzwFulxef1ve4kC3pzD6psefwVY7qOXadL2/Qr7FObf0EgW0RU
- aGIkif5JQRGi8OnKiuZgfbIDsUJ+Fj2BaECXy1/rtMKUZyow+pzaK5w4smbE1/pt7a0Lzqc80t5
- GYKMu9njbrc+nDW0627itxBTK79CSxKBMLv80M9bBBD8caQJhYO7PkQYBzKeKUgME8VFqaqmAci
- IFJp2M2iY6ne6k6NFGzqv6VUhadbSMhhoZ/TXKxA2j53fFWL
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1509; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=WdTnvHIfE9Z+Cf7GFtMdGxS7MP/BA2t1PAoWsH1zAYg=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlGLLbvWdqGA3ROxRyd6mIFL3vECSnHvoc9rU+2
+ VqKsXi7j3yJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRiy2wAKCRAk1otyXVSH
+ 0BZRB/0Z3ddSRqV2F72nIRJwA+HAce3Ol1fpb2ryVwo+fYoVKaq8e9GqrhZy0rllcU71dKwRXvA
+ NcDIIRsW5dgRBAzkFt9GV1U0PMHZq7ql1bBPC33BCVgysnM91rK8e37TOJywfQUt9KMnF5fU+Q6
+ RFlIR4yc3jZY/IJy+GY5dondBS61Uq97LxBDnNvCN4GYdXiCENgDjh8Z991iZEMef2gXlIOVP5n
+ pYxGw6w+wg2eBW61x5v8Wi/UbArt8V2kJiw+xFtNqIWlg8iEzcUMNMxWFX/dsSxIEbQg91SwWWu
+ j4oH4o9XgC+NuKVxdVQMdljHqW/YqaBsymNiArxQMMyFI2p9
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -68,23 +67,46 @@ more appropriate for modern systems than those made by the rbtree cache.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/input/keyboard/qt1050.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mfd/rk8xx-i2c.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/input/keyboard/qt1050.c b/drivers/input/keyboard/qt1050.c
-index 6953097db445..b51dfcd76038 100644
---- a/drivers/input/keyboard/qt1050.c
-+++ b/drivers/input/keyboard/qt1050.c
-@@ -213,7 +213,7 @@ static struct regmap_config qt1050_regmap_config = {
+diff --git a/drivers/mfd/rk8xx-i2c.c b/drivers/mfd/rk8xx-i2c.c
+index 1a98feea97e2..75b5cf09d5a0 100644
+--- a/drivers/mfd/rk8xx-i2c.c
++++ b/drivers/mfd/rk8xx-i2c.c
+@@ -80,7 +80,7 @@ static const struct regmap_config rk818_regmap_config = {
+ 	.reg_bits = 8,
  	.val_bits = 8,
- 	.max_register = QT1050_RES_CAL,
- 
+ 	.max_register = RK818_USB_CTRL_REG,
 -	.cache_type = REGCACHE_RBTREE,
 +	.cache_type = REGCACHE_MAPLE,
+ 	.volatile_reg = rk808_is_volatile_reg,
+ };
  
- 	.wr_table = &qt1050_writeable_table,
- 	.rd_table = &qt1050_readable_table,
+@@ -88,7 +88,7 @@ static const struct regmap_config rk805_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+ 	.max_register = RK805_OFF_SOURCE_REG,
+-	.cache_type = REGCACHE_RBTREE,
++	.cache_type = REGCACHE_MAPLE,
+ 	.volatile_reg = rk808_is_volatile_reg,
+ };
+ 
+@@ -96,7 +96,7 @@ static const struct regmap_config rk808_regmap_config = {
+ 	.reg_bits = 8,
+ 	.val_bits = 8,
+ 	.max_register = RK808_IO_POL_REG,
+-	.cache_type = REGCACHE_RBTREE,
++	.cache_type = REGCACHE_MAPLE,
+ 	.volatile_reg = rk808_is_volatile_reg,
+ };
+ 
 
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20230929-mfd-rk88x-maple-632c9597e289
+
+Best regards,
 -- 
-2.39.2
+Mark Brown <broonie@kernel.org>
 
