@@ -2,260 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A22D7B3DE0
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 05:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65D0D7B3DE4
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 05:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233976AbjI3Dmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 23:42:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55572 "EHLO
+        id S233929AbjI3Dpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 23:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbjI3Dmv (ORCPT
+        with ESMTP id S229649AbjI3Dpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 23:42:51 -0400
-Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66DF7BA
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 20:42:49 -0700 (PDT)
-Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-59f1dff5298so170316357b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 20:42:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696045368; x=1696650168; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2x6fH+w1PdDZvpTev5khLvy5t3y2+BALqf/PDla7s+s=;
-        b=KDXuLjk9D3qhT2wExeqdG8th+lOtxMeAclFPpxw8Eplb+nuCJ1qj2C+wlM8Vnp4Q+s
-         5vh+3t3SxmP41GhssWSZpCjIG40O0JH2t0ACsKhF2hQtVNpf9OguwKMtxFLTPjtGtKg5
-         AzymlDy38Gz4I5ApfOtFiQ6H3YNVRJ5vTceGXaGciuWzPgPBSqpe6dsg2Z/dv+cGF46G
-         p1ElRPE1/+n0bb9P/Rs7Zkhw+34L6Vk2Bkr9iS7SaaosTcBNG6OJfpA0stcivAeo1PW1
-         hzA7calsNJNQeTy37dthP2VWY4Sbd/3s9FH/l/x6a+5gkb03En7M3eQV5KYcjduXk/5R
-         ackw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696045368; x=1696650168;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2x6fH+w1PdDZvpTev5khLvy5t3y2+BALqf/PDla7s+s=;
-        b=n1y6TcW+NmwIuJvVgug+bh/Jj5Jjx7pDt37OtMyCQjhFs+o41luys3BiBz0fxOverI
-         d1mmhiCEFhZ4tsrOqL0NMGF3j5HIi6GlbXTD3J2IvCY3S4b5uAlQhPYyJXGJntZqm0C5
-         +R8zYIFIrAE5mni6DbEiK/yqYIHFOBIYTmcjlL5o5dWAPs9rfHwHCM1HkrvMJHjk0PXz
-         AQiKwsrDesepshC9wnthQL1kp52zqDEIKCKZ24DuG6AoLw0SBfMTgLdG5E/SuOH8ivT0
-         LNss9dDatlH2WhfKOh596LgBdB1A1IfBGF03f3xvlIdnrVUwbn4k9wb5Nhj2n80Ux9sU
-         FATA==
-X-Gm-Message-State: AOJu0YwjFnnJlgiUbFuH8EeadMt/FnkjSZj8bfAwdsvgZcHZaVss+x8/
-        WhX0K+cNyPvLMEnU375Y0PbLKw==
-X-Google-Smtp-Source: AGHT+IHb14+lcWYvYpZ5abpN3vaue9DpNWsOHa4WiXVhBeSyALADDXCj4J3VWtqEBUCWVKYnyTLA1A==
-X-Received: by 2002:a81:a24e:0:b0:59b:5170:a0f3 with SMTP id z14-20020a81a24e000000b0059b5170a0f3mr5957990ywg.36.1696045368515;
-        Fri, 29 Sep 2023 20:42:48 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id f184-20020a0dc3c1000000b0059ae483b89dsm5983309ywd.50.2023.09.29.20.42.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Sep 2023 20:42:47 -0700 (PDT)
-Date:   Fri, 29 Sep 2023 20:42:45 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Tim Chen <tim.c.chen@intel.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Carlos Maiolino <cem@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
+        Fri, 29 Sep 2023 23:45:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D118F
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 20:44:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696045487;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=zn4xqFs4rGY0oTQr3T07H0KV6gmXQ+zDOaROsq+w2v4=;
+        b=Gvzil7DReYlUo8XtDnwar61BAkbmv2sp9OK07ioWVtummsXYv8Ip99AQuWiMXFf8Ivo9jO
+        H/W7/6Bhg5onSAlvp0Up9W24NhxFfmwFYvA//WALmmLAU7EF44cOaddNXtYcj36eWdtg/r
+        tL4MfUnuVn++xpnfMA5oSJBBjFqhdq4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-530-3LdkRfShNZ-VxcbofFnY7g-1; Fri, 29 Sep 2023 23:44:44 -0400
+X-MC-Unique: 3LdkRfShNZ-VxcbofFnY7g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 60B71101A529;
+        Sat, 30 Sep 2023 03:44:43 +0000 (UTC)
+Received: from llong.com (unknown [10.22.10.177])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 950AB10F1BE7;
+        Sat, 30 Sep 2023 03:44:42 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH 8/8] shmem,percpu_counter: add _limited_add(fbc, limit,
- amount)
-In-Reply-To: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com>
-Message-ID: <bb817848-2d19-bcc8-39ca-ea179af0f0b4@google.com>
-References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com>
+        Shuah Khan <shuah@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        Pierre Gondois <pierre.gondois@arm.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH-cgroup] cgroup/cpuset: Enable invalid to valid local partition transition
+Date:   Fri, 29 Sep 2023 23:44:02 -0400
+Message-Id: <20230930034402.2776278-1-longman@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Percpu counter's compare and add are separate functions: without locking
-around them (which would defeat their purpose), it has been possible to
-overflow the intended limit.  Imagine all the other CPUs fallocating
-tmpfs huge pages to the limit, in between this CPU's compare and its add.
+When a local partition becomes invalid, it won't transition back to
+valid partition automatically if a proper "cpuset.cpus.exclusive" or
+"cpuset.cpus" change is made. Instead, system administrators have to
+explicitly echo "root" or "isolated" into the "cpuset.cpus.partition"
+file at the partition root.
 
-I have not seen reports of that happening; but tmpfs's recent addition
-of dquot_alloc_block_nodirty() in between the compare and the add makes
-it even more likely, and I'd be uncomfortable to leave it unfixed.
+This patch now enables the automatic transition of an invalid local
+partition back to valid when there is a proper "cpuset.cpus.exclusive"
+or "cpuset.cpus" change.
 
-Introduce percpu_counter_limited_add(fbc, limit, amount) to prevent it.
+Automatic transition of an invalid remote partition to a valid one,
+however, is not covered by this patch. They still need an explicit
+write to "cpuset.cpus.partition" to become valid again.
 
-I believe this implementation is correct, and slightly more efficient
-than the combination of compare and add (taking the lock once rather
-than twice when nearing full - the last 128MiB of a tmpfs volume on a
-machine with 128 CPUs and 4KiB pages); but it does beg for a better
-design - when nearing full, there is no new batching, but the costly
-percpu counter sum across CPUs still has to be done, while locked.
+The test_cpuset_prs.sh test script is updated to add new test cases to
+test this automatic state transition.
 
-Follow __percpu_counter_sum()'s example, including cpu_dying_mask as
-well as cpu_online_mask: but shouldn't __percpu_counter_compare() and
-__percpu_counter_limited_add() then be adding a num_dying_cpus() to
-num_online_cpus(), when they calculate the maximum which could be held
-across CPUs?  But the times when it matters would be vanishingly rare.
-
-Signed-off-by: Hugh Dickins <hughd@google.com>
-Cc: Tim Chen <tim.c.chen@intel.com>
-Cc: Dave Chinner <dchinner@redhat.com>
-Cc: Darrick J. Wong <djwong@kernel.org>
+Reported-by: Pierre Gondois <pierre.gondois@arm.com>
+Link: https://lore.kernel.org/lkml/9777f0d2-2fdf-41cb-bd01-19c52939ef42@arm.com
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
-Tim, Dave, Darrick: I didn't want to waste your time on patches 1-7,
-which are just internal to shmem, and do not affect this patch (which
-applies to v6.6-rc and linux-next as is): but want to run this by you.
+ kernel/cgroup/cpuset.c                        | 79 +++++++++++--------
+ .../selftests/cgroup/test_cpuset_prs.sh       | 17 ++--
+ 2 files changed, 59 insertions(+), 37 deletions(-)
 
- include/linux/percpu_counter.h | 23 +++++++++++++++
- lib/percpu_counter.c           | 53 ++++++++++++++++++++++++++++++++++
- mm/shmem.c                     | 10 +++----
- 3 files changed, 81 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/percpu_counter.h b/include/linux/percpu_counter.h
-index d01351b1526f..8cb7c071bd5c 100644
---- a/include/linux/percpu_counter.h
-+++ b/include/linux/percpu_counter.h
-@@ -57,6 +57,8 @@ void percpu_counter_add_batch(struct percpu_counter *fbc, s64 amount,
- 			      s32 batch);
- s64 __percpu_counter_sum(struct percpu_counter *fbc);
- int __percpu_counter_compare(struct percpu_counter *fbc, s64 rhs, s32 batch);
-+bool __percpu_counter_limited_add(struct percpu_counter *fbc, s64 limit,
-+				  s64 amount, s32 batch);
- void percpu_counter_sync(struct percpu_counter *fbc);
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 15f399153a2e..93facdab513c 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1806,17 +1806,28 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
+ 		 *
+ 		 * Compute add/delete mask to/from effective_cpus
+ 		 *
+-		 * addmask = effective_xcpus & ~newmask & parent->effective_xcpus
+-		 * delmask = newmask & ~cs->effective_xcpus
+-		 *		     & parent->effective_xcpus
++		 * For valid partition:
++		 *   addmask = exclusive_cpus & ~newmask
++		 *			      & parent->effective_xcpus
++		 *   delmask = newmask & ~exclusive_cpus
++		 *		       & parent->effective_xcpus
++		 *
++		 * For invalid partition:
++		 *   delmask = newmask & parent->effective_xcpus
+ 		 */
+-		cpumask_andnot(tmp->addmask, xcpus, newmask);
+-		adding = cpumask_and(tmp->addmask, tmp->addmask,
+-				     parent->effective_xcpus);
++		if (is_prs_invalid(old_prs)) {
++			adding = false;
++			deleting = cpumask_and(tmp->delmask,
++					newmask, parent->effective_xcpus);
++		} else {
++			cpumask_andnot(tmp->addmask, xcpus, newmask);
++			adding = cpumask_and(tmp->addmask, tmp->addmask,
++					     parent->effective_xcpus);
  
- static inline int percpu_counter_compare(struct percpu_counter *fbc, s64 rhs)
-@@ -69,6 +71,13 @@ static inline void percpu_counter_add(struct percpu_counter *fbc, s64 amount)
- 	percpu_counter_add_batch(fbc, amount, percpu_counter_batch);
- }
- 
-+static inline bool
-+percpu_counter_limited_add(struct percpu_counter *fbc, s64 limit, s64 amount)
-+{
-+	return __percpu_counter_limited_add(fbc, limit, amount,
-+					    percpu_counter_batch);
-+}
-+
- /*
-  * With percpu_counter_add_local() and percpu_counter_sub_local(), counts
-  * are accumulated in local per cpu counter and not in fbc->count until
-@@ -185,6 +194,20 @@ percpu_counter_add(struct percpu_counter *fbc, s64 amount)
- 	local_irq_restore(flags);
- }
- 
-+static inline bool
-+percpu_counter_limited_add(struct percpu_counter *fbc, s64 limit, s64 amount)
-+{
-+	unsigned long flags;
-+	s64 count;
-+
-+	local_irq_save(flags);
-+	count = fbc->count + amount;
-+	if (count <= limit)
-+		fbc->count = count;
-+	local_irq_restore(flags);
-+	return count <= limit;
-+}
-+
- /* non-SMP percpu_counter_add_local is the same with percpu_counter_add */
- static inline void
- percpu_counter_add_local(struct percpu_counter *fbc, s64 amount)
-diff --git a/lib/percpu_counter.c b/lib/percpu_counter.c
-index 9073430dc865..58a3392f471b 100644
---- a/lib/percpu_counter.c
-+++ b/lib/percpu_counter.c
-@@ -278,6 +278,59 @@ int __percpu_counter_compare(struct percpu_counter *fbc, s64 rhs, s32 batch)
- }
- EXPORT_SYMBOL(__percpu_counter_compare);
- 
-+/*
-+ * Compare counter, and add amount if the total is within limit.
-+ * Return true if amount was added, false if it would exceed limit.
-+ */
-+bool __percpu_counter_limited_add(struct percpu_counter *fbc,
-+				  s64 limit, s64 amount, s32 batch)
-+{
-+	s64 count;
-+	s64 unknown;
-+	unsigned long flags;
-+	bool good;
-+
-+	if (amount > limit)
-+		return false;
-+
-+	local_irq_save(flags);
-+	unknown = batch * num_online_cpus();
-+	count = __this_cpu_read(*fbc->counters);
-+
-+	/* Skip taking the lock when safe */
-+	if (abs(count + amount) <= batch &&
-+	    fbc->count + unknown <= limit) {
-+		this_cpu_add(*fbc->counters, amount);
-+		local_irq_restore(flags);
-+		return true;
-+	}
-+
-+	raw_spin_lock(&fbc->lock);
-+	count = fbc->count + amount;
-+
-+	/* Skip percpu_counter_sum() when safe */
-+	if (count + unknown > limit) {
-+		s32 *pcount;
-+		int cpu;
-+
-+		for_each_cpu_or(cpu, cpu_online_mask, cpu_dying_mask) {
-+			pcount = per_cpu_ptr(fbc->counters, cpu);
-+			count += *pcount;
+-		cpumask_andnot(tmp->delmask, newmask, xcpus);
+-		deleting = cpumask_and(tmp->delmask, tmp->delmask,
+-				       parent->effective_xcpus);
++			cpumask_andnot(tmp->delmask, newmask, xcpus);
++			deleting = cpumask_and(tmp->delmask, tmp->delmask,
++					       parent->effective_xcpus);
 +		}
-+	}
-+
-+	good = count <= limit;
-+	if (good) {
-+		count = __this_cpu_read(*fbc->counters);
-+		fbc->count += count + amount;
-+		__this_cpu_sub(*fbc->counters, count);
-+	}
-+
-+	raw_spin_unlock(&fbc->lock);
-+	local_irq_restore(flags);
-+	return good;
-+}
-+
- static int __init percpu_counter_startup(void)
- {
- 	int ret;
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 4f4ab26bc58a..7cb72c747954 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -217,15 +217,15 @@ static int shmem_inode_acct_blocks(struct inode *inode, long pages)
+ 		/*
+ 		 * Make partition invalid if parent's effective_cpus could
+ 		 * become empty and there are tasks in the parent.
+@@ -1910,9 +1921,11 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
  
- 	might_sleep();	/* when quotas */
- 	if (sbinfo->max_blocks) {
--		if (percpu_counter_compare(&sbinfo->used_blocks,
--					   sbinfo->max_blocks - pages) > 0)
-+		if (!percpu_counter_limited_add(&sbinfo->used_blocks,
-+						sbinfo->max_blocks, pages))
- 			goto unacct;
+ 	/*
+ 	 * Transitioning between invalid to valid or vice versa may require
+-	 * changing CS_CPU_EXCLUSIVE.
++	 * changing CS_CPU_EXCLUSIVE. In the case of partcmd_update,
++	 * validate_change() has already been successfully called and
++	 * CPU lists in cs haven't been updated yet. So defer it to later.
+ 	 */
+-	if (old_prs != new_prs) {
++	if ((old_prs != new_prs) && (cmd != partcmd_update))  {
+ 		int err = update_partition_exclusive(cs, new_prs);
  
- 		err = dquot_alloc_block_nodirty(inode, pages);
--		if (err)
-+		if (err) {
-+			percpu_counter_sub(&sbinfo->used_blocks, pages);
- 			goto unacct;
--
--		percpu_counter_add(&sbinfo->used_blocks, pages);
-+		}
- 	} else {
- 		err = dquot_alloc_block_nodirty(inode, pages);
  		if (err)
+@@ -1960,6 +1973,9 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
+ 
+ 	spin_unlock_irq(&callback_lock);
+ 
++	if ((old_prs != new_prs) && (cmd == partcmd_update))
++		update_partition_exclusive(cs, new_prs);
++
+ 	if (adding || deleting) {
+ 		update_tasks_cpumask(parent, tmp->addmask);
+ 		update_sibling_cpumasks(parent, cs, tmp);
+@@ -2356,8 +2372,9 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 	if (alloc_cpumasks(NULL, &tmp))
+ 		return -ENOMEM;
+ 
+-	if (is_partition_valid(cs)) {
+-		if (cpumask_empty(trialcs->effective_xcpus)) {
++	if (old_prs) {
++		if (is_partition_valid(cs) &&
++		    cpumask_empty(trialcs->effective_xcpus)) {
+ 			invalidate = true;
+ 			cs->prs_err = PERR_INVCPUS;
+ 		} else if (prstate_housekeeping_conflict(old_prs, trialcs->effective_xcpus)) {
+@@ -2391,13 +2408,16 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 		 */
+ 		invalidate = true;
+ 		rcu_read_lock();
+-		cpuset_for_each_child(cp, css, parent)
++		cpuset_for_each_child(cp, css, parent) {
++			struct cpumask *xcpus = fetch_xcpus(trialcs);
++
+ 			if (is_partition_valid(cp) &&
+-			    cpumask_intersects(trialcs->effective_xcpus, cp->effective_xcpus)) {
++			    cpumask_intersects(xcpus, cp->effective_xcpus)) {
+ 				rcu_read_unlock();
+ 				update_parent_effective_cpumask(cp, partcmd_invalidate, NULL, &tmp);
+ 				rcu_read_lock();
+ 			}
++		}
+ 		rcu_read_unlock();
+ 		retval = 0;
+ 	}
+@@ -2405,18 +2425,24 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 	if (retval < 0)
+ 		goto out_free;
+ 
+-	if (is_partition_valid(cs)) {
++	if (is_partition_valid(cs) ||
++	   (is_partition_invalid(cs) && !invalidate)) {
++		struct cpumask *xcpus = trialcs->effective_xcpus;
++
++		if (cpumask_empty(xcpus) && is_partition_invalid(cs))
++			xcpus = trialcs->cpus_allowed;
++
+ 		/*
+ 		 * Call remote_cpus_update() to handle valid remote partition
+ 		 */
+ 		if (is_remote_partition(cs))
+-			remote_cpus_update(cs, trialcs->effective_xcpus, &tmp);
++			remote_cpus_update(cs, xcpus, &tmp);
+ 		else if (invalidate)
+ 			update_parent_effective_cpumask(cs, partcmd_invalidate,
+ 							NULL, &tmp);
+ 		else
+ 			update_parent_effective_cpumask(cs, partcmd_update,
+-						trialcs->effective_xcpus, &tmp);
++							xcpus, &tmp);
+ 	} else if (!cpumask_empty(cs->exclusive_cpus)) {
+ 		/*
+ 		 * Use trialcs->effective_cpus as a temp cpumask
+@@ -2493,7 +2519,7 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 	if (retval)
+ 		return retval;
+ 
+-	if (is_partition_valid(cs)) {
++	if (old_prs) {
+ 		if (cpumask_empty(trialcs->effective_xcpus)) {
+ 			invalidate = true;
+ 			cs->prs_err = PERR_INVCPUS;
+@@ -2927,19 +2953,10 @@ static int update_prstate(struct cpuset *cs, int new_prs)
+ 		return 0;
+ 
+ 	/*
+-	 * For a previously invalid partition root with valid partition root
+-	 * parent, treat it as if it is a "member". Otherwise, reject it as
+-	 * remote partition cannot currently self-recover from an invalid
+-	 * state.
++	 * Treat a previously invalid partition root as if it is a "member".
+ 	 */
+-	if (new_prs && is_prs_invalid(old_prs)) {
+-		if (is_partition_valid(parent)) {
+-			old_prs = PRS_MEMBER;
+-		} else {
+-			cs->partition_root_state = -new_prs;
+-			return 0;
+-		}
+-	}
++	if (new_prs && is_prs_invalid(old_prs))
++		old_prs = PRS_MEMBER;
+ 
+ 	if (alloc_cpumasks(NULL, &tmpmask))
+ 		return -ENOMEM;
+diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+index 0f4f4a57ae12..243c4c926964 100755
+--- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
++++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+@@ -318,16 +318,18 @@ TEST_MATRIX=(
+ 	" C0-3:S+ C1-3:S+  C2      .    X2-3   X2-3   T:P2:O2=0 O2=1 0 A1:0-3,A2:1-3,A3:2 A1:P0,A3:P-2"
+ 
+ 	# cpus.exclusive.effective clearing test
+-	" C0-3:S+ C1-3:S+  C2      .   X2-3:X    .      .      .      0 A1:0-3,A2:1-3,A3:2,XA1:"
++	" C0-3:S+ C1-3:S+  C2      .   X2-3:X    .      .      .     0 A1:0-3,A2:1-3,A3:2,XA1:"
+ 
+-	# Invalid to valid remote partition indirect transition test via member
+-	" C0-3:S+   C1-3    .      .      .    X3:P2    .      .      0 A1:0-3,A2:1-3,XA2: A2:P-2"
++	# Invalid to valid remote partition transition test
++	" C0-3:S+   C1-3    .      .      .    X3:P2    .      .     0 A1:0-3,A2:1-3,XA2: A2:P-2"
+ 	" C0-3:S+ C1-3:X3:P2
+-			    .      .    X2-3   P0:P2    .      .      0 A1:0-2,A2:3,XA2:3 A2:P2 3"
++			    .      .    X2-3    P2      .      .     0 A1:0-2,A2:3,XA2:3 A2:P2 3"
+ 
+ 	# Invalid to valid local partition direct transition tests
+-	" C1-3:S+:P2 C2-3:X1:P2 .  .      .      .      .      .      0 A1:1-3,XA1:1-3,A2:2-3:XA2: A1:P2,A2:P-2 1-3"
+-	" C1-3:S+:P2 C2-3:X1:P2 .  .      .    X3:P2    .      .      0 A1:1-2,XA1:1-3,A2:3:XA2:3 A1:P2,A2:P2 1-3"
++	" C1-3:S+:P2 C2-3:X1:P2 .  .      .      .      .      .     0 A1:1-3,XA1:1-3,A2:2-3:XA2: A1:P2,A2:P-2 1-3"
++	" C1-3:S+:P2 C2-3:X1:P2 .  .      .    X3:P2    .      .     0 A1:1-2,XA1:1-3,A2:3:XA2:3 A1:P2,A2:P2 1-3"
++	"  C0-3:P2   .      .    C4-6   C0-4     .      .      .     0 A1:0-4,B1:4-6 A1:P-2,B1:P0"
++	"  C0-3:P2   .      .    C4-6 C0-4:C0-3  .      .      .     0 A1:0-3,B1:4-6 A1:P2,B1:P0 0-3"
+ 
+ 	# Local partition invalidation tests
+ 	" C0-3:X1-3:S+:P2 C1-3:X2-3:S+:P2 C2-3:X3:P2 \
+@@ -336,6 +338,9 @@ TEST_MATRIX=(
+ 				   .      .     X4      .      .     0 A1:1-3,A2:1-3,A3:2-3,XA2:,XA3: A1:P2,A2:P-2,A3:P-2 1-3"
+ 	" C0-3:X1-3:S+:P2 C1-3:X2-3:S+:P2 C2-3:X3:P2 \
+ 				   .      .     C4      .      .     0 A1:1-3,A2:1-3,A3:2-3,XA2:,XA3: A1:P2,A2:P-2,A3:P-2 1-3"
++	# Local partition CPU change tests
++	" C0-5:S+:P2 C4-5:S+:P1 .  .      .    C3-5     .      .     0 A1:0-2,A2:3-5 A1:P2,A2:P1 0-2"
++	" C0-5:S+:P2 C4-5:S+:P1 .  .    C1-5     .      .      .     0 A1:1-3,A2:4-5 A1:P2,A2:P1 1-3"
+ 
+ 	# cpus_allowed/exclusive_cpus update tests
+ 	" C0-3:X2-3:S+ C1-3:X2-3:S+ C2-3:X2-3 \
 -- 
-2.35.3
+2.39.3
 
