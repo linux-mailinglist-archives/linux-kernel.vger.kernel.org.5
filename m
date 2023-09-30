@@ -2,51 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 822F17B4206
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03927B4208
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:16:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234493AbjI3QQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 12:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
+        id S231580AbjI3QQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 12:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231580AbjI3QQY (ORCPT
+        with ESMTP id S234485AbjI3QQn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 12:16:24 -0400
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E2D0FBA;
-        Sat, 30 Sep 2023 09:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=hOXob
-        ZwzCwV2q4+KSYLgaCkiH/4ph/cOP7eBbXprNpI=; b=TqWuiTFpW32p10/UQTlwr
-        oZF5xAf6r7iGuKcky299HBI1GNJvssXON+UFFpuALo0tItLK6VyFWpleqiXjF5OZ
-        GRmKpE+xP9GJIpZsIIYG5meD4Eh4oFpbTgNpBbiohKJUUoOucxPZoxMFAn4tk7Ru
-        Ua7FsRALdiDzTf9x/cVEy0=
-Received: from localhost.localdomain (unknown [221.12.59.213])
-        by zwqz-smtp-mta-g2-1 (Coremail) with SMTP id _____wAXTT+rSRhlQrg8Dg--.48618S3;
-        Sun, 01 Oct 2023 00:15:45 +0800 (CST)
-From:   AllenX <xubo3006@163.com>
-To:     rust-for-linux@vger.kernel.org, ojeda@kernel.org
-Cc:     alex.gaynor@gmail.com, wedsonaf@gmail.com, boqun.feng@gmail.com,
-        gary@garyguo.net, bjorn3_gh@protonmail.com,
-        linux-kernel@vger.kernel.org, AllenX <xubo3006@163.com>
-Subject: [PATCH 2/2] rust: add infiniband mlx4 driver basic structure
-Date:   Sun,  1 Oct 2023 00:14:43 +0800
-Message-Id: <20230930161443.58812-2-xubo3006@163.com>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20230930161443.58812-1-xubo3006@163.com>
-References: <20230930161443.58812-1-xubo3006@163.com>
+        Sat, 30 Sep 2023 12:16:43 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5141AE;
+        Sat, 30 Sep 2023 09:16:40 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38U9gNA2022987;
+        Sat, 30 Sep 2023 16:16:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-03-30;
+ bh=0TQER8WE8CYx0fZeAOi6s55jPkqcvDEsZeNwPRiM0cE=;
+ b=g8RhEZoD3QbJ27Qd9WQFJQ5aVNLiL7buxWJIXP1JhAOHNq6h56C6wSqRhe+6zNqptC+f
+ pSFN8cH4Pw7NGfFRDAWOiifTDzp2GOYC1iyh+JUzNhdBK6Vm5PuhDjRVsmHBf6rCzjYQ
+ 5w8WVnF/92NhsUxRImQqZPo02M/PcQ5Lj7NTn3TdfXo/2G/3OQ4LntWNo1CzIKagwJn5
+ Xg++GTe0fnwbOe2pW57vUCxlR7dSGhkcg0bwp9T9dDbQ+DaLVGM7MCALcN+7S7Lm2/56
+ LkCEmotvsQ0VtmF8/TgSZ/Voy0pGgkJaFaL384jshCQOz6m+7OIlVCF3TmoNqtzvH2Au TA== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tea3e8j75-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 30 Sep 2023 16:16:07 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38UEoUkS035561;
+        Sat, 30 Sep 2023 16:16:07 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2173.outbound.protection.outlook.com [104.47.55.173])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tea439bf5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 30 Sep 2023 16:16:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IeHgtt+ZKE1ReCAlcqPBQtb5UY4UGZ29XRuKvU597+V+1aAWUSFdLhEYm66KElrtIS2DemDsc1+1KcxlUvsvg060MoadhC42S9uBNX1vJapU0GIVQanzjDNoVmqOvx1FcZPOxZfDkLpE3hBN43XbIQIIKqdlSBT29ifIbpy/LrM7YW9mnbamQjZ0iJNm/f7lm6KjFREvnnibHOLCosOJCLLP6tHhAuxpxJY1axJf7gWksIN5vt1aDfTehGdveApn6YXAgbeZ2GZv18yoIz4xCs+D4h1mg5J7cHqxLZybQNOZK96LNlCFzczsqP8vdWJUZB29Ia8H41rsuuy5aiF3MA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0TQER8WE8CYx0fZeAOi6s55jPkqcvDEsZeNwPRiM0cE=;
+ b=Mf/VGPLxiIqXSYFZtkto/Y4UsE9AWke37AG1PCvUrQxyR9hLuHon78rsrw5gmZneTqA4fO8cICdaM50fjj3Q9v5JPw/RmtaGnz465YdgpKrNRiXb8z44FimmTO78SMi1JIVG4ANYODESR0AF/38G2SrFVoKrlb8f2MONqkm7pNrKH0Th7mcpFzSdaT702r1WQvN67Em1nJ9zBNySrjwqN1j6YI71nyGRxg4zeyMnM3WPcUwQz0Bq7z0Nmx3Dz6I+uaYGmhdCYD8cp5MMugYdDtdmYEDNV3sQq42qs/7Gqq1QExlcHFNCXnDDVOAJ9bCM6/28vYlj0hvwxxdBEq1t6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0TQER8WE8CYx0fZeAOi6s55jPkqcvDEsZeNwPRiM0cE=;
+ b=KsekPHv5BWmZNNjovv0eTkVwCtROA4Pkorr2D/ZFxy69ML4IEBbV56X6SWKhFU1YvsUt0F4E8Llk4l5g188jDcZrL69c/GzpW2kOJM15vcJ8L1GDaBASO7sW5x5ktyxGKaOzFL0t7zEvqggqKqOBhcQeDQTrEv4Nz4ry8f46C1w=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by DS7PR10MB4878.namprd10.prod.outlook.com (2603:10b6:5:3a8::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.25; Sat, 30 Sep
+ 2023 16:16:04 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::bffc:4f39:2aa8:6144]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::bffc:4f39:2aa8:6144%5]) with mapi id 15.20.6813.027; Sat, 30 Sep 2023
+ 16:16:04 +0000
+Date:   Sat, 30 Sep 2023 12:16:01 -0400
+From:   Chuck Lever <chuck.lever@oracle.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Carlos Maiolino <cem@kernel.org>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 1/8] shmem: shrink shmem_inode_info: dir_offsets in a
+ union
+Message-ID: <ZRhJwZNbvmp53vZV@tissot.1015granger.net>
+References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com>
+ <86ebb4b-c571-b9e8-27f5-cb82ec50357e@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86ebb4b-c571-b9e8-27f5-cb82ec50357e@google.com>
+X-ClientProxiedBy: CH5PR04CA0018.namprd04.prod.outlook.com
+ (2603:10b6:610:1f4::29) To BN0PR10MB5128.namprd10.prod.outlook.com
+ (2603:10b6:408:117::24)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wAXTT+rSRhlQrg8Dg--.48618S3
-X-Coremail-Antispam: 1Uf129KBjvJXoW3ZrWUArWftFyUuF47Xw4Dtwb_yoWkGF47pr
-        4kG3yrK397tF4xXayjqFW8WFySgw4xWa13Crs7Aw4ftw4jgFWYgF48trW2yrWUArZ5X34a
-        qFWq93yakws5Xw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRjNt3UUUUU=
-X-Originating-IP: [221.12.59.213]
-X-CM-SenderInfo: 50xe0jqqqwqiywtou0bp/1tbiWRb6rlWB07vPRQAAst
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|DS7PR10MB4878:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9ff137af-1a43-4ef1-23ef-08dbc1d08b80
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nEvQjG51WMlAX5Y0d1D6A7vHVaOilg+N1XZC8IMl85cCFlAIUqi3RDtNXqxVj5RmqG73NA5zqRlqWEy0LLnOUd2BgCEB9peWkY3WlAE+kd3zHwliVG4YYS8aznWRsUnwRMQXm9UWT7fTRj7AARr4CwDYTOdvEJt1vgYZeRi3S7XtcrqMi9daab3ilhGELF/w57v2m2Wvo1+vj140vF9x0VFNRp+SOWiGs6HRVhUFh8xIxeEPJfa3wH+vThonjPT3hX/ACQew2eeCABAQJ3G+WfMMz1+ho6kc5U5rkucFgfPkdWsPmxjPL1+sBedVmCfDEae1EMsGysRp1GSeWYEpzLOEF7/k4Rr6kwixTT9UlyjpJCi2/xbeKfuhzCAV1DNBz2n9rY3tBIqgwxo0u/dlSl+5XsxMBrdTcbnjQy162qc4UZMKYBkwTTobqkPnTnY1872Hwas/41kIE8LANqrJMh6tA+HJQfBUt99JdKNQ78tsmW9FzM0I7Wq36hTgW/RtRMmUm1kHJP/vJuD7YheeLWkW/apoi7GH2jqIgLS4aUNuMSgX6n03kUYakCxj4EMS
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39860400002)(136003)(346002)(376002)(366004)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(66946007)(316002)(66556008)(66476007)(54906003)(26005)(8676002)(4326008)(8936002)(41300700001)(6916009)(6486002)(6666004)(478600001)(83380400001)(86362001)(9686003)(38100700002)(6506007)(6512007)(2906002)(7416002)(5660300002)(44832011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XTBKE5NL8Tnl95I2rk11jxSp6AMz1LtxCZE3yTAKctZ8LPGpZ2XSpk9wx87S?=
+ =?us-ascii?Q?D2J4upnWuzb9/rdmn+nF3+8oHjqnd+bJCbZqdym6pYkx7ExCuxThXyrwwBXh?=
+ =?us-ascii?Q?G2gzS1F4xjqerDhytgezmQa/JGnL0QQmV1eyH8dGRB5875l2zoulSN64dbYG?=
+ =?us-ascii?Q?6BxOadoPtaxXoiQDodleVf9MpRepXD+EPRkLvfDBdlyfhI9inyXfr0rwWr27?=
+ =?us-ascii?Q?q2FZ8G9VDsGjFyGnYB9utFk+F14HSIfBSuR/unOhhDF/Ak+KSV9Lo0S5tJlO?=
+ =?us-ascii?Q?qFZK92ow8t2y8OezRGcjA1L5CjlWGKDbhPpWF81B56weQBCntmx8eWxLdf9I?=
+ =?us-ascii?Q?etJTMjjvl8N3dDTfDoS5MlL3MIXYIoLX31aeHuFc+f0Z9Y0C2LmKRuTCoxou?=
+ =?us-ascii?Q?XOGP6bid1odZX1AH4M7ZQ2zOhjfz6XPFEmeNjDI28Ca4mi8rI9R7g5omoJjT?=
+ =?us-ascii?Q?E8a+h97NiaHtJqz8XSt67rrsxt29OlHfHrtyKpYOPNYHRyHMroLqRNMhp63r?=
+ =?us-ascii?Q?QtZeMvvqWkoCcXMHhyEKaURf7h8lkJok87PHUbffKKsnxpJRSwd0ZabL6wtH?=
+ =?us-ascii?Q?SIFGeZe5JLiEN/uBAX00UUjks8DB3or0YwI7FrM8WbJikH//LqdaByRM6HGd?=
+ =?us-ascii?Q?CdVuIlBvbV9tvD4JDJZ0eoyf2yLC/uuOjAbyC49P6ER1fBJ0hRjQ4es8ABcV?=
+ =?us-ascii?Q?nAf56gr5lZQTGRMUq03Wwz+Qz4j2TrKn17K/TByPvbbwOoKGgQzWANzBPO05?=
+ =?us-ascii?Q?g3RCDVcyTsSdInTGSUSp+dsdB8eYrpAAGW6Nr34qFAU3KAsVMK6KjDJQM8HE?=
+ =?us-ascii?Q?teLD9JZcw4IuoxBSLio8LhB5g048hn1T5CYzEkSVhP8wjI1rd4126/+YP8VE?=
+ =?us-ascii?Q?AI+5zeZxAoOr8T5rCDYZ06CZBPFyWTSKQ1GXaxVP6AY0VNbcBo5TvlUgZBhx?=
+ =?us-ascii?Q?TuYxi7xIyqdGt5ZWNiYfqP8MHjQPE2G2L0K9yg8RioaiAqnXzxbv2f8DryJm?=
+ =?us-ascii?Q?L4lmGcSNQxYYMo/QUoHJQfoXgjOx1E8lbPM88/OvQS/netE5rbVUwPtKYFvy?=
+ =?us-ascii?Q?uY7t29LjNdHJ9y7rKKdOzyNfA2CUw76Af3mX/y8oa3BGE/EWgILKZWsz/9sW?=
+ =?us-ascii?Q?VE11ITqg7BfHLz6pkW0g8bgtb6Eb5OkjkIKQA4qVOjF3hZmhAll8gWthA+Nv?=
+ =?us-ascii?Q?yP7wZE1xo93N5zDqb8wv/s5VMgZTj7F2A4gpRyjLruifpDAguu+9qy5U1/ml?=
+ =?us-ascii?Q?DV/s/77mS9hayWRqaC92hWFpkO1dx3ZD548h6DCwyPJgpMKphhNq+0AYdEzA?=
+ =?us-ascii?Q?wtHFIpm1Bp0BoYdHvDpndV/TzRgdE+UEOoyvWESvKqckMUaN/qKkxNRAkh6u?=
+ =?us-ascii?Q?N7WlLcGItW8i8Y40CL4ms/4IrXVCTTzwsJ5ijSi8jYFnwejebbRCMX75IQj8?=
+ =?us-ascii?Q?9MNFGcK80aktHdwZPv+Rss0y8n9LmakTlux+pAehYZDxffYRlR7KKnwuwsrk?=
+ =?us-ascii?Q?yW56wocWOSsOrMAwzMp2b/Kr6BpIAa/pctLUSfw2YZpLdVF/JVKYVMMeraWC?=
+ =?us-ascii?Q?3Rb/FthySs+b+pENQJqdlRfbjO+FpK99JCXRG3QDm+o9an5Eqm8AeKEefUCP?=
+ =?us-ascii?Q?IA=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?EJ5I2gq+Th/AAAmLxvyLKWDP/cBG9W93QOT18XKJDce+IamrFfypUHBcIIk9?=
+ =?us-ascii?Q?894n9YvUTrAMiG8KfzXGrqVF0FpkyH9rC6F2zwppMd1/2ag69IgcqG9+Ec8B?=
+ =?us-ascii?Q?An1QnLUM5PonfMEXFa0ohg/qcy+csKGFAlJATP7zSr9ElzfDxf7/bmh78ZMj?=
+ =?us-ascii?Q?9sYuitTwPgNLhQD/XbHQFxUIG3faZKvzoQ3DWZsXRIAkOh9fft3kLAwO3jCj?=
+ =?us-ascii?Q?0JQ//LomRCiRhTcW0TJt/DXiU+/CXfNbOAD6Qhzykjuz52ykFUIuV0FJG9RZ?=
+ =?us-ascii?Q?GRvtkDW0c5IlcLt2dUJr9x+jCwpJ6Lbji60s+WLQMMtuJvB0IgC5wfGdoamv?=
+ =?us-ascii?Q?l1wqJ51DDsKQIeLqgmpWVnhyfC8uxzqRrWK9nrzEaz8N8dV8/FJUZ8S7LXnM?=
+ =?us-ascii?Q?nhjYNfPTSm5gi+Yvd1aQ40OKs2qIwv7zig85AQnk04TCOTig6QyLG1aMLro6?=
+ =?us-ascii?Q?T1oms5wde/3EdXEtqiGHJZKkNCEGQF9JqX6p7h2rfhwHcCcS9wcnLXUzhTj9?=
+ =?us-ascii?Q?vHsHlydyTZx3H29O47BKCmhrXfORWhx7rcNBhyDH2Z1au2VWD1dK8+bt1Acn?=
+ =?us-ascii?Q?Yq71yhskLrk3LYB9jQOmUntX3jq3demSxUgqXkZqP5l6QzXFGd7qhsmRuHfi?=
+ =?us-ascii?Q?sUHY+bEV6BgdkDMSBASZoU6f/4y12lCcgrXEbfG/VGxQVRooTPFO56tC2j/3?=
+ =?us-ascii?Q?aVNSNfi6zADK8emPB4npDI3OVdrfl6tbZ28OW6TvLdL8bPPVKOt1+P1McD40?=
+ =?us-ascii?Q?VfoF3p/Zg9zQOFM/kTH+hrmgCk97iBEeYm3ldjUowIZPa1b8cha1ZTZSCDzd?=
+ =?us-ascii?Q?4fa7ktJ1AymZwJbtHip2UGR5BhzMO5Vo12W9yTCU35U+I8wvBmx8zjI+JPiK?=
+ =?us-ascii?Q?DFI/upJ7GwswS84Fn4/Pjf9DMFpguPQ/nXnRDxmVSKOZCDfzVV5EvI1I8SrA?=
+ =?us-ascii?Q?P3Mh67rHE58jIRt8NKi7mynSjSd2HSR9jnqBMaZB0Us4Wt2L6C92uTuzV2zY?=
+ =?us-ascii?Q?FQr4?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ff137af-1a43-4ef1-23ef-08dbc1d08b80
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2023 16:16:04.4733
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Ebq/okYD25TSNdn2hq4/4iyMqxDDMJqihLBEw19LWpKPFycVwIXMDijUvPP49cjEowXmAIxyJ1swO8cLdywnvw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB4878
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-30_14,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
+ phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309300134
+X-Proofpoint-ORIG-GUID: u_mJ-E-7q19aO8hW4fmpBGglKXepqbg7
+X-Proofpoint-GUID: u_mJ-E-7q19aO8hW4fmpBGglKXepqbg7
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,453 +171,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add infiniband mlx4 device net driver basic structure and Rust security abstration interface
+On Fri, Sep 29, 2023 at 08:25:38PM -0700, Hugh Dickins wrote:
+> Shave 32 bytes off (the 64-bit) shmem_inode_info.  There was a 4-byte
+> pahole after stop_eviction, better filled by fsflags.  And the 24-byte
+> dir_offsets can only be used by directories, whereas shrinklist and
+> swaplist only by shmem_mapping() inodes (regular files or long symlinks):
+> so put those into a union.  No change in mm/shmem.c is required for this.
+> 
+> Signed-off-by: Hugh Dickins <hughd@google.com>
 
-Signed-off-by: Allen Xu <xubo3006@163.com>
----
- rust/bindings/bindings_helper.h |   1 +
- rust/kernel/lib.rs              |   1 +
- rust/kernel/mlx4.rs             | 288 ++++++++++++++++++++++++++++++++
- rust/kernel/workqueue.rs        |   9 +-
- samples/rust/Kconfig            |   7 +
- samples/rust/Makefile           |   1 +
- samples/rust/rust_mlx4.rs       |  49 ++++++
- 7 files changed, 353 insertions(+), 3 deletions(-)
- create mode 100644 rust/kernel/mlx4.rs
- create mode 100644 samples/rust/rust_mlx4.rs
+Reviewed-by: Chuck Lever <chuck.lever@oracle.com>
 
-diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index cb63710af1..c9b794a3d3 100644
---- a/rust/bindings/bindings_helper.h
-+++ b/rust/bindings/bindings_helper.h
-@@ -39,6 +39,7 @@
- #include <net/udp_tunnel.h>
- #include <rdma/rdma_netlink.h>
- #include <rdma/ib_verbs.h>
-+#include <linux/mlx4/driver.h>
- 
- /* `bindgen` gets confused at certain things. */
- const gfp_t BINDINGS_GFP_KERNEL = GFP_KERNEL;
-diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-index 39e0b17778..60f83427d8 100644
---- a/rust/kernel/lib.rs
-+++ b/rust/kernel/lib.rs
-@@ -80,6 +80,7 @@ mod raw_list;
- pub mod rbtree;
- pub mod unsafe_list;
- 
-+pub mod mlx4;
- pub mod rxe;
- 
- #[doc(hidden)]
-diff --git a/rust/kernel/mlx4.rs b/rust/kernel/mlx4.rs
-new file mode 100644
-index 0000000000..7f53e0e9e6
---- /dev/null
-+++ b/rust/kernel/mlx4.rs
-@@ -0,0 +1,288 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+//! Infiniband mlx4 devices.
-+//!
-+
-+use alloc::boxed::Box;
-+use core::pin::Pin;
-+use core::{marker, ptr};
-+use macros::vtable;
-+
-+use crate::bindings;
-+use crate::error::{code::*, Result};
-+use crate::str::CStr;
-+use crate::workqueue::{BoxedQueue, Queue};
-+
-+/// Infiband mlx4 device registration.
-+///
-+pub struct Registration<T: Mlx4Operation> {
-+    registered: bool,
-+    #[allow(dead_code)]
-+    name: &'static CStr,
-+    wq: Mlx4WorkQueue,
-+    cm_wq: CmWorkQueue,
-+    qp_wq: QpWorkQueue,
-+    mcg_wq: McgWorkQueue,
-+    phantom: marker::PhantomData<T>,
-+}
-+
-+impl<T: Mlx4Operation> Registration<T> {
-+    /// Creates a new [`Registration`] but does not register it yet.
-+    ///
-+    /// It is allowed to move.
-+    pub fn new(name: &'static CStr) -> Self {
-+        // INVARIANT: `registered` is `false`
-+        Self {
-+            registered: false,
-+            name,
-+            wq: Mlx4WorkQueue::new(),
-+            cm_wq: CmWorkQueue::new(),
-+            qp_wq: QpWorkQueue::new(),
-+            mcg_wq: McgWorkQueue::new(),
-+            phantom: marker::PhantomData,
-+        }
-+    }
-+
-+    /// Registers a infiband mlx4 device.
-+    ///
-+    /// Returns a pinned heap-allocated representation of the registration.
-+    pub fn new_pinned(name: &'static CStr) -> Result<Pin<Box<Self>>> {
-+        let mut r = Pin::from(Box::try_new(Self::new(name))?);
-+        r.as_mut().register()?;
-+        Ok(r)
-+    }
-+
-+    // Registers a infiband mlx4 device with the rest of the kernel.
-+    ///
-+    /// It must be pinned because the memory block that represents the registration is
-+    /// self-referential.
-+    pub fn register(self: Pin<&mut Self>) -> Result {
-+        // SAFETY: We must ensure that we never move out of `this`.
-+        let this = unsafe { self.get_unchecked_mut() };
-+        if this.registered {
-+            // Already registered.
-+            return Err(EINVAL);
-+        }
-+
-+        match this.wq.init() {
-+            Ok(()) => {}
-+            Err(e) => return Err(e),
-+        }
-+
-+        match this.qp_wq.init() {
-+            Ok(()) => {}
-+            Err(e) => {
-+                this.wq.clean();
-+                return Err(e);
-+            }
-+        }
-+
-+        match this.cm_wq.init() {
-+            Ok(()) => {}
-+            Err(e) => {
-+                this.wq.clean();
-+                this.qp_wq.clean();
-+                return Err(e);
-+            }
-+        }
-+
-+        match this.mcg_wq.init() {
-+            Ok(()) => {}
-+            Err(e) => {
-+                this.wq.clean();
-+                this.cm_wq.clean();
-+                this.qp_wq.clean();
-+                return Err(e);
-+            }
-+        }
-+
-+        // SAFETY: The adapter is compatible with the mlx4 register
-+        unsafe {
-+            bindings::mlx4_register_interface(Mlx4OperationTable::<T>::build());
-+        }
-+
-+        this.registered = true;
-+        Ok(())
-+    }
-+}
-+
-+impl<T: Mlx4Operation> Drop for Registration<T> {
-+    /// Removes the registration from the kernel if it has completed successfully before.
-+    fn drop(&mut self) {
-+        if self.registered {
-+            self.mcg_wq.clean();
-+            self.cm_wq.clean();
-+            self.qp_wq.clean();
-+            self.wq.clean();
-+        }
-+    }
-+}
-+
-+/// Build kernel's `struct mlx4_interface` type with mlx4 device operation.
-+pub struct Mlx4OperationTable<T>(marker::PhantomData<T>);
-+
-+impl<T: Mlx4Operation> Mlx4OperationTable<T> {
-+    /// Builds an instance of [`struct mlx4_interface`].
-+    ///
-+    /// # Safety
-+    ///
-+    /// The caller must ensure that the adapter is compatible with the way the device is registered.
-+    pub fn build() -> *mut bindings::mlx4_interface {
-+        return &mut bindings::mlx4_interface {
-+            add: Some(Self::add_callback),
-+            remove: Some(Self::remove_callback),
-+            event: Some(Self::event_callback),
-+            get_dev: None,
-+            activate: None,
-+            list: bindings::list_head {
-+                next: ptr::null_mut(),
-+                prev: ptr::null_mut(),
-+            },
-+            // MLX4_PROT_IB_IPV6
-+            protocol: 0,
-+            // MLX4_INTFF_BONDING
-+            flags: 1,
-+        };
-+    }
-+
-+    unsafe extern "C" fn add_callback(_dev: *mut bindings::mlx4_dev) -> *mut core::ffi::c_void {
-+        let _ = T::add();
-+        return ptr::null_mut();
-+    }
-+
-+    unsafe extern "C" fn remove_callback(
-+        _dev: *mut bindings::mlx4_dev,
-+        _context: *mut core::ffi::c_void,
-+    ) {
-+        let _ = T::remove();
-+    }
-+
-+    unsafe extern "C" fn event_callback(
-+        _dev: *mut bindings::mlx4_dev,
-+        _context: *mut core::ffi::c_void,
-+        _event: bindings::mlx4_dev_event,
-+        _param: core::ffi::c_ulong,
-+    ) {
-+        let _ = T::event();
-+    }
-+}
-+
-+/// Corresponds to the kernel's `struct mlx4_interface`.
-+///
-+/// You implement this trait whenever you would create a `struct mlx4_interface`.
-+#[vtable]
-+pub trait Mlx4Operation {
-+    /// Add a new mlx4 ib device.
-+    fn add() -> Result;
-+    /// Remove mlx4 ib device.
-+    fn remove() -> Result;
-+    /// Respond to specific mlx4 ib device event
-+    fn event() -> Result;
-+}
-+
-+pub(crate) struct Mlx4WorkQueue {
-+    wq: Option<BoxedQueue>,
-+}
-+
-+impl Mlx4WorkQueue {
-+    pub(crate) fn new() -> Self {
-+        Self { wq: None }
-+    }
-+
-+    pub(crate) fn init(&mut self) -> Result {
-+        let wq_tmp = Queue::try_new(format_args!("mlx4_ib"), 655369, 1);
-+        self.wq = match wq_tmp {
-+            Ok(wq) => Some(wq),
-+            Err(e) => return Err(e),
-+        };
-+
-+        Ok(())
-+    }
-+
-+    pub(crate) fn clean(&mut self) {
-+        if self.wq.is_some() {
-+            drop(self.wq.take().unwrap());
-+        }
-+    }
-+}
-+
-+pub(crate) struct CmWorkQueue {
-+    cm_wq: Option<BoxedQueue>,
-+}
-+
-+impl CmWorkQueue {
-+    pub(crate) fn new() -> Self {
-+        Self { cm_wq: None }
-+    }
-+
-+    pub(crate) fn init(&mut self) -> Result {
-+        let cm_wq_tmp = Queue::try_new(format_args!("mlx4_ib_cm"), 0, 0);
-+        self.cm_wq = match cm_wq_tmp {
-+            Ok(cm_wq) => Some(cm_wq),
-+            Err(e) => return Err(e),
-+        };
-+
-+        Ok(())
-+    }
-+
-+    pub(crate) fn clean(&mut self) {
-+        if self.cm_wq.is_some() {
-+            drop(self.cm_wq.take().unwrap());
-+        }
-+    }
-+}
-+
-+pub(crate) struct McgWorkQueue {
-+    clean_wq: Option<BoxedQueue>,
-+}
-+
-+impl McgWorkQueue {
-+    pub(crate) fn new() -> Self {
-+        Self { clean_wq: None }
-+    }
-+
-+    pub(crate) fn init(&mut self) -> Result {
-+        let clean_wq_tmp = Queue::try_new(format_args!("mlx4_ib_mcg"), 655369, 1);
-+        self.clean_wq = match clean_wq_tmp {
-+            Ok(clean_wq) => Some(clean_wq),
-+            Err(e) => return Err(e),
-+        };
-+
-+        Ok(())
-+    }
-+
-+    pub(crate) fn clean(&mut self) {
-+        if self.clean_wq.is_some() {
-+            drop(self.clean_wq.take().unwrap());
-+        }
-+    }
-+}
-+
-+pub(crate) struct QpWorkQueue {
-+    mlx4_ib_qp_event_wq: Option<BoxedQueue>,
-+}
-+
-+impl QpWorkQueue {
-+    pub(crate) fn new() -> Self {
-+        Self {
-+            mlx4_ib_qp_event_wq: None,
-+        }
-+    }
-+
-+    pub(crate) fn init(&mut self) -> Result {
-+        let mlx4_ib_qp_event_wq_tmp =
-+            Queue::try_new(format_args!("mlx4_ib_qp_event_wq"), 655361, 1);
-+        self.mlx4_ib_qp_event_wq = match mlx4_ib_qp_event_wq_tmp {
-+            Ok(mlx4_ib_qp_event_wq) => Some(mlx4_ib_qp_event_wq),
-+            Err(e) => return Err(e),
-+        };
-+
-+        Ok(())
-+    }
-+
-+    pub(crate) fn clean(&mut self) {
-+        if self.mlx4_ib_qp_event_wq.is_some() {
-+            drop(self.mlx4_ib_qp_event_wq.take().unwrap());
-+        }
-+    }
-+}
-diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
-index d87dfe4156..fa289af097 100644
---- a/rust/kernel/workqueue.rs
-+++ b/rust/kernel/workqueue.rs
-@@ -209,14 +209,14 @@ impl Queue {
-     ///
-     /// Callers should first consider using one of the existing ones (e.g. [`system`]) before
-     /// deciding to create a new one.
--    pub fn try_new(name: fmt::Arguments<'_>) -> Result<BoxedQueue> {
-+    pub fn try_new(name: fmt::Arguments<'_>, flags: u32, max_active: i32) -> Result<BoxedQueue> {
-         // SAFETY: We use a format string that requires an `fmt::Arguments` pointer as the first
-         // and only argument.
-         let ptr = unsafe {
-             bindings::alloc_workqueue(
-                 c_str!("%pA").as_char_ptr(),
--                0,
--                0,
-+                flags,
-+                max_active,
-                 &name as *const _ as *const core::ffi::c_void,
-             )
-         };
-@@ -408,6 +408,9 @@ pub struct BoxedQueue {
-     ptr: NonNull<Queue>,
- }
- 
-+// SAFETY: Kernel workqueues are usable from any thread.
-+unsafe impl Sync for BoxedQueue {}
-+
- impl BoxedQueue {
-     /// Creates a new instance of [`BoxedQueue`].
-     ///
-diff --git a/samples/rust/Kconfig b/samples/rust/Kconfig
-index 84c68786d9..07b7e2e6e2 100644
---- a/samples/rust/Kconfig
-+++ b/samples/rust/Kconfig
-@@ -170,4 +170,11 @@ config SAMPLE_RUST_RXE
- 
- 	  If unsure, say N.
- 
-+config SAMPLE_RUST_MLX4
-+	tristate "infiniband mlx4"
-+	help
-+	  This option builds the infiniband mlx4 driver cases for Rust.
-+
-+	  If unsure, say N.
-+
- endif # SAMPLES_RUST
-diff --git a/samples/rust/Makefile b/samples/rust/Makefile
-index 56ec1dcee6..c6617394db 100644
---- a/samples/rust/Makefile
-+++ b/samples/rust/Makefile
-@@ -16,5 +16,6 @@ obj-$(CONFIG_SAMPLE_RUST_ECHO_SERVER)		+= rust_echo_server.o
- obj-$(CONFIG_SAMPLE_RUST_FS)			+= rust_fs.o
- obj-$(CONFIG_SAMPLE_RUST_SELFTESTS)		+= rust_selftests.o
- obj-$(CONFIG_SAMPLE_RUST_RXE)		+= rust_rxe.o
-+obj-$(CONFIG_SAMPLE_RUST_MLX4)			+= rust_mlx4.o
- 
- subdir-$(CONFIG_SAMPLE_RUST_HOSTPROGS)		+= hostprogs
-diff --git a/samples/rust/rust_mlx4.rs b/samples/rust/rust_mlx4.rs
-new file mode 100644
-index 0000000000..280838071e
---- /dev/null
-+++ b/samples/rust/rust_mlx4.rs
-@@ -0,0 +1,49 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+//! Rust infiniband mls4 device sample.
-+
-+use kernel::mlx4;
-+use kernel::prelude::*;
-+
-+module! {
-+    type: RustMlx4,
-+    name: "rust_mlx4",
-+    author: "Rust for Linux Contributors",
-+    description: "Rust infiniband mlx4 device sample",
-+    license: "GPL",
-+}
-+
-+struct RustMlx4Ops;
-+
-+#[vtable]
-+impl mlx4::Mlx4Operation for RustMlx4Ops {
-+    fn add() -> Result {
-+        Ok(())
-+    }
-+    fn remove() -> Result {
-+        Ok(())
-+    }
-+    fn event() -> Result {
-+        Ok(())
-+    }
-+}
-+
-+struct RustMlx4 {
-+    _dev: Pin<Box<mlx4::Registration<RustMlx4Ops>>>,
-+}
-+
-+impl kernel::Module for RustMlx4 {
-+    fn init(name: &'static CStr, _module: &'static ThisModule) -> Result<Self> {
-+        pr_info!("Rust infiniband mlx4 driver sample (init)\n");
-+
-+        Ok(RustMlx4 {
-+            _dev: mlx4::Registration::new_pinned(name)?,
-+        })
-+    }
-+}
-+
-+impl Drop for RustMlx4 {
-+    fn drop(&mut self) {
-+        pr_info!("Rust infiniband mlx4 driver sample (exit)\n");
-+    }
-+}
+
+> ---
+>  include/linux/shmem_fs.h | 16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
+> index 6b0c626620f5..2caa6b86106a 100644
+> --- a/include/linux/shmem_fs.h
+> +++ b/include/linux/shmem_fs.h
+> @@ -23,18 +23,22 @@ struct shmem_inode_info {
+>  	unsigned long		flags;
+>  	unsigned long		alloced;	/* data pages alloced to file */
+>  	unsigned long		swapped;	/* subtotal assigned to swap */
+> -	pgoff_t			fallocend;	/* highest fallocate endindex */
+> -	struct list_head        shrinklist;     /* shrinkable hpage inodes */
+> -	struct list_head	swaplist;	/* chain of maybes on swap */
+> +	union {
+> +	    struct offset_ctx	dir_offsets;	/* stable directory offsets */
+> +	    struct {
+> +		struct list_head shrinklist;	/* shrinkable hpage inodes */
+> +		struct list_head swaplist;	/* chain of maybes on swap */
+> +	    };
+> +	};
+> +	struct timespec64	i_crtime;	/* file creation time */
+>  	struct shared_policy	policy;		/* NUMA memory alloc policy */
+>  	struct simple_xattrs	xattrs;		/* list of xattrs */
+> +	pgoff_t			fallocend;	/* highest fallocate endindex */
+> +	unsigned int		fsflags;	/* for FS_IOC_[SG]ETFLAGS */
+>  	atomic_t		stop_eviction;	/* hold when working on inode */
+> -	struct timespec64	i_crtime;	/* file creation time */
+> -	unsigned int		fsflags;	/* flags for FS_IOC_[SG]ETFLAGS */
+>  #ifdef CONFIG_TMPFS_QUOTA
+>  	struct dquot		*i_dquot[MAXQUOTAS];
+>  #endif
+> -	struct offset_ctx	dir_offsets;	/* stable entry offsets */
+>  	struct inode		vfs_inode;
+>  };
+>  
+> -- 
+> 2.35.3
+> 
+
 -- 
-2.39.3
-
+Chuck Lever
