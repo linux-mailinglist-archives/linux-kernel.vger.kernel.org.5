@@ -2,118 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CADFE7B420C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F4A7B420F
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234499AbjI3QRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 12:17:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
+        id S234502AbjI3QSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 12:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234484AbjI3QRL (ORCPT
+        with ESMTP id S232221AbjI3QSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 12:17:11 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B639CE5;
-        Sat, 30 Sep 2023 09:17:09 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-690bd8f89baso12289869b3a.2;
-        Sat, 30 Sep 2023 09:17:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696090629; x=1696695429; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=P87SYNAUx9/KgAQuVKnXUthD0UJfDLOGmA1ZiynjveU=;
-        b=ZX4/HN3QT7uFNDKX75IsVmSB7Z52S4156aBfgAEXPXguc9n7Ebc9+uqraPOQbWUhRI
-         7tbF8T8yZANm0utLFqnvogCd1uCiiZrhqskkV1PcVGd2meBFZiJm//YBFiwC6+v1mpH7
-         w8brhOin+qcyX0zwCEh9wx5xKCXF/VpZFFDr0ibhXpPjLwh5WMq+eTif6fL7a1gf783/
-         CzF9I14DPKFpRYh9iMd3IeqrHsFd1rJSrfgdIW2D6qjmOIsEJfd47YERVXt7dwq2l5XD
-         6gp53nUEvT2sseqnle4iy85YC8dO6Iem1Fa1uEpuPcqXMuVUlLc51OIhC21bPKvlS+OE
-         fLoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696090629; x=1696695429;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P87SYNAUx9/KgAQuVKnXUthD0UJfDLOGmA1ZiynjveU=;
-        b=HCohPahLE8d/aTk7jaxFY9wziGhWi2lT+LipwT/mSAT9TOd1hLGJepBdyPkPZM7q27
-         smuSybLqQ7/f4EmGIHe2qx4DSSLr8tXJtEMKB8lHqRS0Ndu3bQFco9LCjyQHM/ydxEZF
-         bzaUDGEscaXXdzInTO5UkjBmBwzW6LBRYVp4JqNXrWsJAG2oNgsQZrHd7IduCiQPxiy4
-         L1Xl8N8kjQ5TcMlj5DzWsH4c6vLADdTwaypLYNMACYWz5ThFZbhb6v5P6fLdAiQjCzE9
-         PF3oyGY+pshOSaPxf685DkbyUmeU268A0B301l2J54qP/vwCx1jIzb+DzMkomGztEoF4
-         vsUQ==
-X-Gm-Message-State: AOJu0Yw11zqdAPcTJA1gIV9CF6A4OkHDKK3ro/OPzp4At4DOTYCte3TP
-        Pn5eYUkVHj4VMFFKo+kLPTI=
-X-Google-Smtp-Source: AGHT+IG/nHfN2RCt3nLgT20agqyXxSEmMoss87E168KB70OPzDz127pHStkupxojsur4aAr1BtJ/tw==
-X-Received: by 2002:a05:6a20:3d26:b0:159:e0b9:bd02 with SMTP id y38-20020a056a203d2600b00159e0b9bd02mr7289240pzi.40.1696090629051;
-        Sat, 30 Sep 2023 09:17:09 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:a90f:2dad:30c1:d923])
-        by smtp.gmail.com with ESMTPSA id j24-20020aa783d8000000b0069327d0b491sm7173934pfn.195.2023.09.30.09.17.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 09:17:08 -0700 (PDT)
-Date:   Sat, 30 Sep 2023 09:17:05 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Fenglin Wu <quic_fenglinw@quicinc.com>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        agross@kernel.org, andersson@kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        linux-input@vger.kernel.org, quic_collinsd@quicinc.com,
-        quic_subbaram@quicinc.com, quic_kamalw@quicinc.com,
-        jestar@qti.qualcomm.com, Luca Weiss <luca.weiss@fairphone.com>
-Subject: Re: [RESEND PATCH v6 3/3] input: pm8xxx-vibrator: add new SPMI
- vibrator support
-Message-ID: <ZRhKAWYBLcBZHc73@google.com>
-References: <20230922083801.3056724-1-quic_fenglinw@quicinc.com>
- <20230922083801.3056724-4-quic_fenglinw@quicinc.com>
- <CAA8EJpoW8DJOTVHBu9_+BQs5DtxyJu3xrCfDNyYHn2MeHZHV4w@mail.gmail.com>
- <12887370-0ada-359b-8a4f-18a28495c69a@quicinc.com>
+        Sat, 30 Sep 2023 12:18:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 865DDC6;
+        Sat, 30 Sep 2023 09:17:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE0D3C433C9;
+        Sat, 30 Sep 2023 16:17:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696090679;
+        bh=Dzx0SZ8RA3eipu/LBIHEROksssiobsemvjwf/Cv4maY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Nf6Y0KE2FMbWYzx415ksQJJ0Hp5B5JNV39YRLplF0CCkteNNWZx1EaSHApH1TX0Pb
+         AIiRQlKI4Vks0Va2FVZ2U3xfOtcSASCBRSvlZ0cKQ59nNXpKHgivtIfV3j8Xh/TZJZ
+         LScpXhtzgt+0wkU2Pad2RBrBfbiZI3ThAQ0z2akUSNUzEF+VdzOu9S5LbXgkKk2vKs
+         1/AyvBkHYZYXjhKE608mX36MEar0LU75qfWzi6k2BSY5Dv0cZzJUmstra395UGCeGJ
+         2JlNiLADV1yY6mlUM9Jv8FBf2m52T/bMRT7Zy9FzTHXFVtMc9b811Ezjw85eZ3e+e7
+         zyyo88ZYe0i0Q==
+Date:   Sat, 30 Sep 2023 17:17:58 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Jagath Jog J <jagathjog1996@gmail.com>
+Cc:     Denis Benato <benato.denis96@gmail.com>,
+        andriy.shevchenko@linux.intel.com, lars@metafoo.de,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 2/2] iio: imu: Add driver for BMI323 IMU
+Message-ID: <20230930171758.34689af6@jic23-huawei>
+In-Reply-To: <CAM+2EuJUGu4QUCdZ7d28RaLNipJRVuASP9wSzF14k=oBoC4e_Q@mail.gmail.com>
+References: <20230918080314.11959-1-jagathjog1996@gmail.com>
+        <20230918080314.11959-3-jagathjog1996@gmail.com>
+        <20230924153055.0b3486f9@jic23-huawei>
+        <CAM+2EuJBxj7P-ymu84u308g8LCemSEsYi_TSHYtaK9PyrhqrfA@mail.gmail.com>
+        <5eb148b4-25eb-460d-9ec8-0a40bec1dc6f@gmail.com>
+        <CAM+2EuJUGu4QUCdZ7d28RaLNipJRVuASP9wSzF14k=oBoC4e_Q@mail.gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12887370-0ada-359b-8a4f-18a28495c69a@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 25, 2023 at 10:54:45AM +0800, Fenglin Wu wrote:
-> 
-> 
-> On 9/24/2023 3:07 AM, Dmitry Baryshkov wrote:
-> > > +
-> > > +       switch (vib->data->hw_type) {
-> > > +       case SSBI_VIB:
-> > >                  mask = SSBI_VIB_DRV_LEVEL_MASK;
-> > >                  shift = SSBI_VIB_DRV_SHIFT;
-> > > +               break;
-> > > +       case SPMI_VIB:
-> > > +               mask = SPMI_VIB_DRV_LEVEL_MASK;
-> > > +               shift = SPMI_VIB_DRV_SHIFT;
-> > > +               break;
-> > > +       case SPMI_VIB_GEN2:
-> > > +               mask = SPMI_VIB_GEN2_DRV_MASK;
-> > > +               shift = SPMI_VIB_GEN2_DRV_SHIFT;
-> > > +               break;
-> > > +       default:
-> > > +               return -EINVAL;
-> > Could you please move the switch to the previous patch? Then it would
-> > be more obvious that you are just adding the SPMI_VIB_GEN2 here.
-> > 
-> > Other than that LGTM.
-> 
-> Sure, I can move the switch to the previous refactoring patch.
+On Fri, 29 Sep 2023 13:29:13 +0530
+Jagath Jog J <jagathjog1996@gmail.com> wrote:
 
-Actually, the idea of having a const "reg" or "chip", etc. structure is
-to avoid this kind of runtime checks based on hardware type and instead
-use common computation. I believe you need to move mask and shift into
-the chip-specific structure and avoid defining hw_type.
+> Hi Denis,
+>=20
+> On Thu, Sep 28, 2023 at 2:55=E2=80=AFAM Denis Benato <benato.denis96@gmai=
+l.com> wrote:
+> >
+> > Hello,
+> >
+> > Some devices (as my asus rog ally) have an ACPI node describing a BOSC0=
+200 sensor. The IC being used in those devices is a  bmi323 but as a result=
+ of how the ACPI table reports that device, it is detected by the existing =
+kernel module and we have no way of differentiating until after the chip ID=
+ probe.
+> >
+> > The module loaded is bmc150-accel-i2c.c which currently doesn't support=
+ the bmi323 and the loading of the module just fails at chip check. =20
+>=20
+> bmc150 driver supports multiple accelerometer sensors such as
+> bma222, bma280, bmi055 and all of them are having similar
+> register map, but the bmi323 register map is completely different
+> from bmc150.
 
-Thanks.
+Horrible bios hacks that depend on a particular driver stack
+are always a pain.
 
--- 
-Dmitry
+Hmm. Andy (handy ACPI expert), any suggestion?
+
+We could maybe do a wrapper driver that does appropriate checks and wraps
+the probe + remove from the two drivers?  Whilst we can obviously have a
+single driver that deals with radically different devices I'm not
+particularly keen on that as it tends to make things less maintainable.
+
+Jonathan
+
+>=20
+>=20
+> >
+> > I have solved the problem by expanding the current bmc150-accel-i2c.c a=
+nd bmc150-accel-core.c files to handle that IC in almost every part: gyrosc=
+ope, accelerometer and temperature sensor.
+> >
+> > What is the best way of organizing code to have this module mainlined? =
+Is it correct leaving files called bmc150-accel-* even if it is managing an=
+other IC and and not just the accelerometer part anymore?
+> >
+> > TIA for your time.
+> >
+> > Best regards,
+> > Denis Benato =20
+>=20
+> Regards
+>=20
+> Jagath
+
