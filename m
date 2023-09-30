@@ -2,103 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E44CD7B4397
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 22:35:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F29AB7B439C
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 22:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbjI3Ufm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 16:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
+        id S232535AbjI3UiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 16:38:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231124AbjI3Ufl (ORCPT
+        with ESMTP id S231351AbjI3UiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 16:35:41 -0400
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9D4DD
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 13:35:39 -0700 (PDT)
-Received: by mail-oo1-xc41.google.com with SMTP id 006d021491bc7-57bab8676f9so5842483eaf.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 13:35:39 -0700 (PDT)
+        Sat, 30 Sep 2023 16:38:15 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21DA4DD;
+        Sat, 30 Sep 2023 13:38:13 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2c27d653856so22064941fa.0;
+        Sat, 30 Sep 2023 13:38:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696106138; x=1696710938; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=q9xYfZBQImKsyGrauSkx40CmvbMShT//GSfSxiyP5zE=;
-        b=Ye1YXWGhPBAEgxH8F7NwQJfHX5pchAHb9kgSKo+qBWuvEkdXpVJPqa7RpnmHnCef0w
-         6ApazzzAQJ29LS1KLjHDUU1Yoozz8lvzbwj+VdNf8TkWvjh0B6z/3NMZeSaaFCRDH9im
-         ts+YC8WjjISa8Rg46ZbZJWa277QGHiZdrUX+4=
+        d=gmail.com; s=20230601; t=1696106291; x=1696711091; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=legsvKyWWxyzmO1CVoext9AuacagNtz6wv7FLmewiU0=;
+        b=cTylJgJ+3i1WG1rzMdUF4LL6XFVQWfAKkAFPpd8o2bG+ULlnfCrJmTA3XryopnSj8X
+         Tx8ygudUQ5C8A2jIOV5vReH2gsHUMjRUziruB7ClzZhwTe440bkjuANfM0fZKNCoa3/A
+         yGP1R2KRupHFYKUh/7iR+veGR0oyN9uPYEr1Hj/qTopJBmRCl719WhNJ75XgA/qW2X26
+         V2XNQRqV0TeQR7qJUsUGnBuyxtUi6IZmCOY28T/TIRn2J2Q+DY7D6woKY71mXYWhQR+/
+         cU+9fumVYRmM80MlXfEWE9PKMxGmrjTIQG5TkTAGL2iJGJ3YJ8zYJH5JYe+hiZ9dG6LH
+         MDcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696106138; x=1696710938;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q9xYfZBQImKsyGrauSkx40CmvbMShT//GSfSxiyP5zE=;
-        b=eAG/yJwSVyYqj0hKVLLSXxVVnoHaDkbFe+DDUz6yscQ8cZgV51iv8CAycNYMp0iugz
-         nAbeAJ+9YyHBrzV58uuMFnBCs6CP0155YYlZZv4J4wKxRBeU0nmkRG8SfruTn+T0bulj
-         z3qKiXeC/2sV9sTzJ2eEapp98JRG/4hiLZu8y4LZHRacFbRnw/VYecmhaT4yqO6bWKW5
-         4Zi2sCK32H5uPkjzigp1FKcE7aok7iorovYRaQsu0cdhj+CwbqvVVKJLfbG2ShotlrH1
-         cn8krYARORlRlnwK733nE+w4fhB6ahnpQOp8iu18Qf6f7a8ESbM6B2tYJZFfg7vKDJkK
-         9FIA==
-X-Gm-Message-State: AOJu0YwhKLgoSmsLlhXzt/NVaAXZLsEv/mBjBUUutALSC27IBMCv3dW6
-        ajFfUb/1fVaOmTzDEcH0HlH6cQ==
-X-Google-Smtp-Source: AGHT+IES6FCR6Oc6pFQSlN7yRWa0cm//27qrbGfY1PvU67WmpoTEAmenT310bfviix1NiTa1MWHqJQ==
-X-Received: by 2002:a05:6358:718b:b0:143:7a89:a8e8 with SMTP id t11-20020a056358718b00b001437a89a8e8mr8441521rwt.10.1696106138275;
-        Sat, 30 Sep 2023 13:35:38 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id t14-20020a056a0021ce00b0068bc461b68fsm16653273pfj.204.2023.09.30.13.35.37
+        d=1e100.net; s=20230601; t=1696106291; x=1696711091;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=legsvKyWWxyzmO1CVoext9AuacagNtz6wv7FLmewiU0=;
+        b=oLTnlLJSOHwnarCLnrsnDxprmK6v7Sd2XNjY7Pb3lYk0RRQJCVYqPFIr7Ag0R0PJUj
+         MlStD1guzAWDZRNLQa8GPIHpVk6zDSQER6/8hKb8RFR/4GQp9jQKzJkiZ/narNNAy34r
+         cXS0YaN57tUw6fQZVHqzriXsAyibQdycchaOIzBSkY/mPetgDvBA2aepLpqnJl0S4XnL
+         zLoYM1hAT7EcVVqPh3fkkD9WWqnQFieVsbG7Cyi/ySEoSrI+u2ZMM4axNY/eNd4zlYY1
+         bar8jK2UDWoolFNCk+MFZZHXufhYTDi6vkck7MIP+01tsY901FnVBbMjm8TIVupfox83
+         LEug==
+X-Gm-Message-State: AOJu0YxCLaLn4cUbIJU581fcmlENTfZQOxjWzMkoLv8GPU7E1j1SHMbM
+        g+/RtuSWlScZJn0i6UT2jWrIuPEm0/dhcg==
+X-Google-Smtp-Source: AGHT+IFQXfgKYyvhsUungqr9rgZDXEe1m1XyQgXJ/ZkVNwWnci64sDZft8ZfIRGkJ6o2oMpG4FRx3w==
+X-Received: by 2002:a2e:a4d6:0:b0:2bf:f90e:2794 with SMTP id p22-20020a2ea4d6000000b002bff90e2794mr6445483ljm.23.1696106290784;
+        Sat, 30 Sep 2023 13:38:10 -0700 (PDT)
+Received: from HP-ENVY-Notebook.lan (81-229-94-10-no68.tbcn.telia.com. [81.229.94.10])
+        by smtp.googlemail.com with ESMTPSA id d8-20020a2eb048000000b002ba7ae1f52asm4654499ljl.0.2023.09.30.13.38.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 13:35:37 -0700 (PDT)
-Date:   Sat, 30 Sep 2023 13:35:32 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     syzbot <syzbot+510dcbdc6befa1e6b2f6@syzkaller.appspotmail.com>
-Cc:     chandan.babu@oracle.com, david@fromorbit.com, djwong@kernel.org,
-        ebiggers@kernel.org, hch@lst.de, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        mukattreyee@gmail.com, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [xfs?] UBSAN: array-index-out-of-bounds in
- xfs_attr3_leaf_add_work
-Message-ID: <202309301334.FA4D7752@keescook>
-References: <0000000000001c8edb05fe518644@google.com>
- <0000000000003c16100606974653@google.com>
+        Sat, 30 Sep 2023 13:38:10 -0700 (PDT)
+From:   Jonathan Bergh <bergh.jonathan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Bergh <bergh.jonathan@gmail.com>
+Subject: [PATCH 1/3] drivers: usb: Fix block comments whose trailing */ was not on a separate line
+Date:   Sat, 30 Sep 2023 22:36:46 +0200
+Message-Id: <20230930203646.61863-1-bergh.jonathan@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000003c16100606974653@google.com>
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 10:57:28AM -0700, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit a49bbce58ea90b14d4cb1d00681023a8606955f2
-> Author: Darrick J. Wong <djwong@kernel.org>
-> Date:   Mon Jul 10 16:12:20 2023 +0000
-> 
->     xfs: convert flex-array declarations in xfs attr leaf blocks
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12eef28a680000
-> start commit:   f8566aa4f176 Merge tag 'x86-urgent-2023-07-01' of git://gi..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3f27fb02fc20d955
-> dashboard link: https://syzkaller.appspot.com/bug?extid=510dcbdc6befa1e6b2f6
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1652938f280000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c10c40a80000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+Fixed various instances where block comments trailing */ where not on a
+separate line and should be.
 
-Yup, that tracks. :)
+Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+---
+ drivers/usb/atm/cxacru.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-#syz fix: xfs: convert flex-array declarations in xfs attr leaf blocks
-
--Kees
-
-> 
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
+diff --git a/drivers/usb/atm/cxacru.c b/drivers/usb/atm/cxacru.c
+index 4ce7cba2b48a..ba795a8d3888 100644
+--- a/drivers/usb/atm/cxacru.c
++++ b/drivers/usb/atm/cxacru.c
+@@ -55,7 +55,8 @@ static const char cxacru_driver_name[] = "cxacru";
+ #define POLL_INTERVAL	1	/* secs */
+ 
+ /* commands for interaction with the modem through the control channel before
+- * firmware is loaded  */
++ * firmware is loaded
++ */
+ enum cxacru_fw_request {
+ 	FW_CMD_ERR,
+ 	FW_GET_VER,
+@@ -67,7 +68,8 @@ enum cxacru_fw_request {
+ };
+ 
+ /* commands for interaction with the modem through the control channel once
+- * firmware is loaded  */
++ * firmware is loaded
++ */
+ enum cxacru_cm_request {
+ 	CM_REQUEST_UNDEFINED = 0x80,
+ 	CM_REQUEST_TEST,
+@@ -369,7 +371,8 @@ static ssize_t adsl_state_store(struct device *dev,
+ 	/* Line status is only updated every second
+ 	 * and the device appears to only react to
+ 	 * START/STOP every second too. Wait 1.5s to
+-	 * be sure that restart will have an effect. */
++	 * be sure that restart will have an effect.
++	 */
+ 	if (!strcmp(str_cmd, "restart"))
+ 		msleep(1500);
+ 
+@@ -1237,7 +1240,8 @@ static void cxacru_unbind(struct usbatm_data *usbatm_instance,
+ 	BUG_ON(instance->poll_state == CXPOLL_SHUTDOWN);
+ 
+ 	/* ensure that status polling continues unless
+-	 * it has already stopped */
++	 * it has already stopped
++	 */
+ 	if (instance->poll_state == CXPOLL_STOPPED)
+ 		is_polling = 0;
+ 
 -- 
-Kees Cook
+2.34.1
+
