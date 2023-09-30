@@ -2,51 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4A97B3E9A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 08:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5D57B3E9C
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 08:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbjI3GLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 02:11:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60856 "EHLO
+        id S234008AbjI3GOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 02:14:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232072AbjI3GLn (ORCPT
+        with ESMTP id S229447AbjI3GOB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 02:11:43 -0400
+        Sat, 30 Sep 2023 02:14:01 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E74401AB;
-        Fri, 29 Sep 2023 23:11:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A82AC433C8;
-        Sat, 30 Sep 2023 06:11:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2561AB;
+        Fri, 29 Sep 2023 23:13:59 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D64FDC433C7;
+        Sat, 30 Sep 2023 06:13:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696054300;
-        bh=1EphpFWnU/6lrIe7UpyGV+C1tQHUDqUUsCrgVBuTw64=;
+        s=korg; t=1696054439;
+        bh=4a0tblP3n3uiYoGh+jE1PItEJ/6scR1bU+57t6WA/Tw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uFY4WqNIJlRXHSIHR2qN9YOceoWUE6d5MUL+EisewvqwdxsY/k1Iw+mejf80UAw3a
-         n1xbJv3Iv+bJwy/Dzm1zQ9kaLqL6FMpZCIzIXGUz1OWbknde3uin6PCyzprs1IQqc0
-         8vpCglLu9qFkcWgnyjkrR6+VLfVZieLjc1zMxQ6k=
-Date:   Sat, 30 Sep 2023 08:11:37 +0200
+        b=GoZG9Ek04SuxXMOWz5g1jo6otBnQ6yg156MfkMYh/W71zFTiCWDMA1D8LyzpOcw0l
+         p4MBD9ef1ZcVsI/nT38Am1LOaDw8Iq1vSKdKZAOePkw5s9tYmpzxYYMZSCqbm8NujO
+         6zpk3+MHuetHecsJqPSrXYl4EdUfDdqn4K7RQr+k=
+Date:   Sat, 30 Sep 2023 08:13:56 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        haiyangz@microsoft.com, decui@microsoft.com,
-        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
-        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
-        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
-        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        will@kernel.org, catalin.marinas@arm.com
-Subject: Re: [PATCH v4 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Message-ID: <2023093004-evoke-snowbird-363b@gregkh>
-References: <1696010501-24584-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1696010501-24584-16-git-send-email-nunodasneves@linux.microsoft.com>
+To:     Edward AD <twuufnxlz@gmail.com>
+Cc:     alex@ghiti.fr, alexghiti@rivosinc.com, aou@eecs.berkeley.edu,
+        conor@kernel.org, guoren@kernel.org, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-serial@vger.kernel.org, liushixin2@huawei.com,
+        palmer@dabbelt.com, paul.walmsley@sifive.com,
+        syzbot+8d2757d62d403b2d9275@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] Test for riscv fixes
+Message-ID: <2023093049-next-confusion-b812@gregkh>
+References: <2023092939-lagoon-punctual-e312@gregkh>
+ <20230929230534.45142-2-twuufnxlz@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1696010501-24584-16-git-send-email-nunodasneves@linux.microsoft.com>
+In-Reply-To: <20230929230534.45142-2-twuufnxlz@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -57,22 +52,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 11:01:41AM -0700, Nuno Das Neves wrote:
-> --- /dev/null
-> +++ b/include/uapi/linux/mshv.h
-> @@ -0,0 +1,306 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+On Sat, Sep 30, 2023 at 07:05:35AM +0800, Edward AD wrote:
+> On Fri, 29 Sep 2023 08:04:57 +0200 Greg KH wrote:
+> > Where are you getting your odd cc: list from?  This has nothing to do
+> > with serial drivers...
+> https://lore.kernel.org/all/0000000000000170df0605ccf91a@google.com/raw
 
-Much better.
-
-> +#ifndef _UAPI_LINUX_MSHV_H
-> +#define _UAPI_LINUX_MSHV_H
-> +
-> +/*
-> + * Userspace interface for /dev/mshv
-> + * Microsoft Hypervisor root partition APIs
-> + * NOTE: This API is not yet stable!
-
-Sorry, that will not work for obvious reasons.
-
-greg k-h
+I do not understand this answer.
