@@ -2,57 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9BE7B3F35
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 10:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 995B87B3F80
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 10:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234148AbjI3IcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 04:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39798 "EHLO
+        id S229658AbjI3Il4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 04:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjI3IcO (ORCPT
+        with ESMTP id S229489AbjI3Ilz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 04:32:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8173195
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 01:32:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696062732; x=1727598732;
-  h=date:from:to:cc:subject:message-id;
-  bh=VdAh14denq7jsBOWJYWpSWsv16tw7gADtzf2iu9jkCY=;
-  b=mHTen1c7fuZSnvmSaPBQcsZwhz0x5uxZJxrxFPqESoRux1lgYQ5GlV3C
-   9tN2ad7dOa0OZvxo+9fFrwWTlppS0oj/B+QVwtO0crN5baBIRkpVAHQmB
-   PNrWm7bdo3w7ebVXShf4py3zNNOczk6QNJKgLt2tGbwOhRZh8vw6Bw1nz
-   sAzDbbJwXlBZoVWAmk71VEfU7P9pbUCSJBN0ro1uT5MzjFfYWqb1/VOQq
-   sdclYli6RsG9vTXJBHejP79jrvC8wmYwbCK+pdvHDdIXP3FjAsIacTe4B
-   yqgguNOD13/6h6x+x4MR9OzUSoLnHfx9KtIKjF5mJsrXzbD+dkbr3pfT6
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="448923997"
-X-IronPort-AV: E=Sophos;i="6.03,189,1694761200"; 
-   d="scan'208";a="448923997"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2023 01:32:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="820401193"
-X-IronPort-AV: E=Sophos;i="6.03,189,1694761200"; 
-   d="scan'208";a="820401193"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 30 Sep 2023 01:32:10 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qmVOS-0003ur-0c;
-        Sat, 30 Sep 2023 08:32:08 +0000
-Date:   Sat, 30 Sep 2023 16:31:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 15874a3d27e6405e9d17595f83bd3ca1b6cab16d
-Message-ID: <202309301640.BEn4SvNJ-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Sat, 30 Sep 2023 04:41:55 -0400
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D83741A4;
+        Sat, 30 Sep 2023 01:41:50 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0Vt5scEN_1696063306;
+Received: from 30.236.0.214(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0Vt5scEN_1696063306)
+          by smtp.aliyun-inc.com;
+          Sat, 30 Sep 2023 16:41:48 +0800
+Message-ID: <643c479a-b8bc-7526-330a-5c3f5547385c@linux.alibaba.com>
+Date:   Sat, 30 Sep 2023 16:41:45 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH net-next v4 03/18] net/smc: extract v2 check helper from
+ SMC-D device registration
+To:     Jan Karcher <jaka@linux.ibm.com>, kgraul@linux.ibm.com,
+        wenjia@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com
+Cc:     wintera@linux.ibm.com, schnelle@linux.ibm.com,
+        gbayer@linux.ibm.com, pasic@linux.ibm.com,
+        alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+        dust.li@linux.alibaba.com, linux-s390@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1695568613-125057-1-git-send-email-guwen@linux.alibaba.com>
+ <1695568613-125057-4-git-send-email-guwen@linux.alibaba.com>
+ <902e41df-0c98-c8ef-09cb-a92cf053f9d2@linux.ibm.com>
+From:   Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <902e41df-0c98-c8ef-09cb-a92cf053f9d2@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-12.5 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,219 +51,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git sched/core
-branch HEAD: 15874a3d27e6405e9d17595f83bd3ca1b6cab16d  sched/debug: Add new tracepoint to track compute energy computation
 
-elapsed time: 1435m
 
-configs tested: 200
-configs skipped: 2
+On 2023/9/28 11:08, Jan Karcher wrote:
+> 
+> 
+> On 24/09/2023 17:16, Wen Gu wrote:
+>> This patch extracts v2-capable logic from the process of registering the
+>> ISM device as an SMC-D device, so that the registration process of other
+>> underlying devices can reuse it.
+>>
+>> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
+>> ---
+>>   net/smc/smc_ism.c | 29 ++++++++++++++++++-----------
+>>   net/smc/smc_ism.h |  1 +
+>>   2 files changed, 19 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/net/smc/smc_ism.c b/net/smc/smc_ism.c
+>> index 455ae0a..8f1ba74 100644
+>> --- a/net/smc/smc_ism.c
+>> +++ b/net/smc/smc_ism.c
+>> @@ -69,6 +69,22 @@ bool smc_ism_is_v2_capable(void)
+>>       return smc_ism_v2_capable;
+>>   }
+>> +/* must be called under smcd_dev_list.mutex lock */
+>> +void smc_ism_check_v2_capable(struct smcd_dev *smcd)
+>> +{
+>> +    u8 *system_eid = NULL;
+>> +
+>> +    if (smc_ism_v2_capable)
+>> +        return;
+>> +
+>> +    system_eid = smcd->ops->get_system_eid();
+>> +    if (smcd->ops->supports_v2()) {
+>> +        smc_ism_v2_capable = true;
+>> +        memcpy(smc_ism_v2_system_eid, system_eid,
+>> +               SMC_MAX_EID_LEN);
+>> +    }
+>> +}
+>> +
+>>   /* Set a connection using this DMBE. */
+>>   void smc_ism_set_conn(struct smc_connection *conn)
+>>   {
+>> @@ -423,16 +439,7 @@ static void smcd_register_dev(struct ism_dev *ism)
+>>           smc_pnetid_by_table_smcd(smcd);
+>>       mutex_lock(&smcd_dev_list.mutex);
+>> -    if (list_empty(&smcd_dev_list.list)) {
+>> -        u8 *system_eid = NULL;
+>> -
+>> -        system_eid = smcd->ops->get_system_eid();
+>> -        if (smcd->ops->supports_v2()) {
+>> -            smc_ism_v2_capable = true;
+>> -            memcpy(smc_ism_v2_system_eid, system_eid,
+>> -                   SMC_MAX_EID_LEN);
+>> -        }
+>> -    }
+>> +    smc_ism_check_v2_capable(smcd);
+> 
+> The list_empty check is omitted here which means the smc_ism_check_v2_capable does not touch the list.
+> So i think the call could be placed prior the mutex_lock.
+> 
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Good catch. I omitted the list_empty check in this version but forget to remove 'the
+lock comments' and place the helper prior to the mutex_lock. It will be fixed.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20230929   gcc  
-arc                   randconfig-001-20230930   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         at91_dt_defconfig   gcc  
-arm                                 defconfig   gcc  
-arm                       netwinder_defconfig   clang
-arm                          pxa168_defconfig   clang
-arm                   randconfig-001-20230930   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                          allyesconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230929   gcc  
-i386         buildonly-randconfig-001-20230930   gcc  
-i386         buildonly-randconfig-002-20230929   gcc  
-i386         buildonly-randconfig-002-20230930   gcc  
-i386         buildonly-randconfig-003-20230929   gcc  
-i386         buildonly-randconfig-003-20230930   gcc  
-i386         buildonly-randconfig-004-20230929   gcc  
-i386         buildonly-randconfig-004-20230930   gcc  
-i386         buildonly-randconfig-005-20230929   gcc  
-i386         buildonly-randconfig-005-20230930   gcc  
-i386         buildonly-randconfig-006-20230929   gcc  
-i386         buildonly-randconfig-006-20230930   gcc  
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230929   gcc  
-i386                  randconfig-001-20230930   gcc  
-i386                  randconfig-002-20230929   gcc  
-i386                  randconfig-002-20230930   gcc  
-i386                  randconfig-003-20230929   gcc  
-i386                  randconfig-003-20230930   gcc  
-i386                  randconfig-004-20230929   gcc  
-i386                  randconfig-004-20230930   gcc  
-i386                  randconfig-005-20230929   gcc  
-i386                  randconfig-005-20230930   gcc  
-i386                  randconfig-006-20230929   gcc  
-i386                  randconfig-006-20230930   gcc  
-i386                  randconfig-011-20230929   gcc  
-i386                  randconfig-011-20230930   gcc  
-i386                  randconfig-012-20230929   gcc  
-i386                  randconfig-012-20230930   gcc  
-i386                  randconfig-013-20230929   gcc  
-i386                  randconfig-013-20230930   gcc  
-i386                  randconfig-014-20230929   gcc  
-i386                  randconfig-014-20230930   gcc  
-i386                  randconfig-015-20230929   gcc  
-i386                  randconfig-015-20230930   gcc  
-i386                  randconfig-016-20230929   gcc  
-i386                  randconfig-016-20230930   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230929   gcc  
-loongarch             randconfig-001-20230930   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                         amcore_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                          sun3x_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                           ip22_defconfig   clang
-mips                           mtx1_defconfig   clang
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                  or1klitex_defconfig   gcc  
-openrisc                 simple_smp_defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                    adder875_defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc                    ge_imp3a_defconfig   clang
-powerpc                 mpc8313_rdb_defconfig   clang
-powerpc                 mpc8315_rdb_defconfig   clang
-powerpc                 xes_mpc85xx_defconfig   clang
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230929   gcc  
-riscv                 randconfig-001-20230930   gcc  
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230929   gcc  
-s390                  randconfig-001-20230930   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                        apsh4ad0a_defconfig   gcc  
-sh                                  defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                        edosk7760_defconfig   gcc  
-sh                          rsk7201_defconfig   gcc  
-sh                          rsk7269_defconfig   gcc  
-sh                           se7206_defconfig   gcc  
-sh                           se7343_defconfig   gcc  
-sh                           se7619_defconfig   gcc  
-sh                           se7722_defconfig   gcc  
-sh                   secureedge5410_defconfig   gcc  
-sh                           sh2007_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                 randconfig-001-20230930   gcc  
-sparc64                          alldefconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230929   gcc  
-x86_64       buildonly-randconfig-001-20230930   gcc  
-x86_64       buildonly-randconfig-002-20230929   gcc  
-x86_64       buildonly-randconfig-002-20230930   gcc  
-x86_64       buildonly-randconfig-003-20230929   gcc  
-x86_64       buildonly-randconfig-003-20230930   gcc  
-x86_64       buildonly-randconfig-004-20230929   gcc  
-x86_64       buildonly-randconfig-004-20230930   gcc  
-x86_64       buildonly-randconfig-005-20230929   gcc  
-x86_64       buildonly-randconfig-005-20230930   gcc  
-x86_64       buildonly-randconfig-006-20230929   gcc  
-x86_64       buildonly-randconfig-006-20230930   gcc  
-x86_64                              defconfig   gcc  
-x86_64                                  kexec   gcc  
-x86_64                randconfig-001-20230930   gcc  
-x86_64                randconfig-002-20230930   gcc  
-x86_64                randconfig-003-20230930   gcc  
-x86_64                randconfig-004-20230930   gcc  
-x86_64                randconfig-005-20230930   gcc  
-x86_64                randconfig-006-20230930   gcc  
-x86_64                randconfig-011-20230930   gcc  
-x86_64                randconfig-012-20230930   gcc  
-x86_64                randconfig-013-20230930   gcc  
-x86_64                randconfig-014-20230930   gcc  
-x86_64                randconfig-015-20230930   gcc  
-x86_64                randconfig-016-20230930   gcc  
-x86_64                randconfig-071-20230930   gcc  
-x86_64                randconfig-072-20230930   gcc  
-x86_64                randconfig-073-20230930   gcc  
-x86_64                randconfig-074-20230930   gcc  
-x86_64                randconfig-075-20230930   gcc  
-x86_64                randconfig-076-20230930   gcc  
-x86_64                           rhel-8.3-bpf   gcc  
-x86_64                          rhel-8.3-func   gcc  
-x86_64                    rhel-8.3-kselftests   gcc  
-x86_64                         rhel-8.3-kunit   gcc  
-x86_64                           rhel-8.3-ltp   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa                       common_defconfig   gcc  
-xtensa                              defconfig   gcc  
-xtensa                    xip_kc705_defconfig   gcc  
+Thank you.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>>       /* sort list: devices without pnetid before devices with pnetid */
+>>       if (smcd->pnetid[0])
+>>           list_add_tail(&smcd->list, &smcd_dev_list.list);
+>> @@ -535,10 +542,10 @@ int smc_ism_init(void)
+>>   {
+>>       int rc = 0;
+>> -#if IS_ENABLED(CONFIG_ISM)
+>>       smc_ism_v2_capable = false;
+>>       memset(smc_ism_v2_system_eid, 0, SMC_MAX_EID_LEN);
+>> +#if IS_ENABLED(CONFIG_ISM)
+>>       rc = ism_register_client(&smc_ism_client);
+>>   #endif
+>>       return rc;
+>> diff --git a/net/smc/smc_ism.h b/net/smc/smc_ism.h
+>> index 832b2f4..14d2e77 100644
+>> --- a/net/smc/smc_ism.h
+>> +++ b/net/smc/smc_ism.h
+>> @@ -42,6 +42,7 @@ int smc_ism_register_dmb(struct smc_link_group *lgr, int buf_size,
+>>   void smc_ism_get_system_eid(u8 **eid);
+>>   u16 smc_ism_get_chid(struct smcd_dev *dev);
+>>   bool smc_ism_is_v2_capable(void);
+>> +void smc_ism_check_v2_capable(struct smcd_dev *dev);
+>>   int smc_ism_init(void);
+>>   void smc_ism_exit(void);
+>>   int smcd_nl_get_device(struct sk_buff *skb, struct netlink_callback *cb);
