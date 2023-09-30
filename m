@@ -2,100 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 988577B3ED7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 09:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA887B3EDA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 09:47:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234127AbjI3Hgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 03:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
+        id S234119AbjI3Hof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 03:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229578AbjI3Hgk (ORCPT
+        with ESMTP id S229447AbjI3Hoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 03:36:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48306FA;
-        Sat, 30 Sep 2023 00:36:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0279AC433C7;
-        Sat, 30 Sep 2023 07:36:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696059397;
-        bh=u+Q2YBbAuaGWTrcSYtmRkLm1uMagIDTTzw8E5LMr6DA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I/eB9Ij7lq/cTWTCAvkOVWa0S/19CAD++XnB9YNCmV0jmYiYJB9y+IweeBFa8hOs5
-         cniVGLlJnSeTSM82T8xaLthgsjQNikQAkcfKT74c+ut06MZ03ZT9O6Ic11BchgzoQv
-         A28kLMY7Oc6yhkL/RMA9NLG99+/+55fVouNtP2v6RwKTRVdXGFd3JIrv1iFmA5jx/M
-         2l6Pk8pEo0bcDVn4NkTMX9s2qWYRzcuRN+CSCLfhHqjOeFydIvXRmGSma0+kjbfcCb
-         H8/QcRJnz2m+5pQkCwaEond8SLbLL/QLVItHFNxwq15peUwzwNMICuenN2taFpjWrb
-         cw32fmVbfos7Q==
-Date:   Sat, 30 Sep 2023 10:36:33 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Niklas Schnelle <schnelle@linux.ibm.com>
-Cc:     Saeed Mahameed <saeedm@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shay Drory <shayd@nvidia.com>,
-        Moshe Shemesh <moshe@nvidia.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2] net/mlx5: fix calling mlx5_cmd_init() before DMA
- mask is set
-Message-ID: <20230930073633.GC1296942@unreal>
-References: <20230929-mlx5_init_fix-v2-1-51ed2094c9d8@linux.ibm.com>
+        Sat, 30 Sep 2023 03:44:34 -0400
+Received: from mail-oa1-x42.google.com (mail-oa1-x42.google.com [IPv6:2001:4860:4864:20::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75025BF;
+        Sat, 30 Sep 2023 00:44:32 -0700 (PDT)
+Received: by mail-oa1-x42.google.com with SMTP id 586e51a60fabf-1dd1714b9b6so5438954fac.0;
+        Sat, 30 Sep 2023 00:44:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696059872; x=1696664672; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bbxvayBBL1LZMvkAgSgbJrDuTM2+9jSeKuMGIK8uzTw=;
+        b=YE0MezBrgeg/TBBDwk++sz33d7t7nQxkOhmB4I8/kaispVtYBQFAdPR6tkc+bRelqY
+         WzKm6E1TuuzrioHk+UGZzw+LsnOL6+2GPxXpc21GmIsgvjqBqhp4yayThdMETpI3oqCl
+         /Tvtu9sSO9jQgjMv4SXh8Q2FE+HoMpFhI0tAMelwDTy0/xnjH2C7sepS8hJOXk2tKFc4
+         Nn9iski63nn/ZuNTwWMvsTh235TF5/0OCbqmqRcAnMCSsVGgdrkXdQmVXl+VoaRLbVd+
+         s4gv7+++7AOYUy0NpdPVf93VjIwi6huzpL5D86n+ao8+o1Pq9YL9dJRsTu9hE4H0LUwo
+         KJsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696059872; x=1696664672;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bbxvayBBL1LZMvkAgSgbJrDuTM2+9jSeKuMGIK8uzTw=;
+        b=JdRg6mwdVmysT/KiL6FUBS7LOUdYrIzBWPkw8MEouLS0TERBJaKmjnWE5xEK4l7HI1
+         t8APPBB7oYmF8hpqeqMNYr46gotwM9BtcGSqj+z+cgRJ6oyXGgO9rHl0e0C5lxfqvejg
+         RXVKOia9uVt18/4bv8Sk1q8/ZrGNODB1wXwT88MQuXmRCHb7maBpbULR0sk+ZbwI+vpv
+         +oDcwUHcCecP/uYQYT6JbuXlJA+y6ajuqb0SRz2e48HtZzwr05nIPp5McHXQa4XlnZ7R
+         /o2STQ3btl7+BYkXAtK9G7yVlTXXhdONb+XrNNMIvbctDb/rn9fRYN+/V0kdxZMzB1do
+         PMag==
+X-Gm-Message-State: AOJu0Yw9WD7+PwGXxwsSzaQTFv5zDGfuMW405BqVc/oPKnZym5Hy5yAZ
+        Q/q3jlOrC/GEeaxhr8A7g4xwLpHVirao
+X-Google-Smtp-Source: AGHT+IHwzjP/6135BmZyfJjutxvh7TCMU/FeNLkEdg2LRmmPsMyE/M+aS9lKoJZ+vD+8eEtH5mUlMQ==
+X-Received: by 2002:a05:6870:2197:b0:1d5:adc0:4a1 with SMTP id l23-20020a056870219700b001d5adc004a1mr6980589oae.22.1696059871763;
+        Sat, 30 Sep 2023 00:44:31 -0700 (PDT)
+Received: from localhost.localdomain ([62.204.54.223])
+        by smtp.googlemail.com with ESMTPSA id e20-20020aa78c54000000b0069337938bdcsm5561666pfd.125.2023.09.30.00.44.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Sep 2023 00:44:31 -0700 (PDT)
+From:   Lu jicong <jiconglu58@gmail.com>
+To:     jszhang@kernel.org
+Cc:     Thinh.Nguyen@synopsys.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Lu jicong <jiconglu58@gmail.com>
+Subject: Re: [PATCH] usb: dwc3: don't reset device side if dwc3 was configured as host-only
+Date:   Sat, 30 Sep 2023 15:43:34 +0800
+Message-Id: <20230930074334.1406464-1-jiconglu58@gmail.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230627162018.739-1-jszhang@kernel.org>
+References: <20230627162018.739-1-jszhang@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230929-mlx5_init_fix-v2-1-51ed2094c9d8@linux.ibm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 02:15:49PM +0200, Niklas Schnelle wrote:
-> Since commit 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and
-> reload routines") mlx5_cmd_init() is called in mlx5_mdev_init() which is
-> called in probe_one() before mlx5_pci_init(). This is a problem because
-> mlx5_pci_init() is where the DMA and coherent mask is set but
-> mlx5_cmd_init() already does a dma_alloc_coherent(). Thus a DMA
-> allocation is done during probe before the correct mask is set. This
-> causes probe to fail initialization of the cmdif SW structs on s390x
-> after that is converted to the common dma-iommu code. This is because on
-> s390x DMA addresses below 4 GiB are reserved on current machines and
-> unlike the old s390x specific DMA API implementation common code
-> enforces DMA masks.
-> 
-> Fix this by moving set_dma_caps() out of mlx5_pci_init() and into
-> probe_one() before mlx5_mdev_init(). To match the overall naming scheme
-> rename it to mlx5_dma_init().
-> 
-> Link: https://lore.kernel.org/linux-iommu/cfc9e9128ed5571d2e36421e347301057662a09e.camel@linux.ibm.com/
-> Fixes: 06cd555f73ca ("net/mlx5: split mlx5_cmd_init() to probe and reload routines")
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> ---
-> Note: I ran into this while testing the linked series for converting
-> s390x to use dma-iommu. The existing s390x specific DMA API
-> implementation doesn't respect DMA masks and is thus not affected
-> despite of course also only supporting DMA addresses above 4 GiB.
-> ---
-> Changes in v2:
-> - Instead of moving the whole mlx5_pci_init() only move the
->   set_dma_caps() call so as to keep pci_enable_device() after the FW
->   command interface initialization (Leon)
-> - Link to v1: https://lore.kernel.org/r/20230928-mlx5_init_fix-v1-1-79749d45ce60@linux.ibm.com
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/main.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
-> 
+It seems that this patch causes driver failed to initialize on rockchip rk3399 devices
+when DWC3 controller is configured as dual role.
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+[    2.827119] dwc3 fe900000.usb: error -ETIMEDOUT: failed to initialize core
+[    2.827881] dwc3: probe of fe900000.usb failed with error -110
+
+After some tests I am preliminarily certain that this patch caused the failure.
