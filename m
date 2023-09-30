@@ -2,132 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC867B41C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 17:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D0E7B41C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 17:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234431AbjI3Phk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 11:37:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35130 "EHLO
+        id S234422AbjI3PlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 11:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234334AbjI3Phi (ORCPT
+        with ESMTP id S234256AbjI3PlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 11:37:38 -0400
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2FB9EB
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:37:31 -0700 (PDT)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-59f7f2b1036so127911547b3.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:37:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696088251; x=1696693051; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Iij7GZPs4ta7mpI/DDP/sOC6B5pAs6vBvsF5JU59Dng=;
-        b=sYzo6XUj/VGXsS/c+8iIR/YiKUJBwnimrOMTrD+9AUnOIlUUa+wIQpkqJpMyHu/bf3
-         d4+1cDx5AvDqd5noI/NmQZhb10XCf2l8YeZJ+vjZgD/EBXHWLMG0DGxPXcTDNouaD37Y
-         KptpNMaeTeRLAfOvYv4NWBe6a6fVZvxUlO7i8GMXc8wVhc5FpGVv285qRKt5d9Yz6M4a
-         1jh5qc3Bj6I612sXZ9g4DcjZS0+7mfrkOudLL53a6W8DsPdyyCnMvvXD5BY4B3bJJJ5O
-         /vNzBAyqjW70SEluDVl5R9zhVXvcSV6igSvORQ4pfcYfRmUEV0/CJ5ttuXWQddP3dS0N
-         r+sw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696088251; x=1696693051;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Iij7GZPs4ta7mpI/DDP/sOC6B5pAs6vBvsF5JU59Dng=;
-        b=ZYUqWotB+aVFHvBDO/ANVkNoEbVg91XclQng2Z3XPYdv8tUc+zfclad8S82PAwBeGq
-         66wMaNh1/qqWBhXuaES430LRp6Oh8i7oLMCqtwJsGl/p+o5FUt7/nzKLR839L0oxBTpt
-         B3TkhKheCmP+EOgByaPlMo1O9TZxLOVu291A8wBufHUMoOWTorjrjkJzWdUOpp0fK3jK
-         cwSD3Yw7G5F3vSfPLhVdlTHLZB+E+l42A7b3eXPACyp11qZI/2cOYwHkNQXSjKSm1zuT
-         xFfQ0xz9XqILt5A09IGdNxaDL+Y4F/LEx4XjYPf8iKt+lFiAHNUGdMBi2/AphxMFZOrG
-         cxqw==
-X-Gm-Message-State: AOJu0Yyd4Z28Lv4uzi7RDrHUFIG8PJTk92CZovRUJM6IqifieTipT+mn
-        wcPpgiPhrnZ/B8uYYdjvtbFRcVrCYWZsDVZrYAK6eQ==
-X-Google-Smtp-Source: AGHT+IGFEGxNW9iad1m1hopLGKbkXI8hjBmpaUfewF+ozAfJ+lrOwUFw+LD1rcN0USj40MfR4GqG12cZk9y2+fvzoII=
-X-Received: by 2002:a0d:ddc1:0:b0:5a1:d4bc:7faa with SMTP id
- g184-20020a0dddc1000000b005a1d4bc7faamr7394744ywe.18.1696088251028; Sat, 30
- Sep 2023 08:37:31 -0700 (PDT)
+        Sat, 30 Sep 2023 11:41:10 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D5EB3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:41:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696088468; x=1727624468;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=5detMizJG9oXLHG41LVxs7Vbdu5XWqendm5x3jTez24=;
+  b=eN8edClzLuRYadiRGGt+MgAhj5UYCasu/ZVGFcz9dxh675ZSXodQ7Mh7
+   9SlDHN+rIa1XF4zcMDtykzlyKEthEYSrjrUN5qL7tk7QunPtjeJEJkyyO
+   EZnu54MelWrhO4Ix9vlrGAvI5GLUBuDIJugBvBd7x7D6Aj8kI/6H8TWU9
+   sJhyOzwQFoeeIffakYEoQxchgP2HT23p8fa1g67bO2ds5+sBD2Rets+5H
+   FfsLXRHi8K5/WTLbZ+n89LBiuThwfAMk9gU5N0OWUXXgipTr2h3sfyLce
+   19okTUE0eyPWeQQ3DOQUpWNfGw47AFnfFIoAo0PJwxNka/FF358ljECb8
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10849"; a="362715418"
+X-IronPort-AV: E=Sophos;i="6.03,190,1694761200"; 
+   d="scan'208";a="362715418"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2023 08:41:07 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10849"; a="873958715"
+X-IronPort-AV: E=Sophos;i="6.03,190,1694761200"; 
+   d="scan'208";a="873958715"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 30 Sep 2023 08:41:05 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qmc5X-0004FB-0v;
+        Sat, 30 Sep 2023 15:41:03 +0000
+Date:   Sat, 30 Sep 2023 23:40:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Shayne Chen <shayne.chen@mediatek.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Felix Fietkau <nbd@nbd.name>
+Subject: include/linux/compiler_types.h:397:45: error: call to
+ '__compiletime_assert_381' declared with attribute error: BUILD_BUG_ON
+ failed: sizeof(mstat) > sizeof(skb->cb)
+Message-ID: <202309302343.io5LPNu6-lkp@intel.com>
 MIME-Version: 1.0
-References: <20230929-pxa1908-lkml-v5-0-5aa5a1109c5f@skole.hr>
- <20230929-pxa1908-lkml-v5-7-5aa5a1109c5f@skole.hr> <CACRpkdb=8LU9Mkkn_VDcTGoH1pWn=hp9ZhN5dLm5pykif8cp-w@mail.gmail.com>
- <5715527.DvuYhMxLoT@radijator>
-In-Reply-To: <5715527.DvuYhMxLoT@radijator>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 30 Sep 2023 17:37:19 +0200
-Message-ID: <CACRpkdYOLjZ2thKdR7JoYxa2gr078AHO6JXu76fUU+dBzG7MPQ@mail.gmail.com>
-Subject: Re: [PATCH RESEND v5 7/8] arm64: dts: Add DTS for Marvell PXA1908 and samsung,coreprimevelte
-To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     Robert Jarzmik <robert.jarzmik@free.fr>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-hardening@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        afaerber@suse.de, balejk@matfyz.cz
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 10:25=E2=80=AFAM Duje Mihanovi=C4=87 <duje.mihanovi=
-c@skole.hr> wrote:
-> On Saturday, September 30, 2023 12:05:41 AM CEST Linus Walleij wrote:
-> > But it exists, so I can't say you can't use it. Not my choice.
-> > I understand it is convenient.
-> >
-> > It is possible to switch later, but only if you have a unique
-> > pin controller compatible so please add that.
->
-> Maybe a dumb question. I might want to do this at some point to clean up =
-the
-> device tree a bit, are there any such pinctrl drivers I can use as a
-> reference?
+Hi Shayne,
 
-Since it's Marvell after all (albeit a descendant of the 20 yo
-PXA platform!) I would expect new Marvell SoCs to be more alike
-the AC5 bindings that Chris Packham merged only last year:
-Documentation/devicetree/bindings/pinctrl/marvell,ac5-pinctrl.yaml
-Driver:
-drivers/pinctrl/mvebu/pinctrl-armada-xp.c
-drivers/pinctrl/mvebu/pinctrl-mvebu.c
+FYI, the error/warning still remains.
 
-But if this pin controller is more related to PXA (Intel) hardware
-than to either Kirkwood or Armada, you might want to do something
-entirely different. It depends a bit on hardware.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9f3ebbef746f89f860a90ced99a359202ea86fde
+commit: 021af945997ffaeaa37c9673d71afad7cde6bdef wifi: mt76: mt7996: add eht rx rate support
+date:   6 months ago
+config: arm-buildonly-randconfig-r003-20220914 (https://download.01.org/0day-ci/archive/20230930/202309302343.io5LPNu6-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230930/202309302343.io5LPNu6-lkp@intel.com/reproduce)
 
-Hardware such as pinctrl-single.c with one mux configuration
-register per pin usually follow the Qualcomm way of doing
-things, which is to simply have one group per pin, then that
-can be associated with desired functions:
-Documentation/devicetree/bindings/pinctrl/qcom,tlmm-common.yaml
-this has the upside of using all the standard bindings for
-bias etc. Driver:
-drivers/pinctrl/qcom/pinctrl-msm.c
-then qualcomm have subdrivers for each SoC calling into this
-so you have to check "real" bindings and drivers such as:
-Documentation/devicetree/bindings/pinctrl/qcom,sm8550-tlmm.yaml
-drivers/pinctrl/qcom/pinctrl-sm8550.c
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309302343.io5LPNu6-lkp@intel.com/
 
-Yours,
-Linus Walleij
+All errors (new ones prefixed by >>):
+
+   In file included from <command-line>:
+   drivers/net/wireless/mediatek/mt76/mac80211.c: In function 'mt76_rx_convert':
+>> include/linux/compiler_types.h:397:45: error: call to '__compiletime_assert_381' declared with attribute error: BUILD_BUG_ON failed: sizeof(mstat) > sizeof(skb->cb)
+     397 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:378:25: note: in definition of macro '__compiletime_assert'
+     378 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:397:9: note: in expansion of macro '_compiletime_assert'
+     397 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+         |         ^~~~~~~~~~~~~~~~
+   drivers/net/wireless/mediatek/mt76/mac80211.c:1094:9: note: in expansion of macro 'BUILD_BUG_ON'
+    1094 |         BUILD_BUG_ON(sizeof(mstat) > sizeof(skb->cb));
+         |         ^~~~~~~~~~~~
+
+
+vim +/__compiletime_assert_381 +397 include/linux/compiler_types.h
+
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  383  
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  384  #define _compiletime_assert(condition, msg, prefix, suffix) \
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  385  	__compiletime_assert(condition, msg, prefix, suffix)
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  386  
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  387  /**
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  388   * compiletime_assert - break build and emit msg if condition is false
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  389   * @condition: a compile-time constant condition to check
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  390   * @msg:       a message to emit if condition is false
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  391   *
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  392   * In tradition of POSIX assert, this macro will break the build if the
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  393   * supplied condition is *false*, emitting the supplied error message if the
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  394   * compiler has support to do so.
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  395   */
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  396  #define compiletime_assert(condition, msg) \
+eb5c2d4b45e3d2d Will Deacon 2020-07-21 @397  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+eb5c2d4b45e3d2d Will Deacon 2020-07-21  398  
+
+:::::: The code at line 397 was first introduced by commit
+:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
+
+:::::: TO: Will Deacon <will@kernel.org>
+:::::: CC: Will Deacon <will@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
