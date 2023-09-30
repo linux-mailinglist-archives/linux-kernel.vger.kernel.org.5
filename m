@@ -2,307 +2,674 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1DC07B40AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 15:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDE17B40B2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 16:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234226AbjI3N6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 09:58:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58586 "EHLO
+        id S234196AbjI3OFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 10:05:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbjI3N6q (ORCPT
+        with ESMTP id S230516AbjI3OFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 09:58:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22269E;
-        Sat, 30 Sep 2023 06:58:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:Date:Cc:To:
-        From:Subject:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=1vPpvqCVinL9fzTjTNGUlj4myey3yl6y2SPFrWu6ih4=; b=HcEf01AHydDrE8pxRYZKHdPTmx
-        Z9qHuAeBAYxa+TPzHviQ3l2Aen5HCg1wvmHrcVsCcVU0MzmRBrpxtdaJA3QaRjWFYSB+234GW253T
-        8zkAiDx+e1zSNUL+7FEQGFoaIyhyyjSqtdHbINFSaClgzbqNt06j13VXFG/3qPV87Kf63EcHtgu/r
-        dIrMltvvNLRgD91KeJLUiPGteycM0IXLW9B3Ar+hRsCkB5sB7RA35JCc6U4CKf8g3DZCXLDnROJVh
-        iUAlgPa+hWYItb2kTsqhRKpKE0A8UTdPAv12jm0gGKAoG8m5wmwQTcGTH8VPFk4O8k7ppUMXVvl82
-        ABNR1tJw==;
-Received: from 54-240-197-238.amazon.com ([54.240.197.238] helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qmaUP-00FEqW-Rx; Sat, 30 Sep 2023 13:58:38 +0000
-Message-ID: <f21ee3bd852761e7808240d4ecaec3013c649dc7.camel@infradead.org>
-Subject: [PATCH v3] KVM: x86: Use fast path for Xen timer delivery
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     kvm <kvm@vger.kernel.org>
-Cc:     Paul Durrant <paul@xen.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Date:   Sat, 30 Sep 2023 14:58:35 +0100
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-7O1krAcrKpuOyM+gWZH9"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Sat, 30 Sep 2023 10:05:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BF3B3;
+        Sat, 30 Sep 2023 07:05:35 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8588DC433C7;
+        Sat, 30 Sep 2023 14:05:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696082735;
+        bh=jlIYetThseKxhkaFFI5z59gfr53ycTDHTMga/zoUD+A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kKNtNIXXqM+cktPIWig3JMXnh/o+5ZEaScFZPw7qcO0G3oqg9GHgKHMVwP9KK3D05
+         UmPmiaL8aKfgBOiE2sfS+9sc6iUFbf4U5WqoSZcP+abYjlfyfgTFLtJw10kIMZMCP/
+         mq6eN+JEQ7wyLIryxBsA60vMWn8lOFG8BKxHzqpFRUXklJfoLrjMgQ2HmYKQPmmaZe
+         92jxP9DYg9h/xqeWT9pEYXw2/bCYPYOTWwY4LLZG/IuRGhRT9fHaitlgWWA9I1Q7H3
+         zPsBf7lV5r06K8iYIp99PQEfHOh9j5r8IMEROtBsZfr4hZEXF9fBnO7IfJg7xp0ETv
+         bqCpuheV/iWxQ==
+Date:   Sat, 30 Sep 2023 15:05:31 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Dumitru Ceclan <mitrutzceclan@gmail.com>
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
+        linux-gpio@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Leonard =?UTF-8?B?R8O2aHJz?= <l.goehrs@pengutronix.de>,
+        Mike Looijmans <mike.looijmans@topic.nl>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Ceclan Dumitru <dumitru.ceclan@analog.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] iio: adc: ad7173: add AD7173 driver
+Message-ID: <20230930150531.083c51d4@jic23-huawei>
+In-Reply-To: <20230928125443.615006-2-mitrutzceclan@gmail.com>
+References: <20230928125443.615006-1-mitrutzceclan@gmail.com>
+        <20230928125443.615006-2-mitrutzceclan@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 28 Sep 2023 15:54:43 +0300
+Dumitru Ceclan <mitrutzceclan@gmail.com> wrote:
 
---=-7O1krAcrKpuOyM+gWZH9
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> The AD7173 family offer a complete integrated Sigma-Delta ADC solution
+> which can be used in high precision, low noise single channel
+> applications or higher speed multiplexed applications. The Sigma-Delta
+> ADC is intended primarily for measurement of signals close to DC but also
+> delivers outstanding performance with input bandwidths out to ~10kHz.
+> 
+> Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
+Hi Dumitru,
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+A few more things came up on a fresh look. All small stuff so fingers
+crossed for v3.
 
-Most of the time there's no need to kick the vCPU and deliver the timer
-event through kvm_xen_inject_timer_irqs(). Use kvm_xen_set_evtchn_fast()
-directly from the timer callback, and only fall back to the slow path
-when it's necessary to do so.
-
-This gives a significant improvement in timer latency testing (using
-nanosleep() for various periods and then measuring the actual time
-elapsed).
-
-However, there was a reason=C2=B9 the fast path was dropped when this suppo=
-rt
-was first added. The current code holds vcpu->mutex for all operations
-on the kvm->arch.timer_expires field, and the fast path introduces a
-potential race condition. Avoid that race by ensuring the hrtimer is
-(temporarily) cancelled before making changes in kvm_xen_start_timer(),
-and also when reading the values out for KVM_XEN_VCPU_ATTR_TYPE_TIMER.
-
-=C2=B9 https://lore.kernel.org/kvm/846caa99-2e42-4443-1070-84e49d2f11d2@red=
-hat.com/
-
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
----
- =E2=80=A2 v2: Remember, and deal with, those races.=20
-
- =E2=80=A2 v3: Drop the assertions for vcpu being loaded; those can be done
-       separately if at all.
-
-       Reorder the code in xen_timer_callback() to make it clearer
-       that kvm->arch.xen.timer_expires is being cleared in the case
-       where the event channel delivery is *complete*, as opposed to
-       the -EWOULDBLOCK deferred path.
-
-       Drop the 'pending' variable in kvm_xen_vcpu_get_attr() and
-       restart the hrtimer if (kvm->arch.xen.timer_expires), which
-       ought to be exactly the same thing (that's the *point* in
-       cancelling the timer, to make it truthful as we return its
-       value to userspace).      =20
-
-       Improve comments.
-
- arch/x86/kvm/xen.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
-
-diff --git a/arch/x86/kvm/xen.c b/arch/x86/kvm/xen.c
-index 40edf4d1974c..75586da134b3 100644
---- a/arch/x86/kvm/xen.c
-+++ b/arch/x86/kvm/xen.c
-@@ -134,9 +134,23 @@ static enum hrtimer_restart xen_timer_callback(struct =
-hrtimer *timer)
- {
- 	struct kvm_vcpu *vcpu =3D container_of(timer, struct kvm_vcpu,
- 					     arch.xen.timer);
-+	struct kvm_xen_evtchn e;
-+	int rc;
-+
- 	if (atomic_read(&vcpu->arch.xen.timer_pending))
- 		return HRTIMER_NORESTART;
-=20
-+	e.vcpu_id =3D vcpu->vcpu_id;
-+	e.vcpu_idx =3D vcpu->vcpu_idx;
-+	e.port =3D vcpu->arch.xen.timer_virq;
-+	e.priority =3D KVM_IRQ_ROUTING_XEN_EVTCHN_PRIO_2LEVEL;
-+
-+	rc =3D kvm_xen_set_evtchn_fast(&e, vcpu->kvm);
-+	if (rc !=3D -EWOULDBLOCK) {
-+		vcpu->arch.xen.timer_expires =3D 0;
-+		return HRTIMER_NORESTART;
-+	}
-+
- 	atomic_inc(&vcpu->arch.xen.timer_pending);
- 	kvm_make_request(KVM_REQ_UNBLOCK, vcpu);
- 	kvm_vcpu_kick(vcpu);
-@@ -146,6 +160,14 @@ static enum hrtimer_restart xen_timer_callback(struct =
-hrtimer *timer)
-=20
- static void kvm_xen_start_timer(struct kvm_vcpu *vcpu, u64 guest_abs, s64 =
-delta_ns)
- {
-+	/*
-+	 * Avoid races with the old timer firing. Checking timer_expires
-+	 * to avoid calling hrtimer_cancel() will only have false positives
-+	 * so is fine.
-+	 */
-+	if (vcpu->arch.xen.timer_expires)
-+		hrtimer_cancel(&vcpu->arch.xen.timer);
-+
- 	atomic_set(&vcpu->arch.xen.timer_pending, 0);
- 	vcpu->arch.xen.timer_expires =3D guest_abs;
-=20
-@@ -1019,9 +1041,36 @@ int kvm_xen_vcpu_get_attr(struct kvm_vcpu *vcpu, str=
-uct kvm_xen_vcpu_attr *data)
- 		break;
-=20
- 	case KVM_XEN_VCPU_ATTR_TYPE_TIMER:
-+		/*
-+		 * Ensure a consistent snapshot of state is captured, with a
-+		 * timer either being pending, or the event channel delivered
-+		 * to the corresponding bit in the shared_info. Not still
-+		 * lurking in the timer_pending flag for deferred delivery.
-+		 * Purely as an optimisation, if the timer_expires field is
-+		 * zero, that means the timer isn't active (or even in the
-+		 * timer_pending flag) and there is no need to cancel it.
-+		 */
-+		if (vcpu->arch.xen.timer_expires) {
-+			hrtimer_cancel(&vcpu->arch.xen.timer);
-+			kvm_xen_inject_timer_irqs(vcpu);
-+		}
-+
- 		data->u.timer.port =3D vcpu->arch.xen.timer_virq;
- 		data->u.timer.priority =3D KVM_IRQ_ROUTING_XEN_EVTCHN_PRIO_2LEVEL;
- 		data->u.timer.expires_ns =3D vcpu->arch.xen.timer_expires;
-+
-+		/*
-+		 * The hrtimer may trigger and raise the IRQ immediately,
-+		 * while the returned state causes it to be set up and
-+		 * raised again on the destination system after migration.
-+		 * That's fine, as the guest won't even have had a chance
-+		 * to run and handle the interrupt. Asserting an already
-+		 * pending event channel is idempotent.
-+		 */
-+		if (vcpu->arch.xen.timer_expires)
-+			hrtimer_start_expires(&vcpu->arch.xen.timer,
-+					      HRTIMER_MODE_ABS_HARD);
-+
- 		r =3D 0;
- 		break;
-=20
---=20
-2.40.1
+Jonathan
 
 
+> ---
+>  drivers/iio/adc/Kconfig  |  13 +
+>  drivers/iio/adc/Makefile |   1 +
+>  drivers/iio/adc/ad7173.c | 850 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 864 insertions(+)
+>  create mode 100644 drivers/iio/adc/ad7173.c
+> 
+> diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+> index 517b3db114b8..fe14a8b24e41 100644
+> --- a/drivers/iio/adc/Kconfig
+> +++ b/drivers/iio/adc/Kconfig
+> @@ -54,6 +54,19 @@ config AD7124
+>  	  To compile this driver as a module, choose M here: the module will be
+>  	  called ad7124.
+>  
+> +config AD7173
+> +	tristate "Analog Devices AD7173 driver"
+> +	depends on SPI_MASTER
+> +	select AD_SIGMA_DELTA
+> +	select GPIO_REGMAP
+If you are selecting it, why does it have if guards in the driver.
+I prefer the select here, so drop this if guards.
 
---=-7O1krAcrKpuOyM+gWZH9
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+> +	select REGMAP_SPI
+> +	help
+> +	  Say yes here to build support for Analog Devices AD7173 and similar ADC
+> +	  (currently supported: AD7172-2, AD7173-8, AD7175-2, AD7176-2).
+> +
+> +	  To compile this driver as a module, choose M here: the module will be
+> +	  called ad7173.
+> +
+>  config AD7192
+>  	tristate "Analog Devices AD7190 AD7192 AD7193 AD7195 ADC driver"
+>  	depends on SPI
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwOTMwMTM1ODM1WjAvBgkqhkiG9w0BCQQxIgQgaluScEEg
-2ERxGxkAMexOivoEtcilBNM1KbKc2Y5/tOMwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgA7+f+JR9lbxZoL/06qyulYfXNp70iOmvnS
-qGBU5/OXPcz+IkLkBRAHrJpFl2nKTTZ5gP+UhayVQZAcqVIH6EJnPdwG3ybE9rkD9Z/WvyGWLgVX
-e+pF0dZs77/WI0+AtWMFZ+gZfmRk1AJ1kgwyq3I/AbjxpcybtoTzZaCo37CcHwQInCkciFtkaHnv
-zP97+38aoFb752aMNRN4xk7nx86ES94bzMX56xJwAga/nbJF2zJHRXnWLC13VWLKayf1OkRJ1aS0
-AqdEn0z+sd8l17i6CpXbCA7r8lRUfJmxg635LymBGn2P8dRK3/nIs+yX4PsbjEWqIvxoRU3d3RBz
-M5rXUdXaESTjVYYXaAvoCyHWp32HRd6DqpAUyHyQAaViJv5ZKgkNq0TIldLkKKeGTyRlhu+GPpSD
-P482k6kdecMvla20KvIefGuhUQb18fVQ1QKL2V7nzSBa7BXA9HYyJC30ovbImrqorIK4GClcOp8s
-yf3h3BpaHVCScBIUx5wOP1fiwlmau3jGK9Z4nVfG1nCjP2Fo4gb13cF7xqD/Oz7Bvcseu+pjwZ5P
-Qi/h/RpjK+dNIzN1vgARKy0m6TkXlbhKWDTSdwqcxQBWGvntz9T+wQZLxZ+V77d4rXhO6NGD34Uj
-Ej52wBIMEIk/0gOUFFjq6bPDS1tQ6juFvxQT90/GrgAAAAAAAA==
+...
+
+> diff --git a/drivers/iio/adc/ad7173.c b/drivers/iio/adc/ad7173.c
+> new file mode 100644
+> index 000000000000..648bcec836a5
+> --- /dev/null
+> +++ b/drivers/iio/adc/ad7173.c
+> @@ -0,0 +1,850 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * AD7172-2/AD7173-8/AD7175-2/AD7176-2 SPI ADC driver
+> + * Copyright (C) 2023 Analog Devices, Inc.
+
+As you list Lars as an author and he's not be at ADI for 'a while'
+I'm guessing this should probably include a date range going back
+a few years.  Always good to reflect that history even if it's
+been out of tree.
+
+> + */
+> +
+> +#include <linux/bitfield.h>
+> +#include <linux/bits.h>
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/err.h>
+> +#include <linux/gpio/driver.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/property.h>
+> +#include <linux/regmap.h>
+> +#include <linux/gpio/regmap.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/slab.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/sysfs.h>
+> +#include <linux/units.h>
+> +
+> +#include <linux/iio/buffer.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/iio/sysfs.h>
+
+sysfs.h is only needed if you are defining IIO attrs without
+doing it via the IIO core channel descriptions. I don't see you doing
+that so shouldn't be needed.
+
+> +#include <linux/iio/trigger.h>
+Whilst the driver provides a trigger, it's via the ad_sigma_delta
+library so I don't think this driver needs to include trigger.h
+> +#include <linux/iio/trigger_consumer.h>
+> +#include <linux/iio/triggered_buffer.h>
+> +
+> +#include <linux/iio/adc/ad_sigma_delta.h>
+> +
+> +#define AD7173_REG_COMMS		0x00
+> +#define AD7173_REG_ADC_MODE		0x01
+> +#define AD7173_REG_INTERFACE_MODE	0x02
+> +#define AD7173_REG_CRC			0x03
+> +#define AD7173_REG_DATA			0x04
+> +#define AD7173_REG_GPIO			0x06
+> +#define AD7173_REG_ID			0x07
+> +#define AD7173_REG_CH(x)		(0x10 + (x))
+> +#define AD7173_REG_SETUP(x)		(0x20 + (x))
+> +#define AD7173_REG_FILTER(x)		(0x28 + (x))
+> +#define AD7173_REG_OFFSET(x)		(0x30 + (x))
+> +#define AD7173_REG_GAIN(x)		(0x38 + (x))
+> +
+> +#define AD7173_RESET_LENGTH		BITS_TO_BYTES(64)
+> +
+> +#define AD7173_CH_ENABLE		BIT(15)
+> +#define AD7173_CH_SETUP_SEL_MASK	GENMASK(14, 12)
+> +#define AD7173_CH_SETUP_SEL(x)		FIELD_PREP(AD7173_CH_SETUP_SEL_MASK, x)
+> +#define AD7173_CH_SETUP_AINPOS_MASK	GENMASK(9, 5)
+> +#define AD7173_CH_SETUP_AINPOS(x)	FIELD_PREP(AD7173_CH_SETUP_AINPOS_MASK, x)
+> +#define AD7173_CH_SETUP_AINNEG(x)	(x)
+> +
+> +#define AD7173_CH_ADDRESS(pos, neg) \
+> +	(AD7173_CH_SETUP_AINPOS(pos) | AD7173_CH_SETUP_AINNEG(neg))
+> +#define AD7173_AIN_TEMP_POS	17
+> +#define AD7173_AIN_TEMP_NEG	18
+> +
+> +#define AD7172_ID			0x00d0
+> +#define AD7173_ID			0x30d0
+> +#define AD7175_ID			0x0cd0
+> +#define AD7176_ID			0x0c90
+> +#define AD7173_ID_MASK			GENMASK(15, 4)
+> +
+> +#define AD7173_ADC_MODE_REF_EN		BIT(15)
+> +#define AD7173_ADC_MODE_SING_CYC	BIT(13)
+> +#define AD7173_ADC_MODE_MODE_MASK	GENMASK(6, 4)
+> +#define AD7173_ADC_MODE_MODE(x)		FIELD_PREP(AD7173_ADC_MODE_MODE_MASK, x)
+> +#define AD7173_ADC_MODE_CLOCKSEL_MASK	GENMASK(3, 2)
+> +#define AD7173_ADC_MODE_CLOCKSEL(x)	FIELD_PREP(AD7173_ADC_MODE_CLOCKSEL_MASK, x)
+> +
+> +#define AD7173_GPIO_PDSW	BIT(14)
+> +#define AD7173_GPIO_OP_EN2_3	BIT(13)
+> +#define AD7173_GPIO_MUX_IO	BIT(12)
+> +#define AD7173_GPIO_SYNC_EN	BIT(11)
+> +#define AD7173_GPIO_ERR_EN	BIT(10)
+> +#define AD7173_GPIO_ERR_DAT	BIT(9)
+> +#define AD7173_GPIO_GP_DATA3	BIT(7)
+> +#define AD7173_GPIO_GP_DATA2	BIT(6)
+> +#define AD7173_GPIO_IP_EN1	BIT(5)
+> +#define AD7173_GPIO_IP_EN0	BIT(4)
+> +#define AD7173_GPIO_OP_EN1	BIT(3)
+> +#define AD7173_GPIO_OP_EN0	BIT(2)
+> +#define AD7173_GPIO_GP_DATA1	BIT(1)
+> +#define AD7173_GPIO_GP_DATA0	BIT(0)
+> +
+> +#define AD7173_GPO12_DATA(x)	BIT(x)
+> +#define AD7173_GPO23_DATA(x)	BIT(x + 4)
+> +#define AD7173_GPO_DATA(x)	(x < 2 ? AD7173_GPO12_DATA(x) : AD7173_GPO23_DATA(x))
+> +
+> +#define AD7173_INTERFACE_DATA_STAT	BIT(6)
+> +#define AD7173_INTERFACE_DATA_STAT_EN(x)\
+> +	FIELD_PREP(AD7173_INTERFACE_DATA_STAT, x)
+> +
+> +#define AD7173_SETUP_BIPOLAR		BIT(12)
+> +#define AD7173_SETUP_AREF_BUF_MASK	GENMASK(11, 10)
+> +#define AD7173_SETUP_AIN_BUF_MASK	GENMASK(9, 8)
+> +
+> +#define AD7173_SETUP_REF_SEL_MASK	GENMASK(5, 4)
+> +#define AD7173_SETUP_REF_SEL(x)		FIELD_PREP(AD7173_SETUP_REF_SEL_MASK, x)
+> +#define AD7173_SETUP_REF_SEL_AVDD1_AVSS	0x3
+> +#define AD7173_SETUP_REF_SEL_INT_REF	0x2
+> +#define AD7173_SETUP_REF_SEL_EXT_REF2	0x1
+> +#define AD7173_SETUP_REF_SEL_EXT_REF	0x0
+> +
+> +#define AD7173_FILTER_ODR0_MASK		GENMASK(5, 0)
+> +#define AD7173_FILTER_ODR0(x)		FIELD_PREP(AD7173_FILTER_ODR0_MASK, x)
+> +#define AD7173_FILTER_ODR0(x)		FIELD_PREP(AD7173_FILTER_ODR0_MASK, x)
+
+Firstly why is it duplicated?
+
+Secondly why not just use the FIELD_PREP() inline as it's obvious
+what it's doing and the extra macro, if anything makes it less clear.
+Same is true for all the similar macros.
+
+> +
+> +enum ad7173_ids {
+> +	ID_AD7172_2,
+> +	ID_AD7173_8,
+> +	ID_AD7175_2,
+> +	ID_AD7176_2,
+> +};
+> +
+> +struct ad7173_device_info {
+> +	unsigned int id;
+> +	unsigned int num_inputs;
+> +	unsigned int num_configs;
+> +	unsigned int num_channels;
+> +	unsigned char num_gpios;
+> +	bool has_temp;
+> +	unsigned int clock;
+> +
+> +	const unsigned int *sinc5_data_rates;
+> +	unsigned int num_sinc5_data_rates;
+> +};
+> +
+> +struct ad7173_channel_config {
+> +	bool live;
+> +	unsigned char cfg_slot;
+> +	/* Following fields are used to compare equality. Bipolar must be first */
+> +	bool bipolar;
+> +	bool input_buf;
+> +	unsigned char odr;
+> +};
+> +
+> +struct ad7173_channel {
+> +	unsigned int chan_reg;
+> +	struct ad7173_channel_config cfg;
+> +	unsigned int ain;
+> +};
+> +
+> +struct ad7173_state {
+> +	const struct ad7173_device_info *info;
+> +	struct ad_sigma_delta sd;
+> +	struct ad7173_channel *channels;
+> +	struct regulator *reg;
+> +	unsigned int adc_mode;
+> +	unsigned int interface_mode;
+> +	unsigned int num_channels;
+> +	unsigned long cfg_slots_status; /* slots usage status bitmap*/
+
+Whilst you might not need to as it fits in one, DECLARE_BITMAP()
+is a good way of making it clear something is a bitmap.
+
+I wondered if you used this a bitmap, and you do.  Though another
+question there is why assign_bit() when value is known.
+Just use set_bit() or clear_bit() directly
 
 
---=-7O1krAcrKpuOyM+gWZH9--
+> +	unsigned long long config_usage_counter;
+> +	unsigned long long *config_cnts;
+> +#if IS_ENABLED(CONFIG_GPIOLIB)
+> +	struct regmap *regmap;
+> +	struct gpio_regmap *gpio_regmap;
+> +#endif
+> +};
+
+> +#if IS_ENABLED(CONFIG_GPIOLIB)
+
+Seems odd to have these guards.  I don't think we mind obliging
+people to build with GPIOLIB support as very unlikely they won't
+have it anyway for other reasons.  Looking at the Kconfig I see
+you select this anyway, so just drop the if guards.
+
+
+> +
+> +static const struct regmap_range ad7173_range_gpio[] = {
+> +	regmap_reg_range(AD7173_REG_GPIO, AD7173_REG_GPIO),
+> +};
+> +
+> +static const struct regmap_access_table ad7173_access_table = {
+> +	.yes_ranges = ad7173_range_gpio,
+> +	.n_yes_ranges = ARRAY_SIZE(ad7173_range_gpio),
+> +};
+> +
+> +static const struct regmap_config ad7173_regmap_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 16,
+> +	.rd_table = &ad7173_access_table,
+> +	.wr_table = &ad7173_access_table,
+> +	.read_flag_mask = BIT(6),
+> +};
+> +
+> +static int ad7173_mask_xlate(struct gpio_regmap *gpio, unsigned int base,
+> +			     unsigned int offset, unsigned int *reg,
+> +			     unsigned int *mask)
+> +{
+> +	*mask = AD7173_GPO_DATA(offset);
+> +	*reg = AD7173_REG_GPIO;
+> +	return 0;
+> +}
+> +
+> +static int ad7173_gpio_init(struct iio_dev *indio_dev)
+> +{
+> +	struct ad7173_state *st = iio_priv(indio_dev);
+> +	struct gpio_regmap_config gpio_regmap = {};
+> +	struct device *dev = &st->sd.spi->dev;
+> +	unsigned int mask;
+> +
+> +	st->regmap = devm_regmap_init_spi(st->sd.spi, &ad7173_regmap_config);
+
+If the regmap config is only used for the gpio parts, good to name
+it to make that clear.
+
+
+> +	if (IS_ERR(st->regmap)) {
+> +		return dev_err_probe(dev, PTR_ERR(st->regmap),
+> +				     "Unable to init regmap\n");
+> +	}
+> +
+> +	mask = AD7173_GPIO_OP_EN0 | AD7173_GPIO_OP_EN1 | AD7173_GPIO_OP_EN2_3;
+> +	regmap_update_bits(st->regmap, AD7173_REG_GPIO, mask, mask);
+> +
+> +	gpio_regmap.parent = dev;
+> +	gpio_regmap.regmap = st->regmap;
+> +	gpio_regmap.ngpio = st->info->num_gpios;
+> +	gpio_regmap.reg_set_base = GPIO_REGMAP_ADDR_ZERO;
+> +	gpio_regmap.reg_mask_xlate = ad7173_mask_xlate;
+> +
+> +	st->gpio_regmap = devm_gpio_regmap_register(dev, &gpio_regmap);
+> +	if (IS_ERR(st->gpio_regmap)) {
+> +		return dev_err_probe(dev, PTR_ERR(st->gpio_regmap),
+> +				     "Unable to init gpio-regmap\n");
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +#endif /* CONFIG_GPIOLIB */
+> +
+> +static struct ad7173_state *ad_sigma_delta_to_ad7173(struct ad_sigma_delta *sd)
+> +{
+> +	return container_of(sd, struct ad7173_state, sd);
+
+At least one more place you can use this... ( I deleted it whilst reviewing but
+remembered the pattern). It's in ad7173_append_status()
+
+> +}
+> +
+> +static void ad7173_reset_usage_cnts(struct ad7173_state *st)
+> +{
+> +	memset64(st->config_cnts, 0, st->info->num_configs);
+> +	st->config_usage_counter = 0;
+> +}
+> +
+> +static struct ad7173_channel_config *ad7173_find_live_config
+> +	(struct ad7173_state *st, struct ad7173_channel_config *cfg)
+> +{
+> +	struct ad7173_channel_config *cfg_aux;
+> +	ptrdiff_t cmp_size, offset;
+> +	int i;
+> +
+> +	offset = offsetof(struct ad7173_channel_config, cfg_slot) +
+> +		 sizeof(cfg->cfg_slot);
+> +	cmp_size = sizeof(*cfg) - offset;
+> +
+> +	for (i = 0; i < st->num_channels; i++) {
+> +		cfg_aux = &st->channels[i].cfg;
+> +
+> +		if (cfg_aux->live && !memcmp(&cfg->bipolar, &cfg_aux->bipolar,
+> +					     cmp_size))
+> +			return cfg_aux;
+> +	}
+> +	return NULL;
+> +}
+
+> +
+> +static int ad7173_set_mode(struct ad_sigma_delta *sd,
+> +			   enum ad_sigma_delta_mode mode)
+> +{
+> +	struct ad7173_state *st = ad_sigma_delta_to_ad7173(sd);
+> +
+> +	st->adc_mode &= ~AD7173_ADC_MODE_MODE_MASK;
+> +	st->adc_mode |= AD7173_ADC_MODE_MODE(mode);
+Another one I'd find easier to read if it were just
+FIELD_PREP(AD71...)
+as then it would be obvious we masked the field out then replaced it.
+It's fairly obvious anyway, but the macro doesn't make it more than
+just calling FIELD_PREP directly.
+
+> +
+> +	return ad_sd_write_reg(&st->sd, AD7173_REG_ADC_MODE, 2, st->adc_mode);
+> +}
+
+
+> +static int ad7173_read_raw(struct iio_dev *indio_dev,
+> +			   struct iio_chan_spec const *chan,
+> +			   int *val, int *val2, long info)
+> +{
+> +	struct ad7173_state *st = iio_priv(indio_dev);
+> +	unsigned int reg;
+> +	int ret;
+> +
+> +	switch (info) {
+> +	case IIO_CHAN_INFO_RAW:
+> +		ret = ad_sigma_delta_single_conversion(indio_dev, chan, val);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		/* disable channel after single conversion */
+> +		ret = ad_sd_write_reg(&st->sd, AD7173_REG_CH(chan->address), 2, 0);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		return IIO_VAL_INT;
+> +	case IIO_CHAN_INFO_SCALE:
+> +		if (chan->type == IIO_TEMP) {
+> +			*val = 250000000;
+> +			*val2 = 800273203; /* (2^24 * 477) / 10 */
+> +			return IIO_VAL_FRACTIONAL;
+> +		} else {
+> +			*val = 2500;
+> +			if (chan->differential)
+> +				*val2 = 23;
+> +			else
+> +				*val2 = 24;
+> +			return IIO_VAL_FRACTIONAL_LOG2;
+> +		}
+> +	case IIO_CHAN_INFO_OFFSET:
+> +		if (chan->type == IIO_TEMP) {
+> +			*val = -874379;
+> +		} else {
+> +			if (chan->differential)
+> +				*val = (chan->scan_type.realbits < 32) ?
+> +					-(1 << (chan->scan_type.realbits - 1)) :
+> +					INT_MIN;
+
+when is realbits >= 32?  I'm not seeing such a case, so perhaps a comment here
+if there is one.
+
+
+> +			else
+> +				*val = 0;
+> +		}
+> +		return IIO_VAL_INT;
+> +	case IIO_CHAN_INFO_SAMP_FREQ:
+> +		reg = st->channels[chan->address].cfg.odr;
+> +
+> +		*val = st->info->sinc5_data_rates[reg] / MILLI;
+> +		*val2 = (st->info->sinc5_data_rates[reg] % MILLI) * MILLI;
+* MICRO/MILLI 
+
+probably better expresses what is going on here as first bit ends up in
+milli and you want it in micro.  Maths the same though - just a slight
+boost in readability I think.
+
+> +
+> +		return IIO_VAL_INT_PLUS_MICRO;
+> +	}
+> +	return -EINVAL;
+> +}
+> +
+> +static int ad7173_write_raw(struct iio_dev *indio_dev,
+> +			    struct iio_chan_spec const *chan,
+> +			    int val, int val2, long info)
+> +{
+> +	struct ad7173_state *st = iio_priv(indio_dev);
+> +	struct ad7173_channel_config *cfg;
+> +	unsigned int freq, i, reg;
+> +	int ret = 0;
+> +
+> +	iio_device_claim_direct_mode(indio_dev);
+> +	if (iio_buffer_enabled(indio_dev)) {
+Take a closer look at what iio_device_claim_direct_mode does and
+check it's return value.   For reference if the buffer is enabled
+this is a double unlock of the mutex and a nice big error splat.
+
+> +		iio_device_release_direct_mode(indio_dev);
+> +		return -EBUSY;
+> +	}
+> +
+> +	switch (info) {
+> +	case IIO_CHAN_INFO_SAMP_FREQ:
+> +		freq = val * MILLI + val2 / MILLI;
+> +
+> +		for (i = 0; i < st->info->num_sinc5_data_rates - 1; i++) {
+> +			if (freq >= st->info->sinc5_data_rates[i])
+> +				break;
+> +		}
+> +
+> +		cfg = &st->channels[chan->address].cfg;
+> +		cfg->odr = i;
+> +
+> +		if (cfg->live) {
+> +			ret = ad_sd_read_reg(&st->sd, AD7173_REG_FILTER(cfg->cfg_slot), 2, &reg);
+> +			if (ret)
+> +				break;
+> +			reg &= ~AD7173_FILTER_ODR0_MASK;
+> +			reg |= AD7173_FILTER_ODR0(i);
+As mentioned above, I think this is less clear than
+			reg &= ~AD7173_FILTER_ODR0_MASK;
+			reg |= FIELD_PREP(AD7173_FILTER_ODR0_MASK, i);
+
+as you can then see it's all about the same file specified as a mask.
+
+> +			ret = ad_sd_write_reg(&st->sd, AD7173_REG_FILTER(cfg->cfg_slot), 2, reg);
+
+Line is very long. If you can keep closer to 80 chars and below that's alway
+preferred.  Maybe flip the logic to exit early if nothing to do..
+
+		if(!cfg->live) /* Nothing to do yet */
+			break; 
+
+		ret = ...
+
+
+> +		}
+> +		break;
+> +	default:
+> +		ret = -EINVAL;
+> +		break;
+> +	}
+> +
+> +	iio_device_release_direct_mode(indio_dev);
+> +	return ret;
+> +}
+
+
+> +static int ad7173_probe(struct spi_device *spi)
+> +{
+> +	struct ad7173_state *st;
+> +	struct iio_dev *indio_dev;
+> +	struct device *dev = &spi->dev;
+> +	int ret;
+> +
+> +	indio_dev = devm_iio_device_alloc(dev, sizeof(*st));
+> +	if (!indio_dev)
+> +		return -ENOMEM;
+> +
+> +	st = iio_priv(indio_dev);
+> +	st->info = device_get_match_data(dev);
+> +	if (!st->info)
+> +		return -ENODEV;
+> +
+> +	indio_dev->name = spi_get_device_id(spi)->name;
+> +	indio_dev->modes = INDIO_DIRECT_MODE;
+> +	indio_dev->info = &ad7173_info;
+> +
+> +	spi->mode = SPI_MODE_3;
+> +
+> +	ad7173_sigma_delta_info.num_slots = st->info->num_configs;
+> +	ret = ad_sd_init(&st->sd, indio_dev, spi, &ad7173_sigma_delta_info);
+> +	if (ret)
+> +		return ret;
+> +
+> +	spi_set_drvdata(spi, indio_dev);
+> +
+> +	ret = ad7173_fw_parse_channel_config(indio_dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = devm_ad_sd_setup_buffer_and_trigger(dev, indio_dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = ad7173_setup(indio_dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = devm_iio_device_register(dev, indio_dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (IS_ENABLED(CONFIG_GPIOLIB))
+> +		return ad7173_gpio_init(indio_dev);
+
+As nothing to do with IIO part of driver, I'd just pass in st instead
+so there is no implication that this is IIO related.
+
+> +	else
+Either drop the else (one of the bots will moan about this otherwise)
+or I'd go for as style more consistent with earlier code.
+	if (IS_ENABLED(COHNFIG_GPIOLIB)) {
+		ret = ad7173_gpio_init(st); 
+		if (ret)
+			return ret;
+	}
+	
+	return 0;
+
+	}
+> +		return 0;
+> +}
+> +
+> +static const struct of_device_id ad7173_of_match[] = {
+> +	{ .compatible = "adi,ad7172-2",
+> +	  .data = &ad7173_device_info[ID_AD7172_2], },
+> +	{ .compatible = "adi,ad7173-8",
+> +	  .data = &ad7173_device_info[ID_AD7173_8], },
+> +	{ .compatible = "adi,ad7175-2",
+> +	  .data = &ad7173_device_info[ID_AD7175_2], },
+> +	{ .compatible = "adi,ad7176-2",
+> +	  .data = &ad7173_device_info[ID_AD7176_2], },
+> +	{ },
+> +};
+> +MODULE_DEVICE_TABLE(of, ad7173_of_match);
+> +
+> +static const struct spi_device_id ad7173_id_table[] = {
+> +	{ "ad7172-2", &ad7173_device_info[ID_AD7172_2], },
+> +	{ "ad7173-8", &ad7173_device_info[ID_AD7173_8], },
+> +	{ "ad7175-2", &ad7173_device_info[ID_AD7175_2], },
+> +	{ "ad7176-2", &ad7173_device_info[ID_AD7176_2], },
+Cast to kernel_ulong_t as per the build bot warning you got.
+
+> +	{ },
+trivial, but little point in a comma after an element acting as
+a list terminator.
+
+> +};
+
+
