@@ -2,459 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FEFA7B43DB
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 23:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15D667B43B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 23:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234268AbjI3VLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 17:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50274 "EHLO
+        id S233984AbjI3VEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 17:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234053AbjI3VKj (ORCPT
+        with ESMTP id S231351AbjI3VEt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 17:10:39 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49CDFD;
-        Sat, 30 Sep 2023 14:10:36 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 72AC6100011;
-        Sun,  1 Oct 2023 00:10:30 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 72AC6100011
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1696108230;
-        bh=CktksrXKWHAUK0ss1s0u5ALV+yrBkLy7yfkxRxJlaTM=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=q3aq9F1N5o5hEe0BWwSDEWZL15KFYpPzqE1R2WbMGJ9Q/mgXGnwiP/qcrWCy83aV/
-         dskCHdUjlMWcYy0sa8nilRs/R6SdIt+IsW45E8ngsaEzM8fqwq0PeegXroJ4Xwp6OG
-         zjC1bMAx2XRUHV5hZBm0P/ND4NKtQ2tURxRO7vvJ4IzK3768clQPSHGs32zHclDKBE
-         Su/Tp+1x9Dy/8KVnuPw+mHIUSw/B/seWsuyfj5+kjFDnK2HH28KapJ6V+sYc5jrvG9
-         YIGcfB8tu4bnfeUrJdeXg1pTtDvjxlgb5cJcGgpsktNulrYhoJmh5hjp1vu4/LSbso
-         urfKXUICk7hOg==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Sun,  1 Oct 2023 00:10:30 +0300 (MSK)
-Received: from localhost.localdomain (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Sun, 1 Oct 2023 00:10:29 +0300
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
-        <avkrasnov@salutedevices.com>
-Subject: [PATCH net-next v2 12/12] test/vsock: io_uring rx/tx tests
-Date:   Sun, 1 Oct 2023 00:03:08 +0300
-Message-ID: <20230930210308.2394919-13-avkrasnov@salutedevices.com>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20230930210308.2394919-1-avkrasnov@salutedevices.com>
-References: <20230930210308.2394919-1-avkrasnov@salutedevices.com>
+        Sat, 30 Sep 2023 17:04:49 -0400
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2072.outbound.protection.outlook.com [40.107.241.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCDFDA;
+        Sat, 30 Sep 2023 14:04:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=elb0ywYu/E+R5fn/ut027LHsM+M3B5we5uc6QrpEzEHaUs73HsigoT8rxYhp8BqA5fLm18C7Wkm68kgwe/AXheth/Ku5dHeezmMOIaMA7mGC1ROJUk3yxMasXPl0O8nPl6r3QLEhtF0oPUOblrSTimFPPIp+pqIOkw0tD2hkpMdtu34DdOUlDFztYRNJljZVZUTTPx23qX7JYVcpu3sch+53LA2L+527VC+KQXDQHkf386WUiFbJLhwAAsuO11cZ7YcC+tEeIrKJNYl/4qm3F+KTsXRX1MjhZisPBxvm4Qn3tImkKia7fIj1gKW0QyhZwgtlruqSufdqJTyc3nc3eA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FTjTJtpWpFcHum62LjGZVA25Ooo/q/BNsM6l+LWRPm4=;
+ b=Jxo/5V9TQ4IG0em/yF4yp3Q4C8wzth67KaARUk2Ypx2/XkKJrRNEe37POUvOk+Tl+hT3EA7KNI9cgRybCC5kRpg0MNq3SKFJyhyfgxSmvTiiMDYZrFQOKi5DcmUDuxQ+07m+5hVMmbltZrpyy0PYfyh7iV0E0rvXEK5niiLzjixk2O03XxZ4uaUCvXVTBn3AmMoyuyn+CfQhdS4GcLV1ZWXeGVDCThBbsxN9AfJgcehHirUtggBtoKOA6KTLf1fO51JmrKT8+Q7wwPefmdYPHjbRlVTsBoyJWTaMMmvOtX8cPK7Vu8qP8Tm2lBUy8P4Z2xueBelfvNg94JmUnf5Idg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FTjTJtpWpFcHum62LjGZVA25Ooo/q/BNsM6l+LWRPm4=;
+ b=cAqdyxsZmEFZat4r8NxKlmo4aGaP2lfH9okH1MXtE2icFp38FO/cvOiw4nzOgfa1MK5Yc6m9Qm42pMXnQI1EnA4xMuw51RdX10J0cxRXOs/OnOwK6uea++B9c8AMoOKqrAZ27CBVF5VchUR95FR/l+mdlGJBFa7sf7LvQ9mvDUM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by PA4PR04MB9246.eurprd04.prod.outlook.com (2603:10a6:102:2a1::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Sat, 30 Sep
+ 2023 21:04:43 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6813.027; Sat, 30 Sep 2023
+ 21:04:42 +0000
+Date:   Sat, 30 Sep 2023 17:04:31 -0400
+From:   Frank Li <Frank.li@nxp.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     vkoul@kernel.org, bhe@redhat.com, dmaengine@vger.kernel.org,
+        imx@lists.linux.dev, linux-kernel@vger.kernel.org, lkp@intel.com,
+        oe-kbuild-all@lists.linux.dev, rafael@kernel.org
+Subject: Re: [PATCH 1/1] fs: debugfs: fix build error at powerpc platform
+Message-ID: <ZRiNXxz4NlN6LBXt@lizhi-Precision-Tower-5810>
+References: <20230929164920.314849-1-Frank.Li@nxp.com>
+ <2023093029-chalice-violation-c349@gregkh>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023093029-chalice-violation-c349@gregkh>
+X-ClientProxiedBy: BYAPR04CA0013.namprd04.prod.outlook.com
+ (2603:10b6:a03:40::26) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 180254 [Sep 30 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/30 19:49:00 #22015058
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|PA4PR04MB9246:EE_
+X-MS-Office365-Filtering-Correlation-Id: f6f96c89-921e-4762-b227-08dbc1f8dd6b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: UR8fxSwGw64ChzXojD3/KMizRXFzqDBz5e/+F3ASlPWbKBDbxyIFQwM3ZQPXFU7X/d4ZSW2MnYomkYiHDzZ0UJgy6GFgNEFNPY7X2Fow3xqQV5On7KlUNWUfPkMESug4VrEFr0JHhkqoLsK16Qz0/MX4/06WZNUDnZ9YhSvx+rwBbYOSVFz0cyS38Mdewhs+2AEDgOVfcYrT6yFICFxllz++7Qt0JI7L6oDRlvLsfi2uYylXNhwpVAvDR9R255ofG2GBcY6P2OSUKGuEW8pTKqKQk+fNdHrY9WjcvyFyMVy5Hqw2gBU8M+FG+kLXeKdKXcNC4Frj+Y1xmxQhyiK8Z089p6WGgCyqJaBVgIM0K2+TBVsUVQSu5XnS1i4uHlq/hNJHQvNfKLpw367QlxnuNlvbui013WDiztNSualnr+xssE7niIX7MeWPJCTdr8ZgZZgvaIYH4JRZWsJrZ2DwcPFjENP2XS/PRnoLNFPhYzcZR/0Vew23w86b3jEwETUC36AcsjnImynnvXrhb1KZWHyyutAuB+RWRtPC0n0UxA+HiVSUGuEO8WU5fMfsDZk42OIUGWRt+ktvHnomnHDkx73OcTbh6MpMx7p8Srg2nbc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(366004)(396003)(39860400002)(136003)(376002)(346002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(2906002)(86362001)(33716001)(5660300002)(966005)(6506007)(6486002)(26005)(66476007)(6512007)(9686003)(478600001)(8936002)(8676002)(66556008)(41300700001)(4326008)(6916009)(52116002)(66946007)(38350700002)(38100700002)(316002)(83380400001)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?RGOhqh7i7wVgFhwaca52KhGSlc8uEH/RioC2mWLZGnuZVWk8uoZwDBGYCWwG?=
+ =?us-ascii?Q?sO+U0ZoYdVrW40IRxe56G8QnSWxxFH4kiAhB7nt94ec5a12pMpiAu+W/Fro2?=
+ =?us-ascii?Q?VUapvC7Z2/Ui2uPCzYl7obqz1A8uHd0db7GB4h6CZlhnyibLhrdUzVzeC6nW?=
+ =?us-ascii?Q?VsZF3pT/xlk27CsmcSw6GuZhOUi0D5KYDU7AXW98zleHb1BGbjB+H9nAn/tj?=
+ =?us-ascii?Q?HLRJzbeZROx5FVAT6mTYNPja/Xw5X0GrUkE9wlTTQFonnIE+i+vojOa95KgR?=
+ =?us-ascii?Q?vnfhM633E3alV4bu5OrlbAt7bIYuJ4NCHFyUU3tkxdUFF3LXHqCMfCPKILq6?=
+ =?us-ascii?Q?ne+C9SI30VVevYCFhLPX7ffq9yIR+kY6+h2sua9Rq/6m9EKuv6GiH15RkC9D?=
+ =?us-ascii?Q?Y9LpeyzWzCxIxVKz9zH84vb0FgHzRdG/MNBR2njGEghBLBB4Qm7DdIgXR0BV?=
+ =?us-ascii?Q?CXp1HHWhCrf8QU6eRQ0lWFIZyQAyLCA08BRxn+pSH6f/Z8AaPTvpVLqSeDTu?=
+ =?us-ascii?Q?pLkGz/FlsgBnr6IbHzZZ0Mdt/YptpT+HekOQhYHSWVzjZ46NW9TKayoTYcJg?=
+ =?us-ascii?Q?V0aS/ntVcO1izucIed1p1CGHNGDxc6JtN3LBbwkP7nhepTqRRP04Yvb1GqYE?=
+ =?us-ascii?Q?1pXY0QSro7tFQyx5EjCVpMZkqjsTB6b4UAzLNLXBBVrzhwZlUIBk4DIUByGS?=
+ =?us-ascii?Q?m1srZPlCOg3xv1IRZav2jr6qVIfHPdi1J4+P5QNkmQnzeGR0z/0zQ4z4OsXe?=
+ =?us-ascii?Q?PcEBS2krhNZljXpJC4bE8EglFRkwohfoyUo9bSge+gi/V7l6s5lz5EyAJ15k?=
+ =?us-ascii?Q?zVGPTfAkX40x5/AfwYUsCwUEmmMNiGrC4lmPH88VfDj0XIncAmmssfTHfiYi?=
+ =?us-ascii?Q?PYaVW6RVRfaXgdtkz5Y64jpFToBZNBCqK1ggPgJ7AbtNv7DVqP+s9u4JT/xN?=
+ =?us-ascii?Q?ZxLO/GSTI/YW1Ui4l7KMbxigtOtyVvBhBImmC4kvvk7+Sma0liM8jeRVPKTa?=
+ =?us-ascii?Q?kGoMkN48rgqQMzxRPoX55pa7SfGkXXSQnMBcpN7dDqwZuTacH6RmY5w2X8lh?=
+ =?us-ascii?Q?+m32BNynxbr86/VzhYPjIKD9E3rydFf1wUTnC9/6zTSV74syeHusHN2lXdzt?=
+ =?us-ascii?Q?EPQKIe1LQaY7WOTAQNRWPL8Z/EmGxh6Uxw2EuPgVF+Tk3RlwhWd2FlYiG8vH?=
+ =?us-ascii?Q?Ec67sKkAEW/trHTyFU2AW4Wnj3OLyvsXJdzt96hMC7TFl4caFuva4a8O045t?=
+ =?us-ascii?Q?t9HvOZE/zfmR8CfJrK/YhK9FoycLTsSLoEjCYfptgcLFc1UTqqpPQqMahUTP?=
+ =?us-ascii?Q?iw8H4LF0TLYZ2LIHya0g+EzoNQl1b7sIU6lCYWBtIe5Y9MlcOju/k+23AqeP?=
+ =?us-ascii?Q?jhjXJ/s5DRWR0HC0gGVt1A+CvQMVjttODtuNOmtWUeJRNoTJAzzmHy6KZnlD?=
+ =?us-ascii?Q?Gk4tN/BRq96vknaZjvZZM2xvVfWgoh3jC0tqbd3ayqBPMThkI2+18IaP/c0C?=
+ =?us-ascii?Q?IUvxFdU5C+73f8LKANdxdwovHanYtoTjxL4+19xQh8nVn/DRB4wr+05t72X7?=
+ =?us-ascii?Q?1jtWkCmpApKWCSfDXBI=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f6f96c89-921e-4762-b227-08dbc1f8dd6b
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2023 21:04:41.5741
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LWkOopXD6q/6tQGxymtBNQZ/DNhmJKfjsHY0l9KRMSaZ1ohmmKEO/R/VwSY0ei/gez2sTWJt1/dX6vtftfMWGw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB9246
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds set of tests which use io_uring for rx/tx. This test suite is
-implemented as separated util like 'vsock_test' and has the same set of
-input arguments as 'vsock_test'. These tests only cover cases of data
-transmission (no connect/bind/accept etc).
+On Sat, Sep 30, 2023 at 09:11:04AM +0200, Greg KH wrote:
+> On Fri, Sep 29, 2023 at 12:49:20PM -0400, Frank Li wrote:
+> >    ld: fs/debugfs/file.o: in function `debugfs_print_regs':
+> >    file.c:(.text+0x95a): undefined reference to `ioread64be'
+> > >> ld: file.c:(.text+0x9dd): undefined reference to `ioread64'
+> > 
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202309291322.3pZiyosI-lkp@intel.com/
+> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> 
+> What commit id does this fix?
 
-Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
----
- Changelog:
- v1 -> v2:
-  * Add 'LDLIBS = -luring' to the target 'vsock_uring_test'.
-  * Add 'vsock_uring_test' to the target 'test'.
+In dmaengine tree https://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git/log/?h=next
 
- tools/testing/vsock/Makefile           |   7 +-
- tools/testing/vsock/vsock_uring_test.c | 321 +++++++++++++++++++++++++
- 2 files changed, 326 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/vsock/vsock_uring_test.c
+commit 09289d0ad1226c4735f8d9f68c9c3e54cbaba3d4
+Author: Frank Li <Frank.Li@nxp.com>
+Date:   Thu Sep 21 11:01:42 2023 -0400
 
-diff --git a/tools/testing/vsock/Makefile b/tools/testing/vsock/Makefile
-index 1a26f60a596c..b80e7c7def1e 100644
---- a/tools/testing/vsock/Makefile
-+++ b/tools/testing/vsock/Makefile
-@@ -1,12 +1,15 @@
- # SPDX-License-Identifier: GPL-2.0-only
- all: test vsock_perf
--test: vsock_test vsock_diag_test
-+test: vsock_test vsock_diag_test vsock_uring_test
- vsock_test: vsock_test.o vsock_test_zerocopy.o timeout.o control.o util.o
- vsock_diag_test: vsock_diag_test.o timeout.o control.o util.o
- vsock_perf: vsock_perf.o
- 
-+vsock_uring_test: LDLIBS = -luring
-+vsock_uring_test: control.o util.o vsock_uring_test.o timeout.o
-+
- CFLAGS += -g -O2 -Werror -Wall -I. -I../../include -I../../../usr/include -Wno-pointer-sign -fno-strict-overflow -fno-strict-aliasing -fno-common -MMD -U_FORTIFY_SOURCE -D_GNU_SOURCE
- .PHONY: all test clean
- clean:
--	${RM} *.o *.d vsock_test vsock_diag_test vsock_perf
-+	${RM} *.o *.d vsock_test vsock_diag_test vsock_perf vsock_uring_test
- -include *.d
-diff --git a/tools/testing/vsock/vsock_uring_test.c b/tools/testing/vsock/vsock_uring_test.c
-new file mode 100644
-index 000000000000..725895350697
---- /dev/null
-+++ b/tools/testing/vsock/vsock_uring_test.c
-@@ -0,0 +1,321 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* io_uring tests for vsock
-+ *
-+ * Copyright (C) 2023 SberDevices.
-+ *
-+ * Author: Arseniy Krasnov <avkrasnov@salutedevices.com>
-+ */
-+
-+#include <getopt.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <liburing.h>
-+#include <unistd.h>
-+#include <sys/mman.h>
-+#include <linux/kernel.h>
-+#include <error.h>
-+
-+#include "util.h"
-+#include "control.h"
-+
-+#define PAGE_SIZE		4096
-+#define RING_ENTRIES_NUM	4
-+
-+static struct vsock_test_data test_data_array[] = {
-+	/* All elements have page aligned base and size. */
-+	{
-+		.vecs_cnt = 3,
-+		{
-+			{ NULL, PAGE_SIZE },
-+			{ NULL, 2 * PAGE_SIZE },
-+			{ NULL, 3 * PAGE_SIZE },
-+		}
-+	},
-+	/* Middle element has both non-page aligned base and size. */
-+	{
-+		.vecs_cnt = 3,
-+		{
-+			{ NULL, PAGE_SIZE },
-+			{ (void *)1, 200  },
-+			{ NULL, 3 * PAGE_SIZE },
-+		}
-+	}
-+};
-+
-+static void vsock_io_uring_client(const struct test_opts *opts,
-+				  const struct vsock_test_data *test_data,
-+				  bool msg_zerocopy)
-+{
-+	struct io_uring_sqe *sqe;
-+	struct io_uring_cqe *cqe;
-+	struct io_uring ring;
-+	struct iovec *iovec;
-+	struct msghdr msg;
-+	int fd;
-+
-+	fd = vsock_stream_connect(opts->peer_cid, 1234);
-+	if (fd < 0) {
-+		perror("connect");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (msg_zerocopy)
-+		enable_so_zerocopy(fd);
-+
-+	iovec = iovec_from_test_data(test_data);
-+
-+	if (io_uring_queue_init(RING_ENTRIES_NUM, &ring, 0))
-+		error(1, errno, "io_uring_queue_init");
-+
-+	if (io_uring_register_buffers(&ring, iovec, test_data->vecs_cnt))
-+		error(1, errno, "io_uring_register_buffers");
-+
-+	memset(&msg, 0, sizeof(msg));
-+	msg.msg_iov = iovec;
-+	msg.msg_iovlen = test_data->vecs_cnt;
-+	sqe = io_uring_get_sqe(&ring);
-+
-+	if (msg_zerocopy)
-+		io_uring_prep_sendmsg_zc(sqe, fd, &msg, 0);
-+	else
-+		io_uring_prep_sendmsg(sqe, fd, &msg, 0);
-+
-+	if (io_uring_submit(&ring) != 1)
-+		error(1, errno, "io_uring_submit");
-+
-+	if (io_uring_wait_cqe(&ring, &cqe))
-+		error(1, errno, "io_uring_wait_cqe");
-+
-+	io_uring_cqe_seen(&ring, cqe);
-+
-+	control_writeulong(iovec_hash_djb2(iovec, test_data->vecs_cnt));
-+
-+	control_writeln("DONE");
-+	io_uring_queue_exit(&ring);
-+	free_iovec_test_data(test_data, iovec);
-+	close(fd);
-+}
-+
-+static void vsock_io_uring_server(const struct test_opts *opts,
-+				  const struct vsock_test_data *test_data)
-+{
-+	unsigned long remote_hash;
-+	unsigned long local_hash;
-+	struct io_uring_sqe *sqe;
-+	struct io_uring_cqe *cqe;
-+	struct io_uring ring;
-+	struct iovec iovec;
-+	size_t data_len;
-+	void *data;
-+	int fd;
-+
-+	fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
-+	if (fd < 0) {
-+		perror("accept");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	data_len = iovec_bytes(test_data->vecs, test_data->vecs_cnt);
-+
-+	data = malloc(data_len);
-+	if (!data) {
-+		perror("malloc");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	if (io_uring_queue_init(RING_ENTRIES_NUM, &ring, 0))
-+		error(1, errno, "io_uring_queue_init");
-+
-+	sqe = io_uring_get_sqe(&ring);
-+	iovec.iov_base = data;
-+	iovec.iov_len = data_len;
-+
-+	io_uring_prep_readv(sqe, fd, &iovec, 1, 0);
-+
-+	if (io_uring_submit(&ring) != 1)
-+		error(1, errno, "io_uring_submit");
-+
-+	if (io_uring_wait_cqe(&ring, &cqe))
-+		error(1, errno, "io_uring_wait_cqe");
-+
-+	if (cqe->res != data_len) {
-+		fprintf(stderr, "expected %zu, got %u\n", data_len,
-+			cqe->res);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	local_hash = hash_djb2(data, data_len);
-+
-+	remote_hash = control_readulong();
-+	if (remote_hash != local_hash) {
-+		fprintf(stderr, "hash mismatch\n");
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	control_expectln("DONE");
-+	io_uring_queue_exit(&ring);
-+	free(data);
-+}
-+
-+void test_stream_uring_server(const struct test_opts *opts)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
-+		vsock_io_uring_server(opts, &test_data_array[i]);
-+}
-+
-+void test_stream_uring_client(const struct test_opts *opts)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
-+		vsock_io_uring_client(opts, &test_data_array[i], false);
-+}
-+
-+void test_stream_uring_msg_zc_server(const struct test_opts *opts)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
-+		vsock_io_uring_server(opts, &test_data_array[i]);
-+}
-+
-+void test_stream_uring_msg_zc_client(const struct test_opts *opts)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(test_data_array); i++)
-+		vsock_io_uring_client(opts, &test_data_array[i], true);
-+}
-+
-+static struct test_case test_cases[] = {
-+	{
-+		.name = "SOCK_STREAM io_uring test",
-+		.run_server = test_stream_uring_server,
-+		.run_client = test_stream_uring_client,
-+	},
-+	{
-+		.name = "SOCK_STREAM io_uring MSG_ZEROCOPY test",
-+		.run_server = test_stream_uring_msg_zc_server,
-+		.run_client = test_stream_uring_msg_zc_client,
-+	},
-+	{},
-+};
-+
-+static const char optstring[] = "";
-+static const struct option longopts[] = {
-+	{
-+		.name = "control-host",
-+		.has_arg = required_argument,
-+		.val = 'H',
-+	},
-+	{
-+		.name = "control-port",
-+		.has_arg = required_argument,
-+		.val = 'P',
-+	},
-+	{
-+		.name = "mode",
-+		.has_arg = required_argument,
-+		.val = 'm',
-+	},
-+	{
-+		.name = "peer-cid",
-+		.has_arg = required_argument,
-+		.val = 'p',
-+	},
-+	{
-+		.name = "help",
-+		.has_arg = no_argument,
-+		.val = '?',
-+	},
-+	{},
-+};
-+
-+static void usage(void)
-+{
-+	fprintf(stderr, "Usage: vsock_uring_test [--help] [--control-host=<host>] --control-port=<port> --mode=client|server --peer-cid=<cid>\n"
-+		"\n"
-+		"  Server: vsock_uring_test --control-port=1234 --mode=server --peer-cid=3\n"
-+		"  Client: vsock_uring_test --control-host=192.168.0.1 --control-port=1234 --mode=client --peer-cid=2\n"
-+		"\n"
-+		"Run transmission tests using io_uring. Usage is the same as\n"
-+		"in ./vsock_test\n"
-+		"\n"
-+		"Options:\n"
-+		"  --help                 This help message\n"
-+		"  --control-host <host>  Server IP address to connect to\n"
-+		"  --control-port <port>  Server port to listen on/connect to\n"
-+		"  --mode client|server   Server or client mode\n"
-+		"  --peer-cid <cid>       CID of the other side\n"
-+		);
-+	exit(EXIT_FAILURE);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	const char *control_host = NULL;
-+	const char *control_port = NULL;
-+	struct test_opts opts = {
-+		.mode = TEST_MODE_UNSET,
-+		.peer_cid = VMADDR_CID_ANY,
-+	};
-+
-+	init_signals();
-+
-+	for (;;) {
-+		int opt = getopt_long(argc, argv, optstring, longopts, NULL);
-+
-+		if (opt == -1)
-+			break;
-+
-+		switch (opt) {
-+		case 'H':
-+			control_host = optarg;
-+			break;
-+		case 'm':
-+			if (strcmp(optarg, "client") == 0) {
-+				opts.mode = TEST_MODE_CLIENT;
-+			} else if (strcmp(optarg, "server") == 0) {
-+				opts.mode = TEST_MODE_SERVER;
-+			} else {
-+				fprintf(stderr, "--mode must be \"client\" or \"server\"\n");
-+				return EXIT_FAILURE;
-+			}
-+			break;
-+		case 'p':
-+			opts.peer_cid = parse_cid(optarg);
-+			break;
-+		case 'P':
-+			control_port = optarg;
-+			break;
-+		case '?':
-+		default:
-+			usage();
-+		}
-+	}
-+
-+	if (!control_port)
-+		usage();
-+	if (opts.mode == TEST_MODE_UNSET)
-+		usage();
-+	if (opts.peer_cid == VMADDR_CID_ANY)
-+		usage();
-+
-+	if (!control_host) {
-+		if (opts.mode != TEST_MODE_SERVER)
-+			usage();
-+		control_host = "0.0.0.0";
-+	}
-+
-+	control_init(control_host, control_port,
-+		     opts.mode == TEST_MODE_SERVER);
-+
-+	run_tests(test_cases, &opts);
-+
-+	control_cleanup();
-+
-+	return 0;
-+}
--- 
-2.25.1
+    debugfs_create_regset32() support 8/16/64 bit width registers
 
+
+> 
+> > ---
+> >  fs/debugfs/file.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+> > index 5b8d4fd7c747..b406283806d9 100644
+> > --- a/fs/debugfs/file.c
+> > +++ b/fs/debugfs/file.c
+> > @@ -1179,7 +1179,7 @@ void debugfs_print_regs(struct seq_file *s, const struct debugfs_reg *regs,
+> >  			seq_printf(s, "%s = 0x%04x\n", regs->name,
+> >  				  b ? ioread16be(reg) : ioread16(reg));
+> >  			break;
+> > -#ifdef CONFIG_64BIT
+> > +#if defined(ioread64) && defined (ioread64be)
+> 
+> Are you sure this is equivalent?  What if these are functions?
+
+Just dump 64bit register value. I am not sure why powerpc have not
+implement this function with CONFIG_64BIT.
+
+in io.h
+
+#ifndef ioread64
+#define ioread64 ioread64
+...
+#endif
+
+I think it is better why to check if ioread64 exist.
+
+Frank
+
+
+> 
+> thanks,
+> 
+> greg k-h
