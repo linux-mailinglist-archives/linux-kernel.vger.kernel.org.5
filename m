@@ -2,62 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD627B4028
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 13:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FC717B402C
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 13:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234166AbjI3LqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 07:46:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35382 "EHLO
+        id S232253AbjI3L6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 07:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjI3LqE (ORCPT
+        with ESMTP id S229449AbjI3L6V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 07:46:04 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41BDBD6
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 04:46:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1696074356;
-        bh=BwM+qiiSjT1rizB6dAsk8vCl4yMw7XPT8jMNJNoi4ZM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=O9TXPcuv1INo2O/LEVGwoMn7GBtYbSLD9JigUWTf/gPPFSAPxzNXXj5nnVm8basaf
-         uRORdbD/5Q75Q3fCrfkzJ+u3C6tS4tNT9wlP45TDKvYIimJYx7TgUG0NNsVcaMbXoY
-         JSDImIPSuIHcseoi98qIyE5XS4FjWvxBs/LJ4UY4YnyLZ4TtD0GrSFSGuxnpLjhLsv
-         KEEbxRjpAj4Rl4+j+UUOcux8+RQEd654mjO9NKni0CNExGZnLOAWovEF6kZBq24hRp
-         MjI5P+ujwAJMV3VcMtFGKBbNb303RvMO0Rfdp8WCHphkIv+26sVyJ7upwgt6lynDPg
-         IVYHvsvU8fLmA==
-Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RyQQX3vp9z1Rh8;
-        Sat, 30 Sep 2023 07:45:56 -0400 (EDT)
-Message-ID: <0f3cfff3-0df4-3cb7-95cb-ea378517e13b@efficios.com>
-Date:   Sat, 30 Sep 2023 07:45:38 -0400
+        Sat, 30 Sep 2023 07:58:21 -0400
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10640D6;
+        Sat, 30 Sep 2023 04:58:19 -0700 (PDT)
+Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-3513c435465so3772715ab.0;
+        Sat, 30 Sep 2023 04:58:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696075098; x=1696679898; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=U4B8cqh/E8dvMkxyYDZyl7ZQqxhx7sl7i0aMKMFX1cc=;
+        b=YyeaufnBSFIDMckrtNx7qIhq2XMXZD63Z7NQKyOvypoc6LquZDwSYKvZtqOhYjt5Zb
+         6BE8Cn8pl0hNZgWTh9ZwHowNLaDClDZW+cpq6TsKhvo72Rwi8X/s7uemZkac1FaXXd5d
+         i8QUz6gBb+6HAfufAeZ3v6MYLtXwB6BEkKdHx2PI2gdTcyZBUG0cTWYnm27GYmdjSoHN
+         zElWlPg2t2eH0OxK959TOTbPnnR3L+tAMU3j49qJeKvmZcXwgJzP8n3DRiKlnhAYnF7W
+         tqbfqjGtmxQgkPeS6pMKnhFRju/UrnzKddgd/zwqGQP9cFZUu2VcjhhFZd7ADKJAbkUB
+         hnrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696075098; x=1696679898;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U4B8cqh/E8dvMkxyYDZyl7ZQqxhx7sl7i0aMKMFX1cc=;
+        b=dEAHuhGMnB7GKlnsIbRjrA7uAwlEZVwryU9517HobXtdafSD7yxgHuLV7s+NeQZjDk
+         tVnE51VpzI9C1ZCbTWELxvCM4BKO1BrDGqirDiS2ib2jlKk8lGB6ua3vAB5r9v5C8ll0
+         S6PQf4EpfqwBqEsLxOYuDxreHqy5bhab4k5O6KVjUKmyc/pKayZ++ARa1dAvuv7pO5Ct
+         BxsPXIe22+GR/Kj+XtBI97VguHDxsaCXDBTXffYHd8IFN0+XwyItoHutktkic5fzKiHm
+         5c2QP56R6nRKbTRDRXx/H+77YfLhUknWTZ1VQ7zvXsdyQC9v8sqrL4/H26yTp/juodoE
+         XmbA==
+X-Gm-Message-State: AOJu0YyRM2V6668r9f5liQZoOiXgPDm3A7WIAsXjaG/ntr73XuvVOG+H
+        tuXtCgSMi8+p0yOjOgEvyJXcb5kCmjo=
+X-Google-Smtp-Source: AGHT+IFL9BXm3OjXoEc4q3qMpme4S27UurE4+d4CiPM6lBLR5DAmOgKh529unCKKqYs5hUwLo0WcvA==
+X-Received: by 2002:a05:6e02:974:b0:352:682c:1b91 with SMTP id q20-20020a056e02097400b00352682c1b91mr2764724ilt.4.1696075098275;
+        Sat, 30 Sep 2023 04:58:18 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q14-20020a056e02078e00b003514edd0415sm3330299ils.67.2023.09.30.04.58.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Sep 2023 04:58:17 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sat, 30 Sep 2023 04:58:15 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     j@jannau.net
+Cc:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] watchdog: apple: Deactivate on suspend
+Message-ID: <e0a6f9f3-b472-4fda-829c-5d8f29234a4f@roeck-us.net>
+References: <20230930-apple-watchdog-suspend-v1-1-1998c0be9fd7@jannau.net>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH] sched/fair: Bias runqueue selection towards almost
- idle prev CPU
-Content-Language: en-US
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>, Tim Chen <tim.c.chen@intel.com>,
-        K Prateek Nayak <kprateek.nayak@amd.com>,
-        "Gautham R . Shenoy" <gautham.shenoy@amd.com>, x86@kernel.org
-References: <20230929183350.239721-1-mathieu.desnoyers@efficios.com>
- <ZRfKKxBzfu+kf0tM@chenyu5-mobl2.ccr.corp.intel.com>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <ZRfKKxBzfu+kf0tM@chenyu5-mobl2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230930-apple-watchdog-suspend-v1-1-1998c0be9fd7@jannau.net>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,64 +77,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/23 03:11, Chen Yu wrote:
-> Hi Mathieu,
+On Sat, Sep 30, 2023 at 10:19:26AM +0200, Janne Grunau via B4 Relay wrote:
+> From: Janne Grunau <j@jannau.net>
 > 
-> On 2023-09-29 at 14:33:50 -0400, Mathieu Desnoyers wrote:
->> Introduce the WAKEUP_BIAS_PREV_IDLE scheduler feature. It biases
->> select_task_rq towards the previous CPU if it was almost idle
->> (avg_load <= 0.1%).
+> The watchdog remains active after putting the system into suspend. Add
+> PM callbacks to deactivate the watchdog on suspend an re-activate it on
+> resume.
 > 
-> Yes, this is a promising direction IMO. One question is that,
-> can cfs_rq->avg.load_avg be used for percentage comparison?
-> If I understand correctly, load_avg reflects that more than
-> 1 tasks could have been running this runqueue, and the
-> load_avg is the direct proportion to the load_weight of that
-> cfs_rq. Besides, LOAD_AVG_MAX seems to not be the max value
-> that load_avg can reach, it is the sum of
-> 1024 * (y + y^1 + y^2 ... )
+> Signed-off-by: Janne Grunau <j@jannau.net>
+> ---
+>  drivers/watchdog/apple_wdt.c | 25 +++++++++++++++++++++++++
+>  1 file changed, 25 insertions(+)
 > 
-> For example,
-> taskset -c 1 nice -n -20 stress -c 1
-> cat /sys/kernel/debug/sched/debug | grep 'cfs_rq\[1\]' -A 12 | grep "\.load_avg"
->    .load_avg                      : 88763
->    .load_avg                      : 1024
+> diff --git a/drivers/watchdog/apple_wdt.c b/drivers/watchdog/apple_wdt.c
+> index eddeb0fede89..2167e0ba705e 100644
+> --- a/drivers/watchdog/apple_wdt.c
+> +++ b/drivers/watchdog/apple_wdt.c
+> @@ -173,6 +173,8 @@ static int apple_wdt_probe(struct platform_device *pdev)
+>  	if (!wdt->clk_rate)
+>  		return -EINVAL;
+>  
+> +	platform_set_drvdata(pdev, wdt);
+> +
+>  	wdt->wdd.ops = &apple_wdt_ops;
+>  	wdt->wdd.info = &apple_wdt_info;
+>  	wdt->wdd.max_timeout = U32_MAX / wdt->clk_rate;
+> @@ -190,6 +192,28 @@ static int apple_wdt_probe(struct platform_device *pdev)
+>  	return devm_watchdog_register_device(dev, &wdt->wdd);
+>  }
+>  
+> +static int __maybe_unused apple_wdt_resume(struct device *dev)
+> +{
+> +	struct apple_wdt *wdt = dev_get_drvdata(dev);
+> +
+> +	if (watchdog_active(&wdt->wdd) || watchdog_hw_running(&wdt->wdd))
+> +		apple_wdt_start(&wdt->wdd);
+> +
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused apple_wdt_suspend(struct device *dev)
+> +{
+> +	struct apple_wdt *wdt = dev_get_drvdata(dev);
+> +
+> +	if (watchdog_active(&wdt->wdd) || watchdog_hw_running(&wdt->wdd))
+> +		apple_wdt_stop(&wdt->wdd);
+> +
+> +	return 0;
+> +}
+> +
+> +static SIMPLE_DEV_PM_OPS(apple_wdt_pm_ops, apple_wdt_suspend, apple_wdt_resume);
+
+Comments above that define say
+
+/* Deprecated. Use DEFINE_SIMPLE_DEV_PM_OPS() instead. */
+
+and with that the __maybe_unused is no longer necessary.
+
+> +
+>  static const struct of_device_id apple_wdt_of_match[] = {
+>  	{ .compatible = "apple,wdt" },
+>  	{},
+> @@ -200,6 +224,7 @@ static struct platform_driver apple_wdt_driver = {
+>  	.driver = {
+>  		.name = "apple-watchdog",
+>  		.of_match_table = apple_wdt_of_match,
+> +		.pm = pm_sleep_ptr(&apple_wdt_pm_ops),
+>  	},
+>  	.probe = apple_wdt_probe,
+>  };
 > 
-> 88763 is higher than LOAD_AVG_MAX=47742
-
-I would have expected the load_avg to be limited to LOAD_AVG_MAX 
-somehow, but it appears that it does not happen in practice.
-
-That being said, if the cutoff is really at 0.1% or 0.2% of the real 
-max, does it really matter ?
-
-> Maybe the util_avg can be used for precentage comparison I suppose?
-[...]
-> Or
-> return cpu_util_without(cpu_rq(cpu), p) * 1000 <= capacity_orig_of(cpu) ?
-
-Unfortunately using util_avg does not seem to work based on my testing.
-Even at utilization thresholds at 0.1%, 1% and 10%.
-
-Based on comments in fair.c:
-
-  * CPU utilization is the sum of running time of runnable tasks plus the
-  * recent utilization of currently non-runnable tasks on that CPU.
-
-I think we don't want to include currently non-runnable tasks in the 
-statistics we use, because we are trying to figure out if the cpu is a 
-idle-enough target based on the tasks which are currently running, for 
-the purpose of runqueue selection when waking up a task which is 
-considered at that point in time a non-runnable task on that cpu, and 
-which is about to become runnable again.
-
-Thanks,
-
-Mathieu
-
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+> ---
+> base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+> change-id: 20230930-apple-watchdog-suspend-7f73831130fb
+> 
+> Best regards,
+> -- 
+> Janne Grunau <j@jannau.net>
+> 
