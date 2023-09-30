@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3BD7B42F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 20:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C047B42FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 20:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234720AbjI3ST6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 14:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59360 "EHLO
+        id S234726AbjI3SWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 14:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233050AbjI3ST5 (ORCPT
+        with ESMTP id S233050AbjI3SWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 14:19:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBE95E1;
-        Sat, 30 Sep 2023 11:19:53 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D97A7C433C7;
-        Sat, 30 Sep 2023 18:19:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696097993;
-        bh=VkV7TjXZJnym2EdSAsMapvwnoXQMIzv/8uo4dDQrWTg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vBOmrl8788GbnxHeP93j29wo1oJzATYxI9FNfCZ+5dQrB5Zfl32IFQxHVQs5Mezw4
-         qg4RET03lYP+nNNp3ZdBfn1/I+8fe6faywJo5j1LwYGiD25oZBdcYV96BAuVW4pESV
-         GDtUHZblaXnXYqGPF0Pslim6HYcSh6fffRQ68Pu7xz6OVXQyZBGoUcSu2nuRiaZzGc
-         7Uca+FJvj0NT2Wsy+d5XaonAEHbaAVVuahl6HFm6KNFjvbcR0u4DoemNLVz5GL9tN6
-         zaEfh4YeXokL6XoDUQxIW3dFzXWGDnJhyFZ2ljWi8VeWvXW0ApGHMrjgx2mhFcrFzz
-         TsWCHsXKX6Q4A==
-Date:   Sat, 30 Sep 2023 20:19:46 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Paul Rosswurm <paulros@microsoft.com>,
-        "olaf@aepfle.de" <olaf@aepfle.de>, vkuznets <vkuznets@redhat.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        Long Li <longli@microsoft.com>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        "hawk@kernel.org" <hawk@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "shradhagupta@linux.microsoft.com" <shradhagupta@linux.microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net, 3/3] net: mana: Fix oversized sge0 for GSO packets
-Message-ID: <20230930181946.GG92317@kernel.org>
-References: <1695519107-24139-1-git-send-email-haiyangz@microsoft.com>
- <1695519107-24139-4-git-send-email-haiyangz@microsoft.com>
- <ZRaRSKQDyfkhxYmY@kernel.org>
- <PH7PR21MB311698B8C2107E66890F6C7ECAC0A@PH7PR21MB3116.namprd21.prod.outlook.com>
+        Sat, 30 Sep 2023 14:22:30 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE4BDE3;
+        Sat, 30 Sep 2023 11:22:26 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59e88a28b98so26070357b3.1;
+        Sat, 30 Sep 2023 11:22:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696098146; x=1696702946; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cfk+kAIkYmF1E1ZqhKZzYdSWCH0DhBj9gaPb0BECOXU=;
+        b=WL84G1DI8mesKKFAJveYhma7HWdts81Usm6pkp6IlM+TVKh3bCvDK41hDSi1CRnXBg
+         374+cboZ5gEGYwjTR7ow+XSGujBlwkapa3c1HTSAV9O65kAnHfzwy74224jPJ8IHLCDC
+         K9WgHtkGnWbpYx/rYwAVhsR7Te6D8bHd6rXmF39O+n6LQxbdEWLhNhB3Jd4FO9iMf/pd
+         iMcGNvfLNdx/R7CLqT3Lwkbupr3ssngCi7Fxsub9uYvN7UX1BD02kCAV/DwL6wsrS/in
+         J9e+vaUqHVE1l47NQ1cLzNwA2SMYYHCRwJq+ayYOzKO+qBtPAA5tpV8spWvtEig0L5VF
+         vr3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696098146; x=1696702946;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Cfk+kAIkYmF1E1ZqhKZzYdSWCH0DhBj9gaPb0BECOXU=;
+        b=k3qHuNRE4stidbKLyxojUGrfwjsndAasPCWedXRF/+ZiPHlNO3wMKhAaTcvlgxIhli
+         4b8DKIJAChajC+S9u5YGuBJUJJW7CfigNy/eTzr6bd4a47Dr6f2S9il4hUJ5oxESlbGf
+         St+yAXDShoZg4Ufvxd1ncUI7C4vw8jl2tPGrRC2aX89Ij4UtOEB22SUMF7jkPGiAhDTZ
+         ic0jqSy+aS3HINp8NRTIyBJywj5kU8HrlQmEq3jmqurS78GP/dk3/Inch9Q9bRNhJKK7
+         ST/7NtTf3+eHuB7HWxXDOmfO1BX1dFAC+eJFYRE9ecEQbB7NR/qAAuJeqn8oENEBvw5n
+         Uh9Q==
+X-Gm-Message-State: AOJu0YwQ1us+m02xY7ktqCIhGwpDkz53//nZHzQ4Hb+u97/+2boBemRc
+        krhWJhZzn44MAdf7BOd8JNitFqFuJ7VMwXLxtUo=
+X-Google-Smtp-Source: AGHT+IGUDWQoToowUPLFmKQ3hhUmZu70ON3P0B5xXTXZjO886NCuvZ9XxU6OpyeXoaUmL14L4RdF/94Glu6JT+d0zG8=
+X-Received: by 2002:a0d:ebca:0:b0:589:f9c3:8b2e with SMTP id
+ u193-20020a0debca000000b00589f9c38b2emr8915242ywe.20.1696098145893; Sat, 30
+ Sep 2023 11:22:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <PH7PR21MB311698B8C2107E66890F6C7ECAC0A@PH7PR21MB3116.namprd21.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+References: <20230930161443.58812-1-xubo3006@163.com>
+In-Reply-To: <20230930161443.58812-1-xubo3006@163.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 30 Sep 2023 20:22:14 +0200
+Message-ID: <CANiq72k6YR_T9cni+eGVFLzXcym2tifb7eRQW0TV6DwWSXvH7g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] rust: add Soft-RoCE driver basic structure
+To:     AllenX <xubo3006@163.com>
+Cc:     rust-for-linux@vger.kernel.org, ojeda@kernel.org,
+        alex.gaynor@gmail.com, wedsonaf@gmail.com, boqun.feng@gmail.com,
+        gary@garyguo.net, bjorn3_gh@protonmail.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,94 +71,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 04:11:15PM +0000, Haiyang Zhang wrote:
+On Sat, Sep 30, 2023 at 6:16=E2=80=AFPM AllenX <xubo3006@163.com> wrote:
+>
+> add soft-Roce rxe device net driver basic structure and Rust security abs=
+tration interface
+>
+> This patch add Rust abstration for rdma Soft-RoCE drrivers.
+> The basic architecture is completed, initialization is implemented and in=
+terfaces are set aside. Network driver-related support is currently not per=
+fect, and the specific functions of data frame parsing need to be further i=
+mplemented.
+> [PATCH 2/2] is the driver of rdma infiniband mlx4 and also completes a si=
+milar basic architecture.
 
-...
+Thanks for the patches! It is nice to see people interested in Rust
+for more use cases.
 
-> > > @@ -209,19 +281,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb,
-> > struct net_device *ndev)
-> > >  	pkg.wqe_req.client_data_unit = 0;
-> > >
-> > >  	pkg.wqe_req.num_sge = 1 + skb_shinfo(skb)->nr_frags;
-> > > -	WARN_ON_ONCE(pkg.wqe_req.num_sge >
-> > MAX_TX_WQE_SGL_ENTRIES);
-> > > -
-> > > -	if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
-> > > -		pkg.wqe_req.sgl = pkg.sgl_array;
-> > > -	} else {
-> > > -		pkg.sgl_ptr = kmalloc_array(pkg.wqe_req.num_sge,
-> > > -					    sizeof(struct gdma_sge),
-> > > -					    GFP_ATOMIC);
-> > > -		if (!pkg.sgl_ptr)
-> > > -			goto tx_drop_count;
-> > > -
-> > > -		pkg.wqe_req.sgl = pkg.sgl_ptr;
-> > > -	}
-> > 
-> > It is unclear to me why this logic has moved from here to further
-> > down in this function. Is it to avoid some cases where
-> > alloation has to be unwond on error (when mana_fix_skb_head() fails) ?
-> > If so, this feels more like an optimisation than a fix.
-> mana_fix_skb_head() may add one more sge (success case) so the sgl 
-> allocation should be done later. Otherwise, we need to free / re-allocate 
-> the array later.
+On top of what Trevor said, please see:
 
-Understood, thanks for the clarification.
+    https://rust-for-linux.com/contributing
 
-> > >  	if (skb->protocol == htons(ETH_P_IP))
-> > >  		ipv4 = true;
-> > > @@ -229,6 +288,23 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb,
-> > struct net_device *ndev)
-> > >  		ipv6 = true;
-> > >
-> > >  	if (skb_is_gso(skb)) {
-> > > +		gso_hs = mana_get_gso_hs(skb);
-> > > +
-> > > +		if (mana_fix_skb_head(ndev, skb, gso_hs,
-> > &pkg.wqe_req.num_sge))
-> > > +			goto tx_drop_count;
-> > > +
-> > > +		if (skb->encapsulation) {
-> > > +			u64_stats_update_begin(&tx_stats->syncp);
-> > > +			tx_stats->tso_inner_packets++;
-> > > +			tx_stats->tso_inner_bytes += skb->len - gso_hs;
-> > > +			u64_stats_update_end(&tx_stats->syncp);
-> > > +		} else {
-> > > +			u64_stats_update_begin(&tx_stats->syncp);
-> > > +			tx_stats->tso_packets++;
-> > > +			tx_stats->tso_bytes += skb->len - gso_hs;
-> > > +			u64_stats_update_end(&tx_stats->syncp);
-> > > +		}
-> > 
-> > nit: I wonder if this could be slightly more succinctly written as:
-> > 
-> > 		u64_stats_update_begin(&tx_stats->syncp);
-> > 		if (skb->encapsulation) {
-> > 			tx_stats->tso_inner_packets++;
-> > 			tx_stats->tso_inner_bytes += skb->len - gso_hs;
-> > 		} else {
-> > 			tx_stats->tso_packets++;
-> > 			tx_stats->tso_bytes += skb->len - gso_hs;
-> > 		}
-> > 		u64_stats_update_end(&tx_stats->syncp);
-> > 
-> Yes it can be written this way:)
-> 
-> > Also, it is unclear to me why the stats logic is moved here from
-> > futher down in the same block. It feels more like a clean-up than a fix
-> > (as, btw, is my suggestion immediately above).
-> Since we need to calculate the gso_hs and fix head earlier than the stats and 
-> some other work, I move it immediately after skb_is_gso(skb).
-> The gso_hs calculation was part of the tx_stats block, so the tx_stats is moved 
-> together to remain close to the gso_hs calculation to keep readability.
+There is some extra information there that is important, such as
+Cc'ing the relevant C side maintainers and lists, since they are the
+ones that will have to agree to take these abstractions. In this case,
+I would imagine that would be, at least, the InfiniBand maintainers
+and the rdma list.
 
-I agree it is nice the way you have it.
-I was mainly thinking that the diffstat could be made smaller,
-which might be beneficial to a fix. But I have no strong feelings on that.
+Moreover, please note that these patches seem to be on top of the
+`rust` branch. Patches sent to the mailing list should generally be
+based on top of one of the latest Linus' tags or `rust-next`. If your
+abstractions require dependencies that have not arrived yet into
+mainline, those will need to be upstreamed too. Please see the website
+above for more details on this, e.g.
 
-> > > +
-> > >  		pkg.tx_oob.s_oob.is_outer_ipv4 = ipv4;
-> > >  		pkg.tx_oob.s_oob.is_outer_ipv6 = ipv6;
-> > >
+    https://rust-for-linux.com/branches
 
-...
+Cheers,
+Miguel
