@@ -2,276 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEE47B43EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 23:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397E07B445A
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 00:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbjI3V1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 17:27:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
+        id S233897AbjI3WCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 18:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233997AbjI3V1g (ORCPT
+        with ESMTP id S229936AbjI3WCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 17:27:36 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81385DD
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 14:27:31 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id BA0655C0328;
-        Sat, 30 Sep 2023 17:27:27 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Sat, 30 Sep 2023 17:27:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:message-id:mime-version:reply-to
-        :sender:subject:subject:to:to; s=fm1; t=1696109247; x=
-        1696195647; bh=dtw0Eyy0R17VRbDGyjwG9+ncVoMk4C4upzNIEMsL+vs=; b=G
-        NUo+YHhJVvkn+71q5hspf5TdF09u56WjWYmTVi8OqeYNgV5Wze2QSH2jgmKMxDTm
-        0Z7k+/3TpZAnllgc0yDo66udItX8LFX5+zdHHcFTWrCdKRTjRdBDVhtu+0F8lnhd
-        nYE06N5lJri8wpMVCsBsXR1CL9OTD+J7zRzIPp+aSlp4/5cWR5eYNtlvfVue57X6
-        +u5wspp51DWk4TNw0xZPcRIwDdPZ177C3V6lnH79BYzjNlB3sWL6IBiA4ixopxjz
-        KGluLmh6l8LlwN/iPp3MaSXBE3F3L0tLvE390nmjrz39IecfiFZmX1uJEdOwhfSt
-        ipprRuNc0GF8tSFqPYrrQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:message-id:mime-version:reply-to:sender
-        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm2; t=1696109247; x=1696195647; bh=d
-        tw0Eyy0R17VRbDGyjwG9+ncVoMk4C4upzNIEMsL+vs=; b=o21p83bAe8Luf3TVf
-        WD/gVzWzBdt88dVZuekyzXpVjB7NQig1U+r0S2m2JA21C38tGhvzryOuPhx1Wpjr
-        dybbjOskxV+cTAttZccthb47d3ipenJDLXD3KYU+WMedTBsC9fOx7agqpovh6QMN
-        aOlpEJBjQZyRdAMlYhcrIcC/B/P5c6RdKwNuyNvQkeqTDBJjju56j+KQhD/VcTDD
-        jQfKLLkm8gyQMB97G8+f+J0knY8RJ/HdQHf0/9pI2IST17LeuX1gycK2l+ACR9FS
-        FmMNocoh4vlhRNLgiTTfEOUlLbcic50s0Fj56X/CKosSatn5FQc1uCRuc+WsLWvR
-        9Wt2Q==
-X-ME-Sender: <xms:v5IYZSC24DojVQ3qHBJx6yfvoPqp_F6nZO86pOzcU_Tfutd5yRGd7w>
-    <xme:v5IYZchnxOIWMCji1Wi9p3zCmXSl3GH5obKQppY20DJ0s1gvBVtoGn5ywZHkkDt2v
-    PFBXq0vopsWJD-UjPE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudefgdefhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhepleekveevheekffdtiedthfeiffeugfdtgfetffffteejtdfgfeevheegtedvveeg
-    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghdplhhinhgrrhhordhorhhgnecuvehluh
-    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhn
-    uggsrdguvg
-X-ME-Proxy: <xmx:v5IYZVk4nhYXBbPch0B3OeWgkG_xqEbQJIvvEYs5QAVYoAaRtPUYzg>
-    <xmx:v5IYZQxg7Szy9Z-EF_MrR39CtfB3KPhJorEZyj8OKIxfkHhBDE_fDw>
-    <xmx:v5IYZXRxsJTH0-JSlzPH7GsnvD38KzlwOnqdRagEfmk_6yjaVWUSiA>
-    <xmx:v5IYZeLgU6oe4X0vrdAynJLn2eGnWITOqxpdKd9XTBcN6ADOnzq-FA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3BECAB6008F; Sat, 30 Sep 2023 17:27:27 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
+        Sat, 30 Sep 2023 18:02:03 -0400
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AC7CA;
+        Sat, 30 Sep 2023 15:02:01 -0700 (PDT)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-27763c2c22eso7941726a91.3;
+        Sat, 30 Sep 2023 15:02:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696111321; x=1696716121;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FeR5T76ZTZxvMCUfz5YBmfd55MUtP2rm54Tv0PEqVko=;
+        b=jxsFaykwp58tXh7pGzOntCyv8ZjeCZ42ePDOJTifPNGztPWUvRLa/jxE0SLe2/Ou/U
+         tSSgb7Rb2umD/7T5TPwyXdhmimqJo8ZZiH1O54ti3VQxalagXonwNQvF4yCJFMdCoXCM
+         3X8AUJM8xdjy8Ylwg/5K/17OznRDRggxrlJxWdxJaq06EJeXu50saexc4MsbjWNI8VDb
+         APt0EIsrhiDjhYnoABcZlJP9x78meeZ3/VC22SXGt1QoRzUqBroYkEPQnth6vB7W2AyZ
+         iunGl9ZGqQY1v5UYBnK7CRYU0jKGFOfSeKyVtdtVuwry2hk0Q42q1QRF5zZtX3O3AYPz
+         DUag==
+X-Gm-Message-State: AOJu0Yyf3WJ5LdyjErj75ijtAdaUe9fTRYbvOp5tO6opwS6VuXYhnW3F
+        QD9COwxoNU3UxyaTv4Lbr9Y=
+X-Google-Smtp-Source: AGHT+IGMvC2zEatQKS7y1gd4yv3/ZntbuZf7hxKHO/sCNP9K7IutMwyZgqQ2h5/QzBmBsl2VNuZdMA==
+X-Received: by 2002:a17:90a:ea86:b0:277:1070:74a2 with SMTP id h6-20020a17090aea8600b00277107074a2mr6924409pjz.23.1696111320973;
+        Sat, 30 Sep 2023 15:02:00 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id c3-20020a17090abf0300b0026b70d2a8a2sm3582958pjs.29.2023.09.30.15.01.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Sep 2023 15:02:00 -0700 (PDT)
+Date:   Sat, 30 Sep 2023 22:01:58 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, patches@lists.linux.dev,
+        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        haiyangz@microsoft.com, decui@microsoft.com,
+        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
+        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
+        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
+        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        will@kernel.org, catalin.marinas@arm.com
+Subject: Re: [PATCH v4 13/15] uapi: hyperv: Add mshv driver headers defining
+ hypervisor ABIs
+Message-ID: <ZRia1uyFfEkSqmXw@liuwe-devbox-debian-v2>
+References: <1696010501-24584-1-git-send-email-nunodasneves@linux.microsoft.com>
+ <1696010501-24584-14-git-send-email-nunodasneves@linux.microsoft.com>
+ <2023093057-eggplant-reshoot-8513@gregkh>
 MIME-Version: 1.0
-Message-Id: <6425892a-8503-4f70-be45-e545cda59854@app.fastmail.com>
-Date:   Sat, 30 Sep 2023 17:26:59 -0400
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Linus Torvalds" <torvalds@linux-foundation.org>
-Cc:     soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] ARM: SoC fixes for 6.6
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023093057-eggplant-reshoot-8513@gregkh>
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 0bb80ecc33a8fb5a682236443c1e740d5c917=
-d1d:
+On Sat, Sep 30, 2023 at 08:09:19AM +0200, Greg KH wrote:
+> On Fri, Sep 29, 2023 at 11:01:39AM -0700, Nuno Das Neves wrote:
+> > These must be in uapi because they will be used in the mshv ioctl API.
+> > 
+> > Version numbers for each file:
+> > hvhdk.h		25212
+> > hvhdk_mini.h	25294
+> > hvgdk.h		25125
+> > hvgdk_mini.h	25294
+> 
+> what are version numbers?
 
-  Linux 6.6-rc1 (2023-09-10 16:28:41 -0700)
+These are internal version numbers for the hypervisor headers. We keep
+track of them so that we can detect if there are any breakages in the
+ABI, and thus either ask them to be fixed or we come up with ways to
+maintain compatibility. People outside of Microsoft don't need to worry
+about this. If you don't think this information belongs in the commit
+message, we can drop it.
 
-are available in the Git repository at:
+> 
+> > These are unstable interfaces and as such must be compiled independently
+> > from published interfaces found in hyperv-tlfs.h.
+> 
+> uapi files can NOT be unstable, that's the opposite of an api :(
+> 
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git tags/soc-f=
-ixes-6.6
+You made a few suggestions in the past. Nuno responded here:
 
-for you to fetch changes up to b0b88a585c27834223d2daf47faa57ca06dd9414:
+https://lore.kernel.org/linux-hyperv/1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com/T/#m3dd8035e381a1344acd7f570c3f5921b7415bedb
 
-  MAINTAINERS: Fix Florian Fainelli's email address (2023-09-29 17:49:18=
- -0400)
+> > Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
+> > Acked-by: Wei Liu <wei.liu@kernel.org>
+> > ---
+> >  include/uapi/hyperv/hvgdk.h      |   41 +
+> >  include/uapi/hyperv/hvgdk_mini.h | 1076 ++++++++++++++++++++++++
+> >  include/uapi/hyperv/hvhdk.h      | 1342 ++++++++++++++++++++++++++++++
+> >  include/uapi/hyperv/hvhdk_mini.h |  160 ++++
+> >  4 files changed, 2619 insertions(+)
+> >  create mode 100644 include/uapi/hyperv/hvgdk.h
+> >  create mode 100644 include/uapi/hyperv/hvgdk_mini.h
+> >  create mode 100644 include/uapi/hyperv/hvhdk.h
+> >  create mode 100644 include/uapi/hyperv/hvhdk_mini.h
+> > 
+> > diff --git a/include/uapi/hyperv/hvgdk.h b/include/uapi/hyperv/hvgdk.h
+> > new file mode 100644
+> > index 000000000000..9bcbb7d902b2
+> > --- /dev/null
+> > +++ b/include/uapi/hyperv/hvgdk.h
+> > @@ -0,0 +1,41 @@
+> > +/* SPDX-License-Identifier: MIT */
+> 
+> That's usually not a good license for a new uapi .h file, why did you
+> choose this one?
+> 
 
-----------------------------------------------------------------
-ARM: SoC fixes for 6.6
+This is chosen so that other Microsoft developers who don't normally
+work on Linux can review this code.
 
-These are teh latest bug fixes that have come up in the soc tree.
-Most of these are fairly minor. Most notably, the majority of
-changes this time are not for dts files as usual.
+> > +/* Define connection identifier type. */
+> > +union hv_connection_id {
+> > +	__u32 asu32;
+> > +	struct {
+> > +		__u32 id:24;
+> > +		__u32 reserved:8;
+> > +	} __packed u;
+> 
+> bitfields will not work properly in uapi .h files, please never do that.
 
- - Updates to the addresses of the broadcom and aspeed entries in the
-   MAINTAINERS file.
+Can you clarify a bit more why it wouldn't work? Endianess? Alignment?
+Or something else?
 
- - Defconfig updates to address a regression on samsung and a build
-   warning from an unknown Kconfig symbol
+Just by eyeballing the header files under include/uapi, there are a
+non-trivial number of files that use bitfields.
 
- - Build fixes for the StrongARM and Uniphier platforms
+include/uapi/linux/cdrom.h
+include/uapi/linux/hdreg.h
+include/uapi/linux/if_pppox.h
+include/uapi/linux/adfs_fs.h
+include/uapi/linux/atm.h
+include/uapi/linux/batadv_packet.h
+include/uapi/linux/bpf.h
+include/uapi/linux/cciss_defs.h
+include/uapi/linux/dccp.h
+include/uapi/linux/erspan.h
+include/uapi/linux/i2o-dev.h
+include/uapi/linux/icmp.h
+include/uapi/linux/icmpv6.h
+include/uapi/linux/idxd.h
+include/uapi/linux/if_hippi.h
+include/uapi/linux/igmp.h
+include/uapi/linux/inet_diag.h
+include/uapi/linux/ioam6.h
+include/uapi/linux/ip.h
+include/uapi/linux/netfilter/xt_policy.h
+include/uapi/linux/perf_event.h
+include/uapi/linux/rpl.h
+include/uapi/linux/tcp.h
+include/uapi/linux/usb/raw_gadget.h
+include/uapi/linux/watch_queue.h
+include/uapi/scsi/scsi_bsg_ufs.h
+include/uapi/sound/asound.h
+include/uapi/sound/skl-tplg-interface.h
 
- - Code fixes for SCMI and FF-A firmware drivers, both of which had
-   a simple bug that resulted in invalid data, and a lesser fix for
-   the optee firmware driver
+Also under arch/x86/include/uapi/asm:
 
- - Multiple fixes for the recently added loongson/loongarch "guts"
-   soc driver
+arch/x86/include/uapi/asm/kvm.h
 
- - Devicetree fixes for RISC-V on the startfive platform, addressing
-   issues with NOR flash, usb and uart.
+Can you help us understand how we can make our code work like the others
+listed above? There must be a way since they are all in the tree. We're
+happy to make adjustments.
 
- - Multiple fixes for NXP i.MX8/i.MX9 dts files, fixing problems
-   with clock, gpio, hdmi settings and the Makefile
+Thanks,
+Wei.
 
- - Bug fixes for i.MX firmware code and the OCOTP soc driver
-
- - Multiple fixes for the TI sysc bus driver
-
- - Minor dts updates for TI omap dts files, to address boot
-   time warnings and errors
-
-----------------------------------------------------------------
-Adam Ford (3):
-      bus: ti-sysc: Fix missing AM35xx SoC matching
-      arm64: dts: imx8mp: Fix SDMA2/3 clocks
-      arm64: dts: imx8mp-beacon-kit: Fix audio_pll2 clock
-
-Alexander Stein (1):
-      arm64: dts: freescale: tqma9352: Fix gpio hog
-
-Andrew Jeffery (1):
-      MAINTAINERS: aspeed: Update Andrew's email address
-
-Arnd Bergmann (8):
-      Merge tag 'omap-for-v6.6/fixes-signed' of git://git.kernel.org/pub=
-/scm/linux/kernel/git/tmlind/linux-omap into arm/fixes
-      Merge tag 'imx-fixes-6.6' of git://git.kernel.org/pub/scm/linux/ke=
-rnel/git/shawnguo/linux into arm/fixes
-      Merge tag 'riscv-dt-fixes-for-v6.6-rc3' of https://git.kernel.org/=
-pub/scm/linux/kernel/git/conor/linux into arm/fixes
-      Merge tag 'optee-for-for-v6.6' of https://git.linaro.org/people/je=
-ns.wiklander/linux-tee into arm/fixes
-      Merge tag 'aspeed-6.6-maintainers' of git://git.kernel.org/pub/scm=
-/linux/kernel/git/joel/bmc into arm/fixes
-      Merge tag 'ffa-fix-6.6' of git://git.kernel.org/pub/scm/linux/kern=
-el/git/sudeep.holla/linux into arm/fixes
-      Merge tag 'scmi-fix-6.6' of git://git.kernel.org/pub/scm/linux/ker=
-nel/git/sudeep.holla/linux into arm/fixes
-      ARM: locomo: fix locomolcd_power declaration
-
-Aurelien Jarno (1):
-      riscv: dts: starfive: fix NOR flash reserved-data partition size
-
-Binbin Zhou (5):
-      soc: loongson: loongson_pm2: Add dependency for INPUT
-      dt-bindings: soc: loongson,ls2k-pmc: Use fallbacks for ls2k-pmc co=
-mpatible
-      soc: loongson: loongson_pm2: Drop useless of_device_id compatible
-      dt-bindings: soc: loongson,ls2k-pmc: Allow syscon-reboot/syscon-po=
-weroff as child
-      soc: loongson: loongson_pm2: Populate children syscon nodes
-
-Christophe JAILLET (1):
-      firmware: imx-dsp: Fix an error handling path in imx_dsp_setup_cha=
-nnels()
-
-Dongliang Mu (1):
-      soc: loongson: loongson2_guts: Convert to devm_platform_ioremap_re=
-source()
-
-Hal Feng (2):
-      riscv: dts: starfive: visionfive 2: Enable usb0
-      riscv: dts: starfive: visionfive 2: Fix uart0 pins sort order
-
-Julien Panis (1):
-      bus: ti-sysc: Use fsleep() instead of usleep_range() in sysc_reset=
-()
-
-Krzysztof Kozlowski (1):
-      arm64: defconfig: enable syscon-poweroff driver
-
-Liu Ying (1):
-      arm64: dts: imx8mm-evk: Fix hdmi@3d node
-
-Mikko Rapeli (1):
-      arm64: defconfig: remove CONFIG_COMMON_CLK_NPCM8XX=3Dy
-
-Mingtong Bao (1):
-      soc: loongson: loongson2_guts: Remove unneeded semicolon
-
-Nathan Rossi (1):
-      soc: imx8m: Enable OCOTP clock for imx8mm before reading registers
-
-Randy Dunlap (1):
-      ARM: uniphier: fix cache kernel-doc warnings
-
-Rob Herring (2):
-      arm64: dts: mediatek: Fix "mediatek,merge-mute" and "mediatek,merg=
-e-fifo-en" types
-      arm64: dts: imx: Add imx8mm-prt8mm.dtb to build
-
-Sibi Sankar (1):
-      firmware: arm_scmi: Fixup perf power-cost/microwatt support
-
-Sudeep Holla (1):
-      firmware: arm_ffa: Don't set the memory region attributes for MEM_=
-LEND
-
-Tony Lindgren (6):
-      ARM: dts: ti: omap: Fix bandgap thermal cells addressing for omap3=
-/4
-      ARM: dts: ti: omap: motorola-mapphone: Fix abe_clkctrl warning on =
-boot
-      ARM: dts: ti: omap: Fix noisy serial with overrun-throttle-ms for =
-mapphone
-      ARM: omap2+: Downgrade u-boot version warnings to debug statements
-      bus: ti-sysc: Fix SYSC_QUIRK_SWSUP_SIDLE_ACT handling for uart wak=
-e-up
-      Merge branches 'fixes-mapphone' and 'fixes-ti-sysc' into fixes
-
-Uwe Kleine-K=C3=B6nig (1):
-      MAINTAINERS: Fix Florian Fainelli's email address
-
-Yue Haibing (1):
-      tee: Remove unused declarations
-
-Zev Weiss (1):
-      MAINTAINERS: aspeed: Update git tree URL
-
- .../bindings/soc/loongson/loongson,ls2k-pmc.yaml   | 43 +++++++++++++++=
----
- MAINTAINERS                                        | 10 ++---
- .../boot/dts/ti/omap/motorola-mapphone-common.dtsi |  5 ++-
- arch/arm/boot/dts/ti/omap/omap3-cpu-thermal.dtsi   |  3 +-
- arch/arm/boot/dts/ti/omap/omap4-cpu-thermal.dtsi   |  5 ++-
- arch/arm/boot/dts/ti/omap/omap443x.dtsi            |  1 +
- arch/arm/boot/dts/ti/omap/omap4460.dtsi            |  1 +
- arch/arm/include/asm/hardware/locomo.h             |  2 +-
- arch/arm/mach-omap2/pm44xx.c                       |  4 +-
- arch/arm/mach-sa1100/include/mach/collie.h         |  2 -
- arch/arm/mm/cache-uniphier.c                       |  4 +-
- arch/arm64/boot/dts/freescale/Makefile             |  1 +
- arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi      | 32 +++++++++-----
- .../arm64/boot/dts/freescale/imx8mp-beacon-kit.dts |  5 ++-
- arch/arm64/boot/dts/freescale/imx8mp.dtsi          |  6 +++
- arch/arm64/boot/dts/freescale/imx93-tqma9352.dtsi  |  2 +-
- arch/arm64/boot/dts/mediatek/mt8195.dtsi           | 10 ++---
- arch/arm64/configs/defconfig                       |  2 +-
- .../dts/starfive/jh7110-starfive-visionfive-2.dtsi | 51 +++++++++++----=
--------
- drivers/bus/ti-sysc.c                              | 31 +++++++++----
- drivers/firmware/arm_ffa/driver.c                  | 16 ++++++-
- drivers/firmware/arm_scmi/perf.c                   |  4 +-
- drivers/firmware/imx/imx-dsp.c                     |  1 +
- drivers/soc/imx/soc-imx8m.c                        | 10 +++++
- drivers/soc/loongson/Kconfig                       |  1 +
- drivers/soc/loongson/loongson2_guts.c              |  6 +--
- drivers/soc/loongson/loongson2_pm.c                |  7 ++-
- drivers/tee/optee/optee_private.h                  |  2 -
- drivers/tee/tee_private.h                          |  2 -
- 29 files changed, 179 insertions(+), 90 deletions(-)
+> 
+> thanks,
+> 
+> greg k-h
