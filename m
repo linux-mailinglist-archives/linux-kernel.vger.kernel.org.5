@@ -2,54 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5567B3FCA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:57:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CEF7B3FCC
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234034AbjI3J5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 05:57:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40116 "EHLO
+        id S234039AbjI3J6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 05:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229778AbjI3J5D (ORCPT
+        with ESMTP id S233981AbjI3J6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 05:57:03 -0400
-Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A311FDD;
-        Sat, 30 Sep 2023 02:56:58 -0700 (PDT)
-Received: from dinghao.liu$zju.edu.cn ( [10.192.195.11] ) by
- ajax-webmail-mail-app3 (Coremail) ; Sat, 30 Sep 2023 17:56:29 +0800
- (GMT+08:00)
-X-Originating-IP: [10.192.195.11]
-Date:   Sat, 30 Sep 2023 17:56:29 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Marc Zyngier" <maz@kernel.org>
-Cc:     "Toan Le" <toan@os.amperecomputing.com>,
-        "Lorenzo Pieralisi" <lpieralisi@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
-        "Rob Herring" <robh@kernel.org>,
-        "Bjorn Helgaas" <bhelgaas@google.com>, "Duc Dang" <dhdang@apm.com>,
-        "Tanmay Inamdar" <tinamdar@apm.com>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PCI: xgene-msi: Fix a potential UAF in xgene_msi_probe
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version 2023.2-cmXT5 build
- 20230825(e13b6a3b) Copyright (c) 2002-2023 www.mailtech.cn
- mispb-4df6dc2c-e274-4d1c-b502-72c5c3dfa9ce-zj.edu.cn
-In-Reply-To: <87jzs9mjdh.wl-maz@kernel.org>
-References: <20230926025936.7115-1-dinghao.liu@zju.edu.cn>
- <87jzs9mjdh.wl-maz@kernel.org>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Sat, 30 Sep 2023 05:58:18 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15CC3DD;
+        Sat, 30 Sep 2023 02:58:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24C17C433C8;
+        Sat, 30 Sep 2023 09:58:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696067896;
+        bh=Ldronimayk2hvSUPUidfoaAxA+pv148JulDGjjjeupg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=NQdGS2EyNzKhiiCAfbTd3LtaJy1NnrVqfSjw2NmJNO8vX6ZJ2DrrGe/xyMBhcn3cZ
+         DhruvskYQHH4u3wKeIDuVsqtiy9mLVeCCfOG5e55eEzH1c6nPLw6zkhbha/04V7sRD
+         i30N4jFGVjCEzwqjR1HsD2alKSSbWbUmdh6MFIgFoRjfvFovUvGJIn5E8FtqW+ssyK
+         8wwlMNkC0ABzl/sGnmWF6z0gCIgdK6ug4uTx1PuNa5qrAILUJucoMYNu++Vjg+7auV
+         orYa07eJGgpYCTixEfVYxeL5hKlX5JbmnLpKEy4MuSWlHH7kEDS0AWaWbTacdcgLJ1
+         Cb+fpk8yNnxJg==
+Date:   Sat, 30 Sep 2023 11:58:09 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andi Shyti <andi.shyti@kernel.org>
+Subject: [PULL REQUEST] i2c-for-6.6-rc4
+Message-ID: <ZRfxMZNe8wiyX/nc@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andi Shyti <andi.shyti@kernel.org>
 MIME-Version: 1.0
-Message-ID: <23c09050.48ec5.18ae584a39d.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cC_KCgD3_8PO8BdlsEwhAQ--.37042W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgIKBmURl6BBWgARsF
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="OS6/6Xv4W+tjJ9re"
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,18 +55,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiBUdWUsIDI2IFNlcCAyMDIzIDAzOjU5OjM2ICswMTAwLAo+IERpbmdoYW8gTGl1IDxkaW5n
-aGFvLmxpdUB6anUuZWR1LmNuPiB3cm90ZToKPiA+IAo+ID4geGdlbmVfYWxsb2NhdGVfZG9tYWlu
-cygpIHdpbGwgY2FsbCBpcnFfZG9tYWluX3JlbW92ZSgpIHRvIGZyZWUKPiA+IG1zaS0+aW5uZXJf
-ZG9tYWluIG9uIGZhaWx1cmUuIEhvd2V2ZXIsIGl0cyBjYWxsZXIsIHhnZW5lX21zaV9wcm9iZSgp
-LAo+ID4gd2lsbCBhbHNvIGNhbGwgaXJxX2RvbWFpbl9yZW1vdmUoKSB0aHJvdWdoIHhnZW5lX21z
-aV9yZW1vdmUoKSBvbiB0aGUKPiA+IHNhbWUgZmFpbHVyZSwgd2hpY2ggbWF5IGxlYWQgdG8gYSB1
-c2UtYWZ0ZXItZnJlZS4gUmVtb3ZlIHRoZSBmaXJzdAo+ID4gaXJxX2RvbWFpbl9yZW1vdmUoKSBh
-bmQgbGV0IHhnZW5lX2ZyZWVfZG9tYWlucygpIGNsZWFudXAgZG9tYWlucy4KPiA+IAo+ID4gRml4
-ZXM6IGRjZDE5ZGUzNjc3NSAoIlBDSTogeGdlbmU6IEFkZCBBUE0gWC1HZW5lIHYxIFBDSWUgTVNJ
-L01TSVggdGVybWluYXRpb24gZHJpdmVyIikKPiA+IFNpZ25lZC1vZmYtYnk6IERpbmdoYW8gTGl1
-IDxkaW5naGFvLmxpdUB6anUuZWR1LmNuPgo+ID4gLS0tCj4gPiAKPiA+IENoYW5nZWxvZzoKPiA+
-IAo+ID4gdjI6IC1SZW1vdmUgaXJxX2RvbWFpbl9yZW1vdmUoKSBpbnN0ZWFkIG9mIG51bGxpbmcg
-bXNpX2RvbWFpbi4KPiAKPiBVbmZvcnR1bmF0ZWx5LCB5b3VyIGVtYWlsIGRvZXNuJ3QgaW5kaWNh
-dGUgdGhpcyBpcyB2Mi4KClNvcnJ5LCBteSBtaXN0YWtlLiBJIHdpbGwgcmVzZW5kIGEgbmV3IHBh
-dGNoIHNvb24uCgpSZWdhcmRzLApEaW5naGFv
+
+--OS6/6Xv4W+tjJ9re
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 6465e260f48790807eef06b583b38ca9789b6072:
+
+  Linux 6.6-rc3 (2023-09-24 14:31:13 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/i2c-for-6.6-rc4
+
+for you to fetch changes up to 92e73d807b68b2214fcafca4e130b5300a9d4b3c:
+
+  i2c: npcm7xx: Fix callback completion ordering (2023-09-27 21:32:06 +0200)
+
+----------------------------------------------------------------
+Usual buisness: a driver fix, a DT fix, a minor core fix
+
+----------------------------------------------------------------
+Fabio Estevam (1):
+      dt-bindings: i2c: mxs: Pass ref and 'unevaluatedProperties: false'
+
+Heiner Kallweit (1):
+      i2c: mux: Avoid potential false error message in i2c_mux_add_adapter
+
+William A. Kennington III (1):
+      i2c: npcm7xx: Fix callback completion ordering
+
+
+with much appreciated quality assurance from
+----------------------------------------------------------------
+Krzysztof Kozlowski (1):
+      (Rev.) dt-bindings: i2c: mxs: Pass ref and 'unevaluatedProperties: false'
+
+Tali Perry (1):
+      (Rev.) i2c: npcm7xx: Fix callback completion ordering
+
+ Documentation/devicetree/bindings/i2c/i2c-mxs.yaml |  5 ++++-
+ drivers/i2c/busses/i2c-npcm7xx.c                   | 17 +++++++----------
+ drivers/i2c/i2c-mux.c                              |  2 +-
+ 3 files changed, 12 insertions(+), 12 deletions(-)
+
+--OS6/6Xv4W+tjJ9re
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUX8TEACgkQFA3kzBSg
+KbYRdw/+I3swxAkWzLHAQnanmjVd890xsdDOzRE8I3VFo7fi0Bac7dowgVCrdDzo
+cauEDCOXrY+RIMJ/TB65j6LnOI4NaEAjfOe4QlFo41MsPQLW7C0UIrHincGDgeOG
+xVWvC4ayaq8PqTErcRpxOBY/ewGNgZ06Sa6sE9Q/knRqwC/4Bl4fputK2sx1HEQt
+uJGADbtoY/2UpuE1WwOLT6dAu8cMTzkoVfxqfadvpeKVY7cewCm6C5y4jPdvzq0O
+xY09WqAICkyfBzqshgo05zKiegr1qdIXbTY9mI70KcD74urHfN4oNYiuFhQB2fZP
+cUUlFsUEwfINwQqzprcfJi5IQDfFglD6NMY1sD6vcW9koupF9RFvn7FkIvhs19fq
+ZnovF+2mfBdWMdY0W0c1bMsv4UyHviEw58cGp7C30IrSIG8QeVo7bq95OJQ235uJ
+8U6KFxEkukxKJGtgTVG7k58F12DQtnQvRP3ap0gJqY/ehBeuBbIqtevVjtd07Ms7
+WbEpMsv7FJ+mLrdLamkZvhOhmlx5ZUPTMnCZUFh/DFXAScALJfTMIrsNzfK5aR/o
+e8bKLjuIu4x2PwwCRMRldd++ywVeuzjp0KBCt2jA4U59TRXTvIOra68e/2QRbE2T
+IlT7Mq9bHd5VrAB6YNnMlvr6rQgEADIlDiJ73oExR2fki9FXun8=
+=dUYL
+-----END PGP SIGNATURE-----
+
+--OS6/6Xv4W+tjJ9re--
