@@ -2,157 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A93BC7B3F94
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA45D7B3F92
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232125AbjI3JDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 05:03:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48314 "EHLO
+        id S232059AbjI3JC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 05:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231401AbjI3JDT (ORCPT
+        with ESMTP id S231401AbjI3JC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 05:03:19 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386971A4;
-        Sat, 30 Sep 2023 02:03:17 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bffdf50212so233293441fa.1;
-        Sat, 30 Sep 2023 02:03:17 -0700 (PDT)
+        Sat, 30 Sep 2023 05:02:57 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959C91B7
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 02:02:54 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso2047048566b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 02:02:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696064595; x=1696669395; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SYSzdY55+CxrxbH3Om6zQQD6TqvfL34vFHdKYeG2ZYA=;
-        b=L9e+6JSJ3Qy6n4kefbNhpoauNqCMWaXKvtUlOA8M4IUCONTj4IabNIMCHvqGdG466K
-         Y8S2kxkw4nFW9kdmGUfgwok0PpJ5FnTrxBDJuVHRLyRW3vg+O9yUS+FxccaJUKC+Lj2y
-         HqtWksUSROhlkjnT3ovfFF+OsD1AGqtG+IdQdgU/cvG6dJYsU1hafskVTd+LhtZWm9VT
-         D4RkSdL8rCJF7VDkPgKZHeWrcbVcp7FXz+edwOOK4G66qzsPe3KPf+nUxf9dTuTHUB4h
-         eD51IoQI+YJOAvFBfSunyx+Reak28BNrB7jX4yqFgOruKEZnlOUgtDRrOauxUaj7aVYx
-         Clow==
+        d=linaro.org; s=google; t=1696064572; x=1696669372; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Q0hizBBm4A8wjMZ1piqiDjr9gInhzk36CKnQSjY0ZpQ=;
+        b=MqgondFe0Uu0H3HEYZgqefdjdyxZdyTjT8y55ZkDMsPO7kMFgwLJFQf7jFHPA4wdFh
+         X5pfb2tqwIXV0KH4PgZtqU/nohpYPdztpZAuRxFcccPjqGWff0DtXISQB90S3uJb6yKJ
+         HGHXSeLFtNQkXNl1aUFzrCWXS6yQUKLnnutEQ+p5m29WHGggzxM4lVN5yR8awvE/N8aY
+         RNRTMdN+RuAWSP4GuiSYKUywLhpiPQaoaEt2YZJTL9FtHDCDmakBNzVE3WcibXF5n4Td
+         +zAAn7DmmJr1ggvmOqY1fcW15B8skqc85IUp/I74rechxAgdBaS40C5lg/+6t9C+brtW
+         NyaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696064595; x=1696669395;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SYSzdY55+CxrxbH3Om6zQQD6TqvfL34vFHdKYeG2ZYA=;
-        b=YGywBykB7URCC/zE+uqKTKQZRUVhg5ds9m0o9w5nUYMVaMnMedZdTSjyxzpopZkOAz
-         9TWyrq88UTTPCFazs38gkYZThCFkHwcV7a6qP7RpAwVkcCB0ZQPPfRLGKNqGoMrCZz3p
-         0/9oUbCzvUuEmImPIDTEFAY5OA8ID1isQUNmOP6MzG+00Bzp1NRq1mS381bkLtriIV4c
-         2+J9Oyws5WDkcA7D7xU04rWP44VPkcK4Cj6mz5i3DNoRj4rPsxXknunWtBRCmxH8XBFL
-         bO0DnmLiYSww9Xkjcdf6YDZ7BbVLWMLeHzeA4B6AOMxGaMc3PS+lx9xu2Qh/hOxAhq7k
-         Dp8A==
-X-Gm-Message-State: AOJu0Ywq5BhqF474ogZISuVvALqxuX6tGAV8FORB9mRBdDaLj4ZqRcPj
-        Rao+d+W42x/BRd2syTZvIo2G7eVQ3SABR8ze
-X-Google-Smtp-Source: AGHT+IHSdH0luyWoKJ4bUEHxt9DqzqMz/aYF1XYSTUy4+HNiFlIp0VCpJLte5ID5dl3YfSnwnrynVQ==
-X-Received: by 2002:a2e:9cc2:0:b0:2bf:fae2:f97 with SMTP id g2-20020a2e9cc2000000b002bffae20f97mr6101486ljj.12.1696064595135;
-        Sat, 30 Sep 2023 02:03:15 -0700 (PDT)
-Received: from HP-ENVY-Notebook.lan (81-229-94-10-no68.tbcn.telia.com. [81.229.94.10])
-        by smtp.googlemail.com with ESMTPSA id z9-20020a2e3509000000b002bcbae4c21fsm4319794ljz.50.2023.09.30.02.03.13
+        d=1e100.net; s=20230601; t=1696064572; x=1696669372;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q0hizBBm4A8wjMZ1piqiDjr9gInhzk36CKnQSjY0ZpQ=;
+        b=BucWKzWqX47l982mZDb0Uo2e6VOjJKcdwpq/uVibNWLzDA4W79sw+KurXIAwsN9O4Z
+         b/tzgPgWxYmA2lWSd0sQIcrAapRf8Y/0d9xaV5mFBfws7S2Y4Y7vHYJminmpCYInB3Lr
+         EInU7+AKUlO9HGEiDxZ+VhkDYLTOqI+S8SljCGMWAyKpUb7yZJG3QApDycHLphKQAanl
+         ltbrBdjos15TYc5j1ArqdAwVGzQlQT6bKfv5V/SDLx2TspbghAufN1ymEiFlrql+GoNv
+         9hb/5n2Cg57IBe316DI2NjohbzNfpofc8LkYAoiPxco58oJFB10d8IDTaMyGVpWwjiCy
+         MvSw==
+X-Gm-Message-State: AOJu0Yy9wNi2GyxSLTI7tWYoDyi6oEamRKhfbBlfssz2occc+NK4y+G7
+        8wBArMfFF1iMC0oLsgd9OWa/
+X-Google-Smtp-Source: AGHT+IHr952WuR/z5EU6Gyhdfd/SNEYlnNbdjLVbmblbMVw53N3v3z8rJmOSwHR0BANmLPzAn2RjbA==
+X-Received: by 2002:a17:907:985b:b0:9ae:6a08:6f53 with SMTP id jj27-20020a170907985b00b009ae6a086f53mr5637893ejc.63.1696064572153;
+        Sat, 30 Sep 2023 02:02:52 -0700 (PDT)
+Received: from thinkpad ([88.128.88.98])
+        by smtp.gmail.com with ESMTPSA id bv13-20020a170906b1cd00b00993a37aebc5sm13708153ejb.50.2023.09.30.02.02.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 02:03:14 -0700 (PDT)
-From:   Jonathan Bergh <bergh.jonathan@gmail.com>
-To:     rafael@kernel.org, lenb@kernel.org
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Bergh <bergh.jonathan@gmail.com>
-Subject: [PATCH 1/3] drivers: acpi: Fix pointer declarations in parameter lists which included whitespace spuriously
-Date:   Sat, 30 Sep 2023 11:02:48 +0200
-Message-Id: <20230930090248.34759-1-bergh.jonathan@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sat, 30 Sep 2023 02:02:51 -0700 (PDT)
+Date:   Sat, 30 Sep 2023 11:02:49 +0200
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Frank Li <Frank.li@nxp.com>
+Cc:     aisheng.dong@nxp.com, bhelgaas@google.com,
+        devicetree@vger.kernel.org, festevam@gmail.com,
+        imx@lists.linux.dev, jdmason@kudzu.us, kernel@pengutronix.de,
+        kishon@kernel.org, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
+Subject: Re: [PATCH v2 0/5] Add RC-to-EP doorbell with platform MSI controller
+Message-ID: <20230930090249.GB3564@thinkpad>
+References: <20230911220920.1817033-1-Frank.Li@nxp.com>
+ <ZQtmpL2vCMgR+Upu@lizhi-Precision-Tower-5810>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <ZQtmpL2vCMgR+Upu@lizhi-Precision-Tower-5810>
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed issues where pointer declarations in parameter lists included
-whitespace before the parameter names and should not.
+On Wed, Sep 20, 2023 at 05:39:48PM -0400, Frank Li wrote:
+> On Mon, Sep 11, 2023 at 06:09:15PM -0400, Frank Li wrote:
+> > ┌────────────┐   ┌───────────────────────────────────┐   ┌────────────────┐
+> > │            │   │                                   │   │                │
+> > │            │   │ PCI Endpoint                      │   │ PCI Host       │
+> > │            │   │                                   │   │                │
+> > │            │◄──┤ 1.platform_msi_domain_alloc_irqs()│   │                │
+> > │            │   │                                   │   │                │
+> > │ MSI        ├──►│ 2.write_msi_msg()                 ├──►├─BAR<n>         │
+> > │ Controller │   │   update doorbell register address│   │                │
+> > │            │   │   for BAR                         │   │                │
+> > │            │   │                                   │   │ 3. Write BAR<n>│
+> > │            │◄──┼───────────────────────────────────┼───┤                │
+> > │            │   │                                   │   │                │
+> > │            ├──►│ 4.Irq Handle                      │   │                │
+> > │            │   │                                   │   │                │
+> > │            │   │                                   │   │                │
+> > └────────────┘   └───────────────────────────────────┘   └────────────────┘
+> 
+> @mani:
+> 	Do you have chance to review this patch again?
 
-Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
----
- drivers/acpi/osl.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+I was on vacation for past few weeks. Will take a look in the coming week.
 
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index f725813d0cce..29e0005c30aa 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -493,7 +493,7 @@ EXPORT_SYMBOL(acpi_os_unmap_generic_address);
- 
- #ifdef ACPI_FUTURE_USAGE
- acpi_status
--acpi_os_get_physical_address(void *virt, acpi_physical_address * phys)
-+acpi_os_get_physical_address(void *virt, acpi_physical_address *phys)
- {
- 	if (!phys || !virt)
- 		return AE_BAD_PARAMETER;
-@@ -784,7 +784,7 @@ acpi_os_write_memory(acpi_physical_address phys_addr, u64 value, u32 width)
- 
- #ifdef CONFIG_PCI
- acpi_status
--acpi_os_read_pci_configuration(struct acpi_pci_id * pci_id, u32 reg,
-+acpi_os_read_pci_configuration(struct acpi_pci_id *pci_id, u32 reg,
- 			       u64 *value, u32 width)
- {
- 	int result, size;
-@@ -816,7 +816,7 @@ acpi_os_read_pci_configuration(struct acpi_pci_id * pci_id, u32 reg,
- }
- 
- acpi_status
--acpi_os_write_pci_configuration(struct acpi_pci_id * pci_id, u32 reg,
-+acpi_os_write_pci_configuration(struct acpi_pci_id *pci_id, u32 reg,
- 				u64 value, u32 width)
- {
- 	int result, size;
-@@ -1197,7 +1197,7 @@ bool acpi_queue_hotplug_work(struct work_struct *work)
- }
- 
- acpi_status
--acpi_os_create_semaphore(u32 max_units, u32 initial_units, acpi_handle * handle)
-+acpi_os_create_semaphore(u32 max_units, u32 initial_units, acpi_handle *handle)
- {
- 	struct semaphore *sem = NULL;
- 
-@@ -1554,7 +1554,7 @@ void acpi_os_release_lock(acpi_spinlock lockp, acpi_cpu_flags flags)
-  ******************************************************************************/
- 
- acpi_status
--acpi_os_create_cache(char *name, u16 size, u16 depth, acpi_cache_t ** cache)
-+acpi_os_create_cache(char *name, u16 size, u16 depth, acpi_cache_t **cache)
- {
- 	*cache = kmem_cache_create(name, size, 0, 0, NULL);
- 	if (*cache == NULL)
-@@ -1575,7 +1575,7 @@ acpi_os_create_cache(char *name, u16 size, u16 depth, acpi_cache_t ** cache)
-  *
-  ******************************************************************************/
- 
--acpi_status acpi_os_purge_cache(acpi_cache_t * cache)
-+acpi_status acpi_os_purge_cache(acpi_cache_t *cache)
- {
- 	kmem_cache_shrink(cache);
- 	return (AE_OK);
-@@ -1594,7 +1594,7 @@ acpi_status acpi_os_purge_cache(acpi_cache_t * cache)
-  *
-  ******************************************************************************/
- 
--acpi_status acpi_os_delete_cache(acpi_cache_t * cache)
-+acpi_status acpi_os_delete_cache(acpi_cache_t *cache)
- {
- 	kmem_cache_destroy(cache);
- 	return (AE_OK);
-@@ -1614,7 +1614,7 @@ acpi_status acpi_os_delete_cache(acpi_cache_t * cache)
-  *
-  ******************************************************************************/
- 
--acpi_status acpi_os_release_object(acpi_cache_t * cache, void *object)
-+acpi_status acpi_os_release_object(acpi_cache_t *cache, void *object)
- {
- 	kmem_cache_free(cache, object);
- 	return (AE_OK);
+- Mani
+
+> 
+> Frank
+> 
+> > 
+> > This patches based on old https://lore.kernel.org/imx/20221124055036.1630573-1-Frank.Li@nxp.com/
+> > 
+> > Original patch only target to vntb driver. But actually it is common
+> > method.
+> > 
+> > This patches add new API to pci-epf-core, so any EP driver can use it.
+> > 
+> > The key point is comments from Thomas Gleixner, who suggest use new
+> > PCI/IMS. But arm platform change still not be merged yet.
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git devmsi-v2-arm
+> > 
+> > So I still use existed method implement RC to EP doorbell.
+> > 
+> > If Thomas Gleixner want to continue work on devmsi-v2-arm, I can help test
+> > and update this patch.
+> > 
+> > Change from v1 to v2
+> > - Add missed patch for endpont/pci-epf-test.c
+> > - Move alloc and free to epc driver from epf.
+> > - Provide general help function for EPC driver to alloc platform msi irq.
+> > - Fixed manivannan's comments.
+> > 
+> > Frank Li (5):
+> >   PCI: endpoint: Add RC-to-EP doorbell support using platform MSI
+> >     controller
+> >   PCI: dwc: add doorbell support by use MSI controller
+> >   PCI: endpoint: pci-epf-test: add doorbell test
+> >   misc: pci_endpoint_test: Add doorbell test case
+> >   tools: PCI: Add 'B' option for test doorbell
+> > 
+> >  drivers/misc/pci_endpoint_test.c              |  48 +++++
+> >  .../pci/controller/dwc/pcie-designware-ep.c   |   2 +
+> >  drivers/pci/endpoint/functions/pci-epf-test.c |  59 +++++-
+> >  drivers/pci/endpoint/pci-epc-core.c           | 192 ++++++++++++++++++
+> >  drivers/pci/endpoint/pci-epf-core.c           |  44 ++++
+> >  include/linux/pci-epc.h                       |   6 +
+> >  include/linux/pci-epf.h                       |   7 +
+> >  include/uapi/linux/pcitest.h                  |   1 +
+> >  tools/pci/pcitest.c                           |  16 +-
+> >  9 files changed, 373 insertions(+), 2 deletions(-)
+> > 
+> > -- 
+> > 2.34.1
+> > 
+
 -- 
-2.34.1
-
+மணிவண்ணன் சதாசிவம்
