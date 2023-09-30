@@ -2,154 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2089C7B40CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 16:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7537B40CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 16:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234241AbjI3OSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 10:18:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53066 "EHLO
+        id S234253AbjI3OS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 10:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234225AbjI3OSq (ORCPT
+        with ESMTP id S234247AbjI3OSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 10:18:46 -0400
-Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2043.outbound.protection.outlook.com [40.92.103.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64EB6C2;
-        Sat, 30 Sep 2023 07:18:43 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KjJk28pL/CbEmkeUzthhdunUsd4pPo7L92OIEg3QbwahXMc4XFPTvX1OSrwPZ5wp/gUWWbXVMD7fsEZDwwR547vfwflBFM7SB7UmosaFhQZU6usM9ejgiNby/M6YnXngLbo0W/MER4ZZwrzNlRBuMTxxLtEOqp3wDVlSV4KeXcWdRVMdYiUcgDgE9M5/admWRLSmcGkDXaSKygxn6d8CDPupjIc6gzOEjUHP9DSlTBSNCCkxo2NSCw3KHhVd5YsmK1bctx47VHpXTv/rBRN5flrnmrmsUGq92bd9c4Z5CbwMY4Tgr2b4Sb3SpcakDIjuZmA3gVAJLDc55dTO+juGfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=X/Z09aNv/l1dLvCb3WIk9tQ48yXars6OE2nJuvxcW40=;
- b=FY+UXdxazmr4ztHKj0918nfpk6d/xMc5fpg8fG1l1rhK0lIS9HyTxvDCAyc0xmKepZdXDeZBR3AA7hm2+eRT40pZ6zt7oOhkWjzratn6kkDbw6Vn0fXINI0yCbsLJ5P88JY/BFG/ZzBpbv9z0EjenKZMzqOU+6BZ6Vnnex+oPi73xUU0ikgPQvLo1b1ZHu5g9t9g1EYqw/fagr9k+FUVnT/VYx7wENRvE0CXB+F+XKXtYNP+Mz8b2kpzUKBhrltPBqPGQfLNDPlL+XM5/PbBP4Zy11smAN6Z50hzj1S99qLEHjwOUU2s/Q1bOEJ4PyePQq8oYayWkj0RuACcELfFTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X/Z09aNv/l1dLvCb3WIk9tQ48yXars6OE2nJuvxcW40=;
- b=I2W9l4zkgdR9GIoHgnnvMXpx8tKuog6mAIrenr7dSh4EtoWOi5r/01iSTPD2roxaBM0QParB3lxBM9DCqSutdpp0WaKGjWpDDfi8T5BNRAGkGaUoUTuAI8jnZUupRryVZuZNMdkiSNVce+cIMngIKwWdkuezmpxUfQe6kFxikUpWYqVM+DzQoqx7NOhH1ZehCLHWjqCrjJbv8mFjFzJBVXwl1MjIYUJtRBzlrpWWK1oEe4mBfPBNvysBzGOZ0EylKVCbFTLM0Sw0gOMYiRXsM01RnIniqf6UDrYZ2eR3ii4yj3q4I0fk7v6kevwrq+rZjNTzN2+6YcZ/qOVHc/l+ew==
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:ab::5) by
- PN3P287MB2108.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:1d2::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.28; Sat, 30 Sep 2023 14:18:35 +0000
-Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::efe9:8d54:281b:23f7]) by MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- ([fe80::efe9:8d54:281b:23f7%3]) with mapi id 15.20.6838.028; Sat, 30 Sep 2023
- 14:18:35 +0000
-Message-ID: <MA0P287MB0332292A882CC400750788A8FEC7A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-Date:   Sat, 30 Sep 2023 22:18:23 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/5] Add Milk-V Duo board support
-To:     Jisheng Zhang <jszhang@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Anup Patel <anup@brainfault.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Inochi Amaoto <inochiama@outlook.com>, chao.wei@sophgo.com,
-        xiaoguang.xing@sophgo.com
-References: <20230930123937.1551-1-jszhang@kernel.org>
-From:   Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <20230930123937.1551-1-jszhang@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TMN:  [OcENkKcC6rr2ThiY3pkchXNLAmuCfedL]
-X-ClientProxiedBy: TYWP286CA0032.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:262::16) To MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:ab::5)
-X-Microsoft-Original-Message-ID: <314ad51a-4fa9-44fa-a0e3-30f8fe84faae@outlook.com>
+        Sat, 30 Sep 2023 10:18:55 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 929DDE5
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 07:18:52 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-3231d67aff2so11459757f8f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 07:18:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696083531; x=1696688331; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dbndJi5YFfypa54vy5nBzBG/Wj840NhBH9tsJciX4N0=;
+        b=EaboqiKaBJSfEPMMPEFaSBJYndyRRlzSjk6G3ePF4/nqvEXEX328l6sTpzNXLb/b54
+         WKOEeCP5QCPifxr2bRM6FX9+GXbYVA3mZjviSt7aOk+QA4RVlalYCtUSVJTDafmLnHRZ
+         1aNqcD3Zn+d0FPV+2tI0k9gPSeUpZS9LBZL0DTVh/9rTMH1YJz/pqUIHxts6/vhMJtWC
+         hFoQk96yVwnfXMo+t1mGdAZH9nmKvX25RSEko+CxWhJP512bXgtJGFgQbLw7UZCKs54i
+         DahSARqP9GnrWWbob6fVfViFHNlQkLEK/stIRerKYD/mchGoBEs7dkhyMlWyb32Huz6F
+         VpJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696083531; x=1696688331;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dbndJi5YFfypa54vy5nBzBG/Wj840NhBH9tsJciX4N0=;
+        b=Pl1min7BwE1tEqq10VSKkmXfTqknQKpKq1dbBcqLmYPYIJRkVVv1ebJ+mGbWwsuYc9
+         lJ19Bv61Zb6k11U1KJNKQ3+7RVAPnZZK/5HGHf2lE3yyIYwF7+1/t2DTjRyfUppnXH/l
+         ML9ox4wk6xkd4ZjW6DCZibIRMzbnfpX4rzgqT6Gujwd3M9qQO5yAocPGdtaq53AG9iPH
+         jIJdcserulPtbRmc3EeWgIZwVBNV7M7uoC1jupBCIrs9Qmqh0ynujLF1+faD21ejRQeX
+         Wdz0N3RzguObt8QZBfr9/iIYPo+stniumZg4+oaawRy8LOO562WZYgukYzV08BF7LYm/
+         VDTA==
+X-Gm-Message-State: AOJu0YwZFF/asSI3rA+/j90GOWaSxR6BhbEq/hCT2Auxdx8zvr02if8h
+        pDDLDNSXzJ3Czy9AiRNWMnL1cg==
+X-Google-Smtp-Source: AGHT+IHih3G2RTH/t2WSx/N9Ziu1QRRP3RWdr0JMxbqO6wO6KvNDOYFFCePqayTuacflmQ7teBkGzA==
+X-Received: by 2002:a5d:564c:0:b0:323:37b4:fbe5 with SMTP id j12-20020a5d564c000000b0032337b4fbe5mr6248488wrw.8.1696083530933;
+        Sat, 30 Sep 2023 07:18:50 -0700 (PDT)
+Received: from [192.168.8.76] ([88.154.47.206])
+        by smtp.gmail.com with ESMTPSA id b16-20020a5d4d90000000b0031fba0a746bsm3927049wru.9.2023.09.30.07.18.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Sep 2023 07:18:50 -0700 (PDT)
+Message-ID: <38b9d6fb-2800-4308-bd9e-7e743aa9f175@linaro.org>
+Date:   Sat, 30 Sep 2023 16:18:44 +0200
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB0332:EE_|PN3P287MB2108:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3bf091ac-6707-477c-65c9-08dbc1c021dd
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rR6S7BpvHpk1+l6G1WIhUrUoUIiN/x22NaPqqAWmEnoLx+kI9l+fUq1wxSGl7ofxh3/l7qh99SIG7nnjMC/YiJCsasmQID0us5MygQTW8QY3rbNrJKwrusvX6Jl6E/vWQQNzsftcvPS516YbB25s/opMOr649MZP5bxKqAObm3Vop3W0ZCZwjbPa7D876ps+JlRrhZ4xYEb3iOG+aORyRp1fIjCv9JDFfNVawJfmnh0ud9vS5wsLw8u6ED0JavdqSsM3FVUZJAwDFenjwDpK/WoSDow/+Pzt7xQxd3xrd812/+c+G3aLxBAjkHCNBbQp20g6AMb2XmZw4cbv1xD6E48l+7OJGwONUYMiIkKdzenx3vfginFBYSocND6VO8FZgBe85OzorfeFunqYene6bYf3z5bhSgS/k0dUOrlFtVyKndkoZojD7j9pdFrwXsfn3u8QRGm596l6dINN0oLpXQRgu2lpAs3M/WB/KMvlwTAvRL0sQFfiH/23IraA+axtY7/ZtauxqAm0Uyj08o3xWcW+2q8U+mIvmgjthliIz7eDSlKo+wxwwOdk/NHsVgmgSlzRiqjAT46dP67WUMz/J6vl7K7WCvlNGIWxOqwOUKY=
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d1dWT3RuN2EzR1QyRVd4UklKUW1ta00zeHY0RDQ5c1NrOENha2tqdkRWN3Fq?=
- =?utf-8?B?Q3V6L2tObm9hTEtnV3ZyL0o2a2dnUXkzbDdyQ3RZSjVlOS83WmtWYlprMEZn?=
- =?utf-8?B?ZmVCaXU2ajQ0dHJoVmR0YkNidGFwaU1PUVJIVWdFamwvUlZYRnNDd21qbm9N?=
- =?utf-8?B?VzdaTTdTNmM5L0YrMVJnZFJJU05aSXZRZ1h0RGxXWTB6bk1BSGtZbTc3UmFw?=
- =?utf-8?B?NWZTTTZ1a0JZVU0rQzJzbmxjTkUwcDRweGV4d0JDQlQvK2NBdi9BaW1hYklG?=
- =?utf-8?B?bVVtNWhDSDUvL1kxSC9SUjdoTGlhM1JQVGxnNG1ROFU0QVFpT2JxMkRmY3RT?=
- =?utf-8?B?L3RJS0twR0EzVjFNTFdpNmVidzBqdHJwREJGamZnUjVQTVoyejU1emVnRElB?=
- =?utf-8?B?N3pUYitEcFJWQ1BYVUM3aVdDeEszdzhkK0E3K1REd0RrOWpsbmhPQjVKZUFJ?=
- =?utf-8?B?WjJEMXFEK1F3MVZtUiswZzNBVmU5REVtZm1yMnJPekdBTUpSMnlpNTFaeXRa?=
- =?utf-8?B?WTRHbVAyZnR5Rk80MXlVb1N5TEdVN294Z3Y5L2h5ZkxvZnJnUW9HbElSNW5O?=
- =?utf-8?B?VDlNYnNBaTZUK3ZtTml1bDNmRCs2RDF1RmFkek04aGJJYW5KOExBTUR3bEg0?=
- =?utf-8?B?aW5VNHgzT3FES296TFNmcHYyWlZDLzlydkdhR3pYR1ZLODgxblpBVXRjc1lD?=
- =?utf-8?B?anVFU3dEQUFmdXhzTkpCS1ZrSVFQdkhHSkZjRTFtTHR4ZWpRNXRHZVlheHgz?=
- =?utf-8?B?YU4vVzFzaEtmZjY3SUlkMVFsMStlN1I5SmxMM2cyZUJ1eGxRMWtaK3NKdCtX?=
- =?utf-8?B?VGFMbXZNUXY5Z2RMQVhWSTMydXBNT0ZhVGlTZlo4UERrcm1QaWdFQVFWSGox?=
- =?utf-8?B?VHBXaUhoTEdQWG56bjNodDhnWXVFYmRjR3ptRC9xS2Jsc3h2WTJaczVLaEhD?=
- =?utf-8?B?cGxFZzlIbUwycEhVNWI3bTVZUWQ2NXlUT1NuZHpJS0lIU2kzSitDdmNtc2s1?=
- =?utf-8?B?TWxHWHdLSTlnMWplT29aL2U4RmU0RlFVdXg5aDBBQ0hlOVdrcmo0RTllc0M1?=
- =?utf-8?B?RGppck9LTXh5OFcwbEZBZXRySmlKSE4yODN0alNQcTdWY29vbUZHNm5LdXFj?=
- =?utf-8?B?UVJuQ3FhZTBCcENBOENPSGZSRk9sUU4xcjhrai9oU2JZSEYvS0wrbS92TDFK?=
- =?utf-8?B?WnFneVNDZDJ3YStrMWhISVBOQ05rRkVzdnVIL1JxdFJ2eFhEV3RGMktKaXhm?=
- =?utf-8?B?Q2FNeFNtVEZKdzhqTDVVbm9XKzF1M3BGajN3SnJTc0xucW1GblBheU5yTHR2?=
- =?utf-8?B?MllCcFJwdlhidGtoM1Y4YzRWTGdoOTNXNHFDVUdFdEFPN3FqdnVCWnIrV2M4?=
- =?utf-8?B?TXpCaWlsM3ZCSDlabnZGdkF3RVY0ZHBnUERFWG11aHBNRHBnbHFUMmRGVGNj?=
- =?utf-8?B?RUhYTEl1dUt2R1JrUFhqSFNmNUpGMzNmRVc0UFdMckNyeTdhU2ZlZ0JjSWZG?=
- =?utf-8?B?U01DcjNLTUQ5NGlVaWV3elNHcDBOeEdLSVZheDdtcFQvQnZTS3hsNjBKazRF?=
- =?utf-8?B?VlFNb0Z1TWVGUmMwUk13M21Da0JMdDVtOFoxa1V3TEx5WmlneUxlUVNNc0lh?=
- =?utf-8?Q?r98CQ8+zOr1NR49Nxt/O6VVlMSzp6TaxApdp+guveRtQ=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3bf091ac-6707-477c-65c9-08dbc1c021dd
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2023 14:18:35.5477
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PN3P287MB2108
-X-Spam-Status: No, score=-0.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: clocks: qcom,gcc-ipq8074: allow QMP
+ PCI PHY PIPE clocks
+Content-Language: en-US
+To:     Robert Marko <robimarko@gmail.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        quic_tdas@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230930103316.234103-1-robimarko@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20230930103316.234103-1-robimarko@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 30/09/2023 12:32, Robert Marko wrote:
+> Allow passing QMP PCI PHY PIPE clocks to the IPQ8074 GCC to avoid having
+> to do a global matching by name.
 
-在 2023/9/30 20:39, Jisheng Zhang 写道:
-> Milk-V Duo[1] board is an embedded development platform based on the
-> CV1800B[2] chip. Add minimal device tree files for the development board.
-> Currently, now it's supported to boot to a basic shell.
->
-> NOTE: this series is based on the SG2042 upstream series for the vendor
-> prefix and ARCH_SOPHGO option.
-Missing reference to [3].
->
-> Link: https://milkv.io/duo [1]
-> Link: https://en.sophgo.com/product/introduce/cv180xB.html [2]
-> Link: https://lore.kernel.org/linux-riscv/cover.1695804418.git.unicornxw@gmail.com/ [3]
->
-> Jisheng Zhang (5):
->    dt-bindings: interrupt-controller: Add SOPHGO CV1800B plic
->    dt-bindings: timer: Add SOPHGO CV1800B clint
->    dt-bindings: riscv: Add Milk-V Duo board compatibles
->    riscv: dts: sophgo: add initial CV1800B SoC device tree
->    riscv: dts: sophgo: add Milk-V Duo board device tree
->
->   .../sifive,plic-1.0.0.yaml                    |   1 +
->   .../devicetree/bindings/riscv/sophgo.yaml     |   4 +
->   .../bindings/timer/sifive,clint.yaml          |   1 +
->   arch/riscv/boot/dts/sophgo/Makefile           |   2 +-
->   .../boot/dts/sophgo/cv1800b-milkv-duo.dts     |  38 ++++++
->   arch/riscv/boot/dts/sophgo/cv1800b.dtsi       | 117 ++++++++++++++++++
->   6 files changed, 162 insertions(+), 1 deletion(-)
->   create mode 100644 arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
->   create mode 100644 arch/riscv/boot/dts/sophgo/cv1800b.dtsi
->
+I would prefer commit msg refering to hardware, not driver. Basically
+the PCI PHY pipe clocks are inputs to the clock controller.
+
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
+
