@@ -2,72 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC137B41CB
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 17:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C76F7B41CF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 17:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbjI3Pni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 11:43:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37454 "EHLO
+        id S234257AbjI3PqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 11:46:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234256AbjI3Png (ORCPT
+        with ESMTP id S229914AbjI3PqR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 11:43:36 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940D1E1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:43:33 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-40566f89f6eso124433305e9.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:43:33 -0700 (PDT)
+        Sat, 30 Sep 2023 11:46:17 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8778B3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:46:14 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ada2e6e75fso2148757066b.2
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:46:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696088612; x=1696693412; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=rpJwZ/O5D+w7gTj35MHhdDWNOzuh12Ykm9AX9FueopQ=;
-        b=McUnrxQ3So2eCd1jap8GGU9/FRW7jiMQE/Paj5RlmtvYeAEi7ByeiDU+ndbU107biL
-         OcDiJ4faFmVyMX9ZToXahVc76v2vPO+kLwTFql/1Ztdz3xtVbwV0Pbyk3vpNdrvuNy4F
-         LSHqEXBMKejSqCHZYTtvAoKi10dFPdA+ALMsU3BmfFpafVeDSJHgUgCfqlCuVzXEsqvY
-         9nL/ic46B1opnPbDWtiNzYSy7OeEVgTDGUd+uQMszyxaQDJHDmKlw3QOCZhH+PuAWlst
-         drxgcJBRmtqMAFi/iyj6wU2dEt9lCx8XHHHhXxVpgLEuRisLN5uLM/a9LL6r5va0MzVW
-         2Zbw==
+        d=linaro.org; s=google; t=1696088773; x=1696693573; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5ujdxOyRm+3K6e9nLkeJUMVVREpdNXy+Z3KatQc5Dzc=;
+        b=ctGlMlUernaKzdFt9KovEgxVzSsdvvr4SPq3ptspKyt9KIneFqOw8G3rISxMjbwrNK
+         JWjNBI9pEgDHSkjr1MXQTuf5AE3yRvSDoai/aEmS2+k+me9mz7QxEB0MH8wO//5ONoiH
+         8wv3zBQO5+d/jx5bgJ/l+Og44conQ2JtzrUrkMmpBaHQCnTS5lFuwWKZdiI2TunrL3lI
+         MJsB/EChTULAVkdpwLGcbK80thZcwh2Lbs3sSpIYxdwcBQJMrIDFXnrohkqlUT15J9QV
+         q9lkcyf/xGWL7xLqBkurQa1o7kfIZouJ0ZbFWQcqHFEpouxpkAi9AZGvrzKuIGxrpB4s
+         eApQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696088612; x=1696693412;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rpJwZ/O5D+w7gTj35MHhdDWNOzuh12Ykm9AX9FueopQ=;
-        b=ECka87AuxLvFJouX9OU+G07dPiCWr0KtWKQ4HA71w90Uvzxz2jcT6O9C9jcbE+PzXx
-         pMDQhJjR3xu7+a+w+X+CgyaIdADO5vGS+4ERlz7D1GbR4vM5b5j9j6Ou0dXltCXwz1UK
-         lwX5tjf5Y+y3naWoDOKkZrjIRTUphGX7U/ns3TwgcNd/YqjZrUibApRzIRXWzJ/HLNOs
-         p2ds3uTCFvidmyaTwLOfcUMIb4kJ9RD5R39ull+xWqTND0hSbP4ECwkjZ+Z2Q8FfUDhm
-         dNK/TI8UX8naSQV6TFfA5LvnmXKm4rNJm+JBGxzWb/QROnSHpi2LAaP72BRSs5au+H6/
-         p9dg==
-X-Gm-Message-State: AOJu0YyyNyKZowt/5Ne7uwn7DzZ0CyymdGb4q8J4FK/0XINtAXXyL90X
-        CygM5Owyt/ozXkZJvSoEUDBmDw==
-X-Google-Smtp-Source: AGHT+IHBq0A1GV/uKEn5Dbe2EqEO3ahsL1lnc8MsERH0V4ewH6kYowohffEcproNRiE/7+eQu7FyIQ==
-X-Received: by 2002:a5d:68cf:0:b0:31f:e761:d47c with SMTP id p15-20020a5d68cf000000b0031fe761d47cmr5853700wrw.32.1696088611958;
-        Sat, 30 Sep 2023 08:43:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696088773; x=1696693573;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5ujdxOyRm+3K6e9nLkeJUMVVREpdNXy+Z3KatQc5Dzc=;
+        b=UKXPfLCcy5/vo9vIXBmsqsgKj4JweFeMMeg/gTl9NZy2h2jMBfCQUX2577Vreqh2nj
+         Bcyo5bkbXKwXG6LLhgMdyGv5+X8dqthrsQCJe+aMg5VyFQaq/RjrY787Ech9lkTBymK2
+         M6ioKv4u/6ne/mrs0C62WxirVkVUN99QhHDijvnKG9XsO+sPPzpW0ZhnnCOhCH+95iCJ
+         bghuK0l8l2NfvudYPbTq9tFwNXKiyh/pXTUkNJq7W1DL8J0fzkWAs0X0NbzTGWzuDlYF
+         UpiRSbfo2Isz3TUQEhZPhsM9Dg9luuoATDmKD+7Wm3FceAmVZWlxvIC/iQiMow5IF9WB
+         dYQA==
+X-Gm-Message-State: AOJu0YyOWAeQ/VnnKELpUmrjE7iTnYAH9stY5WjZiU1Wk9ZDZX0Tm8qE
+        42IYViLg3xy8XQquEJoZ/N0mvg==
+X-Google-Smtp-Source: AGHT+IEIN3wdGQcE8k9/BpQuuwTdvqrpeAd3381PFLxNMRZawSPe538s4aHO6XJHBqOO9ma0aqy0rA==
+X-Received: by 2002:a17:906:292a:b0:9a1:d29c:6a9d with SMTP id v10-20020a170906292a00b009a1d29c6a9dmr6636278ejd.46.1696088773121;
+        Sat, 30 Sep 2023 08:46:13 -0700 (PDT)
 Received: from [192.168.8.76] ([88.154.66.190])
-        by smtp.gmail.com with ESMTPSA id x11-20020a5d490b000000b00325aca09ad1sm3439703wrq.24.2023.09.30.08.43.28
+        by smtp.gmail.com with ESMTPSA id d2-20020a17090694c200b00977cad140a8sm14034618ejy.218.2023.09.30.08.46.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Sep 2023 08:43:31 -0700 (PDT)
-Message-ID: <04ec1e03-a5c2-43a1-a1df-04e1441eeaf9@linaro.org>
-Date:   Sat, 30 Sep 2023 17:43:23 +0200
+        Sat, 30 Sep 2023 08:46:12 -0700 (PDT)
+Message-ID: <46cf84f1-060b-4f9f-9c9c-edf504bf03ca@linaro.org>
+Date:   Sat, 30 Sep 2023 17:46:03 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom: Add QCM6490 IDP board
-To:     Komal Bajaj <quic_kbajaj@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
+Subject: Re: [PATCH v3 01/12] dt-bindings: net: add STM32MP13 compatible in
+ documentation for stm32
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>,
+        Christophe Roullier <christophe.roullier@foss.st.com>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
-References: <20230928133312.11371-1-quic_kbajaj@quicinc.com>
- <20230928133312.11371-2-quic_kbajaj@quicinc.com>
-Content-Language: en-US
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230928151512.322016-1-christophe.roullier@foss.st.com>
+ <20230928151512.322016-2-christophe.roullier@foss.st.com>
+ <20230928-footwork-padlock-524173c3e205@spud>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -113,26 +123,101 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20230928133312.11371-2-quic_kbajaj@quicinc.com>
+In-Reply-To: <20230928-footwork-padlock-524173c3e205@spud>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/09/2023 15:33, Komal Bajaj wrote:
-> Document the qcom,qcm6490-idp board based off qcm6490 SoC.
+On 28/09/2023 22:39, Conor Dooley wrote:
+> Hey,
 > 
-> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
-> ---
+> On Thu, Sep 28, 2023 at 05:15:01PM +0200, Christophe Roullier wrote:
+>> New STM32 SOC have 2 GMACs instances.
+>> GMAC IP version is SNPS 4.20.
+>>
+>> Signed-off-by: Christophe Roullier <christophe.roullier@foss.st.com>
+>> ---
+>>  .../devicetree/bindings/net/stm32-dwmac.yaml  | 78 +++++++++++++++++--
+>>  1 file changed, 70 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+>> index fc8c96b08d7dc..ca976281bfc22 100644
+>> --- a/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+>> +++ b/Documentation/devicetree/bindings/net/stm32-dwmac.yaml
+>> @@ -22,18 +22,17 @@ select:
+>>          enum:
+>>            - st,stm32-dwmac
+>>            - st,stm32mp1-dwmac
+>> +          - st,stm32mp13-dwmac
+>>    required:
+>>      - compatible
+>>  
+>> -allOf:
+>> -  - $ref: snps,dwmac.yaml#
+>> -
+>>  properties:
+>>    compatible:
+>>      oneOf:
+>>        - items:
+>>            - enum:
+>>                - st,stm32mp1-dwmac
+>> +              - st,stm32mp13-dwmac
+>>            - const: snps,dwmac-4.20a
+>>        - items:
+>>            - enum:
+>> @@ -74,13 +73,10 @@ properties:
+>>  
+>>    st,syscon:
+>>      $ref: /schemas/types.yaml#/definitions/phandle-array
+>> -    items:
+>> -      - items:
+>> -          - description: phandle to the syscon node which encompases the glue register
+>> -          - description: offset of the control register
+>>      description:
+>>        Should be phandle/offset pair. The phandle to the syscon node which
+>> -      encompases the glue register, and the offset of the control register
+>> +      encompases the glue register, the offset of the control register and
+>> +      the mask to set bitfield in control register
+>>  
+>>    st,eth-clk-sel:
+>>      description:
+>> @@ -101,6 +97,38 @@ required:
+>>  
+>>  unevaluatedProperties: false
+>>  
+>> +allOf:
+>> +  - $ref: snps,dwmac.yaml#
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - st,stm32mp1-dwmac
+>> +              - st,stm32-dwmac
+>> +    then:
+>> +      properties:
+>> +        st,syscon:
+>> +          items:
+>> +            items:
+>> +              - description: phandle to the syscon node which encompases the glue register
+>> +              - description: offset of the control register
+> 
+> These descriptions should, IMO, be moved back out to the st,syscon
+> definition. If you put the 3 descriptions there, with "minItems: 2" &
+> put "maxItems: 2" and "minItems: 3" in each of the if/then clauses.
+> Also, it should be sufficient to simplify to if/then/else.
 
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+What's more, same property should not have different types. This syscon
+property was way too generic, thus now you have trouble of conflicting
+types.
 
 Best regards,
 Krzysztof
