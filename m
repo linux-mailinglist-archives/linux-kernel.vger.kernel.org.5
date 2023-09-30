@@ -2,53 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2077B44B0
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 01:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E377B44B1
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 01:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234096AbjI3Xoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 19:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52262 "EHLO
+        id S234101AbjI3Xqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 19:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234101AbjI3Xoh (ORCPT
+        with ESMTP id S234071AbjI3Xqt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 19:44:37 -0400
+        Sat, 30 Sep 2023 19:46:49 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF816FD
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 16:44:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABB7EC433C8;
-        Sat, 30 Sep 2023 23:44:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5C9BC
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 16:46:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A23AC433C7;
+        Sat, 30 Sep 2023 23:46:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696117469;
-        bh=WdTnvHIfE9Z+Cf7GFtMdGxS7MP/BA2t1PAoWsH1zAYg=;
+        s=k20201202; t=1696117606;
+        bh=naZ2q9TcpVDyU3g9xJ/aULduq+CmltpgmFKv1yCFGIA=;
         h=From:Date:Subject:To:Cc:From;
-        b=MlCxd+y7kh2Bn2VFvMQ1aF/BrB3BLwISITRpYnAZpOiEbJh/1zU0EP+cnlbMbpP/o
-         t2cmyDOT/90RWBBTNOl6AbwhiZWUztf5Llj/B63X/SKU6abyssNr5nWzyLrIavmZSi
-         0QU2f25FgzM+GeFVQhZjbv3vEzjZF81WsYdkR5wY8iypZ+HqT7O44A3fof05tjW4BN
-         zlIDp9oyI8yWgiRVgkkmdtBdFOBgThGFfu5U+WE4jgxvVCWITKx5FQsy4v55tWy2Rp
-         Xw7FOa3KNPYOlIp1PN0cIdhTk8DUCfziOPh49PzfBzWEJQwk8YXG8jTYVbHJYo5kxC
-         jEpLgt9uZSIAg==
+        b=M9nY6SJPod7ayz+ilGfFa9BB19YMuXkkWULGO+TciDGh+GWDjJ6we+IUEm5lgC04g
+         3R07vQOUlU/eJJg+1r99b2+EgVTg2C37ogmYC0HG7xPyFv1hJKJNTlAwcWEJSKuY88
+         D1cMN6BMDg2f3Irm+IWZwMy3gOJ/ZkkhnB9z3DTmyUAIA6mlzfoDADFazU7v0UcST8
+         AzLnyyhzgD43trSztxB6mXYtUrADyYakEQs1o8wGrVNK0D/73aiu66pF9+qrYW2pK9
+         s3EljUvpXkk4nWsWu8mjYCtid2HWgbJtQVagd2yX7DbDtPab+bwE+CXJMHMheZGI1R
+         Wbto1i/G9uaQg==
 From:   Mark Brown <broonie@kernel.org>
-Date:   Sun, 01 Oct 2023 00:44:22 +0100
-Subject: [PATCH] mfd: rk8xx: Convert to use maple tree register cache
+Date:   Sun, 01 Oct 2023 00:46:38 +0100
+Subject: [PATCH] drm/bridge: icn6211: Convert to use maple tree register
+ cache
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231001-mfd-rk88x-maple-v1-1-90434cfb2f90@kernel.org>
-X-B4-Tracking: v=1; b=H4sIANWyGGUC/x3MSwqAMAwA0auUrA1oitp4FXEhGjX4Ky2IIN7d4
- vItZh6IElQiNOaBIJdGPY+EIjMwLP0xC+qYDJSTzZkY92nEsDp34977TbCyNHDJtZBjSJUPMun
- 9H9vufT8qJRtmYQAAAA==
-To:     Lee Jones <lee@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Message-Id: <20231001-drm-chipone-maple-v1-1-fb3ce5a53710@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAF2zGGUC/x3MQQqAIBBG4avErBswI8KuEi1C/2ogTRQiCO+et
+ PwW772UkQSZpualhFuyXKGiaxuyxxp2sLhq0kr3ymjDLnm2h8QrgP0aT3DnBvSjxQCnqHYxYZP
+ nf85LKR+itdMTYwAAAA==
+To:     Jagan Teki <jagan@amarulasolutions.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1509; i=broonie@kernel.org;
- h=from:subject:message-id; bh=WdTnvHIfE9Z+Cf7GFtMdGxS7MP/BA2t1PAoWsH1zAYg=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlGLLbvWdqGA3ROxRyd6mIFL3vECSnHvoc9rU+2
- VqKsXi7j3yJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRiy2wAKCRAk1otyXVSH
- 0BZRB/0Z3ddSRqV2F72nIRJwA+HAce3Ol1fpb2ryVwo+fYoVKaq8e9GqrhZy0rllcU71dKwRXvA
- NcDIIRsW5dgRBAzkFt9GV1U0PMHZq7ql1bBPC33BCVgysnM91rK8e37TOJywfQUt9KMnF5fU+Q6
- RFlIR4yc3jZY/IJy+GY5dondBS61Uq97LxBDnNvCN4GYdXiCENgDjh8Z991iZEMef2gXlIOVP5n
- pYxGw6w+wg2eBW61x5v8Wi/UbArt8V2kJiw+xFtNqIWlg8iEzcUMNMxWFX/dsSxIEbQg91SwWWu
- j4oH4o9XgC+NuKVxdVQMdljHqW/YqaBsymNiArxQMMyFI2p9
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1085; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=naZ2q9TcpVDyU3g9xJ/aULduq+CmltpgmFKv1yCFGIA=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlGLNhPqwqkDtYR95iPk4vE1lkhB3buvF4hr3LL
+ mykF+mqFWeJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRizYQAKCRAk1otyXVSH
+ 0KXlB/4+LDDBxjl7siW2vK2X1yQROcJJNkgcMovVFapGMcBiPGM7NYlVIVvEbFo+DJbISxPtRuI
+ D6AI2GFqdj3fKCsfPTbK0S14iwLaVmk7xDfyTUvv/7RNH7rVWtGPhQrOOozw+Jpd4VjqUnuO6dQ
+ MFGn8Au72bFQKWGf/I3821GCxBvBJ+m/SK98sFsO3jhtQvNc8E1fsRBoUEFeWsOJzilf5t3Kjwg
+ 9/iD+FjsrPfSYyBYQEzMQokKMuf7HmSF6eQw0Mvu0c3JaU9J2y/Vlujz7BrTWpgwoxWkACFu/An
+ z+yjCGTtahfvwN5J1eWw6cLL9YJ4noCEAFnlfjp8IIUrS7JR
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -67,44 +77,26 @@ more appropriate for modern systems than those made by the rbtree cache.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/mfd/rk8xx-i2c.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/bridge/chipone-icn6211.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/rk8xx-i2c.c b/drivers/mfd/rk8xx-i2c.c
-index 1a98feea97e2..75b5cf09d5a0 100644
---- a/drivers/mfd/rk8xx-i2c.c
-+++ b/drivers/mfd/rk8xx-i2c.c
-@@ -80,7 +80,7 @@ static const struct regmap_config rk818_regmap_config = {
- 	.reg_bits = 8,
+diff --git a/drivers/gpu/drm/bridge/chipone-icn6211.c b/drivers/gpu/drm/bridge/chipone-icn6211.c
+index d205e755e524..82d23e4df09e 100644
+--- a/drivers/gpu/drm/bridge/chipone-icn6211.c
++++ b/drivers/gpu/drm/bridge/chipone-icn6211.c
+@@ -197,7 +197,7 @@ static const struct regmap_config chipone_regmap_config = {
  	.val_bits = 8,
- 	.max_register = RK818_USB_CTRL_REG,
+ 	.rd_table = &chipone_dsi_readable_table,
+ 	.wr_table = &chipone_dsi_writeable_table,
 -	.cache_type = REGCACHE_RBTREE,
 +	.cache_type = REGCACHE_MAPLE,
- 	.volatile_reg = rk808_is_volatile_reg,
- };
- 
-@@ -88,7 +88,7 @@ static const struct regmap_config rk805_regmap_config = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
- 	.max_register = RK805_OFF_SOURCE_REG,
--	.cache_type = REGCACHE_RBTREE,
-+	.cache_type = REGCACHE_MAPLE,
- 	.volatile_reg = rk808_is_volatile_reg,
- };
- 
-@@ -96,7 +96,7 @@ static const struct regmap_config rk808_regmap_config = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
- 	.max_register = RK808_IO_POL_REG,
--	.cache_type = REGCACHE_RBTREE,
-+	.cache_type = REGCACHE_MAPLE,
- 	.volatile_reg = rk808_is_volatile_reg,
+ 	.max_register = MIPI_ATE_STATUS(1),
  };
  
 
 ---
 base-commit: 6465e260f48790807eef06b583b38ca9789b6072
-change-id: 20230929-mfd-rk88x-maple-632c9597e289
+change-id: 20230929-drm-chipone-maple-1d5e37ce5ed0
 
 Best regards,
 -- 
