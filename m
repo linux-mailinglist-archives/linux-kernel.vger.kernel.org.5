@@ -2,133 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0F67B3EB2
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 08:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A877B3EB7
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 08:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234062AbjI3GzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 02:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
+        id S234067AbjI3G42 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 30 Sep 2023 02:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjI3GzJ (ORCPT
+        with ESMTP id S232125AbjI3G41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 02:55:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C751A7;
-        Fri, 29 Sep 2023 23:55:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696056907; x=1727592907;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tQIq4ld4jG2JZl9UblS1SdZ9anMZonGCZUn1Wq6P19M=;
-  b=bMDOL+skgPjNYAsgq1iHURJDES7i8tDvtI6tYKUceFL/0b1oed6E9qSN
-   kQwtBRKR8yHFHxaRnQFzONTmZh54Or01aAwoa1jdc2GzBuizfjTnVPztG
-   eUBKHqBHUQNZzMXBE2wdEIWOTPOgO45V+fqoZhGi1St7mBe9J+bH0kKIG
-   uJEU+4PSW8FNfQ03jIzDIDNiMY8q1m8A/27ODKDt5F3AtxJPxIGQqHkCZ
-   9ZDStQVQ1s7MOnnj4SHzSVDOTPkP2HbVFKooJcSkRyJA+o0jYckTrsgBS
-   Sp7I1bZerHknPFC9jyq1BcViI4YBAB/aBBRtW7TamBLGR96fDBlQOIGzw
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="379710067"
-X-IronPort-AV: E=Sophos;i="6.03,189,1694761200"; 
-   d="scan'208";a="379710067"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 23:55:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="699856865"
-X-IronPort-AV: E=Sophos;i="6.03,189,1694761200"; 
-   d="scan'208";a="699856865"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 29 Sep 2023 23:55:04 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qmTsU-0003oH-0O;
-        Sat, 30 Sep 2023 06:55:02 +0000
-Date:   Sat, 30 Sep 2023 14:54:52 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: Re: [PATCH 01/29] xattr: make the xattr array itself const
-Message-ID: <202309301437.ZGtqFntR-lkp@intel.com>
-References: <20230930050033.41174-2-wedsonaf@gmail.com>
+        Sat, 30 Sep 2023 02:56:27 -0400
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92C81A7;
+        Fri, 29 Sep 2023 23:56:25 -0700 (PDT)
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-79fca042ec0so341583539f.3;
+        Fri, 29 Sep 2023 23:56:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696056985; x=1696661785;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xLVnq7bpoB/DPNFDYFDqdcabpCoSce/kmj2cilxMHvw=;
+        b=LQcUa7tWs5d5/gAuJ+3pHuRb3t8L6gvzNGOQTC2mwtKOmSKOyjbVesEIYiNbgaVQHJ
+         5JAYvWNXIzlO/5qb2yYP5CaemxV/ioEJ4V++9v7BrjnipMNDio/h0ogCXD8yKMmNdfl2
+         7bxl8YGS3fxp0WU/AI2pLp3NqFpepPV+M5gVJA0i2e15cE0iqkEa3zcMEnuJWynPJhjp
+         W9TgRqh4bZr/I/0fWVo3S6vqDDMbMWZqwWGIZ3QodLkRbll9/1NqltEfp/MrnZlX23sj
+         6/6rPkimTxYUYIMuk4prwAX8dPgHSewQfHElpD+c4DWu4CGbUqcBUlg4TKUkNPiAWyFm
+         eqBQ==
+X-Gm-Message-State: AOJu0YwVir4PRcDMKl7Af50xTUJlg6Fp5UJwk8EGH755mOslvMPrEto3
+        P/FQXgb8rXEqYh5X0K2Ff5YC4mqt4AyYAWmIDLM=
+X-Google-Smtp-Source: AGHT+IEn2wK5Rt7ylWgoipTL/Rk8CN9PcAPurGV3WUfgdnOOQX0Wym6AbQUM+GDhPRaHPe/PVyF5iuCWm9KCZoz2F4g=
+X-Received: by 2002:a5e:c74d:0:b0:79f:96db:f33d with SMTP id
+ g13-20020a5ec74d000000b0079f96dbf33dmr6498919iop.9.1696056984951; Fri, 29 Sep
+ 2023 23:56:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230930050033.41174-2-wedsonaf@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230920122349.418673-1-wyes.karny@amd.com> <CAP-5=fUe-972h3+Cwegb6u8ZOxo2k_jHQ3i5gNPoUq_TR_AWDQ@mail.gmail.com>
+ <CAM9d7cjH_YR9W_Ab-AuJR983GYn3s+ScwexCWid3Q6a+GzWDVg@mail.gmail.com>
+ <CAP-5=fW7dsMw0i7N-oQ7dcz9sFx1hAtZCpsxuH=NqMz+h+i3ZQ@mail.gmail.com> <CAM9d7cgC8qZ=rN-0qAg0mNOV-XKCLzgJ1E530aexUnsytmrjfw@mail.gmail.com>
+In-Reply-To: <CAM9d7cgC8qZ=rN-0qAg0mNOV-XKCLzgJ1E530aexUnsytmrjfw@mail.gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Fri, 29 Sep 2023 23:56:13 -0700
+Message-ID: <CAM9d7cj-JATZ2JryJ7__vX6RES+jiY0PceM7f6hGA6_D7ztmiA@mail.gmail.com>
+Subject: Re: [PATCH] perf pmu: Fix perf stat output with correct scale and unit
+To:     Ian Rogers <irogers@google.com>
+Cc:     Wyes Karny <wyes.karny@amd.com>, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+        adrian.hunter@intel.com, kan.liang@linux.intel.com,
+        james.clark@arm.com, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sandipan.das@amd.com,
+        ravi.bangoria@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wedson,
+On Tue, Sep 26, 2023 at 9:39 PM Namhyung Kim <namhyung@kernel.org> wrote:
+>
+> Hi Ian,
+>
+> On Tue, Sep 26, 2023 at 9:07 PM Ian Rogers <irogers@google.com> wrote:
+> >
+> > On Tue, Sep 26, 2023 at 3:51 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > >
+> > > On Wed, Sep 20, 2023 at 9:02 AM Ian Rogers <irogers@google.com> wrote:
+> > > >
+> > > > On Wed, Sep 20, 2023 at 5:24 AM Wyes Karny <wyes.karny@amd.com> wrote:
+> > > > >
+> > > > > The perf_pmu__parse_* functions for the sysfs files of pmu event’s
+> > > > > scale, unit, per-pkg and snapshot were updated in commit 7b723dbb96e8
+> > > > > ("perf pmu: Be lazy about loading event info files from sysfs").
+> > > > > However, the paths for these sysfs files were incorrect. This resulted
+> > > > > in perf stat reporting values with wrong scaling and missing units. This
+> > > > > is fixed by correcting the paths for these sysfs files.
+> > > > >
+> > > > > Before this fix:
+> > > > >
+> > > > >  $sudo perf stat -e power/energy-pkg/ -- sleep 2
+> > > > >
+> > > > >  Performance counter stats for 'system wide':
+> > > > >
+> > > > >    351,217,188,864      power/energy-pkg/
+> > > > >
+> > > > >           2.004127961 seconds time elapsed
+> > > > >
+> > > > > After this fix:
+> > > > >
+> > > > >  $sudo perf stat -e power/energy-pkg/ -- sleep 2
+> > > > >
+> > > > >  Performance counter stats for 'system wide':
+> > > > >
+> > > > >              80.58 Joules power/energy-pkg/
+> > > > >
+> > > > >              2.004009749 seconds time elapsed
+> > > > >
+> > > > > Fixes: 7b723dbb96e8 ("perf pmu: Be lazy about loading event info files from sysfs")
+> > > > > Signed-off-by: Wyes Karny <wyes.karny@amd.com>
+> > > >
+> > > > Reviewed-by: Ian Rogers <irogers@google.com>
+> > >
+> > > Applied to perf-tools-next, thanks!
+> >
+> > Thanks Namhyung, I think this should be a candidate for perf-tools so
+> > that 6.6 doesn't regress for sysfs events.
+>
+> I see, I overlooked that it's for the current cycle.
+> I'll move it to perf-tools.
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on 2dde18cd1d8fac735875f2e4987f11817cc0bc2c]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Wedson-Almeida-Filho/xattr-make-the-xattr-array-itself-const/20230930-130453
-base:   2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-patch link:    https://lore.kernel.org/r/20230930050033.41174-2-wedsonaf%40gmail.com
-patch subject: [PATCH 01/29] xattr: make the xattr array itself const
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230930/202309301437.ZGtqFntR-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230930/202309301437.ZGtqFntR-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309301437.ZGtqFntR-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   fs/reiserfs/xattr.c: In function 'listxattr_filler':
->> fs/reiserfs/xattr.c:822:57: warning: passing argument 1 of 'reiserfs_xattr_list' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-     822 |                 if (!reiserfs_xattr_list(b->dentry->d_sb->s_xattr, name,
-         |                                          ~~~~~~~~~~~~~~~^~~~~~~~~
-   fs/reiserfs/xattr.c:782:69: note: expected 'const struct xattr_handler **' but argument is of type 'const struct xattr_handler * const*'
-     782 | static inline bool reiserfs_xattr_list(const struct xattr_handler **handlers,
-         |                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
-
-
-vim +822 fs/reiserfs/xattr.c
-
-^1da177e4c3f41 Linus Torvalds      2005-04-16  811  
-25885a35a72007 Al Viro             2022-08-16  812  static bool listxattr_filler(struct dir_context *ctx, const char *name,
-ac7576f4b1da8c Miklos Szeredi      2014-10-30  813  			    int namelen, loff_t offset, u64 ino,
-ac7576f4b1da8c Miklos Szeredi      2014-10-30  814  			    unsigned int d_type)
-^1da177e4c3f41 Linus Torvalds      2005-04-16  815  {
-ac7576f4b1da8c Miklos Szeredi      2014-10-30  816  	struct listxattr_buf *b =
-ac7576f4b1da8c Miklos Szeredi      2014-10-30  817  		container_of(ctx, struct listxattr_buf, ctx);
-48b32a3553a547 Jeff Mahoney        2009-03-30  818  	size_t size;
-f3fb9e27325c4e Fabian Frederick    2014-08-08  819  
-48b32a3553a547 Jeff Mahoney        2009-03-30  820  	if (name[0] != '.' ||
-48b32a3553a547 Jeff Mahoney        2009-03-30  821  	    (namelen != 1 && (name[1] != '.' || namelen != 2))) {
-387b96a5891c07 Christian Brauner   2023-02-01 @822  		if (!reiserfs_xattr_list(b->dentry->d_sb->s_xattr, name,
-387b96a5891c07 Christian Brauner   2023-02-01  823  					 b->dentry))
-25885a35a72007 Al Viro             2022-08-16  824  			return true;
-764a5c6b1fa430 Andreas Gruenbacher 2015-12-02  825  		size = namelen + 1;
-48b32a3553a547 Jeff Mahoney        2009-03-30  826  		if (b->buf) {
-a13f085d111e90 Jann Horn           2018-08-21  827  			if (b->pos + size > b->size) {
-a13f085d111e90 Jann Horn           2018-08-21  828  				b->pos = -ERANGE;
-25885a35a72007 Al Viro             2022-08-16  829  				return false;
-a13f085d111e90 Jann Horn           2018-08-21  830  			}
-764a5c6b1fa430 Andreas Gruenbacher 2015-12-02  831  			memcpy(b->buf + b->pos, name, namelen);
-764a5c6b1fa430 Andreas Gruenbacher 2015-12-02  832  			b->buf[b->pos + namelen] = 0;
-^1da177e4c3f41 Linus Torvalds      2005-04-16  833  		}
-48b32a3553a547 Jeff Mahoney        2009-03-30  834  		b->pos += size;
-48b32a3553a547 Jeff Mahoney        2009-03-30  835  	}
-25885a35a72007 Al Viro             2022-08-16  836  	return true;
-^1da177e4c3f41 Linus Torvalds      2005-04-16  837  }
-bd4c625c061c2a Linus Torvalds      2005-07-12  838  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Applied to perf-tools, thanks!
