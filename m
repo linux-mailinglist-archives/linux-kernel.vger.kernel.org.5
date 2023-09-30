@@ -2,74 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC717B402C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 13:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0837B402F
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 14:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232253AbjI3L6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 07:58:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
+        id S233471AbjI3MAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 08:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229449AbjI3L6V (ORCPT
+        with ESMTP id S229449AbjI3MAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 07:58:21 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10640D6;
-        Sat, 30 Sep 2023 04:58:19 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-3513c435465so3772715ab.0;
-        Sat, 30 Sep 2023 04:58:19 -0700 (PDT)
+        Sat, 30 Sep 2023 08:00:09 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7876FD6
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 05:00:06 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-534694a9f26so3105a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 05:00:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696075098; x=1696679898; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U4B8cqh/E8dvMkxyYDZyl7ZQqxhx7sl7i0aMKMFX1cc=;
-        b=YyeaufnBSFIDMckrtNx7qIhq2XMXZD63Z7NQKyOvypoc6LquZDwSYKvZtqOhYjt5Zb
-         6BE8Cn8pl0hNZgWTh9ZwHowNLaDClDZW+cpq6TsKhvo72Rwi8X/s7uemZkac1FaXXd5d
-         i8QUz6gBb+6HAfufAeZ3v6MYLtXwB6BEkKdHx2PI2gdTcyZBUG0cTWYnm27GYmdjSoHN
-         zElWlPg2t2eH0OxK959TOTbPnnR3L+tAMU3j49qJeKvmZcXwgJzP8n3DRiKlnhAYnF7W
-         tqbfqjGtmxQgkPeS6pMKnhFRju/UrnzKddgd/zwqGQP9cFZUu2VcjhhFZd7ADKJAbkUB
-         hnrA==
+        d=google.com; s=20230601; t=1696075205; x=1696680005; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7GTxYazO7tslop+1R5e/LRP9/RgHOwT+uOuEWmbMhAw=;
+        b=pgvcZ8ef40BgdU0/wa4IZYQOGSHDSmL37DODRGWXZtnj7bsPDfE6M8ax1GIBiDtXR9
+         Ej9obkJsi30kFd+YUZdjoa9EEP6PNFbjk2uB4pbSpSkG6BXzf5ZWPFilqi+hO34PLCJj
+         lQnSrQjOhJps62YAfONRjhhQvUlxfl0QXoTBr0/6J3SAjhzUgU+WB1FVA4WisH5U5Kfr
+         9ADAMpn2MloFClbRxvf8VcGJU8hP7UlEyY17bIBhuAJjwyNSnlrPF67hj2auxGTXJTuo
+         vSRtfclMtSYnEQg36j4X5Lu0I/439EotBkNLWCg4eQhk/16baSTP4ku4opYO6+Vep/4g
+         cOiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696075098; x=1696679898;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696075205; x=1696680005;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U4B8cqh/E8dvMkxyYDZyl7ZQqxhx7sl7i0aMKMFX1cc=;
-        b=dEAHuhGMnB7GKlnsIbRjrA7uAwlEZVwryU9517HobXtdafSD7yxgHuLV7s+NeQZjDk
-         tVnE51VpzI9C1ZCbTWELxvCM4BKO1BrDGqirDiS2ib2jlKk8lGB6ua3vAB5r9v5C8ll0
-         S6PQf4EpfqwBqEsLxOYuDxreHqy5bhab4k5O6KVjUKmyc/pKayZ++ARa1dAvuv7pO5Ct
-         BxsPXIe22+GR/Kj+XtBI97VguHDxsaCXDBTXffYHd8IFN0+XwyItoHutktkic5fzKiHm
-         5c2QP56R6nRKbTRDRXx/H+77YfLhUknWTZ1VQ7zvXsdyQC9v8sqrL4/H26yTp/juodoE
-         XmbA==
-X-Gm-Message-State: AOJu0YyRM2V6668r9f5liQZoOiXgPDm3A7WIAsXjaG/ntr73XuvVOG+H
-        tuXtCgSMi8+p0yOjOgEvyJXcb5kCmjo=
-X-Google-Smtp-Source: AGHT+IFL9BXm3OjXoEc4q3qMpme4S27UurE4+d4CiPM6lBLR5DAmOgKh529unCKKqYs5hUwLo0WcvA==
-X-Received: by 2002:a05:6e02:974:b0:352:682c:1b91 with SMTP id q20-20020a056e02097400b00352682c1b91mr2764724ilt.4.1696075098275;
-        Sat, 30 Sep 2023 04:58:18 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q14-20020a056e02078e00b003514edd0415sm3330299ils.67.2023.09.30.04.58.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 04:58:17 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 30 Sep 2023 04:58:15 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     j@jannau.net
-Cc:     Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] watchdog: apple: Deactivate on suspend
-Message-ID: <e0a6f9f3-b472-4fda-829c-5d8f29234a4f@roeck-us.net>
-References: <20230930-apple-watchdog-suspend-v1-1-1998c0be9fd7@jannau.net>
+        bh=7GTxYazO7tslop+1R5e/LRP9/RgHOwT+uOuEWmbMhAw=;
+        b=Taq1Iy1flXmG8nOyejxb28QecpGXPk4iykbM+zwAOOJZn/yeznovy/qgbMnG0loE3N
+         kE741b7yyeiaGCYwjt4szFlYFOP6o+QK0C4249SAjYzgy9rgZFWoPnh4YEJmzoAgwjak
+         k4Q7x5RLBweVK0tce7JAY4yOo56zgS2B10FeVrJCPOAKnUKEhMkbzcnLaw7FFvbpUqK9
+         8CeTXdzMbR4jk6m9AZoDsPKFQk0LulddUqgc/nRgVU5GUYgnlExSD4MUg9aoPnN2KUWN
+         3sn6L6/YXl4nzKqmN1ETX8HSnZoWSSib+s4dfVWa5j+VNK16+LG4lhOb1ey+6ZY8Qqko
+         7qxQ==
+X-Gm-Message-State: AOJu0Ywvs/LtXhdoGXBEl74j75P+Nx099lck5/Fh60lRdRHSKg8Mgbwg
+        inEDxfAXb1aa3E3gyyQx8ryxy5CKxJeuGgfMCiv26Q==
+X-Google-Smtp-Source: AGHT+IGdzCjX3EBgqb4QPmapoSPJsqAAEbYgJDuzEACgLn7JbDrTrmgIjPOsc2vqbMgvrU34OmWNrGJLKX84Jip4SOo=
+X-Received: by 2002:a50:8d17:0:b0:52f:5697:8dec with SMTP id
+ s23-20020a508d17000000b0052f56978decmr32444eds.4.1696075204644; Sat, 30 Sep
+ 2023 05:00:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230930-apple-watchdog-suspend-v1-1-1998c0be9fd7@jannau.net>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+References: <20230922111247.497-1-ansuelsmth@gmail.com>
+In-Reply-To: <20230922111247.497-1-ansuelsmth@gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Sat, 30 Sep 2023 13:59:53 +0200
+Message-ID: <CANn89iJtrpVQZbeAezd7S4p_yCRSFzcsBMgW+y9YhxOrCv463A@mail.gmail.com>
+Subject: Re: [net-next PATCH 1/3] net: introduce napi_is_scheduled helper
+To:     Christian Marangi <ansuelsmth@gmail.com>
+Cc:     Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Raju Rangoju <rajur@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Kalle Valo <kvalo@kernel.org>, Simon Horman <horms@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-wireless@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,81 +85,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 10:19:26AM +0200, Janne Grunau via B4 Relay wrote:
-> From: Janne Grunau <j@jannau.net>
-> 
-> The watchdog remains active after putting the system into suspend. Add
-> PM callbacks to deactivate the watchdog on suspend an re-activate it on
-> resume.
-> 
-> Signed-off-by: Janne Grunau <j@jannau.net>
+On Fri, Sep 22, 2023 at 1:13=E2=80=AFPM Christian Marangi <ansuelsmth@gmail=
+.com> wrote:
+>
+> We currently have napi_if_scheduled_mark_missed that can be used to
+> check if napi is scheduled but that does more thing than simply checking
+> it and return a bool. Some driver already implement custom function to
+> check if napi is scheduled.
+>
+> Drop these custom function and introduce napi_is_scheduled that simply
+> check if napi is scheduled atomically.
+>
+> Update any driver and code that implement a similar check and instead
+> use this new helper.
+>
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 > ---
->  drivers/watchdog/apple_wdt.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
-> diff --git a/drivers/watchdog/apple_wdt.c b/drivers/watchdog/apple_wdt.c
-> index eddeb0fede89..2167e0ba705e 100644
-> --- a/drivers/watchdog/apple_wdt.c
-> +++ b/drivers/watchdog/apple_wdt.c
-> @@ -173,6 +173,8 @@ static int apple_wdt_probe(struct platform_device *pdev)
->  	if (!wdt->clk_rate)
->  		return -EINVAL;
->  
-> +	platform_set_drvdata(pdev, wdt);
-> +
->  	wdt->wdd.ops = &apple_wdt_ops;
->  	wdt->wdd.info = &apple_wdt_info;
->  	wdt->wdd.max_timeout = U32_MAX / wdt->clk_rate;
-> @@ -190,6 +192,28 @@ static int apple_wdt_probe(struct platform_device *pdev)
->  	return devm_watchdog_register_device(dev, &wdt->wdd);
+>  drivers/net/ethernet/chelsio/cxgb3/sge.c  | 8 --------
+>  drivers/net/wireless/realtek/rtw89/core.c | 2 +-
+>  include/linux/netdevice.h                 | 5 +++++
+>  net/core/dev.c                            | 2 +-
+>  4 files changed, 7 insertions(+), 10 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/chelsio/cxgb3/sge.c b/drivers/net/ether=
+net/chelsio/cxgb3/sge.c
+> index 2e9a74fe0970..71fa2dc19034 100644
+> --- a/drivers/net/ethernet/chelsio/cxgb3/sge.c
+> +++ b/drivers/net/ethernet/chelsio/cxgb3/sge.c
+> @@ -2501,14 +2501,6 @@ static int napi_rx_handler(struct napi_struct *nap=
+i, int budget)
+>         return work_done;
 >  }
->  
-> +static int __maybe_unused apple_wdt_resume(struct device *dev)
+>
+> -/*
+> - * Returns true if the device is already scheduled for polling.
+> - */
+> -static inline int napi_is_scheduled(struct napi_struct *napi)
+> -{
+> -       return test_bit(NAPI_STATE_SCHED, &napi->state);
+> -}
+> -
+>  /**
+>   *     process_pure_responses - process pure responses from a response q=
+ueue
+>   *     @adap: the adapter
+> diff --git a/drivers/net/wireless/realtek/rtw89/core.c b/drivers/net/wire=
+less/realtek/rtw89/core.c
+> index 133bf289bacb..bbf4ea3639d4 100644
+> --- a/drivers/net/wireless/realtek/rtw89/core.c
+> +++ b/drivers/net/wireless/realtek/rtw89/core.c
+> @@ -1744,7 +1744,7 @@ static void rtw89_core_rx_to_mac80211(struct rtw89_=
+dev *rtwdev,
+>         struct napi_struct *napi =3D &rtwdev->napi;
+>
+>         /* In low power mode, napi isn't scheduled. Receive it to netif. =
+*/
+> -       if (unlikely(!test_bit(NAPI_STATE_SCHED, &napi->state)))
+> +       if (unlikely(!napi_is_scheduled(napi)))
+>                 napi =3D NULL;
+>
+>         rtw89_core_hw_to_sband_rate(rx_status);
+> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> index db3d8429d50d..8eac00cd3b92 100644
+> --- a/include/linux/netdevice.h
+> +++ b/include/linux/netdevice.h
+> @@ -482,6 +482,11 @@ static inline bool napi_prefer_busy_poll(struct napi=
+_struct *n)
+>         return test_bit(NAPI_STATE_PREFER_BUSY_POLL, &n->state);
+>  }
+>
+
+
+In which context is it safe to call this helper ?
+
+I fear that making this available will add more bugs.
+
+For instance rspq_check_napi() seems buggy to me.
+
+> +static inline bool napi_is_scheduled(struct napi_struct *n)
+
+const ...
+
 > +{
-> +	struct apple_wdt *wdt = dev_get_drvdata(dev);
-> +
-> +	if (watchdog_active(&wdt->wdd) || watchdog_hw_running(&wdt->wdd))
-> +		apple_wdt_start(&wdt->wdd);
-> +
-> +	return 0;
+> +       return test_bit(NAPI_STATE_SCHED, &n->state);
 > +}
 > +
-> +static int __maybe_unused apple_wdt_suspend(struct device *dev)
-> +{
-> +	struct apple_wdt *wdt = dev_get_drvdata(dev);
-> +
-> +	if (watchdog_active(&wdt->wdd) || watchdog_hw_running(&wdt->wdd))
-> +		apple_wdt_stop(&wdt->wdd);
-> +
-> +	return 0;
-> +}
-> +
-> +static SIMPLE_DEV_PM_OPS(apple_wdt_pm_ops, apple_wdt_suspend, apple_wdt_resume);
-
-Comments above that define say
-
-/* Deprecated. Use DEFINE_SIMPLE_DEV_PM_OPS() instead. */
-
-and with that the __maybe_unused is no longer necessary.
-
-> +
->  static const struct of_device_id apple_wdt_of_match[] = {
->  	{ .compatible = "apple,wdt" },
->  	{},
-> @@ -200,6 +224,7 @@ static struct platform_driver apple_wdt_driver = {
->  	.driver = {
->  		.name = "apple-watchdog",
->  		.of_match_table = apple_wdt_of_match,
-> +		.pm = pm_sleep_ptr(&apple_wdt_pm_ops),
->  	},
->  	.probe = apple_wdt_probe,
->  };
-> 
-> ---
-> base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
-> change-id: 20230930-apple-watchdog-suspend-7f73831130fb
-> 
-> Best regards,
-> -- 
-> Janne Grunau <j@jannau.net>
-> 
+>  bool napi_schedule_prep(struct napi_struct *n);
+>
+>  /**
+> diff --git a/net/core/dev.c b/net/core/dev.c
+> index cc03a5758d2d..32ba8002f65a 100644
+> --- a/net/core/dev.c
+> +++ b/net/core/dev.c
+> @@ -6523,7 +6523,7 @@ static int __napi_poll(struct napi_struct *n, bool =
+*repoll)
+>          * accidentally calling ->poll() when NAPI is not scheduled.
+>          */
+>         work =3D 0;
+> -       if (test_bit(NAPI_STATE_SCHED, &n->state)) {
+> +       if (napi_is_scheduled(n)) {
+>                 work =3D n->poll(n, weight);
+>                 trace_napi_poll(n, work, weight);
+>         }
+> --
+> 2.40.1
+>
