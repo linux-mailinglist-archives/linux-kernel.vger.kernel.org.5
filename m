@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5DD67B3FA4
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8F4A7B3FA8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:17:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233951AbjI3JOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 05:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
+        id S233970AbjI3JRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 05:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjI3JOp (ORCPT
+        with ESMTP id S229588AbjI3JRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 05:14:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE33BF
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 02:14:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D3BDC433C7;
-        Sat, 30 Sep 2023 09:14:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696065282;
-        bh=IDH9i4ossG8fiz9uTqL/nI6nmle6vBA4f7lhXd87Uxw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Rm9SNykJQwdTVW6S+Rf801ssab1h5iVg8gzKgmoRtFEW4Gs155ybnm+rBuwmhe/wo
-         ItrleESvVOeL0vTQJuHBxCkj8xmEBUEOEZ0vkQ2MOmwnNrOpXHIXAni0aewiGrx6OZ
-         xqz/ajf48Q8tqaV6nFOwuUovw9OxlzKfu3rhwjT0vI1sR3aUmvKBmC3Fa233NAFHi5
-         p0epjZiJZ+tvH+uo3MTRZVjE9gbw5Rn+Cmu8I94npTDDhnx+OV8yiZg90Nt2a/iDHc
-         5JgNvnNXsyV9LE1MDj3pA/VQcAbLuJhxdr047t8cmFyKwNaQ/IYSKQ0kH7ecurl1lW
-         Io1hmHa9fALOg==
-Date:   Sat, 30 Sep 2023 18:14:35 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v5 00/12] tracing: fprobe: rethook: Use ftrace_regs
- instead of pt_regs
-Message-Id: <20230930181435.6663ef5a6ad718548a1e414a@kernel.org>
-In-Reply-To: <CAADnVQ+HCLx+QUE88uVxeBNYFY4D=2-HADOU1C_czT1S1sRHgA@mail.gmail.com>
-References: <169556254640.146934.5654329452696494756.stgit@devnote2>
-        <20230929102115.09c015b9af03e188f1fbb25c@kernel.org>
-        <CAADnVQ+HCLx+QUE88uVxeBNYFY4D=2-HADOU1C_czT1S1sRHgA@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Sat, 30 Sep 2023 05:17:02 -0400
+Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr [80.12.242.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058B7195
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 02:16:56 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id mW5lqciwUlLhemW5mqgUyK; Sat, 30 Sep 2023 11:16:55 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1696065415;
+        bh=HqO0OJ0xpYTouMij+n4RJh5b8XJeCUxxVmU/L5T7xtU=;
+        h=From:To:Cc:Subject:Date;
+        b=EpHIjI+HuMMZ8HK0f8SwmZJ28a0d+04wdYHD9bRONTstCAVZiuB6avxQIos6ZEItc
+         nVbK0FhaDctKX08sYwo+8tmAJEnv6ltQgDnG9fYwZpZoBVUgsKFrz+BMHupi59MPeM
+         lgimnXmj+nnzQTAeRwa0bWoRLIp/jaeZ1pwjp3cFsxAdixy+FaKMD6mojz70CMqFDW
+         MqyCIxpgCkZeOjHqiuGZYZcPItC1BeAai4TnekU0s1DSIfshfJMrRT8p3JZGtV0XHt
+         MrFDwIJTX7PV+l0ZqFNDsYVj+zmnJRpnzwhfzLuVIWS231jkCTFUOwZBBvYjegsqtY
+         7l1TLWdCU9YMw==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 30 Sep 2023 11:16:55 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
+Subject: [PATCH] comedi: Annotate struct comedi_lrange with __counted_by
+Date:   Sat, 30 Sep 2023 11:14:47 +0200
+Message-Id: <5c3b7459b820e22e2ac6ce892d4aadcc119cc919.1696065263.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Sep 2023 17:12:07 -0700
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+functions).
 
-> On Thu, Sep 28, 2023 at 6:21 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> >
-> > Thus, what I need is to make fprobe to use function-graph tracer's shadow
-> > stack and trampoline instead of rethook. This may need to generalize its
-> > interface so that we can share it between fprobe and function-graph tracer,
-> > but we don't need to involve rethook and kretprobes anymore.
-> 
-> ...
-> 
-> > And need to add patches
-> >
-> >  - Introduce a generized function exit hook interface for ftrace.
-> >  - Replace rethook in fprobe with the function exit hook interface.
-> 
-> you mean that rethook will be removed after that?
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+This patch is part of a work done in parallel of what is currently worked
+on by Kees Cook.
 
-No, it is too late. rethook is deeply integrated with kretprobe.
-So when we remove the kretprobe, rethook will be removed too.
-(fprobe and kretprobe provides similar functionality, so we can
-move to fprobe)
+My patches are only related to corner cases that do NOT match the
+semantic of his Coccinelle script[1].
 
-Even though, objpool(*) itself might be kept for some other use
-cases. As far as I can see, ftrace_ret_stack can not provide a context
-local storage between entry -> exit callbacks. (so this feature must
-be dropped from fprobe)
+In this case, it is been spotted because of comedi_alloc_spriv().
+All other usages of struct comedi_lrange seem to be static definition of
+the structure that explicitly set the .length field.
 
-(*) https://lore.kernel.org/all/20230905015255.81545-1-wuqiang.matt@bytedance.com/
+[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+---
+ include/linux/comedi/comedidev.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you,
-
+diff --git a/include/linux/comedi/comedidev.h b/include/linux/comedi/comedidev.h
+index 0a1150900ef3..c08416a7364b 100644
+--- a/include/linux/comedi/comedidev.h
++++ b/include/linux/comedi/comedidev.h
+@@ -633,7 +633,7 @@ extern const struct comedi_lrange range_unknown;
+  */
+ struct comedi_lrange {
+ 	int length;
+-	struct comedi_krange range[];
++	struct comedi_krange range[] __counted_by(length);
+ };
+ 
+ /**
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.34.1
+
