@@ -2,85 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 524127B3EEF
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 10:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE897B3F05
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 10:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234106AbjI3IFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 04:05:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
+        id S234134AbjI3IKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 04:10:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232523AbjI3IFK (ORCPT
+        with ESMTP id S234132AbjI3IKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 04:05:10 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5A4EB
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 01:05:08 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id 4fb4d7f45d1cf-536b39daec1so2891720a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 01:05:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696061107; x=1696665907; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WQmcG0PhXG0UkauFZ2tR7iCsRk7FCdRiSqPhAfmvbuo=;
-        b=mbCTseysw8GgZKJs7PSui6McDux9lcc8lK5rbX4T2k7TawfepDAEjHJjLTUcQij3Xe
-         jP8BoURML7b0lo1IFAYFvn0sJSgMxsB8RPmzQsDUKdVHX69mQzH6PvYp4aP4auleQPJA
-         R9+7qkgkeOOYZ4p2iJcUT6BSRhvpyuuZIu+aaXYD/aW05a36fn9WnxaJXf9baag35ZaD
-         o3bpuRN+b4BcB0NYLodCR8/oBwyqs8jsJvAsw1BEOFQtz0peRBwzfH/SlgLDrU5PqSA0
-         EGSAz3UTwvOyOna2ydUpI1U58S1oxEt585UYz3q8gZTFxF31MU+4ZaujeSRfHxUcghQk
-         /HzA==
+        Sat, 30 Sep 2023 04:10:33 -0400
+Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com [209.85.160.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3897C193
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 01:10:31 -0700 (PDT)
+Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1c8f14ed485so31635594fac.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 01:10:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696061107; x=1696665907;
-        h=to:subject:message-id:date:from:sender:mime-version
+        d=1e100.net; s=20230601; t=1696061430; x=1696666230;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WQmcG0PhXG0UkauFZ2tR7iCsRk7FCdRiSqPhAfmvbuo=;
-        b=g5k5yE7YkgqNWpQ3/O23VCoO4TwCxuP5UHBrKnsU9zUGd6gX6qBYjOmNl8hfXGZAbI
-         vLOWOAOHjxJk2rURAAEVOK5cRl+CPMUVrPgGV2q5Dx5Mm+yZRI95goEntd8YdHSYhze0
-         P4wzF2Z05Y86FGxfn7eFNCBjSSGGXrupVHPnD2de5Nq+GMol7A00H7Ez4JSdy7IFxuCa
-         8WYHgEbJTCe3Wp9Ij9ZVKAzQGOYFoSkZUYUgYNYQ9CG0xsUiOaMfVJFvNUnjdQmq9qsm
-         a7oa+TJfbYZTHmWXgZtBrTcJ+jWDY+KBW7xA0wgIWc+DIdgdnRaBxen69rtZFfYEndsZ
-         wyFg==
-X-Gm-Message-State: AOJu0YzkAsuUSOr7u/ReyNulRbRrHiCzaSsE6soXDfoDwN+X+sjxb0iF
-        4fWG5fJYk6tXGJIZ5vECl6oYfGyRDPh6ke7u/cU=
-X-Google-Smtp-Source: AGHT+IERKUuERGPdAG9R0mKALVVrheMxMY4N3c1bZFXBta2rJVSJ3rbydw35/DM9QJAUFf72UepVY0/YshwbkW68x1U=
-X-Received: by 2002:a17:907:788d:b0:9b2:717a:c0ec with SMTP id
- ku13-20020a170907788d00b009b2717ac0ecmr5966220ejc.69.1696061106482; Sat, 30
- Sep 2023 01:05:06 -0700 (PDT)
+        bh=P5glKcCAKLWTatjK8MgeD0rc20gjwod9yAwBhDYVon4=;
+        b=ZyouKxcJUGRGqi4cwLEzeaNMZqi1oexLCej6L+vyVahu/RzD7B706oezp2YYJoFBK6
+         DL1o/RIj9WMe6/zn+m75F6HOdLc+/2PlexOtwrPwTvWjKGHbFAzdmTncW0TPlTbnFpen
+         gsWAP6O+BHx8FhMPAwU6PhTX25d/6wneyxAWOg9Bjes4YswqNM/y/jvxwCC9u5721nRk
+         VqHh4hIF0hNc3haPIMjW8MZrRwhdDprsXCoULurYX7zD8eASfqTPA8o8t/yYAbNhyvUO
+         iO3Y5B0RMLzU21pdS2HMqr0XEtnVCJ8yHMgXgjcKsCtIqRWP/ZJh9tka+LGxZuWsl5CW
+         20/w==
+X-Gm-Message-State: AOJu0YyE9bT0B0BF39sSft556KT1av61tIlpCesHvUr6l79XSzrJMlI0
+        pNWAU4H2vvzrUvUJV5CQf70T5dgL43J/Ka+L7ibl4mSMRv/W
+X-Google-Smtp-Source: AGHT+IEMapBx7oCl6mfS8R+NQF/zOjZb84DdeiWnNjrQpYZorfRLPsKt/BZ1/vF757XZicapYUZIxxjDQCsIvMg+uQM6HCMy6Fc3
 MIME-Version: 1.0
-Sender: justicethomson1@gmail.com
-Received: by 2002:a05:6f02:c252:b0:5b:e7cf:1540 with HTTP; Sat, 30 Sep 2023
- 01:05:05 -0700 (PDT)
-From:   "Dr. Thomsom Jack." <jackthomsom7@gmail.com>
-Date:   Sat, 30 Sep 2023 10:05:05 +0200
-X-Google-Sender-Auth: bP0TTnKqM4BPV4jbq6rOJX9omlw
-Message-ID: <CAH0Xq2+AgBZBNYyxGw6c+aTu-jtjTpnzphPJDgHCXBkNeMJEhA@mail.gmail.com>
-Subject: : Hello,
-To:     undisclosed-recipients:;
+X-Received: by 2002:a05:6870:5b12:b0:1d1:3ad6:bb99 with SMTP id
+ ds18-20020a0568705b1200b001d13ad6bb99mr2260762oab.2.1696061430538; Sat, 30
+ Sep 2023 01:10:30 -0700 (PDT)
+Date:   Sat, 30 Sep 2023 01:10:30 -0700
+In-Reply-To: <20230930074624.1542-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000015a94a06068f132c@google.com>
+Subject: Re: [syzbot] [net?] KASAN: slab-use-after-free Read in tls_encrypt_done
+From:   syzbot <syzbot+29c22ea2d6b2c5fd2eae@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good Day,
+Hello,
 
-I have a good news for you.Please contact me for more details. Sorry
-if
-you received this letter in your spam, Due to recent connection error
-here in my country.a
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Looking forward for your immediate response to me through my private
+Reported-and-tested-by: syzbot+29c22ea2d6b2c5fd2eae@syzkaller.appspotmail.com
 
-e-mail id: (jackthomsom7@gmail.com)
+Tested on:
 
+commit:         6465e260 Linux 6.6-rc3
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=156b6fc6680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8d7d7928f78936aa
+dashboard link: https://syzkaller.appspot.com/bug?extid=29c22ea2d6b2c5fd2eae
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=13cc351a680000
 
-Best Regards,
-
-Regards,
-Dr. Thomsom Jack.
-My Telephone number
-+226-67 -44 - 42- 36
+Note: testing is done by a robot and is best-effort only.
