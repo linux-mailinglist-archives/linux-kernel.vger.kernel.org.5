@@ -2,171 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C787B4262
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FC037B4268
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234598AbjI3Qwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 12:52:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46064 "EHLO
+        id S234586AbjI3QyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 12:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234586AbjI3Qw0 (ORCPT
+        with ESMTP id S234461AbjI3QyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 12:52:26 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35CDE5
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 09:52:22 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40652e570d9so28412565e9.1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 09:52:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20230601.gappssmtp.com; s=20230601; t=1696092741; x=1696697541; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TP49E0lt1lRfwVwEUZNQYaCBfTY4UGz9ptrNHBZhxcM=;
-        b=GODHPJ5OBk5OFYXKYp/AsgCbEs96zHybKMqld2zYIYMA8bWsDO9CD32R4Ve892efWh
-         Rw8h6Qoitfo9fDFRXeGZ1URS0UWu9IJBVx4Vya++BEVhXwx8iJTXEUg7vtyzXuhFlYS7
-         EaYP12e+2yYMGMjH/WAmkF/9TwNHyl/rOxe/+Raw1hFTZ4W/QiD6r+cTfVQujrg4ADiB
-         t0EwhcgT/w1sqCgn4S5QesL/mVLbCPhL0Gs4zfmBWFR0O2+lvC4PwMCbZsvAUBYBpImL
-         7PoPTdEUlEjZSUqF5Cz+l5zBQwpp7snU3QkdNZzBDQG/BZuIT+Nwotv31hy32RoOfd+U
-         mAYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696092741; x=1696697541;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TP49E0lt1lRfwVwEUZNQYaCBfTY4UGz9ptrNHBZhxcM=;
-        b=r54hrp6wk1+VKa5TEdLeDadkxYe9xhFddATtJ5TPMZsH4QN67OXZA6LqsWWxl4ogdk
-         dJbG5XCj0NfpsDtpF0qBr6voFwSG9Y8/AzTYFWG+bcNnFU/9I7XWG+clik/PxTvQNomH
-         t8wUt0ExknJfsnoLMRDfYkBYe6lGDrDmVnp9ktUvsQitm43xtAfocCU9Fhb86dHgIfBa
-         955LsbR30SFFTcPyIOkaqOUBxApWkEY7eGQF/c15qXSkb0yLPu0Mdk0V2B3/3ezEFBvA
-         Eo1NhzPtNPvj3vTDHCoOIibqqqbBuVCkULLDC7EaJtEozEvi/nj/ebFRNTHnCypJtQ71
-         avEg==
-X-Gm-Message-State: AOJu0Yw+DtpNl3KruowA/Mv+1VMpICsY5V0IjdQogUaH6M1vtjIUo3RG
-        UQTfyGXipuimxw1eO/vi/9mB3g==
-X-Google-Smtp-Source: AGHT+IFufhUosQmDbdYYO0lgqH5WgmabRsKPy1NuiT6FdEpd1klh9Lx806UT3kRvn4yTyQ0Y4WLs9Q==
-X-Received: by 2002:adf:cf0a:0:b0:323:1689:6607 with SMTP id o10-20020adfcf0a000000b0032316896607mr6789063wrj.5.1696092741022;
-        Sat, 30 Sep 2023 09:52:21 -0700 (PDT)
-Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id u1-20020adfed41000000b003247d3e5d99sm4921066wro.55.2023.09.30.09.52.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 09:52:20 -0700 (PDT)
-Date:   Sat, 30 Sep 2023 17:52:17 +0100
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     Joel Granados <j.granados@samsung.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        Arnd Bergmann <arnd@arndb.de>, Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Doug Gilbert <dgilbert@interlog.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Corey Minyard <minyard@acm.org>, Theodore Ts'o <tytso@mit.edu>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Russ Weight <russell.h.weight@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Song Liu <song@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-serial@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-rdma@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 01/15] cdrom: Remove now superfluous sentinel element
- from ctl_table array
-Message-ID: <ZRhSQaNDJih5xABq@equinox>
-References: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-0-e59120fca9f9@samsung.com>
- <20230928-jag-sysctl_remove_empty_elem_drivers-v1-1-e59120fca9f9@samsung.com>
- <CGME20230928133705eucas1p182bd81a8e6aff530e43f9b0746a24eaa@eucas1p1.samsung.com>
- <2023092855-cultivate-earthy-4d25@gregkh>
- <20230929121730.bwzhrpaptf45smfy@localhost>
+        Sat, 30 Sep 2023 12:54:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3CC2DA;
+        Sat, 30 Sep 2023 09:54:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 128B0C433C8;
+        Sat, 30 Sep 2023 16:54:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696092846;
+        bh=3FWZ2qW2Ezn08XF7jE/SiC+XcEI8boNjlLaX2s5XXj0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kBH/u9QrsdIL0Bc2HrdOfgtLT/lqXpGNTnTlP69fi8Ump94+jFCr03KYTSTcgwWqz
+         D7aqfgDQ5XlSm9YyBQO2awR/goy7ZwHYh4JZRnmADYJo1L6yICx1oPxsnBpn8w3J5O
+         ULJSYJQ3nAEHb8UklF1lAGbT+3l28/JWZwx2gcbUXX4RqPZ6Cx8MeoKo4Ra7aEjYy8
+         jChr7f1OByeRMIhuUiLftT2zRpa8m5IvY+x2/ncjIwT/q8ESLOLQlJCLKq9oILfSCc
+         JP45pFa7h62dXuBF/uK2KGjFk/XdmAYdvoMTwagoHsaxuvQU7f+YgS9Z/6OuEqTYy4
+         mzqktP+JjH8Qw==
+Date:   Sat, 30 Sep 2023 17:54:04 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Angel Iglesias <ang.iglesiasg@gmail.com>,
+        Andreas Klinger <ak@it-klinger.de>,
+        Benjamin Bara <bbara93@gmail.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/5] iio: improve doc for available_scan_mask
+Message-ID: <20230930175404.033da19e@jic23-huawei>
+In-Reply-To: <4e43bf0186df5c8a56b470318b4827605f9cad6c.1695727471.git.mazziesaccount@gmail.com>
+References: <cover.1695727471.git.mazziesaccount@gmail.com>
+        <4e43bf0186df5c8a56b470318b4827605f9cad6c.1695727471.git.mazziesaccount@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230929121730.bwzhrpaptf45smfy@localhost>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 02:17:30PM +0200, Joel Granados wrote:
-> On Thu, Sep 28, 2023 at 03:36:55PM +0200, Greg Kroah-Hartman wrote:
-> > On Thu, Sep 28, 2023 at 03:21:26PM +0200, Joel Granados via B4 Relay wrote:
-> > > From: Joel Granados <j.granados@samsung.com>
-> > > 
-> > > This commit comes at the tail end of a greater effort to remove the
-> > > empty elements at the end of the ctl_table arrays (sentinels) which
-> > > will reduce the overall build time size of the kernel and run time
-> > > memory bloat by ~64 bytes per sentinel (further information Link :
-> > > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> > > 
-> > > Remove sentinel element from cdrom_table
-> > > 
-> > > Signed-off-by: Joel Granados <j.granados@samsung.com>
-> > > ---
-> > >  drivers/cdrom/cdrom.c | 3 +--
-> > >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
-> > > index cc2839805983..451907ade389 100644
-> > > --- a/drivers/cdrom/cdrom.c
-> > > +++ b/drivers/cdrom/cdrom.c
-> > > @@ -3654,8 +3654,7 @@ static struct ctl_table cdrom_table[] = {
-> > >  		.maxlen		= sizeof(int),
-> > >  		.mode		= 0644,
-> > >  		.proc_handler	= cdrom_sysctl_handler
-> > > -	},
-> > > -	{ }
-> > > +	}
-> > 
-> > You should have the final entry as "}," so as to make any future
-> > additions to the list to only contain that entry, that's long been the
-> > kernel style for lists like this.
-> Will send a V2 with this included. Thx.
-> 
-> > 
-> > So your patches will just remove one line, not 2 and add 1, making it a
-> > smaller diff.
-> indeed.
-> 
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> -- 
-> 
-> Joel Granados
+On Wed, 27 Sep 2023 11:27:41 +0300
+Matti Vaittinen <mazziesaccount@gmail.com> wrote:
 
-Hi Joel,
+> The available_scan_mask is an array of bitmaps representing the channels
+> which can be simultaneously enabled by the driver. In many cases, the
+> hardware can offer more channels than what the user is interested in
+> obtaining. In such cases, it may be preferred that only a subset of
+> channels are enabled, and the driver reads only a subset of the channels
+> from the hardware.
+> 
+> Some devices can't support all channel combinations. For example, the
+> BM1390 pressure sensor must always read the pressure data in order to
+> acknowledge the watermark IRQ, while reading temperature can be omitted.
+> So, the available scan masks would be 'pressure and temperature' and
+> 'pressure only'.
+> 
+> When IIO searches for the scan mask it asks the driver to use, it will
+> pick the first suitable one from the 'available_scan_mask' array. Hence,
+> ordering the masks in the array makes a difference. We should 'prefer'
+> reading just the pressure from the hardware (as it is a cheaper operation
+> than reading both pressure and temperature) over reading both pressure
+> and temperature. Hence, we should set the 'only pressure' as the first
+> scan mask in available_scan_mask array. If we set the 'pressure and
+> temperature' as first in the array, then the 'only temperature' will never
+> get used as 'pressure and temperature' can always serve the user's
+> needs.
+> 
+> Add (minimal) kerneldoc to the 'available_scan_mask' to hint the user
+> that the ordering of masks matters.
+> 
+> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
 
-Thank you for your patch. I look forward to seeing V2, and will be happy
-to review it.
+Applied this patch to the togreg branch of iio.git
+If you fancy turning the patch description into some more formal
+documentation under Documentation/... that might be a good thing in the
+long run. I always mean to spend some time working on that, but too manyt
+things to do :(
 
-Regards,
-Phil
+Thanks,
+
+Jonathan
+
+> ---
+>  include/linux/iio/iio.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+> index 202e55b0a28b..7bfa1b9bc8a2 100644
+> --- a/include/linux/iio/iio.h
+> +++ b/include/linux/iio/iio.h
+> @@ -556,7 +556,9 @@ struct iio_buffer_setup_ops {
+>   *			and owner
+>   * @buffer:		[DRIVER] any buffer present
+>   * @scan_bytes:		[INTERN] num bytes captured to be fed to buffer demux
+> - * @available_scan_masks: [DRIVER] optional array of allowed bitmasks
+> + * @available_scan_masks: [DRIVER] optional array of allowed bitmasks. Sort the
+> + *			   array in order of preference, the most preferred
+> + *			   masks first.
+>   * @masklength:		[INTERN] the length of the mask established from
+>   *			channels
+>   * @active_scan_mask:	[INTERN] union of all scan masks requested by buffers
+
