@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EDC7B4051
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 14:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E852B7B4052
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 14:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234109AbjI3MwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 08:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45940 "EHLO
+        id S234002AbjI3MwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 08:52:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234049AbjI3MwC (ORCPT
+        with ESMTP id S234159AbjI3MwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 08:52:02 -0400
+        Sat, 30 Sep 2023 08:52:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F29F1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 05:52:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25FA9C433CB;
-        Sat, 30 Sep 2023 12:51:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACBE51A4
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 05:52:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9D39C433CD;
+        Sat, 30 Sep 2023 12:52:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696078320;
-        bh=fQTDtT9gnWgXUs+I9buDYmY6imSxTfJ5hIWH/nKngUA=;
+        s=k20201202; t=1696078324;
+        bh=0cXR+wjSxc3y0eRPOSPa5epHEc/W4j4DDvL7tCSFcHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cgjrlymuo0WltimOMkmuXz4oV1+bt9qfmo/hhNyXcikzu7EaGa4n/wgk3XwktQTCN
-         SknjOXRlAENSX/2931edHNrX93SFp8kSZSAgBS2Dfq84VmxdmnkC7iRdLNHn4QGjGr
-         OnYippK2hUgXFApgGby73dVAgX1a+T23DLZqgVtaXipteIfRBzCKt3J14h9489ZnoU
-         hY/wC7LmF8I4YrvI+8jU4R8I/pZNKq1Da7by1qheFDABExAZ5YRBgwehNtZZMBWYIM
-         e4Ds4ctkJIgdnzipElalZr0Dd+g8izrTw3U4STXCsLch6LaF2TbCL0tu50+Yr3dHQE
-         +2qkDcwE9i8tg==
+        b=REmv6J/ExFC/eGAjHAiMAIVg67CrBH31GFPnanZkKftD5wWdukAWx+UAjV0OtHQu1
+         rXunINX7W15Rzcb5lR+QRcBRZ7pcFbZctii84zTu6GjrTZUu594QrJ2moVSBSnCc37
+         my9zZcN2LSVReCLhxC4eMY6hvKC5kqRh1Tg/i36anJCfBggWdN/nAz+JvHgW2DX0w0
+         njgOMh7nPiXoXJvHM/nAoEo0LpXBNuwgPLyS9+/9Pt1EiB2zuSkRPLi3urIEGkmO2m
+         v+/50sD4iWUUyYGoRhAV6SwO7b3tpI4ZEAwrJmvuzH8KdgEW0rksWCxxxmIg2/0yyf
+         r1VWlOi8eXAaQ==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-riscv@lists.infradead.org,
         Inochi Amaoto <inochiama@outlook.com>, chao.wei@sophgo.com,
         xiaoguang.xing@sophgo.com
-Subject: [PATCH 2/5] dt-bindings: timer: Add SOPHGO CV1800B clint
-Date:   Sat, 30 Sep 2023 20:39:34 +0800
-Message-Id: <20230930123937.1551-3-jszhang@kernel.org>
+Subject: [PATCH 3/5] dt-bindings: riscv: Add Milk-V Duo board compatibles
+Date:   Sat, 30 Sep 2023 20:39:35 +0800
+Message-Id: <20230930123937.1551-4-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230930123937.1551-1-jszhang@kernel.org>
 References: <20230930123937.1551-1-jszhang@kernel.org>
@@ -60,25 +60,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible string for the SOPHGO CV1800B clint.
+Document the compatible strings for the Milk-V Duo board[1] which uses
+the SOPHGO CV1800B SoC[2].
 
+Link: https://milkv.io/duo [1]
+Link: https://en.sophgo.com/product/introduce/cv180xB.html [2]
 Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- Documentation/devicetree/bindings/timer/sifive,clint.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/riscv/sophgo.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-index a0185e15a42f..98c76d5893ac 100644
---- a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-+++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
-@@ -37,6 +37,7 @@ properties:
+diff --git a/Documentation/devicetree/bindings/riscv/sophgo.yaml b/Documentation/devicetree/bindings/riscv/sophgo.yaml
+index 4e8fd3c6a6ff..6db241c9d00c 100644
+--- a/Documentation/devicetree/bindings/riscv/sophgo.yaml
++++ b/Documentation/devicetree/bindings/riscv/sophgo.yaml
+@@ -18,6 +18,10 @@ properties:
+     const: '/'
+   compatible:
+     oneOf:
++      - items:
++          - enum:
++              - milkv,duo
++          - const: sophgo,cv1800b
        - items:
            - enum:
-               - allwinner,sun20i-d1-clint
-+              - sophgo,cv1800-clint
-               - thead,th1520-clint
-           - const: thead,c900-clint
-       - items:
+               - milkv,pioneer
 -- 
 2.40.1
 
