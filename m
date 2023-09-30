@@ -2,118 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A877B3EB7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 08:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313AC7B3EBA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 09:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234067AbjI3G42 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 30 Sep 2023 02:56:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
+        id S234079AbjI3HBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 03:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbjI3G41 (ORCPT
+        with ESMTP id S229447AbjI3HBQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 02:56:27 -0400
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92C81A7;
-        Fri, 29 Sep 2023 23:56:25 -0700 (PDT)
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-79fca042ec0so341583539f.3;
-        Fri, 29 Sep 2023 23:56:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696056985; x=1696661785;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xLVnq7bpoB/DPNFDYFDqdcabpCoSce/kmj2cilxMHvw=;
-        b=LQcUa7tWs5d5/gAuJ+3pHuRb3t8L6gvzNGOQTC2mwtKOmSKOyjbVesEIYiNbgaVQHJ
-         5JAYvWNXIzlO/5qb2yYP5CaemxV/ioEJ4V++9v7BrjnipMNDio/h0ogCXD8yKMmNdfl2
-         7bxl8YGS3fxp0WU/AI2pLp3NqFpepPV+M5gVJA0i2e15cE0iqkEa3zcMEnuJWynPJhjp
-         W9TgRqh4bZr/I/0fWVo3S6vqDDMbMWZqwWGIZ3QodLkRbll9/1NqltEfp/MrnZlX23sj
-         6/6rPkimTxYUYIMuk4prwAX8dPgHSewQfHElpD+c4DWu4CGbUqcBUlg4TKUkNPiAWyFm
-         eqBQ==
-X-Gm-Message-State: AOJu0YwVir4PRcDMKl7Af50xTUJlg6Fp5UJwk8EGH755mOslvMPrEto3
-        P/FQXgb8rXEqYh5X0K2Ff5YC4mqt4AyYAWmIDLM=
-X-Google-Smtp-Source: AGHT+IEn2wK5Rt7ylWgoipTL/Rk8CN9PcAPurGV3WUfgdnOOQX0Wym6AbQUM+GDhPRaHPe/PVyF5iuCWm9KCZoz2F4g=
-X-Received: by 2002:a5e:c74d:0:b0:79f:96db:f33d with SMTP id
- g13-20020a5ec74d000000b0079f96dbf33dmr6498919iop.9.1696056984951; Fri, 29 Sep
- 2023 23:56:24 -0700 (PDT)
+        Sat, 30 Sep 2023 03:01:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE0AC5;
+        Sat, 30 Sep 2023 00:01:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FF0FC433C7;
+        Sat, 30 Sep 2023 07:01:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696057273;
+        bh=aH5DifR1+J1vJdlt0HdKBLUJn1v/XbPJouikZChEZlI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B+gwLL3DtZ6fdEbiMlKWdDAslWvJnAtuWXp52nw1rU2c2LU+QkKt7rUIr1o9ly0jU
+         rVBkKKyoB31D8MJEmrAgy717YH3yTN0APjd4dYAUD2UZb6H0sFfM23QhY2iKc2aj2G
+         qccOAwvjavs9nGtVRzBK6/Lg/WzjnWTflT2bnjsM=
+Date:   Sat, 30 Sep 2023 09:01:11 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jann Horn <jannh@google.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] media: usb: siano: Fix undefined behavior bug in
+ struct smsusb_urb_t
+Message-ID: <2023093029-primary-likewise-9579@gregkh>
+References: <ZRbwU8Qnx28gpbuO@work>
+ <CAG48ez2SJMJSYrJQ9RVC44hbj3uNYBZeN0yfxWa7pqX9Fp2L7g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230920122349.418673-1-wyes.karny@amd.com> <CAP-5=fUe-972h3+Cwegb6u8ZOxo2k_jHQ3i5gNPoUq_TR_AWDQ@mail.gmail.com>
- <CAM9d7cjH_YR9W_Ab-AuJR983GYn3s+ScwexCWid3Q6a+GzWDVg@mail.gmail.com>
- <CAP-5=fW7dsMw0i7N-oQ7dcz9sFx1hAtZCpsxuH=NqMz+h+i3ZQ@mail.gmail.com> <CAM9d7cgC8qZ=rN-0qAg0mNOV-XKCLzgJ1E530aexUnsytmrjfw@mail.gmail.com>
-In-Reply-To: <CAM9d7cgC8qZ=rN-0qAg0mNOV-XKCLzgJ1E530aexUnsytmrjfw@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 29 Sep 2023 23:56:13 -0700
-Message-ID: <CAM9d7cj-JATZ2JryJ7__vX6RES+jiY0PceM7f6hGA6_D7ztmiA@mail.gmail.com>
-Subject: Re: [PATCH] perf pmu: Fix perf stat output with correct scale and unit
-To:     Ian Rogers <irogers@google.com>
-Cc:     Wyes Karny <wyes.karny@amd.com>, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        adrian.hunter@intel.com, kan.liang@linux.intel.com,
-        james.clark@arm.com, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sandipan.das@amd.com,
-        ravi.bangoria@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAG48ez2SJMJSYrJQ9RVC44hbj3uNYBZeN0yfxWa7pqX9Fp2L7g@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 9:39 PM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> Hi Ian,
->
-> On Tue, Sep 26, 2023 at 9:07 PM Ian Rogers <irogers@google.com> wrote:
+On Fri, Sep 29, 2023 at 06:20:10PM +0200, Jann Horn wrote:
+> On Fri, Sep 29, 2023 at 5:42 PM Gustavo A. R. Silva
+> <gustavoars@kernel.org> wrote:
+> > `struct urb` is a flexible structure, which means that it contains a
+> > flexible-array member at the bottom. This could potentially lead to an
+> > overwrite of the object `wq` at run-time with the contents of `urb`.
 > >
-> > On Tue, Sep 26, 2023 at 3:51 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> > >
-> > > On Wed, Sep 20, 2023 at 9:02 AM Ian Rogers <irogers@google.com> wrote:
-> > > >
-> > > > On Wed, Sep 20, 2023 at 5:24 AM Wyes Karny <wyes.karny@amd.com> wrote:
-> > > > >
-> > > > > The perf_pmu__parse_* functions for the sysfs files of pmu event’s
-> > > > > scale, unit, per-pkg and snapshot were updated in commit 7b723dbb96e8
-> > > > > ("perf pmu: Be lazy about loading event info files from sysfs").
-> > > > > However, the paths for these sysfs files were incorrect. This resulted
-> > > > > in perf stat reporting values with wrong scaling and missing units. This
-> > > > > is fixed by correcting the paths for these sysfs files.
-> > > > >
-> > > > > Before this fix:
-> > > > >
-> > > > >  $sudo perf stat -e power/energy-pkg/ -- sleep 2
-> > > > >
-> > > > >  Performance counter stats for 'system wide':
-> > > > >
-> > > > >    351,217,188,864      power/energy-pkg/
-> > > > >
-> > > > >           2.004127961 seconds time elapsed
-> > > > >
-> > > > > After this fix:
-> > > > >
-> > > > >  $sudo perf stat -e power/energy-pkg/ -- sleep 2
-> > > > >
-> > > > >  Performance counter stats for 'system wide':
-> > > > >
-> > > > >              80.58 Joules power/energy-pkg/
-> > > > >
-> > > > >              2.004009749 seconds time elapsed
-> > > > >
-> > > > > Fixes: 7b723dbb96e8 ("perf pmu: Be lazy about loading event info files from sysfs")
-> > > > > Signed-off-by: Wyes Karny <wyes.karny@amd.com>
-> > > >
-> > > > Reviewed-by: Ian Rogers <irogers@google.com>
-> > >
-> > > Applied to perf-tools-next, thanks!
+> > Fix this by placing object `urb` at the end of `struct smsusb_urb_t`.
+> 
+> Does this really change the situation? "struct smsusb_device_t"
+> contains an array of "struct smsusb_urb_t", so it seems to be like
+> you're just shifting the "VLA inside a non-final member of a struct"
+> thing around so that there is one more layer of abstraction in
+> between.
+> 
+> Comments on "struct urb" say:
+> 
+>  * Isochronous URBs have a different data transfer model, in part because
+>  * the quality of service is only "best effort".  Callers provide specially
+>  * allocated URBs, with number_of_packets worth of iso_frame_desc structures
+>  * at the end.
+> 
+> and:
+> 
+> /* (in) ISO ONLY */
+> 
+> And it looks like smsusb only uses that URB as a bulk URB, so the flex
+> array is unused and we can't have an overflow here?
+> 
+> If this is intended to make it possible to enable some kinda compiler
+> warning, it might be worth talking to the USB folks to figure out the
+> right approach here.
+> 
+> > Fixes: dd47fbd40e6e ("[media] smsusb: don't sleep while atomic")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > ---
+> >  drivers/media/usb/siano/smsusb.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
 > >
-> > Thanks Namhyung, I think this should be a candidate for perf-tools so
-> > that 6.6 doesn't regress for sysfs events.
->
-> I see, I overlooked that it's for the current cycle.
-> I'll move it to perf-tools.
+> > diff --git a/drivers/media/usb/siano/smsusb.c b/drivers/media/usb/siano/smsusb.c
+> > index 9d9e14c858e6..2c048f8e8371 100644
+> > --- a/drivers/media/usb/siano/smsusb.c
+> > +++ b/drivers/media/usb/siano/smsusb.c
+> > @@ -40,10 +40,10 @@ struct smsusb_urb_t {
+> >         struct smscore_buffer_t *cb;
+> >         struct smsusb_device_t *dev;
+> >
+> > -       struct urb urb;
+> > -
+> >         /* For the bottom half */
+> >         struct work_struct wq;
+> > +
+> > +       struct urb urb;
+> >  };
 
-Applied to perf-tools, thanks!
+Yeah, this is going to get messy.  Ideally, just dynamically create the
+urb and change this to a "struct urb *urb;" instead.
+
+thanks,
+
+greg k-h
