@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBDF7B3FE7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 12:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4527B3FEB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 12:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234128AbjI3KWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 06:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51436 "EHLO
+        id S234143AbjI3KWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 06:22:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234088AbjI3KW2 (ORCPT
+        with ESMTP id S234112AbjI3KWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 06:22:28 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D53D2195;
-        Sat, 30 Sep 2023 03:22:25 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9a58dbd5daeso2046114666b.2;
-        Sat, 30 Sep 2023 03:22:25 -0700 (PDT)
+        Sat, 30 Sep 2023 06:22:30 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D93F1AB;
+        Sat, 30 Sep 2023 03:22:27 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5335725cf84so18277736a12.2;
+        Sat, 30 Sep 2023 03:22:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696069344; x=1696674144; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696069345; x=1696674145; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=At6mV+t12HD5fi2eom0kJSJcVqs7Y5KHuO03wN8Mx64=;
-        b=abfsP9cM4JC00KJpR1OfTeozWto3eI8K6pWdjKH6AXDIXmt1B2tAx7BHjBsP/6AT18
-         p2HPY7NocPvYqjoAV97APBEfRCF9lKJTTFxQECX4wJdh2U0UBQ7QrD4JubHJ/OR4OwJ9
-         dmQ9+xOzOhsYsPKIGsgL4zqfsTqPWu/Wez2B9RAsHNyDGkP0QSmURk8bk832SkWCwW0E
-         Lmdwcqa3xNY0jTbOtc4DzD2RxA/GsNja4QOn+8RlnqkYp4OkAsRLPiekheeh+T06Yf45
-         xi7m6USfuS/+vNG0aMlkVe/oWOX69AsaZ8dA/ph/EYFGfnzlkG6JJcMT09iTMQ8nMDN5
-         taJQ==
+        bh=upvkOshm+Utk6b+l4TjTOIuE/7SOxFRjndlDlP7Geug=;
+        b=BteT6fkt8qOUyo3MKGDOkg3c1DJnlHouFWbZo2Gefy1lAn4M+HjOVGxMOnyaS+CHaJ
+         eVf3bo+k6APFjoE01n3zfIDmA3C2eufCBHq0eXH83fxf5iPwp0U/lsE8NV6sI0OpRbNn
+         gksWQ16QAYKwtgsiSORC0JfpnJ2gI/22ax2FMJYN8pA5EkynaGpgBrreBJoxLGiK1W+3
+         YixP0iChf2jIKp9q6EEzdPC2YOENmPeV9RYvJCmJV1OYx/Lft1mFuO7SeiLiY6/qNWLF
+         2oNW//piN1W+vQLlP7o1MKk/73nhSyE97AntPTIgmbMpRU2RpdGJYSlPCMQV9gBwGIZt
+         /EgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696069344; x=1696674144;
+        d=1e100.net; s=20230601; t=1696069345; x=1696674145;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=At6mV+t12HD5fi2eom0kJSJcVqs7Y5KHuO03wN8Mx64=;
-        b=fTh5yXra5SAOHjXBajRT3cujwa0V0da9GSLrJ0hwgHLOV6eXb3qAh39WCgkoqF/zSv
-         Qn5KoRxEfqfxUDWzbO/0pJ2keiEDYKCaO2prTOeRi0ul5LCGXkTmZ+f9FQYIWfUe8h7f
-         wHIByuOxzX6b17MlVs3rp88cCbt+jfj6n8vfpaqXuyGtmns4qVrXBvDji+JZT3yBm5zk
-         35KwJXT742QN5c3qdH3uEm8G9Sk1bx4uEglZ47K6lUjzvHWGZojnNBf+FdPZDGS5Z7sm
-         wQyucUyRo0ImPQJF8H99lLp5Ie2pPwa66Ig3ShH1c2PQB54dEkoxmaFO1KCmzTVHgaHs
-         6R8Q==
-X-Gm-Message-State: AOJu0YzW37Tg4zxsePumVDFEgSfy+pkXJzfdGQt2iyjjH6RpCsrSgz/E
-        wTH3n7dQ6nXUftzoj7PhqFY=
-X-Google-Smtp-Source: AGHT+IEgLTDHmmLtTeLvWLss177ZMJGt9msEkr/j7HiVG1N2pFGP4UFof4xqWrJOkO6+9F95Zx8mzQ==
-X-Received: by 2002:a17:906:73ca:b0:9af:159a:5113 with SMTP id n10-20020a17090673ca00b009af159a5113mr6734189ejl.52.1696069344006;
-        Sat, 30 Sep 2023 03:22:24 -0700 (PDT)
+        bh=upvkOshm+Utk6b+l4TjTOIuE/7SOxFRjndlDlP7Geug=;
+        b=j9ULVqHQsoC/cyRI/1bcvN0tKfB5yEjsh2yi0micyjLBnUZhycNda6dhwtLPvXbBHH
+         tk/5wY/+wrmxtLfg3HpzbNn0yqsELHQ+WxN0kfmqbQHFdhpaqsLYrL/BMvlwubqgdeBg
+         UPDmHbtxM6/m0FrsLp7LKk7qgRwOfe1p2knURRRi7WfGHlO+J1ymdDb/BolNKWjpZgTX
+         eWDbiT6a2vhfdTV3KrC68sEZcEwL4tVBBkFp/brvrXvzwLubMTAzX6F/viFmBHi0r6dz
+         G5T/9pxXkzIyFkAkQYt/1D31TVMq3d6PhHyQaaKcZd2gXwGZqBEWpFzylzdFoFAwOwdz
+         K87A==
+X-Gm-Message-State: AOJu0YxRMimygFgMntGNIWBYLUs7//Q3UR35rGQOPxWB6LsWP0FoSA8I
+        a1nlzV3P8sZNmCAGukhgLNE=
+X-Google-Smtp-Source: AGHT+IGcDhCz//73gt6W6Dq+CQ+r80HKhSBIex7xtCKsHl3/kCHELm/j6qln6fyfhwhGnqQw8lC3aw==
+X-Received: by 2002:a17:907:77cf:b0:9b2:c2a9:356e with SMTP id kz15-20020a17090777cf00b009b2c2a9356emr6062679ejc.49.1696069345482;
+        Sat, 30 Sep 2023 03:22:25 -0700 (PDT)
 Received: from fedora.. (dh207-96-216.xnet.hr. [88.207.96.216])
-        by smtp.googlemail.com with ESMTPSA id j25-20020a170906255900b0099bcf1c07c6sm13716547ejb.138.2023.09.30.03.22.22
+        by smtp.googlemail.com with ESMTPSA id j25-20020a170906255900b0099bcf1c07c6sm13716547ejb.138.2023.09.30.03.22.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 03:22:23 -0700 (PDT)
+        Sat, 30 Sep 2023 03:22:24 -0700 (PDT)
 From:   Robert Marko <robimarko@gmail.com>
 To:     ilia.lin@kernel.org, vireshk@kernel.org, nm@ti.com,
         sboyd@kernel.org, robh+dt@kernel.org,
@@ -60,9 +60,9 @@ To:     ilia.lin@kernel.org, vireshk@kernel.org, nm@ti.com,
         linux-arm-msm@vger.kernel.org
 Cc:     Christian Marangi <ansuelsmth@gmail.com>,
         Robert Marko <robimarko@gmail.com>
-Subject: [PATCH v5 3/4] cpufreq: qcom-nvmem: add support for IPQ8064
-Date:   Sat, 30 Sep 2023 12:21:18 +0200
-Message-ID: <20230930102218.229613-3-robimarko@gmail.com>
+Subject: [PATCH v5 4/4] ARM: dts: qcom: ipq8064: Add CPU OPP table
+Date:   Sat, 30 Sep 2023 12:21:19 +0200
+Message-ID: <20230930102218.229613-4-robimarko@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230930102218.229613-1-robimarko@gmail.com>
 References: <20230930102218.229613-1-robimarko@gmail.com>
@@ -80,146 +80,226 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Christian Marangi <ansuelsmth@gmail.com>
 
-IPQ8064 comes in 3 families:
-* IPQ8062 up to 1.0GHz
-* IPQ8064/IPQ8066/IPQ8068 up to 1.4GHz
-* IPQ8065/IPQ8069 up to 1.7Ghz
-
-So, in order to be able to support one OPP table, add support for
-IPQ8064 family based of SMEM SoC ID-s and correctly set the version so
-opp-supported-hw can be correctly used.
-
-Bit are set with the following logic:
-* IPQ8062 BIT 0
-* IPQ8064/IPQ8066/IPQ8068 BIT 1
-* IPQ8065/IPQ8069 BIT 2
-
-speed is never fused, only pvs values are fused.
-
-IPQ806x SoC doesn't have pvs_version so we drop and we use the new
-pattern:
-opp-microvolt-speed0-pvs<PSV_VALUE>
-
-Example:
-- for ipq8062 psv2
-  opp-microvolt-speed0-pvs2 = < 925000 878750 971250>
+Add CPU OPP table for IPQ8062, IPQ8064 and IPQ8065 SoC.
+Use opp-supported-hw binding to correctly enable and disable the
+frequency as IPQ8062 supports up to 1.0Ghz, IPQ8064 supports up to
+1.4GHz with 1.2GHz as an additional frequency and IPQ8065 supports
+1.7GHZ but doesn't have 1.2GHZ frequency and has to be disabled.
 
 Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
 Signed-off-by: Robert Marko <robimarko@gmail.com>
 ---
-Changes in v4:
-* Free speedbin in case of an error
+Changes v4:
+* Add OPP DTS patch for IPQ8064
 
-Changes in v3:
-* Use enum for SoC version
-* Dont evaluate speed as its not fused, only pvs
+ arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi | 30 +++++++++++
+ arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi | 67 ++++++++++++++++++++++++
+ arch/arm/boot/dts/qcom/qcom-ipq8065.dtsi | 65 +++++++++++++++++++++++
+ 3 files changed, 162 insertions(+)
 
-Changes in v2:
-* Include IPQ8064 support
-
- drivers/cpufreq/qcom-cpufreq-nvmem.c | 68 +++++++++++++++++++++++++++-
- 1 file changed, 67 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-index ba9e1d60e5b5..3d93b511db86 100644
---- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
-+++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-@@ -35,6 +35,12 @@ enum ipq8074_versions {
- 	IPQ8074_ACORN_VERSION,
+diff --git a/arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi b/arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi
+index 5d3ebd3e2e51..72d9782c3d6f 100644
+--- a/arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-ipq8062.dtsi
+@@ -6,3 +6,33 @@ / {
+ 	model = "Qualcomm Technologies, Inc. IPQ8062";
+ 	compatible = "qcom,ipq8062", "qcom,ipq8064";
  };
- 
-+enum ipq806x_versions {
-+	IPQ8062_VERSION = 0,
-+	IPQ8064_VERSION,
-+	IPQ8065_VERSION,
++
++&opp_table_cpu {
++	opp-384000000 {
++		opp-microvolt-speed0-pvs0 = <1000000 950000 1050000>;
++		opp-microvolt-speed0-pvs1 = <925000 878750 971250>;
++		opp-microvolt-speed0-pvs2 = <875000 831250 918750>;
++		opp-microvolt-speed0-pvs3 = <800000 760000 840000>;
++	};
++
++	opp-600000000 {
++		opp-microvolt-speed0-pvs0 = <1050000 997500 1102500>;
++		opp-microvolt-speed0-pvs1 = <975000 926250 1023750>;
++		opp-microvolt-speed0-pvs2 = <925000 878750 971250>;
++		opp-microvolt-speed0-pvs3 = <850000 807500 892500>;
++	};
++
++	opp-800000000 {
++		opp-microvolt-speed0-pvs0 = <1100000 1045000 1155000>;
++		opp-microvolt-speed0-pvs1 = <1025000 973750 1076250>;
++		opp-microvolt-speed0-pvs2 = <995000 945250 1044750>;
++		opp-microvolt-speed0-pvs3 = <900000 855000 945000>;
++	};
++
++	opp-1000000000 {
++		opp-microvolt-speed0-pvs0 = <1150000 1092500 1207500>;
++		opp-microvolt-speed0-pvs1 = <1075000 1021250 1128750>;
++		opp-microvolt-speed0-pvs2 = <1025000 973750 1076250>;
++		opp-microvolt-speed0-pvs3 = <950000 902500 997500>;
++	};
 +};
-+
- struct qcom_cpufreq_drv;
+diff --git a/arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi b/arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi
+index 6198f42f6a9c..cbbd28b43dc4 100644
+--- a/arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-ipq8064.dtsi
+@@ -30,6 +30,7 @@ cpu0: cpu@0 {
+ 			next-level-cache = <&L2>;
+ 			qcom,acc = <&acc0>;
+ 			qcom,saw = <&saw0>;
++			operating-points-v2 = <&opp_table_cpu>;
+ 		};
  
- struct qcom_cpufreq_match_data {
-@@ -208,6 +214,62 @@ static int qcom_cpufreq_krait_name_version(struct device *cpu_dev,
- 	return ret;
- }
+ 		cpu1: cpu@1 {
+@@ -40,6 +41,7 @@ cpu1: cpu@1 {
+ 			next-level-cache = <&L2>;
+ 			qcom,acc = <&acc1>;
+ 			qcom,saw = <&saw1>;
++			operating-points-v2 = <&opp_table_cpu>;
+ 		};
  
-+static int qcom_cpufreq_ipq8064_name_version(struct device *cpu_dev,
-+					     struct nvmem_cell *speedbin_nvmem,
-+					     char **pvs_name,
-+					     struct qcom_cpufreq_drv *drv)
-+{
-+	int speed = 0, pvs = 0, pvs_ver = 0;
-+	int msm_id, ret = 0;
-+	u8 *speedbin;
-+	size_t len;
+ 		L2: l2-cache {
+@@ -49,6 +51,71 @@ L2: l2-cache {
+ 		};
+ 	};
+ 
++	opp_table_cpu: opp-table-cpu {
++		compatible = "operating-points-v2-kryo-cpu";
++		nvmem-cells = <&speedbin_efuse>;
 +
-+	speedbin = nvmem_cell_read(speedbin_nvmem, &len);
++		opp-384000000 {
++			opp-hz = /bits/ 64 <384000000>;
++			opp-microvolt-speed0-pvs0 = <1000000 950000 1050000>;
++			opp-microvolt-speed0-pvs1 = <925000 878750 971250>;
++			opp-microvolt-speed0-pvs2 = <875000 831250 918750>;
++			opp-microvolt-speed0-pvs3 = <800000 760000 840000>;
++			opp-supported-hw = <0x7>;
++			clock-latency-ns = <100000>;
++		};
 +
-+	if (IS_ERR(speedbin))
-+		return PTR_ERR(speedbin);
++		opp-600000000 {
++			opp-hz = /bits/ 64 <600000000>;
++			opp-microvolt-speed0-pvs0 = <1050000 997500 1102500>;
++			opp-microvolt-speed0-pvs1 = <975000 926250 1023750>;
++			opp-microvolt-speed0-pvs2 = <925000 878750 971250>;
++			opp-microvolt-speed0-pvs3 = <850000 807500 892500>;
++			opp-supported-hw = <0x7>;
++			clock-latency-ns = <100000>;
++		};
 +
-+	if (len != 4) {
-+		dev_err(cpu_dev, "Unable to read nvmem data. Defaulting to 0!\n");
-+		kfree(speedbin);
-+		return -ENODEV;
-+	}
++		opp-800000000 {
++			opp-hz = /bits/ 64 <800000000>;
++			opp-microvolt-speed0-pvs0 = <1100000 1045000 1155000>;
++			opp-microvolt-speed0-pvs1 = <1025000 973750 1076250>;
++			opp-microvolt-speed0-pvs2 = <995000 945250 1044750>;
++			opp-microvolt-speed0-pvs3 = <900000 855000 945000>;
++			opp-supported-hw = <0x7>;
++			clock-latency-ns = <100000>;
++		};
 +
-+	get_krait_bin_format_a(cpu_dev, &speed, &pvs, &pvs_ver, speedbin);
++		opp-1000000000 {
++			opp-hz = /bits/ 64 <1000000000>;
++			opp-microvolt-speed0-pvs0 = <1150000 1092500 1207500>;
++			opp-microvolt-speed0-pvs1 = <1075000 1021250 1128750>;
++			opp-microvolt-speed0-pvs2 = <1025000 973750 1076250>;
++			opp-microvolt-speed0-pvs3 = <950000 902500 997500>;
++			opp-supported-hw = <0x7>;
++			clock-latency-ns = <100000>;
++		};
 +
-+	ret = qcom_smem_get_soc_id(&msm_id);
-+	if (ret)
-+		return ret;
++		opp-1200000000 {
++			opp-hz = /bits/ 64 <1200000000>;
++			opp-microvolt-speed0-pvs0 = <1200000 1140000 1260000>;
++			opp-microvolt-speed0-pvs1 = <1125000 1068750 1181250>;
++			opp-microvolt-speed0-pvs2 = <1075000 1021250 1128750>;
++			opp-microvolt-speed0-pvs3 = <1000000 950000 1050000>;
++			opp-supported-hw = <0x2>;
++			clock-latency-ns = <100000>;
++		};
 +
-+	switch (msm_id) {
-+	case QCOM_ID_IPQ8062:
-+		drv->versions = BIT(IPQ8062_VERSION);
-+		break;
-+	case QCOM_ID_IPQ8064:
-+	case QCOM_ID_IPQ8066:
-+	case QCOM_ID_IPQ8068:
-+		drv->versions = BIT(IPQ8064_VERSION);
-+		break;
-+	case QCOM_ID_IPQ8065:
-+	case QCOM_ID_IPQ8069:
-+		drv->versions = BIT(IPQ8065_VERSION);
-+		break;
-+	default:
-+		dev_err(cpu_dev,
-+			"SoC ID %u is not part of IPQ8064 family, limiting to 1.0GHz!\n",
-+			msm_id);
-+		drv->versions = BIT(IPQ8062_VERSION);
-+		break;
-+	}
++		opp-1400000000 {
++			opp-hz = /bits/ 64 <1400000000>;
++			opp-microvolt-speed0-pvs0 = <1250000 1187500 1312500>;
++			opp-microvolt-speed0-pvs1 = <1175000 1116250 1233750>;
++			opp-microvolt-speed0-pvs2 = <1125000 1068750 1181250>;
++			opp-microvolt-speed0-pvs3 = <1050000 997500 1102500>;
++			opp-supported-hw = <0x6>;
++			clock-latency-ns = <100000>;
++		};
++	};
 +
-+	/* IPQ8064 speed is never fused. Only pvs values are fused. */
-+	snprintf(*pvs_name, sizeof("speedXX-pvsXX"), "speed%d-pvs%d",
-+		 speed, pvs);
-+
-+	kfree(speedbin);
-+	return ret;
-+}
-+
- static int qcom_cpufreq_ipq8074_name_version(struct device *cpu_dev,
- 					     struct nvmem_cell *speedbin_nvmem,
- 					     char **pvs_name,
-@@ -257,6 +319,10 @@ static const struct qcom_cpufreq_match_data match_data_qcs404 = {
- 	.genpd_names = qcs404_genpd_names,
+ 	thermal-zones {
+ 		sensor0-thermal {
+ 			polling-delay-passive = <0>;
+diff --git a/arch/arm/boot/dts/qcom/qcom-ipq8065.dtsi b/arch/arm/boot/dts/qcom/qcom-ipq8065.dtsi
+index ea49f6cc416d..d9ead31b897b 100644
+--- a/arch/arm/boot/dts/qcom/qcom-ipq8065.dtsi
++++ b/arch/arm/boot/dts/qcom/qcom-ipq8065.dtsi
+@@ -6,3 +6,68 @@ / {
+ 	model = "Qualcomm Technologies, Inc. IPQ8065";
+ 	compatible = "qcom,ipq8065", "qcom,ipq8064";
  };
- 
-+static const struct qcom_cpufreq_match_data match_data_ipq8064 = {
-+	.get_version = qcom_cpufreq_ipq8064_name_version,
++
++&opp_table_cpu {
++	opp-384000000 {
++		opp-microvolt-speed0-pvs0 = <975000 926250 1023750>;
++		opp-microvolt-speed0-pvs1 = <950000 902500 997500>;
++		opp-microvolt-speed0-pvs2 = <925000 878750 971250>;
++		opp-microvolt-speed0-pvs3 = <900000 855000 945000>;
++		opp-microvolt-speed0-pvs4 = <875000 831250 918750>;
++		opp-microvolt-speed0-pvs5 = <825000 783750 866250>;
++		opp-microvolt-speed0-pvs6 = <775000 736250 813750>;
++	};
++
++	opp-600000000 {
++		opp-microvolt-speed0-pvs0 = <1000000 950000 1050000>;
++		opp-microvolt-speed0-pvs1 = <975000 926250 1023750>;
++		opp-microvolt-speed0-pvs2 = <950000 902500 997500>;
++		opp-microvolt-speed0-pvs3 = <925000 878750 971250>;
++		opp-microvolt-speed0-pvs4 = <900000 855000 945000>;
++		opp-microvolt-speed0-pvs5 = <850000 807500 892500>;
++		opp-microvolt-speed0-pvs6 = <800000 760000 840000>;
++	};
++
++	opp-800000000 {
++		opp-microvolt-speed0-pvs0 = <1050000 997500 1102500>;
++		opp-microvolt-speed0-pvs1 = <1025000 973750 1076250>;
++		opp-microvolt-speed0-pvs2 = <1000000 950000 1050000>;
++		opp-microvolt-speed0-pvs3 = <975000 926250 1023750>;
++		opp-microvolt-speed0-pvs4 = <950000 902500 997500>;
++		opp-microvolt-speed0-pvs5 = <900000 855000 945000>;
++		opp-microvolt-speed0-pvs6 = <850000 807500 892500>;
++	};
++
++	opp-1000000000 {
++		opp-microvolt-speed0-pvs0 = <1100000 1045000 1155000>;
++		opp-microvolt-speed0-pvs1 = <1075000 1021250 1128750>;
++		opp-microvolt-speed0-pvs2 = <1050000 997500 1102500>;
++		opp-microvolt-speed0-pvs3 = <1025000 973750 1076250>;
++		opp-microvolt-speed0-pvs4 = <1000000 950000 1050000>;
++		opp-microvolt-speed0-pvs5 = <950000 902500 997500>;
++		opp-microvolt-speed0-pvs6 = <900000 855000 945000>;
++	};
++
++	opp-1400000000 {
++		opp-microvolt-speed4-pvs0 = <1175000 1116250 1233750>;
++		opp-microvolt-speed4-pvs1 = <1150000 1092500 1207500>;
++		opp-microvolt-speed4-pvs2 = <1125000 1068750 1181250>;
++		opp-microvolt-speed4-pvs3 = <1100000 1045000 1155000>;
++		opp-microvolt-speed4-pvs4 = <1075000 1021250 1128750>;
++		opp-microvolt-speed4-pvs5 = <1025000 973750 1076250>;
++		opp-microvolt-speed4-pvs6 = <975000 926250 1023750>;
++	};
++
++	opp-1725000000 {
++		opp-hz = /bits/ 64 <1725000000>;
++		opp-microvolt-speed0-pvs0 = <1262500 1199375 1325625>;
++		opp-microvolt-speed0-pvs1 = <1225000 1163750 1286250>;
++		opp-microvolt-speed0-pvs2 = <1200000 1140000 1260000>;
++		opp-microvolt-speed0-pvs3 = <1175000 1116250 1233750>;
++		opp-microvolt-speed0-pvs4 = <1150000 1092500 1207500>;
++		opp-microvolt-speed0-pvs5 = <1100000 1045000 1155000>;
++		opp-microvolt-speed0-pvs6 = <1050000 997500 1102500>;
++		opp-supported-hw = <0x4>;
++		clock-latency-ns = <100000>;
++	};
 +};
-+
- static const struct qcom_cpufreq_match_data match_data_ipq8074 = {
- 	.get_version = qcom_cpufreq_ipq8074_name_version,
- };
-@@ -403,7 +469,7 @@ static const struct of_device_id qcom_cpufreq_match_list[] __initconst = {
- 	{ .compatible = "qcom,apq8096", .data = &match_data_kryo },
- 	{ .compatible = "qcom,msm8996", .data = &match_data_kryo },
- 	{ .compatible = "qcom,qcs404", .data = &match_data_qcs404 },
--	{ .compatible = "qcom,ipq8064", .data = &match_data_krait },
-+	{ .compatible = "qcom,ipq8064", .data = &match_data_ipq8064 },
- 	{ .compatible = "qcom,ipq8074", .data = &match_data_ipq8074 },
- 	{ .compatible = "qcom,apq8064", .data = &match_data_krait },
- 	{ .compatible = "qcom,msm8974", .data = &match_data_krait },
 -- 
 2.41.0
 
