@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A947B3E02
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 06:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02D47B3E15
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 07:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230008AbjI3E2R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 00:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57870 "EHLO
+        id S231901AbjI3FA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 01:00:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjI3E2Q (ORCPT
+        with ESMTP id S229488AbjI3FA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 00:28:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8575EB
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 21:28:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696048093; x=1727584093;
-  h=from:to:cc:subject:references:date:in-reply-to:
-   message-id:mime-version;
-  bh=rVpj1lqLtJb8TCKjOHawgxXj1vC2ae/09G5U9A5u7Xo=;
-  b=BwS9mARgoSYcIUSV8PwrOu8VRf7PkYXDeJUgG28irIP4tTAUBIE0PNga
-   HDvm+hXovr/uAeK869basIxMYwcMSRgJKbL25kpLmHw6PJGQwy57KnnSM
-   3SKq9lQkt/uz4/5bolbzNce6fxLuuFB1q92RO8vgKyl9NkPiNv4Fr6rEr
-   hdisEq110YFqdp38wzxcGRqkMSFdiT4PepeBG9i/SbAaRA89lflfBKi8b
-   zRtyovWcjEg2WORWNqT7wE1TLyXY5zKVlq2Fva/Q3PoOr9vtsgPVy0N2l
-   800he6RRHhWPGq7Nxy1G5QoO1UD12cpW8a8DQl5PipYXQzP1n1QoxEEkO
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="381301879"
-X-IronPort-AV: E=Sophos;i="6.03,189,1694761200"; 
-   d="scan'208";a="381301879"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 21:28:13 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="750110687"
-X-IronPort-AV: E=Sophos;i="6.03,189,1694761200"; 
-   d="scan'208";a="750110687"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 21:28:10 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] mm: page_alloc: remove pcppage migratetype caching
-References: <20230911195023.247694-1-hannes@cmpxchg.org>
-        <20230911195023.247694-2-hannes@cmpxchg.org>
-        <87y1gsrx32.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <20230927145115.GA365513@cmpxchg.org>
-Date:   Sat, 30 Sep 2023 12:26:01 +0800
-In-Reply-To: <20230927145115.GA365513@cmpxchg.org> (Johannes Weiner's message
-        of "Wed, 27 Sep 2023 10:51:15 -0400")
-Message-ID: <87pm20p9ra.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+        Sat, 30 Sep 2023 01:00:57 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB21B9;
+        Fri, 29 Sep 2023 22:00:55 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5859b1c92a0so1386497a12.2;
+        Fri, 29 Sep 2023 22:00:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696050055; x=1696654855; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gMv4JB25eIKmXmuOUK/GNC/1oaLVZUgAaz4JD4n4uhE=;
+        b=Kft86MASrOJ8TXsgsreVvDHLifX8thNK6ZcWZaFQJEUubjXdZcIXx2zCu5q4sYtLOt
+         QRsIh1R4LHvHCKBu/27nu7wu/Q49Gm6Hjxi6KFh9d7/PmtbGiMNWnSA2CkvK2KoTlwQG
+         s2/mr7kKQH0E0WDkvhm1F4cD/rNPnHNHewNuOj2J9yxWRNxgpPwxWQNxbIw0Wrj2U56U
+         /u5HqG+Ga6m7HrkJCqXjHn1b1/cdQyQEX1gjW5uQiX8EVVPPbSyA9UIKATH30rUZ1/XK
+         ZRuyhjE+Fas4xzcbVXNcLW/6AKPA23bF8vXr3WnaqGlH2FjG91s1wJF1uoupkzYmJ1Bo
+         AaEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696050055; x=1696654855;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gMv4JB25eIKmXmuOUK/GNC/1oaLVZUgAaz4JD4n4uhE=;
+        b=BPVEMZuJVLNw+D623m3M/Xhqgp9A4yVldq7HDVzFLOEz1jhUo4ZLvwXePSjKM2MdRC
+         E2TAFhLuLqOOagnpHM44ljicJtapz6Wm5n0r+F6wbozZeIUvxwKrrB4AQnIxaICgw3VW
+         /1vqeumCqsIAHGgY6KgoYO0pLS5vtIGqkEeTEH6UAZrbXera9ib8hEe93yjxl6h3KThV
+         Qx9SFKnstaD+bOzzh6A9wMeHOmsEGHij8jRL2VCUQOcuJDnfn0AKIHr3tXGgGM3UMYbm
+         2Q0iDO/xRHREJdZkWrxk2yR0Ibwgmr5kGaghRviEJ52ceE42WV1vC/0suEjIo/CmcQzz
+         Fc4w==
+X-Gm-Message-State: AOJu0YwehaIQbrB5LdPK/aYDg8tMjCZhHsnG3R2DWEtaow4aic49SLdk
+        y0byZZH3WBNrQjxHc9oe+Dw=
+X-Google-Smtp-Source: AGHT+IHEyw4lfkxUjp25/av55WX2JNQOlp3J+w5pJyYGH7FskZJbrM1NAXXH9nMa42u1tsDTLAb/FA==
+X-Received: by 2002:a05:6a20:729c:b0:15e:bb88:b76e with SMTP id o28-20020a056a20729c00b0015ebb88b76emr6804458pzk.14.1696050054633;
+        Fri, 29 Sep 2023 22:00:54 -0700 (PDT)
+Received: from wedsonaf-dev.home.lan ([189.124.190.154])
+        by smtp.googlemail.com with ESMTPSA id y10-20020a17090322ca00b001c322a41188sm392136plg.117.2023.09.29.22.00.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Sep 2023 22:00:54 -0700 (PDT)
+From:   Wedson Almeida Filho <wedsonaf@gmail.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: [PATCH 00/29] const xattr tables
+Date:   Sat, 30 Sep 2023 02:00:04 -0300
+Message-Id: <20230930050033.41174-1-wedsonaf@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,123 +71,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johannes Weiner <hannes@cmpxchg.org> writes:
+From: Wedson Almeida Filho <walmeida@microsoft.com>
 
-> On Wed, Sep 27, 2023 at 01:42:25PM +0800, Huang, Ying wrote:
->> Johannes Weiner <hannes@cmpxchg.org> writes:
->> 
->> > The idea behind the cache is to save get_pageblock_migratetype()
->> > lookups during bulk freeing. A microbenchmark suggests this isn't
->> > helping, though. The pcp migratetype can get stale, which means that
->> > bulk freeing has an extra branch to check if the pageblock was
->> > isolated while on the pcp.
->> >
->> > While the variance overlaps, the cache write and the branch seem to
->> > make this a net negative. The following test allocates and frees
->> > batches of 10,000 pages (~3x the pcp high marks to trigger flushing):
->> >
->> > Before:
->> >           8,668.48 msec task-clock                       #   99.735 CPUs utilized               ( +-  2.90% )
->> >                 19      context-switches                 #    4.341 /sec                        ( +-  3.24% )
->> >                  0      cpu-migrations                   #    0.000 /sec
->> >             17,440      page-faults                      #    3.984 K/sec                       ( +-  2.90% )
->> >     41,758,692,473      cycles                           #    9.541 GHz                         ( +-  2.90% )
->> >    126,201,294,231      instructions                     #    5.98  insn per cycle              ( +-  2.90% )
->> >     25,348,098,335      branches                         #    5.791 G/sec                       ( +-  2.90% )
->> >         33,436,921      branch-misses                    #    0.26% of all branches             ( +-  2.90% )
->> >
->> >          0.0869148 +- 0.0000302 seconds time elapsed  ( +-  0.03% )
->> >
->> > After:
->> >           8,444.81 msec task-clock                       #   99.726 CPUs utilized               ( +-  2.90% )
->> >                 22      context-switches                 #    5.160 /sec                        ( +-  3.23% )
->> >                  0      cpu-migrations                   #    0.000 /sec
->> >             17,443      page-faults                      #    4.091 K/sec                       ( +-  2.90% )
->> >     40,616,738,355      cycles                           #    9.527 GHz                         ( +-  2.90% )
->> >    126,383,351,792      instructions                     #    6.16  insn per cycle              ( +-  2.90% )
->> >     25,224,985,153      branches                         #    5.917 G/sec                       ( +-  2.90% )
->> >         32,236,793      branch-misses                    #    0.25% of all branches             ( +-  2.90% )
->> >
->> >          0.0846799 +- 0.0000412 seconds time elapsed  ( +-  0.05% )
->> >
->> > A side effect is that this also ensures that pages whose pageblock
->> > gets stolen while on the pcplist end up on the right freelist and we
->> > don't perform potentially type-incompatible buddy merges (or skip
->> > merges when we shouldn't), whis is likely beneficial to long-term
->> > fragmentation management, although the effects would be harder to
->> > measure. Settle for simpler and faster code as justification here.
->> 
->> I suspected the PCP allocating/freeing path may be influenced (that is,
->> allocating/freeing batch is less than PCP high).  So I tested
->> one-process will-it-scale/page_fault1 with sysctl
->> percpu_pagelist_high_fraction=8.  So pages will be allocated/freed
->> from/to PCP only.  The test results are as follows,
->> 
->> Before:
->> will-it-scale.1.processes                        618364.3      (+-  0.075%)
->> perf-profile.children.get_pfnblock_flags_mask         0.13     (+-  9.350%)
->> 
->> After:
->> will-it-scale.1.processes	                 616512.0      (+-  0.057%)
->> perf-profile.children.get_pfnblock_flags_mask	      0.41     (+-  22.44%)
->> 
->> The change isn't large: -0.3%.  Perf profiling shows the cycles% of
->> get_pfnblock_flags_mask() increases.
->
-> Ah, this is going through the free_unref_page_list() path that
-> Vlastimil had pointed out as well. I made another change on top that
-> eliminates the second lookup. After that, both pcp fast paths have the
-> same number of lookups as before: 1. This fixes the regression for me.
->
-> Would you mind confirming this as well?
+The 's_xattr' field of 'struct super_block' currently requires a mutable
+table of 'struct xattr_handler' entries (although each handler itself is
+const). However, no code in vfs actually modifies the tables.
 
-I have done more test for the series and addon patches.  The test
-results are as follows,
+So this series changes the type of 's_xattr' to allow const tables, and
+modifies existing file system to move their tables to .rodata. This is
+desirable because these tables contain entries with function pointers in
+them; moving them to .rodata makes it considerably less likely to be
+modified accidentally or maliciously at runtime.
 
-base
-perf-profile.children.get_pfnblock_flags_mask	     0.15	(+- 32.62%)
-will-it-scale.1.processes			618621.7	(+-  0.18%)
+I found this while writing Rust abstractions for vfs.
 
-mm: page_alloc: remove pcppage migratetype caching
-perf-profile.children.get_pfnblock_flags_mask	     0.40	(+- 21.55%)
-will-it-scale.1.processes			616350.3	(+-  0.27%)
+Wedson Almeida Filho (29):
+  xattr: make the xattr array itself const
+  ext4: move ext4_xattr_handlers to .rodata
+  9p: move xattr-related structs to .rodata
+  afs: move afs_xattr_handlers to .rodata
+  btrfs: move btrfs_xattr_handlers to .rodata
+  ceph: move ceph_xattr_handlers to .rodata
+  ecryptfs: move ecryptfs_xattr_handlers to .rodata
+  erofs: move erofs_xattr_handlers and xattr_handler_map to .rodata
+  ext2: move ext2_xattr_handlers and ext2_xattr_handler_map to .rodata
+  f2fs: move f2fs_xattr_handlers and f2fs_xattr_handler_map to .rodata
+  fuse: move fuse_xattr_handlers to .rodata
+  gfs2: move gfs2_xattr_handlers_max to .rodata
+  hfs: move hfs_xattr_handlers to .rodata
+  hfsplus: move hfsplus_xattr_handlers to .rodata
+  jffs2: move jffs2_xattr_handlers to .rodata
+  jfs: move jfs_xattr_handlers to .rodata
+  kernfs: move kernfs_xattr_handlers to .rodata
+  nfs: move nfs4_xattr_handlers to .rodata
+  ntfs3: move ntfs_xattr_handlers to .rodata
+  ocfs2: move ocfs2_xattr_handlers and ocfs2_xattr_handler_map to
+    .rodata
+  orangefs: move orangefs_xattr_handlers to .rodata
+  reiserfs: move reiserfs_xattr_handlers to .rodata
+  smb: move cifs_xattr_handlers to .rodata
+  squashfs: move squashfs_xattr_handlers to .rodata
+  ubifs: move ubifs_xattr_handlers to .rodata
+  xfs: move xfs_xattr_handlers to .rodata
+  overlayfs: move xattr tables to .rodata
+  shmem: move shmem_xattr_handlers to .rodata
+  net: move sockfs_xattr_handlers to .rodata
 
-mm: page_alloc: fix up block types when merging compatible blocks
-perf-profile.children.get_pfnblock_flags_mask	     0.36	(+-  8.36%)
-will-it-scale.1.processes			617121.0	(+-  0.17%)
+ fs/9p/xattr.c                 | 8 ++++----
+ fs/9p/xattr.h                 | 2 +-
+ fs/afs/internal.h             | 2 +-
+ fs/afs/xattr.c                | 2 +-
+ fs/btrfs/xattr.c              | 2 +-
+ fs/btrfs/xattr.h              | 2 +-
+ fs/ceph/super.h               | 2 +-
+ fs/ceph/xattr.c               | 2 +-
+ fs/ecryptfs/ecryptfs_kernel.h | 2 +-
+ fs/ecryptfs/inode.c           | 2 +-
+ fs/erofs/xattr.c              | 2 +-
+ fs/erofs/xattr.h              | 4 ++--
+ fs/ext2/xattr.c               | 4 ++--
+ fs/ext2/xattr.h               | 2 +-
+ fs/ext4/xattr.c               | 2 +-
+ fs/ext4/xattr.h               | 2 +-
+ fs/f2fs/xattr.c               | 4 ++--
+ fs/f2fs/xattr.h               | 2 +-
+ fs/fuse/fuse_i.h              | 2 +-
+ fs/fuse/xattr.c               | 2 +-
+ fs/gfs2/super.h               | 4 ++--
+ fs/gfs2/xattr.c               | 4 ++--
+ fs/hfs/attr.c                 | 2 +-
+ fs/hfs/hfs_fs.h               | 2 +-
+ fs/hfsplus/xattr.c            | 2 +-
+ fs/hfsplus/xattr.h            | 2 +-
+ fs/jffs2/xattr.c              | 2 +-
+ fs/jffs2/xattr.h              | 2 +-
+ fs/jfs/jfs_xattr.h            | 2 +-
+ fs/jfs/xattr.c                | 2 +-
+ fs/kernfs/inode.c             | 2 +-
+ fs/kernfs/kernfs-internal.h   | 2 +-
+ fs/nfs/nfs.h                  | 2 +-
+ fs/nfs/nfs4_fs.h              | 2 +-
+ fs/nfs/nfs4proc.c             | 2 +-
+ fs/ntfs3/ntfs_fs.h            | 2 +-
+ fs/ntfs3/xattr.c              | 2 +-
+ fs/ocfs2/xattr.c              | 4 ++--
+ fs/ocfs2/xattr.h              | 2 +-
+ fs/orangefs/orangefs-kernel.h | 2 +-
+ fs/orangefs/xattr.c           | 2 +-
+ fs/overlayfs/super.c          | 4 ++--
+ fs/reiserfs/reiserfs.h        | 2 +-
+ fs/reiserfs/xattr.c           | 2 +-
+ fs/smb/client/cifsfs.h        | 2 +-
+ fs/smb/client/xattr.c         | 2 +-
+ fs/squashfs/squashfs.h        | 2 +-
+ fs/squashfs/xattr.c           | 2 +-
+ fs/ubifs/ubifs.h              | 2 +-
+ fs/ubifs/xattr.c              | 2 +-
+ fs/xattr.c                    | 6 +++---
+ fs/xfs/xfs_xattr.c            | 2 +-
+ fs/xfs/xfs_xattr.h            | 2 +-
+ include/linux/fs.h            | 2 +-
+ include/linux/pseudo_fs.h     | 2 +-
+ mm/shmem.c                    | 2 +-
+ net/socket.c                  | 2 +-
+ 57 files changed, 69 insertions(+), 69 deletions(-)
 
-mm: page_alloc: move free pages when converting block during isolation
-perf-profile.children.get_pfnblock_flags_mask	     0.36	(+- 15.10%)
-will-it-scale.1.processes			615578.0	(+-  0.18%)
 
-mm: page_alloc: fix move_freepages_block() range error
-perf-profile.children.get_pfnblock_flags_mask	     0.36	(+- 12.78%)
-will-it-scale.1.processes			615364.7	(+-  0.27%)
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+-- 
+2.34.1
 
-mm: page_alloc: fix freelist movement during block conversion
-perf-profile.children.get_pfnblock_flags_mask	     0.36	(+- 10.52%)
-will-it-scale.1.processes			617834.8	(+-  0.52%)
-
-mm: page_alloc: consolidate free page accounting
-perf-profile.children.get_pfnblock_flags_mask	     0.39	(+-  8.27%)
-will-it-scale.1.processes			621000.0	(+-  0.13%)
-
-mm: page_alloc: close migratetype race between freeing and stealing
-perf-profile.children.get_pfnblock_flags_mask	     0.37	(+-  5.87%)
-will-it-scale.1.processes			618378.8	(+-  0.17%)
-
-mm: page_alloc: optimize free_unref_page_list()
-perf-profile.children.get_pfnblock_flags_mask	     0.20	(+- 14.96%)
-will-it-scale.1.processes			618136.3	(+-  0.16%)
-
-It seems that the will-it-scale score is influenced by some other
-factors too.  But anyway, the series + addon patches restores the score
-of will-it-scale.  And the cycles% of get_pfnblock_flags_mask() is
-almost restored by the final patch (mm: page_alloc: optimize
-free_unref_page_list()).
-
-Feel free to add my "Tested-by" for these patches.
-
---
-Best Regards,
-Huang, Ying
