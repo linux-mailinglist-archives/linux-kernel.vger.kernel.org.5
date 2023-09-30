@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E125C7B404F
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 14:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EDC7B4051
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 14:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234041AbjI3MwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 08:52:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45906 "EHLO
+        id S234109AbjI3MwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 08:52:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234002AbjI3Mv6 (ORCPT
+        with ESMTP id S234049AbjI3MwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 08:51:58 -0400
+        Sat, 30 Sep 2023 08:52:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1465BF9
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 05:51:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3A34C433CC;
-        Sat, 30 Sep 2023 12:51:52 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7F29F1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 05:52:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25FA9C433CB;
+        Sat, 30 Sep 2023 12:51:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696078316;
-        bh=IOW8Qy8WgXjW/pu+Hsiy+A9zCuQxJj+mnIrMdCsos4M=;
+        s=k20201202; t=1696078320;
+        bh=fQTDtT9gnWgXUs+I9buDYmY6imSxTfJ5hIWH/nKngUA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N7P+Uc3HY8yOIulo2M6D0Z/azUsN0Gk5ZdZxddChXOOQzRDWJKD4VBDIk4K40wZ4m
-         Ic6VD7noeijn8iAKvm2P7DTmwoxMBpc1M2VTLb9tcH9dMPHPsiSoJEVHKgFbJI42dq
-         uy/gCJ5NytKS1DopBhSI2mK+0++GlS/dg/lULaqsk8V799Zpu3Eg3aVsBfIQO4GHBj
-         bw9LzOyKHlE5TKjV/ShB3g+YwlYurhL2h+GRCbKaUSk8USPDOVb9djIdsA5dVdgWAC
-         pOk2q/wX+IFzKk+2bkdTBYxEkS5K5xZfdWPBj7YixIi9C0kSzjTJO2sDboG12Jb+PX
-         tnuscWhFhFn3w==
+        b=cgjrlymuo0WltimOMkmuXz4oV1+bt9qfmo/hhNyXcikzu7EaGa4n/wgk3XwktQTCN
+         SknjOXRlAENSX/2931edHNrX93SFp8kSZSAgBS2Dfq84VmxdmnkC7iRdLNHn4QGjGr
+         OnYippK2hUgXFApgGby73dVAgX1a+T23DLZqgVtaXipteIfRBzCKt3J14h9489ZnoU
+         hY/wC7LmF8I4YrvI+8jU4R8I/pZNKq1Da7by1qheFDABExAZ5YRBgwehNtZZMBWYIM
+         e4Ds4ctkJIgdnzipElalZr0Dd+g8izrTw3U4STXCsLch6LaF2TbCL0tu50+Yr3dHQE
+         +2qkDcwE9i8tg==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>,
@@ -42,9 +42,9 @@ Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-riscv@lists.infradead.org,
         Inochi Amaoto <inochiama@outlook.com>, chao.wei@sophgo.com,
         xiaoguang.xing@sophgo.com
-Subject: [PATCH 1/5] dt-bindings: interrupt-controller: Add SOPHGO CV1800B plic
-Date:   Sat, 30 Sep 2023 20:39:33 +0800
-Message-Id: <20230930123937.1551-2-jszhang@kernel.org>
+Subject: [PATCH 2/5] dt-bindings: timer: Add SOPHGO CV1800B clint
+Date:   Sat, 30 Sep 2023 20:39:34 +0800
+Message-Id: <20230930123937.1551-3-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20230930123937.1551-1-jszhang@kernel.org>
 References: <20230930123937.1551-1-jszhang@kernel.org>
@@ -60,25 +60,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible string for SOPHGO CV1800B plic.
+Add compatible string for the SOPHGO CV1800B clint.
 
 Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml         | 1 +
+ Documentation/devicetree/bindings/timer/sifive,clint.yaml | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-index 16f9c4760c0f..5c4539881a22 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-1.0.0.yaml
-@@ -65,6 +65,7 @@ properties:
+diff --git a/Documentation/devicetree/bindings/timer/sifive,clint.yaml b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+index a0185e15a42f..98c76d5893ac 100644
+--- a/Documentation/devicetree/bindings/timer/sifive,clint.yaml
++++ b/Documentation/devicetree/bindings/timer/sifive,clint.yaml
+@@ -37,6 +37,7 @@ properties:
        - items:
            - enum:
-               - allwinner,sun20i-d1-plic
-+              - sophgo,cv1800-plic
-               - sophgo,sg2042-plic
-               - thead,th1520-plic
-           - const: thead,c900-plic
+               - allwinner,sun20i-d1-clint
++              - sophgo,cv1800-clint
+               - thead,th1520-clint
+           - const: thead,c900-clint
+       - items:
 -- 
 2.40.1
 
