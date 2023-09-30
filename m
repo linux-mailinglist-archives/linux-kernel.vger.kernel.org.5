@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 416707B3D5C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 03:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3066A7B3D61
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 03:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231650AbjI3BIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 21:08:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59788 "EHLO
+        id S233908AbjI3BQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 21:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjI3BIt (ORCPT
+        with ESMTP id S229489AbjI3BQa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 21:08:49 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815E2F3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 18:08:47 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-533edb5ac54so14252709a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 18:08:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696036126; x=1696640926; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wZup8TW2zGO5Dc5hYWwOfReZg/1sYcAfov7pXVHZroU=;
-        b=FQS4GMk45toqzJbDaef9/HiAidci7xJHo6c/WRM64Ey8Q0hx3RsTO1viIYganiiNox
-         q5iAZG36KS6wCtzKxtoL+zBWhCw2z+p2R0cdxOARnR6EMNWaaRF96aDZ518NmUCr57dS
-         b+7k+u83Z4mH/F0BthFQ4zLotfSzZ8EWltKMGXww8AlgO2oQ/20Imj2ladudMyAAqQG3
-         +hn3d9vAlCW8r2hXl2Py5zOGmjbpu7TIr/hWAwpGvAipItE+kfQCwjmOj8BUD86Y6atp
-         hgYOsXOz+IH1HNgHnxSk5QEI2XhYstgRmWodHhTZxUf9l3dpClPRZ5lCPCBOoTQqcdZd
-         Vk0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696036126; x=1696640926;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wZup8TW2zGO5Dc5hYWwOfReZg/1sYcAfov7pXVHZroU=;
-        b=HmV19+RcFpyJoxBlGvh2eLDCwM++HQDUzqvSF/MebmHflj3aHOzTSMG5WuHqMVR72i
-         X8wj8IbwUeTfDnv9Ttj0Ojz1WqOv9kLTefOvkjFu5v+LA4N2J31W2ceIsF+NktEm61xv
-         mAx1kTPuL3JvMYLOXnNo2E9TWvkju2KvIj5KtqPHnU2Nl9i0wPF6nhBncXrWSKtnWxbv
-         Iw6tfrS7Z24Tth1aFyIiKv+Pu65ati9nK6IFO/iM/j200TpxuN6OaPy5VRENwJZIEgS/
-         ehLky5/3CNunMvDHJ0pEvFe2L/pXm1VqEJmWpCDiYk8gk0+ZWE13JpVPqp9MP2SjmO0W
-         eQzg==
-X-Gm-Message-State: AOJu0YwgLyctGSHxi4TN0dEPCGIoJQ3H/+jfnZKX+BMftCcMhN4pzPVi
-        OIGzeevXF7UrKawJ4SLbl5CrYVZPRgXEkS23W89KBQ==
-X-Google-Smtp-Source: AGHT+IF8h2UUty/K7RH6GZtDTwRCYxVzrE9X1TPlLmDUaz4Tz1s/zGJimg+5mXKWp3nVXXh21oSaPyBUEm8UvkF4CaE=
-X-Received: by 2002:aa7:d489:0:b0:534:8bdf:a256 with SMTP id
- b9-20020aa7d489000000b005348bdfa256mr5227701edr.31.1696036125906; Fri, 29 Sep
- 2023 18:08:45 -0700 (PDT)
+        Fri, 29 Sep 2023 21:16:30 -0400
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0831F3;
+        Fri, 29 Sep 2023 18:16:27 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 763C13200916;
+        Fri, 29 Sep 2023 21:16:22 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Fri, 29 Sep 2023 21:16:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1696036581; x=1696122981; bh=fFeBd2wnRQFZEpz+r8VxUNSi+h4AN2LcJPK
+        4S1aXKis=; b=AsuR5BNr/3Zccy/Xb5uNgfZgXpVBovOZBwhYBQ0E4yfaaq7CpZh
+        /ZQv/TbE0C6nViX/Qp/767ob3XI3jDp5fgYGH8kTpkTagAAjs9gVTpjdmtsKfsbM
+        iop9rnxJsmUcFDBehPEvfSOO+7nAbOboC8ZPdwHIkrd07YZiVY7zuOkvbfYKAocI
+        P3N0+NCCIBBgaNwcm4UQX7FyJxoo4ML+dmI3bXOkXI2ML+sqZ9tTjQEjJVPnXfTx
+        AMoN59No0cz303+JEs9rjyOp4oTRmYj//EGMTHdBK4fAUSQ/M8U2NGQ1HCysUoV4
+        BbPMZhG7Qn9NYI5QOJhA1zKppl7F4uluoQA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1696036581; x=1696122981; bh=fFeBd2wnRQFZEpz+r8VxUNSi+h4AN2LcJPK
+        4S1aXKis=; b=MCPogdCTKEpWqzyxwXUoXwfpyQJygkdIURvYLbVFhBo218HKEjf
+        46mRPT8AH0p/CC32x0nIVVSbFNni23E0H3vQ+Ot6kSkWANtJr6jEtQAuUqYgtLcV
+        zF3DGMUXDxFBYmbc6NCkFD0m44M+lQmqeyC4OONy01owuyCm88YMvx/v3k+5wWgm
+        lJ3SFBfiF2ZfG9iZizW5/P7d9wqytHEIkCiiytYTvmV5BJdhLvv3TkevTZysgoHo
+        EjzWUhlDBT6GZf6yqku6erzlBru/OPCNrsf6LZDnEV2TrEhcEZcFOQ+Yq18HhVxI
+        bxZiGfCErYvgxcYUuHWbBQYU0j9qyNYf5sA==
+X-ME-Sender: <xms:5XYXZSqt9Rac8jxW6aNaM9v-7OLygZ1dbpaVg29P3K-9-UrS7sJ7-g>
+    <xme:5XYXZQqT3NbNOOl1um60I64qCffg_mgDtNikXrxxbkuZemGWC_KvtDK05kirNvRjM
+    wBi5afgXKAU>
+X-ME-Received: <xmr:5XYXZXPvndhUvUAkT1PdKlTVQxdTm_ZBhmhwOPRugaACaszOZ5Wl239YDlx3z1RYKovsPw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrtdehgddugecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomhepkfgrnhcu
+    mfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrhhnpe
+    euhfeuieeijeeuveekgfeitdethefguddtleffhfelfeelhfduuedvfefhgefhheenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvghnse
+    hthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:5XYXZR6yR90AT63M-YNM2vWNZmjMPexZPzNWbhBdZvqTJBpJQnpkJw>
+    <xmx:5XYXZR6PeRUmhwDfL5Sjr77fd09GbXWtylG8xOEthefDZ1JQjSGBeA>
+    <xmx:5XYXZRiA5c_8DmUr3ykCcMP0SAjJTBfgSk9AwSpN7dFwyxrR-qTIFw>
+    <xmx:5XYXZQKx7obLnQZeNvwDx2rK6qugIqcZ3TgYhQndbWkEcP-tXy2UCw>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 29 Sep 2023 21:16:14 -0400 (EDT)
+Message-ID: <348596f8-e88b-2e8b-96e2-20caaf5c9d7b@themaw.net>
+Date:   Sat, 30 Sep 2023 09:16:11 +0800
 MIME-Version: 1.0
-References: <202309280610.sLGSPkOG-lkp@intel.com> <CANiq72=J=bO-Q0=gMDyiRgvbF_Vre39iqbEnaEeDho4Vo2ox6A@mail.gmail.com>
- <202309291040.F201590997@keescook>
-In-Reply-To: <202309291040.F201590997@keescook>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Sat, 30 Sep 2023 10:08:34 +0900
-Message-ID: <CAFhGd8oLmKA7L_YDps+aYLVJTPxWNaKKTgCX3Ji=ZLoGMv7a6g@mail.gmail.com>
-Subject: Re: drivers/md/dm-cache-metadata.c:1705:9: warning: 'strncpy'
- specified bound 16 equals destination size
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@kernel.org>,
-        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 3/4] add statmount(2) syscall
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-man@vger.kernel.org,
+        linux-security-module@vger.kernel.org, Karel Zak <kzak@redhat.com>,
+        David Howells <dhowells@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <christian@brauner.io>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Matthew House <mattlloydhouse@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <20230928130147.564503-1-mszeredi@redhat.com>
+ <20230928130147.564503-4-mszeredi@redhat.com>
+ <5787bac5-b368-485a-f906-44e7049d4b8f@themaw.net>
+ <CAJfpegt80_Tyto3QyD48V_yzHSghqg8AC_OPHEMPkDjEYCcisQ@mail.gmail.com>
+Content-Language: en-US
+From:   Ian Kent <raven@themaw.net>
+In-Reply-To: <CAJfpegt80_Tyto3QyD48V_yzHSghqg8AC_OPHEMPkDjEYCcisQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,60 +101,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 2:49=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
-rote:
+On 29/9/23 17:10, Miklos Szeredi wrote:
+> On Fri, 29 Sept 2023 at 02:42, Ian Kent <raven@themaw.net> wrote:
+>> On 28/9/23 21:01, Miklos Szeredi wrote:
+>>> +static struct vfsmount *lookup_mnt_in_ns(u64 id, struct mnt_namespace *ns)
+>>> +{
+>>> +     struct mount *mnt;
+>>> +     struct vfsmount *res = NULL;
+>>> +
+>>> +     lock_ns_list(ns);
+>>> +     list_for_each_entry(mnt, &ns->list, mnt_list) {
+>>> +             if (!mnt_is_cursor(mnt) && id == mnt->mnt_id_unique) {
+>>> +                     res = &mnt->mnt;
+>>> +                     break;
+>>> +             }
+>>> +     }
+>>> +     unlock_ns_list(ns);
+>>> +     return res;
+>>> +}
+>> Seems like we might need to consider making (struct mnt_namespace)->list
+>>
+>> a hashed list.
+> Yes, linear search needs to go.  A hash table is probably the easiest solution.
 >
-> On Thu, Sep 28, 2023 at 11:36:46AM +0200, Miguel Ojeda wrote:
-> > On Thu, Sep 28, 2023 at 12:24=E2=80=AFAM kernel test robot <lkp@intel.c=
-om> wrote:
-> > >
-> > >    In function 'write_hints',
-> > >        inlined from 'dm_cache_write_hints' at drivers/md/dm-cache-met=
-adata.c:1729:6:
-> > > >> drivers/md/dm-cache-metadata.c:1705:9: warning: 'strncpy' specifie=
-d bound 16 equals destination size [-Wstringop-truncation]
-> > >     1705 |         strncpy(cmd->policy_name, policy_name, sizeof(cmd-=
->policy_name));
-> > >          |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~~~~
-> >
-> > This looks fine given the check above it. In any case, since it
-> > appears the code wants to terminate the string, this should use
-> > `strscpy*()`, right?
+> But I'd also consider replacing ns->list with an rbtree.  Not as
+> trivial as adding a system hash table and probably also slightly
+> slower, but it would have some advantages:
 >
-> I agree. I can't tell if _pad is needed though. I think struct
-> dm_cache_metadata is only used internally? And I see at least the
-> initial allocation is zeroed:
+>   - most space efficient (no overhead of hash buckets)
 >
->         cmd =3D kzalloc(sizeof(*cmd), GFP_KERNEL);
->
-> Regardless, for background,
->
-> struct has:
->         char policy_name[CACHE_POLICY_NAME_SIZE];
->
-> code does:
->         const char *policy_name =3D dm_cache_policy_get_name(policy);
->
->         if (!policy_name[0] ||
->             (strlen(policy_name) > sizeof(cmd->policy_name) - 1))
->                 return -EINVAL;
->
->         strncpy(cmd->policy_name, policy_name, sizeof(cmd->policy_name));
->
->
-> Justin, can you add this to your queue (if it's not already there)?
+>   - cursor can go away (f_pos can just contain last ID)
 
-I sent a patch out earlier this week [1].
+I guess that would be ok.
 
-The line # on the diff v.s the warning is off though. I suspect I may
-need a rebase if it doesn't apply clean.
+Avoiding the cursor is a big plus.
 
->
-> -Kees
->
-> --
-> Kees Cook
 
-[1]: https://lore.kernel.org/all/20230925-strncpy-drivers-md-dm-cache-metad=
-ata-c-v1-1-4b75c7db0cfe@google.com/
+An rbtree is used in kernfs and its readdir function is rather painful so
+
+I wonder what the implications might be for other enumeration needs.
+
+
+Ian
+
