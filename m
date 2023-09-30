@@ -2,246 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 361047B3FAE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:26:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 204BC7B3FB2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233982AbjI3J0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 05:26:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48368 "EHLO
+        id S233988AbjI3Jak (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 05:30:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230108AbjI3J0n (ORCPT
+        with ESMTP id S229645AbjI3Jah (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 05:26:43 -0400
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 681A2DD
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 02:26:39 -0700 (PDT)
-Received: from submission (posteo.de [185.67.36.169]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 0F1D4240029
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 11:26:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.de; s=2017;
-        t=1696065996; bh=bhsTAvwHD9YkPK3+W0x6nsCnMuRURoezjRHkCLlCP8E=;
-        h=Message-ID:Subject:From:To:Cc:Date:Content-Transfer-Encoding:
-         MIME-Version:From;
-        b=NCjwOitqw9g7HnOGc35Ok1lhZO3w6iatMclH66TXV31fi/mn4U40fGcJE/Ni5m7s+
-         abkSD3HDm61eEReBvm0Q/ddMqSRucRi2EB0pBR8fn+yzFwf68OL644Y+AGurKVgjyq
-         emIIUDCGfIN+sv2MZ75Hinq7n8cZwJOGo8JzYIuhbLVJtx48bRyzgNy6QagRa1I0rZ
-         2IMGA0AUFnmIxdkYoe2qXBkdqF7AfkJ78m8KZ9MWKSsD2gW3yDJjdlGAvdhFjObjRI
-         HrpoFSDY0bo0d1SnKSpm5eJpQCGFEWp+MZTZkljaFLcYF5NBu3F5S4lUgo17H1FohX
-         Ovij8dGH8+QHQ==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4RyMKl2KCXz6tvk;
-        Sat, 30 Sep 2023 11:26:35 +0200 (CEST)
-Message-ID: <2d1e21cc9677a5cfe828decd8cbd5e930237e76d.camel@posteo.de>
-Subject: Re: [RFC PATCH 2/2] hid: lenovo: move type checks to
- lenovo_features_set_cptkbd()
-From:   Martin Kepplinger <martink@posteo.de>
-To:     Jamie Lentin <jm@lentin.co.uk>
-Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Date:   Sat, 30 Sep 2023 09:26:34 +0000
-In-Reply-To: <6adc3e66402f38258eae3a044db9ee11@lentin.co.uk>
-References: <140b721bc345a846863a37ebf17c3174@lentin.co.uk>
-         <20230925102302.13094-1-martink@posteo.de>
-         <20230925102302.13094-2-martink@posteo.de>
-         <ef0f15c3b17ebbd58f7481910b3f40ff@lentin.co.uk>
-         <137ee9ed434fe98fd773cd27895afc564f92a23c.camel@posteo.de>
-         <6adc3e66402f38258eae3a044db9ee11@lentin.co.uk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Sat, 30 Sep 2023 05:30:37 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507B8CA;
+        Sat, 30 Sep 2023 02:30:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E4FFC433C7;
+        Sat, 30 Sep 2023 09:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696066232;
+        bh=tin0U19Nf4ANHDkcJXK1cl2YnmWbZlWUAWYQns6q95A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GrJMGkZXrPIT7StjOmeW+Fl8xwgebNyjtUdAOXRb7MJ/TkKMz13DPx5Qoi0HwXWp1
+         Mj2c9yfx7SVQvUXsKfnq2P+RHMAyI6mccAk8fKyDW4gULxhlZPGShSX0WB+iPaLSr7
+         mUiK0T0ddtqYsPPd0h1y920r2619heC5HkItOvuIA5vB7ZbXGsO9h6OwebpZKIXYfF
+         cpzqp4c9klicbTpjXdFyqmWoSxM1g9gXG3Rv/6g0U6gQbBYq5kpvOkn71X4pJA4cJz
+         KBit/mnJ2hHesyHyAhpoqwuKWDve8VIIRBfPJ7YgW7vnqnXZCqNQXymd7meZ+Cwm2y
+         ZlR+A2h8PKMfg==
+Date:   Sat, 30 Sep 2023 10:30:24 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc:     Robert Jarzmik <robert.jarzmik@free.fr>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-hardening@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        afaerber@suse.de, balejk@matfyz.cz
+Subject: Re: [PATCH RESEND v5 3/8] dt-bindings: clock: Add Marvell PXA1908
+ clock bindings
+Message-ID: <20230930-purr-catchable-7149ee271df9@spud>
+References: <20230929-pxa1908-lkml-v5-0-5aa5a1109c5f@skole.hr>
+ <20230929-pxa1908-lkml-v5-3-5aa5a1109c5f@skole.hr>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="xztbYI3ipS2Vh9bj"
+Content-Disposition: inline
+In-Reply-To: <20230929-pxa1908-lkml-v5-3-5aa5a1109c5f@skole.hr>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, dem 28.09.2023 um 22:06 +0100 schrieb Jamie Lentin:
-> On 2023-09-27 12:20, Martin Kepplinger wrote:
-> > Am Mittwoch, dem 27.09.2023 um 09:19 +0100 schrieb Jamie Lentin:
-> > > On 2023-09-25 11:23, Martin Kepplinger wrote:
-> > > > These custom commands will be sent to both the USB keyboard &
-> > > > mouse
-> > > > devices but only the mouse will respond. Avoid sending known-
-> > > > useless
-> > > > messages by always prepending the filter before sending them.
-> > > >=20
-> > > > Suggested-by: Jamie Lentin <jm@lentin.co.uk>
-> > > > Signed-off-by: Martin Kepplinger <martink@posteo.de>
-> > > > ---
-> > > > =C2=A0drivers/hid/hid-lenovo.c | 27 +++++++++------------------
-> > > > =C2=A01 file changed, 9 insertions(+), 18 deletions(-)
-> > > >=20
-> > > > diff --git a/drivers/hid/hid-lenovo.c b/drivers/hid/hid-
-> > > > lenovo.c
-> > > > index 29aa6d372bad..922f3e5462f4 100644
-> > > > --- a/drivers/hid/hid-lenovo.c
-> > > > +++ b/drivers/hid/hid-lenovo.c
-> > > > @@ -521,6 +521,14 @@ static void
-> > > > lenovo_features_set_cptkbd(struct
-> > > > hid_device *hdev)
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int ret;
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct lenovo_drvda=
-ta *cptkbd_data =3D
-> > > > hid_get_drvdata(hdev);
-> > > >=20
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* All the custom action=
- happens on the USBMOUSE device
-> > > > for
-> > > > USB */
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (((hdev->product =3D=
-=3D USB_DEVICE_ID_LENOVO_CUSBKBD) ||
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (hdev=
-->product =3D=3D USB_DEVICE_ID_LENOVO_TPIIUSBKBD))
-> > > > &&
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hdev-=
->type !=3D HID_TYPE_USBMOUSE) {
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0hid_dbg(hdev, "Ignoring keyboard half of
-> > > > device\n");
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return;
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> > > > +
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/*
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Tell the keyboar=
-d a driver understands it, and turn
-> > > > F7,
-> > > > F9, F11
-> > > > into
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * regular keys
-> > > > @@ -1122,14 +1130,6 @@ static int lenovo_probe_cptkbd(struct
-> > > > hid_device
-> > > > *hdev)
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int ret;
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct lenovo_drvda=
-ta *cptkbd_data;
-> > > >=20
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* All the custom action=
- happens on the USBMOUSE device
-> > > > for
-> > > > USB */
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (((hdev->product =3D=
-=3D USB_DEVICE_ID_LENOVO_CUSBKBD) ||
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (hdev=
-->product =3D=3D USB_DEVICE_ID_LENOVO_TPIIUSBKBD))
-> > > > &&
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 hdev-=
->type !=3D HID_TYPE_USBMOUSE) {
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0hid_dbg(hdev, "Ignoring keyboard half of
-> > > > device\n");
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return 0;
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> > > > -
-> > >=20
-> > > I like the idea of doing it once then forgetting about it, but
-> > > removing
-> > > this will mean that the "keyboard half" will have it's own set of
-> > > non-functional sysfs parameters I think? Currently:-
-> > >=20
-> > > # evtest
-> > > =C2=A0=C2=A0 . . .
-> > > /dev/input/event10:=C2=A0=C2=A0=C2=A0=C2=A0 ThinkPad Compact Bluetoot=
-h Keyboard with
-> > > TrackPoint
-> > > /dev/input/event11:=C2=A0=C2=A0=C2=A0=C2=A0 Lenovo ThinkPad Compact U=
-SB Keyboard with
-> > > TrackPoint
-> > > /dev/input/event12:=C2=A0=C2=A0=C2=A0=C2=A0 Lenovo ThinkPad Compact U=
-SB Keyboard with
-> > > TrackPoint
-> > >=20
-> > > # ls -1 /sys/class/input/event*/device/device/fn_lock
-> > > /sys/class/input/event10/device/device/fn_lock
-> > > /sys/class/input/event12/device/device/fn_lock
-> > >=20
-> > > (note 11 is missing.)
-> > >=20
-> > > I think the easiest (but ugly) thing to do is to copy-paste this
-> > > lump
-> > > of
-> > > code to the top of lenovo_reset_resume.
-> > > Cheers,
-> > >=20
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0cptkbd_data =3D dev=
-m_kzalloc(&hdev->dev,
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0sizeof(*cptkbd_data),
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0GFP_KERNEL);
-> > > > @@ -1264,16 +1264,7 @@ static int lenovo_probe(struct
-> > > > hid_device
-> > > > *hdev,
-> > > > =C2=A0#ifdef CONFIG_PM
-> > > > =C2=A0static int lenovo_reset_resume(struct hid_device *hdev)
-> > > > =C2=A0{
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0switch (hdev->product) {
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0case USB_DEVICE_ID_LENOV=
-O_CUSBKBD:
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0if (hdev->type =3D=3D HID_TYPE_USBMOUSE) {
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0len=
-ovo_features_set_cptkbd(hdev);
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0}
-> > > > -
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0break;
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0default:
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0break;
-> > > > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0lenovo_features_set_cptk=
-bd(hdev);
-> >=20
-> > ok. ignore my change (this whole patch) and look at your addition
-> > here,
-> > don't you already make sure only the mouse-part gets the messages?
-> > you
-> > just write switch()case instead of if(); what do you think is
-> > missing
-> > here?
->=20
-> Correct, this switch statement() that you're removing in this patch=20
-> already does exactly this, so replacing it with the=20
-> if()-and-return-early block would result in equivalent code (ignoring
-> the Trackpoint keyboard II). That suggestion wasn't the most helpful
-> of=20
-> mine, sorry!
->=20
-> The reason I originally used a switch here is for symmetry with=20
-> lenovo_probe(), lenovo_remove(), etc. It might some day be useful to
-> add=20
-> something like:
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0case USB_DEVICE_ID_LENOVO=
-_X1_TAB:
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0lenovo_reset_resume_tp10ubkbd(hdev);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0break;
->=20
-> ...to the switch. For completeness, lenovo_reset_resume() should=20
-> probably call a separate lenovo_reset_resume_cptkbd() that does the=20
-> work. For just 3 lines of code it didn't seem worth it at the time=20
-> though.
->=20
-> Cheers,
 
-ok your original patch seems to basically be a valid first fix. Should
-I send it on your behalf (with you as author) or do you want to send it
-yourself? Let's get this fixed :)
+--xztbYI3ipS2Vh9bj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-thanks,
-                       martin
+On Fri, Sep 29, 2023 at 05:41:59PM +0200, Duje Mihanovi=C4=87 wrote:
+> Add dt bindings and documentation for the Marvell PXA1908 clock
+> controller.
+>=20
+> Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
 
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor.
+
+> ---
+>  .../devicetree/bindings/clock/marvell,pxa1908.yaml | 48 ++++++++++++
+>  include/dt-bindings/clock/marvell,pxa1908.h        | 88 ++++++++++++++++=
+++++++
+>  2 files changed, 136 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/clock/marvell,pxa1908.yaml=
+ b/Documentation/devicetree/bindings/clock/marvell,pxa1908.yaml
+> new file mode 100644
+> index 000000000000..4e78933232b6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/marvell,pxa1908.yaml
+> @@ -0,0 +1,48 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/marvell,pxa1908.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Marvell PXA1908 Clock Controllers
+> +
+> +maintainers:
+> +  - Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
+> +
+> +description: |
+> +  The PXA1908 clock subsystem generates and supplies clock to various
+> +  controllers within the PXA1908 SoC. The PXA1908 contains numerous clock
+> +  controller blocks, with the ones currently supported being APBC, APBCP=
+, MPMU
+> +  and APMU roughly corresponding to internal buses.
+> +
+> +  All these clock identifiers could be found in <include/dt-bindings/mar=
+vell,pxa1908.h>.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - marvell,pxa1908-apbc
+> +      - marvell,pxa1908-apbcp
+> +      - marvell,pxa1908-mpmu
+> +      - marvell,pxa1908-apmu
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#clock-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  # APMU block:
+> +  - |
+> +    clock-controller@d4282800 {
+> +      compatible =3D "marvell,pxa1908-apmu";
+> +      reg =3D <0xd4282800 0x400>;
+> +      #clock-cells =3D <1>;
+> +    };
+> diff --git a/include/dt-bindings/clock/marvell,pxa1908.h b/include/dt-bin=
+dings/clock/marvell,pxa1908.h
+> new file mode 100644
+> index 000000000000..fb15b0d0cd4c
+> --- /dev/null
+> +++ b/include/dt-bindings/clock/marvell,pxa1908.h
+> @@ -0,0 +1,88 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
+> +#ifndef __DTS_MARVELL_PXA1908_CLOCK_H
+> +#define __DTS_MARVELL_PXA1908_CLOCK_H
+> +
+> +/* plls */
+> +#define PXA1908_CLK_CLK32		1
+> +#define PXA1908_CLK_VCTCXO		2
+> +#define PXA1908_CLK_PLL1_624		3
+> +#define PXA1908_CLK_PLL1_416		4
+> +#define PXA1908_CLK_PLL1_499		5
+> +#define PXA1908_CLK_PLL1_832		6
+> +#define PXA1908_CLK_PLL1_1248		7
+> +#define PXA1908_CLK_PLL1_D2		8
+> +#define PXA1908_CLK_PLL1_D4		9
+> +#define PXA1908_CLK_PLL1_D8		10
+> +#define PXA1908_CLK_PLL1_D16		11
+> +#define PXA1908_CLK_PLL1_D6		12
+> +#define PXA1908_CLK_PLL1_D12		13
+> +#define PXA1908_CLK_PLL1_D24		14
+> +#define PXA1908_CLK_PLL1_D48		15
+> +#define PXA1908_CLK_PLL1_D96		16
+> +#define PXA1908_CLK_PLL1_D13		17
+> +#define PXA1908_CLK_PLL1_32		18
+> +#define PXA1908_CLK_PLL1_208		19
+> +#define PXA1908_CLK_PLL1_117		20
+> +#define PXA1908_CLK_PLL1_416_GATE	21
+> +#define PXA1908_CLK_PLL1_624_GATE	22
+> +#define PXA1908_CLK_PLL1_832_GATE	23
+> +#define PXA1908_CLK_PLL1_1248_GATE	24
+> +#define PXA1908_CLK_PLL1_D2_GATE	25
+> +#define PXA1908_CLK_PLL1_499_EN		26
+> +#define PXA1908_CLK_PLL2VCO		27
+> +#define PXA1908_CLK_PLL2		28
+> +#define PXA1908_CLK_PLL2P		29
+> +#define PXA1908_CLK_PLL2VCODIV3		30
+> +#define PXA1908_CLK_PLL3VCO		31
+> +#define PXA1908_CLK_PLL3		32
+> +#define PXA1908_CLK_PLL3P		33
+> +#define PXA1908_CLK_PLL3VCODIV3		34
+> +#define PXA1908_CLK_PLL4VCO		35
+> +#define PXA1908_CLK_PLL4		36
+> +#define PXA1908_CLK_PLL4P		37
+> +#define PXA1908_CLK_PLL4VCODIV3		38
+> +
+> +/* apb (apbc) peripherals */
+> +#define PXA1908_CLK_UART0		1
+> +#define PXA1908_CLK_UART1		2
+> +#define PXA1908_CLK_GPIO		3
+> +#define PXA1908_CLK_PWM0		4
+> +#define PXA1908_CLK_PWM1		5
+> +#define PXA1908_CLK_PWM2		6
+> +#define PXA1908_CLK_PWM3		7
+> +#define PXA1908_CLK_SSP0		8
+> +#define PXA1908_CLK_SSP1		9
+> +#define PXA1908_CLK_IPC_RST		10
+> +#define PXA1908_CLK_RTC			11
+> +#define PXA1908_CLK_TWSI0		12
+> +#define PXA1908_CLK_KPC			13
+> +#define PXA1908_CLK_SWJTAG		14
+> +#define PXA1908_CLK_SSP2		15
+> +#define PXA1908_CLK_TWSI1		16
+> +#define PXA1908_CLK_THERMAL		17
+> +#define PXA1908_CLK_TWSI3		18
+> +
+> +/* apb (apbcp) peripherals */
+> +#define PXA1908_CLK_UART2		1
+> +#define PXA1908_CLK_TWSI2		2
+> +#define PXA1908_CLK_AICER		3
+> +
+> +/* axi (apmu) peripherals */
+> +#define PXA1908_CLK_CCIC1		1
+> +#define PXA1908_CLK_ISP			2
+> +#define PXA1908_CLK_DSI1		3
+> +#define PXA1908_CLK_DISP1		4
+> +#define PXA1908_CLK_CCIC0		5
+> +#define PXA1908_CLK_SDH0		6
+> +#define PXA1908_CLK_SDH1		7
+> +#define PXA1908_CLK_USB			8
+> +#define PXA1908_CLK_NF			9
+> +#define PXA1908_CLK_CORE_DEBUG		10
+> +#define PXA1908_CLK_VPU			11
+> +#define PXA1908_CLK_GC			12
+> +#define PXA1908_CLK_SDH2		13
+> +#define PXA1908_CLK_GC2D		14
+> +#define PXA1908_CLK_TRACE		15
+> +#define PXA1908_CLK_DVC_DFC_DEBUG	16
+> +
+> +#endif
+>=20
+> --=20
+> 2.42.0
+>=20
+>=20
+
+--xztbYI3ipS2Vh9bj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRfqsAAKCRB4tDGHoIJi
+0jIyAQClD4BtPUpM5qBMvLM7SmIKbmSXy1dLhn3+zWj1ceg1kgD/XLaUdvmI7W0U
+Itc9gfrWaDvaBLCZSGLLCFp10gm07AE=
+=eaix
+-----END PGP SIGNATURE-----
+
+--xztbYI3ipS2Vh9bj--
