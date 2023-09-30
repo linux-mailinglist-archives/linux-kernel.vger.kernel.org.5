@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE58E7B4150
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 16:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC207B4155
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 16:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234370AbjI3O6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 10:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43612 "EHLO
+        id S234375AbjI3O7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 10:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234320AbjI3O6d (ORCPT
+        with ESMTP id S234366AbjI3O7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 10:58:33 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD7EC5
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 07:58:31 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9b2a3fd5764so1098597966b.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 07:58:31 -0700 (PDT)
+        Sat, 30 Sep 2023 10:59:15 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DA1C5
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 07:59:12 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9ad8a822508so2083840566b.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 07:59:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696085910; x=1696690710; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696085951; x=1696690751; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=XhRNLpTtFuwflO9fICmWPN+t7DhTdGCrswb6CHsVjHM=;
-        b=rwl+YwMzHKr+zObCsHxuh/XBCicl8O83O+C/JBo60hdjTJSb+CaJkYxbIZQf1fFiXS
-         r7HxoxMnaGjf7n2oTLeIvuL3dOM90S5ECnSWFSdOQs4HXZT36IGbLonbqorBaWu4DLlC
-         idZ1ZQA+CCYhYZPVU0RexKYI9vn1yjfc2svo9aakhbTBcXoa9qHOtNDS1uh8N2n9c2b5
-         q/A9X8+LSobnO+JKaoowfnx8SmHtUvkyO0S660OrToMnX5qzrjEyxbjcltA1o3qe0qp5
-         kPZty/mtMFDm23YQi7WGdSDbzmZZH7u83IEtupYGy8TqsulZIMHVcEQg5e8uNLffsDQm
-         sNsg==
+        bh=E9B2kQ3iq7p4VksKg+DkVqKQqg7HQD9C40iD0MzBios=;
+        b=TjSW2LIEfbZZvkgS8jo/F8yVBIY8SzyrkboP8EyM3o2pH01Iugoc2ymhdTWNZ9mWzb
+         nuaZBH3F3dHZ1Bi3ynPE7UOePWwLWPXA/nvLdQtYI0n1f98pi4jauWfDG2PO+OLUFUVn
+         H0GKiDBiaq8QvDlvpFI30boa1rsKgM3V5q11nikN7owXTbBY891J47/KEiKDfWbPdOP1
+         jlb6WqTQQSEq01CqlVH//FkY0/jyC6o1H9RNZzw43WTjocBGS2p5roeWg9qb2xdx4BgA
+         CgbCPwsubCilGAYdnC03RSXtHnIywai/HCjii+7qOYs03iDB0UPPoa8nT8iDvIx28ggt
+         D55A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696085910; x=1696690710;
+        d=1e100.net; s=20230601; t=1696085951; x=1696690751;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XhRNLpTtFuwflO9fICmWPN+t7DhTdGCrswb6CHsVjHM=;
-        b=lvhPCoWyAR3XA+elXsZvjGHYtbBne2aHkCHuUQ0PE9/tFVBiq58Ma+D0LxZp8IuLFY
-         KUoVO1Vq/cVG8X9F7TwHbiLiH52UBAGZpSj4gcS6k28ZMueZAcx7fyetWUYNWQXPZ40A
-         KKznuYmim8rYhiQTjVUfpcMRN6Re4Xt+4qcfvV7E3VjU6N6fb4XmecDpgeYC+ZqpB0vq
-         yyzGNigQm7afnYdTES2x52oze4MnhSeojffICdHvPINpmK8F2AOFcVhX2W9mmYQ2Nd/5
-         QmMb+q9tGLzWQvuwmr328tdwo3NRUEZcneWEymXjS5hqRWkNDXAF2lTHv121ExA/zr8Z
-         myTg==
-X-Gm-Message-State: AOJu0YwV4xwAsEKxigaunYDlkgd+czdIUznhZsqo+v3+28XEOW9O69Zn
-        WW1wzxumzvGdcaxvhxJ6GwvGqQ==
-X-Google-Smtp-Source: AGHT+IGgy0NCDnxbJzLbMBSjHYuDIDJMISktLeNJAlYutBLBnGDy3EWZDQErpt0F7vKRkY6o3CqJxA==
-X-Received: by 2002:a17:906:3045:b0:9ae:3f7a:f777 with SMTP id d5-20020a170906304500b009ae3f7af777mr6597015ejd.9.1696085909774;
-        Sat, 30 Sep 2023 07:58:29 -0700 (PDT)
+        bh=E9B2kQ3iq7p4VksKg+DkVqKQqg7HQD9C40iD0MzBios=;
+        b=ckNyWxLGkAL6zjM3xmJuugG+71z7P5AGmgItopsgC8CrGwPRa2m66FScmN3BNSZmff
+         PGnc3KG1TGbsOtCKB2V/ad1kgBfCncQL6vgH2GgmjCuWcloQWiz0YzgiK0hUbfuttIlP
+         DqqkvijyNthpDdwp5XzxJ1WBTM637xVCLh+Cp+6U7+E6G/bziFm06w6woX5Q8zSrIKoz
+         WfnVaGp/4xrnsR6GXm7Zjo5PPsg2XjLFCbrqfxHy0SwhdcHKNvOlEOEQr3PvjCJcx+fq
+         gVQp8k0G/EtQw+Fy6w8JZAQsB9QMAKkI0pJMqgbvQ7MwEU/3vnYaRGS/OceY9fUoB9vg
+         fRnw==
+X-Gm-Message-State: AOJu0YyNn7ZkBfAlLMLZrrgmBvRTwOUVyjMEpaeOsIXnFG5fOJ4tYN45
+        qEq3rWgBVdWgLKt4SvLEGi/L0w==
+X-Google-Smtp-Source: AGHT+IH8axa7dnIe/xIWnpxdeRWUiiB26wu/xYmyDnj8UsBBSyQfBUqmeJcpXQ3QelVnDtcM41ngvg==
+X-Received: by 2002:a17:906:8a7a:b0:9ae:3d75:4c83 with SMTP id hy26-20020a1709068a7a00b009ae3d754c83mr6332082ejc.0.1696085951513;
+        Sat, 30 Sep 2023 07:59:11 -0700 (PDT)
 Received: from [192.168.8.76] ([88.154.47.206])
-        by smtp.gmail.com with ESMTPSA id qk7-20020a1709077f8700b009b2b4385db7sm5662953ejc.92.2023.09.30.07.58.19
+        by smtp.gmail.com with ESMTPSA id qk7-20020a1709077f8700b009b2b4385db7sm5662953ejc.92.2023.09.30.07.59.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Sep 2023 07:58:29 -0700 (PDT)
-Message-ID: <854412b9-4993-45a4-b935-037b3b6b9666@linaro.org>
-Date:   Sat, 30 Sep 2023 16:58:19 +0200
+        Sat, 30 Sep 2023 07:59:11 -0700 (PDT)
+Message-ID: <99fa3e43-2202-44d4-ae45-0b47568a5758@linaro.org>
+Date:   Sat, 30 Sep 2023 16:59:00 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/8] dt-bindings: usb: dwc3: Add clocks on Qualcomm
- IPQ5332
+Subject: Re: [PATCH 8/8] arm64: defconfig: Enable qcom USB UNIPHY driver
 Content-Language: en-US
 To:     Praveenkumar I <quic_ipkumar@quicinc.com>, agross@kernel.org,
         andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
@@ -72,7 +71,7 @@ To:     Praveenkumar I <quic_ipkumar@quicinc.com>, agross@kernel.org,
 Cc:     quic_kathirav@quicinc.com, quic_nsekar@quicinc.com,
         quic_srichara@quicinc.com
 References: <20230929084209.3033093-1-quic_ipkumar@quicinc.com>
- <20230929084209.3033093-5-quic_ipkumar@quicinc.com>
+ <20230929084209.3033093-9-quic_ipkumar@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -118,13 +117,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20230929084209.3033093-5-quic_ipkumar@quicinc.com>
+In-Reply-To: <20230929084209.3033093-9-quic_ipkumar@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -132,14 +130,30 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 29/09/2023 10:42, Praveenkumar I wrote:
-> Add aux and lfps clocks in Qualcomm IPQ5332. These clocks are required
-> for USB Super-Speed support.
+> Enable USB UNIPHY driver present in Qualcomm IPQ5332.
 > 
 > Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
 > ---
 
 
 Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+
+---
+
+This is an automated instruction, just in case, because many review tags
+are being ignored. If you know the process, you can skip it (please do
+not feel offended by me posting it here - no bad intentions intended).
+If you do not know the process, here is a short explanation:
+
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
+
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
 
 Best regards,
 Krzysztof
