@@ -2,133 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D60B7B425A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C787B4262
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234580AbjI3QwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 12:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35364 "EHLO
+        id S234598AbjI3Qwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 12:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229788AbjI3QwX (ORCPT
+        with ESMTP id S234586AbjI3Qw0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 12:52:23 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12014C6
+        Sat, 30 Sep 2023 12:52:26 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C35CDE5
         for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 09:52:22 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qmdCQ-00083K-Ew; Sat, 30 Sep 2023 18:52:14 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qmdCN-00A5ig-54; Sat, 30 Sep 2023 18:52:11 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qmdCM-006YZS-RT; Sat, 30 Sep 2023 18:52:10 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kbuild@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        James Clark <james.clark@arm.com>, kernel@pengutronix.de,
-        Leo Yan <leo.yan@linaro.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-arm-kernel@lists.infradead.org,
-        Mike Leach <mike.leach@linaro.org>
-Subject: [PATCH v2] modpost: Don't let "driver"s reference .exit.*
-Date:   Sat, 30 Sep 2023 18:52:04 +0200
-Message-Id: <20230930165204.2478282-1-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.40.1
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-40652e570d9so28412565e9.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 09:52:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20230601.gappssmtp.com; s=20230601; t=1696092741; x=1696697541; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TP49E0lt1lRfwVwEUZNQYaCBfTY4UGz9ptrNHBZhxcM=;
+        b=GODHPJ5OBk5OFYXKYp/AsgCbEs96zHybKMqld2zYIYMA8bWsDO9CD32R4Ve892efWh
+         Rw8h6Qoitfo9fDFRXeGZ1URS0UWu9IJBVx4Vya++BEVhXwx8iJTXEUg7vtyzXuhFlYS7
+         EaYP12e+2yYMGMjH/WAmkF/9TwNHyl/rOxe/+Raw1hFTZ4W/QiD6r+cTfVQujrg4ADiB
+         t0EwhcgT/w1sqCgn4S5QesL/mVLbCPhL0Gs4zfmBWFR0O2+lvC4PwMCbZsvAUBYBpImL
+         7PoPTdEUlEjZSUqF5Cz+l5zBQwpp7snU3QkdNZzBDQG/BZuIT+Nwotv31hy32RoOfd+U
+         mAYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696092741; x=1696697541;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TP49E0lt1lRfwVwEUZNQYaCBfTY4UGz9ptrNHBZhxcM=;
+        b=r54hrp6wk1+VKa5TEdLeDadkxYe9xhFddATtJ5TPMZsH4QN67OXZA6LqsWWxl4ogdk
+         dJbG5XCj0NfpsDtpF0qBr6voFwSG9Y8/AzTYFWG+bcNnFU/9I7XWG+clik/PxTvQNomH
+         t8wUt0ExknJfsnoLMRDfYkBYe6lGDrDmVnp9ktUvsQitm43xtAfocCU9Fhb86dHgIfBa
+         955LsbR30SFFTcPyIOkaqOUBxApWkEY7eGQF/c15qXSkb0yLPu0Mdk0V2B3/3ezEFBvA
+         Eo1NhzPtNPvj3vTDHCoOIibqqqbBuVCkULLDC7EaJtEozEvi/nj/ebFRNTHnCypJtQ71
+         avEg==
+X-Gm-Message-State: AOJu0Yw+DtpNl3KruowA/Mv+1VMpICsY5V0IjdQogUaH6M1vtjIUo3RG
+        UQTfyGXipuimxw1eO/vi/9mB3g==
+X-Google-Smtp-Source: AGHT+IFufhUosQmDbdYYO0lgqH5WgmabRsKPy1NuiT6FdEpd1klh9Lx806UT3kRvn4yTyQ0Y4WLs9Q==
+X-Received: by 2002:adf:cf0a:0:b0:323:1689:6607 with SMTP id o10-20020adfcf0a000000b0032316896607mr6789063wrj.5.1696092741022;
+        Sat, 30 Sep 2023 09:52:21 -0700 (PDT)
+Received: from equinox (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
+        by smtp.gmail.com with ESMTPSA id u1-20020adfed41000000b003247d3e5d99sm4921066wro.55.2023.09.30.09.52.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Sep 2023 09:52:20 -0700 (PDT)
+Date:   Sat, 30 Sep 2023 17:52:17 +0100
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     Joel Granados <j.granados@samsung.com>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
+        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Arnd Bergmann <arnd@arndb.de>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Doug Gilbert <dgilbert@interlog.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Corey Minyard <minyard@acm.org>, Theodore Ts'o <tytso@mit.edu>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Robin Holt <robinmholt@gmail.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Russ Weight <russell.h.weight@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Song Liu <song@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-serial@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-rdma@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 01/15] cdrom: Remove now superfluous sentinel element
+ from ctl_table array
+Message-ID: <ZRhSQaNDJih5xABq@equinox>
+References: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-0-e59120fca9f9@samsung.com>
+ <20230928-jag-sysctl_remove_empty_elem_drivers-v1-1-e59120fca9f9@samsung.com>
+ <CGME20230928133705eucas1p182bd81a8e6aff530e43f9b0746a24eaa@eucas1p1.samsung.com>
+ <2023092855-cultivate-earthy-4d25@gregkh>
+ <20230929121730.bwzhrpaptf45smfy@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2253; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=ExAgENbFDy79YPL9zwkhUwd58OR3hIj9/ep56FwARBs=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlGFIw1iaUvqRkXmdHEuuytknWrwe98MGZS0mOe bymTwqIL/yJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRhSMAAKCRCPgPtYfRL+ Tv2wB/9TZ6zWLaUiIJNkMCcwv2THuCRjyXxDTrBVdfE1pAaQc617coqXgFNc7JgziISZgwDoeQn 0N0zbxBSZ4GXFF6OfcZjqkucea+mDp0ik+Sbg27CFFJ+Pyi5pHvL5i6dVVL6vN1InUzbb0H1st8 dklibia6QN0FCthvN90MIxGzMrOhC9U8gpr5PZmCxEVRAoaSGQXKVS7gM4WCEkdiIkGERLVB2IL IR8Uqxa6jU1N8yGa7W51ySmyi3jyEsy2PhKcePHHw2kaR+xNNht1mvi1ynAgo+jh2o9kohc+ruD dYXXkixPCno0nGA21I1gAeRFGZGhuzvqIGzcCtj2GGKLyFJL
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230929121730.bwzhrpaptf45smfy@localhost>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers must not reference functions marked with __exit as these likely
-are not available when the code is built-in.
+On Fri, Sep 29, 2023 at 02:17:30PM +0200, Joel Granados wrote:
+> On Thu, Sep 28, 2023 at 03:36:55PM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Sep 28, 2023 at 03:21:26PM +0200, Joel Granados via B4 Relay wrote:
+> > > From: Joel Granados <j.granados@samsung.com>
+> > > 
+> > > This commit comes at the tail end of a greater effort to remove the
+> > > empty elements at the end of the ctl_table arrays (sentinels) which
+> > > will reduce the overall build time size of the kernel and run time
+> > > memory bloat by ~64 bytes per sentinel (further information Link :
+> > > https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+> > > 
+> > > Remove sentinel element from cdrom_table
+> > > 
+> > > Signed-off-by: Joel Granados <j.granados@samsung.com>
+> > > ---
+> > >  drivers/cdrom/cdrom.c | 3 +--
+> > >  1 file changed, 1 insertion(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
+> > > index cc2839805983..451907ade389 100644
+> > > --- a/drivers/cdrom/cdrom.c
+> > > +++ b/drivers/cdrom/cdrom.c
+> > > @@ -3654,8 +3654,7 @@ static struct ctl_table cdrom_table[] = {
+> > >  		.maxlen		= sizeof(int),
+> > >  		.mode		= 0644,
+> > >  		.proc_handler	= cdrom_sysctl_handler
+> > > -	},
+> > > -	{ }
+> > > +	}
+> > 
+> > You should have the final entry as "}," so as to make any future
+> > additions to the list to only contain that entry, that's long been the
+> > kernel style for lists like this.
+> Will send a V2 with this included. Thx.
+> 
+> > 
+> > So your patches will just remove one line, not 2 and add 1, making it a
+> > smaller diff.
+> indeed.
+> 
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> -- 
+> 
+> Joel Granados
 
-There are few creative offenders uncovered for example in ARCH=amd64
-allmodconfig builds. So only trigger the section mismatch warning for
-W=1 builds.
+Hi Joel,
 
-The dual rule that drivers must not reference .init.* is implemented
-since commit 0db252452378 ("modpost: don't allow *driver to reference
-.init.*") which however missed that .exit.* should be handled in the
-same way.
+Thank you for your patch. I look forward to seeing V2, and will be happy
+to review it.
 
-Thanks to Masahiro Yamada and Arnd Bergmann who gave valuable hints to
-find this improvement.
-
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
-Hello,
-
-changes since (implicit) v1, sent with Message-Id:
-20230930140601.2457711-1-u.kleine-koenig@pengutronix.de:
-
- - enable the warning about .data -> .exit.* only in W=1 builds to keep
-   normal builds without warnings. *sigh*
- - improved commit log and mention the above item.
- - updated the code comment to match the code
-
-Thanks
-Uwe
-
- scripts/mod/modpost.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index de499dce5265..b3dee80497cb 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -1015,9 +1015,20 @@ static int secref_whitelist(const char *fromsec, const char *fromsym,
- 				    "*_console")))
- 		return 0;
- 
--	/* symbols in data sections that may refer to meminit/exit sections */
-+	/* symbols in data sections that may refer to meminit sections */
- 	if (match(fromsec, PATTERNS(DATA_SECTIONS)) &&
--	    match(tosec, PATTERNS(ALL_XXXINIT_SECTIONS, ALL_EXIT_SECTIONS)) &&
-+	    match(tosec, PATTERNS(ALL_XXXINIT_SECTIONS, ALL_XXXEXIT_SECTIONS)) &&
-+	    match(fromsym, PATTERNS("*driver")))
-+		return 0;
-+
-+	/*
-+	 * symbols in data sections must not refer to .exit.*, but there are
-+	 * quite a few offenders, so hide these unless for W=1 builds until
-+	 * these are fixed.
-+	 */
-+	if (!extra_warn &&
-+	    match(fromsec, PATTERNS(DATA_SECTIONS)) &&
-+	    match(tosec, PATTERNS(EXIT_SECTIONS)) &&
- 	    match(fromsym, PATTERNS("*driver")))
- 		return 0;
- 
-
-base-commit: 6465e260f48790807eef06b583b38ca9789b6072
--- 
-2.40.1
-
+Regards,
+Phil
