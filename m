@@ -2,73 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E79E87B41E1
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 17:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E6A7B41E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 17:55:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234455AbjI3PxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 11:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
+        id S234452AbjI3PzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 11:55:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231715AbjI3PxT (ORCPT
+        with ESMTP id S231715AbjI3PzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 11:53:19 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF69B3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:53:17 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53627feca49so4728869a12.1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:53:17 -0700 (PDT)
+        Sat, 30 Sep 2023 11:55:03 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A394B3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:55:00 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-53447d0241eso13058348a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:55:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696089196; x=1696693996; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696089298; x=1696694098; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=/2uVIZFE3aqCQS1tNVd83Z0RiNW7hSOeczOsLxQAFFU=;
-        b=shq+ZTeyMPY+oc3CaoO4atJOOJtMRN8QOjRkBNOSPc6hNIPU15somPdNVNeZPEZk4G
-         pAn2bAaNBb5BXOYtsuIl7bGVx1xz2iAAnmgwHt2lRYJ0JmWX67Q5RBhVjnthLRp1JSIA
-         04cRB95iqQHWXwA2DWUe+itfGcXk0ZRfhfke5+vngPq9HHq0vs6PnCnhKpRiqBzaHSK/
-         Z3oLLwOyXcBG/NV1z+x01uBXTVzC82tA03k4dxFXUm6+05vcD/XgB6PvONyz4S5S34Yf
-         25TN4d4sVeQOMxHnvFpBxSKUbpCWfirLM5hQZEhRSM65v3pISlaCMKc5uVOuvioMsmLZ
-         x+lQ==
+        bh=2B8e2RLbhf6NIZj5B6D1EhLGeVOUc1Kv8+5YDYEVIuY=;
+        b=i3iRxEfWwj4FG0zG8qxGQvd9j0dFXnFqx7NDtP7qfiub/vqg3m8RPmVsFg1uZ7P6Q3
+         PLyZw3aGz8HhAFiWcY8ZQxgjMPctg6kHMHpf3v0jZRXup6ynAok8zXN2rLkmojFUdw04
+         h+7aENdPX+g4PWFtRhYulIB5MWF9tPxe9/2d6wyQsEe+wX6PrzkFnkH/ExRy+hNXMiI7
+         BmLB/Q5+NS2e6s6nJ6dpnzF3Piy5lqSOg9UAkuQJA7kq+oQkXlMWRx/yzoODCs+bMaoL
+         Ew/+wq7Uxp5MTYKgJBjzGAL4U8MB9OI55Un3OpRwL4lQejo4leNRKJEaBBDnuaqv/q+/
+         xLgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696089196; x=1696693996;
+        d=1e100.net; s=20230601; t=1696089298; x=1696694098;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/2uVIZFE3aqCQS1tNVd83Z0RiNW7hSOeczOsLxQAFFU=;
-        b=eudX/wCd3vGRF1d4e4wW0T0quzU2H3qFY4ppyxSBUNDdJO8RhsKeXJ7ZprHKqHsKR9
-         jbhLkHKJwfFQzokp6QgPe8o71Zx7TJyhpmEGF5ijyPE/p9XEiu7o0iBwCCUnb3wq3pXd
-         M7M/c+aAcCzdbwcAR79QLFnD1HWcxKLYwiIByJaYRBO4PKhC/IZOs/gh8+QrdIJH1KF7
-         3WVk87tmULA506UY02uOaX32e6SOtLU3pHOXI34XmsjrsmkdlwBN5oCBwq/2T/xm4DFe
-         j4tw4AGk6gri9PZ6goI/R+6/duUjM46mEjmFFtqqrdmVSvxqjDQdvuaIG1xUPaK5A1xj
-         KVpw==
-X-Gm-Message-State: AOJu0YxLMplrbGkkT6kKoRqLTlmEg4oYvd45NyDTFmgXmncpNA2i4qaJ
-        UKvH43P4pDrD4XfoHKcajnuLQQ==
-X-Google-Smtp-Source: AGHT+IHv04U+mJ7vZ5Z31pa8YFrhhYBt1IRl/UG6TdlATssdiEqeZL9SEyqOLQu437jPM/gAdYnhCw==
-X-Received: by 2002:a17:906:8a47:b0:994:4095:3abf with SMTP id gx7-20020a1709068a4700b0099440953abfmr6288847ejc.14.1696089196387;
-        Sat, 30 Sep 2023 08:53:16 -0700 (PDT)
+        bh=2B8e2RLbhf6NIZj5B6D1EhLGeVOUc1Kv8+5YDYEVIuY=;
+        b=ZeV+gCllLPJ06EwomN4lp2HJ2KIGMqX7ir72mOzSI/v10fRotiFu8SxpDlWORUcK5b
+         I7A3KM56WcYMkW3B6qrGje1f7elAVd+P6X8CPq9t5u1O4/Sdn2rBocufAua829DC/DtS
+         M84UmMttaG0N80mqRJCxRxuKv0YGwfpiHnIi6v5NcMBI/0QBj5jwcXn52qVMCUP93rar
+         BzYak0qUs8E7t6WGl1xqrp+D4ZwJSMyNxlkVDmDB4IYr6Evgp+dqbS+cDDCJP2itzCk0
+         g9MsRtMnoGlW3U+3bz0BJWsiFpcu/YK+Oic8J+yxHjXwt05x68HurzRX0WxfjXENNMMn
+         C85A==
+X-Gm-Message-State: AOJu0YwsI3x3UiE5Z7XECNmrCuLTRyye96CORalgGzSw+invPUMzOh/I
+        VOsGcmp6AZg4V46ra6JpZVkL8A==
+X-Google-Smtp-Source: AGHT+IGmbXl1/2UScDwGgCr9q1ZmJ2w/CoNjmjVXdB2aVNh9JO7jT/zLchBfb9kj2s8gmdSuh4sCkw==
+X-Received: by 2002:a17:906:301a:b0:9a1:6318:4d39 with SMTP id 26-20020a170906301a00b009a163184d39mr6169887ejz.29.1696089298440;
+        Sat, 30 Sep 2023 08:54:58 -0700 (PDT)
 Received: from [192.168.8.76] ([88.155.12.231])
-        by smtp.gmail.com with ESMTPSA id lf11-20020a170907174b00b009ad81554c1bsm14108157ejc.55.2023.09.30.08.53.11
+        by smtp.gmail.com with ESMTPSA id lf11-20020a170907174b00b009ad81554c1bsm14108157ejc.55.2023.09.30.08.54.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Sep 2023 08:53:16 -0700 (PDT)
-Message-ID: <51abc760-8d6a-41b6-8a10-e03be5edc486@linaro.org>
-Date:   Sat, 30 Sep 2023 17:53:11 +0200
+        Sat, 30 Sep 2023 08:54:57 -0700 (PDT)
+Message-ID: <2720c275-9fc8-426f-b72d-56a06afec6fe@linaro.org>
+Date:   Sat, 30 Sep 2023 17:54:51 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] Add C3 SoC PLLs and Peripheral clock
+Subject: Re: [PATCH v2 3/3] usb: chipidea: Add support for NPCM
 Content-Language: en-US
-To:     Xianwei Zhao <xianwei.zhao@amlogic.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-References: <20230928063448.3544464-1-xianwei.zhao@amlogic.com>
+To:     Tomer Maimon <tmaimon77@gmail.com>, peter.chen@kernel.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, xu.yang_2@nxp.com,
+        peng.fan@nxp.com, avifishman70@gmail.com, tali.perry1@gmail.com,
+        joel@jms.id.au, venture@google.com, yuenn@google.com,
+        benjaminfair@google.com, j.neuschaefer@gmx.net
+Cc:     openbmc@lists.ozlabs.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20230927095509.267029-1-tmaimon77@gmail.com>
+ <20230927095509.267029-4-tmaimon77@gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -114,7 +111,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20230928063448.3544464-1-xianwei.zhao@amlogic.com>
+In-Reply-To: <20230927095509.267029-4-tmaimon77@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -127,24 +124,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/09/2023 08:34, Xianwei Zhao wrote:
-> Add C3 SoC PLLs and Peripheral clock controller dt-bindings.
-> Add PLLs and Peripheral clock controller driver for C3 SOC.
-> 
-> Xianwei Zhao (4):
->   dt-bindings: clock: add Amlogic C3 PLL clock controller bindings
->   dt-bindings: clock: add Amlogic C3 peripherals clock controller
->     bindings
->   clk: meson: C3: add support for the C3 SoC PLL clock
->   clk: meson: c3: add c3 clock peripherals controller driver
-> 
+On 27/09/2023 11:55, Tomer Maimon wrote:
+> Add Nuvoton NPCM BMC SoCs support to USB ChipIdea driver.
+> NPCM SoC include ChipIdea IP block that used for USB device controller
+> mode.
 
-This was absolutely never tested :(
+...
 
-It does not look like you tested the bindings, at least after quick
-look. Please run `make dt_binding_check` (see
-Documentation/devicetree/bindings/writing-schema.rst for instructions).
-Maybe you need to update your dtschema and yamllint.
+> +	ci = devm_kzalloc(&pdev->dev, sizeof(*ci), GFP_KERNEL);
+> +	if (!ci)
+> +		return -ENOMEM;
+> +	platform_set_drvdata(pdev, ci);
+> +
+> +	ci->core_clk = devm_clk_get_optional(dev, NULL);
+> +	if (IS_ERR(ci->core_clk))
+> +		return PTR_ERR(ci->core_clk);
+> +
+> +	ret = clk_prepare_enable(ci->core_clk);
+> +	if (ret) {
+> +		dev_err(dev, "failed to enable the clock: %d\n", ret);
+> +		return ret;
+
+return dev_err_probe()
+
+...
+
+> +
+> +module_platform_driver(npcm_udc_driver);
+> +
+> +MODULE_DESCRIPTION("NPCM USB device controller driver");
+> +MODULE_AUTHOR("Tomer Maimon <tomer.maimon@nuvoton.com>");
+> +MODULE_ALIAS("platform:npcm-udc");
+
+Nope... if you need it, your tables are wrong.
+
 
 Best regards,
 Krzysztof
