@@ -2,76 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68CE17B3FD5
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 12:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFD37B3FD8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 12:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbjI3KLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 06:11:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41732 "EHLO
+        id S234064AbjI3KNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 06:13:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234054AbjI3KLd (ORCPT
+        with ESMTP id S233030AbjI3KNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 06:11:33 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70461A5
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 03:11:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.com; s=s31663417;
- t=1696068689; x=1696673489; i=daggs@gmx.com;
- bh=U8mJ977ngWJQx/0rMVR2wpYC/CtyKa/JE57NogQDcdU=;
- h=X-UI-Sender-Class:From:To:Subject:Date;
- b=LFw4yND9MkYyBXWI7NB6jScbyx8/O9bXFud02i6Fv/6fzWTI+eHhOr2G1UFI3cP1CCN2LmIOtJM
- Kh05Hc2t9w8eogBkVbkswM4enSPU825mvR/O0FJAFUVEOQhXln8LuGGHLRW0Nw33Xu9DfNF77keYz
- RUpYQth05xMd7TZJ3EQzjXf9j9EjCXBADGyqqeAZ4KE3kfLQdf9O0+Lu41KhQqHZwRxWsyaP/H+WA
- yj05gCcHCkyXxGsJMzCajWyzg0Z9ZFhqx+oRkFwl+PMIlDQuB9t7yj9cttqahqhI/3Ff8tooeyq/N
- xMxQIKLSn//uK71MEU2xghoqeN2+HB5GRoCQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [176.231.7.11] ([176.231.7.11]) by web-mail.gmx.net
- (3c-app-mailcom-bs15.server.lan [172.19.170.183]) (via HTTP); Sat, 30 Sep
- 2023 12:11:29 +0200
+        Sat, 30 Sep 2023 06:13:06 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 018D01AB;
+        Sat, 30 Sep 2023 03:13:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71788C433CB;
+        Sat, 30 Sep 2023 10:13:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696068784;
+        bh=IsZF4TWVX1SRhu6LHbwwMx3eoaC8wL2iO+qcbuu8h14=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Cd+L2zUWW7V/mdCcs2VMBNZHa7RK3DjvAvwtm41+4KOnMf4x5CJChMb7eM6m6+Hom
+         3b9ByZRjj2XdYz2dV2dVBLB8LL67X8Ska+OA8HRX/JaEu8qKrc0myRwLcRkx7KwW0B
+         wAvs4xLqQA3eiSgYtsWQFwQ25jkgHonlM5yjkiDaX3nco/i99J35ZHTx5zOmVh6YLi
+         XtuEsDbV+OUOEjJEIRHQLtjI5fSFMVdk4jWQFY/ekk5ghibf5FAJjmtGTgukKiHql4
+         /IUxTeO2tA7kBpK2u9vCgn1/K8U4X4djq5FobAqVlYF1EPOSqfle/fN91LJq2f9eUf
+         TUm5xTlZdlA+w==
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6beff322a97so8654959a34.3;
+        Sat, 30 Sep 2023 03:13:04 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwjDF//JpN4BSLba0Yx+lWleaqcWsFQzHI+tB8TqKK8HHjJCw63
+        NayV9vTvwSuRTj15sbvUk7yONKGJVbTs48axMpk=
+X-Google-Smtp-Source: AGHT+IGNnRiz5tgKzD/S5dLvgJu/YGl0PbaMvzwkiazycsrf5XTjJQzKSLhAChdEHi9J6gj+m5WXPo8+Y7pOMC1QqNg=
+X-Received: by 2002:a05:6870:96ab:b0:1db:3679:198a with SMTP id
+ o43-20020a05687096ab00b001db3679198amr7517135oaq.24.1696068783796; Sat, 30
+ Sep 2023 03:13:03 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <trinity-c4c6b25b-8372-453e-b5e5-5d4003282d7c-1696068689143@3c-app-mailcom-bs15>
-From:   daggs <daggs@gmx.com>
-To:     linux-kernel@vger.kernel.org
-Subject: question regarding coding convention
-Content-Type: text/plain; charset=UTF-8
-Date:   Sat, 30 Sep 2023 12:11:29 +0200
-Importance: normal
-Sensitivity: Normal
-X-Priority: 3
-X-Provags-ID: V03:K1:7Ys1+4NyHXoYdvT2dULbeKHCUTMkshTMeO//f8Gw+HFilblPs88USEI1am3Inrzx2amCC
- NspDW3mQ4b+5+4udunXajJ2GxdkZ2PN33+PNtDaSgAbRN9g81BqAU2oTBrwWVgy/t7RsBSGp5RMJ
- Ui9jGRGeEdA44z+txemPEibzGfWcpReuJAm7lyayB9pUYZiTntGvjI/yLzCt8LGA+dKJCGMuvgsr
- eoHPazoXzPq1+WJ/8kC8t5A3rVbh53K+jaHb+C/91o+v2U+17nV5C7e5kN9tofpfL6Yb+DRt3NcH
- GU=
-UI-OutboundReport: notjunk:1;M01:P0:aAot45z6qxI=;8DFym5phfhtfc8dtQQQG8Ax/480
- PU4zBozSHKV129p8dVyhK63sjzmqj8px0PGn7m7ihp5uV/d68igBb0fh+tNrMXwtnnr0hQZVU
- dID/Y8VxuSpXklhgnfp93Xc+oRfx1vFG3/REIXIKtSe0F2fjJVFK5yFit0qYvW3x6UkAzUet+
- yXr09JDlb5D3FENkzV4Vwtvv2ztGKpmsGslvfHSV2By9jcrurI0vSwdEa7hJfx23PDwrJkFbn
- tMxvsPgrrmrX3Tj16utacOc4jJXe6IDSzC5pGq/HRdwNA/XxACtsSYHgutSyEykPE0P0diD0b
- 3J9gK0z8d+TtjJenyiGEvvxPI22DUQKzGzW/CRL5yuiSuDwt0EecVQ5ABOSa/XDOWlN9xz45A
- 0ZTcfvH5kc0f0MMrmiO6QH6djoEUb8Fr20Bw4sIAytxA6jOLO7w4rBbrA7ODbAigBr2vbbv+C
- X7kIGljEbKXHcSLxlfibCFa4efKQzkjIjoIDgHshtLs3hgxVCUguKCoIA1U2WYTmfdbb801/m
- rk8LkeQ3HfPGZ1d5hvUal7XowZR019vP1Vr9IkWw2p/X+iq5zco3aS+XrqjCgtdD3ehFqAU5N
- K7Pkf/yBp9S2bHSE4NcvkQQ4CMvAiH8pTa2awLvkTZ32wzOWG+pWM72D+2mSgcokf62eEAoM8
- y0qpyBZMLx1Xxe80ja7I4JYeuUUrNQ3EZP7bDjxYxzMcrS3gMBZajKTXe5oiHamXdRGaAX3mg
- Agj1HxTvkYRSIk+C/o4VoiReHuvwrU/HulbSDrPUPfXC2slCpKQ9OealaBRvbMMFgEauKbjK4
- eIT8azrZZpNLjPIqUqN0RJkvysOsNkqoJBSWk7oHIKfUE=
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230928041600.15982-1-quic_jiangenj@quicinc.com> <CAG_fn=V9FXGpqceojn0UGiPi7gFbDbRnObc-N5a55Qk=XQy=kg@mail.gmail.com>
+In-Reply-To: <CAG_fn=V9FXGpqceojn0UGiPi7gFbDbRnObc-N5a55Qk=XQy=kg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 30 Sep 2023 19:12:26 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASfdQYy7ON011jQxqd4Bz98CJuvDNCUp2NRrHcK29x3zA@mail.gmail.com>
+Message-ID: <CAK7LNASfdQYy7ON011jQxqd4Bz98CJuvDNCUp2NRrHcK29x3zA@mail.gmail.com>
+Subject: Re: [PATCH] kasan: Add CONFIG_KASAN_WHITELIST_ONLY mode
+To:     Alexander Potapenko <glider@google.com>
+Cc:     Joey Jiao <quic_jiangenj@quicinc.com>, kasan-dev@googlegroups.com,
+        quic_likaid@quicinc.com, Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings,
+On Fri, Sep 29, 2023 at 11:06=E2=80=AFPM Alexander Potapenko <glider@google=
+.com> wrote:
+>
+> (CC Masahiro Yamada)
+>
+> On Thu, Sep 28, 2023 at 6:16=E2=80=AFAM Joey Jiao <quic_jiangenj@quicinc.=
+com> wrote:
+> >
+> > Fow low memory device, full enabled kasan just not work.
+> > Set KASAN_SANITIZE to n when CONFIG_KASAN_WHITELIST_ONLY=3Dy.
+> > So we can enable kasan for single file or module.
+>
+> I don't have technical objections here, but it bothers me a bit that
+> we are adding support for KASAN_SANITIZE:=3Dy, although nobody will be
+> adding KASAN_SANITIZE:=3Dy to upstream Makefiles - only development
+> kernels when debugging on low-end devices.
+>
+> Masahiro, is this something worth having in upstream Kconfig code?
 
-I have a question regarding the kernel coding convention.
-lets say I want to add a new arch named foo and there is a func named goo which all other archs are implementing but foo isn't.
-what is the proper way to handle it? as the kernel code is quite big, I didn't found any example.
 
-Thanks,
+Even if we apply this patch to the upstream,
+you will end up with adding 'KASAN_SANITIZE :=3Dy'
+to the single file/Makefile.
 
-Dagg
+I am not convinced with this patch
+since this nod is not so useful standalone.
+
+
+
+> > Signed-off-by: Joey Jiao <quic_jiangenj@quicinc.com>
+> Reviewed-by: Alexander Potapenko <glider@google.com>
+
+
+
+--
+Best Regards
+Masahiro Yamada
