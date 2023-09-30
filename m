@@ -2,74 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C9B7B41DE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 17:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E79E87B41E1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 17:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234451AbjI3Pwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 11:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
+        id S234455AbjI3PxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 11:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232709AbjI3Pwb (ORCPT
+        with ESMTP id S231715AbjI3PxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 11:52:31 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3C069C
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:52:28 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9936b3d0286so2075740766b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:52:28 -0700 (PDT)
+        Sat, 30 Sep 2023 11:53:19 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF69B3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:53:17 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53627feca49so4728869a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696089147; x=1696693947; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=M0XspksAE2e3KjyehDjBT4XLAJOfx8ADuKgTmVoQcrE=;
-        b=d93ulKkoPyPZmcaHmiy7ViLHg6eMGE+Ga7D2mO5iNlTpdqLnSJg2AeOWDOLTVqqV3j
-         rrp7nn5Zyf1mGpxPBbfnNQJ0e5XzZWLgT7rqDDOmMLsKwr08zs3CEap7pW9EhXdHnT3i
-         gTl1koLhrcCMJ6luXSc2djbJXd/Fwia/u99AxHubwmXUCjOA0dWJu3ePzqSj0rtWCG+c
-         jg2mDeh4z+hgg+3Ez0qAFVyNpqxfntuc77YisxqiK+knr2Iz//F4JxHa9GFiXY/8DYAw
-         RnOIHLu+bx+8Y51bvCq6swoLHv77yyCBYw6VAcqPHcxFDQDrXmWW+6hhExhHfmf1NjWo
-         K0eQ==
+        d=linaro.org; s=google; t=1696089196; x=1696693996; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/2uVIZFE3aqCQS1tNVd83Z0RiNW7hSOeczOsLxQAFFU=;
+        b=shq+ZTeyMPY+oc3CaoO4atJOOJtMRN8QOjRkBNOSPc6hNIPU15somPdNVNeZPEZk4G
+         pAn2bAaNBb5BXOYtsuIl7bGVx1xz2iAAnmgwHt2lRYJ0JmWX67Q5RBhVjnthLRp1JSIA
+         04cRB95iqQHWXwA2DWUe+itfGcXk0ZRfhfke5+vngPq9HHq0vs6PnCnhKpRiqBzaHSK/
+         Z3oLLwOyXcBG/NV1z+x01uBXTVzC82tA03k4dxFXUm6+05vcD/XgB6PvONyz4S5S34Yf
+         25TN4d4sVeQOMxHnvFpBxSKUbpCWfirLM5hQZEhRSM65v3pISlaCMKc5uVOuvioMsmLZ
+         x+lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696089147; x=1696693947;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=M0XspksAE2e3KjyehDjBT4XLAJOfx8ADuKgTmVoQcrE=;
-        b=kZovwFi7fv6zpY1ijV7GQl4wh1De0LH3jCSEdVhyqLZLmaePdG29K0WipDdcRWrZOr
-         u4A5NuNZv+Bhiu6K1sQNEuDyO1VXLouFzPwqotFyslV7bCYdHMJ06Ut4TwtiEJogjwbE
-         d01/MhuogO/5aEM2OZadgo25+cjdayI8nbKrrNqEdweqCFhCg3VHFeGlZugwXTqHxi4P
-         5N1txA0SMH5Kas5QLe61Bfdqpuu/y205Ogt3g9kLzpGJ1h6L40BSvmcFuNIzHzhz7I9z
-         fwbpsA5HZoT5AoO/cuOxu6G8YgqDGDVltxzMq0Y1CxsIJBMlqTrWT2sZmyzLn5Byrm4l
-         YlIg==
-X-Gm-Message-State: AOJu0YydgW13Vog0qpvX9Qtr0pYyWWn2AZHedXGjqEjRRQqG6/G+KNzz
-        4qOpJwhvh3By+ycYdLcTfP82cA==
-X-Google-Smtp-Source: AGHT+IGmTrC3eVad18TjYVPEym5FoXviWal1NrrN2JI6HE5A3LhZDhYqnbrD4Y6JoJvjv56g/OUUaA==
-X-Received: by 2002:a17:906:74cc:b0:9a1:edfd:73b2 with SMTP id z12-20020a17090674cc00b009a1edfd73b2mr6817091ejl.2.1696089147331;
-        Sat, 30 Sep 2023 08:52:27 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696089196; x=1696693996;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/2uVIZFE3aqCQS1tNVd83Z0RiNW7hSOeczOsLxQAFFU=;
+        b=eudX/wCd3vGRF1d4e4wW0T0quzU2H3qFY4ppyxSBUNDdJO8RhsKeXJ7ZprHKqHsKR9
+         jbhLkHKJwfFQzokp6QgPe8o71Zx7TJyhpmEGF5ijyPE/p9XEiu7o0iBwCCUnb3wq3pXd
+         M7M/c+aAcCzdbwcAR79QLFnD1HWcxKLYwiIByJaYRBO4PKhC/IZOs/gh8+QrdIJH1KF7
+         3WVk87tmULA506UY02uOaX32e6SOtLU3pHOXI34XmsjrsmkdlwBN5oCBwq/2T/xm4DFe
+         j4tw4AGk6gri9PZ6goI/R+6/duUjM46mEjmFFtqqrdmVSvxqjDQdvuaIG1xUPaK5A1xj
+         KVpw==
+X-Gm-Message-State: AOJu0YxLMplrbGkkT6kKoRqLTlmEg4oYvd45NyDTFmgXmncpNA2i4qaJ
+        UKvH43P4pDrD4XfoHKcajnuLQQ==
+X-Google-Smtp-Source: AGHT+IHv04U+mJ7vZ5Z31pa8YFrhhYBt1IRl/UG6TdlATssdiEqeZL9SEyqOLQu437jPM/gAdYnhCw==
+X-Received: by 2002:a17:906:8a47:b0:994:4095:3abf with SMTP id gx7-20020a1709068a4700b0099440953abfmr6288847ejc.14.1696089196387;
+        Sat, 30 Sep 2023 08:53:16 -0700 (PDT)
 Received: from [192.168.8.76] ([88.155.12.231])
-        by smtp.gmail.com with ESMTPSA id lf11-20020a170907174b00b009ad81554c1bsm14108157ejc.55.2023.09.30.08.52.21
+        by smtp.gmail.com with ESMTPSA id lf11-20020a170907174b00b009ad81554c1bsm14108157ejc.55.2023.09.30.08.53.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Sep 2023 08:52:26 -0700 (PDT)
-Message-ID: <924f8334-f4d3-4c41-b8c2-08f1a15c7fa0@linaro.org>
-Date:   Sat, 30 Sep 2023 17:52:18 +0200
+        Sat, 30 Sep 2023 08:53:16 -0700 (PDT)
+Message-ID: <51abc760-8d6a-41b6-8a10-e03be5edc486@linaro.org>
+Date:   Sat, 30 Sep 2023 17:53:11 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: usb: Add T-HEAD TH1520 USB controller
+Subject: Re: [PATCH 0/4] Add C3 SoC PLLs and Peripheral clock
 Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Jisheng Zhang <jszhang@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+To:     Xianwei Zhao <xianwei.zhao@amlogic.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>,
-        Fu Wei <wefu@redhat.com>, linux-riscv@lists.infradead.org
-References: <20230927164222.3505-1-jszhang@kernel.org>
- <20230927164222.3505-2-jszhang@kernel.org>
- <08760c32-fee0-4681-92f2-56003cadad0a@linaro.org>
+        Kevin Hilman <khilman@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+References: <20230928063448.3544464-1-xianwei.zhao@amlogic.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
@@ -114,40 +114,37 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <08760c32-fee0-4681-92f2-56003cadad0a@linaro.org>
+In-Reply-To: <20230928063448.3544464-1-xianwei.zhao@amlogic.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/09/2023 07:21, Krzysztof Kozlowski wrote:
-> Drop stray blank line
+On 28/09/2023 08:34, Xianwei Zhao wrote:
+> Add C3 SoC PLLs and Peripheral clock controller dt-bindings.
+> Add PLLs and Peripheral clock controller driver for C3 SOC.
 > 
->> +    usb {
->> +          compatible = "thead,th1520-usb";
+> Xianwei Zhao (4):
+>   dt-bindings: clock: add Amlogic C3 PLL clock controller bindings
+>   dt-bindings: clock: add Amlogic C3 peripherals clock controller
+>     bindings
+>   clk: meson: C3: add support for the C3 SoC PLL clock
+>   clk: meson: c3: add c3 clock peripherals controller driver
 > 
-> Use 4 spaces for example indentation.
-> 
->> +          reg = <0xec03f000 0x1000>;
->> +          clocks = <&clk 1>,
->> +                   <&clk 2>,
->> +                   <&clk 3>,
->> +                   <&clk 4>;
->> +          clock-names = "ref", "bus_early", "phy", "suspend";
->> +          ranges;
-> 
-> Are you sure you do not have W=1 warnings in DTS?
 
-Ah, as we can see from bot's report, you have warnings. Please test your
-DTS with dtbs_check W=1 and fix all (*ALL*) warnings.
+This was absolutely never tested :(
 
-This looks like missing proper addresses in the ranges.
+It does not look like you tested the bindings, at least after quick
+look. Please run `make dt_binding_check` (see
+Documentation/devicetree/bindings/writing-schema.rst for instructions).
+Maybe you need to update your dtschema and yamllint.
 
 Best regards,
 Krzysztof
