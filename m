@@ -2,192 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 397E07B445A
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 00:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0637B4479
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 00:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233897AbjI3WCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 18:02:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
+        id S234140AbjI3WTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 18:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbjI3WCD (ORCPT
+        with ESMTP id S234028AbjI3WTg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 18:02:03 -0400
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91AC7CA;
-        Sat, 30 Sep 2023 15:02:01 -0700 (PDT)
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-27763c2c22eso7941726a91.3;
-        Sat, 30 Sep 2023 15:02:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696111321; x=1696716121;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FeR5T76ZTZxvMCUfz5YBmfd55MUtP2rm54Tv0PEqVko=;
-        b=jxsFaykwp58tXh7pGzOntCyv8ZjeCZ42ePDOJTifPNGztPWUvRLa/jxE0SLe2/Ou/U
-         tSSgb7Rb2umD/7T5TPwyXdhmimqJo8ZZiH1O54ti3VQxalagXonwNQvF4yCJFMdCoXCM
-         3X8AUJM8xdjy8Ylwg/5K/17OznRDRggxrlJxWdxJaq06EJeXu50saexc4MsbjWNI8VDb
-         APt0EIsrhiDjhYnoABcZlJP9x78meeZ3/VC22SXGt1QoRzUqBroYkEPQnth6vB7W2AyZ
-         iunGl9ZGqQY1v5UYBnK7CRYU0jKGFOfSeKyVtdtVuwry2hk0Q42q1QRF5zZtX3O3AYPz
-         DUag==
-X-Gm-Message-State: AOJu0Yyf3WJ5LdyjErj75ijtAdaUe9fTRYbvOp5tO6opwS6VuXYhnW3F
-        QD9COwxoNU3UxyaTv4Lbr9Y=
-X-Google-Smtp-Source: AGHT+IGMvC2zEatQKS7y1gd4yv3/ZntbuZf7hxKHO/sCNP9K7IutMwyZgqQ2h5/QzBmBsl2VNuZdMA==
-X-Received: by 2002:a17:90a:ea86:b0:277:1070:74a2 with SMTP id h6-20020a17090aea8600b00277107074a2mr6924409pjz.23.1696111320973;
-        Sat, 30 Sep 2023 15:02:00 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id c3-20020a17090abf0300b0026b70d2a8a2sm3582958pjs.29.2023.09.30.15.01.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 15:02:00 -0700 (PDT)
-Date:   Sat, 30 Sep 2023 22:01:58 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        haiyangz@microsoft.com, decui@microsoft.com,
-        apais@linux.microsoft.com, Tianyu.Lan@microsoft.com,
-        ssengar@linux.microsoft.com, mukeshrathor@microsoft.com,
-        stanislav.kinsburskiy@gmail.com, jinankjain@linux.microsoft.com,
-        vkuznets@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        will@kernel.org, catalin.marinas@arm.com
-Subject: Re: [PATCH v4 13/15] uapi: hyperv: Add mshv driver headers defining
- hypervisor ABIs
-Message-ID: <ZRia1uyFfEkSqmXw@liuwe-devbox-debian-v2>
-References: <1696010501-24584-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1696010501-24584-14-git-send-email-nunodasneves@linux.microsoft.com>
- <2023093057-eggplant-reshoot-8513@gregkh>
+        Sat, 30 Sep 2023 18:19:36 -0400
+X-Greylist: delayed 356 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 30 Sep 2023 15:19:31 PDT
+Received: from out-196.mta0.migadu.com (out-196.mta0.migadu.com [IPv6:2001:41d0:1004:224b::c4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFDDDFE
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 15:19:31 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ansari.sh; s=key1;
+        t=1696112012;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=IQtLpN/lGvFKa62keccBQlCiMRFzl9uuLDsEFrnDd3s=;
+        b=R/rzKaAGKHI13R/ACYAWNSpDaCIxlVN3yCK/AWg7Y3mhDof1UybCwE/7sFWBx3TYKFjHqh
+        w05svhyspJx5LKV7dnrFtA4Ey+0WNKOFf6KPmyEiUekmHQwHCCoWwKt9O/Z1jrLx8L7zXz
+        H5AUzwk5ZNT+CL7H8hbGWu4CeqL93lI=
+From:   Rayyan Ansari <rayyan@ansari.sh>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Rayyan Ansari <rayyan@ansari.sh>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: [PATCH v3 0/6] Initial support for MSM8x26 Lumias
+Date:   Sat, 30 Sep 2023 23:07:55 +0100
+Message-ID: <20230930221323.101289-1-rayyan@ansari.sh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023093057-eggplant-reshoot-8513@gregkh>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 08:09:19AM +0200, Greg KH wrote:
-> On Fri, Sep 29, 2023 at 11:01:39AM -0700, Nuno Das Neves wrote:
-> > These must be in uapi because they will be used in the mshv ioctl API.
-> > 
-> > Version numbers for each file:
-> > hvhdk.h		25212
-> > hvhdk_mini.h	25294
-> > hvgdk.h		25125
-> > hvgdk_mini.h	25294
-> 
-> what are version numbers?
+Hello,
 
-These are internal version numbers for the hypervisor headers. We keep
-track of them so that we can detect if there are any breakages in the
-ABI, and thus either ask them to be fixed or we come up with ways to
-maintain compatibility. People outside of Microsoft don't need to worry
-about this. If you don't think this information belongs in the commit
-message, we can drop it.
+The following patches: 
+- Add device tree files for Nokia/Microsoft Lumia phones based around
+  the MSM8x26 family of Qualcomm chipsets, utilising a common tree 
+- Document this support
 
-> 
-> > These are unstable interfaces and as such must be compiled independently
-> > from published interfaces found in hyperv-tlfs.h.
-> 
-> uapi files can NOT be unstable, that's the opposite of an api :(
-> 
+v1: https://lore.kernel.org/linux-arm-msm/20230811213728.23726-1-rayyan@ansari.sh/
+v2: https://lore.kernel.org/linux-arm-msm/20230813152623.64989-1-rayyan@ansari.sh/
 
-You made a few suggestions in the past. Nuno responded here:
+Changes in v2:
+- Fix style issues and CHECK_DTBS warnings
+- Squash common dt commit with a device commit
+- Use both msm8926 and msm8226 compatibles for msm8926 devices
 
-https://lore.kernel.org/linux-hyperv/1692309711-5573-1-git-send-email-nunodasneves@linux.microsoft.com/T/#m3dd8035e381a1344acd7f570c3f5921b7415bedb
+Changes in v3:
+- Fix commit tags
+- More style fixes
+- Delete by label instead of path
 
-> > Signed-off-by: Nuno Das Neves <nunodasneves@linux.microsoft.com>
-> > Acked-by: Wei Liu <wei.liu@kernel.org>
-> > ---
-> >  include/uapi/hyperv/hvgdk.h      |   41 +
-> >  include/uapi/hyperv/hvgdk_mini.h | 1076 ++++++++++++++++++++++++
-> >  include/uapi/hyperv/hvhdk.h      | 1342 ++++++++++++++++++++++++++++++
-> >  include/uapi/hyperv/hvhdk_mini.h |  160 ++++
-> >  4 files changed, 2619 insertions(+)
-> >  create mode 100644 include/uapi/hyperv/hvgdk.h
-> >  create mode 100644 include/uapi/hyperv/hvgdk_mini.h
-> >  create mode 100644 include/uapi/hyperv/hvhdk.h
-> >  create mode 100644 include/uapi/hyperv/hvhdk_mini.h
-> > 
-> > diff --git a/include/uapi/hyperv/hvgdk.h b/include/uapi/hyperv/hvgdk.h
-> > new file mode 100644
-> > index 000000000000..9bcbb7d902b2
-> > --- /dev/null
-> > +++ b/include/uapi/hyperv/hvgdk.h
-> > @@ -0,0 +1,41 @@
-> > +/* SPDX-License-Identifier: MIT */
-> 
-> That's usually not a good license for a new uapi .h file, why did you
-> choose this one?
-> 
+Rayyan Ansari (6):
+  dt-bindings: arm: qcom: Document MSM8x26-based Lumia phones
+  ARM: dts: qcom: add common dt for MSM8x26 Lumias along with Nokia
+    Lumia 630
+  ARM: dts: qcom: add device tree for Microsoft Lumia 640
+  ARM: dts: qcom: add device tree for Microsoft Lumia 640 XL
+  ARM: dts: qcom: add device tree for Nokia Lumia 735
+  ARM: dts: qcom: add device tree for Nokia Lumia 830
 
-This is chosen so that other Microsoft developers who don't normally
-work on Linux can review this code.
+ .../devicetree/bindings/arm/qcom.yaml         |  10 +
+ arch/arm/boot/dts/qcom/Makefile               |   5 +
+ .../qcom/qcom-msm8226-microsoft-common.dtsi   | 327 ++++++++++++++++++
+ .../qcom/qcom-msm8226-microsoft-dempsey.dts   |  17 +
+ .../qcom/qcom-msm8226-microsoft-makepeace.dts |  17 +
+ .../qcom-msm8226-microsoft-moneypenny.dts     |  23 ++
+ .../qcom-msm8926-microsoft-superman-lte.dts   |  53 +++
+ .../dts/qcom/qcom-msm8926-microsoft-tesla.dts |  67 ++++
+ 8 files changed, 519 insertions(+)
+ create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-common.dtsi
+ create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-dempsey.dts
+ create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-makepeace.dts
+ create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8226-microsoft-moneypenny.dts
+ create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8926-microsoft-superman-lte.dts
+ create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8926-microsoft-tesla.dts
 
-> > +/* Define connection identifier type. */
-> > +union hv_connection_id {
-> > +	__u32 asu32;
-> > +	struct {
-> > +		__u32 id:24;
-> > +		__u32 reserved:8;
-> > +	} __packed u;
-> 
-> bitfields will not work properly in uapi .h files, please never do that.
+-- 
+2.42.0
 
-Can you clarify a bit more why it wouldn't work? Endianess? Alignment?
-Or something else?
-
-Just by eyeballing the header files under include/uapi, there are a
-non-trivial number of files that use bitfields.
-
-include/uapi/linux/cdrom.h
-include/uapi/linux/hdreg.h
-include/uapi/linux/if_pppox.h
-include/uapi/linux/adfs_fs.h
-include/uapi/linux/atm.h
-include/uapi/linux/batadv_packet.h
-include/uapi/linux/bpf.h
-include/uapi/linux/cciss_defs.h
-include/uapi/linux/dccp.h
-include/uapi/linux/erspan.h
-include/uapi/linux/i2o-dev.h
-include/uapi/linux/icmp.h
-include/uapi/linux/icmpv6.h
-include/uapi/linux/idxd.h
-include/uapi/linux/if_hippi.h
-include/uapi/linux/igmp.h
-include/uapi/linux/inet_diag.h
-include/uapi/linux/ioam6.h
-include/uapi/linux/ip.h
-include/uapi/linux/netfilter/xt_policy.h
-include/uapi/linux/perf_event.h
-include/uapi/linux/rpl.h
-include/uapi/linux/tcp.h
-include/uapi/linux/usb/raw_gadget.h
-include/uapi/linux/watch_queue.h
-include/uapi/scsi/scsi_bsg_ufs.h
-include/uapi/sound/asound.h
-include/uapi/sound/skl-tplg-interface.h
-
-Also under arch/x86/include/uapi/asm:
-
-arch/x86/include/uapi/asm/kvm.h
-
-Can you help us understand how we can make our code work like the others
-listed above? There must be a way since they are all in the tree. We're
-happy to make adjustments.
-
-Thanks,
-Wei.
-
-> 
-> thanks,
-> 
-> greg k-h
