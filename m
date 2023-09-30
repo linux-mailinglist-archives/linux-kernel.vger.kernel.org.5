@@ -2,89 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE307B3E87
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 07:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAD97B3E8A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 07:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234022AbjI3FxD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 30 Sep 2023 01:53:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37920 "EHLO
+        id S234015AbjI3F70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 01:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbjI3FxC (ORCPT
+        with ESMTP id S229766AbjI3F7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 01:53:02 -0400
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303D6B3;
-        Fri, 29 Sep 2023 22:52:58 -0700 (PDT)
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-79fb78e297bso410726439f.0;
-        Fri, 29 Sep 2023 22:52:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696053178; x=1696657978;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OgL4mgIUCB3+3iorD5Xfn3R15O+SpyDpvRSN+ix3xsI=;
-        b=lZGL/YLTgPABwJvNRwg+U3AoU2Fk2YO14fQei2dUiW1Z/QMzt4WevQa2QoOOA6j7Ol
-         5gM2Hc4rRpIlHcaoSGbS1L9IDfrPgjUde+ZlMoW2/eWAxfl5pYp3GzLvk7+55MatYH34
-         vX2IRkRu4AyoAVC1dag2Qa15EgDspmQODU/Vaq56QAvO5IB15t7g28gvEqCPU7cBVuX5
-         /VX+Lz/yidGJUr+ZMBhg7EBNfdh4gpFnvy+WWjSpxo5A4JtzlvQ8ijsfPr0hJxBhjrvn
-         eCJuBsCTlCp3T5gqIgZ9VB3yPFYrcSFWAcTyo9JK0L757JOGNNIvxmwMUYac63zJdNEw
-         HUwg==
-X-Gm-Message-State: AOJu0Yw7I1fh3DbBTHgkW4IiMWIKJ83zE5w7PA8zlV0+B8RTBzT7vcxi
-        U9+Jl0w9bL22aHhQ8fhfvTUQgcVJA6M4HSxM/aw=
-X-Google-Smtp-Source: AGHT+IEWGh0PEJQMYm7c1DxqOI+Qgx/21NB+oD5KIoFL78pxtoMhWJQolIFXxa2+/NSxrZB5zyzJtqoRQ7ea00LyWg8=
-X-Received: by 2002:a5e:dc44:0:b0:78b:d0a9:34fb with SMTP id
- s4-20020a5edc44000000b0078bd0a934fbmr6395308iop.20.1696053178067; Fri, 29 Sep
- 2023 22:52:58 -0700 (PDT)
+        Sat, 30 Sep 2023 01:59:24 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FB51AB;
+        Fri, 29 Sep 2023 22:59:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36A14C43395;
+        Sat, 30 Sep 2023 05:59:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696053561;
+        bh=fEN/S6mVsSDNV0g4PBlvUaE2VUJdNNjgVZ+Xtar4unE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jr7i7wgkNdL6Y8zEWyvi5nBrCFgRd7bSuk6cLgxK67kkorEKo48vijY4DenStKNc9
+         pwG5cS56mxBLCh8ucvI8a1Mzidbx+V4E2jQahFgerDpxwNk2vfOsYpKDpqsbnO4F5s
+         Z3OkmpQepD5VNw99P29rkUOriPTvtdRrW7pbWN+r6VirTBO+Qc3bB9Kai6EWixggKW
+         qf6CyA1Nzqy3OO831ByicN9VkrFBzv/su7MdxK4cYLZyVAS6HDX7qLKfujLpoKdoCn
+         Sx8ellEqDgmvSxdf6blQmCx5l6XA7V13adGOZUMnOdTxunY3IECNF5FzQreRYG11Hw
+         HabW0qll/rgNg==
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-1dce0c05171so6648989fac.3;
+        Fri, 29 Sep 2023 22:59:21 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yzd2TqML4IZCZRj6k5n2ENUh3AF/E1d35FRRqbSH/1/Qr1q7eNA
+        73CttS6kUF4debVsepqNWuXs16rklq56ClWSLNk=
+X-Google-Smtp-Source: AGHT+IFKcDm5fCe1sGczV8wBd4zz/FAmio9dMBK8EbaraHgpWebWUkbRDlLwZeet8rw3+QxNOAa9smfzO/vfW/H4jC8=
+X-Received: by 2002:a05:6870:2216:b0:1c0:937:455d with SMTP id
+ i22-20020a056870221600b001c00937455dmr6904202oaf.47.1696053560507; Fri, 29
+ Sep 2023 22:59:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <1695794391-34817-1-git-send-email-renyu.zj@linux.alibaba.com>
-In-Reply-To: <1695794391-34817-1-git-send-email-renyu.zj@linux.alibaba.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 29 Sep 2023 22:52:46 -0700
-Message-ID: <CAM9d7chjTuypUywbxfo9fKsJaDrJYE1YuLWdXX9AkFi58JBnew@mail.gmail.com>
-Subject: Re: [PATCH v11 0/7] Add metrics for Arm CMN
-To:     Jing Zhang <renyu.zj@linux.alibaba.com>
-Cc:     John Garry <john.g.garry@oracle.com>,
-        Ian Rogers <irogers@google.com>, Will Deacon <will@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-doc@vger.kernel.org,
-        Zhuo Song <zhuo.song@linux.alibaba.com>,
-        Shuai Xue <xueshuai@linux.alibaba.com>
+References: <20230928194801.2278999-1-mmaurer@google.com>
+In-Reply-To: <20230928194801.2278999-1-mmaurer@google.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 30 Sep 2023 14:58:43 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQP9FVCArnw=JDBbtbu-3bxx162kqT24bUbffPtwE18uA@mail.gmail.com>
+Message-ID: <CAK7LNAQP9FVCArnw=JDBbtbu-3bxx162kqT24bUbffPtwE18uA@mail.gmail.com>
+Subject: Re: [PATCH v3] rust: Respect HOSTCC when linking for host
+To:     Matthew Maurer <mmaurer@google.com>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        Andreas Hindborg <a.hindborg@samsung.com>,
+        Alice Ryhl <aliceryhl@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
+        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 11:00 PM Jing Zhang <renyu.zj@linux.alibaba.com> wrote:
+On Fri, Sep 29, 2023 at 4:48=E2=80=AFAM Matthew Maurer <mmaurer@google.com>=
+ wrote:
 >
-> Changes since v10:
-> - Fixed conflict.
-> - Add tags.
-> -Link: https://lore.kernel.org/all/1695621444-56530-1-git-send-email-renyu.zj@linux.alibaba.com/
+> Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defined,
+> resulting in build failures in hermetic environments where `cc` does not
+> exist. This includes both hostprogs and proc-macros.
 >
-> Jing Zhang (7):
->   perf pmu: "Compat" supports regular expression matching identifiers
->   perf metric: "Compat" supports regular expression matching identifiers
->   perf jevents: Support EventidCode and NodeType
->   perf test: Make matching_pmu effective
->   perf test: Add pmu-event test for "Compat" and new event_field.
->   perf jevents: Add support for Arm CMN PMU aliasing
->   perf vendor events: Add JSON metrics for Arm CMN
+> Since we are setting the linker to `HOSTCC`, we set the linker flavor to
+> `gcc` explicitly. The linker-flavor selects both which linker to search
+> for if the linker is unset, and which kind of linker flags to pass.
+> Without this flag, `rustc` would attempt to determine which flags to
+> pass based on the name of the binary passed as `HOSTCC`. `gcc` is the
+> name of the linker-flavor used by `rustc` for all C compilers, including
+> both `gcc` and `clang`.
+>
+> Signed-off-by: Matthew Maurer <mmaurer@google.com>
+> ---
+>  rust/Makefile         | 2 ++
+>  scripts/Makefile.host | 2 ++
+>  2 files changed, 4 insertions(+)
+>
+> diff --git a/rust/Makefile b/rust/Makefile
+> index 87958e864be0..da664d7aed51 100644
+> --- a/rust/Makefile
+> +++ b/rust/Makefile
+> @@ -383,6 +383,8 @@ $(obj)/exports_kernel_generated.h: $(obj)/kernel.o FO=
+RCE
+>  quiet_cmd_rustc_procmacro =3D $(RUSTC_OR_CLIPPY_QUIET) P $@
+>        cmd_rustc_procmacro =3D \
+>         $(RUSTC_OR_CLIPPY) $(rust_common_flags) \
+> +               -Clinker-flavor=3Dgcc -Clinker=3D$(HOSTCC) \
+> +               -Clink-args=3D'$(subst ','\'',$(KBUILD_HOSTLDFLAGS))' \
 
-Applied to perf-tools-next, thanks!
+
+
+Why not consistently use the escsq macro here too ?
+
+
+
+
+
+
+>                 --emit=3Ddep-info=3D$(depfile) --emit=3Dlink=3D$@ --exter=
+n proc_macro \
+>                 --crate-type proc-macro \
+>                 --crate-name $(patsubst lib%.so,%,$(notdir $@)) $<
+> diff --git a/scripts/Makefile.host b/scripts/Makefile.host
+> index 8f7f842b54f9..08d83d9db31a 100644
+> --- a/scripts/Makefile.host
+> +++ b/scripts/Makefile.host
+> @@ -91,6 +91,8 @@ hostcxx_flags  =3D -Wp,-MMD,$(depfile) \
+>  # current working directory, which may be not accessible in the out-of-t=
+ree
+>  # modules case.
+>  hostrust_flags =3D --out-dir $(dir $@) --emit=3Ddep-info=3D$(depfile) \
+> +                -Clinker-flavor=3Dgcc -Clinker=3D$(HOSTCC) \
+> +                -Clink-args=3D'$(call escsq,$(KBUILD_HOSTLDFLAGS))' \
+>                   $(KBUILD_HOSTRUSTFLAGS) $(HOST_EXTRARUSTFLAGS) \
+>                   $(HOSTRUSTFLAGS_$(target-stem))
+>
+> --
+> 2.42.0.582.g8ccd20d70d-goog
+>
+
+
+--
+Best Regards
+Masahiro Yamada
