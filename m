@@ -2,115 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4762D7B43AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 23:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B530F7B43D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 23:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233961AbjI3VBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 17:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
+        id S234150AbjI3VKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 17:10:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbjI3VBR (ORCPT
+        with ESMTP id S233980AbjI3VKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 17:01:17 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED7C4DA
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 14:01:14 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id 46e09a7af769-6bd04558784so9265137a34.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 14:01:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696107674; x=1696712474; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=27IFQu1p2zMt99rhR1KNh/9hYoodXsLNJNCuaLad3CU=;
-        b=mC1plnhN4obD+IInLbOK4yXBMt5I6FMCWPwGOanr+jskgKt0UfxY9VyzjJ804y3+X6
-         OIZK7uv3zwDA9kx4d65wiwqaSS8oTG/1zJQjJjHybNRhFTEdqM4QoY6xbHDcI3JWfQH2
-         mOlUj2i6ngRz0f7nwHu0Tv3XlqmenExAg5njs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696107674; x=1696712474;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=27IFQu1p2zMt99rhR1KNh/9hYoodXsLNJNCuaLad3CU=;
-        b=N0DoH3LQfqj7qHezEClGSAQhymK0F6X/cA+0HyWiYJBMsGff5zZT55+v1uN1G+IHYE
-         VXCbzH/u6jJJTtULaCh3Nw1laywdxtcB2xwgBK3/zQWY8QjktZXry1kFuarCTV1Ms0Sx
-         FXKetYFBG/hwuMZAAiIrWP7/ayHuDJPl0Cg72OyOdkl7xVlHkLvSwGLKkK2cPabxltpE
-         FiD0fQyh1FqiNAXmNGo0TsKJ+q1bDGHy2I7pJuIvI6r1UAc2+DqHUZ7QXKc3BW28cLtL
-         WU81yN0pHKlzLj5D1ZNjBhM0nT/x4EeCBP2hFBUJW/TfdTEONLZHJoeDPtkH3DJAVc0C
-         lv0Q==
-X-Gm-Message-State: AOJu0YwLndM205Z6400ZVWc59jjZPwh5fxsognlk7fTkT9xG7JTA9rcB
-        qRRqMcP1XItEnV9eyfXMoIugWg==
-X-Google-Smtp-Source: AGHT+IFeOcxaHIbtr3OOPjBvPc8vpAIKWTbtjxf4uBFCfxJieFURN+yasje/os/U6MRlxkFgpLgoBg==
-X-Received: by 2002:a05:6830:2091:b0:6c4:c607:7346 with SMTP id y17-20020a056830209100b006c4c6077346mr8189210otq.23.1696107674143;
-        Sat, 30 Sep 2023 14:01:14 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ey1-20020a056a0038c100b0068a13b0b300sm17483758pfb.11.2023.09.30.14.01.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 14:01:13 -0700 (PDT)
-Date:   Sat, 30 Sep 2023 14:01:11 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] riscv: mm: Update mmap_rnd_bits_max
-Message-ID: <202309301400.4E1AD87@keescook>
-References: <20230929211155.3910949-4-samitolvanen@google.com>
- <20230929211155.3910949-6-samitolvanen@google.com>
- <202309291452.66ED9B4D83@keescook>
- <CABCJKufxUVoO+yJ+513W5FOFu6u45N=6wZe6a69u+8LU6A_N2Q@mail.gmail.com>
- <20230930-emporium-share-2bbdf7074e54@spud>
+        Sat, 30 Sep 2023 17:10:35 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FDF4E3;
+        Sat, 30 Sep 2023 14:10:31 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id DC8D8100003;
+        Sun,  1 Oct 2023 00:10:27 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru DC8D8100003
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1696108227;
+        bh=jMRqqJ1cS+t7jOx0bPvcOZRVJEpnD1obaP6bDeXm6Oc=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=QGbIK0S5QfekicXxDqkwxLbxW/io0IKJYu0aJCVDvpgaMEK9rEFSnhLCkMAfreSsw
+         hbmi6p8KjwQOgFkP94SGUmX8T+ZRYxyEWgFK1lBPJTmRMayFSxKYU+VbYtvHoP31gC
+         uaHcyDYGnpNdHWvx7quVv9dqL4rmiPwwRXiuyAsC8e73GAl9aZNeDkM2QgbkmvNUKG
+         LNLZP7kYg9M75/esBjbPWs88453dddEuyXyAd2jDmMWXjslS2Fv5Ln+z+bQqq8SpmK
+         KpvuzBxCtyllnPYSQ/x4yP31fG4zjNCsQsaf5c00BOrbwQLyirFOAiXpIj9qvi+Sa/
+         cjFbxBHFt9toA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Sun,  1 Oct 2023 00:10:26 +0300 (MSK)
+Received: from localhost.localdomain (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Sun, 1 Oct 2023 00:10:26 +0300
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>,
+        <avkrasnov@salutedevices.com>
+Subject: [PATCH net-next v2 00/12] vsock/virtio: continue MSG_ZEROCOPY support
+Date:   Sun, 1 Oct 2023 00:02:56 +0300
+Message-ID: <20230930210308.2394919-1-avkrasnov@salutedevices.com>
+X-Mailer: git-send-email 2.35.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230930-emporium-share-2bbdf7074e54@spud>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 180254 [Sep 30 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, lore.kernel.org:7.1.1;git.kernel.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/09/30 20:08:00
+X-KSMG-LinksScanning: Clean, bases: 2023/09/30 20:07:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/30 19:49:00 #22015058
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 10:02:35AM +0100, Conor Dooley wrote:
-> On Fri, Sep 29, 2023 at 03:52:22PM -0700, Sami Tolvanen wrote:
-> > On Fri, Sep 29, 2023 at 2:54 PM Kees Cook <keescook@chromium.org> wrote:
-> > >
-> > > On Fri, Sep 29, 2023 at 09:11:58PM +0000, Sami Tolvanen wrote:
-> > > > ARCH_MMAP_RND_BITS_MAX is based on Sv39, which leaves a few
-> > > > potential bits of mmap randomness on the table if we end up enabling
-> > > > 4/5-level paging. Update mmap_rnd_bits_max to take the final address
-> > > > space size into account. This increases mmap_rnd_bits_max from 24 to
-> > > > 33 with Sv48/57.
-> > > >
-> > > > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> > >
-> > > I like this. Is RISCV the only arch where the paging level can be chosen
-> > > at boot time?
-> > 
-> > I haven't seen this elsewhere, but I also haven't looked at all the
-> > other architectures that closely. arm64 does something interesting
-> > with ARM64_VA_BITS_52, but I think we can still handle that in
-> > Kconfig.
-> 
-> AFAIU, x86-64 can do this also:
-> 
-> 	no4lvl		[RISCV] Disable 4-level and 5-level paging modes. Forces
-> 			kernel to use 3-level paging instead.
-> 
-> 	no5lvl		[X86-64,RISCV] Disable 5-level paging mode. Forces
-> 			kernel to use 4-level paging instead.
+Hello,
 
-Ah-ha! Okay, well, then let's track this idea:
-https://github.com/KSPP/linux/issues/346
+this patchset contains second and third parts of another big patchset
+for MSG_ZEROCOPY flag support:
+https://lore.kernel.org/netdev/20230701063947.3422088-1-AVKrasnov@sberdevices.ru/
 
+During review of this series, Stefano Garzarella <sgarzare@redhat.com>
+suggested to split it for three parts to simplify review and merging:
+
+1) virtio and vhost updates (for fragged skbs) (merged to net-next, see
+   link below)
+2) AF_VSOCK updates (allows to enable MSG_ZEROCOPY mode and read
+   tx completions) and update for Documentation/. <-- this patchset
+3) Updates for tests and utils. <-- this patchset
+
+Part 1) was merged:
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=71b263e79370348349553ecdf46f4a69eb436dc7
+
+Head for this patchset is:
+https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=236f3873b517acfaf949c23bb2d5dec13bfd2da2
+
+Link to v1:
+https://lore.kernel.org/netdev/20230922052428.4005676-1-avkrasnov@salutedevices.com/
+
+Changelog:                                                              
+ v1 -> v2:                                                              
+ * Patchset rebased and tested on new HEAD of net-next (see hash above).
+ * See per-patch changelog after ---. 
+
+Arseniy Krasnov (12):
+  vsock: set EPOLLERR on non-empty error queue
+  vsock: read from socket's error queue
+  vsock: check for MSG_ZEROCOPY support on send
+  vsock: enable SOCK_SUPPORT_ZC bit
+  vhost/vsock: support MSG_ZEROCOPY for transport
+  vsock/virtio: support MSG_ZEROCOPY for transport
+  vsock/loopback: support MSG_ZEROCOPY for transport
+  vsock: enable setting SO_ZEROCOPY
+  docs: net: description of MSG_ZEROCOPY for AF_VSOCK
+  test/vsock: MSG_ZEROCOPY flag tests
+  test/vsock: MSG_ZEROCOPY support for vsock_perf
+  test/vsock: io_uring rx/tx tests
+
+ Documentation/networking/msg_zerocopy.rst |  13 +-
+ drivers/vhost/vsock.c                     |   7 +
+ include/linux/socket.h                    |   1 +
+ include/net/af_vsock.h                    |   7 +
+ include/uapi/linux/vm_sockets.h           |   4 +
+ net/vmw_vsock/af_vsock.c                  |  63 ++++-
+ net/vmw_vsock/virtio_transport.c          |   7 +
+ net/vmw_vsock/vsock_loopback.c            |   6 +
+ tools/testing/vsock/Makefile              |   9 +-
+ tools/testing/vsock/util.c                | 214 +++++++++++++++
+ tools/testing/vsock/util.h                |  27 ++
+ tools/testing/vsock/vsock_perf.c          | 143 +++++++++-
+ tools/testing/vsock/vsock_test.c          |  16 ++
+ tools/testing/vsock/vsock_test_zerocopy.c | 314 +++++++++++++++++++++
+ tools/testing/vsock/vsock_test_zerocopy.h |  15 +
+ tools/testing/vsock/vsock_uring_test.c    | 321 ++++++++++++++++++++++
+ 16 files changed, 1151 insertions(+), 16 deletions(-)
+ create mode 100644 tools/testing/vsock/vsock_test_zerocopy.c
+ create mode 100644 tools/testing/vsock/vsock_test_zerocopy.h
+ create mode 100644 tools/testing/vsock/vsock_uring_test.c
 
 -- 
-Kees Cook
+2.25.1
+
