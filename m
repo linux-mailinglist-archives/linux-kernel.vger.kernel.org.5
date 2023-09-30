@@ -2,51 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E897B41EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA70F7B41F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbjI3QEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 12:04:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
+        id S234471AbjI3QEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 12:04:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231715AbjI3QEH (ORCPT
+        with ESMTP id S234460AbjI3QEe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 12:04:07 -0400
+        Sat, 30 Sep 2023 12:04:34 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2027B7;
-        Sat, 30 Sep 2023 09:04:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67C38C433C7;
-        Sat, 30 Sep 2023 16:04:01 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F5CBE
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 09:04:32 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 144A7C433C7;
+        Sat, 30 Sep 2023 16:04:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696089844;
-        bh=uy+s2jrSaGO7rlv5j1HDB4iBkZhkxdyHSs6a8nZrnvI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=WlY+Qbc6QW4pVr2HwYC/satbNiuDKVSmaXTfyXcHh9hJDKsYgRa24Be10WA89AVTp
-         gwW84YfhFLhUAQDfS3F8umAhIdR0fvLQqPPsZYJNlPWILqV/U8z9R+k3IqMqHwaUMH
-         CCCsz61/r8eVvD1h1U8x/6/KkxDZ4fqpthm04c345w1jmIYlj9zFc7kFx+M4PIYQOX
-         GvBi9/Epq4SsT+XFYK25bq/IgT+A0yzMVhqE+Vjvo7GI8WKkx9NdOn4bnZPfDcpinb
-         9o/NoshcW0Jc5whsKb11PoDrJXUiYw6YTp3LCFolELgh42gREsSspoLcaYXTWz/RPw
-         BwHtl3phKZf4g==
-Date:   Sat, 30 Sep 2023 17:04:04 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Ivan Mikhaylov <fr0st61te@gmail.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: adc: provide max34408/9 device tree
- binding document
-Message-ID: <20230930170404.515395b1@jic23-huawei>
-In-Reply-To: <f8735a6d81d485eb8e822e4fd55a00269ae688c2.camel@gmail.com>
-References: <20230917211143.7094-1-fr0st61te@gmail.com>
-        <20230917211143.7094-2-fr0st61te@gmail.com>
-        <20230924135359.6404a867@jic23-huawei>
-        <f8735a6d81d485eb8e822e4fd55a00269ae688c2.camel@gmail.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        s=k20201202; t=1696089872;
+        bh=6RkJeO80Y6I9k6A93GTmjkGFgNpYWb9OU4GsW1LTuYc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RcJAsXbE9a5DeIf+W8MB19aWP172gjnpP3lwAuggEBDqnEKXAJwmYCG6ImDppINAY
+         f6/q/GRNZ2e5Ma8pmzb2B888SrguU8F5MoxwHIILuAUfIaCRxLOdV9UcROOdH/OyQx
+         Cn+HPqALEhFGILZADjo60ed3ulIpl8eQQ1lRFkVZyN2ATRTSV7LBXZcKSNsUeXTuoU
+         w9Dm0ulg+qEGA6vJUKNqAp6xTPkBY8sPtIslKW+d8xslsUr+zOM7suKtKcH5CTdL8S
+         Rn4qi5uI6q0Y85znGNOjKYdYHYj+9D4+HoHittc7tGLxOdd+/mPl+GIw571L1DCt5t
+         xQ5G1AnDmR7dA==
+Date:   Sat, 30 Sep 2023 18:04:28 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Chengfeng Ye <dg573847474@gmail.com>
+Cc:     3chas3@gmail.com, davem@davemloft.net,
+        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] atm: solos-pci: Fix potential deadlock on
+ &cli_queue_lock and &tx_queue_lock
+Message-ID: <20230930160428.GB92317@kernel.org>
+References: <20230926104442.8684-1-dg573847474@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230926104442.8684-1-dg573847474@gmail.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,111 +50,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Sep 2023 19:48:39 +0300
-Ivan Mikhaylov <fr0st61te@gmail.com> wrote:
++ David Woodhouse <dwmw2@infradead.org>
 
-> On Sun, 2023-09-24 at 13:53 +0100, Jonathan Cameron wrote:
-> > On Mon, 18 Sep 2023 00:11:42 +0300
-> > Ivan Mikhaylov <fr0st61te@gmail.com> wrote:
-> >  =20
-> > > The i2c driver with Rsense option for current monitoring.
-> > >=20
-> > > Signed-off-by: Ivan Mikhaylov <fr0st61te@gmail.com> =20
-> >=20
-> > Hi Ivan,
-> >=20
-> > Welcome to IIO!
-> >=20
-> > Looks good, but there are a few things I'd add to make this describe
-> > the device
-> > a little more fully and flexibly.=C2=A0 Ideally we want a binding to fu=
-lly
-> > describe
-> > a device, even if the particular driver for Linux doesn't use all the
-> > features.
-> > Some are easy though such as enabling regulators (that are probably
-> > turned on
-> > already on your board)
-> >=20
-> > Thanks,
-> >=20
-> > Jonathan
-> >  =20
-> > > ---
-> > > =C2=A0.../bindings/iio/adc/maxim,max34408.yaml=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 | 63
-> > > +++++++++++++++++++
-> > > =C2=A01 file changed, 63 insertions(+)
-> > > =C2=A0create mode 100644
-> > > Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
-> > >=20
-> > > diff --git
-> > > a/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
-> > > b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
-> > > new file mode 100644
-> > > index 000000000000..ae7c6ddb13d8
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
-> > > @@ -0,0 +1,63 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/iio/adc/maxim,max34408.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Two- and four-channel current monitors with overcurrent
-> > > control.
-> > > +
-> > > +maintainers:
-> > > +=C2=A0 - Ivan Mikhaylov <fr0st61te@gmail.com>
-> > > +
-> > > +description: |
-> > > +=C2=A0 The MAX34408/MAX34409 are two- and four-channel current monit=
-ors
-> > > that are
-> > > +=C2=A0 configured and monitored with a standard I2C/SMBus serial
-> > > interface. Each
-> > > +=C2=A0 unidirectional current sensor offers precision high-side
-> > > operation with a
-> > > +=C2=A0 low full-scale sense voltage. The devices automatically seque=
-nce
-> > > through
-> > > +=C2=A0 two or four channels and collect the current-sense samples and
-> > > average them
-> > > +=C2=A0 to reduce the effect of impulse noise. The raw ADC samples are
-> > > compared to
-> > > +=C2=A0 user-programmable digital thresholds to indicate overcurrent
-> > > conditions.
-> > > +=C2=A0 Overcurrent conditions trigger a hardware output to provide an
-> > > immediate
-> > > +=C2=A0 indication to shut down any necessary external circuitry.
-> > > +
-> > > +=C2=A0 Specifications about the devices can be found at:
-> > > +=C2=A0
-> > > https://www.analog.com/media/en/technical-documentation/data-sheets/M=
-AX34408-MAX34409.pdf
-> > > +
-> > > +properties:
-> > > +=C2=A0 compatible:
-> > > +=C2=A0=C2=A0=C2=A0 enum:
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - maxim,max34408
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 - maxim,max34409
-> > > +
-> > > +=C2=A0 reg:
-> > > +=C2=A0=C2=A0=C2=A0 maxItems: 1
-> > > +
-> > > +=C2=A0 interrupts:
-> > > +=C2=A0=C2=A0=C2=A0 maxItems: 1
-> > > +
-> > > +=C2=A0 maxim,rsense-val-micro-ohms: =20
-> > From the datasheet you link, it looks like this could be different
-> > for
-> > the inputs? =20
->=20
-> Hi Jonathan, "maxim,input1-rsense-val-micro-ohms", "maxim,input2-
-> rsense-val-micro-ohms" and etc would be better?
+On Tue, Sep 26, 2023 at 10:44:42AM +0000, Chengfeng Ye wrote:
+> As &card->cli_queue_lock and &card->tx_queue_lock are acquired under
+> softirq context along the following call chain from solos_bh(), other
+> acquisition of the same lock inside process context should disable
+> at least bh to avoid double lock.
+> 
+> <deadlock #1>
+> console_show()
+> --> spin_lock(&card->cli_queue_lock)
+> <interrupt>
+>    --> solos_bh()
+>    --> spin_lock(&card->cli_queue_lock)
+> 
+> <deadlock #2>
+> pclose()
+> --> spin_lock(&card->tx_queue_lock)
+> <interrupt>
+>    --> solos_bh()
+>    --> fpga_tx()
+>    --> spin_lock(&card->tx_queue_lock)
+> 
+> This flaw was found by an experimental static analysis tool I am
+> developing for irq-related deadlock.
+> 
+> To prevent the potential deadlock, the patch uses spin_lock_irqsave()
+> on the two locks under process context code consistently to prevent
+> the possible deadlock scenario.
 
-Sorry, missed this during the week (too many emails at work!)
+Hi Chengfeng Ye,
 
-Anyhow, I'd have suggested an array, but a better suggestion was
-made anyway in reply to your v2.
+thanks for your patch.
+
+As this patch seems to fix two, albeit, similar problems,
+it should probably be split into two patches.
+
+As fixes for Networking code they should probably be targeted at the
+'net' tree. Which should be denoted in the subject.
+
+	Subject: [PATCH net] ...
+
+And as fixes the patch(es) should probably have Fixes tags.
+These ones seem appropriate to me, but I could be wrong.
+
+Fixes: 9c54004ea717 ("atm: Driver for Solos PCI ADSL2+ card.")
+Fixes: 213e85d38912 ("solos-pci: clean up pclose() function")
+
+> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+> ---
+>  drivers/atm/solos-pci.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/atm/solos-pci.c b/drivers/atm/solos-pci.c
+> index 94fbc3abe60e..247e9200e312 100644
+> --- a/drivers/atm/solos-pci.c
+> +++ b/drivers/atm/solos-pci.c
+> @@ -447,11 +447,12 @@ static ssize_t console_show(struct device *dev, struct device_attribute *attr,
+>  	struct atm_dev *atmdev = container_of(dev, struct atm_dev, class_dev);
+>  	struct solos_card *card = atmdev->dev_data;
+>  	struct sk_buff *skb;
+> +	unsigned long flags;
+>  	unsigned int len;
+>  
+> -	spin_lock(&card->cli_queue_lock);
+> +	spin_lock_irqsave(&card->cli_queue_lock, flags);
+>  	skb = skb_dequeue(&card->cli_queue[SOLOS_CHAN(atmdev)]);
+> -	spin_unlock(&card->cli_queue_lock);
+> +	spin_unlock_irqrestore(&card->cli_queue_lock, flags);
+>  	if(skb == NULL)
+>  		return sprintf(buf, "No data.\n");
+>  
+> @@ -954,16 +955,17 @@ static void pclose(struct atm_vcc *vcc)
+>  	unsigned char port = SOLOS_CHAN(vcc->dev);
+>  	struct sk_buff *skb, *tmpskb;
+>  	struct pkt_hdr *header;
+> +	unsigned long flags;
+>  
+>  	/* Remove any yet-to-be-transmitted packets from the pending queue */
+> -	spin_lock(&card->tx_queue_lock);
+> +	spin_lock_irqsave(&card->tx_queue_lock, flags);
+>  	skb_queue_walk_safe(&card->tx_queue[port], skb, tmpskb) {
+>  		if (SKB_CB(skb)->vcc == vcc) {
+>  			skb_unlink(skb, &card->tx_queue[port]);
+>  			solos_pop(vcc, skb);
+>  		}
+>  	}
+> -	spin_unlock(&card->tx_queue_lock);
+> +	spin_unlock_irqrestore(&card->tx_queue_lock, flags);
+>  
+>  	skb = alloc_skb(sizeof(*header), GFP_KERNEL);
+>  	if (!skb) {
+> -- 
+> 2.17.1
+> 
+> 
+
+-- 
+pw-bot: changes-requested
