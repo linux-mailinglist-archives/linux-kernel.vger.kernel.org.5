@@ -2,182 +2,337 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8CC7B419A
+	by mail.lfdr.de (Postfix) with ESMTP id 574FD7B4199
 	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 17:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234433AbjI3P3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 11:29:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41618 "EHLO
+        id S234439AbjI3P3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 11:29:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234403AbjI3P3A (ORCPT
+        with ESMTP id S234403AbjI3P3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 11:29:00 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87F2B3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:28:57 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9adb9fa7200so370785666b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 08:28:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696087736; x=1696692536; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=j7XXLyW05UuUEyVYmwUiN5raMHyz10t0j/Cc/Xd9lc8=;
-        b=xEujsMkGA9znJP4WqDNKkesoEyfMzggWKD106J1He055H5N+BcTSivmQWfG8OKPDZe
-         drcR+W5jd3VxDSWASDJO8w9ai79/GOSHK7S7oIcRTXJwgmkekhNkyTOj+NRatUViohtn
-         NV1QyKqRPi/hha5yBKsL7EF3vtqsxYEMVVQdNGIa0IAt0LHTSv60RJHFXqgyHNIP5AKM
-         uh9E6GnxQEl2FsXAEhPCwOa56dJhqTYiCVGN7GUMhK7CMOGn3q5rvX5zIRZQC8+4SOPL
-         1xlzzHhddizmNHLj/i+N4UtR4dwWyGvyMPJHmZVCHr+IvghQAuhIfE51XaFwZ1TficFo
-         IJpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696087736; x=1696692536;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j7XXLyW05UuUEyVYmwUiN5raMHyz10t0j/Cc/Xd9lc8=;
-        b=YxHUcDjlhuhjxsbTETRMInWJ9MF4zjR2wgRLJhYg6uNIvM0PF/QgfL2iD9fqewZgTF
-         l9kTv0vneqdJ+MZ6Rn8aVvKFjcV3zkECIr2iVVmYeIW/fwikRITa8S7CKhgtSeHT5NXB
-         NPpp5jdVhjr3j/wGzzaN/1HZB2RDX2GNRefzLLs4v1ScTAzH1DcgpW2RKRmNDI3ICp+Q
-         TxSOsRwcdIB5PDRa0gQ31MlIMvqPb4/sXIEfRVAu+TIr/BE/Cr8etaW22s7KwlQq25kM
-         gm+7G4GDXkQ8SGKWFysb3qBxWJmZ9yv/Jnq5xiCoyszqIDCxMDbTspmOnQlC2QkMCl1a
-         Rgeg==
-X-Gm-Message-State: AOJu0YxXLnSQFXyavJFpcaBM7pUz0/ddoAJT5M3lYf6GrDjqiSBi5ZJi
-        uxKyD5jCpfq79oRdSOJFD53WkA==
-X-Google-Smtp-Source: AGHT+IGphjNFi8T3I4Cv2/5VpZ5dyVUG/7mANun2nSq75NfYX4sQYaCRI6ZlcjL8RmzFbQ8VW5eF1w==
-X-Received: by 2002:a17:906:cc17:b0:9a5:9f3c:961e with SMTP id ml23-20020a170906cc1700b009a59f3c961emr5735388ejb.18.1696087736305;
-        Sat, 30 Sep 2023 08:28:56 -0700 (PDT)
-Received: from [192.168.8.76] ([88.155.253.228])
-        by smtp.gmail.com with ESMTPSA id o9-20020a1709062e8900b009ae587ce133sm14028019eji.188.2023.09.30.08.28.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Sep 2023 08:28:55 -0700 (PDT)
-Message-ID: <e5663ac2-e197-4667-8c70-28951628920a@linaro.org>
-Date:   Sat, 30 Sep 2023 17:28:50 +0200
+        Sat, 30 Sep 2023 11:29:12 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D94BE;
+        Sat, 30 Sep 2023 08:29:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1696087745; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=I0QWIsXLJ6R0JF1fTd16hMOAf1rLeCt6KnbulbQT0Hi6caHfG5q24UD4Ygf8TZ3/fz
+    VxckiA0yBkHj3tAZIQHXjnEYyf8nbZZ3DHj5VFVwpQfNJK9Yj+8Hc/nTfDe+TnxIQAKT
+    r1gHcoRrBp+QyeOINklG7J2EQbEUlYlDlS4HZvSEvOj252cYTSNt6PA8ZTTyOYS5GmqW
+    EoRn5+lZPLbi+EigyEOrq5boza7xSq6FxGuLldye/CPabUmoqytKd6maPIdbtqqFddRL
+    NzVaOhoqQomgtiuYjgG+4SnEEjvNB1M5NNdTQCNkZl08hBfvG3k5yZ9EAGcu9khPqugl
+    sbKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1696087745;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=Ix09YzWH8S3gStr0pJ5Dfn8yz393MkdSkVsPuVfWquQ=;
+    b=NftcBeB2r34qOOcz5AKpKD7tmYTXt+Vs/RGV4GOzcLOBTmJ2MlJaWTUHSr+rwndaNh
+    zDPK1QGcByoht1/okJh6gvgDIvEkiYV8GdMiF73+Q2sK1/aOJhEkc46wYax9UFJN5rqa
+    EtI0o6NO9haPKSrwdVHF0ShIHiIgWvmET64jVVcYwODp734VmVqAXAPsmGIb5aLNbvNu
+    utA2udauxFhjUf/0go2EY5vz1aq8lqOm4oVOw/am4WOmtZM82Pk9BfwR8WhoFAas25hw
+    yxrphCLOo+m+4zWwquhAxuqDxelWyhEHSHSI8KquZMZRZ1twTV2cGvqKpD0VNczzHQPn
+    Y8yA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1696087745;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=Ix09YzWH8S3gStr0pJ5Dfn8yz393MkdSkVsPuVfWquQ=;
+    b=rzESUc0BvZGFfLq4qxlyEhscQtZuz4VQex7skFEExVHbHV+IxiNJhZB3Y23DQmPXB4
+    BPSpv9m8ms/YXY2aGAel8OMByAePIwdl0MJ87MrwXeVDOBuyg3VfAsQALDydhLZiJROQ
+    ObnfhkjMwp8mBbBMNT2qz2yjakX1oj/E38opfPO5tHMRCE/BddqI0A84IGndbpDO6xcQ
+    gzqsYDgn3AM5JyPldkIQXL0+Ja8t0brRMchuinYKMzLAEQCPn1D9PC89tU9Bspirlbfr
+    bjLETpWZJe0L45C295xgnAyZhXpx858O2fPZXQgN3XCrRSSbfOsn/omdBdADSdM508E9
+    sxlg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1696087745;
+    s=strato-dkim-0003; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=Ix09YzWH8S3gStr0pJ5Dfn8yz393MkdSkVsPuVfWquQ=;
+    b=YQ/rwi1dY7HzVX/VgBzioSSZTNFI+p63x0KFn7t1zOGrLMqjEWwqhltzY1whE0RgWE
+    Op2Rr1pT6lZ2McUSxwBQ==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8paF1A=="
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
+    with ESMTPSA id R04c57z8UFT5tX4
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Sat, 30 Sep 2023 17:29:05 +0200 (CEST)
+Date:   Sat, 30 Sep 2023 17:28:57 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Jeff LaBundy <jeff@labundy.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jonathan Albrieux <jonathan.albrieux@gmail.com>
+Subject: Re: [PATCH 2/2] Input: add Himax HX852x(ES) touchscreen driver
+Message-ID: <ZRg-uZskk07jxup0@gerhold.net>
+References: <20230913-hx852x-v1-0-9c1ebff536eb@gerhold.net>
+ <20230913-hx852x-v1-2-9c1ebff536eb@gerhold.net>
+ <ZQYUe46/rj8jqNvg@nixie71>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] dt-bindings: arm: coresight-tmc: Add "memory-region"
- property
-To:     Linu Cherian <lcherian@marvell.com>, suzuki.poulose@arm.com,
-        mike.leach@linaro.org, james.clark@arm.com, leo.yan@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, sgoutham@marvell.com,
-        gcherian@marvell.com
-References: <20230929133754.857678-1-lcherian@marvell.com>
- <20230929133754.857678-2-lcherian@marvell.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20230929133754.857678-2-lcherian@marvell.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZQYUe46/rj8jqNvg@nixie71>
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/09/2023 15:37, Linu Cherian wrote:
-> memory-region 0: Reserved trace buffer memory
-> 
->   TMC ETR: When available, use this reserved memory region for
->   trace data capture. Same region is used for trace data
->   retention after a panic or watchdog reset.
-> 
->   TMC ETF: When available, use this reserved memory region for
->   trace data retention synced from internal SRAM after a panic or
->   watchdog reset.
-> 
-> memory-region 1: Reserved meta data memory
-> 
->   TMC ETR, ETF: When available, use this memory for register
->   snapshot retention synced from hardware registers after a panic
->   or watchdog reset.
-> 
-> Signed-off-by: Linu Cherian <lcherian@marvell.com>
-> ---
+Hi Jeff,
 
-Where is the changelog? This is supposed to be v4 or something later.
-Please, keep proper versioning and changelog.
-
->  .../bindings/arm/arm,coresight-tmc.yaml       | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
+On Sat, Sep 16, 2023 at 03:47:55PM -0500, Jeff LaBundy wrote:
+> On Wed, Sep 13, 2023 at 03:25:30PM +0200, Stephan Gerhold wrote:
+> > From: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+> > 
+> > Add a simple driver for the Himax HX852x(ES) touch panel controller,
+> > with support for multi-touch and capacitive touch keys.
+> > 
+> > The driver is somewhat based on sample code from Himax. However, that
+> > code was so extremely confusing that we spent a significant amount of
+> > time just trying to understand the packet format and register commands.
+> > In this driver they are described with clean structs and defines rather
+> > than lots of magic numbers and offset calculations.
+> > 
+> > Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
+> > Co-developed-by: Stephan Gerhold <stephan@gerhold.net>
+> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> > ---
+> >  MAINTAINERS                              |   7 +
+> >  drivers/input/touchscreen/Kconfig        |  10 +
+> >  drivers/input/touchscreen/Makefile       |   1 +
+> >  drivers/input/touchscreen/himax_hx852x.c | 491 +++++++++++++++++++++++++++++++
+> >  4 files changed, 509 insertions(+)
+> > 
+> > [...]
+> > diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
+> > index 62bd24f3ac8e..f42a87faa86c 100644
+> > --- a/drivers/input/touchscreen/Makefile
+> > +++ b/drivers/input/touchscreen/Makefile
+> > @@ -48,6 +48,7 @@ obj-$(CONFIG_TOUCHSCREEN_EXC3000)	+= exc3000.o
+> >  obj-$(CONFIG_TOUCHSCREEN_FUJITSU)	+= fujitsu_ts.o
+> >  obj-$(CONFIG_TOUCHSCREEN_GOODIX)	+= goodix_ts.o
+> >  obj-$(CONFIG_TOUCHSCREEN_HIDEEP)	+= hideep.o
+> > +obj-$(CONFIG_TOUCHSCREEN_HIMAX_HX852X)	+= himax_hx852x.o
+> >  obj-$(CONFIG_TOUCHSCREEN_HYNITRON_CSTXXX)	+= hynitron_cstxxx.o
+> >  obj-$(CONFIG_TOUCHSCREEN_ILI210X)	+= ili210x.o
+> >  obj-$(CONFIG_TOUCHSCREEN_ILITEK)	+= ilitek_ts_i2c.o
+> > diff --git a/drivers/input/touchscreen/himax_hx852x.c b/drivers/input/touchscreen/himax_hx852x.c
+> > new file mode 100644
+> > index 000000000000..31616dcfc5ab
+> > --- /dev/null
+> > +++ b/drivers/input/touchscreen/himax_hx852x.c
+> > @@ -0,0 +1,491 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Himax HX852x(ES) Touchscreen Driver
+> > + * Copyright (c) 2020-2023 Stephan Gerhold <stephan@gerhold.net>
+> > + * Copyright (c) 2020 Jonathan Albrieux <jonathan.albrieux@gmail.com>
+> > + *
+> > + * Based on the Himax Android Driver Sample Code Ver 0.3 for HMX852xES chipset:
+> > + * Copyright (c) 2014 Himax Corporation.
+> > + */
+> > +
+> > +#include <asm/unaligned.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/gpio/consumer.h>
+> > +#include <linux/i2c.h>
+> > +#include <linux/input.h>
+> > +#include <linux/input/mt.h>
+> > +#include <linux/input/touchscreen.h>
+> > +#include <linux/interrupt.h>
+> > +#include <linux/kernel.h>
+> > +#include <linux/module.h>
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/arm,coresight-tmc.yaml b/Documentation/devicetree/bindings/arm/arm,coresight-tmc.yaml
-> index cb8dceaca70e..45ca4d02d73e 100644
-> --- a/Documentation/devicetree/bindings/arm/arm,coresight-tmc.yaml
-> +++ b/Documentation/devicetree/bindings/arm/arm,coresight-tmc.yaml
-> @@ -101,6 +101,22 @@ properties:
->            and ETF configurations.
->          $ref: /schemas/graph.yaml#/properties/port
->  
-> +  memory-region:
-> +    items:
-> +      - description: Reserved trace buffer memory for ETR and ETF sinks.
-> +          For ETR, this reserved memory region is used for trace data capture.
-> +          Same region is used for trace data retention as well after a panic
-> +          or watchdog reset.
-> +          For ETF, this reserved memory region is used for retention of trace
-> +          data synced from internal SRAM after a panic or watchdog reset.
-> +
-> +      - description: Reserved meta data memory. Used for ETR and ETF sinks.
-> +
-> +  memory-region-names:
-> +    items:
-> +      - const: trace-mem
-> +      - const: metadata-mem
+> Please explicitly #include of_device.h.
+> 
 
-Drop the 'mem' suffixes.
+In v2 I have added linux/of.h and linux/mod_devicetable.h, since I'm
+actually using definitions from these two only. Seems like including
+of_device.h is discouraged nowadays, see commit dbce1a7d5dce ("Input:
+Explicitly include correct DT includes").
 
+> > [...]
+> > +static void hx852x_stop(struct hx852x *hx)
+> > +{
+> > +	struct device *dev = &hx->client->dev;
+> > +	int error;
+> > +
+> > +	error = i2c_smbus_write_byte(hx->client, HX852X_TS_SENSE_OFF);
+> > +	if (error)
+> > +		dev_err(dev, "failed to send TS_SENSE_OFF: %d\n", error);
+> 
+> Granted the function is of void type, should we not still return if there
+> is an error?
+> 
+> Actually, I would still keep this function as an int for future re-use, even
+> though hx852x_input_close() simply ignores the value. This way, the return
+> value can be propagated to the return value of hx852x_suspend() and elsewhere.
+> 
+> > +
+> > +	msleep(20);
+> > +
+> > +	error = i2c_smbus_write_byte(hx->client, HX852X_TS_SLEEP_IN);
+> > +	if (error)
+> > +		dev_err(dev, "failed to send TS_SLEEP_IN: %d\n", error);
+> 
+> Same here; no need to sleep following a register write that seemingly did
+> not happen.
+> 
+> > +
+> > +	msleep(30);
+> > +}
+> > +
+> > +static void hx852x_power_off(struct hx852x *hx)
+> > +{
+> > +	struct device *dev = &hx->client->dev;
+> > +	int error;
+> > +
+> > +	error = regulator_bulk_disable(ARRAY_SIZE(hx->supplies), hx->supplies);
+> > +	if (error)
+> > +		dev_err(dev, "failed to disable regulators: %d\n", error);
+> > +}
+> 
+> Same comment with regard to function type; it's nice for internal helpers
+> to be of type int, even if the core callback using it is void.
+> 
+> > +
+> > +static int hx852x_read_config(struct hx852x *hx)
+> > +{
+> > +	struct device *dev = &hx->client->dev;
+> > +	struct hx852x_config conf = {0};
+> > +	int x_res, y_res;
+> > +	int error;
+> > +
+> > +	error = hx852x_power_on(hx);
+> > +	if (error)
+> > +		return error;
+> > +
+> > +	/* Sensing must be turned on briefly to load the config */
+> > +	error = hx852x_start(hx);
+> > +	if (error)
+> > +		goto power_off;
+> > +
+> > +	hx852x_stop(hx);
+> 
+> See my earlier comment about promoting this function's type to int.
+> 
+> > +
+> > +	error = i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH,
+> > +					  HX852X_SRAM_SWITCH_TEST_MODE);
+> > +	if (error)
+> > +		goto power_off;
+> > +
+> > +	error = i2c_smbus_write_word_data(hx->client, HX852X_REG_SRAM_ADDR,
+> > +					  HX852X_SRAM_ADDR_CONFIG);
+> > +	if (error)
+> > +		goto exit_test_mode;
+> > +
+> > +	error = hx852x_i2c_read(hx, HX852X_REG_FLASH_RPLACE, &conf, sizeof(conf));
+> > +	if (error)
+> > +		goto exit_test_mode;
+> > +
+> > +	x_res = be16_to_cpu(conf.x_res);
+> > +	y_res = be16_to_cpu(conf.y_res);
+> > +	hx->max_fingers = (conf.max_pt & 0xf0) >> 4;
+> > +	dev_dbg(dev, "x res: %d, y res: %d, max fingers: %d\n",
+> > +		x_res, y_res, hx->max_fingers);
+> > +
+> > +	if (hx->max_fingers > HX852X_MAX_FINGERS) {
+> > +		dev_err(dev, "max supported fingers: %d, found: %d\n",
+> > +			HX852X_MAX_FINGERS, hx->max_fingers);
+> > +		error = -EINVAL;
+> > +		goto exit_test_mode;
+> > +	}
+> > +
+> > +	if (x_res && y_res) {
+> > +		input_set_abs_params(hx->input_dev, ABS_MT_POSITION_X, 0, x_res - 1, 0, 0);
+> > +		input_set_abs_params(hx->input_dev, ABS_MT_POSITION_Y, 0, y_res - 1, 0, 0);
+> > +	}
+> > +
+> > +exit_test_mode:
+> > +	i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH, 0);
+> 
+> Nit: it would still be nice to preserve as many return values as possible, perhaps
+> as follows:
+> 
+> +exit_test_mode:
+> 	error = i2c_smbus_write_byte_data(...) ? : error;
+> 
+> > +power_off:
+> > +	hx852x_power_off(hx);
+> > +	return error;
+> 
+> Similarly, with hx852x_power_off() being promoted to int as suggested above,
+> this could be:
+> 
+> 	return hx852x_power_off(...) ? : error;
+> 
+> There are other idiomatic ways to do the same thing based on your preference.
+> Another (perhaps more clear) option would be to move some of these test mode
+> functions into a helper, which would also avoid some goto statements.
+> 
 
-Best regards,
-Krzysztof
+I played with this for a bit. A problem of the "? : error" approach is
+that it hides the original error in case the new calls error again.
 
+Let's assume
+
+	error = hx852x_start(hx);
+	if (error)
+		goto power_off;
+
+fails with error = -ENXIO. We jump to power_off:
+
+power_off:
+	return hx852x_power_off(hx) ? : error;
+
+Let's say for whatever reason hx852x_power_off() fails too but returns
+-EINVAL. Then the final return value will be -EINVAL, while with the
+current approach in this patch it would return the original cause
+(-ENXIO). I think that's more clear.
+
+I also played with moving code to a separate function to avoid the
+gotos, but I feel like that makes the fairly focused logic of this
+function (reading the configuration by temporarily entering the test
+mode) just more confusing.
+
+To still fix the error handling I ended up with duplicating the
+"success" code path and the "error" code path (it's just two function
+calls), i.e.:
+
+	error = i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH, 0);
+	if (error)
+		goto err_power_off;
+
+	return hx852x_power_off(hx);
+
+err_test_mode:
+	i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH, 0);
+err_power_off:
+	hx852x_power_off(hx);
+	return error;
+
+I hope that's fine too. A bit ugly maybe but in this case I would prefer
+having the main code path (reading the configuration) clearly readable.
+
+Let me know if you have a better suggestion for these (I'll send v2 in a
+bit so that you can see the full diff there).
+
+Thanks!
+Stephan
