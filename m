@@ -2,99 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F4A7B3FA8
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:17:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F807B3FAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233970AbjI3JRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 05:17:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49288 "EHLO
+        id S233973AbjI3JTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 05:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjI3JRC (ORCPT
+        with ESMTP id S229588AbjI3JTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 05:17:02 -0400
-Received: from smtp.smtpout.orange.fr (smtp-21.smtpout.orange.fr [80.12.242.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 058B7195
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 02:16:56 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id mW5lqciwUlLhemW5mqgUyK; Sat, 30 Sep 2023 11:16:55 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1696065415;
-        bh=HqO0OJ0xpYTouMij+n4RJh5b8XJeCUxxVmU/L5T7xtU=;
-        h=From:To:Cc:Subject:Date;
-        b=EpHIjI+HuMMZ8HK0f8SwmZJ28a0d+04wdYHD9bRONTstCAVZiuB6avxQIos6ZEItc
-         nVbK0FhaDctKX08sYwo+8tmAJEnv6ltQgDnG9fYwZpZoBVUgsKFrz+BMHupi59MPeM
-         lgimnXmj+nnzQTAeRwa0bWoRLIp/jaeZ1pwjp3cFsxAdixy+FaKMD6mojz70CMqFDW
-         MqyCIxpgCkZeOjHqiuGZYZcPItC1BeAai4TnekU0s1DSIfshfJMrRT8p3JZGtV0XHt
-         MrFDwIJTX7PV+l0ZqFNDsYVj+zmnJRpnzwhfzLuVIWS231jkCTFUOwZBBvYjegsqtY
-         7l1TLWdCU9YMw==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 30 Sep 2023 11:16:55 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH] comedi: Annotate struct comedi_lrange with __counted_by
-Date:   Sat, 30 Sep 2023 11:14:47 +0200
-Message-Id: <5c3b7459b820e22e2ac6ce892d4aadcc119cc919.1696065263.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Sat, 30 Sep 2023 05:19:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE5FB4;
+        Sat, 30 Sep 2023 02:19:07 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 539E7C433C8;
+        Sat, 30 Sep 2023 09:19:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696065546;
+        bh=CVvQtHQSyndyWy/FagrIZcZBd171yHX/jAjEOxkaFf4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fcQPwglQGQcQUubS/I9/SDHwTgwAtWcUJE/A/+7/Apn5w/5MSfMm+yUXs0mGXrpcO
+         UZvuFt3yb/qYJmKf8dOOkp1eIBGyTUQokCOp+JHlURL5jZWdi7VLTRrrYuNL2bP5PU
+         AxsMcFnAA9B//ObS3Chbf437dPquqf9tF66fq4KZcwfaHfMSXRvgcKiIpF3KD69iAW
+         oBx4eKq9Fpizt0UmpjIXBC4ycRKhyS3cowb1PbvufahsVkrTxnXlp9HkKaL8fTmaA6
+         NqoSVSuLDXgJNKqYIZWlLRG8oniRZUNHxvl2StD3JL6YxvzdBNbhyJh5j3X9yPZIzF
+         ELobq111PNfRg==
+Date:   Sat, 30 Sep 2023 18:19:02 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing/eprobe: drop unneeded breaks
+Message-Id: <20230930181902.eb1d089243deca0017046437@kernel.org>
+In-Reply-To: <alpine.DEB.2.22.394.2309291336260.3137@hadrien>
+References: <20230928104334.41215-1-Julia.Lawall@inria.fr>
+        <20230929203259.74d4ba263b3455172ef37f06@kernel.org>
+        <alpine.DEB.2.22.394.2309291336260.3137@hadrien>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-(for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+On Fri, 29 Sep 2023 13:37:08 +0200 (CEST)
+Julia Lawall <julia.lawall@inria.fr> wrote:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-This patch is part of a work done in parallel of what is currently worked
-on by Kees Cook.
+> 
+> 
+> On Fri, 29 Sep 2023, Masami Hiramatsu  wrote:
+> 
+> > On Thu, 28 Sep 2023 12:43:34 +0200
+> > Julia Lawall <Julia.Lawall@inria.fr> wrote:
+> >
+> > > Drop break after return.
+> > >
+> >
+> > Good catch! This looks good to me.
+> >
+> > Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> >
+> > And
+> >
+> > Fixes: 7491e2c44278 ("tracing: Add a probe that attaches to trace events")
+> 
+> Thanks.  I didn't include that because it's not a bug.  But it does break
+> Coccinelle, which is how I noticed it.
 
-My patches are only related to corner cases that do NOT match the
-semantic of his Coccinelle script[1].
+OK, I got it. I thought it may cause a compiler warning because the
+'break' never be executed. (maybe it is just a flow-control word,
+so it may not need to be warned, but a bit storange.)
 
-In this case, it is been spotted because of comedi_alloc_spriv().
-All other usages of struct comedi_lrange seem to be static definition of
-the structure that explicitly set the .length field.
+> 
+> julia
+> 
+> >
+> > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> > >
+> > > ---
+> > >  kernel/trace/trace_eprobe.c |    5 +----
+> > >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > >
+> > > diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
+> > > index 72714cbf475c..03c851f57969 100644
+> > > --- a/kernel/trace/trace_eprobe.c
+> > > +++ b/kernel/trace/trace_eprobe.c
+> > > @@ -788,12 +788,9 @@ find_and_get_event(const char *system, const char *event_name)
+> > >  		name = trace_event_name(tp_event);
+> > >  		if (!name || strcmp(event_name, name))
+> > >  			continue;
+> > > -		if (!trace_event_try_get_ref(tp_event)) {
+> > > +		if (!trace_event_try_get_ref(tp_event))
+> > >  			return NULL;
+> > > -			break;
+> > > -		}
+> > >  		return tp_event;
+> > > -		break;
+> > >  	}
+> > >  	return NULL;
+> > >  }
+> > >
+> >
+> >
+> > --
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> >
 
-[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
----
- include/linux/comedi/comedidev.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/comedi/comedidev.h b/include/linux/comedi/comedidev.h
-index 0a1150900ef3..c08416a7364b 100644
---- a/include/linux/comedi/comedidev.h
-+++ b/include/linux/comedi/comedidev.h
-@@ -633,7 +633,7 @@ extern const struct comedi_lrange range_unknown;
-  */
- struct comedi_lrange {
- 	int length;
--	struct comedi_krange range[];
-+	struct comedi_krange range[] __counted_by(length);
- };
- 
- /**
 -- 
-2.34.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
