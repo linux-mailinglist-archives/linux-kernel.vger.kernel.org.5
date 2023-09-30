@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4AB7B4273
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 19:02:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AFA7B4274
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 19:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234623AbjI3RCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 13:02:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37144 "EHLO
+        id S234635AbjI3RCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 13:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234604AbjI3RCS (ORCPT
+        with ESMTP id S234608AbjI3RCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 30 Sep 2023 13:02:18 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABC4EE1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 10:02:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 57A45C433C9;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A0A7DA;
+        Sat, 30 Sep 2023 10:02:17 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D945DC433CC;
         Sat, 30 Sep 2023 17:02:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1696093336;
-        bh=5qGi2YCEHd6kQxR5v93za5a15O1F1SDz0D6DWAwbi70=;
+        bh=qreqIGXpQlD8rrZsSfwWjvg5dT2aaoQefTHzNEdbpiE=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=mzIetXB/LhtV2B545Q0w6LZC21WllNf7CgngTgJzEUAT/LZlVdeOrzavl7yPGKgFO
-         UrU/UvQPN/p7hN5a+m8vAfIr9F+fFZDQK+akVyvqw2lTJDGQ9MKiPGdX96cmF9JQMb
-         ClAc4c5DsrH/caSneOgcbHHUGtj9sMh5VFW+HAXq11hGVApIRcc/FxwHcFD1VY+Ld/
-         dIvBZCigbPiKWYCdimxXf/ojT9wcXasjA7BoM+T/7cT4s65xJz3NPjvJpNw9e/T9Lw
-         1+pM4azEyz80amHYSu9NSCgr32BPeURZCn7i2bH6NuRWRbuVk/p17RgWKbcK1wBwi8
-         BiDoJVxs7CVtQ==
+        b=CxdGr2YRt0gSUnMrZNaeIZErmzDvbJxn0m73vPksbvrrBg9TO9DyWrqvE90mvzM2z
+         fBFW9wWTw14v0sptbc2mE6OM3BC5DCR6LyOZ9B7EOuBFj9OaHCInBXKOH/Qhtpk2nE
+         1ythB+wAobJpniCZLDLmRoDgc/1nyQdrFx9TmeGCCBLKdGM9SVSidwLf40i2La9B2s
+         y/QMHiwiLLCMp99/fhUi0Ooi/ois1PyVXqYohNr0H7x5+1MDAHNfTdDDBUMyu26VNS
+         z4MHizUkbEsO2gaOmZ3Plm54plLlOQf9aiaX8iiNHiqMEyXQl9GIp9cx1AHuzFgKQM
+         PiQbM68F8uUDg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3C78CC43170;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C0616C43170;
         Sat, 30 Sep 2023 17:02:16 +0000 (UTC)
-Subject: Re: [GIT PULL] ACPI fix for v6.6-rc4
+Subject: Re: [GIT PULL] second round of v6.6 fixes for nfsd
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0gaw_5VdZBL2ZbqMkAXyFTMEAcq_nO3FQaQc7qGBZJi6w@mail.gmail.com>
-References: <CAJZ5v0gaw_5VdZBL2ZbqMkAXyFTMEAcq_nO3FQaQc7qGBZJi6w@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-acpi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0gaw_5VdZBL2ZbqMkAXyFTMEAcq_nO3FQaQc7qGBZJi6w@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-6.6-rc4
-X-PR-Tracked-Commit-Id: f4dcf06bc6e0161920b700ba3966411d716a321b
+In-Reply-To: <857386F1-ED95-4113-91D3-C082C39040FB@oracle.com>
+References: <857386F1-ED95-4113-91D3-C082C39040FB@oracle.com>
+X-PR-Tracked-List-Id: <linux-nfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <857386F1-ED95-4113-91D3-C082C39040FB@oracle.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.6-2
+X-PR-Tracked-Commit-Id: 0d32a6bbb8e7bf503855f2990f1ccce0922db87b
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 830380e3178a103d4401689021eadddadbb93d6d
-Message-Id: <169609333624.18163.11828807637726153320.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: ae213639983a5406849d62d33257dfc076bc48a7
+Message-Id: <169609333678.18163.12519448826943820871.pr-tracker-bot@kernel.org>
 Date:   Sat, 30 Sep 2023 17:02:16 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
+To:     Chuck Lever III <chuck.lever@oracle.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,12 +57,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 29 Sep 2023 19:11:13 +0200:
+The pull request you sent on Sat, 30 Sep 2023 16:22:50 +0000:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git acpi-6.6-rc4
+> https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.6-2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/830380e3178a103d4401689021eadddadbb93d6d
+https://git.kernel.org/torvalds/c/ae213639983a5406849d62d33257dfc076bc48a7
 
 Thank you!
 
