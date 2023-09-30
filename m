@@ -2,159 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA45D7B3F92
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEEAA7B3F96
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:04:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232059AbjI3JC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 05:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
+        id S232047AbjI3JEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 05:04:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231401AbjI3JC5 (ORCPT
+        with ESMTP id S231311AbjI3JD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 05:02:57 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959C91B7
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 02:02:54 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso2047048566b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 02:02:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696064572; x=1696669372; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Q0hizBBm4A8wjMZ1piqiDjr9gInhzk36CKnQSjY0ZpQ=;
-        b=MqgondFe0Uu0H3HEYZgqefdjdyxZdyTjT8y55ZkDMsPO7kMFgwLJFQf7jFHPA4wdFh
-         X5pfb2tqwIXV0KH4PgZtqU/nohpYPdztpZAuRxFcccPjqGWff0DtXISQB90S3uJb6yKJ
-         HGHXSeLFtNQkXNl1aUFzrCWXS6yQUKLnnutEQ+p5m29WHGggzxM4lVN5yR8awvE/N8aY
-         RNRTMdN+RuAWSP4GuiSYKUywLhpiPQaoaEt2YZJTL9FtHDCDmakBNzVE3WcibXF5n4Td
-         +zAAn7DmmJr1ggvmOqY1fcW15B8skqc85IUp/I74rechxAgdBaS40C5lg/+6t9C+brtW
-         NyaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696064572; x=1696669372;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q0hizBBm4A8wjMZ1piqiDjr9gInhzk36CKnQSjY0ZpQ=;
-        b=BucWKzWqX47l982mZDb0Uo2e6VOjJKcdwpq/uVibNWLzDA4W79sw+KurXIAwsN9O4Z
-         b/tzgPgWxYmA2lWSd0sQIcrAapRf8Y/0d9xaV5mFBfws7S2Y4Y7vHYJminmpCYInB3Lr
-         EInU7+AKUlO9HGEiDxZ+VhkDYLTOqI+S8SljCGMWAyKpUb7yZJG3QApDycHLphKQAanl
-         ltbrBdjos15TYc5j1ArqdAwVGzQlQT6bKfv5V/SDLx2TspbghAufN1ymEiFlrql+GoNv
-         9hb/5n2Cg57IBe316DI2NjohbzNfpofc8LkYAoiPxco58oJFB10d8IDTaMyGVpWwjiCy
-         MvSw==
-X-Gm-Message-State: AOJu0Yy9wNi2GyxSLTI7tWYoDyi6oEamRKhfbBlfssz2occc+NK4y+G7
-        8wBArMfFF1iMC0oLsgd9OWa/
-X-Google-Smtp-Source: AGHT+IHr952WuR/z5EU6Gyhdfd/SNEYlnNbdjLVbmblbMVw53N3v3z8rJmOSwHR0BANmLPzAn2RjbA==
-X-Received: by 2002:a17:907:985b:b0:9ae:6a08:6f53 with SMTP id jj27-20020a170907985b00b009ae6a086f53mr5637893ejc.63.1696064572153;
-        Sat, 30 Sep 2023 02:02:52 -0700 (PDT)
-Received: from thinkpad ([88.128.88.98])
-        by smtp.gmail.com with ESMTPSA id bv13-20020a170906b1cd00b00993a37aebc5sm13708153ejb.50.2023.09.30.02.02.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 02:02:51 -0700 (PDT)
-Date:   Sat, 30 Sep 2023 11:02:49 +0200
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Frank Li <Frank.li@nxp.com>
-Cc:     aisheng.dong@nxp.com, bhelgaas@google.com,
-        devicetree@vger.kernel.org, festevam@gmail.com,
-        imx@lists.linux.dev, jdmason@kudzu.us, kernel@pengutronix.de,
-        kishon@kernel.org, kw@linux.com,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
-        s.hauer@pengutronix.de, shawnguo@kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH v2 0/5] Add RC-to-EP doorbell with platform MSI controller
-Message-ID: <20230930090249.GB3564@thinkpad>
-References: <20230911220920.1817033-1-Frank.Li@nxp.com>
- <ZQtmpL2vCMgR+Upu@lizhi-Precision-Tower-5810>
+        Sat, 30 Sep 2023 05:03:56 -0400
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A98A3195;
+        Sat, 30 Sep 2023 02:03:53 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id 9A087C01D; Sat, 30 Sep 2023 11:03:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1696064629; bh=59HjiSLDEo3+ACXnA5m66IoUgd/1egFkIi0M5pdESts=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Uh6aS3FToSiY1OuqcKcYZQBx6bn7jOph77qLpcDrgGOejGkSJlCopVeE57cMCpl8U
+         mQkJUBPzCO7xzUeTIT3DlKQ7KeowF/NyI2a/JQygNNMSOuzUg0QIoH+ZX6os83LiVd
+         V/stCmX3JK1bVJhmjP458/WL9RtXIF8fXzRNtO9JkeHgEtJgiUufVCF6yXENZh++Np
+         jSB3QGJAmujXIgKKA40r8LT/9ues0cmjPzI7YIFW8Zr1ApBs3mXazL26te0efbbiDp
+         /UdvGdBLlvGscmcpWgFtqVI1aNTt7Zmed/rNaLlzhYyhe7x2WddbnltlyUBOHcSmER
+         Nf8JiQ8uFd75g==
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: from gaia (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id C7991C009;
+        Sat, 30 Sep 2023 11:03:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1696064618; bh=59HjiSLDEo3+ACXnA5m66IoUgd/1egFkIi0M5pdESts=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iw0vHfxRkAHS1WfrcDJdZmjG5MMjaNPpGr+3uo2ujOYAGp3KLHj8VUDhrDJ8oEcAF
+         U+os1aA5XJxPhVIujNlfifVYvjhaXAq7KmE6+k2mRxHb4ze+GDNotHcNxGYz8N8cwT
+         pO3zg2egZxTOYHxeTGHqh7x89o2ajW6Gu/n7iOqaicYyiybcQYPlxKHauFsfzOzAmk
+         Hw/6RjA3H6k+sDKaLW68ayZplMEcli3uBwdIvitEAEKQNDmkvwkF0sXT/5zpMu834h
+         1DtzBTRnq8lk8yDcEI7rTlkgIXpVl35SC1uPl61GCTfUq9W+l6bBk0h0/htYLHeyAO
+         mkQdNslNkGyUg==
+Received: from localhost (gaia [local])
+        by gaia (OpenSMTPD) with ESMTPA id bceda604;
+        Sat, 30 Sep 2023 09:03:32 +0000 (UTC)
+Date:   Sat, 30 Sep 2023 18:03:17 +0900
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Eric Van Hensbergen <ericvh@kernel.org>
+Cc:     Christian Schoenebeck <linux_oss@crudebyte.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Wedson Almeida Filho <walmeida@microsoft.com>,
+        Latchesar Ionkov <lucho@ionkov.net>, v9fs@lists.linux.dev
+Subject: Re: [PATCH 03/29] 9p: move xattr-related structs to .rodata
+Message-ID: <ZRfkVWyuNaapaOOO@codewreck.org>
+References: <20230930050033.41174-1-wedsonaf@gmail.com>
+ <20230930050033.41174-4-wedsonaf@gmail.com>
+ <41368837.HejemxxR3G@silver>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZQtmpL2vCMgR+Upu@lizhi-Precision-Tower-5810>
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+In-Reply-To: <41368837.HejemxxR3G@silver>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 05:39:48PM -0400, Frank Li wrote:
-> On Mon, Sep 11, 2023 at 06:09:15PM -0400, Frank Li wrote:
-> > ┌────────────┐   ┌───────────────────────────────────┐   ┌────────────────┐
-> > │            │   │                                   │   │                │
-> > │            │   │ PCI Endpoint                      │   │ PCI Host       │
-> > │            │   │                                   │   │                │
-> > │            │◄──┤ 1.platform_msi_domain_alloc_irqs()│   │                │
-> > │            │   │                                   │   │                │
-> > │ MSI        ├──►│ 2.write_msi_msg()                 ├──►├─BAR<n>         │
-> > │ Controller │   │   update doorbell register address│   │                │
-> > │            │   │   for BAR                         │   │                │
-> > │            │   │                                   │   │ 3. Write BAR<n>│
-> > │            │◄──┼───────────────────────────────────┼───┤                │
-> > │            │   │                                   │   │                │
-> > │            ├──►│ 4.Irq Handle                      │   │                │
-> > │            │   │                                   │   │                │
-> > │            │   │                                   │   │                │
-> > └────────────┘   └───────────────────────────────────┘   └────────────────┘
+Christian Schoenebeck wrote on Sat, Sep 30, 2023 at 10:12:25AM +0200:
+> On Saturday, September 30, 2023 7:00:07 AM CEST Wedson Almeida Filho wrote:
+> > From: Wedson Almeida Filho <walmeida@microsoft.com>
+> > 
+> > This makes it harder for accidental or malicious changes to
+> > v9fs_xattr_user_handler, v9fs_xattr_trusted_handler,
+> > v9fs_xattr_security_handler, or v9fs_xattr_handlers at runtime.
+> > 
+> > Cc: Eric Van Hensbergen <ericvh@kernel.org>
+> > Cc: Latchesar Ionkov <lucho@ionkov.net>
+> > Cc: Dominique Martinet <asmadeus@codewreck.org>
+> > Cc: Christian Schoenebeck <linux_oss@crudebyte.com>
+> > Cc: v9fs@lists.linux.dev
+> > Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
 > 
-> @mani:
-> 	Do you have chance to review this patch again?
+> Reviewed-by: Christian Schoenebeck <linux_oss@crudebyte.com>
 
-I was on vacation for past few weeks. Will take a look in the coming week.
+Looks good to me on principle as well (and it should blow up immediately
+on testing in the unlikely case there's a problem...)
 
-- Mani
+Eric, I don't think you have anything planned for this round?
+There's another data race patch laying around that we didn't submit for
+6.6, shall I take these two for now?
 
-> 
-> Frank
-> 
-> > 
-> > This patches based on old https://lore.kernel.org/imx/20221124055036.1630573-1-Frank.Li@nxp.com/
-> > 
-> > Original patch only target to vntb driver. But actually it is common
-> > method.
-> > 
-> > This patches add new API to pci-epf-core, so any EP driver can use it.
-> > 
-> > The key point is comments from Thomas Gleixner, who suggest use new
-> > PCI/IMS. But arm platform change still not be merged yet.
-> > 
-> > git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git devmsi-v2-arm
-> > 
-> > So I still use existed method implement RC to EP doorbell.
-> > 
-> > If Thomas Gleixner want to continue work on devmsi-v2-arm, I can help test
-> > and update this patch.
-> > 
-> > Change from v1 to v2
-> > - Add missed patch for endpont/pci-epf-test.c
-> > - Move alloc and free to epc driver from epf.
-> > - Provide general help function for EPC driver to alloc platform msi irq.
-> > - Fixed manivannan's comments.
-> > 
-> > Frank Li (5):
-> >   PCI: endpoint: Add RC-to-EP doorbell support using platform MSI
-> >     controller
-> >   PCI: dwc: add doorbell support by use MSI controller
-> >   PCI: endpoint: pci-epf-test: add doorbell test
-> >   misc: pci_endpoint_test: Add doorbell test case
-> >   tools: PCI: Add 'B' option for test doorbell
-> > 
-> >  drivers/misc/pci_endpoint_test.c              |  48 +++++
-> >  .../pci/controller/dwc/pcie-designware-ep.c   |   2 +
-> >  drivers/pci/endpoint/functions/pci-epf-test.c |  59 +++++-
-> >  drivers/pci/endpoint/pci-epc-core.c           | 192 ++++++++++++++++++
-> >  drivers/pci/endpoint/pci-epf-core.c           |  44 ++++
-> >  include/linux/pci-epc.h                       |   6 +
-> >  include/linux/pci-epf.h                       |   7 +
-> >  include/uapi/linux/pcitest.h                  |   1 +
-> >  tools/pci/pcitest.c                           |  16 +-
-> >  9 files changed, 373 insertions(+), 2 deletions(-)
-> > 
-> > -- 
-> > 2.34.1
-> > 
+(Assuming this patch series is meant to be taken up by individual fs
+maintainers independantly, it's never really clear with such large
+swatches of patchs and we weren't in Cc of a cover letter if there was
+any... In the future it'd help if either there's a clear cover letter
+everyone is in Cc at (some would say keep everyone in cc of all
+patches!), or just send these in a loop so they don't appear to be part
+of a series and each maintainer deals with it as they see fit)
 
 -- 
-மணிவண்ணன் சதாசிவம்
+Dominique
