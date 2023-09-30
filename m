@@ -2,49 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F807B3FAA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1977B3FAB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233973AbjI3JTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 05:19:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47582 "EHLO
+        id S233945AbjI3JYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 05:24:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjI3JTJ (ORCPT
+        with ESMTP id S229588AbjI3JYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 05:19:09 -0400
+        Sat, 30 Sep 2023 05:24:05 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE5FB4;
-        Sat, 30 Sep 2023 02:19:07 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 539E7C433C8;
-        Sat, 30 Sep 2023 09:19:05 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA0D6B3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 02:24:03 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDFBBC433C7;
+        Sat, 30 Sep 2023 09:24:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696065546;
-        bh=CVvQtHQSyndyWy/FagrIZcZBd171yHX/jAjEOxkaFf4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fcQPwglQGQcQUubS/I9/SDHwTgwAtWcUJE/A/+7/Apn5w/5MSfMm+yUXs0mGXrpcO
-         UZvuFt3yb/qYJmKf8dOOkp1eIBGyTUQokCOp+JHlURL5jZWdi7VLTRrrYuNL2bP5PU
-         AxsMcFnAA9B//ObS3Chbf437dPquqf9tF66fq4KZcwfaHfMSXRvgcKiIpF3KD69iAW
-         oBx4eKq9Fpizt0UmpjIXBC4ycRKhyS3cowb1PbvufahsVkrTxnXlp9HkKaL8fTmaA6
-         NqoSVSuLDXgJNKqYIZWlLRG8oniRZUNHxvl2StD3JL6YxvzdBNbhyJh5j3X9yPZIzF
-         ELobq111PNfRg==
-Date:   Sat, 30 Sep 2023 18:19:02 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing/eprobe: drop unneeded breaks
-Message-Id: <20230930181902.eb1d089243deca0017046437@kernel.org>
-In-Reply-To: <alpine.DEB.2.22.394.2309291336260.3137@hadrien>
-References: <20230928104334.41215-1-Julia.Lawall@inria.fr>
-        <20230929203259.74d4ba263b3455172ef37f06@kernel.org>
-        <alpine.DEB.2.22.394.2309291336260.3137@hadrien>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        s=k20201202; t=1696065843;
+        bh=kDNia0WmJ1Icu03VHc1VXn0QbQl9HCIniijZGfUBKUI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P58ubrG8nh4/GOZLvc6HMcH8CTfrM2pxRvOY+nOhDCYrFmFFi5eU9rGaBrX6pC8IN
+         tiky509onDqrpoR1kbEWD4hJvHlH5fH1BSC5YYngCwEh9KNO22RHDEkw41q0GR4DxO
+         LiS7DshG2o6PcDxGYd6U8SssEIUfHD9JvJuodwxYnOgshHxk3DZ0B4nL/mXCgojyZo
+         nWH/+ZNpbwRBiGZXG2+LXyOTYOapZMe0tV0jF5M/49wG8Hw8inBr08O4fBrCGo0Mvd
+         e741caPlxL6CWf3Oh/q7WFLk3cYKLxQCbkYpCA/QuBtNdR6ISuGChqbkE7GvHNm4ih
+         fRKSJhV0YVhoA==
+Date:   Sat, 30 Sep 2023 10:23:58 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     =?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <cleger@rivosinc.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atishp@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Evan Green <evan@rivosinc.com>,
+        =?iso-8859-1?Q?Bj=F6rn?= Topel <bjorn@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ron Minnich <rminnich@gmail.com>,
+        Daniel Maslowski <cyrevolt@googlemail.com>
+Subject: Re: [PATCH 0/7] Add support to handle misaligned accesses in S-mode
+Message-ID: <20230930-patchy-curdle-ef5ee6e1a17c@spud>
+References: <20230926150316.1129648-1-cleger@rivosinc.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="PInAC6LI+1uRW4CY"
+Content-Disposition: inline
+In-Reply-To: <20230926150316.1129648-1-cleger@rivosinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -53,69 +58,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Sep 2023 13:37:08 +0200 (CEST)
-Julia Lawall <julia.lawall@inria.fr> wrote:
 
-> 
-> 
-> On Fri, 29 Sep 2023, Masami Hiramatsu  wrote:
-> 
-> > On Thu, 28 Sep 2023 12:43:34 +0200
-> > Julia Lawall <Julia.Lawall@inria.fr> wrote:
-> >
-> > > Drop break after return.
-> > >
-> >
-> > Good catch! This looks good to me.
-> >
-> > Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> >
-> > And
-> >
-> > Fixes: 7491e2c44278 ("tracing: Add a probe that attaches to trace events")
-> 
-> Thanks.  I didn't include that because it's not a bug.  But it does break
-> Coccinelle, which is how I noticed it.
+--PInAC6LI+1uRW4CY
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-OK, I got it. I thought it may cause a compiler warning because the
-'break' never be executed. (maybe it is just a flow-control word,
-so it may not need to be warned, but a bit storange.)
+On Tue, Sep 26, 2023 at 05:03:09PM +0200, Cl=E9ment L=E9ger wrote:
+> Since commit 61cadb9 ("Provide new description of misaligned load/store
+> behavior compatible with privileged architecture.") in the RISC-V ISA
+> manual, it is stated that misaligned load/store might not be supported.
+> However, the RISC-V kernel uABI describes that misaligned accesses are
+> supported. In order to support that, this series adds support for S-mode
+> handling of misaligned accesses as well support for prctl(PR_UNALIGN).
+>=20
+> Handling misaligned access in kernel allows for a finer grain control
+> of the misaligned accesses behavior, and thanks to the prctl call, can
+> allow disabling misaligned access emulation to generate SIGBUS. User
+> space can then optimize its software by removing such access based on
+> SIGBUS generation.
+>=20
+> Currently, this series is useful for people that uses a SBI that does
+> not handled misaligned traps. In a near future, this series will make
+> use a SBI extension [1] allowing to request delegation of the
+> misaligned load/store traps to the S-mode software. This extension has
+> been submitted for review to the riscv tech-prs group. An OpenSBI
+> implementation for this spec is available at [2].
+>=20
+> This series can be tested using the spike simulator [3] and an openSBI
+> version [4] which allows to always delegate misaligned load/store to
+> S-mode.
 
-> 
-> julia
-> 
-> >
-> > > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> > >
-> > > ---
-> > >  kernel/trace/trace_eprobe.c |    5 +----
-> > >  1 file changed, 1 insertion(+), 4 deletions(-)
-> > >
-> > > diff --git a/kernel/trace/trace_eprobe.c b/kernel/trace/trace_eprobe.c
-> > > index 72714cbf475c..03c851f57969 100644
-> > > --- a/kernel/trace/trace_eprobe.c
-> > > +++ b/kernel/trace/trace_eprobe.c
-> > > @@ -788,12 +788,9 @@ find_and_get_event(const char *system, const char *event_name)
-> > >  		name = trace_event_name(tp_event);
-> > >  		if (!name || strcmp(event_name, name))
-> > >  			continue;
-> > > -		if (!trace_event_try_get_ref(tp_event)) {
-> > > +		if (!trace_event_try_get_ref(tp_event))
-> > >  			return NULL;
-> > > -			break;
-> > > -		}
-> > >  		return tp_event;
-> > > -		break;
-> > >  	}
-> > >  	return NULL;
-> > >  }
-> > >
-> >
-> >
-> > --
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> >
+Some patches in this series do not build for any configs, some are
+broken for clang builds and others are broken for nommu. Please try to
+build test this more thoroughly before you submit the next version.
 
+Also, AIUI, this series should be marked RFC since the SBI extension
+this relies on has not been frozen.
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cheers,
+Conor.
+
+--PInAC6LI+1uRW4CY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRfpLgAKCRB4tDGHoIJi
+0gjVAQC9Fx8Nsb4L0O1OJEH1rh93DACoHcszIy+Nk51MwLmJzwD/efGr2z7a6NM/
+JvCBcINOdxE3OTtc4dn2+/DGMu5DUA0=
+=wwCm
+-----END PGP SIGNATURE-----
+
+--PInAC6LI+1uRW4CY--
