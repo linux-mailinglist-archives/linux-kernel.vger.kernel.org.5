@@ -2,160 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAC17B3EEC
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 10:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 524127B3EEF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 10:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234136AbjI3IEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 04:04:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45566 "EHLO
+        id S234106AbjI3IFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 04:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234130AbjI3IEH (ORCPT
+        with ESMTP id S232523AbjI3IFK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 04:04:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EFAEB
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 01:04:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BCE6C433C8;
-        Sat, 30 Sep 2023 08:04:03 +0000 (UTC)
-Date:   Sat, 30 Sep 2023 04:03:57 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Nicholas Lowell <nicholas.lowell@gmail.com>
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Nicholas Lowell <nlowell@lexmark.com>
-Subject: Re: [PATCH] trace: tracing_event_filter: fast path when no
- subsystem filters
-Message-ID: <20230930040357.14fcbdf4@rorschach.local.home>
-In-Reply-To: <20230926142058.1370-1-Nicholas.Lowell@gmail.com>
-References: <20230926142058.1370-1-Nicholas.Lowell@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Sat, 30 Sep 2023 04:05:10 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5A4EB
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 01:05:08 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id 4fb4d7f45d1cf-536b39daec1so2891720a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 01:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696061107; x=1696665907; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WQmcG0PhXG0UkauFZ2tR7iCsRk7FCdRiSqPhAfmvbuo=;
+        b=mbCTseysw8GgZKJs7PSui6McDux9lcc8lK5rbX4T2k7TawfepDAEjHJjLTUcQij3Xe
+         jP8BoURML7b0lo1IFAYFvn0sJSgMxsB8RPmzQsDUKdVHX69mQzH6PvYp4aP4auleQPJA
+         R9+7qkgkeOOYZ4p2iJcUT6BSRhvpyuuZIu+aaXYD/aW05a36fn9WnxaJXf9baag35ZaD
+         o3bpuRN+b4BcB0NYLodCR8/oBwyqs8jsJvAsw1BEOFQtz0peRBwzfH/SlgLDrU5PqSA0
+         EGSAz3UTwvOyOna2ydUpI1U58S1oxEt585UYz3q8gZTFxF31MU+4ZaujeSRfHxUcghQk
+         /HzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696061107; x=1696665907;
+        h=to:subject:message-id:date:from:sender:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WQmcG0PhXG0UkauFZ2tR7iCsRk7FCdRiSqPhAfmvbuo=;
+        b=g5k5yE7YkgqNWpQ3/O23VCoO4TwCxuP5UHBrKnsU9zUGd6gX6qBYjOmNl8hfXGZAbI
+         vLOWOAOHjxJk2rURAAEVOK5cRl+CPMUVrPgGV2q5Dx5Mm+yZRI95goEntd8YdHSYhze0
+         P4wzF2Z05Y86FGxfn7eFNCBjSSGGXrupVHPnD2de5Nq+GMol7A00H7Ez4JSdy7IFxuCa
+         8WYHgEbJTCe3Wp9Ij9ZVKAzQGOYFoSkZUYUgYNYQ9CG0xsUiOaMfVJFvNUnjdQmq9qsm
+         a7oa+TJfbYZTHmWXgZtBrTcJ+jWDY+KBW7xA0wgIWc+DIdgdnRaBxen69rtZFfYEndsZ
+         wyFg==
+X-Gm-Message-State: AOJu0YzkAsuUSOr7u/ReyNulRbRrHiCzaSsE6soXDfoDwN+X+sjxb0iF
+        4fWG5fJYk6tXGJIZ5vECl6oYfGyRDPh6ke7u/cU=
+X-Google-Smtp-Source: AGHT+IERKUuERGPdAG9R0mKALVVrheMxMY4N3c1bZFXBta2rJVSJ3rbydw35/DM9QJAUFf72UepVY0/YshwbkW68x1U=
+X-Received: by 2002:a17:907:788d:b0:9b2:717a:c0ec with SMTP id
+ ku13-20020a170907788d00b009b2717ac0ecmr5966220ejc.69.1696061106482; Sat, 30
+ Sep 2023 01:05:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Sender: justicethomson1@gmail.com
+Received: by 2002:a05:6f02:c252:b0:5b:e7cf:1540 with HTTP; Sat, 30 Sep 2023
+ 01:05:05 -0700 (PDT)
+From:   "Dr. Thomsom Jack." <jackthomsom7@gmail.com>
+Date:   Sat, 30 Sep 2023 10:05:05 +0200
+X-Google-Sender-Auth: bP0TTnKqM4BPV4jbq6rOJX9omlw
+Message-ID: <CAH0Xq2+AgBZBNYyxGw6c+aTu-jtjTpnzphPJDgHCXBkNeMJEhA@mail.gmail.com>
+Subject: : Hello,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Sep 2023 10:20:58 -0400
-Nicholas Lowell <nicholas.lowell@gmail.com> wrote:
+Good Day,
 
-> From: Nicholas Lowell <nlowell@lexmark.com>
-> 
-> If there are no filters in the event subsystem, then there's no
-> reason to continue and hit the potentially time consuming
-> tracepoint_synchronize_unregister function.  This should give
-> a speed up for initial disabling/configuring
-> 
-> Signed-off-by: Nicholas Lowell <nlowell@lexmark.com>
-> ---
->  kernel/trace/trace_events_filter.c | 19 ++++++++++++++-----
->  1 file changed, 14 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
-> index 33264e510d16..93653d37a132 100644
-> --- a/kernel/trace/trace_events_filter.c
-> +++ b/kernel/trace/trace_events_filter.c
-> @@ -1317,22 +1317,29 @@ void free_event_filter(struct event_filter *filter)
->  	__free_filter(filter);
->  }
->  
-> -static inline void __remove_filter(struct trace_event_file *file)
-> +static inline int __remove_filter(struct trace_event_file *file)
->  {
->  	filter_disable(file);
-> -	remove_filter_string(file->filter);
-> +	if (file->filter)
-> +		remove_filter_string(file->filter);
-> +	else
-> +		return 0;
-> +
-> +	return 1;
+I have a good news for you.Please contact me for more details. Sorry
+if
+you received this letter in your spam, Due to recent connection error
+here in my country.a
 
-The above looks awkward. What about:
+Looking forward for your immediate response to me through my private
 
-	if (!file->filter)
-		return 0;
+e-mail id: (jackthomsom7@gmail.com)
 
-	remove_filter_string(file->filter);
-	return 1;
 
-?
+Best Regards,
 
-Or better yet:
-
-	if (!file->filter)
-		return false;
-
-	remove_filter_string(file->filter);
-	return true;
-
-and ...
-
->  }
->  
-> -static void filter_free_subsystem_preds(struct trace_subsystem_dir *dir,
-> +static int filter_free_subsystem_preds(struct trace_subsystem_dir *dir,
->  					struct trace_array *tr)
->  {
->  	struct trace_event_file *file;
-> +	int i = 0;
-
-We don't really need a counter. It's either do the synchronization or
-we don't.
-
-	bool do_sync = false;
-
->  
->  	list_for_each_entry(file, &tr->events, list) {
->  		if (file->system != dir)
->  			continue;
-> -		__remove_filter(file);
-> +		i += __remove_filter(file);
-
-		if (remove_filter(file))
-			do_sync = true;
-
->  	}
-
-	return do_sync;
-
-> +	return i;
->  }
->  
->  static inline void __free_subsystem_filter(struct trace_event_file *file)
-> @@ -2411,7 +2418,9 @@ int apply_subsystem_event_filter(struct trace_subsystem_dir *dir,
->  	}
->  
->  	if (!strcmp(strstrip(filter_string), "0")) {
-> -		filter_free_subsystem_preds(dir, tr);
-> +		if (filter_free_subsystem_preds(dir, tr) == 0)
-> +			goto out_unlock;
-> +
-
-		/* If nothing was freed, we do not need to sync */
-		if (!filter_free_subsystem_preds(dir, tr))
-			goto out_unlock;
-
-And yes, add the comment.
-
-And actually, in that block with the goto out_unlock, we should have:
-
-		if (!filter_free_subsystem_preds(dir, tr)) {
-			if (!(WARN_ON_ONCE(system->filter))
-				goto out_unlock;
-		}
-
-If there were no preds, ideally there would be no subsystem filter. But
-if that's not the case, we need to warn about that and then continue.
-
--- Steve
-
->  		remove_filter_string(system->filter);
->  		filter = system->filter;
->  		system->filter = NULL;
-
+Regards,
+Dr. Thomsom Jack.
+My Telephone number
++226-67 -44 - 42- 36
