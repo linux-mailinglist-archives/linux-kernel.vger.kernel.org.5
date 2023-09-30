@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 554E17B413E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 16:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 767BF7B4142
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 16:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234358AbjI3OvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 10:51:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34986 "EHLO
+        id S234343AbjI3Ows (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 10:52:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234361AbjI3OvM (ORCPT
+        with ESMTP id S234320AbjI3Owq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 10:51:12 -0400
+        Sat, 30 Sep 2023 10:52:46 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A9AC1B2;
-        Sat, 30 Sep 2023 07:51:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E70CC433AD;
-        Sat, 30 Sep 2023 14:51:03 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDAEBBA;
+        Sat, 30 Sep 2023 07:52:44 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 345ADC433C7;
+        Sat, 30 Sep 2023 14:52:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696085469;
-        bh=/lLYV8RvUqyUZptiSLATFeHJqg+Lsns2VaQMO9wB+FQ=;
+        s=k20201202; t=1696085564;
+        bh=THPze5AUjQwvb2AK0QGXQIyXlQBsto61AATNgwXhGU4=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=H7Ws5/2qRmB4uJOVCDWKpwBIby8e0t3fSlOaRbpd0W9Oime3fkedtF/SqUSDLb1lt
-         VgMJ5I7DOjAkfkUJ08GQY+H1U8a2xO90GwN+zhu1YgHHnjlj3NQvoPxiVqOFfDn+aW
-         aVprqmb0HWfchE2Mbcx/pY4W8msSAbCeYdTt8plHDvRfb95swJFDjLYGzLwvDXgMfA
-         8v9YmAPNlwAcsLeJiB8vl+iP/DsQoPqJmIcFz39//YVkJezQtQEiv43rKUZipeggtf
-         w/qozQ7+yUOgzjzDRndqSo2duYO8j6MX5m39r26ueTdqkZwM0WwbuvNOxvJEvE6bAM
-         xY0dFIivHzzeA==
-Date:   Sat, 30 Sep 2023 15:51:07 +0100
+        b=PsY2NRb32noFVYu5LmNxffRjMbM3KQx5dx3WJfPsCr6k8QUI7rRK4jc8mTvXhbH1v
+         ORGyxj6zu8aFa21wGJoaUCxfgm4r6ttCHr0AaD1BnrjYqG5wu3LOi0U97lBsJSB6SU
+         jYxzYXnnvHTItWIXEzAeBuV+FyvFwjzleQYbjNPg6ttNwCqDTaWceVGhhvPOtkhu+x
+         uofotm4lDN2A+sZ4wH7Mn69Lou0Y2OPwnesmtzz/YAeUrT6F7JqT16NACR6Rat5SkX
+         ZVWfx5/EWkEeI7yVtrTtrdmmbm7/Mno9rx9D9JGqYhYtmRpJ6xeVt2Bb5kmg8+m9Mx
+         QC5o0Paotqwlg==
+Date:   Sat, 30 Sep 2023 15:52:42 +0100
 From:   Jonathan Cameron <jic23@kernel.org>
 To:     David Lechner <dlechner@baylibre.com>
 Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
@@ -41,12 +41,12 @@ Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
         Axel Haslam <ahaslam@baylibre.com>,
         Philip Molloy <pmolloy@baylibre.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 10/27] staging: iio: resolver: ad2s1210: use regmap
- for config registers
-Message-ID: <20230930155107.47bf5b1d@jic23-huawei>
-In-Reply-To: <20230929-ad2s1210-mainline-v3-10-fa4364281745@baylibre.com>
+Subject: Re: [PATCH v3 11/27] staging: iio: resolver: ad2s1210: add debugfs
+ reg access
+Message-ID: <20230930155242.6490bcab@jic23-huawei>
+In-Reply-To: <20230929-ad2s1210-mainline-v3-11-fa4364281745@baylibre.com>
 References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
-        <20230929-ad2s1210-mainline-v3-10-fa4364281745@baylibre.com>
+        <20230929-ad2s1210-mainline-v3-11-fa4364281745@baylibre.com>
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -60,43 +60,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Sep 2023 12:23:15 -0500
+On Fri, 29 Sep 2023 12:23:16 -0500
 David Lechner <dlechner@baylibre.com> wrote:
 
 > From: David Lechner <david@lechnology.com>
 > 
 > From: David Lechner <dlechner@baylibre.com>
 > 
-> This makes use of the regmap API to read and write the configuration
-> registers. This simplifies code quite a bit and makes it safer
-> (previously, it was easy to write a bad value to the config registers
-> which causes the chip to lock up and need to be reset).
-> 
-> This chip has multiple modes of operation. In normal mode, we do not use
-> regmap since there is no addressing - data is just bitshifted out during
-> the SPI read. In config mode, we use regmap since it requires writing
-> the address (with read/write flag) before reading and writing.
-> 
-> We don't use the lock provided by the regmap because we need to also
-> synchronize with the normal mode SPI reads and with the various GPIOs.
-> 
-> There is also a quirk when reading registers (other than the fault
-> register). If the address/data bit is set in the value read, then it
-> indicates there is a configuration parity error and the data is not
-> valid. Previously, this was checked in a few places, but not
-> consistently. Now, we always check it in the regmap read function.
+> This add an implementation of debugfs_reg_access for the AD2S1210
+> driver.
 > 
 > Signed-off-by: David Lechner <dlechner@baylibre.com>
 
-This was a complex change, so I'm partly relying on the fact it clearly
-works after the change to be sure it is correct ;)
-
-Anyhow, code is much cleaner and probably right, so applied to the
-togreg branch of iio.git and pushed out as testing for all the normal
-reasons.
+I never really care if a driver implements this or not.
+However, if you find it useful that's fine, so applied.
 
 Thanks,
 
 Jonathan
 
+> ---
+> 
+> v3 changes: None
+> 
+>  drivers/staging/iio/resolver/ad2s1210.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
+> index 0663a51d04ad..31415fbb6384 100644
+> --- a/drivers/staging/iio/resolver/ad2s1210.c
+> +++ b/drivers/staging/iio/resolver/ad2s1210.c
+> @@ -614,9 +614,29 @@ static int ad2s1210_initial(struct ad2s1210_state *st)
+>  	return ret;
+>  }
+>  
+> +static int ad2s1210_debugfs_reg_access(struct iio_dev *indio_dev,
+> +				       unsigned int reg, unsigned int writeval,
+> +				       unsigned int *readval)
+> +{
+> +	struct ad2s1210_state *st = iio_priv(indio_dev);
+> +	int ret;
+> +
+> +	mutex_lock(&st->lock);
+> +
+> +	if (readval)
+> +		ret = regmap_read(st->regmap, reg, readval);
+> +	else
+> +		ret = regmap_write(st->regmap, reg, writeval);
+> +
+> +	mutex_unlock(&st->lock);
+> +
+> +	return ret;
+> +}
+> +
+>  static const struct iio_info ad2s1210_info = {
+>  	.read_raw = ad2s1210_read_raw,
+>  	.attrs = &ad2s1210_attribute_group,
+> +	.debugfs_reg_access = &ad2s1210_debugfs_reg_access,
+>  };
+>  
+>  static int ad2s1210_setup_clocks(struct ad2s1210_state *st)
+> 
 
