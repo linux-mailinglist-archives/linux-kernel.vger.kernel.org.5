@@ -2,149 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76AEB7B4358
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 21:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9B97B435E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 21:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbjI3Tl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 15:41:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
+        id S229578AbjI3Tpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 15:45:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjI3TlY (ORCPT
+        with ESMTP id S229447AbjI3Tpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 15:41:24 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EF1E1;
-        Sat, 30 Sep 2023 12:41:22 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-69361132a60so394257b3a.1;
-        Sat, 30 Sep 2023 12:41:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696102882; x=1696707682; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DLeIJ/fAJFQuWgfN3SfqzLo+G0sfER2FPjENsdAZzLE=;
-        b=kUUXrxdjnDca3KTpyuzKcwxpgbg8m/S1YYkaMqpgebBMUgoBiMTYg2WsZBGwAlfhiW
-         SYAlke7cE9ksLudI9wyXKRcoKJ96goXN6c5vqVjLmqbwKZsoXEspJ+36Yzzgys9EFtao
-         3Zp7rn91Xu46uDSnSxOUBF6PyUSQsoFcLgYLaEi8KQJoovGkLqeP8EzM91LSlqOdAFq4
-         aGL8AHH6/bPfBC3M+ENzOE6wC0lrnhl9Yr4xXtC8XBfxDMByxdRSoPKDoJUH94mhh9wJ
-         FSn5+F9CG+yhVZhelj8SL8WcpyboWrB6MssEYyV8MOPMwO7ko/6GCYBiDP/Hzji2Z29G
-         feJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696102882; x=1696707682;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DLeIJ/fAJFQuWgfN3SfqzLo+G0sfER2FPjENsdAZzLE=;
-        b=AhdS1L24Bl2IBord+QKhaabKWD23XCX3F3NFHxJTcOuF+peClTclGe9QpaZSAMHQfx
-         c3t3NdrhvF/99TgOYdS8EHngsuNu8T5lbQgWqSSzkSdau0yz77Y3CzG21o2Qp+jWL2mq
-         +WCYD8uj9F8aiS5QVpDeEEe7JJeLfkSl9lZAbxREiCFn9/lmUzMmGMp0OvgBxdUbI0V7
-         n81S3C0/4QP1cyN0k+3MmK2WMWmQSw/yaa/34UWiC6ImSxmSegmimfm85zkq+oVVMw7L
-         00TeVZ+YDFNiry3lTFC6VMUg/+ZOuW2ZwbHDcZ4YTTPP03fR9GlqyxO1znPu5x2AbyCG
-         /YAw==
-X-Gm-Message-State: AOJu0YxlbdCooebWuxxxsi5TTXWUUtTYY89PPgyAIRGrrS7Q2N+pZaTm
-        MdwCBOEM2kF1t3vV9WUzaeALyDaIHhL2JTWS
-X-Google-Smtp-Source: AGHT+IFLX+X0bbprJYYxzfpMKb+uZKzOoBVsOhZSCU2aGF5m/fir3wpoVoZJzPPS/RknQ/D0E/cltQ==
-X-Received: by 2002:a05:6a21:33a0:b0:15a:4634:e4c with SMTP id yy32-20020a056a2133a000b0015a46340e4cmr8807395pzb.5.1696102881879;
-        Sat, 30 Sep 2023 12:41:21 -0700 (PDT)
-Received: from abhinav-IdeaPad-Slim-5-14ABR8.. ([103.75.161.211])
-        by smtp.googlemail.com with ESMTPSA id i14-20020aa787ce000000b006900cb919b8sm16969510pfo.53.2023.09.30.12.41.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 12:41:21 -0700 (PDT)
-From:   Abhinav <singhabhinav9051571833@gmail.com>
-To:     shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Abhinav <singhabhinav9051571833@gmail.com>
-Subject: [PATCH] Added missing TARGETS in kselftest top level Makefile
-Date:   Sun,  1 Oct 2023 01:11:06 +0530
-Message-Id: <20230930194106.1379527-1-singhabhinav9051571833@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sat, 30 Sep 2023 15:45:49 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D22B3;
+        Sat, 30 Sep 2023 12:45:46 -0700 (PDT)
+Received: from mercury (unknown [185.254.75.45])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2DD606607258;
+        Sat, 30 Sep 2023 20:45:44 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696103144;
+        bh=Q+1jxZysTPtWBx/WufxCB1nhy7BZR+3ZnP/hTN5+Ins=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Eaw2WmCr3JXGqV9sSO7jOow1L9iu+roPm3nuZAbYI/9n3H7tVMiFcBvHtWiN4Y0BI
+         Eoz2r6zzMK/g1uPgzv1AcADVtP1ak+oz2GP+U+Za3Us5vGTTDOK10LkKrW+aU+Uoq+
+         3tF1dFOd9t5dIduSAb256Yv8ejiyLiReAjRqwoP2GA0OJN/ROuaGgEH0VXcjvT2LCr
+         P3XTPeBogBWberaelp34yxlfWwpSkb/qJVPfRUhSpwytmbY5uljzLYkaMcmR24y6eZ
+         8VahK++eELa00fa9fa080KY/YIanp/1aNCQrhGiuz+D9EdNTBKZ1CGzvQZcJ9HZfdV
+         uJU9tRYyLKypg==
+Received: by mercury (Postfix, from userid 1000)
+        id 3716D10603F9; Sat, 30 Sep 2023 21:45:40 +0200 (CEST)
+Date:   Sat, 30 Sep 2023 21:45:40 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Jakob Hauser <jahau@rocketmail.com>
+Cc:     Marion & Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Lee Jones <lee@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Raymond Hackley <raymondhackley@protonmail.com>,
+        Henrik Grimler <henrik@grimler.se>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH 3/5] power: supply: rt5033_charger: fix missing unlock
+Message-ID: <20230930194540.szci6qlut5ecodpa@mercury.elektranox.org>
+References: <cover.1695844349.git.jahau@rocketmail.com>
+ <e437e728317b6a2a860f7812f64a98146a27965e.1695844349.git.jahau@rocketmail.com>
+ <89351ef6-ab81-c679-4432-cc44de9a91f1@wanadoo.fr>
+ <24162857-6863-d9eb-7fdf-e6c119e252d1@rocketmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="i2mxvavpm3tig5z5"
+Content-Disposition: inline
+In-Reply-To: <24162857-6863-d9eb-7fdf-e6c119e252d1@rocketmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some TARGETS were missing in selftests top level Makefile.Added those.
-Signed-off-by: Abhinav <singhabhinav9051571833@gmail.com>
----
- tools/testing/selftests/Makefile | 11 +++++++++++
- 1 file changed, 11 insertions(+)
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 8d9b2341b79a..14050f39cc5e 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -13,6 +13,7 @@ TARGETS += core
- TARGETS += cpufreq
- TARGETS += cpu-hotplug
- TARGETS += damon
-+TARGETS += dma
- TARGETS += dmabuf-heaps
- TARGETS += drivers/dma-buf
- TARGETS += drivers/s390x/uvdevice
-@@ -22,6 +23,7 @@ TARGETS += dt
- TARGETS += efivarfs
- TARGETS += exec
- TARGETS += fchmodat2
-+TARGETS += filelock
- TARGETS += filesystems
- TARGETS += filesystems/binderfs
- TARGETS += filesystems/epoll
-@@ -32,17 +34,21 @@ TARGETS += ftrace
- TARGETS += futex
- TARGETS += gpio
- TARGETS += hid
-+TARGETS += ia64
- TARGETS += intel_pstate
- TARGETS += iommu
- TARGETS += ipc
- TARGETS += ir
- TARGETS += kcmp
- TARGETS += kexec
-+TARGETS += kmod
- TARGETS += kvm
- TARGETS += landlock
- TARGETS += lib
- TARGETS += livepatch
- TARGETS += lkdtm
-+TARGETS += locking
-+TARGETS += media_tests
- TARGETS += membarrier
- TARGETS += memfd
- TARGETS += memory-hotplug
-@@ -66,14 +72,18 @@ TARGETS += pid_namespace
- TARGETS += powerpc
- TARGETS += prctl
- TARGETS += proc
-+TARGETS += ptp
- TARGETS += pstore
- TARGETS += ptrace
-+TARGETS += rcutorture
- TARGETS += openat2
- TARGETS += resctrl
- TARGETS += riscv
- TARGETS += rlimits
- TARGETS += rseq
- TARGETS += rtc
-+TARGETS += safesetid
-+TARGETS += sched
- TARGETS += seccomp
- TARGETS += sgx
- TARGETS += sigaltstack
-@@ -99,6 +109,7 @@ TARGETS += user
- TARGETS += user_events
- TARGETS += vDSO
- TARGETS += mm
-+TARGETS += watchdog
- TARGETS += x86
- TARGETS += zram
- #Please keep the TARGETS list alphabetically sorted
--- 
-2.34.1
+--i2mxvavpm3tig5z5
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
+
+On Thu, Sep 28, 2023 at 09:46:33PM +0200, Jakob Hauser wrote:
+> On 28.09.23 07:23, Marion & Christophe JAILLET wrote:
+> > Ok, but why not already in patch #1?
+>=20
+> Thanks for your hints about the missing "unlock"s. And sorry for causing =
+you
+> extra work by having the fix in a separate patch.
+>=20
+> The patch you refer to ("power: supply: rt5033_charger: Add cable detecti=
+on
+> and USB OTG supply") has its own history. It was already applied once,
+> showed up in linux-next, caused some issues, was therefore removed again.=
+ In
+> the meantime, some fixes were provided by different contributors.
+
+Since the commit has been dropped, please merge the fixes into the
+patch. E.g. patch #1 does not make any sense on its own.
+
+> This series actually tries to apply that patch again, accompanied by two
+> fixes =E2=80=93 and two additional clean-up patches. I added the fixes pa=
+tches
+> as-is, also to credit the contributors.
+
+You can use Co-developed-by tag for that.
+
+> Possibly the cover sheet of the series was a bit too thin about that
+> history.
+>=20
+> Kind regards,
+> Jakob
+
+Patches 4-5 look fine to me, but do not apply without 1-3. For 1-3 I
+did not check them in detail. Please merge them first, since it's
+quite hard to read in the current state.
+
+Thanks,
+
+-- Sebastian
+
+--i2mxvavpm3tig5z5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmUYetoACgkQ2O7X88g7
++ppjzRAAqQYV7WWR3ahCHvFo8pWEWJ4xetIyHA9FUQ3UArpMJYI2/3WlrymChj97
+caDn7XDA5wvt18FLVkZMmLW9mPGhxDBUcmJHFyrKfkkQYjtXCgdeKSUNWA9lKqZa
+cRmPVLmAARAlB6nK5P22cTnIXBvpHSJvP5wA4BS3kt7CIeqbYqZBUSwTeB3GhJLJ
+nu46CoAfYxIN0aZMqK2KJLjI4/qWltnnl1gegCtyI7/f+42ELQ+9OzdCCNVHJjdW
+vRN07zFeuqoVt/9XS1mo9fkOsITIgAKmtFdeGrzv0jqRt00x/GfWsn1xH0i4JZnJ
+ef5jO5DCyxVbDCjs50NcpdGuIn5ujIjFs/qY48uFIhfL6lI/NNpkr57hLwrAhCi2
+BZSIQa0UU1DxEeszc3K4Alrhu4He+xU+xQB2Ieogr5IP/1wAaGgfWbnVlmXsj6IZ
+mGNQPvtNWDEQOSD0zg9YirZEWi9ZsVNrIJkY8q8YUVsjR5aScqk7rKtZIp+eHxKx
+0coHkta6vaqL8tuJZYdKwOazHckLO1Mhu9K2on3hkduRt1VYTCH17pv0rJB2rtT0
+4RHnmvLmAIBqrlxw01wjkHYnqPmLLo5Xk1q0/0R5yGwKprCSSnOAxTD1NQcMpU1x
+V+anAa1F74A/7qL77+SIrvDNS4oOtMWy0hCivsRRqdFS6N/O94U=
+=tYmM
+-----END PGP SIGNATURE-----
+
+--i2mxvavpm3tig5z5--
