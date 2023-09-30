@@ -2,47 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE107B4226
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 822F17B4206
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234519AbjI3QcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 12:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57440 "EHLO
+        id S234493AbjI3QQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 12:16:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234498AbjI3Qb5 (ORCPT
+        with ESMTP id S231580AbjI3QQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 12:31:57 -0400
-X-Greylist: delayed 935 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 30 Sep 2023 09:31:53 PDT
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 33099CF;
-        Sat, 30 Sep 2023 09:31:52 -0700 (PDT)
+        Sat, 30 Sep 2023 12:16:24 -0400
+Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E2D0FBA;
+        Sat, 30 Sep 2023 09:16:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=Gj0MA
-        5aagPZFzD46nJUbswYyljTBp8VizZmvHaX2u6w=; b=EDZhHbv07wHalj0L0ReeI
-        N+z2setN3oTLgPCngCa4/vaO8So0ZwPLWbHECGRtptg0VTVURctZdfrIR99UMPn9
-        7fLvH4V5DIOaj83ufbYHtK6OB8E6OA9gnXz2e1wyt9vigAlDvAF91Ehrso8CFDvm
-        ZIZdRgnosDloQM8s6VjYhM=
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=hOXob
+        ZwzCwV2q4+KSYLgaCkiH/4ph/cOP7eBbXprNpI=; b=TqWuiTFpW32p10/UQTlwr
+        oZF5xAf6r7iGuKcky299HBI1GNJvssXON+UFFpuALo0tItLK6VyFWpleqiXjF5OZ
+        GRmKpE+xP9GJIpZsIIYG5meD4Eh4oFpbTgNpBbiohKJUUoOucxPZoxMFAn4tk7Ru
+        Ua7FsRALdiDzTf9x/cVEy0=
 Received: from localhost.localdomain (unknown [221.12.59.213])
-        by zwqz-smtp-mta-g2-1 (Coremail) with SMTP id _____wAXTT+rSRhlQrg8Dg--.48618S2;
-        Sun, 01 Oct 2023 00:15:40 +0800 (CST)
+        by zwqz-smtp-mta-g2-1 (Coremail) with SMTP id _____wAXTT+rSRhlQrg8Dg--.48618S3;
+        Sun, 01 Oct 2023 00:15:45 +0800 (CST)
 From:   AllenX <xubo3006@163.com>
 To:     rust-for-linux@vger.kernel.org, ojeda@kernel.org
 Cc:     alex.gaynor@gmail.com, wedsonaf@gmail.com, boqun.feng@gmail.com,
         gary@garyguo.net, bjorn3_gh@protonmail.com,
         linux-kernel@vger.kernel.org, AllenX <xubo3006@163.com>
-Subject: [PATCH 1/2] rust: add Soft-RoCE driver basic structure
-Date:   Sun,  1 Oct 2023 00:14:42 +0800
-Message-Id: <20230930161443.58812-1-xubo3006@163.com>
+Subject: [PATCH 2/2] rust: add infiniband mlx4 driver basic structure
+Date:   Sun,  1 Oct 2023 00:14:43 +0800
+Message-Id: <20230930161443.58812-2-xubo3006@163.com>
 X-Mailer: git-send-email 2.39.3
+In-Reply-To: <20230930161443.58812-1-xubo3006@163.com>
+References: <20230930161443.58812-1-xubo3006@163.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wAXTT+rSRhlQrg8Dg--.48618S2
-X-Coremail-Antispam: 1Uf129KBjvAXoWfJFy5uFW8Ary8tryxJw4DXFb_yoW8XF45Wo
-        Zaqrs7Wwn5tr1xA34xJ343Gr43XrZ8GFs3Xrn5Kws8Crn7trWUC34fCw18XFWDGF18KFy5
-        u343JFZYvan5XFn5n29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-        AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvj4iMmhmDUUUU
+X-CM-TRANSID: _____wAXTT+rSRhlQrg8Dg--.48618S3
+X-Coremail-Antispam: 1Uf129KBjvJXoW3ZrWUArWftFyUuF47Xw4Dtwb_yoWkGF47pr
+        4kG3yrK397tF4xXayjqFW8WFySgw4xWa13Crs7Aw4ftw4jgFWYgF48trW2yrWUArZ5X34a
+        qFWq93yakws5Xw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRjNt3UUUUU=
 X-Originating-IP: [221.12.59.213]
-X-CM-SenderInfo: 50xe0jqqqwqiywtou0bp/xtbBFhT6rlgi66JaHwABsh
+X-CM-SenderInfo: 50xe0jqqqwqiywtou0bp/1tbiWRb6rlWB07vPRQAAst
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
@@ -53,81 +54,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add soft-Roce rxe device net driver basic structure and Rust security abstration interface
-
-This patch add Rust abstration for rdma Soft-RoCE drrivers.
-The basic architecture is completed, initialization is implemented and interfaces are set aside. Network driver-related support is currently not perfect, and the specific functions of data frame parsing need to be further implemented.
-[PATCH 2/2] is the driver of rdma infiniband mlx4 and also completes a similar basic architecture.
+add infiniband mlx4 device net driver basic structure and Rust security abstration interface
 
 Signed-off-by: Allen Xu <xubo3006@163.com>
 ---
- rust/bindings/bindings_helper.h |   3 +
- rust/kernel/lib.rs              |   2 +
- rust/kernel/rxe.rs              | 356 ++++++++++++++++++++++++++++++++
+ rust/bindings/bindings_helper.h |   1 +
+ rust/kernel/lib.rs              |   1 +
+ rust/kernel/mlx4.rs             | 288 ++++++++++++++++++++++++++++++++
+ rust/kernel/workqueue.rs        |   9 +-
  samples/rust/Kconfig            |   7 +
  samples/rust/Makefile           |   1 +
- samples/rust/rust_rxe.rs        |  49 +++++
- 6 files changed, 418 insertions(+)
- create mode 100644 rust/kernel/rxe.rs
- create mode 100644 samples/rust/rust_rxe.rs
+ samples/rust/rust_mlx4.rs       |  49 ++++++
+ 7 files changed, 353 insertions(+), 3 deletions(-)
+ create mode 100644 rust/kernel/mlx4.rs
+ create mode 100644 samples/rust/rust_mlx4.rs
 
 diff --git a/rust/bindings/bindings_helper.h b/rust/bindings/bindings_helper.h
-index 7d9bef6f87..cb63710af1 100644
+index cb63710af1..c9b794a3d3 100644
 --- a/rust/bindings/bindings_helper.h
 +++ b/rust/bindings/bindings_helper.h
-@@ -36,6 +36,9 @@
- #include <linux/sysctl.h>
- #include <linux/uaccess.h>
- #include <linux/uio.h>
-+#include <net/udp_tunnel.h>
-+#include <rdma/rdma_netlink.h>
-+#include <rdma/ib_verbs.h>
+@@ -39,6 +39,7 @@
+ #include <net/udp_tunnel.h>
+ #include <rdma/rdma_netlink.h>
+ #include <rdma/ib_verbs.h>
++#include <linux/mlx4/driver.h>
  
  /* `bindgen` gets confused at certain things. */
  const gfp_t BINDINGS_GFP_KERNEL = GFP_KERNEL;
 diff --git a/rust/kernel/lib.rs b/rust/kernel/lib.rs
-index c20b37e88a..39e0b17778 100644
+index 39e0b17778..60f83427d8 100644
 --- a/rust/kernel/lib.rs
 +++ b/rust/kernel/lib.rs
-@@ -80,6 +80,8 @@ mod raw_list;
+@@ -80,6 +80,7 @@ mod raw_list;
  pub mod rbtree;
  pub mod unsafe_list;
  
-+pub mod rxe;
-+
- #[doc(hidden)]
- pub mod module_param;
++pub mod mlx4;
+ pub mod rxe;
  
-diff --git a/rust/kernel/rxe.rs b/rust/kernel/rxe.rs
+ #[doc(hidden)]
+diff --git a/rust/kernel/mlx4.rs b/rust/kernel/mlx4.rs
 new file mode 100644
-index 0000000000..4dce98adeb
+index 0000000000..7f53e0e9e6
 --- /dev/null
-+++ b/rust/kernel/rxe.rs
-@@ -0,0 +1,356 @@
++++ b/rust/kernel/mlx4.rs
+@@ -0,0 +1,288 @@
 +// SPDX-License-Identifier: GPL-2.0
 +
-+//! Infiniband soft-Roce devices.
++//! Infiniband mlx4 devices.
++//!
++
 +use alloc::boxed::Box;
 +use core::pin::Pin;
 +use core::{marker, ptr};
 +use macros::vtable;
 +
-+use crate::error::{code::*, Error, Result};
++use crate::bindings;
++use crate::error::{code::*, Result};
 +use crate::str::CStr;
-+use crate::{bindings, pr_err, pr_info};
++use crate::workqueue::{BoxedQueue, Queue};
 +
-+/// Soft-Roce transport registration.
++/// Infiband mlx4 device registration.
 +///
-+pub struct Registration<T: RxeOperation> {
++pub struct Registration<T: Mlx4Operation> {
 +    registered: bool,
 +    #[allow(dead_code)]
 +    name: &'static CStr,
-+    net_socket: RxeRecvSockets<T>,
-+    rxe_link_ops: bindings::rdma_link_ops,
++    wq: Mlx4WorkQueue,
++    cm_wq: CmWorkQueue,
++    qp_wq: QpWorkQueue,
++    mcg_wq: McgWorkQueue,
 +    phantom: marker::PhantomData<T>,
 +}
 +
-+impl<T: RxeOperation> Registration<T> {
++impl<T: Mlx4Operation> Registration<T> {
 +    /// Creates a new [`Registration`] but does not register it yet.
 +    ///
 +    /// It is allowed to move.
@@ -136,13 +136,16 @@ index 0000000000..4dce98adeb
 +        Self {
 +            registered: false,
 +            name,
-+            net_socket: RxeRecvSockets::new(),
-+            rxe_link_ops: bindings::rdma_link_ops::default(),
++            wq: Mlx4WorkQueue::new(),
++            cm_wq: CmWorkQueue::new(),
++            qp_wq: QpWorkQueue::new(),
++            mcg_wq: McgWorkQueue::new(),
 +            phantom: marker::PhantomData,
 +        }
 +    }
 +
-+    /// Registers a infiniband soft-Roce device
++    /// Registers a infiband mlx4 device.
++    ///
 +    /// Returns a pinned heap-allocated representation of the registration.
 +    pub fn new_pinned(name: &'static CStr) -> Result<Pin<Box<Self>>> {
 +        let mut r = Pin::from(Box::try_new(Self::new(name))?);
@@ -150,396 +153,352 @@ index 0000000000..4dce98adeb
 +        Ok(r)
 +    }
 +
-+    /// Registers a infiband soft-Roce device with the rest of the kernel.
++    // Registers a infiband mlx4 device with the rest of the kernel.
 +    ///
 +    /// It must be pinned because the memory block that represents the registration is
 +    /// self-referential.
 +    pub fn register(self: Pin<&mut Self>) -> Result {
-+        // SAFETY: We must ensure that we never move out of 'this'.
++        // SAFETY: We must ensure that we never move out of `this`.
 +        let this = unsafe { self.get_unchecked_mut() };
 +        if this.registered {
-+            // Already registered
++            // Already registered.
 +            return Err(EINVAL);
 +        }
 +
-+        match this.net_socket.alloc() {
++        match this.wq.init() {
 +            Ok(()) => {}
 +            Err(e) => return Err(e),
 +        }
 +
-+        this.rxe_link_ops = RxeRdmaLinkTable::<T>::build();
++        match this.qp_wq.init() {
++            Ok(()) => {}
++            Err(e) => {
++                this.wq.clean();
++                return Err(e);
++            }
++        }
 +
-+        // SAFETY: The adapter is compatible with the rdma_link_register
++        match this.cm_wq.init() {
++            Ok(()) => {}
++            Err(e) => {
++                this.wq.clean();
++                this.qp_wq.clean();
++                return Err(e);
++            }
++        }
++
++        match this.mcg_wq.init() {
++            Ok(()) => {}
++            Err(e) => {
++                this.wq.clean();
++                this.cm_wq.clean();
++                this.qp_wq.clean();
++                return Err(e);
++            }
++        }
++
++        // SAFETY: The adapter is compatible with the mlx4 register
 +        unsafe {
-+            bindings::rdma_link_register(&mut this.rxe_link_ops);
++            bindings::mlx4_register_interface(Mlx4OperationTable::<T>::build());
 +        }
 +
 +        this.registered = true;
-+        pr_info!("loaded");
 +        Ok(())
 +    }
 +}
 +
-+impl<T: RxeOperation> Drop for Registration<T> {
-+    fn drop(&mut self) {
-+        if self.registered {
-+            // SAFETY: [`self.rxe_link_ops`] was previously created using RxeRdmaLinkTable::<T>::build()
-+            unsafe { bindings::rdma_link_unregister(&mut self.rxe_link_ops) };
-+            // SAFETY: unregister ib driver with driver_id bindings::rdma_driver_id_RDMA_DRIVER_RXE
-+            unsafe { bindings::ib_unregister_driver(bindings::rdma_driver_id_RDMA_DRIVER_RXE) };
-+        }
-+    }
-+}
-+
-+// SAFETY: `Registration` does not expose any of its state across threads
-+// (it is fine for multiple threads to have a shared reference to it).
-+unsafe impl<T: RxeOperation> Sync for Registration<T> {}
-+
-+/// soft-Roce register net sockets
-+pub struct RxeRecvSockets<T: RxeOperation> {
-+    sk4: Option<*mut bindings::socket>,
-+    sk6: Option<*mut bindings::socket>,
-+    rxe_net_notifier: Option<bindings::notifier_block>,
-+    phantom: marker::PhantomData<T>,
-+}
-+
-+impl<T: RxeOperation> RxeRecvSockets<T> {
-+    /// Create net socket but not init it yet.
-+    pub fn new() -> Self {
-+        Self {
-+            sk4: None,
-+            sk6: None,
-+            rxe_net_notifier: None,
-+            phantom: marker::PhantomData,
-+        }
-+    }
-+
-+    /// Init rxe net socket
-+    pub fn alloc(&mut self) -> Result<()> {
-+        match self.ipv4_init() {
-+            Ok(_tmp) => {}
-+            Err(e) => return Err(e),
-+        }
-+
-+        match self.ipv6_init() {
-+            Ok(_tmp) => {}
-+            Err(e) => {
-+                self.rxe_net_release();
-+                return Err(e);
-+            }
-+        }
-+
-+        match self.net_notifier_register() {
-+            Ok(_tmp) => {}
-+            Err(e) => {
-+                self.rxe_net_release();
-+                return Err(e);
-+            }
-+        }
-+        Ok(())
-+    }
-+
-+    /// Init ipv4 socket
-+    fn ipv4_init(&mut self) -> Result<()> {
-+        let mut udp_cfg = bindings::udp_port_cfg::default();
-+        let mut tnl_cfg = bindings::udp_tunnel_sock_cfg::default();
-+        let mut sock: *mut bindings::socket = ptr::null_mut();
-+
-+        udp_cfg.family = bindings::AF_INET as u8;
-+        udp_cfg.local_udp_port = 46866;
-+        // SAFETY: [`bindings::init_net`] and [`udp_cfg`] can be safely passed to [`bindings::udp_sock_create4`]
-+        // [`sock`] will be pass to [`self.sk4`] later, it will live at least as long as the module, which is an implicit requirement
-+        let err =
-+            unsafe { bindings::udp_sock_create4(&mut bindings::init_net, &mut udp_cfg, &mut sock) };
-+
-+        if err < 0 {
-+            pr_err!("Failed to create IPv4 UDP tunnel\n");
-+            return Err(Error::from_kernel_errno(err));
-+        }
-+
-+        tnl_cfg.encap_type = 1;
-+        tnl_cfg.encap_rcv = RxeUdpEncapRecvFuncTable::<T>::build_func();
-+
-+        // SAFETY: [`bindings::init_net`] and [`tnl_cfg`] can be safely passed to [`bindings::setup_udp_tunnel_sock`]
-+        // [`sock`] will be pass to [`self.sk4`] later, it will live at least as long as the module, which is an implicit requirement
-+        unsafe { bindings::setup_udp_tunnel_sock(&mut bindings::init_net, sock, &mut tnl_cfg) }
-+        self.sk4 = Some(sock);
-+        Ok(())
-+    }
-+
-+    /// if CONFIG_IPV6=y, init ipv6 socket
-+    fn ipv6_init(&mut self) -> Result<()> {
-+        #[cfg(CONFIG_IPV6)]
-+        {
-+            let mut udp_cfg = bindings::udp_port_cfg::default();
-+            let mut tnl_cfg = bindings::udp_tunnel_sock_cfg::default();
-+            let mut sock: *mut bindings::socket = ptr::null_mut();
-+
-+            udp_cfg.family = bindings::AF_INET6 as u8;
-+            udp_cfg.set_ipv6_v6only(1);
-+            udp_cfg.local_udp_port = 46866;
-+            // SAFETY: [`bindings::init_net`] and [`udp_cfg`] can be safely passed to [`bindings::udp_sock_create4`]
-+            // [`sock`] will be pass to [`self.sk6`] later, it will live at least as long as the module, which is an implicit requirement
-+            let err = unsafe {
-+                bindings::udp_sock_create6(&mut bindings::init_net, &mut udp_cfg, &mut sock)
-+            };
-+
-+            if err < 0 {
-+                // EAFNOSUPPORT
-+                if err == -97 {
-+                    pr_err!("IPv6 is not supported, can not create a UDPv6 socket\n");
-+                    return Ok(());
-+                } else {
-+                    pr_err!("Failed to create IPv6 UDP tunnel\n");
-+                    return Err(Error::from_kernel_errno(err));
-+                }
-+            }
-+
-+            tnl_cfg.encap_type = 1;
-+            tnl_cfg.encap_rcv = RxeUdpEncapRecvFuncTable::<T>::build_func();
-+
-+            // SAFETY: [`bindings::init_net`] and [`tnl_cfg`] can be safely passed to [`bindings::setup_udp_tunnel_sock`]
-+            // [`sock`] will be pass to [`self.sk6`] later, it will live at least as long as the module, which is an implicit requirement
-+            unsafe { bindings::setup_udp_tunnel_sock(&mut bindings::init_net, sock, &mut tnl_cfg) }
-+            self.sk6 = Some(sock);
-+        }
-+        Ok(())
-+    }
-+
-+    /// Rxe receive notifier info and handle func
-+    fn net_notifier_register(&mut self) -> Result<()> {
-+        let err: i32;
-+        self.rxe_net_notifier = Some(RxeNotifyFuncTable::<T>::build());
-+        // SAFETY: [`self.rxe_net_notifier`] is Some, it was previously created by
-+        // RxeNotifyFuncTable::<T>::build().
-+        unsafe {
-+            err = bindings::register_netdevice_notifier(self.rxe_net_notifier.as_mut().unwrap());
-+        }
-+        if err != 0 {
-+            pr_err!("Failed to register netdev notifier\n");
-+            if self.rxe_net_notifier.is_some() {
-+                // SAFETY: [`self.rxe_net_notifier`] is Some, it was previously created by
-+                // RxeNotifyFuncTable::<T>::build().
-+                unsafe {
-+                    bindings::unregister_netdevice_notifier(
-+                        &mut self.rxe_net_notifier.take().unwrap(),
-+                    )
-+                };
-+            }
-+            return Err(Error::from_kernel_errno(err));
-+        }
-+        Ok(())
-+    }
-+
-+    /// release registered socket when error occur
-+    fn rxe_net_release(&mut self) {
-+        if self.sk4.is_some() {
-+            // SAFETY: [`self.sk4`] is Some, it was previously created in ipv4_init(&mut self).
-+            unsafe {
-+                bindings::udp_tunnel_sock_release(self.sk4.take().unwrap());
-+            }
-+        }
-+        if self.sk6.is_some() {
-+            // SAFETY: [`self.sk6`] is Some, it was previously created in ipv6_init(&mut self).
-+            unsafe {
-+                bindings::udp_tunnel_sock_release(self.sk6.take().unwrap());
-+            }
-+        }
-+    }
-+}
-+
-+impl<T: RxeOperation> Drop for RxeRecvSockets<T> {
++impl<T: Mlx4Operation> Drop for Registration<T> {
 +    /// Removes the registration from the kernel if it has completed successfully before.
 +    fn drop(&mut self) {
-+        self.rxe_net_release();
-+        if self.rxe_net_notifier.is_some() {
-+            // SAFETY: [`self.rxe_net_notifier`] is Some, it was previously created by
-+            // RxeNotifyFuncTable::<T>::build().
-+            unsafe {
-+                bindings::unregister_netdevice_notifier(&mut self.rxe_net_notifier.take().unwrap());
-+            };
++        if self.registered {
++            self.mcg_wq.clean();
++            self.cm_wq.clean();
++            self.qp_wq.clean();
++            self.wq.clean();
 +        }
 +    }
 +}
 +
-+// SAFETY: `Registration` does not expose any of its state across threads
-+// (it is fine for multiple threads to have a shared reference to it).
-+unsafe impl<T: RxeOperation> Sync for RxeRecvSockets<T> {}
++/// Build kernel's `struct mlx4_interface` type with mlx4 device operation.
++pub struct Mlx4OperationTable<T>(marker::PhantomData<T>);
 +
-+/// Implement this trait to complete the function.
++impl<T: Mlx4Operation> Mlx4OperationTable<T> {
++    /// Builds an instance of [`struct mlx4_interface`].
++    ///
++    /// # Safety
++    ///
++    /// The caller must ensure that the adapter is compatible with the way the device is registered.
++    pub fn build() -> *mut bindings::mlx4_interface {
++        return &mut bindings::mlx4_interface {
++            add: Some(Self::add_callback),
++            remove: Some(Self::remove_callback),
++            event: Some(Self::event_callback),
++            get_dev: None,
++            activate: None,
++            list: bindings::list_head {
++                next: ptr::null_mut(),
++                prev: ptr::null_mut(),
++            },
++            // MLX4_PROT_IB_IPV6
++            protocol: 0,
++            // MLX4_INTFF_BONDING
++            flags: 1,
++        };
++    }
++
++    unsafe extern "C" fn add_callback(_dev: *mut bindings::mlx4_dev) -> *mut core::ffi::c_void {
++        let _ = T::add();
++        return ptr::null_mut();
++    }
++
++    unsafe extern "C" fn remove_callback(
++        _dev: *mut bindings::mlx4_dev,
++        _context: *mut core::ffi::c_void,
++    ) {
++        let _ = T::remove();
++    }
++
++    unsafe extern "C" fn event_callback(
++        _dev: *mut bindings::mlx4_dev,
++        _context: *mut core::ffi::c_void,
++        _event: bindings::mlx4_dev_event,
++        _param: core::ffi::c_ulong,
++    ) {
++        let _ = T::event();
++    }
++}
++
++/// Corresponds to the kernel's `struct mlx4_interface`.
++///
++/// You implement this trait whenever you would create a `struct mlx4_interface`.
 +#[vtable]
-+pub trait RxeOperation {
-+    /// notify() corresponds to the kernel's rxe_notify.
-+    fn notify() -> Result;
-+    /// newlink() corresponds to the kernel's rxe_newlink.
-+    fn newlink() -> Result;
-+    /// udp_recv() implement skb reception processing.
-+    fn udp_recv() -> Result;
++pub trait Mlx4Operation {
++    /// Add a new mlx4 ib device.
++    fn add() -> Result;
++    /// Remove mlx4 ib device.
++    fn remove() -> Result;
++    /// Respond to specific mlx4 ib device event
++    fn event() -> Result;
 +}
 +
-+///Build kernel's 'struct notifier_block' type with rxe device operation
-+struct RxeNotifyFuncTable<T>(marker::PhantomData<T>);
++pub(crate) struct Mlx4WorkQueue {
++    wq: Option<BoxedQueue>,
++}
 +
-+impl<T: RxeOperation> RxeNotifyFuncTable<T> {
-+    /// Builds an instance of [`struct notifier_block`].
-+    ///
-+    /// # Safety
-+    ///
-+    /// The caller must ensure that the adapter is compatible with the way the device is registered.
-+    pub(crate) fn build() -> bindings::notifier_block {
-+        Self::NOTIFYFUNC
++impl Mlx4WorkQueue {
++    pub(crate) fn new() -> Self {
++        Self { wq: None }
 +    }
 +
-+    const NOTIFYFUNC: bindings::notifier_block = bindings::notifier_block {
-+        notifier_call: Some(Self::rxe_notify),
-+        next: ptr::null_mut(),
-+        priority: 0,
-+    };
++    pub(crate) fn init(&mut self) -> Result {
++        let wq_tmp = Queue::try_new(format_args!("mlx4_ib"), 655369, 1);
++        self.wq = match wq_tmp {
++            Ok(wq) => Some(wq),
++            Err(e) => return Err(e),
++        };
 +
-+    unsafe extern "C" fn rxe_notify(
-+        _not_blk: *mut bindings::notifier_block,
-+        _event: core::ffi::c_ulong,
-+        _arg: *mut core::ffi::c_void,
-+    ) -> core::ffi::c_int {
-+        let _ = T::notify();
-+        return 0;
++        Ok(())
++    }
++
++    pub(crate) fn clean(&mut self) {
++        if self.wq.is_some() {
++            drop(self.wq.take().unwrap());
++        }
 +    }
 +}
 +
-+/// Build kernel's 'struct rxe_link_ops' type with rxe device operation
-+struct RxeRdmaLinkTable<T>(marker::PhantomData<T>);
++pub(crate) struct CmWorkQueue {
++    cm_wq: Option<BoxedQueue>,
++}
 +
-+impl<T: RxeOperation> RxeRdmaLinkTable<T> {
-+    /// Builds an instance of [`struct rxe_link_ops`].
-+    ///
-+    /// # Safety
-+    ///
-+    /// The caller must ensure that the adapter is compatible with the way the device is registered.
-+    pub(crate) fn build() -> bindings::rdma_link_ops {
-+        Self::RXELINKFUNC
++impl CmWorkQueue {
++    pub(crate) fn new() -> Self {
++        Self { cm_wq: None }
 +    }
 +
-+    const RXELINKFUNC: bindings::rdma_link_ops = bindings::rdma_link_ops {
-+        type_: "rxe".as_ptr() as *const i8,
-+        newlink: Some(Self::rxe_newlink),
-+        list: bindings::list_head {
-+            next: ptr::null_mut(),
-+            prev: ptr::null_mut(),
-+        },
-+    };
++    pub(crate) fn init(&mut self) -> Result {
++        let cm_wq_tmp = Queue::try_new(format_args!("mlx4_ib_cm"), 0, 0);
++        self.cm_wq = match cm_wq_tmp {
++            Ok(cm_wq) => Some(cm_wq),
++            Err(e) => return Err(e),
++        };
 +
-+    unsafe extern "C" fn rxe_newlink(
-+        _ibdev_name: *const core::ffi::c_char,
-+        _ndev: *mut bindings::net_device,
-+    ) -> core::ffi::c_int {
-+        let _ = T::newlink();
-+        return 0;
++        Ok(())
++    }
++
++    pub(crate) fn clean(&mut self) {
++        if self.cm_wq.is_some() {
++            drop(self.cm_wq.take().unwrap());
++        }
 +    }
 +}
 +
-+/// Build kernel's rxe_udp_encap_recv function  
-+struct RxeUdpEncapRecvFuncTable<T>(marker::PhantomData<T>);
++pub(crate) struct McgWorkQueue {
++    clean_wq: Option<BoxedQueue>,
++}
 +
-+impl<T: RxeOperation> RxeUdpEncapRecvFuncTable<T> {
-+    /// # Safety
-+    ///
-+    /// The caller must ensure that the adapter is compatible with the way the device is registered.
-+    pub(crate) fn build_func() -> Option<
-+        unsafe extern "C" fn(
-+            sk: *mut bindings::sock,
-+            skb: *mut bindings::sk_buff,
-+        ) -> core::ffi::c_int,
-+    > {
-+        Some(Self::rxe_udp_encap_recv)
++impl McgWorkQueue {
++    pub(crate) fn new() -> Self {
++        Self { clean_wq: None }
 +    }
-+    unsafe extern "C" fn rxe_udp_encap_recv(
-+        _sk: *mut bindings::sock,
-+        _skb: *mut bindings::sk_buff,
-+    ) -> core::ffi::c_int {
-+        let _ = T::udp_recv();
-+        return 0;
++
++    pub(crate) fn init(&mut self) -> Result {
++        let clean_wq_tmp = Queue::try_new(format_args!("mlx4_ib_mcg"), 655369, 1);
++        self.clean_wq = match clean_wq_tmp {
++            Ok(clean_wq) => Some(clean_wq),
++            Err(e) => return Err(e),
++        };
++
++        Ok(())
++    }
++
++    pub(crate) fn clean(&mut self) {
++        if self.clean_wq.is_some() {
++            drop(self.clean_wq.take().unwrap());
++        }
 +    }
 +}
++
++pub(crate) struct QpWorkQueue {
++    mlx4_ib_qp_event_wq: Option<BoxedQueue>,
++}
++
++impl QpWorkQueue {
++    pub(crate) fn new() -> Self {
++        Self {
++            mlx4_ib_qp_event_wq: None,
++        }
++    }
++
++    pub(crate) fn init(&mut self) -> Result {
++        let mlx4_ib_qp_event_wq_tmp =
++            Queue::try_new(format_args!("mlx4_ib_qp_event_wq"), 655361, 1);
++        self.mlx4_ib_qp_event_wq = match mlx4_ib_qp_event_wq_tmp {
++            Ok(mlx4_ib_qp_event_wq) => Some(mlx4_ib_qp_event_wq),
++            Err(e) => return Err(e),
++        };
++
++        Ok(())
++    }
++
++    pub(crate) fn clean(&mut self) {
++        if self.mlx4_ib_qp_event_wq.is_some() {
++            drop(self.mlx4_ib_qp_event_wq.take().unwrap());
++        }
++    }
++}
+diff --git a/rust/kernel/workqueue.rs b/rust/kernel/workqueue.rs
+index d87dfe4156..fa289af097 100644
+--- a/rust/kernel/workqueue.rs
++++ b/rust/kernel/workqueue.rs
+@@ -209,14 +209,14 @@ impl Queue {
+     ///
+     /// Callers should first consider using one of the existing ones (e.g. [`system`]) before
+     /// deciding to create a new one.
+-    pub fn try_new(name: fmt::Arguments<'_>) -> Result<BoxedQueue> {
++    pub fn try_new(name: fmt::Arguments<'_>, flags: u32, max_active: i32) -> Result<BoxedQueue> {
+         // SAFETY: We use a format string that requires an `fmt::Arguments` pointer as the first
+         // and only argument.
+         let ptr = unsafe {
+             bindings::alloc_workqueue(
+                 c_str!("%pA").as_char_ptr(),
+-                0,
+-                0,
++                flags,
++                max_active,
+                 &name as *const _ as *const core::ffi::c_void,
+             )
+         };
+@@ -408,6 +408,9 @@ pub struct BoxedQueue {
+     ptr: NonNull<Queue>,
+ }
+ 
++// SAFETY: Kernel workqueues are usable from any thread.
++unsafe impl Sync for BoxedQueue {}
++
+ impl BoxedQueue {
+     /// Creates a new instance of [`BoxedQueue`].
+     ///
 diff --git a/samples/rust/Kconfig b/samples/rust/Kconfig
-index 189c10ced6..84c68786d9 100644
+index 84c68786d9..07b7e2e6e2 100644
 --- a/samples/rust/Kconfig
 +++ b/samples/rust/Kconfig
-@@ -163,4 +163,11 @@ config SAMPLE_RUST_SELFTESTS
+@@ -170,4 +170,11 @@ config SAMPLE_RUST_RXE
  
  	  If unsure, say N.
  
-+config SAMPLE_RUST_RXE
-+	tristate "Soft-Roce"
++config SAMPLE_RUST_MLX4
++	tristate "infiniband mlx4"
 +	help
-+	  This option builds the self test cases for Rust.
++	  This option builds the infiniband mlx4 driver cases for Rust.
 +
 +	  If unsure, say N.
 +
  endif # SAMPLES_RUST
 diff --git a/samples/rust/Makefile b/samples/rust/Makefile
-index 420bcefeb0..56ec1dcee6 100644
+index 56ec1dcee6..c6617394db 100644
 --- a/samples/rust/Makefile
 +++ b/samples/rust/Makefile
-@@ -15,5 +15,6 @@ obj-$(CONFIG_SAMPLE_RUST_NETFILTER)		+= rust_netfilter.o
- obj-$(CONFIG_SAMPLE_RUST_ECHO_SERVER)		+= rust_echo_server.o
+@@ -16,5 +16,6 @@ obj-$(CONFIG_SAMPLE_RUST_ECHO_SERVER)		+= rust_echo_server.o
  obj-$(CONFIG_SAMPLE_RUST_FS)			+= rust_fs.o
  obj-$(CONFIG_SAMPLE_RUST_SELFTESTS)		+= rust_selftests.o
-+obj-$(CONFIG_SAMPLE_RUST_RXE)		+= rust_rxe.o
+ obj-$(CONFIG_SAMPLE_RUST_RXE)		+= rust_rxe.o
++obj-$(CONFIG_SAMPLE_RUST_MLX4)			+= rust_mlx4.o
  
  subdir-$(CONFIG_SAMPLE_RUST_HOSTPROGS)		+= hostprogs
-diff --git a/samples/rust/rust_rxe.rs b/samples/rust/rust_rxe.rs
+diff --git a/samples/rust/rust_mlx4.rs b/samples/rust/rust_mlx4.rs
 new file mode 100644
-index 0000000000..714d569704
+index 0000000000..280838071e
 --- /dev/null
-+++ b/samples/rust/rust_rxe.rs
++++ b/samples/rust/rust_mlx4.rs
 @@ -0,0 +1,49 @@
 +// SPDX-License-Identifier: GPL-2.0
 +
-+//! Rust infiniband Soft-RoCE driver sample.
++//! Rust infiniband mls4 device sample.
 +
++use kernel::mlx4;
 +use kernel::prelude::*;
-+use kernel::rxe;
 +
 +module! {
-+    type: RustRxe,
-+    name: "rust_rxe",
++    type: RustMlx4,
++    name: "rust_mlx4",
 +    author: "Rust for Linux Contributors",
-+    description: "Rust infiniband soft-Roce driver sample",
++    description: "Rust infiniband mlx4 device sample",
 +    license: "GPL",
 +}
 +
-+struct RustRxeOps;
++struct RustMlx4Ops;
 +
 +#[vtable]
-+impl rxe::RxeOperation for RustRxeOps {
-+    fn notify() -> Result {
++impl mlx4::Mlx4Operation for RustMlx4Ops {
++    fn add() -> Result {
 +        Ok(())
 +    }
-+    fn newlink() -> Result {
++    fn remove() -> Result {
 +        Ok(())
 +    }
-+    fn udp_recv() -> Result {
++    fn event() -> Result {
 +        Ok(())
 +    }
 +}
 +
-+struct RustRxe {
-+    _dev: Pin<Box<rxe::Registration<RustRxeOps>>>,
++struct RustMlx4 {
++    _dev: Pin<Box<mlx4::Registration<RustMlx4Ops>>>,
 +}
 +
-+impl kernel::Module for RustRxe {
++impl kernel::Module for RustMlx4 {
 +    fn init(name: &'static CStr, _module: &'static ThisModule) -> Result<Self> {
-+        pr_info!("Rust Soft-RoCE driver sample (init)\n");
++        pr_info!("Rust infiniband mlx4 driver sample (init)\n");
 +
-+        Ok(RustRxe {
-+            _dev: rxe::Registration::<RustRxeOps>::new_pinned(name)?,
++        Ok(RustMlx4 {
++            _dev: mlx4::Registration::new_pinned(name)?,
 +        })
 +    }
 +}
 +
-+impl Drop for RustRxe {
++impl Drop for RustMlx4 {
 +    fn drop(&mut self) {
-+        pr_info!("Rust Soft-RoCE driver sample (exit)\n");
++        pr_info!("Rust infiniband mlx4 driver sample (exit)\n");
 +    }
 +}
 -- 
