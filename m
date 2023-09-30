@@ -2,114 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B69527B403E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 14:27:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56577B4042
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 14:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233876AbjI3MZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 08:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        id S233944AbjI3Mbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 08:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbjI3MZj (ORCPT
+        with ESMTP id S229559AbjI3Mbo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 08:25:39 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEF27BD;
-        Sat, 30 Sep 2023 05:25:33 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 98e67ed59e1d1-27761d85b31so7905502a91.3;
-        Sat, 30 Sep 2023 05:25:33 -0700 (PDT)
+        Sat, 30 Sep 2023 08:31:44 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596FFBD;
+        Sat, 30 Sep 2023 05:31:41 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-690bc3f82a7so12788224b3a.0;
+        Sat, 30 Sep 2023 05:31:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696076733; x=1696681533; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NxFdnF+d4GELCyBnxXMqf2wy+/Apt8AHrNw5TDGtQhE=;
-        b=d96W7SC/Db06Z1PHimRnUIqL+POqHf9wkiU/0C0PNmovXeNkcHN/gOdzn4O7/DaYSz
-         voDivJJ5Ek+xU7OZmHNAx3L9qGG87LYBPNFxvVXi0WztBU/+9eNczaqNoEg0LTVc3zcF
-         N6oL2XKHwNPTnq+00//Uuw3YtDJp2mYSQOJq6g8rWeX3jiDwVdkaqJW+nGOJt09Q4ebJ
-         mWC7CuzGh9ia6cq6XSddZUcOMH1gGQnNeuchOlMangsm/IgqltIU/MsCXpopRgrZXh1r
-         tLQzaMkfd3Ye2tmV8qF7NG1uIxsStw8z6dpEWBhfz4rdNDwj6hC0sV9ObRUMv5smrQqH
-         EMNg==
+        d=gmail.com; s=20230601; t=1696077101; x=1696681901; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=0PEuv1JE1ji/lSxoZu0EKZ3PyEQs2C6XzXKupEO4HsI=;
+        b=g+zXLR7zeIamobd1EhaifgMeW3Z2kHjB58mZ4DDfMxJnRs9U66ovnop9/uRr4k83cs
+         jUwx7Q6X0KywFIjbAwacCZ+oVX0YoTeUeP9NkusJGBmXZyySb4CQDqzFJGIROr24D84h
+         3Z+ieegFlFeK+zWsoQfNryGd+TeE5stkgdczMJWNJGiZ+gI0cHYaie5sX9PvWFAyEbhr
+         v0FvurisjzUy3o8Rw0tXDws5jDWfb/0HY+q1lcAJt3LI7fQSBenJbJudF7+UmJpdVxZu
+         7ElO4wwFW/Ufj19ht26oJedSrXgZTBli3O+c6uauSUl7ghTbFsI+XcOxjYVeclooVi0p
+         O4NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696076733; x=1696681533;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NxFdnF+d4GELCyBnxXMqf2wy+/Apt8AHrNw5TDGtQhE=;
-        b=qXP7SVKl0v1TQBX15z7Aa+BswS44BzpL+DTfbWfOGKmZ0e2Uqv3dLp1H5ztaRs0ar/
-         xCHFlFmRiq1GwCjbDZms+uqCvqdVE+ijvQQ2hoEUvhOWGVmWgzjs+tdp1RKxRogncehI
-         dm/fv8g/gvTOhbrBWV22EJWrcHNho9kTkVgO0UOB8gwtlvqdqaoLUK4BD4M4SPvFN0Hs
-         61LHVYRxof0C7h4/s9a+wT/uBqtQiW89lrj3bPe6ixaiWALoAfejAU4s9/os6QGBf/OM
-         jvqmCotrZHu5Vlw8D5uacGT7+cAHLo0vMkNBZZLVX40BrvBZ+KeA3gypqD5KNGNWUaku
-         RsEw==
-X-Gm-Message-State: AOJu0YzG0gONugrCXBYI2AIn3jIjFlgupzd9tHDCzT1sYxeK2OOMt2Jt
-        cYHasdMM5vflW0YR/ZaIhTIU3m7EzCVViIHh
-X-Google-Smtp-Source: AGHT+IEK0Xg6qzH2Dm4yIDx6l93pGNsG8+Wuig0p6FBvwt9f5BaAcmHS/LJYC3ybdLbpAIlHcN2gnw==
-X-Received: by 2002:a17:90a:5217:b0:274:9409:bbca with SMTP id v23-20020a17090a521700b002749409bbcamr5793346pjh.3.1696076733186;
-        Sat, 30 Sep 2023 05:25:33 -0700 (PDT)
-Received: from swarup-virtual-machine.localdomain ([171.76.87.78])
-        by smtp.gmail.com with ESMTPSA id q9-20020a17090a178900b0027463889e72sm3301661pja.55.2023.09.30.05.25.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 05:25:32 -0700 (PDT)
-From:   Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
-To:     shuah@kernel.org, akpm@linux-foundation.org, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        swarupkotikalapudi@gmail.com
-Subject: [PATCH] selftests:proc add missing field KSM in smaps_rollup[] array
-Date:   Sat, 30 Sep 2023 17:55:23 +0530
-Message-Id: <20230930122523.118173-1-swarupkotikalapudi@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1696077101; x=1696681901;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0PEuv1JE1ji/lSxoZu0EKZ3PyEQs2C6XzXKupEO4HsI=;
+        b=CaHbJZpBTmp6d9/dNWnxMXKCX02k2kLtZ2D7srzi0tNvy1V2aNrixumJ/Sw46SORc+
+         lGxW0028WL06D6E1BD0qHyZW+c1Er9njIdoDoeQBmf1HMFxRXDU2jlLVEbln+z0Dh8DT
+         HpsYWbhvLz+TDzFTHui1+C2sH3+Ckotjwo96/lrkd7Hz3MmnZpjjOFC3vGnsuKR3bPFJ
+         ISGW/IflSAAmxxmUjY3tOPm8VNi2y1upyvSu+E8nW1iikYGVR2ffs2WZNVScTw8Fj3mw
+         c9jjk9WxYo5JQarSKy7JZidu/sAQ3lSUIkz9TD+XpxmDUAOUfDtroFeC3SdPL5OLAiVD
+         TfGQ==
+X-Gm-Message-State: AOJu0Yxdo4WaufLNc0b0GGIE1FiXi4w9rlde61M1z4mynwCo75XSuuDq
+        tl4cZHAJsFIN5U989VyHQ74=
+X-Google-Smtp-Source: AGHT+IEhI7eA8uS9H8VpG7zI0niIhieHYI5PZG8NgJ2DvP5MEnONifsqFETJAiDku+qqJ+SYqEFV2A==
+X-Received: by 2002:a05:6a00:24c6:b0:68c:2be:67bb with SMTP id d6-20020a056a0024c600b0068c02be67bbmr7158316pfv.20.1696077100602;
+        Sat, 30 Sep 2023 05:31:40 -0700 (PDT)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id e25-20020a62ee19000000b00690d9901ce5sm7900536pfi.102.2023.09.30.05.31.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Sep 2023 05:31:39 -0700 (PDT)
+Message-ID: <da91c950-51c0-4c71-855e-ae11898a97f5@gmail.com>
+Date:   Sat, 30 Sep 2023 19:31:34 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: Performance regression: resume_console takes 100ms longer in
+ S2idle/S3 resume in v6.6-rc1
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Todd Brandt <todd.e.brandt@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Hardening <linux-hardening@vger.kernel.org>
+References: <99b9d4d1-f7a9-4b6c-aebf-ef1d2ddee0d7@gmail.com>
+Content-Language: en-US
+In-Reply-To: <99b9d4d1-f7a9-4b6c-aebf-ef1d2ddee0d7@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Missing field KSM is added in g_smaps_rollup[] array as it
-fixes assert in function test_proc_pid_smaps_rollup()
+On 28/09/2023 07:17, Bagas Sanjaya wrote:
+> Hi,
+> 
+> I notice a regression report on Bugzilla [1]. Quoting from it:
+> 
+>> Ever since 6.6.0-rc1 we've seen S3 and S2idle resume take 100ms longer because of resume_comsole. resume_console ordinarily takes only a few milliseconds, but now it's consistently 100ms. I've bisected the issue to this commit:
+>>
+>> commit 9e70a5e109a4a23367810de09be826c52d27ee2f
+>> Author: John Ogness <john.ogness@linutronix.de>
+>> Date:   Mon Jul 17 21:52:06 2023 +0206
+>>
+>>     printk: Add per-console suspended state
+>>     
+>>     Currently the global @console_suspended is used to determine if
+>>     consoles are in a suspended state. Its primary purpose is to allow
+>>     usage of the console_lock when suspended without causing console
+>>     printing. It is synchronized by the console_lock.
+>>     
+>>     Rather than relying on the console_lock to determine suspended
+>>     state, make it an official per-console state that is set within
+>>     console->flags. This allows the state to be queried via SRCU.
+>>     
+>>     Remove @console_suspended. Console printing will still be avoided
+>>     when suspended because console_is_usable() returns false when
+>>     the new suspended flag is set for that console.
+>>
+>> We are seeing this on roughly 2/3 of our machines, both on test systems and production systems.
+> 
+> Then,
+> 
+>> The effect is most pronounced in the GigaByte z170x UD5. It goes from 300ms to 400ms because of an msleep 100 in the resume_console code. This might not seem like much but it's in series with everything else so it will always be there. Our goal is to keep both suspend and resume under 1 second if at all possible, so every bit counts.
+> 
+> See Bugzilla for the full thread and attached sleepgraph timelines
+> (in html format).
+> 
+> Anyway, I'm adding this regression to be tracked by regzbot:
+> 
+> #regzbot introduced: 9e70a5e109a4a2 https://bugzilla.kernel.org/show_bug.cgi?id=217955
+> #regzbot title: resume_console performance regression due to per-console suspended state
+> 
 
-Without this patchset test fails for "proc-empty-vm" as can be seen below:
-$make TARGETS="proc" kselftest
-...
-  selftests: proc: proc-empty-vm
-  proc-empty-vm: proc-empty-vm.c:299: test_proc_pid_smaps_rollup:
-   Assertion `rv == sizeof(g_smaps_rollup) - 1' failed.
-  /usr/bin/timeout: the monitored command dumped core
-  Aborted
-  not ok 5 selftests: proc: proc-empty-vm # exit=134
-...
+#regzbot fix: printk: flush consoles before checking progress
 
-With this patchset test passes for "proc-empty-vm" as can be seen below:
-$make TARGETS="proc" kselftest
-....
-timeout set to 45
-selftests: proc: proc-empty-vm
-ok 5 selftests: proc: proc-empty-vm
-....
-
-Signed-off-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
----
- tools/testing/selftests/proc/proc-empty-vm.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/tools/testing/selftests/proc/proc-empty-vm.c b/tools/testing/selftests/proc/proc-empty-vm.c
-index b16c13688b88..ee71ce52cb6a 100644
---- a/tools/testing/selftests/proc/proc-empty-vm.c
-+++ b/tools/testing/selftests/proc/proc-empty-vm.c
-@@ -267,6 +267,7 @@ static const char g_smaps_rollup[] =
- "Private_Dirty:         0 kB\n"
- "Referenced:            0 kB\n"
- "Anonymous:             0 kB\n"
-+"KSM:                   0 kB\n"
- "LazyFree:              0 kB\n"
- "AnonHugePages:         0 kB\n"
- "ShmemPmdMapped:        0 kB\n"
 -- 
-2.34.1
+An old man doll... just what I always wanted! - Clara
 
