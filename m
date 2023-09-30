@@ -2,128 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 640327B3D54
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 02:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 416707B3D5C
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 03:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbjI3Ai0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 20:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60126 "EHLO
+        id S231650AbjI3BIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 21:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjI3AiZ (ORCPT
+        with ESMTP id S229489AbjI3BIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 20:38:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1279E5;
-        Fri, 29 Sep 2023 17:38:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696034304; x=1727570304;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2WjIR2c1pM2qQHYl9zj7z0Ym8F1m+VHvFFY1MZSzVB4=;
-  b=GGW9/UCfRIE+2K7HuweuimdjU6k6yGCEyXtGvlgZBGJyXlhyoZ8fy3uP
-   /TyX9IqdeWpfeezN7nHvu6Sstgv+tcg0/p+4fObMyC37gSe6xZSYROCxI
-   ONHgurHOyWlOjMGbANDS958COt4V1on1/fMhXBlw6++gYWzeh4ROH8Wr3
-   Jl6RSaqaVIFSe+YjOwQJ1AA2zJvxdLlAcXvysRZU9IEZuY9wnWVbidlZ0
-   bw8Yn+wVw5h+A2LXFuk3xvakHoxjbglEIQtImmQoHEDm39wUd9Nogq8/K
-   EFQTwTNKHdxuaNf9CCS8Icc4z9JT4VxlROyLsyTH5NoknUM589/vTnNxF
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="385230908"
-X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
-   d="scan'208";a="385230908"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Sep 2023 17:38:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="873841640"
-X-IronPort-AV: E=Sophos;i="6.03,188,1694761200"; 
-   d="scan'208";a="873841640"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 29 Sep 2023 17:38:20 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qmNzu-0003Ti-1W;
-        Sat, 30 Sep 2023 00:38:18 +0000
-Date:   Sat, 30 Sep 2023 08:37:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ivan Mikhaylov <fr0st61te@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Ivan Mikhaylov <fr0st61te@gmail.com>
-Subject: Re: [PATCH v2 2/2] iio: adc: Add driver support for MAX34408/9
-Message-ID: <202309300847.Vb7WCpaN-lkp@intel.com>
-References: <20230929200844.23316-3-fr0st61te@gmail.com>
+        Fri, 29 Sep 2023 21:08:49 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815E2F3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 18:08:47 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-533edb5ac54so14252709a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 18:08:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696036126; x=1696640926; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wZup8TW2zGO5Dc5hYWwOfReZg/1sYcAfov7pXVHZroU=;
+        b=FQS4GMk45toqzJbDaef9/HiAidci7xJHo6c/WRM64Ey8Q0hx3RsTO1viIYganiiNox
+         q5iAZG36KS6wCtzKxtoL+zBWhCw2z+p2R0cdxOARnR6EMNWaaRF96aDZ518NmUCr57dS
+         b+7k+u83Z4mH/F0BthFQ4zLotfSzZ8EWltKMGXww8AlgO2oQ/20Imj2ladudMyAAqQG3
+         +hn3d9vAlCW8r2hXl2Py5zOGmjbpu7TIr/hWAwpGvAipItE+kfQCwjmOj8BUD86Y6atp
+         hgYOsXOz+IH1HNgHnxSk5QEI2XhYstgRmWodHhTZxUf9l3dpClPRZ5lCPCBOoTQqcdZd
+         Vk0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696036126; x=1696640926;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wZup8TW2zGO5Dc5hYWwOfReZg/1sYcAfov7pXVHZroU=;
+        b=HmV19+RcFpyJoxBlGvh2eLDCwM++HQDUzqvSF/MebmHflj3aHOzTSMG5WuHqMVR72i
+         X8wj8IbwUeTfDnv9Ttj0Ojz1WqOv9kLTefOvkjFu5v+LA4N2J31W2ceIsF+NktEm61xv
+         mAx1kTPuL3JvMYLOXnNo2E9TWvkju2KvIj5KtqPHnU2Nl9i0wPF6nhBncXrWSKtnWxbv
+         Iw6tfrS7Z24Tth1aFyIiKv+Pu65ati9nK6IFO/iM/j200TpxuN6OaPy5VRENwJZIEgS/
+         ehLky5/3CNunMvDHJ0pEvFe2L/pXm1VqEJmWpCDiYk8gk0+ZWE13JpVPqp9MP2SjmO0W
+         eQzg==
+X-Gm-Message-State: AOJu0YwgLyctGSHxi4TN0dEPCGIoJQ3H/+jfnZKX+BMftCcMhN4pzPVi
+        OIGzeevXF7UrKawJ4SLbl5CrYVZPRgXEkS23W89KBQ==
+X-Google-Smtp-Source: AGHT+IF8h2UUty/K7RH6GZtDTwRCYxVzrE9X1TPlLmDUaz4Tz1s/zGJimg+5mXKWp3nVXXh21oSaPyBUEm8UvkF4CaE=
+X-Received: by 2002:aa7:d489:0:b0:534:8bdf:a256 with SMTP id
+ b9-20020aa7d489000000b005348bdfa256mr5227701edr.31.1696036125906; Fri, 29 Sep
+ 2023 18:08:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230929200844.23316-3-fr0st61te@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <202309280610.sLGSPkOG-lkp@intel.com> <CANiq72=J=bO-Q0=gMDyiRgvbF_Vre39iqbEnaEeDho4Vo2ox6A@mail.gmail.com>
+ <202309291040.F201590997@keescook>
+In-Reply-To: <202309291040.F201590997@keescook>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Sat, 30 Sep 2023 10:08:34 +0900
+Message-ID: <CAFhGd8oLmKA7L_YDps+aYLVJTPxWNaKKTgCX3Ji=ZLoGMv7a6g@mail.gmail.com>
+Subject: Re: drivers/md/dm-cache-metadata.c:1705:9: warning: 'strncpy'
+ specified bound 16 equals destination size
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@kernel.org>,
+        oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ivan,
+On Sat, Sep 30, 2023 at 2:49=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> On Thu, Sep 28, 2023 at 11:36:46AM +0200, Miguel Ojeda wrote:
+> > On Thu, Sep 28, 2023 at 12:24=E2=80=AFAM kernel test robot <lkp@intel.c=
+om> wrote:
+> > >
+> > >    In function 'write_hints',
+> > >        inlined from 'dm_cache_write_hints' at drivers/md/dm-cache-met=
+adata.c:1729:6:
+> > > >> drivers/md/dm-cache-metadata.c:1705:9: warning: 'strncpy' specifie=
+d bound 16 equals destination size [-Wstringop-truncation]
+> > >     1705 |         strncpy(cmd->policy_name, policy_name, sizeof(cmd-=
+>policy_name));
+> > >          |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~~~~
+> >
+> > This looks fine given the check above it. In any case, since it
+> > appears the code wants to terminate the string, this should use
+> > `strscpy*()`, right?
+>
+> I agree. I can't tell if _pad is needed though. I think struct
+> dm_cache_metadata is only used internally? And I see at least the
+> initial allocation is zeroed:
+>
+>         cmd =3D kzalloc(sizeof(*cmd), GFP_KERNEL);
+>
+> Regardless, for background,
+>
+> struct has:
+>         char policy_name[CACHE_POLICY_NAME_SIZE];
+>
+> code does:
+>         const char *policy_name =3D dm_cache_policy_get_name(policy);
+>
+>         if (!policy_name[0] ||
+>             (strlen(policy_name) > sizeof(cmd->policy_name) - 1))
+>                 return -EINVAL;
+>
+>         strncpy(cmd->policy_name, policy_name, sizeof(cmd->policy_name));
+>
+>
+> Justin, can you add this to your queue (if it's not already there)?
 
-kernel test robot noticed the following build warnings:
+I sent a patch out earlier this week [1].
 
-[auto build test WARNING on jic23-iio/togreg]
-[also build test WARNING on robh/for-next linus/master v6.6-rc3 next-20230929]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The line # on the diff v.s the warning is off though. I suspect I may
+need a rebase if it doesn't apply clean.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ivan-Mikhaylov/dt-bindings-adc-provide-max34408-9-device-tree-binding-document/20230930-043842
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio.git togreg
-patch link:    https://lore.kernel.org/r/20230929200844.23316-3-fr0st61te%40gmail.com
-patch subject: [PATCH v2 2/2] iio: adc: Add driver support for MAX34408/9
-config: sparc-allyesconfig (https://download.01.org/0day-ci/archive/20230930/202309300847.Vb7WCpaN-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230930/202309300847.Vb7WCpaN-lkp@intel.com/reproduce)
+>
+> -Kees
+>
+> --
+> Kees Cook
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309300847.Vb7WCpaN-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/iio/adc/max34408.c:79: warning: Function parameter or member 'input1_rsense' not described in 'max34408_data'
->> drivers/iio/adc/max34408.c:79: warning: Function parameter or member 'input2_rsense' not described in 'max34408_data'
->> drivers/iio/adc/max34408.c:79: warning: Function parameter or member 'input3_rsense' not described in 'max34408_data'
->> drivers/iio/adc/max34408.c:79: warning: Function parameter or member 'input4_rsense' not described in 'max34408_data'
-
-
-vim +79 drivers/iio/adc/max34408.c
-
-    62	
-    63	/**
-    64	 * struct max34408_data - max34408/max34409 specific data.
-    65	 * @regmap:	device register map.
-    66	 * @dev:	max34408 device.
-    67	 * @lock:	lock for protecting access to device hardware registers, mostly
-    68	 *		for read modify write cycles for control registers.
-    69	 * @rsense:	Rsense value in uOhm.
-    70	 */
-    71	struct max34408_data {
-    72		struct regmap *regmap;
-    73		struct device *dev;
-    74		struct mutex lock;
-    75		u32 input1_rsense;
-    76		u32 input2_rsense;
-    77		u32 input3_rsense;
-    78		u32 input4_rsense;
-  > 79	};
-    80	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+[1]: https://lore.kernel.org/all/20230925-strncpy-drivers-md-dm-cache-metad=
+ata-c-v1-1-4b75c7db0cfe@google.com/
