@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3F57B42A0
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 19:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B699A7B42A7
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 19:24:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234643AbjI3RWu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 13:22:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
+        id S234653AbjI3RYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 13:24:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232221AbjI3RWs (ORCPT
+        with ESMTP id S234649AbjI3RYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 13:22:48 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42CF6E3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 10:22:43 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50573e85ee0so1193932e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 10:22:43 -0700 (PDT)
+        Sat, 30 Sep 2023 13:24:03 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E41E3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 10:24:00 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c16bc71e4cso138532781fa.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 10:24:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696094561; x=1696699361; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696094638; x=1696699438; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=JWtx9dHqmbOflZi0fnqEVpNoq1UTPPJzLzExwXGV3SI=;
-        b=IknSE4NhxLd8C0Gi9Fu65zdNIo3A5eb/G8M5qFxaUpcZN+knVIjanOK3H7NJH26L5x
-         DYbt/4BSv8gka0/8XyzBuZ/GoPHLNgaqlrp/o1F0gEs1qazFbtgSCByiqfCBdgvrYxgW
-         F/5TPGxYyRh5EX+DanwIo45Vp1cV2uEGoaUJl9QxaiZqYamYs/8uQg7hLvdouott4jHV
-         kRHLsFfgrRtrUiN/w51R5sltChvXJsFGZyMpfJLTYW8eTVr4Lfkj8+BQ93l1eeHXs9YR
-         vZN2GgYdoCgYePnPMan3+EnIs7zWLgO7dKk4RMKzh5gInW8D7eU/l9yqWN9RltHZLVxW
-         Ee/w==
+        bh=MzpkS5WtBC86fJGuXY0GbjQIu9QUBdjEhDwmlgi2Kew=;
+        b=sJArNkk2fydsFcToRYaN/3SyR8jZ5/eeeNw3On6Gxz+WaKtCN9npRsd/RIXHKKH7R0
+         9l3ihJUqPGGsBnfBggqaosCeWcCV2K2u1rutCtuspm44jJm79uHEUIFWW3H5AJIyFj8+
+         OLSxEZSGF6DLnMJ2XnklNRrwuC9CaEXZkuqYo0YKtIDDJbbIDn3SuzPiHj81ePrqureG
+         mDCsNdnslgrPyXnQUdOkU3E/WMESYOKS4bfJop6jq0JxnxPe87aYOxGcAvsqCq69Gy2J
+         qGaTvtqHI9hSXNUi4D54zu5+DE2QIeZZw5bS41CD6kk1oqPmK7Vtyi4gId9sV4qlp9Ym
+         Lb1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696094561; x=1696699361;
+        d=1e100.net; s=20230601; t=1696094638; x=1696699438;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JWtx9dHqmbOflZi0fnqEVpNoq1UTPPJzLzExwXGV3SI=;
-        b=LLsTdcm5qPsDBz5FBeNq7m5qXYLWBrSgzJCSbTTinU/3vzzStnjthXdpVzCtr3s0B9
-         RUn3JB8hnB0LBeOnpGXok6VGihyesRKDc2mAPjdARkHIwModTVlyrQ0bJsoLRScg/hUC
-         Qhhc2SdO03Y047kX7nIrC7h2peBxu3tAvbjZDEm/zDkW2mUcuXr8f1EE3/6JM5t/BDqu
-         n9AAhZ7KehknARYxr+3/efhIXbI76RbKoKrtQLKywv1ltc36smtV+83kOrKjjnOPh1og
-         WuARk8VwNOi+8D6DzhXPgAW06WDX1Bn6+Caxqu2STV0k3e/ponjxp/qDM75QkKtOo2Jm
-         UWJQ==
-X-Gm-Message-State: AOJu0YyL17A8pNmZMKaNir5YFT8pjurWxEwTpbLIYb8jyfhLR1r39fx4
-        ZGEYkF76GSvK1yQF5r5+WYL5uw==
-X-Google-Smtp-Source: AGHT+IFmPULHC/lTZvEAMtHRivlmdkecp21az20I0qHWTzyMMavZ5xJfz8FMnJKA5soibKeUp+nyEg==
-X-Received: by 2002:a05:6512:3a8c:b0:502:cc8d:f20a with SMTP id q12-20020a0565123a8c00b00502cc8df20amr7139739lfu.27.1696094561376;
-        Sat, 30 Sep 2023 10:22:41 -0700 (PDT)
+        bh=MzpkS5WtBC86fJGuXY0GbjQIu9QUBdjEhDwmlgi2Kew=;
+        b=WzvFWDbCVk3hSwOfcJEn8sRBHxKak68qhOAcAfHMCFaHqBKNuvAn0gw4x0ypML3Vq8
+         czdR9hSKz6R92fEPopSVHQKtRCgrAkNBq/fEEjg2WYsTt4F6lFfiEGVJu9p6KboBNk2s
+         IQj0sWsUzjncuTAs0D3QZb59Q0oComj0hRzNvCRJxLYz7u5AJPvc+ekc69LdFV4zcA0Z
+         tXC1VMefK/8JrzRpe1NmXZh68O2tWEZKvfg/5edwKEYznu8lKbkntFz+0F+h0G53OWjN
+         3X0GGf5UNox+X26Iok8aeA3anLcysn5VdFPA6/WTtQPAWG2HTtihqhPotf7qgnzLNCQY
+         0V8g==
+X-Gm-Message-State: AOJu0YwZ203fIi+mTRBOCcG8TyftFmKtS/onzRcyKcsuVN86mjyrUgaG
+        ij0ufbstiV/MqYIfdGhdDQwLFg==
+X-Google-Smtp-Source: AGHT+IGvXNt7OngCsZTWxJNJE2rVMCZJDaC/Er1JEElLoCfYx28zdY6xhS+zm33ksmi5HfdxncMRiw==
+X-Received: by 2002:a05:6512:10d0:b0:503:293a:dc1b with SMTP id k16-20020a05651210d000b00503293adc1bmr7471121lfg.30.1696094638327;
+        Sat, 30 Sep 2023 10:23:58 -0700 (PDT)
 Received: from [192.168.246.189] (85-76-98-178-nat.elisa-mobile.fi. [85.76.98.178])
-        by smtp.gmail.com with ESMTPSA id z8-20020ac25de8000000b00500ba43a43asm3994414lfq.86.2023.09.30.10.22.37
+        by smtp.gmail.com with ESMTPSA id z8-20020ac25de8000000b00500ba43a43asm3994414lfq.86.2023.09.30.10.23.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Sep 2023 10:22:40 -0700 (PDT)
-Message-ID: <5bf11343-6ab4-43a8-b12d-f2b072ce388a@linaro.org>
-Date:   Sat, 30 Sep 2023 20:22:36 +0300
+        Sat, 30 Sep 2023 10:23:57 -0700 (PDT)
+Message-ID: <c0abfa16-92f3-41e6-afb2-e542131ae67b@linaro.org>
+Date:   Sat, 30 Sep 2023 20:23:54 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/8] arm64: dts: qcom: ipq5332: Add USB Super-Speed PHY
- node
+Subject: Re: [PATCH 4/8] dt-bindings: usb: dwc3: Add clocks on Qualcomm
+ IPQ5332
 Content-Language: en-GB
 To:     Praveenkumar I <quic_ipkumar@quicinc.com>, agross@kernel.org,
         andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
@@ -72,13 +72,13 @@ To:     Praveenkumar I <quic_ipkumar@quicinc.com>, agross@kernel.org,
 Cc:     quic_kathirav@quicinc.com, quic_nsekar@quicinc.com,
         quic_srichara@quicinc.com
 References: <20230929084209.3033093-1-quic_ipkumar@quicinc.com>
- <20230929084209.3033093-4-quic_ipkumar@quicinc.com>
+ <20230929084209.3033093-5-quic_ipkumar@quicinc.com>
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20230929084209.3033093-4-quic_ipkumar@quicinc.com>
+In-Reply-To: <20230929084209.3033093-5-quic_ipkumar@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -88,65 +88,55 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 29/09/2023 11:42, Praveenkumar I wrote:
-> Add USB Super-Speed UNIPHY node and populate the phandle on
-> gcc node for the parent clock map.
+> Add aux and lfps clocks in Qualcomm IPQ5332. These clocks are required
+> for USB Super-Speed support.
 > 
 > Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
 > ---
->   arch/arm64/boot/dts/qcom/ipq5332.dtsi | 25 ++++++++++++++++++++++++-
->   1 file changed, 24 insertions(+), 1 deletion(-)
+>   .../devicetree/bindings/usb/qcom,dwc3.yaml    | 20 ++++++++++++++++++-
+>   1 file changed, 19 insertions(+), 1 deletion(-)
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> index d3fef2f80a81..b08ffd8c094e 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
-> @@ -158,6 +158,29 @@ usbphy0: phy@7b000 {
->   			status = "disabled";
->   		};
+> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> index 67591057f234..18af2887b984 100644
+> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+> @@ -149,6 +149,25 @@ allOf:
+>               - const: sleep
+>               - const: mock_utmi
 >   
-> +		usbphy1: phy@4b0000 {
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,ipq5332-dwc3
+> +    then:
+> +      properties:
+> +        clocks:
+> +          maxItems: 6
+> +        clock-names:
+> +          items:
+> +            - const: core
+> +            - const: iface
+> +            - const: sleep
+> +            - const: mock_utmi
+> +            - const: aux
+> +            - const: lfps
 
-Are there other USB PHYs on this platform?
-
-> +			compatible = "qcom,ipq5332-usb-uniphy";
-> +			reg = <0x4b0000 0x800>;
-> +
-> +			clocks = <&gcc GCC_PCIE3X1_PHY_AHB_CLK>,
-> +				 <&gcc GCC_USB0_PHY_CFG_AHB_CLK>,
-> +				 <&gcc GCC_USB0_PIPE_CLK>;
-> +			clock-names = "ahb",
-> +				      "cfg_ahb",
-> +				      "pipe";
-> +
-> +			resets =  <&gcc GCC_USB0_PHY_BCR>;
-> +
-> +			#clock-cells = <0>;
-> +			clock-output-names = "usb0_pipe_clk_src";
-
-I'm not sure, what is the best approach her. For QMP USB and PCIe PHYs 
-we had to use fixed names historically. On the other hand for QMP DP 
-clocks we are fine with the generated names. I'd prefer the latter case.
+Could you please also describe the lfps clock in the top-level clocks entry?
 
 > +
-> +			qcom,phy-usb-mux-sel = <&tcsr 0x10540>;
-> +
-> +			#phy-cells = <0>;
-> +
-> +			status = "disabled";
-> +		};
-> +
->   		qfprom: efuse@a4000 {
->   			compatible = "qcom,ipq5332-qfprom", "qcom,qfprom";
->   			reg = <0x000a4000 0x721>;
-> @@ -200,7 +223,7 @@ gcc: clock-controller@1800000 {
->   				 <&sleep_clk>,
->   				 <0>,
->   				 <0>,
-> -				 <0>;
-> +				 <&usbphy1>;
->   		};
->   
->   		tcsr_mutex: hwlock@1905000 {
+>     - if:
+>         properties:
+>           compatible:
+> @@ -238,7 +257,6 @@ allOf:
+>           compatible:
+>             contains:
+>               enum:
+> -              - qcom,ipq5332-dwc3
+>                 - qcom,msm8994-dwc3
+>                 - qcom,qcs404-dwc3
+>       then:
 
 -- 
 With best wishes
