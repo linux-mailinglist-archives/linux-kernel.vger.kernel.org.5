@@ -2,80 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 458C47B4241
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FDEC7B4245
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234554AbjI3QmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 12:42:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
+        id S234558AbjI3Qm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 12:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234498AbjI3QmB (ORCPT
+        with ESMTP id S234498AbjI3Qm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 12:42:01 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A955DA
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 09:41:58 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5033918c09eso23427431e87.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 09:41:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696092116; x=1696696916; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=W7EPZlBOMsbq4YGcfpwHvS9ByO6rM41xNn9KYXEs2Ow=;
-        b=NQWMwq2K8Bz3WiFaDgj85slAn9oI9odD7qXHzitUD07s2/zVZg511cyk7gNlPz6zgG
-         lDSiKCOTi1/wfKmOym3u3OMzHN72awxdZi1R1DJuUogJ4aGmFKyhxoGpmmJz2zvw12SE
-         6bFCLt2FSNNgVPAs6faURsQHUd0nGaS7R+/OAlyAjVAnGb0pI1n70uTD0uRhDXYBQUiI
-         j2iUnhSYOqyarcQHE3uyE/YN0fwcGOm84s5xTa50hAO1rC+Dk0CILRuim9haZx4Mkw0A
-         +MonYCfepN0PXHKlG8xExxotSQozDSl5oq1amMGfIvIo0ozYqvlzyBXF+gRJNyGYfeQV
-         z8fg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696092116; x=1696696916;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W7EPZlBOMsbq4YGcfpwHvS9ByO6rM41xNn9KYXEs2Ow=;
-        b=Q7yzKIpkv10oaujM1IGEwPOTHK5tA5ibpKWggaoSlubQ3u00C0+vsYX4XpL8OB0iUI
-         1RvInR0mw03YEqcs4fEHAgmNAJHB1434J8s0lKqx6MXSoXBA4FEfD1n43MbybXB50VW5
-         uEfZSX/D91F76PefFKdiGXE2JtRYGhDVMWoOP8huzCjHNylf/ba3VNaLfWKzlW/7HKoX
-         +Y/+GI9Fk7wtXKM3GhKh9Q1HzECCeEbsDh2yTTUwmBk6S+nQN4aaKgAc95Uozqwf4FAT
-         K8hgzMoC8zHn3QKu+N1xzFlPItQ/QVgEo7f+q7GUPbVcFaNa5yZZrS76MNZkperVd+eF
-         vqTQ==
-X-Gm-Message-State: AOJu0YwJo5KkiP+ld40zdjPKhK/nSxyR32TeXaJiGr6bDkA39wV5HZOH
-        z103dKW6MaPgSyVD1/DvFSR6Qw==
-X-Google-Smtp-Source: AGHT+IFEC/nuQZ+D2t5J6Eo0CbVoFjxOP2ow+vS9DRkGbLdd7mRsSomgxpA1utXgV9UToqsKaHUdXA==
-X-Received: by 2002:a05:6512:2389:b0:503:38fe:4590 with SMTP id c9-20020a056512238900b0050338fe4590mr7696587lfv.60.1696092116610;
-        Sat, 30 Sep 2023 09:41:56 -0700 (PDT)
-Received: from ?IPV6:2a00:f41:906b:9c4e:a878:12c9:4d61:a6f2? ([2a00:f41:906b:9c4e:a878:12c9:4d61:a6f2])
-        by smtp.gmail.com with ESMTPSA id d16-20020ac25450000000b004fe5608e412sm3988898lfn.170.2023.09.30.09.41.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Sep 2023 09:41:56 -0700 (PDT)
-Message-ID: <449cd202-a7d8-4d20-3a41-17a3ba1355cb@linaro.org>
-Date:   Sat, 30 Sep 2023 18:41:52 +0200
+        Sat, 30 Sep 2023 12:42:57 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D564C6;
+        Sat, 30 Sep 2023 09:42:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=GagtNB5oKru/R0xh6c+JiiKDjGrtTBxS9g+mKoBaTJI=; b=bNAEK2992/2avcolWoSxOBEQBZ
+        AVQslNEHtFYtaXseYWP7N6aLDNOLIS/sBcu05HrmCXd0iWmiWYcka5Rk9+ZhpSwviXXsEXWdh6XW3
+        6hKQhT6p1bedNgXLbvhKfHDMapt9lVm0K1GyVdKDusq24qZHDqrRXRQ2cSjw0QxlOy8luN7X8K6CQ
+        BTfB8hbiW/b/+mgUBVni4ZbQ/Q3kXRdsAC0y30Chcf3LiKRB49cVYSp2MtLmXPAjkeuPFskmXsHiH
+        4tj/YoK21+8U4NTI239jKlqq8kNChBeQtLUAXOzjxExOj4fdgm9CpfCfvk9fG49ioAQl/S8D8Zooo
+        KIEBkGEw==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qmd3C-009qhm-0J;
+        Sat, 30 Sep 2023 16:42:42 +0000
+Message-ID: <a30164d2-a527-415a-b264-7f284a5266ab@infradead.org>
+Date:   Sat, 30 Sep 2023 09:42:41 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 5/5] arm64: boot: dts: qcom: sc8280xp: Add in CAMCC for
- sc8280xp
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fixed documentation warning about duplicate symbol
 Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        andersson@kernel.org, agross@kernel.org, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jonathan@marek.ca, quic_tdas@quicinc.com,
-        vladimir.zapolskiy@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230930134114.1816590-1-bryan.odonoghue@linaro.org>
- <20230930134114.1816590-6-bryan.odonoghue@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20230930134114.1816590-6-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Abhinav <singhabhinav9051571833@gmail.com>
+Cc:     stern@rowland.harvard.edu, benjamin.tissoires@redhat.com,
+        mathias.nyman@linux.intel.com, hdegoede@redhat.com,
+        hadess@hadess.net, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, skhan@linuxfoundation.org
+References: <20230930123449.1170359-1-singhabhinav9051571833@gmail.com>
+ <2023093020-discern-dispersed-7dbe@gregkh>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <2023093020-discern-dispersed-7dbe@gregkh>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -84,41 +58,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/30/23 15:41, Bryan O'Donoghue wrote:
-> Add in CAMCC for sc8280xp. The sc8280xp Camera Clock Controller looks
-> similar to most of the sdmX, smX and now scX controllers.
+On 9/30/23 06:31, Greg KH wrote:
+> On Sat, Sep 30, 2023 at 06:04:49PM +0530, Abhinav wrote:
+>> Compiling the documentation in html gives a warning about duplicate symbol
+>> because same name is used for function usb_string(...) and 
+>> also for the struct usb_string.Also having a different name can
+>> be helpful while searching or debugging the code.
+>>
+>> Renaming the function usb_string(...) to utf16le_to_utf8(...) fixes 
+>> this warning.Reason for choosing this name because 
+>> this is what the function description says it is doing.
 > 
-> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> ---
->   arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 16 ++++++++++++++++
->   1 file changed, 16 insertions(+)
+> Odd trailing spaces, why?
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-> index cad59af7ccef..ca43d038578b 100644
-> --- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
-> @@ -8,6 +8,7 @@
->   #include <dt-bindings/clock/qcom,gcc-sc8280xp.h>
->   #include <dt-bindings/clock/qcom,gpucc-sc8280xp.h>
->   #include <dt-bindings/clock/qcom,rpmh.h>
-> +#include <dt-bindings/clock/qcom,sc8280xp-camcc.h>
->   #include <dt-bindings/clock/qcom,sc8280xp-lpasscc.h>
->   #include <dt-bindings/interconnect/qcom,osm-l3.h>
->   #include <dt-bindings/interconnect/qcom,sc8280xp.h>
-> @@ -3450,6 +3451,21 @@ usb_1_role_switch: endpoint {
->   			};
->   		};
->   
-> +		camcc: clock-controller@ad00000 {
-> +			compatible = "qcom,sc8280xp-camcc";
-> +			reg = <0 0x0ad00000 0 0x20000>;
-> +			clocks = <&gcc GCC_CAMERA_AHB_CLK>,
-> +				 <&rpmhcc RPMH_CXO_CLK>,
-> +				 <&rpmhcc RPMH_CXO_CLK_A>,
-> +				 <&sleep_clk>;
-> +			clock-names = "iface", "bi_tcxo", "bi_tcxo_ao", "sleep_clk";
-clock-names is now redundant :)
+> Anyway, sorry, but that's a horrible function name for a usb core
+> function, especially just for a documentation warning?  Surely the
+> documentation tools can determine the difference between a structure
+> name and a function name?  This can't be the only place this has ever
+> happened, right?
+> 
+> Try fixing the documentation tools instead?
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Yes, this is a known Sphinx issue (i.e., not in scripts/kernel-doc).
 
-Konrad
+There was an email thread about this on linux-doc last year:
+
+https://lore.kernel.org/linux-doc/564cbd05-8788-9223-1ecc-59e7fc41b46a@gmail.com/
+
+It looks like this particular issue has patch(es) available but they are
+moving very slowly.
+
+-- 
+~Randy
