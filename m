@@ -2,107 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A007B40B4
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 16:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41DF7B40B8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 16:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234203AbjI3OGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 10:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52968 "EHLO
+        id S234212AbjI3OJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 10:09:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234185AbjI3OG3 (ORCPT
+        with ESMTP id S231364AbjI3OJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 10:06:29 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 960DBBE
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 07:06:27 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qmabl-0001sC-I7; Sat, 30 Sep 2023 16:06:13 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qmabd-00A4Pi-ID; Sat, 30 Sep 2023 16:06:05 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qmabd-006Tsk-8S; Sat, 30 Sep 2023 16:06:05 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>, coresight@lists.linaro.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        James Clark <james.clark@arm.com>, kernel@pengutronix.de,
-        Leo Yan <leo.yan@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH] modpost: Don't let "driver"s reference .exit.*
-Date:   Sat, 30 Sep 2023 16:06:01 +0200
-Message-Id: <20230930140601.2457711-1-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <CAK7LNAQegXeep+8fWCLH4TBGFah20kUcdHGn5sOeXS3L533egg@mail.gmail.com>
-References: <CAK7LNAQegXeep+8fWCLH4TBGFah20kUcdHGn5sOeXS3L533egg@mail.gmail.com>
+        Sat, 30 Sep 2023 10:09:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A18AB3;
+        Sat, 30 Sep 2023 07:09:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C917C433C8;
+        Sat, 30 Sep 2023 14:09:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696082966;
+        bh=hk3AhPgtuY5Ipeir8PTEBRwQE9bjMtb3/FCCgihi7II=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=K7pxfGkEQh8MeyGFqQ5h986qm2vtG+qycbl0qGkwQGD/FWzMKhwvb44aNA4PEITUH
+         7McwyDKHNOhCR4Rdwf9NwglznPkAa+wsNMbuFkyOjjpd7Np2vBcBc58VWY4Aeqi6Kn
+         as3m9ez6hT9Bg6YfAOdq0AwjKrLPoCRPB8RsYtpiXh/qKLK4nfU2orKyHvEi5qnm4R
+         L3fWk+rb6MvPYiOzg58QQNYyDbaeHspe8MJb3//YwOjbL/icDBjOdrirG9a/UD3bG4
+         /ovHG48XpnXf4Qsi6rgwedgX0FRDfS1n81tT6gssIgxmLnYTE/TE9Sibn+n5Vdw+E5
+         VUqQY/m8JBCYQ==
+Date:   Sat, 30 Sep 2023 15:09:26 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Ivan Mikhaylov <fr0st61te@gmail.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: adc: provide max34408/9 device tree
+ binding document
+Message-ID: <20230930150926.47c1e6eb@jic23-huawei>
+In-Reply-To: <20230930-lusty-antihero-f381434ab682@spud>
+References: <20230929200844.23316-1-fr0st61te@gmail.com>
+        <20230929200844.23316-2-fr0st61te@gmail.com>
+        <20230930-lusty-antihero-f381434ab682@spud>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1463; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=hJsl78gXnQWrcDAVn49ln7riQyfrsnDajjAuw+8HdkM=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlGCtFSqfo9e+nu2/xmbfwi40qflgT1U3UwzrCw DE+5DtSypqJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZRgrRQAKCRCPgPtYfRL+ ToHuB/9f4L8eic3cL4fbiH+q6jTJiSLF60bYZPb1R3ao0eTKdeeane3XWeUPMpgCs+I4o0b5n+V g4D3sCsqT7gIvpUc1W5VSbmT0mUKeenI6cKTnwa3kE5C6VsGr7DEWXoY0OLIg3kHTEB9UzFDVbL MuhcU1mPNq+0whgV2nDhbHn/FdE2DRSsg/1hKgFKgPzQG3RLUq5Pc71i6GktVsCEyl75NHnT623 QWNs2c0Q7Y8wJWOaPW0H4e3OZbI2tTP3Ap+R/aSS/J2EEXrS+3MkmWj0rxqHtup/tGP4xNrEVY6 N0AlhO/fI+WweDo0XbmP/MQNbA3tYnSFIGcFMrd4Y37okc8i
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 30 Sep 2023 10:37:09 +0100
+Conor Dooley <conor@kernel.org> wrote:
 
+> Hey,
+> 
+> On Fri, Sep 29, 2023 at 11:08:43PM +0300, Ivan Mikhaylov wrote:
+> > The hardware binding for i2c current monitoring device with overcurrent
+> > control.
+> > 
+> > Signed-off-by: Ivan Mikhaylov <fr0st61te@gmail.com>
+> > ---
+> >  .../bindings/iio/adc/maxim,max34408.yaml      | 101 ++++++++++++++++++
+> >  1 file changed, 101 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
+> > new file mode 100644
+> > index 000000000000..cdf89fa4c80e
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
+> > @@ -0,0 +1,101 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/iio/adc/maxim,max34408.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Two- and four-channel current monitors with overcurrent control
+> > +
+> > +maintainers:
+> > +  - Ivan Mikhaylov <fr0st61te@gmail.com>
+> > +
+> > +description: |
+> > +  The MAX34408/MAX34409 are two- and four-channel current monitors that are
+> > +  configured and monitored with a standard I2C/SMBus serial interface. Each
+> > +  unidirectional current sensor offers precision high-side operation with a
+> > +  low full-scale sense voltage. The devices automatically sequence through
+> > +  two or four channels and collect the current-sense samples and average them
+> > +  to reduce the effect of impulse noise. The raw ADC samples are compared to
+> > +  user-programmable digital thresholds to indicate overcurrent conditions.
+> > +  Overcurrent conditions trigger a hardware output to provide an immediate
+> > +  indication to shut down any necessary external circuitry.
+> > +
+> > +  Specifications about the devices can be found at:
+> > +  https://www.analog.com/media/en/technical-documentation/data-sheets/MAX34408-MAX34409.pdf
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - maxim,max34408
+> > +      - maxim,max34409
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    maxItems: 1
+> > +
+> > +  maxim,input1-rsense-val-micro-ohms:
+> > +    description:
+> > +      Adjust the Rsense value to monitor higher or lower current levels for
+> > +      input 1.
+> > +    enum: [250, 500, 1000, 5000, 10000, 50000, 100000, 200000, 500000]
+> > +    default: 1000
+> > +
+> > +  maxim,input2-rsense-val-micro-ohms:
+> > +    description:
+> > +      Adjust the Rsense value to monitor higher or lower current levels for
+> > +      input 2.
+> > +    enum: [250, 500, 1000, 5000, 10000, 50000, 100000, 200000, 500000]
+> > +    default: 1000
+> > +
+> > +  maxim,input3-rsense-val-micro-ohms:
+> > +    description:
+> > +      Adjust the Rsense value to monitor higher or lower current levels for
+> > +      input 3.
+> > +    enum: [250, 500, 1000, 5000, 10000, 50000, 100000, 200000, 500000]
+> > +    default: 1000
+> > +
+> > +  maxim,input4-rsense-val-micro-ohms:
+> > +    description:
+> > +      Adjust the Rsense value to monitor higher or lower current levels for
+> > +      input 4.
+> > +    enum: [250, 500, 1000, 5000, 10000, 50000, 100000, 200000, 500000]
+> > +    default: 1000  
+> 
+> Having 4 almost identical properties makes it seem like this should have
+> some channel nodes, each containing an rsense-micro-ohms type property.
+Agreed.  That is most flexible route if there is any chance of ending up
+with more channel specific stuff in future.
 
-Drivers must not reference functions marked with __exit as these likely
-are not available when the code is built-in.
+There should also be some magic in here to rule out the input3 and input4
+for the devices with only two channels. (lots of examples in tree)
 
-As of v6.6-rc3 building an allyesconfig on arm64, m68k, powerpc, riscv,
-s390, sparc64 and x86_64 this now stricter check only triggers for a
-single driver (drivers/hwtracing/coresight/coresight-etm4x-core.c). This
-one is indeed broken, a fix was already posted
-(https://lore.kernel.org/linux-arm-kernel/20230929081637.2377335-1-u.kleine-koenig@pengutronix.de).
+Otherwise, in theory this could be an array I guess, but I'd also prefer
+channel nodes.
 
-This matches commit 0db252452378 ("modpost: don't allow *driver to
-reference .init.*") which only handled .init.*.
+> 
+> > +
+> > +  maxim,shtdn:
+> > +    description:
+> > +      Shutdown Output. Open-drain output. This output transitions to high impedance
+> > +      when any of the digital comparator thresholds are exceeded as long as the ENA
+> > +      pin is high.
+> > +    type: boolean  
+> 
+> I don't understand what this property is used for. The description here,
+> and below for "ena", read like they are the descriptions in the
+> datasheet for the pin, rather than how to use the property.
+> 
+> The drivers don't appear to contain users either - what is the point of
+> these properties?
+> 
+> > +
+> > +  maxim,ena:
+> > +    description:
+> > +      SHTDN Enable Input. CMOS digital input. Connect to GND to clear the latch and
+> > +      unconditionally deassert (force low) the SHTDN output and reset the shutdown
+> > +      delay. Connect to VDD to enable normal latch operation of the SHTDN output.
+> > +    type: boolean
+> > +
+> > +  supply-vdd: true  
+> 
+> As pointed out by the bot, this is not correct. You need to use a
+> -supply affix, not a supply-prefix.
+My error in earlier review (not enough coffee that day I guess :)
 
-Thanks to Masahiro Yamada and Arnd Bergmann who gave valuable hints to
-find this improvement.
+Anyhow it does show that the tests weren't run which isn't a good thing to see.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- scripts/mod/modpost.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Jonathan
 
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index de499dce5265..b17665e902fc 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -1017,7 +1017,7 @@ static int secref_whitelist(const char *fromsec, const char *fromsym,
- 
- 	/* symbols in data sections that may refer to meminit/exit sections */
- 	if (match(fromsec, PATTERNS(DATA_SECTIONS)) &&
--	    match(tosec, PATTERNS(ALL_XXXINIT_SECTIONS, ALL_EXIT_SECTIONS)) &&
-+	    match(tosec, PATTERNS(ALL_XXXINIT_SECTIONS, ALL_XXXEXIT_SECTIONS)) &&
- 	    match(fromsym, PATTERNS("*driver")))
- 		return 0;
- 
--- 
-2.40.1
+> 
+> Thanks,
+> Conor.
+> 
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    i2c {
+> > +
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        adc@1e {
+> > +              compatible = "maxim,max34409";
+> > +              reg = <0x1e>;
+> > +              maxim,input1-rsense-val-micro-ohms = <5000>;
+> > +              maxim,input2-rsense-val-micro-ohms = <10000>;
+> > +        };
+> > +    };
+> > -- 
+> > 2.42.0
+> >  
 
