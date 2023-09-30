@@ -2,57 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDFA7B4113
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 16:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0165F7B4116
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 16:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234305AbjI3OnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 10:43:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59598 "EHLO
+        id S234308AbjI3Ong (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 10:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234202AbjI3OnS (ORCPT
+        with ESMTP id S234307AbjI3One (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 10:43:18 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599C0B7;
-        Sat, 30 Sep 2023 07:43:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1879CC433C8;
-        Sat, 30 Sep 2023 14:43:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696084996;
-        bh=F6G/vdejBPJ1u5dK3AA5rnKFIosomhRKDeKXr/D8o+g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=u+5JeH5Iopwv8kj0CGhe4MRJuHKx6wPzTVw8STxM62UR2yamf9oSlffJiaeUoVf0V
-         vOWJSmS+0Ah1i7JGY9cykkxyo3V6AZTWnF/LBZiZAWSeoKOFqfWTf4BnmBiC5dzj04
-         uQltbSQm2UahMx1jUAFU0RQE0iAtW6rkjyvKnsZe2w0W3VVzhZG93Of8uSQAvpCviA
-         lQpqqHwESrA6z901G6CaaIdByXEtti/DuaRUqPaERpzznML6nxK2gpUvzM9m3DUSy0
-         w0aEbMlGPPuSZ85dpizRZdd9/1ZuNxSTFPmaQyffoj8PleuUwraG5NekbJi8zShcBw
-         AHXYju6WcgVeA==
-Date:   Sat, 30 Sep 2023 15:43:15 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     David Lechner <dlechner@baylibre.com>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-staging@lists.linux.dev,
-        David Lechner <david@lechnology.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 08/27] staging: iio: resolver: ad2s1210: implement
- IIO_CHAN_INFO_SCALE
-Message-ID: <20230930154315.4fd10b83@jic23-huawei>
-In-Reply-To: <20230929-ad2s1210-mainline-v3-8-fa4364281745@baylibre.com>
-References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
-        <20230929-ad2s1210-mainline-v3-8-fa4364281745@baylibre.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Sat, 30 Sep 2023 10:43:34 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58B0D193
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 07:43:31 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so1957647566b.3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 07:43:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696085010; x=1696689810; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Xh7c7EGiZ0BQcZv66qKV13L3PEzyzLwVIC7DuUgOOU8=;
+        b=p4r90zxPE4pqoUZXLJ5shnO/uwzZ4G0TmUp/OlgngEWZ7FEfJ+Q1CrTrR6o94AkirM
+         MbPhnol3BqiM5GSTT9yi+zDfUCqLHgIp1PpINe2DOLxOjbMEw7lJu+4m+oi38n5QkUJo
+         igVCCKOROKxzEazvYCNTGP+UxaIqOTq0M4DP4rYfJrBXVGNMRJLoSjbJ/tEaoG2J59mk
+         I88BTEaWqkKANlGcaK4laGSnE5TYi3a0u23qWoBuhb+a1+tLAaZKcKba65eoV5dorY3m
+         DKhl23dvOgS4tySiWSvR+/8ynf+I72q/SgV2YhvEt1x8jZyPCti52y7Bu7nVdANhmU/4
+         JhlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696085010; x=1696689810;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xh7c7EGiZ0BQcZv66qKV13L3PEzyzLwVIC7DuUgOOU8=;
+        b=o1BOpQ1QaTA+eLuUiEti+tEHOXr5EKtWgMDW/+3mpLdO3kaObgzERk+SeC0h336wHW
+         ma2oNfTBVd6rv3HDJyrVGFKGVMCBQoEZMXFXMhhbGwe1/dC/0nXVqL6fuu00QhY0Vzgd
+         jJ71Ofex1RY5IWdqkYRtRGJ2jtxe32kHK2dyx6yICie4LxbMO2oaA4fiIF7UNsplinEg
+         4f38nM2kxCZHIioAiSDiXbVBk+2vK1VkHOCs9de74Ne/89fFyn+V1khKfQeZO/EX6IMY
+         BkkXlZpRivEkkiir1cQnf8Ab5AMczIgX2T8mSgFZ6yoPLzUt59s/HRts1GsYdz25kDaq
+         d9DQ==
+X-Gm-Message-State: AOJu0Yx0P0aoRcp+k23mCMY6gPNKq1bgDGwzvz4oR2SezCgd1tra/16d
+        jtACgMfjVTTTiITF31muN2O4QQ==
+X-Google-Smtp-Source: AGHT+IHtAyiIQSUQcuQRPXRDh5ZYjr/+7WFdiZ3Tbq7Fme0VUi91Efw1NaWeuWb3LPT5M07Kgtxw+A==
+X-Received: by 2002:a17:906:73dc:b0:9ae:696c:2c47 with SMTP id n28-20020a17090673dc00b009ae696c2c47mr6881087ejl.28.1696085009758;
+        Sat, 30 Sep 2023 07:43:29 -0700 (PDT)
+Received: from [192.168.8.76] ([88.154.47.206])
+        by smtp.gmail.com with ESMTPSA id fi3-20020a170906da0300b009a1fef32ce6sm14208942ejb.177.2023.09.30.07.43.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Sep 2023 07:43:29 -0700 (PDT)
+Message-ID: <e46ec21c-3500-468e-9362-2e986c3f0c77@linaro.org>
+Date:   Sat, 30 Sep 2023 16:43:23 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4 1/4] scsi: ufs: qcom: dt-bindings: Add SC7280
+ compatible string
+Content-Language: en-US
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, mani@kernel.org,
+        alim.akhtar@samsung.com, bvanassche@acm.org, avri.altman@wdc.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, cros-qcom-dts-watchers@chromium.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20230929131936.29421-1-quic_nitirawa@quicinc.com>
+ <20230929131936.29421-2-quic_nitirawa@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20230929131936.29421-2-quic_nitirawa@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,113 +123,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Sep 2023 12:23:13 -0500
-David Lechner <dlechner@baylibre.com> wrote:
+On 29/09/2023 15:19, Nitin Rawat wrote:
+> Document the compatible string for the UFS found on SC7280.
+> 
+> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+> Acked-by: Manivannan Sadhasivam <mani@kernel.org>
 
-> From: David Lechner <david@lechnology.com>
-> 
-> From: David Lechner <dlechner@baylibre.com>
-> 
-> This adds an implementation of IIO_CHAN_INFO_SCALE to the ad2s1210
-> resolver driver. This allows userspace to get the scale factor for the
-> raw values.
-> 
-> Signed-off-by: David Lechner <dlechner@baylibre.com>
-Applied
+This is a friendly reminder during the review process.
 
-Thanks,
+It looks like you received a tag and forgot to add it.
 
-> ---
-> 
-> v3 changes:
-> * Split ad2s1210_read_raw() into two functions to reduce complexity.
-> * Use early return instead of break in switch statements.
-> 
->  drivers/staging/iio/resolver/ad2s1210.c | 53 ++++++++++++++++++++++++++++-----
->  1 file changed, 45 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/iio/resolver/ad2s1210.c
-> index f9774dff2df4..a710598a64f0 100644
-> --- a/drivers/staging/iio/resolver/ad2s1210.c
-> +++ b/drivers/staging/iio/resolver/ad2s1210.c
-> @@ -461,13 +461,10 @@ static ssize_t ad2s1210_store_reg(struct device *dev,
->  	return ret < 0 ? ret : len;
->  }
->  
-> -static int ad2s1210_read_raw(struct iio_dev *indio_dev,
-> -			     struct iio_chan_spec const *chan,
-> -			     int *val,
-> -			     int *val2,
-> -			     long m)
-> +static int ad2s1210_single_conversion(struct ad2s1210_state *st,
-> +				      struct iio_chan_spec const *chan,
-> +				      int *val)
->  {
-> -	struct ad2s1210_state *st = iio_priv(indio_dev);
->  	int ret = 0;
->  
->  	mutex_lock(&st->lock);
-> @@ -514,6 +511,44 @@ static int ad2s1210_read_raw(struct iio_dev *indio_dev,
->  	return ret;
->  }
->  
-> +static const int ad2s1210_velocity_scale[] = {
-> +	17089132, /* 8.192MHz / (2*pi * 2500 / 2^15) */
-> +	42722830, /* 8.192MHz / (2*pi * 1000 / 2^15) */
-> +	85445659, /* 8.192MHz / (2*pi * 500 / 2^15) */
-> +	341782638, /* 8.192MHz / (2*pi * 125 / 2^15) */
-> +};
-> +
-> +static int ad2s1210_read_raw(struct iio_dev *indio_dev,
-> +			     struct iio_chan_spec const *chan,
-> +			     int *val,
-> +			     int *val2,
-> +			     long mask)
-> +{
-> +	struct ad2s1210_state *st = iio_priv(indio_dev);
-> +
-> +	switch (mask) {
-> +	case IIO_CHAN_INFO_RAW:
-> +		return ad2s1210_single_conversion(st, chan, val);
-> +	case IIO_CHAN_INFO_SCALE:
-> +		switch (chan->type) {
-> +		case IIO_ANGL:
-> +			/* approx 0.3 arc min converted to radians */
-> +			*val = 0;
-> +			*val2 = 95874;
-> +			return IIO_VAL_INT_PLUS_NANO;
-> +		case IIO_ANGL_VEL:
-> +			*val = st->fclkin;
-> +			*val2 = ad2s1210_velocity_scale[st->resolution];
-> +			return IIO_VAL_FRACTIONAL;
-> +		default:
-> +			return -EINVAL;
-> +		}
-> +
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +}
-> +
->  static IIO_DEVICE_ATTR(fclkin, 0644,
->  		       ad2s1210_show_fclkin, ad2s1210_store_fclkin, 0);
->  static IIO_DEVICE_ATTR(fexcit, 0644,
-> @@ -552,12 +587,14 @@ static const struct iio_chan_spec ad2s1210_channels[] = {
->  		.type = IIO_ANGL,
->  		.indexed = 1,
->  		.channel = 0,
-> -		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-> +				      BIT(IIO_CHAN_INFO_SCALE),
->  	}, {
->  		.type = IIO_ANGL_VEL,
->  		.indexed = 1,
->  		.channel = 0,
-> -		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),
-> +		.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
-> +				      BIT(IIO_CHAN_INFO_SCALE),
->  	}
->  };
->  
-> 
+If you do not know the process, here is a short explanation:
+Please add Acked-by/Reviewed-by/Tested-by tags when posting new
+versions, under or above your Signed-off-by tag. Tag is "received", when
+provided in a message replied to you on the mailing list. Tools like b4
+can help here. However, there's no need to repost patches *only* to add
+the tags. The upstream maintainer will do that for tags received on the
+version they apply.
+
+https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+
+If a tag was not added on purpose, please state why and what changed.
+
+Best regards,
+Krzysztof
 
