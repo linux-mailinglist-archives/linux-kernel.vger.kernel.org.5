@@ -2,53 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 239647B3FA3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5DD67B3FA4
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232620AbjI3JOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 05:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+        id S233951AbjI3JOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 05:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229588AbjI3JOn (ORCPT
+        with ESMTP id S229588AbjI3JOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 05:14:43 -0400
+        Sat, 30 Sep 2023 05:14:45 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6995FBF
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 02:14:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ABD2C433C8;
-        Sat, 30 Sep 2023 09:14:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEE33BF
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 02:14:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D3BDC433C7;
+        Sat, 30 Sep 2023 09:14:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696065279;
-        bh=26DZrEFmmX7RPrQtrMeeSVZD6kM5LM3HQlhgRqueXPE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aMA4lonEOQcec+Y8U5X5uNPY9wy9SAqm8cvrp3N/D9OQuPojEY5CMrfbFvlHeVuIC
-         kDJXYuyKlcCJ09Q6e+/O4OtuyfcTo3Sdchh8MdtED0rM3RfnGVy1IgVcio5HfJ8pRQ
-         EEbw7emfAhc93brMUsc/bz40LDdaLvuafpZpjP7FHA6d7lAzfGBCLvpgUUjgwTsk+u
-         Ju35FdtKswl6b5xzXTQmORx5HMH2sR3mIPpCxm4NCR+LFC2jLXEFVkXC6tKoVe1LPE
-         A2MGxiwjheZxsMF6x/TIR9bzxlK+Jx6iRe/Fctnsi4P+OrFZuAm5lzLHxG/o9vZijG
-         0OIkeo9dbixxw==
-Date:   Sat, 30 Sep 2023 10:14:34 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Qinglin Pan <panqinglin2020@iscas.ac.cn>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -fixes 2/2] riscv: Fix set_huge_pte_at() for NAPOT
- mappings when a swap entry is set
-Message-ID: <20230930-unnoticed-slacked-0bf5696cc265@spud>
-References: <20230928151846.8229-1-alexghiti@rivosinc.com>
- <20230928151846.8229-3-alexghiti@rivosinc.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5QYzZhHNu7GI5bSx"
-Content-Disposition: inline
-In-Reply-To: <20230928151846.8229-3-alexghiti@rivosinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        s=k20201202; t=1696065282;
+        bh=IDH9i4ossG8fiz9uTqL/nI6nmle6vBA4f7lhXd87Uxw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Rm9SNykJQwdTVW6S+Rf801ssab1h5iVg8gzKgmoRtFEW4Gs155ybnm+rBuwmhe/wo
+         ItrleESvVOeL0vTQJuHBxCkj8xmEBUEOEZ0vkQ2MOmwnNrOpXHIXAni0aewiGrx6OZ
+         xqz/ajf48Q8tqaV6nFOwuUovw9OxlzKfu3rhwjT0vI1sR3aUmvKBmC3Fa233NAFHi5
+         p0epjZiJZ+tvH+uo3MTRZVjE9gbw5Rn+Cmu8I94npTDDhnx+OV8yiZg90Nt2a/iDHc
+         5JgNvnNXsyV9LE1MDj3pA/VQcAbLuJhxdr047t8cmFyKwNaQ/IYSKQ0kH7ecurl1lW
+         Io1hmHa9fALOg==
+Date:   Sat, 30 Sep 2023 18:14:35 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v5 00/12] tracing: fprobe: rethook: Use ftrace_regs
+ instead of pt_regs
+Message-Id: <20230930181435.6663ef5a6ad718548a1e414a@kernel.org>
+In-Reply-To: <CAADnVQ+HCLx+QUE88uVxeBNYFY4D=2-HADOU1C_czT1S1sRHgA@mail.gmail.com>
+References: <169556254640.146934.5654329452696494756.stgit@devnote2>
+        <20230929102115.09c015b9af03e188f1fbb25c@kernel.org>
+        <CAADnVQ+HCLx+QUE88uVxeBNYFY4D=2-HADOU1C_czT1S1sRHgA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,92 +66,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 29 Sep 2023 17:12:07 -0700
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
---5QYzZhHNu7GI5bSx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Thu, Sep 28, 2023 at 6:21 PM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> >
+> >
+> > Thus, what I need is to make fprobe to use function-graph tracer's shadow
+> > stack and trampoline instead of rethook. This may need to generalize its
+> > interface so that we can share it between fprobe and function-graph tracer,
+> > but we don't need to involve rethook and kretprobes anymore.
+> 
+> ...
+> 
+> > And need to add patches
+> >
+> >  - Introduce a generized function exit hook interface for ftrace.
+> >  - Replace rethook in fprobe with the function exit hook interface.
+> 
+> you mean that rethook will be removed after that?
 
-On Thu, Sep 28, 2023 at 05:18:46PM +0200, Alexandre Ghiti wrote:
-> We used to determine the number of page table entries to set for a NAPOT
-> hugepage by using the pte value which actually fails when the pte to set =
-is
-> a swap entry.
->=20
-> So take advantage of a recent fix for arm64 reported in [1] which
-> introduces the size of the mapping as an argument of set_huge_pte_at(): we
-> can then use this size to compute the number of page table entries to set
-> for a NAPOT region.
->=20
-> Fixes: 82a1a1f3bfb6 ("riscv: mm: support Svnapot in hugetlb page")
-> Reported-by: Ryan Roberts <ryan.roberts@arm.com>
-> Closes: https://lore.kernel.org/linux-arm-kernel/20230922115804.2043771-1=
--ryan.roberts@arm.com/ [1]
-> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+No, it is too late. rethook is deeply integrated with kretprobe.
+So when we remove the kretprobe, rethook will be removed too.
+(fprobe and kretprobe provides similar functionality, so we can
+move to fprobe)
 
-Breaks the build. Your $subject marks this for -fixes, but this will not
-build there, as it relies on content that's not yet in that branch.
-AFAICT, you're going to have to resend this with akpm on CC, as the
-dependency is in his tree...
+Even though, objpool(*) itself might be kept for some other use
+cases. As far as I can see, ftrace_ret_stack can not provide a context
+local storage between entry -> exit callbacks. (so this feature must
+be dropped from fprobe)
 
-Thanks,
-Conor.
+(*) https://lore.kernel.org/all/20230905015255.81545-1-wuqiang.matt@bytedance.com/
 
-> ---
->  arch/riscv/mm/hugetlbpage.c | 19 +++++++++++++------
->  1 file changed, 13 insertions(+), 6 deletions(-)
->=20
-> diff --git a/arch/riscv/mm/hugetlbpage.c b/arch/riscv/mm/hugetlbpage.c
-> index e4a2ace92dbe..b52f0210481f 100644
-> --- a/arch/riscv/mm/hugetlbpage.c
-> +++ b/arch/riscv/mm/hugetlbpage.c
-> @@ -183,15 +183,22 @@ void set_huge_pte_at(struct mm_struct *mm,
->  		     pte_t pte,
->  		     unsigned long sz)
->  {
-> +	unsigned long hugepage_shift;
->  	int i, pte_num;
-> =20
-> -	if (!pte_napot(pte)) {
-> -		set_pte_at(mm, addr, ptep, pte);
-> -		return;
-> -	}
-> +	if (sz >=3D PGDIR_SIZE)
-> +		hugepage_shift =3D PGDIR_SHIFT;
-> +	else if (sz >=3D P4D_SIZE)
-> +		hugepage_shift =3D P4D_SHIFT;
-> +	else if (sz >=3D PUD_SIZE)
-> +		hugepage_shift =3D PUD_SHIFT;
-> +	else if (sz >=3D PMD_SIZE)
-> +		hugepage_shift =3D PMD_SHIFT;
-> +	else
-> +		hugepage_shift =3D PAGE_SHIFT;
-> =20
-> -	pte_num =3D napot_pte_num(napot_cont_order(pte));
-> -	for (i =3D 0; i < pte_num; i++, ptep++, addr +=3D PAGE_SIZE)
-> +	pte_num =3D sz >> hugepage_shift;
-> +	for (i =3D 0; i < pte_num; i++, ptep++, addr +=3D (1 << hugepage_shift))
->  		set_pte_at(mm, addr, ptep, pte);
->  }
-> =20
-> --=20
-> 2.39.2
->=20
->=20
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+Thank you,
 
---5QYzZhHNu7GI5bSx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRfm+gAKCRB4tDGHoIJi
-0m0zAP91gvh8xVeSCkLcZbXEq+3qnMduthZnz3KibSQU6EOWGQD/ZuPEswXNV4uy
-bVcB6Egf+5E3mB3MeG1hbuQ6lvtluQ0=
-=1QHA
------END PGP SIGNATURE-----
-
---5QYzZhHNu7GI5bSx--
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
