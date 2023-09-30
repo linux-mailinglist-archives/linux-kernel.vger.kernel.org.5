@@ -2,93 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A37D67B4238
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECDD7B423A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 18:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234545AbjI3QiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 12:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51982 "EHLO
+        id S234548AbjI3QjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 12:39:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232221AbjI3QiR (ORCPT
+        with ESMTP id S232221AbjI3QjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 12:38:17 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A064D3;
-        Sat, 30 Sep 2023 09:38:15 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c3cbfa40d6so136589625ad.1;
-        Sat, 30 Sep 2023 09:38:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696091895; x=1696696695; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ll5RgjPd4WERjGYzQzNFee7tOPsdSELqkfPGuXCqmQY=;
-        b=OozuIZ2doM7hMTUYmcI9K6cyaEgqTbIcJ6WwyV5CKRII+z0zHptUju1v3e2apEo6cg
-         1uL86Hcy/iymYPBs2xvhnMhq1uWw5M8rx3Uuh5uXyz9vr4JOO1hXc+okmP9ggC6TLP/K
-         nMVYpPSluE0t4NuusF7+epuFHRnDVto1/weMq2TK3EA9N1dNW/1mNUsfkAqPW7cPCq1d
-         mVvXPJZpWvHSW7N1bBDPYwucspetYsG0wmCEffIkLQu1sODnucKV+bVMIfguTwAJJBd4
-         N3xJzHQhhkthEHkzo754YdAsBFHrH+mfi2CdGxNstMtIC61+aHGvUan5cpTRiYXwZILS
-         7xYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696091895; x=1696696695;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ll5RgjPd4WERjGYzQzNFee7tOPsdSELqkfPGuXCqmQY=;
-        b=MwA8KmTSvRSyzH53/mIbDOCzHzJABrRCUTxWS3ix+7Q2RmMe54f54hnuwTXqTcTukQ
-         omvGzEo2mPPvMy8/VN17AcyY2LWtqACJJoty5dUDNGrOIfE4wmN4VDyU/BMNdbLh60MZ
-         9xywYrLiTIElePkMUjqPe/hlvx7RLaRoA5wwIwYZkaz23MooUJNxoIBWcZe6PwwUIblH
-         xDnJAerf+H6q0MKY21w+Cz/SsVTGEZlaObrdhYOklVBe345afrEnMMgcu07lBVxIOgsP
-         tTgz2y01XVLIEPc0FDAzHPNzfjyCi06gmUo2TwByhGu/R+JwOHZFEKhe9VKvkkHtGEiE
-         TsDA==
-X-Gm-Message-State: AOJu0YzCh6vqa3K616xuMRF9H+jPjd9O94vWIL75YcUgo48HOzdKWNm6
-        BmWJDID4MO1uryA3M3xL5WE=
-X-Google-Smtp-Source: AGHT+IEokMxdLDwnG72GNo8md4NLX8fZro4ky2KeOokEesCSFdQ1+vI/RtlGtfvbM1IityteBfIaUw==
-X-Received: by 2002:a17:902:d34b:b0:1bb:9b29:20d9 with SMTP id l11-20020a170902d34b00b001bb9b2920d9mr8060404plk.20.1696091894718;
-        Sat, 30 Sep 2023 09:38:14 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:a90f:2dad:30c1:d923])
-        by smtp.gmail.com with ESMTPSA id j1-20020a170902c3c100b001bc18e579aesm12841649plj.101.2023.09.30.09.38.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 09:38:14 -0700 (PDT)
-Date:   Sat, 30 Sep 2023 09:38:11 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-input@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] input: mt: Annotate struct input_mt with __counted_by
-Message-ID: <ZRhO828Ml4qpoS60@google.com>
-References: <20230922175036.work.762-kees@kernel.org>
+        Sat, 30 Sep 2023 12:39:17 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A05DAB;
+        Sat, 30 Sep 2023 09:39:15 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B001C433C7;
+        Sat, 30 Sep 2023 16:39:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696091954;
+        bh=5Rso+ZSnc5OcCyyuD3mBmZDa4c7Bh6j3+cSFPCMfCUQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=TDYxRJaGGZ7zEGwfJuPt645qmtLUp5vVT8yHQRf+CDfQCDhKpkyHQ41Hx16E+OhG3
+         KI6o+unOr95bUAw0pVbacQ++NFP2XsMXLeWlxkAoIpkxrfDJ2rWvrtipol6LrX0OSU
+         Wd1PBtS6hrzPipsk0znjeL+z4JvBLErJZu8mOwWeO3v8zxlbI/3TMKU6Rz+Ky2P+fF
+         oBCQ+u7sIiR8XocyoaTtJ6et+P9wZTiDpg116hU4qcGLpE1jxXPVmFLPaYzPuSlgLj
+         obzUpBwsioYUL8UMIZOfuzAYuygPBAqVniv48RN53YJPHNKmBbXZOjGMI0o3ITAaPd
+         bJbCRPK6MHKtQ==
+Date:   Sat, 30 Sep 2023 17:39:16 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
+Cc:     Ramona Gradinariu <ramona.gradinariu@analog.com>,
+        nuno.sa@analog.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] iio: imu: adis16475.c: Add buffer padding after
+ temp channel
+Message-ID: <20230930173916.7bed020c@jic23-huawei>
+In-Reply-To: <d1c7ce3085ad30e568181852df07fed3a0427d8c.camel@gmail.com>
+References: <20230926085721.645687-1-ramona.gradinariu@analog.com>
+        <20230926085721.645687-2-ramona.gradinariu@analog.com>
+        <d1c7ce3085ad30e568181852df07fed3a0427d8c.camel@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230922175036.work.762-kees@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 10:50:37AM -0700, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct input_mt.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: linux-input@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Tue, 26 Sep 2023 12:50:38 +0200
+Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
 
-Applied, thank you.
+> On Tue, 2023-09-26 at 11:57 +0300, Ramona Gradinariu wrote:
+> > The temperature channel has 16-bit storage size. We need to perform
+> > the padding to have the buffer elements naturally aligned in case
+> > the temperature channel is enabled and there are any 32-bit storage
+> > size channels enabled which have a scan index higher than the
+> > temperature channel scan index.
+> >=20
+> > Fixes: 8f6bc87d67c0 ("iio: imu: adis16475.c: Add delta angle and delta
+> > velocity channels")
+> > Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
+> > --- =20
+>=20
+> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+Applied to the togreg branch of iio.git.
 
--- 
-Dmitry
+Jonathan
+
+>=20
+> > =C2=A0drivers/iio/imu/adis16475.c | 10 ++++++++++
+> > =C2=A01 file changed, 10 insertions(+)
+> >=20
+> > diff --git a/drivers/iio/imu/adis16475.c b/drivers/iio/imu/adis16475.c
+> > index 00e4e09cdafb..9af07fec0d89 100644
+> > --- a/drivers/iio/imu/adis16475.c
+> > +++ b/drivers/iio/imu/adis16475.c
+> > @@ -1197,6 +1197,16 @@ static irqreturn_t adis16475_trigger_handler(int=
+ irq,
+> > void *p)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0switch (bit) {
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0case ADIS16475_SCAN_TEMP:
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+st->data[i++] =3D buffer[offset];
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/*
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * The=
+ temperature channel has 16-bit storage size.
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * We =
+need to perform the padding to have the buffer
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * ele=
+ments naturally aligned in case there are any
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * 32-=
+bit storage size channels enabled which have a
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * sca=
+n index higher than the temperature channel scan
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * ind=
+ex.
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (*i=
+ndio_dev->active_scan_mask &
+> > GENMASK(ADIS16475_SCAN_DELTVEL_Z, ADIS16475_SCAN_DELTANG_X))
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0st->data[i++] =3D 0; =20
+>=20
+> You could use ADIS16500_BURST_DATA_SEL_1_CHN_MASK but I kind of agree lik=
+e this
+> is more obvious what's going on...
+>=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+break;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0case ADIS16475_SCAN_DELTANG_X ... ADIS16475_SCAN=
+_DELTVEL_Z:
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+buff_offset =3D ADIS16475_SCAN_DELTANG_X; =20
+>=20
+
