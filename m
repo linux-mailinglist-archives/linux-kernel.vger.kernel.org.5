@@ -2,372 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA5FE7B3D83
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 04:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1310B7B3DA2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 04:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbjI3CNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Sep 2023 22:13:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53344 "EHLO
+        id S229983AbjI3C31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Sep 2023 22:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbjI3CM7 (ORCPT
+        with ESMTP id S229489AbjI3C30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Sep 2023 22:12:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75CD1FA
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 19:12:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696039932;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Uz9zDj0/dSUUJEbYZHeXOoVvSMTWtqtlQTW900AFqbk=;
-        b=dk8eoKXenMwXOoY8Gu4YnVJWaUVnX409OhJWQZ+dR3zgMDKTkDrJFmDe1+aMgL5Qp4tb3K
-        thlq4Ve9Y6p306TVowoMq7MiEvpPN9Uvu1GkGLPzYDma/mmNLVNRMMfnn9md7IJ0Uw8fY4
-        qErLctJASteWvULwNuEagQnUlDL4zKg=
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
- [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-145-lNLYJYpbNkKh_2QnYOV5MQ-1; Fri, 29 Sep 2023 22:12:10 -0400
-X-MC-Unique: lNLYJYpbNkKh_2QnYOV5MQ-1
-Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1c60d6f2c6bso10596655ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 19:12:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696039929; x=1696644729;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uz9zDj0/dSUUJEbYZHeXOoVvSMTWtqtlQTW900AFqbk=;
-        b=SkqQCHYNNOGEVVwrQIEBzhBbQw2H0XyfUxAL1QAFT4S5SGDav/wD/fxD41v9CDnR5d
-         7Qbh9P4zauxubBzNhQoqGQIvPouhUnVy9l4A6WS0vS4DQ3AwJv+838EOUgi03rB57vqe
-         A7g0c/5bwH8AGfQ8RYfP//qcByOy480GjNjRkKzdtClnRNnVfoAhQlMZAY8NG6vxoXoe
-         3zj8B8nEHzOX7nnuIXqyzR1wPOWpFJeVcPoN9ib/m94pTtgizSZEilBXyFVWZGkWDaVR
-         KU2TaUqD2E+QD24K9y1cdy/G2CKTs5Jd28cM1LV7GqpzWLMpNt/fwBIeRZhSdbCjXozY
-         tnKQ==
-X-Gm-Message-State: AOJu0YxYKUmEiQEPTez/wxAUhd7WNqp+vteruZGLkIX6QTsCbYxOLmXF
-        FzmIwZwjb3kXQD1azvVIiXnl9aFQ9FDpwhe3bRoR6Bh+xvgA+ksTLFmuesVDNXz84Cizz9/A1xz
-        2wCIxUw8qcLm66gGvzWpwoHSm
-X-Received: by 2002:a17:902:e5d1:b0:1c3:e5bf:a9fe with SMTP id u17-20020a170902e5d100b001c3e5bfa9femr9645138plf.30.1696039928983;
-        Fri, 29 Sep 2023 19:12:08 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF38Z7llet9+xDSgYMVjkTtdq5jBpTRh8NBrzeq12i052boiDTK+d9vY7qKX6+y9J1PHV7X+A==
-X-Received: by 2002:a17:902:e5d1:b0:1c3:e5bf:a9fe with SMTP id u17-20020a170902e5d100b001c3e5bfa9femr9645114plf.30.1696039928551;
-        Fri, 29 Sep 2023 19:12:08 -0700 (PDT)
-Received: from ?IPV6:2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5? ([2001:8003:e5b0:9f00:dbbc:1945:6e65:ec5])
-        by smtp.gmail.com with ESMTPSA id h2-20020a170902748200b001c60e7bf5besm11924031pll.281.2023.09.29.19.12.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Sep 2023 19:12:07 -0700 (PDT)
-Message-ID: <91bceeda-7964-2509-a1f1-4a2be49ebc60@redhat.com>
-Date:   Sat, 30 Sep 2023 12:12:01 +1000
+        Fri, 29 Sep 2023 22:29:26 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86DCBFA
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Sep 2023 19:29:21 -0700 (PDT)
+Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38U263v5032593;
+        Sat, 30 Sep 2023 02:28:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-03-30;
+ bh=aGTFbKjVuIJSDD9JqTdBKHaXckOomB/oscVcL9ZiNrw=;
+ b=U6uZH2PAVwC1Yiujqh8s681IFUS7k9FN5DXfdnaixb/+kCyEjdpCMSX/4Dyku54P8JqA
+ xjNuRCbGAvWswcCYMPTm9019qQXdTMy7a8cxdburdje+c/JPLY2yhFcUR3wBqh4s6ed+
+ 3lVEoeO5R1OkjtJKXNYpvzSr6MbT0n5aZvX86iWBUcAcf0r/LIgxJfan30f8xUOZvPcm
+ bdRqyKPUNkila+c5nvT+q+FObkeaSl3GYSC9p5yXsi1WUNNvjijWNr4LDkEGdBbVLb6y
+ k+Neptq/zesn2IbTvbO74IxS1b3BrBHfjJFZXsXc5vOJAF2ijIUQNSWLAUuVAfe37xw5 GA== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3teakc80dk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 30 Sep 2023 02:28:50 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 38U1XVD4035785;
+        Sat, 30 Sep 2023 02:28:49 GMT
+Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam02lp2049.outbound.protection.outlook.com [104.47.56.49])
+        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tea42s9p1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 30 Sep 2023 02:28:49 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZhDJgxtE4HDWv5x1YTlgYHZ58b4smCGSK3ODtkbr8SSVmbOx+6JTzgdy/Bg3DVuAA1FlF9WyhIezoUsgidix4sep0cKGYFbqFQzl8qAKTqdF/Hjxs98A+20OQ1lDFlpGQBGCWUnShYe3xmODJkQFgKgBFWivtH4XnJXT7IBgqXxZjqz2xRFtUBWqw7Ylkb0l2D/nIeEnp9swVR0Q8U94Ub0BpCWAHCHf6qm9Ot7ecmFglK0IR4E6Co5YlL+KdpJGejw4AXuyhb/kuXLH1ixqN8gpCp8UynFdd5eKbebAmAcJBq3ghmgz/xwJP2b8AV2JNgTHxiaePLMAME9j+eeE0w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aGTFbKjVuIJSDD9JqTdBKHaXckOomB/oscVcL9ZiNrw=;
+ b=BQ4wx5swOwA0WaIKuvOWCg1pMeSQn1ySgvyR+pY5RsAfvBoU3OqDFUFISAdbYlIuYvzJvyjDldj9cZ9bmLV8idLQNxpclBnUaKhGvkof1L+EtRO+Jge1/4x+UNaBTdqf2jX0q6wTUEKVANqkVk3eLfMXuKfE3P7MNVOQ6ZH+i4Kt7MRb+l3x6jAFatzzvN4JY/zeyKEKBUMlMAQUNPdYtrh7iY9v7ef+gX/gMWPM2fFBS1EYHgEjmnAyf2h09X24Iy6DbQZpCpvqN9aMFsjHpgdlUHRInh/UrDxP0ECRH6aIVjpIZMbtvu+CSVo0K2qG8wg45ctnHc+vOHmOD4vnoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aGTFbKjVuIJSDD9JqTdBKHaXckOomB/oscVcL9ZiNrw=;
+ b=SZUf1ELXvSpB740lKxlWFR2Jv6xwoDTUEa50Rl62sbJz/2MDiVf9n/Oh2Sah6nllM75n7KQz1VsFdgMk79StwdQt7hrjUlnU2HrPnkJamMdq9okar8oZgaVFn0QMFhbs6LL+Fk+CJK2ONhQF2/L0H9aqZdGfiwMXa7ouo7cZmwM=
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by LV3PR10MB7915.namprd10.prod.outlook.com (2603:10b6:408:21a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26; Sat, 30 Sep
+ 2023 02:28:46 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::94a0:adfb:6474:63bf]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::94a0:adfb:6474:63bf%6]) with mapi id 15.20.6838.027; Sat, 30 Sep 2023
+ 02:28:45 +0000
+Date:   Fri, 29 Sep 2023 19:28:42 -0700
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     riel@surriel.com
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        muchun.song@linux.dev, leit@meta.com, willy@infradead.org
+Subject: Re: [PATCH 1/3] hugetlbfs: extend hugetlb_vma_lock to private VMAs
+Message-ID: <20230930022842.GA82828@monkey>
+References: <20230926031245.795759-1-riel@surriel.com>
+ <20230926031245.795759-2-riel@surriel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230926031245.795759-2-riel@surriel.com>
+X-ClientProxiedBy: MW4PR04CA0312.namprd04.prod.outlook.com
+ (2603:10b6:303:82::17) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: Endless calls to xas_split_alloc() due to corrupted xarray entry
-Content-Language: en-US
-To:     Matthew Wilcox <willy@infradead.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Zhenyu Zhang <zhenyzha@redhat.com>,
-        Linux XFS <linux-xfs@vger.kernel.org>,
-        Linux Filesystems Development <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shaoqin Huang <shahuang@redhat.com>,
-        Chandan Babu R <chandan.babu@oracle.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <CAJFLiB+J4mKGDOppp=1moMe2aNqeJhM9F2cD4KPTXoM6nzb5RA@mail.gmail.com>
- <ZRFbIJH47RkQuDid@debian.me> <ZRci1L6qneuZA4mo@casper.infradead.org>
-From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <ZRci1L6qneuZA4mo@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4196:EE_|LV3PR10MB7915:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2aeea6b2-54cc-42a0-2c22-08dbc15cf83d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /PjfLVqTVdXZSVrZXHMddcK+TA1NmTPAlI9cEine5U8pc+osw7aNO2tuPtNp+ZWwq7nHPXsj5BbwtdcJ3HCRyoCCsHbc7exIAVHYX1k+6pKA1+0eRPZhzykqZoC8oKfrAYK4vGXLFfcjp1uc5zUnzPxvgH5nL7W1294FvbD/vGXvHinBU+hAAIzrA5tFznzDV5tN7rmRJH2RaltXaUEb42p4TLJhtL9dUjXV3pyd8BBFh+iZh4fzj/e0tu8q0tMDzr6w0u5JmehW8EVxl9V7Ov1eq2WTEpZ+y8KgyLu802EPrVZFV6WHLqxzI98DPlAsvXGImeSa2BuZY3BMYIPBTes4QhoumwoEAkJzKY3foBLvvRzcU6bCfpWtl7ip+8Mks8JgeXrlyIZS4L82FWgpBT965QA6z+LKABinfxi2HJZxcV+vFIMVaaiGtW+ZrgsiC1YXliKUli//2vEMOHSe6jMnpm8N28R759oebZ6lOki55n+wtP/TImJ70ArwNfvKAqcg47ooZWKHvGIWOJwc9frTYnk9PhkiTf0K5UJ6/P40d3PD29Ox+bSiuQMQZAvr
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(366004)(396003)(346002)(39860400002)(376002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(33716001)(316002)(41300700001)(83380400001)(6486002)(6506007)(66946007)(478600001)(6666004)(8676002)(26005)(66476007)(6916009)(66556008)(53546011)(6512007)(9686003)(1076003)(4326008)(8936002)(2906002)(33656002)(5660300002)(38100700002)(44832011)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nfVBSLAO/F/vNryarm/zWv+RgKpocu8i1YF/qb84EI/whEeNN6FQkDgBtJeP?=
+ =?us-ascii?Q?XAa9vz1TZe3ILhhq1Zk9nhSqLBWqW0CS4KETQM4cYZEj5gxXkgTexJwbMmwf?=
+ =?us-ascii?Q?20E5ruzG7qwarmCytH7TFsv4lhasL0JdaXYc2+7Et5HkGlk/EbGoDJD84S0B?=
+ =?us-ascii?Q?mI5zRFDt3N5VjdEwn0dFzSh9H+xg/yM99NVQbZimdy3iBrd0N4UXpHwKYPtD?=
+ =?us-ascii?Q?kULIlfTYSJ5T45k3dxaAOO4Yp8gWskKgE4TomHNuesL/BLHNkUSI57Ni+UTc?=
+ =?us-ascii?Q?5nElhiOVDYEO0csG3CAm9ACzorDgkRgd0cYrhfkFI46pi5vx4PZBwhflsqaQ?=
+ =?us-ascii?Q?Lh1R5hJcQEGCaM7nTvFU1smfPESaxETqO6hcWVYF2oaKJIUxnoS4i/HKXA2K?=
+ =?us-ascii?Q?nhaLNeVnNuzLC2bc1D/I4eQr9Z2dVRqkOv1Bz+69Sh4kBCCo7mQKDgsDKykB?=
+ =?us-ascii?Q?eEeG+mVYkWwoIdBqN3TYa+PFo4wGH1vPClISgkreynlHHtIv2ICPpesIDQe1?=
+ =?us-ascii?Q?LZkvblo61NXcVf1dqNLK87mCoVcIy7KWj3sMr844NCyCRbMoIJ3tbPvX3OM6?=
+ =?us-ascii?Q?UQ6hmIXFm8zrkH3Rc12bVb1114EpeVRo6SUYz15cFkKHdl679ZBLCm9FrGyz?=
+ =?us-ascii?Q?CY0YygBIxTOCVFqDHqlP2AkS92UqUJUpyY4GTFQB8JJ8INWwctnzv1e2FmM4?=
+ =?us-ascii?Q?KDI8oqncA3+f73slLi1lVrqGykneOyhylCqZrgXWZfI8fF3ep3h7dGRhbeXe?=
+ =?us-ascii?Q?f4r7RjRp0afPyDC+RfIttBAUA4Qh27xY7LqlEJmnK5Oksw1I533J+HNJsqyF?=
+ =?us-ascii?Q?+1QMBV+ydFM3HKTF2QUiJguqHs2SY9bR9q0dbyFrtNZEMsecDSap+QqobC0x?=
+ =?us-ascii?Q?qkIxiWm3bqrMFvW0CsRFrLuVlu6YvLD3+JVGNgA6cHkw+ZnAq5/jaJrCB+YZ?=
+ =?us-ascii?Q?35bhn0fTGUaLw9BZ4sHG7LufqM52bvliwxq/bEUDCzkxV/zyvcTsoumSveEm?=
+ =?us-ascii?Q?GL8S9TotOoN1GeobGi+VlzQloyuGfhOi9dXo3SwFlEoizAdJoh4ygyJ1XKqY?=
+ =?us-ascii?Q?J5xjECVYhQhuw9LTkeLREkZT49cb5Np8W3JfC5Ssof4bAs5M2+wOTKpuDgCu?=
+ =?us-ascii?Q?5H4bmxsYloJHf36gzj/K353Rpt/8NJ+RvaXuPyAwBG23sPfo1bd5FPoLxvNN?=
+ =?us-ascii?Q?7rVw0yTzWTv2CFTOuCjkr3TftAXzGPnj7+ip+lEhLtuyUqeVlvZlVkYHOlLb?=
+ =?us-ascii?Q?JHS7yaHu+N9+Ku+1/1yhzA8d1cIu2xqZS/4rd5oVxe/ixiTqpiA/eOQ6uQ9h?=
+ =?us-ascii?Q?A45ygF7lSQqOUhz3NAM42tAO29A0PfzfsLRcZOM/M3IOAPc3WH2P2ZSXpSBi?=
+ =?us-ascii?Q?hZVNPEH4npWg6Za+/naYqAdc5/bfGhnTTuYHTAHmRado0kc36/kNh4PhBP9T?=
+ =?us-ascii?Q?F/+8pBjMwSQCQ2vatG+D/v/2pYmDjqF7cdQuzh9s6W9Ai4CmE5szvcqxA9Nb?=
+ =?us-ascii?Q?dGUTla+HM2OF8c6vu3WHDMD8V2fXxYXg+xE7aKgwqk6Wphsoi8ecJdgXXZSI?=
+ =?us-ascii?Q?88BLw2O+ywNWAUPkBvWHABmCASm2OYd2cyhC2aR9?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?jmXlM0DQr28NqPwAhMjYvpNzGi6VQAyjX9EBMi//2+MfFrvmHIxJX1/GC+bR?=
+ =?us-ascii?Q?iHo5a4Ystt60V7hz2ereqEBmALqOJOs/UcLOEa/0pX1sje4chnCmStu8fw4q?=
+ =?us-ascii?Q?6vxB48iPZa7I6JygKah7TAZSLguWL7xjCF2nWahN6bfjML5b25EW5RVvjTpG?=
+ =?us-ascii?Q?j2+Djgi+M3357cuIvERwD0eRoQCzJ+AkXQS1BfORA84moCEvpUy54DQUUz+A?=
+ =?us-ascii?Q?08ZYTl3zvAwpitl76nGStSRjjP0/WVr68q2g7iR5qwrqon9QGprqgSWK9N2a?=
+ =?us-ascii?Q?6csIDln/WooWfnoTfz8a/iI24zhCyiOvTD19iokJbO8Ks/f/JfaWsl8+cSqL?=
+ =?us-ascii?Q?s5QpzywjMqwRyf37YDsY1PFtDZ2fU4GbYF0zSh5JoeRoPZmEpalJ/cVs8Ap+?=
+ =?us-ascii?Q?+E0pnvO7VjYvTtkkhXPVJr8jn0f81J0Rq+msUJGmREq30gy9kpQHt7G7dOtf?=
+ =?us-ascii?Q?As/9SKpwcBRx9tz9dXMJuP7OVRkM6HZUPAhR/zPGw+eKAmKiv1ZEV8b3no0N?=
+ =?us-ascii?Q?y+yHgK0rTaWXAhJgxOpTSIsfPaO1yTlP84Vj5dIyQKJohYus/GTjnp0T6rQf?=
+ =?us-ascii?Q?DPYCF0ClTIKksAvf7mR+EWzLw8bX9roAQRBdm6RP4pQ9wIDK6Ati6oJPxJS7?=
+ =?us-ascii?Q?eredb0lCsdxNB6vpt2ACcKM7XBPsqG94PHTbn5tVBBPAGxtKvXiqGMVK4ofJ?=
+ =?us-ascii?Q?hRFzPywWa/jr4w5ZTxovP5ij93Bzxg+moS/wSurUdDr5NZr4eorR7Teb+VRT?=
+ =?us-ascii?Q?oqY4DLWqV8rxUkAaedMtFiEEW7yxI6JZ9Axv0XePnRfCMvzJL4ft05jvcsRA?=
+ =?us-ascii?Q?s1M4ZGLL3uqGsEHM/2OQlHvuEAWOKACJwGogx+P2ZCM5tPLBzkTSiaESSxUx?=
+ =?us-ascii?Q?v8P66R0CxfsrN0rmKGWtJ+AOVwQq70im/BLHtgSZhO1SKPCfvSvHv/FYS/Zb?=
+ =?us-ascii?Q?0eUDP/ImKNlM2cr0gvf3Ug=3D=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2aeea6b2-54cc-42a0-2c22-08dbc15cf83d
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Sep 2023 02:28:45.7712
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0IIlLXSSfGqVd0DlcZRCqiPLusjgTErO06pKVgaCHW4b4adFq3pLxBf5dbuoiN2VGdPLqu0H+s+juQL64lVnRg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR10MB7915
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-09-30_01,2023-09-28_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
+ phishscore=0 bulkscore=0 mlxlogscore=787 suspectscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2309300019
+X-Proofpoint-GUID: oCKs86kb_WppTywMGJL2cQaKKujvyW6i
+X-Proofpoint-ORIG-GUID: oCKs86kb_WppTywMGJL2cQaKKujvyW6i
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew,
-
-On 9/30/23 05:17, Matthew Wilcox wrote:
-> On Mon, Sep 25, 2023 at 05:04:16PM +0700, Bagas Sanjaya wrote:
->> On Fri, Sep 22, 2023 at 11:56:43AM +0800, Zhenyu Zhang wrote:
->>> Hi all,
->>>
->>> we don't know how the xarray entry was corrupted. Maybe it's a known
->>> issue to community.
->>> Lets see.
->>>
->>> Contents
->>> --------
->>> 1. Problem Statement
->>> 2. The call trace
->>> 3. The captured data by bpftrace
->>>
->>>
->>> 1. Problem Statement
->>> --------------------
->>> With 4k guest and 64k host, on aarch64(Ampere's Altra Max CPU) hit Call trace:
->>>      Steps:
->>>      1) System setup hugepages on host.
->>>         # echo 60 > /proc/sys/vm/nr_hugepages
->>>      2) Mount this hugepage to /mnt/kvm_hugepage.
->>>         # mount -t hugetlbfs -o pagesize=524288K none /mnt/kvm_hugepage
->>
->> What block device/disk image you use to format the filesystem?
+On 09/25/23 23:10, riel@surriel.com wrote:
+> From: Rik van Riel <riel@surriel.com>
 > 
-> It's hugetlbfs, Bagas.
+> Extend the locking scheme used to protect shared hugetlb mappings
+> from truncate vs page fault races, in order to protect private
+> hugetlb mappings (with resv_map) against MADV_DONTNEED.
 > 
-
-The hugetlbfs pages are reserved, but never used. In this way, the available
-system memory is reduced. So it's same affect as to "mem=xxx" boot parameter.
-
->>>      3) HugePages didn't leak when using non-existent mem-path.
->>>         # mkdir -p /mnt/tmp
->>>      4) Boot guest.
->>>         # /usr/libexec/qemu-kvm \
->>> ...
->>>           -m 30720 \
->>> -object '{"size": 32212254720, "mem-path": "/mnt/tmp", "qom-type":
->>> "memory-backend-file"}'  \
->>> -smp 4,maxcpus=4,cores=2,threads=1,clusters=1,sockets=2  \
->>>           -blockdev '{"node-name": "file_image1", "driver": "file",
->>> "auto-read-only": true, "discard": "unmap", "aio": "threads",
->>> "filename": "/home/kvm_autotest_root/images/back_up_4k.qcow2",
->>> "cache": {"direct": true, "no-flush": false}}' \
->>> -blockdev '{"node-name": "drive_image1", "driver": "qcow2",
->>> "read-only": false, "cache": {"direct": true, "no-flush": false},
->>> "file": "file_image1"}' \
->>> -device '{"driver": "scsi-hd", "id": "image1", "drive":
->>> "drive_image1", "write-cache": "on"}' \
->>>
->>>      5) Wait about 1 minute ------> hit Call trace
->>>
->>> 2. The call trace
->>> --------------------
->>> [   14.982751] block dm-0: the capability attribute has been deprecated.
->>> [   15.690043] PEFILE: Unsigned PE binary
->>>
->>>
->>> [   90.135676] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
->>> [   90.136629] rcu: 3-...0: (3 ticks this GP)
->>> idle=e6ec/1/0x4000000000000000 softirq=6847/6849 fqs=232
->>> [   90.137293] rcu: (detected by 2, t=6012 jiffies, g=2085, q=2539 ncpus=4)
->>> [   90.137796] Task dump for CPU 3:
->>> [   90.138037] task:PK-Backend      state:R  running task     stack:0
->>>     pid:2287  ppid:1      flags:0x00000202
->>> [   90.138757] Call trace:
->>> [   90.138940]  __switch_to+0xc8/0x110
->>> [   90.139203]  0xb54a54f8c5fb0700
->>>
->>> [  270.190849] rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
->>> [  270.191722] rcu: 3-...0: (3 ticks this GP)
->>> idle=e6ec/1/0x4000000000000000 softirq=6847/6849 fqs=1020
->>> [  270.192405] rcu: (detected by 1, t=24018 jiffies, g=2085, q=3104 ncpus=4)
->>> [  270.192876] Task dump for CPU 3:
->>> [  270.193099] task:PK-Backend      state:R  running task     stack:0
->>>     pid:2287  ppid:1      flags:0x00000202
->>> [  270.193774] Call trace:
->>> [  270.193946]  __switch_to+0xc8/0x110
->>> [  270.194336]  0xb54a54f8c5fb0700
->>>
->>> [ 1228.068406] ------------[ cut here ]------------
->>> [ 1228.073011] WARNING: CPU: 2 PID: 4496 at lib/xarray.c:1010
->>> xas_split_alloc+0xf8/0x128
->>> [ 1228.080828] Modules linked in: binfmt_misc vhost_net vhost
->>> vhost_iotlb tap xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT
->>> nf_reject_ipv4 nft_compat nft_chain_nat nf_nat nf_conntrack
->>> nf_defrag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink tun bridge stp llc
->>> qrtr rfkill sunrpc vfat fat acpi_ipmi ipmi_ssif arm_spe_pmu
->>> ipmi_devintf arm_cmn arm_dmc620_pmu ipmi_msghandler cppc_cpufreq
->>> arm_dsu_pmu xfs libcrc32c ast drm_shmem_helper drm_kms_helper drm
->>> crct10dif_ce ghash_ce igb nvme sha2_ce nvme_core sha256_arm64 sha1_ce
->>> i2c_designware_platform sbsa_gwdt nvme_common i2c_algo_bit
->>> i2c_designware_core xgene_hwmon dm_mirror dm_region_hash dm_log dm_mod
->>> fuse
->>> [ 1228.137630] CPU: 2 PID: 4496 Comm: qemu-kvm Kdump: loaded Tainted:
->>> G        W          6.6.0-rc2-zhenyzha+ #5
->>> [ 1228.147529] Hardware name: GIGABYTE R152-P31-00/MP32-AR1-00, BIOS
->>> F31h (SCP: 2.10.20220810) 07/27/2022
->>> [ 1228.156820] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->>> [ 1228.163767] pc : xas_split_alloc+0xf8/0x128
->>> [ 1228.167938] lr : __filemap_add_folio+0x33c/0x4e0
->>> [ 1228.172543] sp : ffff80008dd4f1c0
->>> [ 1228.175844] x29: ffff80008dd4f1c0 x28: ffffd15825388c40 x27: 0000000000000001
->>> [ 1228.182967] x26: 0000000000000001 x25: ffffffffffffc005 x24: 0000000000000000
->>> [ 1228.190089] x23: ffff80008dd4f270 x22: ffffffc202b00000 x21: 0000000000000000
->>> [ 1228.197211] x20: ffffffc2007f9600 x19: 000000000000000d x18: 0000000000000014
->>> [ 1228.204334] x17: 00000000b21b8a3f x16: 0000000013a8aa94 x15: ffffd15824625944
->>> [ 1228.211456] x14: ffffffffffffffff x13: 0000000000000030 x12: 0101010101010101
->>> [ 1228.218578] x11: 7f7f7f7f7f7f7f7f x10: 000000000000000a x9 : ffffd158252dd3fc
->>> [ 1228.225701] x8 : ffff80008dd4f1c0 x7 : ffff07ffa0945468 x6 : ffff80008dd4f1c0
->>> [ 1228.232823] x5 : 0000000000000018 x4 : 0000000000000000 x3 : 0000000000012c40
->>> [ 1228.239945] x2 : 000000000000000d x1 : 000000000000000c x0 : 0000000000000000
->>> [ 1228.247067] Call trace:
->>> [ 1228.249500]  xas_split_alloc+0xf8/0x128
->>> [ 1228.253324]  __filemap_add_folio+0x33c/0x4e0
->>> [ 1228.257582]  filemap_add_folio+0x48/0xd0
->>> [ 1228.261493]  page_cache_ra_order+0x214/0x310
->>> [ 1228.265750]  ondemand_readahead+0x1a8/0x320
->>> [ 1228.269921]  page_cache_async_ra+0x64/0xa8
->>> [ 1228.274005]  filemap_fault+0x238/0xaa8
->>> [ 1228.277742]  __xfs_filemap_fault+0x60/0x3c0 [xfs]
->>> [ 1228.282491]  xfs_filemap_fault+0x54/0x68 [xfs]
+> Add a read-write semaphore to the resv_map data structure, and
+> use that from the hugetlb_vma_(un)lock_* functions, in preparation
+> for closing the race between MADV_DONTNEED and page faults.
 > 
-> This is interesting.  This path has nothing to do with the hugetlbfs
-> filesystem you've created up above.  And, just to be clear, this is
-> on the host, not in the guest, right?
-> 
+> Signed-off-by: Rik van Riel <riel@surriel.com>
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ---
+>  include/linux/hugetlb.h |  6 ++++++
+>  mm/hugetlb.c            | 41 +++++++++++++++++++++++++++++++++++++----
+>  2 files changed, 43 insertions(+), 4 deletions(-)
 
-Correct, the backtrce is seen on the host. The XFS file is used as backup
-memory to the guest. QEMU maps the entire file as PRIVATE and the VMA has
-been advised to huge page by madvise(MADV_HUGEPAGE). When the guest is
-started, QEMU calls madvise(MADV_POPULATE_WRITE) to populate the VMA. Since
-the VMA is private, there are copy-on-write page fault happening on
-calling to madvise(MADV_POPULATE_WRITE). In the page fault handler,
-there are readahead reuqests to be processed.
+My bad during the review of patch 2!
 
-The backtrace, originating from WARN_ON(), is triggered when attempt to
-allocate a huge page fails in the middle of readahead. In this specific
-case, we're falling back to order-0 with attempt to modify the xarray
-for this. Unfortunately, it's reported this particular scenario isn't
-supported by xas_split_alloc().
+In reply to patch 1, I suggested the changes:
 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index f906c5fa4d09..8f3d5895fffc 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -372,6 +372,11 @@ static void __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma)
+>  		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
+>  
+>  		__hugetlb_vma_unlock_write_put(vma_lock);
+> +	} else if (__vma_private_lock(vma)) {
+> +		struct resv_map *resv_map = vma_resv_map(vma);
+> +
+> +		/* no free for anon vmas, but still need to unlock */
+> +		up_write(&resv_map->rw_sema);
+>  	}
+>  }
 
->>> [ 1228.377124] ------------[ cut here ]------------
->>> [ 1228.381728] WARNING: CPU: 2 PID: 4496 at lib/xarray.c:1010
->>> xas_split_alloc+0xf8/0x128
->>> [ 1228.389546] Modules linked in: binfmt_misc vhost_net vhost
->>> vhost_iotlb tap xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT
->>> nf_reject_ipv4 nft_compat nft_chain_nat nf_nat nf_conntrack
->>> nf_defrag_ipv6 nf_defrag_ipv4 nf_tables nfnetlink tun bridge stp llc
->>> qrtr rfkill sunrpc vfat fat acpi_ipmi ipmi_ssif arm_spe_pmu
->>> ipmi_devintf arm_cmn arm_dmc620_pmu ipmi_msghandler cppc_cpufreq
->>> arm_dsu_pmu xfs libcrc32c ast drm_shmem_helper drm_kms_helper drm
->>> crct10dif_ce ghash_ce igb nvme sha2_ce nvme_core sha256_arm64 sha1_ce
->>> i2c_designware_platform sbsa_gwdt nvme_common i2c_algo_bit
->>> i2c_designware_core xgene_hwmon dm_mirror dm_region_hash dm_log dm_mod
->>> fuse
->>> [ 1228.446348] CPU: 2 PID: 4496 Comm: qemu-kvm Kdump: loaded Tainted:
->>> G        W          6.6.0-rc2-zhenyzha+ #5
->>> [ 1228.456248] Hardware name: GIGABYTE R152-P31-00/MP32-AR1-00, BIOS
->>> F31h (SCP: 2.10.20220810) 07/27/2022
->>> [ 1228.465538] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
->>> [ 1228.472486] pc : xas_split_alloc+0xf8/0x128
->>> [ 1228.476656] lr : __filemap_add_folio+0x33c/0x4e0
->>> [ 1228.481261] sp : ffff80008dd4f1c0
->>> [ 1228.484563] x29: ffff80008dd4f1c0 x28: ffffd15825388c40 x27: 0000000000000001
->>> [ 1228.491685] x26: 0000000000000001 x25: ffffffffffffc005 x24: 0000000000000000
->>> [ 1228.498807] x23: ffff80008dd4f270 x22: ffffffc202b00000 x21: 0000000000000000
->>> [ 1228.505930] x20: ffffffc2007f9600 x19: 000000000000000d x18: 0000000000000014
->>> [ 1228.513052] x17: 00000000b21b8a3f x16: 0000000013a8aa94 x15: ffffd15824625944
->>> [ 1228.520174] x14: ffffffffffffffff x13: 0000000000000030 x12: 0101010101010101
->>> [ 1228.527297] x11: 7f7f7f7f7f7f7f7f x10: 000000000000000a x9 : ffffd158252dd3fc
->>> [ 1228.534419] x8 : ffff80008dd4f1c0 x7 : ffff07ffa0945468 x6 : ffff80008dd4f1c0
->>> [ 1228.541542] x5 : 0000000000000018 x4 : 0000000000000000 x3 : 0000000000012c40
->>> [ 1228.548664] x2 : 000000000000000d x1 : 000000000000000c x0 : 0000000000000000
->>> [ 1228.555786] Call trace:
->>> [ 1228.558220]  xas_split_alloc+0xf8/0x128
->>> [ 1228.562043]  __filemap_add_folio+0x33c/0x4e0
->>> [ 1228.566300]  filemap_add_folio+0x48/0xd0
->>> [ 1228.570211]  page_cache_ra_order+0x214/0x310
->>> [ 1228.574469]  ondemand_readahead+0x1a8/0x320
->>> [ 1228.578639]  page_cache_async_ra+0x64/0xa8
->>> [ 1228.582724]  filemap_fault+0x238/0xaa8
->>> [ 1228.586460]  __xfs_filemap_fault+0x60/0x3c0 [xfs]
->>> [ 1228.591210]  xfs_filemap_fault+0x54/0x68 [xfs]
->>>
->>>
->>>
->>> 3. The captured data by bpftrace
->>> (The following part is the crawl analysis of gshan@redhat.com )
->>> --------------------
->>> pid:  4475    task: qemu-kvm
->>> file: /mnt/tmp/qemu_back_mem.mem-machine_mem.OdGYet (deleted)
->>>
->>> -------------------- inode --------------------
->>> i_flags:               0x0
->>> i_ino:                 67333199
->>> i_size:                32212254720
->>>
->>> ----------------- address_space ----------------
->>> flags:                 040
->>> invalidate_lock
->>>    count:               256
->>>    owner:               0xffff07fff6e759c1
->>>      pid: 4496  task: qemu-kvm
->>>    wait_list.next:      0xffff07ffa20422e0
->>>    wait_list.prev:      0xffff07ffa20422e0
->>>
->>> -------------------- xarray --------------------
->>> entry[0]:       0xffff080f7eda0002
->>> shift:          18
->>> offset:         0
->>> count:          2
->>> nr_values:      0
->>> parent:         0x0
->>> slots[00]:      0xffff07ffa094546a
->>> slots[01]:      0xffff07ffa1b09b22
->>>
->>> entry[1]:       0xffff07ffa094546a
->>> shift:          12
->>> offset:         0
->>> count:          20
->>> nr_values:      0
->>> parent:         0xffff080f7eda0000
->>> slots[00]:      0xffffffc202880000
->>> slots[01]:      0x2
->>>
->>> entry[2]:       0xffffffc202880000
->>> shift:          104
->>> offset:         128
->>> count:          0
->>> nr_values:      0
->>> parent:         0xffffffc20304c888
->>> slots[00]:      0xffff08009a960000
->>> slots[01]:      0x2001ffffffff
->>>
->>> It seems the last xarray entry ("entry[2]") has been corrupted. "shift"
->>> becomes 104 and "offset" becomes 128, which isn't reasonable.
-> 
-> Um, no.  Whatever tool you're using doesn't understand how XArrays work.
-> Fortunately, I wrote xa_dump() which does.  entry[2] does not have bit
-> 1 set, so it is an entry, not a node.  You're dereferencing a pointer to
-> a folio as if it's a pointer to a node, so no wonder it looks corrupted
-> to you.  From this, we know that the folio is at least order-6, and it's
-> probably order-9 (because I bet this VMA has the VM_HUGEPAGE flag set,
-> and we're doing PMD-sized faults).
-> 
+However, the check for 'if (__vma_private_lock(vma))' was dropped.
 
-Indeed, entry[2] is a entry instead of a node, deferencing a folio.
-bpftrace was used to dump the xarray. you're correct that the VMA has
-flag VM_HUGEPAGE, set by madvise(MADV_HUGEPAGE). The order returned by
-xas_get_order() is 13, passed to xas_split_alloc().
+> @@ -345,6 +372,11 @@ static void __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma)
+>  		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
+>  
+>  		__hugetlb_vma_unlock_write_put(vma_lock);
+> +	} else {
+> +		struct resv_map *resv_map = vma_resv_map(vma);
+> +
+> +		/* no free for anon vmas, but still need to unlock */
+> +		up_write(&resv_map->rw_sema);
+>  	}
+>  }
 
-/*
-  * xas->xa_shift    = 0
-  * XA_CHUNK_SHIFT   = 6
-  * order            = 13      (512MB huge page size vs 64KB base page size)
-  */
-void xas_split_alloc(struct xa_state *xas, void *entry, unsigned int order,
-                 gfp_t gfp)
-{
-         unsigned int sibs = (1 << (order % XA_CHUNK_SHIFT)) - 1;
-         unsigned int mask = xas->xa_sibs;
+So, the map_high_truncate_2 (2M: 32) libhugetlbfs test still BUGs with:
 
-         /* XXX: no support for splitting really large entries yet */
-         if (WARN_ON(xas->xa_shift + 2 * XA_CHUNK_SHIFT < order))
-                 goto nomem;
-         :
-}
-
-I've shared a simplified reproducer in another reply. In that reproducer,
-we just run a program in a memroy cgroup, where the memory space is limited.
-The program mimics what QEMU does. The similar backtrace can be seen.
-
-Thanks,
-Gavin
-
+BUG: kernel NULL pointer dereference
+-- 
+Mike Kravetz
