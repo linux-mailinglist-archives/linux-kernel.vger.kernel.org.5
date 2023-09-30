@@ -2,95 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EBB7B3FB4
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:31:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF47E7B3FB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 11:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233991AbjI3Jbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 05:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
+        id S233996AbjI3JhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 05:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233926AbjI3Jbw (ORCPT
+        with ESMTP id S233926AbjI3JhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 05:31:52 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6764DD;
-        Sat, 30 Sep 2023 02:31:48 -0700 (PDT)
-X-QQ-mid: bizesmtp80t1696066296thr4pjsz
-Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 30 Sep 2023 17:31:33 +0800 (CST)
-X-QQ-SSF: 01200000000000B06000000A0000000
-X-QQ-FEAT: znfcQSa1hKbcYxqfol5fP9hy+d5iapd9bWXb81pkq2JorFRHt2ASdRq962bXO
-        Eyl4InpEH2CpYAFUV9l2NYqPU+ovjnAGXlV6VuKPT6l5hIoGbwACL65IFYfcAOI9R5vxSxh
-        ZVK2QI8L8KAdq3fCDHpMUKqg5zwNrhJUoqciQm/r0agtEM+FpE3cQOMFpaybcCKzl0E4XwZ
-        9z4sDnmlMVDXzTD5KCn1+nfGuufGJHuDtn28ZndGAGAbYBESgzNcHQM4gRGtRIqZuNd1nW1
-        fMB4ZZVjW7hiEYljO5IhyEo5/GJCihu7WTCh7i2Ah7wj3qRXX4Mzy/96toY/0Q8o16OgfJV
-        7p7T0l6pCJRY2QycXGEvTE4JwG19BRfLV6CaVq6Zbm9SizxlAc=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 15485949091047528839
-From:   Yuan Tan <tanyuan@tinylab.org>
-To:     falcon@tinylab.org
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux@weissschuh.net, palmer@rivosinc.com,
-        paul.walmsley@sifive.com, paulburton@kernel.org,
-        paulmck@kernel.org, tim.bird@sony.com, tsbogend@alpha.franken.de,
-        w@1wt.eu
-Subject: Re: [PATCH v1 0/7] DCE/DSE: Add Dead Syscalls Elimination support, part1
-Date:   Sat, 30 Sep 2023 17:31:32 +0800
-Message-Id: <20230930093132.2166-1-tanyuan@tinylab.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1695679700.git.falcon@tinylab.org>
-References: <cover.1695679700.git.falcon@tinylab.org>
+        Sat, 30 Sep 2023 05:37:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC01113;
+        Sat, 30 Sep 2023 02:37:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FA46C433C7;
+        Sat, 30 Sep 2023 09:37:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696066634;
+        bh=rMgXv2Vv3/9BKtG3DmJ+10rtoeky76HNbtM+rTF2Z/U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=twVrfwGZpZk3CM7LqwVSVbQAPX9v01GBcCpodDEziI0b5RbnUZMFtTw3jwCApEMT6
+         OSMPrsOx9SBJXKBYvOAZsRe9CPtBv9A8XnglmkgRqnj30rMDWvelWOYiaKaTlRfWoN
+         wGp2CuolBVqnReJ7NR5A0N/YM830shoTS/flknbAYE/g+M5aj0iWBosywARuiEbGiv
+         FiyB+rRye7NjVXvlbNqOelJmiasV3sOedXvMkqmrfxRTtj2bO7/YwOFGNyEiPHuQ+S
+         rWnbx0xs1o3eSGohl6kM5A3Oc4unUh9z9m4ZUI1WjWbQ9wX5aLJf7HQDETyjFhygu0
+         Tok+FNAntkVEg==
+Date:   Sat, 30 Sep 2023 10:37:09 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Ivan Mikhaylov <fr0st61te@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: adc: provide max34408/9 device tree
+ binding document
+Message-ID: <20230930-lusty-antihero-f381434ab682@spud>
+References: <20230929200844.23316-1-fr0st61te@gmail.com>
+ <20230929200844.23316-2-fr0st61te@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: Yes, score=6.1 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_PBL,RCVD_IN_SBL_CSS,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="i1g3ldoWAaPljqK2"
+Content-Disposition: inline
+In-Reply-To: <20230929200844.23316-2-fr0st61te@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [43.154.54.12 listed in list.dnswl.org]
-        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        *  3.3 RCVD_IN_PBL RBL: Received via a relay in Spamhaus PBL
-        *      [43.154.54.12 listed in zen.spamhaus.org]
-        *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [43.154.54.12 listed in bl.score.senderscore.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-X-Spam-Level: ******
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I don't know why linux-kernel@vger.kernel.org reject my email send out by
-thunderbird. So here I am resending this mail with git send-email.
 
-Here is a test result about DEAD_CODE_DATA_ELIMINATION (DCE) and dead syscalls
-elimination (DSE). It's based on config[1] and a simple hello.c initramfs.
+--i1g3ldoWAaPljqK2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In the DSE test, we set CONFIG_SYSCALLS_USED="sys_write sys_exit
-sys_reboot," which is used by hello.c to simply print "Hello" then exit
-and shut down qemu.
+Hey,
 
+On Fri, Sep 29, 2023 at 11:08:43PM +0300, Ivan Mikhaylov wrote:
+> The hardware binding for i2c current monitoring device with overcurrent
+> control.
+>=20
+> Signed-off-by: Ivan Mikhaylov <fr0st61te@gmail.com>
+> ---
+>  .../bindings/iio/adc/maxim,max34408.yaml      | 101 ++++++++++++++++++
+>  1 file changed, 101 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/maxim,max34=
+408.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yam=
+l b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
+> new file mode 100644
+> index 000000000000..cdf89fa4c80e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/maxim,max34408.yaml
+> @@ -0,0 +1,101 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/adc/maxim,max34408.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Two- and four-channel current monitors with overcurrent control
+> +
+> +maintainers:
+> +  - Ivan Mikhaylov <fr0st61te@gmail.com>
+> +
+> +description: |
+> +  The MAX34408/MAX34409 are two- and four-channel current monitors that =
+are
+> +  configured and monitored with a standard I2C/SMBus serial interface. E=
+ach
+> +  unidirectional current sensor offers precision high-side operation wit=
+h a
+> +  low full-scale sense voltage. The devices automatically sequence throu=
+gh
+> +  two or four channels and collect the current-sense samples and average=
+ them
+> +  to reduce the effect of impulse noise. The raw ADC samples are compare=
+d to
+> +  user-programmable digital thresholds to indicate overcurrent condition=
+s.
+> +  Overcurrent conditions trigger a hardware output to provide an immedia=
+te
+> +  indication to shut down any necessary external circuitry.
+> +
+> +  Specifications about the devices can be found at:
+> +  https://www.analog.com/media/en/technical-documentation/data-sheets/MA=
+X34408-MAX34409.pdf
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - maxim,max34408
+> +      - maxim,max34409
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  maxim,input1-rsense-val-micro-ohms:
+> +    description:
+> +      Adjust the Rsense value to monitor higher or lower current levels =
+for
+> +      input 1.
+> +    enum: [250, 500, 1000, 5000, 10000, 50000, 100000, 200000, 500000]
+> +    default: 1000
+> +
+> +  maxim,input2-rsense-val-micro-ohms:
+> +    description:
+> +      Adjust the Rsense value to monitor higher or lower current levels =
+for
+> +      input 2.
+> +    enum: [250, 500, 1000, 5000, 10000, 50000, 100000, 200000, 500000]
+> +    default: 1000
+> +
+> +  maxim,input3-rsense-val-micro-ohms:
+> +    description:
+> +      Adjust the Rsense value to monitor higher or lower current levels =
+for
+> +      input 3.
+> +    enum: [250, 500, 1000, 5000, 10000, 50000, 100000, 200000, 500000]
+> +    default: 1000
+> +
+> +  maxim,input4-rsense-val-micro-ohms:
+> +    description:
+> +      Adjust the Rsense value to monitor higher or lower current levels =
+for
+> +      input 4.
+> +    enum: [250, 500, 1000, 5000, 10000, 50000, 100000, 200000, 500000]
+> +    default: 1000
 
-|                                    | syscall remain | vmlinux size     | vmlinux after strip |
-| ---------------------------------- | -------------- | ---------------- | ------------------- |
-| disable DCE                        | 236            | 2559632          | 1963400             |
-| enable DCE                         | 208            | 2037384 (-20.4%) | 1485776 (-24.3%)    |
-| enable DCE and DSE(SHE_GROUP)      | 3              | 1856640 (-27.6%) | 1354424 (-31.0%)    |
-| enable DCE and DSE(SHE_LINK_ORDER) | 3              | 1856664 (-27.6%) | 1354424 (-31.0%)    |
+Having 4 almost identical properties makes it seem like this should have
+some channel nodes, each containing an rsense-micro-ohms type property.
 
-It shows that dead syscalls elimination can save 7% of space based on DCE.
+> +
+> +  maxim,shtdn:
+> +    description:
+> +      Shutdown Output. Open-drain output. This output transitions to hig=
+h impedance
+> +      when any of the digital comparator thresholds are exceeded as long=
+ as the ENA
+> +      pin is high.
+> +    type: boolean
 
-[1]: https://pastebin.com/KG4fd7aT
+I don't understand what this property is used for. The description here,
+and below for "ena", read like they are the descriptions in the
+datasheet for the pin, rather than how to use the property.
 
+The drivers don't appear to contain users either - what is the point of
+these properties?
+
+> +
+> +  maxim,ena:
+> +    description:
+> +      SHTDN Enable Input. CMOS digital input. Connect to GND to clear th=
+e latch and
+> +      unconditionally deassert (force low) the SHTDN output and reset th=
+e shutdown
+> +      delay. Connect to VDD to enable normal latch operation of the SHTD=
+N output.
+> +    type: boolean
+> +
+> +  supply-vdd: true
+
+As pointed out by the bot, this is not correct. You need to use a
+-supply affix, not a supply-prefix.
+
+Thanks,
+Conor.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    i2c {
+> +
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        adc@1e {
+> +              compatible =3D "maxim,max34409";
+> +              reg =3D <0x1e>;
+> +              maxim,input1-rsense-val-micro-ohms =3D <5000>;
+> +              maxim,input2-rsense-val-micro-ohms =3D <10000>;
+> +        };
+> +    };
+> --=20
+> 2.42.0
+>
+
+--i1g3ldoWAaPljqK2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRfsRQAKCRB4tDGHoIJi
+0oeAAQDQttcTT6GshSw1wrxl9oLiBVnxhULkmPTWb8kZwpfvNAD/RmjnCRGHPpep
+VGRT7//tCpquneArjV/Q94S2/RQ8RA0=
+=EWZj
+-----END PGP SIGNATURE-----
+
+--i1g3ldoWAaPljqK2--
