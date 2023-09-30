@@ -2,337 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 574FD7B4199
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 17:29:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 705617B419C
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 17:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234439AbjI3P3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 11:29:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47700 "EHLO
+        id S234444AbjI3P3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 11:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234403AbjI3P3M (ORCPT
+        with ESMTP id S234438AbjI3P3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 11:29:12 -0400
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D94BE;
-        Sat, 30 Sep 2023 08:29:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1696087745; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=I0QWIsXLJ6R0JF1fTd16hMOAf1rLeCt6KnbulbQT0Hi6caHfG5q24UD4Ygf8TZ3/fz
-    VxckiA0yBkHj3tAZIQHXjnEYyf8nbZZ3DHj5VFVwpQfNJK9Yj+8Hc/nTfDe+TnxIQAKT
-    r1gHcoRrBp+QyeOINklG7J2EQbEUlYlDlS4HZvSEvOj252cYTSNt6PA8ZTTyOYS5GmqW
-    EoRn5+lZPLbi+EigyEOrq5boza7xSq6FxGuLldye/CPabUmoqytKd6maPIdbtqqFddRL
-    NzVaOhoqQomgtiuYjgG+4SnEEjvNB1M5NNdTQCNkZl08hBfvG3k5yZ9EAGcu9khPqugl
-    sbKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1696087745;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Ix09YzWH8S3gStr0pJ5Dfn8yz393MkdSkVsPuVfWquQ=;
-    b=NftcBeB2r34qOOcz5AKpKD7tmYTXt+Vs/RGV4GOzcLOBTmJ2MlJaWTUHSr+rwndaNh
-    zDPK1QGcByoht1/okJh6gvgDIvEkiYV8GdMiF73+Q2sK1/aOJhEkc46wYax9UFJN5rqa
-    EtI0o6NO9haPKSrwdVHF0ShIHiIgWvmET64jVVcYwODp734VmVqAXAPsmGIb5aLNbvNu
-    utA2udauxFhjUf/0go2EY5vz1aq8lqOm4oVOw/am4WOmtZM82Pk9BfwR8WhoFAas25hw
-    yxrphCLOo+m+4zWwquhAxuqDxelWyhEHSHSI8KquZMZRZ1twTV2cGvqKpD0VNczzHQPn
-    Y8yA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1696087745;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Ix09YzWH8S3gStr0pJ5Dfn8yz393MkdSkVsPuVfWquQ=;
-    b=rzESUc0BvZGFfLq4qxlyEhscQtZuz4VQex7skFEExVHbHV+IxiNJhZB3Y23DQmPXB4
-    BPSpv9m8ms/YXY2aGAel8OMByAePIwdl0MJ87MrwXeVDOBuyg3VfAsQALDydhLZiJROQ
-    ObnfhkjMwp8mBbBMNT2qz2yjakX1oj/E38opfPO5tHMRCE/BddqI0A84IGndbpDO6xcQ
-    gzqsYDgn3AM5JyPldkIQXL0+Ja8t0brRMchuinYKMzLAEQCPn1D9PC89tU9Bspirlbfr
-    bjLETpWZJe0L45C295xgnAyZhXpx858O2fPZXQgN3XCrRSSbfOsn/omdBdADSdM508E9
-    sxlg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1696087745;
-    s=strato-dkim-0003; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=Ix09YzWH8S3gStr0pJ5Dfn8yz393MkdSkVsPuVfWquQ=;
-    b=YQ/rwi1dY7HzVX/VgBzioSSZTNFI+p63x0KFn7t1zOGrLMqjEWwqhltzY1whE0RgWE
-    Op2Rr1pT6lZ2McUSxwBQ==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u261EJF5OxJD4peA8paF1A=="
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 49.8.2 DYNA|AUTH)
-    with ESMTPSA id R04c57z8UFT5tX4
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Sat, 30 Sep 2023 17:29:05 +0200 (CEST)
-Date:   Sat, 30 Sep 2023 17:28:57 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Jeff LaBundy <jeff@labundy.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Sat, 30 Sep 2023 11:29:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1101F1;
+        Sat, 30 Sep 2023 08:29:19 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 302B1C433C8;
+        Sat, 30 Sep 2023 15:29:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696087759;
+        bh=R5UtWysv7jm9JER93LbioIFgqN17rbuLlhw7fAJgia0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lkx+2xmL/pceqmuXnxse2igy7L0rhRxT7w8HLgZVpS+NfRiBY61CWjZIGkpsmrY8W
+         1A5NbRHuvF+bDVtkZj9EE1+M0vVK5e6+kHocqxEiH4bR4zCjN4irC+oeULkb9EDbqS
+         PNDRDnW2QuwqloR8ddyKbPjix7lRG4JT8t4Cwf5kWSwidA9TyBjNqu/D5sHAqMrhHP
+         ejhHh6entrjK2YkiTO29fRd+l3qIeyShfzJIkyCRN37G+rC7TrJ5qbOWRACboJpKWH
+         FG9dH3vOXczCTC94mwE/I8mPkXKTWDARfm87nXEybtSS9fmw9g+UQQAtDhZ1LK87ew
+         LS1LPylsLBpBQ==
+Date:   Sat, 30 Sep 2023 16:29:17 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     David Lechner <dlechner@baylibre.com>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        David Lechner <david@lechnology.com>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jonathan Albrieux <jonathan.albrieux@gmail.com>
-Subject: Re: [PATCH 2/2] Input: add Himax HX852x(ES) touchscreen driver
-Message-ID: <ZRg-uZskk07jxup0@gerhold.net>
-References: <20230913-hx852x-v1-0-9c1ebff536eb@gerhold.net>
- <20230913-hx852x-v1-2-9c1ebff536eb@gerhold.net>
- <ZQYUe46/rj8jqNvg@nixie71>
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 21/27] staging: iio: resolver: ad2s1210: convert LOT
+ threshold attrs to event attrs
+Message-ID: <20230930162917.7e289f77@jic23-huawei>
+In-Reply-To: <20230929-ad2s1210-mainline-v3-21-fa4364281745@baylibre.com>
+References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
+        <20230929-ad2s1210-mainline-v3-21-fa4364281745@baylibre.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZQYUe46/rj8jqNvg@nixie71>
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeff,
+On Fri, 29 Sep 2023 12:23:26 -0500
+David Lechner <dlechner@baylibre.com> wrote:
 
-On Sat, Sep 16, 2023 at 03:47:55PM -0500, Jeff LaBundy wrote:
-> On Wed, Sep 13, 2023 at 03:25:30PM +0200, Stephan Gerhold wrote:
-> > From: Jonathan Albrieux <jonathan.albrieux@gmail.com>
-> > 
-> > Add a simple driver for the Himax HX852x(ES) touch panel controller,
-> > with support for multi-touch and capacitive touch keys.
-> > 
-> > The driver is somewhat based on sample code from Himax. However, that
-> > code was so extremely confusing that we spent a significant amount of
-> > time just trying to understand the packet format and register commands.
-> > In this driver they are described with clean structs and defines rather
-> > than lots of magic numbers and offset calculations.
-> > 
-> > Signed-off-by: Jonathan Albrieux <jonathan.albrieux@gmail.com>
-> > Co-developed-by: Stephan Gerhold <stephan@gerhold.net>
-> > Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-> > ---
-> >  MAINTAINERS                              |   7 +
-> >  drivers/input/touchscreen/Kconfig        |  10 +
-> >  drivers/input/touchscreen/Makefile       |   1 +
-> >  drivers/input/touchscreen/himax_hx852x.c | 491 +++++++++++++++++++++++++++++++
-> >  4 files changed, 509 insertions(+)
-> > 
-> > [...]
-> > diff --git a/drivers/input/touchscreen/Makefile b/drivers/input/touchscreen/Makefile
-> > index 62bd24f3ac8e..f42a87faa86c 100644
-> > --- a/drivers/input/touchscreen/Makefile
-> > +++ b/drivers/input/touchscreen/Makefile
-> > @@ -48,6 +48,7 @@ obj-$(CONFIG_TOUCHSCREEN_EXC3000)	+= exc3000.o
-> >  obj-$(CONFIG_TOUCHSCREEN_FUJITSU)	+= fujitsu_ts.o
-> >  obj-$(CONFIG_TOUCHSCREEN_GOODIX)	+= goodix_ts.o
-> >  obj-$(CONFIG_TOUCHSCREEN_HIDEEP)	+= hideep.o
-> > +obj-$(CONFIG_TOUCHSCREEN_HIMAX_HX852X)	+= himax_hx852x.o
-> >  obj-$(CONFIG_TOUCHSCREEN_HYNITRON_CSTXXX)	+= hynitron_cstxxx.o
-> >  obj-$(CONFIG_TOUCHSCREEN_ILI210X)	+= ili210x.o
-> >  obj-$(CONFIG_TOUCHSCREEN_ILITEK)	+= ilitek_ts_i2c.o
-> > diff --git a/drivers/input/touchscreen/himax_hx852x.c b/drivers/input/touchscreen/himax_hx852x.c
-> > new file mode 100644
-> > index 000000000000..31616dcfc5ab
-> > --- /dev/null
-> > +++ b/drivers/input/touchscreen/himax_hx852x.c
-> > @@ -0,0 +1,491 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Himax HX852x(ES) Touchscreen Driver
-> > + * Copyright (c) 2020-2023 Stephan Gerhold <stephan@gerhold.net>
-> > + * Copyright (c) 2020 Jonathan Albrieux <jonathan.albrieux@gmail.com>
-> > + *
-> > + * Based on the Himax Android Driver Sample Code Ver 0.3 for HMX852xES chipset:
-> > + * Copyright (c) 2014 Himax Corporation.
-> > + */
-> > +
-> > +#include <asm/unaligned.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/gpio/consumer.h>
-> > +#include <linux/i2c.h>
-> > +#include <linux/input.h>
-> > +#include <linux/input/mt.h>
-> > +#include <linux/input/touchscreen.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
+> From: David Lechner <david@lechnology.com>
 > 
-> Please explicitly #include of_device.h.
+> From: David Lechner <dlechner@baylibre.com>
 > 
+> The AD2S1210 monitors the internal error signal (difference between
+> estimated angle and measured angle) to determine a loss of position
+> tracking (LOT) condition. When the error value exceeds a threshold, a
+> fault is triggered. This threshold is user-configurable.
+> 
+> This patch converts the custom lot_high_thrd and lot_low_thrd attributes
+> in the ad2s1210 driver to standard event attributes. This will allow
+> tooling to be able to expose these in a generic way.
+> 
+> Since the low threshold determines the hysteresis, it requires some
+> special handling to expose the difference between the high and low
+> register values as the hysteresis instead of exposing the low register
+> value directly.
+> 
+> The attributes also return the values in radians now as required by the
+> ABI.
+> 
+> Actually emitting the fault event will be done in a later patch.
+> 
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> ---
 
-In v2 I have added linux/of.h and linux/mod_devicetable.h, since I'm
-actually using definitions from these two only. Seems like including
-of_device.h is discouraged nowadays, see commit dbce1a7d5dce ("Input:
-Explicitly include correct DT includes").
+A style comment inline. Otherwise this an any patches before it I skipped
+commenting on look fine to me.
 
-> > [...]
-> > +static void hx852x_stop(struct hx852x *hx)
-> > +{
-> > +	struct device *dev = &hx->client->dev;
-> > +	int error;
-> > +
-> > +	error = i2c_smbus_write_byte(hx->client, HX852X_TS_SENSE_OFF);
-> > +	if (error)
-> > +		dev_err(dev, "failed to send TS_SENSE_OFF: %d\n", error);
-> 
-> Granted the function is of void type, should we not still return if there
-> is an error?
-> 
-> Actually, I would still keep this function as an int for future re-use, even
-> though hx852x_input_close() simply ignores the value. This way, the return
-> value can be propagated to the return value of hx852x_suspend() and elsewhere.
-> 
-> > +
-> > +	msleep(20);
-> > +
-> > +	error = i2c_smbus_write_byte(hx->client, HX852X_TS_SLEEP_IN);
-> > +	if (error)
-> > +		dev_err(dev, "failed to send TS_SLEEP_IN: %d\n", error);
-> 
-> Same here; no need to sleep following a register write that seemingly did
-> not happen.
-> 
-> > +
-> > +	msleep(30);
-> > +}
-> > +
-> > +static void hx852x_power_off(struct hx852x *hx)
-> > +{
-> > +	struct device *dev = &hx->client->dev;
-> > +	int error;
-> > +
-> > +	error = regulator_bulk_disable(ARRAY_SIZE(hx->supplies), hx->supplies);
-> > +	if (error)
-> > +		dev_err(dev, "failed to disable regulators: %d\n", error);
-> > +}
-> 
-> Same comment with regard to function type; it's nice for internal helpers
-> to be of type int, even if the core callback using it is void.
-> 
-> > +
-> > +static int hx852x_read_config(struct hx852x *hx)
-> > +{
-> > +	struct device *dev = &hx->client->dev;
-> > +	struct hx852x_config conf = {0};
-> > +	int x_res, y_res;
-> > +	int error;
-> > +
-> > +	error = hx852x_power_on(hx);
-> > +	if (error)
-> > +		return error;
-> > +
-> > +	/* Sensing must be turned on briefly to load the config */
-> > +	error = hx852x_start(hx);
-> > +	if (error)
-> > +		goto power_off;
-> > +
-> > +	hx852x_stop(hx);
-> 
-> See my earlier comment about promoting this function's type to int.
-> 
-> > +
-> > +	error = i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH,
-> > +					  HX852X_SRAM_SWITCH_TEST_MODE);
-> > +	if (error)
-> > +		goto power_off;
-> > +
-> > +	error = i2c_smbus_write_word_data(hx->client, HX852X_REG_SRAM_ADDR,
-> > +					  HX852X_SRAM_ADDR_CONFIG);
-> > +	if (error)
-> > +		goto exit_test_mode;
-> > +
-> > +	error = hx852x_i2c_read(hx, HX852X_REG_FLASH_RPLACE, &conf, sizeof(conf));
-> > +	if (error)
-> > +		goto exit_test_mode;
-> > +
-> > +	x_res = be16_to_cpu(conf.x_res);
-> > +	y_res = be16_to_cpu(conf.y_res);
-> > +	hx->max_fingers = (conf.max_pt & 0xf0) >> 4;
-> > +	dev_dbg(dev, "x res: %d, y res: %d, max fingers: %d\n",
-> > +		x_res, y_res, hx->max_fingers);
-> > +
-> > +	if (hx->max_fingers > HX852X_MAX_FINGERS) {
-> > +		dev_err(dev, "max supported fingers: %d, found: %d\n",
-> > +			HX852X_MAX_FINGERS, hx->max_fingers);
-> > +		error = -EINVAL;
-> > +		goto exit_test_mode;
-> > +	}
-> > +
-> > +	if (x_res && y_res) {
-> > +		input_set_abs_params(hx->input_dev, ABS_MT_POSITION_X, 0, x_res - 1, 0, 0);
-> > +		input_set_abs_params(hx->input_dev, ABS_MT_POSITION_Y, 0, y_res - 1, 0, 0);
-> > +	}
-> > +
-> > +exit_test_mode:
-> > +	i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH, 0);
-> 
-> Nit: it would still be nice to preserve as many return values as possible, perhaps
-> as follows:
-> 
-> +exit_test_mode:
-> 	error = i2c_smbus_write_byte_data(...) ? : error;
-> 
-> > +power_off:
-> > +	hx852x_power_off(hx);
-> > +	return error;
-> 
-> Similarly, with hx852x_power_off() being promoted to int as suggested above,
-> this could be:
-> 
-> 	return hx852x_power_off(...) ? : error;
-> 
-> There are other idiomatic ways to do the same thing based on your preference.
-> Another (perhaps more clear) option would be to move some of these test mode
-> functions into a helper, which would also avoid some goto statements.
-> 
 
-I played with this for a bit. A problem of the "? : error" approach is
-that it hides the original error in case the new calls error again.
+> +
+> +static int ad2s1210_get_lot_low_threshold(struct ad2s1210_state *st,
+> +					  int *val, int *val2)
+> +{
+> +	unsigned int high_reg_val, low_reg_val;
+> +	int ret;
+> +
+> +	mutex_lock(&st->lock);
+> +	ret = regmap_read(st->regmap, AD2S1210_REG_LOT_HIGH_THRD, &high_reg_val);
+> +	if (ret < 0)
+> +		goto error_ret;
+> +
+> +	ret = regmap_read(st->regmap, AD2S1210_REG_LOT_LOW_THRD, &low_reg_val);
+> +
+A separate error path is going to be easier to read.
 
-Let's assume
+	return IIO_VAL_INT_PLUS_MICRO;
 
-	error = hx852x_start(hx);
-	if (error)
-		goto power_off;
+error_ret:
+	mutex_unlock(&st->lock);
 
-fails with error = -ENXIO. We jump to power_off:
+	return ret;
 
-power_off:
-	return hx852x_power_off(hx) ? : error;
+Of make use of the new stuff in cleanup.h etc.  something like.
 
-Let's say for whatever reason hx852x_power_off() fails too but returns
--EINVAL. Then the final return value will be -EINVAL, while with the
-current approach in this patch it would return the original cause
-(-ENXIO). I think that's more clear.
+	scoped_guard(mutex)(&st->lock) {
+		ret = regmap_read(st->regmap, ...)
+		if (ret)
+			return ret;
 
-I also played with moving code to a separate function to avoid the
-gotos, but I feel like that makes the fairly focused logic of this
-function (reading the configuration by temporarily entering the test
-mode) just more confusing.
+		ret = regmap_read(...)
+		if (ret)
+			return ret;
+	}
+	
+	/* sysfs value is hysteresis rather than actual low value */
 
-To still fix the error handling I ended up with duplicating the
-"success" code path and the "error" code path (it's just two function
-calls), i.e.:
+In general you could make could use o
+guard(mutex)(&st->lock);
+in the other functions where  you hold the lock to the end of the function.
 
-	error = i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH, 0);
-	if (error)
-		goto err_power_off;
+Could do that as a follow on patch though and as that stuff is all
+very new, I'm not going to mind if you don't want to use it at all and
+just use the approach above.
 
-	return hx852x_power_off(hx);
+> +error_ret:
+> +	mutex_unlock(&st->lock);
+> +
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* sysfs value is hysteresis rather than actual low value */
+> +	*val = 0;
+> +	*val2 = (high_reg_val - low_reg_val) *
+> +		ad2s1210_lot_threshold_urad_per_lsb[st->resolution];
+> +	return IIO_VAL_INT_PLUS_MICRO;
+> +}
+> +
+> +static int ad2s1210_set_lot_low_threshold(struct ad2s1210_state *st,
+> +					  int val, int val2)
+> +{
+> +	unsigned int reg_val, hysteresis;
+> +	int ret;
+> +
+> +	/* all valid values are between 0 and pi/4 radians */
+> +	if (val != 0)
+> +		return -EINVAL;
+> +
+> +	hysteresis = val2 / ad2s1210_lot_threshold_urad_per_lsb[st->resolution];
+> +
+> +	mutex_lock(&st->lock);
+> +	ret = regmap_read(st->regmap, AD2S1210_REG_LOT_HIGH_THRD, &reg_val);
+> +	if (ret < 0)
+> +		goto error_ret;
+> +
+> +	ret = regmap_write(st->regmap, AD2S1210_REG_LOT_LOW_THRD,
+> +			   reg_val - hysteresis);
+> +
+> +error_ret:
+> +	mutex_unlock(&st->lock);
+> +
+> +	return ret;
+> +}
+>
 
-err_test_mode:
-	i2c_smbus_write_byte_data(hx->client, HX852X_REG_SRAM_SWITCH, 0);
-err_power_off:
-	hx852x_power_off(hx);
-	return error;
-
-I hope that's fine too. A bit ugly maybe but in this case I would prefer
-having the main code path (reading the configuration) clearly readable.
-
-Let me know if you have a better suggestion for these (I'll send v2 in a
-bit so that you can see the full diff there).
-
-Thanks!
-Stephan
