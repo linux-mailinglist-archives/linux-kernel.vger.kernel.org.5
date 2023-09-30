@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E56237B4393
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 22:34:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E44CD7B4397
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 22:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231202AbjI3Uen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 16:34:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40248 "EHLO
+        id S231551AbjI3Ufm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 16:35:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjI3Uel (ORCPT
+        with ESMTP id S231124AbjI3Ufl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 16:34:41 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFD7C4;
-        Sat, 30 Sep 2023 13:34:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C03ABC433C9;
-        Sat, 30 Sep 2023 20:34:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696106071;
-        bh=WBx4sFK18Fvo2S9P2auh13kr8VRYgzO7eZmEq+kqyWo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=j1nqOqtt6jC1dwe86YXIZVFQZsG2VmabaoizcZO21AvbJ1GyOBSwJhPE2j2eioK0T
-         BH3jsQxXJG7ekz5TgA5O5JTiWcZSMFvHpbT+wcAKNd5Wl64NqMBCso7diExqTAe/ws
-         xZ792XGOnFE1xHUcIEGrbfK+/pjJolhA777/W13okG7w/HSFHgK6k7md2x1HuwVPMz
-         82/OwS1gcm9EPH1hDPCSNOp/M7q0vptm5oiZWB0sLmX+qdbKguY1tLFkMFt6lqTXWj
-         c/UD9AIokH4NhelkduRGDgQ5pJ9sDjae8g73/4whKzCSFuoU45UND29AfVz5DjmRFE
-         wFxRSd5s/mmlg==
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6c4bad60a1aso6904636a34.2;
-        Sat, 30 Sep 2023 13:34:31 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzeBMIIawbyWIqXo4YC/tcKvWQSV/s6+GyTmJ+9M7j+6EkPlGS/
-        6iVyMddMrCJwQAXS7OG8BD6dLhYIJ19+VHtobNM=
-X-Google-Smtp-Source: AGHT+IHrXBSzbwXTQkT3E30hfUQzyDv378uXN61B0R/8LnQAs5ioVJp/xHOUWBfyHzX9U7bIpOu33vkZBhijouDtbXs=
-X-Received: by 2002:a05:6870:611f:b0:1be:e6d6:15c4 with SMTP id
- s31-20020a056870611f00b001bee6d615c4mr8149346oae.9.1696106071106; Sat, 30 Sep
- 2023 13:34:31 -0700 (PDT)
+        Sat, 30 Sep 2023 16:35:41 -0400
+Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E9D4DD
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 13:35:39 -0700 (PDT)
+Received: by mail-oo1-xc41.google.com with SMTP id 006d021491bc7-57bab8676f9so5842483eaf.3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 13:35:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696106138; x=1696710938; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=q9xYfZBQImKsyGrauSkx40CmvbMShT//GSfSxiyP5zE=;
+        b=Ye1YXWGhPBAEgxH8F7NwQJfHX5pchAHb9kgSKo+qBWuvEkdXpVJPqa7RpnmHnCef0w
+         6ApazzzAQJ29LS1KLjHDUU1Yoozz8lvzbwj+VdNf8TkWvjh0B6z/3NMZeSaaFCRDH9im
+         ts+YC8WjjISa8Rg46ZbZJWa277QGHiZdrUX+4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696106138; x=1696710938;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q9xYfZBQImKsyGrauSkx40CmvbMShT//GSfSxiyP5zE=;
+        b=eAG/yJwSVyYqj0hKVLLSXxVVnoHaDkbFe+DDUz6yscQ8cZgV51iv8CAycNYMp0iugz
+         nAbeAJ+9YyHBrzV58uuMFnBCs6CP0155YYlZZv4J4wKxRBeU0nmkRG8SfruTn+T0bulj
+         z3qKiXeC/2sV9sTzJ2eEapp98JRG/4hiLZu8y4LZHRacFbRnw/VYecmhaT4yqO6bWKW5
+         4Zi2sCK32H5uPkjzigp1FKcE7aok7iorovYRaQsu0cdhj+CwbqvVVKJLfbG2ShotlrH1
+         cn8krYARORlRlnwK733nE+w4fhB6ahnpQOp8iu18Qf6f7a8ESbM6B2tYJZFfg7vKDJkK
+         9FIA==
+X-Gm-Message-State: AOJu0YwhKLgoSmsLlhXzt/NVaAXZLsEv/mBjBUUutALSC27IBMCv3dW6
+        ajFfUb/1fVaOmTzDEcH0HlH6cQ==
+X-Google-Smtp-Source: AGHT+IES6FCR6Oc6pFQSlN7yRWa0cm//27qrbGfY1PvU67WmpoTEAmenT310bfviix1NiTa1MWHqJQ==
+X-Received: by 2002:a05:6358:718b:b0:143:7a89:a8e8 with SMTP id t11-20020a056358718b00b001437a89a8e8mr8441521rwt.10.1696106138275;
+        Sat, 30 Sep 2023 13:35:38 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t14-20020a056a0021ce00b0068bc461b68fsm16653273pfj.204.2023.09.30.13.35.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Sep 2023 13:35:37 -0700 (PDT)
+Date:   Sat, 30 Sep 2023 13:35:32 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     syzbot <syzbot+510dcbdc6befa1e6b2f6@syzkaller.appspotmail.com>
+Cc:     chandan.babu@oracle.com, david@fromorbit.com, djwong@kernel.org,
+        ebiggers@kernel.org, hch@lst.de, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        mukattreyee@gmail.com, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [xfs?] UBSAN: array-index-out-of-bounds in
+ xfs_attr3_leaf_add_work
+Message-ID: <202309301334.FA4D7752@keescook>
+References: <0000000000001c8edb05fe518644@google.com>
+ <0000000000003c16100606974653@google.com>
 MIME-Version: 1.0
-References: <20230930165204.2478282-1-u.kleine-koenig@pengutronix.de>
-In-Reply-To: <20230930165204.2478282-1-u.kleine-koenig@pengutronix.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 1 Oct 2023 05:33:54 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATyRg6Hc-fnTETERj-tdMFGaBDt0Fyhy9+jKCzAvzQ6Pg@mail.gmail.com>
-Message-ID: <CAK7LNATyRg6Hc-fnTETERj-tdMFGaBDt0Fyhy9+jKCzAvzQ6Pg@mail.gmail.com>
-Subject: Re: [PATCH v2] modpost: Don't let "driver"s reference .exit.*
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kbuild@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        James Clark <james.clark@arm.com>, kernel@pengutronix.de,
-        Leo Yan <leo.yan@linaro.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-arm-kernel@lists.infradead.org,
-        Mike Leach <mike.leach@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000003c16100606974653@google.com>
+X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 1, 2023 at 1:52=E2=80=AFAM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
-> Drivers must not reference functions marked with __exit as these likely
-> are not available when the code is built-in.
->
-> There are few creative offenders uncovered for example in ARCH=3Damd64
-> allmodconfig builds. So only trigger the section mismatch warning for
-> W=3D1 builds.
->
-> The dual rule that drivers must not reference .init.* is implemented
-> since commit 0db252452378 ("modpost: don't allow *driver to reference
-> .init.*") which however missed that .exit.* should be handled in the
-> same way.
->
-> Thanks to Masahiro Yamada and Arnd Bergmann who gave valuable hints to
-> find this improvement.
->
-> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
+On Sat, Sep 30, 2023 at 10:57:28AM -0700, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit a49bbce58ea90b14d4cb1d00681023a8606955f2
+> Author: Darrick J. Wong <djwong@kernel.org>
+> Date:   Mon Jul 10 16:12:20 2023 +0000
+> 
+>     xfs: convert flex-array declarations in xfs attr leaf blocks
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12eef28a680000
+> start commit:   f8566aa4f176 Merge tag 'x86-urgent-2023-07-01' of git://gi..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3f27fb02fc20d955
+> dashboard link: https://syzkaller.appspot.com/bug?extid=510dcbdc6befa1e6b2f6
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1652938f280000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14c10c40a80000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
 
+Yup, that tracks. :)
 
-Thanks.
+#syz fix: xfs: convert flex-array declarations in xfs attr leaf blocks
 
-If there is no objection from anybody, I will apply this
-to my fixes branch and send a pull request.
+-Kees
 
+> 
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-Then, I hope you (or somebody) will volunteer to fix broken drivers.
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+-- 
+Kees Cook
