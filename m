@@ -2,130 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A14817B4056
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 14:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91EC57B4046
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Sep 2023 14:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234221AbjI3MwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 08:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
+        id S231483AbjI3MnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 08:43:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234195AbjI3MwP (ORCPT
+        with ESMTP id S229559AbjI3Mm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 08:52:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F353CCE
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 05:52:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1781DC433C8;
-        Sat, 30 Sep 2023 12:52:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696078331;
-        bh=m/SQdPZRniU8V63PbNGJZepQgR0uVjC52GDULoPYhLA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pf9D5YxB+dW6I7uWNYpDr2vWwXsZm1pPALw4GYcxrH+LFwm9F5wXyYxQNxwy3ynzI
-         5nbINhGExdfhweHSgEgW6mJ3bcpoEjqLia2pNDTjPIzbCxI/G0m2ClbZb+4zD9W65H
-         TzeY2J/OOhZV4SBFmh2p5Ce276sc6Q3f+R+LoPqt0rnqAgoNd4/7a7bqey3r1m6KlG
-         vwPSCOyXja71/KsLWfS2dry6M7jig46j44vHDaLZqg/istRzl++TjDskaHuxXhIIkV
-         oD/sChwBPsfBAdN40+MtqKQJ4ItnSw+Yi9QDDWJjJgqXtSEHiSZysUOfuO/9Zj3a9b
-         djMEc8zmLsLcQ==
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Anup Patel <anup@brainfault.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org,
-        Inochi Amaoto <inochiama@outlook.com>, chao.wei@sophgo.com,
-        xiaoguang.xing@sophgo.com
-Subject: [PATCH 5/5] riscv: dts: sophgo: add Milk-V Duo board device tree
-Date:   Sat, 30 Sep 2023 20:39:37 +0800
-Message-Id: <20230930123937.1551-6-jszhang@kernel.org>
-X-Mailer: git-send-email 2.40.0
-In-Reply-To: <20230930123937.1551-1-jszhang@kernel.org>
-References: <20230930123937.1551-1-jszhang@kernel.org>
+        Sat, 30 Sep 2023 08:42:58 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E60DD;
+        Sat, 30 Sep 2023 05:42:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696077776; x=1727613776;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=5urvBY4emHp1M0EMsX37rukrChBkKlVneACQRGlJHCg=;
+  b=MJFemsHeRCujLTMxyIN8Im5xBg8CnoVyma3VIynarr3/iiQ2G+Z70D/3
+   WnkjO9AqJ1XfnAbNAHE6xJJ4Oo4w7sUbzJ3tIJN0isYYnFd8uf0sqZYPG
+   yV8Rf0stD0cJounF+PjGNSWHWPaa/nQAlMlCx/Mvh/9D1UP8cVUOMpK8g
+   TbkRGT6WHYLtt2gc5IM5vUGxUzBacpoJ4E34oeTLrleWTN3vvffGZJjRs
+   8bZqcIkZDvM8MeBN8xkcR4s8hNrCnLmaCxYrzXqENJYyrH3kLWR/2nHp8
+   X/QTyFM3AWL9daEVmcbGqd6OjJQfsFeAbnz4F9Voym7y0qaN4vPcNZBs3
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10848"; a="446602132"
+X-IronPort-AV: E=Sophos;i="6.03,190,1694761200"; 
+   d="scan'208";a="446602132"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2023 05:42:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10849"; a="997185450"
+X-IronPort-AV: E=Sophos;i="6.03,190,1694761200"; 
+   d="scan'208";a="997185450"
+Received: from spandruv-desk.jf.intel.com (HELO spandruv-desk.amr.corp.intel.com) ([10.54.75.14])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2023 05:42:55 -0700
+Message-ID: <72a2766bc7bb4f9d6b3d5f2ff114f0af1b6646a4.camel@linux.intel.com>
+Subject: Re: [PATCH 2/3] platform/x86: ISST : Check major minor version
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Date:   Sat, 30 Sep 2023 05:42:47 -0700
+In-Reply-To: <f82fcfc9-eb41-56cb-93e1-abf9cf7413@linux.intel.com>
+References: <20230925194338.966639-1-srinivas.pandruvada@linux.intel.com>
+         <20230925194338.966639-3-srinivas.pandruvada@linux.intel.com>
+         <f82fcfc9-eb41-56cb-93e1-abf9cf7413@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-3.fc36) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Milk-V Duo[1] board is an embedded development platform based on the
-CV1800B chip. Add minimal device tree files for the development board.
+On Fri, 2023-09-29 at 17:28 +0300, Ilpo J=C3=A4rvinen wrote:
+> On Mon, 25 Sep 2023, Srinivas Pandruvada wrote:
+>=20
+> > Parse major and minor version number from the version field. If
+> > there
+> > is a mismatch for major version, exit from further processing for
+> > that
+> > domain.
+> >=20
+> > If there is mismatch in minor version, driver continue to process
+> > with
+> > an error message.
+>=20
+> This sentence sounds odd.
+What is the suggestion here?
 
-Support basic uart drivers, so supports booting to a basic shell.
+>=20
+> > Minor version change doesn't change offsets and bit
+> > structures of TPMI fields.
+> >=20
+> > Signed-off-by: Srinivas Pandruvada
+> > <srinivas.pandruvada@linux.intel.com>
+> > ---
+> > =C2=A0.../x86/intel/speed_select_if/isst_tpmi_core.c=C2=A0=C2=A0 | 16
+> > ++++++++++++----
+> > =C2=A01 file changed, 12 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git
+> > a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
+> > b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
+> > index 63faa2ea8327..37f17e229419 100644
+> > --- a/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
+> > +++ b/drivers/platform/x86/intel/speed_select_if/isst_tpmi_core.c
+> > @@ -30,7 +30,8 @@
+> > =C2=A0#include "isst_if_common.h"
+> > =C2=A0
+> > =C2=A0/* Supported SST hardware version by this driver */
+> > -#define ISST_HEADER_VERSION=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A01
+> > +#define ISST_MAJOR_VERSION=C2=A0=C2=A0=C2=A0=C2=A0=C2=A00
+> > +#define ISST_MINOR_VERSION=C2=A0=C2=A0=C2=A0=C2=A0=C2=A01
+> > =C2=A0
+> > =C2=A0/*
+> > =C2=A0 * Used to indicate if value read from MMIO needs to get
+> > multiplied
+> > @@ -352,12 +353,19 @@ static int sst_main(struct auxiliary_device
+> > *auxdev, struct tpmi_per_power_domai
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pd_info->sst_header.cp_=
+offset *=3D 8;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pd_info->sst_header.pp_=
+offset *=3D 8;
+> > =C2=A0
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (pd_info->sst_header.inte=
+rface_version !=3D
+> > ISST_HEADER_VERSION) {
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0dev_err(&auxdev->dev, "SST: Unsupported
+> > version:%x\n",
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0pd_inf=
+o->sst_header.interface_version);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (pd_info->sst_header.inte=
+rface_version =3D=3D
+> > TPMI_VERSION_INVALID)
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0return -ENODEV;
+> > +
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (TPMI_MAJOR_VERSION(pd_in=
+fo-
+> > >sst_header.interface_version) !=3D ISST_MAJOR_VERSION) {
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0dev_err(&auxdev->dev, "SST: Unsupported major
+> > version:%lx\n",
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0TPMI_M=
+AJOR_VERSION(pd_info-
+> > >sst_header.interface_version));
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0return -ENODEV;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
+> > =C2=A0
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (TPMI_MINOR_VERSION(pd_in=
+fo-
+> > >sst_header.interface_version) !=3D ISST_MINOR_VERSION)
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0dev_err(&auxdev->dev, "SST: Ignore: Unsupported
+> > minor version:%lx\n",
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0TPMI_M=
+INOR_VERSION(pd_info-
+> > >sst_header.interface_version));
+>=20
+> Why is this dev_err(), wouldn't dev_info() be more appropriate since=20
+> after this patch it's no longer an error?
 
-Link: https://milkv.io/duo [1]
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
- arch/riscv/boot/dts/sophgo/Makefile           |  2 +-
- .../boot/dts/sophgo/cv1800b-milkv-duo.dts     | 38 +++++++++++++++++++
- 2 files changed, 39 insertions(+), 1 deletion(-)
- create mode 100644 arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
+The distro run with minimum log level. So it is important that they
+notice and upgrade as they may be missing some new additions.
 
-diff --git a/arch/riscv/boot/dts/sophgo/Makefile b/arch/riscv/boot/dts/sophgo/Makefile
-index 5a471b19df22..5ea9ce398ff6 100644
---- a/arch/riscv/boot/dts/sophgo/Makefile
-+++ b/arch/riscv/boot/dts/sophgo/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
- dtb-$(CONFIG_ARCH_SOPHGO) += sg2042-milkv-pioneer.dtb
--
-+dtb-$(CONFIG_ARCH_SOPHGO) += cv1800b-milkv-duo.dtb
-diff --git a/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-new file mode 100644
-index 000000000000..3af9e34b3bc7
---- /dev/null
-+++ b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-@@ -0,0 +1,38 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-+ */
-+
-+/dts-v1/;
-+
-+#include "cv1800b.dtsi"
-+
-+/ {
-+	model = "Milk-V Duo";
-+	compatible = "milkv,duo", "sophgo,cv1800b";
-+
-+	aliases {
-+		serial0 = &uart0;
-+		serial1 = &uart1;
-+		serial2 = &uart2;
-+		serial3 = &uart3;
-+		serial4 = &uart4;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x80000000 0x3f40000>;
-+	};
-+};
-+
-+&osc {
-+	clock-frequency = <25000000>;
-+};
-+
-+&uart0 {
-+	status = "okay";
-+};
--- 
-2.40.1
+Thanks,
+Srinivas
+
+
+>=20
+> > +
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* Read SST CP Header *=
+/
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0*((u64 *)&pd_info->cp_h=
+eader) =3D readq(pd_info->sst_base +
+> > pd_info->sst_header.cp_offset);
+> > =C2=A0
+> >=20
+>=20
 
