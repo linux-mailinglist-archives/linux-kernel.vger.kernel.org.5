@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D117B45FF
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702857B4603
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234537AbjJAIPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 04:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49952 "EHLO
+        id S234582AbjJAIPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 04:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234490AbjJAIP3 (ORCPT
+        with ESMTP id S234481AbjJAIPc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 04:15:29 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9040DD;
-        Sun,  1 Oct 2023 01:15:25 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53447d0241eso13726548a12.3;
-        Sun, 01 Oct 2023 01:15:25 -0700 (PDT)
+        Sun, 1 Oct 2023 04:15:32 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C45EA;
+        Sun,  1 Oct 2023 01:15:27 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9ad8a822508so2158568566b.0;
+        Sun, 01 Oct 2023 01:15:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696148124; x=1696752924; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696148126; x=1696752926; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fgas/z7fExmPUKkMNiaG89VpgAdxGMpsmmwmf/zWrRQ=;
-        b=lb01/eda/yLWCz8D5qSmRH3ipZtX7uA9Wjkm3o5NcD9CSrTRPRoNLlOjh56RGkoM+2
-         zNxZ6xIQW1u91Z8wU3Onl/wIoM9iMXzV0qv5Aot8kw+SJqFhaM8CYuKpmnK3D9VXKkSF
-         uOjfWF6A3wWUvAz/vp1lB7GJpn1JxHXxI/laRkZPD0vmZQqYt/xH7Qwqe1auf8H9rEor
-         dbDtfenks90nkUrvEe8afiwnk+7inXnod8tavWXj0ZwR4Cc9/9qN7/GmniCd+4XodXDq
-         iaJFt7ltbrd6Hjaxf+Ap7zeyLx13RuxEgj6yoLeLaF5ohCYKxsk3lN0NvIowxtueE3Zj
-         oteQ==
+        bh=39ntlcYvDYrsu2wkLxDzmVg+LA5a9z1WHwPNTIKFmRs=;
+        b=jNTGOrHskVgeAPjBDmmszNf7xAy+CK929rEJrauutvWSzEyaTb4tb5OrZ4ahHP/0Bw
+         EjnhQJ6c6Mcx072AXRLUAVQgaOUMu7u6AjBUR+eScxO8pQUTh6cr/j3SXzjQcfikwxCH
+         IiD1LsJQR3fBjTdLVMzcSh9lS96fwALeFtijyszL8apFDhO8RCKsNDU8VBCchnQSPWAs
+         8OOT0AqdPtz60CBVpbBGEAmvQFTrCUkxAJv3Ue5b+AN4KiZNh6iVaCN7YKBoa5wUDuW8
+         IQsSwc3KyzpLSeHbcLgV1qbLddSynujDNrzE7fFHJstzk2tvSKDhtko6Mc7ZJwFz/E0w
+         VAng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696148124; x=1696752924;
+        d=1e100.net; s=20230601; t=1696148126; x=1696752926;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=fgas/z7fExmPUKkMNiaG89VpgAdxGMpsmmwmf/zWrRQ=;
-        b=gT9aO1k2efNYlxC/xKT8wbRep7PA7waW+Z/+QMozEdl/e1h77w/yI4TM4irMhJp8qb
-         NonXlBj6CaZ5UzWrqyhQnzorTynmqDP9o8I5+aj6UzpRZUheJNv1DnVr9sJ7OWnMUt9j
-         Wg2mhWr/+FxYJUFohfndjFSLgWPRoRfiBS+lHJ6eML+VBGpLu5fe+rQqjPzSxN9z5Z4L
-         PxLD+3Uh/B83QzLxDnVzYuIEr8xNX0tFx4qnn9CwgyRqbHKM6da9BwuxJu2wr00Mf3Ou
-         1d/yhUraeFJegBAgRQuiAMWt7eOn4q+evxfT++HBd90K/OPJBgW2KR3D+JajQD0fTlmw
-         d+QA==
-X-Gm-Message-State: AOJu0Yyz3hfqZJB+NyXJsJ4w9h7PhTecOJFJwom0UfEMYulvxkBLIclU
-        RHQJcVVgZwC3ohymT4uuv0s=
-X-Google-Smtp-Source: AGHT+IFqBSbJQtx+Km9aSdFLIo0ddL3283kZet+iqlZ4pnenVe4jE7vkgWsycYvnlmH4d7dgU6gFcw==
-X-Received: by 2002:a17:906:1097:b0:9ae:695f:f938 with SMTP id u23-20020a170906109700b009ae695ff938mr6473162eju.56.1696148124125;
-        Sun, 01 Oct 2023 01:15:24 -0700 (PDT)
+        bh=39ntlcYvDYrsu2wkLxDzmVg+LA5a9z1WHwPNTIKFmRs=;
+        b=bwJgFStFLs/kin6oP/jY1v6CF5W6LNCQu7hG5FIn14XYpNSpvHFvS8d6byobBZuB2K
+         +H+eWfKH7rn2CzCiSIjYs/ScoTgfRpzWfaNHX0JyIqjaepUek9dx2OdMzd4AS/dltBT3
+         9of3wxtW8zgE2zOZezjlzX7BV6qVa77kc2jXF/HH+nrUl6m1ebM7KSBMF1OKM2LSf+GU
+         w3xKWaK6tmaJye4Lh+09xHz9I0vgGU+BwcPxx/C4y9gegJp6XIzy7ExHdwLY4KSyJkce
+         rXl6H1zrvXbFYIbNdnOXm3NWhvImvkPEgpBkoMfBx488/hgH7PH5acXOD56P1Ihbw8P2
+         t5Gg==
+X-Gm-Message-State: AOJu0YwMRjNY4bI1GvmIxl9vl/PWXPUU7JN9tqoW5yA6WkZCSu91aw0d
+        bHCeow6hHohV0XJzsT1EdEg=
+X-Google-Smtp-Source: AGHT+IEAkWDhVU4yUuxEbxvyqsYGD8mrXa6cUiTAsCt8XyivaImPNBfj7P+MAHOLfdDxdmJml9Wcmw==
+X-Received: by 2002:a17:906:5daa:b0:9ad:7890:b4c0 with SMTP id n10-20020a1709065daa00b009ad7890b4c0mr6250083ejv.56.1696148126108;
+        Sun, 01 Oct 2023 01:15:26 -0700 (PDT)
 Received: from primary.. ([213.139.52.198])
-        by smtp.gmail.com with ESMTPSA id e8-20020a170906374800b0099cf840527csm15121841ejc.153.2023.10.01.01.15.22
+        by smtp.gmail.com with ESMTPSA id e8-20020a170906374800b0099cf840527csm15121841ejc.153.2023.10.01.01.15.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Oct 2023 01:15:23 -0700 (PDT)
+        Sun, 01 Oct 2023 01:15:25 -0700 (PDT)
 From:   Abdel Alkuor <alkuor@gmail.com>
 To:     heikki.krogerus@linux.intel.com, krzysztof.kozlowski+dt@linaro.org,
         bryan.odonoghue@linaro.org
@@ -57,9 +57,9 @@ Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
         robh+dt@kernel.org, conor+dt@kernel.org,
         devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>
-Subject: [PATCH v9 04/14] USB: typec: tps6598x: Load TPS25750 patch bundle
-Date:   Sun,  1 Oct 2023 04:11:24 -0400
-Message-Id: <20231001081134.37101-5-alkuor@gmail.com>
+Subject: [PATCH v9 05/14] USB: typec: tps6598x: Check for EEPROM present
+Date:   Sun,  1 Oct 2023 04:11:25 -0400
+Message-Id: <20231001081134.37101-6-alkuor@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231001081134.37101-1-alkuor@gmail.com>
 References: <20231001081134.37101-1-alkuor@gmail.com>
@@ -67,7 +67,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,394 +77,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Abdel Alkuor <abdelalkuor@geotab.com>
 
-TPS25750 controller requires a binary to be loaded with a configuration
-binary by an EEPROM or a host.
-
-Appling a patch bundling using a host is implemented based on the flow
-diagram pg.62 in TPS25750 host interface manual.
-https://www.ti.com/lit/ug/slvuc05a/slvuc05a.pdf
-
-The flow diagram can be summarized as following:
-- Start the patch loading sequence with patch bundle information by
-  executing PBMs
-- Write the whole patch at once
-- When writing the patch fails, execute PBMe which instructs the PD controller
-  to end the patching process
-- After writing the patch successfully, execute PBMc which verifies the patch
-  integrity and applies the patch internally
-- Wait for the device to switch into APP mode (normal operation)
-
-The execuation flow diagram polls the events register and then polls the
-corresponding register related to the event as well before advancing to the next
-state. Polling the events register is a redundant step, in this implementation
-only the corresponding register related to the event is polled.
+When an EEPROM is present, tps25750 loads the binary configuration from
+EEPROM. Hence, all we need to do is wait for the device to switch to APP
+mode
 
 Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
 ---
 Changes in v9:
   - No changes
 Changes in v8:
-  - Return mode when mode is checked
-  - Use device_is_compatible instead of of_device_is_compatible
+  - No changes
 Changes in v7:
   - Add driver name to commit subject
-Changes in v6:
-  - Don't check VID for tps25750 as the VID register doesn't exist
-  - Remove is_tps25750 flag from tps6598x struct
-  - Get patch address from reg property
+Changes in v6: 
+  - Update eeprom macro to use TPS instead
 Changes in v5:
   - Incorporating tps25750 into tps6598x driver
- drivers/usb/typec/tipd/core.c | 263 ++++++++++++++++++++++++++++++++--
- 1 file changed, 255 insertions(+), 8 deletions(-)
+
+ drivers/usb/typec/tipd/core.c     | 13 +++++++++++++
+ drivers/usb/typec/tipd/tps6598x.h |  3 +++
+ 2 files changed, 16 insertions(+)
 
 diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index c5bbf03cb74a..2e7b9eafaf04 100644
+index 2e7b9eafaf04..21b0ea2c9627 100644
 --- a/drivers/usb/typec/tipd/core.c
 +++ b/drivers/usb/typec/tipd/core.c
-@@ -17,6 +17,7 @@
- #include <linux/usb/typec_altmode.h>
- #include <linux/usb/role.h>
- #include <linux/workqueue.h>
-+#include <linux/firmware.h>
- 
- #include "tps6598x.h"
- #include "trace.h"
-@@ -43,6 +44,23 @@
- /* TPS_REG_SYSTEM_CONF bits */
- #define TPS_SYSCONF_PORTINFO(c)		((c) & 7)
- 
-+/*
-+ * BPMs task timeout, recommended 5 seconds
-+ * pg.48 TPS2575 Host Interface Technical Reference
-+ * Manual (Rev. A)
-+ * https://www.ti.com/lit/ug/slvuc05a/slvuc05a.pdf
-+ */
-+#define TPS_BUNDLE_TIMEOUT	0x32
-+
-+/* BPMs return code */
-+#define TPS_TASK_BPMS_INVALID_BUNDLE_SIZE	0x4
-+#define TPS_TASK_BPMS_INVALID_SLAVE_ADDR	0x5
-+#define TPS_TASK_BPMS_INVALID_TIMEOUT		0x6
-+
-+/* PBMc data out */
-+#define TPS_PBMC_RC	0 /* Return code */
-+#define TPS_PBMC_DPCS	2 /* device patch complete status */
-+
- enum {
- 	TPS_PORTINFO_SINK,
- 	TPS_PORTINFO_SINK_ACCESSORY,
-@@ -595,13 +613,15 @@ static int tps6598x_check_mode(struct tps6598x *tps)
- 	if (ret)
- 		return ret;
- 
--	switch (match_string(modes, ARRAY_SIZE(modes), mode)) {
-+	ret = match_string(modes, ARRAY_SIZE(modes), mode);
-+
-+	switch (ret) {
- 	case TPS_MODE_APP:
- 	case TPS_MODE_PTCH:
--		return 0;
-+		return ret;
- 	case TPS_MODE_BOOT:
- 		dev_warn(tps->dev, "dead-battery condition\n");
--		return 0;
-+		return ret;
- 	case TPS_MODE_BIST:
- 	case TPS_MODE_DISC:
- 	default:
-@@ -711,6 +731,213 @@ static int devm_tps6598_psy_register(struct tps6598x *tps)
- 	return PTR_ERR_OR_ZERO(tps->psy);
- }
- 
-+static int
-+tps25750_write_firmware(struct tps6598x *tps,
-+			u8 bpms_addr, const u8 *data, size_t len)
-+{
-+	struct i2c_client *client = to_i2c_client(tps->dev);
-+	int ret;
-+	u8 slave_addr;
-+	int timeout;
-+
-+	slave_addr = client->addr;
-+	timeout = client->adapter->timeout;
-+
-+	/*
-+	 * binary configuration size is around ~16Kbytes
-+	 * which might take some time to finish writing it
-+	 */
-+	client->adapter->timeout = msecs_to_jiffies(5000);
-+	client->addr = bpms_addr;
-+
-+	ret = regmap_raw_write(tps->regmap, data[0], &data[1], len - 1);
-+
-+	client->addr = slave_addr;
-+	client->adapter->timeout = timeout;
-+
-+	return ret;
-+}
-+
-+static int
-+tps25750_exec_pbms(struct tps6598x *tps, u8 *in_data, size_t in_len)
-+{
-+	int ret;
-+	u8 rc;
-+
-+	ret = tps6598x_exec_cmd_tmo(tps, "PBMs", in_len, in_data,
-+				    sizeof(rc), &rc, 4000, 0);
-+	if (ret)
-+		return ret;
-+
-+	switch (rc) {
-+	case TPS_TASK_BPMS_INVALID_BUNDLE_SIZE:
-+		dev_err(tps->dev, "%s: invalid fw size\n", __func__);
-+		return -EINVAL;
-+	case TPS_TASK_BPMS_INVALID_SLAVE_ADDR:
-+		dev_err(tps->dev, "%s: invalid slave address\n", __func__);
-+		return -EINVAL;
-+	case TPS_TASK_BPMS_INVALID_TIMEOUT:
-+		dev_err(tps->dev, "%s: timed out\n", __func__);
-+		return -ETIMEDOUT;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int tps25750_abort_patch_process(struct tps6598x *tps)
-+{
-+	int ret;
-+
-+	ret = tps6598x_exec_cmd(tps, "PBMe", 0, NULL, 0, NULL);
-+	if (ret)
-+		return ret;
-+
-+	ret = tps6598x_check_mode(tps);
-+	if (ret != TPS_MODE_PTCH)
-+		dev_err(tps->dev, "failed to switch to \"PTCH\" mode\n");
-+
-+	return ret;
-+}
-+
-+static int tps25750_start_patch_burst_mode(struct tps6598x *tps)
-+{
-+	int ret;
-+	const struct firmware *fw;
-+	const char *firmware_name;
-+	struct {
-+		u32 fw_size;
-+		u8 addr;
-+		u8 timeout;
-+	} __packed bpms_data;
-+	u32 addr;
-+	struct device_node *np = tps->dev->of_node;
-+
-+	ret = device_property_read_string(tps->dev, "firmware-name",
-+					  &firmware_name);
-+	if (ret)
-+		return ret;
-+
-+	ret = request_firmware(&fw, firmware_name, tps->dev);
-+	if (ret) {
-+		dev_err(tps->dev, "failed to retrieve \"%s\"\n", firmware_name);
-+		return ret;
-+	}
-+
-+	if (fw->size == 0) {
-+		ret = -EINVAL;
-+		goto release_fw;
-+	}
-+
-+	ret = of_property_match_string(np, "reg-names", "patch-address");
-+	if (ret < 0) {
-+		dev_err(tps->dev, "failed to get patch-address %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = of_property_read_u32_index(np, "reg", ret, &addr);
-+	if (ret)
-+		return ret;
-+
-+	if (addr == 0 || (addr >= 0x20 && addr <= 0x23)) {
-+		dev_err(tps->dev, "wrong patch address %u\n", addr);
-+		return -EINVAL;
-+	}
-+
-+	bpms_data.addr = (u8)addr;
-+	bpms_data.fw_size = fw->size;
-+	bpms_data.timeout = TPS_BUNDLE_TIMEOUT;
-+
-+	ret = tps25750_exec_pbms(tps, (u8 *)&bpms_data, sizeof(bpms_data));
-+	if (ret)
-+		goto release_fw;
-+
-+	ret = tps25750_write_firmware(tps, bpms_data.addr, fw->data, fw->size);
-+	if (ret) {
-+		dev_err(tps->dev, "Failed to write patch %s of %zu bytes\n",
-+			firmware_name, fw->size);
-+		goto release_fw;
-+	}
-+
-+	/*
-+	 * A delay of 500us is required after the firmware is written
-+	 * based on pg.62 in tps6598x Host Interface Technical
-+	 * Reference Manual
-+	 * https://www.ti.com/lit/ug/slvuc05a/slvuc05a.pdf
-+	 */
-+	udelay(500);
-+
-+release_fw:
-+	release_firmware(fw);
-+
-+	return ret;
-+}
-+
-+static int tps25750_complete_patch_process(struct tps6598x *tps)
-+{
-+	int ret;
-+	u8 out_data[40];
-+	u8 dummy[2] = { };
-+
-+	/*
-+	 * Without writing something to DATA_IN, this command would
-+	 * return an error
-+	 */
-+	ret = tps6598x_exec_cmd_tmo(tps, "PBMc", sizeof(dummy), dummy,
-+				    sizeof(out_data), out_data, 2000, 20);
-+	if (ret)
-+		return ret;
-+
-+	if (out_data[TPS_PBMC_RC]) {
-+		dev_err(tps->dev,
-+			"%s: pbmc failed: %u\n", __func__,
-+			out_data[TPS_PBMC_RC]);
-+		return -EIO;
-+	}
-+
-+	if (out_data[TPS_PBMC_DPCS]) {
-+		dev_err(tps->dev,
-+			"%s: failed device patch complete status: %u\n",
-+			__func__, out_data[TPS_PBMC_DPCS]);
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+static int tps25750_apply_patch(struct tps6598x *tps)
-+{
-+	int ret;
-+	unsigned long timeout;
-+
-+	ret = tps25750_start_patch_burst_mode(tps);
-+	if (ret) {
-+		tps25750_abort_patch_process(tps);
-+		return ret;
-+	}
-+
-+	ret = tps25750_complete_patch_process(tps);
-+	if (ret)
-+		return ret;
-+
-+	timeout = jiffies + msecs_to_jiffies(1000);
-+
-+	do {
-+		ret = tps6598x_check_mode(tps);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (time_is_before_jiffies(timeout))
-+			return -ETIMEDOUT;
-+
-+	} while (ret != TPS_MODE_APP);
-+
-+	dev_info(tps->dev, "controller switched to \"APP\" mode\n");
-+
-+	return 0;
-+};
-+
- static int tps6598x_probe(struct i2c_client *client)
+@@ -37,6 +37,7 @@
+ #define TPS_REG_STATUS			0x1a
+ #define TPS_REG_SYSTEM_CONF		0x28
+ #define TPS_REG_CTRL_CONF		0x29
++#define TPS_REG_BOOT_STATUS		0x2D
+ #define TPS_REG_POWER_STATUS		0x3f
+ #define TPS_REG_RX_IDENTITY_SOP		0x48
+ #define TPS_REG_DATA_STATUS		0x5f
+@@ -910,6 +911,17 @@ static int tps25750_apply_patch(struct tps6598x *tps)
  {
- 	irq_handler_t irq_handler = tps6598x_interrupt;
-@@ -723,6 +950,7 @@ static int tps6598x_probe(struct i2c_client *client)
- 	u32 vid;
  	int ret;
- 	u64 mask1;
-+	bool is_tps25750;
+ 	unsigned long timeout;
++	u64 status = 0;
++
++	ret = tps6598x_block_read(tps, TPS_REG_BOOT_STATUS, &status, 5);
++	if (ret)
++		return ret;
++	/*
++	 * Nothing to be done if the configuration
++	 * is being loaded from EERPOM
++	 */
++	if (status & TPS_BOOT_STATUS_I2C_EEPROM_PRESENT)
++		goto wait_for_app;
  
- 	tps = devm_kzalloc(&client->dev, sizeof(*tps), GFP_KERNEL);
- 	if (!tps)
-@@ -735,9 +963,12 @@ static int tps6598x_probe(struct i2c_client *client)
- 	if (IS_ERR(tps->regmap))
- 		return PTR_ERR(tps->regmap);
- 
--	ret = tps6598x_read32(tps, TPS_REG_VID, &vid);
--	if (ret < 0 || !vid)
--		return -ENODEV;
-+	is_tps25750 = device_is_compatible(tps->dev, "ti,tps25750");
-+	if (!is_tps25750) {
-+		ret = tps6598x_read32(tps, TPS_REG_VID, &vid);
-+		if (ret < 0 || !vid)
-+			return -ENODEV;
-+	}
- 
- 	/*
- 	 * Checking can the adapter handle SMBus protocol. If it can not, the
-@@ -768,12 +999,18 @@ static int tps6598x_probe(struct i2c_client *client)
- 	tps->irq_handler = irq_handler;
- 	/* Make sure the controller has application firmware running */
- 	ret = tps6598x_check_mode(tps);
--	if (ret)
-+	if (ret < 0)
+ 	ret = tps25750_start_patch_burst_mode(tps);
+ 	if (ret) {
+@@ -921,6 +933,7 @@ static int tps25750_apply_patch(struct tps6598x *tps)
+ 	if (ret)
  		return ret;
  
-+	if (is_tps25750 && ret == TPS_MODE_PTCH) {
-+		ret = tps25750_apply_patch(tps);
-+		if (ret)
-+			return ret;
-+	}
++wait_for_app:
+ 	timeout = jiffies + msecs_to_jiffies(1000);
+ 
+ 	do {
+diff --git a/drivers/usb/typec/tipd/tps6598x.h b/drivers/usb/typec/tipd/tps6598x.h
+index 527857549d69..a80d0929f3ee 100644
+--- a/drivers/usb/typec/tipd/tps6598x.h
++++ b/drivers/usb/typec/tipd/tps6598x.h
+@@ -199,4 +199,7 @@
+ #define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_A    BIT(2)
+ #define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_B    (BIT(2) | BIT(1))
+ 
++/* BOOT STATUS REG*/
++#define TPS_BOOT_STATUS_I2C_EEPROM_PRESENT	BIT(3)
 +
- 	ret = tps6598x_write64(tps, TPS_REG_INT_MASK1, mask1);
- 	if (ret)
--		return ret;
-+		goto err_reset_controller;
- 
- 	ret = tps6598x_read32(tps, TPS_REG_STATUS, &status);
- 	if (ret < 0)
-@@ -893,6 +1130,10 @@ static int tps6598x_probe(struct i2c_client *client)
- 	fwnode_handle_put(fwnode);
- err_clear_mask:
- 	tps6598x_write64(tps, TPS_REG_INT_MASK1, 0);
-+err_reset_controller:
-+	/* Reset PD controller to remove any applied patch */
-+	if (is_tps25750)
-+		tps6598x_exec_cmd_tmo(tps, "GAID", 0, NULL, 0, NULL, 2000, 0);
- 	return ret;
- }
- 
-@@ -903,9 +1144,14 @@ static void tps6598x_remove(struct i2c_client *client)
- 	if (!client->irq)
- 		cancel_delayed_work_sync(&tps->wq_poll);
- 
-+	devm_free_irq(tps->dev, client->irq, tps);
- 	tps6598x_disconnect(tps, 0);
- 	typec_unregister_port(tps->port);
- 	usb_role_switch_put(tps->role_sw);
-+
-+	/* Reset PD controller to remove any applied patch */
-+	if (device_is_compatible(tps->dev, "ti,tps25750"))
-+		tps6598x_exec_cmd_tmo(tps, "GAID", 0, NULL, 0, NULL, 2000, 0);
- }
- 
- static int __maybe_unused tps6598x_suspend(struct device *dev)
-@@ -948,6 +1194,7 @@ static const struct dev_pm_ops tps6598x_pm_ops = {
- static const struct of_device_id tps6598x_of_match[] = {
- 	{ .compatible = "ti,tps6598x", },
- 	{ .compatible = "apple,cd321x", },
-+	{ .compatible = "ti,tps25750", },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, tps6598x_of_match);
+ #endif /* __TPS6598X_H__ */
 -- 
 2.34.1
 
