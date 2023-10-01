@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6AC7B44C1
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 02:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0A6D7B44C5
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 02:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234235AbjJAABP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 20:01:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
+        id S234208AbjJAADj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 20:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234209AbjJAABJ (ORCPT
+        with ESMTP id S234139AbjJAADh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 20:01:09 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78ADFD3
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 17:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=8JOzdz2MFv/hofQCEiBSlk+fe2zZYPTTLqOrgrgxTrs=; b=aY50vHx/8TJHs4pwYHtSuo1O5S
-        1EsyaGWg4BrtrGszYUgzlr94t/eiQPICWutIAGdZZy9IKRehjHBzzxmCDLkqWzlIf6iP8KFd0udpB
-        3WXed1UDAYg6Q6G3ge7aU988Lj7LrBFwJFCju8L0sl9B4FOzn6PTMbeBzYHRFOCMkXhhqix1lm+yU
-        1K+4l2iHJYcF9dAmvkxI7LtSkj9596mou/lgKTCPXfUo2l0f4SRzrfkTKLdIfVk7EHQIdQLwq8jtc
-        90J/rJkHzUDqVI6GuKZ5HEoY7IXmm4mCnmXSQ8+pmc+43mCSmkykt1icHrSJUG1cCFxvhefb64oD6
-        PjceNw7w==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qmjtR-00AFOE-2u;
-        Sun, 01 Oct 2023 00:01:05 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>, Li Yang <leoyang.li@nxp.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        Roy Pledge <Roy.Pledge@nxp.com>
-Subject: [PATCH] soc: fsl: dpio: fix kernel-doc typos
-Date:   Sat, 30 Sep 2023 17:01:05 -0700
-Message-ID: <20231001000105.26766-2-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231001000105.26766-1-rdunlap@infradead.org>
-References: <20231001000105.26766-1-rdunlap@infradead.org>
+        Sat, 30 Sep 2023 20:03:37 -0400
+Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com [209.85.160.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B73BD
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 17:03:33 -0700 (PDT)
+Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1dd691b1037so16807488fac.3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 17:03:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696118613; x=1696723413;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=w7RyblSS0tqaFb3Y91Y88UCjMBkJmAdJj2b4I9Ezm1U=;
+        b=Jt/SqhlO9Ci6q8HrmkkykWp3OFmRDVppnGi4aQ7XZAWmGtjXXj4eLM0PAR4C5qes0t
+         vnS+HtzpZoyh6M8Zi12q/P2jfH/Jjq1nw2E4X0sOzbjC0aEtXzp/qK+xvJFFRPd25Hyf
+         DECOSQ07M/Ag14B9LL2GluPEIQ4xm66X71+YNiFaNvF4HPWGAOB7VR05p8E32CuIvWIm
+         YkgP9E6kxzyLkj6cQbCWQLST4EF8pJSfwOLVSJ80s15K8hGlzWB/1eVIl45y+uKP/r6E
+         LblRG+2LM8Y0jMw8hO2g+dNzQB11qw51R/NlNN6JkkAXqFcGjuzwxd2QU1jZxCUu4RYm
+         G4LA==
+X-Gm-Message-State: AOJu0YxKwiI4fhBX8boaIC8el790uHH8yPTOwRfk1oBuYlKkUf4J50rJ
+        bJ0nHeDZqocTpcQ28VqgXydjZV6nxKs2TmDnZL8AtojZND0N
+X-Google-Smtp-Source: AGHT+IFj/3ix5064W+YXk0/tjitl6ix4wB9gxsdZRwQLoHNQPwV2bbll2Lr00GU38AGrPoM78qWOD/El8ZBU/5ClBn3Tks8tTVQf
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6870:a886:b0:1d1:3ff8:9f80 with SMTP id
+ eb6-20020a056870a88600b001d13ff89f80mr3336962oab.8.1696118613280; Sat, 30 Sep
+ 2023 17:03:33 -0700 (PDT)
+Date:   Sat, 30 Sep 2023 17:03:33 -0700
+In-Reply-To: <000000000000672c810601db3e84@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000710b5c06069c6302@google.com>
+Subject: Re: [syzbot] [btrfs?] kernel BUG in btrfs_cancel_balance
+From:   syzbot <syzbot+d6443e1f040e8d616e7b@syzkaller.appspotmail.com>
+To:     clm@fb.com, code@siddh.me, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiaoshoukui@gmail.com, xiaoshoukui@ruijie.com.cn
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct spelling of 2 words.
+syzbot suspects this issue was fixed by commit:
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Li Yang <leoyang.li@nxp.com>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: Roy Pledge <Roy.Pledge@nxp.com>
----
- include/soc/fsl/dpaa2-io.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+commit 29eefa6d0d07e185f7bfe9576f91e6dba98189c2
+Author: xiaoshoukui <xiaoshoukui@gmail.com>
+Date:   Tue Aug 15 06:55:59 2023 +0000
 
-diff -- a/include/soc/fsl/dpaa2-io.h b/include/soc/fsl/dpaa2-io.h
---- a/include/soc/fsl/dpaa2-io.h
-+++ b/include/soc/fsl/dpaa2-io.h
-@@ -22,7 +22,7 @@ struct device;
-  * DOC: DPIO Service
-  *
-  * The DPIO service provides APIs for users to interact with the datapath
-- * by enqueueing and dequeing frame descriptors.
-+ * by enqueueing and dequeueing frame descriptors.
-  *
-  * The following set of APIs can be used to enqueue and dequeue frames
-  * as well as producing notification callbacks when data is available
-@@ -33,7 +33,7 @@ struct device;
- 
- /**
-  * struct dpaa2_io_desc - The DPIO descriptor
-- * @receives_notifications: Use notificaton mode. Non-zero if the DPIO
-+ * @receives_notifications: Use notification mode. Non-zero if the DPIO
-  *                  has a channel.
-  * @has_8prio:      Set to non-zero for channel with 8 priority WQs.  Ignored
-  *                  unless receives_notification is TRUE.
+    btrfs: fix BUG_ON condition in btrfs_cancel_balance
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=170f5bae680000
+start commit:   5d0c230f1de8 Linux 6.5-rc4
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1e3d5175079af5a4
+dashboard link: https://syzkaller.appspot.com/bug?extid=d6443e1f040e8d616e7b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1167e711a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a90161a80000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: btrfs: fix BUG_ON condition in btrfs_cancel_balance
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
