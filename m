@@ -2,109 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A6F67B49AE
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 23:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EED97B49AB
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 23:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235383AbjJAVRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 17:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55266 "EHLO
+        id S235415AbjJAVPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 17:15:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235161AbjJAVRi (ORCPT
+        with ESMTP id S235299AbjJAVPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 17:17:38 -0400
-Received: from correo1.cdmx.gob.mx (mtax.cdmx.gob.mx [189.240.235.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F02D3;
-        Sun,  1 Oct 2023 14:17:35 -0700 (PDT)
-Received: from cdmx.gob.mx ([10.250.108.150])
-        by correo1.cdmx.gob.mx  with ESMTP id 391LGp95016858-391LGp97016858
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 1 Oct 2023 15:16:51 -0600
-Received: from cdmx.gob.mx (localhost [127.0.0.1])
-        by cdmx.gob.mx (Postfix) with ESMTPS id D3E6B242D16;
-        Sun,  1 Oct 2023 15:10:25 -0500 (CDT)
-Received: from localhost (localhost [127.0.0.1])
-        by cdmx.gob.mx (Postfix) with ESMTP id B2ED6242D45;
-        Sun,  1 Oct 2023 15:10:25 -0500 (CDT)
-DKIM-Filter: OpenDKIM Filter v2.9.2 cdmx.gob.mx B2ED6242D45
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; d=cdmx.gob.mx; s=DKIM1; c=relaxed/relaxed;
- h=content-type:mime-version:subject:to:from:date:reply-to:message-id;
- bh=xoaq/LOC+4eKTZbu2LiokxnQv3PTDgn4X2fWdi3yHqc=;
- b=XDcbsYzIY8IsipVl0MuieR31MS0eppKJ9QUrFzs7hx0v99u7cBusPh1nOv27bxqg2xpyf/Dve+YG
-        QMbH9H1xo6qMsui5bie4SRgFwDVndM4oCEuUg0iVc74lNWPPNB5z/vlzPh4JG2s/cXxyQBpj8+tG
-        etmhWlu0PGe63kyojFtNBDudpEYKTlkAhKd5fDVPpCYqRXSUSfzretvdGKc6vJaBn6E+lcne15wc
-        dmm3USgh5kPV6anrrT8feL2ZLgKXBD6N13yLUAqRfbL8x/dZNM5tUyGFLbq9qt3rBSQFomOJfDVB
-        1zUwX/UjsjRYuhI7QdNYppI35NC5gXEKiMpRiw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cdmx.gob.mx;
-        s=2020J4N146MXCTY; t=1696191025;
-        bh=gh/gHv0AhChJuqpyakBErmR9XX7JItsFvInX1t4m/Ao=;
-        h=Content-Type:MIME-Version:Subject:To:From:Date:Reply-To:
-         Message-Id;
-        b=GYFX5tqgWFWjj0+pdiCx1k70RjjH7pOK/8AsBScpN7AUz0BPa4vUZ+JqyyubVOKfc
-         yKXpohyjNUyUFd8IMdHzhy0oVEvTp6zkK2iqG7ikYQEv+86FgtUX/hS7TiiK/SttNU
-         ExmjjfH1kVHBSR7pLdrFQQcmHq6LM1S7bLRYDbL8=
-X-Virus-Scanned: amavisd-new at cdmx.gob.mx
-Received: from cdmx.gob.mx ([127.0.0.1])
-        by localhost (cdmx.gob.mx [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id y04XKiYnXFkQ; Sun,  1 Oct 2023 15:10:25 -0500 (CDT)
-Received: from [192.168.8.123] (unknown [179.61.245.35])
-        by cdmx.gob.mx (Postfix) with ESMTPSA id 00841242D16;
-        Sun,  1 Oct 2023 15:10:17 -0500 (CDT)
-Content-Type: multipart/alternative; boundary="===============0374931868=="
-MIME-Version: 1.0
-Subject: $4,800,000.00 dollars for you.
-To:     Recipients <sgila@cdmx.gob.mx>
-From:   "Mrs. Mavis Wanczyk" <sgila@cdmx.gob.mx>
-Date:   Sun, 01 Oct 2023 14:10:43 -0700
-Reply-To: maviswanczykfunds@gmail.com
-Message-Id: <20231001201018.00841242D16@cdmx.gob.mx>
-X-Spam-Status: Yes, score=7.3 required=5.0 tests=BAYES_80,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
-        HK_NAME_MR_MRS,LOTS_OF_MONEY,MONEY_FREEMAIL_REPTO,SPF_HELO_NONE,
-        SPF_PASS,SUBJ_DOLLARS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  2.0 BAYES_80 BODY: Bayes spam probability is 80 to 95%
-        *      [score: 0.8406]
-        *  0.1 SUBJ_DOLLARS Subject starts with dollar amount
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        *  1.0 HK_NAME_MR_MRS No description available.
-        *  2.3 MONEY_FREEMAIL_REPTO Lots of money from someone using free
-        *      email?
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-X-Spam-Level: *******
+        Sun, 1 Oct 2023 17:15:20 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4892C9B;
+        Sun,  1 Oct 2023 14:15:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E0646C433C7;
+        Sun,  1 Oct 2023 21:15:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696194917;
+        bh=e923OdFXLWDPy5SyXCEQvZixtu5MHewlxAd2FFJoXSU=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=GcmuQtmEERTCwsMjNaAmgCuj+uAPFOOU8996UidfLlrUiJ1DHtiGmlVjP6tRfraKq
+         m9FSjaWK/DTNf6xnnyX+ot1/TUMW8Q3dPzB+S8agnT0qCIFuUYRjSuoe5JFZV29WOi
+         zwcxps/xT/0J12ceAhCLUxKE0nQbrHcJpgMVffKyIHDujgCJ3841mpX9hezJkI0Uvo
+         zBKOeFjR33+v8FFSFMFcTE4sfeud1YslyFAptXE9/3K2cENgrtH5obmU06/LkkmYxm
+         xk8TBJi+I5t6Qy6BjaUGqAE7vZoLk1+Ed0Y2MPZnFu2W8HwbFqroO1y32kJNzxZkkn
+         fyQUGuUUTk9ng==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CC441C43170;
+        Sun,  1 Oct 2023 21:15:17 +0000 (UTC)
+Subject: Re: [GIT PULL] hotfixes for 6.6-rc4
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20231001083937.5f401972d99dc3168e6d4218@linux-foundation.org>
+References: <20231001083937.5f401972d99dc3168e6d4218@linux-foundation.org>
+X-PR-Tracked-List-Id: <mm-commits.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20231001083937.5f401972d99dc3168e6d4218@linux-foundation.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2023-10-01-08-34
+X-PR-Tracked-Commit-Id: e2a8f20dd8e9df695f736e51cd9115ae55be92d1
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d2c5231581d636af8d5af888ee13048dfbb438c7
+Message-Id: <169619491782.22414.10510049330176555849.pr-tracker-bot@kernel.org>
+Date:   Sun, 01 Oct 2023 21:15:17 +0000
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>, linux-mm@kvack.org,
+        mm-commits@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You will not see this in a MIME-aware mail reader.
---===============0374931868==
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
+The pull request you sent on Sun, 1 Oct 2023 08:39:37 -0700:
 
-Hello, I have a donation worth $4,800,000.00 dollars for you, I won the Ame=
-rica lottery worth $758 million Powerball jackpot and I donated a part of i=
-t to charities. you can contact me for further information via (maviswanczy=
-kfunds@gmail.com) for your claim.
---===============0374931868==
-Content-Type: text/plain; charset=utf-8
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
+> git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2023-10-01-08-34
 
-Hello, I have a donation worth $4,800,000.00 dollars for you, I won the A=
-merica lottery worth $758 million Powerball jackpot and I donated a part =
-of it to charities. you can contact me for further information via (mavis=
-wanczykfunds@gmail.com)) for your claim.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d2c5231581d636af8d5af888ee13048dfbb438c7
 
---===============0374931868==--
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
