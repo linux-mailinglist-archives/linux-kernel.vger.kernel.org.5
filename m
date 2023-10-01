@@ -2,166 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D597B49B3
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 23:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2CC47B49B7
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 23:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235398AbjJAVVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 17:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
+        id S235403AbjJAVW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 17:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235161AbjJAVVE (ORCPT
+        with ESMTP id S235161AbjJAVWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 17:21:04 -0400
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BE69B;
-        Sun,  1 Oct 2023 14:21:00 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E162F240002;
-        Sun,  1 Oct 2023 21:20:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696195258;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hwznFwcLGryjA62uDf/A8rrsHVh9Jec8flcbVAK26OQ=;
-        b=AEpfCPllhngkkX3X4yFiOsjUmetJ017fvXJRYRViGeKNTcN6N8bLdmo/vcX9gD1nQ0HWOg
-        7pQynSgHTCgBKnav76tGajYX7XF3jJ4r+/YGBDO25Hz3S8pEHKpC9PELpL6Rmoxyf7/fnK
-        WUlcmnXCRPsdBV+jnCDZ9Eb54aLovugCORI3XAPHy9sNMcFyipgO6f07l7T+QffQ5g8B5+
-        imMyJtokanMwYbUALfjrNBuJP3VUJWvOLIDOhSOfevtK7oTBRbqHFWpthvODSLbbJBY/sE
-        Ys1uatyCmre29mwZtMzd8wnSM0MPDjioct0ZTZB5JU5ovHiWfoW7f9nrAxRb7g==
-Date:   Sun, 1 Oct 2023 23:20:49 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Esteban Blanc <eblanc@baylibre.com>
-Cc:     linus.walleij@linaro.org, a.zummo@towertech.it,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-rtc@vger.kernel.org, jpanis@baylibre.com,
-        jneanne@baylibre.com, aseketeli@baylibre.com, u-kumar1@ti.com
-Subject: Re: [PATCH v7 1/2] rtc: tps6594: Add driver for TPS6594 RTC
-Message-ID: <2023100121204914ad7c28@mail.local>
-References: <20230628133021.500477-1-eblanc@baylibre.com>
- <20230628133021.500477-2-eblanc@baylibre.com>
+        Sun, 1 Oct 2023 17:22:25 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84B219B
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 14:22:23 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-57be7c28423so5077166eaf.0
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 14:22:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696195343; x=1696800143; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PHJrlgm7LFwgtNAlZtL3Zhw4zS1ia4QUcX3TsUNW/zY=;
+        b=K8ahlFg2t0R6P640XZbVxn1n2eDcpclSPylMTjfPl2JXWodDr6kLrmiNBWzklmDxfH
+         Aw2tK9NBINlcbwYXlmiUEecoy2Zwz4jDigiPKrVjpnE7TY7Rvf5x+y+PkzQQHURorboz
+         xCH+3AnjYHGTOI1euqmlPVViIwmcqqhQwYQ1Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696195343; x=1696800143;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PHJrlgm7LFwgtNAlZtL3Zhw4zS1ia4QUcX3TsUNW/zY=;
+        b=fgHiS2n2b5TFT4zH89/fzQN+Y9KrDH8mqKT382LTlVJBaUC9oUlpce4nYYxTR3pVWY
+         FKFgR382wZBe5mIUOZlhURFclVWlsnPajOC8fgYHwgLQohPxkkkszQK8GfZ7OwYxSQDZ
+         SEa9W0JBdv54E2II10mpeCGPQ6W4lMphooMeAx0Lt+6bjAMXxqClk5Chl8IImWIT7zEk
+         HoUbwPzSBhakOF129q3q3OTxTwCIkUmmeX0zujyc2x2xRPLgHen339Of3ajyTpcvcwZ+
+         Tw8FOC9H2XfA0j1o4lGkilefmwXnMXB0bR9WnpjukxkZwtjCNGzF0N7Ttbaeer5LvmVX
+         sUwQ==
+X-Gm-Message-State: AOJu0Yzo7Rwd8OlraiwhsaP5majOcC63D7FWgyKbPzVcktrKnmutuOHc
+        y14KPzKbPaTfjxVBb1bcTHWpnA==
+X-Google-Smtp-Source: AGHT+IFJ8g4Z37QS8SaU2llcFOkETm2VqxZtmL7Bq8TmJ06CIdCQ3MlUKaTsGOWE7trNihoFqgoeXw==
+X-Received: by 2002:a05:6358:91c:b0:139:cb15:ecd3 with SMTP id r28-20020a056358091c00b00139cb15ecd3mr12488851rwi.8.1696195342750;
+        Sun, 01 Oct 2023 14:22:22 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id y5-20020a62b505000000b0068ffb8da107sm18363405pfe.212.2023.10.01.14.22.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Oct 2023 14:22:22 -0700 (PDT)
+Date:   Sun, 1 Oct 2023 14:22:17 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Kees Cook <kees@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-hardening@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] comedi: Annotate struct comedi_lrange with __counted_by
+Message-ID: <202310011421.C4F19D45@keescook>
+References: <5c3b7459b820e22e2ac6ce892d4aadcc119cc919.1696065263.git.christophe.jaillet@wanadoo.fr>
+ <202309301342.5B5BED40A1@keescook>
+ <alpine.DEB.2.22.394.2310010945130.3166@hadrien>
+ <90E2BBA5-8A2D-42DE-B36A-CD37BABBB433@kernel.org>
+ <alpine.DEB.2.22.394.2310012112560.3166@hadrien>
+ <202310011405.7599BA9@keescook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230628133021.500477-2-eblanc@baylibre.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <202310011405.7599BA9@keescook>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, Oct 01, 2023 at 02:05:46PM -0700, Kees Cook wrote:
+> On Sun, Oct 01, 2023 at 09:14:02PM +0200, Julia Lawall wrote:
+> > Kees,
+> > 
+> > You can try the following.
+> 
+> Cool! Yeah, this finds the example:
+> 
+> drivers/comedi/drivers/rti800.c:74: struct comedi_lrange: field at offset 0 is the counter for the flex array
+> drivers/comedi/drivers/rti800.c:83: struct comedi_lrange: field at offset 0 is the counter for the flex array
+> drivers/comedi/drivers/rti800.c:92: struct comedi_lrange: field at offset 0 is the counter for the flex array
+> 
+> I'll run it on the whole codebase...
 
-What is the status of this series?
-
-On 28/06/2023 15:30:20+0200, Esteban Blanc wrote:
-> +static int tps6594_rtc_read_offset(struct device *dev, long *offset)
-> +{
-> +	int calibration;
-> +	s64 tmp;
-> +	int ret;
-> +
-> +	ret = tps6594_rtc_get_calibration(dev, &calibration);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	// Convert from RTC calibration register format to ppb format.
-> +	tmp = calibration * PPB_MULT;
-> +
-> +	if (tmp < 0)
-> +		tmp -= TICKS_PER_HOUR / 2LL;
-> +	else
-> +		tmp += TICKS_PER_HOUR / 2LL;
-> +	tmp = div_s64(tmp, TICKS_PER_HOUR);
-> +
-> +	/*
-> +	 * SAFETY:
-> +	 * Compution is the reverse operation of the one done in
-
-Small typo -^
-
-> +	 * `tps6594_rtc_set_offset`. The safety remarks applie here too.
-> +	 */
-> +
-> +	/*
-> +	 * Offset value operates in negative way, so swap sign.
-> +	 * See 8.3.10.5, (32768 - COMP_REG).
-> +	 */
-> +	*offset = (long)-tmp;
-> +
-> +	return 0;
-> +}
-> +
-> +static int tps6594_rtc_set_offset(struct device *dev, long offset)
-> +{
-> +	int calibration;
-> +	s64 tmp;
-> +
-> +	// Make sure offset value is within supported range.
-> +	if (offset < MIN_OFFSET || offset > MAX_OFFSET)
-> +		return -ERANGE;
-> +
-> +	// Convert from ppb format to RTC calibration register format.
-> +
-> +	tmp = offset * TICKS_PER_HOUR;
-> +	if (tmp < 0)
-> +		tmp -= PPB_MULT / 2LL;
-> +	else
-> +		tmp += PPB_MULT / 2LL;
-> +	tmp = div_s64(tmp, PPB_MULT);
-> +
-> +	/*
-> +	 * SAFETY:
-> +	 * - tmp = offset * TICK_PER_HOUR :
-> +	 *	`offset` can't be more than 277774, so `tmp` can't exceed 277774000000000
-> +	 *	which is lower than the maximum value in an `s64` (2^63-1). No overflow here.
-> +	 *
-> +	 * - tmp += TICK_PER_HOUR / 2LL :
-> +	 *	tmp will have a maximum value of 277774117964800 which is still inferior to 2^63-1.
-> +	 */
-> +
-> +	// Offset value operates in negative way, so swap sign.
-> +	calibration = (int)-tmp;
-> +
-> +	return tps6594_rtc_set_calibration(dev, calibration);
-> +}
-> +
-> +static irqreturn_t tps6594_rtc_interrupt(int irq, void *rtc)
-> +{
-> +	struct device *dev = rtc;
-> +	unsigned long events = 0;
-> +	struct tps6594 *tps = dev_get_drvdata(dev->parent);
-> +	struct rtc_device *rtc_dev = dev_get_drvdata(dev);
-> +	int ret;
-> +	u32 rtc_reg;
-> +
-> +	ret = regmap_read(tps->regmap, TPS6594_REG_RTC_STATUS, &rtc_reg);
-> +	if (ret)
-> +		return IRQ_NONE;
-> +
-> +	if (rtc_reg & TPS6594_BIT_ALARM)
-> +		events = RTC_IRQF | RTC_AF;
-> +
-> +	// Notify RTC core on event.
-
-Nit: I don't feel like the events varialbe and the comment are
-necessary.
-
-> +	rtc_update_irq(rtc_dev, 1, events);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
-
-If you resend, you can add:
-
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-
+It found only the struct comedi_lrange instances, but that's good to
+know. :)
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Kees Cook
