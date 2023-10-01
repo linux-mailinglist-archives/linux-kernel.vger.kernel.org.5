@@ -2,197 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 792737B48D4
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 19:22:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87E87B48F4
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 19:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235230AbjJARWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 13:22:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48904 "EHLO
+        id S235242AbjJARmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 13:42:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233932AbjJARV7 (ORCPT
+        with ESMTP id S233932AbjJARmf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 13:21:59 -0400
-X-Greylist: delayed 24047 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 01 Oct 2023 10:21:56 PDT
-Received: from gofer.mess.org (gofer.mess.org [88.97.38.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74F2383;
-        Sun,  1 Oct 2023 10:21:56 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 1000)
-        id 6AC07100092; Sun,  1 Oct 2023 18:21:54 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1696180914; bh=fmmbBcKFOGuzoHOa2DXFF4bJYUXHzDbTMg4QwhNR9/g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lf5hY5+iOE0ePrLTAj1raG3VeaKenQpZ4y1toKOxf4a+wxUW/K6lyp1W5qX4czCeg
-         2WUiacdaqdef9XjlBlvLraa6gYtvycdPM7oCM8j111y1mNHTmEapQsWz0cvEvfK+0f
-         RCJk5Xhnd0ONZvBalMt7zuVja88EHL92lHsPCJcJM0C0xX9zXrPcGxZ2lU0Kyq37RB
-         04rMcZCwhODjLsW7F1gBuIoeXzysulxOBxoEDbMNWcure0ghIvjMvKy3sJDvgFethQ
-         2K63Mwb4NZVmLkj4oip8jxh5L5Yp1+9mDS9L9EjuAlJMX+5Onp7H8s4KyzKanFhjc5
-         Ehed2s+3JgOlA==
-Date:   Sun, 1 Oct 2023 18:21:54 +0100
-From:   Sean Young <sean@mess.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        oe-kbuild-all@lists.linux.dev,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH 1/2] pwm: make it possible to apply pwm changes in atomic
- context
-Message-ID: <ZRmqsl+ZyVEtlPbF@gofer.mess.org>
-References: <1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean@mess.org>
- <202310012348.puyNjoMk-lkp@intel.com>
+        Sun, 1 Oct 2023 13:42:35 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCC2E1
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 10:42:32 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id C17435C2ACD;
+        Sun,  1 Oct 2023 13:42:29 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Sun, 01 Oct 2023 13:42:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1696182149; x=1696268549; bh=69
+        v6fzzEznhsP+iYQxrU1Qq2W/AMcZ2L6Dp2+ptqLDY=; b=QDs6lArr2g+oCTGhI4
+        FdS3EHjTfKDRZa/1CPclSEzeK029nE16Xxh2uGtS0QwwJEpz/j0rui8KdK2mqFHi
+        cx8wdu0PF7ZBglgtvDU0Ur6x52aIobahN28iwIm93MCreXzYLG1ACS52gvWg5SdZ
+        Mt0R51mSkQcdtGkByDL+BqXZrN6H4uOBRCBcW+dFirgWvdmtf+GJKIBBdKnWs9AU
+        +CoOfVa5OmKbpLnxeWeHRxjUzUN88bVq7PNQFdIahGz8IinZxtVm1DzV3hsjNeH6
+        pKa8fTiHG65092UOk440d8UI+moWyGUqZPbTZzzKAwfb30wuz/qA0ZVyjGPONoOW
+        RUEA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696182149; x=1696268549; bh=69v6fzzEznhsP
+        +iYQxrU1Qq2W/AMcZ2L6Dp2+ptqLDY=; b=Mlk+mgvQQ5xKnM8ipa+N1OsHr584x
+        DM0JT67JB/JJaW/xeEZODjBlnwnfXU1BAzwfsihy3jVjvsm3NrRNzPUyWTjPu6yV
+        BmdBYwHe0dEh9KgFvrbWITxivNpgWJ3FHFYJnjllswi+RAo1ohIEBwA/0tCdRp4u
+        rUfJ0iPzBFv/Yo2wFhf/FhMJZKStdm3Ara5ddobIcUZ5SLzXPSIKCqcegSLa6bHF
+        n/U/X2VCc5viot16M4xsAxsscw0YWfvEHu70ZslCsza0z9zlLEPhTRB1jzZUwkxv
+        FZK9m/gGqpckjcM8cGJ2lDo2fSOgj5dzyGhsUdX4QTcjCyywdyCj4oBpg==
+X-ME-Sender: <xms:hK8ZZQLHtYx2bRRLUVYDYEV_v1yFBhj_exF4A7b9cXxGZPYv8HWVBA>
+    <xme:hK8ZZQKk_7PgridJq7Hh1RHpqyWasLnKTZx8wFfx03rXjlM3F1UjWKlOI5l7qDN6L
+    4U_ODFLYFiUOx9EUGk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddvgddvhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:hK8ZZQv5ajbSCyXlf7J99Uubnohs_NO9XkLNXBB0p8Cz1ZZ61bvBPA>
+    <xmx:hK8ZZdZXU6zYICKNRjTOh_8GXpEzmMTm3uQZyCAflTwSp9eqYgXevQ>
+    <xmx:hK8ZZXZu8gkOFOSVIzZ3L7FiwItZpJc904BE43ZuG3zoTqWaVuzMwQ>
+    <xmx:ha8ZZfJ7bEuYq9Fq9AzxEPP9Ae3Qgl5HbWN009_l748vV3R3mfaEZQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id B273EB60089; Sun,  1 Oct 2023 13:42:28 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202310012348.puyNjoMk-lkp@intel.com>
+Message-Id: <fdb95a6d-8b54-475c-90c3-8a391161bb66@app.fastmail.com>
+In-Reply-To: <cover.1696174961.git.lstoakes@gmail.com>
+References: <cover.1696174961.git.lstoakes@gmail.com>
+Date:   Sun, 01 Oct 2023 13:39:33 -0400
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Lorenzo Stoakes" <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Will Deacon" <will@kernel.org>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>
+Cc:     "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
+        "Jiri Olsa" <jolsa@kernel.org>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        "Ian Rogers" <irogers@google.com>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        "Oleg Nesterov" <oleg@redhat.com>,
+        "Richard Cochran" <richardcochran@gmail.com>,
+        "Jason Gunthorpe" <jgg@nvidia.com>,
+        "John Hubbard" <jhubbard@nvidia.com>
+Subject: Re: [PATCH 0/4] various improvements to the GUP interface
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 12:07:58AM +0800, kernel test robot wrote:
-> Hi Sean,
-> 
-> kernel test robot noticed the following build errors:
-> 
-> [auto build test ERROR on thierry-reding-pwm/for-next]
-> [also build test ERROR on shawnguo/for-next atorgue-stm32/stm32-next media-tree/master linus/master v6.6-rc3 next-20230929]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+On Sun, Oct 1, 2023, at 12:00, Lorenzo Stoakes wrote:
+> A series of fixes to simplify and improve the GUP interface with an eye to
+> providing groundwork to future improvements:-
+>
+> * __access_remote_vm() and access_remote_vm() are functionally identical,
+>   so make the former static such that in future we can potentially change
+>   the external-facing implementation details of this function.
+>
+> * Extend is_valid_gup_args() to cover the missing FOLL_TOUCH case, and
+>   simplify things by defining INTERNAL_GUP_FLAGS to check against.
+>
+> * Adjust __get_user_pages_locked() to explicitly treat a failure to pin any
+>   pages as an error in all circumstances other than FOLL_NOWAIT being
+>   specified, bringing it in line with the nommu implementation of this
+>   function.
+>
+> * (With many thanks to Arnd who suggested this in the first instance)
+>   Update get_user_page_vma_remote() to explicitly only return a page or an
+>   error, simplifying the interface and avoiding the questionable
+>   IS_ERR_OR_NULL() pattern.
+>
+> Lorenzo Stoakes (4):
+>   mm: make __access_remote_vm() static
+>   mm/gup: explicitly define and check internal GUP flags, disallow
+>     FOLL_TOUCH
+>   mm/gup: make failure to pin an error if FOLL_NOWAIT not specified
+>   mm/gup: adapt get_user_page_vma_remote() to never return NULL
 
-There are indeed some configs in which there are build errors if
-CONFIG_PWM is disabled, I'll fix it in the next version.
+I don't normally review mm patches, but I had a look since it was
+started by my earlier feedback. It all looks good to me, very nice
+cleanup!
 
-In the mean time it would be great to have some feedback on this patch,
-and see if there is any other rework needed.
-
-Thanks
-Sean
-
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Sean-Young/media-pwm-ir-tx-trigger-edges-from-hrtimer-interrupt-context/20231001-194056
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git for-next
-> patch link:    https://lore.kernel.org/r/1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean%40mess.org
-> patch subject: [PATCH 1/2] pwm: make it possible to apply pwm changes in atomic context
-> config: i386-buildonly-randconfig-004-20231001 (https://download.01.org/0day-ci/archive/20231001/202310012348.puyNjoMk-lkp@intel.com/config)
-> compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231001/202310012348.puyNjoMk-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202310012348.puyNjoMk-lkp@intel.com/
-> 
-> All errors (new ones prefixed by >>):
-> 
->    In file included from arch/x86/include/asm/percpu.h:27:0,
->                     from arch/x86/include/asm/current.h:10,
->                     from include/linux/sched.h:12,
->                     from include/linux/ratelimit.h:6,
->                     from include/linux/dev_printk.h:16,
->                     from include/linux/device.h:15,
->                     from include/linux/backlight.h:12,
->                     from drivers/video/fbdev/ssd1307fb.c:8:
->    include/linux/pwm.h: In function 'pwm_apply_state':
->    include/linux/pwm.h:428:17: error: implicit declaration of function 'pwm_can_sleep'; did you mean 'gpiod_cansleep'? [-Werror=implicit-function-declaration]
->      might_sleep_if(pwm_can_sleep(pwm));
->                     ^
->    include/linux/kernel.h:194:39: note: in definition of macro 'might_sleep_if'
->     #define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
->                                           ^~~~
->    In file included from drivers/video/fbdev/ssd1307fb.c:16:0:
->    include/linux/pwm.h: At top level:
-> >> include/linux/pwm.h:455:20: error: conflicting types for 'pwm_can_sleep'
->     static inline bool pwm_can_sleep(struct pwm_device *pwm)
->                        ^~~~~~~~~~~~~
->    In file included from arch/x86/include/asm/percpu.h:27:0,
->                     from arch/x86/include/asm/current.h:10,
->                     from include/linux/sched.h:12,
->                     from include/linux/ratelimit.h:6,
->                     from include/linux/dev_printk.h:16,
->                     from include/linux/device.h:15,
->                     from include/linux/backlight.h:12,
->                     from drivers/video/fbdev/ssd1307fb.c:8:
->    include/linux/pwm.h:428:17: note: previous implicit declaration of 'pwm_can_sleep' was here
->      might_sleep_if(pwm_can_sleep(pwm));
->                     ^
->    include/linux/kernel.h:194:39: note: in definition of macro 'might_sleep_if'
->     #define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
->                                           ^~~~
->    cc1: some warnings being treated as errors
-> --
->    In file included from arch/x86/include/asm/percpu.h:27:0,
->                     from arch/x86/include/asm/preempt.h:6,
->                     from include/linux/preempt.h:79,
->                     from include/linux/spinlock.h:56,
->                     from include/linux/mmzone.h:8,
->                     from include/linux/gfp.h:7,
->                     from include/linux/slab.h:16,
->                     from include/linux/resource_ext.h:11,
->                     from include/linux/acpi.h:13,
->                     from include/linux/i2c.h:13,
->                     from drivers/mfd/intel_soc_pmic_crc.c:11:
->    include/linux/pwm.h: In function 'pwm_apply_state':
->    include/linux/pwm.h:428:17: error: implicit declaration of function 'pwm_can_sleep'; did you mean 'cant_sleep'? [-Werror=implicit-function-declaration]
->      might_sleep_if(pwm_can_sleep(pwm));
->                     ^
->    include/linux/kernel.h:194:39: note: in definition of macro 'might_sleep_if'
->     #define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
->                                           ^~~~
->    In file included from drivers/mfd/intel_soc_pmic_crc.c:18:0:
->    include/linux/pwm.h: At top level:
-> >> include/linux/pwm.h:455:20: error: conflicting types for 'pwm_can_sleep'
->     static inline bool pwm_can_sleep(struct pwm_device *pwm)
->                        ^~~~~~~~~~~~~
->    In file included from arch/x86/include/asm/percpu.h:27:0,
->                     from arch/x86/include/asm/preempt.h:6,
->                     from include/linux/preempt.h:79,
->                     from include/linux/spinlock.h:56,
->                     from include/linux/mmzone.h:8,
->                     from include/linux/gfp.h:7,
->                     from include/linux/slab.h:16,
->                     from include/linux/resource_ext.h:11,
->                     from include/linux/acpi.h:13,
->                     from include/linux/i2c.h:13,
->                     from drivers/mfd/intel_soc_pmic_crc.c:11:
->    include/linux/pwm.h:428:17: note: previous implicit declaration of 'pwm_can_sleep' was here
->      might_sleep_if(pwm_can_sleep(pwm));
->                     ^
->    include/linux/kernel.h:194:39: note: in definition of macro 'might_sleep_if'
->     #define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
->                                           ^~~~
->    cc1: some warnings being treated as errors
-> 
-> 
-> vim +/pwm_can_sleep +455 include/linux/pwm.h
-> 
->    454	
->  > 455	static inline bool pwm_can_sleep(struct pwm_device *pwm)
->    456	{
->    457		return true;
->    458	}
->    459	
-> 
-> -- 
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
