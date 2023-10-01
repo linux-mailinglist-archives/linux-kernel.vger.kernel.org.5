@@ -2,49 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBB987B4572
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 07:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 034B17B4578
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 07:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234326AbjJAFru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 01:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60416 "EHLO
+        id S234320AbjJAFvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 01:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjJAFrr (ORCPT
+        with ESMTP id S229455AbjJAFvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 01:47:47 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA651C6;
-        Sat, 30 Sep 2023 22:47:44 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF09CC433C8;
-        Sun,  1 Oct 2023 05:47:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696139264;
-        bh=88KKkoAPRDO23nRFoIefVOhrftazGGYp+0IoLxHUnW0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hmQ/1YooZLswpEixBNq286dO6GF8BLA9gFrJZfBsiUw8SWMJTOYaDd7K1wHFVpGDf
-         0wJrqILpcxhWPakn1KOvo6ewMQ4Q7F9XMdENYBmEO+b/mFM6qFcEj8k9DXSIsv02Js
-         WLoejLmTkxMnFQDAZsL6d89Ku2Tn4yzLGxpngKraRf5gXurOnIOJqC3b+Ynf1E4FNs
-         pX4SwLayvaVM2pzHJgml05npjdbicunDFhv+b8sTxNhP1FgpinUPcVNkVRbKoPkBzg
-         /rqAE/uovPfnn8GzT4dUbEEnfdEg/LhouUleLGO7ZelUVqfqfgyhdEO4fqjjmvr6kX
-         Ns/lX/DRhhA9Q==
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Subject: [PATCH 2/2] modpost: factor out the common boilerplate of section_rel(a)
-Date:   Sun,  1 Oct 2023 14:47:36 +0900
-Message-Id: <20231001054736.1586001-2-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231001054736.1586001-1-masahiroy@kernel.org>
-References: <20231001054736.1586001-1-masahiroy@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Sun, 1 Oct 2023 01:51:13 -0400
+Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net (zg8tmja2lje4os4yms4ymjma.icoremail.net [206.189.21.223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E5C39D3;
+        Sat, 30 Sep 2023 22:51:06 -0700 (PDT)
+Received: from localhost.localdomain (unknown [10.192.195.11])
+        by mail-app3 (Coremail) with SMTP id cC_KCgDHz8N_CBlllGwtAQ--.64662S4;
+        Sun, 01 Oct 2023 13:50:07 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn
+Cc:     stable@vger.kernel.org, Alexander Aring <alex.aring@gmail.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Harry Morris <harrymorris12@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] [v3] ieee802154: ca8210: Fix a potential UAF in ca8210_probe
+Date:   Sun,  1 Oct 2023 13:49:49 +0800
+Message-Id: <20231001054949.14624-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgDHz8N_CBlllGwtAQ--.64662S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7WF4fGFW5ury5Cry5JFW3GFg_yoW8uF4fpa
+        1Ska4UJryqvF4jga18Ar48Zr98C3W7KayruF95K392k3ZxuryxKanrAFW3JF4rAFWUCan8
+        C3yUJ3y5uFs5AF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvm1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
+        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
+        IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E
+        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
+        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
+        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgMPBmUYLyEI2QADsp
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,97 +62,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first few lines of section_rel() and section_rela() are the same.
-They both retrieve the index of the section to which the relocaton
-applies, and skip known-good sections. This common code should be moved
-to check_sec_ref().
+If of_clk_add_provider() fails in ca8210_register_ext_clock(),
+it calls clk_unregister() to release priv->clk and returns an
+error. However, the caller ca8210_probe() then calls ca8210_remove(),
+where priv->clk is freed again in ca8210_unregister_ext_clock(). In
+this case, a use-after-free may happen in the second time we call
+clk_unregister().
 
-Avoid ugly casts when computing 'start' and 'stop', and also make the
-Elf_Rel and Elf_Rela pointers const.
+Fix this by removing the first clk_unregister(). Also, priv->clk could
+be an error code on failure of clk_register_fixed_rate(). Use
+IS_ERR_OR_NULL to catch this case in ca8210_unregister_ext_clock().
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Fixes: ded845a781a5 ("ieee802154: Add CA8210 IEEE 802.15.4 device driver")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 ---
 
- scripts/mod/modpost.c | 50 ++++++++++++++++++++++---------------------
- 1 file changed, 26 insertions(+), 24 deletions(-)
+Changelog:
 
-diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-index 15d78fe152ac..0e18fe617ed1 100644
---- a/scripts/mod/modpost.c
-+++ b/scripts/mod/modpost.c
-@@ -1425,17 +1425,10 @@ static void get_rel_type_and_sym(struct elf_info *elf, uint64_t r_info,
- }
- 
- static void section_rela(struct module *mod, struct elf_info *elf,
--			 Elf_Shdr *sechdr)
-+			 unsigned int fsecndx, const char *fromsec,
-+			 const Elf_Rela *start, const Elf_Rela *stop)
- {
--	Elf_Rela *rela;
--	unsigned int fsecndx = sechdr->sh_info;
--	const char *fromsec = sec_name(elf, fsecndx);
--	Elf_Rela *start = (void *)elf->hdr + sechdr->sh_offset;
--	Elf_Rela *stop  = (void *)start + sechdr->sh_size;
--
--	/* if from section (name) is know good then skip it */
--	if (match(fromsec, section_white_list))
--		return;
-+	const Elf_Rela *rela;
- 
- 	for (rela = start; rela < stop; rela++) {
- 		Elf_Addr taddr, r_offset;
-@@ -1465,17 +1458,10 @@ static void section_rela(struct module *mod, struct elf_info *elf,
- }
- 
- static void section_rel(struct module *mod, struct elf_info *elf,
--			Elf_Shdr *sechdr)
-+			unsigned int fsecndx, const char *fromsec,
-+			const Elf_Rel *start, const Elf_Rel *stop)
- {
--	Elf_Rel *rel;
--	unsigned int fsecndx = sechdr->sh_info;
--	const char *fromsec = sec_name(elf, fsecndx);
--	Elf_Rel *start = (void *)elf->hdr + sechdr->sh_offset;
--	Elf_Rel *stop  = (void *)start + sechdr->sh_size;
--
--	/* if from section (name) is know good then skip it */
--	if (match(fromsec, section_white_list))
--		return;
-+	const Elf_Rel *rel;
- 
- 	for (rel = start; rel < stop; rel++) {
- 		Elf_Sym *tsym;
-@@ -1530,10 +1516,26 @@ static void check_sec_ref(struct module *mod, struct elf_info *elf)
- 
- 		check_section(mod->name, elf, sechdr);
- 		/* We want to process only relocation sections and not .init */
--		if (sechdr->sh_type == SHT_RELA)
--			section_rela(mod, elf, sechdr);
--		else if (sechdr->sh_type == SHT_REL)
--			section_rel(mod, elf, sechdr);
-+		if (sechdr->sh_type == SHT_REL || sechdr->sh_type == SHT_RELA) {
-+			/* section to which the relocation applies */
-+			unsigned int secndx = sechdr->sh_info;
-+			const char *secname = sec_name(elf, secndx);
-+			const void *start, *stop;
-+
-+			/* If the section is known good, skip it */
-+			if (match(secname, section_white_list))
-+				continue;
-+
-+			start = sym_get_data_by_offset(elf, i, 0);
-+			stop = start + sechdr->sh_size;
-+
-+			if (sechdr->sh_type == SHT_RELA)
-+				section_rela(mod, elf, secndx, secname,
-+					     start, stop);
-+			else
-+				section_rel(mod, elf, secndx, secname,
-+					    start, stop);
-+		}
+v2: -Remove the first clk_unregister() instead of nulling priv->clk.
+
+v3: -Simplify ca8210_register_ext_clock().
+    -Add a ';' after return in ca8210_unregister_ext_clock().
+---
+ drivers/net/ieee802154/ca8210.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/net/ieee802154/ca8210.c b/drivers/net/ieee802154/ca8210.c
+index aebb19f1b3a4..ae44a9133937 100644
+--- a/drivers/net/ieee802154/ca8210.c
++++ b/drivers/net/ieee802154/ca8210.c
+@@ -2757,18 +2757,8 @@ static int ca8210_register_ext_clock(struct spi_device *spi)
+ 		dev_crit(&spi->dev, "Failed to register external clk\n");
+ 		return PTR_ERR(priv->clk);
  	}
+-	ret = of_clk_add_provider(np, of_clk_src_simple_get, priv->clk);
+-	if (ret) {
+-		clk_unregister(priv->clk);
+-		dev_crit(
+-			&spi->dev,
+-			"Failed to register external clock as clock provider\n"
+-		);
+-	} else {
+-		dev_info(&spi->dev, "External clock set as clock provider\n");
+-	}
+ 
+-	return ret;
++	return of_clk_add_provider(np, of_clk_src_simple_get, priv->clk);
  }
  
+ /**
+@@ -2780,8 +2770,8 @@ static void ca8210_unregister_ext_clock(struct spi_device *spi)
+ {
+ 	struct ca8210_priv *priv = spi_get_drvdata(spi);
+ 
+-	if (!priv->clk)
+-		return
++	if (IS_ERR_OR_NULL(priv->clk))
++		return;
+ 
+ 	of_clk_del_provider(spi->dev.of_node);
+ 	clk_unregister(priv->clk);
 -- 
-2.39.2
+2.17.1
 
