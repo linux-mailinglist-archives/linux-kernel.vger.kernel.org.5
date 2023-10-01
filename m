@@ -2,131 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E7D7B455C
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 07:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC5A7B456F
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 07:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234288AbjJAFev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 01:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
+        id S234306AbjJAFmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 01:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjJAFeu (ORCPT
+        with ESMTP id S229455AbjJAFmq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 01:34:50 -0400
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A817C5;
-        Sat, 30 Sep 2023 22:34:47 -0700 (PDT)
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3915YXtm022264;
-        Sat, 30 Sep 2023 22:34:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-         h=date:from:to:cc:subject:message-id:references:content-type
-        :in-reply-to:mime-version; s=PPS06212021; bh=oKGvCI5p9jLiXoUv+w9
-        gxe02IgOT6Tgt6FyBQSKGmBU=; b=j0rRp2HNOKFvkvY87hPHRV+DL4i4GcPxcY7
-        iiHiHEP/xcupocEHwK/moe7Eh/yrh4SsIQZg1/BloXqmW/EFmA3JnnKaKIu7qcFu
-        mOhMlxTfq4s9mukqQoAb1K6n+XX97RKv88sbHmnwTNMQT4dYamhlENaeSI9p4EtD
-        hTR00+8rLCRgHVR8wLH28OYChu61GHSfXHQf4hGMarYW/e+e7bB6UwrfvB+ZvMAb
-        8XWtG5B81Vh3VxNVaDu9w2ZZP83H/bmO7eyKZ2OKC4l7QjWxS4KH65ZPwWa093hy
-        RUESMIZZgpnDZQkvOtkETvLqav7g8H23j5xbLohgorRHEykGbJA==
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2175.outbound.protection.outlook.com [104.47.56.175])
-        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3teey0gm93-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 30 Sep 2023 22:34:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hbd8jsk6vfdLAVlkFfRo+yTbRn7G0L9vaq5T4Ap/HAoa9d01wx0GfHp1lurG73OXWeuoQ00Y7v0Ztw0+Aea+SJDrVIJtxTWEPVGB8o7KFhztoybOSjpGfKsVKn6nLbRi/YrjF56unO8olAUNNBU0WtHneGywTvmvpuoLwK8g291A72gHpVBNotpnxh/Vf9Jyo0gkGbxA0tv5gbz5GzqErPxNY+XuQd19JxFTfbqanOWRSUsQ5lqiTB80On+MEwGCjOziP8Dbo/r+JIINyMpQeDG3xxjI/lvVsHXGu/RI7srf8XU8hh52NObxm5+vTg/PfYsRuskOf+XxtLuwHYkhew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oKGvCI5p9jLiXoUv+w9gxe02IgOT6Tgt6FyBQSKGmBU=;
- b=X6Gh/FrWcZmQQ6AuInAqkTpj5s/w3AXUOrZSNaLPLZUPiomSXzizMEVVl26Pxjf1ycJJMs3W020b20YXafWwYuzyLuY5QW+ILD4T0ftq13Mn6PZVRBFKyIv07LiX0jab5uNN0cgxOuoK4JZn8VOKsplLojEulQPyo3wYdauiWpMiwSAj6SOo8RVAQDSlemEiQ2UMNx/BoIw8n+XNr6IpnYmwX58xnOpWqNXd9FEngxDW/k6DKn6WfZDHE59dA2z+061VTxmi3/eoo28BOlPwndQQyLhjngz6/YxlIxRVraanQTm3IurqhdH+RoEzshTO1MPRUT3h2Co04Da42EK9NQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Received: from IA0PR11MB7378.namprd11.prod.outlook.com (2603:10b6:208:432::8)
- by MW4PR11MB6983.namprd11.prod.outlook.com (2603:10b6:303:226::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.29; Sun, 1 Oct
- 2023 05:34:28 +0000
-Received: from IA0PR11MB7378.namprd11.prod.outlook.com
- ([fe80::e8f9:6b69:3649:212c]) by IA0PR11MB7378.namprd11.prod.outlook.com
- ([fe80::e8f9:6b69:3649:212c%7]) with mapi id 15.20.6792.024; Sun, 1 Oct 2023
- 05:34:27 +0000
-Date:   Sun, 1 Oct 2023 01:34:22 -0400
-From:   Paul Gortmaker <paul.gortmaker@windriver.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>, linux-arch@vger.kernel.org
-Subject: Re: [PATCH] vmlinux.lds.h: remove unused CPU_KEEP and CPU_DISCARD
- macros
-Message-ID: <ZRkE3q0Z9psMYVqi@windriver.com>
-References: <20230930071335.1224500-1-masahiroy@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230930071335.1224500-1-masahiroy@kernel.org>
-X-ClientProxiedBy: YT4PR01CA0379.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:fd::24) To IA0PR11MB7378.namprd11.prod.outlook.com
- (2603:10b6:208:432::8)
+        Sun, 1 Oct 2023 01:42:46 -0400
+Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBFF8C5
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 22:42:43 -0700 (PDT)
+Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-6c4717c4745so28908119a34.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 22:42:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696138963; x=1696743763;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=v/M5+LwXqyyAX85mKMsy9gTo6yWmfbyn31L5z/UyU+8=;
+        b=wjLGOIiKBg3FJd35l2MMp/Nrgpsb/+01LS41dNbaoPk3dEGtWYsv4xM1OwWo0yoY/e
+         onZULE4ZS1S3NiL0nLZM1FDTgqpbFTBt9UGZPs6uAVTRbMGT3D95xPuyLNsYp0J9yYwE
+         Ksk1TUf1osjgzWh+jWIQgZqGipQMm/BTrGNorar2+cK5LuUPqL9hrsmoCfPwPmNcjP5z
+         bghWRu6EudCYpJEGZS7nhAHLEl87QNzdRW6+/mGcF0PWfr3k9VxW181LTqg/iz4nsKEF
+         PGK+0iQaG3y66Hmi3gPSN3wUNkMicj87QFPSZNukwTZHlG0ypVX9bcQutbCD01SCSc5n
+         qaHQ==
+X-Gm-Message-State: AOJu0YyYdffbqxmGydSxw+ISSldzgmgrPJadgvg0KnD+xwOJkpj8HF0R
+        w/8yya8KXuF46A5hlWQROo4oIk/AjKB14GO29UMN/WxHXmHL
+X-Google-Smtp-Source: AGHT+IHm+KBlOCtpKqOgZm9yLGYWKgGx8vWflzCoD9NqXosPpFC9w5h+ha+goLbyQdOuYYlWDKhoXfnZozCQnvPZVzsCi1+2OLTg
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA0PR11MB7378:EE_|MW4PR11MB6983:EE_
-X-MS-Office365-Filtering-Correlation-Id: ffcc166e-4ba8-46be-40f9-08dbc2401376
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: talDHwy4mS+tIioeHzQFTmGb+kH5TYhH2SQeF/jnM2tOssSVN8p6+ffzcjIr3kV7uik0s9ToeJO0dh2EbrxkRrS/pxaJdskIa3oAzFRcqqXB8swmbdCe5jX5vrjmD0sg7jOFFeAJwhg9Pquxb0HXJORlGDlaQ5HUj6aqIfYKPWoNUOh+khS/8uLO/v5BfGzdrWjqegw/isy5pZ6vIaxu7Z48Rsi2b/OXRXcB0fkzokLS4oI92AfLusrYlh25Yop4VPgaodOaFAl0WnWuTYr0Wf5ry4Ye8SZAex/YKmgjUFzc3x3D1OCCdKWxDCNT4Z0gtXfbabbZlzmgyXRFc/O2uC7snkAS1XTdX88rDbrv6zXQb7UcQx8ktv1zVjCOUTve+wr6+mE/Tb5H/2/SofWXDQnm7izy1FTov93dfx2YbshC4adNA+XYLO2paLozeeutsNlNDcOT1tMkqWVlTVeIHgD74XDB3VtBUh1k/CfMQ+aoKUVxOjxaEHEg1oiUfnHD3c0hNoVWs7i9xS6hLN2PQVqCkby/8A6BpFwWX7qrnr5AuYf3sAiDQvgQLqWqcwjy
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR11MB7378.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(376002)(136003)(39840400004)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(478600001)(6486002)(6666004)(36756003)(6506007)(6512007)(2616005)(26005)(83380400001)(2906002)(86362001)(5660300002)(38100700002)(316002)(4326008)(8676002)(8936002)(6916009)(66946007)(66556008)(66476007)(44832011)(41300700001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ADrzzl1eiGPb7gxvXTgs35vLJQJUKXh/SkM5Skcp2RCv1VplgQF9Ut6uZFzq?=
- =?us-ascii?Q?KK8IRF+8cxF0Qay6rZeHVoRE+mwS6Hzv1qEHuKreSodqFk09iU3XOcSzV74Y?=
- =?us-ascii?Q?g+H951lnI1FlIdCV3uMBas6Y5igqxQ8n/zyOdYv1EohbOfNRKQSRL85EooSr?=
- =?us-ascii?Q?crs4IuEqKxwZXbTga5Qxh01p2uE4zoDZkFQ1ubaEUOl7eprs/q/T/k6m3aTf?=
- =?us-ascii?Q?pCHYmha3IP0+dfxlJSluTIXhd/W6PXmWMx5+3hc41QopzOui/bDvv7iPFwE3?=
- =?us-ascii?Q?/z3WHefNrTwNHU6ouV0RIFniymlbQDrVE7zhyUP9f5pRAKaOIeJpNHC6M8Nz?=
- =?us-ascii?Q?LcEjM9ZdMgf8HuV2t4WevK/Gj9x4yJ+pt8qaQCkekZ5vjgw5oElTxxi54JyH?=
- =?us-ascii?Q?xuKegmK0g0ys9jujHgkm0JIpt+RGQsce+bU+OMJEAQ8NkHtvaCUgxYAhnAvS?=
- =?us-ascii?Q?8qAyuIuHgwIU3z2tYqLLPlcVt5+d4HuwuDhgXE14xRg1sZynrsjEQL3NHzNX?=
- =?us-ascii?Q?GxEjuz6vAw32w2p0LaxrrSVcp6YYPMlTPdquBcav7MTklunD6HEvuwkaQPwp?=
- =?us-ascii?Q?zM+DOLUoOIxVPjTzu4iDl0sOorMTEu1iI/O+IwqH7subgOGCsuNSlG+SdmWF?=
- =?us-ascii?Q?j8zaIOo87ObslH/nRhGrrhllQnsjqZlOQWBq3TBV1o9BDiGKUe+ck5Z8SYsc?=
- =?us-ascii?Q?vH/lkY0PIT6g1Px5EJ3J3c9fN+InsKQYCKKgSAi9lvGsGr12VpqnoAz3+FRm?=
- =?us-ascii?Q?2On6j7p8prlCuNYc2jFKVTdszDBvAlF/7TDuHWMpe+p264ockPy7V5+gr6MZ?=
- =?us-ascii?Q?LrxcZBbKrsIOq2nOMsNEcQWzkhTZvryJWDifwOuwX56Nr72aF5Iw2OOrYiFp?=
- =?us-ascii?Q?0u+NPLXpe7ij3oKzp6VDONRZXgC2rNWrc3hPJEFHVm74Et7rEOw+sio9Kc9g?=
- =?us-ascii?Q?JmMPi4pXJ3euQA7aHJws24M/ttWlmScqXHBh4My3icPdqD+Z9lu2sL7EvBbw?=
- =?us-ascii?Q?F3x+8bcDX3Z0Wb3+rW0hQXTF++Xjaj6eWwJRg7+H8D/dH4zsxm6oNsKDZu1B?=
- =?us-ascii?Q?H6g+V0PbCxq00LpDAUpMNAcrRnXM/pkyzgAZcX4lNm3MS3Wix067o8uz5v+l?=
- =?us-ascii?Q?oWwza3Jtd9FY2X4oNkDDrEUFRyDB13f8S3GBssJa40vcLHSXjPP16r99Z4PX?=
- =?us-ascii?Q?o8VoeY7pdkjAnIW5j81w2OY++BvPkoAZ2vilw8RRyDDSAkAfJkUyCUY6vcyJ?=
- =?us-ascii?Q?BqxuprEpTXicK6WsBeqPTACDXrgdNwxMm9jabeYNMmgIDHaNuzjMRAv6Kpol?=
- =?us-ascii?Q?3z52ILMQlDXHNzjsJBImqZe/b7NBTtq3cUYQFgWaXoJMJgFlzeAS9mI/LjKK?=
- =?us-ascii?Q?UGF7kc61JtVjAiBIqhjhCFE1KDff5O5/TQfnrb1QN80e0X2xjYmAIgPoDWmD?=
- =?us-ascii?Q?ZtEELDaTlEmclN7S/fLAVDsqcDZH08MK9Uk1urVrity9S3QTDCaQbN7jcpwn?=
- =?us-ascii?Q?i2dTnLtNs5NGEgszy3HXZdvfTRdHQ+r5Pyz0tDCuEs/GukHA0ozcg1Istaij?=
- =?us-ascii?Q?iNUMQb46vu1uL7WeGlCXGfDFtQtdiIyWVPACNjfvsCgMMs51j2IrloarhPd0?=
- =?us-ascii?Q?dw=3D=3D?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ffcc166e-4ba8-46be-40f9-08dbc2401376
-X-MS-Exchange-CrossTenant-AuthSource: IA0PR11MB7378.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2023 05:34:27.0520
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7ciHJwTempwOo1/JgeM2mpycZilvF+QrcyphNDvLPtfnnrNlfPNS1KG9sRYYnJLTreG2t+6bAW0iVQiGlDtSIs5JmZK/sqptk1xesy/HneQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6983
-X-Proofpoint-GUID: 1rllzaQwGGUl1UOT77LbiaLQS5Hd0mZW
-X-Proofpoint-ORIG-GUID: 1rllzaQwGGUl1UOT77LbiaLQS5Hd0mZW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-01_03,2023-09-28_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
- phishscore=0 spamscore=0 mlxlogscore=441 priorityscore=1501
- lowpriorityscore=0 malwarescore=0 impostorscore=0 adultscore=0
- suspectscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2309180000 definitions=main-2310010044
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a9d:6950:0:b0:6c4:77eb:7130 with SMTP id
+ p16-20020a9d6950000000b006c477eb7130mr2509824oto.0.1696138963208; Sat, 30 Sep
+ 2023 22:42:43 -0700 (PDT)
+Date:   Sat, 30 Sep 2023 22:42:43 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000644f160606a120b3@google.com>
+Subject: [syzbot] [mm?] WARNING in huge_pmd_unshare
+From:   syzbot <syzbot+ff00584717dadcbd2e67@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, llvm@lists.linux.dev, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+        syzkaller-bugs@googlegroups.com, trix@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -134,44 +56,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[[PATCH] vmlinux.lds.h: remove unused CPU_KEEP and CPU_DISCARD macros] On 30/09/2023 (Sat 16:13) Masahiro Yamada wrote:
+Hello,
 
-> Remove the left-over of commit e24f6628811e ("modpost: remove all
-> traces of cpuinit/cpuexit sections").
+syzbot found the following issue on:
 
-Hard to believe that cpuinit/cpuexit removal was over 10 years ago now.
+HEAD commit:    df964ce9ef9f Add linux-next specific files for 20230929
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=134e2921680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=880c828d75e38e1b
+dashboard link: https://syzkaller.appspot.com/bug?extid=ff00584717dadcbd2e67
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-Acked-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Thanks,
-Paul.
---
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/fe7244c6057d/disk-df964ce9.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/48cdc7f3b2c0/vmlinux-df964ce9.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ce7c93a66da9/bzImage-df964ce9.xz
 
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  include/asm-generic/vmlinux.lds.h | 7 -------
->  1 file changed, 7 deletions(-)
-> 
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index 9c59409104f6..67d8dd2f1bde 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -138,13 +138,6 @@
->   * are handled as text/data or they can be discarded (which
->   * often happens at runtime)
->   */
-> -#ifdef CONFIG_HOTPLUG_CPU
-> -#define CPU_KEEP(sec)    *(.cpu##sec)
-> -#define CPU_DISCARD(sec)
-> -#else
-> -#define CPU_KEEP(sec)
-> -#define CPU_DISCARD(sec) *(.cpu##sec)
-> -#endif
->  
->  #if defined(CONFIG_MEMORY_HOTPLUG)
->  #define MEM_KEEP(sec)    *(.mem##sec)
-> -- 
-> 2.39.2
-> 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ff00584717dadcbd2e67@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 7121 at mm/hugetlb.c:298 hugetlb_vma_assert_locked mm/hugetlb.c:298 [inline]
+WARNING: CPU: 1 PID: 7121 at mm/hugetlb.c:298 huge_pmd_unshare+0x6be/0x940 mm/hugetlb.c:6904
+Modules linked in:
+CPU: 1 PID: 7121 Comm: syz-executor.1 Not tainted 6.6.0-rc3-next-20230929-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+RIP: 0010:hugetlb_vma_assert_locked mm/hugetlb.c:298 [inline]
+RIP: 0010:huge_pmd_unshare+0x6be/0x940 mm/hugetlb.c:6904
+Code: ff ff ff ff 48 81 c7 c8 00 00 00 e8 dc 89 6c 08 31 ff 41 89 c5 89 c6 e8 20 ce ae ff 45 85 ed 0f 85 67 fa ff ff e8 a2 d2 ae ff <0f> 0b e9 5b fa ff ff 31 db e9 5d fd ff ff e8 8f d2 ae ff 48 89 da
+RSP: 0018:ffffc90016177678 EFLAGS: 00010283
+RAX: 0000000000003492 RBX: 0000000020000000 RCX: ffffc9000aee4000
+RDX: 0000000000040000 RSI: ffffffff81d9831e RDI: 0000000000000005
+RBP: ffff88802a226880 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 000000000000003c R12: 0000000000000001
+R13: 0000000000000000 R14: 0000000000000001 R15: ffff88807e489e88
+FS:  00007fde004546c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b30d2a000 CR3: 000000007f0d7000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __unmap_hugepage_range+0x4e3/0x1940 mm/hugetlb.c:5222
+ unmap_hugepage_range+0x1fa/0x330 mm/hugetlb.c:5347
+ hugetlb_vmdelete_list+0x11d/0x170 fs/hugetlbfs/inode.c:534
+ hugetlbfs_punch_hole fs/hugetlbfs/inode.c:734 [inline]
+ hugetlbfs_fallocate+0xc75/0x1050 fs/hugetlbfs/inode.c:774
+ shm_fallocate+0xca/0x110 ipc/shm.c:646
+ vfs_fallocate+0x46c/0xe80 fs/open.c:324
+ madvise_remove mm/madvise.c:1019 [inline]
+ madvise_vma_behavior+0x1c00/0x1d00 mm/madvise.c:1043
+ madvise_walk_vmas+0x1cf/0x2c0 mm/madvise.c:1278
+ do_madvise+0x333/0x660 mm/madvise.c:1458
+ __do_sys_madvise mm/madvise.c:1471 [inline]
+ __se_sys_madvise mm/madvise.c:1469 [inline]
+ __x64_sys_madvise+0xaa/0x110 mm/madvise.c:1469
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fddff67cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fde004540c8 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+RAX: ffffffffffffffda RBX: 00007fddff79c050 RCX: 00007fddff67cae9
+RDX: 0000000000000009 RSI: 000000000060000b RDI: 0000000020000000
+RBP: 00007fddff6c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007fddff79c050 R15: 00007ffce99d7b18
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
