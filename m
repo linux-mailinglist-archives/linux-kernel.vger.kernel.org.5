@@ -2,52 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6927B47CD
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3888D7B47DD
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:13:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235076AbjJAOHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 10:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45200 "EHLO
+        id S235092AbjJAONK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 10:13:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235060AbjJAOHx (ORCPT
+        with ESMTP id S235023AbjJAONG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 10:07:53 -0400
-Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C3E9F
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 07:07:51 -0700 (PDT)
-Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-6c61ada4178so11086771a34.0
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 07:07:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696169269; x=1696774069;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eX0vtL5fOhmVLH0Nu1LjGmdg5gsapNaCgl3QZSj8jEY=;
-        b=sd1U6AK8iDmf89iCRn860jEg2KXuPU0+4XVcBqIOEJGtpzjQMMUSX+rq2DZyM7B7yC
-         GQomwZgrRBHN37E3+VXdF6uhVK3vk7MBcHotMhIwM6gx2pit+IqKUX/dp8yEWjP+51kh
-         Puj7xy2xXg0dosOTbzQRlti/buY/bJruncgkP2uB64WS5YO/ECrzPoKc4EZZvE2WD440
-         e1Etatjg9LpldSrgRpOZoK4Hw9Q1uPwUv5oj6eryqvEAHDt4F8oU80j7tHMgj54ORI2p
-         xBKf592VqWQK0IJ+ElHWXgoz6BPsSbKA0bu5WFZggFcclZknZN/z8/iUHWqYzhkOA30b
-         IDOw==
-X-Gm-Message-State: AOJu0Yx/VlU0tmaDbYOXUQShN5IJqRdBRWbm+zb6rRlc9odepKF8CFgk
-        8oXcOI2nv5i7ui+pgGMRhIg4un/cb2Kd/2d+OPH08U3OqBs0
-X-Google-Smtp-Source: AGHT+IHrjbC0o7FwFIb3BoFeuuKZMrHSMktNNZSSu7NoPcrQYSp2SVpEjUoCWY7cH8nvQL8iF/LX8U25w8wvZmxXr+X77RcBsn3p
+        Sun, 1 Oct 2023 10:13:06 -0400
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D04A4;
+        Sun,  1 Oct 2023 07:13:02 -0700 (PDT)
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 3C232836A5;
+        Sun,  1 Oct 2023 16:13:01 +0200 (CEST)
+From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Subject: [PATCH RFC v4 0/6] ARM: pxa: GPIO descriptor conversions
+Date:   Sun, 01 Oct 2023 16:12:51 +0200
+Message-Id: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:988a:b0:1dd:11b8:9ce2 with SMTP id
- eg10-20020a056870988a00b001dd11b89ce2mr3744918oab.5.1696169269394; Sun, 01
- Oct 2023 07:07:49 -0700 (PDT)
-Date:   Sun, 01 Oct 2023 07:07:49 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c801280606a82e95@google.com>
-Subject: [syzbot] [jfs?] INFO: trying to register non-static key in txEnd
-From:   syzbot <syzbot+ca4b16c6465dca321d40@syzkaller.appspotmail.com>
-To:     jfs-discussion@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shaggy@kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAGN+GWUC/13NSw7CIBCA4as0sxbDY2ipKxMTD+DWuKiFWqIpD
+ RhS0/TuEjYSl8Pw/bNCMN6aAIdqBW+iDdZNacBdBf3YTQ9DrE4zcMoFVbQh89KRx2wdEb3hUss
+ GFUNI32dvBrvk1BUu5xPc0uNow9v5T85Hlle51HL8lSIjlHBF5V01WqkWj+HpXmY/+tyIvHR14
+ XhyrUKsUbNaav3nROnawonkukFpaaRmgyjvbdv2BXLmtYoUAQAA
+To:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-spi@vger.kernel.org,
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2325;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=m8bKiHpWAVkzZ4rX+3MqXGTQKxlWpvxpDzrmC6PtKks=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlGX5nOeDT3j+PeN8XmO9hsa7Y0m/xSrsaviidP
+ P5CN29YWYyJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZRl+ZwAKCRCaEZ6wQi2W
+ 4b/FD/0cgXaU50cz0P86RkEXyT6bFJth3AXwlIJKthxeagxMpUY5yEUqu/T8p8LCOUDexyoLiCl
+ 6kUUOumwEsISsqpv+i4HXGcxRa5bLHWNAm3gXyr2KpAxUA0xnqT300mUeEqeRQCqJOYEgCMdTFi
+ EXCArOgqWkm9INcLP7yGavJ33xgosZeOjnoWaa8uQm4wqohD3wOF4fvCFqiSPFpRvtMmGnvnziu
+ o/TQ2MPZORRpb8fH5GIHj07lDkk5Yu40hVEgRy1p74jVxyB9JFyHsQsM14dV8nQ6ITW/596db+v
+ ldXimOvDHfUH4z5bc4D6GhvIUxpCwCO8CCYPPwxobz8TDhM1UApBu809kONvOMXdQxq4hIoedcD
+ M+hE1KV2BTj7vTvD5XeiNTM0xr0a1iVKOPqcUXRWnjl/Of2zDf5kWWvggXDp/ngD06rBEQbYkAN
+ OxpsNpPK1qrMH0/7AqrPt9EvGdtfhWok3aevethRNvzBJP19asFySsuY9zQ9Q1wArwvgAdA8YB8
+ uLMTl85cku91uvG88Z6GsnR0qq4/Wv8x6iHZImb77tWbfmpCqyEkj3RsNCdYGMqGJF4i2BDUWMX
+ PWqi/v8BGbET6E33UF1dxi3MQtJd3WHpoX+5XoBjgMlbe/nlJ5llpB+iEKSrHbirBoiIlxGitMV
+ iwbjBf5fmjzM4Ng==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,175 +73,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-syzbot found the following issue on:
+Small series to convert some of the board files in the mach-pxa directory
+to use the new GPIO descriptor interface.
 
-HEAD commit:    3b517966c561 Merge tag 'dma-mapping-6.6-2023-09-30' of git..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=10f60d01680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=12da82ece7bf46f9
-dashboard link: https://syzkaller.appspot.com/bug?extid=ca4b16c6465dca321d40
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=173cdcd6680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13451e92680000
+Most notably, the am200epd, am300epd and Spitz matrix keypad among
+others are not converted in this series.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5b735d3535d1/disk-3b517966.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b97a846fc755/vmlinux-3b517966.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b9cdff2a07c0/bzImage-3b517966.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/fcc011d82db8/mount_0.gz
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+Changes in v4:
+- Address maintainer comments:
+  - Move wait_for_sync() from spitz.c to driver
+  - Register LED platform device before getting its gpiod-s
+- Add Linus' Reviewed-by
+- Link to v3: https://lore.kernel.org/r/20230929-pxa-gpio-v3-0-af8d5e5d1f34@skole.hr
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ca4b16c6465dca321d40@syzkaller.appspotmail.com
+Changes in v3:
+- Address maintainer comments:
+  - Use GPIO_LOOKUP_IDX for LEDs
+  - Drop unnecessary NULL assignments
+  - Don't give up on *all* SPI devices if hsync cannot be set up
+- Add Linus' Acked-by
+- Link to v2: https://lore.kernel.org/r/20230926-pxa-gpio-v2-0-984464d165dd@skole.hr
 
-WARNING: The mand mount option has been deprecated and
-         and is ignored by this kernel. Remove the mand
-         option from the mount to silence this warning.
-=======================================================
-ERROR: (device loop0): txBegin: read-only filesystem
-ERROR: (device loop0): remounting filesystem as read-only
-INFO: trying to register non-static key.
-The code is fine but needs lockdep annotation, or maybe
-you didn't initialize this object before use?
-turning off the locking correctness validator.
-CPU: 1 PID: 5036 Comm: syz-executor418 Not tainted 6.6.0-rc3-syzkaller-00165-g3b517966c561 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- assign_lock_key+0x234/0x270 kernel/locking/lockdep.c:976
- register_lock_class+0x28e/0x990 kernel/locking/lockdep.c:1289
- __lock_acquire+0x190/0x7f70 kernel/locking/lockdep.c:5013
- lock_acquire+0x1e3/0x520 kernel/locking/lockdep.c:5753
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
- _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
- __wake_up_common_lock kernel/sched/wait.c:137 [inline]
- __wake_up+0x101/0x1d0 kernel/sched/wait.c:160
- txEnd+0x8c/0x560 fs/jfs/jfs_txnmgr.c:504
- __jfs_xattr_set+0x132/0x180 fs/jfs/xattr.c:920
- __vfs_setxattr+0x460/0x4a0 fs/xattr.c:201
- __vfs_setxattr_noperm+0x12e/0x5e0 fs/xattr.c:235
- vfs_setxattr+0x221/0x420 fs/xattr.c:322
- do_setxattr fs/xattr.c:630 [inline]
- setxattr+0x25d/0x2f0 fs/xattr.c:653
- path_setxattr+0x1c0/0x2a0 fs/xattr.c:672
- __do_sys_setxattr fs/xattr.c:688 [inline]
- __se_sys_setxattr fs/xattr.c:684 [inline]
- __x64_sys_setxattr+0xbb/0xd0 fs/xattr.c:684
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f8b974129c9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe91f079a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
-RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00007f8b974129c9
-RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000020000180
-RBP: 00007f8b9745b04b R08: 0000000000000002 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffe91f07b88 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 PID: 5036 Comm: syz-executor418 Not tainted 6.6.0-rc3-syzkaller-00165-g3b517966c561 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:__wake_up_common+0x23d/0x4e0
-Code: 00 49 83 c4 40 4d 39 e7 0f 84 f1 01 00 00 45 31 f6 eb 09 4d 39 e7 0f 84 e3 01 00 00 4c 89 fb 49 8d 6f e8 4c 89 f8 48 c1 e8 03 <80> 3c 10 00 74 12 48 89 df e8 85 46 7e 00 48 ba 00 00 00 00 00 fc
-RSP: 0018:ffffc90003a3f778 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: dffffc0000000000 RSI: 0000000000000003 RDI: ffffc90002631030
-RBP: ffffffffffffffe8 R08: 0000000000000000 R09: ffffc90003a3f820
-R10: dffffc0000000000 R11: fffff52000747ed8 R12: ffffc90002631070
-R13: 1ffff92000747f04 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000555556b00380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055f9c7d4fff0 CR3: 000000007e73b000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __wake_up_common_lock kernel/sched/wait.c:138 [inline]
- __wake_up+0x11e/0x1d0 kernel/sched/wait.c:160
- txEnd+0x8c/0x560 fs/jfs/jfs_txnmgr.c:504
- __jfs_xattr_set+0x132/0x180 fs/jfs/xattr.c:920
- __vfs_setxattr+0x460/0x4a0 fs/xattr.c:201
- __vfs_setxattr_noperm+0x12e/0x5e0 fs/xattr.c:235
- vfs_setxattr+0x221/0x420 fs/xattr.c:322
- do_setxattr fs/xattr.c:630 [inline]
- setxattr+0x25d/0x2f0 fs/xattr.c:653
- path_setxattr+0x1c0/0x2a0 fs/xattr.c:672
- __do_sys_setxattr fs/xattr.c:688 [inline]
- __se_sys_setxattr fs/xattr.c:684 [inline]
- __x64_sys_setxattr+0xbb/0xd0 fs/xattr.c:684
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f8b974129c9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe91f079a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
-RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00007f8b974129c9
-RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000020000180
-RBP: 00007f8b9745b04b R08: 0000000000000002 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffe91f07b88 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__wake_up_common+0x23d/0x4e0
-Code: 00 49 83 c4 40 4d 39 e7 0f 84 f1 01 00 00 45 31 f6 eb 09 4d 39 e7 0f 84 e3 01 00 00 4c 89 fb 49 8d 6f e8 4c 89 f8 48 c1 e8 03 <80> 3c 10 00 74 12 48 89 df e8 85 46 7e 00 48 ba 00 00 00 00 00 fc
-RSP: 0018:ffffc90003a3f778 EFLAGS: 00010046
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: dffffc0000000000 RSI: 0000000000000003 RDI: ffffc90002631030
-RBP: ffffffffffffffe8 R08: 0000000000000000 R09: ffffc90003a3f820
-R10: dffffc0000000000 R11: fffff52000747ed8 R12: ffffc90002631070
-R13: 1ffff92000747f04 R14: 0000000000000000 R15: 0000000000000000
-FS:  0000555556b00380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055f9c7d4fff0 CR3: 000000007e73b000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	49 83 c4 40          	add    $0x40,%r12
-   4:	4d 39 e7             	cmp    %r12,%r15
-   7:	0f 84 f1 01 00 00    	je     0x1fe
-   d:	45 31 f6             	xor    %r14d,%r14d
-  10:	eb 09                	jmp    0x1b
-  12:	4d 39 e7             	cmp    %r12,%r15
-  15:	0f 84 e3 01 00 00    	je     0x1fe
-  1b:	4c 89 fb             	mov    %r15,%rbx
-  1e:	49 8d 6f e8          	lea    -0x18(%r15),%rbp
-  22:	4c 89 f8             	mov    %r15,%rax
-  25:	48 c1 e8 03          	shr    $0x3,%rax
-* 29:	80 3c 10 00          	cmpb   $0x0,(%rax,%rdx,1) <-- trapping instruction
-  2d:	74 12                	je     0x41
-  2f:	48 89 df             	mov    %rbx,%rdi
-  32:	e8 85 46 7e 00       	call   0x7e46bc
-  37:	48                   	rex.W
-  38:	ba 00 00 00 00       	mov    $0x0,%edx
-  3d:	00 fc                	add    %bh,%ah
-
+Changes in v2:
+- Address maintainer comments:
+  - Change mentions of function to function()
+  - Drop cast in OHCI driver dev_warn() call
+  - Use %pe in OHCI and reset drivers
+  - Use GPIO _optional() API in OHCI driver
+  - Drop unnecessary not-null check in OHCI driver
+  - Use pr_err() instead of printk() in reset driver
+- Rebase on v6.6-rc3
+- Link to v1: https://lore.kernel.org/r/20230924-pxa-gpio-v1-0-2805b87d8894@skole.hr
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Duje Mihanović (6):
+      ARM: pxa: Convert Spitz OHCI to GPIO descriptors
+      ARM: pxa: Convert Spitz LEDs to GPIO descriptors
+      ARM: pxa: Convert Spitz CF power control to GPIO descriptors
+      ARM: pxa: Convert reset driver to GPIO descriptors
+      ARM: pxa: Convert gumstix Bluetooth to GPIO descriptors
+      input: ads7846: Move wait_for_sync() logic to driver
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+ arch/arm/mach-pxa/gumstix.c         | 24 +++++++------
+ arch/arm/mach-pxa/reset.c           | 39 +++++++--------------
+ arch/arm/mach-pxa/reset.h           |  3 +-
+ arch/arm/mach-pxa/spitz.c           | 69 +++++++++++++++++++++++++------------
+ drivers/input/touchscreen/ads7846.c | 22 ++++++++----
+ drivers/usb/host/ohci-pxa27x.c      |  7 ++++
+ include/linux/spi/ads7846.h         |  1 -
+ 7 files changed, 96 insertions(+), 69 deletions(-)
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20230807-pxa-gpio-3ce25d574814
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Best regards,
+-- 
+Duje Mihanović <duje.mihanovic@skole.hr>
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
