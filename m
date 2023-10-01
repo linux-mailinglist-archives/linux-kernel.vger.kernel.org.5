@@ -2,88 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E42597B46D7
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 12:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F7A7B46DE
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 12:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234898AbjJAK3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 06:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54414 "EHLO
+        id S234792AbjJAKbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 06:31:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234794AbjJAK3r (ORCPT
+        with ESMTP id S234777AbjJAKbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 06:29:47 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C18DE0;
-        Sun,  1 Oct 2023 03:29:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 203C1C433C9;
-        Sun,  1 Oct 2023 10:29:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696156178;
-        bh=81ol02msEB01/NcMPVgugti07kEIWXohMOsoa/ioGpY=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=e9Sm3PMS6VQE6vdLBrv8d1Uf59Viz0tDVjf6eqMURdDpTgEnZ/WtBNLSQ9qGSqE3f
-         pPBSiFXXS2gW7KWSTzVSX854IPlUsbSJCEz5M1QiWLlPK0zY9HYujA1fVBXn1kdBIQ
-         e1lspOZccDHEdLXguJs8EgbKZ8n9XqLrmyQdwBh/iwwqiPc+n2s3gaJBLQaIyxEx4a
-         z6Gy0B0wF0cz/d/gP4mb8DjpaWhGl4tt+lqXp9oVOoKAAVCDpxP9+VX7e0sIM+NOu7
-         a8oFPbIkAClzVsaVWvyhKo87J+dLt0BO5a26OWmEo2/lzPh4G0lekR0oyw4EY5+t2/
-         vRpyIRn4XG6LQ==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Sun, 01 Oct 2023 11:27:54 +0100
-Subject: [PATCH 7/7] mfd: twl: Convert to use maple tree register cache
+        Sun, 1 Oct 2023 06:31:51 -0400
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [83.223.95.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B395BD8;
+        Sun,  1 Oct 2023 03:31:46 -0700 (PDT)
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+         client-signature RSA-PSS (4096 bits) client-digest SHA256)
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
+        by bmailout1.hostsharing.net (Postfix) with ESMTPS id 0CD1B30000F33;
+        Sun,  1 Oct 2023 12:31:45 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 00557267E4E; Sun,  1 Oct 2023 12:31:44 +0200 (CEST)
+Date:   Sun, 1 Oct 2023 12:31:44 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Alistair Francis <alistair23@gmail.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        Jonathan.Cameron@huawei.com, alex.williamson@redhat.com,
+        christian.koenig@amd.com, kch@nvidia.com,
+        gregkh@linuxfoundation.org, logang@deltatee.com,
+        linux-kernel@vger.kernel.org, chaitanyak@nvidia.com,
+        rdunlap@infradead.org, Alistair Francis <alistair.francis@wdc.com>
+Subject: Re: [PATCH v8 1/3] PCI/DOE: Rename DOE protocol to feature
+Message-ID: <20231001103144.GA8318@wunner.de>
+References: <20230921055531.2028834-1-alistair.francis@wdc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231001-mfd-ti-maple-v1-7-0657862de3f6@kernel.org>
-References: <20231001-mfd-ti-maple-v1-0-0657862de3f6@kernel.org>
-In-Reply-To: <20231001-mfd-ti-maple-v1-0-0657862de3f6@kernel.org>
-To:     Lee Jones <lee@kernel.org>, Tony Lindgren <tony@atomide.com>
-Cc:     linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=827; i=broonie@kernel.org;
- h=from:subject:message-id; bh=81ol02msEB01/NcMPVgugti07kEIWXohMOsoa/ioGpY=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlGUoFMIIpewrFmcaDtdsWcw4kILq4xQOQEEJcq
- qqWTgwxageJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZRlKBQAKCRAk1otyXVSH
- 0I1TB/9XK+0FAoLrIqX2yf2A5OetRN4h4IXkuQHFOYzDlrhosx0/8s0CfJAT2vpe8ZfIAJpazRK
- kCffT4kP3+voI07IKlmRkcIp8YdzBHpl3WudYgDxoCIsAWSHtdPoYeuAmoSlLSsJb5fNv7Zczg5
- LTgcFyXQJD+hlr/KfY97jZ1LkZlbr7eokbvGdd3CtyjEM80Nem/mCoELPKRquT+y2XgIKcli9KF
- LqkuWSVLTXpbXtqAGPqQZX5iYqLCICmjxA2EvVcK49EHEs5OQKFy/7cNZcLhcJXovKD8FkhQFw6
- PKh5OPcqnAK1AREiVJNYuTmrWPdiL/lDVxu/a+xCexjFnBCt
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230921055531.2028834-1-alistair.francis@wdc.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The maple tree register cache is based on a much more modern data structure
-than the rbtree cache and makes optimisation choices which are probably
-more appropriate for modern systems than those made by the rbtree cache.
+On Thu, Sep 21, 2023 at 03:55:29PM +1000, Alistair Francis wrote:
+> DOE r1.1 replaced all occurrences of "protocol" with the term "feature"
+> or "Data Object Type".
+> 
+> PCIe r6.1 (which was published July 24) incorporated that change.
+> 
+> This patch renames the existing terms protocol with feature.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/mfd/twl-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Imperative mood is generally preferred instead of "This patch", i.e.:
+"Rename the exising..."
 
-diff --git a/drivers/mfd/twl-core.c b/drivers/mfd/twl-core.c
-index ce01a87f8dc3..1c1fefbeeb80 100644
---- a/drivers/mfd/twl-core.c
-+++ b/drivers/mfd/twl-core.c
-@@ -312,7 +312,7 @@ static const struct regmap_config twl4030_regmap_config[4] = {
- 
- 		.reg_defaults = twl4030_49_defaults,
- 		.num_reg_defaults = ARRAY_SIZE(twl4030_49_defaults),
--		.cache_type = REGCACHE_RBTREE,
-+		.cache_type = REGCACHE_MAPLE,
- 	},
- 	{
- 		/* Address 0x4a */
+Could you also rename PCI_DOE_DATA_OBJECT_DISC_RSP_3_PROTOCOL
+to PCI_DOE_DATA_OBJECT_DISC_RSP_3_TYPE (per PCIe r6.1 Table 6-31,
+both in drivers/pci/doe.c and include/uapi/linux/pci_regs.h).
 
--- 
-2.39.2
+Likewise PCI_DOE_PROTOCOL_DISCOVERY to PCI_DOE_FEATURE_DISCOVERY
+(per PCIe r6.1 sec 6.30.1.1, only in drivers/pci/doe.c)?
 
+With that addressed,
+Reviewed-by: Lukas Wunner <lukas@wunner.de>
+
+Thanks!
+
+Lukas
