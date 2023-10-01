@@ -2,127 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0A37B4749
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 14:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB9007B474C
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 14:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234919AbjJAMMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 08:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60278 "EHLO
+        id S234925AbjJAMSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 08:18:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbjJAMMe (ORCPT
+        with ESMTP id S232837AbjJAMSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 08:12:34 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6B492;
-        Sun,  1 Oct 2023 05:12:32 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id D44D23201263;
-        Sun,  1 Oct 2023 08:12:28 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sun, 01 Oct 2023 08:12:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ryhl.io; h=cc:cc
-        :content-transfer-encoding:content-type:content-type:date:date
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1696162348; x=1696248748; bh=/AsSColXGkWSjllLUN3EiONCeSGJj3ZeJ8O
-        xXQx3U9M=; b=D8ltTHChN8dMBqYyS1l2aj6kPoQiN7CzWyqeefEjExnLRNE61VP
-        r7X5sP7CvuVBUOgnwGdtc5ffRlfMVdDVX1pzorMNNcsuoBqGqyw11axHlUa+roNQ
-        CL+MBD8G6oD1H5r+a3ecwmBAEkXCUBlRG29dY15hQSHBpZySpJWc7ho5lWhzZYdl
-        kXAMvLXEmkdrM5t1GTXm7FzLVpHIIdKz3H2w8PLyti+THLW7TXfzoHUcryTt1mUo
-        BtTmIsaoqnBQDfryx7B8tW6GppRS+3b139RIKjt4mk2VXv98yuWLZZ/mpapz68iR
-        Tiu4FH6HDuXyCA0HZQJ0BZwJ8uxPN9FcPEA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1696162348; x=1696248748; bh=/AsSColXGkWSjllLUN3EiONCeSGJj3ZeJ8O
-        xXQx3U9M=; b=cyEalKmaFcRXmBvSO1C3+ZCqDhUIR3h2WANHk8uUuqhbQXprRdp
-        52+46QXlaRiXcFFA3I+BguFKDjTyxRJ4jlooWS60Eh3RxFX1EGHQfXAZm1qyg+Rt
-        pL11gt4d6Gda/26WTaTQ33mB6Cstx95YNCUI1wcaJ+2UHStqij8iGJPNQ5ynvsY9
-        u5X4AspgxEdOZWBgODKA1naN0X3l9qutstzo1gH3fb3zG4lFTllqXRmMv96pbGDO
-        8hw37gGCzh7++CczKCdfpjNvEjxEfSQV9rBtfPObkzxB2YJ7357V0kB1iRergozT
-        zD9LbjjIinth9kGgQlSsIe48VX1wAUnoOmg==
-X-ME-Sender: <xms:K2IZZS0c6YVOELAvj2rCtFZwszUpAdCgPk7Pzi044HA198TYcaSWzQ>
-    <xme:K2IZZVGJA7u1fsLbXtzp5R5qUVvla1Ox3HckRtjz53hh3z9p2Iv9Es8PFAiA4-cV_
-    xVp3sDE5x7bv-HxHg>
-X-ME-Received: <xmr:K2IZZa6V7JmwTNNYY-C5ckSshCWTix1CTnDqiN0Ozjr7Si1_XyczCnpJvYukZN6Dt2PWYHBhXNOr00Yn7D5h3zoMZSf9pdfRukxW>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddtgddvgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomheptehlihgt
-    vgcutfihhhhluceorghlihgtvgesrhihhhhlrdhioheqnecuggftrfgrthhtvghrnhepfe
-    fguefgtdeghfeuieduffejhfevueehueehkedvteefgfehhedtffdutdfgudejnecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghlihgtvgesrh
-    ihhhhlrdhioh
-X-ME-Proxy: <xmx:K2IZZT17gT0xOWKvlOZMZTeirz99xOTkClMQNOXWQZIeWJPSj_h5Lg>
-    <xmx:K2IZZVELWkOwEq9INNxwdl2oTUQ4lu7ntfwGYG6LrBoI46Rzbj5YUw>
-    <xmx:K2IZZc8zFMGFm98P3nTEaorjgJFHv7CqO_aDPRvwVFP80l8x71BIRQ>
-    <xmx:LGIZZdGudjo6bBgpGV3mygpFbBiwsHutBqGFWpgp5NGvdRh6m5h02w>
-Feedback-ID: i56684263:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 1 Oct 2023 08:12:24 -0400 (EDT)
-Message-ID: <45f5151e-76bc-4a86-a68f-3d8844e81323@ryhl.io>
-Date:   Sun, 1 Oct 2023 14:12:23 +0200
+        Sun, 1 Oct 2023 08:18:00 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E098F94
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 05:17:56 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-533c8f8f91dso17432537a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 05:17:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696162675; x=1696767475; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GAzLS2dOI2yGk1V4Wl9xWr4J2ifkSYT5oCM0Ek9ZlC8=;
+        b=Lta9eVgqJGx64bM+OYsoMD6qdOeD4XBsArp4+SGAHt96s8gek1zmsg3CatajP6K7Yv
+         WeSasDVG3A0LMCKFjBcad2RMYn2US6iYyJMl//flCybX4p5pdD5yb4lUnQB9HD2zTcne
+         kvL0I3VPCaXFgMT5GpzhYGF7CgaSAPCZtQkmlLIGj9QFHuoPJlGowi+Fgnxl0PprqfHg
+         luUIBRwIfIdHunzhcOw7+KHKjYj/QhD5a+JQe20D44e2WZENMHti4O2UV+Q2MpOQHFzv
+         uqfvRdGxaj+C/aGIbMbZaNTrAxcMG0Qwihpkcw4QTERYoDFWgCgRaYLepyjbsGgUTgT0
+         OyrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696162675; x=1696767475;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GAzLS2dOI2yGk1V4Wl9xWr4J2ifkSYT5oCM0Ek9ZlC8=;
+        b=HhDx3WXp+s7tWkeyrZZfqDPImffPfX4YhIOLg8VwMb/te3HaKMnArIsY37HyceTkL5
+         Df3ofNl0GARCZkynOH6W4kpOLnfkmNNlLQPTnyKduCtJAsxdm7dbTanB3JcJQiR+XbgR
+         HRZMSUfNgGwUZBky4D+HJEdoqGL902klatOnkuNrCC46bN+hrXHSJkf1F7oe9t581M1N
+         jdE+hCSrOtllTLikxdPljJH8ncJpdfPbGxVyAskRoYngXl32GtQ0w0xd1xzx9E/mOjuh
+         wr5umrBz6VPsG9D/sX2e+gA7+h+uphl82fV48YitFHZFFAQw3eNIjpt8BpYrNF1rtASb
+         eZtQ==
+X-Gm-Message-State: AOJu0Yx7XYgNn//o+0Wv08015HIjtO2ZsSkHYqDoddEd9+A2hkYNaGLN
+        efdTlmfdXp8erRVvzhL0uuI=
+X-Google-Smtp-Source: AGHT+IGlUbJ6x50iaYdhuEWNUrelSREHnjmxrrJK6ohea0fCwZ2JyB9hGW++3kFanro7izPMNQqTvg==
+X-Received: by 2002:a17:907:2cd5:b0:9ae:68dc:d571 with SMTP id hg21-20020a1709072cd500b009ae68dcd571mr7867155ejc.46.1696162674925;
+        Sun, 01 Oct 2023 05:17:54 -0700 (PDT)
+Received: from gmail.com (84-236-113-123.pool.digikabel.hu. [84.236.113.123])
+        by smtp.gmail.com with ESMTPSA id i8-20020a17090685c800b009ad7fc17b2asm15458667ejy.224.2023.10.01.05.17.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Oct 2023 05:17:52 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sun, 1 Oct 2023 14:17:50 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Alexey Kardashevskiy <aik@amd.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Subject: Re: [PATCH kernel v2] x86/compressed/64: reduce #VC nesting for
+ intercepted CPUID for SEV-SNP guest
+Message-ID: <ZRljbqRbaj+eoUU6@gmail.com>
+References: <20230926040526.957240-1-aik@amd.com>
+ <20230930071759.GAZRfLpz38AAITSZzW@fat_crate.local>
+ <e009f70e-32fc-404a-8560-f059b8999895@amd.com>
+ <20231001095322.GAZRlBkle6JC2rfM6u@fat_crate.local>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] rust: bindings: rename const binding using sed
-Content-Language: en-US-large
-To:     Gary Guo <gary@garyguo.net>
-Cc:     Wedson Almeida Filho <walmeida@microsoft.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
-        Vincenzo Palazzo <vincenzopalazzodev@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-References: <20230930133704.13313-1-gary@garyguo.net>
-From:   Alice Ryhl <alice@ryhl.io>
-In-Reply-To: <20230930133704.13313-1-gary@garyguo.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231001095322.GAZRlBkle6JC2rfM6u@fat_crate.local>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/23 15:36, Gary Guo wrote:
-> Current for consts that bindgen don't recognise, we define a helper
-> constant with
-> 
->      const <TYPE> BINDINGS_<NAME> = <NAME>;
-> 
-> in `bindings_helper.h` and then we put
-> 
->      pub const <NAME>: <TYPE> = BINDINGS_<NAME>;
-> 
-> in `bindings/lib.rs`. This is fine that we currently only have 3
-> constants that are defined this way, but is going to be more annoying
-> when more constants are added since every new constant needs to be
-> defined in two places.
-> 
-> This patch changes the way we define constant helpers to
-> 
->      const <TYPE> RUST_BINDING_<NAME> = <NAME>;
-> 
-> and then use `sed` to postprocess Rust code by generated by bindgen to
-> remove the distinct prefix, so user of the binding crate can refer to
-> the name directly.
 
-Maybe it would make sense to use a less generic name for this sed 
-replacement? E.g., maybe RUST_CONST_HELPER_ or something that's less 
-likely to overlap with things that are not constants.
+* Borislav Petkov <bp@alien8.de> wrote:
 
-Alice
+> On Sun, Oct 01, 2023 at 08:40:30PM +1100, Alexey Kardashevskiy wrote:
+> > Ingo says different, who wins? :)
+> 
+> I do: a function gives you type checking - a macro doesn't.
+
+That's false, because this specific macro don't force any types, it
+only passes types through as-is to type-checked functions, so both
+the macro and the function variant does similar quality of type
+checking ...
+
+But I'm fine with both approaches, I suggested a macro because the
+existing rdtsc definitions used macros already - but I have no
+strong feelings which particular color this shed gets painted ...
+
+Thanks,
+
+	Ingo
