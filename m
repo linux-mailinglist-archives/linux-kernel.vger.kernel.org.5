@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 205987B45F8
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC8B17B45F1
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234496AbjJAIP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 04:15:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48350 "EHLO
+        id S234489AbjJAIP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 04:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234480AbjJAIPZ (ORCPT
+        with ESMTP id S234474AbjJAIPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 1 Oct 2023 04:15:25 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001D4C2;
-        Sun,  1 Oct 2023 01:15:19 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b2cee40de8so464555766b.1;
-        Sun, 01 Oct 2023 01:15:19 -0700 (PDT)
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF01DBA;
+        Sun,  1 Oct 2023 01:15:21 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b2cee55056so441980866b.3;
+        Sun, 01 Oct 2023 01:15:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696148118; x=1696752918; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696148120; x=1696752920; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OGpDxcT5aeITQfH2zI83I7bXWv8lEzILwF0J/4qGo+Y=;
-        b=KkOyL5ES7i9q8GzliIAxFb+3VPZ8uBJloVMnbZ0baox7njgRc+AGRULZSxqpr0zxDf
-         fq6NgCyTH+eMoemcSzF30STP1EQc4sZYLSYfXQ14CxvNd8l0bjer8pjUMOLIsiOrSNCd
-         bdM55YDq4KHY3I4msyk2StjgOP7O151EQo3Zw7uwJ64Z24SuepvxXCVy+rpe60wCEVGv
-         IsJmJoi3oSbTU6X6PntX4UL/AEOtbEiDJViD3y3i/+9zzGy3glixT7OCZyWQsJ6DHSc1
-         GUghF21vuSDQ2taKKgWLzJzU53KquoZkz54chZ/YCxod06hqUIY85OWM71/JzNQocHTW
-         dQpQ==
+        bh=bXPGOO8O8at+wGMGIlqhcBW/HHlv4Zqhk0okLpSRNJU=;
+        b=Vv4lBv2M0T38TRc1d+qSs1hJ0Pa2XsM3mBGBz2U4aPo2JdxDecmTgfVFLyQhX3Dc5Z
+         rucOnmB4F3+P7I6UoHbtWYKxKj9LbGDqJeIShOX8pPuHXjIz2gGK0i0MuQyyBg+2VJPi
+         fQRPLmYUZKtbmrrSH7V87DNgP9wVBner8+gVkRfAWZeBtlcn2BgRVys3Rh9iqM6VAR3d
+         u3SfHxCROTAXQ8A7ulnCt12rMoGwvVjpZ7CGVpX/QMezutOryhhGc/74/EN65JDAZutb
+         WGLiYFKBqKbYGja4epQzj9c0occ1Ing25KzuxADN+YhbKl9uq7OUaPKv0qN4Ae+WfL7S
+         tASw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696148118; x=1696752918;
+        d=1e100.net; s=20230601; t=1696148120; x=1696752920;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=OGpDxcT5aeITQfH2zI83I7bXWv8lEzILwF0J/4qGo+Y=;
-        b=gAUAcUyis8gx3+0Y790WtTTz3svF4VmRE49Q0bowVaBLDms4D9BZEsn/iBJBvNOuzV
-         fKIL4haDuKqxTqMs6lGjc8tIeziTUzbxShYSriqwTMvUtXcN4KJ8l0sjvmsRJ7alx0Gf
-         smOfLInfzJ2j45d1Y6WGJs59e6NfQcvQ3cvoEa48XzN1ktiuY4Y/3mMBBJebgLmGVszc
-         +UijejVNqiEMPOO0wv7s38q1ITgYqwgNSnqabXfKLoU4/QWmcgBSrxo1m//qxj70OLUa
-         yE6fvwGZgqp+gFqmrRIiAss6KjtI81vnotS/MPPMjx8ENLDYwiStYxdU+KbNPH/1YMJR
-         szRw==
-X-Gm-Message-State: AOJu0Yxzpeq6SPyw/isI2fBvoglg3QxwFwHZGUimUi+1xcSsrYf9B15t
-        BMg6ICN4g1U+zeAZ4W8dsbk=
-X-Google-Smtp-Source: AGHT+IHIKuKziaTPs/SvMhhF5Zkuf6L4ps6cFZ7uLtEsBgaVjFj11OU6BXG0g3PD77GfV9LSmBb3Ew==
-X-Received: by 2002:a17:906:225c:b0:9a1:f1b2:9f2e with SMTP id 28-20020a170906225c00b009a1f1b29f2emr7570192ejr.2.1696148118076;
-        Sun, 01 Oct 2023 01:15:18 -0700 (PDT)
+        bh=bXPGOO8O8at+wGMGIlqhcBW/HHlv4Zqhk0okLpSRNJU=;
+        b=jqEhqNNOSgLwCD2RbaHuOZQJTiPVuibVWzTLrSPluZ4UT5wRIJm0ZGNhgfoQC4KhK8
+         m15a9d/sk12dbs1+uOLc2OKOXITUNF2oOw0m3xoa1VjF5/9jQdtnFifjXboOOdRTgk8T
+         gaREGmeiC2EDs1g2WdTBoyJcR43sT8BeilTLHX42xgaDCo7Iet6VfPwbYQ7pDhpZ/kma
+         tz0eonFb4Htnz8naYNLUQrhuSSwYZyE/410XSyeSFq7K3KJKwdk5dIgEtMHo0eBRMoRu
+         1f8iMD2vtZzUVY3SBCj/3v7gTcGdmOjNwhaV4bxh9BbCvJcuWJ1u4BpWQt5ehIHOKXaI
+         JVOg==
+X-Gm-Message-State: AOJu0YynDE0G5qekWnZN520PGumvX+9cnRwXS/j5dYaDscZCxiDET+sx
+        19o9NyasbUD3DcQ6h0+txaI=
+X-Google-Smtp-Source: AGHT+IFoG1Xk4xZXcw5QGT0BNVlKxAxA+W8WCMiypY5kOMOssGc51vH/NrB79UCzJnSl0JZgmz78ww==
+X-Received: by 2002:a17:906:cc2:b0:9ad:a59f:331a with SMTP id l2-20020a1709060cc200b009ada59f331amr7221138ejh.57.1696148119934;
+        Sun, 01 Oct 2023 01:15:19 -0700 (PDT)
 Received: from primary.. ([213.139.52.198])
-        by smtp.gmail.com with ESMTPSA id e8-20020a170906374800b0099cf840527csm15121841ejc.153.2023.10.01.01.15.16
+        by smtp.gmail.com with ESMTPSA id e8-20020a170906374800b0099cf840527csm15121841ejc.153.2023.10.01.01.15.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Oct 2023 01:15:17 -0700 (PDT)
+        Sun, 01 Oct 2023 01:15:19 -0700 (PDT)
 From:   Abdel Alkuor <alkuor@gmail.com>
 To:     heikki.krogerus@linux.intel.com, krzysztof.kozlowski+dt@linaro.org,
         bryan.odonoghue@linaro.org
 Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
         robh+dt@kernel.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v9 01/14] dt-bindings: usb: tps6598x: Add tps25750
-Date:   Sun,  1 Oct 2023 04:11:21 -0400
-Message-Id: <20231001081134.37101-2-alkuor@gmail.com>
+        devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>
+Subject: [PATCH v9 02/14] USB: typec: tsp6598x: Add cmd timeout and response delay
+Date:   Sun,  1 Oct 2023 04:11:22 -0400
+Message-Id: <20231001081134.37101-3-alkuor@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231001081134.37101-1-alkuor@gmail.com>
 References: <20231001081134.37101-1-alkuor@gmail.com>
@@ -78,135 +77,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Abdel Alkuor <abdelalkuor@geotab.com>
 
-TPS25750 is USB TypeC PD controller which is a subset of TPS6598x.
+Some commands in tps25750 take longer than 1 second
+to complete, and some responses need some delay before
+the result becomes available.
 
 Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 ---
 Changes in v9:
-  - Add Reviewed-by
+  - No changes
 Changes in v8:
-  - Define reg-names at top-level
+  - Add Reviewed-by
 Changes in v7:
-  - Define reg at top-level
-  - Remove description from reg-names
+  - Add driver name to commit subject 
 Changes in v6:
-  - Use reg property for patch address
+  - Use tps6598x_exec_cmd as a wrapper
 Changes in v5:
-  - Add tps25750 bindings
- .../devicetree/bindings/usb/ti,tps6598x.yaml  | 81 ++++++++++++++++++-
- .../devicetree/bindings/usb/ti,tps6598x.yaml  | 81 ++++++++++++++++++-
- 1 file changed, 80 insertions(+), 1 deletion(-)
+  - Incorporating tps25750 into tps6598x driver
+ drivers/usb/typec/tipd/core.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
-index 5497a60cddbc..72ac534e6ed2 100644
---- a/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
-+++ b/Documentation/devicetree/bindings/usb/ti,tps6598x.yaml
-@@ -20,8 +20,23 @@ properties:
-     enum:
-       - ti,tps6598x
-       - apple,cd321x
-+      - ti,tps25750
-+
-   reg:
--    maxItems: 1
-+    minItems: 1
-+    items:
-+      - description: main PD controller address
-+      - description: |
-+          I2C slave address field in PBMs input data
-+          which is used as the device address when writing the
-+          patch for TPS25750.
-+          The patch address can be any value except 0x00, 0x20,
-+          0x21, 0x22, and 0x23
-+
-+  reg-names:
-+    items:
-+      - const: main
-+      - const: patch-address
+diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+index 37b56ce75f39..32420c61660d 100644
+--- a/drivers/usb/typec/tipd/core.c
++++ b/drivers/usb/typec/tipd/core.c
+@@ -282,9 +282,10 @@ static void tps6598x_disconnect(struct tps6598x *tps, u32 status)
+ 	power_supply_changed(tps->psy);
+ }
  
-   wakeup-source: true
+-static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
++static int tps6598x_exec_cmd_tmo(struct tps6598x *tps, const char *cmd,
+ 			     size_t in_len, u8 *in_data,
+-			     size_t out_len, u8 *out_data)
++			     size_t out_len, u8 *out_data,
++			     u32 cmd_timeout_ms, u32 res_delay_ms)
+ {
+ 	unsigned long timeout;
+ 	u32 val;
+@@ -307,8 +308,7 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+ 	if (ret < 0)
+ 		return ret;
  
-@@ -32,10 +47,42 @@ properties:
-     items:
-       - const: irq
+-	/* XXX: Using 1s for now, but it may not be enough for every command. */
+-	timeout = jiffies + msecs_to_jiffies(1000);
++	timeout = jiffies + msecs_to_jiffies(cmd_timeout_ms);
  
-+  firmware-name:
-+    description: |
-+      Should contain the name of the default patch binary
-+      file located on the firmware search path which is
-+      used to switch the controller into APP mode.
-+      This is used when tps25750 doesn't have an EEPROM
-+      connected to it.
-+    maxItems: 1
-+
- required:
-   - compatible
-   - reg
+ 	do {
+ 		ret = tps6598x_read32(tps, TPS_REG_CMD1, &val);
+@@ -321,6 +321,9 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+ 			return -ETIMEDOUT;
+ 	} while (val);
  
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: ti,tps25750
-+    then:
-+      properties:
-+        reg:
-+          maxItems: 2
++	/* some commands require delay for the result to be available */
++	mdelay(res_delay_ms);
 +
-+        connector:
-+          required:
-+            - data-role
-+
-+      required:
-+        - connector
-+        - reg-names
-+    else:
-+      properties:
-+        reg:
-+          maxItems: 1
-+
- additionalProperties: true
+ 	if (out_len) {
+ 		ret = tps6598x_block_read(tps, TPS_REG_DATA1,
+ 					  out_data, out_len);
+@@ -345,6 +348,14 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
+ 	return 0;
+ }
  
- examples:
-@@ -68,4 +115,36 @@ examples:
-             };
-         };
-     };
++static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
++			     size_t in_len, u8 *in_data,
++			     size_t out_len, u8 *out_data)
++{
++	return tps6598x_exec_cmd_tmo(tps, cmd, in_len, in_data,
++				     out_len, out_data, 1000, 0);
++}
 +
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        typec@21 {
-+            compatible = "ti,tps25750";
-+            reg = <0x21>, <0x0f>;
-+            reg-names = "main", "patch-address";
-+
-+            interrupt-parent = <&msmgpio>;
-+            interrupts = <100 IRQ_TYPE_LEVEL_LOW>;
-+            interrupt-names = "irq";
-+            firmware-name = "tps25750.bin";
-+
-+            pinctrl-names = "default";
-+            pinctrl-0 = <&typec_pins>;
-+
-+            typec_con0: connector {
-+                compatible = "usb-c-connector";
-+                label = "USB-C";
-+                data-role = "dual";
-+                port {
-+                    typec_ep0: endpoint {
-+                        remote-endpoint = <&otg_ep>;
-+                    };
-+                };
-+            };
-+        };
-+    };
- ...
+ static int tps6598x_dr_set(struct typec_port *port, enum typec_data_role role)
+ {
+ 	const char *cmd = (role == TYPEC_DEVICE) ? "SWUF" : "SWDF";
 -- 
 2.34.1
 
