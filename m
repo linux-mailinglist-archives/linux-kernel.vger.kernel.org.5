@@ -2,147 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D14A7B4701
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 12:44:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDF17B470E
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 13:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234851AbjJAKoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 06:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39516 "EHLO
+        id S234839AbjJALHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 07:07:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234823AbjJAKoM (ORCPT
+        with ESMTP id S234821AbjJALHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 06:44:12 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A976B7;
-        Sun,  1 Oct 2023 03:44:09 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id E3C142184E;
-        Sun,  1 Oct 2023 10:44:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1696157046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KjN8Jj9pXX9nJ/oV/ViQdrLPUA+iQsH1M0z+BUtNsS4=;
-        b=W+T0U5VCcSvnv3PZ5nIsaPbS0kynBOBKKcLR41f6b0hVPcutsdyd0DdZ/0j6sDYd8Vt4lC
-        LMiRYPwYlhJeOhglhruxRWMrowncDpKpq5R0bL5SkI6tmrxJMnh2bg0uez9CLKyh3WHK7v
-        T02WAOhH7P7PaayzaCxI20dot5KOf4U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1696157046;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KjN8Jj9pXX9nJ/oV/ViQdrLPUA+iQsH1M0z+BUtNsS4=;
-        b=A/oShsgDE03LIuhKodJBq2l80uiUQ72jCQrfyJO/GgdxnSWhHd5ntt5RpR0ymzLXspmpjW
-        0x2oBaTTbgly9ODA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6737F132BE;
-        Sun,  1 Oct 2023 10:44:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id l84GGHZNGWU7UwAAMHmgww
-        (envelope-from <hare@suse.de>); Sun, 01 Oct 2023 10:44:06 +0000
-Message-ID: <e0360d8f-6d36-4178-9069-d633d9b7031d@suse.de>
-Date:   Sun, 1 Oct 2023 12:44:05 +0200
+        Sun, 1 Oct 2023 07:07:37 -0400
+Received: from smtp.smtpout.orange.fr (smtp-25.smtpout.orange.fr [80.12.242.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE033C2
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 04:07:32 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id muIKqTqNAm6tamuIKq8U2z; Sun, 01 Oct 2023 13:07:30 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1696158450;
+        bh=vnDdg5+DzhgdjgHe7taJV26QihvlT8zptPXcuelUK94=;
+        h=From:To:Cc:Subject:Date;
+        b=nPaerTM624Q5KEjxgJswqeFpq5OhcBol67sFbIhkVF77GVRMUBXpY0DwuSsqJOOTn
+         wVoZtLnsn5JrD9WKvVwo47eqbRqe37LfBdvE372lstTMcBReVX5Ne/KYW0ECHitHIG
+         BiMgTnyMEZlatR/fk9sP4bO8zUmQE/nRZaUza69inlUDs29S+7LqSv5TUVY2+byAZC
+         /Qt14ebRducV3Or2yaSeyn1BR8eYoPair4dsek646jESx9lLw/nO4p8QGHI/x4YLqX
+         ER03VapFfVsNtESQi5WqNOJlKhxDMhW6E9sBbuojDeRTBQzTP5nH/O0hBrRrgtmmf1
+         iNgvxfBcgFv+A==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 01 Oct 2023 13:07:30 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     keescook@chromium.org, Pravin B Shelar <pshelar@ovn.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        netdev@vger.kernel.org, dev@openvswitch.org
+Subject: [PATCH net-next 1/2] net: openvswitch: Use struct_size()
+Date:   Sun,  1 Oct 2023 13:07:22 +0200
+Message-Id: <8be59c9e06fca8eff2f264abb4c2f74db0b19a9e.1696156198.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] cnic,bnx2,bnx2x: use UIO_MEM_DMA_COHERENT
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Chris Leech <cleech@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Rasesh Mody <rmody@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        John Meneghini <jmeneghi@redhat.com>,
-        Lee Duncan <lduncan@suse.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230929170023.1020032-1-cleech@redhat.com>
- <20230929170023.1020032-4-cleech@redhat.com>
- <2023093055-gotten-astronomy-a98b@gregkh>
- <ZRhmqBRNUB3AfLv/@rhel-developer-toolbox>
- <2023093002-unlighted-ragged-c6e1@gregkh>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <2023093002-unlighted-ragged-c6e1@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/23 20:28, Greg Kroah-Hartman wrote:
-> On Sat, Sep 30, 2023 at 11:19:20AM -0700, Chris Leech wrote:
->> On Sat, Sep 30, 2023 at 09:06:51AM +0200, Greg Kroah-Hartman wrote:
->>> On Fri, Sep 29, 2023 at 10:00:23AM -0700, Chris Leech wrote:
->>>> Make use of the new UIO_MEM_DMA_COHERENT type to properly handle mmap
->>>> for dma_alloc_coherent buffers.
->>>
->>> Why are ethernet drivers messing around with UIO devices?  That's not
->>> what UIO is for, unless you are trying to do kernel bypass for these
->>> devices without anyone noticing?
->>>
->>> confused,
->>
->> It's confusing. The bnx2 driver stack included a cnic (converged nic?)
->> module that sits between the ethernet drivers (bnx2, bnx2x) and protocol
->> offload drivers (iscsi, fcoe, rdma).
->>
->> The iscsi module (bnx2i) uses a passthrough interface from cnic to
->> handle some network configuration that the device firmware doesn't do.
->> It uses a uio device and a userspace component called iscsiuio to do
->> that.
-> 
-> That's horrible, and not what the UIO api is for at all.  Configure the
-> device like any other normal kernel device, don't poke at raw memory
-> values directly, that way lies madness.
-> 
-> Have a pointer to the userspace tool anywhere?  All I found looks like a
-> full IP stack in userspace under that name, and surely that's not what
-> this api is for...
-> 
-But that's how the interface is used, in particular for the bnx2i 
-driver. Problem is that the bnx2i iSCSI offload is just that, an iSCSI 
-offload. Not a TCP offload. So if the iSCSI interface is configured to
-acquire the IP address via DHCP, someone has to run the DHCP protocol.
-But the iSCSI offload can't, and the bnx2i PCI device is not a network
-device so that the normal network stack can't be used.
-And so the architects of the bnx2i card decided to use UIO to pass
-the network traffic to userspace, and used the userspace 'iscsiuio'
-application to run DHCP in userspace.
+Use struct_size() instead of hand writing it.
+This is less verbose and more robust.
 
-But's been that way for several years now; so long, in fact, that
-the card itself has been out of support from Marvell (since quite some 
-years, too, IIRC). And even the successor of that card (the qedi driver)
-is nearing EOL. Mind you, the qedi driver is using the same interface 
-(by using UIO to run DHCP in userspace), so singling out the bnx2i for 
-bad design can be construed as being unfair :-)
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+This is IMHO more readable, even if not perfect.
 
-I agree, though, that the design is a mess.
+However (untested):
++	new = kzalloc(size_add(struct_size(new, masks, size),
+			       size_mul(sizeof(u64), size)), GFP_KERNEL);
 
-Cheers,
+looks completely unreadable to me.
+---
+ net/openvswitch/flow_table.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Hannes
+diff --git a/net/openvswitch/flow_table.c b/net/openvswitch/flow_table.c
+index 4f3b1798e0b2..d108ae0bd0ee 100644
+--- a/net/openvswitch/flow_table.c
++++ b/net/openvswitch/flow_table.c
+@@ -220,16 +220,13 @@ static struct mask_array *tbl_mask_array_alloc(int size)
+ 	struct mask_array *new;
+ 
+ 	size = max(MASK_ARRAY_SIZE_MIN, size);
+-	new = kzalloc(sizeof(struct mask_array) +
+-		      sizeof(struct sw_flow_mask *) * size +
++	new = kzalloc(struct_size(new, masks, size) +
+ 		      sizeof(u64) * size, GFP_KERNEL);
+ 	if (!new)
+ 		return NULL;
+ 
+ 	new->masks_usage_zero_cntr = (u64 *)((u8 *)new +
+-					     sizeof(struct mask_array) +
+-					     sizeof(struct sw_flow_mask *) *
+-					     size);
++					     struct_size(new, masks, size));
+ 
+ 	new->masks_usage_stats = __alloc_percpu(sizeof(struct mask_array_stats) +
+ 						sizeof(u64) * size,
 -- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
-Myers, Andrew McDonald, Martje Boudien Moerman
+2.34.1
 
