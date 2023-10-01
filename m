@@ -2,107 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 004587B4818
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB35C7B481D
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:41:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235088AbjJAOkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 10:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
+        id S235114AbjJAOlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 10:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233590AbjJAOki (ORCPT
+        with ESMTP id S235093AbjJAOlN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 10:40:38 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F5EDF
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 07:40:35 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99c136ee106so2155113266b.1
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 07:40:35 -0700 (PDT)
+        Sun, 1 Oct 2023 10:41:13 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074CED8;
+        Sun,  1 Oct 2023 07:41:11 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-57b9cb05fa3so1228489eaf.1;
+        Sun, 01 Oct 2023 07:41:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696171234; x=1696776034; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9WSXGXHBURPzmrW9bvhy9NXhgUHoIYOxdiOp4oYI05E=;
-        b=OWazHkrQFi9ydc6GKaSXUKtcIMn/ouoM6uD5imB8I8P7g2YbEL3BxkFm/bPBD0TPI7
-         VAdQ2P/OAp/TnqMkfWhKN/gDmla63KtoUHoBWSzrIcsN14lm7T1eeBnR0TRQ3HjK+nHe
-         nsMKTmpN9z1bn77QnGQryXGH61o8JM/66lFxT1QT0NjsxjuMIcuBXGfoq+eTItpcb1qW
-         6g5kMeUQBgQOrcZealJjQwpCyWUXv1kGYm/CwLEuvsyOz3R2MZUvBUBBrpfOefpLhKx4
-         nQ4GzQzXBg+3vOTe6ua3MiCJ5FfGz59IjB1NqwdIjHwMllHffwcMMUNQf1TV9x5a2j60
-         A+cQ==
+        d=gmail.com; s=20230601; t=1696171270; x=1696776070; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H7NM/u8C5++r3Xu6S7NuTAOJjvs6pM7LKKNv5w0BhLA=;
+        b=Y/yo2sR2TTsiH8vXxFqL17sXQup7mYjUjNxCQ9zxi+e0tKj9VHfs1GPIFG9cXZToxW
+         NAnQJN4K9CXRET1g7z7ji9QhacETcf2tLwWWxvXAkKOCn/xzwy3PeaUbC4rhS/KD5jOA
+         XzsiMsIoNSYQI72peAwX09iLoVzn8MOVds8/dicTduUV/02UD2bpVWPU0TAlEI1tgkrw
+         cyokCekMP296cd5yXAAGKO2895d34yfrB4SbPtLQ4/KaENQyvo7A7dBS3+7KW+qHqkTG
+         UU6KKsbjd/bIquiCRrGJZaEsLz2GtDtXGPLWvoB4YKlLNlI4Py59KWNWlpVmnARVFdl5
+         EZ7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696171234; x=1696776034;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9WSXGXHBURPzmrW9bvhy9NXhgUHoIYOxdiOp4oYI05E=;
-        b=G/Hu+n4Xq1DrYP3MbBvALt3xPjVD5WoMgQrfVPXgrZR8aTPY+7J6Lx+MhULAj1mx1f
-         rqdDpCviM9YcSguDu7h5/gZY+g6fPoUOVUiUAB5ArOfXx6XB0ygV6He6aTXJ4s+9nYXp
-         E2EE955saEpCjjayggOZnEpUOS3bePjznfCNADC+NSWBVUNDXjk3MREIGs1U8mBa3WkW
-         OKiAVKcEHHDxES6VsVn8zwW3IxPLdLd9bXuwDwvBNIFrTx8wlU/Dp8bjtLjqMv7XB07H
-         Nl6LRe8bYkNOGUel71onXQl6G9299J4P5jHA5wx1eKxHN5qbVgFRbGsxTlC6VZ5RN4bP
-         oBkA==
-X-Gm-Message-State: AOJu0Yx7/mkR8htvjwEEqUNN0BTfBwpVsS8nM1rbIie6IPOinrbszZAt
-        Hh6fS/rbPj1V88uqEhvR9RZO5A==
-X-Google-Smtp-Source: AGHT+IFeKziBiDxciXW7IYU9GXRpZ7Acba6SrW2fNPJ0lVgwpU/JeOc+jSOevgpbrnpxGuOEWPRqkw==
-X-Received: by 2002:a17:906:6a19:b0:9a1:c0e9:58ff with SMTP id qw25-20020a1709066a1900b009a1c0e958ffmr10773602ejc.11.1696171233722;
-        Sun, 01 Oct 2023 07:40:33 -0700 (PDT)
-Received: from [192.168.1.23] (host-2-99-112-229.as13285.net. [2.99.112.229])
-        by smtp.gmail.com with ESMTPSA id z3-20020a05600c220300b00406443c8b4fsm5378881wml.19.2023.10.01.07.40.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Oct 2023 07:40:33 -0700 (PDT)
-Message-ID: <230ca044-99c7-45df-9947-4605b8c0d295@linaro.org>
-Date:   Sun, 1 Oct 2023 15:40:30 +0100
+        d=1e100.net; s=20230601; t=1696171270; x=1696776070;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H7NM/u8C5++r3Xu6S7NuTAOJjvs6pM7LKKNv5w0BhLA=;
+        b=mvjEeNJ0tU7e+HezWyECfHj6/0IiIq5pwUS3yZeJrn9ljNZcpPOJzJlzXQ0gxudwBI
+         90UgzxN23gE0M7tVANaAH3gPpNEJ6XbgNNzs+x3ZMb+Fm3fh/jniwE/cx/rplusXWRW8
+         1jpPXJg9CEB+0K/MZk3ciWMDIAbbUuml+ErPtCJNaxhux2ziGu+gLtfeyg4d83O4MDhl
+         74PhAgeQlzJvadu4d4P3nLzu4f6wxL+/Kke3KBZp5vss2VQqfVLk5bdB6UbLUPEg38RE
+         h0HpVz7yv+u9Ur7ieEu+X1fmCjoEQyj37c/aacEf1k6h3VBX06T+W5kRlEOFWdquvyql
+         HQPg==
+X-Gm-Message-State: AOJu0YzbSuzNya5TITePg0IAkMy9/khhy12D/TaptlwJQr6diYP4DXX0
+        hwdFmFsgcZLX7H3/M9T9UnqofCSMNZxdhPdvteFRr1DaM+o3Bg==
+X-Google-Smtp-Source: AGHT+IEedQ7ArMjxTl0Iu9IA1xF0adbmoyGALbJAbsgy+A565Hvf5GKHZtriwF2UQ+mKr7piHvi435JHAYmMEzqMJ+A=
+X-Received: by 2002:a05:6820:127:b0:57e:ac1:6442 with SMTP id
+ i7-20020a056820012700b0057e0ac16442mr5462481ood.4.1696171270179; Sun, 01 Oct
+ 2023 07:41:10 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/3] Add fixes for FastRPC driver
-Content-Language: en-US
-To:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
-        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org
-Cc:     ekangupt@qti.qualcomm.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
-References: <1695973360-14369-1-git-send-email-quic_ekangupt@quicinc.com>
-From:   Caleb Connolly <caleb.connolly@linaro.org>
-In-Reply-To: <1695973360-14369-1-git-send-email-quic_ekangupt@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr> <20231001-pxa-gpio-v4-4-0f3b975e6ed5@skole.hr>
+In-Reply-To: <20231001-pxa-gpio-v4-4-0f3b975e6ed5@skole.hr>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 1 Oct 2023 17:40:34 +0300
+Message-ID: <CAHp75VcgajYz4XScSLTxYSKy6mbTjJ9mD7zF3j90d5+6V8NyZg@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 4/6] ARM: pxa: Convert reset driver to GPIO descriptors
+To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-spi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Oct 1, 2023 at 5:13=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovic@=
+skole.hr> wrote:
+>
+> The PXA reset driver still uses the legacy GPIO interface for
+> configuring and asserting the reset pin.
+>
+> Convert it to use the GPIO descriptor interface.
 
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-On 29/09/2023 08:42, Ekansh Gupta wrote:
-> This patchset carries the following fixes.
-> - Reset metadata buffer to avoid incorrect fd getting freed
-> - Free DMA handles for remote calls with no arguments
-> - Clean buffers on remote call failures
+I dunno how.
 
-Bit of a nit pick here, but you should try and use the cover letter to 
-explain the necessary context and justification for your series. An 
-overview of the commits is already included below by b4 or git-send-email.
+...
 
-It would be good to establish if these fixes are all related in some way 
-(ie to enable a specific usecase), or if it's just a few random things 
-that folks have discovered. Although it's almost always useful for 
-maintainers to know how these issues where discovered as it could expose 
-a gap in testing.
+> +       reset_gpio =3D gpiod_get(NULL, "reset generator", GPIOD_ASIS);
+> +       if (IS_ERR(reset_gpio)) {
+> +               pr_err("Can't request reset_gpio: %pe\n", reset_gpio);
+> +               return PTR_ERR(reset_gpio);
+>         }
 
-Regards,
+Here you asked for the GPIO named as "reset generator-gpio(s)" (The
+"(s)" part is for new bindings), but you must not use spaces in the
+GPIO names. Moreover the string literal there is for labeling, and not
+for matching.
 
-> 
-> Ekansh Gupta (3):
->    misc: fastrpc: Reset metadata buffer to avoid incorrect free
->    misc: fastrpc: Free DMA handles for RPC calls with no arguments
->    misc: fastrpc: Clean buffers on remote invocation failures
-> 
->   drivers/misc/fastrpc.c | 26 ++++++++++++--------------
->   1 file changed, 12 insertions(+), 14 deletions(-)
-> 
+...
 
--- 
-// Caleb (they/them)
+> +GPIO_LOOKUP_SINGLE(spitz_reset_gpio_table, NULL, "pxa-gpio",
+
+And here should be gpios. That's what you have to request, but because
+of the global (device-less) nature of this, you have to be very
+careful to avoid any clashes.
+
+> +               SPITZ_GPIO_ON_RESET, "reset generator", GPIO_ACTIVE_HIGH)=
+;
+
+...
+
+TBH, I don't know how it is supposed to work with your current code
+and if Linus really was okay with this.
+
+--=20
+With Best Regards,
+Andy Shevchenko
