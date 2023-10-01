@@ -2,126 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB35C7B481D
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:41:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33CE17B4822
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235114AbjJAOlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 10:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48164 "EHLO
+        id S235094AbjJAOoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 10:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235093AbjJAOlN (ORCPT
+        with ESMTP id S230173AbjJAOoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 10:41:13 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 074CED8;
-        Sun,  1 Oct 2023 07:41:11 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id 006d021491bc7-57b9cb05fa3so1228489eaf.1;
-        Sun, 01 Oct 2023 07:41:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696171270; x=1696776070; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H7NM/u8C5++r3Xu6S7NuTAOJjvs6pM7LKKNv5w0BhLA=;
-        b=Y/yo2sR2TTsiH8vXxFqL17sXQup7mYjUjNxCQ9zxi+e0tKj9VHfs1GPIFG9cXZToxW
-         NAnQJN4K9CXRET1g7z7ji9QhacETcf2tLwWWxvXAkKOCn/xzwy3PeaUbC4rhS/KD5jOA
-         XzsiMsIoNSYQI72peAwX09iLoVzn8MOVds8/dicTduUV/02UD2bpVWPU0TAlEI1tgkrw
-         cyokCekMP296cd5yXAAGKO2895d34yfrB4SbPtLQ4/KaENQyvo7A7dBS3+7KW+qHqkTG
-         UU6KKsbjd/bIquiCRrGJZaEsLz2GtDtXGPLWvoB4YKlLNlI4Py59KWNWlpVmnARVFdl5
-         EZ7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696171270; x=1696776070;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H7NM/u8C5++r3Xu6S7NuTAOJjvs6pM7LKKNv5w0BhLA=;
-        b=mvjEeNJ0tU7e+HezWyECfHj6/0IiIq5pwUS3yZeJrn9ljNZcpPOJzJlzXQ0gxudwBI
-         90UgzxN23gE0M7tVANaAH3gPpNEJ6XbgNNzs+x3ZMb+Fm3fh/jniwE/cx/rplusXWRW8
-         1jpPXJg9CEB+0K/MZk3ciWMDIAbbUuml+ErPtCJNaxhux2ziGu+gLtfeyg4d83O4MDhl
-         74PhAgeQlzJvadu4d4P3nLzu4f6wxL+/Kke3KBZp5vss2VQqfVLk5bdB6UbLUPEg38RE
-         h0HpVz7yv+u9Ur7ieEu+X1fmCjoEQyj37c/aacEf1k6h3VBX06T+W5kRlEOFWdquvyql
-         HQPg==
-X-Gm-Message-State: AOJu0YzbSuzNya5TITePg0IAkMy9/khhy12D/TaptlwJQr6diYP4DXX0
-        hwdFmFsgcZLX7H3/M9T9UnqofCSMNZxdhPdvteFRr1DaM+o3Bg==
-X-Google-Smtp-Source: AGHT+IEedQ7ArMjxTl0Iu9IA1xF0adbmoyGALbJAbsgy+A565Hvf5GKHZtriwF2UQ+mKr7piHvi435JHAYmMEzqMJ+A=
-X-Received: by 2002:a05:6820:127:b0:57e:ac1:6442 with SMTP id
- i7-20020a056820012700b0057e0ac16442mr5462481ood.4.1696171270179; Sun, 01 Oct
- 2023 07:41:10 -0700 (PDT)
+        Sun, 1 Oct 2023 10:44:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D189183;
+        Sun,  1 Oct 2023 07:44:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696171449; x=1727707449;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=eaZ6EntjZndNXd4oKfdQ0McHn3ig2hRV/qhNZ2cj228=;
+  b=PKzuV8KYQ74I0pZl59PncDSnGTv4sVzjyLM9d/FjJyi02NkcAnE2VuX7
+   OgslZok12MS0MXyxkMk4A+HlnocuV/+GCQhOP6Xg/MxQ6LZoRR24P1Pev
+   fIRo18K04oBjIne4niWQRKPSeT8NRpe9Ic7UxboOWR+y73X/IA+cGuVVz
+   sVazSTmTwcxSvXjXOJsnhfkwLEl4D+4yUOcPiiTYu9/fyjialLHH5iOuq
+   aynHYy8WN+4T2gVu3Q3ZcCV47zuR3kLFQrtfAhA141rKHOa7tzGoTO8wu
+   t5AaaQNLWWMgb+QfYVFHm5b9X3VBiBLrXBKuxHF0v6LFohZ6VaWbdxRzz
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="361906869"
+X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
+   d="scan'208";a="361906869"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2023 07:44:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="840769901"
+X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
+   d="scan'208";a="840769901"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by FMSMGA003.fm.intel.com with ESMTP; 01 Oct 2023 07:44:02 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qmxfo-00058N-1r;
+        Sun, 01 Oct 2023 14:43:57 +0000
+Date:   Sun, 1 Oct 2023 22:43:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sean Young <sean@mess.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc:     oe-kbuild-all@lists.linux.dev, Sean Young <sean@mess.org>,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH 1/2] pwm: make it possible to apply pwm changes in atomic
+ context
+Message-ID: <202310012229.ldJwkjOY-lkp@intel.com>
+References: <1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean@mess.org>
 MIME-Version: 1.0
-References: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr> <20231001-pxa-gpio-v4-4-0f3b975e6ed5@skole.hr>
-In-Reply-To: <20231001-pxa-gpio-v4-4-0f3b975e6ed5@skole.hr>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 1 Oct 2023 17:40:34 +0300
-Message-ID: <CAHp75VcgajYz4XScSLTxYSKy6mbTjJ9mD7zF3j90d5+6V8NyZg@mail.gmail.com>
-Subject: Re: [PATCH RFC v4 4/6] ARM: pxa: Convert reset driver to GPIO descriptors
-To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-spi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean@mess.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 1, 2023 at 5:13=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovic@=
-skole.hr> wrote:
->
-> The PXA reset driver still uses the legacy GPIO interface for
-> configuring and asserting the reset pin.
->
-> Convert it to use the GPIO descriptor interface.
+Hi Sean,
 
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
+kernel test robot noticed the following build errors:
 
-I dunno how.
+[auto build test ERROR on thierry-reding-pwm/for-next]
+[also build test ERROR on shawnguo/for-next atorgue-stm32/stm32-next media-tree/master linus/master v6.6-rc3 next-20230929]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-...
+url:    https://github.com/intel-lab-lkp/linux/commits/Sean-Young/media-pwm-ir-tx-trigger-edges-from-hrtimer-interrupt-context/20231001-194056
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git for-next
+patch link:    https://lore.kernel.org/r/1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean%40mess.org
+patch subject: [PATCH 1/2] pwm: make it possible to apply pwm changes in atomic context
+config: arm-randconfig-002-20231001 (https://download.01.org/0day-ci/archive/20231001/202310012229.ldJwkjOY-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231001/202310012229.ldJwkjOY-lkp@intel.com/reproduce)
 
-> +       reset_gpio =3D gpiod_get(NULL, "reset generator", GPIOD_ASIS);
-> +       if (IS_ERR(reset_gpio)) {
-> +               pr_err("Can't request reset_gpio: %pe\n", reset_gpio);
-> +               return PTR_ERR(reset_gpio);
->         }
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310012229.ldJwkjOY-lkp@intel.com/
 
-Here you asked for the GPIO named as "reset generator-gpio(s)" (The
-"(s)" part is for new bindings), but you must not use spaces in the
-GPIO names. Moreover the string literal there is for labeling, and not
-for matching.
+All errors (new ones prefixed by >>):
 
-...
+   In file included from include/linux/cpumask.h:10,
+                    from include/linux/smp.h:13,
+                    from include/linux/lockdep.h:14,
+                    from include/linux/spinlock.h:63,
+                    from include/linux/mmzone.h:8,
+                    from include/linux/gfp.h:7,
+                    from include/linux/slab.h:16,
+                    from include/linux/resource_ext.h:11,
+                    from include/linux/acpi.h:13,
+                    from include/linux/i2c.h:13,
+                    from drivers/input/misc/da7280.c:12:
+   include/linux/pwm.h: In function 'pwm_apply_state':
+>> include/linux/pwm.h:428:24: error: implicit declaration of function 'pwm_can_sleep'; did you mean 'cant_sleep'? [-Werror=implicit-function-declaration]
+     428 |         might_sleep_if(pwm_can_sleep(pwm));
+         |                        ^~~~~~~~~~~~~
+   include/linux/kernel.h:194:39: note: in definition of macro 'might_sleep_if'
+     194 | #define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
+         |                                       ^~~~
+   In file included from drivers/input/misc/da7280.c:16:
+   include/linux/pwm.h: At top level:
+>> include/linux/pwm.h:455:20: error: conflicting types for 'pwm_can_sleep'; have 'bool(struct pwm_device *)' {aka '_Bool(struct pwm_device *)'}
+     455 | static inline bool pwm_can_sleep(struct pwm_device *pwm)
+         |                    ^~~~~~~~~~~~~
+   include/linux/pwm.h:428:24: note: previous implicit declaration of 'pwm_can_sleep' with type 'int()'
+     428 |         might_sleep_if(pwm_can_sleep(pwm));
+         |                        ^~~~~~~~~~~~~
+   include/linux/kernel.h:194:39: note: in definition of macro 'might_sleep_if'
+     194 | #define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
+         |                                       ^~~~
+   cc1: some warnings being treated as errors
 
-> +GPIO_LOOKUP_SINGLE(spitz_reset_gpio_table, NULL, "pxa-gpio",
 
-And here should be gpios. That's what you have to request, but because
-of the global (device-less) nature of this, you have to be very
-careful to avoid any clashes.
+vim +428 include/linux/pwm.h
 
-> +               SPITZ_GPIO_ON_RESET, "reset generator", GPIO_ACTIVE_HIGH)=
-;
+   419	
+   420	struct pwm_device *devm_pwm_get(struct device *dev, const char *con_id);
+   421	struct pwm_device *devm_fwnode_pwm_get(struct device *dev,
+   422					       struct fwnode_handle *fwnode,
+   423					       const char *con_id);
+   424	#else
+   425	static inline int pwm_apply_state(struct pwm_device *pwm,
+   426					  const struct pwm_state *state)
+   427	{
+ > 428		might_sleep_if(pwm_can_sleep(pwm));
+   429		return -ENOTSUPP;
+   430	}
+   431	
+   432	static inline int pwm_adjust_config(struct pwm_device *pwm)
+   433	{
+   434		return -ENOTSUPP;
+   435	}
+   436	
+   437	static inline int pwm_config(struct pwm_device *pwm, int duty_ns,
+   438				     int period_ns)
+   439	{
+   440		might_sleep_if(pwm_can_sleep(pwm));
+   441		return -EINVAL;
+   442	}
+   443	
+   444	static inline int pwm_enable(struct pwm_device *pwm)
+   445	{
+   446		might_sleep_if(pwm_can_sleep(pwm));
+   447		return -EINVAL;
+   448	}
+   449	
+   450	static inline void pwm_disable(struct pwm_device *pwm)
+   451	{
+   452		might_sleep_if(pwm_can_sleep(pwm));
+   453	}
+   454	
+ > 455	static inline bool pwm_can_sleep(struct pwm_device *pwm)
+   456	{
+   457		return true;
+   458	}
+   459	
 
-...
-
-TBH, I don't know how it is supposed to work with your current code
-and if Linus really was okay with this.
-
---=20
-With Best Regards,
-Andy Shevchenko
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
