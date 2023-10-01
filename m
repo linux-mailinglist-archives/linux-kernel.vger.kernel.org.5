@@ -2,169 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACBAC7B4805
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB8747B4810
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:33:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235098AbjJAOXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 10:23:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
+        id S235090AbjJAOdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 10:33:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235074AbjJAOXb (ORCPT
+        with ESMTP id S233590AbjJAOdb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 10:23:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AA9A6
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 07:22:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696170160;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pS/deKlBkZMul+LFIgWetgiJ2B6GYe7768vqbID1y4s=;
-        b=ApmnCe5IKGekC6uXJM31sdVgH21DubGubAOBwd/nRLlcORO175FBnDyV8RgrusIiV2rw8k
-        2dnyn6+2b/94A8mRcCJr9e/6ezg7bajLYt3veV+A+zormntOV8taXCoiigVE7O17cGxW+c
-        TtAha9r1XfavU1WXPBbWt9HN410WXXA=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-304-NirXEysLMrqvmdl95GsmkQ-1; Sun, 01 Oct 2023 10:22:38 -0400
-X-MC-Unique: NirXEysLMrqvmdl95GsmkQ-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-77405179afdso2591363085a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 07:22:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696170158; x=1696774958;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        Sun, 1 Oct 2023 10:33:31 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E952ED3;
+        Sun,  1 Oct 2023 07:33:29 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-57b811a6ce8so7152586eaf.3;
+        Sun, 01 Oct 2023 07:33:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696170809; x=1696775609; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pS/deKlBkZMul+LFIgWetgiJ2B6GYe7768vqbID1y4s=;
-        b=EOp6U41OM7z2sasrYnZ9P4jhqxDKtFVuPY0s3Wx9N/NHjXGo2zE3a0CJXPTIqEe7F6
-         yTJL5gxmKbANuta8dW76jPyXuEi+R/KJC5KCGnv7oNWEdMePY9ie1RMr1gq7/P/gWhhH
-         1eGzUG4LVFqEFV7sw1Kl4X8EiuDIiXTFBOWvnlPQa6ksKaxPOTXvLYIZYnV/DXgmUhC2
-         yc3h6oIkns8+a+vrDSAfDXHhhJ7swY2h+x07o7tJJvyBVMthdKgJaUg8RYOpvFN7AXEY
-         32Kep+cUwdMKtYzcJJt4naieTnDoG63KZpKttBlm1DXi//ZP5vk8IuB8QlF30zmESRvf
-         zzrQ==
-X-Gm-Message-State: AOJu0Yz3nVQHt4Pklpf3YJ96BzCQKeP2DPwIIiKNi0RA9X7C0KWExK8H
-        c6lo5cJ5bFqkIXszFTh+6kLzI2eOWa8VDaRLPE1sSm+cvVlxWM+Ix2nIbmaT3WRNC3ngW77Kvp6
-        ecrkHBdkvyR214Gx0xFxG4fqV
-X-Received: by 2002:a05:620a:2992:b0:773:d99a:49e9 with SMTP id r18-20020a05620a299200b00773d99a49e9mr12568587qkp.66.1696170158517;
-        Sun, 01 Oct 2023 07:22:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFoEB2QAvrRIoNJUdcES86FH6wLkRgYY8YbnsxzOnPpV1YyGPz5hvVFbl3TQJU9hwHYDcqubw==
-X-Received: by 2002:a05:620a:2992:b0:773:d99a:49e9 with SMTP id r18-20020a05620a299200b00773d99a49e9mr12568566qkp.66.1696170158173;
-        Sun, 01 Oct 2023 07:22:38 -0700 (PDT)
-Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
-        by smtp.gmail.com with ESMTPSA id f19-20020a05620a15b300b0076f1d8b1c2dsm8317668qkk.12.2023.10.01.07.22.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Oct 2023 07:22:37 -0700 (PDT)
-Date:   Sun, 1 Oct 2023 07:22:36 -0700
-From:   Jerry Snitselaar <jsnitsel@redhat.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Hannes Reinecke <hare@suse.de>, Chris Leech <cleech@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Rasesh Mody <rmody@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        John Meneghini <jmeneghi@redhat.com>,
-        Lee Duncan <lduncan@suse.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] cnic,bnx2,bnx2x: use UIO_MEM_DMA_COHERENT
-Message-ID: <7pq4ptas5wpcxd3v4p7iwvgoj7vrpta6aqfppqmuoccpk4mg5t@fwxm3apjkez3>
-References: <20230929170023.1020032-1-cleech@redhat.com>
- <20230929170023.1020032-4-cleech@redhat.com>
- <2023093055-gotten-astronomy-a98b@gregkh>
- <ZRhmqBRNUB3AfLv/@rhel-developer-toolbox>
- <2023093002-unlighted-ragged-c6e1@gregkh>
- <e0360d8f-6d36-4178-9069-d633d9b7031d@suse.de>
- <2023100114-flatware-mourner-3fed@gregkh>
+        bh=g3Jav5+6DUIs7KX+qZ3JaZt9JVupViQnJo5QGYgH5Mc=;
+        b=g8XVXritbColFM+++Y8QFPXk6i3peWJ2TjxOXgnEktURGTpBSvi8jwptRf+TftPBf8
+         5OCQktDLxRnd4Jp49A1Y0fZhYZsZqOeBWhoiyV1AK3QEpfuWFrG12Z3BsGQOV6mx81mH
+         wAC+EzHq1kf/4vQlxZcMqJfMpTVCoZ2C6tA6uVPIPtgS2v4DMUpXKUy4Zxn0FxZperBM
+         oQDNGsbK712uLoVGhfPdS+3Qgtgqg6kxoaDzZ+oFkktzkoqwJhWtb6TV5bygNpH397NV
+         LukTecU3jkMjN/K3s8dQWkM2wBnkbSOzvIByEmbbKjCV+R3C7JvJErFUOszQ+Oo6jvW4
+         h8NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696170809; x=1696775609;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g3Jav5+6DUIs7KX+qZ3JaZt9JVupViQnJo5QGYgH5Mc=;
+        b=TCXpE5FB0nLLNlkr5rgQfQw3qqVTvdVJvWEiYZ7k8QJgcDZg6Dfd1yDqLrwKXtSqVJ
+         z2zc2ER2o4Qgt2FyhibkdAHCCizHd7o/yfgrmo4vaQpT6FRcquB9UgIGEmUXGHgN5DdN
+         qrT+GKpagBXqgwXC/zX2zT7n9mQTKmCtUmEUkuKVzmMHmUmXUQjCiQaj7Fi27/XQEQB8
+         RCseEA8midy1ifJsXV0fm9OfBcMWYL8NcSFJseYhkYLa2I6A5o4S248V00Ipxr3Qt20e
+         JmTU2RfHttYTeBQvphS8/PywB6lRt6ePx4C/9gunjbb1TXb95aMWARszYCa+xIaV/o4U
+         OX+A==
+X-Gm-Message-State: AOJu0YxENZjmD1jdtMhmaHLkOOcjJ2JBifNOJ9mCGwFNYSuJOHvtWMug
+        8Ulc048+xr2c5m9sah7xFLchOhKa7Z4hDG1LGkN/RLI+3yyB8g==
+X-Google-Smtp-Source: AGHT+IGgNaOiZcpHaHm5piA7udLhcvwFBsnPWU4dhIDLuEYbFppcaolhcpxeLANBtTKYa3FvhrVELca8deDOmfAKCc8=
+X-Received: by 2002:a4a:2756:0:b0:573:bf68:8dbc with SMTP id
+ w22-20020a4a2756000000b00573bf688dbcmr8662181oow.7.1696170809215; Sun, 01 Oct
+ 2023 07:33:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023100114-flatware-mourner-3fed@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr> <20231001-pxa-gpio-v4-1-0f3b975e6ed5@skole.hr>
+In-Reply-To: <20231001-pxa-gpio-v4-1-0f3b975e6ed5@skole.hr>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 1 Oct 2023 17:32:53 +0300
+Message-ID: <CAHp75VcBY3W8aVEsRMPNMW9940yT+_=-w8J2uKfqvmUiAVjPhg@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 1/6] ARM: pxa: Convert Spitz OHCI to GPIO descriptors
+To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Shevchenko <andy@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-spi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 01, 2023 at 01:57:25PM +0200, Greg Kroah-Hartman wrote:
-> On Sun, Oct 01, 2023 at 12:44:05PM +0200, Hannes Reinecke wrote:
-> > On 9/30/23 20:28, Greg Kroah-Hartman wrote:
-> > > On Sat, Sep 30, 2023 at 11:19:20AM -0700, Chris Leech wrote:
-> > > > On Sat, Sep 30, 2023 at 09:06:51AM +0200, Greg Kroah-Hartman wrote:
-> > > > > On Fri, Sep 29, 2023 at 10:00:23AM -0700, Chris Leech wrote:
-> > > > > > Make use of the new UIO_MEM_DMA_COHERENT type to properly handle mmap
-> > > > > > for dma_alloc_coherent buffers.
-> > > > > 
-> > > > > Why are ethernet drivers messing around with UIO devices?  That's not
-> > > > > what UIO is for, unless you are trying to do kernel bypass for these
-> > > > > devices without anyone noticing?
-> > > > > 
-> > > > > confused,
-> > > > 
-> > > > It's confusing. The bnx2 driver stack included a cnic (converged nic?)
-> > > > module that sits between the ethernet drivers (bnx2, bnx2x) and protocol
-> > > > offload drivers (iscsi, fcoe, rdma).
-> > > > 
-> > > > The iscsi module (bnx2i) uses a passthrough interface from cnic to
-> > > > handle some network configuration that the device firmware doesn't do.
-> > > > It uses a uio device and a userspace component called iscsiuio to do
-> > > > that.
-> > > 
-> > > That's horrible, and not what the UIO api is for at all.  Configure the
-> > > device like any other normal kernel device, don't poke at raw memory
-> > > values directly, that way lies madness.
-> > > 
-> > > Have a pointer to the userspace tool anywhere?  All I found looks like a
-> > > full IP stack in userspace under that name, and surely that's not what
-> > > this api is for...
-> > > 
-> > But that's how the interface is used, in particular for the bnx2i driver.
-> > Problem is that the bnx2i iSCSI offload is just that, an iSCSI offload. Not
-> > a TCP offload. So if the iSCSI interface is configured to
-> > acquire the IP address via DHCP, someone has to run the DHCP protocol.
-> > But the iSCSI offload can't, and the bnx2i PCI device is not a network
-> > device so that the normal network stack can't be used.
-> > And so the architects of the bnx2i card decided to use UIO to pass
-> > the network traffic to userspace, and used the userspace 'iscsiuio'
-> > application to run DHCP in userspace.
-> > 
-> > But's been that way for several years now; so long, in fact, that
-> > the card itself has been out of support from Marvell (since quite some
-> > years, too, IIRC). And even the successor of that card (the qedi driver)
-> > is nearing EOL. Mind you, the qedi driver is using the same interface (by
-> > using UIO to run DHCP in userspace), so singling out the bnx2i for bad
-> > design can be construed as being unfair :-)
-> 
-> Ok, let's say they are all horrible! :)
-> 
-> > I agree, though, that the design is a mess.
-> 
-> Ok, so why are we papering over it and continuing to allow it to exist?
+On Sun, Oct 1, 2023 at 5:13=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovic@=
+skole.hr> wrote:
 >
-> What "broke" to suddenly require this UIO change?  If this has been
-> around for a very long time, what has caused this to now require the UIO
-> layer to change?
-> 
-> thanks,
-> 
-> greg k-h
+> Sharp's Spitz board still uses the legacy GPIO interface for controlling
+> a GPIO pin related to the USB host controller.
+>
+> Convert this function to use the new GPIO descriptor interface.
 
-Changes last year to the dma-mapping api to no longer allow __GFP_COMP,
-in particular these two (from the e529d3507a93 dma-mapping pull for
-6.2):
+...
 
-ffcb75458460 dma-mapping: reject __GFP_COMP in dma_alloc_attrs | 2022-11-21 | (Christoph Hellwig)
-bb73955c0b1d cnic: don't pass bogus GFP_ flags to dma_alloc_coherent | 2022-11-21 | (Christoph Hellwig)
+> +       pxa_ohci->usb_host =3D gpiod_get_optional(&pdev->dev, "usb-host",=
+ GPIOD_OUT_LOW);
+> +       if (IS_ERR(pxa_ohci->usb_host))
+> +               dev_warn(&pdev->dev, "failed to get USB host GPIO with %p=
+e\n",
+> +                               pxa_ohci->usb_host);
 
+Since you are using _optional() API, you need to bail out on the error
+case and replace dev_warn() by dev_err(). I guess I already commented
+on this. What is the rationale to not follow my comment?
 
-Regards,
-Jerry
-
+--=20
+With Best Regards,
+Andy Shevchenko
