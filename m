@@ -2,170 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF787B45C0
+	by mail.lfdr.de (Postfix) with ESMTP id E1A6E7B45C1
 	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 09:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234380AbjJAHKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 03:10:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42602 "EHLO
+        id S234399AbjJAHOO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 03:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234351AbjJAHKD (ORCPT
+        with ESMTP id S234371AbjJAHOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 03:10:03 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 977DBBE
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 00:10:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696144200; x=1727680200;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=O8LO/x9HI8vE7NlP7DwrbfUWGVenFX481uUfJVYURxQ=;
-  b=LOI3jO+AF75y1+WThEQDOlT0oXDw6SkN7d50D79GQmIWOMcTKpHclz9M
-   chB+y4oAVpNeIfwO7r71kx1VpxLPO42uugcqSpAhGmNBepErxSXBc9dyY
-   /10YwhqEkCA/XuF4yJwXh/rJA8X0l6G2eR3bI5EJivYgAwA4ryPE1nUs2
-   ag0P+/pwu6SQlQTB/oiZLyKKSXcY5xuNMcbn2BMsMddP+ht2kmkYKMaVC
-   +G0ioRAihKQxa+vU+FnJmIfMt/W0+6m32cfy6k8jXAGjgZM72shBDzUxL
-   wJNvLwrqieFAANSjh6AYYgdIVZxcucC0arcgA+76QAik4uyi4qyVlM/4S
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10849"; a="362764410"
-X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
-   d="scan'208";a="362764410"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2023 00:10:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10849"; a="779655223"
-X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
-   d="scan'208";a="779655223"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 01 Oct 2023 00:09:51 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qmqaL-0004rt-1T;
-        Sun, 01 Oct 2023 07:09:49 +0000
-Date:   Sun, 1 Oct 2023 15:09:18 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     WANG Xuerui <git@xen0n.name>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Huacai Chen <chenhuacai@kernel.org>
-Subject: include/linux/build_bug.h:16:51: error: bit-field '<anonymous>'
- width not an integer constant
-Message-ID: <202310011507.dV9SV80o-lkp@intel.com>
+        Sun, 1 Oct 2023 03:14:12 -0400
+Received: from smtp.smtpout.orange.fr (smtp-15.smtpout.orange.fr [80.12.242.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C227BF
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 00:14:08 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id mqeRqDkx1FUAImqeRqiyTX; Sun, 01 Oct 2023 09:14:06 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1696144446;
+        bh=Dz1UeOwZ8D3gWqhd347/K4+hqBwOzPrkQWzzaVtlMzY=;
+        h=From:To:Cc:Subject:Date;
+        b=PQawNpi9kuc2NtZ7RgyVhcDO425+uGUgiUz6D13ulhKLSwmkQA6wWu5hiT3J7Y8jk
+         yNpNrMK0R4GbtAYoC2a2VMHMzWQ9V6tvquetNHnhGvTEs0SQ5gdTplEfBq1YQS9oSo
+         oBXRPQBNWDuHO8Pxj0lh898dN6EUpyq1V36bV1nORSquzqw9j6G7wVlN4byFgd6Gys
+         9x8wYJabPmpFjO6ito9ye6c8yerJR22PSZNtmTNz1TtPlUoEFGRxwtTVa5i7i9JRQG
+         nw37iCpgVbnGPr7+1Su7hBZBnhnCPkGur3OSgLSK22yUrj8Vb20JHP3FN/MZNrebVi
+         Kgr34PBPFnnmg==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 01 Oct 2023 09:14:06 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Kent Overstreet <kent.overstreet@linux.dev>,
+        Brian Foster <bfoster@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-bcachefs@vger.kernel.org, linux-hardening@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: [PATCH] bcachefs: Use struct_size()
+Date:   Sun,  1 Oct 2023 09:13:54 +0200
+Message-Id: <120b638f99b088f91d5a4491c800463c554e70b8.1696144401.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   e402b08634b398e9feb94902c7adcf05bb8ba47d
-commit: 3f301dc292eb122eff61b8b2906e519154b0327f LoongArch: Replace -ffreestanding with finer-grained -fno-builtin's
-date:   5 weeks ago
-config: loongarch-loongson3_defconfig (https://download.01.org/0day-ci/archive/20231001/202310011507.dV9SV80o-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 12.3.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231001/202310011507.dV9SV80o-lkp@intel.com/reproduce)
+Use struct_size() instead of hand writing it.
+This is less verbose and more robust.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310011507.dV9SV80o-lkp@intel.com/
+While at it, prepare for the coming implementation by GCC and Clang of the
+__counted_by attribute. Flexible array members annotated with __counted_by
+can have their accesses bounds-checked at run-time checking via
+CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE (for
+strcpy/memcpy-family functions).
 
-All error/warnings (new ones prefixed by >>):
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+This patch is part of a work done in parallel of what is currently worked
+on by Kees Cook.
 
-   In file included from include/linux/percpu.h:13,
-                    from include/linux/context_tracking_state.h:5,
-                    from include/linux/hardirq.h:5,
-                    from include/linux/interrupt.h:11,
-                    from sound/pci/bt87x.c:11:
-   arch/loongarch/include/asm/percpu.h:20:4: error: #error compiler support for the model attribute is necessary when a recent assembler is used
-      20 | #  error compiler support for the model attribute is necessary when a recent assembler is used
-         |    ^~~~~
-   In file included from include/linux/init.h:5,
-                    from sound/pci/bt87x.c:10:
->> include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width not an integer constant
-      16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-         |                                                   ^
-   include/linux/compiler.h:231:33: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-     231 | #define __must_be_array(a)      BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
-         |                                 ^~~~~~~~~~~~~~~~~
-   include/linux/kernel.h:56:59: note: in expansion of macro '__must_be_array'
-      56 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
-         |                                                           ^~~~~~~~~~~~~~~
-   include/linux/moduleparam.h:517:20: note: in expansion of macro 'ARRAY_SIZE'
-     517 |         = { .max = ARRAY_SIZE(array), .num = nump,                      \
-         |                    ^~~~~~~~~~
-   include/linux/moduleparam.h:501:9: note: in expansion of macro 'module_param_array_named'
-     501 |         module_param_array_named(name, name, type, nump, perm)
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~
-   sound/pci/bt87x.c:33:1: note: in expansion of macro 'module_param_array'
-      33 | module_param_array(index, int, NULL, 0444);
-         | ^~~~~~~~~~~~~~~~~~
->> sound/pci/bt87x.c:27:12: warning: 'index' defined but not used [-Wunused-variable]
-      27 | static int index[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = -2}; /* Exclude the first card */
-         |            ^~~~~
---
-   In file included from include/linux/irqflags.h:18,
-                    from include/linux/spinlock.h:59,
-                    from include/linux/mmzone.h:8,
-                    from include/linux/gfp.h:7,
-                    from include/linux/slab.h:16,
-                    from sound/usb/card.c:26:
-   arch/loongarch/include/asm/percpu.h:20:4: error: #error compiler support for the model attribute is necessary when a recent assembler is used
-      20 | #  error compiler support for the model attribute is necessary when a recent assembler is used
-         |    ^~~~~
-   In file included from include/linux/bits.h:21,
-                    from include/linux/bitops.h:6,
-                    from sound/usb/card.c:23:
->> include/linux/build_bug.h:16:51: error: bit-field '<anonymous>' width not an integer constant
-      16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-         |                                                   ^
-   include/linux/compiler.h:231:33: note: in expansion of macro 'BUILD_BUG_ON_ZERO'
-     231 | #define __must_be_array(a)      BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
-         |                                 ^~~~~~~~~~~~~~~~~
-   include/linux/kernel.h:56:59: note: in expansion of macro '__must_be_array'
-      56 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
-         |                                                           ^~~~~~~~~~~~~~~
-   include/linux/moduleparam.h:517:20: note: in expansion of macro 'ARRAY_SIZE'
-     517 |         = { .max = ARRAY_SIZE(array), .num = nump,                      \
-         |                    ^~~~~~~~~~
-   include/linux/moduleparam.h:501:9: note: in expansion of macro 'module_param_array_named'
-     501 |         module_param_array_named(name, name, type, nump, perm)
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~
-   sound/usb/card.c:81:1: note: in expansion of macro 'module_param_array'
-      81 | module_param_array(index, int, NULL, 0444);
-         | ^~~~~~~~~~~~~~~~~~
->> sound/usb/card.c:63:12: warning: 'index' defined but not used [-Wunused-variable]
-      63 | static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;      /* Index 0-MAX */
-         |            ^~~~~
+My patches are only related to corner cases that do NOT match the
+semantic of his Coccinelle script[1].
 
+In this case, struct_size() was not used to compute the size needed for the
+structure and its flex array.
 
-vim +16 include/linux/build_bug.h
+[1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+---
+ fs/bcachefs/disk_groups.c | 3 +--
+ fs/bcachefs/super_types.h | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-bc6245e5efd70c Ian Abbott       2017-07-10   6  
-bc6245e5efd70c Ian Abbott       2017-07-10   7  #ifdef __CHECKER__
-bc6245e5efd70c Ian Abbott       2017-07-10   8  #define BUILD_BUG_ON_ZERO(e) (0)
-bc6245e5efd70c Ian Abbott       2017-07-10   9  #else /* __CHECKER__ */
-bc6245e5efd70c Ian Abbott       2017-07-10  10  /*
-bc6245e5efd70c Ian Abbott       2017-07-10  11   * Force a compilation error if condition is true, but also produce a
-8788994376d84d Rikard Falkeborn 2019-12-04  12   * result (of value 0 and type int), so the expression can be used
-bc6245e5efd70c Ian Abbott       2017-07-10  13   * e.g. in a structure initializer (or where-ever else comma expressions
-bc6245e5efd70c Ian Abbott       2017-07-10  14   * aren't permitted).
-bc6245e5efd70c Ian Abbott       2017-07-10  15   */
-8788994376d84d Rikard Falkeborn 2019-12-04 @16  #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
-527edbc18a70e7 Masahiro Yamada  2019-01-03  17  #endif /* __CHECKER__ */
-527edbc18a70e7 Masahiro Yamada  2019-01-03  18  
-
-:::::: The code at line 16 was first introduced by commit
-:::::: 8788994376d84d627450fd0d67deb6a66ddf07d7 linux/build_bug.h: change type to int
-
-:::::: TO: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
-
+diff --git a/fs/bcachefs/disk_groups.c b/fs/bcachefs/disk_groups.c
+index b292dbef7992..224efa917427 100644
+--- a/fs/bcachefs/disk_groups.c
++++ b/fs/bcachefs/disk_groups.c
+@@ -166,8 +166,7 @@ int bch2_sb_disk_groups_to_cpu(struct bch_fs *c)
+ 	if (!groups)
+ 		return 0;
+ 
+-	cpu_g = kzalloc(sizeof(*cpu_g) +
+-			sizeof(cpu_g->entries[0]) * nr_groups, GFP_KERNEL);
++	cpu_g = kzalloc(struct_size(cpu_g, entries, nr_groups), GFP_KERNEL);
+ 	if (!cpu_g)
+ 		return -BCH_ERR_ENOMEM_disk_groups_to_cpu;
+ 
+diff --git a/fs/bcachefs/super_types.h b/fs/bcachefs/super_types.h
+index 597a8db73585..78d6138db62d 100644
+--- a/fs/bcachefs/super_types.h
++++ b/fs/bcachefs/super_types.h
+@@ -46,7 +46,7 @@ struct bch_disk_group_cpu {
+ struct bch_disk_groups_cpu {
+ 	struct rcu_head			rcu;
+ 	unsigned			nr;
+-	struct bch_disk_group_cpu	entries[];
++	struct bch_disk_group_cpu	entries[] __counted_by(nr);
+ };
+ 
+ #endif /* _BCACHEFS_SUPER_TYPES_H */
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
