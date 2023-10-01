@@ -2,202 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C9A97B4908
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 20:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5527B490C
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 20:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235274AbjJASNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 14:13:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43658 "EHLO
+        id S235281AbjJASOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 14:14:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233932AbjJASNr (ORCPT
+        with ESMTP id S233932AbjJASOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 14:13:47 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857E1BC;
-        Sun,  1 Oct 2023 11:13:44 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-692779f583fso11713363b3a.0;
-        Sun, 01 Oct 2023 11:13:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696184024; x=1696788824; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gMj01fiCMchmpOFI6pg14GedO51sLHMCkjaQsCK6pDM=;
-        b=kggSocivqwv1ntXtLBlqPimDLxjuQ0r8qrHhRCdx6r/cl+7DV0NW2tsyIwispQPK7H
-         3T41zyPDy/c0eFxpSx5UnYQcBVxOkyolJolYeZ34Bv8L16kDB3BTNzIt20/Culd5AwBx
-         PHG6frWKAie0N/lpru0aeyXGYod8Ee6X74PX2Ug30Opmx9wJ8LV6gVB4II89jiQ1lbjv
-         fuMKoEb1ABtn5hdB0EeuqsABBBR0kaLJHoM0lU14jS1VxtHUAW6qJna6gEfZKYWxmJTy
-         Oq2DVtQjaPZTk9PS8+8vj65IzkAe+DJX7BqcOAbF5v61WPFtnmP8QMsSNpkvVXIgF5da
-         e4Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696184024; x=1696788824;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gMj01fiCMchmpOFI6pg14GedO51sLHMCkjaQsCK6pDM=;
-        b=LuOurGuYKQvXBwZ5/sJQA+mSExg6UJs9rhUNv9bkkJiAO8Q73Ghf8dZv9sVEABk3kU
-         fZUUtreNJJnYBOR/v3hngb2AmtBurR97DHKTeXhWGD+qySPTCSBCa0ss5dA2QnZR5nZB
-         guXoCw4UWBZPRthN6LsDPMczFnAKq4I1/2YDr4lhF2WfMqzwoq3JkKwgYeDqg3+GhjyJ
-         xCGFvkqBrBgmSEphQspiE2XRoeMReCrDnddrN+z18FzJ4y9m1oIsSR2ElKWV0DsRljqZ
-         JDxPTv1J79xL1MyFMTFFltOdIRqMs0shVSg1Ka4Nc3D7UyM2IyAT/lt3RVFO4yNOwfbA
-         G77g==
-X-Gm-Message-State: AOJu0YzXNdvdLcuEofW2TfiOg06xYz2pbccLDqjKpcb8JUAs0C+UbHwR
-        bVfIjkzcnidG3AiwdeEcqKf6p+/MNfVx8g==
-X-Google-Smtp-Source: AGHT+IH+QzGsLJ3GCTpB6XfJ4ivzoU357fMauno1Q+QAtY+opNqUqihkD2RFpKSnRz/tRFolPHYyEQ==
-X-Received: by 2002:a05:6a00:2341:b0:68c:4e22:8f78 with SMTP id j1-20020a056a00234100b0068c4e228f78mr9219967pfj.25.1696184023793;
-        Sun, 01 Oct 2023 11:13:43 -0700 (PDT)
-Received: from [172.16.116.58] ([103.15.228.93])
-        by smtp.gmail.com with ESMTPSA id q25-20020a62e119000000b0069337938be8sm7729216pfh.110.2023.10.01.11.13.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Oct 2023 11:13:43 -0700 (PDT)
-Message-ID: <66fbd8d1-8b1a-50b5-c442-23847dc3d42f@gmail.com>
-Date:   Sun, 1 Oct 2023 23:43:38 +0530
+        Sun, 1 Oct 2023 14:14:38 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338F7C6;
+        Sun,  1 Oct 2023 11:14:35 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 391IELYD032646;
+        Sun, 1 Oct 2023 13:14:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696184061;
+        bh=O5rdSdlyu4updCwA3s54d2+oQ8P77FGDsfrVMd0oaJc=;
+        h=From:To:Subject:Date;
+        b=XHuVCaR2C+fLzVKrTQ1+YSQRtBSUiv0A1sToDjAfY6ZfqRRsf08iiMIxvyVokNDUx
+         9enLUoEP+mF8LtZAnEkLb1luNquaPNlkRgIa5Ak9mzHogOhGhJDdzxQZX5hXpk2vP7
+         tMiIm1HuwkL64gZvHxVjFKk9SbNALP4ZCcc+SahA=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 391IELJY004802
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sun, 1 Oct 2023 13:14:21 -0500
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 1
+ Oct 2023 13:14:21 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 1 Oct 2023 13:14:21 -0500
+Received: from TI.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 391IEHtn063395;
+        Sun, 1 Oct 2023 13:14:18 -0500
+From:   Apurva Nandan <a-nandan@ti.com>
+To:     Apurva Nandan <a-nandan@ti.com>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Hari Nagalla <hnagalla@ti.com>, Udit Kumar <u-kumar1@ti.com>
+Subject: [PATCH v5 0/9] Add R5F and C7x DSP node for K3 J721S2, AM68 and AM69 SoCs
+Date:   Sun, 1 Oct 2023 23:44:08 +0530
+Message-ID: <20231001181417.743306-1-a-nandan@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 2/3] greybus: Add BeaglePlay Linux Driver
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        greybus-dev@lists.linaro.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, vaishnav@beagleboard.org,
-        jkridner@beagleboard.org, nm@ti.com,
-        krzysztof.kozlowski+dt@linaro.org, johan@kernel.org,
-        elder@kernel.org
-References: <20230924113725.164948-1-ayushdevel1325@gmail.com>
- <20230924113725.164948-3-ayushdevel1325@gmail.com>
- <6ce74c42-d1d0-d9cb-9d90-68989933d1d4@linaro.org>
- <62f5671d-738b-997c-798f-7e6cc00f7ef9@gmail.com>
- <11888c25-466b-2c28-1265-578736182846@linaro.org>
-Content-Language: en-US
-From:   Ayush Singh <ayushdevel1325@gmail.com>
-In-Reply-To: <11888c25-466b-2c28-1265-578736182846@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>> +	spinlock_t tx_producer_lock;
->>>> +	/* tx_consumer_lock: HDLC consumer lock */
->>>> +	spinlock_t tx_consumer_lock;
->>>> +	struct circ_buf tx_circ_buf;
->>>> +	u16 tx_crc;
->>>> +	u8 tx_ack_seq;
->>>> +
->>>> +	u16 rx_buffer_len;
->>>> +	u8 rx_in_esc;
->>>> +	u8 rx_buffer[MAX_RX_HDLC];
->>>> +};
->>>> +
->>>> +struct hdlc_payload {
->>>> +	u16 length;
->>>> +	void *payload;
->>>> +};
->>>> +
->>> ...
->>>
->>>> +
->>>> +static int gb_serdev_init(struct gb_beagleplay *bg)
->>>> +{
->>>> +	u32 speed = 115200;
->>>> +	int ret;
->>>> +
->>>> +	serdev_device_set_drvdata(bg->serdev, bg);
->>>> +	serdev_device_set_client_ops(bg->serdev, &gb_beagleplay_ops);
->>>> +	ret = serdev_device_open(bg->serdev);
->>>> +	if (ret) {
->>>> +		return dev_err_probe(&bg->serdev->dev, ret,
->>>> +				     "Unable to Open Serial Device");
->>>> +	}
->>> Please run scripts/checkpatch.pl --strict and fix reported warnings.
->>> Some warnings can be ignored, but the code here looks like it needs a
->>> fix. Feel free to get in touch if the warning is not clear.
->> So I do not actually get any errors here in checkpatch. I am running the
->> follwing:
->>
->> `scripts/checkpatch.pl --codespell --strict patch/*`
->>
->> I only get a warning in coverletter due to that path of DT bindings
->> being more than 75 character long and ` Lines should not end with a '('`.
->>
->>>> +	if (!bg)
->>>> +		return -ENOMEM;
->>>> +
->>>> +	bg->serdev = serdev;
->>>> +	ret = gb_serdev_init(bg);
->>>> +	if (ret)
->>>> +		return ret;
->>>> +
->>>> +	ret = hdlc_init(bg);
->>>> +	if (ret)
->>>> +		goto free_serdev;
->>>> +
->>>> +	ret = gb_greybus_init(bg);
->>>> +	if (ret)
->>>> +		goto free_hdlc;
->>>> +
->>>> +	gb_beagleplay_start_svc(bg);
->>>> +
->>>> +	return 0;
->>>> +
->>>> +free_hdlc:
->>>> +	hdlc_deinit(bg);
->>>> +free_serdev:
->>>> +	gb_serdev_deinit(bg);
->>>> +	return ret;
->>>> +}
->>>> +
->>>> +static void gb_beagleplay_remove(struct serdev_device *serdev)
->>>> +{
->>>> +	struct gb_beagleplay *bg = serdev_device_get_drvdata(serdev);
->>>> +
->>>> +	gb_greybus_deinit(bg);
->>>> +	gb_beagleplay_stop_svc(bg);
->>>> +	hdlc_deinit(bg);
->>>> +	gb_serdev_deinit(bg);
->>>> +}
->>>> +
->>>> +static const struct of_device_id gb_beagleplay_of_match[] = {
->>>> +	{
->>>> +		.compatible = "beagle,play-cc1352",
->>>> +	},
->>>> +	{},
->>>> +};
->>>> +MODULE_DEVICE_TABLE(of, gb_beagleplay_of_match);
->>>> +
->>>> +static struct serdev_device_driver gb_beagleplay_driver = {
->>>> +	.probe = gb_beagleplay_probe,
->>>> +	.remove = gb_beagleplay_remove,
->>>> +	.driver = {
->>>> +	      .name = "gb_beagleplay",
->>>> +	      .of_match_table = gb_beagleplay_of_match,
->>> This is still wrongly aligned. Spaces after tab. Are you sure checkpatch
->>> does not complain bout it?
->> Again, it doesn't seem to for me. Am I missing some environment
->> variables or options? Or maybe something wrong with my editor config
->> (neovim)?
-> You have spaces after tab, so how can this be properly aligned?
->
-> Best regards,
-> Krzysztof
->
-So I just wanted to confirm, but I think spaces after tab are fine for 
-alignment, right? I found this 
-(https://www.mail-archive.com/kernelnewbies@kernelnewbies.org/msg13354.html) 
-message in mailing list stating that it is fine.
+This series adds the R5F processor nodes and C7x DSP nodes for 
+J721S2, AM68 and AM69 SoCs to align these nodes with other K3 SOC's node.
 
-It seems clang-format adds spaces for alignment less than 8 spaces. And 
-checkpatch doesn't seem to complain as long as spaces are used for 
-alignment (not indentation).
+The first three patches adds the remote proc nodes to the SoC device
+tree, remaining patches reserves the memory for remote proc IPCs
+on K3 J721S2 EVM, AM68 SK, AM69 boards.
 
+Note, K3 AM69 SoC derives from K3 J784S4 SoC, but is included in this
+series as it was originally missed in the K3 J784S4 EVM rproc series.
+(https://lore.kernel.org/all/20230502231527.25879-4-hnagalla@ti.com/).
 
-Sincerely,
+kpv log: https://gist.githubusercontent.com/apurvanandan1997/57fcf127c118a48bd174ce36d8840329/raw/
+Test log: https://gist.githubusercontent.com/apurvanandan1997/556b4148651ae74b50dda993ad07f1e5/raw/
 
-Ayush Singh
+v5: Changelog:
+1) Rebased patches on top of next-20230929 tag, no other change
+
+Link to v4:
+https://lore.kernel.org/linux-arm-kernel/20230906112422.2846151-1-a-nandan@ti.com/
+
+v4: Changelog:
+1) Added R5F and C7x nodes for K3 AM68 and AM69 SoCs
+
+Link to v3:
+https://lore.kernel.org/linux-arm-kernel/20230811202252.3586926-1-a-nandan@ti.com/
+
+v3: Changelog:
+1) Disabled c7x in k3-j721s2-main.dtsi and enabled in k3-j721s2-som-p0.dtsi
+   which fixes the following dtbs_check for k3-am69-sk.dts
+   - dsp@64800000: 'mboxes' is a required property
+   - dsp@64800000: 'memory-region' is a required property
+2) Split into separate patches for C7x and R5F
+
+Link to v2:
+https://lore.kernel.org/lkml/20230808201842.292911-1-a-nandan@ti.com/
+
+v2:Changelog:
+1) Added status = "disabled"; in soc dtsi files, and removed it from som dts
+2) Fixed mboxes property in for all cores in som dts
+
+Link to v1:
+https://lore.kernel.org/all/20230529220941.10801-1-hnagalla@ti.com/
+
+Apurva Nandan (9):
+  arm64: dts: ti: k3-j721s2-mcu: Add MCU R5F cluster nodes
+  arm64: dts: ti: k3-j721s2-main: Add MAIN R5F remote processsor nodes
+  arm64: dts: ti: k3-j721s2-main: Add C7x remote processsor nodes
+  arm64: dts : ti: k3-j721s2-som-p0: Add DDR carveout memory nodes for
+    R5F
+  arm64: dts : ti: k3-j721s2-som-p0: Add DDR carveout memory nodes for
+    C71x DSPs
+  arm64: dts : ti: k3-am68-sk-som: Add DDR carveout memory nodes for R5F
+  arm64: dts : ti: k3-am68-sk-som: Add DDR carveout memory nodes for
+    C71x DSP
+  arm64: dts : ti: k3-am69-sk: Add DDR carveout memory nodes for R5F
+  arm64: dts : ti: k3-am69-sk: Add DDR carveout memory nodes for C71x
+    DSP
+
+ arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi    | 208 ++++++++++++
+ arch/arm64/boot/dts/ti/k3-am69-sk.dts         | 304 ++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi    | 106 ++++++
+ .../boot/dts/ti/k3-j721s2-mcu-wakeup.dtsi     |  40 +++
+ arch/arm64/boot/dts/ti/k3-j721s2-som-p0.dtsi  | 208 ++++++++++++
+ 5 files changed, 866 insertions(+)
+
+-- 
+2.34.1
 
