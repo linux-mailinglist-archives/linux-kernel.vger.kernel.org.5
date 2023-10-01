@@ -2,202 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E30D37B4889
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 18:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 150CB7B488F
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 18:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235186AbjJAQI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 12:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46254 "EHLO
+        id S235198AbjJAQK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 12:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235093AbjJAQI1 (ORCPT
+        with ESMTP id S235155AbjJAQKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 12:08:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A950ED3;
-        Sun,  1 Oct 2023 09:08:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696176504; x=1727712504;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ttbpa5CPZtUl/EL5mFBC+uzL/iLNKmwUeDvQROsDv6k=;
-  b=d0oDODo4nQa9xmI7lbTpV2a9K/7S3gcW5m+8+wrTic42ocMZNcjR5v1j
-   2oyjqs9wpx6GaPTDiPhMqzRXu6blnWLQiUWUKRoEvb626uqkPY20N/AXR
-   C4kbmHsypjGv7cPNFYeVrNxZia7fvqahvql+80SxAGFf4jDOWKPi24OI6
-   RomTVlTAa1x0kXeOXruOgXVaC70AHC/zsCpC2Ql9P14VsYiJGyEKZJqcm
-   OahpARJADkbJRX7qnF36sqlFKFuchhk8DxvePno8NRGVrxc1KbEcxC+ZJ
-   Bl/Bwoo4eLzSBMD8GAcWTWF5xBzUUMfz/jF7jBR3BSR33wc1K2Q1UjTAO
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="382445439"
-X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
-   d="scan'208";a="382445439"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2023 09:08:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="785576469"
-X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
-   d="scan'208";a="785576469"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 01 Oct 2023 09:08:17 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qmyzP-0005Cf-2Z;
-        Sun, 01 Oct 2023 16:08:15 +0000
-Date:   Mon, 2 Oct 2023 00:07:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sean Young <sean@mess.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daire McNamara <daire.mcnamara@microchip.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     oe-kbuild-all@lists.linux.dev, Sean Young <sean@mess.org>,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH 1/2] pwm: make it possible to apply pwm changes in atomic
- context
-Message-ID: <202310012348.puyNjoMk-lkp@intel.com>
-References: <1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean@mess.org>
+        Sun, 1 Oct 2023 12:10:54 -0400
+Received: from smtprelay05.ispgateway.de (smtprelay05.ispgateway.de [80.67.18.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47989DA
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 09:10:51 -0700 (PDT)
+Received: from [92.206.139.21] (helo=note-book.lan)
+        by smtprelay05.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <git@apitzsch.eu>)
+        id 1qmz1l-0008CX-Ob; Sun, 01 Oct 2023 18:10:41 +0200
+From:   =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
+Date:   Sun, 01 Oct 2023 18:09:56 +0200
+Subject: [PATCH] iio: magnetometer: ak8975: Fix 'Unexpected device' error
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean@mess.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20231001-ak_magnetometer-v1-1-09bf3b8798a3@apitzsch.eu>
+X-B4-Tracking: v=1; b=H4sIANOZGWUC/x3MQQqAIBBA0avIrBNGhaiuEhGWUw2RhkoE0d2Tl
+ m/x/wOJIlOCTjwQ6eLEwReoSsC8Wb+SZFcMGrVRiErafTzs6imHgzJFOWFtsG2w0c5Bqc5IC9/
+ /sR/e9wOgT7D+YQAAAA==
+To:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
+X-Mailer: b4 0.12.3
+X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
+Explicity specify array indices to fix mapping between
+asahi_compass_chipset and ak_def_array.
+While at it, remove unneeded AKXXXX.
 
-kernel test robot noticed the following build errors:
+Fixes: 4f9ea93afde1 ("iio: magnetometer: ak8975: Convert enum->pointer for data in the match tables")
+Signed-off-by: André Apitzsch <git@apitzsch.eu>
+---
+ drivers/iio/magnetometer/ak8975.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-[auto build test ERROR on thierry-reding-pwm/for-next]
-[also build test ERROR on shawnguo/for-next atorgue-stm32/stm32-next media-tree/master linus/master v6.6-rc3 next-20230929]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+diff --git a/drivers/iio/magnetometer/ak8975.c b/drivers/iio/magnetometer/ak8975.c
+index 8cfceb007936..dd466c5fa621 100644
+--- a/drivers/iio/magnetometer/ak8975.c
++++ b/drivers/iio/magnetometer/ak8975.c
+@@ -204,7 +204,6 @@ static long ak09912_raw_to_gauss(u16 data)
+ 
+ /* Compatible Asahi Kasei Compass parts */
+ enum asahi_compass_chipset {
+-	AKXXXX		= 0,
+ 	AK8975,
+ 	AK8963,
+ 	AK09911,
+@@ -248,7 +247,7 @@ struct ak_def {
+ };
+ 
+ static const struct ak_def ak_def_array[] = {
+-	{
++	[AK8975] = {
+ 		.type = AK8975,
+ 		.raw_to_gauss = ak8975_raw_to_gauss,
+ 		.range = 4096,
+@@ -273,7 +272,7 @@ static const struct ak_def ak_def_array[] = {
+ 			AK8975_REG_HYL,
+ 			AK8975_REG_HZL},
+ 	},
+-	{
++	[AK8963] = {
+ 		.type = AK8963,
+ 		.raw_to_gauss = ak8963_09911_raw_to_gauss,
+ 		.range = 8190,
+@@ -298,7 +297,7 @@ static const struct ak_def ak_def_array[] = {
+ 			AK8975_REG_HYL,
+ 			AK8975_REG_HZL},
+ 	},
+-	{
++	[AK09911] = {
+ 		.type = AK09911,
+ 		.raw_to_gauss = ak8963_09911_raw_to_gauss,
+ 		.range = 8192,
+@@ -323,7 +322,7 @@ static const struct ak_def ak_def_array[] = {
+ 			AK09912_REG_HYL,
+ 			AK09912_REG_HZL},
+ 	},
+-	{
++	[AK09912] = {
+ 		.type = AK09912,
+ 		.raw_to_gauss = ak09912_raw_to_gauss,
+ 		.range = 32752,
+@@ -348,7 +347,7 @@ static const struct ak_def ak_def_array[] = {
+ 			AK09912_REG_HYL,
+ 			AK09912_REG_HZL},
+ 	},
+-	{
++	[AK09916] = {
+ 		.type = AK09916,
+ 		.raw_to_gauss = ak09912_raw_to_gauss,
+ 		.range = 32752,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Sean-Young/media-pwm-ir-tx-trigger-edges-from-hrtimer-interrupt-context/20231001-194056
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/thierry.reding/linux-pwm.git for-next
-patch link:    https://lore.kernel.org/r/1bd5241d584ceb4d6b731c4dc3203fb9686ee1d1.1696156485.git.sean%40mess.org
-patch subject: [PATCH 1/2] pwm: make it possible to apply pwm changes in atomic context
-config: i386-buildonly-randconfig-004-20231001 (https://download.01.org/0day-ci/archive/20231001/202310012348.puyNjoMk-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231001/202310012348.puyNjoMk-lkp@intel.com/reproduce)
+---
+base-commit: df964ce9ef9fea10cf131bf6bad8658fde7956f6
+change-id: 20231001-ak_magnetometer-b063098082dd
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310012348.puyNjoMk-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from arch/x86/include/asm/percpu.h:27:0,
-                    from arch/x86/include/asm/current.h:10,
-                    from include/linux/sched.h:12,
-                    from include/linux/ratelimit.h:6,
-                    from include/linux/dev_printk.h:16,
-                    from include/linux/device.h:15,
-                    from include/linux/backlight.h:12,
-                    from drivers/video/fbdev/ssd1307fb.c:8:
-   include/linux/pwm.h: In function 'pwm_apply_state':
-   include/linux/pwm.h:428:17: error: implicit declaration of function 'pwm_can_sleep'; did you mean 'gpiod_cansleep'? [-Werror=implicit-function-declaration]
-     might_sleep_if(pwm_can_sleep(pwm));
-                    ^
-   include/linux/kernel.h:194:39: note: in definition of macro 'might_sleep_if'
-    #define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
-                                          ^~~~
-   In file included from drivers/video/fbdev/ssd1307fb.c:16:0:
-   include/linux/pwm.h: At top level:
->> include/linux/pwm.h:455:20: error: conflicting types for 'pwm_can_sleep'
-    static inline bool pwm_can_sleep(struct pwm_device *pwm)
-                       ^~~~~~~~~~~~~
-   In file included from arch/x86/include/asm/percpu.h:27:0,
-                    from arch/x86/include/asm/current.h:10,
-                    from include/linux/sched.h:12,
-                    from include/linux/ratelimit.h:6,
-                    from include/linux/dev_printk.h:16,
-                    from include/linux/device.h:15,
-                    from include/linux/backlight.h:12,
-                    from drivers/video/fbdev/ssd1307fb.c:8:
-   include/linux/pwm.h:428:17: note: previous implicit declaration of 'pwm_can_sleep' was here
-     might_sleep_if(pwm_can_sleep(pwm));
-                    ^
-   include/linux/kernel.h:194:39: note: in definition of macro 'might_sleep_if'
-    #define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
-                                          ^~~~
-   cc1: some warnings being treated as errors
---
-   In file included from arch/x86/include/asm/percpu.h:27:0,
-                    from arch/x86/include/asm/preempt.h:6,
-                    from include/linux/preempt.h:79,
-                    from include/linux/spinlock.h:56,
-                    from include/linux/mmzone.h:8,
-                    from include/linux/gfp.h:7,
-                    from include/linux/slab.h:16,
-                    from include/linux/resource_ext.h:11,
-                    from include/linux/acpi.h:13,
-                    from include/linux/i2c.h:13,
-                    from drivers/mfd/intel_soc_pmic_crc.c:11:
-   include/linux/pwm.h: In function 'pwm_apply_state':
-   include/linux/pwm.h:428:17: error: implicit declaration of function 'pwm_can_sleep'; did you mean 'cant_sleep'? [-Werror=implicit-function-declaration]
-     might_sleep_if(pwm_can_sleep(pwm));
-                    ^
-   include/linux/kernel.h:194:39: note: in definition of macro 'might_sleep_if'
-    #define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
-                                          ^~~~
-   In file included from drivers/mfd/intel_soc_pmic_crc.c:18:0:
-   include/linux/pwm.h: At top level:
->> include/linux/pwm.h:455:20: error: conflicting types for 'pwm_can_sleep'
-    static inline bool pwm_can_sleep(struct pwm_device *pwm)
-                       ^~~~~~~~~~~~~
-   In file included from arch/x86/include/asm/percpu.h:27:0,
-                    from arch/x86/include/asm/preempt.h:6,
-                    from include/linux/preempt.h:79,
-                    from include/linux/spinlock.h:56,
-                    from include/linux/mmzone.h:8,
-                    from include/linux/gfp.h:7,
-                    from include/linux/slab.h:16,
-                    from include/linux/resource_ext.h:11,
-                    from include/linux/acpi.h:13,
-                    from include/linux/i2c.h:13,
-                    from drivers/mfd/intel_soc_pmic_crc.c:11:
-   include/linux/pwm.h:428:17: note: previous implicit declaration of 'pwm_can_sleep' was here
-     might_sleep_if(pwm_can_sleep(pwm));
-                    ^
-   include/linux/kernel.h:194:39: note: in definition of macro 'might_sleep_if'
-    #define might_sleep_if(cond) do { if (cond) might_sleep(); } while (0)
-                                          ^~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/pwm_can_sleep +455 include/linux/pwm.h
-
-   454	
- > 455	static inline bool pwm_can_sleep(struct pwm_device *pwm)
-   456	{
-   457		return true;
-   458	}
-   459	
-
+Best regards,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+André Apitzsch <git@apitzsch.eu>
+
