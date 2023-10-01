@@ -2,61 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D209F7B499A
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 22:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E297B499C
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 22:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235390AbjJAUqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 16:46:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46670 "EHLO
+        id S235375AbjJAUsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 16:48:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235385AbjJAUqV (ORCPT
+        with ESMTP id S235346AbjJAUso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 16:46:21 -0400
-Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09959FD
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 13:46:14 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id n3KNqyyr9615Bn3KNqlffC; Sun, 01 Oct 2023 22:46:13 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1696193173;
-        bh=7At+tgghxTpDkCLTU9xfaQ4S4LQnyz/kWKTMko1AVgw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=dnqhl6EIg76q1bgjLTHypcynJguKurd8tKbMZv8VaLdT/cFU7bo465sBi4rdHgVW8
-         939S0FX+c+9AVPVenj9gxEzQriNqBBzLhLksCuxr7Rs/eBR9qI41E5rCC2ZGlxYx+X
-         3YA1kU1vFi+RGyoUOPz+MTS8wbIUaXtFGvGwIzPZkfoOfj6lT1GOkNZ3j/Y4zWG/Uy
-         1iuxKDfwnyLkqgs8fvmFfGQZCkua/8+rZWTbhHF7YqBV1fxoysGWyPAZy1TjL+QAfR
-         iRw1cZ9n8+xk1VOnnJyy9HV0PNWpn4O7m7t4+5pzdnp2NBSULYbXQBiltY1cPOylha
-         I4qlL0UM4Msjg==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 01 Oct 2023 22:46:13 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <82e9cffc-472a-b725-1a12-de8aade67189@wanadoo.fr>
-Date:   Sun, 1 Oct 2023 22:46:11 +0200
+        Sun, 1 Oct 2023 16:48:44 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D125EBA
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 13:48:41 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b64b98656bso377466b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 13:48:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1696193320; x=1696798120; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=T5nwqgL0/UCkT25jpZLet8OWaUvSFwUq172hL3LVY/g=;
+        b=Z/ycTf54sspzNV6Y5WhlLdbLbhjju4KkI07srcIUlV3V8IKiHIgvTelXFHjls+RCvL
+         69oJeV2ySwAce3LrhDViRcVzcrnvYgPm+tBusSWOdN8K4ub/MDzupT8zgOsqjYCjtvoY
+         B1EKkWQw+3v5knBGPGTkzb1cTyaDXFXZTj8sM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696193320; x=1696798120;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T5nwqgL0/UCkT25jpZLet8OWaUvSFwUq172hL3LVY/g=;
+        b=aXZ06wSbKbFX6Lqp73ReCsr/v/bA9BR19x3HdOVQ36W56xhFgRcS8WsVCCKy2TY9FW
+         f8de0F4Q0Fw4UjJyhFjAmNBVgvK/fGyuSo974LiXwpl19Cub80UYVna4jnHQSTRHbOHh
+         DUfZZs+Nf/lCNxALc9A2mn8j/qqEkl5MpiykyHMva8vfdJWPRLoIMKi2RsCbNGm1X4c8
+         xatuWCzW0PvuY+RVHi8QYzzTGSCfOrq5EgxjWC3hcHIOaLff3eiDzitjCwzfrwJmJl/Q
+         I2lc1MxKcipIhI1XzbtrAFSIW236lrDnIMdeaNRVfKRPWT4Cxrs+aeEOPjiiRX4/5slx
+         nabA==
+X-Gm-Message-State: AOJu0YwqhUmuL90KGV5giYC41NyjjRIwvcm4bPJQ2Oy7Tnnam/PAGWxQ
+        Hy/uJ7nqbQkShnDruWdcaQAGnCRUiVlpe5+zgis0kaWf
+X-Google-Smtp-Source: AGHT+IFIFnemMLyNUTRbGIfV8qtB5J3U9ArQi755uEZrwHVuet+1A3PP9joAP/r6k9pqNf2ZOlUl5A==
+X-Received: by 2002:a17:907:760f:b0:9b2:b633:ada2 with SMTP id jx15-20020a170907760f00b009b2b633ada2mr8598633ejc.36.1696193320243;
+        Sun, 01 Oct 2023 13:48:40 -0700 (PDT)
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
+        by smtp.gmail.com with ESMTPSA id lw3-20020a170906bcc300b009ae0042e48bsm15836568ejb.5.2023.10.01.13.48.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 Oct 2023 13:48:39 -0700 (PDT)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-307d58b3efbso13851704f8f.0
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 13:48:38 -0700 (PDT)
+X-Received: by 2002:a5d:67c4:0:b0:31f:f94f:e13f with SMTP id
+ n4-20020a5d67c4000000b0031ff94fe13fmr8989234wrw.19.1696193318578; Sun, 01 Oct
+ 2023 13:48:38 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v5 2/2] leds: add ktd202x driver
-Content-Language: fr
-To:     =?UTF-8?Q?Andr=c3=a9_Apitzsch?= <git@apitzsch.eu>
-Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, lee@kernel.org,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        pavel@ucw.cz, phone-devel@vger.kernel.org, robh+dt@kernel.org,
-        u.kleine-koenig@pengutronix.de,
-        ~postmarketos/upstreaming@lists.sr.ht
-References: <20231001-ktd202x-v5-0-f544a1d0510d@apitzsch.eu>
- <20231001-ktd202x-v5-2-f544a1d0510d@apitzsch.eu>
- <a2380c93-42a5-9de5-3be9-9ebb50a965a3@wanadoo.fr>
- <250d0e681e7bbb750464338fb3a1a4a3199ce6ef.camel@apitzsch.eu>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <250d0e681e7bbb750464338fb3a1a4a3199ce6ef.camel@apitzsch.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=ham
+References: <CAHk-=wjrZgxjHZuXwrGeFnng_whUmtToCWE5GQ+HORhGSeiX8g@mail.gmail.com>
+ <ZRhKq6e5nF/4ZIV1@fedora> <CAB=+i9QiJ=BXkQuCFJTh3dMXrkKQvVA2EM51Mj6SsDMimWQ71g@mail.gmail.com>
+In-Reply-To: <CAB=+i9QiJ=BXkQuCFJTh3dMXrkKQvVA2EM51Mj6SsDMimWQ71g@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 1 Oct 2023 13:48:21 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whosoBSLAWzSGUZ8s=UwAVG9rsQ9OVPvw97S2RRFGfk2A@mail.gmail.com>
+Message-ID: <CAHk-=whosoBSLAWzSGUZ8s=UwAVG9rsQ9OVPvw97S2RRFGfk2A@mail.gmail.com>
+Subject: Re: Linux 6.6-rc3 (DEBUG_VIRTUAL is unhappy on x86)
+To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Kaplan <David.Kaplan@amd.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,241 +81,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 01/10/2023 à 18:56, André Apitzsch a écrit :
-> Hi Christophe,
-> 
-> Am Sonntag, dem 01.10.2023 um 17:15 +0200 schrieb Christophe JAILLET:
->> Le 01/10/2023 à 15:52, André Apitzsch a écrit :
->>> This commit adds support for Kinetic KTD2026/7 RGB/White LED
->>> driver.
->>>
->>> Signed-off-by: André Apitzsch
->>> <git-AtRKszJ1oGPsq35pWSNszA@public.gmane.org>
->>
->> ...
->>
->>> +static int ktd202x_setup_led_rgb(struct ktd202x *chip, struct
->>> device_node *np,
->>> +                                struct ktd202x_led *led, struct
->>> led_init_data *init_data)
->>> +{
->>> +       struct led_classdev *cdev;
->>> +       struct device_node *child;
->>> +       struct mc_subled *info;
->>> +       int num_channels;
->>> +       int i = 0;
->>> +       u32 reg;
->>> +       int ret;
->>> +
->>> +       num_channels = of_get_available_child_count(np);
->>> +       if (!num_channels || num_channels > chip->num_leds)
->>> +               return -EINVAL;
->>> +
->>> +       info = devm_kcalloc(chip->dev, num_channels, sizeof(*info),
->>> GFP_KERNEL);
->>> +       if (!info)
->>> +               return -ENOMEM;
->>> +
->>> +       for_each_available_child_of_node(np, child) {
->>> +               u32 mono_color = 0;
->>
->> Un-needed init.
->> And, why is it defined here, while reg is defined out-side the loop?
-> 
-> I'll move it out-side the loop (without initialization).
-> 
->>
->>> +
->>> +               ret = of_property_read_u32(child, "reg", &reg);
->>> +               if (ret != 0 || reg >= chip->num_leds) {
->>> +                       dev_err(chip->dev, "invalid 'reg' of
->>> %pOFn\n", np);
->>
->> Mossing of_node_put(np);?
-> 
-> It shouldn't be needed here if handled in the calling function, right?
+On Sun, 1 Oct 2023 at 07:17, Hyeonggon Yoo <42.hyeyoo@gmail.com> wrote:
+> >
+> > > Peter Zijlstra (1):
+> > >       x86,static_call: Fix static-call vs return-thunk
+> >
+> > Hello, the commit above caused a crash on x86 kernel with
+> > CONFIG_DEBUG_VIRTUAL=y.
+>
+> OK, I looked into this a little bit, and it turns out that the problematic
+> address here is from cleanup_trusted() in
+> security/keys/trusted-keys/trusted_core.c.
+> (and it's builtin due to CONFIG_TRUSTED_KEYS=y)
+>
+> The function is marked as __exit, so it does not fall within the
+> 'core kernel text address range,' which is between _stext and _etext
+> (or between _sinittext and _einittext). and thus __text_poke() thinks that
+> it's vmalloc/module area.
+>
+> I think __text_poke() should be taught that functions marked as __exit
+> also belong to kernel code just like __init.
 
-How can the caller do this?
+I think your patch is fine (well, whitespace-damaged, but conceptually good).
 
-The goal of this of_node_put() is to release a reference taken by the 
-for_each_available_child_of_node() loop, in case of early exit.
+But I also wonder about that
 
-The caller can't know if np needs to be released or not. An error code 
-is returned either if an error occurs within the for_each loop, or if 
-devm_led_classdev_multicolor_register_ext() fails.
+        static_call_cond(trusted_key_exit)();
 
-More over, in your case the caller is ktd202x_add_led().
- From there either ktd202x_setup_led_rgb() or ktd202x_setup_led_single() 
-is called.
+in cleanup_trusted(). It seems all kinds of pointless to use static
+calls for something that is done *once*. That's not an optimization,
+that's honestly just _stupid_. It costs more to do the rewriting that
+it does to just do the one dynamic indirect call.
 
-ktd202x_setup_led_single() does not take any reference to np.
-But if it fails, of_node_put() would still be called.
+Side note: the same is true of the init-time call, which does
 
-> 
->>
->>> +                       return -EINVAL;
->>> +               }
->>> +
->>> +               ret = of_property_read_u32(child, "color",
->>> &mono_color);
->>> +               if (ret < 0 && ret != -EINVAL) {
->>> +                       dev_err(chip->dev, "failed to parse 'color'
->>> of %pOF\n", np);
->>
->> Mossing of_node_put(np);?
->>
->>> +                       return ret;
->>> +               }
->>> +
->>> +               info[i].color_index = mono_color;
->>> +               info[i].channel = reg;
->>> +               info[i].intensity = KTD202X_MAX_BRIGHTNESS;
->>> +               i++;
->>> +       }
->>> +
->>> +       led->mcdev.subled_info = info;
->>> +       led->mcdev.num_colors = num_channels;
->>> +
->>> +       cdev = &led->mcdev.led_cdev;
->>> +       cdev->brightness_set_blocking = ktd202x_brightness_mc_set;
->>> +       cdev->blink_set = ktd202x_blink_mc_set;
->>> +
->>> +       return devm_led_classdev_multicolor_register_ext(chip->dev,
->>> &led->mcdev, init_data);
->>> +}
->>> +
->>> +static int ktd202x_setup_led_single(struct ktd202x *chip, struct
->>> device_node *np,
->>> +                                   struct ktd202x_led *led, struct
->>> led_init_data *init_data)
->>> +{
->>> +       struct led_classdev *cdev;
->>> +       u32 reg;
->>> +       int ret;
->>> +
->>> +       ret = of_property_read_u32(np, "reg", &reg);
->>> +       if (ret != 0 || reg >= chip->num_leds) {
->>> +               dev_err(chip->dev, "invalid 'reg' of %pOFn\n", np);
->>> +               return -EINVAL;
->>> +       }
->>> +       led->index = reg;
->>> +
->>> +       cdev = &led->cdev;
->>> +       cdev->brightness_set_blocking =
->>> ktd202x_brightness_single_set;
->>> +       cdev->blink_set = ktd202x_blink_single_set;
->>> +
->>> +       return devm_led_classdev_register_ext(chip->dev, &led-
->>>> cdev, init_data);
->>> +}
->>> +
->>> +static int ktd202x_add_led(struct ktd202x *chip, struct
->>> device_node *np, unsigned int index)
->>> +{
->>> +       struct ktd202x_led *led = &chip->leds[index];
->>> +       struct led_init_data init_data = {};
->>> +       struct led_classdev *cdev;
->>> +       u32 color = 0;
->> Un-needed init.
->>
->>> +       int ret;
->>> +
->>> +       /* Color property is optional in single color case */
->>> +       ret = of_property_read_u32(np, "color", &color);
->>> +       if (ret < 0 && ret != -EINVAL) {
->>> +               dev_err(chip->dev, "failed to parse 'color' of
->>> %pOF\n", np);
->>> +               return ret;
->>> +       }
->>> +
->>> +       led->chip = chip;
->>> +       init_data.fwnode = of_fwnode_handle(np);
->>> +
->>> +       if (color == LED_COLOR_ID_RGB) {
->>> +               cdev = &led->mcdev.led_cdev;
->>> +               ret = ktd202x_setup_led_rgb(chip, np, led,
->>> &init_data);
->>> +       } else {
->>> +               cdev = &led->cdev;
->>> +               ret = ktd202x_setup_led_single(chip, np, led,
->>> &init_data);
->>> +       }
->>> +
->>> +       if (ret) {
->>> +               dev_err(chip->dev, "unable to register %s\n", cdev-
->>>> name);
->>> +               of_node_put(np);
->>
->> This is strange to have it here.
->> Why not above after "if (ret < 0 && ret != -EINVAL) {"?
->>
->> It would look much more natural to have it a few lines below, ... [1]
-> 
-> Good catch. I'll move of_node_put(np); to [1] and [2].
+                static_call_update(trusted_key_init,
+                                   trusted_key_sources[i].ops->init);
+                ...
+                ret = static_call(trusted_key_init)();
 
-Why [2]?
-It does not seem needed here.
+which again is a *lot* more expensive than just doing the indirect
+function call.
 
-of_get_available_child_count() does not keep any reference.
+So while I don't think your patch is wrong, I do think that the cause
+here is plain silly code, and that trusted key code simply should not
+do the crazy thing it does (and that causes silly problems).
 
-CJ
-
-> 
->>
->>> +               return ret;
->>> +       }
->>> +
->>> +       cdev->max_brightness = KTD202X_MAX_BRIGHTNESS;
->>> +
->>> +       return 0;
->>> +}
->>> +
->>> +static int ktd202x_probe_dt(struct ktd202x *chip)
->>> +{
->>> +       struct device_node *np = dev_of_node(chip->dev), *child;
->>> +       unsigned int i;
->>> +       int count, ret;
->>> +
->>> +       chip->num_leds = (int)(unsigned
->>> long)of_device_get_match_data(chip->dev);
->>> +
->>> +       count = of_get_available_child_count(np);
->>> +       if (!count || count > chip->num_leds)
-> 
-> [2].
-> 
->>> +               return -EINVAL;
->>> +
->>> +       regmap_write(chip->regmap, KTD202X_REG_RESET_CONTROL,
->>> KTD202X_RSTR_RESET);
->>> +
->>> +       /* Allow the device to execute the complete reset */
->>> +       usleep_range(200, 300);
->>> +
->>> +       i = 0;
->>> +       for_each_available_child_of_node(np, child) {
->>> +               ret = ktd202x_add_led(chip, child, i);
->>> +               if (ret)
->>
->> [1] ... here.
->>
->> Otherwise, it is likely that, thanks to a static checker, an
->> additionnal
->> of_node_put() will be added on early exit of the loop.
->>
->> CJ
->>
->>> +                       return ret;
->>> +               i++;
->>> +       }
->>> +
->>> +       return 0;
->>> +}
->>
->> ...
->>
-> 
-> Best regards,
-> André
-> 
-
+               Linus
