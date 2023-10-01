@@ -2,99 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C1D47B4620
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2754E7B4623
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234491AbjJAIUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 04:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
+        id S234506AbjJAIVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 04:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234402AbjJAIUi (ORCPT
+        with ESMTP id S234402AbjJAIVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 04:20:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1F59C;
-        Sun,  1 Oct 2023 01:20:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696148435; x=1727684435;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=o+KVW1rLaOn0lxFyk+mJJT0IABPC8pRmelGMvaMNn4g=;
-  b=VnctnJQwx54nVGH8W1/mOmh6bfFuHnZ0gpz7coAbjbkNPqj1TdNYUYbX
-   MAYuqPvUD7bP4MiuA9XobZUse8OcrPytLy3tpU06G1Nor1C8YSD6lwb3F
-   BNnB2BPNpJt+4sOhvB8p0JWvUX8m6ICZm/0qadq41bBr5GSdFrN5AlZRS
-   pFHvh33csyxsklktvI85L8iWKjclUbV0rKuhJcKuYW9z58U4qwhbw1yEt
-   eTw/Was1bu5m38rSXfktzfrUfQQZGmk6EGaJ/cmdUhXnjFV1X+wlMmXSn
-   JCBb+PC/Pe+vqGo9S2Jf9thnGPJvT4zPO1jh+41QflMzYT7DP8/k6qN8h
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10849"; a="468782309"
-X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
-   d="scan'208";a="468782309"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2023 01:20:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10849"; a="815989669"
-X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
-   d="scan'208";a="815989669"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2023 01:20:32 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qmrgj-00000001qri-1Gm8;
-        Sun, 01 Oct 2023 11:20:29 +0300
-Date:   Sun, 1 Oct 2023 11:20:28 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Jagath Jog J <jagathjog1996@gmail.com>, jic23@kernel.org,
-        lars@metafoo.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/2] iio: imu: Add driver for BMI323 IMU
-Message-ID: <ZRkrzCcPqmiaNZqK@smile.fi.intel.com>
-References: <20230918080314.11959-1-jagathjog1996@gmail.com>
- <20230918080314.11959-3-jagathjog1996@gmail.com>
- <20230927095708.l57kmdc3mmrtaco7@pengutronix.de>
- <ZRQhdkVNFdCfPseY@smile.fi.intel.com>
- <20230927143443.f4xpfzkwylipo25g@pengutronix.de>
+        Sun, 1 Oct 2023 04:21:41 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA453C2
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 01:21:16 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-690bd59322dso12223941b3a.3
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 01:21:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1696148476; x=1696753276; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nb2D3LuQXiqDzGOTpeZzuHnR6ZfiMCGFmdYta0VCauI=;
+        b=BNdqHacUuGF9KIhNxHqfX/PSVxUjgTKkJY5g845ujOsvAcxhe2NvYVP1vpWoNUEu0Z
+         ZQLjHeLuMxArel/PNxQgFcz7ZTj6Sa6MkPZGtUjX/azGxaKy7o420hc6OFu/7MtWr5kN
+         MOkNtE7yCDHQaiUZBxyTAYYbhQmaVXXaYt3Iyl/aZSlWomrsHFHbgsVlSAZk0AUk7n6u
+         uYhLEqJoNkCINyyrpY4DiDcUHXH6AjhBPxh2FN6bIOulG4HW2SStoogQc5dLYejh7gSb
+         Cj1Fwe0GVPudTNNFxy1lcQrfOXRfeetlNOegSnxaASUJREoA/U3+DS9KbEVNgD2M04cP
+         CvSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696148476; x=1696753276;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nb2D3LuQXiqDzGOTpeZzuHnR6ZfiMCGFmdYta0VCauI=;
+        b=gooIyEKdZBNg+1Gq/acWJQST06SNxCgCLWWyJVOLVyER5/1UruyQyC3Oqwgj1rBgJW
+         XJAuXTxVGKa4JldLio2lBJKriF91dAQ0glj13SIuACP6DRXrRZir7vl712fu0KNKuLaz
+         TO0Xs/+5E35f8DJwVZXqUo+kfG/Kgc3ctAgI7Co4ljv4zR8+Y+0+PyX/OA7ZmCrHd/pH
+         su/3J7bVrLf3TEPtUIQZWP4Od5xGRd0/5EzAV5y3ZMuzn4fmVQrwJPuPqoqdAYO6ivTS
+         6dyoyfmdx1gumclEkPDtqs6rcRkNqPAJyOspc2KPZDRe3nrg+x8e2yR7c6cEznomA7Q9
+         N7gQ==
+X-Gm-Message-State: AOJu0Yxs3M8XPJP1Yma6ElqscW87p9lMm+50sDDOrZb54M+n39JY5NhI
+        ohny+HGeSkM+ZQ3GgKGY2/m28A==
+X-Google-Smtp-Source: AGHT+IHSbN28+T0fwUvP9GyB72rIm+vRF8T2jfcpUGcg1FbAADZsCOPu/+wOGpe2l59nBarDraHgWA==
+X-Received: by 2002:aa7:88c3:0:b0:68a:4261:ab7f with SMTP id k3-20020aa788c3000000b0068a4261ab7fmr8452493pff.31.1696148476108;
+        Sun, 01 Oct 2023 01:21:16 -0700 (PDT)
+Received: from ?IPV6:2409:8a28:5060:6c21:2872:efd0:e8fb:f8d8? ([2409:8a28:5060:6c21:2872:efd0:e8fb:f8d8])
+        by smtp.gmail.com with ESMTPSA id g23-20020aa78197000000b00684ca1b45b9sm17972119pfi.149.2023.10.01.01.21.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 Oct 2023 01:21:15 -0700 (PDT)
+Message-ID: <425309da-ec03-df8b-3565-d226dd1a1715@bytedance.com>
+Date:   Sun, 1 Oct 2023 16:21:08 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH bpf-next v3 3/7] bpf: Introduce task open coded iterator
+ kfuncs
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230925105552.817513-1-zhouchuyi@bytedance.com>
+ <20230925105552.817513-4-zhouchuyi@bytedance.com>
+ <CAEf4BzZFBFPMBs6t4GM7GRt-c-Po9KkQqxQ_Zo9vuG=KuqeLzQ@mail.gmail.com>
+ <716adfa5-bd5d-3fe2-108c-ff24b2e81420@bytedance.com>
+ <CAEf4BzaAtybx=Cbb6zD1otgQ-Jm+Xta0_8rwmL_ZYb3GzjSwWg@mail.gmail.com>
+From:   Chuyi Zhou <zhouchuyi@bytedance.com>
+In-Reply-To: <CAEf4BzaAtybx=Cbb6zD1otgQ-Jm+Xta0_8rwmL_ZYb3GzjSwWg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230927143443.f4xpfzkwylipo25g@pengutronix.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 04:34:43PM +0200, Uwe Kleine-K�nig wrote:
-> On Wed, Sep 27, 2023 at 03:35:02PM +0300, Andy Shevchenko wrote:
-> > On Wed, Sep 27, 2023 at 11:57:08AM +0200, Uwe Kleine-K�nig wrote:
-> > > On Mon, Sep 18, 2023 at 01:33:14PM +0530, Jagath Jog J wrote:
+Hello, Andrii
 
-...
+在 2023/9/30 05:27, Andrii Nakryiko 写道:
+> On Wed, Sep 27, 2023 at 8:29 PM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
+>>
+>> Hello,
+>>
+>> 在 2023/9/28 07:20, Andrii Nakryiko 写道:
+>>> On Mon, Sep 25, 2023 at 3:56 AM Chuyi Zhou <zhouchuyi@bytedance.com> wrote:
+>>>>
+>>>> This patch adds kfuncs bpf_iter_task_{new,next,destroy} which allow
+>>>> creation and manipulation of struct bpf_iter_task in open-coded iterator
+>>>> style. BPF programs can use these kfuncs or through bpf_for_each macro to
+>>>> iterate all processes in the system.
+>>>>
+>>>> The API design keep consistent with SEC("iter/task"). bpf_iter_task_new()
+>>>> accepts a specific task and iterating type which allows:
+>>>> 1. iterating all process in the system
+>>>>
+>>>> 2. iterating all threads in the system
+>>>>
+>>>> 3. iterating all threads of a specific task
+>>>> Here we also resuse enum bpf_iter_task_type and rename BPF_TASK_ITER_TID
+>>>> to BPF_TASK_ITER_THREAD, rename BPF_TASK_ITER_TGID to BPF_TASK_ITER_PROC.
+>>>>
+>>>> The newly-added struct bpf_iter_task has a name collision with a selftest
+>>>> for the seq_file task iter's bpf skel, so the selftests/bpf/progs file is
+>>>> renamed in order to avoid the collision.
+>>>>
+>>>> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+>>>> ---
+>>>>    include/linux/bpf.h                           |  8 +-
+>>>>    kernel/bpf/helpers.c                          |  3 +
+>>>>    kernel/bpf/task_iter.c                        | 96 ++++++++++++++++---
+>>>>    .../testing/selftests/bpf/bpf_experimental.h  |  5 +
+>>>>    .../selftests/bpf/prog_tests/bpf_iter.c       | 18 ++--
+>>>>    .../{bpf_iter_task.c => bpf_iter_tasks.c}     |  0
+>>>>    6 files changed, 106 insertions(+), 24 deletions(-)
+>>>>    rename tools/testing/selftests/bpf/progs/{bpf_iter_task.c => bpf_iter_tasks.c} (100%)
+>>>>
+>>>
 
-> > > > Datasheet: https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmi323-ds000.pdf
-> > > 
-> > > Maybe put this link better in the driver.
-> > 
-> > Why? We have a handful commits with this and it's better to see the link
-> > to the datasheet without browsing the source code.
+
+[...]
+
+>>>> +get_next_task:
+>>>> +       kit->pos = next_task(kit->pos);
+>>>> +       kit->task = kit->pos;
+>>>> +       if (kit->pos == &init_task)
+>>>> +               kit->pos = NULL;
+>>>
+>>> I can't say I completely follow the logic (e.g., for
+>>> BPF_TASK_ITER_PROC, why do we do next_task() on first next() call)?
+>>> Can you elabore the expected behavior for various combinations of
+>>> types and starting task argument?
+>>>
+>>
+>> Thanks for the review.
+>>
+>> The expected behavior of current implementation is:
+>>
+>> BPF_TASK_ITER_PROC:
+>>
+>> init_task->first_process->second_process->...->last_process->init_task
+>>
+>> We would exit before visiting init_task again.
 > 
-> But if you later work on a problem in the driver, it's better to see the
-> link without browsing git history. :-)
+> ah, ok, so in this case it's more like BPF_TASK_ITER_ALL_PROCS, i.e.,
+> we iterate all processes in the system. Input `task` that we provide
+> is ignored/meaningless, right? Maybe we should express it as
+> ALL_PROCS?
+> 
+>>
+>> BPF_TASK_ITER_THREAD:
+>>
+>> group_task->first_thread->second_thread->...->last_thread->group_task
+>>
+>> We would exit before visiting group_task again.
+>>
+> 
+> And this one is iterating threads of a process specified by given
+> `task`, right?   This is where my confusion comes from. ITER_PROC and
+> ITER_THREAD, by their name, seems to be very similar, but in reality
+> ITER_PROC is more like ITER_ALL (except process vs thread iteration),
+> while ITER_THREAD is parameterized by input `task`.
+> 
+> I'm not sure what's the least confusing way to name and organize
+> everything, but I think it's quite confusing right now, unfortunately.
+> I wonder if you or someone else have a better suggestion on making
+> this more straightforward?
+> 
 
-Both make sense.
+Maybe here we can introduce new enums and not reuse or rename 
+BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID?
 
+{
+BPF_TASK_ITER_ALL_PROC,
+BPF_TASK_ITER_ALL_THREAD,
+BPF_TASK_ITER_THREAD
+}
 
--- 
-With Best Regards,
-Andy Shevchenko
+BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID are inner flags. Looking at the
+example usage of SEC("iter/task"), unlike 
+BPF_CGROUP_ITER_DESCENDANTS_PRE/BPF_CGROUP_ITER_DESCENDANTS_POST, we 
+actually don't use BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID directly. When 
+using SEC("iter/task"), we just set pid/tid for struct 
+bpf_iter_link_info. Exposing new enums to users for open coded 
+task_iters will not confuse users.
 
+Thanks.
 
