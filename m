@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 960547B47B0
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 15:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938917B47B1
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 15:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235052AbjJANpb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 09:45:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41640 "EHLO
+        id S235053AbjJANpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 09:45:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235032AbjJANp3 (ORCPT
+        with ESMTP id S235068AbjJANpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 09:45:29 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BC4C4
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 06:45:25 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-32337a39009so1722969f8f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 06:45:25 -0700 (PDT)
+        Sun, 1 Oct 2023 09:45:36 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA78107
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 06:45:30 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ae3d7eb7e0so470716366b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 06:45:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696167924; x=1696772724; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696167929; x=1696772729; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PSwRlj34WawnYB96b1PvZ1E7JgfJyhtAvZK5jo+OVcc=;
-        b=A20CiVnlBJ1V3sE9irWV0eadnRS33xNpmFF/YNAWhW/T1lwwk4Og52jcwWcIRRmhee
-         ZZpDHrTL/lW+A++MKLh7A8p/sDV5h7rzpUGfaTeyvZLhdGUTj9oB++pkFP4vt6bzEJCR
-         PuChBsuTA/qbzv9sItwR2n1uC3rzqj3ZMSRMOjEiA5TnctwKa05rVqvRLmViybYwPn7c
-         YLw9D3JWnJpt3icebfvRd6JkSxEIy5LNsLRK95FZg22axgKRuZ+1xRlBRO3mh36nh0Z6
-         sDObhB4DG2TFyS9xFeRR6MSgaxF299bF/jrTmxS7R2YV+QmVz/g6bss0wAPm9YrM2Hh/
-         gZIA==
+        bh=F4mpp0HTqoMB98qe9eiYEXks5rNRdwSriBgWOGd0HtU=;
+        b=HsxThKK5cuHz7Wwoe9bFRX6PmzcY0yvEXPv0GMqyoPCLMfv5o8VZO2W9/pzJUA4byo
+         jQuD2AyCRhu6Uh6vq0VXubsi4nswpAvnRz0lj3E57I3PB4ITLrJsTjyUjJRwg+xkfdgt
+         Zz0/+CWJAP/tMjdRbUvExn9Bovcn6G3mZKKvKxQtoe3e8zCWOev1yHVVU+2uiq/XsAfV
+         3uAcQclzXKUAc2y/9a73oBshEDDHT5y4bD1zXbRhSRr3a20Fakd8nCT5r24cjjXJqAG2
+         yzl9pyoMWgFGjYcfKiOHcSfMyLQutMrgvI8tQ5JaHEI5Q8W1Pz1u+TiMJqnJHyIo+pIG
+         iR4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696167924; x=1696772724;
+        d=1e100.net; s=20230601; t=1696167929; x=1696772729;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PSwRlj34WawnYB96b1PvZ1E7JgfJyhtAvZK5jo+OVcc=;
-        b=gdv65jQZykKnD01+tHyt3mMyhNB8vMtq4TcA/Nzo33P6UYF916mbQUUYJ1+DB6srgx
-         fR9jsG/KByDig4fQ5fZT8f9AlmhwmnNNby4OOqdv/GKl3srpj2JugSmKo2I/Pv1nmQGW
-         n8MTemGjI3oJayAtinNigkDKJUL+7QhaFRzcAcIulRti+hid/ofrEcz98vcqnYHSoKAk
-         lI7L1/DO0ig4q2B9ZgIzm6mEzw+U2+GMaZ/mgPi3Igu4EP8majcp/KnQNsma+UtLUDVO
-         ovqOuKx2Oq4eOQNv1Q2sPTD752otvhNsZW2m73LdboHd3LdQYEr5PcjJMrRF4zl5wiJI
-         yB6Q==
-X-Gm-Message-State: AOJu0YzDApNnRT0GU2lvXwYd4/+jtS5L48ohOKYy74PciO0KwAl06hMj
-        vftPAP1nGOxgfO6xCYSnNTc4jF/O7GI=
-X-Google-Smtp-Source: AGHT+IFnyxfQdSg/E7QYc4x/qfBVxzxQg88geg32+X9f36EEmlbnkk8pvvwlVh6FB1dGxIch6EaUAw==
-X-Received: by 2002:a05:600c:1c9d:b0:405:39bb:38a8 with SMTP id k29-20020a05600c1c9d00b0040539bb38a8mr8229593wms.2.1696167923593;
-        Sun, 01 Oct 2023 06:45:23 -0700 (PDT)
+        bh=F4mpp0HTqoMB98qe9eiYEXks5rNRdwSriBgWOGd0HtU=;
+        b=kyoUajQp7oL2+B4yrEWOzQNOxp8AkqAAvNMdzaSpEagWnCHDNQoTFNQThUDe77JjGx
+         JuzkPMUGPjn8wWQqxcUzzzh8WSdCWrl1iZzdxPHY9yTGNB0VHd2fvJcTG7eGT+pEbDHO
+         4KK8/LDtEzjFCHXAPXniICzCyyxBXiRWV5NJRBMgLJVgoGgzMllDzXTf2lbQGZ7yjWP1
+         W1mJUsS9FCssw44M6r/X+VeE5O1Rg5czOKTyzSDU5S2YSnVIkjxN6uGaGQZlXbrwrAKs
+         9DXFH03uQf1vmo2wlLiyZj+shnvIO6/sYisrAsK6eI2GeMh4n4ir8SslWTYDjHgK5NFO
+         2X+A==
+X-Gm-Message-State: AOJu0YyX4EqkDnrujizdGMjAYIM6BlNgPwL8lvydI81Ltto3m097gSjE
+        qYPg7W87rmYqM30eHiSyrww=
+X-Google-Smtp-Source: AGHT+IGNkNqp55500Dar/9Z/ljUObrvuldAHFjlgKHrcz54z7M5xcd0kE8B6BUbPJYEtmdXyb+UF7g==
+X-Received: by 2002:a17:906:2ce:b0:9ae:3f76:1091 with SMTP id 14-20020a17090602ce00b009ae3f761091mr6844214ejk.0.1696167928880;
+        Sun, 01 Oct 2023 06:45:28 -0700 (PDT)
 Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id p17-20020aa7d311000000b00532bec5f768sm14061556edq.95.2023.10.01.06.45.23
+        by smtp.gmail.com with ESMTPSA id bn23-20020a170906c0d700b0099cd1c0cb21sm15429750ejb.129.2023.10.01.06.45.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Oct 2023 06:45:23 -0700 (PDT)
-Date:   Sun, 1 Oct 2023 15:45:21 +0200
+        Sun, 01 Oct 2023 06:45:28 -0700 (PDT)
+Date:   Sun, 1 Oct 2023 15:45:27 +0200
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 10/11] staging: rtl8192e: Remove unused variables
- priv->reset_count and reset_cnt
-Message-ID: <27adae9b824a522280485b3d16f14893bf99da4c.1696165351.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 11/11] staging: rtl8192e: Remove r8192_private_handler
+ _rtl92e_wx_force_reset()
+Message-ID: <8447643122088ff03dab65ac15e5e5199603008d.1696165351.git.philipp.g.hortmann@gmail.com>
 References: <cover.1696165351.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,199 +71,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused variables priv->reset_count, reset_cnt and reset_cnt_highpwr
-as those are always 0. All equations result accordingly. Remove dead code.
+Remove r8192_private_handler _rtl92e_wx_force_reset() as driver does not
+reset. Remove dead code.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c |  3 ---
  drivers/staging/rtl8192e/rtl8192e/rtl_core.h |  1 -
- drivers/staging/rtl8192e/rtl8192e/rtl_dm.c   | 49 ++------------------
- 2 files changed, 4 insertions(+), 46 deletions(-)
+ drivers/staging/rtl8192e/rtl8192e/rtl_wx.c   | 18 +-----------------
+ 3 files changed, 1 insertion(+), 21 deletions(-)
 
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
+index 2b91c481df93..c4688c273f4b 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
+@@ -754,7 +754,6 @@ static void _rtl92e_init_priv_variable(struct net_device *dev)
+ 	priv->rfa_txpowertrackingindex = 0;
+ 	priv->rfc_txpowertrackingindex = 0;
+ 	priv->cck_pwr_enl = 6;
+-	priv->force_reset = false;
+ 	memset(priv->rtllib->swcamtable, 0, sizeof(struct sw_cam_table) * 32);
+ 	priv->rx_ctr = 0;
+ 	priv->rtllib->wx_set_enc = 0;
+@@ -1130,8 +1129,6 @@ static void _rtl92e_watchdog_wq_cb(void *data)
+ 		check_reset_cnt = 3;
+ 	}
+ 	spin_unlock_irqrestore(&priv->tx_lock, flags);
+-
+-	priv->force_reset = false;
+ }
+ 
+ static void _rtl92e_watchdog_timer_cb(struct timer_list *t)
 diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-index fa5d0eec90d3..0ebebb3c2c35 100644
+index 0ebebb3c2c35..deb707dfa443 100644
 --- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
 +++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-@@ -368,7 +368,6 @@ struct r8192_priv {
- 	u32		continue_diff_count;
- 	bool		bswitch_fsync;
- 	u8		framesync;
--	u32		reset_count;
+@@ -371,7 +371,6 @@ struct r8192_priv {
  
  	u16		tx_counter;
  	u16		rx_ctr;
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-index fd5228e7a462..c29bc85f9577 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
-@@ -1088,7 +1088,6 @@ static void _rtl92e_dm_ctrl_initgain_byrssi_driver(struct net_device *dev)
- static void _rtl92e_dm_ctrl_initgain_byrssi_false_alarm(struct net_device *dev)
- {
- 	struct r8192_priv *priv = rtllib_priv(dev);
--	static u32 reset_cnt;
- 	u8 i;
+-	bool		force_reset;
+ 	bool		force_lps;
+ };
  
- 	if (!dm_digtable.dig_enable_flag)
-@@ -1108,10 +1107,8 @@ static void _rtl92e_dm_ctrl_initgain_byrssi_false_alarm(struct net_device *dev)
- 		(priv->undecorated_smoothed_pwdb < dm_digtable.rssi_high_thresh))
- 		return;
- 	if (priv->undecorated_smoothed_pwdb <= dm_digtable.rssi_low_thresh) {
--		if (dm_digtable.dig_state == DM_STA_DIG_OFF &&
--			(priv->reset_count == reset_cnt))
-+		if (dm_digtable.dig_state == DM_STA_DIG_OFF)
- 			return;
--		reset_cnt = priv->reset_count;
- 
- 		dm_digtable.dig_highpwr_state = DM_STA_DIG_MAX;
- 		dm_digtable.dig_state = DM_STA_DIG_OFF;
-@@ -1136,15 +1133,10 @@ static void _rtl92e_dm_ctrl_initgain_byrssi_false_alarm(struct net_device *dev)
- 	if (priv->undecorated_smoothed_pwdb >= dm_digtable.rssi_high_thresh) {
- 		u8 reset_flag = 0;
- 
--		if (dm_digtable.dig_state == DM_STA_DIG_ON &&
--		    (priv->reset_count == reset_cnt)) {
-+		if (dm_digtable.dig_state == DM_STA_DIG_ON) {
- 			_rtl92e_dm_ctrl_initgain_byrssi_highpwr(dev);
- 			return;
- 		}
--		if (priv->reset_count != reset_cnt)
--			reset_flag = 1;
--
--		reset_cnt = priv->reset_count;
- 
- 		dm_digtable.dig_state = DM_STA_DIG_ON;
- 
-@@ -1175,7 +1167,6 @@ static void _rtl92e_dm_ctrl_initgain_byrssi_false_alarm(struct net_device *dev)
- static void _rtl92e_dm_ctrl_initgain_byrssi_highpwr(struct net_device *dev)
- {
- 	struct r8192_priv *priv = rtllib_priv(dev);
--	static u32 reset_cnt_highpwr;
- 
- 	if ((priv->undecorated_smoothed_pwdb >
- 	     dm_digtable.rssi_high_power_lowthresh) &&
-@@ -1185,8 +1176,7 @@ static void _rtl92e_dm_ctrl_initgain_byrssi_highpwr(struct net_device *dev)
- 
- 	if (priv->undecorated_smoothed_pwdb >=
- 	    dm_digtable.rssi_high_power_highthresh) {
--		if (dm_digtable.dig_highpwr_state == DM_STA_DIG_ON &&
--			(priv->reset_count == reset_cnt_highpwr))
-+		if (dm_digtable.dig_highpwr_state == DM_STA_DIG_ON)
- 			return;
- 		dm_digtable.dig_highpwr_state = DM_STA_DIG_ON;
- 
-@@ -1195,8 +1185,7 @@ static void _rtl92e_dm_ctrl_initgain_byrssi_highpwr(struct net_device *dev)
- 		else
- 			rtl92e_writeb(dev, rOFDM0_RxDetector1, 0x43);
- 	} else {
--		if (dm_digtable.dig_highpwr_state == DM_STA_DIG_OFF &&
--			(priv->reset_count == reset_cnt_highpwr))
-+		if (dm_digtable.dig_highpwr_state == DM_STA_DIG_OFF)
- 			return;
- 		dm_digtable.dig_highpwr_state = DM_STA_DIG_OFF;
- 
-@@ -1210,7 +1199,6 @@ static void _rtl92e_dm_ctrl_initgain_byrssi_highpwr(struct net_device *dev)
- 				rtl92e_writeb(dev, rOFDM0_RxDetector1, 0x44);
- 		}
- 	}
--	reset_cnt_highpwr = priv->reset_count;
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+index 17e7fcc01f70..ec09066f2f32 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
+@@ -141,19 +141,6 @@ static int _rtl92e_wx_set_rawtx(struct net_device *dev,
+ 	return ret;
  }
  
- static void _rtl92e_dm_initial_gain(struct net_device *dev)
-@@ -1218,11 +1206,9 @@ static void _rtl92e_dm_initial_gain(struct net_device *dev)
- 	struct r8192_priv *priv = rtllib_priv(dev);
- 	u8 initial_gain = 0;
- 	static u8 initialized, force_write;
--	static u32 reset_cnt;
- 
- 	if (dm_digtable.dig_algorithm_switch) {
- 		initialized = 0;
--		reset_cnt = 0;
- 	}
- 
- 	if (rtllib_act_scanning(priv->rtllib, true)) {
-@@ -1249,11 +1235,6 @@ static void _rtl92e_dm_initial_gain(struct net_device *dev)
- 		dm_digtable.pre_ig_value = 0;
- 	}
- 
--	if (priv->reset_count != reset_cnt) {
--		force_write = 1;
--		reset_cnt = priv->reset_count;
--	}
--
- 	if (dm_digtable.pre_ig_value != rtl92e_readb(dev, rOFDM0_XAAGCCore1))
- 		force_write = 1;
- 
-@@ -1274,11 +1255,9 @@ static void _rtl92e_dm_pd_th(struct net_device *dev)
- {
- 	struct r8192_priv *priv = rtllib_priv(dev);
- 	static u8 initialized, force_write;
--	static u32 reset_cnt;
- 
- 	if (dm_digtable.dig_algorithm_switch) {
- 		initialized = 0;
--		reset_cnt = 0;
- 	}
- 
- 	if (dm_digtable.pre_sta_connect_state == dm_digtable.cur_sta_connect_state) {
-@@ -1307,11 +1286,6 @@ static void _rtl92e_dm_pd_th(struct net_device *dev)
- 		dm_digtable.curpd_thstate = DIG_PD_AT_LOW_POWER;
- 	}
- 
--	if (priv->reset_count != reset_cnt) {
--		force_write = 1;
--		reset_cnt = priv->reset_count;
--	}
--
- 	if ((dm_digtable.prepd_thstate != dm_digtable.curpd_thstate) ||
- 	    (initialized <= 3) || force_write) {
- 		if (dm_digtable.curpd_thstate == DIG_PD_AT_LOW_POWER) {
-@@ -1340,13 +1314,10 @@ static void _rtl92e_dm_pd_th(struct net_device *dev)
- 
- static void _rtl92e_dm_cs_ratio(struct net_device *dev)
- {
+-static int _rtl92e_wx_force_reset(struct net_device *dev,
+-				  struct iw_request_info *info,
+-				  union iwreq_data *wrqu, char *extra)
+-{
 -	struct r8192_priv *priv = rtllib_priv(dev);
- 	static u8 initialized, force_write;
--	static u32 reset_cnt;
- 
- 	if (dm_digtable.dig_algorithm_switch) {
- 		initialized = 0;
--		reset_cnt = 0;
- 	}
- 
- 	if (dm_digtable.pre_sta_connect_state == dm_digtable.cur_sta_connect_state) {
-@@ -1364,11 +1335,6 @@ static void _rtl92e_dm_cs_ratio(struct net_device *dev)
- 		dm_digtable.curcs_ratio_state = DIG_CS_RATIO_LOWER;
- 	}
- 
--	if (priv->reset_count != reset_cnt) {
--		force_write = 1;
--		reset_cnt = priv->reset_count;
--	}
 -
- 	if ((dm_digtable.precs_ratio_state != dm_digtable.curcs_ratio_state) ||
- 	    !initialized || force_write) {
- 		if (dm_digtable.curcs_ratio_state == DIG_CS_RATIO_LOWER)
-@@ -1982,7 +1948,6 @@ static void _rtl92e_dm_check_fsync(struct net_device *dev)
- #define	RegC38_Fsync_AP_BCM		2
- 	struct r8192_priv *priv = rtllib_priv(dev);
- 	static u8 reg_c38_State = RegC38_Default;
--	static u32 reset_cnt;
- 
- 	if (priv->rtllib->link_state == MAC80211_LINKED &&
- 	    priv->rtllib->ht_info->IOTPeer == HT_IOT_PEER_BROADCOM) {
-@@ -2066,12 +2031,6 @@ static void _rtl92e_dm_check_fsync(struct net_device *dev)
- 			}
- 		}
- 	}
--	if (priv->reset_count != reset_cnt) {
--		rtl92e_writeb(dev, rOFDM0_RxDetector3,
--			       priv->framesync);
--		reg_c38_State = RegC38_Default;
--		reset_cnt = priv->reset_count;
--	}
- }
- 
- /*---------------------------Define function prototype------------------------*/
+-	mutex_lock(&priv->wx_mutex);
+-
+-	priv->force_reset = *extra;
+-	mutex_unlock(&priv->wx_mutex);
+-	return 0;
+-}
+-
+ static int _rtl92e_wx_adapter_power_status(struct net_device *dev,
+ 					   struct iw_request_info *info,
+ 					   union iwreq_data *wrqu, char *extra)
+@@ -1060,9 +1047,6 @@ static const struct iw_priv_args r8192_private_args[] = {
+ 	}, {
+ 		SIOCIWFIRSTPRIV + 0x2,
+ 		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "rawtx"
+-	}, {
+-		SIOCIWFIRSTPRIV + 0x3,
+-		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "forcereset"
+ 	}, {
+ 		SIOCIWFIRSTPRIV + 0x6,
+ 		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, IW_PRIV_TYPE_NONE,
+@@ -1089,7 +1073,7 @@ static iw_handler r8192_private_handler[] = {
+ 	(iw_handler)_rtl92e_wx_set_debug,   /*SIOCIWSECONDPRIV*/
+ 	(iw_handler)_rtl92e_wx_set_scan_type,
+ 	(iw_handler)_rtl92e_wx_set_rawtx,
+-	(iw_handler)_rtl92e_wx_force_reset,
++	(iw_handler)NULL,
+ 	(iw_handler)NULL,
+ 	(iw_handler)NULL,
+ 	(iw_handler)_rtl92e_wx_adapter_power_status,
 -- 
 2.42.0
 
