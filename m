@@ -2,129 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E297B499C
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 22:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D2C7B499F
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 22:57:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235375AbjJAUsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 16:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
+        id S235385AbjJAU5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 16:57:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235346AbjJAUso (ORCPT
+        with ESMTP id S231727AbjJAU5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 16:48:44 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D125EBA
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 13:48:41 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9b64b98656bso377466b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 13:48:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1696193320; x=1696798120; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=T5nwqgL0/UCkT25jpZLet8OWaUvSFwUq172hL3LVY/g=;
-        b=Z/ycTf54sspzNV6Y5WhlLdbLbhjju4KkI07srcIUlV3V8IKiHIgvTelXFHjls+RCvL
-         69oJeV2ySwAce3LrhDViRcVzcrnvYgPm+tBusSWOdN8K4ub/MDzupT8zgOsqjYCjtvoY
-         B1EKkWQw+3v5knBGPGTkzb1cTyaDXFXZTj8sM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696193320; x=1696798120;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T5nwqgL0/UCkT25jpZLet8OWaUvSFwUq172hL3LVY/g=;
-        b=aXZ06wSbKbFX6Lqp73ReCsr/v/bA9BR19x3HdOVQ36W56xhFgRcS8WsVCCKy2TY9FW
-         f8de0F4Q0Fw4UjJyhFjAmNBVgvK/fGyuSo974LiXwpl19Cub80UYVna4jnHQSTRHbOHh
-         DUfZZs+Nf/lCNxALc9A2mn8j/qqEkl5MpiykyHMva8vfdJWPRLoIMKi2RsCbNGm1X4c8
-         xatuWCzW0PvuY+RVHi8QYzzTGSCfOrq5EgxjWC3hcHIOaLff3eiDzitjCwzfrwJmJl/Q
-         I2lc1MxKcipIhI1XzbtrAFSIW236lrDnIMdeaNRVfKRPWT4Cxrs+aeEOPjiiRX4/5slx
-         nabA==
-X-Gm-Message-State: AOJu0YwqhUmuL90KGV5giYC41NyjjRIwvcm4bPJQ2Oy7Tnnam/PAGWxQ
-        Hy/uJ7nqbQkShnDruWdcaQAGnCRUiVlpe5+zgis0kaWf
-X-Google-Smtp-Source: AGHT+IFIFnemMLyNUTRbGIfV8qtB5J3U9ArQi755uEZrwHVuet+1A3PP9joAP/r6k9pqNf2ZOlUl5A==
-X-Received: by 2002:a17:907:760f:b0:9b2:b633:ada2 with SMTP id jx15-20020a170907760f00b009b2b633ada2mr8598633ejc.36.1696193320243;
-        Sun, 01 Oct 2023 13:48:40 -0700 (PDT)
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
-        by smtp.gmail.com with ESMTPSA id lw3-20020a170906bcc300b009ae0042e48bsm15836568ejb.5.2023.10.01.13.48.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Oct 2023 13:48:39 -0700 (PDT)
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-307d58b3efbso13851704f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 13:48:38 -0700 (PDT)
-X-Received: by 2002:a5d:67c4:0:b0:31f:f94f:e13f with SMTP id
- n4-20020a5d67c4000000b0031ff94fe13fmr8989234wrw.19.1696193318578; Sun, 01 Oct
- 2023 13:48:38 -0700 (PDT)
+        Sun, 1 Oct 2023 16:57:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F19F4BD;
+        Sun,  1 Oct 2023 13:57:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696193867; x=1727729867;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=758DrSEcuFaG2JVSDrnKrxCHgbC5DHZC/ey5mhM5Dx0=;
+  b=H2OOruPZnha5kZzTjWSDW+Sww0gesDJ5HRLRSeCpJ5xjuNN6zCME5UPY
+   LbxgUlQt4JEm6o75jKa9u4/N5b4v1YfwBw+OC8PNAsHWAle2XiuF6HhXv
+   MVW4niMxRq4Jlxfufrjq+olMU/ANIa9/E41qjr+LKNUlrTNvcnYKbRqt1
+   BIeUcintNMIGdqd1ydQc1363DlaYZckHgmS/uvFqSCJnRQeEwxrrVJ9qJ
+   SqFG0EAZGcqWDBK067Swv7vFWp10W/+ZPFZs4XTsDMnGrhJVZoKYUFEdH
+   Pe9ikdSOxbrWQT1weQ9QsZsfLRiy6/20fNCuHEvd0WjIrg6ix4Dm2BoOt
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="372902409"
+X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
+   d="scan'208";a="372902409"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2023 13:57:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="785612314"
+X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
+   d="scan'208";a="785612314"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga001.jf.intel.com with ESMTP; 01 Oct 2023 13:57:43 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qn3VT-0005Ow-0Z;
+        Sun, 01 Oct 2023 20:57:39 +0000
+Date:   Mon, 2 Oct 2023 04:56:33 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        dmitry.baryshkov@linaro.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rohit Agarwal <quic_rohiagar@quicinc.com>
+Subject: Re: [PATCH v2 1/3] arm64: dts: qcom: Add interconnect nodes for SDX75
+Message-ID: <202310020405.aU033fMG-lkp@intel.com>
+References: <1695720564-2978-2-git-send-email-quic_rohiagar@quicinc.com>
 MIME-Version: 1.0
-References: <CAHk-=wjrZgxjHZuXwrGeFnng_whUmtToCWE5GQ+HORhGSeiX8g@mail.gmail.com>
- <ZRhKq6e5nF/4ZIV1@fedora> <CAB=+i9QiJ=BXkQuCFJTh3dMXrkKQvVA2EM51Mj6SsDMimWQ71g@mail.gmail.com>
-In-Reply-To: <CAB=+i9QiJ=BXkQuCFJTh3dMXrkKQvVA2EM51Mj6SsDMimWQ71g@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 1 Oct 2023 13:48:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whosoBSLAWzSGUZ8s=UwAVG9rsQ9OVPvw97S2RRFGfk2A@mail.gmail.com>
-Message-ID: <CAHk-=whosoBSLAWzSGUZ8s=UwAVG9rsQ9OVPvw97S2RRFGfk2A@mail.gmail.com>
-Subject: Re: Linux 6.6-rc3 (DEBUG_VIRTUAL is unhappy on x86)
-To:     Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Kaplan <David.Kaplan@amd.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1695720564-2978-2-git-send-email-quic_rohiagar@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 1 Oct 2023 at 07:17, Hyeonggon Yoo <42.hyeyoo@gmail.com> wrote:
-> >
-> > > Peter Zijlstra (1):
-> > >       x86,static_call: Fix static-call vs return-thunk
-> >
-> > Hello, the commit above caused a crash on x86 kernel with
-> > CONFIG_DEBUG_VIRTUAL=y.
->
-> OK, I looked into this a little bit, and it turns out that the problematic
-> address here is from cleanup_trusted() in
-> security/keys/trusted-keys/trusted_core.c.
-> (and it's builtin due to CONFIG_TRUSTED_KEYS=y)
->
-> The function is marked as __exit, so it does not fall within the
-> 'core kernel text address range,' which is between _stext and _etext
-> (or between _sinittext and _einittext). and thus __text_poke() thinks that
-> it's vmalloc/module area.
->
-> I think __text_poke() should be taught that functions marked as __exit
-> also belong to kernel code just like __init.
+Hi Rohit,
 
-I think your patch is fine (well, whitespace-damaged, but conceptually good).
+kernel test robot noticed the following build errors:
 
-But I also wonder about that
+[auto build test ERROR on robh/for-next]
+[also build test ERROR on linus/master v6.6-rc3 next-20230929]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-        static_call_cond(trusted_key_exit)();
+url:    https://github.com/intel-lab-lkp/linux/commits/Rohit-Agarwal/arm64-dts-qcom-Add-interconnect-nodes-for-SDX75/20230926-173336
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
+patch link:    https://lore.kernel.org/r/1695720564-2978-2-git-send-email-quic_rohiagar%40quicinc.com
+patch subject: [PATCH v2 1/3] arm64: dts: qcom: Add interconnect nodes for SDX75
+config: arm64-randconfig-002-20230930 (https://download.01.org/0day-ci/archive/20231002/202310020405.aU033fMG-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231002/202310020405.aU033fMG-lkp@intel.com/reproduce)
 
-in cleanup_trusted(). It seems all kinds of pointless to use static
-calls for something that is done *once*. That's not an optimization,
-that's honestly just _stupid_. It costs more to do the rewriting that
-it does to just do the one dynamic indirect call.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310020405.aU033fMG-lkp@intel.com/
 
-Side note: the same is true of the init-time call, which does
+All errors (new ones prefixed by >>):
 
-                static_call_update(trusted_key_init,
-                                   trusted_key_sources[i].ops->init);
-                ...
-                ret = static_call(trusted_key_init)();
+   In file included from arch/arm64/boot/dts/qcom/sdx75-idp.dts:9:
+>> arch/arm64/boot/dts/qcom/sdx75.dtsi:11:10: fatal error: dt-bindings/interconnect/qcom,sdx75.h: No such file or directory
+      11 | #include <dt-bindings/interconnect/qcom,sdx75.h>
+         |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   compilation terminated.
 
-which again is a *lot* more expensive than just doing the indirect
-function call.
 
-So while I don't think your patch is wrong, I do think that the cause
-here is plain silly code, and that trusted key code simply should not
-do the crazy thing it does (and that causes silly problems).
+vim +11 arch/arm64/boot/dts/qcom/sdx75.dtsi
 
-               Linus
+  > 11	#include <dt-bindings/interconnect/qcom,sdx75.h>
+    12	#include <dt-bindings/interrupt-controller/arm-gic.h>
+    13	#include <dt-bindings/power/qcom,rpmhpd.h>
+    14	#include <dt-bindings/power/qcom-rpmpd.h>
+    15	#include <dt-bindings/soc/qcom,rpmh-rsc.h>
+    16	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
