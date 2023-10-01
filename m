@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8369C7B47DF
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:13:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7D97B47E5
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235105AbjJAONQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 10:13:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
+        id S235130AbjJAONW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 10:13:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235074AbjJAONI (ORCPT
+        with ESMTP id S235079AbjJAONI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 1 Oct 2023 10:13:08 -0400
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BEE7B4;
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC65FA6;
         Sun,  1 Oct 2023 07:13:05 -0700 (PDT)
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id DC05382D29;
-        Sun,  1 Oct 2023 16:13:03 +0200 (CEST)
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 79DAD836EA;
+        Sun,  1 Oct 2023 16:13:04 +0200 (CEST)
 From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Sun, 01 Oct 2023 16:12:55 +0200
-Subject: [PATCH RFC v4 4/6] ARM: pxa: Convert reset driver to GPIO
+Date:   Sun, 01 Oct 2023 16:12:56 +0200
+Subject: [PATCH RFC v4 5/6] ARM: pxa: Convert gumstix Bluetooth to GPIO
  descriptors
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20231001-pxa-gpio-v4-4-0f3b975e6ed5@skole.hr>
+Message-Id: <20231001-pxa-gpio-v4-5-0f3b975e6ed5@skole.hr>
 References: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr>
 In-Reply-To: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr>
 To:     Daniel Mack <daniel@zonque.org>,
@@ -44,21 +44,21 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-input@vger.kernel.org, linux-spi@vger.kernel.org,
         =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3654;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2120;
  i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=/5RS07oDLTRM3lgyYG7tk3xbGzkj5Cj8vfkuDyb1HJU=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlGX5oQcyjQR6JAF0y/zmQk3Z8t5h4+yoRN+M4i
- PYHyqTY3eWJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZRl+aAAKCRCaEZ6wQi2W
- 4aiyEACQLJHgTkUAExmrwUOYfsqTHZPOmxL50sd8zf5DPeL5KfPskdb+IC3mVz4bfKlqoEppanD
- 1q3MXyiXNSU3pyquUiOcOoVzn8nIKHfy5iN7fBiq9VA7TePKJRSOmv2pM1bdDmQP+nsD3V2F7RL
- Dkwk2G1jnlXwgsOmfQeuP1bdR4sgJJtlqDQDpe/be3yClQ5wqvo2A4Pggxsof6NYhDa/K5wheCL
- vjn36qYxcmU++1prFzEeFMnxaWuAiZPCVM0X9jcgpmuE7sowlaOjkctODIAOLZWB/uFF0ZpCcZr
- Nml9gKI0cDb6BEjGqczHu4f2Bdn87FmNJhmGtOt1JVzVRDWbquWU2LUWCcbdqY78OffRWjqwgnP
- 97tdLJwNmovVflsn/z2Tu34q450alWc/x+0U4r9loZctjXMCWwV6SonjfKNNCuGLQJZq5gMXkSN
- 1zE2Ul9/cf2508SjcDmzhXzd3A2RW/B4TDhdmgJvmioejxnv3c95sq1Qx4OU+vqxL9XbZzd0fVx
- ciKRY8b4NsKu1MA8gThDJnEtv3/fgDy7SyLw0ADrmDHa3nBEBj4xYy6hZLGGv07vy3BbqEoiReE
- Lb6InZzJPiaK9FBaLYNXesQ5I7kVc6eg4H4vGkCpK3nk3BoNXpt6qmnUwhCD2NVwvf5ncG48gaf
- Hgt93S+vaVBsV1w==
+ bh=iuWT35T+pUGdfAj4zdYMGj+Bj0cXb5OTfKVaTOQr/5k=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlGX5oUa8Zw23lPXVy8SqVKx1jldghSwj9GmogH
+ Dm2K+0yBZOJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZRl+aAAKCRCaEZ6wQi2W
+ 4T4+D/9UXJlbUcC9ellaDRwD9fD5QSbYUvMGxUcaUIDmi/tcwO2jDFIStFEW7ZC66UkWSPAn4kb
+ Rwo9UI1weqRgpoFLg99O8LoM7L/pcDCVoTxGfaP6/+uNWWw1gCQpXUisr6y4JZM8nsGqMAZSzLy
+ uO2cBdPSm5Dbj8ITCepq2brfJNMSQ7s4iAMHzeWrlI851tYj/+M7CL2l7GSe+1F76e3Bwq5q7pS
+ YmbZDAg9unl3OvKKjMVj+JQO2SGyEBbryuiePxDkb+39RgRYsSan3z4lJ8uQSwrCXAvaF56QfFK
+ kFwV8+4PBoSaUyE2otTwUdUkhAk4ThqOipeYswz51Dnwo73OPTIVHvu3o0UD05W1LvfJ0ME3Xnq
+ Nq7Jlv5MwueroGBtBAhGQOOB38K6FUA6B1IslCZ7hL9NX8Ut2c/QvDXNq7sse8W7eVw3Qd/2Cti
+ 97SlxkA6OchUSUufb3l+wRQj/9ea+1tK6bX3HMSCo+d9IeBf5xDWG+orOZmwizhK5NfJoFLDdZs
+ GvVNZbogSyTNFgtqh/K/QxuPvTp/Mxc9/H+/Lg6zZwbzsGT9DkilYChjybY36FtNorKSJ1W+xfa
+ vH1W2JD2l3aSBR9Gbj7QNalOJegrc4LJhyCtlSNbAZhM4xvq3TiQWJmkaa+ke+Uxc9SX3NzASn4
+ h1EL9YyO34U5ABw==
 X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
  fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -70,130 +70,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PXA reset driver still uses the legacy GPIO interface for
-configuring and asserting the reset pin.
+Gumstix still uses the legacy GPIO interface for resetting the Bluetooth
+device.
 
 Convert it to use the GPIO descriptor interface.
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
- arch/arm/mach-pxa/reset.c | 39 +++++++++++++--------------------------
- arch/arm/mach-pxa/reset.h |  3 +--
- arch/arm/mach-pxa/spitz.c |  6 +++++-
- 3 files changed, 19 insertions(+), 29 deletions(-)
+ arch/arm/mach-pxa/gumstix.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/reset.c b/arch/arm/mach-pxa/reset.c
-index 27293549f8ad..2bfa66f99555 100644
---- a/arch/arm/mach-pxa/reset.c
-+++ b/arch/arm/mach-pxa/reset.c
-@@ -2,7 +2,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
+diff --git a/arch/arm/mach-pxa/gumstix.c b/arch/arm/mach-pxa/gumstix.c
+index c9f0f62187bd..14e1b9274d7a 100644
+--- a/arch/arm/mach-pxa/gumstix.c
++++ b/arch/arm/mach-pxa/gumstix.c
+@@ -20,8 +20,8 @@
  #include <linux/delay.h>
--#include <linux/gpio.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/partitions.h>
 +#include <linux/gpio/consumer.h>
- #include <linux/io.h>
- #include <asm/proc-fns.h>
- #include <asm/system_misc.h>
-@@ -14,33 +14,20 @@
+ #include <linux/gpio/machine.h>
+-#include <linux/gpio.h>
+ #include <linux/err.h>
+ #include <linux/clk.h>
  
- static void do_hw_reset(void);
+@@ -129,6 +129,9 @@ static void gumstix_udc_init(void)
+ #endif
  
--static int reset_gpio = -1;
-+static struct gpio_desc *reset_gpio;
+ #ifdef CONFIG_BT
++GPIO_LOOKUP_SINGLE(gumstix_bt_gpio_table, "pxa2xx-uart.1", "pxa-gpio",
++		GPIO_GUMSTIX_BTRESET, "BTRST", GPIO_ACTIVE_LOW);
++
+ /* Normally, the bootloader would have enabled this 32kHz clock but many
+ ** boards still have u-boot 1.1.4 so we check if it has been turned on and
+ ** if not, we turn it on with a warning message. */
+@@ -153,24 +156,23 @@ static void gumstix_setup_bt_clock(void)
  
--int init_gpio_reset(int gpio, int output, int level)
-+int init_gpio_reset(int output, int level)
+ static void __init gumstix_bluetooth_init(void)
  {
--	int rc;
--
--	rc = gpio_request(gpio, "reset generator");
--	if (rc) {
--		printk(KERN_ERR "Can't request reset_gpio\n");
--		goto out;
-+	reset_gpio = gpiod_get(NULL, "reset generator", GPIOD_ASIS);
-+	if (IS_ERR(reset_gpio)) {
-+		pr_err("Can't request reset_gpio: %pe\n", reset_gpio);
-+		return PTR_ERR(reset_gpio);
+-	int err;
++	struct gpio_desc *desc;
++
++	gpiod_add_lookup_table(&gumstix_bt_gpio_table);
+ 
+ 	gumstix_setup_bt_clock();
+ 
+-	err = gpio_request(GPIO_GUMSTIX_BTRESET, "BTRST");
+-	if (err) {
++	desc = gpiod_get(&pxa_device_btuart.dev, "BTRST", GPIOD_OUT_HIGH);
++	if (IS_ERR(desc)) {
+ 		pr_err("gumstix: failed request gpio for bluetooth reset\n");
+ 		return;
  	}
  
- 	if (output)
--		rc = gpio_direction_output(gpio, level);
-+		return gpiod_direction_output(reset_gpio, level);
- 	else
--		rc = gpio_direction_input(gpio);
--	if (rc) {
--		printk(KERN_ERR "Can't configure reset_gpio\n");
--		gpio_free(gpio);
--		goto out;
+-	err = gpio_direction_output(GPIO_GUMSTIX_BTRESET, 1);
+-	if (err) {
+-		pr_err("gumstix: can't reset bluetooth\n");
+-		return;
 -	}
--
--out:
--	if (!rc)
--		reset_gpio = gpio;
--
--	return rc;
-+		return gpiod_direction_input(reset_gpio);
- }
- 
- /*
-@@ -50,16 +37,16 @@ int init_gpio_reset(int gpio, int output, int level)
-  */
- static void do_gpio_reset(void)
- {
--	BUG_ON(reset_gpio == -1);
-+	BUG_ON(IS_ERR(reset_gpio));
- 
- 	/* drive it low */
--	gpio_direction_output(reset_gpio, 0);
-+	gpiod_direction_output(reset_gpio, 0);
- 	mdelay(2);
- 	/* rising edge or drive high */
--	gpio_set_value(reset_gpio, 1);
-+	gpiod_set_value(reset_gpio, 1);
- 	mdelay(2);
- 	/* falling edge */
--	gpio_set_value(reset_gpio, 0);
-+	gpiod_set_value(reset_gpio, 0);
- 
- 	/* give it some time */
- 	mdelay(10);
-diff --git a/arch/arm/mach-pxa/reset.h b/arch/arm/mach-pxa/reset.h
-index 963dd190bc13..5864f61a0e94 100644
---- a/arch/arm/mach-pxa/reset.h
-+++ b/arch/arm/mach-pxa/reset.h
-@@ -13,10 +13,9 @@ extern void pxa_register_wdt(unsigned int reset_status);
- 
- /**
-  * init_gpio_reset() - register GPIO as reset generator
-- * @gpio: gpio nr
-  * @output: set gpio as output instead of input during normal work
-  * @level: output level
-  */
--extern int init_gpio_reset(int gpio, int output, int level);
-+extern int init_gpio_reset(int output, int level);
- 
- #endif /* __ASM_ARCH_RESET_H */
-diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
-index 965354e64c68..701fba130ac4 100644
---- a/arch/arm/mach-pxa/spitz.c
-+++ b/arch/arm/mach-pxa/spitz.c
-@@ -1024,9 +1024,13 @@ static void spitz_restart(enum reboot_mode mode, const char *cmd)
- 	spitz_poweroff();
- }
- 
-+GPIO_LOOKUP_SINGLE(spitz_reset_gpio_table, NULL, "pxa-gpio",
-+		SPITZ_GPIO_ON_RESET, "reset generator", GPIO_ACTIVE_HIGH);
+-	gpio_set_value(GPIO_GUMSTIX_BTRESET, 0);
++	gpiod_set_value(desc, 0);
+ 	udelay(100);
+-	gpio_set_value(GPIO_GUMSTIX_BTRESET, 1);
++	gpiod_set_value(desc, 1);
 +
- static void __init spitz_init(void)
- {
--	init_gpio_reset(SPITZ_GPIO_ON_RESET, 1, 0);
-+	gpiod_add_lookup_table(&spitz_reset_gpio_table);
-+	init_gpio_reset(1, 0);
- 	pm_power_off = spitz_poweroff;
- 
- 	PMCR = 0x00;
++	gpiod_put(desc);
+ }
+ #else
+ static void gumstix_bluetooth_init(void)
 
 -- 
 2.42.0
