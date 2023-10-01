@@ -2,73 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 122147B4984
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 21:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1627B498C
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 22:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235369AbjJAT7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 15:59:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48404 "EHLO
+        id S235370AbjJAUOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 16:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235346AbjJAT7S (ORCPT
+        with ESMTP id S235346AbjJAUOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 15:59:18 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102A1C6;
-        Sun,  1 Oct 2023 12:59:15 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50437c618b4so21997095e87.2;
-        Sun, 01 Oct 2023 12:59:14 -0700 (PDT)
+        Sun, 1 Oct 2023 16:14:09 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344B0D3
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 13:14:06 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32799639a2aso936198f8f.3
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 13:14:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696190353; x=1696795153; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G6wnHTgTcw37XCFqdNoUwceIprHkHSWJNKSBsu0v9k0=;
-        b=b2AEyb7Djs2XMEk+JHtlUbo1horar/QONrxDjtDnk1u9DLZStteMueb+jehXQ4tzCv
-         u/TT/E9B+SKGVVB9yZe10ba5ZLUynWE7igNL/5PicEs+hfaYf40YJkBYcZ6a5xsA2QT3
-         2ydNf1Aqi9x7rIj5NGpV5dhU5D1iKGTfAdI4U8CuwUffd28W4Au2MbsAKlgFw1JBAGSG
-         xFVKm9l4w9u9TQR1aQpr/amhO2DB0i9oHFoLhwCIKHl5LK3w08+BBAPwH606+En6J4Mc
-         mt8U2jQZpR3wy13/CUP/ovU0Pv6f7EDfQ2Dru55giuCAucaKIRf7Ya0kop0kW/3b0acH
-         xCGQ==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696191244; x=1696796044; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=S5gdKKBRI8HMjzMvfQFYDp6loku3qgrG9OQcfyEaG8Y=;
+        b=ENJDV8FQI78y78EglS69TxeGxUl/zickH6M2Iw6RqqbDpzVNH7ywqOc5FryAzAQdfo
+         ZuP6zHwaHwnf9HCfsz5CXh+tLxz8PoFvscwLEhbefPx5QVjoqX1KmXP9n66dKz6ryxYH
+         tCBDYgkx/1R4SI9HKVh7zok8NHyvmXXBhttmuKc2StwabPKDrwAu4t+zMA+MnSGPHcbN
+         /FDW1HCcs3EItuOQZMIUejk/TFYTXVC8XTMOe2/xCNarO96Cby/kcjhqiFRQAIUG3o/m
+         aLACJyFofk8zJxiqT66akr6qKK844hmkDnJtn3RluPm/n3jIbt6JmDgtmIkfKdkxSSMo
+         VLTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696190353; x=1696795153;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G6wnHTgTcw37XCFqdNoUwceIprHkHSWJNKSBsu0v9k0=;
-        b=pDlfZ5ZNniBheiNG+f7//LQt8xFM1Ky1CoaHoU4vPBp+ri5FVY6ipYLi356JA+UPQH
-         Zt1fp0GW8zhS8xmJsEVOk4tzV1kjLvPSe+Tdcy+PFjh/52gB4bnEPLNfhgR44KeLcD/d
-         o1t/zkA2Awd3dU1qYYG2jOq7XatQNl6wfbibnDx8R3lPwFccjuV0Smb2RaZ09moLJ3rZ
-         aQHc2BSDFejMZI5ks/CyWy8h0oHioC/P5Z/VGge8FSTZcmj9wQsDbb3cC0owJnswqiMo
-         nj2W/ZyP2vZkA04fOjVdKwah51vN5TuaaFuznSJqsNQlhS+2L17cF+Sil7O2yqhnhLSa
-         a54w==
-X-Gm-Message-State: AOJu0Yy/oPTkgTgGU+s7Lx7ut55kJsD8v4HrC5DHk5K+gvmHKsGhNASy
-        2wZtincn9qUOkmk492y0NKIV7qvjmymEex6NN+Q=
-X-Google-Smtp-Source: AGHT+IFoIIwxaA7g5WAF7STEjI04HAo61gFoGEBM2TseweuiTvit/2GlFb8eZm9jmmI/b6cQqQd1t2uXsm39ei/59lU=
-X-Received: by 2002:ac2:58db:0:b0:505:6fed:33a0 with SMTP id
- u27-20020ac258db000000b005056fed33a0mr5768211lfo.34.1696190353001; Sun, 01
- Oct 2023 12:59:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696191244; x=1696796044;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=S5gdKKBRI8HMjzMvfQFYDp6loku3qgrG9OQcfyEaG8Y=;
+        b=ipMb1OlVwwCBhwdZ57E/doAEuVM3MGbvESODCv9t+Zuflcszo1weXNq7GYWi3R5l0u
+         b3YhdWz0okZ92ni3aQMwXQt8VVo86LOvG9cLnKvHiCPkQs4jx7GkjAaE1+9vX0vvU7j/
+         DIF62JoGvTeA4XJNw/VAkcCqfJ05K7J6ebhK+ngczbiNRmqTtYqxhV8SryEBftWbFZAp
+         dGq6l2orEMtCUahNR579qr+k5VsHH1cBD1H+ImCkKVqtftrvN+1Q/wI8O1lGbFCh1LnX
+         PIxV/owjkgxauyIW0cX9ROUdfaSRSv1ZZkyQCCqFUVjIbg+esvcNuN6ggN5G6MLrlpbR
+         dWrg==
+X-Gm-Message-State: AOJu0YzgA8y9srz5JLyX7f9f6qFTMXU4GAVLANrIzPqBaQXCYyHw+WDb
+        h+Ool6n44/Hq98EkasmFoztd6Q==
+X-Google-Smtp-Source: AGHT+IF8bQPLl/XkMjCK1GATpgLR3obNH1Yh0AnESH4KmxjbQ0tap497/YPYQvdhCNXwcL8NlYsgvQ==
+X-Received: by 2002:a5d:63cb:0:b0:319:6e3f:d5f0 with SMTP id c11-20020a5d63cb000000b003196e3fd5f0mr9162433wrw.44.1696191244674;
+        Sun, 01 Oct 2023 13:14:04 -0700 (PDT)
+Received: from arnold.baylibre (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id j6-20020a5d6046000000b003259b068ba6sm6141665wrt.7.2023.10.01.13.14.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Oct 2023 13:14:03 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     andrew@aj.id.au, davem@davemloft.net, herbert@gondor.apana.org.au,
+        joel@jms.id.au, john.allen@amd.com, neal_liu@aspeedtech.com,
+        thomas.lendacky@amd.com
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH] crypto: Move akcipher_request_cast helper to crypto header
+Date:   Sun,  1 Oct 2023 20:13:57 +0000
+Message-Id: <20231001201357.2052949-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230930050033.41174-1-wedsonaf@gmail.com> <20230930050033.41174-24-wedsonaf@gmail.com>
-In-Reply-To: <20230930050033.41174-24-wedsonaf@gmail.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Sun, 1 Oct 2023 14:59:01 -0500
-Message-ID: <CAH2r5mt_u0SDLpFzZ43n0F2-ZQ8xF8KJ4qTvvDKxe116Doa1Qw@mail.gmail.com>
-Subject: Re: [PATCH 23/29] smb: move cifs_xattr_handlers to .rodata
-To:     Wedson Almeida Filho <wedsonaf@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>,
-        Steve French <sfrench@samba.org>,
-        Paulo Alcantara <pc@manguebit.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Tom Talpey <tom@talpey.com>, linux-cifs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,62 +71,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Steve French <stfrench@microsoft.com>
+There is already 2 driver implementing their own akcipher_request_cast.
+In the future there will be also rockchip and allwinner driver that will
+need this.
+This is sufficient to move it in crypto headers.
 
-On Sat, Sep 30, 2023 at 6:27=E2=80=AFAM Wedson Almeida Filho <wedsonaf@gmai=
-l.com> wrote:
->
-> From: Wedson Almeida Filho <walmeida@microsoft.com>
->
-> This makes it harder for accidental or malicious changes to
-> cifs_xattr_handlers at runtime.
->
-> Cc: Steve French <sfrench@samba.org>
-> Cc: Paulo Alcantara <pc@manguebit.com>
-> Cc: Ronnie Sahlberg <lsahlber@redhat.com>
-> Cc: Shyam Prasad N <sprasad@microsoft.com>
-> Cc: Tom Talpey <tom@talpey.com>
-> Cc: linux-cifs@vger.kernel.org
-> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
-> ---
->  fs/smb/client/cifsfs.h | 2 +-
->  fs/smb/client/xattr.c  | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/smb/client/cifsfs.h b/fs/smb/client/cifsfs.h
-> index 15c8cc4b6680..a0472b539567 100644
-> --- a/fs/smb/client/cifsfs.h
-> +++ b/fs/smb/client/cifsfs.h
-> @@ -134,7 +134,7 @@ extern int cifs_symlink(struct mnt_idmap *idmap, stru=
-ct inode *inode,
->                         struct dentry *direntry, const char *symname);
->
->  #ifdef CONFIG_CIFS_XATTR
-> -extern const struct xattr_handler *cifs_xattr_handlers[];
-> +extern const struct xattr_handler * const cifs_xattr_handlers[];
->  extern ssize_t cifs_listxattr(struct dentry *, char *, size_t);
->  #else
->  # define cifs_xattr_handlers NULL
-> diff --git a/fs/smb/client/xattr.c b/fs/smb/client/xattr.c
-> index 4ad5531686d8..ac199160bce6 100644
-> --- a/fs/smb/client/xattr.c
-> +++ b/fs/smb/client/xattr.c
-> @@ -478,7 +478,7 @@ static const struct xattr_handler smb3_ntsd_full_xatt=
-r_handler =3D {
->         .set =3D cifs_xattr_set,
->  };
->
-> -const struct xattr_handler *cifs_xattr_handlers[] =3D {
-> +const struct xattr_handler * const cifs_xattr_handlers[] =3D {
->         &cifs_user_xattr_handler,
->         &cifs_os2_xattr_handler,
->         &cifs_cifs_acl_xattr_handler,
-> --
-> 2.34.1
->
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ drivers/crypto/aspeed/aspeed-acry.c | 6 ------
+ drivers/crypto/ccp/ccp-crypto-rsa.c | 6 ------
+ include/crypto/akcipher.h           | 7 +++++++
+ 3 files changed, 7 insertions(+), 12 deletions(-)
 
+diff --git a/drivers/crypto/aspeed/aspeed-acry.c b/drivers/crypto/aspeed/aspeed-acry.c
+index 247c568aa8df..ecb6e984367b 100644
+--- a/drivers/crypto/aspeed/aspeed-acry.c
++++ b/drivers/crypto/aspeed/aspeed-acry.c
+@@ -137,12 +137,6 @@ enum aspeed_rsa_key_mode {
+ 	ASPEED_RSA_DATA_MODE,
+ };
+ 
+-static inline struct akcipher_request *
+-	akcipher_request_cast(struct crypto_async_request *req)
+-{
+-	return container_of(req, struct akcipher_request, base);
+-}
+-
+ static int aspeed_acry_do_fallback(struct akcipher_request *req)
+ {
+ 	struct crypto_akcipher *cipher = crypto_akcipher_reqtfm(req);
+diff --git a/drivers/crypto/ccp/ccp-crypto-rsa.c b/drivers/crypto/ccp/ccp-crypto-rsa.c
+index a14f85512cf4..32c9f524f3d5 100644
+--- a/drivers/crypto/ccp/ccp-crypto-rsa.c
++++ b/drivers/crypto/ccp/ccp-crypto-rsa.c
+@@ -19,12 +19,6 @@
+ 
+ #include "ccp-crypto.h"
+ 
+-static inline struct akcipher_request *akcipher_request_cast(
+-	struct crypto_async_request *req)
+-{
+-	return container_of(req, struct akcipher_request, base);
+-}
+-
+ static inline int ccp_copy_and_save_keypart(u8 **kpbuf, unsigned int *kplen,
+ 					    const u8 *buf, size_t sz)
+ {
+diff --git a/include/crypto/akcipher.h b/include/crypto/akcipher.h
+index 670508f1dca1..4b6e610db18d 100644
+--- a/include/crypto/akcipher.h
++++ b/include/crypto/akcipher.h
+@@ -498,4 +498,11 @@ static inline int crypto_akcipher_set_priv_key(struct crypto_akcipher *tfm,
+ 
+ 	return alg->set_priv_key(tfm, key, keylen);
+ }
++
++static inline struct akcipher_request *
++	akcipher_request_cast(struct crypto_async_request *req)
++{
++	return container_of(req, struct akcipher_request, base);
++}
++
+ #endif
+-- 
+2.41.0
 
---=20
-Thanks,
-
-Steve
