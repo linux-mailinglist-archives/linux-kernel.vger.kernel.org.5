@@ -2,69 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB237B49AC
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 23:15:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57D597B49B3
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 23:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235401AbjJAVPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 17:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
+        id S235398AbjJAVVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 17:21:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235399AbjJAVPV (ORCPT
+        with ESMTP id S235161AbjJAVVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 17:15:21 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE00CE;
-        Sun,  1 Oct 2023 14:15:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 40B16C433C8;
-        Sun,  1 Oct 2023 21:15:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696194919;
-        bh=QPO1+1OVr/oT5EV2wN7AMqhxI3EhE6LePqC9WtxwhGA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=d1Gvb66Sb+DYgvNt9NevoMaDwvTWHQrcGCFo2tMrp9dXRfNZ1xBjbh2eJUqp65Fhb
-         RcKj42V6Uei5OlmVqF4zslHsC8APSjG+YOQg3effBh8smkmtCPlE/0GhKw8mKDG26r
-         +gs3GZ/YQdLi0SzGnlrH/3oztsklliBLaE9Gws4FqsZLoE+rrUjN0qOha62hDCOiDp
-         wqQG4SgsKtwKyaVonSPcbSE0d6pCSw59M7cDG5vzKP/nDOYUeLDXAx3pbiU6P14UXT
-         lEXpB6eQ5TiCygewvnxDBe5zT3Fk3HQpIDnW53oRUIkjlwdjDur9RwYtEutApPcsG7
-         HkUNgL1HYvG+A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 21FA6C43170;
-        Sun,  1 Oct 2023 21:15:19 +0000 (UTC)
-Subject: Re: [GIT PULL] Kbuild fixes for v6.6-rc4
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAK7LNAToVL02t9rApELSbCFfA=PYbgDzyLsJO+J3RV0h0Ry2hA@mail.gmail.com>
-References: <CAK7LNAToVL02t9rApELSbCFfA=PYbgDzyLsJO+J3RV0h0Ry2hA@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAK7LNAToVL02t9rApELSbCFfA=PYbgDzyLsJO+J3RV0h0Ry2hA@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v6.6-2
-X-PR-Tracked-Commit-Id: 2d7d1bc119a4d7f54cfe0b1be480c34e8c712d06
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e81a2dabc3f3faa0d96808708a8dc2025f2bdde3
-Message-Id: <169619491913.22414.2256666820104535823.pr-tracker-bot@kernel.org>
-Date:   Sun, 01 Oct 2023 21:15:19 +0000
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Sun, 1 Oct 2023 17:21:04 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71BE69B;
+        Sun,  1 Oct 2023 14:21:00 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E162F240002;
+        Sun,  1 Oct 2023 21:20:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696195258;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hwznFwcLGryjA62uDf/A8rrsHVh9Jec8flcbVAK26OQ=;
+        b=AEpfCPllhngkkX3X4yFiOsjUmetJ017fvXJRYRViGeKNTcN6N8bLdmo/vcX9gD1nQ0HWOg
+        7pQynSgHTCgBKnav76tGajYX7XF3jJ4r+/YGBDO25Hz3S8pEHKpC9PELpL6Rmoxyf7/fnK
+        WUlcmnXCRPsdBV+jnCDZ9Eb54aLovugCORI3XAPHy9sNMcFyipgO6f07l7T+QffQ5g8B5+
+        imMyJtokanMwYbUALfjrNBuJP3VUJWvOLIDOhSOfevtK7oTBRbqHFWpthvODSLbbJBY/sE
+        Ys1uatyCmre29mwZtMzd8wnSM0MPDjioct0ZTZB5JU5ovHiWfoW7f9nrAxRb7g==
+Date:   Sun, 1 Oct 2023 23:20:49 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Esteban Blanc <eblanc@baylibre.com>
+Cc:     linus.walleij@linaro.org, a.zummo@towertech.it,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-rtc@vger.kernel.org, jpanis@baylibre.com,
+        jneanne@baylibre.com, aseketeli@baylibre.com, u-kumar1@ti.com
+Subject: Re: [PATCH v7 1/2] rtc: tps6594: Add driver for TPS6594 RTC
+Message-ID: <2023100121204914ad7c28@mail.local>
+References: <20230628133021.500477-1-eblanc@baylibre.com>
+ <20230628133021.500477-2-eblanc@baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230628133021.500477-2-eblanc@baylibre.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 2 Oct 2023 01:56:16 +0900:
+Hello,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v6.6-2
+What is the status of this series?
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e81a2dabc3f3faa0d96808708a8dc2025f2bdde3
+On 28/06/2023 15:30:20+0200, Esteban Blanc wrote:
+> +static int tps6594_rtc_read_offset(struct device *dev, long *offset)
+> +{
+> +	int calibration;
+> +	s64 tmp;
+> +	int ret;
+> +
+> +	ret = tps6594_rtc_get_calibration(dev, &calibration);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	// Convert from RTC calibration register format to ppb format.
+> +	tmp = calibration * PPB_MULT;
+> +
+> +	if (tmp < 0)
+> +		tmp -= TICKS_PER_HOUR / 2LL;
+> +	else
+> +		tmp += TICKS_PER_HOUR / 2LL;
+> +	tmp = div_s64(tmp, TICKS_PER_HOUR);
+> +
+> +	/*
+> +	 * SAFETY:
+> +	 * Compution is the reverse operation of the one done in
 
-Thank you!
+Small typo -^
+
+> +	 * `tps6594_rtc_set_offset`. The safety remarks applie here too.
+> +	 */
+> +
+> +	/*
+> +	 * Offset value operates in negative way, so swap sign.
+> +	 * See 8.3.10.5, (32768 - COMP_REG).
+> +	 */
+> +	*offset = (long)-tmp;
+> +
+> +	return 0;
+> +}
+> +
+> +static int tps6594_rtc_set_offset(struct device *dev, long offset)
+> +{
+> +	int calibration;
+> +	s64 tmp;
+> +
+> +	// Make sure offset value is within supported range.
+> +	if (offset < MIN_OFFSET || offset > MAX_OFFSET)
+> +		return -ERANGE;
+> +
+> +	// Convert from ppb format to RTC calibration register format.
+> +
+> +	tmp = offset * TICKS_PER_HOUR;
+> +	if (tmp < 0)
+> +		tmp -= PPB_MULT / 2LL;
+> +	else
+> +		tmp += PPB_MULT / 2LL;
+> +	tmp = div_s64(tmp, PPB_MULT);
+> +
+> +	/*
+> +	 * SAFETY:
+> +	 * - tmp = offset * TICK_PER_HOUR :
+> +	 *	`offset` can't be more than 277774, so `tmp` can't exceed 277774000000000
+> +	 *	which is lower than the maximum value in an `s64` (2^63-1). No overflow here.
+> +	 *
+> +	 * - tmp += TICK_PER_HOUR / 2LL :
+> +	 *	tmp will have a maximum value of 277774117964800 which is still inferior to 2^63-1.
+> +	 */
+> +
+> +	// Offset value operates in negative way, so swap sign.
+> +	calibration = (int)-tmp;
+> +
+> +	return tps6594_rtc_set_calibration(dev, calibration);
+> +}
+> +
+> +static irqreturn_t tps6594_rtc_interrupt(int irq, void *rtc)
+> +{
+> +	struct device *dev = rtc;
+> +	unsigned long events = 0;
+> +	struct tps6594 *tps = dev_get_drvdata(dev->parent);
+> +	struct rtc_device *rtc_dev = dev_get_drvdata(dev);
+> +	int ret;
+> +	u32 rtc_reg;
+> +
+> +	ret = regmap_read(tps->regmap, TPS6594_REG_RTC_STATUS, &rtc_reg);
+> +	if (ret)
+> +		return IRQ_NONE;
+> +
+> +	if (rtc_reg & TPS6594_BIT_ALARM)
+> +		events = RTC_IRQF | RTC_AF;
+> +
+> +	// Notify RTC core on event.
+
+Nit: I don't feel like the events varialbe and the comment are
+necessary.
+
+> +	rtc_update_irq(rtc_dev, 1, events);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+
+If you resend, you can add:
+
+Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
