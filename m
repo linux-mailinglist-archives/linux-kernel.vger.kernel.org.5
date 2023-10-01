@@ -2,263 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D28CE7B478E
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 15:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B1A7B4797
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 15:18:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235010AbjJANQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 09:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34612 "EHLO
+        id S235030AbjJANSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 09:18:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234993AbjJANQn (ORCPT
+        with ESMTP id S235008AbjJANSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 09:16:43 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E96B8
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 06:16:41 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99de884ad25so2168723266b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 06:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696166199; x=1696770999; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jISPkvnxHNZ9YOvTMmU4+FmuVTZn4CUvBaU3KXe/pp4=;
-        b=WCGZ4EKLUjEMsGp1rm2NTOlXQi63Rd1R1h+BEmN9sp8ajE80gpZX26xUNEFVpuhQ4L
-         EFVNSbkDETmBxOKuIJDjv/ax9YVi5xuODDzhc1JWwIa3XqFiq+RswySyfzIP4t2vm9aL
-         IyFroKnlLDWSmuol+YkdS8eOPnjSAAiCp3IGf7cKqqSx+Ruf2F7K0aSS9IrW5LUCNTke
-         BEqTkHfaueFZcWtIHOJlvyeqrQgYp6KbFWsUVoJPQV8GFEE/8rprq9dXZRn8cKV02Spd
-         tDTpdbTSXyneZ1hKgH/bPDPHjr4w5NM877i4rSibHSFyaEablIuT3Zs5F0aXsFz0kXwx
-         IFBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696166199; x=1696770999;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jISPkvnxHNZ9YOvTMmU4+FmuVTZn4CUvBaU3KXe/pp4=;
-        b=fYYq9Mvpzy/kuVY4P/uH4QJxvbnWFBBo+2lI0yHVoBHKpIV9XFm3nyBVlPH4Jd4FZR
-         1lN1Ub0+GcevTIHkzUZZGkCNd95JiQrmyhlADJevz1gvn9CYIzxaCH2vM9Uc1yif5TK9
-         iKGxf1ENXnpF+0GZ7PeMWArvv9Bd0uWQNnElsqHxW4L7tRZAqe0pQo9HUKnT4Z06h2Ph
-         EMeB3HItVRDwnig7uzYUnYDdjr5jVRT4mTOMqZ28WLKxPprPWULpLqgNnCR9ZMu4dUDb
-         Ops2GZilslYBwiEDxc+7INODXQQTq3ycLGZrHFakWRsqF0PI0+/Q5mVRxnWnSf6VZ+vP
-         +d3Q==
-X-Gm-Message-State: AOJu0YxmQpbk9I84DeG+I2eiKoHEJCLTq8TKqhtqnBQyowNzhNWGfuav
-        uQANtjwqFgt74ts/utJ7/vk=
-X-Google-Smtp-Source: AGHT+IHqZFgfFLGRezJorS7YXOWe2HwziQUZEK/PuXaRrXoBQYoUKEUf80TYdu9SSW3tQhMeEGWVZQ==
-X-Received: by 2002:a17:906:58c6:b0:9b2:6ce3:bdf3 with SMTP id e6-20020a17090658c600b009b26ce3bdf3mr10268002ejs.54.1696166199117;
-        Sun, 01 Oct 2023 06:16:39 -0700 (PDT)
-Received: from localhost.localdomain ([46.248.82.114])
-        by smtp.gmail.com with ESMTPSA id lv23-20020a170906bc9700b0099d798a6bb5sm15504272ejb.67.2023.10.01.06.16.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Oct 2023 06:16:38 -0700 (PDT)
-From:   Uros Bizjak <ubizjak@gmail.com>
-To:     x86@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Uros Bizjak <ubizjak@gmail.com>, Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: [RFC PATCH 4/4] x86/percpu: Use C for percpu read/write accessors
-Date:   Sun,  1 Oct 2023 15:14:36 +0200
-Message-ID: <20231001131620.112484-5-ubizjak@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231001131620.112484-1-ubizjak@gmail.com>
-References: <20231001131620.112484-1-ubizjak@gmail.com>
+        Sun, 1 Oct 2023 09:18:05 -0400
+Received: from sonic311-30.consmr.mail.ir2.yahoo.com (sonic311-30.consmr.mail.ir2.yahoo.com [77.238.176.162])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB35C6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 06:18:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rocketmail.com; s=s2048; t=1696166280; bh=kNrx2gSsDcIRy0/jUMhx14yk2GcQW+d/YuI+hbflL44=; h=From:To:Cc:Subject:Date:References:From:Subject:Reply-To; b=ivdMzMmksKqkVBOPJtaf2qg27MbF194EN65foLJjObHSsbIHT+TZSPPr7Rj6b19vuLInCO2chf/YlX7m+uORURCqeXnmAk3pmvmftjMs8N/S/xPV5WSR43UI5Fjn+0sRPf5B1n1/8K+l/hCjcxLqCu2rr+QMQydUPp9lcHn0tEfmO70winp+OuEDaFFRIV1/Pslf1ouGzqYqQ4wCO4krhQP0EfiMRHy41izmuukKhFLWuUJWngUotIw4JmbVlmKyMuGhjoSkr9pbw8Hv3eqyJBdeuf6P+EzXnOWm7TdlJ9FmMKXzPXwR4OzbfyxaBzDHQfzmc7l6Hk792rViYef2VA==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1696166280; bh=gGSrZcH0TzgQp6Bu3ZNTwMT8hibJ/uSGMjflmD8yLAE=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=BldcmYrOJy6iwHzfj3jCyou2/ga6yo+pl14po2Z/+01mYoN/1PBFTVHCfPyuY0oPrFY3TCCwkfeeIfAxpbSt6t9DNBiEMqTX6kY4HHeH98qsUSCuEQEuq7QjQXIqpOz1cpJyzdDTF5QfBMEHVyXTcLfZlq2d7o/iYw0ndYgnvfljsBJFa/8yQ8MTImy1eh6slnnntiHWH9D5OTIzGgl0C+L5g3Sgm2MbrOVD6MtYsxEsJGMKI3rr5ftJIxn/fVSAXUyPjrUyFGgx7QQCiTnwiJRJhiZtpPtx7Ha96ILs1OtGpGLq2QRoGuaaJAxPLEpdVb0kGaxLHKKjl3dw9Zv0Yg==
+X-YMail-OSG: _IApiQ0VM1kLZ5bDrJwQnZgoFwCRjbGuXSJQuCbZoK6vMeF1q2qIMzEZ3b_XZPu
+ rPu8_2pv76ZLMyv9aIAfQVpEAnLMLTMyLmGmmsAEYkYPTqHWunC5Tqu_CqSuVz7FOrjjbSxz8ntY
+ qe123CJLpU4_BH_F_7xwrUZ9izP8nG22ME8vm9S3mPX8diyr_PjS50B5QISerFdRuDn.jKOi_Wc8
+ RiQ1AqcVmqD5a1xMt8hqsq.wS6MLH9MF5ly2WiZofwhImT7PrORlerv6StppebGEEvd25zTkj52n
+ k55S0EBLN3kok6xRGiteZ4DSpNki_HCujSAjXPEtmHmTbBPYakq6Ze0cipCrngcFIF69TqR.1x.y
+ 6WgkpDlH4DhTbzDdzg1bIm1ABH9C9XXI.w1QF3UO04xFkMhWl9SPVsvwJbOE.BGF2x2224Woga1D
+ ySOvqjseuZRDHpezPSy3gS4smHspk4O9cQHQD_vVeACh7avv6JMF2geYUIIkp1rcDut5CdQXKqXB
+ dCujSS8RPodK5lP7r5AKcoAAc2MNiHTWnYSR4s.jBS1_NUPT48gkXPdKagnuuLuVM7vpvtn6glxr
+ lsew.nAuOWNDvG145cPnGUdYuHgLDcL.4vQfpZq6ITmAKRwklfrr_xM1rPyjRvhPeNqeTHwn._gJ
+ zThPWZXfel0w9LisWbrUO4gRS9RaGV8I0TW8E6nYNlHPcMDAtLSCgbplcZGgp2vrXfojeYk20Vf5
+ IuJ5L0ln3vMrnmJJqtK_3OyOlgelXX_pF_FH6l06A42v7AaNuWoL97x2SJRUPTBynlOHzrNmz4LI
+ mJuz7aRwBnp7vZFzcb4_RwbrkSgap6U2VmHoGS8XC02yfpuONfYGGU7iNbWluhmzQG1mt14NnUQl
+ UehKThmVXxXehXfzZFCQfziYqKAMiQ7AlaqDtLZx4EWRCDM.pSnXcHFAecfQy0x__ei9H3iZbw0h
+ _MN4hatiuBdmLyQ0is3zXXHhAiFOpy95VdP0CNzGFSNCrNdv.2quX9G8ENeC_65Tx3KGAi0quLhm
+ 8e.RUVAw89w_uEy5iqlL3XwYSa.bEI71gygvjrSVJpVlqEX3bhuHU_MpSTyY9BsDfhkTWOoCE1k3
+ Hh688YQhimXqeLWgUuOi_iR8KnaJP835IzHRjzyAMql0V.OKmKW5kcUPYLir3GLl5YWJ0agsuB69
+ 6x2DJh4v8BEyXLDrwq5ernvna92l8rM9euVx1hXiceXqm.I2LqjkIwT5xp.gz0ty2Pc4gtDL3Xrc
+ stJH2A_65To5vn45P24FC1EJONsrz6eXnPSv9KNkZL9VX.KcnuC6iSFN0XXMG3oHblUHUlX.Xc7c
+ JJwkobz7nNWiUuEvIciQf3eIQMezDdN4zNpjuszrVn36KuKIJ7MaNV9NrFt0beXkOqZEtRZrTiae
+ LJ09G4Gj3I6KheSpANjiR89DdGOrFXCsg2uyX.ohm8EQcj72D5FmZdrrbeCkV4nN83SJy_dbhMKU
+ .pnQaXeG_X04zv9GlPRVPa9Ltz4YEXf8IWXp5LDDw_kYBPdF9Tm3vMYK9CjScH4WySrN8u10cviq
+ A_KHBPdFzHJqz8POVNTyaMw87AKbDUOupSlj_MuOVn_LkCDGODwb.s1eeVT3H3tQXm5dZ4TUKYS9
+ 7XWBscKiqRk.kDLOt8dEL0UxAwn_hBXnWKj1YAOySBTUSfShq5UlBvnIi3P3YYnCoWbSqAmcIWFM
+ DtZB1m6ypvkqskLcLI.PY9MZZqFuXjpPVGlk6V72PIckznn.gAtLi65dxA91jzyxwETBSqgL73D1
+ 3RuRXZUVPfw5v16Icnorwh21Gw2P3EDVtEEPjhwfd__9ESyK2720z_YsCo_WnlZ1IGVS4B3d4prh
+ z4M0rRjy2hMrHefT4k6XrUzVlei5okfAwlUbD_vEIpsGVZIUNcBzepg7.qnE.gNHX2p2GqVHAglI
+ hJelwMF033Pc8bR1Pz5Nv8oRo6g9Rc1XVtLIkgMpPD9nm0cBPcRbFv.X1Hz8Bn2IcpQat.cc6C8f
+ iXX2.QCPU8CcXH.XfGVPMixNOAtW1L8Ni2EC6O8MM7GoUn75JyvkZ7bW60kqRr84HjJqQ6kkPNBS
+ cjv4eT1Xrzc85YwrvyYZpzvWOPOomzwJBsDsZOAviKlpfn7OgmMlkdnjwBPv.WZNDaF1hqKGOTqC
+ B9AHCWZ2B4XoUU.Y9AqC.DVHgc1h868QDiD5On7O57iaRG7jEXuiBYR_6PEFiCFpgNwa.mJBcxsh
+ KUS2TvhNClFLvdKtFHTe3er_YhPSxpl5qT3XiGjM2oLSmdhFYL0RQjKHxAvlGfjYFuPT0zUV9ADw
+ JRed16H2P3st7c0EUJac1D93few--
+X-Sonic-MF: <jahau@rocketmail.com>
+X-Sonic-ID: 97622b99-d75f-47de-a1fd-ae88f0c6aa69
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.ir2.yahoo.com with HTTP; Sun, 1 Oct 2023 13:18:00 +0000
+Received: by hermes--production-ir2-55db9d9d5-gk4f2 (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID f1c2828dd5bee1de58f8566f5b57afb9;
+          Sun, 01 Oct 2023 13:17:56 +0000 (UTC)
+From:   Jakob Hauser <jahau@rocketmail.com>
+To:     Sebastian Reichel <sre@kernel.org>
+Cc:     Lee Jones <lee@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Christophe Jaillet <christophe.jaillet@wanadoo.fr>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Raymond Hackley <raymondhackley@protonmail.com>,
+        Henrik Grimler <henrik@grimler.se>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Jakob Hauser <jahau@rocketmail.com>
+Subject: [PATCH v2 0/3] Remaining patches for RT5033 charger
+Date:   Sun,  1 Oct 2023 15:17:41 +0200
+Message-Id: <cover.1696165240.git.jahau@rocketmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+References: <cover.1696165240.git.jahau.ref@rocketmail.com>
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The percpu code mostly uses inline assembly. Using segment qualifiers
-allows to use C code instead, which enables the compiler to perform
-various optimizations (e.g. propagation of memory arguments). Convert
-percpu read and write accessors to C code, so the memory argument can
-be propagated to the instruction that uses this argument.
+This series adds the missing patch "Add cable detection and USB OTG supply"
+to the RT5033 charger driver. The patch didn't make it with the initial
+series [1].
 
-Some examples of propagations:
+In the meantime, two fixes patches [2][3] were squashed into that patch.
+Additionally there are two clean-up patches, which are patches No. 2 & 3
+in this series.
 
-a) into sign/zero extensions:
+On squashing the fixes patches into the main patch: I didn't add a
+Co-developed-by tag of Stephen because the one fix on the includes seemed
+to me below the threshold for that tag.
 
- 110b54:       65 0f b6 05 00 00 00    movzbl %gs:0x0(%rip),%eax
- 11ab90:       65 0f b6 15 00 00 00    movzbl %gs:0x0(%rip),%edx
- 14484a:       65 0f b7 35 00 00 00    movzwl %gs:0x0(%rip),%esi
- 1a08a9:       65 0f b6 43 78          movzbl %gs:0x78(%rbx),%eax
- 1a08f9:       65 0f b6 43 78          movzbl %gs:0x78(%rbx),%eax
+Changes in v2:
+- Patch 1: Squashed fixes patches into patch 1.
+- Patch 1: Added Co-developed-by tag of Yang Yingliang and a short
+  description about that in the commit message.
+- Patch 1: Removed Acked-by tag of Sebastian as the patch has changed.
 
- 4ab29a:       65 48 63 15 00 00 00    movslq %gs:0x0(%rip),%rdx
- 4be128:       65 4c 63 25 00 00 00    movslq %gs:0x0(%rip),%r12
- 547468:       65 48 63 1f             movslq %gs:(%rdi),%rbx
- 5474e7:       65 48 63 0a             movslq %gs:(%rdx),%rcx
- 54d05d:       65 48 63 0d 00 00 00    movslq %gs:0x0(%rip),%rcx
+v1: https://lore.kernel.org/linux-pm/cover.1695844349.git.jahau@rocketmail.com/T/#t
 
-b) into compares:
+[1] https://lore.kernel.org/linux-pm/cover.1684182964.git.jahau@rocketmail.com/T/#t
+[2] https://lore.kernel.org/linux-next/20230821125741.3a2474d7@canb.auug.org.au
+[3] https://lore.kernel.org/linux-pm/20230822030207.644738-1-yangyingliang@huawei.com/T/#u
 
- b40804:       65 f7 05 00 00 00 00    testl  $0xf0000,%gs:0x0(%rip)
- b487e8:       65 f7 05 00 00 00 00    testl  $0xf0000,%gs:0x0(%rip)
- b6f14c:       65 f6 05 00 00 00 00    testb  $0x1,%gs:0x0(%rip)
- bac1b8:       65 f6 05 00 00 00 00    testb  $0x1,%gs:0x0(%rip)
- df2244:       65 f7 05 00 00 00 00    testl  $0xff00,%gs:0x0(%rip)
+Jakob Hauser (3):
+  power: supply: rt5033_charger: Add cable detection and USB OTG supply
+  power: supply: rt5033_charger: Simplify initialization of
+    rt5033_charger_data
+  power: supply: rt5033_charger: Replace "&pdev->dev" by "charger->dev"
+    in probe
 
- 9a7517:       65 80 3d 00 00 00 00    cmpb   $0x0,%gs:0x0(%rip)
- b282ba:       65 44 3b 35 00 00 00    cmp    %gs:0x0(%rip),%r14d
- b48f61:       65 66 83 3d 00 00 00    cmpw   $0x8,%gs:0x0(%rip)
- b493fe:       65 80 38 00             cmpb   $0x0,%gs:(%rax)
- b73867:       65 66 83 3d 00 00 00    cmpw   $0x8,%gs:0x0(%rip)
+ drivers/power/supply/rt5033_charger.c | 320 ++++++++++++++++++++++++--
+ 1 file changed, 299 insertions(+), 21 deletions(-)
 
-c) into other insns:
-
- 65ec02:       65 0f 44 15 00 00 00    cmove  %gs:0x0(%rip),%edx
- 6c98ac:       65 0f 44 15 00 00 00    cmove  %gs:0x0(%rip),%edx
- 9aafaf:       65 0f 44 15 00 00 00    cmove  %gs:0x0(%rip),%edx
- b45868:       65 0f 48 35 00 00 00    cmovs  %gs:0x0(%rip),%esi
- d276f8:       65 0f 44 15 00 00 00    cmove  %gs:0x0(%rip),%edx
-
-The above propagations result in the following code size
-improvements for current mainline kernel (with the default config),
-compiled with
-
-gcc (GCC) 12.3.1 20230508 (Red Hat 12.3.1-1)
-
-   text    data     bss     dec     hex filename
-25508862        4386540  808388 30703790        1d480ae vmlinux-vanilla.o
-25500922        4386532  808388 30695842        1d461a2 vmlinux-new.o
-
-The conversion of other read-modify-write instructions does not bring us any
-benefits, the compiler has some problems when constructing RMW instructions
-from the generic code and easily misses some opportunities.
-
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Nadav Amit <namit@vmware.com>
-Cc: Brian Gerst <brgerst@gmail.com>
-Cc: Denys Vlasenko <dvlasenk@redhat.com>
-Cc: H. Peter Anvin <hpa@zytor.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Co-developed-by: Nadav Amit <namit@vmware.com>
-Signed-off-by: Nadav Amit <namit@vmware.com>
-Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
----
- arch/x86/include/asm/percpu.h | 65 +++++++++++++++++++++++++++++------
- 1 file changed, 54 insertions(+), 11 deletions(-)
-
-diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
-index da451202a1b9..60ea7755c0fe 100644
---- a/arch/x86/include/asm/percpu.h
-+++ b/arch/x86/include/asm/percpu.h
-@@ -400,13 +400,66 @@ do {									\
- #define this_cpu_read_stable_8(pcp)	percpu_stable_op(8, "mov", pcp)
- #define this_cpu_read_stable(pcp)	__pcpu_size_call_return(this_cpu_read_stable_, pcp)
- 
-+#ifdef CONFIG_USE_X86_SEG_SUPPORT
-+
-+#define __raw_cpu_read(qual, pcp)					\
-+({									\
-+	*(qual __my_cpu_type(pcp) *)__my_cpu_ptr(&(pcp));		\
-+})
-+
-+#define __raw_cpu_write(qual, pcp, val)					\
-+do {									\
-+	*(qual __my_cpu_type(pcp) *)__my_cpu_ptr(&(pcp)) = (val);	\
-+} while (0)
-+
-+#define raw_cpu_read_1(pcp)		__raw_cpu_read(, pcp)
-+#define raw_cpu_read_2(pcp)		__raw_cpu_read(, pcp)
-+#define raw_cpu_read_4(pcp)		__raw_cpu_read(, pcp)
-+#define raw_cpu_write_1(pcp, val)	__raw_cpu_write(, pcp, val)
-+#define raw_cpu_write_2(pcp, val)	__raw_cpu_write(, pcp, val)
-+#define raw_cpu_write_4(pcp, val)	__raw_cpu_write(, pcp, val)
-+
-+#define this_cpu_read_1(pcp)		__raw_cpu_read(volatile, pcp)
-+#define this_cpu_read_2(pcp)		__raw_cpu_read(volatile, pcp)
-+#define this_cpu_read_4(pcp)		__raw_cpu_read(volatile, pcp)
-+#define this_cpu_write_1(pcp, val)	__raw_cpu_write(volatile, pcp, val)
-+#define this_cpu_write_2(pcp, val)	__raw_cpu_write(volatile, pcp, val)
-+#define this_cpu_write_4(pcp, val)	__raw_cpu_write(volatile, pcp, val)
-+
-+#ifdef CONFIG_X86_64
-+#define raw_cpu_read_8(pcp)		__raw_cpu_read(, pcp)
-+#define raw_cpu_write_8(pcp, val)	__raw_cpu_write(, pcp, val)
-+
-+#define this_cpu_read_8(pcp)		__raw_cpu_read(volatile, pcp)
-+#define this_cpu_write_8(pcp, val)	__raw_cpu_write(volatile, pcp, val)
-+#endif
-+
-+#else /* CONFIG_USE_X86_SEG_SUPPORT */
-+
- #define raw_cpu_read_1(pcp)		percpu_from_op(1, , "mov", pcp)
- #define raw_cpu_read_2(pcp)		percpu_from_op(2, , "mov", pcp)
- #define raw_cpu_read_4(pcp)		percpu_from_op(4, , "mov", pcp)
--
- #define raw_cpu_write_1(pcp, val)	percpu_to_op(1, , "mov", (pcp), val)
- #define raw_cpu_write_2(pcp, val)	percpu_to_op(2, , "mov", (pcp), val)
- #define raw_cpu_write_4(pcp, val)	percpu_to_op(4, , "mov", (pcp), val)
-+
-+#define this_cpu_read_1(pcp)		percpu_from_op(1, volatile, "mov", pcp)
-+#define this_cpu_read_2(pcp)		percpu_from_op(2, volatile, "mov", pcp)
-+#define this_cpu_read_4(pcp)		percpu_from_op(4, volatile, "mov", pcp)
-+#define this_cpu_write_1(pcp, val)	percpu_to_op(1, volatile, "mov", (pcp), val)
-+#define this_cpu_write_2(pcp, val)	percpu_to_op(2, volatile, "mov", (pcp), val)
-+#define this_cpu_write_4(pcp, val)	percpu_to_op(4, volatile, "mov", (pcp), val)
-+
-+#ifdef CONFIG_X86_64
-+#define raw_cpu_read_8(pcp)		percpu_from_op(8, , "mov", pcp)
-+#define raw_cpu_write_8(pcp, val)	percpu_to_op(8, , "mov", (pcp), val)
-+
-+#define this_cpu_read_8(pcp)		percpu_from_op(8, volatile, "mov", pcp)
-+#define this_cpu_write_8(pcp, val)	percpu_to_op(8, volatile, "mov", (pcp), val)
-+#endif
-+
-+#endif /* CONFIG_USE_X86_SEG_SUPPORT */
-+
- #define raw_cpu_add_1(pcp, val)		percpu_add_op(1, , (pcp), val)
- #define raw_cpu_add_2(pcp, val)		percpu_add_op(2, , (pcp), val)
- #define raw_cpu_add_4(pcp, val)		percpu_add_op(4, , (pcp), val)
-@@ -432,12 +485,6 @@ do {									\
- #define raw_cpu_xchg_2(pcp, val)	raw_percpu_xchg_op(pcp, val)
- #define raw_cpu_xchg_4(pcp, val)	raw_percpu_xchg_op(pcp, val)
- 
--#define this_cpu_read_1(pcp)		percpu_from_op(1, volatile, "mov", pcp)
--#define this_cpu_read_2(pcp)		percpu_from_op(2, volatile, "mov", pcp)
--#define this_cpu_read_4(pcp)		percpu_from_op(4, volatile, "mov", pcp)
--#define this_cpu_write_1(pcp, val)	percpu_to_op(1, volatile, "mov", (pcp), val)
--#define this_cpu_write_2(pcp, val)	percpu_to_op(2, volatile, "mov", (pcp), val)
--#define this_cpu_write_4(pcp, val)	percpu_to_op(4, volatile, "mov", (pcp), val)
- #define this_cpu_add_1(pcp, val)	percpu_add_op(1, volatile, (pcp), val)
- #define this_cpu_add_2(pcp, val)	percpu_add_op(2, volatile, (pcp), val)
- #define this_cpu_add_4(pcp, val)	percpu_add_op(4, volatile, (pcp), val)
-@@ -476,8 +523,6 @@ do {									\
-  * 32 bit must fall back to generic operations.
-  */
- #ifdef CONFIG_X86_64
--#define raw_cpu_read_8(pcp)			percpu_from_op(8, , "mov", pcp)
--#define raw_cpu_write_8(pcp, val)		percpu_to_op(8, , "mov", (pcp), val)
- #define raw_cpu_add_8(pcp, val)			percpu_add_op(8, , (pcp), val)
- #define raw_cpu_and_8(pcp, val)			percpu_to_op(8, , "and", (pcp), val)
- #define raw_cpu_or_8(pcp, val)			percpu_to_op(8, , "or", (pcp), val)
-@@ -486,8 +531,6 @@ do {									\
- #define raw_cpu_cmpxchg_8(pcp, oval, nval)	percpu_cmpxchg_op(8, , pcp, oval, nval)
- #define raw_cpu_try_cmpxchg_8(pcp, ovalp, nval)	percpu_try_cmpxchg_op(8, , pcp, ovalp, nval)
- 
--#define this_cpu_read_8(pcp)			percpu_from_op(8, volatile, "mov", pcp)
--#define this_cpu_write_8(pcp, val)		percpu_to_op(8, volatile, "mov", (pcp), val)
- #define this_cpu_add_8(pcp, val)		percpu_add_op(8, volatile, (pcp), val)
- #define this_cpu_and_8(pcp, val)		percpu_to_op(8, volatile, "and", (pcp), val)
- #define this_cpu_or_8(pcp, val)			percpu_to_op(8, volatile, "or", (pcp), val)
 -- 
-2.41.0
+2.39.2
 
