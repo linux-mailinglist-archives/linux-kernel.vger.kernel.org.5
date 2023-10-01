@@ -2,57 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 612E97B451E
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 05:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19177B4536
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 06:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233171AbjJADzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 23:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
+        id S229996AbjJAE3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 00:29:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjJADzO (ORCPT
+        with ESMTP id S229455AbjJAE32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 23:55:14 -0400
-Received: from zju.edu.cn (mail.zju.edu.cn [61.164.42.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ED4CADD;
-        Sat, 30 Sep 2023 20:55:09 -0700 (PDT)
-Received: from localhost.localdomain (unknown [10.192.195.11])
-        by mail-app3 (Coremail) with SMTP id cC_KCgBXPcCC7RhlwbwsAQ--.29716S4;
-        Sun, 01 Oct 2023 11:54:48 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn
-Cc:     Toan Le <toan@os.amperecomputing.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Tanmay Inamdar <tinamdar@apm.com>,
-        Marc Zyngier <maz@kernel.org>, Duc Dang <dhdang@apm.com>,
-        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [v3] PCI: xgene-msi: Fix a potential UAF in xgene_msi_probe
-Date:   Sun,  1 Oct 2023 11:54:40 +0800
-Message-Id: <20231001035441.30408-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgBXPcCC7RhlwbwsAQ--.29716S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7JF13Cr4xXr15WF13Gr18uFg_yoW8JrWDpF
-        WxCw13WFWft3yUXa1Igw18Wa4aya9rt3yDtwsxWrnrZrnxC34DuryjqFy5C34akFWrXr4j
-        y3WxJF15uFs5JFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvm1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
-        c2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgwPBmUYLyEI2AAAsk
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        Sun, 1 Oct 2023 00:29:28 -0400
+Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com [209.85.161.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08205C6
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 21:29:27 -0700 (PDT)
+Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-57b6b3bde6cso22883877eaf.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 21:29:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696134564; x=1696739364;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y3TSr7QqetFYrddy0bCP+Xv3JFmbjCIi8bG/cXjlF+4=;
+        b=qSFzFF9ot2rjsW0SkZcxrO7s8ShRD7iHGrzaU4AdWuNGv/ytN2MCasixo+5en+Zhfm
+         USqurxHVz9ylPDxyb1ne8eh0HnZkpZZproQ/ncrFB1FQQBKFNNzsIbQlLPixqepO8+Tb
+         AgtSe1DMalPK8I/pQeDOxZmQfVCjma36SQWiUZQEJq+/GsNHLUPz5JujwQDaF8k+yypz
+         69laoDdjltwvoWHTuuroSHs03TOnkcDKfFFaOQLC8NZisxO5tywUm5HauCnr5QPfnlvw
+         AeqvcI7wbBsGuR4xx+BSQYdX2G1TfDi3WpzsoVQKvK48XWJRoE6lhc2RQqeJjM616q05
+         Ovkg==
+X-Gm-Message-State: AOJu0YxZpP9AbkgobJRGpl50ssmlwpkZclb5Lokqvjpq6Al/pHP7HPwF
+        DvU6ZRrXcQmJrIEas7usmsAJlomlyFGw3hQ91gtcpcm+svuf
+X-Google-Smtp-Source: AGHT+IHVhUA8ZymBFAk8BsF98zbjMMKYoqJFUsnGiF05e3aw9TS378/23ibGl9PBa+BleockCy9LMW1t7jzGzzjuqIwTTpunrdfZ
+MIME-Version: 1.0
+X-Received: by 2002:a05:6871:4e84:b0:1e1:2ebc:b636 with SMTP id
+ uk4-20020a0568714e8400b001e12ebcb636mr2536327oab.4.1696134563838; Sat, 30 Sep
+ 2023 21:29:23 -0700 (PDT)
+Date:   Sat, 30 Sep 2023 21:29:23 -0700
+In-Reply-To: <00000000000035aab005ec690a00@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002b41f10606a01a89@google.com>
+Subject: Re: [syzbot] [serial?] KASAN: use-after-free Read in gsm_cleanup_mux
+From:   syzbot <syzbot+893c55305230e719a203@syzkaller.appspotmail.com>
+To:     daniel.starke@siemens.com, gregkh@linuxfoundation.org,
+        hdanton@sina.com, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, yiyang13@huawei.com,
+        zhangqiumiao1@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,41 +58,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-xgene_allocate_domains() will call irq_domain_remove() to free
-msi->inner_domain on failure. However, its caller, xgene_msi_probe(),
-will also call irq_domain_remove() through xgene_msi_remove() on the
-same failure, which may lead to a use-after-free. Remove the first
-irq_domain_remove() and let xgene_free_domains() cleanup domains.
+syzbot suspects this issue was fixed by commit:
 
-Fixes: dcd19de36775 ("PCI: xgene: Add APM X-Gene v1 PCIe MSI/MSIX termination driver")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+commit 3c4f8333b582487a2d1e02171f1465531cde53e3
+Author: Yi Yang <yiyang13@huawei.com>
+Date:   Fri Aug 11 03:11:21 2023 +0000
 
-Changelog:
+    tty: n_gsm: fix the UAF caused by race condition in gsm_cleanup_mux
 
-v2: -Remove irq_domain_remove() instead of nulling msi_domain.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=121e6a92680000
+start commit:   a4412fdd49dc error-injection: Add prompt for function erro..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cc4b2e0a8e8a8366
+dashboard link: https://syzkaller.appspot.com/bug?extid=893c55305230e719a203
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12b1ca83880000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1023c5e3880000
 
-v3: -Add 'v3' tag in the title.
----
- drivers/pci/controller/pci-xgene-msi.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+If the result looks correct, please mark the issue as fixed by replying with:
 
-diff --git a/drivers/pci/controller/pci-xgene-msi.c b/drivers/pci/controller/pci-xgene-msi.c
-index 3ce38dfd0d29..0f9b9394399d 100644
---- a/drivers/pci/controller/pci-xgene-msi.c
-+++ b/drivers/pci/controller/pci-xgene-msi.c
-@@ -251,10 +251,8 @@ static int xgene_allocate_domains(struct xgene_msi *msi)
- 						    &xgene_msi_domain_info,
- 						    msi->inner_domain);
- 
--	if (!msi->msi_domain) {
--		irq_domain_remove(msi->inner_domain);
-+	if (!msi->msi_domain)
- 		return -ENOMEM;
--	}
- 
- 	return 0;
- }
--- 
-2.17.1
+#syz fix: tty: n_gsm: fix the UAF caused by race condition in gsm_cleanup_mux
 
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
