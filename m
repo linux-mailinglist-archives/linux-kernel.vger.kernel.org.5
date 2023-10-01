@@ -2,122 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 697467B44F2
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 04:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A645B7B44F8
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 04:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234254AbjJACUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 22:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60082 "EHLO
+        id S231989AbjJACgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Sep 2023 22:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjJACUl (ORCPT
+        with ESMTP id S229461AbjJACge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Sep 2023 22:20:41 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03151BC;
-        Sat, 30 Sep 2023 19:20:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=64FZBFm9QXLeaiqRuEoVGaE58ddNALR1GNC50CVRTEA=; b=CVwbcSdZreAZxeCYkfLtCDY8pI
-        dUV/ED0NZY/U4uO/LCDVZeeZBAPyeBmZThaQTaoqVJYYYDxtK7k4zr0c8v0DjkxnB/FHQeDcR2Zbd
-        hAKXVaLAewCUo+wpwBvikRlHdTLnIH5jtiAbBP8YnAGq/bAfaU6vRE7i3mpfTSfCTenX7OH5M45Bv
-        lQj+I8psGj8qDu0nYvd3IG86sVl2Lkm6oLdovy00DvjD90Q9xou4c1/QmDGuxO0m27Pf+wrkYq1rQ
-        rIhlRm71YSCJK86DyB+eeEYKQbXN/lhD2nQjEhLxKPzV8AXYZmW1NOR6//oXyMvp6ZjQO5VacdQUL
-        PiVhqZIg==;
-Received: from [2603:3004:644:9100::a64a]
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qmm4K-000iXd-6D; Sun, 01 Oct 2023 02:20:28 +0000
-Message-ID: <b66c04cb-9576-4b8b-9e5e-4e5b37c2c092@infradead.org>
-Date:   Sat, 30 Sep 2023 19:20:21 -0700
+        Sat, 30 Sep 2023 22:36:34 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662A0CF
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 19:36:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696127792; x=1727663792;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=B11R/aQfRIBXj15gOjXsQrZVIWkmudcUdgZiApI+VwU=;
+  b=V2OF9L4bKSWI6qC5DkQFe+Hy4zURlCc9Dd0pIt6kGro2jlMA7Ic2SX0T
+   a3BQIpT5l2r/shPpDpZQIQM4ZH7900znqBFplt+GPyvt3Mi1zA454tG/I
+   /L1jXRi4Ut632+osPxXMT82izLs8oqw0l7raYna9SmQ66lnowNboN15XR
+   yN5bdyVAY2vbuARJ3H8Pf36ErZl96mCLRoxqDsP0e9LFOa69CwO2rnZzu
+   x59il6ce3VLaNDfwkuRXXj8P1ML2Xsa/vycg77DzIsWX91yVun9rcS6gB
+   dndaVbFSi/iApzM35F7DyzZpsw1nAfyIN2jAdKDKrLq8LpanedFlg4++i
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10849"; a="385318978"
+X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
+   d="scan'208";a="385318978"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Sep 2023 19:36:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10849"; a="874039626"
+X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
+   d="scan'208";a="874039626"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 30 Sep 2023 19:36:29 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qmmJn-0004gP-0u;
+        Sun, 01 Oct 2023 02:36:27 +0000
+Date:   Sun, 1 Oct 2023 10:35:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Christopher M. Riedl" <cmr@bluescreens.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Gray <bgray@linux.ibm.com>
+Subject: include/linux/compiler_types.h:357:45: error: call to
+ '__compiletime_assert_185' declared with attribute error: BUILD_BUG failed
+Message-ID: <202310011034.1GinlGzM-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] media: sunxi: a83-mips-csi2: also select GENERIC_PHY
-Content-Language: en-US
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        linux-phy@lists.infradead.org
-References: <20230927040438.5589-1-rdunlap@infradead.org>
- <ZRQIfC67fDmOUBNY@kekkonen.localdomain>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <ZRQIfC67fDmOUBNY@kekkonen.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3b517966c5616ac011081153482a5ba0e91b17ff
+commit: c28c15b6d28a776538482101522cbcd9f906b15c powerpc/code-patching: Use temporary mm for Radix MMU
+date:   10 months ago
+config: powerpc-randconfig-r001-20211226 (https://download.01.org/0day-ci/archive/20231001/202310011034.1GinlGzM-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231001/202310011034.1GinlGzM-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310011034.1GinlGzM-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from <command-line>:
+   In function 'local_flush_tlb_page_psize',
+       inlined from '__do_patch_instruction_mm' at arch/powerpc/lib/code-patching.c:310:2,
+       inlined from 'do_patch_instruction' at arch/powerpc/lib/code-patching.c:355:9,
+       inlined from 'patch_instruction' at arch/powerpc/lib/code-patching.c:379:9:
+>> include/linux/compiler_types.h:357:45: error: call to '__compiletime_assert_185' declared with attribute error: BUILD_BUG failed
+     357 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:338:25: note: in definition of macro '__compiletime_assert'
+     338 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:357:9: note: in expansion of macro '_compiletime_assert'
+     357 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:59:21: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      59 | #define BUILD_BUG() BUILD_BUG_ON_MSG(1, "BUILD_BUG failed")
+         |                     ^~~~~~~~~~~~~~~~
+   arch/powerpc/include/asm/book3s/32/tlbflush.h:83:9: note: in expansion of macro 'BUILD_BUG'
+      83 |         BUILD_BUG();
+         |         ^~~~~~~~~
 
 
-On 9/27/23 03:48, Sakari Ailus wrote:
-> Hi Randy,
-> 
-> Thanks for the patch.
-> 
-> On Tue, Sep 26, 2023 at 09:04:38PM -0700, Randy Dunlap wrote:
->> When selecting GENERIC_PHY_MIPI_DPHY, also select GENERIC_PHY to
->> prevent kconfig warnings:
->>
->> WARNING: unmet direct dependencies detected for GENERIC_PHY_MIPI_DPHY
->>   Depends on [n]: GENERIC_PHY [=n]
->>   Selected by [y]:
->>   - VIDEO_SUN8I_A83T_MIPI_CSI2 [=y] && MEDIA_SUPPORT [=y] && MEDIA_PLATFORM_SUPPORT [=y] && MEDIA_PLATFORM_DRIVERS [=y] && V4L_PLATFORM_DRIVERS [=y] && VIDEO_DEV [=y] && (ARCH_SUNXI || COMPILE_TEST [=y]) && PM [=y] && COMMON_CLK [=y] && RESET_CONTROLLER [=y]
->>
->> Fixes: 94d7fd9692b5 ("media: sunxi: Depend on GENERIC_PHY_MIPI_DPHY")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Closes: lore.kernel.org/r/ZQ/WS8HC1A3F0Qn8@rli9-mobl
->> Cc: Arnd Bergmann <arnd@arndb.de>
->> Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
->> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
->> Cc: linux-media@vger.kernel.org
->> Cc: Chen-Yu Tsai <wens@csie.org>
->> Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
->> Cc: Samuel Holland <samuel@sholland.org>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-sunxi@lists.linux.dev
->> ---
->>  drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/Kconfig |    1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff -- a/drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/Kconfig b/drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/Kconfig
->> --- a/drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/Kconfig
->> +++ b/drivers/media/platform/sunxi/sun8i-a83t-mipi-csi2/Kconfig
->> @@ -8,6 +8,7 @@ config VIDEO_SUN8I_A83T_MIPI_CSI2
->>  	select VIDEO_V4L2_SUBDEV_API
->>  	select V4L2_FWNODE
->>  	select REGMAP_MMIO
->> +	select GENERIC_PHY
-> 
-> Could GENERIC_PHY_MIPI_DPHY select GENERIC_PHY instead of depending it?
+vim +/__compiletime_assert_185 +357 include/linux/compiler_types.h
 
-Yes, I don't see why not.  Let's see what the PHY framework people have to say about it.
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  343  
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  344  #define _compiletime_assert(condition, msg, prefix, suffix) \
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  345  	__compiletime_assert(condition, msg, prefix, suffix)
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  346  
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  347  /**
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  348   * compiletime_assert - break build and emit msg if condition is false
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  349   * @condition: a compile-time constant condition to check
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  350   * @msg:       a message to emit if condition is false
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  351   *
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  352   * In tradition of POSIX assert, this macro will break the build if the
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  353   * supplied condition is *false*, emitting the supplied error message if the
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  354   * compiler has support to do so.
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  355   */
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  356  #define compiletime_assert(condition, msg) \
+eb5c2d4b45e3d2 Will Deacon 2020-07-21 @357  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  358  
 
-Vinod, Kishon, do you see any reason that GENERIC_PHY_MIPI_DPHY could not select
-GENERIC_PHY instead of depending on it?
+:::::: The code at line 357 was first introduced by commit
+:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
 
+:::::: TO: Will Deacon <will@kernel.org>
+:::::: CC: Will Deacon <will@kernel.org>
 
-> There seem to be a few other drivers that appear to have the same issue.
-
-Yes, I see 4 others that have the same issue.
-
->>  	select GENERIC_PHY_MIPI_DPHY
->>  	help
->>  	   Support for the Allwinner A83T MIPI CSI-2 controller and D-PHY.
-> 
-
-~Randy
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
