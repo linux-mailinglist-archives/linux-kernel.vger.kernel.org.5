@@ -2,112 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 902507B45E8
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:11:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D377B45ED
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234485AbjJAILY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 04:11:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49252 "EHLO
+        id S234465AbjJAIPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 04:15:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234402AbjJAILX (ORCPT
+        with ESMTP id S233816AbjJAIPU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 04:11:23 -0400
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2080.outbound.protection.outlook.com [40.107.13.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69528BA;
-        Sun,  1 Oct 2023 01:11:20 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JC+0Dsts0rB5z+ZTWaUJIqpyySb5e1W+qKLdt+sK40IF6CewUKscIvmWt6rL2vQ8cEAmUWDXFmf7W0OA1VEN0NoQd2XjUc+aGG6aPoLfe6dhYwPZ7ZOChLI0uRrC59JPnno+AMOoAwxgINSt2ki/fFvbyF+HKv/u/lUxLBaWX7d1YIXsiRFF0sdLsOdFI7tWK5npaY/nSOTZyMPMA0712RUxk6zhKZcIj4UrvE1r0cFG7Q8wFzUT682jjWcAUoJ84uFalvWSRbnmPcHxosVO5A+nIlovwJy/PGdYOukS8RzjozO7CTfk4DWJGaNU4IZe2ieJF3VjsfjqRQyHaszUng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nbg5dEf2maQJUv1G4F/zAIXkuiIeUoM3JSyBo3VOpYw=;
- b=c83aAftCduG3qMaFkm53CJGcSeWKaM2pe+yToYoDQwTR6g2ejFc/vOJxHywmIhBQpLvl6ECO1uc6yfwQMxx7wlHJy4OQPYU0HAe7lHblm/HHUz8X9whSS5OkaD100S8h+80fdcGAD5l0XO2QPvLln35s/xlzzs216rm/+Ir27SVcEy/yLcFUrm4vpq49q2Dl5GefJ25Y3I3o+ETPWXEHvenZ2S4CX4WLgdMbRfuErL3QsIOnr3B4UuDjxmc/kbUtPBu3GaHJFndll/dVSEQi/mke4cRsMfNGgZbobzG+9q3AvcOKPoGgvvXgO7vgxrMBAbsFYy6ez6BKLh/Ma69dhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nbg5dEf2maQJUv1G4F/zAIXkuiIeUoM3JSyBo3VOpYw=;
- b=KFryhiFBf5A72YSZeQt+6otx5jtAMmgVdCXFpbZB8wjI8lsIsC5hlETPqrk50tbVp92tGzfz9PkeyB5LOWWyTAkZbPeIwMesg22Pz4hxVFfP6xy66cXZzJqRhKT6EWUiu+WhmGZ9chwcJt7fTytes4GJJ6FsyBCiWzTVFQnORddxt1/AwkYAFj37RO6XizfGKK9bwDn4uFqLcyn6863IXL7U+2mOy2mSHBfVDvhVlhj4CyZMdS1xZfJtJcu0BY/OUlEu+4OroC45NtmJkihg750xAZpX+/ZCKLOkkt9EzpixFCui768EMoY/2kPfmAMLIov2DNhekljhaFoartSMVw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from DB8PR04MB7164.eurprd04.prod.outlook.com (2603:10a6:10:129::23)
- by AM9PR04MB8572.eurprd04.prod.outlook.com (2603:10a6:20b:437::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.23; Sun, 1 Oct
- 2023 08:11:17 +0000
-Received: from DB8PR04MB7164.eurprd04.prod.outlook.com
- ([fe80::8647:4673:b19:acc2]) by DB8PR04MB7164.eurprd04.prod.outlook.com
- ([fe80::8647:4673:b19:acc2%4]) with mapi id 15.20.6813.027; Sun, 1 Oct 2023
- 08:11:17 +0000
-Date:   Sun, 1 Oct 2023 16:11:06 +0800
-From:   "Lee, Chun-Yi" <jlee@suse.com>
-To:     Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org
-Subject: [PATCH 2/2] Bluetooth: Reject connection with the device which has
- same BD_ADDR
-Message-ID: <20231001081106.GA14555@linux-691t>
-References: <20231001080328.GA14494@linux-691t>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231001080328.GA14494@linux-691t>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-ClientProxiedBy: TYCP286CA0300.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:3c8::15) To DB8PR04MB7164.eurprd04.prod.outlook.com
- (2603:10a6:10:129::23)
+        Sun, 1 Oct 2023 04:15:20 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B52BA;
+        Sun,  1 Oct 2023 01:15:17 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9a64619d8fbso2167119866b.0;
+        Sun, 01 Oct 2023 01:15:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696148116; x=1696752916; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tCGU7l+ViGep3xnaiG+Tgxk7IH4Sn0hq2t+mXfvxZPQ=;
+        b=eIrKhf+rZLHYf2tr4IVH9tzhZoEyngo7phICdfbpPYWMf3kfYZEcHHhp8jGWcLYnr7
+         SnB5fryq96zWtYmXCtSXeqzk5xkyCNwdKwK41omRqtmQbAnPsNTZmjYBEJdZ7pIlKzeq
+         aETo/+8C5XfCcRCPf1B8TV8frqrR1RqOBiAzD+M+EdhBZ85qC/14D1cZ8KJsRnwaJ4M2
+         nAmHShaTTU1oI0BvFFABkN4vf2V5TWOkfR1gXcGh3YxzcPTo5ZOE5e+FuWFSeb0PGoxf
+         OLkay0CacyU6DW3m8XpfT+Klq2JNlkQHZ0QLBaOFyw8KL23Z9F0DhwdVVtsxGXX7p2uC
+         Wkyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696148116; x=1696752916;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tCGU7l+ViGep3xnaiG+Tgxk7IH4Sn0hq2t+mXfvxZPQ=;
+        b=GE/sRsAlefqy+rC2W2S551Yhv7SY145TSLCu35GtN3VpTB/5MTi3YJkHtLuA689zDa
+         b7IAFCg77fanzA9FLBUlAuZYM/b/7z6u80MM9UfyPOHh1+J9KPHj87Ba6Th8rdQEEjpr
+         uyUY/mbZeIf7ct86lq+KsRLp3PGL//1AtJQw4G/KCHQAAtxCAQMbX6syCfrsW6ER0KIx
+         5Wk7f+IWGwlXTTsH+RGY5+lC6Yay479wZ9GlxF/mQGoVAwquGyTpam+LkrLVia2kEIwh
+         fNdg+9oNHb7llYDhT/TDO/9ELSmB302gTPw2n+tsKRV4vuujqvPMkpB9mFLI6fOsJBG7
+         ZrFg==
+X-Gm-Message-State: AOJu0Yxzp8J5G6ZJYhwS5wHmRsZ3/6TpkogTr/PR9A6jPG/2gAqXBTJB
+        O9RTEJ9FZqXCL/h422Ns41A=
+X-Google-Smtp-Source: AGHT+IHTOrTTrtQg1snQOveaja6+XjunR3IFvKEnuJ2Ep2HKYPMd23tWkfQ1rAvjaKs9rCiewAq01A==
+X-Received: by 2002:a17:906:11a:b0:9a1:bd82:de24 with SMTP id 26-20020a170906011a00b009a1bd82de24mr7290213eje.12.1696148115882;
+        Sun, 01 Oct 2023 01:15:15 -0700 (PDT)
+Received: from primary.. ([213.139.52.198])
+        by smtp.gmail.com with ESMTPSA id e8-20020a170906374800b0099cf840527csm15121841ejc.153.2023.10.01.01.15.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Oct 2023 01:15:15 -0700 (PDT)
+From:   Abdel Alkuor <alkuor@gmail.com>
+To:     heikki.krogerus@linux.intel.com, krzysztof.kozlowski+dt@linaro.org,
+        bryan.odonoghue@linaro.org
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
+        robh+dt@kernel.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, Abdel Alkuor <alkuor@gmail.com>
+Subject: [PATCH v9 00/14] Add TPS25750 USB type-C PD controller support
+Date:   Sun,  1 Oct 2023 04:11:20 -0400
+Message-Id: <20231001081134.37101-1-alkuor@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DB8PR04MB7164:EE_|AM9PR04MB8572:EE_
-X-MS-Office365-Filtering-Correlation-Id: ecd61bae-4023-479a-977f-08dbc255fd17
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tu4rNjTO5tf6NWxXi/yPZhe9lrpxwQzgR5BaNq5n2a7fInSt1DfWBzU7s/CRyR8BM60+t+hMc+HgMjcKgz6OzrpqmZrKiHJCiu6Jkbbty+fHf2WDL3EAlzLk95yZJOx8qP0l92AW5cI8nmNkrmLSaAmqTx0VrJVpRSPjwGD+cCuXNIUgWdm1cmpynYWqC2knfXDNmLVL5iy/uHFX8tp6We21bpJTStoaUoTt8sHPt9umGO2pf4nKdQBAqZS5dO9MnZR2LKtE7E5r2OM4Co+BfO8G/dK/bpPiQqR2xOXatnpEnXl2qqFu9uWg4F7TJWnhc6djLZTn21HKQkMNxJfThnISSnxyKYRpqI5PxoMhB8O53NR/FlnNrtTHAzH4LuPSdhu1JmD8c0nKV97ECaLd7Gh0RhnM48vI1QnPvd4om/byPWMJIqCWVsDSrUzmBv6Gd4R22ywffIvoPZob0ufzBEEBYAVHlxaw5klxVk9mRPP0HGbuBo7U7YROyzppFqwApnbdUD7KwVV+jzaxPe/dnBIdDind94sySzvGien7zVU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB7164.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(39860400002)(136003)(396003)(366004)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(1076003)(26005)(33716001)(38100700002)(86362001)(33656002)(83380400001)(316002)(8936002)(8676002)(4326008)(5660300002)(41300700001)(110136005)(66476007)(66556008)(66946007)(2906002)(6506007)(6666004)(6512007)(9686003)(6486002)(966005)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SwWkcz5GaWsy+vZNH2kW3iOStQoWSja4sjFeRUcUpPzmKvoTkoUYOdrNU5dV?=
- =?us-ascii?Q?dOLjzxcOKi7LfTBUpSX1ksheS/zuou5yRS+ZdnnZp+CGa3AxC6+BOTj/fI5G?=
- =?us-ascii?Q?NJs1t3r2BPLTp7I5l0PDd/9CA0C7bMDdbyZ2z0lnlJ5FHySrEkk9XduX0aA5?=
- =?us-ascii?Q?T9r4Kfd7HtVibSRzq11/9WYwPP3oLl26TkCDCljZH8Gi/K1MJDRB2f9WLBzv?=
- =?us-ascii?Q?V2zPISbDayWuQZyjH883h1D5QrFAsRaJEpD3mI2ytEZg7K2rDWpaV0mAclWB?=
- =?us-ascii?Q?oIGLXOMI1OjsoGNIek30SkTrlLUgR8nLiDG6DTFqDagK0+LxVr7h3w4WGJvW?=
- =?us-ascii?Q?LJct7uIcfOoGFmjgzzeAumxQ5vYiIEhqie3RzeB0hEfRaFhbPCurnugRL6he?=
- =?us-ascii?Q?hQIyZR/CKuV14GoqI6SZgY8y4m8YAwGY3Jf5HuRwClfvLi0J/wxZ4kM63Q5q?=
- =?us-ascii?Q?FfFkFCir2ka+gsB4f3LwQLrzs9IgoxWrLdc4jzPm5I2ToRBQBy21Z/9CcgWs?=
- =?us-ascii?Q?4DhiTec6Fa8uzS+yW3SN5YcfYP1KO3x4jOz/+lt+CXZ74tMSgv+gjut3VAMT?=
- =?us-ascii?Q?KeQOIaMAZ+HCZJozVao7tyZQtb6rP9+kxebVd8ZRnL+8qpDXLntRf6kC6JAG?=
- =?us-ascii?Q?vnXb7dlT4ipaIcomj+eBiuJ0Lcv3ulFsAwTYOVGDvT4gEuw0p6HoU8w6V19b?=
- =?us-ascii?Q?g2i+BHLDqB0dBSFx+i0Nl19BJtmkzHZqEzMLmilJT0lLIfxYD/cxtV8N4yvt?=
- =?us-ascii?Q?Y6kRIhKyU0oa1N0jADZru9Xf08Rji5EuD4lR/if4XrC51diAGaiIAJx11jiV?=
- =?us-ascii?Q?gNy86SrBCb5j0hx3itzsej4JIhIttjKP6CjsflZyUofaTV5+iDuSI7kOIOcb?=
- =?us-ascii?Q?YxJiqARU2xZSqhU6H3LDKja1s4VbAV/nGUdD5V9eXIaMnuR9fAbBfIiuQ46J?=
- =?us-ascii?Q?nUr7vgqRNlY1bOl/wIPOI6UG2x+quMDCAU4w9ofEYFLux/hy1uJs8YoHPPyz?=
- =?us-ascii?Q?Z8XVnYgOW58CzEtPggMEVIvNWKb7PRbOGlFtkSWbwQhCBnHtFI5m0twGpPye?=
- =?us-ascii?Q?poJ/iNrcFz/gsdEcPXqZugx/kPwX9cfI7mhdqlUjP6Pa7WH7bewXVD6aF75A?=
- =?us-ascii?Q?jMSGJJDY7L0qBBvuhmi0l0pkWV1xbDWKOac9ef72QzwwAz5WieUtrMA5Vagj?=
- =?us-ascii?Q?KKVph7CO5WTPU3A69D4G12m+tB8fwesNxCZIn6LYtYQSOGMuQRiKzhIA4+M5?=
- =?us-ascii?Q?bZf3XH4ACTLmKP+RxZNG62DK8SY1QeZUQnA6qgTvzZVptIxhUvIeGLPiCL3h?=
- =?us-ascii?Q?DB/UATeX64a81I7tLMgFBbtk18ccEXzysKc6AD6pwppbdi9xZWJN+ELisALG?=
- =?us-ascii?Q?U+ilTTkmQpKeTJmJg0L3FZxA1NGRx++au/UT7oazvuBmxpSZprjkmpgoGo3y?=
- =?us-ascii?Q?03NHqQocQG8lFDSJFtAm6sGosCzp3HLn34phIscLzkrAOivsPMfmU1Zh2b17?=
- =?us-ascii?Q?yvEUe/wgZm2psE1keYgnH08maAuCf1YI7yOdqyka2KS+BBcLFQA/XEsY22LT?=
- =?us-ascii?Q?l5Fa5Whyu31w1rrkw8zyqm07amEscG59JMJmFZl8?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ecd61bae-4023-479a-977f-08dbc255fd17
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB7164.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2023 08:11:17.8275
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3HSgVtOENppa7Eieudycuov98sI4UEhauleDy2wypUWO7jcG6+G+ZSQu7bHDLste
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8572
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -115,79 +72,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change is used to relieve CVE-2020-26555. The description of
-the CVE:
+TPS25750 USB type-C PD controller has the same register offsets as
+tps6598x. The following is a summary of incorporating TPS25750 into
+TPS6598x driver:
 
-Bluetooth legacy BR/EDR PIN code pairing in Bluetooth Core Specification
-1.0B through 5.2 may permit an unauthenticated nearby device to spoof
-the BD_ADDR of the peer device to complete pairing without knowledge
-of the PIN. [1]
+- Only Check VID register (0x00) for TPS6598x and cd321x, as TPS25750 doesn't
+  have VID register.
 
-The detail of this attack is in IEEE paper:
-BlueMirror: Reflections on Bluetooth Pairing and Provisioning Protocols
-[2]
+- TypeC port registration will be registered differently for each PD
+  controller. TPS6598x uses system configuration register (0x28) to get
+  pr/dr capabilities. On the other hand, TPS25750 will use data role property
+  and PD status register (0x40) to get pr/dr capabilities as TPS25750 doesn't
+  have register 0x28 supported.
 
-It's a reflection attack. The paper mentioned that attacker can induce
-the attacked target to generate null link key (zero key) without PIN
-code. In BR/EDR, the key generation is actually handled in the controller
-which is below HCI.
+- TPS25750 requires writing a binary configuration to switch PD
+  controller from PTCH mode to APP mode which needs the following changes:
+  - Add PTCH mode to the modes list.
+  - Add an argument to tps6598x_check_mode to return the current mode.
+  - Currently, tps6598x_exec_cmd has cmd timeout hardcoded to 1 second,
+    and doesn't wait before checking DATA_OUT response. In TPS25750, patch 4CCs
+    take longer than 1 second to execute and some requires a delay before
+    checking DATA_OUT. To accommodate that, cmd_timeout and response_delay will
+    be added as arguments to tps6598x_exec_cmd.
+  - Implement applying patch sequence for TPS25750.
 
-A condition of this attack is that attacker should change the
-BR_ADDR of his hacking device (Host B) to equal to the BR_ADDR with
-the target device being attacked (Host A).
+- In pm suspend callback, patch mode needs to be checked and the binary
+  configuration should be applied if needed.
 
-Thus, we reject the connection with device which has same BD_ADDR
-both on HCI_Create_Connection and HCI_Connection_Request to prevent
-the attack. A similar implementation also shows in btstack project.
-[3][4]
+- For interrupt, TPS25750 has only one event register (0x14) and one mask
+  register (0x16) of 11 bytes each, where TPS6598x has two event
+  and two mask registers of 8 bytes each. Both TPS25750 and TPS65986x
+  shares the same bit field offsets for events/masks/clear but many of
+  there fields are reserved in TPS25750, the following needs to be done in
+  tps6598x_interrupt:
+  - Read EVENT1 register as a block of 11 bytes when tps25750 is present
+  - Write CLEAR1 register as a block of 11 bytes when tps25750 is present
+  - Add trace_tps25750_irq
+  - During testing, I noticed that when a cable is plugged into the PD
+    controller and before PD controller switches to APP mode, there is a
+    lag between dr/pr updates and PlugInsertOrRemoval Event, so a check
+    for dr/pr change needs to be added along TPS_REG_INT_PLUG_EVENT check
 
-Link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-26555 [1]
-Link: https://ieeexplore.ieee.org/abstract/document/9474325/authors#authors [2]
-Link: https://github.com/bluekitchen/btstack/blob/master/src/hci.c#L3523 [3]
-Link: https://github.com/bluekitchen/btstack/blob/master/src/hci.c#L7297 [4]
-Signed-off-by: Lee, Chun-Yi <jlee@suse.com>
----
- net/bluetooth/hci_conn.c  | 7 +++++++
- net/bluetooth/hci_event.c | 8 ++++++++
- 2 files changed, 15 insertions(+)
+- Add TPS25750 traces for status and power status registers. Trace for
+  data register won't be added as it doesn't exist in the device.
 
-diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
-index 056f9516e46d..583d2e18314e 100644
---- a/net/bluetooth/hci_conn.c
-+++ b/net/bluetooth/hci_conn.c
-@@ -1611,6 +1611,13 @@ struct hci_conn *hci_connect_acl(struct hci_dev *hdev, bdaddr_t *dst,
- 		return ERR_PTR(-EOPNOTSUPP);
- 	}
- 
-+	/* Reject outgoing connection to device with same BD ADDR against CVE-2020-26555 */
-+	if (!bacmp(&hdev->bdaddr, dst))
-+	{
-+		bt_dev_dbg(hdev, "Reject connection to the device with same BD_ADDR %pMR\n", dst);
-+		return ERR_PTR(-ECONNREFUSED);
-+	}
-+
- 	acl = hci_conn_hash_lookup_ba(hdev, ACL_LINK, dst);
- 	if (!acl) {
- 		acl = hci_conn_add(hdev, ACL_LINK, dst, HCI_ROLE_MASTER);
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index a20a94e85b1a..d66718190dc5 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -3268,6 +3268,14 @@ static void hci_conn_request_evt(struct hci_dev *hdev, void *data,
- 
- 	bt_dev_dbg(hdev, "bdaddr %pMR type 0x%x", &ev->bdaddr, ev->link_type);
- 
-+	/* Reject incoming connection from device with same BD ADDR against CVE-2020-26555 */
-+	if (!bacmp(&hdev->bdaddr, &ev->bdaddr))
-+	{
-+		bt_dev_dbg(hdev, "Reject connection from the device with same BD_ADDR %pMR\n", &ev->bdaddr);
-+		hci_reject_conn(hdev, &ev->bdaddr);
-+		return;
-+	}
-+
- 	mask |= hci_proto_connect_ind(hdev, &ev->bdaddr, ev->link_type,
- 				      &flags);
- 
+- Configure sleep mode for TPS25750.
+
+v9:
+ - PATCH 1: 
+    - Add Reviewed-by
+ - PATCH 2..7:
+    - No changes
+ - PATCH 8:
+    - Move of_device_id to its original place
+    - Move device data structs to the top of of_device_id
+    - Use device_get_match_data to get device data
+ - PATCH 9:
+    - No changes
+ - PATCH 10:
+    - Move device data structs to the top of of_device_id
+ - PATCH 11,12:
+    - No changes
+ - PATCH 13,14:
+    - Move device data structs to the top of of_device_id
+v8:
+ - PATCH 1: 
+    - Define reg-names at top-level
+ - PATCH 2:
+    - Add Reviewed-by
+ - PATCH 3:
+    - Revert mode check return
+ - PATCH 4:
+    - Return mode when mode is checked
+    - Use device_is_compatible instead of of_device_is_compatible
+ - PATCH 5,6:
+    - No changes
+ - PATCH 7:
+    - Use device_is_compatible instead of of_device_is_compatible
+ - PATCH 8,9:
+    - No changes
+ - PATCH 10:
+    - Change tps->cb to tps->data
+ - PATCH 11,12:
+    - No changes
+ - PATCH 13,14:
+    - Change tps->cb to tps->data
+
+v7:
+ - PATCH 1: 
+    - Define reg at top-level
+    - Remove description from reg-names
+ - PATCH 2..7: Add tps6598x to the subject
+ - PATCH 8:
+    - Add tps6598x to the subject
+    - Create tps25750 interrupt handler
+ - PATCH 9..11: Add tps6598x to the subject
+ - PATCH 12: 
+    - Add driver name to commit subject
+    - Call trace_tps25750_irq directly from tps25750 interrupt
+      handler
+ - PATCH 13-14: Add tps6598x to the subject
+      
+v6:
+ - PATCH 1: Use reg property for patch address
+ - PATCH 2: Use tps6598x_exec_cmd as a wrapper
+ - PATCH 3: Return current mode and check it directly
+ - PATCH 4:
+    - Don't check VID for tps25750 as the VID register doesn't exist
+    - Remove is_tps25750 flag from tps6598x struct
+    - Get patch address from reg property
+ - PATCH 5: Update eeprom macro to use TPS instead
+ - PATCH 6: No changes
+ - PATCH 7: Check tps25750 using is_compatiable device node
+ - PATCH 8: Create tipd callbacks factory 
+ - PATCH 9: No changes
+ - PATCH 10: Add port registration to tipd data factory
+ - PATCH 11: Use tps25750_init instead of tps25750_apply_patch in resume
+    	     as it initializes sleep mode
+ - PATCH 12: Add trace irq to tipd callbacks factory
+ - PATCH 13: Add trace power status to tipd data factory
+ - PATCH 14: Add trace status to tipd data factory
+v5:
+ - PATCH 1: Add tps25750 bindings to tps6598x
+ - PATCH 2: Remove tps25750 driver and incorperate tps25750
+ 	    into tps6598x driver
+ - PATCH [3..15]: Incorporating tps25750 into tps6598x driver
+v4:
+ - PATCH 1: No change
+ - PATCH 2: Fix comments style and drop of_match_ptr
+v3:
+ - PATCH 1: Fix node name
+ - PATCH 2: Upload tps25750 driver patch
+v2:
+ - PATCH 1: General properties clean up
+
+Abdel Alkuor (14):
+  dt-bindings: usb: tps6598x: Add tps25750
+  USB: typec: tsp6598x: Add cmd timeout and response delay
+  USB: typec: tps6598x: Add patch mode to tps6598x
+  USB: typec: tps6598x: Load TPS25750 patch bundle
+  USB: typec: tps6598x: Check for EEPROM present
+  USB: typec: tps6598x: Clear dead battery flag
+  USB: typec: tps6598x: Apply patch again after power resume
+  USB: typec: tps6598x: Add interrupt support for TPS25750
+  USB: typec: tps6598x: Refactor tps6598x port registration
+  USB: typec: tps6598x: Add port registration for tps25750
+  USB: typec: tps6598x: Enable sleep mode for tps25750
+  USB: typec: tps6598x: Add trace for tps25750 irq
+  USB: typec: tps6598x: Add power status trace for tps25750
+  USB: typec: tps6598x: Add status trace for tps25750
+
+ .../devicetree/bindings/usb/ti,tps6598x.yaml  |  81 ++-
+ drivers/usb/typec/tipd/core.c                 | 624 ++++++++++++++++--
+ drivers/usb/typec/tipd/tps6598x.h             |  36 +
+ drivers/usb/typec/tipd/trace.h                |  92 +++
+ 4 files changed, 762 insertions(+), 71 deletions(-)
+
 -- 
-2.35.3
+2.34.1
 
