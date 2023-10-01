@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB29F7B47A0
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 15:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D41E87B47A5
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 15:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235013AbjJANXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 09:23:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46052 "EHLO
+        id S234287AbjJANn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 09:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234979AbjJANXi (ORCPT
+        with ESMTP id S229514AbjJANnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 09:23:38 -0400
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CAE8E;
-        Sun,  1 Oct 2023 06:23:36 -0700 (PDT)
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3af609c4dfeso2944548b6e.1;
-        Sun, 01 Oct 2023 06:23:36 -0700 (PDT)
+        Sun, 1 Oct 2023 09:43:55 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C07891
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 06:43:52 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9ae3d4c136fso419564366b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 06:43:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696167831; x=1696772631; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FWdo0Xen3j1Z5vpJFXzKckOo4KzL4gSS+suSALE7N7s=;
+        b=OouGPLxx6j16480ZyIPkliilYDwa+ufr9jVPalgmmPVsylHlpEmRG13kGUhLEsQ4Tq
+         LwSN/MmyPHlQ9iIEgmFIvCtUpJ1ug6S+fvbznWkGTRL2q3BSB2dwxaLemf+sGgPfxJY3
+         N3OoNgworp9qDzID49X8+3QH7UgaTia03C44alk3O0vwiDDAytxhJbQ96d2w8pKQy1Gw
+         D/x6k1aKBViwQ3jQ2PPCnzeUPHstTGMkESH51FZsjv3N1c2cIfWNlyoLXq0M0fJSf+wd
+         g+rzS0BZE/o4t1OcLphTUXm9Dwa2onKb2GSJMpMAD9qYs79jyN0ZLwWg1hsLZTtH/H/i
+         tG7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696166615; x=1696771415;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1696167831; x=1696772631;
+        h=content-disposition:mime-version:message-id:subject:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xVJSYZtpL0YLa+wcSpHtc+qG+rdtMGRB99f0WwrMd40=;
-        b=l8gK/xLbmU3VcpswqtVQ4osnKA3PiOgCmngkGdgGvW42lc3FPAoee0wkwEUE/i9hR3
-         9a9Fj0T9jBo1x9YS3TJ/62OSIqjzO9Z617M0bHZw21IUwRAuTp5qty0WKg1zgxz8+u04
-         eUV5mdQc3Tn/HrZzM7p1qYk38OeI1Lcqmwrfc2QJzy1Y0hVXjoT7GfR1wG9JpQTga1cH
-         nfpzAcj7gk7kWmRMLiF8Fr2Vd5EQUSt6W/3RSJ8VggbtOtZL7aa+1RKwmJeX3r+qFALy
-         OIZa1enx/FJueIi4Arsdy7hTPBm2grlt3kIqwQpFYVy5Z20RisCoEDM/hrodMBmd8WtU
-         YmzA==
-X-Gm-Message-State: AOJu0YwlZR5/xURFcSL7Sps60/xL7XfhhisCqbdIr+UnD22ISDmGGjHV
-        UAbFcBBFdrd+UxnV+7EYGgY=
-X-Google-Smtp-Source: AGHT+IG5r59Stw18eP45GGvts3KKKs7AnR8jZu7o46ucmeUjXt+CrOjIYIY866yaw9ZKQjAGZmJ61Q==
-X-Received: by 2002:aca:220e:0:b0:3a1:bfda:c6d2 with SMTP id b14-20020aca220e000000b003a1bfdac6d2mr9142795oic.11.1696166615513;
-        Sun, 01 Oct 2023 06:23:35 -0700 (PDT)
-Received: from ?IPV6:2601:647:4d7e:54f3:667:4981:ffa1:7be1? ([2601:647:4d7e:54f3:667:4981:ffa1:7be1])
-        by smtp.gmail.com with ESMTPSA id d4-20020a170903230400b001c20c608373sm20148814plh.296.2023.10.01.06.23.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Oct 2023 06:23:34 -0700 (PDT)
-Message-ID: <b9c266d2-d5d6-4294-9a95-764641e295b4@acm.org>
-Date:   Sun, 1 Oct 2023 06:23:31 -0700
+        bh=FWdo0Xen3j1Z5vpJFXzKckOo4KzL4gSS+suSALE7N7s=;
+        b=Jz0rgW0NxzVV179LUS4y01HEwdb8rmM7ojHDw+ELUG0JcefOFpfGIPESmM68fSuBmC
+         LAOS/x4nfgV0gF8i/fUNPse1HXTt9TtEOA/jNxEXt7DKuYMQKKQ+rx/zuCNuPWo2AyBr
+         XfbGSMNFmv/t6J+pxmB90l4mhuYVxeEbvm9P0ehKYBozs3SFN8aXWdv4CdinkKARyDks
+         Z2OHN7EiqrgS+HUYWq6Kod+V5mQ/Z6YefnAnLCh6NjlieUMzogRJJTn6l6x2RonzWo9/
+         IHsACmeFVOPHT6YEoTAhD/G0sF8tzao1wpZpyck3G9HNmwFnbWYrc3srbTTbRP3SNcQr
+         f9QQ==
+X-Gm-Message-State: AOJu0Ywfb+/47fNqXTGMPbDRjZBojtj9TNRaW/B/eqt3SQZkiKrpiZN1
+        CORFP+rAEnRLqtkKf4K1dyI=
+X-Google-Smtp-Source: AGHT+IGJGDepRSWl8XWYqnjABUG4wibQ/FteSnWEM1qITlmjBWrSE9kTGtNocO5auiwqLEYGWOtfWg==
+X-Received: by 2002:a17:906:2098:b0:9a1:f96c:4bb9 with SMTP id 24-20020a170906209800b009a1f96c4bb9mr8720043ejq.6.1696167830793;
+        Sun, 01 Oct 2023 06:43:50 -0700 (PDT)
+Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
+        by smtp.gmail.com with ESMTPSA id qk8-20020a170906d9c800b0099bd1ce18fesm15753463ejb.10.2023.10.01.06.43.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Oct 2023 06:43:50 -0700 (PDT)
+Date:   Sun, 1 Oct 2023 15:43:48 +0200
+From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/11] staging: rtl8192e: Remove broken function
+ _rtl92e_if_silent_reset()
+Message-ID: <cover.1696165351.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/21] fs/bdev: Add atomic write support info to statx
-Content-Language: en-US
-To:     Eric Biggers <ebiggers@kernel.org>,
-        John Garry <john.g.garry@oracle.com>
-Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chandan.babu@oracle.com, dchinner@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-api@vger.kernel.org,
-        Prasad Singamsetty <prasad.singamsetty@oracle.com>
-References: <20230929102726.2985188-1-john.g.garry@oracle.com>
- <20230929102726.2985188-4-john.g.garry@oracle.com>
- <20230929224922.GB11839@google.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20230929224922.GB11839@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/23 15:49, Eric Biggers wrote:
-> On Fri, Sep 29, 2023 at 10:27:08AM +0000, John Garry wrote:
->> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
->> index 7cab2c65d3d7..c99d7cac2aa6 100644
->> --- a/include/uapi/linux/stat.h
->> +++ b/include/uapi/linux/stat.h
->> @@ -127,7 +127,10 @@ struct statx {
->>   	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
->>   	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
->>   	/* 0xa0 */
->> -	__u64	__spare3[12];	/* Spare space for future expansion */
->> +	__u32	stx_atomic_write_unit_max;
->> +	__u32	stx_atomic_write_unit_min;
-> 
-> Maybe min first and then max?  That seems a bit more natural, and a lot of the
-> code you've written handle them in that order.
-> 
->> +#define STATX_ATTR_WRITE_ATOMIC		0x00400000 /* File supports atomic write operations */
-> 
-> How would this differ from stx_atomic_write_unit_min != 0?
+When the function _rtl92e_if_silent_reset() is called the variable
+priv->rst_progress is set to RESET_TYPE_SILENT.
+Since priv->up is always true the function is left at "if (priv->up) {"
+without resetting. Now the function _rtl92e_if_silent_reset() is like
+deactivated because the equation at the very beginning is false:
+"if (priv->rst_progress == RESET_TYPE_NORESET) {"
+This leads to a state where the driver hangs in the reset state and
+cannot go forward.
+In 30% of the cases the wlan is disconnected and cannot reconnect. The
+rest of the time it continues working but no reset is done at all.
+Further requests for reset are ignored. Remove broken function that
+has never worked.
+Some related cleanups are included.
 
-Is it even possible that stx_atomic_write_unit_min == 0? My understanding
-is that all Linux filesystems rely on the assumption that writing a single
-logical block either succeeds or does not happen, even if a power failure
-occurs between writing and reading a logical block.
+Tested with rtl8192e (WLL6130-D99) in Mode n (12.5 MB/s)
+Tested r8192_private_handler with:
+	sudo iwpriv wlan0
+	sudo iwpriv wlan0 forcereset 1
+Tested channel switch.
+Transferred this patch over wlan connection of rtl8192e.
 
-Thanks,
+Philipp Hortmann (11):
+  staging: rtl8192e: Remove ibss_maxjoin_chal
+  staging: rtl8192e: Remove dead code from _rtl92e_if_check_reset()
+  staging: rtl8192e: Remove RESET_TYPE_NORMAL
+  staging: rtl8192e: Remove broken function _rtl92e_if_silent_reset()
+  staging: rtl8192e: Remove unused variable rst_progress
+  staging: rtl8192e: Remove unused variable reset_in_progress
+  staging: rtl8192e: Remove unused parameter from _rtl92e_sta_up()
+  staging: rtl8192e: Remove unused parameter from _rtl92e_up()
+  staging: rtl8192e: Remove unused variable is_silent_reset
+  staging: rtl8192e: Remove unused variables priv->reset_count and
+    reset_cnt
+  staging: rtl8192e: Remove r8192_private_handler
+    _rtl92e_wx_force_reset()
 
-Bart.
+ drivers/staging/rtl8192e/dot11d.c             |   3 -
+ .../staging/rtl8192e/rtl8192e/r8192E_dev.c    | 100 ++++++------
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c  | 147 ++----------------
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.h  |   5 -
+ drivers/staging/rtl8192e/rtl8192e/rtl_dm.c    |  54 +------
+ drivers/staging/rtl8192e/rtl8192e/rtl_wx.c    |  18 +--
+ drivers/staging/rtl8192e/rtllib.h             |   2 -
+ drivers/staging/rtl8192e/rtllib_softmac.c     |  10 +-
+ 8 files changed, 66 insertions(+), 273 deletions(-)
+
+-- 
+2.42.0
+
