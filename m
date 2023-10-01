@@ -2,161 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 938917B47B1
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 15:45:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35077B47BF
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 15:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235053AbjJANpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 09:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41788 "EHLO
+        id S235062AbjJANwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 09:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235068AbjJANpg (ORCPT
+        with ESMTP id S234285AbjJANws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 09:45:36 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA78107
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 06:45:30 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ae3d7eb7e0so470716366b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 06:45:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696167929; x=1696772729; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=F4mpp0HTqoMB98qe9eiYEXks5rNRdwSriBgWOGd0HtU=;
-        b=HsxThKK5cuHz7Wwoe9bFRX6PmzcY0yvEXPv0GMqyoPCLMfv5o8VZO2W9/pzJUA4byo
-         jQuD2AyCRhu6Uh6vq0VXubsi4nswpAvnRz0lj3E57I3PB4ITLrJsTjyUjJRwg+xkfdgt
-         Zz0/+CWJAP/tMjdRbUvExn9Bovcn6G3mZKKvKxQtoe3e8zCWOev1yHVVU+2uiq/XsAfV
-         3uAcQclzXKUAc2y/9a73oBshEDDHT5y4bD1zXbRhSRr3a20Fakd8nCT5r24cjjXJqAG2
-         yzl9pyoMWgFGjYcfKiOHcSfMyLQutMrgvI8tQ5JaHEI5Q8W1Pz1u+TiMJqnJHyIo+pIG
-         iR4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696167929; x=1696772729;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F4mpp0HTqoMB98qe9eiYEXks5rNRdwSriBgWOGd0HtU=;
-        b=kyoUajQp7oL2+B4yrEWOzQNOxp8AkqAAvNMdzaSpEagWnCHDNQoTFNQThUDe77JjGx
-         JuzkPMUGPjn8wWQqxcUzzzh8WSdCWrl1iZzdxPHY9yTGNB0VHd2fvJcTG7eGT+pEbDHO
-         4KK8/LDtEzjFCHXAPXniICzCyyxBXiRWV5NJRBMgLJVgoGgzMllDzXTf2lbQGZ7yjWP1
-         W1mJUsS9FCssw44M6r/X+VeE5O1Rg5czOKTyzSDU5S2YSnVIkjxN6uGaGQZlXbrwrAKs
-         9DXFH03uQf1vmo2wlLiyZj+shnvIO6/sYisrAsK6eI2GeMh4n4ir8SslWTYDjHgK5NFO
-         2X+A==
-X-Gm-Message-State: AOJu0YyX4EqkDnrujizdGMjAYIM6BlNgPwL8lvydI81Ltto3m097gSjE
-        qYPg7W87rmYqM30eHiSyrww=
-X-Google-Smtp-Source: AGHT+IGNkNqp55500Dar/9Z/ljUObrvuldAHFjlgKHrcz54z7M5xcd0kE8B6BUbPJYEtmdXyb+UF7g==
-X-Received: by 2002:a17:906:2ce:b0:9ae:3f76:1091 with SMTP id 14-20020a17090602ce00b009ae3f761091mr6844214ejk.0.1696167928880;
-        Sun, 01 Oct 2023 06:45:28 -0700 (PDT)
-Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id bn23-20020a170906c0d700b0099cd1c0cb21sm15429750ejb.129.2023.10.01.06.45.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Oct 2023 06:45:28 -0700 (PDT)
-Date:   Sun, 1 Oct 2023 15:45:27 +0200
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 11/11] staging: rtl8192e: Remove r8192_private_handler
- _rtl92e_wx_force_reset()
-Message-ID: <8447643122088ff03dab65ac15e5e5199603008d.1696165351.git.philipp.g.hortmann@gmail.com>
-References: <cover.1696165351.git.philipp.g.hortmann@gmail.com>
+        Sun, 1 Oct 2023 09:52:48 -0400
+Received: from smtprelay05.ispgateway.de (smtprelay05.ispgateway.de [80.67.18.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8F21AB;
+        Sun,  1 Oct 2023 06:52:44 -0700 (PDT)
+Received: from [92.206.139.21] (helo=note-book.lan)
+        by smtprelay05.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <git@apitzsch.eu>)
+        id 1qmwsD-0004h3-Cy; Sun, 01 Oct 2023 15:52:41 +0200
+From:   =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>
+Subject: [PATCH v5 0/2] leds: Add a driver for KTD202x
+Date:   Sun, 01 Oct 2023 15:52:11 +0200
+Message-Id: <20231001-ktd202x-v5-0-f544a1d0510d@apitzsch.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1696165351.git.philipp.g.hortmann@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAIt5GWUC/2XNQW7DIBAF0KtErEsEA8ZOV71HFEUDDAW1dVJwr
+ TSR7x6cjRN5x0f/zb+xQjlRYe+bG8s0ppJOfQ3N24a5iP0n8eRrZiBACSM7/jX4+r7wRhsL2Hr
+ QwrLatliI24y9i3Pf/v40x/CNJR4zYZ4b50whXR5b+0PNMZXhlP8f06Ocf9cro+SCByc7CBTQ+
+ /YDz2m4Fhe39MfmKyMscifkIqFK5WxnhUMB5NdSPUuzSFVlG5zdSWcar3At9ZMEtUhdpdShBR2
+ M18q+ymma7usZgAlwAQAA
+To:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        =?utf-8?q?Andr=C3=A9_Apitzsch?= <git@apitzsch.eu>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.12.3
+X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove r8192_private_handler _rtl92e_wx_force_reset() as driver does not
-reset. Remove dead code.
+Add the binding description and the corresponding driver for
+the Kinetic KTD2026 and KTD2027.
 
-Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+Signed-off-by: André Apitzsch <git@apitzsch.eu>
 ---
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c |  3 ---
- drivers/staging/rtl8192e/rtl8192e/rtl_core.h |  1 -
- drivers/staging/rtl8192e/rtl8192e/rtl_wx.c   | 18 +-----------------
- 3 files changed, 1 insertion(+), 21 deletions(-)
+Changes in v5:
+- Restructure brightness_set() + add comments to it to be easier understandable
+- Add some line breaks + remove little line-wraps to improve readability
+- Move parts of add_led() to setup_led_{rgb,single}()
+- Move mutex_init() to the end of probe to omit gotos
+- Fix grammar
+- Set initial intensity to max brightness to avoid LED staying off when
+  brightness is changed after switching to timer trigger, because of zero
+  intensity
+- Link to v4: https://lore.kernel.org/r/20230923-ktd202x-v4-0-14f724f6d43b@apitzsch.eu
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-index 2b91c481df93..c4688c273f4b 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
-@@ -754,7 +754,6 @@ static void _rtl92e_init_priv_variable(struct net_device *dev)
- 	priv->rfa_txpowertrackingindex = 0;
- 	priv->rfc_txpowertrackingindex = 0;
- 	priv->cck_pwr_enl = 6;
--	priv->force_reset = false;
- 	memset(priv->rtllib->swcamtable, 0, sizeof(struct sw_cam_table) * 32);
- 	priv->rx_ctr = 0;
- 	priv->rtllib->wx_set_enc = 0;
-@@ -1130,8 +1129,6 @@ static void _rtl92e_watchdog_wq_cb(void *data)
- 		check_reset_cnt = 3;
- 	}
- 	spin_unlock_irqrestore(&priv->tx_lock, flags);
--
--	priv->force_reset = false;
- }
- 
- static void _rtl92e_watchdog_timer_cb(struct timer_list *t)
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-index 0ebebb3c2c35..deb707dfa443 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.h
-@@ -371,7 +371,6 @@ struct r8192_priv {
- 
- 	u16		tx_counter;
- 	u16		rx_ctr;
--	bool		force_reset;
- 	bool		force_lps;
- };
- 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-index 17e7fcc01f70..ec09066f2f32 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-@@ -141,19 +141,6 @@ static int _rtl92e_wx_set_rawtx(struct net_device *dev,
- 	return ret;
- }
- 
--static int _rtl92e_wx_force_reset(struct net_device *dev,
--				  struct iw_request_info *info,
--				  union iwreq_data *wrqu, char *extra)
--{
--	struct r8192_priv *priv = rtllib_priv(dev);
--
--	mutex_lock(&priv->wx_mutex);
--
--	priv->force_reset = *extra;
--	mutex_unlock(&priv->wx_mutex);
--	return 0;
--}
--
- static int _rtl92e_wx_adapter_power_status(struct net_device *dev,
- 					   struct iw_request_info *info,
- 					   union iwreq_data *wrqu, char *extra)
-@@ -1060,9 +1047,6 @@ static const struct iw_priv_args r8192_private_args[] = {
- 	}, {
- 		SIOCIWFIRSTPRIV + 0x2,
- 		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "rawtx"
--	}, {
--		SIOCIWFIRSTPRIV + 0x3,
--		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, 0, "forcereset"
- 	}, {
- 		SIOCIWFIRSTPRIV + 0x6,
- 		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, IW_PRIV_TYPE_NONE,
-@@ -1089,7 +1073,7 @@ static iw_handler r8192_private_handler[] = {
- 	(iw_handler)_rtl92e_wx_set_debug,   /*SIOCIWSECONDPRIV*/
- 	(iw_handler)_rtl92e_wx_set_scan_type,
- 	(iw_handler)_rtl92e_wx_set_rawtx,
--	(iw_handler)_rtl92e_wx_force_reset,
-+	(iw_handler)NULL,
- 	(iw_handler)NULL,
- 	(iw_handler)NULL,
- 	(iw_handler)_rtl92e_wx_adapter_power_status,
+Changes in v4:
+- Annotate struct ktd202x with __counted_by
+- Link to v3: https://lore.kernel.org/r/20230906-ktd202x-v3-0-7fcb91c65d3a@apitzsch.eu
+
+Changes in v3:
+- Add r-b to bindings patch
+- Replace .probe_new by .probe
+- Link to v2: https://lore.kernel.org/r/20230901-ktd202x-v2-0-3cb8b0ca02ed@apitzsch.eu
+
+Changes in v2:
+- Make binding description filename match compatible
+- Address comments by Lee Jones
+  - Extend driver description in Kconfig
+  - Add copyright + link to datasheet
+  - Add unit to definition/variable names, where needed
+  - Define magic numbers
+  - Remove forward declaration of 'struct ktd202x'
+  - Remove superfluous comments
+  - Get rid of struct ktd202x_info
+  - Join ktd202x_chip_init() with ktd202x_chip_enable()
+  - Return the error on ktd202x_chip_disable()
+  - Remove unreachable case from chip_in_use()
+  - Rename ktd202x_brightness_set() argument from num_colors to num_channels
+  - Forward errors received in ktd202x_brightness_set()
+  - Remove variable for 'num_channels = 1'
+  - Add some explanations to blink time calculation
+  - Remove unneeded lcdev from ktd202x_blink_*_set()
+  - Add define for max brightness and replace deprecated LED_FULL by it
+  - Move setting led_classdev.brightness to ktd202x_brightness_*_set()
+  - Move mutex_lock inside ktd202x_blink_set()
+  - Add comment that 'color' property is optional (allow EINVAL)
+  - Replace escaped double quotes by single quotes
+  - Avoid overloading variable 'color'
+  - Do not lock during probe
+  - Remove usage of 'of_match_ptr'
+- Document interrupt and pull-up supply, like done for aw2013[1]
+- Fix error in num_steps calculation
+- Link to v1: https://lore.kernel.org/r/20230618-ktd202x-v1-0-fc182fefadd7@apitzsch.eu
+
+[1] https://lore.kernel.org/linux-leds/20230815-aw2013-vio-v3-0-2505296b0856@gerhold.net/
+
+---
+André Apitzsch (2):
+      dt-bindings: leds: Add Kinetic KTD2026/2027 LED
+      leds: add ktd202x driver
+
+ .../devicetree/bindings/leds/kinetic,ktd202x.yaml  | 171 ++++++
+ drivers/leds/rgb/Kconfig                           |  13 +
+ drivers/leds/rgb/Makefile                          |   1 +
+ drivers/leds/rgb/leds-ktd202x.c                    | 619 +++++++++++++++++++++
+ 4 files changed, 804 insertions(+)
+---
+base-commit: 165adeea3617ea22dc49f8880474ebf3a98b696d
+change-id: 20230618-ktd202x-546b2a7d240b
+
+Best regards,
 -- 
-2.42.0
+André Apitzsch <git@apitzsch.eu>
 
