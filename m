@@ -2,200 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3BB27B47E6
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:13:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11AB37B47EB
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235135AbjJAONZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 10:13:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
+        id S235083AbjJAOQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 10:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235089AbjJAONK (ORCPT
+        with ESMTP id S235023AbjJAOP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 10:13:10 -0400
-Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EC0BC;
-        Sun,  1 Oct 2023 07:13:07 -0700 (PDT)
-Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id D0F71849BE;
-        Sun,  1 Oct 2023 16:13:05 +0200 (CEST)
-From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Sun, 01 Oct 2023 16:12:57 +0200
-Subject: [PATCH RFC v4 6/6] input: ads7846: Move wait_for_sync() logic to
- driver
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231001-pxa-gpio-v4-6-0f3b975e6ed5@skole.hr>
-References: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr>
-In-Reply-To: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr>
-To:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-spi@vger.kernel.org,
-        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4116;
- i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=vDxjARPpIkB52+0U6yxYfBgdugyxZKs36TcEKwzrmIE=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlGX5oeO7RLXrgpT84soQS3RW8AL4f+9KqS2biH
- w8i7dlZgViJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZRl+aAAKCRCaEZ6wQi2W
- 4YO+D/9DQqpYETk638UYYXIIbSeoFZF/ozW1wcqL+jDyIxrota8mS/axOJe4lCC7bUBB8pRi/t3
- VoTKgmjv+wK8Vnt9E6xtyTF0S1JoMkv28l8i5/c97MdGWb9wEd7DLEQ9b/sFNIhUt/FhwRFPEDZ
- Evq1LZFBbGAYr4uN3xIKjgd+zX+pElQiMU/uDqMov92Ac/CeX0pQNVkpgTeRR+YcBA2JNRKWCyF
- Ypnf2qUh+MBfkMNryG5Eh8oO2/T+9gBLFUtgg6yWDgO9seRO48EJjpuHTGpv3o0eJr/tBLblcYr
- dcWFEvjIc2tFC+kAfcIfJ2lpCnDO+GT/hiN75clChJQgUYiaWH0aoeGZb2eXlZ3AaJIw4n30n9a
- 8l+1yP2L9IOt/QsNHc6YRPfWqJkFIvn+UPyI7cvub9udcl0NwmOkbScnHdQZyQyffhjhA4g3d5O
- FX04w8F52TuCWG3yyPRy6zJuxXYJtT3v1BjGw94zcOEs/XG1i0p5JX7hiqVei9jkocYoePUahu0
- bUxD6RxK/Lx58IqSK8IW9X19+kcBWqNdOXdopqk9SwXneXTfJw8I2s7X9nUKeilV4/P3GPh+FSV
- taulT/VVCaH9q79o0TVydh1177M5vLOWyOrMO6xInQt0camzl6DZrsj8SQdZz0Y0finkO03uatj
- U3OUdZsr6rWtqZw==
-X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
- fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 1 Oct 2023 10:15:59 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6594DA6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 07:15:54 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9a65f9147ccso2120652466b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 07:15:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1696169753; x=1696774553; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4DdqFn2Z3bHJeGohpJ3zhXHAdEVBVwH1IEgmvBHO5so=;
+        b=5CRJObg0cpw0c7qP/N3Vdv55MFb98rUPxv/QazH/Uq1XhtrgCjjc5GkPycpXSb4xhJ
+         C+A3Rk6Kj/FBgMMH8uTcZfAkoFjHldkFQI5fF45AyI3ZUsvqW6AK+AJvISRPA17uKtm0
+         eiXHTW+VhXu4cZ7b0KL/IaXZWAAxel7Vvb+tQC4XH9S7xMz4nr78SyFxF7KcUnUJIGU/
+         gawRSyh/XX6u56oJRlIOW4SJkTma68CR4SkbRF3ZDVwcA3Hg2Tp/x+kJUoFvav8+RZF+
+         mtI5RCLBjuJFNoqURB0A2+nR/gC3G/hT0nUxf7fQIfd7Obyd77bofpd2uwhQULsDmBNY
+         upPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696169753; x=1696774553;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4DdqFn2Z3bHJeGohpJ3zhXHAdEVBVwH1IEgmvBHO5so=;
+        b=mUwo8jbIGT0cRcQAD98JkWWt+utwIxYhWc27om+eYKV4Q0fgRzIQoD66gTmsQ3jcdy
+         j7q0ZyQXbjZLp2bs1nRYGFqBLGURwS72e7jPB1Y8X6suIFWejt6huuAatjRjQdwhPPXq
+         XdasyzPY1CUR++DeNhJA5u51TYLa4TGVSCf0Qu+A69xwg1yDSzbIxs6b3GcSJrhmK9Td
+         JAEGVXtIffmUjv1oQR/7v14ocGGxz3Cc1PxeCgaI5tXTW4VhOhzm1qXRu4Nu8vtdjySG
+         NTwsxyJ4FqkZ/eQe6KxM0O6gqcDblc8a6Giluysgnfwe8r1I/iiimwbHj2MVQo/mo3Nc
+         YVQw==
+X-Gm-Message-State: AOJu0YyiRWbXZ30x0r2YLj97slOCq4SXEhYBp4Zh2e0jXL6N9YHm8IHG
+        NMbEg1JDz1ZWHTd+FKlrBddDwQ==
+X-Google-Smtp-Source: AGHT+IGfkqrZpht21J94fVHX40sis+d2WV+7LP64gzm7OfSZf+TfpiTrv+Tt+D/AwQLcsMTUv3Fdiw==
+X-Received: by 2002:a17:906:51c9:b0:9ae:6355:5ef4 with SMTP id v9-20020a17090651c900b009ae63555ef4mr7661552ejk.3.1696169752514;
+        Sun, 01 Oct 2023 07:15:52 -0700 (PDT)
+Received: from localhost (k10064.upc-k.chello.nl. [62.108.10.64])
+        by smtp.gmail.com with ESMTPSA id c6-20020a170906340600b009b2f2451381sm2345488ejb.182.2023.10.01.07.15.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 Oct 2023 07:15:52 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Sun, 01 Oct 2023 16:15:50 +0200
+Message-Id: <CVX5ZUGU9BVE.2TA819U1AI6BZ@otso>
+Cc:     <konrad.dybcio@linaro.org>, <u.kleine-koenig@pengutronix.de>,
+        <quic_subbaram@quicinc.com>, <quic_gurus@quicinc.com>,
+        <linux-leds@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-pwm@vger.kernel.org>, <kernel@quicinc.com>
+Subject: Re: [PATCH v5 0/7] Add support for LUT PPG
+From:   "Luca Weiss" <luca.weiss@fairphone.com>
+To:     "Anjelique Melendez" <quic_amelende@quicinc.com>, <pavel@ucw.cz>,
+        <lee@kernel.org>, <thierry.reding@gmail.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20230929003901.15086-1-quic_amelende@quicinc.com>
+In-Reply-To: <20230929003901.15086-1-quic_amelende@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If this code is left in the board file, the sync GPIO would have to be
-separated into another lookup table during conversion to the GPIO
-descriptor API (which is also done in this patch).
+On Fri Sep 29, 2023 at 2:38 AM CEST, Anjelique Melendez wrote:
+> In certain PMICs, LUT pattern and LPG configuration is stored in SDAM
+> modules instead of LUT peripheral. This feature is called PPG.
+>
+> This change series adds support for PPG. Thanks!
+>
+> Changes since v4:
+>   - Patch 3/7
+>     - Get rid of r/w helpers
+>     - Use regmap_read_poll_timeout() in qcom_pbs_wait_for_ack()
+>     - Update error path in qcom_pbs_trigger_event()
+>     - Fix reverse christmas tree
+>   - Patch 4/7
+>     - Get rid of r/w helpers
+>     - Update variables to use "sdam" instead of "nvmem"
+>     - Fix comments
+>     - Fix reverse christmas tree
+>     - Update lpg_pattern_set() logic
+>   - Patch 5/7
+>     - Removed sdam_lut_base from lpg_data
+> Changes since v3:
+>   - Patch 4/7
+>     - Fix function returns
+>     - Move register definition to top of file
+>     - Revert max_brightness and probe accidental changes
+>     - Combine init_sdam() and parse_sdam()
+>     - Change error prints in probe to use dev_err_probe
+>     - Remove ppg_en variable
+>     - Update when pbs triggers are set/cleared
+>   - Patch 6/7
+>     - Remove use of nvmem_count
+>     - Move register definition to top of file
+>     - Remove lpg_get_sdam_lut_idx()
+> Changes since v2:
+>   - Patch 1/7
+>     - Fix dt_binding_check error
+>     - Rename binding file to match compatible
+>     - Iclude SoC specific comptaibles
+>   - Patch 2/7
+>     - Update nvmem-names list
+>   - Patch 3/7
+>     - Update EXPORT_SYMBOL to EXPORT_SYMBOL_GPL
+>     - Fix return/break logic in qcom_pbs_wait_for_ack()
+>     - Update iterators to be int
+>     - Add constants
+>     - Fix function calls in qcom_pbs_trigger_event()
+>     - Remove unnessary comments
+>     - Return -EPROBE_DEFER from get_pbs_client_device()
+> Changes since v1:
+>   - Patch 1/7
+>     - Fix dt_binding_check errors
+>     - Update binding description
+>   - Path 2/7
+>     - Fix dt_binding_check errors
+>     - Update per variant constraints
+>     - Update nvmem description
+>   - Patch 3/7
+>     - Update get_pbs_client_device()
+>     - Drop use of printk
+>     - Remove unused function
+>
+> Tested-by: Luca Weiss <luca.weiss@fairphone.com> # sdm632-fairphone-fp3 (=
+pmi632)
 
-The only user of this code (Sharp Spitz) is also converted in this
-patch.
+Hi Anjelique,
 
-Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
----
- arch/arm/mach-pxa/spitz.c           | 12 ++----------
- drivers/input/touchscreen/ads7846.c | 22 +++++++++++++++-------
- include/linux/spi/ads7846.h         |  1 -
- 3 files changed, 17 insertions(+), 18 deletions(-)
+Actually I've retested this now on PMI632 (and also realized that my
+previous tests weren't correct and wasn't actually using hw_pattern).
 
-diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
-index 701fba130ac4..22d5c5645b8f 100644
---- a/arch/arm/mach-pxa/spitz.c
-+++ b/arch/arm/mach-pxa/spitz.c
-@@ -520,22 +520,12 @@ static inline void spitz_leds_init(void) {}
-  * SSP Devices
-  ******************************************************************************/
- #if defined(CONFIG_SPI_PXA2XX) || defined(CONFIG_SPI_PXA2XX_MODULE)
--static void spitz_ads7846_wait_for_hsync(void)
--{
--	while (gpio_get_value(SPITZ_GPIO_HSYNC))
--		cpu_relax();
--
--	while (!gpio_get_value(SPITZ_GPIO_HSYNC))
--		cpu_relax();
--}
--
- static struct ads7846_platform_data spitz_ads7846_info = {
- 	.model			= 7846,
- 	.vref_delay_usecs	= 100,
- 	.x_plate_ohms		= 419,
- 	.y_plate_ohms		= 486,
- 	.pressure_max		= 1024,
--	.wait_for_sync		= spitz_ads7846_wait_for_hsync,
- };
- 
- static struct gpiod_lookup_table spitz_ads7846_gpio_table = {
-@@ -543,6 +533,8 @@ static struct gpiod_lookup_table spitz_ads7846_gpio_table = {
- 	.table = {
- 		GPIO_LOOKUP("gpio-pxa", SPITZ_GPIO_TP_INT,
- 			    "pendown", GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP("gpio-pxa", SPITZ_GPIO_HSYNC,
-+			    "sync", GPIO_ACTIVE_LOW),
- 		{ }
- 	},
- };
-diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
-index faea40dd66d0..894f179bfa8d 100644
---- a/drivers/input/touchscreen/ads7846.c
-+++ b/drivers/input/touchscreen/ads7846.c
-@@ -138,8 +138,7 @@ struct ads7846 {
- 	void			*filter_data;
- 	int			(*get_pendown_state)(void);
- 	struct gpio_desc	*gpio_pendown;
--
--	void			(*wait_for_sync)(void);
-+	struct gpio_desc	*sync;
- };
- 
- enum ads7846_filter {
-@@ -636,9 +635,14 @@ static const struct attribute_group ads784x_attr_group = {
- };
- 
- /*--------------------------------------------------------------------------*/
--
--static void null_wait_for_sync(void)
-+static void ads7846_wait_for_sync(struct ads7846 *ts)
- {
-+	if (!ts->sync) return;
-+	while (!gpiod_get_value(ts->sync))
-+		cpu_relax();
-+
-+	while (gpiod_get_value(ts->sync))
-+		cpu_relax();
- }
- 
- static int ads7846_debounce_filter(void *ads, int data_idx, int *val)
-@@ -803,7 +807,7 @@ static void ads7846_read_state(struct ads7846 *ts)
- 	packet->last_cmd_idx = 0;
- 
- 	while (true) {
--		ts->wait_for_sync();
-+		ads7846_wait_for_sync(ts);
- 
- 		m = &ts->msg[msg_idx];
- 		error = spi_sync(ts->spi, m);
-@@ -1261,8 +1265,6 @@ static int ads7846_probe(struct spi_device *spi)
- 		ts->penirq_recheck_delay_usecs =
- 				pdata->penirq_recheck_delay_usecs;
- 
--	ts->wait_for_sync = pdata->wait_for_sync ? : null_wait_for_sync;
--
- 	snprintf(ts->phys, sizeof(ts->phys), "%s/input0", dev_name(dev));
- 	snprintf(ts->name, sizeof(ts->name), "ADS%d Touchscreen", ts->model);
- 
-@@ -1361,6 +1363,12 @@ static int ads7846_probe(struct spi_device *spi)
- 	if (err)
- 		return err;
- 
-+	ts->sync = devm_gpiod_get_optional(dev, "sync", GPIOD_IN);
-+	if (IS_ERR(ts->sync)) {
-+		dev_err(dev, "Failed to get sync GPIO: %pe\n", ts->sync);
-+		return PTR_ERR(ts->sync);
-+	}
-+
- 	err = input_register_device(input_dev);
- 	if (err)
- 		return err;
-diff --git a/include/linux/spi/ads7846.h b/include/linux/spi/ads7846.h
-index a04c1c34c344..fa7c4f119023 100644
---- a/include/linux/spi/ads7846.h
-+++ b/include/linux/spi/ads7846.h
-@@ -38,7 +38,6 @@ struct ads7846_platform_data {
- 	int	gpio_pendown_debounce;	/* platform specific debounce time for
- 					 * the gpio_pendown */
- 	int	(*get_pendown_state)(void);
--	void	(*wait_for_sync)(void);
- 	bool	wakeup;
- 	unsigned long irq_flags;
- };
+Using the following commands (after boot) I'm expecting to get a
+500ms on 500ms off blinking pattern between white (255 255 255) and off
+(0 0 0).
 
--- 
-2.42.0
+  echo pattern > /sys/class/leds/rgb:status/trigger
+  echo -1 > /sys/class/leds/rgb:status/repeat
 
+  echo "255 255 255" > /sys/class/leds/rgb:status/multi_intensity
+  echo "255 500 255 0 0 500 0 0" > /sys/class/leds/rgb:status/hw_pattern
+
+What I actually see is it blinking between cyan (0 255 255) and red (255
+0 0).
+At some point after playing with many patterns I got it to actually
+cycle between white and off, but I couldn't reproduce this again (or I
+didn't try hard enough).
+
+
+But with this example it correctly blinks red on-off.
+
+  echo "255 0 0" > /sys/class/leds/rgb:status/multi_intensity
+  echo "255 500 255 0 0 500 0 0" > /sys/class/leds/rgb:status/hw_pattern
+
+With "0 255 0" and "0 0 255" the other colors also work fine, it's just
+the combinations that seem somewhat broken.
+
+Regards
+Luca
+
+
+>
+> Anjelique Melendez (7):
+>   dt-bindings: soc: qcom: Add qcom,pbs bindings
+>   dt-bindings: leds: leds-qcom-lpg: Add support for LPG PPG
+>   soc: qcom: add QCOM PBS driver
+>   leds: rgb: leds-qcom-lpg: Add support for single SDAM PPG
+>   leds: rgb: leds-qcom-lpg: Update PMI632 lpg_data to support PPG
+>   leds: rgb: leds-qcom-lpg: Include support for PPG with dedicated LUT
+>     SDAM
+>   leds: rgb: Update PM8350C lpg_data to support two-nvmem PPG Scheme
+>
+>  .../bindings/leds/leds-qcom-lpg.yaml          |  89 ++++-
+>  .../bindings/soc/qcom/qcom,pbs.yaml           |  46 +++
+>  drivers/leds/rgb/leds-qcom-lpg.c              | 359 ++++++++++++++++--
+>  drivers/soc/qcom/Kconfig                      |   9 +
+>  drivers/soc/qcom/Makefile                     |   1 +
+>  drivers/soc/qcom/qcom-pbs.c                   | 243 ++++++++++++
+>  include/linux/soc/qcom/qcom-pbs.h             |  30 ++
+>  7 files changed, 749 insertions(+), 28 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,pbs.y=
+aml
+>  create mode 100644 drivers/soc/qcom/qcom-pbs.c
+>  create mode 100644 include/linux/soc/qcom/qcom-pbs.h
 
