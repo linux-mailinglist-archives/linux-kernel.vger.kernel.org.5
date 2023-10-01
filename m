@@ -2,199 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC097B4548
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 07:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02F047B454A
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 07:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232577AbjJAFPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 01:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
+        id S234246AbjJAFU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 01:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjJAFPo (ORCPT
+        with ESMTP id S229455AbjJAFUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 01:15:44 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD3DC4
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 22:15:42 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id D34E532011DE;
-        Sun,  1 Oct 2023 01:15:38 -0400 (EDT)
-Received: from imap44 ([10.202.2.94])
-  by compute5.internal (MEProxy); Sun, 01 Oct 2023 01:15:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-         h=cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm2; t=1696137338; x=1696223738; bh=LL
-        qhziztpsU4hplQSJL0KgoZ/2Tbl/WDiZLhU4ejS4g=; b=1EnF5YgIgrIDkMB8yC
-        UzP6IW/D3O0hLKEoQVudsBSA/nJxg5ITKfYNXO6mPw0YjdnRgDMseEHs9uDzhjJN
-        p1BSDCeZf93w72Hc7zhw0yonVty6AGnc5PPG8DVLfS4V+7u1ZyG8A5w2LcXEN47t
-        fjD8m5Aw45oQ9IlK+i0SvNQtAoBrsvUgrlYM7WtOl/tKJnSOxi5JygL2VefqK5GX
-        AR1ok8jS5lds7AunfFkvmEcN1Zxn50L0eM5KM/Nphv/PE/t/dRYcjCo/Q+B3bAbh
-        c0qW311pbfbRCdEhQaUH6nS3/79fOleqiiaRCOKecB0rAYhWS08Y/200SbKzuRIt
-        2wLg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1696137338; x=1696223738; bh=LLqhziztpsU4h
-        plQSJL0KgoZ/2Tbl/WDiZLhU4ejS4g=; b=H36QVYNPJnWKdaHpMS13XFT+bdlwc
-        TokPLqXz8DVv7aYdlJWC4qb2DJJLlTsn9XxDK+B7HJHT/u3NcucvNr6jt9EqqXz/
-        DFqA4k6cQqd863rtxz6XL26efHFiIWtFInjdUHvqOWxSFPVa23tecjO7TAAcY0ZK
-        5na85QLN1zPOXEleuBNxOakA9Nk/IiQELoSlgjs3eIWKkGXkQ1ikxtYoIEHaqPH2
-        Qq2KaAJC2414U7H34AIbCQNL6RryX609IpZ6w69ZLqDlc20s8M4JqjEpYuQG8W6T
-        /aMa8F2G/7wIfVdqCIlzO/OgRBjzLa5qBZP2lXf6+bu7w8fl0R0YfJ18w==
-X-ME-Sender: <xms:egAZZQj03zD-4baycRwDDoHaqyR-S2aHCynqzR5T_WhpDjMHSVTFbA>
-    <xme:egAZZZAz8DNh1cdx0UuthvlbgKA-4WwWcAlIaFBVDoNVlcjM5trI9k3b-F0js-vsJ
-    _5fKxlza722N7uU_-g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejgddugecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfvfgrkhgr
-    shhhihcuufgrkhgrmhhothhofdcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhih
-    drjhhpqeenucggtffrrghtthgvrhhnpeetheegtdevhfeufeejtdevheehudeiieejvedt
-    tdekiedtheeuvefgudfgjeekueenucffohhmrghinhepohhpvghnshhushgvrdhorhhgne
-    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepohdqthgr
-    khgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:egAZZYGsuUvTLF1GyGXSyCkpwtVDVQmy9fchfnTaOomZlW6Mx6cfgw>
-    <xmx:egAZZRTF2Tjw-e_ZWPr70iDtFsd8HhJP_p7L0NDN6NGKZYGgfe3VSQ>
-    <xmx:egAZZdylfB5lc2cGq2BhhlErjhYf9QAkZs7whHBSzHWFGk6v7mVnRg>
-    <xmx:egAZZWtIkTVLL2mgpdLM6raC-TdAEwP4o5iAwO58WVt4bNhKyvATiw>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 1F2C236A0075; Sun,  1 Oct 2023 01:15:38 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
+        Sun, 1 Oct 2023 01:20:54 -0400
+Received: from mail-oo1-f78.google.com (mail-oo1-f78.google.com [209.85.161.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD71C5
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 22:20:50 -0700 (PDT)
+Received: by mail-oo1-f78.google.com with SMTP id 006d021491bc7-57b89ce6dc0so25633090eaf.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 22:20:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696137650; x=1696742450;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RuyzqJDmboZ6S/cDpTxB9O2RD/pB6/5O4DPd5g462hc=;
+        b=W+8Kx7CXUSN0YmIPmYQ93bEDz1BskJsrL94LIJIDl/csAC+l0rOA/Vop2FQr2SHvcW
+         7zZUHDAwk8RJFYgfjd8ZyC8K4nGJxaViJ/OHdhoPl1VJFkc3UO1dI87runsHaxggF9NH
+         V895VM5SHpSXveYzdznYNJTXUaY5spAmks0RDgz6duhfsUcYewfLXBHe9EXSRmDkPvOy
+         C5yBYxThAAGWsS12XrU6dAuUgMjHa6LfKHaY5NN4kbbFWQvBOLRHfSdyzDQe/SjySnd1
+         CdTF+usNXthXXGVrFT5JDtRK1hMslPhLrgziltz35R/4CghA/GfiF+zg5IlEgftECMmF
+         qaow==
+X-Gm-Message-State: AOJu0YxiODdBEEQsQRIBxpXxdu9PhaPlJnlVKYYR6xvq3h+4O1n+V9yK
+        VjHXJXDMtCY+PA9NXzaaHOZlE+6z+/lOvJRRL2JMZe2F0b01
+X-Google-Smtp-Source: AGHT+IHYROQ7cTZPaM1lgipXnBlrqzNhbHIOqhi15o0R9rn5rl9Nt+6sqGxd7OQFbwrzUyejnf2zaKxX9BWQfQZ5gY4e5m3CSiG1
 MIME-Version: 1.0
-Message-Id: <0ed4012a-83a7-4849-92c4-87a86e1bbb84@app.fastmail.com>
-In-Reply-To: <a12593c9-9ced-4bb8-b7a5-8247b08d0e0f@kernel.org>
-References: <20230704121847.GA26576@workstation.local>
- <f3d8c72b-cd30-490c-833f-5807bd74511f@kernel.org>
- <20230926140922.GA6538@workstation.local>
- <a12593c9-9ced-4bb8-b7a5-8247b08d0e0f@kernel.org>
-Date:   Sun, 01 Oct 2023 14:15:16 +0900
-From:   "Takashi Sakamoto" <o-takashi@sakamocchi.jp>
-To:     "Jiri Slaby" <jirislaby@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] firewire updates for 6.5-rc1
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:2099:b0:3ae:526e:2634 with SMTP id
+ s25-20020a056808209900b003ae526e2634mr4154714oiw.9.1696137649966; Sat, 30 Sep
+ 2023 22:20:49 -0700 (PDT)
+Date:   Sat, 30 Sep 2023 22:20:49 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001dd5e20606a0d265@google.com>
+Subject: [syzbot] [mm?] WARNING in page_vma_mapped_walk
+From:   syzbot <syzbot+dcf3f48f4bfe47a2f80a@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+Hello,
 
-Just now I installed openSUSE Tumbleweed, however I found no issue on my 1394 OHCI
-hardware. I would like to ask your current opinion for the issue?
+syzbot found the following issue on:
 
-~> uname -r
-6.5.4-1-default
+HEAD commit:    df964ce9ef9f Add linux-next specific files for 20230929
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17fed5e1680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=880c828d75e38e1b
+dashboard link: https://syzkaller.appspot.com/bug?extid=dcf3f48f4bfe47a2f80a
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-~> cat /etc/os-release 
-NAME="openSUSE Tumbleweed"
-# VERSION="20230929"
-ID="opensuse-tumbleweed"
-ID_LIKE="opensuse suse"
-VERSION_ID="20230929"
-PRETTY_NAME="openSUSE Tumbleweed"
-ANSI_COLOR="0;32"
-CPE_NAME="cpe:/o:opensuse:tumbleweed:20230929"
-BUG_REPORT_URL="https://bugzilla.opensuse.org"
-SUPPORT_URL="https://bugs.opensuse.org"
-HOME_URL="https://www.opensuse.org"
-DOCUMENTATION_URL="https://en.opensuse.org/Portal:Tumbleweed"
-LOGO="distributor-logo-Tumbleweed"
+Unfortunately, I don't have any reproducer for this issue yet.
 
-->sudo lspci -v
-...
-01:00.0 PCI bridge: Texas Instruments XIO2213A/B/XIO2221 PCI Express to PCI Bridge [Cheetah Express] (rev 01) (prog-if 00 [Normal decode])
-        Subsystem: Device 3412:7856
-        Flags: bus master, fast devsel, latency 0, IOMMU group 8
-        Memory at fce00000 (32-bit, non-prefetchable) [size=4K]
-        Bus: primary=01, secondary=02, subordinate=02, sec-latency=32
-        I/O behind bridge: [disabled] [32-bit]
-        Memory behind bridge: fcd00000-fcdfffff [size=1M] [32-bit]
-        Prefetchable memory behind bridge: [disabled] [64-bit]
-        Capabilities: [50] Power Management version 3
-        Capabilities: [60] MSI: Enable- Count=1/16 Maskable- 64bit+
-        Capabilities: [80] Subsystem: Device 3412:7856
-        Capabilities: [90] Express PCI-Express to PCI/PCI-X Bridge, MSI 00
-        Capabilities: [100] Advanced Error Reporting
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/fe7244c6057d/disk-df964ce9.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/48cdc7f3b2c0/vmlinux-df964ce9.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ce7c93a66da9/bzImage-df964ce9.xz
 
-02:00.0 FireWire (IEEE 1394): Texas Instruments XIO2213A/B/XIO2221 IEEE-1394b OHCI Controller [Cheetah Express] (rev 01) (prog-if 10 [OHCI])
-        Subsystem: Device 3412:7856
-        Flags: bus master, 66MHz, medium devsel, latency 32, IRQ 39, IOMMU group 8
-        Memory at fcd04000 (32-bit, non-prefetchable) [size=2K]
-        Memory at fcd00000 (32-bit, non-prefetchable) [size=16K]
-        Capabilities: [44] Power Management version 3
-        Kernel driver in use: firewire_ohci
-        Kernel modules: firewire_ohci
-...
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dcf3f48f4bfe47a2f80a@syzkaller.appspotmail.com
 
-$ udevadm info -e
-...
-P: /devices/pci0000:00/0000:00:01.1/0000:01:00.0
-M: 0000:01:00.0
-R: 0
-U: pci
-E: DEVPATH=/devices/pci0000:00/0000:00:01.1/0000:01:00.0
-E: SUBSYSTEM=pci
-E: PCI_CLASS=60400
-E: PCI_ID=104C:823E
-E: PCI_SUBSYS_ID=3412:7856
-E: PCI_SLOT_NAME=0000:01:00.0
-E: MODALIAS=pci:v0000104Cd0000823Esv00003412sd00007856bc06sc04i00
-E: USEC_INITIALIZED=11023840
-E: ID_PCI_CLASS_FROM_DATABASE=Bridge
-E: ID_PCI_SUBCLASS_FROM_DATABASE=PCI bridge
-E: ID_PCI_INTERFACE_FROM_DATABASE=Normal decode
-E: ID_VENDOR_FROM_DATABASE=Texas Instruments
-E: ID_MODEL_FROM_DATABASE=XIO2213A/B/XIO2221 PCI Express to PCI Bridge [Cheetah Express]
-E: ID_PATH=pci-0000:01:00.0
-E: ID_PATH_TAG=pci-0000_01_00_0
-
-P: /devices/pci0000:00/0000:00:01.1/0000:01:00.0/0000:02:00.0
-M: 0000:02:00.0
-R: 0
-U: pci
-V: firewire_ohci
-E: DEVPATH=/devices/pci0000:00/0000:00:01.1/0000:01:00.0/0000:02:00.0
-E: SUBSYSTEM=pci
-E: DRIVER=firewire_ohci
-E: PCI_CLASS=C0010
-E: PCI_ID=104C:823F
-E: PCI_SUBSYS_ID=3412:7856
-E: PCI_SLOT_NAME=0000:02:00.0
-E: MODALIAS=pci:v0000104Cd0000823Fsv00003412sd00007856bc0Csc00i10
-E: USEC_INITIALIZED=11023930
-E: ID_PCI_CLASS_FROM_DATABASE=Serial bus controller
-E: ID_PCI_SUBCLASS_FROM_DATABASE=FireWire (IEEE 1394)
-E: ID_PCI_INTERFACE_FROM_DATABASE=OHCI
-E: ID_VENDOR_FROM_DATABASE=Texas Instruments
-E: ID_MODEL_FROM_DATABASE=XIO2213A/B/XIO2221 IEEE-1394b OHCI Controller [Cheetah Express]
-E: ID_PATH=pci-0000:02:00.0
-E: ID_PATH_TAG=pci-0000_02_00_0
-
-P: /devices/pci0000:00/0000:00:01.1/0000:01:00.0/0000:02:00.0/fw0
-M: fw0
-R: 0
-U: firewire
-D: c 244:0
-N: fw0
-L: 0
-E: DEVPATH=/devices/pci0000:00/0000:00:01.1/0000:01:00.0/0000:02:00.0/fw0
-E: SUBSYSTEM=firewire
-E: DEVNAME=/dev/fw0
-E: MAJOR=244
-E: MINOR=0
-...
-
-When I plugged in my sound device (Tascam Fireone) and load ALSA OXFW driver, it works as expected. It means that both 1394 Asynchronous/Isochronous communications are established as expected.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8436 at include/linux/hugetlb.h:1289 hugetlb_walk include/linux/hugetlb.h:1289 [inline]
+WARNING: CPU: 1 PID: 8436 at include/linux/hugetlb.h:1289 page_vma_mapped_walk+0x1e85/0x27a0 mm/page_vma_mapped.c:199
+Modules linked in:
+CPU: 1 PID: 8436 Comm: syz-executor.0 Not tainted 6.6.0-rc3-next-20230929-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+RIP: 0010:hugetlb_walk include/linux/hugetlb.h:1289 [inline]
+RIP: 0010:page_vma_mapped_walk+0x1e85/0x27a0 mm/page_vma_mapped.c:199
+Code: 00 be ff ff ff ff 48 81 c7 a0 01 00 00 e8 33 71 77 08 31 ff 89 c5 89 c6 e8 78 b5 b9 ff 85 ed 0f 85 64 f7 ff ff e8 fb b9 b9 ff <0f> 0b e9 58 f7 ff ff e8 ef b9 b9 ff 48 89 ef 48 81 e7 00 f0 ff ff
+RSP: 0000:ffffc90004f0f6b8 EFLAGS: 00010283
+RAX: 000000000001b5c2 RBX: ffff88801eca2710 RCX: ffffc9000a691000
+RDX: 0000000000040000 RSI: ffffffff81ce9bc5 RDI: 0000000000000005
+RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 000000000000002f R12: 0000000000200000
+R13: ffffffff92312af8 R14: ffffc90004f0f8c0 R15: ffffffff92312b90
+FS:  00007f489c7ce6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b31a24000 CR3: 0000000017fc0000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ try_to_migrate_one+0x4a2/0x28b0 mm/rmap.c:1929
+ rmap_walk_anon+0x225/0x570 mm/rmap.c:2501
+ rmap_walk mm/rmap.c:2578 [inline]
+ rmap_walk mm/rmap.c:2573 [inline]
+ try_to_migrate+0x2b6/0x300 mm/rmap.c:2230
+ unmap_and_move_huge_page mm/migrate.c:1421 [inline]
+ migrate_hugetlbs mm/migrate.c:1547 [inline]
+ migrate_pages+0xa42/0x27c0 mm/migrate.c:1901
+ migrate_to_node mm/mempolicy.c:1097 [inline]
+ do_migrate_pages+0x2e9/0x670 mm/mempolicy.c:1196
+ kernel_migrate_pages+0x59b/0x780 mm/mempolicy.c:1682
+ __do_sys_migrate_pages mm/mempolicy.c:1701 [inline]
+ __se_sys_migrate_pages mm/mempolicy.c:1697 [inline]
+ __x64_sys_migrate_pages+0x96/0x100 mm/mempolicy.c:1697
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f489ba7cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f489c7ce0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000100
+RAX: ffffffffffffffda RBX: 00007f489bb9c050 RCX: 00007f489ba7cae9
+RDX: 0000000020000000 RSI: 0000000000000004 RDI: 0000000000000000
+RBP: 00007f489bac847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000020000080 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007f489bb9c050 R15: 00007ffcda957698
+ </TASK>
 
 
-Regards
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Takashi Sakamoto
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
