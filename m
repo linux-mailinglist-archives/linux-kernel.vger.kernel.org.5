@@ -2,157 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E9927B4658
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C538F7B465D
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234576AbjJAIhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 04:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
+        id S234603AbjJAImX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 04:42:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233966AbjJAIhv (ORCPT
+        with ESMTP id S233966AbjJAImV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 04:37:51 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523CDA7;
-        Sun,  1 Oct 2023 01:37:48 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9b29186e20aso1403437866b.2;
-        Sun, 01 Oct 2023 01:37:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696149466; x=1696754266; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qKCiT0Iifb0CtpWzGitgnJVAW7NIhgQwEiMWWCVthZY=;
-        b=WOZnVlwOIShwnwcE9g1WsNw3qiTGk/c09sWWD+mva109hX08HTyJp5OYyjn2EMIEIY
-         VjfcgpVA3Xa7qYbm6lHtistsnyX1Vz3WL7lq3zrTp/cBzyERHRMGh9nHeveA2NT+Ivde
-         PgZAsXeXU68R2FcHrltVq8iZW+byEi1rCBQOEeEPeuF1sIWBbvIIvACl+/p72KcS+pAU
-         MEk5V9+4SjxDZ6MLxVfNjLEbTtQjLUijxDq+neFpWBecDaeH1ycNApr77GmvaiXg5O5k
-         fksP3u4p8WuYkddzgwg/rnPyJ/DrFbvmmFaW8N4ik3w3ldA6+kyLRAVcHLjoX0I8sqlH
-         +ERQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696149466; x=1696754266;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qKCiT0Iifb0CtpWzGitgnJVAW7NIhgQwEiMWWCVthZY=;
-        b=a24YsQPsgvTBBlkgWSrSaMAnKg50O8FffJJQQ0vouAvDFeZMBIxOagnBlPkWYWUb5r
-         nZsno5ESKPTSVtEdC5SSV4ZEli7yDGC8S5M8I3HnXvWasRn6kXp2xdrW7TRWW8QikHpk
-         F+ONry8GmTpgG/nrp2v6KFlxaDqyhtXnxDiZQL7tXKRNfcPgQl3RJevFi27qj6cM2KXI
-         XGrz294c7K7ia402pMPtVhRQcI6etpaLYaY7p9AB2aRccb1jw56lg4MxjVRoM+VwK2xo
-         S4Bv7oUnPVR46agciRh5VmhRBdbsvFrOoPnVp+2K+mAquK3txT1RoGut4Nr7SLbgArhU
-         rOZA==
-X-Gm-Message-State: AOJu0Yyo3m2iybCG3IHIKZDV14iYqWw3e8zsWe2+VQZlQxO+SNYfLKcX
-        Z8DZoF5tZpRVeOUmrVuiDixSlK70uZ5Hwg==
-X-Google-Smtp-Source: AGHT+IE+AYpwCV+T05pdMhELTcZqS8EBtQzUZgoVHRaGdGak5rURWO0OzKfpG3QuxIYLnjsoB4MtTQ==
-X-Received: by 2002:a17:907:b1a:b0:9a9:f14a:22dc with SMTP id h26-20020a1709070b1a00b009a9f14a22dcmr8360790ejl.8.1696149466226;
-        Sun, 01 Oct 2023 01:37:46 -0700 (PDT)
-Received: from [127.0.1.1] (2a02-8389-41cf-e200-4c68-6c03-863b-ad4e.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:4c68:6c03:863b:ad4e])
-        by smtp.gmail.com with ESMTPSA id w23-20020a1709061f1700b0098921e1b064sm15130499ejj.181.2023.10.01.01.37.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Oct 2023 01:37:45 -0700 (PDT)
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date:   Sun, 01 Oct 2023 10:37:44 +0200
-Subject: [PATCH v2] selftests: uevent filtering: fix return on error in
- uevent_listener
+        Sun, 1 Oct 2023 04:42:21 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27944B3;
+        Sun,  1 Oct 2023 01:42:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696149739; x=1727685739;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=sWvqOZkq+0BZQpNOVZiv4CjVHp5FMxqth8BjfwKctd4=;
+  b=fjRfMgUttgZhdecu+AxR2DaJgL158gt49+BQg0ZcU88LLjRfnFSkoqjw
+   cG3qEylV3LgtwCmlBHPcLT3KLPRCdSE3uoCOWyM6Yz1WVrPhKLd91jG36
+   +ygij6qLYeUrdTfWPZUnh/Ge9stRagnd926HML988txxThv9kvuIX2Sd3
+   R2Uto0i8eXnAtT5IkSGhl9k1EcIFIGlC6T4m0RDf+e8473yPnUA1J6krj
+   hqKZFGmf6rNCDXt2TIyBQxhlP+8UjXoFHE5qji5ENan62etL+FRtEQBkp
+   C5nBjIrnaXrItsCVd/3/1t9L692TeAsvzIzl/YH+6rJKiEhHzC1iTzmke
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10849"; a="385333195"
+X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
+   d="scan'208";a="385333195"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2023 01:42:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10849"; a="820596568"
+X-IronPort-AV: E=Sophos;i="6.03,191,1694761200"; 
+   d="scan'208";a="820596568"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2023 01:42:15 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qms1k-00000001r7u-234T;
+        Sun, 01 Oct 2023 11:42:12 +0300
+Date:   Sun, 1 Oct 2023 11:42:12 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Mark Gross <markgross@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v2 2/5] platform/x86: int3472: Add new
+ skl_int3472_gpiod_get_from_temp_lookup() helper
+Message-ID: <ZRkw5FfhSq3J+Wb8@smile.fi.intel.com>
+References: <20230926145943.42814-1-brgl@bgdev.pl>
+ <e6817d30-b443-1a73-efae-84415604b19f@redhat.com>
+ <b8b1a3f0-3aca-341c-07ee-389b077a01f7@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230916-topic-self_uevent_filtering-v2-1-2d0a958c235b@gmail.com>
-X-B4-Tracking: v=1; b=H4sIANcvGWUC/42OQQ6DIBQFr2JYl0ZQMe3KezTGAH71JwgGkLQx3
- r3UE3Q5bzHzDhLAIwTyLA7iIWFAZzPwW0H0Iu0MFMfMhJe8Kh9M0Og21DSAmYYdEtg4TGhilti
- ZslY1FRdc6VqQbFAyAFVeWr1kh92NyePmYcL3lXz1mRcM0fnP9SCx3/pfLDHKKBcwQlO2Y93U3
- bxKNHftVtKf5/kFqZkt/dsAAAA=
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696149465; l=2613;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=HtH6ZooiQZhj/+OvGcNzkDPBy9n4u+3X6ldRAYYPCDs=;
- b=at6YPXx+fOXZkwoEOETeXgA4z2Z7fCl2ihfE8DLduQh1rZ+hOCVx2PrRpu6RmisMIosh11dRe
- X/8cMgwZmxRCwBDrU1MwCJGbHMWaHhxInwRkeHGiRg+wtUfFFGs28GI
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b8b1a3f0-3aca-341c-07ee-389b077a01f7@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ret variable is used to check function return values and assigning
-values to it on error has no effect as it is an unused value.
+On Thu, Sep 28, 2023 at 02:42:50PM +0200, Hans de Goede wrote:
+> Add a new skl_int3472_gpiod_get_from_temp_lookup() helper.
+> 
+> This is a preparation patch for removing usage of the deprecated
+> gpiod_toggle_active_low() and acpi_get_and_request_gpiod() functions.
+> 
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> [hdegoede@redhat.com] use the new skl_int3472_fill_gpiod_lookup() helper
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 
-The current implementation uses an additional variable (fret) to return
-the error value, which in this case is unnecessary and lead to the above
-described misuse. There is no restriction in the current implementation
-to always return -1 on error and the actual negative error value can be
-returned safely without storing -1 in a specific variable.
+Something wrong between authorship and committer and SoB chain.
+I believe you need to preserve the authorship and add yourself as
+Co-developed-by: ?
 
-Simplify the error checking by using a single variable which always
-holds the returned value.
-
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
-Changes in v2:
-- Remove fret and use a single variable to check errors.
-- Link to v1: https://lore.kernel.org/r/20230916-topic-self_uevent_filtering-v1-1-26ede507d454@gmail.com
----
- tools/testing/selftests/uevent/uevent_filtering.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/uevent/uevent_filtering.c b/tools/testing/selftests/uevent/uevent_filtering.c
-index 5cebfb356345..dbe55f3a66f4 100644
---- a/tools/testing/selftests/uevent/uevent_filtering.c
-+++ b/tools/testing/selftests/uevent/uevent_filtering.c
-@@ -78,7 +78,7 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
- {
- 	int sk_fd, ret;
- 	socklen_t sk_addr_len;
--	int fret = -1, rcv_buf_sz = __UEVENT_BUFFER_SIZE;
-+	int rcv_buf_sz = __UEVENT_BUFFER_SIZE;
- 	uint64_t sync_add = 1;
- 	struct sockaddr_nl sk_addr = { 0 }, rcv_addr = { 0 };
- 	char buf[__UEVENT_BUFFER_SIZE] = { 0 };
-@@ -121,6 +121,7 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
- 
- 	if ((size_t)sk_addr_len != sizeof(sk_addr)) {
- 		fprintf(stderr, "Invalid socket address size\n");
-+		ret = -1;
- 		goto on_error;
- 	}
- 
-@@ -147,11 +148,12 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
- 	ret = write_nointr(sync_fd, &sync_add, sizeof(sync_add));
- 	close(sync_fd);
- 	if (ret != sizeof(sync_add)) {
-+		ret = -1;
- 		fprintf(stderr, "Failed to synchronize with parent process\n");
- 		goto on_error;
- 	}
- 
--	fret = 0;
-+	ret = 0;
- 	for (;;) {
- 		ssize_t r;
- 
-@@ -187,7 +189,7 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
- on_error:
- 	close(sk_fd);
- 
--	return fret;
-+	return ret;
- }
- 
- int trigger_uevent(unsigned int times)
-
----
-base-commit: cefc06e4de1477dbdc3cb2a91d4b1873b7797a5c
-change-id: 20230916-topic-self_uevent_filtering-17b53262bc46
-
-Best regards,
 -- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
+With Best Regards,
+Andy Shevchenko
+
 
