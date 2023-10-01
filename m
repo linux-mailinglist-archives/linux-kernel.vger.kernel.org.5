@@ -2,111 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C23B17B473C
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 13:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6222B7B4742
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 13:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234906AbjJALsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 07:48:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40170 "EHLO
+        id S234899AbjJAL5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 07:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbjJALsc (ORCPT
+        with ESMTP id S232837AbjJAL5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 07:48:32 -0400
-Received: from halley.uberspace.de (halley.uberspace.de [185.26.156.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5610BD
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 04:48:27 -0700 (PDT)
-Received: (qmail 19704 invoked by uid 498); 1 Oct 2023 11:48:25 -0000
-Authentication-Results: halley.uberspace.de;
-        auth=pass (plain)
-From:   Kai Uwe Broulik <foss-linux@broulik.de>
-To:     linux-kernel@vger.kernel.org
-Cc:     dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <mripard@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Kai Uwe Broulik <foss-linux@broulik.de>
-Subject: [PATCH v2] drm: panel-orientation-quirks: Add quirk for One Mix 2S
-Date:   Sun,  1 Oct 2023 13:47:10 +0200
-Message-Id: <20231001114710.336172-1-foss-linux@broulik.de>
-X-Mailer: git-send-email 2.34.1
+        Sun, 1 Oct 2023 07:57:31 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB71D3
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 04:57:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5F2CC433C8;
+        Sun,  1 Oct 2023 11:57:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696161448;
+        bh=JsTcYuCjnKCRS49oBtoC/vqy3wZU5S1GK8S0OnCnZK4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zaeTs7ygqGfjrJWOnFpfD3yxD4Vik2KbdPjbE0n2twJEyAqkuWttYUXY3y0MSydKM
+         VgbDXZMTofVh3NjFuvBjRB+0g7QNWvqSbKpMModxj2vdeuN1iJey22rW1P4myyS8lf
+         by8piuTx91mqiUPbju6XcRad0soc2YA8f92gTkJ4=
+Date:   Sun, 1 Oct 2023 13:57:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Chris Leech <cleech@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Rasesh Mody <rmody@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        Manish Chopra <manishc@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        John Meneghini <jmeneghi@redhat.com>,
+        Lee Duncan <lduncan@suse.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] cnic,bnx2,bnx2x: use UIO_MEM_DMA_COHERENT
+Message-ID: <2023100114-flatware-mourner-3fed@gregkh>
+References: <20230929170023.1020032-1-cleech@redhat.com>
+ <20230929170023.1020032-4-cleech@redhat.com>
+ <2023093055-gotten-astronomy-a98b@gregkh>
+ <ZRhmqBRNUB3AfLv/@rhel-developer-toolbox>
+ <2023093002-unlighted-ragged-c6e1@gregkh>
+ <e0360d8f-6d36-4178-9069-d633d9b7031d@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Bar: -
-X-Rspamd-Report: MID_CONTAINS_FROM(1) BAYES_HAM(-2.986423) MIME_GOOD(-0.1) R_MISSING_CHARSET(0.5)
-X-Rspamd-Score: -1.586423
-Received: from unknown (HELO unkown) (::1)
-        by halley.uberspace.de (Haraka/3.0.1) with ESMTPSA; Sun, 01 Oct 2023 13:48:25 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=broulik.de; s=uberspace;
-        h=from;
-        bh=D5MBsAkyvt0fqWpX/dd/Wz1+4BBD8R0ZGdeNAsn88Qg=;
-        b=ActS/PrcHuFhGo6d9xJaGCb/O0eO/AZDvVqlNBDxwSTRnPlVkg9Vn8TdX70IRBY3AAWkD4aorD
-        W/Zer4lobybEMn71cyfUZ62t7cZr8S3vfDqJtr1LXOa0xIVXTUk75k5hiTgYkp5Y1oSENmUO/mCd
-        L+UUQ6h8ecQn78Pt5GBSxF6MrSuwxN1AUVdGJ1IATUrGyqMNz0na7ayFcTkHveIWWICoWCbnbXvK
-        tpoKaQK20KKhf8pSAJlvvGr6Fl5Fb7hi4vNlP+cyHXL14FbW2CLrGZlRTipFOB3zxPPN1ivFnY8O
-        Uds3alYB347Ps0yMH8Utk+qXEYxZoCi8/EXTncO+wI5ETIi7CPWT+aD2A6UzKUUx5b+tWfhDimqy
-        /jF49eef9QMf/2svbCFEditSt3QYuzi1hTBsU4RW1aa8Xn+O8rA9wmbeG7Cc2bzDE92hoedfnGih
-        kCwrW3Qt90v0RhXMel2HtpTxnjsCTBqK1GMXAV+v0uOP5A7WDqqx/BB2dW3eNLk9xsKMEkmj9Q4l
-        liIyMYgqFXAB4yM1Sq22a5kTRGvemmOdMGX9lm1iHTTP6p909tkuXt6PnWC+UxlNIvXJ4Kz6B2MG
-        BkeZHzzs4CBfSFm/YPdE3mkWlvXBK3pfwviAoGJWpOeoovS2TU167PVny7PIKD4uQdPOn+JgwIKo
-        I=
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,MSGID_FROM_MTA_HEADER,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e0360d8f-6d36-4178-9069-d633d9b7031d@suse.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The One Mix 2S is a mini laptop with a 1200x1920 portrait screen
-mounted in a landscape oriented clamshell case. Because of the too
-generic DMI strings this entry is also doing bios-date matching.
+On Sun, Oct 01, 2023 at 12:44:05PM +0200, Hannes Reinecke wrote:
+> On 9/30/23 20:28, Greg Kroah-Hartman wrote:
+> > On Sat, Sep 30, 2023 at 11:19:20AM -0700, Chris Leech wrote:
+> > > On Sat, Sep 30, 2023 at 09:06:51AM +0200, Greg Kroah-Hartman wrote:
+> > > > On Fri, Sep 29, 2023 at 10:00:23AM -0700, Chris Leech wrote:
+> > > > > Make use of the new UIO_MEM_DMA_COHERENT type to properly handle mmap
+> > > > > for dma_alloc_coherent buffers.
+> > > > 
+> > > > Why are ethernet drivers messing around with UIO devices?  That's not
+> > > > what UIO is for, unless you are trying to do kernel bypass for these
+> > > > devices without anyone noticing?
+> > > > 
+> > > > confused,
+> > > 
+> > > It's confusing. The bnx2 driver stack included a cnic (converged nic?)
+> > > module that sits between the ethernet drivers (bnx2, bnx2x) and protocol
+> > > offload drivers (iscsi, fcoe, rdma).
+> > > 
+> > > The iscsi module (bnx2i) uses a passthrough interface from cnic to
+> > > handle some network configuration that the device firmware doesn't do.
+> > > It uses a uio device and a userspace component called iscsiuio to do
+> > > that.
+> > 
+> > That's horrible, and not what the UIO api is for at all.  Configure the
+> > device like any other normal kernel device, don't poke at raw memory
+> > values directly, that way lies madness.
+> > 
+> > Have a pointer to the userspace tool anywhere?  All I found looks like a
+> > full IP stack in userspace under that name, and surely that's not what
+> > this api is for...
+> > 
+> But that's how the interface is used, in particular for the bnx2i driver.
+> Problem is that the bnx2i iSCSI offload is just that, an iSCSI offload. Not
+> a TCP offload. So if the iSCSI interface is configured to
+> acquire the IP address via DHCP, someone has to run the DHCP protocol.
+> But the iSCSI offload can't, and the bnx2i PCI device is not a network
+> device so that the normal network stack can't be used.
+> And so the architects of the bnx2i card decided to use UIO to pass
+> the network traffic to userspace, and used the userspace 'iscsiuio'
+> application to run DHCP in userspace.
+> 
+> But's been that way for several years now; so long, in fact, that
+> the card itself has been out of support from Marvell (since quite some
+> years, too, IIRC). And even the successor of that card (the qedi driver)
+> is nearing EOL. Mind you, the qedi driver is using the same interface (by
+> using UIO to run DHCP in userspace), so singling out the bnx2i for bad
+> design can be construed as being unfair :-)
 
-Signed-off-by: Kai Uwe Broulik <foss-linux@broulik.de>
----
-Changes since v1:
-* Got two more BIOS dates reported
+Ok, let's say they are all horrible! :)
 
- drivers/gpu/drm/drm_panel_orientation_quirks.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+> I agree, though, that the design is a mess.
 
-diff --git a/drivers/gpu/drm/drm_panel_orientation_quirks.c b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-index 0cb646cb04ee..d5c15292ae93 100644
---- a/drivers/gpu/drm/drm_panel_orientation_quirks.c
-+++ b/drivers/gpu/drm/drm_panel_orientation_quirks.c
-@@ -38,6 +38,14 @@ static const struct drm_dmi_panel_orientation_data gpd_micropc = {
- 	.orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
- };
- 
-+static const struct drm_dmi_panel_orientation_data gpd_onemix2s = {
-+	.width = 1200,
-+	.height = 1920,
-+	.bios_dates = (const char * const []){ "05/21/2018", "10/26/2018",
-+		"03/04/2019", NULL },
-+	.orientation = DRM_MODE_PANEL_ORIENTATION_RIGHT_UP,
-+};
-+
- static const struct drm_dmi_panel_orientation_data gpd_pocket = {
- 	.width = 1200,
- 	.height = 1920,
-@@ -401,6 +409,14 @@ static const struct dmi_system_id orientation_data[] = {
- 		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "LTH17"),
- 		},
- 		.driver_data = (void *)&lcd800x1280_rightside_up,
-+	}, {	/* One Mix 2S (generic strings, also match on bios date) */
-+		.matches = {
-+		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Default string"),
-+		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Default string"),
-+		  DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Default string"),
-+		  DMI_EXACT_MATCH(DMI_BOARD_NAME, "Default string"),
-+		},
-+		.driver_data = (void *)&gpd_onemix2s,
- 	},
- 	{}
- };
--- 
-2.34.1
+Ok, so why are we papering over it and continuing to allow it to exist?
 
+What "broke" to suddenly require this UIO change?  If this has been
+around for a very long time, what has caused this to now require the UIO
+layer to change?
+
+thanks,
+
+greg k-h
