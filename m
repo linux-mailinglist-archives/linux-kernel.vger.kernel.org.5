@@ -2,95 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E1E7B4724
+	by mail.lfdr.de (Postfix) with ESMTP id A622A7B4725
 	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 13:25:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234859AbjJALXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 07:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60116 "EHLO
+        id S234890AbjJALZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 07:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234821AbjJALXk (ORCPT
+        with ESMTP id S234821AbjJALZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 07:23:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0853C2
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 04:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696159372;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2PmJLGZGYM/2RvXfCM4a7iZd7KULTy8GDfhMPfgYLY8=;
-        b=ex1yB+qHk2/hfB3xTadxWYwdywavBjzXH5Wf8d/3MAzpNhTqLlSFILYF9oqNg7GwRv/drh
-        BzwHxNE3y3RMG2JZ96T9L1L241WSmiKw7S/QwpXwx6LhL1uehUzwZf9feXemrGAzqg39m4
-        NxJz9OUoSJ3RMkq2gTM1JdEJomrlHxw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-678-3liq-1YMPcWNLKVRSl48gA-1; Sun, 01 Oct 2023 07:22:38 -0400
-X-MC-Unique: 3liq-1YMPcWNLKVRSl48gA-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 763E73C02520;
-        Sun,  1 Oct 2023 11:22:37 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9F2FA493113;
-        Sun,  1 Oct 2023 11:22:36 +0000 (UTC)
-Date:   Sun, 1 Oct 2023 19:22:33 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     vkoul@kernel.org, dmaengine@vger.kernel.org,
-        gregkh@linuxfoundation.org, arnd@arndb.de, imx@lists.linux.dev,
-        linux-kernel@vger.kernel.org, lkp@intel.com,
-        oe-kbuild-all@lists.linux.dev, rafael@kernel.org
-Subject: Re: [PATCH 1/1] fs: debugfs: fix build error at powerpc platform
-Message-ID: <ZRlWeeq/AOjyTtnV@MiWiFi-R3L-srv>
-References: <20230929164920.314849-1-Frank.Li@nxp.com>
+        Sun, 1 Oct 2023 07:25:25 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4750DBD
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 04:25:23 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4866C433C8;
+        Sun,  1 Oct 2023 11:25:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696159522;
+        bh=PUipNyho5r4Psjk0eUfxhKXe9d7G3c2FY5IEw3imF0o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YcfwTZmoo6jGSte0O0n8afk14KpMPshBNFzDQX6NRwpFBGbnP1gvpfmkAIZaCln2k
+         gLuBUMm+ZBVoH+1vYr4fNyfHR4U3FpEnucNVBEe8bxiMfNkoctILHc88MdpFW+h6qW
+         VBJhuFmOdx6hLO7zT5ZRgVAXvCF8QSHN88xyIhVN+oXnZIOJJqCX5LEn79/fBvQIbG
+         KoiLGHSCbJh9C3lBcaclrRW/b4jpWmhB0ZLyo0eJ9EV22o6wRqJ1gdPvXBPunHJVrR
+         QUnudpzl90lfUE4R7Dd8DBZaWW0wd4oCSwuuSVQk8v/gTyPNVn+iCecUXGS6HkLQjs
+         ahHz3+8V9strQ==
+Date:   Sun, 1 Oct 2023 12:25:17 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Jisheng Zhang <jszhang@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Inochi Amaoto <inochiama@outlook.com>, chao.wei@sophgo.com,
+        xiaoguang.xing@sophgo.com
+Subject: Re: [PATCH 1/5] dt-bindings: interrupt-controller: Add SOPHGO
+ CV1800B plic
+Message-ID: <20231001-manila-unsent-6163d2a08145@spud>
+References: <20230930123937.1551-1-jszhang@kernel.org>
+ <20230930123937.1551-2-jszhang@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="MA1P9/d49We4ZiCr"
 Content-Disposition: inline
-In-Reply-To: <20230929164920.314849-1-Frank.Li@nxp.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+In-Reply-To: <20230930123937.1551-2-jszhang@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/29/23 at 12:49pm, Frank Li wrote:
->    ld: fs/debugfs/file.o: in function `debugfs_print_regs':
->    file.c:(.text+0x95a): undefined reference to `ioread64be'
-> >> ld: file.c:(.text+0x9dd): undefined reference to `ioread64'
 
-From your reproducer, on x86_64, GENERIC_IOMAP is selected. So the
-default version of ioread64 and ioread64be in asm-generic/io.h are
-bypassed. Except of those arch where ioread64 and ioread64be are
-implemented specifically like alpha, arm64, parisc, power, we may need
-include include/linux/io-64-nonatomic-hi-lo.h or
-include/linux/io-64-nonatomic-lo-hi.h to fix above linking issue?
+--MA1P9/d49We4ZiCr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-From my side, below change can fix the issue. However, I am not quite
-sure which one is chosen between io-64-nonatomic-hi-lo.h and 
-io-64-nonatomic-hi-lo.h.
+On Sat, Sep 30, 2023 at 08:39:33PM +0800, Jisheng Zhang wrote:
+> Add compatible string for SOPHGO CV1800B plic.
+>=20
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 
-diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
-index 87b3753aa4b1..b433be134c67 100644
---- a/fs/debugfs/file.c
-+++ b/fs/debugfs/file.c
-@@ -15,6 +15,7 @@
- #include <linux/pagemap.h>
- #include <linux/debugfs.h>
- #include <linux/io.h>
-+#include <linux/io-64-nonatomic-hi-lo.h>
- #include <linux/slab.h>
- #include <linux/atomic.h>
- #include <linux/device.h>
--- 
-2.41.0
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
+Thanks,
+Conor.
+
+> ---
+>  .../bindings/interrupt-controller/sifive,plic-1.0.0.yaml         | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/sifiv=
+e,plic-1.0.0.yaml b/Documentation/devicetree/bindings/interrupt-controller/=
+sifive,plic-1.0.0.yaml
+> index 16f9c4760c0f..5c4539881a22 100644
+> --- a/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-=
+1.0.0.yaml
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/sifive,plic-=
+1.0.0.yaml
+> @@ -65,6 +65,7 @@ properties:
+>        - items:
+>            - enum:
+>                - allwinner,sun20i-d1-plic
+> +              - sophgo,cv1800-plic
+>                - sophgo,sg2042-plic
+>                - thead,th1520-plic
+>            - const: thead,c900-plic
+> --=20
+> 2.40.1
+>=20
+
+--MA1P9/d49We4ZiCr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRlW/QAKCRB4tDGHoIJi
+0hSKAP92lZxT2iiinmDL1BKX4qpZYu3g7KH/TCU9/uIef7ll4AD/Yf7u4wHaHvLx
+av8JWEjoAfAlfpRq4nlnWoElnzANRQA=
+=Vebj
+-----END PGP SIGNATURE-----
+
+--MA1P9/d49We4ZiCr--
