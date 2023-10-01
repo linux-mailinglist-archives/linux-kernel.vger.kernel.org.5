@@ -2,147 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07DB97B46F1
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 12:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0E57B46F6
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 12:41:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234811AbjJAKgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 06:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
+        id S234837AbjJAKlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 06:41:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234817AbjJAKgJ (ORCPT
+        with ESMTP id S234817AbjJAKlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 06:36:09 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2086.outbound.protection.outlook.com [40.107.220.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E04FD9;
-        Sun,  1 Oct 2023 03:36:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C+9apRzwB7Dhay5tiGBBlcvvPSAI4VAmDoONztyGvUyoMq7bVMxonsOk8jpakdyq8qvuZoIyK6t5o97jIE/aCWontuccRoa+hJw9t60nYpKxREsjOq0cjthpp278xWwLIFrUSZWRVN/DFOiuufXHKVqErJT3duMqQNcvyf0rB9h6fysSF7Jhcnkp3OeKjS9S34ixMhgeScu0jEo2pcyNO/DKgyYsPR376uya3MA1gXwZKfht2dbnughM0Zf7uqP8px1YEQSYxtFKhhwKsCrMbVHAXRAKCmbD0yjwxRQ6usdhO6bbhL3b+6bzoyA18duZqA+DgOJpRseUR0rd5uq28A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QiWFQXD98sB/XqBci/ZBEfxWRQKjWR7Bg+CDu7V3uMo=;
- b=ifIEiNtEejT9B9mbDJpJsoWAnkBD3fPOj9KwlcOilVwNP8TihAqW+P30TE8gbHX8xsQGhtNQnT/xHm9I/eH8QeV4iU8fQTudEDnJKSzl1NXBhZY9SbeLJCN0lGcylo6TOsMBE0EGuoPRfHBiobQzk7mJeJSYKPTmIeFKqheVBKoA9Lul+j0jw5jqePZZOH1alw3QHKuShTbHKe+lITvs/kHjTYldeX9wxZhcce5klY7byqiNWQ/XHf4p17KKDiNgFzUuJ1eJyWe+45rRpo3QfQz09VHZAlv/UpSnfoYFIfRSLIS20jThiRkpf/KJ1cSkdFcd6gR0PAUe6Y1Ps/PdPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QiWFQXD98sB/XqBci/ZBEfxWRQKjWR7Bg+CDu7V3uMo=;
- b=F3SCKXvtYiHV2T5OS4GO5aF03hdqSO0EMbByLCQcxL+21OXMCeaSgfmuDitJzuLeQFCdT0Kx/4j4McDhnMjqe6RTdr0WEwOGNPWha4+dbjBsZw5K46lJp/sjQiKFjKPzzY0Qshte3MXLIXhuW28nTP3NfcIsAILY0aDKhxKpflEuj404kTgchgH63bHxEgVyr7WDgEonK7ea6hWxnuXTGSlXsWL14/seek6W2vSxssF5gErokqlSEAZ0yZ3EAlT26y40LVJKmFs69hHzwUN4IIGGnhMEkjZ73lmsRTqrYfji1TUlXuXShfXvG/Jpm2JZcssha37HrsbvGXJHQKGU/w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CY5PR12MB6179.namprd12.prod.outlook.com (2603:10b6:930:24::22)
- by SN7PR12MB7836.namprd12.prod.outlook.com (2603:10b6:806:34e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.29; Sun, 1 Oct
- 2023 10:36:02 +0000
-Received: from CY5PR12MB6179.namprd12.prod.outlook.com
- ([fe80::fbb3:a23d:62b0:932]) by CY5PR12MB6179.namprd12.prod.outlook.com
- ([fe80::fbb3:a23d:62b0:932%4]) with mapi id 15.20.6838.029; Sun, 1 Oct 2023
- 10:36:02 +0000
-Date:   Sun, 1 Oct 2023 13:35:56 +0300
-From:   Ido Schimmel <idosch@nvidia.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Petr Machata <petrm@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH 5/5] mlxsw: spectrum_span: Annotate struct mlxsw_sp_span
- with __counted_by
-Message-ID: <ZRlLjD1hEYRWZunt@shredder>
-References: <20230929180611.work.870-kees@kernel.org>
- <20230929180746.3005922-5-keescook@chromium.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230929180746.3005922-5-keescook@chromium.org>
-X-ClientProxiedBy: FR4P281CA0022.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:c9::17) To CY5PR12MB6179.namprd12.prod.outlook.com
- (2603:10b6:930:24::22)
+        Sun, 1 Oct 2023 06:41:09 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F314DC2
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 03:41:05 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99c3c8adb27so2174764166b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 03:41:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696156864; x=1696761664; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hd3IQ5VOgFAiZIrz9J6WO1XKlWIuJJ+vlxIzopklsp0=;
+        b=HNpBruBrP9JzlDTLT3jwlvp35+N8Hanf9xRtUPYV0DY7jeb30+Ii6INq6fnq7Tu0pa
+         bVZVKozzwlsDso3MmC6zlr9Qrq38VutlS+0M7WxtPd4c3gMawP9p+1CVZeRRxbLfTIUS
+         VFNX825AQgiPejHc+sVReYHjcL6sXWelR0QMdfZ9G6nnrMaKensCGktv73rMvwF+SyVe
+         8l5NVP3lmmAQ/Rf5c57TdZquwVSsAYT7Trv2SXujbwhXE14YOSywCA6uRBTW3GCJAb2X
+         XGIjYC+8Obf9gH2kixwVXt48pw33bN3RABMSJhdx0RW1qHkAa1CHKWWLywSVeF4Xon+H
+         eAWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696156864; x=1696761664;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hd3IQ5VOgFAiZIrz9J6WO1XKlWIuJJ+vlxIzopklsp0=;
+        b=YSBwT1jakYK+9DsakEYyGtwiTzdiH85351DUWMt5APPJBNo69VYefc0J6i32fsO2Vg
+         VxWTLBOCcnYVUcWerV4OxeEJEUNtnCbwgBllrENhQbsrBoZxXcfGzhh/2q3Wl9FYb3ok
+         53kYno8xq3KzKdxZEAXWDZ1/6ioHXvlk5Wkdp34mUFeFa6+VCg+qx2B2H94+aq5FXTOq
+         mTuXvHSxAVJNW3/vy3xa+6rtjddAZUUzCYb+vSlVGPfA4p2M3lK6bYddicFANrL5O2Ph
+         oBuw0cuGUsV1G70svI89Q5kSieOsJAEVuxqX3Gd3wl12dGCXP9Abc5dmIXfBbiYALvru
+         R81w==
+X-Gm-Message-State: AOJu0YyS3kNad1PbRDonyfY27vo3XphH176b+GUcQAIEnSSrPaNFc+1/
+        FA3MJAPCWsZB+EowNZWd8qQETk/YFhlxwQ==
+X-Google-Smtp-Source: AGHT+IG9JZc6TmvZHbVpgjX2iUva5UEpfEXoJsk9uCuk4m2g+BHUY+ApqFLeLJsTAyFlG09evitVDA==
+X-Received: by 2002:a17:907:774f:b0:9ae:673a:88b9 with SMTP id kx15-20020a170907774f00b009ae673a88b9mr7550136ejc.22.1696156863846;
+        Sun, 01 Oct 2023 03:41:03 -0700 (PDT)
+Received: from localhost.localdomain ([46.248.82.114])
+        by smtp.gmail.com with ESMTPSA id jx14-20020a170906ca4e00b0099caf5bed64sm15333657ejb.57.2023.10.01.03.41.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Oct 2023 03:41:03 -0700 (PDT)
+From:   Uros Bizjak <ubizjak@gmail.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     Uros Bizjak <ubizjak@gmail.com>, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v2 1/3] locking/generic: Add generic support for sync_try_cmpxchg and its fallback
+Date:   Sun,  1 Oct 2023 12:39:09 +0200
+Message-ID: <20231001104053.9644-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR12MB6179:EE_|SN7PR12MB7836:EE_
-X-MS-Office365-Filtering-Correlation-Id: d195d662-3988-4e08-3445-08dbc26a35b9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QHuwFO9Z0dkxtuWPrfJ8utPlu9h89dXX4I4khci0HLIPYxPAx4Ixdkn+Bj+v4tasQv8j59c53WRjcJxy71O4OWrpBs1JbLNTMVLK0s7lp6tibQZGgFQWvBKSn1FuFUjw67RWhRME/r93t7NtqAIG57yyZLFCmJMxqo2Sm5SaF+lo6ji2hlBPTi5sQUHmHBkM3QHGGlpyr9/Kbz2Wb7HEg9axVFuoIUB1y3tGDXK/rJG1uDgxKC5wdBtTcV3lBYrYRcX1lCM+6+lye7HSAEJsGfL7GM0bj9yUeO9/5Uvs/mwWqnvX0J34tNqfWUz21f/knC8aPYqOY+xWAzX5EXvRCgdxWJMehAYpSObywgbLBaE0EjTpXNI3HZAmSmAXKiWi6/p0oby/8o7lJOOm7w+hDQAOHzKlFySdaYzCO1cfkmpaEdt2Xn1vAZbWvBYCCx255vgeYgn+WhN2Dmw6y+6v09mg/iiYwGHngyzBcr3YayAsc/T4jBKoCmNuFzbIcu50Q4CU6YW91TAfBORFjM0XclMQ9EItd7JtLx6BP5jeIAY1aqVIsE8Q3IIKOsDQrX14tyRBNVK6kwzLRex3wBiVKWScnsMFkbCnxwPm7idZqhY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(39860400002)(136003)(366004)(396003)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(26005)(38100700002)(4326008)(8676002)(8936002)(2906002)(9686003)(4744005)(6506007)(7416002)(6666004)(6512007)(86362001)(966005)(6486002)(5660300002)(33716001)(478600001)(54906003)(66476007)(66946007)(66556008)(316002)(6916009)(41300700001)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JXjhssXrRXgMjM7PnHFyy2SOPxIw+NP1uJI1aiSnrxojy3AOCXuIaObtaVIx?=
- =?us-ascii?Q?mN/dO8Mn072LaqX56/CiN/JiJaDuyykSwQWyyvszBO6WzVLvWGXcz6F3jO3c?=
- =?us-ascii?Q?zRAI/4jzX4Wp52lyuVBUwWp7Shz+MjdwTuOEMWjhQL3/86Gq6g3pHFDRWTp6?=
- =?us-ascii?Q?vaDeYufOkK5QrcmUM+oeiOQsTLx6hSzli3rQodWKxC64tzpDV46Gp15vjcr0?=
- =?us-ascii?Q?Rg66PhaA9e3APsgeCebVM5Pbm51CKLLuYY7+TT5c2b9NjTpQpjxlCxd6Duho?=
- =?us-ascii?Q?1FrMq2za2hiXtY87j2NQK4iaqOvZQRqh0pnWvQ7MV1dCWnWjRHup/Ful/y7d?=
- =?us-ascii?Q?UlRbItu4hSYUimxdlgDyB5UBpPwsnC6LkEyfYURNWIT2P+Meo5XsNx44soo7?=
- =?us-ascii?Q?Y81WzJo3nTN9BFZfQ8oucfMbqmC7gnBtvelchmBcmy+DcUHJTBekFAw7QwSt?=
- =?us-ascii?Q?X624ut2KC6G5wqZzASPRxplfmpTsQmgUH/gD84Mc/O45CjyIdcahezsM8MVv?=
- =?us-ascii?Q?IraON5aeq/lmgDAdtzZsl/ykhQt7aia3ZGkWfX2f9EYhpPuJRt/SGIJ8N6T/?=
- =?us-ascii?Q?uYsqgX61MneZpKxMOwdY/0Dkex3tSPTxAM2T/lKrXNlQ7LvXFRJiXWlCk7b8?=
- =?us-ascii?Q?FzXgIvMjxADo7hn1tZWg2XdKPiZJ4Vd33W+Mh7prCFul7GTSr+6c6oQAZsu1?=
- =?us-ascii?Q?4OW92KxeOQM7Kjo+zqoG9/JsBo2cN13LIKysD0VxXpXFOz0XjLwafGuYKrTn?=
- =?us-ascii?Q?e+usVTJdw2of0Er2g78Hht0nWt0sUbAq8VgJr6i3CLEdb2OK9yRpxorVj4my?=
- =?us-ascii?Q?AVtSeRrH+NBM7RuS/53PGI/ka6CwmB6MDezOj8uJJy7c3WB+KO0f0v9N8tmS?=
- =?us-ascii?Q?F3bZgXAHhukZvZS4mkD9B4gHbqeUrL+70FWuOoyWXKMgQUzw9CTSfZVggUv0?=
- =?us-ascii?Q?lJ+SP6rAgqqy/0wDLqfuRPG3+K6GCraEjDrT+mIDJNgjWBYnPVKqctjLzIny?=
- =?us-ascii?Q?uZC8R5Z4/2fgpADdwNc8uqQdqJUQL9yUAzK67UAU5vy2SF5LF6nEi5zswuB6?=
- =?us-ascii?Q?DTpTeSF39q0hMRYM1NrSpCdx7pZhGgzVepvlcYuerP5/UVbZXb35MORstnfh?=
- =?us-ascii?Q?9mH0zZx74EMxizWrrjv50lEOuDE0dXxdIPTxJ/h2qxSxhIZBavr7AMRqwEhd?=
- =?us-ascii?Q?pVWzw3jfB4KMaHEewXmRFLfo6NNiAxv52/asGOMa56LhEIj8AgD1Ayviqpb9?=
- =?us-ascii?Q?O29oe9BiOOVlumyZrlYWpqKeI6ZRTn7cPPVfdl1OZ5XlJAq8a1DXtn2/Q+ys?=
- =?us-ascii?Q?O7HKoBCPer36wni1Kkdiu6wlagIumzbnFWUQzwbT36Jyuc8LLPk6EljM5jLr?=
- =?us-ascii?Q?uiZDHRzM+j20JxV2VZNIg0tSIZeL2Omvofs+SeU/N7SeataOTUdnd0kxIGGN?=
- =?us-ascii?Q?nbNTsbYNe152Fhk2cVhUUbccWk+Rh1W/9/8h+brNAK9iLH+52MMdtX6uUYLW?=
- =?us-ascii?Q?ZIe5avjOprhu07j+cSBgbRCQ9q6TrRoRNwd/ZVn3JrgCKT19bFN4kyLqaABg?=
- =?us-ascii?Q?Gh4nZsuB8VxYgBeTw8FLBeHN4jR50Kl02DpKsJZt?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d195d662-3988-4e08-3445-08dbc26a35b9
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6179.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2023 10:36:02.7617
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2SxmjCsV5idDYZ82eNUK3P9Gi0E5ZxlVFS98YQfegrJR/Q/vmP/kdsyGgtYA0k+gN9ApiYb3fesLGf68s2ZHXw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7836
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 11:07:44AM -0700, Kees Cook wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> As found with Coccinelle[1], add __counted_by for struct mlxsw_sp_span.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> 
-> Cc: Ido Schimmel <idosch@nvidia.com>
-> Cc: Petr Machata <petrm@nvidia.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: netdev@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+Provide the generic sync_try_cmpxchg function from the
+raw_ prefixed version, also adding explicit instrumentation.
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+The patch amends existing scripts to generate sync_try_cmpxchg
+locking primitive and its raw_sync_try_cmpxchg fallback, while
+leaving existing macros from try_cmpxchg family unchanged.
 
-Thanks for taking care of that
+The target can define its own arch_sync_try_cmpxchg to override the
+generic version of raw_sync_try_cmpxchg. This allows the target
+to generate more optimal assembly than the generic version.
+
+Additionally, the patch renames two scripts to better reflect
+whet they really do.
+
+Cc: Will Deacon <will@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+---
+v2: Improve commit description.
+---
+ include/linux/atomic/atomic-arch-fallback.h | 15 +++++++++-
+ include/linux/atomic/atomic-instrumented.h  | 10 ++++++-
+ scripts/atomic/gen-atomic-fallback.sh       | 33 +++++++++++----------
+ scripts/atomic/gen-atomic-instrumented.sh   |  3 +-
+ 4 files changed, 43 insertions(+), 18 deletions(-)
+
+diff --git a/include/linux/atomic/atomic-arch-fallback.h b/include/linux/atomic/atomic-arch-fallback.h
+index b83ef19da13d..5e95faa959c4 100644
+--- a/include/linux/atomic/atomic-arch-fallback.h
++++ b/include/linux/atomic/atomic-arch-fallback.h
+@@ -428,6 +428,19 @@ extern void raw_cmpxchg128_relaxed_not_implemented(void);
+ 
+ #define raw_sync_cmpxchg arch_sync_cmpxchg
+ 
++#ifdef arch_sync_try_cmpxchg
++#define raw_sync_try_cmpxchg arch_sync_try_cmpxchg
++#else
++#define raw_sync_try_cmpxchg(_ptr, _oldp, _new) \
++({ \
++	typeof(*(_ptr)) *___op = (_oldp), ___o = *___op, ___r; \
++	___r = raw_sync_cmpxchg((_ptr), ___o, (_new)); \
++	if (unlikely(___r != ___o)) \
++		*___op = ___r; \
++	likely(___r == ___o); \
++})
++#endif
++
+ /**
+  * raw_atomic_read() - atomic load with relaxed ordering
+  * @v: pointer to atomic_t
+@@ -4649,4 +4662,4 @@ raw_atomic64_dec_if_positive(atomic64_t *v)
+ }
+ 
+ #endif /* _LINUX_ATOMIC_FALLBACK_H */
+-// 2fdd6702823fa842f9cea57a002e6e4476ae780c
++// eec048affea735b8464f58e6d96992101f8f85f1
+diff --git a/include/linux/atomic/atomic-instrumented.h b/include/linux/atomic/atomic-instrumented.h
+index d401b406ef7c..54d7bbe0aeaa 100644
+--- a/include/linux/atomic/atomic-instrumented.h
++++ b/include/linux/atomic/atomic-instrumented.h
+@@ -4998,6 +4998,14 @@ atomic_long_dec_if_positive(atomic_long_t *v)
+ 	raw_try_cmpxchg128_local(__ai_ptr, __ai_oldp, __VA_ARGS__); \
+ })
+ 
++#define sync_try_cmpxchg(ptr, ...) \
++({ \
++	typeof(ptr) __ai_ptr = (ptr); \
++	kcsan_mb(); \
++	instrument_atomic_read_write(__ai_ptr, sizeof(*__ai_ptr)); \
++	raw_sync_try_cmpxchg(__ai_ptr, __VA_ARGS__); \
++})
++
+ 
+ #endif /* _LINUX_ATOMIC_INSTRUMENTED_H */
+-// 1568f875fef72097413caab8339120c065a39aa4
++// 2cc4bc990fef44d3836ec108f11b610f3f438184
+diff --git a/scripts/atomic/gen-atomic-fallback.sh b/scripts/atomic/gen-atomic-fallback.sh
+index a45154cefa48..f80d69cfeb1f 100755
+--- a/scripts/atomic/gen-atomic-fallback.sh
++++ b/scripts/atomic/gen-atomic-fallback.sh
+@@ -223,14 +223,15 @@ gen_xchg_fallbacks()
+ 
+ gen_try_cmpxchg_fallback()
+ {
++	local prefix="$1"; shift
+ 	local cmpxchg="$1"; shift;
+-	local order="$1"; shift;
++	local suffix="$1"; shift;
+ 
+ cat <<EOF
+-#define raw_try_${cmpxchg}${order}(_ptr, _oldp, _new) \\
++#define raw_${prefix}try_${cmpxchg}${suffix}(_ptr, _oldp, _new) \\
+ ({ \\
+ 	typeof(*(_ptr)) *___op = (_oldp), ___o = *___op, ___r; \\
+-	___r = raw_${cmpxchg}${order}((_ptr), ___o, (_new)); \\
++	___r = raw_${prefix}${cmpxchg}${suffix}((_ptr), ___o, (_new)); \\
+ 	if (unlikely(___r != ___o)) \\
+ 		*___op = ___r; \\
+ 	likely(___r == ___o); \\
+@@ -259,11 +260,11 @@ gen_try_cmpxchg_order_fallback()
+ 	fi
+ 
+ 	printf "#else\n"
+-	gen_try_cmpxchg_fallback "${cmpxchg}" "${order}"
++	gen_try_cmpxchg_fallback "" "${cmpxchg}" "${order}"
+ 	printf "#endif\n\n"
+ }
+ 
+-gen_try_cmpxchg_fallbacks()
++gen_try_cmpxchg_order_fallbacks()
+ {
+ 	local cmpxchg="$1"; shift;
+ 
+@@ -272,15 +273,17 @@ gen_try_cmpxchg_fallbacks()
+ 	done
+ }
+ 
+-gen_cmpxchg_local_fallbacks()
++gen_def_and_try_cmpxchg_fallback()
+ {
++	local prefix="$1"; shift
+ 	local cmpxchg="$1"; shift
++	local suffix="$1"; shift
+ 
+-	printf "#define raw_${cmpxchg} arch_${cmpxchg}\n\n"
+-	printf "#ifdef arch_try_${cmpxchg}\n"
+-	printf "#define raw_try_${cmpxchg} arch_try_${cmpxchg}\n"
++	printf "#define raw_${prefix}${cmpxchg}${suffix} arch_${prefix}${cmpxchg}${suffix}\n\n"
++	printf "#ifdef arch_${prefix}try_${cmpxchg}${suffix}\n"
++	printf "#define raw_${prefix}try_${cmpxchg}${suffix} arch_${prefix}try_${cmpxchg}${suffix}\n"
+ 	printf "#else\n"
+-	gen_try_cmpxchg_fallback "${cmpxchg}" ""
++	gen_try_cmpxchg_fallback "${prefix}" "${cmpxchg}" "${suffix}"
+ 	printf "#endif\n\n"
+ }
+ 
+@@ -302,15 +305,15 @@ for xchg in "xchg" "cmpxchg" "cmpxchg64" "cmpxchg128"; do
+ done
+ 
+ for cmpxchg in "cmpxchg" "cmpxchg64" "cmpxchg128"; do
+-	gen_try_cmpxchg_fallbacks "${cmpxchg}"
++	gen_try_cmpxchg_order_fallbacks "${cmpxchg}"
+ done
+ 
+-for cmpxchg in "cmpxchg_local" "cmpxchg64_local" "cmpxchg128_local"; do
+-	gen_cmpxchg_local_fallbacks "${cmpxchg}" ""
++for cmpxchg in "cmpxchg" "cmpxchg64" "cmpxchg128"; do
++	gen_def_and_try_cmpxchg_fallback "" "${cmpxchg}" "_local"
+ done
+ 
+-for cmpxchg in "sync_cmpxchg"; do
+-	printf "#define raw_${cmpxchg} arch_${cmpxchg}\n\n"
++for cmpxchg in "cmpxchg"; do
++	gen_def_and_try_cmpxchg_fallback "sync_" "${cmpxchg}" ""
+ done
+ 
+ grep '^[a-z]' "$1" | while read name meta args; do
+diff --git a/scripts/atomic/gen-atomic-instrumented.sh b/scripts/atomic/gen-atomic-instrumented.sh
+index 8f8f8e3b20f9..592f3ec89b5f 100755
+--- a/scripts/atomic/gen-atomic-instrumented.sh
++++ b/scripts/atomic/gen-atomic-instrumented.sh
+@@ -169,7 +169,8 @@ for xchg in "xchg" "cmpxchg" "cmpxchg64" "cmpxchg128" "try_cmpxchg" "try_cmpxchg
+ 	done
+ done
+ 
+-for xchg in "cmpxchg_local" "cmpxchg64_local" "cmpxchg128_local" "sync_cmpxchg" "try_cmpxchg_local" "try_cmpxchg64_local" "try_cmpxchg128_local"; do
++for xchg in "cmpxchg_local" "cmpxchg64_local" "cmpxchg128_local" "sync_cmpxchg" \
++	    "try_cmpxchg_local" "try_cmpxchg64_local" "try_cmpxchg128_local" "sync_try_cmpxchg"; do
+ 	gen_xchg "${xchg}" ""
+ 	printf "\n"
+ done
+-- 
+2.41.0
+
