@@ -2,65 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2197B45AC
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 08:43:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565E97B45AE
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 08:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234362AbjJAGnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 02:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55902 "EHLO
+        id S234369AbjJAGnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 02:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233771AbjJAGnY (ORCPT
+        with ESMTP id S233771AbjJAGnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 02:43:24 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2B729F
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 23:43:20 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-57ba2cd3507so6649536eaf.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 23:43:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696142600; x=1696747400; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RRFoBKVV7I1mTgjaVz0LFS8Idil3+mH+AD5v2iGxmww=;
-        b=XLh504kzD3q5NwOWSWbP6zngTx/kTiReQs8wnMscXH4bsn93l1dX0C4nG4FmMgc+of
-         Rtf+1fzIOzysSvBgjWr4jRR4EQF6TiuLSpHMgJ6jNwJZdScmeyzSnw7LkKBoNOGct/T3
-         p3VhgZUXCgZXaz/uLImYLH6BjNj6jMGP0xT4E/jX3r0ER6P5MntnyDsEta4TNVulmMPg
-         HrursuMEVEWHnGPa9Xk5i5qIDYsvbN3AXCnGeDo9YsVUiX4Cn9rvrfMQxEBKd2AMG4QN
-         PyStB4JL/XU2bgtwUGkdc92lFYSGVyIdILvEU04fIY9+6sk27Y+1sTub/js1kkP7vMc4
-         YUhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696142600; x=1696747400;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RRFoBKVV7I1mTgjaVz0LFS8Idil3+mH+AD5v2iGxmww=;
-        b=glTmrb6FzqOIq4peikq4c85eT8hSc7S2o7PIScN+v9bBRbk3XdCthdMljDO+77c5Uz
-         8fmQxmUOZ0wB/S/6bmjQQokZlhq5yUOPc9z4AjDiXquBvF4gkl0q72i1XvqsmORweX+m
-         gIjwheiZNh2zWkpHah89Gfwj0loGCohVfLaANikBziDch/5yByRVWcAcA3jcRqHawaA2
-         9Ao/cbW1h18uj1E//FoXuGWDIO6+i1ChqYFbEZNPQySevNUE8Cken5Lb6oJ0ghvUdAun
-         GzUuII9p+8Wil4HpcWlZiBlyvkSPBX2Amg7B0p9RrT2SnaXIoHurwO/9kG3pGiBgX8h8
-         +Xqg==
-X-Gm-Message-State: AOJu0Yzml0iPOwJ61s2frEN3AnJGhuausfGh/vVhVQW/u3Nr5PU4QOlm
-        U1V1sw+ZihimnAhM0l49I7Q=
-X-Google-Smtp-Source: AGHT+IGy6wK0h6ZwCaAIVr+NLtE33DCv4OiuV4VdXJBuUz+2S79tBeSUknt7zVocakjeIdaZhBle6A==
-X-Received: by 2002:a05:6358:7250:b0:13a:a85b:d024 with SMTP id i16-20020a056358725000b0013aa85bd024mr9378607rwa.30.1696142599541;
-        Sat, 30 Sep 2023 23:43:19 -0700 (PDT)
-Received: from ubuntu.myguest.virtualbox.org ([171.61.192.246])
-        by smtp.gmail.com with ESMTPSA id z35-20020a056a001da300b00692c5b1a731sm13405590pfw.186.2023.09.30.23.43.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Sep 2023 23:43:18 -0700 (PDT)
-Date:   Sun, 1 Oct 2023 12:13:14 +0530
-From:   Pavan Bobba <opensource206@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] Type encoding info dropped from arrary name "abyBBVGA"
- and variable names "byBBVGACurrent", "byBBVGANew"
-Message-ID: <cover.1696141471.git.opensource206@gmail.com>
+        Sun, 1 Oct 2023 02:43:51 -0400
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C153BE
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 23:43:49 -0700 (PDT)
+Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
+        by cmsmtp with ESMTP
+        id mm6OqmEFFaLCxmqBAqyBMm; Sun, 01 Oct 2023 06:43:48 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with ESMTPS
+        id mqB9qnwFw1J29mqB9qxDhP; Sun, 01 Oct 2023 06:43:48 +0000
+X-Authority-Analysis: v=2.4 cv=Ko9eZEaN c=1 sm=1 tr=0 ts=65191524
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
+ a=NEAV23lmAAAA:8 a=HvF037n1xESchLcPDVoA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ZuglWOHeRktdc1SI7fZMrBNHt7pae0GyCoYbfoLsddc=; b=GFdvOHVqx5Ih/kinRsGsl14I4H
+        XwgD7x624J2I2bdWybbFp0blj7IipDqTb2ve8qeM1Zr6SStvdA1RDj4fLKTA+gu+Px53PQkTEfhPA
+        F8Tdj5L0w+fk1NcqtKULEGRfDKe/H/V3lDCCDS81uwTDIVSeCIwuGj/Rr51EDxyHU4mQoTYnjRS7z
+        Een0yBKUVeStFKGXsILzuV55OhL0zibUcfe4sRvsi54GMD5jthFMPrKwLdJY4gHBpPRkyP8SvuaFJ
+        ZOO2FqckXRE0UWVQngqNNafYK6Jhr8b7I5R4gQhhYBNf/529jWdDw2iPKECUyLMULWp7JFPZM4X6r
+        KLmBhQDg==;
+Received: from [94.239.20.48] (port=48958 helo=[192.168.1.98])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1qmqB8-001P7H-25;
+        Sun, 01 Oct 2023 01:43:46 -0500
+Message-ID: <935d0577-4a6a-eb84-6ae0-f1efa4352b5b@embeddedor.com>
+Date:   Sun, 1 Oct 2023 08:43:41 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="1mwXnP3tkU9W1WO7"
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] comedi: Annotate struct comedi_lrange with __counted_by
+Content-Language: en-US
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
+References: <5c3b7459b820e22e2ac6ce892d4aadcc119cc919.1696065263.git.christophe.jaillet@wanadoo.fr>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <5c3b7459b820e22e2ac6ce892d4aadcc119cc919.1696065263.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 94.239.20.48
+X-Source-L: No
+X-Exim-ID: 1qmqB8-001P7H-25
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:48958
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 74
+X-Org:  HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfFvCx0n8uqFRLdcr1B1V85l6hz8vm+soMv7BEoMrbY6SxEw4j4NvcKF7LEPM4g+rrfHxrPszJivqXJdSHiRhQcRXnYUiR+DvykPXc2O07zwY4+C8DoIi
+ HNOAkoX4Ig6bQ4voXxyz55esckoPersTaFs2PwB23jRggYSBLHkNZtieAzY/WylJ6y8Un8xUfEkb5O1On8QXVlbTeZEOqRTRSKOYDcNXmVtLudeK9gaK1XE8
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,435 +98,48 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---1mwXnP3tkU9W1WO7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-This patchset series consist of fixes to issues found by checkpatch
+On 9/30/23 11:14, Christophe JAILLET wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Pavan Bobba (3):
-  staging: vt6655: Type encoding info dropped from array name "abyBBVGA"
-  staging: vt6655: Type encoding info dropped from variable name
-    "byBBVGACurrent"
-  staging: vt6655: Type encoding info dropped from variable name
-    "byBBVGANew"
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
- drivers/staging/vt6655/baseband.c    | 40 ++++++++++++++--------------
- drivers/staging/vt6655/channel.c     |  6 ++---
- drivers/staging/vt6655/device.h      |  6 ++---
- drivers/staging/vt6655/device_main.c | 24 ++++++++---------
- 4 files changed, 38 insertions(+), 38 deletions(-)
-
+Thanks
 -- 
-2.34.1
+Gustavo
 
-
---1mwXnP3tkU9W1WO7
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-PATCH-1-3-staging-vt6655-Type-encoding-info-dropped-.patch"
-
-From 6894dff7cc5a780627e0335e8f5cdc8b353eea53 Mon Sep 17 00:00:00 2001
-Message-Id: <6894dff7cc5a780627e0335e8f5cdc8b353eea53.1696141471.git.opensource206@gmail.com>
-In-Reply-To: <cover.1696141471.git.opensource206@gmail.com>
-References: <cover.1696141471.git.opensource206@gmail.com>
-From: Pavan Bobba <opensource206@gmail.com>
-Date: Thu, 28 Sep 2023 18:27:27 +0530
-Subject: [PATCH 1/3] [PATCH 1/3] staging: vt6655: Type encoding info dropped
- from array name "abyBBVGA"
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,linux-staging@lists.linux.dev,linux-kernel@vger.kernel.org
-
-array name "abyBBVGA" updated like below:
-
-a.type encoding info dropped from name
-b.camelcase name replaced by snakecase
-
-Issue found by checkpatch
-
-Signed-off-by: Pavan Bobba <opensource206@gmail.com>
----
- drivers/staging/vt6655/baseband.c    | 38 ++++++++++++++--------------
- drivers/staging/vt6655/channel.c     |  4 +--
- drivers/staging/vt6655/device.h      |  2 +-
- drivers/staging/vt6655/device_main.c |  8 +++---
- 4 files changed, 26 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
-index 0ae2ab3987c6..a19a75f5d761 100644
---- a/drivers/staging/vt6655/baseband.c
-+++ b/drivers/staging/vt6655/baseband.c
-@@ -2016,10 +2016,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 			iowrite32(0x23, iobase + MAC_REG_ITRTMSET);
- 			vt6655_mac_reg_bits_on(iobase, MAC_REG_PAPEDELAY, BIT(0));
- 		}
--		priv->abyBBVGA[0] = 0x18;
--		priv->abyBBVGA[1] = 0x0A;
--		priv->abyBBVGA[2] = 0x0;
--		priv->abyBBVGA[3] = 0x0;
-+		priv->bbvga[0] = 0x18;
-+		priv->bbvga[1] = 0x0A;
-+		priv->bbvga[2] = 0x0;
-+		priv->bbvga[3] = 0x0;
- 		priv->dbm_threshold[0] = -70;
- 		priv->dbm_threshold[1] = -50;
- 		priv->dbm_threshold[2] = 0;
-@@ -2034,10 +2034,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 			result &= bb_write_embedded(priv,
- 				vt3253b0_agc[ii][0], vt3253b0_agc[ii][1]);
- 
--		priv->abyBBVGA[0] = 0x1C;
--		priv->abyBBVGA[1] = 0x10;
--		priv->abyBBVGA[2] = 0x0;
--		priv->abyBBVGA[3] = 0x0;
-+		priv->bbvga[0] = 0x1C;
-+		priv->bbvga[1] = 0x10;
-+		priv->bbvga[2] = 0x0;
-+		priv->bbvga[3] = 0x0;
- 		priv->dbm_threshold[0] = -70;
- 		priv->dbm_threshold[1] = -48;
- 		priv->dbm_threshold[2] = 0;
-@@ -2056,10 +2056,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 		iowrite8(0x23, iobase + MAC_REG_ITRTMSET);
- 		vt6655_mac_reg_bits_on(iobase, MAC_REG_PAPEDELAY, BIT(0));
- 
--		priv->abyBBVGA[0] = 0x14;
--		priv->abyBBVGA[1] = 0x0A;
--		priv->abyBBVGA[2] = 0x0;
--		priv->abyBBVGA[3] = 0x0;
-+		priv->bbvga[0] = 0x14;
-+		priv->bbvga[1] = 0x0A;
-+		priv->bbvga[2] = 0x0;
-+		priv->bbvga[3] = 0x0;
- 		priv->dbm_threshold[0] = -60;
- 		priv->dbm_threshold[1] = -50;
- 		priv->dbm_threshold[2] = 0;
-@@ -2074,10 +2074,10 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 			result &= bb_write_embedded(priv,
- 				vt3253b0_agc[ii][0], vt3253b0_agc[ii][1]);
- 
--		priv->abyBBVGA[0] = 0x1C;
--		priv->abyBBVGA[1] = 0x10;
--		priv->abyBBVGA[2] = 0x0;
--		priv->abyBBVGA[3] = 0x0;
-+		priv->bbvga[0] = 0x1C;
-+		priv->bbvga[1] = 0x10;
-+		priv->bbvga[2] = 0x0;
-+		priv->bbvga[3] = 0x0;
- 		priv->dbm_threshold[0] = -70;
- 		priv->dbm_threshold[1] = -48;
- 		priv->dbm_threshold[2] = 0;
-@@ -2088,7 +2088,7 @@ bool bb_vt3253_init(struct vnt_private *priv)
- 	} else {
- 		/* No VGA Table now */
- 		priv->bUpdateBBVGA = false;
--		priv->abyBBVGA[0] = 0x1C;
-+		priv->bbvga[0] = 0x1C;
- 	}
- 
- 	if (by_local_id > REV_ID_VT3253_A1) {
-@@ -2126,7 +2126,7 @@ bb_set_short_slot_time(struct vnt_private *priv)
- 
- 	/* patch for 3253B0 Baseband with Cardbus module */
- 	bb_read_embedded(priv, 0xE7, &by_bb_vga);
--	if (by_bb_vga == priv->abyBBVGA[0])
-+	if (by_bb_vga == priv->bbvga[0])
- 		by_bb_rx_conf |= 0x20; /* 0010 0000 */
- 
- 	bb_write_embedded(priv, 0x0A, by_bb_rx_conf); /* CR10 */
-@@ -2140,7 +2140,7 @@ void bb_set_vga_gain_offset(struct vnt_private *priv, unsigned char by_data)
- 
- 	bb_read_embedded(priv, 0x0A, &by_bb_rx_conf); /* CR10 */
- 	/* patch for 3253B0 Baseband with Cardbus module */
--	if (by_data == priv->abyBBVGA[0])
-+	if (by_data == priv->bbvga[0])
- 		by_bb_rx_conf |= 0x20; /* 0010 0000 */
- 	else if (priv->short_slot_time)
- 		by_bb_rx_conf &= 0xDF; /* 1101 1111 */
-diff --git a/drivers/staging/vt6655/channel.c b/drivers/staging/vt6655/channel.c
-index e90e0b43505d..e20701815db9 100644
---- a/drivers/staging/vt6655/channel.c
-+++ b/drivers/staging/vt6655/channel.c
-@@ -87,8 +87,8 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
- 
- 	/* Set VGA to max sensitivity */
- 	if (priv->bUpdateBBVGA &&
--	    priv->byBBVGACurrent != priv->abyBBVGA[0]) {
--		priv->byBBVGACurrent = priv->abyBBVGA[0];
-+	    priv->byBBVGACurrent != priv->bbvga[0]) {
-+		priv->byBBVGACurrent = priv->bbvga[0];
- 
- 		bb_set_vga_gain_offset(priv, priv->byBBVGACurrent);
- 	}
-diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
-index 8c90539cc3d7..b662c74a2dc7 100644
---- a/drivers/staging/vt6655/device.h
-+++ b/drivers/staging/vt6655/device.h
-@@ -250,7 +250,7 @@ struct vnt_private {
- 	unsigned int	uBBVGADiffCount;
- 	unsigned char byBBVGANew;
- 	unsigned char byBBVGACurrent;
--	unsigned char abyBBVGA[BB_VGA_LEVEL];
-+	unsigned char bbvga[BB_VGA_LEVEL];
- 	long                    dbm_threshold[BB_VGA_LEVEL];
- 
- 	unsigned char byBBPreEDRSSI;
-diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
-index f76f482f4c06..385848df8848 100644
---- a/drivers/staging/vt6655/device_main.c
-+++ b/drivers/staging/vt6655/device_main.c
-@@ -424,9 +424,9 @@ static void device_init_registers(struct vnt_private *priv)
- 	bb_vt3253_init(priv);
- 
- 	if (priv->bUpdateBBVGA) {
--		priv->byBBVGACurrent = priv->abyBBVGA[0];
-+		priv->byBBVGACurrent = priv->bbvga[0];
- 		priv->byBBVGANew = priv->byBBVGACurrent;
--		bb_set_vga_gain_offset(priv, priv->abyBBVGA[0]);
-+		bb_set_vga_gain_offset(priv, priv->bbvga[0]);
- 	}
- 
- 	bb_set_rx_antenna_mode(priv, priv->byRxAntennaMode);
-@@ -1053,7 +1053,7 @@ static void vnt_check_bb_vga(struct vnt_private *priv)
- 
- 	for (i = 0; i < BB_VGA_LEVEL; i++) {
- 		if (dbm < priv->dbm_threshold[i]) {
--			priv->byBBVGANew = priv->abyBBVGA[i];
-+			priv->byBBVGANew = priv->bbvga[i];
- 			break;
- 		}
- 	}
-@@ -1510,7 +1510,7 @@ static void vnt_bss_info_changed(struct ieee80211_hw *hw,
- 			priv->short_slot_time = false;
- 
- 		CARDbSetPhyParameter(priv, priv->byBBType);
--		bb_set_vga_gain_offset(priv, priv->abyBBVGA[0]);
-+		bb_set_vga_gain_offset(priv, priv->bbvga[0]);
- 	}
- 
- 	if (changed & BSS_CHANGED_TXPOWER)
--- 
-2.34.1
-
-
---1mwXnP3tkU9W1WO7
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0002-PATCH-2-3-staging-vt6655-Type-encoding-info-dropped-.patch"
-
-From d40eb60e6cccf2b5432904abb74bc009fac5e2e1 Mon Sep 17 00:00:00 2001
-Message-Id: <d40eb60e6cccf2b5432904abb74bc009fac5e2e1.1696141471.git.opensource206@gmail.com>
-In-Reply-To: <cover.1696141471.git.opensource206@gmail.com>
-References: <cover.1696141471.git.opensource206@gmail.com>
-From: Pavan Bobba <opensource206@gmail.com>
-Date: Thu, 28 Sep 2023 20:26:02 +0530
-Subject: [PATCH 2/3] [PATCH 2/3] staging: vt6655: Type encoding info dropped
- from variable name "byBBVGACurrent"
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,linux-staging@lists.linux.dev,linux-kernel@vger.kernel.org
-
-variable name "byBBVGACurrent" updated like below:
-
-a.type encoding info dropped from name
-b.camelcase name replaced by snakecase
-
-Issue found by checkpatch
-
-Signed-off-by: Pavan Bobba <opensource206@gmail.com>
----
- drivers/staging/vt6655/baseband.c    |  2 +-
- drivers/staging/vt6655/channel.c     |  6 +++---
- drivers/staging/vt6655/device.h      |  2 +-
- drivers/staging/vt6655/device_main.c | 10 +++++-----
- 4 files changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/staging/vt6655/baseband.c b/drivers/staging/vt6655/baseband.c
-index a19a75f5d761..7d47b266b87e 100644
---- a/drivers/staging/vt6655/baseband.c
-+++ b/drivers/staging/vt6655/baseband.c
-@@ -2146,7 +2146,7 @@ void bb_set_vga_gain_offset(struct vnt_private *priv, unsigned char by_data)
- 		by_bb_rx_conf &= 0xDF; /* 1101 1111 */
- 	else
- 		by_bb_rx_conf |= 0x20; /* 0010 0000 */
--	priv->byBBVGACurrent = by_data;
-+	priv->bbvga_current = by_data;
- 	bb_write_embedded(priv, 0x0A, by_bb_rx_conf); /* CR10 */
- }
- 
-diff --git a/drivers/staging/vt6655/channel.c b/drivers/staging/vt6655/channel.c
-index e20701815db9..6ac7d470c041 100644
---- a/drivers/staging/vt6655/channel.c
-+++ b/drivers/staging/vt6655/channel.c
-@@ -87,10 +87,10 @@ bool set_channel(struct vnt_private *priv, struct ieee80211_channel *ch)
- 
- 	/* Set VGA to max sensitivity */
- 	if (priv->bUpdateBBVGA &&
--	    priv->byBBVGACurrent != priv->bbvga[0]) {
--		priv->byBBVGACurrent = priv->bbvga[0];
-+	    priv->bbvga_current != priv->bbvga[0]) {
-+		priv->bbvga_current = priv->bbvga[0];
- 
--		bb_set_vga_gain_offset(priv, priv->byBBVGACurrent);
-+		bb_set_vga_gain_offset(priv, priv->bbvga_current);
- 	}
- 
- 	/* clear NAV */
-diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
-index b662c74a2dc7..9ae7171d02ee 100644
---- a/drivers/staging/vt6655/device.h
-+++ b/drivers/staging/vt6655/device.h
-@@ -249,7 +249,7 @@ struct vnt_private {
- 	bool bUpdateBBVGA;
- 	unsigned int	uBBVGADiffCount;
- 	unsigned char byBBVGANew;
--	unsigned char byBBVGACurrent;
-+	unsigned char bbvga_current;
- 	unsigned char bbvga[BB_VGA_LEVEL];
- 	long                    dbm_threshold[BB_VGA_LEVEL];
- 
-diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
-index 385848df8848..6990129ceb10 100644
---- a/drivers/staging/vt6655/device_main.c
-+++ b/drivers/staging/vt6655/device_main.c
-@@ -424,8 +424,8 @@ static void device_init_registers(struct vnt_private *priv)
- 	bb_vt3253_init(priv);
- 
- 	if (priv->bUpdateBBVGA) {
--		priv->byBBVGACurrent = priv->bbvga[0];
--		priv->byBBVGANew = priv->byBBVGACurrent;
-+		priv->bbvga_current = priv->bbvga[0];
-+		priv->byBBVGANew = priv->bbvga_current;
- 		bb_set_vga_gain_offset(priv, priv->bbvga[0]);
- 	}
- 
-@@ -1058,7 +1058,7 @@ static void vnt_check_bb_vga(struct vnt_private *priv)
- 		}
- 	}
- 
--	if (priv->byBBVGANew == priv->byBBVGACurrent) {
-+	if (priv->byBBVGANew == priv->bbvga_current) {
- 		priv->uBBVGADiffCount = 1;
- 		return;
- 	}
-@@ -1072,7 +1072,7 @@ static void vnt_check_bb_vga(struct vnt_private *priv)
- 		dev_dbg(&priv->pcid->dev,
- 			"First RSSI[%d] NewGain[%d] OldGain[%d] Count[%d]\n",
- 			(int)dbm, priv->byBBVGANew,
--			priv->byBBVGACurrent,
-+			priv->bbvga_current,
- 			(int)priv->uBBVGADiffCount);
- 	}
- 
-@@ -1080,7 +1080,7 @@ static void vnt_check_bb_vga(struct vnt_private *priv)
- 		dev_dbg(&priv->pcid->dev,
- 			"RSSI[%d] NewGain[%d] OldGain[%d] Count[%d]\n",
- 			(int)dbm, priv->byBBVGANew,
--			priv->byBBVGACurrent,
-+			priv->bbvga_current,
- 			(int)priv->uBBVGADiffCount);
- 
- 		bb_set_vga_gain_offset(priv, priv->byBBVGANew);
--- 
-2.34.1
-
-
---1mwXnP3tkU9W1WO7
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0003-PATCH-3-3-staging-vt6655-Type-encoding-info-dropped-.patch"
-
-From e7dc405ffa8050eb8693086204c902a723392a62 Mon Sep 17 00:00:00 2001
-Message-Id: <e7dc405ffa8050eb8693086204c902a723392a62.1696141471.git.opensource206@gmail.com>
-In-Reply-To: <cover.1696141471.git.opensource206@gmail.com>
-References: <cover.1696141471.git.opensource206@gmail.com>
-From: Pavan Bobba <opensource206@gmail.com>
-Date: Thu, 28 Sep 2023 20:30:34 +0530
-Subject: [PATCH 3/3] [PATCH 3/3] staging: vt6655: Type encoding info dropped
- from variable name "byBBVGANew"
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,linux-staging@lists.linux.dev,linux-kernel@vger.kernel.org
-
-variable name "byBBVGANew" updated like below:
-
-a.type encoding info dropped from name
-b.camelcase name replaced by snakecase
-
-Issue found by checkpatch
-
-Signed-off-by: Pavan Bobba <opensource206@gmail.com>
----
- drivers/staging/vt6655/device.h      |  2 +-
- drivers/staging/vt6655/device_main.c | 14 +++++++-------
- 2 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/staging/vt6655/device.h b/drivers/staging/vt6655/device.h
-index 9ae7171d02ee..68bfadacfa7c 100644
---- a/drivers/staging/vt6655/device.h
-+++ b/drivers/staging/vt6655/device.h
-@@ -248,7 +248,7 @@ struct vnt_private {
- 	/* For Update BaseBand VGA Gain Offset */
- 	bool bUpdateBBVGA;
- 	unsigned int	uBBVGADiffCount;
--	unsigned char byBBVGANew;
-+	unsigned char bbvga_new;
- 	unsigned char bbvga_current;
- 	unsigned char bbvga[BB_VGA_LEVEL];
- 	long                    dbm_threshold[BB_VGA_LEVEL];
-diff --git a/drivers/staging/vt6655/device_main.c b/drivers/staging/vt6655/device_main.c
-index 6990129ceb10..b08fcf7e6edc 100644
---- a/drivers/staging/vt6655/device_main.c
-+++ b/drivers/staging/vt6655/device_main.c
-@@ -425,7 +425,7 @@ static void device_init_registers(struct vnt_private *priv)
- 
- 	if (priv->bUpdateBBVGA) {
- 		priv->bbvga_current = priv->bbvga[0];
--		priv->byBBVGANew = priv->bbvga_current;
-+		priv->bbvga_new = priv->bbvga_current;
- 		bb_set_vga_gain_offset(priv, priv->bbvga[0]);
- 	}
- 
-@@ -1053,12 +1053,12 @@ static void vnt_check_bb_vga(struct vnt_private *priv)
- 
- 	for (i = 0; i < BB_VGA_LEVEL; i++) {
- 		if (dbm < priv->dbm_threshold[i]) {
--			priv->byBBVGANew = priv->bbvga[i];
-+			priv->bbvga_new = priv->bbvga[i];
- 			break;
- 		}
- 	}
- 
--	if (priv->byBBVGANew == priv->bbvga_current) {
-+	if (priv->bbvga_new == priv->bbvga_current) {
- 		priv->uBBVGADiffCount = 1;
- 		return;
- 	}
-@@ -1067,11 +1067,11 @@ static void vnt_check_bb_vga(struct vnt_private *priv)
- 
- 	if (priv->uBBVGADiffCount == 1) {
- 		/* first VGA diff gain */
--		bb_set_vga_gain_offset(priv, priv->byBBVGANew);
-+		bb_set_vga_gain_offset(priv, priv->bbvga_new);
- 
- 		dev_dbg(&priv->pcid->dev,
- 			"First RSSI[%d] NewGain[%d] OldGain[%d] Count[%d]\n",
--			(int)dbm, priv->byBBVGANew,
-+			(int)dbm, priv->bbvga_new,
- 			priv->bbvga_current,
- 			(int)priv->uBBVGADiffCount);
- 	}
-@@ -1079,11 +1079,11 @@ static void vnt_check_bb_vga(struct vnt_private *priv)
- 	if (priv->uBBVGADiffCount >= BB_VGA_CHANGE_THRESHOLD) {
- 		dev_dbg(&priv->pcid->dev,
- 			"RSSI[%d] NewGain[%d] OldGain[%d] Count[%d]\n",
--			(int)dbm, priv->byBBVGANew,
-+			(int)dbm, priv->bbvga_new,
- 			priv->bbvga_current,
- 			(int)priv->uBBVGADiffCount);
- 
--		bb_set_vga_gain_offset(priv, priv->byBBVGANew);
-+		bb_set_vga_gain_offset(priv, priv->bbvga_new);
- 	}
- }
- 
--- 
-2.34.1
-
-
---1mwXnP3tkU9W1WO7--
+> ---
+> This patch is part of a work done in parallel of what is currently worked
+> on by Kees Cook.
+> 
+> My patches are only related to corner cases that do NOT match the
+> semantic of his Coccinelle script[1].
+> 
+> In this case, it is been spotted because of comedi_alloc_spriv().
+> All other usages of struct comedi_lrange seem to be static definition of
+> the structure that explicitly set the .length field.
+> 
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
+> ---
+>   include/linux/comedi/comedidev.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/comedi/comedidev.h b/include/linux/comedi/comedidev.h
+> index 0a1150900ef3..c08416a7364b 100644
+> --- a/include/linux/comedi/comedidev.h
+> +++ b/include/linux/comedi/comedidev.h
+> @@ -633,7 +633,7 @@ extern const struct comedi_lrange range_unknown;
+>    */
+>   struct comedi_lrange {
+>   	int length;
+> -	struct comedi_krange range[];
+> +	struct comedi_krange range[] __counted_by(length);
+>   };
+>   
+>   /**
