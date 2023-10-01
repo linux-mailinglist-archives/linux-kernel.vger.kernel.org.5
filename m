@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 006CC7B464D
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1788B7B464B
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234596AbjJAIeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 04:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37696 "EHLO
+        id S234600AbjJAId6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 04:33:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234603AbjJAId7 (ORCPT
+        with ESMTP id S234510AbjJAId4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 04:33:59 -0400
+        Sun, 1 Oct 2023 04:33:56 -0400
 Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36644C6;
-        Sun,  1 Oct 2023 01:33:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08ED683;
+        Sun,  1 Oct 2023 01:33:54 -0700 (PDT)
 Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
         by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qmrtL-002PUo-Ba; Sun, 01 Oct 2023 16:33:32 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 01 Oct 2023 16:33:35 +0800
-Date:   Sun, 1 Oct 2023 16:33:35 +0800
+        id 1qmrtd-002PUw-7x; Sun, 01 Oct 2023 16:33:50 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Sun, 01 Oct 2023 16:33:53 +0800
+Date:   Sun, 1 Oct 2023 16:33:53 +0800
 From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Gatien Chevallier <gatien.chevallier@foss.st.com>
-Cc:     Olivia Mackall <olivia@selenic.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Lionel Debieve <lionel.debieve@foss.st.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/9] hwrng: stm32: support STM32MP13x platforms
-Message-ID: <ZRku36epapNNQP3b@gondor.apana.org.au>
-References: <20230921080301.253563-1-gatien.chevallier@foss.st.com>
+To:     Gaurav Jain <gaurav.jain@nxp.com>
+Cc:     Horia Geanta <horia.geanta@nxp.com>,
+        Pankaj Gupta <pankaj.gupta@nxp.com>,
+        Varun Sethi <V.Sethi@nxp.com>,
+        Meenakshi Aggarwal <meenakshi.aggarwal@nxp.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+Subject: Re: [PATCH] crypto: caam/qi2 - fix Chacha20 + Poly1305 self test
+ failure
+Message-ID: <ZRku8WKoMiiUJdsX@gondor.apana.org.au>
+References: <20230921094444.2121891-1-gaurav.jain@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230921080301.253563-1-gatien.chevallier@foss.st.com>
+In-Reply-To: <20230921094444.2121891-1-gaurav.jain@nxp.com>
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -46,46 +47,19 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 10:02:52AM +0200, Gatien Chevallier wrote:
-> The STM32MP13x platforms have a RNG hardware block that supports
-> customization, a conditional reset sequences that allows to
-> recover from certain situations and a configuration locking
-> mechanism.
+On Thu, Sep 21, 2023 at 03:14:44PM +0530, Gaurav Jain wrote:
+> key buffer is not copied in chachapoly_setkey function,
+> results in wrong output for encryption/decryption operation.
 > 
-> This series adds support for the mentionned features. Note that
-> the hardware RNG can and should be managed in the secure world
-> for this platform, hence the rng not being default enabled on
-> the STM32MP135F-DK board.
+> fix this by memcpy the key in caam_ctx key arrary
 > 
-> Changes in V2:
-> 	- Use pm_ptr() and add __maybe_unused on PM API
-> 	- Correct bug using WARN_ON
-> 
-> Changes in V3:
-> 	- Squash of bindings patches
-> 	- st,rng-lock-conf property declaration rework
-> 	- Fix stm32_rng_pm_ops declaration in patch [5/9]
-> 
-> Gatien Chevallier (9):
->   dt-bindings: rng: introduce new compatible for STM32MP13x
->   hwrng: stm32 - use devm_platform_get_and_ioremap_resource() API
->   hwrng: stm32 - implement STM32MP13x support
->   hwrng: stm32 - implement error concealment
->   hwrng: stm32 - rework error handling in stm32_rng_read()
->   hwrng: stm32 - restrain RNG noise source clock
->   hwrng: stm32 - support RNG configuration locking mechanism
->   hwrng: stm32 - rework power management sequences
->   ARM: dts: stm32: add RNG node for STM32MP13x platforms
-> 
->  .../devicetree/bindings/rng/st,stm32-rng.yaml |  20 +-
->  arch/arm/boot/dts/st/stm32mp131.dtsi          |   8 +
->  drivers/char/hw_random/stm32-rng.c            | 511 +++++++++++++++---
->  3 files changed, 455 insertions(+), 84 deletions(-)
-> 
-> -- 
-> 2.25.1
+> Fixes: c10a53367901 ("crypto: caam/qi2 - add support for Chacha20 + Poly1305")
+> Signed-off-by: Gaurav Jain <gaurav.jain@nxp.com>
+> ---
+>  drivers/crypto/caam/caamalg_qi2.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-Patches 1-8 applied.  Thanks.
+Patch applied.  Thanks.
 -- 
 Email: Herbert Xu <herbert@gondor.apana.org.au>
 Home Page: http://gondor.apana.org.au/~herbert/
