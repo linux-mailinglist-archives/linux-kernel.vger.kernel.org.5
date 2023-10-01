@@ -2,169 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C28B67B4681
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 11:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C817B45DE
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234694AbjJAJNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 05:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35382 "EHLO
+        id S234441AbjJAIDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 04:03:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234680AbjJAJNi (ORCPT
+        with ESMTP id S234371AbjJAIDj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 05:13:38 -0400
-Received: from omta036.useast.a.cloudfilter.net (omta036.useast.a.cloudfilter.net [44.202.169.35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD85DBD;
-        Sun,  1 Oct 2023 02:13:35 -0700 (PDT)
-Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
-        by cmsmtp with ESMTP
-        id mektqJp77NWIemsW7qthYR; Sun, 01 Oct 2023 09:13:35 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id msW6qMDOEBsZEmsW6qFaZn; Sun, 01 Oct 2023 09:13:34 +0000
-X-Authority-Analysis: v=2.4 cv=bax47cDB c=1 sm=1 tr=0 ts=6519383e
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=NEAV23lmAAAA:8 a=cLZyiMI5l2q1nrJyhZUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=IrcoHngMEI3PscYSp/Yz5U/Odq3VqzylH1QDFm3GoFc=; b=wENTTVexpEzDAK1AaTXmTVTBCH
-        HcQdwyPj1nfMN7BPfWZyzbIGYDJbD4fpVkyOgDZ4uCN/lvfuDJbzj0JXwA7AFa75V0rR5+i8sVxr8
-        q4s7FyxXzwBrSHLPeYKQiaFqNiuLfr8oESTuq2XH8j7rwA3pUS9qf7ois5YmGlbrNJcQI75t64Scb
-        AVmiffu2dRGR2MrLvyyqq82EtDzbQIhx3TV5+vUHane82zJol+mtFN5PJzTTNBdG41t4RsZjzLe92
-        uJn2gdKrbPBCbQj02bhQ/lSDIrV34rosz3Gzhs96y98LxBvN2nOOGxB1LhlV7VPd5RbrBD1OMt3FN
-        tV56v4eA==;
-Received: from [94.239.20.48] (port=43308 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qmqnU-0020ti-1f;
-        Sun, 01 Oct 2023 02:23:24 -0500
-Message-ID: <7ae7737e-e32c-e9e7-880c-cafc240e7c33@embeddedor.com>
-Date:   Sun, 1 Oct 2023 09:23:17 +0200
+        Sun, 1 Oct 2023 04:03:39 -0400
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2070.outbound.protection.outlook.com [40.107.22.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CACCC2;
+        Sun,  1 Oct 2023 01:03:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IS6eLRFz8VGE4r7OyVwTYCYmb2R7ojOJwkHSdkRgTxNzQmBHR9gs/U4Zwufum1C541PCqgPbsjXN6ut0F3PjdJaqPSFpKFsRJGqcdyzC397UuVYsg/WEyG3UV47gti4yS9pFAax4pXR5Vri7IeXuyFZNnkiTSfNkPSlF6ec/5qhYQsjgzAlLDWCRh2vqNT6/du0y7ZzoIoUgf7rJSRAAVeu8C5zJzaff9GPMfqqV1T7OC05CH5kkpdFL26Lyj2kMngpj31vkyXuKDAdtdtXFlci/Evr7x240czPH8W4Ga3GGuVj2YS5vENpBjZCrzHgeeWuFI8OOxhX3si1C5cjUaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=usDYAF7/Uio4et+c3RkYZX2RrThASPQaEumJNzznkQ0=;
+ b=KMTvDIdyF8L6LvaeAO94jWCD+iA/EOYLWE+DxeuY1zuNUyUDEF7/C4pf6BVLffc7JnsvXnChgeXa5gylAWcG6U9zX9AI+cQiqAHRC+272OeXNpqUljmdXyOxXPK/4Uf8kUKqoRNx5KK4fFKbe1cfQZsPJREMpGteR4Kh8AJmPw9Pt2gYZFQOX0mnerFGEZpdkT7zRJDXN7phNwDDNkreE4FNsepOSEo6LNhMqK6FjvhvkaPS6FsqC0WFh1GS2U5giaBZkswdNx2/kGz2J9j8R4evQnacQEY/s1dVmZMr/ryLep8Jb/cJbqKuMKLMY+XocFo+eTuySSP27/wofJEPwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=usDYAF7/Uio4et+c3RkYZX2RrThASPQaEumJNzznkQ0=;
+ b=rAbAkF8yHBDYGBGyxeDCcW+HzqG5i0SGR2Ti6cm3tDhgj6iJrPP6ZbHM3mRLF0V4i8qSvCXn5NUjVG5X0KFazNnr69mOFLl89FJOKyaVtbrKRi5nAmIoa59/75OM/qz71IRwgvZVdIePh1IMMgMqHq393A3nJqedV8kEjxw7b1OFB8toVaVG3DTJPjfPYvMbc6u6ZKqJFHxIFV6E4mpSzvFQNBfyQHlet55y5RK7c/PRn6N+FkBsUSVPIdBk60rybrUjG2XN192ImRPxD0aD8Ar4SzzZyCynrtG/Aa2VjjK0QCYqhhtSNDrr+/RoSWxaVw4Lc6L84LZTw4TbyESsbA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=suse.com;
+Received: from DB8PR04MB7164.eurprd04.prod.outlook.com (2603:10a6:10:129::23)
+ by PA4PR04MB7725.eurprd04.prod.outlook.com (2603:10a6:102:f1::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Sun, 1 Oct
+ 2023 08:03:34 +0000
+Received: from DB8PR04MB7164.eurprd04.prod.outlook.com
+ ([fe80::8647:4673:b19:acc2]) by DB8PR04MB7164.eurprd04.prod.outlook.com
+ ([fe80::8647:4673:b19:acc2%4]) with mapi id 15.20.6813.027; Sun, 1 Oct 2023
+ 08:03:34 +0000
+Date:   Sun, 1 Oct 2023 16:03:28 +0800
+From:   "Lee, Chun-Yi" <jlee@suse.com>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org
+Subject: [PATCH 0/2] Bluetooth: ignore NULL link key and reject connection
+ with the device which has same BD_ADDR
+Message-ID: <20231001080328.GA14494@linux-691t>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.11.4 (2019-03-13)
+X-ClientProxiedBy: FR2P281CA0087.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:9b::6) To DB8PR04MB7164.eurprd04.prod.outlook.com
+ (2603:10a6:10:129::23)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] bcachefs: Use struct_size()
-Content-Language: en-US
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Brian Foster <bfoster@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-bcachefs@vger.kernel.org, linux-hardening@vger.kernel.org,
-        llvm@lists.linux.dev
-References: <120b638f99b088f91d5a4491c800463c554e70b8.1696144401.git.christophe.jaillet@wanadoo.fr>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <120b638f99b088f91d5a4491c800463c554e70b8.1696144401.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.239.20.48
-X-Source-L: No
-X-Exim-ID: 1qmqnU-0020ti-1f
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:43308
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 0
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfJV7R3hh1LzRfvAnjgMTJBwXQOSvgrtPZWtBNBaUWkODEpkynlZvciSgfBrKfALoIubDUo4K9IaHtYpUurxwyTUP8BRhNc1PzGR4P7PJHacdTRYeoOlp
- uE+X2zUYOMlut8e1hSTQLGgItGS3KhwvIef+pSSiTSOA6hnrHF62NdFOfBfAlnqzQ5u7hqqOtUVe58glwVln/X0MDhYkJLY6Nz8Rizu6GGes+MKzBCHY/oAi
- Q8x8dn/7KUHhVHsk2DISSNJzxvBGJFgZTtQsG//hPoDai9V0d5qXV0Rf7RkssuuOmIBF6KE2QiyXsms6/g4JOQocmhd2XN/BXLIOnebU+ZC/3ZeKiwSiMBWH
- m8Hm7VE+
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB8PR04MB7164:EE_|PA4PR04MB7725:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0830b3c6-7df8-4bd7-19e6-08dbc254e8e2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vO4duyr9wFfT+QcWR4xL8mRquBBB6hw4xqdI3HGgGId8FyxmxvqCfkWftl+wC4RSgNfW2hJPos6e4DLdihgfGaWvaKx0is48cEC8i0Rps2VHPwHzzneDBQs84vzRf0+osdHO1IzuKc6Z6m5xtY3JrSu2is2Ht6K3FXBQLxrtBfHPxGMuQRZjITHmcqicpmZqBqLC1MMreycWwjXMwyPeTzwZE8bcNXmQtsDOa1qXbmIWgv1jDKHUVJ8RcUZ5wci02CgKOiDb7JKybOIWvmeuaYryQxzOAR+INUXXGQ7JTdSdQUrBJ2vC0YZLnfN6ZsXFnnLGo9cAXqWk20Dms8Giy2rEkn6XEGVgcPIA+oWxUgearW0YuGEGV2gt//B4rCC45QWg5DqM6ACecTqeCfuF6C5aZd+i9ZuzPEgYCKBtdEneTODLHqs/yD93P7HqrnEfpnvu8HMjRrcA2CstwnLZyp6mgnjq4g3/rgs4VT3DbS3cMXKbIRo4XKb8FuDG9evM6U9c1W6mEfKzxl570w4ew3VUpWVjKrytssujWMMArXQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB7164.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(346002)(39860400002)(136003)(366004)(376002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(41300700001)(316002)(26005)(4326008)(2906002)(8936002)(5660300002)(66556008)(8676002)(110136005)(478600001)(966005)(66946007)(66476007)(6486002)(6666004)(6506007)(6512007)(9686003)(1076003)(33716001)(38100700002)(83380400001)(33656002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?r5jwUXqTTPbPG+8OmLfA0fM+6+REJfXLk2wPNmudqLCRG9Ii2cuq9rI7iKkp?=
+ =?us-ascii?Q?cU53Sg+yoByyy3sXdAWQXTORd3JKUa5JS0f4ReHo2FjyFAHXIbMx1GA9eTmC?=
+ =?us-ascii?Q?IsBJdgrNHKpO1TIhivHhLndSTDuRhdqmt3Ab5frhYwdkg9qeRqZwo5cbOg3w?=
+ =?us-ascii?Q?dRDps2wxzF9HDqsJJ2OZETwYJ0nqiANhRelWxGAJvagxUiD5aCg1KzBgOYo7?=
+ =?us-ascii?Q?ZFS5YY5QMLwAKH2ZZ8y8WvCGVlfQCJ7fGguKtmcKuQBbSItmI8uyNvPa5Mu7?=
+ =?us-ascii?Q?cwEEZ/kHRPf1RtRTeaAcVd9dbdAjNWTyOcgi3oYiT6wPU0dCMJlUUiezwJID?=
+ =?us-ascii?Q?Tq6KYFAJDWePETivVL4cKti5+DsbGEHnu1usj7ddVglDSa86itCZ2bxuXUo3?=
+ =?us-ascii?Q?3V6XijPPMx/G10K56GoR86ccmcU8ZCOfT7A3CCo1peG4UiMwsE6T1AlKh4gV?=
+ =?us-ascii?Q?gdDXIsm/ftIjCm3uf2k2wryrGIYjni0ZKdl5AgMwyd2AFbpnozu/1NI7wobJ?=
+ =?us-ascii?Q?ZbdClIjc0xBigKxlsdtohz7AbJ/VN6QU3qNYRFaUxNpE09xjPaMsVdPejxka?=
+ =?us-ascii?Q?TRirHPf6JUzcO5eRnTspfufTiSyimrUdK1ySNstMF2nIYyBhJhCFuCVPG7jh?=
+ =?us-ascii?Q?q2UwzRC/5cMM0SNTRIuD1XMBPhLxZz7btpbrAPSbRMyURfdqEkXnoAMht78N?=
+ =?us-ascii?Q?hmvLlDVm2MbfvXI+pKjYLM7oBAI1cwFqHpcm3ovlc3H7sFKX+OyHb2hx8pPe?=
+ =?us-ascii?Q?XBMqAvxoMVcbmmhXyl+1d9r3xzYu06J9EKRJj1XL5UMBprDVPnqJrCPyUC6g?=
+ =?us-ascii?Q?Hfqf5aBuZMyx1fGLb+U0qSWh+5EyYfLN1U+amCOphHzr29svXZLQgfwTnek5?=
+ =?us-ascii?Q?HwFF/kpHyV9DUV4a6bEtwfWpcfztDGjKJooZUHYiZShIJoR2+6s+CQKWYM67?=
+ =?us-ascii?Q?swzYP6+bx67GBOV+mQ8FKjfZhwnsh59IxXeGQt98EQdU1WNyN/HDgBLt92d8?=
+ =?us-ascii?Q?BC9xuZBA8NAwArqnwjv6FqKLOmyiGD2x+7BkE2Gbjj3zO7lWFzgyGM1n1SmS?=
+ =?us-ascii?Q?UVa2xYT4AA0XqLZySz0dlmDKBQe4AQW/BaOOyt5bjWfYdHqawxUSPsPPLN/f?=
+ =?us-ascii?Q?K4AgByjQZE+tBSFeoHemb+lGCOoir8YGGZC4dLqBjh0pOGxV8n7w+xVzXGvT?=
+ =?us-ascii?Q?OC3akjdV3tF49LMW4uIkPGgnVKMblV3bmypsKEwqlY9fnvMyntrUqjzfKFFy?=
+ =?us-ascii?Q?O4oHqNIZanR0YDksS/Bb+XLKjry78o9rwq5OV78TcCGIlWfK3tmxfkjXBYtj?=
+ =?us-ascii?Q?HdvDQ3RdF+qRZyQDUcNE4GB/Ciegs5BV5Gfdqn/u/Dw3Dp3B5Ggv+WW30F4U?=
+ =?us-ascii?Q?tmEhlGu30nSEfSoEibEIe6vDtKw7CnQ0XL+czcFLFgAeN2aAH0wVyWyWSsqx?=
+ =?us-ascii?Q?t0iZP1wtoZbWvOOZz6I7Kv8shw1dWHuFhy/UEgOncmnazX1Rbb2T2THDss6q?=
+ =?us-ascii?Q?CdagQKOGARWUfDJ2buUrSwL++W80WlkRJjx07q6/nPMhV60LrlEFLqjiuXdG?=
+ =?us-ascii?Q?uyo3vM5ecp2DdZCRwd+PMW8qdnIvTxAudw9LmM+g?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0830b3c6-7df8-4bd7-19e6-08dbc254e8e2
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB7164.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2023 08:03:34.4454
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jIsmlvFyB/PXdPpK0y8bfSUbsSau2T92moLoFMFHOktBYjwIvi7QpQeL22k40gFo
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA4PR04MB7725
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch set is used to relieve CVE-2020-26555. The description of the
+CVE:
 
+Bluetooth legacy BR/EDR PIN code pairing in Bluetooth Core Specification
+1.0B through 5.2 may permit an unauthenticated nearby device to spoof
+the BD_ADDR of the peer device to complete pairing without knowledge
+of the PIN. [1]
 
-On 10/1/23 09:13, Christophe JAILLET wrote:
-> Use struct_size() instead of hand writing it.
-> This is less verbose and more robust.
-> 
-> While at it, prepare for the coming implementation by GCC and Clang of the
-> __counted_by attribute. Flexible array members annotated with __counted_by
-> can have their accesses bounds-checked at run-time checking via
-> CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE (for
-> strcpy/memcpy-family functions).
+The detail of this attack is in IEEE paper:
+BlueMirror: Reflections on Bluetooth Pairing and Provisioning Protocols
+[2]
 
-I would prefer this as two separate patches.
+It's a reflection attack. The paper mentioned that attacker can induce
+the attacked target to generate null link key (zero key) without PIN
+code. In BR/EDR, the key generation is actually handled in the controller
+which is below HCI.
 
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Thus, we can ignore null link key in the handler of "Link Key Notification
+event" to relieve the attack. And, a condition of this attack is that
+attacker should change the BR_ADDR of his hacking device (Host B) to equal
+to the BR_ADDR with the target device being attacked (Host A). So we reject
+the connection with device which has same BD_ADDR both on HCI_Create_Connection
+and HCI_Connection_Request to prevent the attack.
 
-In any case:
+Similar implementations also show in btstack project. [3][4][5]
 
-Reviewed-by: Gustavo A. R. Silva <gustavors@kernel.org>
+Link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-26555 [1]
+Link: https://ieeexplore.ieee.org/abstract/document/9474325/authors#authors [2]
+Link: https://github.com/bluekitchen/btstack/blob/master/src/hci.c#L3722 [3]
+Link: https://github.com/bluekitchen/btstack/blob/master/src/hci.c#L3523 [4]
+Link: https://github.com/bluekitchen/btstack/blob/master/src/hci.c#L7297 [5]
 
-Thanks
---
-Gustavo
+Lee, Chun-Yi (2):
+  Bluetooth: hci_event: Ignore NULL link key
+  Bluetooth: Reject connection with the device which has same BD_ADDR
 
-> ---
-> This patch is part of a work done in parallel of what is currently worked
-> on by Kees Cook.
-> 
-> My patches are only related to corner cases that do NOT match the
-> semantic of his Coccinelle script[1].
-> 
-> In this case, struct_size() was not used to compute the size needed for the
-> structure and its flex array.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> ---
->   fs/bcachefs/disk_groups.c | 3 +--
->   fs/bcachefs/super_types.h | 2 +-
->   2 files changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/bcachefs/disk_groups.c b/fs/bcachefs/disk_groups.c
-> index b292dbef7992..224efa917427 100644
-> --- a/fs/bcachefs/disk_groups.c
-> +++ b/fs/bcachefs/disk_groups.c
-> @@ -166,8 +166,7 @@ int bch2_sb_disk_groups_to_cpu(struct bch_fs *c)
->   	if (!groups)
->   		return 0;
->   
-> -	cpu_g = kzalloc(sizeof(*cpu_g) +
-> -			sizeof(cpu_g->entries[0]) * nr_groups, GFP_KERNEL);
-> +	cpu_g = kzalloc(struct_size(cpu_g, entries, nr_groups), GFP_KERNEL);
->   	if (!cpu_g)
->   		return -BCH_ERR_ENOMEM_disk_groups_to_cpu;
->   
-> diff --git a/fs/bcachefs/super_types.h b/fs/bcachefs/super_types.h
-> index 597a8db73585..78d6138db62d 100644
-> --- a/fs/bcachefs/super_types.h
-> +++ b/fs/bcachefs/super_types.h
-> @@ -46,7 +46,7 @@ struct bch_disk_group_cpu {
->   struct bch_disk_groups_cpu {
->   	struct rcu_head			rcu;
->   	unsigned			nr;
-> -	struct bch_disk_group_cpu	entries[];
-> +	struct bch_disk_group_cpu	entries[] __counted_by(nr);
->   };
->   
->   #endif /* _BCACHEFS_SUPER_TYPES_H */
+ net/bluetooth/hci_conn.c  |  7 +++++++
+ net/bluetooth/hci_event.c | 16 ++++++++++++++++
+ 2 files changed, 23 insertions(+)
+
+-- 
+2.35.3
+
