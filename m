@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1507B45E3
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8097B45E5
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234468AbjJAIIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 04:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
+        id S234476AbjJAIJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 04:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234416AbjJAIIb (ORCPT
+        with ESMTP id S234416AbjJAIJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 04:08:31 -0400
-Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2053.outbound.protection.outlook.com [40.107.15.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA092C2;
-        Sun,  1 Oct 2023 01:08:28 -0700 (PDT)
+        Sun, 1 Oct 2023 04:09:23 -0400
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2043.outbound.protection.outlook.com [40.107.13.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE78BA;
+        Sun,  1 Oct 2023 01:09:20 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iKV9qVxFUq5OP59rT828HD6quGBNyGecP039OQFUdna0/U2uzBFxscM07/vXxvoCoJFNg5D2RPQSFAYq0zm5bjtqhACVrYus/OsUvsxkh2DzouzM6H++nCZ8nWhkFLfTVnovuNSTCm2iMfgHzJ+6ys2PPoCKFaISs1/7B+NA4v1s7/bBrPLjaQKv1j4i+iUUOX47F/S/18kcUb87vNNWq0l0eLNdECl1UDrgaI8zfV2w0AY5EuTdgPT66xWuOY4r0t7mEPPUiz5oJpJBjuBwoZgQze6DcA0Wa/ZSe0ry3NAtnmKlvvwE3ZK2ccqcrRX0nnA2r6zhWS+sm7/EeW+icw==
+ b=WDQAUiqKh3stLRv2s2q38oRIxodE/W2m6FeyW8dibnGU/Ark1SNce4vVCTMP9VcErqicHCSo88gpIlqw6QBHgGlow0dD4rIFJ3dDgKX5q4D6g/mv6vkCJLdM53SPn8IwCMjSrNcFA4ROs7jPAYHDlF9scKf7ojewdzilJMd6SW4qWh7RMj7kRzbUEs6UxXGTKwN844HxEc333ncSWioUPKGakW3icEd/bmGKPQea/BSDhQnyJsBxKvaaEtwNbPXOxEXz3HLP7KZ2+pT2hquNZh742skvEDULIy0oLJ9dZhPwHVVUeRNqMsBtXwYkBvNbt6MAaZe1w1aMLIhsOXV97g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eGQqYZ0FgUqrYy37FVP0MiI7B5zDK0F712BQATH/yqA=;
- b=h9QzRe2mCOV2pgPirFCRYtJdZ5iuAPZRTSDRZeZvBKGE+IC5cqDdEhziTrBzJPRXWkqf+WfuqH4SO5t6MNklKxghRaXtldb4xtbpSZgpiGzNLbrfXl790saY0PgtPh1jTWCWuvsudF/cCuJetRfOrRLGRWsoF917R8gHYYWBmllop4csBMcRe2fporBzKX1tConGDtxmSTw/EX2BLjX1BhOgJFol2bJJ847wJMz+/7drJrul/Y7R2PCeGlo00KiECxhVXKxaVosRdaX7I4ZQuFWRrhsTc9MH/Ykt2y6HANxzJijWlb2UR/UzV3GoYCC6lETBO+YaBPUnPfpp7P/Lpw==
+ bh=nbg5dEf2maQJUv1G4F/zAIXkuiIeUoM3JSyBo3VOpYw=;
+ b=kgBR92n3NImhibBJCcR+OXpQqcpYSL6QxcyrPX2O8kVMKZGVgX4N9YbplGLpZIpZ9DQvZ51c8Nm9gp89Da/Svfq/WDHKiA0cT2uqqBQ4NUPrczrQHLlwNUhBdeY5Z66XgDGEbtyxsIn7IVBbbAJjtHOoAe2a66uXLqinU3R7aXzNA4MDowXzFuZ50vPZFvPte663Z+LleS5GVBHHQxQ1rhuICtK0BkrHxaCezZyfyu+jZ0X+5NNkQJZtGftsbMG/tx5koE2rkO1REwcxqoPxPuvtHhjkhDCNQi/6l9y1w0JteIfmAa57hXJ+OW1dBBFQYW98dY+aK3moNTHn/W3eMA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
  dkim=pass header.d=suse.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eGQqYZ0FgUqrYy37FVP0MiI7B5zDK0F712BQATH/yqA=;
- b=rRm74ao4AJBdQQ3CFJratCV6N7F/fDjb9oTd/3PEz2rnkZXFb0c4+KOUV7pheeQ4S6VRsLiNRAcOI+Sbs1jzNytzB8yqDKG1ip91NcN4ussRjWOQFug9lK2DeySGMj0RPM+5XxnF8tbgfzeUzmZedqoA4BgkU1gQKAE8fw9LNkM0X9vW2LkZ+ALlBN373pIR21gEKXRkni4u7mTHoBPeqBMEwD7Qx/naowkdlGUoAXXeVHbyJ4DrovXjvRRY1BnkfOuY8AMOdVLC3p7UxUDP4rfRm9XJrQXUhavuH4qKxRY2yo1vuDlNDYDngwfazsfyTpK1BYqlQGgbsh3+0eDpPw==
+ bh=nbg5dEf2maQJUv1G4F/zAIXkuiIeUoM3JSyBo3VOpYw=;
+ b=mPhyn5rcY/sxFpuhqqscoHxS9V22kBkQrxg61dF4ICajqjK9r3iSioCosj5SdzdCwlrEpqEGRMG2rulXWykxReM1RWr3s4JEJVecJgE8QjUC6wdxUPjQXFe0sizBii/WUEaHwz8Wp/IWFAfHlJdnr0fevqonfH692BzMTRR9iFYwhcytEpbl6VJ7N03nqe54drvprNWbp6hvUsPJVE9LHTu4NVXZBGQDA65lYZ8D3x8I5M/noAnGGzFhbEJiUK99S+6OK5rm0netGb5YJr9KkRgD9HEHbPlrIvluSgDYXC0nW9XjKeqo7nW7hS/sI6/sSQHBVVVKWBqjG20rXUOrpw==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=suse.com;
 Received: from DB8PR04MB7164.eurprd04.prod.outlook.com (2603:10a6:10:129::23)
  by AM9PR04MB8572.eurprd04.prod.outlook.com (2603:10a6:20b:437::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.23; Sun, 1 Oct
- 2023 08:08:26 +0000
+ 2023 08:09:18 +0000
 Received: from DB8PR04MB7164.eurprd04.prod.outlook.com
  ([fe80::8647:4673:b19:acc2]) by DB8PR04MB7164.eurprd04.prod.outlook.com
  ([fe80::8647:4673:b19:acc2%4]) with mapi id 15.20.6813.027; Sun, 1 Oct 2023
- 08:08:26 +0000
-Date:   Sun, 1 Oct 2023 16:08:13 +0800
+ 08:09:18 +0000
+Date:   Sun, 1 Oct 2023 16:09:06 +0800
 From:   "Lee, Chun-Yi" <jlee@suse.com>
 To:     Marcel Holtmann <marcel@holtmann.org>,
         Johan Hedberg <johan.hedberg@gmail.com>,
         Luiz Augusto von Dentz <luiz.dentz@gmail.com>
 Cc:     linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org
-Subject: [PATCH 1/2] Bluetooth: hci_event: Ignore NULL link key
-Message-ID: <20231001080813.GA14514@linux-691t>
+Subject: [PATCH 2/2] Bluetooth: Reject connection with the device which has
+ same BD_ADDR
+Message-ID: <20231001080906.GA14521@linux-691t>
 References: <20231001074524.GA14361@linux-691t>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20231001074524.GA14361@linux-691t>
 User-Agent: Mutt/1.11.4 (2019-03-13)
-X-ClientProxiedBy: TYCP286CA0067.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:31a::9) To DB8PR04MB7164.eurprd04.prod.outlook.com
+X-ClientProxiedBy: TYWP286CA0004.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:178::6) To DB8PR04MB7164.eurprd04.prod.outlook.com
  (2603:10a6:10:129::23)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: DB8PR04MB7164:EE_|AM9PR04MB8572:EE_
-X-MS-Office365-Filtering-Correlation-Id: bc0a1c72-277d-453a-d8ee-08dbc25596a7
+X-MS-Office365-Filtering-Correlation-Id: 9c98bc4d-c0b0-4257-c168-08dbc255b5a9
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: NqcaeDvVwL6IKIWPnzzCIKlHikLBxaJ1w42i0z5PKBLaU1vbxmhzviFAEsldbvzWDk9otWwg3uQn2d/DdZjHCTEJ6POPjfgG+pWDZzSMphlYkObxjXj/OUSZUPDVc8XMPl9ShcNUQC2/aHgT1tkWPp8pM+LT7K68V4YGPszgQVJJwO2qaTbtKE9s0NIWljl0gaUsmVaM2IQvhj/ckJMrJwlcX1hGhEyO4O7F11j377IdfWFGs+arsfL9RiHbPakjpO31XiHULhNj25FXzL6Idjpr1nP3mplHfJzGxvuLJZNa950Nij5ocfsV7Ef5AfeoFyxxMq9ppSRh+d5149/NM7kYuUtBeSKCX4xcpXKXIkrR9EhhgaaTD6sAgQUJr2ThCuEys2qPjFXdyJ5vOwtFMfGzKEVN6N3hgVznC6Hf3S8DyU45odgQZOdnyDQhrXxaR88BCy4MiqtRA2sEWJ/Vd7yhUlI0PZlL/B09CVfcsLcbjKJCE2b/XyfLFr9xb7Bsn58hp1K1IUAvytnmx9sVRrz5jEHl0BEzMmTe1QM5tiM=
+X-Microsoft-Antispam-Message-Info: 01a9kkeOI2J9cNw6bs+2Hbj3yjunhom/z1qvcArpmW+hNEKMT6udte3GzRKMLmubyhjC93YStzkAGoVE0iAiKpOKAk2rGMNz0vs7wgMkEuyO3JMTmgSCzibFVQ0sbtWzB5unvQMEXHWndiJGCp0YGwbKQ/V/ldeleNtZcaZmqyrbHOFZOgdvFq7pL2tnve7XasZFcvUuO342ZIFsjA5fVBr6tO2Mb2d2sCDDLkOwZ/8M9Q0Nqmznq5TUOlZl/DvptAnrlec3iiv3dimjQtY/i7ZGUOKuo7uY9EfRc9aQyuTf2lP2Lzww6AQE0UvQXswsjxc9s5SO2MpV83bFM5ylB6ROjcMPAehOw1KAsUEPiRE9/oFl0jq7JCrN2HhDC71otdLRaGpDL/GOHQ0JYFEPgP137UZOJppP83GNYsu71c2b/cAWNlGgtlgW0hIREpgaq7ngjWZqlqNOrMPsW+OCU1Mjogn62IOjll5ZiJrz2ZSyhTkSIYegm4z3OJ93hrpellsqVvOfi8yKlAS3VHNN0W+4yBWd23WHxsfJNj4fGs0=
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB7164.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(39860400002)(136003)(396003)(366004)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(1076003)(26005)(33716001)(38100700002)(86362001)(33656002)(83380400001)(316002)(8936002)(8676002)(4326008)(5660300002)(41300700001)(110136005)(66476007)(66556008)(66946007)(2906002)(6506007)(6666004)(6512007)(9686003)(6486002)(966005)(478600001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?sdKkf3oreHeWlVSI47uHsNOFlJuo50DVU394nB110u2pY132C4ifo3yQfmF4?=
- =?us-ascii?Q?FK+/841BzTYz3Rpkd1HHQA2beBy9heSq+bPUjS2lfivmLIyo1bymmbgiTt+S?=
- =?us-ascii?Q?I8oP9dT+xVQEp/hzjOcpvqZww//SC6Aiv3H/PYYSpxyAGWwn65U88gXd9DiN?=
- =?us-ascii?Q?BArq8n+7LvhLYFnPfF373l+H9uDs1peCVJWyH/z7PquSkZ2ea4vcNbfS8/uy?=
- =?us-ascii?Q?t5EfYJGhuxrtkvgZkTL/+XElYZMqoBFEd6fQ5oyNZcKVwrkOh3R0xc7jH212?=
- =?us-ascii?Q?w/kqerI/aALTnwfCOtL6KKVIy8FTJZlACTGBxJWsUGfunPpnt/O6+7ZszTQG?=
- =?us-ascii?Q?9ONOnoGBRX8msuYKhmk8o7nsVFcRX5N/xPMZ/wAjGclp8xf3WiC4UKulCl/Z?=
- =?us-ascii?Q?9QXvtJrFF8++4i+Ud8vllDIcc/9+po9YgjkTosGZrhB8Z05DsLM8LAwpo2I/?=
- =?us-ascii?Q?KvJFqKMlOjUCCS1eyDREV5uh5xzf2GucJo9tOs/0I4iFbOqvcnq7iyzDzkZv?=
- =?us-ascii?Q?FoGC7rARwaYWjlilyMjRMhcEQc2iR6KjZenPhpmlaXyBg5uFksXkl/a0QvdR?=
- =?us-ascii?Q?nMcTJXep3ZSzt/mpkooDxh3Z835z8/22QlJibSZsDM6XyPa/jo9l19aKiKZX?=
- =?us-ascii?Q?enszAdyyenkNbqC6i0XHEL+ZTifC2HyaSlp1ThfBRIHmh47VJ6jdlDgesu4m?=
- =?us-ascii?Q?3GQLb+7DmiMQqChN7wZBw7uyY8oi90v0BzqykyoSlJUd4Xr0B8A8B2RzJx55?=
- =?us-ascii?Q?ul/Synr3tWnZu7LSjqfoU8VNmSgDyhkr3njYoOKDepFMZgbTWiipkRH/5mae?=
- =?us-ascii?Q?qZ6v0D4yy50Izi0vCpyy9RzosGCbyjRVcMhmgAJGrAfFe5QrDwMxOyaHqFjy?=
- =?us-ascii?Q?DBdqlQ0INnvf9CL5+Swuvq6FINL2Vp9NADzM9PcIGP/lqj12JAIZTOHqyP7D?=
- =?us-ascii?Q?Tph4gohNTnNSEh8ob3I4cfiW1juudP1PzTgUMx4GIRYkwdpvKHDA9O2HG2LD?=
- =?us-ascii?Q?uvw3LEqhhYS01QdPlwKELo5e6oncZPwALHzCtbnHxb06uRFEiBlnkA1tdhX2?=
- =?us-ascii?Q?FLBftPYwbcUftWbxqxE7qoruZRjRMo/FK0eML6JhjOcLSle4amrp9JukPvB0?=
- =?us-ascii?Q?0lqlDAJXPsPAv7VEDskKf4Ce/sZeTiv7HQpWpBRqNpHI/8AvLZMMbFy9+2Gm?=
- =?us-ascii?Q?h+xH32sYnabFLKHfI1ZcO0hYIu64j/GGYBxMzvRrcnZ9YYMhhmiElRuBZ8vF?=
- =?us-ascii?Q?eQ6XZDF0nexZ1+8WgisZbPHnQR7FrZzVu3rbjFKAMk9WxIla+I8Eq+G7bmhe?=
- =?us-ascii?Q?N6AoOqx0znTi4DXewNY56TdEqnwicGzpaY0oqt1OPdpnxnCa4/8L3Ms0HIJt?=
- =?us-ascii?Q?J88XzZ2gm0WJ6TizgLLlr4cdAnwBNsBBKE7QKB3SA4HBH38dc1zqlWl3J7Hp?=
- =?us-ascii?Q?jqvtUoB8wM00FK8NCVxSszJzbDb0bRybympSmQ1umdDVksOOymvL27wjxejw?=
- =?us-ascii?Q?XnZ+60lenfQa3mCmbuVKg839h5R6IzGKnEsMQ61q2N1R95msPt6qyyeFHZxj?=
- =?us-ascii?Q?QKgXVkx6JEUrEtW9/9Ao1NjQIPrtS1ZCtw0KBhW1?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?stbhGU91R7VT0Gr+ErR0kKlziNBl+Vt/qBiCn4sGYXWc73H78wYbSv5S+U5R?=
+ =?us-ascii?Q?aCHZg2riDvnzKbvaaHVvFmwCOgeZoE1EGBeBly2HZPbqM2k1hCD7PnnivEdd?=
+ =?us-ascii?Q?aJtbolOemcLlhFUwBIpcAswZwxREGHhoNtiirAFQYIzrWCHbAGDYe4wgmzDa?=
+ =?us-ascii?Q?oaWDPjqGwzwByy8PZesPITQrnjofiOzUYGLEoaFLLPGrC4tC+ZQnybntSKXj?=
+ =?us-ascii?Q?sNOS2o7hBbhDXcsg3cBoKP5yffZQJUgUv/EXklHASbS1oRdhDPdk7qNwLm8M?=
+ =?us-ascii?Q?Miyl91MiSnE/8EE3KAce526D0D33ZxYDId5zWQHEzAXPlifln1Vxso2OpIwT?=
+ =?us-ascii?Q?Anm4kJJB/5U/7CjKku4x4p2nUg9Svr9S4ZdZWFjEiiaPd3uWSxOt9gOwxF9T?=
+ =?us-ascii?Q?fe8p/YtyHaK/f8LsjX7gAfxb/R1tJxPq8y4tIt3Z65xZ5L0lmVwZhCbybTF1?=
+ =?us-ascii?Q?msAr+Gl907SXgn7WvRCvItZ8N9BJfDyVI23XlrKa7pm3bExXwW4dBJAdyifY?=
+ =?us-ascii?Q?07o9YOQcQa1SGUpl+1YQwPj9dokB5vOcpPYiOMIRIQj2onJOUhVSjR5iJqlW?=
+ =?us-ascii?Q?cARuDP/xkO94YXVgXb4bdRsn4EVkellGZheNf+cKo+BpM4r6nh8XUPj3sTZ8?=
+ =?us-ascii?Q?0sIeCssDaDeiU/m5n6icotkCeHSQWsWn1P7bd1DDWL+3142gSciASuGC2rms?=
+ =?us-ascii?Q?Ktcme4pgPmE1yfzILAjXpi9nw77VbnMwuSFKiG0NUZ8xXSonvTFkGyS9uXPF?=
+ =?us-ascii?Q?pNlhq2c4wyY/VN4CKpoM/zJ9Jtnkabp8EQKqOfXxR2IZ/XmIA5i4EkxM798c?=
+ =?us-ascii?Q?wrf1DqBB9fa/Dfq3MT+I5dnPamYMJ2uuzUKXFmNNSp31ObPbALDkPRSNguV3?=
+ =?us-ascii?Q?n9FDk5TfOjZZB1uOeot3uPewBShqaiL4tMiHmUGa3i/Oa8iRi/eWeLq40xoT?=
+ =?us-ascii?Q?bASXcNQeLSlrb9P8aWfypCPfhySUZd4zHSb3fhrw/GRUNc4V7EXMe0M3z1iz?=
+ =?us-ascii?Q?4VwXMAZnjQuZ3QCV8XsIbiHS9H32MAA7YxIzJDA+j6DdJDXGOoZcXyYwVP1T?=
+ =?us-ascii?Q?oZXO+v1Nq6Xov0pIIbcsOA01RIfRnMtPAz3zjEJKRWyV5gAtBiuXA0umzZFw?=
+ =?us-ascii?Q?B7sYuPjBxeytsBXKzGs/xDprTOplZGsVQqmiwE7wdiKZ4Xx8xaE1vR08bCiD?=
+ =?us-ascii?Q?nUwwLaBB+a+OmPH+2UHh4KUl25O9npVm7AVWShRsM1NPqF8gf/a1QW9WLPPw?=
+ =?us-ascii?Q?OVsZr7ZLjBRPl0S3l1YPomlhrjiFCg0RdIlJFQjrHZ50q1hYS65QLBEqHzGF?=
+ =?us-ascii?Q?roEr0Tkn1c7Mf3WFT7x58uqWgrheYoh/3CpqjjZoit3HsHpF6r4w4gkcA+FK?=
+ =?us-ascii?Q?cD0XUTvk0/X+0UP1NdJxtt1SpcCGmCqHcVonSbZ3FetdRE3g4vqIhnxARpSI?=
+ =?us-ascii?Q?1APjCbHhpV0vEo2b6dNSOX+Zl5NPhYqCvsMQP8G7RrhBZFdzVhLSeKrfC72b?=
+ =?us-ascii?Q?Clp+TaKRbboO3ssh1txGjoZwWRGI/VzENOte2xZhY7AIBLvoLMIWNg3YW2TD?=
+ =?us-ascii?Q?rKaqANXVCz187oeSEQGI8ELGNAEsxJDDdV2pnA6V?=
 X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc0a1c72-277d-453a-d8ee-08dbc25596a7
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c98bc4d-c0b0-4257-c168-08dbc255b5a9
 X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB7164.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2023 08:08:25.9779
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Oct 2023 08:09:17.9857
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: z5sPcvSGjInDsrXO1GWWM5gBl3WJAnaAKe+t4EGZhsEycEl6hMb2sszGaWwgBzzI
+X-MS-Exchange-CrossTenant-UserPrincipalName: uQ5WE7B1PXcEfQVsEcZO6o1FoTXfAwlYiphY0ibzVJR73K3AkD4KaCb/zdSaS3mA
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8572
 X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
@@ -114,8 +115,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change is used to relieve CVE-2020-26555. The description of the
-CVE:
+This change is used to relieve CVE-2020-26555. The description of
+the CVE:
 
 Bluetooth legacy BR/EDR PIN code pairing in Bluetooth Core Specification
 1.0B through 5.2 may permit an unauthenticated nearby device to spoof
@@ -131,45 +132,62 @@ the attacked target to generate null link key (zero key) without PIN
 code. In BR/EDR, the key generation is actually handled in the controller
 which is below HCI.
 
-Thus, we can ignore null link key in the handler of "Link Key Notification
-event" to relieve the attack. A similar implementation also shows in
-btstack project. [3]
+A condition of this attack is that attacker should change the
+BR_ADDR of his hacking device (Host B) to equal to the BR_ADDR with
+the target device being attacked (Host A).
 
-v3: Drop the connection when null link key be detected.
+Thus, we reject the connection with device which has same BD_ADDR
+both on HCI_Create_Connection and HCI_Connection_Request to prevent
+the attack. A similar implementation also shows in btstack project.
+[3][4]
 
-v2:
-- Used Link: tag instead of Closes:
-- Used bt_dev_dbg instead of BT_DBG
-- Added Fixes: tag
-
-Fixes: 55ed8ca10f35 ("Bluetooth: Implement link key handling for the management interface")
 Link: https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-26555 [1]
 Link: https://ieeexplore.ieee.org/abstract/document/9474325/authors#authors [2]
-Link: https://github.com/bluekitchen/btstack/blob/master/src/hci.c#L3722 [3]
+Link: https://github.com/bluekitchen/btstack/blob/master/src/hci.c#L3523 [3]
+Link: https://github.com/bluekitchen/btstack/blob/master/src/hci.c#L7297 [4]
 Signed-off-by: Lee, Chun-Yi <jlee@suse.com>
 ---
+ net/bluetooth/hci_conn.c  | 7 +++++++
  net/bluetooth/hci_event.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ 2 files changed, 15 insertions(+)
 
-diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
-index 95816a938cea..a20a94e85b1a 100644
---- a/net/bluetooth/hci_event.c
-+++ b/net/bluetooth/hci_event.c
-@@ -4692,6 +4692,14 @@ static void hci_link_key_notify_evt(struct hci_dev *hdev, void *data,
- 	if (!conn)
- 		goto unlock;
+diff --git a/net/bluetooth/hci_conn.c b/net/bluetooth/hci_conn.c
+index 056f9516e46d..583d2e18314e 100644
+--- a/net/bluetooth/hci_conn.c
++++ b/net/bluetooth/hci_conn.c
+@@ -1611,6 +1611,13 @@ struct hci_conn *hci_connect_acl(struct hci_dev *hdev, bdaddr_t *dst,
+ 		return ERR_PTR(-EOPNOTSUPP);
+ 	}
  
-+	/* Ignore NULL link key against CVE-2020-26555 */
-+	if (!memcmp(ev->link_key, ZERO_KEY, HCI_LINK_KEY_SIZE)) {
-+		bt_dev_dbg(hdev, "Ignore NULL link key (ZERO KEY) for %pMR", &ev->bdaddr);
-+		hci_disconnect(conn, HCI_ERROR_AUTH_FAILURE);
-+		hci_conn_drop(conn);
-+		goto unlock;
++	/* Reject outgoing connection to device with same BD ADDR against CVE-2020-26555 */
++	if (!bacmp(&hdev->bdaddr, dst))
++	{
++		bt_dev_dbg(hdev, "Reject connection to the device with same BD_ADDR %pMR\n", dst);
++		return ERR_PTR(-ECONNREFUSED);
 +	}
 +
- 	hci_conn_hold(conn);
- 	conn->disc_timeout = HCI_DISCONN_TIMEOUT;
- 	hci_conn_drop(conn);
+ 	acl = hci_conn_hash_lookup_ba(hdev, ACL_LINK, dst);
+ 	if (!acl) {
+ 		acl = hci_conn_add(hdev, ACL_LINK, dst, HCI_ROLE_MASTER);
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index a20a94e85b1a..d66718190dc5 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -3268,6 +3268,14 @@ static void hci_conn_request_evt(struct hci_dev *hdev, void *data,
+ 
+ 	bt_dev_dbg(hdev, "bdaddr %pMR type 0x%x", &ev->bdaddr, ev->link_type);
+ 
++	/* Reject incoming connection from device with same BD ADDR against CVE-2020-26555 */
++	if (!bacmp(&hdev->bdaddr, &ev->bdaddr))
++	{
++		bt_dev_dbg(hdev, "Reject connection from the device with same BD_ADDR %pMR\n", &ev->bdaddr);
++		hci_reject_conn(hdev, &ev->bdaddr);
++		return;
++	}
++
+ 	mask |= hci_proto_connect_ind(hdev, &ev->bdaddr, ev->link_type,
+ 				      &flags);
+ 
 -- 
 2.35.3
 
