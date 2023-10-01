@@ -2,211 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D87267B46F9
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 12:41:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D14A7B4701
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 12:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234877AbjJAKlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 06:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41596 "EHLO
+        id S234851AbjJAKoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 06:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234817AbjJAKlM (ORCPT
+        with ESMTP id S234823AbjJAKoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 06:41:12 -0400
-X-Greylist: delayed 152457 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 01 Oct 2023 03:41:09 PDT
-Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26960D8;
-        Sun,  1 Oct 2023 03:41:09 -0700 (PDT)
-Received: by gofer.mess.org (Postfix, from userid 501)
-        id 8C6291007F9; Sun,  1 Oct 2023 11:41:07 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1696156867; bh=RSMxdZlA6dvGl+ue7BCTI/DiHrSS0pIbsuFSiBzaOJ4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c9z9EUlgawEqlaCkIPyJ6mNMWC2WE3QL+yucOEtRFySKnL/fb7NL2zshpKzwoTkmv
-         44LYsYUlyznZDNPS6tcJCa6WODDu4ksUgG+bgTqodh7zRtgNaDL0ujp4ahdbJGeWsc
-         /yE/wxsgFWrdmO0FLUCdm306F9vcbcM1QlNDpjAfTLqMNzy5aQZPLVL/ynm9SDdROx
-         vB85Mj+LRA/DGUZEtXEnH59yRl47JPWWwFSzFY6+JBcAUeuB52UcBTw75XsBHouC6x
-         BmOVl48nSleG9qMnPkVIgA/WnlNuGKn2nMQP27/B+U0qB6gGZlBl2AUKqp7LSv/VYa
-         RNitSIyNv/rOQ==
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
-X-Spam-Level: 
+        Sun, 1 Oct 2023 06:44:12 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A976B7;
+        Sun,  1 Oct 2023 03:44:09 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id E3C142184E;
+        Sun,  1 Oct 2023 10:44:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1696157046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KjN8Jj9pXX9nJ/oV/ViQdrLPUA+iQsH1M0z+BUtNsS4=;
+        b=W+T0U5VCcSvnv3PZ5nIsaPbS0kynBOBKKcLR41f6b0hVPcutsdyd0DdZ/0j6sDYd8Vt4lC
+        LMiRYPwYlhJeOhglhruxRWMrowncDpKpq5R0bL5SkI6tmrxJMnh2bg0uez9CLKyh3WHK7v
+        T02WAOhH7P7PaayzaCxI20dot5KOf4U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1696157046;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KjN8Jj9pXX9nJ/oV/ViQdrLPUA+iQsH1M0z+BUtNsS4=;
+        b=A/oShsgDE03LIuhKodJBq2l80uiUQ72jCQrfyJO/GgdxnSWhHd5ntt5RpR0ymzLXspmpjW
+        0x2oBaTTbgly9ODA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6737F132BE;
+        Sun,  1 Oct 2023 10:44:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id l84GGHZNGWU7UwAAMHmgww
+        (envelope-from <hare@suse.de>); Sun, 01 Oct 2023 10:44:06 +0000
+Message-ID: <e0360d8f-6d36-4178-9069-d633d9b7031d@suse.de>
+Date:   Sun, 1 Oct 2023 12:44:05 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] cnic,bnx2,bnx2x: use UIO_MEM_DMA_COHERENT
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chris Leech <cleech@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Rasesh Mody <rmody@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        Manish Chopra <manishc@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        John Meneghini <jmeneghi@redhat.com>,
+        Lee Duncan <lduncan@suse.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230929170023.1020032-1-cleech@redhat.com>
+ <20230929170023.1020032-4-cleech@redhat.com>
+ <2023093055-gotten-astronomy-a98b@gregkh>
+ <ZRhmqBRNUB3AfLv/@rhel-developer-toolbox>
+ <2023093002-unlighted-ragged-c6e1@gregkh>
+From:   Hannes Reinecke <hare@suse.de>
+In-Reply-To: <2023093002-unlighted-ragged-c6e1@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-Received: from bigcore.mess.org (unknown [IPv6:2a02:8011:d000:212:ca7f:54ff:fe51:14d6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by gofer.mess.org (Postfix) with ESMTPSA id D57F41007F6;
-        Sun,  1 Oct 2023 11:41:00 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
-        t=1696156860; bh=RSMxdZlA6dvGl+ue7BCTI/DiHrSS0pIbsuFSiBzaOJ4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Burzah2rsgdUFBELWQkDEpvEVUZuZ10sJsnvNNbRfakZycGZ1mt3/98/RYa/iw6D4
-         KU840KaAqRazeBe/+RR/xfltc+SSlg5DrZpoy1IzcnDOIBMozmNiKKpeWLC0MOViLL
-         5sfS5k1nunMjHzxWo94snpO5hz6l4mI0Tv1k8SJsVyDshiWy3q6Zn7svKI06GYwL+I
-         LrrreBQQAdNKv2Vqv8jvYwdX0rDbpj4QaEyK3nX6Z89UVnZ9qfMZqA5l/5qSAq5piT
-         NTHl62yvdP/bq9G9zOo4q7Sxtj7cUPj3PJ5oJf/iaYkQP7pIpeFd2YPU5slpZY1FMv
-         shX3PYzqFLeDA==
-From:   Sean Young <sean@mess.org>
-To:     Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: [PATCH 2/2] media: pwm-ir-tx: trigger edges from hrtimer interrupt context
-Date:   Sun,  1 Oct 2023 11:40:30 +0100
-Message-ID: <7efe4229514001b835fa70d51973cd3306dc0b04.1696156485.git.sean@mess.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1696156485.git.sean@mess.org>
-References: <cover.1696156485.git.sean@mess.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pwm-ir-tx driver has to turn the pwm signal on and off, and suffers
-from delays as this is done in process context. Make this work in atomic
-context.
+On 9/30/23 20:28, Greg Kroah-Hartman wrote:
+> On Sat, Sep 30, 2023 at 11:19:20AM -0700, Chris Leech wrote:
+>> On Sat, Sep 30, 2023 at 09:06:51AM +0200, Greg Kroah-Hartman wrote:
+>>> On Fri, Sep 29, 2023 at 10:00:23AM -0700, Chris Leech wrote:
+>>>> Make use of the new UIO_MEM_DMA_COHERENT type to properly handle mmap
+>>>> for dma_alloc_coherent buffers.
+>>>
+>>> Why are ethernet drivers messing around with UIO devices?  That's not
+>>> what UIO is for, unless you are trying to do kernel bypass for these
+>>> devices without anyone noticing?
+>>>
+>>> confused,
+>>
+>> It's confusing. The bnx2 driver stack included a cnic (converged nic?)
+>> module that sits between the ethernet drivers (bnx2, bnx2x) and protocol
+>> offload drivers (iscsi, fcoe, rdma).
+>>
+>> The iscsi module (bnx2i) uses a passthrough interface from cnic to
+>> handle some network configuration that the device firmware doesn't do.
+>> It uses a uio device and a userspace component called iscsiuio to do
+>> that.
+> 
+> That's horrible, and not what the UIO api is for at all.  Configure the
+> device like any other normal kernel device, don't poke at raw memory
+> values directly, that way lies madness.
+> 
+> Have a pointer to the userspace tool anywhere?  All I found looks like a
+> full IP stack in userspace under that name, and surely that's not what
+> this api is for...
+> 
+But that's how the interface is used, in particular for the bnx2i 
+driver. Problem is that the bnx2i iSCSI offload is just that, an iSCSI 
+offload. Not a TCP offload. So if the iSCSI interface is configured to
+acquire the IP address via DHCP, someone has to run the DHCP protocol.
+But the iSCSI offload can't, and the bnx2i PCI device is not a network
+device so that the normal network stack can't be used.
+And so the architects of the bnx2i card decided to use UIO to pass
+the network traffic to userspace, and used the userspace 'iscsiuio'
+application to run DHCP in userspace.
 
-This makes the driver much more precise.
+But's been that way for several years now; so long, in fact, that
+the card itself has been out of support from Marvell (since quite some 
+years, too, IIRC). And even the successor of that card (the qedi driver)
+is nearing EOL. Mind you, the qedi driver is using the same interface 
+(by using UIO to run DHCP in userspace), so singling out the bnx2i for 
+bad design can be construed as being unfair :-)
 
-Signed-off-by: Sean Young <sean@mess.org>
-Cc: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
----
- drivers/media/rc/pwm-ir-tx.c | 79 ++++++++++++++++++++++++++++--------
- 1 file changed, 63 insertions(+), 16 deletions(-)
+I agree, though, that the design is a mess.
 
-diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
-index c5f37c03af9c..557725a07a67 100644
---- a/drivers/media/rc/pwm-ir-tx.c
-+++ b/drivers/media/rc/pwm-ir-tx.c
-@@ -10,6 +10,8 @@
- #include <linux/slab.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/hrtimer.h>
-+#include <linux/completion.h>
- #include <media/rc-core.h>
- 
- #define DRIVER_NAME	"pwm-ir-tx"
-@@ -17,8 +19,13 @@
- 
- struct pwm_ir {
- 	struct pwm_device *pwm;
--	unsigned int carrier;
--	unsigned int duty_cycle;
-+	struct hrtimer timer;
-+	struct completion completion;
-+	uint carrier;
-+	uint duty_cycle;
-+	uint *txbuf;
-+	uint txbuf_len;
-+	uint txbuf_index;
- };
- 
- static const struct of_device_id pwm_ir_of_match[] = {
-@@ -55,33 +62,65 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
- 	struct pwm_ir *pwm_ir = dev->priv;
- 	struct pwm_device *pwm = pwm_ir->pwm;
- 	struct pwm_state state;
--	int i;
--	ktime_t edge;
--	long delta;
-+
-+	reinit_completion(&pwm_ir->completion);
- 
- 	pwm_init_state(pwm, &state);
- 
- 	state.period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
- 	pwm_set_relative_duty_cycle(&state, pwm_ir->duty_cycle, 100);
-+	state.enabled = false;
- 
--	edge = ktime_get();
-+	pwm_ir->txbuf = txbuf;
-+	pwm_ir->txbuf_len = count;
-+	pwm_ir->txbuf_index = 0;
- 
--	for (i = 0; i < count; i++) {
--		state.enabled = !(i % 2);
--		pwm_apply_state(pwm, &state);
-+	pwm_apply_state(pwm, &state);
- 
--		edge = ktime_add_us(edge, txbuf[i]);
--		delta = ktime_us_delta(edge, ktime_get());
--		if (delta > 0)
--			usleep_range(delta, delta + 10);
--	}
-+	hrtimer_start(&pwm_ir->timer, 1000, HRTIMER_MODE_REL);
- 
--	state.enabled = false;
--	pwm_apply_state(pwm, &state);
-+	wait_for_completion(&pwm_ir->completion);
- 
- 	return count;
- }
- 
-+static enum hrtimer_restart pwm_ir_timer(struct hrtimer *timer)
-+{
-+	struct pwm_ir *pwm_ir = container_of(timer, struct pwm_ir, timer);
-+	ktime_t now;
-+
-+	/*
-+	 * If we happen to hit an odd latency spike, loop through the
-+	 * pulses until we catch up.
-+	 */
-+	do {
-+		u64 ns;
-+
-+		if (pwm_ir->txbuf_index >= pwm_ir->txbuf_len) {
-+			/* Stop TX here */
-+			pwm_disable(pwm_ir->pwm);
-+
-+			complete(&pwm_ir->completion);
-+
-+			return HRTIMER_NORESTART;
-+		}
-+
-+		if (pwm_ir->txbuf_index % 2)
-+			pwm_disable(pwm_ir->pwm);
-+		else
-+			pwm_enable(pwm_ir->pwm);
-+
-+		ns = US_TO_NS(pwm_ir->txbuf[pwm_ir->txbuf_index]);
-+		hrtimer_add_expires_ns(timer, ns);
-+
-+		pwm_ir->txbuf_index++;
-+
-+		now = timer->base->get_time();
-+	} while (hrtimer_get_expires_tv64(timer) < now);
-+
-+	return HRTIMER_RESTART;
-+}
-+
- static int pwm_ir_probe(struct platform_device *pdev)
- {
- 	struct pwm_ir *pwm_ir;
-@@ -96,8 +135,16 @@ static int pwm_ir_probe(struct platform_device *pdev)
- 	if (IS_ERR(pwm_ir->pwm))
- 		return PTR_ERR(pwm_ir->pwm);
- 
-+	if (pwm_can_sleep(pwm_ir->pwm)) {
-+		dev_err(&pdev->dev, "unsupported pwm device: driver can sleep\n");
-+		return -ENODEV;
-+	}
-+
- 	pwm_ir->carrier = 38000;
- 	pwm_ir->duty_cycle = 50;
-+	init_completion(&pwm_ir->completion);
-+	hrtimer_init(&pwm_ir->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
-+	pwm_ir->timer.function = pwm_ir_timer;
- 
- 	rcdev = devm_rc_allocate_device(&pdev->dev, RC_DRIVER_IR_RAW_TX);
- 	if (!rcdev)
+Cheers,
+
+Hannes
 -- 
-2.42.0
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Ivo Totev, Andrew
+Myers, Andrew McDonald, Martje Boudien Moerman
 
