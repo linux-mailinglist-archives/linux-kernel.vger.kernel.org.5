@@ -2,120 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC16B7B4882
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 18:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE707B487F
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 18:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235181AbjJAP7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 11:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58772 "EHLO
+        id S235187AbjJAQAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 12:00:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235093AbjJAP7x (ORCPT
+        with ESMTP id S235093AbjJAQAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 11:59:53 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76973D3
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 08:59:49 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7A70160003;
-        Sun,  1 Oct 2023 15:59:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696175987;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VRzqWCTxRUztaMZlK8v6aOumJ51TcHdPHCtL5+sT2OE=;
-        b=bRjfPi7aEyDDSoacSwXVKW1HXj2fQ9UHKQqyb7QZZacM1McD+hOp7J6Cs/4Dc/twEsyw/L
-        SinCXoFu+pbpbJAmwEOh8wiWKbJG0HsSRrnZUQN66SkmIPYvt2GoLzchT1PoMQJ+DV+kgJ
-        wPs+S5DeM7O0axqr+mn+KqLxmOQpexhomGptAT5DJzVdF++mGo892xN/YZxQBrT/RaxwGY
-        HwWrwDOyoeCanBYi/1/UgXIGgG5WR228ic5wTD6qSp7zMknJKHlGemjAbnznrZz3g2gzGd
-        BJAg0qiyz2tjT0bbT3q2zldOuYUVi4/aVYPwzbyXCYbFya/aDY6sD0mSjiNqsg==
-Date:   Sun, 1 Oct 2023 17:59:42 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Walle <michael@walle.cc>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>
-Subject: Re: [PATCH v10 3/3] nvmem: core: Expose cells through sysfs
-Message-ID: <20231001175942.749d9bb3@xps-13>
-In-Reply-To: <5f1221613fb71b87c01c82add9fe5097@milecki.pl>
-References: <20230922174854.611975-1-miquel.raynal@bootlin.com>
-        <20230922174854.611975-4-miquel.raynal@bootlin.com>
-        <1a27a3341379b9679174f7c5143bbeb3@milecki.pl>
-        <5f1221613fb71b87c01c82add9fe5097@milecki.pl>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Sun, 1 Oct 2023 12:00:13 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3A0DF
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 09:00:10 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-406402933edso73933055e9.2
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 09:00:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696176009; x=1696780809; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qbQ2+MNx7iQKlTg6jhWJ9e8ngVQbdAZdbk2tukIrGRw=;
+        b=IVRm8T0V976mZ9cTdEnp23eUgJqclHZFvpe5N6nVDwaCGxt8aYCLNtA5lRF1MpPyUv
+         1XjtCpfA2GBvPb4ysyuutwMdTN2mw9cIU86LpPVaYHWXkhGBvR3Vfjbry2euyn9yKSKu
+         k4KA90KaSJzrOsqqOG355vhEVv+/zoL32ibAJfpodhFLuamR7q2ll6KCKxO3g7UNJ/i9
+         WoqoTf3zRg2iERk297zbpPeMlyz6+EaXVurZ9OvACAmmxCFFgeC6oD7McpQVeq0SnAnL
+         xcAHJJuHopkI/wJ6YJoJhhG6xHVTNVktruod3QpZGW2HPNlMHLyQfjkF3Ccqs6vbDdl+
+         ijmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696176009; x=1696780809;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qbQ2+MNx7iQKlTg6jhWJ9e8ngVQbdAZdbk2tukIrGRw=;
+        b=bp+pw1DAJY+puMzIEebxSdQpoz2o/DJq3YcxBGH0dp1LxSPwRw4s1OueSvU4qt9o4d
+         xWwoip+04JFlWKFkqof2SGVaKDh2tqdevQ5o0uscf0myHnmiH353zyx/FRR831yCys80
+         O/ZK1vaPqEwqhEk/KQIf1vu+rDkS2kpjQ/cm5zmK4ruYHgGIbYLgltLHOeOXqID5C8R/
+         IGBYx36eV45Zt50Ykcp8fBNFfha1KuLlG06m+TSgt9DXViLz10fzaO1O06YXcNcfaIny
+         1Mt4mbmAXlFZSt8tsj3K87wXbPeO0TNC2cW7OpUQmER71/fcwG0CBHGrWKy01n1npGKq
+         2GFQ==
+X-Gm-Message-State: AOJu0YzDovH3uxB7PgA6HXtfWfdwh0VN3bQ6Z4Lwp5LXq5narPR6DU8f
+        /3oo861ooIhv6Mrc9fmPeDM=
+X-Google-Smtp-Source: AGHT+IGsBTJNp2/AtL0YHzJ0LwsCxVV5d5j9nxOnHW1suaWojSlQ/S2cfF5NquVDInPTiVFlnC6r1A==
+X-Received: by 2002:a05:600c:6027:b0:406:535a:cfb4 with SMTP id az39-20020a05600c602700b00406535acfb4mr7987766wmb.1.1696176008738;
+        Sun, 01 Oct 2023 09:00:08 -0700 (PDT)
+Received: from lucifer.home ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
+        by smtp.googlemail.com with ESMTPSA id s16-20020a05600c045000b0040536dcec17sm5487695wmb.27.2023.10.01.09.00.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Oct 2023 09:00:07 -0700 (PDT)
+From:   Lorenzo Stoakes <lstoakes@gmail.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lorenzo Stoakes <lstoakes@gmail.com>
+Subject: [PATCH 0/4] various improvements to the GUP interface
+Date:   Sun,  1 Oct 2023 17:00:01 +0100
+Message-ID: <cover.1696174961.git.lstoakes@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafa=C5=82,
+A series of fixes to simplify and improve the GUP interface with an eye to
+providing groundwork to future improvements:-
 
-rafal@milecki.pl wrote on Fri, 29 Sep 2023 07:18:32 +0200:
+* __access_remote_vm() and access_remote_vm() are functionally identical,
+  so make the former static such that in future we can potentially change
+  the external-facing implementation details of this function.
 
-> On 2023-09-28 17:31, Rafa=C5=82 Mi=C5=82ecki wrote:
-> > On 2023-09-22 19:48, Miquel Raynal wrote: =20
-> >> The binary content of nvmem devices is available to the user so in the
-> >> easiest cases, finding the content of a cell is rather easy as it is
-> >> just a matter of looking at a known and fixed offset. However, nvmem
-> >> layouts have been recently introduced to cope with more advanced
-> >> situations, where the offset and size of the cells is not known in
-> >> advance or is dynamic. When using layouts, more advanced parsers are
-> >> used by the kernel in order to give direct access to the content of >>=
- each
-> >> cell, regardless of its position/size in the underlying
-> >> device. Unfortunately, these information are not accessible by users,
-> >> unless by fully re-implementing the parser logic in userland. =20
-> >> >> Let's expose the cells and their content through sysfs to avoid the=
-se =20
-> >> situations. Of course the relevant NVMEM sysfs Kconfig option must be
-> >> enabled for this support to be available. =20
-> >> >> Not all nvmem devices expose cells. Indeed, the .bin_attrs attribut=
-e =20
-> >> group member will be filled at runtime only when relevant and will
-> >> remain empty otherwise. In this case, as the cells attribute group >> =
-will
-> >> be empty, it will not lead to any additional folder/file creation. =20
-> >> >> Exposed cells are read-only. There is, in practice, everything in t=
-he =20
-> >> core to support a write path, but as I don't see any need for that, I
-> >> prefer to keep the interface simple (and probably safer). The >> inter=
-face
-> >> is documented as being in the "testing" state which means we can later
-> >> add a write attribute if though relevant. =20
-> >> >> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com> =20
-> >=20
-> > Tested-by: Rafa=C5=82 Mi=C5=82ecki <rafal@milecki.pl>
-> >=20
-> > # hexdump -C /sys/bus/nvmem/devices/u-boot-env0/cells/ipaddr@15c
-> > 00000000  31 39 32 2e 31 36 38 2e  31 2e 31                 > |192.168.=
-1.1|
-> > 0000000b =20
->=20
-> The same test after converting U-Boot env into layout driver:
->=20
-> # hexdump -C /sys/bus/nvmem/devices/mtd1/cells/ipaddr@15c
-> 00000000  31 39 32 2e 31 36 38 2e  31 2e 31                 |192.168.1.1|
-> 0000000b
->=20
-> Looks good!
->=20
+* Extend is_valid_gup_args() to cover the missing FOLL_TOUCH case, and
+  simplify things by defining INTERNAL_GUP_FLAGS to check against.
 
-Great! Thanks a lot for testing!
+* Adjust __get_user_pages_locked() to explicitly treat a failure to pin any
+  pages as an error in all circumstances other than FOLL_NOWAIT being
+  specified, bringing it in line with the nommu implementation of this
+  function.
 
-Miqu=C3=A8l
+* (With many thanks to Arnd who suggested this in the first instance)
+  Update get_user_page_vma_remote() to explicitly only return a page or an
+  error, simplifying the interface and avoiding the questionable
+  IS_ERR_OR_NULL() pattern.
+
+Lorenzo Stoakes (4):
+  mm: make __access_remote_vm() static
+  mm/gup: explicitly define and check internal GUP flags, disallow
+    FOLL_TOUCH
+  mm/gup: make failure to pin an error if FOLL_NOWAIT not specified
+  mm/gup: adapt get_user_page_vma_remote() to never return NULL
+
+ arch/arm64/kernel/mte.c |  4 ++--
+ include/linux/mm.h      | 18 +++++++++++++-----
+ kernel/events/uprobes.c |  4 ++--
+ kernel/ptrace.c         |  2 +-
+ mm/gup.c                | 16 +++++++++++++---
+ mm/internal.h           |  3 +++
+ mm/memory.c             |  7 +++----
+ mm/nommu.c              |  4 ++--
+ 8 files changed, 39 insertions(+), 19 deletions(-)
+
+-- 
+2.42.0
+
