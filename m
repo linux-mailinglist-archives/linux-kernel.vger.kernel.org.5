@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1424D7B4996
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 22:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6F27B4995
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 22:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235368AbjJAUae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 16:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49194 "EHLO
+        id S235381AbjJAUhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 16:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235346AbjJAUac (ORCPT
+        with ESMTP id S235346AbjJAUhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 16:30:32 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FE6BD
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 13:30:25 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b1ebc80d0aso1873794066b.0
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 13:30:25 -0700 (PDT)
+        Sun, 1 Oct 2023 16:37:12 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9ADFBD
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 13:37:08 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-5859a7d6556so2147909a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 13:37:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1696192224; x=1696797024; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4UIa9Ejjfrtgzd3sj6bMjsMzc6hS9g1BCxnyrZfaWR0=;
-        b=YafTmrYb6wsEwnI8NEKa9ohTMghXmZGR88kn5EVOfXJAzB4zCQSCtcscKtDRw6GQSX
-         ImNS5wvLoBMiS0juZldQvA7NpBIVCiYdHWdtOeo3IcFAKxKTQaiHMft+tCgssBafg5iD
-         gmV0Rb/inl5R2jfKR+i1GXAHL16nZQ5gGxF4o=
+        d=chromium.org; s=google; t=1696192628; x=1696797428; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fyBFMSqqwX8RPnuE4cKMfmvDwm/8Oa7DFI/6NjwESSg=;
+        b=aGauLLfzUZSenoVQkQXwhwHD4HmsNjV2X8H9IjzgckcLywfFvM6+0+WO21zeo0gwNS
+         IFl/eWWuG6G+6EDea75gDCFT5E2/K5GlpJfq0Sz+6zXJ9/xvfqBcKZMXkJBglDQT65aO
+         B+uTD0035K3nfua5WOnhMMpyxyrWhyg6++KOs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696192224; x=1696797024;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4UIa9Ejjfrtgzd3sj6bMjsMzc6hS9g1BCxnyrZfaWR0=;
-        b=UJ2rIF+ZoB2+BgYP+dWceLN02R9Df29cEgSPir/hV6UrWSMJ+/ibNLbrzNVFyuztMa
-         K8KJ67fuuSIeR46zGKkM3cT4dbogu2jnLOy+fqcmmqKYXKyg7ac3c3d/adXxVit+jWrh
-         k0NQjqAu70FLdf0sSJAghCgTSxHaVTbye2lbu29w2VJVS3mR7FiZtXhuNiqkYfm1OOv/
-         iUCqPOL7d9m0eVohBL3kITk8Hm0CUTLPLrlMIzmuIIzBR6AvoZW7ET2C0WYwhbjZc8K9
-         Ab1k9EJZZ1YlJe6v4wx7mcG0qgUxuRZezzRAP6bs8vrTfSC12W+LLR09ONjyMzH7lomp
-         e0qw==
-X-Gm-Message-State: AOJu0YxWfU0u1Dws1kjF8LkfWGUXMIvrETgPsYBMiXjVf0dn6x8Ieb9G
-        lZRZTWmBJv3dKbRF6TZVrfVwGxGUI2Sx1nNmWenzPQ==
-X-Google-Smtp-Source: AGHT+IGr1BIWYwHFTCPgqi6ZaW3wQ7AaGRBo1C/7ztVslEX38Ozh4vF5ZJRQAXk9ueY7+YEysqnASg==
-X-Received: by 2002:a17:906:74ca:b0:9b2:94a8:df5 with SMTP id z10-20020a17090674ca00b009b294a80df5mr8799495ejl.35.1696192223876;
-        Sun, 01 Oct 2023 13:30:23 -0700 (PDT)
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
-        by smtp.gmail.com with ESMTPSA id p3-20020a17090635c300b0098951bb4dc3sm15619739ejb.184.2023.10.01.13.30.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Oct 2023 13:30:23 -0700 (PDT)
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-31427ddd3fbso14496202f8f.0
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 13:30:23 -0700 (PDT)
-X-Received: by 2002:adf:ec03:0:b0:31f:e1b4:5846 with SMTP id
- x3-20020adfec03000000b0031fe1b45846mr8996993wrn.53.1696192223123; Sun, 01 Oct
- 2023 13:30:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696192628; x=1696797428;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fyBFMSqqwX8RPnuE4cKMfmvDwm/8Oa7DFI/6NjwESSg=;
+        b=Oj1Fy4g8Q7PQPNwGztCR5WsQFQvAACZDhOv8b05akuiSZSeTYHotkx6RvK7bWFLU1O
+         JMf3XVN3GGdwgfFK2S9TjtBuS1vXuBlRMthSKMRLgzu6hsnE0f/huXNOud+QJ+F5G4Gj
+         PjTLOcYgNChcW993oON8CFWqRaJyWEf6Rj6NMVZQ1OyBXVvIxgnQ6+kOO/swya/5ORdu
+         84Ldcst0k03kJiXcQmm8G2zJmmBDdHK1i7VCdMpdrFjpZm9LXvtP24mrxeILSiYfi0ld
+         QjJLI4SfRlqwQPZCmDv8qxwG+rJnq427ggGwtQ6atUn1bOZLGtjtVm+qnp/Ohv14RuQw
+         sUdg==
+X-Gm-Message-State: AOJu0Yzi86bDS7kHwdsNGf5D2nReLmhlU/qg64dbtAXj7eZDrRHqWSyW
+        PA4WdxQj8NKzzFW7Py3hLSR54P0q9a2zJesLTwY=
+X-Google-Smtp-Source: AGHT+IH0+lH3U3tlZJvdil7jRXzwK7T7NrFAv5uYLQCT/HAB93NjqNDt0CShB8VBCNkf5st0BzTA+w==
+X-Received: by 2002:a05:6a20:8e0a:b0:133:bbe0:312f with SMTP id y10-20020a056a208e0a00b00133bbe0312fmr12736806pzj.50.1696192628223;
+        Sun, 01 Oct 2023 13:37:08 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id y15-20020a17090322cf00b001c3e732b8dbsm20673804plg.168.2023.10.01.13.37.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Oct 2023 13:37:07 -0700 (PDT)
+Date:   Sun, 1 Oct 2023 13:37:04 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] ASoC: SOF: ipc4-topology: Use size_add() in call
+ to struct_size()
+Message-ID: <202310011335.28B55A3BE@keescook>
+References: <ZQSr15AYJpDpipg6@work>
+ <169601489953.3012131.13922425518082792309.b4-ty@chromium.org>
+ <ZRlJN9qVOv7CIu1N@finisterre.sirena.org.uk>
 MIME-Version: 1.0
-References: <20231001131620.112484-1-ubizjak@gmail.com> <CAHk-=wg6P8pPg-x4BPUQj-wE0xC7HkGzFk89ftuji8MVo+RRxw@mail.gmail.com>
- <CAFULd4Y+HXuditB51Q0LznqiBsvxJr3BjEYvx4_224XmqrycCw@mail.gmail.com> <CAHk-=wh+cfn58XxMLnG6dH+Eb9-2dYfABXJF2FtSZ+vfqVvWzA@mail.gmail.com>
-In-Reply-To: <CAHk-=wh+cfn58XxMLnG6dH+Eb9-2dYfABXJF2FtSZ+vfqVvWzA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 1 Oct 2023 13:30:05 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgycD7=dtGwHEBi8dVyv3Fy2yWzv_bGe9zY0QwTn2BWTA@mail.gmail.com>
-Message-ID: <CAHk-=wgycD7=dtGwHEBi8dVyv3Fy2yWzv_bGe9zY0QwTn2BWTA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/4] x86/percpu: Use segment qualifiers
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRlJN9qVOv7CIu1N@finisterre.sirena.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 1 Oct 2023 at 13:21, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Sun, 1 Oct 2023 at 12:53, Uros Bizjak <ubizjak@gmail.com> wrote:
-> >
-> > Regarding x86 target specific code, the same functionality used for
-> > explicit address space is used internally to handle __thread
-> > qualifier.
->
-> Ok, that's interesting, in that __thread is certainly widely used so
-> it will have seen testing.
+On Sun, Oct 01, 2023 at 11:25:59AM +0100, Mark Brown wrote:
+> On Fri, Sep 29, 2023 at 12:14:59PM -0700, Kees Cook wrote:
+> > On Fri, 15 Sep 2023 13:09:11 -0600, Gustavo A. R. Silva wrote:
+> 
+> > > If, for any reason, the open-coded arithmetic causes a wraparound,
+> > > the protection that `struct_size()` adds against potential integer
+> > > overflows is defeated. Fix this by hardening call to `struct_size()`
+> > > with `size_add()`.
+> 
+> > [1/1] ASoC: SOF: ipc4-topology: Use size_add() in call to struct_size()
+> >       https://git.kernel.org/kees/c/93d2858dd630
+> 
+> Why is this bypassing the ASoC tree?
 
-.. but I just checked that the __thread case *does* work with my
-stupid test-case, so clearly the "__thread" coverage ends up being
-very different from something like __seg_fs.
+Hi! Sorry, I can drop it if you want to take it? I tend to collect trivial
+hardening changes with reviews that haven't been otherwise commented on
+for at least 2 weeks.
 
-The difference? For __thread, gcc and clang know how to get the
-beginning of the thread area (the equivalent of our kernel
-this_cpu_ptr() macro), so now the compiler knows how to turn a
-__thread pointer into a "normal" pointer, and can just do memcpy.
+-Kees
 
-But for __seg_fs and __seg_gs, the compiler doesn't know how to do
-that, and then ends up just flailing wildly.
-
-If the structure is small enough to be done as individual moves, both
-gcc and clang do ok. But anything else is just a complete shit-show.
-
-If they both errored out reliably and legibly, that would be one
-thing. But gcc just silently generates garbage, and clang errors out
-with 60+ lines of internal compiler backtrace.
-
-             Linus
+-- 
+Kees Cook
