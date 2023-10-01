@@ -2,68 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1627B498C
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 22:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6EEC7B4992
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 22:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235370AbjJAUOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 16:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39974 "EHLO
+        id S235378AbjJAUVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 16:21:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235346AbjJAUOJ (ORCPT
+        with ESMTP id S235346AbjJAUVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 16:14:09 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344B0D3
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 13:14:06 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-32799639a2aso936198f8f.3
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 13:14:06 -0700 (PDT)
+        Sun, 1 Oct 2023 16:21:42 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285A3A7
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 13:21:39 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-99c136ee106so2184713466b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 13:21:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696191244; x=1696796044; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=S5gdKKBRI8HMjzMvfQFYDp6loku3qgrG9OQcfyEaG8Y=;
-        b=ENJDV8FQI78y78EglS69TxeGxUl/zickH6M2Iw6RqqbDpzVNH7ywqOc5FryAzAQdfo
-         ZuP6zHwaHwnf9HCfsz5CXh+tLxz8PoFvscwLEhbefPx5QVjoqX1KmXP9n66dKz6ryxYH
-         tCBDYgkx/1R4SI9HKVh7zok8NHyvmXXBhttmuKc2StwabPKDrwAu4t+zMA+MnSGPHcbN
-         /FDW1HCcs3EItuOQZMIUejk/TFYTXVC8XTMOe2/xCNarO96Cby/kcjhqiFRQAIUG3o/m
-         aLACJyFofk8zJxiqT66akr6qKK844hmkDnJtn3RluPm/n3jIbt6JmDgtmIkfKdkxSSMo
-         VLTQ==
+        d=linux-foundation.org; s=google; t=1696191697; x=1696796497; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=u1n+ZWsHXBr8FhnGB0kWER6c5yvJ+Tmgd0dVGu15OJg=;
+        b=WXCVxI/wBzliWVLUw0z6FjGmBfcUXdBKvf9l1NbAzk+sxqiE9GtZGfATXONdFYtAGa
+         pBvOR+ZZwRIElxeT0GvtHkRQGCAMELllUeo64Frr0zlzIpZuv5t15oLUI0TrYIj5UTzR
+         d3fI7WxZ2Q403IjeKRFs9BGUZPeZXF8KAWj58=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696191244; x=1696796044;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1696191697; x=1696796497;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=S5gdKKBRI8HMjzMvfQFYDp6loku3qgrG9OQcfyEaG8Y=;
-        b=ipMb1OlVwwCBhwdZ57E/doAEuVM3MGbvESODCv9t+Zuflcszo1weXNq7GYWi3R5l0u
-         b3YhdWz0okZ92ni3aQMwXQt8VVo86LOvG9cLnKvHiCPkQs4jx7GkjAaE1+9vX0vvU7j/
-         DIF62JoGvTeA4XJNw/VAkcCqfJ05K7J6ebhK+ngczbiNRmqTtYqxhV8SryEBftWbFZAp
-         dGq6l2orEMtCUahNR579qr+k5VsHH1cBD1H+ImCkKVqtftrvN+1Q/wI8O1lGbFCh1LnX
-         PIxV/owjkgxauyIW0cX9ROUdfaSRSv1ZZkyQCCqFUVjIbg+esvcNuN6ggN5G6MLrlpbR
-         dWrg==
-X-Gm-Message-State: AOJu0YzgA8y9srz5JLyX7f9f6qFTMXU4GAVLANrIzPqBaQXCYyHw+WDb
-        h+Ool6n44/Hq98EkasmFoztd6Q==
-X-Google-Smtp-Source: AGHT+IF8bQPLl/XkMjCK1GATpgLR3obNH1Yh0AnESH4KmxjbQ0tap497/YPYQvdhCNXwcL8NlYsgvQ==
-X-Received: by 2002:a5d:63cb:0:b0:319:6e3f:d5f0 with SMTP id c11-20020a5d63cb000000b003196e3fd5f0mr9162433wrw.44.1696191244674;
-        Sun, 01 Oct 2023 13:14:04 -0700 (PDT)
-Received: from arnold.baylibre (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id j6-20020a5d6046000000b003259b068ba6sm6141665wrt.7.2023.10.01.13.14.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Oct 2023 13:14:03 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     andrew@aj.id.au, davem@davemloft.net, herbert@gondor.apana.org.au,
-        joel@jms.id.au, john.allen@amd.com, neal_liu@aspeedtech.com,
-        thomas.lendacky@amd.com
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH] crypto: Move akcipher_request_cast helper to crypto header
-Date:   Sun,  1 Oct 2023 20:13:57 +0000
-Message-Id: <20231001201357.2052949-1-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        bh=u1n+ZWsHXBr8FhnGB0kWER6c5yvJ+Tmgd0dVGu15OJg=;
+        b=NU5nYIoEH2vDw2rSMzID4e010/bBPQPFQadtwMveaTC356ilmHRDzYT6xiqWCKkOic
+         p4X/lpFtpVLsv1QuEb9oLaH0UlYtuSkGvRxVaOOX0mxhg0oOIr4OPPd8o/FCfrJxiirQ
+         fv5yhnWSId+KaRnSS8hkup/z9/m2xsM2tkww4wqJV2nlBynz3FWJXDm2EySzWaxZOTVI
+         kTSyzQdf8hfKAsbdf7tMXuyrcDrwri8jXpWA312JHgjs+dJDvWVvi2cxyrgoTdXIQ64/
+         Fv7tr/r+CgPVf0VlVnb4Pr3liXwLCEqbLwXMMC3uM75ihu/GvH3ETlklUl24bqYRvJkX
+         x2ww==
+X-Gm-Message-State: AOJu0YwBWbjrKZvpPhZ9bhmoTrjFNcnvQZ/sCn1iMSIIfmYRfcs8hvVH
+        4+8KH5tmHR2sJ2DTsGIbW3h+g3inepHHo5rN9rIEgw==
+X-Google-Smtp-Source: AGHT+IGb35y+MHDzEOo1KzUGuCvRtdtf6Bw9DLAfx1seuV/nGZ6RiX2auJOz2cskirn9kFUEYQIN4w==
+X-Received: by 2002:a17:906:328b:b0:9ae:658f:a80a with SMTP id 11-20020a170906328b00b009ae658fa80amr8357288ejw.48.1696191697356;
+        Sun, 01 Oct 2023 13:21:37 -0700 (PDT)
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
+        by smtp.gmail.com with ESMTPSA id lf23-20020a170906ae5700b00991d54db2acsm15834780ejb.44.2023.10.01.13.21.36
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 Oct 2023 13:21:36 -0700 (PDT)
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-533d9925094so17466346a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 13:21:36 -0700 (PDT)
+X-Received: by 2002:a05:6402:1257:b0:530:77e6:849f with SMTP id
+ l23-20020a056402125700b0053077e6849fmr8682600edw.27.1696191696452; Sun, 01
+ Oct 2023 13:21:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20231001131620.112484-1-ubizjak@gmail.com> <CAHk-=wg6P8pPg-x4BPUQj-wE0xC7HkGzFk89ftuji8MVo+RRxw@mail.gmail.com>
+ <CAFULd4Y+HXuditB51Q0LznqiBsvxJr3BjEYvx4_224XmqrycCw@mail.gmail.com>
+In-Reply-To: <CAFULd4Y+HXuditB51Q0LznqiBsvxJr3BjEYvx4_224XmqrycCw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 1 Oct 2023 13:21:16 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh+cfn58XxMLnG6dH+Eb9-2dYfABXJF2FtSZ+vfqVvWzA@mail.gmail.com>
+Message-ID: <CAHk-=wh+cfn58XxMLnG6dH+Eb9-2dYfABXJF2FtSZ+vfqVvWzA@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/4] x86/percpu: Use segment qualifiers
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,68 +83,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is already 2 driver implementing their own akcipher_request_cast.
-In the future there will be also rockchip and allwinner driver that will
-need this.
-This is sufficient to move it in crypto headers.
+On Sun, 1 Oct 2023 at 12:53, Uros Bizjak <ubizjak@gmail.com> wrote:
+>
+> Regarding x86 target specific code, the same functionality used for
+> explicit address space is used internally to handle __thread
+> qualifier.
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/crypto/aspeed/aspeed-acry.c | 6 ------
- drivers/crypto/ccp/ccp-crypto-rsa.c | 6 ------
- include/crypto/akcipher.h           | 7 +++++++
- 3 files changed, 7 insertions(+), 12 deletions(-)
+Ok, that's interesting, in that __thread is certainly widely used so
+it will have seen testing.
 
-diff --git a/drivers/crypto/aspeed/aspeed-acry.c b/drivers/crypto/aspeed/aspeed-acry.c
-index 247c568aa8df..ecb6e984367b 100644
---- a/drivers/crypto/aspeed/aspeed-acry.c
-+++ b/drivers/crypto/aspeed/aspeed-acry.c
-@@ -137,12 +137,6 @@ enum aspeed_rsa_key_mode {
- 	ASPEED_RSA_DATA_MODE,
- };
- 
--static inline struct akcipher_request *
--	akcipher_request_cast(struct crypto_async_request *req)
--{
--	return container_of(req, struct akcipher_request, base);
--}
--
- static int aspeed_acry_do_fallback(struct akcipher_request *req)
- {
- 	struct crypto_akcipher *cipher = crypto_akcipher_reqtfm(req);
-diff --git a/drivers/crypto/ccp/ccp-crypto-rsa.c b/drivers/crypto/ccp/ccp-crypto-rsa.c
-index a14f85512cf4..32c9f524f3d5 100644
---- a/drivers/crypto/ccp/ccp-crypto-rsa.c
-+++ b/drivers/crypto/ccp/ccp-crypto-rsa.c
-@@ -19,12 +19,6 @@
- 
- #include "ccp-crypto.h"
- 
--static inline struct akcipher_request *akcipher_request_cast(
--	struct crypto_async_request *req)
--{
--	return container_of(req, struct akcipher_request, base);
--}
--
- static inline int ccp_copy_and_save_keypart(u8 **kpbuf, unsigned int *kplen,
- 					    const u8 *buf, size_t sz)
- {
-diff --git a/include/crypto/akcipher.h b/include/crypto/akcipher.h
-index 670508f1dca1..4b6e610db18d 100644
---- a/include/crypto/akcipher.h
-+++ b/include/crypto/akcipher.h
-@@ -498,4 +498,11 @@ static inline int crypto_akcipher_set_priv_key(struct crypto_akcipher *tfm,
- 
- 	return alg->set_priv_key(tfm, key, keylen);
- }
-+
-+static inline struct akcipher_request *
-+	akcipher_request_cast(struct crypto_async_request *req)
-+{
-+	return container_of(req, struct akcipher_request, base);
-+}
-+
- #endif
--- 
-2.41.0
+> Even *if* there are some issues with aliasing, the kernel
+> is immune to them due to
+>
+> KBUILD_CFLAGS += -fno-strict-aliasing
 
+It's not aliasing I'd worry about. It's correctness.
+
+And indeed, the *very* first thing I tried shows that this is all very
+very buggy in gcc.
+
+What did I try? A simple memory copy with a structure assignment.
+
+Try to compile this:
+
+    #include <string.h>
+    struct a { long arr[30]; };
+
+    __seg_fs struct a m;
+    void foo(struct a *dst) { *dst = m; }
+
+using the kernel compiler options (it's the "don't use sse/avx" ones
+that matter):
+
+    gcc -mno-avx -mno-sse -O2 -S t.c
+
+and look at the end result. It's complete and utter sh*t:
+
+        foo:
+                xorl    %eax, %eax
+                cmpq    $240, %rax
+                jnb     .L5
+        .L2:
+                movzbl  %fs:m(%rax), %edx
+                movb    %dl, (%rdi,%rax)
+                addq    $1, %rax
+                cmpq    $240, %rax
+                jb      .L2
+        .L5:
+                ret
+
+to the point that I can only go "WTF"?
+
+I mean, it's not just that it does the copy one byte at a time. It
+literally compares %rax to $240 just after it has cleared it. I look
+at that code, and I go "a five-year old with a crayon could have done
+better".
+
+In other words, no, we're not using this thing that generates that
+kind of garbage.
+
+Somebody needs to open a bugzilla entry for this kind of code generation.
+
+Clang isn't much better, but at least it doesn't generate bad code. It
+just crashes with an internal compiler error on the above trivial
+test-case:
+
+    fatal error: error in backend: cannot lower memory intrinsic in
+address space 257
+
+which at least tells the user that they can't copy memory from that
+address space. But once again shows that no, this feature is not ready
+for prime-time.
+
+If literally the *first* thing I thought to test was this broken, what
+else is broken in this model?
+
+And no, the kernel doesn't currently do the above kinds of things.
+That's not the point. The point was "how well is this compiler support
+tested". The answer is "not at all".
+
+                   Linus
