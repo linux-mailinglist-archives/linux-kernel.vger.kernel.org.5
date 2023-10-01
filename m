@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFC77B45A3
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 08:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFA27B45A5
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 08:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234339AbjJAGdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 02:33:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55584 "EHLO
+        id S234345AbjJAGgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 02:36:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233320AbjJAGdo (ORCPT
+        with ESMTP id S233320AbjJAGgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 02:33:44 -0400
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72F39F
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 23:33:41 -0700 (PDT)
-Received: from eig-obgw-6004a.ext.cloudfilter.net ([10.0.30.197])
+        Sun, 1 Oct 2023 02:36:08 -0400
+Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BDABBF
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 23:36:06 -0700 (PDT)
+Received: from eig-obgw-5001a.ext.cloudfilter.net ([10.0.29.139])
         by cmsmtp with ESMTP
-        id mdm9q0gX3QUgRmq1MqbtHR; Sun, 01 Oct 2023 06:33:40 +0000
+        id moYMqG0NpIBlVmq3Iqiqvi; Sun, 01 Oct 2023 06:35:40 +0000
 Received: from gator4166.hostgator.com ([108.167.133.22])
         by cmsmtp with ESMTPS
-        id mq1LqLN5oRPlHmq1LqLHYF; Sun, 01 Oct 2023 06:33:39 +0000
-X-Authority-Analysis: v=2.4 cv=ILARtyjG c=1 sm=1 tr=0 ts=651912c3
+        id mq3gqYCeiokB3mq3hqnddW; Sun, 01 Oct 2023 06:36:05 +0000
+X-Authority-Analysis: v=2.4 cv=Z+P/oVdA c=1 sm=1 tr=0 ts=65191355
  a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=P7XfKmiOJ4/qXqHZrN7ymg==:17
  a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
  a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
  a=AGRr4plBAAAA:8 a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8 a=VwQbUJbxAAAA:8
- a=20KFwNOVAAAA:8 a=cm27Pg_UAAAA:8 a=1wfVGpDdhcGxkbiBJp0A:9 a=QEXdDO2ut3YA:10
+ a=20KFwNOVAAAA:8 a=cm27Pg_UAAAA:8 a=YSKGN3ub9cUXa_79IdMA:9 a=QEXdDO2ut3YA:10
  a=bOnWt3ThIoLzEnqt84vq:22 a=y1Q9-5lHfBjTkpIzbSAN:22 a=AjGcO6oz07-iQ99wixmX:22
  a=xmb-EsYY8bH0VWELuYED:22
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
@@ -35,25 +35,24 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=DrXa2rG6dSCIyhFViMvKaxN9ZljtEbXXYtJDNmxhFcI=; b=rA0c4/TQzJTvID0G+vnwo8cTWP
-        247fmP7DGX+RGqHLGzelXVmgqGgwO/N74BuoNGXyKQlXf53/pll05f9d05i4Rae0WbxnMY9oNZglZ
-        jZXRz4mWqZhFwrQVCYqjNpTwmcZ9/eYJRfIJnPCE3G5scqoGWV80KDNjorrS4OcTPVfAGsvIBnaMN
-        u31d6w4tiTLyknlBsshptooe+/TFDF0H3uc7rgpKSKyDKFJCyTODlNFoXgPWbud/ldzO2awUB4jzs
-        E6lMvCcFZzfpUAohT9Frt6M7mwRmqRz8hq22Ht3zDCDIDlSknfd9Yn+R5rsbWQ2Tro8bV9fFPOoJY
-        /M6lQPpQ==;
-Received: from [94.239.20.48] (port=58074 helo=[192.168.1.98])
+        bh=wEbc3aLc5WkB4zgnblCikUvyXlXYHxn2wdtnmUdcKTo=; b=nWHV5orJl3ozAobr0tfIcJ386H
+        5/1waZHpyc1KwT5s0QQn52LgylXA+s2qkRtrxi8/ZrSO0jtylGm5rg7Pgx0398O3YHsAyb4RVFmEn
+        IP/Uq3CUV4FZngoZTw3UluleYhf2ah4ladk1X0TrULqXGabst7svM+IKO1WB056wo7amc9HLHzR2f
+        FOtLrHYmGkA4z29/uDTtimAE0DOORaBIzidASVAc6u27OBJ0a6alhNYS5HZWwHB+hJYG3x0LItyTZ
+        4dgNnFhoLWZF682CBxUuStNNOJuHxoyLYl3l4IK6oQ3vZL7s4cZYhNE1MxDpsnOOdbzeDrlDBOWrZ
+        VrERjJGA==;
+Received: from [94.239.20.48] (port=56274 helo=[192.168.1.98])
         by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.96)
         (envelope-from <gustavo@embeddedor.com>)
-        id 1qmq1J-001HC8-0v;
-        Sun, 01 Oct 2023 01:33:37 -0500
-Message-ID: <2a8c5d4f-8404-3198-da8a-ba341609aeb1@embeddedor.com>
-Date:   Sun, 1 Oct 2023 08:33:28 +0200
+        id 1qmq3f-001JVJ-0A;
+        Sun, 01 Oct 2023 01:36:03 -0500
+Message-ID: <96317217-3eb8-c537-c3f6-a741b44d4148@embeddedor.com>
+Date:   Sun, 1 Oct 2023 08:35:58 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH 1/5] chelsio/l2t: Annotate struct l2t_data with
- __counted_by
+Subject: Re: [PATCH 2/5] cxgb4: Annotate struct clip_tbl with __counted_by
 Content-Language: en-US
 To:     Kees Cook <keescook@chromium.org>, Raju Rangoju <rajur@chelsio.com>
 Cc:     "David S. Miller" <davem@davemloft.net>,
@@ -66,9 +65,9 @@ Cc:     "David S. Miller" <davem@davemloft.net>,
         Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
         linux-hardening@vger.kernel.org, llvm@lists.linux.dev
 References: <20230929181042.work.990-kees@kernel.org>
- <20230929181149.3006432-1-keescook@chromium.org>
+ <20230929181149.3006432-2-keescook@chromium.org>
 From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20230929181149.3006432-1-keescook@chromium.org>
+In-Reply-To: <20230929181149.3006432-2-keescook@chromium.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
@@ -79,22 +78,22 @@ X-AntiAbuse: Sender Address Domain - embeddedor.com
 X-BWhitelist: no
 X-Source-IP: 94.239.20.48
 X-Source-L: No
-X-Exim-ID: 1qmq1J-001HC8-0v
+X-Exim-ID: 1qmq3f-001JVJ-0A
 X-Source: 
 X-Source-Args: 
 X-Source-Dir: 
-X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:58074
+X-Source-Sender: ([192.168.1.98]) [94.239.20.48]:56274
 X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
+X-Email-Count: 17
 X-Org:  HG=hgshared;ORG=hostgator;
 X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
 X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfFuimF1OCBJV53+tfv/ctGmnGWegALDFHUY78TvgfbO8hfUzvQdp3vuQyzGKoKV98YUprfQx4wX8TNcHFxxn4l0nB7BsnV7b4e0DDhH9uq8ZkHVDHrKj
- G9ia+BOA29GxSp+ZbT0nlIcTqGmVZ2vKzGta05I0/KEk3ztYt83dWdkZgRwAVvS3rLcMUMHEmFZCHS+GQ3b6yXGItapbL6v8OUcu9A/DAzD/0bzzmrQtGE1N
+X-CMAE-Envelope: MS4xfO9Y5MvsTKden1AKxQuPE8EA37jMqhrZX5/opqoe+3JxNIOpq+WrOwsjNqujJ+nRNAw5gHqp1LJ7z03xWvAQA6gquRbLWTNKcmTD+AGzjWimoYWPEl9R
+ 9Grg8KTAjTaFe27uaPOiGCMxMtM+3gQkjKyVo2Lf9/0+14CuseI0JSeV/P++dMqVBX4gw2/GrivQyEEVuX25PlM4oRU3IbTLUcMABVD0mqj7w6tG4ollvEG+
 X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -110,7 +109,7 @@ On 9/29/23 20:11, Kees Cook wrote:
 > (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
 > functions).
 > 
-> As found with Coccinelle[1], add __counted_by for struct l2t_data.
+> As found with Coccinelle[1], add __counted_by for struct clip_tbl.
 > 
 > [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
 > 
@@ -129,33 +128,19 @@ Thanks
 Gustavo
 
 > ---
->   drivers/net/ethernet/chelsio/cxgb3/l2t.h | 2 +-
->   drivers/net/ethernet/chelsio/cxgb4/l2t.c | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
+>   drivers/net/ethernet/chelsio/cxgb4/clip_tbl.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/net/ethernet/chelsio/cxgb3/l2t.h b/drivers/net/ethernet/chelsio/cxgb3/l2t.h
-> index ea75f275023f..646ca0bc25bd 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb3/l2t.h
-> +++ b/drivers/net/ethernet/chelsio/cxgb3/l2t.h
-> @@ -76,7 +76,7 @@ struct l2t_data {
->   	atomic_t nfree;		/* number of free entries */
->   	rwlock_t lock;
->   	struct rcu_head rcu_head;	/* to handle rcu cleanup */
-> -	struct l2t_entry l2tab[];
-> +	struct l2t_entry l2tab[] __counted_by(nentries);
+> diff --git a/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.h b/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.h
+> index 290c1058069a..847c7fc2bbd9 100644
+> --- a/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.h
+> +++ b/drivers/net/ethernet/chelsio/cxgb4/clip_tbl.h
+> @@ -29,7 +29,7 @@ struct clip_tbl {
+>   	atomic_t nfree;
+>   	struct list_head ce_free_head;
+>   	void *cl_list;
+> -	struct list_head hash_list[];
+> +	struct list_head hash_list[] __counted_by(clipt_size);
 >   };
 >   
->   typedef void (*arp_failure_handler_func)(struct t3cdev * dev,
-> diff --git a/drivers/net/ethernet/chelsio/cxgb4/l2t.c b/drivers/net/ethernet/chelsio/cxgb4/l2t.c
-> index a10a6862a9a4..1e5f5b1a22a6 100644
-> --- a/drivers/net/ethernet/chelsio/cxgb4/l2t.c
-> +++ b/drivers/net/ethernet/chelsio/cxgb4/l2t.c
-> @@ -59,7 +59,7 @@ struct l2t_data {
->   	rwlock_t lock;
->   	atomic_t nfree;             /* number of free entries */
->   	struct l2t_entry *rover;    /* starting point for next allocation */
-> -	struct l2t_entry l2tab[];  /* MUST BE LAST */
-> +	struct l2t_entry l2tab[] __counted_by(l2t_size);  /* MUST BE LAST */
->   };
->   
->   static inline unsigned int vlan_prio(const struct l2t_entry *e)
+>   enum {
