@@ -2,156 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C292C7B48FB
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 19:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A50847B48FD
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 19:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235265AbjJARxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 13:53:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35680 "EHLO
+        id S235272AbjJARyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 13:54:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233932AbjJARxh (ORCPT
+        with ESMTP id S233932AbjJARya (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 13:53:37 -0400
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net [IPv6:2a01:37:1000::53df:5f64:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7772D9;
-        Sun,  1 Oct 2023 10:53:33 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL Global TLS RSA4096 SHA256 2022 CA1" (verified OK))
-        by bmailout1.hostsharing.net (Postfix) with ESMTPS id C0877300000BE;
-        Sun,  1 Oct 2023 19:53:31 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id B40DE17C3E; Sun,  1 Oct 2023 19:53:31 +0200 (CEST)
-Date:   Sun, 1 Oct 2023 19:53:31 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Alistair Francis <alistair23@gmail.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, alex.williamson@redhat.com,
-        christian.koenig@amd.com, kch@nvidia.com,
-        gregkh@linuxfoundation.org, logang@deltatee.com,
-        linux-kernel@vger.kernel.org, chaitanyak@nvidia.com,
-        rdunlap@infradead.org, Alistair Francis <alistair.francis@wdc.com>
-Subject: Re: [PATCH v8 2/3] PCI/DOE: Expose the DOE features via sysfs
-Message-ID: <20231001175331.GA13453@wunner.de>
-References: <20230921055531.2028834-1-alistair.francis@wdc.com>
- <20230921055531.2028834-2-alistair.francis@wdc.com>
+        Sun, 1 Oct 2023 13:54:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32F3A7
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 10:54:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 238FBC433C7;
+        Sun,  1 Oct 2023 17:54:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696182867;
+        bh=Lk94c1Pr/kdJ6GO1+4Jo2iWmzYgaMVSKIR6PfPgI5DY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SYU3gK0lrlOPDbGgFKYHIZ1a5cj3aSJUVifwAp4V56PstaLW5RB0/24mz2NM0QbSA
+         7i7VeKINiCQRgHFuuugaxJ5Jk73ff3OIyfu2U2Jv9k9XXXlXxYkCT6pkqtWFipNpNy
+         6A3T9LgCnRV5gOfNuKBxlsYOeljTfTCMvXngAIDh6ZOoAHrxXtEdE8KXkJGikpfapH
+         ciixqEYsQwnm/AqHuodprrxzFqt1PO5S76zJHXoBTeXtdur/pA2nxYoQGC8VyvZuGq
+         flPPtlzVXgeIpxzz8n+HImPLBgydJ5qPWpibnQQpdz51zaNXMW+ctkz2oAZOIm5EL8
+         FT58b0nHnXItw==
+Date:   Sun, 1 Oct 2023 19:54:22 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Chengfeng Ye <dg573847474@gmail.com>
+Cc:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Pedro Tammela <pctammela@mojatatu.com>, Po Liu <Po.Liu@nxp.com>
+Subject: Re: [PATCH] net/sched: use spin_lock_bh() on &gact->tcf_lock
+Message-ID: <20231001175422.GT92317@kernel.org>
+References: <20230926182625.72475-1-dg573847474@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230921055531.2028834-2-alistair.francis@wdc.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230926182625.72475-1-dg573847474@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 21, 2023 at 03:55:30PM +1000, Alistair Francis wrote:
-> The PCIe 6 specification added support for the Data Object Exchange (DOE).
-> When DOE is supported the Discovery Data Object Protocol must be
++  Pedro Tammela <pctammela@mojatatu.com>
+   Po Liu <Po.Liu@nxp.com>
 
-"... the DOE Discovery *Feature* must be implemented per PCIe r6.1
-sec 6.30.1.1"
-
-
-> implemented. The protocol allows a requester to obtain information about
-> the other DOE features supported by the device.
+On Tue, Sep 26, 2023 at 06:26:25PM +0000, Chengfeng Ye wrote:
+> I find tcf_gate_act() acquires &gact->tcf_lock without disable
+> bh explicitly, as gact->tcf_lock is acquired inside timer under
+> softirq context, if tcf_gate_act() is not called with bh disable
+> by default or under softirq context(which I am not sure as I cannot
+> find corresponding documentation), then it could be the following 
+> deadlocks.
 > 
-> The kernel is already querying the DOE features supported and cacheing
-> the values. This patch exposes the values via sysfs. This will allow
-
-Instead of "This patch ...", prefer imperative mood, i.e.:
-"Expose the values in sysfs to allow user space to ..."
-
-
-> --- a/Documentation/ABI/testing/sysfs-bus-pci
-> +++ b/Documentation/ABI/testing/sysfs-bus-pci
-> @@ -500,3 +500,26 @@ Description:
->  		console drivers from the device.  Raw users of pci-sysfs
->  		resourceN attributes must be terminated prior to resizing.
->  		Success of the resizing operation is not guaranteed.
-> +
-> +What:		/sys/bus/pci/devices/.../doe_features
-> +Date:		August 2023
-
-Date says August but patch submission is from September.
+> tcf_gate_act()
+> --> spin_loc(&gact->tcf_lock)
+> <interrupt>
+>    --> gate_timer_func()
+>    --> spin_lock(&gact->tcf_lock)
+> 
+> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
 
 
-> --- a/drivers/pci/doe.c
-> +++ b/drivers/pci/doe.c
-> @@ -47,6 +47,7 @@
->   * @wq: Wait queue for work item
->   * @work_queue: Queue of pci_doe_work items
->   * @flags: Bit array of PCI_DOE_FLAG_* flags
-> + * @sysfs_attrs: Array of sysfs device attributes
+Hi Chengfeng Ye,
 
-What's the purpose of this pointer?  It's set in
-pci_doe_sysfs_feature_supports() but never used for anything.
+thanks for your patch.
 
-I'm guessing that you meant to use it to tear down the added attributes
-on device removal, but that's missing in the patch.
+As a fix for Networking this should probably be targeted at the
+'net' tree. Which should be denoted in the subject.
 
-The attributes are added with sysfs_add_file_to_group(), but it seems
-to me they're not automatically removed by sysfs_remove_groups() on
-device teardown.  Am I missing something?
+        Subject: [PATCH net] ...
 
+And as a fix this patch should probably have a Fixes tag.
+This ones seem appropriate to me, but I could be wrong.
 
-> +static int pci_doe_sysfs_feature_supports(struct pci_dev *pdev,
-> +					  struct pci_doe_mb *doe_mb)
+Fixes: a51c328df310 ("net: qos: introduce a gate control flow action")
 
-I don't quite understand the meaning of the function name:
-It sounds as if its purpose is to determine whether a feature
-is supported.  Maybe something like pci_doe_sysfs_add_features()
-instead?
+I don't think it is necessary to repost just to address these issues,
+but the Networking maintainers may think otherwise.
 
+The code change itself looks good to me.
 
-> +	doe_mb->sysfs_attrs = attrs;
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-Set this after the xa_for_each() loop to avoid having to reset it
-to NULL on error.
-
-
-> +		attrs[i].show = pci_doe_sysfs_feature_show;
-> +
-> +		ret = sysfs_add_file_to_group(&dev->kobj, &attrs[i].attr,
-> +					      pci_dev_doe_feature_group.name);
-> +		if (ret) {
-> +			attrs[i].show = NULL;
-> +			goto fail;
-> +		}
-
-The purpose of resetting attrs[i].show to NULL in the error path
-seems to be that you want to skip over features which haven't
-been created as attributes yet.
-
-It seems more straightforward to just iterate over the elements
-in attrs[] until you reach one whose mode is 0.
-
-Alternatively, use xa_for_each_range(&doe_mb->feats, i, entry, 0, i - 1).
-
-
-> +int doe_sysfs_init(struct pci_dev *pdev)
-
-Rename to pci_doe_sysfs_init() for consistency.
-
-
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -186,6 +186,9 @@ extern const struct attribute_group *pci_dev_groups[];
->  extern const struct attribute_group *pcibus_groups[];
->  extern const struct device_type pci_dev_type;
->  extern const struct attribute_group *pci_bus_groups[];
-> +#ifdef CONFIG_SYSFS
-> +extern const struct attribute_group pci_dev_doe_feature_group;
-> +#endif
-
-No #ifdef necessary.
-
-Thanks,
-
-Lukas
+> ---
+>  net/sched/act_gate.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/net/sched/act_gate.c b/net/sched/act_gate.c
+> index c9a811f4c7ee..b82daf7401a5 100644
+> --- a/net/sched/act_gate.c
+> +++ b/net/sched/act_gate.c
+> @@ -124,25 +124,25 @@ TC_INDIRECT_SCOPE int tcf_gate_act(struct sk_buff *skb,
+>  	tcf_lastuse_update(&gact->tcf_tm);
+>  	tcf_action_update_bstats(&gact->common, skb);
+>  
+> -	spin_lock(&gact->tcf_lock);
+> +	spin_lock_bh(&gact->tcf_lock);
+>  	if (unlikely(gact->current_gate_status & GATE_ACT_PENDING)) {
+> -		spin_unlock(&gact->tcf_lock);
+> +		spin_unlock_bh(&gact->tcf_lock);
+>  		return action;
+>  	}
+>  
+>  	if (!(gact->current_gate_status & GATE_ACT_GATE_OPEN)) {
+> -		spin_unlock(&gact->tcf_lock);
+> +		spin_unlock_bh(&gact->tcf_lock);
+>  		goto drop;
+>  	}
+>  
+>  	if (gact->current_max_octets >= 0) {
+>  		gact->current_entry_octets += qdisc_pkt_len(skb);
+>  		if (gact->current_entry_octets > gact->current_max_octets) {
+> -			spin_unlock(&gact->tcf_lock);
+> +			spin_unlock_bh(&gact->tcf_lock);
+>  			goto overlimit;
+>  		}
+>  	}
+> -	spin_unlock(&gact->tcf_lock);
+> +	spin_unlock_bh(&gact->tcf_lock);
+>  
+>  	return action;
+>  
+> -- 
+> 2.17.1
+> 
+> 
