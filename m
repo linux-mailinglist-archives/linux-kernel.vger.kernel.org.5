@@ -2,186 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D917B4656
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9927B4658
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234610AbjJAIfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 04:35:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53786 "EHLO
+        id S234576AbjJAIhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 04:37:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234511AbjJAIft (ORCPT
+        with ESMTP id S233966AbjJAIhv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 04:35:49 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49951A9;
-        Sun,  1 Oct 2023 01:35:47 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b27bc8b65eso1515540966b.0;
-        Sun, 01 Oct 2023 01:35:47 -0700 (PDT)
+        Sun, 1 Oct 2023 04:37:51 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523CDA7;
+        Sun,  1 Oct 2023 01:37:48 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9b29186e20aso1403437866b.2;
+        Sun, 01 Oct 2023 01:37:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696149346; x=1696754146; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=0L/mHBlIgGc4satRCNpr7UON8xxJCcVUo/QQgDPnABw=;
-        b=TnCOsYqwwG3uBBt+T9SInnULUbsyJeXF88tiOCdzNA8QQmkYKY8Oq6X8fj1LA8xaR8
-         Pt8eZyFrQd6Y/vwUtYJ6hKYDyyc0TW3INHk4v8wvZdELhv18MxiviWXUjsxpB6jOQvn9
-         IWBUiAUY/+n7t79ptgAJSVX/lvMnCTCR7X76a2FGO3bxLeuq59H2q8BJclhx1yhIZV6Z
-         MXkEdKsiZyP8yHHOnZ7vA0y9m5jnhB/3OLU+NvBBUIKQeOpAFFVcSmNbrWkTy1wLUTxQ
-         TVDDU9pT0EOLvQhuPKaRAH3mtv1+0gxVOxkHLu/ozwCjbwqnWMwI4svBJsBbGHlVh3dy
-         HwRw==
+        d=gmail.com; s=20230601; t=1696149466; x=1696754266; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qKCiT0Iifb0CtpWzGitgnJVAW7NIhgQwEiMWWCVthZY=;
+        b=WOZnVlwOIShwnwcE9g1WsNw3qiTGk/c09sWWD+mva109hX08HTyJp5OYyjn2EMIEIY
+         VjfcgpVA3Xa7qYbm6lHtistsnyX1Vz3WL7lq3zrTp/cBzyERHRMGh9nHeveA2NT+Ivde
+         PgZAsXeXU68R2FcHrltVq8iZW+byEi1rCBQOEeEPeuF1sIWBbvIIvACl+/p72KcS+pAU
+         MEk5V9+4SjxDZ6MLxVfNjLEbTtQjLUijxDq+neFpWBecDaeH1ycNApr77GmvaiXg5O5k
+         fksP3u4p8WuYkddzgwg/rnPyJ/DrFbvmmFaW8N4ik3w3ldA6+kyLRAVcHLjoX0I8sqlH
+         +ERQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696149346; x=1696754146;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1696149466; x=1696754266;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0L/mHBlIgGc4satRCNpr7UON8xxJCcVUo/QQgDPnABw=;
-        b=SNempHmMhfcwi3xD3tGywKBKftZbe076jpa7HdjGfx973KNFZheQDo9zZhCB2dVTTg
-         mLH/wtRcAAiwTNCkk5T5bUMxNofYkQSA6yNjEEK1tm5gXWL2N6tv57radIrf5HOuj+Da
-         cFe+EShihg/5QyY8+1JeUMMkLZO+7N6B+1Ijh+Vffv4m8Wo+rna+GIvb6rOiDpqeiXQV
-         WrxUOL2T8ppA89A3bfgQPQZoByK9I2UsoivFdngM9Xw0+dDbBzRR3oOypCOFuSv8UOfC
-         qjWOUumr1Q7A2rvPE/fK2VupbHoyw2BhEM8SBCGEyMcnSlybaLQpItKv2LTtMQmz9UaK
-         7S7w==
-X-Gm-Message-State: AOJu0YzhJVnKQDpyGMprzalbMBTksLRp65dQZOKZVd4Os8nvALkFbXQg
-        SGdHZ0bjfLYDtzv3t6MxhEo=
-X-Google-Smtp-Source: AGHT+IE3dD9qG4fwRxqaxw2CkMokYSazdpGU7egf/gKbwRO51ZOgC5oxWtzf3QMy4GrT5KQVU7m0Nw==
-X-Received: by 2002:a17:906:73dc:b0:9ae:696c:2c47 with SMTP id n28-20020a17090673dc00b009ae696c2c47mr8343992ejl.28.1696149345399;
-        Sun, 01 Oct 2023 01:35:45 -0700 (PDT)
-Received: from gmail.com (84-236-113-123.pool.digikabel.hu. [84.236.113.123])
-        by smtp.gmail.com with ESMTPSA id z15-20020a170906944f00b00993928e4d1bsm15053657ejx.24.2023.10.01.01.35.44
+        bh=qKCiT0Iifb0CtpWzGitgnJVAW7NIhgQwEiMWWCVthZY=;
+        b=a24YsQPsgvTBBlkgWSrSaMAnKg50O8FffJJQQ0vouAvDFeZMBIxOagnBlPkWYWUb5r
+         nZsno5ESKPTSVtEdC5SSV4ZEli7yDGC8S5M8I3HnXvWasRn6kXp2xdrW7TRWW8QikHpk
+         F+ONry8GmTpgG/nrp2v6KFlxaDqyhtXnxDiZQL7tXKRNfcPgQl3RJevFi27qj6cM2KXI
+         XGrz294c7K7ia402pMPtVhRQcI6etpaLYaY7p9AB2aRccb1jw56lg4MxjVRoM+VwK2xo
+         S4Bv7oUnPVR46agciRh5VmhRBdbsvFrOoPnVp+2K+mAquK3txT1RoGut4Nr7SLbgArhU
+         rOZA==
+X-Gm-Message-State: AOJu0Yyo3m2iybCG3IHIKZDV14iYqWw3e8zsWe2+VQZlQxO+SNYfLKcX
+        Z8DZoF5tZpRVeOUmrVuiDixSlK70uZ5Hwg==
+X-Google-Smtp-Source: AGHT+IE+AYpwCV+T05pdMhELTcZqS8EBtQzUZgoVHRaGdGak5rURWO0OzKfpG3QuxIYLnjsoB4MtTQ==
+X-Received: by 2002:a17:907:b1a:b0:9a9:f14a:22dc with SMTP id h26-20020a1709070b1a00b009a9f14a22dcmr8360790ejl.8.1696149466226;
+        Sun, 01 Oct 2023 01:37:46 -0700 (PDT)
+Received: from [127.0.1.1] (2a02-8389-41cf-e200-4c68-6c03-863b-ad4e.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:4c68:6c03:863b:ad4e])
+        by smtp.gmail.com with ESMTPSA id w23-20020a1709061f1700b0098921e1b064sm15130499ejj.181.2023.10.01.01.37.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Oct 2023 01:35:44 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 1 Oct 2023 10:35:42 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [GIT PULL] perf events fixes
-Message-ID: <ZRkvXkyEXYfoAPiA@gmail.com>
+        Sun, 01 Oct 2023 01:37:45 -0700 (PDT)
+From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Date:   Sun, 01 Oct 2023 10:37:44 +0200
+Subject: [PATCH v2] selftests: uevent filtering: fix return on error in
+ uevent_listener
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230916-topic-self_uevent_filtering-v2-1-2d0a958c235b@gmail.com>
+X-B4-Tracking: v=1; b=H4sIANcvGWUC/42OQQ6DIBQFr2JYl0ZQMe3KezTGAH71JwgGkLQx3
+ r3UE3Q5bzHzDhLAIwTyLA7iIWFAZzPwW0H0Iu0MFMfMhJe8Kh9M0Og21DSAmYYdEtg4TGhilti
+ ZslY1FRdc6VqQbFAyAFVeWr1kh92NyePmYcL3lXz1mRcM0fnP9SCx3/pfLDHKKBcwQlO2Y93U3
+ bxKNHftVtKf5/kFqZkt/dsAAAA=
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Javier Carrasco <javier.carrasco.cruz@gmail.com>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696149465; l=2613;
+ i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
+ bh=HtH6ZooiQZhj/+OvGcNzkDPBy9n4u+3X6ldRAYYPCDs=;
+ b=at6YPXx+fOXZkwoEOETeXgA4z2Z7fCl2ihfE8DLduQh1rZ+hOCVx2PrRpu6RmisMIosh11dRe
+ X/8cMgwZmxRCwBDrU1MwCJGbHMWaHhxInwRkeHGiRg+wtUfFFGs28GI
+X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
+ pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The ret variable is used to check function return values and assigning
+values to it on error has no effect as it is an unused value.
 
-Linus,
+The current implementation uses an additional variable (fret) to return
+the error value, which in this case is unnecessary and lead to the above
+described misuse. There is no restriction in the current implementation
+to always return -1 on error and the actual negative error value can be
+returned safely without storing -1 in a specific variable.
 
-Please pull the latest perf/urgent git tree from:
+Simplify the error checking by using a single variable which always
+holds the returned value.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git perf-urgent-2023-10-01
+Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+---
+Changes in v2:
+- Remove fret and use a single variable to check errors.
+- Link to v1: https://lore.kernel.org/r/20230916-topic-self_uevent_filtering-v1-1-26ede507d454@gmail.com
+---
+ tools/testing/selftests/uevent/uevent_filtering.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-   # HEAD: 599522d9d2e19d6240e4312577f1c5f3ffca22f6 perf/x86/amd: Do not WARN() on every IRQ
-
-Misc fixes: work around an AMD microcode bug on certain models,
-and fix kexec kernel PMI handlers on AMD systems that get loaded
-on older kernels that have an unexpected register state.
-
- Thanks,
-
-	Ingo
-
------------------->
-Breno Leitao (1):
-      perf/x86/amd: Do not WARN() on every IRQ
-
-Sandipan Das (1):
-      perf/x86/amd/core: Fix overflow reset on hotplug
-
-
- arch/x86/events/amd/core.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
-index abadd5f23425..e24976593a29 100644
---- a/arch/x86/events/amd/core.c
-+++ b/arch/x86/events/amd/core.c
-@@ -534,8 +534,12 @@ static void amd_pmu_cpu_reset(int cpu)
- 	/* Clear enable bits i.e. PerfCntrGlobalCtl.PerfCntrEn */
- 	wrmsrl(MSR_AMD64_PERF_CNTR_GLOBAL_CTL, 0);
+diff --git a/tools/testing/selftests/uevent/uevent_filtering.c b/tools/testing/selftests/uevent/uevent_filtering.c
+index 5cebfb356345..dbe55f3a66f4 100644
+--- a/tools/testing/selftests/uevent/uevent_filtering.c
++++ b/tools/testing/selftests/uevent/uevent_filtering.c
+@@ -78,7 +78,7 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
+ {
+ 	int sk_fd, ret;
+ 	socklen_t sk_addr_len;
+-	int fret = -1, rcv_buf_sz = __UEVENT_BUFFER_SIZE;
++	int rcv_buf_sz = __UEVENT_BUFFER_SIZE;
+ 	uint64_t sync_add = 1;
+ 	struct sockaddr_nl sk_addr = { 0 }, rcv_addr = { 0 };
+ 	char buf[__UEVENT_BUFFER_SIZE] = { 0 };
+@@ -121,6 +121,7 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
  
--	/* Clear overflow bits i.e. PerfCntrGLobalStatus.PerfCntrOvfl */
--	wrmsrl(MSR_AMD64_PERF_CNTR_GLOBAL_STATUS_CLR, amd_pmu_global_cntr_mask);
-+	/*
-+	 * Clear freeze and overflow bits i.e. PerfCntrGLobalStatus.LbrFreeze
-+	 * and PerfCntrGLobalStatus.PerfCntrOvfl
-+	 */
-+	wrmsrl(MSR_AMD64_PERF_CNTR_GLOBAL_STATUS_CLR,
-+	       GLOBAL_STATUS_LBRS_FROZEN | amd_pmu_global_cntr_mask);
- }
- 
- static int amd_pmu_cpu_prepare(int cpu)
-@@ -570,6 +574,7 @@ static void amd_pmu_cpu_starting(int cpu)
- 	int i, nb_id;
- 
- 	cpuc->perf_ctr_virt_mask = AMD64_EVENTSEL_HOSTONLY;
-+	amd_pmu_cpu_reset(cpu);
- 
- 	if (!x86_pmu.amd_nb_constraints)
- 		return;
-@@ -591,8 +596,6 @@ static void amd_pmu_cpu_starting(int cpu)
- 
- 	cpuc->amd_nb->nb_id = nb_id;
- 	cpuc->amd_nb->refcnt++;
--
--	amd_pmu_cpu_reset(cpu);
- }
- 
- static void amd_pmu_cpu_dead(int cpu)
-@@ -601,6 +604,7 @@ static void amd_pmu_cpu_dead(int cpu)
- 
- 	kfree(cpuhw->lbr_sel);
- 	cpuhw->lbr_sel = NULL;
-+	amd_pmu_cpu_reset(cpu);
- 
- 	if (!x86_pmu.amd_nb_constraints)
- 		return;
-@@ -613,8 +617,6 @@ static void amd_pmu_cpu_dead(int cpu)
- 
- 		cpuhw->amd_nb = NULL;
- 	}
--
--	amd_pmu_cpu_reset(cpu);
- }
- 
- static inline void amd_pmu_set_global_ctl(u64 ctl)
-@@ -884,7 +886,7 @@ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
- 	struct hw_perf_event *hwc;
- 	struct perf_event *event;
- 	int handled = 0, idx;
--	u64 status, mask;
-+	u64 reserved, status, mask;
- 	bool pmu_enabled;
- 
- 	/*
-@@ -909,6 +911,14 @@ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
- 		status &= ~GLOBAL_STATUS_LBRS_FROZEN;
+ 	if ((size_t)sk_addr_len != sizeof(sk_addr)) {
+ 		fprintf(stderr, "Invalid socket address size\n");
++		ret = -1;
+ 		goto on_error;
  	}
  
-+	reserved = status & ~amd_pmu_global_cntr_mask;
-+	if (reserved)
-+		pr_warn_once("Reserved PerfCntrGlobalStatus bits are set (0x%llx), please consider updating microcode\n",
-+			     reserved);
-+
-+	/* Clear any reserved bits set by buggy microcode */
-+	status &= amd_pmu_global_cntr_mask;
-+
- 	for (idx = 0; idx < x86_pmu.num_counters; idx++) {
- 		if (!test_bit(idx, cpuc->active_mask))
- 			continue;
+@@ -147,11 +148,12 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
+ 	ret = write_nointr(sync_fd, &sync_add, sizeof(sync_add));
+ 	close(sync_fd);
+ 	if (ret != sizeof(sync_add)) {
++		ret = -1;
+ 		fprintf(stderr, "Failed to synchronize with parent process\n");
+ 		goto on_error;
+ 	}
+ 
+-	fret = 0;
++	ret = 0;
+ 	for (;;) {
+ 		ssize_t r;
+ 
+@@ -187,7 +189,7 @@ static int uevent_listener(unsigned long post_flags, bool expect_uevent,
+ on_error:
+ 	close(sk_fd);
+ 
+-	return fret;
++	return ret;
+ }
+ 
+ int trigger_uevent(unsigned int times)
+
+---
+base-commit: cefc06e4de1477dbdc3cb2a91d4b1873b7797a5c
+change-id: 20230916-topic-self_uevent_filtering-17b53262bc46
+
+Best regards,
+-- 
+Javier Carrasco <javier.carrasco.cruz@gmail.com>
+
