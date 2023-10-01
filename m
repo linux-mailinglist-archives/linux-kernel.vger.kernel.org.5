@@ -2,136 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2BDE7B4799
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 15:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB29F7B47A0
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 15:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235034AbjJANSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 09:18:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46650 "EHLO
+        id S235013AbjJANXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 09:23:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235018AbjJANSV (ORCPT
+        with ESMTP id S234979AbjJANXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 09:18:21 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F33100;
-        Sun,  1 Oct 2023 06:18:16 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-538575a38ffso276791a12.1;
-        Sun, 01 Oct 2023 06:18:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696166294; x=1696771094; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/kmrieUoEvolqVXvMCccXXIjVigvLDaCkvcg3JtU/Iw=;
-        b=Z6SA2oxgwIEp88aIQPnhGlAH6BT93fzOgLNc6WEJobO2SjyX02CjoAaN9LVD6q31um
-         7uIxJoYQLo2wNz5N8AkHEPxlSRx8H77TR80Vi8tTerkQuTzRrFp4tUcW1zYoDS3td2yi
-         FJ5P0Ww/xCOaEVrtCAMLrvzCun8l1CO8mJ14IE9bTRM27/vMNlo1kSyjq+uwYDolSRyF
-         QduAJC6QgTcKbwnwJKvygdgebW8KCjphxZKcPzycbZUJkm+Is1mfqLbHuwg78u1HrE09
-         at/UHhE9Klb4IhEt/qqMxGbDQl94Fr4QU3jLTWK2PHZgRk8ItEDGvo4GWCepuUSlzNMB
-         4DBw==
+        Sun, 1 Oct 2023 09:23:38 -0400
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70CAE8E;
+        Sun,  1 Oct 2023 06:23:36 -0700 (PDT)
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3af609c4dfeso2944548b6e.1;
+        Sun, 01 Oct 2023 06:23:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696166294; x=1696771094;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/kmrieUoEvolqVXvMCccXXIjVigvLDaCkvcg3JtU/Iw=;
-        b=FOpcom0BR07Ivn5tX5LZPbTHubn0B0q2nlpTHTfWtPPKW0gL7zvSbouKmjuZdOU9Nh
-         RchBJrYgApc+vfT/HzV+u3TlIMJKPQdArZ21OFEDnY+d1b8+Jwu9H7Z/58VugRQyZdpi
-         tUtqplx62wrecbqEReeelLH5ZfTjEyI1ye/HJkq+L/E0mkMBJCvlnWyKe3XehC6CTQRi
-         t+97TeQ3OANHURkxh/3DyBAo9zDj2YiqmCavSd8QWOgKcfMUN3TKoDmo/Kxk08Oc3zTg
-         P5eZ0RdGRYaD7zMktunbcmX7TkfJ4T8WTj5lPtm19YYWclZnwbHzPiq+dVluWQDPkBj2
-         9+fA==
-X-Gm-Message-State: AOJu0Yy3w6E8XbhRoYHbZjWk+KPjbF6fnXznADKiXjUv4CePMIvWQCvV
-        0PhAtr7FM5gyqtE3b+/mIdtCArBN83fC8w==
-X-Google-Smtp-Source: AGHT+IGevTZnyJQZflsEG6qrGGm9qgAssk/eAes2jv0cQkmvXveXNKBCZJKIMymOzxZz8oEzi9hphg==
-X-Received: by 2002:a05:6402:14d2:b0:522:1f09:dde3 with SMTP id f18-20020a05640214d200b005221f09dde3mr8303172edx.3.1696166294412;
-        Sun, 01 Oct 2023 06:18:14 -0700 (PDT)
-Received: from [127.0.1.1] (2a02-8389-41cf-e200-4c68-6c03-863b-ad4e.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:4c68:6c03:863b:ad4e])
-        by smtp.gmail.com with ESMTPSA id p17-20020aa7d311000000b00532bec5f768sm14036189edq.95.2023.10.01.06.18.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Oct 2023 06:18:13 -0700 (PDT)
-From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date:   Sun, 01 Oct 2023 15:18:09 +0200
-Subject: [PATCH] selftests: static_keys: fix test name in messages
+        d=1e100.net; s=20230601; t=1696166615; x=1696771415;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xVJSYZtpL0YLa+wcSpHtc+qG+rdtMGRB99f0WwrMd40=;
+        b=l8gK/xLbmU3VcpswqtVQ4osnKA3PiOgCmngkGdgGvW42lc3FPAoee0wkwEUE/i9hR3
+         9a9Fj0T9jBo1x9YS3TJ/62OSIqjzO9Z617M0bHZw21IUwRAuTp5qty0WKg1zgxz8+u04
+         eUV5mdQc3Tn/HrZzM7p1qYk38OeI1Lcqmwrfc2QJzy1Y0hVXjoT7GfR1wG9JpQTga1cH
+         nfpzAcj7gk7kWmRMLiF8Fr2Vd5EQUSt6W/3RSJ8VggbtOtZL7aa+1RKwmJeX3r+qFALy
+         OIZa1enx/FJueIi4Arsdy7hTPBm2grlt3kIqwQpFYVy5Z20RisCoEDM/hrodMBmd8WtU
+         YmzA==
+X-Gm-Message-State: AOJu0YwlZR5/xURFcSL7Sps60/xL7XfhhisCqbdIr+UnD22ISDmGGjHV
+        UAbFcBBFdrd+UxnV+7EYGgY=
+X-Google-Smtp-Source: AGHT+IG5r59Stw18eP45GGvts3KKKs7AnR8jZu7o46ucmeUjXt+CrOjIYIY866yaw9ZKQjAGZmJ61Q==
+X-Received: by 2002:aca:220e:0:b0:3a1:bfda:c6d2 with SMTP id b14-20020aca220e000000b003a1bfdac6d2mr9142795oic.11.1696166615513;
+        Sun, 01 Oct 2023 06:23:35 -0700 (PDT)
+Received: from ?IPV6:2601:647:4d7e:54f3:667:4981:ffa1:7be1? ([2601:647:4d7e:54f3:667:4981:ffa1:7be1])
+        by smtp.gmail.com with ESMTPSA id d4-20020a170903230400b001c20c608373sm20148814plh.296.2023.10.01.06.23.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 Oct 2023 06:23:34 -0700 (PDT)
+Message-ID: <b9c266d2-d5d6-4294-9a95-764641e295b4@acm.org>
+Date:   Sun, 1 Oct 2023 06:23:31 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 03/21] fs/bdev: Add atomic write support info to statx
+Content-Language: en-US
+To:     Eric Biggers <ebiggers@kernel.org>,
+        John Garry <john.g.garry@oracle.com>
+Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chandan.babu@oracle.com, dchinner@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-api@vger.kernel.org,
+        Prasad Singamsetty <prasad.singamsetty@oracle.com>
+References: <20230929102726.2985188-1-john.g.garry@oracle.com>
+ <20230929102726.2985188-4-john.g.garry@oracle.com>
+ <20230929224922.GB11839@google.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+In-Reply-To: <20230929224922.GB11839@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231001-topic-static_keys_selftest_messages-v1-1-da170a080427@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAJBxGWUC/x2N0QqDMAwAf0XyvEJbB9L9yhgl7aKGzSpNkA3x3
- 6d7PA7uNhCqTAK3ZoNKKwvP5QB3aSCPWAYy/DwYvPWts9YZnRfORhSVc3zRV6LQu1cSjROJ4EB
- ibAi+9fbapS7AUUooZFLFksezNaEo1VMslXr+/Pf3x77/ANA3ABqOAAAA
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Javier Carrasco <javier.carrasco.cruz@gmail.com>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1696166292; l=1878;
- i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=UnmF1DURZkDd0tpxiFqDNHzvObTRgMeQgOdg9+HX6H8=;
- b=fq22QaIRZ2IM0I0h9saBt3BujVkkKa49u50vh9ahqujpgz2c6yKSsyYmG4bqOHLV1xz1n3Asx
- bw3+buCUPUTDZ1D78eJzCkC7i2od9kuNx/iyJSrcNNHshc9igaPinyU
-X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
- pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As a general rule, the name of the selftest is printed at the beginning
-of every message.
+On 9/29/23 15:49, Eric Biggers wrote:
+> On Fri, Sep 29, 2023 at 10:27:08AM +0000, John Garry wrote:
+>> diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+>> index 7cab2c65d3d7..c99d7cac2aa6 100644
+>> --- a/include/uapi/linux/stat.h
+>> +++ b/include/uapi/linux/stat.h
+>> @@ -127,7 +127,10 @@ struct statx {
+>>   	__u32	stx_dio_mem_align;	/* Memory buffer alignment for direct I/O */
+>>   	__u32	stx_dio_offset_align;	/* File offset alignment for direct I/O */
+>>   	/* 0xa0 */
+>> -	__u64	__spare3[12];	/* Spare space for future expansion */
+>> +	__u32	stx_atomic_write_unit_max;
+>> +	__u32	stx_atomic_write_unit_min;
+> 
+> Maybe min first and then max?  That seems a bit more natural, and a lot of the
+> code you've written handle them in that order.
+> 
+>> +#define STATX_ATTR_WRITE_ATOMIC		0x00400000 /* File supports atomic write operations */
+> 
+> How would this differ from stx_atomic_write_unit_min != 0?
 
-Use "static_keys" (name of the test itself) consistently instead of mixing
-"static_key" and "static_keys" at the beginning of the messages in the
-test_static_keys script.
+Is it even possible that stx_atomic_write_unit_min == 0? My understanding
+is that all Linux filesystems rely on the assumption that writing a single
+logical block either succeeds or does not happen, even if a power failure
+occurs between writing and reading a logical block.
 
-Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
----
- tools/testing/selftests/static_keys/test_static_keys.sh | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Thanks,
 
-diff --git a/tools/testing/selftests/static_keys/test_static_keys.sh b/tools/testing/selftests/static_keys/test_static_keys.sh
-index fc9f8cde7d42..3b0f17b81ac2 100755
---- a/tools/testing/selftests/static_keys/test_static_keys.sh
-+++ b/tools/testing/selftests/static_keys/test_static_keys.sh
-@@ -6,18 +6,18 @@
- ksft_skip=4
- 
- if ! /sbin/modprobe -q -n test_static_key_base; then
--	echo "static_key: module test_static_key_base is not found [SKIP]"
-+	echo "static_keys: module test_static_key_base is not found [SKIP]"
- 	exit $ksft_skip
- fi
- 
- if ! /sbin/modprobe -q -n test_static_keys; then
--	echo "static_key: module test_static_keys is not found [SKIP]"
-+	echo "static_keys: module test_static_keys is not found [SKIP]"
- 	exit $ksft_skip
- fi
- 
- if /sbin/modprobe -q test_static_key_base; then
- 	if /sbin/modprobe -q test_static_keys; then
--		echo "static_key: ok"
-+		echo "static_keys: ok"
- 		/sbin/modprobe -q -r test_static_keys
- 		/sbin/modprobe -q -r test_static_key_base
- 	else
-@@ -25,6 +25,6 @@ if /sbin/modprobe -q test_static_key_base; then
- 		/sbin/modprobe -q -r test_static_key_base
- 	fi
- else
--	echo "static_key: [FAIL]"
-+	echo "static_keys: [FAIL]"
- 	exit 1
- fi
-
----
-base-commit: cefc06e4de1477dbdc3cb2a91d4b1873b7797a5c
-change-id: 20231001-topic-static_keys_selftest_messages-099232047b79
-
-Best regards,
--- 
-Javier Carrasco <javier.carrasco.cruz@gmail.com>
-
+Bart.
