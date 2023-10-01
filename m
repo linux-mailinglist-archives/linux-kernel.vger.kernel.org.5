@@ -2,106 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E52E77B4594
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 08:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 075577B4596
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 08:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234349AbjJAGUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 02:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
+        id S234360AbjJAGVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 02:21:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234249AbjJAGUn (ORCPT
+        with ESMTP id S234293AbjJAGVA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 02:20:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF3B5BE;
-        Sat, 30 Sep 2023 23:20:40 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D636DC433C7;
-        Sun,  1 Oct 2023 06:20:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696141240;
-        bh=YDUZdeEXU5GQ21bz2RuNAZE9GXbGGebX5Tc6BWPTwnI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cxIF61TJ418ssrowJq9Xysr/+cYheFTlfkvk7x7L34U8POn50VYY4Pppjs6DOl6Bz
-         tMSnec4n9J+AbAEqJsyDlQybR6Mg3XThRAiZjwahDx4W80WaCAJqQjrWeeA6CjLF+2
-         9qZLqQMq5yNfixB8i/KhNfWniPxFWqZJ5Fd7JsJ8=
-Date:   Sun, 1 Oct 2023 08:20:37 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, haiyangz@microsoft.com,
-        decui@microsoft.com, apais@linux.microsoft.com,
-        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
-        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
-        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
-        catalin.marinas@arm.com
-Subject: Re: [PATCH v4 15/15] Drivers: hv: Add modules to expose /dev/mshv to
- VMMs running on Hyper-V
-Message-ID: <2023100130-profusely-landside-0f97@gregkh>
-References: <1696010501-24584-1-git-send-email-nunodasneves@linux.microsoft.com>
- <1696010501-24584-16-git-send-email-nunodasneves@linux.microsoft.com>
- <2023093004-evoke-snowbird-363b@gregkh>
- <ZRhkxxBbxkeM4whg@liuwe-devbox-debian-v2>
- <2023093002-bonfire-petty-c3ca@gregkh>
- <ZRiPY5GzrGvlnPmY@liuwe-devbox-debian-v2>
+        Sun, 1 Oct 2023 02:21:00 -0400
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE36DA
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 23:20:56 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id mpoyqui9X615Bmpozqjj2L; Sun, 01 Oct 2023 08:20:54 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1696141254;
+        bh=8VNyDNwvUj63WBSAVLx12j5A3luCQB3hSbdx06sW9dw=;
+        h=From:To:Cc:Subject:Date;
+        b=mZm6LI0qG50vdg0Uro8unjFDDj9mH+yKMAUMUQ2ocIobQyTbRkztvejkhx/9rI3jz
+         Hl+ODEgwKZFYvl2X6ERvzj7iv6gsRXKfwqvRnDZw62N5+E+DI3QJp0tunDcRjQoYFO
+         BRzMlDyHaol3lIdT0vaFhd6689GkUMYJa55fCjYYRB8Swp0U96eOtqnpaZJb77WxAL
+         VZ/fJgqABRSSxmUCSls5JP5lA12rFNbDMJfl0/1I6f/28qBUjGUSWKKjpcuZXr95Vw
+         esFvOZH7PFjQ8dgbdYYUjcbkFIZUDtrr6GszNWIzglg7UzEtixuwXls4uoB1WipZWT
+         Mzl7W0rvq7JXQ==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 01 Oct 2023 08:20:54 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Vadim Pasternak <vadimp@nvidia.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Michael Shych <michaelsh@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        platform-driver-x86@vger.kernel.org
+Subject: [PATCH] platform: mellanox: Fix a resource leak in an error handling path in mlxplat_probe()
+Date:   Sun,  1 Oct 2023 08:20:51 +0200
+Message-Id: <8bd0a7944f0f4f1342333eaf8d92d8e9d5623110.1696141233.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRiPY5GzrGvlnPmY@liuwe-devbox-debian-v2>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 09:13:07PM +0000, Wei Liu wrote:
-> On Sat, Sep 30, 2023 at 08:31:13PM +0200, Greg KH wrote:
-> > On Sat, Sep 30, 2023 at 06:11:19PM +0000, Wei Liu wrote:
-> > > On Sat, Sep 30, 2023 at 08:11:37AM +0200, Greg KH wrote:
-> > > > On Fri, Sep 29, 2023 at 11:01:41AM -0700, Nuno Das Neves wrote:
-> > > > > --- /dev/null
-> > > > > +++ b/include/uapi/linux/mshv.h
-> > > > > @@ -0,0 +1,306 @@
-> > > > > +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> > > > 
-> > > > Much better.
-> > > > 
-> > > > > +#ifndef _UAPI_LINUX_MSHV_H
-> > > > > +#define _UAPI_LINUX_MSHV_H
-> > > > > +
-> > > > > +/*
-> > > > > + * Userspace interface for /dev/mshv
-> > > > > + * Microsoft Hypervisor root partition APIs
-> > > > > + * NOTE: This API is not yet stable!
-> > > > 
-> > > > Sorry, that will not work for obvious reasons.
-> > > 
-> > > This can be removed. For practical purposes, the API has been stable for
-> > > the past three years.
-> > 
-> > Then who wrote this text?
-> 
-> I don't think this matter, does it? This patch series had been rewritten
-> so many times internally to conform to upstream standard it is very
-> difficult to track down who wrote this and when.
+If an error occurs after a successful mlxplat_i2c_main_init(),
+mlxplat_i2c_main_exit() should be called to free some resources.
 
-The point is someone wrote this for a good reason so figuring out why
-that was done would be good for you all to do as maybe it is true!
+Add the missing call, as already done in the remove function.
 
-> If you have concrete concerns about removing the text, please let me
-> know.
+Fixes: 158cd8320776 ("platform: mellanox: Split logic in init and exit flow")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+This patch is based on comparison between functions called in the remove
+function and the error handling path of the probe.
 
-You need to verify that the comment is not true before removing it,
-otherwise you all will have a very hard time in the future when things
-change...
+For some reason, the way the code is written and function names are
+puzzling to me. So Review with care!
+---
+ drivers/platform/x86/mlx-platform.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-thanks,
+diff --git a/drivers/platform/x86/mlx-platform.c b/drivers/platform/x86/mlx-platform.c
+index 3d96dbf79a72..64701b63336e 100644
+--- a/drivers/platform/x86/mlx-platform.c
++++ b/drivers/platform/x86/mlx-platform.c
+@@ -6598,6 +6598,7 @@ static int mlxplat_probe(struct platform_device *pdev)
+ fail_register_reboot_notifier:
+ fail_regcache_sync:
+ 	mlxplat_pre_exit(priv);
++	mlxplat_i2c_main_exit(priv);
+ fail_mlxplat_i2c_main_init:
+ fail_regmap_write:
+ fail_alloc:
+-- 
+2.34.1
 
-greg k-h
