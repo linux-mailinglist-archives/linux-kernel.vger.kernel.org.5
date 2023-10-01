@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D3F7B44D9
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 02:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56AD7B44D7
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 02:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234250AbjJAA6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Sep 2023 20:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234231AbjJAA6G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234239AbjJAA6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 30 Sep 2023 20:58:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229873AbjJAA6F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Sep 2023 20:58:05 -0400
 Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7ABCA
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 17:58:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31638D3
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Sep 2023 17:58:02 -0700 (PDT)
 Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
         by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.96)
         (envelope-from <riel@shelob.surriel.com>)
-        id 1qmklZ-0008G8-0N;
+        id 1qmklZ-0008G8-0V;
         Sat, 30 Sep 2023 20:57:01 -0400
 From:   riel@surriel.com
 To:     linux-kernel@vger.kernel.org
@@ -27,9 +27,9 @@ Cc:     kernel-team@meta.com, linux-mm@kvack.org,
         akpm@linux-foundation.org, muchun.song@linux.dev,
         mike.kravetz@oracle.com, leit@meta.com, willy@infradead.org,
         Rik van Riel <riel@surriel.com>
-Subject: [PATCH 1/3] hugetlbfs: extend hugetlb_vma_lock to private VMAs
-Date:   Sat, 30 Sep 2023 20:55:48 -0400
-Message-ID: <20231001005659.2185316-2-riel@surriel.com>
+Subject: [PATCH 2/3] hugetlbfs: close race between MADV_DONTNEED and page fault
+Date:   Sat, 30 Sep 2023 20:55:49 -0400
+Message-ID: <20231001005659.2185316-3-riel@surriel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231001005659.2185316-1-riel@surriel.com>
 References: <20231001005659.2185316-1-riel@surriel.com>
@@ -47,153 +47,199 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rik van Riel <riel@surriel.com>
 
-Extend the locking scheme used to protect shared hugetlb mappings
-from truncate vs page fault races, in order to protect private
-hugetlb mappings (with resv_map) against MADV_DONTNEED.
+Malloc libraries, like jemalloc and tcalloc, take decisions on when
+to call madvise independently from the code in the main application.
 
-Add a read-write semaphore to the resv_map data structure, and
-use that from the hugetlb_vma_(un)lock_* functions, in preparation
-for closing the race between MADV_DONTNEED and page faults.
+This sometimes results in the application page faulting on an address,
+right after the malloc library has shot down the backing memory with
+MADV_DONTNEED.
+
+Usually this is harmless, because we always have some 4kB pages
+sitting around to satisfy a page fault. However, with hugetlbfs
+systems often allocate only the exact number of huge pages that
+the application wants.
+
+Due to TLB batching, hugetlbfs MADV_DONTNEED will free pages outside of
+any lock taken on the page fault path, which can open up the following
+race condition:
+
+       CPU 1                            CPU 2
+
+       MADV_DONTNEED
+       unmap page
+       shoot down TLB entry
+                                       page fault
+                                       fail to allocate a huge page
+                                       killed with SIGBUS
+       free page
+
+Fix that race by pulling the locking from __unmap_hugepage_final_range
+into helper functions called from zap_page_range_single. This ensures
+page faults stay locked out of the MADV_DONTNEED VMA until the
+huge pages have actually been freed.
 
 Signed-off-by: Rik van Riel <riel@surriel.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 ---
- include/linux/hugetlb.h |  6 ++++++
- mm/hugetlb.c            | 41 +++++++++++++++++++++++++++++++++++++----
- 2 files changed, 43 insertions(+), 4 deletions(-)
+ include/linux/hugetlb.h | 35 +++++++++++++++++++++++++++++++++--
+ mm/hugetlb.c            | 20 +++++++++++---------
+ mm/memory.c             | 13 ++++++++-----
+ 3 files changed, 52 insertions(+), 16 deletions(-)
 
 diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 5b2626063f4f..694928fa06a3 100644
+index 694928fa06a3..d9ec500cfef9 100644
 --- a/include/linux/hugetlb.h
 +++ b/include/linux/hugetlb.h
-@@ -60,6 +60,7 @@ struct resv_map {
- 	long adds_in_progress;
- 	struct list_head region_cache;
- 	long region_cache_count;
-+	struct rw_semaphore rw_sema;
- #ifdef CONFIG_CGROUP_HUGETLB
- 	/*
- 	 * On private mappings, the counter to uncharge reservations is stored
-@@ -1231,6 +1232,11 @@ static inline bool __vma_shareable_lock(struct vm_area_struct *vma)
- 	return (vma->vm_flags & VM_MAYSHARE) && vma->vm_private_data;
- }
+@@ -139,7 +139,7 @@ struct page *hugetlb_follow_page_mask(struct vm_area_struct *vma,
+ void unmap_hugepage_range(struct vm_area_struct *,
+ 			  unsigned long, unsigned long, struct page *,
+ 			  zap_flags_t);
+-void __unmap_hugepage_range_final(struct mmu_gather *tlb,
++void __unmap_hugepage_range(struct mmu_gather *tlb,
+ 			  struct vm_area_struct *vma,
+ 			  unsigned long start, unsigned long end,
+ 			  struct page *ref_page, zap_flags_t zap_flags);
+@@ -246,6 +246,25 @@ int huge_pmd_unshare(struct mm_struct *mm, struct vm_area_struct *vma,
+ void adjust_range_if_pmd_sharing_possible(struct vm_area_struct *vma,
+ 				unsigned long *start, unsigned long *end);
  
-+static inline bool __vma_private_lock(struct vm_area_struct *vma)
++extern void __hugetlb_zap_begin(struct vm_area_struct *vma,
++				unsigned long *begin, unsigned long *end);
++extern void __hugetlb_zap_end(struct vm_area_struct *vma,
++			      struct zap_details *details);
++
++static inline void hugetlb_zap_begin(struct vm_area_struct *vma,
++				     unsigned long *start, unsigned long *end)
 +{
-+	return (!(vma->vm_flags & VM_MAYSHARE)) && vma->vm_private_data;
++	if (is_vm_hugetlb_page(vma))
++		__hugetlb_zap_begin(vma, start, end);
 +}
 +
- /*
-  * Safe version of huge_pte_offset() to check the locks.  See comments
-  * above huge_pte_offset().
++static inline void hugetlb_zap_end(struct vm_area_struct *vma,
++				   struct zap_details *details)
++{
++	if (is_vm_hugetlb_page(vma))
++		__hugetlb_zap_end(vma, details);
++}
++
+ void hugetlb_vma_lock_read(struct vm_area_struct *vma);
+ void hugetlb_vma_unlock_read(struct vm_area_struct *vma);
+ void hugetlb_vma_lock_write(struct vm_area_struct *vma);
+@@ -297,6 +316,18 @@ static inline void adjust_range_if_pmd_sharing_possible(
+ {
+ }
+ 
++static inline void hugetlb_zap_begin(
++				struct vm_area_struct *vma,
++				unsigned long *start, unsigned long *end)
++{
++}
++
++static inline void hugetlb_zap_end(
++				struct vm_area_struct *vma,
++				struct zap_details *details)
++{
++}
++
+ static inline struct page *hugetlb_follow_page_mask(
+     struct vm_area_struct *vma, unsigned long address, unsigned int flags,
+     unsigned int *page_mask)
+@@ -442,7 +473,7 @@ static inline long hugetlb_change_protection(
+ 	return 0;
+ }
+ 
+-static inline void __unmap_hugepage_range_final(struct mmu_gather *tlb,
++static inline void __unmap_hugepage_range(struct mmu_gather *tlb,
+ 			struct vm_area_struct *vma, unsigned long start,
+ 			unsigned long end, struct page *ref_page,
+ 			zap_flags_t zap_flags)
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index ba6d39b71cb1..ee7497f37098 100644
+index ee7497f37098..397a26f70deb 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -97,6 +97,7 @@ static void hugetlb_vma_lock_alloc(struct vm_area_struct *vma);
- static void __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma);
- static void hugetlb_unshare_pmds(struct vm_area_struct *vma,
- 		unsigned long start, unsigned long end);
-+static struct resv_map *vma_resv_map(struct vm_area_struct *vma);
+@@ -5306,9 +5306,9 @@ int move_hugetlb_page_tables(struct vm_area_struct *vma,
+ 	return len + old_addr - old_end;
+ }
  
- static inline bool subpool_is_free(struct hugepage_subpool *spool)
+-static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
+-				   unsigned long start, unsigned long end,
+-				   struct page *ref_page, zap_flags_t zap_flags)
++void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct *vma,
++			    unsigned long start, unsigned long end,
++			    struct page *ref_page, zap_flags_t zap_flags)
  {
-@@ -267,6 +268,10 @@ void hugetlb_vma_lock_read(struct vm_area_struct *vma)
- 		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
- 
- 		down_read(&vma_lock->rw_sema);
-+	} else if (__vma_private_lock(vma)) {
-+		struct resv_map *resv_map = vma_resv_map(vma);
-+
-+		down_read(&resv_map->rw_sema);
- 	}
+ 	struct mm_struct *mm = vma->vm_mm;
+ 	unsigned long address;
+@@ -5435,16 +5435,18 @@ static void __unmap_hugepage_range(struct mmu_gather *tlb, struct vm_area_struct
+ 		tlb_flush_mmu_tlbonly(tlb);
  }
  
-@@ -276,6 +281,10 @@ void hugetlb_vma_unlock_read(struct vm_area_struct *vma)
- 		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
- 
- 		up_read(&vma_lock->rw_sema);
-+	} else if (__vma_private_lock(vma)) {
-+		struct resv_map *resv_map = vma_resv_map(vma);
-+
-+		up_read(&resv_map->rw_sema);
- 	}
- }
- 
-@@ -285,6 +294,10 @@ void hugetlb_vma_lock_write(struct vm_area_struct *vma)
- 		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
- 
- 		down_write(&vma_lock->rw_sema);
-+	} else if (__vma_private_lock(vma)) {
-+		struct resv_map *resv_map = vma_resv_map(vma);
-+
-+		down_write(&resv_map->rw_sema);
- 	}
- }
- 
-@@ -294,17 +307,27 @@ void hugetlb_vma_unlock_write(struct vm_area_struct *vma)
- 		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
- 
- 		up_write(&vma_lock->rw_sema);
-+	} else if (__vma_private_lock(vma)) {
-+		struct resv_map *resv_map = vma_resv_map(vma);
-+
-+		up_write(&resv_map->rw_sema);
- 	}
- }
- 
- int hugetlb_vma_trylock_write(struct vm_area_struct *vma)
+-void __unmap_hugepage_range_final(struct mmu_gather *tlb,
+-			  struct vm_area_struct *vma, unsigned long start,
+-			  unsigned long end, struct page *ref_page,
+-			  zap_flags_t zap_flags)
++void __hugetlb_zap_begin(struct vm_area_struct *vma,
++			 unsigned long *start, unsigned long *end)
  {
--	struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
++	adjust_range_if_pmd_sharing_possible(vma, start, end);
+ 	hugetlb_vma_lock_write(vma);
+ 	i_mmap_lock_write(vma->vm_file->f_mapping);
++}
  
--	if (!__vma_shareable_lock(vma))
--		return 1;
-+	if (__vma_shareable_lock(vma)) {
-+		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
+-	/* mmu notification performed in caller */
+-	__unmap_hugepage_range(tlb, vma, start, end, ref_page, zap_flags);
++void __hugetlb_zap_end(struct vm_area_struct *vma,
++		       struct zap_details *details)
++{
++	zap_flags_t zap_flags = details ? details->zap_flags : 0;
  
--	return down_write_trylock(&vma_lock->rw_sema);
-+		return down_write_trylock(&vma_lock->rw_sema);
-+	} else if (__vma_private_lock(vma)) {
-+		struct resv_map *resv_map = vma_resv_map(vma);
-+
-+		return down_write_trylock(&resv_map->rw_sema);
-+	}
-+
-+	return 1;
+ 	if (zap_flags & ZAP_FLAG_UNMAP) {	/* final unmap */
+ 		/*
+diff --git a/mm/memory.c b/mm/memory.c
+index 6c264d2f969c..517221f01303 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -1683,7 +1683,7 @@ static void unmap_single_vma(struct mmu_gather *tlb,
+ 			if (vma->vm_file) {
+ 				zap_flags_t zap_flags = details ?
+ 				    details->zap_flags : 0;
+-				__unmap_hugepage_range_final(tlb, vma, start, end,
++				__unmap_hugepage_range(tlb, vma, start, end,
+ 							     NULL, zap_flags);
+ 			}
+ 		} else
+@@ -1728,8 +1728,12 @@ void unmap_vmas(struct mmu_gather *tlb, struct ma_state *mas,
+ 				start_addr, end_addr);
+ 	mmu_notifier_invalidate_range_start(&range);
+ 	do {
+-		unmap_single_vma(tlb, vma, start_addr, end_addr, &details,
++		unsigned long start = start_addr;
++		unsigned long end = end_addr;
++		hugetlb_zap_begin(vma, &start, &end);
++		unmap_single_vma(tlb, vma, start, end, &details,
+ 				 mm_wr_locked);
++		hugetlb_zap_end(vma, &details);
+ 	} while ((vma = mas_find(mas, tree_end - 1)) != NULL);
+ 	mmu_notifier_invalidate_range_end(&range);
+ }
+@@ -1753,9 +1757,7 @@ void zap_page_range_single(struct vm_area_struct *vma, unsigned long address,
+ 	lru_add_drain();
+ 	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma->vm_mm,
+ 				address, end);
+-	if (is_vm_hugetlb_page(vma))
+-		adjust_range_if_pmd_sharing_possible(vma, &range.start,
+-						     &range.end);
++	hugetlb_zap_begin(vma, &range.start, &range.end);
+ 	tlb_gather_mmu(&tlb, vma->vm_mm);
+ 	update_hiwater_rss(vma->vm_mm);
+ 	mmu_notifier_invalidate_range_start(&range);
+@@ -1766,6 +1768,7 @@ void zap_page_range_single(struct vm_area_struct *vma, unsigned long address,
+ 	unmap_single_vma(&tlb, vma, address, end, details, false);
+ 	mmu_notifier_invalidate_range_end(&range);
+ 	tlb_finish_mmu(&tlb);
++	hugetlb_zap_end(vma, details);
  }
  
- void hugetlb_vma_assert_locked(struct vm_area_struct *vma)
-@@ -313,6 +336,10 @@ void hugetlb_vma_assert_locked(struct vm_area_struct *vma)
- 		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
- 
- 		lockdep_assert_held(&vma_lock->rw_sema);
-+	} else if (__vma_private_lock(vma)) {
-+		struct resv_map *resv_map = vma_resv_map(vma);
-+
-+		lockdep_assert_held(&resv_map->rw_sema);
- 	}
- }
- 
-@@ -345,6 +372,11 @@ static void __hugetlb_vma_unlock_write_free(struct vm_area_struct *vma)
- 		struct hugetlb_vma_lock *vma_lock = vma->vm_private_data;
- 
- 		__hugetlb_vma_unlock_write_put(vma_lock);
-+	} else if (__vma_private_lock(vma)) {
-+		struct resv_map *resv_map = vma_resv_map(vma);
-+
-+		/* no free for anon vmas, but still need to unlock */
-+		up_write(&resv_map->rw_sema);
- 	}
- }
- 
-@@ -1068,6 +1100,7 @@ struct resv_map *resv_map_alloc(void)
- 	kref_init(&resv_map->refs);
- 	spin_lock_init(&resv_map->lock);
- 	INIT_LIST_HEAD(&resv_map->regions);
-+	init_rwsem(&resv_map->rw_sema);
- 
- 	resv_map->adds_in_progress = 0;
- 	/*
+ /**
 -- 
 2.41.0
 
