@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7CF7B4617
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216FD7B4618
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 10:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234563AbjJAIQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 04:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
+        id S234728AbjJAIQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 04:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234684AbjJAIP7 (ORCPT
+        with ESMTP id S234606AbjJAIP7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 1 Oct 2023 04:15:59 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE3ED8;
-        Sun,  1 Oct 2023 01:15:42 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9b2f73e3af3so104822066b.3;
-        Sun, 01 Oct 2023 01:15:42 -0700 (PDT)
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4521112;
+        Sun,  1 Oct 2023 01:15:44 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c3c8adb27so2163070066b.1;
+        Sun, 01 Oct 2023 01:15:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696148141; x=1696752941; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696148143; x=1696752943; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1AZ7TZBuxgbfz7hxQq4OKpZkJG9RmU/3ei2xqClWle4=;
-        b=WOTZWAzMEM9gMUlOPlCXO7csP0dvE3ckA2yNjNOsq5mxMImeWTPcwL+lNg1eaCGIYP
-         HRXFnyE+AVetatYGYYfWS8FzXPMjB1Gsp5YD/PTyNvcJwNM9jE2UZsc9LuMdx0uRzKW8
-         mEiHu2yLT1rMuzeRJB76W2F8BTJ27aOPzU02llSyalLChm9fIPlGg235hfVm8H7Ao/Pr
-         nh0jq+z2GJNlPjaRpogCwFSNTqyMl9FvzHWP+BF5In1H6Kdnp2shcF7ri3jS+YTfDBv1
-         GZ2nEiMSs25rRd+Y84Wv9ZJsyATMGHv5wyg/GKk262IpqeQA4TKaC/pNwKiNiawrJrYy
-         wXZQ==
+        bh=rhlGRH7X7YHOrcRNVN9EVkoiyHqqCPmAlgcebPmFLo8=;
+        b=AU+hOTjasd/4MciaWhSvKzAhLkPgbHHO6nSv7VIBG8zQZZfuu1CJTiEp7DFK6T0mS/
+         vvFtlLl4pio/fCANs9P2GBqRB228FKMKhwTAz+wEGS0y5OKhgbkjcKwolJL9RX2AQgU2
+         oMtp9L5fLPs0BLWxuYjOb+n+940p86ElCg9DjJJxD/IkD8fcjv/j+OCHC+trjMtZaJOw
+         9OTrwDSFaTJdQQeZh5a0CHl1dDKdviMq8UTCzxE4THO8uLufmCScWqb0/RybesQ7qYcJ
+         NnV+O7Xk6R2kcRByi40agn033Vh1SIV4nGr8AO8DZu2jO2U3D0i7DgcTFYYzrYbDp2ki
+         PsIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696148141; x=1696752941;
+        d=1e100.net; s=20230601; t=1696148143; x=1696752943;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=1AZ7TZBuxgbfz7hxQq4OKpZkJG9RmU/3ei2xqClWle4=;
-        b=ZeHirWpfa1Px/Mp/L+2/0MsUc8WObCSXLEcYm4o4EBdwdOA9l/lB0TZ+19zp6nBzwP
-         exK8+Dm3UkfkC2df6X8IrZ+WdwraHTWXwZmvn/QUSGWJBjSPvtX82se1SSnFQRb9aklb
-         7sR15kV2Vz5Uv9nkhUnSVN+5HhgT7V9l4qZPLqUStYdZrH++PfgS7EI6AtNfYBNaLivF
-         DHLaPyVb4VlAPw1f2RcdSBeMICUXC8E/5v96IKSk/5GSQHwlJE7uAIKHPIvJ1iKcJtnt
-         9aocTa9Qg09YfvD9uEW4fqD4LtlghZilyyV7LXf8bRjWc/DauOwwAD5uFFsZzr28VifQ
-         Jz/A==
-X-Gm-Message-State: AOJu0Yy3vXyWJPkdL4wQN1iWpCa+X5W18BXsEohtgVi8FVBfIOPTLK4F
-        v7TyZDTUBAPbuugWTQVluW4=
-X-Google-Smtp-Source: AGHT+IFf09f4eWyeXW4StIzAbU77DRWQDEgbK5OkeBJKeQpmRh2JnNp/2eD/DtZzMnn1fRl3KjOC4Q==
-X-Received: by 2002:a17:907:724b:b0:9ae:7870:1532 with SMTP id ds11-20020a170907724b00b009ae78701532mr8624554ejc.58.1696148141148;
-        Sun, 01 Oct 2023 01:15:41 -0700 (PDT)
+        bh=rhlGRH7X7YHOrcRNVN9EVkoiyHqqCPmAlgcebPmFLo8=;
+        b=KoJ15vdNGexiKlx0ecUxmkA4vpan4B0WDtFpSQR0OUdzwRXgR/yhoJaytvsxlz2BXz
+         BFlUwzuK0pfRrkxjEQVKYltfOBiFCdYn0An0BuCMBHownBRKL2eh9nuO5a5pMowtZY2U
+         0wtHltIEHNw0fHQSkLha59WBbQmK6thdPOD2BYkL82cJZ+7ZX3h8XwZdiIyGHDZiIh0T
+         nh5ZXIn/AmYY7xED8kycHdQaEZ3DCWXkiDijm4yWJvLMikU6NWeNpUUVcgRfh6kBkL9O
+         3Cw1r0u4DEN0wKB0/Yw22PKmW/8eSgMDPhyOh0966/slKpFx2cCN5Zi5lgqv93tyr8wE
+         hHcQ==
+X-Gm-Message-State: AOJu0YwzRBNaYIRRp2EoyNXatnwGo0TMesEeeODdid8K9BLwtdhnQkUU
+        j9FFxB0mIx28w2BSRMqtBHo=
+X-Google-Smtp-Source: AGHT+IHJ3ty8zSrVoeci1CsprfxSBa9M7N2Yd+u7+n51Nmf1n6MJYy3BBiFXUF20e6Q475rHJe1EPw==
+X-Received: by 2002:a17:907:1dca:b0:9ae:43be:e5f5 with SMTP id og10-20020a1709071dca00b009ae43bee5f5mr7639080ejc.4.1696148143008;
+        Sun, 01 Oct 2023 01:15:43 -0700 (PDT)
 Received: from primary.. ([213.139.52.198])
-        by smtp.gmail.com with ESMTPSA id e8-20020a170906374800b0099cf840527csm15121841ejc.153.2023.10.01.01.15.39
+        by smtp.gmail.com with ESMTPSA id e8-20020a170906374800b0099cf840527csm15121841ejc.153.2023.10.01.01.15.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Oct 2023 01:15:40 -0700 (PDT)
+        Sun, 01 Oct 2023 01:15:42 -0700 (PDT)
 From:   Abdel Alkuor <alkuor@gmail.com>
 To:     heikki.krogerus@linux.intel.com, krzysztof.kozlowski+dt@linaro.org,
         bryan.odonoghue@linaro.org
@@ -57,9 +57,9 @@ Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
         robh+dt@kernel.org, conor+dt@kernel.org,
         devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>
-Subject: [PATCH v9 13/14] USB: typec: tps6598x: Add power status trace for tps25750
-Date:   Sun,  1 Oct 2023 04:11:33 -0400
-Message-Id: <20231001081134.37101-14-alkuor@gmail.com>
+Subject: [PATCH v9 14/14] USB: typec: tps6598x: Add status trace for tps25750
+Date:   Sun,  1 Oct 2023 04:11:34 -0400
+Message-Id: <20231001081134.37101-15-alkuor@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231001081134.37101-1-alkuor@gmail.com>
 References: <20231001081134.37101-1-alkuor@gmail.com>
@@ -67,7 +67,7 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,8 +77,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Abdel Alkuor <abdelalkuor@geotab.com>
 
-tps25750 power status register is a subset of tps6598x power status
-register.
+tps25750 status register is a subset of tps6598x status register, hence
+a trace for tps25750 status register is added.
 
 Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
 ---
@@ -89,139 +89,133 @@ Changes in v8:
 Changes in v7:
   - Add driver name to commit subject
 Changes in v6:
-  - Add trace power status to tipd data factory
+ - Add trace status to tipd data factory
 Changes in v5:
   - Incorporating tps25750 into tps6598x driver
 
- drivers/usb/typec/tipd/core.c     |  8 +++++++-
- drivers/usb/typec/tipd/tps6598x.h | 19 ++++++++++++++++++
- drivers/usb/typec/tipd/trace.h    | 33 +++++++++++++++++++++++++++++++
- 3 files changed, 59 insertions(+), 1 deletion(-)
+ drivers/usb/typec/tipd/core.c  | 12 +++++++----
+ drivers/usb/typec/tipd/trace.h | 37 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 45 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index f775e479b92b..a114e786b1a7 100644
+index a114e786b1a7..4f2bfa19d2f5 100644
 --- a/drivers/usb/typec/tipd/core.c
 +++ b/drivers/usb/typec/tipd/core.c
-@@ -109,6 +109,7 @@ struct tps6598x;
- struct tipd_data {
+@@ -110,6 +110,7 @@ struct tipd_data {
  	irq_handler_t irq_handler;
  	int (*register_port)(struct tps6598x *tps, struct fwnode_handle *node);
-+	void (*trace_power_status)(u16 status);
+ 	void (*trace_power_status)(u16 status);
++	void (*trace_status)(u32 status);
  };
  
  struct tps6598x {
-@@ -499,7 +500,9 @@ static bool tps6598x_read_power_status(struct tps6598x *tps)
+@@ -469,7 +470,9 @@ static bool tps6598x_read_status(struct tps6598x *tps, u32 *status)
+ 		dev_err(tps->dev, "%s: failed to read status\n", __func__);
  		return false;
  	}
- 	tps->pwr_status = pwr_status;
--	trace_tps6598x_power_status(pwr_status);
+-	trace_tps6598x_status(*status);
 +
-+	if (tps->data->trace_power_status)
-+		tps->data->trace_power_status(pwr_status);
++	if (tps->data->trace_status)
++		tps->data->trace_status(*status);
  
  	return true;
  }
-@@ -1392,16 +1395,19 @@ static const struct dev_pm_ops tps6598x_pm_ops = {
- static const struct tipd_data cd321x_data = {
+@@ -1243,10 +1246,8 @@ static int tps6598x_probe(struct i2c_client *client)
+ 	if (ret)
+ 		goto err_reset_controller;
+ 
+-	ret = tps6598x_read32(tps, TPS_REG_STATUS, &status);
+-	if (ret < 0)
++	if (!tps6598x_read_status(tps, &status))
+ 		goto err_clear_mask;
+-	trace_tps6598x_status(status);
+ 
+ 	/*
+ 	 * This fwnode has a "compatible" property, but is never populated as a
+@@ -1396,18 +1397,21 @@ static const struct tipd_data cd321x_data = {
  	.irq_handler = cd321x_interrupt,
  	.register_port = tps6598x_register_port,
-+	.trace_power_status = trace_tps6598x_power_status,
+ 	.trace_power_status = trace_tps6598x_power_status,
++	.trace_status = trace_tps6598x_status,
  };
  
  static const struct tipd_data tps6598x_data = {
  	.irq_handler = tps6598x_interrupt,
  	.register_port = tps6598x_register_port,
-+	.trace_power_status = trace_tps6598x_power_status,
+ 	.trace_power_status = trace_tps6598x_power_status,
++	.trace_status = trace_tps6598x_status,
  };
  
  static const struct tipd_data tps25750_data = {
  	.irq_handler = tps25750_interrupt,
  	.register_port = tps25750_register_port,
-+	.trace_power_status = trace_tps25750_power_status,
+ 	.trace_power_status = trace_tps25750_power_status,
++	.trace_status = trace_tps25750_status,
  };
  
  static const struct of_device_id tps6598x_of_match[] = {
-diff --git a/drivers/usb/typec/tipd/tps6598x.h b/drivers/usb/typec/tipd/tps6598x.h
-index f86b5e96efba..01609bf509e4 100644
---- a/drivers/usb/typec/tipd/tps6598x.h
-+++ b/drivers/usb/typec/tipd/tps6598x.h
-@@ -161,6 +161,25 @@
- #define TPS_POWER_STATUS_BC12_STATUS_CDP 2
- #define TPS_POWER_STATUS_BC12_STATUS_DCP 3
- 
-+/* TPS25750_REG_POWER_STATUS bits */
-+#define TPS25750_POWER_STATUS_CHARGER_DETECT_STATUS_MASK	GENMASK(7, 4)
-+#define TPS25750_POWER_STATUS_CHARGER_DETECT_STATUS(p) \
-+	TPS_FIELD_GET(TPS25750_POWER_STATUS_CHARGER_DETECT_STATUS_MASK, (p))
-+#define TPS25750_POWER_STATUS_CHARGER_ADVERTISE_STATUS_MASK	GENMASK(9, 8)
-+#define TPS25750_POWER_STATUS_CHARGER_ADVERTISE_STATUS(p) \
-+	TPS_FIELD_GET(TPS25750_POWER_STATUS_CHARGER_ADVERTISE_STATUS_MASK, (p))
-+
-+#define TPS25750_POWER_STATUS_CHARGER_DET_STATUS_DISABLED	0
-+#define TPS25750_POWER_STATUS_CHARGER_DET_STATUS_IN_PROGRESS	1
-+#define TPS25750_POWER_STATUS_CHARGER_DET_STATUS_NONE		2
-+#define TPS25750_POWER_STATUS_CHARGER_DET_STATUS_SPD		3
-+#define TPS25750_POWER_STATUS_CHARGER_DET_STATUS_BC_1_2_CPD	4
-+#define TPS25750_POWER_STATUS_CHARGER_DET_STATUS_BC_1_2_DPD	5
-+#define TPS25750_POWER_STATUS_CHARGER_DET_STATUS_DIV_1_DCP	6
-+#define TPS25750_POWER_STATUS_CHARGER_DET_STATUS_DIV_2_DCP	7
-+#define TPS25750_POWER_STATUS_CHARGER_DET_STATUS_DIV_3_DCP	8
-+#define TPS25750_POWER_STATUS_CHARGER_DET_STATUS_1_2V_DCP	9
-+
- /* TPS_REG_DATA_STATUS bits */
- #define TPS_DATA_STATUS_DATA_CONNECTION	     BIT(0)
- #define TPS_DATA_STATUS_UPSIDE_DOWN	     BIT(1)
 diff --git a/drivers/usb/typec/tipd/trace.h b/drivers/usb/typec/tipd/trace.h
-index 28725234a2d8..739b0a2a867d 100644
+index 739b0a2a867d..0669cca12ea1 100644
 --- a/drivers/usb/typec/tipd/trace.h
 +++ b/drivers/usb/typec/tipd/trace.h
-@@ -166,6 +166,19 @@
- 		{ TPS_POWER_STATUS_BC12_STATUS_CDP, "cdp" }, \
- 		{ TPS_POWER_STATUS_BC12_STATUS_SDP, "sdp" })
+@@ -91,6 +91,14 @@
+ 						      TPS_STATUS_USB_HOST_PRESENT_MASK | \
+ 						      TPS_STATUS_LEGACY_MASK))
  
-+#define show_tps25750_power_status_charger_detect_status(power_status) \
-+	__print_symbolic(TPS25750_POWER_STATUS_CHARGER_DETECT_STATUS(power_status), \
-+		{ TPS25750_POWER_STATUS_CHARGER_DET_STATUS_DISABLED,	"disabled"}, \
-+		{ TPS25750_POWER_STATUS_CHARGER_DET_STATUS_IN_PROGRESS,	"in progress"}, \
-+		{ TPS25750_POWER_STATUS_CHARGER_DET_STATUS_NONE,	"none"}, \
-+		{ TPS25750_POWER_STATUS_CHARGER_DET_STATUS_SPD,		"spd"}, \
-+		{ TPS25750_POWER_STATUS_CHARGER_DET_STATUS_BC_1_2_CPD,	"cpd"}, \
-+		{ TPS25750_POWER_STATUS_CHARGER_DET_STATUS_BC_1_2_DPD,	"dpd"}, \
-+		{ TPS25750_POWER_STATUS_CHARGER_DET_STATUS_DIV_1_DCP,	"divider 1 dcp"}, \
-+		{ TPS25750_POWER_STATUS_CHARGER_DET_STATUS_DIV_2_DCP,	"divider 2 dcp"}, \
-+		{ TPS25750_POWER_STATUS_CHARGER_DET_STATUS_DIV_3_DCP,	"divider 3 dpc"}, \
-+		{ TPS25750_POWER_STATUS_CHARGER_DET_STATUS_1_2V_DCP,	"1.2V dpc"})
++#define TPS25750_STATUS_FLAGS_MASK (GENMASK(31, 0) ^ (TPS_STATUS_CONN_STATE_MASK | \
++						      GENMASK(19, 7) | \
++						      TPS_STATUS_VBUS_STATUS_MASK | \
++						      TPS_STATUS_USB_HOST_PRESENT_MASK | \
++						      TPS_STATUS_LEGACY_MASK | \
++						      BIT(26) | \
++						      GENMASK(31, 28)))
 +
- #define TPS_DATA_STATUS_FLAGS_MASK (GENMASK(31, 0) ^ (TPS_DATA_STATUS_DP_PIN_ASSIGNMENT_MASK | \
- 						      TPS_DATA_STATUS_TBT_CABLE_SPEED_MASK | \
- 						      TPS_DATA_STATUS_TBT_CABLE_GEN_MASK))
-@@ -299,6 +312,26 @@ TRACE_EVENT(tps6598x_power_status,
+ #define show_status_conn_state(status) \
+ 	__print_symbolic(TPS_STATUS_CONN_STATE((status)), \
+ 		{ TPS_STATUS_CONN_STATE_CONN_WITH_R_A,	"conn-Ra"  }, \
+@@ -148,6 +156,14 @@
+ 		      { TPS_STATUS_HIGH_VOLAGE_WARNING,	"HIGH_VOLAGE_WARNING" }, \
+ 		      { TPS_STATUS_HIGH_LOW_VOLTAGE_WARNING, "HIGH_LOW_VOLTAGE_WARNING" })
+ 
++#define show_tps25750_status_flags(flags) \
++	__print_flags((flags & TPS25750_STATUS_FLAGS_MASK), "|", \
++		      { TPS_STATUS_PLUG_PRESENT,	"PLUG_PRESENT" }, \
++		      { TPS_STATUS_PLUG_UPSIDE_DOWN,	"UPSIDE_DOWN" }, \
++		      { TPS_STATUS_PORTROLE,		"PORTROLE" }, \
++		      { TPS_STATUS_DATAROLE,		"DATAROLE" }, \
++		      { TPS_STATUS_BIST,		"BIST" })
++
+ #define show_power_status_source_sink(power_status) \
+ 	__print_symbolic(TPS_POWER_STATUS_SOURCESINK(power_status), \
+ 		{ 1, "sink" }, \
+@@ -292,6 +308,27 @@ TRACE_EVENT(tps6598x_status,
  		    )
  );
  
-+TRACE_EVENT(tps25750_power_status,
-+	    TP_PROTO(u16 power_status),
-+	    TP_ARGS(power_status),
++TRACE_EVENT(tps25750_status,
++	    TP_PROTO(u32 status),
++	    TP_ARGS(status),
 +
 +	    TP_STRUCT__entry(
-+			     __field(u16, power_status)
++			     __field(u32, status)
 +			     ),
 +
 +	    TP_fast_assign(
-+			   __entry->power_status = power_status;
++			   __entry->status = status;
 +			   ),
 +
-+	    TP_printk("conn: %d, pwr-role: %s, typec: %s, charger detect: %s",
-+		      !!TPS_POWER_STATUS_CONNECTION(__entry->power_status),
-+		      show_power_status_source_sink(__entry->power_status),
-+		      show_power_status_typec_status(__entry->power_status),
-+		      show_tps25750_power_status_charger_detect_status(__entry->power_status)
++	    TP_printk("conn: %s, vbus: %s, usb-host: %s, legacy: %s, flags: %s",
++		      show_status_conn_state(__entry->status),
++		      show_status_vbus_status(__entry->status),
++		      show_status_usb_host_present(__entry->status),
++		      show_status_legacy(__entry->status),
++		      show_tps25750_status_flags(__entry->status)
 +		    )
 +);
 +
- TRACE_EVENT(tps6598x_data_status,
- 	    TP_PROTO(u32 data_status),
- 	    TP_ARGS(data_status),
+ TRACE_EVENT(tps6598x_power_status,
+ 	    TP_PROTO(u16 power_status),
+ 	    TP_ARGS(power_status),
 -- 
 2.34.1
 
