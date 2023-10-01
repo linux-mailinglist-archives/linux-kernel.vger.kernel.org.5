@@ -2,53 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA3B7B48AF
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 18:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0755F7B48AB
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 18:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235227AbjJAQ46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 12:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57758 "EHLO
+        id S235214AbjJAQ4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 12:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235184AbjJAQ44 (ORCPT
+        with ESMTP id S235093AbjJAQ42 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 12:56:56 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32C8EC9;
-        Sun,  1 Oct 2023 09:56:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2739C433C9;
-        Sun,  1 Oct 2023 16:56:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696179413;
-        bh=7GEDIDM2CZQfuVWXUXqevuu15Za7aaDemQVmFgqIfXA=;
-        h=From:Date:Subject:To:Cc:From;
-        b=q0WITblhD5KBMSq3YbwJNwOHysFE4C1KmUM2jGFd6AxEihFOzVFj88vIiEgE2Z90L
-         /KycVIuGwwWJ1L+HiTkphNuoSWIt35drXifY7kzY2SBX+6FZPIQW0RhHve9wA0up9+
-         YBxVF7jqFp+Yc+bWa5qght38hCkSxoDbrtMCVePYGCt1kM6pvBBn40H3mcEPsAUZmv
-         yQdpWQVYvdhoC3AXddN/R1cmzjjmy9oFgY0/pVDKhozuiZFlgg84usL1blZM6is+JB
-         LYFWldf/Bnkk+s2cKxHkTDk07XQHi0fH0R1yT/ak2KfY7Hi7FgIiMMF3FQ3uZGwQID
-         aTyohGFCchejA==
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-1dce0c05171so7318070fac.3;
-        Sun, 01 Oct 2023 09:56:53 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwxqHu2/y8BDxKbRHzKSbV+apKdpf8foh6E7ir59fFrPAIWcPOY
-        rUqppuwrlx9Op4ylKgNk43bW9JsNL+oKkmvOD/k=
-X-Google-Smtp-Source: AGHT+IFWDvaN11V5bbggOPZp8I8yT6LNbYShxtKNldE0YAjtAKJqdS3PZVO9kXHnZDC1PNYfjJ4o4JEB4Fi9df2a+xE=
-X-Received: by 2002:a05:6871:8ac:b0:1b7:308e:6cd9 with SMTP id
- r44-20020a05687108ac00b001b7308e6cd9mr12554195oaq.5.1696179413218; Sun, 01
- Oct 2023 09:56:53 -0700 (PDT)
-MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 2 Oct 2023 01:56:16 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAToVL02t9rApELSbCFfA=PYbgDzyLsJO+J3RV0h0Ry2hA@mail.gmail.com>
-Message-ID: <CAK7LNAToVL02t9rApELSbCFfA=PYbgDzyLsJO+J3RV0h0Ry2hA@mail.gmail.com>
-Subject: [GIT PULL] Kbuild fixes for v6.6-rc4
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+        Sun, 1 Oct 2023 12:56:28 -0400
+Received: from smtprelay08.ispgateway.de (smtprelay08.ispgateway.de [134.119.228.110])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7944FC9;
+        Sun,  1 Oct 2023 09:56:25 -0700 (PDT)
+Received: from [92.206.139.21] (helo=note-book.lan)
+        by smtprelay08.ispgateway.de with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <git@apitzsch.eu>)
+        id 1qmzjx-0001tl-I7; Sun, 01 Oct 2023 18:56:21 +0200
+Message-ID: <250d0e681e7bbb750464338fb3a1a4a3199ce6ef.camel@apitzsch.eu>
+Subject: Re: [PATCH v5 2/2] leds: add ktd202x driver
+From:   =?ISO-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     conor+dt@kernel.org, devicetree@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, lee@kernel.org,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        pavel@ucw.cz, phone-devel@vger.kernel.org, robh+dt@kernel.org,
+        u.kleine-koenig@pengutronix.de,
+        ~postmarketos/upstreaming@lists.sr.ht
+Date:   Sun, 01 Oct 2023 18:56:20 +0200
+In-Reply-To: <a2380c93-42a5-9de5-3be9-9ebb50a965a3@wanadoo.fr>
+References: <20231001-ktd202x-v5-0-f544a1d0510d@apitzsch.eu>
+         <20231001-ktd202x-v5-2-f544a1d0510d@apitzsch.eu>
+         <a2380c93-42a5-9de5-3be9-9ebb50a965a3@wanadoo.fr>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.48.4 
+MIME-Version: 1.0
+X-Df-Sender: YW5kcmVAYXBpdHpzY2guZXU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,67 +49,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+SGkgQ2hyaXN0b3BoZSwKCkFtIFNvbm50YWcsIGRlbSAwMS4xMC4yMDIzIHVtIDE3OjE1ICswMjAw
+IHNjaHJpZWIgQ2hyaXN0b3BoZSBKQUlMTEVUOgo+IExlIDAxLzEwLzIwMjMgw6AgMTU6NTIsIEFu
+ZHLDqSBBcGl0enNjaCBhIMOpY3JpdMKgOgo+ID4gVGhpcyBjb21taXQgYWRkcyBzdXBwb3J0IGZv
+ciBLaW5ldGljIEtURDIwMjYvNyBSR0IvV2hpdGUgTEVECj4gPiBkcml2ZXIuCj4gPiAKPiA+IFNp
+Z25lZC1vZmYtYnk6IEFuZHLDqSBBcGl0enNjaAo+ID4gPGdpdC1BdFJLc3pKMW9HUHNxMzVwV1NO
+c3pBQHB1YmxpYy5nbWFuZS5vcmc+Cj4gCj4gLi4uCj4gCj4gPiArc3RhdGljIGludCBrdGQyMDJ4
+X3NldHVwX2xlZF9yZ2Ioc3RydWN0IGt0ZDIwMnggKmNoaXAsIHN0cnVjdAo+ID4gZGV2aWNlX25v
+ZGUgKm5wLAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIHN0cnVjdCBrdGQyMDJ4X2xlZCAqbGVkLCBzdHJ1Y3QKPiA+IGxl
+ZF9pbml0X2RhdGEgKmluaXRfZGF0YSkKPiA+ICt7Cj4gPiArwqDCoMKgwqDCoMKgwqBzdHJ1Y3Qg
+bGVkX2NsYXNzZGV2ICpjZGV2Owo+ID4gK8KgwqDCoMKgwqDCoMKgc3RydWN0IGRldmljZV9ub2Rl
+ICpjaGlsZDsKPiA+ICvCoMKgwqDCoMKgwqDCoHN0cnVjdCBtY19zdWJsZWQgKmluZm87Cj4gPiAr
+wqDCoMKgwqDCoMKgwqBpbnQgbnVtX2NoYW5uZWxzOwo+ID4gK8KgwqDCoMKgwqDCoMKgaW50IGkg
+PSAwOwo+ID4gK8KgwqDCoMKgwqDCoMKgdTMyIHJlZzsKPiA+ICvCoMKgwqDCoMKgwqDCoGludCBy
+ZXQ7Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqBudW1fY2hhbm5lbHMgPSBvZl9nZXRfYXZhaWxh
+YmxlX2NoaWxkX2NvdW50KG5wKTsKPiA+ICvCoMKgwqDCoMKgwqDCoGlmICghbnVtX2NoYW5uZWxz
+IHx8IG51bV9jaGFubmVscyA+IGNoaXAtPm51bV9sZWRzKQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoHJldHVybiAtRUlOVkFMOwo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgaW5m
+byA9IGRldm1fa2NhbGxvYyhjaGlwLT5kZXYsIG51bV9jaGFubmVscywgc2l6ZW9mKCppbmZvKSwK
+PiA+IEdGUF9LRVJORUwpOwo+ID4gK8KgwqDCoMKgwqDCoMKgaWYgKCFpbmZvKQo+ID4gK8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiAtRU5PTUVNOwo+ID4gKwo+ID4gK8KgwqDC
+oMKgwqDCoMKgZm9yX2VhY2hfYXZhaWxhYmxlX2NoaWxkX29mX25vZGUobnAsIGNoaWxkKSB7Cj4g
+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdTMyIG1vbm9fY29sb3IgPSAwOwo+IAo+
+IFVuLW5lZWRlZCBpbml0Lgo+IEFuZCwgd2h5IGlzIGl0IGRlZmluZWQgaGVyZSwgd2hpbGUgcmVn
+IGlzIGRlZmluZWQgb3V0LXNpZGUgdGhlIGxvb3A/CgpJJ2xsIG1vdmUgaXQgb3V0LXNpZGUgdGhl
+IGxvb3AgKHdpdGhvdXQgaW5pdGlhbGl6YXRpb24pLgoKPiAKPiA+ICsKPiA+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqByZXQgPSBvZl9wcm9wZXJ0eV9yZWFkX3UzMihjaGlsZCwgInJl
+ZyIsICZyZWcpOwo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChyZXQgIT0g
+MCB8fCByZWcgPj0gY2hpcC0+bnVtX2xlZHMpIHsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZGV2X2VycihjaGlwLT5kZXYsICJpbnZhbGlkICdyZWcn
+IG9mCj4gPiAlcE9GblxuIiwgbnApOwo+IAo+IE1vc3Npbmcgb2Zfbm9kZV9wdXQobnApOz8KCkl0
+IHNob3VsZG4ndCBiZSBuZWVkZWQgaGVyZSBpZiBoYW5kbGVkIGluIHRoZSBjYWxsaW5nIGZ1bmN0
+aW9uLCByaWdodD8gCgo+IAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqByZXR1cm4gLUVJTlZBTDsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqB9Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0ID0gb2Zf
+cHJvcGVydHlfcmVhZF91MzIoY2hpbGQsICJjb2xvciIsCj4gPiAmbW9ub19jb2xvcik7Cj4gPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHJldCA8IDAgJiYgcmV0ICE9IC1FSU5W
+QUwpIHsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+ZGV2X2VycihjaGlwLT5kZXYsICJmYWlsZWQgdG8gcGFyc2UgJ2NvbG9yJwo+ID4gb2YgJXBPRlxu
+IiwgbnApOwo+IAo+IE1vc3Npbmcgb2Zfbm9kZV9wdXQobnApOz8KPiAKPiA+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIHJldDsKPiA+ICvCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgaW5mb1tpXS5jb2xvcl9pbmRleCA9IG1vbm9fY29sb3I7Cj4gPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaW5mb1tpXS5jaGFubmVsID0gcmVnOwo+ID4gK8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGluZm9baV0uaW50ZW5zaXR5ID0gS1REMjAyWF9NQVhf
+QlJJR0hUTkVTUzsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpKys7Cj4gPiAr
+wqDCoMKgwqDCoMKgwqB9Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqBsZWQtPm1jZGV2LnN1Ymxl
+ZF9pbmZvID0gaW5mbzsKPiA+ICvCoMKgwqDCoMKgwqDCoGxlZC0+bWNkZXYubnVtX2NvbG9ycyA9
+IG51bV9jaGFubmVsczsKPiA+ICsKPiA+ICvCoMKgwqDCoMKgwqDCoGNkZXYgPSAmbGVkLT5tY2Rl
+di5sZWRfY2RldjsKPiA+ICvCoMKgwqDCoMKgwqDCoGNkZXYtPmJyaWdodG5lc3Nfc2V0X2Jsb2Nr
+aW5nID0ga3RkMjAyeF9icmlnaHRuZXNzX21jX3NldDsKPiA+ICvCoMKgwqDCoMKgwqDCoGNkZXYt
+PmJsaW5rX3NldCA9IGt0ZDIwMnhfYmxpbmtfbWNfc2V0Owo+ID4gKwo+ID4gK8KgwqDCoMKgwqDC
+oMKgcmV0dXJuIGRldm1fbGVkX2NsYXNzZGV2X211bHRpY29sb3JfcmVnaXN0ZXJfZXh0KGNoaXAt
+PmRldiwKPiA+ICZsZWQtPm1jZGV2LCBpbml0X2RhdGEpOwo+ID4gK30KPiA+ICsKPiA+ICtzdGF0
+aWMgaW50IGt0ZDIwMnhfc2V0dXBfbGVkX3NpbmdsZShzdHJ1Y3Qga3RkMjAyeCAqY2hpcCwgc3Ry
+dWN0Cj4gPiBkZXZpY2Vfbm9kZSAqbnAsCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RydWN0IGt0ZDIwMnhf
+bGVkICpsZWQsIHN0cnVjdAo+ID4gbGVkX2luaXRfZGF0YSAqaW5pdF9kYXRhKQo+ID4gK3sKPiA+
+ICvCoMKgwqDCoMKgwqDCoHN0cnVjdCBsZWRfY2xhc3NkZXYgKmNkZXY7Cj4gPiArwqDCoMKgwqDC
+oMKgwqB1MzIgcmVnOwo+ID4gK8KgwqDCoMKgwqDCoMKgaW50IHJldDsKPiA+ICsKPiA+ICvCoMKg
+wqDCoMKgwqDCoHJldCA9IG9mX3Byb3BlcnR5X3JlYWRfdTMyKG5wLCAicmVnIiwgJnJlZyk7Cj4g
+PiArwqDCoMKgwqDCoMKgwqBpZiAocmV0ICE9IDAgfHwgcmVnID49IGNoaXAtPm51bV9sZWRzKSB7
+Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZGV2X2VycihjaGlwLT5kZXYsICJp
+bnZhbGlkICdyZWcnIG9mICVwT0ZuXG4iLCBucCk7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgcmV0dXJuIC1FSU5WQUw7Cj4gPiArwqDCoMKgwqDCoMKgwqB9Cj4gPiArwqDCoMKg
+wqDCoMKgwqBsZWQtPmluZGV4ID0gcmVnOwo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgY2RldiA9
+ICZsZWQtPmNkZXY7Cj4gPiArwqDCoMKgwqDCoMKgwqBjZGV2LT5icmlnaHRuZXNzX3NldF9ibG9j
+a2luZyA9Cj4gPiBrdGQyMDJ4X2JyaWdodG5lc3Nfc2luZ2xlX3NldDsKPiA+ICvCoMKgwqDCoMKg
+wqDCoGNkZXYtPmJsaW5rX3NldCA9IGt0ZDIwMnhfYmxpbmtfc2luZ2xlX3NldDsKPiA+ICsKPiA+
+ICvCoMKgwqDCoMKgwqDCoHJldHVybiBkZXZtX2xlZF9jbGFzc2Rldl9yZWdpc3Rlcl9leHQoY2hp
+cC0+ZGV2LCAmbGVkLQo+ID4gPmNkZXYsIGluaXRfZGF0YSk7Cj4gPiArfQo+ID4gKwo+ID4gK3N0
+YXRpYyBpbnQga3RkMjAyeF9hZGRfbGVkKHN0cnVjdCBrdGQyMDJ4ICpjaGlwLCBzdHJ1Y3QKPiA+
+IGRldmljZV9ub2RlICpucCwgdW5zaWduZWQgaW50IGluZGV4KQo+ID4gK3sKPiA+ICvCoMKgwqDC
+oMKgwqDCoHN0cnVjdCBrdGQyMDJ4X2xlZCAqbGVkID0gJmNoaXAtPmxlZHNbaW5kZXhdOwo+ID4g
+K8KgwqDCoMKgwqDCoMKgc3RydWN0IGxlZF9pbml0X2RhdGEgaW5pdF9kYXRhID0ge307Cj4gPiAr
+wqDCoMKgwqDCoMKgwqBzdHJ1Y3QgbGVkX2NsYXNzZGV2ICpjZGV2Owo+ID4gK8KgwqDCoMKgwqDC
+oMKgdTMyIGNvbG9yID0gMDsKPiBVbi1uZWVkZWQgaW5pdC4KPiAKPiA+ICvCoMKgwqDCoMKgwqDC
+oGludCByZXQ7Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqAvKiBDb2xvciBwcm9wZXJ0eSBpcyBv
+cHRpb25hbCBpbiBzaW5nbGUgY29sb3IgY2FzZSAqLwo+ID4gK8KgwqDCoMKgwqDCoMKgcmV0ID0g
+b2ZfcHJvcGVydHlfcmVhZF91MzIobnAsICJjb2xvciIsICZjb2xvcik7Cj4gPiArwqDCoMKgwqDC
+oMKgwqBpZiAocmV0IDwgMCAmJiByZXQgIT0gLUVJTlZBTCkgewo+ID4gK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoGRldl9lcnIoY2hpcC0+ZGV2LCAiZmFpbGVkIHRvIHBhcnNlICdjb2xv
+cicgb2YKPiA+ICVwT0ZcbiIsIG5wKTsKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqByZXR1cm4gcmV0Owo+ID4gK8KgwqDCoMKgwqDCoMKgfQo+ID4gKwo+ID4gK8KgwqDCoMKgwqDC
+oMKgbGVkLT5jaGlwID0gY2hpcDsKPiA+ICvCoMKgwqDCoMKgwqDCoGluaXRfZGF0YS5md25vZGUg
+PSBvZl9md25vZGVfaGFuZGxlKG5wKTsKPiA+ICsKPiA+ICvCoMKgwqDCoMKgwqDCoGlmIChjb2xv
+ciA9PSBMRURfQ09MT1JfSURfUkdCKSB7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgY2RldiA9ICZsZWQtPm1jZGV2LmxlZF9jZGV2Owo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoHJldCA9IGt0ZDIwMnhfc2V0dXBfbGVkX3JnYihjaGlwLCBucCwgbGVkLAo+ID4g
+JmluaXRfZGF0YSk7Cj4gPiArwqDCoMKgwqDCoMKgwqB9IGVsc2Ugewo+ID4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoGNkZXYgPSAmbGVkLT5jZGV2Owo+ID4gK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoHJldCA9IGt0ZDIwMnhfc2V0dXBfbGVkX3NpbmdsZShjaGlwLCBucCwg
+bGVkLAo+ID4gJmluaXRfZGF0YSk7Cj4gPiArwqDCoMKgwqDCoMKgwqB9Cj4gPiArCj4gPiArwqDC
+oMKgwqDCoMKgwqBpZiAocmV0KSB7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+ZGV2X2VycihjaGlwLT5kZXYsICJ1bmFibGUgdG8gcmVnaXN0ZXIgJXNcbiIsIGNkZXYtCj4gPiA+
+bmFtZSk7Cj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgb2Zfbm9kZV9wdXQobnAp
+Owo+IAo+IFRoaXMgaXMgc3RyYW5nZSB0byBoYXZlIGl0IGhlcmUuCj4gV2h5IG5vdCBhYm92ZSBh
+ZnRlciAiaWYgKHJldCA8IDAgJiYgcmV0ICE9IC1FSU5WQUwpIHsiPwo+IAo+IEl0IHdvdWxkIGxv
+b2sgbXVjaCBtb3JlIG5hdHVyYWwgdG8gaGF2ZSBpdCBhIGZldyBsaW5lcyBiZWxvdywgLi4uIFsx
+XQoKR29vZCBjYXRjaC4gSSdsbCBtb3ZlIG9mX25vZGVfcHV0KG5wKTsgdG8gWzFdIGFuZCBbMl0u
+Cgo+IAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiByZXQ7Cj4gPiAr
+wqDCoMKgwqDCoMKgwqB9Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqBjZGV2LT5tYXhfYnJpZ2h0
+bmVzcyA9IEtURDIwMlhfTUFYX0JSSUdIVE5FU1M7Cj4gPiArCj4gPiArwqDCoMKgwqDCoMKgwqBy
+ZXR1cm4gMDsKPiA+ICt9Cj4gPiArCj4gPiArc3RhdGljIGludCBrdGQyMDJ4X3Byb2JlX2R0KHN0
+cnVjdCBrdGQyMDJ4ICpjaGlwKQo+ID4gK3sKPiA+ICvCoMKgwqDCoMKgwqDCoHN0cnVjdCBkZXZp
+Y2Vfbm9kZSAqbnAgPSBkZXZfb2Zfbm9kZShjaGlwLT5kZXYpLCAqY2hpbGQ7Cj4gPiArwqDCoMKg
+wqDCoMKgwqB1bnNpZ25lZCBpbnQgaTsKPiA+ICvCoMKgwqDCoMKgwqDCoGludCBjb3VudCwgcmV0
+Owo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgY2hpcC0+bnVtX2xlZHMgPSAoaW50KSh1bnNpZ25l
+ZAo+ID4gbG9uZylvZl9kZXZpY2VfZ2V0X21hdGNoX2RhdGEoY2hpcC0+ZGV2KTsKPiA+ICsKPiA+
+ICvCoMKgwqDCoMKgwqDCoGNvdW50ID0gb2ZfZ2V0X2F2YWlsYWJsZV9jaGlsZF9jb3VudChucCk7
+Cj4gPiArwqDCoMKgwqDCoMKgwqBpZiAoIWNvdW50IHx8IGNvdW50ID4gY2hpcC0+bnVtX2xlZHMp
+CgpbMl0uCgo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiAtRUlOVkFM
+Owo+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgcmVnbWFwX3dyaXRlKGNoaXAtPnJlZ21hcCwgS1RE
+MjAyWF9SRUdfUkVTRVRfQ09OVFJPTCwKPiA+IEtURDIwMlhfUlNUUl9SRVNFVCk7Cj4gPiArCj4g
+PiArwqDCoMKgwqDCoMKgwqAvKiBBbGxvdyB0aGUgZGV2aWNlIHRvIGV4ZWN1dGUgdGhlIGNvbXBs
+ZXRlIHJlc2V0ICovCj4gPiArwqDCoMKgwqDCoMKgwqB1c2xlZXBfcmFuZ2UoMjAwLCAzMDApOwo+
+ID4gKwo+ID4gK8KgwqDCoMKgwqDCoMKgaSA9IDA7Cj4gPiArwqDCoMKgwqDCoMKgwqBmb3JfZWFj
+aF9hdmFpbGFibGVfY2hpbGRfb2Zfbm9kZShucCwgY2hpbGQpIHsKPiA+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqByZXQgPSBrdGQyMDJ4X2FkZF9sZWQoY2hpcCwgY2hpbGQsIGkpOwo+
+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChyZXQpCj4gCj4gWzFdIC4uLiBo
+ZXJlLgo+IAo+IE90aGVyd2lzZSwgaXQgaXMgbGlrZWx5IHRoYXQsIHRoYW5rcyB0byBhIHN0YXRp
+YyBjaGVja2VyLCBhbgo+IGFkZGl0aW9ubmFsIAo+IG9mX25vZGVfcHV0KCkgd2lsbCBiZSBhZGRl
+ZCBvbiBlYXJseSBleGl0IG9mIHRoZSBsb29wLgo+IAo+IENKCj4gCj4gPiArwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiByZXQ7Cj4gPiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaSsrOwo+ID4gK8KgwqDCoMKgwqDCoMKgfQo+ID4gKwo+
+ID4gK8KgwqDCoMKgwqDCoMKgcmV0dXJuIDA7Cj4gPiArfQo+IAo+IC4uLgo+IAoKQmVzdCByZWdh
+cmRzLApBbmRyw6kKCg==
 
-Please pull Kbuild fixes for v6.6-rc4.
-Thank you.
-
-
-The following changes since commit 6465e260f48790807eef06b583b38ca9789b6072=
-:
-
-  Linux 6.6-rc3 (2023-09-24 14:31:13 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kbuild-fixes-v6.6-2
-
-for you to fetch changes up to 2d7d1bc119a4d7f54cfe0b1be480c34e8c712d06:
-
-  kbuild: remove stale code for 'source' symlink in packaging scripts
-(2023-10-01 23:06:06 +0900)
-
-----------------------------------------------------------------
-Kbuild fixes for v6.6 (2nd)
-
- - Fix the module compression with xz so the in-kernel decompressor works
-
- - Document a kconfig idiom to express an optional dependency between
-   modules
-
- - Make modpost, when W=3D1 is given, detect broken drivers that reference
-   .exit.* sections
-
- - Remove unused code
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      Documentation: kbuild: explain handling optional dependencies
-
-Martin Nybo Andersen (1):
-      kbuild: Use CRC32 and a 1MiB dictionary for XZ compressed modules
-
-Masahiro Yamada (2):
-      vmlinux.lds.h: remove unused CPU_KEEP and CPU_DISCARD macros
-      kbuild: remove stale code for 'source' symlink in packaging scripts
-
-Mauricio Faria de Oliveira (1):
-      modpost: add missing else to the "of" check
-
-Uwe Kleine-K=C3=B6nig (1):
-      modpost: Don't let "driver"s reference .exit.*
-
- Documentation/kbuild/kconfig-language.rst | 26 ++++++++++++++++++++++++++
- include/asm-generic/vmlinux.lds.h         |  7 -------
- scripts/Makefile.modinst                  |  2 +-
- scripts/mod/file2alias.c                  |  2 +-
- scripts/mod/modpost.c                     | 15 +++++++++++++--
- scripts/package/builddeb                  |  1 -
- scripts/package/kernel.spec               |  3 ---
- 7 files changed, 41 insertions(+), 15 deletions(-)
-
-
---=20
-Best Regards
-Masahiro Yamada
