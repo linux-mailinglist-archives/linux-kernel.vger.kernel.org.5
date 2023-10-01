@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F7D97B47E5
-	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:13:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3BB27B47E6
+	for <lists+linux-kernel@lfdr.de>; Sun,  1 Oct 2023 16:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235130AbjJAONW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 10:13:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
+        id S235135AbjJAONZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 10:13:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235079AbjJAONI (ORCPT
+        with ESMTP id S235089AbjJAONK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 10:13:08 -0400
-Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC65FA6;
-        Sun,  1 Oct 2023 07:13:05 -0700 (PDT)
-Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
-        by mx.skole.hr (mx.skole.hr) with ESMTP id 79DAD836EA;
-        Sun,  1 Oct 2023 16:13:04 +0200 (CEST)
+        Sun, 1 Oct 2023 10:13:10 -0400
+Received: from mx.skole.hr (mx2.hosting.skole.hr [161.53.165.186])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32EC0BC;
+        Sun,  1 Oct 2023 07:13:07 -0700 (PDT)
+Received: from mx2.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id D0F71849BE;
+        Sun,  1 Oct 2023 16:13:05 +0200 (CEST)
 From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Date:   Sun, 01 Oct 2023 16:12:56 +0200
-Subject: [PATCH RFC v4 5/6] ARM: pxa: Convert gumstix Bluetooth to GPIO
- descriptors
+Date:   Sun, 01 Oct 2023 16:12:57 +0200
+Subject: [PATCH RFC v4 6/6] input: ads7846: Move wait_for_sync() logic to
+ driver
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20231001-pxa-gpio-v4-5-0f3b975e6ed5@skole.hr>
+Message-Id: <20231001-pxa-gpio-v4-6-0f3b975e6ed5@skole.hr>
 References: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr>
 In-Reply-To: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr>
 To:     Daniel Mack <daniel@zonque.org>,
@@ -44,21 +44,21 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-input@vger.kernel.org, linux-spi@vger.kernel.org,
         =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2120;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4116;
  i=duje.mihanovic@skole.hr; h=from:subject:message-id;
- bh=iuWT35T+pUGdfAj4zdYMGj+Bj0cXb5OTfKVaTOQr/5k=;
- b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlGX5oUa8Zw23lPXVy8SqVKx1jldghSwj9GmogH
- Dm2K+0yBZOJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZRl+aAAKCRCaEZ6wQi2W
- 4T4+D/9UXJlbUcC9ellaDRwD9fD5QSbYUvMGxUcaUIDmi/tcwO2jDFIStFEW7ZC66UkWSPAn4kb
- Rwo9UI1weqRgpoFLg99O8LoM7L/pcDCVoTxGfaP6/+uNWWw1gCQpXUisr6y4JZM8nsGqMAZSzLy
- uO2cBdPSm5Dbj8ITCepq2brfJNMSQ7s4iAMHzeWrlI851tYj/+M7CL2l7GSe+1F76e3Bwq5q7pS
- YmbZDAg9unl3OvKKjMVj+JQO2SGyEBbryuiePxDkb+39RgRYsSan3z4lJ8uQSwrCXAvaF56QfFK
- kFwV8+4PBoSaUyE2otTwUdUkhAk4ThqOipeYswz51Dnwo73OPTIVHvu3o0UD05W1LvfJ0ME3Xnq
- Nq7Jlv5MwueroGBtBAhGQOOB38K6FUA6B1IslCZ7hL9NX8Ut2c/QvDXNq7sse8W7eVw3Qd/2Cti
- 97SlxkA6OchUSUufb3l+wRQj/9ea+1tK6bX3HMSCo+d9IeBf5xDWG+orOZmwizhK5NfJoFLDdZs
- GvVNZbogSyTNFgtqh/K/QxuPvTp/Mxc9/H+/Lg6zZwbzsGT9DkilYChjybY36FtNorKSJ1W+xfa
- vH1W2JD2l3aSBR9Gbj7QNalOJegrc4LJhyCtlSNbAZhM4xvq3TiQWJmkaa+ke+Uxc9SX3NzASn4
- h1EL9YyO34U5ABw==
+ bh=vDxjARPpIkB52+0U6yxYfBgdugyxZKs36TcEKwzrmIE=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlGX5oeO7RLXrgpT84soQS3RW8AL4f+9KqS2biH
+ w8i7dlZgViJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZRl+aAAKCRCaEZ6wQi2W
+ 4YO+D/9DQqpYETk638UYYXIIbSeoFZF/ozW1wcqL+jDyIxrota8mS/axOJe4lCC7bUBB8pRi/t3
+ VoTKgmjv+wK8Vnt9E6xtyTF0S1JoMkv28l8i5/c97MdGWb9wEd7DLEQ9b/sFNIhUt/FhwRFPEDZ
+ Evq1LZFBbGAYr4uN3xIKjgd+zX+pElQiMU/uDqMov92Ac/CeX0pQNVkpgTeRR+YcBA2JNRKWCyF
+ Ypnf2qUh+MBfkMNryG5Eh8oO2/T+9gBLFUtgg6yWDgO9seRO48EJjpuHTGpv3o0eJr/tBLblcYr
+ dcWFEvjIc2tFC+kAfcIfJ2lpCnDO+GT/hiN75clChJQgUYiaWH0aoeGZb2eXlZ3AaJIw4n30n9a
+ 8l+1yP2L9IOt/QsNHc6YRPfWqJkFIvn+UPyI7cvub9udcl0NwmOkbScnHdQZyQyffhjhA4g3d5O
+ FX04w8F52TuCWG3yyPRy6zJuxXYJtT3v1BjGw94zcOEs/XG1i0p5JX7hiqVei9jkocYoePUahu0
+ bUxD6RxK/Lx58IqSK8IW9X19+kcBWqNdOXdopqk9SwXneXTfJw8I2s7X9nUKeilV4/P3GPh+FSV
+ taulT/VVCaH9q79o0TVydh1177M5vLOWyOrMO6xInQt0camzl6DZrsj8SQdZz0Y0finkO03uatj
+ U3OUdZsr6rWtqZw==
 X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
  fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
@@ -70,75 +70,130 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gumstix still uses the legacy GPIO interface for resetting the Bluetooth
-device.
+If this code is left in the board file, the sync GPIO would have to be
+separated into another lookup table during conversion to the GPIO
+descriptor API (which is also done in this patch).
 
-Convert it to use the GPIO descriptor interface.
+The only user of this code (Sharp Spitz) is also converted in this
+patch.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
 ---
- arch/arm/mach-pxa/gumstix.c | 24 +++++++++++++-----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
+ arch/arm/mach-pxa/spitz.c           | 12 ++----------
+ drivers/input/touchscreen/ads7846.c | 22 +++++++++++++++-------
+ include/linux/spi/ads7846.h         |  1 -
+ 3 files changed, 17 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/gumstix.c b/arch/arm/mach-pxa/gumstix.c
-index c9f0f62187bd..14e1b9274d7a 100644
---- a/arch/arm/mach-pxa/gumstix.c
-+++ b/arch/arm/mach-pxa/gumstix.c
-@@ -20,8 +20,8 @@
- #include <linux/delay.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/partitions.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/gpio/machine.h>
--#include <linux/gpio.h>
- #include <linux/err.h>
- #include <linux/clk.h>
+diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
+index 701fba130ac4..22d5c5645b8f 100644
+--- a/arch/arm/mach-pxa/spitz.c
++++ b/arch/arm/mach-pxa/spitz.c
+@@ -520,22 +520,12 @@ static inline void spitz_leds_init(void) {}
+  * SSP Devices
+  ******************************************************************************/
+ #if defined(CONFIG_SPI_PXA2XX) || defined(CONFIG_SPI_PXA2XX_MODULE)
+-static void spitz_ads7846_wait_for_hsync(void)
+-{
+-	while (gpio_get_value(SPITZ_GPIO_HSYNC))
+-		cpu_relax();
+-
+-	while (!gpio_get_value(SPITZ_GPIO_HSYNC))
+-		cpu_relax();
+-}
+-
+ static struct ads7846_platform_data spitz_ads7846_info = {
+ 	.model			= 7846,
+ 	.vref_delay_usecs	= 100,
+ 	.x_plate_ohms		= 419,
+ 	.y_plate_ohms		= 486,
+ 	.pressure_max		= 1024,
+-	.wait_for_sync		= spitz_ads7846_wait_for_hsync,
+ };
  
-@@ -129,6 +129,9 @@ static void gumstix_udc_init(void)
- #endif
+ static struct gpiod_lookup_table spitz_ads7846_gpio_table = {
+@@ -543,6 +533,8 @@ static struct gpiod_lookup_table spitz_ads7846_gpio_table = {
+ 	.table = {
+ 		GPIO_LOOKUP("gpio-pxa", SPITZ_GPIO_TP_INT,
+ 			    "pendown", GPIO_ACTIVE_LOW),
++		GPIO_LOOKUP("gpio-pxa", SPITZ_GPIO_HSYNC,
++			    "sync", GPIO_ACTIVE_LOW),
+ 		{ }
+ 	},
+ };
+diff --git a/drivers/input/touchscreen/ads7846.c b/drivers/input/touchscreen/ads7846.c
+index faea40dd66d0..894f179bfa8d 100644
+--- a/drivers/input/touchscreen/ads7846.c
++++ b/drivers/input/touchscreen/ads7846.c
+@@ -138,8 +138,7 @@ struct ads7846 {
+ 	void			*filter_data;
+ 	int			(*get_pendown_state)(void);
+ 	struct gpio_desc	*gpio_pendown;
+-
+-	void			(*wait_for_sync)(void);
++	struct gpio_desc	*sync;
+ };
  
- #ifdef CONFIG_BT
-+GPIO_LOOKUP_SINGLE(gumstix_bt_gpio_table, "pxa2xx-uart.1", "pxa-gpio",
-+		GPIO_GUMSTIX_BTRESET, "BTRST", GPIO_ACTIVE_LOW);
-+
- /* Normally, the bootloader would have enabled this 32kHz clock but many
- ** boards still have u-boot 1.1.4 so we check if it has been turned on and
- ** if not, we turn it on with a warning message. */
-@@ -153,24 +156,23 @@ static void gumstix_setup_bt_clock(void)
+ enum ads7846_filter {
+@@ -636,9 +635,14 @@ static const struct attribute_group ads784x_attr_group = {
+ };
  
- static void __init gumstix_bluetooth_init(void)
+ /*--------------------------------------------------------------------------*/
+-
+-static void null_wait_for_sync(void)
++static void ads7846_wait_for_sync(struct ads7846 *ts)
  {
--	int err;
-+	struct gpio_desc *desc;
++	if (!ts->sync) return;
++	while (!gpiod_get_value(ts->sync))
++		cpu_relax();
 +
-+	gpiod_add_lookup_table(&gumstix_bt_gpio_table);
- 
- 	gumstix_setup_bt_clock();
- 
--	err = gpio_request(GPIO_GUMSTIX_BTRESET, "BTRST");
--	if (err) {
-+	desc = gpiod_get(&pxa_device_btuart.dev, "BTRST", GPIOD_OUT_HIGH);
-+	if (IS_ERR(desc)) {
- 		pr_err("gumstix: failed request gpio for bluetooth reset\n");
- 		return;
- 	}
- 
--	err = gpio_direction_output(GPIO_GUMSTIX_BTRESET, 1);
--	if (err) {
--		pr_err("gumstix: can't reset bluetooth\n");
--		return;
--	}
--	gpio_set_value(GPIO_GUMSTIX_BTRESET, 0);
-+	gpiod_set_value(desc, 0);
- 	udelay(100);
--	gpio_set_value(GPIO_GUMSTIX_BTRESET, 1);
-+	gpiod_set_value(desc, 1);
-+
-+	gpiod_put(desc);
++	while (gpiod_get_value(ts->sync))
++		cpu_relax();
  }
- #else
- static void gumstix_bluetooth_init(void)
+ 
+ static int ads7846_debounce_filter(void *ads, int data_idx, int *val)
+@@ -803,7 +807,7 @@ static void ads7846_read_state(struct ads7846 *ts)
+ 	packet->last_cmd_idx = 0;
+ 
+ 	while (true) {
+-		ts->wait_for_sync();
++		ads7846_wait_for_sync(ts);
+ 
+ 		m = &ts->msg[msg_idx];
+ 		error = spi_sync(ts->spi, m);
+@@ -1261,8 +1265,6 @@ static int ads7846_probe(struct spi_device *spi)
+ 		ts->penirq_recheck_delay_usecs =
+ 				pdata->penirq_recheck_delay_usecs;
+ 
+-	ts->wait_for_sync = pdata->wait_for_sync ? : null_wait_for_sync;
+-
+ 	snprintf(ts->phys, sizeof(ts->phys), "%s/input0", dev_name(dev));
+ 	snprintf(ts->name, sizeof(ts->name), "ADS%d Touchscreen", ts->model);
+ 
+@@ -1361,6 +1363,12 @@ static int ads7846_probe(struct spi_device *spi)
+ 	if (err)
+ 		return err;
+ 
++	ts->sync = devm_gpiod_get_optional(dev, "sync", GPIOD_IN);
++	if (IS_ERR(ts->sync)) {
++		dev_err(dev, "Failed to get sync GPIO: %pe\n", ts->sync);
++		return PTR_ERR(ts->sync);
++	}
++
+ 	err = input_register_device(input_dev);
+ 	if (err)
+ 		return err;
+diff --git a/include/linux/spi/ads7846.h b/include/linux/spi/ads7846.h
+index a04c1c34c344..fa7c4f119023 100644
+--- a/include/linux/spi/ads7846.h
++++ b/include/linux/spi/ads7846.h
+@@ -38,7 +38,6 @@ struct ads7846_platform_data {
+ 	int	gpio_pendown_debounce;	/* platform specific debounce time for
+ 					 * the gpio_pendown */
+ 	int	(*get_pendown_state)(void);
+-	void	(*wait_for_sync)(void);
+ 	bool	wakeup;
+ 	unsigned long irq_flags;
+ };
 
 -- 
 2.42.0
