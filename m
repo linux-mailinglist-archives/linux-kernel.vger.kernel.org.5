@@ -2,199 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0843A7B55A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A9B7B55E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237865AbjJBOsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:48:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
+        id S237869AbjJBOud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237823AbjJBOsK (ORCPT
+        with ESMTP id S237862AbjJBOuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:48:10 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BD4F2;
-        Mon,  2 Oct 2023 07:48:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86C2DC433C7;
-        Mon,  2 Oct 2023 14:48:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696258086;
-        bh=HHXocg/UqDLTpBTms/VMzX03y/J3TDNJKoUjdrxZ1l0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SxqRp350bCXrlLYTCXAC17UQCCmm51+C+6kQ9mkjWoxlB9MTfh5N0bCKg2/EnnjcT
-         f885QQtuJrMdAMYs/2pQiLF6l+SU2plFx76+tNDHdskSW6EbAUq9cvw2VIB9dYBVMx
-         5dQfl2E/QIlaUl93d9aSRNJpP5epZTeelI9WF5qvUxTm2WMzSsxx1La69ysKCKBIhr
-         78VGgPpD3mrWViQouPWR/BU+gxZaAHtgnQU+D8CebnD30jJCzB8lfZ1rEwrlUorFPm
-         8nzsS3U0yc5+hj7igp3Ym6oyiNOUYyghmqaWqB08Blj1GEmCen4MWqnRBT+TQ6gL6X
-         bD9xQdW5ANvgQ==
-Date:   Mon, 2 Oct 2023 16:48:01 +0200
-From:   Benjamin Tissoires <bentiss@kernel.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] selftests/hid: fix building for older kernels
-Message-ID: <lhb7u2lg7fv2wx3kzrboftqcdtmbjvbzz7zssfn5mho72hcrvj@i53fzzis7b4q>
-References: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
- <CAFhGd8pEv32zp4RDsj_jeBjzP5hcsf4dP4Knueiw_UM8ZsqcKw@mail.gmail.com>
+        Mon, 2 Oct 2023 10:50:32 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CC994
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:50:29 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-774141bb415so942180085a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 07:50:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696258228; x=1696863028; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3flX8pvYQpulFjLzINdT1Z6OZiL8rcWR2w9QCAJvARw=;
+        b=yZE5GGJ4SlG3U2OihoNsmoYESUEUX5gx8uv32YURfDzbZcRCaiS276djCvfoUU37OM
+         RKTBdflQLvVOia8YKXEW1tQbU9PMBN7khACVc2FzAvWomhRZ/+sKHG1bUAU0ojhRhnTt
+         BFeth3Zp8JNz7TRbB8Z36+RGwS4ZfP94YfkmbxxFSZrVcIq72+kaBGZFvAohcrfg9NHo
+         gYy0xUOjxvZ1WuhEhzj3vR7CGFkyMn2RJHI5rgXCxc8I2M7BdqjsL759mddEFGWx2KbU
+         k4mcPFnyhaWBv3VpkBVa6t6qMN5v0pjhC8Rv9S82nXZkjk2z8b0Fok4Y1a4NGRb/Qezp
+         z3xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696258228; x=1696863028;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3flX8pvYQpulFjLzINdT1Z6OZiL8rcWR2w9QCAJvARw=;
+        b=odFUT+Edphduywkae93EAwL9i3hBSxcCMXxEuc+RoycPjkfP7bgPYia0POsDL0MUCe
+         1D7aSv21DlIISrGJ8+PNX1aL/NGCTehkGZ05tx/3ViseqivirjvhoEXQbTeaXO4qHm9M
+         t+uOMYF+yOfJf4D8GzO0aF112J5tiynBRr1e4+k8UDWMbWPd/E5Q0biBMmeoaNmeNtjr
+         So3f3hjpyH8DKu+ei47WbBlmnnwd0R+nQf3mvLVpZENcKsOWdH/JPdVpKM5HCTw6T3Rl
+         DNOkB0nfaYZ3mbsGR/DKL9vqE4W4g8b3V/hmsVuIvi+XNsouIZlZHZY8EA+uz7yqXZOw
+         Ld0A==
+X-Gm-Message-State: AOJu0YyHUaz/aJlpdjV9wDpZJRedtqeShpVfDSnE5Kj117NzbjYjeLz4
+        zaEfOlPH/DKSWw71Zj1UJZkAOA==
+X-Google-Smtp-Source: AGHT+IGrhGOcsDvoDEISgACZY/G+y1Ase64mfWV0FDNriKPr/kVTRdJZtPPkZ36hyFu9t+NaOPtfyQ==
+X-Received: by 2002:a05:620a:1920:b0:773:ae67:4b96 with SMTP id bj32-20020a05620a192000b00773ae674b96mr13046574qkb.53.1696258228654;
+        Mon, 02 Oct 2023 07:50:28 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
+        by smtp.gmail.com with ESMTPSA id ou2-20020a05620a620200b0076768dfe53esm8987922qkn.105.2023.10.02.07.50.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 07:50:28 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 10:50:26 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        riel@surriel.com, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
+ memory controller
+Message-ID: <20231002145026.GB4414@cmpxchg.org>
+References: <20230928005723.1709119-1-nphamcs@gmail.com>
+ <20230928005723.1709119-2-nphamcs@gmail.com>
+ <ZRrI90KcRBwVZn/r@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFhGd8pEv32zp4RDsj_jeBjzP5hcsf4dP4Knueiw_UM8ZsqcKw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZRrI90KcRBwVZn/r@dhcp22.suse.cz>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sep 26 2023, Justin Stitt wrote:
-> Hey all,
+On Mon, Oct 02, 2023 at 03:43:19PM +0200, Michal Hocko wrote:
+> On Wed 27-09-23 17:57:22, Nhat Pham wrote:
+> > Currently, hugetlb memory usage is not acounted for in the memory
+> > controller, which could lead to memory overprotection for cgroups with
+> > hugetlb-backed memory. This has been observed in our production system.
+> > 
+> > This patch rectifies this issue by charging the memcg when the hugetlb
+> > folio is allocated, and uncharging when the folio is freed (analogous to
+> > the hugetlb controller).
 > 
-> Gentle ping on this patch. Looking to get this patch and [1] slated
-> for 6.7 wherein we can start getting cleaner kselftests builds.
+> This changelog is missing a lot of information. Both about the usecase
+> (we do not want to fish that out from archives in the future) and the
+> actual implementation and the reasoning behind that.
 > 
-> I do not think I am able to successfully run the hid/bpf selftests due
-> to my kernel version being too low (and an inability to upgrade it as
-> I'm on a corp rolling release). I'd appreciate some insight on how to
-> get the tests running or if someone could actually build+run the tests
-> with this patch applied.
-
-I wanted to apply this series today, but it failed my own CI now with
-the enums being already defined:
-https://gitlab.freedesktop.org/bentiss/hid/-/jobs/49754306
-
-I'll probably squash the following patch in 1/3, would you mind giving
-it a test?
-
----
-From 37feca6c0e84705ad65e621643206c287b63bb0a Mon Sep 17 00:00:00 2001
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Mon, 2 Oct 2023 15:37:18 +0200
-Subject: [PATCH] fix selftests/hid: ensure we can compile the tests on kernels
- pre-6.3
-
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
----
- .../selftests/hid/progs/hid_bpf_helpers.h     | 30 ++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-index ab3b18ba48c4..feed5a991e05 100644
---- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-+++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-@@ -5,16 +5,44 @@
- #ifndef __HID_BPF_HELPERS_H
- #define __HID_BPF_HELPERS_H
- 
--/* "undefine" structs in vmlinux.h, because we "override" them below */
-+/* "undefine" structs and enums in vmlinux.h, because we "override" them below */
- #define hid_bpf_ctx hid_bpf_ctx___not_used
- #define hid_report_type hid_report_type___not_used
- #define hid_class_request hid_class_request___not_used
- #define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
-+#define HID_INPUT_REPORT         HID_INPUT_REPORT___not_used
-+#define HID_OUTPUT_REPORT        HID_OUTPUT_REPORT___not_used
-+#define HID_FEATURE_REPORT       HID_FEATURE_REPORT___not_used
-+#define HID_REPORT_TYPES         HID_REPORT_TYPES___not_used
-+#define HID_REQ_GET_REPORT       HID_REQ_GET_REPORT___not_used
-+#define HID_REQ_GET_IDLE         HID_REQ_GET_IDLE___not_used
-+#define HID_REQ_GET_PROTOCOL     HID_REQ_GET_PROTOCOL___not_used
-+#define HID_REQ_SET_REPORT       HID_REQ_SET_REPORT___not_used
-+#define HID_REQ_SET_IDLE         HID_REQ_SET_IDLE___not_used
-+#define HID_REQ_SET_PROTOCOL     HID_REQ_SET_PROTOCOL___not_used
-+#define HID_BPF_FLAG_NONE        HID_BPF_FLAG_NONE___not_used
-+#define HID_BPF_FLAG_INSERT_HEAD HID_BPF_FLAG_INSERT_HEAD·___not_used
-+#define HID_BPF_FLAG_MAX         HID_BPF_FLAG_MAX___not_used
-+
- #include "vmlinux.h"
-+
- #undef hid_bpf_ctx
- #undef hid_report_type
- #undef hid_class_request
- #undef hid_bpf_attach_flags
-+#undef HID_INPUT_REPORT
-+#undef HID_OUTPUT_REPORT
-+#undef HID_FEATURE_REPORT
-+#undef HID_REPORT_TYPES
-+#undef HID_REQ_GET_REPORT
-+#undef HID_REQ_GET_IDLE
-+#undef HID_REQ_GET_PROTOCOL
-+#undef HID_REQ_SET_REPORT
-+#undef HID_REQ_SET_IDLE
-+#undef HID_REQ_SET_PROTOCOL
-+#undef HID_BPF_FLAG_NONE
-+#undef HID_BPF_FLAG_INSERT_HEAD
-+#undef HID_BPF_FLAG_MAX
- 
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
--- 
-2.41.0
----
-
-Cheers,
-Benjamin
-
+> AFAICS you have decided to charge on the hugetlb use rather than hugetlb
+> allocation to the pool. I suspect the underlying reasoning is that pool
+> pages do not belong to anybody. This is a deliberate decision and it
+> should be documented as such.
 > 
-> On Sat, Sep 9, 2023 at 7:22 AM Justin Stitt <justinstitt@google.com> wrote:
-> >
-> > Hi, I am sending this series on behalf of myself and Benjamin Tissoires. There
-> > existed an initial n=3 patch series which was later expanded to n=4 and
-> > is now back to n=3 with some fixes added in and rebased against
-> > mainline.
-> >
-> > This patch series aims to ensure that the hid/bpf selftests can be built
-> > without errors.
-> >
-> > Here's Benjamin's initial cover letter for context:
-> > |  These fixes have been triggered by [0]:
-> > |  basically, if you do not recompile the kernel first, and are
-> > |  running on an old kernel, vmlinux.h doesn't have the required
-> > |  symbols and the compilation fails.
-> > |
-> > |  The tests will fail if you run them on that very same machine,
-> > |  of course, but the binary should compile.
-> > |
-> > |  And while I was sorting out why it was failing, I realized I
-> > |  could do a couple of improvements on the Makefile.
-> > |
-> > |  [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0ca1c153dcb2@redhat.com/T/#t
-> >
-> > Changes from v1 -> v2:
-> > - roll Justin's fix into patch 1/3
-> > - add __attribute__((preserve_access_index)) (thanks Eduard)
-> > - rebased onto mainline (2dde18cd1d8fac735875f2e4987f11817cc0bc2c)
-> > - Link to v1: https://lore.kernel.org/all/20230825-wip-selftests-v1-0-c862769020a8@kernel.org/
-> >
-> > Link: https://github.com/ClangBuiltLinux/linux/issues/1698
-> > Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/61
-> > ---
-> > Benjamin Tissoires (3):
-> >       selftests/hid: ensure we can compile the tests on kernels pre-6.3
-> >       selftests/hid: do not manually call headers_install
-> >       selftests/hid: force using our compiled libbpf headers
-> >
-> >  tools/testing/selftests/hid/Makefile               | 10 ++---
-> >  tools/testing/selftests/hid/progs/hid.c            |  3 --
-> >  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 49 ++++++++++++++++++++++
-> >  3 files changed, 53 insertions(+), 9 deletions(-)
-> > ---
-> > base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-> > change-id: 20230908-kselftest-09-08-56d7f4a8d5c4
-> >
-> > Best regards,
-> > --
-> > Justin Stitt <justinstitt@google.com>
-> >
-> 
-> [1]: https://lore.kernel.org/all/20230912-kselftest-param_test-c-v1-1-80a6cffc7374@google.com/
-> 
-> Thanks
-> Justin
+> It is also very important do describe subtle behavior properties that
+> might be rather unintuitive to users. Most notably 
+> - there is no hugetlb pool management involved in the memcg
+>   controller. One has to use hugetlb controller for that purpose.
+>   Also the pre allocated pool as such doesn't belong to anybody so the
+>   memcg host overcommit management has to consider it when configuring
+>   hard limits.
+
++1
+
+> - memcg limit reclaim doesn't assist hugetlb pages allocation when
+>   hugetlb overcommit is configured (i.e. pages are not consumed from the
+>   pool) which means that the page allocation might disrupt workloads
+>   from other memcgs.
+> - failure to charge a hugetlb page results in SIGBUS rather
+>   than memcg oom killer. That could be the case even if the
+>   hugetlb pool still has pages available and there is
+>   reclaimable memory in the memcg.
+
+Are these actually true? AFAICS, regardless of whether the page comes
+from the pool or the buddy allocator, the memcg code will go through
+the regular charge path, attempt reclaim, and OOM if that fails.
