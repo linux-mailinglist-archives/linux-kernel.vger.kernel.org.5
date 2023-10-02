@@ -2,50 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 906D97B56A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F1A7B5672
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237627AbjJBPRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57682 "EHLO
+        id S238030AbjJBPRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237994AbjJBPRb (ORCPT
+        with ESMTP id S238018AbjJBPRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:17:31 -0400
+        Mon, 2 Oct 2023 11:17:33 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE14A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:17:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B6A7C433C9;
-        Mon,  2 Oct 2023 15:17:24 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9929790
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:17:30 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6901C433C8;
+        Mon,  2 Oct 2023 15:17:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696259848;
-        bh=tBXplhjLBUVmn/j4ZoUk9kfVVHtW2nJRQ5brH7z0kH4=;
+        s=k20201202; t=1696259850;
+        bh=hF16LqSa4Syn4jn5dAWKbpzCRm2q1LVCGwoK56BnfY4=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=LBPnyMGbql6bRxwdrjfUsJuOtPhRl4WUZglBOH7y/JjdWMYw37+xy8QaCfBNLYyjl
-         DpVF8IEBmnDA6GMAWIC9WcNi6B4KmYPZKLcx2/vdQ27HZ3F2lumHq3ors8WV6Wkm4n
-         uVUpEVrrWgHzb3B4DXbaOAqvBGPmrKqj+ooSX/7tXrGeVrHHY+WzLaaf90N3W34kv5
-         ol6OMH14+oTEMk1j4axFNjTpAu88KZHReH2R3+shMuxBfdskOmbJMJNg6bRq9jRyWI
-         BovnntrLB8mZUAM8fPbilce10pbReLOxdOu685/C/B2OfOWsM/nPV14KH/lufK/W59
-         uqxLKIY8njs/w==
+        b=chvy6+gEVKMrMyTwo76gNnMqZNgcqeIh0iCT+slnWvKswqcF2RysWxQb0BQlS06dr
+         QVmasCtcr3hB+/LZ5OIXgt4k2tU3+/RsOUpEJsCKMXvU3t/BWJcdd9XBI4/1ZKeFmQ
+         1/FHkTlRsVFpuNYehLzlvpqT6f+5IrQjVDMFzKlakeDBZXnHWuia392P4RaI9QdS/O
+         3NIVUUDkY7aInCuLN1xAdp/qsGyapkLzIG6sZ7w3shP7pQn4MWFP0nnEKw21aptPfm
+         armmcBXB8HwZqMBOsYJAkZ2NsV2piwnHngfTEJtWrGjYcBMgHTxBpWyz3obqfyM12g
+         pHc6Srxhp+Kow==
 From:   Mark Brown <broonie@kernel.org>
-To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-In-Reply-To: <ZQSr15AYJpDpipg6@work>
-References: <ZQSr15AYJpDpipg6@work>
-Subject: Re: [PATCH][next] ASoC: SOF: ipc4-topology: Use size_add() in call
- to struct_size()
-Message-Id: <169625984488.65718.9772394979337795498.b4-ty@kernel.org>
-Date:   Mon, 02 Oct 2023 16:17:24 +0100
+To:     oder_chiou@realtek.com, Zhang Shurong <zhang_shurong@foxmail.com>
+Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <tencent_4F37C9B5315B7960041E8E0ADDA869128F08@qq.com>
+References: <tencent_4F37C9B5315B7960041E8E0ADDA869128F08@qq.com>
+Subject: Re: [PATCH] ASoC: rt5682: Fix regulator enable/disable sequence
+Message-Id: <169625984853.65718.1048649527672207151.b4-ty@kernel.org>
+Date:   Mon, 02 Oct 2023 16:17:28 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -59,11 +49,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 15 Sep 2023 13:09:11 -0600, Gustavo A. R. Silva wrote:
-> If, for any reason, the open-coded arithmetic causes a wraparound,
-> the protection that `struct_size()` adds against potential integer
-> overflows is defeated. Fix this by hardening call to `struct_size()`
-> with `size_add()`.
+On Sat, 30 Sep 2023 17:55:50 +0800, Zhang Shurong wrote:
+> This will attempt to disable the regulators if the initial enable fails
+> which is a bug.
+> 
+> Fix this bug by modifying the code to the correct sequence.
 > 
 > 
 
@@ -73,8 +63,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: SOF: ipc4-topology: Use size_add() in call to struct_size()
-      commit: 3746284c233d5cf5f456400e61cd4a46a69c6e8c
+[1/1] ASoC: rt5682: Fix regulator enable/disable sequence
+      commit: 892fbdb203945d887ad2a109a3700b091a8e3b97
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
