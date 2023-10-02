@@ -2,56 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 919AE7B4F5D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CA37B4F5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236237AbjJBJqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:46:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
+        id S236275AbjJBJqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:46:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236174AbjJBJqn (ORCPT
+        with ESMTP id S236234AbjJBJqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:46:43 -0400
+        Mon, 2 Oct 2023 05:46:47 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E67F91;
-        Mon,  2 Oct 2023 02:46:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC20183;
+        Mon,  2 Oct 2023 02:46:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696240000; x=1727776000;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=yecl4KQ6cTg1O9LGgRMfjZXbOywvYlyUsjIAYh4QoG4=;
-  b=VVQt3w9tzmYOuQn1xA3lCEjrmt7xnLJTd/VBO9/E+ufowLVH2yvpFK0d
-   fsI/t1XsZ53mDW4Crba5HaQBNv9gOO7xMG8qmEzP2MbuxwIljskaDSx9R
-   G3cHSKuhBvNj5/nhKtKDISexr4cfD9hasZsPC3LcUs2wE1DIYcE64a3UY
-   4/PfnEQSJi/MDV4V8qMynBprvZfGTrqb4YkCvIziLQBOFL67GMxH3DY2N
-   XwbePEd1UhgzN92EnmK7b+k2GOnVuBqOemHwFnYVJP0TGGAyt+cZlLE7f
-   wZ/7QoAIRMSxrjFMuy6B4njcYccwEglLPbX4KzV4hKBTgSv6E1oE7Hynh
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="372960252"
+  t=1696240004; x=1727776004;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+rojfav0AEhdlKxJ7yP2mhSeCWfVBVJaA5FY6zYujt8=;
+  b=Ys05JtOXh1C35jRr4IwrZUmxSgRxWE2zjuMOGfNYwFfRWaXsN0Zfkkik
+   lVfWA6r5qHs2c8L14IEtslhdjuuHzOJZ/620q4k4ZI57PHdLlbl1IQegE
+   a/f3Z2lWu7Sc7HnvqeOsiJS5Yha09HRpFzPSC5Lo6poUIytfRPTIEBwrM
+   azQMACN1ZCTPF8dS5Zg1fvSn9SCs4WdqGC5rkOLFS4Y9h4YM+a5YYDuAv
+   oIeM3XIrQzDj1KolH4IVrKi/LRzs8LVJjcb31tKi0lwqaNUHbWtYf8MK6
+   rx+VjhSznhWsXzMSJGZFdvwS9grXgX6rUMjdFVrm0wu7Rz7eoMo6KsNx+
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="372960262"
 X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="372960252"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:46:39 -0700
+   d="scan'208";a="372960262"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:46:44 -0700
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="754005124"
 X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="1467822"
-Received: from roliveir-mobl1.ger.corp.intel.com ([10.251.222.16])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:45:58 -0700
-Date:   Mon, 2 Oct 2023 12:46:35 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v3 1/7] selftests/resctrl: Fix uninitialized .sa_flags
-In-Reply-To: <0df7f82d-de3b-3e51-ffc1-5aa4e23db62a@intel.com>
-Message-ID: <545ef67c-4ca2-9a2-381a-991fda391e8e@linux.intel.com>
-References: <20230929112039.7488-1-ilpo.jarvinen@linux.intel.com> <20230929112039.7488-2-ilpo.jarvinen@linux.intel.com> <0df7f82d-de3b-3e51-ffc1-5aa4e23db62a@intel.com>
+   d="scan'208";a="754005124"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:46:41 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qnFVf-000000027gX-048L;
+        Mon, 02 Oct 2023 12:46:39 +0300
+Date:   Mon, 2 Oct 2023 12:46:38 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v4 05/11] gpiolib: provide gpio_device_get_desc()
+Message-ID: <ZRqRfss5oI+xcS3o@smile.fi.intel.com>
+References: <20230927142931.19798-1-brgl@bgdev.pl>
+ <20230927142931.19798-6-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-889719702-1696239999=:2459"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927142931.19798-6-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
@@ -62,63 +70,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-889719702-1696239999=:2459
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Fri, 29 Sep 2023, Reinette Chatre wrote:
-
-> Hi Ilpo,
+On Wed, Sep 27, 2023 at 04:29:25PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 > 
-> On 9/29/2023 4:20 AM, Ilpo Järvinen wrote:
-> > signal_handler_unregister() calls sigaction() with uninitializing
-> > sa_flags in the struct sigaction.
-> > 
-> > Make sure sa_flags is always initialized in signal_handler_unregister()
-> > by initializing the struct sigaction when declaring it.
-> > 
-> > Fixes: 73c55fa5ab55 (selftests/resctrl: Commonize the signal handler register/unregister for all tests)
-> 
-> Please place the title line in quotes (checkpatch warning).
+> Getting the GPIO descriptor directly from the gpio_chip struct is
+> dangerous as we don't take the reference to the underlying GPIO device.
+> In order to start working towards removing gpiochip_get_desc(), let's
+> provide a safer variant that works with an existing reference to struct
+> gpio_device.
 
-Thanks. I hadn't realize the quotes vanished without an error when I 
-removed the escape from " char in gitconfig alias (I have just migrated to 
-use alias instead of a custom tool).
+...
 
-> > Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
-> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > Cc: <stable@vger.kernel.org>
-> > ---
-> >  tools/testing/selftests/resctrl/resctrl_val.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
-> > index 51963a6f2186..1e8b90077218 100644
-> > --- a/tools/testing/selftests/resctrl/resctrl_val.c
-> > +++ b/tools/testing/selftests/resctrl/resctrl_val.c
-> > @@ -504,7 +504,7 @@ int signal_handler_register(void)
-> >   */
-> >  void signal_handler_unregister(void)
-> >  {
-> > -	struct sigaction sigact;
-> > +	struct sigaction sigact = {};
-> >  
-> >  	sigact.sa_handler = SIG_DFL;
-> >  	sigemptyset(&sigact.sa_mask);
-> 
-> Could you please add this initialization to signal_handler_register()
-> also? I understand that the particular issue of sa_flags is not 
-> relevant to that function but there are other uninitialized fields.
-> I think initializing the struct makes the code more robust without
-> needing to reason/understand glibc behavior.
+> +EXPORT_SYMBOL_GPL(gpiochip_get_desc);
 
-Okay, I'll do that and add a note into the changelog that then correctness 
-is obvious from the code itself.
+> +struct gpio_desc *
+> +gpio_device_get_desc(struct gpio_device *gdev, unsigned int hwnum)
+
+I'm wondering if you move this to be upper than gpiochip_get_desc() and
+diff will look better...
 
 -- 
- i.
+With Best Regards,
+Andy Shevchenko
 
---8323329-889719702-1696239999=:2459--
+
