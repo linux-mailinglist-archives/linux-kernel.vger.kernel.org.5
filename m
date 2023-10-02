@@ -2,52 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5A37B4F1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01FCA7B4F1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236126AbjJBJfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:35:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
+        id S236133AbjJBJft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:35:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230459AbjJBJfJ (ORCPT
+        with ESMTP id S230506AbjJBJfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:35:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DC891
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:35:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC250C433C7;
-        Mon,  2 Oct 2023 09:35:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696239305;
-        bh=dnFTdFOeagWaBjtPe10DLkl9Q4FvdlXBuptRNi7f1Co=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W2HtDzXu4yOZbQ2AFnAcl/zCHHLxln8B/vd/0FptfV1dKTGOdS0Edm4RggU+VF74U
-         zE9POEtYaZ+J45iLWkBdchlSprJVOky94tjUrFD/FKXXVwDu+I5+RuqtyIh173wQ67
-         nMahuGSlY81z+9tHkhIVFGOv5LRccRcJFv1pGJCU=
-Date:   Mon, 2 Oct 2023 11:35:02 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Michael Walle <michael@walle.cc>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Daniel Golle <daniel@makrotopia.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH v10 1/3] nvmem: core: Rework layouts to become platform
- devices
-Message-ID: <2023100200-snowcap-arena-a548@gregkh>
-References: <20230922174854.611975-1-miquel.raynal@bootlin.com>
- <20230922174854.611975-2-miquel.raynal@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230922174854.611975-2-miquel.raynal@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Mon, 2 Oct 2023 05:35:47 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7515A91
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:35:42 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-690bd59322dso12653530b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:35:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=areca-com-tw.20230601.gappssmtp.com; s=20230601; t=1696239342; x=1696844142; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:cc:to:from:subject
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=DSomhkdtUP7F+02/nCh3Eh/+Tdns1WIxU3dMozvIOWY=;
+        b=JKojgjMHUOnOLSFlqyYH4UIQuiDMer+l37yKpZcyx7qNfDIWZbGETYXnx5t+ZZkXT+
+         8yVllmAXt02oTFN8y0AzgEYW3J7ExbEPed2Miwogbj1t4GWZR2D7JXKOS2ylnl/GgHXQ
+         LnonoLTG2xhjxBuYeZA6DRspb1cpcsP4VXSqt5IgKqOMFz3gJmaPBguzNCwtGfCej3sq
+         PmxtPYcnSCCHLsrYsJvcemFS0A0Q4u30bL10qkXFVNYh68NXwoTKkhQ4ImV6krVcQY+Y
+         kNszN9mx9mD0Vi3p73ixIzKQoz2D2Cmbvblt4op1V5d9q5rfPWPznRe+gtThCPvrxU9e
+         OBEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696239342; x=1696844142;
+        h=content-transfer-encoding:mime-version:date:cc:to:from:subject
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DSomhkdtUP7F+02/nCh3Eh/+Tdns1WIxU3dMozvIOWY=;
+        b=maj2us9Xw+gCpI5dd6cS6pYGfgDsznpmWZPGbNb3NTgOqc3WkqmlUOBItcbng610IJ
+         V3n0qwbiTUrfc9sk3dNqtLvFU2ttiuL7bVM2kMYlopyGjeDUQxtMy5Sw4eL3Qe1rIwto
+         LRXPqHAMU6fe6/aZ8j/m2ahslLH0XALtiYVHbDRTv0EpcD66nqCzAbmr7a79fG5TsRwB
+         NcYapFhjYOiXbbGpyg9UzNlo323So1qHzAfuSB6vqYL079JqJyhYXrhwBnfyJ3lnIPZK
+         mbqNWgjQsy9dQCHCK/K2N6WnoUtsgZUyndULdv0WHoXNFF8+rOB8Rid3dWriPNEIT94B
+         ne4A==
+X-Gm-Message-State: AOJu0YzDG2Ohw9BgnqWB6wQQA8MZ1mAAR2JOX0aCZJBlnhhKGGs6Oldz
+        D7fVdV3oapw+m4QzK3RBbcxTkw==
+X-Google-Smtp-Source: AGHT+IGT75k9aPQu4D+LrRUl2l806picCBMRseS1HAFAQX5xJYALwIizFzIqsfwtIpMmySCtvtEp/A==
+X-Received: by 2002:a05:6a20:3d90:b0:15e:10e:12f3 with SMTP id s16-20020a056a203d9000b0015e010e12f3mr11697085pzi.0.1696239341920;
+        Mon, 02 Oct 2023 02:35:41 -0700 (PDT)
+Received: from centos78 (60-248-88-209.hinet-ip.hinet.net. [60.248.88.209])
+        by smtp.googlemail.com with ESMTPSA id a17-20020aa780d1000000b00690d4464b94sm8294693pfn.7.2023.10.02.02.35.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Oct 2023 02:35:40 -0700 (PDT)
+Message-ID: <ca21468a8a5de0fa19397232ac409c1015f8e29f.camel@areca.com.tw>
+Subject: [PATCH v3 0/3] scsi: arcmsr: support Areca ARC-1688 Raid controller
+From:   ching Huang <ching2048@areca.com.tw>
+To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
+        linux-scsi@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     bvanassche@acm.org, kbuild test robot <lkp@intel.com>
+Date:   Mon, 02 Oct 2023 17:35:49 +0800
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,43 +70,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 22, 2023 at 07:48:52PM +0200, Miquel Raynal wrote:
-> Current layout support was initially written without modules support in
-> mind. When the requirement for module support rose, the existing base
-> was improved to adopt modularization support, but kind of a design flaw
-> was introduced. With the existing implementation, when a storage device
-> registers into NVMEM, the core tries to hook a layout (if any) and
-> populates its cells immediately. This means, if the hardware description
-> expects a layout to be hooked up, but no driver was provided for that,
-> the storage medium will fail to probe and try later from
-> scratch. Technically, the layouts are more like a "plus" and, even we
-> consider that the hardware description shall be correct, we could still
-> probe the storage device (especially if it contains the rootfs).
-> 
-> One way to overcome this situation is to consider the layouts as
-> devices, and leverage the existing notifier mechanism. When a new NVMEM
-> device is registered, we can:
-> - populate its nvmem-layout child, if any
-> - try to modprobe the relevant driver, if relevant
-> - try to hook the NVMEM device with a layout in the notifier
-> And when a new layout is registered:
-> - try to hook all the existing NVMEM devices which are not yet hooked to
->   a layout with the new layout
-> This way, there is no strong order to enforce, any NVMEM device creation
-> or NVMEM layout driver insertion will be observed as a new event which
-> may lead to the creation of additional cells, without disturbing the
-> probes with costly (and sometimes endless) deferrals.
-> 
-> Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+This patch bases on git.kernel.org/pub/scm/linux/kernel/git/mkp/scsi.git for-next
 
-Did I miss why these were decided to be platform devices and not normal
-devices on their own "bus" that are attached to the parent device
-properly?  Why platform for a dynamic thing?
+Changes from v3:
+- fix warning of cast from pointer to integer of different size
 
-If I did agree with this, it should be documented here in the changelog
-why this is required to be this way so I don't ask the question again in
-the future :)
+Changes from v2:
+- remove mangled whitespace
+- fix wrapped lines
 
-thanks,
+ching Huang (3):
+  support new Raid controller ARC-1688
+  support new PCI device ID 1883 and 1886
+  update driver's version to v1.51.00.14-20230915
 
-greg k-h
+ drivers/scsi/arcmsr/arcmsr.h     | 29 +++++++++-
+ drivers/scsi/arcmsr/arcmsr_hba.c | 96 +++++++++++++++++++++++++++++++-
+ 2 files changed, 123 insertions(+), 2 deletions(-)
+
+-- 
+2.39.3
+
+
