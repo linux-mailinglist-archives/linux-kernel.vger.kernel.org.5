@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D37117B4B7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 08:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F417B4C42
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235533AbjJBGbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 02:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
+        id S235686AbjJBHH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 03:07:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235524AbjJBGbT (ORCPT
+        with ESMTP id S235601AbjJBHH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 02:31:19 -0400
-Received: from out203-205-221-155.mail.qq.com (out203-205-221-155.mail.qq.com [203.205.221.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A8F5DA;
-        Sun,  1 Oct 2023 23:31:15 -0700 (PDT)
+        Mon, 2 Oct 2023 03:07:26 -0400
+X-Greylist: delayed 2162 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 02 Oct 2023 00:07:22 PDT
+Received: from out203-205-221-191.mail.qq.com (out203-205-221-191.mail.qq.com [203.205.221.191])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DFA6BC;
+        Mon,  2 Oct 2023 00:07:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1696228273;
-        bh=kX93wG8sDvK/NYNskFqLEmdWnX99G5sekJ2NkAtEEsY=;
+        s=s201512; t=1696230440;
+        bh=/va6eC4+0cEIiwSVm3cTBhnxHL1n1Ys42lzQlFSbemA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=vCLTs4r1NfyHuQVDcDd8PKnW2nJccRaJX3oJbjLqvYw+K9RWHaO26Ug3ps53/yfAT
-         pNuZOeUp0ErF4yx7bZPWMi5/1N1TLPF+ZJ7YKdNIZFgMA1B7NrgmR6OyfP4oBcOJ+X
-         XT0U86VTIySy67q8xGEuQTHP6l1tInialJPrzuKc=
+        b=EH5353Zm1ORPKHjjH35V0B5RfmVJZBe8YuquinZrDw7sKsMlG1Tlsc5+zXIFSNY94
+         u9WBuRDm8lKmoGMnx95+NaqebNj1nwwlgJCEuedU/lF+BYgx+128MZEUdGkseGdkeZ
+         fjQhqiZ6unQXUsiyO/W96ekdLyn1gP21y2gcnbW4=
 Received: from localhost ([124.78.196.55])
-        by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-        id 7CBA4A46; Mon, 02 Oct 2023 14:31:11 +0800
-X-QQ-mid: xmsmtpt1696228271topi6npl5
-Message-ID: <tencent_25938315DAA0CF57818CE1D5CFCCC4B02406@qq.com>
-X-QQ-XMAILINFO: OY0S8v5Ciex7OzVci6wQgTcll1R17sLVOkSa/oS4MllxcNQnLA9qrynZPm41Ce
-         4U5e1tX7oL803Eg3UrVo65g/alL12hAVQYsfhfjnBKjw5sgI5/fZwiiJ+/L7ETlMzl4zhfHvLWlf
-         /tYsmjBO0o1S4OuPAF/Yadm87s6ljOUsSKYixfvnUJ8mj6Q2XwiVstnaz9sAYogpDcHPtlwmtpWJ
-         zZOTGx6Cc67qKe0Uy4/tfyvcf2QJW5P/jDqCtAzw+1/bCa6JS8GHmsA+hRYd7HTJoHdB+ta+I3Nv
-         Ds7VTGg8YAMZu4eKsvw4lGX/HFM8sV5El54QhICD2v1bT7JL/Ieq/y1LH/Iwn5EnkOmKASfy4yEH
-         At7N6lE+UgsuTMUa1k6YHgN95xnf/3makLJcvXJzW9N08Pjqeb+kjpCSHuGPFPqHPBRNQbl6yJJu
-         hqr1mlWI6N23vE6FCRpqwqKfi2ZBUQ2vHoFjOK8H55K15jjTjPSsenqKoNa3+Wf/GsfdPDKWzO7A
-         iWf7WTvubXAHojuEkYfrKqrxLzho+v1sHtSX+hluU5ODRmK7oNY/s74bqL4TBjgvvEZ3R6vKXnNa
-         7P+bNe7tjMfsWcfJjkp8hsA5V4f98YHGlyZoV3gUbaZ2zOnFIHFuWPXD1pG/ILIVBb2s3hqJmn+p
-         vK6RYqWs/JajWSCK/1cSsyM9zqDcWiLAHwgyMtsEUuuWzSLXlahlpw3x0lysbTIaPsBKEYFYfEpC
-         34kFGzTtXPmGnPOF24NrAN7FSq8f3AQhNcWAC91PkdO1Em+lzj4Hx5gUo8q1G21Frfs0m1P5bOnj
-         XliLkjRxzJyN+Bo95dVPgcTZUSMovoZsrU+qkeWuzcPG74b/CA//G8ppwQKDt3ZKB3YcqyIXN6Wg
-         wG2ewY8rKV8ATEb8LJt20KiiR1ZsSCIga0c8RUf7JLG5puwLgc9aJMsMW2dWT8VxrAcUrTMZboX2
-         qt3TwiQ2boZXyF9vR652Mmjykvqx7SKLtbIf1eCHsUSmK+0Ou/NMkhHv8W80P6yqiwgH4Qm6loJ0
-         e8pxYPbA==
+        by newxmesmtplogicsvrszc2-0.qq.com (NewEsmtp) with SMTP
+        id 7D027EE0; Mon, 02 Oct 2023 14:31:16 +0800
+X-QQ-mid: xmsmtpt1696228276t3iuj484p
+Message-ID: <tencent_E465261B2BB2C1EBAF5C19912B9F19B7E107@qq.com>
+X-QQ-XMAILINFO: OZZSS56D9fAjFJK57+xHWtgp8Z39avrTzcuiK+PjLSh5axQe5xVL+LS3/vkmak
+         04R/P60x5pNZylcwXW4N3oapc9mgvzwLudqmrxKo28ib34Tl13D2cqrUCQTjcD+MjjBDyvQvukvq
+         BcsilxEc2SSPTn+n1IdDPDB9qegPhUsqeT4G0wWn+ijKYbSleaCx6VQchRvU9e75owWkxhyw/p8h
+         a7TQTm0Fwn0EU2zBa/T4NjkFhXRN0kY218B0HjA9S6X6Cd07NcGXI2+u2InqDrS6+7Fuz+9FeTnu
+         0PilEjcl6eufObl0uFrKy5/dXnyeRwejqFOshgUwQzBeSNCFtHS4XGzBQ4qCQGDHdCwefGFhyNLm
+         0VKYqaUycHLvERKALUrbBvaT/FycmJy2EPxxYJldf5T9ugHas4XePfN/lQdGZwDrlkZ5hIBGc1wi
+         A8LQkf+NkNUKgG2cyWB2X52KQLlRX2ttutj5oGOHG/Sw5J8qERJqrcFQjaKkhdT7YPIttQuhCYgD
+         3AsaYPz3eR0Zq1Sa5GovJ+bUTUm6R+L9niqvAiD6vs37Ki989fqlZbDiI1LmxNiYKnoCtiVPLzMT
+         SIbROkkG9s1ylHbpbnkyI6sCgUdoriTWjD0+KZ5bpGWLVNz7YQIQwwJKKQFPAtHFRk5qxl9PdBMQ
+         BT3KCln0BDMfXljPlP5fQ14Hm6d87COuhmhUacfieBAO7Z127FsHXZPcl2b9VV49v8yXp5Pi3gi7
+         kMaXbUe44lGXHWuKyk+ZYBdIc386DblEMHE25czUzAaVrU/Kf7KGORLPtddIegnayvWeZPB2nxpF
+         pV/G0rm2l8XitFf3/e+WgTgOYZEK9TBohuwNKnnOM1kpiFOkfpJM83+/kZVezAucdnnAcXgmxp9N
+         WQIjeSamjCupVzEeBXzvMbNkp1UAyy1trJMDSwVv5UYzHfA9tWHW71Jr7619giCzv8i3i+eb5E4V
+         YtT0oKCQmKPBESBQl3EKfm8E6ss8AYRWFRpInXcNjTHZQ2bnX+bQ==
 X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
 From:   Woody Zhang <woodylab@foxmail.com>
 To:     Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
@@ -50,9 +50,9 @@ To:     Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
 Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
         Woody Zhang <woodylab@foxmail.com>
-Subject: [PATCH 1/2] spi: sun6i: Fix memory leak on device removal
-Date:   Mon,  2 Oct 2023 14:29:58 +0800
-X-OQ-MSGID: <20231002062957.1741396-2-woodylab@foxmail.com>
+Subject: [PATCH 2/2] spi: sun4i: Fix memory leak on device removal
+Date:   Mon,  2 Oct 2023 14:29:59 +0800
+X-OQ-MSGID: <20231002062957.1741396-3-woodylab@foxmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231002062957.1741396-1-woodylab@foxmail.com>
 References: <20231002062957.1741396-1-woodylab@foxmail.com>
@@ -73,21 +73,24 @@ and driver detachment.
 
 Signed-off-by: Woody Zhang <woodylab@foxmail.com>
 ---
- drivers/spi/spi-sun6i.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/spi/spi-sun4i.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
-index fddc63309773..33cec49d5538 100644
---- a/drivers/spi/spi-sun6i.c
-+++ b/drivers/spi/spi-sun6i.c
-@@ -774,6 +774,7 @@ static void sun6i_spi_remove(struct platform_device *pdev)
- 		dma_release_channel(master->dma_tx);
- 	if (master->dma_rx)
- 		dma_release_channel(master->dma_rx);
+diff --git a/drivers/spi/spi-sun4i.c b/drivers/spi/spi-sun4i.c
+index b8947265d329..ba5690039f72 100644
+--- a/drivers/spi/spi-sun4i.c
++++ b/drivers/spi/spi-sun4i.c
+@@ -518,7 +518,10 @@ static int sun4i_spi_probe(struct platform_device *pdev)
+ 
+ static void sun4i_spi_remove(struct platform_device *pdev)
+ {
++	struct spi_master *master = dev_get_drvdata(&pdev->dev);
++
+ 	pm_runtime_force_suspend(&pdev->dev);
 +	spi_master_put(master);
  }
  
- static const struct sun6i_spi_cfg sun6i_a31_spi_cfg = {
+ static const struct of_device_id sun4i_spi_match[] = {
 -- 
 2.39.2
 
