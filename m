@@ -2,150 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 750D37B54AA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575DA7B546D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237671AbjJBOJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
+        id S237658AbjJBOJX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:09:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237662AbjJBOJb (ORCPT
+        with ESMTP id S236201AbjJBOJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:09:31 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F36B7;
-        Mon,  2 Oct 2023 07:09:28 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RzjS861dVz67ydC;
-        Mon,  2 Oct 2023 22:06:48 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 2 Oct
- 2023 15:09:25 +0100
-Date:   Mon, 2 Oct 2023 15:09:24 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Gregory Price <gourry.memverge@gmail.com>
-CC:     <linux-mm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arch@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        <linux-cxl@vger.kernel.org>, <luto@kernel.org>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <dave.hansen@linux.intel.com>, <hpa@zytor.com>, <arnd@arndb.de>,
-        <akpm@linux-foundation.org>, <x86@kernel.org>,
-        Gregory Price <gregory.price@memverge.com>
-Subject: Re: [RFC v2 5/5] ktest: sys_move_phys_pages ktest
-Message-ID: <20231002150924.00006a7b@Huawei.com>
-In-Reply-To: <20230919230909.530174-6-gregory.price@memverge.com>
-References: <20230919230909.530174-1-gregory.price@memverge.com>
-        <20230919230909.530174-6-gregory.price@memverge.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Mon, 2 Oct 2023 10:09:21 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A706E9B;
+        Mon,  2 Oct 2023 07:09:17 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B2718C15;
+        Mon,  2 Oct 2023 07:09:55 -0700 (PDT)
+Received: from [10.57.93.204] (unknown [10.57.93.204])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 172413F762;
+        Mon,  2 Oct 2023 07:09:14 -0700 (PDT)
+Message-ID: <91d6e9be-d50c-d157-55a0-79134cbd01fb@arm.com>
+Date:   Mon, 2 Oct 2023 15:09:57 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4 11/18] PM: EM: Add runtime update interface to modify
+ EM power
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dietmar.eggemann@arm.com, rui.zhang@intel.com,
+        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
+        qyousef@layalina.io, wvw@google.com
+References: <20230925081139.1305766-1-lukasz.luba@arm.com>
+ <20230925081139.1305766-12-lukasz.luba@arm.com>
+ <CAJZ5v0iebSOT--AiP-9-CYwqtTe7+kRddryJ3DdvFb3WUeji7w@mail.gmail.com>
+ <a3907ec0-7e20-e3a5-3814-476a25e1efaa@arm.com>
+ <CAJZ5v0jU1SZ5kPHYqM3DLGY9j8DgGp7XCciyy=fJAyHnkyGgtA@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <CAJZ5v0jU1SZ5kPHYqM3DLGY9j8DgGp7XCciyy=fJAyHnkyGgtA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023 19:09:08 -0400
-Gregory Price <gourry.memverge@gmail.com> wrote:
 
-> Implement simple ktest that looks up the physical address via
-> /proc/self/pagemap and migrates the page based on that information.
+
+On 9/29/23 14:18, Rafael J. Wysocki wrote:
+> On Fri, Sep 29, 2023 at 11:59 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+
+[snip]
+
+>>
+>> It's done above, next to '!dev || !dev->em_pd'
 > 
-> Signed-off-by: Gregory Price <gregory.price@memverge.com>
-
-One trivial comment inline.
-
-
-> ---
->  tools/testing/selftests/mm/migration.c | 101 +++++++++++++++++++++++++
->  1 file changed, 101 insertions(+)
+> Yes, it is, I meant something like this:
 > 
-> diff --git a/tools/testing/selftests/mm/migration.c b/tools/testing/selftests/mm/migration.c
-> index 6908569ef406..67fbae243f94 100644
-> --- a/tools/testing/selftests/mm/migration.c
-> +++ b/tools/testing/selftests/mm/migration.c
-> @@ -5,6 +5,8 @@
->   */
->  
->  #include "../kselftest_harness.h"
-> +#include <stdint.h>
-> +#include <stdio.h>
->  #include <strings.h>
->  #include <pthread.h>
->  #include <numa.h>
-> @@ -14,11 +16,17 @@
->  #include <sys/types.h>
->  #include <signal.h>
->  #include <time.h>
-> +#include <unistd.h>
->  
->  #define TWOMEG (2<<20)
->  #define RUNTIME (20)
->  
-> +#define GET_BIT(X, Y) ((X & ((uint64_t)1<<Y)) >> Y)
-> +#define GET_PFN(X) (X & 0x7FFFFFFFFFFFFFull)
->  #define ALIGN(x, a) (((x) + (a - 1)) & (~((a) - 1)))
-> +#define PAGEMAP_ENTRY 8
-> +const int __endian_bit = 1;
-> +#define is_bigendian() ((*(char *)&__endian_bit) == 0)
->  
->  FIXTURE(migration)
->  {
-> @@ -94,6 +102,47 @@ int migrate(uint64_t *ptr, int n1, int n2)
->  	return 0;
->  }
->  
-> +
-Trivial, but 3 lines definitely more than needed.
+>      if (!cb || !cb->update_power || !dev)
+>          return -EINVAL;
+> 
+>      mutex_lock(&em_pd_mutex);
+> 
+>      pd = dev->em_pd;
+>      if (!pd) {
+>          ret = -EINVAL; /* or perhaps -ENODATA */
+>          goto unlock_em;
+>      }
+> 
+> 
 
-> +
-> +int migrate_phys(uint64_t paddr, int n1, int n2)
-> +{
-> +	int ret, tmp;
-> +	int status = 0;
-> +	struct timespec ts1, ts2;
-> +
-> +	if (clock_gettime(CLOCK_MONOTONIC, &ts1))
-> +		return -1;
-> +
-> +	while (1) {
-> +		if (clock_gettime(CLOCK_MONOTONIC, &ts2))
-> +			return -1;
-> +
-> +		if (ts2.tv_sec - ts1.tv_sec >= RUNTIME)
-> +			return 0;
-> +
-> +		/*
-> +		 * FIXME: move_phys_pages was syscall 454 during RFC.
-> +		 * Update this when an official syscall number is adopted
-> +		 * and the libnuma interface is implemented.
-> +		 */
-> +		ret = syscall(454, 1, (void **) &paddr, &n2, &status,
-> +			      MPOL_MF_MOVE_ALL);
-> +		if (ret) {
-> +			if (ret > 0)
-> +				printf("Didn't migrate %d pages\n", ret);
-> +			else
-> +				perror("Couldn't migrate pages");
-> +			return -2;
-> +		}
-> +
-> +		tmp = n2;
-> +		n2 = n1;
-> +		n1 = tmp;
-> +	}
-> +
-> +	return 0;
-> +}
+OK, I see what you mean. Let me change that.
+
+>>>
+>>>> +
+>>>> +       runtime_table = kzalloc(sizeof(*runtime_table), GFP_KERNEL);
+>>>> +       if (!runtime_table) {
+>>>> +               ret = -ENOMEM;
+>>>> +               goto unlock_em;
+>>>> +       }
+>>>> +
+>>>> +       runtime_table->state = kcalloc(pd->nr_perf_states,
+>>>> +                                      sizeof(struct em_perf_state),
+>>>> +                                      GFP_KERNEL);
+>>>> +       if (!runtime_table->state) {
+>>>> +               ret = -ENOMEM;
+>>>> +               goto free_runtime_table;
+>>>> +       }
+>>>
+>>> The above allocations can be merged into one and allocating memory
+>>> under the mutex is questionable.
+>>
+>> So how to make sure that there is no 2 callers trying to update the
+>> same EM or unregistration is not in the background?
+> 
+> You can allocate memory upfront and take the mutex before accessing
+> the shared data structures.  If there's an error in the code running
+> under the mutex, release it and then free the memory.
+> 
+> Allocating memory is one operation, updating the shared data
+> structures to use it is another one.  The former doesn't affect the
+> shared state in any way, so why do it under the mutex?
+
+Yes, make sense. I will shrink that critical section. Good catch,
+thanks!
+
+> 
+>> [snip]
+>>
+>>>>
+>>>> @@ -501,9 +598,23 @@ void em_dev_unregister_perf_domain(struct device *dev)
+>>>>
+>>>>           runtime_table = pd->runtime_table;
+>>>>
+>>>> +       /*
+>>>> +        * Safely destroy runtime modifiable EM. By using the call
+>>>> +        * synchronize_rcu() we make sure we don't progress till last user
+>>>> +        * finished the RCU section and our update got applied.
+>>>> +        */
+>>>>           rcu_assign_pointer(pd->runtime_table, NULL);
+>>>>           synchronize_rcu();
+>>>>
+>>>> +       /*
+>>>> +        * After the sync no updates will be in-flight, so free the
+>>>> +        * memory allocated for runtime table (if there was such).
+>>>> +        */
+>>>> +       if (runtime_table != pd->default_table) {
+>>>> +               kfree(runtime_table->state);
+>>>> +               kfree(runtime_table);
+>>>> +       }
+>>>
+>>> Can't this race with the RCU callback freeing the runtime table?
+>>
+>> That's why there is this 'synchronize_rcu()' above and the mutex. The
+>> updating caller if finished the update, would unlock the mutex and this
+>> unregister code can go. Here we call the synchronize_rcu() so we assure
+>> the callback has finished for the update path and than we explicitly
+>> free the saved 'runtime_table' here. So all data should be freed and
+>> code serialized in those two paths.
+> 
+> This doesn't quite agree with my understanding of what synchronize_rcu() does.
+> 
+> IIUC, RCU callbacks can run as soon as the grace period has elapsed
+> and they need not wait for synchronize_rcu() to return.  Conversely,
+> synchronize_rcu() doesn't wait for all of the RCU callbacks to
+> complete.
+> 
+> Now, em_destroy_rt_table_rcu() doesn't actually use the mutex, so how
+> exactly is it protected against racing with this code?
 
 
+I'll try to draw in on some pictures...
+
+(previous instance )
++---------------------+
+|                     |
+| runtime table    #1 |
+|                     |
++---------------------+
+
+
+(next instance )
++---------------------+
+|                     |
+| runtime table    #2 |
+|                     |
++---------------------+
+
+
+(not possible new instance)
++.....................+
+.                     .
+. runtime table    #3 .
+.                     .
++.....................+
+
+
+
+    cpu A - "updater"          |    cpu B - "remover"
+                               |
+------------------------------|------------------------------
+    lock em_pd_mutex           |
+                               |
+       alloc runtime table #2  |   lock em_pd_mutex
+                               |   (waiting)
+       async free instance #1  |    .
+                               |    .
+    unlock em_pd_mutex         |    .
+                               |   (enter critical section)
+                               |
+    lock em_pd_mutex           |   set NULL to runtime table ptr
+    (waiting)                  |
+    (wanted to create #3 inst) |   synchronize rcu to make it is visible
+    .                          |
+    .                          |   implicit free instance #2
+    .                          |
+    .                          |   free the rest of EM and EM
+    .                          |
+    .                          |   unlock em_pd_mutex
+    (enter critical section)   |
+    !dev->em_pd so             |
+    unlock & exit              |
+                               |
+                               |
+
+
+This should clean all involved memory and also prevent
+of allocating new instance, when we unregister EM.
