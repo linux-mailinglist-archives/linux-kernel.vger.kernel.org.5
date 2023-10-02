@@ -2,101 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0D27B56BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11CD7B5694
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238105AbjJBPZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:25:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43046 "EHLO
+        id S238095AbjJBP0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:26:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238088AbjJBPY6 (ORCPT
+        with ESMTP id S238078AbjJBP0B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:24:58 -0400
-Received: from bird.elm.relay.mailchannels.net (bird.elm.relay.mailchannels.net [23.83.212.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB5999
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:24:54 -0700 (PDT)
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 732036C2346
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 15:24:53 +0000 (UTC)
-Received: from pdx1-sub0-mail-a234.dreamhost.com (unknown [127.0.0.6])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 144BA6C25DC
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 15:24:53 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1696260293; a=rsa-sha256;
-        cv=none;
-        b=ZSq5TA12Aoo7Y/2xeI25EFcJ5tecBJ4mjk/2ecRWG6WXRQTdQO6rqcwPw2QptkU2EUehpM
-        0yft6F7WPSj7IYQlaSFP+wdkj2QnrRiWMdSu7HwezgISfZKJqPgRLOkCHehIsLW2bTeAFx
-        5Q2JlF15jC8zPX8oRenUU/Xrtth953/CcFPpXixFjM4DrR8HHxSb3JJq20otpEm6mU+OJ1
-        DPDGa3ZH9d6S5LIMA8A7/3wBBgsWAidtOr6JyzYfkwBSK+9Vo5e58o92RSiko72HymLEhe
-        R3BIKVedEOFvg30JoTGG1U97Rd9r+4cT5ReeoHekz6xaavlCN+d0y++ftKx36A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-        s=arc-2022; t=1696260293;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:dkim-signature;
-        bh=BpDz/GSeF06rc+c8xq1C9eT93VnU3phb3ZkiVcYrwwo=;
-        b=7E3Qdt/v8aeHQvR00A58F7SI/cWHNloeX0BkUInnNVUQIcDbKT8DKtWEmWAg541O6APgBa
-        j+piL0m2syRnO/PJm01faggtBmKahcwm0uP7lbNpIy+zDTHGrafDS5oLAXthzFIQq0PKRO
-        /43148woUwxRzRXZ0lRjIZbNtgIPrX2nTSi4DZu80iNn0prq3g55zOpTkeDg5ARkMf1oJO
-        +1m/14g6CP/5vrscJKTsALUBEnjj7xRaUOiZ3gPuCWPjYjIsIMZ09l99zSKYEELuVxq8dl
-        qTAu4xtPimvFm0z4l4cw2ItC+ARW4BEMHXLirRcYF4dBnxleHmI31YDYYTRP+Q==
-ARC-Authentication-Results: i=1;
-        rspamd-7d5dc8fd68-7jvhx;
-        auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
-X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
-X-MailChannels-Auth-Id: dreamhost
-X-Shelf-Whispering: 272698364e44d9dc_1696260293310_3036199405
-X-MC-Loop-Signature: 1696260293310:705572807
-X-MC-Ingress-Time: 1696260293310
-Received: from pdx1-sub0-mail-a234.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-        by 100.124.45.11 (trex/6.9.1);
-        Mon, 02 Oct 2023 15:24:53 +0000
-Received: from kmjvbox (c-73-231-176-24.hsd1.ca.comcast.net [73.231.176.24])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kjlx@templeofstupid.com)
-        by pdx1-sub0-mail-a234.dreamhost.com (Postfix) with ESMTPSA id 4RzlBD5nx3z11T
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
-        s=dreamhost; t=1696260292;
-        bh=BpDz/GSeF06rc+c8xq1C9eT93VnU3phb3ZkiVcYrwwo=;
-        h=Date:From:To:Cc:Subject:Content-Type;
-        b=VmXXspI4qsfiYqhz5/mCWzzyo+dIKOMdlF3OebWW0mcd3gmSmEZvmYuMQ36gkw7NF
-         MFCLv0xA1YtqyVzi2Q51ZVN2l9L5k5XQ1NmFghkA3l4rcKwfDKYpYn5lwy8xRx7DQZ
-         iXln9qeqUX8y+SH3bSg5vWNRkHJRaZTDwkCic1/b8pu9VFbUJxah7LEGQwOfE/4kMK
-         DSSuZf9s0lUI/Ue9kaXTI/HFkYmN4e7iBRNNFR+14UR6g7PF75HIImlWpDIuow3jsQ
-         ACD1obGTy4TFa4wCDQNo6p04c+bjGObhDK5nLaDIRKVpEdkwOfIMSRw/6gJT5SRBG9
-         mnFDWgCFSozkw==
-Received: from johansen (uid 1000)
-        (envelope-from kjlx@templeofstupid.com)
-        id e0110
-        by kmjvbox (DragonFly Mail Agent v0.12);
-        Mon, 02 Oct 2023 08:24:49 -0700
-Date:   Mon, 2 Oct 2023 08:24:49 -0700
-From:   Krister Johansen <kjlx@templeofstupid.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org
-Cc:     Miklos Szeredi <mszeredi@redhat.com>, linux-kernel@vger.kernel.org,
-        German Maglione <gmaglione@redhat.com>,
-        Greg Kurz <groug@kaod.org>, Max Reitz <mreitz@redhat.com>,
-        Bernd Schubert <bernd.schubert@fastmail.fm>
-Subject: [resend PATCH v2 2/2] fuse: ensure that submounts lookup their parent
-Message-ID: <45778432fba32dce1fb1f5fd13272c89c95c3f52.1696043833.git.kjlx@templeofstupid.com>
-References: <cover.1696043833.git.kjlx@templeofstupid.com>
+        Mon, 2 Oct 2023 11:26:01 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A52A9
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:25:58 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77574dec71bso480073985a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 08:25:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696260357; x=1696865157; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z686kNiWukEPuUFPdj5Zpdh2jq/+sj08V/foqt23i+A=;
+        b=y4Lpd+/4SIcTmMP+it4zIC2bLkghe/X8cNL2Hpr66K0KhC/8NgnTKxgtiai1lq8JlT
+         yRnNDfTjrGENFRjPNJwZ/Kx3r336mjDgS9perjkesmiZjPMq8OAOTK+v7UqkfmFy1Miz
+         xuaJ9LEqus9y77xTAskjdm6WHdQ7naVXSvjbTtFM6qBKKZLPMHy7UYld5kpc8FzQoXzT
+         fLzLFh4+4tYI7x+GS6ekbW9zxITAeVUAgX+qnV8W98vnP0lFXh1Cc70eMEY13mYYhQM7
+         9/c+pOfSkf2UZYRDZytYO8zC1lkjpmiYMmzj3ULBIHtyJi53pwUD4wbfHgnzGwGsSB2N
+         b1eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696260357; x=1696865157;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Z686kNiWukEPuUFPdj5Zpdh2jq/+sj08V/foqt23i+A=;
+        b=pFBIAXsBY92EGPBWbzxqaw9v3eoNH20LMkRBh+k3cTfiuBVxfvgvCVe8tzSJL9xzBj
+         x3qE7FoiHRN/K8v6JTKVR3B4cy5+/BBQQcmQ11lBVpr/G6m9zEKn77gQ+cWHXy72r4OO
+         eQGwQRVDRMYtSoHvwqrMvxwFHjEe9/jcyhdXXazLxingFyqYXxalZ2Sh9rOTtSj4tb63
+         DaDk1w/9Y6xoPZeNye42ltKNDPpk7DcCji6JPxrA2fq2ZWZ/uaVZQeoI5aO4Ef8imEMY
+         aZkQ0xxSd0AEmnp3WFeJ3MhIZn2NDD5yQkKD8Ee4F8Ri1nXkSsD5elyzrQe5Tfy1NqGo
+         QILA==
+X-Gm-Message-State: AOJu0Yyjvl9v8dNRyKkdoKmQ3W4h76jLYuaH3sNZVng1zJaOsalz0WOe
+        cV5eg1tvG2NRBS/Uu5IsuOK0jg==
+X-Google-Smtp-Source: AGHT+IGOzBNgnR/8kyNK9t/3Vfmd2zrtQURJkh2zz1eHoYnXPAUTPdrNqNl1BvQCUeX7rTJ8yRuL2w==
+X-Received: by 2002:a05:620a:4891:b0:775:9766:cb69 with SMTP id ea17-20020a05620a489100b007759766cb69mr7612236qkb.75.1696260356936;
+        Mon, 02 Oct 2023 08:25:56 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
+        by smtp.gmail.com with ESMTPSA id b6-20020a05620a126600b007759e9b0eb8sm1707697qkl.99.2023.10.02.08.25.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 08:25:56 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 11:25:55 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        riel@surriel.com, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
+ memory controller
+Message-ID: <20231002152555.GA5054@cmpxchg.org>
+References: <20230928005723.1709119-1-nphamcs@gmail.com>
+ <20230928005723.1709119-2-nphamcs@gmail.com>
+ <ZRrI90KcRBwVZn/r@dhcp22.suse.cz>
+ <20231002145026.GB4414@cmpxchg.org>
+ <ZRrc8hv4t740MZar@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1696043833.git.kjlx@templeofstupid.com>
-X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_BL_SPAMCOP_NET,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=no
+In-Reply-To: <ZRrc8hv4t740MZar@dhcp22.suse.cz>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -104,140 +79,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The submount code uses the parent nodeid passed into the function in
-order to create the root dentry for the new submount.  This nodeid does
-not get its remote reference count incremented by a lookup option.
+On Mon, Oct 02, 2023 at 05:08:34PM +0200, Michal Hocko wrote:
+> On Mon 02-10-23 10:50:26, Johannes Weiner wrote:
+> > On Mon, Oct 02, 2023 at 03:43:19PM +0200, Michal Hocko wrote:
+> > > On Wed 27-09-23 17:57:22, Nhat Pham wrote:
+> [...]
+> > > - memcg limit reclaim doesn't assist hugetlb pages allocation when
+> > >   hugetlb overcommit is configured (i.e. pages are not consumed from the
+> > >   pool) which means that the page allocation might disrupt workloads
+> > >   from other memcgs.
+> > > - failure to charge a hugetlb page results in SIGBUS rather
+> > >   than memcg oom killer. That could be the case even if the
+> > >   hugetlb pool still has pages available and there is
+> > >   reclaimable memory in the memcg.
+> > 
+> > Are these actually true? AFAICS, regardless of whether the page comes
+> > from the pool or the buddy allocator, the memcg code will go through
+> > the regular charge path, attempt reclaim, and OOM if that fails.
+> 
+> OK, I should have been more explicit. Let me expand. Charges are
+> accounted only _after_ the actual allocation is done. So the actual
+> allocation is not constrained by the memcg context. It might reclaim
+> from the memcg at that time but the disruption could have already
+> happened. Not really any different from regular memory allocation
+> attempt but much more visible with GB pages and one could reasonably
+> expect that memcg should stop such a GB allocation if the local reclaim
+> would be hopeless to free up enough from its own consumption.
+> 
+> Makes more sense?
 
-If the parent inode is evicted from its superblock, due to memory
-pressure for example, it can result in a forget opertation being sent to
-the server.  Should this nodeid be forgotten while it is still in use in
-a submount, users of the submount get an error from the server on any
-subsequent access.  In the author's case, this was an EBADF on all
-subsequent operations that needed to reference the root.
+Yes, that makes sense.
 
-Debugging the problem revealed that the dentry shrinker triggered a forget
-after killing the dentry with the last reference, despite the root
-dentry in another superblock still using the nodeid.
+This should be fairly easy to address by having hugetlb do the split
+transaction that charge_memcg() does in one go, similar to what we do
+for the hugetlb controller as well. IOW,
 
-As a result, a container that was also using this submount failed to
-access its filesystem because it had borrowed the reference instead of
-taking its own when setting up its superblock for the submount.
+alloc_hugetlb_folio()
+{
+	if (mem_cgroup_hugetlb_try_charge())
+		return ERR_PTR(-ENOMEM);
 
-This commit fixes the problem by having the new submount trigger a
-lookup for the parent as part of creating a new root dentry for the
-virtiofsd submount superblock.  This allows each superblock to have its
-inodes removed by the shrinker when unreferenced, while keeping the
-nodeid reference count accurate and active with the server.
+	folio = dequeue();
+	if (!folio) {
+		folio = alloc_buddy();
+		if (!folio)
+			goto uncharge;
+	}
 
-Signed-off-by: Krister Johansen <kjlx@templeofstupid.com>
----
- fs/fuse/dir.c    | 10 +++++-----
- fs/fuse/fuse_i.h |  6 ++++++
- fs/fuse/inode.c  | 43 +++++++++++++++++++++++++++++++++++++------
- 3 files changed, 48 insertions(+), 11 deletions(-)
-
-diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-index 5e01946d7531..333730c74619 100644
---- a/fs/fuse/dir.c
-+++ b/fs/fuse/dir.c
-@@ -183,11 +183,11 @@ static void fuse_lookup_init(struct fuse_conn *fc, struct fuse_args *args,
- 	args->out_args[0].value = outarg;
- }
- 
--static int fuse_dentry_revalidate_lookup(struct fuse_mount *fm,
--					 struct dentry *entry,
--					 struct inode *inode,
--					 struct fuse_entry_out *outarg,
--					 bool *lookedup)
-+int fuse_dentry_revalidate_lookup(struct fuse_mount *fm,
-+				  struct dentry *entry,
-+				  struct inode *inode,
-+				  struct fuse_entry_out *outarg,
-+				  bool *lookedup)
- {
- 	struct dentry *parent;
- 	struct fuse_forget_link *forget;
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 405252bb51f2..a66fcf50a4cc 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -1325,6 +1325,12 @@ void fuse_dax_dontcache(struct inode *inode, unsigned int flags);
- bool fuse_dax_check_alignment(struct fuse_conn *fc, unsigned int map_alignment);
- void fuse_dax_cancel_work(struct fuse_conn *fc);
- 
-+/* dir.c */
-+int fuse_dentry_revalidate_lookup(struct fuse_mount *fm, struct dentry *entry,
-+				  struct inode *inode,
-+				  struct fuse_entry_out *outarg,
-+				  bool *lookedup);
-+
- /* ioctl.c */
- long fuse_file_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
- long fuse_file_compat_ioctl(struct file *file, unsigned int cmd,
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 444418e240c8..79a31cb55512 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1464,7 +1464,13 @@ static int fuse_fill_super_submount(struct super_block *sb,
- 	struct fuse_mount *fm = get_fuse_mount_super(sb);
- 	struct super_block *parent_sb = parent_fi->inode.i_sb;
- 	struct fuse_attr root_attr;
-+	struct fuse_inode *fi;
- 	struct inode *root;
-+	struct inode *parent;
-+	struct dentry *pdent;
-+	struct fuse_entry_out outarg;
-+	bool lookedup = false;
-+	int ret;
- 
- 	fuse_sb_defaults(sb);
- 	fm->sb = sb;
-@@ -1480,14 +1486,39 @@ static int fuse_fill_super_submount(struct super_block *sb,
- 	if (parent_sb->s_subtype && !sb->s_subtype)
- 		return -ENOMEM;
- 
--	fuse_fill_attr_from_inode(&root_attr, parent_fi);
--	root = fuse_iget(sb, parent_fi->nodeid, 0, &root_attr, 0, 0);
- 	/*
--	 * This inode is just a duplicate, so it is not looked up and
--	 * its nlookup should not be incremented.  fuse_iget() does
--	 * that, though, so undo it here.
-+	 * It is necessary to lookup the parent_if->nodeid in case the dentry
-+	 * that triggered the automount of the submount is later evicted.
-+	 * If this dentry is evicted without the lookup count getting increased
-+	 * on the submount root, then the server can subsequently forget this
-+	 * nodeid which leads to errors when trying to access the root of the
-+	 * submount.
- 	 */
--	get_fuse_inode(root)->nlookup--;
-+	parent = &parent_fi->inode;
-+	pdent = d_find_alias(parent);
-+	if (!pdent)
-+		return -EINVAL;
-+
-+	ret = fuse_dentry_revalidate_lookup(fm, pdent, parent, &outarg,
-+	    &lookedup);
-+	dput(pdent);
-+	/*
-+	 * The new root owns this nlookup on success, and it is incremented by
-+	 * fuse_iget().  In the case the lookup succeeded but revalidate fails,
-+	 * ensure that the lookup count is tracked by the parent.
-+	 */
-+	if (ret <= 0) {
-+		if (lookedup) {
-+			fi = get_fuse_inode(parent);
-+			spin_lock(&fi->lock);
-+			fi->nlookup++;
-+			spin_unlock(&fi->lock);
-+		}
-+		return ret ? ret : -EINVAL;
-+	}
-+
-+	fuse_fill_attr_from_inode(&root_attr, parent_fi);
-+	root = fuse_iget(sb, parent_fi->nodeid, 0, &root_attr, 0, 0);
- 	sb->s_d_op = &fuse_dentry_operations;
- 	sb->s_root = d_make_root(root);
- 	if (!sb->s_root)
--- 
-2.25.1
-
+	mem_cgroup_hugetlb_commit_charge();
+}
