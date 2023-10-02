@@ -2,127 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8469D7B5857
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9BB37B583E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:57:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238506AbjJBQt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 12:49:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37078 "EHLO
+        id S238498AbjJBQvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 12:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238479AbjJBQty (ORCPT
+        with ESMTP id S237797AbjJBQu6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 12:49:54 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F112DA
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 09:49:48 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59c0dd156e5so309935037b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 09:49:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696265387; x=1696870187; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/NStGJqIAfzxqmZKJo1jqWKDF2/XWhgoYCwHuSutwVs=;
-        b=SKvht2WuY5SteMoxDMaP1lKFglc/q4FJUKgzvElPO8pbAKi2pOsA0W3V4p6/6wXfxN
-         rYFrKZbFQHbim0AlMTbPeHlbKR0eWFaTcMxfMoe4Wmj6khJOh3oZCyfL0UO2IZjQhP6X
-         BEuVM13PU8YPBI8stFAktdt8DCfGg0e4GIjq6vahnWs3GehXuZvhUppTFs1FhDFzwpB4
-         Qpbk4XVBrwhFp5U4yKF9QoHM0JGX5OKKc2rc/jX6WKlyl+ZHz3jXlP3qDeYOEAGEyJ3D
-         e4fKddGpJevJyIGad6Qx9zS0yEhymqjvpElBJaGfa4Fi63qPOe8S3XS6hsahBWZt28AC
-         cBtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696265387; x=1696870187;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/NStGJqIAfzxqmZKJo1jqWKDF2/XWhgoYCwHuSutwVs=;
-        b=E6tMqC3mFXF4EuWRpMgWfdpfSwIolMv0lH6EIauRjj4uxmAYdnlO4JnztWYsAD9kBm
-         vQDxFTHKpbMLo1l2UeatQVooAWPAua5hiU9hxMtNjVF12SP+PSj9ZSBMERpYSj9D0Xf6
-         0I4NgoH0ECEXMHWT/Am/YpXDGw4GknQxqkVHkeXksLRPTVhJYphR/Il+JRftDOTWmluB
-         ULBl2UIPTHDjwEAm2tg61Q2EYM+uFEkCEb9xKJGHrAkvt0o421YBnbzQGKCQjKIYAWqP
-         38qdiPQDqNll9ofeEbq0xI9OabEfIWDs2Ut9JykffywKunCT69LjdierrQppknY/vyFA
-         JBLA==
-X-Gm-Message-State: AOJu0YzSW/AeQPTxksa8GoxFS2l/5D5WnT6xp8CgG/aljkvVOuo5PTjc
-        WDGjhFwFcIuelG8gdFXmT1QSgD6J82g=
-X-Google-Smtp-Source: AGHT+IEsB5LCDJg4oleh71+UlutWTjEVI8m3tSshlzhn1JD6VtpE5PMMw65GMVMmiSbNHEOFxZtC45ZXJJk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:aa8a:0:b0:d80:eb4:9ca with SMTP id
- t10-20020a25aa8a000000b00d800eb409camr200372ybi.0.1696265387716; Mon, 02 Oct
- 2023 09:49:47 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 09:49:45 -0700
-In-Reply-To: <20231002155330.lguyhqgy64rhko4p@amd.com>
-Mime-Version: 1.0
-References: <20230921203331.3746712-1-seanjc@google.com> <20230921203331.3746712-7-seanjc@google.com>
- <20230922224210.6klwbphnsk5j2wft@amd.com> <ZRXGl44g8oD-FtNy@google.com> <20231002155330.lguyhqgy64rhko4p@amd.com>
-Message-ID: <ZRr0qUeSVxZfK-w2@google.com>
-Subject: Re: [PATCH 06/13] KVM: Disallow hugepages for incompatible gmem
- bindings, but let 'em succeed
-From:   Sean Christopherson <seanjc@google.com>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Binbin Wu <binbin.wu@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Mon, 2 Oct 2023 12:50:58 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8602A7
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 09:50:55 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62B9CC433C8;
+        Mon,  2 Oct 2023 16:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696265455;
+        bh=f355bukHKLu1rhR9na0ATb96tUNkqek2Wx4BQTlRLEE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TvhQY/lPTGKePjWnU3TJXXZbvZcyE9R4GVQNjw2UhR1CGilrwJflkZpSCRx68mWX9
+         aglUTzcQd57shU8ZaQjV4Ir5l5bU7wGp7N8tJtUwEQ0Ix+MGMON27iCuEipKyDXxr6
+         dJhSpUKrHjvchK3ArrSixlPpkW+/3M5PrIhA+PL9oBHP5zfjGTzOZt2GcmkXAKF4lH
+         Uth6eLZhyVqoJ9Z+o2yT8q+A6ims3hajfeoQ+CPSbHYnHWSR7VPoFmWZWt18Q6SrHn
+         vVjTax/Xrw+fgZz4gVd8yUZIM03a1AIcqsYAGgQAtj3sMbyfF4HDpgOb2ZVcTtvXRq
+         dGYG6HWBiHP9w==
+Received: (nullmailer pid 1924037 invoked by uid 1000);
+        Mon, 02 Oct 2023 16:50:52 -0000
+Date:   Mon, 2 Oct 2023 11:50:52 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: dt: writing-schema: add example for multiple
+ DT_SCHEMA_FILES
+Message-ID: <20231002165052.GA1915589-robh@kernel.org>
+References: <20230928190259.3497563-1-hugo@hugovil.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928190259.3497563-1-hugo@hugovil.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023, Michael Roth wrote:
-> On Thu, Sep 28, 2023 at 11:31:51AM -0700, Sean Christopherson wrote:
-> > On Fri, Sep 22, 2023, Michael Roth wrote:
-> > > On Thu, Sep 21, 2023 at 01:33:23PM -0700, Sean Christopherson wrote:
-> > > > +	/*
-> > > > +	 * For simplicity, allow mapping a hugepage if and only if the entire
-> > > > +	 * binding is compatible, i.e. don't bother supporting mapping interior
-> > > > +	 * sub-ranges with hugepages (unless userspace comes up with a *really*
-> > > > +	 * strong use case for needing hugepages within unaligned bindings).
-> > > > +	 */
-> > > > +	if (!IS_ALIGNED(slot->gmem.pgoff, 1ull << *max_order) ||
-> > > > +	    !IS_ALIGNED(slot->npages, 1ull << *max_order))
-> > > > +		*max_order = 0;
-> > > 
-> > > Thanks for working this in. Unfortunately on x86 the bulk of guest memory
-> > > ends up getting slotted directly above legacy regions at GFN 0x100, 
-> > 
-> > Can you provide an example?  I'm struggling to understand what the layout actually
-> > is.  I don't think it changes the story for the kernel, but it sounds like there
-> > might be room for optimization in QEMU?  Or more likely, I just don't understand
-> > what you're saying :-)
+On Thu, Sep 28, 2023 at 03:02:59PM -0400, Hugo Villeneuve wrote:
+> From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
 > 
-> Here's one example, which seems to be fairly normal for an x86 boot:
+> Variable DT_SCHEMA_FILES can specify multiple files, but the
+> documentation does not indicate how to do it. Each entry needs to be
+> separated by a column symbol ':'.
 > 
->   kvm_set_user_memory AddrSpace#0 Slot#0 flags=0x4 gpa=0x0 size=0x80000000 ua=0x7f24afc00000 ret=0 restricted_fd=19 restricted_offset=0x0
->   ^ QEMU creates Slot 0 for all of main guest RAM
->   kvm_set_user_memory AddrSpace#0 Slot#0 flags=0x0 gpa=0x0 size=0x0 ua=0x7f24afc00000 ret=0 restricted_fd=19 restricted_offset=0x0
->   kvm_set_user_memory AddrSpace#0 Slot#0 flags=0x4 gpa=0x0 size=0xc0000 ua=0x7f24afc00000 ret=0 restricted_fd=19 restricted_offset=0x0
->   kvm_set_user_memory AddrSpace#0 Slot#3 flags=0x6 gpa=0xc0000 size=0x20000 ua=0x7f2575000000 ret=0 restricted_fd=33 restricted_offset=0x0
->   kvm_set_user_memory AddrSpace#0 Slot#4 flags=0x6 gpa=0xe0000 size=0x20000 ua=0x7f2575400000 ret=0 restricted_fd=31 restricted_offset=0x0
->   ^ legacy regions are created and mapped on top of GPA ranges [0xc0000:0xe0000) and [0xe0000:0x100000)
->   kvm_set_user_memory AddrSpace#0 Slot#5 flags=0x4 gpa=0x100000 size=0x7ff00000 ua=0x7f24afd00000 ret=0 restricted_fd=19 restricted_offset=0x100000
->   ^ QEMU divides Slot 0 into Slot 0 at [0x0:0xc0000) and Slot 5 at [0x100000:0x80000000)
->     Both Slots still share the same backing memory allocation, so same gmem
->     fd 19 is used,but Slot 5 is assigned to offset 0x100000, whih is not
->     2M-aligned
+> Add an example to make it more obvious how to specify multiple
+> DT_SCHEMA_FILES.
 > 
-> I tried messing with QEMU handling to pad out guest_memfd offsets to 2MB
-> boundaries but then the inode size needs to be enlarged to account for it
-> and things get a bit messy. Not sure if there are alternative approaches
-> that can be taken from userspace, but with normal malloc()'d or mmap()'d
-> backing memory the kernel can still allocate a 2MB backing page for the
-> [0x0:0x200000) range and I think KVM still handles that when setting up
-> NPT of sub-ranges so there might not be much room for further optimization
-> there.
+> Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+> ---
+>  Documentation/devicetree/bindings/writing-schema.rst | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/writing-schema.rst b/Documentation/devicetree/bindings/writing-schema.rst
+> index 4a381d20f2b4..a500d3c2e12e 100644
+> --- a/Documentation/devicetree/bindings/writing-schema.rst
+> +++ b/Documentation/devicetree/bindings/writing-schema.rst
+> @@ -159,11 +159,13 @@ It is possible to run both in a single command::
+>      make dt_binding_check dtbs_check
+>  
+>  It is also possible to run checks with a subset of matching schema files by
+> -setting the ``DT_SCHEMA_FILES`` variable to a specific schema file or pattern.
+> +setting the ``DT_SCHEMA_FILES`` variable to a specific schema file, multiple
+> +schema files or pattern.
 
-Oooh, duh.  QEMU intentionally creates a gap for the VGA and/or BIOS holes, and
-so the lower DRAM chunk that goes from the end of the system reserved chunk to
-to TOLUD is started at an unaligned offset, even though 99% of the slot is properly
-aligned.
+And multiple patterns. I would say: ... to 1 or more specific schema 
+files or patterns (partial match of a fixed string). Each file or 
+pattern should be separated by ':'.
 
-Yeah, KVM definitely needs to support that.  Requiring userspace to align based
-on the hugepage size could work, e.g. QEMU could divide slot 5 into N slots, to
-end up with a series of slots to get from 4KiB aligned => 2MiB aligned => 1GiB
-aligned.  But pushing for that would be beyond stubborn.
 
-Thanks for being patient :-)
+>  
+>  ::
+>  
+>      make dt_binding_check DT_SCHEMA_FILES=trivial-devices.yaml
+> +    make dt_binding_check DT_SCHEMA_FILES=trivial-devices.yaml:rtc.yaml
+>      make dt_binding_check DT_SCHEMA_FILES=/gpio/
+>      make dtbs_check DT_SCHEMA_FILES=trivial-devices.yaml
+>  
+> 
+> base-commit: 633b47cb009d09dc8f4ba9cdb3a0ca138809c7c7
+> -- 
+> 2.30.2
+> 
