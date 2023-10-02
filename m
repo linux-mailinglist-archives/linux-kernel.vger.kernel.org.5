@@ -2,88 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFB87B579C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F6B7B574D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238306AbjJBP47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:56:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43706 "EHLO
+        id S238293AbjJBP6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238269AbjJBP45 (ORCPT
+        with ESMTP id S238026AbjJBP6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:56:57 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD6FCE
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:56:53 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d81ff714678so24097032276.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 08:56:53 -0700 (PDT)
+        Mon, 2 Oct 2023 11:58:49 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B80F91
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:58:46 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-78f1210e27fso7304664241.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 08:58:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696262212; x=1696867012; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cpsMPjbR1WNgJ/uUktgfbNndpX69oDvkpl70xKylEH8=;
-        b=QDU9RwJW0u50FcNZZxExPPEv4dK3Fr1p/MZuwCn1Awwcr6dwkCmF0GzdiDn6X1Ls1a
-         9FrOsfkXc/UMWpC7ayqGFvQnaS8UDsjnVVwkOGcf1alqLj78ib1LLFC2o5xA//oQWnbi
-         teMNTWoAuEveJJfFz9WD49zQ7krILJAHmJFFwxLp30zoy5rSScSyJe7OUnSsUhAfYm20
-         ktMpYDPOWmB+xkNZ7zs4ZiCGEFTthxIijuehMK3QCAMgBiqpUdK+4s2c1Pfj4kLUeMOR
-         RvOpZvC46JEkr590M7niku2AG8CEn/Pcp7jf/SzqgpDmgEEjRUtKCy8kmmI4qzwXGyC5
-         stiA==
+        d=google.com; s=20230601; t=1696262325; x=1696867125; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V/uBY1GHK5wM8Sw0r1xr8kkIVh7PpQ9+l557Rxtbl80=;
+        b=Pc7dFJlYTRopiol2lzwUFAHigo2IMLSYGRyMF9T0hPL/qJwLZ/OHPF4xthoEazJ7VW
+         4L+IevofZ3PFQsGMvoP6OXLPnKpZ+j7NE4kDB2dDyNnVPT2Twz99DLakTHI5O+0ux9p0
+         mtuX5YX7WxrsXH1Ka85C4Qqk2sfnCGlKv+nFDnDJYm2XgMqFFCmwRBI0aWAs0xo6exVu
+         YERYjRcNEtTT4igoIy0CQZlV4WZmgMhWJl8yn6m34UQW5/KeoHPfOu9pE0iL/HCe3UjV
+         ZItTjFykQHMNdA4C4xlC218BBOiEc9apsxICASsjCqkoV9H6y2VNE+djvL3VtJoSvxm+
+         I4mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696262212; x=1696867012;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cpsMPjbR1WNgJ/uUktgfbNndpX69oDvkpl70xKylEH8=;
-        b=sAFlK7Bssy12RSsU8ZCGKarrFzpxHjlCaXZJnlW1m+ORuFFaPF7+TvboAdYNQcaB8X
-         GYscD/M2Oh16p/xR1wnAMCW4Pm6lCDaqXYHB7xow+WB9IGWefFxe6Xahbyy2kBvY0zN2
-         ZwBsi3uqRkj1JdIFeDflwZGVMI8gBfq3iFqT1N6k+NdSnn9Wn71U9+RN1T6Su5aHg77D
-         GcSbVshkiV0cxndbj7LdaytXF2yjC1J/KZOiaYujpRTZin1rJvrJNLEZn3TB+2Lb90nj
-         RrmanePV4mDwJqQzUiSaFqK+M2pgelXH9h5CUPOeknEagoRBmIjLhyaiP1mxW9joNHYA
-         HaRA==
-X-Gm-Message-State: AOJu0Yzs1/IS0SjCz3srZEPcrnnTArY9984WCT4a8d/+6KX2kbxJC8Kq
-        twtHnp8CmcrOsTnaoque9ja5aRBU/hw=
-X-Google-Smtp-Source: AGHT+IFU0Rp0ypciSYbq9+jHt9tXgKHuu0bXBd5z/jIOuiXJuVh5Iwgc1+UaORfJnN9j0OiqnnlHuGl3o/U=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:abe9:0:b0:d80:19e5:76c8 with SMTP id
- v96-20020a25abe9000000b00d8019e576c8mr178348ybi.12.1696262212083; Mon, 02 Oct
- 2023 08:56:52 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 08:56:50 -0700
-In-Reply-To: <ZRrF38RGllA04R8o@gmail.com>
-Mime-Version: 1.0
-References: <20230927033124.1226509-1-dapeng1.mi@linux.intel.com>
- <20230927033124.1226509-8-dapeng1.mi@linux.intel.com> <20230927113312.GD21810@noisy.programming.kicks-ass.net>
- <ZRRl6y1GL-7RM63x@google.com> <20230929115344.GE6282@noisy.programming.kicks-ass.net>
- <ZRbxb15Opa2_AusF@google.com> <20231002115718.GB13957@noisy.programming.kicks-ass.net>
- <ZRrF38RGllA04R8o@gmail.com>
-Message-ID: <ZRroQg6flyGBtZTG@google.com>
-Subject: Re: [Patch v4 07/13] perf/x86: Add constraint for guest perf metrics event
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <likexu@tencent.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Lv Zhiyuan <zhiyuan.lv@intel.com>,
-        Yang Weijiang <weijiang.yang@intel.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Dunn <daviddunn@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        d=1e100.net; s=20230601; t=1696262325; x=1696867125;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=V/uBY1GHK5wM8Sw0r1xr8kkIVh7PpQ9+l557Rxtbl80=;
+        b=cxaPaVmGHaaltP3FV9+SpfmZxAyg3yp+p+yMCo/aARwpHDmAwJIrPb/JQYZy6tMIeg
+         ObB1RBSLYEKvGtTClRlaM98SPdWTECecUh+FU7Yas5FGD/yQYS+SjyeL6R4CkzB47p0z
+         tbHicO308cZDbFBuDCDb9/aY8yEUybh/MGfoCtDgdPhfBBmrsfEplfdxm0KZeR9Rs5Jb
+         YNF5cUb6Al0vknjqhUra1nrEJACE2h206VMYBijcyDZ+DE6LI0hMGll4mS9YzPM7p9vr
+         UYXDAR9j3ioTqmqdj7CfdBbWYemE2p1/uUu5X3ZXm66Ra2EklQU6b7BnO/A1BUp5dZFO
+         wQOw==
+X-Gm-Message-State: AOJu0YxluODNG10F9bJN9sjC9GN2/0GDk8YDxT5fqiHKWWfkdz1QuQLF
+        AOOZM95drVBQlSzkapCRQP0hBW4yRecBFkI1fdMeLQ==
+X-Google-Smtp-Source: AGHT+IFW1CmNUWYkc6jWoQN9D8Ez4GQmg0IhD/dCqR+ig8ardwLgD7Q08r9vAe22Az/mJ0aZENlZbqM+iJIDMe5iWf8=
+X-Received: by 2002:a05:6102:2db:b0:452:cfeb:160d with SMTP id
+ h27-20020a05610202db00b00452cfeb160dmr10233920vsh.26.1696262325473; Mon, 02
+ Oct 2023 08:58:45 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230929211155.3910949-4-samitolvanen@google.com>
+ <20230929211155.3910949-6-samitolvanen@google.com> <202309291452.66ED9B4D83@keescook>
+ <CABCJKufxUVoO+yJ+513W5FOFu6u45N=6wZe6a69u+8LU6A_N2Q@mail.gmail.com>
+ <20230930-emporium-share-2bbdf7074e54@spud> <202309301400.4E1AD87@keescook>
+ <CAKbZUD08W9_HB9F7tQqwreYvVapgVMOkS3QokzwHPcBnFnVMig@mail.gmail.com> <8d305ae1-4235-6ae8-7dfb-9f432fdfcd41@ghiti.fr>
+In-Reply-To: <8d305ae1-4235-6ae8-7dfb-9f432fdfcd41@ghiti.fr>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Mon, 2 Oct 2023 08:58:07 -0700
+Message-ID: <CABCJKucscLdmyD8zJ=aOJDT9zbChW3=ZMXPgudPqykfOemR+fA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] riscv: mm: Update mmap_rnd_bits_max
+To:     Alexandre Ghiti <alex@ghiti.fr>
+Cc:     Pedro Falcato <pedro.falcato@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Conor Dooley <conor@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,87 +81,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023, Ingo Molnar wrote:
-> 
-> * Peter Zijlstra <peterz@infradead.org> wrote:
-> 
-> > On Fri, Sep 29, 2023 at 03:46:55PM +0000, Sean Christopherson wrote:
-> > 
-> > > > I will firmly reject anything that takes the PMU away from the host
-> > > > entirely through.
-> > > 
-> > > Why?  What is so wrong with supporting use cases where the platform owner *wants*
-> > > to give up host PMU and NMI watchdog functionality?  If disabling host PMU usage
-> > > were complex, highly invasive, and/or difficult to maintain, then I can understand
-> > > the pushback.  
-> > 
-> > Because it sucks.
+On Mon, Oct 2, 2023 at 12:02=E2=80=AFAM Alexandre Ghiti <alex@ghiti.fr> wro=
+te:
 >
-> > You're forcing people to choose between no host PMU or a slow guest PMU.
+> On 01/10/2023 17:19, Pedro Falcato wrote:
+> > On Sun, Oct 1, 2023 at 2:51=E2=80=AFAM Kees Cook <keescook@chromium.org=
+> wrote:
+> >> On Sat, Sep 30, 2023 at 10:02:35AM +0100, Conor Dooley wrote:
+> >>> On Fri, Sep 29, 2023 at 03:52:22PM -0700, Sami Tolvanen wrote:
+> >>>> On Fri, Sep 29, 2023 at 2:54=E2=80=AFPM Kees Cook <keescook@chromium=
+.org> wrote:
+> >>>>> On Fri, Sep 29, 2023 at 09:11:58PM +0000, Sami Tolvanen wrote:
+> >>>>>> ARCH_MMAP_RND_BITS_MAX is based on Sv39, which leaves a few
+> >>>>>> potential bits of mmap randomness on the table if we end up enabli=
+ng
+> >>>>>> 4/5-level paging. Update mmap_rnd_bits_max to take the final addre=
+ss
+> >>>>>> space size into account. This increases mmap_rnd_bits_max from 24 =
+to
+> >>>>>> 33 with Sv48/57.
+> >>>>>>
+> >>>>>> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+> >>>>> I like this. Is RISCV the only arch where the paging level can be c=
+hosen
+> >>>>> at boot time?
+> >>>> I haven't seen this elsewhere, but I also haven't looked at all the
+> >>>> other architectures that closely. arm64 does something interesting
+> >>>> with ARM64_VA_BITS_52, but I think we can still handle that in
+> >>>> Kconfig.
+> >>> AFAIU, x86-64 can do this also:
+> >>>
+> >>>        no4lvl          [RISCV] Disable 4-level and 5-level paging mod=
+es. Forces
+> >>>                        kernel to use 3-level paging instead.
+> >>>
+> >>>        no5lvl          [X86-64,RISCV] Disable 5-level paging mode. Fo=
+rces
+> >>>                        kernel to use 4-level paging instead.
+> >> Ah-ha! Okay, well, then let's track this idea:
+> >> https://github.com/KSPP/linux/issues/346
+> > (Replying here for visibility, tell me if you want to move this
+> > discussion to github)
+> >
+> > AIUI, x86 cannot do this for compat reasons. Even if you enable LA57,
+> > mmap only gives you < 48-bit addresses, for compatibility with things
+> > like JITs, etc that stash information in the upper 16 bits. You need
+> > to pass a > 48-bit mmap hint to get 57-bit addresses.
+> >
+> > I imagine riscv does not have this issue yet, due to little
+> > accumulated cruft, but it may be wise to check against popular JITters
+> > for these problems on riscv code.
+> >
+>
+> We already encountered those issues and the same solution was recently
+> merged (restrict to sv48 unless otherwise specified):
+> https://lore.kernel.org/all/20230809232218.849726-1-charlie@rivosinc.com/
 
-Nowhere did I say that we wouldn't take patches to improve the existing vPMU
-support.  But that's largely a moot point because I don't think it's possible to
-improve the current approach to the point where it would provide a performant,
-functional guest PMU.
+We recently ran into this issue when bringing up Android as well
+because qemu defaults to Sv57 and some userspace bits weren't happy
+with >48-bit mmap addresses.
 
-> > And that's simply not a sane choice for most people --
+Note that this patch uses MMAP_VA_BITS, which is 48 for both Sv48 and
+Sv57, which is why mmap_rnd_bits_max will be 33 even with Sv57.
 
-It's better than the status quo, which is that no one gets to choose, everyone
-gets a slow guest PMU.
-
-> > worse it's not a choice based in technical reality.
-
-The technical reality is that context switching the PMU between host and guest
-requires reading and writing far too many MSRs for KVM to be able to context
-switch at every VM-Enter and every VM-Exit.  And PMIs skidding past VM-Exit adds
-another layer of complexity to deal with.
-
-> > It's a choice out of lazyness, disabling host PMU is not a requirement
-> > for pass-through.
-
-The requirement isn't passthrough access, the requirements are that the guest's
-PMU has accuracy that is on par with bare metal, and that exposing a PMU to the
-guest doesn't have a meaningful impact on guest performance.
-
-> Not just a choice of laziness, but it will clearly be forced upon users
-> by external entities:
-> 
->    "Pass ownership of the PMU to the guest and have no host PMU, or you
->     won't have sane guest PMU support at all. If you disagree, please open
->     a support ticket, which we'll ignore."
-
-We don't have sane guest PMU support today.  In the 12+ years since commit
-f5132b01386b ("KVM: Expose a version 2 architectural PMU to a guests"), KVM has
-never provided anything remotely close to a sane vPMU.  It *mostly* works if host
-perf is quiesced, but that "good enough" approach doesn't suffice for any form of
-PMU usage that requires a high level of accuracy and precision.
-
-> The host OS shouldn't offer facilities that severely limit its own capabilities,
-> when there's a better solution. We don't give the FPU to apps exclusively either,
-> it would be insanely stupid for a platform to do that.
-
-The FPU can be effeciently context switched, guest state remains resident in
-hardware so long as the vCPU task is scheduled in (ignoring infrequrent FPU usage
-from IRQ context), and guest usage of the FPU doesn't require trap-and-emulate
-behavior in KVM.
-
-As David said, ceding the hardware PMU for all of kvm_arch_vcpu_ioctl_run()
-(module the vCPU task being scheduled out) is likely a viable alternative.
-
- : But it does mean that when entering the KVM run loop, the host perf system 
- : needs to context switch away the host PMU state and allow KVM to load the guest
- : PMU state.  And much like the FPU situation, the portion of the host kernel
- : that runs between the context switch to the KVM thread and VMENTER to the guest
- : cannot use the PMU.
-
-If y'all are willing to let KVM redefined exclude_guest to be KVM's outer run
-loop, then I'm all for exploring that option.  But that idea got shot down over
-a year ago[*].  Or at least, that was my reading of things.  Maybe it was just a
-misunderstanding because we didn't do a good job of defining the behavior.
-
-I am completely ok with either approach, but I am not ok with being nak'd on both.
-Because unless there's a magical third option lurking, those two options are the
-only ways for KVM to provide a vPMU that meets the requirements for slice-of-hardware
-use cases.
-
-[*] https://lore.kernel.org/all/YgPCm1WIt9dHuoEo@hirez.programming.kicks-ass.net
+Sami
