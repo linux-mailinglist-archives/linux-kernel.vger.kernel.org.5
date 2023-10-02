@@ -2,144 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 317D47B5A59
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0FA7B5A81
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238822AbjJBSkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 14:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54258 "EHLO
+        id S238803AbjJBSmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238819AbjJBSkr (ORCPT
+        with ESMTP id S232711AbjJBSmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 14:40:47 -0400
-Received: from omta38.uswest2.a.cloudfilter.net (omta38.uswest2.a.cloudfilter.net [35.89.44.37])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B817FF2
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 11:40:39 -0700 (PDT)
-Received: from eig-obgw-6003a.ext.cloudfilter.net ([10.0.30.151])
-        by cmsmtp with ESMTP
-        id nLqAqhvgvytxcnNqOq6YGz; Mon, 02 Oct 2023 18:40:36 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id nNqNqw8X8Q6DInNqNqBqEc; Mon, 02 Oct 2023 18:40:35 +0000
-X-Authority-Analysis: v=2.4 cv=UalC9YeN c=1 sm=1 tr=0 ts=651b0ea3
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=Dx1Zrv+1i3YEdDUMOX3koA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=bhdUkHdE2iEA:10 a=wYkD_t78qR0A:10 a=VwQbUJbxAAAA:8
- a=gXLdhW2jAAAA:8 a=MqvWAp6GOtdlVlTrVWUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=Dn9eIPSr_RzuO0KTJioD:22
+        Mon, 2 Oct 2023 14:42:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4561B0
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 11:42:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=7ClwwiYL5MaAd6g9xWmRVME3vEiVZ83RtKSsFLeZH90=; b=aD+wgnXlbRDuzRcV2OZazjH5P4
-        AqpZWHdIkg+cjMYqvbj8Vr1+wq0saI3cAHD/iPUBuk5J50iVbJFNZoGGu7vihEjTHEOmETr74aR9r
-        pEMGfTzUr+DIc4LwYoiz7+MxyON0MbHV7vRAtNLw/sfZeTnaxSRlg0feSY7l+xTOGWRejO3g2TnmE
-        l77Bp06LIg+h8JTnqgpTPKWX1b99Szb/E1fEDJx5dmTl95llZ3yYeGXW/UGc/WpW6mf5MRWapj7O3
-        38yTTPShFZCJugG27W/tXCcJHTxeuV7jkL8vGxqlW6z3IBhfGXtSElCkI+6UeyR9h2Mfoqj8FyHLT
-        Jj0YvC6g==;
-Received: from 94-238-9-39.abo.bbox.fr ([94.238.9.39]:41648 helo=[192.168.1.98])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1qnNqM-003NdX-1u;
-        Mon, 02 Oct 2023 13:40:34 -0500
-Message-ID: <734c7fdf-4c41-2890-dbe7-ddb23fd6bcc7@embeddedor.com>
-Date:   Mon, 2 Oct 2023 20:40:31 +0200
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nyWCVXS8PqBYuLCq0GKreS/wQJesJaUJKyaLwZQihgg=; b=vs9VL1IWPHTru7ozL6Wh/0gUsr
+        fgshk/L0VduYyAUrlincQ0IA5G7RQe2lGO8kFO+IWBoBIVDAWl7ChgdfAOcm+Bmkk2J8fTL7jC1Ed
+        Q9XRkkSPbqcBHdhT8k02bqqCnIFb8c0OGRzF96dp6TKHzG1N7aaiQdc5bmWs++fqU8HFBroxu7HqY
+        u5E4XUFJvoCSc1bYgLWVvdRDUaTKKQtVOKF4WkPHGGTcdSJdiCopR+eAzrAU/GGBX/mwVrhGrZkbK
+        PZiMf+WkgpdgMFqlxkWQoMHvr5ieDS8RPaJi28B/qLZtAuyBBBoZ07oq1ivv2pvrlil6+97PYX/Rt
+        UQsoxWtQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qnNrN-00Aazz-DL; Mon, 02 Oct 2023 18:41:37 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C1972300454; Mon,  2 Oct 2023 20:41:36 +0200 (CEST)
+Date:   Mon, 2 Oct 2023 20:41:36 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Youssef Esmat <youssefesmat@chromium.org>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>, mingo@kernel.org,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, corbet@lwn.net, qyousef@layalina.io,
+        chris.hyser@oracle.com, patrick.bellasi@matbug.net, pjt@google.com,
+        pavel@ucw.cz, qperret@google.com, tim.c.chen@linux.intel.com,
+        joshdon@google.com, timj@gnu.org, kprateek.nayak@amd.com,
+        yu.c.chen@intel.com, joel@joelfernandes.org, efault@gmx.de,
+        tglx@linutronix.de
+Subject: Re: [PATCH 00/15] sched: EEVDF and latency-nice and/or slice-attr
+Message-ID: <20231002184136.GA1539@noisy.programming.kicks-ass.net>
+References: <20230531115839.089944915@infradead.org>
+ <dlbtvvm5cewqzh5bcpl4cqhcwxmnnjb6pdle5jzywiiznlactd@cmhnpim42m3p>
+ <20230906131356.GG38741@noisy.programming.kicks-ass.net>
+ <CA+q576MS0-MV1Oy-eecvmYpvNT3tqxD8syzrpxQ-Zk310hvRbw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH][next] PCI/P2PDMA: Fix undefined behavior bug in struct
- pci_p2pdma_pagemap
-Content-Language: en-US
-To:     Logan Gunthorpe <logang@deltatee.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <ZRnf6wVOu0IJQ2Ok@work>
- <29da763d-1570-7197-2d5a-03c5659b8b52@deltatee.com>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <29da763d-1570-7197-2d5a-03c5659b8b52@deltatee.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 94.238.9.39
-X-Source-L: No
-X-Exim-ID: 1qnNqM-003NdX-1u
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 94-238-9-39.abo.bbox.fr ([192.168.1.98]) [94.238.9.39]:41648
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 3
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfB2FqVn/wSIbaE4Q729k9TukWIPeenaeD7OIFdycnIU9YqyN8JuovDG/iu8rZHKPGuqNEN1TKG/8qnvJ+wXdKHeI5mX/tH1cbNGJceHp0iZvXu3tLOWC
- W/oNf5/8a8yejOmRPfbpH/htrOLiOWKXyW4ii8iORSO8vZVXlnO+Q44iykhWgKuIveKikKV0hIY8FQ+K/cePhSAI41GVIlDbtfUy1cE5Ul5GLeSbVg0V5FbE
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+q576MS0-MV1Oy-eecvmYpvNT3tqxD8syzrpxQ-Zk310hvRbw@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 29, 2023 at 11:54:25AM -0500, Youssef Esmat wrote:
+> >
+> > EEVDF fundamentally supports per task request/slice sizes, which is the
+> > primary motivator for finally finishing these patches.
+> >
+> > So the plan is to extend sched_setattr() to allow tasks setting their
+> > own ideal slice length. But we're not quite there yet.
+> >
+> > Having just returned from PTO the mailbox is an utter trainwreck, but
+> > I'll try and refresh those few patches this week for consideration.
+> >
+> > In the meantime I think you found the right knob to twiddle.
+> 
+> Hello Peter,
+> 
+> I am trying to understand a little better the need for the eligibility
+> checks (entity_eligible). I understand the general concept, but I am
+> trying to find a scenario where it is necessary. And maybe propose to
+> have it toggled by a feature flag.
 
+My initial response was that it ensures fairness, but thinking a little
+about it I'm not so sure anymore.
 
-On 10/2/23 18:07, Logan Gunthorpe wrote:
-> 
-> 
-> On 2023-10-01 15:08, Gustavo A. R. Silva wrote:
->> `struct dev_pagemap` is a flexible structure, which means that it
->> contains a flexible-array member at the bottom. This could potentially
->> lead to an overwrite of the objects following `pgmap` in `struct
->> pci_p2pdma_pagemap`, when `nr_range > 1`.
->>
->> Fix this by placing the declaration of object `pgmap` at the end of
->> `struct pci_p2pdma_pagemap`.
->>
->> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
->> ready to enable it globally.
->>
->> Fixes: 0afea3814358 ("PCI/P2PDMA: Add provider's pci_dev to pci_p2pdma_pagemap struct")
->> Fixes: a6e6fe6549f6 ("PCI/P2PDMA: Introduce private pagemap structure")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> 
-> 
-> Makes sense to me, thanks.
-> 
-> Although, I'm not sure the fixes tags are appropriate. The
-> flexible-array member was introduced in 5.10 (b7b3c01b19) and both the
-> "fixed" commits predate that change by a number of releases.
+I do think it features in section 6 lemma 4 and 5, which provide
+interference bounds. But I'd have to think a little more about it.
 
-You're right. I'll remove those tags.
+The current setup, where all requests are of equal size, then virtual
+deadline tree is basically identical to the virtual runtime tree, just
+transposed (in the static state scenario).
 
-> 
-> Also, it's probably worth noting in the commit message that the p2pdma
-> code hardcodes nr_ranges to 1 (in pci_p2pdma_add_resource); so there is
-> no way to actually hit any bug with the current code.
+When mixing request sizes things become a little more interesting.
 
-Yep. I mention that in this part "This could potentially lead to an
-overwrite of the objects following `pgmap` in `struct pci_p2pdma_pagemap`,
-when `nr_range > 1`."
-
-> 
-> I totally agree that the patch should be applied to prevent possible
-> bugs being introduced in the future:
-> 
-> Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-
-Thanks for the RB and the feedback. :)
---
-Gustavo
+Let me ponder this a little bit more.
