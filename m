@@ -2,179 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A91AD7B50BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FBF97B50C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236571AbjJBK5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 06:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
+        id S236602AbjJBK53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 06:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236192AbjJBK5R (ORCPT
+        with ESMTP id S236573AbjJBK5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 06:57:17 -0400
-Received: from out-190.mta1.migadu.com (out-190.mta1.migadu.com [IPv6:2001:41d0:203:375::be])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9CDFB3
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 03:57:14 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696244232;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=aQO3XkBHu5rCLD4ypD1Z6J4F2frqkYY0S4aXHFwX8tQ=;
-        b=cD0MgmhCw1APCHXI0U9MBlpClZ+i2x8Hr54sVTocyWd+KcZNOKeijukaBQD7nRrYt0Pfgi
-        zAutlO6DcswAcmq+elAvPFY/YwlGgbOu9yI4m7vI4TyKveLfFlE9g0N28iarbEQG3keg+R
-        ofWm4eWWchDain5ptATvfaKOijIdnw0=
-From:   Yajun Deng <yajun.deng@linux.dev>
-To:     rppt@kernel.org, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yajun Deng <yajun.deng@linux.dev>
-Subject: [PATCH v2] memblock: don't run loop in memblock_add_range() twice
-Date:   Mon,  2 Oct 2023 18:56:52 +0800
-Message-Id: <20231002105652.2514182-1-yajun.deng@linux.dev>
+        Mon, 2 Oct 2023 06:57:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D689AB3;
+        Mon,  2 Oct 2023 03:57:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65A1CC433C9;
+        Mon,  2 Oct 2023 10:57:16 +0000 (UTC)
+Message-ID: <4e9452b9-a02c-47eb-ba8f-5949f07f707d@xs4all.nl>
+Date:   Mon, 2 Oct 2023 12:57:14 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 13/13] media: platform: mtk-mdp3: fix uninitialized
+ variable in mdp_path_config()
+Content-Language: en-US, nl
+To:     Moudy Ho <moudy.ho@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Ping-Hsun Wu <ping-hsun.wu@mediatek.com>,
+        daoyuan huang <daoyuan.huang@mediatek.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230922074145.11977-1-moudy.ho@mediatek.com>
+ <20230922074145.11977-14-moudy.ho@mediatek.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230922074145.11977-14-moudy.ho@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is round twice in memblock_add_range(). The first counts the number
-of regions needed to accommodate the new area. The second actually inserts
-them. But the first round isn't really needed, we just need to check the
-counts before inserting them.
+On 22/09/2023 09:41, Moudy Ho wrote:
+> Fix the build warnings that were detected by the linux-media
+> build scripts tool:
+> 
+> drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c:
+> 	In function 'mdp_path_config.isra':
+> drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c:443:51:
+> 	warning: 'ctx' may be used uninitialized [-Wmaybe-uninitialized]
+>   443 |                    out = CFG_COMP(MT8195, ctx->param, outputs[0]);
+>       |                                           ~~~^~~~~~~
+> drivers/media/platform/mediatek/mdp3/mtk-img-ipi.h:137:25: note:
+> 	in definition of macro 'CFG_COMP'
+>   137 |         (IS_ERR_OR_NULL(comp) ? 0 : _CFG_COMP(plat, comp, mem))
+>       |                         ^~~~
+> drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c:396:30:
+> 	note: 'ctx' was declared here
+>   396 |         struct mdp_comp_ctx *ctx;
+>       |
+> 
+> Fixes: 61890ccaefaf ("media: platform: mtk-mdp3: add MediaTek MDP3 driver")
+> Signed-off-by: Moudy Ho <moudy.ho@mediatek.com>
+> ---
+>  drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
+> index 15a0b944745e..4a8d941178aa 100644
+> --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
+> +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
+> @@ -436,13 +436,13 @@ static int mdp_path_config(struct mdp_dev *mdp, struct mdp_cmdq_cmd *cmd,
+>  		if (mdp_cfg_comp_is_dummy(path->mdp_dev, inner_id))
+>  			continue;
+>  
+> +		ctx = &path->comps[index];
+>  		if (CFG_CHECK(MT8183, p_id))
+>  			out = CFG_COMP(MT8183, ctx->param, outputs[0]);
+>  		else if (CFG_CHECK(MT8195, p_id))
+>  			out = CFG_COMP(MT8195, ctx->param, outputs[0]);
+>  
+>  		compose = path->composes[out];
+> -		ctx = &path->comps[index];
+>  		ret = call_op(ctx, config_frame, cmd, compose);
+>  		if (ret)
+>  			return ret;
 
-Check the count before iterate memblock. If the count is equal to the
-maximum, it needs to resize the array. Otherwise, insert it directly.
-After that, it's similar logic to memblock_isolate_range.
+Hmm, this patch really should be a separate patch on top of the media
+staging branch: it is wrong there as well, except you don't get a build
+warning. Other changes in this patch series caused this warning to appear,
+but the actual bug is already present in the current staging code.
 
-Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
----
-v2: remove the changes of memblock_double_array.
-v1: https://lore.kernel.org/all/20230927013752.2515238-1-yajun.deng@linux.dev/
----
- mm/memblock.c | 75 +++++++++++++++++----------------------------------
- 1 file changed, 24 insertions(+), 51 deletions(-)
+Regards,
 
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 5a88d6d24d79..655d8e82f90a 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -588,11 +588,11 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
- 				phys_addr_t base, phys_addr_t size,
- 				int nid, enum memblock_flags flags)
- {
--	bool insert = false;
- 	phys_addr_t obase = base;
- 	phys_addr_t end = base + memblock_cap_size(base, &size);
--	int idx, nr_new, start_rgn = -1, end_rgn;
-+	int idx, start_rgn = -1, end_rgn;
- 	struct memblock_region *rgn;
-+	unsigned long ocnt = type->cnt;
- 
- 	if (!size)
- 		return 0;
-@@ -609,23 +609,13 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
- 	}
- 
- 	/*
--	 * The worst case is when new range overlaps all existing regions,
--	 * then we'll need type->cnt + 1 empty regions in @type. So if
--	 * type->cnt * 2 + 1 is less than or equal to type->max, we know
--	 * that there is enough empty regions in @type, and we can insert
--	 * regions directly.
-+	 * If type->cnt is equal to type->max, it means there's
-+	 * not enough empty region and the array needs to be
-+	 * resized. Otherwise, insert it directly.
- 	 */
--	if (type->cnt * 2 + 1 <= type->max)
--		insert = true;
--
--repeat:
--	/*
--	 * The following is executed twice.  Once with %false @insert and
--	 * then with %true.  The first counts the number of regions needed
--	 * to accommodate the new area.  The second actually inserts them.
--	 */
--	base = obase;
--	nr_new = 0;
-+	if ((type->cnt == type->max) &&
-+	    memblock_double_array(type, obase, size))
-+		return -ENOMEM;
- 
- 	for_each_memblock_type(idx, type, rgn) {
- 		phys_addr_t rbase = rgn->base;
-@@ -644,15 +634,13 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
- 			WARN_ON(nid != memblock_get_region_node(rgn));
- #endif
- 			WARN_ON(flags != rgn->flags);
--			nr_new++;
--			if (insert) {
--				if (start_rgn == -1)
--					start_rgn = idx;
--				end_rgn = idx + 1;
--				memblock_insert_region(type, idx++, base,
--						       rbase - base, nid,
--						       flags);
--			}
-+
-+			if (start_rgn == -1)
-+				start_rgn = idx;
-+			end_rgn = idx + 1;
-+			memblock_insert_region(type, idx++, base,
-+					       rbase - base, nid,
-+					       flags);
- 		}
- 		/* area below @rend is dealt with, forget about it */
- 		base = min(rend, end);
-@@ -660,33 +648,18 @@ static int __init_memblock memblock_add_range(struct memblock_type *type,
- 
- 	/* insert the remaining portion */
- 	if (base < end) {
--		nr_new++;
--		if (insert) {
--			if (start_rgn == -1)
--				start_rgn = idx;
--			end_rgn = idx + 1;
--			memblock_insert_region(type, idx, base, end - base,
--					       nid, flags);
--		}
--	}
- 
--	if (!nr_new)
--		return 0;
-+		if (start_rgn == -1)
-+			start_rgn = idx;
-+		end_rgn = idx + 1;
-+		memblock_insert_region(type, idx, base, end - base,
-+				       nid, flags);
-+	}
- 
--	/*
--	 * If this was the first round, resize array and repeat for actual
--	 * insertions; otherwise, merge and return.
--	 */
--	if (!insert) {
--		while (type->cnt + nr_new > type->max)
--			if (memblock_double_array(type, obase, size) < 0)
--				return -ENOMEM;
--		insert = true;
--		goto repeat;
--	} else {
-+	if (ocnt != type->cnt)
- 		memblock_merge_regions(type, start_rgn, end_rgn);
--		return 0;
--	}
-+
-+	return 0;
- }
- 
- /**
--- 
-2.25.1
-
+	Hans
