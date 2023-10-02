@@ -2,228 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9BB7B5753
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A57857B573B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238190AbjJBPmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34116 "EHLO
+        id S238214AbjJBPpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:45:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238165AbjJBPmn (ORCPT
+        with ESMTP id S238155AbjJBPpj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:42:43 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2045.outbound.protection.outlook.com [40.107.220.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AE393;
-        Mon,  2 Oct 2023 08:42:40 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gnhx0+yfTWJeQQO50pS2eYtv431NmTkW1ltstymdzMpi1sBS/aFCZyDaDyaTKwxK5yA2dm0/6fH1tchaqnX/MvGX2soAF+G8BVH9lrAwqwWPAQBQs0NPj2/gaHt4Y6uq6QmKlWK4ailiXyhx6/HboKUUzG6YaXXZPeeUCln70oV+DDvVCoFMvYyUJw50E+xzfTEZSYYGRZveVnx/ouvJjfhiTmvi9cXdlk/OHVeRPaHeG1zIst3IYWlX41gxtG8NjR+KbfawxQWS+OClCIstMEBHS0/SDaf40uEFwoLoAIoJtULAB4CIu3aD98FaRwfRp4fXlwG8ORLuJWdyJQGKYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=D2lufn424Ss4gHxsGp7bt/PkhbtvNXKEumfJkE46RB0=;
- b=nh//5hynD1T+1EJH4CEfPtAu7+oRbdMDWBUa1uKCpv5QX2tWWjFnHbJVeNNZMvBAIrk1NLK9iNUdL/C0adAAJ1ERSAlgzv93Uh+oIFinP67c8Gi+0Bkk3vYcZtgPAF4daI6DmaWE6UtC2cwG2MBXDImL4CetZkN1/YUmhn/g1q+0PhmSPRS2yyO3nhtgtOn2Z4strzVP0hbY/uDTw7GYoo70QPQe8proVaGTa3dmtrvTTOKr+4gbbCIYc/um1PcOivWw2wLLTJ44HLU3yerXrnQ+coMg9aYkKsBHewFXNSR0COum4b3XcwbxmA4ISrjYBYo4TGPtHQ8I8cDOTD5jnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D2lufn424Ss4gHxsGp7bt/PkhbtvNXKEumfJkE46RB0=;
- b=TS4FnI6rZ5KyUN3rX333en/0TmtqDNajK5CPiEcMNlzKO+8mFVg1wLG6ZQr4kCn2GEfUc0w2npkaiFAEudOmDpayUuTYhFI6/b+Y2efWQKKNsqHKry0cV/YKIQ2cP/3WejCkug0OmlkHQQeaxLARL3RUc/SCmYOl7ou3GWE9Ok4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by SJ2PR12MB8690.namprd12.prod.outlook.com (2603:10b6:a03:540::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.31; Mon, 2 Oct
- 2023 15:42:38 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::2b54:7ddf:9e2e:751c]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::2b54:7ddf:9e2e:751c%3]) with mapi id 15.20.6813.027; Mon, 2 Oct 2023
- 15:42:38 +0000
-Message-ID: <6cc4dea3-915c-1842-10f6-c3a8137cfdc9@amd.com>
-Date:   Mon, 2 Oct 2023 10:42:35 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 0/5] x86/coco: Mark CoCo VM pages not present when
- changing encrypted state
-Content-Language: en-US
-To:     Michael Kelley <mikelley@microsoft.com>, kys@microsoft.com,
-        haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, luto@kernel.org,
-        peterz@infradead.org, sathyanarayanan.kuppuswamy@linux.intel.com,
-        kirill.shutemov@linux.intel.com, seanjc@google.com,
-        rick.p.edgecombe@intel.com, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, x86@kernel.org
-References: <1696011549-28036-1-git-send-email-mikelley@microsoft.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <1696011549-28036-1-git-send-email-mikelley@microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DS7PR05CA0067.namprd05.prod.outlook.com
- (2603:10b6:8:57::12) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        Mon, 2 Oct 2023 11:45:39 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02581A4;
+        Mon,  2 Oct 2023 08:45:36 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96035C433C7;
+        Mon,  2 Oct 2023 15:45:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696261535;
+        bh=gnflgoj/4t5aXhvqE1jJ7nBMN1dHV/5laG0EVdN1cG4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=UzcgrRZTcB0U5fChegyD+GRbZ3TS0yzcuIozm39qGUTZMC9bwD0p0pKp7XGK3ELSa
+         Ibvgn175ol1Q+eEpdDw9zaJT+bduDTXYzOGelaXswzoHkiheBT87cZ4qp0LrupVLGE
+         EzbS6UgbyXKX1HpAzhxIsrm57E8/FhqEEQiNyp6b+c7JXb/YwbRRsquBRYkTXW/9cR
+         ntrTdY7z/FeoD+vTjifzO+iER9sHjddRtgfrNuOWVCDUU1rA3b/fX5TTYirM+Dn4yv
+         kZeMAWXN8E7yb+TXKfd0+5j9ll5PKYpkXcx9LpsO59GKDYWTIa+qtacr75D/UxnUDq
+         3KkqkBDS0+BUA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3A527CE0CCF; Mon,  2 Oct 2023 08:45:35 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 08:45:35 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>,
+        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [PATCH 06/10] rcu: Assume rcu_report_dead() is always called
+ locally
+Message-ID: <685c5e4e-491c-4fef-b7d7-499a32158e39@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230908203603.5865-1-frederic@kernel.org>
+ <20230908203603.5865-7-frederic@kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|SJ2PR12MB8690:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8699b45d-8a81-4181-9908-08dbc35e349e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XYJe1nVrXXSYPbojTnJEGfBC8MXYs6l2QpqIXaVTtZwrDmnjaiT5dM5mK8vACiEcPz8BMLZQviUYn6noLQyvjqfiZo5+8GhuIeqV8LMWV5aYiAEdoCUSSaDUW8c8mc75iePImGlM1/mcTXWxZP/5eEfmbm3nMtRCr6mY6xOQsjGMptb4tWJ35XrzVhPGgvS+30zAm71T9Q/UQjsO9aWjrn2+ACPQl8z54V+y5nmRYockOjHtVI/j3VxCtTB2V2AMdww9V1cGoO889NxoBiAR20PGV4DMBV44Y8G4GYO/e1802KojX7VaNlmxBOEqa14LcQe4wZjdpkCY98S3TlR5e35BzXbnocorwqE44qALFY8Z4KWhMNP2zd5vqvCskFmuFWM0WykxVQwftK8P+H6PsRr1pWbLN7DwrkwqzSot3KBGcm8PeQbYYssEJE3i+u1gWh0O1Ls/ZwyAfXiYzsxnJGBTsb+zwMvRaxEaUIag8Q0PIUhGi7W7XZ2avCnFXF3chF4uKdBwvMoNYWns4NIXFjJF33xVasRpD1SYF+dfwa3raf+2D9ifZk8RWqt+c3EsWsGBrZDigHXGN4toy+C2L5Bl/wYtZBYypiUW2xKoDZCwmzxM0V9FyMipjhODWJg+eBesjLLwKH6nO8PmsvgNkOxc3PCQt30GSzzMJsuAJps=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(6029001)(366004)(346002)(396003)(376002)(39860400002)(136003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(45080400002)(53546011)(6506007)(6666004)(6486002)(966005)(478600001)(83380400001)(6512007)(2616005)(26005)(7416002)(2906002)(41300700001)(66556008)(66946007)(316002)(66476007)(8676002)(5660300002)(8936002)(36756003)(31696002)(38100700002)(921005)(86362001)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?LzNSZXZwbWhmYmVjNTVQWWs5QmdNT0V2N0s3OHhjMkgxK2xoTDVwU3B2UDVt?=
- =?utf-8?B?UHE5WWdXcS9RM1EzdDEyU0g2dTYwT2tyRUFxMmtvOWtFOEZPanQ4c0dRbUt6?=
- =?utf-8?B?SXFhUTY3cDNNakowUzF5WE5nbmFmUkEva0tsSUZCVFpmaWp6ZEhhVm5HSTh3?=
- =?utf-8?B?WXBZN1dFdHBaWUQya1BZZzI0cml2YUgvNnliSHVIQ0xUejkvMm45eDltcVMz?=
- =?utf-8?B?ZDl1OSt5TitRZDhIR2lEMFhySFNvTmhDSHdOczFPbDdxQlREdG4wa1RFVlBz?=
- =?utf-8?B?aHNzcmxkT0g1VE1JSlZrQ2pHSjF5QStGTUZOSW1PbC9zNVkvRThzM1ZUWlBW?=
- =?utf-8?B?RnZxcTlxK0RXeGpWd29XanBOZjZJT1pkM200UUE0WVRZMEd1SWpFN1BlS1BU?=
- =?utf-8?B?RUh4c2V4dFNNZHFBU3J0eDB0YlkwQWRiT3IvOFUvQmtsTjBJRmdUUHpyN2FX?=
- =?utf-8?B?OG9UUTJOamY5TGdicWdVVGVNRms3ekZQV21HWUQ4dllxQTRMeTZrbXFqYmda?=
- =?utf-8?B?UmhycXNhbzE4Mkx6cXJWVU8zditFd3FvS212MlpIZEwvMVhJcTZ2VzVJYTRy?=
- =?utf-8?B?UGJ0WHBreWJDaUU5SzNLV0FaZ0lJc1pzbUJWL2xzcUpqaWdQNkV3U0VqNGRF?=
- =?utf-8?B?cXVpUnpwa3ZhbzhFbU5xQjFxVzFYU1JaejlTQWFneHVlbm5kM3JVNk1JZmZX?=
- =?utf-8?B?ZnRmTW9jZ0h4emFJdXhqSXNaK09kaWhqSEFqZEg4VEwzQ1M2RXNyNndmSHZh?=
- =?utf-8?B?c1d1OExoK2FCUU9raTloYVhHRC94K21LMElSTFNkMFdPM1p6K0lwRkRRa0FS?=
- =?utf-8?B?eG1LbWd2RXBnMGVZZDRycmcvU2haTVFYT05jUXdBMEppSElONVhmcU5TN1Rq?=
- =?utf-8?B?ZjdEUlJ3QS9qREZzSHo0SmxLc0RnVTI3d3piWmQvSnJYSlBqV083T0JOMjFO?=
- =?utf-8?B?WnQ4NGdmRWUzSWtPcmM3cE1EaThId2VBd2JCSDlTbjFsOG1acnJSNnBCMXMv?=
- =?utf-8?B?eDZkQ1N5a0V5cWhDOHBITUNLVkMvQ25yNlNRKzdrQy8wV2lFbkRjOUJ4YmdV?=
- =?utf-8?B?ZzY0ek5HMDAxemY4dVAzWStLNDFlT2pQUWs0WXl2VG5pd2lMTkZORlRBbmVy?=
- =?utf-8?B?YUh1d29xcFJHRmRCVHQrY05oRUpmRTA1ZENPVW5PcTgvcVhYK2dBT2FLMkYw?=
- =?utf-8?B?Mno5bG9uNGh5Q0RxV0I2Wm1BT0s2TFFJb1habE8xTXJqWFdtUmpCeXBHNHNn?=
- =?utf-8?B?dmlXeWp2NENYV3dVMFkrOUo1MXU1T1I5ZGFZZW9zNExwNzRrV2M5WFVKUks4?=
- =?utf-8?B?bzNQZmxtY1dZbEEwRFhacS9VK2g4eTRYRHhDYzhMRnBpVkVFODFmaWZaTWMr?=
- =?utf-8?B?WitDY1V6ODI2QnFxdWxhTHZOTW4ydXlrb0hPbFJaMUltUmtFOEVXZmlJZFNW?=
- =?utf-8?B?OWNLK1NvWHRnUzZhU2YwM0JRL012K2pqVVZSUThRbUlybThtWkdrVVFVVlky?=
- =?utf-8?B?V1NQeTlCL05GVUJDVFBBbW1leFFKcVVPVnFtdGlHVXpKQjk5Vm5SeXFtL1kr?=
- =?utf-8?B?eFlDeERXbGN5cEhaWW9IVi9UVkI0WU1lWmdlYXBuUENFVXNPSlNIVys0OTg4?=
- =?utf-8?B?U0FoSDBCdE0zMW0zQ0FRcnB4bzRNdEZUbGNQV1dnd1RUYUVrU2JTRzFlR2M4?=
- =?utf-8?B?cndjSXVOMHI4b1VpWlFTRVQ0NnpVbCt3ZXFKcWlDekhFb294MnZRVW4rVE8x?=
- =?utf-8?B?SnRmSkJRTXBPMUFXdGVsZnVEUUFhaVZBcVFSdENza2M2T3lEYTVoWW1STGVT?=
- =?utf-8?B?dmpJTGNBbXgxeGhTRXViQWpKNHhvcnNUTWhyZS9Gc3hYOWpJSENuRkxXN0E0?=
- =?utf-8?B?RXBGaVBVVWNYb0Rpb1dPa0J0czVxZU5iN1JtR1Q5NUJPZTh6NlJuNnc0bHlI?=
- =?utf-8?B?RWszOTd1UGdab080QUtJUlhtaEdMT2dhc2FPWlpSL3JwYU9KZVRHZ0xUc2tL?=
- =?utf-8?B?VnBOOXJsZmdOZVVXT3JUd2t6SkFjYVF1WDJPUTc4NVZlZ3RjTTNTN3N2NE45?=
- =?utf-8?B?VDAvNTR3QmlwSzhjSi9mTVR3eUh1MHZGQkVUVERNQk5XZzlHam4yMm1ZU1hW?=
- =?utf-8?Q?eBtCVyQJpHB7r5OwrbE8Bn8Uq?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8699b45d-8a81-4181-9908-08dbc35e349e
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2023 15:42:38.1762
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1IAYXduOiQqGtlCqpXfI87brMuaD1pIsD37J52NyOLkyalXqI4KXB2jhaiPLfdUuDHaKEJVbpC7OlY21qSGg+A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8690
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230908203603.5865-7-frederic@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/23 13:19, Michael Kelley wrote:
-> In a CoCo VM when a page transitions from encrypted to decrypted, or vice
-> versa, attributes in the PTE must be updated *and* the hypervisor must
-> be notified of the change. Because there are two separate steps, there's
-> a window where the settings are inconsistent.  Normally the code that
-> initiates the transition (via set_memory_decrypted() or
-> set_memory_encrypted()) ensures that the memory is not being accessed
-> during a transition, so the window of inconsistency is not a problem.
-> However, load_unaligned_zeropad() can read arbitrary memory pages at
-> arbitrary times, which could read a transitioning page during the
-> window.  In such a case, CoCo VM specific exceptions are taken
-> (depending on the CoCo architecture in use).  Current code in those
-> exception handlers recovers and does "fixup" on the result returned by
-> load_unaligned_zeropad().  Unfortunately, this exception handling can't
-> work in paravisor scenarios (TDX Paritioning and SEV-SNP in vTOM mode).
-> The exceptions would need to be forwarded from the paravisor to the
-> Linux guest, but there's no architectural spec for how to do that.
+On Fri, Sep 08, 2023 at 10:35:59PM +0200, Frederic Weisbecker wrote:
+> rcu_report_dead() has to be called locally by the CPU that is going to
+> exit the RCU state machine. Passing a cpu argument here is error-prone
+> and leaves the possibility for a racy remote call.
 > 
-> Fortunately, there's a simpler way to solve the problem by changing
-> the core transition code in __set_memory_enc_pgtable() to do the
-> following:
+> Use local access instead.
 > 
-> 1.  Remove aliasing mappings
-> 2.  Flush the data cache if needed
-> 3.  Remove the PRESENT bit from the PTEs of all transitioning pages
-> 4.  Set/clear the encryption attribute as appropriate
-> 5.  Flush the TLB so the changed encryption attribute isn't visible
-> 6.  Notify the hypervisor of the encryption status change
-> 7.  Add back the PRESENT bit, making the changed attribute visible
-> 
-> With this approach, load_unaligned_zeropad() just takes its normal
-> page-fault-based fixup path if it touches a page that is transitioning.
-> As a result, load_unaligned_zeropad() and CoCo VM page transitioning
-> are completely decoupled.  CoCo VM page transitions can proceed
-> without needing to handle architecture-specific exceptions and fix
-> things up. This decoupling reduces the complexity due to separate
-> TDX and SEV-SNP fixup paths, and gives more freedom to revise and
-> introduce new capabilities in future versions of the TDX and SEV-SNP
-> architectures. Paravisor scenarios work properly without needing
-> to forward exceptions.
-> 
-> This patch set is follow-up to an RFC patch and discussion.[1]
-> Compared with the RFC patch, the steps listed above are optimized for
-> better performance and particularly for fewer TLB flushes.
-> 
-> Patch 1 handles implications of the hypervisor callbacks in Step 6
-> needing to do virt-to-phys translations on pages that are temporarily
-> marked not present.
-> 
-> Patch 2 is a performance optimization so that Step 7 doesn't generate
-> a TLB flush.
-> 
-> Patch 3 is the core change that implements Steps 1 thru 7. It also
-> simplifies the associated TDX, SEV-SNP, and Hyper-V vTOM callbacks.
-> 
-> Patch 4 is a somewhat tangential cleanup that removes an unnecessary
-> wrapper function in the path for doing a transition.
-> 
-> Patch 5 adds comments describing the implications of errors when
-> doing a transition.  These implications are discussed in the email
-> thread for the RFC patch.
-> 
-> With this change, the #VE and #VC exception handlers should no longer
-> be triggered for load_unaligned_zeropad() accesses, and the existing
-> code in those handlers to do the "fixup" shouldn't be needed. But I
-> have not removed that code in this patch set. Kirill Shutemov wants
-> to keep the code for TDX #VE, so the code for #VC on the the SEV-SNP
-> side has also been kept.
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-There isn't any code for the SEV-SNP side at the moment.
+I was going to ask for an assertion for "cpu" in cpu_die_early(), but
+given that its value comes from smp_processor_id() just a few lines
+earlier, there isn't a whole lot of point to that.  So:
 
-Thanks,
-Tom
+Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
 
+> ---
+>  arch/arm64/kernel/smp.c  | 2 +-
+>  include/linux/rcupdate.h | 2 +-
+>  kernel/cpu.c             | 2 +-
+>  kernel/rcu/tree.c        | 4 ++--
+>  4 files changed, 5 insertions(+), 5 deletions(-)
 > 
-> This patch set is based on the linux-next20230921 code tree.
-> 
-> [1] https://lore.kernel.org/lkml/1688661719-60329-1-git-send-email-mikelley@microsoft.com/
-> 
-> Michael Kelley (5):
->    x86/coco: Use slow_virt_to_phys() in page transition hypervisor
->      callbacks
->    x86/mm: Don't do a TLB flush if changing a PTE that isn't marked
->      present
->    x86/mm: Mark CoCo VM pages not present while changing encrypted state
->    x86/mm: Remove unnecessary call layer for __set_memory_enc_pgtable()
->    x86/mm: Add comments about errors in
->      set_memory_decrypted()/encrypted()
-> 
->   arch/x86/coco/tdx/tdx.c       |  66 +-----------------------
->   arch/x86/hyperv/ivm.c         |  15 +++---
->   arch/x86/kernel/sev.c         |   8 ++-
->   arch/x86/kernel/x86_init.c    |   4 --
->   arch/x86/mm/mem_encrypt_amd.c |  27 +++-------
->   arch/x86/mm/pat/set_memory.c  | 114 +++++++++++++++++++++++++++++-------------
->   6 files changed, 102 insertions(+), 132 deletions(-)
+> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> index edd63894d61e..ce672cb69f1c 100644
+> --- a/arch/arm64/kernel/smp.c
+> +++ b/arch/arm64/kernel/smp.c
+> @@ -401,7 +401,7 @@ void __noreturn cpu_die_early(void)
+>  
+>  	/* Mark this CPU absent */
+>  	set_cpu_present(cpu, 0);
+> -	rcu_report_dead(cpu);
+> +	rcu_report_dead();
+>  
+>  	if (IS_ENABLED(CONFIG_HOTPLUG_CPU)) {
+>  		update_cpu_boot_status(CPU_KILL_ME);
+> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> index 5e5f920ade90..aa351ddcbe8d 100644
+> --- a/include/linux/rcupdate.h
+> +++ b/include/linux/rcupdate.h
+> @@ -122,7 +122,7 @@ static inline void call_rcu_hurry(struct rcu_head *head, rcu_callback_t func)
+>  void rcu_init(void);
+>  extern int rcu_scheduler_active;
+>  void rcu_sched_clock_irq(int user);
+> -void rcu_report_dead(unsigned int cpu);
+> +void rcu_report_dead(void);
+>  void rcutree_migrate_callbacks(int cpu);
+>  
+>  #ifdef CONFIG_TASKS_RCU_GENERIC
+> diff --git a/kernel/cpu.c b/kernel/cpu.c
+> index 88a7ede322bd..86f08eafbd9f 100644
+> --- a/kernel/cpu.c
+> +++ b/kernel/cpu.c
+> @@ -1368,7 +1368,7 @@ void cpuhp_report_idle_dead(void)
+>  	struct cpuhp_cpu_state *st = this_cpu_ptr(&cpuhp_state);
+>  
+>  	BUG_ON(st->state != CPUHP_AP_OFFLINE);
+> -	rcu_report_dead(smp_processor_id());
+> +	rcu_report_dead();
+>  	st->state = CPUHP_AP_IDLE_DEAD;
+>  	/*
+>  	 * We cannot call complete after rcu_report_dead() so we delegate it
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 8b5ebef32e17..289c51417cbc 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -4551,11 +4551,11 @@ void rcu_cpu_starting(unsigned int cpu)
+>   * from the outgoing CPU rather than from the cpuhp_step mechanism.
+>   * This is because this function must be invoked at a precise location.
+>   */
+> -void rcu_report_dead(unsigned int cpu)
+> +void rcu_report_dead(void)
+>  {
+>  	unsigned long flags;
+>  	unsigned long mask;
+> -	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
+> +	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>  	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
+>  
+>  	/*
+> -- 
+> 2.41.0
 > 
