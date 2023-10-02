@@ -2,100 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3944C7B4D55
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF45C7B4D5D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235858AbjJBIeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 04:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41006 "EHLO
+        id S235859AbjJBIlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 04:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbjJBId7 (ORCPT
+        with ESMTP id S229981AbjJBIk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 04:33:59 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927DD9F;
-        Mon,  2 Oct 2023 01:33:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30DF0C433CC;
-        Mon,  2 Oct 2023 08:33:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696235635;
-        bh=rrrMa7nz3whAggXNqFbdIoDxf26fpbhOB3UDgI26A8Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XnYXux6be/fbot4Sk370rY7pwtyVH7C+57xeMNOGXvwrFCH46RsZ1JHgJfMYLIdOQ
-         VREs+go9LwZeU+luk2OzSML/H1pt/jM0yPc+T1dfn4uio4UXn4FPcd0epqOslab2WX
-         Ex9zo9b0wbNm/AhlEVrJff4CzvLRBdZTjlZGv1c1x0vVEOQSIHw1bf2ELNPXEYK+Pl
-         TcMf76YP78VvhINN2TryzvHR9qVKKEPhKjlhnIlRSAHK3kwQIAZy8al/0UINDwl8aU
-         1aDAW18226pNw4E8R8WYiJJo0nem5V1K/dMz9o87csJaj7ez0XIwas6h3NXLlkCDhB
-         1kW8unWkkzRSw==
-Received: from johan by xi.lan with local (Exim 4.96)
-        (envelope-from <johan@kernel.org>)
-        id 1qnENO-0007kc-0Y;
-        Mon, 02 Oct 2023 10:34:02 +0200
-Date:   Mon, 2 Oct 2023 10:34:02 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH 2/2] clk: qcom: gcc-sc8280xp: Don't keep display AHB
- clocks always-on
-Message-ID: <ZRqAel1pwLom-h45@hovoldconsulting.com>
-References: <20230929-topic-8280_ahbdisp-v1-0-72bdc38309b9@linaro.org>
- <20230929-topic-8280_ahbdisp-v1-2-72bdc38309b9@linaro.org>
- <ZRfsvAJIdlmOWjf2@hovoldconsulting.com>
- <43473e04-ac33-179e-4343-e5c78eef3faf@linaro.org>
+        Mon, 2 Oct 2023 04:40:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 214459F;
+        Mon,  2 Oct 2023 01:40:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696236057; x=1727772057;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=B/P37FcaXZjMMutq9n67JQiVyfnH8gDi/nEODIuFKqk=;
+  b=A6a2fkp1viAm+TrKoOsC91ucyOHs/Sid7l/+ZNXkpOZ+1wUxMGlF/lyb
+   Xp8ofuMPRlqaNEYEQV1Blnm0NODIZa/RdKlhEUy2pgZ7X1UM5yvYpIhqI
+   p/FiHzCY1NIvQ4s44BnCdo+0p7GuE/4CvUr7GjUpNCVEMFID0J2tHm0tH
+   YFhia5r59xDZe22tpckaVAwxPV75I0mU6dQHHmXWUh30KEqZibz8KZ2RG
+   9LyHapS/gTSNl1qqhU3LHfcZm0LQYCOU12GFADEIahMtCUkjZN4NwF6bm
+   jxgMHLSOrRGQ8gszqrwd8KvNF1rfzP2E5ywJaDcOEjq6bZXTp8x93CVwD
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="379880220"
+X-IronPort-AV: E=Sophos;i="6.03,193,1694761200"; 
+   d="scan'208";a="379880220"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 01:40:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="997565754"
+X-IronPort-AV: E=Sophos;i="6.03,193,1694761200"; 
+   d="scan'208";a="997565754"
+Received: from powerlab.fi.intel.com ([10.237.71.25])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 01:40:54 -0700
+From:   Michal Wilczynski <michal.wilczynski@intel.com>
+To:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rafael@kernel.org, lenb@kernel.org,
+        Michal Wilczynski <michal.wilczynski@intel.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH v1] ACPI: scan: Add support for GPE block devices
+Date:   Mon,  2 Oct 2023 11:40:45 +0300
+Message-ID: <20231002084045.475843-1-michal.wilczynski@intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <43473e04-ac33-179e-4343-e5c78eef3faf@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 06:44:47PM +0200, Konrad Dybcio wrote:
-> On 9/30/23 11:39, Johan Hovold wrote:
-> > On Fri, Sep 29, 2023 at 03:38:53PM +0200, Konrad Dybcio wrote:
-> >> These clocks are consumed by the dispcc[01] clock controllers, so there's
-> >> no reason to keep them on from gcc probe. Remove that hack.
-> > 
-> > Eh, how did you test this patch?
+Currently there is no support for GPE block devices described in the
+ACPI specification. However there is a need to implement it as new
+platforms are coming that will make use of that feature.
 
-> Oehh you're right, I didn't notice that I still had clk_ignore_unused :/
+Add new acpi_scan_handler, that will attach itself to devices with
+"ACPI0006" _HID. Implement .attach() callback. Check for _CRS and _PRS
+objects, as their presence is required in non-FADT GPE block device, per
+ACPI specification. Extract address ranges/irq from _CRS/_PRS object. Call
+acpi_install_gpe_block() from ACPICA to install the GPE block. Then call
+acpi_update_all_gpes() to initialize newly installed GPE block.
 
-That doesn't matter since these clocks are never even registered with
-the clock framework.
+Link: https://uefi.org/specs/ACPI/6.5/09_ACPI_Defined_Devices_and_Device_Specific_Objects.html#gpe-block-device
+Suggested-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Michal Wilczynski <michal.wilczynski@intel.com>
+---
+ drivers/acpi/scan.c | 111 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 111 insertions(+)
 
-But you'd notice that if you try to verify the clock state by looking at
-/sys/kernel/debug/clk/clk_summary for example.
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index 7cae369ca33b..f00bfe63fbcf 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -2174,6 +2174,116 @@ static int acpi_scan_attach_handler(struct acpi_device *device)
+ 	return ret;
+ }
+ 
++static const struct acpi_device_id gpe_block_ids[] = {
++	{"ACPI0006"},
++	{}
++};
++
++static int acpi_gpe_fill_address(struct acpi_generic_address *gpe_block_address,
++				 u8 type,
++				 int *register_count,
++				 struct resource_entry *rentry)
++{
++	if (gpe_block_address->address)
++		return -EINVAL;
++
++	gpe_block_address->address = rentry->res->start;
++	gpe_block_address->space_id = type;
++	*register_count = (rentry->res->end - rentry->res->start);
++	*register_count /= ACPI_GPE_REGISTER_WIDTH;
++
++	return 0;
++}
++
++static int acpi_gpe_block_attach(struct acpi_device *adev,
++				 const struct acpi_device_id *not_used)
++{
++	struct acpi_generic_address gpe_block_address = {};
++	struct list_head resource_list;
++	struct resource_entry *rentry;
++	int register_count;
++	acpi_status status;
++	u32 irq = 0;
++	int ret;
++
++	if (!acpi_has_method(adev->handle, METHOD_NAME__CRS) &&
++	    !acpi_has_method(adev->handle, METHOD_NAME__PRS))
++		/* It's not a block GPE if it doesn't contain _CRS or _PRS.
++		 * Specification says that ACPI0006 _HID can also refer to
++		 * FADT described GPE's. It's not an error, so it's reasonable
++		 * to return 0.
++		 */
++		return 0;
++
++	INIT_LIST_HEAD(&resource_list);
++	ret = acpi_dev_get_resources(adev, &resource_list, NULL, NULL);
++	if (ret)
++		return ret;
++
++	list_for_each_entry(rentry, &resource_list, node) {
++		switch (resource_type(rentry->res)) {
++		case IORESOURCE_IO:
++			ret = acpi_gpe_fill_address(&gpe_block_address,
++						    ACPI_ADR_SPACE_SYSTEM_IO,
++						    &register_count,
++						    rentry);
++			if (ret) {
++				acpi_handle_err(adev->handle,
++						"Multiple IO blocks in GPE block\n");
++				return ret;
++			}
++			break;
++		case IORESOURCE_MEM:
++			ret = acpi_gpe_fill_address(&gpe_block_address,
++						    ACPI_ADR_SPACE_SYSTEM_MEMORY,
++						    &register_count,
++						    rentry);
++			if (ret) {
++				acpi_handle_err(adev->handle,
++						"Multiple MEM blocks in GPE block\n");
++				return ret;
++			}
++			break;
++		case IORESOURCE_IRQ:
++			if (irq) {
++				acpi_handle_err(adev->handle,
++						"Multiple IRQ blocks in GPE block\n");
++				return -EINVAL;
++			}
++			irq = rentry->res->start;
++			break;
++		default:
++			break;
++		}
++	}
++
++	acpi_dev_free_resource_list(&resource_list);
++
++	/* GPE block needs to define one address range and one irq line */
++	if (!gpe_block_address.address || !irq)
++		return -ENODEV;
++
++	status = acpi_install_gpe_block(adev->handle,
++					&gpe_block_address,
++					register_count,
++					irq);
++	if (ACPI_FAILURE(status))
++		return -EINVAL;
++
++	status = acpi_update_all_gpes();
++	if (ACPI_FAILURE(status)) {
++		acpi_remove_gpe_block(adev->handle);
++		return -ENODEV;
++	}
++
++	return 1;
++}
++
++static struct acpi_scan_handler gpe_block_device_handler = {
++	.ids = gpe_block_ids,
++	.attach = acpi_gpe_block_attach,
++};
++
+ static int acpi_bus_attach(struct acpi_device *device, void *first_pass)
+ {
+ 	bool skip = !first_pass && device->flags.visited;
+@@ -2623,6 +2733,7 @@ void __init acpi_scan_init(void)
+ 	acpi_init_lpit();
+ 
+ 	acpi_scan_add_handler(&generic_device_handler);
++	acpi_scan_add_handler(&gpe_block_device_handler);
+ 
+ 	/*
+ 	 * If there is STAO table, check whether it needs to ignore the UART
+-- 
+2.41.0
 
-> > The GCC_DISP_AHB_CLK clocks are not modelled by the clock driver
-> > currently so nothing is guaranteeing them to be enabled if we were to
-> > apply this patch. They just happen to be left on by the bootloader on
-> > some machines currently (well at least one of them is on one machine).
-
-> What fooled me is that despite not being modeled by the clock driver, it 
-> is defined in bindings and referenced in the device tree.
-> 
-> Another thing I'll fix up!
-
-Right, a number of Qualcomm SoCs apparently fail to register these
-clocks. You should start by determining why that is as I assume (hope)
-it was done for a reason.
-
-Then the Qualcomm drivers use sloppy bulk clock look-up and enable so
-that an integrator would never even notice when clocks are missing. Once
-the clocks are registered, that could be tightened up as well.
-
-Johan
