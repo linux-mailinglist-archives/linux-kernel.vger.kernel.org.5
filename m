@@ -2,122 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 720A47B5D12
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 00:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55D777B5D16
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 00:23:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234270AbjJBWV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 18:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49052 "EHLO
+        id S234813AbjJBWXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 18:23:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjJBWV5 (ORCPT
+        with ESMTP id S230043AbjJBWXS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 18:21:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A155C9;
-        Mon,  2 Oct 2023 15:21:55 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFC12C433C8;
-        Mon,  2 Oct 2023 22:21:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696285314;
-        bh=CGV3l4m1Fsxjo5KVleucQ9ACIj7qp3IjWnhkCyY4rZo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=YPx5MEwF/HCg5A6rfAedz2iYizSQOXr/9gtMzV+E2dlwiqJvuiHqVp6YRtAwC9ZlS
-         iOAwE9rZIHCPbdG0ZKTqccGsZvdmJOo/00bYzDZF8QdQBQe94QFgEyvtBE9hUE1ZhX
-         FPhADmeOCjSVgRUmxviHjBL7ROHTUtdiWaeb4uQfNFQMva2lL3M61UoF3ATuxEMgMo
-         Uj/iFCrNIKmeNh9SROF1KxJx/VsHoXbgWm43eAwiShXr57QIf5n+H60C5Q59nRGkQM
-         Fnuq18MhzNA8vdaj3zP3dQsTNCYa/h7xuzPe+Ktf6dcjXsvZ3NikpBFsjOaB3zpmQy
-         FO3A4oVVbVVRw==
-Date:   Mon, 2 Oct 2023 15:21:42 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Christian Marangi <ansuelsmth@gmail.com>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Chris Snook <chris.snook@gmail.com>,
-        Raju Rangoju <rajur@chelsio.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Shailend Chand <shailend@google.com>,
-        Douglas Miller <dougmill@linux.ibm.com>,
-        Nick Child <nnac123@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Haren Myneni <haren@linux.ibm.com>,
-        Rick Lindsley <ricklind@linux.ibm.com>,
-        Dany Madden <danymadden@us.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Krzysztof Halasa <khalasa@piap.pl>,
-        Kalle Valo <kvalo@kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Chandrashekar Devegowda <chandrashekar.devegowda@intel.com>,
-        Intel Corporation <linuxwwan@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@linux.intel.com>,
-        Liu Haijun <haijun.liu@mediatek.com>,
-        M Chetan Kumar <m.chetan.kumar@linux.intel.com>,
-        Ricardo Martinez <ricardo.martinez@linux.intel.com>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Yuanjun Gong <ruc_gongyuanjun@163.com>,
-        Wei Fang <wei.fang@nxp.com>, Alex Elder <elder@linaro.org>,
-        Simon Horman <horms@kernel.org>, Rob Herring <robh@kernel.org>,
-        Bailey Forrest <bcf@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Junfeng Guo <junfeng.guo@intel.com>,
-        Ziwei Xiao <ziweixiao@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rushil Gupta <rushilg@google.com>,
-        Uwe =?UTF-8?B?S2xlaW5lLUvDtm5pZw==?= 
-        <u.kleine-koenig@pengutronix.de>, Yuri Karpov <YKarpov@ispras.ru>,
-        Zhengchao Shao <shaozhengchao@huawei.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Zheng Zengkai <zhengzengkai@huawei.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Lee Jones <lee@kernel.org>, Dawei Li <set_pte_at@outlook.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org
-Subject: Re: [net-next PATCH 1/4] netdev: replace simple
- napi_schedule_prep/__napi_schedule to napi_schedule
-Message-ID: <20231002152142.4e8e2cfb@kernel.org>
-In-Reply-To: <20231002151023.4054-1-ansuelsmth@gmail.com>
-References: <20231002151023.4054-1-ansuelsmth@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 2 Oct 2023 18:23:18 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C1DC4
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 15:23:11 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-406618d0991so2697505e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 15:23:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jrtc27.com; s=gmail.jrtc27.user; t=1696285390; x=1696890190; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5fCiH9a5W/fqJ38SwmAjZfsGQXwRLcdeZgKgDR4wEc4=;
+        b=WUPKUNl+oj8JAfd+eGEBBQak7B0dl5FAQ9HwTdpFHWa7P2Uqe6k7KuaSoo/QjoCzIX
+         o95/k1RjXwR5N1Rhi7G6H+h2P4ClRdNeloGz2/LhiGQ3/SOOKoiSnPuNHBs3wchCaox7
+         34ppdml2YbVLN65KxNvYniVa5zv35c/0XVm8/Y/yxr6rzt+F2DjdhZKP/P0nDVFMFJox
+         a2GIkqZFNRdCsbSnq3SBBBAmMnT4gUPXrnbadozZGXZzISiGxgsO4QL0hvuDc8ay1Lfj
+         Gsc7WZH69rsFURbdAnpSORJPxyBbAdGeYIPU3mQatSAW6QWq0MWq/RDfGkgkSiep6StF
+         CFgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696285390; x=1696890190;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5fCiH9a5W/fqJ38SwmAjZfsGQXwRLcdeZgKgDR4wEc4=;
+        b=EDfQRVsf5kA0f7o9H+tnGqeVptyvXrirl8Rpug08B0uwd2D1YoMRCmC1IM8YcDmhJ3
+         FLInW8n6MHLmMnsBB+akaJ6MSwuil9OPeK3VsY0K7Q9OAmSOx1UJUH5cpR31AIIeWGvA
+         NQfQYHtT3c2Ca1mIyW2/MKvfBHgaUDqKD53NTyO2cwNWzUxRw1fi/RKCn7izTiHZH/dE
+         fuTd5bp/URFHSv5jxsCtqSeXhHz5bZz1RpReNeCvhsBvyqsaYaDiuHSh9VmrASbdQDQg
+         PqDHW41NTDBlIDhGOnMrxAnFnOu8hH0RyTrJhBPDDsrVF23RSL5wxnyDNLXLetMWGb0S
+         sHcA==
+X-Gm-Message-State: AOJu0YyTPsfJ7nGiqY2ebpZL4tfhUwVlIOAGElv25vY2Cdl8DFFtIRyN
+        WZdE52dVk3HAMmbGXp6VzUMg4w==
+X-Google-Smtp-Source: AGHT+IF0+hsZ77J1FUzLRT2PMI9V2R5c1nXxGrMA9Nc9wPd3CzAgHdKCKNewknKvF/5TrzCPMoWkOA==
+X-Received: by 2002:a05:600c:1c11:b0:406:592b:e5aa with SMTP id j17-20020a05600c1c1100b00406592be5aamr9328015wms.14.1696285389514;
+        Mon, 02 Oct 2023 15:23:09 -0700 (PDT)
+Received: from smtpclient.apple ([131.111.5.246])
+        by smtp.gmail.com with ESMTPSA id n7-20020adff087000000b0031c6e1ea4c7sm11760280wro.90.2023.10.02.15.23.08
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Oct 2023 15:23:09 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
+Subject: Re: [PATCH 0/7] Add support to handle misaligned accesses in S-mode
+From:   Jessica Clarke <jrtc27@jrtc27.com>
+In-Reply-To: <CAP6exYLtQuyqMgG6jRAhizp-52ebu3OLNSXe8a8xvLALYFD3kA@mail.gmail.com>
+Date:   Mon, 2 Oct 2023 23:22:58 +0100
+Cc:     =?utf-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
+        Conor Dooley <conor@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atishp@rivosinc.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Evan Green <evan@rivosinc.com>,
+        =?utf-8?Q?Bj=C3=B6rn_Topel?= <bjorn@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Daniel Maslowski <cyrevolt@googlemail.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <FF617BC9-0FE4-4468-8FF9-06BD8A8115E2@jrtc27.com>
+References: <20230926150316.1129648-1-cleger@rivosinc.com>
+ <20230930-patchy-curdle-ef5ee6e1a17c@spud>
+ <8ce6cd97-6d63-4174-a290-40690c81e205@rivosinc.com>
+ <20231002-spearman-doze-70cc026ac13e@spud>
+ <693e6584-1e66-48c0-aa7c-61d9f88abd4c@rivosinc.com>
+ <CAP6exYLtQuyqMgG6jRAhizp-52ebu3OLNSXe8a8xvLALYFD3kA@mail.gmail.com>
+To:     ron minnich <rminnich@gmail.com>
+X-Mailer: Apple Mail (2.3731.600.7)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  2 Oct 2023 17:10:20 +0200 Christian Marangi wrote:
->  			queue_work(priv->xfer_wq, &priv->rx_work);
-> -		else if (napi_schedule_prep(&priv->napi))
-> -			__napi_schedule(&priv->napi);
-> +		else
-> +			napi_schedule(&priv->napi)
+On 2 Oct 2023, at 16:32, ron minnich <rminnich@gmail.com> wrote:
+>=20
+> This was a very interesting read. One other thought crossed my mind,
+> which is that a RISC-V implementation might make the alignment
+> delegation hard-wired to always delegate to S mode. I.e, the bit might
+> be WARL and always 1. For what I'm doing, this would actually be
+> pretty convenient. Just want to make sure this code can accommodate
+> that -- wdyt?
 
-Missing semi-colon, please make sure each patch builds cleanly 
-with allmodconfig.
--- 
-pw-bot: cr
+Such an implementation would violate the spec:
+
+  An implementation shall not have any bits of medeleg be read-only
+  one, i.e., any synchronous trap that can be delegated must support not
+  being delegated.
+
+Supporting that is thus out of scope.
+
+Jess
+
+> We have found lots of value in our experiments with delegating
+> alignment traps to Linux -- not least because they tend to locate
+> problems in the kernel :-) -- we've found issues in module loading,
+> early startup (there's a needed .align2 directive for sbi secondary
+> startup, AFAICT) and the timing code for misaligned load/store
+> handling.
+>=20
+> I don't know how you test this unaligned trap handling, but it might
+> be worthwhile to work that out. You can test via oreboot and the
+> visionfive2, save we have not figured out why SMP startup is going
+> wrong, yet :-), so we're not as feature-complete as needed. But soon.
+>=20
+> Thanks!
+>=20
+> On Mon, Oct 2, 2023 at 5:19=E2=80=AFAM Cl=C3=A9ment L=C3=A9ger =
+<cleger@rivosinc.com> wrote:
+>>=20
+>>=20
+>>=20
+>> On 02/10/2023 12:49, Conor Dooley wrote:
+>>> On Mon, Oct 02, 2023 at 09:40:04AM +0200, Cl=C3=A9ment L=C3=A9ger =
+wrote:
+>>>>=20
+>>>>=20
+>>>> On 30/09/2023 11:23, Conor Dooley wrote:
+>>>>> On Tue, Sep 26, 2023 at 05:03:09PM +0200, Cl=C3=A9ment L=C3=A9ger =
+wrote:
+>>>>>> Since commit 61cadb9 ("Provide new description of misaligned =
+load/store
+>>>>>> behavior compatible with privileged architecture.") in the RISC-V =
+ISA
+>>>>>> manual, it is stated that misaligned load/store might not be =
+supported.
+>>>>>> However, the RISC-V kernel uABI describes that misaligned =
+accesses are
+>>>>>> supported. In order to support that, this series adds support for =
+S-mode
+>>>>>> handling of misaligned accesses as well support for =
+prctl(PR_UNALIGN).
+>>>>>>=20
+>>>>>> Handling misaligned access in kernel allows for a finer grain =
+control
+>>>>>> of the misaligned accesses behavior, and thanks to the prctl =
+call, can
+>>>>>> allow disabling misaligned access emulation to generate SIGBUS. =
+User
+>>>>>> space can then optimize its software by removing such access =
+based on
+>>>>>> SIGBUS generation.
+>>>>>>=20
+>>>>>> Currently, this series is useful for people that uses a SBI that =
+does
+>>>>>> not handled misaligned traps. In a near future, this series will =
+make
+>>>>>> use a SBI extension [1] allowing to request delegation of the
+>>>>>> misaligned load/store traps to the S-mode software. This =
+extension has
+>>>>>> been submitted for review to the riscv tech-prs group. An OpenSBI
+>>>>>> implementation for this spec is available at [2].
+>>>>>>=20
+>>>>>> This series can be tested using the spike simulator [3] and an =
+openSBI
+>>>>>> version [4] which allows to always delegate misaligned load/store =
+to
+>>>>>> S-mode.
+>>>>>=20
+>>>>> Some patches in this series do not build for any configs, some are
+>>>>> broken for clang builds and others are broken for nommu. Please =
+try to> build test this more thoroughly before you submit the next =
+version.
+>>>>=20
+>>>> Hi Conor,
+>>>>=20
+>>>> Thanks for the feedback, I'll check that.
+>>>>=20
+>>>>>=20
+>>>>> Also, AIUI, this series should be marked RFC since the SBI =
+extension
+>>>>> this relies on has not been frozen.
+>>>>=20
+>>>> This series does not actually uses the SBI extension but provides a =
+way
+>>>> to detect if misaligned accesses are not handled by hardware nor by =
+the
+>>>> SBI. It has been reported by Ron & Daniel they they have a minimal =
+SBI
+>>>> implementation that does not handle misaligned accesses and that =
+they
+>>>> would like to make use of the PR_SET_UNALIGN feature. This is what =
+this
+>>>> series addresses (and thus does not depend on the mentioned SBI =
+extension).
+>>>=20
+>>> Ah, I must have misread then. Apologies.
+>>=20
+>> No worries, maybe I should actually remove this from the cover letter =
+to
+>> avoid any confusion !
+>>=20
+>> Cl=C3=A9ment
+>=20
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+
