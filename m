@@ -2,84 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B59187B4C90
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:33:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6A4D7B4C91
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235739AbjJBHdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 03:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38054 "EHLO
+        id S235756AbjJBHfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 03:35:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235630AbjJBHdh (ORCPT
+        with ESMTP id S235630AbjJBHfK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 03:33:37 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4BD83;
-        Mon,  2 Oct 2023 00:33:33 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2c28e35752cso26803531fa.0;
-        Mon, 02 Oct 2023 00:33:33 -0700 (PDT)
+        Mon, 2 Oct 2023 03:35:10 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BF4A83
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:35:06 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-664bd97692dso14215276d6.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:35:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696232011; x=1696836811; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tPMk98xbDjSu/d7zq/OqT3E5dxTEAuHNUfRDfBNu09M=;
-        b=iHoFqerJLWvsMbJ1X18xKeGDB4a7MMRMcgJPr0DrBM5iRCtzHG8b0U63BqdpuPDRq+
-         h3NgBSjvqGWZo2qLiiYPrw2kjbJbAxWsSiZDJ7jbevt9ynoPA1KfmS4mrxjU7h4zNCrA
-         dViSSsJe/ou/ei8j+dol2U31RIz/fVpLs84UAruRbl60owdnr8omCJDNoukNmE2VtCyP
-         BwGDMPO1/hrF/fefSXDKZw4ah3eo8cEAmiXReZ0BSuAD2eEkjcQtML6OaPaEc41YEPoy
-         vdeHp3inYwHlpRgIuLpHDDM11GKq236Ds178EdehrtXg6ygTTcfTLtamvNHV3GTlb3UZ
-         Jelw==
+        d=google.com; s=20230601; t=1696232106; x=1696836906; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hxS5zIJtibRbCh5vK1xQq6wWfoxr2oLcV1k3s8vlyNA=;
+        b=un5UBiwXqyrE+EJRcT5lQS5qgBxT53qfxrLv2WyzL5c3sMufs8w75QXWuTKgSogE8i
+         +LLs4+dooT0BWxrRDo+ATadANUrzIKhbrTLzhwswHCpLRzbCjojos1CYDdDQNXkZG6P3
+         Oij9NDRdMGR9wfZ85SLkFWSf8V9kUFKVFH7h59BbhRLtwUemQ+FMX/Bx9NLEJg/RFNqh
+         ehE/FZ7DCSC1PZHk63m2x/68cMJzo/85wGQ2ad2Z2dP1dtKb5gSp0pC349OkMUzrFvlC
+         /76AOt16e1oIV438YDiyhOw03/Esro54pZgWALcPra5BlCnfLHUUgnsvwR2GTRQxloVK
+         sBgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696232011; x=1696836811;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tPMk98xbDjSu/d7zq/OqT3E5dxTEAuHNUfRDfBNu09M=;
-        b=WzjULZZWPimoMfaWMHmrh6xap+heoIjkb20a05d9wO81v+vKWszWHGOdWDQnyK4lnz
-         V9amKrhSZCTf7nj09v4n/u467m3TSay2ZWz6MjcGj7O8JHGMO8Yv1L5BgRDmB1dmkaPZ
-         5hZHCOQ233geBqonSlcFIMOocWCn6KDOp/WDexqbjqHEGa3ym661OXa6yTaRJ0/1XwHP
-         Wh3eYVUxJ15/TT5UQ/WZY/Qo131A9QTMiEIWshlUoed4nZsHl0L1/PNzUg6WzBtGJ4N1
-         R48eRPousgmGYSeYuyHwtKtKcX+HDZq50SzsPdxbgxM1vOBwLrHmPWVCQn+9TVBF1dx+
-         p/EA==
-X-Gm-Message-State: AOJu0YzXuN1xX3jj1ct40OgextH1TmFrWpp+2PXl+GWtJG+psRw0Exy3
-        e2s392pPDgGzCmiMrwhir5iRgXgctao=
-X-Google-Smtp-Source: AGHT+IEKUBzdD3IBYzVwMB+ztCKmxhrGIchOs8J21tfb3W3iZHq6hiK+7zJFt9eI0T6sgshZw91YCw==
-X-Received: by 2002:a2e:9652:0:b0:2bc:c004:cc22 with SMTP id z18-20020a2e9652000000b002bcc004cc22mr9106922ljh.33.1696232011243;
-        Mon, 02 Oct 2023 00:33:31 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:16f8:1500::7? (dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::7])
-        by smtp.gmail.com with ESMTPSA id p20-20020a2e9a94000000b002b9f0fb5f20sm5155259lji.72.2023.10.02.00.33.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 00:33:30 -0700 (PDT)
-Message-ID: <7e571a3c-ccd4-22cc-f1a0-c69b62aa2f7a@gmail.com>
-Date:   Mon, 2 Oct 2023 10:33:29 +0300
+        d=1e100.net; s=20230601; t=1696232106; x=1696836906;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hxS5zIJtibRbCh5vK1xQq6wWfoxr2oLcV1k3s8vlyNA=;
+        b=gZ/gonpV1w809bB6cOKm+2EyhkkSSj7v+BGT9JAuXF+FUgGCV/u8q6wvEOtDy2OIkq
+         xEUVvmf6eLJwV7Xo5CJY/NXWs7kHKmw/lROvpNAFSw2nz955tv9TYE8Ea8IKopmen4yl
+         TzPcM2pZm1Cg1eq5TeW//YXW4iUMc9K686C4iaumRj75lmk0a0e7jjYczJFZbjvTAmsz
+         tiLihMPe3+xQT9MydlAndJoJFiJ1kT6nDSzScjyT/qyMyR+VzFZgroP343cnTxqCbrJe
+         xhWJoVgOp1ztmrHet2GMcL6D/p3z8Q6qc2J3NrY+99jhhaey2NNmtQJCJI7n2oalsAIO
+         33NQ==
+X-Gm-Message-State: AOJu0YzG3kcikRmvdAVvCQuFGzBk2nwBwD/awjZX6QClCWAj4GhjFPRb
+        qOehiMmOe4TEqqfy+pZZPPKoCa+bF5IvEXlV6A6rdw==
+X-Google-Smtp-Source: AGHT+IFj57Th9WhoHQH1MQFok8YfX19y4QhFpLQDK4grB8F/KQXLEa9Iz03MCQLlcgLc1Cvf3IiDVW+iiR2d/20F+dU=
+X-Received: by 2002:a0c:db93:0:b0:64f:8d4c:1c0b with SMTP id
+ m19-20020a0cdb93000000b0064f8d4c1c0bmr11335901qvk.43.1696232105529; Mon, 02
+ Oct 2023 00:35:05 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 1/5] tools: iio: iio_generic_buffer ensure alignment
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
+References: <CAG_fn=UeFoyhZvPJ7pGPrc5011D9h1e4ioffat4eUfVHP6Hd-Q@mail.gmail.com>
+ <ZRF7r0ZjxcL9C8U8@smile.fi.intel.com> <CAG_fn=V8Mx89dOfKf88nEq9V9i_kMYaOdGjd3DQVOWnYrandyA@mail.gmail.com>
+ <CAG_fn=WX+yAFHtbsxSvd41P61jjWtFEePqOs_1AKGJcgaWfVag@mail.gmail.com>
+ <3bc8fda47dc04e3b8cfd0e3f6fc7bbee@AcuMS.aculab.com> <CAG_fn=XCXYZhC+ER5mhMyE2YD-__1oj+uvPB4pyz4X7tmiq=3w@mail.gmail.com>
+ <CAAH8bW-9ZWB=i0RWAWBXguOkguLHZGp7fLg7An73NqFnVmtgFw@mail.gmail.com>
+ <CAG_fn=UWJ30ATV0mruPm__+qcuqB9yieMsG_EiFcmty_MZyEqQ@mail.gmail.com>
+ <ZRXbOoKHHafCWQCW@yury-ThinkPad> <CAG_fn=VYRdk0KV5tZaakjLLczdWTvGp2gfLjXqpYR2ifh4S4vA@mail.gmail.com>
+ <ZRoukg5eWDHICiei@yury-ThinkPad>
+In-Reply-To: <ZRoukg5eWDHICiei@yury-ThinkPad>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 2 Oct 2023 09:34:24 +0200
+Message-ID: <CAG_fn=V3CKzEkuFujHzsMR4vxd26C0ZvxooUPYiH49bzY=jf5g@mail.gmail.com>
+Subject: Re: [PATCH v5 2/5] lib/test_bitmap: add tests for bitmap_{read,write}()
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     David Laight <David.Laight@aculab.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Angel Iglesias <ang.iglesiasg@gmail.com>,
-        Andreas Klinger <ak@it-klinger.de>,
-        Benjamin Bara <bbara93@gmail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1695727471.git.mazziesaccount@gmail.com>
- <e986b4562ca663e19ea30b81d15221c15bd87227.1695727471.git.mazziesaccount@gmail.com>
- <20230930173409.4fe38d94@jic23-huawei>
-Content-Language: en-US, en-GB
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <20230930173409.4fe38d94@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, pcc@google.com,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        eugenis@google.com, Syed Nayyar Waris <syednwaris@gmail.com>,
+        william.gray@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,108 +85,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/23 19:34, Jonathan Cameron wrote:
-> On Wed, 27 Sep 2023 11:26:07 +0300
-> Matti Vaittinen <mazziesaccount@gmail.com> wrote:
-> 
->> The iio_generic_buffer can return garbage values when the total size of
->> scan data is not a multiple of the largest element in the scan. This can be
->> demonstrated by reading a scan, consisting, for example of one 4-byte and
->> one 2-byte element, where the 4-byte element is first in the buffer.
->>
->> The IIO generic buffer code does not take into account the last two
->> padding bytes that are needed to ensure that the 4-byte data for next
->> scan is correctly aligned.
->>
->> Add the padding bytes required to align the next sample with the scan size.
->>
->> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
->>
->> ---
->> I think the whole alignment code could be revised here, but I am unsure
->> what kind of alignment is expected, and if it actually depends on the
->> architecture. Anyways, I'll quote myself from another mail to explain
->> how this patch handles things:
->>
->>> For non power of2 sizes, the alignment code will result strange alignments.
->>> For example, scan consisting of two 6-byte elements would be packed -
->>> meaning the second element would probably break the alignment rules by
->>> starting from address '6'. I think that on most architectures the proper
->>> access would require 2 padding bytes to be added at the end of the first
->>> sample. Current code wouldn't do that.
->>
->>> If we allow only power of 2 sizes - I would expect a scan consisting of a
->>> 8 byte element followed by a 16 byte element to be tightly packed. I'd
->>> assume that for the 16 byte data, it'd be enough to ensure 8 byte alignment.
->>> Current code would however add 8 bytes of padding at the end of the first
->>> 8 byte element to make the 16 byte scan element to be aligned at 16 byte
->>> address. To my uneducated mind this is not needed - but maybe I just don't
->>> know what I am writing about :)
->>
->> Revision history
->> v3 => v4:
->>   - drop extra print and TODO coment
->>   - add comment clarifying alignment sizes
->> ---
->>   tools/iio/iio_generic_buffer.c | 18 +++++++++++++++++-
->>   1 file changed, 17 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
->> index 44bbf80f0cfd..c07c49397b19 100644
->> --- a/tools/iio/iio_generic_buffer.c
->> +++ b/tools/iio/iio_generic_buffer.c
->> @@ -54,9 +54,12 @@ enum autochan {
->>   static unsigned int size_from_channelarray(struct iio_channel_info *channels, int num_channels)
->>   {
->>   	unsigned int bytes = 0;
->> -	int i = 0;
->> +	int i = 0, max = 0;
->> +	unsigned int misalignment;
->>   
->>   	while (i < num_channels) {
->> +		if (channels[i].bytes > max)
->> +			max = channels[i].bytes;
->>   		if (bytes % channels[i].bytes == 0)
->>   			channels[i].location = bytes;
->>   		else
->> @@ -66,6 +69,19 @@ static unsigned int size_from_channelarray(struct iio_channel_info *channels, in
->>   		bytes = channels[i].location + channels[i].bytes;
->>   		i++;
->>   	}
->> +	/*
->> +	 * We wan't the data in next sample to also be properly aligned so
->> +	 * we'll add padding at the end if needed.
->> +	 *
->> +	 * Please note, this code does ensure alignment to maximum channel
->> +	 * size. It works only as long as the channel sizes are 1, 2, 4 or 8
->> +	 * bytes. Also, on 32 bit platforms it might be enough to align also
->> +	 * the 8 byte elements to 4 byte boundary - which this code is not
->> +	 * doing.
-> Very much not!  We need to present same data alignment to userspace
-> indpendent of what architecture is running.
-> 
-> It's annoyingly inconsistent how 8 byte elements are handled on 32 bit
-> architectures as some have optimized aligned access routines and others
-> will read as 2 32 bit fields.  Hence we just stick to 8 byte value is
-> 8 byte aligned which is always fine but wastes a bit of space on x86 32
-> bit - which I don't care about ;)
-> 
-> Please drop this last bit of the comment as we should just say what it
-> does, not conjecture what it might do!
+On Mon, Oct 2, 2023 at 4:44=E2=80=AFAM Yury Norov <yury.norov@gmail.com> wr=
+ote:
+>
+> On Fri, Sep 29, 2023 at 10:54:59AM +0200, Alexander Potapenko wrote:
+> > On Thu, Sep 28, 2023 at 10:02=E2=80=AFPM Yury Norov <yury.norov@gmail.c=
+om> wrote:
+> > >
+> > > On Thu, Sep 28, 2023 at 05:14:55PM +0200, Alexander Potapenko wrote:
+> > > >
+> > > > So e.g. for compressing something into a 16-byte buffer using bitma=
+ps
+> > > > I'd need to:
+> > > >
+> > > > 1) Allocate the buffer: buf =3D kmem_cache_alloc(...)
+> > > > 2) Allocate the bitmap: bitmap =3D bitmap_alloc(16*8, ...)
+> > > > 3) Fill the bitmap: mte_compress_to_buf(..., bitmap, 16)
+> > > > 4) Copy the bitmap contents to the buffer: bitmap_to_arr64(buf, bit=
+map, 16*8)
+> > > > 5) Deallocate the bitmap: bitmap_free(bitmap)
+> > > >
+> > > > instead of:
+> > > >
+> > > > buf =3D kmem_cache_alloc(...)
+> > > > mte_compress_to_buf(..., (unsigned long *)buf, 16)
+> > > >
+> > > > , correct?
+> > > >
+> > > > Given that the buffer contents are opaque and its size is aligned o=
+n 8
+> > > > bytes, could it be possible to somehow adopt the `buf` pointer
+> > > > instead?
+> > >
+> > > I didn't find an explicit typecasting where you're using
+> > > mte_compress_to_buf(), but now after hard 2nd look I see...
+> > >
+> > > Firstly, now that in the documentation you are explicitly describing =
+the
+> > > return value of mte_compress() as 64-bit frame, the right way to go w=
+ould
+> > > be declaring the function as: u64 mte_compress(u8 *tags).
+> >
+> > Ack.
+> >
+> > > And the general pattern should be like this:
+> > >
+> > >   unsigned long mte_compress(u8 *tags)
+> > >   {
+> > >           DECLARE_BITMAP(tmp, MTECOMP_CACHES_MAXBITS);
+> > >           void *storage;
+> > >           ...
+> > >           if (alloc_size < MTE_PAGE_TAG_STORAGE) {
+> > >                   storage =3D kmem_cache_alloc(cache, GFP_KERNEL);
+> > >                   mte_compress_to_buf(r_len, r_tags, r_sizes, tmp, al=
+loc_size);
+> > >
+> > >                   switch (alloc_size) {
+> > >                   case 16:
+> > >                           bitmap_to_arr16(storage, tmp, 16);
+> >
+> > I might be missing something, but why do we need the switch at all?
+> > The buffers we are allocating always contain a whole number of u64's -
+> > cannot we just always call bitmap_to_arr64()?
+> >
+> > Note that for cases where alloc_size is > 8 we never make any
+> > assumptions about the contents of @storage, and don't care much about
+> > the byte order as long as swap decompression is done with the same
+> > endianness (which is always the case).
+> > (The case where alloc_size=3D=3D8 is somewhat special, and needs more
+> > accurate handling, because we do make assumptions about the bit layout
+> > there).
+>
+> So, this is my fault, and I'm really sorry. I read that 16-byte as
+> 16-bit, and mistaken everything else. Please scratch the above.
+>
+> If you allocate word-aligned memory, and it's a multiple of words,
+> which is your case, and access it only using bitmap API like
+> bitmap_read/write, everything should be fine.
 
-Ok. The comment was more to catch the reviewers' attention ;) I'll just 
-note the alignment works for power of 2 sample sizes and aligns 
-according to the max sized sample, even if it was bigger than 8.
-
-Thanks!
-
--- Matti
-
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+Ok, fine, I'll stick to the current implementation then.
