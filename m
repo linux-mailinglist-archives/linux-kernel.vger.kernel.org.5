@@ -2,236 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3EB67B5BB1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:04:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16B77B5BB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:04:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229666AbjJBT7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 15:59:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56230 "EHLO
+        id S229728AbjJBUEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 16:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjJBT7s (ORCPT
+        with ESMTP id S229714AbjJBUEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 15:59:48 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2042.outbound.protection.outlook.com [40.107.243.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A662F93;
-        Mon,  2 Oct 2023 12:59:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QFKvBtzEwKDO519QF04Fo3p6ExNt/iehZ6Y1HzDMnv5v+sSdZy7590LgDzKGhH7Hsvsz7KKEl0KW/negwJ1NWBqd5GmNnuQSRmh7coaj5SF7HxUOtVvdhMzhwFIMxPFVSUHhjwzVbTd7HUA4Onv0iVXgd1KbA4nPy0ysr8vRn0LchUJpcWb3hVK0VB1RZykE2BwlczAQH7oAmAYWe01BD56+LNBRbBVr9lubm/I4tIJwAgogg5rv5OfbbzepouKqCmmlj03Tkp0/u/CAVsKV04I/S+MP6rjVWRovw5v8bk85bIssM8vOuf9I6qHUo1EAPvWwtu18/vfmF2u9upDoWA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=z5yFwW4bJBzc9wiGkvNlR6JmJ9T+ygeNqKtVaj1/fXw=;
- b=Yr36U87p6iGfvcgnE/HbOKLc4/lYBBTpIWjw4Z9T0rOzwpjwpGYK5iwZ7qchvDIAOP9oVIcIa0UKG3d120Tq0tJa+8qo0NlLKnUBJ5tGlCazmtUbme4zb4ruC7+45ny4zXKSKL7Ze9zKkBgzLftX8ADv3AQy9HckAtXx26OUpVB4B7qZV1J/DKAmH3zulbhkbf0B6maaBi9TZhLIp022yY4OGdDrs4mxCIx3K1emzGhpau/J3qQ31As5i5zmBA/aoxPFEgK0g+Jv4GLNpdSK5B8lGkDiaT8MEa+ktX6ZsdP+gLO1HpA89htnJDf4n4DRCSqB1ucBz1W41BA8kaUDYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z5yFwW4bJBzc9wiGkvNlR6JmJ9T+ygeNqKtVaj1/fXw=;
- b=FkkcKiBtGbG9XAF4Oq3hRtohQeFQNaiUqzb3uom3/vgpdZ+fYXZehDUvoOmHGWE566XFrLEEpcd4oKAIzRQfG8vFH5yZAOCNfjIF+SfWCdNsM+ngQfFrncyf2DGYRLhEAO1UhT0fr12A52D0+VUSUtgrV6B/+zbV5GTlFIbV9UM=
-Received: from BYAPR21CA0003.namprd21.prod.outlook.com (2603:10b6:a03:114::13)
- by IA1PR12MB6481.namprd12.prod.outlook.com (2603:10b6:208:3aa::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26; Mon, 2 Oct
- 2023 19:59:42 +0000
-Received: from CO1PEPF000042AC.namprd03.prod.outlook.com
- (2603:10b6:a03:114:cafe::73) by BYAPR21CA0003.outlook.office365.com
- (2603:10b6:a03:114::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.2 via Frontend
- Transport; Mon, 2 Oct 2023 19:59:41 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000042AC.mail.protection.outlook.com (10.167.243.41) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Mon, 2 Oct 2023 19:59:41 +0000
-Received: from titanite-d354host.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Mon, 2 Oct 2023 14:59:40 -0500
-From:   Avadhut Naik <avadhut.naik@amd.com>
-To:     <rafael@kernel.org>, <lenb@kernel.org>,
-        <linux-acpi@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <yazen.ghannam@amd.com>,
-        <avadnaik@amd.com>
-Subject: [PATCH v2] ACPI: APEI: Skip initialization of GHES_ASSIST structures for Machine Check Architecture
-Date:   Mon, 2 Oct 2023 14:59:32 -0500
-Message-ID: <20231002195932.2501674-1-avadhut.naik@amd.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 2 Oct 2023 16:04:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90020AC
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 13:03:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696277029;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/gCkTChgkIass8/wlf0Xcc3byuosa8jOTlijo6BuSMQ=;
+        b=YzeAWxtVTBsOiYbqS0+f9E6HQW3Jg/KBT6kiee57ESoYAf0/FHaP/sZMr2QoyRoEfl53G3
+        ZvgONJ01F72DZ5oGQw2DkcCuGrT7h0wVtwB6BQ0HhitKTEJhSDfnqnQbMZb+VmR2aDBso7
+        +TRJO9g7iFSxR2OD8kWAq9TdCgL1Tnw=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-48-_5jIvisRP3K8TDTPqEjJ7Q-1; Mon, 02 Oct 2023 16:03:47 -0400
+X-MC-Unique: _5jIvisRP3K8TDTPqEjJ7Q-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6FC301C294AA;
+        Mon,  2 Oct 2023 20:03:47 +0000 (UTC)
+Received: from [100.85.132.103] (unknown [10.22.48.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 46E5240107B;
+        Mon,  2 Oct 2023 20:03:46 +0000 (UTC)
+From:   Benjamin Coddington <bcodding@redhat.com>
+To:     Anna Schumaker <anna@kernel.org>
+Cc:     Scott Mayhew <smayhew@redhat.com>,
+        Trond Myklebust <trondmy@hammerspace.com>, jlayton@kernel.org,
+        linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nfs: decrement nrequests counter before releasing the req
+Date:   Mon, 02 Oct 2023 16:03:44 -0400
+Message-ID: <88F65385-18D7-4DC0-93F4-2FF6A54087E8@redhat.com>
+In-Reply-To: <CAFX2JfkE8yhBm8kkm5u74q7grFEg8+YSfdhokTn4K=zXPHHowg@mail.gmail.com>
+References: <20230919-nfs-fixes-v1-1-d22bf72e05ad@kernel.org>
+ <69c748d58f834b80abda5dcd291ee29ea1cafaf7.camel@hammerspace.com>
+ <ZRSbuY+mhgBqGdn3@aion> <3C9D081E-E698-4F8B-B2BB-8A1EC9C20871@redhat.com>
+ <0C77F0B3-9D42-4BE7-AD56-1BF7EDBF3729@redhat.com>
+ <CAFX2JfkE8yhBm8kkm5u74q7grFEg8+YSfdhokTn4K=zXPHHowg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000042AC:EE_|IA1PR12MB6481:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7fcc1670-909c-4394-e39c-08dbc3821dc8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F/nMTBaXrbxBYYQojIFXJSqTKr6rqVhPhN4NhQS33YkHv1/FLCnkUDW1XDMvv3MaIPGxcsra3iD2SpJDzvyIsk8lp1VnNedhLvMZi69VhbQSBnWlso9D81PXCF6LLkY5yOiLBUspHbdSJYkYTPMudUSkUTtg/p1uXIZ0FpcZIk29iWUtJ70VR6X4bywUdFZaczRtKpoN46pvDLiDz3ibZ69EHrwVS1Xorq+Wj9GQ94UVplaKXUaQ2mJJqSfLf36FhEPwgUdfJAog47fXMhqsqzVIr0PZ1OJhEUXhlvt1LxAShBOglAkvV1Qsuiasa6hMDAXv5Za1akUfFwAUWi7aZ0zpCxJbKVqkLdndtCZwQUeJfNg8Xcb0ui0VIFU5+0HvXp3ZODpcQ5VQlujXX6nHWtUBv9zrVd+A0bGLMvNleCKfE0uz2r6XcCHJWcC7RS1hGEJRKiWEkQEaBsi6ECxUFjj369aP2iYjXCVvi2KPW4U4GzrCARiyB4kTJfeRAeFAbidxsQICO1bOSRi9CezCXWmls58a5PlvrXtakrxOxMtYelqhKdGT57U8nNvmdRYGl7mlnAp/IlOYDphzmb3mTcOKOiAcU+D+lumKiUP5fT3tsIK8vfU7TNVRXLfluMeZyk2DURFQ1mr2vmo1cKpVVmZxksecA5t8JoeOFYPJjl+XpksiQ8fDY7iD2lcgFQc+V9zCzirALoI1ufYv96P/VqN53pUP7bmYB/xTU9vcKmz3OOrurEPoZ3Rd6mJNfqeJzNLMGQLkr2VgEjn9sG1gBVcElo11zx/hEt6HgDgrKTY=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(346002)(396003)(136003)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(82310400011)(46966006)(36840700001)(40470700004)(2906002)(44832011)(4326008)(5660300002)(26005)(8936002)(8676002)(1076003)(36756003)(41300700001)(2616005)(40480700001)(316002)(70206006)(54906003)(40460700003)(110136005)(336012)(356005)(70586007)(83380400001)(478600001)(6666004)(16526019)(426003)(47076005)(7696005)(82740400003)(86362001)(81166007)(36860700001)(36900700001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2023 19:59:41.4364
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7fcc1670-909c-4394-e39c-08dbc3821dc8
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042AC.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6481
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.9
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To support GHES_ASSIST on Machine Check Architecture (MCA) error sources,
-a set of GHES structures is provided by the system firmware for each MCA
-error source. Each of these sets consists of a GHES structure for each MCA
-bank on each logical CPU, with all structures of a set sharing a common
-Related Source ID, equal to the Source ID of one of the MCA error source
-structures.[1] On SOCs with large core counts, this typically equates to
-tens of thousands of GHES_ASSIST structures for MCA under
-"/sys/bus/platform/drivers/GHES".
+On 28 Sep 2023, at 12:23, Anna Schumaker wrote:
+>>
+>> On 28 Sep 2023, at 9:04, Benjamin Coddington wrote:
+>>>
+>>> I think your patch on July 25th fixes a real bug based on that vmcore=
+ we
+>>> have, but it's a pretty crazy race.   I'll try again to reproduce it.=
 
-Support for GHES_ASSIST however, hasn't been implemented in the kernel. As
-such, the information provided through these structures is not consumed by
-Linux. Moreover, these GHES_ASSIST structures for MCA, which are supposed
-to provide supplemental information in context of an error reported by
-hardware, are setup as independent error sources by the kernel during HEST
-initialization.
+>>>
+>>> Ben
+>
+> Okay, I'll plan on taking this patch for 6.6-rc now and if we
+> determine there is still a bug we can add an additional patch on top.
 
-Additionally, if the Type field of the Notification structure, associated
-with these GHES_ASSIST structures for MCA, is set to Polled, the kernel
-sets up a timer for each individual structure. The duration of the timer
-is derived from the Poll Interval field of the Notification structure. On
-SOCs with high core counts, this will result in tens of thousands of
-timers expiring periodically causing unnecessary preemptions and wastage
-of CPU cycles. The problem will particularly intensify if Poll Interval
-duration is not sufficiently high.
+I can reproduce the crash Scott reported in July:
+https://lore.kernel.org/linux-nfs/20230725150807.8770-1-smayhew@redhat.co=
+m/
 
-Since GHES_ASSIST support is not present in kernel, skip initialization
-of GHES_ASSIST structures for MCA to eliminate their performance impact.
+I used a three-way race between lock(), write(), and syncfs() with a
+mapped file and no delegation, and I can reliably hit it by inserting a f=
+ew
+small delays into the kernel.
 
-[1] ACPI specification 6.5, section 18.7
+Scott's patch fixes it and his analysis is correct.  I can resend that pa=
+tch
+with more information, or provide more details, if needed.  Basically the=
 
-Signed-off-by: Avadhut Naik <avadhut.naik@amd.com>
-Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
----
-Changes in v2:
-1.	Since is_ghes_assist_struct() returns if any of the conditions is hit
-if-else-if chain is redundant. Replace it with just if statements.
-2.	Fix formatting errors.
-3.	Add Reviewed-by: Yazen Ghannam <yazen.ghannam@amd.com>
----
- drivers/acpi/apei/hest.c | 51 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+issue is that the lock/unlock path sets NFS_INO_INVALID_DATA, the write p=
+ath
+invalidates on that, and syncfs() (or a rarer writeback flush) swoops in =
+and
+dereferences the null folio->mapping.
 
-diff --git a/drivers/acpi/apei/hest.c b/drivers/acpi/apei/hest.c
-index 6aef1ee5e1bd..99db7621adb7 100644
---- a/drivers/acpi/apei/hest.c
-+++ b/drivers/acpi/apei/hest.c
-@@ -37,6 +37,20 @@ EXPORT_SYMBOL_GPL(hest_disable);
- 
- static struct acpi_table_hest *__read_mostly hest_tab;
- 
-+/*
-+ * Since GHES_ASSIST is not supported, skip initialization
-+ * of GHES_ASSIST structures for MCA.
-+ * During HEST parsing, detected MCA error sources are cached.
-+ * Flags and Source Id fields from these cached values are
-+ * then referred to determine if the encountered GHES_ASSIST
-+ * structure should be initialized.
-+ */
-+static struct {
-+	struct acpi_hest_ia_corrected *cmc;
-+	struct acpi_hest_ia_machine_check *mc;
-+	struct acpi_hest_ia_deferred_check *dmc;
-+} mces;
-+
- static const int hest_esrc_len_tab[ACPI_HEST_TYPE_RESERVED] = {
- 	[ACPI_HEST_TYPE_IA32_CHECK] = -1,	/* need further calculation */
- 	[ACPI_HEST_TYPE_IA32_CORRECTED_CHECK] = -1,
-@@ -70,22 +84,54 @@ static int hest_esrc_len(struct acpi_hest_header *hest_hdr)
- 		cmc = (struct acpi_hest_ia_corrected *)hest_hdr;
- 		len = sizeof(*cmc) + cmc->num_hardware_banks *
- 			sizeof(struct acpi_hest_ia_error_bank);
-+		mces.cmc = cmc;
- 	} else if (hest_type == ACPI_HEST_TYPE_IA32_CHECK) {
- 		struct acpi_hest_ia_machine_check *mc;
- 		mc = (struct acpi_hest_ia_machine_check *)hest_hdr;
- 		len = sizeof(*mc) + mc->num_hardware_banks *
- 			sizeof(struct acpi_hest_ia_error_bank);
-+		mces.mc = mc;
- 	} else if (hest_type == ACPI_HEST_TYPE_IA32_DEFERRED_CHECK) {
- 		struct acpi_hest_ia_deferred_check *mc;
- 		mc = (struct acpi_hest_ia_deferred_check *)hest_hdr;
- 		len = sizeof(*mc) + mc->num_hardware_banks *
- 			sizeof(struct acpi_hest_ia_error_bank);
-+		mces.dmc = mc;
- 	}
- 	BUG_ON(len == -1);
- 
- 	return len;
- };
- 
-+/*
-+ * GHES and GHESv2 structures share the same format, starting from
-+ * Source Id and ending in Error Status Block Length (inclusive).
-+ */
-+static bool is_ghes_assist_struct(struct acpi_hest_header *hest_hdr)
-+{
-+	struct acpi_hest_generic *ghes;
-+	u16 related_source_id;
-+
-+	if (hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR &&
-+	    hest_hdr->type != ACPI_HEST_TYPE_GENERIC_ERROR_V2)
-+		return false;
-+
-+	ghes = (struct acpi_hest_generic *)hest_hdr;
-+	related_source_id = ghes->related_source_id;
-+
-+	if (mces.cmc && mces.cmc->flags & ACPI_HEST_GHES_ASSIST &&
-+	    related_source_id == mces.cmc->header.source_id)
-+		return true;
-+	if (mces.mc && mces.mc->flags & ACPI_HEST_GHES_ASSIST &&
-+	    related_source_id == mces.mc->header.source_id)
-+		return true;
-+	if (mces.dmc && mces.dmc->flags & ACPI_HEST_GHES_ASSIST &&
-+	    related_source_id == mces.dmc->header.source_id)
-+		return true;
-+
-+	return false;
-+}
-+
- typedef int (*apei_hest_func_t)(struct acpi_hest_header *hest_hdr, void *data);
- 
- static int apei_hest_parse(apei_hest_func_t func, void *data)
-@@ -114,6 +160,11 @@ static int apei_hest_parse(apei_hest_func_t func, void *data)
- 			return -EINVAL;
- 		}
- 
-+		if (is_ghes_assist_struct(hest_hdr)) {
-+			hest_hdr = (void *)hest_hdr + len;
-+			continue;
-+		}
-+
- 		rc = func(hest_hdr, data);
- 		if (rc)
- 			return rc;
--- 
-2.34.1
+I think Jeff's fix here is also correct, both problems need a fix.
+
+Ben
+
+(Splat included because.. it was hard to make it.)
+
+[  966.743865] Unable to handle kernel NULL pointer dereference at virtua=
+l address 0000000000000000
+[  966.743879] Mem abort info:
+[  966.743884]   ESR =3D 0x0000000096000004
+[  966.743890]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+[  966.743898]   SET =3D 0, FnV =3D 0
+[  966.743904]   EA =3D 0, S1PTW =3D 0
+[  966.743910]   FSC =3D 0x04: level 0 translation fault
+[  966.743918] Data abort info:
+[  966.743923]   ISV =3D 0, ISS =3D 0x00000004, ISS2 =3D 0x00000000
+[  966.743931]   CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
+[  966.743938]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
+[  966.743946] user pgtable: 4k pages, 48-bit VAs, pgdp=3D0000000100a0300=
+0
+[  966.743955] [0000000000000000] pgd=3D0000000000000000, p4d=3D000000000=
+0000000
+[  966.743965] Internal error: Oops: 0000000096000004 [#1] SMP
+[  966.743974] Modules linked in: nfsv4(OE) nfs(OE) nfsd nfs_acl rpcsec_g=
+ss_krb5 auth_rpcgss dns_resolver lockd grace fscache netfs nft_fib_inet n=
+ft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject=
+_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 =
+nf_defrag_ipv4 rfkill ip_set nf_tables nfnetlink qrtr vsock_loopback vmw_=
+vsock_virtio_transport_common vmw_vsock_vmci_transport vsock sunrpc vfat =
+fat snd_hda_codec_generic ledtrig_audio snd_hda_intel snd_intel_dspcfg sn=
+d_hda_codec snd_hda_core snd_hwdep uvcvideo snd_seq uvc videobuf2_vmalloc=
+ snd_seq_device videobuf2_memops videobuf2_v4l2 snd_pcm videobuf2_common =
+videodev snd_timer snd mc joydev soundcore vmw_vmci loop zram xfs crct10d=
+if_ce polyval_ce polyval_generic ghash_ce sha3_ce sha512_ce vmwgfx sha512=
+_arm64 e1000e nvme nvme_core nvme_common drm_ttm_helper ttm uhci_hcd scsi=
+_dh_rdac scsi_dh_emc scsi_dh_alua fuse dm_multipath
+[  966.744003] Unloaded tainted modules: nfs(OE):1 nfsv4(OE):1 [last unlo=
+aded: nfs(OE)]
+[  966.744060] CPU: 6 PID: 3666 Comm: kworker/u27:0 Tainted: G           =
+OE      6.6.0-rc1.nks #191
+[  966.744307] Hardware name: VMware, Inc. VMware20,1/VBSA, BIOS VMW201.0=
+0V.20904234.BA64.2212051119 12/05/2022
+[  966.744504] Workqueue: nfsiod rpc_async_release [sunrpc]
+[  966.744725] pstate: 21400005 (nzCv daif +PAN -UAO -TCO +DIT -SSBS BTYP=
+E=3D--)
+[  966.744915] pc : nfs_inode_remove_request+0xc0/0x220 [nfs]
+[  966.745123] lr : nfs_inode_remove_request+0x9c/0x220 [nfs]
+[  966.745323] sp : ffff8000848fbc90
+[  966.745499] x29: ffff8000848fbc90 x28: 0000000000000000 x27: ffff80008=
+23aec50
+[  966.745673] x26: ffff800081c0e008 x25: ffff0000c7afe2d0 x24: ffff0000c=
+7afe2e0
+[  966.745849] x23: 0000000000000000 x22: ffff80007b92bea8 x21: ffff0000c=
+c137d00
+[  966.746021] x20: 0000000000418958 x19: 0000000000000000 x18: 000000000=
+0000014
+[  966.746193] x17: 1d00000000000000 x16: 4100000000000000 x15: 000000039=
+89a4603
+[  966.746365] x14: 0000000000000000 x13: 0000000000000030 x12: 010101010=
+1010101
+[  966.746536] x11: 7f7f7f7f7f7f7f7f x10: fefefefefefefeff x9 : ffff80007=
+bb02f4c
+[  966.746708] x8 : ffff8000848fbbd0 x7 : 0000000000000000 x6 : 000000000=
+0000000
+[  966.746881] x5 : 0000000000000800 x4 : ffff8000848fbc70 x3 : ffff80008=
+48fbc90
+[  966.747052] x2 : 0000000000000002 x1 : 002fffff00000128 x0 : 000000000=
+0000000
+[  966.747222] Call trace:
+[  966.747390]  nfs_inode_remove_request+0xc0/0x220 [nfs]
+[  966.747574]  nfs_commit_release_pages+0x218/0x338 [nfs]
+[  966.747756]  nfs_commit_release+0x28/0x58 [nfs]
+[  966.747934]  rpc_free_task+0x3c/0x78 [sunrpc]
+[  966.748128]  rpc_async_release+0x34/0x60 [sunrpc]
+[  966.748315]  process_one_work+0x170/0x3d8
+[  966.748482]  worker_thread+0x2bc/0x3e0
+[  966.748648]  kthread+0xf8/0x110
+[  966.748813]  ret_from_fork+0x10/0x20
+[  966.748977] Code: 36980741 f9400001 36600701 952221f7 (f9400000)
+[  966.749143] ---[ end trace 0000000000000000 ]---
 
