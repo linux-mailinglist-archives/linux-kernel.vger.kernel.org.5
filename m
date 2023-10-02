@@ -2,116 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 193947B5C81
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 23:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2DA7B5C83
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 23:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229942AbjJBVfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 17:35:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43082 "EHLO
+        id S229937AbjJBViX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 17:38:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbjJBVfv (ORCPT
+        with ESMTP id S229650AbjJBViV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 17:35:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEB2AD;
-        Mon,  2 Oct 2023 14:35:48 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7AC9C433C7;
-        Mon,  2 Oct 2023 21:35:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696282548;
-        bh=dtMicesKSYyffCRL1N76vJcab9XftRh1uSrvFlXyJlQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H6oQheMcpgg3FqmQTqYroj15/fG8I5vXCMRa88CBhuyBN3mstQ0cxbevUHPrWkg/F
-         CKAohIBN5cRLup6hOZLTxl8QhgsZcfPFhKm3+4V683KHwb0KhbEZB1Er4FG2UWxrc/
-         3/3hQaiaYkmJwXDf95Nmts2yk/jb8tP8wHccTv8XMWqQGsXLAzZu0FhZ6j+cuE8dCY
-         G+kk7NyGmDF770sUphucFI1SFADPh0BXdo0kZJpSN1ZDr4WJk6C/0elwsaBHlvg6oQ
-         HJHC59BhXeXOxzJI2bFY25gngbeZSVqYCpsQFCJsS4AlrkTxWMLrsrGv2k0fw5yYg0
-         dzz5bV0LhI29g==
-Date:   Mon, 2 Oct 2023 23:35:42 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Luca Weiss <luca.weiss@fairphone.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: i2c: qcom-cci: Document SC7280
- compatible
-Message-ID: <ZRs3rlbPAfYJtHJ0@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Luca Weiss <luca.weiss@fairphone.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Robert Foss <rfoss@kernel.org>, Andi Shyti <andi.shyti@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-References: <20231002-sc7280-cci-v2-0-9333fda4612a@fairphone.com>
- <20231002-sc7280-cci-v2-1-9333fda4612a@fairphone.com>
+        Mon, 2 Oct 2023 17:38:21 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A06AB
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 14:38:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=IOnyXCPE/X01FPFeE/AD8XCGbNcYV5U6wQzXkM72WrE=; b=MlyNf6KkNPAmEp9Xe+n4yUvYwY
+        plegmkH98M4oOaoMU+Sw2IinQ9JZC6GPMcF8aSzobFgSDnPjwzZWeGxg1GGwoiZlKgDDBae/ZTxHP
+        M5k7BGSpSRWpsc1lJxJEJE0IBo5WBxu42EiSRb41qwWiuBohSzci0MXOBNz6tM2aA4pXnep8A/vQt
+        frlviKS5bU9yYNmjGlVZQTebFDtXV8V6TDrdWnxP7py6n2g8VPVhpD/RojGgkGJSDnZ10+AuKa2Xv
+        9bjSTlaiXJBncshvIDxnSzz4wg4jY3NNNGHI8x9E6yXYP+SmawSLqDtzsQkNVJQhA039yhLcn123E
+        3oPzBHzA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qnQbv-009JiK-1F;
+        Mon, 02 Oct 2023 21:37:55 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 3585F300454; Mon,  2 Oct 2023 23:37:52 +0200 (CEST)
+Date:   Mon, 2 Oct 2023 23:37:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
+        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Subject: Re: [RESEND PATCH V3 1/6] perf: Add branch stack extra
+Message-ID: <20231002213752.GB1539@noisy.programming.kicks-ass.net>
+References: <20230911154822.2559213-1-kan.liang@linux.intel.com>
+ <20231002154535.GB35785@noisy.programming.kicks-ass.net>
+ <ce16c6c1-9bdc-35e2-fe85-155bd7edbaa4@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KUY/m73HFlcH/V/c"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231002-sc7280-cci-v2-1-9333fda4612a@fairphone.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ce16c6c1-9bdc-35e2-fe85-155bd7edbaa4@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 02, 2023 at 03:19:04PM -0400, Liang, Kan wrote:
 
---KUY/m73HFlcH/V/c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> >> Also, add a new branch sample type, PERF_SAMPLE_BRANCH_EVT_CNTRS, to
+> >> indicate whether include occurrences of events in branch info. The
+> >> information will be stored in the extra space.
+> > 
+> > This... why do we need two flags?
+> 
+> Users may only collect the occurrences of some events in a group. The
+> EVT_CNTRS flag is used to indicate those events. E.g.,
+> perf record -e "{cpu/branch-instructions,branch_type=call/,
+> cpu/branch-misses,branch_type=event/}"
+> 
+> Only the occurrences of the branch-misses event is collected in LBR and
+> finally dumped into the extra buffer.
+> 
+> While the first flag, PERF_SAMPLE_BRANCH_EXTRA, only tells that the
+> extra space is required.
 
-On Mon, Oct 02, 2023 at 08:55:30AM +0200, Luca Weiss wrote:
-> Document the compatible for the CCI block found on SC7280 SoC.
->=20
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+Or have it implicit, I reallt don't see the point of having two bits
+here.
 
-Applied to for-next, thanks!
+> > Also, I can't find this in the SDM, how wide are these counter deltas?
+> > ISTR they're saturating, but not how wide they are.
+> 
+> Now, it's documented in the Intel® Architecture Instruction Set
+> Extensions and Future Features, Chapter 8, 8.6 LBR ENHANCEMENTS. It
+> should be moved to SDM later.
+> https://cdrdv2.intel.com/v1/dl/getContent/671368
+> 
+> Only 2 bits for each counter. Saturating at a value of 3.
 
+Urgh, this ISE document is shite, that thing don't say how many
+IA32_LBR_INFO.PMCx_CNT fields there are, I think your later patch says
+4, right? And is this for arch LBR or the other thing?
 
---KUY/m73HFlcH/V/c
-Content-Type: application/pgp-signature; name="signature.asc"
+(Also, what is IA32_LER_x_INFO ?)
 
------BEGIN PGP SIGNATURE-----
+This is then a grant total of 8 bits.
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUbN6oACgkQFA3kzBSg
-KbbccRAAnY69h6ee7uMb2v5YFdYnPQWU+bEimrwo3FXAphFPDwoPoenF6H2hsZ3j
-R6GnkgpK6cJekEOZNV5lGtT7EuX8qqea15ap0KKyZ7h6ueX9ZvNVfkD0gUcCDE2L
-sgYkNS0ekYs4mwr2LnnaFD3jDaMWwQMZXcZiMubYGjX5Qhzwik428eNjeug5w5/G
-/dzwmJBVYV27XL8JOePFgkc013qcs4a1E7G7esmKuLVphiUj2M8/qeoBkbaAqPx0
-SsbpMpvCzwWBymeXZTU/8LEkpTGfF8wJoqKV3+KUl4CcdTp05NGlwj3MI66PfZa1
-kb/KxyKBHkjH5G5l4R+PnGh6T4+NnQ6vzb6p4rviOxtq1J3us5Vlf5YCHrs73KTT
-d7fuo1p7AUQRp3say4pGBKHB0cKhZMMMGIZLvMng1uXHYx+j0lVa+rOsyjMzN1Q3
-qiu4hixoqdIbZIgWkSzkNbDWdC7DU7SUpEfZcJbUEx+kczDb3pA4UZXK96ERLez4
-Yw9l8Gy5ZRPP0SfVl5/GRVC/OQtgYG8y4MBNle6ZIPDSKJGI+z5jPiksv7lW7ekS
-MalQ/bNfiAGlvzjeTT+yP4dj0lghU4kCRg2uuf9D5AcPZzBIsGtZJRPr4U4MFaR0
-gkmU7G7J3mS//puQm1tAdhnqArIUX/UMUqA6Crn3Re7EettcXX8=
-=RDHQ
------END PGP SIGNATURE-----
+And we still have 31 spare bits in perf_branch_entry.
 
---KUY/m73HFlcH/V/c--
+Why again do we need the extra u64 ?!?
+
+More specifically, this interface is pretty crap -- suppose the next
+generation of things feels that 2 bits aint' enough and goes and gives
+us 4. Then what do we do?
+
+Did I already say that the ISE document raises more questions than it
+provides answers?
