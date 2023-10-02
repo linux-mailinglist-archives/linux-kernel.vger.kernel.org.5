@@ -2,141 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2BD47B5C15
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4657B5C29
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236687AbjJBUbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 16:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53580 "EHLO
+        id S229810AbjJBUiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 16:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjJBUbf (ORCPT
+        with ESMTP id S229685AbjJBUiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 16:31:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8EA5AC
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 13:30:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696278642;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w8f6DdK1GdbJ9qglZe36tie4rL6xJEQDl6yTedgx1kc=;
-        b=ZG8y6mUhssNujKITZUqDkub4CmFHP/2vrrY5NlKnfxaq7CB36/FuoHs5GbcpVKbdEVIEnk
-        8kFk/B2Y+6vBTwkdQMKoBVZyuObOxvkXWpEOJp49stzAO8OemypjBO9yyaxntbCU8sNrf3
-        odapv21DkAPIpRVr9uN6hU+nQ5wjyLE=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-551-ByT_flPnO9C3kHAIzhv8TQ-1; Mon, 02 Oct 2023 16:30:39 -0400
-X-MC-Unique: ByT_flPnO9C3kHAIzhv8TQ-1
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-65b00c2cbb6so3862056d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 13:30:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696278639; x=1696883439;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=w8f6DdK1GdbJ9qglZe36tie4rL6xJEQDl6yTedgx1kc=;
-        b=lm/Fzj0i0OXBKfNyqBVbUOrDw5rN4ZQMdA48LDdwTx0SCe4cR6TVuG1mvyCnio2j4b
-         edi45syjtR+icnjOLiuDr0AqiKXQNIKFyEvcTOZep8L6raGXfI7PRoYDAxnvkUpKbmsd
-         cgZ3NA3PYzXVrrBkSf2hYI9A/sErcLPvtQISAu0wmq3JU1CTulUs7dNPbsrVhor0tIuL
-         iQqo23HKk1yFYN3Nylaot+BQmGo70rNk1kBzST8dw/zKA1ayRjBNk89COsdPdWk3FfY1
-         X/1mMaxXOQeC0ZZ8/c3EpgDe3qWt4KtPkaMg9cCPVoobfcuBtqR4tmU1INS24At2W19M
-         UF3g==
-X-Gm-Message-State: AOJu0YxCncnJdYtprdz2sRha9CJSsjUXTmQstzAEHuF6TjcFShZEYibP
-        yr48hcfee2wlqwco4ICNAeD2SfXrXBn+Bvr9yUP9r5q8RpL9hi6U3bFCiHc4AOjF662MxVqH7Ur
-        s0IjokLa7sXy1ErMpXRwJC3Rd
-X-Received: by 2002:a05:6214:500b:b0:65d:343:8e50 with SMTP id jo11-20020a056214500b00b0065d03438e50mr17919986qvb.3.1696278639174;
-        Mon, 02 Oct 2023 13:30:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEEBzcp3LOMaX+vRfy6OADLYWwS1aUlqXi3WUStAokU3G7oCq11ynu1Wreo7RqMGIcieUkl6A==
-X-Received: by 2002:a05:6214:500b:b0:65d:343:8e50 with SMTP id jo11-20020a056214500b00b0065d03438e50mr17919965qvb.3.1696278638861;
-        Mon, 02 Oct 2023 13:30:38 -0700 (PDT)
-Received: from [10.0.0.97] ([24.225.234.80])
-        by smtp.gmail.com with ESMTPSA id h3-20020a0cf403000000b00655d711180dsm4844123qvl.17.2023.10.02.13.30.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 13:30:38 -0700 (PDT)
-Message-ID: <a2a43d5a-678d-129b-d258-d559df42431f@redhat.com>
-Date:   Mon, 2 Oct 2023 16:30:37 -0400
+        Mon, 2 Oct 2023 16:38:08 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4D1BF
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 13:38:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 431D4C433C8;
+        Mon,  2 Oct 2023 20:38:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696279085;
+        bh=jKPwA4P6nQ5kxg8vRRfjFSgIxbHzzXE+7FY6uh0C2P4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eMqhukkfUrEcD0BYIw9hLxIg3fzeK2MSY6RlwpYsMwk4n5udXEKJm6wwceq/UawYM
+         bT3W3blw2X//ge96SadRcKD0FxGUAXyHMk3kZor4RdwSmulOXquYqaw5j0M4PBssRe
+         WqnQmm41g0i2mKi8jIj1InHjEihqmUiuebgAHmQ4X5gslT6R5yK9Ta9Vhv1640MrYc
+         9w4FoxLQg3zQR4mh6IROehSrpEV9sR8WRYtXNpzYVw0PU342FQAp5hV2EyX843gaET
+         d62nT5V31kd18lwm3t0l1Xs7EO5od75lDmW3YN4tukKwGuKhXsdargVQob1MR/oC3M
+         JCaCGvym2RQSA==
+Date:   Mon, 2 Oct 2023 13:37:59 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Remi Pommarel <repk@triplefau.lt>
+Cc:     Paolo Abeni <pabeni@redhat.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v2] net: stmmac: remove unneeded
+ stmmac_poll_controller
+Message-ID: <20231002133759.133d8a97@kernel.org>
+In-Reply-To: <ZRKozLps8dmDmQgc@pilgrim>
+References: <20230906091330.6817-1-repk@triplefau.lt>
+        <626de62327fa25706ab1aaab32d7ba3a93ab26e4.camel@redhat.com>
+        <ZRKozLps8dmDmQgc@pilgrim>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.0
-Subject: Re: [PATCH] tipc: fix a potential deadlock on &tx->lock
-Content-Language: en-US
-To:     Chengfeng Ye <dg573847474@gmail.com>, ying.xue@windriver.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-References: <20230927181414.59928-1-dg573847474@gmail.com>
-From:   Jon Maloy <jmaloy@redhat.com>
-In-Reply-To: <20230927181414.59928-1-dg573847474@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 26 Sep 2023 11:47:56 +0200 Remi Pommarel wrote:
+> > I'm sorry for the incremental feedback, but we also need a suitable
+> > Fixes tag, thanks!  
+> 
+> I didn't include Fixes tag because it would go back up to the initial
+> driver support commit [0]. I can't be sure that this commit includes
+> necessary NAPI implementation to be able to get rid of
+> .ndo_poll_controller callback back then. And I am not able to test it on
+> older version than 5.15.x hence I only included the 5.15.x Cc tag
+> version prerequisite.
+> 
+> But I surely can add a Fixed tag if it is ok for it to be [0].
+> 
+> Also sorry for the long replying delay.
+> 
+> [0] commit 47dd7a540b8a ("net: add support for STMicroelectronics Ethernet controllers")
 
-
-On 2023-09-27 14:14, Chengfeng Ye wrote:
-> It seems that tipc_crypto_key_revoke() could be be invoked by
-> wokequeue tipc_crypto_work_rx() under process context and
-> timer/rx callback under softirq context, thus the lock acquisition
-> on &tx->lock seems better use spin_lock_bh() to prevent possible
-> deadlock.
->
-> This flaw was found by an experimental static analysis tool I am
-> developing for irq-related deadlock.
->
-> tipc_crypto_work_rx() <workqueue>
-> --> tipc_crypto_key_distr()
-> --> tipc_bcast_xmit()
-> --> tipc_bcbase_xmit()
-> --> tipc_bearer_bc_xmit()
-> --> tipc_crypto_xmit()
-> --> tipc_ehdr_build()
-> --> tipc_crypto_key_revoke()
-> --> spin_lock(&tx->lock)
-> <timer interrupt>
->     --> tipc_disc_timeout()
->     --> tipc_bearer_xmit_skb()
->     --> tipc_crypto_xmit()
->     --> tipc_ehdr_build()
->     --> tipc_crypto_key_revoke()
->     --> spin_lock(&tx->lock) <deadlock here>
->
-> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
-> ---
->   net/tipc/crypto.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/net/tipc/crypto.c b/net/tipc/crypto.c
-> index 302fd749c424..43c3f1c971b8 100644
-> --- a/net/tipc/crypto.c
-> +++ b/net/tipc/crypto.c
-> @@ -1441,14 +1441,14 @@ static int tipc_crypto_key_revoke(struct net *net, u8 tx_key)
->   	struct tipc_crypto *tx = tipc_net(net)->crypto_tx;
->   	struct tipc_key key;
->   
-> -	spin_lock(&tx->lock);
-> +	spin_lock_bh(&tx->lock);
->   	key = tx->key;
->   	WARN_ON(!key.active || tx_key != key.active);
->   
->   	/* Free the active key */
->   	tipc_crypto_key_set_state(tx, key.passive, 0, key.pending);
->   	tipc_crypto_key_detach(tx->aead[key.active], &tx->lock);
-> -	spin_unlock(&tx->lock);
-> +	spin_unlock_bh(&tx->lock);
->   
->   	pr_warn("%s: key is revoked\n", tx->name);
->   	return -EKEYREVOKED;
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-
+AFAIU the Fixes tag only indicates where the bug was present,
+no guarantees on whether the fix can be backported as far back.
+IOW I think [0] as Fixes tag will be perfectly correct, please
+repost with it included?
