@@ -2,211 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AB37B58D2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 793687B58D9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbjJBR2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56716 "EHLO
+        id S231730AbjJBRbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:31:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjJBR2w (ORCPT
+        with ESMTP id S229576AbjJBRbe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:28:52 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7592FB4;
-        Mon,  2 Oct 2023 10:28:48 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-79fa5d9f3a2so516464539f.3;
-        Mon, 02 Oct 2023 10:28:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696267728; x=1696872528; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/+gPI7karCGwOfvdi9At0XF2O3t7B4eyDINiSd4rikE=;
-        b=DMci7H0fOPQCtwnpg2AHotRw3yF/vPTyh6yn7qrnfE3p5bo3AY2xN4VQB3I+1gCREZ
-         v9eDCuqN1yzbmIM0Zu9mtiSk99LfyLkN1y8yx4awr1QBBGIAINVH8psrZOU8af0VdbfW
-         LfZf98SeAdh8MtQu3A9XEhF/w6dxsUILz60E/ZyU/D0IGyJbpG/eaco9Bwz9DmzBQANM
-         63MEuMoKvHDFzoiFK1gpbeHay4ODiJQkkhIjQrzbyGJ68yBec6tBZbaH14RbLQvSCLQk
-         yRo7Xgr6bpJAsOkukZ4QcUs3Zz9g8bq169Rm1eysglUGaOHNr64vzrgzl1y/VL5wfS7D
-         oC2g==
+        Mon, 2 Oct 2023 13:31:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B4BD8
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:30:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696267840;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1Zv0IPJYzYkiErG2s6ydEpQAC8u1zC0W3lAo3suRrzY=;
+        b=Oxn3zN+OxXJbPXNgHVQeWgFskNZtAygEb95VEtl8YLUyZ53UbsmGYFqbbB9a+CmT+voT05
+        /AULt6jQGfwXYKLZmczfxbBuegdrOedukv/0Dl960hSyQPXlUF1SWs2xm5PFEJx7HzET0G
+        JHQ2iKT69wc+kw2/qEqdnOY7CrAy9L4=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-298-NJ8NG5SiPzS648yVOE6aFg-1; Mon, 02 Oct 2023 13:30:38 -0400
+X-MC-Unique: NJ8NG5SiPzS648yVOE6aFg-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-321726b0238so26770f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:30:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696267728; x=1696872528;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/+gPI7karCGwOfvdi9At0XF2O3t7B4eyDINiSd4rikE=;
-        b=gpqSFRJGxDBiG7lcsfKNgTmVFikYc2Txo/paF+f4UUKjgA+c4YFm+P9u6CG3vLBW3j
-         Lxa+U8qi2FewPMtW268fQ4+brWxczzCwUQyJLYGtDyyA9TN8cg+jWQotkh+CmxqZh/e8
-         9erxEswqm9GOqU2PuvTnnrIMUG66pJfmdCR+qlhPEATfbBcHu6WpNtd32+hTYCZIxp/X
-         AP0vSCxHblop9YpcOsCxTwUkuyf+kKaBLTxqkqExidYkjbXIrBV4RSJSODEorEw6Dgn2
-         Odc+C5JQLre/BDEq9VlEW6VDVbGGV72Vc76tBN8FuTWGtaY7yBKjTPUn7Zq5Mqbjb1vf
-         AseQ==
-X-Gm-Message-State: AOJu0Yz6zKU8W0mxchevlpq9Ier8OrOS4UrFdfzQsx7zIxwy4FQgZj/7
-        58EwFYL0Y7ASqcDCxfJG5PbTL0o/22dwD0uJy8Q=
-X-Google-Smtp-Source: AGHT+IED9P/sdhWflPI5nZpkF9sxImJVIZAlrYm2HirkirDwKllAD69cNEDugkzKyvrzn1PiwUA8gd/WJCRrppMRfNk=
-X-Received: by 2002:a6b:7318:0:b0:79f:a3ac:71dc with SMTP id
- e24-20020a6b7318000000b0079fa3ac71dcmr12901656ioh.8.1696267727558; Mon, 02
- Oct 2023 10:28:47 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696267837; x=1696872637;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :content-language:references:cc:to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1Zv0IPJYzYkiErG2s6ydEpQAC8u1zC0W3lAo3suRrzY=;
+        b=ueTBDXnsEOpqhwkpK3qVU/jlssw/W2cCRniO+wr9P0+rXqKSlN3OeQ869DRqLUrc1F
+         eI+epVsd7CQk4NC/Ao89X/T982IIgCz1/BrBNVdWLXbfNKchJ91/NbtLzEjkQlZV4BYp
+         KTWccPCWXX0asXsuoa8MGrhbzEGAUfbRRKMWV3CMKNOeI3zUdU57pda8pOzmVN5sypLV
+         KRzSmOYFMUnxs8SQhMojQnDG/VeO1faWlnftRhA3CPkjHpNxoO24EsKp6TlZ/elpkpZk
+         iim2/IlW5nkWFdY6gE8fFKC64XXAxxCkm0P7PB6priULe5KwCv2r/2ZYuW0abhO4GlKh
+         6ZpQ==
+X-Gm-Message-State: AOJu0YwCOy8QWYl4k+jOpmr0Ajrnlqr4gTu3ko1nROUHucWamx4CisPj
+        nzQ/fTS14NJIvxhzO20nzk+3n4MVjvVWJL0XnprtK062rkkESpHsRvC6U1bi25jx7kfptxYlEAg
+        2S4bFqTDSJiP65SxKVkQfY3zK
+X-Received: by 2002:a5d:448c:0:b0:321:4d1c:425f with SMTP id j12-20020a5d448c000000b003214d1c425fmr10461736wrq.47.1696267837291;
+        Mon, 02 Oct 2023 10:30:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH1s/Oh/sK26P/qhtJnkQ9pABgb0+Kto2RYoGCs5kChT5kKPuRRCO3dybkxiXNrHhCDhqfXMQ==
+X-Received: by 2002:a5d:448c:0:b0:321:4d1c:425f with SMTP id j12-20020a5d448c000000b003214d1c425fmr10461690wrq.47.1696267836848;
+        Mon, 02 Oct 2023 10:30:36 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c735:f200:cb49:cb8f:88fc:9446? (p200300cbc735f200cb49cb8f88fc9446.dip0.t-ipconnect.de. [2003:cb:c735:f200:cb49:cb8f:88fc:9446])
+        by smtp.gmail.com with ESMTPSA id r17-20020adfda51000000b00327c79ca7c6sm3612731wrl.80.2023.10.02.10.30.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 10:30:36 -0700 (PDT)
+Message-ID: <e5d41fbe-a91b-9491-7b93-733f67e75a54@redhat.com>
+Date:   Mon, 2 Oct 2023 19:30:35 +0200
 MIME-Version: 1.0
-References: <20230928005723.1709119-1-nphamcs@gmail.com> <20230928005723.1709119-2-nphamcs@gmail.com>
- <ZRrI90KcRBwVZn/r@dhcp22.suse.cz>
-In-Reply-To: <ZRrI90KcRBwVZn/r@dhcp22.suse.cz>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Mon, 2 Oct 2023 10:28:36 -0700
-Message-ID: <CAKEwX=OwrMNMAvve9a965mBJm8as+njtXE993VcnKXdccd5GEw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
- memory controller
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     akpm@linux-foundation.org, riel@surriel.com, hannes@cmpxchg.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, hughd@google.com,
+        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
+        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <20230923013148.1390521-1-surenb@google.com>
+ <20230923013148.1390521-2-surenb@google.com>
+ <27f177c9-1035-3277-cd62-dc81c12acec4@redhat.com> <ZRrgWVgjVfQu4RGX@x1n>
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v2 1/3] userfaultfd: UFFDIO_REMAP: rmap preparation
+In-Reply-To: <ZRrgWVgjVfQu4RGX@x1n>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 6:43=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
-:
->
-> On Wed 27-09-23 17:57:22, Nhat Pham wrote:
-> > Currently, hugetlb memory usage is not acounted for in the memory
-> > controller, which could lead to memory overprotection for cgroups with
-> > hugetlb-backed memory. This has been observed in our production system.
-> >
-> > This patch rectifies this issue by charging the memcg when the hugetlb
-> > folio is allocated, and uncharging when the folio is freed (analogous t=
-o
-> > the hugetlb controller).
->
-> This changelog is missing a lot of information. Both about the usecase
-> (we do not want to fish that out from archives in the future) and the
-> actual implementation and the reasoning behind that.
->
-> AFAICS you have decided to charge on the hugetlb use rather than hugetlb
-> allocation to the pool. I suspect the underlying reasoning is that pool
-> pages do not belong to anybody. This is a deliberate decision and it
-> should be documented as such.
+On 02.10.23 17:23, Peter Xu wrote:
+> On Mon, Oct 02, 2023 at 04:42:50PM +0200, David Hildenbrand wrote:
+>> On 23.09.23 03:31, Suren Baghdasaryan wrote:
+>>> From: Andrea Arcangeli <aarcange@redhat.com>
+>>>
+>>> As far as the rmap code is concerned, UFFDIO_REMAP only alters the
+>>> page->mapping and page->index. It does it while holding the page
+>>> lock. However folio_referenced() is doing rmap walks without taking the
+>>> folio lock first, so folio_lock_anon_vma_read() must be updated to
+>>> re-check that the folio->mapping didn't change after we obtained the
+>>> anon_vma read lock.
+>>
+>> I'm curious: why don't we need this for existing users of
+>> page_move_anon_rmap()? What's special about UFFDIO_REMAP?
+> 
+> Totally no expert on anon vma so I'm prone to errors, but IIUC the
+> difference here is root anon vma cannot change in page_move_anon_rmap(),
+> while UFFDIO_REMAP can.
 
-Yep that was the intention behind placing the charging of the hugetlb folio
-in alloc_hugetlb_folio(). I'll document this in the changelog and/or code.
+That does sound reasonable, thanks.
 
->
-> It is also very important do describe subtle behavior properties that
-> might be rather unintuitive to users. Most notably
+Probably we can do better with the patch description (once [1] is used 
+to move the folio to the other anon_vma).
 
-If you don't mind, I'll summarize these into the next version of
-the patch's changelog :)
+"mm/rmap: support move to different root anon_vma in folio_move_anon_rmap()
 
-> - there is no hugetlb pool management involved in the memcg
->   controller. One has to use hugetlb controller for that purpose.
->   Also the pre allocated pool as such doesn't belong to anybody so the
->   memcg host overcommit management has to consider it when configuring
->   hard limits.
-> - memcg limit reclaim doesn't assist hugetlb pages allocation when
->   hugetlb overcommit is configured (i.e. pages are not consumed from the
->   pool) which means that the page allocation might disrupt workloads
->   from other memcgs.
-> - failure to charge a hugetlb page results in SIGBUS rather
->   than memcg oom killer. That could be the case even if the
->   hugetlb pool still has pages available and there is
->   reclaimable memory in the memcg.
+For now, folio_move_anon_rmap() was only used to move a folio to a 
+different anon_vma after fork(), whereby the root anon_vma stayed 
+unchanged. For that, it was sufficient to hold the page lock when 
+calling folio_move_anon_rmap().
 
-Ah yes that should be documented indeed.
+However, we want to make use of folio_move_anon_rmap() to move folios 
+between VMAs that have a different root anon_vma. As folio_referenced() 
+performs an RMAP walk without holding the page lock but only holding the 
+anon_vma in read mode, holding the page lock is insufficient.
 
-> - hugetlb pages are contributing to memory reclaim protection
->   implicitly. This means that the low,min limits tunning has to consider
->   hugetlb memory as well.
+When moving to an anon_vma with a different root anon_vma, we'll have to 
+hold both, the page lock and the anon_vma lock in write mode. 
+Consequently, whenever we succeeded in folio_lock_anon_vma_read() to 
+read-lock the anon_vma, we have to re-check if the mapping was changed 
+in the meantime. If that was the case, we have to retry.
 
-This was the original inspiration for this change. I'll expand on it
-in the new version's changelog.
+Note that folio_move_anon_rmap() must only be called if the anon page is 
+exclusive to a process, and must not be called on KSM folios.
 
->
-> I suspect there is more than the above. To be completely honest I am
-> still not convinced this is a good idea.
->
-> I do recognize that this might work in a very limited environments but
-> hugetlb management is quite challenging on its own and this just adds
-> another layer of complexity which is really hard to see through without
-> an intimate understanding of both memcg and hugetlb. The reason that
-> hugetlb has been living outside of the core MM (and memcg) is not just
-> because we like it that way. And yes I do fully understand that users
-> shouldn't really care about that because this is just a memory to them.
->
-> We should also consider the global control for this functionality. I am
-> especially worried about setups where a mixed bag of workloads
-> (containers) is executed. While some of them will be ready for the new
-> accounting mode many will leave in their own world without ever being
-> modified. How do we deal with that situation?
+This is a preparation for UFFDIO_REMAP, which will hold the page lock, 
+the anon_vma lock in write mode, and the mmap_lock in read mode.
+"
 
-Johannes already responded to this, but I also think this hypothetical
-situation isn't super urgent to handle right now. That said, we can
-always revisit it if/when it proves to be an issue and add appropriate
-memcg-specific control for this feature as a follow-up.
+In addition, we should document these locking details for 
+folio_move_anon_rmap() and probably not mention UFFDIO_REMAP in the 
+comment in folio_lock_anon_vma_read(), but instead say 
+"folio_move_anon_rmap() might have changed the anon_vma as we might not 
+hold the page lock here."
 
->
-> All that being said, I am not going to ack nor nack this but I really do
-> prefer to be much more explicit about the motivation and current
-> implementation specifics so that we can forward users to something
-> they can digest.
->
-> > Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-> [...]
->
-> a minor implementation detail below. I couldn't spot anything obviously
-> broken with the rest of the hugetlb specific code. restore_reserve_on_mem=
-cg_failure
-> is rather clumsy and potentially error prone but I will leave that out
-> to Mike as he is much more familiar with that behavior than me.
 
-That part irks me too, but I'm trying to follow the error handling logic
-that follows each alloc_hugetlb_folio() call site.
+[1] https://lkml.kernel.org/r/20231002142949.235104-3-david@redhat.com
 
-If anyone has any suggestions, I'd be happy to listen!
+-- 
+Cheers,
 
->
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index de220e3ff8be..ff88ea4df11a 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> [...]
-> > @@ -3119,6 +3121,15 @@ struct folio *alloc_hugetlb_folio(struct vm_area=
-_struct *vma,
-> >                       hugetlb_cgroup_uncharge_folio_rsvd(hstate_index(h=
-),
-> >                                       pages_per_huge_page(h), folio);
-> >       }
-> > +
-> > +     /* undo allocation if memory controller disallows it. */
-> > +     if (mem_cgroup_hugetlb_charge_folio(folio, GFP_KERNEL)) {
->
-> htlb_alloc_mask(h) rather than GFP_KERNEL. Ideally with
-> __GFP_RETRY_MAYFAIL which is a default allocation policy.
+David / dhildenb
 
-Oh I wasn't aware of htlb_alloc_mask(h). So I'll fix this to:
-
-htlb_alloc_mask(h) | __GFP_RETRY_MAYFAIL
-
->
-> > +             if (restore_reserve_on_memcg_failure)
-> > +                     restore_reserve_on_error(h, vma, addr, folio);
-> > +             folio_put(folio);
-> > +             return ERR_PTR(-ENOMEM);
-> > +     }
-> > +
-> >       return folio;
-> >
-> >  out_uncharge_cgroup:
->
-> --
-> Michal Hocko
-> SUSE Labs
