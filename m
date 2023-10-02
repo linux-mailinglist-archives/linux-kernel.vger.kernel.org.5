@@ -2,69 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FB2F7B5C59
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 23:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C837B5C5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 23:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235909AbjJBVHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 17:07:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41570 "EHLO
+        id S236591AbjJBVHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 17:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjJBVHb (ORCPT
+        with ESMTP id S230021AbjJBVHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 17:07:31 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6CC8E
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 14:07:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 32C5AC433C8;
-        Mon,  2 Oct 2023 21:07:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696280848;
-        bh=kjPrjoUe/9VuBTxdCJiHRgzOyyuCd4jD4rV4hRN+tsw=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=SjVXRtivZGX567fiL4ehhhsnK+c2HZNUjddqpt9xjC8uwjHhLv/kjsr1ED/OSbBMj
-         J30yeGhAOdZ/eWiSW5Tb9DwvaOB/BmGiy96tc1aZMmsqw4JuNKs3jzhNgSCjCVgg95
-         /bYovtpUjdg0yViZZ5UbNmeIDrLxqj/nSAmhIzNBZCRZw9YcywytIHo4sbPJbfPL2m
-         Q7YARBMcYjCg4ziHY/30XqXvoech5Xx05kSd5X/u6ZTJVnkRTk+m6TGHssPgFvbKzC
-         8oqGZqAeimj1zSx3ecHY8weUsLMGWAi9jWl+av1jS/AIeWkuG8l8QSU/vme26MBxUf
-         a0stmNactEDxA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1D2A8E632CE;
-        Mon,  2 Oct 2023 21:07:27 +0000 (UTC)
-Subject: Re: [GIT PULL] NVDIMM Fixes for 6.6-rc5
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ae3d980a-21e1-4d66-a7a3-7d5f6dc32b9c@intel.com>
-References: <ae3d980a-21e1-4d66-a7a3-7d5f6dc32b9c@intel.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ae3d980a-21e1-4d66-a7a3-7d5f6dc32b9c@intel.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm.git tags/libnvdimm-fixes-6.6-rc5
-X-PR-Tracked-Commit-Id: 33908660e814203e996f6e775d033c5c32fcf9a7
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a9c2be4f3730961fdda03d226d783e444babe6f2
-Message-Id: <169628084711.24746.8482866309886255471.pr-tracker-bot@kernel.org>
-Date:   Mon, 02 Oct 2023 21:07:27 +0000
-To:     Dave Jiang <dave.jiang@intel.com>
-Cc:     torvalds@linux-foundation.org,
-        "nvdimm@lists.linux.dev" <nvdimm@lists.linux.dev>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 2 Oct 2023 17:07:50 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF08EA;
+        Mon,  2 Oct 2023 14:07:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696280865;
+        bh=95oVmibtNe89rFCe1kmkrQ54XgVNgGgAPEGkAgBRX+o=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ewQXwSXGA7Ooie5ZlwMoanzWZxLNA0xPIjSuYjdT12WS0YSgdb1uSG5JPS65Ul+dI
+         IyO5en0KiNNX2iMToyIzB8d7UjO4QEO/AUF4SI0pI7j9kYeFA4slqKsZ2WUyT35nHn
+         kxAyYEF0EDfzHEUy4A0aYMyXoALQjWuOfG8wAHt/1bQONDbj/vl/26SBFmMk/w+wxA
+         X0zOn/m1myrkOTTikpbEqw8CV5euMUn7ogoC2bqBppR4SB3nw6hTdjG3doZ99DHkqa
+         GTfT2n3NsZN4W6VfrssYg39Kp7Ev1Af8za5R8Li0CtVtMaj5AbAnZsCWbcX9cM3p+l
+         b2nQDu7fMjNOg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rztns5cLWz4xPL;
+        Tue,  3 Oct 2023 08:07:45 +1100 (AEDT)
+Date:   Tue, 3 Oct 2023 08:07:44 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the libata tree
+Message-ID: <20231003080744.69ca4ed0@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/QaorJh+iemfgFlv2sz4gWty";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 2 Oct 2023 10:25:42 -0700:
+--Sig_/QaorJh+iemfgFlv2sz4gWty
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm.git tags/libnvdimm-fixes-6.6-rc5
+Hi all,
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a9c2be4f3730961fdda03d226d783e444babe6f2
+The following commits are also in Linus Torvalds' tree as different
+commits (but the same patches):
 
-Thank you!
+  0e23330fccd4 ("ata: libata-scsi: Disable scsi device manage_system_start_=
+stop")
+  1cf14228f460 ("scsi: sd: Differentiate system and runtime start/stop mana=
+gement")
+  540bd522a82e ("ata: libata-scsi: link ata port and scsi device")
+  54e5c956a103 ("scsi: sd: Do not issue commands to suspended disks on shut=
+down")
+  6d62f34a6741 ("ata: libata-core: Fix ata_port_request_pm() locking")
+  7c412cfbeecf ("scsi: Do not attempt to rescan suspended devices")
+  9459518aba7b ("ata: libata-scsi: Fix delayed scsi_rescan_device() executi=
+on")
+  cb37013b985e ("ata: libata-eh: Fix compilation warning in ata_eh_link_rep=
+ort()")
+  e4bfeedb3b50 ("ata: libata-core: Fix port and device removal")
+  f215cc816f8f ("ata: libata-core: Do not register PM operations for SAS po=
+rts")
+  fdd57890e769 ("ata: libata-core: Fix compilation warning in ata_dev_confi=
+g_ncq()")
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/QaorJh+iemfgFlv2sz4gWty
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUbMSAACgkQAVBC80lX
+0GzLcAgAhzQVl3Y45s//Rq+NfW5IP0+YfeRLUBPvEwugVDDnSerd357y097nYpVR
+xryx2T5ORFmypoAxpkxaa5GLyMlguKRQgUFL/gHrIT1hCjaRfdymnLCIxpPXCM2O
+jHYjHLn2OdoYtEFsDSow9OT00+W1fSVyCravsChvhUPHT5dJQPy1ilVruMq4QhrG
+6d4D4AqSBMOVJyhoecfvVPoaC3EjDatrsHKFdF1p03XjWedjvEMPbEYMsMuKwfsS
+/TOiJSQkaA4gVWaRvyeiTlJsysGnschZXwxljukWyLNjSf7K1AggSLO4bUBsSyKF
+DNAKFX+VXb/pYl5sQc4dPwrUlm3BTQ==
+=mSv2
+-----END PGP SIGNATURE-----
+
+--Sig_/QaorJh+iemfgFlv2sz4gWty--
