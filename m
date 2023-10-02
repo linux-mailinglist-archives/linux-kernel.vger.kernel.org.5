@@ -2,102 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 609257B5944
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F4AA7B5955
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:43:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238614AbjJBRAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:00:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43418 "EHLO
+        id S238613AbjJBRAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238609AbjJBRAe (ORCPT
+        with ESMTP id S238598AbjJBRAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:00:34 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707ADE1;
-        Mon,  2 Oct 2023 10:00:29 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id ffacd0b85a97d-31f71b25a99so10506f8f.2;
-        Mon, 02 Oct 2023 10:00:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696266028; x=1696870828; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=64nOEqf6/mjPbfcle6tVHCIMmPQhDPH56TTUSyH+RFM=;
-        b=aIy3mFuvz7Llw1SYC1etGsUvvRuSbgA+XCSNe/qA2KbH5XEL9RKE681JAilNrpjglj
-         NqBw8RIf8Gf94stoft6I95EPZTDYvikUxyWFOGd08bLo7qjvZJKm3231bTPxyeaD9GUs
-         skwxsrsyZFHMIhu3NjRIgpAZLZM4+TlxSoIFijLzOpUT/lOcauVE9i3Xm5e41tM//TC9
-         PVY1NZOjK9BEpdE64s3GWDHchGbN4IYi6Mr4vdViPUxdFhjVdNEXn6Gjvficre3Wjuzs
-         GItko1Mgla/0aZvR8P1K6n9KIbWxbjZ6kwmRK60ZjX2B0r8/a4oJeTx60DELQ/zm8VaT
-         snGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696266028; x=1696870828;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=64nOEqf6/mjPbfcle6tVHCIMmPQhDPH56TTUSyH+RFM=;
-        b=EB+Id5sVIhrMr69hEqU9+i0qcOu2It2Em2zBjgN7H7B7TGDxhunoJWiQnIzYNoTyd5
-         5p7Qum/3ajqMTv4PJA1aklmUnF2AZhrzf+4vKFFx09A9YCbVDDFucb6X8bm93HghKCFV
-         xiMaA7HYMH4yU47jJsaeiqNGe9Q8qLsRDI53I93HLrBX2KJIJCgqlR6seiGK5LASf2Ed
-         sNKAcnTXK7vo8pJvf3ZwlZN65/0xfPtzE2s5hI9h3SrGfBfmm2NQDjB5iuN8otg6L9ZT
-         bQDisYuenswv9QdG2FXwltOOH0Tt5sfzw2ln6QNm8PNfDxi59MAYkAkrGsYaZbJsxDJc
-         v1dw==
-X-Gm-Message-State: AOJu0YyP5ezAIU5NGBqnuVEf0wlSYvKzlZrW1RW3+6avt1RVM3NH5Hn4
-        Yusw7051YKmyL6MwQJRTKsQ=
-X-Google-Smtp-Source: AGHT+IHpcMlgO+FESOdL7EI4eJDVfSdlQRwVtLaTvR3QI4UuoRJ/vT5SXk3mgLz5PVu1tjXbHe3UIQ==
-X-Received: by 2002:adf:e912:0:b0:31a:d8c0:cb8b with SMTP id f18-20020adfe912000000b0031ad8c0cb8bmr10447917wrm.25.1696266027424;
-        Mon, 02 Oct 2023 10:00:27 -0700 (PDT)
-Received: from archlinux.local (BC249365.dsl.pool.telekom.hu. [188.36.147.101])
-        by smtp.gmail.com with ESMTPSA id s16-20020a05640217d000b0053420e55616sm11338426edy.75.2023.10.02.10.00.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 10:00:26 -0700 (PDT)
-From:   =?UTF-8?q?Barnab=C3=A1s=20Cz=C3=A9m=C3=A1n?= <trabarni@gmail.com>
-To:     Bjorn Andersson <andersson@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?q?Barnab=C3=A1s=20Cz=C3=A9m=C3=A1n?= <trabarni@gmail.com>
-Subject: [PATCH] clk: qcom: gcc-msm8953: fix stuck gcc_usb30_master_clk
-Date:   Mon,  2 Oct 2023 19:00:21 +0200
-Message-ID: <20231002170021.192740-1-trabarni@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Mon, 2 Oct 2023 13:00:33 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E78CD9
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:00:28 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4EA1C433C8;
+        Mon,  2 Oct 2023 17:00:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696266028;
+        bh=3UbyqZIFaU6RJC2KOuQvJj8u1FhIUKRifoIKRVKlW9k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Oe7AKrswQVKt5UlDiKVSxuiRD2QnAnHROWGMNBPHHdFj6b3rzg71vcTho3JhcVpsJ
+         EQj/R+RDo3YeYG/I7SMUvMI/WkfXl5pDsWO40OyzoWY6AJnkW8/4cMYv9qbyq/Ly9/
+         /EyvByBCPqTrQ1iVbv0oUG1vE4Hv0vUVoDglY5NZne5XaIz8YUJfClfz8caBlHvTZy
+         4poorrJtt3NdkTsnEWCDrdYShiBq+NmrlbiPJBnXPuDAQLKGbSeF9u/xTf4pGvS7C1
+         wQKOoVsi6SfgJcOtpmUBrY5LbynOLWobJ1JIF2gZkbJ2ABeR8YREvJlCr0vqcuYii3
+         KYCpwq72VoR8g==
+Received: (nullmailer pid 1934730 invoked by uid 1000);
+        Mon, 02 Oct 2023 17:00:25 -0000
+Date:   Mon, 2 Oct 2023 12:00:25 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Piyush Mehta <piyush.mehta@amd.com>
+Cc:     gregkh@linuxfoundation.org, michal.simek@amd.com,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        peter.chen@kernel.org, linus.walleij@linaro.org,
+        paul@crapouillou.net, arnd@arndb.de, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        git@amd.com
+Subject: Re: [RFC PATCH 1/3] dt-binding: usb: ulpi-phy: add ulpi-phy binding
+Message-ID: <20231002170025.GA1928031-robh@kernel.org>
+References: <20230929064852.16642-1-piyush.mehta@amd.com>
+ <20230929064852.16642-2-piyush.mehta@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230929064852.16642-2-piyush.mehta@amd.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to downstream dwc3-msm source this clock has FSM dependency on
-gcc_pcnoc_usb30_clk so enabling it would fail if latter isn't enabled.
-This patch add works around this issue by changing parent of
-gcc_usb30_master_clk to gcc_pcnoc_usb30_clk. This is acceptable because
-both clocks have same parent and are branches/gates.
+On Fri, Sep 29, 2023 at 12:18:50PM +0530, Piyush Mehta wrote:
+> Create an ulpi-phy binding to read and write PHY registers with explicit
+> control of the address and data using the usb.VIEWPORT register.
+> 
+> Signed-off-by: Piyush Mehta <piyush.mehta@amd.com>
+> ---
+> This binding patch was created to support generic platforms. This binding
+> will be modified in accordance with patch [3/3] procedures. One of the
+> approch may be Create a zynq phy platform driver in "driver/usb/phy" with
+> driver source "phy-ulpi-zynq-usb.c" and then the binding will be particular
+> to the Xilinx/AMD zynq platform.
+> 
+> This binding was built with the Zynq hardware design example in consideration
+> of as a generic platform. The viewport provide access the Chipidea controller
+> to interface with the ULPI PHY.
+> ---
+>  .../devicetree/bindings/usb/ulpi-phy.yaml     | 48 +++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/usb/ulpi-phy.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/usb/ulpi-phy.yaml b/Documentation/devicetree/bindings/usb/ulpi-phy.yaml
+> new file mode 100644
+> index 000000000000..490b2f610129
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/usb/ulpi-phy.yaml
+> @@ -0,0 +1,48 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/usb/ulpi-phy.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ULPI PHY- Generic platform
+> +
+> +maintainers:
+> +  - Piyush Mehta <piyush.mehta@amd.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: ulpi-phy
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#phy-cells':
+> +    const: 0
+> +
+> +  external-drv-vbus:
+> +    description:
+> +      If present, configure ulpi-phy external supply to drive 5V on VBus.
+> +    type: boolean
+> +
+> +  view-port:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Address to read and write PHY registers with explicit control of
+> +      the address and data using the usb.VIEWPORT register.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - view-port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    phy0@e0002000 {
+> +        compatible = "ulpi-phy";
+> +        #phy-cells = <0x00>;
+> +        reg = <0xe0002000 0x1000>;
+> +        view-port = <0x170>;
 
-Signed-off-by: Barnabás Czémán <trabarni@gmail.com>
----
- drivers/clk/qcom/gcc-msm8953.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I don't understand. Do you have an MMIO address and the VIEWPORT 
+address to the PHY? You need both?
 
-diff --git a/drivers/clk/qcom/gcc-msm8953.c b/drivers/clk/qcom/gcc-msm8953.c
-index 3e5a8cb14d4d..20639340e8a6 100644
---- a/drivers/clk/qcom/gcc-msm8953.c
-+++ b/drivers/clk/qcom/gcc-msm8953.c
-@@ -3645,7 +3645,7 @@ static struct clk_branch gcc_usb30_master_clk = {
- 		.hw.init = &(struct clk_init_data) {
- 			.name = "gcc_usb30_master_clk",
- 			.parent_hws = (const struct clk_hw*[]){
--				&usb30_master_clk_src.clkr.hw,
-+				&gcc_pcnoc_usb3_axi_clk.clkr.hw,
- 			},
- 			.num_parents = 1,
- 			.ops = &clk_branch2_ops,
--- 
-2.42.0
+There's already a defined binding for ULPI bus:
 
+Documentation/devicetree/bindings/usb/ulpi.txt
+
+Why can't you use/expand that?
+
+Rob
