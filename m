@@ -2,116 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DD47B5937
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FD67B58FC
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235868AbjJBRkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35600 "EHLO
+        id S236396AbjJBRlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:41:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236446AbjJBRkQ (ORCPT
+        with ESMTP id S229628AbjJBRlo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:40:16 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A09E9;
-        Mon,  2 Oct 2023 10:40:13 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-565e395e7a6so9245318a12.0;
-        Mon, 02 Oct 2023 10:40:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696268413; x=1696873213; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G85KjuFiBO73o7Wzp/yJK1STnMsGHZl8ZA4ohW5rdb0=;
-        b=mHG2XujWpv5aY+ZT+hK4Qg1TPrVrbZadveA8ZLZwQ3TmYJZA1VNSYTprhRCgdX3L3s
-         jPU6cWcAG3hAdHDn8qh1SgzomplyUCaEUZPXh9N7LdkXdym3VKLgqjwr+z53dEDTT0yZ
-         OAyvPUNZQUlmNxEkQ5WIkLUtns2qYu2grgX3TJnrEsMwaUKKTa1uELp5eIVTAa5SF8lC
-         twNQG8ure3IQWvbeb0l70v31EPszoSea5woBQg43VFMTyTT6/5CQJy8n9DpW4hLNij1U
-         mNj4dMzh5uN4GVhuChLnQDOOQ79i+QOPLnCEd2+TsyTXBUPL4muAjztlVziJXcm78meW
-         dgpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696268413; x=1696873213;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G85KjuFiBO73o7Wzp/yJK1STnMsGHZl8ZA4ohW5rdb0=;
-        b=qQ1w7DUTgQ0CKE2FG4YejtuWpnu4WqsRRLSTv+W1F5gZf5C/9VHvI2A5MKWDq0npni
-         n+bj8SWUeaHmR0ZgYOOaivkgtYIIG1BJDMVIJiQG0XJuxeVfh279jv+IHNQVybO54bRp
-         S3PiwMV8XhQLypSMoAZI3TK6odNDhQxYza+n5UacZMk7DR5mHOXuVqxDyMzH4mNubRm/
-         RdKNuYzrr/7/e1fDOkXP8PXes44NFqzPVjWrPu5Y8yKI+hkzUU9X6h80q7i+/QaqC5WH
-         7b5Gm5/idVOfnsiboRry/d/TgHjuEK3BDxVKG4qlR1RTHjAOHVhkmQ6NkD88gpaZ6/KH
-         Jx5Q==
-X-Gm-Message-State: AOJu0YxDs4Aguoqw0foRQmEhQS8GMiFFNRz0q7QBqjpLcGCDJ4imi/cl
-        aXsvRSHV1QeLH7Wf9STeJ3fSI5o91pbENsTz
-X-Google-Smtp-Source: AGHT+IFfnemkqgLkLIaFXsRgXJMqG3C9Cw5R8Sr91ipeEIpNMozmNWbJAPPEYNXlIB6+I8ZpFUwICg==
-X-Received: by 2002:a05:6a20:4292:b0:157:b453:dbb9 with SMTP id o18-20020a056a20429200b00157b453dbb9mr12165018pzj.6.1696268412767;
-        Mon, 02 Oct 2023 10:40:12 -0700 (PDT)
-Received: from swarup-virtual-machine ([171.76.87.78])
-        by smtp.gmail.com with ESMTPSA id p22-20020aa78616000000b006932657075bsm58122pfn.82.2023.10.02.10.40.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 10:40:12 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 23:10:06 +0530
-From:   swarup <swarupkotikalapudi@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>, q@swarup-virtual-machine
-Cc:     Thinh.Nguyen@synopsys.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] usb: fix kernel-doc warning
-Message-ID: <ZRsAdi/LOEFPY6j1@swarup-virtual-machine>
-References: <20230918193505.7046-1-swarupkotikalapudi@gmail.com>
- <2023100253-aide-authentic-5aa1@gregkh>
- <ZRrkbkjoHgEnuy/m@swarup-virtual-machine>
- <2023100207-unmoved-arbitrary-2c33@gregkh>
+        Mon, 2 Oct 2023 13:41:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2E89E
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:40:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696268457;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4f3o6Dy0aKfMhbFfem3eSrFYgmkRkeAED7I//e1+Hvw=;
+        b=f++GDCc9Dh+wEXNleBc35ffr840YmIeod9BkjLxaEAYVq2hcmeuzPdN6vTZnjclORZ0BrK
+        d4yNEyN+PR6qmLvBIdqoNPuEjOUbLYaxoJhJ5mdtpF6ta7YYNKtvwSKS72oQ8kwAYHCZ3Q
+        PuxOQB/dHd4L5hns9ECE1M0vpHruFW8=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-645-daL--MNsPvSgVE23VMIfuA-1; Mon, 02 Oct 2023 13:40:53 -0400
+X-MC-Unique: daL--MNsPvSgVE23VMIfuA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8E0583C23641;
+        Mon,  2 Oct 2023 17:40:52 +0000 (UTC)
+Received: from [10.22.34.33] (unknown [10.22.34.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A1BF2026D4B;
+        Mon,  2 Oct 2023 17:40:52 +0000 (UTC)
+Message-ID: <a284696f-6c73-02b6-1ce5-1017eb257bb1@redhat.com>
+Date:   Mon, 2 Oct 2023 13:40:51 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2023100207-unmoved-arbitrary-2c33@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH-cgroup] cgroup/cpuset: Enable invalid to valid local
+ partition transition
+Content-Language: en-US
+To:     Pierre Gondois <pierre.gondois@arm.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+References: <20230930034402.2776278-1-longman@redhat.com>
+ <ed8e013a-ece2-4a9c-142f-e9f62883e7b1@arm.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <ed8e013a-ece2-4a9c-142f-e9f62883e7b1@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-esOn Mon, Oct 02, 2023 at 05:46:49PM +0200, Greg KH wrote:
-> On Mon, Oct 02, 2023 at 09:10:30PM +0530, swarup wrote:
-> > On Mon, Oct 02, 2023 at 04:42:03PM +0200, Greg KH wrote:
-> > > On Tue, Sep 19, 2023 at 01:05:05AM +0530, Swarup Laxman Kotiaklapudi wrote:
-> > > > Fix kernel-doc warnings discovered in usb driver.
-> > > > Fixes this warning:
-> > > > warning: Function parameter or member 'gfladj_refclk_lpm_sel'
-> > > >          not described in 'dwc3'
-> > > > 
-> > > > Signed-off-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
-> > > > ---
-> > > >  drivers/usb/dwc3/core.h | 2 ++
-> > > >  1 file changed, 2 insertions(+)
-> > > 
-> > > What commit id does this fix?
-> > > 
-> > > thanks,
-> > > 
-> > > greg k-h
-> > 
-> > Hi Greg,
-> > Please find the commit id as mentioned below,
-> > next time onwards i will mention it:
-> > 
-> > Fixes: 5cd07f96c0c6 ("usb: fix kernel-doc warning")
-> 
-> That is not a valid commit id in Linus's tree, are you sure it is
-> correct?
-> 
-> And please resend the patch with that information in it.
-> 
-> thanks,
-> 
-> greg k-h
+On 10/2/23 06:06, Pierre Gondois wrote:
+> Hello Waiman,
+>
+> I could test the patch using the for-next branch in your tree.
+> Just a NIT, it seemed that the message indicating the reason
+> the isolated configuration was invalid is not printed anymore:
+>
+> Commands:
+> # mkdir cgroup
+> # mount -t cgroup2 none cgroup/
+> # mkdir cgroup/A1 cgroup/B1
+> # echo "+cpuset" > cgroup/cgroup.subtree_control
+> # echo 0-3 > cgroup/A1/cpuset.cpus
+> # echo isolated > cgroup/A1/cpuset.cpus.partition
+> # echo 4-6 > cgroup/B1/cpuset.cpus
+> # cat cgroup/A1/cpuset.cpus.partition
+> isolated
+> # echo 0-4 > cgroup/A1/cpuset.cpus
+> # cat cgroup/A1/cpuset.cpus.partition
+> isolated invalid                      <--- used to have '(Cpu list in 
+> cpuset.cpus not exclusive)'
+> # echo 0-3 > cgroup/A1/cpuset.cpus
+> # cat cgroup/A1/cpuset.cpus.partition
+> isolated                              <--- now working!
+>
+>
+> But when creating an isolated partition from overlapping cpusets,
+> the message is printed:
+> # mkdir cgroup
+> # mount -t cgroup2 none cgroup/
+> # mkdir cgroup/A1 cgroup/B1
+> # echo "+cpuset" > cgroup/cgroup.subtree_control
+> # echo 0-4 > cgroup/A1/cpuset.cpus
+> # echo 4-6 > cgroup/B1/cpuset.cpus
+> # echo isolated > cgroup/B1/cpuset.cpus.partition
+>
+> # cat cgroup/A1/cpuset.cpus.partition
+> member
+> # cat cgroup/B1/cpuset.cpus.partition
+> isolated invalid (Cpu list in cpuset.cpus not exclusive) <--- Complete 
+> message printed
+>
+>
+> On 9/30/23 05:44, Waiman Long wrote:
+>> When a local partition becomes invalid, it won't transition back to
+>> valid partition automatically if a proper "cpuset.cpus.exclusive" or
+>> "cpuset.cpus" change is made. Instead, system administrators have to
+>> explicitly echo "root" or "isolated" into the "cpuset.cpus.partition"
+>> file at the partition root.
+>>
+>> This patch now enables the automatic transition of an invalid local
+>> partition back to valid when there is a proper "cpuset.cpus.exclusive"
+>> or "cpuset.cpus" change.
+>>
+>> Automatic transition of an invalid remote partition to a valid one,
+>> however, is not covered by this patch. They still need an explicit
+>> write to "cpuset.cpus.partition" to become valid again.
+>
+> I'm not sure I understand what is meant by 'remote partition',
+> is it possible to explain ? Or is the following illustrating what you
+> mean ?
+>
+> # mkdir cgroup
+> # mount -t cgroup2 none cgroup/
+> # mkdir cgroup/A1 cgroup/B1
+> # echo "+cpuset" > cgroup/cgroup.subtree_control
+> # echo 0-3 > cgroup/A1/cpuset.cpus
+> # echo isolated > cgroup/A1/cpuset.cpus.partition
+> # echo 4-6 > cgroup/B1/cpuset.cpus
+> # echo isolated > cgroup/B1/cpuset.cpus.partition
+>
+> # echo 0-4 > cgroup/A1/cpuset.cpus
+> # cat cgroup/A1/cpuset.cpus.partition
+> isolated invalid
+> # cat cgroup/B1/cpuset.cpus.partition
+> isolated invalid
+>
+> # echo 0-3 > cgroup/A1/cpuset.cpus
+> # cat cgroup/A1/cpuset.cpus.partition
+> isolated
+> # cat cgroup/B1/cpuset.cpus.partition
+> isolated invalid        <--- The remote CPU is not updated
 
-Hi Greg,
-  I send patch V2, with the Fixes tag being mentioned.
-  Please check the email.
-Thanks,
-Swarup
+It is probably another corner case that has not been handled. I will 
+look into that.
+
+Thanks for the test.
+
+-Longman
+
+
