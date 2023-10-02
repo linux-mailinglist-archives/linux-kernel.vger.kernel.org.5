@@ -2,96 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C327B4D36
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:18:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30737B4D3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:20:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235814AbjJBISX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 04:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50784 "EHLO
+        id S235833AbjJBIU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 04:20:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235809AbjJBISW (ORCPT
+        with ESMTP id S229981AbjJBIU0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 04:18:22 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBBFD8
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 01:18:19 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-7ab4c86eeb0so5376512241.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 01:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696234698; x=1696839498; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fzGsF0rzQfJ2PSb9vQta/54VjhELfW04Cn5cgB+veoY=;
-        b=2VZoskpY8CB3Bl80MW8tT3w0+t3zNEZSuAo0/YMtpN+yb6ivR+iyjXwhmL1K1rf2MB
-         iiZEAi1eLpgwjRSDe+1ALVti28AoIBEy6Z52Yv/QTcEm2qXy8156wTrXzzuK2majr3um
-         jKtn8R6jC8DmJJY0iNjIsGiNI2NcsXx3coTGWMa7HkItfKrDh9o0wBWmeMHy4L6Y5BM8
-         zBTXrGeDhecHbNT7uIJiV76hsPAqPymCgpNdlmhTen7LXSF3r3tGyiQVPa2KLnc/e2Wn
-         loh7L2SlrLHBq/ICJZ91an0SNqJdzADr7IcBv5YxovxSqed8Y8ne7FjgHf+YxeUcOhoO
-         Xogw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696234698; x=1696839498;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fzGsF0rzQfJ2PSb9vQta/54VjhELfW04Cn5cgB+veoY=;
-        b=IkaYIR7Ch3NWKYdQxmdHlH1FwWAAv0rG6+zZdW0DVjvbneDpCYoOs+URqwk8i8vKb6
-         cFyoxosp6koUsCCBXhcNJ1hxIYd0YkecR/n9QWsL5crjKUMWovwXG0TA1+M1GCjpCQie
-         1q94RI0K4/DprUScuoszUi0QFuz+UzT3q99200PphrLTl2ok/z1bSro4k1Vud4n8XMXb
-         NfUQ9IZJ+FtHihoQC1c5Imhn90T3S2+aFLjm8FhvOx0ujX/fLWGJ6GXVXVWaSo8rj7ID
-         /X70F5eae3eS20L/79ZGCiaDOcP4YuXn71Vg4goiBidmPq4gjcuFGbYVuPYJ5hngLuXh
-         PhJA==
-X-Gm-Message-State: AOJu0Yz0MykYF17mSgXybR6V6sr25ULjqSgadia9p3VroNNNT1pykewG
-        ZA0J7fkN2w2BHSEfX4+ficRrdPezkvb5KfEViMGbHw==
-X-Google-Smtp-Source: AGHT+IHNKNGh7AYwLVhrXE3mmbjF4Lf/z1rjAVKz9QkAX1cFb5lJWqWaTN2K7r0ITPz7PTVM6uJ747xF8Gt7sVyM2sY=
-X-Received: by 2002:a67:f818:0:b0:452:6ac0:ed19 with SMTP id
- l24-20020a67f818000000b004526ac0ed19mr7834838vso.31.1696234698016; Mon, 02
- Oct 2023 01:18:18 -0700 (PDT)
+        Mon, 2 Oct 2023 04:20:26 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6934BAC;
+        Mon,  2 Oct 2023 01:20:22 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id 86568100092; Mon,  2 Oct 2023 09:20:20 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+        t=1696234820; bh=OlA0pl5VSa+hyOkc5IXR0SOcbRUBvOFJJLhphqTBLzc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QGsTgdOmxf3yPTzRlHQFBU434qP/FCRqb0w2FsIEhT1hn935KhEokeVckqf3xD+zM
+         B/ZmU/a5xZd+GXvzwMn4TLkFC2t3Nz0+0Dh9zTE7sI6hY+DLWpeyAXGAsOWPaB+gWA
+         xrCY/jughT/INCYfCGREExLRZ1ipwv9cGz0XxnwdpgvAifyE3yRoqAC+Hr56/tbAce
+         oo4G801RbuLl9bRLW57PwzwfukO7fV9Pg9vWKfb0f/JxlmHDke5v+Q4G/Pju/1auJP
+         PjRh5GupJf6Fh8xVLhEWUgnUFQOpaULb60j1A5n45jAjItIYhromOw/b7rhhpeGqIu
+         Y31yw9y4FsAmw==
+Date:   Mon, 2 Oct 2023 09:20:20 +0100
+From:   Sean Young <sean@mess.org>
+To:     Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH 2/2] media: pwm-ir-tx: trigger edges from hrtimer
+ interrupt context
+Message-ID: <ZRp9RE2jOZdL0+1/@gofer.mess.org>
+References: <cover.1696156485.git.sean@mess.org>
+ <7efe4229514001b835fa70d51973cd3306dc0b04.1696156485.git.sean@mess.org>
+ <5982681d-4fb5-0271-fdc5-712d6c8512e3@gmail.com>
 MIME-Version: 1.0
-References: <20230928201421.2296518-1-mmaurer@google.com> <CAH5fLgjmPkfokku190dab9JVqk3_uTABNWqOZ-xKOEqQJoX+9g@mail.gmail.com>
-In-Reply-To: <CAH5fLgjmPkfokku190dab9JVqk3_uTABNWqOZ-xKOEqQJoX+9g@mail.gmail.com>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Mon, 2 Oct 2023 10:18:07 +0200
-Message-ID: <CAH5fLggO4FP3JHdA6QtU8fK9yzFtnAk53=bbKF2++23bA+ML6Q@mail.gmail.com>
-Subject: Re: [PATCH] rust: Use grep -Ev rather than relying on GNU grep
-To:     Matthew Maurer <mmaurer@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5982681d-4fb5-0271-fdc5-712d6c8512e3@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 9:51=E2=80=AFAM Alice Ryhl <aliceryhl@google.com> wr=
-ote:
->
-> On Thu, Sep 28, 2023 at 10:14=E2=80=AFPM Matthew Maurer <mmaurer@google.c=
-om> wrote:
-> >
-> > While GNU grep supports '\|' when in basic regular expression mode, not
-> > all grep implementations do (notably toybox grep, used to build the
-> > Android kernel, does not). Switching to grep -Ev enables extended
-> > regular expresions which includes support for the '|' operator.
-> >
-> > Signed-off-by: Matthew Maurer <mmaurer@google.com>
->
-> LGTM. I tested this in my Android build.
+Hi,
 
-Also tested in a non-Android build. Works both places.
+On Mon, Oct 02, 2023 at 08:49:47AM +0300, Ivaylo Dimitrov wrote:
+> On 1.10.23 г. 13:40 ч., Sean Young wrote:
+> > The pwm-ir-tx driver has to turn the pwm signal on and off, and suffers
+> > from delays as this is done in process context. Make this work in atomic
+> > context.
+> > 
+> > This makes the driver much more precise.
+> > 
+> > Signed-off-by: Sean Young <sean@mess.org>
+> > Cc: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+> > ---
+> >   drivers/media/rc/pwm-ir-tx.c | 79 ++++++++++++++++++++++++++++--------
+> >   1 file changed, 63 insertions(+), 16 deletions(-)
+> > 
+> > diff --git a/drivers/media/rc/pwm-ir-tx.c b/drivers/media/rc/pwm-ir-tx.c
+> > index c5f37c03af9c..557725a07a67 100644
+> > --- a/drivers/media/rc/pwm-ir-tx.c
+> > +++ b/drivers/media/rc/pwm-ir-tx.c
+> > @@ -10,6 +10,8 @@
+> >   #include <linux/slab.h>
+> >   #include <linux/of.h>
+> >   #include <linux/platform_device.h>
+> > +#include <linux/hrtimer.h>
+> > +#include <linux/completion.h>
+> >   #include <media/rc-core.h>
+> >   #define DRIVER_NAME	"pwm-ir-tx"
+> > @@ -17,8 +19,13 @@
+> >   struct pwm_ir {
+> >   	struct pwm_device *pwm;
+> > -	unsigned int carrier;
+> > -	unsigned int duty_cycle;
+> > +	struct hrtimer timer;
+> > +	struct completion completion;
+> > +	uint carrier;
+> > +	uint duty_cycle;
+> > +	uint *txbuf;
+> > +	uint txbuf_len;
+> > +	uint txbuf_index;
+> >   };
+> >   static const struct of_device_id pwm_ir_of_match[] = {
+> > @@ -55,33 +62,65 @@ static int pwm_ir_tx(struct rc_dev *dev, unsigned int *txbuf,
+> >   	struct pwm_ir *pwm_ir = dev->priv;
+> >   	struct pwm_device *pwm = pwm_ir->pwm;
+> >   	struct pwm_state state;
+> > -	int i;
+> > -	ktime_t edge;
+> > -	long delta;
+> > +
+> > +	reinit_completion(&pwm_ir->completion);
+> 
+> You should not need that.
 
-> Reviewed-by: Alice Ryhl <aliceryhl@google.com>
-> Tested-by: Alice Ryhl <aliceryhl@google.com>
+It does not work without it - the process doing the 2nd tx hangs indefinitely.
+
+> >   	pwm_init_state(pwm, &state);
+> >   	state.period = DIV_ROUND_CLOSEST(NSEC_PER_SEC, pwm_ir->carrier);
+> >   	pwm_set_relative_duty_cycle(&state, pwm_ir->duty_cycle, 100);
+> > +	state.enabled = false;
+> > -	edge = ktime_get();
+> > +	pwm_ir->txbuf = txbuf;
+> > +	pwm_ir->txbuf_len = count;
+> > +	pwm_ir->txbuf_index = 0;
+> > -	for (i = 0; i < count; i++) {
+> > -		state.enabled = !(i % 2);
+> > -		pwm_apply_state(pwm, &state);
+> > +	pwm_apply_state(pwm, &state);
+> 
+> ditto, first pwm control should be in the timer function
+
+This requires keeping a copy of pwm_state in pwm_ir but does avoid the extra
+call to pwm_apply_state() here.
+
+Having said that, the extra call to pwm_apply_state() may have benefits,
+see this comment in the pwm-sifive driver:
+
+ * - When changing both duty cycle and period, we cannot prevent in
+ *   software that the output might produce a period with mixed
+ *   settings (new period length and old duty cycle).
+
+So setting the duty cycle and period once with enabled = false prevents a
+first period with mixed settings (i.e. bogus).
+
+> > -		edge = ktime_add_us(edge, txbuf[i]);
+> > -		delta = ktime_us_delta(edge, ktime_get());
+> > -		if (delta > 0)
+> > -			usleep_range(delta, delta + 10);
+> > -	}
+> > +	hrtimer_start(&pwm_ir->timer, 1000, HRTIMER_MODE_REL);
+> 
+> why not just call it with 0 time?
+
+Otherwise the timings are a little off for the first edge - hrtimer setup
+time, I think. I can experiment again.
+
+> > -	state.enabled = false;
+> > -	pwm_apply_state(pwm, &state);
+> > +	wait_for_completion(&pwm_ir->completion);
+> >   	return count;
+> >   }
+> > +static enum hrtimer_restart pwm_ir_timer(struct hrtimer *timer)
+> > +{
+> > +	struct pwm_ir *pwm_ir = container_of(timer, struct pwm_ir, timer);
+> > +	ktime_t now;
+> > +
+> > +	/*
+> > +	 * If we happen to hit an odd latency spike, loop through the
+> > +	 * pulses until we catch up.
+> > +	 */
+> > +	do {
+> > +		u64 ns;
+> > +
+> > +		if (pwm_ir->txbuf_index >= pwm_ir->txbuf_len) {
+> > +			/* Stop TX here */
+> > +			pwm_disable(pwm_ir->pwm);
+> > +
+> > +			complete(&pwm_ir->completion);
+> > +
+> > +			return HRTIMER_NORESTART;
+> > +		}
+> > +
+> > +		if (pwm_ir->txbuf_index % 2)
+> > +			pwm_disable(pwm_ir->pwm);
+> > +		else
+> > +			pwm_enable(pwm_ir->pwm);
+> > +
+> 
+> pwm_ir->pwm->state.enabled = !(pwm_ir->txbuf_index % 2);
+> pwm_apply_state(pwm_ir->pwm, pwm_ir->state);
+
+Requires a copy of pwm_state in pwm_ir, not a huge difference (copy of 28
+bytes vs keeping it around).
+
+> > +		ns = US_TO_NS(pwm_ir->txbuf[pwm_ir->txbuf_index]);
+> > +		hrtimer_add_expires_ns(timer, ns);
+> > +
+> > +		pwm_ir->txbuf_index++;
+> > +
+> > +		now = timer->base->get_time();
+> > +	} while (hrtimer_get_expires_tv64(timer) < now);
+> > +
+> > +	return HRTIMER_RESTART;
+> > +}
+> > +
+> >   static int pwm_ir_probe(struct platform_device *pdev)
+> >   {
+> >   	struct pwm_ir *pwm_ir;
+> > @@ -96,8 +135,16 @@ static int pwm_ir_probe(struct platform_device *pdev)
+> >   	if (IS_ERR(pwm_ir->pwm))
+> >   		return PTR_ERR(pwm_ir->pwm);
+> > +	if (pwm_can_sleep(pwm_ir->pwm)) {
+> > +		dev_err(&pdev->dev, "unsupported pwm device: driver can sleep\n");
+> > +		return -ENODEV;
+> > +	}
+> > +
+> 
+> I think we shall not limit, but use high priority thread to support those
+> drivers. I have that working on n900 with current (sleeping) pwm, see my
+> reply on the other mail. Maybe we can combine both patches in a way to
+> support both atomic and sleeping pwm drivers.
+
+If the ir-rx51 driver uses a sleeping pwm then that's broken and only works
+by accident - the current driver is broken then.
+
+Spinning for longer periods (e.g. 100us) does not play well with RT. Would
+make more sense to fix the pwm driver to non-sleeping when a pwm driver
+is used for pwm-ir-tx?
+
+Thanks
+
+Sean
+
+> 
+> >   	pwm_ir->carrier = 38000;
+> >   	pwm_ir->duty_cycle = 50;
+> > +	init_completion(&pwm_ir->completion);
+> > +	hrtimer_init(&pwm_ir->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> > +	pwm_ir->timer.function = pwm_ir_timer;
+> >   	rcdev = devm_rc_allocate_device(&pdev->dev, RC_DRIVER_IR_RAW_TX);
+> >   	if (!rcdev)
+> > 
+> 
+> Regards,
+> Ivo
