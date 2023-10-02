@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45BC77B5485
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A657B548A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237644AbjJBOGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:06:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
+        id S237647AbjJBOGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237630AbjJBOGH (ORCPT
+        with ESMTP id S237452AbjJBOGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:06:07 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8681AD;
-        Mon,  2 Oct 2023 07:06:04 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 558D4C433C7;
-        Mon,  2 Oct 2023 14:06:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696255564;
-        bh=oewcKLq9leZeLUNbvL3ga7nSrHdL0EKdi+eyXGMLtGM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LNby3amfuHQMnQB9J2b8Ap7V4xMsYjdQ+XX8Ne1yQwFKEIv84i754KEVLeJUg8gjk
-         eZTKvwinC7merJ7qh3W+Ryukjgt+Ym0L/vorD2BQb5irTxbdLjpDtXAHCd6QjBG+ei
-         dy3qg4A5giv1IyOZdkFSdZB0DqgYAVyfuB/rZgF9WspTUP/kgYYQiWx8pGDeDCPUsV
-         88TQek2wbfOllqc1CJUhTmDeKwr1V3nYM0Dx5pgKq7WA9HXKbc79/fwueApOG25YO2
-         XY2NIwNXL/Nh56LmRlwLJVInrde4+cGRsTvcZU56epMHub7GBj0vwBexSCyF3poPFl
-         fuCV5QO5Z3uIQ==
-Date:   Mon, 2 Oct 2023 15:05:59 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Florian Eckert <fe@dev.tdt.de>
-Cc:     Eckert.Florian@googlemail.com, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, pavel@ucw.cz, kabel@kernel.org,
-        u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, linux-leds@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v2 3/4] trigger: ledtrig-tty: move variable definition to
- the top
-Message-ID: <20231002140559.GB8453@google.com>
-References: <20230928132632.200263-1-fe@dev.tdt.de>
- <20230928132632.200263-4-fe@dev.tdt.de>
+        Mon, 2 Oct 2023 10:06:50 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D9900B0
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:06:46 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 18D4CC15;
+        Mon,  2 Oct 2023 07:07:25 -0700 (PDT)
+Received: from [10.57.66.29] (unknown [10.57.66.29])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E30873F762;
+        Mon,  2 Oct 2023 07:06:43 -0700 (PDT)
+Message-ID: <0f99fa65-c8c1-5d5c-d9b0-5436b7592656@arm.com>
+Date:   Mon, 2 Oct 2023 15:06:33 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230928132632.200263-4-fe@dev.tdt.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 1/2] KVM: arm64: Add handler for MOPS exceptions
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        linux-kernel@vger.kernel.org, Oliver Upton <oliver.upton@linux.dev>
+References: <20230922112508.1774352-1-kristina.martsenko@arm.com>
+ <20230922112508.1774352-2-kristina.martsenko@arm.com>
+ <87sf734ofv.wl-maz@kernel.org> <9f731870-ed36-d2e4-378b-f7fbf338ebd6@arm.com>
+ <ZRPnpHwiRhrYwfSM@linux.dev> <87h6ndmixh.wl-maz@kernel.org>
+From:   Kristina Martsenko <kristina.martsenko@arm.com>
+In-Reply-To: <87h6ndmixh.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,43 +55,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Sep 2023, Florian Eckert wrote:
-
-> The Intel build robot has complained about this. Hence move the commit
-> of the variable definition to the beginning of the function.
-
-Please copy the robot's error message into the commit message.
-
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Florian Eckert <fe@dev.tdt.de>
-> ---
->  drivers/leds/trigger/ledtrig-tty.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+On 29/09/2023 10:23, Marc Zyngier wrote:
+> On Wed, 27 Sep 2023 09:28:20 +0100,
+> Oliver Upton <oliver.upton@linux.dev> wrote:
+>>
+>> On Mon, Sep 25, 2023 at 04:16:06PM +0100, Kristina Martsenko wrote:
+>>
+>> [...]
+>>
+>>>> What is the rationale for advancing the state machine? Shouldn't we
+>>>> instead return to the guest and immediately get the SS exception,
+>>>> which in turn gets reported to userspace? Is it because we rollback
+>>>> the PC to a previous instruction?
+>>>
+>>> Yes, because we rollback the PC to the prologue instruction. We advance the
+>>> state machine so that the SS exception is taken immediately upon returning to
+>>> the guest at the prologue instruction. If we didn't advance it then we would
+>>> return to the guest, execute the prologue instruction, and then take the SS
+>>> exception on the middle instruction. Which would be surprising as userspace
+>>> would see the middle and epilogue instructions executed multiple times but not
+>>> the prologue.
+>>
+>> I agree with Kristina that taking the SS exception on the prologue is
+>> likely the best course of action. Especially since it matches the
+>> behavior of single-stepping an EL0 MOPS sequence with an intervening CPU
+>> migration.
+>>
+>> This behavior might throw an EL1 that single-steps itself for a loop,
+>> but I think it is impossible for a hypervisor to hide the consequences
+>> of vCPU migration with MOPS in the first place.
+>>
+>> Marc, I'm guessing you were most concerned about the former case where
+>> the VMM was debugging the guest. Is there something you're concerned
+>> about I missed?
 > 
-> diff --git a/drivers/leds/trigger/ledtrig-tty.c b/drivers/leds/trigger/ledtrig-tty.c
-> index 8ae0d2d284af..1c6fadf0b856 100644
-> --- a/drivers/leds/trigger/ledtrig-tty.c
-> +++ b/drivers/leds/trigger/ledtrig-tty.c
-> @@ -82,6 +82,7 @@ static void ledtrig_tty_work(struct work_struct *work)
->  {
->  	struct ledtrig_tty_data *trigger_data =
->  		container_of(work, struct ledtrig_tty_data, dwork.work);
-> +	unsigned long interval = LEDTRIG_TTY_INTERVAL;
->  	struct serial_icounter_struct icount;
->  	int ret;
->  
-> @@ -124,8 +125,6 @@ static void ledtrig_tty_work(struct work_struct *work)
->  
->  	if (icount.rx != trigger_data->rx ||
->  	    icount.tx != trigger_data->tx) {
-> -		unsigned long interval = LEDTRIG_TTY_INTERVAL;
-> -
->  		led_blink_set_oneshot(trigger_data->led_cdev, &interval,
->  				      &interval, 0);
->  
-> -- 
-> 2.30.2
+> My concern is not only the VMM, but any userspace that perform
+> single-stepping. Imagine the debugger tracks PC by itself, and simply
+> increments it by 4 on a non-branch, non-fault instruction.
 > 
+> Move the vcpu or the userspace around, rewind PC, and now the debugger
+> is out of whack with what is executing. While I agree that there is
+> not much a hypervisor can do about that, I'm a bit worried that we are
+> going to break existing SW with this.
+> 
+> Now the obvious solution is "don't do that"...
 
--- 
-Lee Jones [李琼斯]
+If the debugger can handle the PC changing on branching or faulting
+instructions, then why can't it handle it on MOPS instructions? Wouldn't
+such a debugger need to be updated any time the architecture adds new
+branching or faulting instructions? What's different here?
+
+Confused,
+Kristina
