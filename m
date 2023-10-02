@@ -2,130 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 227E47B55D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 415DA7B55D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237931AbjJBO6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:58:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39464 "EHLO
+        id S237916AbjJBO7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:59:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237925AbjJBO6i (ORCPT
+        with ESMTP id S237923AbjJBO65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:58:38 -0400
-Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51510DC
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:58:34 -0700 (PDT)
-Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-65afba4cfadso85631696d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 07:58:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696258713; x=1696863513; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1sFWixVT1aJ1xZnbcfQwd2hXqQRNB5cMO+e1QJYiddA=;
-        b=AAAtEirevuhi4YSLfcquhi4MOppQCXgDWlVgt8IyN+ygmJMOOTrxmdBXBL1tMEkzX7
-         zQpoFrBNjD9fMGVzF5sr0FNetXUshg5lK7KER460N0KinpzcfcxwXXysXiOufFGBfWq8
-         z6BSl2aFJuQTkBzh6GCgzIUzKQ0wqmjamvBwIFt3ECPc9hnkjP5/VfM2iTpsDCCajE3l
-         VelvASqHIxAMSFj7ZCiGgkJlLUc4bVYPkokBrZTUEZsVHdotaKy5sRjgZuZyzVAiTvtK
-         jdmMLMaJBPmOWOXMDpVA2S2dibhAyrzWL/yHiVgHWBULZwejbsIuIamj8onf0l/OSgRf
-         CI5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696258713; x=1696863513;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1sFWixVT1aJ1xZnbcfQwd2hXqQRNB5cMO+e1QJYiddA=;
-        b=esp58SFLbxvYTnqz7HXq+4/AREWLQy28sd/r4xBSarQjyc1Wjkna7MFG6yJQ7FlwzG
-         nMGocwthmwL/MP5Ejuprz4zTbxrUv3nQnyWAmWRwo5z/cPGFVe7K8TYD1e2UU9gYMjRZ
-         ToDz/N3VZNZlCwBEF7IeAmG6vtz7cVXPytC4gdSKOV5WMpLv/AKYD5N+i80bwFzcD5T+
-         Fr/nxS3PRUJFybctRRk8z+hKMB5kUMDKIiIpVynGbN6Dh4v5vpF7rskgfEezNZFV//Ah
-         EpVeA0YMPUCrWO3erahL9P99Q3iK5lP0dgRP2FUExMGuhB1eC+RTZVGMV+r587vxam2+
-         Zmsw==
-X-Gm-Message-State: AOJu0Ywc83lBncyB/uP9PyQMpn+kfN7WJG0Hsk+tWhN8EEEH5TUgJrcL
-        UW/afDcxOE7nXqtm9BfsQlblPg==
-X-Google-Smtp-Source: AGHT+IEYMyB6kO3EaICU1eCypYWYXZYQCfEUvn2XQ+5lFcitH6GpMhzkUOZ5TPGoksk8znqkDZF4+w==
-X-Received: by 2002:a0c:c302:0:b0:65a:f9f3:e779 with SMTP id f2-20020a0cc302000000b0065af9f3e779mr11660343qvi.34.1696258713315;
-        Mon, 02 Oct 2023 07:58:33 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
-        by smtp.gmail.com with ESMTPSA id t9-20020a0cde09000000b0065d0dcc28e3sm3440408qvk.73.2023.10.02.07.58.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 07:58:33 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 10:58:32 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
+        Mon, 2 Oct 2023 10:58:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F322B9D
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:58:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EB8BC433C7;
+        Mon,  2 Oct 2023 14:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696258734;
+        bh=aPElMtrm6cRnjvgAzssfrsP0JzinANpUMRWhgXxUB/M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ozqfavxtalm0nQpoOCGplrCeGMuZYRp5LLJ0XRkTKgyTSSTQHbAKqZZWhFleLIpUT
+         KWfz3NLQMpaQD3eOIWU8HYPYVmiMV5UHGnAjaLYgkGMj3Gd2D+81ZSxcgDJKDnv2K2
+         aypXo8nmaf4zp1lHMCKHde66SK9gUZu4qGZk0TKWtCOOAGmLXCwb95wRhVu3585CMH
+         trJwNkpZpxLkitNP7cjcsK1brUYA1t00Lnhw064moonHpEqHQZO3vSZL4UE2dBMp1T
+         uP7alNf2phJqCqkyjVjSsuJtl9cmQay/sIdIOv7U/e3kSK7krW3DFdDPuX0NH6ZHD0
+         z1+uYvV4nFqtg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qnKNo-000OrN-93;
+        Mon, 02 Oct 2023 15:58:52 +0100
+Date:   Mon, 02 Oct 2023 15:58:50 +0100
+Message-ID: <86sf6tnk9h.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Kristina Martsenko <kristina.martsenko@arm.com>
+Cc:     Oliver Upton <oliver.upton@linux.dev>, kvmarm@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vladimir Murzin <vladimir.murzin@arm.com>,
+        Colton Lewis <coltonlewis@google.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] mm: page_alloc: remove pcppage migratetype caching
-Message-ID: <20231002145832.GC4414@cmpxchg.org>
-References: <20230911195023.247694-1-hannes@cmpxchg.org>
- <20230911195023.247694-2-hannes@cmpxchg.org>
- <87y1gsrx32.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <20230927145115.GA365513@cmpxchg.org>
- <87pm20p9ra.fsf@yhuang6-desk2.ccr.corp.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87pm20p9ra.fsf@yhuang6-desk2.ccr.corp.intel.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Subject: Re: [PATCH v2 0/2] KVM: arm64: Support for Arm v8.8 memcpy instructions in KVM guests
+In-Reply-To: <d0b0a7c3-1944-8758-7967-c981c343cea6@arm.com>
+References: <20230922112508.1774352-1-kristina.martsenko@arm.com>
+        <ZRPE9OcB9ndgFxbs@linux.dev>
+        <6687f58c-0da9-0583-2dc1-2089f292b745@arm.com>
+        <87fs2xmiof.wl-maz@kernel.org>
+        <d0b0a7c3-1944-8758-7967-c981c343cea6@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: kristina.martsenko@arm.com, oliver.upton@linux.dev, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, vladimir.murzin@arm.com, coltonlewis@google.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 12:26:01PM +0800, Huang, Ying wrote:
-> I have done more test for the series and addon patches.  The test
-> results are as follows,
+On Fri, 29 Sep 2023 15:51:32 +0100,
+Kristina Martsenko <kristina.martsenko@arm.com> wrote:
 > 
-> base
-> perf-profile.children.get_pfnblock_flags_mask	     0.15	(+- 32.62%)
-> will-it-scale.1.processes			618621.7	(+-  0.18%)
+> On 29/09/2023 10:29, Marc Zyngier wrote:
+> > On Thu, 28 Sep 2023 17:55:39 +0100,
+> > Kristina Martsenko <kristina.martsenko@arm.com> wrote:
+> >>
+> >> On 27/09/2023 07:00, Oliver Upton wrote:
+> >>>
+> >>> On Fri, Sep 22, 2023 at 12:25:06PM +0100, Kristina Martsenko wrote:
+> >>>> Hi,
+> >>>>
+> >>>> This is v2 of the series to allow using the new Arm memory copy instructions
+> >>>> in KVM guests. See v1 for more information [1].
+> >>>
+> >>>
+> >>> Thanks for sending out the series. I've been thinking about what the
+> >>> architecture says for MOPS, and I wonder if what's currently in the
+> >>> Arm ARM is clear enough for EL1 software to be written robustly.
+> >>>
+> >>> While HCRX_EL2.MCE2 allows the hypervisor to intervene on MOPS
+> >>> exceptions from EL1, there's no such control for EL0. So when vCPU
+> >>> migration occurs EL1 could get an unexpected MOPS exception, even for a
+> >>> process that was pinned to a single (virtual) CPU implementation.
+> >>>
+> >>> Additionally, the wording of I_NXHPS seems to suggest that EL2 handling
+> >>> of MOPS exceptions is only expected in certain circumstances where EL1 is
+> >>> incapable of handling an exception. Is the unwritten expectation then
+> >>> that EL1 software should tolerate 'unexpected' MOPS exceptions from EL1
+> >>> and EL0, even if EL1 did not migrate the PE context?
+> >>>
+> >>> Perhaps I'm being pedantic, but I'd really like for there to be some
+> >>> documentation that suggests MOPS exceptions can happen due to context
+> >>> migration done by a higher EL as that is the only option in the context
+> >>> of virtualization.
+> >>
+> >> That's a good point. This shouldn't affect Linux guests as Linux is
+> >> always able to handle a MOPS exception coming from EL0. But it would
+> >> affect any non-Linux guest that pins all its EL0 tasks and doesn't
+> >> implement a handler. It's not clear to me what the expectation for
+> >> guests is, I'll ask the architects to clarify and get back to you.
+> > 
+> > My understanding is that MCE2 should always be set if the hypervisor
+> > can migrate vcpus across implementations behind EL1's back, and that
+> > in this context, EL1 never sees such an exception.
 > 
-> mm: page_alloc: remove pcppage migratetype caching
-> perf-profile.children.get_pfnblock_flags_mask	     0.40	(+- 21.55%)
-> will-it-scale.1.processes			616350.3	(+-  0.27%)
-> 
-> mm: page_alloc: fix up block types when merging compatible blocks
-> perf-profile.children.get_pfnblock_flags_mask	     0.36	(+-  8.36%)
-> will-it-scale.1.processes			617121.0	(+-  0.17%)
-> 
-> mm: page_alloc: move free pages when converting block during isolation
-> perf-profile.children.get_pfnblock_flags_mask	     0.36	(+- 15.10%)
-> will-it-scale.1.processes			615578.0	(+-  0.18%)
-> 
-> mm: page_alloc: fix move_freepages_block() range error
-> perf-profile.children.get_pfnblock_flags_mask	     0.36	(+- 12.78%)
-> will-it-scale.1.processes			615364.7	(+-  0.27%)
-> 
-> mm: page_alloc: fix freelist movement during block conversion
-> perf-profile.children.get_pfnblock_flags_mask	     0.36	(+- 10.52%)
-> will-it-scale.1.processes			617834.8	(+-  0.52%)
-> 
-> mm: page_alloc: consolidate free page accounting
-> perf-profile.children.get_pfnblock_flags_mask	     0.39	(+-  8.27%)
-> will-it-scale.1.processes			621000.0	(+-  0.13%)
-> 
-> mm: page_alloc: close migratetype race between freeing and stealing
-> perf-profile.children.get_pfnblock_flags_mask	     0.37	(+-  5.87%)
-> will-it-scale.1.processes			618378.8	(+-  0.17%)
-> 
-> mm: page_alloc: optimize free_unref_page_list()
-> perf-profile.children.get_pfnblock_flags_mask	     0.20	(+- 14.96%)
-> will-it-scale.1.processes			618136.3	(+-  0.16%)
-> 
-> It seems that the will-it-scale score is influenced by some other
-> factors too.  But anyway, the series + addon patches restores the score
-> of will-it-scale.  And the cycles% of get_pfnblock_flags_mask() is
-> almost restored by the final patch (mm: page_alloc: optimize
-> free_unref_page_list()).
-> 
-> Feel free to add my "Tested-by" for these patches.
+> Notice that MCE2 only traps exceptions from EL1, not from EL0.
+> Exceptions from EL0 always go to EL1. Even if MCE2 is always set, EL1
+> will see the exception when the hypervisor migrates the vcpu while the
+> vcpu is executing a MOPS instruction in EL0.
 
-Thanks, I'll add those!
+Ah, good point. I stand corrected.
 
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
