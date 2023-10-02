@@ -2,111 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C9C7B55AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D6D7B55E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237751AbjJBOeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:34:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44038 "EHLO
+        id S237720AbjJBOem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237538AbjJBOeV (ORCPT
+        with ESMTP id S237538AbjJBOek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:34:21 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDA7AB
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:34:18 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-35291dbf7efso110315ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 07:34:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1696257258; x=1696862058; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kRxNfqGjCGFxbOhmZF5JCBU40Y06pFegG3QOX3/BuLA=;
-        b=AcBs8j71d+0tRd4MTrVBbNUC2HhA0V9p1Gjp3SQFxAOMZOzAAwMPYOPdh3njG3ybEn
-         t8bNduzfaG7ZzKK8YSshNic1KLSRYZhTZQv20zHUwepJsYOOeHXzLIlOzxW3I/tmKEWH
-         zQok36EjCDm4LFdFCLnIUCnJtV1BOpoNuTiRY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696257258; x=1696862058;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kRxNfqGjCGFxbOhmZF5JCBU40Y06pFegG3QOX3/BuLA=;
-        b=LX8exJAksGonLVFPSNetJrmRVM1a5Wt5bn+n2j5I59lfUY3l8+lFrbuCBKmRijUCkU
-         xbjV6faqFI5sBEFGKQ1ZQUru8BIA2AEY1gEF7jm9cfx7iwKnr/fHC+4bDoM+j3nPnfvt
-         95sgwBi5JK9osMA6VhNm2fT0j6cLQhaCnzLhEOvk3ppep2sgeX5qyMf2CmHjYn4kOGhF
-         VgMAdk9IrcUt4Hob8hTX1f7AlR9irjUOK6cgUc9Jh6dmrnTO9KZyRr0CLkEeXhmV3qdg
-         azZt0E/zjsnyfAWeNo44lUQgp7DO+2P2D3xgWVAtMIO+gp6+k32HhLqiWsvAdWzbDOS3
-         sIgw==
-X-Gm-Message-State: AOJu0YzVJPoMrwHqwv7EVrqnLJOlDBFml6fdGsX5Gi5y6NgUdYm1SCTi
-        v7ZG2XyzZqUir2L40qH7kbbqXg==
-X-Google-Smtp-Source: AGHT+IEeeEyqmM4GNE0zvXS/ZnjHo+Pb1gJrNueMD0ZUcJZdbOdVx2t67HBz2Wwi1Ck4CD4GkyhX6g==
-X-Received: by 2002:a92:c9c4:0:b0:349:983c:4940 with SMTP id k4-20020a92c9c4000000b00349983c4940mr11992080ilq.1.1696257257752;
-        Mon, 02 Oct 2023 07:34:17 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id e18-20020a056e0204b200b00351268dfbd5sm6374043ils.57.2023.10.02.07.34.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 07:34:17 -0700 (PDT)
-Message-ID: <087c5c0d-6a20-e58b-7735-d764c4de69af@linuxfoundation.org>
-Date:   Mon, 2 Oct 2023 08:34:16 -0600
+        Mon, 2 Oct 2023 10:34:40 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CAE5B4;
+        Mon,  2 Oct 2023 07:34:37 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rzk436LWDz67fjR;
+        Mon,  2 Oct 2023 22:34:27 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 2 Oct
+ 2023 15:34:34 +0100
+Date:   Mon, 2 Oct 2023 15:34:34 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Robert Richter <rrichter@amd.com>
+CC:     Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Ben Widawsky <bwidawsk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Davidlohr Bueso" <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>, <linux-cxl@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Terry Bowman <terry.bowman@amd.com>
+Subject: Re: [PATCH v11 04/20] cxl/port: Rename @comp_map to @reg_map in
+ struct cxl_register_map
+Message-ID: <20231002153434.000073b9@Huawei.com>
+In-Reply-To: <20230927154339.1600738-5-rrichter@amd.com>
+References: <20230927154339.1600738-1-rrichter@amd.com>
+        <20230927154339.1600738-5-rrichter@amd.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] Added missing TARGETS in kselftest top level Makefile
-To:     Abhinav <singhabhinav9051571833@gmail.com>, shuah@kernel.org
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <2023100251-recycled-purist-1ea5@gregkh>
- <20231002114635.1567809-1-singhabhinav9051571833@gmail.com>
-Content-Language: en-US
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20231002114635.1567809-1-singhabhinav9051571833@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/23 05:46, Abhinav wrote:
-> Some tests like dma, ia64, etc. were not present in top level of
-> selftest Makefile, so when someone ran 'make run_tests' they would miss
-> these tests. This patches adds those left out tests.
+On Wed, 27 Sep 2023 17:43:23 +0200
+Robert Richter <rrichter@amd.com> wrote:
+
+> Name the field @reg_map, because @reg_map->host will be used for
+> mapping operations beyond component registers (i.e. AER registers).
+> This is valid for all occurrences of @comp_map. Change them all.
 > 
-> Signed-off-by: Abhinav <singhabhinav9051571833@gmail.com>
+> Signed-off-by: Robert Richter <rrichter@amd.com>
+Makes sense.  Can we pull the one I moaned about in the previous
+patch into this one?
+
+That way the renames are all together.
+
+If not, I'm fine with just moaning :)  Whichever patch split
+you go with across this and previous...
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.co>
 > ---
+>  drivers/cxl/core/port.c | 2 +-
+>  drivers/cxl/cxl.h       | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
 > 
-> I removed sched, safesetid and filelock from the Makefile, because these
-> tests were actually triggered when we run 'make run_tests' even though it
-> has not been mentioned explicitly inside top level Makefile of selftest.
-> 
->   tools/testing/selftests/Makefile | 7 +++++++
->   1 file changed, 7 insertions(+)
->
-
-There are good reasons to leave out tests from the kselftest default
-run.
-
-1. test requires specific hardware or driver or system configuration
-    which includes kernel configuration options.
-    e.g: media_tests, dma
-2. It is a benchmark and/or destructive test that doesn't fit into
-    default run category: watchdog, kmod
-3. test Makefile doesn't support kselftest framework
-
-Any patch adding a test left out of default run to the default
-run has to explain the reasons why it is a good idea to add it
-and more importantly showing that this doesn't impact the default
-run with report from the test run "make kselftest"
-
-Sorry. I am not going to take this patch.
-  
-thanks,
--- Shuah
+> diff --git a/drivers/cxl/core/port.c b/drivers/cxl/core/port.c
+> index 99df86d72dbc..b993dea61436 100644
+> --- a/drivers/cxl/core/port.c
+> +++ b/drivers/cxl/core/port.c
+> @@ -712,7 +712,7 @@ static int cxl_port_setup_regs(struct cxl_port *port,
+>  {
+>  	if (dev_is_platform(port->uport_dev))
+>  		return 0;
+> -	return cxl_setup_comp_regs(&port->dev, &port->comp_map,
+> +	return cxl_setup_comp_regs(&port->dev, &port->reg_map,
+>  				   component_reg_phys);
+>  }
+>  
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> index 68abf9944383..3a51b58a66d0 100644
+> --- a/drivers/cxl/cxl.h
+> +++ b/drivers/cxl/cxl.h
+> @@ -572,7 +572,7 @@ struct cxl_dax_region {
+>   * @regions: cxl_region_ref instances, regions mapped by this port
+>   * @parent_dport: dport that points to this port in the parent
+>   * @decoder_ida: allocator for decoder ids
+> - * @comp_map: component register capability mappings
+> + * @reg_map: component and ras register mapping parameters
+>   * @nr_dports: number of entries in @dports
+>   * @hdm_end: track last allocated HDM decoder instance for allocation ordering
+>   * @commit_end: cursor to track highest committed decoder for commit ordering
+> @@ -592,7 +592,7 @@ struct cxl_port {
+>  	struct xarray regions;
+>  	struct cxl_dport *parent_dport;
+>  	struct ida decoder_ida;
+> -	struct cxl_register_map comp_map;
+> +	struct cxl_register_map reg_map;
+>  	int nr_dports;
+>  	int hdm_end;
+>  	int commit_end;
 
