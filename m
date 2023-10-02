@@ -2,72 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 720E47B4BB7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 08:53:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC0B7B4BB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 08:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235586AbjJBGxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 02:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33174 "EHLO
+        id S235590AbjJBGxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 02:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235587AbjJBGxH (ORCPT
+        with ESMTP id S235561AbjJBGxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 02:53:07 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CA7C9;
-        Sun,  1 Oct 2023 23:53:03 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-4529d1238a9so7691583137.3;
-        Sun, 01 Oct 2023 23:53:03 -0700 (PDT)
+        Mon, 2 Oct 2023 02:53:04 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40FC6B7
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 23:53:01 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-7ab5150a7b5so1930684241.0
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 23:53:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696229583; x=1696834383; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696229580; x=1696834380; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=6l+jmeB2VfTAn+b6B+3ppKXZp69RAqjIcox5duaFcYw=;
-        b=d9is37bqTFwZtKp+EFKhURrRVPZUmRVwOV1sskBvkO4lD2ZNhuEAALxHOmCoQ2RHfC
-         ySPyK/0DF4FVGKevOc07OxzgJXz3iDhNFZ7X7tD4ZIHQINasxXRlnycvocNTdRqzLMtC
-         IeLHB05uwTkdEDzkabOdYeXQbYhAJzs6gJ3NVek9oERfU2YtAB6pXAND7zPJ8MJyN8o6
-         JV59sh64ABX3N1xiS7G9+MV3qMNZG4/rvJhKKL2EmNIB+abXadfAOoT7PX62M8WeH5+n
-         fB1dr1pQI1hmOcdGjR9ODavopnsiiD/ZSWEz24vORz2X5GZ5xV3YQ9ZBYZCvc+40xwpf
-         F5yw==
+        bh=+ryxoZacRjxfVjFlzq6b9dnRAwZ9Cwhv/ctEImXuEGU=;
+        b=H4bjcETEOQsD881Qg6aEedbLymtufIQwY5MVzUYu/ICezTi7BwASBQGCSqKW20Egaa
+         3R7r1dkL3CTL5jAGNM5oxp8PmWvBp1P9S+IzPOf2Cmmt/fY6YlNN2azS2So4BgzkKCcA
+         eUe/FiWOaBskcQm/zgoJCwVaoVc8ouF9w5XJLMbROSZqJmuL72wv3bj8ji28u3K9a1nl
+         DxLsUHM8O5bsuXP8QK8mmkHooiY09dxUmW2Wvwv0hs6WB+hOn5/FM9eIR9wFj2Whc/Bu
+         DG+w3nZFlx6D3bmNmRe/lqPvFTI0Qasfu/ZbTE1Fazcufq+yigJpom9kyruCE36NyyQQ
+         0vag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696229583; x=1696834383;
+        d=1e100.net; s=20230601; t=1696229580; x=1696834380;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=6l+jmeB2VfTAn+b6B+3ppKXZp69RAqjIcox5duaFcYw=;
-        b=Wdc/drctqAdi2bAxQ4SQiSy415llzAHVD9nvI4GEseNcxm/DMUhR9yUudcwuXwUsc4
-         8m44JH9g2pdkvLGxQUCmLNsmJXRJr2FSQqynUg9Bz9sBMsprhUcj0lv20AMPh47zBk0h
-         BmMk364VluoOHzoD6Shi63EAG8xIYjivv/QK95VjbLaxNHSbfhkSwQRp/TjCf7dI6nzb
-         bFY2H5PigSJ4BcpDwqBiwsuYvzgn4GUc2bcjdXd6wANN5xriDu456tBUFfo+iFdedI9Y
-         rC5f7J3PMeFrs7FOY4dTVRn6Kn3F4tUukq2nhlZAYJ/hLiEz1lMZEbNnRIx/zSWJF6Ap
-         9EZw==
-X-Gm-Message-State: AOJu0YxbY+RTo858GWeR1kJXko+/1BoVhmnCxce5Za/5Wl5UmBmWF+Wf
-        szeg06uw2SyLcGbhbjAzvK4cpsccBvKvPVnocNc=
-X-Google-Smtp-Source: AGHT+IHEWJBqMBCVUZ8gONTAN9/9lSmcfocSJE4xfoGOl0sVAuwUbcCSDed6NgsEQo2eC+da2oqM2nBObo1igJnn6Q8=
-X-Received: by 2002:a67:f71a:0:b0:44e:ab53:6152 with SMTP id
- m26-20020a67f71a000000b0044eab536152mr9446139vso.29.1696229582591; Sun, 01
- Oct 2023 23:53:02 -0700 (PDT)
+        bh=+ryxoZacRjxfVjFlzq6b9dnRAwZ9Cwhv/ctEImXuEGU=;
+        b=JuDsr1RRE8IHRj6qtsgQW0p25IGNBHz3Ojk+8LawSMWqOil9R0f0paYFak/+mHQgr5
+         ZtJxo3zkavUV3uPp56P6u7G5rj+7PXwuC6mYe7DM7alfqjvLBoQHJBsy5ZH93x/Di8F/
+         CnpugViaMcc8UUdu64ePcWV7GoCp39Sj9RJhBVwVBhWrBrgYVgeDRK4bDf7xIujas927
+         v7+pfkFg0FoxMR6X0bONWKIuWXa4ajHzo4MlzMPztemWjtfLb+MvnDgg8Ed9fLE8AyhA
+         aeyaJiUUMeovvRg02a6akhRwLewzmaswAR5J179nCqT+qMiZd5tLaIQcqT4btiUNU94o
+         EXTA==
+X-Gm-Message-State: AOJu0YzNoFBsY4+86PRjtQC+yEg2/tMmNEnIUzlF+ZQSfDycelZIWrPO
+        sllr02NPOMydTTxms693xvPhpztK4dJzLZaspCkeJQ==
+X-Google-Smtp-Source: AGHT+IEgGi6qU2Mp3mDYr8L0Z6jDhHwhMnnuFjnFIJ7nxBJXc9EksuQXfdql9FqITrIaHBUfcgn5Fc+wHwg/LrGhOnU=
+X-Received: by 2002:a05:6102:3178:b0:450:cebb:4f15 with SMTP id
+ l24-20020a056102317800b00450cebb4f15mr4555097vsm.1.1696229580147; Sun, 01 Oct
+ 2023 23:53:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <ZRcOXJ0pkuph6fko@debian.debian> <20230930110854.GA13787@breakpoint.cc>
-In-Reply-To: <20230930110854.GA13787@breakpoint.cc>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 2 Oct 2023 08:52:26 +0200
-Message-ID: <CAF=yD-JR8cxEt6JRhmMyBFucyHtbaKrarDh=xN7jeT2obBsCRQ@mail.gmail.com>
-Subject: Re: [PATCH net] ipv6: avoid atomic fragment on GSO packets
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Yan Zhai <yan@cloudflare.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>, linux-kernel@vger.kernel.org,
-        kernel-team@cloudflare.com
+References: <20230928070706.2290137-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20230928070706.2290137-1-u.kleine-koenig@pengutronix.de>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 2 Oct 2023 08:52:48 +0200
+Message-ID: <CAMRc=Mf1yPMAXRYc4S8MnzmQY_i9EaNVDRPf+FnJAeXRzXJ55g@mail.gmail.com>
+Subject: Re: [PATCH 00/23] gpio: Convert to platform remove callback returning void
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mun Yew Tham <mun.yew.tham@intel.com>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>, linux-omap@vger.kernel.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
+        Srinivas Neeli <srinivas.neeli@amd.com>,
+        Michal Simek <michal.simek@amd.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,73 +88,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 1:09=E2=80=AFPM Florian Westphal <fw@strlen.de> wro=
-te:
+On Thu, Sep 28, 2023 at 9:07=E2=80=AFAM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
 >
-> Yan Zhai <yan@cloudflare.com> wrote:
-> > GSO packets can contain a trailing segment that is smaller than
-> > gso_size. When examining the dst MTU for such packet, if its gso_size
-> > is too large, then all segments would be fragmented. However, there is =
-a
-> > good chance the trailing segment has smaller actual size than both
-> > gso_size as well as the MTU, which leads to an "atomic fragment".
-> > RFC-8021 explicitly recommend to deprecate such use case. An Existing
-> > report from APNIC also shows that atomic fragments can be dropped
-> > unexpectedly along the path [1].
-> >
-> > Add an extra check in ip6_fragment to catch all possible generation of
-> > atomic fragments. Skip atomic header if it is called on a packet no
-> > larger than MTU.
-> >
-> > Link: https://www.potaroo.net/presentations/2022-03-01-ipv6-frag.pdf [1=
-]
-> > Fixes: b210de4f8c97 ("net: ipv6: Validate GSO SKB before finish IPv6 pr=
-ocessing")
-> > Reported-by: David Wragg <dwragg@cloudflare.com>
-> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> > ---
-> >  net/ipv6/ip6_output.c | 8 +++++++-
-> >  1 file changed, 7 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
-> > index 951ba8089b5b..42f5f68a6e24 100644
-> > --- a/net/ipv6/ip6_output.c
-> > +++ b/net/ipv6/ip6_output.c
-> > @@ -854,6 +854,13 @@ int ip6_fragment(struct net *net, struct sock *sk,=
- struct sk_buff *skb,
-> >       __be32 frag_id;
-> >       u8 *prevhdr, nexthdr =3D 0;
-> >
-> > +     /* RFC-8021 recommended atomic fragments to be deprecated. Double=
- check
-> > +      * the actual packet size before fragment it.
-> > +      */
-> > +     mtu =3D ip6_skb_dst_mtu(skb);
-> > +     if (unlikely(skb->len <=3D mtu))
-> > +             return output(net, sk, skb);
-> > +
+> Hello,
 >
-> This helper is also called for skbs where IP6CB(skb)->frag_max_size
-> exceeds the MTU, so this check looks wrong to me.
+> this series converts all platform drivers below drivers/gpio to use
+> .remove_new(). The motivation is to get rid of an integer return code
+> that is (mostly) ignored by the platform driver core and error prone on
+> the driver side.
 >
-> Same remark for dst_allfrag() check in __ip6_finish_output(),
-> after this patch, it would be ignored.
+> See commit 5c5a7680e67b ("platform: Provide a remove callback that
+> returns no value") for an extended explanation and the eventual goal.
 >
-> I think you should consider to first refactor __ip6_finish_output to make
-> the existing checks more readable (e.g. handle gso vs. non-gso in separat=
-e
-> branches) and then add the check to last seg in
-> ip6_finish_output_gso_slowpath_drop().
+> There are no interdependencies between the patches. As there are still
+> quite a few drivers to convert, I'm happy about every patch that makes
+> it in. So even if there is a merge conflict with one patch until you
+> apply or a subject prefix is suboptimal, please apply the remainder of
+> this series anyhow.
 >
-> Alternatively you might be able to pass more info down to
-> ip6_fragment and move decisions there.
+> Best regards
+> Uwe
 >
-> In any case we should make same frag-or-no-frag decisions,
-> regardless of this being the orig skb or a segmented one,
+> Uwe Kleine-K=C3=B6nig (23):
+>   gpio: altera: Convert to platform remove callback returning void
+>   gpio: amdpt: Convert to platform remove callback returning void
+>   gpio: brcmstb: Convert to platform remove callback returning void
+>   gpio: cadence: Convert to platform remove callback returning void
+>   gpio: dln2: Convert to platform remove callback returning void
+>   gpio: ftgpio010: Convert to platform remove callback returning void
+>   gpio: grgpio: Convert to platform remove callback returning void
+>   gpio: ljca: Convert to platform remove callback returning void
+>   gpio: lpc18xx: Convert to platform remove callback returning void
+>   gpio: mb86s7x: Convert to platform remove callback returning void
+>   gpio: mm-lantiq: Convert to platform remove callback returning void
+>   gpio: mpc5200: Convert to platform remove callback returning void
+>   gpio: mpc8xxx: Convert to platform remove callback returning void
+>   gpio: omap: Convert to platform remove callback returning void
+>   gpio: rcar: Convert to platform remove callback returning void
+>   gpio: rockchip: Convert to platform remove callback returning void
+>   gpio: tb10x: Convert to platform remove callback returning void
+>   gpio: ts5500: Convert to platform remove callback returning void
+>   gpio: uniphier: Convert to platform remove callback returning void
+>   gpio: xgene-sb: Convert to platform remove callback returning void
+>   gpio: xgs-iproc: Convert to platform remove callback returning void
+>   gpio: xilinx: Convert to platform remove callback returning void
+>   gpio: zynq: Convert to platform remove callback returning void
+>
+>  drivers/gpio/gpio-altera.c    | 6 ++----
+>  drivers/gpio/gpio-amdpt.c     | 6 ++----
+>  drivers/gpio/gpio-brcmstb.c   | 6 ++----
+>  drivers/gpio/gpio-cadence.c   | 6 ++----
+>  drivers/gpio/gpio-dln2.c      | 6 ++----
+>  drivers/gpio/gpio-ftgpio010.c | 6 ++----
+>  drivers/gpio/gpio-grgpio.c    | 6 ++----
+>  drivers/gpio/gpio-ljca.c      | 5 ++---
+>  drivers/gpio/gpio-lpc18xx.c   | 6 ++----
+>  drivers/gpio/gpio-mb86s7x.c   | 6 ++----
+>  drivers/gpio/gpio-mm-lantiq.c | 6 ++----
+>  drivers/gpio/gpio-mpc5200.c   | 8 +++-----
+>  drivers/gpio/gpio-mpc8xxx.c   | 6 ++----
+>  drivers/gpio/gpio-omap.c      | 6 ++----
+>  drivers/gpio/gpio-rcar.c      | 5 ++---
+>  drivers/gpio/gpio-rockchip.c  | 6 ++----
+>  drivers/gpio/gpio-tb10x.c     | 6 ++----
+>  drivers/gpio/gpio-ts5500.c    | 6 ++----
+>  drivers/gpio/gpio-uniphier.c  | 6 ++----
+>  drivers/gpio/gpio-xgene-sb.c  | 6 ++----
+>  drivers/gpio/gpio-xgs-iproc.c | 6 ++----
+>  drivers/gpio/gpio-xilinx.c    | 6 ++----
+>  drivers/gpio/gpio-zynq.c      | 5 ++---
+>  23 files changed, 47 insertions(+), 90 deletions(-)
+>
+>
+> base-commit: 719136e5c24768ebdf80b9daa53facebbdd377c3
+> --
+> 2.40.1
+>
 
-To add to that: if this is a suggestion to update the algorithm to
-match RFC 8021, not a fix for a bug in the current implementation,
-then I think this should target net-next.
+Series queued for v6.7, thanks!
 
-That will also make it easier to include the kind of refactoring that
-Florian suggests.
+Bart
