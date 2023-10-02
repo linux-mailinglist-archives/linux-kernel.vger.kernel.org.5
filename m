@@ -2,153 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C1B7B4AFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 06:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFB507B4AFC
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 06:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230233AbjJBEI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 00:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
+        id S229967AbjJBEOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 00:14:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJBEI6 (ORCPT
+        with ESMTP id S229448AbjJBEOW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 00:08:58 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ECF8D3
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 21:08:55 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d86dac81f8fso17259775276.1
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 21:08:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696219734; x=1696824534; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d9RyKi2tLeQpV4Sj/8aOYjchp6vn0YLRcfFMMaJdDOc=;
-        b=nuhkbkB61/9L0+ARVQso1isocI+VwKg/Dkn+iHemmNXL6SFoB8XqE1HNZLdKmUe7b+
-         LOnjL9SEyL7+3aZMWI/Aq3tFiB1+0UYl7zqDOKMaZcpaJCVdmxTEWmFpB8vMFgH28lsf
-         8aJK+zQlpYFsXBgcHZxZjxmszV4/0hTQUCxZDgxhAipNfzIKgEQHjRGJRTe8ZY8uZfvo
-         tpXBIjTdlWVj9ceHFTy1GnmAb/i/9nhm9a2/08iqzWPxmjhzcfph2iiyvm2ZJzcDHJ9Z
-         kRnWhy4HlP1NtVkBg0nxwZkvk1TrtRRpU2eB4+XWtrh7rXiNrrV4YV1WVf6ZCVKsWfDc
-         l7TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696219734; x=1696824534;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d9RyKi2tLeQpV4Sj/8aOYjchp6vn0YLRcfFMMaJdDOc=;
-        b=WpjvCZEowE5L8tyq1WnFEaIDSc7EB9Yt/P+3LvqHtHDFYQQnxz0Av0cyCzQLBXIbau
-         e15rcDZvNjQskGGgDe1hMLd+I/e85PlrNm8NezLT21Zh7Vc7z3AW8J5x4W6XAskZ+H/X
-         KRIw/VlFu3xwLxg3Idged9RgIksGPoFSKgAiFMfP8OKXxbPYAQQ6u5jLD410n3Cieumb
-         GEG8a5ah65w2x8zp6+sO8U/KYySnVt3bgWL+H0rpXHj+c6J6FtIRT09LsuRsAT6xadgv
-         /8ml9WhiyG/Vg6jFHDeySxdyautIPJHtMIFyb9DzwDGthSOb1J5kRlglc8agpA41uz6O
-         VhiA==
-X-Gm-Message-State: AOJu0YwiBMJ5U0dsEWLVIwgDqnDoOT61lnBg/xF0D7gGmiy6KJ6aJMRD
-        5ykSMgg6UyorZAhLEtsTg+CeJC35LfBa
-X-Google-Smtp-Source: AGHT+IHYS1p5vGODFCUAA+svB2TN/dFLZ+w+KKKdhm3BjVhLIwbZUhrQ+K2+1+aqqgq9thHos0Ja3m2JENC/
-X-Received: from mizhang-super.c.googlers.com ([34.105.13.176]) (user=mizhang
- job=sendgmr) by 2002:a25:ae84:0:b0:d0c:c83b:94ed with SMTP id
- b4-20020a25ae84000000b00d0cc83b94edmr151069ybj.10.1696219734572; Sun, 01 Oct
- 2023 21:08:54 -0700 (PDT)
-Reply-To: Mingwei Zhang <mizhang@google.com>
-Date:   Mon,  2 Oct 2023 04:08:39 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20231002040839.2630027-1-mizhang@google.com>
-Subject: [PATCH v2] KVM: x86: Service NMI requests after PMI requests in
- VM-Enter path
-From:   Mingwei Zhang <mizhang@google.com>
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mingwei Zhang <mizhang@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Like Xu <likexu@tencent.com>, Kan Liang <kan.liang@intel.com>,
-        Dapeng1 Mi <dapeng1.mi@intel.com>, Xin Li <xin@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        Mon, 2 Oct 2023 00:14:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903A3B8;
+        Sun,  1 Oct 2023 21:14:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696220059; x=1727756059;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+SbMEiP/nQq9jUEuPEvZs/+si7/UMTULLo1o542jqPM=;
+  b=nB0ksuQASYsg2CHkNkSE/x7Cm4FvcPRBoo5q8w33WGAFGC2KfWkD/Vk3
+   zjISeyhtdYVA1uMQcuKZvJ509mqPytBhyRTmmoaGaACj87kv4RBc9aKcI
+   N7qn30stK9seQ4c12aq5MNgdBGKwaaKrt82mzYHpOKUbJiTH10K+ievW1
+   T1qN311kRvVo2OfBl7oRP27aklXzgOoAkwJT4/JkpEetPAgv9rZLmkHf/
+   jSLAmLl5XI1SDhw+mUEs4cPJTRS1LnGsHlQGsGh3q9f7/kHTwS6Gg2+38
+   MfexjBRLGBW2qdjDTJNGAOxMpUY6CDDoaDoVYEE0KCWesVPIlTD5e4jDV
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="381463401"
+X-IronPort-AV: E=Sophos;i="6.03,193,1694761200"; 
+   d="scan'208";a="381463401"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2023 21:14:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,193,1694761200"; 
+   d="scan'208";a="1407423"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 01 Oct 2023 21:13:37 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qnAJy-0005ki-2q;
+        Mon, 02 Oct 2023 04:14:14 +0000
+Date:   Mon, 2 Oct 2023 12:13:24 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Crescent CY Hsieh <crescentcy.hsieh@moxa.com>,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org,
+        Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+Subject: Re: [PATCH 4/4] tty: serial: 8250: Add support for MOXA PCIe boards
+ to switch interface between RS422/RS485
+Message-ID: <202310021202.xDwDImQv-lkp@intel.com>
+References: <20231002015702.30509-5-crescentcy.hsieh@moxa.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231002015702.30509-5-crescentcy.hsieh@moxa.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Service NMI requests after PMI requests in vcpu_enter_guest() so that KVM
-does not need to cancel and redo the VM-Enter. Because APIC emulation
-"injects" NMIs via KVM_REQ_NMI, handling PMI requests after NMI requests
-means KVM won't detect the pending NMI request until the final check for
-outstanding requests. Detecting requests at the final stage is costly as
-KVM has already loaded guest state, potentially queued events for
-injection, disabled IRQs, dropped SRCU, etc., most of which needs to be
-unwound.
+Hi Crescent,
 
-Move the code snippet processing KVM_REQ_NMI to the one after processing
-KVM_REQ_PMI to make KVM vPMU more efficient. Note that changing the order
-of the code snippets does make any functional change to KVM. KVM allows two
-pending NMIs while x86 architecture allows only one pending. This is
-because KVM may not be able to process NMI quickly. Therefore, if a PMI
-generated NMI is coincident two other NMIs pending (or one other pending
-NMI and KVM blocks NMI) in KVM, then it will be dropped and it is
-architecturely ok, since x86 CPU does not guarantee the delivery of each
-NMI.
+kernel test robot noticed the following build errors:
 
-Using SPEC2017 benchmark programs running along with Intel vtune in a VM
-demonstrates that the following code change reduces 800~1500 canceled
-VM-Enters per second.
+[auto build test ERROR on tty/tty-testing]
+[also build test ERROR on tty/tty-next tty/tty-linus usb/usb-testing usb/usb-next usb/usb-linus linus/master v6.6-rc4 next-20230929]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Some glory details:
+url:    https://github.com/intel-lab-lkp/linux/commits/Crescent-CY-Hsieh/tty-serial-8250-Cleanup-MOXA-configurations-in-8250_pci-c/20231002-095945
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty.git tty-testing
+patch link:    https://lore.kernel.org/r/20231002015702.30509-5-crescentcy.hsieh%40moxa.com
+patch subject: [PATCH 4/4] tty: serial: 8250: Add support for MOXA PCIe boards to switch interface between RS422/RS485
+config: sparc-allnoconfig (https://download.01.org/0day-ci/archive/20231002/202310021202.xDwDImQv-lkp@intel.com/config)
+compiler: sparc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231002/202310021202.xDwDImQv-lkp@intel.com/reproduce)
 
-Probe the invocation to vmx_cancel_injection():
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310021202.xDwDImQv-lkp@intel.com/
 
-    $ perf probe -a vmx_cancel_injection
-    $ perf stat -a -e probe:vmx_cancel_injection -I 10000 # per 10 seconds
+All errors (new ones prefixed by >>):
 
-Partial results when SPEC2017 with Intel vtune are running in the VM:
+   drivers/tty/serial/serial_core.c: In function 'uart_check_rs485_flags':
+>> drivers/tty/serial/serial_core.c:1302:60: error: 'SER_RS422_ENALBED' undeclared (first use in this function); did you mean 'SER_RS422_ENABLED'?
+    1302 |                                  SER_RS485_TERMINATE_BUS | SER_RS422_ENALBED)
+         |                                                            ^~~~~~~~~~~~~~~~~
+   drivers/tty/serial/serial_core.c:1309:19: note: in expansion of macro 'SER_RS485_LEGACY_FLAGS'
+    1309 |         flags &= ~SER_RS485_LEGACY_FLAGS;
+         |                   ^~~~~~~~~~~~~~~~~~~~~~
+   drivers/tty/serial/serial_core.c:1302:60: note: each undeclared identifier is reported only once for each function it appears in
+    1302 |                                  SER_RS485_TERMINATE_BUS | SER_RS422_ENALBED)
+         |                                                            ^~~~~~~~~~~~~~~~~
+   drivers/tty/serial/serial_core.c:1309:19: note: in expansion of macro 'SER_RS485_LEGACY_FLAGS'
+    1309 |         flags &= ~SER_RS485_LEGACY_FLAGS;
+         |                   ^~~~~~~~~~~~~~~~~~~~~~
 
-On kernel without the change:
-    10.010018010              14254      probe:vmx_cancel_injection
-    20.037646388              15207      probe:vmx_cancel_injection
-    30.078739816              15261      probe:vmx_cancel_injection
-    40.114033258              15085      probe:vmx_cancel_injection
-    50.149297460              15112      probe:vmx_cancel_injection
-    60.185103088              15104      probe:vmx_cancel_injection
 
-On kernel with the change:
-    10.003595390                 40      probe:vmx_cancel_injection
-    20.017855682                 31      probe:vmx_cancel_injection
-    30.028355883                 34      probe:vmx_cancel_injection
-    40.038686298                 31      probe:vmx_cancel_injection
-    50.048795162                 20      probe:vmx_cancel_injection
-    60.069057747                 19      probe:vmx_cancel_injection
+vim +1302 drivers/tty/serial/serial_core.c
 
-v1: https://lore.kernel.org/all/20230927040939.342643-1-mizhang@google.com/
+  1299	
+  1300	#define SER_RS485_LEGACY_FLAGS	(SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND | \
+  1301					 SER_RS485_RTS_AFTER_SEND | SER_RS485_RX_DURING_TX | \
+> 1302					 SER_RS485_TERMINATE_BUS | SER_RS422_ENALBED)
+  1303	
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Mingwei Zhang <mizhang@google.com>
----
- arch/x86/kvm/x86.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 42a4e8f5e89a..302b6f8ddfb1 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -10580,12 +10580,12 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 		if (kvm_check_request(KVM_REQ_SMI, vcpu))
- 			process_smi(vcpu);
- #endif
--		if (kvm_check_request(KVM_REQ_NMI, vcpu))
--			process_nmi(vcpu);
- 		if (kvm_check_request(KVM_REQ_PMU, vcpu))
- 			kvm_pmu_handle_event(vcpu);
- 		if (kvm_check_request(KVM_REQ_PMI, vcpu))
- 			kvm_pmu_deliver_pmi(vcpu);
-+		if (kvm_check_request(KVM_REQ_NMI, vcpu))
-+			process_nmi(vcpu);
- 		if (kvm_check_request(KVM_REQ_IOAPIC_EOI_EXIT, vcpu)) {
- 			BUG_ON(vcpu->arch.pending_ioapic_eoi > 255);
- 			if (test_bit(vcpu->arch.pending_ioapic_eoi,
-
-base-commit: 73554b29bd70546c1a9efc9c160641ef1b849358
 -- 
-2.42.0.582.g8ccd20d70d-goog
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
