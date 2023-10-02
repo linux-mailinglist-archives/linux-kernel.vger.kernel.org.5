@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5E57B4EFC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB6277B4EFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236089AbjJBJYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
+        id S236101AbjJBJYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236076AbjJBJXw (ORCPT
+        with ESMTP id S236079AbjJBJXx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:23:52 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFDA991;
-        Mon,  2 Oct 2023 02:23:48 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-4060b623e64so17034395e9.0;
-        Mon, 02 Oct 2023 02:23:48 -0700 (PDT)
+        Mon, 2 Oct 2023 05:23:53 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17FB83;
+        Mon,  2 Oct 2023 02:23:49 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-405524e6769so16967185e9.1;
+        Mon, 02 Oct 2023 02:23:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696238627; x=1696843427; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696238628; x=1696843428; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0zfNZlxXcCTfNfmsz4BOltE66rgV2iaZsNlV7GrJxxA=;
-        b=PUSHbJzyijUr1rpI8epmHVk+nCxLKUH1kzecaZs0XqrrYH6uG9pLmocoFRMqOtQ3D3
-         IXX8Dg+WyQ2OZTMe5gxIbFYprbKuMgBNGLtcaRlkrcVqdEZOg7PcfQ8SzgUSKrpvPV2g
-         MbOXnFm9WSaFziC2IIzprhMEEnyCUURmraR3mqS0HTZfUTOyXXjMPHW6gS5FXOtDmWxS
-         Srdu8j/1acXUS8MCfgf11gG5cGuf5QFQJ7x1D4GxSDIOm1kpCupxFWV53oCNdr1IrT6q
-         BGVX5DMOVpNbNN36ICNFUgh2II3dErmikrxnaNAevAFGGX/HHaBbLM3dxC4V0YUp4mVE
-         2I6g==
+        bh=CWnc+dy+pgpvwPkAp+YPEAjlQNYnRW3rr6yrN5WtgHM=;
+        b=ebkgnddL+rUXra5avqchX5dzdO9VJepU6B/wzyC1s0SmnJDDH4/mkGt1hEuz2h9QXg
+         jaQKKpOTO9uoXkpR+rNbp6hTsyVkd2limfbdD49VrYZ9+ZrWvYRZJ+RA1+s9DymVEDaW
+         WZiypRs39SAA0svCURfc3UrwtqO+ipGrI1f+rAg6yz0fZOHryXw+JuJDgSrNaFNwcfJr
+         8mxlN13S1zZ5cpyaVMVUJYy4gWrUDQll8og46PH4DXUyxjcYrq2KhhZ4pPgzUQEvCQdG
+         yy4GlnrBoKKt1BjMtY6y+nw32qNDNW79rJrLKnME9T0QjVdqq7zTr8IvA+k7a0AwMWMO
+         grGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696238627; x=1696843427;
+        d=1e100.net; s=20230601; t=1696238628; x=1696843428;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0zfNZlxXcCTfNfmsz4BOltE66rgV2iaZsNlV7GrJxxA=;
-        b=ZPj0cXgipgDPTcACLEWbNrw5HRed16snHb3/7f8O93HA3mU4TSko732Bseg409icUO
-         tZfsejGZMWUX7EDYqCvsMcAcRlUS8sSiV4dDD4JoqctsuT6zfxhQEm690QYNPbpfhzFy
-         c1+nxp5N3OtQgutGOdG89uutjQU8xCd7V0L0kvEBwVvVmhyqQPYsQWc8hySS7ej3AoHz
-         vdigSHuGHQKAGDmKko5MP8xC+egyFMx04pOrxr8CKcvvW0yimvkx+vQIlzWbb7wXAhzo
-         gfQrXYsjvmm7jP2zIIXAPLntWS5QpLGJEqa631cVEI+mh+YIxhHRGxixWWM/pBzZGPqP
-         d0AQ==
-X-Gm-Message-State: AOJu0Yx1gfVSx/txVBRLBfwbtAYrL3poX2jwHPkqXDSZGFz4PTrQ+Goq
-        xeQQNfdZNjSRqqy9TIHwLnqTurm1Pgw=
-X-Google-Smtp-Source: AGHT+IGwfzei/DJdHX7odp7l+Tnxd+hri1iomzAmP3bzlVoXIU31ZrWDGHFiUZ3WBrZH79yoCaEKmw==
-X-Received: by 2002:a05:600c:5022:b0:405:3f06:d2ef with SMTP id n34-20020a05600c502200b004053f06d2efmr9149200wmr.4.1696238626910;
-        Mon, 02 Oct 2023 02:23:46 -0700 (PDT)
+        bh=CWnc+dy+pgpvwPkAp+YPEAjlQNYnRW3rr6yrN5WtgHM=;
+        b=M2O8cTV8G9v7lEh/vBNp2jqxZcmZ5fKWvhi6q+/Ael+6c/+TWIgPYGKoAiXa4uT6Y+
+         JZjfkmfrwtP0nF4/c+Nf4kGenkE0d3T4PQR/uoB77qylpmNiQCGQ57KQotmlY9lEnnNQ
+         94J2s5ObhB7PZwiKD9gm6O0mt74BkbYRD3fNo1tHpXmwxjinLPHp7d+lk7gQkMAU7g0k
+         lzJ1NFoUOlIUrd3FGukV+fpYl6TQ1wIdIFfwufUm1RV6n6JIsQ/cbTvYZDJOIKOrsCHr
+         Yf2XcO05EWxawngsNHNZtaoru2BAnng1bFuJZHDb97GBEaYeiA8JNgYN8qtWGpRIywuL
+         EFhw==
+X-Gm-Message-State: AOJu0YzCqEBk7AZw//hd4bniLmBaEZ54Q+WKYp+WeJnc3C1kd4D8UrPw
+        y1M5JFfzpjBlOTOLTdOKIbZOvR7E7Tc=
+X-Google-Smtp-Source: AGHT+IEvprV74S3E0t1zQ5YloeRABiVyP75Q8xh4lMPOj/63ZR6M35ItZEnAIgtYfanunqc81pt4FA==
+X-Received: by 2002:a05:600c:3d8d:b0:405:d70d:1790 with SMTP id bi13-20020a05600c3d8d00b00405d70d1790mr8993263wmb.13.1696238627736;
+        Mon, 02 Oct 2023 02:23:47 -0700 (PDT)
 Received: from [127.0.1.1] ([91.230.2.244])
         by smtp.gmail.com with ESMTPSA id o30-20020a05600c511e00b003fef5e76f2csm6156589wms.0.2023.10.02.02.23.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 02:23:46 -0700 (PDT)
+        Mon, 02 Oct 2023 02:23:47 -0700 (PDT)
 From:   Benjamin Bara <bbara93@gmail.com>
-Date:   Mon, 02 Oct 2023 11:23:32 +0200
-Subject: [PATCH RFC 1/4] clk: only set req_rate if it is set by consumer
+Date:   Mon, 02 Oct 2023 11:23:33 +0200
+Subject: [PATCH RFC 2/4] clk: reset new_rates for next run
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231002-ccf-set-multiple-v1-1-2df5e9eb3738@skidata.com>
+Message-Id: <20231002-ccf-set-multiple-v1-2-2df5e9eb3738@skidata.com>
 References: <20231002-ccf-set-multiple-v1-0-2df5e9eb3738@skidata.com>
 In-Reply-To: <20231002-ccf-set-multiple-v1-0-2df5e9eb3738@skidata.com>
 To:     Maxime Ripard <mripard@kernel.org>,
@@ -79,173 +79,92 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Benjamin Bara <benjamin.bara@skidata.com>
 
-Currently, the req_rate is set during initialization and during
-re-parenting. Therefore, it is not clear whether the req_rate is really
-required by a consumer or just set by accident. Fix this by only setting
-the req_rate when it is really required (clk_set_rate() is called by
-consumer).
+During clk_set_rate(), new_rates are calculated for all clocks that are
+part of the changed clock subtree. These values are temporary and only
+valid during the current call. Therefore, reset them to prepare a clean
+state for the next call.
 
 Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
 ---
- drivers/clk/clk.c | 37 ++++++++++++++++++++++++-------------
- 1 file changed, 24 insertions(+), 13 deletions(-)
+ drivers/clk/clk.c | 25 ++++++++++++++++++++++---
+ 1 file changed, 22 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index c249f9791ae8..82f954121e4d 100644
+index 82f954121e4d..5f183cba300c 100644
 --- a/drivers/clk/clk.c
 +++ b/drivers/clk/clk.c
-@@ -24,6 +24,8 @@
+@@ -2163,6 +2163,17 @@ static void clk_calc_subtree(struct clk_core *core, unsigned long new_rate,
+ 	}
+ }
  
- #include "clk.h"
- 
-+#define CLK_RATE_UNSET -1UL
++static void clk_reset_temp_rates(struct clk_core *core)
++{
++	struct clk_core *child;
 +
- static DEFINE_SPINLOCK(enable_lock);
- static DEFINE_MUTEX(prepare_lock);
++	core->new_rate = CLK_RATE_UNSET;
++
++	hlist_for_each_entry(child, &core->children, child_node) {
++		clk_reset_temp_rates(child);
++	}
++}
++
+ /*
+  * calculate the new rates returning the topmost clock that has to be
+  * changed.
+@@ -2244,7 +2255,9 @@ static struct clk_core *clk_calc_new_rates(struct clk_core *core,
+ 		top = clk_calc_new_rates(parent, best_parent_rate);
  
-@@ -1832,7 +1834,6 @@ static unsigned long clk_recalc(struct clk_core *core,
- /**
-  * __clk_recalc_rates
-  * @core: first clk in the subtree
-- * @update_req: Whether req_rate should be updated with the new rate
-  * @msg: notification type (see include/linux/clk.h)
-  *
-  * Walks the subtree of clks starting with clk and recalculates rates as it
-@@ -1842,8 +1843,7 @@ static unsigned long clk_recalc(struct clk_core *core,
-  * clk_recalc_rates also propagates the POST_RATE_CHANGE notification,
-  * if necessary.
-  */
--static void __clk_recalc_rates(struct clk_core *core, bool update_req,
--			       unsigned long msg)
-+static void __clk_recalc_rates(struct clk_core *core, unsigned long msg)
- {
- 	unsigned long old_rate;
- 	unsigned long parent_rate = 0;
-@@ -1857,8 +1857,6 @@ static void __clk_recalc_rates(struct clk_core *core, bool update_req,
- 		parent_rate = core->parent->rate;
+ out:
+-	clk_calc_subtree(core, new_rate, parent, p_index);
++	/* only set new_rates if we found a valid change path */
++	if (top)
++		clk_calc_subtree(core, new_rate, parent, p_index);
  
- 	core->rate = clk_recalc(core, parent_rate);
--	if (update_req)
--		core->req_rate = core->rate;
+ 	return top;
+ }
+@@ -2347,6 +2360,7 @@ static void clk_change_rate(struct clk_core *core)
+ 
+ 	trace_clk_set_rate_complete(core, core->new_rate);
+ 
++	core->new_rate = CLK_RATE_UNSET;
+ 	core->rate = clk_recalc(core, best_parent_rate);
+ 
+ 	if (core->flags & CLK_SET_RATE_UNGATE) {
+@@ -2361,7 +2375,7 @@ static void clk_change_rate(struct clk_core *core)
+ 		__clk_notify(core, POST_RATE_CHANGE, old_rate, core->rate);
+ 
+ 	if (core->flags & CLK_RECALC_NEW_RATES)
+-		(void)clk_calc_new_rates(core, core->new_rate);
++		(void)clk_calc_new_rates(core, core->rate);
  
  	/*
- 	 * ignore NOTIFY_STOP and NOTIFY_BAD return values for POST_RATE_CHANGE
-@@ -1868,13 +1866,13 @@ static void __clk_recalc_rates(struct clk_core *core, bool update_req,
- 		__clk_notify(core, msg, old_rate, core->rate);
+ 	 * Use safe iteration, as change_rate can actually swap parents
+@@ -2437,8 +2451,10 @@ static int clk_core_set_rate_nolock(struct clk_core *core,
+ 		return -EINVAL;
  
- 	hlist_for_each_entry(child, &core->children, child_node)
--		__clk_recalc_rates(child, update_req, msg);
-+		__clk_recalc_rates(child, msg);
- }
+ 	ret = clk_pm_runtime_get(core);
+-	if (ret)
++	if (ret) {
++		clk_reset_temp_rates(top);
+ 		return ret;
++	}
  
- static unsigned long clk_core_get_rate_recalc(struct clk_core *core)
- {
- 	if (core && (core->flags & CLK_GET_RATE_NOCACHE))
--		__clk_recalc_rates(core, false, 0);
-+		__clk_recalc_rates(core, 0);
- 
- 	return clk_core_get_rate_nolock(core);
- }
-@@ -2455,7 +2453,6 @@ static int clk_core_set_rate_nolock(struct clk_core *core,
- 	/* change the rates */
+ 	/* notify that we are about to change rates */
+ 	fail_clk = clk_propagate_rate_change(top, PRE_RATE_CHANGE);
+@@ -2454,6 +2470,8 @@ static int clk_core_set_rate_nolock(struct clk_core *core,
  	clk_change_rate(top);
  
--	core->req_rate = req_rate;
  err:
++	clk_reset_temp_rates(top);
++
  	clk_pm_runtime_put(core);
  
-@@ -2485,6 +2482,7 @@ static int clk_core_set_rate_nolock(struct clk_core *core,
-  */
- int clk_set_rate(struct clk *clk, unsigned long rate)
- {
-+	unsigned long old_req_rate;
- 	int ret;
- 
- 	if (!clk)
-@@ -2493,6 +2491,9 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
- 	/* prevent racing with updates to the clock topology */
- 	clk_prepare_lock();
- 
-+	old_req_rate = clk->core->req_rate;
-+	clk->core->req_rate = rate;
-+
- 	if (clk->exclusive_count)
- 		clk_core_rate_unprotect(clk->core);
- 
-@@ -2501,6 +2502,9 @@ int clk_set_rate(struct clk *clk, unsigned long rate)
- 	if (clk->exclusive_count)
- 		clk_core_rate_protect(clk->core);
- 
-+	if (ret)
-+		clk->core->req_rate = old_req_rate;
-+
- 	clk_prepare_unlock();
- 
  	return ret;
-@@ -2528,6 +2532,7 @@ EXPORT_SYMBOL_GPL(clk_set_rate);
-  */
- int clk_set_rate_exclusive(struct clk *clk, unsigned long rate)
- {
-+	unsigned long old_req_rate;
- 	int ret;
- 
- 	if (!clk)
-@@ -2536,6 +2541,9 @@ int clk_set_rate_exclusive(struct clk *clk, unsigned long rate)
- 	/* prevent racing with updates to the clock topology */
- 	clk_prepare_lock();
- 
-+	old_req_rate = clk->core->req_rate;
-+	clk->core->req_rate = rate;
-+
- 	/*
- 	 * The temporary protection removal is not here, on purpose
- 	 * This function is meant to be used instead of clk_rate_protect,
-@@ -2546,6 +2554,8 @@ int clk_set_rate_exclusive(struct clk *clk, unsigned long rate)
- 	if (!ret) {
- 		clk_core_rate_protect(clk->core);
- 		clk->exclusive_count++;
-+	} else {
-+		clk->core->req_rate = old_req_rate;
- 	}
- 
- 	clk_prepare_unlock();
-@@ -2723,7 +2733,7 @@ static void clk_core_reparent(struct clk_core *core,
- {
- 	clk_reparent(core, new_parent);
- 	__clk_recalc_accuracies(core);
--	__clk_recalc_rates(core, true, POST_RATE_CHANGE);
-+	__clk_recalc_rates(core, POST_RATE_CHANGE);
- }
- 
- void clk_hw_reparent(struct clk_hw *hw, struct clk_hw *new_parent)
-@@ -2807,9 +2817,9 @@ static int clk_core_set_parent_nolock(struct clk_core *core,
- 
- 	/* propagate rate an accuracy recalculation accordingly */
- 	if (ret) {
--		__clk_recalc_rates(core, true, ABORT_RATE_CHANGE);
-+		__clk_recalc_rates(core, ABORT_RATE_CHANGE);
- 	} else {
--		__clk_recalc_rates(core, true, POST_RATE_CHANGE);
-+		__clk_recalc_rates(core, POST_RATE_CHANGE);
- 		__clk_recalc_accuracies(core);
- 	}
- 
-@@ -3706,7 +3716,7 @@ static void clk_core_reparent_orphans_nolock(void)
- 			__clk_set_parent_before(orphan, parent);
- 			__clk_set_parent_after(orphan, parent, NULL);
- 			__clk_recalc_accuracies(orphan);
--			__clk_recalc_rates(orphan, true, 0);
-+			__clk_recalc_rates(orphan, 0);
- 
- 			/*
- 			 * __clk_init_parent() will set the initial req_rate to
-@@ -3888,7 +3898,8 @@ static int __clk_core_init(struct clk_core *core)
- 		rate = parent->rate;
- 	else
+@@ -3900,6 +3918,7 @@ static int __clk_core_init(struct clk_core *core)
  		rate = 0;
--	core->rate = core->req_rate = rate;
-+	core->rate = rate;
-+	core->req_rate = CLK_RATE_UNSET;
+ 	core->rate = rate;
+ 	core->req_rate = CLK_RATE_UNSET;
++	core->new_rate = CLK_RATE_UNSET;
  
  	/*
  	 * Enable CLK_IS_CRITICAL clocks so newly added critical clocks
