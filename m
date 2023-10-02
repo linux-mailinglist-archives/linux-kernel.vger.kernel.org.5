@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E8A7B4CD5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40657B4CD9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230019AbjJBHue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 03:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
+        id S235788AbjJBHvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 03:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjJBHud (ORCPT
+        with ESMTP id S229712AbjJBHvR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 03:50:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF77ABF
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:49:44 -0700 (PDT)
+        Mon, 2 Oct 2023 03:51:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 920E8C9
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:50:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696232983;
+        s=mimecast20190719; t=1696233029;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=R3pNKxFBUrDFcUW5mxBwAPe/18s1s98AEQ79l0wt2AA=;
-        b=Qm9tqKZYABYPRb7sor+tDQnl6L/WGtTQSAzPudhaNhph4w8/WYZ+IFnU2VpsdXnreye4oF
-        pCJcAafjCtfUjiwklDp/EFuDg9arhxBC2k29qzqU/ueuOfKb0JiHc9NcUuwvJct5Wspr9D
-        q66yzEX3PVybY3+1o6rC7327pUlciG8=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=L5fJ5s4tSJ75JUyYMT3IWTY1CcZbtcp06il4dgPzNKo=;
+        b=gGdL8YYsOGjOfc2o3Jyisk4qJpL7PM32LBi4/aYCKNaFtB9JLhXehwX8vDAF0MXcvdZE/m
+        LVU+ohgDbK1lnot2kGaUpY2ONaZUC1U1vcAHu/4lKiI3ObQpbFDaZohflxDiqWKz5l2rcq
+        TFcciADtxg7y9YdiUS1ywi3qY6mr4UY=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-308-rF3EJqj9NCWQvwEYOultqw-1; Mon, 02 Oct 2023 03:49:42 -0400
-X-MC-Unique: rF3EJqj9NCWQvwEYOultqw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3217fdf913dso12018498f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:49:42 -0700 (PDT)
+ us-mta-581--tsNFju0NPqPdIVzNhoEZQ-1; Mon, 02 Oct 2023 03:50:23 -0400
+X-MC-Unique: -tsNFju0NPqPdIVzNhoEZQ-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-63d0c38e986so224545946d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:50:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696232981; x=1696837781;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R3pNKxFBUrDFcUW5mxBwAPe/18s1s98AEQ79l0wt2AA=;
-        b=vYkz64TuoaxZmA3Z7CfOmlTYHP+kp/gNTt/StrFjfFCpLj2PnvjdFi1eUeFNIkPr57
-         axepsnRgDL+eBxk02ihKXI/h8FJqMYAIG0Vs512F9fPW74MegbfyxSYc7R51Z9q2FdqN
-         ttN7ts9UPz4UPrf/Zug+MSw4oVWdUEZdqit3RpuGcY8kD/HHbVL3hBqp4cY6Nke8SQ+h
-         aFyXt4BMB9OBUcrcoIoLKTnhxS//gX7iXhXRfS78nH6EDSThwGmHiXsofF1iqyL0eK2U
-         Djj0JO+/8n0rOwDUw4ZkMsM9XEd2tpM8WnjtsQHQ5OH64SEi3Z0+QPgIC8cyirME1DO4
-         u1WQ==
-X-Gm-Message-State: AOJu0Yzka0fK+Crwho+U3N4+iOUrSWMtBwAeUBmO60IBtYKdNUJ3ckkd
-        nRZw+zP71hfZi8b6jsy1K6NnGf1RKEKbiNbcD/PUlNAttyajfNNcCSQRAwcDti/YGsMxWeRhJT7
-        DuK0b3Q2DfzGjYgVUnPVk7j50
-X-Received: by 2002:adf:cd0a:0:b0:31f:f982:5395 with SMTP id w10-20020adfcd0a000000b0031ff9825395mr10301916wrm.35.1696232981321;
-        Mon, 02 Oct 2023 00:49:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFLBiLwKVSTk/G8HcTeWj03aHPuB2YTlSJwfNO0ffMI/phA6rHC95xmGQ2ps9Gau1Kj+UL4rw==
-X-Received: by 2002:adf:cd0a:0:b0:31f:f982:5395 with SMTP id w10-20020adfcd0a000000b0031ff9825395mr10301886wrm.35.1696232980873;
-        Mon, 02 Oct 2023 00:49:40 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c735:f200:cb49:cb8f:88fc:9446? (p200300cbc735f200cb49cb8f88fc9446.dip0.t-ipconnect.de. [2003:cb:c735:f200:cb49:cb8f:88fc:9446])
-        by smtp.gmail.com with ESMTPSA id s5-20020adf9785000000b003232380ffd7sm19386758wrb.102.2023.10.02.00.49.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 00:49:40 -0700 (PDT)
-Message-ID: <56c63536-3947-49b3-d271-6092e50474ec@redhat.com>
-Date:   Mon, 2 Oct 2023 09:49:38 +0200
+        d=1e100.net; s=20230601; t=1696233023; x=1696837823;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L5fJ5s4tSJ75JUyYMT3IWTY1CcZbtcp06il4dgPzNKo=;
+        b=eJY5F0KJAWoOjEB4HdPSDJ0hA9GOsp3JEVZA8C3H474fKrjhYGwaFGS3qZUMlSH+G/
+         R0qKb0qvD5ICiU/r11ezJuKUWVSOZBpTBJMmHhKvAjgjmjBOwmCYc46/i8pivrm7Vdrg
+         DM/5samdx8utvKOuGZIuQ/JO7w9td8KXZzW/6KfgP2VZUF/HWNJVuQ8fL52OIdRl9IOH
+         T0HrfF06KYSZ/IuN5pM4ryvpbCF14NIqc7bhGDgUOBRRdwd/bGu3+UctFSouF4PFAHcm
+         sWKdxo2Db8dzKWOn1SCjBbQniRx31eVL9qqaUobJDxPEir9ReM4kdKwseRt8crfWP18Z
+         PTcA==
+X-Gm-Message-State: AOJu0YwdrlGWc8MGj51GolwL+6KeuSsIor4ylDQ1CoSlo5zSmipmgIac
+        nq8COBbtmBXy6LAOdYupLVSqqUiRS5kBPYAtGf52+CCgqlLAFstZgdLCphRIbI5aJZtWYWFSjkp
+        Js8vkaaYrAq+O3S7gtClIdNIK
+X-Received: by 2002:a0c:8d07:0:b0:655:8a4b:a3fd with SMTP id r7-20020a0c8d07000000b006558a4ba3fdmr7491364qvb.63.1696233023416;
+        Mon, 02 Oct 2023 00:50:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFIatO2dq8szhlU914qNxjhFLjpRo1iSQwCyioR13FeEegFPwRpmsPfQlILV+sD5kYQXi2J3g==
+X-Received: by 2002:a0c:8d07:0:b0:655:8a4b:a3fd with SMTP id r7-20020a0c8d07000000b006558a4ba3fdmr7491357qvb.63.1696233023100;
+        Mon, 02 Oct 2023 00:50:23 -0700 (PDT)
+Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
+        by smtp.gmail.com with ESMTPSA id r13-20020a0cb28d000000b0064f4e0b2089sm5527376qve.33.2023.10.02.00.50.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 00:50:22 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 00:50:21 -0700
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hannes Reinecke <hare@suse.de>,
+        Chris Leech <cleech@redhat.com>,
+        Rasesh Mody <rmody@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        Manish Chopra <manishc@marvell.com>,
+        Nilesh Javali <njavali@marvell.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        John Meneghini <jmeneghi@redhat.com>,
+        Lee Duncan <lduncan@suse.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] cnic,bnx2,bnx2x: use UIO_MEM_DMA_COHERENT
+Message-ID: <tf2zu6gqaii2bjipbo2mn2hz64px2624rfcmyg36rkq4bskxiw@zgjzznig6e22>
+References: <20230929170023.1020032-1-cleech@redhat.com>
+ <20230929170023.1020032-4-cleech@redhat.com>
+ <2023093055-gotten-astronomy-a98b@gregkh>
+ <ZRhmqBRNUB3AfLv/@rhel-developer-toolbox>
+ <2023093002-unlighted-ragged-c6e1@gregkh>
+ <e0360d8f-6d36-4178-9069-d633d9b7031d@suse.de>
+ <2023100114-flatware-mourner-3fed@gregkh>
+ <7pq4ptas5wpcxd3v4p7iwvgoj7vrpta6aqfppqmuoccpk4mg5t@fwxm3apjkez3>
+ <20231002060424.GA781@lst.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Jann Horn <jannh@google.com>, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, lokeshgidra@google.com, hughd@google.com,
-        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
-        willy@infradead.org, Liam.Howlett@oracle.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-References: <20230923013148.1390521-1-surenb@google.com>
- <20230923013148.1390521-3-surenb@google.com>
- <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
- <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com>
- <CAJuCfpHf6BWaf_k5dBx7mAz49kF5BwBhW_mUxu4E_p2iAy9-iA@mail.gmail.com>
- <9101f70c-0c0a-845b-4ab7-82edf71c7bac@redhat.com> <ZRXNVGI73SfX1lu4@x1n>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <ZRXNVGI73SfX1lu4@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231002060424.GA781@lst.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -98,69 +98,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.09.23 21:00, Peter Xu wrote:
-> On Thu, Sep 28, 2023 at 07:15:13PM +0200, David Hildenbrand wrote:
->> There are some interesting questions to ask here:
->>
->> 1) What happens if the old VMA has VM_SOFTDIRTY set but the new one not? You
->> most probably have to mark the PTE softdirty and not make it writable.
+On Mon, Oct 02, 2023 at 08:04:24AM +0200, Christoph Hellwig wrote:
+> On Sun, Oct 01, 2023 at 07:22:36AM -0700, Jerry Snitselaar wrote:
+> > Changes last year to the dma-mapping api to no longer allow __GFP_COMP,
+> > in particular these two (from the e529d3507a93 dma-mapping pull for
+> > 6.2):
 > 
-> I don't know whether anyone would care about soft-dirty used with uffd
-> remap, but if to think about it..
+> That's complete BS.  The driver was broken since day 1 and always
+> ignored the DMA API requirement to never try to grab the page from the
+> dma coherent allocation because you generally speaking can't.  It just
+> happened to accidentally work the trivial dma coherent allocator that
+> is used on x86.
 > 
-> Logically if the dst vma has !SOFTDIRTY (means, soft-dirty tracking
-> enabled), then IIUC the right thing to do is to assume this page is
-> modified, hence mark softdirty and perhaps proceed with other checks (where
-> write bit can be set if all check pass)?
 
-I think so, yes.
+re-sending since gmail decided to not send plain text:
 
-> 
-> Because from a soft-dirty monitor POV on dst_vma I see this REMAP the same
-> as writting data onto the missing page and got a page fault
-> (e.g. UFFDIO_COPY); we just avoided the allocation and copy.
-> 
-> The src vma seems also fine in this regard: soft-dirty should ignore holes
-> always anyway (e.g. DONTNEED on a page should report !soft-dirty later even
-> if tracking).
+Yes, I agree that it has been broken and misusing the API. Greg's
+question was what changed though, and it was the clean up of
+__GFP_COMP in dma-mapping that brought the problem in the driver to
+light.
 
-Sounds good to me.
+I already said the other day that cnic has been doing this for 14
+years. I'm not blaming you or your __GFP_COMP cleanup commits, they
+just uncovered that cnic was doing something wrong. My apologies if
+you took it that way.
 
-> 
->>
->> 2) VM_UFFD_WP requires similar care I assume? Peter might know.
-> 
-> UFFD_WP shouldn't be affected, iiuc.
-> 
-> Let's first discuss dst vma side.
-> 
-> WP_UNPOPULATED made it slightly complicated but not so much.  The core
-> should be that REMAP only installs pages if it's exactly pte_none():
-> 
-> +       if (!pte_none(orig_dst_pte)) {
-> +               err = -EEXIST;
-> +               goto out;
-> +       }
-> 
-> Then it already covers things like pte markers, and any marker currently
-> will fail the REMAP ioctl already.  May not be always wanted, but no risk
-> of losing wp notifications.  If that'll be a valid use case we can work it
-> out.
-
-Agreed.
-
-> 
-> On src vma, REMAP ioctl should behave the same as DONTNEED.  Now we drop
-> the src pte along with the uffd-wp bit even if set, which is the correct
-> behavior from that regard.
-> 
-> Again, I don't know whether anyone cares on any of those, though..
-
-If it's easy to handle, we should just handle it or instead spell it out 
-why we believe we can break other features. Seems to be very easy to handle.
-
--- 
-Cheers,
-
-David / dhildenb
+Regards,
+Jerry
 
