@@ -2,253 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 766B87B4BDC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 08:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F337B4BE1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 08:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235636AbjJBGzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 02:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45050 "EHLO
+        id S235654AbjJBG4J convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Oct 2023 02:56:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235600AbjJBGzr (ORCPT
+        with ESMTP id S235643AbjJBG4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 02:55:47 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C095611B
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 23:55:38 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-5347e657a11so10907493a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 23:55:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1696229737; x=1696834537; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CLUF0/a7PdgNt6u9Pw5UnwojPsRQiGDOxDcNhly3Luw=;
-        b=QWjeYU1Of290RGkt5rXqZrsegGBEwMXrs1wsqAMDq8fMDKbhsJ2bX46PdlTH3fsMUi
-         H86NLXevjPr5vIoPMbXDBK25TaCAJ1tN164lRdgs3U43/D42udyv7Mtxo6ClTLWviifT
-         rFvCP7CEoj9I4v07jYg93YfMumdu8aaMSU22/Ubd3vJ5vYxS8hYf+oaCuNid9B5LZcPu
-         YE8y0RglHgxfQUOztnMXg4G01uAEytz4P77UoA7EDVqfH5WiIs32U40O4sUy9mqk7vg9
-         I15HnVHhs5dh9tPeRmYHAfAFT2tHKrgACLUTTkeVIFuZV0ZLNQ8/Djz/iz/6xx0lBy2F
-         tpYg==
+        Mon, 2 Oct 2023 02:56:03 -0400
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97541B9;
+        Sun,  1 Oct 2023 23:55:59 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-59f7f46b326so130935027b3.0;
+        Sun, 01 Oct 2023 23:55:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696229737; x=1696834537;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696229758; x=1696834558;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CLUF0/a7PdgNt6u9Pw5UnwojPsRQiGDOxDcNhly3Luw=;
-        b=lMJAgr5SESS/C9/vFFl0LjrNVpZ7TGZSWtijjjfszeGywAfcPWL8nHoS11ag7msuDc
-         r1w5F2e972UnR08iyenSP6JNb7X7bRGagbwEwAjjhcyQ7SidXcNSvuYi/hX8ecfg9tEf
-         FPXsg1G2zVWGXd6eV8bTFSwtNxB1mxa6CbwzswzhSH74RcH+r7X7lF2de1wjxP3boME8
-         lmFZjeR8iRhUj5UujBeaz88dIx4Q4PPJMCWpW8tX4Fm+42vZecSda/os/Sz1uOtlaZZ7
-         m2xW36rmK28sfzjcQwytyMoIu0q8xrS0ZWF2YV6l3pXRQuVdHS6erivFdyUnurR/Arzg
-         y0Tw==
-X-Gm-Message-State: AOJu0YyOlTcztmQCacPnDIWrNyEspkNwi7UPV8wBNB9BvPitdCLojRiE
-        +QRY/mgK9s6g3hZjRb+uLzS4vw==
-X-Google-Smtp-Source: AGHT+IEvPypp8fZTob08fjR9qOqeRPvfVW8GbTB3iOc2doKjnm7+JLd5MoVpJ/Ej47EE5oKwpDVpaA==
-X-Received: by 2002:a05:6402:2694:b0:530:dd97:fe78 with SMTP id w20-20020a056402269400b00530dd97fe78mr12220249edd.7.1696229737219;
-        Sun, 01 Oct 2023 23:55:37 -0700 (PDT)
-Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id m7-20020a056402050700b00537f44827a8sm4095557edv.64.2023.10.01.23.55.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Oct 2023 23:55:37 -0700 (PDT)
-From:   Luca Weiss <luca.weiss@fairphone.com>
-Date:   Mon, 02 Oct 2023 08:55:31 +0200
-Subject: [PATCH v2 2/2] arm64: dts: qcom: sc7280: Add Camera Control
- Interface busses
+        bh=Mroo4u9dUunFLXQiBkd+nT/yozwsDeLEUlSVenP9iqQ=;
+        b=Nt6cAIkdSSZLrAoGW7ZwcLfrrRYmQ/zP5eZbhUZHHBvoTS/2WOqyF6ZllVp6mBGTuL
+         +XHPT4CKSsqGnpHYLStpBbbNzltc7aCIke6lVactw2lsqAHNETCbWLOcefmE7LjTaUvo
+         GRZ+qUOf0qSahgIPvEV0p3U1+336I0Ih3oN3qSGj/+FZ/ivGP7OL9zDdvPCqIMG3jNIw
+         Ub9j6fKQsgqlr248W0LfaFBztPL8tMx5MEUvkld0RKLjd5jlSevudndtf4hzF74BuH+T
+         SitNaJdAZglDXmsqLt1812lobJOv8nSfKMt1zoa4EHV9pDplqxoDa76SpZPYCTmoRtJ/
+         CTMg==
+X-Gm-Message-State: AOJu0YyBHW6FRysv87oXgfdelr3UhRICOc4OFv8ls4hfvrjYf1BOGZwu
+        aXz4oWKDWhEPH6kvAVdL9SZZY9XeR0QZ2g==
+X-Google-Smtp-Source: AGHT+IFkUA8MULCP6p5AlPlp5OBGD8Ruh+QZ8PTrlDVOwDCtPOfVx7QWfkQXrhRA/FBaCZ0kTbExSA==
+X-Received: by 2002:a81:4783:0:b0:592:2a17:9d88 with SMTP id u125-20020a814783000000b005922a179d88mr10115307ywa.47.1696229758542;
+        Sun, 01 Oct 2023 23:55:58 -0700 (PDT)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
+        by smtp.gmail.com with ESMTPSA id x2-20020a818702000000b005869ca8da8esm7510300ywf.146.2023.10.01.23.55.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 01 Oct 2023 23:55:58 -0700 (PDT)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-59f4f80d084so156442127b3.1;
+        Sun, 01 Oct 2023 23:55:58 -0700 (PDT)
+X-Received: by 2002:a81:9250:0:b0:583:d1fa:1fc4 with SMTP id
+ j77-20020a819250000000b00583d1fa1fc4mr10160161ywg.26.1696229758085; Sun, 01
+ Oct 2023 23:55:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231002-sc7280-cci-v2-2-9333fda4612a@fairphone.com>
-References: <20231002-sc7280-cci-v2-0-9333fda4612a@fairphone.com>
-In-Reply-To: <20231002-sc7280-cci-v2-0-9333fda4612a@fairphone.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
+References: <20230927130734.9921-1-changhuang.liang@starfivetech.com> <20230927130734.9921-2-changhuang.liang@starfivetech.com>
+In-Reply-To: <20230927130734.9921-2-changhuang.liang@starfivetech.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 2 Oct 2023 08:55:44 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWOyxnFSjG3Sg2mBUJRdoMFYdUu9H_iZmCSX_0-jd1vnA@mail.gmail.com>
+Message-ID: <CAMuHMdWOyxnFSjG3Sg2mBUJRdoMFYdUu9H_iZmCSX_0-jd1vnA@mail.gmail.com>
+Subject: Re: [-next v1 1/2] dt-bindings: power: Update prefixes for AON power domain
+To:     Changhuang Liang <changhuang.liang@starfivetech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Luca Weiss <luca.weiss@fairphone.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Walker Chen <walker.chen@starfivetech.com>,
+        Hal Feng <hal.feng@starfivetech.com>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the CCI busses found on sc7280 and their pinctrl states.
+Hi Changhuang,
 
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 136 +++++++++++++++++++++++++++++++++++
- 1 file changed, 136 insertions(+)
+Thanks for your patch!
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 66f1eb83cca7..65550de2e4ff 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -3793,6 +3793,86 @@ videocc: clock-controller@aaf0000 {
- 			#power-domain-cells = <1>;
- 		};
- 
-+		cci0: cci@ac4a000 {
-+			compatible = "qcom,sc7280-cci", "qcom,msm8996-cci";
-+			reg = <0 0x0ac4a000 0 0x1000>;
-+			interrupts = <GIC_SPI 460 IRQ_TYPE_EDGE_RISING>;
-+			power-domains = <&camcc CAM_CC_TITAN_TOP_GDSC>;
-+
-+			clocks = <&camcc CAM_CC_CAMNOC_AXI_CLK>,
-+				 <&camcc CAM_CC_SLOW_AHB_CLK_SRC>,
-+				 <&camcc CAM_CC_CPAS_AHB_CLK>,
-+				 <&camcc CAM_CC_CCI_0_CLK>,
-+				 <&camcc CAM_CC_CCI_0_CLK_SRC>;
-+			clock-names = "camnoc_axi",
-+				      "slow_ahb_src",
-+				      "cpas_ahb",
-+				      "cci",
-+				      "cci_src";
-+			pinctrl-0 = <&cci0_default &cci1_default>;
-+			pinctrl-1 = <&cci0_sleep &cci1_sleep>;
-+			pinctrl-names = "default", "sleep";
-+
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			status = "disabled";
-+
-+			cci0_i2c0: i2c-bus@0 {
-+				reg = <0>;
-+				clock-frequency = <1000000>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			cci0_i2c1: i2c-bus@1 {
-+				reg = <1>;
-+				clock-frequency = <1000000>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+		};
-+
-+		cci1: cci@ac4b000 {
-+			compatible = "qcom,sc7280-cci", "qcom,msm8996-cci";
-+			reg = <0 0x0ac4b000 0 0x1000>;
-+			interrupts = <GIC_SPI 271 IRQ_TYPE_EDGE_RISING>;
-+			power-domains = <&camcc CAM_CC_TITAN_TOP_GDSC>;
-+
-+			clocks = <&camcc CAM_CC_CAMNOC_AXI_CLK>,
-+				 <&camcc CAM_CC_SLOW_AHB_CLK_SRC>,
-+				 <&camcc CAM_CC_CPAS_AHB_CLK>,
-+				 <&camcc CAM_CC_CCI_1_CLK>,
-+				 <&camcc CAM_CC_CCI_1_CLK_SRC>;
-+			clock-names = "camnoc_axi",
-+				      "slow_ahb_src",
-+				      "cpas_ahb",
-+				      "cci",
-+				      "cci_src";
-+			pinctrl-0 = <&cci2_default &cci3_default>;
-+			pinctrl-1 = <&cci2_sleep &cci3_sleep>;
-+			pinctrl-names = "default", "sleep";
-+
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			status = "disabled";
-+
-+			cci1_i2c0: i2c-bus@0 {
-+				reg = <0>;
-+				clock-frequency = <1000000>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+
-+			cci1_i2c1: i2c-bus@1 {
-+				reg = <1>;
-+				clock-frequency = <1000000>;
-+				#address-cells = <1>;
-+				#size-cells = <0>;
-+			};
-+		};
-+
- 		camcc: clock-controller@ad00000 {
- 			compatible = "qcom,sc7280-camcc";
- 			reg = <0 0x0ad00000 0 0x10000>;
-@@ -4298,6 +4378,62 @@ tlmm: pinctrl@f100000 {
- 			gpio-ranges = <&tlmm 0 0 175>;
- 			wakeup-parent = <&pdc>;
- 
-+			cci0_default: cci0-default-state {
-+				pins = "gpio69", "gpio70";
-+				function = "cci_i2c";
-+				drive-strength = <2>;
-+				bias-pull-up;
-+			};
-+
-+			cci0_sleep: cci0-sleep-state {
-+				pins = "gpio69", "gpio70";
-+				function = "cci_i2c";
-+				drive-strength = <2>;
-+				bias-pull-down;
-+			};
-+
-+			cci1_default: cci1-default-state {
-+				pins = "gpio71", "gpio72";
-+				function = "cci_i2c";
-+				drive-strength = <2>;
-+				bias-pull-up;
-+			};
-+
-+			cci1_sleep: cci1-sleep-state {
-+				pins = "gpio71", "gpio72";
-+				function = "cci_i2c";
-+				drive-strength = <2>;
-+				bias-pull-down;
-+			};
-+
-+			cci2_default: cci2-default-state {
-+				pins = "gpio73", "gpio74";
-+				function = "cci_i2c";
-+				drive-strength = <2>;
-+				bias-pull-up;
-+			};
-+
-+			cci2_sleep: cci2-sleep-state {
-+				pins = "gpio73", "gpio74";
-+				function = "cci_i2c";
-+				drive-strength = <2>;
-+				bias-pull-down;
-+			};
-+
-+			cci3_default: cci3-default-state {
-+				pins = "gpio75", "gpio76";
-+				function = "cci_i2c";
-+				drive-strength = <2>;
-+				bias-pull-up;
-+			};
-+
-+			cci3_sleep: cci3-sleep-state {
-+				pins = "gpio75", "gpio76";
-+				function = "cci_i2c";
-+				drive-strength = <2>;
-+				bias-pull-down;
-+			};
-+
- 			dp_hot_plug_det: dp-hot-plug-det-state {
- 				pins = "gpio47";
- 				function = "dp_hot";
+On Wed, Sep 27, 2023 at 3:07 PM Changhuang Liang
+<changhuang.liang@starfivetech.com> wrote:
+> Use "JH7110_AON_PD_" prefix for AON power doamin for JH7110 SoC.
+
+domain
+
+>
+> Reviewed-by: Walker Chen <walker.chen@starfivetech.com>
+> Signed-off-by: Changhuang Liang <changhuang.liang@starfivetech.com>
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-2.42.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
