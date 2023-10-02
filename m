@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A33ED7B581A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:56:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C917B582A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238405AbjJBQTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 12:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
+        id S238448AbjJBQQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 12:16:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238300AbjJBQSz (ORCPT
+        with ESMTP id S238488AbjJBQQc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 12:18:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1EEEBD;
-        Mon,  2 Oct 2023 09:18:52 -0700 (PDT)
+        Mon, 2 Oct 2023 12:16:32 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63889E;
+        Mon,  2 Oct 2023 09:16:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696263532; x=1727799532;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=25mC9ayhiVvOyhyLLT89N3/FQzoVtawylvAn3pXdF80=;
-  b=B2tePY5g5C67WekeQ/1V1wRaQ47IXSbbc9IY3mnpJhNrS+nFjq+TQ4s4
-   JDZ4F0HxZl0bo7pUN7vaVgPTK0YSMqOvmMLt3Hwbxnu8TYqo4KwG8DhcE
-   CliNe6IKjsRMGSqqU5Rese7HF/kRIMCzO3KeG0eATUekY6FIX3Zcdp73k
-   7TzWAjPlDYhKb99oL8rcbPwvGF5h7+PTEK/mKtvo3E0MDNSoYfusXREjb
-   z4d2Rx1iK39mvgA58acXnJ9vuU2FBhdk0KwwZgkiy+LxW71NCtdqBphU9
-   4CKPM1rWhYZ7IzZhnCkRXzQ9aoKKf0J2jS72LeEvuFmLFvncOl2CzN+yj
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="362949543"
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1696263389; x=1727799389;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=DPrZPdYeRNfXZOtbRB8PnTVno3GzcqOBQS4+4QktUg4=;
+  b=lu8FI5Q/DBu+DUAfA7dIG6R/munxfToM5VLF8zyz56uM6I/YVxSaGXSG
+   s/dFBKkd4CxsjMputLBUnB+2DZHClgj/5zWvbYJtXLZ1hm5rj0vRz7w/q
+   W28497nGRh4RMwpO2C6E5hBolRIDNVJY1WGAv2DtiN7TuPI1YH2IXWan9
+   jBle+S1ccjNcXa1sDfthA1KpWwZuXXbEVEKrX8kY6ftBZSBaUZoqBYNVx
+   UAorNKaOyZPbJOUK1KUUjeJNq+PM+v3OLoHJXrkcsDiDUp7iOdF0K1AYg
+   ljYlkw3CK7IxeVPRXXd4ZwdqdGs4/Nu/2n3Xsu4j7lo3gxnvk58QTEnMo
+   Q==;
+X-CSE-ConnectionGUID: M5MHFYEZQ66VfybJvKr2SQ==
+X-CSE-MsgGUID: yuxl+01OQCaK38yX3xDJQg==
+X-ThreatScanner-Verdict: Negative
 X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="362949543"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 09:16:27 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="816339811"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="816339811"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga008.fm.intel.com with ESMTP; 02 Oct 2023 09:16:25 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 898081665; Mon,  2 Oct 2023 19:16:20 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v1 10/10] xhci: dbc: Add missing headers
-Date:   Mon,  2 Oct 2023 19:16:10 +0300
-Message-Id: <20231002161610.2648818-10-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
-In-Reply-To: <20231002161610.2648818-1-andriy.shevchenko@linux.intel.com>
-References: <20231002161610.2648818-1-andriy.shevchenko@linux.intel.com>
+   d="scan'208";a="7940525"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Oct 2023 09:16:29 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 2 Oct 2023 09:16:28 -0700
+Received: from marius-VM.mshome.net (10.10.85.11) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2507.21 via Frontend
+ Transport; Mon, 2 Oct 2023 09:16:27 -0700
+From:   <marius.cristea@microchip.com>
+To:     <jic23@kernel.org>, <lars@metafoo.de>, <lgirdwood@gmail.com>,
+        <broonie@kernel.org>
+CC:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <marius.cristea@microchip.com>
+Subject: [PATCH v1] iio: adc: MCP3564: fix warn: unsigned '__x' is never less than zero.
+Date:   Mon, 2 Oct 2023 19:16:18 +0300
+Message-ID: <20231002161618.36373-1-marius.cristea@microchip.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't inherit headers "by chances" from asm/bug.h, asm/io.h,
-etc... Include the needed headers explicitly.
+From: Marius Cristea <marius.cristea@microchip.com>
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+The patch efea15e3c65d: "iio: adc: MCP3564: fix the static checker warning"
+leads to the following Smatch static checker warning:
+
+   smatch warnings:
+   drivers/iio/adc/mcp3564.c:1105 mcp3564_fill_scale_tbls() warn: unsigned '__x' is never less than zero.
+
+vim +/__x +1105 drivers/iio/adc/mcp3564.c
+
+   1094
+   1095  static void mcp3564_fill_scale_tbls(struct mcp3564_state *adc)
+   1096  {
+   .....
+   1103          for (i = 0; i < MCP3564_MAX_PGA; i++) {
+   1104                  ref = adc->vref_mv;
+ > 1105                  tmp1 = shift_right((u64)ref * NANO, pow);
+   1106                  div_u64_rem(tmp1, NANO, &tmp0);
+   1107
+   .....
+   1113  }
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309280738.NWjVfVt4-lkp@intel.com/
+Fixes: efea15e3c65d (iio: adc: MCP3564: fix the static checker warning)
+Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
 ---
- drivers/usb/host/xhci-dbgcap.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ drivers/iio/adc/mcp3564.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/host/xhci-dbgcap.c b/drivers/usb/host/xhci-dbgcap.c
-index 366ce3146a93..eb2e89bf31be 100644
---- a/drivers/usb/host/xhci-dbgcap.c
-+++ b/drivers/usb/host/xhci-dbgcap.c
-@@ -6,9 +6,24 @@
-  *
-  * Author: Lu Baolu <baolu.lu@linux.intel.com>
-  */
-+#include <linux/device.h>
- #include <linux/dma-mapping.h>
--#include <linux/slab.h>
-+#include <linux/errno.h>
-+#include <linux/kstrtox.h>
-+#include <linux/list.h>
- #include <linux/nls.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/slab.h>
-+#include <linux/spinlock.h>
-+#include <linux/string.h>
-+#include <linux/sysfs.h>
-+#include <linux/types.h>
-+#include <linux/workqueue.h>
-+
-+#include <linux/io-64-nonatomic-lo-hi.h>
-+
-+#include <asm/bug.h>
-+#include <asm/byteorder.h>
+diff --git a/drivers/iio/adc/mcp3564.c b/drivers/iio/adc/mcp3564.c
+index 9ede1a5d5d7b..e3f1de5fcc5a 100644
+--- a/drivers/iio/adc/mcp3564.c
++++ b/drivers/iio/adc/mcp3564.c
+@@ -1102,7 +1102,7 @@ static void mcp3564_fill_scale_tbls(struct mcp3564_state *adc)
  
- #include "xhci.h"
- #include "xhci-trace.h"
+ 	for (i = 0; i < MCP3564_MAX_PGA; i++) {
+ 		ref = adc->vref_mv;
+-		tmp1 = shift_right((u64)ref * NANO, pow);
++		tmp1 = ((u64)ref * NANO) >> pow;
+ 		div_u64_rem(tmp1, NANO, &tmp0);
+ 
+ 		tmp1 = tmp1 * mcp3564_hwgain_frac[(2 * i) + 1];
+
+base-commit: 5e99f692d4e32e3250ab18d511894ca797407aec
 -- 
-2.40.0.1.gaa8946217a0b
+2.34.1
 
