@@ -2,110 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 929CB7B5A83
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB137B5A8F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238839AbjJBSpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 14:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35156 "EHLO
+        id S232711AbjJBSqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232711AbjJBSpb (ORCPT
+        with ESMTP id S229555AbjJBSqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 14:45:31 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A69AB;
-        Mon,  2 Oct 2023 11:45:28 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 392DeOKH026344;
-        Mon, 2 Oct 2023 18:45:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=3wU1MhJWEST554d4LwEyoTXgt68gsjdDbD2JetUjQM8=;
- b=ojqjVNAFqGp+MwaBu0JqubNoVWfJCdwXKmM+V6invskDGrk10KD1JlrUc8nBQvgvWPYm
- Kd0AySVNqtTSY82CHgCgpykdWge/ryeh8Xh1IzZuRNe0XRhFCUbb17KCIvA6dNf1NFfX
- vJZGs4stpMEy/yeAqDqEBQLg5V2+FVWJp+74vdK5oMjEkXxndiDr3eqs/ACiJfSCQzK1
- 39plRYLZvpL5doAASt4SM3SKWB8uGdB2CcLiqxo7cGzIH0xZr/RFhDHnlacy7Y0BoTLu
- duJlgZ4P/O5Idv3IMd4iZjbDJ3cn7r6N5N8conTPlVv4CwvaBopI/XeNOtN86MSyNp8N 6Q== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3teapev7n3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Oct 2023 18:45:15 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 392IjEAo017149
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 2 Oct 2023 18:45:14 GMT
-Received: from [10.110.71.113] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 2 Oct
- 2023 11:45:13 -0700
-Message-ID: <6220ce37-dd39-5664-b5fe-5279d81ed228@quicinc.com>
-Date:   Mon, 2 Oct 2023 11:45:12 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v4 4/4] firmware: arm_scmi: Add qcom hvc/shmem transport
- support
-To:     Brian Masney <bmasney@redhat.com>
-CC:     <sudeep.holla@arm.com>, <cristian.marussi@arm.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20230911194359.27547-1-quic_nkela@quicinc.com>
- <20230911194359.27547-5-quic_nkela@quicinc.com> <ZRsNHnuUdGl+vuqz@brian-x1>
- <ZRsOTH//BZ74mU6P@brian-x1>
-Content-Language: en-US
-From:   Nikunj Kela <quic_nkela@quicinc.com>
-In-Reply-To: <ZRsOTH//BZ74mU6P@brian-x1>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Tz2vkXRfvlTs3vQKf5BCdakYE2UF3KTL
-X-Proofpoint-GUID: Tz2vkXRfvlTs3vQKf5BCdakYE2UF3KTL
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-02_12,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- adultscore=0 clxscore=1015 mlxlogscore=732 lowpriorityscore=0
- suspectscore=0 priorityscore=1501 impostorscore=0 phishscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310020144
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 2 Oct 2023 14:46:03 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F961AB
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 11:46:00 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1c6187b44b1so1309335ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 11:46:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696272360; x=1696877160; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8kSRCnQrP7GCGBrc1UUOIIV1aoiUT07F0vO5xwuv0mE=;
+        b=uJELmAMaz03XkhtSRIwYRCwoNVCOUZGsrWIjTzY+5RkJD1//I7I8GChWQifnTNx7wA
+         n1QB0Ynz3IK9wHXXG16GcMKXyCqLHqilijZpeya3q/kiKXHrw0PaRbyX7lmKN68Z4lyg
+         74OY29ZDmBCaf4VapcMCb0qr+qI6perSjSsEAbaHA/RNLxX5PC9jp+lYBMMH+CqW1qW7
+         WcX8YloVIu1BLp+lEwksepLAG8ZThqP09I1x0vilwwuVr5JLTj7ygt9Qm6For86SzKHn
+         zXZm0pEKBV8v7emR4rxgglmiglU9YSsh6/V1jewxyELbhccOnrZ7pKvfsJ+DVxF+XdFL
+         Y4DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696272360; x=1696877160;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8kSRCnQrP7GCGBrc1UUOIIV1aoiUT07F0vO5xwuv0mE=;
+        b=HaYV2IsOPcRqKnnq1yjID1qtWdraWbUrKjtGfa3d39LAr2QYHd89BElIZFnALK2CaF
+         Fvpin/HxSPJF6Jcz5uLTvi/ULnwzuW3TfACqochGGFvwuFx48/CzJeOAjLgEq+PEWi3D
+         B7oFP/cy1Z3aoIwEUUAWhF6jtEHXvf9CIorRJBvTViihm+Bu+M8lDz0AHmGsFWkCcfbR
+         lBhI2Y+8b39v1MtUOlYu8EaSfTTLcWMfvV++EtQgg8LkJrhUGlNO+PFahFrEu8p9pNdw
+         fwxB4qPA1hpkR8mCJWUsPup2nUxyZXGTXwD6Lq2Z3gRs4EzCQ5BHEHRz4vvHmI0+Hxqj
+         pySw==
+X-Gm-Message-State: AOJu0YzdbIlK2tWe/SyNM/iztXuNo6e6+LZvCiGPqWV8o86zG53E23K8
+        YpyU5SClbVxIcU+r5yj0nBOj3Nw/TCw=
+X-Google-Smtp-Source: AGHT+IFwNu2qW8CoPqxOWo5pHPn2BkknPX6/ha6VTGQvkh0EnmM8lW1B3hYnT7zbKi9Oua8Il85e+7AYD2I=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:d4cd:b0:1c7:217c:3e4b with SMTP id
+ o13-20020a170902d4cd00b001c7217c3e4bmr196964plg.5.1696272359895; Mon, 02 Oct
+ 2023 11:45:59 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 11:45:57 -0700
+In-Reply-To: <ac097a26e96ded73e19200066b9063354096a8fd.camel@infradead.org>
+Mime-Version: 1.0
+References: <a3989e7ff9cca77f680f9bdfbaee52b707693221.camel@infradead.org>
+ <ZRbolEa6RI3IegyF@google.com> <ee679de20e3a53772f9d233b9653fdc642781577.camel@infradead.org>
+ <ZRsAvYecCOpeHvPY@google.com> <ac097a26e96ded73e19200066b9063354096a8fd.camel@infradead.org>
+Message-ID: <ZRsP5cvyqLaihb76@google.com>
+Subject: Re: [PATCH v2] KVM: x86: Use fast path for Xen timer delivery
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     kvm <kvm@vger.kernel.org>, Paul Durrant <paul@xen.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 02, 2023, David Woodhouse wrote:
+> On Mon, 2023-10-02 at 10:41 -0700, Sean Christopherson wrote:
+> > On Fri, Sep 29, 2023, David Woodhouse wrote:
+> > > On Fri, 2023-09-29 at 08:16 -0700, Sean Christopherson wrote:
+> > > > On Fri, Sep 29, 2023, David Woodhouse wrote:
+> > > > > From: David Woodhouse <dwmw@amazon.co.uk>
+> > > > >=20
+> > > > > Most of the time there's no need to kick the vCPU and deliver the=
+ timer
+> > > > > event through kvm_xen_inject_timer_irqs(). Use kvm_xen_set_evtchn=
+_fast()
+> > > > > directly from the timer callback, and only fall back to the slow =
+path
+> > > > > when it's necessary to do so.
+> > > >=20
+> > > > It'd be helpful for non-Xen folks to explain "when it's necessary".=
+=C2=A0 IIUC, the
+> > > > only time it's necessary is if the gfn=3D>pfn cache isn't valid/fre=
+sh.
+> > >=20
+> > > That's an implementation detail.
+> >=20
+> > And?=C2=A0 The target audience of changelogs are almost always people t=
+hat care about
+> > the implementation.
+> >
+> > > Like all of the fast path functions that can be called from
+> > > kvm_arch_set_irq_inatomic(), it has its own criteria for why it might=
+ return
+> > > -EWOULDBLOCK or not. Those are *its* business.
+> >=20
+> > And all of the KVM code is the business of the people who contribute to=
+ the kernel,
+> > now and in the future.=C2=A0 Yeah, there's a small chance that a detail=
+ed changelog can
+> > become stale if the patch races with some other in-flight change, but e=
+ven *that*
+> > is a useful data point.=C2=A0 E.g. if Paul's patches somehow broke/degr=
+aded this code,
+> > then knowing that what the author (you) intended/observed didn't match =
+reality when
+> > the patch was applied would be extremely useful information for whoever=
+ encountered
+> > the hypothetical breakage.
+>=20
+> Fair enough, but on this occasion it truly doesn't matter. It has
+> nothing to do with the implementation of *this* patch. This code makes
+> no assumptions and has no dependency on *when* that fast path might
+> return -EWOULDBLOCK. Sometimes it does, sometimes it doesn't. This code
+> just doesn't care one iota.
+>=20
+> If this code had *dependencies* on the precise behaviour of
+> kvm_xen_set_evtchn_fast() that we needed to reason about, then sure,
+> I'd have written those explicitly into the commit comment *and* tried
+> to find some way of enforcing them with runtime warnings etc.
+>=20
+> But it doesn't. So I am no more inclined to document the precise
+> behaviour of kvm_xen_set_evtchn_fast() in a patch which just happens to
+> call it, than I am inclined to document hrtimer_cancel() or any other
+> function called from the new code :)
 
-On 10/2/2023 11:39 AM, Brian Masney wrote:
-> On Mon, Oct 02, 2023 at 02:34:06PM -0400, Brian Masney wrote:
->> On Mon, Sep 11, 2023 at 12:43:59PM -0700, Nikunj Kela wrote:
->>> +		func_id = readl((void __iomem *)(scmi_info->shmem) + size - 16);
->>> +#ifdef CONFIG_ARM64
->>> +		cap_id = readq((void __iomem *)(scmi_info->shmem) + size - 8);
->>> +#else
->>> +		/* capability-id is 32 bit wide on 32bit machines */
->>> +		cap_id = readl((void __iomem *)(scmi_info->shmem) + size - 8);
->>> +#endif
->> The 32 bit case is defined as a u64 in two places above.
-> Also should the 32 bit case be 'size - 4' instead of 'size - 8'? Sorry
-> I just noticed that as soon as I pressed send.
+Just because some bit of code doesn't care/differentiate doesn't mean the b=
+ehavior
+of said code is correct.  I agree that adding a comment to explain the gory=
+ details
+is unnecessary and would lead to stale code.  But changelogs essentially ca=
+pture a
+single point in a time, and a big role of the changelog is to help reviewer=
+s and
+readers understand (a) the *intent* of the change and (b) whether or not th=
+at change
+is correct.
+
+E.g. there's an assumption that -EWOULDBLOCK is the only non-zero return co=
+de where
+the correct response is to go down the slow path.
+
+I'm not asking to spell out every single condition, I'm just asking for cla=
+rification
+on what the intended behavior is, e.g.
+
+  Use kvm_xen_set_evtchn_fast() directly from the timer callback, and fall
+  back to the slow path if the event is valid but fast delivery isn't
+  possible, which currently can only happen if delivery needs to block,
+  e.g. because the gfn=3D>pfn cache is invalid or stale.
+
+instead of simply saying "when it's necessary to do so" and leaving it up t=
+o the
+reader to figure what _they_ think that means, which might not always align=
+ with
+what the author actually meant.
+
+> > > And in fact one of Paul's current patches is tweaking them subtly, bu=
+t that
+> > > isn't relevant here. (But yes, you are broadly correct in your
+> > > understanding.)
+> > >=20
+> > > > > This gives a significant improvement in timer latency testing (us=
+ing
+> > > > > nanosleep() for various periods and then measuring the actual tim=
+e
+> > > > > elapsed).
+> > > > >=20
+> > > > > However, there was a reason=C2=B9 the fast path was dropped when =
+this support
+> > > >=20
+> > > > Heh, please use [1] or [*] like everyone else.=C2=A0 I can barely s=
+ee that tiny little =C2=B9.
+> > >=20
+> > > Isn't that the *point*? The reference to the footnote isn't supposed =
+to
+> > > detract from the flow of the main text. It's exactly how you'll see i=
+t
+> > > when typeset properly.
+> > =C2=A0
+> > Footnotes that are "typeset properly" have the entire footnote in a dif=
+ferent
+> > font+size.=C2=A0 A tiny number next to normal sized text just looks wei=
+rd to me.
+> >=20
+> > And I often do a "reverse lookup" when I get to footnotes that are link=
+s, e.g. to
+> > gauge whether or not it's worth my time to follow the link.=C2=A0 Tryin=
+g to find the
+> > tiny =C2=B9 via a quick visual scan is an exercise in frustration, at l=
+east for the
+> > monospace font I use for reading mail, e.g. it's much more readable on =
+my end in
+> > an editor using a different font.
+> >=20
+> > Which is a big benefit to sticking to the old and kludgly ASCII: it pro=
+vides a
+> > fairly consistent experience regardless of what client/font/etc each re=
+ader is
+> > using.=C2=A0 I'm not completely against using unicode characters, e.g. =
+for names with
+> > characters not found in the Latin alphabet, but for code and things lik=
+e this,
+> > IMO simpler is better.
+> >=20
+> > > I've always assumed the people using [1] or [*] just haven't yet real=
+ised
+> > > that it's the 21st century and we are no longer limited to 7-bit ASCI=
+I. Or
+> > > haven't worked out how to type anything but ASCII.
+> >=20
+> > Please don't devolve into ad hominem attacks against other reviews and =
+contributors.
+> > If you want to argue that using footnote notation unicode is superior i=
+n some way,
+> > then by all means, present your arguments.
+>=20
+> Hey, you started the logical fallacies with the ad populum when you
+> said "everyone else" :)
 >
-> Brian
+> Not that that was true; there are examples of =C2=B9 being used in the
+> kernel changelog going back decades.
 
-I already addressed this in one of your previous comments. We are 
-keeping last 16 bytes reserved for these two parameters regardless of 
-the architecture.
-
-
+LOL, fine, "almost everyone else".
