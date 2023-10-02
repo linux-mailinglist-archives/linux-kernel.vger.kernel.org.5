@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0DB97B54E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 469B07B5513
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237606AbjJBOOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46180 "EHLO
+        id S237620AbjJBOOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:14:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237540AbjJBOOA (ORCPT
+        with ESMTP id S237479AbjJBOOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:14:00 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0082AD;
-        Mon,  2 Oct 2023 07:13:57 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qnJgH-0003Y1-AM; Mon, 02 Oct 2023 16:13:53 +0200
-Message-ID: <048d9715-9cb2-4bc0-b8b0-5e30a0db54c7@leemhuis.info>
-Date:   Mon, 2 Oct 2023 16:13:52 +0200
+        Mon, 2 Oct 2023 10:14:50 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90AE5AD;
+        Mon,  2 Oct 2023 07:14:46 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RzjbW6tMyz67ZgC;
+        Mon,  2 Oct 2023 22:13:11 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 2 Oct
+ 2023 15:14:44 +0100
+Date:   Mon, 2 Oct 2023 15:14:43 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Robert Richter <rrichter@amd.com>
+CC:     Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Ben Widawsky <bwidawsk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Davidlohr Bueso" <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>, <linux-cxl@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Terry Bowman <terry.bowman@amd.com>
+Subject: Re: [PATCH v11 01/20] cxl/port: Fix release of RCD endpoints
+Message-ID: <20231002151443.000017d5@Huawei.com>
+In-Reply-To: <20230927154339.1600738-2-rrichter@amd.com>
+References: <20230927154339.1600738-1-rrichter@amd.com>
+        <20230927154339.1600738-2-rrichter@amd.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
-Content-Language: en-US, de-DE
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Mark Brown <broonie@kernel.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     Sven Frotscher <sven.frotscher@gmail.com>, git@augustwikerfors.se,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>
-References: <20230927223758.18870-1-sven.frotscher@gmail.com>
- <46560887-0b6e-42ac-96c3-b4dbc1d7cb61@leemhuis.info>
- <4fa7d39d-dc34-4550-97fa-2b089f364cca@sirena.org.uk>
- <0a3feafc-b843-420a-9b04-c835f8210c1a@amd.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <0a3feafc-b843-420a-9b04-c835f8210c1a@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1696256037;2750f13f;
-X-HE-SMSGID: 1qnJgH-0003Y1-AM
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.10.23 15:47, Mario Limonciello wrote:
-> On 10/2/2023 06:52, Mark Brown wrote:
->> On Mon, Oct 02, 2023 at 11:32:48AM +0200, Linux regression tracking
->> (Thorsten Leemhuis) wrote:
->>
->>> Makes me wonder: How many more such quirk entries will be needed? Will
->>> we have all machines listed soon, or do we expect that future Lenovo
->>> hardware will need entries as well? If it's the latter: are quirks
->>> really the right solution here, or do they just hide some bug or then
->>> need for code that automatically handles things?
->>
->> x86 firmware descriptions are terrible, it's just an endless procession
->> of quirks.  The model for ACPI is not to describe key information in the
->> kernel and instead on Windows load device specific information from
->> separately supplied tables.  On Linux that translates into these endless
->> quirks, on Windows it's platform specific drivers for otherwise generic
->> audio hardware.
+On Wed, 27 Sep 2023 17:43:20 +0200
+Robert Richter <rrichter@amd.com> wrote:
+
+> Binding and unbindind RCD endpoints (e.g. mem0 device) caused the
+> corresponding endpoint not being released. Reason for that is the
+> wrong port discovered for RCD endpoints. See cxl_mem_probe() for
+> proper endpoint parent detection. Fix delete_endpoint() respectively.
 > 
-> I knew there was a TON of "82" prefix systems from Lenovo so it was an
-> educated guess that all of them needed DMIC support.  This was incorrect
-> because one of them didn't have DMIC and that caused a no mic support
-> problem on that system.
+> Signed-off-by: Robert Richter <rrichter@amd.com>
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+I wondered briefly if an access function of some type could be
+used to hide this detail away. However it's messy enough that
+that is a little tricky so I think we should just keep it
+explicit in each location.  So as you have it here.
+
+> ---
+>  drivers/cxl/core/port.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 > 
-> So in the case of this seemingly endless list of systems being added to
-> enable DMIC support Mark is right, Windows does it differently.
+> diff --git a/drivers/cxl/core/port.c b/drivers/cxl/core/port.c
+> index 7ca01a834e18..d4572a02989a 100644
+> --- a/drivers/cxl/core/port.c
+> +++ b/drivers/cxl/core/port.c
+> @@ -1222,12 +1222,17 @@ static void delete_endpoint(void *data)
+>  	struct cxl_memdev *cxlmd = data;
+>  	struct cxl_port *endpoint = cxlmd->endpoint;
+>  	struct cxl_port *parent_port;
+> +	struct cxl_dport *dport;
+>  	struct device *parent;
+>  
+> -	parent_port = cxl_mem_find_port(cxlmd, NULL);
+> +	parent_port = cxl_mem_find_port(cxlmd, &dport);
+>  	if (!parent_port)
+>  		goto out;
+> -	parent = &parent_port->dev;
+> +
+> +	if (dport->rch)
+> +		parent = parent_port->uport_dev;
+> +	else
+> +		parent = &parent_port->dev;
+>  
+>  	device_lock(parent);
+>  	if (parent->driver && !endpoint->dead) {
 
-Now I understand things better, many thx. But please allow me one more
-question from the cheap seats:
-
-Seems before c008323fe361 things worked for a lot of systems for about
-one year thx to 2232b2dd8cd4 (which added the wide "82" prefix quirk).
-We then made that one machine work with c008323fe361, but broke a lot of
-others with it that now need to be fixed with additional quirks; that
-"TON of 82 prefix systems" sounds like we might not be close to the end
-of that journey.
-
-So can't we just do it the other way around and assume DMIC support on
-Lenovo 82* machines, except on those where we know it to cause trouble?
-
-Again: you are the experts here. If you are positive that we soon got
-all machines covered where c008323fe361 causes a regression, then I
-guess it's best to continue the patch we're on.
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
