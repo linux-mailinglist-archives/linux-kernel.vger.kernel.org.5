@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC607B52A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57ED77B5291
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:08:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237242AbjJBMHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 08:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43158 "EHLO
+        id S237257AbjJBMIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 08:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236937AbjJBMGn (ORCPT
+        with ESMTP id S236945AbjJBMGn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Oct 2023 08:06:43 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F351594;
-        Mon,  2 Oct 2023 05:06:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A597B0;
+        Mon,  2 Oct 2023 05:06:40 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:9537:67ca:c85e:d0ae])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4E233660731D;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D95976607356;
         Mon,  2 Oct 2023 13:06:38 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696248398;
-        bh=7OP/lnsbD5MzPZ4L/gceSmxIzda3Ng9eLtu0phjni7k=;
+        s=mail; t=1696248399;
+        bh=ZWZu+iiWZeSR97TuxWAcPyCT2zWmqcsNlEZTasx6lQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f88Lkm0oKTrBkVS+11PzY0oHDtH24yH2hRy+ovgFH1RcJt5BuaKf6dhZxZLVj0d1m
-         pEzDe/zH34BjfmNCWHk1Svyw2F0rYKTA0eC9K3BsAvthcKPWLO/lVfpBVpCabDtXy6
-         rlKYM4QI0x7Qk85CCDVH9q6BouBVguyNbu+VOFQ0yAyJ2trsFPY0DuP4fZshU3ycxI
-         RhqyY6MdSIb8qkbL9MDzvwRW4iTiRZJI26o6YziZ7lkHlbOiT8kT8pdOhQoP461h+l
-         cYL1AwoinjFwZCpMScAjefTMXBVzvZ/bJY7xQ0t36JVzRr+x6xGZSgr4yqr9FwgL5N
-         5Lpd1ZJ/O0xVA==
+        b=jHuIY1C3xdaiIOcz8Gnf5aJox/kRb26KCOPiCbxf/EP7Q4CYPzisp52Z9WHgipQGK
+         1olsqWV1yrelchZO27XT5TZl8znK3yUVD1ZLGBuDsXGazsGSBKlLN1QNFjTgUYvmdl
+         EU0twmXBgV45JyyTtRYUOeX3nclSp6MAV+16D7L2DPC0cT6sfat/49+Khg38EPriEJ
+         58yE+KobUFleYnvREnM9aj9XS1ml0CBr1XpuaOQ1RRhpEm1Hbe3AMSGb5na0pn1/Kc
+         L2qJehzRfvjg6plJ5W9XGnM4oNagK60r1k7SG+ZQ0P6S2pne7VFZkUUvlx0joAqCCG
+         kUVB5ZLvMQU6w==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v9 26/53] media: pci: dt3155: Remove useless check
-Date:   Mon,  2 Oct 2023 14:05:50 +0200
-Message-Id: <20231002120617.119602-27-benjamin.gaignard@collabora.com>
+Subject: [PATCH v9 27/53] media: pci: netup_unidvb: Remove useless number of buffers check
+Date:   Mon,  2 Oct 2023 14:05:51 +0200
+Message-Id: <20231002120617.119602-28-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231002120617.119602-1-benjamin.gaignard@collabora.com>
 References: <20231002120617.119602-1-benjamin.gaignard@collabora.com>
@@ -60,27 +60,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-min_buffers_needed is already set to 2 so remove this useless
-check.
+vb2 core tests this already so remove it.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- drivers/media/pci/dt3155/dt3155.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/media/pci/netup_unidvb/netup_unidvb_core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/media/pci/dt3155/dt3155.c b/drivers/media/pci/dt3155/dt3155.c
-index 548156b199cc..d09cde2f6ee4 100644
---- a/drivers/media/pci/dt3155/dt3155.c
-+++ b/drivers/media/pci/dt3155/dt3155.c
-@@ -128,8 +128,6 @@ dt3155_queue_setup(struct vb2_queue *vq,
- 	struct dt3155_priv *pd = vb2_get_drv_priv(vq);
- 	unsigned size = pd->width * pd->height;
+diff --git a/drivers/media/pci/netup_unidvb/netup_unidvb_core.c b/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
+index d85bfbb77a25..52de9b0af812 100644
+--- a/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
++++ b/drivers/media/pci/netup_unidvb/netup_unidvb_core.c
+@@ -297,11 +297,9 @@ static int netup_unidvb_queue_setup(struct vb2_queue *vq,
+ 	dev_dbg(&dma->ndev->pci_dev->dev, "%s()\n", __func__);
  
--	if (vq->num_buffers + *nbuffers < 2)
--		*nbuffers = 2 - vq->num_buffers;
- 	if (*num_planes)
- 		return sizes[0] < size ? -EINVAL : 0;
- 	*num_planes = 1;
+ 	*nplanes = 1;
+-	if (vq->num_buffers + *nbuffers < VIDEO_MAX_FRAME)
+-		*nbuffers = VIDEO_MAX_FRAME - vq->num_buffers;
+ 	sizes[0] = PAGE_ALIGN(NETUP_DMA_PACKETS_COUNT * 188);
+ 	dev_dbg(&dma->ndev->pci_dev->dev, "%s() nbuffers=%d sizes[0]=%d\n",
+-		__func__, *nbuffers, sizes[0]);
++		__func__, vb2_get_num_buffers(vq), sizes[0]);
+ 	return 0;
+ }
+ 
 -- 
 2.39.2
 
