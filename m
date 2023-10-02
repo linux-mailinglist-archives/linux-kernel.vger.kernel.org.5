@@ -2,100 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E847B4CBA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E6F7B4CBE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235761AbjJBHmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 03:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
+        id S235777AbjJBHnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 03:43:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230011AbjJBHmo (ORCPT
+        with ESMTP id S229853AbjJBHnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 03:42:44 -0400
-Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4781B3
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:42:40 -0700 (PDT)
-Received: by mail-vk1-xa31.google.com with SMTP id 71dfb90a1353d-49a319c9e17so4769945e0c.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:42:40 -0700 (PDT)
+        Mon, 2 Oct 2023 03:43:07 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45AEAB3
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:43:04 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7ab9488f2f0so6262784241.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:43:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696232559; x=1696837359; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696232583; x=1696837383; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vSh85qp98TAtPCnT67pcz20dczDxxqTD4YcLwPP44io=;
-        b=kCNawjjI/f4n+biV+vLjAA/Cfl6jcOXHeKOk6l1DA+XWCEw7e9oVx73OoewqH0LByQ
-         +bzuu0sAWaZYVwCLahYw+AukSMGBd7pll8bDsGEWTI0KsZB6jskePOTvjQBwKXBM0XAB
-         bwFAZNoS3nvrC759EuJ9C5P8R/AeSST675QPXxop/lqONFbnhx4tzfwsP+2aS1+tuq9y
-         3g6AnYWtZMCAniGXwxEg8IO43lILdpQBB9hVZ0p68LFPBqFrN+OuQWhR6tJLKxp804S+
-         +SjVQNgF7PS52qa5Lel7ragBcrINhcf0LT7zRq7aGv2DSQI47Hl5DsAw6T4OaJg6tGqm
-         l/cA==
+        bh=u+VAUc4E+Y21AdLpQo4ZI38h7A9OH7Ux8a8Ek8zfCE8=;
+        b=qplXjsWHxVZXvDUoPJc+ruqcd/LRX1kKkgII1SKDn4FvThkhEGf2Lf+QfX+2O8ktTz
+         1MCoMyNWO3JAqO5k8gXrR2Z8fxyNdIypQmpF8NIAq77zRyi9mCnp2XJlzQbXXfKbYdyK
+         fmNqkOT630jLVqHNOphKHctCSwPvlSMuaqV4ygHW7tGsLgYJZF+Johncih+QN79x0Dcz
+         ztW90zVVfTG3md3HZ7jCWnhjwpjs/3lCqEV2PG+hwIm6IA6xnINdPFMssFMLDQH/lJzr
+         /gdfzQrV57+EgAP0Tl/KlCUWQ6aXStJsA4IdA4bYCPbj9hrMkniMByf4dGRQaC/JQkVN
+         oPIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696232559; x=1696837359;
+        d=1e100.net; s=20230601; t=1696232583; x=1696837383;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vSh85qp98TAtPCnT67pcz20dczDxxqTD4YcLwPP44io=;
-        b=mEtnZ8FmiNGq2cALfDO+XSLgO96WLZnY39AVTx3dshTOWZnNdLs9fc09H8YdoaulGU
-         CAYikp6QdlVj+mp6twQoe4Chgc8MwUAh7x4jv9ZVbd+Kicq6qDd6/gt11LwYuDBL+qoG
-         ajjJLKZpKhWcqYqL4/eBK22eEvL81Pv63hHf0BReqd3GXGrLoghTFGR4qyZSROGDHG9m
-         7f68fKeFAHS5idMLaHJV5Ej+YwcXEG1rvMGParafurNbGad8n02DVWYw8Aw5OeSzn14x
-         ZdBVc1LOhlz2SqSyi46vY5a6byNRzwRWnwavo3NsnOHlFdV9WnQ448E6upaW+602lcrP
-         IXwg==
-X-Gm-Message-State: AOJu0YwA59fTe+BvJ3D4AnEdnrQdFiBjvwhjE0YzvwIq5U3ApCwPqlSz
-        tPt5KuWdrAbgsGOrW/YxiEq0fKWr/+bLRqMsNejJxA==
-X-Google-Smtp-Source: AGHT+IHiH489RsoEvG5mrvyEeCxTptwArpNqWcQAsB6rSnXOWlpgRvQ3FVsqD93DxR1muZRoq/7CFunpI/fq4emM2Mw=
-X-Received: by 2002:a1f:ca82:0:b0:496:f00a:88b2 with SMTP id
- a124-20020a1fca82000000b00496f00a88b2mr6397262vkg.7.1696232559619; Mon, 02
- Oct 2023 00:42:39 -0700 (PDT)
+        bh=u+VAUc4E+Y21AdLpQo4ZI38h7A9OH7Ux8a8Ek8zfCE8=;
+        b=tLuDaBvazDMV76Mwe1vZeMMWT9IWUA8DUMiWNXPSAH5V0dMYruQenlsMDyiV4wcCeC
+         qjoibobfwnxPOns0pNqUsdL3vzxqKOECTNkp95Z0yhBe3BAtAAwI+kR0kgf8X5SSdm1y
+         MP/UYLWkSqdZqAQiXgz05HAQCagiHMruNsGmgqC/jwjUdUe5AlghpAL/rKdhlOZ0hbb2
+         3rB02tgS2aoHEYRlsMIjjh4vLKKOk37LPDqtsLTye4YEi8nxTV2Ixy1dMFBIlqZ3ZgAS
+         taPtvpH3EkdUu3pDEjQaw7a3PaFKQYAsSTj+VBLKdRlEUImwBvStoOF5/TBMDzAXsDOb
+         zHug==
+X-Gm-Message-State: AOJu0YzCuYmSWNmEKLwf2rBaoLKadG+9u5EaO3h6++qdK+DUDZEF9HcY
+        pTbnau82wE8edHltKClDJmx0O8otU76Vp+jf1JVjTw==
+X-Google-Smtp-Source: AGHT+IFmS8Y8o10/iX1hxTsbAjkfklmWIjUvA2ZCS4Kabcn+Zm8qj4rKrioQbkwgn36XGL+DicPyDjqH3RTB3brkDMI=
+X-Received: by 2002:a67:cfc6:0:b0:452:7795:7c93 with SMTP id
+ h6-20020a67cfc6000000b0045277957c93mr9731589vsm.29.1696232583363; Mon, 02 Oct
+ 2023 00:43:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230928194801.2278999-1-mmaurer@google.com>
-In-Reply-To: <20230928194801.2278999-1-mmaurer@google.com>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Mon, 2 Oct 2023 09:42:28 +0200
-Message-ID: <CAH5fLgjUa+TRO_xOQp-uRo5wC8+iVgSh+MA573EjfFtiHbA4mg@mail.gmail.com>
-Subject: Re: [PATCH v3] rust: Respect HOSTCC when linking for host
-To:     Matthew Maurer <mmaurer@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Nicolas Schier <nicolas@fjasle.eu>, Tom Rix <trix@redhat.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, llvm@lists.linux.dev
+References: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr> <20231001-pxa-gpio-v4-5-0f3b975e6ed5@skole.hr>
+In-Reply-To: <20231001-pxa-gpio-v4-5-0f3b975e6ed5@skole.hr>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 2 Oct 2023 09:42:52 +0200
+Message-ID: <CAMRc=MdHv0YxSowMnqJ8xG1_w8dwTWVJV1K0b1jgectPTbOheQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 5/6] ARM: pxa: Convert gumstix Bluetooth to GPIO descriptors
+To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Cc:     Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-spi@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 9:48=E2=80=AFPM Matthew Maurer <mmaurer@google.com>=
- wrote:
+On Sun, Oct 1, 2023 at 4:13=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovic@=
+skole.hr> wrote:
 >
-> Currently, rustc defaults to invoking `cc`, even if `HOSTCC` is defined,
-> resulting in build failures in hermetic environments where `cc` does not
-> exist. This includes both hostprogs and proc-macros.
+> Gumstix still uses the legacy GPIO interface for resetting the Bluetooth
+> device.
 >
-> Since we are setting the linker to `HOSTCC`, we set the linker flavor to
-> `gcc` explicitly. The linker-flavor selects both which linker to search
-> for if the linker is unset, and which kind of linker flags to pass.
-> Without this flag, `rustc` would attempt to determine which flags to
-> pass based on the name of the binary passed as `HOSTCC`. `gcc` is the
-> name of the linker-flavor used by `rustc` for all C compilers, including
-> both `gcc` and `clang`.
+> Convert it to use the GPIO descriptor interface.
 >
-> Signed-off-by: Matthew Maurer <mmaurer@google.com>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
+> ---
+>  arch/arm/mach-pxa/gumstix.c | 24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
+>
+> diff --git a/arch/arm/mach-pxa/gumstix.c b/arch/arm/mach-pxa/gumstix.c
+> index c9f0f62187bd..14e1b9274d7a 100644
+> --- a/arch/arm/mach-pxa/gumstix.c
+> +++ b/arch/arm/mach-pxa/gumstix.c
+> @@ -20,8 +20,8 @@
+>  #include <linux/delay.h>
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/mtd/partitions.h>
+> +#include <linux/gpio/consumer.h>
+>  #include <linux/gpio/machine.h>
+> -#include <linux/gpio.h>
+>  #include <linux/err.h>
+>  #include <linux/clk.h>
+>
+> @@ -129,6 +129,9 @@ static void gumstix_udc_init(void)
+>  #endif
+>
+>  #ifdef CONFIG_BT
+> +GPIO_LOOKUP_SINGLE(gumstix_bt_gpio_table, "pxa2xx-uart.1", "pxa-gpio",
+> +               GPIO_GUMSTIX_BTRESET, "BTRST", GPIO_ACTIVE_LOW);
+> +
+>  /* Normally, the bootloader would have enabled this 32kHz clock but many
+>  ** boards still have u-boot 1.1.4 so we check if it has been turned on a=
+nd
+>  ** if not, we turn it on with a warning message. */
+> @@ -153,24 +156,23 @@ static void gumstix_setup_bt_clock(void)
+>
+>  static void __init gumstix_bluetooth_init(void)
+>  {
+> -       int err;
+> +       struct gpio_desc *desc;
+> +
+> +       gpiod_add_lookup_table(&gumstix_bt_gpio_table);
+>
+>         gumstix_setup_bt_clock();
+>
+> -       err =3D gpio_request(GPIO_GUMSTIX_BTRESET, "BTRST");
+> -       if (err) {
+> +       desc =3D gpiod_get(&pxa_device_btuart.dev, "BTRST", GPIOD_OUT_HIG=
+H);
+> +       if (IS_ERR(desc)) {
+>                 pr_err("gumstix: failed request gpio for bluetooth reset\=
+n");
+>                 return;
+>         }
+>
+> -       err =3D gpio_direction_output(GPIO_GUMSTIX_BTRESET, 1);
+> -       if (err) {
+> -               pr_err("gumstix: can't reset bluetooth\n");
+> -               return;
+> -       }
+> -       gpio_set_value(GPIO_GUMSTIX_BTRESET, 0);
+> +       gpiod_set_value(desc, 0);
+>         udelay(100);
+> -       gpio_set_value(GPIO_GUMSTIX_BTRESET, 1);
+> +       gpiod_set_value(desc, 1);
+> +
+> +       gpiod_put(desc);
 
-Tested-by: Alice Ryhl <aliceryhl@google.com>
+This changes the way this code works. You release the descriptor here,
+it returns to the driver and can be re-requested by someone else. Its
+value is also not guaranteed to remain as "active". Is this what you
+want?
+
+Bart
+
+>  }
+>  #else
+>  static void gumstix_bluetooth_init(void)
+>
+> --
+> 2.42.0
+>
+>
