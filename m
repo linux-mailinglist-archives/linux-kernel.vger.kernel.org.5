@@ -2,101 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 964AE7B5492
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32E87B548D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237615AbjJBN62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57126 "EHLO
+        id S237637AbjJBOA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:00:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237593AbjJBN6Z (ORCPT
+        with ESMTP id S237619AbjJBOAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 09:58:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72892C6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 06:57:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696255057;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=M8WYdzef3dhUYZw3DH0bBi+1f62S5ySyKU54RTq989w=;
-        b=G2efkXPKjKSd1Onwy6aCXMcID5WUY/TkE0+VWtwYJJKLmIPF9bGvyAKeROor7N9N/6bthb
-        d+X5UMwm7wEx55ldIXuKhPQzOkrJwpKEVh1rCiXJp1hhM8cCUaj3ItIqP96ndTdbvwhsd3
-        e0B/djNv4kboApMiW4QdFEhJUkP4G/o=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-93-5fiUcE4UOEGpdcgS_ey3xA-1; Mon, 02 Oct 2023 09:57:36 -0400
-X-MC-Unique: 5fiUcE4UOEGpdcgS_ey3xA-1
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-418116b13a7so197226421cf.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 06:57:36 -0700 (PDT)
+        Mon, 2 Oct 2023 10:00:21 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3533CAD
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:00:16 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-50305abe5f0so25237961e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 07:00:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1696255214; x=1696860014; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zpZhytU+mtyOMS/VgBxlj3+c2Lys7k0tYKY4H/RoMIc=;
+        b=Ginm017MxEquRCV2mk7/P7g0EIxBqpgdlFFc7ndlsIl0p+gcF9qLJTWQWnOrjtC/b7
+         aTYss4JN0kgNO9ldJWcgiv41quD7dWNbfmocFwf8rm/goUZ+ZkYk/seUIdx/X+jHqoMc
+         4d0wef2VcqqhDtfQQrz6czzeY9EwwIBdjekyFsGWeSh9DISW0V0Qz0La+qAK0PP5/5ZF
+         QXHYAJoL4a14hN3P7q/+MYhQiG3osQQYAhpv7aFCWDNfy422wW5K98XXcNRD9sgU5Q59
+         h/tumQsNbAcPtEEADbrGhMwUqiSDmZ0svwYhKzJK2sCPWoFyMosh0z7W5ZgmRkCyz740
+         h24g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696255056; x=1696859856;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=M8WYdzef3dhUYZw3DH0bBi+1f62S5ySyKU54RTq989w=;
-        b=mdvBJWJNbAEzJ7bIn2Ba6m4q/6a45dPq+/blTnzIC0Xf4VSWze516mpRtM65WUaxdz
-         Ug29/oy4yU9rUL8vyhfCRrHqLd0y/OnkhU+Oe39OE0CCSSLAmz4vifKw+4P5RhNJKBxs
-         lOgRElesRwxp5YmbjR0+03HoaJapkOs67DXEU4jUC2vLRRXgmD20O+VXtPa1TN6i0ewM
-         CKh4TzB3m6cP2pzrihFCLOlBgx1vCBpluRvaZ1JYePmp6V8oe6Zi8Oo9J+I+ElqQww2F
-         ugTcsO6tiC35dIsGq2AXu0JPqstVI6BTd9wOqeUdxEnWJsOJaPHNf1IfI2J8kxbj5rwT
-         Zllw==
-X-Gm-Message-State: AOJu0YwqM8n77e3Z1xrxxFWT3ORAtpirFOhTrKqfwgNljF46ZUc8XxLQ
-        YyIcZ6CDk8F6xEveGnCCKesP98Jd7Jl5xJfzEpE9VULNpXxAab31FIOYvBC/I2PACekzovrIGvp
-        IkolWWAmdrVuwG0VmpJJi6qFp
-X-Received: by 2002:ac8:58c5:0:b0:418:4e7:b82c with SMTP id u5-20020ac858c5000000b0041804e7b82cmr15356415qta.57.1696255055998;
-        Mon, 02 Oct 2023 06:57:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFFqqH2hLZLdUz2hZHgPn/1hd6wxw8eYP65VHIjQN4f059HcEmEoL26OMfQzDI+qIGKcMwU0g==
-X-Received: by 2002:ac8:58c5:0:b0:418:4e7:b82c with SMTP id u5-20020ac858c5000000b0041804e7b82cmr15356401qta.57.1696255055721;
-        Mon, 02 Oct 2023 06:57:35 -0700 (PDT)
-Received: from thinkpad2021 ([64.99.149.73])
-        by smtp.gmail.com with ESMTPSA id i6-20020ac813c6000000b0041817637873sm5831638qtj.9.2023.10.02.06.57.35
+        d=1e100.net; s=20230601; t=1696255214; x=1696860014;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zpZhytU+mtyOMS/VgBxlj3+c2Lys7k0tYKY4H/RoMIc=;
+        b=HPGVn+WffqXfCT2saJaFgcnbc4MhdG0lmTS48+mcAsy8NW1nguh7xYHuxcpTYGYP0I
+         Z+xsenEO3uHLdz0JD8msz+bXLA/5spdRcoDIKqOwlZCFRjLMDfyeO+GReD/OU9RJLZVa
+         sOX1aq4iRxE6CzuLHqf4dBlsdvcpQzVRuGxhJETkD/WFBq61JIaE5QznYunwb/vh5LyG
+         xNxCCnRDzBCPzc7nj0Ixi4xpOI09YbAOb86T2tEX3QJ1oDbTFNTuqIiKOk0ALtc19aBI
+         LWQlAQ2V3lgZTs2zpESh7RcuGMlETf7naDr9/WfSZEjf9dvCjKeyBwY6JOXjNaTkSVg0
+         W44A==
+X-Gm-Message-State: AOJu0YylNE3gx6ddb5ioDGvBI38779hjEfbA51+WIb7cWWnn70DNJmHh
+        sYcXTJXGazrYSFEgAIXlrp244A==
+X-Google-Smtp-Source: AGHT+IGso9r5zHTjq+JheuE+Q/cqqFcdJ//IYpcalgTIQ1LdA5XgDbH9CA6sx9n8hYQEZLx5OnqiXA==
+X-Received: by 2002:a05:6512:ba7:b0:4fe:db6:cb41 with SMTP id b39-20020a0565120ba700b004fe0db6cb41mr12425999lfv.39.1696255213950;
+        Mon, 02 Oct 2023 07:00:13 -0700 (PDT)
+Received: from otso.luca.vpn.lucaweiss.eu (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id q13-20020a056402518d00b005346925a474sm9350377edd.43.2023.10.02.07.00.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 06:57:35 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 09:57:33 -0400
-From:   "John B. Wyatt IV" <jwyatt@redhat.com>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-rt-users@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-rts-sst <kernel-rts-sst@redhat.com>, jlelli@redhat.com
-Subject: Re: Crash with 6.6.0-rc1-rt1 and several i915 locking call traces
- with v6.5.2-rt8 and gnome-shell on Alder Lake laptop
-Message-ID: <ZRrMTfZsM9bv4GiF@thinkpad2021>
-References: <ZQttJ8W9UFP46E1b@thinkpad2021>
- <20230922110720.AZ03l3A9@linutronix.de>
- <ZRaONA0LSFumpyja@thinkpad2021>
- <F4pA9qG-zsUd2s-KZZ8oHrbd@linutronix.de>
+        Mon, 02 Oct 2023 07:00:13 -0700 (PDT)
+From:   Luca Weiss <luca.weiss@fairphone.com>
+Subject: [PATCH v2 0/2] Remove reset GPIO for AW88261
+Date:   Mon, 02 Oct 2023 16:00:10 +0200
+Message-Id: <20231002-aw88261-reset-v2-0-837cb1e7b95c@fairphone.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <F4pA9qG-zsUd2s-KZZ8oHrbd@linutronix.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOrMGmUC/3XMQQ6CMBCF4auQWTumHUQpK+9hWNQyyCykpCVVQ
+ 3p3K3uX/0vet0HkIByhqzYInCSKn0vQoQI32fnBKENpIEW1MmTQvtqWzhoDR17xwkoNhqkxDUH
+ 5LIFHee/erS89SVx9+Ox80r/1n5Q0ahzd3bE2J9tSfR2thGXyMx+df0Kfc/4C3Prpf64AAAA=
+To:     Weidong Wang <wangweidong.a@awinic.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Luca Weiss <luca.weiss@fairphone.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 11:45:45AM +0200, Sebastian Andrzej Siewior wrote:
-> I looked at the traces in this email and they originate from a
-> might_sleep() in guc_context_set_prio(). The reason is that they check
-> at the atomic/interrupt state to figure out if they can sleep or not.
-> Both checks don't work on RT as intended and the former has a not to not
-> be used in drivers…
-> 
-> The snippet below should cure this. Could you test, please.
-> 
-> Sebastian
->
+The AW88261 chip doesn't have a reset gpio, so remove it from the
+bindings and from the driver.
 
-I tested this at both boot and suspend/resume. No call traces reported.
+Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+---
+Changes in v2:
+- Include dt-bindings change
+- Link to v1: https://lore.kernel.org/r/20230929-aw88261-reset-v1-1-fcbce194a823@fairphone.com
 
-Thank you Sebastian.
+---
+Luca Weiss (2):
+      ASoC: dt-bindings: awinic,aw88395: Remove reset-gpios from AW88261
+      ASoC: codecs: aw88261: Remove non-existing reset gpio
+
+ .../devicetree/bindings/sound/awinic,aw88395.yaml        | 16 ++++++++++++----
+ sound/soc/codecs/aw88261.c                               | 15 ---------------
+ 2 files changed, 12 insertions(+), 19 deletions(-)
+---
+base-commit: df964ce9ef9fea10cf131bf6bad8658fde7956f6
+change-id: 20230929-aw88261-reset-7e00d9e25952
+
+Best regards,
+-- 
+Luca Weiss <luca.weiss@fairphone.com>
 
