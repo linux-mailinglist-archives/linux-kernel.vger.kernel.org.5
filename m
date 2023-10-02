@@ -2,135 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D050F7B4C1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F394C7B4C1F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235697AbjJBHC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 03:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45888 "EHLO
+        id S235716AbjJBHDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 03:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235680AbjJBHCr (ORCPT
+        with ESMTP id S235728AbjJBHC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 03:02:47 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F05E811C
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:02:40 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9b29186e20aso1512735766b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:02:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1696230159; x=1696834959; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PeSmx0D2O0/a7oNGI2vszLu5YKBAPoxdy4aY0mQYyUI=;
-        b=gBee/ib04lb8Su5dE1/csNqk7QhGlcoWLm257hjst94+6JplyfreEF1J7Pg0azyqtG
-         semeU2l/YR+vdQg3JxOEAYI+fB9O4moXqGQBRChnyAvz2gFnI/J7mcLgB5O1PjWVyldf
-         zJIzZ64zzvZCxAN8QY3USX5+Nm3FWWM15VaYzvniOuyrDQZA+EWUcoavvVOa/BR5W2lV
-         D0OIVcLiXVAvbWxiYPOU5b8DDLSP4Iq3WG1jLzUtp9q0B0WB0cuQjoFm9qdmjfxg5jfG
-         MAaE0o/lWmynDU4sCCkLl5yMG86qwApHeT1k84pHBYV+MiwcJIPUigXNIasznIYsTFHD
-         0rpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696230159; x=1696834959;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=PeSmx0D2O0/a7oNGI2vszLu5YKBAPoxdy4aY0mQYyUI=;
-        b=Gqanxvudi1E50Y0/LnbgM8WA5RIVzC7PxVQlb+mNm5YaOFmPznNxzIvAuHoyvxPWCY
-         AJ+ehmk9zauzMJGVTaIyiCq6YUxOtm91hulLSsO9jy9wJgnBNp+L2amkneeyt+W63MOz
-         WbGi2AM6gvsEBlR2j9iNLkZ7cFpj9BYjSlfy7o+R/1QV4F6vVQLzTuQTeiE1us4qslPS
-         kHdSoHkdzQ83jlYHkrWhBmGnIWOBTmkWgUWqhz3T03K/ezYPT30pYYip+56nS09xsKGS
-         vXnvGJVUqezpnOap3iL93kA2g46CInFXTOgpzLVmRozfRylu5tayUYWW8Y6cNkm6zbD0
-         7oew==
-X-Gm-Message-State: AOJu0YwT+OHH0raG56DmyS/HRxWEvy682x6DoI/JvfkJPStWMFxfK8GW
-        9j/sGKT0BmY8WQcYFK6rrNSBZA==
-X-Google-Smtp-Source: AGHT+IH37QpKi/pRabAVwX8WI7qczpBr3LGNV8QJIAxW4evWS9WWvOYpM3vfLk1f8Jvg8ql7AlYMlA==
-X-Received: by 2002:a17:906:76d1:b0:9ae:729c:f651 with SMTP id q17-20020a17090676d100b009ae729cf651mr9070622ejn.17.1696230159028;
-        Mon, 02 Oct 2023 00:02:39 -0700 (PDT)
-Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id t15-20020a170906608f00b009a9fbeb15f2sm16459798ejj.62.2023.10.02.00.02.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 00:02:38 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 02 Oct 2023 09:02:38 +0200
-Message-Id: <CVXREP4FCX4E.3M77P8JP1T27M@otso>
-Cc:     <~postmarketos/upstreaming@lists.sr.ht>,
-        <phone-devel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: qcom: qcm6490-fairphone-fp5: Enable UFS
-From:   "Luca Weiss" <luca.weiss@fairphone.com>
-To:     "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        "Andy Gross" <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Nitin Rawat" <quic_nitirawa@quicinc.com>
-X-Mailer: aerc 0.15.2
-References: <20230929-fp5-ufs-v1-1-122941e28b06@fairphone.com>
- <cac1b912-e08b-4643-b081-834fdee30ea7@linaro.org>
-In-Reply-To: <cac1b912-e08b-4643-b081-834fdee30ea7@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Mon, 2 Oct 2023 03:02:56 -0400
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8FE81A5
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:02:51 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3318B20009;
+        Mon,  2 Oct 2023 07:02:42 +0000 (UTC)
+Message-ID: <8d305ae1-4235-6ae8-7dfb-9f432fdfcd41@ghiti.fr>
+Date:   Mon, 2 Oct 2023 09:02:42 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 2/2] riscv: mm: Update mmap_rnd_bits_max
+Content-Language: en-US
+To:     Pedro Falcato <pedro.falcato@gmail.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Conor Dooley <conor@kernel.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org, llvm@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20230929211155.3910949-4-samitolvanen@google.com>
+ <20230929211155.3910949-6-samitolvanen@google.com>
+ <202309291452.66ED9B4D83@keescook>
+ <CABCJKufxUVoO+yJ+513W5FOFu6u45N=6wZe6a69u+8LU6A_N2Q@mail.gmail.com>
+ <20230930-emporium-share-2bbdf7074e54@spud> <202309301400.4E1AD87@keescook>
+ <CAKbZUD08W9_HB9F7tQqwreYvVapgVMOkS3QokzwHPcBnFnVMig@mail.gmail.com>
+From:   Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <CAKbZUD08W9_HB9F7tQqwreYvVapgVMOkS3QokzwHPcBnFnVMig@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: alex@ghiti.fr
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri Sep 29, 2023 at 3:12 PM CEST, Konrad Dybcio wrote:
-> On 29.09.2023 11:52, Luca Weiss wrote:
-> > Enable the UFS phy and controller so that we can access the internal
-> > storage of the phone.
-> >=20
-> > At the same time we need to bump the minimum voltage used for UFS VCC,
-> > otherwise it doesn't initialize properly. The new range is taken from
-> > the vcc-voltage-level property downstream.
-> >=20
-> > See also the following link for more information about the VCCQ/VCCQ2:
-> > https://gerrit-public.fairphone.software/plugins/gitiles/kernel/msm-ext=
-ra/devicetree/+/1590a3739e7dc29d2597307881553236d492f188/fp5/yupik-idp-pm72=
-50b.dtsi#207
-> >=20
-> > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> > ---
-> > I'm not 100% convinced about the regulator range change. For sure with
-> > the original voltage range the UFS fails to initialize, but looking at
-> > downstream kernel during runtime (debugfs) we see the VCC voltage
-> > switches between 2.4V (idle?) and 2.952V (active?). But even with this
-> > change in mainline the regulator would always stay at 2.504V which is
-> > for sure lower than the downstream operating voltage of 2.952V. Behavio=
-r
-> > wise I don't see a difference between ~2.5V and ~2.9V.
-> >=20
-> > Should I just constrain the regulator here to min=3Dmax=3D2.952V? Or ju=
-st
-> > say it's okay as-is?
-> >=20
-> > Depends on: https://lore.kernel.org/linux-arm-msm/20230927081858.15961-=
-1-quic_nitirawa@quicinc.com/
-> > ---
-> There's a little funny hack inside the driver
+On 01/10/2023 17:19, Pedro Falcato wrote:
+> On Sun, Oct 1, 2023 at 2:51 AM Kees Cook <keescook@chromium.org> wrote:
+>> On Sat, Sep 30, 2023 at 10:02:35AM +0100, Conor Dooley wrote:
+>>> On Fri, Sep 29, 2023 at 03:52:22PM -0700, Sami Tolvanen wrote:
+>>>> On Fri, Sep 29, 2023 at 2:54 PM Kees Cook <keescook@chromium.org> wrote:
+>>>>> On Fri, Sep 29, 2023 at 09:11:58PM +0000, Sami Tolvanen wrote:
+>>>>>> ARCH_MMAP_RND_BITS_MAX is based on Sv39, which leaves a few
+>>>>>> potential bits of mmap randomness on the table if we end up enabling
+>>>>>> 4/5-level paging. Update mmap_rnd_bits_max to take the final address
+>>>>>> space size into account. This increases mmap_rnd_bits_max from 24 to
+>>>>>> 33 with Sv48/57.
+>>>>>>
+>>>>>> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+>>>>> I like this. Is RISCV the only arch where the paging level can be chosen
+>>>>> at boot time?
+>>>> I haven't seen this elsewhere, but I also haven't looked at all the
+>>>> other architectures that closely. arm64 does something interesting
+>>>> with ARM64_VA_BITS_52, but I think we can still handle that in
+>>>> Kconfig.
+>>> AFAIU, x86-64 can do this also:
+>>>
+>>>        no4lvl          [RISCV] Disable 4-level and 5-level paging modes. Forces
+>>>                        kernel to use 3-level paging instead.
+>>>
+>>>        no5lvl          [X86-64,RISCV] Disable 5-level paging mode. Forces
+>>>                        kernel to use 4-level paging instead.
+>> Ah-ha! Okay, well, then let's track this idea:
+>> https://github.com/KSPP/linux/issues/346
+> (Replying here for visibility, tell me if you want to move this
+> discussion to github)
 >
-> #if defined(CONFIG_SCSI_UFSHCD_QTI)
->                         if (vreg->low_voltage_sup && !vreg->low_voltage_a=
-ctive && on)
->                                 min_uV =3D vreg->max_uV;
-> #endif
+> AIUI, x86 cannot do this for compat reasons. Even if you enable LA57,
+> mmap only gives you < 48-bit addresses, for compatibility with things
+> like JITs, etc that stash information in the upper 16 bits. You need
+> to pass a > 48-bit mmap hint to get 57-bit addresses.
 >
-> so, when the ufs is in use, it's pinned to vmax
-
-Hi Konrad,
-
-Are you implying I *should* or *should not* pin the voltage range to
-2.952V-2.952V for mainline?
-
-Regards
-Luca
-
+> I imagine riscv does not have this issue yet, due to little
+> accumulated cruft, but it may be wise to check against popular JITters
+> for these problems on riscv code.
 >
-> Konrad
+
+We already encountered those issues and the same solution was recently 
+merged (restrict to sv48 unless otherwise specified): 
+https://lore.kernel.org/all/20230809232218.849726-1-charlie@rivosinc.com/
 
