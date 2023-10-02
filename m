@@ -2,45 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 184CB7B5102
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA3E7B5108
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236683AbjJBLQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 07:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52582 "EHLO
+        id S236678AbjJBLRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 07:17:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236677AbjJBLQj (ORCPT
+        with ESMTP id S236590AbjJBLRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 07:16:39 -0400
+        Mon, 2 Oct 2023 07:17:07 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0677AE1;
-        Mon,  2 Oct 2023 04:16:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AD45C433C7;
-        Mon,  2 Oct 2023 11:16:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DFDAC;
+        Mon,  2 Oct 2023 04:17:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E1B8C433C8;
+        Mon,  2 Oct 2023 11:17:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696245396;
-        bh=YetwJyqXgZc4sFys8EJFoVJlHDAB5zSfeEgiVGM/8+g=;
+        s=k20201202; t=1696245424;
+        bh=RE4FBlHyO/zfPZlZLM/Jo+wd0nETiNEbLPtdhiy7h3E=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ugCf5hAV8WQEFP/wWhwSok2r728oHiw/DEkoHWhit9/Wi3Uqedtv220MRwe9CBC6X
-         KOWmWdCpndOCtPTQCDlAhASIXXw8CwTHPrUJ4LXmhC3keAIaDSdBFvvoMj2gYQUoSr
-         d1QeR8FJrG6YSgFFb+1QmwPFXkhnVYbv2UhCmZwOJhOo6CmuDeMom4cNdUTM6Ae3FD
-         Ulqh6GPKDi4Soc8VNj2hVR7nsMPzI0sWCzhvEcvS+2i1+/YkjTOi6jXC0LGExAteRT
-         Vbtnz2ImCxC3Hncyai61gYJD/W01TAuS+OXbQ0DmPZVwFwdSHocF/jlRt5kW4rT4Zv
-         flKL4w3ZvbXNA==
-Date:   Mon, 2 Oct 2023 14:16:31 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Junxian Huang <huangjunxian6@hisilicon.com>
-Cc:     jgg@ziepe.ca, linux-rdma@vger.kernel.org, linuxarm@huawei.com,
-        linux-kernel@vger.kernel.org, David Ahern <dsahern@gmail.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH 0/2] rdma: Support dumping SRQ resource in raw format
-Message-ID: <20231002111631.GD7059@unreal>
-References: <20230928063202.1435527-1-huangjunxian6@hisilicon.com>
+        b=jOPkb9ZbcogOmm4h1gRsBa+K6JijVCLmXOiwo5eBMoQHrMh9lZ5B8XLSKTh7pEurw
+         IvXpcaCd0ycX+k1pcMrQcBxs9oknb6F0s02BqlJkKqn7M1T9m9MZGBUxbDpYNxZWqH
+         /2SmJdTA0ZsPDFnibJABildeb1sqvP3qfJhHxRYTCIBSE+zFS4UVN6fVEGFMEQYRD8
+         c4tUZq7EFvuyT3p7kqfKsqVG78536BwdonuSgcHSGwxBY2sS2SkEajaILMOLgVqPnD
+         NIqPiYkDUZNLUqE2/sFTQb9AA0JOvxZBWyocqp4rv2zI7/BBZ4BLv3u6P9Kjqi+/Sp
+         k3M2dYJS2vFtw==
+Date:   Mon, 2 Oct 2023 12:16:59 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Luca Weiss <luca.weiss@fairphone.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: mfd: qcom,spmi-pmic: Drop unused
+ labels from examples
+Message-ID: <20231002-unmolded-petition-d2ee6a725c31@spud>
+References: <20231002-pm7250b-gpio-fixup-v2-0-debb8b599989@fairphone.com>
+ <20231002-pm7250b-gpio-fixup-v2-1-debb8b599989@fairphone.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="KTUTVgcFE5gHKHtM"
 Content-Disposition: inline
-In-Reply-To: <20230928063202.1435527-1-huangjunxian6@hisilicon.com>
+In-Reply-To: <20231002-pm7250b-gpio-fixup-v2-1-debb8b599989@fairphone.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -51,35 +60,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 02:32:00PM +0800, Junxian Huang wrote:
-> This patchset adds support to dump SRQ resource in raw format with
-> rdmatool. The corresponding kernel commit is aebf8145e11a
-> ("RDMA/core: Add support to dump SRQ resource in RAW format")
-> 
-> Junxian Huang (1):
->   rdma: Update uapi headers
-> 
-> wenglianfa (1):
->   rdma: Add support to dump SRQ resource in raw format
-> 
->  rdma/include/uapi/rdma/rdma_netlink.h |  2 ++
->  rdma/res-srq.c                        | 17 ++++++++++++++++-
->  rdma/res.h                            |  2 ++
->  3 files changed, 20 insertions(+), 1 deletion(-)
 
-rdmatool is part of iproute2 suite and as such To, Cc and Subject should
-follow that suite rules. You need to add David to "TO", add Stephen and
-netdev and add target (iproute2-next) for this patches.
+--KTUTVgcFE5gHKHtM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-See this randomly chosen series as an example.
-https://lore.kernel.org/netdev/20211014075358.239708-1-markzhang@nvidia.com/
+On Mon, Oct 02, 2023 at 09:00:11AM +0200, Luca Weiss wrote:
+> There's not much point in having unused labels in the binding example,
+> so drop them.
+>=20
+> This patch was originally motivated by ea25d61b448a ("arm64: dts: qcom:
+> Use plural _gpios node label for PMIC gpios") updating all dts files to
+> use the plural _gpios label instead of the singular _gpio as label but
+> this example wasn't updated. But since we should just drop the label
+> alltogether, do that.
+>=20
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 
-or latest one
-https://lore.kernel.org/netdev/20231002104349.971927-1-tariqt@nvidia.com/T/#m7ef8e4ce275052d428b4f13ad9f3b41a4bf5d46b
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Thanks
+Thanks,
+Conor.
 
-> 
-> --
-> 2.30.0
-> 
+> ---
+>  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml b/=
+Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
+> index 55e931ba5b47..9fa568603930 100644
+> --- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
+> @@ -239,13 +239,13 @@ examples:
+>          interrupt-controller;
+>          #interrupt-cells =3D <4>;
+> =20
+> -        pmi8998_lsid0: pmic@2 {
+> +        pmic@2 {
+>              compatible =3D "qcom,pmi8998", "qcom,spmi-pmic";
+>              reg =3D <0x2 SPMI_USID>;
+>              #address-cells =3D <1>;
+>              #size-cells =3D <0>;
+> =20
+> -            pmi8998_gpio: gpio@c000 {
+> +            gpio@c000 {
+>                  compatible =3D "qcom,pmi8998-gpio", "qcom,spmi-gpio";
+>                  reg =3D <0xc000>;
+>                  gpio-controller;
+> @@ -330,7 +330,7 @@ examples:
+>              };
+>          };
+> =20
+> -        pm6150_gpio: gpio@c000 {
+> +        gpio@c000 {
+>              compatible =3D "qcom,pm6150-gpio", "qcom,spmi-gpio";
+>              reg =3D <0xc000>;
+>              gpio-controller;
+>=20
+> --=20
+> 2.42.0
+>=20
+
+--KTUTVgcFE5gHKHtM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRqmqgAKCRB4tDGHoIJi
+0sxtAP95+mFfGC9hHntWipbprg+ek4xNlhEbpKWWHfDq4/DL6gEAni6Hhoqt30DV
+oh45HivEaiwndosjW1G+4bCpCmle2AA=
+=2/vd
+-----END PGP SIGNATURE-----
+
+--KTUTVgcFE5gHKHtM--
