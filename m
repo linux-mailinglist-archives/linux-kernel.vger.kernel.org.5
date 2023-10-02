@@ -2,46 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0602E7B5D89
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 01:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D4147B5D8C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 01:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237085AbjJBXHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 19:07:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43624 "EHLO
+        id S237112AbjJBXJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 19:09:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbjJBXHP (ORCPT
+        with ESMTP id S229934AbjJBXJJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 19:07:15 -0400
+        Mon, 2 Oct 2023 19:09:09 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B61AD;
-        Mon,  2 Oct 2023 16:07:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 820AAC433C7;
-        Mon,  2 Oct 2023 23:07:11 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DC6AC;
+        Mon,  2 Oct 2023 16:09:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D8FAC433C8;
+        Mon,  2 Oct 2023 23:09:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696288032;
-        bh=pqvohkmy+2m5Tqt1sTRxlBrIprA83sMhWjYw54JI05M=;
+        s=k20201202; t=1696288145;
+        bh=gu0kj3Vk49NUDMDYLH9k8+xKFSohRBsIFcK4rRhjEUs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jjdz6eixvqAz08YRMbWSuL4jQlaSOX95kn5uuK4Mkq6zj1pdxcmCPphMyrBYhuByE
-         9n+mae1GFj78m6OwJyEKUcC5/wYYIK7LsF9xWbNpWvZaXyMyeVbJQuH9W8vLjh5RLA
-         y/0H7xXbdRS98XpnP2zQDhGKT1lhZ+t8OvGHkfJeLkqNAW03dfnsUpSUaMtqN+7e9r
-         /57qKywpv3q0rZndFV8DU8v7d85ynQ0UC/4zm/+SQ11mKiY1UzaDWKHgnq0oiQXzh/
-         L8aERvYjHrcY5hqyGdNdR9dbP1X+VszD2VL3U90PlTYSA6D87BeBHSWNSfmkGHvzB6
-         g52qkjS/mwXwA==
-Date:   Mon, 2 Oct 2023 16:07:09 -0700
+        b=lgZ41VgPd/ElBPwEA8nqF4reKV4tw4t1f1QtPTGDsUQ3nNWaH/g9ahzQ74CcYhPgg
+         KKqUlOyfAWUqeJAy7BF7oiZlBf46YiE8L/oVkVvJNgD9XwlWRhnmjvvx7oyolyKA5D
+         Vjn8wbgE+IAzrRQZ0DxZ+iVKaKUBGiCkS7Bx4QeHXXQTl1SSleU4TCRnJ8L4BuW3xX
+         pgCgt37pFE+XPnZL3cwYwL3U/tgrJ/EWoVo7XlkruI94G5eFeiSVUItWeKK0yq3kRt
+         c1TAeJLbNYEP8x/46uBAt94k4mh5bbfxl+DxUyTfXxtBMFYYD91XdZldHK3VOam1KZ
+         urE3rpatkPcJw==
+Date:   Mon, 2 Oct 2023 16:09:03 -0700
 From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jeremy Cline <jeremy@jcline.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, llvm@lists.linux.dev,
-        linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH] gen_compile_commands: use raw string when replacing \#
-Message-ID: <20231002230709.GA1029006@dev-arch.thelio-3990X>
-References: <20230929190446.113168-1-jeremy@jcline.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>
+Subject: Re: [PATCH] kbuild: rpm-build: generate kernel.spec in
+ rpmbuild/SPECS/
+Message-ID: <20231002230903.GB1029006@dev-arch.thelio-3990X>
+References: <20230930103847.1272324-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230929190446.113168-1-jeremy@jcline.org>
+In-Reply-To: <20230930103847.1272324-1-masahiroy@kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -51,52 +50,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeremy,
-
-On Fri, Sep 29, 2023 at 03:04:46PM -0400, Jeremy Cline wrote:
-> I noticed this since I'm running Python 3.12-rc3, which emits
-> "SyntaxWarning: invalid escape sequence '\#'" when running this script.
-> According to the Python 3.12 release notes this will eventually become a
-> SyntaxError.
+On Sat, Sep 30, 2023 at 07:38:47PM +0900, Masahiro Yamada wrote:
+> kernel.spec is the last piece that resides outside the rpmbuild/
+> directory. Move all RPM-related files to rpmbuild/ consistently.
 > 
-> Based on the comment in the code, I believe the intention was to match
-> the literal string "\#". Marking it as a raw string will stop Python
-> from trying to treat it as an escape sequence and behave as intended.
-> 
-> Signed-off-by: Jeremy Cline <jeremy@jcline.org>
-
-Thanks for the patch, it looks good to me.
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
 Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-Just a heads up, you are not the first person to see this and send a
-patch:
-
-https://lore.kernel.org/20230912060801.95533-5-bgray@linux.ibm.com/
-
-But as far as I can tell, there is no movement on that changeset, so if
-Masahiro is able to pick this up, that would still be good. Masahiro,
-the original change is available at
-https://lore.kernel.org/all/20230929190446.113168-1-jeremy@jcline.org/,
-if you are able to apply it that way.
+Tested-by: Nathan Chancellor <nathan@kernel.org>
 
 > ---
->  scripts/clang-tools/gen_compile_commands.py | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-> index a84cc5737c2c..bc005cac1944 100755
-> --- a/scripts/clang-tools/gen_compile_commands.py
-> +++ b/scripts/clang-tools/gen_compile_commands.py
-> @@ -170,7 +170,7 @@ def process_line(root_directory, command_prefix, file_path):
->      # escape the pound sign '#', either as '\#' or '$(pound)' (depending on the
->      # kernel version). The compile_commands.json file is not interepreted
->      # by Make, so this code replaces the escaped version with '#'.
-> -    prefix = command_prefix.replace('\#', '#').replace('$(pound)', '#')
-> +    prefix = command_prefix.replace(r'\#', '#').replace('$(pound)', '#')
+>  .gitignore                 | 1 -
+>  Makefile                   | 2 +-
+>  scripts/Makefile.package   | 8 ++++----
+>  scripts/package/mkspec     | 6 ++++++
+>  scripts/remove-stale-files | 2 +-
+>  5 files changed, 12 insertions(+), 7 deletions(-)
+> 
+> diff --git a/.gitignore b/.gitignore
+> index 0bbae167bf93..98274e1160d7 100644
+> --- a/.gitignore
+> +++ b/.gitignore
+> @@ -74,7 +74,6 @@ modules.order
+>  #
+>  # RPM spec file (make rpm-pkg)
+>  #
+> -/kernel.spec
+>  /rpmbuild/
 >  
->      # Use os.path.abspath() to normalize the path resolving '.' and '..' .
->      abs_path = os.path.abspath(os.path.join(root_directory, file_path))
+>  #
+> diff --git a/Makefile b/Makefile
+> index 3de08c780c74..9e77a58207a8 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1486,7 +1486,7 @@ MRPROPER_FILES += include/config include/generated          \
+>  		  certs/signing_key.pem \
+>  		  certs/x509.genkey \
+>  		  vmlinux-gdb.py \
+> -		  kernel.spec rpmbuild \
+> +		  rpmbuild \
+>  		  rust/libmacros.so
+>  
+>  # clean - Delete most, but leave enough to build external modules
+> diff --git a/scripts/Makefile.package b/scripts/Makefile.package
+> index 2bcab02da965..05b8c3e29aac 100644
+> --- a/scripts/Makefile.package
+> +++ b/scripts/Makefile.package
+> @@ -69,9 +69,9 @@ $(linux-tarballs): .tmp_HEAD FORCE
+>  # ---------------------------------------------------------------------------
+>  
+>  quiet_cmd_mkspec = GEN     $@
+> -      cmd_mkspec = $(srctree)/scripts/package/mkspec > $@
+> +      cmd_mkspec = $(srctree)/scripts/package/mkspec $@
+>  
+> -kernel.spec: FORCE
+> +rpmbuild/SPECS/kernel.spec: FORCE
+>  	$(call cmd,mkspec)
+>  
+>  PHONY += rpm-sources
+> @@ -88,8 +88,8 @@ srcrpm-pkg: private build-type := s
+>  binrpm-pkg: private build-type := b
+>  
+>  rpm-pkg srcrpm-pkg: rpm-sources
+> -rpm-pkg srcrpm-pkg binrpm-pkg: kernel.spec
+> -	+$(strip rpmbuild -b$(build-type) kernel.spec \
+> +rpm-pkg srcrpm-pkg binrpm-pkg: rpmbuild/SPECS/kernel.spec
+> +	+$(strip rpmbuild -b$(build-type) rpmbuild/SPECS/kernel.spec \
+>  	--define='_topdir $(abspath rpmbuild)' \
+>  	$(if $(filter a b, $(build-type)), \
+>  		--target $(UTS_MACHINE)-linux --build-in-place --noprep --define='_smp_mflags %{nil}' \
+> diff --git a/scripts/package/mkspec b/scripts/package/mkspec
+> index d41608efb747..ce201bfa8377 100755
+> --- a/scripts/package/mkspec
+> +++ b/scripts/package/mkspec
+> @@ -9,6 +9,12 @@
+>  #	Patched for non-x86 by Opencon (L) 2002 <opencon@rio.skydome.net>
+>  #
+>  
+> +output=$1
+> +
+> +mkdir -p "$(dirname "${output}")"
+> +
+> +exec >"${output}"
+> +
+>  if grep -q CONFIG_MODULES=y include/config/auto.conf; then
+>  echo '%define with_devel %{?_without_devel: 0} %{?!_without_devel: 1}'
+>  else
+> diff --git a/scripts/remove-stale-files b/scripts/remove-stale-files
+> index 8b1a636f8543..385610fe3936 100755
+> --- a/scripts/remove-stale-files
+> +++ b/scripts/remove-stale-files
+> @@ -38,4 +38,4 @@ rm -rf include/ksym
+>  
+>  find . -name '*.usyms' | xargs rm -f
+>  
+> -rm -f binkernel.spec
+> +rm -f *.spec
 > -- 
-> 2.41.0
+> 2.39.2
 > 
