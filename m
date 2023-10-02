@@ -2,209 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1437B5211
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944547B521B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236868AbjJBMD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 08:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47138 "EHLO
+        id S236912AbjJBMFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 08:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236843AbjJBMD4 (ORCPT
+        with ESMTP id S236869AbjJBMFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 08:03:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE6110D0
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 05:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696248169;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KRNcUMO/3qZE3ezJDf3zkvX+ebI+kEjoeR2cSJmrJs8=;
-        b=SEA4rwawn7EncTuRa72DuAvAyeid85OZjsOV7wMfSlbka1qGJDkKvnb/5oVfIY0sRH/dHn
-        QgGQTIO5jfB818DB+CssgY4VJjs+LCXRMC/DHS93M7ePO3WPOgmO+fT/mDF9Vz89Um1mGl
-        zHAnevh2BO3TEYsnq0DrhNRENEEjs0E=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-499-gLzkORjIPI-dG0TowIN7Kw-1; Mon, 02 Oct 2023 08:02:45 -0400
-X-MC-Unique: gLzkORjIPI-dG0TowIN7Kw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 958F8811E7B;
-        Mon,  2 Oct 2023 11:57:43 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.45.224.55])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5446C140E953;
-        Mon,  2 Oct 2023 11:57:40 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Joerg Roedel <joro@8bytes.org>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Robin Murphy <robin.murphy@arm.com>, iommu@lists.linux.dev,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH v3 4/4] x86: KVM: SVM: allow optionally to disable AVIC's IPI virtualization
-Date:   Mon,  2 Oct 2023 14:57:23 +0300
-Message-Id: <20231002115723.175344-5-mlevitsk@redhat.com>
-In-Reply-To: <20231002115723.175344-1-mlevitsk@redhat.com>
-References: <20231002115723.175344-1-mlevitsk@redhat.com>
+        Mon, 2 Oct 2023 08:05:19 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6872394;
+        Mon,  2 Oct 2023 05:05:15 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8BxNuj5sRplz5MuAA--.35409S3;
+        Mon, 02 Oct 2023 20:05:13 +0800 (CST)
+Received: from openarena.loongson.cn (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxK9z3sRplVSEXAA--.47905S2;
+        Mon, 02 Oct 2023 20:05:11 +0800 (CST)
+From:   Sui Jingfeng <suijingfeng@loongson.cn>
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH pci-next v6 0/2] PCI/VGA: Make the vga_is_firmware_default() less arch-dependent
+Date:   Mon,  2 Oct 2023 20:05:09 +0800
+Message-Id: <20231002120511.594737-1-suijingfeng@loongson.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-CM-TRANSID: AQAAf8BxK9z3sRplVSEXAA--.47905S2
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoW3Ww45XryUWw4kGw43CFWDWrX_yoW3Ww43pr
+        18Wa13Ww4kG3WrKrW7XF15CF15WrW8Ca97Jr1Igr48Cw4xKw18CF9IqF4jg347ArsFqw17
+        X3Z7Aa4rtw17JagCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAF
+        wI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
+        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI42IY6x
+        IIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
+        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8w0eJUUUUU==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Zen2 (and likely on Zen1 as well), AVIC doesn't reliably detect a change
-in the 'is_running' bit during ICR write emulation and might skip a
-VM exit, if that bit was recently cleared.
+The vga_is_firmware_default() only works on x86 and ia64 currently, it is
+a no-op on the rest of the architectures. This patch completes the
+implementation for it, the added code tries to capture the PCI (e) VGA
+device that owns the firmware framebuffer before the PCI resource
+relocation. Since only one GPU could owns the firmware fb in normal case,
+things are almost done once we have determined the boot VGA device
+successfully.
 
-The absence of the VM exit, leads to the KVM not waking up / triggering
-nested vm exit on the target(s) of the IPI, which can, in some cases,
-lead to unbounded delays in the guest execution.
+Note that this patch requires the target platform has a way to set up the
+kernel's screen_info. On machines with muiltiple GPU co-exist and On UEFI
+environment, the firmware framebuffer should be put into the VRAM BAR of
+the primary GPU. For the arbitration purpose itself, changing PCI class
+code of the GPU to be non-primary is not required.
 
-As I recently discovered, a reasonable workaround exists: make the KVM
-never set the is_running bit, which in essence disables the
-IPI virtualization portion of AVIC making it equal to APICv without IPI
-virtualization.
+The provided method is tested on x86, arm64 and loongarch, all of the
+machine with UEFI firmware shipped.  See below for more information.
 
-This workaround ensures that (*) all ICR writes always cause a VM exit
-and therefore correctly emulated, in expense of never enjoying VM exit-less
-ICR write emulation.
+1) LS3A5000+LS7A1000 platform with three video cards:
 
-To let the user control the workaround, a new kvm_amd module parameter was
-added: 'enable_ipiv', using the same name as IPI virtualization of VMX.
+$ lspci | grep VGA
 
-However unlike VMX, this parameter is tri-state: 0, 1, -1.
--1 is the default value which instructs KVM to choose the default based
-on the CPU model.
+00:06.1 VGA compatible controller: Loongson Technology LLC DC (Display Controller) (rev 01)
+03:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Caicos XT [Radeon HD 7470/8470 / R5 235/310 OEM]
+07:00.0 VGA compatible controller: S3 Graphics Ltd. Device 9070 (rev 01)
+08:00.0 VGA compatible controller: S3 Graphics Ltd. Device 9070 (rev 01)
 
-(*) More correctly all ICR writes except when the 'Self' shorthand is used:
+Before apply this series:
 
-In this case AVIC skips reading physid table and just sets bits in IRR
-of local APIC. Thankfully in this case, the errata is not possible,
-therefore an extra workaround is not needed.
+ pci 0000:00:06.1: vgaarb: setting as boot VGA device
+ pci 0000:00:06.1: vgaarb: VGA device added: decodes=io+mem,owns=io+mem,locks=none
+ pci 0000:03:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ pci 0000:07:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ pci 0000:08:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ vgaarb: loaded
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/svm/avic.c | 51 +++++++++++++++++++++++++++++++----------
- 1 file changed, 39 insertions(+), 12 deletions(-)
+After apply this series:
 
-diff --git a/arch/x86/kvm/svm/avic.c b/arch/x86/kvm/svm/avic.c
-index bdab28005ad3405..b3ec693083cc883 100644
---- a/arch/x86/kvm/svm/avic.c
-+++ b/arch/x86/kvm/svm/avic.c
-@@ -62,6 +62,9 @@ static_assert(__AVIC_GATAG(AVIC_VM_ID_MASK, AVIC_VCPU_ID_MASK) == -1u);
- static bool force_avic;
- module_param_unsafe(force_avic, bool, 0444);
- 
-+static int enable_ipiv = -1;
-+module_param(enable_ipiv, int, 0444);
-+
- /* Note:
-  * This hash table is used to map VM_ID to a struct kvm_svm,
-  * when handling AMD IOMMU GALOG notification to schedule in
-@@ -1024,7 +1027,6 @@ avic_update_iommu_vcpu_affinity(struct kvm_vcpu *vcpu, int cpu, bool r)
- 
- void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- {
--	u64 entry;
- 	int h_physical_id = kvm_cpu_get_apicid(cpu);
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	unsigned long flags;
-@@ -1053,14 +1055,22 @@ void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 	 */
- 	spin_lock_irqsave(&svm->ir_list_lock, flags);
- 
--	entry = READ_ONCE(*(svm->avic_physical_id_cache));
--	WARN_ON_ONCE(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK);
-+	/*
-+	 * Do not update the actual physical id table entry, if the IPI
-+	 * virtualization portion of AVIC is not enabled.
-+	 * In this case all ICR writes except Self IPIs will be intercepted.
-+	 */
-+
-+	if (enable_ipiv) {
-+		u64 entry = READ_ONCE(*svm->avic_physical_id_cache);
- 
--	entry &= ~AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK;
--	entry |= (h_physical_id & AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK);
--	entry |= AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
-+		WARN_ON_ONCE(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK);
-+		entry &= ~AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK;
-+		entry |= (h_physical_id & AVIC_PHYSICAL_ID_ENTRY_HOST_PHYSICAL_ID_MASK);
-+		entry |= AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
-+		WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
-+	}
- 
--	WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
- 	avic_update_iommu_vcpu_affinity(vcpu, h_physical_id, true);
- 
- 	spin_unlock_irqrestore(&svm->ir_list_lock, flags);
-@@ -1068,7 +1078,6 @@ void avic_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 
- void avic_vcpu_put(struct kvm_vcpu *vcpu)
- {
--	u64 entry;
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	unsigned long flags;
- 
-@@ -1093,11 +1102,17 @@ void avic_vcpu_put(struct kvm_vcpu *vcpu)
- 
- 	avic_update_iommu_vcpu_affinity(vcpu, -1, 0);
- 
--	entry = READ_ONCE(*(svm->avic_physical_id_cache));
--	WARN_ON_ONCE(!(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK));
-+	/*
-+	 * Do not update the actual physical id table entry if the IPI
-+	 * virtualization is disabled. See explanation in avic_vcpu_load().
-+	 */
-+	if (enable_ipiv) {
-+		u64 entry = READ_ONCE(*svm->avic_physical_id_cache);
- 
--	entry &= ~AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
--	WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
-+		WARN_ON_ONCE(!(entry & AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK));
-+		entry &= ~AVIC_PHYSICAL_ID_ENTRY_IS_RUNNING_MASK;
-+		WRITE_ONCE(*(svm->avic_physical_id_cache), entry);
-+	}
- 
- 	spin_unlock_irqrestore(&svm->ir_list_lock, flags);
- 
-@@ -1211,5 +1226,17 @@ bool avic_hardware_setup(void)
- 
- 	amd_iommu_register_ga_log_notifier(&avic_ga_log_notifier);
- 
-+	if (enable_ipiv == -1) {
-+		enable_ipiv = 1;
-+		/* Assume that Zen1 and Zen2 have errata #1235 */
-+		if (boot_cpu_data.x86 == 0x17) {
-+			pr_info("AVIC's IPI virtualization disabled due to errata #1235\n");
-+			enable_ipiv = 0;
-+		}
-+	}
-+
-+	if (enable_ipiv)
-+		pr_info("AVIC's IPI virtualization enabled\n");
-+
- 	return true;
- }
+ pci 0000:03:00.0: vgaarb: BAR 0: [mem 0xe0050000000-0xe005fffffff 64bit pref] contains firmware FB [0xe0050000000-0xe00500ea5ff]
+ pci 0000:00:06.1: vgaarb: setting as boot VGA device
+ pci 0000:03:00.0: vgaarb: setting as boot VGA device (overriding previous)
+ pci 0000:03:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ pci 0000:07:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ pci 0000:08:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ vgaarb: loaded
+
+$ dmesg | grep 0000:03:00.0
+
+ pci 0000:03:00.0: [1002:6778] type 00 class 0x030000
+ pci 0000:03:00.0: reg 0x10: [mem 0xe0050000000-0xe005fffffff 64bit pref]
+ pci 0000:03:00.0: reg 0x18: [mem 0xe0065300000-0xe006531ffff 64bit]
+ pci 0000:03:00.0: reg 0x20: [io  0x20000-0x200ff]
+ pci 0000:03:00.0: reg 0x30: [mem 0xfffe0000-0xffffffff pref]
+ pci 0000:03:00.0: vgaarb: BAR 0: [mem 0xe0050000000-0xe005fffffff 64bit pref] contains firmware FB [0xe0050000000-0xe00500ea5ff]
+ pci 0000:03:00.0: BAR 0: assigned [mem 0xe0030000000-0xe003fffffff 64bit pref]
+ pci 0000:03:00.0: BAR 2: assigned [mem 0xe0065200000-0xe006521ffff 64bit]
+ pci 0000:03:00.0: BAR 6: assigned [mem 0xe0065220000-0xe006523ffff pref]
+ pci 0000:03:00.0: BAR 4: assigned [io  0x5000-0x50ff]
+ pci 0000:03:00.0: vgaarb: setting as boot VGA device (overriding previous)
+ pci 0000:03:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+
+Loongson UEFI firmware does not support specify which GPU to be the primary,
+the firmware set the ATI GPU(03:00.0) as the primary GPU with this hardware
+configuration by hardcode. The problem is that VGAARB can not override the
+platform integrated one(00:06.1) before apply this series.
+
+Please note that BAR 0 of the ATI GPU moved by PCI core from
+[0xe0050000000-0xe005fffffff] to [0xe0030000000-0xe003fffffff], the
+vga_is_firmware_default() function will return wrong results by simply
+remove #ifdefs while without take relocation into account.
+
+
+2) ARM64 (Kunpeng 920) with three video card:
+
+Before apply this series:
+
+ pci 0000:02:00.0: vgaarb: setting as boot VGA device
+ pci 0000:02:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ pci 0000:05:00.0: vgaarb: setting as boot VGA device (overriding previous) <--- (Because it has IO or MEM enabled)
+ pci 0000:05:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ pci 0000:06:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ vgaarb: loaded
+
+After apply this series:
+
+ pci 0000:05:00.0: vgaarb: BAR 0: [mem 0x80010000000-0x8001fffffff 64bit pref] contains firmware FB [0x80010000000-0x800101e77ff]
+ pci 0000:02:00.0: vgaarb: setting as boot VGA device
+ pci 0000:02:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ pci 0000:05:00.0: vgaarb: Boot VGA selected by firmware
+ pci 0000:05:00.0: vgaarb: setting as boot VGA device (overriding previous) <--- (Because it owns firmware framebuffer)
+ pci 0000:05:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ pci 0000:06:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ vgaarb: loaded
+
+3) x86 with three video card
+
+lspci | grep VGA
+05:00.0 VGA compatible controller: Silicon Motion, Inc. SM750 (rev a1)
+0c:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Navi 10 [Radeon RX 5600 OEM/5600 XT / 5700/5700 XT] (rev c1)
+0d:00.0 VGA compatible controller: Jingjia Microelectronics Co Ltd Device 9100 (rev 01)
+
+Before apply this series:
+
+ pci 0000:05:00.0: vgaarb: setting as boot VGA device
+ pci 0000:05:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ pci 0000:0c:00.0: vgaarb: setting as boot VGA device (overriding previous)
+ pci 0000:0c:00.0: vgaarb: VGA device added: decodes=io+mem,owns=io+mem,locks=none
+ pci 0000:0d:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ vgaarb: loaded
+ amdgpu 0000:0c:00.0: vgaarb: deactivate vga console
+ amdgpu 0000:0c:00.0: vgaarb: changed VGA decodes: olddecodes=io+mem,decodes=none:owns=io+me
+
+After apply this series:
+
+ pci 0000:0c:00.0: vgaarb: BAR 0: [mem 0xa0000000-0xafffffff 64bit pref] contains firmware FB [0xa0000000-0xa1fa3fff]
+ pci 0000:05:00.0: vgaarb: setting as boot VGA device
+ pci 0000:05:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ pci 0000:0c:00.0: vgaarb: Boot VGA selected by firmware
+ pci 0000:0c:00.0: vgaarb: setting as boot VGA device (overriding previous)
+ pci 0000:0c:00.0: vgaarb: VGA device added: decodes=io+mem,owns=io+mem,locks=none
+ pci 0000:0d:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+ vgaarb: loaded
+ amdgpu 0000:0c:00.0: vgaarb: deactivate vga console
+ amdgpu 0000:0c:00.0: vgaarb: changed VGA decodes: olddecodes=io+mem,decodes=none:owns=io+mem
+
+
+v2:
+	* Fix test robot warnnings and fix typos
+v3:
+	* Fix linkage problems if the global screen_info is not exported
+v4:
+	* Handle linkage problems by hiding behind of CONFIG_SYSFB,
+	* Drop side-effects and simplify.
+v5:
+	* Print the BAR and the framebuffer region (Bjorn)
+	* Use pci_dev_for_each_resource() (Bjorn)
+	* Cleanup the old mechanisms (Bjorn)
+	* Make the commit log simple by moving the extraneous details to cover letter (Bjorn)
+	* Carry on test on arm64
+v6:
+	* Resolve merge conflect on pci-next branch.
+
+Sui Jingfeng (2):
+  PCI/VGA: Make the vga_is_firmware_default() less arch-dependent
+  PCI/VGA: Remove vga_is_firmware_default() function
+
+ drivers/pci/vgaarb.c | 116 ++++++++++++++++++++++++++++---------------
+ 1 file changed, 76 insertions(+), 40 deletions(-)
+
+
+base-commit: 87ab156b7bb2a117a79692a96239c667f5b4f08e
 -- 
-2.26.3
+2.34.1
 
