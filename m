@@ -2,100 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C62C7B4F95
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173307B4F99
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236253AbjJBJy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:54:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56224 "EHLO
+        id S236294AbjJBJz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236112AbjJBJyz (ORCPT
+        with ESMTP id S236112AbjJBJzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:54:55 -0400
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B09F1AB
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:54:51 -0700 (PDT)
-Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-79df12ff0f0so6188897241.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:54:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696240491; x=1696845291; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XQk9WKQf6wTX5p8wxFHLOknA4t/nyk+AgRRg1oWYdhQ=;
-        b=Mv815g/nbn4u+I/KrsKa9iyJhqx3JwE+L+KWjECqLOu9e9chdWhji57KYEL7eVKnER
-         sLXu/clJB+AdbsL7V4YzyvWBYx95/v1vpcQ4iYXZSobH5i0+Qopd80B3m9ddKLQq/Fgu
-         S0dyesIgw5EoRu381pOGjbdEYKbThC/L2woPBarT1yVF+XkZ0TNFTwKWHqtT7NLTUjHN
-         vXFXS54dXC/KtEzMCRLu7gJkpuiS7KrJbCwa6HX2GXVZOKKYUgKzuvTfGxWOzWf2vrSm
-         ij5GvODhmC8XE7K1Lgly4K7t9p+Rx0Q/rus0cIM0HwbAMOl4oICCv96VxDXz9sH2BDd0
-         M64w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696240491; x=1696845291;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XQk9WKQf6wTX5p8wxFHLOknA4t/nyk+AgRRg1oWYdhQ=;
-        b=HdwXHNFG6Fy/PouC3pl5+0PRDXzBfu6z8kbBgIvGIJr/QVvlp4GfwgTw4+S9cHW0lz
-         0opFHdudsampd5ebuqNhbZc2sFB+3zKRl75lQvlUzzVVCH5s8BTwOGZjAvXHuEOkjtVL
-         1hGHRfHR/wbeCZC3TjbOF1/DSBu4RiDfeV+9IiWH1EvDoe8BKanil8CydAXWPixcNd0P
-         ZTAD3ZSjLa9u+98IA3TblnC8J29Y9h6ZgYFbthjYtz87FCkMF69MgAJCwTCaP4hbuKPJ
-         mR6NW3cvdqiB8nxtLlm03U3EirUDQ/cpefrhvJSy1giu7IwmhPmiCKb+Q6TYIuMAzaOp
-         Y6qg==
-X-Gm-Message-State: AOJu0YxEJAydmKmHvhbpZtE4NFwop16yBLjy1ok5cxbZf0TZZ7okM24n
-        Kx4XP2dETcy+Qt81x6CIaeazgQNb3Xu14rEOSsjOQw==
-X-Google-Smtp-Source: AGHT+IH3Wly4Y8a48dseTR5Kou8rKUP3Ria54hdWexULcUH+2B+J4+J2ck9zX9NWtGibqgI6Ke50Lkhgrls8gcDKcc8=
-X-Received: by 2002:a05:6102:302b:b0:452:6bb2:3620 with SMTP id
- v11-20020a056102302b00b004526bb23620mr9152195vsa.22.1696240490732; Mon, 02
- Oct 2023 02:54:50 -0700 (PDT)
+        Mon, 2 Oct 2023 05:55:24 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC7B8E;
+        Mon,  2 Oct 2023 02:55:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696240522; x=1727776522;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=fOrOmvdF6LT3+L3Jy/6pyrjx2JfHMcCZvJIukRslaqg=;
+  b=g/PtyqUjQJGgwpVUO4BSTBuy7+c9gWBRGG8ojvT2/xjFHR7KFVT5ZPzE
+   ZnpzzuWbRkA2U32+FHcrbUUaE1WJba4mIRGpNQAmpmpxPSkBvev5WECXJ
+   ODVL0sNxn//dyXzMUvCH3TLJTtvsQ1KoRU845+1FlpvYqdC49gmVye4ii
+   aLpmoxLmEL6MUuAdXcz8G8tSPS8p+ewsjZ8/XInIOOT/dxaMMD5vGo/5L
+   QAz/2yLKR0PAXfgrCnDKDemnpv4GhOfO3QdfZOhHIZ8MQLnRup8n3Dcj1
+   Na4i1020zm8G/JZQjpZnQfu+uYX0BitLk6k5UtOaAcRlf7s2B6JeO7OgB
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="413524513"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="413524513"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:55:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="840935007"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="840935007"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:55:20 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qnFe1-000000027n8-0Hr2;
+        Mon, 02 Oct 2023 12:55:17 +0300
+Date:   Mon, 2 Oct 2023 12:55:16 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        =?iso-8859-1?Q?Andr=E9?= Apitzsch <git@apitzsch.eu>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] iio: magnetometer: ak8975: Fix 'Unexpected device' error
+Message-ID: <ZRqThAuMogtcMtHI@smile.fi.intel.com>
+References: <20231001-ak_magnetometer-v1-1-09bf3b8798a3@apitzsch.eu>
+ <20231002102745.0000540b@Huawei.com>
+ <ZRqOn8tnJqvU22ex@smile.fi.intel.com>
+ <OS0PR01MB5922C468BEF67BC2A19F87D286C5A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-References: <20230927142931.19798-1-brgl@bgdev.pl> <20230927142931.19798-6-brgl@bgdev.pl>
- <ZRqRfss5oI+xcS3o@smile.fi.intel.com>
-In-Reply-To: <ZRqRfss5oI+xcS3o@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 2 Oct 2023 11:54:40 +0200
-Message-ID: <CAMRc=MesApEwEQxesBkodtB_4Zu4ubf3XScJ4iNLwn7sWBEcEQ@mail.gmail.com>
-Subject: Re: [PATCH v4 05/11] gpiolib: provide gpio_device_get_desc()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <OS0PR01MB5922C468BEF67BC2A19F87D286C5A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 11:46=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Wed, Sep 27, 2023 at 04:29:25PM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Getting the GPIO descriptor directly from the gpio_chip struct is
-> > dangerous as we don't take the reference to the underlying GPIO device.
-> > In order to start working towards removing gpiochip_get_desc(), let's
-> > provide a safer variant that works with an existing reference to struct
-> > gpio_device.
->
-> ...
->
-> > +EXPORT_SYMBOL_GPL(gpiochip_get_desc);
->
-> > +struct gpio_desc *
-> > +gpio_device_get_desc(struct gpio_device *gdev, unsigned int hwnum)
->
-> I'm wondering if you move this to be upper than gpiochip_get_desc() and
-> diff will look better...
->
+On Mon, Oct 02, 2023 at 09:38:17AM +0000, Biju Das wrote:
+> > On Mon, Oct 02, 2023 at 10:27:45AM +0100, Jonathan Cameron wrote:
+> > > On Sun, 1 Oct 2023 18:09:56 +0200
+> > > André Apitzsch <git@apitzsch.eu> wrote:
+> > 
+> > > > Fixes: 4f9ea93afde1 ("iio: magnetometer: ak8975: Convert
+> > > > enum->pointer for data in the match tables")
+> > 
+> > ^^^ (1)
 
-There's a limit to bikeshedding in my book and "making the diff look
-better" is definitely it. :)
+...
 
-Bart
+> > > So we need the spacer until someone converts this driver to use
+> > > pointers instead for both of and ACPI tables.
+> > 
+> > Isn't it done by (1) which is in your tree?
+> 
+> How (1) can trigger 'Unexpected device' error??
+> It returns match_data, and match_data has correct device type.
+
+How? The enum starts from 0 with a AKXXXX and ak_def_array starts from 0
+indexing, it's classical off-by-one, you got the driver data for a wrong chip.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
