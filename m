@@ -2,174 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D907B599D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDA57B59D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238664AbjJBRyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:54:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46018 "EHLO
+        id S238484AbjJBRzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:55:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238607AbjJBRyE (ORCPT
+        with ESMTP id S238317AbjJBRzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:54:04 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E97CE4
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:54:00 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id ffacd0b85a97d-3233799e7b8so14439f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:54:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696269239; x=1696874039; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=76iRx49ZBjTzS3/ihrdEmUB6JBE+9sFOl4sgt+UhoLQ=;
-        b=lAmREfscTE1emigtGjrRuaD8nRXe6x6R6JZEvedk7T9aFv1qZIQokQkjgD3rf2jpwE
-         BdSCRN61lEusLOy1AVPGw/yUN0w/aYqZuulUcJtX8VSjdaeKs/LaDdxnCnzNHdWbt0z1
-         HUpnjtE8iQoQOud11QhELFP4IiRhMhVnnzpKPpd8YtwBa4/6seSd+xCy28kF2Kf9VqNh
-         OIH3/DoAiZ3Mxg+z/JZF4ojGSHSXDHnJdJewa0JTnmwObHwR7G6YDDcfDeiNAL4Qmqhv
-         dUpFBhXcjIOpb9ZlFkdDrmyF3D9YYU/DFC/XNMlCKcM+ndzmFIjmIFSNa8TNK6VPQiIL
-         E9kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696269239; x=1696874039;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=76iRx49ZBjTzS3/ihrdEmUB6JBE+9sFOl4sgt+UhoLQ=;
-        b=iYP6rmy525RYMPEZX75Yj/1sAy7TfA4iGMFyb3goqEOyRFgGjuilF8vHEqsOUtjQmS
-         9Msmtnws132fUQEomX8Ka3aQjMXd+VA+7hIKQXPifqDiylyIyMejECfc68R55Aaoelx6
-         KO86PiK5J8L8j/ZGrgI0NVyfHR5B0txac1I+IrJNEbiOj/9cxHigUjVp/qoDJECmzQ7v
-         Lh/sXeCLTYzip5175OwVw6TK0SqEfwQ97CL87jfpnXi9TbCdwl2vnqq5QabnJV8cNaxT
-         c8XfpH+RIqhPjqrNapzxjICSZCUZ22HB6Akda0eRXZ5eal2tTQ+pMtGr20Jv0PmvJLFB
-         0OBQ==
-X-Gm-Message-State: AOJu0YxEb3vDb3ZtRXSM7P9nkH30aykcnpFBmh2/TbHFE8AL6U6sKIbi
-        GjvX3RGPvZzpPqS/89BdLoY=
-X-Google-Smtp-Source: AGHT+IEqGg5Mv/6tMKOZxA4ggAtVSs5nKOTnduDKRqzJPyS9+sVH5HpcAbGEOT/LL84pTdI3LN+dYA==
-X-Received: by 2002:adf:f04b:0:b0:317:630d:1e8e with SMTP id t11-20020adff04b000000b00317630d1e8emr10079014wro.2.1696269238704;
-        Mon, 02 Oct 2023 10:53:58 -0700 (PDT)
-Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id z19-20020a1709063ad300b009a1a653770bsm17455916ejd.87.2023.10.02.10.53.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 10:53:58 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 19:53:56 +0200
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] staging: rtl8192e: Remove constant parameter from
- rtllib_stop_protocol()
-Message-ID: <7eebcd3a8637b686331e34532136df3e7760f869.1696266965.git.philipp.g.hortmann@gmail.com>
-References: <cover.1696266964.git.philipp.g.hortmann@gmail.com>
+        Mon, 2 Oct 2023 13:55:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E90B9E;
+        Mon,  2 Oct 2023 10:55:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0774CC433C8;
+        Mon,  2 Oct 2023 17:55:42 +0000 (UTC)
+Date:   Mon, 2 Oct 2023 13:56:43 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Florian Weimer <fw@deneb.enyo.de>,
+        "carlos@redhat.com" <carlos@redhat.com>,
+        Peter Oskolkov <posk@posk.io>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        Chris Kennelly <ckennelly@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Noah Goldstein <goldstein.w.n@gmail.com>,
+        Daniel Colascione <dancol@google.com>,
+        "longman@redhat.com" <longman@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>
+Subject: Re: [RFC PATCH v2 1/4] rseq: Add sched_state field to struct rseq
+Message-ID: <20231002135643.4c8eefbd@gandalf.local.home>
+In-Reply-To: <845039ad23d24cc687491efa95be5e0d@AcuMS.aculab.com>
+References: <20230529191416.53955-1-mathieu.desnoyers@efficios.com>
+        <20230529191416.53955-2-mathieu.desnoyers@efficios.com>
+        <20230928103926.GI9829@noisy.programming.kicks-ass.net>
+        <20230928104321.490782a7@rorschach.local.home>
+        <40b76cbd00d640e49f727abbd0c39693@AcuMS.aculab.com>
+        <20231002125109.55c35030@gandalf.local.home>
+        <845039ad23d24cc687491efa95be5e0d@AcuMS.aculab.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1696266964.git.philipp.g.hortmann@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove constant parameter shutdown of function rtllib_stop_protocol().
-shutdown is always true. Remove dead code.
+On Mon, 2 Oct 2023 17:22:34 +0000
+David Laight <David.Laight@ACULAB.COM> wrote:
 
-Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
----
- drivers/staging/rtl8192e/rtllib.h            |  2 +-
- drivers/staging/rtl8192e/rtllib_softmac.c    | 19 ++++++++-----------
- drivers/staging/rtl8192e/rtllib_softmac_wx.c |  6 +++---
- 3 files changed, 12 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index 65f29afa81be..ff1728d1824d 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -1698,7 +1698,7 @@ void rtllib_start_scan_syncro(struct rtllib_device *ieee);
- void rtllib_sta_ps_send_null_frame(struct rtllib_device *ieee, short pwr);
- void rtllib_sta_ps_send_pspoll_frame(struct rtllib_device *ieee);
- void rtllib_start_protocol(struct rtllib_device *ieee);
--void rtllib_stop_protocol(struct rtllib_device *ieee, u8 shutdown);
-+void rtllib_stop_protocol(struct rtllib_device *ieee);
- 
- void rtllib_EnableNetMonitorMode(struct net_device *dev, bool bInitState);
- void rtllib_DisableNetMonitorMode(struct net_device *dev, bool bInitState);
-diff --git a/drivers/staging/rtl8192e/rtllib_softmac.c b/drivers/staging/rtl8192e/rtllib_softmac.c
-index 1a086f0ff10d..79a62bd9a297 100644
---- a/drivers/staging/rtl8192e/rtllib_softmac.c
-+++ b/drivers/staging/rtl8192e/rtllib_softmac.c
-@@ -2283,21 +2283,19 @@ void rtllib_softmac_stop_protocol(struct rtllib_device *ieee)
- {
- 	rtllib_stop_scan_syncro(ieee);
- 	mutex_lock(&ieee->wx_mutex);
--	rtllib_stop_protocol(ieee, true);
-+	rtllib_stop_protocol(ieee);
- 	mutex_unlock(&ieee->wx_mutex);
- }
- EXPORT_SYMBOL(rtllib_softmac_stop_protocol);
- 
--void rtllib_stop_protocol(struct rtllib_device *ieee, u8 shutdown)
-+void rtllib_stop_protocol(struct rtllib_device *ieee)
- {
- 	if (!ieee->proto_started)
- 		return;
- 
--	if (shutdown) {
--		ieee->proto_started = 0;
--		ieee->proto_stoppping = 1;
--		ieee->rtllib_ips_leave(ieee->dev);
--	}
-+	ieee->proto_started = 0;
-+	ieee->proto_stoppping = 1;
-+	ieee->rtllib_ips_leave(ieee->dev);
- 
- 	del_timer_sync(&ieee->associate_timer);
- 	mutex_unlock(&ieee->wx_mutex);
-@@ -2315,10 +2313,9 @@ void rtllib_stop_protocol(struct rtllib_device *ieee, u8 shutdown)
- 		rtllib_disassociate(ieee);
- 	}
- 
--	if (shutdown) {
--		RemoveAllTS(ieee);
--		ieee->proto_stoppping = 0;
--	}
-+	RemoveAllTS(ieee);
-+	ieee->proto_stoppping = 0;
-+
- 	kfree(ieee->assocreq_ies);
- 	ieee->assocreq_ies = NULL;
- 	ieee->assocreq_ies_len = 0;
-diff --git a/drivers/staging/rtl8192e/rtllib_softmac_wx.c b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
-index 3c7c0f07ab0b..e9da566646c5 100644
---- a/drivers/staging/rtl8192e/rtllib_softmac_wx.c
-+++ b/drivers/staging/rtl8192e/rtllib_softmac_wx.c
-@@ -134,7 +134,7 @@ int rtllib_wx_set_wap(struct rtllib_device *ieee,
- 	}
- 
- 	if (ifup)
--		rtllib_stop_protocol(ieee, true);
-+		rtllib_stop_protocol(ieee);
- 
- 	/* just to avoid to give inconsistent infos in the
- 	 * get wx method. not really needed otherwise
-@@ -277,7 +277,7 @@ int rtllib_wx_set_mode(struct rtllib_device *ieee, struct iw_request_info *a,
- 	if (!ieee->proto_started) {
- 		ieee->iw_mode = wrqu->mode;
- 	} else {
--		rtllib_stop_protocol(ieee, true);
-+		rtllib_stop_protocol(ieee);
- 		ieee->iw_mode = wrqu->mode;
- 		rtllib_start_protocol(ieee);
- 	}
-@@ -401,7 +401,7 @@ int rtllib_wx_set_essid(struct rtllib_device *ieee,
- 	}
- 
- 	if (proto_started)
--		rtllib_stop_protocol(ieee, true);
-+		rtllib_stop_protocol(ieee);
- 
- 	/* this is just to be sure that the GET wx callback
- 	 * has consistent infos. not needed otherwise
--- 
-2.42.0
+> > And what heuristic would you use. My experience with picking "time to spin"
+> > may work for one workload but cause major regressions in another workload.
+> > I came to the conclusion to "hate" heuristics and NACK them whenever
+> > someone suggested adding them to the rt_mutex in the kernel (back before
+> > adaptive mutexes were introduced).  
+> 
+> Isn't that exactly what and adaptive mutex does?
+> Spin 'for a bit' before sleeping.
 
+But it's not some arbitrary time to spin. Technically, a kernel spin lock
+is spinning on the heuristic of ownership. "Spin until the lock is
+released" is a heuristic!
+
+> 
+> > > > The obvious problem with their implementation is that if the owner is
+> > > > sleeping, there's no point in spinning. Worse, the owner may even be
+> > > > waiting for the spinner to get off the CPU before it can run again. But
+> > > > according to Robert, the gain in the general performance greatly
+> > > > outweighed the few times this happened in practice.  
+> > >
+> > > Unless you can use atomics (ok for bits and linked lists) you
+> > > always have the problem that userspace can't disable interrupts.
+> > > So, unlike the kernel, you can't implement a proper spinlock.  
+> > 
+> > Why do you need to disable interrupts? If you know the owner is running on
+> > the CPU, you know it's not trying to run on the CPU that is acquiring the
+> > lock. Heck, there's normal spin locks outside of PREEMPT_RT that do not
+> > disable interrupts. The only time you need to disable interrupts is if the
+> > interrupt itself takes the spin lock, and that's just to prevent deadlocks.  
+> 
+> You need to disable interrupts in order to bound the time the
+> spinlock is held for.
+> If all you are doing is a dozen instructions (eg to remove an
+> item from s list) then you really don't want an interrupt coming in
+> while you have the spinlock held.
+
+That's just noise of normal processing. What's the difference of it
+happening during spinning to where it happens in normal execution?
+
+> It isn't the cost of the ISR - that has to happen sometime, but that
+> the cpu waiting for the spinlock also take the cost of the ISR.
+
+As supposed to just going into the kernel? So it wastes some of its quota.
+It's not stopping anything else from running more than normal.
+
+> 
+> A network+softint ISR can run for a long time - I'm sure I've
+> seen a good fraction of a millisecond.
+> You really don't want another (or many other) cpu spinning while
+> that is going on.
+
+Why not? The current user space only code does that now (and it will even
+spin if the owner is preempted). What we are talking about implementing is
+a big improvement to what is currently done.
+
+> Which (to my mind) pretty much means that you always want to
+> disable interrupts on a spinlock.
+
+The benchmarks say otherwise. Sure, once in a while you may spin longer
+because of an interrupt, but that's a very rare occurrence compared to
+normal taking of spin locks. Disabling interrupts is an expensive
+operation. The savings you get from "not waiting for a softirq to finish"
+will be drowned out by the added overhead of disabling interrupts at every
+acquire.
+
+> If the architecture makes masking ISR expensive then I've seen schemes
+> that let the hardware interrupt happen, then disable it and rerun later.
+> 
+> > > I've NFI how CONFIG_RT manages to get anything done with all
+> > > the spinlocks replaced by sleep locks.
+> > > Clearly there are a spinlocks that are held for far too long.
+> > > But you really do want to spin most of the time.  
+> > 
+> > It spins as long as the owner of the lock is running on the CPU. This is
+> > what we are looking to get from this patch series for user space.  
+> 
+> I think you'd need to detect that the cpu was in-kernel running an ISR.
+
+For the few times that might happen, it's not worth it.
+
+> 
+> But the multithreaded audio app I was 'fixing' basically failed
+> as soon as it had to sleep on one of the futex.
+> The real problem was ISR while the mutex was held.
+> So deciding to sleep because the lock owner isn't running (in user)
+> would already be delaying things too much.
+
+That doesn't sound like the use case we are fixing. If your audio app
+failed because it had to sleep, that tells me it would fail regardless.
+
+> 
+> > 
+> > Back in 2007, we had an issue with scaling on SMP machines. The RT kernel
+> > with the sleeping spin locks would start to exponentially slow down with
+> > the more CPUs you had. Once we hit more than 16 CPUs,  the time to boot a
+> > kernel took 10s of minutes to boot RT when the normal CONFIG_PREEMPT kernel
+> > would only take a couple of minutes. The more CPUs you added, the worse it
+> > became.
+> > 
+> > Then SUSE submitted a patch to have the rt_mutex spin only if the owner of
+> > the mutex was still running on another CPU. This actually mimics a real
+> > spin lock (because that's exactly what they do, they spin while the owner
+> > is running on a CPU). The difference between a true spin lock and an
+> > rt_mutex was that the spinner would stop spinning if the owner was
+> > preempted (a true spin lock owner could not be preempted).
+> > 
+> > After applying the adaptive spinning, we were able to scale PREEMPT_RT to
+> > any number of CPUs that the normal kernel could do with just a linear
+> > performance hit.  
+> 
+> Sounds like it was spinning for far too long at the best of times.
+> But analysing these sort of latencies is hard.
+
+It wasn't spinning at all! The problem was that all rt_mutex would
+immediately sleep on any contention. This caused a ripple effect that would
+increase the time locks were held and that would increase contention which
+increased the time more. A very bad feedback loop.
+
+This was all very well traced and studied. That analysis was not hard at
+all. We know exactly what the cause was and why adaptive mutexes fixed the
+situation. And this is why I'm excited about this current work.
+
+-- Steve
