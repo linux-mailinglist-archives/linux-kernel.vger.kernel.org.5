@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEA277B5C4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFED7B5C51
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 23:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236391AbjJBU4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 16:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33922 "EHLO
+        id S229891AbjJBVBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 17:01:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229840AbjJBU4C (ORCPT
+        with ESMTP id S229671AbjJBVBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 16:56:02 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB7CCE
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 13:55:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E7B0C433C8;
-        Mon,  2 Oct 2023 20:55:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696280157;
-        bh=3SUjHS1R/+k33+41I8df1OAaO4gb+JCavb+GatMXfr8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ts6e8OPAXbwJSqbHZh7OB/J5bL/OHFILZtb1yBVm7HXPB1PZk/XGQ7AuIW4n29dj+
-         ecoBTO+7hrPW8Q6xuPPASkVTEUpIET4SQ0Jsvd2gVlk1zyw1YTaRy14t4smDjHCbYx
-         Ip/BJuo0W6EjA2rvCbaan0iEIW+cj78pq0AqAEptDJPl392/1LNQKv84du3Y6mEcD5
-         kLx5VdsMxdIHgNASSD2ZmOJqOflab/gjsH9hwidf2wGhMgu6x7m8pUtG4MO1ahLvP5
-         y4L8a3M2ByHooguBVfjxXHjB0K4VvDBx4MXBRBHPNchRHELaiLL3HcPvunO0YVRUT/
-         sMrIc2mpMLNtQ==
-Date:   Mon, 2 Oct 2023 13:55:51 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     Rohan G Thomas <rohan.g.thomas@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Mon, 2 Oct 2023 17:01:51 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0528FC9;
+        Mon,  2 Oct 2023 14:01:49 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-692ada71d79so174742b3a.1;
+        Mon, 02 Oct 2023 14:01:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696280508; x=1696885308; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HRAxndoOywhRzYPgMdhdUgmtQrGkiYMmSMD+Z1Z5zSg=;
+        b=JS2routNGvf+sgz0pfotst8KnIoKgS5BYZ+MZZ5qApfk4kTZaINEuIUww4MV1gbWJP
+         E5rWWDz09HTCxCjYvu7qDAnTlkf5Hxiifo83T04IV4RPgkcHOp5/uYeiDqXtmEtunOIZ
+         oQVm0ipCGVU8xRUdwURVP6PH2pHRIIoNQrATvNdFB48QK/P7fvuDEITaoWvG2iPwfCGA
+         i8WizS1djNnhqsIKLdVDl1qZfcXqXxhBHgIEeKcRnTh6XIkg/UKiLHZ2HvyQZHHk/lxU
+         ZZ5vfsFw2JF1UtW5AMjmmB2wvE1gJpKDMB/IBq71xLO0mex/9LQfaMQ5nmrwHv98D6xF
+         QQow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696280508; x=1696885308;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HRAxndoOywhRzYPgMdhdUgmtQrGkiYMmSMD+Z1Z5zSg=;
+        b=FLZw5GqHLH6Jgn0kHioM7bXCqTseef8DWOej6dQV0apfWo8n9jTPpROWXVjy9Ba8is
+         NqzhzfdxumVInjjYvlB/keq8uStDb9D8/sdcsmD+zie2UU/1TP19tnrZbHcyNaQCqr9u
+         CEsCwRDiA9zpAIZ7WB4OTBJvUH1pv4CFPz4WWxFOmOOb9oCHySXS51tTVkQGP/A2EKN0
+         +UtOlSD4NQZ2m6coFfgPmwfnoDJfDVCBzuZhTsu1vdAnxbHmC5qD1ZDpSXFKXeVoU5ma
+         Cxr7IqP1A9prPoJ6uroO7LiUa7ILf0vfZ4oFVDOqdY7yDGYmjUI8vzM8h7uIZ4qTmkIS
+         gfmw==
+X-Gm-Message-State: AOJu0YymUZmEpjSzT0L4660YfAxwpr5IpWE0ZUDb+a8A86vFQv7ao2AS
+        ii5NMv0Ys0vlWfjWqNtcOwCrPDb58xCaPhhN
+X-Google-Smtp-Source: AGHT+IEKCfUG0nwjH8sZfRtHvsAK+dOUfuK8uQYrL1Bc9Etwdi/XDgar1p1eQl8pEiTFhOqtIgGXOg==
+X-Received: by 2002:a05:6a20:2589:b0:135:4df7:f165 with SMTP id k9-20020a056a20258900b001354df7f165mr11492945pzd.21.1696280508384;
+        Mon, 02 Oct 2023 14:01:48 -0700 (PDT)
+Received: from swarup-virtual-machine.localdomain ([171.76.87.78])
+        by smtp.gmail.com with ESMTPSA id c26-20020aa78c1a000000b0067b643b814csm20072472pfd.6.2023.10.02.14.01.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 14:01:47 -0700 (PDT)
+From:   Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+To:     Thinh.Nguyen@synopsys.com, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, usb@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH net-next 1/1] net: stmmac: xgmac: EST interrupts
- handling
-Message-ID: <20231002135551.020f180c@kernel.org>
-In-Reply-To: <xwcwjtyy5yx6pruoa3vmssnjzkbeahmfyym4e5lrq2efcwwiym@2upf4ko4mah5>
-References: <20230923031031.21434-1-rohan.g.thomas@intel.com>
-        <xwcwjtyy5yx6pruoa3vmssnjzkbeahmfyym4e5lrq2efcwwiym@2upf4ko4mah5>
+        linux-kernel-mentees@lists.linuxfoundation.org
+Cc:     swarupkotikalapudi@gmail.com
+Subject: [PATCH v3] usb: dwc3: document gfladj_refclk_lpm_sel field
+Date:   Tue,  3 Oct 2023 02:31:37 +0530
+Message-Id: <20231002210137.209382-1-swarupkotikalapudi@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 26 Sep 2023 14:25:56 +0300 Serge Semin wrote:
-> On Sat, Sep 23, 2023 at 11:10:31AM +0800, Rohan G Thomas wrote:
-> > Enabled the following EST related interrupts:
-> >   1) Constant Gate Control Error (CGCE)
-> >   2) Head-of-Line Blocking due to Scheduling (HLBS)
-> >   3) Head-of-Line Blocking due to Frame Size (HLBF)
-> >   4) Base Time Register error (BTRE)
-> >   5) Switch to S/W owned list Complete (SWLC)
-> > Also, add EST errors into the ethtool statistic.
-> > 
-> > The commit e49aa315cb01 ("net: stmmac: EST interrupts handling and
-> > error reporting") and commit 9f298959191b ("net: stmmac: Add EST
-> > errors into ethtool statistic") add EST interrupts handling and error
-> > reporting support to DWMAC4 core. This patch enables the same support
-> > for XGMAC.  
-> 
-> So, this is basically a copy of what was done for the DW QoS Eth
-> IP-core (DW GMAC v4.x/v5.x). IMO it would be better to factor it out
-> into a separate module together with the rest of the setup methods
-> like it's done for TC or PTP. But since it implies some much more work
-> I guess we can leave it as is for now...
+Avoid a kernel-doc warning by documenting it:
+	drivers/usb/dwc3/core.h:1343: warning:
+	  Function parameter or member 'gfladj_refclk_lpm_sel'
+          not described in 'dwc3'
 
-I think we can push back a little harder. At the very least we should
-get a clear explanation why this copy'n'paste is needed, i.e. what are
-the major differences. No?
+Fixes: a6fc2f1b0927 ("usb: dwc3: core: add gfladj_refclk_lpm_sel quirk")
+Signed-off-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+---
+ Changes in V3:
+ - Include correct Fixes tag as suggested by Thinh
+ - Update the commit message
+ - Update the commit log
+ - Change wording of document warning fix
+ 
+ Changes in V2:
+ - Include Fixes tag as suggested by Greg
+
+ Changes in V1:
+ - Fix document warning
+
+ drivers/usb/dwc3/core.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
+index a69ac67d89fe..96685391696d 100644
+--- a/drivers/usb/dwc3/core.h
++++ b/drivers/usb/dwc3/core.h
+@@ -1106,6 +1106,8 @@ struct dwc3_scratchpad_array {
+  *			instances in park mode.
+  * @parkmode_disable_hs_quirk: set if we need to disable all HishSpeed
+  *			instances in park mode.
++ * @gfladj_refclk_lpm_sel: set if we need to enable SOF/ITP counter
++ *                          running based on ref_clk
+  * @tx_de_emphasis_quirk: set if we enable Tx de-emphasis quirk
+  * @tx_de_emphasis: Tx de-emphasis value
+  *	0	- -6dB de-emphasis
+-- 
+2.34.1
+
