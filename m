@@ -2,129 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D11CD7B5694
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36D67B56A7
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238095AbjJBP0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:26:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
+        id S238102AbjJBP0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:26:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238078AbjJBP0B (ORCPT
+        with ESMTP id S237928AbjJBP0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:26:01 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A52A9
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:25:58 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77574dec71bso480073985a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 08:25:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696260357; x=1696865157; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z686kNiWukEPuUFPdj5Zpdh2jq/+sj08V/foqt23i+A=;
-        b=y4Lpd+/4SIcTmMP+it4zIC2bLkghe/X8cNL2Hpr66K0KhC/8NgnTKxgtiai1lq8JlT
-         yRnNDfTjrGENFRjPNJwZ/Kx3r336mjDgS9perjkesmiZjPMq8OAOTK+v7UqkfmFy1Miz
-         xuaJ9LEqus9y77xTAskjdm6WHdQ7naVXSvjbTtFM6qBKKZLPMHy7UYld5kpc8FzQoXzT
-         fLzLFh4+4tYI7x+GS6ekbW9zxITAeVUAgX+qnV8W98vnP0lFXh1Cc70eMEY13mYYhQM7
-         9/c+pOfSkf2UZYRDZytYO8zC1lkjpmiYMmzj3ULBIHtyJi53pwUD4wbfHgnzGwGsSB2N
-         b1eA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696260357; x=1696865157;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Z686kNiWukEPuUFPdj5Zpdh2jq/+sj08V/foqt23i+A=;
-        b=pFBIAXsBY92EGPBWbzxqaw9v3eoNH20LMkRBh+k3cTfiuBVxfvgvCVe8tzSJL9xzBj
-         x3qE7FoiHRN/K8v6JTKVR3B4cy5+/BBQQcmQ11lBVpr/G6m9zEKn77gQ+cWHXy72r4OO
-         eQGwQRVDRMYtSoHvwqrMvxwFHjEe9/jcyhdXXazLxingFyqYXxalZ2Sh9rOTtSj4tb63
-         DaDk1w/9Y6xoPZeNye42ltKNDPpk7DcCji6JPxrA2fq2ZWZ/uaVZQeoI5aO4Ef8imEMY
-         aZkQ0xxSd0AEmnp3WFeJ3MhIZn2NDD5yQkKD8Ee4F8Ri1nXkSsD5elyzrQe5Tfy1NqGo
-         QILA==
-X-Gm-Message-State: AOJu0Yyjvl9v8dNRyKkdoKmQ3W4h76jLYuaH3sNZVng1zJaOsalz0WOe
-        cV5eg1tvG2NRBS/Uu5IsuOK0jg==
-X-Google-Smtp-Source: AGHT+IGOzBNgnR/8kyNK9t/3Vfmd2zrtQURJkh2zz1eHoYnXPAUTPdrNqNl1BvQCUeX7rTJ8yRuL2w==
-X-Received: by 2002:a05:620a:4891:b0:775:9766:cb69 with SMTP id ea17-20020a05620a489100b007759766cb69mr7612236qkb.75.1696260356936;
-        Mon, 02 Oct 2023 08:25:56 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
-        by smtp.gmail.com with ESMTPSA id b6-20020a05620a126600b007759e9b0eb8sm1707697qkl.99.2023.10.02.08.25.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 08:25:56 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 11:25:55 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-        riel@surriel.com, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
- memory controller
-Message-ID: <20231002152555.GA5054@cmpxchg.org>
-References: <20230928005723.1709119-1-nphamcs@gmail.com>
- <20230928005723.1709119-2-nphamcs@gmail.com>
- <ZRrI90KcRBwVZn/r@dhcp22.suse.cz>
- <20231002145026.GB4414@cmpxchg.org>
- <ZRrc8hv4t740MZar@dhcp22.suse.cz>
+        Mon, 2 Oct 2023 11:26:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB27899;
+        Mon,  2 Oct 2023 08:26:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B87B3C433C7;
+        Mon,  2 Oct 2023 15:26:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696260410;
+        bh=8IILTKrGQU/hoxa4/QqemlhG1ml9gdsLhVJNcvhGTc4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=P+s/tFcBRWOWCefwZM/YJXvU2QkWHBHx7Uv4ZlXCMglTa9+DhzkDs8c4izlq2FTq6
+         X2GQJzod5e+/oTemAFeQPspp4zxeM+TZ+9MIRkHkz4BFqcNjxgHFx1aXl5AZgDRe2Y
+         O3JYwqat004rqzOilvO5ZUUllH/d77+fj4vv1gIqwqtiPpzRVk2LBWRjuZjg+PHhr/
+         DlvljSVs8AseaMUKuDD1sqy/7qOYWIBiENeTo3+opcrqA/u+nZdHfdXD7kZScsHWnL
+         fxFXgOQLeoH3YZKkuQKx3jybs30UXJSJvvnVv32RJyxV7p1nCDtNo4jXi0b88u4dza
+         4gwzBjXX3hrQg==
+Date:   Mon, 2 Oct 2023 16:26:45 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] scripts/faddr2line: Skip over mapping symbols in
+ output from readelf
+Message-ID: <20231002152644.GA1519@willie-the-truck>
+References: <20230914131225.13415-1-will@kernel.org>
+ <20230914131225.13415-4-will@kernel.org>
+ <CAKwvOd=gDX4ebkyHyqr276nrZVuRaoJG9Ptofpq8WjejD3s5AA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZRrc8hv4t740MZar@dhcp22.suse.cz>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKwvOd=gDX4ebkyHyqr276nrZVuRaoJG9Ptofpq8WjejD3s5AA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 05:08:34PM +0200, Michal Hocko wrote:
-> On Mon 02-10-23 10:50:26, Johannes Weiner wrote:
-> > On Mon, Oct 02, 2023 at 03:43:19PM +0200, Michal Hocko wrote:
-> > > On Wed 27-09-23 17:57:22, Nhat Pham wrote:
-> [...]
-> > > - memcg limit reclaim doesn't assist hugetlb pages allocation when
-> > >   hugetlb overcommit is configured (i.e. pages are not consumed from the
-> > >   pool) which means that the page allocation might disrupt workloads
-> > >   from other memcgs.
-> > > - failure to charge a hugetlb page results in SIGBUS rather
-> > >   than memcg oom killer. That could be the case even if the
-> > >   hugetlb pool still has pages available and there is
-> > >   reclaimable memory in the memcg.
-> > 
-> > Are these actually true? AFAICS, regardless of whether the page comes
-> > from the pool or the buddy allocator, the memcg code will go through
-> > the regular charge path, attempt reclaim, and OOM if that fails.
+On Mon, Sep 18, 2023 at 08:46:22AM -0700, Nick Desaulniers wrote:
+> On Thu, Sep 14, 2023 at 6:12 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > Mapping symbols emitted in the readelf output can confuse the
+> > 'faddr2line' symbol size calculation, resulting in the erroneous
+> > rejection of valid offsets. This is especially prevalent when building
+> > an arm64 kernel with CONFIG_CFI_CLANG=y, where most functions are
+> > prefixed with a 32-bit data value in a '$d.n' section. For example:
+> >
+> > 447538: ffff800080014b80   548 FUNC    GLOBAL DEFAULT    2 do_one_initcall
+> >    104: ffff800080014c74     0 NOTYPE  LOCAL  DEFAULT    2 $x.73
+> >    106: ffff800080014d30     0 NOTYPE  LOCAL  DEFAULT    2 $x.75
+> >    111: ffff800080014da4     0 NOTYPE  LOCAL  DEFAULT    2 $d.78
+> >    112: ffff800080014da8     0 NOTYPE  LOCAL  DEFAULT    2 $x.79
+> >     36: ffff800080014de0   200 FUNC    LOCAL  DEFAULT    2 run_init_process
+> >
+> > Adding a warning to do_one_initcall() results in:
+> >
+> >   | WARNING: CPU: 0 PID: 1 at init/main.c:1236 do_one_initcall+0xf4/0x260
+> >
+> > Which 'faddr2line' refuses to accept:
+> >
+> > $ ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
+> > skipping do_one_initcall address at 0xffff800080014c74 due to size mismatch (0x260 != 0x224)
+> > no match for do_one_initcall+0xf4/0x260
+> >
+> > Filter out these entries from readelf using a shell reimplementation of
+> > is_mapping_symbol(), so that the size of a symbol is calculated as a
+> > delta to the next symbol present in ksymtab.
+> >
+> > Cc: Josh Poimboeuf <jpoimboe@kernel.org>
+> > Cc: John Stultz <jstultz@google.com>
+> > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> > Signed-off-by: Will Deacon <will@kernel.org>
+> > ---
+> >  scripts/faddr2line | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/scripts/faddr2line b/scripts/faddr2line
+> > index 6b8206802157..20d9b3d37843 100755
+> > --- a/scripts/faddr2line
+> > +++ b/scripts/faddr2line
+> > @@ -179,6 +179,11 @@ __faddr2line() {
+> >                         local cur_sym_elf_size=${fields[2]}
+> >                         local cur_sym_name=${fields[7]:-}
+> >
+> > +                       # is_mapping_symbol(cur_sym_name)
+> > +                       if [[ ${cur_sym_name} =~ ^((\.L)|(L0)|(\$[adtx](\.|$))) ]]; then
 > 
-> OK, I should have been more explicit. Let me expand. Charges are
-> accounted only _after_ the actual allocation is done. So the actual
-> allocation is not constrained by the memcg context. It might reclaim
-> from the memcg at that time but the disruption could have already
-> happened. Not really any different from regular memory allocation
-> attempt but much more visible with GB pages and one could reasonably
-> expect that memcg should stop such a GB allocation if the local reclaim
-> would be hopeless to free up enough from its own consumption.
+> Thanks for the patch!
 > 
-> Makes more sense?
+> I'm curious about the `|$` in the final part of the regex.  IIUC that
+> will match something like
+> $a
+> Do we have any such symbols without `.<n>` suffixes?
 
-Yes, that makes sense.
+tbh, I just blindly followed the implementation of is_mapping_symbol()
+at the time, but Masahiro has since pointed out that it's been
+significantly simplified so this regex should get much more manageable
+in the next version.
 
-This should be fairly easy to address by having hugetlb do the split
-transaction that charge_memcg() does in one go, similar to what we do
-for the hugetlb controller as well. IOW,
-
-alloc_hugetlb_folio()
-{
-	if (mem_cgroup_hugetlb_try_charge())
-		return ERR_PTR(-ENOMEM);
-
-	folio = dequeue();
-	if (!folio) {
-		folio = alloc_buddy();
-		if (!folio)
-			goto uncharge;
-	}
-
-	mem_cgroup_hugetlb_commit_charge();
-}
+Will
