@@ -2,178 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC2CB7B59E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E0B7B59BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236535AbjJBRrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:47:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
+        id S237641AbjJBRu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:50:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjJBRru (ORCPT
+        with ESMTP id S229563AbjJBRu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:47:50 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D325C90
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:47:46 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6910ea9cddbso42618b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:47:46 -0700 (PDT)
+        Mon, 2 Oct 2023 13:50:26 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4927183
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:50:23 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-79fa5d9f3a2so239f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:50:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696268866; x=1696873666; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YNQQwx91b/uOnSKKZUppyBENuJr/eDgIe44FB0FMCNo=;
-        b=AbT+IkSZ1SWfUy804U29it0vgHMydIrdscYuT8bTC5lUJWJ58WklfZIUl/+MloTZ6W
-         +JYYgXv+A2lCdtiqWcyrUdDp22jn6vuZ1yNdNeogmUygAufZ/JMDNWIthD35YzNyXOqZ
-         6YYqJjiZX997F4YgZ06AVWsu29AgD0KeZKWiU=
+        d=chromium.org; s=google; t=1696269022; x=1696873822; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=k71/w5tQzn4vicDbb9dqcU9SEKAhIvW7cb6nA8shinc=;
+        b=k4eei0utiOJesXtZQ51L6fvgK/efzcOJp/15EYG7K+IaxOupBksjh7jvnDoHMvkPse
+         rcWshuer51ZaVdj8Bo3ofJ0xPh92PYeKdchi1x0HmTQsy8FI04ddhVLBBrvZhCCMx+Xe
+         u4Y/blSP7xA1x2oziAAFakli/jXAiNIZrDDJg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696268866; x=1696873666;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YNQQwx91b/uOnSKKZUppyBENuJr/eDgIe44FB0FMCNo=;
-        b=iaSrYM9QHoVS27zgGhKObNO2fS6NuSWD6k7CcId9rYYoHM+W3eBRlKvVFx1cAGNFr/
-         CkkF5dhIXU+3KpjpjnEgjW/5dLzYgp34O5HLeJFeie4E3Bp32kDBkr7zz/mjQrfnDjxq
-         fZ0FBxkO/ScIKfey01E+golKoSp3L1RleLZj+wn1NqfRzmRr7bsjmawl67eN06Md1vmk
-         nBY4cSCR+prwM6YsL06cDmsuaB3NBNFW+Wq4RZQTssUo1Faav/zUJBadbSEutoInfNVg
-         QT7lYDULyFkx0NXepC/gLrNYHFw/KPcG0IQy2V/zB1ZoXI7xjuSBc7Llkv51291p+2Eh
-         qBlQ==
-X-Gm-Message-State: AOJu0YyEWRFmzvg2DGEhYcK1LXU+JMekTUDq23YwiS1MLLuXcgkDOY2O
-        PRSA3LkIAV//2OT9hWsBuuNlYg==
-X-Google-Smtp-Source: AGHT+IEOGmXwzJQMmP9O9e3J1zTzuRGD6g3Odz/FFlBFPYnkIsiyFPzZQHxZCCd8Ejh+aMpMYfz8TQ==
-X-Received: by 2002:a05:6a21:4841:b0:161:76a4:4f6e with SMTP id au1-20020a056a21484100b0016176a44f6emr11714690pzc.32.1696268866346;
-        Mon, 02 Oct 2023 10:47:46 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s1-20020a170902ea0100b001c3be750900sm22314441plg.163.2023.10.02.10.47.45
+        d=1e100.net; s=20230601; t=1696269022; x=1696873822;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=k71/w5tQzn4vicDbb9dqcU9SEKAhIvW7cb6nA8shinc=;
+        b=sn3CPksvIu0rc2ljEp7wz2ZKjvNdr9m6cfGArOamaN7z63hCsw0lHjUfKYq04GC5yu
+         7y2QbYOFCKiZ96bD29UpDjnlUwg0AuTuMr0GC+hqodtX5/6VFwMDXgt9NJmllCvxp5S9
+         iOBzpF7UCVdusaWsKAtIbh8CCUHI4W5C1+2UfQBtghJ0rU9vllc5/vr4GxMrFWEdGDZM
+         Mng3MSFuA60UshCmwNRHvqAAEenytR+xXlnjz2eqJa/xR4op8umjEIB1ryGf2ErpNBd4
+         ctEybsg3s3TJtcPlcGM1pfgM66JvLeCM27kUwoBIiTY2ZZ0hMxRoP8U5yYg7ej8ZA+aJ
+         qZ8Q==
+X-Gm-Message-State: AOJu0Ywv3+Hb4+tVB1OcqGbx9Ufn7JrCD8RWWgE73tYeLmbZEsA4EycE
+        HKVzLMCTD5tke9EMgrYN8Ch/vA==
+X-Google-Smtp-Source: AGHT+IEyXhGigDBdCKAGT+/IMaNGbS+k8t3ALkt9DIMUsltzdGeZnx6gsOo2/2x7u2YGnPQKl0q5+w==
+X-Received: by 2002:a5d:9cd5:0:b0:794:cdd8:db3c with SMTP id w21-20020a5d9cd5000000b00794cdd8db3cmr14699347iow.17.1696269022549;
+        Mon, 02 Oct 2023 10:50:22 -0700 (PDT)
+Received: from kea.bld.corp.google.com ([2620:15c:183:200:63cd:2673:520:2e9])
+        by smtp.gmail.com with ESMTPSA id s23-20020a02c517000000b0042b2e309f97sm6919562jam.177.2023.10.02.10.50.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 10:47:45 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 10:47:42 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] scsi: message: fusion: replace deprecated strncpy with
- strscpy
-Message-ID: <202310021043.5BCA90FB92@keescook>
-References: <20230927-strncpy-drivers-message-fusion-mptsas-c-v1-1-edac65cd7010@google.com>
+        Mon, 02 Oct 2023 10:50:22 -0700 (PDT)
+From:   Simon Glass <sjg@chromium.org>
+To:     devicetree@vger.kernel.org
+Cc:     Rob Herring <robh@kernel.org>, Tom Rini <trini@konsulko.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        linux-mtd@lists.infradead.org, Simon Glass <sjg@chromium.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Pratyush Yadav <ptyadav@amazon.de>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Richard Weinberger <richard@nod.at>,
+        Rob Herring <robh+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] dt-bindings: mtd: fixed-partitions: Add binman compatible
+Date:   Mon,  2 Oct 2023 11:49:40 -0600
+Message-ID: <20231002174948.1015223-1-sjg@chromium.org>
+X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230927-strncpy-drivers-message-fusion-mptsas-c-v1-1-edac65cd7010@google.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 04:43:08AM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> The only caller of mptsas_exp_repmanufacture_info() is
-> mptsas_probe_one_phy() which can allocate rphy in either
-> sas_end_device_alloc() or sas_expander_alloc(). Both of which
-> zero-allocate:
-> |       rdev = kzalloc(sizeof(*rdev), GFP_KERNEL);
-> ... this is supplied to mptsas_exp_repmanufacture_info() as edev meaning
-> that no future NUL-padding of edev members is needed.
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Note that while `strscpy(dest, src, sizeof(dest))` is more idiomatic
-> strscpy usage, we should keep `SAS_EXPANDER...LEN` for length arguments
-> since changing these to sizeof would mean we are getting buffers one
-> character larger than expected due to the declaration for these members:
-> |       char   vendor_id[SAS_EXPANDER_VENDOR_ID_LEN+1];
-> |       char   product_id[SAS_EXPANDER_PRODUCT_ID_LEN+1];
-> |       char   product_rev[SAS_EXPANDER_PRODUCT_REV_LEN+1];
-> |       char   component_vendor_id[SAS_EXPANDER_COMPONENT_VENDOR_ID_LEN+1];
-> ... and simply removing the "+1" in conjunction with using sizeof() may
-> not work as other code may rely on this adjusted buffer length for
-> sas_expander_device members.
+Add a compatible string for binman, so we can extend fixed-partitions
+in various ways.
 
-I don't agree with this assessment: without the +1, moving to strscpy()
-could lead to early truncation. I would change all of them to use
-sizeof(), so that %NUL termination will happen at the right place when a
-maxmimally sized string source is used.
+Signed-off-by: Simon Glass <sjg@chromium.org>
+---
 
-i.e. for this:
+Changes in v2:
+- Drop mention of 'enhanced features' in fixed-partitions.yaml
+- Mention Binman input and output properties
+- Use plain partition@xxx for the node name
 
-	dst[FOO + 1] = { };
+ .../bindings/mtd/partitions/binman.yaml       | 61 +++++++++++++++++++
+ .../mtd/partitions/fixed-partitions.yaml      |  3 +
+ .../bindings/mtd/partitions/partitions.yaml   |  1 +
+ MAINTAINERS                                   |  5 ++
+ 4 files changed, 70 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
 
-	strncpy(dst, src, FOO);
-
-we will copy at most FOO bytes into dst, leaving dst[FOO] as '\0'.
-
-If we replace it with:
-
-	strscpy(dst, src, FOO);
-
-Then we'll copy at most FOO-1 bytes into dst, setting dst[FOO - 1] = '\0';
-
-So, these need to be adjusted to use sizeof(dst)...
-
--Kees
-
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
-> ---
-> Note: build-tested only.
-> 
-> Note: similar to drivers/scsi/mpi3mr/mpi3mr_transport.c +212 which uses
-> strscpy
-> ---
->  drivers/message/fusion/mptsas.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/message/fusion/mptsas.c b/drivers/message/fusion/mptsas.c
-> index 86f16f3ea478..1dc225701a50 100644
-> --- a/drivers/message/fusion/mptsas.c
-> +++ b/drivers/message/fusion/mptsas.c
-> @@ -2964,15 +2964,15 @@ mptsas_exp_repmanufacture_info(MPT_ADAPTER *ioc,
->  			goto out_free;
->  
->  		manufacture_reply = data_out + sizeof(struct rep_manu_request);
-> -		strncpy(edev->vendor_id, manufacture_reply->vendor_id,
-> +		strscpy(edev->vendor_id, manufacture_reply->vendor_id,
->  			SAS_EXPANDER_VENDOR_ID_LEN);
-> -		strncpy(edev->product_id, manufacture_reply->product_id,
-> +		strscpy(edev->product_id, manufacture_reply->product_id,
->  			SAS_EXPANDER_PRODUCT_ID_LEN);
-> -		strncpy(edev->product_rev, manufacture_reply->product_rev,
-> +		strscpy(edev->product_rev, manufacture_reply->product_rev,
->  			SAS_EXPANDER_PRODUCT_REV_LEN);
->  		edev->level = manufacture_reply->sas_format;
->  		if (manufacture_reply->sas_format) {
-> -			strncpy(edev->component_vendor_id,
-> +			strscpy(edev->component_vendor_id,
->  				manufacture_reply->component_vendor_id,
->  				SAS_EXPANDER_COMPONENT_VENDOR_ID_LEN);
->  			tmp = (u8 *)&manufacture_reply->component_id;
-> 
-> ---
-> base-commit: 6465e260f48790807eef06b583b38ca9789b6072
-> change-id: 20230927-strncpy-drivers-message-fusion-mptsas-c-f22d5a4082e2
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
-
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+new file mode 100644
+index 000000000000..844f241feebf
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+@@ -0,0 +1,61 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2023 Google LLC
++
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Binman firmware layout
++
++maintainers:
++  - Simon Glass <sjg@chromium.org>
++
++select: false
++
++description: |
++  The binman node provides a layout for firmware, used when packaging firmware
++  from multiple projects. It is based on fixed-partitions, with some
++  extensions.
++
++  Binman supports properties used as inputs to the firmware-packaging process,
++  such as those which control alignment of partitions. This binding addresses
++  these 'input' properties. For example, it is common for the 'reg' property
++  (an 'output' property) to be set by Binman, based on the alignment requested
++  in the input.
++
++  Once processing is complete, input properties have mostly served their
++  purpose, at least until the firmware is repacked later, e.g. due to a
++  firmware update. The base 'fixed-partitions' binding should provide enough
++  information to read the firmware at runtime, including decompression if
++  needed.
++
++  Documentation for Binman is available at:
++
++  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html
++
++  with the current image-description format at:
++
++  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
++
++allOf:
++  - $ref: /schemas/mtd/partitions/fixed-partitions.yaml#
++
++properties:
++  compatible:
++    const: binman
++
++additionalProperties: false
++
++examples:
++  - |
++    partitions {
++        compatible = "binman", "fixed-partitions";
++        #address-cells = <1>;
++        #size-cells = <1>;
++
++        partition@100000 {
++            label = "u-boot";
++            reg = <0x100000 0xf00000>;
++        };
++    };
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+index 331e564f29dc..85aef1572967 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
+@@ -24,6 +24,9 @@ properties:
+       - items:
+           - const: sercomm,sc-partitions
+           - const: fixed-partitions
++      - items:
++          - const: binman
++          - const: fixed-partitions
+ 
+   "#address-cells": true
+ 
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
+index 1dda2c80747b..849fd15d085c 100644
+--- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
++++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
+@@ -15,6 +15,7 @@ maintainers:
+ 
+ oneOf:
+   - $ref: arm,arm-firmware-suite.yaml
++  - $ref: binman.yaml
+   - $ref: brcm,bcm4908-partitions.yaml
+   - $ref: brcm,bcm947xx-cfe-partitions.yaml
+   - $ref: fixed-partitions.yaml
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5f18c6ba3c3c..367c843ec348 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3517,6 +3517,11 @@ F:	Documentation/filesystems/bfs.rst
+ F:	fs/bfs/
+ F:	include/uapi/linux/bfs_fs.h
+ 
++BINMAN
++M:	Simon Glass <sjg@chromium.org>
++S:	Supported
++F:	Documentation/devicetree/bindings/mtd/partitions/binman*
++
+ BITMAP API
+ M:	Yury Norov <yury.norov@gmail.com>
+ R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 -- 
-Kees Cook
+2.42.0.582.g8ccd20d70d-goog
+
