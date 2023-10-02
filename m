@@ -2,212 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF397B51E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9A77B51E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236731AbjJBL7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 07:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42238 "EHLO
+        id S236834AbjJBL7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 07:59:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236697AbjJBL7N (ORCPT
+        with ESMTP id S236822AbjJBL7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 07:59:13 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D25DC;
-        Mon,  2 Oct 2023 04:59:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696247948; x=1727783948;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Wt4lQ+Vn3ccG4DjT09X9x0/9SxVjB8iFicc1DH/dTOI=;
-  b=UVxX6Z2bbw5ORchyrQTQX/JBwm728TIswzWm/t6Hh8zUQH3c5B9285tL
-   H9i/2uDPtDgAUo5DrOh72xKFcxN5CtQblMnIt+YqJAUmzz66S3mLPbyyI
-   HUiwqR2mTEgm2aTfCnTcdxVWKd4ReJEk0BuWWqL81Bi57X9Bw3FLih3RT
-   qZHSB5Gr6jvOrM6NkE31JsLoFlQKiXqbrDkCtZo31BQUynPK8SBDzKWma
-   51uyQ5FyDdotIAtephBTkePthM40nZyXAcIfY7g+yeJZQfE66/CmJrR02
-   FubGk5ZZ9EVQkTZyHCDNaQ+w4Rkb3hSXa772i5iMCVMHFVt7nvmZkNSlx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="413538846"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="413538846"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 04:59:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="816267781"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="816267781"
-Received: from roliveir-mobl1.ger.corp.intel.com ([10.251.222.16])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 04:59:04 -0700
-Date:   Mon, 2 Oct 2023 14:59:01 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Jithu Joseph <jithu.joseph@intel.com>
-cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        rostedt@goodmis.org, ashok.raj@intel.com, tony.luck@intel.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org, patches@lists.linux.dev,
-        ravi.v.shankar@intel.com, pengfei.xu@intel.com
-Subject: Re: [PATCH v3 9/9] platform/x86/intel/ifs: ARRAY BIST for Sierra
- Forest
-In-Reply-To: <20230929202436.2850388-10-jithu.joseph@intel.com>
-Message-ID: <b92b44ed-19a7-aec2-615b-1b1755dafdac@linux.intel.com>
-References: <20230922232606.1928026-1-jithu.joseph@intel.com> <20230929202436.2850388-1-jithu.joseph@intel.com> <20230929202436.2850388-10-jithu.joseph@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 2 Oct 2023 07:59:40 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA4994
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 04:59:37 -0700 (PDT)
+Message-ID: <20231002115506.217091296@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696247974;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=BqEDe5JJULg8F/6J5m2oO/d4LtY3PQFxeMN1+3fdG3U=;
+        b=FAZXfmT+pePEX5zHjiWOpGl8tnaiTjgaVMAw3CyzNrjxsSMHxUS4nwkkT5FSI0CnJynf3u
+        iZ+xpMbJ/0Yr9Iv9HXoKa02Zx10L3SPq94o7rIWb/e3xb28IHBjdrUCmpeWQxAa+Ff1p6o
+        LKjvme5Cm/yZjl0nKf8xeF8X35283O6j5MIZtuewVzegFpgadsw4wG/HZ2wXak/d+FrzG2
+        8rYbOPlxW1LtqbDAPFPxTwow36562Ce+i/jH6ZGI251CCcWAvMRplF3XuXv+o1AUs5pDd4
+        d+thsKnEZA8USjmDupqcQPdbW/AyvXxn3saQzZ4bfP8VfEeUSrEQjMuAIj0a4w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696247974;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=BqEDe5JJULg8F/6J5m2oO/d4LtY3PQFxeMN1+3fdG3U=;
+        b=jGr9D+FUWoWUBzWK7H0omKIOSDmDYoy6FRUC6tWUIehzS2cd9Qpeq0Se03/AcZOyQ8U7PG
+        HAfoPmmw0DL2/dDA==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Nikolay Borisov <nik.borisov@suse.com>
+Subject: [patch V4 00/30] x86/microcode: Cleanup and late loading enhancements
+Date:   Mon,  2 Oct 2023 13:59:34 +0200 (CEST)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Sep 2023, Jithu Joseph wrote:
+This is a follow up on:
 
-> Array BIST MSR addresses, bit definition and semantics are different for
-> Sierra Forest. Branch into a separate Array BIST flow on Sierra Forest
-> when user invokes Array Test.
-> 
-> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
-> ---
->  drivers/platform/x86/intel/ifs/ifs.h     |  4 +++
->  drivers/platform/x86/intel/ifs/core.c    | 15 +++++-----
->  drivers/platform/x86/intel/ifs/runtest.c | 37 +++++++++++++++++++++++-
->  3 files changed, 48 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/intel/ifs/ifs.h b/drivers/platform/x86/intel/ifs/ifs.h
-> index f0dd849b3400..b183aba3ffdf 100644
-> --- a/drivers/platform/x86/intel/ifs/ifs.h
-> +++ b/drivers/platform/x86/intel/ifs/ifs.h
-> @@ -137,6 +137,8 @@
->  #define MSR_CHUNKS_AUTHENTICATION_STATUS	0x000002c5
->  #define MSR_ACTIVATE_SCAN			0x000002c6
->  #define MSR_SCAN_STATUS				0x000002c7
-> +#define MSR_ARRAY_TRIGGER			0x000002d6
-> +#define MSR_ARRAY_STATUS			0x000002d7
->  #define MSR_SAF_CTRL				0x000004f0
->  
->  #define SCAN_NOT_TESTED				0
-> @@ -272,6 +274,7 @@ struct ifs_test_caps {
->   * @cur_batch: number indicating the currently loaded test file
->   * @generation: IFS test generation enumerated by hardware
->   * @chunk_size: size of a test chunk
-> + * @array_gen: test generation of array test
->   */
->  struct ifs_data {
->  	int	loaded_version;
-> @@ -283,6 +286,7 @@ struct ifs_data {
->  	u32	cur_batch;
->  	u32	generation;
->  	u32	chunk_size;
-> +	u32	array_gen;
->  };
->  
->  struct ifs_work {
-> diff --git a/drivers/platform/x86/intel/ifs/core.c b/drivers/platform/x86/intel/ifs/core.c
-> index 0c8927916373..934eaf348f9d 100644
-> --- a/drivers/platform/x86/intel/ifs/core.c
-> +++ b/drivers/platform/x86/intel/ifs/core.c
-> @@ -11,16 +11,16 @@
->  
->  #include "ifs.h"
->  
-> -#define X86_MATCH(model)				\
-> +#define X86_MATCH(model, array_gen)				\
->  	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(INTEL, 6,	\
-> -		INTEL_FAM6_##model, X86_FEATURE_CORE_CAPABILITIES, NULL)
-> +		INTEL_FAM6_##model, X86_FEATURE_CORE_CAPABILITIES, array_gen)
->  
->  static const struct x86_cpu_id ifs_cpu_ids[] __initconst = {
-> -	X86_MATCH(SAPPHIRERAPIDS_X),
-> -	X86_MATCH(EMERALDRAPIDS_X),
-> -	X86_MATCH(GRANITERAPIDS_X),
-> -	X86_MATCH(GRANITERAPIDS_D),
-> -	X86_MATCH(ATOM_CRESTMONT_X),
-> +	X86_MATCH(SAPPHIRERAPIDS_X, 0),
-> +	X86_MATCH(EMERALDRAPIDS_X, 0),
-> +	X86_MATCH(GRANITERAPIDS_X, 0),
-> +	X86_MATCH(GRANITERAPIDS_D, 0),
-> +	X86_MATCH(ATOM_CRESTMONT_X, 1),
+  https://lore.kernel.org/lkml/20230912065249.695681286@linutronix.de
 
-Just a suggestion that would IMO make these easier to understand, you 
-could name these array generations with defines so that one does not need 
-to look what's defined in X86_MATCH() to understand the purpose of the 
-second parameter. But it's up to you.
+Late microcode loading is desired by enterprise users. Late loading is
+problematic as it requires detailed knowledge about the change and an
+analysis whether this change modifies something which is already in use by
+the kernel. Large enterprise customers have engineering teams and access to
+deep technical vendor support. The regular admin does not have such
+resources, so the kernel has always tainted the kernel after late loading.
 
--- 
- i.
+Intel recently added a new previously reserved field to the microcode
+header which contains the minimal microcode revision which must be running
+on the CPU to make the load safe. This field is 0 in all older microcode
+revisions, which the kernel assumes to be unsafe. Minimal revision checking
+can be enforced via Kconfig or kernel command line. It then refuses to load
+an unsafe revision. The default loads unsafe revisions like before and
+taints the kernel. If a safe revision is loaded the kernel is not tainted.
 
->  	{}
->  };
->  MODULE_DEVICE_TABLE(x86cpu, ifs_cpu_ids);
-> @@ -100,6 +100,7 @@ static int __init ifs_init(void)
->  			continue;
->  		ifs_devices[i].rw_data.generation = FIELD_GET(MSR_INTEGRITY_CAPS_SAF_GEN_MASK,
->  							      msrval);
-> +		ifs_devices[i].rw_data.array_gen = (u32)m->driver_data;
->  		ret = misc_register(&ifs_devices[i].misc);
->  		if (ret)
->  			goto err_exit;
-> diff --git a/drivers/platform/x86/intel/ifs/runtest.c b/drivers/platform/x86/intel/ifs/runtest.c
-> index 4fe544d79946..a54cd97920c4 100644
-> --- a/drivers/platform/x86/intel/ifs/runtest.c
-> +++ b/drivers/platform/x86/intel/ifs/runtest.c
-> @@ -329,6 +329,38 @@ static void ifs_array_test_core(int cpu, struct device *dev)
->  		ifsd->status = SCAN_TEST_PASS;
->  }
->  
-> +#define ARRAY_GEN1_TEST_ALL_ARRAYS	0x0ULL
-> +#define ARRAY_GEN1_STATUS_FAIL		0x1ULL
-> +
-> +static int do_array_test_gen1(void *status)
-> +{
-> +	int cpu = smp_processor_id();
-> +	int first;
-> +
-> +	first = cpumask_first(cpu_smt_mask(cpu));
-> +
-> +	if (cpu == first) {
-> +		wrmsrl(MSR_ARRAY_TRIGGER, ARRAY_GEN1_TEST_ALL_ARRAYS);
-> +		rdmsrl(MSR_ARRAY_STATUS, *((u64 *)status));
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void ifs_array_test_gen1(int cpu, struct device *dev)
-> +{
-> +	struct ifs_data *ifsd = ifs_get_data(dev);
-> +	u64 status = 0;
-> +
-> +	stop_core_cpuslocked(cpu, do_array_test_gen1, &status);
-> +	ifsd->scan_details = status;
-> +
-> +	if (status & ARRAY_GEN1_STATUS_FAIL)
-> +		ifsd->status = SCAN_TEST_FAIL;
-> +	else
-> +		ifsd->status = SCAN_TEST_PASS;
-> +}
-> +
->  /*
->   * Initiate per core test. It wakes up work queue threads on the target cpu and
->   * its sibling cpu. Once all sibling threads wake up, the scan test gets executed and
-> @@ -356,7 +388,10 @@ int do_core_test(int cpu, struct device *dev)
->  		ifs_test_core(cpu, dev);
->  		break;
->  	case IFS_TYPE_ARRAY_BIST:
-> -		ifs_array_test_core(cpu, dev);
-> +		if (ifsd->array_gen == 0)
-> +			ifs_array_test_core(cpu, dev);
-> +		else
-> +			ifs_array_test_gen1(cpu, dev);
->  		break;
->  	default:
->  		return -EINVAL;
-> 
+But that does not solve all other known problems with late loading:
+
+    - Late loading on current Intel CPUs is unsafe vs. NMI when
+      hyperthreading is enabled. If a NMI hits the secondary sibling while
+      the primary loads the microcode, the machine can crash.
+
+    - Soft offline SMT siblings which are playing dead with MWAIT can cause
+      damage too when the microcode update modifies MWAIT. That's a
+      realistic scenario in the context of 'nosmt' mitigations. :(
+
+Neither the core code nor the Intel specific code handles any of this at all.
+
+While trying to implement this, I stumbled over disfunctional, horribly
+complex and redundant code, which I decided to clean up first so the new
+functionality can be added on a clean slate.
+
+So the series has several sections:
+
+   1) Move the 32bit early loading after paging enable
+
+   2) Cleanup of the Intel specific code
+
+   3) Implementation of proper core control logic to handle the NMI safe
+      requirements
+
+   4) Support for minimal revision check in the core and the Intel specific
+      parts.
+
+Changes vs. V3:
+
+  - Rebased on v6.6-rc1
+
+  - Remove the early load magic which was required for physical address
+    mode from the AMD code.
+
+  - Address the review comments from Borislav, which is mostly naming,
+    comments and change logs. No functional changes vs. v3
+
+The series is also available from git:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git ucode-v4
+
+Thanks,
+
+	tglx
+---
+ Documentation/admin-guide/kernel-parameters.txt |    5 
+ arch/x86/Kconfig                                |   25 
+ arch/x86/include/asm/apic.h                     |    5 
+ arch/x86/include/asm/cpu.h                      |   20 
+ arch/x86/include/asm/microcode.h                |   19 
+ arch/x86/kernel/Makefile                        |    1 
+ arch/x86/kernel/apic/apic_flat_64.c             |    2 
+ arch/x86/kernel/apic/ipi.c                      |    8 
+ arch/x86/kernel/apic/x2apic_cluster.c           |    1 
+ arch/x86/kernel/apic/x2apic_phys.c              |    1 
+ arch/x86/kernel/cpu/common.c                    |   12 
+ arch/x86/kernel/cpu/microcode/amd.c             |  129 +---
+ arch/x86/kernel/cpu/microcode/core.c            |  637 ++++++++++++++--------
+ arch/x86/kernel/cpu/microcode/intel.c           |  682 +++++++-----------------
+ arch/x86/kernel/cpu/microcode/internal.h        |   32 -
+ arch/x86/kernel/head32.c                        |    6 
+ arch/x86/kernel/head_32.S                       |   10 
+ arch/x86/kernel/nmi.c                           |    9 
+ arch/x86/kernel/smpboot.c                       |   12 
+ drivers/platform/x86/intel/ifs/load.c           |    8 
+ include/linux/cpuhotplug.h                      |    1 
+ 21 files changed, 788 insertions(+), 837 deletions(-)
