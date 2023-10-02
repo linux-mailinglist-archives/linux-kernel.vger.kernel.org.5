@@ -2,153 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80D487B4F9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C20407B4FA1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236308AbjJBJze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:55:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46426 "EHLO
+        id S236278AbjJBJ4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:56:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236112AbjJBJz2 (ORCPT
+        with ESMTP id S236277AbjJBJ4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:55:28 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFEBA7
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:55:25 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B90F82185A;
-        Mon,  2 Oct 2023 09:55:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696240523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a5qSHb2HY4O8xrSTCIffNnESicw2f6a/GZiMI+Le440=;
-        b=BwyfoNRWkaue7UlzJq8yzWf5se6SWP9HRooAzqRkIdEmCRyV+PDH5v/Y3Gxib+XuSJzGwt
-        N8qAAlg6ZvoYeec2zurYZzNcsY0tY4K6NeG4jsWXkGSGcWDAVXi8L77it3P2fyq+xsvqPA
-        mI+cvpcEbLP3Ktx8QLSOUmW0zNfPqK0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696240523;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=a5qSHb2HY4O8xrSTCIffNnESicw2f6a/GZiMI+Le440=;
-        b=FPv/6jZ7LK9Jbe325/Ith2a3jrIj4f1jDpacojNccVHQKwc5wQBlJPuQYC+hRPZ5wO72Wt
-        kHZ2Q9GLb48tCkBg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id ABF5813434;
-        Mon,  2 Oct 2023 09:55:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ZJPoKYuTGmUXUgAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 02 Oct 2023 09:55:23 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 48D3FA07C9; Mon,  2 Oct 2023 11:55:23 +0200 (CEST)
-Date:   Mon, 2 Oct 2023 11:55:23 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH] mm/filemap: clarify filemap_fault() comments for not
- uptodate case
-Message-ID: <20231002095523.6gttx365tvfaeexb@quack3>
-References: <20230930231029.88196-1-lstoakes@gmail.com>
+        Mon, 2 Oct 2023 05:56:12 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A00D9E
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:56:07 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50585357903so804307e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:56:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696240566; x=1696845366; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VI6ALURCYFTZzB2n0KbkvH0CnC/yIlDD9PmeGJooHMM=;
+        b=kMWAElZ1iknV5CgzRu9hpyJO+jTSMH8408YtG+t/fVy0KnKWByRIG4+FGr0D/tX3y/
+         SrBBcw+9CDWoOdXLv0oNnwy66IrlnssODrwmw7THAEbNXzuij75V/YuKG2n4tJYmGofh
+         QR3lbWWcIAmv9tPkPlDazuqRTyeLyIEy5XbNWxKTqfLb3hTv7rBpZq+OFuTeN+ofQgKf
+         764B7Qx+N5XGFwLLGhz3w43c0GUVVeliiGdqoKbm5GI4byHCrtqA195up+IGWv1+/7kB
+         +0+PwNpi/+OVfExZhmRnGZnFJjBxdvsLmiiHqrfqSeB/Cx6BJ4hLGoD20AYNY3mkNa68
+         9yiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696240566; x=1696845366;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VI6ALURCYFTZzB2n0KbkvH0CnC/yIlDD9PmeGJooHMM=;
+        b=BKdKvZILeB/dDfTWy/Su/MrQM/4HheKnuM1UcoaXHVL8UISWW+w5sorcDSt7QIQ3AV
+         zp4/HJBzxbFOSqlv6A9/PwdKlf3jTVG4VzXZYsTbolYz4r56ZrEIEZ0pYfcBm3LHwvEI
+         tPbqrhyaJ5AdLYnlJJjfX+yBJ74jAbLpqepI7n6KivlWDB/eCNkFQhAqyxOCfhWLJAN7
+         VLoBVZ0/nusGUqCmyOgtOptGwaHj9wqpYraYKsc31aXwJ9Nq3UrBPxUrRntNmqXvOy1u
+         x1LMleM/IoG2s8r7F0zdqVzGMk8tXH5bCKaz3ZuwpK9UWIxJRVsxc+yKgEMgBX6gcKa1
+         xI1g==
+X-Gm-Message-State: AOJu0YyVjqQeWtat0Dvdyf58/Ac1xH3IOz21zob8jLJaZjbIJlwLADbh
+        Q72NSn6Rdxd2rWXomdT+0GUcqQ==
+X-Google-Smtp-Source: AGHT+IEyPY2VWrXaKI4eQ9fWZwqFimDpZkQ+STvWpRTjmOVGlI4ZzlEncK2E1RdAljpCJEvp4OTGQw==
+X-Received: by 2002:a05:6512:485b:b0:503:3707:66ed with SMTP id ep27-20020a056512485b00b00503370766edmr8580902lfb.34.1696240565714;
+        Mon, 02 Oct 2023 02:56:05 -0700 (PDT)
+Received: from [172.30.204.164] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id f8-20020ac25328000000b004fe37339f8esm4687715lfh.149.2023.10.02.02.56.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 02:56:05 -0700 (PDT)
+Message-ID: <36e790a6-a9e8-bca9-226c-48339fefffb1@linaro.org>
+Date:   Mon, 2 Oct 2023 11:56:04 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230930231029.88196-1-lstoakes@gmail.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 5/5] arm64: boot: dts: qcom: sc8280xp: Add in CAMCC for
+ sc8280xp
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        andersson@kernel.org, agross@kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        jonathan@marek.ca, quic_tdas@quicinc.com,
+        vladimir.zapolskiy@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230930134114.1816590-1-bryan.odonoghue@linaro.org>
+ <20230930134114.1816590-6-bryan.odonoghue@linaro.org>
+ <449cd202-a7d8-4d20-3a41-17a3ba1355cb@linaro.org>
+ <ec28c662-8065-4bfc-bd5e-af0b9f3e87ac@linaro.org>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <ec28c662-8065-4bfc-bd5e-af0b9f3e87ac@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 01-10-23 00:10:29, Lorenzo Stoakes wrote:
-> The existing comments in filemap_fault() suggest that, after either a minor
-> fault has occurred and filemap_get_folio() found a folio in the page cache,
-> or a major fault arose and __filemap_get_folio(FGP_CREATE...) did the job
-> (having relied on do_sync_mmap_readahead() or filemap_read_folio() to read
-> in the folio), the only possible reason it could not be uptodate is because
-> of an error.
-> 
-> This is not so, as if, for instance, the fault occurred within a VMA which
-> had the VM_RAND_READ flag set (via madvise() with the MADV_RANDOM flag
-> specified), this would cause even synchronous readahead to fail to read in
-> the folio.
-> 
-> I confirmed this by dropping page caches and faulting in memory madvise()'d
-> this way, observing that this code path was reached on each occasion.
-> 
-> Clarify the comments to include this case, and additionally update the
-> comment recently added around the invalidate lock logic to make it clear
-> the comment explicitly refers to the minor fault case.
-> 
-> In addition, while we're here, refer to folios rather than pages.
-> 
-> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
 
-After the alignment fixup the patch looks good to me. Feel free to add:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  mm/filemap.c | 19 +++++++++++++------
->  1 file changed, 13 insertions(+), 6 deletions(-)
+On 10/1/23 01:01, Bryan O'Donoghue wrote:
+> On 30/09/2023 17:41, Konrad Dybcio wrote:
+>>
+>>
+>> On 9/30/23 15:41, Bryan O'Donoghue wrote:
+>>> Add in CAMCC for sc8280xp. The sc8280xp Camera Clock Controller looks
+>>> similar to most of the sdmX, smX and now scX controllers.
+>>>
+>>> Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+>>> ---
+>>>   arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 16 ++++++++++++++++
+>>>   1 file changed, 16 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi 
+>>> b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+>>> index cad59af7ccef..ca43d038578b 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+>>> @@ -8,6 +8,7 @@
+>>>   #include <dt-bindings/clock/qcom,gcc-sc8280xp.h>
+>>>   #include <dt-bindings/clock/qcom,gpucc-sc8280xp.h>
+>>>   #include <dt-bindings/clock/qcom,rpmh.h>
+>>> +#include <dt-bindings/clock/qcom,sc8280xp-camcc.h>
+>>>   #include <dt-bindings/clock/qcom,sc8280xp-lpasscc.h>
+>>>   #include <dt-bindings/interconnect/qcom,osm-l3.h>
+>>>   #include <dt-bindings/interconnect/qcom,sc8280xp.h>
+>>> @@ -3450,6 +3451,21 @@ usb_1_role_switch: endpoint {
+>>>               };
+>>>           };
+>>> +        camcc: clock-controller@ad00000 {
+>>> +            compatible = "qcom,sc8280xp-camcc";
+>>> +            reg = <0 0x0ad00000 0 0x20000>;
+>>> +            clocks = <&gcc GCC_CAMERA_AHB_CLK>,
+>>> +                 <&rpmhcc RPMH_CXO_CLK>,
+>>> +                 <&rpmhcc RPMH_CXO_CLK_A>,
+>>> +                 <&sleep_clk>;
+>>> +            clock-names = "iface", "bi_tcxo", "bi_tcxo_ao", 
+>>> "sleep_clk";
+>> clock-names is now redundant :)
+>>
+>> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>>
+>> Konrad
 > 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index d285ec5f9162..959694a2ade7 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -3308,21 +3308,28 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
->  	VM_BUG_ON_FOLIO(!folio_contains(folio, index), folio);
->  
->  	/*
-> -	 * We have a locked page in the page cache, now we need to check
-> -	 * that it's up-to-date. If not, it is going to be due to an error.
-> +	 * We have a locked folio in the page cache, now we need to check
-> +	 * that it's up-to-date. If not, it is going to be due to an error,
-> +	 * or because readahead was otherwise unable to retrieve it.
->  	 */
->  	if (unlikely(!folio_test_uptodate(folio))) {
->  		/*
-> -		 * The page was in cache and uptodate and now it is not.
-> -		 * Strange but possible since we didn't hold the page lock all
-> -		 * the time. Let's drop everything get the invalidate lock and
-> -		 * try again.
-> +		 * If the invalidate lock is not held, the folio was in cache and
-> +		 * uptodate and now it is not. Strange but possible since we
-> +		 * didn't hold the page lock all the time. Let's drop everything,
-> +		 * get the invalidate lock and try again.
->  		 */
->  		if (!mapping_locked) {
->  			folio_unlock(folio);
->  			folio_put(folio);
->  			goto retry_find;
->  		}
-> +
-> +		/*
-> +		 * OK, the folio is really not uptodate. This can be because the
-> +		 * VMA has the VM_RAND_READ flag set, or because an error
-> +		 * arose. Let's read it in directly.
-> +		 */
->  		goto page_not_uptodate;
->  	}
->  
-> -- 
-> 2.42.0
+> BTW.
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Looking at the block diagram for the Camera, I see why Cam_CC_AHB is 
+> included in this list. Its not called out as a dependency in the clock 
+> tree but when you look at the block diagram you can see it gates the AHB 
+> bus to the CAM_CC block.
+Yep, that's why using is as pm_clk for the clock controller makes sense
+
+Konrad
