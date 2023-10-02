@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C69E7B533B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895007B533E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237098AbjJBM32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 08:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
+        id S237122AbjJBM3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 08:29:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237079AbjJBM3V (ORCPT
+        with ESMTP id S237028AbjJBM3m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 08:29:21 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F67DB4
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 05:29:17 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-4054496bde3so146954425e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 05:29:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696249756; x=1696854556; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XgkgY+Hphqjk3amPtIZgb/fXeevEe3mIn4vayjBuH/Q=;
-        b=pWWuDtexRpwgrtrUTk3qRTe16jU+WxHXtAX+DGFDJirVkzGrnbVRVlDEaMmDGza7U+
-         /mwmy7T7gYHZtLSlIzqELL5g+ILgCUXyDf00Hz4icc6OrX36a6gU8cJscNc//j/cucHN
-         SZ5fBca54cpK/hKDIEiTKUk/u93qfdGMKoydJjcVslLB6BjOWNeZiuqFQnGy+QBxBa3F
-         sKWyt3QzW91uymMrgQiLcrjQ67nwZ28YumtuKFEb6rPPnBh+WlTHiv4iGwPTXWNLgUH3
-         mdaH++sdU2VGkxj6QUOP8iyZ581sLawOUC7Qhe4amQI4v2XWU5bWIk0WHMmm7SMof6Ix
-         LfWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696249756; x=1696854556;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XgkgY+Hphqjk3amPtIZgb/fXeevEe3mIn4vayjBuH/Q=;
-        b=hi4VFEzraPG1NoXaq3zz0wiV4pA+dk/ojZI18DSwUnARl10Ajec30yofH1abTIC1si
-         u+tntS1MXqisqdtHPg4lraT4Bo3wJ3dvEOWG2+uhAW7LqGUI3BZfRcBFfQSIWCjfJ9oM
-         pASGoRgJUL8ECbCkefYInVOjteA2iA+Yjhwyj3yB/lMlF0HDm+CzxQ8/2Q5tCx5O5X5O
-         kF143EwDgfH5Nmxjs64yBC5dMdZLJzb6PCwiR/+dUVZMs93ni8H5DWZgHtOtF5nOVeX2
-         TH3kzn1ErNrsoUdktEhxlXfop3dAp5wYFq/RgQZVf1UL2eRIMxt0CnzlJrvwIf++W+9z
-         TeTw==
-X-Gm-Message-State: AOJu0Yz0Jg7HGiYHMud03qffubYnTaF2zqjywkNI2FdDfXTyWQa5rz4A
-        IWYMIsLQiK9L2LlA7f0kbbIMvw==
-X-Google-Smtp-Source: AGHT+IHaICWozkAOxVKpDGyd190ouKwdneqDNILngD+XeRWNOuBi+o+3Ai7Htyu5JiiL2skBq8+P6w==
-X-Received: by 2002:a7b:c44f:0:b0:402:ee71:29 with SMTP id l15-20020a7bc44f000000b00402ee710029mr9655082wmi.10.1696249755731;
-        Mon, 02 Oct 2023 05:29:15 -0700 (PDT)
-Received: from toaster.lan ([2a01:e0a:3c5:5fb1:fcf2:65f1:853c:13be])
-        by smtp.googlemail.com with ESMTPSA id s16-20020a05600c045000b0040536dcec17sm7144819wmb.27.2023.10.02.05.29.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 05:29:15 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v2 1/2] dt-bindings: usb: add device for Genesys Logic hub gl3510
-Date:   Mon,  2 Oct 2023 14:29:08 +0200
-Message-Id: <20231002122909.2338049-2-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20231002122909.2338049-1-jbrunet@baylibre.com>
-References: <20231002122909.2338049-1-jbrunet@baylibre.com>
+        Mon, 2 Oct 2023 08:29:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55191EB;
+        Mon,  2 Oct 2023 05:29:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KL1v3ERuqGAckhQouBuxqqIbYjdQyTtkhHki0C/q84c=; b=YP5xSF1Oemu2I0hFWrgo43pZ4h
+        fCiZhQofphigB6JQOLIKI/85S60pcMYf1mSHKG39Qsw1JPGo+kXmrufEBFbb+X7zBIQsztHNbTVVD
+        +DjOXt1FD2ZYeisEBDVigdkdAIqZTlY6hWxGBbWQOdtURVMGlg7J9Qw/NXiWPz46GC9WVdLPwuDZx
+        Vn3YHkqkwGFvsm2qDNP4Fe+DV/Z1i0NU5bMns0C73DW25bNMz9NXviIf2iR99M4zXS4KdwNQhJ2pw
+        UeCnkQP33VhvHvHzin+hhLfMRzHFjbIEADlEhAjD0rQI2m+0yNBQkIxbFnY7LvXlc9ECyaQCD1Ly1
+        l0EOqJNw==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qnI2v-0091Eh-Ne; Mon, 02 Oct 2023 12:29:09 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 64E33300454; Mon,  2 Oct 2023 14:29:09 +0200 (CEST)
+Date:   Mon, 2 Oct 2023 14:29:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Ravi Bangoria <ravi.bangoria@amd.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Dapeng Mi <dapeng1.mi@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Like Xu <likexu@tencent.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Lv Zhiyuan <zhiyuan.lv@intel.com>,
+        Yang Weijiang <weijiang.yang@intel.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Dunn <daviddunn@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Manali Shukla <manali.shukla@amd.com>
+Subject: Re: [Patch v4 07/13] perf/x86: Add constraint for guest perf metrics
+ event
+Message-ID: <20231002122909.GC13957@noisy.programming.kicks-ass.net>
+References: <20230927033124.1226509-1-dapeng1.mi@linux.intel.com>
+ <20230927033124.1226509-8-dapeng1.mi@linux.intel.com>
+ <20230927113312.GD21810@noisy.programming.kicks-ass.net>
+ <ZRRl6y1GL-7RM63x@google.com>
+ <20230929115344.GE6282@noisy.programming.kicks-ass.net>
+ <957d37c8-c833-e1d3-2afb-45e5ef695b22@amd.com>
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <957d37c8-c833-e1d3-2afb-45e5ef695b22@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add gl3510 USB 3 root hub device id
+On Fri, Sep 29, 2023 at 08:50:07PM +0530, Ravi Bangoria wrote:
+> On 29-Sep-23 5:23 PM, Peter Zijlstra wrote:
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- Documentation/devicetree/bindings/usb/genesys,gl850g.yaml | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> > I don't think you need to go that far, host can use PMU just fine as
+> > long as it doesn't overlap with a vCPU. Basically, if you force
+> > perf_attr::exclude_guest on everything your vCPU can haz the full thing.
 
-diff --git a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-index d0927f6768a4..ee08b9c3721f 100644
---- a/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-+++ b/Documentation/devicetree/bindings/usb/genesys,gl850g.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/usb/genesys,gl850g.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Genesys Logic GL850G USB 2.0 hub controller
-+title: Genesys Logic USB hub controller
- 
- maintainers:
-   - Icenowy Zheng <uwu@icenowy.me>
-@@ -18,6 +18,7 @@ properties:
-       - usb5e3,608
-       - usb5e3,610
-       - usb5e3,620
-+      - usb5e3,626
- 
-   reg: true
- 
--- 
-2.40.1
+^ this..
 
+> How about keying off based on PMU specific KVM module parameter? Something
+> like what Manali has proposed for AMD VIBS? Please see solution 1.1:
+> 
+> https://lore.kernel.org/r/3a6c693e-1ef4-6542-bc90-d4468773b97d@amd.com
+
+So I hadn't read that, but isn't that more or less what I proposed
+above?
