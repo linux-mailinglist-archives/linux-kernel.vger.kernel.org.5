@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3B0E7B52B9
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5EA67B52AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237383AbjJBMIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 08:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
+        id S237435AbjJBMIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 08:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237149AbjJBMHD (ORCPT
+        with ESMTP id S237152AbjJBMHD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Oct 2023 08:07:03 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F07894;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE071AE;
         Mon,  2 Oct 2023 05:06:50 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:9537:67ca:c85e:d0ae])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8BF436607363;
-        Mon,  2 Oct 2023 13:06:48 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1D1DF660738B;
+        Mon,  2 Oct 2023 13:06:49 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1696248409;
-        bh=uwQYrGuMm2ejNz+6p1iPg1BLomW4NJekCoZt42bzvk0=;
+        bh=/cndzbQG0EfdVraDFE6iiWONWcwO1/xN2meedcRh5A0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MDYUG4DDIvMnA81tBRyQL+62Dtzm7dhbo+VkEpsEkonVOHRy4lBK1QTWM7q0AeAlk
-         srMl8Xek7F8frKaTkr0D/igAmvkmJOnOtdH+6oAhRinguykOu2Nh0eL9m4nNUjgXSc
-         f8d3Wx3R6T4ujvWucUzCMbNT7keNhVsxzffQM+mkkWTpYCtMANOs5gCSwUfbZS0Mog
-         0OKEpgC8jnffmvaBPYZ/Y0uyq0KGt1pbmDfehxdFxK+c0I95C2PvzuqS+bF08W/zxY
-         IVTdYg2/YjiTTdzQjIVC0bj1qc/LxBLAjBVJ0GRD3FD0y5Gq01UgWFwG+TVWKZJYB0
-         fZSHtvO6lYKow==
+        b=OZIZlYiZZBJVXu8Pjtt7ACOpjp2e09ky4E+doqU+FZoBSFfKpaaSEEnMzBCvVKe0G
+         kcQBxMRwq5WboOadi3pNaVJkoFB3hYrYEqXQuj/Usz5LZmMumKq+BJ4BdehzrbQU6w
+         +wtE8ZXtN21IkRbesIipT6PpOuwhxGUN1ELcvYHmCWTrzqhxF2JaSvBvHAOuZWocCe
+         PT62SMp/vuNB1QGmmEYhvVxrJgCh5arMwkL4qz/08+QSEbSP1uz/qapw7PgVHNg3tQ
+         l9HBOgJ203mFYR9o7F8qevla+unEkgQG4j6bSYiYuLQzljzcaSH4bTceUlOVKiNMg8
+         qwR7V7meifDmw==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v9 45/53] touchscreen: sur40: Stop direct calls to queue num_buffers field
-Date:   Mon,  2 Oct 2023 14:06:09 +0200
-Message-Id: <20231002120617.119602-46-benjamin.gaignard@collabora.com>
+Subject: [PATCH v9 46/53] sample: v4l: Stop direct calls to queue num_buffers field
+Date:   Mon,  2 Oct 2023 14:06:10 +0200
+Message-Id: <20231002120617.119602-47-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231002120617.119602-1-benjamin.gaignard@collabora.com>
 References: <20231002120617.119602-1-benjamin.gaignard@collabora.com>
@@ -64,26 +64,32 @@ Use vb2_get_num_buffers() to avoid using queue num_buffer field directly.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- drivers/input/touchscreen/sur40.c | 5 +++--
+ samples/v4l/v4l2-pci-skeleton.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/input/touchscreen/sur40.c b/drivers/input/touchscreen/sur40.c
-index 8ddb3f7d307a..e7d2a52169a0 100644
---- a/drivers/input/touchscreen/sur40.c
-+++ b/drivers/input/touchscreen/sur40.c
-@@ -847,9 +847,10 @@ static int sur40_queue_setup(struct vb2_queue *q,
+diff --git a/samples/v4l/v4l2-pci-skeleton.c b/samples/v4l/v4l2-pci-skeleton.c
+index a61f94db18d9..a65aa9d1e9da 100644
+--- a/samples/v4l/v4l2-pci-skeleton.c
++++ b/samples/v4l/v4l2-pci-skeleton.c
+@@ -155,6 +155,7 @@ static int queue_setup(struct vb2_queue *vq,
  		       unsigned int sizes[], struct device *alloc_devs[])
  {
- 	struct sur40_state *sur40 = vb2_get_drv_priv(q);
-+	unsigned int q_num_bufs = vb2_get_num_buffers(q);
+ 	struct skeleton *skel = vb2_get_drv_priv(vq);
++	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
  
--	if (q->num_buffers + *nbuffers < 3)
--		*nbuffers = 3 - q->num_buffers;
+ 	skel->field = skel->format.field;
+ 	if (skel->field == V4L2_FIELD_ALTERNATE) {
+@@ -167,8 +168,8 @@ static int queue_setup(struct vb2_queue *vq,
+ 		skel->field = V4L2_FIELD_TOP;
+ 	}
+ 
+-	if (vq->num_buffers + *nbuffers < 3)
+-		*nbuffers = 3 - vq->num_buffers;
 +	if (q_num_bufs + *nbuffers < 3)
 +		*nbuffers = 3 - q_num_bufs;
  
  	if (*nplanes)
- 		return sizes[0] < sur40->pix_fmt.sizeimage ? -EINVAL : 0;
+ 		return sizes[0] < skel->format.sizeimage ? -EINVAL : 0;
 -- 
 2.39.2
 
