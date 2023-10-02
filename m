@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB9A7B57A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB55F7B5741
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238162AbjJBPlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42052 "EHLO
+        id S238158AbjJBPkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237481AbjJBPlK (ORCPT
+        with ESMTP id S238130AbjJBPki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:41:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8EFAC
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:41:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696261267; x=1727797267;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SDh69gAchoeUmTBcUVCtw20M7uUtrPDrCXD7/sO8i4g=;
-  b=MAbYna6LNw7y0C5kOnncPWbmi/6UhHxC2xx5KvcqXkcdBbXyHbPrTydv
-   tXzU2dHAnhKm7RyV1SKopPmdhVQ78iWF/OtgsYhby0D0FxP5OsvPtCbRJ
-   U7gatSuqJWFGonVmaAn1NYcm6JhJoq0aYdcM6f/TfSO8+yS/45jEv0m9Q
-   wePN2eX138mtjBp4aZ285BJyJ5BzSi71i3TRKRKJG6p7uwPbDja66tCEs
-   gQ+QCqTKQn/oYoH0z4V49hHuL4GswEuP56RTP0Y2iI298ZEw3dxjRZSV5
-   KA9mTL0n7WiA4k3FlKZ/+IGb/27/193o8ZiGfD0YBm+f1tOzL2dubdtXl
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="379950226"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="379950226"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 08:41:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="727314202"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="727314202"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 02 Oct 2023 08:41:02 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qnL2a-0006A9-2D;
-        Mon, 02 Oct 2023 15:41:00 +0000
-Date:   Mon, 2 Oct 2023 23:40:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com,
-        thomas.hellstrom@linux.intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, boris.brezillon@collabora.com,
-        christian.koenig@amd.com, faith@gfxstrand.net
-Cc:     oe-kbuild-all@lists.linux.dev, nouveau@lists.freedesktop.org,
-        Danilo Krummrich <dakr@redhat.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH drm-misc-next v5 4/6] drm/gpuvm: track/lock/validate
- external/evicted objects
-Message-ID: <202310022331.lPOA8kRt-lkp@intel.com>
-References: <20230928191624.13703-5-dakr@redhat.com>
+        Mon, 2 Oct 2023 11:40:38 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E15CBD;
+        Mon,  2 Oct 2023 08:40:36 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c723f1c80fso55177575ad.1;
+        Mon, 02 Oct 2023 08:40:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696261235; x=1696866035; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/wiIjPxGS9I1xRfBewNetTUwkZeGUFLTkeOYKIQyLkg=;
+        b=GL2VvNKj50vCwZmzR8P9pCycp9QD3HOzUV3U5hRlV9Bf3fnubMqEXQTOKHQ8Jak02T
+         XoH8w27u4NwmHf7SHTQ8opZ8LFwf/aghia+4kN8D3d1sGUJz93GtbH/VmZgHsF+T16z/
+         pg9/TFtSc4MBbzSCVq9dnitVjybEKvdp1U2G4pLYVou6qflWS7g2sYa+EFe8E/0Cba1b
+         DEoP3Sv4hxH84M2MJr7a4YQ27nzDK9abe3SWPlG7gc+Zxz+Mqhp+Tc3KZDa6MsLB04C4
+         mBnj2GA288OUdzFsaeZaUNnyr3W93ZS0PdiccJmHQEF11ZMKupdeQR1/j+BLAgo1SATK
+         3nrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696261235; x=1696866035;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/wiIjPxGS9I1xRfBewNetTUwkZeGUFLTkeOYKIQyLkg=;
+        b=YZqMmwyG2zE7zp+kPkCVyiaG8CvNPhegToJh6J+NxKnmTTX7adkv/s1lSjN29qa6wC
+         4JTZtpPkDeO/GU5TzHI+lhTznRwDMLwCCplC3pvXHyjemSc0TxorHwJWgdDk+g31qfNv
+         SDGhYdFRzAerZOizXKyKR1mF1Ll8H/O7L5ZVh4agkAl1ZaKJfPLb+20X7cXMaZs6rAf0
+         eDgVPLyLnB/fr5RnKHmWWJ7KpXl35Z1bP0o3sTjresG5WbnQctOG8znadw8hIj3e6lFD
+         /3IEqoltLgv0G+7W30roI1nXjxPZFaIMtsM2fdqTWDFyMbW9qzuXmDss4NBgO/01ev83
+         NcLQ==
+X-Gm-Message-State: AOJu0Yxgwq4kDdqSeDhpckA1BFO201Dw2vSwr8UTJgbcJaoTp5Kf7X0a
+        ssUAF+AsABGBMQ+Xy5kZAixQv0OvCqUB3eFR
+X-Google-Smtp-Source: AGHT+IEqZ3v/v//a1wYhJ9s8uuhb7EVgVzeNPvmzBmt8w0G6QXiks6v052V2OBcI6S1rLh8zi7i+rQ==
+X-Received: by 2002:a17:902:ecc8:b0:1c7:41ed:199 with SMTP id a8-20020a170902ecc800b001c741ed0199mr10742839plh.66.1696261235536;
+        Mon, 02 Oct 2023 08:40:35 -0700 (PDT)
+Received: from swarup-virtual-machine ([171.76.87.78])
+        by smtp.gmail.com with ESMTPSA id g2-20020a170902868200b001b54d064a4bsm3524178plo.259.2023.10.02.08.40.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 08:40:35 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 21:10:30 +0530
+From:   swarup <swarupkotikalapudi@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Thinh.Nguyen@synopsys.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] usb: fix kernel-doc warning
+Message-ID: <ZRrkbkjoHgEnuy/m@swarup-virtual-machine>
+References: <20230918193505.7046-1-swarupkotikalapudi@gmail.com>
+ <2023100253-aide-authentic-5aa1@gregkh>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230928191624.13703-5-dakr@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+In-Reply-To: <2023100253-aide-authentic-5aa1@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,110 +73,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Danilo,
+On Mon, Oct 02, 2023 at 04:42:03PM +0200, Greg KH wrote:
+> On Tue, Sep 19, 2023 at 01:05:05AM +0530, Swarup Laxman Kotiaklapudi wrote:
+> > Fix kernel-doc warnings discovered in usb driver.
+> > Fixes this warning:
+> > warning: Function parameter or member 'gfladj_refclk_lpm_sel'
+> >          not described in 'dwc3'
+> > 
+> > Signed-off-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+> > ---
+> >  drivers/usb/dwc3/core.h | 2 ++
+> >  1 file changed, 2 insertions(+)
+> 
+> What commit id does this fix?
+> 
+> thanks,
+> 
+> greg k-h
 
-kernel test robot noticed the following build warnings:
+Hi Greg,
+Please find the commit id as mentioned below,
+next time onwards i will mention it:
 
-[auto build test WARNING on a4ead6e37e3290cff399e2598d75e98777b69b37]
+Fixes: 5cd07f96c0c6 ("usb: fix kernel-doc warning")
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Danilo-Krummrich/drm-gpuvm-add-common-dma-resv-per-struct-drm_gpuvm/20230929-031831
-base:   a4ead6e37e3290cff399e2598d75e98777b69b37
-patch link:    https://lore.kernel.org/r/20230928191624.13703-5-dakr%40redhat.com
-patch subject: [PATCH drm-misc-next v5 4/6] drm/gpuvm: track/lock/validate external/evicted objects
-reproduce: (https://download.01.org/0day-ci/archive/20231002/202310022331.lPOA8kRt-lkp@intel.com/reproduce)
+Thanks,
+Swarup
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310022331.lPOA8kRt-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> ./include/drm/drm_gpuvm.h:563: warning: Function parameter or member 'vm_exec' not described in 'drm_gpuvm_exec_unlock'
->> ./include/drm/drm_gpuvm.h:563: warning: expecting prototype for drm_gpuvm_lock(). Prototype was for drm_gpuvm_exec_unlock() instead
->> ./include/drm/drm_gpuvm.h:601: warning: expecting prototype for drm_gpuvm_exec_resv_add_fence(). Prototype was for drm_gpuvm_exec_validate() instead
-
-vim +563 ./include/drm/drm_gpuvm.h
-
-   527	
-   528	int drm_gpuvm_prepare_objects(struct drm_gpuvm *gpuvm,
-   529				      struct drm_exec *exec,
-   530				      unsigned int num_fences);
-   531	
-   532	int drm_gpuvm_prepare_range(struct drm_gpuvm *gpuvm,
-   533				    struct drm_exec *exec,
-   534				    u64 addr, u64 range,
-   535				    unsigned int num_fences);
-   536	
-   537	int drm_gpuvm_exec_lock(struct drm_gpuvm_exec *vm_exec,
-   538				unsigned int num_fences,
-   539				bool interruptible);
-   540	
-   541	int drm_gpuvm_exec_lock_array(struct drm_gpuvm_exec *vm_exec,
-   542				      struct drm_gem_object **objs,
-   543				      unsigned int num_objs,
-   544				      unsigned int num_fences,
-   545				      bool interruptible);
-   546	
-   547	int drm_gpuvm_exec_lock_range(struct drm_gpuvm_exec *vm_exec,
-   548				      u64 addr, u64 range,
-   549				      unsigned int num_fences,
-   550				      bool interruptible);
-   551	
-   552	/**
-   553	 * drm_gpuvm_lock() - lock all dma-resv of all assoiciated BOs
-   554	 * @gpuvm: the &drm_gpuvm
-   555	 *
-   556	 * Releases all dma-resv locks of all &drm_gem_objects previously acquired
-   557	 * through drm_gpuvm_lock() or its variants.
-   558	 *
-   559	 * Returns: 0 on success, negative error code on failure.
-   560	 */
-   561	static inline void
-   562	drm_gpuvm_exec_unlock(struct drm_gpuvm_exec *vm_exec)
- > 563	{
-   564		drm_exec_fini(&vm_exec->exec);
-   565	}
-   566	
-   567	int drm_gpuvm_validate(struct drm_gpuvm *gpuvm, struct drm_exec *exec);
-   568	void drm_gpuvm_resv_add_fence(struct drm_gpuvm *gpuvm,
-   569				      struct drm_exec *exec,
-   570				      struct dma_fence *fence,
-   571				      enum dma_resv_usage private_usage,
-   572				      enum dma_resv_usage extobj_usage);
-   573	
-   574	/**
-   575	 * drm_gpuvm_exec_resv_add_fence()
-   576	 * @vm_exec: the &drm_gpuvm_exec abstraction
-   577	 * @fence: fence to add
-   578	 * @private_usage: private dma-resv usage
-   579	 * @extobj_usage: extobj dma-resv usage
-   580	 *
-   581	 * See drm_gpuvm_resv_add_fence().
-   582	 */
-   583	static inline void
-   584	drm_gpuvm_exec_resv_add_fence(struct drm_gpuvm_exec *vm_exec,
-   585				      struct dma_fence *fence,
-   586				      enum dma_resv_usage private_usage,
-   587				      enum dma_resv_usage extobj_usage)
-   588	{
-   589		drm_gpuvm_resv_add_fence(vm_exec->vm, &vm_exec->exec, fence,
-   590					 private_usage, extobj_usage);
-   591	}
-   592	
-   593	/**
-   594	 * drm_gpuvm_exec_resv_add_fence()
-   595	 * @vm_exec: the &drm_gpuvm_exec abstraction
-   596	 *
-   597	 * See drm_gpuvm_validate().
-   598	 */
-   599	static inline int
-   600	drm_gpuvm_exec_validate(struct drm_gpuvm_exec *vm_exec)
- > 601	{
-   602		return drm_gpuvm_validate(vm_exec->vm, &vm_exec->exec);
-   603	}
-   604	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
