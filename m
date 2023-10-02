@@ -2,133 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E01377B53EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 614877B53EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237362AbjJBNW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
+        id S237399AbjJBNWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 09:22:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237299AbjJBNWZ (ORCPT
+        with ESMTP id S237379AbjJBNWk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 09:22:25 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC10AAD
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 06:22:21 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9b2a3fd5764so1350814766b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 06:22:21 -0700 (PDT)
+        Mon, 2 Oct 2023 09:22:40 -0400
+Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9F9AD;
+        Mon,  2 Oct 2023 06:22:37 -0700 (PDT)
+Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-7ab4c86eeb0so5520783241.2;
+        Mon, 02 Oct 2023 06:22:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696252940; x=1696857740; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BGYoLUnLzaZLpXUSHuD1x8imzBKWTH0+I6v2Ivt44T4=;
-        b=i13BCMwzsY9p9EOY4c4Yu6G+0fwq0CXXp+g9lq6vI3H2ydS6yx8JY64R5UMecBC6V4
-         LaWT1OCWWbLf+6Vw8AHp2PfxoeIChX94kiHKCS2PGgb9IiKoiXJngysN8s6GFm9mTJj8
-         jvxaF/JpFxmFv7Qfg8L7BpXQ6DWLc6ivKk1aqbh+NyZi60Nd2r8xZSkKdx9KVx20JPSM
-         5vu1qI5clP9/f6zNFdXdMxz2JIFE/JVaddrA1T3+uL+fTBLEQZbcj5goTjmLb9duPXpj
-         izc+zjXxFoo75p91ByeXQZKkX0s5WyL3nf94XIYHiHaUAkK4AC0mG8um7ML2I2IWbeRv
-         7QVw==
+        d=gmail.com; s=20230601; t=1696252956; x=1696857756; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IVsMtZasrJtEby/cWp2K2MNSFEAPM2DmMjcEMUEk2rg=;
+        b=QA+e4iatRG6shuVP6s54Kwzt+/kB3PjlQJI6m51mUFQj0Q5SDGgA6RUFqER82swpzH
+         bL5frKvlZCS9EH90amZIAs1dbI6kfsCN1+J5bbMUARr8SvHbYMqwq6gCOJDOV8jRwjvF
+         +k05KwzjEsrd34atc+g1r8bZkP2KN6yDACixlrp22Vdbj/2x//XbtYOGxPKWRxvh2H0W
+         YnvGAc7OdQBK1maHDWwvnKJxwLvT+IrHwEkTztlqMZq/iHdyGoXkfg5olFKhHtX7FM7e
+         kxRwVpAE9tQZAyoDFjK/Y+aMcpWlMC+7GWUI5NzfkJlwlUUhu0Exw9OW2bUTeFU5hzBm
+         aVgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696252940; x=1696857740;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696252956; x=1696857756;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BGYoLUnLzaZLpXUSHuD1x8imzBKWTH0+I6v2Ivt44T4=;
-        b=K6iVdLBnkyt/hCi7hagvjxm9D4jHNPG9WhWTK+fXOOYbLLbOSFchOAbSx6mM1DpA1i
-         nw2QRgeBYw+v+bwRMPR2uOuxrscsauVFFnItf7pYGGmWWARQPUBdT5no9LQwajhmaM0v
-         cHPoLS1Sn2EkKnztlIaazhxf640k2hDEyrUgH5rJCG5XYSt02MsvH66UZ7RPcYiaFeS9
-         p18RRCTW0lZJbqQ1w611euDAi78uMaMftZvWz5Wtbe+DK6FxEIGSnLQsm7+NO4Eg0NhS
-         e4sWXfl+GISY4uBeMQIiMjc/tYf64ttg9OD7HLEaNaG7vElw94molKClpuBGorNZQvU3
-         5FMw==
-X-Gm-Message-State: AOJu0Yxh/17VJ4oKXpo6QXLmqMGk/3XZRToGvgKCwp5bwGH75prDTezE
-        xGxQtek84/r7gONLcgeOYTw=
-X-Google-Smtp-Source: AGHT+IE8/5+M0ccoQYq73JpeAGFF0/4WT21sdXk6i5eMJcanJEj12URSUuPU6NNPucgV64Q5cVckvg==
-X-Received: by 2002:a17:906:1010:b0:9aa:23c9:aa52 with SMTP id 16-20020a170906101000b009aa23c9aa52mr10751281ejm.20.1696252939911;
-        Mon, 02 Oct 2023 06:22:19 -0700 (PDT)
-Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
-        by smtp.gmail.com with ESMTPSA id fr33-20020a170906892100b009b2d46425absm5497166ejc.85.2023.10.02.06.22.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 06:22:19 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 2 Oct 2023 15:22:17 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Nadav Amit <namit@vmware.com>, Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [RFC PATCH 0/4] x86/percpu: Use segment qualifiers
-Message-ID: <ZRrECdIoKCXALl39@gmail.com>
-References: <20231001131620.112484-1-ubizjak@gmail.com>
- <CAHk-=wg6P8pPg-x4BPUQj-wE0xC7HkGzFk89ftuji8MVo+RRxw@mail.gmail.com>
- <CAFULd4Y+HXuditB51Q0LznqiBsvxJr3BjEYvx4_224XmqrycCw@mail.gmail.com>
- <CAHk-=wh+cfn58XxMLnG6dH+Eb9-2dYfABXJF2FtSZ+vfqVvWzA@mail.gmail.com>
- <CAFULd4atO8uy_5PbjV8vw-yk0tv_=4kh_JwJ+6Xq-2myStCnmw@mail.gmail.com>
- <CAFULd4YsPnCfw-NV_0ck1_za=WPc-FxYKV1bb99UcAwMJ=34YA@mail.gmail.com>
+        bh=IVsMtZasrJtEby/cWp2K2MNSFEAPM2DmMjcEMUEk2rg=;
+        b=QbMke1rvYPoVZpaCRfN2ls1msoHxYnfVVpmoIo8TGWcThbH4lhhUokr/28fwD7bOWB
+         t8DTf5IQmwba2NPjC1iDIeuR1WFE+9r1Az2H7FgxtnkzkvLlvbZD1TxYApeoS3hawzJh
+         RsDh5ocJHYGvHYsLeOWxze/EafhOmCJyYetx3foZStZmyjUk5j3VNqqjNYfzi/WfCTRT
+         Lse9u/2/DSWY/949EbojMGnhTRe8YQsODBoDVwjGd6zWZpFFiREH8rQeWipSy5cxD+u1
+         1o9ma1PVvN71GDfgJUQReBHgT305hd9odyUKFRXsLz6xw13gSSMZ82WouMFQminLI6aw
+         udUg==
+X-Gm-Message-State: AOJu0Ywnp8ZJdO1RQYFKBYXL5N5xMwtH2VWdvbS2VVN9pMOLoi/VD+Zp
+        xqmTduRBRTi/JRM/B3VrnxOJpxzffnsH++DVixg=
+X-Google-Smtp-Source: AGHT+IFEgHiwDYxWJCCCP4Dn2vbruH+ZDPDbE2jLy9mehhlbjWAHx6f13KHylzPOKRRvQxlVA1Nd0fOVlOQKS83hLLw=
+X-Received: by 2002:a67:e9ca:0:b0:452:6764:4f8e with SMTP id
+ q10-20020a67e9ca000000b0045267644f8emr8676333vso.34.1696252956237; Mon, 02
+ Oct 2023 06:22:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFULd4YsPnCfw-NV_0ck1_za=WPc-FxYKV1bb99UcAwMJ=34YA@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20231002125733.1251467-1-stefanb@linux.vnet.ibm.com>
+In-Reply-To: <20231002125733.1251467-1-stefanb@linux.vnet.ibm.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 2 Oct 2023 16:22:25 +0300
+Message-ID: <CAOQ4uxiuQxTDqn4F62ueGf_9f4KC4p7xqRZdwPvL8rEYrCOWbg@mail.gmail.com>
+Subject: Re: [PATCH] fs: Pass AT_GETATTR_NOSEC flag to getattr interface function
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, Tyler Hicks <code@tyhicks.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Christian Brauner <brauner@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 2, 2023 at 3:57=E2=80=AFPM Stefan Berger <stefanb@linux.vnet.ib=
+m.com> wrote:
+>
+> From: Stefan Berger <stefanb@linux.ibm.com>
+>
+> When vfs_getattr_nosec() calls a filesystem's getattr interface function
+> then the 'nosec' should propagate into this function so that
+> vfs_getattr_nosec() can again be called from the filesystem's gettattr
+> rather than vfs_getattr(). The latter would add unnecessary security
+> checks that the initial vfs_getattr_nosec() call wanted to avoid.
+> Therefore, introduce the getattr flag GETATTR_NOSEC and allow to pass
+> with the new getattr_flags parameter to the getattr interface function.
+> In overlayfs and ecryptfs use this flag to determine which one of the
+> two functions to call.
+>
+> In a recent code change introduced to IMA vfs_getattr_nosec() ended up
+> calling vfs_getattr() in overlayfs, which in turn called
+> security_inode_getattr() on an exiting process that did not have
+> current->fs set anymore, which then caused a kernel NULL pointer
+> dereference. With this change the call to security_inode_getattr() can
+> be avoided, thus avoiding the NULL pointer dereference.
+>
+> Reported-by: syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com
+> Fixes: db1d1e8b9867 ("IMA: use vfs_getattr_nosec to get the i_version")
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: Miklos Szeredi <miklos@szeredi.hu>
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: Tyler Hicks <code@tyhicks.com>
+> Cc: Mimi Zohar <zohar@linux.ibm.com>
+> Suggested-by: Christian Brauner <brauner@kernel.org>
+> Co-developed-by: Amir Goldstein <amir73il@gmail.com>
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> ---
 
-* Uros Bizjak <ubizjak@gmail.com> wrote:
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-> > > Clang isn't much better, but at least it doesn't generate bad code. It
-> > > just crashes with an internal compiler error on the above trivial
-> > > test-case:
-> > >
-> > >     fatal error: error in backend: cannot lower memory intrinsic in
-> > > address space 257
-> > >
-> > > which at least tells the user that they can't copy memory from that
-> > > address space. But once again shows that no, this feature is not ready
-> > > for prime-time.
-> > >
-> > > If literally the *first* thing I thought to test was this broken, what
-> > > else is broken in this model?
-> > >
-> > > And no, the kernel doesn't currently do the above kinds of things.
-> > > That's not the point. The point was "how well is this compiler support
-> > > tested". The answer is "not at all".
-> 
-> I don't agree with the above claims. The generated code was the product 
-> of a too limited selection of available copy algorithms in unusual 
-> circumstances, but even in the case of generic fallback code, the 
-> generated code was *correct*. As said in the previous post, and 
-> re-confirmed by the patch in the PR, the same code in GCC handles 
-> implicit (__thread) and named address spaces. At the end of the day, the 
-> problematic code was merely a missing-optimization (the bug with the 
-> lowest severity in GCC).
-
-Yeah, so the feature generated really crappy code for Linus's
-testcase. That's never a good sign for compiler features, full stop.
-
-Do we want the kernel to be at the bleeding edge of an 
-unusual compiler feature that is only used internally by the
-compiler in a very specific fashion?
-
-Maybe, but Linus's reluctance and caution is justified IMHO,
-and at minimum this feature needs some careful evaluation of 
-long-time suitability [*] ...
+Now let's see what vfs maintainers think about this...
 
 Thanks,
+Amir.
 
-	Ingo
-
-
-[*] euphemism for: "I have no idea how to evaluate this risk"... :-/
+>  fs/ecryptfs/inode.c        | 12 ++++++++++--
+>  fs/overlayfs/inode.c       | 10 +++++-----
+>  fs/overlayfs/overlayfs.h   |  8 ++++++++
+>  fs/stat.c                  |  6 +++++-
+>  include/uapi/linux/fcntl.h |  3 +++
+>  5 files changed, 31 insertions(+), 8 deletions(-)
+>
+> diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
+> index 992d9c7e64ae..5ab4b87888a7 100644
+> --- a/fs/ecryptfs/inode.c
+> +++ b/fs/ecryptfs/inode.c
+> @@ -998,6 +998,14 @@ static int ecryptfs_getattr_link(struct mnt_idmap *i=
+dmap,
+>         return rc;
+>  }
+>
+> +static int ecryptfs_do_getattr(const struct path *path, struct kstat *st=
+at,
+> +                              u32 request_mask, unsigned int flags)
+> +{
+> +       if (flags & AT_GETATTR_NOSEC)
+> +               return vfs_getattr_nosec(path, stat, request_mask, flags)=
+;
+> +       return vfs_getattr(path, stat, request_mask, flags);
+> +}
+> +
+>  static int ecryptfs_getattr(struct mnt_idmap *idmap,
+>                             const struct path *path, struct kstat *stat,
+>                             u32 request_mask, unsigned int flags)
+> @@ -1006,8 +1014,8 @@ static int ecryptfs_getattr(struct mnt_idmap *idmap=
+,
+>         struct kstat lower_stat;
+>         int rc;
+>
+> -       rc =3D vfs_getattr(ecryptfs_dentry_to_lower_path(dentry), &lower_=
+stat,
+> -                        request_mask, flags);
+> +       rc =3D ecryptfs_do_getattr(ecryptfs_dentry_to_lower_path(dentry),
+> +                                &lower_stat, request_mask, flags);
+>         if (!rc) {
+>                 fsstack_copy_attr_all(d_inode(dentry),
+>                                       ecryptfs_inode_to_lower(d_inode(den=
+try)));
+> diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
+> index 83ef66644c21..fca29dba7b14 100644
+> --- a/fs/overlayfs/inode.c
+> +++ b/fs/overlayfs/inode.c
+> @@ -171,7 +171,7 @@ int ovl_getattr(struct mnt_idmap *idmap, const struct=
+ path *path,
+>
+>         type =3D ovl_path_real(dentry, &realpath);
+>         old_cred =3D ovl_override_creds(dentry->d_sb);
+> -       err =3D vfs_getattr(&realpath, stat, request_mask, flags);
+> +       err =3D ovl_do_getattr(&realpath, stat, request_mask, flags);
+>         if (err)
+>                 goto out;
+>
+> @@ -196,8 +196,8 @@ int ovl_getattr(struct mnt_idmap *idmap, const struct=
+ path *path,
+>                                         (!is_dir ? STATX_NLINK : 0);
+>
+>                         ovl_path_lower(dentry, &realpath);
+> -                       err =3D vfs_getattr(&realpath, &lowerstat,
+> -                                         lowermask, flags);
+> +                       err =3D ovl_do_getattr(&realpath, &lowerstat, low=
+ermask,
+> +                                            flags);
+>                         if (err)
+>                                 goto out;
+>
+> @@ -249,8 +249,8 @@ int ovl_getattr(struct mnt_idmap *idmap, const struct=
+ path *path,
+>
+>                         ovl_path_lowerdata(dentry, &realpath);
+>                         if (realpath.dentry) {
+> -                               err =3D vfs_getattr(&realpath, &lowerdata=
+stat,
+> -                                                 lowermask, flags);
+> +                               err =3D ovl_do_getattr(&realpath, &lowerd=
+atastat,
+> +                                                    lowermask, flags);
+>                                 if (err)
+>                                         goto out;
+>                         } else {
+> diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
+> index 9817b2dcb132..09ca82ed0f8c 100644
+> --- a/fs/overlayfs/overlayfs.h
+> +++ b/fs/overlayfs/overlayfs.h
+> @@ -397,6 +397,14 @@ static inline bool ovl_open_flags_need_copy_up(int f=
+lags)
+>         return ((OPEN_FMODE(flags) & FMODE_WRITE) || (flags & O_TRUNC));
+>  }
+>
+> +static inline int ovl_do_getattr(const struct path *path, struct kstat *=
+stat,
+> +                                u32 request_mask, unsigned int flags)
+> +{
+> +       if (flags & AT_GETATTR_NOSEC)
+> +               return vfs_getattr_nosec(path, stat, request_mask, flags)=
+;
+> +       return vfs_getattr(path, stat, request_mask, flags);
+> +}
+> +
+>  /* util.c */
+>  int ovl_want_write(struct dentry *dentry);
+>  void ovl_drop_write(struct dentry *dentry);
+> diff --git a/fs/stat.c b/fs/stat.c
+> index d43a5cc1bfa4..5375be5f97cc 100644
+> --- a/fs/stat.c
+> +++ b/fs/stat.c
+> @@ -133,7 +133,8 @@ int vfs_getattr_nosec(const struct path *path, struct=
+ kstat *stat,
+>         idmap =3D mnt_idmap(path->mnt);
+>         if (inode->i_op->getattr)
+>                 return inode->i_op->getattr(idmap, path, stat,
+> -                                           request_mask, query_flags);
+> +                                           request_mask,
+> +                                           query_flags | AT_GETATTR_NOSE=
+C);
+>
+>         generic_fillattr(idmap, request_mask, inode, stat);
+>         return 0;
+> @@ -166,6 +167,9 @@ int vfs_getattr(const struct path *path, struct kstat=
+ *stat,
+>  {
+>         int retval;
+>
+> +       if (WARN_ON_ONCE(query_flags & AT_GETATTR_NOSEC))
+> +               return -EPERM;
+> +
+>         retval =3D security_inode_getattr(path);
+>         if (retval)
+>                 return retval;
+> diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
+> index 6c80f96049bd..282e90aeb163 100644
+> --- a/include/uapi/linux/fcntl.h
+> +++ b/include/uapi/linux/fcntl.h
+> @@ -116,5 +116,8 @@
+>  #define AT_HANDLE_FID          AT_REMOVEDIR    /* file handle is needed =
+to
+>                                         compare object identity and may n=
+ot
+>                                         be usable to open_by_handle_at(2)=
+ */
+> +#if defined(__KERNEL__)
+> +#define AT_GETATTR_NOSEC       0x80000000
+> +#endif
+>
+>  #endif /* _UAPI_LINUX_FCNTL_H */
+> --
+> 2.40.1
+>
