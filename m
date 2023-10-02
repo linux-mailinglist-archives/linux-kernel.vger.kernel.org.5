@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D51C57B594D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED0BD7B58F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbjJBRcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:32:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34098 "EHLO
+        id S238050AbjJBRcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:32:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231610AbjJBRcG (ORCPT
+        with ESMTP id S231794AbjJBRcV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:32:06 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDB494;
-        Mon,  2 Oct 2023 10:32:03 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 392GmiMl029262;
-        Mon, 2 Oct 2023 17:31:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=p2VU07VW0j7CLsz+/d+8HTh3nDeofti/dtnqmepD624=;
- b=jfV+RugfkH84cHiPJdaXdgCPgL6TiqUDKjDfaPnkOD5nb7Av39LC6oHq6fz0Tv51u+3j
- WuoqjuWK+rv8wclBEk4jjsJmkrDe8SkCgIDazTX5Uqtb9JXyAWaCMD1wr/53mJJf+JG3
- xdiTvcsFWELXD6CeZPKEF9AY9HVcdBDwkHeJLIjyCn2eFuSEMvsgrb9Ly4dQH8THyBiW
- NamzEP13l0uKlPfI10Jawdm4naD/tXIBQYprO/expXErmd2g05uGjP+qDdLzW4aVkOS0
- 7BcxyaEik5JloYUIJ1W/Q3s7HC4JpqYGpYVNAkJk6yTrOhMm3vREBzkNX+nFkLoPPfpC XA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3te9cmmgwj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Oct 2023 17:31:45 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 392HVjYt014078
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 2 Oct 2023 17:31:45 GMT
-Received: from [10.110.71.113] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 2 Oct
- 2023 10:31:44 -0700
-Message-ID: <74725381-bb13-2550-efd3-224e51af49d2@quicinc.com>
-Date:   Mon, 2 Oct 2023 10:31:27 -0700
+        Mon, 2 Oct 2023 13:32:21 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959C5D9;
+        Mon,  2 Oct 2023 10:32:18 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-3528bc102adso4010885ab.2;
+        Mon, 02 Oct 2023 10:32:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696267938; x=1696872738; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cOcvNtoCPG98RS11q56sK5rtazXlCaKT/ov5ePtmTYw=;
+        b=HQhw7KfciLByyvGcx8T9S0xInHY44XhYRXIMKhCNKqD6MqWMAvaD6hSTuGKvRLvoy/
+         lwZpfybjwljszcfcMHeLMK68Fdy/GqrthE9BK5sRndb3zUVsnacBF/X3q1vTzQ41Cpbc
+         t73Eyf1471396yHdOEgdo9QcveYtwKqZ2FYD6cQYubiWb1Ru8EIWQowJ5+TW9yh3+edm
+         cp/NCwn6FlWdyzWceGjZTZebfNPEf6QY3r7Ap+JDQT73rTULHg0Rc+lx6DF7kI1S/zUu
+         kIynetfc5dqVKYZ96JOwmX018VXx/xax0MMyQ7p1U+QL3IF6dOEy+NSnx/mvzHaLTUei
+         kqJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696267938; x=1696872738;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cOcvNtoCPG98RS11q56sK5rtazXlCaKT/ov5ePtmTYw=;
+        b=f7TC6vXy/D3p/OR2X4/HcGPpXlxXYkyOQmpc6RTDMranJ+JRwv4y55xtkV6JmJv5Fj
+         SnlYLag8hfXhTgb5i2SckfjXYiZpnmAAfn5SKevr/niRkBjdH+gZijXd5566mtGceLcZ
+         vqnPwNjvKqFVlJRYvSt+owK/XU/ehkMb1APD/M/JGf4HK6ynY/82GL07c+Ujy7tpK1z3
+         eHOQ3VrWls/vWNRMVpLw7XBx31303yXT/drVnfNnKMJCjXBkQPb0xxdC87O5/u4joSVe
+         awSXadkQuB79MkJ8W9cCvE6Nm3HXnbi/FLa643ncw6/KXaNeqLG5WZl1AF6skFrNJ2v7
+         MxYA==
+X-Gm-Message-State: AOJu0YzCqUaOXKSWKf4ulNrsQMAfxWxfkslMyNs2uChP31SuJJR9Ot0z
+        +R5Z1w4L+sjKgvXqe4u962Ch5arzbr36jANnDLI=
+X-Google-Smtp-Source: AGHT+IEngd3huTiNWRKhSAhYvvfitjNpvnUhpR7tSZ7IfW+0b6vK/Dtf2oCc8q9C6d4q6yVwFCOESBbY5foNkYh0IXY=
+X-Received: by 2002:a05:6e02:1c0f:b0:351:56de:515c with SMTP id
+ l15-20020a056e021c0f00b0035156de515cmr15191810ilh.6.1696267937801; Mon, 02
+ Oct 2023 10:32:17 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v4 0/4] Add qcom hvc/shmem transport support
-To:     Sudeep Holla <sudeep.holla@arm.com>,
-        Brian Masney <bmasney@redhat.com>
-CC:     "cristian.marussi@arm.com" <cristian.marussi@arm.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "andersson@kernel.org" <andersson@kernel.org>,
-        "konrad.dybcio@linaro.org" <konrad.dybcio@linaro.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20230911194359.27547-1-quic_nkela@quicinc.com>
- <0efe305e-031b-bdf5-0268-ca1c6d562653@quicinc.com>
- <20230918151552.n3jvw2qqi5tmyfbb@bogus> <ZQhysWhFtR68iVMa@brian-x1>
- <20230919085612.gdmpze6c6stvammg@bogus>
-Content-Language: en-US
-From:   Nikunj Kela <quic_nkela@quicinc.com>
-In-Reply-To: <20230919085612.gdmpze6c6stvammg@bogus>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: S5wDj1sQVnzaFZDD8F1Yurru0f_aDLQk
-X-Proofpoint-ORIG-GUID: S5wDj1sQVnzaFZDD8F1Yurru0f_aDLQk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-02_12,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 adultscore=0 suspectscore=0 bulkscore=0 impostorscore=0
- mlxlogscore=698 priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1011
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310020136
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+References: <20230928005723.1709119-1-nphamcs@gmail.com> <20230928005723.1709119-2-nphamcs@gmail.com>
+ <ZRrI90KcRBwVZn/r@dhcp22.suse.cz> <20231002145026.GB4414@cmpxchg.org>
+ <ZRrc8hv4t740MZar@dhcp22.suse.cz> <20231002152555.GA5054@cmpxchg.org>
+In-Reply-To: <20231002152555.GA5054@cmpxchg.org>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Mon, 2 Oct 2023 10:32:06 -0700
+Message-ID: <CAKEwX=NLBs=Oi8VDUyawWvKKhwU08kbgq8RKrY8CqrcG9G2QWA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
+ memory controller
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org,
+        riel@surriel.com, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -94,31 +76,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/19/2023 1:56 AM, Sudeep Holla wrote:
-> On Mon, Sep 18, 2023 at 11:54:25AM -0400, Brian Masney wrote:
->> On Mon, Sep 18, 2023 at 04:15:52PM +0100, Sudeep Holla wrote:
->>> On Mon, Sep 18, 2023 at 08:01:26AM -0700, Nikunj Kela wrote:
->>>> Gentle Ping!
->>>>
->>> I will take a look at this later this week. That said, I am unable be
->>> gauge the urgency based on you ping here. You have shown the same urgency
->>> last time for a feature that I queued promptly just to know that it was
->>> abandon within couple of days. So I don't want to rush here simply based
->>> on the number of pings here. I need to understand that it is really that
->>> important. For now, I am thinking of skipping even v6.7 just to allow
->>> some time for Qcom to make up its mind and be absolutely sure this is what
->>> they *really* want this time.
->> Hi Sudeep,
->>
->> Red Hat is interested in this patch set. Qualcomm is moving one of their
->> automotive platforms over to use SCMI and this will appear in that
->> product.
->>
-> Thanks Brian, I trust Redhat over Qcom 😄. I will try to review and enable
-> progress later this week. We can try to target next merge window.
+On Mon, Oct 2, 2023 at 8:25=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org>=
+ wrote:
 >
-> --
-> Regards,
-> Sudeep
-Gentle Ping...
+> On Mon, Oct 02, 2023 at 05:08:34PM +0200, Michal Hocko wrote:
+> > On Mon 02-10-23 10:50:26, Johannes Weiner wrote:
+> > > On Mon, Oct 02, 2023 at 03:43:19PM +0200, Michal Hocko wrote:
+> > > > On Wed 27-09-23 17:57:22, Nhat Pham wrote:
+> > [...]
+> > > > - memcg limit reclaim doesn't assist hugetlb pages allocation when
+> > > >   hugetlb overcommit is configured (i.e. pages are not consumed fro=
+m the
+> > > >   pool) which means that the page allocation might disrupt workload=
+s
+> > > >   from other memcgs.
+> > > > - failure to charge a hugetlb page results in SIGBUS rather
+> > > >   than memcg oom killer. That could be the case even if the
+> > > >   hugetlb pool still has pages available and there is
+> > > >   reclaimable memory in the memcg.
+> > >
+> > > Are these actually true? AFAICS, regardless of whether the page comes
+> > > from the pool or the buddy allocator, the memcg code will go through
+> > > the regular charge path, attempt reclaim, and OOM if that fails.
+> >
+> > OK, I should have been more explicit. Let me expand. Charges are
+> > accounted only _after_ the actual allocation is done. So the actual
+> > allocation is not constrained by the memcg context. It might reclaim
+> > from the memcg at that time but the disruption could have already
+> > happened. Not really any different from regular memory allocation
+> > attempt but much more visible with GB pages and one could reasonably
+> > expect that memcg should stop such a GB allocation if the local reclaim
+> > would be hopeless to free up enough from its own consumption.
+> >
+> > Makes more sense?
+>
+> Yes, that makes sense.
+>
+> This should be fairly easy to address by having hugetlb do the split
+> transaction that charge_memcg() does in one go, similar to what we do
+> for the hugetlb controller as well. IOW,
+>
+> alloc_hugetlb_folio()
+> {
+>         if (mem_cgroup_hugetlb_try_charge())
+>                 return ERR_PTR(-ENOMEM);
+>
+>         folio =3D dequeue();
+>         if (!folio) {
+>                 folio =3D alloc_buddy();
+>                 if (!folio)
+>                         goto uncharge;
+>         }
+>
+>         mem_cgroup_hugetlb_commit_charge();
+> }
+
+Ah actually, I like this better.
+If I do this I can circumvent all the redo_reserve bogus as well!
