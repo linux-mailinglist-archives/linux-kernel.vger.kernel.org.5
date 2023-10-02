@@ -2,48 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D3017B53BC
+	by mail.lfdr.de (Postfix) with ESMTP id B39A37B53BE
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237284AbjJBNC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
+        id S237186AbjJBNE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 09:04:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237186AbjJBNC0 (ORCPT
+        with ESMTP id S236163AbjJBNEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 09:02:26 -0400
+        Mon, 2 Oct 2023 09:04:24 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4755A93;
-        Mon,  2 Oct 2023 06:02:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F8D7C433C9;
-        Mon,  2 Oct 2023 13:02:21 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11440B0;
+        Mon,  2 Oct 2023 06:04:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B56B2C433C7;
+        Mon,  2 Oct 2023 13:04:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696251743;
-        bh=tYgjzEelwToAG5hZdFfT9BvK6R9nIvBGWgQkejATYgg=;
+        s=k20201202; t=1696251861;
+        bh=AFn+gVXbUD0U4Y6bUXqTweEbLHVA0KrcQKlngrIzbJ4=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=j0U7zCa4ZJKEgJHrs6JNk97vPL6vyZ0D9Bc6O7EqQeN/NuxT9QxNhPYZ6H99cH1Dw
-         ZFBSGpoBq/gs7nhFgC8X+KxyCCfadab6VwUtORCTGHtQSnYOovyB7KljgDJnBhqfo4
-         gV4vGWKbnU1k2EjogZsugUGFUpkVpg2Kvy6O3VRCUR2OFTYJ96KNoEyz5sAOe7/LBE
-         ZkpxH1JwLYCodtwEYJcTt/0MCfP7Q079ZethW0vcHcxC6T0e7MwTl30i7sL+t0Nygp
-         3vq7XMSoVWHI2+PDj3jfMpzwE5yWZlnehdghfuW0oHnbQKF9eSIZXhrDxoY11V5bKz
-         rHG2+XMiEPrtg==
-Date:   Mon, 2 Oct 2023 14:02:17 +0100
+        b=m3xKYy6amE4sejsfFYH8X2/F22UfVwfhG3qQDtBSK2Sk9lu9vm3DA9+PiIMuDkVIA
+         6x8JSfOzNGbU/scZWI3UbLrrG5R7/sp2z8XbYRJBCetpMRwID/jZR92vJHnwdeuQLf
+         h7ZGaPS4qfsMzcO0bV9IAJHjD7QrbPZy0l5ON0Q+mtw2fPYP1zjHIGtQAbRt/XiVuq
+         1HBp+KOnq6EuJtASfW5G4IxzxtypXIgEJ2Z422Etd7kGHwccAVkAV9ZXoCE6GSjASj
+         9dNj2Tvz9G3cWQxAZv52eUtdF+doS2I4oImit/a0NvNFw1+Epyky0yG5W9ub5STiTv
+         +eysXJ9BIWcLQ==
+Date:   Mon, 2 Oct 2023 14:04:15 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Woody Zhang <woodylab@foxmail.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] spi: sun4i: Fix memory leak on device removal
-Message-ID: <06646231-d67e-453a-a1a0-d2665c1f9421@sirena.org.uk>
-References: <20231002062957.1741396-1-woodylab@foxmail.com>
- <tencent_E465261B2BB2C1EBAF5C19912B9F19B7E107@qq.com>
+To:     Sven Frotscher <sven.frotscher@gmail.com>
+Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        mario.limonciello@amd.com, git@augustwikerfors.se,
+        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH v4] ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
+Message-ID: <89698b5f-a616-4f49-802a-21326a868c7f@sirena.org.uk>
+References: <20230927223758.18870-1-sven.frotscher@gmail.com>
+ <46560887-0b6e-42ac-96c3-b4dbc1d7cb61@leemhuis.info>
+ <4fa7d39d-dc34-4550-97fa-2b089f364cca@sirena.org.uk>
+ <541ac45b-8de7-4fa2-85ee-456d34e60aa9@leemhuis.info>
+ <64c78944-4d62-4eda-b92b-3b415fea3333@sirena.org.uk>
+ <65KW1S.A6C8VBV29YCM@gmail.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="MmQt3Jv7+ExT5bXv"
+        protocol="application/pgp-signature"; boundary="T3pA0U+bnE9JGR4j"
 Content-Disposition: inline
-In-Reply-To: <tencent_E465261B2BB2C1EBAF5C19912B9F19B7E107@qq.com>
+In-Reply-To: <65KW1S.A6C8VBV29YCM@gmail.com>
 X-Cookie: Postage will be paid by addressee.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -56,38 +60,35 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---MmQt3Jv7+ExT5bXv
+--T3pA0U+bnE9JGR4j
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Oct 02, 2023 at 02:29:59PM +0800, Woody Zhang wrote:
+On Mon, Oct 02, 2023 at 03:00:42PM +0200, Sven Frotscher wrote:
+> Am Mo, 2. Okt 2023 um 13:54:59 +01:00:00 schrieb Mark Brown
 
-> Call spi_master_put to free the spi_master structure on device removal
-> and driver detachment.
+> > Until someone tests or otherwise provides specific information on a
+> > given machine we're just guessing about how it's wired up.
 
->  static void sun4i_spi_remove(struct platform_device *pdev)
->  {
-> +	struct spi_master *master = dev_get_drvdata(&pdev->dev);
-> +
->  	pm_runtime_force_suspend(&pdev->dev);
-> +	spi_master_put(master);
->  }
+> What specific information are we talking about here? I have the 82YM in
+> front of me and could help investigate.
 
-This is just obviously buggy, it doesn't match the registration at all.
+We need to know what magic set of quirks makes the thing work.  Are you
+saying that your patch doesn't actually do that?
 
---MmQt3Jv7+ExT5bXv
+--T3pA0U+bnE9JGR4j
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUav1gACgkQJNaLcl1U
-h9COpQf/ZZ2D4twgg+aSv1ip9qVUzmoZwIO04bU7hbfXvyVqzX5DF5t0YiR9CNmt
-kk91dpgKCXMqyy2GrjKyA4nDVyhh/hJKRLzjfTe9UjkWOV9orLMRfjm3d7GfbS0b
-Gezpdi3vBYozHCnAVs1A2o7qrOIJp0KrN5/9dDUAplIFSEiS/viF81OWYdfiYw9v
-gLu5boQeqZUJEPcSaJyVQOkzsV1rS8vhEr1cybpgRcmdn33k/DDtA29qwZkgA7Ty
-gHXdCG1NXg4l6htjZAsqrzLznJ6WcRwh/VuL5zJIvpfDKeiLIMJhvkMsXWgX9/6l
-n/qIkaJnWhvyw01GBpHeRINw0HqKQg==
-=tS9I
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUav84ACgkQJNaLcl1U
+h9Cz6Qf9H7niacF30Y0k3OYJeoCcMMTuQYXuwjRZLJuCVOI/Uq8KIC/E3ovi+GX8
+CEcICKguhEX6gtzClAEOWWdRRmLubWi4kHEfZAaMMmKdNxa3xMEqazvbKLK1gidP
+1Mq4xx7BmNDoK1CSVInPoPl1Q5S9CEUOr9T855Mio0rY+4SjjOcTKjCmw9+SSkPr
+mpMTIdixcEm235K5rOh8KNcGtYqXmDvSHE0VFtkPu9iTC5Ik3Rh/CF4iC5Yl7u8u
+wkjKg+LSPqSTuf+FNJjqYARLOLFsTYhcbKQIcweBRHSxLDz9XHZSni20mX3V4Zlt
+t6c9FH0ejAjo0hZbJ9p8VRqOJJHHnA==
+=SH/+
 -----END PGP SIGNATURE-----
 
---MmQt3Jv7+ExT5bXv--
+--T3pA0U+bnE9JGR4j--
