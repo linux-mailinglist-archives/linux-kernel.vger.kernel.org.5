@@ -2,110 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 302C87B4C40
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6497B4C45
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:09:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235679AbjJBHHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 03:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55508 "EHLO
+        id S235646AbjJBHJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 03:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235601AbjJBHHE (ORCPT
+        with ESMTP id S235599AbjJBHJ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 03:07:04 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B35AA6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:06:59 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-5046bf37daeso15789885e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:06:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696230417; x=1696835217; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WGSmVU6eV61MEm0eDF1LjmBvte+gjgPeqhrseQVFPWQ=;
-        b=eLbWnRa36GNcZkjZ9H6CHmbBxpGRwnPpqbheEb7mjXBO63a4RQYlX2SqcehANGP9Ju
-         U4hlN2qv5yWQ7uh8RNWZFBZYlqIKkxugExiz9yXLoAxGY5wyzPH5FVCsHA8XFiP1F1pQ
-         FxSL9sYlLD1gE+xB1e81mcSv2Ss+XrVDLr+QxU2Kq6OBtrC0o6rS4KGxplNMdOpKHOIY
-         Bth9ZWy7wJZDvJPsonDpxD/yQvmaRzuLeJSOHZ5KO8TJhWwrNWYDwaxN+LfzXl2JwHVb
-         Zo1leWQURgLaTSAKxXpwkv6PgG3w8fL1qsL+4VFg2dO/fWBzEK6ffYQM7r1CfMnXILKb
-         R/wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696230417; x=1696835217;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WGSmVU6eV61MEm0eDF1LjmBvte+gjgPeqhrseQVFPWQ=;
-        b=aFixlggxI9LfeRGhsaJX8SQH9wMFAzYCpc0xX8cG1tEeZoopC3poa8aKmSBFDyl4G2
-         Ctuk0zA+WK+ifrOFSvc5/IIqgB5eLqtdLIKjhYhWR0hdj6rZrPtS1YcYMirT0x5DMfGe
-         otZVRzOSaCRBRbCDh39LBBkqKiX7+EZYAUWkNi2lXGIrGY4Zeq+oB/2DG5VAPZPINXpD
-         jWKFLg0uLyd3hG4CnCj2a3cqXl3ut6huzAl0uPgtTkOMY/TY0mjceyg99qYU1mB/D4i0
-         cMux4vb8mGHNRJAdiVphp4hQjA0zbwMyLMu+FYpst2pGGYNOeaxkMTST8LxemHoO1u12
-         WFsQ==
-X-Gm-Message-State: AOJu0YxDeSmBIn3d+gV8u0eLI6zilpFrIf5cKrD6IWXLy7vnIIJXE4b9
-        TeLlvM6U940a1bfYmqIkQrTvPA==
-X-Google-Smtp-Source: AGHT+IFqNxtPg80t50ZYFfWxUt2W5y2FEtd43xRb6YCWO1WM7DYE1bqvmoOMC0T13JN44j87ql34Rw==
-X-Received: by 2002:a05:6512:1598:b0:500:78ee:4cd7 with SMTP id bp24-20020a056512159800b0050078ee4cd7mr10804857lfb.23.1696230417514;
-        Mon, 02 Oct 2023 00:06:57 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id z17-20020a05600c221100b0040642a1df1csm6565662wml.25.2023.10.02.00.06.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 00:06:57 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 10:06:54 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Brian Foster <bfoster@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] bcachefs: Use struct_size()
-Message-ID: <fdc46489-4266-48e3-99cc-ddb23b64f02e@kadam.mountain>
-References: <120b638f99b088f91d5a4491c800463c554e70b8.1696144401.git.christophe.jaillet@wanadoo.fr>
- <7ae7737e-e32c-e9e7-880c-cafc240e7c33@embeddedor.com>
- <ff682afb-a914-4cd7-8d19-202a6cb778de@kadam.mountain>
+        Mon, 2 Oct 2023 03:09:26 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5218E;
+        Mon,  2 Oct 2023 00:09:24 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id BD2C121853;
+        Mon,  2 Oct 2023 07:09:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1696230562; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8vcbNq67Xl3f2iKsCH4we0sJgW4X2ca2S7bOAsiex1Q=;
+        b=sYBuE9DmG1frwKtVsSRTG3Ale2r5OTm85xqfZD4SMQgyARAWCQuqkgePAMH2qt5USeFSzU
+        +3vTGLz702iOSggMMRZMufC+M6m+JAsB/esv//AAAKxAUUcVtuITmwd1siIpONwABSppuA
+        O+ZYuCQ4dJgnDNq4hb0wZ7Qj8p6sC3Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1696230562;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8vcbNq67Xl3f2iKsCH4we0sJgW4X2ca2S7bOAsiex1Q=;
+        b=Je9vocE06l6uaNRhWqNdvU+Sf0X8KCDs3p9+1pNsnpesOSRzY1tacE+DfjZuDBsZ5JmuP6
+        Mk1KJum7qrwXhKCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 92F6613456;
+        Mon,  2 Oct 2023 07:09:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id xE9RI6JsGmWqeAAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Mon, 02 Oct 2023 07:09:22 +0000
+Message-ID: <8055dadf-a8ee-6706-79b3-6fc61d77c71e@suse.cz>
+Date:   Mon, 2 Oct 2023 09:09:22 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ff682afb-a914-4cd7-8d19-202a6cb778de@kadam.mountain>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 1/3] mmap: Fix vma_iterator in error path of
+ vma_merge()
+Content-Language: en-US
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jann Horn <jannh@google.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Matthew Wilcox <willy@infradead.org>, stable@vger.kernel.org
+References: <20230929183041.2835469-1-Liam.Howlett@oracle.com>
+ <20230929183041.2835469-2-Liam.Howlett@oracle.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20230929183041.2835469-2-Liam.Howlett@oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 09:42:06AM +0300, Dan Carpenter wrote:
-> On Sun, Oct 01, 2023 at 09:23:17AM +0200, Gustavo A. R. Silva wrote:
-> > 
-> > 
-> > On 10/1/23 09:13, Christophe JAILLET wrote:
-> > > Use struct_size() instead of hand writing it.
-> > > This is less verbose and more robust.
-> > > 
-> > > While at it, prepare for the coming implementation by GCC and Clang of the
-> > > __counted_by attribute. Flexible array members annotated with __counted_by
-> > > can have their accesses bounds-checked at run-time checking via
-> > > CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE (for
-> > > strcpy/memcpy-family functions).
-> > 
-> > I would prefer this as two separate patches.
-> > 
+On 9/29/23 20:30, Liam R. Howlett wrote:
+> During the error path, the vma iterator may not be correctly positioned
+> or set to the correct range.  Undo the vma_prev() call by resetting to
+> the passed in address.  Re-walking to the same range will fix the range
+> to the area previously passed in.
 > 
-> I kind of feel like it's all part of one thing.  It's easier to review
-> as one patch.
+> Users would notice increased cycles as vma_merge() would be called an
+> extra time with vma == prev, and thus would fail to merge and return.
+> 
+> Link: https://lore.kernel.org/linux-mm/CAG48ez12VN1JAOtTNMY+Y2YnsU45yL5giS-Qn=ejtiHpgJAbdQ@mail.gmail.com/
+> Closes: https://lore.kernel.org/linux-mm/CAG48ez12VN1JAOtTNMY+Y2YnsU45yL5giS-Qn=ejtiHpgJAbdQ@mail.gmail.com/
+> Fixes: 18b098af2890 ("vma_merge: set vma iterator to correct position.")
+> Cc: stable@vger.kernel.org
+> Cc: Jann Horn <jannh@google.com>
+> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
 
-Also I think there is static analysis which sees struct_size()
-allocations and pushes people to use __counted_by() so doing it in two
-steps is sort of like introducing a static checker bug and then
-silencing it in the next patch.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-regards,
-dan carpenter
+> ---
+>  mm/mmap.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index b56a7f0c9f85..acb7dea49e23 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -975,7 +975,7 @@ struct vm_area_struct *vma_merge(struct vma_iterator *vmi, struct mm_struct *mm,
+>  
+>  	/* Error in anon_vma clone. */
+>  	if (err)
+> -		return NULL;
+> +		goto anon_vma_fail;
+>  
+>  	if (vma_start < vma->vm_start || vma_end > vma->vm_end)
+>  		vma_expanded = true;
+> @@ -988,7 +988,7 @@ struct vm_area_struct *vma_merge(struct vma_iterator *vmi, struct mm_struct *mm,
+>  	}
+>  
+>  	if (vma_iter_prealloc(vmi, vma))
+> -		return NULL;
+> +		goto prealloc_fail;
+>  
+>  	init_multi_vma_prep(&vp, vma, adjust, remove, remove2);
+>  	VM_WARN_ON(vp.anon_vma && adjust && adjust->anon_vma &&
+> @@ -1016,6 +1016,12 @@ struct vm_area_struct *vma_merge(struct vma_iterator *vmi, struct mm_struct *mm,
+>  	vma_complete(&vp, vmi, mm);
+>  	khugepaged_enter_vma(res, vm_flags);
+>  	return res;
+> +
+> +prealloc_fail:
+> +anon_vma_fail:
+> +	vma_iter_set(vmi, addr);
+> +	vma_iter_load(vmi);
+> +	return NULL;
+>  }
+>  
+>  /*
 
