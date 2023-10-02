@@ -2,158 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8241F7B4DFF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A20657B4E66
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236009AbjJBIxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 04:53:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54858 "EHLO
+        id S235949AbjJBI71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 04:59:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235916AbjJBIxW (ORCPT
+        with ESMTP id S235961AbjJBI7V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 04:53:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA7A91;
-        Mon,  2 Oct 2023 01:53:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9E83FC4E67B;
-        Mon,  2 Oct 2023 08:53:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696236795;
-        bh=vDlxMU2ggFFcgL4XVv7yaCla84NzDst78pAlmrI/LAU=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-        b=pR95+O9r6nUzq07c9kPGKb7Ab0VcY5+68ndSSzB+hZmwZYikEf3FKE5QZgbbuqjOX
-         gQkhguZwdsurCaU0axfIZ2F0cJCq86v09nWDCYqoJnOhNSunu1At9WlawEgkBrEmJ6
-         y18G/0sKMdEFBxdOakpL3K6ARrEuVanraUCM76n/OBLvRpO3S0uhlUJVkFeuWm+fyr
-         dbr8FI1IRqLxTOLySLXMasu08oJ1w1pZXHhh4+kaXfndJ8OZR17RetwZax4Z6ehYkJ
-         mIoVTZonmVbDcGCi8ny+uoSKjBM1DIy75fzJacAsTb3IqeKffbenQJRDWZ7+Dfqjc4
-         7r/qhjuBtwo0A==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by smtp.lore.kernel.org (Postfix) with ESMTP id 87B1FE7849A;
-        Mon,  2 Oct 2023 08:53:15 +0000 (UTC)
-From:   Joel Granados via B4 Relay 
-        <devnull+j.granados.samsung.com@kernel.org>
-Date:   Mon, 02 Oct 2023 10:55:26 +0200
-Subject: [PATCH v2 09/15] char-misc: Remove the now superfluous sentinel
- element from ctl_table array
+        Mon, 2 Oct 2023 04:59:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01AE23C31
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 01:56:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696237015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kZolH99067fvKHUQAUHeclQlPt0YjXr+P4dEn1LOWbQ=;
+        b=CXvEsq9VSlASyzVd5KOmW1Bv4g1dE+A8WMIRiyLn0evRBQ66sz71RYQ+xTBPJfsFTSatHZ
+        B6RzrNx7/XxLUzP1TqU1PPSbr00aHo51DIeBg/JhHtI3Qkr7LYtXa493fEDL2fAUcJ+Alq
+        +vbec04xtvHN0vFwL5vg60kLd8bu8wg=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-14-zxibARMDMNSbqEtobKKvtg-1; Mon, 02 Oct 2023 04:56:54 -0400
+X-MC-Unique: zxibARMDMNSbqEtobKKvtg-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-30e3ee8a42eso12027773f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 01:56:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696237013; x=1696841813;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kZolH99067fvKHUQAUHeclQlPt0YjXr+P4dEn1LOWbQ=;
+        b=Epl2AMHD825SJjjoG0o7xWjmpelrEk5DnOzn+34NxijLoxDyF3FjAPvi4jYIglR/kX
+         3FHDF/F3zMyLxXKWJPYtcUWHWqDymo3MBkvDLztPbRy/96/bh5YHzLw8MroqYUQxTCWf
+         eq99JIGPiQqqzqmfctetNfx46Fg77ZJ2B0U8RdhhyDnoQVsYyeLtz8lMwGedzfR11x2R
+         a2jY42zhyVZ3evdI6gMhx9oi3TuXHgPnprtKaqZCZ6L7wFVdDI2hHzSWi3zO+DvvN3KR
+         ziOhMp6JWBbveXBdu/iSWrHPjRpnc5KQ6GEjzd0kTpg1tSjpisQqjsRl/boeSvpZWjR5
+         LVUg==
+X-Gm-Message-State: AOJu0YzMqre9JMxeb9nLMtlDufpZhEq5QazuqbV+ySVUlMry0btD/IUx
+        dgwbTXWF+Tcl4J493P3XG3A0O/RTmD+qBZhE8mGmaXXz1cSR61jw8S94H5wI65GcuD/969BR/+y
+        a62FBsYKALh/HL0cFf4vurXPL
+X-Received: by 2002:a5d:668a:0:b0:321:5969:d465 with SMTP id l10-20020a5d668a000000b003215969d465mr9091194wru.65.1696237013400;
+        Mon, 02 Oct 2023 01:56:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFNivYmW4PtO+ePKJDFQz9ZH3hXp+F3LiyWwZ9zsgVXl2tVW95sg/9viMCcYxcA7zlnFJjn2Q==
+X-Received: by 2002:a5d:668a:0:b0:321:5969:d465 with SMTP id l10-20020a5d668a000000b003215969d465mr9091177wru.65.1696237012975;
+        Mon, 02 Oct 2023 01:56:52 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c735:f200:cb49:cb8f:88fc:9446? (p200300cbc735f200cb49cb8f88fc9446.dip0.t-ipconnect.de. [2003:cb:c735:f200:cb49:cb8f:88fc:9446])
+        by smtp.gmail.com with ESMTPSA id 11-20020a056000156b00b0032485046055sm9783325wrz.5.2023.10.02.01.56.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 01:56:52 -0700 (PDT)
+Message-ID: <f7e6f67a-4cac-73bd-1d5e-5020c6c8423d@redhat.com>
+Date:   Mon, 2 Oct 2023 10:56:51 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231002-jag-sysctl_remove_empty_elem_drivers-v2-9-02dd0d46f71e@samsung.com>
-References: <20231002-jag-sysctl_remove_empty_elem_drivers-v2-0-02dd0d46f71e@samsung.com>
-In-Reply-To: <20231002-jag-sysctl_remove_empty_elem_drivers-v2-0-02dd0d46f71e@samsung.com>
-To:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Doug Gilbert <dgilbert@interlog.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Corey Minyard <minyard@acm.org>, Theodore Ts'o <tytso@mit.edu>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Russ Weight <russell.h.weight@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Song Liu <song@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Joel Granados <j.granados@samsung.com>,
-        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-serial@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-rdma@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-X-Mailer: b4 0.13-dev-86aa5
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1339;
- i=j.granados@samsung.com; h=from:subject:message-id;
- bh=Kv0ap7oOhCIEujO7K32kNHT+ZxUGAQsjjs8+/enag5M=;
- b=owEB7QES/pANAwAKAbqXzVK3lkFPAcsmYgBlGoV+isCI8TDO6pwR+wgikdJs6dLv5S5QCOB04
- iOxWZrSGSiJAbMEAAEKAB0WIQSuRwlXJeYxJc7LJ5C6l81St5ZBTwUCZRqFfgAKCRC6l81St5ZB
- T6oTC/9qOUC9BOwrcAbb8+8X5NEMfhYEKBwZOjn0qP7z2HP9F0B0s13QbRcV+nD/AboNml1SyV1
- 2bME5eSPBRhDk/FgUi2dHVoWST0piu5f+xZVAdCGk0dlm6zx066OrZgELiJpoohNDrDPt3Hw74l
- vDFg1cmFZeVWLG+9hQVfG+0ip5WPINFZL6HG5Qaf5vQovahB6Axer95+p066sCI/hydwE7wEmQW
- AaBpPNfAYpiEL3HtJ935jxFkTOmK8sqEwQTXsN1aJcHVhbXpAwOog7xO+DfU6DOBHTdb4MVBOxq
- BDdLiqegmjac+IlK2slz/WfvUKW0V+2LZN7aJ0/GqoMforwaGZwvUhwn34nmenlx7NcpDwgIKDx
- orVBtck2IN7tetdBhNLpoy3r7xDl7WRjm3f3xIxDXcUNqlOY9x1VyHKww5KiFk49KJ9UPmc8tKT
- 3ACEiDi7UvwEFAfJwF4Zc34OpSkdkpY3PQGUWRU0h2+aTGNKyDRzq42XfqrCcpxTHv5xA=
-X-Developer-Key: i=j.granados@samsung.com; a=openpgp;
- fpr=F1F8E46D30F0F6C4A45FF4465895FAAC338C6E77
-X-Endpoint-Received: by B4 Relay for j.granados@samsung.com/default with auth_id=70
-X-Original-From: Joel Granados <j.granados@samsung.com>
-Reply-To: <j.granados@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4 2/2] mm: Init page count in reserve_bootmem_region when
+ MEMINIT_EARLY
+Content-Language: en-US
+To:     Mike Rapoport <rppt@kernel.org>, Yajun Deng <yajun.deng@linux.dev>
+Cc:     akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        muchun.song@linux.dev, willy@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20230928083302.386202-1-yajun.deng@linux.dev>
+ <20230928083302.386202-3-yajun.deng@linux.dev>
+ <20230929083018.GU3303@kernel.org>
+ <a6a20ff9-385c-639f-75cf-ce73a01d97cf@linux.dev>
+ <20230929100252.GW3303@kernel.org>
+ <15233624-f32e-172e-b2f6-7ca7bffbc96d@linux.dev>
+ <20231001185934.GX3303@kernel.org>
+ <90342474-432a-9fe3-2f11-915a04f0053f@linux.dev>
+ <20231002084708.GZ3303@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20231002084708.GZ3303@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joel Granados <j.granados@samsung.com>
+On 02.10.23 10:47, Mike Rapoport wrote:
+> On Mon, Oct 02, 2023 at 03:03:56PM +0800, Yajun Deng wrote:
+>>
+>> On 2023/10/2 02:59, Mike Rapoport wrote:
+>>> On Fri, Sep 29, 2023 at 06:27:25PM +0800, Yajun Deng wrote:
+>>>> On 2023/9/29 18:02, Mike Rapoport wrote:
+>>>>>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>>>>>>> index 06be8821d833..b868caabe8dc 100644
+>>>>>>>> --- a/mm/page_alloc.c
+>>>>>>>> +++ b/mm/page_alloc.c
+>>>>>>>> @@ -1285,18 +1285,22 @@ void __free_pages_core(struct page *page, unsigned int order)
+>>>>>>>>      	unsigned int loop;
+>>>>>>>>      	/*
+>>>>>>>> -	 * When initializing the memmap, __init_single_page() sets the refcount
+>>>>>>>> -	 * of all pages to 1 ("allocated"/"not free"). We have to set the
+>>>>>>>> -	 * refcount of all involved pages to 0.
+>>>>>>>> +	 * When initializing the memmap, memmap_init_range sets the refcount
+>>>>>>>> +	 * of all pages to 1 ("reserved" and "free") in hotplug context. We
+>>>>>>>> +	 * have to set the refcount of all involved pages to 0. Otherwise,
+>>>>>>>> +	 * we don't do it, as reserve_bootmem_region only set the refcount on
+>>>>>>>> +	 * reserve region ("reserved") in early context.
+>>>>>>>>      	 */
+>>>>>>> Again, why hotplug and early init should be different?
+>>>>>> I will add a comment that describes it will save boot time.
+>>>>> But why do we need initialize struct pages differently at boot time vs
+>>>>> memory hotplug?
+>>>>> Is there a reason memory hotplug cannot have page count set to 0 just like
+>>>>> for pages reserved at boot time?
+>>>> This patch just save boot time in MEMINIT_EARLY. If someone finds out that
+>>>> it can save time in
+>>>>
+>>>> MEMINIT_HOTPLUG, I think it can be done in another patch later. I just
+>>>> keeping it in the same.
+>>> But it's not the same. It becomes slower after your patch and the code that
+>>> frees the pages for MEMINIT_EARLY and MEMINIT_HOTPLUG becomes non-uniform
+>>> for no apparent reason.
+>>
+>> __free_pages_core will also be called by others, such as:
+>> deferred_free_range, do_collection and memblock_free_late.
+>>
+>> We couldn't remove  'if (page_count(page))' even if we set page count to 0
+>> when MEMINIT_HOTPLUG.
+> 
+> That 'if' breaks the invariant that __free_pages_core is always called for
+> pages with initialized page count. Adding it may lead to subtle bugs and
+> random memory corruption so we don't want to add it at the first place.
 
-This commit comes at the tail end of a greater effort to remove the
-empty elements at the end of the ctl_table arrays (sentinels) which
-will reduce the overall build time size of the kernel and run time
-memory bloat by ~64 bytes per sentinel (further information Link :
-https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-
-Remove sentinel from impi_table and random_table
-
-Signed-off-by: Joel Granados <j.granados@samsung.com>
----
- drivers/char/ipmi/ipmi_poweroff.c | 1 -
- drivers/char/random.c             | 1 -
- 2 files changed, 2 deletions(-)
-
-diff --git a/drivers/char/ipmi/ipmi_poweroff.c b/drivers/char/ipmi/ipmi_poweroff.c
-index 870659d91db2..941d2dcc8c9d 100644
---- a/drivers/char/ipmi/ipmi_poweroff.c
-+++ b/drivers/char/ipmi/ipmi_poweroff.c
-@@ -656,7 +656,6 @@ static struct ctl_table ipmi_table[] = {
- 	  .maxlen	= sizeof(poweroff_powercycle),
- 	  .mode		= 0644,
- 	  .proc_handler	= proc_dointvec },
--	{ }
- };
- 
- static struct ctl_table_header *ipmi_table_header;
-diff --git a/drivers/char/random.c b/drivers/char/random.c
-index 3cb37760dfec..4a9c79391dee 100644
---- a/drivers/char/random.c
-+++ b/drivers/char/random.c
-@@ -1683,7 +1683,6 @@ static struct ctl_table random_table[] = {
- 		.mode		= 0444,
- 		.proc_handler	= proc_do_uuid,
- 	},
--	{ }
- };
- 
- /*
+As long as we have to special-case memory hotplug, we know that we are 
+always coming via generic_online_page() in that case. We could either 
+move some logic over there, or let __free_pages_core() know what it 
+should do.
 
 -- 
-2.30.2
+Cheers,
+
+David / dhildenb
 
