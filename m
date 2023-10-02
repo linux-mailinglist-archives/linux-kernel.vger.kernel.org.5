@@ -2,222 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D1D7B548C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B447B54AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237561AbjJBNtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34618 "EHLO
+        id S237559AbjJBNuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 09:50:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237556AbjJBNtg (ORCPT
+        with ESMTP id S237567AbjJBNuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 09:49:36 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 407B4109
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 06:49:30 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 66281C15;
-        Mon,  2 Oct 2023 06:50:08 -0700 (PDT)
-Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1C7A33F77D;
-        Mon,  2 Oct 2023 06:49:29 -0700 (PDT)
-From:   Robin Murphy <robin.murphy@arm.com>
-To:     joro@8bytes.org, will@kernel.org
-Cc:     iommu@lists.linux.dev, jgg@nvidia.com, baolu.lu@linux.intel.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 7/7] iommu: Clean up open-coded ownership checks
-Date:   Mon,  2 Oct 2023 14:49:15 +0100
-Message-Id: <c86ceb7aff3a73ac7303b3b196467df563a7703a.1696253096.git.robin.murphy@arm.com>
-X-Mailer: git-send-email 2.39.2.101.g768bb238c484.dirty
-In-Reply-To: <cover.1696253096.git.robin.murphy@arm.com>
-References: <cover.1696253096.git.robin.murphy@arm.com>
+        Mon, 2 Oct 2023 09:50:06 -0400
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC2A11B1;
+        Mon,  2 Oct 2023 06:49:49 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5AA4324000D;
+        Mon,  2 Oct 2023 13:49:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696254587;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4paVPeEF9ZLJzDxaKPdD/mR7tqf5kQ9/5kHc/DvHhlA=;
+        b=UIU5d6aGGKL6D6KCkhLdPeAbU+VlRdNenyDOL4h5JCr7mdCK0cF81jnxFzn2VZAApdGu9V
+        /TdCXnRvnYb0PQlvWdeLsivGVY7GG7UCQLl2ZcmHfnhYv3V6wB/nGglgx1pQ6blCu7HQzY
+        HiI2Qbpr4JbVZHT8+ya6BWHZ5jeDlSECvN0w7u1m27DbmzULPWoRe+6+CnLGYeziNZyr8E
+        LbJ5g/1+Clz/d/6ZE9GXNXScrYSSO1XtHVEPdamxnDHp5J/k87l8FIBvfFhYX4epsZOmvM
+        6fGlpXEDsqBIWuL81FXIPBCaVJT2iRZGz/5xRKfdFx5x1Sw78gBfrkkAcqrDAw==
+Date:   Mon, 2 Oct 2023 15:49:43 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Martin =?UTF-8?B?SHVuZGViw7hsbA==?= <martin@geanix.com>
+Cc:     Rouven Czerwinski <r.czerwinski@pengutronix.de>,
+        =?UTF-8?B?TcOlbnMg?= =?UTF-8?B?UnVsbGfDpXJk?= <mans@mansr.com>,
+        Alexander Shiyan <eagle.alexander923@gmail.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        JaimeLiao <jaimeliao.tw@gmail.com>, kernel@pengutronix.de,
+        stable@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Sean =?UTF-8?B?Tnlla2rDpnI=?= <sean@geanix.com>,
+        Domenico Punzo <dpunzo@micron.com>,
+        Bean Huo <beanhuo@micron.com>
+Subject: Re: [PATCH v2] mtd: rawnand: Ensure the nand chip supports cached
+ reads
+Message-ID: <20231002154943.361e31b0@xps-13>
+In-Reply-To: <b8de26e243afa3e5920455a4d8e5a3451a06d074.camel@geanix.com>
+References: <20230922141717.35977-1-r.czerwinski@pengutronix.de>
+        <e911f5d9c7def8c80904a17ad3924ecba6625998.camel@geanix.com>
+        <20230926132725.5d570e1b@xps-13>
+        <20230927170516.2604e8f2@xps-13>
+        <b8de26e243afa3e5920455a4d8e5a3451a06d074.camel@geanix.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some drivers already implement their own defence against the possibility
-of being given someone else's device. Since this is now taken care of by
-the core code (and via a slightly different path from the original
-fwspec-based idea), let's clean them up.
+Hi Martin,
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Robin Murphy <robin.murphy@arm.com>
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c |  3 ---
- drivers/iommu/arm/arm-smmu/arm-smmu.c       |  9 +--------
- drivers/iommu/arm/arm-smmu/qcom_iommu.c     | 16 +++-------------
- drivers/iommu/mtk_iommu.c                   |  7 +------
- drivers/iommu/mtk_iommu_v1.c                |  3 ---
- drivers/iommu/sprd-iommu.c                  |  8 +-------
- drivers/iommu/virtio-iommu.c                |  3 ---
- 7 files changed, 6 insertions(+), 43 deletions(-)
+martin@geanix.com wrote on Thu, 28 Sep 2023 09:19:56 +0200:
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index e82bf1c449a3..01ea307c7791 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2653,9 +2653,6 @@ static struct iommu_device *arm_smmu_probe_device(struct device *dev)
- 	struct arm_smmu_master *master;
- 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
- 
--	if (!fwspec || fwspec->ops != &arm_smmu_ops)
--		return ERR_PTR(-ENODEV);
--
- 	if (WARN_ON_ONCE(dev_iommu_priv_get(dev)))
- 		return ERR_PTR(-EBUSY);
- 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index 4b83a3adacd6..4d09c0047892 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -1116,11 +1116,6 @@ static int arm_smmu_attach_dev(struct iommu_domain *domain, struct device *dev)
- 	struct arm_smmu_device *smmu;
- 	int ret;
- 
--	if (!fwspec || fwspec->ops != &arm_smmu_ops) {
--		dev_err(dev, "cannot attach to SMMU, is it on the same bus?\n");
--		return -ENXIO;
--	}
--
- 	/*
- 	 * FIXME: The arch/arm DMA API code tries to attach devices to its own
- 	 * domains between of_xlate() and probe_device() - we have no way to cope
-@@ -1357,10 +1352,8 @@ static struct iommu_device *arm_smmu_probe_device(struct device *dev)
- 		fwspec = dev_iommu_fwspec_get(dev);
- 		if (ret)
- 			goto out_free;
--	} else if (fwspec && fwspec->ops == &arm_smmu_ops) {
--		smmu = arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
- 	} else {
--		return ERR_PTR(-ENODEV);
-+		smmu = arm_smmu_get_by_fwnode(fwspec->iommu_fwnode);
- 	}
- 
- 	ret = -EINVAL;
-diff --git a/drivers/iommu/arm/arm-smmu/qcom_iommu.c b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
-index 97b2122032b2..33f3c870086c 100644
---- a/drivers/iommu/arm/arm-smmu/qcom_iommu.c
-+++ b/drivers/iommu/arm/arm-smmu/qcom_iommu.c
-@@ -79,16 +79,6 @@ static struct qcom_iommu_domain *to_qcom_iommu_domain(struct iommu_domain *dom)
- 
- static const struct iommu_ops qcom_iommu_ops;
- 
--static struct qcom_iommu_dev * to_iommu(struct device *dev)
--{
--	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
--
--	if (!fwspec || fwspec->ops != &qcom_iommu_ops)
--		return NULL;
--
--	return dev_iommu_priv_get(dev);
--}
--
- static struct qcom_iommu_ctx * to_ctx(struct qcom_iommu_domain *d, unsigned asid)
- {
- 	struct qcom_iommu_dev *qcom_iommu = d->iommu;
-@@ -372,7 +362,7 @@ static void qcom_iommu_domain_free(struct iommu_domain *domain)
- 
- static int qcom_iommu_attach_dev(struct iommu_domain *domain, struct device *dev)
- {
--	struct qcom_iommu_dev *qcom_iommu = to_iommu(dev);
-+	struct qcom_iommu_dev *qcom_iommu = dev_iommu_priv_get(dev);
- 	struct qcom_iommu_domain *qcom_domain = to_qcom_iommu_domain(domain);
- 	int ret;
- 
-@@ -404,7 +394,7 @@ static int qcom_iommu_identity_attach(struct iommu_domain *identity_domain,
- 	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
- 	struct qcom_iommu_domain *qcom_domain;
- 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
--	struct qcom_iommu_dev *qcom_iommu = to_iommu(dev);
-+	struct qcom_iommu_dev *qcom_iommu = dev_iommu_priv_get(dev);
- 	unsigned int i;
- 
- 	if (domain == identity_domain || !domain)
-@@ -535,7 +525,7 @@ static bool qcom_iommu_capable(struct device *dev, enum iommu_cap cap)
- 
- static struct iommu_device *qcom_iommu_probe_device(struct device *dev)
- {
--	struct qcom_iommu_dev *qcom_iommu = to_iommu(dev);
-+	struct qcom_iommu_dev *qcom_iommu = dev_iommu_priv_get(dev);
- 	struct device_link *link;
- 
- 	if (!qcom_iommu)
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index 19ef50221c93..0a3698c33e19 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -863,16 +863,11 @@ static phys_addr_t mtk_iommu_iova_to_phys(struct iommu_domain *domain,
- static struct iommu_device *mtk_iommu_probe_device(struct device *dev)
- {
- 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
--	struct mtk_iommu_data *data;
-+	struct mtk_iommu_data *data = dev_iommu_priv_get(dev);
- 	struct device_link *link;
- 	struct device *larbdev;
- 	unsigned int larbid, larbidx, i;
- 
--	if (!fwspec || fwspec->ops != &mtk_iommu_ops)
--		return ERR_PTR(-ENODEV); /* Not a iommu client device */
--
--	data = dev_iommu_priv_get(dev);
--
- 	if (!MTK_IOMMU_IS_TYPE(data->plat_data, MTK_IOMMU_TYPE_MM))
- 		return &data->iommu;
- 
-diff --git a/drivers/iommu/mtk_iommu_v1.c b/drivers/iommu/mtk_iommu_v1.c
-index 67e044c1a7d9..25b41222abae 100644
---- a/drivers/iommu/mtk_iommu_v1.c
-+++ b/drivers/iommu/mtk_iommu_v1.c
-@@ -481,9 +481,6 @@ static struct iommu_device *mtk_iommu_v1_probe_device(struct device *dev)
- 		idx++;
- 	}
- 
--	if (!fwspec || fwspec->ops != &mtk_iommu_v1_ops)
--		return ERR_PTR(-ENODEV); /* Not a iommu client device */
--
- 	data = dev_iommu_priv_get(dev);
- 
- 	/* Link the consumer device with the smi-larb device(supplier) */
-diff --git a/drivers/iommu/sprd-iommu.c b/drivers/iommu/sprd-iommu.c
-index 9c33ea6903f6..b15a8fe7ae8a 100644
---- a/drivers/iommu/sprd-iommu.c
-+++ b/drivers/iommu/sprd-iommu.c
-@@ -384,13 +384,7 @@ static phys_addr_t sprd_iommu_iova_to_phys(struct iommu_domain *domain,
- 
- static struct iommu_device *sprd_iommu_probe_device(struct device *dev)
- {
--	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
--	struct sprd_iommu_device *sdev;
--
--	if (!fwspec || fwspec->ops != &sprd_iommu_ops)
--		return ERR_PTR(-ENODEV);
--
--	sdev = dev_iommu_priv_get(dev);
-+	struct sprd_iommu_device *sdev = dev_iommu_priv_get(dev);
- 
- 	return &sdev->iommu;
- }
-diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
-index 17dcd826f5c2..bb2e795a80d0 100644
---- a/drivers/iommu/virtio-iommu.c
-+++ b/drivers/iommu/virtio-iommu.c
-@@ -969,9 +969,6 @@ static struct iommu_device *viommu_probe_device(struct device *dev)
- 	struct viommu_dev *viommu = NULL;
- 	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
- 
--	if (!fwspec || fwspec->ops != &viommu_ops)
--		return ERR_PTR(-ENODEV);
--
- 	viommu = viommu_get_by_fwnode(fwspec->iommu_fwnode);
- 	if (!viommu)
- 		return ERR_PTR(-ENODEV);
--- 
-2.39.2.101.g768bb238c484.dirty
+> Hi Miquel,
+>=20
+> On Wed, 2023-09-27 at 17:05 +0200, Miquel Raynal wrote:
+> > Hi Martin,
+> >=20
+> > miquel.raynal@bootlin.com=C2=A0wrote on Tue, 26 Sep 2023 13:27:25 +0200:
+> >  =20
+> > > Hi Martin,
+> > >=20
+> > > + Bean and Domenico, there is a question for you below.
+> > >=20
+> > > martin@geanix.com=C2=A0wrote on Mon, 25 Sep 2023 13:01:06 +0200:
+> > >  =20
+> > > > Hi Rouven,
+> > > >=20
+> > > > On Fri, 2023-09-22 at 16:17 +0200, Rouven Czerwinski wrote:=C2=A0  =
+=20
+> > > > > Both the JEDEC and ONFI specification say that read cache
+> > > > > sequential
+> > > > > support is an optional command. This means that we not only
+> > > > > need to
+> > > > > check whether the individual controller supports the command,
+> > > > > we also
+> > > > > need to check the parameter pages for both ONFI and JEDEC NAND
+> > > > > flashes
+> > > > > before enabling sequential cache reads.
+> > > > >=20
+> > > > > This fixes support for NAND flashes which don't support
+> > > > > enabling
+> > > > > cache
+> > > > > reads, i.e. Samsung K9F4G08U0F or Toshiba TC58NVG0S3HTA00.
+> > > > >=20
+> > > > > Sequential cache reads are now only available for ONFI and
+> > > > > JEDEC
+> > > > > devices, if individual vendors implement this, it needs to be
+> > > > > enabled
+> > > > > per vendor.
+> > > > >=20
+> > > > > Tested on i.MX6Q with a Samsung NAND flash chip that doesn't
+> > > > > support
+> > > > > sequential reads.
+> > > > >=20
+> > > > > Fixes: 003fe4b9545b ("mtd: rawnand: Support for sequential
+> > > > > cache
+> > > > > reads")
+> > > > > Cc: stable@vger.kernel.org
+> > > > > Signed-off-by: Rouven Czerwinski
+> > > > > <r.czerwinski@pengutronix.de>=C2=A0=C2=A0=C2=A0  =20
+> > > >=20
+> > > > Thanks for this. It works as expected for my Toshiba chip,
+> > > > obviously
+> > > > because it doesn't use ONFI or JEDEC.
+> > > >=20
+> > > > Unfortunately, my Micron chip does use ONFI, and it sets the
+> > > > cached-
+> > > > read-supported bit. It then fails when reading afterwords: =20
+> >=20
+> > I might have over reacted regarding my findings in Micron's
+> > datasheet,
+> > I need to know if you use the on-die ECC engine or if you use the one
+> > on the controller. In the former case the failure is expected. In the
+> > latter case, it's not. =20
+>=20
+> I use the default, which seems to be the controller engine?
 
+Yeah, you're using the gpmi NAND controller right? If that's the case,
+it seems that only ECC correction is supported.
+
+Thanks,
+Miqu=C3=A8l
