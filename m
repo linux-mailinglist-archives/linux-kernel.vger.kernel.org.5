@@ -2,2095 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0537B5B54
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD257B5B60
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238866AbjJBTab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 15:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58582 "EHLO
+        id S238873AbjJBTdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 15:33:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238516AbjJBTa3 (ORCPT
+        with ESMTP id S229570AbjJBTds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 15:30:29 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 121E4B3
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 12:30:22 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AF32C433C7;
-        Mon,  2 Oct 2023 19:30:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696275021;
-        bh=QWzWrhJp7dxs93ZH9N9DbT7gsMc+i8rI4fB8fw2qII0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=A4VMWXqSTqC0hnHw6TQyUwJO0ub3JkROizYvdG3Go38zOR2wVG3UZ9OU7AKGdIk0v
-         WKA6nSR6TS4j9fMNOPEp8PpLtsURZf1YFbM7+8tOiyyuAY1DgQp/lBtunUNMg7BZhf
-         OSg9wxYXgZIYFt8K7SBhHE2Oe5HlagaCZBMwJrvpihGa3KX17c0VuJ5lz0jus14N1v
-         7N7fPDX/Zhf8aPmh+3+VNZpiYkcsHoD/jSt5VdQb2DIeMi/9NuLwzLjpwwaJufKZdo
-         vsjSJpAXHpJ8NK5LBddSMKNYMv1ACFGlogLerjBk5r0Zqlbi+yxc0YoUseaYufFDTZ
-         7QJnpjKyHCsrg==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-504a7f9204eso59619e87.3;
-        Mon, 02 Oct 2023 12:30:21 -0700 (PDT)
-X-Gm-Message-State: AOJu0YzVfdBKi58vzpQUUSUTth+xGFGkpvEbnQW9kYiqG0iz/aS8Jt+o
-        gm5c2MYq8VXx5yO5lTpR9IfanS4GzQG8FHzb/rg=
-X-Google-Smtp-Source: AGHT+IFZHUXuqC6jtJTOialRH3/SJ/f2Vw8J4fHh2W1SBlDBu/4IaBcSG8jxeVqZiHwyTBGWPTII4E5lcT6J1dWiuSs=
-X-Received: by 2002:ac2:4f0b:0:b0:500:bff5:54ec with SMTP id
- k11-20020ac24f0b000000b00500bff554ecmr12351306lfr.3.1696275019494; Mon, 02
- Oct 2023 12:30:19 -0700 (PDT)
+        Mon, 2 Oct 2023 15:33:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B67AFA9;
+        Mon,  2 Oct 2023 12:33:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
+        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=PR6P3AHgME2xp/86LQk0U8HJnsQwyxZ69ZF5Vg5SzyU=; b=ftuGncLMie+EE9v00gSa/Hhq7Q
+        4wuq/5zaQQ6qapTl8ywdKYu7OLIK8kL7XuF+vfuYmuVfY8YnzPF6SZz2bQbY1l/MU0AU81v79A4vw
+        QshJRzvGISYY5vnZfaHKxTw8nYPFITeVggn7er0WNjaFRrYKVvLkE7qJzeUcRhHowNfxHmw9HtrCS
+        1np5c5SmWM2PYdO36tgDCBzZKK5CuzOju+YyHoiDDYPKQrE41r4x/RM43e7DcfqPLAksffWCZCDtp
+        YALnF0CM08Y7l3BY8PQKweaMgPKDyn3oWvH0vLsRbYv7juDnvKzoUZDJNHEInUk3UoOQK/kCCRWc0
+        5i3Gl7Cw==;
+Received: from [2001:8b0:10b:5:5205:71fd:de0:52fd] (helo=u3832b3a9db3152.ant.amazon.com)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qnOfl-00Anqu-Mx; Mon, 02 Oct 2023 19:33:41 +0000
+Message-ID: <b50afadea577065d90ae3dc8ca2aa67dcffcc50e.camel@infradead.org>
+Subject: Re: [PATCH v2] KVM: x86: Use fast path for Xen timer delivery
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm <kvm@vger.kernel.org>, Paul Durrant <paul@xen.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Date:   Mon, 02 Oct 2023 20:33:41 +0100
+In-Reply-To: <ZRsP5cvyqLaihb76@google.com>
+References: <a3989e7ff9cca77f680f9bdfbaee52b707693221.camel@infradead.org>
+         <ZRbolEa6RI3IegyF@google.com>
+         <ee679de20e3a53772f9d233b9653fdc642781577.camel@infradead.org>
+         <ZRsAvYecCOpeHvPY@google.com>
+         <ac097a26e96ded73e19200066b9063354096a8fd.camel@infradead.org>
+         <ZRsP5cvyqLaihb76@google.com>
+Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
+        boundary="=-q4kMllPbnP65tdh2LrUv"
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-References: <20230904051253.23208-1-stanley_chang@realtek.com> <43138ac278224fb78055c5c78e93cfb0@realtek.com>
-In-Reply-To: <43138ac278224fb78055c5c78e93cfb0@realtek.com>
-From:   Chanwoo Choi <chanwoo@kernel.org>
-Date:   Tue, 3 Oct 2023 04:29:42 +0900
-X-Gmail-Original-Message-ID: <CAGTfZH0QTYCXF_hpPw_gHMBX4Mf-ZQ_5auU4p-20CtYtcOWYoA@mail.gmail.com>
-Message-ID: <CAGTfZH0QTYCXF_hpPw_gHMBX4Mf-ZQ_5auU4p-20CtYtcOWYoA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] extcon: add Realtek DHC RTD SoC Type-C driver
-To:     =?UTF-8?B?U3RhbmxleSBDaGFuZ1vmmIzogrLlvrdd?= 
-        <stanley_chang@realtek.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stanley,
 
-Applied them with patch1/2.
+--=-q4kMllPbnP65tdh2LrUv
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I'm sorry for late reply.
-
-Regards,
-Chanwoo Choi
-
-On Mon, Sep 18, 2023 at 3:41=E2=80=AFPM Stanley Chang[=E6=98=8C=E8=82=B2=E5=
-=BE=B7]
-<stanley_chang@realtek.com> wrote:
->
-> Hi Chanwoo,
->
-> Can you help review this patch?
->
-> Thanks,
-> Stanley
->
-> > -----Original Message-----
-> > From: Stanley Chang <stanley_chang@realtek.com>
-> > Sent: Monday, September 4, 2023 1:13 PM
-> > To: MyungJoo Ham <myungjoo.ham@samsung.com>
-> > Cc: Stanley Chang[=E6=98=8C=E8=82=B2=E5=BE=B7] <stanley_chang@realtek.c=
-om>; Greg
-> > Kroah-Hartman <gregkh@linuxfoundation.org>; Rob Herring
-> > <robh+dt@kernel.org>; Krzysztof Kozlowski
-> > <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>=
-;
-> > Chanwoo Choi <cw00.choi@samsung.com>; linux-usb@vger.kernel.org;
-> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Subject: [PATCH v3 1/2] extcon: add Realtek DHC RTD SoC Type-C driver
-> >
-> > This patch adds the extcon driver for Realtek DHC (digital home center)
-> > RTD SoCs type-c module. This can be used to detect whether the port is
-> > configured as a downstream or upstream facing port. And notify the stat=
-us
-> > of extcon to listeners.
-> >
-> > Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
-> > ---
-> > v2 to v3 change:
-> >   removed the error check for debugfs
-> > v1 to v2 change:
-> >   1. added "depends on TYPEC" and "select USB_COMMON" in Kconfig
-> >   2. revised the code about gpio.
-> >   3. revised the definitions to keep the left-aligned of value
-> >   4. add the comment for delay or sleep
-> >   5. changed some functions to connector_attached/connector_detached
-> >   6. removed to check 'CONFIG_TYPEC' definition with ifdef
-> > ---
-> >  drivers/extcon/Kconfig             |   11 +
-> >  drivers/extcon/Makefile            |    1 +
-> >  drivers/extcon/extcon-rtk-type-c.c | 1792 ++++++++++++++++++++++++++++
-> >  3 files changed, 1804 insertions(+)
-> >  create mode 100644 drivers/extcon/extcon-rtk-type-c.c
-> >
-> > diff --git a/drivers/extcon/Kconfig b/drivers/extcon/Kconfig
-> > index 0ef1971d22bb..0f4c061e7321 100644
-> > --- a/drivers/extcon/Kconfig
-> > +++ b/drivers/extcon/Kconfig
-> > @@ -190,4 +190,15 @@ config EXTCON_USBC_TUSB320
-> >         Say Y here to enable support for USB Type C cable detection ext=
-con
-> >         support using a TUSB320.
-> >
-> > +config EXTCON_RTK_TYPE_C
-> > +     tristate "Realtek RTD SoC extcon Type-C Driver"
-> > +     depends on ARCH_REALTEK || COMPILE_TEST
-> > +     depends on TYPEC
-> > +     select USB_COMMON
-> > +     help
-> > +       Say Y here to enable extcon support for USB Type C cable detect=
-ion
-> > +       when using the Realtek RTD SoC USB Type-C port.
-> > +       The DHC (Digital Home Hub) RTD series SoC contains a type c mod=
-ule.
-> > +       This driver will detect the status of the type-c port.
-> > +
-> >  endif
-> > diff --git a/drivers/extcon/Makefile b/drivers/extcon/Makefile
-> > index 1b390d934ca9..f779adb5e4c7 100644
-> > --- a/drivers/extcon/Makefile
-> > +++ b/drivers/extcon/Makefile
-> > @@ -25,3 +25,4 @@ obj-$(CONFIG_EXTCON_SM5502) +=3D
-> > extcon-sm5502.o
-> >  obj-$(CONFIG_EXTCON_USB_GPIO)        +=3D extcon-usb-gpio.o
-> >  obj-$(CONFIG_EXTCON_USBC_CROS_EC) +=3D extcon-usbc-cros-ec.o
-> >  obj-$(CONFIG_EXTCON_USBC_TUSB320) +=3D extcon-usbc-tusb320.o
-> > +obj-$(CONFIG_EXTCON_RTK_TYPE_C) +=3D extcon-rtk-type-c.o
-> > diff --git a/drivers/extcon/extcon-rtk-type-c.c
-> > b/drivers/extcon/extcon-rtk-type-c.c
-> > new file mode 100644
-> > index 000000000000..00465cfba23e
-> > --- /dev/null
-> > +++ b/drivers/extcon/extcon-rtk-type-c.c
-> > @@ -0,0 +1,1792 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + *  * extcon-rtk-type-c.c - Realtek Extcon Type C driver
-> > + *
-> > + * Copyright (C) 2023 Realtek Semiconductor Corporation
-> > + *
-> > + */
-> > +
-> > +#include <linux/module.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/of.h>
-> > +#include <linux/of_address.h>
-> > +#include <linux/of_irq.h>
-> > +#include <linux/of_gpio.h>
-> > +#include <linux/io.h>
-> > +#include <linux/interrupt.h>
-> > +#include <linux/syscalls.h>
-> > +#include <linux/suspend.h>
-> > +#include <linux/debugfs.h>
-> > +#include <linux/extcon.h>
-> > +#include <linux/extcon-provider.h>
-> > +#include <linux/sys_soc.h>
-> > +#include <linux/nvmem-consumer.h>
-> > +#include <linux/gpio/consumer.h>
-> > +#include <linux/usb/otg.h>
-> > +#include <linux/usb/typec.h>
-> > +
-> > +struct cc_param {
-> > +     u32 rp_4p7k_code;
-> > +     u32 rp_36k_code;
-> > +     u32 rp_12k_code;
-> > +     u32 rd_code;
-> > +     u32 ra_code;
-> > +     u32 vref_2p6v;
-> > +     u32 vref_1p23v;
-> > +     u32 vref_0p8v;
-> > +     u32 vref_0p66v;
-> > +     u32 vref_0p4v;
-> > +     u32 vref_0p2v;
-> > +     u32 vref_1_1p6v;
-> > +     u32 vref_0_1p6v;
-> > +};
-> > +
-> > +struct type_c_cfg {
-> > +     int parameter_ver; /* Parameter version */
-> > +     int cc_dfp_mode;
-> > +     struct cc_param cc1_param;
-> > +     struct cc_param cc2_param;
-> > +
-> > +     u32 debounce_val;
-> > +     bool use_defalut_parameter;
-> > +};
-> > +
-> > +struct type_c_data {
-> > +     void __iomem *reg_base;
-> > +     struct device *dev;
-> > +     struct extcon_dev *edev;
-> > +
-> > +     u32 irq;
-> > +
-> > +     /* rd control GPIO only for rtd1295 */
-> > +     struct gpio_desc *rd_ctrl_gpio_desc;
-> > +
-> > +     /* Parameters */
-> > +     struct type_c_cfg *type_c_cfg;
-> > +     u32 dfp_mode_rp_en;
-> > +     u32 ufp_mode_rd_en;
-> > +     u32 cc1_code;
-> > +     u32 cc2_code;
-> > +     u32 cc1_vref;
-> > +     u32 cc2_vref;
-> > +     u32 debounce; /* 1b,1us 7f,4.7us */
-> > +
-> > +     /* type_c state */
-> > +     int connect_change;
-> > +#define CONNECT_CHANGE 1
-> > +#define CONNECT_NO_CHANGE 0
-> > +     int cc_mode; /* cc is host or device */
-> > +#define IN_HOST_MODE 0x10
-> > +#define IN_DEVICE_MODE 0x20
-> > +     int is_attach;
-> > +#define IN_ATTACH 1
-> > +#define TO_ATTACH 1
-> > +#define IN_DETACH 0
-> > +#define TO_DETACH 0
-> > +     int at_cc1;
-> > +#define AT_CC1 1
-> > +#define AT_CC2 0
-> > +
-> > +     u32 int_status;
-> > +     u32 cc_status;
-> > +     /* protect the data member */
-> > +     spinlock_t lock;
-> > +     struct delayed_work delayed_work;
-> > +
-> > +     bool rd_en_at_first;
-> > +
-> > +     struct dentry *debug_dir;
-> > +
-> > +     struct typec_port *port;
-> > +};
-> > +
-> > +/* Type C register offset */
-> > +#define USB_TYPEC_CTRL_CC1_0 0x0
-> > +#define USB_TYPEC_CTRL_CC1_1 0x4
-> > +#define USB_TYPEC_CTRL_CC2_0 0x8
-> > +#define USB_TYPEC_CTRL_CC2_1 0xC
-> > +#define USB_TYPEC_STS                0x10
-> > +#define USB_TYPEC_CTRL               0x14
-> > +#define USB_DBUS_PWR_CTRL    0x18
-> > +
-> > +#define ENABLE_CC1   0x1
-> > +#define ENABLE_CC2   0x2
-> > +#define DISABLE_CC   0x0
-> > +
-> > +/* Bit mapping USB_TYPEC_CTRL_CC1_0 and USB_TYPEC_CTRL_CC2_0 */
-> > +#define PLR_EN               BIT(29)
-> > +#define CC_SWITCH_MASK       (BIT(29) | BIT(28) | BIT(27))
-> > +#define CC_CODE_MASK (0xfffff << 7)
-> > +#define rp4pk_code(val)      ((0x1f & (val)) << 22)
-> > +#define code_rp4pk(val)      (((val) >> 22) & 0x1f)
-> > +#define rp36k_code(val)      ((0x1f & (val)) << 17)
-> > +#define code_rp36k(val)      (((val) >> 17) & 0x1f)
-> > +#define rp12k_code(val)      ((0x1f & (val)) << 12)
-> > +#define code_rp12k(val)      (((val) >> 12) & 0x1f)
-> > +#define rd_code(val) ((0x1f & (val)) << 7)
-> > +#define code_rd(val) (((val) >> 7) & 0x1f)
-> > +#define dfp_mode(val)        ((0x3 & (val)) << 5)
-> > +#define EN_RP4P7K    BIT(4)
-> > +#define EN_RP36K     BIT(3)
-> > +#define EN_RP12K     BIT(2)
-> > +#define EN_RD                BIT(1)
-> > +#define EN_CC_DET    BIT(0)
-> > +
-> > +#define CC_MODE_UFP  0x0
-> > +#define CC_MODE_DFP_USB      0x1
-> > +#define CC_MODE_DFP_1_5      0x2
-> > +#define CC_MODE_DFP_3_0      0x3
-> > +
-> > +/*
-> > + * PARAMETER_V0:
-> > + *  Realtek Kylin    rtd1295
-> > + *  Realtek Hercules rtd1395
-> > + *  Realtek Thor     rtd1619
-> > + *  Realtek Hank     rtd1319
-> > + *  Realtek Groot    rtd1312c
-> > + * PARAMETER_V1:
-> > + *  Realtek Stark    rtd1619b
-> > + *  Realtek Parker   rtd1319d
-> > + *  Realtek Danvers  rtd1315e
-> > + */
-> > +enum parameter_version {
-> > +     PARAMETER_V0 =3D 0,
-> > +     PARAMETER_V1 =3D 1,
-> > +};
-> > +
-> > +/* Bit mapping USB_TYPEC_CTRL_CC1_1 and USB_TYPEC_CTRL_CC2_1 */
-> > +#define V0_vref_2p6v(val)    ((0xf & (val)) << 26) /* Bit 29 for groot=
- */
-> > +#define V0_vref_1p23v(val)   ((0xf & (val)) << 22)
-> > +#define V0_vref_0p8v(val)    ((0xf & (val)) << 18)
-> > +#define V0_vref_0p66v(val)   ((0xf & (val)) << 14)
-> > +#define V0_vref_0p4v(val)    ((0x7 & (val)) << 11)
-> > +#define V0_vref_0p2v(val)    ((0x7 & (val)) << 8)
-> > +#define V0_vref_1_1p6v(val)  ((0xf & (val)) << 4)
-> > +#define V0_vref_0_1p6v(val)  ((0xf & (val)) << 0)
-> > +
-> > +#define V0_decode_2p6v(val)  (((val) >> 26) & 0xf) /* Bit 29 for groot=
- */
-> > +#define V0_decode_1p23v(val) (((val) >> 22) & 0xf)
-> > +#define V0_decode_0p8v(val)  (((val) >> 18) & 0xf)
-> > +#define V0_decode_0p66v(val) (((val) >> 14) & 0xf)
-> > +#define V0_decode_0p4v(val)  (((val) >> 11) & 0x7)
-> > +#define V0_decode_0p2v(val)  (((val) >> 8) & 0x7)
-> > +#define V0_decode_1_1p6v(val)        (((val) >> 4) & 0xf)
-> > +#define V0_decode_0_1p6v(val)        (((val) >> 0) & 0xf)
-> > +
-> > +/* new Bit mapping USB_TYPEC_CTRL_CC1_1 and USB_TYPEC_CTRL_CC2_1
-> > */
-> > +#define V1_vref_2p6v(val)    ((0xf & (val)) << 28)
-> > +#define V1_vref_1p23v(val)   ((0xf & (val)) << 24)
-> > +#define V1_vref_0p8v(val)    ((0xf & (val)) << 20)
-> > +#define V1_vref_0p66v(val)   ((0xf & (val)) << 16)
-> > +#define V1_vref_0p4v(val)    ((0xf & (val)) << 12)
-> > +#define V1_vref_0p2v(val)    ((0xf & (val)) << 8)
-> > +#define V1_vref_1_1p6v(val)  ((0xf & (val)) << 4)
-> > +#define V1_vref_0_1p6v(val)  ((0xf & (val)) << 0)
-> > +
-> > +#define V1_decode_2p6v(val)  (((val) >> 28) & 0xf)
-> > +#define V1_decode_1p23v(val) (((val) >> 24) & 0xf)
-> > +#define V1_decode_0p8v(val)  (((val) >> 20) & 0xf)
-> > +#define V1_decode_0p66v(val) (((val) >> 16) & 0xf)
-> > +#define V1_decode_0p4v(val)  (((val) >> 12) & 0xf)
-> > +#define V1_decode_0p2v(val)  (((val) >> 8) & 0xf)
-> > +#define V1_decode_1_1p6v(val)        (((val) >> 4) & 0xf)
-> > +#define V1_decode_0_1p6v(val)        (((val) >> 0) & 0xf)
-> > +
-> > +/* Bit mapping USB_TYPEC_STS */
-> > +#define DET_STS              0x7
-> > +#define CC1_DET_STS  (DET_STS)
-> > +#define CC2_DET_STS  (DET_STS << 3)
-> > +#define DET_STS_RA   0x1
-> > +#define DET_STS_RD   0x3
-> > +#define DET_STS_RP   0x1
-> > +#define CC1_DET_STS_RA       (DET_STS_RA)
-> > +#define CC1_DET_STS_RD       (DET_STS_RD)
-> > +#define CC1_DET_STS_RP       (DET_STS_RP)
-> > +#define CC2_DET_STS_RA       (DET_STS_RA << 3)
-> > +#define CC2_DET_STS_RD       (DET_STS_RD << 3)
-> > +#define CC2_DET_STS_RP       (DET_STS_RP << 3)
-> > +
-> > +/* Bit mapping USB_TYPEC_CTRL */
-> > +#define CC2_INT_EN           BIT(11)
-> > +#define CC1_INT_EN           BIT(10)
-> > +#define CC2_INT_STS          BIT(9)
-> > +#define CC1_INT_STS          BIT(8)
-> > +#define DEBOUNCE_TIME_MASK   0xff
-> > +#define DEBOUNCE_EN          BIT(0)
-> > +#define ENABLE_TYPE_C_DETECT (CC1_INT_EN | CC2_INT_EN)
-> > +#define ALL_CC_INT_STS               (CC1_INT_STS | CC2_INT_STS)
-> > +
-> > +/* Parameter */
-> > +#define DETECT_TIME 50 /* ms */
-> > +
-> > +static const unsigned int usb_type_c_cable[] =3D {
-> > +     EXTCON_USB,
-> > +     EXTCON_USB_HOST,
-> > +     EXTCON_NONE,
-> > +};
-> > +
-> > +enum usb_data_roles {
-> > +     DR_NONE,
-> > +     DR_HOST,
-> > +     DR_DEVICE,
-> > +};
-> > +
-> > +static const struct soc_device_attribute rtk_soc_kylin[] =3D {
-> > +     { .family =3D "Realtek Kylin", },
-> > +     { /* empty */ }
-> > +};
-> > +
-> > +static int rtd129x_switch_type_c_plug_config(struct type_c_data *type_=
-c,
-> > +                                          int dr_mode, int cc)
-> > +{
-> > +     void __iomem *reg =3D type_c->reg_base + USB_TYPEC_CTRL_CC1_0;
-> > +     int val_cc;
-> > +
-> > +#define TYPE_C_EN_SWITCH     BIT(29)
-> > +#define TYPE_C_TXRX_SEL              (BIT(28) | BIT(27))
-> > +#define TYPE_C_SWITCH_MASK   (TYPE_C_EN_SWITCH | TYPE_C_TXRX_SEL)
-> > +#define TYPE_C_ENABLE_CC1    TYPE_C_EN_SWITCH
-> > +#define TYPE_C_ENABLE_CC2    (TYPE_C_EN_SWITCH | TYPE_C_TXRX_SEL)
-> > +#define TYPE_C_DISABLE_CC    ~TYPE_C_SWITCH_MASK
-> > +
-> > +     val_cc =3D readl(reg);
-> > +     val_cc &=3D ~TYPE_C_SWITCH_MASK;
-> > +
-> > +     if (cc =3D=3D DISABLE_CC) {
-> > +             val_cc &=3D TYPE_C_DISABLE_CC;
-> > +     } else if (cc =3D=3D ENABLE_CC1) {
-> > +             val_cc |=3D TYPE_C_ENABLE_CC1;
-> > +     } else if (cc =3D=3D ENABLE_CC2) {
-> > +             val_cc |=3D TYPE_C_ENABLE_CC2;
-> > +     } else {
-> > +             dev_err(type_c->dev, "%s: Error cc setting cc=3D0x%x\n", =
-__func__,
-> > cc);
-> > +             return -EINVAL;
-> > +     }
-> > +     writel(val_cc, reg);
-> > +
-> > +     /* waiting cc stable for enable/disable */
-> > +     mdelay(1);
-> > +
-> > +     dev_dbg(type_c->dev, "%s: cc=3D0x%x val_cc=3D0x%x
-> > usb_typec_ctrl_cc1_0=3D0x%x\n",
-> > +             __func__, cc, val_cc, readl(reg));
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static inline void switch_type_c_plug_config(struct type_c_data *type_=
-c,
-> > +                                          int dr_mode, int cc)
-> > +{
-> > +     int ret =3D 0;
-> > +
-> > +     if (soc_device_match(rtk_soc_kylin))
-> > +             ret =3D rtd129x_switch_type_c_plug_config(type_c, dr_mode=
-, cc);
-> > +
-> > +     if (ret < 0)
-> > +             dev_err(type_c->dev, "%s: Error set type c plug config\n"=
-,
-> > +                     __func__);
-> > +}
-> > +
-> > +static void switch_type_c_dr_mode(struct type_c_data *type_c, int dr_m=
-ode,
-> > int cc)
-> > +{
-> > +     bool is_host =3D false;
-> > +     bool is_device =3D false;
-> > +     bool polarity =3D false;
-> > +     bool vbus =3D false;
-> > +     bool ss =3D true;
-> > +
-> > +     switch_type_c_plug_config(type_c, dr_mode, cc);
-> > +     if (cc =3D=3D ENABLE_CC2)
-> > +             polarity =3D true;
-> > +
-> > +     switch (dr_mode) {
-> > +     case USB_DR_MODE_HOST:
-> > +             is_host =3D true;
-> > +             break;
-> > +     case USB_DR_MODE_PERIPHERAL:
-> > +             is_device =3D true;
-> > +             vbus =3D true;
-> > +             break;
-> > +     default:
-> > +             dev_dbg(type_c->dev, "%s dr_mode=3D%d =3D=3D> no host or =
-device\n",
-> > +                     __func__, dr_mode);
-> > +             break;
-> > +     }
-> > +
-> > +     dev_dbg(type_c->dev, "%s is_host=3D%d is_device=3D%d vbus=3D%d
-> > polarity=3D%d\n",
-> > +             __func__, is_host, is_device, vbus, polarity);
-> > +
-> > +     /* for EXTCON_USB device mode */
-> > +     extcon_set_state(type_c->edev, EXTCON_USB, is_device);
-> > +     extcon_set_property(type_c->edev, EXTCON_USB,
-> > +                         EXTCON_PROP_USB_VBUS,
-> > +                         (union extcon_property_value)(int)vbus);
-> > +     extcon_set_property(type_c->edev, EXTCON_USB,
-> > +                         EXTCON_PROP_USB_TYPEC_POLARITY,
-> > +                         (union extcon_property_value)(int)polarity);
-> > +     extcon_set_property(type_c->edev, EXTCON_USB,
-> > +                         EXTCON_PROP_USB_SS,
-> > +                         (union extcon_property_value)(int)ss);
-> > +
-> > +     /* for EXTCON_USB_HOST host mode */
-> > +     extcon_set_state(type_c->edev, EXTCON_USB_HOST, is_host);
-> > +     extcon_set_property(type_c->edev, EXTCON_USB_HOST,
-> > +                         EXTCON_PROP_USB_VBUS,
-> > +                         (union extcon_property_value)(int)vbus);
-> > +     extcon_set_property(type_c->edev, EXTCON_USB_HOST,
-> > +                         EXTCON_PROP_USB_TYPEC_POLARITY,
-> > +                         (union extcon_property_value)(int)polarity);
-> > +     extcon_set_property(type_c->edev, EXTCON_USB_HOST,
-> > +                         EXTCON_PROP_USB_SS,
-> > +                         (union extcon_property_value)(int)ss);
-> > +
-> > +     /* sync EXTCON_USB and EXTCON_USB_HOST */
-> > +     extcon_sync(type_c->edev, EXTCON_USB);
-> > +     extcon_sync(type_c->edev, EXTCON_USB_HOST);
-> > +
-> > +     if (type_c->port) {
-> > +             switch (dr_mode) {
-> > +             case USB_DR_MODE_HOST:
-> > +                     typec_set_data_role(type_c->port, TYPEC_HOST);
-> > +                     typec_set_pwr_role(type_c->port, TYPEC_SOURCE);
-> > +                     break;
-> > +             case USB_DR_MODE_PERIPHERAL:
-> > +                     typec_set_data_role(type_c->port, TYPEC_DEVICE);
-> > +                     typec_set_pwr_role(type_c->port, TYPEC_SINK);
-> > +                     break;
-> > +             default:
-> > +                     dev_dbg(type_c->dev, "%s unknown dr_mode=3D%d\n",
-> > +                             __func__, dr_mode);
-> > +                     break;
-> > +             }
-> > +     }
-> > +}
-> > +
-> > +/* connector attached/detached */
-> > +static int connector_attached(struct type_c_data *type_c, u32 cc, int
-> > dr_mode)
-> > +{
-> > +     void __iomem *reg =3D type_c->reg_base + USB_TYPEC_CTRL;
-> > +
-> > +     cancel_delayed_work(&type_c->delayed_work);
-> > +
-> > +     switch_type_c_dr_mode(type_c, dr_mode, cc);
-> > +
-> > +     writel(ENABLE_TYPE_C_DETECT | readl(reg), reg);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int connector_detached(struct type_c_data *type_c, u32 cc, int
-> > dr_mode)
-> > +{
-> > +     void __iomem *reg =3D type_c->reg_base + USB_TYPEC_CTRL;
-> > +
-> > +     writel(~ENABLE_TYPE_C_DETECT & readl(reg), reg);
-> > +
-> > +     switch_type_c_dr_mode(type_c, 0, cc);
-> > +
-> > +     schedule_delayed_work(&type_c->delayed_work,
-> > msecs_to_jiffies(DETECT_TIME));
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +/* detect host device switch */
-> > +static int __detect_host_device(struct type_c_data *type_c, u32 rp_or_=
-rd_en)
-> > +{
-> > +     struct device *dev =3D type_c->dev;
-> > +     void __iomem *reg_base =3D type_c->reg_base;
-> > +     u32 cc1_config, cc2_config, default_ctrl;
-> > +     u32 cc1_switch =3D 0;
-> > +
-> > +     default_ctrl =3D readl(reg_base + USB_TYPEC_CTRL) &
-> > DEBOUNCE_TIME_MASK;
-> > +     writel(default_ctrl, reg_base + USB_TYPEC_CTRL);
-> > +
-> > +     cc1_config =3D readl(reg_base + USB_TYPEC_CTRL_CC1_0);
-> > +     cc2_config =3D readl(reg_base + USB_TYPEC_CTRL_CC2_0);
-> > +
-> > +     cc1_config &=3D ~EN_CC_DET;
-> > +     cc2_config &=3D ~EN_CC_DET;
-> > +     writel(cc1_config, reg_base + USB_TYPEC_CTRL_CC1_0);
-> > +     writel(cc2_config, reg_base + USB_TYPEC_CTRL_CC2_0);
-> > +
-> > +     if (soc_device_match(rtk_soc_kylin))
-> > +             cc1_switch =3D cc1_config & CC_SWITCH_MASK;
-> > +
-> > +     cc1_config &=3D CC_CODE_MASK;
-> > +     cc1_config |=3D rp_or_rd_en | cc1_switch;
-> > +     cc2_config &=3D CC_CODE_MASK;
-> > +     cc2_config |=3D rp_or_rd_en;
-> > +     writel(cc2_config, reg_base + USB_TYPEC_CTRL_CC2_0);
-> > +     writel(cc1_config, reg_base + USB_TYPEC_CTRL_CC1_0);
-> > +
-> > +     /* For kylin to disable external rd control gpio */
-> > +     if (soc_device_match(rtk_soc_kylin)) {
-> > +             struct gpio_desc *gpio =3D type_c->rd_ctrl_gpio_desc;
-> > +
-> > +             if (gpio && gpiod_direction_output(gpio, 1))
-> > +                     dev_err(dev, "%s ERROR set rd_ctrl_gpio_desc fail=
-\n",
-> > __func__);
-> > +     }
-> > +
-> > +     cc1_config |=3D EN_CC_DET;
-> > +     cc2_config |=3D EN_CC_DET;
-> > +     writel(cc1_config, reg_base + USB_TYPEC_CTRL_CC1_0);
-> > +     writel(cc2_config, reg_base + USB_TYPEC_CTRL_CC2_0);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int detect_device(struct type_c_data *type_c)
-> > +{
-> > +     return __detect_host_device(type_c, type_c->dfp_mode_rp_en);
-> > +}
-> > +
-> > +static int detect_host(struct type_c_data *type_c)
-> > +{
-> > +     return __detect_host_device(type_c, type_c->ufp_mode_rd_en);
-> > +}
-> > +
-> > +static int host_device_switch_detection(struct type_c_data *type_c)
-> > +{
-> > +     if (type_c->cc_mode =3D=3D IN_HOST_MODE) {
-> > +             type_c->cc_mode =3D IN_DEVICE_MODE;
-> > +             detect_host(type_c);
-> > +     } else {
-> > +             type_c->cc_mode =3D IN_HOST_MODE;
-> > +             detect_device(type_c);
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int detect_type_c_state(struct type_c_data *type_c)
-> > +{
-> > +     struct device *dev =3D type_c->dev;
-> > +     void __iomem *reg_base =3D type_c->reg_base;
-> > +     u32 int_status, cc_status, cc_status_check;
-> > +     unsigned long flags;
-> > +
-> > +     spin_lock_irqsave(&type_c->lock, flags);
-> > +
-> > +     int_status =3D readl(reg_base + USB_TYPEC_CTRL);
-> > +     cc_status =3D readl(reg_base + USB_TYPEC_STS);
-> > +
-> > +     type_c->connect_change =3D CONNECT_NO_CHANGE;
-> > +
-> > +     switch (type_c->cc_mode | type_c->is_attach) {
-> > +     case IN_HOST_MODE | IN_ATTACH:
-> > +             if (((cc_status & CC1_DET_STS) =3D=3D CC1_DET_STS) &&
-> > type_c->at_cc1 =3D=3D AT_CC1) {
-> > +                     dev_dbg(dev, "IN host mode and cc1 device detach
-> > (cc_status=3D0x%x)",
-> > +                             cc_status);
-> > +                     type_c->is_attach =3D TO_DETACH;
-> > +                     type_c->connect_change =3D CONNECT_CHANGE;
-> > +             } else if (((cc_status & CC2_DET_STS) =3D=3D CC2_DET_STS)=
- &&
-> > +                        type_c->at_cc1 =3D=3D AT_CC2) {
-> > +                     dev_dbg(dev, "IN host mode and cc2 device detach
-> > (cc_status=3D0x%x)",
-> > +                             cc_status);
-> > +                     type_c->is_attach =3D TO_DETACH;
-> > +                     type_c->connect_change =3D CONNECT_CHANGE;
-> > +             }
-> > +             break;
-> > +     case IN_HOST_MODE | IN_DETACH:
-> > +             cc_status_check =3D readl(reg_base + USB_TYPEC_STS);
-> > +             if (cc_status_check !=3D (CC1_DET_STS | CC2_DET_STS)) {
-> > +                     if (in_interrupt()) {
-> > +                             /* Add delay time to avoid capacitive eff=
-ect of cable. */
-> > +                             mdelay(300);
-> > +                     } else {
-> > +                             spin_unlock_irqrestore(&type_c->lock, fla=
-gs);
-> > +                             /* Add delay time to avoid capacitive eff=
-ect of cable. */
-> > +                             msleep(300);
-> > +                             spin_lock_irqsave(&type_c->lock, flags);
-> > +                     }
-> > +                     cc_status_check =3D readl(reg_base + USB_TYPEC_ST=
-S);
-> > +             }
-> > +             if (cc_status !=3D cc_status_check) {
-> > +                     dev_warn(dev, "IN_HOST_MODE: cc_status (0x%x) !=
-=3D
-> > cc_status_check (0x%x)\n",
-> > +                              cc_status, cc_status_check);
-> > +                     cc_status =3D readl(reg_base + USB_TYPEC_STS);
-> > +             }
-> > +
-> > +             if ((cc_status & CC1_DET_STS) =3D=3D CC1_DET_STS_RD) {
-> > +                     dev_dbg(dev, "IN host mode and cc1 device attach
-> > (cc_status=3D0x%x)",
-> > +                             cc_status);
-> > +                     type_c->is_attach =3D TO_ATTACH;
-> > +                     type_c->at_cc1 =3D AT_CC1;
-> > +                     type_c->connect_change =3D CONNECT_CHANGE;
-> > +             } else if ((cc_status & CC2_DET_STS) =3D=3D CC2_DET_STS_R=
-D) {
-> > +                     dev_dbg(dev, "In host mode and cc2 device attach
-> > (cc_status=3D0x%x)",
-> > +                             cc_status);
-> > +                     type_c->is_attach =3D TO_ATTACH;
-> > +                     type_c->at_cc1 =3D AT_CC2;
-> > +                     type_c->connect_change =3D CONNECT_CHANGE;
-> > +             }
-> > +             break;
-> > +     case IN_DEVICE_MODE | IN_ATTACH:
-> > +             if ((cc_status & CC1_DET_STS) < CC1_DET_STS_RP ||
-> > +                 (cc_status & CC2_DET_STS) < CC2_DET_STS_RP) {
-> > +                     /* Add a sw debounce to filter cc signal sent fro=
-m apple pd
-> > adapter */
-> > +                     mdelay(5);
-> > +                     cc_status_check =3D readl(reg_base + USB_TYPEC_ST=
-S);
-> > +
-> > +                     if (cc_status !=3D cc_status_check) {
-> > +                             dev_dbg(dev, "IN_DEVICE_MODE: cc_status (=
-0x%x) !=3D
-> > cc_status_check (0x%x) maybe use a pd adapter\n",
-> > +                                     cc_status, cc_status_check);
-> > +                             cc_status =3D cc_status_check;
-> > +                     }
-> > +             }
-> > +
-> > +             if ((cc_status & CC1_DET_STS) < CC1_DET_STS_RP &&
-> > type_c->at_cc1 =3D=3D AT_CC1) {
-> > +                     dev_dbg(dev, "IN device mode and cc1 host disconn=
-ect
-> > (cc_status=3D0x%x)",
-> > +                             cc_status);
-> > +                     type_c->is_attach =3D TO_DETACH;
-> > +                     type_c->connect_change =3D CONNECT_CHANGE;
-> > +             } else if ((cc_status & CC2_DET_STS) < CC2_DET_STS_RP &&
-> > +                        type_c->at_cc1 =3D=3D AT_CC2) {
-> > +                     dev_dbg(dev, "IN device mode and cc2 host disconn=
-ect
-> > (cc_status=3D0x%x)",
-> > +                             cc_status);
-> > +                     type_c->is_attach =3D TO_DETACH;
-> > +                     type_c->connect_change =3D CONNECT_CHANGE;
-> > +             }
-> > +             break;
-> > +     case IN_DEVICE_MODE | IN_DETACH:
-> > +             cc_status_check =3D readl(reg_base + USB_TYPEC_STS);
-> > +             if (cc_status_check !=3D 0x0) {
-> > +                     if (in_interrupt()) {
-> > +                             /* Add delay time to avoid capacitive eff=
-ect of cable. */
-> > +                             mdelay(300);
-> > +                     } else {
-> > +                             spin_unlock_irqrestore(&type_c->lock, fla=
-gs);
-> > +                             /* Add delay time to avoid capacitive eff=
-ect of cable. */
-> > +                             msleep(300);
-> > +                             spin_lock_irqsave(&type_c->lock, flags);
-> > +                     }
-> > +                     cc_status_check =3D readl(reg_base + USB_TYPEC_ST=
-S);
-> > +             }
-> > +
-> > +             if (cc_status !=3D cc_status_check) {
-> > +                     dev_warn(dev, "IN_DEVICE_MODE: cc_status (0x%x) !=
-=3D
-> > cc_status_check (0x%x)\n",
-> > +                              cc_status, cc_status_check);
-> > +                     cc_status =3D readl(reg_base + USB_TYPEC_STS);
-> > +             }
-> > +
-> > +             if ((cc_status & CC1_DET_STS) >=3D CC1_DET_STS_RP) {
-> > +                     dev_dbg(dev, "IN device mode and cc1 host connect
-> > (cc_status=3D0x%x)",
-> > +                             cc_status);
-> > +                     type_c->at_cc1 =3D AT_CC1;
-> > +                     type_c->is_attach =3D TO_ATTACH;
-> > +                     type_c->connect_change =3D CONNECT_CHANGE;
-> > +             } else if ((cc_status & CC2_DET_STS) >=3D CC2_DET_STS_RP)=
- {
-> > +                     dev_dbg(dev, "IN device mode and cc2 host connect
-> > (cc_status=3D0x%x)",
-> > +                             cc_status);
-> > +                     type_c->at_cc1 =3D AT_CC2;
-> > +                     type_c->is_attach =3D TO_ATTACH;
-> > +                     type_c->connect_change =3D CONNECT_CHANGE;
-> > +             }
-> > +             break;
-> > +     default:
-> > +             dev_err(dev, "error host or device mode (cc_mode=3D%d,
-> > is_attach=3D%d) ",
-> > +                     type_c->cc_mode, type_c->is_attach);
-> > +     }
-> > +
-> > +     type_c->int_status =3D int_status;
-> > +     type_c->cc_status =3D cc_status;
-> > +
-> > +     spin_unlock_irqrestore(&type_c->lock, flags);
-> > +     return 0;
-> > +}
-> > +
-> > +static void host_device_switch(struct work_struct *work)
-> > +{
-> > +     struct type_c_data *type_c =3D container_of(work, struct type_c_d=
-ata,
-> > +                                               delayed_work.work);
-> > +     struct device *dev =3D type_c->dev;
-> > +     unsigned long flags;
-> > +     int connect_change =3D 0;
-> > +     int cc_mode =3D 0;
-> > +     int is_attach =3D 0;
-> > +     int at_cc1 =3D 0;
-> > +
-> > +     spin_lock_irqsave(&type_c->lock, flags);
-> > +     if (type_c->connect_change)
-> > +             connect_change =3D type_c->connect_change;
-> > +     spin_unlock_irqrestore(&type_c->lock, flags);
-> > +
-> > +     if (!connect_change)
-> > +             detect_type_c_state(type_c);
-> > +
-> > +     spin_lock_irqsave(&type_c->lock, flags);
-> > +     if (type_c->connect_change) {
-> > +             connect_change =3D type_c->connect_change;
-> > +             cc_mode =3D type_c->cc_mode;
-> > +             is_attach =3D type_c->is_attach;
-> > +             at_cc1 =3D type_c->at_cc1;
-> > +             type_c->connect_change =3D CONNECT_NO_CHANGE;
-> > +     } else {
-> > +             host_device_switch_detection(type_c);
-> > +
-> > +             schedule_delayed_work(&type_c->delayed_work,
-> > msecs_to_jiffies(DETECT_TIME));
-> > +     }
-> > +     spin_unlock_irqrestore(&type_c->lock, flags);
-> > +
-> > +     if (!connect_change)
-> > +             return;
-> > +
-> > +     dev_dbg(dev, "%s: usb cable connection change\n", __func__);
-> > +     if (cc_mode =3D=3D IN_HOST_MODE) {
-> > +             if (is_attach && at_cc1)
-> > +                     connector_attached(type_c, ENABLE_CC1,
-> > USB_DR_MODE_HOST);
-> > +             else if (is_attach && !at_cc1)
-> > +                     connector_attached(type_c, ENABLE_CC2,
-> > USB_DR_MODE_HOST);
-> > +             else
-> > +                     connector_detached(type_c, DISABLE_CC,
-> > USB_DR_MODE_HOST);
-> > +     } else if (cc_mode =3D=3D IN_DEVICE_MODE) {
-> > +             if (is_attach && at_cc1)
-> > +                     connector_attached(type_c, ENABLE_CC1,
-> > USB_DR_MODE_PERIPHERAL);
-> > +             else if (is_attach && !at_cc1)
-> > +                     connector_attached(type_c, ENABLE_CC2,
-> > USB_DR_MODE_PERIPHERAL);
-> > +             else
-> > +                     connector_detached(type_c, DISABLE_CC,
-> > USB_DR_MODE_PERIPHERAL);
-> > +     } else {
-> > +             dev_err(dev, "Error: IN unknown mode %d to %s at %s
-> > (cc_status=3D0x%x)\n",
-> > +                     cc_mode, is_attach ? "attach" : "detach",
-> > +                     at_cc1 ? "cc1" : "cc2", type_c->cc_status);
-> > +     }
-> > +     dev_info(dev, "Connection change OK: IN %s mode to %s at %s
-> > (cc_status=3D0x%x)\n",
-> > +              cc_mode =3D=3D IN_HOST_MODE ? "host" : "device",
-> > +              is_attach ? "attach" : "detach",
-> > +              at_cc1 ? "cc1" : "cc2", type_c->cc_status);
-> > +}
-> > +
-> > +static irqreturn_t type_c_detect_irq(int irq, void *__data)
-> > +{
-> > +     struct type_c_data *type_c =3D (struct type_c_data *)__data;
-> > +     struct device *dev =3D type_c->dev;
-> > +     void __iomem *reg =3D type_c->reg_base + USB_TYPEC_CTRL;
-> > +     unsigned long flags;
-> > +
-> > +     detect_type_c_state(type_c);
-> > +
-> > +     spin_lock_irqsave(&type_c->lock, flags);
-> > +
-> > +     if (type_c->connect_change) {
-> > +             dev_dbg(dev, "%s: IN %s mode to %s (at %s interrupt)
-> > int_status=3D0x%x, cc_status=3D0x%x",
-> > +                     __func__,
-> > +                     type_c->cc_mode =3D=3D IN_HOST_MODE ? "host" : "d=
-evice",
-> > +                     type_c->is_attach ? "attach" : "detach",
-> > +                     type_c->at_cc1 ? "cc1" : "cc2",
-> > +                     type_c->int_status, type_c->cc_status);
-> > +
-> > +             /* clear interrupt status */
-> > +             writel(~ALL_CC_INT_STS & readl(reg), reg);
-> > +
-> > +             cancel_delayed_work(&type_c->delayed_work);
-> > +             schedule_delayed_work(&type_c->delayed_work,
-> > msecs_to_jiffies(0));
-> > +     } else {
-> > +             static int local_count;
-> > +
-> > +             /* if no connect_change, we keep the status to avoid stat=
-us lose */
-> > +             if (local_count++ > 10) {
-> > +                     /* clear interrupt status */
-> > +                     writel(~ALL_CC_INT_STS & readl(reg), reg);
-> > +                     local_count =3D 0;
-> > +             }
-> > +     }
-> > +
-> > +     spin_unlock_irqrestore(&type_c->lock, flags);
-> > +
-> > +     return IRQ_HANDLED;
-> > +}
-> > +
-> > +static int type_c_port_dr_set(struct typec_port *port,
-> > +                           enum typec_data_role role)
-> > +{
-> > +     struct type_c_data *type_c =3D typec_get_drvdata(port);
-> > +     u32 enable_cc;
-> > +     unsigned long flags;
-> > +
-> > +     spin_lock_irqsave(&type_c->lock, flags);
-> > +     enable_cc =3D type_c->at_cc1 ? ENABLE_CC1 : ENABLE_CC2;
-> > +     spin_unlock_irqrestore(&type_c->lock, flags);
-> > +
-> > +     if (role =3D=3D TYPEC_HOST)
-> > +             switch_type_c_dr_mode(type_c, USB_DR_MODE_HOST, enable_cc=
-);
-> > +     else if (role =3D=3D TYPEC_DEVICE)
-> > +             switch_type_c_dr_mode(type_c, USB_DR_MODE_PERIPHERAL,
-> > enable_cc);
-> > +     else
-> > +             switch_type_c_dr_mode(type_c, 0, DISABLE_CC);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct typec_operations type_c_port_ops =3D {
-> > +     .dr_set =3D type_c_port_dr_set,
-> > +};
-> > +
-> > +#ifdef CONFIG_DEBUG_FS
-> > +static int type_c_parameter_show(struct seq_file *s, void *unused)
-> > +{
-> > +     struct type_c_data *type_c =3D s->private;
-> > +     struct type_c_cfg *type_c_cfg =3D type_c->type_c_cfg;
-> > +     struct cc_param *cc_param;
-> > +     unsigned long flags;
-> > +
-> > +     spin_lock_irqsave(&type_c->lock, flags);
-> > +
-> > +     seq_printf(s, "cc_dfp_mode %s\n",
-> > +                ({ char *tmp;
-> > +                     switch (type_c_cfg->cc_dfp_mode) {
-> > +                     case CC_MODE_DFP_USB:
-> > +                             tmp =3D "CC_MODE_DFP_USB"; break;
-> > +                     case CC_MODE_DFP_1_5:
-> > +                             tmp =3D "CC_MODE_DFP_1_5"; break;
-> > +                     case CC_MODE_DFP_3_0:
-> > +                             tmp =3D "CC_MODE_DFP_3_0"; break;
-> > +                     default:
-> > +                             tmp =3D "?"; break;
-> > +                } tmp; }));
-> > +
-> > +     seq_printf(s, "dfp_mode_rp_en 0x%x\n", type_c->dfp_mode_rp_en);
-> > +     seq_printf(s, "ufp_mode_rd_en 0x%x\n", type_c->ufp_mode_rd_en);
-> > +     seq_printf(s, "cc1_code 0x%x\n", type_c->cc1_code);
-> > +     seq_printf(s, "cc2_code 0x%x\n", type_c->cc2_code);
-> > +     seq_printf(s, "cc1_vref 0x%x\n", type_c->cc1_vref);
-> > +     seq_printf(s, "cc2_vref 0x%x\n", type_c->cc2_vref);
-> > +     seq_printf(s, "debounce 0x%x\n", type_c->debounce);
-> > +     seq_puts(s, "\n");
-> > +
-> > +     cc_param =3D &type_c_cfg->cc1_param;
-> > +     seq_puts(s, "cc1_param:\n");
-> > +     seq_printf(s, "  rp_4p7k_code 0x%x\n", cc_param->rp_4p7k_code);
-> > +     seq_printf(s, "  rp_36k_code  0x%x\n", cc_param->rp_36k_code);
-> > +     seq_printf(s, "  rp_12k_code  0x%x\n", cc_param->rp_12k_code);
-> > +     seq_printf(s, "  rd_code      0x%x\n", cc_param->rd_code);
-> > +     seq_printf(s, "  vref_2p6v    0x%x\n", cc_param->vref_2p6v);
-> > +     seq_printf(s, "  vref_1p23v   0x%x\n", cc_param->vref_1p23v);
-> > +     seq_printf(s, "  vref_0p8v    0x%x\n", cc_param->vref_0p8v);
-> > +     seq_printf(s, "  vref_0p66v   0x%x\n", cc_param->vref_0p66v);
-> > +     seq_printf(s, "  vref_0p4v    0x%x\n", cc_param->vref_0p4v);
-> > +     seq_printf(s, "  vref_0p2v    0x%x\n", cc_param->vref_0p2v);
-> > +     seq_printf(s, "  vref_1_1p6v  0x%x\n", cc_param->vref_1_1p6v);
-> > +     seq_printf(s, "  vref_0_1p6v  0x%x\n", cc_param->vref_0_1p6v);
-> > +
-> > +     cc_param =3D &type_c_cfg->cc2_param;
-> > +     seq_puts(s, "cc2_param:\n");
-> > +     seq_printf(s, "  rp_4p7k_code 0x%x\n", cc_param->rp_4p7k_code);
-> > +     seq_printf(s, "  rp_36k_code  0x%x\n", cc_param->rp_36k_code);
-> > +     seq_printf(s, "  rp_12k_code  0x%x\n", cc_param->rp_12k_code);
-> > +     seq_printf(s, "  rd_code      0x%x\n", cc_param->rd_code);
-> > +     seq_printf(s, "  vref_2p6v    0x%x\n", cc_param->vref_2p6v);
-> > +     seq_printf(s, "  vref_1p23v   0x%x\n", cc_param->vref_1p23v);
-> > +     seq_printf(s, "  vref_0p8v    0x%x\n", cc_param->vref_0p8v);
-> > +     seq_printf(s, "  vref_0p66v   0x%x\n", cc_param->vref_0p66v);
-> > +     seq_printf(s, "  vref_0p4v    0x%x\n", cc_param->vref_0p4v);
-> > +     seq_printf(s, "  vref_0p2v    0x%x\n", cc_param->vref_0p2v);
-> > +     seq_printf(s, "  vref_1_1p6v  0x%x\n", cc_param->vref_1_1p6v);
-> > +     seq_printf(s, "  vref_0_1p6v  0x%x\n", cc_param->vref_0_1p6v);
-> > +
-> > +     spin_unlock_irqrestore(&type_c->lock, flags);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int type_c_parameter_open(struct inode *inode, struct file *fil=
-e)
-> > +{
-> > +     return single_open(file, type_c_parameter_show, inode->i_private)=
-;
-> > +}
-> > +
-> > +static const struct file_operations type_c_parameter_fops =3D {
-> > +     .open                   =3D type_c_parameter_open,
-> > +     .read                   =3D seq_read,
-> > +     .llseek                 =3D seq_lseek,
-> > +     .release                =3D single_release,
-> > +};
-> > +
-> > +static int type_c_status_show(struct seq_file *s, void *unused)
-> > +{
-> > +     struct type_c_data *type_c =3D s->private;
-> > +     unsigned long flags;
-> > +
-> > +     spin_lock_irqsave(&type_c->lock, flags);
-> > +
-> > +     seq_printf(s, "In %s mode %s at %s (cc_status=3D0x%x)\n",
-> > +                type_c->cc_mode =3D=3D IN_HOST_MODE ? "host" : "device=
-",
-> > +                type_c->is_attach ? "attach" : "detach",
-> > +                type_c->at_cc1 ? "cc1" : "cc2", type_c->cc_status);
-> > +
-> > +     seq_printf(s, "Read Register (type_c_ctrl_cc1_0=3D0x%x)\n",
-> > +                readl(type_c->reg_base + 0x0));
-> > +     seq_printf(s, "Read Register (type_c_ctrl_cc1_1=3D0x%x)\n",
-> > +                readl(type_c->reg_base + 0x4));
-> > +     seq_printf(s, "Read Register (type_c_ctrl_cc2_0=3D0x%x)\n",
-> > +                readl(type_c->reg_base + 0x8));
-> > +     seq_printf(s, "Read Register (type_c_ctrl_cc2_1=3D0x%x)\n",
-> > +                readl(type_c->reg_base + 0xc));
-> > +     seq_printf(s, "Read Register (type_c_status=3D0x%x)\n",
-> > +                readl(type_c->reg_base + 0x10));
-> > +     seq_printf(s, "Read Register (type_c_ctrl=3D0x%x)\n",
-> > +                readl(type_c->reg_base + 0x14));
-> > +
-> > +     spin_unlock_irqrestore(&type_c->lock, flags);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int type_c_status_open(struct inode *inode, struct file *file)
-> > +{
-> > +     return single_open(file, type_c_status_show, inode->i_private);
-> > +}
-> > +
-> > +static const struct file_operations type_c_status_fops =3D {
-> > +     .open                   =3D type_c_status_open,
-> > +     .read                   =3D seq_read,
-> > +     .llseek                 =3D seq_lseek,
-> > +     .release                =3D single_release,
-> > +};
-> > +
-> > +static inline void create_debug_files(struct type_c_data *type_c)
-> > +{
-> > +     type_c->debug_dir =3D debugfs_create_dir("type_c", usb_debug_root=
-);
-> > +
-> > +     debugfs_create_file("parameter", 0444, type_c->debug_dir, type_c,
-> > +                         &type_c_parameter_fops);
-> > +
-> > +     debugfs_create_file("status", 0444, type_c->debug_dir, type_c,
-> > +                         &type_c_status_fops);
-> > +}
-> > +
-> > +static inline void remove_debug_files(struct type_c_data *type_c)
-> > +{
-> > +     debugfs_remove_recursive(type_c->debug_dir);
-> > +}
-> > +#else
-> > +static inline void create_debug_files(struct type_c_data *type_c) { }
-> > +static inline void remove_debug_files(struct type_c_data *type_c) { }
-> > +#endif /* CONFIG_DEBUG_FS */
-> > +
-> > +/* Init and probe */
-> > +
-> > +static inline s8 get_value(s8 value)
-> > +{
-> > +     return (((s8)value & 0x8) ? (-(s8)(0x7 & value)) : ((s8)(value)))=
-;
-> > +}
-> > +
-> > +static int __updated_type_c_parameter_by_efuse(struct type_c_data
-> > *type_c)
-> > +{
-> > +     struct type_c_cfg *type_c_cfg =3D type_c->type_c_cfg;
-> > +     struct cc_param *cc_param;
-> > +     struct nvmem_cell *cell;
-> > +     s8 cc1_4p7k =3D 0;
-> > +     s8 cc1_12k =3D 0;
-> > +     s8 cc1_0p2v =3D 0;
-> > +     s8 cc1_0p8v =3D 0;
-> > +     s8 cc1_2p6v =3D 0;
-> > +     s8 cc1_0p66v =3D 0;
-> > +     s8 cc1_1p23v =3D 0;
-> > +     s8 cc2_4p7k =3D 0;
-> > +     s8 cc2_12k =3D 0;
-> > +     s8 cc2_0p2v =3D 0;
-> > +     s8 cc2_0p8v =3D 0;
-> > +     s8 cc2_2p6v =3D 0;
-> > +     s8 cc2_0p66v =3D 0;
-> > +     s8 cc2_1p23v =3D 0;
-> > +
-> > +     cell =3D nvmem_cell_get(type_c->dev, "usb-cal");
-> > +     if (IS_ERR(cell)) {
-> > +             dev_warn(type_c->dev, "%s failed to get usb-cal: %ld\n",
-> > +                      __func__, PTR_ERR(cell));
-> > +     } else {
-> > +             unsigned char *buf;
-> > +             size_t buf_size;
-> > +             int value_size =3D 4;
-> > +             int value_mask =3D (BIT(value_size) - 1);
-> > +
-> > +             buf =3D nvmem_cell_read(cell, &buf_size);
-> > +
-> > +             cc1_0p2v =3D get_value((buf[0] >> value_size * 0) & value=
-_mask);
-> > +             cc1_0p8v =3D get_value((buf[0] >> value_size * 1) & value=
-_mask);
-> > +             cc1_2p6v =3D get_value((buf[1] >> value_size * 0) & value=
-_mask);
-> > +             cc1_0p66v =3D get_value((buf[1] >> value_size * 1) & valu=
-e_mask);
-> > +             cc1_1p23v =3D get_value((buf[2] >> value_size * 0) & valu=
-e_mask);
-> > +
-> > +             cc2_0p2v =3D get_value((buf[3] >> value_size * 0) & value=
-_mask);
-> > +             cc2_0p8v =3D get_value((buf[3] >> value_size * 1) & value=
-_mask);
-> > +             cc2_2p6v =3D get_value((buf[4] >> value_size * 0) & value=
-_mask);
-> > +             cc2_0p66v =3D get_value((buf[4] >> value_size * 1) & valu=
-e_mask);
-> > +             cc2_1p23v =3D get_value((buf[5] >> value_size * 0) & valu=
-e_mask);
-> > +
-> > +             cc1_4p7k =3D get_value((buf[6] >> value_size * 0) & value=
-_mask);
-> > +             cc1_12k =3D get_value((buf[6] >> value_size * 1) & value_=
-mask);
-> > +             cc2_4p7k =3D get_value((buf[7] >> value_size * 0) & value=
-_mask);
-> > +             cc2_12k =3D get_value((buf[7] >> value_size * 1) & value_=
-mask);
-> > +
-> > +             kfree(buf);
-> > +             nvmem_cell_put(cell);
-> > +     }
-> > +
-> > +     dev_dbg(type_c->dev, "check efuse cc1_4p7k=3D%d cc1_12k=3D%d
-> > cc2_4p7k=3D%d cc2_12k=3D%d\n",
-> > +             cc1_4p7k, cc1_12k, cc2_4p7k, cc2_12k);
-> > +     dev_dbg(type_c->dev, "check efuse cc1_0p2v=3D%d cc1_0p8v=3D%d
-> > cc1_2p6v=3D%d cc1_0p66v=3D%d cc1_1p23v=3D%d\n",
-> > +             cc1_0p2v, cc1_0p8v, cc1_2p6v, cc1_0p66v, cc1_1p23v);
-> > +     dev_dbg(type_c->dev, "check efuse cc2_0p2v=3D%d cc2_0p8v=3D%d
-> > cc2_2p6v=3D%d cc2_0p66v=3D%d cc2_1p23v=3D%d\n",
-> > +             cc2_0p2v, cc2_0p8v, cc2_2p6v, cc2_0p66v, cc2_1p23v);
-> > +
-> > +     cc_param =3D &type_c_cfg->cc1_param;
-> > +     cc_param->rp_4p7k_code =3D cc_param->rp_4p7k_code + cc1_4p7k;
-> > +     cc_param->rp_12k_code =3D cc_param->rp_12k_code + cc1_12k;
-> > +
-> > +     cc_param->vref_1p23v =3D cc_param->vref_1p23v + cc1_1p23v;
-> > +     cc_param->vref_0p66v =3D cc_param->vref_0p66v + cc1_0p66v;
-> > +     cc_param->vref_2p6v =3D cc_param->vref_2p6v + cc1_2p6v;
-> > +     cc_param->vref_0p8v =3D cc_param->vref_0p8v + cc1_0p8v;
-> > +     cc_param->vref_0p2v =3D cc_param->vref_0p2v + cc1_0p2v;
-> > +
-> > +     cc_param =3D &type_c_cfg->cc2_param;
-> > +     cc_param->rp_4p7k_code =3D cc_param->rp_4p7k_code + cc2_4p7k;
-> > +     cc_param->rp_12k_code =3D cc_param->rp_12k_code + cc2_12k;
-> > +
-> > +     cc_param->vref_1p23v =3D cc_param->vref_1p23v + cc2_1p23v;
-> > +     cc_param->vref_0p66v =3D cc_param->vref_0p66v + cc2_0p66v;
-> > +     cc_param->vref_2p6v =3D cc_param->vref_2p6v + cc2_2p6v;
-> > +     cc_param->vref_0p8v =3D cc_param->vref_0p8v + cc2_0p8v;
-> > +     cc_param->vref_0p2v =3D cc_param->vref_0p2v + cc2_0p2v;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int __updated_type_c_parameter_by_efuse_v2(struct type_c_data
-> > *type_c)
-> > +{
-> > +     struct type_c_cfg *type_c_cfg =3D type_c->type_c_cfg;
-> > +     struct cc_param *cc_param;
-> > +     struct nvmem_cell *cell;
-> > +     s8 cc1_4p7k =3D 0;
-> > +     s8 cc1_12k =3D 0;
-> > +     s8 cc1_0p2v =3D 0;
-> > +     s8 cc1_0p8v =3D 0;
-> > +     s8 cc1_2p6v =3D 0;
-> > +     s8 cc1_0p66v =3D 0;
-> > +     s8 cc1_1p23v =3D 0;
-> > +     s8 cc2_4p7k =3D 0;
-> > +     s8 cc2_12k =3D 0;
-> > +     s8 cc2_0p2v =3D 0;
-> > +     s8 cc2_0p8v =3D 0;
-> > +     s8 cc2_2p6v =3D 0;
-> > +     s8 cc2_0p66v =3D 0;
-> > +     s8 cc2_1p23v =3D 0;
-> > +
-> > +     cell =3D nvmem_cell_get(type_c->dev, "usb-type-c-cal");
-> > +     if (IS_ERR(cell)) {
-> > +             dev_warn(type_c->dev, "%s failed to get usb-type-c-cal: %=
-ld\n",
-> > +                      __func__, PTR_ERR(cell));
-> > +     } else {
-> > +             unsigned char *buf;
-> > +             size_t buf_size;
-> > +             int value_size =3D 0;
-> > +             int value_mask =3D (BIT(value_size) - 1);
-> > +
-> > +             buf =3D nvmem_cell_read(cell, &buf_size);
-> > +
-> > +             value_size =3D 5;
-> > +             value_mask =3D (BIT(value_size) - 1);
-> > +             cc1_4p7k =3D buf[0] & value_mask;
-> > +             cc1_12k =3D buf[1] & value_mask;
-> > +             cc2_4p7k =3D buf[2] & value_mask;
-> > +             cc2_12k =3D buf[3] & value_mask;
-> > +
-> > +             value_size =3D 4;
-> > +             value_mask =3D (BIT(value_size) - 1);
-> > +             cc1_0p2v =3D (buf[4] >> value_size * 0) & value_mask;
-> > +             cc1_0p66v =3D (buf[4] >> value_size * 1) & value_mask;
-> > +             cc1_0p8v =3D (buf[5] >> value_size * 0) & value_mask;
-> > +             cc1_1p23v =3D (buf[5] >> value_size * 1) & value_mask;
-> > +             cc1_2p6v =3D (buf[6] >> value_size * 0) & value_mask;
-> > +
-> > +             cc2_0p2v =3D (buf[6] >> value_size * 1) & value_mask;
-> > +             cc2_0p66v =3D (buf[7] >> value_size * 0) & value_mask;
-> > +             cc2_0p8v =3D (buf[7] >> value_size * 1) & value_mask;
-> > +             cc2_1p23v =3D (buf[8] >> value_size * 0) & value_mask;
-> > +             cc2_2p6v =3D (buf[8] >> value_size * 1) & value_mask;
-> > +
-> > +             kfree(buf);
-> > +             nvmem_cell_put(cell);
-> > +     }
-> > +
-> > +     dev_dbg(type_c->dev, "check efuse v2 cc1_4p7k=3D%d cc1_12k=3D%d
-> > cc2_4p7k=3D%d cc2_12k=3D%d\n",
-> > +             cc1_4p7k, cc1_12k, cc2_4p7k, cc2_12k);
-> > +     dev_dbg(type_c->dev, "check efuse v2 cc1_0p2v=3D%d cc1_0p8v=3D%d
-> > cc1_2p6v=3D%d cc1_0p66v=3D%d cc1_1p23v=3D%d\n",
-> > +             cc1_0p2v, cc1_0p8v, cc1_2p6v, cc1_0p66v, cc1_1p23v);
-> > +     dev_dbg(type_c->dev, "check efuse v2 cc2_0p2v=3D%d cc2_0p8v=3D%d
-> > cc2_2p6v=3D%d cc2_0p66v=3D%d cc2_1p23v=3D%d\n",
-> > +             cc2_0p2v, cc2_0p8v, cc2_2p6v, cc2_0p66v, cc2_1p23v);
-> > +
-> > +     cc_param =3D &type_c_cfg->cc1_param;
-> > +     if (cc1_4p7k)
-> > +             cc_param->rp_4p7k_code =3D cc1_4p7k;
-> > +     if (cc1_12k)
-> > +             cc_param->rp_12k_code =3D cc1_12k;
-> > +
-> > +     if (cc1_1p23v)
-> > +             cc_param->vref_1p23v =3D cc1_1p23v;
-> > +     if (cc1_0p66v)
-> > +             cc_param->vref_0p66v =3D cc1_0p66v;
-> > +     if (cc1_2p6v)
-> > +             cc_param->vref_2p6v =3D cc1_2p6v;
-> > +     if (cc1_0p8v)
-> > +             cc_param->vref_0p8v =3D cc1_0p8v;
-> > +     if (cc1_0p2v)
-> > +             cc_param->vref_0p2v =3D cc1_0p2v;
-> > +
-> > +     cc_param =3D &type_c_cfg->cc2_param;
-> > +     if (cc2_4p7k)
-> > +             cc_param->rp_4p7k_code =3D cc2_4p7k;
-> > +     if (cc2_12k)
-> > +             cc_param->rp_12k_code =3D cc2_12k;
-> > +
-> > +     if (cc2_1p23v)
-> > +             cc_param->vref_1p23v =3D cc2_1p23v;
-> > +     if (cc2_0p66v)
-> > +             cc_param->vref_0p66v =3D cc2_0p66v;
-> > +     if (cc2_2p6v)
-> > +             cc_param->vref_2p6v =3D cc2_2p6v;
-> > +     if (cc2_0p8v)
-> > +             cc_param->vref_0p8v =3D cc2_0p8v;
-> > +     if (cc2_0p2v)
-> > +             cc_param->vref_0p2v =3D cc2_0p2v;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void get_default_type_c_parameter(struct type_c_data *type_c)
-> > +{
-> > +     void __iomem *reg;
-> > +     int val;
-> > +
-> > +     type_c->dfp_mode_rp_en =3D dfp_mode(CC_MODE_DFP_3_0) |
-> > EN_RP4P7K;
-> > +     type_c->ufp_mode_rd_en =3D EN_RD;
-> > +
-> > +     reg =3D type_c->reg_base + USB_TYPEC_CTRL_CC1_0;
-> > +     val =3D readl(reg);
-> > +     type_c->cc1_code =3D CC_CODE_MASK & val;
-> > +
-> > +     reg =3D type_c->reg_base + USB_TYPEC_CTRL_CC2_0;
-> > +     val =3D readl(reg);
-> > +     type_c->cc2_code =3D CC_CODE_MASK & val;
-> > +
-> > +     reg =3D type_c->reg_base + USB_TYPEC_CTRL_CC1_1;
-> > +     val =3D readl(reg);
-> > +     type_c->cc1_vref =3D val;
-> > +
-> > +     reg =3D type_c->reg_base + USB_TYPEC_CTRL_CC2_1;
-> > +     val =3D readl(reg);
-> > +     type_c->cc2_vref =3D val;
-> > +
-> > +     reg =3D type_c->reg_base + USB_TYPEC_CTRL;
-> > +     val =3D readl(reg);
-> > +     type_c->debounce =3D DEBOUNCE_TIME_MASK & val;
-> > +}
-> > +
-> > +static int setup_type_c_parameter(struct type_c_data *type_c)
-> > +{
-> > +     struct type_c_cfg *type_c_cfg =3D type_c->type_c_cfg;
-> > +     struct cc_param *cc_param;
-> > +     struct soc_device_attribute rtk_soc_efuse_v1[] =3D {
-> > +                     { .family =3D "Realtek Phoenix",},
-> > +                     { .family =3D "Realtek Kylin",},
-> > +                     { .family =3D "Realtek Hercules",},
-> > +                     { .family =3D "Realtek Thor",},
-> > +                     { .family =3D "Realtek Hank",},
-> > +                     { .family =3D "Realtek Groot",},
-> > +                     { .family =3D "Realtek Stark",},
-> > +                     { .family =3D "Realtek Parker",},
-> > +                     { /* empty */ }
-> > +             };
-> > +
-> > +     if (type_c_cfg->use_defalut_parameter) {
-> > +             get_default_type_c_parameter(type_c);
-> > +             return 0;
-> > +     }
-> > +
-> > +     if (soc_device_match(rtk_soc_efuse_v1))
-> > +             __updated_type_c_parameter_by_efuse(type_c);
-> > +     else
-> > +             __updated_type_c_parameter_by_efuse_v2(type_c);
-> > +
-> > +     /*
-> > +      * UFP     rd     vref_ufp    : 1p23v,  0p66v, 0p2v
-> > +      * DFP_USB rp36k  vref_dfp_usb: 0_1p6v, 0p2v,  unused
-> > +      * DFP_1.5 rp12k  vref_dfp_1_5: 1_1p6v, 0p4v,  0p2v
-> > +      * DFP_3.0 rp4p7k vref_dfp_3_0: 2p6v,   0p8v,  0p2v
-> > +      */
-> > +
-> > +     switch (type_c_cfg->cc_dfp_mode) {
-> > +     case CC_MODE_DFP_USB:
-> > +             type_c->dfp_mode_rp_en =3D dfp_mode(CC_MODE_DFP_USB) |
-> > EN_RP36K;
-> > +             break;
-> > +     case CC_MODE_DFP_1_5:
-> > +             type_c->dfp_mode_rp_en =3D dfp_mode(CC_MODE_DFP_1_5) |
-> > EN_RP12K;
-> > +             break;
-> > +     case CC_MODE_DFP_3_0:
-> > +             type_c->dfp_mode_rp_en =3D dfp_mode(CC_MODE_DFP_3_0) |
-> > EN_RP4P7K;
-> > +             break;
-> > +     default:
-> > +             dev_err(type_c->dev, "%s: unknown cc_dfp_mode %d\n",
-> > +                     __func__, type_c_cfg->cc_dfp_mode);
-> > +     }
-> > +
-> > +     type_c->ufp_mode_rd_en =3D EN_RD;
-> > +
-> > +     cc_param =3D &type_c_cfg->cc1_param;
-> > +     type_c->cc1_code =3D rp4pk_code(cc_param->rp_4p7k_code) |
-> > +                        rp36k_code(cc_param->rp_36k_code) |
-> > +                        rp12k_code(cc_param->rp_12k_code) |
-> > +                        rd_code(cc_param->rd_code);
-> > +
-> > +     if (type_c_cfg->parameter_ver =3D=3D PARAMETER_V0)
-> > +             type_c->cc1_vref =3D V0_vref_2p6v(cc_param->vref_2p6v) |
-> > +                                V0_vref_1p23v(cc_param->vref_1p23v) |
-> > +                                V0_vref_0p8v(cc_param->vref_0p8v) |
-> > +                                V0_vref_0p66v(cc_param->vref_0p66v) |
-> > +                                V0_vref_0p4v(cc_param->vref_0p4v) |
-> > +                                V0_vref_0p2v(cc_param->vref_0p2v) |
-> > +                                V0_vref_1_1p6v(cc_param->vref_1_1p6v) =
-|
-> > +                                V0_vref_0_1p6v(cc_param->vref_0_1p6v);
-> > +     else if (type_c_cfg->parameter_ver =3D=3D PARAMETER_V1)
-> > +             type_c->cc1_vref =3D V1_vref_2p6v(cc_param->vref_2p6v) |
-> > +                                V1_vref_1p23v(cc_param->vref_1p23v) |
-> > +                                V1_vref_0p8v(cc_param->vref_0p8v) |
-> > +                                V1_vref_0p66v(cc_param->vref_0p66v) |
-> > +                                V1_vref_0p4v(cc_param->vref_0p4v) |
-> > +                                V1_vref_0p2v(cc_param->vref_0p2v) |
-> > +                                V1_vref_1_1p6v(cc_param->vref_1_1p6v) =
-|
-> > +                                V1_vref_0_1p6v(cc_param->vref_0_1p6v);
-> > +     else
-> > +             dev_err(type_c->dev, "%s: unknown parameter_ver %d\n",
-> > +                     __func__, type_c_cfg->parameter_ver);
-> > +
-> > +     cc_param =3D &type_c_cfg->cc2_param;
-> > +     type_c->cc2_code =3D rp4pk_code(cc_param->rp_4p7k_code)
-> > +                      | rp36k_code(cc_param->rp_36k_code)
-> > +                      | rp12k_code(cc_param->rp_12k_code)
-> > +                      | rd_code(cc_param->rd_code);
-> > +
-> > +     if (type_c_cfg->parameter_ver =3D=3D PARAMETER_V0)
-> > +             type_c->cc2_vref =3D V0_vref_2p6v(cc_param->vref_2p6v) |
-> > +                                V0_vref_1p23v(cc_param->vref_1p23v) |
-> > +                                V0_vref_0p8v(cc_param->vref_0p8v) |
-> > +                                V0_vref_0p66v(cc_param->vref_0p66v) |
-> > +                                V0_vref_0p4v(cc_param->vref_0p4v) |
-> > +                                V0_vref_0p2v(cc_param->vref_0p2v) |
-> > +                                V0_vref_1_1p6v(cc_param->vref_1_1p6v) =
-|
-> > +                                V0_vref_0_1p6v(cc_param->vref_0_1p6v);
-> > +     else if (type_c_cfg->parameter_ver =3D=3D PARAMETER_V1)
-> > +             type_c->cc2_vref =3D V1_vref_2p6v(cc_param->vref_2p6v) |
-> > +                                V1_vref_1p23v(cc_param->vref_1p23v) |
-> > +                                V1_vref_0p8v(cc_param->vref_0p8v) |
-> > +                                V1_vref_0p66v(cc_param->vref_0p66v) |
-> > +                                V1_vref_0p4v(cc_param->vref_0p4v) |
-> > +                                V1_vref_0p2v(cc_param->vref_0p2v) |
-> > +                                V1_vref_1_1p6v(cc_param->vref_1_1p6v) =
-|
-> > +                                V1_vref_0_1p6v(cc_param->vref_0_1p6v);
-> > +     else
-> > +             dev_err(type_c->dev, "%s: unknown parameter_ver %d\n",
-> > +                     __func__, type_c_cfg->parameter_ver);
-> > +
-> > +     type_c->debounce =3D (type_c_cfg->debounce_val << 1) | DEBOUNCE_E=
-N;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int extcon_rtk_type_c_init(struct type_c_data *type_c)
-> > +{
-> > +     struct device *dev =3D type_c->dev;
-> > +     unsigned long flags;
-> > +     void __iomem *reg;
-> > +     int val;
-> > +
-> > +     spin_lock_irqsave(&type_c->lock, flags);
-> > +
-> > +     /* set parameter */
-> > +     reg =3D type_c->reg_base + USB_TYPEC_CTRL_CC1_0;
-> > +     val =3D readl(reg);
-> > +     val =3D (~CC_CODE_MASK & val) | (type_c->cc1_code & CC_CODE_MASK)=
-;
-> > +     writel(val, reg);
-> > +
-> > +     reg =3D type_c->reg_base + USB_TYPEC_CTRL_CC2_0;
-> > +     val =3D readl(reg);
-> > +     val =3D (~CC_CODE_MASK & val) | (type_c->cc2_code & CC_CODE_MASK)=
-;
-> > +
-> > +     reg =3D type_c->reg_base + USB_TYPEC_CTRL_CC1_1;
-> > +     writel(type_c->cc1_vref, reg);
-> > +
-> > +     reg =3D type_c->reg_base + USB_TYPEC_CTRL_CC2_1;
-> > +     writel(type_c->cc2_vref, reg);
-> > +
-> > +     reg =3D type_c->reg_base + USB_TYPEC_CTRL;
-> > +     val =3D readl(reg);
-> > +     val =3D (~DEBOUNCE_TIME_MASK & val) | (type_c->debounce &
-> > DEBOUNCE_TIME_MASK);
-> > +
-> > +     dev_info(dev, "First check USB_DR_MODE_PERIPHERAL");
-> > +     type_c->cc_mode =3D IN_DEVICE_MODE;
-> > +     type_c->is_attach =3D IN_DETACH;
-> > +     type_c->connect_change =3D CONNECT_NO_CHANGE;
-> > +
-> > +     detect_host(type_c);
-> > +
-> > +     spin_unlock_irqrestore(&type_c->lock, flags);
-> > +
-> > +     schedule_delayed_work(&type_c->delayed_work, msecs_to_jiffies(0))=
-;
-> > +
-> > +     if (!type_c->port) {
-> > +             struct typec_capability typec_cap =3D { };
-> > +             struct fwnode_handle *fwnode;
-> > +             const char *buf;
-> > +             int ret;
-> > +
-> > +             typec_cap.revision =3D USB_TYPEC_REV_1_0;
-> > +             typec_cap.prefer_role =3D TYPEC_NO_PREFERRED_ROLE;
-> > +             typec_cap.driver_data =3D type_c;
-> > +             typec_cap.ops =3D &type_c_port_ops;
-> > +
-> > +             fwnode =3D device_get_named_child_node(dev, "connector");
-> > +             if (!fwnode)
-> > +                     return -EINVAL;
-> > +
-> > +             ret =3D fwnode_property_read_string(fwnode, "power-role",=
- &buf);
-> > +             if (ret) {
-> > +                     dev_err(dev, "power-role not found: %d\n", ret);
-> > +                     return ret;
-> > +             }
-> > +
-> > +             ret =3D typec_find_port_power_role(buf);
-> > +             if (ret < 0)
-> > +                     return ret;
-> > +             typec_cap.type =3D ret;
-> > +
-> > +             ret =3D fwnode_property_read_string(fwnode, "data-role", =
-&buf);
-> > +             if (ret) {
-> > +                     dev_err(dev, "data-role not found: %d\n", ret);
-> > +                     return ret;
-> > +             }
-> > +
-> > +             ret =3D typec_find_port_data_role(buf);
-> > +             if (ret < 0)
-> > +                     return ret;
-> > +             typec_cap.data =3D ret;
-> > +
-> > +             type_c->port =3D typec_register_port(type_c->dev, &typec_=
-cap);
-> > +             if (IS_ERR(type_c->port))
-> > +                     return PTR_ERR(type_c->port);
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int extcon_rtk_type_c_edev_register(struct type_c_data *type_c)
-> > +{
-> > +     struct device *dev =3D type_c->dev;
-> > +     int ret =3D 0;
-> > +
-> > +     type_c->edev =3D devm_extcon_dev_allocate(dev, usb_type_c_cable);
-> > +     if (IS_ERR(type_c->edev)) {
-> > +             dev_err(dev, "failed to allocate extcon device\n");
-> > +             return -ENOMEM;
-> > +     }
-> > +
-> > +     ret =3D devm_extcon_dev_register(dev, type_c->edev);
-> > +     if (ret < 0) {
-> > +             dev_err(dev, "failed to register extcon device\n");
-> > +             return ret;
-> > +     }
-> > +
-> > +     extcon_set_property_capability(type_c->edev, EXTCON_USB,
-> > +                                    EXTCON_PROP_USB_VBUS);
-> > +     extcon_set_property_capability(type_c->edev, EXTCON_USB,
-> > +                                    EXTCON_PROP_USB_TYPEC_POLARITY);
-> > +     extcon_set_property_capability(type_c->edev, EXTCON_USB,
-> > +                                    EXTCON_PROP_USB_SS);
-> > +
-> > +     extcon_set_property_capability(type_c->edev, EXTCON_USB_HOST,
-> > +                                    EXTCON_PROP_USB_VBUS);
-> > +     extcon_set_property_capability(type_c->edev, EXTCON_USB_HOST,
-> > +                                    EXTCON_PROP_USB_TYPEC_POLARITY);
-> > +     extcon_set_property_capability(type_c->edev, EXTCON_USB_HOST,
-> > +                                    EXTCON_PROP_USB_SS);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static int extcon_rtk_type_c_probe(struct platform_device *pdev)
-> > +{
-> > +     struct device *dev =3D &pdev->dev;
-> > +     struct type_c_data *type_c;
-> > +     const struct type_c_cfg *type_c_cfg;
-> > +     int ret =3D 0;
-> > +
-> > +     type_c =3D devm_kzalloc(dev, sizeof(*type_c), GFP_KERNEL);
-> > +     if (!type_c)
-> > +             return -ENOMEM;
-> > +
-> > +     type_c->reg_base =3D devm_platform_ioremap_resource(pdev, 0);
-> > +     if (IS_ERR(type_c->reg_base))
-> > +             return PTR_ERR(type_c->reg_base);
-> > +
-> > +     type_c->dev =3D dev;
-> > +
-> > +     type_c->irq =3D irq_of_parse_and_map(pdev->dev.of_node, 0);
-> > +     if (type_c->irq <=3D 0) {
-> > +             dev_err(&pdev->dev, "Type C driver with no IRQ. Check %s =
-setup!\n",
-> > +                     dev_name(&pdev->dev));
-> > +             ret =3D -ENODEV;
-> > +             goto err;
-> > +     }
-> > +
-> > +     ret =3D devm_request_irq(dev, type_c->irq, type_c_detect_irq,
-> > +                            IRQF_SHARED, "type_c_detect", type_c);
-> > +
-> > +     spin_lock_init(&type_c->lock);
-> > +
-> > +     type_c->rd_ctrl_gpio_desc =3D NULL;
-> > +     if (soc_device_match(rtk_soc_kylin)) {
-> > +             struct gpio_desc *gpio;
-> > +
-> > +             gpio =3D fwnode_gpiod_get_index(of_fwnode_handle(dev->of_=
-node),
-> > +                                           "realtek,rd-ctrl-gpios",
-> > +                                           0, GPIOD_OUT_HIGH, "rd-ctrl=
--gpio");
-> > +             if (IS_ERR(gpio)) {
-> > +                     dev_err(dev, "Error rd_ctrl-gpios no found (err=
-=3D%d)\n",
-> > +                             (int)PTR_ERR(gpio));
-> > +             } else {
-> > +                     type_c->rd_ctrl_gpio_desc =3D gpio;
-> > +                     dev_dbg(dev, "%s get rd-ctrl-gpios (id=3D%d) OK\n=
-",
-> > +                             __func__, desc_to_gpio(gpio));
-> > +             }
-> > +     }
-> > +
-> > +     type_c_cfg =3D of_device_get_match_data(dev);
-> > +     if (!type_c_cfg) {
-> > +             dev_err(dev, "type_c config are not assigned!\n");
-> > +             ret =3D -EINVAL;
-> > +             goto err;
-> > +     }
-> > +
-> > +     type_c->type_c_cfg =3D devm_kzalloc(dev, sizeof(*type_c_cfg),
-> > GFP_KERNEL);
-> > +
-> > +     memcpy(type_c->type_c_cfg, type_c_cfg, sizeof(*type_c_cfg));
-> > +
-> > +     if (setup_type_c_parameter(type_c)) {
-> > +             dev_err(dev, "ERROR: %s to setup type c parameter!!", __f=
-unc__);
-> > +             ret =3D -EINVAL;
-> > +             goto err;
-> > +     }
-> > +
-> > +     INIT_DELAYED_WORK(&type_c->delayed_work, host_device_switch);
-> > +
-> > +     ret =3D extcon_rtk_type_c_init(type_c);
-> > +     if (ret) {
-> > +             dev_err(dev, "%s failed to init type_c\n", __func__);
-> > +             goto err;
-> > +     }
-> > +
-> > +     platform_set_drvdata(pdev, type_c);
-> > +
-> > +     ret =3D extcon_rtk_type_c_edev_register(type_c);
-> > +
-> > +     create_debug_files(type_c);
-> > +
-> > +     return 0;
-> > +
-> > +err:
-> > +     dev_err(&pdev->dev, "%s: Probe fail, %d\n", __func__, ret);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static void extcon_rtk_type_c_remove(struct platform_device *pdev)
-> > +{
-> > +     struct device *dev =3D &pdev->dev;
-> > +     struct type_c_data *type_c =3D dev_get_drvdata(dev);
-> > +     u32 default_ctrl;
-> > +     unsigned long flags;
-> > +
-> > +     remove_debug_files(type_c);
-> > +
-> > +     if (type_c->port) {
-> > +             typec_unregister_port(type_c->port);
-> > +             type_c->port =3D NULL;
-> > +     }
-> > +
-> > +     cancel_delayed_work_sync(&type_c->delayed_work);
-> > +     flush_delayed_work(&type_c->delayed_work);
-> > +     WARN_ON_ONCE(delayed_work_pending(&type_c->delayed_work));
-> > +
-> > +     spin_lock_irqsave(&type_c->lock, flags);
-> > +     /* disable interrupt */
-> > +     default_ctrl =3D readl(type_c->reg_base + USB_TYPEC_CTRL) &
-> > +                 DEBOUNCE_TIME_MASK;
-> > +     writel(default_ctrl, type_c->reg_base + USB_TYPEC_CTRL);
-> > +
-> > +     /* disable cc detect, rp, rd */
-> > +     writel(PLR_EN, type_c->reg_base + USB_TYPEC_CTRL_CC1_0);
-> > +     writel(0, type_c->reg_base + USB_TYPEC_CTRL_CC2_0);
-> > +
-> > +     spin_unlock_irqrestore(&type_c->lock, flags);
-> > +
-> > +     if (type_c->rd_ctrl_gpio_desc)
-> > +             gpiod_put(type_c->rd_ctrl_gpio_desc);
-> > +     type_c->rd_ctrl_gpio_desc =3D NULL;
-> > +
-> > +     free_irq(type_c->irq, type_c);
-> > +}
-> > +
-> > +static const struct type_c_cfg rtd1295_type_c_cfg =3D {
-> > +     .parameter_ver =3D PARAMETER_V0,
-> > +     .cc_dfp_mode =3D CC_MODE_DFP_3_0,
-> > +     .cc1_param =3D { .rp_4p7k_code =3D 0xb,
-> > +                    .rp_36k_code =3D 0x17,
-> > +                    .rp_12k_code =3D 0x10,
-> > +                    .rd_code =3D 0,
-> > +                    .ra_code =3D 0,
-> > +                    .vref_2p6v =3D 0x0,
-> > +                    .vref_1p23v =3D 0x0,
-> > +                    .vref_0p8v =3D 0x3,
-> > +                    .vref_0p66v =3D 0x0,
-> > +                    .vref_0p4v =3D 0x0,
-> > +                    .vref_0p2v =3D 0x4,
-> > +                    .vref_1_1p6v =3D 0,
-> > +                    .vref_0_1p6v =3D 0 },
-> > +     .cc2_param =3D { .rp_4p7k_code =3D 0xc,
-> > +                    .rp_36k_code =3D 0x17,
-> > +                    .rp_12k_code =3D 0x12,
-> > +                    .rd_code =3D 0,
-> > +                    .ra_code =3D 0,
-> > +                    .vref_2p6v =3D 0x2,
-> > +                    .vref_1p23v =3D 0x0,
-> > +                    .vref_0p8v =3D 0x3,
-> > +                    .vref_0p66v =3D 0x0,
-> > +                    .vref_0p4v =3D 0x0,
-> > +                    .vref_0p2v =3D 0x5,
-> > +                    .vref_1_1p6v =3D 0,
-> > +                    .vref_0_1p6v =3D 0 },
-> > +     .debounce_val =3D 0x7f, /* 1b,1us 7f,4.7us */
-> > +     .use_defalut_parameter =3D false,
-> > +};
-> > +
-> > +static const struct type_c_cfg rtd1395_type_c_cfg =3D {
-> > +     .parameter_ver =3D PARAMETER_V0,
-> > +     .cc_dfp_mode =3D CC_MODE_DFP_3_0,
-> > +     .cc1_param =3D { .rp_4p7k_code =3D 0xc,
-> > +                    .rp_36k_code =3D 0xb,
-> > +                    .rp_12k_code =3D 0xe,
-> > +                    .rd_code =3D 0x10,
-> > +                    .ra_code =3D 0x0,
-> > +                    .vref_2p6v =3D 0x0,
-> > +                    .vref_1p23v =3D 0x1,
-> > +                    .vref_0p8v =3D 0x0,
-> > +                    .vref_0p66v =3D 0x0,
-> > +                    .vref_0p4v =3D 0x3,
-> > +                    .vref_0p2v =3D 0x0,
-> > +                    .vref_1_1p6v =3D 0x7,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .cc2_param =3D { .rp_4p7k_code =3D 0xb,
-> > +                    .rp_36k_code =3D 0x9,
-> > +                    .rp_12k_code =3D 0xe,
-> > +                    .rd_code =3D 0xf,
-> > +                    .ra_code =3D 0x0,
-> > +                    .vref_2p6v =3D 0x1,
-> > +                    .vref_1p23v =3D 0x3,
-> > +                    .vref_0p8v =3D 0x3,
-> > +                    .vref_0p66v =3D 0x2,
-> > +                    .vref_0p4v =3D 0x3,
-> > +                    .vref_0p2v =3D 0x2,
-> > +                    .vref_1_1p6v =3D 0x7,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .debounce_val =3D 0x7f, /* 1b,1us 7f,4.7us */
-> > +     .use_defalut_parameter =3D false,
-> > +};
-> > +
-> > +static const struct type_c_cfg rtd1619_type_c_cfg =3D {
-> > +     .parameter_ver =3D PARAMETER_V0,
-> > +     .cc_dfp_mode =3D CC_MODE_DFP_3_0,
-> > +     .cc1_param =3D { .rp_4p7k_code =3D 0xc,
-> > +                    .rp_36k_code =3D 0xf,
-> > +                    .rp_12k_code =3D 0xe,
-> > +                    .rd_code =3D 0x11,
-> > +                    .ra_code =3D 0x0,
-> > +                    .vref_2p6v =3D 0x5,
-> > +                    .vref_1p23v =3D 0x7,
-> > +                    .vref_0p8v =3D 0xa,
-> > +                    .vref_0p66v =3D 0xa,
-> > +                    .vref_0p4v =3D 0x3,
-> > +                    .vref_0p2v =3D 0x2,
-> > +                    .vref_1_1p6v =3D 0x7,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .cc2_param =3D { .rp_4p7k_code =3D 0xc,
-> > +                    .rp_36k_code =3D 0xf,
-> > +                    .rp_12k_code =3D 0xe,
-> > +                    .rd_code =3D 0xf,
-> > +                    .ra_code =3D 0x0,
-> > +                    .vref_2p6v =3D 0x5,
-> > +                    .vref_1p23v =3D 0x8,
-> > +                    .vref_0p8v =3D 0xa,
-> > +                    .vref_0p66v =3D 0xa,
-> > +                    .vref_0p4v =3D 0x3,
-> > +                    .vref_0p2v =3D 0x2,
-> > +                    .vref_1_1p6v =3D 0x7,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .debounce_val =3D 0x7f, /* 1b,1us 7f,4.7us */
-> > +     .use_defalut_parameter =3D false,
-> > +};
-> > +
-> > +static const struct type_c_cfg rtd1319_type_c_cfg =3D {
-> > +     .parameter_ver =3D PARAMETER_V0,
-> > +     .cc_dfp_mode =3D CC_MODE_DFP_1_5,
-> > +     .cc1_param =3D { .rp_4p7k_code =3D 0x9,
-> > +                    .rp_36k_code =3D 0xe,
-> > +                    .rp_12k_code =3D 0x9,
-> > +                    .rd_code =3D 0x9,
-> > +                    .ra_code =3D 0x7,
-> > +                    .vref_2p6v =3D 0x3,
-> > +                    .vref_1p23v =3D 0x7,
-> > +                    .vref_0p8v =3D 0x7,
-> > +                    .vref_0p66v =3D 0x6,
-> > +                    .vref_0p4v =3D 0x2,
-> > +                    .vref_0p2v =3D 0x3,
-> > +                    .vref_1_1p6v =3D 0x4,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .cc2_param =3D { .rp_4p7k_code =3D 0x8,
-> > +                    .rp_36k_code =3D 0xe,
-> > +                    .rp_12k_code =3D 0x9,
-> > +                    .rd_code =3D 0x9,
-> > +                    .ra_code =3D 0x7,
-> > +                    .vref_2p6v =3D 0x3,
-> > +                    .vref_1p23v =3D 0x7,
-> > +                    .vref_0p8v =3D 0x7,
-> > +                    .vref_0p66v =3D 0x6,
-> > +                    .vref_0p4v =3D 0x3,
-> > +                    .vref_0p2v =3D 0x3,
-> > +                    .vref_1_1p6v =3D 0x6,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .debounce_val =3D 0x7f, /* 1b,1us 7f,4.7us */
-> > +     .use_defalut_parameter =3D false,
-> > +};
-> > +
-> > +static const struct type_c_cfg rtd1312c_type_c_cfg =3D {
-> > +     .parameter_ver =3D PARAMETER_V0,
-> > +     .cc_dfp_mode =3D CC_MODE_DFP_1_5,
-> > +     .cc1_param =3D { .rp_4p7k_code =3D 0xe,
-> > +                    .rp_36k_code =3D 0xc,
-> > +                    .rp_12k_code =3D 0xc,
-> > +                    .rd_code =3D 0xa,
-> > +                    .ra_code =3D 0x3,
-> > +                    .vref_2p6v =3D 0xa,
-> > +                    .vref_1p23v =3D 0x7,
-> > +                    .vref_0p8v =3D 0x7,
-> > +                    .vref_0p66v =3D 0x7,
-> > +                    .vref_0p4v =3D 0x4,
-> > +                    .vref_0p2v =3D 0x4,
-> > +                    .vref_1_1p6v =3D 0x7,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .cc2_param =3D { .rp_4p7k_code =3D 0xe,
-> > +                    .rp_36k_code =3D 0xc,
-> > +                    .rp_12k_code =3D 0xc,
-> > +                    .rd_code =3D 0xa,
-> > +                    .ra_code =3D 0x3,
-> > +                    .vref_2p6v =3D 0xa,
-> > +                    .vref_1p23v =3D 0x7,
-> > +                    .vref_0p8v =3D 0x7,
-> > +                    .vref_0p66v =3D 0x7,
-> > +                    .vref_0p4v =3D 0x4,
-> > +                    .vref_0p2v =3D 0x4,
-> > +                    .vref_1_1p6v =3D 0x7,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .debounce_val =3D 0x7f, /* 1b,1us 7f,4.7us */
-> > +     .use_defalut_parameter =3D false,
-> > +};
-> > +
-> > +static const struct type_c_cfg rtd1619b_type_c_cfg =3D {
-> > +     .parameter_ver =3D PARAMETER_V1,
-> > +     .cc_dfp_mode =3D CC_MODE_DFP_1_5,
-> > +     .cc1_param =3D { .rp_4p7k_code =3D 0xf,
-> > +                    .rp_36k_code =3D 0xf,
-> > +                    .rp_12k_code =3D 0xf,
-> > +                    .rd_code =3D 0xf,
-> > +                    .ra_code =3D 0x7,
-> > +                    .vref_2p6v =3D 0x9,
-> > +                    .vref_1p23v =3D 0x7,
-> > +                    .vref_0p8v =3D 0x9,
-> > +                    .vref_0p66v =3D 0x8,
-> > +                    .vref_0p4v =3D 0x7,
-> > +                    .vref_0p2v =3D 0x9,
-> > +                    .vref_1_1p6v =3D 0x7,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .cc2_param =3D { .rp_4p7k_code =3D 0xf,
-> > +                    .rp_36k_code =3D 0xf,
-> > +                    .rp_12k_code =3D 0xf,
-> > +                    .rd_code =3D 0xf,
-> > +                    .ra_code =3D 0x7,
-> > +                    .vref_1p23v =3D 0x7,
-> > +                    .vref_0p8v =3D 0x9,
-> > +                    .vref_0p66v =3D 0x8,
-> > +                    .vref_0p4v =3D 0x7,
-> > +                    .vref_0p2v =3D 0x8,
-> > +                    .vref_1_1p6v =3D 0x7,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .debounce_val =3D 0x7f, /* 1b,1us 7f,4.7us */
-> > +     .use_defalut_parameter =3D false,
-> > +};
-> > +
-> > +static const struct type_c_cfg rtd1319d_type_c_cfg =3D {
-> > +     .parameter_ver =3D PARAMETER_V1,
-> > +     .cc_dfp_mode =3D CC_MODE_DFP_1_5,
-> > +     .cc1_param =3D { .rp_4p7k_code =3D 0xe,
-> > +                    .rp_36k_code =3D 0x3,
-> > +                    .rp_12k_code =3D 0xe,
-> > +                    .rd_code =3D 0xf,
-> > +                    .ra_code =3D 0x6,
-> > +                    .vref_2p6v =3D 0x7,
-> > +                    .vref_1p23v =3D 0x7,
-> > +                    .vref_0p8v =3D 0x8,
-> > +                    .vref_0p66v =3D 0x7,
-> > +                    .vref_0p4v =3D 0x7,
-> > +                    .vref_0p2v =3D 0x7,
-> > +                    .vref_1_1p6v =3D 0x7,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .cc2_param =3D { .rp_4p7k_code =3D 0xe,
-> > +                    .rp_36k_code =3D 0x3,
-> > +                    .rp_12k_code =3D 0xe,
-> > +                    .rd_code =3D 0xf,
-> > +                    .ra_code =3D 0x6,
-> > +                    .vref_2p6v =3D 0x7,
-> > +                    .vref_1p23v =3D 0x7,
-> > +                    .vref_0p8v =3D 0x8,
-> > +                    .vref_0p66v =3D 0x7,
-> > +                    .vref_0p4v =3D 0x7,
-> > +                    .vref_0p2v =3D 0x8,
-> > +                    .vref_1_1p6v =3D 0x7,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .debounce_val =3D 0x7f, /* 1b,1us 7f,4.7us */
-> > +     .use_defalut_parameter =3D false,
-> > +};
-> > +
-> > +static const struct type_c_cfg rtd1315e_type_c_cfg =3D {
-> > +     .parameter_ver =3D PARAMETER_V1,
-> > +     .cc_dfp_mode =3D CC_MODE_DFP_1_5,
-> > +     .cc1_param =3D { .rp_4p7k_code =3D 0xe,
-> > +                    .rp_36k_code =3D 0x3,
-> > +                    .rp_12k_code =3D 0xe,
-> > +                    .rd_code =3D 0xf,
-> > +                    .ra_code =3D 0x6,
-> > +                    .vref_2p6v =3D 0x7,
-> > +                    .vref_1p23v =3D 0x7,
-> > +                    .vref_0p8v =3D 0x8,
-> > +                    .vref_0p66v =3D 0x7,
-> > +                    .vref_0p4v =3D 0x7,
-> > +                    .vref_0p2v =3D 0x7,
-> > +                    .vref_1_1p6v =3D 0x7,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .cc2_param =3D { .rp_4p7k_code =3D 0xe,
-> > +                    .rp_36k_code =3D 0x3,
-> > +                    .rp_12k_code =3D 0xe,
-> > +                    .rd_code =3D 0xf,
-> > +                    .ra_code =3D 0x6,
-> > +                    .vref_2p6v =3D 0x7,
-> > +                    .vref_1p23v =3D 0x7,
-> > +                    .vref_0p8v =3D 0x8,
-> > +                    .vref_0p66v =3D 0x7,
-> > +                    .vref_0p4v =3D 0x7,
-> > +                    .vref_0p2v =3D 0x8,
-> > +                    .vref_1_1p6v =3D 0x7,
-> > +                    .vref_0_1p6v =3D 0x7 },
-> > +     .debounce_val =3D 0x7f, /* 1b,1us 7f,4.7us */
-> > +     .use_defalut_parameter =3D false,
-> > +};
-> > +
-> > +static const struct of_device_id extcon_rtk_type_c_match[] =3D {
-> > +     { .compatible =3D "realtek,rtd1295-type-c", .data =3D &rtd1295_ty=
-pe_c_cfg },
-> > +     { .compatible =3D "realtek,rtd1312c-type-c", .data =3D
-> > &rtd1312c_type_c_cfg },
-> > +     { .compatible =3D "realtek,rtd1315e-type-c", .data =3D
-> > &rtd1315e_type_c_cfg },
-> > +     { .compatible =3D "realtek,rtd1319-type-c", .data =3D &rtd1319_ty=
-pe_c_cfg },
-> > +     { .compatible =3D "realtek,rtd1319d-type-c", .data =3D
-> > &rtd1319d_type_c_cfg },
-> > +     { .compatible =3D "realtek,rtd1395-type-c", .data =3D &rtd1395_ty=
-pe_c_cfg },
-> > +     { .compatible =3D "realtek,rtd1619-type-c", .data =3D &rtd1619_ty=
-pe_c_cfg },
-> > +     { .compatible =3D "realtek,rtd1619b-type-c", .data =3D
-> > &rtd1619b_type_c_cfg },
-> > +     {},
-> > +};
-> > +MODULE_DEVICE_TABLE(of, extcon_rtk_type_c_match);
-> > +
-> > +#ifdef CONFIG_PM_SLEEP
-> > +static int extcon_rtk_type_c_prepare(struct device *dev)
-> > +{
-> > +     struct type_c_data *type_c =3D dev_get_drvdata(dev);
-> > +     u32 default_ctrl;
-> > +     unsigned long flags;
-> > +
-> > +     cancel_delayed_work_sync(&type_c->delayed_work);
-> > +     flush_delayed_work(&type_c->delayed_work);
-> > +     WARN_ON_ONCE(delayed_work_pending(&type_c->delayed_work));
-> > +
-> > +     spin_lock_irqsave(&type_c->lock, flags);
-> > +     /* disable interrupt */
-> > +     default_ctrl =3D readl(type_c->reg_base + USB_TYPEC_CTRL) &
-> > +                 DEBOUNCE_TIME_MASK;
-> > +     writel(default_ctrl, type_c->reg_base + USB_TYPEC_CTRL);
-> > +
-> > +     /* disable cc detect, rp, rd */
-> > +     writel(PLR_EN, type_c->reg_base + USB_TYPEC_CTRL_CC1_0);
-> > +     writel(0, type_c->reg_base + USB_TYPEC_CTRL_CC2_0);
-> > +
-> > +     spin_unlock_irqrestore(&type_c->lock, flags);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void extcon_rtk_type_c_complete(struct device *dev)
-> > +{
-> > +     /* nothing */
-> > +}
-> > +
-> > +static int extcon_rtk_type_c_suspend(struct device *dev)
-> > +{
-> > +     /* nothing */
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int extcon_rtk_type_c_resume(struct device *dev)
-> > +{
-> > +     struct type_c_data *type_c =3D dev_get_drvdata(dev);
-> > +     int ret;
-> > +
-> > +     ret =3D extcon_rtk_type_c_init(type_c);
-> > +     if (ret) {
-> > +             dev_err(dev, "%s failed to init type_c\n", __func__);
-> > +             return ret;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static const struct dev_pm_ops extcon_rtk_type_c_pm_ops =3D {
-> > +     SET_LATE_SYSTEM_SLEEP_PM_OPS(extcon_rtk_type_c_suspend,
-> > extcon_rtk_type_c_resume)
-> > +     .prepare =3D extcon_rtk_type_c_prepare,
-> > +     .complete =3D extcon_rtk_type_c_complete,
-> > +};
-> > +
-> > +#define DEV_PM_OPS   (&extcon_rtk_type_c_pm_ops)
-> > +#else
-> > +#define DEV_PM_OPS   NULL
-> > +#endif /* CONFIG_PM_SLEEP */
-> > +
-> > +static struct platform_driver extcon_rtk_type_c_driver =3D {
-> > +     .probe          =3D extcon_rtk_type_c_probe,
-> > +     .remove_new     =3D extcon_rtk_type_c_remove,
-> > +     .driver         =3D {
-> > +             .name   =3D "extcon-rtk-type_c",
-> > +             .of_match_table =3D extcon_rtk_type_c_match,
-> > +             .pm =3D DEV_PM_OPS,
-> > +     },
-> > +};
-> > +
-> > +module_platform_driver(extcon_rtk_type_c_driver);
-> > +
-> > +MODULE_DESCRIPTION("Realtek Extcon Type C driver");
-> > +MODULE_AUTHOR("Stanley Chang <stanley_chang@realtek.com>");
-> > +MODULE_LICENSE("GPL");
-> > --
-> > 2.34.1
->
+On Mon, 2023-10-02 at 11:45 -0700, Sean Christopherson wrote:
+> On Mon, Oct 02, 2023, David Woodhouse wrote:
+> > On Mon, 2023-10-02 at 10:41 -0700, Sean Christopherson wrote:
+> > > On Fri, Sep 29, 2023, David Woodhouse wrote:
+> > > > On Fri, 2023-09-29 at 08:16 -0700, Sean Christopherson wrote:
+> > > > > On Fri, Sep 29, 2023, David Woodhouse wrote:
+> > > > > > From: David Woodhouse <dwmw@amazon.co.uk>
+> > > > > >=20
+> > > > > > Most of the time there's no need to kick the vCPU and deliver t=
+he timer
+> > > > > > event through kvm_xen_inject_timer_irqs(). Use kvm_xen_set_evtc=
+hn_fast()
+> > > > > > directly from the timer callback, and only fall back to the slo=
+w path
+> > > > > > when it's necessary to do so.
+> > > > >=20
+> > > > > It'd be helpful for non-Xen folks to explain "when it's necessary=
+".=C2=A0 IIUC, the
+> > > > > only time it's necessary is if the gfn=3D>pfn cache isn't valid/f=
+resh.
+> > > >=20
+> > > > That's an implementation detail.
+> > >=20
+> > > And?=C2=A0 The target audience of changelogs are almost always people=
+ that care about
+> > > the implementation.
+> > >=20
+> > > > Like all of the fast path functions that can be called from
+> > > > kvm_arch_set_irq_inatomic(), it has its own criteria for why it mig=
+ht return
+> > > > -EWOULDBLOCK or not. Those are *its* business.
+> > >=20
+> > > And all of the KVM code is the business of the people who contribute =
+to the kernel,
+> > > now and in the future.=C2=A0 Yeah, there's a small chance that a deta=
+iled changelog can
+> > > become stale if the patch races with some other in-flight change, but=
+ even *that*
+> > > is a useful data point.=C2=A0 E.g. if Paul's patches somehow broke/de=
+graded this code,
+> > > then knowing that what the author (you) intended/observed didn't matc=
+h reality when
+> > > the patch was applied would be extremely useful information for whoev=
+er encountered
+> > > the hypothetical breakage.
+> >=20
+> > Fair enough, but on this occasion it truly doesn't matter. It has
+> > nothing to do with the implementation of *this* patch. This code makes
+> > no assumptions and has no dependency on *when* that fast path might
+> > return -EWOULDBLOCK. Sometimes it does, sometimes it doesn't. This code
+> > just doesn't care one iota.
+> >=20
+> > If this code had *dependencies* on the precise behaviour of
+> > kvm_xen_set_evtchn_fast() that we needed to reason about, then sure,
+> > I'd have written those explicitly into the commit comment *and* tried
+> > to find some way of enforcing them with runtime warnings etc.
+> >=20
+> > But it doesn't. So I am no more inclined to document the precise
+> > behaviour of kvm_xen_set_evtchn_fast() in a patch which just happens to
+> > call it, than I am inclined to document hrtimer_cancel() or any other
+> > function called from the new code :)
+>=20
+> Just because some bit of code doesn't care/differentiate doesn't mean the=
+ behavior
+> of said code is correct.=C2=A0 I agree that adding a comment to explain t=
+he gory details
+> is unnecessary and would lead to stale code.=C2=A0 But changelogs essenti=
+ally capture a
+> single point in a time, and a big role of the changelog is to help review=
+ers and
+> readers understand (a) the *intent* of the change and (b) whether or not =
+that change
+> is correct.
+>=20
+> E.g. there's an assumption that -EWOULDBLOCK is the only non-zero return =
+code where
+> the correct response is to go down the slow path.
+>=20
+> I'm not asking to spell out every single condition, I'm just asking for c=
+larification
+> on what the intended behavior is, e.g.
+>=20
+> =C2=A0 Use kvm_xen_set_evtchn_fast() directly from the timer callback, an=
+d fall
+> =C2=A0 back to the slow path if the event is valid but fast delivery isn'=
+t
+> =C2=A0 possible, which currently can only happen if delivery needs to blo=
+ck,
+> =C2=A0 e.g. because the gfn=3D>pfn cache is invalid or stale.
+>=20
+> instead of simply saying "when it's necessary to do so" and leaving it up=
+ to the
+> reader to figure what _they_ think that means, which might not always ali=
+gn with
+> what the author actually meant.
 
 
---=20
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Fair enough. There's certainly scope for something along the lines of
+
+
++	rc =3D kvm_xen_set_evtchn_fast(&e, vcpu->kvm);
++	if (rc !=3D -EWOULDBLOCK) {
+
+   /*
+    * If kvm_xen_set_evtchn_fast() returned -EWOULDBLOCK, then set the
+    * timer_pending flag and kick the vCPU, to defer delivery of the=C2=A0
+    * event channel to a context which can sleep. If it fails for any
+    * other reasons, just let it fail silently. The slow path fails=C2=A0
+    * silently too; a warning in that case may be guest triggerable,
+    * should never happen anyway, and guests are generally going to
+    * *notice* timers going missing.
+    */
+
++		vcpu->arch.xen.timer_expires =3D 0;
++		return HRTIMER_NORESTART;
++	}
+
+That's documenting *this* code, not the function it happens to call.
+It's more verbose than I would normally have bothered to be, but I'm
+all for improving the level of commenting in our code as long as it's
+adding value.=20
+
+
+--=-q4kMllPbnP65tdh2LrUv
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
+ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
+EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
+FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
+aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
+EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
+VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
+aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
+AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
+ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
+QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
+rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
+ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
+U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
+DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
+BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
+dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
+BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
+QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
+CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
+xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
+IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
+kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
+eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
+KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
+1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
+OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
+x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
+5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
+DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
+VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
+UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
+MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
+ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
+oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
+SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
+xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
+RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
+bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
+NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
+KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
+5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
+C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
+gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
+VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
+MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
+by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
+b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
+BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
+QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
+c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
+AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
+qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
+v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
+Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
+tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
+Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
+YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
+ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
+IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
+ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
+GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
+h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
+9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
+P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
+2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
+BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
+7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
+lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
+lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
+AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
+Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
+BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
+cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
+aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
+LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
+BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
+cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
+Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
+lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
+WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
+hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
+IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
+dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
+NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
+xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDAyMTkzMzQxWjAvBgkqhkiG9w0BCQQxIgQg/Rer/Jg8
+1aUMnJrBciRMjmZOb6nFkeIlwD06nXn9nXQwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
+A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
+dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
+DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
+MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
+Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCh3xT4S1O78g3P60YkgPcwTWOxwow/yQGz
+kVcM9A5LsZ44F2juclAXynLf9soOD6ksOQHf4Ea0ErC67bH+3Il0mvnahx46+v5Y0ewy+T1uuHqP
+NnpaUzsj6PWNMehMkFotC5bMZyfO+1SwREt3PvGlfofCOz1lfdleDnBxsgoaH1LloasacTepgTUz
+49iH55d8V3ZcLbAT+Z+CFUdfQtbW6v/UYSWMyzpYT9efrC8cDH8YXixCvlx5y89c3l9Yq12xC+7o
+FEZumlMrhZeDZ+7VcY5lhCZw4XRa/hTygnmsk78gIA+zu7zfu6C2xOjX7QSt5kKbCorgm4wxfn71
+mc9NeVC31garS39j7rzexagcfDSqGrQeGZ22brM5GdMUC4gp74puAOC1iS9YOck6txYTr2ISYKO7
+LRNmSMKNdt/9KtngtUU+W8KAzLIKRdvPCCLyUVaZWAwwGTV/OeU90ClYISB/1fYQRZqc3Tr0G4IK
+7t2d2EE9UCKlHMyh0RJtdinI05EK3j/ZnbibwBB08nBqeqfaNEvN8YOTk+F01yf7FoYLd1GPmMEw
+qhsKjHH3lvirIU1ZHyLFouHHnazsRXc0a7tDu10KW2wSp2lmMOcRGyuTUFTE65hh1C6JHoKIYZlb
+qOKs8D6dqa0TQIj1WzSzxOWUtu7bHkjI7V+G0HOH1AAAAAAAAA==
+
+
+--=-q4kMllPbnP65tdh2LrUv--
