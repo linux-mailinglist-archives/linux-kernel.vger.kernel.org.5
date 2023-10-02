@@ -2,95 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 239E97B586A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098497B5870
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238502AbjJBQvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 12:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54518 "EHLO
+        id S231249AbjJBQwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 12:52:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237797AbjJBQvO (ORCPT
+        with ESMTP id S229506AbjJBQwM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 12:51:14 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E64FBD;
-        Mon,  2 Oct 2023 09:51:09 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4C3C2C000D;
-        Mon,  2 Oct 2023 16:51:03 +0000 (UTC)
-Message-ID: <689fe81f-e2b4-9f99-4005-8ae330afb869@ovn.org>
-Date:   Mon, 2 Oct 2023 18:51:53 +0200
+        Mon, 2 Oct 2023 12:52:12 -0400
+Received: from mblankhorst.nl (lankhorst.se [IPv6:2a02:2308:0:7ec:e79c:4e97:b6c4:f0ae])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBC7A7
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 09:52:09 -0700 (PDT)
+From:   Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        =?UTF-8?q?Amadeusz=20S=C5=82awi=C5=84ski?= 
+        <amadeuszx.slawinski@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+Subject: [PATCH v5 10/12] ASoC: Intel: Skylake: Move snd_hdac_i915_init to before probe_work.
+Date:   Mon,  2 Oct 2023 18:52:02 +0200
+Message-Id: <20231002165202.17863-1-maarten.lankhorst@linux.intel.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230929145123.233838-1-maarten.lankhorst@linux.intel.com>
+References: <20230929145123.233838-1-maarten.lankhorst@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Cc:     dev@openvswitch.org, netdev@vger.kernel.org, llvm@lists.linux.dev,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, i.maximets@ovn.org
-Subject: Re: [ovs-dev] [PATCH net-next 2/2] net: openvswitch: Annotate struct
- mask_array with __counted_byUse struct_size()
-Content-Language: en-US
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        keescook@chromium.org, Pravin B Shelar <pshelar@ovn.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>
-References: <8be59c9e06fca8eff2f264abb4c2f74db0b19a9e.1696156198.git.christophe.jaillet@wanadoo.fr>
- <f66ddcf1ef9328f10292ea75a17b584359b6cde3.1696156198.git.christophe.jaillet@wanadoo.fr>
-From:   Ilya Maximets <i.maximets@ovn.org>
-In-Reply-To: <f66ddcf1ef9328f10292ea75a17b584359b6cde3.1696156198.git.christophe.jaillet@wanadoo.fr>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: i.maximets@ovn.org
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NEUTRAL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/23 13:07, Christophe JAILLET wrote:
-> Prepare for the coming implementation by GCC and Clang of the __counted_by
-> attribute. Flexible array members annotated with __counted_by can have
-> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
-> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-> functions).
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> This patch is part of a work done in parallel of what is currently worked
-> on by Kees Cook.
-> 
-> My patches are only related to corner cases that do NOT match the
-> semantic of his Coccinelle script[1].
-> 
-> In this case, in tbl_mask_array_alloc(), several things are allocated with
-> a single allocation. Then, some pointer arithmetic computes the address of
-> the memory after the flex-array.
-> 
-> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci
-> ---
->  net/openvswitch/flow_table.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/openvswitch/flow_table.h b/net/openvswitch/flow_table.h
-> index 9e659db78c05..8d9e83b4d62c 100644
-> --- a/net/openvswitch/flow_table.h
-> +++ b/net/openvswitch/flow_table.h
-> @@ -48,7 +48,7 @@ struct mask_array {
->  	int count, max;
->  	struct mask_array_stats __percpu *masks_usage_stats;
->  	u64 *masks_usage_zero_cntr;
-> -	struct sw_flow_mask __rcu *masks[];
-> +	struct sw_flow_mask __rcu *masks[] __counted_by(size);
+Now that we can use -EPROBE_DEFER, it's no longer required to spin off
+the snd_hdac_i915_init into a workqueue. It's likely the whole workqueue
+can be destroyed, but I don't have the means to test this.
 
-Did you mean 'max'?  There is no 'size' in the structure.
+Removing the workqueue would simplify init even further, but is left
+as exercise for the reviewer.
 
-Also, the patch subject is messed up a bit.
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Acked-by: Mark Brown <broonie@kernel.org>
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Amadeusz Sławiński <amadeuszx.slawinski@linux.intel.com>
+---
+ sound/soc/intel/skylake/skl.c | 31 +++++++++----------------------
+ 1 file changed, 9 insertions(+), 22 deletions(-)
 
-Best regards, Ilya Maximets.
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Cezary Rojewski <cezary.rojewski@intel.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@linux.intel.com>
+Cc: Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Cc: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
+Cc: sound-open-firmware@alsa-project.org
+
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 4f7acb4f6680b..24bdbe2a53bec 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -783,23 +783,6 @@ static void skl_codec_create(struct hdac_bus *bus)
+ 	}
+ }
+ 
+-static int skl_i915_init(struct hdac_bus *bus)
+-{
+-	int err;
+-
+-	/*
+-	 * The HDMI codec is in GPU so we need to ensure that it is powered
+-	 * up and ready for probe
+-	 */
+-	err = snd_hdac_i915_init(bus, true);
+-	if (err < 0)
+-		return err;
+-
+-	snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+-
+-	return 0;
+-}
+-
+ static void skl_probe_work(struct work_struct *work)
+ {
+ 	struct skl_dev *skl = container_of(work, struct skl_dev, probe_work);
+@@ -807,11 +790,8 @@ static void skl_probe_work(struct work_struct *work)
+ 	struct hdac_ext_link *hlink;
+ 	int err;
+ 
+-	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+-		err = skl_i915_init(bus);
+-		if (err < 0)
+-			return;
+-	}
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
++		snd_hdac_display_power(bus, HDA_CODEC_IDX_CONTROLLER, true);
+ 
+ 	skl_init_pci(skl);
+ 	skl_dum_set(bus);
+@@ -1075,10 +1055,17 @@ static int skl_probe(struct pci_dev *pci,
+ 		goto out_dsp_free;
+ 	}
+ 
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
++		err = snd_hdac_i915_init(bus, false);
++		if (err < 0)
++			goto out_dmic_unregister;
++	}
+ 	schedule_work(&skl->probe_work);
+ 
+ 	return 0;
+ 
++out_dmic_unregister:
++	skl_dmic_device_unregister(skl);
+ out_dsp_free:
+ 	skl_free_dsp(skl);
+ out_clk_free:
+-- 
+2.39.2
+
