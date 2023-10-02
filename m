@@ -2,82 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFAD67B5171
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:34:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8DA27B5177
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236719AbjJBLeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 07:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45892 "EHLO
+        id S236695AbjJBLfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 07:35:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236599AbjJBLeJ (ORCPT
+        with ESMTP id S230427AbjJBLfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 07:34:09 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99062BF;
-        Mon,  2 Oct 2023 04:34:06 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 68B1F66071CC;
-        Mon,  2 Oct 2023 12:34:04 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696246445;
-        bh=9t/jOl0Thy1T1dExt2YlwpxckJSmjnulYz343ekqiOU=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=c2UwnXYA6v1PGmWdlFewrB37q0sywfNvyFg/94NAuO8wbPvLH88UGuTUTvoP0V834
-         7iRcR/wpx1DwUXyaST2eBbGrr/9mZOs8nHeLqt37i8mI3aMQL4ILhnukzUtVXaWAVe
-         pI8FCG73fK29CrveqlNc8AVBT04GLz0gjHEj9SU/7txpy1rHU0Ljq41bsB+PInh3+8
-         OUBuVwUlm8ZZu+VoxRgChPQuPeOPtcvv+FRd93B/3uKyFFNzs/zVIbGFgnFyLYWSqS
-         oIjGAVYoHCCAyh/NWulz/WO8fNRytQRf9jBAmt8YhM+VU7mBzbB1/g0CMVgkJK5KUu
-         No3ozYeZGszNg==
-Message-ID: <7e6fb959-9e0e-ad08-c33a-92cc86eec2d0@collabora.com>
-Date:   Mon, 2 Oct 2023 13:34:01 +0200
+        Mon, 2 Oct 2023 07:35:03 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778C4BF
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 04:35:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=from:to:cc:subject:date:message-id
+        :mime-version:content-transfer-encoding; s=k1; bh=PVFYZy0ARB0Ir/
+        opkUijq37R80R5ihV2iohA49i/p94=; b=dhgplXggEMUmtHf8YWo1fxG2khbfD1
+        vANkwwzl+P9Mjv4aE0BhpYuCSI2sID79CaNcUcl1khaOVQfbWvI0niwedvS4V9qf
+        rXfZ6ahhCgPAYrrAmvlgiAh6UkrSPPEj6KpHF6b33bFZTojyQiP0FNopZI9vtxYz
+        SqN7Joa+czso0IIJEgwDnr2ezeRPUoTz7I82XUoaqC6aRA9nT9KzCcG6BHOCmGqw
+        OLC4YjbbuwoCnmbgbhTNHiI+fbl+W1iSWfeWh8hN54g/6Rtum2j/zlAP+frtMBzG
+        a+NL8d8ASaNbaL/n6MfFIOWL115gM1R8j4Ewmta7HW4KRiwdm6hyKI3A==
+Received: (qmail 509107 invoked from network); 2 Oct 2023 13:34:57 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 2 Oct 2023 13:34:57 +0200
+X-UD-Smtp-Session: l3s3148p1@6aK5KboGfJcujntX
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-renesas-soc@vger.kernel.org
+Cc:     Takeshi Kihara <takeshi.kihara.df@renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] arm64: dts: renesas: r8a77990: Add Ebisu-4D board support
+Date:   Mon,  2 Oct 2023 13:34:41 +0200
+Message-Id: <20231002113441.19571-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 2/2] media: mediatek: vcodec: Handle encoder vsi NULL
- pointer case
-Content-Language: en-US
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     Irui Wang <irui.wang@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        nicolas.dufresne@collabora.com,
-        Yunfei Dong <yunfei.dong@mediatek.com>
-Cc:     Project_Global_Chrome_Upstream_Group@mediatek.com,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Maoguang Meng <maoguang.meng@mediatek.com>
-References: <20230926101909.15030-1-irui.wang@mediatek.com>
- <20230926101909.15030-2-irui.wang@mediatek.com>
- <633d4544-e215-2742-a4c0-81698607e830@collabora.com>
-In-Reply-To: <633d4544-e215-2742-a4c0-81698607e830@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 02/10/23 12:48, AngeloGioacchino Del Regno ha scritto:
-> Il 26/09/23 12:19, Irui Wang ha scritto:
->> There will be a kernel null pointer exception if 'vsi' is NULL, check
->> 'vsi' is not NULL before assign it to encoder instance.
->>
->> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
-> 
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> 
+From: Takeshi Kihara <takeshi.kihara.df@renesas.com>
 
-Sorry I just noticed that there's no Fixes tag.
+Add initial support for the Renesas Ebisu-4D development board.
 
-This commit needs a Fixes tag, please add one and send a v2.
+The Ebisu-4D board is very similar to the Ebisu board, but the memory
+configuration is different.
+
+  - The memory map of Ebisu-4D board is as follows:
+      Bank0: 2 GiB RAM : 0x000048000000 -> 0x000bfffffff
+
+  - The memory map of Ebisu board is as follows:
+      Bank0: 1 GiB RAM : 0x000048000000 -> 0x0007fffffff
+
+Signed-off-by: Takeshi Kihara <takeshi.kihara.df@renesas.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+[wsa: rebased]
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
+
+Resending this patch because I want to utilize all 2GB of memory on my
+Ebisu. Since nobody updated U-Boot to handle different RAM sizes on
+Ebisu in the last 4.5 years, let's add the Ebisu-4D as a seperate board.
+
+
+ arch/arm64/boot/dts/renesas/Makefile          |  1 +
+ .../boot/dts/renesas/r8a77990-ebisu-4d.dts    | 25 +++++++++++++++++++
+ 2 files changed, 26 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/renesas/r8a77990-ebisu-4d.dts
+
+diff --git a/arch/arm64/boot/dts/renesas/Makefile b/arch/arm64/boot/dts/renesas/Makefile
+index 7114cbbd8713..ad8f13f9907a 100644
+--- a/arch/arm64/boot/dts/renesas/Makefile
++++ b/arch/arm64/boot/dts/renesas/Makefile
+@@ -55,6 +55,7 @@ dtb-$(CONFIG_ARCH_R8A77980) += r8a77980-v3hsk.dtb
+ dtb-$(CONFIG_ARCH_R8A77980) += r8a77980a-condor-i.dtb
+ 
+ dtb-$(CONFIG_ARCH_R8A77990) += r8a77990-ebisu.dtb
++dtb-$(CONFIG_ARCH_R8A77990) += r8a77990-ebisu-4d.dtb
+ 
+ dtb-$(CONFIG_ARCH_R8A77995) += r8a77995-draak.dtb
+ 
+diff --git a/arch/arm64/boot/dts/renesas/r8a77990-ebisu-4d.dts b/arch/arm64/boot/dts/renesas/r8a77990-ebisu-4d.dts
+new file mode 100644
+index 000000000000..9f5bc7a7734f
+--- /dev/null
++++ b/arch/arm64/boot/dts/renesas/r8a77990-ebisu-4d.dts
+@@ -0,0 +1,25 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Device Tree Source for the Ebisu-4D board
++ *
++ * Copyright (C) 2018 Renesas Electronics Corp.
++ */
++
++/dts-v1/;
++#include "r8a77990-ebisu.dts"
++
++/ {
++	model = "Renesas Ebisu-4D board based on r8a77990";
++	compatible = "renesas,ebisu", "renesas,r8a77990";
++
++	memory@48000000 {
++		device_type = "memory";
++		/* first 128MB is reserved for secure area. */
++		reg = <0x0 0x48000000 0x0 0x78000000>;
++	};
++};
++
++&pciec0 {
++	/* Map all possible DDR as inbound ranges */
++	dma-ranges = <0x42000000 0 0x40000000 0 0x40000000 0 0x80000000>;
++};
+-- 
+2.30.2
+
