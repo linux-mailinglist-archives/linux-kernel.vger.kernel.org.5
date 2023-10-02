@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CDC7B5018
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B257B501C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:20:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236377AbjJBKUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 06:20:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41578 "EHLO
+        id S236458AbjJBKUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 06:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236435AbjJBKUh (ORCPT
+        with ESMTP id S236442AbjJBKUh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Oct 2023 06:20:37 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD11C9
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 03:20:32 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40572aeb673so134005265e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 03:20:32 -0700 (PDT)
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D42DA
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 03:20:33 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-50308217223so24832408e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 03:20:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696242031; x=1696846831; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pfv0AtlnvNa/E/C0wmR1XzkqLMulzABmbQ9znMd60Gs=;
-        b=sf3/WjS6YXUi2Sfrp8k42vnphJfnnf/LtGYvI433cW28zbBmHPd58q3UqLU8BqI0H6
-         aX9ZEbdkkZCxh2lzsJCXN4qUayN3Kz65ooMF9Nk2xos4ps3KVNCAAq+deePnt1nn/70X
-         MSaYeGarT/K+hcbjwp1kx8g4WaeGC2kS7ROwLIJm9tWJk+yXk/+ikDsLZUHqZF/T9hQD
-         czvZQKQ2NFy92yGs/h16GdVH/fbCvfooz6kC+yZqGma4pWwhNuxwqlBLy17EIDxn850d
-         VX9yTSD9/Hp0dvNNKYo1FPW/NNdo8eraaSaHgCO94U/zHaOHh+15Tipik4XUpZHFN6P5
-         2JNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696242031; x=1696846831;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1696242032; x=1696846832; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pfv0AtlnvNa/E/C0wmR1XzkqLMulzABmbQ9znMd60Gs=;
-        b=h+Q06P7eQBYOFzJ6TTDKa1OLq7vgSASR/czBkkr16W3OhmWoSEDNY/f8HQFlbaJGNZ
-         Rn/CSt1V/nue/f+87IG04gGWRoGGJYYhNDnagTQXl61NMWrXoSA2MvgG2gnQzax0bRCy
-         /3Ij/27l83GZurGyGU4nEz6jfAUBokTD0YVxEHe6bSpZfVVvNk2mAIsKmehChLVg6VKS
-         Du2ekd8T1L8sWfEEKlKJIaWDkVYD3/cDuB4L2gd62g1PxRFrmEd5H6rZW60FVZ87FSmQ
-         /iwJWDG1XdzqnG2CxaYQxe+nIZdf+fbVcHZUYZ1xt6QGbTtDyGnMOajmEeUA+1l4oou1
-         7/uQ==
-X-Gm-Message-State: AOJu0YxyO+o6eqyTpa3ZXg36Orfx+YHlrHAX2ztg/Zl1+olUl0ChuUjP
-        3zAKJvL83574K1iLf5opbs8a+Q==
-X-Google-Smtp-Source: AGHT+IHKQKBc27yWRnJvsnCQnRfbEPhbVYRxX4qMkNLc/yNshIM4n70R/iHPUBBLejbfbmWcStSkGw==
-X-Received: by 2002:a05:600c:2609:b0:405:34e4:e756 with SMTP id h9-20020a05600c260900b0040534e4e756mr9115752wma.36.1696242030644;
-        Mon, 02 Oct 2023 03:20:30 -0700 (PDT)
+        bh=ICWvHuFsaFLK5szrah3dwwdrzpV6FfDaZOz40gAcqqk=;
+        b=WGFbRrcyqw9reHfV5SCfD92CLMNthhPXKKJhjP6YFL1jx++/cQ0j4OjypXW8Hb4Zxn
+         QpNuroBc5tasNahgSCaLuFK6lMNcpSuBeELgdpyT2h9xrxcTM3UwRZJGWt1BEnVAKbqF
+         RBKqFK/wooUEjHOs0gJlHeRV2TEsE+heWsshb1g64j+U02j7DdIGLbs/rKbFM4qCoEzT
+         hqi1AbvHy7lZwcublbi960ZTMqqpFkyFoIRqKiNeVJwr7zFO6UboaYx8YiGIwerz1LgF
+         gsELyGJ4e/xYtnLnbLbZjODfyPWLWUJnn/Je7SXYaj+Gu2ML5uNtoF8QbQod0a7lvaOJ
+         hF1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696242032; x=1696846832;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ICWvHuFsaFLK5szrah3dwwdrzpV6FfDaZOz40gAcqqk=;
+        b=H6H25uhFZ9PjQhPwaxc1rtI19NXSX1vxkFI5fLeCzCRYADL6ChWeSzz6CoHLpkKO2w
+         ZpX/ILQ89s+cRr5eKSM+/mX5hsN7uYmHYYZc7cmeg+eJQY+UWfUzMvkJtrostto2tcU/
+         TuOaLANa7WxECY0vaoCSEIG1b/yEwZH0+wuxedhNyT+mVUd/X+3AWU9GmItOjeZbcnoU
+         68iiFgf0iSUQaBkgkR3oB78Lu1IUSxHUe6fycp84sFsri37/50f+jEvWm7Uw3Y1TdtdG
+         Cgf4U9NJ8ky3cRJfH6efT36dT1T4npbE4kPcGejiU9pyosnNecAAPRAQwDbYveMrpKhc
+         4vWQ==
+X-Gm-Message-State: AOJu0Yy1deEApb5rs/5dGu5CODWnfAaHKlz5OPkJHUet2uFxsz4Wa7jg
+        RsTHWxOoWU1oiMJv0aEgLMX1BQ==
+X-Google-Smtp-Source: AGHT+IHH9AffhbFDJfNzTdURfoi9bsKLkCyvLukcnhRxhhPNC/iBQ2DUCRD0oBggM3uwEdeYac88SQ==
+X-Received: by 2002:a05:6512:4019:b0:503:2683:ec7b with SMTP id br25-20020a056512401900b005032683ec7bmr11113056lfb.33.1696242031604;
+        Mon, 02 Oct 2023 03:20:31 -0700 (PDT)
 Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id g18-20020a5d5552000000b003196b1bb528sm27822901wrw.64.2023.10.02.03.20.29
+        by smtp.gmail.com with ESMTPSA id g18-20020a5d5552000000b003196b1bb528sm27822901wrw.64.2023.10.02.03.20.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 03:20:30 -0700 (PDT)
+        Mon, 02 Oct 2023 03:20:31 -0700 (PDT)
 From:   Neil Armstrong <neil.armstrong@linaro.org>
-Subject: [PATCH v2 0/4] arm64: qcom: sm8550: retrieve USB-C port
- orientation from gpio
-Date:   Mon, 02 Oct 2023 12:20:20 +0200
-Message-Id: <20231002-topic-sm8550-upstream-type-c-orientation-v2-0-125410d3ff95@linaro.org>
+Date:   Mon, 02 Oct 2023 12:20:21 +0200
+Subject: [PATCH v2 1/4] dt-bindings: soc: qcom: qcom,pmic-glink: add a gpio
+ used to determine the Type-C port plug orientation
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAGSZGmUC/52NTQ6CMBBGr0K6dkyh8hNX3sOwKO0Ak0jbtJVIC
- Hd35Ah+u/ct3ttFwkiYxL3YRcSVEnnHUF0KYWbtJgSyzKKSlZKdvEH2gQykpatrCe+QckS9QN4
- CggHPLpd1ZgnIgacaadXYCtaFiCN9ztSzZ54pZR+3s7yWv/ePyFqCBNVYq9CiaYfx8SKno7/6O
- In+OI4vlPwx1+EAAAA=
+Message-Id: <20231002-topic-sm8550-upstream-type-c-orientation-v2-1-125410d3ff95@linaro.org>
+References: <20231002-topic-sm8550-upstream-type-c-orientation-v2-0-125410d3ff95@linaro.org>
+In-Reply-To: <20231002-topic-sm8550-upstream-type-c-orientation-v2-0-125410d3ff95@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
@@ -73,78 +72,80 @@ Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
         Neil Armstrong <neil.armstrong@linaro.org>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2113;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1747;
  i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=Qo0f5HDypComny9WssJzstEih7AYlhet2I248Twlt+M=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlGplqbypaeMI7QPoC/3sxqXx+ye2lh9NHkExQ2cJx
- WmorGX2JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZRqZagAKCRB33NvayMhJ0bNhEA
- CVbMRdn6P21VLUf44cwkzQqo1lYjaXsYYdSdPfwWQsZUIStSyQXM0NgZAE6bdLgzwPCVNXQSQU5GJm
- Vfia1K6beM16pmdzcn/xH3SQIcW8hBPQn5gU1HVFfbAsT2l9J2qcdQi3vE88wdKOUlIvsctPehHwug
- xGtKNNY5soumjqrWVfclKgN6kD86X6KS1lFxWpl3T+LRvzDuqrdJf/oWQRnxpFIKk771INk+u+lGu+
- nAPURX/CIk6/z/Tl57qGid/Cwr/0Llb5Q1JniIpFfp+ulKVGY6YeCuDLEi89NFE9/QQUooo+/GEkFQ
- pAPgpMxjGMt26/LzvdaRR4rrT0BS5tzT1VSInoncJAcwivrHQonenbpJDs/N+DRQfzFw45Va2kjGus
- V5th/H1lIRqm2bTFcaqPhiAaykKojfTb646ud7lhAKqWvTIZUDr+EnkLOW5iFLA6fx5dfnd3an7gzH
- QQZxT/+WUtYedNPLPiWrfDGWgz3a+NPKB7uqOr56zqvuAUSnRIrFZg4J+6quc0njXTUb2uKXD/Sxip
- NQUaO8hI7S4oCx/Uj8nx/9PNDO1FFM9qvhGCrFfyYiFcFRGR06FKUNfr9+ONbYhH8Q1hWbQWgoYbZX
- RyEFfusjjRJzhvs6aepmktan+/wEeHEXaf7zQgr5J9oix/mO0e8xrnzwi8kA==
+ bh=L7UnCblZqCaCfW4IrZ58Z/ALtSFo6Rtxp79suaPVa+c=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlGplrkqZV/Tmlq7jEKIw/ICGOw1HdwAoPaffkBJCT
+ u+mNY6CJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZRqZawAKCRB33NvayMhJ0SSWEA
+ CQqVMykzVIbnYm3WSgupWHnT+di0HYfk1Y7rw0Y8BgStNrBNTndgtHxdON1IPN3lVC/cPM+J6Xl1t8
+ pCKP0o8HZidzHv6RD9PF2v1DZpf6AmwKRRcFxqNMxi7nVBkAJTNaGzPIV7w+d8fArKsDdaEQ7fwyN0
+ 5XBDDRnqyqUUS0andHcKg00hxF6ulleTOAHz79jsTby/kD4vg6213txvMzDeKQOqWlpcnjvt3JS43/
+ dkG7EMr2atvs+YbRr5+0y4AIOzgUa7j+6Zi7MO7ORd58ujpSDQbAxMzuKcWc/9jieSSrX06VjfJfD/
+ Bj3c7kYvl65k1tmTrk8D1Sw57TguhfveGuxfTvlpS4DhI3EVBW2DwRB7Cs1rXfqsU6m2Kbjz0NH1zh
+ gb0eY23NQnVi/vbDU1sPJ6IyzqRAU05vq6EjUbXejb4pmXune3uVNOHvl5dWVEJDovq97CdyOg5S9e
+ jqc2UgeEacN8s5lXJmk1cbwtSqFnLOpwCoU+4oHI7vwphYo4itQqogsKVCF0jpsm0/LgVDoqx5bltX
+ qMFcxOewcic3wDRqC6HWbL7iW3iwYfUxsgGI7c4yE+hlKNeoGobh4Fzd7J7G3wlnEUzxDPEzTg/OnT
+ XJPsc8QtY7PbxvWh9NuLQLIbPwH7BSeMsVJcZ7rD4UdYbbcOA1cAZmNtnNaA==
 X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
  fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset is derived from [1], with only the GPIO orientation.
+On SM8450 and SM8550 based platforms, the Type-C plug orientation is given on a
+GPIO line for each connector which are set by the PMIC(s).
 
-On the SM8550 platform, the PMIC Glink firmware doesn't emit
-ALTMODE events for all USB-C port changes like it was done
-for older platforms (like SM8450).
-This means we only have a valid orientation when an Altmode
-compliant device is inserted, but not for all the other devices,
-including USB cables, dongles and non-altmode Hubs.
-
-But the actual orientation is shared by the PM8550B by
-a signal called CC_OUT which can be read on a gpio of the SM8550
-SoC.
-
-Let's add support for this feature by using the UCSI PMIC
-Glink driver events to read and dispatch the orientation
-to the USB-C connector devices on the DT graph.
-
-While everybody would prefer having a proper PMIC Glink event
-for an orientation change, this is not implemented and not
-planned for future platforms either.
-
-[1] https://lore.kernel.org/all/20230601-topic-sm8550-upstream-type-c-v3-0-22c9973012b6@linaro.org/
+Document this optional Type-C connector property, and take the
+assumption an active level represents an inverted/flipped orientation.
 
 Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 ---
-Changes in v2:
-- Update bindings property description to describe how multi-port is handled
-- Link to v1: https://lore.kernel.org/r/20230804-topic-sm8550-upstream-type-c-orientation-v1-0-36dd3edec7bf@linaro.org
+ .../devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
----
-Neil Armstrong (4):
-      dt-bindings: soc: qcom: qcom,pmic-glink: add a gpio used to determine the Type-C port plug orientation
-      usb: ucsi: glink: use the connector orientation GPIO to provide switch events
-      arm64: dts: qcom: sm8550-mtp: add orientation gpio
-      arm64: dts: qcom: sm8550-qrd: add orientation gpio
+diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml
+index bceb479f74c5..422921cf1f82 100644
+--- a/Documentation/devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml
++++ b/Documentation/devicetree/bindings/soc/qcom/qcom,pmic-glink.yaml
+@@ -35,6 +35,12 @@ properties:
+   '#size-cells':
+     const: 0
+ 
++  orientation-gpios:
++    description: Array of input gpios for the Type-C connector orientation indication.
++      The GPIO indication is used to detect the orientation of the Type-C connector.
++      The array should contain a gpio entry for each PMIC Glink connector, in reg order.
++      It is defined that GPIO active level means "CC2" or Reversed/Flipped orientation.
++
+ patternProperties:
+   '^connector@\d$':
+     $ref: /schemas/connector/usb-connector.yaml#
+@@ -44,6 +50,19 @@ patternProperties:
+ required:
+   - compatible
+ 
++allOf:
++  - if:
++      not:
++        properties:
++          compatible:
++            contains:
++              enum:
++                - qcom,sm8450-pmic-glink
++                - qcom,sm8550-pmic-glink
++    then:
++      properties:
++        orientation-gpios: false
++
+ additionalProperties: false
+ 
+ examples:
 
- .../bindings/soc/qcom/qcom,pmic-glink.yaml         | 19 ++++++++
- arch/arm64/boot/dts/qcom/sm8550-mtp.dts            |  1 +
- arch/arm64/boot/dts/qcom/sm8550-qrd.dts            |  1 +
- drivers/usb/typec/ucsi/ucsi_glink.c                | 54 +++++++++++++++++++++-
- 4 files changed, 74 insertions(+), 1 deletion(-)
----
-base-commit: df964ce9ef9fea10cf131bf6bad8658fde7956f6
-change-id: 20230804-topic-sm8550-upstream-type-c-orientation-0bbbb360d3f7
-
-Best regards,
 -- 
-Neil Armstrong <neil.armstrong@linaro.org>
+2.34.1
 
