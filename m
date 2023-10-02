@@ -2,201 +2,353 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E107B5911
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E09D7B5941
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238644AbjJBRFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33818 "EHLO
+        id S229531AbjJBRG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:06:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238636AbjJBRFs (ORCPT
+        with ESMTP id S229484AbjJBRGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:05:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F71BD;
-        Mon,  2 Oct 2023 10:05:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7bBUQQBbikz+mr1wFb3TbP3U/Mu2dfuOU+MFIKId8NI=; b=ZKVZA6OQqD4yP21cfgdPLfOhSB
-        IFJmbw7JAbE+Xmy8uiV+UYes9CIHwHTpkhKvDoYOdKCBYtAT18TjMVwxulXQS0mA7ltnYUjyjWB5S
-        AlpL8woB5qPA1pRjeKPAruMWyn9uBnId6u6eX1SGXfaDEUxo717q9UCGUK/3BrS+geIW6xt2UKKm/
-        BAVEEhGtjshwHuiNKftyUuvPAZXywI0MJGO/gmo95V1qksphVz1k8s3bhlQkvzjYETMRf3a5Fs+jd
-        aZIIGMQSfxO7tsix9uyl2cmFp+eTSeuN0MUUJWTX2j7I6i0+ulFkHiy0C6IAuYFNpJyI1k960bhzD
-        V6ti4RPw==;
-Received: from [2001:8b0:10b:5:5205:71fd:de0:52fd] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qnMMX-00ABOF-Ga; Mon, 02 Oct 2023 17:05:41 +0000
-Message-ID: <c57dc32ee6ef31854cac372fde8dc097aa2dab40.camel@infradead.org>
-Subject: Re: [PATCH v3] KVM: x86: Use fast path for Xen timer delivery
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm <kvm@vger.kernel.org>, Paul Durrant <paul@xen.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Date:   Mon, 02 Oct 2023 18:05:40 +0100
-In-Reply-To: <ZRr3NvZg4OiXyjoq@google.com>
-References: <f21ee3bd852761e7808240d4ecaec3013c649dc7.camel@infradead.org>
-         <ZRr3NvZg4OiXyjoq@google.com>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-y4l/1yhdNzdAl7lnM+IJ"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 2 Oct 2023 13:06:54 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6795CAB
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:06:50 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-5345a3dfe3bso14373501a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:06:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696266409; x=1696871209; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4zr8XEwAco8V/FzcE18uSIZZEEXK/FcIrQsRSpjgE0M=;
+        b=CzkaDQdemrZNs0TShVHlVisAGTomi5ZY56jTJT0e0sxW+i0wdLfrGrtOpMZs2koF8C
+         AO7/KPdgDp5Xr2vXWyxZaU5h5h3T2hCwAR6eNh+O0yIsY02NUrpKC4f53pDvs16jKZR3
+         9Cb3RJzU7hgGndJ96UodXi2MUxFz37md++1lE7JM1pQMuFBVQkkJn1esi9TJsv/Rj25g
+         t2VjRb4ZNOo2+CRgvnajCb8tQdjwBT2N52i+vrOTg32lNY3+ZFTfdnjKTZgtGIEIFH2O
+         kyQRzrf3DL0Ybs1bUd2cPv2zNK0coexR/CXOzOpcB9Pqus7b3GjmL9d984acSxLT4Wl+
+         HU5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696266409; x=1696871209;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4zr8XEwAco8V/FzcE18uSIZZEEXK/FcIrQsRSpjgE0M=;
+        b=C1TjzhOl4px7dTmCY55/PpVK8SCr8V8qZzkJuXPjrPiCXZpa1mAeIXFWaeKvo/5pOp
+         h71M2nj7T0QdaEqqX30jpSxhz+cGyHoOfj26rs09GtCnF+l6vpUP4UbM5mdtnwCEtwtI
+         P+0FPJr0+yV9T8xiEEiPe+lXOtG4T7zGSOAfsMbOZvcm8Iy7O8T8OmOFsI6mruBq4tJr
+         Fz6ydiWY8ZQ0sVb4ynvI4wV49MKvoX6QvQrXtHiop/4XqzWpU5UmvhNuh81LgenAP3wq
+         Le8X6c6fHfJvLhXaPcg11CKlZOvvrXVepefpSOFmBBsD5dUiKWIpPtdrmecwC6SajM/G
+         2ecA==
+X-Gm-Message-State: AOJu0Yz5WcG53Gt1URsah4s2/KHEW5DU/ZguRzkeNjm733/PsZmvJNCJ
+        kZG9UfQc98Pf6J1C5KIDFh6nuHSu7+yw9z8AFQ6mig==
+X-Google-Smtp-Source: AGHT+IFDLMKu5H1Hp5Sp9vbOfDYXOD5dBEAO02aty9GSqep9YF17ks5lLn/G5syKVrfjFePGHUPVt+Ksa/QLQ+AksbQ=
+X-Received: by 2002:aa7:c248:0:b0:534:6b51:83a3 with SMTP id
+ y8-20020aa7c248000000b005346b5183a3mr11627534edo.1.1696266408762; Mon, 02 Oct
+ 2023 10:06:48 -0700 (PDT)
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
+ <20230929-ad2s1210-mainline-v3-25-fa4364281745@baylibre.com> <20230930164732.34e62b20@jic23-huawei>
+In-Reply-To: <20230930164732.34e62b20@jic23-huawei>
+From:   David Lechner <dlechner@baylibre.com>
+Date:   Mon, 2 Oct 2023 12:06:36 -0500
+Message-ID: <CAMknhBE0a-nmMEt4XG9YskUdcP0+6yz1mZnvSo3QpimAkQzFsg@mail.gmail.com>
+Subject: Re: [PATCH v3 25/27] staging: iio: resolver: ad2s1210: rename DOS
+ reset min/max attrs
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        David Lechner <david@lechnology.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Sep 30, 2023 at 10:47=E2=80=AFAM Jonathan Cameron <jic23@kernel.org=
+> wrote:
+>
+> On Fri, 29 Sep 2023 12:23:30 -0500
+> David Lechner <dlechner@baylibre.com> wrote:
+>
+> > From: David Lechner <david@lechnology.com>
+> >
+> > From: David Lechner <dlechner@baylibre.com>
+> >
+> > The AD2S1210 has a programmable threshold for the degradation of signal
+> > (DOS) mismatch fault. This fault is triggered when the difference in
+> > amplitude between the sine and cosine inputs exceeds the threshold.
+> >
+> > The DOS reset min/max registers on the chip provide initial values
+> > for internal tracking of the min/max of the monitor signal after the
+> > fault register is cleared.
+> >
+> > This patch converts the custom device DOS reset min/max threshold
+> > attributes custom event attributes on the monitor signal channel.
+> >
+> > The attributes now use millivolts instead of the raw register value in
+> > accordance with the IIO ABI.
+> >
+> > Emitting the event will be implemented in a later patch.
+> >
+> > Signed-off-by: David Lechner <dlechner@baylibre.com>
+> > ---
+> >
+> > v3 changes: This is a new patch in v3
+> >
+> >  .../Documentation/sysfs-bus-iio-resolver-ad2s1210  | 27 ++++++
+> >  drivers/staging/iio/resolver/ad2s1210.c            | 99 ++++++++++++--=
+--------
+> >  2 files changed, 82 insertions(+), 44 deletions(-)
+> >
+> > diff --git a/drivers/staging/iio/Documentation/sysfs-bus-iio-resolver-a=
+d2s1210 b/drivers/staging/iio/Documentation/sysfs-bus-iio-resolver-ad2s1210
+> > new file mode 100644
+> > index 000000000000..ea75881b0c77
+> > --- /dev/null
+> > +++ b/drivers/staging/iio/Documentation/sysfs-bus-iio-resolver-ad2s1210
+> > @@ -0,0 +1,27 @@
+> > +What:                /sys/bus/iio/devices/iio:deviceX/events/in_altvol=
+tage0-altvoltage1_thresh_rising_reset_max
+> Ah. So these are differential.  But the mismatch channel value isn't?
+>
+> I also got the format wrong for differential channels. Oops. Should
+> be the in_altvoltage0-altvoltage1 format for the previous suggestion
+> to change that channel type to differential.
+>
+> This looks fine to me as new ABI.
+>
+> Jonathan
+>
 
---=-y4l/1yhdNzdAl7lnM+IJ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+As discussed in
+<https://lore.kernel.org/linux-iio/CAMknhBFKSqXvgOeRjGAOfURzndmxmCffdU6MUir=
+EmfzKqwM_Kg@mail.gmail.com/>,
+technically no they are not differential. I started to implement it
+that way but changed my mind after understanding the datasheet more in
+depth. It looks like I forgot to update the documentation in this
+patch to match the final implementation that was submitted.
 
-T24gTW9uLCAyMDIzLTEwLTAyIGF0IDEwOjAwIC0wNzAwLCBTZWFuIENocmlzdG9waGVyc29uIHdy
-b3RlOgo+IAo+ID4gwqDCoMKgwqDCoMKgwqDCoGNhc2UgS1ZNX1hFTl9WQ1BVX0FUVFJfVFlQRV9U
-SU1FUjoKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAvKgo+ID4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIEVuc3VyZSBhIGNvbnNpc3RlbnQgc25hcHNob3Qgb2Yg
-c3RhdGUgaXMgY2FwdHVyZWQsIHdpdGggYQo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCAqIHRpbWVyIGVpdGhlciBiZWluZyBwZW5kaW5nLCBvciB0aGUgZXZlbnQgY2hhbm5lbCBk
-ZWxpdmVyZWQKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiB0byB0aGUgY29y
-cmVzcG9uZGluZyBiaXQgaW4gdGhlIHNoYXJlZF9pbmZvLiBOb3Qgc3RpbGwKPiA+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiBsdXJraW5nIGluIHRoZSB0aW1lcl9wZW5kaW5nIGZs
-YWcgZm9yIGRlZmVycmVkIGRlbGl2ZXJ5Lgo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCAqIFB1cmVseSBhcyBhbiBvcHRpbWlzYXRpb24sIGlmIHRoZSB0aW1lcl9leHBpcmVzIGZp
-ZWxkIGlzCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICogemVybywgdGhhdCBt
-ZWFucyB0aGUgdGltZXIgaXNuJ3QgYWN0aXZlIChvciBldmVuIGluIHRoZQo+ID4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAqIHRpbWVyX3BlbmRpbmcgZmxhZykgYW5kIHRoZXJlIGlz
-IG5vIG5lZWQgdG8gY2FuY2VsIGl0Lgo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCAqLwo+IAo+IEFoLCBrdm1feGVuX3N0YXJ0X3RpbWVyKCkgemVyb3MgdGltZXJfcGVuZGluZy4K
-PiAKPiBHaXZlbiB0aGF0LCBzaG91bGRuJ3QgaXQgYmUgaW1wb3NzaWJsZSBmb3IgeGVuX3RpbWVy
-X2NhbGxiYWNrKCkgdG8gb2JzZXJ2ZSBhCj4gbm9uLXplcm8gdGltZXJfcGVuZGluZyB2YWx1ZT/C
-oCBFLmcuIGNvdWxkbid0IHRoaXMgY29kZSBXQVJOPwo+IAo+IMKgwqDCoMKgwqDCoMKgwqBpZiAo
-YXRvbWljX3JlYWQoJnZjcHUtPmFyY2gueGVuLnRpbWVyX3BlbmRpbmcpKQo+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIEhSVElNRVJfTk9SRVNUQVJUOwo+IAo+IE9idmlv
-dXNseSBub3QgYSBibG9ja2VyIGZvciB0aGlzIHBhdGNoLCBJJ20gbW9zdGx5IGp1c3QgY3VyaW91
-cyB0byBrbm93IGlmIEknbQo+IG1pc3Npbmcgc29tZXRoaW5nLgoKWWVzLCBJIGJlbGlldmUgdGhh
-dCBpcyB0cnVlLgo=
+In any case, I will update the documentation to match the
+implementation or vice versa depending on what we decide on for which
+channel the events should be associated with.
 
+>
+>
+> > +KernelVersion:  6.7
+> > +Contact:     linux-iio@vger.kernel.org
+> > +Description:
+> > +             Reading returns the current Degradation of Signal Reset M=
+aximum
+> > +             Threshold value in millivolts. Writing sets the value.
+> > +
+> > +What:                /sys/bus/iio/devices/iio:deviceX/events/in_altvol=
+tage0-altvoltage1_thresh_rising_reset_max_available
+> > +KernelVersion:  6.7
+> > +Contact:     linux-iio@vger.kernel.org
+> > +Description:
+> > +             Reading returns the allowable voltage range for
+> > +             in_altvoltage0-altvoltage1_thresh_rising_reset_max.
+> > +
+> > +What:                /sys/bus/iio/devices/iio:deviceX/events/in_altvol=
+tage0-altvoltage1_thresh_rising_reset_min
+> > +KernelVersion:  6.7
+> > +Contact:     linux-iio@vger.kernel.org
+> > +Description:
+> > +             Reading returns the current Degradation of Signal Reset M=
+inimum
+> > +             Threshold value in millivolts. Writing sets the value.
+> > +
+> > +What:                /sys/bus/iio/devices/iio:deviceX/events/in_altvol=
+tage0-altvoltage1_thresh_rising_reset_min_available
+> > +KernelVersion:  6.7
+> > +Contact:     linux-iio@vger.kernel.org
+> > +Description:
+> > +             Reading returns the allowable voltage range for
+> > +             in_altvoltage0-altvoltage1_thresh_rising_reset_min.
+> > diff --git a/drivers/staging/iio/resolver/ad2s1210.c b/drivers/staging/=
+iio/resolver/ad2s1210.c
+> > index aa14edbe8a77..e1c95ec73545 100644
+> > --- a/drivers/staging/iio/resolver/ad2s1210.c
+> > +++ b/drivers/staging/iio/resolver/ad2s1210.c
+> > @@ -283,41 +283,6 @@ static ssize_t ad2s1210_clear_fault(struct device =
+*dev,
+> >       return ret < 0 ? ret : len;
+> >  }
+> >
+> > -static ssize_t ad2s1210_show_reg(struct device *dev,
+> > -                              struct device_attribute *attr,
+> > -                              char *buf)
+> > -{
+> > -     struct ad2s1210_state *st =3D iio_priv(dev_to_iio_dev(dev));
+> > -     struct iio_dev_attr *iattr =3D to_iio_dev_attr(attr);
+> > -     unsigned int value;
+> > -     int ret;
+> > -
+> > -     mutex_lock(&st->lock);
+> > -     ret =3D regmap_read(st->regmap, iattr->address, &value);
+> > -     mutex_unlock(&st->lock);
+> > -
+> > -     return ret < 0 ? ret : sprintf(buf, "%d\n", value);
+> > -}
+> > -
+> > -static ssize_t ad2s1210_store_reg(struct device *dev,
+> > -                               struct device_attribute *attr,
+> > -                               const char *buf, size_t len)
+> > -{
+> > -     struct ad2s1210_state *st =3D iio_priv(dev_to_iio_dev(dev));
+> > -     unsigned char data;
+> > -     int ret;
+> > -     struct iio_dev_attr *iattr =3D to_iio_dev_attr(attr);
+> > -
+> > -     ret =3D kstrtou8(buf, 10, &data);
+> > -     if (ret)
+> > -             return -EINVAL;
+> > -
+> > -     mutex_lock(&st->lock);
+> > -     ret =3D regmap_write(st->regmap, iattr->address, data);
+> > -     mutex_unlock(&st->lock);
+> > -     return ret < 0 ? ret : len;
+> > -}
+> > -
+> >  static int ad2s1210_single_conversion(struct ad2s1210_state *st,
+> >                                     struct iio_chan_spec const *chan,
+> >                                     int *val)
+> > @@ -743,13 +708,6 @@ static int ad2s1210_write_raw(struct iio_dev *indi=
+o_dev,
+> >  static IIO_DEVICE_ATTR(fault, 0644,
+> >                      ad2s1210_show_fault, ad2s1210_clear_fault, 0);
+> >
+> > -static IIO_DEVICE_ATTR(dos_rst_max_thrd, 0644,
+> > -                    ad2s1210_show_reg, ad2s1210_store_reg,
+> > -                    AD2S1210_REG_DOS_RST_MAX_THRD);
+> > -static IIO_DEVICE_ATTR(dos_rst_min_thrd, 0644,
+> > -                    ad2s1210_show_reg, ad2s1210_store_reg,
+> > -                    AD2S1210_REG_DOS_RST_MIN_THRD);
+> > -
+> >  static const struct iio_event_spec ad2s1210_position_event_spec[] =3D =
+{
+> >       {
+> >               /* Tracking error exceeds LOT threshold fault. */
+> > @@ -867,8 +825,6 @@ static const struct iio_chan_spec ad2s1210_channels=
+[] =3D {
+> >
+> >  static struct attribute *ad2s1210_attributes[] =3D {
+> >       &iio_dev_attr_fault.dev_attr.attr,
+> > -     &iio_dev_attr_dos_rst_max_thrd.dev_attr.attr,
+> > -     &iio_dev_attr_dos_rst_min_thrd.dev_attr.attr,
+> >       NULL,
+> >  };
+> >
+> > @@ -876,6 +832,49 @@ static const struct attribute_group ad2s1210_attri=
+bute_group =3D {
+> >       .attrs =3D ad2s1210_attributes,
+> >  };
+> >
+> > +static ssize_t event_attr_voltage_reg_show(struct device *dev,
+> > +                                        struct device_attribute *attr,
+> > +                                        char *buf)
+> > +{
+> > +     struct ad2s1210_state *st =3D iio_priv(dev_to_iio_dev(dev));
+> > +     struct iio_dev_attr *iattr =3D to_iio_dev_attr(attr);
+> > +     unsigned int value;
+> > +     int ret;
+> > +
+> > +     mutex_lock(&st->lock);
+> > +     ret =3D regmap_read(st->regmap, iattr->address, &value);
+> > +     mutex_unlock(&st->lock);
+> > +
+> > +     if (ret < 0)
+> > +             return ret;
+> > +
+> > +     return sprintf(buf, "%d\n", value * THRESHOLD_MILLIVOLT_PER_LSB);
+> > +}
+> > +
+> > +static ssize_t event_attr_voltage_reg_store(struct device *dev,
+> > +                                         struct device_attribute *attr=
+,
+> > +                                         const char *buf, size_t len)
+> > +{
+> > +     struct ad2s1210_state *st =3D iio_priv(dev_to_iio_dev(dev));
+> > +     struct iio_dev_attr *iattr =3D to_iio_dev_attr(attr);
+> > +     u16 data;
+> > +     int ret;
+> > +
+> > +     ret =3D kstrtou16(buf, 10, &data);
+> > +     if (ret)
+> > +             return -EINVAL;
+> > +
+> > +     mutex_lock(&st->lock);
+> > +     ret =3D regmap_write(st->regmap, iattr->address,
+> > +                        data / THRESHOLD_MILLIVOLT_PER_LSB);
+> > +     mutex_unlock(&st->lock);
+> > +
+> > +     if (ret < 0)
+> > +             return ret;
+> > +
+> > +     return len;
+> > +}
+> > +
+> >  static ssize_t
+> >  in_angl1_thresh_rising_value_available_show(struct device *dev,
+> >                                           struct device_attribute *attr=
+,
+> > @@ -906,6 +905,14 @@ IIO_CONST_ATTR(in_phase0_mag_value_available,
+> >  IIO_CONST_ATTR(in_altvoltage0_thresh_falling_value_available, THRESHOL=
+D_RANGE_STR);
+> >  IIO_CONST_ATTR(in_altvoltage0_thresh_rising_value_available, THRESHOLD=
+_RANGE_STR);
+> >  IIO_CONST_ATTR(in_altvoltage0_mag_value_available, THRESHOLD_RANGE_STR=
+);
+> > +IIO_DEVICE_ATTR(in_altvoltage0_mag_reset_max, 0644,
+> > +             event_attr_voltage_reg_show, event_attr_voltage_reg_store=
+,
+> > +             AD2S1210_REG_DOS_RST_MAX_THRD);
+> > +IIO_CONST_ATTR(in_altvoltage0_mag_reset_max_available, THRESHOLD_RANGE=
+_STR);
+> > +IIO_DEVICE_ATTR(in_altvoltage0_mag_reset_min, 0644,
+> > +             event_attr_voltage_reg_show, event_attr_voltage_reg_store=
+,
+> > +             AD2S1210_REG_DOS_RST_MIN_THRD);
+> > +IIO_CONST_ATTR(in_altvoltage0_mag_reset_min_available, THRESHOLD_RANGE=
+_STR);
+> >  IIO_DEVICE_ATTR_RO(in_angl1_thresh_rising_value_available, 0);
+> >  IIO_DEVICE_ATTR_RO(in_angl1_thresh_rising_hysteresis_available, 0);
 
---=-y4l/1yhdNzdAl7lnM+IJ
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
+These attribute names don't match the documentation above. :-/
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDAyMTcwNTQwWjAvBgkqhkiG9w0BCQQxIgQgA6BUzbHV
-wOpeCDYrT6IZbnC1iR49gN0za06V55zMG18wgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgA+tJDubhf7pg4cfii/BrPeipdLUIZapwaO
-7hcHgXQu6YyJrzr1GOp8etk+g3Kp3I4dCGHYSJdZAabB69Xh25+pvxZmm3yYnFrGiIv/W8UKS6i6
-YcFQL6lmY2h2PQSgcfrKv7+aDoDhWWzzKDen9wMR6wSDEaxFUCjnJ2gyy4RdgHObl5fDOEf/L5Jz
-rMd3GvEjNSDLGUTOb+eqFPq7KhkwxnoiDnXBLzUuyST5qlTOzAeeczmj0FodT6suzWXlnWWxuIdD
-4r9ni2YVU4fqmFf/zJ+/vqR4dbeMilIN6U6sZZ3iL46Q3U9i/C37cxquQraeI9MumEMLXNOQndP7
-pt6uNgaFmGCJnHZjcvXB/ROLLy+rJpNhpzlLXRb1Kji3dJ+/5gMEVR1om5CUqPsGoX6sdU8n+snn
-RngjM9pL3+0OOfiNhWvtXsIuhXq4OiXLenhdhUhi9I2eMvUc4Ya2SrKRqeUBzH4na3lFJNo3O+xh
-QrMvTcHYntcEPjwz8Hy8FBG6lDz5876xi/UiI/PsCU6d+BWgEy11wfkPCsPBT7u7MfTnZBxqUO2O
-d2m/SOPZ5OAUWmSiw1Ssd/EFa/lbNOWjI/F6zcEBq+vez4623U1mdAZVbFmlWCfsJrPBNw774oJy
-Dr/a7imMKbW8yknSBiSwRHKJP9XbL7JkcPYPFVi8aAAAAAAAAA==
-
-
---=-y4l/1yhdNzdAl7lnM+IJ--
+> >
+> > @@ -914,6 +921,10 @@ static struct attribute *ad2s1210_event_attributes=
+[] =3D {
+> >       &iio_const_attr_in_altvoltage0_thresh_falling_value_available.dev=
+_attr.attr,
+> >       &iio_const_attr_in_altvoltage0_thresh_rising_value_available.dev_=
+attr.attr,
+> >       &iio_const_attr_in_altvoltage0_mag_value_available.dev_attr.attr,
+> > +     &iio_dev_attr_in_altvoltage0_mag_reset_max.dev_attr.attr,
+> > +     &iio_const_attr_in_altvoltage0_mag_reset_max_available.dev_attr.a=
+ttr,
+> > +     &iio_dev_attr_in_altvoltage0_mag_reset_min.dev_attr.attr,
+> > +     &iio_const_attr_in_altvoltage0_mag_reset_min_available.dev_attr.a=
+ttr,
+> >       &iio_dev_attr_in_angl1_thresh_rising_value_available.dev_attr.att=
+r,
+> >       &iio_dev_attr_in_angl1_thresh_rising_hysteresis_available.dev_att=
+r.attr,
+> >       NULL,
+> >
+>
