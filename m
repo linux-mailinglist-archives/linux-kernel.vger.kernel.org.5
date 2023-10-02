@@ -2,113 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC3F7B5C10
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2BD47B5C15
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236416AbjJBU3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 16:29:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
+        id S236687AbjJBUbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 16:31:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235575AbjJBU3u (ORCPT
+        with ESMTP id S229679AbjJBUbf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 16:29:50 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B61AC
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 13:29:46 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-692a885f129so162648b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 13:29:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696278586; x=1696883386; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=l0WqvxjZPFgnTMVefi0EvUmMzg28kKmDEueowRCLoP8=;
-        b=XCHIsYi7q+fZ5DlAHRHbxyo8kSkOiKJTNaBiIGSwNLJhJ/NYEmUd3G1+UtA7ZkqSYk
-         IYzgzhWvp4F9gO+1Ea7AoAdXKOPFDllkiGDor2x6bWStVbLeJ2WJTMr1AgaJLXLbG8eC
-         7+Fq3VNzYfXltukxbu/PgVt10hhBGsoaBdRbM=
+        Mon, 2 Oct 2023 16:31:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8EA5AC
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 13:30:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696278642;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w8f6DdK1GdbJ9qglZe36tie4rL6xJEQDl6yTedgx1kc=;
+        b=ZG8y6mUhssNujKITZUqDkub4CmFHP/2vrrY5NlKnfxaq7CB36/FuoHs5GbcpVKbdEVIEnk
+        8kFk/B2Y+6vBTwkdQMKoBVZyuObOxvkXWpEOJp49stzAO8OemypjBO9yyaxntbCU8sNrf3
+        odapv21DkAPIpRVr9uN6hU+nQ5wjyLE=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-551-ByT_flPnO9C3kHAIzhv8TQ-1; Mon, 02 Oct 2023 16:30:39 -0400
+X-MC-Unique: ByT_flPnO9C3kHAIzhv8TQ-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-65b00c2cbb6so3862056d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 13:30:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696278586; x=1696883386;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l0WqvxjZPFgnTMVefi0EvUmMzg28kKmDEueowRCLoP8=;
-        b=aMDQkeNmlWEvx2DSB5jqpodlIj46O9cMXZ2FzOL1aJ0P5kQAOimRht4HE+Xw632myj
-         hV4nIfkeO0he1VeLtZm5vOZR8h5U7k0pGg9i1dSBVqc6cS/O8YQXDCjeDGMs5V/1Td6U
-         VWtUHSQ8tKtBTLZKRdeO0sd1FJRCWRHAAiENTgLYKRaNhvUyeLCD1VYZaNGmCC9h37MT
-         S9P2c+N9GyUWlK6t0N2j7xmVX10A1AEVtGcMyMh/IgDutyMEi6YbpZT1vX63aSClV0yM
-         pNZChRn5uRuFhTufoVczWfA+gTwUJQyQJ7d5Q7esMiMXUNSGVi7q5cLeVV5JQ1N38Hlc
-         0Z5g==
-X-Gm-Message-State: AOJu0YwI/rKE2/hE3Q87bUokXDBqQIFgC68BTkns8/cd2kgIKWehasLN
-        7Afb5ND4gCEo4ud00PVMhkPpgg==
-X-Google-Smtp-Source: AGHT+IH7EJAFcR/dE+fR2pl8ERxWFWJidFnQyrbZorlL1KyxD/iU349CYKdzcSGq8EAl/ms6FiBQWQ==
-X-Received: by 2002:a05:6a21:35c4:b0:165:a34a:ce20 with SMTP id ba4-20020a056a2135c400b00165a34ace20mr1436405pzc.29.1696278585958;
-        Mon, 02 Oct 2023 13:29:45 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id p23-20020a170902a41700b001c32fd9e412sm10598281plq.58.2023.10.02.13.29.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 13:29:45 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 13:29:40 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Long Li <longli@microsoft.com>,
-        Ajay Sharma <sharmaajay@microsoft.com>,
-        Alex Elder <elder@kernel.org>,
-        Pravin B Shelar <pshelar@ovn.org>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, Simon Horman <horms@kernel.org>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
-        dev@openvswitch.org, linux-parisc@vger.kernel.org,
-        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH 00/14] Batch 1: Annotate structs with __counted_by
-Message-ID: <202310021329.56BE32B19@keescook>
-References: <20230922172449.work.906-kees@kernel.org>
- <202309270854.67756EAC2@keescook>
- <20231002112635.7daf13ef@kernel.org>
+        d=1e100.net; s=20230601; t=1696278639; x=1696883439;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=w8f6DdK1GdbJ9qglZe36tie4rL6xJEQDl6yTedgx1kc=;
+        b=lm/Fzj0i0OXBKfNyqBVbUOrDw5rN4ZQMdA48LDdwTx0SCe4cR6TVuG1mvyCnio2j4b
+         edi45syjtR+icnjOLiuDr0AqiKXQNIKFyEvcTOZep8L6raGXfI7PRoYDAxnvkUpKbmsd
+         cgZ3NA3PYzXVrrBkSf2hYI9A/sErcLPvtQISAu0wmq3JU1CTulUs7dNPbsrVhor0tIuL
+         iQqo23HKk1yFYN3Nylaot+BQmGo70rNk1kBzST8dw/zKA1ayRjBNk89COsdPdWk3FfY1
+         X/1mMaxXOQeC0ZZ8/c3EpgDe3qWt4KtPkaMg9cCPVoobfcuBtqR4tmU1INS24At2W19M
+         UF3g==
+X-Gm-Message-State: AOJu0YxCncnJdYtprdz2sRha9CJSsjUXTmQstzAEHuF6TjcFShZEYibP
+        yr48hcfee2wlqwco4ICNAeD2SfXrXBn+Bvr9yUP9r5q8RpL9hi6U3bFCiHc4AOjF662MxVqH7Ur
+        s0IjokLa7sXy1ErMpXRwJC3Rd
+X-Received: by 2002:a05:6214:500b:b0:65d:343:8e50 with SMTP id jo11-20020a056214500b00b0065d03438e50mr17919986qvb.3.1696278639174;
+        Mon, 02 Oct 2023 13:30:39 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEEBzcp3LOMaX+vRfy6OADLYWwS1aUlqXi3WUStAokU3G7oCq11ynu1Wreo7RqMGIcieUkl6A==
+X-Received: by 2002:a05:6214:500b:b0:65d:343:8e50 with SMTP id jo11-20020a056214500b00b0065d03438e50mr17919965qvb.3.1696278638861;
+        Mon, 02 Oct 2023 13:30:38 -0700 (PDT)
+Received: from [10.0.0.97] ([24.225.234.80])
+        by smtp.gmail.com with ESMTPSA id h3-20020a0cf403000000b00655d711180dsm4844123qvl.17.2023.10.02.13.30.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 13:30:38 -0700 (PDT)
+Message-ID: <a2a43d5a-678d-129b-d258-d559df42431f@redhat.com>
+Date:   Mon, 2 Oct 2023 16:30:37 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231002112635.7daf13ef@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.6.0
+Subject: Re: [PATCH] tipc: fix a potential deadlock on &tx->lock
+Content-Language: en-US
+To:     Chengfeng Ye <dg573847474@gmail.com>, ying.xue@windriver.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+References: <20230927181414.59928-1-dg573847474@gmail.com>
+From:   Jon Maloy <jmaloy@redhat.com>
+In-Reply-To: <20230927181414.59928-1-dg573847474@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 11:26:35AM -0700, Jakub Kicinski wrote:
-> On Wed, 27 Sep 2023 08:57:36 -0700 Kees Cook wrote:
-> > > Since the element count member must be set before accessing the annotated
-> > > flexible array member, some patches also move the member's initialization
-> > > earlier. (These are noted in the individual patches.)  
-> > 
-> > Hi, just checking on this batch of changes. Is it possible to take the
-> > 1-13 subset:
-> 
-> On it, sorry for the delay.
 
-No worries; thanks for grabbing them!
 
--- 
-Kees Cook
+On 2023-09-27 14:14, Chengfeng Ye wrote:
+> It seems that tipc_crypto_key_revoke() could be be invoked by
+> wokequeue tipc_crypto_work_rx() under process context and
+> timer/rx callback under softirq context, thus the lock acquisition
+> on &tx->lock seems better use spin_lock_bh() to prevent possible
+> deadlock.
+>
+> This flaw was found by an experimental static analysis tool I am
+> developing for irq-related deadlock.
+>
+> tipc_crypto_work_rx() <workqueue>
+> --> tipc_crypto_key_distr()
+> --> tipc_bcast_xmit()
+> --> tipc_bcbase_xmit()
+> --> tipc_bearer_bc_xmit()
+> --> tipc_crypto_xmit()
+> --> tipc_ehdr_build()
+> --> tipc_crypto_key_revoke()
+> --> spin_lock(&tx->lock)
+> <timer interrupt>
+>     --> tipc_disc_timeout()
+>     --> tipc_bearer_xmit_skb()
+>     --> tipc_crypto_xmit()
+>     --> tipc_ehdr_build()
+>     --> tipc_crypto_key_revoke()
+>     --> spin_lock(&tx->lock) <deadlock here>
+>
+> Signed-off-by: Chengfeng Ye <dg573847474@gmail.com>
+> ---
+>   net/tipc/crypto.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/net/tipc/crypto.c b/net/tipc/crypto.c
+> index 302fd749c424..43c3f1c971b8 100644
+> --- a/net/tipc/crypto.c
+> +++ b/net/tipc/crypto.c
+> @@ -1441,14 +1441,14 @@ static int tipc_crypto_key_revoke(struct net *net, u8 tx_key)
+>   	struct tipc_crypto *tx = tipc_net(net)->crypto_tx;
+>   	struct tipc_key key;
+>   
+> -	spin_lock(&tx->lock);
+> +	spin_lock_bh(&tx->lock);
+>   	key = tx->key;
+>   	WARN_ON(!key.active || tx_key != key.active);
+>   
+>   	/* Free the active key */
+>   	tipc_crypto_key_set_state(tx, key.passive, 0, key.pending);
+>   	tipc_crypto_key_detach(tx->aead[key.active], &tx->lock);
+> -	spin_unlock(&tx->lock);
+> +	spin_unlock_bh(&tx->lock);
+>   
+>   	pr_warn("%s: key is revoked\n", tx->name);
+>   	return -EKEYREVOKED;
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+
