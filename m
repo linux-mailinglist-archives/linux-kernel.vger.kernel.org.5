@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 887D97B58FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1AEF7B58E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238694AbjJBROR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36098 "EHLO
+        id S238699AbjJBROT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238688AbjJBROP (ORCPT
+        with ESMTP id S238689AbjJBROQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:14:15 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17A5FAD
+        Mon, 2 Oct 2023 13:14:16 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F04AEB4
         for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:14:12 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-4542d7e9bcfso11776137.3
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-7743448d88eso1678585a.2
         for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:14:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1696266851; x=1696871651; darn=vger.kernel.org;
+        d=hefring-com.20230601.gappssmtp.com; s=20230601; t=1696266852; x=1696871652; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+Mtj4NCPRxZ6VOa3hAfKfXCzeZnGQjZkkPegFeXl3ak=;
-        b=dcBt5dq4PmXpgwCWCtvzziGiKdoAEkVeOXd9VspMbpP8IkbsSSzzu2iHhiTEnrrdVv
-         +pEJ5lZG0BbWwwAqA/8hjVy3mgvLUVvuTQyxlC1KM6ha8mUVopN9WHev8H1s6JGORj8V
-         gstip1+CgTy6eIxNp9cQ7gTpzxzFa81RHyfMaC4GM7mThKJGFztUhG7RH6JO8xrAAhxN
-         /TP1eSfxO9WXkJND5KtHW4VZLv9CZ8Ovnj9ga35Svm6DX5FBIONpJdd/8VMviasTGqIi
-         Qz7VoQjn3El8RTPnyOHtIU4hVS73cCislSYskBuCLPBtexiG1wUNrcEmnIgCWeUAH3a/
-         yuLQ==
+        bh=VNHPyhjdF/EgT+ErFOTgdy7sUGT7qrL3KrhKOabumMM=;
+        b=3Q7p9Vs6ZUAhXoLxBH4lY6C8TpXPwgB6/rLWkRUx1+uT6oD1C5uvWxOI26GF4jbKuP
+         wY0WoaiapG7xc476R9laabv9BmPsjXF5CbCWAk11qexHyHWOmejzQJ+dmOntlCdcZxyp
+         3a7Fk7KWzT6K4hZkpNy+bDpIRwVtwYoVGIZsawEgwXM4N90cHGuskIDt9jch7dTRpjqY
+         QAtEHJPC4q6ODZJYN2VrddL4J1tMUtv18IIhawSWddU88iJTxHN3bABsL6KcWXEK2XTH
+         12aiCNx660077jS9+gx733S+VOu67sSA7Q9EsY+dp0eAzMxaER9GJkpH5rGKim46Sed1
+         ePOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696266851; x=1696871651;
+        d=1e100.net; s=20230601; t=1696266852; x=1696871652;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+Mtj4NCPRxZ6VOa3hAfKfXCzeZnGQjZkkPegFeXl3ak=;
-        b=YMGskO30q9cm1fDkz51tYfrIw97blpJ4TBxLl7kscGNKBXmS4QIN44e2rVdDfI/WOv
-         SPK47HrQ5qkcXLutXGINzskKbh6/TM+RB4q+UpJZPtvoFJHfqvIspJS61b3P/fkrVt42
-         eOMdcGJKRBB8+NQpPSQmYumRa0TRJYrXzq9sVk4eUEfiDnv5DkafPvN7nTf6SiYr9/qd
-         dEKISiMxH4iy1KKzo7iGRfjSgkOjW7FGBUBLgfi4QJDfYtGb/YwyI0E0ghZdjQ3TVhGn
-         AajmqlOhJExmoXoOWcHzCbN2a4ez5AfOe1IdZ65TNmdIHR5aoQgylI3Y3cOvIHbq82r9
-         faQg==
-X-Gm-Message-State: AOJu0YySKKCQ64rO9OrdxVdD6fwmiOfo8uKEngQtTxsISf4/0EVB50Jy
-        VlWlHeHGsUCMcx4X5I2rL07f4A==
-X-Google-Smtp-Source: AGHT+IH3XNpYfmGvb7OL9Qkhu2zYZC2IvCPU6H6n+N4txNDekG4/DSCJW9S/TxcZ4yyvcTicsIFB7Q==
-X-Received: by 2002:a67:e8d0:0:b0:452:8717:1fa3 with SMTP id y16-20020a67e8d0000000b0045287171fa3mr10481368vsn.3.1696266850932;
-        Mon, 02 Oct 2023 10:14:10 -0700 (PDT)
+        bh=VNHPyhjdF/EgT+ErFOTgdy7sUGT7qrL3KrhKOabumMM=;
+        b=AXRt45O05rDV0l03neChim8dFRt9F/VUys7quGvJQbpRpoQvntzLu9zM5TTP0Onr3G
+         WONq8JCu48dCW2GV0eAHFWj+XXpL6aC9hB7sMu3uk4ZKP5HtG3POGRt4JB99VAE3mDtJ
+         i6bgvcPM7ufyHrDyMxe97OLapM0sQwIf7KEjoq9UX1Gmu2Tfj1wUISI7h/St7PUBU0pE
+         3bAQ3YQDGPCDN2iC6KJa5l9IBXPduJZhL5INbppxoRKBSbTMkZ4cafIiMQhSq43r7BpW
+         lm2QmEKMZO+N3DJy6kjOSxcM5Xs14boSaOzy1+HzWJHhDtZcKHxmhdRZezqr2qbP5oIE
+         1bTA==
+X-Gm-Message-State: AOJu0YzuY5W9R3T+STW7/wNl6OITf1VnW+H+/hiXdq6pMfk7eqhc6trz
+        P2G4s6GWiTz8fEwskh9DrWdC0Q==
+X-Google-Smtp-Source: AGHT+IEWK9INZfqH54sojbPPQ04UX+zsKbgvbESo0CRSHjzA94kt7jBUvnzEPtI2+sJX7off71P2Fw==
+X-Received: by 2002:a05:620a:25ce:b0:76d:2f15:56a9 with SMTP id y14-20020a05620a25ce00b0076d2f1556a9mr12871693qko.31.1696266852065;
+        Mon, 02 Oct 2023 10:14:12 -0700 (PDT)
 Received: from localhost.localdomain ([50.212.55.89])
-        by smtp.gmail.com with ESMTPSA id dy52-20020a05620a60f400b007678973eaa1sm9132660qkb.127.2023.10.02.10.14.09
+        by smtp.gmail.com with ESMTPSA id dy52-20020a05620a60f400b007678973eaa1sm9132660qkb.127.2023.10.02.10.14.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 10:14:10 -0700 (PDT)
+        Mon, 02 Oct 2023 10:14:11 -0700 (PDT)
 From:   Ben Wolsieffer <ben.wolsieffer@hefring.com>
 To:     linux-stm32@st-md-mailman.stormreply.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -60,9 +60,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         Maxime Coquelin <mcoquelin.stm32@gmail.com>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
         Ben Wolsieffer <ben.wolsieffer@hefring.com>
-Subject: [PATCH 1/2] ARM: dts: stm32: add stm32f7 SDIO sleep pins
-Date:   Mon,  2 Oct 2023 13:13:38 -0400
-Message-ID: <20231002171339.1594470-2-ben.wolsieffer@hefring.com>
+Subject: [PATCH 2/2] ARM: dts: stm32: add SDIO pinctrl sleep support on stm32f7 boards
+Date:   Mon,  2 Oct 2023 13:13:39 -0400
+Message-ID: <20231002171339.1594470-3-ben.wolsieffer@hefring.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231002171339.1594470-1-ben.wolsieffer@hefring.com>
 References: <20231002171339.1594470-1-ben.wolsieffer@hefring.com>
@@ -77,54 +77,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SDIO sleep pin definitions that place the pins in analog mode to
-save power.
+Use the new analog mode SDIO pin definitions on the STM32F7 boards.
 
 Signed-off-by: Ben Wolsieffer <ben.wolsieffer@hefring.com>
 ---
- arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ arch/arm/boot/dts/st/stm32746g-eval.dts  | 3 ++-
+ arch/arm/boot/dts/st/stm32f746-disco.dts | 3 ++-
+ arch/arm/boot/dts/st/stm32f769-disco.dts | 3 ++-
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi b/arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi
-index 9f65403295ca..26f91ca0d458 100644
---- a/arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi
-+++ b/arch/arm/boot/dts/st/stm32f7-pinctrl.dtsi
-@@ -253,6 +253,17 @@ pins2 {
- 				};
- 			};
+diff --git a/arch/arm/boot/dts/st/stm32746g-eval.dts b/arch/arm/boot/dts/st/stm32746g-eval.dts
+index a293e65141c6..e9ac37b6eca0 100644
+--- a/arch/arm/boot/dts/st/stm32746g-eval.dts
++++ b/arch/arm/boot/dts/st/stm32746g-eval.dts
+@@ -188,9 +188,10 @@ &sdio1 {
+ 	status = "okay";
+ 	vmmc-supply = <&mmc_vcard>;
+ 	broken-cd;
+-	pinctrl-names = "default", "opendrain";
++	pinctrl-names = "default", "opendrain", "sleep";
+ 	pinctrl-0 = <&sdio_pins_a>;
+ 	pinctrl-1 = <&sdio_pins_od_a>;
++	pinctrl-2 = <&sdio_pins_sleep_a>;
+ 	bus-width = <4>;
+ };
  
-+			sdio_pins_sleep_a: sdio-pins-sleep-a-0 {
-+				pins {
-+					pinmux = <STM32_PINMUX('C', 8, ANALOG)>, /* SDMMC1 D0 */
-+						 <STM32_PINMUX('C', 9, ANALOG)>, /* SDMMC1 D1 */
-+						 <STM32_PINMUX('C', 10, ANALOG)>, /* SDMMC1 D2 */
-+						 <STM32_PINMUX('C', 11, ANALOG)>, /* SDMMC1 D3 */
-+						 <STM32_PINMUX('C', 12, ANALOG)>, /* SDMMC1 CLK */
-+						 <STM32_PINMUX('D', 2, ANALOG)>; /* SDMMC1 CMD */
-+				};
-+			};
-+
- 			sdio_pins_b: sdio-pins-b-0 {
- 				pins {
- 					pinmux = <STM32_PINMUX('G', 9, AF11)>, /* SDMMC2 D0 */
-@@ -284,6 +295,17 @@ pins2 {
- 				};
- 			};
+diff --git a/arch/arm/boot/dts/st/stm32f746-disco.dts b/arch/arm/boot/dts/st/stm32f746-disco.dts
+index c11616ed5fc6..b50461d676a7 100644
+--- a/arch/arm/boot/dts/st/stm32f746-disco.dts
++++ b/arch/arm/boot/dts/st/stm32f746-disco.dts
+@@ -103,9 +103,10 @@ &sdio1 {
+ 	status = "okay";
+ 	vmmc-supply = <&mmc_vcard>;
+ 	cd-gpios = <&gpioc 13 GPIO_ACTIVE_LOW>;
+-	pinctrl-names = "default", "opendrain";
++	pinctrl-names = "default", "opendrain", "sleep";
+ 	pinctrl-0 = <&sdio_pins_a>;
+ 	pinctrl-1 = <&sdio_pins_od_a>;
++	pinctrl-2 = <&sdio_pins_sleep_a>;
+ 	bus-width = <4>;
+ };
  
-+			sdio_pins_sleep_b: sdio-pins-sleep-b-0 {
-+				pins {
-+					pinmux = <STM32_PINMUX('G', 9, ANALOG)>, /* SDMMC2 D0 */
-+						 <STM32_PINMUX('G', 10, ANALOG)>, /* SDMMC2 D1 */
-+						 <STM32_PINMUX('B', 3, ANALOG)>, /* SDMMC2 D2 */
-+						 <STM32_PINMUX('B', 4, ANALOG)>, /* SDMMC2 D3 */
-+						 <STM32_PINMUX('D', 6, ANALOG)>, /* SDMMC2 CLK */
-+						 <STM32_PINMUX('D', 7, ANALOG)>; /* SDMMC2 CMD */
-+				};
-+			};
-+
- 			can1_pins_a: can1-0 {
- 				pins1 {
- 					pinmux = <STM32_PINMUX('A', 12, AF9)>; /* CAN1_TX */
+diff --git a/arch/arm/boot/dts/st/stm32f769-disco.dts b/arch/arm/boot/dts/st/stm32f769-disco.dts
+index b038d0ed39e8..5d12ae25b327 100644
+--- a/arch/arm/boot/dts/st/stm32f769-disco.dts
++++ b/arch/arm/boot/dts/st/stm32f769-disco.dts
+@@ -131,9 +131,10 @@ &sdio2 {
+ 	vmmc-supply = <&mmc_vcard>;
+ 	cd-gpios = <&gpioi 15 GPIO_ACTIVE_LOW>;
+ 	broken-cd;
+-	pinctrl-names = "default", "opendrain";
++	pinctrl-names = "default", "opendrain", "sleep";
+ 	pinctrl-0 = <&sdio_pins_b>;
+ 	pinctrl-1 = <&sdio_pins_od_b>;
++	pinctrl-2 = <&sdio_pins_sleep_b>;
+ 	bus-width = <4>;
+ };
+ 
 -- 
 2.42.0
 
