@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7C917B509C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CA77B50A0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:49:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236544AbjJBKtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 06:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44390 "EHLO
+        id S236555AbjJBKtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 06:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236495AbjJBKtA (ORCPT
+        with ESMTP id S236547AbjJBKtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 06:49:00 -0400
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050:0:465::201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2120B0
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 03:48:55 -0700 (PDT)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 2 Oct 2023 06:49:02 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 404DDAB;
+        Mon,  2 Oct 2023 03:48:59 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4Rzd3h1N5yz9shG;
-        Mon,  2 Oct 2023 12:48:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1696243728;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aKQIXYEpE/9OswE+cL5Gpii4j2iJ/oBrPTa1hkC9W2Q=;
-        b=Lu8JYA6L58FS3IbDEJ95v5ZZAHqVj2M/9SqMC880LS5F1ZHqlt6GyE1lEaOtqYnfLkhrLG
-        cH1P1LPiqTBQcJWBIaoqINbqqaLk/6wgGu3CfSTZIrDjO7TWhLHpfuaQ7w0beJBH8NkneN
-        GW8cD5NhEc96hCbus98+hlkwnpN8eeB1tT8K0o6BEOBtOx014gCm5j+SouRs7nc7yMfn+i
-        ZyITZ/P+JF04AX8Ao/NdJk/fnTLhUs5Xefg2tUfOAqcQ++xcdq/1T9Qibl5KCthewHxXkv
-        EZyUDkNDrUegtclxKvTFGUK8m2uDlRrDI74XzCSSGpUZmRtHkGeJz2ra9lg/HA==
-Message-ID: <39342931-1716-bf53-62d7-613b1191f60a@mailbox.org>
-Date:   Mon, 2 Oct 2023 12:48:44 +0200
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6D6AC6607243;
+        Mon,  2 Oct 2023 11:48:57 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696243738;
+        bh=7FCl16Mw64i/EfJ6OQlYS83PjShxYQyaVY0iisClkvs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=iaaC3T9MOdFWNSdt8GwXYT3PmeNwtdCQBBoj5cz7A3PFEyv6F1VIK6culpzUe0MkY
+         gzLD0lPwDmSotUujazj0MwoM9+rTJYbEXKYW3KKB1V6PRQm4xElNUCsalQGLOpG2Qa
+         wR3fhOvQikkkXUNHMf/ug8Zz2v/yNb9QcWiLW4bWT1auKzZXJamWTIHEqUKOKKZB1/
+         r8fRqvlTLdh5ydNeDwr0naOpXO7rF1MMVIHTUNhsyvXZEcCo45cTCeAr7adLKesTl5
+         U6a3TbF1v90MyBnmuKQvNgmYE4mONST5hJyu3brRkEWCKAQiJHzYSaE2gEymlXhZ5Z
+         /3B+BDyVA2rug==
+Message-ID: <633d4544-e215-2742-a4c0-81698607e830@collabora.com>
+Date:   Mon, 2 Oct 2023 12:48:55 +0200
 MIME-Version: 1.0
-Subject: Re: [PATCH] Revert "drm/amd/display: Check all enabled planes in
- dm_check_crtc_cursor"
-Content-Language: en-CA
-To:     Hamza Mahfooz <hamza.mahfooz@amd.com>
-Cc:     Stylon Wang <stylon.wang@amd.com>, Ivan Lipski <ivlipski@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Alex Hung <alex.hung@amd.com>,
-        =?UTF-8?Q?Michel_D=c3=a4nzer?= <mdaenzer@redhat.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>, amd-gfx@lists.freedesktop.org,
-        Daniel Vetter <daniel@ffwll.ch>, Wayne Lin <wayne.lin@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-References: <20230929204120.120795-1-hamza.mahfooz@amd.com>
- <2a8ebf1a-0d74-e068-6d68-de0ecae9bdf1@mailbox.org>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
-In-Reply-To: <2a8ebf1a-0d74-e068-6d68-de0ecae9bdf1@mailbox.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-MBO-RS-META: 4wx17h8uorgrg4ynpwwk343ayfcp7oii
-X-MBO-RS-ID: c5a17bc6f1869c534c6
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 2/2] media: mediatek: vcodec: Handle encoder vsi NULL
+ pointer case
+Content-Language: en-US
+To:     Irui Wang <irui.wang@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        nicolas.dufresne@collabora.com,
+        Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Project_Global_Chrome_Upstream_Group@mediatek.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Maoguang Meng <maoguang.meng@mediatek.com>
+References: <20230926101909.15030-1-irui.wang@mediatek.com>
+ <20230926101909.15030-2-irui.wang@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230926101909.15030-2-irui.wang@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/23 12:05, Michel Dänzer wrote:
-> On 9/29/23 22:41, Hamza Mahfooz wrote:
->> From: Ivan Lipski <ivlipski@amd.com>
->>
->> This reverts commit 45e1ade04b4d60fe5df859076005779f27c4c9be.
->>
->> Since, it causes the following IGT tests to fail:
->> kms_cursor_legacy@cursor-vs-flip.*
->> kms_cursor_legacy@flip-vs-cursor.*
+Il 26/09/23 12:19, Irui Wang ha scritto:
+> There will be a kernel null pointer exception if 'vsi' is NULL, check
+> 'vsi' is not NULL before assign it to encoder instance.
 > 
-> Any information about how those tests fail? Maybe they accidentally rely on the broken behaviour?
+> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
 
-I was able to reproduce, that doesn't seem to be the case. They just rely on multiple legacy cursor ioctl calls being able to complete between consecutive flips, which I suppose is broken by always pulling in non-cursor plane state with any cursor plane state changes.
-
-I'll see if I can find a better solution. Meanwhile,
-
-Acked-by: Michel Dänzer <mdaenzer@redhat.com>
-
-for the revert.
-
-
--- 
-Earthling Michel Dänzer            |                  https://redhat.com
-Libre software enthusiast          |         Mesa and Xwayland developer
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
