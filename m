@@ -2,136 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 999307B4E65
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 937B17B4E83
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235985AbjJBI7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 04:59:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41610 "EHLO
+        id S235945AbjJBJCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:02:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235950AbjJBI7V (ORCPT
+        with ESMTP id S230033AbjJBJCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 04:59:21 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F6F2E9;
-        Mon,  2 Oct 2023 01:59:18 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id B38C11F459;
-        Mon,  2 Oct 2023 08:59:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1696237156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qcPUbGA1OPBhP970rKA5RR3bhU0HBzoEh7CfM2ZP+Pw=;
-        b=v0I03Ls8yUYfs3AcIaerQ80e6MnUB/wuZoOr+ergWAhoVegiTUhbXD2++Vnyr444VoiOsQ
-        K7JwuedU9aqrhLk9uXsd0Sz2i8XEAV2gYnE1qm4VTl42UoOvf6sG1y4ZXwjheRrEMbSSvW
-        Is9pBdnECCIkR4/vXFemyefhMpBSne0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1696237156;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qcPUbGA1OPBhP970rKA5RR3bhU0HBzoEh7CfM2ZP+Pw=;
-        b=WnXC6kKTWlSx72JCw94CzdZAB7aOBIjwRqcqMUyNvQQ7gEUYmWD/vthTIJjoGL+wCdzpIz
-        N1ON2JtlwxsIL9Cw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 33EAB13456;
-        Mon,  2 Oct 2023 08:59:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id W8xPCGSGGmVKNQAAMHmgww
-        (envelope-from <hare@suse.de>); Mon, 02 Oct 2023 08:59:16 +0000
-Message-ID: <0e0040be-0375-4461-914d-1ea9d04ee62c@suse.de>
-Date:   Mon, 2 Oct 2023 10:59:15 +0200
+        Mon, 2 Oct 2023 05:02:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49D4FA4;
+        Mon,  2 Oct 2023 02:02:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FE7CC433C8;
+        Mon,  2 Oct 2023 09:02:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696237361;
+        bh=smbdD+CUEQ4ahMF3RqsYVNHHjGroQxTTaWRgCAR/D24=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nMX+58jl6hq9UFJUHZd1tjzFPgSTOpSlydUnTfJQnD4JkBTo1W3OhKwdiqRz3OSHL
+         5qGb/GMTdZ1Zi7txcN44MpKcZqjCquccKdPkeOQfVVDMci/1xfBziuQgAa/1GdsgkO
+         fTB8auP7M3L0i1rXICcsdIgBp+nJtQayOSXiZzAY=
+Date:   Mon, 2 Oct 2023 11:02:38 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        "j.granados@samsung.com" <j.granados@samsung.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "josh@joshtriplett.org" <josh@joshtriplett.org>,
+        Kees Cook <keescook@chromium.org>,
+        Phillip Potter <phil@philpotter.co.uk>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Arnd Bergmann <arnd@arndb.de>, Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Doug Gilbert <dgilbert@interlog.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Corey Minyard <minyard@acm.org>, Theodore Ts'o <tytso@mit.edu>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Robin Holt <robinmholt@gmail.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Russ Weight <russell.h.weight@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Song Liu <song@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "openipmi-developer@lists.sourceforge.net" 
+        <openipmi-developer@lists.sourceforge.net>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH 04/15] tty: Remove now superfluous sentinel element from
+ ctl_table array
+Message-ID: <2023100252-plod-user-4504@gregkh>
+References: <20230928-jag-sysctl_remove_empty_elem_drivers-v1-0-e59120fca9f9@samsung.com>
+ <20230928-jag-sysctl_remove_empty_elem_drivers-v1-4-e59120fca9f9@samsung.com>
+ <63e7a4fe-58c9-470e-84c2-dd92e76462ae@kernel.org>
+ <4d7bf39e-e7f9-f497-13aa-73718456a653@csgroup.eu>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] cnic,bnx2,bnx2x: use UIO_MEM_DMA_COHERENT
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jerry Snitselaar <jsnitsel@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Chris Leech <cleech@redhat.com>,
-        Rasesh Mody <rmody@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        Manish Chopra <manishc@marvell.com>,
-        Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        John Meneghini <jmeneghi@redhat.com>,
-        Lee Duncan <lduncan@suse.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Hannes Reinecke <hare@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230929170023.1020032-1-cleech@redhat.com>
- <20230929170023.1020032-4-cleech@redhat.com>
- <2023093055-gotten-astronomy-a98b@gregkh>
- <ZRhmqBRNUB3AfLv/@rhel-developer-toolbox>
- <2023093002-unlighted-ragged-c6e1@gregkh>
- <e0360d8f-6d36-4178-9069-d633d9b7031d@suse.de>
- <2023100114-flatware-mourner-3fed@gregkh>
- <7pq4ptas5wpcxd3v4p7iwvgoj7vrpta6aqfppqmuoccpk4mg5t@fwxm3apjkez3>
- <20231002060424.GA781@lst.de>
- <tf2zu6gqaii2bjipbo2mn2hz64px2624rfcmyg36rkq4bskxiw@zgjzznig6e22>
- <2023100233-salsa-joyous-6d8c@gregkh>
-From:   Hannes Reinecke <hare@suse.de>
-In-Reply-To: <2023100233-salsa-joyous-6d8c@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4d7bf39e-e7f9-f497-13aa-73718456a653@csgroup.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/23 10:46, Greg Kroah-Hartman wrote:
-> On Mon, Oct 02, 2023 at 12:50:21AM -0700, Jerry Snitselaar wrote:
->> On Mon, Oct 02, 2023 at 08:04:24AM +0200, Christoph Hellwig wrote:
->>> On Sun, Oct 01, 2023 at 07:22:36AM -0700, Jerry Snitselaar wrote:
->>>> Changes last year to the dma-mapping api to no longer allow __GFP_COMP,
->>>> in particular these two (from the e529d3507a93 dma-mapping pull for
->>>> 6.2):
->>>
->>> That's complete BS.  The driver was broken since day 1 and always
->>> ignored the DMA API requirement to never try to grab the page from the
->>> dma coherent allocation because you generally speaking can't.  It just
->>> happened to accidentally work the trivial dma coherent allocator that
->>> is used on x86.
->>>
->>
->> re-sending since gmail decided to not send plain text:
->>
->> Yes, I agree that it has been broken and misusing the API. Greg's
->> question was what changed though, and it was the clean up of
->> __GFP_COMP in dma-mapping that brought the problem in the driver to
->> light.
->>
->> I already said the other day that cnic has been doing this for 14
->> years. I'm not blaming you or your __GFP_COMP cleanup commits, they
->> just uncovered that cnic was doing something wrong. My apologies if
->> you took it that way.
+On Mon, Oct 02, 2023 at 08:47:53AM +0000, Christophe Leroy wrote:
 > 
-> As these devices aren't being made anymore, and this api is really not a
-> good idea in the first place, why don't we just leave it broken and see
-> if anyone notices?
 > 
-Guess what triggered this mail thread.
-Some customers did notice.
+> Le 02/10/2023 à 10:17, Jiri Slaby a écrit :
+> > On 28. 09. 23, 15:21, Joel Granados via B4 Relay wrote:
+> >> From: Joel Granados <j.granados@samsung.com>
+> >>
+> >> This commit comes at the tail end of a greater effort to remove the
+> >> empty elements at the end of the ctl_table arrays (sentinels) which
+> >> will reduce the overall build time size of the kernel and run time
+> >> memory bloat by ~64 bytes per sentinel (further information Link :
+> >> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
+> >>
+> >> Remove sentinel from tty_table
+> >>
+> >> Signed-off-by: Joel Granados <j.granados@samsung.com>
+> >> ---
+> >>   drivers/tty/tty_io.c | 3 +--
+> >>   1 file changed, 1 insertion(+), 2 deletions(-)
+> >>
+> >> diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+> >> index 8a94e5a43c6d..2f925dc54a20 100644
+> >> --- a/drivers/tty/tty_io.c
+> >> +++ b/drivers/tty/tty_io.c
+> >> @@ -3607,8 +3607,7 @@ static struct ctl_table tty_table[] = {
+> >>           .proc_handler    = proc_dointvec,
+> >>           .extra1        = SYSCTL_ZERO,
+> >>           .extra2        = SYSCTL_ONE,
+> >> -    },
+> >> -    { }
+> >> +    }
+> > 
+> > Why to remove the comma? One would need to add one when adding a new entry?
+> 
+> Does it make any difference at all ?
+> 
+> In one case you have:
+> 
+> @xxxx
+>   		something old,
+>   	},
+> +	{
+> +		something new,
+> +	},
+>   }
+> 
+> In the other case you have:
+> 
+> @xxxx
+>   		something old,
+> + 	},
+> +	{
+> +		something new,
+>   	}
+>   }
 
-Problem is that these devices were built as the network interface in 
-some bladecenter machines, so you can't just replace them with a 
-different Ethernet card.
+Because that way it is obvious you are only touching the "something new"
+lines and never have to touch the "something old" ones.
 
-Cheers,
+It's just a long-standing tradition in Linux, don't have an extra
+character if you don't need it :)
 
-Hannes
+thanks,
 
+greg k-h
