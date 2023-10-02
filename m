@@ -2,138 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6601D7B4CC5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:43:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E8A7B4CD5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235784AbjJBHnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 03:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41604 "EHLO
+        id S230019AbjJBHue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 03:50:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbjJBHns (ORCPT
+        with ESMTP id S229712AbjJBHud (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 03:43:48 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48AAFAB;
-        Mon,  2 Oct 2023 00:43:45 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5041bb9ce51so24792726e87.1;
-        Mon, 02 Oct 2023 00:43:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696232623; x=1696837423; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o+nReRagUozu8z0tWV2+jg0w12ucMifR6ov/hT+a2As=;
-        b=VftKKsWBUF+XRm4W5NE1Ov/odMnZ4R7qFW3EfbzgyrDetMxcJOUP+BDIyDzaO3Wcp3
-         WyipHmZvm4WU3+Ya3e4fwHuenB0VonlVSRflko2/5q8GKWaVD3Z8w2cApiR88dcr0RUU
-         XNqPyobqMS3n/1vDo7ohiSYuX4rBMqyj25kAYSvXXXgqGaTThWbD2PNm0R/w5WPO8T2C
-         88O3opfHZ4Dyqs9u9QsAs8DiqALbm4s+x9SlVo3a/zSPxBi3Xp9SWqgOahIKsdasNLuD
-         WwZd8Q8Wqufeuk+LWXJ4t1vmDKliaaZqqvDkmphdg/ZfAMYlOD07Iesg5zmuU2ZghGYO
-         sFDQ==
+        Mon, 2 Oct 2023 03:50:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF77ABF
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:49:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696232983;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=R3pNKxFBUrDFcUW5mxBwAPe/18s1s98AEQ79l0wt2AA=;
+        b=Qm9tqKZYABYPRb7sor+tDQnl6L/WGtTQSAzPudhaNhph4w8/WYZ+IFnU2VpsdXnreye4oF
+        pCJcAafjCtfUjiwklDp/EFuDg9arhxBC2k29qzqU/ueuOfKb0JiHc9NcUuwvJct5Wspr9D
+        q66yzEX3PVybY3+1o6rC7327pUlciG8=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-308-rF3EJqj9NCWQvwEYOultqw-1; Mon, 02 Oct 2023 03:49:42 -0400
+X-MC-Unique: rF3EJqj9NCWQvwEYOultqw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3217fdf913dso12018498f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:49:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696232623; x=1696837423;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o+nReRagUozu8z0tWV2+jg0w12ucMifR6ov/hT+a2As=;
-        b=NmEHQhJYmSFSfOo32v0rtzzZEhftIZbfggMU9iufAW4xzWSD7bqcBeqfgBemll1UGf
-         bphTj7Lb9Cby4axR35hAElhJ/+omr4z6aCqg8AW978rnf1U5uia0r+OxowUXdHBsi7OI
-         QhyfT9Fk77uuqyYUkV9qghkiKV2gdycwBx9xH+agXTzxCwXAk9OchMehZh9ntdVmqR4v
-         EBdGz4fxcaQ8copA3zNuu65MZbt2DtCbyquLARCZl9OZC5yIg0+xQk9jKs9jsJoKESRj
-         4UG7QU+kASBVlu9VgQw1AO+WI/+zygjImI/SWBlZJBru/yMa/HGyeILugVquPyAkT+Td
-         D26Q==
-X-Gm-Message-State: AOJu0YwnqItfeIVCH5iLM87ZzT4sCI3ABd233sIdLb8tORIWHSNr2vOl
-        8pX6vVlJowqh4FXVYycTTIGcvPiA6iI=
-X-Google-Smtp-Source: AGHT+IEEisoHnB4dHSYvzwRawwJ8vQwMufIusH62krxfUfH8omy30RCu3+e/jnlvbnT0qcWMK+gjsQ==
-X-Received: by 2002:a19:7b0b:0:b0:503:1ca6:c590 with SMTP id w11-20020a197b0b000000b005031ca6c590mr6238199lfc.22.1696232623342;
-        Mon, 02 Oct 2023 00:43:43 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id a11-20020a05600c2d4b00b004065daba6casm6541786wmg.46.2023.10.02.00.43.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 00:43:42 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 08:43:41 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] mmap: Fix error paths with dup_anon_vma()
-Message-ID: <6f85e46d-78e3-426d-9a24-3aadfd91bdc6@lucifer.local>
-References: <20230929183041.2835469-1-Liam.Howlett@oracle.com>
- <20230929183041.2835469-3-Liam.Howlett@oracle.com>
- <843f059f-dd54-4481-b46a-e87e56274db3@lucifer.local>
- <db77d8e7-4b29-2348-c034-3a2cf120b7b2@suse.cz>
+        d=1e100.net; s=20230601; t=1696232981; x=1696837781;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R3pNKxFBUrDFcUW5mxBwAPe/18s1s98AEQ79l0wt2AA=;
+        b=vYkz64TuoaxZmA3Z7CfOmlTYHP+kp/gNTt/StrFjfFCpLj2PnvjdFi1eUeFNIkPr57
+         axepsnRgDL+eBxk02ihKXI/h8FJqMYAIG0Vs512F9fPW74MegbfyxSYc7R51Z9q2FdqN
+         ttN7ts9UPz4UPrf/Zug+MSw4oVWdUEZdqit3RpuGcY8kD/HHbVL3hBqp4cY6Nke8SQ+h
+         aFyXt4BMB9OBUcrcoIoLKTnhxS//gX7iXhXRfS78nH6EDSThwGmHiXsofF1iqyL0eK2U
+         Djj0JO+/8n0rOwDUw4ZkMsM9XEd2tpM8WnjtsQHQ5OH64SEi3Z0+QPgIC8cyirME1DO4
+         u1WQ==
+X-Gm-Message-State: AOJu0Yzka0fK+Crwho+U3N4+iOUrSWMtBwAeUBmO60IBtYKdNUJ3ckkd
+        nRZw+zP71hfZi8b6jsy1K6NnGf1RKEKbiNbcD/PUlNAttyajfNNcCSQRAwcDti/YGsMxWeRhJT7
+        DuK0b3Q2DfzGjYgVUnPVk7j50
+X-Received: by 2002:adf:cd0a:0:b0:31f:f982:5395 with SMTP id w10-20020adfcd0a000000b0031ff9825395mr10301916wrm.35.1696232981321;
+        Mon, 02 Oct 2023 00:49:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFLBiLwKVSTk/G8HcTeWj03aHPuB2YTlSJwfNO0ffMI/phA6rHC95xmGQ2ps9Gau1Kj+UL4rw==
+X-Received: by 2002:adf:cd0a:0:b0:31f:f982:5395 with SMTP id w10-20020adfcd0a000000b0031ff9825395mr10301886wrm.35.1696232980873;
+        Mon, 02 Oct 2023 00:49:40 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c735:f200:cb49:cb8f:88fc:9446? (p200300cbc735f200cb49cb8f88fc9446.dip0.t-ipconnect.de. [2003:cb:c735:f200:cb49:cb8f:88fc:9446])
+        by smtp.gmail.com with ESMTPSA id s5-20020adf9785000000b003232380ffd7sm19386758wrb.102.2023.10.02.00.49.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 00:49:40 -0700 (PDT)
+Message-ID: <56c63536-3947-49b3-d271-6092e50474ec@redhat.com>
+Date:   Mon, 2 Oct 2023 09:49:38 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <db77d8e7-4b29-2348-c034-3a2cf120b7b2@suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
+Content-Language: en-US
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Suren Baghdasaryan <surenb@google.com>,
+        Jann Horn <jannh@google.com>, akpm@linux-foundation.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, hughd@google.com,
+        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
+        willy@infradead.org, Liam.Howlett@oracle.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <20230923013148.1390521-1-surenb@google.com>
+ <20230923013148.1390521-3-surenb@google.com>
+ <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
+ <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com>
+ <CAJuCfpHf6BWaf_k5dBx7mAz49kF5BwBhW_mUxu4E_p2iAy9-iA@mail.gmail.com>
+ <9101f70c-0c0a-845b-4ab7-82edf71c7bac@redhat.com> <ZRXNVGI73SfX1lu4@x1n>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <ZRXNVGI73SfX1lu4@x1n>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 09:26:03AM +0200, Vlastimil Babka wrote:
-> On 9/30/23 00:28, Lorenzo Stoakes wrote:
-> > On Fri, Sep 29, 2023 at 02:30:40PM -0400, Liam R. Howlett wrote:
-> >> When the calling function fails after the dup_anon_vma(), the
-> >> duplication of the anon_vma is not being undone.  Add the necessary
-> >> unlink_anon_vma() call to the error paths that are missing them.
-> >>
-> >> This issue showed up during inspection of the error path in vma_merge()
-> >> for an unrelated vma iterator issue.
-> >>
-> >> Users may experience increased memory usage, which may be problematic as
-> >> the failure would likely be caused by a low memory situation.
-> >>
-> >> Fixes: d4af56c5c7c6 ("mm: start tracking VMAs with maple tree")
-> >> Cc: stable@vger.kernel.org
-> >> Cc: Jann Horn <jannh@google.com>
-> >> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-> >> ---
-> >>  mm/mmap.c | 30 ++++++++++++++++++++++--------
-> >>  1 file changed, 22 insertions(+), 8 deletions(-)
-> >>
-> >> diff --git a/mm/mmap.c b/mm/mmap.c
-> >> index acb7dea49e23..f9f0a5fe4db4 100644
-> >> --- a/mm/mmap.c
-> >> +++ b/mm/mmap.c
-> >> @@ -583,11 +583,12 @@ static inline void vma_complete(struct vma_prepare *vp,
-> >>   * dup_anon_vma() - Helper function to duplicate anon_vma
-> >>   * @dst: The destination VMA
-> >>   * @src: The source VMA
-> >> + * @dup: Pointer to the destination VMA when successful.
-> >>   *
-> >>   * Returns: 0 on success.
-> >
-> > Being a bit nitpicky/refactory here, but anon_vma_clone() appears to have
-> > two possible return values - 0 for success, and -ENOMEM.
-> >
-> > As a result, it's not really gaining us much passing through this value.
-> >
-> > It'd be nice if dup_anon_vma() and anon_vma_clone() were therefore updated
-> > to instead return NULL on ENOMEM and the dst otherwise.
->
-> But we also need to represent that dup_anon_vma() had nothing to do, because
-> "(src->anon_vma && !dst->anon_vma)" was false, and in that case we should
-> not be returning dst from there?
->
-> So maybe we could return NULL for that case and ERR_PTR(ret) for the -ENOMEM
-> from anon_vma_clone() ?
+On 28.09.23 21:00, Peter Xu wrote:
+> On Thu, Sep 28, 2023 at 07:15:13PM +0200, David Hildenbrand wrote:
+>> There are some interesting questions to ask here:
+>>
+>> 1) What happens if the old VMA has VM_SOFTDIRTY set but the new one not? You
+>> most probably have to mark the PTE softdirty and not make it writable.
+> 
+> I don't know whether anyone would care about soft-dirty used with uffd
+> remap, but if to think about it..
+> 
+> Logically if the dst vma has !SOFTDIRTY (means, soft-dirty tracking
+> enabled), then IIUC the right thing to do is to assume this page is
+> modified, hence mark softdirty and perhaps proceed with other checks (where
+> write bit can be set if all check pass)?
 
-Yeah, you're right, actually I think that would probably be the best
-approach as you'd both eliminate the awkward out parameter but retain the
-fact that there's 3 possible return states (dup'd, no need to dup, error).
+I think so, yes.
 
->
-> > Then we could de-clunk this whole code path, and the quite natural fact of
-> > 'thing didn't return a pointer therefore had no memory to allocate it' fals
-> > out.
-> >
-> > But this isn't exactly an earth-shattering concern :)
-> >
->
+> 
+> Because from a soft-dirty monitor POV on dst_vma I see this REMAP the same
+> as writting data onto the missing page and got a page fault
+> (e.g. UFFDIO_COPY); we just avoided the allocation and copy.
+> 
+> The src vma seems also fine in this regard: soft-dirty should ignore holes
+> always anyway (e.g. DONTNEED on a page should report !soft-dirty later even
+> if tracking).
+
+Sounds good to me.
+
+> 
+>>
+>> 2) VM_UFFD_WP requires similar care I assume? Peter might know.
+> 
+> UFFD_WP shouldn't be affected, iiuc.
+> 
+> Let's first discuss dst vma side.
+> 
+> WP_UNPOPULATED made it slightly complicated but not so much.  The core
+> should be that REMAP only installs pages if it's exactly pte_none():
+> 
+> +       if (!pte_none(orig_dst_pte)) {
+> +               err = -EEXIST;
+> +               goto out;
+> +       }
+> 
+> Then it already covers things like pte markers, and any marker currently
+> will fail the REMAP ioctl already.  May not be always wanted, but no risk
+> of losing wp notifications.  If that'll be a valid use case we can work it
+> out.
+
+Agreed.
+
+> 
+> On src vma, REMAP ioctl should behave the same as DONTNEED.  Now we drop
+> the src pte along with the uffd-wp bit even if set, which is the correct
+> behavior from that regard.
+> 
+> Again, I don't know whether anyone cares on any of those, though..
+
+If it's easy to handle, we should just handle it or instead spell it out 
+why we believe we can break other features. Seems to be very easy to handle.
+
+-- 
+Cheers,
+
+David / dhildenb
+
