@@ -2,189 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8F27B55C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:01:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9ADA7B55F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:02:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237900AbjJBO5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58274 "EHLO
+        id S237912AbjJBO6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237911AbjJBO5H (ORCPT
+        with ESMTP id S237894AbjJBO57 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:57:07 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52382B3;
-        Mon,  2 Oct 2023 07:57:02 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RzkW23kZgz6HJX9;
-        Mon,  2 Oct 2023 22:54:22 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 2 Oct
- 2023 15:56:59 +0100
-Date:   Mon, 2 Oct 2023 15:56:58 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Robert Richter <rrichter@amd.com>
-CC:     Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Ben Widawsky <bwidawsk@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Davidlohr Bueso" <dave@stgolabs.net>,
-        Dave Jiang <dave.jiang@intel.com>, <linux-cxl@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Terry Bowman <terry.bowman@amd.com>
-Subject: Re: [PATCH v11 14/20] cxl/pci: Map RCH downstream AER registers for
- logging protocol errors
-Message-ID: <20231002155658.00004ac0@Huawei.com>
-In-Reply-To: <20230927154339.1600738-15-rrichter@amd.com>
-References: <20230927154339.1600738-1-rrichter@amd.com>
-        <20230927154339.1600738-15-rrichter@amd.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Mon, 2 Oct 2023 10:57:59 -0400
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2066.outbound.protection.outlook.com [40.107.105.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96969D;
+        Mon,  2 Oct 2023 07:57:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AKlkUabgcq8GY3gjHDgxowAOwAHUVD+5pJa82TZhFskaSiFrG43QGsINVH1NEOE/xIzxQ4H9xfCqA5cRE+W8LZfohAjAfmkBhr98/c3Xilnx6f2BmFrmUttu4AMKVijxTtZx4+77s6Zo5mayYzRzPsOO12OtGeATJrperTYCf2hTjty0hNCWJb5csW7f9XsxcIBLYDjf6gOHP8chabZn0C1t0UKeJ7wI6DRX1EVZFuR3MOref4C9nlfbNQff0V1BVfpcmmIC0bvknh3vJFCQqeRA8L8SIU2ono6Ew50m4HIhwSgeAfWLMZsHoZ5Rs0TQCsJ4GMKEtXj05Pjo6EEv6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=agg4p5GigpgpJnC3NANg8pARD2qcBdhnIzE5/bQX57g=;
+ b=gH8GTVbLhaXB4k5JiTB16DUoXtIADtUtpzHuAKE3Et3f368yJXgULv1DLBX5WvZJgfpsevEsuJOsFvce+v/JJmRA3TfCgfXoeaU1iCZWjF5dtX4lGRj0vFvihiMVn3BTXHZF0YRPV5tXDQx7/8y7j4+jGovzcmMWCfLVhUTpkRGXNnLtv0Ub0UrIadmtgs3IOPRFEKaHMYdvODi8pdrbz4dOsjTkfEAEjIr2LkeZvbHvs5orZVXthR+1kwQoTQWoPhNrhi6jtp3Pc7CO/Qo3dHBMI7lRlB1K/yjoo8yucyuCM1CefqMEBQuZBu303rbLSKolhDoYEx0SH31yyuD/eQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=agg4p5GigpgpJnC3NANg8pARD2qcBdhnIzE5/bQX57g=;
+ b=GapmF/aS1DtzXGqijDe323F4zlQlL8yMtv34U8OrYz95CkwY1qKR6whp53XywDxhor4SwE+RMZzABvbUgpbgrzT85VJdOzdxyx4u605Nh9DwlPWYDBNtw8nZSjcFxgvs9AK23tZyu5dMkLxCLRyn4Wn6bgJ3yCaYqI5s1FZ2gG0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by AM8PR04MB7986.eurprd04.prod.outlook.com (2603:10a6:20b:245::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 2 Oct
+ 2023 14:57:53 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::1774:e25f:f99:aca2%4]) with mapi id 15.20.6813.027; Mon, 2 Oct 2023
+ 14:57:52 +0000
+From:   Frank Li <Frank.Li@nxp.com>
+To:     bhe@redhat.com
+Cc:     Frank.Li@nxp.com, arnd@arndb.de, dmaengine@vger.kernel.org,
+        gregkh@linuxfoundation.org, imx@lists.linux.dev,
+        linux-kernel@vger.kernel.org, lkp@intel.com,
+        oe-kbuild-all@lists.linux.dev, rafael@kernel.org, vkoul@kernel.org
+Subject: [PATCH v2 1/1] fs: debugfs: fix build error at powerpc platform
+Date:   Mon,  2 Oct 2023 10:57:37 -0400
+Message-Id: <20231002145737.538934-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR13CA0195.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c3::20) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM8PR04MB7986:EE_
+X-MS-Office365-Filtering-Correlation-Id: d6bfdf01-00c5-4cfe-c8d4-08dbc357f400
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HbXIUegZPy3wPr+SbMoybK5sT+yNimn4/F5JLehsfFptltuNrLIpumsuPTUDI9tYWJkzWXyRaf0efSQYg/PYRSGOrR3Bn5+fuHoAnYgVZTvIbQUoOWDmgJ7xS4QxOjKxCCTinN9GcwutzzUqYJHjdfh3UxYaVDW1QSl026H65J3nW6kaHtFL/YrP+JcQ5lm1ou0UP1rLuIRHRasYziqbQSjTnY6rJOA7qMkAgCVrPN34DhLaLKyccLn4DGdCgEHWGuopK+r28StCeM6IFRSuuotDBi9+l6TiJmPyoQD6beyQXk5qNrJhuuRIqtTUfSUtfWuTgS08WOsNmbLZ6B8HqSLfIpHRLgXpMWzsqvj669F0lA+ctudx14s/5KsS7O3SLEgz1OtUFLGPkguKm03CObXQn1dxkkqNKqupNwsBt2CL8dPbOGy7KqNQFNi3QUCEEUM4A8Lj0m/mHIuy5SmMkZHhamR7JLLiZ6hZxqVHXGtzKBP72h2UI3V7r2BWyBDszkrwPNba6PuQDK+Z9Em6CbkcOVPv7Y5sJgxw9CVemN64pqeKsWRAOdJ00qM68I4qET750LP5s9pkpWAqYqfjiujNHpJa4LTcTw8UfpZnBB0=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(366004)(136003)(39860400002)(396003)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(2906002)(7416002)(4744005)(36756003)(86362001)(6512007)(38100700002)(316002)(1076003)(26005)(2616005)(478600001)(52116002)(41300700001)(6666004)(6916009)(4326008)(966005)(6486002)(6506007)(66476007)(38350700002)(8936002)(66946007)(8676002)(83380400001)(66556008)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YMwfuw8fsKFyVkG4Wwmb8e32SCVuntEWBCQxzhQnuJiw2EXDlAqP2YzCY2If?=
+ =?us-ascii?Q?cPVpv4BOsaeGbG9Yvt5Xwj6/tSLsnQFz7nhTERzoX/f4dKzYQ20fFxhTJiYZ?=
+ =?us-ascii?Q?Smo+sMP+ELovv6oNbtoETPrnpOh2BqXnHHIjAD0TO50BB6aOTvVma8A2Y0FK?=
+ =?us-ascii?Q?qT/t98Zllpn++k/h1Vj/r7kAKv5EW4Gar19WI3afmWg8JUktH1BtQygeQV7R?=
+ =?us-ascii?Q?Qo56CzyCLw6YpBAEXupQNFAr/SXyXkXtdBlJhZP7VSCMxgfGzwOoBbLoYPf7?=
+ =?us-ascii?Q?AkwjEB53t9eK8WqqJBoKAFxvTwgpj6SU/DjR4eBSH3MNvSZui4B3bUbl0qkc?=
+ =?us-ascii?Q?lsUZZaCMrPQkNN6y7USujAsgBV1s+jkWy9ZDqdTMrPlR5o4T4HNdtcf2YEKb?=
+ =?us-ascii?Q?YlCPAPYwvAMR11xAGBfMvTn5IBogSXCT2tmt5BDohvWssxdMxUVnuG2NHdXb?=
+ =?us-ascii?Q?EAAm6zXvMRHIo8xNEwUNJ9HaRqB93Gvtwfh9ay7KwvA8FkCNZIlYWf7aoeMU?=
+ =?us-ascii?Q?jvEuaM0EANSVHPxltT6fSgZXznKRZxVoes679v3Ybhfi7mKE6Y3x4EMFfDtZ?=
+ =?us-ascii?Q?YC2S2Nk1yyWVKWWeNJwSqAWvgpGh8BfQe7WDQUoaISOWFe8ThxqZ9/t6dWuq?=
+ =?us-ascii?Q?6m0BzqWdJ0MJqb19NJRAHrIIKo3nBRI2Xi2uDhMdaqsDBlDmh8pvIypa+Edu?=
+ =?us-ascii?Q?MlnmvUNqRTbg/9MLaEZjdswUEgMhtcaZX+qeHnSVB2ZrFe9+UEPdCqHTECWK?=
+ =?us-ascii?Q?dgYc0yvAbSx559agq2BjDFnKRlBOtIuvCCrXUgbAX4bVeOX0FCqgTV6qjBgc?=
+ =?us-ascii?Q?6KBrFOw1Cx0tNkqKwiNcKYLNBNrdOuYzdzdXfzV824eVoZvGPVQbGtv33ssC?=
+ =?us-ascii?Q?EESLb0U024+oimKqtUOtDmfiTKqZJ/NQquj+91KmgXleYeC2QCad6zDsH0sK?=
+ =?us-ascii?Q?GNMvf1LX3QVLmBNjjkLZNIrtPcS75/k8beeQcC+OKA/WpLTrsztU+nfY78PP?=
+ =?us-ascii?Q?Xs5/fDZH+D+pOlJtfUeSsOrLFJFpzHRU3JUjbz37CE0o+Ym8EOkQaENVNfa4?=
+ =?us-ascii?Q?RzV6sPRGMoFD46ZzmJu1NXizrCq/+0NgcpsRclMQJMo6S5XY2Ft5ll570ok3?=
+ =?us-ascii?Q?AScsc2TfNq+kYogq+hABGF+SLEEy1xHbrQx3EJOvCtqdX+NdDgmkzKy4nBZR?=
+ =?us-ascii?Q?AX935CIfdENCnblJasR1zn02ByE0x4bOQeOXMZ61y0hIFIqT6cUwrC4PT0G8?=
+ =?us-ascii?Q?FlQUTtUbRgtYco5aooo0pWzyNGNH7/Kf1NXVGRPABMlXHUMAfmDYpNOWWWvn?=
+ =?us-ascii?Q?dXpwRzAZL/MsHSwKBn4WlFMmOqatxNPl1GM9mkykAYVxZf1a1t9SUwqj9UDc?=
+ =?us-ascii?Q?KjmdUf4vsnSEsQo7gsy/ST/XAlC01RBmry9EAQ5YXsHP9SOxSbPHVRP77QRF?=
+ =?us-ascii?Q?ELXE4QYr1P3rFp64WG/J0HQbmeO3PxhwJCQw0wRpdzoCBDTzS0A9s0CmZZ8/?=
+ =?us-ascii?Q?ar9LsqSgkRRccxOrenhwwa3ANp3V+aGtG4zrs+dXKW++9q4/Yqs5xXXCY4hh?=
+ =?us-ascii?Q?HWwfrsSYEe+x56nEVq4=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6bfdf01-00c5-4cfe-c8d4-08dbc357f400
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2023 14:57:52.9151
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HbRXADmWevK3rNyi8cB/yFsSL01NMJDGpQ5kioKPRIWLDOzdUOEGGbwzQJV8cc/1haaIyrdfbFAIT1H09C6t4g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR04MB7986
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Sep 2023 17:43:33 +0200
-Robert Richter <rrichter@amd.com> wrote:
+   ld: fs/debugfs/file.o: in function `debugfs_print_regs':
+   file.c:(.text+0x95a): undefined reference to `ioread64be'
+>> ld: file.c:(.text+0x9dd): undefined reference to `ioread64'
 
-> From: Terry Bowman <terry.bowman@amd.com>
-> 
-> The restricted CXL host (RCH) error handler will log protocol errors
-> using AER and RAS status registers. The AER and RAS registers need to
-> be virtually memory mapped before enabling interrupts. Create the
-> initializer function devm_cxl_setup_parent_dport() for this when the
-> endpoint is connected with the dport. The initialization sets up the
-> RCH RAS and AER mappings.
-> 
-> Add 'struct cxl_regs' to 'struct cxl_dport' for saving a pointer to
-> the RCH downstream port's AER and RAS registers.
-> 
-> Co-developed-by: Robert Richter <rrichter@amd.com>
-> Signed-off-by: Terry Bowman <terry.bowman@amd.com>
-As before. Co-dev just before SoB. 
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202309291322.3pZiyosI-lkp@intel.com/
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
 
-https://elixir.bootlin.com/linux/latest/source/Documentation/process/submitting-patches.rst#L521
-This example looks like what you have here.
+Notes:
+    Change from v1 to v2
+    - fixed it by #include <linux/io-64-nonatomic-hi-lo.h>
 
-> Signed-off-by: Robert Richter <rrichter@amd.com>
-Otherwise, LGTM
+ fs/debugfs/file.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-> ---
->  drivers/cxl/core/pci.c | 36 ++++++++++++++++++++++++++++++++++++
->  drivers/cxl/cxl.h      | 10 ++++++++++
->  2 files changed, 46 insertions(+)
-> 
-> diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
-> index 2b8883288539..2af7ad77b273 100644
-> --- a/drivers/cxl/core/pci.c
-> +++ b/drivers/cxl/core/pci.c
-> @@ -5,6 +5,7 @@
->  #include <linux/delay.h>
->  #include <linux/pci.h>
->  #include <linux/pci-doe.h>
-> +#include <linux/aer.h>
->  #include <cxlpci.h>
->  #include <cxlmem.h>
->  #include <cxl.h>
-> @@ -730,6 +731,38 @@ static bool cxl_handle_endpoint_ras(struct cxl_dev_state *cxlds)
->  
->  #ifdef CONFIG_PCIEAER_CXL
->  
-> +static void cxl_dport_map_rch_aer(struct cxl_dport *dport)
-> +{
-> +	struct cxl_rcrb_info *ri = &dport->rcrb;
-> +	void __iomem *dport_aer = NULL;
-> +	resource_size_t aer_phys;
-> +	struct device *host;
-> +
-> +	if (dport->rch && ri->aer_cap) {
-> +		host = dport->reg_map.host;
-> +		aer_phys = ri->aer_cap + ri->base;
-> +		dport_aer = devm_cxl_iomap_block(host, aer_phys,
-> +				sizeof(struct aer_capability_regs));
-> +	}
-> +
-> +	dport->regs.dport_aer = dport_aer;
-> +}
-> +
-> +static void cxl_dport_map_regs(struct cxl_dport *dport)
-> +{
-> +	struct cxl_register_map *map = &dport->reg_map;
-> +	struct device *dev = dport->dport_dev;
-> +
-> +	if (!map->component_map.ras.valid)
-> +		dev_dbg(dev, "RAS registers not found\n");
-> +	else if (cxl_map_component_regs(map, &dport->regs.component,
-> +					BIT(CXL_CM_CAP_CAP_ID_RAS)))
-> +		dev_dbg(dev, "Failed to map RAS capability.\n");
-> +
-> +	if (dport->rch)
-> +		cxl_dport_map_rch_aer(dport);
-> +}
-> +
->  void devm_cxl_setup_parent_dport(struct device *host, struct cxl_dport *dport)
->  {
->  	struct device *dport_dev = dport->dport_dev;
-> @@ -738,6 +771,9 @@ void devm_cxl_setup_parent_dport(struct device *host, struct cxl_dport *dport)
->  	host_bridge = to_pci_host_bridge(dport_dev);
->  	if (host_bridge->native_cxl_error)
->  		dport->rcrb.aer_cap = cxl_rcrb_to_aer(dport_dev, dport->rcrb.base);
-> +
-> +	dport->reg_map.host = host;
-> +	cxl_dport_map_regs(dport);
->  }
->  EXPORT_SYMBOL_NS_GPL(devm_cxl_setup_parent_dport, CXL);
->  
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> index cfa2f6bede41..7c2c195592d6 100644
-> --- a/drivers/cxl/cxl.h
-> +++ b/drivers/cxl/cxl.h
-> @@ -221,6 +221,14 @@ struct cxl_regs {
->  	struct_group_tagged(cxl_pmu_regs, pmu_regs,
->  		void __iomem *pmu;
->  	);
-> +
-> +	/*
-> +	 * RCH downstream port specific RAS register
-> +	 * @aer: CXL 3.0 8.2.1.1 RCH Downstream Port RCRB
-> +	 */
-> +	struct_group_tagged(cxl_rch_regs, rch_regs,
-> +		void __iomem *dport_aer;
-> +	);
->  };
->  
->  struct cxl_reg_map {
-> @@ -623,6 +631,7 @@ struct cxl_rcrb_info {
->   * @rcrb: Data about the Root Complex Register Block layout
->   * @rch: Indicate whether this dport was enumerated in RCH or VH mode
->   * @port: reference to cxl_port that contains this downstream port
-> + * @regs: Dport parsed register blocks
->   */
->  struct cxl_dport {
->  	struct device *dport_dev;
-> @@ -631,6 +640,7 @@ struct cxl_dport {
->  	struct cxl_rcrb_info rcrb;
->  	bool rch;
->  	struct cxl_port *port;
-> +	struct cxl_regs regs;
->  };
->  
->  /**
+diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+index 5b8d4fd7c747..ca6208c49339 100644
+--- a/fs/debugfs/file.c
++++ b/fs/debugfs/file.c
+@@ -15,6 +15,7 @@
+ #include <linux/pagemap.h>
+ #include <linux/debugfs.h>
+ #include <linux/io.h>
++#include <linux/io-64-nonatomic-hi-lo.h>
+ #include <linux/slab.h>
+ #include <linux/atomic.h>
+ #include <linux/device.h>
+-- 
+2.34.1
 
