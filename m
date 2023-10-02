@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 380AB7B4C4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:11:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE8497B4C4D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235693AbjJBHLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 03:11:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44978 "EHLO
+        id S235698AbjJBHLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 03:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235684AbjJBHLH (ORCPT
+        with ESMTP id S235684AbjJBHLV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 03:11:07 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEBEA8E;
-        Mon,  2 Oct 2023 00:11:04 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6FEE721853;
-        Mon,  2 Oct 2023 07:11:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696230663; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P0mFFbYawjhHJI/MVnVhD7eJbJDMhTOVCb9gruMN8Mo=;
-        b=rZ41UYqhrcd8ECadWlH8Rnkr1zEiqXt/hPInCf1O+E1azyx6hnKeUVA/wA+GuapSurfKUh
-        7WUFXtgDl/vzNsccAXHBHzWdSSvwmL4ym+VTsa+3SOJ+F4p3YxIl2P3TfNa1NDqPw0lLhm
-        0VskMfhMVK4SE874zL7qR0Rh243XBwU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696230663;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P0mFFbYawjhHJI/MVnVhD7eJbJDMhTOVCb9gruMN8Mo=;
-        b=DQliiCU2cteEMe2Lt8fetDwWqgRgcP4yttY4lh4VwuGdtOu/Z8M9Jw0aPGS1KUKZjDfTOt
-        WPrkUfC86Yh+JtCQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4E40F13456;
-        Mon,  2 Oct 2023 07:11:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Rc9uEgdtGmVKeQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Mon, 02 Oct 2023 07:11:03 +0000
-Message-ID: <eca412f9-b642-48c8-f0ba-b02c0b7cefad@suse.cz>
-Date:   Mon, 2 Oct 2023 09:11:02 +0200
+        Mon, 2 Oct 2023 03:11:21 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0F5A4
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:11:17 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-5334f9a56f6so21389818a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:11:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696230676; x=1696835476; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/rL+TycpMQLfB5P4Zn9xgGfUWg8yPCNTwrE46ZNldMM=;
+        b=fotVtHlN6CzNAbxz5vo/PqopF8PLE/FFMGOErEKeF2JacsXY2F9uJr3743CsellrBX
+         VzwfPNZNok3INQluFGzFnvbdFUwNJyxQeX0AtBH0nkFN2xaw8nIZgm772JamcBPEv5Br
+         PqU9lvNvDT383biHVUucGD6NNpeWPH78RSKmp2W+VtUF94gp+Yc7wHYO2UJFxWAKorHy
+         NBPRH+sudKDdV4OgKorWps5Jrn4T0p0b0AR0XWlJDICPmcsPL6cOpf+/UWjeOq/WsUBX
+         Bx7I/RNXG1Oy8E3rw2ehR0cD3NRKs/ykBAiuXv+RZOKHnf90QWryC87UovqlDjFugPiK
+         +pVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696230676; x=1696835476;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/rL+TycpMQLfB5P4Zn9xgGfUWg8yPCNTwrE46ZNldMM=;
+        b=m20ClZvnUpIIWwb+zGQocVee3MilBD68z1PYV9xGmnG3dzmoLqYjiNXl5mv8gftk0w
+         Zip97rbzVcDlWTVtsV78hF1MlwAgY9TL/nqWA+eX4cL/PqiJpVKR0Fga1j8U04AiuD7q
+         jAQ3DxWPz3EO9dbqGV0u6hZ1VdM1D2s9/T1Sg+xMnRym6xq7HXDUNOOeM3YwXfD0H/oN
+         bwCQYh7y6DBz/UteBCBu3JMX+YwHKm8tatWDNnlu6idGI5IakNAIIcUGbvq1NXxPxxgW
+         Yzms2K8oQVucRJkUmHJUwL3KROt941eUSVBUnEQ7hQLkRDZGnu1pW/zHhyoIt3mBZHoX
+         drMw==
+X-Gm-Message-State: AOJu0YyiI53RQo8rCuS8LKu95auKiRYMDWGYdUKNtZkFyk/rrbMypOLt
+        N+DuHK/T/EqxiGKJys0RCVDbUOpdUxIoHqn961M=
+X-Google-Smtp-Source: AGHT+IHLZlXbbvc1YqHZv77usNOMtnil8ooeXfPrqVBkDum3beiEXjgjgN2TUxGOWsiKkTPoo4gdh+6c0NyFFUavrJk=
+X-Received: by 2002:a05:6402:1257:b0:534:8392:879d with SMTP id
+ l23-20020a056402125700b005348392879dmr9350085edw.37.1696230675192; Mon, 02
+ Oct 2023 00:11:15 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 2/3] mmap: Fix error paths with dup_anon_vma()
-Content-Language: en-US
-To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Jann Horn <jannh@google.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>, stable@vger.kernel.org
-References: <20230929183041.2835469-1-Liam.Howlett@oracle.com>
- <20230929183041.2835469-3-Liam.Howlett@oracle.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20230929183041.2835469-3-Liam.Howlett@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:a54:2a92:0:b0:22d:7aeb:6361 with HTTP; Mon, 2 Oct 2023
+ 00:11:14 -0700 (PDT)
+Reply-To: dravasmith27@gmail.com
+From:   Dr Ava Smith <gdr0026@gmail.com>
+Date:   Mon, 2 Oct 2023 00:11:14 -0700
+Message-ID: <CABpE2Pu1DfXyLk8azsGuOg0XFHB3GQwqa4X0L=X5cs023-QrVQ@mail.gmail.com>
+Subject: GREETINGS FROM DR AVA SMITH
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,SUBJ_ALL_CAPS,
+        UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
+        *      DNSWL was blocked.  See
+        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+        *      for more information.
+        *      [2a00:1450:4864:20:0:0:0:52c listed in]
+        [list.dnswl.org]
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.5000]
+        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
+        *       in digit
+        *      [gdr0026[at]gmail.com]
+        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
+        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
+        *      provider
+        *      [gdr0026[at]gmail.com]
+        *  0.2 FREEMAIL_REPLYTO_END_DIGIT Reply-To freemail username ends in
+        *      digit
+        *      [dravasmith27[at]gmail.com]
+        *  0.5 SUBJ_ALL_CAPS Subject is all capitals
+        * -0.0 SPF_PASS SPF: sender matches SPF record
+        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
+        *      author's domain
+        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
+        *       valid
+        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
+        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
+        *      envelope-from domain
+        *  2.7 UNDISC_FREEM Undisclosed recipients + freemail reply-to
+        *  1.0 FREEMAIL_REPLYTO Reply-To/From or Reply-To/body contain
+        *      different freemails
+X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/23 20:30, Liam R. Howlett wrote:
-> When the calling function fails after the dup_anon_vma(), the
-> duplication of the anon_vma is not being undone.  Add the necessary
-> unlink_anon_vma() call to the error paths that are missing them.
-> 
-> This issue showed up during inspection of the error path in vma_merge()
-> for an unrelated vma iterator issue.
-> 
-> Users may experience increased memory usage, which may be problematic as
-> the failure would likely be caused by a low memory situation.
-> 
-> Fixes: d4af56c5c7c6 ("mm: start tracking VMAs with maple tree")
-> Cc: stable@vger.kernel.org
-> Cc: Jann Horn <jannh@google.com>
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
+-- 
+Hello Dear,
+how are you today?hope you are fine
+My name is Dr Ava Smith ,Am an English and French nationalities.
+I will give you pictures and more details about me as soon as i hear from you
+Thanks
+Ava
