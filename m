@@ -2,132 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC33C7B4ED8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6272E7B4EDA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236038AbjJBJRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:17:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54958 "EHLO
+        id S236059AbjJBJRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:17:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235965AbjJBJRm (ORCPT
+        with ESMTP id S235965AbjJBJRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:17:42 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE4583
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:17:39 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5046bf37daeso15946712e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:17:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696238257; x=1696843057; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=I22ZLDTwt1a3CMGPKW9Vs2iggXkEI+mYq1W9AQhp2yk=;
-        b=p+yPpsRec6dTSrHy1x8sStsVHP3w0K0Ifm/SgWzMrzttCtSvylAou8fnywhWfxLomA
-         UvPCSsvDsz7+uS4Xd1nfncKRSHeQGzJAKGAT0IIWIhMPNRlY7Y0JdS1dIW7vUR4hqXM7
-         dvsz5Gqz4LaOI8gFX9bDYVXfHKglm4z9GhvWMBcZ6JSMjuXE2tXz75u/ZXo9sIXfxrUb
-         D6qXu22fcfOOuKkf3CuNdGkkLxxsdwJLdBDp1aikjXOrpbMMv0YR5WfRHKgcN+QZKR+d
-         INTiVNICpth6Zhu6EUBg9mNzGjtkUnpDt0kArg8kwMJdZyrFs5WzlJ6r0wWA3gwpwV/7
-         CHBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696238257; x=1696843057;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I22ZLDTwt1a3CMGPKW9Vs2iggXkEI+mYq1W9AQhp2yk=;
-        b=qNQyW6awVZ1Ruja84tEFUQKgDQJTk4297kmFJcoiEzcTRKt3BJUYygJ+e78vrZt0yr
-         qtQ/+6S7EmSb2LCltQ9JRODhDcPCVdNAu/INBbVTIUJjND6sWZu6lJQ9w8+Xej2c/ilG
-         H0CcGJfjTE36cUgMnd732pBJAusqZKuScggqbjMvfC99ElNo9JBN2JyHYaU/B8pIua1z
-         VobFM1p3ce7DNMJan5h5ii82TqmbPfH+tKOfd4oGEqhgitUNIJBSqcxifl5AtTEAuBWR
-         1X28Y+vDN4ZLEwuMdpZKF18kjsR/PApUcvJqsJIw/Ao9Xh66rrEbjMyjVxFnYnD5gz9B
-         Z79Q==
-X-Gm-Message-State: AOJu0Yw5cdqYvFU3CoIKQch0uvzNn5ggAasgqnedlMtfQbnltxPPb838
-        9vePk2s3xKyJywEsHs3IgR1wIA==
-X-Google-Smtp-Source: AGHT+IED43N8wMsSahvTAyFScOfTAxyoQ6SKq6oMWQygKZHQxUQEU3eWK7Pc1WKu3IbEpvwxP5FnrA==
-X-Received: by 2002:ac2:4d99:0:b0:500:94aa:739c with SMTP id g25-20020ac24d99000000b0050094aa739cmr8259221lfe.61.1696238257252;
-        Mon, 02 Oct 2023 02:17:37 -0700 (PDT)
-Received: from [172.30.204.164] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id j16-20020ac24550000000b0050300e013f3sm4661437lfm.254.2023.10.02.02.17.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 02:17:36 -0700 (PDT)
-Message-ID: <76a5b753-5d65-071f-d43c-512f30a69fa1@linaro.org>
-Date:   Mon, 2 Oct 2023 11:17:35 +0200
+        Mon, 2 Oct 2023 05:17:48 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F33B93;
+        Mon,  2 Oct 2023 02:17:46 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rzb2S44nNz67L0F;
+        Mon,  2 Oct 2023 17:17:36 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 2 Oct
+ 2023 10:17:43 +0100
+Date:   Mon, 2 Oct 2023 10:17:42 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+CC:     David Lechner <dlechner@baylibre.com>, <linux-iio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-staging@lists.linux.dev>,
+        David Lechner <david@lechnology.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?ISO-8859-1?Q?S?= =?ISO-8859-1?Q?=E1?= 
+        <nuno.sa@analog.com>, Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        <linux-kernel@vger.kernel.org>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>
+Subject: Re: [PATCH v3 02/27] staging: iio: resolver: ad2s1210: fix use
+ before initialization
+Message-ID: <20231002101742.0000774b@Huawei.com>
+In-Reply-To: <1b366292-6e05-421e-914e-6d3457886238@kadam.mountain>
+References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
+        <20230929-ad2s1210-mainline-v3-2-fa4364281745@baylibre.com>
+        <1b366292-6e05-421e-914e-6d3457886238@kadam.mountain>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 4/5] clk: qcom: camcc-sc8280xp: Add sc8280xp CAMCC
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        andersson@kernel.org, agross@kernel.org, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jonathan@marek.ca, quic_tdas@quicinc.com,
-        vladimir.zapolskiy@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230930134114.1816590-1-bryan.odonoghue@linaro.org>
- <20230930134114.1816590-5-bryan.odonoghue@linaro.org>
- <ba0399d3-c3a5-0458-3668-e734fafe2f1a@linaro.org>
- <ec8a0350-aac8-443e-854a-652179a5d6bb@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <ec8a0350-aac8-443e-854a-652179a5d6bb@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 2 Oct 2023 11:07:15 +0300
+Dan Carpenter <dan.carpenter@linaro.org> wrote:
+
+> On Fri, Sep 29, 2023 at 12:23:07PM -0500, David Lechner wrote:
+> > From: David Lechner <david@lechnology.com>
+> > 
+> > From: David Lechner <dlechner@baylibre.com>
+> > 
+> > This fixes a use before initialization in ad2s1210_probe(). The
+> > ad2s1210_setup_gpios() function uses st->sdev but it was being called
+> > before this field was initialized.
+> > 
+> > Signed-off-by: David Lechner <dlechner@baylibre.com>
+> > ---
+> >   
+> 
+> Fixes: b19e9ad5e2cb ("staging:iio:resolver:ad2s1210 general driver cleanup.")
+Thanks but nope, not that one.
+
+At that point ad2s1210_setup_gpios, didn't use st->sdev.
+I think this went wrong when the platform data was removed in 
+
+I 'think' it was
+Fixes: f356dc6ec26b ("staging: iio: ad2s1210: Switch to the gpio descriptor interface")
 
 
-On 10/1/23 00:53, Bryan O'Donoghue wrote:
-> On 30/09/2023 17:39, Konrad Dybcio wrote:
->>
->>> +static struct clk_branch camcc_gdsc_clk = {
->>> +    .halt_reg = 0xc1e4,
->>> +    .halt_check = BRANCH_HALT,
->>> +    .clkr = {
->>> +        .enable_reg = 0xc1e4,
->>> +        .enable_mask = BIT(0),
->>> +        .hw.init = &(struct clk_init_data){
->>> +            .name = "camcc_gdsc_clk",
->>> +            .parent_hws = (const struct clk_hw*[]){
->>> +                &camcc_xo_clk_src.clkr.hw,
->>> +            },
->>> +            .num_parents = 1,
->>> +            .flags = CLK_IS_CRITICAL | CLK_SET_RATE_PARENT,
->> "meh"
->>
->> Is this clock only necessary for the GDSC to turn on?
-> 
-> Most of this code is autogenerated in downstream as I understand it a 
-> script is run against some definition the RTL one would hope.
-> 
-> I think that is probably how the gdsc clocks for the camcc are marked 
-> like this upstream already too.
-> 
-> grep CRITICAL drivers/clk/qcom/*camcc*
-> drivers/clk/qcom/camcc-sc7280.c:            .flags = CLK_IS_CRITICAL | 
-> CLK_SET_RATE_PARENT,
-> drivers/clk/qcom/camcc-sm8250.c:            .flags = CLK_IS_CRITICAL | 
-> CLK_SET_RATE_PARENT,
-> drivers/clk/qcom/camcc-sm8450.c:            .flags = CLK_IS_CRITICAL | 
-> CLK_SET_RATE_PARENT,
-> 
-> I can tell you what clocks this clock but I can't tell you where that 
-> clock routes too, so the best/only source of information I have is the 
-> flag that comes from the autogenerated downstream code.
-> 
-> I think the safe thing to do is to leave the flag as is TBH.
-Safe yes, good no.
 
-Clocks with this flag prevent the clock controller device from
-entering runtime suspend, which causes a dangling vote on RPMh
-and prevents system power collapse.
+> 
+> This would crash the driver right away, on probe.  It's amazing no one
+> filed a bug report even though the bug is 12 years old.
+Only 5 years :)
 
-Konrad
+Welcome to the long tail of IIO Devices and the long term availability of the
+hardware - this is still a production part.  Clearly no one was using the
+upstream driver for 5 + years, but here comes David who is not only fixing
+the bugs but cleaning it up.
+
+Hmm. What happened to roadtest? I was hoping that would solve this sort
+of issue by allowing simple testing of basic functionality... Hope it
+is still headed for a new version / upstream!
+
+Jonathan
+
+> regards,
+> dan carpenter
+
+
+
+
