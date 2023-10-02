@@ -2,100 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 355407B519C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 620087B519E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236735AbjJBLpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 07:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45378 "EHLO
+        id S236782AbjJBLp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 07:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbjJBLpW (ORCPT
+        with ESMTP id S231305AbjJBLp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 07:45:22 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 039FD93;
-        Mon,  2 Oct 2023 04:45:20 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F18F7C433C7;
-        Mon,  2 Oct 2023 11:45:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696247119;
-        bh=tYbjMAUcN0XthNOVzmGs+Y3qL7jGJzmEPsY7LU8xTvA=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=BTfPMprg4YuP+Z/b4wNUvLHqmhQhknwnOsJaCrX8jdJgMG2qQkoakD1KWkwJpw4ae
-         WKVJJGbwR55plXJnNoyyUV/6wOC5TXyibvJgL1jpMPR28Jf/5UQDiOIDRmT1RFh27S
-         sIU8eJxG39H5R8owFjMNsWZTItcsulV0TJI1TfE4Nf8KgO9y9tF96f6ETso+iLdEpl
-         CoJKbDgyTLzSeqEcl5GN3xhY57Z6/+bL35hj+2HVJoXsv0B/PpGR9dm4FxM6Jonefm
-         hKUWpK6reWVyaTW2roySUWjO/UgJdJVgLsYbHcAQSB20M7g5RU+hemNg8KQVa5hIff
-         9JUA5RWAxrT4Q==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>, Kees Cook <keescook@chromium.org>
-Cc:     Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        =?utf-8?q?H=C3=A5kon?= Bugge <haakon.bugge@oracle.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        Anand Khoje <anand.a.khoje@oracle.com>,
-        Mark Bloch <mbloch@nvidia.com>,
-        Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Patrisious Haddad <phaddad@nvidia.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Tom Talpey <tom@talpey.com>,
-        wangjianli <wangjianli@cdjrlc.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, linux-hardening@vger.kernel.org,
-        llvm@lists.linux.dev
-In-Reply-To: <20230929180305.work.590-kees@kernel.org>
-References: <20230929180305.work.590-kees@kernel.org>
-Subject: Re: [PATCH 0/7] RDMA: Annotate structs with __counted_by
-Message-Id: <169624711583.134088.705118476077332376.b4-ty@kernel.org>
-Date:   Mon, 02 Oct 2023 14:45:15 +0300
+        Mon, 2 Oct 2023 07:45:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DDEA6;
+        Mon,  2 Oct 2023 04:45:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696247124; x=1727783124;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=9bwHBLFRV4COs3zXIsaJKBDYTiurCzcYr4Weu9R05qE=;
+  b=X1RZhYnKfakksAhjaAx+QeP+vuw2feS+8UjWRvE/WE7amG+n5AdyuhSu
+   sGbtMjSc5C6WrRG4CcQCmw0A89a6m4borCAM5+ST7YGlUx77I11nMk6zH
+   jdk1SeC9k86BvV3W0Mkf35rQhpsdL7nWX1a2o+kMQmhvVOhF3nthNCLIL
+   u3tdfAOd8lSkJVrkL7u9EJ9j8WBJjI/hwFszJgZv7eYB4uaQ+sUIP/QKZ
+   icL4yptbYvxzD6JSfUT/4wfinFH27kKTdrq9PAygC2/rrb1UwkrTp6ksP
+   Qs9seGO2o0r3LCgeyp0hl4fyVto4bDOAFEAdeLJsPc1Yb75rl7NwYQE1p
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="381508667"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="381508667"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 04:45:23 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="754027255"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="754027255"
+Received: from roliveir-mobl1.ger.corp.intel.com ([10.251.222.16])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 04:45:19 -0700
+Date:   Mon, 2 Oct 2023 14:45:16 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Jithu Joseph <jithu.joseph@intel.com>
+cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        rostedt@goodmis.org, ashok.raj@intel.com, tony.luck@intel.com,
+        LKML <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org, patches@lists.linux.dev,
+        ravi.v.shankar@intel.com, pengfei.xu@intel.com
+Subject: Re: [PATCH v3 4/9] platform/x86/intel/ifs: Gen2 Scan test support
+In-Reply-To: <20230929202436.2850388-5-jithu.joseph@intel.com>
+Message-ID: <36a8ca4-50b5-f177-d1c0-5fddaac5041@linux.intel.com>
+References: <20230922232606.1928026-1-jithu.joseph@intel.com> <20230929202436.2850388-1-jithu.joseph@intel.com> <20230929202436.2850388-5-jithu.joseph@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12-dev-a055d
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1504648656-1696247123=:2459"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On Fri, 29 Sep 2023 11:04:23 -0700, Kees Cook wrote:
-> This annotates several structures with the coming __counted_by attribute
-> for bounds checking of flexible arrays at run-time. For more details, see
-> commit dd06e72e68bc ("Compiler Attributes: Add __counted_by macro").
+--8323329-1504648656-1696247123=:2459
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+
+On Fri, 29 Sep 2023, Jithu Joseph wrote:
+
+> Width of chunk related bitfields is ACTIVATE_SCAN and SCAN_STATUS MSRs
+> are different in newer IFS generation compared to gen0.
 > 
-> Thanks!
+> Make changes to scan test flow such that MSRs are populated
+> appropriately based on the generation supported by hardware.
 > 
-> -Kees
+> Account for the 8/16 bit MSR bitfield width differences between gen0 and
+> newer generations for the scan test trace event too.
 > 
-> [...]
+> Signed-off-by: Jithu Joseph <jithu.joseph@intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
 
-Applied, thanks!
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-[1/7] RDMA: Annotate struct rdma_hw_stats with __counted_by
-      https://git.kernel.org/rdma/rdma/c/4755dc6f29597d
-[2/7] RDMA/core: Annotate struct ib_pkey_cache with __counted_by
-      https://git.kernel.org/rdma/rdma/c/fc424078f50840
-[3/7] RDMA/usnic: Annotate struct usnic_uiom_chunk with __counted_by
-      https://git.kernel.org/rdma/rdma/c/ed7c64de622ff9
-[4/7] RDMA/siw: Annotate struct siw_pbl with __counted_by
-      https://git.kernel.org/rdma/rdma/c/0bc018b7a7b733
-[5/7] IB/srp: Annotate struct srp_fr_pool with __counted_by
-      https://git.kernel.org/rdma/rdma/c/bd8eec5bfa59b5
-[6/7] IB/mthca: Annotate struct mthca_icm_table with __counted_by
-      https://git.kernel.org/rdma/rdma/c/2aba54a9e0ead5
-[7/7] IB/hfi1: Annotate struct tid_rb_node with __counted_by
-      https://git.kernel.org/rdma/rdma/c/964168970cef5f
 
-Best regards,
 -- 
-Leon Romanovsky <leon@kernel.org>
+ i.
+
+--8323329-1504648656-1696247123=:2459--
