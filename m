@@ -2,248 +2,422 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AAA67B53E1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D80117B53F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237156AbjJBNZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:25:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
+        id S237359AbjJBNZX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 09:25:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235717AbjJBNZD (ORCPT
+        with ESMTP id S235717AbjJBNZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 09:25:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BACB3
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 06:24:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696253056;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KviN0X/RCx/xPsHBoxNjf84tjjuoc20Hd49jrGxldSk=;
-        b=gyvTOujIbu2/H76jJ0l3Q/AXzX04wzFG/bqahMNusfYb8nWr45KYaD47VVKTnGgaW8OOBN
-        6nMyUIAilA2UlLqtDIshruJtHl+mPqLjITsf45l5V+KDSWxnwI4fWq6WjdGAHr4/EoJDPH
-        ACWiRN6x5ga4BpE+nB/pP52MD/xPZaM=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-450-X2omKhzRPfig3rQzC3OJuQ-1; Mon, 02 Oct 2023 09:24:13 -0400
-X-MC-Unique: X2omKhzRPfig3rQzC3OJuQ-1
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3af64a4c931so7511058b6e.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 06:24:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696253052; x=1696857852;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KviN0X/RCx/xPsHBoxNjf84tjjuoc20Hd49jrGxldSk=;
-        b=nSkyrs7VjggJnZONfD3zwbgD0ZLxzvH3r2zM13dM2Qbab4Xg8xnMiFkkTMIqNnIujU
-         C9nWHnrtetWdAK3nQ8bferuOTk1wRThJ/Ng9mM9mw9e4dM3mrpc/FLhFjBtkcT52pi3g
-         cKdJGGJdRxtsIj2Pryo0G/9GXZZaoIhR2MIpVyoxY8dBNenow4HSFHVitZin3TlOWNeb
-         UnD+WD963tcAhTBJ0zHhKCylVfKJfNu/w6S4gkHvl/af/buJHbkw8Q0MhVk47nvEdYfN
-         hHqUlV1uoaWT0grttFYOHQr2ivgrsJj65EpRfNQsGKqqtmOnBxGxhr4/qeqN8d/t2/Vp
-         iJBA==
-X-Gm-Message-State: AOJu0YzhMLDlBTgB6yjmVTv7gVdFiV3tmYrlF71y4dlLgqDDVC811plo
-        HVme3sgDRaymWWW20amQvnD+mWRBfJfeAEw4pE9pCIVmN2QiT2cq+f0b4VfU5eiHWSq90z5whg4
-        mtfyAQbfibER0Suj8qoaW9ewA
-X-Received: by 2002:a05:6808:309c:b0:3ab:84f0:b491 with SMTP id bl28-20020a056808309c00b003ab84f0b491mr14899218oib.19.1696253052512;
-        Mon, 02 Oct 2023 06:24:12 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFNYuViafwDqus6MokKeZpafc4TpjWvt/q4KRQ8mzGcIJB5yeDpFD4cy3LJZRgwtWeWRw2zNA==
-X-Received: by 2002:a05:6808:309c:b0:3ab:84f0:b491 with SMTP id bl28-20020a056808309c00b003ab84f0b491mr14899186oib.19.1696253051886;
-        Mon, 02 Oct 2023 06:24:11 -0700 (PDT)
-Received: from fedora ([2600:1700:1ff0:d0e0::37])
-        by smtp.gmail.com with ESMTPSA id c15-20020a0cf2cf000000b0065d05c8bb5dsm3775747qvm.64.2023.10.02.06.24.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 06:24:11 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 08:24:09 -0500
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Elliot Berman <quic_eberman@quicinc.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        kernel@quicinc.com,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2 06/11] firmware: qcom: scm: make
- qcom_scm_pas_init_image() use the SCM allocator
-Message-ID: <5puhrnpw2rww6kawt77krges6aj4re6nfblqkomuw5njtwydya@cuarfakzv62i>
-References: <20230928092040.9420-1-brgl@bgdev.pl>
- <20230928092040.9420-7-brgl@bgdev.pl>
- <gwflmag5pq7osprj25l7i4tgyln2nauuqcwdhth2eomareooag@4dw4lwk4vr36>
- <CAMRc=Mfxt1DLinxMcKivQqqnHvFv5P8WXNnfAwnfrHgoz+q-5w@mail.gmail.com>
- <20230929204404.enzsjanohdqqpmk4@halaney-x13s>
- <2539186e-e0ec-4eba-9d6a-d966e00f0eb9@quicinc.com>
+        Mon, 2 Oct 2023 09:25:21 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0459DC6;
+        Mon,  2 Oct 2023 06:25:18 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC0E2C433C8;
+        Mon,  2 Oct 2023 13:25:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696253117;
+        bh=yMKiAZh8Zi1IRLurrlmkJCC3ZtBt6u8921RF62mKwiA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ATTFpem79JBuSlV65H7DgvZGCj9e9VZO5bpbua2jGaJJsloz4yWNe4YgiS+6wNayG
+         rQEgXCWlRMulM13fhYzlXbYAwqONLzm/qUB0SaiJXCiA+Yy6lCXMWRVCVgf5bisGQu
+         lDhvgBWZc7iuYPaw1gmv6qN00GW/btCrvJ6n4Yp4hFy9rEoWOGRDj7HNaFukmL4xRP
+         jCS50V2El2LLMiQqRUvAzDJ8DsOFyiLbBWIjITnjJ9RyiJ6LJMNYHfpTCQmACQi6Fg
+         oyL4URChnP6XktZ8MRwUIx0VD+5mEPpJnvwozt1du0EMe33V34qcNcFUYE+NU9ijJt
+         5Z+qHR/n2lvsw==
+Date:   Mon, 2 Oct 2023 14:25:09 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Costa Shulyupin <costa.shul@redhat.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Alex Shi <alexs@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Atish Patra <atishp@rivosinc.com>,
+        Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Sunil V L <sunilvl@ventanamicro.com>,
+        Evan Green <evan@rivosinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Andy Chiu <andy.chiu@sifive.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Song Shuai <songshuaishuai@tinylab.org>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@rivosinc.com>,
+        Anup Patel <anup@brainfault.org>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Charlie Jenkins <charlie@rivosinc.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Wu XiangCheng <bobwxc@email.cn>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, workflows@vger.kernel.org
+Subject: Re: [PATCH v1] docs: move riscv under arch
+Message-ID: <20231002-exclusive-ebay-29cf9c449e2a@spud>
+References: <87h6nbka8x.fsf@meer.lwn.net>
+ <20230930185354.3034118-1-costa.shul@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="yyJILPRGEs0APJsw"
 Content-Disposition: inline
-In-Reply-To: <2539186e-e0ec-4eba-9d6a-d966e00f0eb9@quicinc.com>
+In-Reply-To: <20230930185354.3034118-1-costa.shul@redhat.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 03:48:37PM -0700, Elliot Berman wrote:
-> Hi Andrew,
-> 
-> On 9/29/2023 1:44 PM, Andrew Halaney wrote:
-> > On Fri, Sep 29, 2023 at 12:22:16PM -0700, Bartosz Golaszewski wrote:
-> >> On Fri, 29 Sep 2023 21:16:51 +0200, Andrew Halaney <ahalaney@redhat.com> said:
-> >>> On Thu, Sep 28, 2023 at 11:20:35AM +0200, Bartosz Golaszewski wrote:
-> >>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >>>>
-> >>>> Let's use the new SCM memory allocator to obtain a buffer for this call
-> >>>> instead of using dma_alloc_coherent().
-> >>>>
-> >>>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >>>> ---
-> >>>>  drivers/firmware/qcom/qcom_scm.c | 16 +++++-----------
-> >>>>  1 file changed, 5 insertions(+), 11 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-> >>>> index 02a773ba1383..c0eb81069847 100644
-> >>>> --- a/drivers/firmware/qcom/qcom_scm.c
-> >>>> +++ b/drivers/firmware/qcom/qcom_scm.c
-> >>>> @@ -532,7 +532,7 @@ static void qcom_scm_set_download_mode(bool enable)
-> >>>>  int qcom_scm_pas_init_image(u32 peripheral, const void *metadata, size_t size,
-> >>>>  			    struct qcom_scm_pas_metadata *ctx)
-> >>>>  {
-> >>>> -	dma_addr_t mdata_phys;
-> >>>> +	phys_addr_t mdata_phys;
-> >>>
-> >>>>  	void *mdata_buf;
-> >>>>  	int ret;
-> >>>>  	struct qcom_scm_desc desc = {
-> >>>> @@ -544,13 +544,7 @@ int qcom_scm_pas_init_image(u32 peripheral, const void *metadata, size_t size,
-> >>>>  	};
-> >>>>  	struct qcom_scm_res res;
-> >>>>
-> >>>> -	/*
-> >>>> -	 * During the scm call memory protection will be enabled for the meta
-> >>>> -	 * data blob, so make sure it's physically contiguous, 4K aligned and
-> >>>> -	 * non-cachable to avoid XPU violations.
-> >>>> -	 */
-> >>>> -	mdata_buf = dma_alloc_coherent(__scm->dev, size, &mdata_phys,
-> >>>> -				       GFP_KERNEL);
-> >>>> +	mdata_buf = qcom_scm_mem_alloc(size, GFP_KERNEL);
-> >>>
-> >>> mdata_phys is never initialized now, and its what's being shoved into
-> >>> desc.args[1] later, which I believe is what triggered the -EINVAL
-> >>> with qcom_scm_call() that I reported in my cover letter reply this
-> >>> morning.
-> >>>
-> >>> Prior with the DMA API that would have been the device view of the buffer.
-> >>>
-> >>
-> >> Gah! Thanks for finding this.
-> >>
-> >> Can you try the following diff?
-> >>
-> >> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-> >> index 794388c3212f..b0d4ea237034 100644
-> >> --- a/drivers/firmware/qcom/qcom_scm.c
-> >> +++ b/drivers/firmware/qcom/qcom_scm.c
-> >> @@ -556,6 +556,7 @@ int qcom_scm_pas_init_image(u32 peripheral, const
-> >> void *metadata, size_t size,
-> >>  		dev_err(__scm->dev, "Allocation of metadata buffer failed.\n");
-> >>  		return -ENOMEM;
-> >>  	}
-> >> +	mdata_phys = qcom_scm_mem_to_phys(mdata_buf);
-> >>  	memcpy(mdata_buf, metadata, size);
-> >>
-> >>  	ret = qcom_scm_clk_enable();
-> >> @@ -578,7 +579,7 @@ int qcom_scm_pas_init_image(u32 peripheral, const
-> >> void *metadata, size_t size,
-> >>  		qcom_scm_mem_free(mdata_buf);
-> >>  	} else if (ctx) {
-> >>  		ctx->ptr = mdata_buf;
-> >> -		ctx->phys = qcom_scm_mem_to_phys(mdata_buf);
-> >> +		ctx->phys = mdata_phys;
-> >>  		ctx->size = size;
-> >>  	}
-> >>
-> >> Bart
-> >>
-> > 
-> > For some reason that I can't explain that is still not working. It seems
-> > the SMC call is returning !0 and then we return -EINVAL from there
-> > with qcom_scm_remap_error().
-> > 
-> > Here's a really crummy diff of what I hacked in during lunch to debug (don't
-> > judge my primitive debug skills):
-> > 
-> 
-> I don't know what you're talking about :-)
-> 
-> > diff --git a/drivers/firmware/qcom/qcom_scm-smc.c b/drivers/firmware/qcom/qcom_scm-smc.c
-> > index 0d5554df1321..56eab0ae5f3a 100644
-> > --- a/drivers/firmware/qcom/qcom_scm-smc.c
-> > +++ b/drivers/firmware/qcom/qcom_scm-smc.c
-> > @@ -162,6 +162,8 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
-> >         struct arm_smccc_res smc_res;
-> >         struct arm_smccc_args smc = {0};
-> >  
-> > +       dev_err(dev, "%s: %d: We are in this function\n", __func__, __LINE__);
-> > +
-> >         smc.args[0] = ARM_SMCCC_CALL_VAL(
-> >                 smccc_call_type,
-> >                 qcom_smccc_convention,
-> > @@ -174,6 +176,7 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
-> >         if (unlikely(arglen > SCM_SMC_N_REG_ARGS)) {
-> >                 alloc_len = SCM_SMC_N_EXT_ARGS * sizeof(u64);
-> >                 args_virt = qcom_scm_mem_alloc(PAGE_ALIGN(alloc_len), flag);
-> > +               dev_err(dev, "%s: %d: Hit the unlikely case!\n", __func__, __LINE__);
-> >  
-> >                 if (!args_virt)
-> >                         return -ENOMEM;
-> > @@ -197,6 +200,7 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
-> >  
-> >         /* ret error check follows after args_virt cleanup*/
-> >         ret = __scm_smc_do(dev, &smc, &smc_res, atomic);
-> > +       dev_err(dev, "%s: %d: ret: %d\n", __func__, __LINE__, ret);
-> >  
-> >         if (ret)
-> >                 return ret;
-> > @@ -205,8 +209,10 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
-> >                 res->result[0] = smc_res.a1;
-> >                 res->result[1] = smc_res.a2;
-> >                 res->result[2] = smc_res.a3;
-> > +               dev_err(dev, "%s: %d: 0: %llu, 1: %llu: 2: %llu\n", __func__, __LINE__, res->result[0], res->result[1], res->result[2]);
-> >         }
-> >  
-> > +       dev_err(dev, "%s: %d: smc_res.a0: %lu\n", __func__, __LINE__, smc_res.a0);
-> >         return (long)smc_res.a0 ? qcom_scm_remap_error(smc_res.a0) : 0;
-> > 
-> > 
-> > And that all spams dmesg successfully for most cases, but the
-> > pas_init_image calls log this out:
-> > 
-> > [   16.362965] remoteproc remoteproc1: powering up 1b300000.remoteproc
-> > [   16.364897] remoteproc remoteproc1: Booting fw image qcom/sc8280xp/LENOVO/21BX/qccdsp8280.mbn, size 3575808
-> > [   16.365009] qcom_scm firmware:scm: __scm_smc_call: 165: We are in this function
-> > [   16.365251] qcom_scm firmware:scm: __scm_smc_call: 203: ret: 0
-> > [   16.365256] qcom_scm firmware:scm: __scm_smc_call: 212: 0: 0, 1: 0: 2: 0
-> > [   16.365261] qcom_scm firmware:scm: __scm_smc_call: 215: smc_res.a0: 4291821558
-> > 
-> > At the moment I am unsure why...
-> > 
-> Does the issue appear right after taking patch 6 or does it only appear after taking
-> the whole series? If it's just to this patch, then maybe something wrong with
-> the refactor: shm bridge isn't enabled at this point in the series.
-> 
 
-I've only been testing the series as a whole on top of a 6.6 based
-branch, I'm going to try and test some more today to see if just the
-allocator bits (but not the SHM bridge enablement) works alright for
-me.
+--yyJILPRGEs0APJsw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hey,
+
+On Sat, Sep 30, 2023 at 09:52:00PM +0300, Costa Shulyupin wrote:
+> and fix all in-tree references.
+>=20
+> Architecture-specific documentation is being moved into Documentation/arc=
+h/
+> as a way of cleaning up the top-level documentation directory and making
+> the docs hierarchy more closely match the source hierarchy.
+>=20
+> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+
+Firstly, $subject is not correct - this is now v2.
+Also, please do not send new versions as a response to old threads. It
+buries them in people's mailboxes that do things like sorting by
+threads. Clearly no resubmission should be required for either of those
+items though, so:
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
 Thanks,
-Andrew
+Conor.
 
+>=20
+> ---
+> Changes in v1: rebased on linux-next
+>=20
+> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+> ---
+>  Documentation/arch/index.rst                                  | 2 +-
+>  Documentation/{ =3D> arch}/riscv/acpi.rst                       | 0
+>  Documentation/{ =3D> arch}/riscv/boot-image-header.rst          | 0
+>  Documentation/{ =3D> arch}/riscv/boot.rst                       | 0
+>  Documentation/{ =3D> arch}/riscv/features.rst                   | 0
+>  Documentation/{ =3D> arch}/riscv/hwprobe.rst                    | 0
+>  Documentation/{ =3D> arch}/riscv/index.rst                      | 0
+>  Documentation/{ =3D> arch}/riscv/patch-acceptance.rst           | 0
+>  Documentation/{ =3D> arch}/riscv/uabi.rst                       | 0
+>  Documentation/{ =3D> arch}/riscv/vector.rst                     | 0
+>  Documentation/{ =3D> arch}/riscv/vm-layout.rst                  | 0
+>  Documentation/maintainer/maintainer-entry-profile.rst         | 2 +-
+>  Documentation/process/index.rst                               | 2 +-
+>  Documentation/translations/it_IT/riscv/patch-acceptance.rst   | 2 +-
+>  Documentation/translations/zh_CN/arch/index.rst               | 2 +-
+>  .../translations/zh_CN/{ =3D> arch}/riscv/boot-image-header.rst | 4 ++--
+>  Documentation/translations/zh_CN/{ =3D> arch}/riscv/index.rst   | 4 ++--
+>  .../translations/zh_CN/{ =3D> arch}/riscv/patch-acceptance.rst  | 4 ++--
+>  .../translations/zh_CN/{ =3D> arch}/riscv/vm-layout.rst         | 4 ++--
+>  .../zh_CN/maintainer/maintainer-entry-profile.rst             | 2 +-
+>  MAINTAINERS                                                   | 2 +-
+>  arch/riscv/include/uapi/asm/hwprobe.h                         | 2 +-
+>  arch/riscv/kernel/sys_riscv.c                                 | 2 +-
+>  23 files changed, 17 insertions(+), 17 deletions(-)
+>  rename Documentation/{ =3D> arch}/riscv/acpi.rst (100%)
+>  rename Documentation/{ =3D> arch}/riscv/boot-image-header.rst (100%)
+>  rename Documentation/{ =3D> arch}/riscv/boot.rst (100%)
+>  rename Documentation/{ =3D> arch}/riscv/features.rst (100%)
+>  rename Documentation/{ =3D> arch}/riscv/hwprobe.rst (100%)
+>  rename Documentation/{ =3D> arch}/riscv/index.rst (100%)
+>  rename Documentation/{ =3D> arch}/riscv/patch-acceptance.rst (100%)
+>  rename Documentation/{ =3D> arch}/riscv/uabi.rst (100%)
+>  rename Documentation/{ =3D> arch}/riscv/vector.rst (100%)
+>  rename Documentation/{ =3D> arch}/riscv/vm-layout.rst (100%)
+>  rename Documentation/translations/zh_CN/{ =3D> arch}/riscv/boot-image-he=
+ader.rst (96%)
+>  rename Documentation/translations/zh_CN/{ =3D> arch}/riscv/index.rst (79=
+%)
+>  rename Documentation/translations/zh_CN/{ =3D> arch}/riscv/patch-accepta=
+nce.rst (93%)
+>  rename Documentation/translations/zh_CN/{ =3D> arch}/riscv/vm-layout.rst=
+ (98%)
+>=20
+> diff --git a/Documentation/arch/index.rst b/Documentation/arch/index.rst
+> index 194e7e797877..d27c360e0312 100644
+> --- a/Documentation/arch/index.rst
+> +++ b/Documentation/arch/index.rst
+> @@ -19,7 +19,7 @@ implementation.
+>     openrisc/index
+>     parisc/index
+>     ../powerpc/index
+> -   ../riscv/index
+> +   riscv/index
+>     s390/index
+>     sh/index
+>     sparc/index
+> diff --git a/Documentation/riscv/acpi.rst b/Documentation/arch/riscv/acpi=
+=2Erst
+> similarity index 100%
+> rename from Documentation/riscv/acpi.rst
+> rename to Documentation/arch/riscv/acpi.rst
+> diff --git a/Documentation/riscv/boot-image-header.rst b/Documentation/ar=
+ch/riscv/boot-image-header.rst
+> similarity index 100%
+> rename from Documentation/riscv/boot-image-header.rst
+> rename to Documentation/arch/riscv/boot-image-header.rst
+> diff --git a/Documentation/riscv/boot.rst b/Documentation/arch/riscv/boot=
+=2Erst
+> similarity index 100%
+> rename from Documentation/riscv/boot.rst
+> rename to Documentation/arch/riscv/boot.rst
+> diff --git a/Documentation/riscv/features.rst b/Documentation/arch/riscv/=
+features.rst
+> similarity index 100%
+> rename from Documentation/riscv/features.rst
+> rename to Documentation/arch/riscv/features.rst
+> diff --git a/Documentation/riscv/hwprobe.rst b/Documentation/arch/riscv/h=
+wprobe.rst
+> similarity index 100%
+> rename from Documentation/riscv/hwprobe.rst
+> rename to Documentation/arch/riscv/hwprobe.rst
+> diff --git a/Documentation/riscv/index.rst b/Documentation/arch/riscv/ind=
+ex.rst
+> similarity index 100%
+> rename from Documentation/riscv/index.rst
+> rename to Documentation/arch/riscv/index.rst
+> diff --git a/Documentation/riscv/patch-acceptance.rst b/Documentation/arc=
+h/riscv/patch-acceptance.rst
+> similarity index 100%
+> rename from Documentation/riscv/patch-acceptance.rst
+> rename to Documentation/arch/riscv/patch-acceptance.rst
+> diff --git a/Documentation/riscv/uabi.rst b/Documentation/arch/riscv/uabi=
+=2Erst
+> similarity index 100%
+> rename from Documentation/riscv/uabi.rst
+> rename to Documentation/arch/riscv/uabi.rst
+> diff --git a/Documentation/riscv/vector.rst b/Documentation/arch/riscv/ve=
+ctor.rst
+> similarity index 100%
+> rename from Documentation/riscv/vector.rst
+> rename to Documentation/arch/riscv/vector.rst
+> diff --git a/Documentation/riscv/vm-layout.rst b/Documentation/arch/riscv=
+/vm-layout.rst
+> similarity index 100%
+> rename from Documentation/riscv/vm-layout.rst
+> rename to Documentation/arch/riscv/vm-layout.rst
+> diff --git a/Documentation/maintainer/maintainer-entry-profile.rst b/Docu=
+mentation/maintainer/maintainer-entry-profile.rst
+> index 6b64072d4bf2..7ad4bfc2cc03 100644
+> --- a/Documentation/maintainer/maintainer-entry-profile.rst
+> +++ b/Documentation/maintainer/maintainer-entry-profile.rst
+> @@ -101,7 +101,7 @@ to do something different in the near future.
+> =20
+>     ../doc-guide/maintainer-profile
+>     ../nvdimm/maintainer-entry-profile
+> -   ../riscv/patch-acceptance
+> +   ../arch/riscv/patch-acceptance
+>     ../driver-api/media/maintainer-entry-profile
+>     ../driver-api/vfio-pci-device-specific-driver-acceptance
+>     ../nvme/feature-and-quirk-policy
+> diff --git a/Documentation/process/index.rst b/Documentation/process/inde=
+x.rst
+> index b501cd977053..db09a81d474b 100644
+> --- a/Documentation/process/index.rst
+> +++ b/Documentation/process/index.rst
+> @@ -71,7 +71,7 @@ lack of a better place.
+>     volatile-considered-harmful
+>     botching-up-ioctls
+>     clang-format
+> -   ../riscv/patch-acceptance
+> +   ../arch/riscv/patch-acceptance
+>     ../core-api/unaligned-memory-access
+> =20
+>  .. only::  subproject and html
+> diff --git a/Documentation/translations/it_IT/riscv/patch-acceptance.rst =
+b/Documentation/translations/it_IT/riscv/patch-acceptance.rst
+> index edf67252b3fb..2d7afb1f6959 100644
+> --- a/Documentation/translations/it_IT/riscv/patch-acceptance.rst
+> +++ b/Documentation/translations/it_IT/riscv/patch-acceptance.rst
+> @@ -1,6 +1,6 @@
+>  .. include:: ../disclaimer-ita.rst
+> =20
+> -:Original: :doc:`../../../riscv/patch-acceptance`
+> +:Original: :doc:`../../../arch/riscv/patch-acceptance`
+>  :Translator: Federico Vaga <federico.vaga@vaga.pv.it>
+> =20
+>  arch/riscv linee guida alla manutenzione per gli sviluppatori
+> diff --git a/Documentation/translations/zh_CN/arch/index.rst b/Documentat=
+ion/translations/zh_CN/arch/index.rst
+> index 945b078168b0..71186d9df7c9 100644
+> --- a/Documentation/translations/zh_CN/arch/index.rst
+> +++ b/Documentation/translations/zh_CN/arch/index.rst
+> @@ -10,7 +10,7 @@
+> =20
+>     mips/index
+>     arm64/index
+> -   ../riscv/index
+> +   ../arch/riscv/index
+>     openrisc/index
+>     parisc/index
+>     loongarch/index
+> diff --git a/Documentation/translations/zh_CN/riscv/boot-image-header.rst=
+ b/Documentation/translations/zh_CN/arch/riscv/boot-image-header.rst
+> similarity index 96%
+> rename from Documentation/translations/zh_CN/riscv/boot-image-header.rst
+> rename to Documentation/translations/zh_CN/arch/riscv/boot-image-header.r=
+st
+> index 0234c28a7114..779b5172fe24 100644
+> --- a/Documentation/translations/zh_CN/riscv/boot-image-header.rst
+> +++ b/Documentation/translations/zh_CN/arch/riscv/boot-image-header.rst
+> @@ -1,6 +1,6 @@
+> -.. include:: ../disclaimer-zh_CN.rst
+> +.. include:: ../../disclaimer-zh_CN.rst
+> =20
+> -:Original: Documentation/riscv/boot-image-header.rst
+> +:Original: Documentation/arch/riscv/boot-image-header.rst
+> =20
+>  :=E7=BF=BB=E8=AF=91:
+> =20
+> diff --git a/Documentation/translations/zh_CN/riscv/index.rst b/Documenta=
+tion/translations/zh_CN/arch/riscv/index.rst
+> similarity index 79%
+> rename from Documentation/translations/zh_CN/riscv/index.rst
+> rename to Documentation/translations/zh_CN/arch/riscv/index.rst
+> index 131e405aa857..3b041c116169 100644
+> --- a/Documentation/translations/zh_CN/riscv/index.rst
+> +++ b/Documentation/translations/zh_CN/arch/riscv/index.rst
+> @@ -1,8 +1,8 @@
+>  .. SPDX-License-Identifier: GPL-2.0
+> =20
+> -.. include:: ../disclaimer-zh_CN.rst
+> +.. include:: ../../disclaimer-zh_CN.rst
+> =20
+> -:Original: Documentation/riscv/index.rst
+> +:Original: Documentation/arch/riscv/index.rst
+> =20
+>  :=E7=BF=BB=E8=AF=91:
+> =20
+> diff --git a/Documentation/translations/zh_CN/riscv/patch-acceptance.rst =
+b/Documentation/translations/zh_CN/arch/riscv/patch-acceptance.rst
+> similarity index 93%
+> rename from Documentation/translations/zh_CN/riscv/patch-acceptance.rst
+> rename to Documentation/translations/zh_CN/arch/riscv/patch-acceptance.rst
+> index d180d24717bf..c8eb230ca8ee 100644
+> --- a/Documentation/translations/zh_CN/riscv/patch-acceptance.rst
+> +++ b/Documentation/translations/zh_CN/arch/riscv/patch-acceptance.rst
+> @@ -1,8 +1,8 @@
+>  .. SPDX-License-Identifier: GPL-2.0
+> =20
+> -.. include:: ../disclaimer-zh_CN.rst
+> +.. include:: ../../disclaimer-zh_CN.rst
+> =20
+> -:Original: Documentation/riscv/patch-acceptance.rst
+> +:Original: Documentation/arch/riscv/patch-acceptance.rst
+> =20
+>  :=E7=BF=BB=E8=AF=91:
+> =20
+> diff --git a/Documentation/translations/zh_CN/riscv/vm-layout.rst b/Docum=
+entation/translations/zh_CN/arch/riscv/vm-layout.rst
+> similarity index 98%
+> rename from Documentation/translations/zh_CN/riscv/vm-layout.rst
+> rename to Documentation/translations/zh_CN/arch/riscv/vm-layout.rst
+> index 91884e2dfff8..4b9f4dcf6c19 100644
+> --- a/Documentation/translations/zh_CN/riscv/vm-layout.rst
+> +++ b/Documentation/translations/zh_CN/arch/riscv/vm-layout.rst
+> @@ -1,7 +1,7 @@
+>  .. SPDX-License-Identifier: GPL-2.0
+> -.. include:: ../disclaimer-zh_CN.rst
+> +.. include:: ../../disclaimer-zh_CN.rst
+> =20
+> -:Original: Documentation/riscv/vm-layout.rst
+> +:Original: Documentation/arch/riscv/vm-layout.rst
+> =20
+>  :=E7=BF=BB=E8=AF=91:
+> =20
+> diff --git a/Documentation/translations/zh_CN/maintainer/maintainer-entry=
+-profile.rst b/Documentation/translations/zh_CN/maintainer/maintainer-entry=
+-profile.rst
+> index a1ee99c4786e..0f5acfb1012e 100644
+> --- a/Documentation/translations/zh_CN/maintainer/maintainer-entry-profil=
+e.rst
+> +++ b/Documentation/translations/zh_CN/maintainer/maintainer-entry-profil=
+e.rst
+> @@ -89,4 +89,4 @@
+> =20
+>     ../doc-guide/maintainer-profile
+>     ../../../nvdimm/maintainer-entry-profile
+> -   ../../../riscv/patch-acceptance
+> +   ../../../arch/riscv/patch-acceptance
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 208cfcc1aee3..863ba7e0123c 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -18533,7 +18533,7 @@ L:	linux-riscv@lists.infradead.org
+>  S:	Supported
+>  Q:	https://patchwork.kernel.org/project/linux-riscv/list/
+>  C:	irc://irc.libera.chat/riscv
+> -P:	Documentation/riscv/patch-acceptance.rst
+> +P:	Documentation/arch/riscv/patch-acceptance.rst
+>  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git
+>  F:	arch/riscv/
+>  N:	riscv
+> diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/u=
+api/asm/hwprobe.h
+> index 006bfb48343d..d43e306ce2f9 100644
+> --- a/arch/riscv/include/uapi/asm/hwprobe.h
+> +++ b/arch/riscv/include/uapi/asm/hwprobe.h
+> @@ -10,7 +10,7 @@
+> =20
+>  /*
+>   * Interface for probing hardware capabilities from userspace, see
+> - * Documentation/riscv/hwprobe.rst for more information.
+> + * Documentation/arch/riscv/hwprobe.rst for more information.
+>   */
+>  struct riscv_hwprobe {
+>  	__s64 key;
+> diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.c
+> index 473159b5f303..b651ec698a91 100644
+> --- a/arch/riscv/kernel/sys_riscv.c
+> +++ b/arch/riscv/kernel/sys_riscv.c
+> @@ -79,7 +79,7 @@ SYSCALL_DEFINE3(riscv_flush_icache, uintptr_t, start, u=
+intptr_t, end,
+> =20
+>  /*
+>   * The hwprobe interface, for allowing userspace to probe to see which f=
+eatures
+> - * are supported by the hardware.  See Documentation/riscv/hwprobe.rst f=
+or more
+> + * are supported by the hardware.  See Documentation/arch/riscv/hwprobe.=
+rst for more
+>   * details.
+>   */
+>  static void hwprobe_arch_id(struct riscv_hwprobe *pair,
+> --=20
+> 2.41.0
+>=20
+
+--yyJILPRGEs0APJsw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRrEtQAKCRB4tDGHoIJi
+0nrbAQDt+tijrtXHvRrRVExbW8E394V2d3fuesA3s5gWsmMhTQD7BPgN+CDXM6L5
+JA9U4cUnXWiRYkikQn1VtlMF1oHF3Qk=
+=FMgc
+-----END PGP SIGNATURE-----
+
+--yyJILPRGEs0APJsw--
