@@ -2,140 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E9D7B5A90
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C717B5A8B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238763AbjJBStp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 14:49:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
+        id S238841AbjJBSuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:50:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjJBStn (ORCPT
+        with ESMTP id S238791AbjJBSuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 14:49:43 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2469B;
-        Mon,  2 Oct 2023 11:49:39 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bfea381255so581751fa.3;
-        Mon, 02 Oct 2023 11:49:39 -0700 (PDT)
+        Mon, 2 Oct 2023 14:50:08 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC45C9
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 11:50:04 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so44865a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 11:50:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696272578; x=1696877378; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696272603; x=1696877403; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QArjfUTTcgJwwXB2cHAnDmcQypRbqPPM7kA043mYYzA=;
-        b=Y1/N4ixQxacvshz2OvOUeh5iTSNIMmzW6fz938wKqu/3SKX54FuSXkYB1dPE6spDot
-         w8O5KHTT0PMnKxMKXJNsq0dZCrfiDO0tybQKmV2GTmUE2op+GjXrt0BBUHMCCwFGEmCm
-         Z1pvQ8H+xQ9j/+qFq94swx4oAG3QJbxllBFP3v3K1BtiDiIwhdwCtomlpveuursCcjN7
-         wmtqapB0UCug3SEbxy4nMBNfwUKBOIOsvJqqGWML19gqWGM7kuZxK0Men9PuPD8xwkBq
-         iGt+c4dUj3URFEtwJfGU0JUKnWcruwbJ0PpQnSwFBLSN5gZOCI4/KQLghXzy7KE3QBlW
-         tUWQ==
+        bh=Lci7aE9Nr12rnsuBj8lxjXGwqKY+F3Jq4/Wt3MfIP2I=;
+        b=O38wsdmxtsyna4oOXPYL4H+Twdm/qOzAHz9KQdyr4mqdZm+XuEjlfGkoeVFVJcNc5K
+         prA2f9hvBEW4j2GmaGH+mZkZEuZ7vT4tUN2PxFMO2zFWEE78UN/L9tZd8yFrHysdI8bT
+         Sjc3V/qlMwZ1PRlCe0NqqX9v5qQTmI5EF7BTNqXre8YISVLhtQpO6aIJMkmfwql5Lm16
+         NmqVf4qF0BgshIbmiVXajOgmlD8yV61dL7MA9kXd2at14bpFxY5a5eLR8VLZ09cUemol
+         lNY/6flNkYKFezBSqltNp1tBut2dhfOiKHBPJyr93qOwO1KVDXkS3sua5eKiEcvtVpi6
+         eqaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696272578; x=1696877378;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696272603; x=1696877403;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QArjfUTTcgJwwXB2cHAnDmcQypRbqPPM7kA043mYYzA=;
-        b=urpi3N2YdXOe/oR+TQTkqPj4LNouOBg6G1VvQLQvr/3HKpspFf2P19QyeDJPLO2IZ8
-         6xulmlfso+YppN5M6mKQZDMX3M3GUb0so/gclPZqzqDQ1sOM4oNvnubjwoeSnx3myOYb
-         4zmH9STm9+OV37U0uwI7mi/7nbaAIYVMHkPlBBa0T+ip/TQ/Xtwfj7Jlgvz6uEWZ2cNS
-         GN8nO8AKRCff7flu6pSp6L5PrYuVDIKrfyOb7GD6fybo+iS9FXyHLzkdjh8n9dewM9wH
-         mVf8biIxPG/riR9TFr/G/QtEVB35w6p5oLnnnTY2XgbJ/62tpEmJ+jS+JksQNemewCPL
-         ClRg==
-X-Gm-Message-State: AOJu0Yw9C06BOK2h4BErxNt+r0VOIsh3ndZjwUxs0dPtqT51LpbTilu8
-        BCzhj1VaA7V0wPzDRAjWL+A=
-X-Google-Smtp-Source: AGHT+IH3M+qevVH7Kr9KnZ3kt9CcZO9iV+yGM+179shLGbvDskmG59LydCDjwjajO6Hvh17XAOJKvQ==
-X-Received: by 2002:a05:6512:2813:b0:4fb:caed:95c3 with SMTP id cf19-20020a056512281300b004fbcaed95c3mr12030931lfb.53.1696272577665;
-        Mon, 02 Oct 2023 11:49:37 -0700 (PDT)
-Received: from pc.localnet (c-7e17235c.012-196-6c6b701.bbcust.telenor.se. [92.35.23.126])
-        by smtp.gmail.com with ESMTPSA id f21-20020a19ae15000000b00500d1f67be9sm4820914lfc.43.2023.10.02.11.49.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 11:49:37 -0700 (PDT)
-From:   Henrik =?ISO-8859-1?Q?Lindstr=F6m?= <lindstrom515@gmail.com>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: macvtap performs IP defragmentation,
- causing MTU problems for virtual machines
-Date:   Mon, 02 Oct 2023 20:49:36 +0200
-Message-ID: <2197902.NgBsaNRSFp@pc>
-In-Reply-To: <20231002092010.GA30843@breakpoint.cc>
-References: <CAHkKap3sdN4wZm_euAZEyt3XB4bvr6cV-oAMGtrmrm5Z8biZ_Q@mail.gmail.com>
- <20231002092010.GA30843@breakpoint.cc>
+        bh=Lci7aE9Nr12rnsuBj8lxjXGwqKY+F3Jq4/Wt3MfIP2I=;
+        b=L3DdhL7KtECTijHGzDznB/usagnQz7z4Gwi5EdMpSpJeI7E+8JjvQZzbnwv1Mi56o6
+         nAGgY3OkHmcGeb0F6W5Lu63z3cXh3hjlHVhgwGNaQHz8NVk7TrW2W88G4DqOr7TvV9Sx
+         GdfEYODUdTUM8tzvgGzapPkjoKNg20gTKC7BhDJXjPQaBr032ic8U/9X/8UoTphXOaWk
+         nJacKOJ5N9oBSKcjwWVI61y1fwC8WaG4p1xPqxTt+YtPoHYxELMLeTBlbwShzTyYApVU
+         mzyVWdoFdBvBUKo/hBm/FPrnT/fTwYyp0s3/bcYIMGAvhZa07+g37HtLFEoOJXuuTeFX
+         DrvA==
+X-Gm-Message-State: AOJu0YyhP1txJ6zqQiwFdQjDkW/OBTpTRNHJuhBtTeu4eTe3sabtoXFQ
+        L+M2njm4YdtqcGFQEIJzJsD68hTEFi1rIq2WuoE7qQ==
+X-Google-Smtp-Source: AGHT+IGL+kcb6ZIi1pHexQ8Fkm4S3zA9EjTyFErM4ZJzlSAeQCJ0yHHY0K9LT47stqhw9jK05IhHUx7c6c+C9uoQT4Y=
+X-Received: by 2002:a05:6402:1a28:b0:531:1241:3e98 with SMTP id
+ be8-20020a0564021a2800b0053112413e98mr9957195edb.9.1696272602654; Mon, 02 Oct
+ 2023 11:50:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
+ <20230929-ad2s1210-mainline-v3-26-fa4364281745@baylibre.com>
+ <20230930170046.36637e9c@jic23-huawei> <CAMknhBH4+cUSX_j3-Y0xuTEiZHd3Ke4Zm8FdxLZJwn5gr_d-ug@mail.gmail.com>
+In-Reply-To: <CAMknhBH4+cUSX_j3-Y0xuTEiZHd3Ke4Zm8FdxLZJwn5gr_d-ug@mail.gmail.com>
+From:   David Lechner <dlechner@baylibre.com>
+Date:   Mon, 2 Oct 2023 13:49:51 -0500
+Message-ID: <CAMknhBGFpYx3oYqJgVgKZpoeANmVmXtUn+V3VnAW7woc7ytTow@mail.gmail.com>
+Subject: Re: [PATCH v3 26/27] staging: iio: resolver: ad2s1210: implement
+ fault events
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        David Lechner <david@lechnology.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Had to change "return 0" to "return vif" but other than that your changes
-seem to work, even with macvlan defragmentation removed.
+On Mon, Oct 2, 2023 at 11:58=E2=80=AFAM David Lechner <dlechner@baylibre.co=
+m> wrote:
+>
+> On Sat, Sep 30, 2023 at 11:00=E2=80=AFAM Jonathan Cameron <jic23@kernel.o=
+rg> wrote:
+> >
+> > On Fri, 29 Sep 2023 12:23:31 -0500
+> > David Lechner <dlechner@baylibre.com> wrote:
+> >
+> > > From: David Lechner <david@lechnology.com>
+> > >
+> > > From: David Lechner <dlechner@baylibre.com>
+> > >
+> > > When reading the position and velocity on the AD2S1210, there is also=
+ a
+> > > 3rd byte following the two data bytes that contains the fault flag bi=
+ts.
+> > > This patch adds support for reading this byte and generating events w=
+hen
+> > > faults occur.
+> > >
+> > > The faults are mapped to various channels and event types in order to
+> > > have a unique event for each fault.
+> > >
+> > > Signed-off-by: David Lechner <dlechner@baylibre.com>
+> >
+> > Use of x and y modifiers is a little odd.  What was your reasoning?
+> > Was it just that there was a X_OR_Y modifier?  If so, don't use that!
+> > It seemed like a good idea at the time, but it's not nice to deal with
+> > and requires a channel with that modifier to hang the controls off
+> > + make sure userspace expects that event code.
+>
+>
+> Regarding the point about "requires a channel with that modifier to
+> hang the controls off...". Although that comment was about modifiers,
+> does it also apply in general.
+>
+> There are several fault events that don't have any configurable
+> parameters, namely _sine/cosine inputs clipping_ and _velocity exceeds
+> max tracking rate_. So there won't be any attributes that contain the
+> event specification for those (e.g. no `events/in_angl0_*`
+> attributes). It sounds like this would be a problem as well?
+>
+> Should we consider a IIO_EV_INFO_LABEL so that we can have some sort
+> of attribute (namely `events/<dir>_<channel spec>_label`) so that
+> userspace can enumerate expected events for non-configurable events?
 
-I tested it by sending 8K fragmented multicast packets, with 5 macvlans on
-the receiving side. I consistently received 6 copies of the packet (1 from the
-real interface and 1 per macvlan). While doing this i had my VM running with
-a macvtap, and it was receiving fragmented packets as expected.
-
-Here are the changes i was testing with, first time sending a diff over mail
-so hope it works :-)
-
-diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
-index 02bd201bc7e5..5f638433cef9 100644
---- a/drivers/net/macvlan.c
-+++ b/drivers/net/macvlan.c
-@@ -462,10 +462,6 @@ static rx_handler_result_t macvlan_handle_frame(struct sk_buff **pskb)
- 	if (is_multicast_ether_addr(eth->h_dest)) {
- 		unsigned int hash;
- 
--		skb = ip_check_defrag(dev_net(skb->dev), skb, IP_DEFRAG_MACVLAN);
--		if (!skb)
--			return RX_HANDLER_CONSUMED;
--		*pskb = skb;
- 		eth = eth_hdr(skb);
- 		if (macvlan_forward_source(skb, port, eth->h_source)) {
- 			kfree_skb(skb);
-diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
-index a4941f53b523..30b822dfa222 100644
---- a/net/ipv4/ip_fragment.c
-+++ b/net/ipv4/ip_fragment.c
-@@ -479,11 +479,29 @@ static int ip_frag_reasm(struct ipq *qp, struct sk_buff *skb,
- 	return err;
- }
- 
-+static int ip_defrag_vif(const struct sk_buff *skb, const struct net_device *dev)
-+{
-+	int vif = l3mdev_master_ifindex_rcu(dev);
-+
-+	if (vif)
-+		return vif;
-+
-+	/* some folks insist that receiving a fragmented mcast dgram on n devices shall
-+	 * result in n defragmented packets.
-+	 */
-+	if (skb->pkt_type == PACKET_BROADCAST || skb->pkt_type == PACKET_MULTICAST) {
-+		if (dev)
-+			vif = dev->ifindex;
-+	}
-+
-+	return vif;
-+}
-+
- /* Process an incoming IP datagram fragment. */
- int ip_defrag(struct net *net, struct sk_buff *skb, u32 user)
- {
- 	struct net_device *dev = skb->dev ? : skb_dst(skb)->dev;
--	int vif = l3mdev_master_ifindex_rcu(dev);
-+	int vif = ip_defrag_vif(skb, dev);
- 	struct ipq *qp;
- 
- 	__IP_INC_STATS(net, IPSTATS_MIB_REASMREQDS);
-
-
-
+Well, I didn't think that all the way through before I hit send.
+IIO_EV_INFO_LABEL is clearly not the right way to implement a
+`events/*_label` attribute, but however we consider going about it,
+the point of adding such an attribute was the main idea.
