@@ -2,77 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38DC77B5772
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B3F7B57A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238156AbjJBPkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39912 "EHLO
+        id S238173AbjJBPli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238137AbjJBPkT (ORCPT
+        with ESMTP id S237934AbjJBPlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:40:19 -0400
+        Mon, 2 Oct 2023 11:41:36 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722C3AC;
-        Mon,  2 Oct 2023 08:40:16 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7059FC433C9;
-        Mon,  2 Oct 2023 15:40:15 +0000 (UTC)
-Date:   Mon, 2 Oct 2023 11:41:16 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patches in the rcu tree
-Message-ID: <20231002114116.72211394@gandalf.local.home>
-In-Reply-To: <20230927115330.69ef6671@canb.auug.org.au>
-References: <20230927115330.69ef6671@canb.auug.org.au>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7430AC;
+        Mon,  2 Oct 2023 08:41:33 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFB66C433C7;
+        Mon,  2 Oct 2023 15:41:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696261293;
+        bh=IJef45iiSUwLCelIrGKpbPKJ/a6DbHY9R0upJa+MNeE=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=Ow1PcRfVyHawjKORotYFEWxM6PAuElIiWDWCKb4PZ9yyTp34Fc7KrcyKj4pXY2d8F
+         XNsWFwI9ucKXXJFSbcODXuQlkNl6e7N7heRHHBpwoPTgj9t6kCuDwsjOQIkgss5S2t
+         RlWh4g9jYKCt6twutLUxNAXmsAdCjXwEWu23A/Q9LD1ISMwRsJ9uoPBfz2FD4/b+3O
+         PIh5MOkPtZNfx2svGVlgCllcOMLIoyjX65qaOGU8eIf6VXyEsOQn3hCDDDpkPl+6UC
+         3EOX8SiVjXw/QddL6Jq1oJlBE6u9xNcJ4Qw+0LnQY9aqHNRevtziz547Bz3cESatan
+         VDqvt20nv67sw==
+From:   Mark Brown <broonie@kernel.org>
+To:     tmaimon77@gmail.com, tali.perry1@gmail.com, avifishman70@gmail.com,
+        joel@jms.id.au,
+        "William A. Kennington III" <william@wkennington.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230922182812.2728066-1-william@wkennington.com>
+References: <20230922182812.2728066-1-william@wkennington.com>
+Subject: Re: [PATCH] spi: npcm-fiu: Fix UMA reads when dummy.nbytes == 0
+Message-Id: <169626129142.73782.530918104356513259.b4-ty@kernel.org>
+Date:   Mon, 02 Oct 2023 16:41:31 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Mailer: b4 0.13-dev-0438c
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Sep 2023 11:53:30 +1000
-Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-
-> Hi all,
+On Fri, 22 Sep 2023 11:28:12 -0700, William A. Kennington III wrote:
+> We don't want to use the value of ilog2(0) as dummy.buswidth is 0 when
+> dummy.nbytes is 0. Since we have no dummy bytes, we don't need to
+> configure the dummy byte bits per clock register value anyway.
 > 
-> The following commits are also in the ftrace tree as different commits
-> (but similar patches):
-> 
->   8f2612479c71 ("doc: Add /proc/bootconfig to proc.rst")
-
-This one looks like it has some whitespace issues (according to git show).
-
->   648c895fda8d ("doc: Update /proc/cmdline documentation to include boot config")
-> 
-> These are commits
-> 
->   5f4028880652 ("doc: Add /proc/bootconfig to proc.rst")
->   6eab72b5fea3 ("doc: Update /proc/cmdline documentation to include boot config")
-> 
-> in the ftrace tree.  They are causing a conflict due to the differences.
-> 
-> I am guessing that the commits in the ftrace tree are an older verison?
 > 
 
-It looks like the commits in the for-next branch were nacked by Linus due
-to a commit in between the above two.
+Applied to
 
-  https://lore.kernel.org/all/CAHk-=wjpVAW3iRq_bfKnVfs0ZtASh_aT67bQBG11b4W6niYVUw@mail.gmail.com/
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-Masami, can you update your for-next bootconfig branch? If Paul is taking
-the patches, I'm guessing we can just drop them.
+Thanks!
+
+[1/1] spi: npcm-fiu: Fix UMA reads when dummy.nbytes == 0
+      commit: 2ec8b010979036c2fe79a64adb6ecc0bd11e91d1
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
 Thanks,
+Mark
 
--- Steve
