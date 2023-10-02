@@ -2,154 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D5E7B5088
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DE07B5096
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236504AbjJBKpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 06:45:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57338 "EHLO
+        id S236531AbjJBKq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 06:46:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236429AbjJBKo7 (ORCPT
+        with ESMTP id S236429AbjJBKq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 06:44:59 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA4FB3
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 03:44:55 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5384975e34cso1861197a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 03:44:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696243494; x=1696848294; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8DgRy9wyELYkrXoesMhy/Irg2NSJ9BDo37kM0qeNRsk=;
-        b=jhWeJtKMIt6ajuW4m9ZKv7UEqcspMu2FNEpFeVs+uwVcUzLe1GOEI34i7TLgu4GgZ8
-         70HJCSzov3bx082aF8VyFblPebvzqLayHDWCnB/omElRChLlseTLc0afUn3sz+xcJ+Y0
-         cLA5DlY/2OSSY3ldUvHisaVmOsGkBLdrMGfdMBJfKVFEU6AY2IhIqF7WR7WuUcC9zIDp
-         pnIdV5PpPpNF8M1WPbCTxBVGBeFxLhPF+QjpOkrcSGEHOgWZeELyYqMsiWKglkD+ttYX
-         QeybnkqP2f8PGhGDXiOuHJGQsLyaHXc6nLmYywcHrJGXyQviLNaKti+19tzIZPq3krNj
-         R3YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696243494; x=1696848294;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8DgRy9wyELYkrXoesMhy/Irg2NSJ9BDo37kM0qeNRsk=;
-        b=uvZ39BZDov+Q6F3GkrwVjRF6KexJ7g7DEbfP+fTbE1kOUNKifH5FD39T1dfRzQc0Xv
-         FdMPyIfB14q2sDOWN76U6iqYDAieyI+32RNKub1jtQJc/K/0RxBWyGZyANFu+PPxl5DM
-         oHOtgd8WWe+azV1jzE5Kmkr+kc+Jt/rT96UdBYg4jpUeZYneRFJw8maUWu/PwF+A/5lM
-         BxtaESm+4cMbpdioJAV9ge4l6wsI8r/a0uFpiEmAjnU02xMhFgVlwnIXvq4cF1+FgU2S
-         wQ7zWhEl2P2KNRISQbCTROYyKg6RpnveMGSe8/SDfknHeprrpIIMH5YTiHTRnznl9VLn
-         /xAA==
-X-Gm-Message-State: AOJu0YxfqVpeMLoOPkMGKuwr+jBa5pvYaFr+caHEJSK0by6+GrIozle5
-        UirZoAzXoEeK1JIsMxJyxHHVw8PRjHPjbWTmuGEDQA==
-X-Google-Smtp-Source: AGHT+IFfEHZYAoCIgoYnJV9808N/Wza8FLcB832L+PSoW0VoXZBH3SP/z2HN19oDwKOYQiS0ViJiuQtLXo4v1DWwk9c=
-X-Received: by 2002:a05:6402:68e:b0:523:2e0e:5462 with SMTP id
- f14-20020a056402068e00b005232e0e5462mr7843842edy.42.1696243493936; Mon, 02
- Oct 2023 03:44:53 -0700 (PDT)
+        Mon, 2 Oct 2023 06:46:56 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E92C9D;
+        Mon,  2 Oct 2023 03:46:48 -0700 (PDT)
+Received: from msexch01.omp.ru (10.188.4.12) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Mon, 2 Oct 2023
+ 13:46:40 +0300
+Received: from msexch01.omp.ru ([fe80::4020:d881:621a:6b6b]) by
+ msexch01.omp.ru ([fe80::4020:d881:621a:6b6b%5]) with mapi id 15.02.0986.014;
+ Mon, 2 Oct 2023 13:46:40 +0300
+From:   Denis Glazkov <d.glazkov@omp.ru>
+To:     "jarkko@kernel.org" <jarkko@kernel.org>
+CC:     Denis Glazkov <d.glazkov@omp.ru>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Sergey Shtylyov" <s.shtylyov@omp.ru>
+Subject: [PATCH v3] certs: Add option to disallow non-CA certificates in
+ secondary trusted keying
+Thread-Topic: [PATCH v3] certs: Add option to disallow non-CA certificates in
+ secondary trusted keying
+Thread-Index: AQHZ9R25FRQFBB8VuUOFgsWwTdSR3g==
+Date:   Mon, 2 Oct 2023 10:46:40 +0000
+Message-ID: <20231002104525.7631-1-d.glazkov@omp.ru>
+References: <CVS5MB3X82Q8.8KDB4346ROR5@suppilovahvero>
+In-Reply-To: <CVS5MB3X82Q8.8KDB4346ROR5@suppilovahvero>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.188.4.40]
+x-kse-serverinfo: msexch01.omp.ru, 9
+x-kse-antivirus-interceptor-info: scan successful
+x-kse-antivirus-info: Clean, bases: 10/2/2023 6:03:00 AM
+x-kse-attachment-filter-triggered-rules: Clean
+x-kse-attachment-filter-triggered-filters: Clean
+x-kse-bulkmessagesfiltering-scan-result: InTheLimit
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1D4C26ED0CC7E645B19392EB865D6784@omp.ru>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20230922-unclothed-bottom-5531329f9724@spud> <CAGD2q_YsFdDVhE4JCmQSGMWOdpe_yzG8-CdWYPXtjeZsManvgQ@mail.gmail.com>
- <20230922-removable-footwork-f1d4d96d38dd@spud> <CAGD2q_Y467jJJnwCVH+3F-hh6a-1-OYRugcy0DdjPnTCC77Z8A@mail.gmail.com>
- <20230925-cod-vacancy-08dc8d88f90e@wendy> <CAGD2q_a1nLtFj7H42f+u+J5Bih59MGS0aJLHCFJy5gM2ydys4w@mail.gmail.com>
- <20230926-action-sludge-ec8e51fdd6d4@spud> <CAGD2q_YBfDT950tyxEF87ZeiANgea_x8S16Ud5K2bcQ+eL9T=w@mail.gmail.com>
- <20230926-reverence-unlit-d0027225cc43@spud> <CAGD2q_ZzNPOL+Mhg7aWFTQd+UJJYVLz1ZE9hbNb0roS2M6y34g@mail.gmail.com>
- <20230928-spectacle-civic-339c0d71d8d7@spud>
-In-Reply-To: <20230928-spectacle-civic-339c0d71d8d7@spud>
-From:   yang tylor <tylor_yang@himax.corp-partner.google.com>
-Date:   Mon, 2 Oct 2023 18:44:41 +0800
-Message-ID: <CAGD2q_b1gn8XAfgfzuNn3Jo6gEguBEacxERyRM5ms-V=+hWS+g@mail.gmail.com>
-Subject: Re: [PATCH V2 1/2] dt-bindings: input: Introduce Himax HID-over-SPI device
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        dmitry.torokhov@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        poyuan_chang@himax.corp-partner.google.com, hbarnor@chromium.org,
-        "jingyliang@chromium.org" <jingyliang@chromium.org>,
-        wuxy23@lenovo.com, luolm1@lenovo.com,
-        hung poyu <poyu_hung@himax.corp-partner.google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 12:56=E2=80=AFAM Conor Dooley <conor@kernel.org> wr=
-ote:
->
-> On Thu, Sep 28, 2023 at 10:12:41AM +0800, yang tylor wrote:
-> > On Tue, Sep 26, 2023 at 8:53=E2=80=AFPM Conor Dooley <conor@kernel.org>=
- wrote:
-> > > On Tue, Sep 26, 2023 at 05:52:39PM +0800, yang tylor wrote:
-> > > > On Tue, Sep 26, 2023 at 5:02=E2=80=AFPM Conor Dooley <conor@kernel.=
-org> wrote:
-> > > > > On Mon, Sep 25, 2023 at 06:16:29PM +0800, yang tylor wrote:
-> > > > > > On Mon, Sep 25, 2023 at 4:41=E2=80=AFPM Conor Dooley <conor.doo=
-ley@microchip.com> wrote:
-> > > > > > We have a default prefix firmware name(like himax_xxxx.bin) in =
-the driver code.
-> > > > >
-> > > > > How do you intend generating the name of the firmware file? I ass=
-ume the
-> > > > > same firmware doesn't work on every IC, so you'll need to pick a
-> > > > > different one depending on the compatible?
-> > > > >
-> > > > If considering a firmware library line-up for all the incoming pane=
-ls
-> > > > of this driver.
-> > > > We would use PID as part of the file name. Because all the support =
-panels would
-> > > > have a unique PID associated. Which will make the firmware name lik=
-e
-> > > > himax_xxx_{$PID}.bin. The problem is, we need to know PID before fi=
-rmware load
-> > > > at no flash condition. Thus PID information is required in dts when
-> > > > no-flash-flag
-> > > > is specified.
-> > >
-> > > Firstly, where does the "xxx" come from?
-> > > And you're making it sound more like having firmware-name is suitable
-> > > for this use case, given you need to determine the name of the file t=
-o
-> > > use based on something that is hardware specific but is not
-> > > dynamically detectable.
-> > Current driver patch uses a prefix name "himax_i2chid" which comes
-> > from the previous project
-> >  and seems not suitable for this condition, so I use "xxx" and plan to
-> > replace it in the next version.
-> > For finding firmware, I think both solutions are reasonable.
-> > - provide firmware name directly: implies no-flash and use user
-> > specified firmware, no PID info.
-> > - provide no-flash-flag and PID info: loading firmware from organized
-> > names with PID info.
-> > I prefer the 2nd solution, but it needs more properties in dts. 1st
-> > has less properties and more
-> > intuitive.
-> >
-> > I don't know which one is more acceptable by the community, as you
-> > know I'm a newbie here.
->
-> To be honest, I am not all that sure either! Does the panel id have
-> value in its own right, or is that only used to determine the firmware
-> filename?
-Currently, PID stands for Panel/Project ID and is used for determining
-the firmware filename only. We haven't come up with any new attribute that
-may attach to it. The differences between panels are handled in firmware
-dedicated to its PID.
-
-> Also, if it does have value in its own right, rather than a "pid",
-> should the panel be a child node of this hid device with its own
-> compatible?
-It may need a child node if we find it necessary to add attributes to each =
-PID.
-But currently we have no idea about it.
-
-Thanks,
-Tylor
+VGhlIExpbnV4IGtlcm5lbCBoYXMgYW4gSU1BIChJbnRlZ3JpdHkgTWVhc3VyZW1lbnQgQXJjaGl0
+ZWN0dXJlKQ0Kc3Vic3lzdGVtIHRvIGNoZWNrIHRoZSBpbnRlZ3JpdHkgb2YgdGhlIGZpbGUgc3lz
+dGVtIGJhc2VkIG9uIGRpZ2l0YWwNCnNpZ25hdHVyZXMuIElNQSB1c2VzIGNlcnRpZmljYXRlcyBp
+biBgLmltYWAga2V5aW5nIHRvIGNoZWNrIGludGVncml0eS4NCg0KT25seSBjZXJ0aWZpY2F0ZXMg
+aXNzdWVkIGJ5IG9uZSBvZiB0aGUgdHJ1c3RlZCBDQSAoQ2VydGlmaWNhdGUgQXV0aG9yaXR5KQ0K
+Y2VydGlmaWNhdGVzIGNhbiBiZSBhZGRlZCB0byB0aGUgYC5pbWFgIGtleWluZy4NCg0KVGhlIExp
+bnV4IGtlcm5lbCBub3cgaGFzIGEgc2Vjb25kYXJ5IHRydXN0ZWQga2V5aW5nIHRvIHdoaWNoIHRy
+dXN0ZWQNCmNlcnRpZmljYXRlcyBmcm9tIHVzZXIgc3BhY2UgY2FuIGJlIGFkZGVkIGlmIHlvdSBo
+YXZlIHN1cGVydXNlcg0KcHJpdmlsZWdlcy4gUHJldmlvdXNseSwgYWxsIHRydXN0ZWQgY2VydGlm
+aWNhdGVzIHdlcmUgaW4gdGhlIGJ1aWx0LWluDQp0cnVzdGVkIGtleWluZywgd2hpY2ggY291bGQg
+bm90IGJlIG1vZGlmaWVkIGZyb20gdXNlciBzcGFjZS4NClRydXN0ZWQgY2VydGlmaWNhdGVzIHdl
+cmUgcGxhY2VkIGluIHRoZSBidWlsdC1pbiB0cnVzdGVkIGtleWluZyBhdA0Ka2VybmVsIGNvbXBp
+bGUgdGltZS4NCg0KVGhlIHNlY29uZGFyeSB0cnVzdGVkIGtleWluZyBpcyBkZXNpZ25lZCBzbyB0
+aGF0IGFueSBjZXJ0aWZpY2F0ZXMgdGhhdA0KYXJlIHNpZ25lZCBieSBvbmUgb2YgdGhlIHRydXN0
+ZWQgQ0EgY2VydGlmaWNhdGVzIGluIHRoZSBidWlsdC1pbiBvcg0Kc2Vjb25kYXJ5IHRydXN0ZWQg
+a2V5cmluZyBjYW4gYmUgYWRkZWQgdG8gaXQuDQoNCkxldCdzIGltYWdpbmUgdGhhdCB3ZSBoYXZl
+IHRoZSBmb2xsb3dpbmcgY2VydGlmaWNhdGUgdHJ1c3QgY2hhaW46DQoNCiAgICAgICAgICAgICDi
+lIzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilKzilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilJANCiAgICAgICAgICAgICDilIIg
+ICAgICAgICAgICAgICAgICAgICAgICAgICDilIIgICAgIOKUjOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUkCAgICAgICDilIINCiAgICAgICAgICAgICDilIIgICAgICAgICAgICAgICAgICAgICAgICAg
+ICDilIIgICAgIOKUgiAgICAgICDilIIgICAgICAg4pSCDQrilIzilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilrzilIDilIDilIDilIDilIDilIDilIDilIDilJAgICAg4pSM4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pa84pSA4pSA4pSA4pSA4pSA4pa8
+4pSA4pSA4pSA4pSA4pSQICDilIIg4pSM4pSA4pSA4pSA4pSA4pSA4pS04pSA4pSA4pSA4pSA4pSA
+4pSQDQrilIIuYnVpbHRpbl90cnVzdGVkX2tleXPilILil4TilIDilIDilIDilKQuc2Vjb25kYXJ5
+X3RydXN0ZWRfa2V5cyDilJzilIDilIDilJgg4pSCICAgLmltYSAgICDilIINCuKUnOKUgOKUgOKU
+gOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+pCAgICDilJzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilKQgICAg4pSc4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSkDQrilIIgICAgIFJvb3QgQ0EgQ2VydCAgICDilIItLS0tLeKWuiBJbnRlcm1l
+ZGlhdGUgQ0EgQ2VydCAg4pSCLS0tLS3ilrogSU1BIENlcnQg4pSCDQrilJTilIDilIDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilJggICAg
+4pSU4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+4pSA4pSA4pSA4pSA4pSA4pSA4pSYICAgIOKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKU
+gOKUgOKUmA0KDQogICAgICAgICAgICAgICAgSXNzdWVzICAgICAgICAgICAgICAgICAgUmVzdHJp
+Y3RlZCBieQ0KICAgICAgICAgICAgLS0tLS0tLS0tLS0tLeKWuiAgICAgICAgICAgICDilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilroNCg0KU2luY2UgdGhlIElNQSBj
+ZXJ0aWZpY2F0ZSBpcyBzaWduZWQgYnkgYSBDQSBjZXJ0aWZpY2F0ZSBmcm9tIGEgc2Vjb25kYXJ5
+DQp0cnVzdGVkIGtleWluZywgYW4gYXR0YWNrZXIgd2l0aCBzdXBlcnVzZXIgcHJpdmlsZWdlcyB3
+aWxsIGJlIGFibGUgdG8NCmFkZCB0aGUgSU1BIGNlcnRpZmljYXRlIHRvIHRoZSBzZWNvbmRhcnkg
+dHJ1c3RlZCBrZXlpbmcuIFRoYXQgaXMsIHRoZSBJTUENCmNlcnRpZmljYXRlIHdpbGwgYmVjb21l
+IHRydXN0ZWQuDQoNClNpbmNlLCB3aXRoIGBDT05GSUdfTU9EVUxFX1NJR2Agb3B0aW9uIGVuYWJs
+ZWQsIG1vZHVsZXMgY2FuIG9ubHkgYmUNCmxvYWRlZCBpbnRvIGtlcm5lbCBzcGFjZSBpZiB0aGV5
+IGFyZSBzaWduZWQgd2l0aCBvbmUgb2YgdGhlIHRydXN0ZWQNCmNlcnRpZmljYXRlcywgYW4gYXR0
+YWNrZXIgY291bGQgc2lnbiB1bnRydXN0ZWQga2VybmVsIG1vZHVsZXMgd2l0aA0KdGhlIHByaXZh
+dGUga2V5IGNvcnJlc3BvbmRpbmcgdG8gdGhlIElNQSBjZXJ0aWZpY2F0ZSBhbmQgc3VjY2Vzc2Z1
+bGx5DQpsb2FkIHRoZSB1bnRydXN0ZWQgbW9kdWxlcyBpbnRvIGtlcm5lbCBzcGFjZS4NCg0KVGhp
+cyBwYXRjaCB3YXMgY3JlYXRlZCBub3QgdG8gc29sdmUgb25seSB0aGUgcHJvYmxlbSBvZiBsb2Fk
+aW5nDQp1bnRydXN0ZWQga2VybmVsIG1vZHVsZXMsIGJ1dCB0byBtYWtlIGl0IHBvc3NpYmxlIHRv
+IHVzZSBhIHNlY29uZGFyeQ0KdHJ1c3RlZCBrZXlpbmcgb25seSBhcyBhIHBhcnQgb2YgYSBjaGFp
+biBvZiB0cnVzdCBjb250YWluaW5nIG9ubHkNCkNBIGNlcnRpZmljYXRlcyB3aXRoIG5vIGRpZ2l0
+YWwgc2lnbmF0dXJlIGNhcGFiaWxpdHkuIFRoaXMgd2lsbA0KaGVscCBhdm9pZCBzaW1pbGFyIHBy
+b2JsZW1zIHdoZW4gbmV3IGZlYXR1cmVzIGFwcGVhciBpbiB0aGUgbGludXgNCmtlcm5lbCB0aGF0
+IGFyZSBzaW1pbGFyIHRvIGtlcm5lbCBtb2R1bGVzIGluIHRlcm1zIG9mIHRoZWlyIGltcGFjdA0K
+b24gc3lzdGVtIHNlY3VyaXR5LCB3aGljaCB3aWxsIGFsc28gdXNlIHRydXN0ZWQgY2VydGlmaWNh
+dGVzIGZvcg0Kc2lnbmF0dXJlIHZlcmlmaWNhdGlvbi4NCg0KVGhpcyBwYXRjaCBhZGRzIHRoZSBj
+b25maWd1cmF0aW9uIHRoYXQgb25jZSBlbmFibGVkLCBvbmx5DQpjZXJ0aWZpY2F0ZXMgdGhhdCBt
+ZWV0IHRoZSBmb2xsb3dpbmcgcmVxdWlyZW1lbnRzIGNhbiBiZSBhZGRlZA0KdG8gdGhlIHNlY29u
+ZGFyeSB0cnVzdGVkIGtleWluZzoNCg0KMS4gVGhlIGNlcnRpZmljYXRlIGlzIGEgQ0EgKENlcnRp
+ZmljYXRlIEF1dGhvcml0eSkNCjIuIFRoZSBjZXJ0aWZpY2F0ZSBtdXN0IGJlIHVzZWQgZm9yIHZl
+cmlmeWluZyBhIENBJ3Mgc2lnbmF0dXJlcw0KMy4gVGhlIGNlcnRpZmljYXRlIG11c3Qgbm90IGJl
+IHVzZWQgZm9yIGRpZ2l0YWwgc2lnbmF0dXJlcw0KDQpTaWduZWQtb2ZmLWJ5OiBEZW5pcyBHbGF6
+a292IDxkLmdsYXprb3ZAb21wLnJ1Pg0KLS0tDQp2MSAtPiB2MjoNCiAtIFJlYmFzZSB0aGUgcGF0
+Y2ggZnJvbSBgbGludXgtbmV4dGAgdG8gdGhlIG1haW4gYGxpbnV4YCByZXBvIG1hc3RlciBicmFu
+Y2gNCiAtIE1ha2UgdGhlIGNvbW1pdCBtZXNzYWdlIG1vcmUgZGV0YWlsZWQNCiAtIE1vdmUgdGhl
+IHZhcmlhYmxlIGRlY2xhcmF0aW9uIHRvIHRoZSBgaWZgIGJsb2NrDQogLSBSZXBsYWNlIGAjaWZk
+ZWZgIHdpdGggYElTX0VOQUJMRURgIG1hY3JvDQoNCnYyIC0+IHYzOg0KIC0gQWRkIHRoZSBwdXJw
+b3NlIGFuZCBnb2FsIG9mIHRoZSBwYXRjaCB0byB0aGUgY29tbWl0IG1lc3NhZ2UNCi0tLQ0KIGNl
+cnRzL0tjb25maWcgICAgICAgICAgfCAgOSArKysrKysrKysNCiBjZXJ0cy9zeXN0ZW1fa2V5cmlu
+Zy5jIHwgMTYgKysrKysrKysrKysrKysrKw0KIDIgZmlsZXMgY2hhbmdlZCwgMjUgaW5zZXJ0aW9u
+cygrKQ0KDQpkaWZmIC0tZ2l0IGEvY2VydHMvS2NvbmZpZyBiL2NlcnRzL0tjb25maWcNCmluZGV4
+IDFmMTA5YjA3MDg3Ny4uNGE0ZGM4YWFiODkyIDEwMDY0NA0KLS0tIGEvY2VydHMvS2NvbmZpZw0K
+KysrIGIvY2VydHMvS2NvbmZpZw0KQEAgLTkwLDYgKzkwLDE1IEBAIGNvbmZpZyBTRUNPTkRBUllf
+VFJVU1RFRF9LRVlSSU5HDQogCSAgdGhvc2Uga2V5cyBhcmUgbm90IGJsYWNrbGlzdGVkIGFuZCBh
+cmUgdm91Y2hlZCBmb3IgYnkgYSBrZXkgYnVpbHQNCiAJICBpbnRvIHRoZSBrZXJuZWwgb3IgYWxy
+ZWFkeSBpbiB0aGUgc2Vjb25kYXJ5IHRydXN0ZWQga2V5cmluZy4NCiANCitjb25maWcgU0VDT05E
+QVJZX1RSVVNURURfS0VZUklOR19GT1JfQ0FfQ0VSVElGSUNBVEVTX09OTFkNCisJYm9vbCAiQWxs
+b3cgb25seSBDQSBjZXJ0aWZpY2F0ZXMgdG8gYmUgYWRkZWQgdG8gdGhlIHNlY29uZGFyeSB0cnVz
+dGVkIGtleXJpbmciDQorCWRlcGVuZHMgb24gU0VDT05EQVJZX1RSVVNURURfS0VZUklORw0KKwlo
+ZWxwDQorCSAgSWYgc2V0LCBvbmx5IENBIGNlcnRpZmljYXRlcyBjYW4gYmUgYWRkZWQgdG8gdGhl
+IHNlY29uZGFyeSB0cnVzdGVkIGtleXJpbmcuDQorCSAgQW4gYWNjZXB0YWJsZSBDQSBjZXJ0aWZp
+Y2F0ZSBtdXN0IGluY2x1ZGUgdGhlIGBrZXlDZXJ0U2lnbmAgdmFsdWUgaW4NCisJICB0aGUgYGtl
+eVVzYWdlYCBmaWVsZC4gQ0EgY2VydGlmaWNhdGVzIHRoYXQgaW5jbHVkZSB0aGUgYGRpZ2l0YWxT
+aWduYXR1cmVgDQorCSAgdmFsdWUgaW4gdGhlIGBrZXlVc2FnZWAgZmllbGQgd2lsbCBub3QgYmUg
+YWNjZXB0ZWQuDQorDQogY29uZmlnIFNZU1RFTV9CTEFDS0xJU1RfS0VZUklORw0KIAlib29sICJQ
+cm92aWRlIHN5c3RlbS13aWRlIHJpbmcgb2YgYmxhY2tsaXN0ZWQga2V5cyINCiAJZGVwZW5kcyBv
+biBLRVlTDQpkaWZmIC0tZ2l0IGEvY2VydHMvc3lzdGVtX2tleXJpbmcuYyBiL2NlcnRzL3N5c3Rl
+bV9rZXlyaW5nLmMNCmluZGV4IDlkZTYxMGJmMWY0Yi4uZWUxNDQ0NzM3NGU3IDEwMDY0NA0KLS0t
+IGEvY2VydHMvc3lzdGVtX2tleXJpbmcuYw0KKysrIGIvY2VydHMvc3lzdGVtX2tleXJpbmcuYw0K
+QEAgLTk5LDYgKzk5LDIyIEBAIGludCByZXN0cmljdF9saW5rX2J5X2J1aWx0aW5fYW5kX3NlY29u
+ZGFyeV90cnVzdGVkKA0KIAkJLyogQWxsb3cgdGhlIGJ1aWx0aW4ga2V5cmluZyB0byBiZSBhZGRl
+ZCB0byB0aGUgc2Vjb25kYXJ5ICovDQogCQlyZXR1cm4gMDsNCiANCisJaWYgKElTX0VOQUJMRUQo
+Q09ORklHX1NFQ09OREFSWV9UUlVTVEVEX0tFWVJJTkdfRk9SX0NBX0NFUlRJRklDQVRFU19PTkxZ
+KSAmJg0KKwkgICAgZGVzdF9rZXlyaW5nID09IHNlY29uZGFyeV90cnVzdGVkX2tleXMpIHsNCisJ
+CWNvbnN0IHN0cnVjdCBwdWJsaWNfa2V5ICpwdWIgPSBwYXlsb2FkLT5kYXRhW2FzeW1fY3J5cHRv
+XTsNCisNCisJCWlmICh0eXBlICE9ICZrZXlfdHlwZV9hc3ltbWV0cmljKQ0KKwkJCXJldHVybiAt
+RU9QTk9UU1VQUDsNCisJCWlmICghcHViKQ0KKwkJCXJldHVybiAtRU5PUEtHOw0KKwkJaWYgKCF0
+ZXN0X2JpdChLRVlfRUZMQUdfQ0EsICZwdWItPmtleV9lZmxhZ3MpKQ0KKwkJCXJldHVybiAtRVBF
+Uk07DQorCQlpZiAoIXRlc3RfYml0KEtFWV9FRkxBR19LRVlDRVJUU0lHTiwgJnB1Yi0+a2V5X2Vm
+bGFncykpDQorCQkJcmV0dXJuIC1FUEVSTTsNCisJCWlmICh0ZXN0X2JpdChLRVlfRUZMQUdfRElH
+SVRBTFNJRywgJnB1Yi0+a2V5X2VmbGFncykpDQorCQkJcmV0dXJuIC1FUEVSTTsNCisJfQ0KKw0K
+IAlyZXR1cm4gcmVzdHJpY3RfbGlua19ieV9zaWduYXR1cmUoZGVzdF9rZXlyaW5nLCB0eXBlLCBw
+YXlsb2FkLA0KIAkJCQkJICBzZWNvbmRhcnlfdHJ1c3RlZF9rZXlzKTsNCiB9DQotLSANCjIuMzQu
+MQ0K
