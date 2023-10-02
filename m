@@ -2,91 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E2757B5C3A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8A27B5C3D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:49:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235575AbjJBUsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 16:48:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36140 "EHLO
+        id S235696AbjJBUtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 16:49:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbjJBUsH (ORCPT
+        with ESMTP id S229777AbjJBUtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 16:48:07 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE466C4;
-        Mon,  2 Oct 2023 13:48:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696279678;
-        bh=bec5dMn6q+l2mI6NdjHgpXfGiGBum0OM/W2zvWqM7cU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=sWkrsdktpZSsbxYJDGIdAPnceTKEZtZS13EBJUOeEUzS8crdr12RbVIUaHFfoKhb1
-         cxR3ltShLAnIPlH/c5Fb3sdqvzc2jjIpdEcmsioS40kyRhHnthlT7MJgqPStJjU4ZB
-         K2k3FO9H/FgNj2V03QXGALl4rDv+WyypAlAzUIWChXvbHlWdBVub6wB6sahXiRh1uK
-         xNl14tw0Z5RoehITGp4WRo0G/saPyGPwXWubYMBGA59+4dwcPaw/YdzupFauFmw2Ct
-         j8ly+58fECHRafUk3UTFvvlLja/LM6B8DryU9XNR0Ft3CamDq7UBx4aecGfS1w8OAM
-         HLEFtkEuhpTMA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RztM22ddkz4xPc;
-        Tue,  3 Oct 2023 07:47:58 +1100 (AEDT)
-Date:   Tue, 3 Oct 2023 07:47:43 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the mm-hotfixes tree
-Message-ID: <20231003074743.3960382e@canb.auug.org.au>
+        Mon, 2 Oct 2023 16:49:08 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E3FC9;
+        Mon,  2 Oct 2023 13:49:03 -0700 (PDT)
+Received: from [192.168.1.103] (178.176.75.5) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Mon, 2 Oct 2023
+ 23:49:00 +0300
+Subject: Re: [PATCH 3/4] pata_parport: add custom version of wait_after_reset
+To:     Ondrej Zary <linux@zary.sk>,
+        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+CC:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Tim Waugh <tim@cyberelk.net>, <linux-block@vger.kernel.org>,
+        <linux-parport@lists.infradead.org>, <linux-ide@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230930191511.24994-1-linux@zary.sk>
+ <20230930191511.24994-4-linux@zary.sk>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <a164fc88-ef57-f957-25df-e149540830c0@omp.ru>
+Date:   Mon, 2 Oct 2023 23:48:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/TX.z1VT8Av8fNu=NSVvC3j.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230930191511.24994-4-linux@zary.sk>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.75.5]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 10/02/2023 20:32:19
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 180294 [Oct 02 2023]
+X-KSE-AntiSpam-Info: Version: 5.9.59.0
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.5 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: FromAlignment: s
+X-KSE-AntiSpam-Info: {rdns complete}
+X-KSE-AntiSpam-Info: {fromrtbl complete}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.5
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 10/02/2023 20:37:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 10/2/2023 5:26:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/TX.z1VT8Av8fNu=NSVvC3j.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 9/30/23 10:15 PM, Ondrej Zary wrote:
 
-Hi all,
+> Some parallel adapters (e.g. EXP Computer MC-1285B EPP Cable) return
+> bogus values when there's no master device present. This can cause
+> reset to fail, preventing the lone slave device (such as EXP Computer
+> CD-865) from working.
+> 
+> Add custom version of wait_after_reset that ignores master failure when
+> a slave device is present. The custom version is also needed because
+> the generic ata_sff_wait_after_reset uses direct port I/O for slave
+> device detection.
+> 
+> Signed-off-by: Ondrej Zary <linux@zary.sk>
+> ---
+>  drivers/ata/pata_parport/pata_parport.c | 65 ++++++++++++++++++++++++-
+>  1 file changed, 64 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ata/pata_parport/pata_parport.c b/drivers/ata/pata_parport/pata_parport.c
+> index cf87bbb52f1f..b3db953e615a 100644
+> --- a/drivers/ata/pata_parport/pata_parport.c
+> +++ b/drivers/ata/pata_parport/pata_parport.c
+> @@ -80,6 +80,69 @@ static bool pata_parport_devchk(struct ata_port *ap, unsigned int device)
+>  	return (nsect == 0x55) && (lbal == 0xaa);
+>  }
+>  
+> +static int pata_parport_wait_after_reset(struct ata_link *link,
+> +					 unsigned int devmask,
+> +					 unsigned long deadline)
+> +{
+> +	struct ata_port *ap = link->ap;
+> +	struct pi_adapter *pi = ap->host->private_data;
+> +	unsigned int dev0 = devmask & (1 << 0);
+> +	unsigned int dev1 = devmask & (1 << 1);
+> +	int rc, ret = 0;
+> +
+> +	ata_msleep(ap, ATA_WAIT_AFTER_RESET);
+> +
+> +	/* always check readiness of the master device */
+> +	rc = ata_sff_wait_ready(link, deadline);
+> +	/* some adapters return bogus values if master device is not present,
 
-The following commit is also in Linus Torvalds' tree as a different commit
-(but the same patch):
+   The multiline comments should start with /* on its own line.
+   Have you run scripts/checkpatch.pl on the patches?
 
-  d6e3429602a0 ("i915: limit the length of an sg list to the requested leng=
-th")
+> +	 * so don't abort now if a slave device is present
+> +	 */
+> +	if (rc) {
+> +		if (!dev1)
+> +			return rc;
+> +		ret = -ENODEV;
+> +	}
+> +
+> +	/* if device 1 was found in ata_devchk, wait for register
 
-This is commit
+   Likewise here...
 
-  863a8eb3f270 ("i915: Limit the length of an sg list to the requested leng=
-th")
+> +	 * access briefly, then wait for BSY to clear.
+> +	 */
+> +	if (dev1) {
+> +		int i;
+> +
+> +		pata_parport_dev_select(ap, 1);
+> +
+> +		/* Wait for register access.  Some ATAPI devices fail
 
-in Linus' tree.
+   And here...
 
---=20
-Cheers,
-Stephen Rothwell
+[...]
 
---Sig_/TX.z1VT8Av8fNu=NSVvC3j.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUbLG8ACgkQAVBC80lX
-0Gykowf+KVeI2ODFKaG9w2RB+25rq49vqGcSgTnk0nHWW/Gs3zGVLP1KqPOwbyO4
-/QYCkCCD7tMoPWTiXsp1fuTh9KFNo8SY71SZ4lEhPEqh18eIgpDwuQbIHHKHSOFW
-w5vkY+dzPSiCefjX7kGzdnzEJayZiPYLINACXObtxzwulvKHRwbKqvPTUNvLcujO
-+CfMu8LnG6pvIfWLFl9kz1dr3w0M3LY36iC4ZIdK+HQFjzw4uRy5lyegKODXVf7G
-GtNe9bLoGdc4HCXSHTqzuMtBOwG5KKVz2TE99WEGRFpoldNutB1jQHH0e970UgJI
-Ib7/ZWROIydOg9LQ4zss+bsaDzUdXQ==
-=6wVR
------END PGP SIGNATURE-----
-
---Sig_/TX.z1VT8Av8fNu=NSVvC3j.--
+MBR, Sergey
