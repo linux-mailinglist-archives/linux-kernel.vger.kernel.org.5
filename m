@@ -2,105 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 105FD7B5AD6
+	by mail.lfdr.de (Postfix) with ESMTP id 5E1557B5AD7
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238549AbjJBTBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 15:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
+        id S238522AbjJBTB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 15:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbjJBTBR (ORCPT
+        with ESMTP id S229696AbjJBTBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 15:01:17 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2084B0
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 12:01:13 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59b5a586da6so336147b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 12:01:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696273273; x=1696878073; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ckwzzbSxH95zbV9Ph3aAP9Fp5FbPi93+Tiiv+0bzk7M=;
-        b=dWkherERAXJwUbcB4LVAVI1asYxXGO6aXixpYhOyv9kIuSGUTcEjwh4BLaWTgxTXzG
-         7K75V63eR7A9o2tbKD9nu3ZUi6DCeuqdVU46vGgMHiVcsE7jyOrIIRC2Dd45vyIhwQD8
-         52XgV67+fPs2zds8XPK82H1yn3qWhe2Spt9tYu3s8ojXckAEtHGQ8zuIDyJ9UmRPpnUm
-         nO1+y0hjz5Cn/WLMQiq9x+AFz0CHu1mcIKMPgkAo1L4Toou4V5CTnOJLtm7xJJgG1keC
-         xT/3VtMtPu+S9SeTzmV3HEeYnN+D3NvCIS6yYJtY6Isn/07bXyW3PiKNOzTBvWTNemd7
-         hNsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696273273; x=1696878073;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ckwzzbSxH95zbV9Ph3aAP9Fp5FbPi93+Tiiv+0bzk7M=;
-        b=e285zuwoGquV4TNLMyw3Z1SXwBbPFbbVLVhP9NlSIYuSXBOUXZN1/ztrdAsmemqqAJ
-         712bDNXwqqwRuBciuSnWwszWskZ0IT0FReE8vrWSgq+1lsJEDu439lg+xUYzFeewr4w4
-         1ptYXnrLqvy9aiL5z4U70Mx72ht/F8FkafMdlXdMpa0qLIOuU0R+Ugg8pv4L/WlFkTq2
-         63kQGeiTckTSIKZRnAjV0p3FrbpPwAMowQwaFePgW4THI4/0/FRWrjS5+Ko6eIk5dzyn
-         NO1+17HFnU/boONk8Du8DQtzlQIvc4wbo0x0P/20ZbnkqzX0fAaHstPl5C95bTniCTEQ
-         qXAQ==
-X-Gm-Message-State: AOJu0Yxloj8aTW4SK8m95EzYIjTlBmVqiYLosTTQk5bVQVPr3VDw8oUn
-        k3ArccMsinJX2mXCJ+LSg3+fj21nzmw=
-X-Google-Smtp-Source: AGHT+IFYEOOv4UwLqviXbR+k+OW+wIzCw/xJ4qlPUj28o767UlOg6AdRosVhdf5F+RckQFM18g4YOtNNMdw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:ac07:0:b0:59b:eb4b:2cad with SMTP id
- k7-20020a81ac07000000b0059beb4b2cadmr9775ywh.5.1696273272964; Mon, 02 Oct
- 2023 12:01:12 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 12:01:11 -0700
-In-Reply-To: <0da9874b6e9fcbaaa5edeb345d7e2a7c859fc818.1696271334.git.thomas.lendacky@amd.com>
-Mime-Version: 1.0
-References: <0da9874b6e9fcbaaa5edeb345d7e2a7c859fc818.1696271334.git.thomas.lendacky@amd.com>
-Message-ID: <ZRsTd9FEIvgERrte@google.com>
-Subject: Re: [PATCH] KVM: SVM: Fix build error when using -Werror=unused-but-set-variable
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 2 Oct 2023 15:01:54 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA75B3;
+        Mon,  2 Oct 2023 12:01:50 -0700 (PDT)
+Date:   Mon, 02 Oct 2023 19:01:47 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696273308;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J5JVuozAWsvYoCCJ91LTdlldPKoE+8ohqohFARoyNwo=;
+        b=h8XkvrNMlxZ8jPuDgfBEDxnScR1jtOn/WjRkutzFG66wB332lkBYS9UDLLZY9qkVCaQuEW
+        LCAZyoy6NS8W5aSj9Mpkn5TadkNUBMEZPqQi3nbPb5cE8puRUAuOHoScyGIpgK1Flhnw8s
+        u7/jKst+/84DlX84OLmm/EkLwi5blkih55DCqJQ2wFZsiQ4MFvR5vyF1oWW5z0zmQUhTz3
+        TsMQAl3YgE11/34SEbjwO7IXLrUMPpG5DbkAmsvZlYp/w3hVXQmQyjrLVSyOOAeCsdFzJS
+        fv5t42qTFZ69vfgPUkhOYxuVpoO7S+W064hRESIyKN9pj9olQHVa7WRpf3soYw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696273308;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=J5JVuozAWsvYoCCJ91LTdlldPKoE+8ohqohFARoyNwo=;
+        b=FBt+lmTWi0C4QAfLx2kJaieFps1629b+dnsCPXex9mOE87mDvw0BR2K2eF2AxAAMy6tHBc
+        Qj05AMx56uWwhYBQ==
+From:   "tip-bot2 for Kir Kolyshkin" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/headers: Move 'struct sched_param' out of
+ uapi, to work around glibc/musl breakage
+Cc:     Kir Kolyshkin <kolyshkin@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230808030357.1213829-1-kolyshkin@gmail.com>
+References: <20230808030357.1213829-1-kolyshkin@gmail.com>
+MIME-Version: 1.0
+Message-ID: <169627330795.3135.16650166898816781742.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023, Tom Lendacky wrote:
-> Commit 916e3e5f26ab ("KVM: SVM: Do not use user return MSR support for
-> virtualized TSC_AUX") introduced a local variable used for the rdmsr()
-> function for the high 32-bits of the MSR value. This variable is not used
-> after being set and triggers a warning or error, when treating warnings
-> as errors, when the unused-but-set-variable flag is set. Mark this
-> variable as __maybe_unused to fix this.
-> 
-> Fixes: 916e3e5f26ab ("KVM: SVM: Do not use user return MSR support for virtualized TSC_AUX")
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> ---
->  arch/x86/kvm/svm/svm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 9507df93f410..4c917c74a4d3 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -691,7 +691,7 @@ static int svm_hardware_enable(void)
->  	 */
->  	if (boot_cpu_has(X86_FEATURE_V_TSC_AUX)) {
->  		struct sev_es_save_area *hostsa;
-> -		u32 msr_hi;
-> +		u32 __maybe_unused msr_hi;
+The following commit has been merged into the sched/core branch of tip:
 
-Argh, the abomination that is rdmsrl() strikes again :-/  We really should be able
-to do:
+Commit-ID:     d844fe65f0957024c3e1b0bf2a0615246184d9bc
+Gitweb:        https://git.kernel.org/tip/d844fe65f0957024c3e1b0bf2a061524618=
+4d9bc
+Author:        Kir Kolyshkin <kolyshkin@gmail.com>
+AuthorDate:    Mon, 07 Aug 2023 20:03:57 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 02 Oct 2023 20:48:16 +02:00
 
-		hostsa->tsc_aux = (u32)rdmsrl(MSR_TSC_AUX);
+sched/headers: Move 'struct sched_param' out of uapi, to work around glibc/mu=
+sl breakage
 
-I don't see a better quick fix than __maybe_unused though.
+Both glibc and musl define 'struct sched_param' in sched.h, while kernel
+has it in uapi/linux/sched/types.h, making it cumbersome to use
+sched_getattr(2) or sched_setattr(2) from userspace.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+For example, something like this:
+
+	#include <sched.h>
+	#include <linux/sched/types.h>
+
+	struct sched_attr sa;
+
+will result in "error: redefinition of =E2=80=98struct sched_param=E2=80=99" =
+(note the
+code doesn't need sched_param at all -- it needs struct sched_attr
+plus some stuff from sched.h).
+
+The situation is, glibc is not going to provide a wrapper for
+sched_{get,set}attr, thus the need to include linux/sched_types.h
+directly, which leads to the above problem.
+
+Thus, the userspace is left with a few sub-par choices when it wants to
+use e.g. sched_setattr(2), such as maintaining a copy of struct
+sched_attr definition, or using some other ugly tricks.
+
+OTOH, 'struct sched_param' is well known, defined in POSIX, and it won't
+be ever changed (as that would break backward compatibility).
+
+So, while 'struct sched_param' is indeed part of the kernel uapi,
+exposing it the way it's done now creates an issue, and hiding it
+(like this patch does) fixes that issue, hopefully without creating
+another one: common userspace software rely on libc headers, and as
+for "special" software (like libc), it looks like glibc and musl
+do not rely on kernel headers for 'struct sched_param' definition
+(but let's Cc their mailing lists in case it's otherwise).
+
+The alternative to this patch would be to move struct sched_attr to,
+say, linux/sched.h, or linux/sched/attr.h (the new file).
+
+Oh, and here is the previous attempt to fix the issue:
+
+  https://lore.kernel.org/all/20200528135552.GA87103@google.com/
+
+While I support Linus arguments, the issue is still here
+and needs to be fixed.
+
+[ mingo: Linus is right, this shouldn't be needed - but on the other
+         hand I agree that this header is not really helpful to
+	 user-space as-is. So let's pretend that
+	 <uapi/linux/sched/types.h> is only about sched_attr, and
+	 call this commit a workaround for user-space breakage
+	 that it in reality is ... Also, remove the Fixes tag. ]
+
+Signed-off-by: Kir Kolyshkin <kolyshkin@gmail.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: https://lore.kernel.org/r/20230808030357.1213829-1-kolyshkin@gmail.com
+---
+ include/linux/sched.h            | 5 ++++-
+ include/uapi/linux/sched/types.h | 4 ----
+ 2 files changed, 4 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index dc37ae7..e4235bb 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -63,7 +63,6 @@ struct robust_list_head;
+ struct root_domain;
+ struct rq;
+ struct sched_attr;
+-struct sched_param;
+ struct seq_file;
+ struct sighand_struct;
+ struct signal_struct;
+@@ -370,6 +369,10 @@ extern struct root_domain def_root_domain;
+ extern struct mutex sched_domains_mutex;
+ #endif
+=20
++struct sched_param {
++	int sched_priority;
++};
++
+ struct sched_info {
+ #ifdef CONFIG_SCHED_INFO
+ 	/* Cumulative counters: */
+diff --git a/include/uapi/linux/sched/types.h b/include/uapi/linux/sched/type=
+s.h
+index f2c4589..9066238 100644
+--- a/include/uapi/linux/sched/types.h
++++ b/include/uapi/linux/sched/types.h
+@@ -4,10 +4,6 @@
+=20
+ #include <linux/types.h>
+=20
+-struct sched_param {
+-	int sched_priority;
+-};
+-
+ #define SCHED_ATTR_SIZE_VER0	48	/* sizeof first published struct */
+ #define SCHED_ATTR_SIZE_VER1	56	/* add: util_{min,max} */
+=20
