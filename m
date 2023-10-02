@@ -2,90 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BFC7B4F0A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:28:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FEB77B4F0C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236096AbjJBJ21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:28:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57276 "EHLO
+        id S236099AbjJBJ3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:29:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236074AbjJBJ2Z (ORCPT
+        with ESMTP id S236074AbjJBJ3e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:28:25 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B04FA4
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:28:22 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-532c81b9adbso22133172a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:28:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696238900; x=1696843700; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GnjEkfxn8HRloGbpNCzqYP3xODULl+xCK5wXNCLSzC0=;
-        b=HXy8hhHbsd7eQ4WewwaYkQ6TQe+G4rgnEcZu3YDcobuptEi3A2fFI0xoD65d2i6RL3
-         8n+gyxllo91Jd+p1xv2VonsGKz8jEJgI7uCvfgtgM/ISHuSBU/T1Ay1VS92IdPIj3ec4
-         2LVVcxCu5pFvR/d8j2hEA0S6fw5w2vK7WPu979oUU7/4+nQ3erMz38rXDXxZqX3hSsez
-         YGp5DYBJo//uDoYb4znw+maD6jZhNqCQg2zo/2DsBAO40eVPnIs9qM8MA/+S7CGXBMMi
-         yB8b93uVmWGH+8V8o/265hFL3sZIC3GjubQM32VoujTwf0jvCzr+WFI/iOsO5U984dCq
-         +fZg==
+        Mon, 2 Oct 2023 05:29:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C9EA7
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:28:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696238929;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AJJ/7KPwaOb8i7teRUVDmyTyd/EZIX0vx+LShsb9z+w=;
+        b=a+dSmxnG21gSW3Ax1FZg4quhY5IOr7PANjy6SuHaAoJX9bk6TeWyU7wGRR2dlYMmmb6xen
+        /aVRcig3zrBcyLGt0g6KwFVmPqWFcDnynEUvCNRj1kLQAX0KvOvKmZZapZEy3eTFjD/9E2
+        Xucs6FXIlcdi5uH4SRnuEM+b2XJwHMs=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-29-3muGqdNxP6Gy4hdul09A2A-1; Mon, 02 Oct 2023 05:28:48 -0400
+X-MC-Unique: 3muGqdNxP6Gy4hdul09A2A-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4065ca278b3so20452275e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:28:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696238900; x=1696843700;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GnjEkfxn8HRloGbpNCzqYP3xODULl+xCK5wXNCLSzC0=;
-        b=WZ42NO5q0JlEsEyfFTPmElKpxDGXS5Owkp2zPZwB8iNp/U/LjddcMICGuTgcCrM/14
-         D5T6dqiljs7o/SBKZbW0q+4RtWMwgvtKXs0g7ZWEVpxg+ykchjiDbdDBBRupikrRlHMA
-         YLhDT0Y+JGgBLOqF2o/X1kczqhE8fkD87ZRB9bWEc1/mm3O0GKuZMGWW7CJK4Evm6Uo0
-         b///3ijzE5iYJV3fC0db2HFouO2rMlBxExkbzbOtQjnI1882mGh0e2wVZynASJtFmEk0
-         IdWU26Xp7uH2YTOjP6Dx8DMXS1Vi9f3aYOQFVPxUgPF1iES2sn5wNYBs9JPQqjPGYDs2
-         HlNQ==
-X-Gm-Message-State: AOJu0Yxg7vhIsaRhmBlBisnFEHIQNiCvNftJANZz1j3Qc6KmjvpvE/Tt
-        tjBRLOpm30TKv50ujt2thak4KntEgxOxei7I
-X-Google-Smtp-Source: AGHT+IEtJbLI+jiQadbv7srFDSFEZzyJFbLWC3l5QxR6LQEEHHv6Sp3n5sAG3a4YQh7FrYTAg758xw==
-X-Received: by 2002:aa7:db50:0:b0:533:efc3:91b6 with SMTP id n16-20020aa7db50000000b00533efc391b6mr10582578edt.11.1696238900403;
-        Mon, 02 Oct 2023 02:28:20 -0700 (PDT)
-Received: from [192.168.5.6] (PC-176-101-165-146.tvk-net.pl. [176.101.165.146])
-        by smtp.gmail.com with ESMTPSA id da11-20020a056402176b00b0053495596f42sm7907258edb.30.2023.10.02.02.28.19
+        d=1e100.net; s=20230601; t=1696238927; x=1696843727;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AJJ/7KPwaOb8i7teRUVDmyTyd/EZIX0vx+LShsb9z+w=;
+        b=Bt+t8Rv6OHYHAlTPL+8jeanWsvnhX0ybnYpHRxMqfL7hQ2IGZVqoY0GeYIltzazczu
+         2zBOrbdSrOKcYmTOooa5JeBU/WJeRCAEI3ywPvXxJmD/noRK8glTz97Gcb20+ba5/bMj
+         aj019830yJqKxogUeM/rgmH+tWxOgl175jH7y39pcjRSV2G/bWFx87Uu1h9aa1/l0HT3
+         LhCqdfw6hrvz2BYC1/T5CuoeBAwexwB/4OgMCKJA+HUgixj+6pUROb1vzyWrddqd7ndv
+         +d0xh4hQAvKI5Q6xL9lnJUAoim4/H+Z8OrATslgv/9Uvy2iQwh93iKT75WuwPidJQ4vq
+         BVUQ==
+X-Gm-Message-State: AOJu0YxZuLuKoyzB0Ao/yuGjc8JF8m/8KkV2qR7z53g3OudJTaJwRNck
+        xeZy9niHvMuUVgJSVwckmZkc08lF1lt8jdn0rngKXwTmMP6UaYobKTiHWCG4CnKi6juWxoZiKqS
+        A2YNe4ttOPCcjEMTy+jBYQmi9
+X-Received: by 2002:a7b:cbc8:0:b0:3ff:ca80:eda3 with SMTP id n8-20020a7bcbc8000000b003ffca80eda3mr8982374wmi.10.1696238927141;
+        Mon, 02 Oct 2023 02:28:47 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEmhn8B8uW4T+AICrNUjuxaqcAcDPKrxy0MVMZxpv82pLtYtPKE8QMU+0CJ7y3jMcfBPVswXw==
+X-Received: by 2002:a7b:cbc8:0:b0:3ff:ca80:eda3 with SMTP id n8-20020a7bcbc8000000b003ffca80eda3mr8982347wmi.10.1696238926766;
+        Mon, 02 Oct 2023 02:28:46 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c735:f200:cb49:cb8f:88fc:9446? (p200300cbc735f200cb49cb8f88fc9446.dip0.t-ipconnect.de. [2003:cb:c735:f200:cb49:cb8f:88fc:9446])
+        by smtp.gmail.com with ESMTPSA id j17-20020a05600c489100b003fc16ee2864sm6835636wmp.48.2023.10.02.02.28.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 02:28:20 -0700 (PDT)
-Message-ID: <7f442447-f69f-5cca-1a3b-fae0910eef23@gmail.com>
-Date:   Mon, 2 Oct 2023 11:28:17 +0200
+        Mon, 02 Oct 2023 02:28:46 -0700 (PDT)
+Message-ID: <efe2acfd-f22f-f856-cd2a-32374af2053a@redhat.com>
+Date:   Mon, 2 Oct 2023 11:28:44 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [RFC kvmtool 18/31] arm64: Populate initial realm contents
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4 1/2] mm/memory_hotplug: split memmap_on_memory requests
+ across memblocks
 Content-Language: en-US
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        Andrew Jones <andrew.jones@linux.dev>,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joey Gouly <Joey.Gouly@arm.com>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Steven Price <steven.price@arm.com>,
-        Thomas Huth <thuth@redhat.com>, Will Deacon <will@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>, linux-coco@lists.linux.dev,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20230127112248.136810-1-suzuki.poulose@arm.com>
- <20230127113932.166089-1-suzuki.poulose@arm.com>
- <20230127113932.166089-19-suzuki.poulose@arm.com>
- <7a0e256d-3ce1-3218-c930-ed518a679b8b@gmail.com>
- <f9b316ad-fe27-cb3a-493e-70f2ced8a6f7@arm.com>
-From:   Piotr Sawicki <piotr.sawickas@gmail.com>
-In-Reply-To: <f9b316ad-fe27-cb3a-493e-70f2ced8a6f7@arm.com>
+To:     Vishal Verma <vishal.l.verma@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Jeff Moyer <jmoyer@redhat.com>
+References: <20230928-vv-kmem_memmap-v4-0-6ff73fec519a@intel.com>
+ <20230928-vv-kmem_memmap-v4-1-6ff73fec519a@intel.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230928-vv-kmem_memmap-v4-1-6ff73fec519a@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -93,82 +97,54 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+> +
+> +static int __ref try_remove_memory(u64 start, u64 size)
+> +{
+> +	int rc, nid = NUMA_NO_NODE;
+> +
+> +	BUG_ON(check_hotplug_memory_range(start, size));
+> +
+> +	/*
+> +	 * All memory blocks must be offlined before removing memory.  Check
+> +	 * whether all memory blocks in question are offline and return error
+> +	 * if this is not the case.
+> +	 *
+> +	 * While at it, determine the nid. Note that if we'd have mixed nodes,
+> +	 * we'd only try to offline the last determined one -- which is good
+> +	 * enough for the cases we care about.
+> +	 */
+> +	rc = walk_memory_blocks(start, size, &nid, check_memblock_offlined_cb);
+> +	if (rc)
+> +		return rc;
+> +
+> +	/*
+> +	 * For memmap_on_memory, the altmaps could have been added on
+> +	 * a per-memblock basis. Loop through the entire range if so,
+> +	 * and remove each memblock and its altmap.
+> +	 */
+> +	if (mhp_memmap_on_memory()) {
+> +		unsigned long memblock_size = memory_block_size_bytes();
+> +		u64 cur_start;
+> +
+> +		for (cur_start = start; cur_start < start + size;
+> +		     cur_start += memblock_size)
+> +			__try_remove_memory(nid, cur_start, memblock_size);
+> +	} else {
+> +		__try_remove_memory(nid, start, size);
+> +	}
+> +
+>   	return 0;
+>   }
 
-Hi Suzuki
+Why is the firmware, memblock and nid handling not kept in this outer 
+function?
 
-> Hi Piotr
-> 
-> On 02/03/2023 14:03, Piotr Sawicki wrote:
->> Hi,
->>
->>> From: Alexandru Elisei <alexandru.elisei@arm.com>
->>>
->>> Populate the realm memory with the initial contents, which include
->>> the device tree blob, the kernel image, and initrd, if specified,
->>> or the firmware image.
->>>
->>> Populating an image in the realm involves two steps:
->>>   a) Mark the IPA area as RAM - INIT_IPA_REALM
->>>   b) Load the contents into the IPA - POPULATE_REALM
->>>
->>> Wherever we know the actual size of an image in memory, we make
->>> sure the "memory area" is initialised to RAM.
->>> e.g., Linux kernel image size from the header which includes the bss 
->>> etc.
->>> The "file size" on disk for the Linux image is much smaller.
->>> We mark the region of size Image.header.size as RAM (a), from the kernel
->>> load address. And load the Image file into the memory (b) above.
->>> At the moment we only detect the Arm64 Linux Image header format.
->>>
->>> Since we're already touching the code that copies the
->>> initrd in guest memory, let's do a bit of cleaning and remove a
->>> useless local variable.
->>>
->>> Signed-off-by: Alexandru Elisei <alexandru.elisei@arm.com>
->>> [ Make sure the Linux kernel image area is marked as RAM ]
->>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> 
-> 
->>> diff --git a/arm/kvm.c b/arm/kvm.c
->>> index acb627b2..57c5b5f7 100644
->>> --- a/arm/kvm.c
->>> +++ b/arm/kvm.c
->>> @@ -6,6 +6,7 @@
->>>   #include "kvm/fdt.h"
->>>   #include "arm-common/gic.h"
->>> +#include <asm/realm.h>
->>>   #include <sys/resource.h>
->>> @@ -167,6 +168,9 @@ bool kvm__arch_load_kernel_image(struct kvm *kvm, 
->>> int fd_kernel, int fd_initrd,
->>>       pr_debug("Loaded kernel to 0x%llx (%llu bytes)",
->>>            kvm->arch.kern_guest_start, kvm->arch.kern_size);
->>
->>
->> I've noticed that multiple calling of the measurement test from the 
->> kvm-unit-tests suite results in different Realm Initial Measurements, 
->> although the kernel image is always the same.
->>
->> After short investigation, I've found that the RIM starts being 
->> different while populating the last 4kB chunk of the kernel image.
->> The issue occurs when the image size is not aligned to the page size 
->> (4kB).
->>
->> After zeroing the unused area of the last chunk, the measurements 
->> become repeatable.
->>
-> 
-> That is a good point. We could memset() the remaining bits of the 4K 
-> page to 0. I will make this change.
+We really shouldn't be doing per memory block what needs to be done per 
+memblock: remove_memory_block_devices() and arch_remove_memory().
 
-It looks that this is somewhat related to the implementation of the 9p 
-filesystem (Linux host and/or the FVP emulator).
 
-I'm getting this issue only when the initrd and the guest kernel images 
-are located in the shared folder that uses the 9p filesystem. Moving 
-those files to the ramdisk (e.g. to the /root folder) and running lkvm 
-tool on them resolves the issue.
+-- 
+Cheers,
 
-Kind regards,
-Piotr Sawicki
-
+David / dhildenb
 
