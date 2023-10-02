@@ -2,91 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 617737B4CDA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D22F7B4D05
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235792AbjJBHwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 03:52:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42506 "EHLO
+        id S235816AbjJBIBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 04:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjJBHwN (ORCPT
+        with ESMTP id S229712AbjJBIA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 03:52:13 -0400
-Received: from mail-vk1-xa2e.google.com (mail-vk1-xa2e.google.com [IPv6:2607:f8b0:4864:20::a2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19CC8BD
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:52:11 -0700 (PDT)
-Received: by mail-vk1-xa2e.google.com with SMTP id 71dfb90a1353d-49040dc5cedso6085333e0c.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:52:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696233130; x=1696837930; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0eB1JHsdEJVi5+OIbOyuQwr2jpiM2fDRqI2qLCnxqC4=;
-        b=lOawnfVvwurlGTERAfCT4nN4sN8YNb//Rhno00eUkh/EMlMMBwsZc/C52164FgYi2B
-         ElQmNb4QFVQ7toDcsHFYfwca6DRTb57AWxnA/SXCpeW+f7Vh7p6Dlqbfcy3alYaEK261
-         AuLjMZI5UP2MiSnOKtNctfDWty4A4LVl8biAEa3fPyoST2PdIU0AqDK3xX0yeDZq0/yU
-         3pyqTzYyxzSTqH3Z6mLYiukRqzw/o2qyAI3PfiSzPZL0ScLVBrCCYwQYZ0S0sx3prehL
-         r1FsrQYD1y/6NUZXGa4vGeULZtvWmk6w7l7Nh9muHRhvjP5grRz7ZXkvJKcZpJnPIeAZ
-         ApDw==
+        Mon, 2 Oct 2023 04:00:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DAD5C4
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 01:00:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696233609;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2hMwBDQxPqEr2KGnCZRjOsa4DbxGMCcRw1+qHGhTgF8=;
+        b=PuaY8BvUbZnHIXTBkBpArOROtKepAC9DHeW6wsABpNNQxvJmhlgrbNWXGQHv9K6F9tg3hz
+        yRG3IjZ6L6nWxp2F0P7qA4S8BjtW9T122ArC892xrMLR9j1jbDa0ZCAZAbt3stD96zZKSP
+        U64YovOWZUK9c8Vb0sHfqVTlYneqZk4=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-64-ftlcronVM4iC8m0QWImP2w-1; Mon, 02 Oct 2023 04:00:06 -0400
+X-MC-Unique: ftlcronVM4iC8m0QWImP2w-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4065478afd3so25129375e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 01:00:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696233130; x=1696837930;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0eB1JHsdEJVi5+OIbOyuQwr2jpiM2fDRqI2qLCnxqC4=;
-        b=ZjYD3kcUWZsG0gG1tw/ZJbCkwEWbqdAqtrcZILP1Y/lCMXBUkClshHjWZyTFK1tuly
-         LWeeYCYDmg0RNBlE1ZsVgkUFbzUKnzcYmC9uaJlCpxRbcZn8/rElpCqK02fzl2a7oUly
-         g1Kw2bebbwPpDc2jdcSHp9uL3M320/BbzRlWlpWCW9MRe4+Mjuy8RhptfMOcfKWIdbCw
-         fz0s69qaih1flxhrRh/QL+sY/u7zVEusNB1xRGb7FgvvVzKIMGJjyW90QoqIsT9730KE
-         EwkylJpPMlDIkw7/fA8v2RbO3v++fHlCqH0YXSMlI6kJB77SzemafiuWvhDXSyMTjHY5
-         SNhg==
-X-Gm-Message-State: AOJu0YzpPJ3VDq0Jq0Xl8zXttYjBgyiMvf4xTQ2jVyOivOMr7q7VJeoI
-        0cRKWMIp991oo69OSlEo5dy0ayX2rRBgSS325rAhnA==
-X-Google-Smtp-Source: AGHT+IHZB51YF7QTx3t7DDgFWlsKziT1a7v9b77HG6jtZQj1Bi+P05ewtbDn3c7BD6d6mOHABX16dzqMmdw4k+2s4SQ=
-X-Received: by 2002:a1f:c8c4:0:b0:499:dec9:e1a7 with SMTP id
- y187-20020a1fc8c4000000b00499dec9e1a7mr5746398vkf.10.1696233129914; Mon, 02
- Oct 2023 00:52:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696233605; x=1696838405;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2hMwBDQxPqEr2KGnCZRjOsa4DbxGMCcRw1+qHGhTgF8=;
+        b=Y2JPIoD3IWhwa7xa3EdbIFGWQOqO/6vyRFvH80wQbO0tyxett4NwvqHD+mJ2AUf8MW
+         U/PPULdzvGLv05to0D0Kxnj0bOzluFQVETnuntOavdBcKVKnaAWuP5rZAUU8YrqSeQ92
+         w6wsIe4+Ktfe/5XorWACz3I6S533rXTiBOoNgv4oyhLGmY8CMNSupz1Rjo5gCQsLsoQt
+         ldcXEy3lrzpVPSqbI79tfbXaryrX0liwsiANrf787WxuEzxNPDxFuJfurtn1zrev1UpH
+         XWERGhZh9gG7Hrm1pO7Ug/Btb/WoHXOIOKITuOQcvbv7z85KrHXydhFFwhRwZj8K620f
+         V8TQ==
+X-Gm-Message-State: AOJu0YxyRiQ6Jt5OCArLBCGeoD821rzBzZXars8a0BN+UqjabfGOrzzh
+        Ms6egoi6KawLU51t7S5+G0Zk0Kg/QbAxmg4sbP/vBxiqnyOT+98GvxL0OIp5x3ZixWcpm8Zm2nq
+        P2rOWTIK1y8YbLolAKTZd2Tow
+X-Received: by 2002:a05:600c:ac1:b0:402:f501:447c with SMTP id c1-20020a05600c0ac100b00402f501447cmr9457515wmr.0.1696233605511;
+        Mon, 02 Oct 2023 01:00:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFLXTkL+9EEt3zHQk5ZsLeQprJDYGJsst31lbLdGGFpUez2Jqfmw0gPneDp6ON/b1DJjaaQzg==
+X-Received: by 2002:a05:600c:ac1:b0:402:f501:447c with SMTP id c1-20020a05600c0ac100b00402f501447cmr9457493wmr.0.1696233604995;
+        Mon, 02 Oct 2023 01:00:04 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c735:f200:cb49:cb8f:88fc:9446? (p200300cbc735f200cb49cb8f88fc9446.dip0.t-ipconnect.de. [2003:cb:c735:f200:cb49:cb8f:88fc:9446])
+        by smtp.gmail.com with ESMTPSA id 3-20020a05600c020300b004063cced50bsm6701171wmi.23.2023.10.02.01.00.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 01:00:04 -0700 (PDT)
+Message-ID: <fc27ce41-bc97-91a7-deb6-67538689021c@redhat.com>
+Date:   Mon, 2 Oct 2023 10:00:03 +0200
 MIME-Version: 1.0
-References: <20230928201421.2296518-1-mmaurer@google.com>
-In-Reply-To: <20230928201421.2296518-1-mmaurer@google.com>
-From:   Alice Ryhl <aliceryhl@google.com>
-Date:   Mon, 2 Oct 2023 09:51:59 +0200
-Message-ID: <CAH5fLgjmPkfokku190dab9JVqk3_uTABNWqOZ-xKOEqQJoX+9g@mail.gmail.com>
-Subject: Re: [PATCH] rust: Use grep -Ev rather than relying on GNU grep
-To:     Matthew Maurer <mmaurer@google.com>
-Cc:     Miguel Ojeda <ojeda@kernel.org>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Jann Horn <jannh@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, hughd@google.com, mhocko@suse.com,
+        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
+        Liam.Howlett@oracle.com, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+References: <20230923013148.1390521-1-surenb@google.com>
+ <20230923013148.1390521-3-surenb@google.com>
+ <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
+ <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com> <ZRWo1daWBnwNz0/O@x1n>
+ <98b21e78-a90d-8b54-3659-e9b890be094f@redhat.com> <ZRW2CBUDNks9RGQJ@x1n>
+ <85e5390c-660c-ef9e-b415-00ee71bc5cbf@redhat.com> <ZRXHK3hbdjfQvCCp@x1n>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
+In-Reply-To: <ZRXHK3hbdjfQvCCp@x1n>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 10:14=E2=80=AFPM Matthew Maurer <mmaurer@google.com=
-> wrote:
->
-> While GNU grep supports '\|' when in basic regular expression mode, not
-> all grep implementations do (notably toybox grep, used to build the
-> Android kernel, does not). Switching to grep -Ev enables extended
-> regular expresions which includes support for the '|' operator.
->
-> Signed-off-by: Matthew Maurer <mmaurer@google.com>
+On 28.09.23 20:34, Peter Xu wrote:
+> On Thu, Sep 28, 2023 at 07:51:18PM +0200, David Hildenbrand wrote:
+>> On 28.09.23 19:21, Peter Xu wrote:
+>>> On Thu, Sep 28, 2023 at 07:05:40PM +0200, David Hildenbrand wrote:
+>>>> As described as reply to v1, without fork() and KSM, the PAE bit should
+>>>> stick around. If that's not the case, we should investigate why.
+>>>>
+>>>> If we ever support the post-fork case (which the comment above remap_pages()
+>>>> excludes) we'll need good motivation why we'd want to make this
+>>>> overly-complicated feature even more complicated.
+>>>
+>>> The problem is DONTFORK is only a suggestion, but not yet restricted.  If
+>>> someone reaches on top of some !PAE page on src it'll never gonna proceed
+>>> and keep failing, iiuc.
+>>
+>> Yes. It won't work if you fork() and not use DONTFORK on the src VMA. We
+>> should document that as a limitation.
+>>
+>> For example, you could return an error to the user that can just call
+>> UFFDIO_COPY. (or to the UFFDIO_COPY from inside uffd code, but that's
+>> probably ugly as well).
+> 
+> We could indeed provide some special errno perhaps upon the PAE check, then
+> document it explicitly in the man page and suggest resolutions (like
+> DONTFORK) when user hit it.
+> 
 
-LGTM. I tested this in my Android build.
+Maybe it might be reasonable to consider an operation that moves the 
+page, even if it might do an internal copy. UFFDIO_MOVE might be a 
+better name for something like that.
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
-Tested-by: Alice Ryhl <aliceryhl@google.com>
+In case we cannot simply remap the page, the fallback sequence (from the 
+cover letter) would be triggered.
+
+1) UFFDIO_COPY
+2) MADV_DONTNEED
+
+So we would just handle the operation internally without a fallback.
+
+The recommendation to the user to make the overall operation as fast as 
+possible would be to not use KSM, to avoid fork(), or to use 
+MADV_DONTFORK when fork() must be used.
+
+
+-- 
+Cheers,
+
+David / dhildenb
+
