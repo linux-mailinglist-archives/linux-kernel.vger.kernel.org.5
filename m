@@ -2,120 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 175307B5BDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:11:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD76B7B5BDD
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:13:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235442AbjJBULg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 16:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53206 "EHLO
+        id S235631AbjJBUNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 16:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjJBULf (ORCPT
+        with ESMTP id S229741AbjJBUNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 16:11:35 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B1B3AC;
-        Mon,  2 Oct 2023 13:11:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2590C433C8;
-        Mon,  2 Oct 2023 20:11:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696277491;
-        bh=ncy0wGCJ2hjg3VoApdm7ly5waa7mSKZO5dkfG6H7ffI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=tv8Bnt3SwTOSbyTlHiMANimfqbRCq6Iq097sOUqA/sdsvl/arSp0xe0lJJTMwtmbd
-         4aMIzPWq8A48XMFBGBlfmjB6sfxVB0Bh4vpgi4sEiMvdVyHhBn44XYAXgbUGnHVqP2
-         rDgAsPXhfES5zGuSjE9b3Xf5ppqYRBDPixp8BToTXmOKaF9YM8jpCGWqxe8iBts4jH
-         0km++HpV8WqwlwmsDG0Z34Uv8Sgae6KRMpAIYVV0XNApAJCoY/U0YvN5+5SHccZGs5
-         sVPTpW7bljjoJJyxpwpsngRfwCkJdVunVJKL9jNXoO8wPyNgPdNwYcwxYiASnpEacy
-         DQUALCusRN7sg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4417ECE0591; Mon,  2 Oct 2023 13:11:31 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 13:11:31 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christoph Paasch <cpaasch@apple.com>, stable@vger.kernel.org,
-        rcu@vger.kernel.org
-Subject: Re: [PATCH] rcu: kmemleak: Ignore kmemleak false positives when
- RCU-freeing objects
-Message-ID: <e715c26a-61b9-4815-8cb6-d18839cd98f5@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230930174657.800551-1-joel@joelfernandes.org>
+        Mon, 2 Oct 2023 16:13:00 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAF0A6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 13:12:56 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77412b91c41so13692185a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 13:12:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696277575; x=1696882375; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4ig8P4cQOGE/ZtlmRjRCjZeop9P1BTd8W7jj+VA+9aI=;
+        b=0o3ncYFUuY+VowDql8yoKEm4jD156AkUWgkCakspTyKKENrQzoWyT9LVMULUFmoNAq
+         65B4xG+Rw57tZewQ31g0/fXyOXx5MQTsIi45a/IjAqLTIETvhT0IsUQNAdLWASVYkAXS
+         oXGn6kQHjyjA3+WTTDe6l/Kjk+Curm1vMk0O9hGsaLVdNnLjpHkiZ4cxfg1ZxfPku5uT
+         5vJULhGHXmwgYAsk3/NyfH8tGgXtSvd79b4AQKB0Sx/8l8dqPN3M1X75VYsvj6n1WYVe
+         1siVBFaRj3lqntyINalRF1J0gaH+FzV7tJMcrEUWtFGfEFMkrd80ESGCbLmetl7wFmJg
+         MLGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696277575; x=1696882375;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4ig8P4cQOGE/ZtlmRjRCjZeop9P1BTd8W7jj+VA+9aI=;
+        b=Qy7iDLCDF339Z5Zcaq4VG6Y1AmEhbinh5N2wUbniI54b2/bTssxmPrJg1jTLYpDnRv
+         aO8YN//UVP+zFNVrW287Kcp16gRgcpJiotqRgd2kMGp8/6mkQu51VN9d2HDW7SpIY3HO
+         kp3vAnICvBkAvRsi9zrEWtAW5tUJBvhkVIXPm2H/AEbNs3dlR/h/+wRzdYM4Xv/6zMbf
+         R8t41DI6K585UKAeRzFC0V/BKKiwXD3++QJ/k1ycO8qvvyufUb59LTpgGpqon59Rbt+o
+         85jtdxrsbssURMM3yQDPbaYgkEtYQrS032tAHio9qGVx9hzALvLq+Lc6Auy8k890RnO8
+         rdQA==
+X-Gm-Message-State: AOJu0YzFaXwsABuEcwajHO7v+FZYxIiTPIqNuAJ0xt0TaWhUHeNBXAz6
+        Zs1jB9vI6MBmLVxb6TfKuoL7ZA==
+X-Google-Smtp-Source: AGHT+IEQxVBvmIIyECAYi31Co1WajvJKUAwk2DEdf2g2H2l51M3wsw7tatmmX4E/BLzu5B0qPOINzA==
+X-Received: by 2002:a05:620a:854:b0:774:1d7f:2730 with SMTP id u20-20020a05620a085400b007741d7f2730mr10977679qku.46.1696277575439;
+        Mon, 02 Oct 2023 13:12:55 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
+        by smtp.gmail.com with ESMTPSA id c2-20020a05620a134200b007743360b3fasm6248556qkl.34.2023.10.02.13.12.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 13:12:55 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 16:12:54 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH rfc 2/5] mm: kmem: add direct objcg pointer to task_struct
+Message-ID: <20231002201254.GA8435@cmpxchg.org>
+References: <20230927150832.335132-1-roman.gushchin@linux.dev>
+ <20230927150832.335132-3-roman.gushchin@linux.dev>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230930174657.800551-1-joel@joelfernandes.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230927150832.335132-3-roman.gushchin@linux.dev>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 05:46:56PM +0000, Joel Fernandes (Google) wrote:
-> From: Catalin Marinas <catalin.marinas@arm.com>
-> 
-> Since the actual slab freeing is deferred when calling kvfree_rcu(), so
-> is the kmemleak_free() callback informing kmemleak of the object
-> deletion. From the perspective of the kvfree_rcu() caller, the object is
-> freed and it may remove any references to it. Since kmemleak does not
-> scan RCU internal data storing the pointer, it will report such objects
-> as leaks during the grace period.
-> 
-> Tell kmemleak to ignore such objects on the kvfree_call_rcu() path. Note
-> that the tiny RCU implementation does not have such issue since the
-> objects can be tracked from the rcu_ctrlblk structure.
-> 
-> Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-> Reported-by: Christoph Paasch <cpaasch@apple.com>
-> Closes: https://lore.kernel.org/all/F903A825-F05F-4B77-A2B5-7356282FBA2C@apple.com/
-> Cc: <stable@vger.kernel.org>
-> Tested-by: Christoph Paasch <cpaasch@apple.com>
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-
-> ---
->  kernel/rcu/tree.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index cb1caefa8bd0..24423877962c 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -31,6 +31,7 @@
->  #include <linux/bitops.h>
->  #include <linux/export.h>
->  #include <linux/completion.h>
-> +#include <linux/kmemleak.h>
->  #include <linux/moduleparam.h>
->  #include <linux/panic.h>
->  #include <linux/panic_notifier.h>
-> @@ -3388,6 +3389,14 @@ void kvfree_call_rcu(struct rcu_head *head, void *ptr)
->  		success = true;
->  	}
+On Wed, Sep 27, 2023 at 08:08:29AM -0700, Roman Gushchin wrote:
+> @@ -3001,6 +3001,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
+>  	return objcg;
+>  }
 >  
-> +	/*
-> +	 * The kvfree_rcu() caller considers the pointer freed at this point
-> +	 * and likely removes any references to it. Since the actual slab
-> +	 * freeing (and kmemleak_free()) is deferred, tell kmemleak to ignore
-> +	 * this object (no scanning or false positives reporting).
-> +	 */
-> +	kmemleak_ignore(ptr);
+> +static DEFINE_SPINLOCK(current_objcg_lock);
 > +
->  	// Set timer to drain after KFREE_DRAIN_JIFFIES.
->  	if (rcu_scheduler_active == RCU_SCHEDULER_RUNNING)
->  		schedule_delayed_monitor_work(krcp);
-> -- 
-> 2.42.0.582.g8ccd20d70d-goog
-> 
+> +static struct obj_cgroup *current_objcg_update(struct obj_cgroup *old)
+> +{
+> +	struct mem_cgroup *memcg;
+> +	struct obj_cgroup *objcg;
+> +	unsigned long flags;
+> +
+> +	old = current_objcg_clear_update_flag(old);
+> +	if (old)
+> +		obj_cgroup_put(old);
+> +
+> +	spin_lock_irqsave(&current_objcg_lock, flags);
+> +	rcu_read_lock();
+> +	memcg = mem_cgroup_from_task(current);
+> +	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
+> +		objcg = rcu_dereference(memcg->objcg);
+> +		if (objcg && obj_cgroup_tryget(objcg))
+> +			break;
+> +		objcg = NULL;
+> +	}
+> +	rcu_read_unlock();
+
+Can this tryget() actually fail when this is called on the current
+task during fork() and attach()? A cgroup cannot be offlined while
+there is a task in it.
+
+> @@ -6345,6 +6393,22 @@ static void mem_cgroup_move_task(void)
+>  		mem_cgroup_clear_mc();
+>  	}
+>  }
+> +
+> +#ifdef CONFIG_MEMCG_KMEM
+> +static void mem_cgroup_fork(struct task_struct *task)
+> +{
+> +	task->objcg = (struct obj_cgroup *)0x1;
+
+dup_task_struct() will copy this pointer from the old task. Would it
+be possible to bump the refcount here instead? That would save quite a
+bit of work during fork().
