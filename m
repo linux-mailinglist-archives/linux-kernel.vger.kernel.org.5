@@ -2,198 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BF97B5DD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 01:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3520D7B5DDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 01:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236973AbjJBXrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 19:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
+        id S236676AbjJBXrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 19:47:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjJBXrR (ORCPT
+        with ESMTP id S229862AbjJBXrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 19:47:17 -0400
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 879EACC;
-        Mon,  2 Oct 2023 16:47:14 -0700 (PDT)
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5859a7d6556so185881a12.0;
-        Mon, 02 Oct 2023 16:47:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696290434; x=1696895234;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/wzzKUe/S8MKLxWxB+dTpANkK30HpVTpho7RkzNp9HU=;
-        b=JGZXPKN5C88bONLmHTu2b+WahjPJe/spGq8m56Xh9fBqJ6dl6qJs/yjQx2I9bXvVg1
-         TpRD8MfphdqbENu8Wdowr6LfPJxX33DN4Eduo7KOtECns27+DG4bSPozuCPV/ce6ICje
-         jK2M2kkDuhXaYPiELQI6bpUFN8MpvbMT2Jr29d3/wQ2rMhGx8wCL1z/TQ+3RHnuKijyp
-         /vaWt6to5pnIPkw3yzqdwcD8dZOhomdAfuv1fvjTS875WFI4ZWJ0n+TtVGRzl8BnC5cz
-         tzPKCddwbvkSZq/+RCWYzXFoxMyGP/bRsU2LWjUjNwGuFlP544bfZSi6aMCJtH4xOC7p
-         oBRA==
-X-Gm-Message-State: AOJu0YzpASAx7My8RFcUqO8CfJh+GfOs9aNpeZXrvUrj2VSfvYUg9K0O
-        wp0sLnOPOablTTVirlnJhAaZBhva55bTFeH8
-X-Google-Smtp-Source: AGHT+IH58b+uEONYiSLGbLsu12iNGiHLzw9r8xy2AVog41EIuRQumQ29v3ltTMSt9EecNREs3Shx6A==
-X-Received: by 2002:a05:6a20:9184:b0:153:8754:8a7e with SMTP id v4-20020a056a20918400b0015387548a7emr14828886pzd.3.1696290433610;
-        Mon, 02 Oct 2023 16:47:13 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::4:d0e0])
-        by smtp.gmail.com with ESMTPSA id g6-20020a170902740600b001b5656b0bf9sm13876pll.286.2023.10.02.16.47.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 16:47:13 -0700 (PDT)
-From:   David Vernet <void@manifault.com>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@meta.com, himadrispandya@gmail.com,
-        julia.lawall@inria.fr
-Subject: [PATCH bpf-next 2/2] bpf/selftests: Test pinning bpf timer to a core
-Date:   Mon,  2 Oct 2023 18:47:08 -0500
-Message-ID: <20231002234708.331192-2-void@manifault.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231002234708.331192-1-void@manifault.com>
-References: <20231002234708.331192-1-void@manifault.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 2 Oct 2023 19:47:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13DEBD;
+        Mon,  2 Oct 2023 16:47:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7C51C433CA;
+        Mon,  2 Oct 2023 23:47:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696290459;
+        bh=Ti8LyhbBrkGIA+S5fmn/19mNrKPyR2nRWiTufb/IsNM=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=KqRV81/sQpCeD5xnP+aNj9VyXE9yUre5Zfs0/plFuXiKPMBu7uZLsJZoFC9Vf+1Dc
+         8rhP1DQk3v/oT4amyWXdgfJ0pN+AoG4P07eD6mio5Dfs7L2MYzBdrT/LDEnjvhlgio
+         h6wzawpGR4+QP4w8sYIQc1Gzs5MWt9sbpWJj1/IZRTxVGD6F5WWMM8fbOv1QG75bvz
+         jRCJlCWkVXZm5v7JjmALpHpaaqAUAxyvYbY9uJvK0E/0q2w9dYwFkocGRPx8DiyqK7
+         Ktg2UbZOKsZJLdQEprOvteRVv0UPIFq6CPVxVow+ptWQCa8oMwwcWdR/4JuHsX3trN
+         9EFce/8qFBxhw==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 03 Oct 2023 02:47:33 +0300
+Message-Id: <CVYCS4GZ0JJ0.KXKWHDIN8X0W@seitikki>
+Cc:     <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] crypto: pkcs7: remove md4 md5 x.509 support
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Dimitri John Ledkov" <dimitri.ledkov@canonical.com>,
+        "David Howells" <dhowells@redhat.com>,
+        "Herbert Xu" <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+X-Mailer: aerc 0.14.0
+References: <20231001235716.588251-1-dimitri.ledkov@canonical.com>
+In-Reply-To: <20231001235716.588251-1-dimitri.ledkov@canonical.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we support pinning a BPF timer to the current core, we should
-test it with some selftests. This patch adds two new testcases to the
-timer suite, which verifies that a BPF timer both with and without
-BPF_F_TIMER_ABS, can be pinned to the calling core with
-BPF_F_TIMER_CPU_PIN.
+On Mon Oct 2, 2023 at 2:57 AM EEST, Dimitri John Ledkov wrote:
+> Remove support for md4 md5 hash and signatures in x.509 certificate
+> parsers, pkcs7 signature parser, authenticode parser.
+>
+> All of these are insecure or broken, and everyone has long time ago
+> migrated to alternative hash implementations.
+>
+> Also remove md2 & md3 oids which have already didn't have support.
+>
+> This is also likely the last user of md4 in the kernel, and thus
+> crypto/md4.c and related tests in tcrypt & testmgr can likely be
+> removed. Other users such as cifs smbfs ext modpost sumversions have
+> their own internal implementation as needed.
+>
+> Signed-off-by: Dimitri John Ledkov <dimitri.ledkov@canonical.com>
+> ---
+>  crypto/asymmetric_keys/mscode_parser.c    | 6 ------
+>  crypto/asymmetric_keys/pkcs7_parser.c     | 6 ------
+>  crypto/asymmetric_keys/x509_cert_parser.c | 6 ------
+>  include/linux/oid_registry.h              | 8 --------
+>  4 files changed, 26 deletions(-)
+>
+> diff --git a/crypto/asymmetric_keys/mscode_parser.c b/crypto/asymmetric_k=
+eys/mscode_parser.c
+> index 839591ad21..690405ebe7 100644
+> --- a/crypto/asymmetric_keys/mscode_parser.c
+> +++ b/crypto/asymmetric_keys/mscode_parser.c
+> @@ -75,12 +75,6 @@ int mscode_note_digest_algo(void *context, size_t hdrl=
+en,
+> =20
+>  	oid =3D look_up_OID(value, vlen);
+>  	switch (oid) {
+> -	case OID_md4:
+> -		ctx->digest_algo =3D "md4";
+> -		break;
+> -	case OID_md5:
+> -		ctx->digest_algo =3D "md5";
+> -		break;
+>  	case OID_sha1:
+>  		ctx->digest_algo =3D "sha1";
+>  		break;
+> diff --git a/crypto/asymmetric_keys/pkcs7_parser.c b/crypto/asymmetric_ke=
+ys/pkcs7_parser.c
+> index 277482bb17..cf4caab962 100644
+> --- a/crypto/asymmetric_keys/pkcs7_parser.c
+> +++ b/crypto/asymmetric_keys/pkcs7_parser.c
+> @@ -227,12 +227,6 @@ int pkcs7_sig_note_digest_algo(void *context, size_t=
+ hdrlen,
+>  	struct pkcs7_parse_context *ctx =3D context;
+> =20
+>  	switch (ctx->last_oid) {
+> -	case OID_md4:
+> -		ctx->sinfo->sig->hash_algo =3D "md4";
+> -		break;
+> -	case OID_md5:
+> -		ctx->sinfo->sig->hash_algo =3D "md5";
+> -		break;
+>  	case OID_sha1:
+>  		ctx->sinfo->sig->hash_algo =3D "sha1";
+>  		break;
+> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetri=
+c_keys/x509_cert_parser.c
+> index 7a9b084e20..8d23a69890 100644
+> --- a/crypto/asymmetric_keys/x509_cert_parser.c
+> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
+> @@ -195,15 +195,9 @@ int x509_note_sig_algo(void *context, size_t hdrlen,=
+ unsigned char tag,
+>  	pr_debug("PubKey Algo: %u\n", ctx->last_oid);
+> =20
+>  	switch (ctx->last_oid) {
+> -	case OID_md2WithRSAEncryption:
+> -	case OID_md3WithRSAEncryption:
+>  	default:
+>  		return -ENOPKG; /* Unsupported combination */
+> =20
+> -	case OID_md4WithRSAEncryption:
+> -		ctx->cert->sig->hash_algo =3D "md4";
+> -		goto rsa_pkcs1;
+> -
+>  	case OID_sha1WithRSAEncryption:
+>  		ctx->cert->sig->hash_algo =3D "sha1";
+>  		goto rsa_pkcs1;
+> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+> index 0f4a890392..89fb4612b2 100644
+> --- a/include/linux/oid_registry.h
+> +++ b/include/linux/oid_registry.h
+> @@ -30,9 +30,6 @@ enum OID {
+> =20
+>  	/* PKCS#1 {iso(1) member-body(2) us(840) rsadsi(113549) pkcs(1) pkcs-1(=
+1)} */
+>  	OID_rsaEncryption,		/* 1.2.840.113549.1.1.1 */
+> -	OID_md2WithRSAEncryption,	/* 1.2.840.113549.1.1.2 */
+> -	OID_md3WithRSAEncryption,	/* 1.2.840.113549.1.1.3 */
+> -	OID_md4WithRSAEncryption,	/* 1.2.840.113549.1.1.4 */
+>  	OID_sha1WithRSAEncryption,	/* 1.2.840.113549.1.1.5 */
+>  	OID_sha256WithRSAEncryption,	/* 1.2.840.113549.1.1.11 */
+>  	OID_sha384WithRSAEncryption,	/* 1.2.840.113549.1.1.12 */
+> @@ -49,11 +46,6 @@ enum OID {
+>  	OID_smimeCapabilites,		/* 1.2.840.113549.1.9.15 */
+>  	OID_smimeAuthenticatedAttrs,	/* 1.2.840.113549.1.9.16.2.11 */
+> =20
+> -	/* {iso(1) member-body(2) us(840) rsadsi(113549) digestAlgorithm(2)} */
+> -	OID_md2,			/* 1.2.840.113549.2.2 */
+> -	OID_md4,			/* 1.2.840.113549.2.4 */
+> -	OID_md5,			/* 1.2.840.113549.2.5 */
+> -
+>  	OID_mskrb5,			/* 1.2.840.48018.1.2.2 */
+>  	OID_krb5,			/* 1.2.840.113554.1.2.2 */
+>  	OID_krb5u2u,			/* 1.2.840.113554.1.2.2.3 */
+> --=20
+> 2.34.1
 
-Signed-off-by: David Vernet <void@manifault.com>
----
- .../testing/selftests/bpf/prog_tests/timer.c  |  4 +
- tools/testing/selftests/bpf/progs/timer.c     | 75 +++++++++++++++++++
- 2 files changed, 79 insertions(+)
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testing/selftests/bpf/prog_tests/timer.c
-index 290c21dbe65a..d8bc838445ec 100644
---- a/tools/testing/selftests/bpf/prog_tests/timer.c
-+++ b/tools/testing/selftests/bpf/prog_tests/timer.c
-@@ -14,6 +14,7 @@ static int timer(struct timer *timer_skel)
- 
- 	ASSERT_EQ(timer_skel->data->callback_check, 52, "callback_check1");
- 	ASSERT_EQ(timer_skel->data->callback2_check, 52, "callback2_check1");
-+	ASSERT_EQ(timer_skel->bss->pinned_callback_check, 0, "pinned_callback_check1");
- 
- 	prog_fd = bpf_program__fd(timer_skel->progs.test1);
- 	err = bpf_prog_test_run_opts(prog_fd, &topts);
-@@ -32,6 +33,9 @@ static int timer(struct timer *timer_skel)
- 	/* check that timer_cb3() was executed twice */
- 	ASSERT_EQ(timer_skel->bss->abs_data, 12, "abs_data");
- 
-+	/* check that timer_cb_pinned() was executed twice */
-+	ASSERT_EQ(timer_skel->bss->pinned_callback_check, 2, "pinned_callback_check");
-+
- 	/* check that there were no errors in timer execution */
- 	ASSERT_EQ(timer_skel->bss->err, 0, "err");
- 
-diff --git a/tools/testing/selftests/bpf/progs/timer.c b/tools/testing/selftests/bpf/progs/timer.c
-index 9a16d95213e1..0112b9c038b4 100644
---- a/tools/testing/selftests/bpf/progs/timer.c
-+++ b/tools/testing/selftests/bpf/progs/timer.c
-@@ -53,12 +53,28 @@ struct {
- 	__type(value, struct elem);
- } abs_timer SEC(".maps");
- 
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, struct elem);
-+} soft_timer_pinned SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, int);
-+	__type(value, struct elem);
-+} abs_timer_pinned SEC(".maps");
-+
- __u64 bss_data;
- __u64 abs_data;
- __u64 err;
- __u64 ok;
- __u64 callback_check = 52;
- __u64 callback2_check = 52;
-+__u64 pinned_callback_check;
-+__s32 pinned_cpu;
- 
- #define ARRAY 1
- #define HTAB 2
-@@ -329,3 +345,62 @@ int BPF_PROG2(test3, int, a)
- 
- 	return 0;
- }
-+
-+/* callback for pinned timer */
-+static int timer_cb_pinned(void *map, int *key, struct bpf_timer *timer)
-+{
-+	__s32 cpu = bpf_get_smp_processor_id();
-+
-+	if (cpu != pinned_cpu)
-+		err |= 16384;
-+
-+	pinned_callback_check++;
-+	return 0;
-+}
-+
-+static void test_pinned_timer(bool soft)
-+{
-+	int key = 0;
-+	void *map;
-+	struct bpf_timer *timer;
-+	__u64 flags = BPF_F_TIMER_CPU_PIN;
-+	__u64 start_time;
-+
-+	if (soft) {
-+		map = &soft_timer_pinned;
-+		start_time = 0;
-+	} else {
-+		map = &abs_timer_pinned;
-+		start_time = bpf_ktime_get_boot_ns();
-+		flags |= BPF_F_TIMER_ABS;
-+	}
-+
-+	timer = bpf_map_lookup_elem(map, &key);
-+	if (timer) {
-+		if (bpf_timer_init(timer, map, CLOCK_BOOTTIME) != 0)
-+			err |= 4096;
-+		bpf_timer_set_callback(timer, timer_cb_pinned);
-+		pinned_cpu = bpf_get_smp_processor_id();
-+		bpf_timer_start(timer, start_time + 1000, flags);
-+	} else {
-+		err |= 8192;
-+	}
-+}
-+
-+SEC("fentry/bpf_fentry_test4")
-+int BPF_PROG2(test4, int, a)
-+{
-+	bpf_printk("test4");
-+	test_pinned_timer(true);
-+
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test5")
-+int BPF_PROG2(test5, int, a)
-+{
-+	bpf_printk("test5");
-+	test_pinned_timer(false);
-+
-+	return 0;
-+}
--- 
-2.41.0
-
+BR, Jarkko
