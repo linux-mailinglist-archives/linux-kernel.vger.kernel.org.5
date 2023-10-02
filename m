@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF5137B569A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9535D7B5643
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237941AbjJBPD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35608 "EHLO
+        id S237947AbjJBPD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237934AbjJBPDZ (ORCPT
+        with ESMTP id S237933AbjJBPDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:03:25 -0400
+        Mon, 2 Oct 2023 11:03:24 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8213FAC
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:03:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213749D
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:03:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696259002; x=1727795002;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=b81D1JINHi5ibUTtiEbFI9DrxQMJ+q3uFxu+iVHcAlI=;
-  b=IkYBynFMHZPtgFbRc3Im95Oy6RPvwMzrn67pfNzlY5S/7mYkjRkqIYKQ
-   k8mCV/6nVJgk0l9ZMCupJFjRz09B1dMtL7CTKm81+sXcxSiE0p3rjTy/7
-   K4SXTfYFy+jXnhA80jVD3YQzgljHLZI/cQ18ZfhVjXI6SKPwaJtnUFu4e
-   KOVNV3CHZGmqOE1nZfqK5F/xmSrw00xFB79FwPZMdCJQ44WRnSIDh6oqx
-   4YJ9LMq+2AOkhWFZ46HDNpFzojEvzS/ty514NCBUkBTLdis2qWkSSPzYI
-   aF8Kk1NQOGrpuxj5k1uX3yze7usTpYtKiVW/TLrosFIZhB0fJMFPT+Pgm
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="362033035"
+  t=1696259001; x=1727795001;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=N++j3DS1/2axXzEV8F4CEyXci3t830vsxt/HcEcmtvc=;
+  b=MHrDoyt5Oi+WKiizvJJeddDfmJEKe1hJHJXDBNPXJDv8xs30Zm1xifKs
+   FxzzlO38n4JBw8UAOylqrt2Dpz8ptz7O8X1nZEUM4VepxUSk1k06gUvIE
+   15+25NkD2KInQx3y96FSVgqgEVdOx30bFfB/sCaim4ZoXxeq7WDtYQJLV
+   9Y48h/SsXzNnkIqcRP4f0xiszGWos3a8wHyjwLGZ2lQhqUT6GSPRmrzOb
+   ormiGczqBx4KSswB0i+acWOTuU9On89rF8n0rlddDT/jQPbiLtoMqDZgN
+   QE+RakfMwEFvqXFIndlEiaKoeH7qGs124Bspsaxoz+DtALOX26h6JRUap
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="362033039"
 X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="362033035"
+   d="scan'208";a="362033039"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 08:03:20 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="820904658"
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="820904659"
 X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="820904658"
+   d="scan'208";a="820904659"
 Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
   by fmsmga004.fm.intel.com with ESMTP; 02 Oct 2023 08:03:19 -0700
 From:   kan.liang@linux.intel.com
@@ -44,10 +44,12 @@ To:     peterz@infradead.org, mingo@redhat.com,
         linux-kernel@vger.kernel.org
 Cc:     eranian@google.com, ak@linux.intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 1/5] perf/x86/intel/uncore: Generic uncore_get_uncores and MMIO format of SPR
-Date:   Mon,  2 Oct 2023 08:03:21 -0700
-Message-Id: <20231002150325.2025749-1-kan.liang@linux.intel.com>
+Subject: [PATCH 2/5] perf/x86/uncore: Use u64 to replace unsigned for the uncore offsets array
+Date:   Mon,  2 Oct 2023 08:03:22 -0700
+Message-Id: <20231002150325.2025749-2-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20231002150325.2025749-1-kan.liang@linux.intel.com>
+References: <20231002150325.2025749-1-kan.liang@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -61,107 +63,133 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Factor out SPR_UNCORE_MMIO_COMMON_FORMAT which can be reused by
-Granite Rapids in the following patch.
+The current perf doesn't save the complete address of an uncore unit.
+The complete address of each unit is calculated by the base address +
+offset. The type of the base address is u64, while the type of offset is
+unsigned.
+In the old platforms (without the discovery table method), the base
+address and offset are hard coded in the driver. Perf can always use the
+lowest address as the base address. Everything works well.
 
-Granite Rapids have more uncore units than Sapphire Rapids. Add new
-parameters to support adjustable uncore units.
+In the new platforms (starting from SPR), the discovery table provides
+a complete address for all uncore units. To follow the current
+framework/codes, when parsing the discovery table, the complete address
+of the first box is stored as a base address. The offset of the
+following units is calculated by the complete address of the unit minus
+the base address (the address of the first unit). On GNR, the latter
+units may have a lower address compared to the first unit. So the offset
+is a negative value. The upper 32 bits are lost when casting a negative
+u64 to an unsigned type.
 
-No functional change.
+Use u64 to replace unsigned for the uncore offsets array to correct the
+above case. There is no functional change.
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/uncore_snbep.c | 34 +++++++++++++++++++---------
- 1 file changed, 23 insertions(+), 11 deletions(-)
+ arch/x86/events/intel/uncore.h           | 6 +++---
+ arch/x86/events/intel/uncore_discovery.c | 5 +++--
+ arch/x86/events/intel/uncore_discovery.h | 2 +-
+ arch/x86/events/intel/uncore_nhmex.c     | 2 +-
+ arch/x86/events/intel/uncore_snbep.c     | 6 +++---
+ 5 files changed, 11 insertions(+), 10 deletions(-)
 
+diff --git a/arch/x86/events/intel/uncore.h b/arch/x86/events/intel/uncore.h
+index c30fb5bb1222..7428ecaddf72 100644
+--- a/arch/x86/events/intel/uncore.h
++++ b/arch/x86/events/intel/uncore.h
+@@ -72,9 +72,9 @@ struct intel_uncore_type {
+ 	unsigned single_fixed:1;
+ 	unsigned pair_ctr_ctl:1;
+ 	union {
+-		unsigned *msr_offsets;
+-		unsigned *pci_offsets;
+-		unsigned *mmio_offsets;
++		u64 *msr_offsets;
++		u64 *pci_offsets;
++		u64 *mmio_offsets;
+ 	};
+ 	unsigned *box_ids;
+ 	struct event_constraint unconstrainted;
+diff --git a/arch/x86/events/intel/uncore_discovery.c b/arch/x86/events/intel/uncore_discovery.c
+index cb488e41807c..9a698a92962a 100644
+--- a/arch/x86/events/intel/uncore_discovery.c
++++ b/arch/x86/events/intel/uncore_discovery.c
+@@ -125,7 +125,8 @@ uncore_insert_box_info(struct uncore_unit_discovery *unit,
+ 		       int die, bool parsed)
+ {
+ 	struct intel_uncore_discovery_type *type;
+-	unsigned int *box_offset, *ids;
++	unsigned int *ids;
++	u64 *box_offset;
+ 	int i;
+ 
+ 	if (!unit->ctl || !unit->ctl_offset || !unit->ctr_offset) {
+@@ -153,7 +154,7 @@ uncore_insert_box_info(struct uncore_unit_discovery *unit,
+ 	if (!type)
+ 		return;
+ 
+-	box_offset = kcalloc(type->num_boxes + 1, sizeof(unsigned int), GFP_KERNEL);
++	box_offset = kcalloc(type->num_boxes + 1, sizeof(u64), GFP_KERNEL);
+ 	if (!box_offset)
+ 		return;
+ 
+diff --git a/arch/x86/events/intel/uncore_discovery.h b/arch/x86/events/intel/uncore_discovery.h
+index 6ee80ad3423e..22e769a81103 100644
+--- a/arch/x86/events/intel/uncore_discovery.h
++++ b/arch/x86/events/intel/uncore_discovery.h
+@@ -125,7 +125,7 @@ struct intel_uncore_discovery_type {
+ 	u8		ctr_offset;	/* Counter 0 offset */
+ 	u16		num_boxes;	/* number of boxes for the uncore block */
+ 	unsigned int	*ids;		/* Box IDs */
+-	unsigned int	*box_offset;	/* Box offset */
++	u64		*box_offset;	/* Box offset */
+ };
+ 
+ bool intel_uncore_has_discovery_tables(int *ignore);
+diff --git a/arch/x86/events/intel/uncore_nhmex.c b/arch/x86/events/intel/uncore_nhmex.c
+index 173e2674be6e..56eea2c66cfb 100644
+--- a/arch/x86/events/intel/uncore_nhmex.c
++++ b/arch/x86/events/intel/uncore_nhmex.c
+@@ -306,7 +306,7 @@ static const struct attribute_group nhmex_uncore_cbox_format_group = {
+ };
+ 
+ /* msr offset for each instance of cbox */
+-static unsigned nhmex_cbox_msr_offsets[] = {
++static u64 nhmex_cbox_msr_offsets[] = {
+ 	0x0, 0x80, 0x40, 0xc0, 0x20, 0xa0, 0x60, 0xe0, 0x240, 0x2c0,
+ };
+ 
 diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-index d49e90dc04a4..cef51b83410a 100644
+index cef51b83410a..dfe4a84f25c6 100644
 --- a/arch/x86/events/intel/uncore_snbep.c
 +++ b/arch/x86/events/intel/uncore_snbep.c
-@@ -6079,13 +6079,16 @@ static struct uncore_event_desc spr_uncore_imc_events[] = {
- 	{ /* end: all zeroes */ },
+@@ -5278,7 +5278,7 @@ void snr_uncore_mmio_init(void)
+ 
+ /* ICX uncore support */
+ 
+-static unsigned icx_cha_msr_offsets[] = {
++static u64 icx_cha_msr_offsets[] = {
+ 	0x2a0, 0x2ae, 0x2bc, 0x2ca, 0x2d8, 0x2e6, 0x2f4, 0x302, 0x310,
+ 	0x31e, 0x32c, 0x33a, 0x348, 0x356, 0x364, 0x372, 0x380, 0x38e,
+ 	0x3aa, 0x3b8, 0x3c6, 0x3d4, 0x3e2, 0x3f0, 0x3fe, 0x40c, 0x41a,
+@@ -5326,7 +5326,7 @@ static struct intel_uncore_type icx_uncore_chabox = {
+ 	.format_group		= &snr_uncore_chabox_format_group,
  };
  
-+#define SPR_UNCORE_MMIO_COMMON_FORMAT()				\
-+	SPR_UNCORE_COMMON_FORMAT(),				\
-+	.ops			= &spr_uncore_mmio_ops
-+
- static struct intel_uncore_type spr_uncore_imc = {
--	SPR_UNCORE_COMMON_FORMAT(),
-+	SPR_UNCORE_MMIO_COMMON_FORMAT(),
- 	.name			= "imc",
- 	.fixed_ctr_bits		= 48,
- 	.fixed_ctr		= SNR_IMC_MMIO_PMON_FIXED_CTR,
- 	.fixed_ctl		= SNR_IMC_MMIO_PMON_FIXED_CTL,
--	.ops			= &spr_uncore_mmio_ops,
- 	.event_descs		= spr_uncore_imc_events,
+-static unsigned icx_msr_offsets[] = {
++static u64 icx_msr_offsets[] = {
+ 	0x0, 0x20, 0x40, 0x90, 0xb0, 0xd0,
  };
  
-@@ -6412,7 +6415,8 @@ static void uncore_type_customized_copy(struct intel_uncore_type *to_type,
+@@ -6184,7 +6184,7 @@ static struct intel_uncore_type *spr_uncores[UNCORE_SPR_NUM_UNCORE_TYPES] = {
+  */
+ #define SPR_UNCORE_UPI_NUM_BOXES	4
  
- static struct intel_uncore_type **
- uncore_get_uncores(enum uncore_access_type type_id, int num_extra,
--		    struct intel_uncore_type **extra)
-+		   struct intel_uncore_type **extra, int max_num_types,
-+		   struct intel_uncore_type **uncores)
- {
- 	struct intel_uncore_type **types, **start_types;
- 	int i;
-@@ -6421,9 +6425,9 @@ uncore_get_uncores(enum uncore_access_type type_id, int num_extra,
+-static unsigned int spr_upi_pci_offsets[SPR_UNCORE_UPI_NUM_BOXES] = {
++static u64 spr_upi_pci_offsets[SPR_UNCORE_UPI_NUM_BOXES] = {
+ 	0, 0x8000, 0x10000, 0x18000
+ };
  
- 	/* Only copy the customized features */
- 	for (; *types; types++) {
--		if ((*types)->type_id >= UNCORE_SPR_NUM_UNCORE_TYPES)
-+		if ((*types)->type_id >= max_num_types)
- 			continue;
--		uncore_type_customized_copy(*types, spr_uncores[(*types)->type_id]);
-+		uncore_type_customized_copy(*types, uncores[(*types)->type_id]);
- 	}
- 
- 	for (i = 0; i < num_extra; i++, types++)
-@@ -6470,7 +6474,9 @@ void spr_uncore_cpu_init(void)
- 
- 	uncore_msr_uncores = uncore_get_uncores(UNCORE_ACCESS_MSR,
- 						UNCORE_SPR_MSR_EXTRA_UNCORES,
--						spr_msr_uncores);
-+						spr_msr_uncores,
-+						UNCORE_SPR_NUM_UNCORE_TYPES,
-+						spr_uncores);
- 
- 	type = uncore_find_type_by_id(uncore_msr_uncores, UNCORE_SPR_CHA);
- 	if (type) {
-@@ -6542,7 +6548,9 @@ int spr_uncore_pci_init(void)
- 	spr_update_device_location(UNCORE_SPR_M3UPI);
- 	uncore_pci_uncores = uncore_get_uncores(UNCORE_ACCESS_PCI,
- 						UNCORE_SPR_PCI_EXTRA_UNCORES,
--						spr_pci_uncores);
-+						spr_pci_uncores,
-+						UNCORE_SPR_NUM_UNCORE_TYPES,
-+						spr_uncores);
- 	return 0;
- }
- 
-@@ -6550,12 +6558,16 @@ void spr_uncore_mmio_init(void)
- {
- 	int ret = snbep_pci2phy_map_init(0x3250, SKX_CPUNODEID, SKX_GIDNIDMAP, true);
- 
--	if (ret)
--		uncore_mmio_uncores = uncore_get_uncores(UNCORE_ACCESS_MMIO, 0, NULL);
--	else {
-+	if (ret) {
-+		uncore_mmio_uncores = uncore_get_uncores(UNCORE_ACCESS_MMIO, 0, NULL,
-+							 UNCORE_SPR_NUM_UNCORE_TYPES,
-+							 spr_uncores);
-+	} else {
- 		uncore_mmio_uncores = uncore_get_uncores(UNCORE_ACCESS_MMIO,
- 							 UNCORE_SPR_MMIO_EXTRA_UNCORES,
--							 spr_mmio_uncores);
-+							 spr_mmio_uncores,
-+							 UNCORE_SPR_NUM_UNCORE_TYPES,
-+							 spr_uncores);
- 
- 		spr_uncore_imc_free_running.num_boxes = uncore_type_max_boxes(uncore_mmio_uncores, UNCORE_SPR_IMC) / 2;
- 	}
 -- 
 2.35.1
 
