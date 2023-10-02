@@ -2,437 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FF97B5030
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8534A7B5033
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236450AbjJBKXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 06:23:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50278 "EHLO
+        id S236444AbjJBKYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 06:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236367AbjJBKXk (ORCPT
+        with ESMTP id S236367AbjJBKYJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 06:23:40 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BDDB7
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 03:23:36 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id EF2266607038;
-        Mon,  2 Oct 2023 11:23:33 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696242214;
-        bh=ToRh/ISd/gxtCYAZ6mSqZdgNWox9j5WdKAq9Ron8cEY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=FQemsHx0RrG7eGmZCFdlKAHRn3yQ23PLvL3ViLfnkyPwKnZngEzZHrJL7k0K5BKXs
-         arjck/3Zb1rjGKDBBpi6QG+DbxtbzX1OGDBypeo7s+SCybOkgeLkt/NMsF4etSkZhC
-         mTWoknjiHucxkxfOeeziyzloaNKW4b954f673H2f2xL1MUJ6RPPCa+C9lIzByOHpXz
-         SR7ca40dL3rhjshg1A2iw6NZg/kw/Qzu5PYSmyAUfI+sPspuoH+XDxAoiagFknAVJN
-         a+CyxMoqSRT/hpENkMJh47QGpqWyOZTOjIvqu3v8NLlox4pSyqCr3LP7lr0ZZ2xKgs
-         Oh/+fRjxcsqPw==
-Message-ID: <4303dcfd-4dc1-18da-8884-1cb9b0bfa0a9@collabora.com>
-Date:   Mon, 2 Oct 2023 12:23:31 +0200
+        Mon, 2 Oct 2023 06:24:09 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B49990;
+        Mon,  2 Oct 2023 03:24:06 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 094FEC433C8;
+        Mon,  2 Oct 2023 10:24:02 +0000 (UTC)
+Message-ID: <36356e37-9abd-4dec-a716-9822b67bd0fa@xs4all.nl>
+Date:   Mon, 2 Oct 2023 12:24:01 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v10 5/9] drm/mediatek: Add connector dynamic selection
- capability
-Content-Language: en-US
-To:     =?UTF-8?B?SmFzb24tSkggTGluICjmnpfnnb/npaUp?= 
-        <Jason-JH.Lin@mediatek.com>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>
-Cc:     "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        =?UTF-8?B?U2luZ28gQ2hhbmcgKOW8teiIiOWciyk=?= 
-        <Singo.Chang@mediatek.com>,
-        =?UTF-8?B?Sm9obnNvbiBXYW5nICjnjovogZbpkasp?= 
-        <Johnson.Wang@mediatek.com>,
-        =?UTF-8?B?SmFzb24tY2ggQ2hlbiAo6Zmz5bu66LGqKQ==?= 
-        <Jason-ch.Chen@mediatek.com>,
-        =?UTF-8?B?U2hhd24gU3VuZyAo5a6L5a2d6KyZKQ==?= 
-        <Shawn.Sung@mediatek.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?UTF-8?B?TmFuY3kgTGluICjmnpfmrKPonqIp?= <Nancy.Lin@mediatek.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        =?UTF-8?B?TmF0aGFuIEx1ICjlkYLmnbHpnJYp?= <Nathan.Lu@mediatek.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-References: <20230927153833.23583-1-jason-jh.lin@mediatek.com>
- <20230927153833.23583-6-jason-jh.lin@mediatek.com>
- <891fe60a-cee9-29ab-3214-848b1161a0a7@collabora.com>
- <1780d283425dea81e894fc75eeb893ab7a1faff2.camel@mediatek.com>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <1780d283425dea81e894fc75eeb893ab7a1faff2.camel@mediatek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] media: mediatek: vcodec: Fix encoder access NULL
+ pointer
+Content-Language: en-US, nl
+To:     Irui Wang <irui.wang@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        angelogioacchino.delregno@collabora.com,
+        nicolas.dufresne@collabora.com,
+        Yunfei Dong <yunfei.dong@mediatek.com>
+Cc:     Project_Global_Chrome_Upstream_Group@mediatek.com,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Maoguang Meng <maoguang.meng@mediatek.com>
+References: <20230926101909.15030-1-irui.wang@mediatek.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230926101909.15030-1-irui.wang@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 02/10/23 09:14, Jason-JH Lin (林睿祥) ha scritto:
-> Hi Angelo,
+On 26/09/2023 12:19, Irui Wang wrote:
+> Need to set the private data with encoder device, or will access
+> NULL pointer in encoder handler.
 > 
-> Thanks for the reviews.
+> Fixes: 1972e32431ed ("media: mediatek: vcodec: Fix possible invalid memory access for encoder")
 > 
-> On Thu, 2023-09-28 at 12:00 +0200, AngeloGioacchino Del Regno wrote:
->> Il 27/09/23 17:38, Jason-JH.Lin ha scritto:
->>> Add dynamic select available connector flow in
->>> mtk_drm_crtc_create()
->>> and mtk_drm_crtc_atomic_enable().
->>>
->>> In mtk_drm_crtc_create(), if there is a connector routes array in
->>> drm
->>> driver data, all components definded in the connector routes array
->>> will
->>> be checked and their encoder_index will be set.
->>>
->>> In mtk_drm_crtc_atomic_enable(), crtc will check its encoder_index
->>> to
->>> identify which componet in the connector routes array should
->>> append.
->>>
->>> Signed-off-by: Nancy Lin <nancy.lin@mediatek.com>
->>> Signed-off-by: Nathan Lu <nathan.lu@mediatek.com>
->>> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
->>> Tested-by: Fei Shao <fshao@chromium.org>
->>> ---
->>>    drivers/gpu/drm/mediatek/mtk_drm_crtc.c     | 78
->>> ++++++++++++++++++++-
->>>    drivers/gpu/drm/mediatek/mtk_drm_crtc.h     |  5 +-
->>>    drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 27 ++++++-
->>>    drivers/gpu/drm/mediatek/mtk_drm_drv.c      | 13 +++-
->>>    drivers/gpu/drm/mediatek/mtk_drm_drv.h      |  7 ++
->>>    5 files changed, 123 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
->>> b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
->>> index b6fa4ad2f94d..8eb4d2646a76 100644
->>> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
->>> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
->>> @@ -63,6 +63,8 @@ struct mtk_drm_crtc {
->>>    	struct mtk_mutex		*mutex;
->>>    	unsigned int			ddp_comp_nr;
->>>    	struct mtk_ddp_comp		**ddp_comp;
->>> +	unsigned int			num_conn_routes;
->>> +	const struct mtk_drm_route	*conn_routes;
->>>    
->>>    	/* lock for display hardware access */
->>>    	struct mutex			hw_lock;
->>> @@ -647,6 +649,45 @@ static void mtk_drm_crtc_disable_vblank(struct
->>> drm_crtc *crtc)
->>>    	mtk_ddp_comp_disable_vblank(comp);
->>>    }
->>>    
->>> +static void mtk_drm_crtc_update_output(struct drm_crtc *crtc,
->>> +				       struct drm_atomic_state *state)
->>> +{
->>> +	int crtc_index = drm_crtc_index(crtc);
->>> +	int i;
->>> +	struct device *dev;
->>> +	struct drm_crtc_state *crtc_state = state-
->>>> crtcs[crtc_index].new_state;
->>> +	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
->>> +	struct mtk_drm_private *priv = crtc->dev->dev_private;
->>> +	unsigned int comp_id;
->>
->> You're not using comp_id globally in this function....
+> Signed-off-by: Irui Wang <irui.wang@mediatek.com>
+> ---
+>  drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> OK, I'll move it to the for loop below.
-> 
->>
->>> +	unsigned int encoder_mask = crtc_state->encoder_mask;
->>> +
->>> +	if (!crtc_state->connectors_changed)
->>> +		return;
->>> +
->>> +	if (!mtk_crtc->num_conn_routes)
->>> +		return;
->>> +
->>> +	priv = priv->all_drm_private[crtc_index];
->>
->> This is a bit confusing. You're reassigning priv: please avoid that.
->> I would prefer directly seeing the final assignment, or otherwise two
->> pointers.
->>
->> 	struct mtk_drm_private *priv;
->>
->> 	if ....
->> 	...........
->>
->> 	priv = crtc->dev->dev_private->all_drm_private[crtc_index];
->>
-> 
-> OK, because the type of dev_private is void*. I'll change the
-> assignment to:
-> 
-> priv = ((struct mtk_drm_private *)crtc->dev->dev_private)-
->> all_drm_private[crtc_index];
-> 
->>> +	dev = priv->dev;
->>> +
->>> +	dev_dbg(dev, "connector change:%d, encoder mask:0x%x for
->>> crtc:%d\n",
->>> +		crtc_state->connectors_changed, encoder_mask,
->>> crtc_index);
->>> +
->>> +	for (i = 0; i < mtk_crtc->num_conn_routes; i++) {
->>> +		struct mtk_ddp_comp *comp;
->>
->> ...so you can move it here...
-> 
-> OK, I'll move it here.
-> 
->> 		unsigned int comp_id = mtk_crtc-
->>> conn_routes[i].route_ddp;
->> 		struct mtk_ddp_comp *comp = &priv->ddp_comp[comp_id];
->>
->>> +
->>> +		comp_id = mtk_crtc->conn_routes[i].route_ddp;
->>> +		comp = &priv->ddp_comp[comp_id];
->>> +		if (comp->encoder_index >= 0 &&
->>> +		    encoder_mask & BIT(comp->encoder_index)) {
->>
->> For readability, I would prefer to see
->>
->> 		if (comp->encoder_index >= 0 &&
->> 		    (encoder_mask & BIT(comp->encoder_index))) {
->>
->> ...but I don't have strong opinions on that.
->>
-> 
-> OK, I'll modify it.
-> 
->>> +			mtk_crtc->ddp_comp[mtk_crtc->ddp_comp_nr - 1] =
->>> comp;
->>> +			dev_dbg(dev, "Add comp_id: %d at path index
->>> %d\n",
->>> +				comp->id, mtk_crtc->ddp_comp_nr - 1);
->>> +			break;
->>> +		}
->>> +	}
->>> +}
->>> +
->>>    int mtk_drm_crtc_plane_check(struct drm_crtc *crtc, struct
->>> drm_plane *plane,
->>>    			     struct mtk_plane_state *state)
->>>    {
->>> @@ -679,6 +720,8 @@ static void mtk_drm_crtc_atomic_enable(struct
->>> drm_crtc *crtc,
->>>    
->>>    	DRM_DEBUG_DRIVER("%s %d\n", __func__, crtc->base.id);
->>>    
->>> +	mtk_drm_crtc_update_output(crtc, state);
->>> +
->>
->> What's the point of updating the output before
->> pm_runtime_resume_and_get()?
->> If PM resume fails we're not enabling the CRTC so the update is
->> actually useless.
->>
->> Please move this after PM resume: that will also possibly come handy
->> in the future.
-> 
-> OK, I'll move this after pm_runtime_resume_and_get().
-> 
->>
->>
->>>    	ret = pm_runtime_resume_and_get(comp->dev);
->>>    	if (ret < 0) {
->>>    		DRM_DEV_ERROR(comp->dev, "Failed to enable power
->>> domain: %d\n", ret);
->>> @@ -884,7 +927,8 @@ struct device *mtk_drm_crtc_dma_dev_get(struct
->>> drm_crtc *crtc)
->>>    
->>>    int mtk_drm_crtc_create(struct drm_device *drm_dev,
->>>    			const unsigned int *path, unsigned int
->>> path_len,
->>> -			int priv_data_index)
->>> +			int priv_data_index, const struct mtk_drm_route
->>> *conn_routes,
->>> +			unsigned int num_conn_routes)
->>>    {
->>>    	struct mtk_drm_private *priv = drm_dev->dev_private;
->>>    	struct device *dev = drm_dev->dev;
->>> @@ -935,7 +979,8 @@ int mtk_drm_crtc_create(struct drm_device
->>> *drm_dev,
->>>    
->>>    	mtk_crtc->mmsys_dev = priv->mmsys_dev;
->>>    	mtk_crtc->ddp_comp_nr = path_len;
->>> -	mtk_crtc->ddp_comp = devm_kmalloc_array(dev, mtk_crtc-
->>>> ddp_comp_nr,
->>> +	mtk_crtc->ddp_comp = devm_kmalloc_array(dev,
->>> +						mtk_crtc->ddp_comp_nr +
->>> (conn_routes ? 1 : 0),
->>>    						sizeof(*mtk_crtc-
->>>> ddp_comp),
->>>    						GFP_KERNEL);
->>>    	if (!mtk_crtc->ddp_comp)
->>> @@ -1038,5 +1083,34 @@ int mtk_drm_crtc_create(struct drm_device
->>> *drm_dev,
->>>    		init_waitqueue_head(&mtk_crtc->cb_blocking_queue);
->>>    	}
->>>    #endif
->>> +
->>> +	if (conn_routes) {
->>> +		struct device_node *node;
->>> +		struct mtk_ddp_comp *comp;
->>> +		unsigned int comp_id;
->>> +
->>> +		for (i = 0; i < num_conn_routes; i++) {
->>
->> Same here, you're locally using comp_id, node and comp *only* in the
->> for loop....
->>
-> 
-> OK I'll move it here.
-> 
->> 			unsigned int comp_id =
->> conn_routes[i].route_ddp;
->> 			struct device_node *node = priv-
->>> comp_node[comp_id];
->> 			struct mtk_ddp_comp *comp = &priv-
->>> ddp_comp[comp_id];
->>
->>> +			comp_id = conn_routes[i].route_ddp;
->>> +			node = priv->comp_node[comp_id];
->>> +			comp = &priv->ddp_comp[comp_id];
->>> +
->>> +			if (!comp->dev) {
->>> +				dev_dbg(dev, "comp_id:%d, Component
->>> %pOF not initialized\n",
->>> +					comp_id, node);
->>> +				/* mark encoder_index to -1, if route
->>> comp device is not enabled */
->>> +				comp->encoder_index = -1;
->>> +				continue;
->>> +			}
->>> +
->>> +			mtk_ddp_comp_encoder_index_set(&priv-
->>>> ddp_comp[comp_id]);
->>> +		}
->>> +
->>> +		mtk_crtc->num_conn_routes = num_conn_routes;
->>> +		mtk_crtc->conn_routes = conn_routes;
->>> +
->>> +		/* increase ddp_comp_nr at the end of
->>> mtk_drm_crtc_create */
->>> +		mtk_crtc->ddp_comp_nr++;
->>> +	}
->>> +
->>>    	return 0;
->>>    }
->>> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
->>> b/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
->>> index 3e9046993d09..3c224595fa71 100644
->>> --- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
->>> +++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.h
->>> @@ -8,6 +8,7 @@
->>>    
->>>    #include <drm/drm_crtc.h>
->>>    #include "mtk_drm_ddp_comp.h"
->>> +#include "mtk_drm_drv.h"
->>>    #include "mtk_drm_plane.h"
->>>    
->>>    #define MTK_LUT_SIZE	512
->>> @@ -18,7 +19,9 @@ void mtk_drm_crtc_commit(struct drm_crtc *crtc);
->>>    int mtk_drm_crtc_create(struct drm_device *drm_dev,
->>>    			const unsigned int *path,
->>>    			unsigned int path_len,
->>> -			int priv_data_index);
->>> +			int priv_data_index,
->>> +			const struct mtk_drm_route *conn_routes,
->>> +			unsigned int num_conn_routes);
->>>    int mtk_drm_crtc_plane_check(struct drm_crtc *crtc, struct
->>> drm_plane *plane,
->>>    			     struct mtk_plane_state *state);
->>>    void mtk_drm_crtc_async_update(struct drm_crtc *crtc, struct
->>> drm_plane *plane,
->>> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
->>> b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
->>> index 771f4e173353..4ddb5e561116 100644
->>> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
->>> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
->>> @@ -507,6 +507,23 @@ static bool mtk_drm_find_comp_in_ddp(struct
->>> device *dev,
->>>    	return false;
->>>    }
->>>    
->>> +static int mtk_drm_find_comp_in_ddp_conn_path(struct device *dev,
->>> +					      const struct
->>> mtk_drm_route *routes,
->>> +					      unsigned int num_routes,
->>> +					      struct mtk_ddp_comp
->>> *ddp_comp)
->>> +{
->>> +	unsigned int i;
->>> +
->>> +	if (!routes)
->>> +		return -EINVAL;
->>> +
->>> +	for (i = 0; i < num_routes; i++)
->>> +		if (dev == ddp_comp[routes[i].route_ddp].dev)
->>> +			return BIT(routes[i].crtc_id);
->>> +
->>> +	return -ENODEV;
->>> +}
->>> +
->>>    int mtk_ddp_comp_get_id(struct device_node *node,
->>>    			enum mtk_ddp_comp_type comp_type)
->>>    {
->>> @@ -538,7 +555,15 @@ unsigned int
->>> mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
->>>    					  private->data->third_len,
->>> private->ddp_comp))
->>>    		ret = BIT(2);
->>>    	else
->>> -		DRM_INFO("Failed to find comp in ddp table\n");
->>> +		ret = mtk_drm_find_comp_in_ddp_conn_path(dev,
->>> +							 private->data-
->>>> conn_routes,
->>> +							 private->data-
->>>> num_conn_routes,
->>> +							 private-
->>>> ddp_comp);
->>> +
->>> +	if (ret <= 0) {
->>> +		DRM_INFO("Failed to find comp in ddp table, ret =%d\n",
->>> ret);
->>> +		ret = 0;
->>
->> Why are you returning 0 for error here?!
-> 
-> Because this function return 0 means not found any valid crtc bits.
-> Should I change this?
-> 
+> diff --git a/drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c b/drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c
+> index d299cc2962a5..ae6290d28f8e 100644
+> --- a/drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c
+> +++ b/drivers/media/platform/mediatek/vcodec/encoder/venc_vpu_if.c
+> @@ -138,7 +138,8 @@ int vpu_enc_init(struct venc_vpu_inst *vpu)
+>  	vpu->ctx->vpu_inst = vpu;
+>  
+>  	status = mtk_vcodec_fw_ipi_register(vpu->ctx->dev->fw_handler, vpu->id,
+> -					    vpu_enc_ipi_handler, "venc", NULL);
+> +					    vpu_enc_ipi_handler, "venc",
+> +					    vpu->ctx->dev);
+>  
+>  	if (status) {
+>  		mtk_venc_err(vpu->ctx, "vpu_ipi_register fail %d", status);
 
-Yes, please, return a relevant error code instead.
+Is this a fix that should go to 6.6?
 
-Thanks,
-Angelo
+Regards,
 
-> Regards,
-> Jason-JH.Lin
-> 
->>
->>> +	}
->>>    
->>>    	return ret;
->>>    }
->>
->> Regards,
->> Angelo
->>
-
-
-
+	Hans
