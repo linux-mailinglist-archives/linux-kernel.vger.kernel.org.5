@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3217B4F2C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E77F7B4F2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236162AbjJBJjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
+        id S231164AbjJBJj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:39:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236156AbjJBJjs (ORCPT
+        with ESMTP id S236144AbjJBJj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:39:48 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFAD0F2;
-        Mon,  2 Oct 2023 02:39:44 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RzbVB2Vv3z6K60M;
-        Mon,  2 Oct 2023 17:38:10 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 2 Oct
- 2023 10:39:41 +0100
-Date:   Mon, 2 Oct 2023 10:39:40 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-CC:     Jonathan Cameron <jic23@kernel.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Potin.Lai@quantatw.com" <Potin.Lai@quantatw.com>,
-        "patrickw3@meta.com" <patrickw3@meta.com>
-Subject: Re: [PATCH v1] iio: adc: aspeed: Support deglitch feature.
-Message-ID: <20231002103940.00001dbd@Huawei.com>
-In-Reply-To: <SG2PR06MB3365E89B1543B770AC2EE7E78BC5A@SG2PR06MB3365.apcprd06.prod.outlook.com>
-References: <20230925081845.4147424-1-billy_tsai@aspeedtech.com>
-        <20230930174501.039095da@jic23-huawei>
-        <SG2PR06MB3365E89B1543B770AC2EE7E78BC5A@SG2PR06MB3365.apcprd06.prod.outlook.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Mon, 2 Oct 2023 05:39:57 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A412EEC
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:39:53 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-307d20548adso14775979f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:39:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696239592; x=1696844392; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RMQoXZJ1gXgVqo8xfz08xq4cJM19gNcTFBOT4UgBJMM=;
+        b=TwTjUBuokaFx4EQ4Un6SSbkgzE0dfBTgRksSoy3CJf65lU1bUxSGvtUBVvifnrCM/b
+         F5xo1O440PsFQWYeE8s2SPyo4ROzI0FPukKuTa+9huSxo83yZN8putzqoprk4H0g/VL8
+         Zty398ewbOXMd4dj8BzZhcizaYGcMEEo08BciA1W20yWNIJUGhFLoNVAVhboB973OsfY
+         q60XL65YmZMMRUJpeYGzeoxyfGtc0U1sQai3EqwYS1pXzfOINTIk5VH0KpM6fTVGM5Ti
+         +sK1fbQ18KGGZ8CWyRAFgF22y1h9jt+6tnO/amhNJysILfhF/hbsz+MvCiPE9r804heV
+         ivtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696239592; x=1696844392;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RMQoXZJ1gXgVqo8xfz08xq4cJM19gNcTFBOT4UgBJMM=;
+        b=v6NfmSsnUKI6GkwAFFFRzmubYHQSNXT4PGHujsIpSZVlKdR4YA0h9w1w/qhdNo73V2
+         1mwN/3g2SUT8HaSwUNhVuO9OvikhRK9sqNri5lCairEyeFldCv9+Fo9NH/vs4HZRVqW4
+         4ZTbZ6EDuUVCTVLYxGNGCh91b3G8oNsd9yY4VI28S0hLuoWRSDUQ+8D7yCY2nXyqLOZM
+         lnA0DuEqwA6LXRZb5C0INai2pBh4rvnNj7Gi/VM2R6dQ45jtIBr5i1kXeBmKS0YYMMOr
+         mE64YeVoTTeYglJ9EgZxceIxbXoF9YObaIFqEXrCG9C8RJyVPr9LG74vnqGKy0/0fG3A
+         YywA==
+X-Gm-Message-State: AOJu0Yy4+lFsQN3cbNcOtWIu8X36SnrH/0geUYTfW6gzE9YJgBkJPA8e
+        1NSVnztp+xg+RvHOEfiQa4ljEA==
+X-Google-Smtp-Source: AGHT+IEyhZz4ePCpuNjy9UDgJERpfEf9aNCorn5j6wNTqr2zFv0wnnSiItqzanEK/Fp4KGAMR6BGBQ==
+X-Received: by 2002:adf:db4b:0:b0:319:7428:9ca0 with SMTP id f11-20020adfdb4b000000b0031974289ca0mr9423077wrj.61.1696239592052;
+        Mon, 02 Oct 2023 02:39:52 -0700 (PDT)
+Received: from [172.30.204.164] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id b12-20020a5d634c000000b0031773a8e5c4sm27649294wrw.37.2023.10.02.02.39.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 02:39:51 -0700 (PDT)
+Message-ID: <c6768336-cf3f-9d60-697a-270ba63f9992@linaro.org>
+Date:   Mon, 2 Oct 2023 11:39:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 2/6] ARM: dts: qcom: add common dt for MSM8x26 Lumias
+ along with Nokia Lumia 630
+Content-Language: en-US
+To:     Rayyan Ansari <rayyan@ansari.sh>, linux-arm-msm@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Dominik Kobinski <dominikkobinski314@gmail.com>,
+        Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>,
+        Jack Matthews <jm5112356@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+References: <20230930221323.101289-1-rayyan@ansari.sh>
+ <20230930221323.101289-3-rayyan@ansari.sh>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20230930221323.101289-3-rayyan@ansari.sh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml500001.china.huawei.com (7.191.163.213) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Oct 2023 02:30:43 +0000
-Billy Tsai <billy_tsai@aspeedtech.com> wrote:
 
-> On Mon, 25 Sep 2023 16:18:45 +0800
-> Billy Tsai <billy_tsai@aspeedtech.com> wrote:
-> 
-> > > Create event sysfs for applying the deglitch condition. When
-> > > in_voltageY_thresh_rising_en/in_voltageY_thresh_falling_en is set to true,
-> > > the driver will use the in_voltageY_thresh_rising_value and
-> > > in_voltageY_thresh_falling_value as threshold values. If the ADC value
-> > > falls outside this threshold, the driver will wait for the ADC sampling
-> > > period and perform an additional read once to achieve the deglitching
-> > > purpose.
-> > >
-> > > Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>  
-> 
-> > Hi Billy  
-> 
-> > This is pushing the meaning of the events interface too far.
-> > You can't use it to hide a value you don't like from userspace.  
-> 
-> > If you can explain what the condition is that you are seeing
-> > and what you need to prevent happening if it is seen that would help
-> > us figure out if there is another way to do this.  
-> 
-> > Jonathan  
-> 
-> Hi Jonathan,
-> 
-> Currently, we are experiencing some voltage glitches while reading from our
-> controller, but we do not wish to report these false alarms to the user space.
-> Instead, we want to retry the operation as soon as possible. This is why the
-> driver requires this patch to handle retries internally, rather than relying on user
-> space which could introduce unpredictable timing for retrying the reading process.
-> This software approach aims to minimize the possibility of false alarms as much as possible.
-Thanks for the extra detail. Perhaps share more of that in the cover letter for v2.
-> 
-> If you have any suggestions or recommendations regarding this situation, please feel free to
-> share them with me.
 
-Why do you need userspace control for the thresholds?
-Perhaps this is something that belongs in DT for a particular board design?
-
-Jonathan
+On 10/1/23 00:07, Rayyan Ansari wrote:
+> Add a common device tree for Lumia phones based on the Qualcomm MSM8x26
+> family of chipsets.
 > 
-> Thanks 
+> Currently supports:
+> - Framebuffer
+> - Touchscreen
+> - Keys
+> - Regulators
+> - MMC
+> - USB
+> - UART
 > 
-> > > ---
-> > >  drivers/iio/adc/aspeed_adc.c | 193 ++++++++++++++++++++++++++++++++++-
-> > >  1 file changed, 189 insertions(+), 4 deletions(-)
-> >   
+> Also add an initial device tree for the Nokia Lumia 630, codenamed
+> "moneypenny".
+> 
+> Co-developed-by: Dominik Kobinski <dominikkobinski314@gmail.com>
+> Signed-off-by: Dominik Kobinski <dominikkobinski314@gmail.com>
+> Co-developed-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
+> Signed-off-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
+> Co-developed-by: Jack Matthews <jm5112356@gmail.com>
+> Signed-off-by: Jack Matthews <jm5112356@gmail.com>
+> Signed-off-by: Rayyan Ansari <rayyan@ansari.sh>
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
+Konrad
