@@ -2,162 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FD67B58FC
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D637B58D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236396AbjJBRlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42418 "EHLO
+        id S235489AbjJBRlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:41:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjJBRlo (ORCPT
+        with ESMTP id S229628AbjJBRlW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:41:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2E89E
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:40:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696268457;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4f3o6Dy0aKfMhbFfem3eSrFYgmkRkeAED7I//e1+Hvw=;
-        b=f++GDCc9Dh+wEXNleBc35ffr840YmIeod9BkjLxaEAYVq2hcmeuzPdN6vTZnjclORZ0BrK
-        d4yNEyN+PR6qmLvBIdqoNPuEjOUbLYaxoJhJ5mdtpF6ta7YYNKtvwSKS72oQ8kwAYHCZ3Q
-        PuxOQB/dHd4L5hns9ECE1M0vpHruFW8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-645-daL--MNsPvSgVE23VMIfuA-1; Mon, 02 Oct 2023 13:40:53 -0400
-X-MC-Unique: daL--MNsPvSgVE23VMIfuA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8E0583C23641;
-        Mon,  2 Oct 2023 17:40:52 +0000 (UTC)
-Received: from [10.22.34.33] (unknown [10.22.34.33])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A1BF2026D4B;
-        Mon,  2 Oct 2023 17:40:52 +0000 (UTC)
-Message-ID: <a284696f-6c73-02b6-1ce5-1017eb257bb1@redhat.com>
-Date:   Mon, 2 Oct 2023 13:40:51 -0400
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH-cgroup] cgroup/cpuset: Enable invalid to valid local
- partition transition
-Content-Language: en-US
-To:     Pierre Gondois <pierre.gondois@arm.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20230930034402.2776278-1-longman@redhat.com>
- <ed8e013a-ece2-4a9c-142f-e9f62883e7b1@arm.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ed8e013a-ece2-4a9c-142f-e9f62883e7b1@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
+        Mon, 2 Oct 2023 13:41:22 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5396294
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:41:19 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a1f12cf1ddso53143217b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:41:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696268478; x=1696873278; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I2qKfz7FtuCEEAr+FcQImglSqV/M/oqG44A6BkuudUw=;
+        b=dPHhWy+hGEDlRGcGkulurwXrOCxu9sBMcdnT8nqQc5I2JcP3p2ejk4MjobB8ILhQMf
+         VIPkgNob7GM0BE6n0M+5HuZMUOdcTyxKAVXKn9GqUKwtSpJvDbNtGpcLHcHSql3KVet4
+         hHLiUS0qisE5YPoWVw6O/W7IwWxsJJ4XH9Vt5LcRXXoDdXsZsWMm4+2Bxwes2uiWC0AP
+         zC4Jl8p/RTgjfzXw8eBg/i4rv0ukHBozybhbEqyvAXj9GuxlqvbMBwiRHDyflovkJ3Uz
+         eqKDp9pN9uSRa0revh0VhBw8W5VTNjRyaBpz99LDVelHykN1W3JbzbgJvd7ogzuyu2vJ
+         TR/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696268478; x=1696873278;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=I2qKfz7FtuCEEAr+FcQImglSqV/M/oqG44A6BkuudUw=;
+        b=ojdv4+cQTPMiDKRfIYDknsvi6/xrTPJIHoT6zC4uZIQzVQ0LJXiXnM/DJxSRd1a2k+
+         24Ljz1nGcvUhaEeJ8u72cmsmdRPIOr466WN8UoICUNcTDsWNryYJSbQ2mISnnIbIPvCw
+         wC/D5sAj2E3K9d8ka0fbuPi44TV1/Cp86jw8KEqx2T6hwva7ZjutZavj9DLJWNP7xFuC
+         LD2ZkZnCKQPbWeZuz1PbMtUMzIUv7+PWVvaora36KJ9QNAOn1GWiHck9Gzh3J5B0mN2M
+         antj6hOsNcFL7fNzPb6I6VFoROL9pSakSlfyyCwXUqKqrEp92zPoTVk9p1P/WlxaAPWV
+         gVFg==
+X-Gm-Message-State: AOJu0YwbjOl+r0Q27BnmXsD3ASbhFuPU55xreijANFxoazGwV7+c0Z2U
+        E9URHHDDywywnV6attpmkcMfngvlsi0=
+X-Google-Smtp-Source: AGHT+IHEfLylolE41hjtA1PRNg0WE3J1NkB5TECLhGNKVi8nzwEN9Z2OvDPsveGb70LKFunCP8Z8cDFWBLQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:98c7:0:b0:ca3:3341:6315 with SMTP id
+ m7-20020a2598c7000000b00ca333416315mr6944ybo.0.1696268478540; Mon, 02 Oct
+ 2023 10:41:18 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 10:41:17 -0700
+In-Reply-To: <ee679de20e3a53772f9d233b9653fdc642781577.camel@infradead.org>
+Mime-Version: 1.0
+References: <a3989e7ff9cca77f680f9bdfbaee52b707693221.camel@infradead.org>
+ <ZRbolEa6RI3IegyF@google.com> <ee679de20e3a53772f9d233b9653fdc642781577.camel@infradead.org>
+Message-ID: <ZRsAvYecCOpeHvPY@google.com>
+Subject: Re: [PATCH v2] KVM: x86: Use fast path for Xen timer delivery
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     kvm <kvm@vger.kernel.org>, Paul Durrant <paul@xen.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/23 06:06, Pierre Gondois wrote:
-> Hello Waiman,
->
-> I could test the patch using the for-next branch in your tree.
-> Just a NIT, it seemed that the message indicating the reason
-> the isolated configuration was invalid is not printed anymore:
->
-> Commands:
-> # mkdir cgroup
-> # mount -t cgroup2 none cgroup/
-> # mkdir cgroup/A1 cgroup/B1
-> # echo "+cpuset" > cgroup/cgroup.subtree_control
-> # echo 0-3 > cgroup/A1/cpuset.cpus
-> # echo isolated > cgroup/A1/cpuset.cpus.partition
-> # echo 4-6 > cgroup/B1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated
-> # echo 0-4 > cgroup/A1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated invalid                      <--- used to have '(Cpu list in 
-> cpuset.cpus not exclusive)'
-> # echo 0-3 > cgroup/A1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated                              <--- now working!
->
->
-> But when creating an isolated partition from overlapping cpusets,
-> the message is printed:
-> # mkdir cgroup
-> # mount -t cgroup2 none cgroup/
-> # mkdir cgroup/A1 cgroup/B1
-> # echo "+cpuset" > cgroup/cgroup.subtree_control
-> # echo 0-4 > cgroup/A1/cpuset.cpus
-> # echo 4-6 > cgroup/B1/cpuset.cpus
-> # echo isolated > cgroup/B1/cpuset.cpus.partition
->
-> # cat cgroup/A1/cpuset.cpus.partition
-> member
-> # cat cgroup/B1/cpuset.cpus.partition
-> isolated invalid (Cpu list in cpuset.cpus not exclusive) <--- Complete 
-> message printed
->
->
-> On 9/30/23 05:44, Waiman Long wrote:
->> When a local partition becomes invalid, it won't transition back to
->> valid partition automatically if a proper "cpuset.cpus.exclusive" or
->> "cpuset.cpus" change is made. Instead, system administrators have to
->> explicitly echo "root" or "isolated" into the "cpuset.cpus.partition"
->> file at the partition root.
->>
->> This patch now enables the automatic transition of an invalid local
->> partition back to valid when there is a proper "cpuset.cpus.exclusive"
->> or "cpuset.cpus" change.
->>
->> Automatic transition of an invalid remote partition to a valid one,
->> however, is not covered by this patch. They still need an explicit
->> write to "cpuset.cpus.partition" to become valid again.
->
-> I'm not sure I understand what is meant by 'remote partition',
-> is it possible to explain ? Or is the following illustrating what you
-> mean ?
->
-> # mkdir cgroup
-> # mount -t cgroup2 none cgroup/
-> # mkdir cgroup/A1 cgroup/B1
-> # echo "+cpuset" > cgroup/cgroup.subtree_control
-> # echo 0-3 > cgroup/A1/cpuset.cpus
-> # echo isolated > cgroup/A1/cpuset.cpus.partition
-> # echo 4-6 > cgroup/B1/cpuset.cpus
-> # echo isolated > cgroup/B1/cpuset.cpus.partition
->
-> # echo 0-4 > cgroup/A1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated invalid
-> # cat cgroup/B1/cpuset.cpus.partition
-> isolated invalid
->
-> # echo 0-3 > cgroup/A1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated
-> # cat cgroup/B1/cpuset.cpus.partition
-> isolated invalid        <--- The remote CPU is not updated
+On Fri, Sep 29, 2023, David Woodhouse wrote:
+> On Fri, 2023-09-29 at 08:16 -0700, Sean Christopherson wrote:
+> > On Fri, Sep 29, 2023, David Woodhouse wrote:
+> > > From: David Woodhouse <dwmw@amazon.co.uk>
+> > >=20
+> > > Most of the time there's no need to kick the vCPU and deliver the tim=
+er
+> > > event through kvm_xen_inject_timer_irqs(). Use kvm_xen_set_evtchn_fas=
+t()
+> > > directly from the timer callback, and only fall back to the slow path
+> > > when it's necessary to do so.
+> >=20
+> > It'd be helpful for non-Xen folks to explain "when it's necessary".=C2=
+=A0 IIUC, the
+> > only time it's necessary is if the gfn=3D>pfn cache isn't valid/fresh.
+>=20
+> That's an implementation detail.
 
-It is probably another corner case that has not been handled. I will 
-look into that.
+And?  The target audience of changelogs are almost always people that care =
+about
+the implementation.
 
-Thanks for the test.
+> Like all of the fast path functions that can be called from
+> kvm_arch_set_irq_inatomic(), it has its own criteria for why it might ret=
+urn
+> -EWOULDBLOCK or not. Those are *its* business.
 
--Longman
+And all of the KVM code is the business of the people who contribute to the=
+ kernel,
+now and in the future.  Yeah, there's a small chance that a detailed change=
+log can
+become stale if the patch races with some other in-flight change, but even =
+*that*
+is a useful data point.  E.g. if Paul's patches somehow broke/degraded this=
+ code,
+then knowing that what the author (you) intended/observed didn't match real=
+ity when
+the patch was applied would be extremely useful information for whoever enc=
+ountered
+the hypothetical breakage.
 
+> And in fact one of Paul's current patches is tweaking them subtly, but th=
+at
+> isn't relevant here. (But yes, you are broadly correct in your
+> understanding.)
+>=20
+> > > This gives a significant improvement in timer latency testing (using
+> > > nanosleep() for various periods and then measuring the actual time
+> > > elapsed).
+> > >=20
+> > > However, there was a reason=C2=B9 the fast path was dropped when this=
+ support
+> >=20
+> > Heh, please use [1] or [*] like everyone else.=C2=A0 I can barely see t=
+hat tiny little =C2=B9.
+>=20
+> Isn't that the *point*? The reference to the footnote isn't supposed to
+> detract from the flow of the main text. It's exactly how you'll see it
+> when typeset properly.
+=20
+Footnotes that are "typeset properly" have the entire footnote in a differe=
+nt
+font+size.  A tiny number next to normal sized text just looks weird to me.
 
+And I often do a "reverse lookup" when I get to footnotes that are links, e=
+.g. to
+gauge whether or not it's worth my time to follow the link.  Trying to find=
+ the
+tiny =C2=B9 via a quick visual scan is an exercise in frustration, at least=
+ for the
+monospace font I use for reading mail, e.g. it's much more readable on my e=
+nd in
+an editor using a different font.
+
+Which is a big benefit to sticking to the old and kludgly ASCII: it provide=
+s a
+fairly consistent experience regardless of what client/font/etc each reader=
+ is
+using.  I'm not completely against using unicode characters, e.g. for names=
+ with
+characters not found in the Latin alphabet, but for code and things like th=
+is,
+IMO simpler is better.
+
+> I've always assumed the people using [1] or [*] just haven't yet realised
+> that it's the 21st century and we are no longer limited to 7-bit ASCII. O=
+r
+> haven't worked out how to type anything but ASCII.
+
+Please don't devolve into ad hominem attacks against other reviews and cont=
+ributors.
+If you want to argue that using footnote notation unicode is superior in so=
+me way,
+then by all means, present your arguments.
