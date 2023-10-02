@@ -2,170 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BC137B58E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7853A7B5952
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbjJBRd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:33:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38588 "EHLO
+        id S237982AbjJBRel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231587AbjJBRdz (ORCPT
+        with ESMTP id S231835AbjJBRej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:33:55 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDDA6AC
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:33:52 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c5cd27b1acso372255ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:33:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696268032; x=1696872832; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6rRb6SjgSwWAACsZX0/4Czm5+jXbNVrlYY55MOVJCmE=;
-        b=FlGqQZK4kcphn/IjeIEJMF6zCP7rSj+D8uTj1LYNTWnJ//mOT2k8gevqYspkf1g/Js
-         akTjRKv1UutKHazO7q+eVKWMKYecBYSHstIik+QRhvHpYXXtY58wOT0fhjLQY9q194kP
-         ++6j7Ah2Y7+fmV4ZKVBXnnx2RJeBtkjfyOREU=
+        Mon, 2 Oct 2023 13:34:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9316AD
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:33:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696268035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ycaPEXE57RgkhfEN2l1Hbx0ds50RPCHq0uPD2XiXlY0=;
+        b=dIiPrq6NZzD2ZyRbUQ/LDI2OJatMF9+dZE1+L8yQ93Tx81pvtGBIp8wnBPKj0NIbKJm8sl
+        vzx+GKBZ3iSfTadigcxn8gNZTQKatPpyTCyPcnMfqYi7oQgl+se0i4PGgF/2IUxFWZal3D
+        sYkOdBzMzP0m9ooPRrHrlhEa+GqJi/c=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-647-NwxJlj0LOkqtfM8KznIiLA-1; Mon, 02 Oct 2023 13:33:54 -0400
+X-MC-Unique: NwxJlj0LOkqtfM8KznIiLA-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3172a94b274so43460f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:33:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696268032; x=1696872832;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6rRb6SjgSwWAACsZX0/4Czm5+jXbNVrlYY55MOVJCmE=;
-        b=Bu+P+0jslE1UlXcYPyldwmAuZfK1ERe3KWutcFVij82pEEFm7R1Kjd12Y/5EwwX1Ay
-         Q7MhAeu/hkZODpVMnj1L2nXrXC6PO1w+3i7BXySUEAm2VDhD4ywXHLQq7o2CNKDbJxHb
-         fXMplp1GkKYfXRa6WDdbMyknKjUVMy2M75SM00nr2cwoOsvBKm0dAeUUPMbJTxZtgiGa
-         HgX3JGIpvGrP5T3R8/gwlWxzrBpisLNcgNxLJ4vz9A0sAnVPJgS8agSgWYzQeYvd0XUm
-         cFIRu9MMlqhcivLtZbBcWDur4nrY+ARivvLeXwgxEIL/wIZKm+ld+cPMW6gDuL+tv0cA
-         wNZQ==
-X-Gm-Message-State: AOJu0YxY3//MmToEunz0oTCH/CkjhthVw/wshjT1ViBwllCZKnjCkOHy
-        vt3akSrFP5mo83WO01Y4o7Y4MQ==
-X-Google-Smtp-Source: AGHT+IGRCML+r2Jip9vCDGfd1NGpA5p6h4nQxL00b7LD3Gc92A7E2BFJlmHz7gXdkSag+UNANxGkkw==
-X-Received: by 2002:a17:902:d508:b0:1c6:1733:fb3f with SMTP id b8-20020a170902d50800b001c61733fb3fmr14128485plg.49.1696268032303;
+        d=1e100.net; s=20230601; t=1696268033; x=1696872833;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ycaPEXE57RgkhfEN2l1Hbx0ds50RPCHq0uPD2XiXlY0=;
+        b=PipC7rPLzT1PUO6N2D725gcVS3qXrt5k0xFmZmqWAh0F7HZLdblLcxl0QjuuVHR6O8
+         9wfzGaLDq6rNNjuR8PkeoCp7ieoeOsJWL4ZXjm3T6PKXLbxTNyu1QhywzomjnqnQGQVh
+         eA7e9ptrxymeEptR5zALtAZf/8ZXUqpBvzHHFdum8wERMbW7ctdLtkYapboR4Y0QsIWa
+         +zJQQbd+vwNO/4AJeO2yb6Pm7zBHQLPyrqmSvkehIBr6FVqU0xoRqtC8hyiYxC4BZziP
+         spk0d4wdsXhVUIbffJtpakiFACJ65qfxTwb469SM+7847OX0ECqE3951LruJcNzOvkQz
+         uWaA==
+X-Gm-Message-State: AOJu0YxiU5UbZIpT35MSNg9Y2b0GhrN7FKcFi60/l7lIfxT8RmwHiDRU
+        yA7sBNsMlG/ByKkE/Q13Lg+YCVe29P2OQDePCydHUyFedECkA/Xp6ro6MRNTuBzAaUuvpfuX/Ir
+        K25mRA/3tbV+LlDRcg2PEA9mX
+X-Received: by 2002:a7b:c392:0:b0:405:4a9d:b2bc with SMTP id s18-20020a7bc392000000b004054a9db2bcmr10174637wmj.22.1696268033346;
+        Mon, 02 Oct 2023 10:33:53 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF6OH8aY1+9aqrgbgtOpu85+2xJbjCF9QgW2wew0ab2APA3ftxFGN8117E8JTqoZU4pvNvgWA==
+X-Received: by 2002:a7b:c392:0:b0:405:4a9d:b2bc with SMTP id s18-20020a7bc392000000b004054a9db2bcmr10174607wmj.22.1696268032828;
         Mon, 02 Oct 2023 10:33:52 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y13-20020a170902ed4d00b001c60d0a6d84sm16188290plb.127.2023.10.02.10.33.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 10:33:51 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 10:33:49 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     akpm@linux-foundation.org, Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: Re: [PATCH] extract and use FILE_LINE macro
-Message-ID: <202310021033.A5F0159F25@keescook>
-References: <ebf12ac4-5a61-4b12-b8b0-1253eb371332@p183>
+Received: from ?IPV6:2003:cb:c735:f200:cb49:cb8f:88fc:9446? (p200300cbc735f200cb49cb8f88fc9446.dip0.t-ipconnect.de. [2003:cb:c735:f200:cb49:cb8f:88fc:9446])
+        by smtp.gmail.com with ESMTPSA id r1-20020a05600c298100b0040586360a36sm7706418wmd.17.2023.10.02.10.33.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 10:33:52 -0700 (PDT)
+Message-ID: <d613c21e-c76c-f40a-23ec-b9bb3feb5b85@redhat.com>
+Date:   Mon, 2 Oct 2023 19:33:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ebf12ac4-5a61-4b12-b8b0-1253eb371332@p183>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
+Content-Language: en-US
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Jann Horn <jannh@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, hughd@google.com, mhocko@suse.com,
+        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
+        Liam.Howlett@oracle.com, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+References: <20230923013148.1390521-1-surenb@google.com>
+ <20230923013148.1390521-3-surenb@google.com>
+ <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
+ <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com> <ZRWo1daWBnwNz0/O@x1n>
+ <98b21e78-a90d-8b54-3659-e9b890be094f@redhat.com> <ZRW2CBUDNks9RGQJ@x1n>
+ <85e5390c-660c-ef9e-b415-00ee71bc5cbf@redhat.com> <ZRXHK3hbdjfQvCCp@x1n>
+ <fc27ce41-bc97-91a7-deb6-67538689021c@redhat.com> <ZRrf8NligMzwqx97@x1n>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <ZRrf8NligMzwqx97@x1n>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 16, 2023 at 09:21:31PM +0300, Alexey Dobriyan wrote:
-> Extract nifty FILE_LINE useful for printk style debugging:
+On 02.10.23 17:21, Peter Xu wrote:
+> On Mon, Oct 02, 2023 at 10:00:03AM +0200, David Hildenbrand wrote:
+>> In case we cannot simply remap the page, the fallback sequence (from the
+>> cover letter) would be triggered.
+>>
+>> 1) UFFDIO_COPY
+>> 2) MADV_DONTNEED
+>>
+>> So we would just handle the operation internally without a fallback.
 > 
-> 	printk("%s\n", FILE_LINE);
-> 
-> 
-> It should not be used en mass probably because __FILE__ string literals
-> can be merged while FILE_LINE's won't. But for debugging it is what
-> the doctor ordered.
-> 
-> Don't add leading and trailing underscores, they're painful to type.
-> Trust me, I've tried both versions.
-> 
-> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
-> ---
-> 
->  include/linux/fortify-string.h |    2 +-
->  include/linux/stringify.h      |    2 ++
->  include/linux/timer.h          |    3 +--
->  sound/pci/asihpi/hpidebug.h    |    9 ++++-----
->  4 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> --- a/include/linux/fortify-string.h
-> +++ b/include/linux/fortify-string.h
-> @@ -643,7 +643,7 @@ __FORTIFY_INLINE bool fortify_memcpy_chk(__kernel_size_t size,
->  				     __q_size_field, #op),		\
->  		  #op ": detected field-spanning write (size %zu) of single %s (size %zu)\n", \
->  		  __fortify_size,					\
-> -		  "field \"" #p "\" at " __FILE__ ":" __stringify(__LINE__), \
-> +		  "field \"" #p "\" at " FILE_LINE,			\
->  		  __p_size_field);					\
->  	__underlying_##op(p, q, __fortify_size);			\
->  })
-> --- a/include/linux/stringify.h
-> +++ b/include/linux/stringify.h
-> @@ -9,4 +9,6 @@
->  #define __stringify_1(x...)	#x
->  #define __stringify(x...)	__stringify_1(x)
->  
-> +#define FILE_LINE	__FILE__ ":" __stringify(__LINE__)
-> +
->  #endif	/* !__LINUX_STRINGIFY_H */
-> --- a/include/linux/timer.h
-> +++ b/include/linux/timer.h
-> @@ -77,8 +77,7 @@ struct timer_list {
->  		.entry = { .next = TIMER_ENTRY_STATIC },	\
->  		.function = (_function),			\
->  		.flags = (_flags),				\
-> -		__TIMER_LOCKDEP_MAP_INITIALIZER(		\
-> -			__FILE__ ":" __stringify(__LINE__))	\
-> +		__TIMER_LOCKDEP_MAP_INITIALIZER(FILE_LINE)	\
->  	}
->  
->  #define DEFINE_TIMER(_name, _function)				\
-> --- a/sound/pci/asihpi/hpidebug.h
-> +++ b/sound/pci/asihpi/hpidebug.h
-> @@ -29,16 +29,15 @@ enum { HPI_DEBUG_LEVEL_ERROR = 0,	/* always log errors */
->     the start of each message, eg see linux kernel hpios.h */
->  
->  #ifdef SOURCEFILE_NAME
-> +#undef FILE_LINE
->  #define FILE_LINE  SOURCEFILE_NAME ":" __stringify(__LINE__) " "
+> Note that I think there will be a slight difference on whole remap
+> atomicity, on what happens if the page is modified after UFFDIO_COPY but
+> before DONTNEED.
 
-Should this drop the trailing " " to match the new macro?
+If the page is writable (implies PAE), we can always move it. If it is 
+R/O, it cannot change before we get a page fault and grab the PT lock 
+(well, and page lock).
 
--Kees
+So I think something atomic can be implemented without too much issues.
 
-> -#else
-> -#define FILE_LINE  __FILE__ ":" __stringify(__LINE__) " "
->  #endif
->  
->  #define HPI_DEBUG_ASSERT(expression) \
->  	do { \
->  		if (!(expression)) { \
->  			printk(KERN_ERR  FILE_LINE \
-> -				"ASSERT " __stringify(expression)); \
-> +				" ASSERT " __stringify(expression)); \
->  		} \
->  	} while (0)
->  
-> @@ -46,7 +45,7 @@ enum { HPI_DEBUG_LEVEL_ERROR = 0,	/* always log errors */
->  	do { \
->  		if (hpi_debug_level >= HPI_DEBUG_LEVEL_##level) { \
->  			printk(HPI_DEBUG_FLAG_##level \
-> -			FILE_LINE  __VA_ARGS__); \
-> +			FILE_LINE " " __VA_ARGS__); \
->  		} \
->  	} while (0)
->  
-> @@ -70,7 +69,7 @@ void hpi_debug_data(u16 *pdata, u32 len);
->  	do { \
->  		if (hpi_debug_level >= HPI_DEBUG_LEVEL_##level) { \
->  			hpi_debug_message(phm, HPI_DEBUG_FLAG_##level \
-> -				FILE_LINE __stringify(level)); \
-> +				FILE_LINE " " __stringify(level)); \
->  		} \
->  	} while (0)
->  
+> 
+> UFFDIO_REMAP guarantees full atomicity when moving the page, IOW, threads
+> can be updating the pages when ioctl(UFFDIO_REMAP), data won't get lost
+> during movement, and it will generate a missing event after moved, with
+> latest data showing up on dest.
+
+If the page has to be copied, grab a reference and unmap it, then copy 
+it and map it into the new process. Should be doable and handle all 
+kinds of situations just fine.
+
+Just throwing out ideas to get a less low-level interface.
+
+[if one really wants to get notified when one cannot move without a 
+copy, one could have a flag for such power users to control the behavior]
 
 -- 
-Kees Cook
+Cheers,
+
+David / dhildenb
+
