@@ -2,100 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBFED7B50C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:00:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 079907B50C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236562AbjJBK76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 06:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44718 "EHLO
+        id S236583AbjJBLBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 07:01:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236192AbjJBK75 (ORCPT
+        with ESMTP id S236565AbjJBLBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 06:59:57 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F682BD
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 03:59:54 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06359C433C9;
-        Mon,  2 Oct 2023 10:59:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696244394;
-        bh=lUBPNIWpDvjHX8I98WirEls2JkxV4/o074urcrO7lc4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uFkgOuEtIDIjXaSSXt/PFQcRlOw/GbqlZHzhVadAKGoQmFEXk9IuDCnVku7/bEcOt
-         V8lW3oZ23trVQAcoS5oIS8hmtzQqrmJzT7SROtNsvHqFN1grInXjiA/TuYqXx+EqLT
-         nkUq89SORBvYg6mVUw/I8GYplVJNNGYmWP+PrwnFCzvNk8OViZCLMS6JsjaRgmL2uC
-         blJoFRJq1l+z9KVP9rEm8ZDiofm8lkggAPty8ezQPlbub2Bpg/Ypp5oyqbAc3kQWA8
-         AlcsUBM56q+yklqUJYlU/Jict4HTERCmkaCPvHCmrVz4d9xW+rG1Ji+hXgXKs6aXwK
-         OINs6zWiFd6qQ==
-Date:   Mon, 2 Oct 2023 11:59:47 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] ASoC: SOF: ipc4-topology: Use size_add() in call
- to struct_size()
-Message-ID: <b5e0bfc8-88cc-4428-8554-66b4da9c9acf@sirena.org.uk>
-References: <ZQSr15AYJpDpipg6@work>
- <169601489953.3012131.13922425518082792309.b4-ty@chromium.org>
- <ZRlJN9qVOv7CIu1N@finisterre.sirena.org.uk>
- <202310011335.28B55A3BE@keescook>
+        Mon, 2 Oct 2023 07:01:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E7AEBD
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 04:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696244428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sE/fioVyndoiPfLD2q8BtFGyullYe2NKQu6+go3HzhA=;
+        b=IuVHAjrxnQlnmOtwh5cRWK2czD4AMnp5obp/95vUwFNfmh0Alee06jv59NYBSQGCY6TtLq
+        Fa9IrpCA7xAugjnkAf4LiFOoSUN/5BSHtka7g9hjUyId70Csy1sNQ2WTWAC5X0yROVfMCR
+        En1Fm2jLZHTmB+7ArmnIWpC3GSXHpRs=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-616-CASPoCAGMY63-ixC9YROLA-1; Mon, 02 Oct 2023 07:00:26 -0400
+X-MC-Unique: CASPoCAGMY63-ixC9YROLA-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4063dd6729bso68636285e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 04:00:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696244425; x=1696849225;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sE/fioVyndoiPfLD2q8BtFGyullYe2NKQu6+go3HzhA=;
+        b=wcbf+LtaMoxsIgGWbO3XoeCEjlgI12GMMSgqhUCJiigaFEcJgx/MVU0H82b3vN0MGA
+         HToD5RonrQLMEgDG+4NexEXdqG6c4DQgkgcoxmFoxir9I68xKmMquCnPe32cCmHd/SsN
+         CVNCteU3WRKUXKtqHyAHEF6svHY4ZxGqyfC1uhDjv6qsEorbmGRsg7eL9cBubXITU40r
+         z5VD64R8/R2nOPTTVVFEyQ/f2ZAjom/etr/TfyuEMR7rTRWw2DvF1uZiOoqn7XP21sAc
+         GNr5+y4j4QRg2pLF3nEzn6dgAx/A6wTBIYU0Hc/ws8Ddmv+9ZnF825OyLNE2mK2CY29L
+         OdZw==
+X-Gm-Message-State: AOJu0YzoBQSR7+2WO7/SHm7nwLNa9pwWpq6Ky916hU1LFlxFmST/eT0p
+        4P5WQT6zrTFS3+uWz0D6NqV+vx57pedEtJj2SnOKajb/IBrOcPrRLfluxzakkifzuYG6bd4m91g
+        YC9WCgY/T9CgL9/4Wbnnlfb7d
+X-Received: by 2002:a05:600c:520c:b0:406:7232:1431 with SMTP id fb12-20020a05600c520c00b0040672321431mr2380547wmb.33.1696244425570;
+        Mon, 02 Oct 2023 04:00:25 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEpz5EnA7VUhjf8bxBaFi8Q2J/OIhu65nFbWQC3K6Vf2VMyOLsEW2oCO85ItfFHZ33XdZIETQ==
+X-Received: by 2002:a05:600c:520c:b0:406:7232:1431 with SMTP id fb12-20020a05600c520c00b0040672321431mr2380515wmb.33.1696244425233;
+        Mon, 02 Oct 2023 04:00:25 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c735:f200:cb49:cb8f:88fc:9446? (p200300cbc735f200cb49cb8f88fc9446.dip0.t-ipconnect.de. [2003:cb:c735:f200:cb49:cb8f:88fc:9446])
+        by smtp.gmail.com with ESMTPSA id 11-20020a05600c248b00b003fefe70ec9csm6996004wms.10.2023.10.02.04.00.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 04:00:24 -0700 (PDT)
+Message-ID: <a221bab2-d4f6-eb55-7406-31b71b5b4def@redhat.com>
+Date:   Mon, 2 Oct 2023 13:00:23 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jHjeUkQ9vroTCASR"
-Content-Disposition: inline
-In-Reply-To: <202310011335.28B55A3BE@keescook>
-X-Cookie: Postage will be paid by addressee.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 2/4] mm/gup: explicitly define and check internal GUP
+ flags, disallow FOLL_TOUCH
+Content-Language: en-US
+To:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>
+Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>
+References: <cover.1696174961.git.lstoakes@gmail.com>
+ <5b20f3cda7cd841555c2626f98d23aa25a039828.1696174961.git.lstoakes@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <5b20f3cda7cd841555c2626f98d23aa25a039828.1696174961.git.lstoakes@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 01.10.23 18:00, Lorenzo Stoakes wrote:
+> Rather than open-coding a list of internal GUP flags in
+> is_valid_gup_args(), define which ones are internal.
+> 
+> In addition, we were not explicitly checking to see if the user passed in
+> FOLL_TOUCH somehow, this patch fixes that.
+> 
+> Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
+> ---
+>   mm/gup.c      | 5 ++---
+>   mm/internal.h | 3 +++
+>   2 files changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/gup.c b/mm/gup.c
+> index 2f8a2d89fde1..b21b33d1787e 100644
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -2227,12 +2227,11 @@ static bool is_valid_gup_args(struct page **pages, int *locked,
+>   	/*
+>   	 * These flags not allowed to be specified externally to the gup
+>   	 * interfaces:
+> -	 * - FOLL_PIN/FOLL_TRIED/FOLL_FAST_ONLY are internal only
+> +	 * - FOLL_TOUCH/FOLL_PIN/FOLL_TRIED/FOLL_FAST_ONLY are internal only
+>   	 * - FOLL_REMOTE is internal only and used on follow_page()
+>   	 * - FOLL_UNLOCKABLE is internal only and used if locked is !NULL
+>   	 */
+> -	if (WARN_ON_ONCE(gup_flags & (FOLL_PIN | FOLL_TRIED | FOLL_UNLOCKABLE |
+> -				      FOLL_REMOTE | FOLL_FAST_ONLY)))
+> +	if (WARN_ON_ONCE(gup_flags & INTERNAL_GUP_FLAGS))
+>   		return false;
+>   
+>   	gup_flags |= to_set;
+> diff --git a/mm/internal.h b/mm/internal.h
+> index 449891ad7fdb..499016c6b01d 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -1018,6 +1018,9 @@ enum {
+>   	FOLL_UNLOCKABLE = 1 << 21,
+>   };
+>   
+> +#define INTERNAL_GUP_FLAGS (FOLL_TOUCH | FOLL_TRIED | FOLL_REMOTE | FOLL_PIN | \
+> +			    FOLL_FAST_ONLY | FOLL_UNLOCKABLE)
+> +
+>   /*
+>    * Indicates for which pages that are write-protected in the page table,
+>    * whether GUP has to trigger unsharing via FAULT_FLAG_UNSHARE such that the
 
---jHjeUkQ9vroTCASR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-On Sun, Oct 01, 2023 at 01:37:04PM -0700, Kees Cook wrote:
-> On Sun, Oct 01, 2023 at 11:25:59AM +0100, Mark Brown wrote:
+-- 
+Cheers,
 
-> > Why is this bypassing the ASoC tree?
+David / dhildenb
 
-> Hi! Sorry, I can drop it if you want to take it? I tend to collect trivial
-> hardening changes with reviews that haven't been otherwise commented on
-> for at least 2 weeks.
-
-Yes, it's in my queue - 2 weeks is really rather fast between people not
-being available and waiting for driver authors to review if they
-normally look at things.
-
---jHjeUkQ9vroTCASR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUaoqMACgkQJNaLcl1U
-h9Ba+Qf/dXs8T5y+jACKhiUt2Q8jXwBJIZcnab5H86E5MOnONXQyTG+rozhIbvdQ
-5FibdLoYXrDu+EbviyhKagsSr0D4fDTPUvKubBR+DXOjVDWMcaKW+bVQTXHa428T
-xzsMvPVvjVOlmA8vPux7nv26XtV0HLuJE+Ym2EzBlqFiQefjbb+6pwfw5/ZbOc/s
-6DKIpT1kWL8cWb3zlhHsssQhnS5xVj+3qGb77NjiIme07oBr4Vl6PJW+6Nt+HrIy
-GrWfE7kVfTHb5ph7OEesv68rG7bkEcsz/l7KP10XwjBMO/E6bCyqzKum3iIBxhWg
-OSFTopV/X+x+PWLesMM5w7oenKni3A==
-=qPZ5
------END PGP SIGNATURE-----
-
---jHjeUkQ9vroTCASR--
