@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E0B7B59BB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 699A57B59D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237641AbjJBRu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:50:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44998 "EHLO
+        id S237960AbjJBRul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjJBRu0 (ORCPT
+        with ESMTP id S237853AbjJBRuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:50:26 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4927183
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:50:23 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-79fa5d9f3a2so239f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:50:23 -0700 (PDT)
+        Mon, 2 Oct 2023 13:50:39 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83895C6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:50:35 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-76c64da0e46so810139f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:50:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696269022; x=1696873822; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=k71/w5tQzn4vicDbb9dqcU9SEKAhIvW7cb6nA8shinc=;
-        b=k4eei0utiOJesXtZQ51L6fvgK/efzcOJp/15EYG7K+IaxOupBksjh7jvnDoHMvkPse
-         rcWshuer51ZaVdj8Bo3ofJ0xPh92PYeKdchi1x0HmTQsy8FI04ddhVLBBrvZhCCMx+Xe
-         u4Y/blSP7xA1x2oziAAFakli/jXAiNIZrDDJg=
+        d=chromium.org; s=google; t=1696269035; x=1696873835; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F2OIh/G3vvfH8cT1f+jhivcT+xHStCXj54HHC5DhSlw=;
+        b=AWo5QFqi3vDLNgXtRAXU3v3ejAKlGFEYneI+WL/VuF3O37bI7rgOhwwfIddbR8TBDZ
+         b9+DOJuI0NYMxPztTllcC5SGi5IQg5w7T772e9ZMNOcmwPmjtG2nz9WfFxrIOiHEQuEC
+         Q3ebbxjgqIpHFCeYrZ/RRXtP4Q7yVaF1LV3ZE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696269022; x=1696873822;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k71/w5tQzn4vicDbb9dqcU9SEKAhIvW7cb6nA8shinc=;
-        b=sn3CPksvIu0rc2ljEp7wz2ZKjvNdr9m6cfGArOamaN7z63hCsw0lHjUfKYq04GC5yu
-         7y2QbYOFCKiZ96bD29UpDjnlUwg0AuTuMr0GC+hqodtX5/6VFwMDXgt9NJmllCvxp5S9
-         iOBzpF7UCVdusaWsKAtIbh8CCUHI4W5C1+2UfQBtghJ0rU9vllc5/vr4GxMrFWEdGDZM
-         Mng3MSFuA60UshCmwNRHvqAAEenytR+xXlnjz2eqJa/xR4op8umjEIB1ryGf2ErpNBd4
-         ctEybsg3s3TJtcPlcGM1pfgM66JvLeCM27kUwoBIiTY2ZZ0hMxRoP8U5yYg7ej8ZA+aJ
-         qZ8Q==
-X-Gm-Message-State: AOJu0Ywv3+Hb4+tVB1OcqGbx9Ufn7JrCD8RWWgE73tYeLmbZEsA4EycE
-        HKVzLMCTD5tke9EMgrYN8Ch/vA==
-X-Google-Smtp-Source: AGHT+IEyXhGigDBdCKAGT+/IMaNGbS+k8t3ALkt9DIMUsltzdGeZnx6gsOo2/2x7u2YGnPQKl0q5+w==
-X-Received: by 2002:a5d:9cd5:0:b0:794:cdd8:db3c with SMTP id w21-20020a5d9cd5000000b00794cdd8db3cmr14699347iow.17.1696269022549;
-        Mon, 02 Oct 2023 10:50:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696269035; x=1696873835;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=F2OIh/G3vvfH8cT1f+jhivcT+xHStCXj54HHC5DhSlw=;
+        b=RVoGXuM1FmwimujD4oRU4SPhhZ4EPmY//cHP0LRX6g/EbijMBWkUd6/Tp29JXA6XSZ
+         lJG40ddl7FWzDbO4C8UzSrdhA8rD76cidGsV3+t/JyzB8nmqtLBAGhfOuNik27nJJc1K
+         Nz65nXUIycdZFHBQs/rYejQjq/y25bRmIOeHUom88wmJYl19y3l6gRqaMrIydLmGoPPq
+         zoVnrCI3Mya2S+QGpo4vHUwKg8NHmfcAKQEIPNWHKuXIzuUjqYv/ZwNd4WsTOhjaQCR4
+         mxEMp/nTJeCEctz/R/tjH2h1azm20/MkummvYfXwRLbYgQJGcd3H+KMT3/4OzHi2RVFJ
+         GFdQ==
+X-Gm-Message-State: AOJu0YxtU9UifcUrXZ5Z41IubBWZBjSTz0SpJBSjgaRBBIBzxF/TrCCC
+        uYPP5Y8TIn3SNXgWJfedPAHeHg==
+X-Google-Smtp-Source: AGHT+IEajo7AgZ09G/o1FHYBl5iibeG+V+B1CsR5q6ZjwznpqxMf8wOSm4wNhvKtLK5z7hs1GK8trg==
+X-Received: by 2002:a5d:9cd5:0:b0:799:36c2:fa49 with SMTP id w21-20020a5d9cd5000000b0079936c2fa49mr12850092iow.15.1696269034885;
+        Mon, 02 Oct 2023 10:50:34 -0700 (PDT)
 Received: from kea.bld.corp.google.com ([2620:15c:183:200:63cd:2673:520:2e9])
-        by smtp.gmail.com with ESMTPSA id s23-20020a02c517000000b0042b2e309f97sm6919562jam.177.2023.10.02.10.50.21
+        by smtp.gmail.com with ESMTPSA id s23-20020a02c517000000b0042b2e309f97sm6919562jam.177.2023.10.02.10.50.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 10:50:22 -0700 (PDT)
+        Mon, 02 Oct 2023 10:50:34 -0700 (PDT)
 From:   Simon Glass <sjg@chromium.org>
 To:     devicetree@vger.kernel.org
 Cc:     Rob Herring <robh@kernel.org>, Tom Rini <trini@konsulko.com>,
@@ -54,21 +55,21 @@ Cc:     Rob Herring <robh@kernel.org>, Tom Rini <trini@konsulko.com>,
         Conor Dooley <conor+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
-        Pratyush Yadav <ptyadav@amazon.de>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
         Richard Weinberger <richard@nod.at>,
         Rob Herring <robh+dt@kernel.org>,
         Vignesh Raghavendra <vigneshr@ti.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/3] dt-bindings: mtd: fixed-partitions: Add binman compatible
-Date:   Mon,  2 Oct 2023 11:49:40 -0600
-Message-ID: <20231002174948.1015223-1-sjg@chromium.org>
+Subject: [PATCH v2 2/3] dt-bindings: mtd: binman-partition: Add binman labels
+Date:   Mon,  2 Oct 2023 11:49:41 -0600
+Message-ID: <20231002174948.1015223-2-sjg@chromium.org>
 X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+In-Reply-To: <20231002174948.1015223-1-sjg@chromium.org>
+References: <20231002174948.1015223-1-sjg@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,39 +77,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a compatible string for binman, so we can extend fixed-partitions
-in various ways.
+Add two labels for binman entries, as a starting point for the schema.
 
 Signed-off-by: Simon Glass <sjg@chromium.org>
 ---
 
 Changes in v2:
-- Drop mention of 'enhanced features' in fixed-partitions.yaml
-- Mention Binman input and output properties
 - Use plain partition@xxx for the node name
 
- .../bindings/mtd/partitions/binman.yaml       | 61 +++++++++++++++++++
- .../mtd/partitions/fixed-partitions.yaml      |  3 +
- .../bindings/mtd/partitions/partitions.yaml   |  1 +
- MAINTAINERS                                   |  5 ++
- 4 files changed, 70 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+ .../mtd/partitions/binman-partition.yaml      | 48 +++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
+diff --git a/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
 new file mode 100644
-index 000000000000..844f241feebf
+index 000000000000..406a8997d3e4
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/mtd/partitions/binman.yaml
-@@ -0,0 +1,61 @@
++++ b/Documentation/devicetree/bindings/mtd/partitions/binman-partition.yaml
+@@ -0,0 +1,48 @@
 +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
 +# Copyright 2023 Google LLC
 +
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/mtd/partitions/binman.yaml#
++$id: http://devicetree.org/schemas/mtd/partitions/binman-partition.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Binman firmware layout
++title: Binman partition
 +
 +maintainers:
 +  - Simon Glass <sjg@chromium.org>
@@ -116,36 +111,18 @@ index 000000000000..844f241feebf
 +select: false
 +
 +description: |
-+  The binman node provides a layout for firmware, used when packaging firmware
-+  from multiple projects. It is based on fixed-partitions, with some
-+  extensions.
-+
-+  Binman supports properties used as inputs to the firmware-packaging process,
-+  such as those which control alignment of partitions. This binding addresses
-+  these 'input' properties. For example, it is common for the 'reg' property
-+  (an 'output' property) to be set by Binman, based on the alignment requested
-+  in the input.
-+
-+  Once processing is complete, input properties have mostly served their
-+  purpose, at least until the firmware is repacked later, e.g. due to a
-+  firmware update. The base 'fixed-partitions' binding should provide enough
-+  information to read the firmware at runtime, including decompression if
-+  needed.
-+
-+  Documentation for Binman is available at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html
-+
-+  with the current image-description format at:
-+
-+  https://u-boot.readthedocs.io/en/latest/develop/package/binman.html#image-description-format
++  This corresponds to a binman 'entry'. It is a single partition which holds
++  data of a defined type.
 +
 +allOf:
-+  - $ref: /schemas/mtd/partitions/fixed-partitions.yaml#
++  - $ref: /schemas/mtd/partitions/partition.yaml#
 +
 +properties:
-+  compatible:
-+    const: binman
++  label:
++    items:
++      enum:
++        - u-boot       # u-boot.bin from U-Boot projec6t
++        - atf-bl31     # bl31.bin or bl31.elf from TF-A project
 +
 +additionalProperties: false
 +
@@ -160,49 +137,12 @@ index 000000000000..844f241feebf
 +            label = "u-boot";
 +            reg = <0x100000 0xf00000>;
 +        };
-+    };
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
-index 331e564f29dc..85aef1572967 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/fixed-partitions.yaml
-@@ -24,6 +24,9 @@ properties:
-       - items:
-           - const: sercomm,sc-partitions
-           - const: fixed-partitions
-+      - items:
-+          - const: binman
-+          - const: fixed-partitions
- 
-   "#address-cells": true
- 
-diff --git a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-index 1dda2c80747b..849fd15d085c 100644
---- a/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-+++ b/Documentation/devicetree/bindings/mtd/partitions/partitions.yaml
-@@ -15,6 +15,7 @@ maintainers:
- 
- oneOf:
-   - $ref: arm,arm-firmware-suite.yaml
-+  - $ref: binman.yaml
-   - $ref: brcm,bcm4908-partitions.yaml
-   - $ref: brcm,bcm947xx-cfe-partitions.yaml
-   - $ref: fixed-partitions.yaml
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 5f18c6ba3c3c..367c843ec348 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3517,6 +3517,11 @@ F:	Documentation/filesystems/bfs.rst
- F:	fs/bfs/
- F:	include/uapi/linux/bfs_fs.h
- 
-+BINMAN
-+M:	Simon Glass <sjg@chromium.org>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/mtd/partitions/binman*
 +
- BITMAP API
- M:	Yury Norov <yury.norov@gmail.com>
- R:	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
++        partition@200000 {
++            label = "atf-bl31";
++            reg = <0x200000 0x100000>;
++        };
++    };
 -- 
 2.42.0.582.g8ccd20d70d-goog
 
