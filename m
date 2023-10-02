@@ -2,124 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E5057B5AF5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861EE7B5B18
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238594AbjJBTM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 15:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48564 "EHLO
+        id S238578AbjJBTQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 15:16:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238519AbjJBTM4 (ORCPT
+        with ESMTP id S229482AbjJBTQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 15:12:56 -0400
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1A2FC9;
-        Mon,  2 Oct 2023 12:12:52 -0700 (PDT)
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3af603da0f0so69170b6e.3;
-        Mon, 02 Oct 2023 12:12:52 -0700 (PDT)
+        Mon, 2 Oct 2023 15:16:20 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F4DDB3;
+        Mon,  2 Oct 2023 12:16:17 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-4527d65354bso88163137.0;
+        Mon, 02 Oct 2023 12:16:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696274176; x=1696878976; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7Tr1XYfZFQPwOIGZkao0xDKBVDpd/yFY9b0CTr+HCmI=;
+        b=fG8Lk0qhIQ9sgBk798MAYtZLMMNfcPDOVCC0CpCe7i3XpsRF7tEScj/ldnV79b91Rj
+         Ip41w2YhjKbY9PykpLqYXhDQzE1vOBiWpqyMQTOzhYL3apgFZW1zRoYokZKpG3oWC+E6
+         v24X0nLYLJkK6CsDBH/C/VBI/epdehsas0OrFS7uoSXpoRyiUPJt9rqt1iXOz/byznKm
+         6Kgj9PjFKAOguAINhI/d/6kkMEQg3jV/j3YrKVgSAFM6srkuPxUI8IRAvmk2bEdthyJo
+         qOTLFJE/6/jUAwyisNI9UCnwcbdFuRc9ru1qk4wz6TTNdBcVggNz26eKJiA+vhpvrucg
+         1/KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696273972; x=1696878772;
+        d=1e100.net; s=20230601; t=1696274176; x=1696878976;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QUdRRJDEOEUkLfFy9sPy2x/dfu57//lkDWppt3CgCr0=;
-        b=POUAI3nH/ATN8nxSyfkeanTklP+0FQKReRaRF4qD8X4PoZ6eKRfV/KZMLAup1P3yTl
-         gGqaI0w8luGRdM4k8tIMxufzgreqRPchnetFqn5qooNVYGQUKvVJ2yBH0Yf0a3Ro/jPs
-         aIbryfGYXyA29WOBG1mObNAr3whIyLVdVXYsj1yJeRCOmQJeEtRbm3cizVtQGxF029YB
-         +v7a7O7d9UFQ3fm1t+PQoHBnABzj68IuYHfVlMkrNXJPL8Hy0LBsDvPibm30k16zUf6D
-         KozoWv41MOJ2pRNi20gLhPMoqpSOHlHK3vz5xAfhZZ/jaPXgGateCmIs6PCGzBOlIWyP
-         WnSw==
-X-Gm-Message-State: AOJu0Yz1kdLOTGYCxBYu2M1+r2WMOXK/Zc39uMwnQsgKZ0vr7nBkBZCE
-        7lS8byRfes8Vms2Fx4HaS68=
-X-Google-Smtp-Source: AGHT+IH0PK11dn6H63Mr8RpWcPoILY0OrFw4a9OhWFOW8KKCEwPGNLXzRWfSUSCL5bhxshAKSBIzhQ==
-X-Received: by 2002:aca:1911:0:b0:3a7:aabc:738f with SMTP id l17-20020aca1911000000b003a7aabc738fmr11881935oii.39.1696273971928;
-        Mon, 02 Oct 2023 12:12:51 -0700 (PDT)
-Received: from ?IPV6:2620:15c:211:201:6ad7:f663:5f97:db57? ([2620:15c:211:201:6ad7:f663:5f97:db57])
-        by smtp.gmail.com with ESMTPSA id p4-20020a637f44000000b005637030d00csm19436115pgn.30.2023.10.02.12.12.50
+        bh=7Tr1XYfZFQPwOIGZkao0xDKBVDpd/yFY9b0CTr+HCmI=;
+        b=tpzlZQbbKX5mC9ZKRMyJViyEGcxsLl2iEu+QmxOWtJjtyUktDjcukGskb4KDa/NLsp
+         sIDymMG0dox1SeNVoU43FQlBeVJpi9L/xnyFp4onRrd49a7FTyleSuVtZqMNdOmeP/6b
+         0Jk/9ukyfZ9veAzdPnZW8OiEm64avcO10e7Buu35DSsvS8AYLw4FH4ubE70+uFbOR7H5
+         Pxdxsv0+gBscC9azb6dQgMOd5bjP6a0/anVrU6lnznrm6zhuCsUSMES+hg0FvPipQN+f
+         vVBHnArTuH39F8AeoRDPa2MjNjtpXghoVi0m7zaoYzBOpq0+J1FZxuWDp3X9gmfmSwUM
+         kk/w==
+X-Gm-Message-State: AOJu0YyDpN1+/TDOtTAwAJbuzL8xonWvdm2JTpe0G8cA2gqHZnFAzNrg
+        +CF5LuuP7EvpbV1IfwzsgKU=
+X-Google-Smtp-Source: AGHT+IFv1LL4hAxRrpJUw0BnAkrSJG1KrOzUpd35rSgjuWaSyLrINoESA3s18Z8/hb4VtPYwVgEJ0g==
+X-Received: by 2002:a05:6102:1cb:b0:454:6ccc:ab79 with SMTP id s11-20020a05610201cb00b004546cccab79mr10882242vsq.11.1696274176341;
+        Mon, 02 Oct 2023 12:16:16 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id o20-20020a0cf4d4000000b00656329bb3b1sm7686722qvm.10.2023.10.02.12.16.13
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 12:12:51 -0700 (PDT)
-Message-ID: <b7a6f380-c6fa-45e0-b727-ba804c6684e4@acm.org>
-Date:   Mon, 2 Oct 2023 12:12:49 -0700
+        Mon, 02 Oct 2023 12:16:15 -0700 (PDT)
+Message-ID: <4351a85a-ab53-acf8-9e80-e65b2ebfab66@gmail.com>
+Date:   Mon, 2 Oct 2023 12:16:12 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/21] block: Add fops atomic write support
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH v2 net-next 01/15] phy: introduce phy_get_status() and
+ use it to report CDR lock
 Content-Language: en-US
-To:     John Garry <john.g.garry@oracle.com>, axboe@kernel.dk,
-        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chandan.babu@oracle.com, dchinner@redhat.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-        linux-api@vger.kernel.org
-References: <20230929102726.2985188-1-john.g.garry@oracle.com>
- <20230929102726.2985188-11-john.g.garry@oracle.com>
- <17ee1669-5830-4ead-888d-a6a4624b638a@acm.org>
- <5d26fa3b-ec34-bc39-ecfe-4616a04977ca@oracle.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <5d26fa3b-ec34-bc39-ecfe-4616a04977ca@oracle.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Cc:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Camelia Groza <camelia.groza@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor@kernel.org>,
+        Sean Anderson <sean.anderson@seco.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>
+References: <20230923134904.3627402-1-vladimir.oltean@nxp.com>
+ <20230923134904.3627402-2-vladimir.oltean@nxp.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20230923134904.3627402-2-vladimir.oltean@nxp.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/23 03:10, John Garry wrote:
-> On 29/09/2023 18:51, Bart Van Assche wrote:
->> On 9/29/23 03:27, John Garry wrote:
->  > +    if (pos % atomic_write_unit_min_bytes)
->  > +        return false;
+On 9/23/23 06:48, Vladimir Oltean wrote:
+> Some modules, like the MTIP AN/LT block used as a copper backplane PHY
+> driver, need this extra information from the SerDes PHY as another
+> source of "link up" information.
 > 
-> See later rules.
-
-Is atomic_write_unit_min_bytes always equal to the logical block size?
-If so, can the above test be left out?
-
->  > +    if (iov_iter_count(iter) % atomic_write_unit_min_bytes)
->  > +        return false;
+> Namely, the 25GBase-R PCS does not have a MDIO_CTRL1_LPOWER bit
+> implemented in its MDIO_MMD_PCS:MDIO_CTRL1 register. That bit is
+> typically set from phy_suspend() or phylink_pcs_disable() implementations,
+> and that is supposed to cause a link drop event on the link partner.
+> But here it does not happen.
 > 
-> For SCSI, there is an atomic write granularity, which dictates 
-> atomic_write_unit_min_bytes. So here we need to ensure that the length 
-> is a multiple of this value.
-
-Are there any SCSI devices that we care about that report an ATOMIC 
-TRANSFER LENGTH GRANULARITY that is larger than a single logical block?
-I'm wondering whether we really have to support such devices.
-
->  > +    if (!is_power_of_2(iov_iter_count(iter)))
->  > +        return false;
+> By implementing the networking phylink_pcs_disable() as phy_power_off(),
+> we are able to actually power down the lane in a way that is visible to
+> the remote end. Where it is visible is the CDR lock, so we introduce
+> PHY_STATUS_TYPE_CDR_LOCK as an extra link indication, we are able to
+> detect that condition and signal it to upper layers of the network
+> stack.
 > 
-> This rule comes from FS block alignment and NVMe atomic boundary.
+> A more high-level and generic phy_get_status() operation was chosen
+> instead of the more specific phy_get_cdr_lock() alternative, because I
+> saw this as being more in the spirit of the generic PHY API.
+> Also, phy_get_status() is more extensible and reusable for other
+> purposes as well.
 > 
-> FSes (XFS) have discontiguous extents. We need to ensure that an atomic 
-> write does not cross discontiguous extents. To do this we ensure extent 
-> length and alignment and limit atomic_write_unit_max_bytes to that.
-> 
-> For NVMe, an atomic write boundary is a boundary in LBA space which an 
-> atomic write should not cross. We limit atomic_write_unit_max_bytes such 
-> that it is evenly divisible into this atomic write boundary.
-> 
-> To ensure that the write does not cross these alignment boundaries we 
-> say that it must be naturally aligned and a power-of-2 in length.
-> 
-> We may be able to relax this rule but I am not sure it buys us anything 
-> - typically we want to be writing a 64KB block aligned to 64KB, for 
-> example.
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-It seems to me that the requirement is_power_of_2(iov_iter_count(iter))
-is necessary for some filesystems but not for all filesystems. 
-Restrictions that are specific to a single filesystem (XFS) should not 
-occur in code that is intended to be used by all filesystems 
-(blkdev_atomic_write_valid()).
-
-Thanks,
-
-Bart.
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
