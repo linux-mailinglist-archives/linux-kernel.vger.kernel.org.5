@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE347B55CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69E2D7B55D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237820AbjJBOm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:42:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
+        id S237833AbjJBOnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:43:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237697AbjJBOmz (ORCPT
+        with ESMTP id S237823AbjJBOnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:42:55 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB3CAD
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:42:52 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-4196ae80fc3so31793121cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 07:42:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696257772; x=1696862572; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=m9gT0sJ6bxJ7LFGJ3qcn0lur/HHwUZlrfxhEFRGE3Lc=;
-        b=c6OXd9YFBsot277vrDT83xXwBobB0wm3QiKoEK3jxGefiNII0hx0/53I6hHHWBXXVI
-         PjFknMvxds4R53+FJpAlBJ054OExLeKNeXw7qmnc4NxhEvXGplheOaY1MxMALVEdpnEm
-         W9xaYOEaB8aSe+ML2F/9TOrJtMvONMM7IqgjwKu4XXCQXF2/cTBOxwCBeOnLp3QkJYMR
-         JT0J8y/YwBi84rPL28BZJBtN5ohIIA/Rz8NRLRykwAuige0IT+Hi03kYU4VokLkQ+4dT
-         su6T6pt0wlQHfEpCPdEAQscQR4fNXz7ttI3OKWzyE9lr6OI8GD7BTbehBqmSuPE8mkIC
-         kwGg==
+        Mon, 2 Oct 2023 10:43:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BADB0
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:42:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696257775;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=JyF1pnZ6qkmXa4qXcGzIhipUJOWvJDJpCe2ELEDUqZE=;
+        b=Tx/PcI0aIJ6Dj5VWmraIIglYrfDpvJ7WUKFO16hFtZ2Za6O5jmxKHp83Z/tU6x1pOJ10iw
+        4QUzpW9Q8zjR7oet9hjTKzR4XfcswZ02QenYP/NBzAxRylQLktHaWkrm8rCfwCfPDqzeYp
+        vLqgqA1zydudr1vHgFJ5ev7Y+gobuRo=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-86-VyBoLyQYNY67slij8-PGRQ-1; Mon, 02 Oct 2023 10:42:54 -0400
+X-MC-Unique: VyBoLyQYNY67slij8-PGRQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-325a78c806eso2026906f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 07:42:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696257772; x=1696862572;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1696257773; x=1696862573;
+        h=content-transfer-encoding:in-reply-to:organization:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m9gT0sJ6bxJ7LFGJ3qcn0lur/HHwUZlrfxhEFRGE3Lc=;
-        b=v61kcplc8qyxAnRGBlXflZZe16u5fPn7LPz3kHjPr/ZXu12aYnL3XSqgjgO45lEcqg
-         zLWKDjtoSQYHj+4TEAyiCoMc94TWVpUygRPKdJrzNm/t7X9OwDjK5RW/yql27nhE2/HT
-         vt49Q14LCEQWx8vVdQ7smB86SvDuZHktAsC8BWet+co2kaqzCYQAKb7Ie3slnOLXj/Xw
-         5SEUgeVik5JUoNLfCcOrU1LvNvRRXI9NosPawAw/W1dZkmiQUTIANWmI/Fi/gYccEJcm
-         up1qvuJsT9GzqGoBrBoq25AfBg/hMIVkDxXYArwLVyj1Ltw9JOhV/p/H68TEILNJ3QcM
-         3AyA==
-X-Gm-Message-State: AOJu0YwfOZaNmA9bj/EW5LSjJezSDA9nFRdFun/0Xl50rng0BhqM2saB
-        7h+eaQ0i9cRzgnx459QaEL0rhw==
-X-Google-Smtp-Source: AGHT+IFa+AtbCwYbo1F1bL/0dGXEiEXwwHQPJD08WSpIXpwHS50M5VhohUTqeEfXszT9O2DE8i1vpg==
-X-Received: by 2002:ac8:588a:0:b0:417:95e7:a2f7 with SMTP id t10-20020ac8588a000000b0041795e7a2f7mr12774184qta.19.1696257771693;
+        bh=JyF1pnZ6qkmXa4qXcGzIhipUJOWvJDJpCe2ELEDUqZE=;
+        b=lkAv+/S17Z/19el+ZjTNcQoSlyb/1E7HEf6frEo81DZ7KXsPK3XxkNnEDhs4qdhXCP
+         fxiqURHp75CceZbIeDq/z5SbqbCpZpveM1Pko04LZQvM6W4BUAsb5l2GNA6yIcue1rif
+         ugDCSbWAYip+Haqn4w0g1v6stk6X66oEPpEyqt4Lxp+zoUXjDvhhOVqVS3oscVBO2rP+
+         +gSIZWrolf9lkaRyCWLX9XyCgBEM7wINg2YGA41IoDZEWBgIzUCLe7Zn+HamUB3YyzKj
+         Emtxsb/K7mRxPMptU2nhTsHUVVwDYYPwdf+7c9uDT3osK5/u/AznIbBJ0M+W/u8CcC4d
+         88IA==
+X-Gm-Message-State: AOJu0YyKbGFf/diuNi0ZXSWVLN8kCv0/KMOJVrXmo2Lw9Qo7HBGICGaM
+        RYv1PV4UJGApbuRoGxsMjlg5S6MZrnT3nP+K+WT2DB7dK/GxCqz72bOatopWsJVo6GL1Qq5+KZp
+        Y/Ho8GqnXLvGeYWdSXLm+wew2
+X-Received: by 2002:a05:6000:1d0:b0:322:707e:a9fd with SMTP id t16-20020a05600001d000b00322707ea9fdmr8891402wrx.34.1696257772808;
+        Mon, 02 Oct 2023 07:42:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGymUSv8zl2ClRiKwhAr/NLjZAkFh/vu2pxeK/KZTOMETVSkxSO89mrdgd615CqhPnR+vID4A==
+X-Received: by 2002:a05:6000:1d0:b0:322:707e:a9fd with SMTP id t16-20020a05600001d000b00322707ea9fdmr8891355wrx.34.1696257772272;
+        Mon, 02 Oct 2023 07:42:52 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c735:f200:cb49:cb8f:88fc:9446? (p200300cbc735f200cb49cb8f88fc9446.dip0.t-ipconnect.de. [2003:cb:c735:f200:cb49:cb8f:88fc:9446])
+        by smtp.gmail.com with ESMTPSA id j6-20020a5d6046000000b003259b068ba6sm7972412wrt.7.2023.10.02.07.42.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
         Mon, 02 Oct 2023 07:42:51 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
-        by smtp.gmail.com with ESMTPSA id h20-20020ac846d4000000b0041812600a47sm6261207qto.59.2023.10.02.07.42.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 07:42:51 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 10:42:50 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Nhat Pham <nphamcs@gmail.com>,
-        akpm@linux-foundation.org, riel@surriel.com,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, yosryahmed@google.com, linux-mm@kvack.org,
-        kernel-team@meta.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 0/2] hugetlb memcg accounting
-Message-ID: <20231002144250.GA4414@cmpxchg.org>
-References: <20230926194949.2637078-1-nphamcs@gmail.com>
- <ZRQQMABiVIcXXcrg@dhcp22.suse.cz>
- <20230927184738.GC365513@cmpxchg.org>
- <20231001232730.GA11194@monkey>
+Message-ID: <27f177c9-1035-3277-cd62-dc81c12acec4@redhat.com>
+Date:   Mon, 2 Oct 2023 16:42:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231001232730.GA11194@monkey>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 1/3] userfaultfd: UFFDIO_REMAP: rmap preparation
+To:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
+        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <20230923013148.1390521-1-surenb@google.com>
+ <20230923013148.1390521-2-surenb@google.com>
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+In-Reply-To: <20230923013148.1390521-2-surenb@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 01, 2023 at 04:27:30PM -0700, Mike Kravetz wrote:
-> On 09/27/23 14:47, Johannes Weiner wrote:
-> > On Wed, Sep 27, 2023 at 01:21:20PM +0200, Michal Hocko wrote:
-> > > On Tue 26-09-23 12:49:47, Nhat Pham wrote:
-> > 
-> > So that if you use 80% hugetlb, the other memory is forced to stay in
-> > the remaining 20%, or it OOMs; and that if you don't use hugetlb, the
-> > group is still allowed to use the full 100% of its host memory
-> > allowance, without requiring some outside agent continuously
-> > monitoring and adjusting the container limits.
+On 23.09.23 03:31, Suren Baghdasaryan wrote:
+> From: Andrea Arcangeli <aarcange@redhat.com>
 > 
-> Jumping in late here as I was traveling last week.  In addition, I want
-> to state my limited cgroup knowledge up front.
-> 
-> I was thinking of your scenario above a little differently.  Suppose a
-> group is up and running at almost 100% memory usage.  However, the majority
-> of that memory is reclaimable.  Now, someone wants to allocate a 2M hugetlb
-> page.  There is not 2MB free, but we could easily reclaim 2MB to make room
-> for the hugetlb page.  I may be missing something, but I do not see how that
-> is going to happen.  It seems like we would really want that behavior.
+> As far as the rmap code is concerned, UFFDIO_REMAP only alters the
+> page->mapping and page->index. It does it while holding the page
+> lock. However folio_referenced() is doing rmap walks without taking the
+> folio lock first, so folio_lock_anon_vma_read() must be updated to
+> re-check that the folio->mapping didn't change after we obtained the
+> anon_vma read lock.
 
-But that is actually what it does, no?
+I'm curious: why don't we need this for existing users of 
+page_move_anon_rmap()? What's special about UFFDIO_REMAP?
 
-alloc_hugetlb_folio
-  mem_cgroup_hugetlb_charge_folio
-    charge_memcg
-      try_charge
-        !page_counter_try_charge ?
-          !try_to_free_mem_cgroup_pages ?
-            mem_cgroup_oom
 
-So it does reclaim when the hugetlb hits the cgroup limit. And if that
-fails to make room, it OOMs the cgroup.
+-- 
+Cheers,
 
-Or maybe I'm missing something?
+David / dhildenb
+
