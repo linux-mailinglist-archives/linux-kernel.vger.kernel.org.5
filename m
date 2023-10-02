@@ -2,95 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C66A7B4AEA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 05:27:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F057B4AEB
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 05:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235414AbjJBD1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 1 Oct 2023 23:27:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
+        id S234967AbjJBDac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 1 Oct 2023 23:30:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234048AbjJBD1d (ORCPT
+        with ESMTP id S234048AbjJBDaa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 1 Oct 2023 23:27:33 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5103C9
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 20:27:30 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-419768e69dfso344601cf.0
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 20:27:30 -0700 (PDT)
+        Sun, 1 Oct 2023 23:30:30 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF57D3
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 20:30:26 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5045cb9c091so18490017e87.3
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 20:30:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696217250; x=1696822050; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1696217425; x=1696822225; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3scGPNEBOwqptWVfFKrAiu9JumQod6q+Tv1f0Kk9vI8=;
-        b=p0I0WQngiMTljmtIUk48OauD++yGbo0q4BsGs1uucpi8V2/5luig3wKUKgZCXced/h
-         P2tkQk3Ut/vOBa/lHXxiFpa+ScXwTzv374fCNQGQD5R+5qeF3WjSFHw/fdzWmz/cZnX4
-         CWTCjSu3dbC9yryQuEo0pHJYJtQa5QeieUJNiffCp6rp9JWOTQy8vpmfJeXLFtD3Ztv5
-         IAIoPfhAFPtvRvjuY93QnmQmiAzY6LxhMj78rLx0z6cIHTMErYZ98oq6Rit+bSC1A+2R
-         MWW4yYQ68q8T1YUofP5xbOoBp2Z5ie39dbnQ0wisy1cGdhsRpnueHQvVN28czXOTSjpw
-         BFhg==
+        bh=fxrswed9LXFiMLWzaLJZwhwURVs4ghK//pBojhrWxiw=;
+        b=d3fQbsTOlHvLAzHt3q8MBMS4QiWX4slVdZk27NYJGMlZ47XsA1nDfoxKoOLnJBX4+e
+         0LS6DqXH7dD/LpSYcWyJNcfSVUBzZmnkFZezI2OghoMFin1SpH9OnAhs9s4h+7RSaLNn
+         RHwzaWoSyfIC0ymwgd5CRDSTKtdyEV9Uv7Hcs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696217250; x=1696822050;
+        d=1e100.net; s=20230601; t=1696217425; x=1696822225;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3scGPNEBOwqptWVfFKrAiu9JumQod6q+Tv1f0Kk9vI8=;
-        b=BQZ/VMbM39ZkcARbzmVZqnhqJhO41V28nY2ldwOZdDUztfTQYSdBb8WQp7IFQE2dG9
-         HeCxucUCItF+ytx24vSQBpMkQOi6kd5iSII/xeafmrlzCq5X1RdjTuKw8lcJ73dMO/uL
-         0w4M+cBqPVGso+lhAY0ZHiFYwmkZsfbYca2rQuWcKIpAt2OA8+GgrJH8/6mdWd6z/SpP
-         du/tLChKbc/KFE+Av9lCOAbypXD8xiRhukCawALq+06qy77Ic3blSiTzoiTsfVk7ndnR
-         RTcsAyXR/BNpblkA83JaSdwJDaCDNLk6ZYjBqOgSeXFf5BuxERcAIaUkFSKt+/g01vzg
-         VmJA==
-X-Gm-Message-State: AOJu0Yw0sfyxvKQlv6+3jyafhDcgNloVfJH3S5OTRSMjYMX+GN2tAim1
-        abZZMW9VnN0UZiEcSOAXcj6psP6utwlY/juRVao0VsjPpeOOPFtuSVvPiQ==
-X-Google-Smtp-Source: AGHT+IGENNrmhb+4VzqpTVANnEdpNQzdc47Y1/jQh2hnXoAhQ9KrK2qnZ25Hg3IgVO1OgzS81imF8a9kjErZFI/73jk=
-X-Received: by 2002:ac8:5746:0:b0:417:cd31:a2f6 with SMTP id
- 6-20020ac85746000000b00417cd31a2f6mr235602qtx.1.1696217249641; Sun, 01 Oct
- 2023 20:27:29 -0700 (PDT)
+        bh=fxrswed9LXFiMLWzaLJZwhwURVs4ghK//pBojhrWxiw=;
+        b=wfc76ehGaFFeuer9O4VlnVgnPd02wkh39TDqOKdBNgTx+4aIz3nKjpdBynf6xtfsFf
+         VYLg5GyTNPsoEwQt2lirEFCAjxdZ6m5yrX3gjgLKgNUd/Q7Ue0A+MdTqGOCYLHh4NeLf
+         w+KUkujIJJBzgx1NkkcIVLoc62zlsK9cmB3F39BgozuSc/LZjf3n88+sHRFp1QVXNare
+         ptPaFANs0nUC3I/bOCt0Mt8xPst5il0cAnEjj+aR2TCBuAXS4S0ImOaQeLZZ7sirAI6u
+         t8Tsai42ysK2021Dght7+xlneH/Y9OGLkUS7lKsE6SsrG+TfKddB9ZFoAPgDK6svUF7G
+         ihzQ==
+X-Gm-Message-State: AOJu0YyKdbQgDJ3+9oTfay1tw7GFstTU1aaroun6Fu2O76Iac+a+Fr0s
+        hQqC+OwDkQliq9SOUZjh8X9Sn3OV4cBwxchu+MSmdw==
+X-Google-Smtp-Source: AGHT+IF+QatVocFmRGJXKsFlY239FHUEt/InSagl685uTbNTsTU5IYYV6+uN84C44RNwztMDPSDeexsTiihSb+Hslig=
+X-Received: by 2002:a05:6512:485b:b0:503:3707:66ed with SMTP id
+ ep27-20020a056512485b00b00503370766edmr8048003lfb.34.1696217424296; Sun, 01
+ Oct 2023 20:30:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230926051035epcms1p312b531bba2c17bb763b6f046a45c86da@epcms1p3>
- <CAOUHufZwLET1E9dQq15LX27v+20HwWstL4XFi+qzVuz1voLW=w@mail.gmail.com>
- <20230926042250.6028-1-jaewon31.kim@samsung.com> <CGME20230926042019epcas1p11c28533f7b7db99db9f9d8a03ddd332c@epcms1p5>
- <20230926073333epcms1p14c9798232b395007eb20becb5dbc4b4e@epcms1p1>
- <20230926141519epcms1p5b7808c768df48647516f458529e4e3c8@epcms1p5> <CAJrd-Uu16oZncaFzycGoyryxyjEGFWJdecQoShveGV6_GGJLiQ@mail.gmail.com>
-In-Reply-To: <CAJrd-Uu16oZncaFzycGoyryxyjEGFWJdecQoShveGV6_GGJLiQ@mail.gmail.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Sun, 1 Oct 2023 21:26:53 -0600
-Message-ID: <CAOUHufaqROR00_u6enJxhvGuPLTLMW_t4MSMqvDuyGpTECU3Mg@mail.gmail.com>
-Subject: Re: [PATCH v4] vmscan: add trace events for lru_gen
-To:     Jaewon Kim <jaewon31.kim@gmail.com>
-Cc:     jaewon31.kim@samsung.com,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "tjmercier@google.com" <tjmercier@google.com>,
-        "kaleshsingh@google.com" <kaleshsingh@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "sj@kernel.org" <sj@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-trace-kernel@vger.kernel.org" 
-        <linux-trace-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
+References: <20230929082009.71843-1-angelogioacchino.delregno@collabora.com> <84b2de54-8337-42a3-a25c-a95cf2f3349f@app.fastmail.com>
+In-Reply-To: <84b2de54-8337-42a3-a25c-a95cf2f3349f@app.fastmail.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Mon, 2 Oct 2023 11:30:13 +0800
+Message-ID: <CAGXv+5FtBcHwEhQEoEUBx24Zf4ABrDeSaWo_mDbM7OvmBLF5nA@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Add Angelo as MediaTek SoC co-maintainer
+To:     Arnd Bergmann <arnd@arndb.de>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>, amergnat@baylibre.com,
+        Stephen Rothwell <sfr@canb.auug.org.au>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 1, 2023 at 5:41=E2=80=AFPM Jaewon Kim <jaewon31.kim@gmail.com> =
-wrote:
+On Sat, Sep 30, 2023 at 3:37=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> wrote=
+:
 >
-> Hello Yu Zhao
+> On Fri, Sep 29, 2023, at 04:20, AngeloGioacchino Del Regno wrote:
+> > I am a top reviewer mainly for MediaTek SoC related patches in most
+> > subsystems and I've also been upstreaming both improvements, fixes
+> > and new drivers and devicetrees when required.
+> >
+> > The MediaTek scene saw a generous increase in number of patches that
+> > are sent to the lists every week, increasing the amount of required
+> > efforts to maintain the MTK bits overall, and we will possibly see
+> > even more of that.
+> >
+> > For this reason, and also because of suggestions and encouragement
+> > coming from the community, I'm stepping up to be a co-maintainer of
+> > MediaTek SoCs support.
+> >
+> > Signed-off-by: AngeloGioacchino Del Regno
+> > <angelogioacchino.delregno@collabora.com>
+> > ---
+> >
+> > P.S.: I tried to reach to Matthias for almost two months, but I couldn'=
+t
+> > find any way to talk to him and he has been unresponsive on the mailing
+> > lists as well.
+> >
+> > P.P.S.: This also comes after Rob Herring's suggestion to have myself a=
+s
+> > a MediaTek SoC co-maintainer [1] and support from other people.
+> >
+> > [1]: https://lore.kernel.org/all/20230804225813.12493-1-robh@kernel.org=
+/
 >
-> Could you give me your comment? I am waiting for your opinion on the
-> reuse method. I'm planning to resend it as a complete patch with it.
-> Thank you.
+> Thanks for volunteering for this!
+>
+> I have no information on what Mattias is doing, but I see that he
+> has not merged any patches since June, and that he never sent a
+> pull request for your patches that are still in his for-next
+> branch.
+>
+> I hope he's going to be ok, but let's plan for you to take over
+> for the moment, at least until Matthias is again able to keep
+> maintaining the platform in the near future.
+>
+> Here is my suggestion for how to continue from here:
+>
+> - Please send your MAINTAINERS file update to soc@kernel.org
+>   along  with any urgent bugfixes you may have, so I can forward
+>   them for 6.7. I'm wrapping up the current set of fixes at
+>   the moment, so this would be for next week's rc
+>
+> - Create a git tree with the ususal branches (drivers, soc, dt,
+>   fixes, for-next) and ask Stephen Rothwell (on Cc) to add
+>   the combined for-next branch  to linux-next for integration testing
 
-Acked-by: Yu Zhao <yuzhao@google.com>
+I suggest creating a shared git tree from the start. That way when
+Mattias comes back and does agree to co-maintainership, or if anyone
+else joins in, you don't have to change the git tree URL in a lot of
+places.
+
+> - Start each branch on 6.6-rc2 (usually we use rc1, but this time
+>   rc2 is a better candidate because of the last-minute
+>   drivers/pmdomain rename), and merge the corresponding branches
+>   from git://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.g=
+it
+>   into those to avoids conflicts with his tree
+>
+> - Add any further patches you want in 6.7 on top
+>
+> - Send a first set of pull requests to soc@kernel.org for whatever
+>   you have merged as soon as you are confident about them,
+>   ideally by the end of next week.
+>
+> - Send additional pull requests for fixups or late features in
+>   the weeks after that as you see fit.
+>
+> See Documentation/process/maintainer-soc.rst for more details
+> on the above. When Mattias comes back, you can work out a new
+> process together with him.
+
+I can also answer any questions you might have about the process.
+
+
+ChenYu
