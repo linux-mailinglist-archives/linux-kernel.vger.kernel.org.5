@@ -2,108 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44C357B5929
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E237B5962
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238591AbjJBQ6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 12:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59866 "EHLO
+        id S238584AbjJBQ6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 12:58:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238546AbjJBQ6I (ORCPT
+        with ESMTP id S238557AbjJBQ6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 12:58:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D00B4;
-        Mon,  2 Oct 2023 09:58:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D177DC433CA;
-        Mon,  2 Oct 2023 16:58:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696265884;
-        bh=BdsyPvEj53bRhSrPGLPqhoMZxFh5sEybiAwaA9VVpew=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MoarQNNeg90+ZrJS/8bCWOtdeyip/Ehjh86/RE+EGGzvFDosBwZcGY1z1RQ63OveD
-         SMdtoHLgk61DoaWo1+DjXCqTATkbwX0SsEhgSEop0Ngos/5ZZ3DSfm26vZYJQ6Iqju
-         EJxZisKAzbqHVcj5x2mQ8JsErjOOdCMg4KYsdU5/iD5ER243gBlawhplsUzfDDPEMf
-         kAPfyNyPNRUJ2Dhx9r0HAXeSGtgjlTcj/gPVFyoSlPWvAJbmF6ah3ivJ7MUt+mcjKV
-         eElZNnBThoDIIihUby56Wwn1BWy4wASAaMOEUXf+OoOUtzAUib5VMG++5Wc/IuTEhc
-         T7d7sF6HltmXA==
-From:   Will Deacon <will@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
-Subject: [PATCH v5 3/3] scripts/faddr2line: Skip over mapping symbols in output from readelf
-Date:   Mon,  2 Oct 2023 17:57:49 +0100
-Message-Id: <20231002165750.1661-4-will@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20231002165750.1661-1-will@kernel.org>
-References: <20231002165750.1661-1-will@kernel.org>
+        Mon, 2 Oct 2023 12:58:06 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C74FFBF
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 09:58:02 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c735473d1aso188375ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 09:58:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696265882; x=1696870682; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OmqTcPALB5Fa2231OIyxzbdzfqXkdnOxzqNeS9x4hgs=;
+        b=IWzQ12f1FmtSa5xm350ayLL0Msu8ZKS6hNwlapwOkWQ73CdIBBhQNxNcdjVGkIjNc8
+         DuVr1RZVcJ2qFK+HkCNMWjE+FoUUNz6R/A9M8NlKIJJvrLKqmrSAI5ok9g0l3xknfeo4
+         pUw96U41+khQ0DeQyhvnq8SebmJxsRF3p1zao=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696265882; x=1696870682;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OmqTcPALB5Fa2231OIyxzbdzfqXkdnOxzqNeS9x4hgs=;
+        b=g87yJh6hwF5wwbGO6qZGyTSheAgtynomLQ/suSNT1CNyJHxBKOsB9mnNE8j539iA0p
+         8jhX5tWJtzGeRRJPSbqjbaCydjkpHK37O3oPoiAKjRd6q3SGYp7egxO7RjCmXtmjHQgU
+         yxcqWvu+UCsGmcIfhyUimA2Oeu0wlae3ptxS/KmGEebQOaVbItloeEJKL3XJXQZt/eW8
+         TWS+hY9RrkxtXS6wcY4oXHa7x3/tlucJEklWQveQ1QyMQMbn8k+LV6J/CPCHfWrOoekK
+         vT/8lITmh0JTUbKo0vTkQM2FJhIv67ZKRuHqKRvNwnGlK4SPNKeD7uOVcyVeuTro5kng
+         ePRg==
+X-Gm-Message-State: AOJu0YxY/0qgqVNz9kJDVfHL8prc1KAswC5LGzhGHs6f3xk6DdzZpfF7
+        zOSD2y//XL5k46Qx3YvkFSIW7g==
+X-Google-Smtp-Source: AGHT+IFbiFrmNXAcBqoD21bFKcMD0lXjlNKJVvMM6NyfF786Ran5xugt2TBoWfWxH0Mge86oU9T5HA==
+X-Received: by 2002:a17:903:22c4:b0:1c1:f3f8:3949 with SMTP id y4-20020a17090322c400b001c1f3f83949mr11623836plg.1.1696265882236;
+        Mon, 02 Oct 2023 09:58:02 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a5-20020a170902ee8500b001c62d63b817sm13050708pld.179.2023.10.02.09.58.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 09:58:01 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 09:57:59 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v2 0/5] params: harden string ops and allocatio ops
+Message-ID: <202310020957.022F9047F0@keescook>
+References: <20231002124856.2455696-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231002124856.2455696-1-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mapping symbols emitted in the readelf output can confuse the
-'faddr2line' symbol size calculation, resulting in the erroneous
-rejection of valid offsets. This is especially prevalent when building
-an arm64 kernel with CONFIG_CFI_CLANG=y, where most functions are
-prefixed with a 32-bit data value in a '$d.n' section. For example:
+On Mon, Oct 02, 2023 at 03:48:51PM +0300, Andy Shevchenko wrote:
+> A couple of patches are for get the string ops, used in the module,
+> slightly harden. On top a few cleanups.
+> 
+> Since the main part is rather hardening, I think the Kees' tree is
+> the best fit for the series, but I'm open for another option(s).
+> 
+> Changelog v2:
+> - dropped the s*printf() --> sysfs_emit() conversion as it revealed
+>   an issue, i.e. reuse getters with non-page-aligned pointer, which
+>   would be addressed separately
+> - added cover letter and clarified the possible route for the series
+>   (Luis)
+> 
+> Andy Shevchenko (5):
+>   params: Introduce the param_unknown_fn type
+>   params: Do not go over the limit when getting the string length
+>   params: Use size_add() for kmalloc()
+>   params: Sort headers
+>   params: Fix multi-line comment style
 
-447538: ffff800080014b80   548 FUNC    GLOBAL DEFAULT    2 do_one_initcall
-   104: ffff800080014c74     0 NOTYPE  LOCAL  DEFAULT    2 $x.73
-   106: ffff800080014d30     0 NOTYPE  LOCAL  DEFAULT    2 $x.75
-   111: ffff800080014da4     0 NOTYPE  LOCAL  DEFAULT    2 $d.78
-   112: ffff800080014da8     0 NOTYPE  LOCAL  DEFAULT    2 $x.79
-    36: ffff800080014de0   200 FUNC    LOCAL  DEFAULT    2 run_init_process
+Seems like a nice bit of clean-up.
 
-Adding a warning to do_one_initcall() results in:
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-  | WARNING: CPU: 0 PID: 1 at init/main.c:1236 do_one_initcall+0xf4/0x260
-
-Which 'faddr2line' refuses to accept:
-
-$ ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
-skipping do_one_initcall address at 0xffff800080014c74 due to size mismatch (0x260 != 0x224)
-no match for do_one_initcall+0xf4/0x260
-
-Filter out these entries from readelf using a shell reimplementation of
-is_mapping_symbol(), so that the size of a symbol is calculated as a
-delta to the next symbol present in ksymtab.
-
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-Cc: John Stultz <jstultz@google.com>
-Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Will Deacon <will@kernel.org>
----
- scripts/faddr2line | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/scripts/faddr2line b/scripts/faddr2line
-index 6b8206802157..587415a52b6f 100755
---- a/scripts/faddr2line
-+++ b/scripts/faddr2line
-@@ -179,6 +179,11 @@ __faddr2line() {
- 			local cur_sym_elf_size=${fields[2]}
- 			local cur_sym_name=${fields[7]:-}
- 
-+			# is_mapping_symbol(cur_sym_name)
-+			if [[ ${cur_sym_name} =~ ^(\.L|L0|\$) ]]; then
-+				continue
-+			fi
-+
- 			if [[ $cur_sym_addr = $sym_addr ]] &&
- 			   [[ $cur_sym_elf_size = $sym_elf_size ]] &&
- 			   [[ $cur_sym_name = $sym_name ]]; then
 -- 
-2.42.0.582.g8ccd20d70d-goog
-
+Kees Cook
