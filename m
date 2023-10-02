@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E097B4FA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA1D27B4FAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:58:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236320AbjJBJ52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50110 "EHLO
+        id S236334AbjJBJ6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236322AbjJBJ5Z (ORCPT
+        with ESMTP id S236303AbjJBJ55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:57:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA072E0;
-        Mon,  2 Oct 2023 02:57:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696240640; x=1727776640;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=xkucgrf0Gku3sclZsNEmC/t2jO0YvL8B44d22Q1fSaQ=;
-  b=mxhO8IHSTy4K6vDuEiB3qBkUavbLXi5VXnkwtEgxMzXoRPB4sUMe2TQG
-   nEXqrvvPcb4gqahuA3UKqyS7+R5CztabmA91/lAcWL4ARkzqggZ/dDy2o
-   823/5psLEDILq5NItKj4bNsu8cbUC7/d+bLfRZlQiIK9GY+UdGHqETUSe
-   E889RxCfoezNuuWZUVfuYUPDJTfOX9V/obPc86sQBPB0UJUVBFZ8cnPXB
-   Z1Upx54m4dKKbcc8oj6E8y9Wh+S6nAEMC34PcPe6dvG3dDBUVbFZDQNwZ
-   0taBdXjoYrF7D8faxnL5uQhx1kj0WlPK+mUFzX0XjR6drZ9L62mNc93Ve
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="372961768"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="372961768"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:57:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="924221103"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="924221103"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:57:18 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qnFfv-000000027od-18zE;
-        Mon, 02 Oct 2023 12:57:15 +0300
-Date:   Mon, 2 Oct 2023 12:57:14 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v4 03/11] gpiolib: provide gpio_device_find()
-Message-ID: <ZRqT+qZ+Xrz4x1IQ@smile.fi.intel.com>
-References: <20230927142931.19798-1-brgl@bgdev.pl>
- <20230927142931.19798-4-brgl@bgdev.pl>
- <ZRqQbzbcNHOtJm7z@smile.fi.intel.com>
- <CAMRc=MffRnq2ABRGAL9zuQxytfE6E-cJWwUrourgY2k=RNv-Aw@mail.gmail.com>
+        Mon, 2 Oct 2023 05:57:57 -0400
+Received: from mail.xenproject.org (mail.xenproject.org [104.130.215.37])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 172E9A7;
+        Mon,  2 Oct 2023 02:57:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:
+        Subject:Cc:To:From; bh=nDcMECDXAxc3Yrl3Jp44BBQI/ASgsDkZDKNgpLmcJiE=; b=hl7wLQ
+        Ycn5Rmnfeig1ImPI8wakjB8coQiDXmmsx1CzJeSrO8oLeSZRuLBeIG2VEqU5krY1qb8YCHn89CJGe
+        42ud+yym9CFHgfsSarmAtbywdbqRK67OknwxtG2l0NZyAvn2KMHvHw+LREf40C/XxlzqmZvpX2xJM
+        Tx8xxVZ7Ve0=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1qnFgS-0000v4-R8; Mon, 02 Oct 2023 09:57:48 +0000
+Received: from ec2-63-33-11-17.eu-west-1.compute.amazonaws.com ([63.33.11.17] helo=REM-PW02S00X.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1qnFgS-0000Ft-DL; Mon, 02 Oct 2023 09:57:48 +0000
+From:   Paul Durrant <paul@xen.org>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
+Subject: [PATCH v7 00/11] KVM: xen: update shared_info and vcpu_info handling
+Date:   Mon,  2 Oct 2023 09:57:29 +0000
+Message-Id: <20231002095740.1472907-1-paul@xen.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MffRnq2ABRGAL9zuQxytfE6E-cJWwUrourgY2k=RNv-Aw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 11:52:52AM +0200, Bartosz Golaszewski wrote:
-> On Mon, Oct 2, 2023 at 11:42 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Wed, Sep 27, 2023 at 04:29:23PM +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+From: Paul Durrant <pdurrant@amazon.com>
 
-...
+The following text from the original cover letter still serves as an
+introduction to the series:
 
-> > >  struct gpio_chip *gpiochip_find(void *data,
-> > >                               int (*match)(struct gpio_chip *gc,
-> >
-> > > +struct gpio_device *gpio_device_find(void *data,
-> > > +                                  int (*match)(struct gpio_chip *gc,
-> > > +                                               void *data))
-> >
-> > Why not
-> >
-> > typedef int (*gpio_chip_match_fn)(struct gpio_chip *gc, void *data);
-> 
-> Because gpiochip_find() will go away as soon as we convert all users.
+"Currently we treat the shared_info page as guest memory and the VMM
+informs KVM of its location using a GFN. However it is not guest memory as
+such; it's an overlay page. So we pointlessly invalidate and re-cache a
+mapping to the *same page* of memory every time the guest requests that
+shared_info be mapped into its address space. Let's avoid doing that by
+modifying the pfncache code to allow activation using a fixed userspace HVA
+as well as a GPA."
 
-And gpio_device_find() does not. So, I didn't get this argument.
+This version of the series is functionally the same as version 6. I have
+simply added David Woodhouse's R-b to patch 11 to indicate that he has
+now fully reviewed the series.
 
+Paul Durrant (11):
+  KVM: pfncache: add a map helper function
+  KVM: pfncache: add a mark-dirty helper
+  KVM: pfncache: add a helper to get the gpa
+  KVM: pfncache: base offset check on khva rather than gpa
+  KVM: pfncache: allow a cache to be activated with a fixed (userspace)
+    HVA
+  KVM: xen: allow shared_info to be mapped by fixed HVA
+  KVM: xen: allow vcpu_info to be mapped by fixed HVA
+  KVM: selftests / xen: map shared_info using HVA rather than GFN
+  KVM: selftests / xen: re-map vcpu_info using HVA rather than GPA
+  KVM: xen: advertize the KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA capability
+  KVM: xen: allow vcpu_info content to be 'safely' copied
+
+ Documentation/virt/kvm/api.rst                |  53 +++++--
+ arch/x86/kvm/x86.c                            |   5 +-
+ arch/x86/kvm/xen.c                            |  92 +++++++++----
+ include/linux/kvm_host.h                      |  43 ++++++
+ include/linux/kvm_types.h                     |   3 +-
+ include/uapi/linux/kvm.h                      |   9 +-
+ .../selftests/kvm/x86_64/xen_shinfo_test.c    |  59 ++++++--
+ virt/kvm/pfncache.c                           | 129 +++++++++++++-----
+ 8 files changed, 302 insertions(+), 91 deletions(-)
+---
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: x86@kernel.org
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.39.2
 
