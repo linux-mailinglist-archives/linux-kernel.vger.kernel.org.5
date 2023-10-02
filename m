@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4584E7B5DA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 01:15:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B107B5DA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 01:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237280AbjJBXPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 19:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52388 "EHLO
+        id S237835AbjJBXPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 19:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237204AbjJBXPG (ORCPT
+        with ESMTP id S237247AbjJBXPJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 19:15:06 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228B6AD
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 16:15:04 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-317c3ac7339so355260f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 16:15:04 -0700 (PDT)
+        Mon, 2 Oct 2023 19:15:09 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BBDBB8
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 16:15:05 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3231d6504e1so326819f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 16:15:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696288502; x=1696893302; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696288504; x=1696893304; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vQvCLVMfpl1rfMES4jKdwm82L8UOBjNuap0Ti+SzBhc=;
-        b=M+CLVVRy5HwsqvwlOokevjgvepUgwThG5qiKvLLjgD6DgeE0lvwqnB3Uwnbn04and0
-         5FwsF0wShTTx273cd96s8GM5ipKSoQNtSSWLleeCVEi+nkNqXAS5+Skcbte8QM65fri7
-         CozNyc2DCzNxLYZC2uztoUiriVNctcjbqvUEIPQSF8LrQiVpZD/grqAQaBMVlZ8pkcYa
-         VMbDr9bjJpGKhPJui+9bnSEhAD/CRyHtYHvTgJxCVZq+6//ibb2+RZHErvAkBnvdDDpM
-         OsUvgL92PtYNz963pxwdEIybG9/0Q6M8vXsx9KiGD04R9j+8vvMmaHeZfIW3pbIOP23U
-         U0Cg==
+        bh=XG4wWkmLCo1BkRFV+SZ7pD22xcplU2FkjQ1ykcSCzlA=;
+        b=nC2uPqKaHv+ZGud73irvViL69+e70oLHG/gE2GX5iioSIZDUkiEo98cvpWWRs1rQcv
+         RfcE+uhXBrltGQtEpvz5V0Ax9Vnw2nM7lX0JoKEjmQrRg0E7591VUPJbjcstCmwofFqt
+         q97vZQz+EFQTogxvoFm9ej8w8yjOU9/jGQiZ1G78g12HaTPIJCgnOYheji9YzxAH6hFv
+         RkHR4NlcMwukPC/Z3H7sjjA4aD2VAyvsFFohdkgrlQg3CIGne/Vsx/wnikP4/SdmeoGJ
+         otRHdMIZjHFKOPMVYH/oYiP7q01NGT3do9AuZPdKboGKT9dEGHO59C6F0sjg6a890Eh4
+         xhWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696288502; x=1696893302;
+        d=1e100.net; s=20230601; t=1696288504; x=1696893304;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=vQvCLVMfpl1rfMES4jKdwm82L8UOBjNuap0Ti+SzBhc=;
-        b=Wz91v5mZdLiPfpjUaMQ6OO3YcLFO1BBx+q276hxhSVcJ3ayBLOFG4gRZ63uNAE9UTR
-         1IMbZIhkk6Ngb/XEKYfrsRxDl19VZ0Ssa2+YB531BppAlHzyrCZ+yJk4Sb6MikgmKvgD
-         qoURXuWHQUFamsz+kbhMqvGHbRLuYld8JybKuvAoVjjqnWlZ0VYgAbv6v+UonAE2aaAM
-         gM3Tn/TUaXd0l54rgmo45ZG0qjJ4X+qC3dGTXlXumIoU3VmJ4jn5Vm7+NhP6DHspBXuj
-         6SaO8xRzYsLZ9m+w6UCGSnvZFJDn2Ou8MSfUS9RQtNN6wwtZiKsWggVOtPrfVMmabC2q
-         QtMQ==
-X-Gm-Message-State: AOJu0YwTAQD5Ljb1yb48RliWmioVD9xG4yfLfxsYg2rUnIVteh3tUM5f
-        vLvr++qE9AZOvQIYkk0gSH0=
-X-Google-Smtp-Source: AGHT+IEtd7/2+KG5WHd0cByCIEOQATOBxdbRX+bfexS1IsqnxYU1Maj/cmH3p1/Wp7fgogXQxGevfg==
-X-Received: by 2002:adf:fc4c:0:b0:31a:d4e1:ea30 with SMTP id e12-20020adffc4c000000b0031ad4e1ea30mr11701566wrs.17.1696288502337;
-        Mon, 02 Oct 2023 16:15:02 -0700 (PDT)
+        bh=XG4wWkmLCo1BkRFV+SZ7pD22xcplU2FkjQ1ykcSCzlA=;
+        b=NY/aBdgqAVPDE/MwiT/8tomrmf562qNV3S1OotbuNXsyRf/RtMZjeyFVkrmxicOq4h
+         iB5QL4KHsOgsmyjCWIXF2RqOpcggBYhItPzMORWYeWX0aFabqjX4CP9sUZioLwv6+cz0
+         EVmdAr4ZYlJtsbjQlo3tqDPG0uUm1+tPH2oa2o0uBLrVI4mxNAuXrvlpwYjcj17jzOiG
+         k3CHohqoewDsnQKOECjtHhDEjzpgHxbg40/unthwpdrFcacAa8+hihxC2B3aBeG+C+rx
+         qjgkMvQRFPU/8Uwph1mWPnlGDUYxuuig2zrBMdZBn+AFoOi8bQVGzbo7L38X/rbxcU1U
+         okcQ==
+X-Gm-Message-State: AOJu0Yx2+QcmQP1Eutl/q3VMefQ1wF0fF8Q9fSasj3cBaMMYNkGtbE4z
+        ZdUwgoDLE6JzrNcSz4FlZvs=
+X-Google-Smtp-Source: AGHT+IHPD0YW6W2NKg8MPeJMMqQ8iaJpIr7CxgDjPL+crfsBudmp0EpxGqIbkwK6ssWkl/HoqBh5Gw==
+X-Received: by 2002:adf:ea8f:0:b0:320:1c6:628c with SMTP id s15-20020adfea8f000000b0032001c6628cmr12351480wrm.65.1696288503641;
+        Mon, 02 Oct 2023 16:15:03 -0700 (PDT)
 Received: from lucifer.home ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.googlemail.com with ESMTPSA id e31-20020a5d595f000000b0031fbbe347e1sm63860wri.65.2023.10.02.16.15.01
+        by smtp.googlemail.com with ESMTPSA id e31-20020a5d595f000000b0031fbbe347e1sm63860wri.65.2023.10.02.16.15.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 16:15:01 -0700 (PDT)
+        Mon, 02 Oct 2023 16:15:02 -0700 (PDT)
 From:   Lorenzo Stoakes <lstoakes@gmail.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -69,11 +69,10 @@ Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         John Hubbard <jhubbard@nvidia.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: [PATCH v2 2/4] mm/gup: explicitly define and check internal GUP flags, disallow FOLL_TOUCH
-Date:   Tue,  3 Oct 2023 00:14:52 +0100
-Message-ID: <971e013dfe20915612ea8b704e801d7aef9a66b6.1696288092.git.lstoakes@gmail.com>
+        Lorenzo Stoakes <lstoakes@gmail.com>
+Subject: [PATCH v2 3/4] mm/gup: make failure to pin an error if FOLL_NOWAIT not specified
+Date:   Tue,  3 Oct 2023 00:14:53 +0100
+Message-ID: <2a42d96dd1e37163f90a0019a541163dafb7e4c3.1696288092.git.lstoakes@gmail.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <cover.1696288092.git.lstoakes@gmail.com>
 References: <cover.1696288092.git.lstoakes@gmail.com>
@@ -89,53 +88,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than open-coding a list of internal GUP flags in
-is_valid_gup_args(), define which ones are internal.
+There really should be no circumstances under which a non-FOLL_NOWAIT GUP
+operation fails to return any pages, so make this an error and warn on it.
 
-In addition, explicitly check to see if the user passed in FOLL_TOUCH
-somehow, as this appears to have been accidentally excluded.
+To catch the trivial case, simply exit early if nr_pages == 0.
+
+This brings __get_user_pages_locked() in line with the behaviour of its
+nommu variant.
 
 Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: David Hildenbrand <david@redhat.com>
 Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
 ---
- mm/gup.c      | 5 ++---
- mm/internal.h | 3 +++
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ mm/gup.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/mm/gup.c b/mm/gup.c
-index 2f8a2d89fde1..b21b33d1787e 100644
+index b21b33d1787e..231711efa390 100644
 --- a/mm/gup.c
 +++ b/mm/gup.c
-@@ -2227,12 +2227,11 @@ static bool is_valid_gup_args(struct page **pages, int *locked,
- 	/*
- 	 * These flags not allowed to be specified externally to the gup
- 	 * interfaces:
--	 * - FOLL_PIN/FOLL_TRIED/FOLL_FAST_ONLY are internal only
-+	 * - FOLL_TOUCH/FOLL_PIN/FOLL_TRIED/FOLL_FAST_ONLY are internal only
- 	 * - FOLL_REMOTE is internal only and used on follow_page()
- 	 * - FOLL_UNLOCKABLE is internal only and used if locked is !NULL
- 	 */
--	if (WARN_ON_ONCE(gup_flags & (FOLL_PIN | FOLL_TRIED | FOLL_UNLOCKABLE |
--				      FOLL_REMOTE | FOLL_FAST_ONLY)))
-+	if (WARN_ON_ONCE(gup_flags & INTERNAL_GUP_FLAGS))
- 		return false;
+@@ -1471,6 +1471,9 @@ static __always_inline long __get_user_pages_locked(struct mm_struct *mm,
+ 	long ret, pages_done;
+ 	bool must_unlock = false;
  
- 	gup_flags |= to_set;
-diff --git a/mm/internal.h b/mm/internal.h
-index 449891ad7fdb..499016c6b01d 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -1018,6 +1018,9 @@ enum {
- 	FOLL_UNLOCKABLE = 1 << 21,
- };
- 
-+#define INTERNAL_GUP_FLAGS (FOLL_TOUCH | FOLL_TRIED | FOLL_REMOTE | FOLL_PIN | \
-+			    FOLL_FAST_ONLY | FOLL_UNLOCKABLE)
++	if (!nr_pages)
++		return 0;
 +
- /*
-  * Indicates for which pages that are write-protected in the page table,
-  * whether GUP has to trigger unsharing via FAULT_FLAG_UNSHARE such that the
+ 	/*
+ 	 * The internal caller expects GUP to manage the lock internally and the
+ 	 * lock must be released when this returns.
+@@ -1595,6 +1598,14 @@ static __always_inline long __get_user_pages_locked(struct mm_struct *mm,
+ 		mmap_read_unlock(mm);
+ 		*locked = 0;
+ 	}
++
++	/*
++	 * Failing to pin anything implies something has gone wrong (except when
++	 * FOLL_NOWAIT is specified).
++	 */
++	if (WARN_ON_ONCE(pages_done == 0 && !(flags & FOLL_NOWAIT)))
++		return -EFAULT;
++
+ 	return pages_done;
+ }
+ 
 -- 
 2.42.0
 
