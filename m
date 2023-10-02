@@ -2,401 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4417B5A6D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:42:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E6717B5A7F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238768AbjJBSmI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Oct 2023 14:42:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
+        id S238817AbjJBSmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:42:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238650AbjJBSmG (ORCPT
+        with ESMTP id S232711AbjJBSmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 14:42:06 -0400
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81DC69B;
-        Mon,  2 Oct 2023 11:42:03 -0700 (PDT)
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-57bf04841ccso12955eaf.0;
-        Mon, 02 Oct 2023 11:42:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696272123; x=1696876923;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W8a704JflSj3pI3y3Xgh4yVCmyPmtThEVtu9+wifhXA=;
-        b=aARAi0QFI4PI1RkkCILAJiWksK/y8+JJ8Tv05qsR7o1GPOPYRN/yUkOcIcQZQodc94
-         VbYZYtbuTN4DwzoKEegesvkc4eU985Z2AbH7n3LS8N2BNVXI/tMBXcaCIWngz8enVRKP
-         cLnQOq5uJMt61Ppe42Ic6r7Vw5xTPIbQrR0m+wY/8t3k6uErcS4UllEDgzvhKgaFAn49
-         8xA8xE1qowggZzLSfUN5K6dsaJ21WCPcYq0P90pb36PoUyKyMq/MZM0aciqu3Lfp3xJ/
-         J3rsKMsBJOO9dvgx8ige1hK6la/ZqdRQGPaddjuRePv5E5i0IYk7jOt6UvaG2iOZ0aPd
-         qPFg==
-X-Gm-Message-State: AOJu0YwEBMcT1MNhOUeOnwqokNb/hvBtN8qMagBYUu5xLBjEkXs0jS3H
-        aOrCvMetlwhaHQBN2ormoicIJIEQVl9Rbyq8sAqXHo0bUpw=
-X-Google-Smtp-Source: AGHT+IH+UsSXasSZjFIpClF3O5SDMHWAtaPKZFRCQbQiMAsDqWYaDD0Ezv3bN1fme2Bb501+fx0Y9pcPD+oHhcrg17c=
-X-Received: by 2002:a05:6808:97:b0:3a1:d457:83b5 with SMTP id
- s23-20020a056808009700b003a1d45783b5mr11496334oic.3.1696272122527; Mon, 02
- Oct 2023 11:42:02 -0700 (PDT)
+        Mon, 2 Oct 2023 14:42:40 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800999B;
+        Mon,  2 Oct 2023 11:42:37 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 392GrjwF023515;
+        Mon, 2 Oct 2023 18:42:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Dw6cRiyD4ij6FFvALmSO0YkJH8axhbYkwEimPioPBPM=;
+ b=ZBGshLzSSiNC6Xgh727AyySBQx9K71UUom7uDB94DmT8qJFrGxlNQ1+j+e0w4MCB+K73
+ +aAb7wzyL+hgIJymnY5d38cHLIIaoru7n+1EB4qbPnLT/vLD6lJBbtIKiDxANdpJyUlB
+ QRcRPtpgKMGDd7Pz9R7hkuzTIZoQ/KbCHv5RafQXldMM7hIWojJL8vuDiKo6V6YemR3Y
+ KNG14lWuwi8gGcn9zYEz6JfrH/5dKQX0kURSFNCoSmsHmgOX4r41SX9l8qpmLLQ2iD/c
+ C0QIcPZyA8fmQqDXWQToDVx2cJG0lLnd/LwMpUOKZhPjRo/+ohXkVIfRUGdFH5TFl+Gs Ag== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3teamxmjkg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Oct 2023 18:42:24 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 392IgNaB032091
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 2 Oct 2023 18:42:23 GMT
+Received: from [10.110.71.113] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 2 Oct
+ 2023 11:42:22 -0700
+Message-ID: <9684a5fc-f981-bc4b-5d3a-3cd539bdb421@quicinc.com>
+Date:   Mon, 2 Oct 2023 11:42:22 -0700
 MIME-Version: 1.0
-References: <20230926225813.995948-1-srinivas.pandruvada@linux.intel.com> <20230926225813.995948-3-srinivas.pandruvada@linux.intel.com>
-In-Reply-To: <20230926225813.995948-3-srinivas.pandruvada@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 2 Oct 2023 20:41:51 +0200
-Message-ID: <CAJZ5v0i8Y=tphmYtmwq-i93_OkxuiNvk_N-k1dUkqn46CwUj0w@mail.gmail.com>
-Subject: Re: [PATCH 2/5] thermal: int340x: processor_thermal: Support power
- floor notifications
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     daniel.lezcano@linaro.org, rafael@kernel.org, rui.zhang@intel.com,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v4 4/4] firmware: arm_scmi: Add qcom hvc/shmem transport
+ support
+Content-Language: en-US
+To:     Brian Masney <bmasney@redhat.com>
+CC:     <sudeep.holla@arm.com>, <cristian.marussi@arm.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+ <20230911194359.27547-1-quic_nkela@quicinc.com>
+ <20230911194359.27547-5-quic_nkela@quicinc.com> <ZRsNHnuUdGl+vuqz@brian-x1>
+From:   Nikunj Kela <quic_nkela@quicinc.com>
+In-Reply-To: <ZRsNHnuUdGl+vuqz@brian-x1>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: sYkcnUooeMierLCqgb0nxDz_t0mZlT6I
+X-Proofpoint-ORIG-GUID: sYkcnUooeMierLCqgb0nxDz_t0mZlT6I
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-02_13,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ impostorscore=0 spamscore=0 phishscore=0 adultscore=0 clxscore=1015
+ lowpriorityscore=0 malwarescore=0 priorityscore=1501 bulkscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310020145
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 12:58 AM Srinivas Pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
->
-> When the hardware reduces the power to the minimum possible, the power
-> floor is notified via an interrupt. This can happen when user space
-> requests a power limit via powercap RAPL interface, which forces the
-> system to enter to the lowest power. This power floor indication can
-> be used as a hint to resort to other methods of reducing power than
-> via RAPL power limit.
->
-> Before power floor status can be read or get notifications from the
-> firmware, it needs to be configured via a mailbox command. Actual power
-> floor status is read via bit 39 of MMIO offset 0x5B18 of the processor
-> thermal PCI device.
->
-> To show the current power floor status and get notification
-> on a sysfs attribute, add additional attributes to
-> /sys/bus/pci/devices/0000\:00\:04.0/power_limits/
->
-> power_floor_enable : This attribute is present when a SoC supports
-> power floor notification. This attribute allows to enable/disable
-> power floor notifications.
->
-> power_floor_status : This attribute is present when a SoC supports
-> power floor notification. When enabled this shows the current
-> status of power floor.
->
-> The power floor implementation provides interfaces, which are called
-> from the sysfs callbacks to enable/disable and read power floor
-> status. Also provides two additional interface to check if the current
-> processor thermal device interrupt is for power floor status and
-> send notification to user space.
->
-> Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-> ---
->  .../driver-api/thermal/intel_dptf.rst         |   8 ++
->  .../thermal/intel/int340x_thermal/Makefile    |   1 +
->  .../processor_thermal_device.c                |  68 ++++++++++-
->  .../processor_thermal_device.h                |   8 ++
->  .../processor_thermal_power_floor.c           | 114 ++++++++++++++++++
->  5 files changed, 198 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/thermal/intel/int340x_thermal/processor_thermal_power_floor.c
->
-> diff --git a/Documentation/driver-api/thermal/intel_dptf.rst b/Documentation/driver-api/thermal/intel_dptf.rst
-> index 2d11e74ac665..55d90eafd94b 100644
-> --- a/Documentation/driver-api/thermal/intel_dptf.rst
-> +++ b/Documentation/driver-api/thermal/intel_dptf.rst
-> @@ -164,6 +164,14 @@ ABI.
->  ``power_limit_1_tmax_us`` (RO)
->         Maximum powercap sysfs constraint_1_time_window_us for Intel RAPL
->
-> +``power_floor_status`` (RO)
-> +       When set to 1, hardware is not able to satisfy the requested power limit
-> +       via Intel RAPL.
-> +
-> +``power_floor_enable`` (RW)
-> +       When set to 1, enable reading and notification of power floor status.
-> +       Notifications are issued for changes in the power_floor_status attribute.
-> +
->  :file:`/sys/bus/pci/devices/0000\:00\:04.0/`
->
->  ``tcc_offset_degree_celsius`` (RW)
-> diff --git a/drivers/thermal/intel/int340x_thermal/Makefile b/drivers/thermal/intel/int340x_thermal/Makefile
-> index f33a3ad3bef3..fe3f43924525 100644
-> --- a/drivers/thermal/intel/int340x_thermal/Makefile
-> +++ b/drivers/thermal/intel/int340x_thermal/Makefile
-> @@ -12,5 +12,6 @@ obj-$(CONFIG_INT340X_THERMAL) += processor_thermal_rfim.o
->  obj-$(CONFIG_INT340X_THERMAL)  += processor_thermal_mbox.o
->  obj-$(CONFIG_INT340X_THERMAL)  += processor_thermal_wt_req.o
->  obj-$(CONFIG_INT340X_THERMAL)  += processor_thermal_wt_hint.o
-> +obj-$(CONFIG_INT340X_THERMAL)  += processor_thermal_power_floor.o
->  obj-$(CONFIG_INT3406_THERMAL)  += int3406_thermal.o
->  obj-$(CONFIG_ACPI_THERMAL_REL) += acpi_thermal_rel.o
-> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-> index 29ed7d0f7022..649f67fdf345 100644
-> --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.c
-> @@ -26,6 +26,48 @@ static ssize_t power_limit_##index##_##suffix##_show(struct device *dev, \
->         (unsigned long)proc_dev->power_limits[index].suffix * 1000); \
->  }
->
-> +static ssize_t power_floor_status_show(struct device *dev,
-> +                                      struct device_attribute *attr,
-> +                                      char *buf)
-> +{
-> +       struct proc_thermal_device *proc_dev = dev_get_drvdata(dev);
-> +       int ret;
-> +
-> +       ret = proc_thermal_read_power_floor_status(proc_dev);
-> +
-> +       return sysfs_emit(buf, "%d\n", ret);
-> +}
-> +
-> +static ssize_t power_floor_enable_show(struct device *dev,
-> +                                      struct device_attribute *attr,
-> +                                      char *buf)
-> +{
-> +       struct proc_thermal_device *proc_dev = dev_get_drvdata(dev);
-> +       bool ret;
-> +
-> +       ret = proc_thermal_power_floor_get_state(proc_dev);
-> +
-> +       return sysfs_emit(buf, "%d\n", ret);
-> +}
-> +
-> +static ssize_t power_floor_enable_store(struct device *dev,
-> +                                       struct device_attribute *attr,
-> +                                       const char *buf, size_t count)
-> +{
-> +       struct proc_thermal_device *proc_dev = dev_get_drvdata(dev);
-> +       u8 state;
-> +       int ret;
-> +
-> +       if (kstrtou8(buf, 0, &state))
-> +               return -EINVAL;
-> +
-> +       ret = proc_thermal_power_floor_set_state(proc_dev, !!state);
-> +       if (ret)
-> +               return ret;
-> +
-> +       return count;
-> +}
-> +
->  POWER_LIMIT_SHOW(0, min_uw)
->  POWER_LIMIT_SHOW(0, max_uw)
->  POWER_LIMIT_SHOW(0, step_uw)
-> @@ -50,6 +92,9 @@ static DEVICE_ATTR_RO(power_limit_1_step_uw);
->  static DEVICE_ATTR_RO(power_limit_1_tmin_us);
->  static DEVICE_ATTR_RO(power_limit_1_tmax_us);
->
-> +static DEVICE_ATTR_RO(power_floor_status);
-> +static DEVICE_ATTR_RW(power_floor_enable);
-> +
->  static struct attribute *power_limit_attrs[] = {
->         &dev_attr_power_limit_0_min_uw.attr,
->         &dev_attr_power_limit_1_min_uw.attr,
-> @@ -61,12 +106,30 @@ static struct attribute *power_limit_attrs[] = {
->         &dev_attr_power_limit_1_tmin_us.attr,
->         &dev_attr_power_limit_0_tmax_us.attr,
->         &dev_attr_power_limit_1_tmax_us.attr,
-> +       &dev_attr_power_floor_status.attr,
-> +       &dev_attr_power_floor_enable.attr,
->         NULL
->  };
->
-> +static umode_t power_limit_attr_visible(struct kobject *kobj, struct attribute *attr, int unused)
-> +{
-> +       struct device *dev = kobj_to_dev(kobj);
-> +       struct proc_thermal_device *proc_dev;
-> +
-> +       if (attr != &dev_attr_power_floor_status.attr && attr != &dev_attr_power_floor_enable.attr)
-> +               return attr->mode;
-> +
-> +       proc_dev = dev_get_drvdata(dev);
-> +       if (!proc_dev || !(proc_dev->mmio_feature_mask & PROC_THERMAL_FEATURE_POWER_FLOOR))
-> +               return 0;
-> +
-> +       return attr->mode;
-> +}
-> +
->  static const struct attribute_group power_limit_attribute_group = {
->         .attrs = power_limit_attrs,
-> -       .name = "power_limits"
-> +       .name = "power_limits",
-> +       .is_visible = power_limit_attr_visible,
->  };
->
->  static ssize_t tcc_offset_degree_celsius_show(struct device *dev,
-> @@ -380,6 +443,9 @@ void proc_thermal_mmio_remove(struct pci_dev *pdev, struct proc_thermal_device *
->             proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_DVFS)
->                 proc_thermal_rfim_remove(pdev);
->
-> +       if (proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_POWER_FLOOR)
-> +               proc_thermal_power_floor_set_state(proc_priv, false);
-> +
->         if (proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_WT_REQ)
->                 proc_thermal_wt_req_remove(pdev);
->         else if (proc_priv->mmio_feature_mask & PROC_THERMAL_FEATURE_WT_HINT)
-> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-> index dd025c8c2bac..89e98f025a49 100644
-> --- a/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_device.h
-> @@ -63,6 +63,7 @@ struct rapl_mmio_regs {
->  #define PROC_THERMAL_FEATURE_WT_REQ    0x08
->  #define PROC_THERMAL_FEATURE_DLVR      0x10
->  #define PROC_THERMAL_FEATURE_WT_HINT   0x20
-> +#define PROC_THERMAL_FEATURE_POWER_FLOOR       0x40
->
->  #if IS_ENABLED(CONFIG_PROC_THERMAL_MMIO_RAPL)
->  int proc_thermal_rapl_add(struct pci_dev *pdev, struct proc_thermal_device *proc_priv);
-> @@ -91,6 +92,13 @@ void proc_thermal_wt_req_remove(struct pci_dev *pdev);
->  #define MBOX_DATA_BIT_AC_DC            30
->  #define MBOX_DATA_BIT_VALID            31
->
-> +int proc_thermal_read_power_floor_status(struct proc_thermal_device *proc_priv);
-> +int proc_thermal_power_floor_set_state(struct proc_thermal_device *proc_priv, bool enable);
-> +bool proc_thermal_power_floor_get_state(struct proc_thermal_device *proc_priv);
-> +void proc_thermal_power_floor_intr_callback(struct pci_dev *pdev,
-> +                                           struct proc_thermal_device *proc_priv);
-> +bool proc_thermal_check_power_floor_intr(struct proc_thermal_device *proc_priv);
-> +
->  int processor_thermal_send_mbox_read_cmd(struct pci_dev *pdev, u16 id, u64 *resp);
->  int processor_thermal_send_mbox_write_cmd(struct pci_dev *pdev, u16 id, u32 data);
->  int processor_thermal_mbox_interrupt_config(struct pci_dev *pdev, bool enable, int enable_bit,
-> diff --git a/drivers/thermal/intel/int340x_thermal/processor_thermal_power_floor.c b/drivers/thermal/intel/int340x_thermal/processor_thermal_power_floor.c
-> new file mode 100644
-> index 000000000000..cac3a38f430f
-> --- /dev/null
-> +++ b/drivers/thermal/intel/int340x_thermal/processor_thermal_power_floor.c
-> @@ -0,0 +1,114 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Processor thermal device module for registering and processing
-> + * power floor. When the hardware reduces the power to the minimum
-> + * possible, the power floor is notified via an interrupt.
-> + *
-> + * Operation:
-> + * When user space enables power floor reporting:
-> + * - Use mailbox to:
-> + *     Enable processor thermal device interrupt
-> + *
-> + * - Current status of power floor is read from offset 0x5B18
-> + *   bit 39.
-> + *
-> + * Two interface functions are provided to call when there is a
-> + * thermal device interrupt:
-> + * - proc_thermal_power_floor_intr():
-> + *     Check if the interrupt is for change in power floor.
-> + *     Called from interrupt context.
-> + *
-> + * - proc_thermal_power_floor_intr_callback():
-> + *     Callback for interrupt processing in thread context. This involves
-> + *     sending notification to user space that there is a change in the
-> + *     power floor status.
-> + *
-> + * Copyright (c) 2023, Intel Corporation.
-> + */
-> +
-> +#include <linux/pci.h>
-> +#include "processor_thermal_device.h"
-> +
-> +#define SOC_POWER_FLOOR_INT_STATUS_OFF 0x5B18
 
-"OFFSET" would be better than "OFF" IMO.
+On 10/2/2023 11:34 AM, Brian Masney wrote:
+> On Mon, Sep 11, 2023 at 12:43:59PM -0700, Nikunj Kela wrote:
+>> This change adds the support for SCMI message exchange on Qualcomm
+>> virtual platforms.
+>>
+>> The hypervisor associates an object-id also known as capability-id
+>> with each hvc doorbell object. The capability-id is used to identify the
+>> doorbell from the VM's capability namespace, similar to a file-descriptor.
+>>
+>> The hypervisor, in addition to the function-id, expects the capability-id
+>> to be passed in x1 register when HVC call is invoked.
+>>
+>> The function-id & capability-id are allocated by the hypervisor on bootup
+>> and are stored in the shmem region by the firmware before starting Linux.
+>>
+>> Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
+>> ---
+>>   drivers/firmware/arm_scmi/driver.c |  1 +
+>>   drivers/firmware/arm_scmi/smc.c    | 47 ++++++++++++++++++++++++++----
+>>   2 files changed, 43 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+>> index 87383c05424b..ea344bc6ae49 100644
+>> --- a/drivers/firmware/arm_scmi/driver.c
+>> +++ b/drivers/firmware/arm_scmi/driver.c
+>> @@ -2915,6 +2915,7 @@ static const struct of_device_id scmi_of_match[] = {
+>>   #ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC
+>>   	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
+>>   	{ .compatible = "arm,scmi-smc-param", .data = &scmi_smc_desc},
+>> +	{ .compatible = "qcom,scmi-hvc-shmem", .data = &scmi_smc_desc},
+>>   #endif
+>>   #ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
+>>   	{ .compatible = "arm,scmi-virtio", .data = &scmi_virtio_desc},
+>> diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
+>> index 0a0b7e401159..94ec07fdc14a 100644
+>> --- a/drivers/firmware/arm_scmi/smc.c
+>> +++ b/drivers/firmware/arm_scmi/smc.c
+>> @@ -50,6 +50,9 @@
+>>    * @func_id: smc/hvc call function id
+>>    * @param_page: 4K page number of the shmem channel
+>>    * @param_offset: Offset within the 4K page of the shmem channel
+>> + * @cap_id: hvc doorbell's capability id to be used on Qualcomm virtual
+>> + *	    platforms
+>> + * @qcom_xport: Flag to indicate the transport on Qualcomm virtual platforms
+>>    */
+>>   
+>>   struct scmi_smc {
+>> @@ -63,6 +66,8 @@ struct scmi_smc {
+>>   	u32 func_id;
+>>   	u32 param_page;
+>>   	u32 param_offset;
+>> +	u64 cap_id;
+>> +	bool qcom_xport;
+>>   };
+> [snip]
+>
+>>   static irqreturn_t smc_msg_done_isr(int irq, void *data)
+>> @@ -129,6 +134,7 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
+>>   	struct resource res;
+>>   	struct device_node *np;
+>>   	u32 func_id;
+>> +	u64 cap_id;
+>>   	int ret;
+> [snip]
+>
+>> +		func_id = readl((void __iomem *)(scmi_info->shmem) + size - 16);
+>> +#ifdef CONFIG_ARM64
+>> +		cap_id = readq((void __iomem *)(scmi_info->shmem) + size - 8);
+>> +#else
+>> +		/* capability-id is 32 bit wide on 32bit machines */
+>> +		cap_id = readl((void __iomem *)(scmi_info->shmem) + size - 8);
+>> +#endif
+> The 32 bit case is defined as a u64 in two places above.
 
-> +#define SOC_POWER_FLOOR_STATUS         BIT(39)
-> +#define SOC_POWER_FLOOR_SHIFT          39
-> +
-> +#define SOC_POWER_FLOOR_INT_ENABLE_BIT 31
-> +#define SOC_POWER_FLOOR_INT_ACTIVE     BIT(3)
-> +
-> +/* Mark time windows as invalid as this is not applicable */
+That is done to make sure the size of the structure in memory is not 
+architecture dependent. This was recommended in one of the previous 
+version of this patch.
 
-The meaning of the above comment is unclear.
 
-> +#define SOC_POWER_FLOOR_TIME_WINDOW    -1
-> +
-> +int proc_thermal_read_power_floor_status(struct proc_thermal_device *proc_priv)
-> +{
-> +       u64 status = 0;
-> +
-> +       status = readq(proc_priv->mmio_base + SOC_POWER_FLOOR_INT_STATUS_OFF);
-> +       return (status & SOC_POWER_FLOOR_STATUS) >> SOC_POWER_FLOOR_SHIFT;
-> +}
-> +EXPORT_SYMBOL_NS_GPL(proc_thermal_read_power_floor_status, INT340X_THERMAL);
-> +
-> +static bool enable_state;
-> +static DEFINE_MUTEX(pf_lock);
-> +
-> +int proc_thermal_power_floor_set_state(struct proc_thermal_device *proc_priv, bool enable)
-> +{
-> +       int ret = 0;
-> +
-> +       mutex_lock(&pf_lock);
-> +       if (enable_state == enable)
-> +               goto pf_unlock;
-> +
-> +       ret = processor_thermal_mbox_interrupt_config(to_pci_dev(proc_priv->dev), enable,
-> +                                                     SOC_POWER_FLOOR_INT_ENABLE_BIT,
-> +                                                     SOC_POWER_FLOOR_TIME_WINDOW);
-> +       if (!ret)
-> +               enable_state = enable;
-> +
-> +pf_unlock:
-> +       mutex_unlock(&pf_lock);
-> +
-> +       return ret;
-> +}
-> +EXPORT_SYMBOL_NS_GPL(proc_thermal_power_floor_set_state, INT340X_THERMAL);
-> +
-> +bool proc_thermal_power_floor_get_state(struct proc_thermal_device *proc_priv)
-> +{
-> +       return enable_state;
-> +}
-> +EXPORT_SYMBOL_NS_GPL(proc_thermal_power_floor_get_state, INT340X_THERMAL);
-> +
-> +/*
-> + * Callback to check if interrupt for power floor is active.
-> + * Caution: Called from interrupt context.
-> + */
+>
+>> +
+>> +		/* The func-id & capability-id are kept in last 16 bytes of shmem.
+>> +		 *     +-------+
+>> +		 *     |       |
+>> +		 *     | shmem |
+>> +		 *     |       |
+>> +		 *     |       |
+>> +		 *     +-------+ <-- (size - 16)
+>> +		 *     | funcId|
+>> +		 *     +-------+ <-- (size - 8)
+>> +		 *     | capId |
+>> +		 *     +-------+ <-- size
+>> +		 */
+> Personally I'd add one more space to the right side of the table after
+> funcId.
 
-I would prefer this comment and the one below to be proper kerneldoc
-ones or to be moved inside the functions.
+I could do that but then in 32bit case, you would want one more space 
+right after cap-id since it is 32 bit on 32 bit platform. If it helps, I 
+can have two lay out one for 32bit and one for 64 bit.
 
-> +bool proc_thermal_check_power_floor_intr(struct proc_thermal_device *proc_priv)
-> +{
-> +       u64 int_status;
-> +
-> +       int_status = readq(proc_priv->mmio_base + SOC_POWER_FLOOR_INT_STATUS_OFF);
-> +       if (int_status & SOC_POWER_FLOOR_INT_ACTIVE)
-> +               return true;
-> +
-> +       return false;
 
-return !!(int_status & SOC_POWER_FLOOR_INT_ACTIVE);
+>> -	arm_smccc_1_1_invoke(scmi_info->func_id, page, offset, 0, 0, 0, 0, 0,
+>> -			     &res);
+>> +	if (scmi_info->qcom_xport)
+>> +		arm_smccc_1_1_hvc(scmi_info->func_id, cap_id, 0, 0, 0, 0, 0, 0,
+>> +				  &res);
+>> +	else
+>> +		arm_smccc_1_1_invoke(scmi_info->func_id, page, offset, 0, 0, 0,
+>> +				     0, 0, &res);
+> Does it make sense to call this variable qcom_xport? Would hvc_xport be
+> a more appropriate name?
+>
+> Brian
 
-> +}
-> +EXPORT_SYMBOL_NS_GPL(proc_thermal_check_power_floor_intr, INT340X_THERMAL);
-> +
-> +/* Callback to notify user space */
+Cap-id is QCOM specific ABI parameter not HVC.
 
-Notify user space about what and how?  As is, this comment isn't very
-useful IMO.
-
-> +void proc_thermal_power_floor_intr_callback(struct pci_dev *pdev,
-> +                                           struct proc_thermal_device *proc_priv)
-> +{
-> +       u64 status;
-> +
-> +       status = readq(proc_priv->mmio_base + SOC_POWER_FLOOR_INT_STATUS_OFF);
-> +       if (!(status & SOC_POWER_FLOOR_INT_ACTIVE))
-> +               return;
-> +
-> +       writeq(status & ~SOC_POWER_FLOOR_INT_ACTIVE,
-> +              proc_priv->mmio_base + SOC_POWER_FLOOR_INT_STATUS_OFF);
-> +       sysfs_notify(&pdev->dev.kobj, "power_limits", "power_floor_status");
-> +}
-> +EXPORT_SYMBOL_NS_GPL(proc_thermal_power_floor_intr_callback, INT340X_THERMAL);
-> +
-> +MODULE_IMPORT_NS(INT340X_THERMAL);
-> +MODULE_LICENSE("GPL");
-> --
+>
