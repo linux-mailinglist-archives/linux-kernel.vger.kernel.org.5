@@ -2,136 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 835307B5664
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DF97B566E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237734AbjJBPXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37166 "EHLO
+        id S238074AbjJBPXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237928AbjJBPXd (ORCPT
+        with ESMTP id S237877AbjJBPXt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:23:33 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7ED3B7
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:23:30 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id d75a77b69052e-4195fe5cf73so438171cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 08:23:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696260210; x=1696865010; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WcmjJranJU9dHmKZgwi11TJfqlRgTzZNCx/vVbaZ/W0=;
-        b=WRCQdQGHTZRwMsM/W5bx9E3lku+poVB/wDA58277PG8jQwqVtE0Cbu/XEumKa0Lps6
-         0J5eKYADoXN+vUWAvYxnXH9dSe4nG6LkHrwJvH4g3dvbUs3ntyk3j+7bD4m1363WSjQw
-         tzMSSbs1cPT9kNtswcAg70HcFBcDugUv3awR6lRzA1Zhb372xG22TwZLTPG5LvpbV0re
-         DAJjmCby8mqQN5R4wfdRZOZYSA+zRRKPX5sAawG09qginICkco9KeCzdWAlF7AF55pHp
-         QFxwtSRlUXbXAEweNyj5a1aqSq8g307bIk0fcPIk9FLhafs5QkCgVVDF2jPq3ny0zh5f
-         DkcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696260210; x=1696865010;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WcmjJranJU9dHmKZgwi11TJfqlRgTzZNCx/vVbaZ/W0=;
-        b=ctSdFV+PoXWhnSiJZ5oEiXBlPT1Lkv+my/5rA6SUUeOldulB4sO5yhQZEELeLw3xvA
-         nAQQre9tKKq5M1hwV/I1VdT2ssLnEXpXy12pfgbEFkAyQOK4JuTqktq0IQ1RHHInphD7
-         NIh9Rc/J1pGjfx5X7M7EI6LYiz/mBhJJz30Ghyzcvl5Jx7z2vcUGa5LXp2AsiPWPa1sY
-         1ZFe5N2+ti1YG7VSy6TP4OZQEoj50N793hXMNo8plYU9ehGZ/LpoZnvbR90qjZ66020d
-         +KnKVit1moINe1SBbg61aF8envRXcrYI6BReQMRX/H77OSD3h1vxPeCfbP6qiguqDCyW
-         ZLZA==
-X-Gm-Message-State: AOJu0Yzd33tACPorZobi74A315+budgckniFhGmVienKGDFsg0tg4ocr
-        qFxI+x57KsrOSiOc4giv6kjuBYAz0/K+unQg4NPEpQ==
-X-Google-Smtp-Source: AGHT+IFlu305KhvyXysTo++Jl9EAskcrzabqiwpzs9CTrnnArCGgWBa6iqE4HiqMPpkfLFQwSSpfqxOPoWFQEhD18O0=
-X-Received: by 2002:a05:622a:94:b0:417:9238:5a30 with SMTP id
- o20-20020a05622a009400b0041792385a30mr354168qtw.29.1696260209711; Mon, 02 Oct
- 2023 08:23:29 -0700 (PDT)
+        Mon, 2 Oct 2023 11:23:49 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 880E4D8;
+        Mon,  2 Oct 2023 08:23:46 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D0BCC433C7;
+        Mon,  2 Oct 2023 15:23:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696260226;
+        bh=J31MH8/2r2BMfbJUBh+R459Cp6pdTI0Bsk+3NWVzrsE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hPStttAfTWc+lyohHbX38wiESvCZgMH8ITKZQzHcHdm8G7UCp7Q5ImGYlldQGDmwi
+         JIh2c8/pTqJ9a5pQ3NhFY5MyAysWRzFmSLK7X6uevHewo8kIHvFqKI3FTqgCgMsYXe
+         tsrNuodOO+IXVlt+OKJEsk+m2tAC3V5suY4SDpR6BRTAfxHVR4q3imCOiGoVS5Lh5G
+         yl9Gr2QCptI3ctd6eYSpy9H/998tREUU18ydMG1t2acp89rKMAtxzSXe5yZ8IFFyMG
+         SK15YA+ffl5SMze3JNikC4t3pYswRTXVrWrQ9z/bqAf/vDpvm3RhKRBW+PJ319123s
+         w4RiwFX/fxsdw==
+Received: (nullmailer pid 1752918 invoked by uid 1000);
+        Mon, 02 Oct 2023 15:23:43 -0000
+Date:   Mon, 2 Oct 2023 10:23:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     jdelvare@suse.com, linux@roeck-us.net,
+        krzysztof.kozlowski+dt@linaro.org, joel@jms.id.au, andrew@aj.id.au,
+        corbet@lwn.net, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, p.zabel@pengutronix.de,
+        naresh.solanki@9elements.com, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
+        BMC-SW@aspeedtech.com, patrick@stwcx.xyz
+Subject: Re: [PATCH v9 1/3] dt-bindings: hwmon: fan: Add fan binding to schema
+Message-ID: <20231002152343.GA1747496-robh@kernel.org>
+References: <20230918064111.2221594-1-billy_tsai@aspeedtech.com>
+ <20230918064111.2221594-2-billy_tsai@aspeedtech.com>
 MIME-Version: 1.0
-References: <20230927033124.1226509-1-dapeng1.mi@linux.intel.com>
- <20230927033124.1226509-8-dapeng1.mi@linux.intel.com> <20230927113312.GD21810@noisy.programming.kicks-ass.net>
- <ZRRl6y1GL-7RM63x@google.com> <20230929115344.GE6282@noisy.programming.kicks-ass.net>
- <ZRbxb15Opa2_AusF@google.com> <20231002115718.GB13957@noisy.programming.kicks-ass.net>
- <ZRrF38RGllA04R8o@gmail.com>
-In-Reply-To: <ZRrF38RGllA04R8o@gmail.com>
-From:   David Dunn <daviddunn@google.com>
-Date:   Mon, 2 Oct 2023 08:23:17 -0700
-Message-ID: <CABOYuvYNZd63mNjAsZUckguYbcq4KDvy1Q9Zwzh1DgFfiFb=HQ@mail.gmail.com>
-Subject: Re: [Patch v4 07/13] perf/x86: Add constraint for guest perf metrics event
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <likexu@tencent.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Lv Zhiyuan <zhiyuan.lv@intel.com>,
-        Yang Weijiang <weijiang.yang@intel.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230918064111.2221594-2-billy_tsai@aspeedtech.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 6:30=E2=80=AFAM Ingo Molnar <mingo@kernel.org> wrote=
-:
->
->
-> The host OS shouldn't offer facilities that severely limit its own capabi=
-lities,
-> when there's a better solution. We don't give the FPU to apps exclusively=
- either,
-> it would be insanely stupid for a platform to do that.
->
+On Mon, Sep 18, 2023 at 02:41:09PM +0800, Billy Tsai wrote:
+> From: Naresh Solanki <naresh.solanki@9elements.com>
+> 
+> Add common fan properties bindings to a schema.
+> 
+> Bindings for fan controllers can reference the common schema for the
+> fan
+> 
+> child nodes:
+> 
+>   patternProperties:
+>     "^fan@[0-2]":
+>       type: object
+>       $ref: fan-common.yaml#
+>       unevaluatedProperties: false
+> 
+> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> ---
+>  .../devicetree/bindings/hwmon/fan-common.yaml | 78 +++++++++++++++++++
+>  1 file changed, 78 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/fan-common.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/hwmon/fan-common.yaml b/Documentation/devicetree/bindings/hwmon/fan-common.yaml
+> new file mode 100644
+> index 000000000000..2bd2f57fc9d9
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/fan-common.yaml
+> @@ -0,0 +1,78 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwmon/fan-common.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Common Fan Properties
+> +
+> +maintainers:
+> +  - Naresh Solanki <naresh.solanki@9elements.com>
+> +  - Billy Tsai <billy_tsai@aspeedtech.com>
+> +
+> +properties:
+> +  max-rpm:
+> +    description:
+> +      Max RPM supported by fan.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maximum: 100000
+> +
+> +  min-rpm:
+> +    description:
+> +      Min RPM supported by fan.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maximum: 1000
+> +
+> +  pulses-per-revolution:
+> +    description:
+> +      The number of pulse from fan sensor per revolution.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    maximum: 4
+> +
+> +  tach-div:
+> +    description:
+> +      Divisor for the tach sampling clock, which determines the sensitivity of the tach pin.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  target-rpm:
+> +    description:
+> +      The default desired fan speed in RPM.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +
+> +  fan-driving-mode:
+> +    description:
+> +      Select the driving mode of the fan.(DC, PWM and so on)
+> +    $ref: /schemas/types.yaml#/definitions/uint32
 
-If you think of the guest VM as a usermode application (which it
-effectively is), the analogous situation is that there is no way to
-tell the usermode application which portions of the FPU state might be
-used by the kernel without context switching.  Although the kernel can
-and does use FPU state, it doesn't zero out a portion of that state
-whenever the kernel needs to use the FPU.
+What value corresponds to what mode? I'd do strings instead. 'dc', 
+'pwm', etc.
 
-Today there is no way for a guest to dynamically adjust which PMU
-state is valid or invalid.  And this changes based on usage by other
-commands run on the host.  As observed by perf subsystem running in
-the guest kernel, this looks like counters that simply zero out and
-stop counting at random.
+> +
+> +  pwms:
+> +    description:
+> +      PWM provider.
+> +    maxItems: 1
+> +
+> +  "#cooling-cells":
+> +    const: 2
+> +
+> +  cooling-levels:
+> +    description: |
 
-I think the request here is that there be a way for KVM to be able to
-tell the guest kernel (running the perf subsystem) that it has a
-functional HW PMU.  And for that to be true.  This doesn't mean taking
-away the use of the PMU any more than exposing the FPU to usermode
-applications means taking away the FPU from the kernel.  But it does
-mean that when entering the KVM run loop, the host perf system needs
-to context switch away the host PMU state and allow KVM to load the
-guest PMU state.  And much like the FPU situation, the portion of the
-host kernel that runs between the context switch to the KVM thread and
-VMENTER to the guest cannot use the PMU.
+Don't need '|'
 
-This obviously should be a policy set by the host owner.  They are
-deliberately giving up the ability to profile that small portion of
-the host (KVM VCPU thread cannot be profiled) in return to providing a
-full set of perf functionality to the guest kernel.
-
-Dave Dunn
+> +      The control value which correspond to thermal cooling states.
+> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+> +
+> +  tach-ch:
+> +    description:
+> +      The tach channel used for the fan.
+> +    $ref: /schemas/types.yaml#/definitions/uint8-array
+> +
+> +  label:
+> +    description:
+> +      Optional fan label
+> +
+> +  fan-supply:
+> +    description:
+> +      Power supply for fan.
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +additionalProperties: true
+> +
+> +...
+> -- 
+> 2.25.1
+> 
