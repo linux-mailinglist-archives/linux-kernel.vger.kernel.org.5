@@ -2,82 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A017B4F28
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9AA7B4F2A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236143AbjJBJjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57118 "EHLO
+        id S236159AbjJBJjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236146AbjJBJja (ORCPT
+        with ESMTP id S231164AbjJBJji (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:39:30 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E29E4A7;
-        Mon,  2 Oct 2023 02:39:26 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 7F49BFF80A;
-        Mon,  2 Oct 2023 09:39:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696239565;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OXizb9gGd7vJ+bHW/cxJRzpuCYpWwyioDAXH0qfuvtk=;
-        b=bEhjfkT+X0IqLZRPfwYa0v73V18GcN5X6Bpb+/p1hV//YXZeuITd5nIjeYPecbadt467fc
-        UQDlKMBicXXSdQsMB2taV7+R33Sc/f/wEYPk7zchuLLNZZqSLy2VG6xwkkOf6sKUYmpBGr
-        2YKP3uTv3Je+ZFs6k/UGqM9J2Ss5LVpfrN6nHlOAQN+p3jQpj30cL0WorQlsBmrCVZsP4G
-        FWq1VlLGK0ZyunKux0YcIPT7CLdpF4KZF/SFelIFpZe3mrJy9Lpo0leELuBaRx6sodmocR
-        3Euo8HetgP9pFRBaFE4ME2bsfaRtuskvmHm8myywH1ydKZVw3O4PW65wRtUlfQ==
-Date:   Mon, 2 Oct 2023 11:39:11 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 2/6] mtd: parsers: ar7: remove support
-Message-ID: <20231002113911.6bf2b73e@xps-13>
-In-Reply-To: <ZRUm4DS3qvRfcPox@ninjato>
-References: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
-        <20230922061530.3121-3-wsa+renesas@sang-engineering.com>
-        <20230922163903.3f49ea2a@xps-13>
-        <ZRUm4DS3qvRfcPox@ninjato>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Mon, 2 Oct 2023 05:39:38 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A117DA;
+        Mon,  2 Oct 2023 02:39:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696239576; x=1727775576;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fHrjvcJ6gy9Fptsh53LE767saMnzrLZN5aVBlrefQ7I=;
+  b=Oyg/dXKmKF4r+rnKdvg8K8W/D5S0VJ41xoRyn2Ho0d7M5abtvVaoHOgw
+   a7NbTyLY+e22P9sOTjdtJlb3XLN1B09EGvcpAr9L4FxFhTcXPp5WQ/ySV
+   W3wNBUf6F1x8pQRgxMnjiTtzzADZ04khx7N3qJ8yiXUHiy+ekrwynBkIo
+   rBofcqb9/zPJBNWXGJKKyT8AC0935jUXrqf9DxEN9jpRfCfN+mH02E05y
+   8zRyc/mKiMqoEST1q4LdurAd5mbK/m0FMYKcPWmq5g8VKdgl8ynDwsPEA
+   PsbjnjrjrOcIr36fo3x9X6GphL3++oZ/5v/6L5mgW6Fm9YDQDbs8js8HO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="361988030"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="361988030"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:39:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="997574136"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="997574136"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:39:34 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qnFOl-000000027be-1Mac;
+        Mon, 02 Oct 2023 12:39:31 +0300
+Date:   Mon, 2 Oct 2023 12:39:31 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v4 02/11] gpiolib: add support for scope-based management
+ to gpio_device
+Message-ID: <ZRqP07zBK5+Y8pDq@smile.fi.intel.com>
+References: <20230927142931.19798-1-brgl@bgdev.pl>
+ <20230927142931.19798-3-brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927142931.19798-3-brgl@bgdev.pl>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+On Wed, Sep 27, 2023 at 04:29:22PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> As the few users that need to get the reference to the GPIO device often
+> release it right after inspecting its properties, let's add support for
+> the automatic reference release to struct gpio_device.
 
-wsa+renesas@sang-engineering.com wrote on Thu, 28 Sep 2023 09:10:24
-+0200:
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-> > I'm not sure it is wise to merge defconfig changes through mtd. Would
-> > you mind sending this change aside to avoid potential conflicts? Each
-> > patch can live on their own anyway. =20
->=20
-> I checked pxa_defconfig history. Most commits in the last 7 years were
-> just removing outdated Kconfig symbols from all kind of subsystems. Like
-> what we want to do here. I think it is okay to keep it.
->=20
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Ok, I've acked the patch anyway, so now I expect it to be taken through
-the mips tree as suggested earlier. Let me know if it's happening
-differently.
 
-Thanks,
-Miqu=C3=A8l
