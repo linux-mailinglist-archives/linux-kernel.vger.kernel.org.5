@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFA77B5D3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 00:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019A47B5D3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 00:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235738AbjJBWko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 18:40:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42576 "EHLO
+        id S231178AbjJBWkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 18:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229825AbjJBWkl (ORCPT
+        with ESMTP id S229753AbjJBWkk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 18:40:41 -0400
-X-Greylist: delayed 469 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 02 Oct 2023 15:40:24 PDT
+        Mon, 2 Oct 2023 18:40:40 -0400
+X-Greylist: delayed 470 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 02 Oct 2023 15:40:24 PDT
 Received: from raptorengineering.com (mail.raptorengineering.com [23.155.224.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FD69D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3205E99;
         Mon,  2 Oct 2023 15:40:24 -0700 (PDT)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.rptsys.com (Postfix) with ESMTP id 3F024828597D;
+        by mail.rptsys.com (Postfix) with ESMTP id D98898285418;
         Mon,  2 Oct 2023 17:32:35 -0500 (CDT)
 Received: from mail.rptsys.com ([127.0.0.1])
         by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Dcw0G3nmlXZQ; Mon,  2 Oct 2023 17:32:34 -0500 (CDT)
+        with ESMTP id y9b-NGjVqnzX; Mon,  2 Oct 2023 17:32:35 -0500 (CDT)
 Received: from localhost (localhost [127.0.0.1])
-        by mail.rptsys.com (Postfix) with ESMTP id F3ADF82859F5;
-        Mon,  2 Oct 2023 17:32:33 -0500 (CDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com F3ADF82859F5
+        by mail.rptsys.com (Postfix) with ESMTP id DA0B182859EC;
+        Mon,  2 Oct 2023 17:32:34 -0500 (CDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com DA0B182859EC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=raptorengineering.com; s=B8E824E6-0BE2-11E6-931D-288C65937AAD;
-        t=1696285954; bh=LufzGIQ23pbgUD0Ke1CGyp8zeUOTPZspVJDLvGFGfgY=;
+        t=1696285954; bh=S+mCMOZ2NAwJ7Ik3LFaWrPjlnuBduz6GXjcS8/kAvNM=;
         h=From:To:Date:Message-Id:MIME-Version;
-        b=eF4bxsy7wgoMOs7K3EjAhBoDZgP2Z/Tg8yq+IrMrXBnffBHoyXNj0nIsRmvwPVkz6
-         8eQPEQIXPBAMTr8kLh0RthdEst3+xA65gUDGK+T/WMsdQM8pnjg7fPgckug/XQTUO2
-         PZTiebt4i5QNMK/N0g655gSF7020iXbmGWS3VbO0=
+        b=gE/3HFkpo8+TGJ0K9Y6OUyeh2h6A1K/c8/af65KLCJ3j6I6MuM1uYYQ8D1YgDKRLT
+         D0ScLHsYB5yaclOLuGtuYs8BMsg0L3siPDf803pxQgwXi04Xht2BKzJ2T3Gahxgrzr
+         s8zQpjbQZ2YiAv5pIFrvCxgj8ovf3JCefB+ifbQ4=
 X-Virus-Scanned: amavisd-new at rptsys.com
 Received: from mail.rptsys.com ([127.0.0.1])
         by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id jAgWyKlAZhMy; Mon,  2 Oct 2023 17:32:33 -0500 (CDT)
+        with ESMTP id S_EcUAiR6GDY; Mon,  2 Oct 2023 17:32:34 -0500 (CDT)
 Received: from raptor-ewks-026.lan (5.edge.rptsys.com [23.155.224.38])
-        by mail.rptsys.com (Postfix) with ESMTPSA id 651DA8285418;
+        by mail.rptsys.com (Postfix) with ESMTPSA id EDC68828597D;
         Mon,  2 Oct 2023 17:32:33 -0500 (CDT)
 From:   Shawn Anastasio <sanastasio@raptorengineering.com>
 To:     devicetree@vger.kernel.org, lee@kernel.org,
@@ -46,14 +46,11 @@ To:     devicetree@vger.kernel.org, lee@kernel.org,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Rob Herring <robh+dt@kernel.org>
 Cc:     Shawn Anastasio <sanastasio@raptorengineering.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Jagan Teki <jagan@edgeble.ai>, Icenowy Zheng <uwu@icenowy.me>,
+        Timothy Pearson <tpearson@raptorengineering.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] dt-bindings: vendor-prefixes: Add prefix for SIE
-Date:   Mon,  2 Oct 2023 17:32:20 -0500
-Message-Id: <e2fb7a1924bf5642204c50d73d414b5d41e09e93.1696285339.git.sanastasio@raptorengineering.com>
+Subject: [PATCH 2/3] dt-bindings: mfd: sie,cronos-cpld: Add initial DT binding
+Date:   Mon,  2 Oct 2023 17:32:21 -0500
+Message-Id: <8b014f8b302f8b41c45c4f6fb114cf18e84a76fa.1696285339.git.sanastasio@raptorengineering.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1696285339.git.sanastasio@raptorengineering.com>
 References: <cover.1696285339.git.sanastasio@raptorengineering.com>
@@ -68,26 +65,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a vendor prefix for Sony Interactive Entertainment LLC (SIE).
+The SIE Cronos Platform Controller CPLD is a multi-purpose platform
+controller that provides both a watchdog timer and an LED controller. As
+both functions are provided by the same CPLD, a multi-function device is
+exposed as the parent of both functions.
+
+Add a DT binding for this device.
 
 Signed-off-by: Shawn Anastasio <sanastasio@raptorengineering.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ .../bindings/mfd/sie,cronos-cpld.yaml         | 67 +++++++++++++++++++
+ 1 file changed, 67 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/sie,cronos-cpld.yaml
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 573578db9509..cff35e68a34d 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -1211,6 +1211,8 @@ patternProperties:
-     description: Si-En Technology Ltd.
-   "^si-linux,.*":
-     description: Silicon Linux Corporation
-+  "^sie,.*":
-+    description: Sony Interactive Entertainment LLC
-   "^siemens,.*":
-     description: Siemens AG
-   "^sifive,.*":
+diff --git a/Documentation/devicetree/bindings/mfd/sie,cronos-cpld.yaml b/Documentation/devicetree/bindings/mfd/sie,cronos-cpld.yaml
+new file mode 100644
+index 000000000000..3b59cdd46243
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mfd/sie,cronos-cpld.yaml
+@@ -0,0 +1,67 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright 2023 Raptor Engineering, LLC
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/mfd/sie,cronos-cpld.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: SIE Cronos Platform Controller CPLD multi-function device
++
++maintainers:
++  - Timothy Pearson <tpearson@raptorengineering.com>
++
++description: |
++  The SIE Cronos Platform Controller CPLD is a multi-purpose platform controller
++  that provides both a watchdog timer and an LED controller. As both functions
++  are provided by the same CPLD, a multi-function device is exposed as the
++  parent of both functions.
++
++properties:
++  compatible:
++    const: sie,cronos-cpld
++
++  reg:
++    maxItems: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 1
++
++  leds:
++    type: object
++    description: Cronos Platform Status LEDs
++
++    properties:
++      compatible:
++        const: sie,cronos-leds
++
++  watchdog:
++    type: object
++    description: Cronos Platform Watchdog Timer
++
++    properties:
++      compatible:
++        const: sie,cronos-watchdog
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    cpld: cpld@3f {
++      compatible = "sie,cronos-cpld";
++      reg = <0x3f>;
++
++      watchdog {
++        compatible = "sie,cronos-watchdog";
++      };
++
++      leds {
++        compatible = "sie,cronos-leds";
++      };
++    };
 -- 
 2.30.2
 
