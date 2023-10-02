@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5317B5249
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 575BA7B525D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237069AbjJBMG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 08:06:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
+        id S237038AbjJBMHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 08:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236984AbjJBMGd (ORCPT
+        with ESMTP id S236981AbjJBMGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Oct 2023 08:06:33 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A3CD3;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4AFDA;
         Mon,  2 Oct 2023 05:06:29 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:9537:67ca:c85e:d0ae])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9CE336607314;
-        Mon,  2 Oct 2023 13:06:27 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 298E3660731D;
+        Mon,  2 Oct 2023 13:06:28 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1696248388;
-        bh=MAfzqnBElYsriZOe56F+JFfMksB0FEVAHWT7iRLKeFk=;
+        bh=dORnTzB2rXmsaHgnhN9KRI5xHQJEBU6mRdZelnGjotA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gQft/qs4HXHcaOnvsTV1VjfLtIR4x6frTn77MseWecOwzxMKmTVmft0lsnmGNa6On
-         2HHrXuVCR5s7Hz+C3s0duze8XZOStWWbxDTPaalTbQBpJs6j3dWDHIaGnD73gebmd7
-         3+rOKk6ULRfiOU5QMtOcVjjcQIPIXj3ll3GL095Dde5Ew0IhGFTXB9GBdZHsOJeOco
-         gV2pEqHk+/NWMDQclk3UM4QZu5U3iLMFDe6pBXtUXnKpd8ORJYhnh1iq8qPDBBzwrH
-         x/z6MLJINJYdc+eyeOfpDmgGIOMnc3kIv8torqzwf1Z6xa3WxZj7RAfye/0nZackJ4
-         /8O4PridKzwYw==
+        b=ANY/SlcTIS9xvbBO6GqeOWDY1CFXdCUe6YQTXaSqymuiyKsQbnvtUnxPowI1uRjda
+         k1l09jAB7GDi+SSnP/HTGeAizOnJpxL1zBeo+hTLGz9FoHfv5J8zmBvDELlz0FiMlN
+         F4159b7AH1vQQTGykRD/waSHkYptPYMxXF4PLhoYw7bvACZEiq9Zc8xbEQhY07bPLP
+         /nTK7uAQNGktsSKvfEwHA7tMYbawXcFHtREDQVpBzV2Ktu5k1I4U8Xp0VHbmLEZfgk
+         0KOoKAStThD7La1zhmMr9bofB/TBB8miDQXNnZ/0U4FxXLXK439jhJWzynH+McHp/U
+         QDrDAyZMRK1ng==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v9 06/53] media: mediatek: vdec: Remove useless loop
-Date:   Mon,  2 Oct 2023 14:05:30 +0200
-Message-Id: <20231002120617.119602-7-benjamin.gaignard@collabora.com>
+Subject: [PATCH v9 07/53] media: sti: hva: Use vb2_get_buffer() instead of directly access to buffers array
+Date:   Mon,  2 Oct 2023 14:05:31 +0200
+Message-Id: <20231002120617.119602-8-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231002120617.119602-1-benjamin.gaignard@collabora.com>
 References: <20231002120617.119602-1-benjamin.gaignard@collabora.com>
@@ -60,33 +60,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify code by removing useless loop by using video buffer index.
+Use vb2_get_buffer() instead of directly access to vb2_buffer buffer array.
+After each call to vb2_get_buffer() we need to be sure that we get
+a valid pointer so check the return value of all of them.
+Remove index range test since it is done by vb2_get_buffer().
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- .../mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c   | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ drivers/media/platform/st/sti/hva/hva-v4l2.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
-index e393e3e668f8..69d37b93bd35 100644
---- a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
-+++ b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.c
-@@ -1695,13 +1695,8 @@ static int vdec_vp9_slice_setup_core_buffer(struct vdec_vp9_slice_instance *inst
- 		return -EINVAL;
+diff --git a/drivers/media/platform/st/sti/hva/hva-v4l2.c b/drivers/media/platform/st/sti/hva/hva-v4l2.c
+index 3a848ca32a0e..cfe83e9dc01b 100644
+--- a/drivers/media/platform/st/sti/hva/hva-v4l2.c
++++ b/drivers/media/platform/st/sti/hva/hva-v4l2.c
+@@ -569,14 +569,11 @@ static int hva_qbuf(struct file *file, void *priv, struct v4l2_buffer *buf)
+ 		struct vb2_buffer *vb2_buf;
  
- 	/* update internal buffer's width/height */
--	for (i = 0; i < vq->num_buffers; i++) {
--		if (vb == vq->bufs[i]) {
--			instance->dpb[i].width = w;
--			instance->dpb[i].height = h;
--			break;
--		}
--	}
-+	instance->dpb[vb->index].width = w;
-+	instance->dpb[vb->index].height = h;
- 
- 	/*
- 	 * get buffer's width/height from instance
+ 		vq = v4l2_m2m_get_vq(ctx->fh.m2m_ctx, buf->type);
+-
+-		if (buf->index >= vq->num_buffers) {
+-			dev_dbg(dev, "%s buffer index %d out of range (%d)\n",
+-				ctx->name, buf->index, vq->num_buffers);
++		vb2_buf = vb2_get_buffer(vq, buf->index);
++		if (!vb2_buf) {
++			dev_dbg(dev, "%s buffer index %d not found\n", ctx->name, buf->index);
+ 			return -EINVAL;
+ 		}
+-
+-		vb2_buf = vb2_get_buffer(vq, buf->index);
+ 		stream = to_hva_stream(to_vb2_v4l2_buffer(vb2_buf));
+ 		stream->bytesused = buf->bytesused;
+ 	}
 -- 
 2.39.2
 
