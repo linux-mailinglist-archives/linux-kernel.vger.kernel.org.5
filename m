@@ -2,179 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E5857B59A0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C6D7B5AFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238734AbjJBSEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 14:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59226 "EHLO
+        id S238513AbjJBTJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 15:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238697AbjJBSEH (ORCPT
+        with ESMTP id S229536AbjJBTJx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 14:04:07 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA13B4;
-        Mon,  2 Oct 2023 11:04:03 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 323f4ac4e097ed97; Mon, 2 Oct 2023 20:04:02 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id ACC1D6658DF;
-        Mon,  2 Oct 2023 20:04:01 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v1 4/4] thermal: int340x: Use thermal_zone_for_each_trip()
-Date:   Mon, 02 Oct 2023 20:03:42 +0200
-Message-ID: <3260859.aeNJFYEL58@kreacher>
-In-Reply-To: <4871671.31r3eYUQgx@kreacher>
-References: <4871671.31r3eYUQgx@kreacher>
+        Mon, 2 Oct 2023 15:09:53 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35B8AC;
+        Mon,  2 Oct 2023 12:09:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696273791; x=1727809791;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=kiLGI+5TqDC7P7rNtPOhB6kiPKfw3a05asdwO3hr3oc=;
+  b=jfozkfJuIMjfdryRXT7HFZF9MeJZlmGxIuH5u8rLrDLjyVbZ7hni3H7+
+   CNKNdWlQb5aASRH+cETBFJK8uxIR+BNsxDPYm+Loydl3+m4Kn3cAOq+PK
+   088gh59fZcKEd5aTNdOrgRYM1Z35B5fGAT3FhYroZ7ee5CxA+dyVIm1d4
+   onvshy/IOKxD53eN31SvRxe3z+4Q+/eD/iih3QMR/+lg4n1Rqxrfvk9x0
+   OcHvwzQnSmzMmBDd9Fk1V/GLzWigd2L+34CjHxS+JuipHQOAeTSi9rueR
+   znS9fS5lzGtF0Uw2vMFhUZj5rOM+FB9V0PVV3Mv95FVZcvDbUnL7mEbzH
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="381585036"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="381585036"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 11:04:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="744186907"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="744186907"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga007.jf.intel.com with ESMTP; 02 Oct 2023 11:04:20 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qnNHF-0006GF-2W;
+        Mon, 02 Oct 2023 18:04:17 +0000
+Date:   Tue, 3 Oct 2023 02:03:53 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v1 03/10] xhci: dbc: Use sysfs_emit() to instead of
+ scnprintf()
+Message-ID: <202310030150.M1SfrYmG-lkp@intel.com>
+References: <20231002161610.2648818-3-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelgdduvddvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghp
- thhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231002161610.2648818-3-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Hi Andy,
 
-Modify int340x_thermal_update_trips() to use thermal_zone_for_each_trip()
-for walking trips instead of using the trips[] table passed to the
-thermal zone registration function.
+kernel test robot noticed the following build warnings:
 
-For this purpose, store active trip point indices in the priv fieids of
-the corresponding thermal_trip structures.
+[auto build test WARNING on usb/usb-testing]
+[also build test WARNING on usb/usb-next usb/usb-linus linus/master v6.6-rc4 next-20230929]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-No intentional functional impact.
+url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/xhci-dbc-Convert-to-use-sysfs_streq/20231003-002032
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+patch link:    https://lore.kernel.org/r/20231002161610.2648818-3-andriy.shevchenko%40linux.intel.com
+patch subject: [PATCH v1 03/10] xhci: dbc: Use sysfs_emit() to instead of scnprintf()
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231003/202310030150.M1SfrYmG-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231003/202310030150.M1SfrYmG-lkp@intel.com/reproduce)
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c |   76 +++++------
- 1 file changed, 41 insertions(+), 35 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310030150.M1SfrYmG-lkp@intel.com/
 
-Index: linux-pm/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-===================================================================
---- linux-pm.orig/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-+++ linux-pm/drivers/thermal/intel/int340x_thermal/int340x_thermal_zone.c
-@@ -67,6 +67,16 @@ static struct thermal_zone_device_ops in
- 	.critical	= int340x_thermal_critical,
- };
- 
-+static inline void *int_to_trip_priv(int i)
-+{
-+	return (void *)(long)i;
-+}
-+
-+static inline int trip_priv_to_int(const struct thermal_trip *trip)
-+{
-+	return (long)trip->priv;
-+}
-+
- static int int340x_thermal_read_trips(struct acpi_device *zone_adev,
- 				      struct thermal_trip *zone_trips,
- 				      int trip_cnt)
-@@ -101,6 +111,7 @@ static int int340x_thermal_read_trips(st
- 			break;
- 
- 		zone_trips[trip_cnt].type = THERMAL_TRIP_ACTIVE;
-+		zone_trips[trip_cnt].priv = int_to_trip_priv(i);
- 		trip_cnt++;
- 	}
- 
-@@ -212,45 +223,40 @@ void int340x_thermal_zone_remove(struct
- }
- EXPORT_SYMBOL_GPL(int340x_thermal_zone_remove);
- 
--void int340x_thermal_update_trips(struct int34x_thermal_zone *int34x_zone)
-+static int int340x_update_one_trip(struct thermal_trip *trip, void *arg)
- {
--	struct acpi_device *zone_adev = int34x_zone->adev;
--	struct thermal_trip *zone_trips = int34x_zone->trips;
--	int trip_cnt = int34x_zone->zone->num_trips;
--	int act_trip_nr = 0;
--	int i;
--
--	mutex_lock(&int34x_zone->zone->lock);
--
--	for (i = int34x_zone->aux_trip_nr; i < trip_cnt; i++) {
--		int temp, err;
--
--		switch (zone_trips[i].type) {
--		case THERMAL_TRIP_CRITICAL:
--			err = thermal_acpi_critical_trip_temp(zone_adev, &temp);
--			break;
--		case THERMAL_TRIP_HOT:
--			err = thermal_acpi_hot_trip_temp(zone_adev, &temp);
--			break;
--		case THERMAL_TRIP_PASSIVE:
--			err = thermal_acpi_passive_trip_temp(zone_adev, &temp);
--			break;
--		case THERMAL_TRIP_ACTIVE:
--			err = thermal_acpi_active_trip_temp(zone_adev, act_trip_nr++,
--							    &temp);
--			break;
--		default:
--			err = -ENODEV;
--		}
--		if (err) {
--			zone_trips[i].temperature = THERMAL_TEMP_INVALID;
--			continue;
--		}
-+	struct acpi_device *zone_adev = arg;
-+	int temp, err;
- 
--		zone_trips[i].temperature = temp;
-+	switch (trip->type) {
-+	case THERMAL_TRIP_CRITICAL:
-+		err = thermal_acpi_critical_trip_temp(zone_adev, &temp);
-+		break;
-+	case THERMAL_TRIP_HOT:
-+		err = thermal_acpi_hot_trip_temp(zone_adev, &temp);
-+		break;
-+	case THERMAL_TRIP_PASSIVE:
-+		err = thermal_acpi_passive_trip_temp(zone_adev, &temp);
-+		break;
-+	case THERMAL_TRIP_ACTIVE:
-+		err = thermal_acpi_active_trip_temp(zone_adev,
-+						    trip_priv_to_int(trip),
-+						    &temp);
-+		break;
-+	default:
-+		err = -ENODEV;
- 	}
-+	if (err)
-+		temp = THERMAL_TEMP_INVALID;
- 
--	mutex_unlock(&int34x_zone->zone->lock);
-+	trip->temperature = temp;
-+	return 0;
-+}
-+
-+void int340x_thermal_update_trips(struct int34x_thermal_zone *int34x_zone)
-+{
-+	thermal_zone_for_each_trip(int34x_zone->zone, int340x_update_one_trip,
-+				   int34x_zone->adev);
- }
- EXPORT_SYMBOL_GPL(int340x_thermal_update_trips);
- 
+All warnings (new ones prefixed by >>):
+
+   drivers/usb/host/xhci-dbgcap.c: In function 'dbc_show':
+>> drivers/usb/host/xhci-dbgcap.c:926:34: warning: unused variable 'p' [-Wunused-variable]
+     926 |         const char              *p;
+         |                                  ^
 
 
+vim +/p +926 drivers/usb/host/xhci-dbgcap.c
 
+60f4451ef37351 Andy Shevchenko 2023-10-02  921  
+dfba2174dc421e Lu Baolu        2017-12-08  922  static ssize_t dbc_show(struct device *dev,
+dfba2174dc421e Lu Baolu        2017-12-08  923  			struct device_attribute *attr,
+dfba2174dc421e Lu Baolu        2017-12-08  924  			char *buf)
+dfba2174dc421e Lu Baolu        2017-12-08  925  {
+dfba2174dc421e Lu Baolu        2017-12-08 @926  	const char		*p;
+dfba2174dc421e Lu Baolu        2017-12-08  927  	struct xhci_dbc		*dbc;
+dfba2174dc421e Lu Baolu        2017-12-08  928  	struct xhci_hcd		*xhci;
+dfba2174dc421e Lu Baolu        2017-12-08  929  
+dfba2174dc421e Lu Baolu        2017-12-08  930  	xhci = hcd_to_xhci(dev_get_drvdata(dev));
+dfba2174dc421e Lu Baolu        2017-12-08  931  	dbc = xhci->dbc;
+dfba2174dc421e Lu Baolu        2017-12-08  932  
+60f4451ef37351 Andy Shevchenko 2023-10-02  933  	if (dbc->state >= ARRAY_SIZE(dbc_state_strings))
+60f4451ef37351 Andy Shevchenko 2023-10-02  934  		return sysfs_emit(buf, "unknown\n");
+dfba2174dc421e Lu Baolu        2017-12-08  935  
+60f4451ef37351 Andy Shevchenko 2023-10-02  936  	return sysfs_emit(buf, "%s\n", dbc_state_strings[dbc->state]);
+dfba2174dc421e Lu Baolu        2017-12-08  937  }
+dfba2174dc421e Lu Baolu        2017-12-08  938  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
