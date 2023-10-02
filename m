@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB6907B4F4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 997CA7B4F50
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236189AbjJBJob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
+        id S236186AbjJBJoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:44:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbjJBJo1 (ORCPT
+        with ESMTP id S236168AbjJBJox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:44:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4265791;
-        Mon,  2 Oct 2023 02:44:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696239865; x=1727775865;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YjDtKD15C5wYw2UlLbCaVNumylNRVOL/0RAdrwts2Ac=;
-  b=Rtlat9rFf5fF8gUqogLbO6gdg/TuyWuHAjYX6y300hHc9TlONDiduI2r
-   UHxe3FMu/FIuSCXtSbLAs9gThJu74E/7ygs5ahRKd+Hoa+mgZcj8r18ck
-   NjG7yS8UbUWYDZvfzWgHIL2BU5MeYbW9tAG1cDdshu++/zbDaWgX6l2Uw
-   9zWvTzPr72fc2YsVT8L2iENhwhh+UjRA4ZbaV45du43A25rkEsgpdPUSj
-   9mGf0JLfc2rdjulZ6KTRKIQsoqJ6+8rJrVw7KJ56bB3ydnSoS3Lm7c5AB
-   ypK7B4yZqydwjClzrV8Il5r2U1yxSxuQsUSjONwqxLZ37UqYSpN97xkCF
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="382516840"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="382516840"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:44:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="1081592085"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="1081592085"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:44:22 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qnFTQ-000000027eh-1cMI;
-        Mon, 02 Oct 2023 12:44:20 +0300
-Date:   Mon, 2 Oct 2023 12:44:20 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v4 04/11] gpiolib: provide gpio_device_find_by_label()
-Message-ID: <ZRqQ9KZe619vx7pz@smile.fi.intel.com>
-References: <20230927142931.19798-1-brgl@bgdev.pl>
- <20230927142931.19798-5-brgl@bgdev.pl>
+        Mon, 2 Oct 2023 05:44:53 -0400
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com [209.85.210.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96C8EBD
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:44:50 -0700 (PDT)
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6bf0d513257so29802306a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:44:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696239890; x=1696844690;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aZVwf6WiRiOj0OXOXdp+NwbIcumjFFUUSCI16ysNhaY=;
+        b=fL6haIcSUiqzf88SWGlfZ9pNC6J/qrId38rK4pD8aiEIARxJsjEByS+MGb6zrL0p5c
+         d3KazMsnOKCpKDuTLbhLCDSIpuiB6wuHOknrFnG/gSTsu8I64alYKOPOHkZr3Hp7t4kb
+         hErcIkWH+lNAV3/3EXTyN54t+8MJicEdy1nVLF4wOi36Awv5FEl1E+OjZtrYk27GZ9YI
+         0qBWoAtSHLhmhFnHF9yw+oEVt90L5T5orFn/8AXQpAsQgGeX5Y90V7oUaxzj49z/CBnD
+         UoloocC+plbFx1+GJH6NBzJ1suDe++vVgXOy6Fdo18TiAp/PZApdUuPN/72oEbNr2snB
+         hvgw==
+X-Gm-Message-State: AOJu0YwJJaOIfcLXgvqcg4zmfbcNca7ZXcRnSheFvJCtrLvTPfx7dSvJ
+        nukVJzuKZqTGhsHZY3CyzfX/+2/amlVlw9L5CWimZ670w9Pi
+X-Google-Smtp-Source: AGHT+IGoOXhtRQRlr9dZLd6jo1k8tgYgp1b/Y6PWK9HqykysZZcKskz5Rg7o5F3MG32e87eBFwsr5UPAIsMNjA0a058LP4vpa2kf
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230927142931.19798-5-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6830:16c3:b0:6c4:aa6a:c4db with SMTP id
+ l3-20020a05683016c300b006c4aa6ac4dbmr3726979otr.0.1696239889846; Mon, 02 Oct
+ 2023 02:44:49 -0700 (PDT)
+Date:   Mon, 02 Oct 2023 02:44:49 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001697760606b8a05e@google.com>
+Subject: [syzbot] Monthly hams report (Sep 2023)
+From:   syzbot <syzbot+list96e394457c1cb35c32bc@syzkaller.appspotmail.com>
+To:     linux-hams@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 04:29:24PM +0200, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> By far the most common way of looking up GPIO devices is using their
-> label. Provide a helpers for that to avoid every user implementing their
-> own matching function.
+Hello hams maintainers/developers,
 
-...
+This is a 31-day syzbot report for the hams subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/hams
 
-> +struct gpio_device *gpio_device_find_by_label(const char *label)
-> +{
-> +	return gpio_device_find((void *)label, gpio_chip_match_by_label);
-> +}
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 3 issues are still open and 31 have been fixed so far.
 
-Are we expecting that data referenced by the first parameter to the
-gpio_device_find() can be altered? If not, why not using const void *
-there and here as well?
+Some of the still happening issues:
 
--- 
-With Best Regards,
-Andy Shevchenko
+Ref Crashes Repro Title
+<1> 92      Yes   memory leak in nr_rx_frame (2)
+                  https://syzkaller.appspot.com/bug?extid=0145ea560de205bc09f0
+<2> 20      No    general protection fault in rose_transmit_link (3)
+                  https://syzkaller.appspot.com/bug?extid=677921bcd8c3a67a3df3
+<3> 9       Yes   memory leak in nr_create (3)
+                  https://syzkaller.appspot.com/bug?extid=d327a1f3b12e1e206c16
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
