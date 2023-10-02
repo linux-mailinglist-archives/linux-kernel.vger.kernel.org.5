@@ -2,83 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA8E7B4C84
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4647B4C86
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235748AbjJBH1E convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Oct 2023 03:27:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48034 "EHLO
+        id S235752AbjJBH15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 03:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235696AbjJBH1D (ORCPT
+        with ESMTP id S235696AbjJBH1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 03:27:03 -0400
-Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E428E;
-        Mon,  2 Oct 2023 00:26:58 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id D11FC1865484;
-        Mon,  2 Oct 2023 10:26:53 +0300 (MSK)
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id EGJ8tBZbybyi; Mon,  2 Oct 2023 10:26:53 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 6B7D51865147;
-        Mon,  2 Oct 2023 10:26:53 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at astralinux.ru
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id emH8Na_9A7FH; Mon,  2 Oct 2023 10:26:53 +0300 (MSK)
-Received: from new-mail.astralinux.ru (unknown [10.177.185.102])
-        by mail.astralinux.ru (Postfix) with ESMTPS id A843518639B7;
-        Mon,  2 Oct 2023 10:26:52 +0300 (MSK)
-Received: from [10.177.232.254] (unknown [10.177.232.254])
-        by new-mail.astralinux.ru (Postfix) with ESMTPA id 4RzXZg5tKQzYcn0;
-        Mon,  2 Oct 2023 10:26:51 +0300 (MSK)
-Message-ID: <9e6d5cba-d40a-ff44-3400-d86d8257e98a@astralinux.ru>
-Date:   Mon, 2 Oct 2023 10:26:45 +0300
+        Mon, 2 Oct 2023 03:27:55 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C5DB3;
+        Mon,  2 Oct 2023 00:27:52 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c746bc3bceso5191725ad.1;
+        Mon, 02 Oct 2023 00:27:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696231672; x=1696836472; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fKdhwE6Nvv6dfMJ1charSbuyq7vd9RUBMHfjBdkzVPc=;
+        b=hqZf9YuZz6l8x5zAFTQtzmiFa5g2NjkhmVne+dls297+DneybQDtqaliV24t0MKjjI
+         2slGIgBWYnab05HSSrPX+CAKoIUKvU9hk6+wZatJMTjG+Cwv8KJ8rimRgyVU1M41LP39
+         IkrVe9skTVg8VnG99PCbJHzrngFgQcthx4cjrnqctwFCbjb78tZfUuq4RJEa9HQb7jRK
+         t2xJOKGg42+AcT8QY9k5IO8u5TsCI6KTZqLGgS2aeCROrz8kfjShLtGbpzoivrSku3px
+         cnvpGtyN5p2tw9Zcla4VQAhTBKH7G080yOL7G/eGWDBW7yLDeghL7SO5L0Z1soqyjtfa
+         os0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696231672; x=1696836472;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fKdhwE6Nvv6dfMJ1charSbuyq7vd9RUBMHfjBdkzVPc=;
+        b=rRUKqF4o5rX7UcmVVJ9S6/Dky4jyQWyOv8ZV7VAJ3Gv20PBUakzzgtxTRlpg5yzPqQ
+         pYx4cESvSPzi1bQ+wr+vEmpsV/MBMQ4OFScBQ4kMQOCt0zNmLc/CcforoSFrUUeVLB5Y
+         EXut83VH0xxj4gj+Og3kZMeBeliM15K34b2n4TR6ZlbUYC9/GG/Lnl2A469JXFepubYa
+         fmsyL6wOgPGr5nOOfrrlbwRwWafrLSVN21HZREbpHVPPlS9K3GdzBRNGRssTTZ03qdie
+         eWvOj3d9pinV2iS5Bxl/oSCl2qfVQioLKK5CWUeKmL9Z1BjMsu6jJNm+V7wk5VXfU6Im
+         1L6w==
+X-Gm-Message-State: AOJu0YyZjsgIfXuIu0trU7apnSTR154h9ASEW6OyEWMAkT6kspJ5aU48
+        +YNJTavhS4UJD1P3ThInycs0C2B3tNnqmQ==
+X-Google-Smtp-Source: AGHT+IHYjn8vbhw0v2ocpkuF8SIWfiwgwx7fIsV29nwtCJY3zotMPH6p6MLpJsCcAJDaxG3ZUVPSFQ==
+X-Received: by 2002:a17:903:41c1:b0:1bf:349f:b85c with SMTP id u1-20020a17090341c100b001bf349fb85cmr12573981ple.1.1696231671756;
+        Mon, 02 Oct 2023 00:27:51 -0700 (PDT)
+Received: from abhinav-IdeaPad-Slim-5-14ABR8.. ([103.75.161.210])
+        by smtp.googlemail.com with ESMTPSA id 4-20020a170902c14400b001c755810f89sm4059895plj.181.2023.10.02.00.27.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 00:27:51 -0700 (PDT)
+From:   Abhinav <singhabhinav9051571833@gmail.com>
+To:     shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Abhinav <singhabhinav9051571833@gmail.com>
+Subject: [PATCH v2] Added missing TARGETS in kselftest top level Makefile
+Date:   Mon,  2 Oct 2023 12:57:35 +0530
+Message-Id: <20231002072735.1566009-1-singhabhinav9051571833@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <2023100135-stiffen-depress-8121@gregkh>
+References: <2023100135-stiffen-depress-8121@gregkh>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.0
-Subject: Re: [PATCH v2] drm: rcar-du: turn rcar_du_group_get() into void and
- remove its return value check
-Content-Language: en-US
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-References: <169383224922.277971.15400887308406098634@ping.linuxembedded.co.uk>
- <20230927104438.30628-1-adiupina@astralinux.ru>
- <20230930145032.GD31829@pendragon.ideasonboard.com>
-From:   =?UTF-8?B?0JDQu9C10LrRgdCw0L3QtNGA0LAg0JTRjtC/0LjQvdCw?= 
-        <adiupina@astralinux.ru>
-In-Reply-To: <20230930145032.GD31829@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+Some tests like dma, ia64, etc. were not present in top level of
+selftest Makefile, so when someone ran 'make run_tests' they would miss
+these tests. This patches adds those left out tests.
 
-I'm sorry, my mistake. Thank you for your comment, I will be more 
-careful in the future
+Signed-off-by: Abhinav <singhabhinav9051571833@gmail.com>
+---
+ tools/testing/selftests/Makefile | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-30.09.2023 17:50, Laurent Pinchart пишет:
-> Using tools to find issues is fine in principle, but not even
-> compile-testing the resulting patch before submitting it is not.
-
-
-
-Alexandra
+diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
+index 8d9b2341b79a..dc138c1dcb4b 100644
+--- a/tools/testing/selftests/Makefile
++++ b/tools/testing/selftests/Makefile
+@@ -13,6 +13,7 @@ TARGETS += core
+ TARGETS += cpufreq
+ TARGETS += cpu-hotplug
+ TARGETS += damon
++TARGETS += dma
+ TARGETS += dmabuf-heaps
+ TARGETS += drivers/dma-buf
+ TARGETS += drivers/s390x/uvdevice
+@@ -32,17 +33,21 @@ TARGETS += ftrace
+ TARGETS += futex
+ TARGETS += gpio
+ TARGETS += hid
++TARGETS += ia64
+ TARGETS += intel_pstate
+ TARGETS += iommu
+ TARGETS += ipc
+ TARGETS += ir
+ TARGETS += kcmp
+ TARGETS += kexec
++TARGETS += kmod
+ TARGETS += kvm
+ TARGETS += landlock
+ TARGETS += lib
+ TARGETS += livepatch
+ TARGETS += lkdtm
++TARGETS += locking
++TARGETS += media_tests
+ TARGETS += membarrier
+ TARGETS += memfd
+ TARGETS += memory-hotplug
+@@ -66,6 +71,7 @@ TARGETS += pid_namespace
+ TARGETS += powerpc
+ TARGETS += prctl
+ TARGETS += proc
++TARGETS += ptp
+ TARGETS += pstore
+ TARGETS += ptrace
+ TARGETS += openat2
+@@ -99,6 +105,7 @@ TARGETS += user
+ TARGETS += user_events
+ TARGETS += vDSO
+ TARGETS += mm
++TARGETS += watchdog
+ TARGETS += x86
+ TARGETS += zram
+ #Please keep the TARGETS list alphabetically sorted
+-- 
+2.34.1
 
