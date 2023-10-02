@@ -2,89 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AFE7B5A88
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1B77B5A82
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238791AbjJBSvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 14:51:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44820 "EHLO
+        id S229566AbjJBSyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238852AbjJBSvL (ORCPT
+        with ESMTP id S229482AbjJBSyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 14:51:11 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF659B;
-        Mon,  2 Oct 2023 11:51:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBF30C433C9;
-        Mon,  2 Oct 2023 18:51:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696272668;
-        bh=5CTwTLBEvduUICvuu4skaNUm4ejcj7Qi7S/UNZzRJiE=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=S8AF7ciAoQ2kkg5GltwcBo7ww4CDBBhPHcFnC3/w/u/OM2IdygZ8Nl11+7XXddPCm
-         A4MP+YkhXNhN515RN+L7svKr7FzXiq5K+G1zWkgOV7wkP9dTBAn0sCHNtTRUY/4bgm
-         L0z8iUucUsRpPB6zZCW93SpmPCBSbyeQQxtbzJf+BtTBJQ0cia/HAL2FtzV/Jv632g
-         6O5GdBPF8D606o/VXHA0vm1zAuj4PXkPTq2b+l1+UrBsb8Q0IRIGSVoi2OJKfvpBYI
-         wDsZQekeqMPdBVCsOJ7a5h5Em9RLPQwdSLGSbpSMUdoxgQ7S9Rm+l4okPEf4QtUjPk
-         8wDzs1JM2oQpQ==
-From:   Mark Brown <broonie@kernel.org>
-To:     Sven Frotscher <sven.frotscher@gmail.com>
-Cc:     git@augustwikerfors.se, alsa-devel@alsa-project.org,
-        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        mario.limonciello@amd.com, regressions@lists.linux.dev,
-        stable@vger.kernel.org
-In-Reply-To: <20230927223758.18870-1-sven.frotscher@gmail.com>
-References: <20230927223758.18870-1-sven.frotscher@gmail.com>
-Subject: Re: [PATCH v4] ASoC: amd: yc: Fix non-functional mic on Lenovo
- 82YM
-Message-Id: <169627266558.110968.10545623851131128761.b4-ty@kernel.org>
-Date:   Mon, 02 Oct 2023 19:51:05 +0100
+        Mon, 2 Oct 2023 14:54:14 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D317D94;
+        Mon,  2 Oct 2023 11:54:11 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CE25BC15;
+        Mon,  2 Oct 2023 11:54:49 -0700 (PDT)
+Received: from bogus (unknown [10.57.93.106])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 026533F59C;
+        Mon,  2 Oct 2023 11:54:08 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 19:52:37 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     Cristian Marussi <cristian.marussi@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH v3 1/2] firmware: arm_scmi: clock: support clock parents
+Message-ID: <20231002185237.alkcszs5ymtylypt@bogus>
+References: <20231001-scmi-clock-v2-v3-0-898bd92d8939@nxp.com>
+ <20231001-scmi-clock-v2-v3-1-898bd92d8939@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-0438c
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231001-scmi-clock-v2-v3-1-898bd92d8939@nxp.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Sep 2023 00:36:07 +0200, Sven Frotscher wrote:
-> Like the Lenovo 82TL, 82V2, 82QF and 82UG, the 82YM (Yoga 7 14ARP8)
-> requires an entry in the quirk list to enable the internal microphone.
-> The latter two received similar fixes in commit 1263cc0f414d
-> ("ASoC: amd: yc: Fix non-functional mic on Lenovo 82QF and 82UG").
+On Sun, Oct 01, 2023 at 12:38:43PM +0800, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> 
+> SCMI v3.2 spec introduces CLOCK_POSSIBLE_PARENTS_GET, CLOCK_PARENT_SET
+> and CLOCK_PARENT_GET. This patch is to add the upper three new
+> commands.
+>
 
-Applied to
+Looks good to me as well. Please rebase this on [1] when you address
+Cristian's comment and post v4. I will queue once Stephen is fine with
+clk driver changes.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+-- 
+Regards,
+Sudeep
 
-Thanks!
-
-[1/1] ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
-      commit: 1948fa64727685ac3f6584755212e2e738b6b051
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi/updates
