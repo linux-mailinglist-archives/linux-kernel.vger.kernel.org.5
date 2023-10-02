@@ -2,267 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4276A7B4B28
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 07:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123197B4B2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 07:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235436AbjJBFhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 01:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60324 "EHLO
+        id S235445AbjJBFit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 01:38:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjJBFhe (ORCPT
+        with ESMTP id S230309AbjJBFis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 01:37:34 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139DFBD
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 22:37:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696225051; x=1727761051;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=oyFNw4AXQQYXw3PNmo08Fr9Y1DJhjeZlFYLu8JVSOKI=;
-  b=g/3v28IN164/QPyCaJfLjH+QydOOQgTp15aBXYjKdXuTB6ox5IiY2qVY
-   lAFBOO+vICxUDdvXUoDLZHuAUSYjg1t3KCEb23NrAqfcuM0jIT1Gtdspp
-   5a5vYOERCTijFFWIIfAmgmhQYmiQ3fhPamjzLuPfTXtUVCiJb5L6BftaJ
-   3hbl40mq9oVTac86RW8OqWR7Nz8FhCsbQR1cFH7ERxSra6dNaXV2FtokR
-   NrU4uTlTZFUIU8Ywg14sv+o7X1EShiW8OE2OfhAfdE43E0JOT31oe90b3
-   EmP1i5IWqyxzomDfftux15lDoPcenI0BA1j+sOt1o5cfIE/bs7zxpnCs0
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="468864491"
-X-IronPort-AV: E=Sophos;i="6.03,193,1694761200"; 
-   d="scan'208";a="468864491"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2023 22:37:30 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="997526353"
-X-IronPort-AV: E=Sophos;i="6.03,193,1694761200"; 
-   d="scan'208";a="997526353"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 01 Oct 2023 22:37:28 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qnBcU-0005mS-2C;
-        Mon, 02 Oct 2023 05:37:26 +0000
-Date:   Mon, 2 Oct 2023 13:37:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Qin Jian <qinjian@cqplus1.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: drivers/pinctrl/sunplus/sppctl.c:176: warning: Function parameter or
- member 'pctl' not described in 'sppctl_func_set'
-Message-ID: <202310021357.ge6TB5iz-lkp@intel.com>
+        Mon, 2 Oct 2023 01:38:48 -0400
+Received: from mail3-relais-sop.national.inria.fr (mail3-relais-sop.national.inria.fr [192.134.164.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BEE59F;
+        Sun,  1 Oct 2023 22:38:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=uOUzmb8ftzbOyFeK0edTqft1MheQUfEIQXgPtEe/8BM=;
+  b=Hd8NbBKsVd0zs1p7J5JnV+4cB+382/OjJB/78nDnuyqCucAQsl6Nk0H2
+   fy6HM5EWGeeK2/gAFUSUB1wpfOsGxEFpu2tBRjL4k02Bgv5uEi/dH+oo7
+   ozD+ml33TF3cf43UZFaTWgXzclPYV+SccLRPMrVqkzn/GbSCp7Dc7yqLI
+   I=;
+Authentication-Results: mail3-relais-sop.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.03,193,1694728800"; 
+   d="scan'208";a="67469029"
+Received: from 231.85.89.92.rev.sfr.net (HELO hadrien) ([92.89.85.231])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 07:38:42 +0200
+Date:   Mon, 2 Oct 2023 07:38:42 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Kees Cook <keescook@chromium.org>
+cc:     Julia Lawall <julia.lawall@inria.fr>, Kees Cook <kees@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-hardening@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] comedi: Annotate struct comedi_lrange with
+ __counted_by
+In-Reply-To: <202310011515.D4C9184@keescook>
+Message-ID: <alpine.DEB.2.22.394.2310020737570.3166@hadrien>
+References: <5c3b7459b820e22e2ac6ce892d4aadcc119cc919.1696065263.git.christophe.jaillet@wanadoo.fr> <202309301342.5B5BED40A1@keescook> <alpine.DEB.2.22.394.2310010945130.3166@hadrien> <90E2BBA5-8A2D-42DE-B36A-CD37BABBB433@kernel.org>
+ <alpine.DEB.2.22.394.2310012112560.3166@hadrien> <202310011405.7599BA9@keescook> <202310011421.C4F19D45@keescook> <202310011515.D4C9184@keescook>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qin,
-
-FYI, the error/warning still remains.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
-commit: 0aa94eea8d955c82014e5368a843da93f1dc58f8 ARM: sunplus: Add initial support for Sunplus SP7021 SoC
-date:   1 year, 3 months ago
-config: arm-defconfig (https://download.01.org/0day-ci/archive/20231002/202310021357.ge6TB5iz-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231002/202310021357.ge6TB5iz-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310021357.ge6TB5iz-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/pinctrl/sunplus/sppctl.c:176: warning: Function parameter or member 'pctl' not described in 'sppctl_func_set'
->> drivers/pinctrl/sunplus/sppctl.c:176: warning: Function parameter or member 'func' not described in 'sppctl_func_set'
->> drivers/pinctrl/sunplus/sppctl.c:176: warning: Function parameter or member 'val' not described in 'sppctl_func_set'
->> drivers/pinctrl/sunplus/sppctl.c:229: warning: Function parameter or member 'pctl' not described in 'sppctl_gmx_set'
->> drivers/pinctrl/sunplus/sppctl.c:229: warning: Function parameter or member 'reg_off' not described in 'sppctl_gmx_set'
->> drivers/pinctrl/sunplus/sppctl.c:229: warning: Function parameter or member 'bit_off' not described in 'sppctl_gmx_set'
->> drivers/pinctrl/sunplus/sppctl.c:229: warning: Function parameter or member 'bit_sz' not described in 'sppctl_gmx_set'
->> drivers/pinctrl/sunplus/sppctl.c:229: warning: Function parameter or member 'val' not described in 'sppctl_gmx_set'
->> drivers/pinctrl/sunplus/sppctl.c:262: warning: Function parameter or member 'chip' not described in 'sppctl_first_get'
->> drivers/pinctrl/sunplus/sppctl.c:262: warning: Function parameter or member 'offset' not described in 'sppctl_first_get'
->> drivers/pinctrl/sunplus/sppctl.c:297: warning: Function parameter or member 'chip' not described in 'sppctl_master_get'
->> drivers/pinctrl/sunplus/sppctl.c:297: warning: Function parameter or member 'offset' not described in 'sppctl_master_get'
->> drivers/pinctrl/sunplus/sppctl.c:699: warning: Function parameter or member 'offset' not described in 'sppctl_fully_pinmux_conv'
 
 
-vim +176 drivers/pinctrl/sunplus/sppctl.c
+On Sun, 1 Oct 2023, Kees Cook wrote:
 
-aa74c44be19c8b Wells Lu 2022-01-16  149  
-aa74c44be19c8b Wells Lu 2022-01-16  150  /**
-aa74c44be19c8b Wells Lu 2022-01-16  151   * sppctl_func_set() - Set pin of fully-pinmux function.
-aa74c44be19c8b Wells Lu 2022-01-16  152   *
-aa74c44be19c8b Wells Lu 2022-01-16  153   * Mask-fields and control-fields of fully-pinmux function of SP7021 are
-aa74c44be19c8b Wells Lu 2022-01-16  154   * arranged as shown below:
-aa74c44be19c8b Wells Lu 2022-01-16  155   *
-aa74c44be19c8b Wells Lu 2022-01-16  156   *  func# | register |  mask-field  | control-field
-aa74c44be19c8b Wells Lu 2022-01-16  157   * -------+----------+--------------+---------------
-aa74c44be19c8b Wells Lu 2022-01-16  158   *    0   | base[0]  |  (22 : 16)   |   ( 6 : 0)
-aa74c44be19c8b Wells Lu 2022-01-16  159   *    1   | base[0]  |  (30 : 24)   |   (14 : 8)
-aa74c44be19c8b Wells Lu 2022-01-16  160   *    2   | base[1]  |  (22 : 16)   |   ( 6 : 0)
-aa74c44be19c8b Wells Lu 2022-01-16  161   *    3   | baeg[1]  |  (30 : 24)   |   (14 : 8)
-aa74c44be19c8b Wells Lu 2022-01-16  162   *    :   |    :     |      :       |       :
-aa74c44be19c8b Wells Lu 2022-01-16  163   *
-aa74c44be19c8b Wells Lu 2022-01-16  164   * where mask-fields are used to protect control-fields from write-in
-aa74c44be19c8b Wells Lu 2022-01-16  165   * accidentally. Set the corresponding bits in the mask-field before
-aa74c44be19c8b Wells Lu 2022-01-16  166   * you write a value into a control-field.
-aa74c44be19c8b Wells Lu 2022-01-16  167   *
-aa74c44be19c8b Wells Lu 2022-01-16  168   * Control-fields are used to set where the function pin is going to
-aa74c44be19c8b Wells Lu 2022-01-16  169   * be routed to.
-aa74c44be19c8b Wells Lu 2022-01-16  170   *
-aa74c44be19c8b Wells Lu 2022-01-16  171   * Note that mask-fields and control-fields of even number of 'func'
-aa74c44be19c8b Wells Lu 2022-01-16  172   * are located at bits (22:16) and (6:0), while odd number of 'func's
-aa74c44be19c8b Wells Lu 2022-01-16  173   * are located at bits (30:24) and (14:8).
-aa74c44be19c8b Wells Lu 2022-01-16  174   */
-aa74c44be19c8b Wells Lu 2022-01-16  175  static void sppctl_func_set(struct sppctl_pdata *pctl, u8 func, u8 val)
-aa74c44be19c8b Wells Lu 2022-01-16 @176  {
-aa74c44be19c8b Wells Lu 2022-01-16  177  	u32 reg, offset;
-aa74c44be19c8b Wells Lu 2022-01-16  178  
-aa74c44be19c8b Wells Lu 2022-01-16  179  	/*
-aa74c44be19c8b Wells Lu 2022-01-16  180  	 * Note that upper 16-bit word are mask-fields and lower 16-bit
-aa74c44be19c8b Wells Lu 2022-01-16  181  	 * word are the control-fields. Set corresponding bits in mask-
-aa74c44be19c8b Wells Lu 2022-01-16  182  	 * field before write to a control-field.
-aa74c44be19c8b Wells Lu 2022-01-16  183  	 */
-aa74c44be19c8b Wells Lu 2022-01-16  184  	reg = SPPCTL_FULLY_PINMUX_MASK_MASK | val;
-aa74c44be19c8b Wells Lu 2022-01-16  185  
-aa74c44be19c8b Wells Lu 2022-01-16  186  	/*
-aa74c44be19c8b Wells Lu 2022-01-16  187  	 * MUXF_L2SW_CLK_OUT is the first fully-pinmux pin
-aa74c44be19c8b Wells Lu 2022-01-16  188  	 * and its register offset is 0.
-aa74c44be19c8b Wells Lu 2022-01-16  189  	 */
-aa74c44be19c8b Wells Lu 2022-01-16  190  	func -= MUXF_L2SW_CLK_OUT;
-aa74c44be19c8b Wells Lu 2022-01-16  191  
-aa74c44be19c8b Wells Lu 2022-01-16  192  	/*
-aa74c44be19c8b Wells Lu 2022-01-16  193  	 * Check if 'func' is an odd number or not. Mask and control-
-aa74c44be19c8b Wells Lu 2022-01-16  194  	 * fields of odd number 'func' is located at upper portion of
-aa74c44be19c8b Wells Lu 2022-01-16  195  	 * a register. Extra shift is needed.
-aa74c44be19c8b Wells Lu 2022-01-16  196  	 */
-aa74c44be19c8b Wells Lu 2022-01-16  197  	if (func & BIT(0))
-aa74c44be19c8b Wells Lu 2022-01-16  198  		reg <<= SPPCTL_FULLY_PINMUX_UPPER_SHIFT;
-aa74c44be19c8b Wells Lu 2022-01-16  199  
-aa74c44be19c8b Wells Lu 2022-01-16  200  	/* Convert func# to register offset w.r.t. base register. */
-aa74c44be19c8b Wells Lu 2022-01-16  201  	offset = func * 2;
-aa74c44be19c8b Wells Lu 2022-01-16  202  	offset &= GENMASK(31, 2);
-aa74c44be19c8b Wells Lu 2022-01-16  203  
-aa74c44be19c8b Wells Lu 2022-01-16  204  	writel(reg, pctl->moon2_base + offset);
-aa74c44be19c8b Wells Lu 2022-01-16  205  }
-aa74c44be19c8b Wells Lu 2022-01-16  206  
-aa74c44be19c8b Wells Lu 2022-01-16  207  /**
-aa74c44be19c8b Wells Lu 2022-01-16  208   * sppctl_gmx_set() - Set pin of group-pinmux.
-aa74c44be19c8b Wells Lu 2022-01-16  209   *
-aa74c44be19c8b Wells Lu 2022-01-16  210   * Mask-fields and control-fields of group-pinmux function of SP7021 are
-aa74c44be19c8b Wells Lu 2022-01-16  211   * arranged as shown below:
-aa74c44be19c8b Wells Lu 2022-01-16  212   *
-aa74c44be19c8b Wells Lu 2022-01-16  213   *  register |  mask-fields | control-fields
-aa74c44be19c8b Wells Lu 2022-01-16  214   * ----------+--------------+----------------
-aa74c44be19c8b Wells Lu 2022-01-16  215   *  base[0]  |  (31 : 16)   |   (15 : 0)
-aa74c44be19c8b Wells Lu 2022-01-16  216   *  base[1]  |  (31 : 24)   |   (15 : 0)
-aa74c44be19c8b Wells Lu 2022-01-16  217   *  base[2]  |  (31 : 24)   |   (15 : 0)
-aa74c44be19c8b Wells Lu 2022-01-16  218   *     :     |      :       |       :
-aa74c44be19c8b Wells Lu 2022-01-16  219   *
-aa74c44be19c8b Wells Lu 2022-01-16  220   * where mask-fields are used to protect control-fields from write-in
-aa74c44be19c8b Wells Lu 2022-01-16  221   * accidentally. Set the corresponding bits in the mask-field before
-aa74c44be19c8b Wells Lu 2022-01-16  222   * you write a value into a control-field.
-aa74c44be19c8b Wells Lu 2022-01-16  223   *
-aa74c44be19c8b Wells Lu 2022-01-16  224   * Control-fields are used to set where the function pin is going to
-aa74c44be19c8b Wells Lu 2022-01-16  225   * be routed to. A control-field consists of one or more bits.
-aa74c44be19c8b Wells Lu 2022-01-16  226   */
-aa74c44be19c8b Wells Lu 2022-01-16  227  static void sppctl_gmx_set(struct sppctl_pdata *pctl, u8 reg_off, u8 bit_off, u8 bit_sz,
-aa74c44be19c8b Wells Lu 2022-01-16  228  			   u8 val)
-aa74c44be19c8b Wells Lu 2022-01-16 @229  {
-aa74c44be19c8b Wells Lu 2022-01-16  230  	u32 mask, reg;
-aa74c44be19c8b Wells Lu 2022-01-16  231  
-aa74c44be19c8b Wells Lu 2022-01-16  232  	/*
-aa74c44be19c8b Wells Lu 2022-01-16  233  	 * Note that upper 16-bit word are mask-fields and lower 16-bit
-aa74c44be19c8b Wells Lu 2022-01-16  234  	 * word are the control-fields. Set corresponding bits in mask-
-aa74c44be19c8b Wells Lu 2022-01-16  235  	 * field before write to a control-field.
-aa74c44be19c8b Wells Lu 2022-01-16  236  	 */
-aa74c44be19c8b Wells Lu 2022-01-16  237  	mask = GENMASK(bit_sz - 1, 0) << SPPCTL_MOON_REG_MASK_SHIFT;
-aa74c44be19c8b Wells Lu 2022-01-16  238  	reg = (mask | val) << bit_off;
-aa74c44be19c8b Wells Lu 2022-01-16  239  
-aa74c44be19c8b Wells Lu 2022-01-16  240  	writel(reg, pctl->moon1_base + reg_off * 4);
-aa74c44be19c8b Wells Lu 2022-01-16  241  }
-aa74c44be19c8b Wells Lu 2022-01-16  242  
-aa74c44be19c8b Wells Lu 2022-01-16  243  /**
-aa74c44be19c8b Wells Lu 2022-01-16  244   * sppctl_first_get() - get bit of FIRST register.
-aa74c44be19c8b Wells Lu 2022-01-16  245   *
-aa74c44be19c8b Wells Lu 2022-01-16  246   * There are 4 FIRST registers. Each has 32 control-bits.
-aa74c44be19c8b Wells Lu 2022-01-16  247   * Totally, there are 4 * 32 = 128 control-bits.
-aa74c44be19c8b Wells Lu 2022-01-16  248   * Control-bits are arranged as shown below:
-aa74c44be19c8b Wells Lu 2022-01-16  249   *
-aa74c44be19c8b Wells Lu 2022-01-16  250   *  registers | control-bits
-aa74c44be19c8b Wells Lu 2022-01-16  251   * -----------+--------------
-aa74c44be19c8b Wells Lu 2022-01-16  252   *  first[0]  |  (31 :  0)
-aa74c44be19c8b Wells Lu 2022-01-16  253   *  first[1]  |  (63 : 32)
-aa74c44be19c8b Wells Lu 2022-01-16  254   *  first[2]  |  (95 : 64)
-aa74c44be19c8b Wells Lu 2022-01-16  255   *  first[3]  | (127 : 96)
-aa74c44be19c8b Wells Lu 2022-01-16  256   *
-aa74c44be19c8b Wells Lu 2022-01-16  257   * Each control-bit sets type of a GPIO pin.
-aa74c44be19c8b Wells Lu 2022-01-16  258   *   0: a fully-pinmux pin
-aa74c44be19c8b Wells Lu 2022-01-16  259   *   1: a GPIO or IOP pin
-aa74c44be19c8b Wells Lu 2022-01-16  260   */
-aa74c44be19c8b Wells Lu 2022-01-16  261  static int sppctl_first_get(struct gpio_chip *chip, unsigned int offset)
-aa74c44be19c8b Wells Lu 2022-01-16 @262  {
-aa74c44be19c8b Wells Lu 2022-01-16  263  	struct sppctl_gpio_chip *spp_gchip = gpiochip_get_data(chip);
-aa74c44be19c8b Wells Lu 2022-01-16  264  	u32 reg_off, bit_off, reg;
-aa74c44be19c8b Wells Lu 2022-01-16  265  
-aa74c44be19c8b Wells Lu 2022-01-16  266  	bit_off = sppctl_get_reg_and_bit_offset(offset, &reg_off);
-aa74c44be19c8b Wells Lu 2022-01-16  267  	reg = sppctl_first_readl(spp_gchip, reg_off);
-aa74c44be19c8b Wells Lu 2022-01-16  268  
-aa74c44be19c8b Wells Lu 2022-01-16  269  	return (reg & BIT(bit_off)) ? 1 : 0;
-aa74c44be19c8b Wells Lu 2022-01-16  270  }
-aa74c44be19c8b Wells Lu 2022-01-16  271  
-aa74c44be19c8b Wells Lu 2022-01-16  272  /**
-aa74c44be19c8b Wells Lu 2022-01-16  273   * sppctl_master_get() - get bit of MASTER register.
-aa74c44be19c8b Wells Lu 2022-01-16  274   *
-aa74c44be19c8b Wells Lu 2022-01-16  275   * There are 8 MASTER registers. Each has 16 mask-bits and 16 control-bits.
-aa74c44be19c8b Wells Lu 2022-01-16  276   * Upper 16-bit of MASTER registers are mask-bits while lower 16-bit are
-aa74c44be19c8b Wells Lu 2022-01-16  277   * control-bits. Totally, there are 128 mask-bits and 128 control-bits.
-aa74c44be19c8b Wells Lu 2022-01-16  278   * They are arranged as shown below:
-aa74c44be19c8b Wells Lu 2022-01-16  279   *
-aa74c44be19c8b Wells Lu 2022-01-16  280   *  register  |  mask-bits  | control-bits
-aa74c44be19c8b Wells Lu 2022-01-16  281   * -----------+-------------+--------------
-aa74c44be19c8b Wells Lu 2022-01-16  282   *  master[0] |  (15 :   0) |  (15 :   0)
-aa74c44be19c8b Wells Lu 2022-01-16  283   *  master[1] |  (31 :  16) |  (31 :  16)
-aa74c44be19c8b Wells Lu 2022-01-16  284   *  master[2] |  (47 :  32) |  (47 :  32)
-aa74c44be19c8b Wells Lu 2022-01-16  285   *     :      |      :      |      :
-aa74c44be19c8b Wells Lu 2022-01-16  286   *  master[7] | (127 : 112) | (127 : 112)
-aa74c44be19c8b Wells Lu 2022-01-16  287   *
-aa74c44be19c8b Wells Lu 2022-01-16  288   * where mask-bits are used to protect control-bits from write-in
-aa74c44be19c8b Wells Lu 2022-01-16  289   * accidentally. Set the corresponding mask-bit before you write
-aa74c44be19c8b Wells Lu 2022-01-16  290   * a value into a control-bit.
-aa74c44be19c8b Wells Lu 2022-01-16  291   *
-aa74c44be19c8b Wells Lu 2022-01-16  292   * Each control-bit sets type of a GPIO pin when FIRST bit is 1.
-aa74c44be19c8b Wells Lu 2022-01-16  293   *   0: a IOP pin
-aa74c44be19c8b Wells Lu 2022-01-16  294   *   1: a GPIO pin
-aa74c44be19c8b Wells Lu 2022-01-16  295   */
-aa74c44be19c8b Wells Lu 2022-01-16  296  static int sppctl_master_get(struct gpio_chip *chip, unsigned int offset)
-aa74c44be19c8b Wells Lu 2022-01-16 @297  {
-aa74c44be19c8b Wells Lu 2022-01-16  298  	struct sppctl_gpio_chip *spp_gchip = gpiochip_get_data(chip);
-aa74c44be19c8b Wells Lu 2022-01-16  299  	u32 reg_off, bit_off, reg;
-aa74c44be19c8b Wells Lu 2022-01-16  300  
-aa74c44be19c8b Wells Lu 2022-01-16  301  	bit_off = sppctl_get_moon_reg_and_bit_offset(offset, &reg_off);
-aa74c44be19c8b Wells Lu 2022-01-16  302  	reg = sppctl_gpio_master_readl(spp_gchip, reg_off);
-aa74c44be19c8b Wells Lu 2022-01-16  303  	return (reg & BIT(bit_off)) ? 1 : 0;
-aa74c44be19c8b Wells Lu 2022-01-16  304  }
-aa74c44be19c8b Wells Lu 2022-01-16  305  
+> On Sun, Oct 01, 2023 at 02:22:17PM -0700, Kees Cook wrote:
+> > On Sun, Oct 01, 2023 at 02:05:46PM -0700, Kees Cook wrote:
+> > > On Sun, Oct 01, 2023 at 09:14:02PM +0200, Julia Lawall wrote:
+> > > > Kees,
+> > > >
+> > > > You can try the following.
+> > >
+> > > Cool! Yeah, this finds the example:
+> > >
+> > > drivers/comedi/drivers/rti800.c:74: struct comedi_lrange: field at offset 0 is the counter for the flex array
+> > > drivers/comedi/drivers/rti800.c:83: struct comedi_lrange: field at offset 0 is the counter for the flex array
+> > > drivers/comedi/drivers/rti800.c:92: struct comedi_lrange: field at offset 0 is the counter for the flex array
+> > >
+> > > I'll run it on the whole codebase...
+> >
+> > It found only the struct comedi_lrange instances, but that's good to
+> > know. :)
+>
+> On a related note, why doesn't this work?
+>
+> @allocated@
+> identifier STRUCT, ARRAY;
+> expression COUNT;
+> struct STRUCT *PTR;
+> identifier ALLOC;
+> type ELEMENT_TYPE;
+> @@
+>
+>         PTR = ALLOC(..., sizeof(\(*PTR\|struct STRUCT\)) +
+>                          COUNT * sizeof(\(*PTR->ARRAY\|PTR->ARRAY[0]\|ELEMENT_TYPE\)), ...);
+>
+>
+> minus: parse error:
+>   File "alloc.cocci", line 15, column 34, charpos = 485
+>   around = 'struct',
+>   whole content =       PTR = ALLOC(..., sizeof(\(*PTR\|struct STRUCT\)) +
+>
+> if I drop "struct", then it complains about ELEMENT_TYPE...
 
-:::::: The code at line 176 was first introduced by commit
-:::::: aa74c44be19c8b1de38d955c2c45c309991c805a pinctrl: Add driver for Sunplus SP7021
+The sizeof with an expression argument is treated differently than the
+sizeof with a type argument.  So you need to write:
 
-:::::: TO: Wells Lu <wellslutw@gmail.com>
-:::::: CC: Linus Walleij <linus.walleij@linaro.org>
+@allocated@
+identifier STRUCT, ARRAY;
+expression COUNT;
+struct STRUCT *PTR;
+identifier ALLOC;
+type ELEMENT_TYPE;
+@@
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+        PTR = ALLOC(..., \(sizeof(*PTR)\|sizeof(struct STRUCT)\) +
+                         COUNT * \(sizeof(*PTR->ARRAY)\|sizeof(PTR->ARRAY[0])\|sizeof(ELEMENT_TYPE)\), ...);
+
+julia
