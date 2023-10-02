@@ -2,63 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE6237B5432
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 487D47B5433
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237461AbjJBNnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:43:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46382 "EHLO
+        id S237480AbjJBNoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 09:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237452AbjJBNnY (ORCPT
+        with ESMTP id S236736AbjJBNoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 09:43:24 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07C2DAD;
-        Mon,  2 Oct 2023 06:43:21 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B77E32185E;
-        Mon,  2 Oct 2023 13:43:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1696254199; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=caakDTqPQiiqSKbfuYgVTeM3IkU7B/tdKX/DWu+ptPg=;
-        b=mftAFFZeLc7dpw7U7ba2KaL8anrudYFIbm8u+J+/kblE3rVxtHFiYu+9utSCfI8EwdsCWZ
-        hW+KUdT5id10aCyLZEhUWNgzHRIkMdA9d3veD2tJYxxnH0YMNYnt6CgY8vT8bWLtRWKCV4
-        /4gLkQNoELYuWRV/vevKHB2Y8avyPa8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9355613456;
-        Mon,  2 Oct 2023 13:43:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 3YcEIffIGmVzTgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 02 Oct 2023 13:43:19 +0000
-Date:   Mon, 2 Oct 2023 15:43:19 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, riel@surriel.com, hannes@cmpxchg.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
- memory controller
-Message-ID: <ZRrI90KcRBwVZn/r@dhcp22.suse.cz>
-References: <20230928005723.1709119-1-nphamcs@gmail.com>
- <20230928005723.1709119-2-nphamcs@gmail.com>
+        Mon, 2 Oct 2023 09:44:10 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AADAAD;
+        Mon,  2 Oct 2023 06:44:07 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rzhxn4YN0z67M1H;
+        Mon,  2 Oct 2023 21:43:57 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 2 Oct
+ 2023 14:44:04 +0100
+Date:   Mon, 2 Oct 2023 14:44:03 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Gregory Price <gourry.memverge@gmail.com>
+CC:     <linux-mm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        <linux-cxl@vger.kernel.org>, <luto@kernel.org>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <dave.hansen@linux.intel.com>, <hpa@zytor.com>, <arnd@arndb.de>,
+        <akpm@linux-foundation.org>, <x86@kernel.org>,
+        Gregory Price <gregory.price@memverge.com>
+Subject: Re: [RFC v2 2/5] mm/migrate: remove unused mm argument from
+ do_move_pages_to_node
+Message-ID: <20231002144403.0000707d@Huawei.com>
+In-Reply-To: <20230919230909.530174-3-gregory.price@memverge.com>
+References: <20230919230909.530174-1-gregory.price@memverge.com>
+        <20230919230909.530174-3-gregory.price@memverge.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230928005723.1709119-2-nphamcs@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,99 +56,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 27-09-23 17:57:22, Nhat Pham wrote:
-> Currently, hugetlb memory usage is not acounted for in the memory
-> controller, which could lead to memory overprotection for cgroups with
-> hugetlb-backed memory. This has been observed in our production system.
+On Tue, 19 Sep 2023 19:09:05 -0400
+Gregory Price <gourry.memverge@gmail.com> wrote:
+
+> preparatory work to re-use do_move_pages_to_node with a physical
+> address instead of virtual address.  This function does not actively
+> use the mm_struct, so it can be removed.
 > 
-> This patch rectifies this issue by charging the memcg when the hugetlb
-> folio is allocated, and uncharging when the folio is freed (analogous to
-> the hugetlb controller).
+> Signed-off-by: Gregory Price <gregory.price@memverge.com>
+Indeed doesn't need to be there.
+FWIW
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-This changelog is missing a lot of information. Both about the usecase
-(we do not want to fish that out from archives in the future) and the
-actual implementation and the reasoning behind that.
+Would be nice if these first 2 patches go upstream separately.
 
-AFAICS you have decided to charge on the hugetlb use rather than hugetlb
-allocation to the pool. I suspect the underlying reasoning is that pool
-pages do not belong to anybody. This is a deliberate decision and it
-should be documented as such.
-
-It is also very important do describe subtle behavior properties that
-might be rather unintuitive to users. Most notably 
-- there is no hugetlb pool management involved in the memcg
-  controller. One has to use hugetlb controller for that purpose.
-  Also the pre allocated pool as such doesn't belong to anybody so the
-  memcg host overcommit management has to consider it when configuring
-  hard limits.
-- memcg limit reclaim doesn't assist hugetlb pages allocation when
-  hugetlb overcommit is configured (i.e. pages are not consumed from the
-  pool) which means that the page allocation might disrupt workloads
-  from other memcgs.
-- failure to charge a hugetlb page results in SIGBUS rather
-  than memcg oom killer. That could be the case even if the
-  hugetlb pool still has pages available and there is
-  reclaimable memory in the memcg.
-- hugetlb pages are contributing to memory reclaim protection 
-  implicitly. This means that the low,min limits tunning has to consider
-  hugetlb memory as well.
-
-I suspect there is more than the above. To be completely honest I am
-still not convinced this is a good idea.
-
-I do recognize that this might work in a very limited environments but
-hugetlb management is quite challenging on its own and this just adds
-another layer of complexity which is really hard to see through without
-an intimate understanding of both memcg and hugetlb. The reason that
-hugetlb has been living outside of the core MM (and memcg) is not just
-because we like it that way. And yes I do fully understand that users
-shouldn't really care about that because this is just a memory to them.
-
-We should also consider the global control for this functionality. I am
-especially worried about setups where a mixed bag of workloads
-(containers) is executed. While some of them will be ready for the new
-accounting mode many will leave in their own world without ever being
-modified. How do we deal with that situation?
-
-All that being said, I am not going to ack nor nack this but I really do
-prefer to be much more explicit about the motivation and current
-implementation specifics so that we can forward users to something
-they can digest.
-
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
-[...]
-
-a minor implementation detail below. I couldn't spot anything obviously
-broken with the rest of the hugetlb specific code. restore_reserve_on_memcg_failure
-is rather clumsy and potentially error prone but I will leave that out
-to Mike as he is much more familiar with that behavior than me.
-
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index de220e3ff8be..ff88ea4df11a 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-[...]
-> @@ -3119,6 +3121,15 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
->  			hugetlb_cgroup_uncharge_folio_rsvd(hstate_index(h),
->  					pages_per_huge_page(h), folio);
->  	}
-> +
-> +	/* undo allocation if memory controller disallows it. */
-> +	if (mem_cgroup_hugetlb_charge_folio(folio, GFP_KERNEL)) {
-
-htlb_alloc_mask(h) rather than GFP_KERNEL. Ideally with
-__GFP_RETRY_MAYFAIL which is a default allocation policy.
-
-> +		if (restore_reserve_on_memcg_failure)
-> +			restore_reserve_on_error(h, vma, addr, folio);
-> +		folio_put(folio);
-> +		return ERR_PTR(-ENOMEM);
-> +	}
-> +
->  	return folio;
+> ---
+>  mm/migrate.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/migrate.c b/mm/migrate.c
+> index a0b0c5a7f8a5..dbe436163d65 100644
+> --- a/mm/migrate.c
+> +++ b/mm/migrate.c
+> @@ -2026,8 +2026,7 @@ static int store_status(int __user *status, int start, int value, int nr)
+>  	return 0;
+>  }
 >  
->  out_uncharge_cgroup:
+> -static int do_move_pages_to_node(struct mm_struct *mm,
+> -		struct list_head *pagelist, int node)
+> +static int do_move_pages_to_node(struct list_head *pagelist, int node)
+>  {
+>  	int err;
+>  	struct migration_target_control mtc = {
+> @@ -2123,7 +2122,7 @@ static int add_page_for_migration(struct mm_struct *mm, const void __user *p,
+>  	return err;
+>  }
+>  
+> -static int move_pages_and_store_status(struct mm_struct *mm, int node,
+> +static int move_pages_and_store_status(int node,
+>  		struct list_head *pagelist, int __user *status,
+>  		int start, int i, unsigned long nr_pages)
+>  {
+> @@ -2132,7 +2131,7 @@ static int move_pages_and_store_status(struct mm_struct *mm, int node,
+>  	if (list_empty(pagelist))
+>  		return 0;
+>  
+> -	err = do_move_pages_to_node(mm, pagelist, node);
+> +	err = do_move_pages_to_node(pagelist, node);
+>  	if (err) {
+>  		/*
+>  		 * Positive err means the number of failed
+> @@ -2200,7 +2199,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
+>  			current_node = node;
+>  			start = i;
+>  		} else if (node != current_node) {
+> -			err = move_pages_and_store_status(mm, current_node,
+> +			err = move_pages_and_store_status(current_node,
+>  					&pagelist, status, start, i, nr_pages);
+>  			if (err)
+>  				goto out;
+> @@ -2235,7 +2234,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
+>  		if (err)
+>  			goto out_flush;
+>  
+> -		err = move_pages_and_store_status(mm, current_node, &pagelist,
+> +		err = move_pages_and_store_status(current_node, &pagelist,
+>  				status, start, i, nr_pages);
+>  		if (err) {
+>  			/* We have accounted for page i */
+> @@ -2247,7 +2246,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
+>  	}
+>  out_flush:
+>  	/* Make sure we do not overwrite the existing error */
+> -	err1 = move_pages_and_store_status(mm, current_node, &pagelist,
+> +	err1 = move_pages_and_store_status(current_node, &pagelist,
+>  				status, start, i, nr_pages);
+>  	if (err >= 0)
+>  		err = err1;
 
--- 
-Michal Hocko
-SUSE Labs
