@@ -2,102 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C61B47B5B9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7E57B5BA9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238927AbjJBTwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 15:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39096 "EHLO
+        id S229680AbjJBT4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 15:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjJBTwj (ORCPT
+        with ESMTP id S229497AbjJBT4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 15:52:39 -0400
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40CB3B3;
-        Mon,  2 Oct 2023 12:52:35 -0700 (PDT)
-Received: from [192.168.1.103] (178.176.75.5) by msexch01.omp.ru (10.188.4.12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Mon, 2 Oct 2023
- 22:52:31 +0300
-Subject: Re: [PATCH 2/4] pata_parport: implement set_devctl
-To:     Ondrej Zary <linux@zary.sk>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-CC:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Tim Waugh <tim@cyberelk.net>, <linux-block@vger.kernel.org>,
-        <linux-parport@lists.infradead.org>, <linux-ide@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230930191511.24994-1-linux@zary.sk>
- <20230930191511.24994-3-linux@zary.sk>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <ecef0b03-b0a5-82c7-1274-c4d7a1b82308@omp.ru>
-Date:   Mon, 2 Oct 2023 22:52:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Mon, 2 Oct 2023 15:56:15 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 707DDB3;
+        Mon,  2 Oct 2023 12:56:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB3C8C433C7;
+        Mon,  2 Oct 2023 19:56:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696276572;
+        bh=ph7h5sAEb9ypE4i6uCa380vh5k+WO2IDb6ilcGeeXL0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CLu04a56diys/JmudLhCzoBs+DRZaXslCht8wJQM0ZdJavmMXvRt1xGMwET2BZUth
+         xWMBloMwrHyzBlsLy2/z/1QdZrDZxcAwpZ4aoBaKFsvFOYkCYldzhU/jbBxq2Ub6+A
+         fZB1ZGYiqmVqntAYmxas6Ie5xlay4RP5t5wgOtSQIQOB9lru487BMDnKrf1EqVZTNB
+         vU96ibJRZJuoRrqIlcB0UzoyX94Yl/nd0AzS0eyEaHHIb5E4kiyC/NYBR5NguNFq4I
+         JnxLUznlkW1nIaBFrtufR2gkJoMpl3HczwhQhmZDa4n8wJpFpmX3nDBkV5JGqFSnqG
+         4XeLHFo2UxohA==
+Date:   Mon, 2 Oct 2023 20:56:07 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: ltc2991: add bindings
+Message-ID: <20231002-gradient-crop-cfd75342c475@spud>
+References: <20231002101835.39624-1-antoniu.miclaus@analog.com>
+ <20231002-babbling-justice-73d3601a71aa@spud>
+ <CY4PR03MB33990FB22E1BB8686AC0CF509BC5A@CY4PR03MB3399.namprd03.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20230930191511.24994-3-linux@zary.sk>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.75.5]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 10/02/2023 19:37:23
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 180294 [Oct 02 2023]
-X-KSE-AntiSpam-Info: Version: 5.9.59.0
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.5 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: omp.ru:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;178.176.75.5:7.1.2
-X-KSE-AntiSpam-Info: FromAlignment: s
-X-KSE-AntiSpam-Info: {rdns complete}
-X-KSE-AntiSpam-Info: {fromrtbl complete}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.5
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 10/02/2023 19:41:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 10/2/2023 5:26:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="zPbks5im7L45xBIh"
+Content-Disposition: inline
+In-Reply-To: <CY4PR03MB33990FB22E1BB8686AC0CF509BC5A@CY4PR03MB3399.namprd03.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/23 10:15 PM, Ondrej Zary wrote:
 
-> Add missing ops->sff_set_devctl implementation.
+--zPbks5im7L45xBIh
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   This is also a bug fix, right?
+On Mon, Oct 02, 2023 at 01:46:53PM +0000, Miclaus, Antoniu wrote:
+>=20
+>=20
+> --
+> Antoniu Micl=C4=83u=C5=9F
+>=20
+> > -----Original Message-----
+> > From: Conor Dooley <conor@kernel.org>
+> > Sent: Monday, October 2, 2023 4:01 PM
+> > To: Miclaus, Antoniu <Antoniu.Miclaus@analog.com>
+> > Cc: Jean Delvare <jdelvare@suse.com>; Guenter Roeck <linux@roeck-
+> > us.net>; Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
+> > <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
+> > <conor+dt@kernel.org>; Jonathan Corbet <corbet@lwn.net>; linux-
+> > hwmon@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; linux-doc@vger.kernel.org
+> > Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: ltc2991: add bindings
+> >=20
+> > [External]
+> >=20
+> > Hey,
+> >=20
+> > On Mon, Oct 02, 2023 at 01:18:14PM +0300, Antoniu Miclaus wrote:
+> > > Add dt-bindings for ltc2991 octal i2c voltage, current and temperature
+> > > monitor.
+> > >
+> > > Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+> > > ---
+> > > changes in v2:
+> > >  - make compatible const type
+> > >  - remove `|` where not necessary
+> > >  - switch to micro-ohms for the shunt resistor property
+> > >  - add vendor prefix for temperature-enable
+> >=20
+> > Thanks for the updates...
+> >=20
+> > >  .../bindings/hwmon/adi,ltc2991.yaml           | 114 ++++++++++++++++=
+++
+> > >  1 file changed, 114 insertions(+)
+> > >  create mode 100644
+> > Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+> > b/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+> > > new file mode 100644
+> > > index 000000000000..3811ea07a04f
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+> > > @@ -0,0 +1,114 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +
+> > > +$id: http://devicetree.org/schemas/hwmon/adi,ltc2991.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Analog Devices LTC2991 Octal I2C Voltage, Current and Tempera=
+ture
+> > Monitor
+> > > +
+> > > +maintainers:
+> > > +  - Antoniu Miclaus <antoniu.miclaus@analog.com>
+> > > +
+> > > +description: |
+> > > +  The LTC2991 is used to monitor system temperatures, voltages and
+> > currents.
+> > > +  Through the I2C serial interface, the eight monitors can individua=
+lly
+> > measure
+> > > +  supply voltages and can be paired for differential measurements of
+> > current
+> > > +  sense resistors or temperature sensing transistors.
+> > > +
+> > > +  Datasheet:
+> > > +    https://www.analog.com/en/products/ltc2991.html
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: adi,ltc2991
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  '#address-cells':
+> > > +    const: 1
+> > > +
+> > > +  '#size-cells':
+> > > +    const: 0
+> > > +
+> > > +  vcc-supply: true
+> > > +
+> > > +patternProperties:
+> > > +  "^channel@[0-3]$":
+> > > +    type: object
+> > > +    description:
+> > > +      Represents the differential/temperature channels.
 
-> Signed-off-by: Ondrej Zary <linux@zary.sk>
+Missing "additionalProperties: false". Once added, it finds that you
+didn't update the child nodes to account for the addition of the vendor
+prefix.
 
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Fixes: 246a1c4c6b7f ("ata: pata_parport: add driver (PARIDE replacement)")
+> > > +
+> > > +    properties:
+> > > +      reg:
+> > > +        description:
+> > > +          The channel number. LTC2991 can monitor 4 currents/tempera=
+tures.
+> > > +        items:
+> > > +          minimum: 0
+> > > +          maximum: 3
 
-[...]
+Should reg not be required here?
 
-MBR, Sergey
+> > > +
+> > > +      shunt-resistor-micro-ohms:
+> > > +        description:
+> > > +          The value of curent sense resistor in miliohms. Enables di=
+fferential
+> > > +          input pair.
+> > > +
+> > > +      adi,temperature-enable:
+> > > +        description:
+> > > +          Enables temperature readings for a input pair.
+> > > +        type: boolean
+> >=20
+> > ...but I did not see an answer to my question on v1:
+> > 	TBH, this seems like it is used just to control software behaviour.
+> > 	Why would you want to actually disable this in DT?
+> > In other words, is there something in that hardware that precludes
+> > measuring temperature for channels that do not contain this property?
+> >=20
+> > Thanks,
+> > Conor.
+> >=20
+> Sorry for missing that. I took in consideration this approach based on th=
+e pin functions
+> described in the datasheet (page 8 of 32). For example the V1 pin of the =
+part can support
+> 3 different configurations: "V1 (Pin 1): First Monitor Input. This pin ca=
+n be configured
+> as a single-ended input (0V to 4.9V) or the positive inputfor a different=
+ial or remote diode
+> temperature measurement (in combination with V2)."
+> Moreover, looking at the multiple typical applications examples at the en=
+d of the datasheet
+> there is a specific adjacent hardware circuit connected to this part for =
+the temperature
+> measurements configurations.
+
+Okay. That seems fair to me, thanks for the explanation. From your
+description here it sounds like the pins between which differential
+measurements are made are fixed in hardware. Is that correct?
+
+One final question - from your description here it sounds like
+shunt-resistor-micro-ohms & adi,temperature-enable are mutually
+exclusive? If they are indeed mutually exclusive, you can fold in
+something like the below.
+diff --git a/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml b/Doc=
+umentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+index 3811ea07a04f..8b1bbbfe7948 100644
+--- a/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
++++ b/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+@@ -39,6 +39,7 @@ patternProperties:
+     type: object
+     description:
+       Represents the differential/temperature channels.
++    additionalProperties: false
+=20
+     properties:
+       reg:
+@@ -58,6 +59,17 @@ patternProperties:
+           Enables temperature readings for a input pair.
+         type: boolean
+=20
++    required:
++      - reg
++
++    allOf:
++      - if:
++          required:
++            - shunt-resistor-micro-ohms
++        then:
++          properties:
++            adi,temperature-enable: false
++
+ required:
+   - compatible
+   - reg
+
+Cheers,
+Conor.
+
+>=20
+> Thank you,
+> Antoniu
+> > > +
+> > > +required:
+> > > +  - compatible
+> > > +  - reg
+> > > +  - vcc-supply
+> > > +
+> > > +additionalProperties: false
+> > > +
+> > > +examples:
+> > > +  - |
+> > > +    i2c {
+> > > +        #address-cells =3D <1>;
+> > > +        #size-cells =3D <0>;
+> > > +
+> > > +        hwmon@48 {
+> > > +            compatible =3D "adi,ltc2991";
+> > > +            reg =3D <0x48>;
+> > > +            vcc-supply =3D <&vcc>;
+> > > +        };
+> > > +    };
+> > > +  - |
+> > > +    i2c {
+> > > +        #address-cells =3D <1>;
+> > > +        #size-cells =3D <0>;
+> > > +
+> > > +        hwmon@48 {
+> > > +            #address-cells =3D <1>;
+> > > +            #size-cells =3D <0>;
+> > > +
+> > > +            compatible =3D "adi,ltc2991";
+> > > +            reg =3D <0x48>;
+> > > +            vcc-supply =3D <&vcc>;
+> > > +
+> > > +            channel@0 {
+> > > +                    reg =3D <0x0>;
+> > > +                    shunt-resistor-micro-ohms =3D <100000>;
+> > > +            };
+> > > +
+> > > +            channel@1 {
+> > > +                    reg =3D <0x1>;
+> > > +                    shunt-resistor-micro-ohms =3D <100000>;
+> > > +            };
+> > > +
+> > > +            channel@2 {
+> > > +                    reg =3D <0x2>;
+> > > +                    temperature-enable;
+> > > +            };
+> > > +
+> > > +            channel@3 {
+> > > +                    reg =3D <0x3>;
+> > > +                    temperature-enable;
+> > > +            };
+> > > +        };
+> > > +    };
+> > > +...
+> > > --
+> > > 2.42.0
+> > >
+
+--zPbks5im7L45xBIh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRsgVwAKCRB4tDGHoIJi
+0vOZAQCv9kZP0jt/EoZ1B3kYj0wcoOI26AeHAnG21QEvcDYmlwEAgMyhB+ExhReG
+WmMXYIFmiCGRqV+AKgiRUmorSB1EUgY=
+=3dB+
+-----END PGP SIGNATURE-----
+
+--zPbks5im7L45xBIh--
