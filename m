@@ -2,78 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA25C7B4B8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 08:40:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 178AE7B4B92
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 08:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235541AbjJBGkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 02:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56260 "EHLO
+        id S235546AbjJBGlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 02:41:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235457AbjJBGkQ (ORCPT
+        with ESMTP id S235512AbjJBGlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 02:40:16 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D20D9E
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 23:40:13 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c3d3c3db9so2131734966b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 23:40:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1696228812; x=1696833612; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zc23Ml6s281iYcprl/tAvfX+YAKmlfawnLlUSvbGAsw=;
-        b=a9aI1P6cq7Ijpu1/FDHEklBYUmNXr3T7UGImQIyyMhbvVWCeILBsLX9eY2XXb5fODg
-         SWFxzRH3i+ycc50g9+QEai8wNguZm4zAcd/B9O/zvggFkSfphnAyF++6s0+CavagEX5g
-         6knrqzB9C9ZpvZ3ReACWO7yhli9cpAC5cotlYOqprWqUzqfo5yrNH0giZ2VOlzAULXj9
-         UFgksZzSmzZVXnu81TfwhF40BXOZqd12vn7xJOyNXnj15glQpsgVbTiOW51lePFRCXty
-         elzJs4CadfuzxGUaUqk3Mu7TqdNrIfduy8PdqQeHgpNVrHl2+C/QNxhQZbjG+QRQtlqp
-         mtUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696228812; x=1696833612;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=zc23Ml6s281iYcprl/tAvfX+YAKmlfawnLlUSvbGAsw=;
-        b=KpaLqGGHTTLgMNFoA7jzddNlZnj8BtPNaREd7vXwsvV3Aii6s/7Ua5ur/WpJgINrsw
-         FKygtfSx2INTKfK+v0YqUe93rNsE+oI0Xyxp03Jlpp+UlWgTuoj4l43UqnXh79e5Iffz
-         8DMWu6OzHJsgGABoJzYDlvzuFQ2M2oqcC3JUC5N0bQ+UmxOXzL8HCAPZQ8GrcqY+ITQN
-         Erbk8X4ON5fQd9igGPyZjyaBbN7XgmThmw19rP8KjgSxgsK/6jpOpd4x5d23v7M+G5aP
-         D5Mjh5hFy9QmBqlSj9VlgHUL5oAdP34TxfIpGh1q5FcjAInQc9NjQ0UfMicMbC4kpr/E
-         fUSA==
-X-Gm-Message-State: AOJu0YxNleWa29g0vOSn7bQwFEoGzxp+HYE0vYkO4JW14b34pC/crWhP
-        tHJZjhswztW6wLRF1oWsMGiaNw==
-X-Google-Smtp-Source: AGHT+IEbfMSd1KQGutXy0/VQkgg3rL0bTo/Rz41LYjg+kFwRNU61ZSgXer1jAT8aCtRG/RaEmdxrSw==
-X-Received: by 2002:a17:906:311b:b0:9a2:28dc:4168 with SMTP id 27-20020a170906311b00b009a228dc4168mr8602028ejx.61.1696228811729;
-        Sun, 01 Oct 2023 23:40:11 -0700 (PDT)
-Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id kg28-20020a17090776fc00b0099b921de301sm16491457ejc.159.2023.10.01.23.40.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 01 Oct 2023 23:40:11 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 02 Oct 2023 08:40:10 +0200
-Message-Id: <CVXQXI5E053J.386OVO28LNSYT@otso>
-Cc:     <~postmarketos/upstreaming@lists.sr.ht>,
-        <phone-devel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: mfd: qcom,spmi-pmic: Update gpio
- example
-From:   "Luca Weiss" <luca.weiss@fairphone.com>
-To:     "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
-        "Andy Gross" <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        "Lee Jones" <lee@kernel.org>, "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Stephen Boyd" <sboyd@kernel.org>
-X-Mailer: aerc 0.15.2
-References: <20230929-pm7250b-gpio-fixup-v1-0-ef68543c1d3b@fairphone.com>
- <20230929-pm7250b-gpio-fixup-v1-1-ef68543c1d3b@fairphone.com>
- <510d6407-8033-4f2e-aabf-bd3fb84875a9@linaro.org>
-In-Reply-To: <510d6407-8033-4f2e-aabf-bd3fb84875a9@linaro.org>
+        Mon, 2 Oct 2023 02:41:16 -0400
+Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 221179B
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 23:41:12 -0700 (PDT)
+Received: from 8bytes.org (pd9fe9df8.dip0.t-ipconnect.de [217.254.157.248])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.8bytes.org (Postfix) with ESMTPSA id EA6E11A25DB;
+        Mon,  2 Oct 2023 08:41:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+        s=default; t=1696228871;
+        bh=W4Tp5WnCJ54D2BoW9qbc/kq5SmRYARJLysU6XU7xl+s=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ypTQIu+moWXyectBcNgrPPIu1c/q6jjyAtaAcmB2OQ27Ii91wMMq0dLagmlUlknqy
+         NE1y3Axabb8KpaULYy7+RMhHvII9P0i5I7PYrR+abt2s3+9C9S9ke8G024R8TOmnvL
+         rmk5DvEFLmr2KzUb6hSkGHrxpMLdta0voInaMdtBaAwEv5FrqZLdLdbHFbwqyVXUiz
+         qF9r/QCMJ6QjYXUy/BmeoMHPAy4gijfqUkxbt6hCiFWrd18sH0UIoRLhg8i1JQjP5W
+         LNt3jUXsYUz324ImUV9ZMjcsAT8v2Sl/nB89FiWOvd6jM6L/OAMFvIn+/uL7NgqO1w
+         1kWZuFKxBHSGw==
+Date:   Mon, 2 Oct 2023 08:41:09 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev
+Subject: [git pull] IOMMU Fixes for Linux v6.6-rc4
+Message-ID: <ZRpmBaTbF3xPNJHz@8bytes.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="TGFrNeBVgX5uFluk"
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -83,41 +51,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat Sep 30, 2023 at 5:06 PM CEST, Krzysztof Kozlowski wrote:
-> On 29/09/2023 10:17, Luca Weiss wrote:
-> > As per commit ea25d61b448a ("arm64: dts: qcom: Use plural _gpios node
-> > label for PMIC gpios") all dts files now use the plural _gpios instead
-> > of the singular _gpio as label. Update the schema example also to match=
-.
-> >=20
-> > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> > ---
-> >  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml =
-b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-> > index 55e931ba5b47..e4842e1fbd65 100644
-> > --- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-> > +++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
-> > @@ -245,7 +245,7 @@ examples:
-> >              #address-cells =3D <1>;
-> >              #size-cells =3D <0>;
-> > =20
-> > -            pmi8998_gpio: gpio@c000 {
-> > +            pmi8998_gpios: gpio@c000=20
->
-> This does no=C2=A0make sense... you update label only here, but not in an=
-y
-> user of it which proves that label is not used. If it is not used, it
-> should be dropped, not changed...
 
-Okay, I will drop the label instead of updating it in v2.
+--TGFrNeBVgX5uFluk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Regards
-Luca
+Hi Linus,
 
->
-> Best regards,
-> Krzysztof
+The following changes since commit 6465e260f48790807eef06b583b38ca9789b6072:
 
+  Linux 6.6-rc3 (2023-09-24 14:31:13 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v6.6-rc4
+
+for you to fetch changes up to 59df44bfb0ca4c3ee1f1c3c5d0ee8e314844799e:
+
+  iommu/vt-d: Avoid memory allocation in iommu_suspend() (2023-09-25 16:10:36 +0200)
+
+----------------------------------------------------------------
+IOMMU Fixes for Linux v6.6-rc4
+
+Including:
+
+	- Arm SMMU fixes from Will Deacon:
+	  - Fix TLB range command encoding when TTL, Num and Scale are all zero
+	  - Fix soft lockup by limiting TLB invalidation ops issued by SVA
+	  - Fix clocks description for SDM630 platform in arm-smmu DT binding
+
+	- Intel VT-d fix from Lu Baolu:
+	  - Fix a suspend/hibernation problem in iommu_suspend()
+
+	- Mediatek driver: Fix page table sharing for addresses over 4GiB
+
+	- Apple/Dart: DMA_FQ handling fix in attach_dev()
+
+----------------------------------------------------------------
+Hector Martin (1):
+      iommu/apple-dart: Handle DMA_FQ domains in attach_dev()
+
+Joerg Roedel (1):
+      Merge tag 'arm-smmu-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/will/linux into iommu/fixes
+
+Konrad Dybcio (1):
+      dt-bindings: arm-smmu: Fix SDM630 clocks description
+
+Nicolin Chen (1):
+      iommu/arm-smmu-v3: Fix soft lockup triggered by arm_smmu_mm_invalidate_range
+
+Robin Murphy (1):
+      iommu/arm-smmu-v3: Avoid constructing invalid range commands
+
+Yong Wu (1):
+      iommu/mediatek: Fix share pgtable for iova over 4GB
+
+Zhang Rui (1):
+      iommu/vt-d: Avoid memory allocation in iommu_suspend()
+
+ Documentation/devicetree/bindings/iommu/arm,smmu.yaml |  2 +-
+ drivers/iommu/apple-dart.c                            |  3 +--
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c       | 18 ++++++++++++++++--
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c           | 15 ++++++++++-----
+ drivers/iommu/intel/iommu.c                           | 16 ----------------
+ drivers/iommu/intel/iommu.h                           |  2 +-
+ drivers/iommu/mtk_iommu.c                             |  9 ++++-----
+ 7 files changed, 33 insertions(+), 32 deletions(-)
+
+Please pull.
+
+Thanks,
+
+	Joerg
+
+--TGFrNeBVgX5uFluk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAmUaZgUACgkQK/BELZcB
+GuM9yRAAkqY5NPFkF3VVS0ZN2EfXa35LE+ngwJa43Y/HQDEE6NriOyNTlQHLHdlp
+ia7b8qrqVO0vFhQ6XXX1LVqrBA9kep9Nf3G40Gt068Uo6KUiYaSrw7exPszDsSQz
+L0A7WDS5MAHr/5JgzpI5Lmd/shpPxoRo9YMiP7ehKfQY8/WVtfOt5jIU1A30nsf+
+oSegb64EroHrc7aKTXTJwBTQn7pqLusdj0B4DeQB6ohEmx08S6JLHvHuDvhMUJ+0
+nbefpUNLZgPORtXQPiw6CZ5M2vZVKpNBWIEhqAofcUwEYpgizxmt07C4mih22daB
+m+kWwvVDLFKAqvZIbVYQaHVbCmBWvYC8w7DMgmtKAV1QQLpxBibMC/VXGz1Gy5Uh
+F/hTh2d1KCtVGJDpE/uK24O7RaIRyVwlACRbU8jGOamuWYCyiRP39RbioqnBjF5I
+4AJFeop21xBYcoTtQrKdw2+axZOn1OwQlcdEeMoo/5WLfeelCef0EgsmW5jwNcTc
+LrH1FWNiFaEd07pD865DmgDJF/+epZRRGPBq+slIO8lLM69jg47PHsgCFa/eckhI
+q1H8IxUFpe5KoVata0srQc8OC8QjQmULYts4yeiNJB0T7H1JrvNpWiNEiCycRhCk
+uHuTL/T7CBiky4QAgR+DUXaBpa2qivHMTGZQ3tHw2B+mlngI5WY=
+=Gnk2
+-----END PGP SIGNATURE-----
+
+--TGFrNeBVgX5uFluk--
