@@ -2,137 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F27B97B5196
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36647B5197
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236770AbjJBLm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 07:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39846 "EHLO
+        id S236716AbjJBLo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 07:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236686AbjJBLmz (ORCPT
+        with ESMTP id S231305AbjJBLo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 07:42:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87DA793
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 04:42:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696246972; x=1727782972;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=m9mE8NH7u2Rse4DbyyyqUn4RrCYgKc6Jbl5K35i1so0=;
-  b=KnswlRguV+70QXxW9+vPLfibLpccb5S+ZWQGamvRHytUI8fV/bEW6iFA
-   ueVMBPHWrFJiPnIrnO1DzaNTBdOrZ3eGPnebWtBRYBxm9esNkH1Ca6FE2
-   Z6B/PNkrEysUUrbVDqWZQNoFhvEYfbbOYz0n13VjpMoCWQM9+2e981AJm
-   OlKuXIQPLyNIDcQlJTGH3Xzb8tUeOwCom7MYeAHOtiBxwjgPvlhlfCLT9
-   2D5X3Ud1xsNJx/OpaqrsdhO9OLYdBcWfqwvxK//+tYTnZvvb0FwTTH6kA
-   T4hz4bZ4bSGM98Ud55sRnf74j8b6Ar7Sm9eKgznWMsGkxw0tI1qX5Pyhk
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="379902237"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="379902237"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 04:42:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="1508264"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmviesa001.fm.intel.com with ESMTP; 02 Oct 2023 04:42:53 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qnHK4-00061X-0L;
-        Mon, 02 Oct 2023 11:42:48 +0000
-Date:   Mon, 2 Oct 2023 19:42:13 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: drivers/clocksource/timer-ti-dm.c:947: warning: Function parameter
- or member 'cookie' not described in 'omap_dm_timer_set_int_disable'
-Message-ID: <202310021902.Uqcr69hR-lkp@intel.com>
+        Mon, 2 Oct 2023 07:44:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B556193
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 04:43:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696247015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LdWQ9z8fOkBkb74XxqcIV2JNA2pnsgRxBSJgOXL/JUc=;
+        b=eAAic6Ql4riwEsr9shSxAtzqsETXIEAymMIavoCMz0CaMvQ0CMZUywaHYJUxDhd/iBhj8i
+        MaNEtJbnrBd6R4jVoJZ/TkfodNMqWL+aA2YA9KSNNlAH//jWOIXXZjfsx+aHdAbDHauRDw
+        C0h0ZO7o0L4+jZa2bIZ3jsBdytKWJxM=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-274-UzFoxvswPTaDJ_-nT4Vo6g-1; Mon, 02 Oct 2023 07:43:33 -0400
+X-MC-Unique: UzFoxvswPTaDJ_-nT4Vo6g-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-32172e3679bso12576989f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 04:43:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696247012; x=1696851812;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LdWQ9z8fOkBkb74XxqcIV2JNA2pnsgRxBSJgOXL/JUc=;
+        b=ElSyl42KBdsblUwyFXP30q9azU5DA5YueM6ZTrAph5PEUetK6zdXwpCMWdHabTwGHq
+         cNLe0UJ5aDb1oA9FhNlkhCM5hJMqhjxrmOiAPl9cVnCvmtUHx9KeB++nvGTOI2CWN+TH
+         XcPLYCDJk3YBKn/jOistkcw8QVMb4IlH7+8x94sH29MLqyO+7owNwxmplq16AGO95DbJ
+         +z7DF8gFX9uVnBC7S3yRW80QlIvMejDoXzVksqIHc4t4N7dbuE6XUEEeIgi7wsoMpzZ1
+         llv/EN89ENkwOpxZhZzhdmeElELdEcvTzLDuAKgsbhO4d1Npfu5vF/a+FsMGGrcvnxUM
+         oRYg==
+X-Gm-Message-State: AOJu0Yy8/2Ei2NkjSBcnpfVPtxsKugpf+HB5ai+c2tdHefe3Gr1G6DRX
+        +6Qoqtj2unJCvF7MFxr5IV4pMwX7KfHoSkOjjueCU7vqo0Z41MQWdGf6j34GkIa+HXqqGT2ZK0B
+        li5EWC3LEfq1o578c5ie715p5
+X-Received: by 2002:a05:6000:109:b0:317:f70b:3156 with SMTP id o9-20020a056000010900b00317f70b3156mr9388988wrx.28.1696247012526;
+        Mon, 02 Oct 2023 04:43:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG2VtYKpfiI7DgOq24joo0XGjgOCqAtFXichvVpOWYSLVbPNVAtso2DOpQ0xzD71nGgtOVKCw==
+X-Received: by 2002:a05:6000:109:b0:317:f70b:3156 with SMTP id o9-20020a056000010900b00317f70b3156mr9388972wrx.28.1696247012075;
+        Mon, 02 Oct 2023 04:43:32 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c735:f200:cb49:cb8f:88fc:9446? (p200300cbc735f200cb49cb8f88fc9446.dip0.t-ipconnect.de. [2003:cb:c735:f200:cb49:cb8f:88fc:9446])
+        by smtp.gmail.com with ESMTPSA id o5-20020adfeac5000000b0031984b370f2sm27838751wrn.47.2023.10.02.04.43.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 04:43:31 -0700 (PDT)
+Message-ID: <ac73d772-c585-1d9e-c8ee-36c51b608906@redhat.com>
+Date:   Mon, 2 Oct 2023 13:43:30 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <a88b7339-beab-37c6-7d32-0292b325916d@suse.cz>
+ <20230918145204.GB16104@cmpxchg.org> <20230918174037.GA112714@monkey>
+ <20230919064914.GA124289@cmpxchg.org> <20230919184731.GC112714@monkey>
+ <C416A861-44D3-46E7-B756-63DA3731FC1E@nvidia.com>
+ <20230920003239.GD112714@monkey>
+ <149ACAE8-D3E4-4009-828A-D3AC881FFB9C@nvidia.com>
+ <bc4bd049-1e29-0f23-cca6-493abb5e774f@suse.cz>
+ <20230920134811.GB124289@cmpxchg.org> <20230920160400.GC124289@cmpxchg.org>
+ <762CA634-053A-41DD-8ED7-895374640858@nvidia.com>
+ <D4F59724-61EB-4DA5-94DF-59E79F0F1FB3@nvidia.com>
+ <505e7f55-f63a-b33d-aa10-44de16d2d3cc@redhat.com>
+ <4466F447-43D3-43CD-8930-FBE9A49028BA@nvidia.com>
+ <98f3e433-153d-5dd8-c868-30f703baeb46@redhat.com>
+ <6DD1F426-A87D-47B7-B27F-043B399CBEDA@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH V2 0/6] mm: page_alloc: freelist migratetype hygiene
+In-Reply-To: <6DD1F426-A87D-47B7-B27F-043B399CBEDA@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+>>> I can do it after I fix this. That change might or might not help only if we make
+>>> some redesign on how migratetype is managed. If MIGRATE_ISOLATE does not
+>>> overwrite existing migratetype, the code might not need to split a page and move
+>>> it to MIGRATE_ISOLATE freelist?
+>>
+>> Did someone test how memory offlining plays along with that? (I can try myself
+>> within the next 1-2 weeks)
+>>
+>> There [mm/memory_hotplug.c:offline_pages] we always cover full MAX_ORDER ranges,
+>> though.
+>>
+>> ret = start_isolate_page_range(start_pfn, end_pfn,
+>> 			       MIGRATE_MOVABLE,
+>> 			       MEMORY_OFFLINE | REPORT_FAILURE,
+>> 			       GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL);
+> 
+> Since a full MAX_ORDER range is passed, no free page split will happen.
 
-FYI, the error/warning still remains.
+Okay, thanks for verifying that it should not be affected!
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   8a749fd1a8720d4619c91c8b6e7528c0a355c0aa
-commit: a6e543f61531b63bfc8d43053c6ec6f65117f627 clocksource/drivers/timer-ti-dm: Move struct omap_dm_timer fields to driver
-date:   1 year ago
-config: arm-defconfig (https://download.01.org/0day-ci/archive/20231002/202310021902.Uqcr69hR-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231002/202310021902.Uqcr69hR-lkp@intel.com/reproduce)
+> 
+>>
+>>>
+>>> The fundamental issue in alloc_contig_range() is that to work at
+>>> pageblock level, a page (>pageblock_order) can have one part is isolated and
+>>> the rest is a different migratetype. {add_to,move_to,del_page_from}_free_list()
+>>> now checks first pageblock migratetype, so such a page needs to be removed
+>>> from its free_list, set MIGRATE_ISOLATE on one of the pageblock, split, and
+>>> finally put back to multiple free lists. This needs to be done at isolation stage
+>>> before free pages are removed from their free lists (the stage after isolation).
+>>
+>> One idea was to always isolate larger chunks, and handle movability checks/split/etc
+>> at a later stage. Once isolation would be decoupled from the actual/original migratetype,
+>> the could have been easier to handle (especially some corner cases I had in mind back then).
+> 
+> I think it is a good idea. When I coded alloc_contig_range() up, I tried to
+> accommodate existing set_migratetype_isolate(), which calls has_unmovable_pages().
+> If these two are decoupled, set_migrateype_isolate() can work on MAX_ORDER-aligned
+> ranges and has_unmovable_pages() can still work on pageblock-aligned ranges.
+> Let me give this a try.
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310021902.Uqcr69hR-lkp@intel.com/
+But again, just some thought I had back then, maybe it doesn't help for 
+anything; I found more time to look into the whole thing in more detail.
 
-All warnings (new ones prefixed by >>):
+>>
+>>> If MIGRATE_ISOLATE is a separate flag and we are OK with leaving isolated pages
+>>> in their original migratetype and check migratetype before allocating a page,
+>>> that might help. But that might add extra work (e.g., splitting a partially
+>>> isolated free page before allocation) in the really hot code path, which is not
+>>> desirable.
+>>
+>> With MIGRATE_ISOLATE being a separate flag, one idea was to have not a single
+>> separate isolate list, but one per "proper migratetype". But again, just some random
+>> thoughts I had back then, I never had sufficient time to think it all through.
+> 
+> Got it. I will think about it.
+> 
+> One question on separate MIGRATE_ISOLATE:
+> 
+> the implementation I have in mind is that MIGRATE_ISOLATE will need a dedicated flag
+> bit instead of being one of migratetype. But now there are 5 migratetypes +
 
-   drivers/clocksource/timer-ti-dm.c:191: warning: Function parameter or member 'val' not described in 'dmtimer_write'
-   drivers/clocksource/timer-ti-dm.c:191: warning: Excess function parameter 'value' description in 'dmtimer_write'
->> drivers/clocksource/timer-ti-dm.c:947: warning: Function parameter or member 'cookie' not described in 'omap_dm_timer_set_int_disable'
->> drivers/clocksource/timer-ti-dm.c:947: warning: Excess function parameter 'timer' description in 'omap_dm_timer_set_int_disable'
+Exactly what I was concerned about back then ...
 
+> MIGRATE_ISOLATE and PB_migratetype_bits is 3, so an extra migratetype_bit is needed.
+> But current migratetype implementation is a word-based operation, requiring
+> NR_PAGEBLOCK_BITS to be divisor of BITS_PER_LONG. This means NR_PAGEBLOCK_BITS
+> needs to be increased from 4 to 8 to meet the requirement, wasting a lot of space.
 
-vim +947 drivers/clocksource/timer-ti-dm.c
+... until I did the math. Let's assume a pageblock is 2 MiB.
 
-92105bb70634ab arch/arm/plat-omap/dmtimer.c      Tony Lindgren 2005-09-07  938  
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  939  /**
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  940   * omap_dm_timer_set_int_disable - disable timer interrupts
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  941   * @timer:	pointer to timer handle
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  942   * @mask:	bit mask of interrupts to be disabled
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  943   *
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  944   * Disables the specified timer interrupts for a timer.
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  945   */
-a6e543f61531b6 drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  946  static int omap_dm_timer_set_int_disable(struct omap_dm_timer *cookie, u32 mask)
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13 @947  {
-a6e543f61531b6 drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  948  	struct dmtimer *timer;
-bd351f1aee21ca drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  949  	struct device *dev;
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  950  	u32 l = mask;
-bd351f1aee21ca drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  951  	int rc;
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  952  
-a6e543f61531b6 drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  953  	timer = to_dmtimer(cookie);
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  954  	if (unlikely(!timer))
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  955  		return -EINVAL;
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  956  
-bd351f1aee21ca drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  957  	dev = &timer->pdev->dev;
-bd351f1aee21ca drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  958  	rc = pm_runtime_resume_and_get(dev);
-bd351f1aee21ca drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  959  	if (rc)
-bd351f1aee21ca drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  960  		return rc;
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  961  
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  962  	if (timer->revision == 1)
-f32bdac10cb5f4 drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  963  		l = dmtimer_read(timer, timer->irq_ena) & ~mask;
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  964  
-f32bdac10cb5f4 drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  965  	dmtimer_write(timer, timer->irq_dis, l);
-90c9aada19606a drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  966  	l = dmtimer_read(timer, OMAP_TIMER_WAKEUP_EN_REG) & ~mask;
-49cd16bb573e43 drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  967  	dmtimer_write(timer, OMAP_TIMER_WAKEUP_EN_REG, l);
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  968  
-bd351f1aee21ca drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  969  	pm_runtime_put_sync(dev);
-bd351f1aee21ca drivers/clocksource/timer-ti-dm.c Tony Lindgren 2022-08-15  970  
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  971  	return 0;
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  972  }
-4249d96ca35a76 arch/arm/plat-omap/dmtimer.c      Jon Hunter    2012-07-13  973  
+4/(2* 1024 * 1024 * 8) = 0,00002384185791016 %
 
-:::::: The code at line 947 was first introduced by commit
-:::::: 4249d96ca35a765c25a70b7d29df5b6d80987c7f ARM: OMAP: Add dmtimer interrupt disable function
+8/(2* 1024 * 1024 * 8) -> 1 / (2* 1024 * 1024) = 0,00004768371582031 %
 
-:::::: TO: Jon Hunter <jon-hunter@ti.com>
-:::::: CC: Jon Hunter <jon-hunter@ti.com>
+For a 1 TiB machine that means 256 KiB vs. 512 KiB
+
+I concluded that "wasting a lot of space" is not really the right word 
+to describe that :)
+
+Just to put it into perspective, the memmap (64/4096) for a 1 TiB 
+machine is ... 16 GiB.
+
+> An alternative is to have a separate array for MIGRATE_ISOLATE, which requires
+> additional changes. Let me know if you have a better idea. Thanks.
+
+It would probably be cleanest to just use one byte per pageblock. That 
+would cleanup the whole machinery eventually as well.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+
+David / dhildenb
+
