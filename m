@@ -2,129 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 595E27B5071
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:35:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB897B5073
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236527AbjJBKfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 06:35:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
+        id S236477AbjJBKfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 06:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236477AbjJBKfk (ORCPT
+        with ESMTP id S236530AbjJBKfp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 06:35:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1ED0B0;
-        Mon,  2 Oct 2023 03:35:36 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE2B1C433C9;
-        Mon,  2 Oct 2023 10:35:33 +0000 (UTC)
-Message-ID: <46b3af72-d458-439d-9f2c-11a707acafa9@xs4all.nl>
-Date:   Mon, 2 Oct 2023 12:35:31 +0200
+        Mon, 2 Oct 2023 06:35:45 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF121D7;
+        Mon,  2 Oct 2023 03:35:42 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-405361bb9f7so167403325e9.2;
+        Mon, 02 Oct 2023 03:35:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696242941; x=1696847741; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=R6KXywotmXA/KObeIwoWwMRfeXeVZZEdCqJZCtARBEE=;
+        b=BnbIkcXVaB3i96HLhCsKk2KWF1s1/soW9L14RzIFbHGDNEBaeaRvlsdb/lXSQkBn/d
+         WLh0ZnxkXqXI+qtqcMdJAucW7d4l/miDgYcjakGplzqzzZ60I2CSnAWbmnTRbyFL8qx9
+         Lra4easKTgqXq71AzZTDCB9LD7n2qkzZF0FxjqGmZP4q+jFx3Lrv5g3mn62DldE1ppM5
+         LW/WfWPcdQ8AAO6sH7jWgMd9SCEXeMfAvs0nxyRvXEbwTLH7UArAjl/7jsB670YJQerh
+         ZpBsnJNHWheeoGGj/1H+ADtyKKsAcvRUPBLNJbf/WXGKvovTPsNujocmEALxbxvvXsT4
+         WRHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696242941; x=1696847741;
+        h=content-transfer-encoding:in-reply-to:organization:references:cc:to
+         :content-language:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R6KXywotmXA/KObeIwoWwMRfeXeVZZEdCqJZCtARBEE=;
+        b=Cgynl3c8n46teGEQgPIAVbWG7Tgs3oeeRBNmmVhwQjDZjnszpMsGDQKGWJb+MT+kz7
+         aNVzbDbF+n5no/7s4G66VKdgbOH6yTl7kuJNUgUdm51DHxfs0sSMXj7o6MEhOWbfF8NG
+         asaX6GQo/SMAl3z2LEQJeOlCGANGBjxUnyyM0IU/IMuvHe4ReQOQo0wSRPgkRZak/P/G
+         Ca4obL9Sr8bP46Xl1UPUkYJnMQKKpxg8k9P+kQSA/Qsf/iLIyfpKma966KV+mdhqij5K
+         PrVTIz8d1ciJf6ZWSEECjHQmtY3oIWlucmVJUqzndr/znJQ+BLiFDC0MjvYqRzKdRTg/
+         m6cg==
+X-Gm-Message-State: AOJu0YzOqOrlmCgZDfutv2EeeLx9JXIz5O4Z+NzBVPzkfZQvC4PB0Egi
+        p1Oo+XqNISGEmTJ9hWlpEas=
+X-Google-Smtp-Source: AGHT+IFDOlffJnVURr4RV6FUspnNEaQ5wh1PVQ5JaO1cH8UM1PWxzMdAx5UcU21YAQ5oiNhTsy4F7g==
+X-Received: by 2002:a05:600c:215:b0:405:1c19:b747 with SMTP id 21-20020a05600c021500b004051c19b747mr8788914wmi.15.1696242941202;
+        Mon, 02 Oct 2023 03:35:41 -0700 (PDT)
+Received: from [192.168.7.196] (54-240-197-236.amazon.com. [54.240.197.236])
+        by smtp.gmail.com with ESMTPSA id f21-20020a7bcc15000000b00404719b05b5sm6915006wmh.27.2023.10.02.03.35.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 03:35:40 -0700 (PDT)
+From:   Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <8ddfdcc1-1c28-4ff1-9f4f-3f150a69a7e4@xen.org>
+Date:   Mon, 2 Oct 2023 11:35:38 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] media: imx-jpeg: notify source chagne event when the
- first picture parsed
-Content-Language: en-US, nl
-To:     Ming Qian <ming.qian@nxp.com>, mchehab@kernel.org,
-        mirela.rabulea@oss.nxp.com
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, xiahong.bao@nxp.com, eagle.zhou@nxp.com,
-        tao.jiang_2@nxp.com, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230928053723.20765-1-ming.qian@nxp.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230928053723.20765-1-ming.qian@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v3] KVM: x86: Use fast path for Xen timer delivery
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>, kvm <kvm@vger.kernel.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+References: <f21ee3bd852761e7808240d4ecaec3013c649dc7.camel@infradead.org>
+Organization: Xen Project
+In-Reply-To: <f21ee3bd852761e7808240d4ecaec3013c649dc7.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28/09/2023 07:37, Ming Qian wrote:
-> After gstreamer rework the dynamic resolution change handling, gstreamer
-> stop doing capture buffer allocation based on guesses and wait for the
-> source change event when available. It requires driver always notify
-> source change event in the initialization, even if the size parsed is
-> equal to the size set on capture queue. otherwise, the pipeline will be
-> stalled.
+On 30/09/2023 14:58, David Woodhouse wrote:
+> From: David Woodhouse <dwmw@amazon.co.uk>
 > 
-> Currently driver may not notify source change event if the parsed format
-> and size are equal to those previously established, but it may stall the
-> gstreamer pipeline.
+> Most of the time there's no need to kick the vCPU and deliver the timer
+> event through kvm_xen_inject_timer_irqs(). Use kvm_xen_set_evtchn_fast()
+> directly from the timer callback, and only fall back to the slow path
+> when it's necessary to do so.
 > 
-> The link of gstreamer patch is
-> https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/4437
+> This gives a significant improvement in timer latency testing (using
+> nanosleep() for various periods and then measuring the actual time
+> elapsed).
 > 
-> Fixes: b4e1fb8643da ("media: imx-jpeg: Support dynamic resolution change")
-> Signed-off-by: Ming Qian <ming.qian@nxp.com>
+> However, there was a reason¹ the fast path was dropped when this support
+> was first added. The current code holds vcpu->mutex for all operations
+> on the kvm->arch.timer_expires field, and the fast path introduces a
+> potential race condition. Avoid that race by ensuring the hrtimer is
+> (temporarily) cancelled before making changes in kvm_xen_start_timer(),
+> and also when reading the values out for KVM_XEN_VCPU_ATTR_TYPE_TIMER.
+> 
+> ¹ https://lore.kernel.org/kvm/846caa99-2e42-4443-1070-84e49d2f11d2@redhat.com/
+> 
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
 > ---
->  drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c | 7 ++++++-
->  drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h | 1 +
->  2 files changed, 7 insertions(+), 1 deletion(-)
+>   • v2: Remember, and deal with, those races.
 > 
-> diff --git a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
-> index 3af0af8ac07b..372f3007ff43 100644
-> --- a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
-> +++ b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.c
-> @@ -1348,7 +1348,8 @@ static bool mxc_jpeg_source_change(struct mxc_jpeg_ctx *ctx,
->  	q_data_cap = mxc_jpeg_get_q_data(ctx, V4L2_BUF_TYPE_VIDEO_CAPTURE);
->  	if (mxc_jpeg_compare_format(q_data_cap->fmt, jpeg_src_buf->fmt))
->  		jpeg_src_buf->fmt = q_data_cap->fmt;
-> -	if (q_data_cap->fmt != jpeg_src_buf->fmt ||
-> +	if (!ctx->source_change_cnt ||
-> +	    q_data_cap->fmt != jpeg_src_buf->fmt ||
->  	    q_data_cap->w != jpeg_src_buf->w ||
->  	    q_data_cap->h != jpeg_src_buf->h) {
->  		dev_dbg(dev, "Detected jpeg res=(%dx%d)->(%dx%d), pixfmt=%c%c%c%c\n",
-> @@ -1392,6 +1393,7 @@ static bool mxc_jpeg_source_change(struct mxc_jpeg_ctx *ctx,
->  		mxc_jpeg_sizeimage(q_data_cap);
->  		notify_src_chg(ctx);
->  		ctx->source_change = 1;
-> +		ctx->source_change_cnt++;
->  		if (vb2_is_streaming(v4l2_m2m_get_dst_vq(ctx->fh.m2m_ctx)))
->  			mxc_jpeg_set_last_buffer(ctx);
->  	}
-> @@ -1611,6 +1613,9 @@ static int mxc_jpeg_queue_setup(struct vb2_queue *q,
->  	for (i = 0; i < *nplanes; i++)
->  		sizes[i] = mxc_jpeg_get_plane_size(q_data, i);
->  
-> +	if (V4L2_TYPE_IS_OUTPUT(q->type))
-> +		ctx->source_change_cnt = 0;
-> +
->  	return 0;
->  }
->  
-> diff --git a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h
-> index d80e94cc9d99..b7e94fa50e02 100644
-> --- a/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h
-> +++ b/drivers/media/platform/nxp/imx-jpeg/mxc-jpeg.h
-> @@ -99,6 +99,7 @@ struct mxc_jpeg_ctx {
->  	enum mxc_jpeg_enc_state		enc_state;
->  	int				slot;
->  	unsigned int			source_change;
-> +	unsigned int			source_change_cnt;
+>   • v3: Drop the assertions for vcpu being loaded; those can be done
+>         separately if at all.
+> 
+>         Reorder the code in xen_timer_callback() to make it clearer
+>         that kvm->arch.xen.timer_expires is being cleared in the case
+>         where the event channel delivery is *complete*, as opposed to
+>         the -EWOULDBLOCK deferred path.
+> 
+>         Drop the 'pending' variable in kvm_xen_vcpu_get_attr() and
+>         restart the hrtimer if (kvm->arch.xen.timer_expires), which
+>         ought to be exactly the same thing (that's the *point* in
+>         cancelling the timer, to make it truthful as we return its
+>         value to userspace).
+> 
+>         Improve comments.
+> 
+>   arch/x86/kvm/xen.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 49 insertions(+)
+> 
 
-This is a confusing field. It is not a counter at all, it is just a
-bool to indicate if the initial source change event was raised or not.
-
-So something like:
-
-	bool need_initial_source_change_evt;
-
-(feel free to give it a better name!)
-
-It is certainly not a counter.
-
-Regards,
-
-	Hans
-
->  	bool				header_parsed;
->  	struct v4l2_ctrl_handler	ctrl_handler;
->  	u8				jpeg_quality;
+Reviewed-by: Paul Durrant <paul@xen.org>
 
