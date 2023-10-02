@@ -2,213 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 222E57B4AF7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 06:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C1B7B4AFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 06:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229548AbjJBEGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 00:06:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
+        id S230233AbjJBEI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 00:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjJBEGc (ORCPT
+        with ESMTP id S229446AbjJBEI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 00:06:32 -0400
-Received: from mail-vk1-xa2a.google.com (mail-vk1-xa2a.google.com [IPv6:2607:f8b0:4864:20::a2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A66D3;
-        Sun,  1 Oct 2023 21:06:28 -0700 (PDT)
-Received: by mail-vk1-xa2a.google.com with SMTP id 71dfb90a1353d-495cf1bf9f9so6026912e0c.2;
-        Sun, 01 Oct 2023 21:06:28 -0700 (PDT)
+        Mon, 2 Oct 2023 00:08:58 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5ECF8D3
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 21:08:55 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d86dac81f8fso17259775276.1
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 21:08:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696219587; x=1696824387; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=a7N14C5lw8nxoWs6YpUUkEHECVFntWCWWPn4SACIIVI=;
-        b=J6+aKWyBHrlGKS5kgU8bzthrukW1+IuEJ8iyzJlzuXYXmeu1ulnj9HmHwh571jl++d
-         7wQxAKXaEuQwJF+aeXZ7mGgkFlgovY94VVp5IzFr28O3lH+sdr1rMXLIJkO9XvNCzuJB
-         Cl+eYktIyg+nRQzIgbtsUTF4SRgN74qEnMz4jEt+1wtumQgOFg1I6OmQK/YRlmvM2AcW
-         SZ1Jgn0Bh6TRVrHvy0WUTQN71jAEQUFDohBO5CcYGpMrJ2ecQbCY41un+9szYScLaPNL
-         +uQXU7XGov6dwDda4exeV4cRRnOiGhaNZohppiXZuzQJRXz2XJBphvzIYBM/gB5UREFn
-         ebFQ==
+        d=google.com; s=20230601; t=1696219734; x=1696824534; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d9RyKi2tLeQpV4Sj/8aOYjchp6vn0YLRcfFMMaJdDOc=;
+        b=nuhkbkB61/9L0+ARVQso1isocI+VwKg/Dkn+iHemmNXL6SFoB8XqE1HNZLdKmUe7b+
+         LOnjL9SEyL7+3aZMWI/Aq3tFiB1+0UYl7zqDOKMaZcpaJCVdmxTEWmFpB8vMFgH28lsf
+         8aJK+zQlpYFsXBgcHZxZjxmszV4/0hTQUCxZDgxhAipNfzIKgEQHjRGJRTe8ZY8uZfvo
+         tpXBIjTdlWVj9ceHFTy1GnmAb/i/9nhm9a2/08iqzWPxmjhzcfph2iiyvm2ZJzcDHJ9Z
+         kRnWhy4HlP1NtVkBg0nxwZkvk1TrtRRpU2eB4+XWtrh7rXiNrrV4YV1WVf6ZCVKsWfDc
+         l7TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696219587; x=1696824387;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a7N14C5lw8nxoWs6YpUUkEHECVFntWCWWPn4SACIIVI=;
-        b=WtqsJc+w29+G5NuS/JUHCJSywvcZhP7bMD7HE1Yf4Rw4EguY4Cl21w7jUptbFi27v+
-         3uGtj+Ez2UBDtzlCPrqowq5hodKbz6S2qYKOyeLqQb9MBGsGFztkBWXgOk2WTlgtMr4Z
-         V5Xhyc3Zx0OpPJQMvYMDsw01GnHCG9jGl/2kXtKeB5pW0dcu2zRs0h7/sDG1yuImwXrI
-         3v3JnFu7h7m0YtcP+tYO+B6AZYzm7qt+QYH5qsmOGCCxxe8B82Zth8r6q6opHnXYaPq6
-         gh+GGajJKOmRkI4dy167Ai6PsUXlUQuhhl5LyDVALcJ0nHEURhkqC1LBYF/VGj6fJyGx
-         Ldqw==
-X-Gm-Message-State: AOJu0YzCB3Qxc+5DyXpbCiZuTyS/kfYle2iUEvJUhOsPD608C0+uo/fC
-        MGSigM5lJ1iV2DBhgOAn0IbI2gAe/DEaEQ==
-X-Google-Smtp-Source: AGHT+IHpyA9ox0N97+86UDd7xs50XCnM7RzezJ8RYrQ9jbNn5sUxvlv6Q81SiiShZQVQsb/3chitIw==
-X-Received: by 2002:a1f:e3c4:0:b0:49a:b737:4df7 with SMTP id a187-20020a1fe3c4000000b0049ab7374df7mr6283589vkh.5.1696219586025;
-        Sun, 01 Oct 2023 21:06:26 -0700 (PDT)
-Received: from localhost ([2607:fb90:beca:c7a7:dba8:3746:709f:6151])
-        by smtp.gmail.com with ESMTPSA id f24-20020ac5c9b8000000b0049d20faf953sm800101vkm.55.2023.10.01.21.06.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Oct 2023 21:06:25 -0700 (PDT)
-Date:   Sun, 1 Oct 2023 21:06:24 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
-        Srinivas Neeli <srinivas.neeli@amd.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: [PATCH v1 2/5] lib/bitmap: Introduce bitmap_scatter() and
- bitmap_gather() helpers
-Message-ID: <ZRpBwFznhl+pci/a@yury-ThinkPad>
-References: <20230926052007.3917389-1-andriy.shevchenko@linux.intel.com>
- <20230926052007.3917389-3-andriy.shevchenko@linux.intel.com>
- <ZRN2adZZaGeqWNlY@yury-ThinkPad>
- <ZRQZ2m0Rb/4AkeQ3@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRQZ2m0Rb/4AkeQ3@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696219734; x=1696824534;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d9RyKi2tLeQpV4Sj/8aOYjchp6vn0YLRcfFMMaJdDOc=;
+        b=WpjvCZEowE5L8tyq1WnFEaIDSc7EB9Yt/P+3LvqHtHDFYQQnxz0Av0cyCzQLBXIbau
+         e15rcDZvNjQskGGgDe1hMLd+I/e85PlrNm8NezLT21Zh7Vc7z3AW8J5x4W6XAskZ+H/X
+         KRIw/VlFu3xwLxg3Idged9RgIksGPoFSKgAiFMfP8OKXxbPYAQQ6u5jLD410n3Cieumb
+         GEG8a5ah65w2x8zp6+sO8U/KYySnVt3bgWL+H0rpXHj+c6J6FtIRT09LsuRsAT6xadgv
+         /8ml9WhiyG/Vg6jFHDeySxdyautIPJHtMIFyb9DzwDGthSOb1J5kRlglc8agpA41uz6O
+         VhiA==
+X-Gm-Message-State: AOJu0YwiBMJ5U0dsEWLVIwgDqnDoOT61lnBg/xF0D7gGmiy6KJ6aJMRD
+        5ykSMgg6UyorZAhLEtsTg+CeJC35LfBa
+X-Google-Smtp-Source: AGHT+IHYS1p5vGODFCUAA+svB2TN/dFLZ+w+KKKdhm3BjVhLIwbZUhrQ+K2+1+aqqgq9thHos0Ja3m2JENC/
+X-Received: from mizhang-super.c.googlers.com ([34.105.13.176]) (user=mizhang
+ job=sendgmr) by 2002:a25:ae84:0:b0:d0c:c83b:94ed with SMTP id
+ b4-20020a25ae84000000b00d0cc83b94edmr151069ybj.10.1696219734572; Sun, 01 Oct
+ 2023 21:08:54 -0700 (PDT)
+Reply-To: Mingwei Zhang <mizhang@google.com>
+Date:   Mon,  2 Oct 2023 04:08:39 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+Message-ID: <20231002040839.2630027-1-mizhang@google.com>
+Subject: [PATCH v2] KVM: x86: Service NMI requests after PMI requests in
+ VM-Enter path
+From:   Mingwei Zhang <mizhang@google.com>
+To:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mingwei Zhang <mizhang@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Like Xu <likexu@tencent.com>, Kan Liang <kan.liang@intel.com>,
+        Dapeng1 Mi <dapeng1.mi@intel.com>, Xin Li <xin@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 03:02:34PM +0300, Andy Shevchenko wrote:
+Service NMI requests after PMI requests in vcpu_enter_guest() so that KVM
+does not need to cancel and redo the VM-Enter. Because APIC emulation
+"injects" NMIs via KVM_REQ_NMI, handling PMI requests after NMI requests
+means KVM won't detect the pending NMI request until the final check for
+outstanding requests. Detecting requests at the final stage is costly as
+KVM has already loaded guest state, potentially queued events for
+injection, disabled IRQs, dropped SRCU, etc., most of which needs to be
+unwound.
 
-[...]
+Move the code snippet processing KVM_REQ_NMI to the one after processing
+KVM_REQ_PMI to make KVM vPMU more efficient. Note that changing the order
+of the code snippets does make any functional change to KVM. KVM allows two
+pending NMIs while x86 architecture allows only one pending. This is
+because KVM may not be able to process NMI quickly. Therefore, if a PMI
+generated NMI is coincident two other NMIs pending (or one other pending
+NMI and KVM blocks NMI) in KVM, then it will be dropped and it is
+architecturely ok, since x86 CPU does not guarantee the delivery of each
+NMI.
 
-> > It looks like those are designed complement to each other. Is that
-> > true? If so, can you make your example showing that
-> >         scatter -> gather -> scatter
-> > would restore the original bitmap?
-> 
-> It looks like you stopped reading documentation somewhere on the middle.
+Using SPEC2017 benchmark programs running along with Intel vtune in a VM
+demonstrates that the following code change reduces 800~1500 canceled
+VM-Enters per second.
 
-What a wonderful week of strong statements... Whatever...
+Some glory details:
 
-> The two APIs are documented with the same example which makes it clear
-> that they are data-loss transformations.
-> 
-> Do you need something like this to be added (in both documentations):
-> 
->   The bitmap_scatter(), when executed over the @dst bitmap, will
->   restore the @src one if the @mask is kept the same, see the example
->   in the function description.
-> 
-> ?
-> 
-> > If I'm wrong, can you please underline that they are not complement,
-> > and why?
-> 
-> No, you are not.
+Probe the invocation to vmx_cancel_injection():
 
-I should be confused even more. You're saying that I'm not wrong here, and few
-lines above you're saying it's a data loss...
+    $ perf probe -a vmx_cancel_injection
+    $ perf stat -a -e probe:vmx_cancel_injection -I 10000 # per 10 seconds
 
-I don't mind this new 3-liners, but I'd like you to have a well better
-wording and testing around them because those bitmap_scatter/gather are
-all about performance, readability and usability.
+Partial results when SPEC2017 with Intel vtune are running in the VM:
 
-To begin with, the whole name of the series: "get rid of bitmap_remap() and
-bitmap_biremap() uses" is wrong because the functions are still here, and are
-still used.
+On kernel without the change:
+    10.010018010              14254      probe:vmx_cancel_injection
+    20.037646388              15207      probe:vmx_cancel_injection
+    30.078739816              15261      probe:vmx_cancel_injection
+    40.114033258              15085      probe:vmx_cancel_injection
+    50.149297460              15112      probe:vmx_cancel_injection
+    60.185103088              15104      probe:vmx_cancel_injection
 
-Even worse, instead of getting rid of some useless code, you're
-bloating the kernel with something that duplicates existing
-functionality.
+On kernel with the change:
+    10.003595390                 40      probe:vmx_cancel_injection
+    20.017855682                 31      probe:vmx_cancel_injection
+    30.028355883                 34      probe:vmx_cancel_injection
+    40.038686298                 31      probe:vmx_cancel_injection
+    50.048795162                 20      probe:vmx_cancel_injection
+    60.069057747                 19      probe:vmx_cancel_injection
 
-This is an example of a series that 'gets rid of' something for true:
+v1: https://lore.kernel.org/all/20230927040939.342643-1-mizhang@google.com/
 
-https://yhbt.net/lore/all/20230925023817.782509-7-yury.norov@gmail.com/T/
+Suggested-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Mingwei Zhang <mizhang@google.com>
+---
+ arch/x86/kvm/x86.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-(And unfortunately it's still unreviewed.)
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 42a4e8f5e89a..302b6f8ddfb1 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -10580,12 +10580,12 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+ 		if (kvm_check_request(KVM_REQ_SMI, vcpu))
+ 			process_smi(vcpu);
+ #endif
+-		if (kvm_check_request(KVM_REQ_NMI, vcpu))
+-			process_nmi(vcpu);
+ 		if (kvm_check_request(KVM_REQ_PMU, vcpu))
+ 			kvm_pmu_handle_event(vcpu);
+ 		if (kvm_check_request(KVM_REQ_PMI, vcpu))
+ 			kvm_pmu_deliver_pmi(vcpu);
++		if (kvm_check_request(KVM_REQ_NMI, vcpu))
++			process_nmi(vcpu);
+ 		if (kvm_check_request(KVM_REQ_IOAPIC_EOI_EXIT, vcpu)) {
+ 			BUG_ON(vcpu->arch.pending_ioapic_eoi > 255);
+ 			if (test_bit(vcpu->arch.pending_ioapic_eoi,
 
-But I understand your motivation, and as I already said, I like this
-series in general. So let's please figure out a better wording before
-moving forward?
+base-commit: 73554b29bd70546c1a9efc9c160641ef1b849358
+-- 
+2.42.0.582.g8ccd20d70d-goog
 
-Below are some my of thought.
-
-1. Stop saying that you're getting rid of something when you're not.
-   I'd suggest something like: "add simple and verbose alternatives to
-   bitmap_remap(), and use them where appropriate".
-
-2. Don't blame people considering a parameter named 'mask' as a mask.
-   I mean this sentence: 
-
-   > You should get the mask meaning. It's not the bit provider, it's a bit
-   > positions provider.
-
-   If it's a 'bit position provider', please give it a proper name,
-   for example 'pos'. I'd suggest something like:
-        unsigned long bitmap_scatter(unsigned long *dst, unsigned long *pos,
-                                                          unsigned long *val)
-
-3. If you're saying that new API is a simplified replacement for
-   something, I'd like to see the full contract, i.e. explicit list of all
-   simplifications and limitations implied:
-   - val == dst is not handled;
-   - when 'pos' is empty, val is not copied to dst;
-   - new API doesn't wrap around 0, like bitmap_remap() does;
-   - set bits in 'val' are not copied to 'dst' when not in 'pos' (?)'
-   - anything else else?
-
-4. Similarly to previous item, I'd like to have explicit understanding
-   and examples where and how bitmap_remap may be replaced. You're
-   only saying that it is possible when either 'new' or 'old' are
-   dense. Is that the only case? Can you add a test that explicitly
-   checks that bitmap_remap and bitmap_scatter/gather produce the same
-   output. Something like this:
-        bitmap_remap(dst1, val, dense_map, pos, nbits);
-        bitmap_scatter(dst2, val, pos, nbits);
-        check_eq_bitmap(dst1, dst2, nbits);
-
-5. Can you add a picture like this to explain the algorithm even more:
-
-        mask:    ...v..vv..v...vv
-        bits:    0000001100000010
-        1.          ^  ^^  ^    0
-        2.          |  ||  |   10
-        3.          |  ||  +> 010
-        4.          |  |+--> 1010
-        5.          |  +--> 11010
-        6.          +----> 011010
-        gather:  ..........011010
-
-5. Regarding my confusion, I had to draw the picture above to realise
-   how it's possible that scatter/gather are inverse and data-loss
-   (i.e. not inverse) at the same time. Can you explain it with a
-   wording like this: "For bits selected by 'pos' bitmap, gathering a
-   'val' bitmap with the following scattering restores the original map.
-   All other bits values are lost and replaced with zeros." Similarly
-   for gathering. And please add a test case.
-
-6. Regarding performance. I think it's wrong to say that that your
-   code is better optimized then some other, and then ask your
-   reviewers to figure out how to measure the difference. If you make
-   such statement, you should already have some test or real-life
-   measurement.
-
-   However, if you ask me, I can suggest you to pull this patch:
-   https://lore.kernel.org/lkml/20230828184353.5145-4-yury.norov@gmail.com/
-
-   and modify/extend it in a way that both bitmap_remap and
-   bitmap_scatter/gather take the same 'val' and 'pos' bitmaps,
-   produce the same output, and then see which code is faster.
-
-   Worth to mention that since all current users of your API are working
-   on 64-bit maps, performance is doubty an issue. So you can drop the
-   'optimization' part of your wording, and don't add performance test.
-
-Thanks,
-Yury
