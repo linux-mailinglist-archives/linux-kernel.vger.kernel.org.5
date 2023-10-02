@@ -2,105 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1EA27B593F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72DD47B5937
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238372AbjJBRkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49870 "EHLO
+        id S235868AbjJBRkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238402AbjJBRkB (ORCPT
+        with ESMTP id S236446AbjJBRkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:40:01 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE47AD
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:39:57 -0700 (PDT)
-Received: from [192.168.68.123] (unknown [177.98.17.243])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: koike)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C96EB6607079;
-        Mon,  2 Oct 2023 18:39:53 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696268395;
-        bh=pO6SXFnbuDL8KRe7IF+DPw70jf9y7/3XfB4CaFiUT+o=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=NfbH6euN4AD/tIGPGbm5G3jkEu2nEpyp73QHuIqQWCL/h2MkOq8ER+b6tWYGk/fSg
-         /CviPxXf4XqPzQpaenCNQpm8jqiIC7r/xJx5mYsDMkklbjRubfjpbJyGduUkn9LOSh
-         egMmfmOQQd6h6nq/Ck9tX+wAbLr2jRrsyHf33jeSjQKnEBGGEYFM4NJIKnfKq7q+KK
-         a7oPiCiaWLExmIYMQRoEWZoR+RTtjpOm57k+ZXqOpKcGd2wwIpoBSVBeCA0/PGjXfl
-         7p8+CNXR4CeB4LA+cLCuljfv2paXFWbh6XoSVCCfTfw2DTYDLWVpTp/3ckSzeVfgbs
-         dlBRjy0p52Jjw==
-Message-ID: <008e7532-1650-15ca-8b31-5acb88a7305b@collabora.com>
-Date:   Mon, 2 Oct 2023 14:39:48 -0300
+        Mon, 2 Oct 2023 13:40:16 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A09E9;
+        Mon,  2 Oct 2023 10:40:13 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-565e395e7a6so9245318a12.0;
+        Mon, 02 Oct 2023 10:40:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696268413; x=1696873213; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=G85KjuFiBO73o7Wzp/yJK1STnMsGHZl8ZA4ohW5rdb0=;
+        b=mHG2XujWpv5aY+ZT+hK4Qg1TPrVrbZadveA8ZLZwQ3TmYJZA1VNSYTprhRCgdX3L3s
+         jPU6cWcAG3hAdHDn8qh1SgzomplyUCaEUZPXh9N7LdkXdym3VKLgqjwr+z53dEDTT0yZ
+         OAyvPUNZQUlmNxEkQ5WIkLUtns2qYu2grgX3TJnrEsMwaUKKTa1uELp5eIVTAa5SF8lC
+         twNQG8ure3IQWvbeb0l70v31EPszoSea5woBQg43VFMTyTT6/5CQJy8n9DpW4hLNij1U
+         mNj4dMzh5uN4GVhuChLnQDOOQ79i+QOPLnCEd2+TsyTXBUPL4muAjztlVziJXcm78meW
+         dgpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696268413; x=1696873213;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G85KjuFiBO73o7Wzp/yJK1STnMsGHZl8ZA4ohW5rdb0=;
+        b=qQ1w7DUTgQ0CKE2FG4YejtuWpnu4WqsRRLSTv+W1F5gZf5C/9VHvI2A5MKWDq0npni
+         n+bj8SWUeaHmR0ZgYOOaivkgtYIIG1BJDMVIJiQG0XJuxeVfh279jv+IHNQVybO54bRp
+         S3PiwMV8XhQLypSMoAZI3TK6odNDhQxYza+n5UacZMk7DR5mHOXuVqxDyMzH4mNubRm/
+         RdKNuYzrr/7/e1fDOkXP8PXes44NFqzPVjWrPu5Y8yKI+hkzUU9X6h80q7i+/QaqC5WH
+         7b5Gm5/idVOfnsiboRry/d/TgHjuEK3BDxVKG4qlR1RTHjAOHVhkmQ6NkD88gpaZ6/KH
+         Jx5Q==
+X-Gm-Message-State: AOJu0YxDs4Aguoqw0foRQmEhQS8GMiFFNRz0q7QBqjpLcGCDJ4imi/cl
+        aXsvRSHV1QeLH7Wf9STeJ3fSI5o91pbENsTz
+X-Google-Smtp-Source: AGHT+IFfnemkqgLkLIaFXsRgXJMqG3C9Cw5R8Sr91ipeEIpNMozmNWbJAPPEYNXlIB6+I8ZpFUwICg==
+X-Received: by 2002:a05:6a20:4292:b0:157:b453:dbb9 with SMTP id o18-20020a056a20429200b00157b453dbb9mr12165018pzj.6.1696268412767;
+        Mon, 02 Oct 2023 10:40:12 -0700 (PDT)
+Received: from swarup-virtual-machine ([171.76.87.78])
+        by smtp.gmail.com with ESMTPSA id p22-20020aa78616000000b006932657075bsm58122pfn.82.2023.10.02.10.40.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 10:40:12 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 23:10:06 +0530
+From:   swarup <swarupkotikalapudi@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>, q@swarup-virtual-machine
+Cc:     Thinh.Nguyen@synopsys.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] usb: fix kernel-doc warning
+Message-ID: <ZRsAdi/LOEFPY6j1@swarup-virtual-machine>
+References: <20230918193505.7046-1-swarupkotikalapudi@gmail.com>
+ <2023100253-aide-authentic-5aa1@gregkh>
+ <ZRrkbkjoHgEnuy/m@swarup-virtual-machine>
+ <2023100207-unmoved-arbitrary-2c33@gregkh>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] drm/ci: Enable CONFIG_BACKLIGHT_CLASS_DEVICE
-To:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org
-Cc:     Emma Anholt <emma@anholt.net>, Rob Clark <robdclark@chromium.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231002164715.157298-1-robdclark@gmail.com>
-Content-Language: en-US
-From:   Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <20231002164715.157298-1-robdclark@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2023100207-unmoved-arbitrary-2c33@gregkh>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 02/10/2023 13:47, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+esOn Mon, Oct 02, 2023 at 05:46:49PM +0200, Greg KH wrote:
+> On Mon, Oct 02, 2023 at 09:10:30PM +0530, swarup wrote:
+> > On Mon, Oct 02, 2023 at 04:42:03PM +0200, Greg KH wrote:
+> > > On Tue, Sep 19, 2023 at 01:05:05AM +0530, Swarup Laxman Kotiaklapudi wrote:
+> > > > Fix kernel-doc warnings discovered in usb driver.
+> > > > Fixes this warning:
+> > > > warning: Function parameter or member 'gfladj_refclk_lpm_sel'
+> > > >          not described in 'dwc3'
+> > > > 
+> > > > Signed-off-by: Swarup Laxman Kotiaklapudi <swarupkotikalapudi@gmail.com>
+> > > > ---
+> > > >  drivers/usb/dwc3/core.h | 2 ++
+> > > >  1 file changed, 2 insertions(+)
+> > > 
+> > > What commit id does this fix?
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > 
+> > Hi Greg,
+> > Please find the commit id as mentioned below,
+> > next time onwards i will mention it:
+> > 
+> > Fixes: 5cd07f96c0c6 ("usb: fix kernel-doc warning")
 > 
-> Dependency for CONFIG_DRM_PANEL_EDP.  Missing this was causing the drm
-> driver to not probe on devices that use panel-edp.
+> That is not a valid commit id in Linus's tree, are you sure it is
+> correct?
 > 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-
-Thank you a lot!
-
-Now sc7180, apq8096 and sdm845 are probing!
-
-Tested-by: Helen Koike <helen.koike@collabora.com>
-Acked-by: Helen Koike <helen.koike@collabora.com>
-
-> ---
->   drivers/gpu/drm/ci/arm.config   | 1 +
->   drivers/gpu/drm/ci/arm64.config | 1 +
->   2 files changed, 2 insertions(+)
+> And please resend the patch with that information in it.
 > 
-> diff --git a/drivers/gpu/drm/ci/arm.config b/drivers/gpu/drm/ci/arm.config
-> index 871f4de063ad..411e814819a8 100644
-> --- a/drivers/gpu/drm/ci/arm.config
-> +++ b/drivers/gpu/drm/ci/arm.config
-> @@ -24,6 +24,7 @@ CONFIG_DRM_LIMA=y
->   CONFIG_DRM_PANEL_SIMPLE=y
->   CONFIG_PWM_CROS_EC=y
->   CONFIG_BACKLIGHT_PWM=y
-> +CONFIG_BACKLIGHT_CLASS_DEVICE=y
->   
->   CONFIG_ROCKCHIP_CDN_DP=n
->   
-> diff --git a/drivers/gpu/drm/ci/arm64.config b/drivers/gpu/drm/ci/arm64.config
-> index 817e18ddfd4f..45f9deb7c4f6 100644
-> --- a/drivers/gpu/drm/ci/arm64.config
-> +++ b/drivers/gpu/drm/ci/arm64.config
-> @@ -26,6 +26,7 @@ CONFIG_DRM_ETNAVIV=y
->   CONFIG_DRM_I2C_ADV7511=y
->   CONFIG_PWM_CROS_EC=y
->   CONFIG_BACKLIGHT_PWM=y
-> +CONFIG_BACKLIGHT_CLASS_DEVICE=y
->   
->   CONFIG_ROCKCHIP_CDN_DP=n
->   
+> thanks,
+> 
+> greg k-h
+
+Hi Greg,
+  I send patch V2, with the Fixes tag being mentioned.
+  Please check the email.
+Thanks,
+Swarup
