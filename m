@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD8E97B55CB
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 826FC7B55EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237847AbjJBOgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60622 "EHLO
+        id S237824AbjJBOiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237841AbjJBOgo (ORCPT
+        with ESMTP id S237806AbjJBOiH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:36:44 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D72B0;
-        Mon,  2 Oct 2023 07:36:40 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qnK2D-0007cK-38; Mon, 02 Oct 2023 16:36:33 +0200
-Message-ID: <5ef915d0-82af-4b85-88e4-d4078228c38d@leemhuis.info>
-Date:   Mon, 2 Oct 2023 16:36:32 +0200
+        Mon, 2 Oct 2023 10:38:07 -0400
+Received: from mail-ot1-f79.google.com (mail-ot1-f79.google.com [209.85.210.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3262B3
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:38:02 -0700 (PDT)
+Received: by mail-ot1-f79.google.com with SMTP id 46e09a7af769-6c4d128e090so29547334a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 07:38:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696257482; x=1696862282;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cPvlpVCxggrsJ1ZuYlyGtFjY4Bpm1Ku4mYIQDej4bsU=;
+        b=HUL8HmZS7cqkskersI9PcZINg95gkVSnnNBiC2M4O8jIfWJMvTBLuRgDfDwR2g4i54
+         pkl/br8S+cD6Q5jEyB++2D6W4QqYHgcjSXNppIXaj0pBCbbnxtirl0vEE9aLqnTQ0b1t
+         lS/ZRQVxUP2iz8dkuRV9Kmz2ISzHkEJM8K1/W6vA8Sw1QveJmf29yMCYnw/VEoCWNZRY
+         GkOLpaIPhcSfsOvSIUfbk1i28nZNe0vbFZVVQFqdbbNbmL1Um33smI/28vSDaWHdleQ/
+         k0J93kjeq1Cgg3g5E11BB7Uip2K3qixHbF4VDRUGa22Ra41i4+PExD7+cjLelbvYy0g2
+         Iz+g==
+X-Gm-Message-State: AOJu0YxWVkzms+WAuNvpv7REB0nkd6MAox4G21IGMttf0w+0VwR7lbhF
+        gqqsvFYOauHWp3EA//aOgid3/AKxWvsg2cJ0Xp7P9ChjH0j4
+X-Google-Smtp-Source: AGHT+IEePAadETEB4lauvM++mLzQzXSkBVWcRYpGWu1P9iUEtnFYVlPBmC8JqrG9a0lGsyqGEYQioGdvJQJBRSYXbV36r0rd6TMQ
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
-Content-Language: en-US, de-DE
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Linux regressions mailing list <regressions@lists.linux.dev>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Sven Frotscher <sven.frotscher@gmail.com>, git@augustwikerfors.se,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>
-References: <20230927223758.18870-1-sven.frotscher@gmail.com>
- <46560887-0b6e-42ac-96c3-b4dbc1d7cb61@leemhuis.info>
- <4fa7d39d-dc34-4550-97fa-2b089f364cca@sirena.org.uk>
- <0a3feafc-b843-420a-9b04-c835f8210c1a@amd.com>
- <048d9715-9cb2-4bc0-b8b0-5e30a0db54c7@leemhuis.info>
- <28e38593-4861-4d61-b27d-994328ea4e82@amd.com>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <28e38593-4861-4d61-b27d-994328ea4e82@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1696257401;54b82d18;
-X-HE-SMSGID: 1qnK2D-0007cK-38
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a05:6830:d7:b0:6c4:b847:cb9a with SMTP id
+ x23-20020a05683000d700b006c4b847cb9amr3174297oto.0.1696257482382; Mon, 02 Oct
+ 2023 07:38:02 -0700 (PDT)
+Date:   Mon, 02 Oct 2023 07:38:02 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000af635c0606bcb889@google.com>
+Subject: [syzbot] [io-uring?] BUG: unable to handle kernel NULL pointer
+ dereference in __io_remove_buffers (2)
+From:   syzbot <syzbot+2113e61b8848fa7951d8@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,67 +55,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.10.23 16:20, Mario Limonciello wrote:
-> On 10/2/2023 09:13, Linux regression tracking (Thorsten Leemhuis) wrote:
->> On 02.10.23 15:47, Mario Limonciello wrote:
->>> On 10/2/2023 06:52, Mark Brown wrote:
->>>> On Mon, Oct 02, 2023 at 11:32:48AM +0200, Linux regression tracking
->>>> (Thorsten Leemhuis) wrote:
->>>>
->>>>> Makes me wonder: How many more such quirk entries will be needed? Will
->>>>> we have all machines listed soon, or do we expect that future Lenovo
->>>>> hardware will need entries as well? If it's the latter: are quirks
->>>>> really the right solution here, or do they just hide some bug or then
->>>>> need for code that automatically handles things?
->>>>
->>>> x86 firmware descriptions are terrible, it's just an endless procession
->>>> of quirks.  The model for ACPI is not to describe key information in
->>>> the
->>>> kernel and instead on Windows load device specific information from
->>>> separately supplied tables.  On Linux that translates into these
->>>> endless
->>>> quirks, on Windows it's platform specific drivers for otherwise generic
->>>> audio hardware.
->>>
->>> I knew there was a TON of "82" prefix systems from Lenovo so it was an
->>> educated guess that all of them needed DMIC support.  This was incorrect
->>> because one of them didn't have DMIC and that caused a no mic support
->>> problem on that system.
->>>
->>> So in the case of this seemingly endless list of systems being added to
->>> enable DMIC support Mark is right, Windows does it differently.
->>
->> Now I understand things better, many thx. But please allow me one more
->> question from the cheap seats:
->>
->> Seems before c008323fe361 things worked for a lot of systems for about
->> one year thx to 2232b2dd8cd4 (which added the wide "82" prefix quirk).
->> We then made that one machine work with c008323fe361, but broke a lot of
->> others with it that now need to be fixed with additional quirks; that
->> "TON of 82 prefix systems" sounds like we might not be close to the end
->> of that journey.
->>
->> So can't we just do it the other way around and assume DMIC support on
->> Lenovo 82* machines, except on those where we know it to cause trouble?
->>
->> Again: you are the experts here. If you are positive that we soon got
->> all machines covered where c008323fe361 causes a regression, then I
->> guess it's best to continue the patch we're on.
-> 
-> I don't like lists
+Hello,
 
-And I don't like if we let people run into regressions knowingly. ;)
+syzbot found the following issue on:
 
-> that enable something for a ton of systems and then
-> lists that disable something for a subset of them.  This becomes
-> difficult to maintain.
+HEAD commit:    ec8c298121e3 Merge tag 'x86-urgent-2023-10-01' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16ef0ed6680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3be743fa9361d5b0
+dashboard link: https://syzkaller.appspot.com/bug?extid=2113e61b8848fa7951d8
+compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm
 
-Well, I had more thought along the lines of "do enable DMIC on Lenovo
-82*, unless the following dmi (the one from c008323fe361) matches". But
-I assume that's not easy to realize with the quirks table, so I guess
-that is out. Whatever.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Well, I rest my case. But I guess I might come back to this if multiple
-additional regressions reports come it due to c008323fe361.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/8ead8862021c/non_bootable_disk-ec8c2981.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e19aa754d61c/vmlinux-ec8c2981.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/709e546bab85/zImage-ec8c2981.xz
 
-Ciao, Thorsten
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2113e61b8848fa7951d8@syzkaller.appspotmail.com
+
+8<--- cut here ---
+Unable to handle kernel NULL pointer dereference at virtual address 0000000e when read
+[0000000e] *pgd=80000080004003, *pmd=00000000
+Internal error: Oops: 207 [#1] PREEMPT SMP ARM
+Modules linked in:
+CPU: 0 PID: 28152 Comm: kworker/u5:4 Not tainted 6.6.0-rc3-syzkaller #0
+Hardware name: ARM-Versatile Express
+Workqueue: events_unbound io_ring_exit_work
+PC is at __io_remove_buffers io_uring/kbuf.c:219 [inline]
+PC is at __io_remove_buffers+0x38/0x184 io_uring/kbuf.c:209
+LR is at io_destroy_buffers+0x48/0x138 io_uring/kbuf.c:264
+pc : [<807c966c>]    lr : [<807c9c28>]    psr: 20000013
+sp : eab35e48  ip : eab35e78  fp : eab35e74
+r10: 827e4691  r9 : 8b0de000  r8 : ffffffff
+r7 : 8b0de34c  r6 : 00000001  r5 : 8b0dc800  r4 : 00000000
+r3 : 00000000  r2 : 00000000  r1 : 8b0dc800  r0 : 8b0de000
+Flags: nzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM  Segment user
+Control: 30c5387d  Table: 8be86780  DAC: fffffffd
+Register r0 information: slab kmalloc-2k start 8b0de000 pointer offset 0 size 2048
+Register r1 information: slab kmalloc-2k start 8b0dc800 pointer offset 0 size 2048
+Register r2 information: NULL pointer
+Register r3 information: NULL pointer
+Register r4 information: NULL pointer
+Register r5 information: slab kmalloc-2k start 8b0dc800 pointer offset 0 size 2048
+Register r6 information: non-paged memory
+Register r7 information: slab kmalloc-2k start 8b0de000 pointer offset 844 size 2048
+Register r8 information: non-paged memory
+Register r9 information: slab kmalloc-2k start 8b0de000 pointer offset 0 size 2048
+Register r10 information: non-slab/vmalloc memory
+Register r11 information: 2-page vmalloc region starting at 0xeab34000 allocated at kernel_clone+0xac/0x424 kernel/fork.c:2909
+Register r12 information: 2-page vmalloc region starting at 0xeab34000 allocated at kernel_clone+0xac/0x424 kernel/fork.c:2909
+Process kworker/u5:4 (pid: 28152, stack limit = 0xeab34000)
+Stack: (0xeab35e48 to 0xeab36000)
+5e40:                   8bce69c0 00000014 8b0de000 8b0de040 8b0de34c 82604d40
+5e60: 8b0de3cc 827e4691 eab35e9c eab35e78 807c9c28 807c9640 00000000 6ae810d6
+5e80: 8b0de3bc 8b0de000 8b0de040 8b0de34c eab35f04 eab35ea0 818264d0 807c9bec
+5ea0: eab35ebc 8b0de3cc 00079ebb 8b0de000 00000000 00000000 00000000 81825000
+5ec0: 00000000 00030003 eab35ec8 eab35ec8 8b0de000 6ae810d6 eab35f48 8be74900
+5ee0: 8b0de3bc 82c21400 82c0f000 00000140 8bce69c0 82c21405 eab35f44 eab35f08
+5f00: 80265fd4 81826134 eab35f2c eab35f18 eab35f44 eab35f20 8026196c 8be74900
+5f20: 8be7492c 82c0f000 82604d40 82c0f020 8bce69c0 61c88647 eab35f84 eab35f48
+5f40: 80266520 80265e44 eab35f64 eab35f58 81847bb0 80278e68 eab35f84 8a4e0180
+5f60: 8bce69c0 802662e0 8be74900 8b121ac0 e04f5e98 00000000 eab35fac eab35f88
+5f80: 8026d8e0 802662ec 8a4e0180 8026d7dc 00000000 00000000 00000000 00000000
+5fa0: 00000000 eab35fb0 80200104 8026d7e8 00000000 00000000 00000000 00000000
+5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+5fe0: 00000000 00000000 00000000 00000000 00000013 00000000 00000000 00000000
+Backtrace: 
+[<807c9634>] (__io_remove_buffers) from [<807c9c28>] (io_destroy_buffers+0x48/0x138 io_uring/kbuf.c:264)
+ r10:827e4691 r9:8b0de3cc r8:82604d40 r7:8b0de34c r6:8b0de040 r5:8b0de000
+ r4:00000014 r3:8bce69c0
+[<807c9be0>] (io_destroy_buffers) from [<818264d0>] (io_ring_ctx_free io_uring/io_uring.c:2895 [inline])
+[<807c9be0>] (io_destroy_buffers) from [<818264d0>] (io_ring_exit_work+0x3a8/0x5ec io_uring/io_uring.c:3151)
+ r7:8b0de34c r6:8b0de040 r5:8b0de000 r4:8b0de3bc
+[<81826128>] (io_ring_exit_work) from [<80265fd4>] (process_one_work+0x19c/0x4a8 kernel/workqueue.c:2630)
+ r10:82c21405 r9:8bce69c0 r8:00000140 r7:82c0f000 r6:82c21400 r5:8b0de3bc
+ r4:8be74900
+[<80265e38>] (process_one_work) from [<80266520>] (process_scheduled_works kernel/workqueue.c:2703 [inline])
+[<80265e38>] (process_one_work) from [<80266520>] (worker_thread+0x240/0x48c kernel/workqueue.c:2784)
+ r10:61c88647 r9:8bce69c0 r8:82c0f020 r7:82604d40 r6:82c0f000 r5:8be7492c
+ r4:8be74900
+[<802662e0>] (worker_thread) from [<8026d8e0>] (kthread+0x104/0x134 kernel/kthread.c:388)
+ r10:00000000 r9:e04f5e98 r8:8b121ac0 r7:8be74900 r6:802662e0 r5:8bce69c0
+ r4:8a4e0180
+[<8026d7dc>] (kthread) from [<80200104>] (ret_from_fork+0x14/0x30 arch/arm/kernel/entry-common.S:134)
+Exception stack(0xeab35fb0 to 0xeab35ff8)
+5fa0:                                     00000000 00000000 00000000 00000000
+5fc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+ r9:00000000 r8:00000000 r7:00000000 r6:00000000 r5:8026d7dc r4:8a4e0180
+Code: 0a000022 e5913004 e1d120be e5d14013 (e1d380be) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	0a000022 	beq	0x90
+   4:	e5913004 	ldr	r3, [r1, #4]
+   8:	e1d120be 	ldrh	r2, [r1, #14]
+   c:	e5d14013 	ldrb	r4, [r1, #19]
+* 10:	e1d380be 	ldrh	r8, [r3, #14] <-- trapping instruction
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
