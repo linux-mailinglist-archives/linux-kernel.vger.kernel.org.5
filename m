@@ -2,195 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDA57B59D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F647B59D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238484AbjJBRzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:55:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
+        id S238621AbjJBR5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:57:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238317AbjJBRzt (ORCPT
+        with ESMTP id S229538AbjJBR5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:55:49 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E90B9E;
-        Mon,  2 Oct 2023 10:55:46 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0774CC433C8;
-        Mon,  2 Oct 2023 17:55:42 +0000 (UTC)
-Date:   Mon, 2 Oct 2023 13:56:43 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        "carlos@redhat.com" <carlos@redhat.com>,
-        Peter Oskolkov <posk@posk.io>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Noah Goldstein <goldstein.w.n@gmail.com>,
-        Daniel Colascione <dancol@google.com>,
-        "longman@redhat.com" <longman@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>
-Subject: Re: [RFC PATCH v2 1/4] rseq: Add sched_state field to struct rseq
-Message-ID: <20231002135643.4c8eefbd@gandalf.local.home>
-In-Reply-To: <845039ad23d24cc687491efa95be5e0d@AcuMS.aculab.com>
-References: <20230529191416.53955-1-mathieu.desnoyers@efficios.com>
-        <20230529191416.53955-2-mathieu.desnoyers@efficios.com>
-        <20230928103926.GI9829@noisy.programming.kicks-ass.net>
-        <20230928104321.490782a7@rorschach.local.home>
-        <40b76cbd00d640e49f727abbd0c39693@AcuMS.aculab.com>
-        <20231002125109.55c35030@gandalf.local.home>
-        <845039ad23d24cc687491efa95be5e0d@AcuMS.aculab.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 2 Oct 2023 13:57:38 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F819E
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:57:35 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6c4d625da40so8823459a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:57:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696269454; x=1696874254; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q8B0/uXjAr6LveWMWyxJdWy+uWy8DEvO0GpTrgc2Uq0=;
+        b=D0Aml8KmT2Sv2zn/GlQUvvZGEWNRyefhBBBdIs5oQgdZgQNpOj1vKE2yOdedkDW5Up
+         7fYO42WR3kwlAsCcFzBXrVRBusFpxuy2SpU0a9aJA2tZCPN4iWURbTVvfJj/o/9uEkXR
+         IOoMc9UXBAnSLNNUhAe/KtIpWELQxlNkCPnuzdblcusZ3wAjsXApoVe6MHy5C6SZ3EgE
+         8Rp6h/m7WGNzNB8H/jwtf0rbKSkYoOP/SloHKEuccLvdf9pmrhF7ziAsfCSIjguEk/I8
+         YAnR7gUCgF6doJSHy7jiUv0fwiUtn0qjy+YC0+qSReDiCCrgMxp21rP4OHEkXbnSLL22
+         yTXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696269454; x=1696874254;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q8B0/uXjAr6LveWMWyxJdWy+uWy8DEvO0GpTrgc2Uq0=;
+        b=p65yTij09b6Sb4DeaaJQt7Lk0WJWMCU+EfsS1stv5Nw+LwJM+yG1rOIjjauEN2o7aX
+         9P5bvpR49+fe2fMWPcmYBo3Z3EG4NuB+U9UrP7RyzBXJVfgbCqrJcR60OG1ZY5bn6dp9
+         7/SUhjjFs3cfes8dgGqXBXNz86eYVE7ZGaqQv+g5XNADdZuVMvZ/VsP8QqkrzX7kTow+
+         CUv8bFlWFCn+6TeqFUguWCU24NTfSx6ljQ8155lZP3/vgA84YQZ5ZIZFWTOGZdZK2akc
+         m8GhN3TOOYrl54WWTE6nIpsUy3SZn8si44nBeAkvisonTJTwX5K6BxlUBcXuq5cXPOSi
+         IXjg==
+X-Gm-Message-State: AOJu0YwW/CTywp5o+9m4n0xB8DX9NyyQFuQJym2Fcg+s/Lzd3+B5uX2l
+        svS5mb4Dwv9mUSDRylIRNmJOEC5HH/+KT08PNgz/eQ==
+X-Google-Smtp-Source: AGHT+IGvGWkxIfjQe0OJDF3weG6P2712Y3sNEMLOotV6JeFjphLAFPM3Vo2NYODWBaaBm2lRdbcpPYmny6R6c3agUbI=
+X-Received: by 2002:aca:c43:0:b0:3ae:5e0e:1667 with SMTP id
+ i3-20020aca0c43000000b003ae5e0e1667mr13519357oiy.43.1696269454429; Mon, 02
+ Oct 2023 10:57:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230929-hib_zero_bitmap_fix-v1-1-6cfdcb785250@quicinc.com>
+In-Reply-To: <20230929-hib_zero_bitmap_fix-v1-1-6cfdcb785250@quicinc.com>
+From:   Brian Geffon <bgeffon@google.com>
+Date:   Mon, 2 Oct 2023 13:56:58 -0400
+Message-ID: <CADyq12znHG_VPLVxSe+2ofX-WR1Uha2hu1MhoUAquMnoD_oP0w@mail.gmail.com>
+Subject: Re: [PATCH] PM: hibernate: Fix a bug in copying the zero bitmap to
+ safe pages
+To:     Pavankumar Kondeti <quic_pkondeti@quicinc.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        kernel@quicinc.com,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Oct 2023 17:22:34 +0000
-David Laight <David.Laight@ACULAB.COM> wrote:
+On Fri, Sep 29, 2023 at 1:31=E2=80=AFPM Pavankumar Kondeti
+<quic_pkondeti@quicinc.com> wrote:
+>
+> The following crash is observed 100% of the time during resume from
+> the hibernation on a x86 QEMU system.
+>
+> [   12.931887]  ? __die_body+0x1a/0x60
+> [   12.932324]  ? page_fault_oops+0x156/0x420
+> [   12.932824]  ? search_exception_tables+0x37/0x50
+> [   12.933389]  ? fixup_exception+0x21/0x300
+> [   12.933889]  ? exc_page_fault+0x69/0x150
+> [   12.934371]  ? asm_exc_page_fault+0x26/0x30
+> [   12.934869]  ? get_buffer.constprop.0+0xac/0x100
+> [   12.935428]  snapshot_write_next+0x7c/0x9f0
+> [   12.935929]  ? submit_bio_noacct_nocheck+0x2c2/0x370
+> [   12.936530]  ? submit_bio_noacct+0x44/0x2c0
+> [   12.937035]  ? hib_submit_io+0xa5/0x110
+> [   12.937501]  load_image+0x83/0x1a0
+> [   12.937919]  swsusp_read+0x17f/0x1d0
+> [   12.938355]  ? create_basic_memory_bitmaps+0x1b7/0x240
+> [   12.938967]  load_image_and_restore+0x45/0xc0
+> [   12.939494]  software_resume+0x13c/0x180
+> [   12.939994]  resume_store+0xa3/0x1d0
+>
+> The commit being fixed introduced a bug in copying the zero bitmap
+> to safe pages. A temporary bitmap is allocated in prepare_image()
+> to make a copy of zero bitmap after the unsafe pages are marked.
+> Freeing this temporary bitmap later results in an inconsistent state
+> of unsafe pages. Since free bit is left as is for this temporary bitmap
+> after free, these pages are treated as unsafe pages when they are
+> allocated again. This results in incorrect calculation of the number
+> of pages pre-allocated for the image.
+>
+> nr_pages =3D (nr_zero_pages + nr_copy_pages) - nr_highmem - allocated_uns=
+afe_pages;
+>
+> The allocate_unsafe_pages is estimated to be higher than the actual
+> which results in running short of pages in safe_pages_list. Hence the
+> crash is observed in get_buffer() due to NULL pointer access of
+> safe_pages_list.
 
+After reading through the code, perhaps I'm missing something, I'm not
+sure that this is really fixing the problem.
 
-> > And what heuristic would you use. My experience with picking "time to spin"
-> > may work for one workload but cause major regressions in another workload.
-> > I came to the conclusion to "hate" heuristics and NACK them whenever
-> > someone suggested adding them to the rt_mutex in the kernel (back before
-> > adaptive mutexes were introduced).  
-> 
-> Isn't that exactly what and adaptive mutex does?
-> Spin 'for a bit' before sleeping.
+It seems like the problem would be that memory_bm_create() results in
+calls to get_image_page() w/ safe_needed =3D PG_ANY =3D=3D 0, meaning that
+get_image_page() will not touch allocated_unsafe_pages and instead
+will mark the page as in use by setting it in the forbidden_pages_map
+and the free_pages_map simultaneously. The problem is that the
+free_pages_map was already populated by the call to mark_unsafe_pages,
+meaning that if we allocated a safe page in get_image_page() we just
+set the free bit when it otherwise should not be set.
 
-But it's not some arbitrary time to spin. Technically, a kernel spin lock
-is spinning on the heuristic of ownership. "Spin until the lock is
-released" is a heuristic!
+When the page is later free'd via the call to memory_bm_free(&tmp,
+PG_UNSAFE_KEEP), it results in calls to free_image_page() w/
+clear_page_nosave =3D PG_UNSAFE_KEEP =3D=3D 0. This means that we do not
+touch the free_pages_map because we don't call
+swsusp_unset_page_free().
 
-> 
-> > > > The obvious problem with their implementation is that if the owner is
-> > > > sleeping, there's no point in spinning. Worse, the owner may even be
-> > > > waiting for the spinner to get off the CPU before it can run again. But
-> > > > according to Robert, the gain in the general performance greatly
-> > > > outweighed the few times this happened in practice.  
-> > >
-> > > Unless you can use atomics (ok for bits and linked lists) you
-> > > always have the problem that userspace can't disable interrupts.
-> > > So, unlike the kernel, you can't implement a proper spinlock.  
-> > 
-> > Why do you need to disable interrupts? If you know the owner is running on
-> > the CPU, you know it's not trying to run on the CPU that is acquiring the
-> > lock. Heck, there's normal spin locks outside of PREEMPT_RT that do not
-> > disable interrupts. The only time you need to disable interrupts is if the
-> > interrupt itself takes the spin lock, and that's just to prevent deadlocks.  
-> 
-> You need to disable interrupts in order to bound the time the
-> spinlock is held for.
-> If all you are doing is a dozen instructions (eg to remove an
-> item from s list) then you really don't want an interrupt coming in
-> while you have the spinlock held.
+With all that being said it seems like the correct way to deal with
+that would be to do:
+   error =3D memory_bm_create(&tmp, GFP_ATOMIC, PG_SAFE);
+Here we know that the pages were not in the free_pages_map initially.
 
-That's just noise of normal processing. What's the difference of it
-happening during spinning to where it happens in normal execution?
+Followed by freeing it as:
+    memory_bm_free(&tmp, PG_UNSAFE_CLEAR);
+And here we know that swsusp_unset_page_free() will be called making
+sure the page is not in the free_pages_map afterwards.
 
-> It isn't the cost of the ISR - that has to happen sometime, but that
-> the cpu waiting for the spinlock also take the cost of the ISR.
+And that should result in an unchanged free_pages_map. Does that make
+sense? Please correct me if I'm misunderstanding something.
 
-As supposed to just going into the kernel? So it wastes some of its quota.
-It's not stopping anything else from running more than normal.
-
-> 
-> A network+softint ISR can run for a long time - I'm sure I've
-> seen a good fraction of a millisecond.
-> You really don't want another (or many other) cpu spinning while
-> that is going on.
-
-Why not? The current user space only code does that now (and it will even
-spin if the owner is preempted). What we are talking about implementing is
-a big improvement to what is currently done.
-
-> Which (to my mind) pretty much means that you always want to
-> disable interrupts on a spinlock.
-
-The benchmarks say otherwise. Sure, once in a while you may spin longer
-because of an interrupt, but that's a very rare occurrence compared to
-normal taking of spin locks. Disabling interrupts is an expensive
-operation. The savings you get from "not waiting for a softirq to finish"
-will be drowned out by the added overhead of disabling interrupts at every
-acquire.
-
-> If the architecture makes masking ISR expensive then I've seen schemes
-> that let the hardware interrupt happen, then disable it and rerun later.
-> 
-> > > I've NFI how CONFIG_RT manages to get anything done with all
-> > > the spinlocks replaced by sleep locks.
-> > > Clearly there are a spinlocks that are held for far too long.
-> > > But you really do want to spin most of the time.  
-> > 
-> > It spins as long as the owner of the lock is running on the CPU. This is
-> > what we are looking to get from this patch series for user space.  
-> 
-> I think you'd need to detect that the cpu was in-kernel running an ISR.
-
-For the few times that might happen, it's not worth it.
-
-> 
-> But the multithreaded audio app I was 'fixing' basically failed
-> as soon as it had to sleep on one of the futex.
-> The real problem was ISR while the mutex was held.
-> So deciding to sleep because the lock owner isn't running (in user)
-> would already be delaying things too much.
-
-That doesn't sound like the use case we are fixing. If your audio app
-failed because it had to sleep, that tells me it would fail regardless.
-
-> 
-> > 
-> > Back in 2007, we had an issue with scaling on SMP machines. The RT kernel
-> > with the sleeping spin locks would start to exponentially slow down with
-> > the more CPUs you had. Once we hit more than 16 CPUs,  the time to boot a
-> > kernel took 10s of minutes to boot RT when the normal CONFIG_PREEMPT kernel
-> > would only take a couple of minutes. The more CPUs you added, the worse it
-> > became.
-> > 
-> > Then SUSE submitted a patch to have the rt_mutex spin only if the owner of
-> > the mutex was still running on another CPU. This actually mimics a real
-> > spin lock (because that's exactly what they do, they spin while the owner
-> > is running on a CPU). The difference between a true spin lock and an
-> > rt_mutex was that the spinner would stop spinning if the owner was
-> > preempted (a true spin lock owner could not be preempted).
-> > 
-> > After applying the adaptive spinning, we were able to scale PREEMPT_RT to
-> > any number of CPUs that the normal kernel could do with just a linear
-> > performance hit.  
-> 
-> Sounds like it was spinning for far too long at the best of times.
-> But analysing these sort of latencies is hard.
-
-It wasn't spinning at all! The problem was that all rt_mutex would
-immediately sleep on any contention. This caused a ripple effect that would
-increase the time locks were held and that would increase contention which
-increased the time more. A very bad feedback loop.
-
-This was all very well traced and studied. That analysis was not hard at
-all. We know exactly what the cause was and why adaptive mutexes fixed the
-situation. And this is why I'm excited about this current work.
-
--- Steve
+>
+> Fixes: 005e8dddd497 ("PM: hibernate: don't store zero pages in the image =
+file")
+> Signed-off-by: Pavankumar Kondeti <quic_pkondeti@quicinc.com>
+> ---
+>  kernel/power/snapshot.c | 23 ++++++++++++++---------
+>  1 file changed, 14 insertions(+), 9 deletions(-)
+>
+> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+> index 87e9f7e2bdc0..cb7341a71a21 100644
+> --- a/kernel/power/snapshot.c
+> +++ b/kernel/power/snapshot.c
+> @@ -2628,7 +2628,7 @@ static int prepare_image(struct memory_bitmap *new_=
+bm, struct memory_bitmap *bm,
+>                 struct memory_bitmap *zero_bm)
+>  {
+>         unsigned int nr_pages, nr_highmem;
+> -       struct memory_bitmap tmp;
+> +       struct memory_bitmap tmp_zero_bm;
+>         struct linked_page *lp;
+>         int error;
+>
+> @@ -2636,6 +2636,16 @@ static int prepare_image(struct memory_bitmap *new=
+_bm, struct memory_bitmap *bm,
+>         free_image_page(buffer, PG_UNSAFE_CLEAR);
+>         buffer =3D NULL;
+>
+> +       /*
+> +        * Allocate a temporary bitmap to create a copy of zero_bm in
+> +        * safe pages. This allocation needs to be done before marking
+> +        * unsafe pages below so that it can be freed without altering
+> +        * the state of unsafe pages.
+> +        */
+> +       error =3D memory_bm_create(&tmp_zero_bm, GFP_ATOMIC, PG_ANY);
+> +       if (error)
+> +               goto Free;
+> +
+>         nr_highmem =3D count_highmem_image_pages(bm);
+>         mark_unsafe_pages(bm);
+>
+> @@ -2646,12 +2656,7 @@ static int prepare_image(struct memory_bitmap *new=
+_bm, struct memory_bitmap *bm,
+>         duplicate_memory_bitmap(new_bm, bm);
+>         memory_bm_free(bm, PG_UNSAFE_KEEP);
+>
+> -       /* Make a copy of zero_bm so it can be created in safe pages */
+> -       error =3D memory_bm_create(&tmp, GFP_ATOMIC, PG_ANY);
+> -       if (error)
+> -               goto Free;
+> -
+> -       duplicate_memory_bitmap(&tmp, zero_bm);
+> +       duplicate_memory_bitmap(&tmp_zero_bm, zero_bm);
+>         memory_bm_free(zero_bm, PG_UNSAFE_KEEP);
+>
+>         /* Recreate zero_bm in safe pages */
+> @@ -2659,8 +2664,8 @@ static int prepare_image(struct memory_bitmap *new_=
+bm, struct memory_bitmap *bm,
+>         if (error)
+>                 goto Free;
+>
+> -       duplicate_memory_bitmap(zero_bm, &tmp);
+> -       memory_bm_free(&tmp, PG_UNSAFE_KEEP);
+> +       duplicate_memory_bitmap(zero_bm, &tmp_zero_bm);
+> +       memory_bm_free(&tmp_zero_bm, PG_UNSAFE_KEEP);
+>         /* At this point zero_bm is in safe pages and it can be used for =
+restoring. */
+>
+>         if (nr_highmem > 0) {
+>
+> ---
+> base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+> change-id: 20230929-hib_zero_bitmap_fix-bc5884eba0ae
+>
+> Best regards,
+> --
+> Pavankumar Kondeti <quic_pkondeti@quicinc.com>
+>
