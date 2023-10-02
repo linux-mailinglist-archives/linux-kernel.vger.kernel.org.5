@@ -2,90 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D1F7B4F42
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3CC7B4F41
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236206AbjJBJmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40572 "EHLO
+        id S236199AbjJBJmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236189AbjJBJmq (ORCPT
+        with ESMTP id S236167AbjJBJmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:42:46 -0400
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com [209.85.167.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D9DDD
+        Mon, 2 Oct 2023 05:42:45 -0400
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3CDD9
         for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:42:42 -0700 (PDT)
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3ae4eaca6a9so22424563b6e.2
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6c4f91d2f55so16038384a34.0
         for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:42:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696239762; x=1696844562;
+        d=1e100.net; s=20230601; t=1696239761; x=1696844561;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=b9lzjmnDECsVuxR0eNzta65jB9ijAT2ximrGaddwS2I=;
-        b=F/hf3w42OvcstDBIZk4LOZtdtZTO7xjKAjev6LbzIinqELz3ydBhAOVHPSCs8GgjpP
-         nodzcV+CsYGThTYQ05gdKwWYYUk5nwtww9qS7+AsDCdor58DI0HJU3n5uBKqz3EVivxg
-         +BQmoyP4Lxoq1Gr5dO/z9wPhUlRDwDsbNsGDsxew/dsxTwnAizZ4fFmMB9FQVEeDVKes
-         +Dp/iQ4mwWCQCPNtdzuMrSgdX5bf5jtAznmdJD4YiTCTCbn10qcmOnPtmPXWKzY7mlyb
-         kIjQF+exz2nBbF/ZperhBK/iNZoiMr0+b8xlgtKDSVFe3DQ/OAfJtWzIktAB9hmB5x55
-         2zFg==
-X-Gm-Message-State: AOJu0Yzu7XDa3w2SOW18vC9nERmOM5VeBFNPV6/IawXQG0boZNT5/XjA
-        DgjfHkuthBvmOo851p2jSXYK3H+n1UVwRWhOjvNgjhZszOmu
-X-Google-Smtp-Source: AGHT+IHDr8g0fYd77L3NAUGwkycaSCjD7T8S/tveWn1eMYSuIRy7T9dAT8Jci+Uwc4bBLNt82onHkPUcYlqGph4IDmIORLQbhKJi
+        bh=K8iDe811qHlzkRrk0aLNFWUZDFGRY4TIbF0rvRbfvdk=;
+        b=Z+6Cwm1LvOVoydSfKFT3GwJ5YFMesyj82EsDxKIeio423qVSv6i4rnhOyPPxHxeQTO
+         ab+SL4Ak6OBO0yM3s+22Mz+UmeGFPI7ASGtaEN0q/xzu05CP+a5pLpsfuNDFu03Z6xVU
+         +GwmMi68ctwHxnu8kJNo9dvmwhol4zqoMnllMcJ7lD1+4lQrzqg1ghNPZbDpwVUB3iD1
+         sKuKDwlajG/GbkEVoAbs47qwz87oEWEJ6Wxrs166IWxiZoJYgh5VqvuNceNlw/YjRtST
+         5tEgqQy5OncHioWKWigkNIODHK5f+0qPyFQryl87KhvZrTXz/tckx+vSpZdapFqy+vIb
+         /ASg==
+X-Gm-Message-State: AOJu0Yyqp059EChD2S1IskisKQ5YsTVTc2sl27VFpNsAssVJPZxpEtsy
+        nqdHGnkKLwTdDLq5FsLLZL6NRtHwsUtY2uhWLX13i7xgPVzG
+X-Google-Smtp-Source: AGHT+IEmJl45SeTDxxVBlymifO4GL1/rQjK4skftH7Q3sOnRYojRvSUSt8YaJefjGGWKggGKVZcvCk9AD8moBkEJmQxkfXizQ0SZ
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:1a19:b0:3ae:532c:e93a with SMTP id
- bk25-20020a0568081a1900b003ae532ce93amr5192770oib.11.1696239762001; Mon, 02
- Oct 2023 02:42:42 -0700 (PDT)
+X-Received: by 2002:a05:6830:1d4b:b0:6bd:c80d:2b65 with SMTP id
+ p11-20020a0568301d4b00b006bdc80d2b65mr3316189oth.6.1696239761756; Mon, 02 Oct
+ 2023 02:42:41 -0700 (PDT)
 Date:   Mon, 02 Oct 2023 02:42:41 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000077d7230606b89884@google.com>
-Subject: [syzbot] Monthly ntfs3 report (Sep 2023)
-From:   syzbot <syzbot+list76acd067f542279b62d7@syzkaller.appspotmail.com>
-To:     almaz.alexandrovich@paragon-software.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ntfs3@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Message-ID: <0000000000007419730606b898ed@google.com>
+Subject: [syzbot] Monthly nilfs report (Sep 2023)
+From:   syzbot <syzbot+list88e3b0f0499ea99b802f@syzkaller.appspotmail.com>
+To:     konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello ntfs3 maintainers/developers,
+Hello nilfs maintainers/developers,
 
-This is a 31-day syzbot report for the ntfs3 subsystem.
+This is a 31-day syzbot report for the nilfs subsystem.
 All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ntfs3
+https://syzkaller.appspot.com/upstream/s/nilfs
 
-During the period, 4 new issues were detected and 1 were fixed.
-In total, 56 issues are still open and 28 have been fixed so far.
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 7 issues are still open and 36 have been fixed so far.
 
 Some of the still happening issues:
 
-Ref  Crashes Repro Title
-<1>  11288   Yes   VFS: Busy inodes after unmount (use-after-free)
-                   https://syzkaller.appspot.com/bug?extid=0af00f6a2cba2058b5db
-<2>  3606    Yes   KASAN: slab-out-of-bounds Read in ntfs_iget5
-                   https://syzkaller.appspot.com/bug?extid=b4084c18420f9fad0b4f
-<3>  1931    Yes   possible deadlock in ni_fiemap
-                   https://syzkaller.appspot.com/bug?extid=c300ab283ba3bc072439
-<4>  1662    Yes   KASAN: out-of-bounds Write in end_buffer_read_sync
-                   https://syzkaller.appspot.com/bug?extid=3f7f291a3d327486073c
-<5>  1311    Yes   possible deadlock in ntfs_set_state
-                   https://syzkaller.appspot.com/bug?extid=f91c29a5d5a01ada051a
-<6>  1277    Yes   possible deadlock in attr_data_get_block
-                   https://syzkaller.appspot.com/bug?extid=36bb70085ef6edc2ebb9
-<7>  790     No    possible deadlock in ntfs_mark_rec_free
-                   https://syzkaller.appspot.com/bug?extid=f83f0dbef763c426e3cf
-<8>  591     Yes   possible deadlock in mi_read
-                   https://syzkaller.appspot.com/bug?extid=bc7ca0ae4591cb2550f9
-<9>  514     Yes   possible deadlock in filemap_fault
-                   https://syzkaller.appspot.com/bug?extid=7736960b837908f3a81d
-<10> 457     Yes   possible deadlock in ntfs_fiemap
-                   https://syzkaller.appspot.com/bug?extid=96cee7d33ca3f87eee86
+Ref Crashes Repro Title
+<1> 335     Yes   WARNING in nilfs_sufile_set_segment_usage
+                  https://syzkaller.appspot.com/bug?extid=14e9f834f6ddecece094
+<2> 325     Yes   kernel BUG at fs/buffer.c:LINE!
+                  https://syzkaller.appspot.com/bug?extid=cfed5b56649bddf80d6e
+<3> 220     No    INFO: task hung in path_openat (7)
+                  https://syzkaller.appspot.com/bug?extid=950a0cdaa2fdd14f5bdc
+<4> 95      Yes   INFO: task hung in nilfs_detach_log_writer
+                  https://syzkaller.appspot.com/bug?extid=e3973c409251e136fdd0
+<5> 6       Yes   kernel BUG in end_buffer_async_write
+                  https://syzkaller.appspot.com/bug?extid=5c04210f7c7f897c1e7f
 
 ---
 This report is generated by a bot. It may contain errors.
