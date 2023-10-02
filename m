@@ -2,187 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86DC77B59A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC967B598B
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238742AbjJBSEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 14:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59262 "EHLO
+        id S229571AbjJBSBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238708AbjJBSEJ (ORCPT
+        with ESMTP id S231334AbjJBSBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 14:04:09 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CA65AC;
-        Mon,  2 Oct 2023 11:04:05 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id 86a8d004266c595f; Mon, 2 Oct 2023 20:04:04 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 88BE16658DF;
-        Mon,  2 Oct 2023 20:04:03 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v1 2/4] ACPI: thermal: Use thermal_zone_for_each_trip()
-Date:   Mon, 02 Oct 2023 20:00:20 +0200
-Message-ID: <1873286.tdWV9SEqCh@kreacher>
-In-Reply-To: <4871671.31r3eYUQgx@kreacher>
-References: <4871671.31r3eYUQgx@kreacher>
+        Mon, 2 Oct 2023 14:01:07 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10086AC
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 11:01:05 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d81b42a3108so28187276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 11:01:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696269664; x=1696874464; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iOYDr52agfsu91xM8m2iaWWGVv9lXmRJ4r8U24TP67A=;
+        b=TBeNGCIcbZHJfViQR0KyBosia+sj+2WtfbBFvMHF/D9rLetrPqPiTyi3yBEFvywoUY
+         46KAqMzA2jFHYyEoMdQHaCjIySFW8+y2jJ53ruLBZE1DdGaHbN4ImNjkLi+G9Tjppkqp
+         Z+6aHB58WdKYcLmtuyCPEYw06PtMcAVirMc/E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696269664; x=1696874464;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iOYDr52agfsu91xM8m2iaWWGVv9lXmRJ4r8U24TP67A=;
+        b=FH2oFktLIUQWVBltZPHZZ7ym7a2ajxBTyykHfLkftsQbb9WGeF6FDXJOmEtF3piPkl
+         5cWXsqINYnnOSusVlgRCDGPls9PSt+3mI3XJ7krBbMm9OG6cvO8B/MsyAgDT4IjkeYEe
+         IneNFxHT2t2dAVLfYauz+OpwTTPK4YWpY8qK+5DEEknVn8jP6gzde2iFLkhXRRuE4wEf
+         EWMfYCjHdezFGfo0ZBqM+45JKYS+NZk4xNMOI7ERUbk61gKw86wHJTNb/oEInOjhR8Wp
+         YsltO8QAmVKg4tVMPjJdyw0n8Mow9hbmegsuqZjpz3NK19lCOWrwEPg6PG0+Fyvt2VMx
+         PFvQ==
+X-Gm-Message-State: AOJu0YzpfVc1zR1TOse85DFcyndIJQWgq9dnMyKoQIpzMw+rgCrsf1/h
+        Ym8cv6fP5IviJMr+DXH3NuaC1A==
+X-Google-Smtp-Source: AGHT+IEnF3j+rJGNnZbSDKSflRdBe2uXAAfCiOzl86PRFfuwUAwjhutEhB6KHHHsfumjj4/ymsbDoQ==
+X-Received: by 2002:a25:d6d2:0:b0:d80:4533:9556 with SMTP id n201-20020a25d6d2000000b00d8045339556mr12092359ybg.63.1696269664239;
+        Mon, 02 Oct 2023 11:01:04 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id f18-20020a637552000000b005777a50c14csm19617226pgn.0.2023.10.02.11.01.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 11:01:03 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 11:01:02 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Brad Warrum <bwarrum@linux.ibm.com>,
+        Ritu Agarwal <rituagar@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] ibmvmc: replace deprecated strncpy with strscpy
+Message-ID: <202310021058.C9E46875@keescook>
+References: <20230927-strncpy-drivers-misc-ibmvmc-c-v1-1-29f56cd3a269@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelgdduvddvucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghp
- thhtoheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhm
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927-strncpy-drivers-misc-ibmvmc-c-v1-1-29f56cd3a269@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wed, Sep 27, 2023 at 05:52:14AM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> A suitable replacement is `strscpy` [2] due to the fact that it
+> guarantees NUL-termination on the destination buffer without
+> unnecessarily NUL-padding.
 
-Rearrange the code handling notifications from the platform firmware
-to carry out one loop over trip points instead of two and use
-thermal_zone_for_each_trip() for that, which is more straightforward
-that using a combination of thermal_zone_device_exec() and
-for_each_thermal_trip(), each with its own callback function.
+This is weird -- I think hmc_id needs to be marked __nonstring, and the
+commit log should talk about how it appears to be not %NUL terminated.
 
-No intentional functional impact.
+The bounce buffer is weird -- it seems like hmc_id could be made a
+regular C string by being changed to MHC_ID_LEN + 1, and then everything
+would work correctly without needing a bounce buffer, etc. (Well, it
+would need explicit %NUL termination after the copy_from_user()).
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/thermal.c |   58 +++++++++++++++++++++++++++----------------------
- 1 file changed, 32 insertions(+), 26 deletions(-)
+But if that refactor doesn't sound right to maintainers, then I'd agree
+that this patch is fine (though capturing the __nonstring bit might be
+nice):
 
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -95,6 +95,7 @@ struct acpi_thermal_passive {
- 
- struct acpi_thermal_active {
- 	struct acpi_thermal_trip trip;
-+	int index;
- };
- 
- struct acpi_thermal_trips {
-@@ -285,14 +286,36 @@ static void acpi_thermal_update_active_t
- 		ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
- }
- 
-+struct adjust_trip_data {
-+	struct acpi_thermal *tz;
-+	u32 event;
-+};
-+
- static int acpi_thermal_adjust_trip(struct thermal_trip *trip, void *data)
- {
- 	struct acpi_thermal_trip *acpi_trip = trip->priv;
--	struct acpi_thermal *tz = data;
-+	struct adjust_trip_data *atd = data;
-+	struct acpi_thermal *tz = atd->tz;
- 
- 	if (!acpi_trip)
- 		return 0;
- 
-+	if (trip->type == THERMAL_TRIP_PASSIVE) {
-+		if (atd->event == ACPI_THERMAL_NOTIFY_THRESHOLDS)
-+			acpi_thermal_update_passive_trip(tz);
-+		else
-+			acpi_thermal_update_trip_devices(tz, ACPI_THERMAL_TRIP_PASSIVE);
-+	} else {
-+		/* Since acpi_trip is present, this must be an active trip. */
-+		struct acpi_thermal_active *active;
-+
-+		active = container_of(acpi_trip, struct acpi_thermal_active, trip);
-+		if (atd->event == ACPI_THERMAL_NOTIFY_THRESHOLDS)
-+			acpi_thermal_update_active_trip(tz, active->index);
-+		else
-+			acpi_thermal_update_trip_devices(tz, active->index);
-+	}
-+
- 	if (acpi_thermal_trip_valid(acpi_trip))
- 		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temp_dk);
- 	else
-@@ -301,25 +324,6 @@ static int acpi_thermal_adjust_trip(stru
- 	return 0;
- }
- 
--static void acpi_thermal_adjust_thermal_zone(struct thermal_zone_device *thermal,
--					     unsigned long data)
--{
--	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
--	int i;
--
--	if (data == ACPI_THERMAL_NOTIFY_THRESHOLDS) {
--		acpi_thermal_update_passive_trip(tz);
--		for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++)
--			acpi_thermal_update_active_trip(tz, i);
--	} else {
--		acpi_thermal_update_trip_devices(tz, ACPI_THERMAL_TRIP_PASSIVE);
--		for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++)
--			acpi_thermal_update_trip_devices(tz, i);
--	}
--
--	for_each_thermal_trip(tz->thermal_zone, acpi_thermal_adjust_trip, tz);
--}
--
- static void acpi_queue_thermal_check(struct acpi_thermal *tz)
- {
- 	if (!work_pending(&tz->thermal_check_work))
-@@ -328,17 +332,18 @@ static void acpi_queue_thermal_check(str
- 
- static void acpi_thermal_trips_update(struct acpi_thermal *tz, u32 event)
- {
-+	struct adjust_trip_data atd = { .tz = tz, .event = event };
- 	struct acpi_device *adev = tz->device;
- 
- 	/*
--	 * Use thermal_zone_device_exec() to carry out the trip points
-+	 * Use thermal_zone_for_each_trip() to carry out the trip points
- 	 * update, so as to protect thermal_get_trend() from getting stale
- 	 * trip point temperatures and to prevent thermal_zone_device_update()
- 	 * invoked from acpi_thermal_check_fn() from producing inconsistent
- 	 * results.
- 	 */
--	thermal_zone_device_exec(tz->thermal_zone,
--				 acpi_thermal_adjust_thermal_zone, event);
-+	thermal_zone_for_each_trip(tz->thermal_zone,
-+				   acpi_thermal_adjust_trip, &atd);
- 	acpi_queue_thermal_check(tz);
- 	acpi_bus_generate_netlink_event(adev->pnp.device_class,
- 					dev_name(&adev->dev), event, 0);
-@@ -466,11 +471,12 @@ static int acpi_thermal_get_trip_points(
- 		count++;
- 
- 	for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++) {
--		if (acpi_thermal_init_trip(tz, i))
-+		if (acpi_thermal_init_trip(tz, i)) {
-+			tz->trips.active[i].index = i;
- 			count++;
--		else
-+		} else {
- 			break;
--
-+		}
- 	}
- 
- 	while (++i < ACPI_THERMAL_MAX_ACTIVE)
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
+-Kees
 
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Note: build-tested only.
+> ---
+>  drivers/misc/ibmvmc.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/misc/ibmvmc.c b/drivers/misc/ibmvmc.c
+> index 2101eb12bcba..6d9ed9325f9f 100644
+> --- a/drivers/misc/ibmvmc.c
+> +++ b/drivers/misc/ibmvmc.c
+> @@ -1249,9 +1249,7 @@ static long ibmvmc_ioctl_sethmcid(struct ibmvmc_file_session *session,
+>  		return -EIO;
+>  	}
+>  
+> -	/* Make sure buffer is NULL terminated before trying to print it */
+> -	memset(print_buffer, 0, HMC_ID_LEN + 1);
+> -	strncpy(print_buffer, hmc->hmc_id, HMC_ID_LEN);
+> +	strscpy(print_buffer, hmc->hmc_id, sizeof(print_buffer));
+>  	pr_info("ibmvmc: sethmcid: Set HMC ID: \"%s\"\n", print_buffer);
+>  
+>  	memcpy(buffer->real_addr_local, hmc->hmc_id, HMC_ID_LEN);
+> 
+> ---
+> base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+> change-id: 20230927-strncpy-drivers-misc-ibmvmc-c-534349716fa4
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
 
+-- 
+Kees Cook
