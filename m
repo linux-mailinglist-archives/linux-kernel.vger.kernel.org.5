@@ -2,86 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 258047B4E9A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F7E37B4E58
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:59:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236019AbjJBJDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57948 "EHLO
+        id S235923AbjJBI7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 04:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236032AbjJBJDs (ORCPT
+        with ESMTP id S235857AbjJBI7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:03:48 -0400
+        Mon, 2 Oct 2023 04:59:08 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B410CCC7;
-        Mon,  2 Oct 2023 01:58:10 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1E7EC433C8;
-        Mon,  2 Oct 2023 08:58:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696237090;
-        bh=8abm9OAu+6R2eeXjvqzEvTzOpfgxvqtX2BvAOig38Qc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=R3iroP1fgcPCfVuj+LKeoTyHLNnOW1uVwQiT1WrjNYg+BWp/TPOvIaG7m1vjEea9n
-         f1i0I0RO0TojNIyE2LzamXcwGlHYmuYAZSVRpu9dFBN8Nd2OWywNdtZBxplEoB3n9k
-         3vAAbta8hvhd0hnSSJwqg0kwzk5vjWWX98klWb5Q=
-Date:   Mon, 2 Oct 2023 10:58:08 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Abhinav <singhabhinav9051571833@gmail.com>
-Cc:     shuah@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2] Added missing TARGETS in kselftest top level Makefile
-Message-ID: <2023100251-recycled-purist-1ea5@gregkh>
-References: <2023100135-stiffen-depress-8121@gregkh>
- <20231002072735.1566009-1-singhabhinav9051571833@gmail.com>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F77AB;
+        Mon,  2 Oct 2023 01:59:05 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEE83C433C7;
+        Mon,  2 Oct 2023 08:59:01 +0000 (UTC)
+Message-ID: <5b1006ba-37d9-4dbe-ad21-b0bba454e97b@xs4all.nl>
+Date:   Mon, 2 Oct 2023 10:59:00 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231002072735.1566009-1-singhabhinav9051571833@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] MediaTek MDP3: use devicetree to retrieve SCP
+Content-Language: en-US, nl
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mchehab@kernel.org
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, matthias.bgg@gmail.com, moudy.ho@mediatek.com,
+        sakari.ailus@linux.intel.com, u.kleine-koenig@pengutronix.de,
+        linqiheng@huawei.com, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, kernel@collabora.com,
+        wenst@chromium.org
+References: <20230919095938.70679-1-angelogioacchino.delregno@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230919095938.70679-1-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 12:57:35PM +0530, Abhinav wrote:
-> Some tests like dma, ia64, etc. were not present in top level of
-> selftest Makefile, so when someone ran 'make run_tests' they would miss
-> these tests. This patches adds those left out tests.
+On 19/09/2023 11:59, AngeloGioacchino Del Regno wrote:
+> Especially now that Multi-Core SCP support has landed, it makes sense to
+> retrieve the SCP handle by using the "mediatek,scp" property (as already
+> done in MediaTek VCODEC), both to select one specific SCP core for MDP3
+> and to avoid walking the parent node to find a SCP node.
 > 
-> Signed-off-by: Abhinav <singhabhinav9051571833@gmail.com>
-> ---
->  tools/testing/selftests/Makefile | 7 +++++++
->  1 file changed, 7 insertions(+)
+> AngeloGioacchino Del Regno (2):
+>   media: dt-bindings: mediatek: Add phandle to mediatek,scp on MDP3 RDMA
+>   media: platform: mtk-mdp3: Use devicetree phandle to retrieve SCP
+> 
+>  .../bindings/media/mediatek,mdp3-rdma.yaml       |  6 ++++++
+>  .../media/platform/mediatek/mdp3/mtk-mdp3-core.c | 16 ++++++++++------
+>  2 files changed, 16 insertions(+), 6 deletions(-)
 > 
 
-Hi,
+This series no longer applies to our staging master branch.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Since Krzysztof also asked for a better patch 1/2, I prefer a rebased and
+updated v5.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Regards,
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+	Hans
