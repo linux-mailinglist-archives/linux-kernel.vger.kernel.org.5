@@ -2,124 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBF77B4D62
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AFF57B4D68
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235850AbjJBImr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 04:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
+        id S235877AbjJBIoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 04:44:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235856AbjJBImq (ORCPT
+        with ESMTP id S229981AbjJBIoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 04:42:46 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11062A6;
-        Mon,  2 Oct 2023 01:42:42 -0700 (PDT)
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3928U3U6019923;
-        Mon, 2 Oct 2023 10:42:16 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=selector1; bh=ST/+Jyc
-        5mLphX8HujPhPASxpDHMbj5k1JIST9D3Y+J0=; b=e7MCGpg1xbM8W063320H0Km
-        +c9mxJVe+yYjekAoCqVa/0yo1GP22pICas5bVIRYpLY4/C35a82Qs03levH3k9CB
-        Ki3aAftI1Y7RohsjoWfq+a4RvYj0u2YXi3/fQkqQVC6YBXSDS8M99KRRHetJ3SKV
-        OF4iTu1TyYklmUBcAvSKVhyxyMip23v/JkUgjUgavTC6U2+GEuiI++xCwW8+ZA5R
-        wHdenECB6AbDg+PdDtnF3gZxKlyR0OH+gMx+y4Xu2WLcbQk4dqaImnupObBIIVWR
-        teraMW0BxZ2QH51iIvHyS81UXe/aMmK1f+oJ3KFJBV+SLvJgNLRu5X42FFxSC4w=
-        =
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3te8t4pbnw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Oct 2023 10:42:16 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2196A100059;
-        Mon,  2 Oct 2023 10:42:16 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 196D420F55A;
-        Mon,  2 Oct 2023 10:42:16 +0200 (CEST)
-Received: from localhost (10.129.178.213) by SHFDAG1NODE1.st.com
- (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 2 Oct
- 2023 10:42:15 +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        "Maxime Coquelin" <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        M'boumba Cedric Madianga <cedric.madianga@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>
-CC:     Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
-        <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] i2c: stm32f7: Fix PEC handling in case of SMBUS transfers
-Date:   Mon, 2 Oct 2023 10:42:10 +0200
-Message-ID: <20231002084211.1108940-1-alain.volmat@foss.st.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 2 Oct 2023 04:44:06 -0400
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA9BDA4;
+        Mon,  2 Oct 2023 01:44:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1696236244; x=1727772244;
+  h=from:subject:date:message-id:mime-version:
+   content-transfer-encoding:to:cc;
+  bh=b+aTORcVWyPRU0e0zfa5AhazdfQSs5Ixw/y30Fq9c/k=;
+  b=azHPzlKKmricxigaSDW+sy64MxwgctDlN3oUUK1TZR1Tl7gd9+6/uA1p
+   O56ybSSR5oXr4kKQGeOUVVMyBsd7ratKOp3YbvbGP2Ln53BSytIV08dgF
+   /wgfmQ9tDv9jErJp8jCpGfbwJvT4ml7YfqQ5tOIKqJItCrFdIib2tYfSA
+   tWzE8uwutH/GogW6mCs3fI6+lGYkyn04OzQeZS3gUNvzynkXfSrStJkle
+   +cN4CTKOINRpIM6BGoBT2U4Skb8TJOymvDNQ344MUaujyzAV5IydJVu7O
+   vjrtsLMt62pIrAFHeVjG4QPqJQkmgxO8z87VyO5R3JxCEivJj/aRsg9da
+   w==;
+X-IronPort-AV: E=Sophos;i="6.03,193,1694728800"; 
+   d="scan'208";a="33241245"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 02 Oct 2023 10:43:59 +0200
+Received: from [127.0.1.1] (herburgerg-w2.tq-net.de [10.122.52.145])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 47330280075;
+        Mon,  2 Oct 2023 10:43:59 +0200 (CEST)
+From:   Gregor Herburger <gregor.herburger@ew.tq-group.com>
+Subject: [PATCH v3 0/5] TQMLS10xxA support
+Date:   Mon, 02 Oct 2023 10:43:49 +0200
+Message-Id: <20231002-for-ml-tqmls10xxa-v2-test-v3-0-402819b9a29b@ew.tq-group.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.129.178.213]
-X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
- (10.75.129.69)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-02_03,2023-09-28_03,2023-05-22_02
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-B4-Tracking: v=1; b=H4sIAMWCGmUC/42Oyw6CMBBFf4V07ZB2yktX/odxAThAE7AwLYgx/
+ LuVlYkbVzfnJnPmvoQjNuTEKXoJpsU4Y+8B9CESdVfeWwJzCyxQopYFHqGxDEMPfhp6p+S6lrA
+ geHIeEtJZUutGY1aLcD8yNWbd3Zdr4IbtAL5jKr+NWqE8phhrleeJBAUtU2s57oirmVviMz1iP
+ 4XazmNc2+Gj7ozzlp/76gU/D/4ZGFJCpW5lpvMirTD9UV+3bXsDY0rtWxMBAAA=
+To:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux@ew.tq-group.com,
+        gregor.herburger@ew.tq-group.com,
+        Conor Dooley <conor.dooley@microchip.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1696236239; l=2439;
+ i=gregor.herburger@ew.tq-group.com; s=20230829; h=from:subject:message-id;
+ bh=d86vdRWS6AL82dK3Ppi+XcM9V7N57f3lq2Dzdgdt1HQ=;
+ b=a5j5dv7/sOIamoa4qrcVjYmiwfV4QIAawCCxUuZGUklZZlGHnq24vcs7cp7tcxHA2JCgg1TJa
+ aIdYE0A+d2iBZ/t+SmkmlBwROSSwAvseYjqninlQFuvprIycrZyBFbe
+X-Developer-Key: i=gregor.herburger@ew.tq-group.com; a=ed25519;
+ pk=+eRxwX7ikXwazcRjlOjj2/tbDmfVZdDLoW+xLZbQ4h4=
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PECBYTE bit allows to generate (in case of write) or
-compute/compare the PEC byte (in case of read).  In case
-of reading a value (performed by first sending a write
-command, then followed by a read command) the PECBYTE should
-only be set before starting the read command and not before
-the first write command.
+Hi,
 
-Fixes: 9e48155f6bfe ("i2c: i2c-stm32f7: Add initial SMBus protocols support")
+this series adds initial support for the TQMLS1043A, TQMLS1046A and
+TQMLS1088A SoM on the MBLS10xxA baseboard. These three modules share a
+common layout and a common baseboard.
 
-Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
+Patch 1 removes an non-existing spi controller
+Patch 2 and 4 add the compatible to dt bindings
+Patch 3 and 5 add the .dts[i] files for SoMs and baseboard
+
+Changes in v3:
+- reordered aliases alphabetically
+- squashed MAINTAINERS patch into dts patch
+- rebased to next-20230929
+- Link to v2: https://lore.kernel.org/r/20230829-for-ml-tqmls10xxa-v2-test-v2-0-b1da63785b25@ew.tq-group.com
+
+Changes in v2:
+- Added Acked-Bys from Conor Dooley
+- Renamed gpio nodes
+- Removed trailing empty line
+
+Best regards
+Gregor
+
 ---
- drivers/i2c/busses/i2c-stm32f7.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Gregor Herburger (5):
+      arm64: dts: ls1043a: remove second dspi node
+      dt-bindings: arm: fsl: Add TQ-Systems LS1043A/LS1046A based boards
+      arm64: dts: freescale: add initial device tree for TQMLS1043A/TQMLS1046A
+      dt-bindings: arm: fsl: Add TQ-Systems LS1088 based boards
+      arm64: dts: freescale: add initial device tree for TQMLS1088A
 
-diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
-index 579b30581725..0d3c9a041b56 100644
---- a/drivers/i2c/busses/i2c-stm32f7.c
-+++ b/drivers/i2c/busses/i2c-stm32f7.c
-@@ -1059,9 +1059,10 @@ static int stm32f7_i2c_smbus_xfer_msg(struct stm32f7_i2c_dev *i2c_dev,
- 	/* Configure PEC */
- 	if ((flags & I2C_CLIENT_PEC) && f7_msg->size != I2C_SMBUS_QUICK) {
- 		cr1 |= STM32F7_I2C_CR1_PECEN;
--		cr2 |= STM32F7_I2C_CR2_PECBYTE;
--		if (!f7_msg->read_write)
-+		if (!f7_msg->read_write) {
-+			cr2 |= STM32F7_I2C_CR2_PECBYTE;
- 			f7_msg->count++;
-+		}
- 	} else {
- 		cr1 &= ~STM32F7_I2C_CR1_PECEN;
- 		cr2 &= ~STM32F7_I2C_CR2_PECBYTE;
-@@ -1149,8 +1150,10 @@ static void stm32f7_i2c_smbus_rep_start(struct stm32f7_i2c_dev *i2c_dev)
- 	f7_msg->stop = true;
- 
- 	/* Add one byte for PEC if needed */
--	if (cr1 & STM32F7_I2C_CR1_PECEN)
-+	if (cr1 & STM32F7_I2C_CR1_PECEN) {
-+		cr2 |= STM32F7_I2C_CR2_PECBYTE;
- 		f7_msg->count++;
-+	}
- 
- 	/* Set number of bytes to be transferred */
- 	cr2 &= ~(STM32F7_I2C_CR2_NBYTES_MASK);
+ Documentation/devicetree/bindings/arm/fsl.yaml     |  21 +++
+ MAINTAINERS                                        |   2 +
+ arch/arm64/boot/dts/freescale/Makefile             |   3 +
+ .../freescale/fsl-ls1043a-tqmls1043a-mbls10xxa.dts |  49 +++++++
+ .../boot/dts/freescale/fsl-ls1043a-tqmls1043a.dtsi |  32 +++++
+ arch/arm64/boot/dts/freescale/fsl-ls1043a.dtsi     |  14 --
+ .../freescale/fsl-ls1046a-tqmls1046a-mbls10xxa.dts |  56 ++++++++
+ .../boot/dts/freescale/fsl-ls1046a-tqmls1046a.dtsi |  42 ++++++
+ .../freescale/fsl-ls1088a-tqmls1088a-mbls10xxa.dts |  64 +++++++++
+ .../boot/dts/freescale/fsl-ls1088a-tqmls1088a.dtsi |  43 ++++++
+ .../dts/freescale/tqmls104xa-mbls10xxa-fman.dtsi   | 104 +++++++++++++++
+ .../dts/freescale/tqmls1088a-mbls10xxa-mc.dtsi     | 146 +++++++++++++++++++++
+ .../boot/dts/freescale/tqmls10xxa-mbls10xxa.dtsi   | 136 +++++++++++++++++++
+ arch/arm64/boot/dts/freescale/tqmls10xxa.dtsi      |  58 ++++++++
+ 14 files changed, 756 insertions(+), 14 deletions(-)
+---
+base-commit: df964ce9ef9fea10cf131bf6bad8658fde7956f6
+change-id: 20230829-for-ml-tqmls10xxa-v2-test-4e364c3f326c
+
+Best regards,
 -- 
-2.25.1
+TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht München, HRB 105018
+Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
+https://www.tq-group.com/
 
