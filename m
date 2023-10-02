@@ -2,200 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4CA7B4EA0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC1F7B4EA3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235980AbjJBJE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:04:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
+        id S235987AbjJBJEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235951AbjJBJE0 (ORCPT
+        with ESMTP id S235974AbjJBJEn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:04:26 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4C90A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:04:22 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50308217223so24737039e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:04:22 -0700 (PDT)
+        Mon, 2 Oct 2023 05:04:43 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1859CE9
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:04:38 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id ada2fe7eead31-45456121514so3686020137.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:04:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696237461; x=1696842261; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696237478; x=1696842278; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=50/2hsvbLrIvggaR30aYtR9Jo6d9ZOr+OHp/3txBaD0=;
-        b=lPBXkBFzpV7djjZjxp+Up3Eq+FAXlcZZUlpBcZeLtWPbKAScrCFn9sSOKw6VtjrZLM
-         p1adbQMEgc5+FW+nyiOg512pBUhlSgc6s7A8qPcWqAOJTZ/MgddKZCc9NfN398jYXtZ+
-         UF1wcPlHXAYVphgYol8iiGVck6kkAxWO5yNEo=
+        bh=w6lSGzMYmbvQIYpVjiyxdxEmD3PDo3maFv/Yj2jKXkA=;
+        b=gyK3ViCxB5CiK7cAFiaPb/6seSebdH7OUrotGMBqaF+yMjWGH3EEqLvyIqKlTgCQdC
+         8cgX8x0zt2Zvx188KUUlL//un6jrwNUlV7PQaCBX2HCt16AKCgAlApyXEkHfyQL2Twyf
+         +3ZDx2w2ZuiXpyFYj78R86tqlsTEc0ihmQYlN0OXf9yBkGU4L6rsk4CoGXLYBDKMghco
+         fsexOMU+zFejkPr9Z1MxCxfQwSKNq2vR+FtZ+PGRKIUf7QYknI6Odc3HlBfsnxeX8rLT
+         l6Ndz1IS+YlkrpHG8ejPKXaCCr/ayn63wuzJLKJ2HF8By4Yop1E2sGHHy2wvyDbcTDRt
+         1U4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696237461; x=1696842261;
+        d=1e100.net; s=20230601; t=1696237478; x=1696842278;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=50/2hsvbLrIvggaR30aYtR9Jo6d9ZOr+OHp/3txBaD0=;
-        b=EKzmipb0xaZ1XWGVJutolWQnksBMym1AlbBLwYnpBFNwHpNyiA6IVFzgTraP/30UvW
-         RDVFgVZgUw+rY0De4+MBf/iBS4lc4EHBFpJODry0oVU26XewPTii2jURsx1/6npSFJJt
-         WXnOKAha9nju4ZlMHUlS1U7vaeSwiDE6YHddVprNZaupDmcGCB24s+log4b44wP98+fv
-         6nkLjgoZP2xzP1dl2MA8wDkk0Z2QKNS5x0fAzpZqd4G0PS62zGsJtmr+8yJs3VKuIByS
-         QnqWIZ83plI5gc0xJB9Xytdto33+0RP57+XyHT5CQyJJJrSjHnmxoUYrLWTdjPl2gaYp
-         0nfg==
-X-Gm-Message-State: AOJu0YxDl03Ilt+/oYOYCWT3c3DQkghqWFQLnGaANe8T8pycPco7uArs
-        6UNoCAuKMfFgP0jaBDjUuhP9p9qm2sYE49X6DRQDbA==
-X-Google-Smtp-Source: AGHT+IGneJ9FgkMSGDGOIASBqdEuFAnrvX8yuv1YB2NtaOm9WDOAb/vk+og0O6KbRm7uTPH/Pc2L428eZfb3dwnSB9I=
-X-Received: by 2002:a19:6509:0:b0:503:970:4dbf with SMTP id
- z9-20020a196509000000b0050309704dbfmr7689708lfb.15.1696237460859; Mon, 02 Oct
- 2023 02:04:20 -0700 (PDT)
+        bh=w6lSGzMYmbvQIYpVjiyxdxEmD3PDo3maFv/Yj2jKXkA=;
+        b=Fp1pZs+Tjv4HTJt0whVYk7s7cED6gVatKze+mKah99mliPndxrA37ye0Wm3gszuEad
+         91DuBYrVWxkCgZzfRH3BXUPztZnCJj8u6ZIEorA33jyDdE2jG6inmt4gz7yEfhMRc07k
+         QWACik1r3U0gqPdA5XZSCqN6/RJnKh7wTUTQgXNIBYlNEuS4njfNA42q3I5ICWYPycwl
+         lUUa9apq6N22KvTmSyVskFiuyq15FeYz9ojqsaHRGQmtGHPACOH398iFdRxTHqu3M4+e
+         +3AL32oOGg4X9S5KPLlMkmqpBTZ+oeORgd1SEoRcMSemplGNoGWJg6Yj/jRdQ4pngtQu
+         sTcw==
+X-Gm-Message-State: AOJu0YxlJT5peIqh8uBQv/SWddDXsjb9XMqaM6Ypd7BSDW6qoX/nJZJq
+        DVI/vftDDrlGXW0I7rWKJ54IFiABukuUqNkTNAZJYA==
+X-Google-Smtp-Source: AGHT+IHJZy1TMb/fvXpxgZf1OGsiFiqP+dJU/QormPX81So2k7lHQizhtBNoZhxqRjcK9UBTsp9Haz+YSQw3rbHYVqY=
+X-Received: by 2002:a67:ed4e:0:b0:452:5798:64bd with SMTP id
+ m14-20020a67ed4e000000b00452579864bdmr7520196vsp.35.1696237477855; Mon, 02
+ Oct 2023 02:04:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230929082009.71843-1-angelogioacchino.delregno@collabora.com>
- <84b2de54-8337-42a3-a25c-a95cf2f3349f@app.fastmail.com> <CAGXv+5FtBcHwEhQEoEUBx24Zf4ABrDeSaWo_mDbM7OvmBLF5nA@mail.gmail.com>
- <660c5c93-4a02-0f6b-4640-ddf67a477490@collabora.com>
-In-Reply-To: <660c5c93-4a02-0f6b-4640-ddf67a477490@collabora.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Mon, 2 Oct 2023 17:04:09 +0800
-Message-ID: <CAGXv+5H0jFRj-79XXp+LSE=kD=p1we5Vem4+9AYk2-tS-bHT0A@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Add Angelo as MediaTek SoC co-maintainer
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
-        <nfraprado@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh@kernel.org>, amergnat@baylibre.com,
-        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <20231001-vf610-gpio-v5-0-8d873a8f224a@nxp.com> <20231001-vf610-gpio-v5-4-8d873a8f224a@nxp.com>
+In-Reply-To: <20231001-vf610-gpio-v5-4-8d873a8f224a@nxp.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 2 Oct 2023 11:04:27 +0200
+Message-ID: <CAMRc=MdXkFBWMuyr8sbetyP2sJX2QG6Ce=Tsb7RVMguvGdC3TA@mail.gmail.com>
+Subject: Re: [PATCH v5 4/7] gpio: vf610: add i.MX8ULP of_device_id entry
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stefan Agner <stefan@agner.ch>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Peng Fan <peng.fan@nxp.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 4:27=E2=80=AFPM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@collabora.com> wrote:
+On Sun, Oct 1, 2023 at 10:23=E2=80=AFAM Peng Fan (OSS) <peng.fan@oss.nxp.co=
+m> wrote:
 >
-> Il 02/10/23 05:30, Chen-Yu Tsai ha scritto:
-> > On Sat, Sep 30, 2023 at 3:37=E2=80=AFAM Arnd Bergmann <arnd@arndb.de> w=
-rote:
-> >>
-> >> On Fri, Sep 29, 2023, at 04:20, AngeloGioacchino Del Regno wrote:
-> >>> I am a top reviewer mainly for MediaTek SoC related patches in most
-> >>> subsystems and I've also been upstreaming both improvements, fixes
-> >>> and new drivers and devicetrees when required.
-> >>>
-> >>> The MediaTek scene saw a generous increase in number of patches that
-> >>> are sent to the lists every week, increasing the amount of required
-> >>> efforts to maintain the MTK bits overall, and we will possibly see
-> >>> even more of that.
-> >>>
-> >>> For this reason, and also because of suggestions and encouragement
-> >>> coming from the community, I'm stepping up to be a co-maintainer of
-> >>> MediaTek SoCs support.
-> >>>
-> >>> Signed-off-by: AngeloGioacchino Del Regno
-> >>> <angelogioacchino.delregno@collabora.com>
-> >>> ---
-> >>>
-> >>> P.S.: I tried to reach to Matthias for almost two months, but I could=
-n't
-> >>> find any way to talk to him and he has been unresponsive on the maili=
-ng
-> >>> lists as well.
-> >>>
-> >>> P.P.S.: This also comes after Rob Herring's suggestion to have myself=
- as
-> >>> a MediaTek SoC co-maintainer [1] and support from other people.
-> >>>
-> >>> [1]: https://lore.kernel.org/all/20230804225813.12493-1-robh@kernel.o=
-rg/
-> >>
-> >> Thanks for volunteering for this!
-> >>
-> >> I have no information on what Mattias is doing, but I see that he
-> >> has not merged any patches since June, and that he never sent a
-> >> pull request for your patches that are still in his for-next
-> >> branch.
-> >>
-> >> I hope he's going to be ok, but let's plan for you to take over
-> >> for the moment, at least until Matthias is again able to keep
-> >> maintaining the platform in the near future.
-> >>
-> >> Here is my suggestion for how to continue from here:
-> >>
-> >> - Please send your MAINTAINERS file update to soc@kernel.org
-> >>    along  with any urgent bugfixes you may have, so I can forward
-> >>    them for 6.7. I'm wrapping up the current set of fixes at
-> >>    the moment, so this would be for next week's rc
-> >>
-> >> - Create a git tree with the ususal branches (drivers, soc, dt,
-> >>    fixes, for-next) and ask Stephen Rothwell (on Cc) to add
-> >>    the combined for-next branch  to linux-next for integration testing
-> >
-> > I suggest creating a shared git tree from the start. That way when
-> > Mattias comes back and does agree to co-maintainership, or if anyone
-> > else joins in, you don't have to change the git tree URL in a lot of
-> > places.
-> >
+> From: Peng Fan <peng.fan@nxp.com>
 >
-> I agree with creating a shared git tree from the start... I currently don=
-'t have
-> a kernel.org account yet, as I'm waiting for helpdesk to grant my account=
- request.
+> i.MX8ULP/93 GPIO supports similar feature as i.MX7ULP GPIO, but i.MX8ULP =
+is
+> actually not hardware compatible with i.MX7ULP. i.MX8ULP only has one
+> register base, not two bases. i.MX8ULP and i.MX93 actually has two
+> interrupts for each gpio controller, one for Trustzone non-secure world,
+> one for secure world.
 >
-> They asked me to send a patch adding myself to MAINTAINERS as they would =
-use that
-> as a basis to grant the account request... so I guess it's happening soon=
-; seen
-> the urgency, I would do anything in my power to speed up the process, but=
- probably
-> there's "nothing to do" about it.
-
-If you do end up not getting an account in time, I can do all the patch
-queuing and sending out PR work using my account for this cycle, if that's
-OK with the soc maintainers.
-
-That said, we have a long weekend (Oct. 7 to Oct. 10) during which I will b=
+> Although the Linux Kernel driver gpio-vf610.c could work with
+> fsl,imx7ulp-gpio compatible, it is based on some tricks did in device tre=
 e
-travelling. I might also be travelling during parts of the remaining three
-work days, but the whole thing is still up in the air.
-
-> I am guessing that the right thing to do right now is to just send the mo=
-stly
-> critical fixes to soc@kernel.org, along with this patch, and wait until a=
- shared
-> tree is created to keep things clean?
-
-+1 Sounds good to me.
-
-
-> >> - Start each branch on 6.6-rc2 (usually we use rc1, but this time
-> >>    rc2 is a better candidate because of the last-minute
-> >>    drivers/pmdomain rename), and merge the corresponding branches
-> >>    from git://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/lin=
-ux.git
-> >>    into those to avoids conflicts with his tree
-> >>
-> >> - Add any further patches you want in 6.7 on top
-> >>
-> >> - Send a first set of pull requests to soc@kernel.org for whatever
-> >>    you have merged as soon as you are confident about them,
-> >>    ideally by the end of next week.
-> >>
-> >> - Send additional pull requests for fixups or late features in
-> >>    the weeks after that as you see fit.
-> >>
-> >> See Documentation/process/maintainer-soc.rst for more details
-> >> on the above. When Mattias comes back, you can work out a new
-> >> process together with him.
-> >
-> > I can also answer any questions you might have about the process.
-> >
+> with some offset added to base address.
 >
-> Many thanks for your support, I greatly appreciate that.
+> Add a new of_device_id entry for i.MX8ULP. But to make the driver could
+> also support old bindings, check the compatible string first, before
+> check the device data.
 >
-> Cheers,
-> Angelo
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  drivers/gpio/gpio-vf610.c | 47 ++++++++++++++++++++++++++++++++++++++++-=
+------
+>  1 file changed, 40 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-vf610.c b/drivers/gpio/gpio-vf610.c
+> index dbc7ba0ee72c..8e12706c0b22 100644
+> --- a/drivers/gpio/gpio-vf610.c
+> +++ b/drivers/gpio/gpio-vf610.c
+> @@ -25,6 +25,7 @@
+>  struct fsl_gpio_soc_data {
+>         /* SoCs has a Port Data Direction Register (PDDR) */
+>         bool have_paddr;
+> +       bool have_dual_base;
+>  };
+>
+>  struct vf610_gpio_port {
+> @@ -60,13 +61,26 @@ struct vf610_gpio_port {
+>  #define PORT_INT_EITHER_EDGE   0xb
+>  #define PORT_INT_LOGIC_ONE     0xc
+>
+> +#define IMX8ULP_GPIO_BASE_OFF  0x40
+> +#define IMX8ULP_BASE_OFF       0x80
+> +
+> +static const struct fsl_gpio_soc_data vf610_data =3D {
+> +       .have_dual_base =3D true,
+> +};
+> +
+>  static const struct fsl_gpio_soc_data imx_data =3D {
+>         .have_paddr =3D true,
+> +       .have_dual_base =3D true,
+> +};
+> +
+> +static const struct fsl_gpio_soc_data imx8ulp_data =3D {
+> +       .have_paddr =3D true,
+>  };
+>
+>  static const struct of_device_id vf610_gpio_dt_ids[] =3D {
+> -       { .compatible =3D "fsl,vf610-gpio",       .data =3D NULL, },
+> +       { .compatible =3D "fsl,vf610-gpio",       .data =3D &vf610_data }=
+,
+>         { .compatible =3D "fsl,imx7ulp-gpio",     .data =3D &imx_data, },
+> +       { .compatible =3D "fsl,imx8ulp-gpio",     .data =3D &imx8ulp_data=
+, },
+>         { /* sentinel */ }
+>  };
+>
+> @@ -263,19 +277,38 @@ static int vf610_gpio_probe(struct platform_device =
+*pdev)
+>         struct gpio_irq_chip *girq;
+>         int i;
+>         int ret;
+> +       bool dual_base;
+>
+>         port =3D devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
+>         if (!port)
+>                 return -ENOMEM;
+>
+>         port->sdata =3D of_device_get_match_data(dev);
+> -       port->base =3D devm_platform_ioremap_resource(pdev, 0);
+> -       if (IS_ERR(port->base))
+> -               return PTR_ERR(port->base);
+>
+> -       port->gpio_base =3D devm_platform_ioremap_resource(pdev, 1);
+> -       if (IS_ERR(port->gpio_base))
+> -               return PTR_ERR(port->gpio_base);
+> +       dual_base =3D port->sdata->have_dual_base;
+> +
+> +       /* support old compatible strings */
+> +       if (device_is_compatible(dev, "fsl,imx7ulp-gpio") &&
+> +           (device_is_compatible(dev, "fsl,imx93-gpio") ||
+
+Why not just add this compatible to vf610_gpio_dt_ids?
+
+Bart
+
+> +           (device_is_compatible(dev, "fsl,imx8ulp-gpio"))))
+> +               dual_base =3D true;
+> +
+> +       if (dual_base) {
+> +               port->base =3D devm_platform_ioremap_resource(pdev, 0);
+> +               if (IS_ERR(port->base))
+> +                       return PTR_ERR(port->base);
+> +
+> +               port->gpio_base =3D devm_platform_ioremap_resource(pdev, =
+1);
+> +               if (IS_ERR(port->gpio_base))
+> +                       return PTR_ERR(port->gpio_base);
+> +       } else {
+> +               port->base =3D devm_platform_ioremap_resource(pdev, 0);
+> +               if (IS_ERR(port->base))
+> +                       return PTR_ERR(port->base);
+> +
+> +               port->gpio_base =3D port->base + IMX8ULP_GPIO_BASE_OFF;
+> +               port->base =3D port->base + IMX8ULP_BASE_OFF;
+> +       }
+>
+>         port->irq =3D platform_get_irq(pdev, 0);
+>         if (port->irq < 0)
+>
+> --
+> 2.37.1
 >
