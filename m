@@ -2,153 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6039C7B4F0E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:30:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C594A7B4F0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:30:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236104AbjJBJaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58758 "EHLO
+        id S236119AbjJBJa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:30:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236098AbjJBJaU (ORCPT
+        with ESMTP id S236118AbjJBJa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:30:20 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DF4A4
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:30:16 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99de884ad25so2281315566b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:30:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696239014; x=1696843814; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/4UpxCQBxDX1LugDmhEIeIka2jTxgrDKUQizgQT2+9I=;
-        b=vo/XS2gPWoLFkbpdYQuZJ6VuPA1b0gCLGcN+cOSh9TeNP7o1Uc7QOm4T5goInTYISi
-         iE6irRDRNwHTeICdJVE7dRJ+kuMzP/Spv9JU66GkLesYmFQbam9t6kEPNTFL8egHfxCy
-         lADE8AzrcO7/Zo+i8HYHgBqsR3Oa2Hw9gx9P6lecm+w2kQ76090oxxdi9yZAQlYSDC0H
-         bifwjpLoZhj58eu+9M9ToqEBoo6rlQSFCuL7TzDRl9mPK31fIE7ylDzaQb0bP97ibyFU
-         Kgrz7ZTaLbFXYR7J/1GuhdvGo3dc3Pam3ADkDDxsKR6FUkuls2K4Hb3aIcXk2SgM2PQX
-         /PWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696239014; x=1696843814;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/4UpxCQBxDX1LugDmhEIeIka2jTxgrDKUQizgQT2+9I=;
-        b=e7BS/uG/IPoOekEiy/xQv79CJ4XKfTBIvfht+SaLr9lKUzndGPJKCkA3fDjwOvgVCm
-         JUsp5zCK1sQL+P0Cc5gLDS3MC5S3Pnt6gxozyqU7GOg0VHiTgDLMQKecpT7wQbhJoNc9
-         1Pho409dVPTq4fP/ohVuOU40HW08g9F6W6sxHnwWzWECAayK+gdODGgfRL5QpSJt28qv
-         wyzrq2gN2AvfK3vU4WRQPdhBDxAQw4A3lWwbBywsvyxPUKr4bBBe5784rHCbu/d0dsIl
-         /Zq5AkRsIXUehgHzksuxkoM18RwM0LhMn3WERn6Bu7bQyBCjhSnXoddbhF4SkBEy2jmb
-         y4iQ==
-X-Gm-Message-State: AOJu0YzN57wArIbPVVpJuFEWzzJozWxzGdKm/nZ3UdQhpld8CdEWjnZG
-        ORePFygJcKaijDTkjhjDI/2iKA==
-X-Google-Smtp-Source: AGHT+IHO6AD3vjK5Y1otTfkKT2XlBvraVvG/KjArGCr0JQ6NJdniqtEewGE9pqBfr+Z9/c6C3j0dsQ==
-X-Received: by 2002:a17:906:2d1:b0:9ae:5fe1:ef01 with SMTP id 17-20020a17090602d100b009ae5fe1ef01mr9843170ejk.37.1696239014687;
-        Mon, 02 Oct 2023 02:30:14 -0700 (PDT)
-Received: from [192.168.86.24] ([5.133.47.210])
-        by smtp.googlemail.com with ESMTPSA id fi3-20020a170906da0300b009a1fef32ce6sm16866511ejb.177.2023.10.02.02.30.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 02:30:14 -0700 (PDT)
-Message-ID: <92db4a0d-c416-6a1c-ad71-15c2156d59aa@linaro.org>
-Date:   Mon, 2 Oct 2023 10:30:13 +0100
+        Mon, 2 Oct 2023 05:30:27 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B625A4
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:30:22 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A66AB1BF204;
+        Mon,  2 Oct 2023 09:30:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696239021;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1nvcBaLCmY8mO5vCFGklzXqpSCLTGt+OF1cfRa4tU1I=;
+        b=Gcu7m0Pp90GHp77BmLulIh3lxJ0ZsmBaZP25G4W3qzZoxP5zDxpwxd9xrPi9jXYNVEHQHl
+        gs5ksdF8QBLn0dDh7DneFcTXW7sWyJgEvjsDusTLTZLpdY2bIbfiJ/qCO69QGqCnPEnM1X
+        5v4Zjj2T2t2a1urSFGseCBBWjFk/9JiBLRvr6FC8HksUeu2Fxuj7Xu9eGJD+KVSmqShlqx
+        9mAy6i19fqNtvGZ/y9RLOKrO2s07JQtVmjQjfUM7c9cTLYzzrVj/wCMHeVcmoAfYh/VF2X
+        O2NlsZbI442Ie1NYSl6+Cnptn2zDykeaCUokAp6Gmm1dSL8uIWXqTWtwZnMH1A==
+Date:   Mon, 2 Oct 2023 11:30:17 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Rouven Czerwinski <r.czerwinski@pengutronix.de>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jean Delvare <jdelvare@suse.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Johan Jonker <jbx6244@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [RFC PATCH] mtd: nand: add support for ts72xx
+Message-ID: <20231002113017.481aae31@xps-13>
+In-Reply-To: <8bbe66a23eb5c8a2404b72d754b1bcb6f4d23867.camel@maquefel.me>
+References: <20230927141532.25525-1-nikita.shubin@maquefel.me>
+        <20230927172947.33106fe2@xps-13>
+        <8bbe66a23eb5c8a2404b72d754b1bcb6f4d23867.camel@maquefel.me>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1 2/3] misc: fastrpc: Free DMA handles for RPC calls with
- no arguments
-Content-Language: en-US
-To:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
-        linux-arm-msm@vger.kernel.org
-Cc:     ekangupt@qti.qualcomm.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com,
-        stable <stable@kernel.org>
-References: <1695973360-14369-1-git-send-email-quic_ekangupt@quicinc.com>
- <1695973360-14369-3-git-send-email-quic_ekangupt@quicinc.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-In-Reply-To: <1695973360-14369-3-git-send-email-quic_ekangupt@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Nikita,
 
+> ```
+> # modprobe technologic-nand-controller
+> nand: device found, Manufacturer ID: 0xec, Chip ID: 0xf1
+> nand: Samsung NAND 128MiB 3,3V 8-bit
+> nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
+> Scanning device for bad blocks
+> Bad eraseblock 137 at 0x000001120000
+> Bad eraseblock 310 at 0x0000026c0000
+> 3 fixed-partitions partitions found on MTD device 60000000.nand-
+> controller
+> Creating 3 MTD partitions on "60000000.nand-controller":
+> 0x000000000000-0x000000020000 : "TS-BOOTROM"
+> 0x000000020000-0x000007d20000 : "Linux"
+> 0x000007d20000-0x000008000000 : "RedBoot"
+> ```
+>=20
+> This looks like Samsung K9F1G08U0D or K9F1G08U0B.
+>=20
+> And the patch above totally solves my issues with READCACHE - thank
+> you!
+>=20
 
-On 29/09/2023 08:42, Ekansh Gupta wrote:
-> The FDs for DMA handles to be freed is updated in fdlist by DSP over
-> a remote call. This holds true even for remote calls with no
-> arguments. To handle this, get_args and put_args are needed to
-> be called for remote calls with no arguments also as fdlist
-> is allocated in get_args and FDs updated in fdlist is freed
-> in put_args.
-> 
-> Fixes: 8f6c1d8c4f0c ("misc: fastrpc: Add fdlist implementation")
-> Cc: stable <stable@kernel.org>
-> Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
-> ---
->   drivers/misc/fastrpc.c | 23 ++++++++++-------------
->   1 file changed, 10 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-> index fb92197..a52701c 100644
-> --- a/drivers/misc/fastrpc.c
-> +++ b/drivers/misc/fastrpc.c
-> @@ -1091,6 +1091,7 @@ static int fastrpc_put_args(struct fastrpc_invoke_ctx *ctx,
->   		}
->   	}
->   
-> +	/* Clean up fdlist which is updated by DSP */
->   	for (i = 0; i < FASTRPC_MAX_FDLIST; i++) {
->   		if (!fdlist[i])
->   			break;
-> @@ -1157,11 +1158,9 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
->   	if (IS_ERR(ctx))
->   		return PTR_ERR(ctx);
->   
-<---
-> -	if (ctx->nscalars) {
-> -		err = fastrpc_get_args(kernel, ctx);
-> -		if (err)
-> -			goto bail;
-> -	}
-> +	err = fastrpc_get_args(kernel, ctx);
-> +	if (err)
-> +		goto bail;
--->
-I dont see any point of the above change as fastrpc_internal_invoke will 
-be called from kernel with nscalars always set.
+Great!
 
-do you see a path that does not set this?
+> > If you are using a Micron chip that specifies not supporting ECC
+> > correction together with sequential cache reads, then it's a problem
+> > that we will solve soon (you can hardcode
+> > chip->controller->supported_op.cont_read to 0);
+> >=20
+> > Otherwise we can discuss it.
+> >  =20
+> > > - legacy wait implementation had no delays - only timeout and if i
+> > > set=20
+> > > =C2=A0 readb_poll_timeout() to something reasonable i experience speed
+> > > degradation=20
+> > > =C2=A0 on mtd_speedtest, can it be left as 0 ? =20
+> >=20
+> > Looks like the legacy implementation used cond_resched(). The delay
+> > needs to be observed before first checking for the status, it's a
+> > delay
+> > that is described in the spec, if you get the status before you might
+> > just not see a consistent value. I believe that is worth taking into
+> > account in your implementation below (don't wait then delay, it's
+> > not relevant). Can you share the values you've tried and the
+> > performances you've got? =20
+>=20
+> The numbers are pretty stable, so indeed legacy is a bit faster,
+> followed up by new one with zero interval.
 
---srini
->   
->   	/* make sure that all CPU memory writes are seen by DSP */
->   	dma_wmb();
-> @@ -1185,14 +1184,12 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
->   	if (err)
->   		goto bail;
->   
-> -	if (ctx->nscalars) {
-> -		/* make sure that all memory writes by DSP are seen by CPU */
-> -		dma_rmb();
-> -		/* populate all the output buffers with results */
-> -		err = fastrpc_put_args(ctx, kernel);
-> -		if (err)
-> -			goto bail;
-> -	}
-> +	/* make sure that all memory writes by DSP are seen by CPU */
-> +	dma_rmb();
-> +	/* populate all the output buffers with results */
-> +	err = fastrpc_put_args(ctx, kernel);
-> +	if (err)
-> +		goto bail;
->   
->   bail:
->   	if (err != -ERESTARTSYS && err != -ETIMEDOUT) {
+...
+
+> Legacy speedtest (old version of nand controller):
+
+> mtd_speedtest: eraseblock write speed is 3793 KiB/s
+> mtd_speedtest: eraseblock read speed is 3567 KiB/s
+> mtd_speedtest: page write speed is 3682 KiB/s
+> mtd_speedtest: page read speed is 3488 KiB/s
+> mtd_speedtest: 2 page write speed is 3724 KiB/s
+> mtd_speedtest: 2 page read speed is 3521 KiB/s
+> mtd_speedtest: erase speed is 198709 KiB/s
+
+...
+=20
+> New version with interval zero:
+
+> mtd_speedtest: eraseblock write speed is 3685 KiB/s
+> mtd_speedtest: eraseblock read speed is 3517 KiB/s
+> mtd_speedtest: page write speed is 3592 KiB/s
+> mtd_speedtest: page read speed is 3444 KiB/s
+> mtd_speedtest: 2 page write speed is 3608 KiB/s
+> mtd_speedtest: 2 page read speed is 3475 KiB/s
+> mtd_speedtest: erase speed is 194499 KiB/s
+
+Looks almost the same as above, I believe the difference is just noise
+between measurements.
+
+...
+
+> New version with interval 100:
+
+> mtd_speedtest: eraseblock write speed is 2722 KiB/s
+> mtd_speedtest: eraseblock read speed is 2175 KiB/s
+> mtd_speedtest: page write speed is 2598 KiB/s
+> mtd_speedtest: page read speed is 2070 KiB/s
+> mtd_speedtest: 2 page write speed is 2627 KiB/s
+> mtd_speedtest: 2 page read speed is 2106 KiB/s
+> mtd_speedtest: erase speed is 175851 KiB/s
+
+...
+
+> Also providing version with zero interval and "if (instr->delay_ns)"
+> dropped - it's optional as far i understood:
+
+It's not optional, sorry for the wrong comment, please keep it as it
+is, knowing that it will be null after a wait_rdy.
+
+> mtd_speedtest: eraseblock write speed is 3695 KiB/s
+> mtd_speedtest: eraseblock read speed is 3532 KiB/s
+> mtd_speedtest: page write speed is 3593 KiB/s
+> mtd_speedtest: page read speed is 3457 KiB/s
+> mtd_speedtest: 2 page write speed is 3640 KiB/s
+> mtd_speedtest: 2 page read speed is 3488 KiB/s
+> mtd_speedtest: erase speed is 195451 KiB/s
+
+Thanks,
+Miqu=C3=A8l
