@@ -2,52 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD967B53A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF597B5392
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237270AbjJBNAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:00:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49420 "EHLO
+        id S237288AbjJBNA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 09:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237226AbjJBNAp (ORCPT
+        with ESMTP id S237285AbjJBNAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 09:00:45 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B32199;
-        Mon,  2 Oct 2023 06:00:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0088AC433C8;
-        Mon,  2 Oct 2023 13:00:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696251642;
-        bh=HeArIM02Qnv4lwvTAbzTJtNzOGPD/ms1sGZR8dVdPZ0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=un6g0REdKqioq485uu78vWvDhqMLUyvRMuQyUp/Zcxw44DYckmgzNIhvn1qXxtRew
-         olsuG2AXkzRftazezlM7rYsZ51CYuWpPkZOhIADL72qkiPNPNESHCjCQZ4Q8PhwRBf
-         oEyTb7ufy3Yf4vpTkQ6slSLznxiVpyXoVz9NkxoRqhqM8Rzv3H77CZCNzzzwFO62Vb
-         3y3vK15aiP9AdkD0j1i5vXUgtMQ2wqXkxCyiCNSOiKhVZooeQiHbpPFq48Zugs37bH
-         61uIWW/HWNCfTHydeSRaa2+6HeGOD2fI+vJrKRhbtXsXom2elWVQouy4mG1QES/iS3
-         FZxC7Ilj75UaQ==
-Date:   Mon, 2 Oct 2023 14:00:37 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: ltc2991: add bindings
-Message-ID: <20231002-babbling-justice-73d3601a71aa@spud>
-References: <20231002101835.39624-1-antoniu.miclaus@analog.com>
+        Mon, 2 Oct 2023 09:00:55 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F3B8B7;
+        Mon,  2 Oct 2023 06:00:52 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3226cc3e324so15356066f8f.3;
+        Mon, 02 Oct 2023 06:00:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696251650; x=1696856450; darn=vger.kernel.org;
+        h=mime-version:references:in-reply-to:message-id:cc:to:subject:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ovbV2eys6IIdOiXHS9kD3zODjwel8FxTC6gNW0c8hfc=;
+        b=msMykvTUadAxYHwVlY1UmDO28bkZMN2URKGyesQB2YO44rYi+G9vgYTOAKmHqqMwQt
+         R2oBwOwmxZXEhaN30Y1KNOvLwP30T2N5CsamsFIAPE0Bw9PyHFEMbG9qe36PmTzZ1UmV
+         66Qj0gjpwvEfOI1Ou/jLnz5bSDXq0Wnq1Z0XbCyALuv8+X2WZ1ruHg9vse3Ia3VFDOJe
+         ZbGtdDzODmhnt6ziZQMr27ABGmE/AA8jARFqLihMsK8fjbmf1DqITdETuCW8/NQGlz8q
+         MRyOUXAwRpi+MCM2iJ2wxE59kp+do4A4GoYsZKePSBxERZK8VK9aYHpo12YAlmpBzpt3
+         +CJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696251650; x=1696856450;
+        h=mime-version:references:in-reply-to:message-id:cc:to:subject:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ovbV2eys6IIdOiXHS9kD3zODjwel8FxTC6gNW0c8hfc=;
+        b=ZVHv0HCnycJLV46jKoVVNAR/a1wdfzLsT5pCx6tbdA83ZAv9qoTZc/b7/JrIgNebxM
+         FPRwVzub+TcK26DNiQlxqH+RScdkH/rKVn9qN88g2L1nTYXBdy5af4oHAMMhJrzY2Tsy
+         mOcBSxivgiT3bHXFptS1WJYyXVNBYdUVKyHX6o7j01c29uHFMBLrgR7I3NawTEBe9cGf
+         ld7G9gIiDeHKwyBfXLYjf1R1vtEmQAnNApN+Q6e4Xkw0Ry6rlCURtsUPVpKg0H5HQzd3
+         t54nguyvfDanu28eXDiOO/HUgl0ioOJ1f2tMQb0i4rS3yJnsgdk7+BwCY5SjDoXfaxE1
+         2Z8g==
+X-Gm-Message-State: AOJu0YyeqbJ6MqjBJoIJlj5Erh+flvW4J/WPUbqCQcCvBQsZVaPtN7TS
+        88lIvjaAi8Mc/8e9PkVispM=
+X-Google-Smtp-Source: AGHT+IGsS0ybABVU0gSlvh634b7lSev/pAic38BOQT0jBO2o4HznWacSqgb/YE8IgpbdE5p0M3B43g==
+X-Received: by 2002:a05:6000:18c9:b0:319:62e0:f2fe with SMTP id w9-20020a05600018c900b0031962e0f2femr9647539wrq.36.1696251649490;
+        Mon, 02 Oct 2023 06:00:49 -0700 (PDT)
+Received: from yoga ([2001:638:904:ffe5:5742:c50f:bd0:6aa6])
+        by smtp.gmail.com with ESMTPSA id e9-20020adfe7c9000000b003197efd1e7bsm14065942wrn.114.2023.10.02.06.00.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 06:00:49 -0700 (PDT)
+Date:   Mon, 02 Oct 2023 15:00:42 +0200
+From:   Sven Frotscher <sven.frotscher@gmail.com>
+Subject: Re: [PATCH v4] ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        mario.limonciello@amd.com, git@augustwikerfors.se,
+        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>
+Message-Id: <65KW1S.A6C8VBV29YCM@gmail.com>
+In-Reply-To: <64c78944-4d62-4eda-b92b-3b415fea3333@sirena.org.uk>
+References: <20230927223758.18870-1-sven.frotscher@gmail.com>
+        <46560887-0b6e-42ac-96c3-b4dbc1d7cb61@leemhuis.info>
+        <4fa7d39d-dc34-4550-97fa-2b089f364cca@sirena.org.uk>
+        <541ac45b-8de7-4fa2-85ee-456d34e60aa9@leemhuis.info>
+        <64c78944-4d62-4eda-b92b-3b415fea3333@sirena.org.uk>
+X-Mailer: geary/44.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4qGEe174rhPUIzeC"
-Content-Disposition: inline
-In-Reply-To: <20231002101835.39624-1-antoniu.miclaus@analog.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Type: text/plain; charset=us-ascii; format=flowed
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -56,183 +77,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am Mo, 2. Okt 2023 um 13:54:59 +01:00:00 schrieb Mark Brown 
+<broonie@kernel.org>:
+> Until someone tests or otherwise provides specific information on a
+> given machine we're just guessing about how it's wired up.
 
---4qGEe174rhPUIzeC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+What specific information are we talking about here? I have the 82YM in 
+front of me and could help investigate.
 
-Hey,
 
-On Mon, Oct 02, 2023 at 01:18:14PM +0300, Antoniu Miclaus wrote:
-> Add dt-bindings for ltc2991 octal i2c voltage, current and temperature
-> monitor.
->=20
-> Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
-> ---
-> changes in v2:
->  - make compatible const type
->  - remove `|` where not necessary
->  - switch to micro-ohms for the shunt resistor property
->  - add vendor prefix for temperature-enable
-
-Thanks for the updates...
-
->  .../bindings/hwmon/adi,ltc2991.yaml           | 114 ++++++++++++++++++
->  1 file changed, 114 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ltc2991.y=
-aml
->=20
-> diff --git a/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml b/D=
-ocumentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
-> new file mode 100644
-> index 000000000000..3811ea07a04f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
-> @@ -0,0 +1,114 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +
-> +$id: http://devicetree.org/schemas/hwmon/adi,ltc2991.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Analog Devices LTC2991 Octal I2C Voltage, Current and Temperature=
- Monitor
-> +
-> +maintainers:
-> +  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-> +
-> +description: |
-> +  The LTC2991 is used to monitor system temperatures, voltages and curre=
-nts.
-> +  Through the I2C serial interface, the eight monitors can individually =
-measure
-> +  supply voltages and can be paired for differential measurements of cur=
-rent
-> +  sense resistors or temperature sensing transistors.
-> +
-> +  Datasheet:
-> +    https://www.analog.com/en/products/ltc2991.html
-> +
-> +properties:
-> +  compatible:
-> +    const: adi,ltc2991
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +  vcc-supply: true
-> +
-> +patternProperties:
-> +  "^channel@[0-3]$":
-> +    type: object
-> +    description:
-> +      Represents the differential/temperature channels.
-> +
-> +    properties:
-> +      reg:
-> +        description:
-> +          The channel number. LTC2991 can monitor 4 currents/temperature=
-s.
-> +        items:
-> +          minimum: 0
-> +          maximum: 3
-> +
-> +      shunt-resistor-micro-ohms:
-> +        description:
-> +          The value of curent sense resistor in miliohms. Enables differ=
-ential
-> +          input pair.
-> +
-> +      adi,temperature-enable:
-> +        description:
-> +          Enables temperature readings for a input pair.
-> +        type: boolean
-
-=2E..but I did not see an answer to my question on v1:
-	TBH, this seems like it is used just to control software behaviour.
-	Why would you want to actually disable this in DT?
-In other words, is there something in that hardware that precludes
-measuring temperature for channels that do not contain this property?
-
-Thanks,
-Conor.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - vcc-supply
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        hwmon@48 {
-> +            compatible =3D "adi,ltc2991";
-> +            reg =3D <0x48>;
-> +            vcc-supply =3D <&vcc>;
-> +        };
-> +    };
-> +  - |
-> +    i2c {
-> +        #address-cells =3D <1>;
-> +        #size-cells =3D <0>;
-> +
-> +        hwmon@48 {
-> +            #address-cells =3D <1>;
-> +            #size-cells =3D <0>;
-> +
-> +            compatible =3D "adi,ltc2991";
-> +            reg =3D <0x48>;
-> +            vcc-supply =3D <&vcc>;
-> +
-> +            channel@0 {
-> +                    reg =3D <0x0>;
-> +                    shunt-resistor-micro-ohms =3D <100000>;
-> +            };
-> +
-> +            channel@1 {
-> +                    reg =3D <0x1>;
-> +                    shunt-resistor-micro-ohms =3D <100000>;
-> +            };
-> +
-> +            channel@2 {
-> +                    reg =3D <0x2>;
-> +                    temperature-enable;
-> +            };
-> +
-> +            channel@3 {
-> +                    reg =3D <0x3>;
-> +                    temperature-enable;
-> +            };
-> +        };
-> +    };
-> +...
-> --=20
-> 2.42.0
->=20
-
---4qGEe174rhPUIzeC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRq+9QAKCRB4tDGHoIJi
-0ueTAQDx05+Ro78ZLvC9iBZWPPBFodIfIuTafvjJsOC7s0x3+gEA7X0AM0o7Hrjo
-L0CXzkMCQDQOz309zfkOE0uTkrcVIwc=
-=EQhT
------END PGP SIGNATURE-----
-
---4qGEe174rhPUIzeC--
