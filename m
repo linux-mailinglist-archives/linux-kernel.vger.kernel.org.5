@@ -2,89 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80A0C7B4C98
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7385F7B4C9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235762AbjJBHgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 03:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57272 "EHLO
+        id S235774AbjJBHgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 03:36:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235630AbjJBHgR (ORCPT
+        with ESMTP id S235771AbjJBHgb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 03:36:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97DA5A7;
-        Mon,  2 Oct 2023 00:36:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696232174; x=1727768174;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=oyVkJe+bvjoFz09YDo+qoxynv+bU5hsnVCU4huRc1CA=;
-  b=Q+GoOXE1lR33OhTFEglAI93SJlhgyk+iTPrTvvqGhkrT+1OZcJ4As088
-   eScyw7eDpsg3u02+Fchz7dbqclQeJQZRiU2dRpI1fyPswQh/ZdsH3hzdb
-   NSZ2JYhh9/enl4NjB4wZ7+JrGkQWDeX88fO0jzHbWRXovkVh6QE7FkOun
-   2OYItclOv2ihuiDq+ZA/5mKK5ACKqN2sA6haGAwpDxkkQ+e4y41jT5Zhl
-   4fzOpNWWKbVQbbknzb4Sv0rOCWn2XdTVGCLxtO5ifkl8PqDt0Jng+1+Op
-   e0xJ238yUpmmacHov9JYVxCQt4Jk4A4yyRJdAHReU8yUf9nF8zoZvMIe/
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="446751767"
-X-IronPort-AV: E=Sophos;i="6.03,193,1694761200"; 
-   d="scan'208";a="446751767"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 00:36:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="866424772"
-X-IronPort-AV: E=Sophos;i="6.03,193,1694761200"; 
-   d="scan'208";a="866424772"
-Received: from svandens-mobl.ger.corp.intel.com (HELO localhost) ([10.252.55.151])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 00:36:10 -0700
-From:   Jani Nikula <jani.nikula@intel.com>
-To:     Christoph Hellwig <hch@infradead.org>,
-        Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: submitting-patches: encourage direct
- notifications to reviewers
-In-Reply-To: <ZRpkWXMiQjUJPszZ@infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20230927-docs-cc-reviewer-v1-1-2af46ceb2d3c@weissschuh.net>
- <ZRVDv2fiFyW2S0z1@infradead.org>
- <f4ce8205-93a6-4ef5-94c0-1fb8d261bcac@t-8ch.de>
- <ZRpkWXMiQjUJPszZ@infradead.org>
-Date:   Mon, 02 Oct 2023 10:36:01 +0300
-Message-ID: <874jj9iihq.fsf@intel.com>
+        Mon, 2 Oct 2023 03:36:31 -0400
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7BDA7
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:36:28 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-7ab9488f2f0so6259897241.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696232187; x=1696836987; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/kzGcKH51BMhzvkfijbkvJZcq6BeliJjCgiKuHtTrZI=;
+        b=XUBlhCQCluEKPTIeKdQAyXsvycYs0HPKyzJwsKaAlprAGDhvJkWBqmXREA4B4AeVgt
+         g/1+uIOwYGamevIHZEQVWRY6ClzqwSx53B93NdDsKCefWtfGJ37005JkrvVSeshgefaq
+         fhaBnJXTQgMS4XXJVVP1Pa7G5wrj59r3EopY+dGf1+r9epR7KQII32teS/JiSG8QqSlx
+         2bk6UUpeuuBpLLRETmvP2lkfyAOt/zrmPsWgghVeTyTuSwJ2842z70SefXGyG6fpVQ+h
+         dgoEbiySSPXuhZCQgIcYSQzI+AoNtkj0QsfB8x4ZFMfgmzPtsELWzDFWiC+e2PpX8KLo
+         GS4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696232187; x=1696836987;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/kzGcKH51BMhzvkfijbkvJZcq6BeliJjCgiKuHtTrZI=;
+        b=tn1inf7OXWUv/VXKd+gMyTIU7yxyvwLLqnLqY6mmi7pHUWEMHoyFtBURrBUDOR+g47
+         lg/tPGmb71E+7SNGAwoW+/k5DIRgUJ7JA+p8tJgT3ugPrU0fl91mG2IvSQocr5GVRgcu
+         muYMYHY21W5RRNc8rWVLZEvXEkAAs6LXSfAdt7W4+xr5phGc4QJ4kD0DUeQHbZwClxfa
+         Zp6aux6MXQwdaDBcLDWL5RSGRa3oQyAsevafxLsKebQKhwrTR2gs3EqRfxcIZDXbayiy
+         8pie5+QPgFEt0JqdNBJY88gSTkA904eSWGgs9BKBnGci/AkgkdsFlhSWFXkhbgmMLE/o
+         ug2Q==
+X-Gm-Message-State: AOJu0Yy9/Ip8hPS7WSSiiWcK9/sqfRVheM7hia7F0+af+x4Y/qxk4AVP
+        OP94MBLf4thyr36Lbey5vtHEvfRxVb+yKAp3UmMuKA==
+X-Google-Smtp-Source: AGHT+IHIgV9UAM4yA8MoechR8q4GLUBkoPowZHLEFw1ZULiGDp+VXiAj3o0rKyl0yWYlk/4LeZK5AfIRMZZY2/x23tg=
+X-Received: by 2002:a67:fe0b:0:b0:452:560e:31a9 with SMTP id
+ l11-20020a67fe0b000000b00452560e31a9mr8909087vsr.1.1696232186976; Mon, 02 Oct
+ 2023 00:36:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr> <20231001-pxa-gpio-v4-2-0f3b975e6ed5@skole.hr>
+ <CAHp75VeYduD=uXpNKcxhwqFTkahUbz_Ockqi7KVO88cpeVHbQQ@mail.gmail.com>
+In-Reply-To: <CAHp75VeYduD=uXpNKcxhwqFTkahUbz_Ockqi7KVO88cpeVHbQQ@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 2 Oct 2023 09:36:16 +0200
+Message-ID: <CAMRc=McgNoz-umhkJKZ-juWukgToEhPh3iex7G-QikmSTgDdnw@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 2/6] ARM: pxa: Convert Spitz LEDs to GPIO descriptors
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-spi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 01 Oct 2023, Christoph Hellwig <hch@infradead.org> wrote:
-> On Fri, Sep 29, 2023 at 09:24:57AM +0200, Thomas Wei=C3=9Fschuh wrote:
->> > This does not scale.
->>=20
->> Could you elaborate in which way it doesn't scale?
+On Sun, Oct 1, 2023 at 4:35=E2=80=AFPM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 >
-> If I send a modest cross-subsystem series it often touches 20+
-> subsystems.  Between mailing lists and maintainers that's usually
-> already 60+ recipients.  If you now add a another 2-3 maintainers
-> we're just going to hit limits in mail servers.
+> On Sun, Oct 1, 2023 at 5:13=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovi=
+c@skole.hr> wrote:
+> >
+> > Sharp's Spitz board still uses the legacy GPIO interface for configurin=
+g
+> > its two onboard LEDs.
+> >
+> > Convert them to use the GPIO descriptor interface.
+>
+> ...
+>
+> >  static void __init spitz_leds_init(void)
+> >  {
+> > +       gpiod_add_lookup_table(&spitz_led_gpio_table);
+> >         platform_device_register(&spitz_led_device);
+> > +       spitz_gpio_leds[0].gpiod =3D gpiod_get_index(&spitz_led_device.=
+dev,
+> > +                       NULL, 0, GPIOD_ASIS);
+> > +       spitz_gpio_leds[1].gpiod =3D gpiod_get_index(&spitz_led_device.=
+dev,
+> > +                       NULL, 1, GPIOD_ASIS);
+> >  }
+>
+> What's the point of keeping a lookup table after we got descriptors out o=
+f it?
+>
 
-I thought this was about adding people who have commented on previous
-versions to Cc. That's usually a very limited number.
+Normally the descriptors would be retrieved in drivers and so lookup
+tables should stay in memory forever as static resources (just like
+device-tree). We have recently added some "temporary" lookup tables to
+address even worse hacks. The tables would be removed immediately
+after the descriptor is retrieved simply because we used that hack in
+drivers which may be unbound and re-bound resulting in adding
+repeating lookup entries.
 
-BR,
-Jani.
+Here we're dealing with a board-file so a more classic approach of
+having static lookup tables added once and never removed is in order.
+So I'd leave it like this.
 
-
---=20
-Jani Nikula, Intel
+Bart
