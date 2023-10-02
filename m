@@ -2,112 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85EA27B5D47
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 00:44:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A0F7B5D4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 00:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229834AbjJBWom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 18:44:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37690 "EHLO
+        id S236354AbjJBWrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 18:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229753AbjJBWol (ORCPT
+        with ESMTP id S229879AbjJBWrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 18:44:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9179E9D
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 15:43:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696286631;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1awiNTJbHPwF4KLgernZOq6U4A0vnzn8In3XQ7oBM7I=;
-        b=Vrjpx7IytDY/kKLoJsCVBAZHfyIF/CBLnnC04bbPB5lfWc/d94dlkkKN2sNEeeJvLB3Qpo
-        KASEieKB1dMlF6xZcoLktnG/7lcHWK9qmd262DQSLt/QnkID63eX/gG3xXyFDxkxdxAxBj
-        44ifT3ZYTpecqdUNAKB/Wl7Jbqz8EYI=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-179-f6WqBdJkOfW3Y01MTBghUA-1; Mon, 02 Oct 2023 18:43:48 -0400
-X-MC-Unique: f6WqBdJkOfW3Y01MTBghUA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2A109811E7E;
-        Mon,  2 Oct 2023 22:43:48 +0000 (UTC)
-Received: from omen.home.shazbot.org (unknown [10.22.10.36])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E8E3440C6EBF;
-        Mon,  2 Oct 2023 22:43:46 +0000 (UTC)
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     alex.williamson@redhat.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liucong2@kylinos.cn, yishaih@nvidia.com, brett.creeley@amd.com
-Subject: [PATCH] vfio: Fix smatch errors in vfio_combine_iova_ranges()
-Date:   Mon,  2 Oct 2023 16:43:25 -0600
-Message-Id: <20231002224325.3150842-1-alex.williamson@redhat.com>
-In-Reply-To: <20230920095532.88135-1-liucong2@kylinos.cn>
-References: <20230920095532.88135-1-liucong2@kylinos.cn>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 2 Oct 2023 18:47:46 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A819E93;
+        Mon,  2 Oct 2023 15:47:43 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCF62C433C7;
+        Mon,  2 Oct 2023 22:47:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696286863;
+        bh=28kekbe9MiZUa316MRCxUdXRzkm3hMRvIjbqD7/s5i8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G+iHZLhJB3/4FRAtEYCyZESHh0hPip6cxNlaTyjXlB6JYTzF8XN6GnvnEk+sPOnSm
+         EgcYdfR98TPQmwnGiIBHyR7rHh0pum6Pz3DEk2uRauB6/NXkm9eGn2HUU8eWoJyhBS
+         OqGCwnfoEIiynY5pYtO+ox5GojUkfifjoel/vsx0voArid8oyFQOIeOgAXNnXrbfeP
+         FQhd0vD8qdpeo/X3D3MPmGaNwDGjCI/XQCO7uPlE+fwDZWzfqZYq1dJJ+LZeYC+o9E
+         YCLtoYK6YxY9E2PXxUP3Mbrne+8OEO66b7EzCl75bFVE3amH0ZgCY5bAK/gRx88PWC
+         7SBTDwOmNOtAw==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 03 Oct 2023 01:47:34 +0300
+Message-Id: <CVYBI76N4PTF.38BQ9KIBIOGEH@seitikki>
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+        <sohil.mehta@intel.com>
+Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
+        <seanjc@google.com>, <zhanb@microsoft.com>,
+        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
+        <yangjie@microsoft.com>
+Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for
+ CSS events
+X-Mailer: aerc 0.14.0
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-2-haitao.huang@linux.intel.com>
+ <CVS5XFKKTTUZ.XRMYK1ADHSPG@suppilovahvero>
+ <op.2buytfetwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <CVSVH3ARQBRC.1QUTEQE3YNN5T@qgv27q77ld-mac>
+ <CVSVJ8DYAME8.SMTH7VYG7ER@qgv27q77ld-mac>
+ <op.2bwqct0rwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <op.2bwqct0rwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-smatch reports:
+On Wed Sep 27, 2023 at 4:56 AM EEST, Haitao Huang wrote:
+> On Tue, 26 Sep 2023 08:13:18 -0500, Jarkko Sakkinen <jarkko@kernel.org> =
+=20
+> wrote:
+>
+> ...
+> >> > >>  /**
+> >> > >> @@ -410,7 +429,14 @@ misc_cg_alloc(struct cgroup_subsys_state
+> >> > >> *parent_css)
+> >> > >>   */
+> >> > >>  static void misc_cg_free(struct cgroup_subsys_state *css)
+> >> > >>  {
+> >> > >> -	kfree(css_misc(css));
+> >> > >> +	struct misc_cg *cg =3D css_misc(css);
+> >> > >> +	enum misc_res_type i;
+> >> > >> +
+> >> > >> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
+> >> > >> +		if (cg->res[i].free)
+> >> > >> +			cg->res[i].free(cg);
+> >> > >> +
+> >> > >> +	kfree(cg);
+> >> > >>  }
+> >> > >>
+> >> > >>  /* Cgroup controller callbacks */
+> >> > >> --
+> >> > >> 2.25.1
+> >> > >
+> >> > > Since the only existing client feature requires all callbacks, =20
+> >> should
+> >> > > this not have that as an invariant?
+> >> > >
+> >> > > I.e. it might be better to fail unless *all* ops are non-nil (e.g.=
+ =20
+> >> to
+> >> > > catch issues in the kernel code).
+> >> > >
+> >> >
+> >> > These callbacks are chained from cgroup_subsys, and they are defined
+> >> > separately so it'd be better follow the same pattern.  Or change =20
+> >> together
+> >> > with cgroup_subsys if we want to do that. Reasonable?
+> >>
+> >> I noticed this one later:
+> >>
+> >> It would better to create a separate ops struct and declare the instan=
+ce
+> >> as const at minimum.
+> >>
+> >> Then there is no need for dynamic assigment of ops and all that is in
+> >> rodata. This is improves both security and also allows static analysis
+> >> bit better.
+> >>
+> >> Now you have to dynamically trace the struct instance, e.g. in case of
+> >> a bug. If this one done, it would be already in the vmlinux.
+> >I.e. then in the driver you can have static const struct declaration
+> > with *all* pointers pre-assigned.
+> >
+> > Not sure if cgroups follows this or not but it is *objectively*
+> > better. Previous work is not always best possible work...
+> >
+>
+> IIUC, like vm_ops field in vma structs. Although function pointers in =20
+> vm_ops are assigned statically, but you still need dynamically assign =20
+> vm_ops for each instance of vma.
+>
+> So the code will look like this:
+>
+> if (parent_cg->res[i].misc_ops && parent_cg->res[i].misc_ops->alloc)
+> {
+> ...
+> }
+>
+> I don't see this is the pattern used in cgroups and no strong opinion =20
+> either way.
+>
+> TJ, do you have preference on this?
 
-vfio_combine_iova_ranges() error: uninitialized symbol 'last'.
-vfio_combine_iova_ranges() error: potentially dereferencing uninitialized 'comb_end'.
-vfio_combine_iova_ranges() error: potentially dereferencing uninitialized 'comb_start'.
+I do have strong opinion on this. In the client side we want as much
+things declared statically as we can because it gives more tools for
+statical analysis.
 
-These errors are only reachable via invalid input, in the case of
-@last when we receive an empty rb-tree or for @comb_{start,end} if the
-rb-tree is empty or otherwise fails to produce a second node that
-reduces the gap.  Add tests with warnings for these cases.
+I don't want to see dynamic assignments in the SGX driver, when they
+are not actually needed, no matter things are done in cgroups.
 
-Reported-by: Cong Liu <liucong2@kylinos.cn>
-Link: https://lore.kernel.org/all/20230920095532.88135-1-liucong2@kylinos.cn
-Cc: Yishai Hadas <yishaih@nvidia.com>
-Cc: Brett Creeley <brett.creeley@amd.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
----
- drivers/vfio/vfio_main.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+> Thanks
+> Haitao
 
-diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-index 40732e8ed4c6..e31e1952d7b8 100644
---- a/drivers/vfio/vfio_main.c
-+++ b/drivers/vfio/vfio_main.c
-@@ -946,6 +946,11 @@ void vfio_combine_iova_ranges(struct rb_root_cached *root, u32 cur_nodes,
- 		unsigned long last;
- 
- 		comb_start = interval_tree_iter_first(root, 0, ULONG_MAX);
-+
-+		/* Empty list */
-+		if (WARN_ON_ONCE(!comb_start))
-+			return;
-+
- 		curr = comb_start;
- 		while (curr) {
- 			last = curr->last;
-@@ -975,6 +980,11 @@ void vfio_combine_iova_ranges(struct rb_root_cached *root, u32 cur_nodes,
- 			prev = curr;
- 			curr = interval_tree_iter_next(curr, 0, ULONG_MAX);
- 		}
-+
-+		/* Empty list or no nodes to combine */
-+		if (WARN_ON_ONCE(min_gap == ULONG_MAX))
-+			break;
-+
- 		comb_start->last = comb_end->last;
- 		interval_tree_remove(comb_end, root);
- 		cur_nodes--;
--- 
-2.40.1
-
+BR, Jarkko
