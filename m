@@ -2,135 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 487D47B5433
+	by mail.lfdr.de (Postfix) with ESMTP id EF96D7B5435
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237480AbjJBNoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:44:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48534 "EHLO
+        id S237472AbjJBNnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 09:43:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236736AbjJBNoK (ORCPT
+        with ESMTP id S237476AbjJBNn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 09:44:10 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AADAAD;
-        Mon,  2 Oct 2023 06:44:07 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rzhxn4YN0z67M1H;
-        Mon,  2 Oct 2023 21:43:57 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 2 Oct
- 2023 14:44:04 +0100
-Date:   Mon, 2 Oct 2023 14:44:03 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Gregory Price <gourry.memverge@gmail.com>
-CC:     <linux-mm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arch@vger.kernel.org>, <linux-api@vger.kernel.org>,
-        <linux-cxl@vger.kernel.org>, <luto@kernel.org>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <dave.hansen@linux.intel.com>, <hpa@zytor.com>, <arnd@arndb.de>,
-        <akpm@linux-foundation.org>, <x86@kernel.org>,
-        Gregory Price <gregory.price@memverge.com>
-Subject: Re: [RFC v2 2/5] mm/migrate: remove unused mm argument from
- do_move_pages_to_node
-Message-ID: <20231002144403.0000707d@Huawei.com>
-In-Reply-To: <20230919230909.530174-3-gregory.price@memverge.com>
-References: <20230919230909.530174-1-gregory.price@memverge.com>
-        <20230919230909.530174-3-gregory.price@memverge.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Mon, 2 Oct 2023 09:43:29 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46CC4B0;
+        Mon,  2 Oct 2023 06:43:26 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 70AD2C15;
+        Mon,  2 Oct 2023 06:44:04 -0700 (PDT)
+Received: from [10.57.93.204] (unknown [10.57.93.204])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD7653F59C;
+        Mon,  2 Oct 2023 06:43:23 -0700 (PDT)
+Message-ID: <57078a6b-83bc-d558-1071-be23d213a56f@arm.com>
+Date:   Mon, 2 Oct 2023 14:44:05 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4 10/18] PM: EM: Add RCU mechanism which safely cleans
+ the old data
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dietmar.eggemann@arm.com, rui.zhang@intel.com,
+        amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+        daniel.lezcano@linaro.org, viresh.kumar@linaro.org,
+        len.brown@intel.com, pavel@ucw.cz, mhiramat@kernel.org,
+        qyousef@layalina.io, wvw@google.com
+References: <20230925081139.1305766-1-lukasz.luba@arm.com>
+ <20230925081139.1305766-11-lukasz.luba@arm.com>
+ <CAJZ5v0g6jPr3LqTuRfwUWsK4em7F1pfsZDn9pVziyu3tV56m8A@mail.gmail.com>
+ <f7a6da56-93e4-0b7c-1746-bc3357bf8163@arm.com>
+ <CAJZ5v0hBPD8cHJe-Xa8354SE5jdM1bYw94DjG-MVHsRKrUY=gQ@mail.gmail.com>
+Content-Language: en-US
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <CAJZ5v0hBPD8cHJe-Xa8354SE5jdM1bYw94DjG-MVHsRKrUY=gQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 19 Sep 2023 19:09:05 -0400
-Gregory Price <gourry.memverge@gmail.com> wrote:
 
-> preparatory work to re-use do_move_pages_to_node with a physical
-> address instead of virtual address.  This function does not actively
-> use the mm_struct, so it can be removed.
+
+On 9/29/23 13:59, Rafael J. Wysocki wrote:
+> On Fri, Sep 29, 2023 at 11:36 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+
+[snip]
+
+>> We had a few internal reviews and there were voices where saying that
+>> it's better to have 2 identical tables: 'default_table' and
+>> 'runtime_table' to make sure it's visible everywhere when it's used.
+>> That made the need to actually have also the 'state' table inside.
+>> I don't see it as a big problem, though.
 > 
-> Signed-off-by: Gregory Price <gregory.price@memverge.com>
-Indeed doesn't need to be there.
-FWIW
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-Would be nice if these first 2 patches go upstream separately.
-
-> ---
->  mm/migrate.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
+> What I'm trying to say is that you can allocate runtime_table along
+> with the table pointed to by its state field in one invocation of
+> kzalloc() (say).
 > 
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index a0b0c5a7f8a5..dbe436163d65 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -2026,8 +2026,7 @@ static int store_status(int __user *status, int start, int value, int nr)
->  	return 0;
->  }
->  
-> -static int do_move_pages_to_node(struct mm_struct *mm,
-> -		struct list_head *pagelist, int node)
-> +static int do_move_pages_to_node(struct list_head *pagelist, int node)
->  {
->  	int err;
->  	struct migration_target_control mtc = {
-> @@ -2123,7 +2122,7 @@ static int add_page_for_migration(struct mm_struct *mm, const void __user *p,
->  	return err;
->  }
->  
-> -static int move_pages_and_store_status(struct mm_struct *mm, int node,
-> +static int move_pages_and_store_status(int node,
->  		struct list_head *pagelist, int __user *status,
->  		int start, int i, unsigned long nr_pages)
->  {
-> @@ -2132,7 +2131,7 @@ static int move_pages_and_store_status(struct mm_struct *mm, int node,
->  	if (list_empty(pagelist))
->  		return 0;
->  
-> -	err = do_move_pages_to_node(mm, pagelist, node);
-> +	err = do_move_pages_to_node(pagelist, node);
->  	if (err) {
->  		/*
->  		 * Positive err means the number of failed
-> @@ -2200,7 +2199,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
->  			current_node = node;
->  			start = i;
->  		} else if (node != current_node) {
-> -			err = move_pages_and_store_status(mm, current_node,
-> +			err = move_pages_and_store_status(current_node,
->  					&pagelist, status, start, i, nr_pages);
->  			if (err)
->  				goto out;
-> @@ -2235,7 +2234,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
->  		if (err)
->  			goto out_flush;
->  
-> -		err = move_pages_and_store_status(mm, current_node, &pagelist,
-> +		err = move_pages_and_store_status(current_node, &pagelist,
->  				status, start, i, nr_pages);
->  		if (err) {
->  			/* We have accounted for page i */
-> @@ -2247,7 +2246,7 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
->  	}
->  out_flush:
->  	/* Make sure we do not overwrite the existing error */
-> -	err1 = move_pages_and_store_status(mm, current_node, &pagelist,
-> +	err1 = move_pages_and_store_status(current_node, &pagelist,
->  				status, start, i, nr_pages);
->  	if (err >= 0)
->  		err = err1;
+> Having just one memory region to free eventually instead of two of
+> them would help to avoid some complexity, especially in the next
+> patch.
 
+I think, I know what you mean, basically:
+
+------------------------------
+struct em_perf_table {
+	struct rcu_head rcu;
+	struct em_perf_state state[];
+}
+
+kzalloc(sizeof(struct em_perf_table) + N * sizeof(struct em_perf_state))
+
+------
+
+IMO that should also be OK in the rest of places.
+I agree the alloc/free code would be smaller.
+
+Let me do that than.
+
+> 
+>>>
+>>>> +}
+>>>> +
+>>>> +static void em_perf_runtime_table_set(struct device *dev,
+>>>> +                                     struct em_perf_table *runtime_table)
+>>>> +{
+>>>> +       struct em_perf_domain *pd = dev->em_pd;
+>>>> +       struct em_perf_table *tmp;
+>>>> +
+>>>> +       tmp = pd->runtime_table;
+>>>> +
+>>>> +       rcu_assign_pointer(pd->runtime_table, runtime_table);
+>>>> +
+>>>> +       em_cpufreq_update_efficiencies(dev, runtime_table->state);
+>>>> +
+>>>> +       /* Don't free default table since it's used by other frameworks. */
+>>>
+>>> Apparently, some frameworks are only going to use the default table
+>>> while the runtime-updatable table will be used somewhere else at the
+>>> same time.
+>>>
+>>> I'm not really sure if this is a good idea.
+>>
+>> Runtime table is only for driving the task placement in the EAS.
+>>
+>> The thermal gov IPA won't make better decisions because it already
+>> has the mechanism to accumulate the error that it made.
+>>
+>> The same applies to DTPM, which works in a more 'configurable' way,
+>> rather that hard optimization mechanism (like EAS).
+> 
+> My understanding of the above is that the other EM users don't really
+> care that much so they can get away with using the default table all
+> the time, but EAS needs more accuracy, so the table used by it needs
+> to be adjusted in certain situations.
+
+Yes
+
+> 
+> Fair enough, I'm assuming that you've done some research around it.
+> Still, this is rather confusing.
+
+Yes, I have presented those ~2y ago in Android Gerrit world
+(got feedback from a few vendors) and in a few Linux conferences.
+
+For now we don't plan to have this feature for the thermal
+governor or something similar.
+
+> 
+>>>
+>>>> +       if (tmp != pd->default_table)
+>>>> +               call_rcu(&tmp->rcu, em_destroy_rt_table_rcu);
+>>
+>> The em_destroy_rt_table_rcu() is used here ^^^^^^
