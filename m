@@ -2,117 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 665F37B50C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A557B50C6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236595AbjJBLAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 07:00:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44700 "EHLO
+        id S236596AbjJBLAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 07:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236192AbjJBLAm (ORCPT
+        with ESMTP id S236601AbjJBLAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 07:00:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD75B7
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 03:59:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696244391;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eNg3nEOpUwhfLtl4Gfv+d61zrXncWfZX/sb9x36c/O4=;
-        b=Kg/Qf9MnggE64wzKikXttXxSKSBZ/u9toNDRKqzKcXxdy5O3bq5paoKknl7fvshx7XtEI8
-        HuIspAOckrdxSMh7mwhxvZ8nXqvwPcNr9jTJaBGNwMIYsRajd9U/bk/lXoxyspbG83haIi
-        gJn5z0rM0YTrYduCksyxcFkjnvEA958=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-271-VIlZqTmqNBi_eyQO1T6l6w-1; Mon, 02 Oct 2023 06:59:27 -0400
-X-MC-Unique: VIlZqTmqNBi_eyQO1T6l6w-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-321726b0238so11712320f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 03:59:27 -0700 (PDT)
+        Mon, 2 Oct 2023 07:00:06 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DE2BF
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 04:00:03 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-4198f67b581so7962771cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 04:00:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696244401; x=1696849201; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zag2FfUNq99ttVshS20BuMzQ5l7ujEO0IQzOyYgkL70=;
+        b=e0TC4acnjxe0jCpLWfAhJsSZsaRkuDW0nqwdTls0QUr3J4qFskX+2m4pEq/3lw6Tgf
+         lvQYqvqt6RAmEEa0hUCQkSeQPSxAfGciuBpG4ugDsO8C05NYXKKsRNh7+4wCUcuVWwZz
+         Z2BTpOy2mJD4t16kHp1Vk7GLVWDn3oVc1VNPI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696244366; x=1696849166;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eNg3nEOpUwhfLtl4Gfv+d61zrXncWfZX/sb9x36c/O4=;
-        b=OxIRPw3c8DjuSaEkOiqJjEllYy8shegocirAt++WFx5u0Vq5m9qU9tmWCa9+SlgHNL
-         4xYLQS78lzDIiNgdnEenhDLVgDrB8ddJ7MzF2yJvD5MaV5xrrcSzvRx0fA0JbiyRxxV5
-         zEab0UINa46mqzXbEs4wUzjHcbII5vaBWhgo8TEJ0vw7Ecm9bMK/6PDas3PwYLyYw3T0
-         99j9K28cNnZiFdii+gucl45Gpzas8NScQ48ORAtRpPOcakH1cVNnPAVkV7QzvHWJeGMB
-         FisaY/BnggBK0M0U4WwsPtAv6HeAYyjrVkZQIKrZRDoYPg9q9+cJ+hYWQHj9uVqMoOx6
-         nv8Q==
-X-Gm-Message-State: AOJu0Yw2jVdL0ttzup20xM/nQYUdjBSu9xuaHWATzQm1zfiutvdvi5OY
-        mq2bLOqUQH32hdk6wENZ5AVuoyLmd8OjvV1nReIxWf5ZbTKwytDbAh5X9pjCdORVV/60oTWG1E8
-        RSbYzW8bFRuuFflw8xbSjyNWj
-X-Received: by 2002:adf:e5d0:0:b0:324:8700:6421 with SMTP id a16-20020adfe5d0000000b0032487006421mr9940111wrn.3.1696244366408;
-        Mon, 02 Oct 2023 03:59:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG7+/wspCQe+ttuEnailDH3oMbBRWqWZxM95GNarmAdNoJ0f4ILn2ZzlLcxnZxSeOljT6fouA==
-X-Received: by 2002:adf:e5d0:0:b0:324:8700:6421 with SMTP id a16-20020adfe5d0000000b0032487006421mr9940090wrn.3.1696244365935;
-        Mon, 02 Oct 2023 03:59:25 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c735:f200:cb49:cb8f:88fc:9446? (p200300cbc735f200cb49cb8f88fc9446.dip0.t-ipconnect.de. [2003:cb:c735:f200:cb49:cb8f:88fc:9446])
-        by smtp.gmail.com with ESMTPSA id x5-20020adfdcc5000000b0031c6581d55esm28162012wrm.91.2023.10.02.03.59.24
+        d=1e100.net; s=20230601; t=1696244401; x=1696849201;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zag2FfUNq99ttVshS20BuMzQ5l7ujEO0IQzOyYgkL70=;
+        b=WEVkxt1Par60zLUhphSHWbunJF9c7UxsTV+qGvrbITKQYi4O2mXuok4oRLGw0qEtcF
+         SaKQo8Sv0S/AjRyawMrorlQRMPuAZ5xMq6bEqQppiypWzug0Omus77Werh7dwSVhYV07
+         nhrA59BmrsoM3gUh0B+Z1Yd1h7yXc2ldqnuM6Oo2b8jI7cbP6pfClTRwzwI1c3Tp4MVI
+         IOkaVYTOGOT00TU6KUTKUPmrb+FuQWr7ue10c7/gVuupQoVfPJG6XuhtnayXUVzm0qQ8
+         odgDhQKiA8SJIfpckk4HZJ/F3e64j2ob6Xz+ml+OiH+r96h0lL95ZCxJQdWoHuL4q6VB
+         A/rw==
+X-Gm-Message-State: AOJu0YxJp4OuNT1l7jdIN6yW7ciVg9ABcQ1HgOcust4uKsKvmi17TXHN
+        0kqYqUKy8lov8k01AlB8VuP79RLy/YNal/bkSbhF2g==
+X-Google-Smtp-Source: AGHT+IHsF+Y+gplvjz9ADxZs0kqBrs6fzfa28OP8ChpK3udpId0CmYlTOsUZrzilc6aiLrYkh7eKcg==
+X-Received: by 2002:a05:622a:148c:b0:418:fc1:1e9f with SMTP id t12-20020a05622a148c00b004180fc11e9fmr12260554qtx.52.1696244401002;
+        Mon, 02 Oct 2023 04:00:01 -0700 (PDT)
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com. [209.85.219.48])
+        by smtp.gmail.com with ESMTPSA id x14-20020ac8538e000000b0040331f93ee0sm4873618qtp.77.2023.10.02.04.00.00
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 03:59:25 -0700 (PDT)
-Message-ID: <428d07a6-bdc6-c12b-1b7e-e271bd841ff5@redhat.com>
-Date:   Mon, 2 Oct 2023 12:59:24 +0200
+        Mon, 02 Oct 2023 04:00:00 -0700 (PDT)
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-65b0c9fb673so66717906d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 04:00:00 -0700 (PDT)
+X-Received: by 2002:a05:6214:5f0c:b0:65d:105f:6934 with SMTP id
+ lx12-20020a0562145f0c00b0065d105f6934mr10393985qvb.5.1696244399754; Mon, 02
+ Oct 2023 03:59:59 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 1/4] mm: make __access_remote_vm() static
-Content-Language: en-US
-To:     Lorenzo Stoakes <lstoakes@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-Cc:     Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <cover.1696174961.git.lstoakes@gmail.com>
- <70436dcf596565770e604a4fc4e8f27a14c85166.1696174961.git.lstoakes@gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <70436dcf596565770e604a4fc4e8f27a14c85166.1696174961.git.lstoakes@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230924124425.3664024-1-make_ruc2021@163.com> <20e3745b-ed89-4f9e-9ef6-f527122fe204@xs4all.nl>
+In-Reply-To: <20e3745b-ed89-4f9e-9ef6-f527122fe204@xs4all.nl>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Mon, 2 Oct 2023 19:59:43 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5BewuzafQ-ohW6hESRH409ZBRKBZUAPP3OCK5iHuPPHNA@mail.gmail.com>
+Message-ID: <CAAFQd5BewuzafQ-ohW6hESRH409ZBRKBZUAPP3OCK5iHuPPHNA@mail.gmail.com>
+Subject: Re: [PATCH] media: videobuf2: Fix IS_ERR checking in vb2_vmalloc_put_userptr()
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     Ma Ke <make_ruc2021@163.com>, m.szyprowski@samsung.com,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.10.23 18:00, Lorenzo Stoakes wrote:
-> access_remote_vm() passes through parameters to __access_remote_vm()
-> directly, so remove the __access_remote_vm() function from mm.h aand use
-> access_remote_vm() in the one caller that needs it (ptrace_access_vm()).
-> 
+On Mon, Oct 2, 2023 at 7:16=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl> wr=
+ote:
+>
+> Hi Ma Ke,
+>
+> On 24/09/2023 14:44, Ma Ke wrote:
+> > In order to avoid error pointers from frame_vector_pages(), we could
+> > use IS_ERR() to check the return value to fix this. This checking
+> > operation could make sure that vector contains pages.
+> >
+> > Signed-off-by: Ma Ke <make_ruc2021@163.com>
+> > ---
+> >  drivers/media/common/videobuf2/videobuf2-vmalloc.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/drivers/media/common/videobuf2/videobuf2-vmalloc.c b/drive=
+rs/media/common/videobuf2/videobuf2-vmalloc.c
+> > index 7c635e292106..c37775080aff 100644
+> > --- a/drivers/media/common/videobuf2/videobuf2-vmalloc.c
+> > +++ b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
+> > @@ -134,6 +134,7 @@ static void vb2_vmalloc_put_userptr(void *buf_priv)
+> >       if (!buf->vec->is_pfns) {
+> >               n_pages =3D frame_vector_count(buf->vec);
+> >               pages =3D frame_vector_pages(buf->vec);
+> > +             BUG_ON(IS_ERR(pages));
 
-Wondering why we even still have __access_remote_vm() in the first 
-place, if it really should just be access_remote_vm() directly.
+Can this even happen? We removed support for pfn maps from
+get_vaddr_frames() quite long ago, so we should always have pages in
+the frame vector if vb2_crate_framevec() in get_userptr() succeeds.
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Or am I reading something wrong?
 
--- 
-Cheers,
-
-David / dhildenb
-
+> >               if (vaddr)
+> >                       vm_unmap_ram((void *)vaddr, n_pages);
+> >               if (buf->dma_dir =3D=3D DMA_FROM_DEVICE ||
+>
+> The use of BUG_ON is discouraged in the kernel. I did notice that is it
+> also used in the put_userptr callback in videobuf2-dma-contig.c.
+>
+> I think it is much better to do something like this:
+>
+>         if (!buf->vec->is_pfns) {
+>                 n_pages =3D frame_vector_count(buf->vec);
+>                 if (vaddr)
+>                         vm_unmap_ram((void *)vaddr, n_pages);
+>                 if (buf->dma_dir =3D=3D DMA_FROM_DEVICE ||
+>                     buf->dma_dir =3D=3D DMA_BIDIRECTIONAL) {
+>                         pages =3D frame_vector_pages(buf->vec);
+>                         if (!WARN_ON_ONCE(IS_ERR(pages)))
+>                                 for (i =3D 0; i < n_pages; i++)
+>                                         set_page_dirty_lock(pages[i]);
+>                 }
+>         } else {
+>
+> and do something similar in videobuf2-dma-contig.c.
+>
+> Regards,
+>
+>         Hans
