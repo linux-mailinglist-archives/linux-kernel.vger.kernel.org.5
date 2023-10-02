@@ -2,149 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7A277B54A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C877B5481
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237504AbjJBNtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45056 "EHLO
+        id S237546AbjJBNti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 09:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236736AbjJBNtU (ORCPT
+        with ESMTP id S237515AbjJBNta (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 09:49:20 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32CBB7
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 06:49:16 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-52fe27898e9so22961978a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 06:49:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696254555; x=1696859355; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xty2hjrI0rUBwt6hciFpO785hSratICpEH6GmITOrmY=;
-        b=nPWvEbWi24k3iMR8R3oNeK4iqMOQupp8pTY55DrOmqycxcb3cS2gknlMQH6l6mYjgH
-         N380taxuo6eoP1qiDbofBFRDysilmnuZLYmxbEqJTfn+YLLDpWDFJ19m52M5G5XKREq7
-         DRyGCNrEkA/y57dqd5aHH7zJq3QfJHYHtyJ2183ZanZPMmnvnTa+utcDedebpy7/0st4
-         qqQn5W2CTjfxZI/BxmLIhVT4MoowuXOQfLbEHHPi6DUewrqUtH2xsHKPGmJsoKEkAVhb
-         IueyTikHEN0SyG/+/3M7LnkgKbXTPMyL8cHkSXvFus3NpoYiHeyB9JZ5PwDVZGdBWRbA
-         PVAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696254555; x=1696859355;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xty2hjrI0rUBwt6hciFpO785hSratICpEH6GmITOrmY=;
-        b=alsDCIE8+x+oW7YQVarx4XquCo0p1FsnOE0Sw94D+E+3LLHL1F9/1/hVcoBhNFyUeD
-         ltN0DsMvSk0OoSRrUY/TrVXNbe7KPBg7gGPuNFtO/y1aH1NJqLBqAkpnRxIuX9OvaTRX
-         Wyz+18jtAcWb3ffx/drUncMiYYRbiW13d4mzHUGBe2FtIFOHqVDUpkvX1hI1Y/bPXbFo
-         BPloS9GHzvARKzVwtA1irUHKFo0rcUIA4nehRwgIhyYwDJgtadnUoFULT+Smyza7PBpX
-         IrTUEfWjsz3Y6Us3pS2OYUCEYKpJNmgsRX37ETvxRU2knPYrKXfOEPAJQ1hRfC2B0HwI
-         2ezw==
-X-Gm-Message-State: AOJu0YwgGhzzH8F5+CRy5CVVpC1algY9FNJLt4HbfBitIcvGVlVK7Jx0
-        AOWfmzjQQ556OVzx5ki/gsh7DA==
-X-Google-Smtp-Source: AGHT+IETS5hDzPJJ8t+72ICyq1R9SLNSuaLJXKC/3tvPE/8bRhg8x7jridIpwkTKhuCdTCrqni9G+w==
-X-Received: by 2002:a17:907:770d:b0:9ae:5370:81d5 with SMTP id kw13-20020a170907770d00b009ae537081d5mr10086083ejc.41.1696254555327;
-        Mon, 02 Oct 2023 06:49:15 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id h13-20020a170906584d00b00992b8d56f3asm17008467ejs.105.2023.10.02.06.49.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 06:49:14 -0700 (PDT)
-Message-ID: <9f09757e-1ab6-4e5f-8c70-fbb9acd179e8@linaro.org>
-Date:   Mon, 2 Oct 2023 15:49:12 +0200
+        Mon, 2 Oct 2023 09:49:30 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9E0A9D9
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 06:49:26 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D950CC15;
+        Mon,  2 Oct 2023 06:50:04 -0700 (PDT)
+Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8FC013F762;
+        Mon,  2 Oct 2023 06:49:25 -0700 (PDT)
+From:   Robin Murphy <robin.murphy@arm.com>
+To:     joro@8bytes.org, will@kernel.org
+Cc:     iommu@lists.linux.dev, jgg@nvidia.com, baolu.lu@linux.intel.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 4/7] iommu: Switch __iommu_domain_alloc() to device ops
+Date:   Mon,  2 Oct 2023 14:49:12 +0100
+Message-Id: <458dd0ed839541693a49da33239b33cf4c48b8ec.1696253096.git.robin.murphy@arm.com>
+X-Mailer: git-send-email 2.39.2.101.g768bb238c484.dirty
+In-Reply-To: <cover.1696253096.git.robin.murphy@arm.com>
+References: <cover.1696253096.git.robin.murphy@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] dt-bindings: i2c: qcom-cci: Document SC7280
- compatible
-To:     Luca Weiss <luca.weiss@fairphone.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Loic Poulain <loic.poulain@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-References: <20231002-sc7280-cci-v2-0-9333fda4612a@fairphone.com>
- <20231002-sc7280-cci-v2-1-9333fda4612a@fairphone.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231002-sc7280-cci-v2-1-9333fda4612a@fairphone.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/10/2023 08:55, Luca Weiss wrote:
-> Document the compatible for the CCI block found on SC7280 SoC.
-> 
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> ---
+In all the places we allocate default domains, we have (or can easily
+get hold of) a device from which to resolve the right IOMMU ops; only
+the public iommu_domain_alloc() interface actually depends on bus ops.
+Reworking the public API is a big enough mission in its own right, but
+in the meantime we can still decouple it from bus ops internally to move
+forward.
 
-Thanks, looks good now.
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 
+---
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+v3: Make sure blocking domains are covered as well
+v4: Reinstate correct bus_for_each_dev() handling from v2
+---
+ drivers/iommu/iommu.c | 48 ++++++++++++++++++++++++++++---------------
+ 1 file changed, 31 insertions(+), 17 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 7c79a58ef010..c5b5408d1dd7 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -95,8 +95,8 @@ static const char * const iommu_group_resv_type_string[] = {
+ static int iommu_bus_notifier(struct notifier_block *nb,
+ 			      unsigned long action, void *data);
+ static void iommu_release_device(struct device *dev);
+-static struct iommu_domain *
+-__iommu_group_domain_alloc(struct iommu_group *group, unsigned int type);
++static struct iommu_domain *__iommu_domain_alloc(struct device *dev,
++						 unsigned type);
+ static int __iommu_attach_device(struct iommu_domain *domain,
+ 				 struct device *dev);
+ static int __iommu_attach_group(struct iommu_domain *domain,
+@@ -1763,7 +1763,7 @@ __iommu_group_alloc_default_domain(struct iommu_group *group, int req_type)
+ {
+ 	if (group->default_domain && group->default_domain->type == req_type)
+ 		return group->default_domain;
+-	return __iommu_group_domain_alloc(group, req_type);
++	return __iommu_domain_alloc(iommu_group_first_dev(group), req_type);
+ }
+ 
+ /*
+@@ -2082,10 +2082,10 @@ void iommu_set_fault_handler(struct iommu_domain *domain,
+ }
+ EXPORT_SYMBOL_GPL(iommu_set_fault_handler);
+ 
+-static struct iommu_domain *__iommu_domain_alloc(const struct iommu_ops *ops,
+-						 struct device *dev,
+-						 unsigned int type)
++static struct iommu_domain *__iommu_domain_alloc(struct device *dev,
++						 unsigned type)
+ {
++	const struct iommu_ops *ops = dev_iommu_ops(dev);
+ 	struct iommu_domain *domain;
+ 	unsigned int alloc_type = type & IOMMU_DOMAIN_ALLOC_FLAGS;
+ 
+@@ -2120,20 +2120,30 @@ static struct iommu_domain *__iommu_domain_alloc(const struct iommu_ops *ops,
+ 	return domain;
+ }
+ 
+-static struct iommu_domain *
+-__iommu_group_domain_alloc(struct iommu_group *group, unsigned int type)
++static int __iommu_domain_alloc_dev(struct device *dev, void *data)
+ {
+-	struct device *dev = iommu_group_first_dev(group);
++	struct device **alloc_dev = data;
+ 
+-	return __iommu_domain_alloc(dev_iommu_ops(dev), dev, type);
++	if (!dev_has_iommu(dev))
++		return 0;
++
++	WARN_ONCE(*alloc_dev && dev_iommu_ops(dev) != dev_iommu_ops(*alloc_dev),
++		  "Multiple IOMMU drivers present, which the public IOMMU API can't fully support yet. You may still need to disable one or more to get the expected result here, sorry!\n");
++
++	*alloc_dev = dev;
++	return 0;
+ }
+ 
+ struct iommu_domain *iommu_domain_alloc(const struct bus_type *bus)
+ {
+-	if (bus == NULL || bus->iommu_ops == NULL)
++	struct device *dev = NULL;
++
++	/* We always check the whole bus, so the return value isn't useful */
++	bus_for_each_dev(bus, NULL, &dev, __iommu_domain_alloc_dev);
++	if (!dev)
+ 		return NULL;
+-	return __iommu_domain_alloc(bus->iommu_ops, NULL,
+-				    IOMMU_DOMAIN_UNMANAGED);
++
++	return __iommu_domain_alloc(dev, IOMMU_DOMAIN_UNMANAGED);
+ }
+ EXPORT_SYMBOL_GPL(iommu_domain_alloc);
+ 
+@@ -3256,18 +3266,22 @@ void iommu_device_unuse_default_domain(struct device *dev)
+ 
+ static int __iommu_group_alloc_blocking_domain(struct iommu_group *group)
+ {
++	struct device *dev = iommu_group_first_dev(group);
++
+ 	if (group->blocking_domain)
+ 		return 0;
+ 
+-	group->blocking_domain =
+-		__iommu_group_domain_alloc(group, IOMMU_DOMAIN_BLOCKED);
++	/* noiommu groups should never be here */
++	if (WARN_ON(!dev_has_iommu(dev)))
++		return -ENODEV;
++
++	group->blocking_domain = __iommu_domain_alloc(dev, IOMMU_DOMAIN_BLOCKED);
+ 	if (!group->blocking_domain) {
+ 		/*
+ 		 * For drivers that do not yet understand IOMMU_DOMAIN_BLOCKED
+ 		 * create an empty domain instead.
+ 		 */
+-		group->blocking_domain = __iommu_group_domain_alloc(
+-			group, IOMMU_DOMAIN_UNMANAGED);
++		group->blocking_domain = __iommu_domain_alloc(dev, IOMMU_DOMAIN_UNMANAGED);
+ 		if (!group->blocking_domain)
+ 			return -EINVAL;
+ 	}
+-- 
+2.39.2.101.g768bb238c484.dirty
 
