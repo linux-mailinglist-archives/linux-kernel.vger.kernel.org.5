@@ -2,93 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25B117B5C76
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 23:24:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193947B5C81
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 23:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbjJBVYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 17:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
+        id S229942AbjJBVfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 17:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjJBVYg (ORCPT
+        with ESMTP id S229840AbjJBVfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 17:24:36 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C7999;
-        Mon,  2 Oct 2023 14:24:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696281872;
-        bh=G4l6q0UgYoSotK/uTS34eAJwo5Z9oXNP+ysveSUxBXI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EWbSr0RBEAxQC8XoyZg08F1smbNufKj2ACXD9pO8frTZc4sjiNUeAa2aw3XS8lPaL
-         fFgZUUVfYqQCZuYfoQexWPxmDbIeBwzGifv94iBk1I6plmxjf9xE3Jq5jMSq6DVBk9
-         TzejHf8njhIk/6ZHkApBngq1o0axQEXcW0HQqjWbf8ddZZA3Pg2JUeDy7+UPMPL9Rk
-         jCWj9gFiO7NdDqduxT6pTfJi7XJlf7qgkg7pJwzN2eI5Lm1+31STniY/NcZAnZ3FO+
-         mcXsz/ryE0ypkrIqQQH42oaxOLMuzlBJSsXdUOBILaz0Pv3FGGRoGIVKMzhXCSDFU4
-         q2HpAQrijUGSQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rzv9D2S3jz4xGT;
-        Tue,  3 Oct 2023 08:24:31 +1100 (AEDT)
-Date:   Tue, 3 Oct 2023 08:24:30 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Christian Brauner <brauner@kernel.org>,
-        Kent Overstreet <kent.overstreet@linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the vfs-brauner tree
-Message-ID: <20231003082430.2e95925a@canb.auug.org.au>
-In-Reply-To: <20231002112648.rn2o4dvifn7x4zle@quack3>
-References: <20230928105443.1b1ad98c@canb.auug.org.au>
-        <20231002112142.bfjj54ikijf4iwfr@quack3>
-        <20231002112648.rn2o4dvifn7x4zle@quack3>
+        Mon, 2 Oct 2023 17:35:51 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEB2AD;
+        Mon,  2 Oct 2023 14:35:48 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7AC9C433C7;
+        Mon,  2 Oct 2023 21:35:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696282548;
+        bh=dtMicesKSYyffCRL1N76vJcab9XftRh1uSrvFlXyJlQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=H6oQheMcpgg3FqmQTqYroj15/fG8I5vXCMRa88CBhuyBN3mstQ0cxbevUHPrWkg/F
+         CKAohIBN5cRLup6hOZLTxl8QhgsZcfPFhKm3+4V683KHwb0KhbEZB1Er4FG2UWxrc/
+         3/3hQaiaYkmJwXDf95Nmts2yk/jb8tP8wHccTv8XMWqQGsXLAzZu0FhZ6j+cuE8dCY
+         G+kk7NyGmDF770sUphucFI1SFADPh0BXdo0kZJpSN1ZDr4WJk6C/0elwsaBHlvg6oQ
+         HJHC59BhXeXOxzJI2bFY25gngbeZSVqYCpsQFCJsS4AlrkTxWMLrsrGv2k0fw5yYg0
+         dzz5bV0LhI29g==
+Date:   Mon, 2 Oct 2023 23:35:42 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Luca Weiss <luca.weiss@fairphone.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: i2c: qcom-cci: Document SC7280
+ compatible
+Message-ID: <ZRs3rlbPAfYJtHJ0@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Luca Weiss <luca.weiss@fairphone.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Robert Foss <rfoss@kernel.org>, Andi Shyti <andi.shyti@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+References: <20231002-sc7280-cci-v2-0-9333fda4612a@fairphone.com>
+ <20231002-sc7280-cci-v2-1-9333fda4612a@fairphone.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VujK5u=A0mxf=bL/oA9rgMa";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="KUY/m73HFlcH/V/c"
+Content-Disposition: inline
+In-Reply-To: <20231002-sc7280-cci-v2-1-9333fda4612a@fairphone.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/VujK5u=A0mxf=bL/oA9rgMa
-Content-Type: text/plain; charset=US-ASCII
+
+--KUY/m73HFlcH/V/c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Jan,
+On Mon, Oct 02, 2023 at 08:55:30AM +0200, Luca Weiss wrote:
+> Document the compatible for the CCI block found on SC7280 SoC.
+>=20
+> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 
-On Mon, 2 Oct 2023 13:26:48 +0200 Jan Kara <jack@suse.cz> wrote:
->
-> Oh, and one more note - Christian is on vacation this week so Stephen ple=
-ase
-> just revert the commit in the linux-next until he returns and updates his
-> tree. Thanks!
+Applied to for-next, thanks!
 
-Thanks for letting me know, I will do so.
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/VujK5u=A0mxf=bL/oA9rgMa
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--KUY/m73HFlcH/V/c
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUbNQ8ACgkQAVBC80lX
-0GzfMQgAkA1iyxu0E/VpkfPWIFpDHCNZYys/kxjhmWaTnLiY0wwls8amwglrzlRQ
-6kUE+if159mOs3Y+He6qIGN4g2msAeEnQ1VwkyVUJ5pzVOOLb5MettiqybBcyyzK
-JEmpmnNl1OGis2/SfSgRyN5rb/OvSLNqw3tGi86/eUWXif4XCmpCPTPGnh6vYCv2
-gQvUvPD5Tbq/gUNNXMTKk1RMlo9UdrepFxnae/IjXgNzRTkLD7EdTX75KawYCsts
-CoRaeCyTGUBgBJ3GlrKd/jhZhiElvRqDPR+TRcOIrCEeLwosQvruU6fDITLApKl4
-g7VNOpMsUPI2MyVWRfSAS2L9VCmbHg==
-=c/u+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUbN6oACgkQFA3kzBSg
+KbbccRAAnY69h6ee7uMb2v5YFdYnPQWU+bEimrwo3FXAphFPDwoPoenF6H2hsZ3j
+R6GnkgpK6cJekEOZNV5lGtT7EuX8qqea15ap0KKyZ7h6ueX9ZvNVfkD0gUcCDE2L
+sgYkNS0ekYs4mwr2LnnaFD3jDaMWwQMZXcZiMubYGjX5Qhzwik428eNjeug5w5/G
+/dzwmJBVYV27XL8JOePFgkc013qcs4a1E7G7esmKuLVphiUj2M8/qeoBkbaAqPx0
+SsbpMpvCzwWBymeXZTU/8LEkpTGfF8wJoqKV3+KUl4CcdTp05NGlwj3MI66PfZa1
+kb/KxyKBHkjH5G5l4R+PnGh6T4+NnQ6vzb6p4rviOxtq1J3us5Vlf5YCHrs73KTT
+d7fuo1p7AUQRp3say4pGBKHB0cKhZMMMGIZLvMng1uXHYx+j0lVa+rOsyjMzN1Q3
+qiu4hixoqdIbZIgWkSzkNbDWdC7DU7SUpEfZcJbUEx+kczDb3pA4UZXK96ERLez4
+Yw9l8Gy5ZRPP0SfVl5/GRVC/OQtgYG8y4MBNle6ZIPDSKJGI+z5jPiksv7lW7ekS
+MalQ/bNfiAGlvzjeTT+yP4dj0lghU4kCRg2uuf9D5AcPZzBIsGtZJRPr4U4MFaR0
+gkmU7G7J3mS//puQm1tAdhnqArIUX/UMUqA6Crn3Re7EettcXX8=
+=RDHQ
 -----END PGP SIGNATURE-----
 
---Sig_/VujK5u=A0mxf=bL/oA9rgMa--
+--KUY/m73HFlcH/V/c--
