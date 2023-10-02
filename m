@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5927B5A58
+	by mail.lfdr.de (Postfix) with ESMTP id 37BD27B5A56
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238761AbjJBSkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 14:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
+        id S238821AbjJBSki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229644AbjJBSkC (ORCPT
+        with ESMTP id S229678AbjJBSke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 14:40:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85AC4AB
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 11:39:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696271952;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WYt6bra2fRdXu2dkXwuYoSR3Jxl4VEKHXbPW5NpZljc=;
-        b=JzHq0TtQkTWjAKIsDt6j/JaZYaWn2Y/JfF/IsJXcfnnDdTYBvMY5AzK/1G8jSmheIy4Krk
-        OfL8fn9H7M+zXyvd9oo/Fw9wpIJ3mOHiUMA2KL4wG4089ubDwSFofd7u7q4DislNiVK3lx
-        oELOYpGkkJdCPhtPgH+fwvMGOQs4AOc=
-Received: from mail-yw1-f199.google.com (mail-yw1-f199.google.com
- [209.85.128.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-589-yXke03orMie9aI9aEUM5tQ-1; Mon, 02 Oct 2023 14:39:11 -0400
-X-MC-Unique: yXke03orMie9aI9aEUM5tQ-1
-Received: by mail-yw1-f199.google.com with SMTP id 00721157ae682-5a213b4d0efso1232847b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 11:39:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696271951; x=1696876751;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WYt6bra2fRdXu2dkXwuYoSR3Jxl4VEKHXbPW5NpZljc=;
-        b=ifkLn4Mn1rTWR5HueI+GC2tfiMaLqFSlshPXypxrcnVirj0P7XNyTRDIIVsOp5OQrA
-         ifxgxJ+nJM37TJp4ezjZhlf3dAG4tEgxKxKKoCYSSWUNdoO3XgAUpkHqRiDD/6m1NQ8S
-         xE3I0JHTiOA2Ys6aF8fYejYQeTgMn0qCO6LbAsIw98EY0UFKXUrep6g87lXhH/OZODbx
-         d9JXvG4oxwMx3Yn01OowPvcLrUp/HW4BX5MuzKeJ7l3uzH555IK9ig85zT45fRQ5IpmE
-         RMCtfvl7FDsyaDqfx+tA/LtDr4+vH/vrNU9WEpOGnBspaSeOF3mi1fCQpKGuMSeyn1BK
-         aY4Q==
-X-Gm-Message-State: AOJu0YzJZsIhRgdzRc90OPSMwCxRlfIs/oYW3KvmoMrO3iWlLzSuSAmo
-        gN8TCjRcchiB4Dnj31DwE3ubMWNBfl/cFQqg5nhFSgCcmCXYlbQ2IryACiUfoGKAXjKZiUZqRwD
-        d+isz2sIHu17QKOzgDwP462T2
-X-Received: by 2002:a25:8603:0:b0:d32:f2e7:7786 with SMTP id y3-20020a258603000000b00d32f2e77786mr10996417ybk.56.1696271951093;
-        Mon, 02 Oct 2023 11:39:11 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFOWEC4ny8KWu3fUPvQKn4wRh0cjkvr8hu/5wFhvnGe0yZ1IUYjTdLH/xTEiyfLSuO18WFTAQ==
-X-Received: by 2002:a25:8603:0:b0:d32:f2e7:7786 with SMTP id y3-20020a258603000000b00d32f2e77786mr10996398ybk.56.1696271950763;
-        Mon, 02 Oct 2023 11:39:10 -0700 (PDT)
-Received: from brian-x1 (c-73-214-169-22.hsd1.pa.comcast.net. [73.214.169.22])
-        by smtp.gmail.com with ESMTPSA id n5-20020a5b0485000000b00d911680fd10sm236158ybp.50.2023.10.02.11.39.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 11:39:10 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 14:39:08 -0400
-From:   Brian Masney <bmasney@redhat.com>
-To:     Nikunj Kela <quic_nkela@quicinc.com>
-Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] firmware: arm_scmi: Add qcom hvc/shmem transport
- support
-Message-ID: <ZRsOTH//BZ74mU6P@brian-x1>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20230911194359.27547-1-quic_nkela@quicinc.com>
- <20230911194359.27547-5-quic_nkela@quicinc.com>
- <ZRsNHnuUdGl+vuqz@brian-x1>
+        Mon, 2 Oct 2023 14:40:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D033B0;
+        Mon,  2 Oct 2023 11:40:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A3C9CC433C9;
+        Mon,  2 Oct 2023 18:40:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696272030;
+        bh=6KsLZI9g7UhiN89nAcewKJ5x/HxWt4mFru++XEczoDg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=kl1bxsepo+ybIiREqjgx6wx0ShnxoUpHhOb8jw0rJC74J5TAO1gXryRFhSr8JahB/
+         /U1aL71EW62ZKhgkUaTwq9dYMPVnXluHHp8RfWlW/Fnl9xoRLQo05UmgxLgYOHDSnY
+         3HaLBufuykE0Ga8nAS2DRgiVfBkDp9jrO99Of5B2PPzAw8vdWyaWr9hPGW/q2rGQbz
+         2zEGRxCOI8Wa53iD7jmbL0foJ3xzr489GnEki+zvjJQnvfGcx8xlSfUq4yB20KHE6r
+         jcnLoUwUjTGvxMf1j53okC4H8YotaXjn6zPVplQyypMYcNxtstzlnfG07Fx9eGxmVM
+         UmYqlnBxHMSsg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 85DCAE632CE;
+        Mon,  2 Oct 2023 18:40:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRsNHnuUdGl+vuqz@brian-x1>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 00/14] Batch 1: Annotate structs with __counted_by
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169627203054.11990.6492371681347182041.git-patchwork-notify@kernel.org>
+Date:   Mon, 02 Oct 2023 18:40:30 +0000
+References: <20230922172449.work.906-kees@kernel.org>
+In-Reply-To: <20230922172449.work.906-kees@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     kuba@kernel.org, jhs@mojatatu.com, davem@davemloft.net,
+        dsahern@kernel.org, edumazet@google.com, pabeni@redhat.com,
+        martin.lau@kernel.org, gustavoars@kernel.org, ast@kernel.org,
+        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
+        claudiu.manoil@nxp.com, vladimir.oltean@nxp.com, kys@microsoft.com,
+        haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        longli@microsoft.com, sharmaajay@microsoft.com, elder@kernel.org,
+        pshelar@ovn.org, zhangshaokun@hisilicon.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, nathan@kernel.org,
+        ndesaulniers@google.com, trix@redhat.com, horms@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-rdma@vger.kernel.org,
+        dev@openvswitch.org, linux-parisc@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 02:34:06PM -0400, Brian Masney wrote:
-> On Mon, Sep 11, 2023 at 12:43:59PM -0700, Nikunj Kela wrote:
-> > +		func_id = readl((void __iomem *)(scmi_info->shmem) + size - 16);
-> > +#ifdef CONFIG_ARM64
-> > +		cap_id = readq((void __iomem *)(scmi_info->shmem) + size - 8);
-> > +#else
-> > +		/* capability-id is 32 bit wide on 32bit machines */
-> > +		cap_id = readl((void __iomem *)(scmi_info->shmem) + size - 8);
-> > +#endif
+Hello:
+
+This series was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Fri, 22 Sep 2023 10:28:42 -0700 you wrote:
+> Hi,
 > 
-> The 32 bit case is defined as a u64 in two places above.
+> This is the batch 1 of patches touching netdev for preparing for
+> the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> [...]
 
-Also should the 32 bit case be 'size - 4' instead of 'size - 8'? Sorry
-I just noticed that as soon as I pressed send.
+Here is the summary with links:
+  - [01/14] ipv4: Annotate struct fib_info with __counted_by
+    https://git.kernel.org/netdev/net-next/c/5b98fd5dc1e3
+  - [02/14] ipv4/igmp: Annotate struct ip_sf_socklist with __counted_by
+    https://git.kernel.org/netdev/net-next/c/210d4e9c732f
+  - [03/14] ipv6: Annotate struct ip6_sf_socklist with __counted_by
+    https://git.kernel.org/netdev/net-next/c/5d22b6528073
+  - [04/14] net: hns: Annotate struct ppe_common_cb with __counted_by
+    https://git.kernel.org/netdev/net-next/c/5b829c8460ae
+  - [05/14] net: enetc: Annotate struct enetc_int_vector with __counted_by
+    https://git.kernel.org/netdev/net-next/c/dd8e215ea9a8
+  - [06/14] net: hisilicon: Annotate struct rcb_common_cb with __counted_by
+    https://git.kernel.org/netdev/net-next/c/2290999d278e
+  - [07/14] net: mana: Annotate struct mana_rxq with __counted_by
+    https://git.kernel.org/netdev/net-next/c/a3d7a1209bbb
+  - [08/14] net: ipa: Annotate struct ipa_power with __counted_by
+    https://git.kernel.org/netdev/net-next/c/20551ee45d7d
+  - [09/14] net: mana: Annotate struct hwc_dma_buf with __counted_by
+    https://git.kernel.org/netdev/net-next/c/59656519763d
+  - [10/14] net: openvswitch: Annotate struct dp_meter_instance with __counted_by
+    https://git.kernel.org/netdev/net-next/c/e7b34822fa4d
+  - [11/14] net: enetc: Annotate struct enetc_psfp_gate with __counted_by
+    https://git.kernel.org/netdev/net-next/c/93bc6ab6b19d
+  - [12/14] net: openvswitch: Annotate struct dp_meter with __counted_by
+    https://git.kernel.org/netdev/net-next/c/16ae53d80c00
+  - [13/14] net: tulip: Annotate struct mediatable with __counted_by
+    https://git.kernel.org/netdev/net-next/c/0d01cfe5aaaf
+  - [14/14] net: sched: Annotate struct tc_pedit with __counted_by
+    (no matching commit)
 
-Brian
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
