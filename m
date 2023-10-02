@@ -2,143 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0467B55BF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:01:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C9C7B55AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237555AbjJBOeQ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Oct 2023 10:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
+        id S237751AbjJBOeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:34:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237538AbjJBOeP (ORCPT
+        with ESMTP id S237538AbjJBOeV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:34:15 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E244FAD
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:34:11 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-323-BFh42y3gPLOfgOGwjWsmYQ-1; Mon, 02 Oct 2023 15:34:07 +0100
-X-MC-Unique: BFh42y3gPLOfgOGwjWsmYQ-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 2 Oct
- 2023 15:34:05 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 2 Oct 2023 15:34:05 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "'linux@rasmusvillemoes.dk'" <linux@rasmusvillemoes.dk>,
-        'Steven Rostedt' <rostedt@goodmis.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "'bvanassche@acm.org'" <bvanassche@acm.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: [PATCH next] compiler.h: Move __is_constexpr() to compiler.h.
-Thread-Topic: [PATCH next] compiler.h: Move __is_constexpr() to compiler.h.
-Thread-Index: Adn1PNrdhhFKapOtSdeAhH/r8REupw==
-Date:   Mon, 2 Oct 2023 14:34:05 +0000
-Message-ID: <6d2b584e26544ee6a0810e494352d432@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 2 Oct 2023 10:34:21 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BDA7AB
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:34:18 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-35291dbf7efso110315ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 07:34:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1696257258; x=1696862058; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kRxNfqGjCGFxbOhmZF5JCBU40Y06pFegG3QOX3/BuLA=;
+        b=AcBs8j71d+0tRd4MTrVBbNUC2HhA0V9p1Gjp3SQFxAOMZOzAAwMPYOPdh3njG3ybEn
+         t8bNduzfaG7ZzKK8YSshNic1KLSRYZhTZQv20zHUwepJsYOOeHXzLIlOzxW3I/tmKEWH
+         zQok36EjCDm4LFdFCLnIUCnJtV1BOpoNuTiRY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696257258; x=1696862058;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kRxNfqGjCGFxbOhmZF5JCBU40Y06pFegG3QOX3/BuLA=;
+        b=LX8exJAksGonLVFPSNetJrmRVM1a5Wt5bn+n2j5I59lfUY3l8+lFrbuCBKmRijUCkU
+         xbjV6faqFI5sBEFGKQ1ZQUru8BIA2AEY1gEF7jm9cfx7iwKnr/fHC+4bDoM+j3nPnfvt
+         95sgwBi5JK9osMA6VhNm2fT0j6cLQhaCnzLhEOvk3ppep2sgeX5qyMf2CmHjYn4kOGhF
+         VgMAdk9IrcUt4Hob8hTX1f7AlR9irjUOK6cgUc9Jh6dmrnTO9KZyRr0CLkEeXhmV3qdg
+         azZt0E/zjsnyfAWeNo44lUQgp7DO+2P2D3xgWVAtMIO+gp6+k32HhLqiWsvAdWzbDOS3
+         sIgw==
+X-Gm-Message-State: AOJu0YzVJPoMrwHqwv7EVrqnLJOlDBFml6fdGsX5Gi5y6NgUdYm1SCTi
+        v7ZG2XyzZqUir2L40qH7kbbqXg==
+X-Google-Smtp-Source: AGHT+IEeeEyqmM4GNE0zvXS/ZnjHo+Pb1gJrNueMD0ZUcJZdbOdVx2t67HBz2Wwi1Ck4CD4GkyhX6g==
+X-Received: by 2002:a92:c9c4:0:b0:349:983c:4940 with SMTP id k4-20020a92c9c4000000b00349983c4940mr11992080ilq.1.1696257257752;
+        Mon, 02 Oct 2023 07:34:17 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id e18-20020a056e0204b200b00351268dfbd5sm6374043ils.57.2023.10.02.07.34.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 07:34:17 -0700 (PDT)
+Message-ID: <087c5c0d-6a20-e58b-7735-d764c4de69af@linuxfoundation.org>
+Date:   Mon, 2 Oct 2023 08:34:16 -0600
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2] Added missing TARGETS in kselftest top level Makefile
+To:     Abhinav <singhabhinav9051571833@gmail.com>, shuah@kernel.org
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <2023100251-recycled-purist-1ea5@gregkh>
+ <20231002114635.1567809-1-singhabhinav9051571833@gmail.com>
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20231002114635.1567809-1-singhabhinav9051571833@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prior to f747e6667ebb2 __is_constexpr() was in its only user minmax.h.
-That commit moved it to const.h - but that file just defined ULL(x) and
-  UL(x) so that constants can be defined for .S and .c files.
-So apart from the word 'const' it wasn't really a good location.
-Instead move the definition to compiler.h just before the similar
-  is_signed_type() and is_unsigned_type().
-(Which were moved there by dcf8e5633e2e6)
-This may not be a good long-term home, but the three definitions
-  belong together.
+On 10/2/23 05:46, Abhinav wrote:
+> Some tests like dma, ia64, etc. were not present in top level of
+> selftest Makefile, so when someone ran 'make run_tests' they would miss
+> these tests. This patches adds those left out tests.
+> 
+> Signed-off-by: Abhinav <singhabhinav9051571833@gmail.com>
+> ---
+> 
+> I removed sched, safesetid and filelock from the Makefile, because these
+> tests were actually triggered when we run 'make run_tests' even though it
+> has not been mentioned explicitly inside top level Makefile of selftest.
+> 
+>   tools/testing/selftests/Makefile | 7 +++++++
+>   1 file changed, 7 insertions(+)
+>
 
-Signed-off-by: David Laight <david.laight@aculab.com>
----
-This makes it possible to use __is_constexpr() inside is_signed_type()
-so that the result is constant integer expression for pointer types.
-In particular (void *)1 isn't constant enough.
+There are good reasons to leave out tests from the kselftest default
+run.
 
- include/linux/compiler.h    | 8 ++++++++
- include/linux/const.h       | 8 --------
- tools/include/linux/const.h | 8 --------
- 3 files changed, 8 insertions(+), 16 deletions(-)
+1. test requires specific hardware or driver or system configuration
+    which includes kernel configuration options.
+    e.g: media_tests, dma
+2. It is a benchmark and/or destructive test that doesn't fit into
+    default run category: watchdog, kmod
+3. test Makefile doesn't support kselftest framework
 
-diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-index d7779a18b24f..2efec9bfcc40 100644
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -230,6 +230,14 @@ static inline void *offset_to_ptr(const int *off)
- /* &a[0] degrades to a pointer: a different type from an array */
- #define __must_be_array(a)	BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
- 
-+/*
-+ * This returns a constant expression while determining if an argument is
-+ * a constant expression, most importantly without evaluating the argument.
-+ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-+ */
-+#define __is_constexpr(x) \
-+	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-+
- /*
-  * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
-  * bool and also pointer types.
-diff --git a/include/linux/const.h b/include/linux/const.h
-index 435ddd72d2c4..81b8aae5a855 100644
---- a/include/linux/const.h
-+++ b/include/linux/const.h
-@@ -3,12 +3,4 @@
- 
- #include <vdso/const.h>
- 
--/*
-- * This returns a constant expression while determining if an argument is
-- * a constant expression, most importantly without evaluating the argument.
-- * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-- */
--#define __is_constexpr(x) \
--	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
--
- #endif /* _LINUX_CONST_H */
-diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
-index 435ddd72d2c4..81b8aae5a855 100644
---- a/tools/include/linux/const.h
-+++ b/tools/include/linux/const.h
-@@ -3,12 +3,4 @@
- 
- #include <vdso/const.h>
- 
--/*
-- * This returns a constant expression while determining if an argument is
-- * a constant expression, most importantly without evaluating the argument.
-- * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-- */
--#define __is_constexpr(x) \
--	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
--
- #endif /* _LINUX_CONST_H */
--- 
-2.17.1
+Any patch adding a test left out of default run to the default
+run has to explain the reasons why it is a good idea to add it
+and more importantly showing that this doesn't impact the default
+run with report from the test run "make kselftest"
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Sorry. I am not going to take this patch.
+  
+thanks,
+-- Shuah
 
