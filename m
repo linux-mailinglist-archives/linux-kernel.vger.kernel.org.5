@@ -2,100 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5D37B4F56
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF1127B4F59
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236222AbjJBJpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54600 "EHLO
+        id S236216AbjJBJqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:46:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236216AbjJBJpx (ORCPT
+        with ESMTP id S236227AbjJBJqA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:45:53 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C23FBD;
-        Mon,  2 Oct 2023 02:45:50 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 11:45:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696239949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3MowVRzXm2YmsrA98gyFla3NvwCXHpDETpA/BOhEMPU=;
-        b=gAI7FKDcl7edDdPfBzsFVSpJc34CmE9A+nAyBWxAOAPTtFaYvtU6dPe6TjFh3IK61fI6AU
-        yFLYeDKGq4oABD0TmyTJP6tAjciizmVA23pTzFliygN+OKhuj4isj46Oqi/wx5xhY5FGq9
-        pAWvJZ2Op8sf8lG4yjSkKEdFA+kIgF3xEhCj8qJY4Qfi18u5cIN1bl1gzmO0NF2OM7aHcf
-        Q0bCgm+PBUFMpjvkf14JokGkx1fq3/8rAvoQG1RXNVX7azDY3GBcAy/VarkfsU9uNWYOhF
-        3qPX/vGFD2BWVgE65wSiz4AC1gCAd9uHAlaV6nBZ6zGzLelbHbSBB8FPDgFUCw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696239949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3MowVRzXm2YmsrA98gyFla3NvwCXHpDETpA/BOhEMPU=;
-        b=99oP8AnvLnyr5rF47HaRFQOrD+W0yp/XmL++TI5qSNa4Jlmv58Hqr70lTIliUVnFQAyCby
-        HlPX71sSM3K7O3Bw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     "John B. Wyatt IV" <jwyatt@redhat.com>
-Cc:     linux-rt-users@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-rts-sst <kernel-rts-sst@redhat.com>, jlelli@redhat.com
-Subject: Re: Crash with 6.6.0-rc1-rt1 and several i915 locking call traces
- with v6.5.2-rt8 and gnome-shell on Alder Lake laptop
-Message-ID: <F4pA9qG-zsUd2s-KZZ8oHrbd@linutronix.de>
-References: <ZQttJ8W9UFP46E1b@thinkpad2021>
- <20230922110720.AZ03l3A9@linutronix.de>
- <ZRaONA0LSFumpyja@thinkpad2021>
+        Mon, 2 Oct 2023 05:46:00 -0400
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995F2E3
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:45:57 -0700 (PDT)
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6c4fa7d0da0so14903650a34.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:45:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696239957; x=1696844757;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j+V/Kas7sPAGONSNF95omM6KA+Zl9oYVho8EqMT7rbM=;
+        b=LBD7WGJ8fpXP3a5ikmYuTharlO/6TTzE549FiV22ufKFBuSyeL1HQMKPlhBNwGmaKP
+         ItW6JVn5qFnSOXP8dsZf+IBRdgf5noqXDzhjOY12l05Sdr9psq4V4qeVKjNlQ4OlqrcA
+         zRg1Ut5uqapWhx9HqClOcb4dHNykBcQZ6QpzoVYBh2kmheMCF+6KqkHZcAUDM6w6fChl
+         qaq+sw2XND16BeRNBNk2M++TsEDwExQQHBxH49g5fcgRA8DO8BpV31fNM0u8DAeAj0J3
+         FxTfsnJMwBc6VCTcOQB2XqTl22vQmOjIilMD21TwEubVCmE2DGcjQBlQqulhDBEg+is0
+         2GHQ==
+X-Gm-Message-State: AOJu0Yyr/LQaDCwN4EQv3kQfphZdacFz1Dn0wAirwsJrw7NbSxFlFsHQ
+        nFYxO++H3xsjbvHY4Lpnw2giZe9kTnPYd2QuznWIGhJFrpzD
+X-Google-Smtp-Source: AGHT+IElUT3xavaqCQKZ2cxGY8UTjgJeI6y9hTzx2P/TqT18EAuMs23S/kpRJXl8aA3EWRB2XmcfIHh+ZTLv+OHC+INg60lnz9ow
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <ZRaONA0LSFumpyja@thinkpad2021>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a9d:7dcc:0:b0:6b9:a955:43bc with SMTP id
+ k12-20020a9d7dcc000000b006b9a95543bcmr3119771otn.3.1696239957023; Mon, 02 Oct
+ 2023 02:45:57 -0700 (PDT)
+Date:   Mon, 02 Oct 2023 02:45:56 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000017a4bd0606b8a48c@google.com>
+Subject: [syzbot] Monthly can report (Sep 2023)
+From:   syzbot <syzbot+list80422fea79f8c83e326e@syzkaller.appspotmail.com>
+To:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mkl@pengutronix.de, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-29 04:43:32 [-0400], John B. Wyatt IV wrote:
-> For stock (non-rt) I do not see it with 6.6-rc2. This was compiled
-> with the Stream 9 debug config.
->=20
-> I was able to reproduce similar call traces once I tested again
-> with 6.6-rc3-rt5 at [4] and [5].
->=20
-> What would be the best way to determine if the warning is wrongly
-> triggered?
+Hello can maintainers/developers,
 
-I looked at the traces in this email and they originate from a
-might_sleep() in guc_context_set_prio(). The reason is that they check
-at the atomic/interrupt state to figure out if they can sleep or not.
-Both checks don't work on RT as intended and the former has a not to not
-be used in drivers=E2=80=A6
+This is a 31-day syzbot report for the can subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/can
 
-The snippet below should cure this. Could you test, please.
+During the period, 0 new issues were detected and 0 were fixed.
+In total, 8 issues are still open and 47 have been fixed so far.
 
-Sebastian
+Some of the still happening issues:
 
+Ref Crashes Repro Title
+<1> 279     Yes   possible deadlock in j1939_sk_queue_drop_all
+                  https://syzkaller.appspot.com/bug?extid=3bd970a1887812621b4c
+<2> 60      Yes   possible deadlock in j1939_session_activate
+                  https://syzkaller.appspot.com/bug?extid=f32cbede7fd867ce0d56
+<3> 6       Yes   possible deadlock in j1939_sk_errqueue (2)
+                  https://syzkaller.appspot.com/bug?extid=1591462f226d9cbf0564
 
-diff --git a/drivers/gpu/drm/i915/gt/uc/intel_guc.h b/drivers/gpu/drm/i915/=
-gt/uc/intel_guc.h
-index 8dc291ff00935..5b8d084c9c58c 100644
---- a/drivers/gpu/drm/i915/gt/uc/intel_guc.h
-+++ b/drivers/gpu/drm/i915/gt/uc/intel_guc.h
-@@ -317,7 +317,7 @@ static inline int intel_guc_send_busy_loop(struct intel=
-_guc *guc,
- {
- 	int err;
- 	unsigned int sleep_period_ms =3D 1;
--	bool not_atomic =3D !in_atomic() && !irqs_disabled();
-+	bool not_atomic =3D !in_atomic() && !irqs_disabled() && !rcu_preempt_dept=
-h();
-=20
- 	/*
- 	 * FIXME: Have caller pass in if we are in an atomic context to avoid
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
