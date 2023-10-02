@@ -2,64 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1B77B5A82
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:55:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC657B5A8A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:55:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbjJBSyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 14:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50768 "EHLO
+        id S229602AbjJBSzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:55:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229482AbjJBSyO (ORCPT
+        with ESMTP id S229583AbjJBSzR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 14:54:14 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D317D94;
-        Mon,  2 Oct 2023 11:54:11 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CE25BC15;
-        Mon,  2 Oct 2023 11:54:49 -0700 (PDT)
-Received: from bogus (unknown [10.57.93.106])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 026533F59C;
-        Mon,  2 Oct 2023 11:54:08 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 19:52:37 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     Cristian Marussi <cristian.marussi@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH v3 1/2] firmware: arm_scmi: clock: support clock parents
-Message-ID: <20231002185237.alkcszs5ymtylypt@bogus>
-References: <20231001-scmi-clock-v2-v3-0-898bd92d8939@nxp.com>
- <20231001-scmi-clock-v2-v3-1-898bd92d8939@nxp.com>
+        Mon, 2 Oct 2023 14:55:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CB0B0
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 11:54:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696272876;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=dmM5ZNDegeZhf5s/Nz9vdWgDVovgTarUhb8l/wE2St4=;
+        b=D6EtpInv3Uq0zrKQjjic7ta+Fe46Eujr51FcGNfpf63EUa9tzOOrqgW9cMBnDawAU6qMGR
+        BeOhfAPeGaHTAbqr27TR3BMr+NidPe9NflU8qt6sXFzRKrkN/AJIjoMkta0jzwhlXdb4J/
+        E6gtxKOBRXEIGzoI3Bjo5Yau374PjZI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-584-W4uLBja-N5WWgJ9pUCQOhA-1; Mon, 02 Oct 2023 14:54:22 -0400
+X-MC-Unique: W4uLBja-N5WWgJ9pUCQOhA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 24FD3101A59B;
+        Mon,  2 Oct 2023 18:54:22 +0000 (UTC)
+Received: from localhost (unknown [10.39.192.67])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A0BD310EE402;
+        Mon,  2 Oct 2023 18:54:21 +0000 (UTC)
+Date:   Mon, 2 Oct 2023 14:54:20 -0400
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vhost-scsi: Spelling s/preceeding/preceding/g
+Message-ID: <20231002185420.GB1059748@fedora>
+References: <b57b882675809f1f9dacbf42cf6b920b2bea9cba.1695903476.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="fuzmqqeB7+mI12HN"
 Content-Disposition: inline
-In-Reply-To: <20231001-scmi-clock-v2-v3-1-898bd92d8939@nxp.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <b57b882675809f1f9dacbf42cf6b920b2bea9cba.1695903476.git.geert+renesas@glider.be>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 01, 2023 at 12:38:43PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> SCMI v3.2 spec introduces CLOCK_POSSIBLE_PARENTS_GET, CLOCK_PARENT_SET
-> and CLOCK_PARENT_GET. This patch is to add the upper three new
-> commands.
->
 
-Looks good to me as well. Please rebase this on [1] when you address
-Cristian's comment and post v4. I will queue once Stephen is fine with
-clk driver changes.
+--fuzmqqeB7+mI12HN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Regards,
-Sudeep
+On Thu, Sep 28, 2023 at 02:18:33PM +0200, Geert Uytterhoeven wrote:
+> Fix a misspelling of "preceding".
+>=20
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/vhost/scsi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi/updates
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+
+--fuzmqqeB7+mI12HN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmUbEdwACgkQnKSrs4Gr
+c8jm3wf3SybCVag7HhsRlbQBB2qCWSsI12mkvW0sXMAwLbLvfBANqEWmTzmywolz
+wzPqtLEJrTAScwq8jHk8r9R+V8Sq+thDzpNdI08PCGDVriCt8LBEgDIjvs0EvSNP
+rAhQxFxP5ciDKCRnnVq3cdXdzwPdkKNifj02HiaXQknBCE99vXD71LTwYLY4MBXI
+fIfva8/FlebeJYdBU91I9alORHAnlmgE7xZWh3j9QN8b+hT6TQKbcVKan2Z+/Zj+
+uEsjUWce8P3nTF8jd1AkjFDTegRXSmc9TKX2iqiglCBRZPUT8Ya2pSacmGdk2Lm/
+mNLVJfYcDmicuRAkTrTsok4iECvw
+=P1kz
+-----END PGP SIGNATURE-----
+
+--fuzmqqeB7+mI12HN--
+
