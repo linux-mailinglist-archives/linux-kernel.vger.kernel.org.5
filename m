@@ -2,60 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF737B50CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 171447B50D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236612AbjJBLDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 07:03:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56870 "EHLO
+        id S236625AbjJBLD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 07:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236614AbjJBLDO (ORCPT
+        with ESMTP id S236617AbjJBLDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 07:03:14 -0400
-Received: from vulcan.natalenko.name (vulcan.natalenko.name [104.207.131.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01CFE9;
-        Mon,  2 Oct 2023 04:03:08 -0700 (PDT)
-Received: from spock.localnet (unknown [94.142.239.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 581591528A26;
-        Mon,  2 Oct 2023 13:03:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1696244584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ksUEqlapOqMH7Fpkxrstb3/2J4U6ZMZEKSj22Lx69To=;
-        b=nXbu0B5U9WFnOcE6otIg3HRZYvOcelja3QsWbQZDPnRutm26R11HBWyp6WFDgLSSBp6nq8
-        /1WYQ4la6D+GmuhwIjcj0Srr+SYdZjxRXsBy9bIJ63+42UWzOF+ujcMNfkUXn8syNxz1fB
-        TEYUODPJ/yUrGybI4sUlUf5zagzRhsA=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     linux-kernel@vger.kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
-        dri-devel@lists.freedesktop.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Subject: Re: [REGRESSION] BUG: KFENCE: memory corruption in
- drm_gem_put_pages+0x186/0x250
-Date:   Mon, 02 Oct 2023 13:02:52 +0200
-Message-ID: <2300189.ElGaqSPkdT@natalenko.name>
-In-Reply-To: <ZRqeoiZ2ayrAR6AV@debian.me>
-References: <13360591.uLZWGnKmhe@natalenko.name> <2701570.mvXUDI8C0e@natalenko.name>
- <ZRqeoiZ2ayrAR6AV@debian.me>
+        Mon, 2 Oct 2023 07:03:24 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8DAD3;
+        Mon,  2 Oct 2023 04:03:20 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RzdNH0cJvz6K8hv;
+        Mon,  2 Oct 2023 19:03:11 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 2 Oct
+ 2023 12:03:17 +0100
+Date:   Mon, 2 Oct 2023 12:03:17 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Gregory Price <gourry.memverge@gmail.com>
+CC:     <linux-mm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arch@vger.kernel.org>, <linux-api@vger.kernel.org>,
+        <linux-cxl@vger.kernel.org>, <luto@kernel.org>,
+        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+        <dave.hansen@linux.intel.com>, <hpa@zytor.com>, <arnd@arndb.de>,
+        <akpm@linux-foundation.org>, <x86@kernel.org>,
+        Gregory Price <gregory.price@memverge.com>
+Subject: Re: [RFC PATCH 1/3] mm/mempolicy: refactor do_set_mempolicy for
+ code re-use
+Message-ID: <20231002120317.000058ef@Huawei.com>
+In-Reply-To: <20230914235457.482710-2-gregory.price@memverge.com>
+References: <20230914235457.482710-1-gregory.price@memverge.com>
+        <20230914235457.482710-2-gregory.price@memverge.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart4837470.GXAFRqVoOG";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,146 +56,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart4837470.GXAFRqVoOG
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
-From: Oleksandr Natalenko <oleksandr@natalenko.name>
-To: linux-kernel@vger.kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>
-Date: Mon, 02 Oct 2023 13:02:52 +0200
-Message-ID: <2300189.ElGaqSPkdT@natalenko.name>
-In-Reply-To: <ZRqeoiZ2ayrAR6AV@debian.me>
-MIME-Version: 1.0
+On Thu, 14 Sep 2023 19:54:55 -0400
+Gregory Price <gourry.memverge@gmail.com> wrote:
 
-/cc Matthew, Andrew (please see below)
+> Refactors do_set_mempolicy into swap_mempolicy and do_set_mempolicy
+> so that swap_mempolicy can be re-used with set_mempolicy2.
+> 
+> Signed-off-by: Gregory Price <gregory.price@memverge.com>
 
-On pond=C4=9Bl=C3=AD 2. =C5=99=C3=ADjna 2023 12:42:42 CEST Bagas Sanjaya wr=
-ote:
-> On Mon, Oct 02, 2023 at 08:20:15AM +0200, Oleksandr Natalenko wrote:
-> > Hello.
-> >=20
-> > On pond=C4=9Bl=C3=AD 2. =C5=99=C3=ADjna 2023 1:45:44 CEST Bagas Sanjaya=
- wrote:
-> > > On Sun, Oct 01, 2023 at 06:32:34PM +0200, Oleksandr Natalenko wrote:
-> > > > Hello.
-> > > >=20
-> > > > I've got a VM from a cloud provider, and since v6.5 I observe the f=
-ollowing kfence splat in dmesg during boot:
-> > > >=20
-> > > > ```
-> > > > BUG: KFENCE: memory corruption in drm_gem_put_pages+0x186/0x250
-> > > >=20
-> > > > Corrupted memory at 0x00000000e173a294 [ ! ! ! ! ! ! ! ! ! ! ! ! ! =
-! ! ! ] (in kfence-#108):
-> > > >  drm_gem_put_pages+0x186/0x250
-> > > >  drm_gem_shmem_put_pages_locked+0x43/0xc0
-> > > >  drm_gem_shmem_object_vunmap+0x83/0xe0
-> > > >  drm_gem_vunmap_unlocked+0x46/0xb0
-> > > >  drm_fbdev_generic_helper_fb_dirty+0x1dc/0x310
-> > > >  drm_fb_helper_damage_work+0x96/0x170
-> > > >  process_one_work+0x254/0x470
-> > > >  worker_thread+0x55/0x4f0
-> > > >  kthread+0xe8/0x120
-> > > >  ret_from_fork+0x34/0x50
-> > > >  ret_from_fork_asm+0x1b/0x30
-> > > >=20
-> > > > kfence-#108: 0x00000000cda343af-0x00000000aec2c095, size=3D3072, ca=
-che=3Dkmalloc-4k
-> > > >=20
-> > > > allocated by task 51 on cpu 0 at 14.668667s:
-> > > >  drm_gem_get_pages+0x94/0x2b0
-> > > >  drm_gem_shmem_get_pages+0x5d/0x110
-> > > >  drm_gem_shmem_object_vmap+0xc4/0x1e0
-> > > >  drm_gem_vmap_unlocked+0x3c/0x70
-> > > >  drm_client_buffer_vmap+0x23/0x50
-> > > >  drm_fbdev_generic_helper_fb_dirty+0xae/0x310
-> > > >  drm_fb_helper_damage_work+0x96/0x170
-> > > >  process_one_work+0x254/0x470
-> > > >  worker_thread+0x55/0x4f0
-> > > >  kthread+0xe8/0x120
-> > > >  ret_from_fork+0x34/0x50
-> > > >  ret_from_fork_asm+0x1b/0x30
-> > > >=20
-> > > > freed by task 51 on cpu 0 at 14.668697s:
-> > > >  drm_gem_put_pages+0x186/0x250
-> > > >  drm_gem_shmem_put_pages_locked+0x43/0xc0
-> > > >  drm_gem_shmem_object_vunmap+0x83/0xe0
-> > > >  drm_gem_vunmap_unlocked+0x46/0xb0
-> > > >  drm_fbdev_generic_helper_fb_dirty+0x1dc/0x310
-> > > >  drm_fb_helper_damage_work+0x96/0x170
-> > > >  process_one_work+0x254/0x470
-> > > >  worker_thread+0x55/0x4f0
-> > > >  kthread+0xe8/0x120
-> > > >  ret_from_fork+0x34/0x50
-> > > >  ret_from_fork_asm+0x1b/0x30
-> > > >=20
-> > > > CPU: 0 PID: 51 Comm: kworker/0:2 Not tainted 6.5.0-pf4 #1 8b557a417=
-3114d86eef7240f7a080080cfc4617e
-> > > > Hardware name: Red Hat KVM, BIOS 1.11.0-2.el7 04/01/2014
-> > > > Workqueue: events drm_fb_helper_damage_work
-> > > > ```
-> > > >=20
-> > > > This repeats a couple of times and then stops.
-> > > >=20
-> > > > Currently, I'm running v6.5.5. So far, there's no impact on how VM =
-functions for me.
-> > > >=20
-> > > > The VGA adapter is as follows: 00:02.0 VGA compatible controller: C=
-irrus Logic GD 5446
-> > > >=20
-> > >=20
-> > > Do you have this issue on v6.4?
-> >=20
-> > No, I did not have this issue with v6.4.
-> >=20
->=20
-> Then proceed with kernel bisection. You can refer to
-> Documentation/admin-guide/bug-bisect.rst in the kernel sources for the
-> process.
+Obviously this is an RFC, so you probably didn't give it the polish
+a finished patch might have.  Still I was curious and reading it and
+I can't resist pointing out trivial stuff.. So....
 
-Matthew, before I start dancing around, do you think ^^ could have the same=
- cause as 0b62af28f249b9c4036a05acfb053058dc02e2e2 which got fixed by 863a8=
-eb3f27098b42772f668e3977ff4cae10b04?
+> ---
+>  mm/mempolicy.c | 44 +++++++++++++++++++++++++++++---------------
+>  1 file changed, 29 insertions(+), 15 deletions(-)
+> 
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 42b5567e3773..f49337f6f300 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -855,28 +855,21 @@ static int mbind_range(struct vma_iterator *vmi, struct vm_area_struct *vma,
+>  	return vma_replace_policy(vma, new_pol);
+>  }
+>  
+> -/* Set the process memory policy */
+> -static long do_set_mempolicy(unsigned short mode, unsigned short flags,
+> -			     nodemask_t *nodes)
+> +/* Swap in a new mempolicy, release the old one if successful */
 
-In the git log between v6.4 and v6.5 I see this:
+Not really swapping. More replacing given we don't get the
+old one back to do something else with it.
 
-```
-commit 3291e09a463870610b8227f32b16b19a587edf33
-Author: Matthew Wilcox (Oracle) <willy@infradead.org>
-Date:   Wed Jun 21 17:45:49 2023 +0100
+> +static long swap_mempolicy(struct mempolicy *new,
+> +			   nodemask_t *nodes)
 
-drm: convert drm_gem_put_pages() to use a folio_batch
+Excessive wrapping.
 
-Remove a few hidden compound_head() calls by converting the returned page
-to a folio once and using the folio APIs.
-```
+>  {
+> -	struct mempolicy *new, *old;
+> -	NODEMASK_SCRATCH(scratch);
+> +	struct mempolicy *old = NULL;
+>  	int ret;
+> +	NODEMASK_SCRATCH(scratch);
 
-Thanks.
+I'd avoid the reordering as makes it look like slightly more is happening
+in this change than is actually the case.
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
---nextPart4837470.GXAFRqVoOG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+>  
+>  	if (!scratch)
+>  		return -ENOMEM;
+>  
+> -	new = mpol_new(mode, flags, nodes);
+> -	if (IS_ERR(new)) {
+> -		ret = PTR_ERR(new);
+> -		goto out;
+> -	}
+> -
+>  	task_lock(current);
+>  	ret = mpol_set_nodemask(new, nodes, scratch);
+>  	if (ret) {
+>  		task_unlock(current);
+> -		mpol_put(new);
+>  		goto out;
+>  	}
+>  
+> @@ -884,14 +877,35 @@ static long do_set_mempolicy(unsigned short mode, unsigned short flags,
+>  	current->mempolicy = new;
+>  	if (new && new->mode == MPOL_INTERLEAVE)
+>  		current->il_prev = MAX_NUMNODES-1;
+> -	task_unlock(current);
+> -	mpol_put(old);
+> -	ret = 0;
+>  out:
+> +	task_unlock(current);
+> +	if (old)
+> +		mpol_put(old);
+It's protected against NULL parameter internally, so
+	mpol_put(old);
 
------BEGIN PGP SIGNATURE-----
+which has advantage that a block of diff will hopefully disappear making
+this patch easier to read.
 
-iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmUao1wACgkQil/iNcg8
-M0s3dg/8CO8fmsx9fjX8gK4rbe7C3aYWo6KhaJzggfPgPFgo5PQOrus8j3SbGlan
-iSoJjWDouEEpQsp/ftMc1vlT1zdNOIVp8j/1wM/SL+PG3LeY5Ne2DCnV4Z+UB9aB
-sugKZfA7I+//+gt+3AxD6zv/M95+rYG2bXIDxauNP8Zus+Pngs3u+bx2XU5Bmr0v
-ed5pLuWCkY9KTa/BXv6Gl8j8prDr+5DynpvxwhLLF+qt/0yQRgNnvO9s7alC3t7p
-H6q0EFFm2GcWqsznsUtzuDjywpekUOrFqUZO9uBWDXNmT5jts2w6RwINj4fgvwvd
-I5em4uumMTGcvAQcAmYxB1apft6azpTpCTO908QvKE1tnL+TZtWIsul8pYslm58f
-oOfyq2C7u0szwMByqQ+Sw0w6sLbd9za+4J/dn5tIk6kTsX/0Y7MCAV7LYz1T5yLf
-XkRN8k/Dw5cUD6pBRUoAtMipeZng+VIifDLM+qDYVak3xUKb6NQ7hONni6q34Hvs
-ph3FijRzIqpnRzneEGU/j8BpGvk7bH3ILo7oSfuAVv0mwPANgMszdIBQEWE8BQrG
-9vjqepw5SOVl2TADXsLRiH99MLJTlx0u5UX1rc4Gwzq84H07JwLuvf2UOk3xJDn1
-BbgVDW5QMh00GYz/DYpI3zf2R1u+lhtMnmp25uex9np0sqfac8k=
-=QDDU
------END PGP SIGNATURE-----
+> +
+>  	NODEMASK_SCRATCH_FREE(scratch);
+>  	return ret;
+>  }
+>  
+> +/* Set the process memory policy */
+> +static long do_set_mempolicy(unsigned short mode, unsigned short flags,
+> +			     nodemask_t *nodes)
+> +{
+> +	struct mempolicy *new;
+> +	int ret;
+> +
+> +	new = mpol_new(mode, flags, nodes);
+> +	if (IS_ERR(new)) {
+> +		ret = PTR_ERR(new);
+> +		goto out;
 
---nextPart4837470.GXAFRqVoOG--
+Given nothing to do at out lable, in keeping with at least some local
+style, you could do direct returns on errors.
 
+	if (IS_ERR(new))
+		return PTR_ERR(new)
 
+	ret = swap_mempolicy(new, nodes);
+	if (ret) {
+		mpol_put(new);
+		return ret;
+	}
+
+	return 0;
+
+> +	}
+> +
+> +	ret = swap_mempolicy(new, nodes);
+> +	if (ret)
+> +		mpol_put(new);
+> +out:
+> +	return ret;
+> +}
+> +
+>  /*
+>   * Return nodemask for policy for get_mempolicy() query
+>   *
 
