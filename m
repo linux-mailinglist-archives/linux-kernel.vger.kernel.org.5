@@ -2,102 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 998D57B54A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E227B5471
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237585AbjJBNzC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:55:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44188 "EHLO
+        id S237599AbjJBNzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 09:55:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237580AbjJBNzA (ORCPT
+        with ESMTP id S237618AbjJBNzL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 09:55:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2636FC9;
-        Mon,  2 Oct 2023 06:54:57 -0700 (PDT)
+        Mon, 2 Oct 2023 09:55:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C13BADC;
+        Mon,  2 Oct 2023 06:55:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696254897; x=1727790897;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=tx1tgOGb+obkh2wNcFVuCCVF7/4FoKjjpzWkyz9vmJ4=;
-  b=IwK0sZXWGwwoxVZ3nI26Q/M7dv+K0mTknYFenmrP8OkhNihCDCmsFMBZ
-   WjLtBlwzec9IpjnASvOL0XNu6XcPcSHQxqmCQVDecgTgs7unBGrYcm8LZ
-   Z5oTNK4AOgCUB15fMISmMXStJYEm02b3AFhq+iUcMUnQOV4R6Yld3J+DD
-   OjYTAqcY5YUbM7oEprCTOjyKWDu/rhu9BEdgqsQzMfsJBm6dRGUSUv82R
-   AMJJ3f0qy3pMMaFebbKhV/XO7AGiwFRKShyyKw1bkiMv3fvab/YDx+UB8
-   kSr5843CAHSDvS41sJw1uj0qmrHmA87G4Rs6Q5PRxOJ4w5FlWkcksYtZp
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="372995311"
+  t=1696254904; x=1727790904;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=7CvkNllIdMRaFkXGmuu4g9r5sHV6wrnsOajfayAqkbY=;
+  b=dgpMPu3MAP3uQgS683ZLarOg4ngCglE+pUg1e6JHNk6AHywKYOFnEcbc
+   bx9wkSMxzkDDG1PhfVkoyhcYEQySScyxcQde524W2pV0HKVIDGfu06Sw/
+   KI3OFx4nyQQdgKdVtjjU+9rhsRhbVm/Y4MYSdNuJ5dxYUwTOoVuugwdGN
+   aWQSyAZIlLcT/gbrlj36XaWNZ0KDHTzHkg3dLcSNyglhNy98E7HcG9hZa
+   ZRK+bm1wJIOOL46Ca79MMHp0NTj061YWEM64GPSbDtvfNOrZeylqdCxfc
+   3hn8sd/gG/etl+/P8zv5siY8uf2cwTdEI7O1v/t54N3VZ1iqwVLfwlr4w
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="362911942"
 X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="372995311"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 06:54:56 -0700
+   d="scan'208";a="362911942"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 06:55:04 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="924280877"
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="785782513"
 X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="924280877"
-Received: from spandruv-desk.jf.intel.com (HELO spandruv-desk.amr.corp.intel.com) ([10.54.75.14])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 06:54:56 -0700
-Message-ID: <daa44585c4a57b8823cb260d9ec9bd3f59f410c6.camel@linux.intel.com>
-Subject: Re: [PATCH 2/3] platform/x86: ISST : Check major minor version
-From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>, markgross@kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Date:   Mon, 02 Oct 2023 06:54:56 -0700
-In-Reply-To: <45625e9e-997b-eba1-413a-43a7d835feb@linux.intel.com>
-References: <20230925194338.966639-1-srinivas.pandruvada@linux.intel.com>
-         <20230925194338.966639-3-srinivas.pandruvada@linux.intel.com>
-         <f82fcfc9-eb41-56cb-93e1-abf9cf7413@linux.intel.com>
-         <72a2766bc7bb4f9d6b3d5f2ff114f0af1b6646a4.camel@linux.intel.com>
-         <45625e9e-997b-eba1-413a-43a7d835feb@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-3.fc36) 
+   d="scan'208";a="785782513"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga001.jf.intel.com with ESMTP; 02 Oct 2023 06:55:01 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 9CE6A14AF; Mon,  2 Oct 2023 16:54:59 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Michal Wilczynski <michal.wilczynski@intel.com>,
+        nvdimm@lists.linux.dev, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] ACPI: NFIT: Switch to use acpi_evaluate_dsm_typed()
+Date:   Mon,  2 Oct 2023 16:54:58 +0300
+Message-Id: <20231002135458.2603293-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-10-02 at 16:49 +0300, Ilpo J=C3=A4rvinen wrote:
-> On Sat, 30 Sep 2023, srinivas pandruvada wrote:
->=20
-> > On Fri, 2023-09-29 at 17:28 +0300, Ilpo J=C3=A4rvinen wrote:
-> > > On Mon, 25 Sep 2023, Srinivas Pandruvada wrote:
-> > >=20
-> > > > Parse major and minor version number from the version field. If
-> > > > there
-> > > > is a mismatch for major version, exit from further processing
-> > > > for
-> > > > that
-> > > > domain.
-> > > >=20
-> > > > If there is mismatch in minor version, driver continue to
-> > > > process
-> > > > with
-> > > > an error message.
-> > >=20
-> > > This sentence sounds odd.
-> > What is the suggestion here?
->=20
-> These things sound wrong: It should be "continues"
-OK
+The acpi_evaluate_dsm_typed() provides a way to check the type of the
+object evaluated by _DSM call. Use it instead of open coded variant.
 
->  but I also find "to=20
-> process" odd when lacking what it processes.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/acpi/nfit/core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-Further processing means, whatever this driver is supposed to do. You
-don't want to fully explain again what this driver is doing.
-
-
->=20
+diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
+index f96bf32cd368..280da408c02c 100644
+--- a/drivers/acpi/nfit/core.c
++++ b/drivers/acpi/nfit/core.c
+@@ -1737,9 +1737,8 @@ __weak void nfit_intel_shutdown_status(struct nfit_mem *nfit_mem)
+ 	if ((nfit_mem->dsm_mask & (1 << func)) == 0)
+ 		return;
+ 
+-	out_obj = acpi_evaluate_dsm(handle, guid, revid, func, &in_obj);
+-	if (!out_obj || out_obj->type != ACPI_TYPE_BUFFER
+-			|| out_obj->buffer.length < sizeof(smart)) {
++	out_obj = acpi_evaluate_dsm_typed(handle, guid, revid, func, &in_obj, ACPI_TYPE_BUFFER);
++	if (!out_obj || out_obj->buffer.length < sizeof(smart)) {
+ 		dev_dbg(dev->parent, "%s: failed to retrieve initial health\n",
+ 				dev_name(dev));
+ 		ACPI_FREE(out_obj);
+-- 
+2.40.0.1.gaa8946217a0b
 
