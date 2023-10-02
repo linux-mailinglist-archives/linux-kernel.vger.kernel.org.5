@@ -2,124 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C6D7B5AFE
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00D937B59BE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238513AbjJBTJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 15:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48498 "EHLO
+        id S238729AbjJBSFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:05:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbjJBTJx (ORCPT
+        with ESMTP id S238702AbjJBSFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 15:09:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35B8AC;
-        Mon,  2 Oct 2023 12:09:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696273791; x=1727809791;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kiLGI+5TqDC7P7rNtPOhB6kiPKfw3a05asdwO3hr3oc=;
-  b=jfozkfJuIMjfdryRXT7HFZF9MeJZlmGxIuH5u8rLrDLjyVbZ7hni3H7+
-   CNKNdWlQb5aASRH+cETBFJK8uxIR+BNsxDPYm+Loydl3+m4Kn3cAOq+PK
-   088gh59fZcKEd5aTNdOrgRYM1Z35B5fGAT3FhYroZ7ee5CxA+dyVIm1d4
-   onvshy/IOKxD53eN31SvRxe3z+4Q+/eD/iih3QMR/+lg4n1Rqxrfvk9x0
-   OcHvwzQnSmzMmBDd9Fk1V/GLzWigd2L+34CjHxS+JuipHQOAeTSi9rueR
-   znS9fS5lzGtF0Uw2vMFhUZj5rOM+FB9V0PVV3Mv95FVZcvDbUnL7mEbzH
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="381585036"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="381585036"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 11:04:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="744186907"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="744186907"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 02 Oct 2023 11:04:20 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qnNHF-0006GF-2W;
-        Mon, 02 Oct 2023 18:04:17 +0000
-Date:   Tue, 3 Oct 2023 02:03:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v1 03/10] xhci: dbc: Use sysfs_emit() to instead of
- scnprintf()
-Message-ID: <202310030150.M1SfrYmG-lkp@intel.com>
-References: <20231002161610.2648818-3-andriy.shevchenko@linux.intel.com>
+        Mon, 2 Oct 2023 14:05:20 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D759AD
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 11:05:16 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5859d13f73dso2109177a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 11:05:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696269915; x=1696874715; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UzW0YVguzNw7sySoEGaMr3yWzidp8N0IwGPJ49IGe8U=;
+        b=YRoYavZYeCPNp9Tp8RUruIaoht2DPbUFG5v5tuGTbBOnK9CUbJ3lKpdNRr6Sl93Nnp
+         wbByOMHspc2cU1VbhiCYx8xlVZdqOdqajIa/W06wMWR8Cb8uZDdiAzaR0LoF13rNDbEL
+         uuRe4XgUX3mGurXAEmFJbmmufH6er5Q3RW75U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696269915; x=1696874715;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UzW0YVguzNw7sySoEGaMr3yWzidp8N0IwGPJ49IGe8U=;
+        b=GNZFzrPpxWfmB6lThdID17sEAZP4vQlNNDs4NQ8dA5WLpyz8duhzqx9CJexa5GZvzV
+         edKSYO7kw83yO203E0Cjz3468FYm0cMWU7thr8Fj13oAFlSQC2HE+4tns0YJse2SFGQo
+         zU7l7om6MFxj7GC+B43p9lgEHti6kTIgtk5OvsH3kp1wkhRoaFqBShOmObBXGwiC4Mib
+         AIRRuExnS7uJWlOyCAWOZMpXmX8+f4m/0WQ6PbZQDDB3jzKor/qXtU/rM5v/8kRiBf3r
+         psO7ZE25cDbU5CoUvEMZHiVnnbEyCXR8pZt0ODjLdx1bD2qkFBnid3O78AoiRCtaUfPz
+         EcVA==
+X-Gm-Message-State: AOJu0YwTSHXBjcmC6eXKiWMG5UyL2jUIQ+IpbJogS1+BO/oEoeogib7j
+        WJSmvC7TPg9TuUSSRgNrfIuvjQ==
+X-Google-Smtp-Source: AGHT+IH/MouaVnR9EdrEnIBcyIKUEno0+AsWLhGW19SNRxdiN+LbRG2ox56FkU8qF8Zj8mpmHLzHwA==
+X-Received: by 2002:a05:6a20:560b:b0:163:ab2b:bddd with SMTP id ir11-20020a056a20560b00b00163ab2bbdddmr4702632pzc.27.1696269915513;
+        Mon, 02 Oct 2023 11:05:15 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id g12-20020a170902740c00b001c62b9a51c0sm13314483pll.103.2023.10.02.11.05.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 11:05:15 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 11:05:14 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] drivers: misc: ti-st: replace deprecated strncpy with
+ strscpy
+Message-ID: <202310021104.30D14A206F@keescook>
+References: <20230927-strncpy-drivers-misc-ti-st-st_kim-c-v1-1-29bbdeed1a2c@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231002161610.2648818-3-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230927-strncpy-drivers-misc-ti-st-st_kim-c-v1-1-29bbdeed1a2c@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Wed, Sep 27, 2023 at 06:17:34AM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> We expect both `kim_data->dev_name` and `kim_gdata->dev_name` to be
+> NUL-terminated.
+> 
+> `kim_data->dev_name` seems to not require NUL-padding.
+> 
+> `kim_gdata` is already zero-allocated and as such does not require
+> NUL-padding:
+> |       kim_gdata = kzalloc(sizeof(struct kim_data_s), GFP_KERNEL);
+> 
+> Considering the above, a suitable replacement is `strscpy` [2] due to
+> the fact that it guarantees NUL-termination on the destination buffer
+> without unnecessarily NUL-padding.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Note: build-tested only.
+> ---
+>  drivers/misc/ti-st/st_kim.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/misc/ti-st/st_kim.c b/drivers/misc/ti-st/st_kim.c
+> index fe682e0553b2..a034b5d8b585 100644
+> --- a/drivers/misc/ti-st/st_kim.c
+> +++ b/drivers/misc/ti-st/st_kim.c
+> @@ -590,7 +590,7 @@ static ssize_t store_dev_name(struct device *dev,
+>  {
+>  	struct kim_data_s *kim_data = dev_get_drvdata(dev);
+>  	pr_debug("storing dev name >%s<", buf);
+> -	strncpy(kim_data->dev_name, buf, count);
+> +	strscpy(kim_data->dev_name, buf, count);
 
-kernel test robot noticed the following build warnings:
+This is again the early truncation issue. This should use
+sizeof(kim_data->dev_name). "buf" will be %NUL terminated already.
 
-[auto build test WARNING on usb/usb-testing]
-[also build test WARNING on usb/usb-next usb/usb-linus linus/master v6.6-rc4 next-20230929]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>  	pr_debug("stored dev name >%s<", kim_data->dev_name);
+>  	return count;
+>  }
+> @@ -751,7 +751,8 @@ static int kim_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	/* copying platform data */
+> -	strncpy(kim_gdata->dev_name, pdata->dev_name, UART_DEV_NAME_LEN);
+> +	strscpy(kim_gdata->dev_name, pdata->dev_name,
+> +		sizeof(kim_gdata->dev_name));
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/xhci-dbc-Convert-to-use-sysfs_streq/20231003-002032
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-patch link:    https://lore.kernel.org/r/20231002161610.2648818-3-andriy.shevchenko%40linux.intel.com
-patch subject: [PATCH v1 03/10] xhci: dbc: Use sysfs_emit() to instead of scnprintf()
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20231003/202310030150.M1SfrYmG-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231003/202310030150.M1SfrYmG-lkp@intel.com/reproduce)
+This looks correct.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310030150.M1SfrYmG-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   drivers/usb/host/xhci-dbgcap.c: In function 'dbc_show':
->> drivers/usb/host/xhci-dbgcap.c:926:34: warning: unused variable 'p' [-Wunused-variable]
-     926 |         const char              *p;
-         |                                  ^
-
-
-vim +/p +926 drivers/usb/host/xhci-dbgcap.c
-
-60f4451ef37351 Andy Shevchenko 2023-10-02  921  
-dfba2174dc421e Lu Baolu        2017-12-08  922  static ssize_t dbc_show(struct device *dev,
-dfba2174dc421e Lu Baolu        2017-12-08  923  			struct device_attribute *attr,
-dfba2174dc421e Lu Baolu        2017-12-08  924  			char *buf)
-dfba2174dc421e Lu Baolu        2017-12-08  925  {
-dfba2174dc421e Lu Baolu        2017-12-08 @926  	const char		*p;
-dfba2174dc421e Lu Baolu        2017-12-08  927  	struct xhci_dbc		*dbc;
-dfba2174dc421e Lu Baolu        2017-12-08  928  	struct xhci_hcd		*xhci;
-dfba2174dc421e Lu Baolu        2017-12-08  929  
-dfba2174dc421e Lu Baolu        2017-12-08  930  	xhci = hcd_to_xhci(dev_get_drvdata(dev));
-dfba2174dc421e Lu Baolu        2017-12-08  931  	dbc = xhci->dbc;
-dfba2174dc421e Lu Baolu        2017-12-08  932  
-60f4451ef37351 Andy Shevchenko 2023-10-02  933  	if (dbc->state >= ARRAY_SIZE(dbc_state_strings))
-60f4451ef37351 Andy Shevchenko 2023-10-02  934  		return sysfs_emit(buf, "unknown\n");
-dfba2174dc421e Lu Baolu        2017-12-08  935  
-60f4451ef37351 Andy Shevchenko 2023-10-02  936  	return sysfs_emit(buf, "%s\n", dbc_state_strings[dbc->state]);
-dfba2174dc421e Lu Baolu        2017-12-08  937  }
-dfba2174dc421e Lu Baolu        2017-12-08  938  
+>  	kim_gdata->flow_cntrl = pdata->flow_cntrl;
+>  	kim_gdata->baud_rate = pdata->baud_rate;
+>  	pr_info("sysfs entries created\n");
+> 
+> ---
+> base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+> change-id: 20230927-strncpy-drivers-misc-ti-st-st_kim-c-e1663a211a0c
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Kees Cook
