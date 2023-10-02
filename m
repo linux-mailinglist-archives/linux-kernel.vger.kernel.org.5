@@ -2,136 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7AF7B52C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CDA7B52C3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236985AbjJBMNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 08:13:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41984 "EHLO
+        id S237388AbjJBMN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 08:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237102AbjJBMNB (ORCPT
+        with ESMTP id S236921AbjJBMNN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 08:13:01 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C95261BC
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 05:12:08 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99EC2C433C7;
-        Mon,  2 Oct 2023 12:11:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696248685;
-        bh=xzFeW3pPDzT2xIba8bCh5rsBV+Lctflw0Tb347eHVco=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VAAMF77CSZ8zwlWvhXP27KLdxzDnIVh8IlcwMgGerC3ryuvIDXa4QOqQPbQ7CxThc
-         IItzNuWyU1eSRRbY4AkgYcpWtu/hUfddBTyn6OHD8KfR8twts19NCI4ngpIzpPtf0s
-         MPGRcOPXczLSLjxdWU0Bfh+tEKiDOGQwx2qhDQ06Z2y0LtNAxSbc5FndvhpKnF8WGm
-         Ag03SZQUGYHmNktxJQrbTy2czINs8uWtwwZyQfpuh+gA+JCp+dv1jy5DmhPLKQumLr
-         +p6g3S2zokIJdJRzUVtU0X/OojOx2YFp/pWYkNGM1dFS8ZOdgzr7DOlk28IqtkujIq
-         Kg06xZhArdpkA==
-Date:   Mon, 2 Oct 2023 13:11:20 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Inochi Amaoto <inochiama@outlook.com>
-Cc:     Conor Dooley <conor+dt@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        chao.wei@sophgo.com, xiaoguang.xing@sophgo.com
-Subject: Re: [PATCH 4/5] riscv: dts: sophgo: add initial CV1800B SoC device
- tree
-Message-ID: <20231002-crux-drained-448f49cf6b7d@spud>
-References: <IA1PR20MB4953D58BA3ECFD487918E3A4BBC6A@IA1PR20MB4953.namprd20.prod.outlook.com>
- <IA1PR20MB4953967F34C7C48C74313B74BBC6A@IA1PR20MB4953.namprd20.prod.outlook.com>
+        Mon, 2 Oct 2023 08:13:13 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D4A3584
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 05:12:28 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 47CCDE0003;
+        Mon,  2 Oct 2023 12:12:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696248729;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nhprkMPkS6qsImRy6W6yD41h8GmwyEwpRYEXzX0JD58=;
+        b=GHF5gaegWFK5T/2iN2ILLf9N1xBfeyfNCSEEHRiceuS/wDMVym86qm63nqG7UxapsRlupt
+        0h/ZmTwLleXaR4nJ1WWKkceRluLSysXP/j1TBMKvogEExebtyWsCd5gdIydxildd94wL/f
+        eZ4bGe0r/ODfrj2aHH3H3Huxu6hUqyqIk7L8VI8L+9Hupg/QxWhoAPkcWxqTKqf/3Pe04H
+        BCDLe00nKz46B2ypo/5xBzQOmZlv8C4ifukd9AhCBs663FVl0VwSPplloVQRKp9D2acP8Q
+        PViOmfUCNURrycr5RvkwJ53TZ4kqrETQaLeMIL5nY7yuyglu1LeX0p361I7nzw==
+Date:   Mon, 2 Oct 2023 14:12:04 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     dregan@mail.com
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
+        rafal@milecki.pl, joel.peshkin@broadcom.com,
+        computersforpeace@gmail.com, dan.beygelman@broadcom.com,
+        william.zhang@broadcom.com, frieder.schrempf@kontron.de,
+        linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
+        bbrezillon@kernel.org, kdasu.kdev@gmail.com
+Subject: Re: [PATCH] mtd: rawnand: brcmnand: Initial exec_op implementation
+Message-ID: <20231002141204.167a9cc6@xps-13>
+In-Reply-To: <trinity-ad65aa5d-e930-4f11-ac86-e18f90f5092c-1696016842791@3c-app-mailcom-lxa02>
+References: <trinity-bb7db9f1-d34d-4fe2-bed3-814d3a63476a-1694571881792@3c-app-mailcom-lxa03>
+        <20230922162424.4a7b27ec@xps-13>
+        <trinity-ad65aa5d-e930-4f11-ac86-e18f90f5092c-1696016842791@3c-app-mailcom-lxa02>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="FyNWdJyZjS0Y1L+C"
-Content-Disposition: inline
-In-Reply-To: <IA1PR20MB4953967F34C7C48C74313B74BBC6A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi David,
 
---FyNWdJyZjS0Y1L+C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Oct 01, 2023 at 08:22:04PM +0800, Inochi Amaoto wrote:
-> >
-> >>On Sun, Oct 01, 2023 at 06:34:21AM +0800, Inochi Amaoto wrote:
-> >>> Hi, Jisheng
-> >>
-> >>>> Add initial device tree for the CV1800B RISC-V SoC by SOPHGO.
-> >>
-> >>>
-> >>> You add the clint dt-bindings of CV1800B clint, but I don't see the c=
-lint
-> >>> node in this dt. The SBI needs this clint node to provide timer for l=
-inux.
-> >>> AFAIK, the dt of SBI comes from the linux or the bootloader, and boot=
-loader
-> >>> may load the linux dt and pass it to the SBI. I think it is better to=
- add
-> >>> the clint node.
-> >>
-> >>> In addition, please separate the peripheral node to a different file,=
- which
-> >>> can be reused by both the CV1800 series and CV1810 series.
-> >>
-> >>How do these SoCs differ?
-> >
-> >AFAIK, the most peripheral of CV1800 and CV1810 are the same. there are
-> >only a few difference between CV1800 and CV1810:
-> >1. CV1810 have mmc interrupt, but CV1800 have none
-> >2. CV1810 have more RAM and a more powerful TPU.
-> >3. Some models of CV1810 support I2S.
-> >
-> >Also is some you have already mentioned, the video capabilities (includi=
-ng
-> >encoding, output steam number, input steam number) are different.
-> >
-> >The only board with a CV1800 soc is Huashan Pi (CV1812H).
-> >
+> > > +
+> > > +	for (i =3D 0; i < subop->ninstrs; i++) {
+> > > +		instr =3D &subop->instrs[i];
+> > > +
+> > > +		if ((instr->type =3D=3D NAND_OP_CMD_INSTR) &&
+> > > +			(instr->ctx.cmd.opcode =3D=3D NAND_CMD_STATUS))
+> > > +			status =3D 1;
+> > > +		else if (status && (instr->type =3D=3D NAND_OP_DATA_IN_INSTR)) {
+> > > +			/*
+> > > +			 * need to fake the nand device write protect because nand_base d=
+oes a
+> > > +			 * nand_check_wp which calls nand_status_op NAND_CMD_STATUS which=
+ checks
+> > > +			 * that the nand is not write protected before an operation start=
+s.
+> > > +			 * The problem with this is it's done outside exec_op so the nand=
+ is
+> > > +			 * write protected and this check will fail until the write or er=
+ase
+> > > +			 * or write back operation actually happens where we turn off wp.
+> > > +			 */ =20
+> >=20
+> > If there is a problem with the core it needs to be handled in the core,
+> > not workarounded here. The whole logic with the status property seems
+> > really wrong.
+> >  =20
 >=20
-> A mistake, I mean CV1810 soc, not the CV1800 one.
->=20
-> >>Documentation seems rather lacking, but I was able to find something on
-> >>github that suggests there is also a cv180zb. The difference between the
-> >>three seems to, from a quick look, be their video encoding capabilities.
-> >>Is that correct?
-> >>
-> >
-> >Yes. it is correct.
-> >It seems like you have forgot a chip called CV1801B, which has 128MB
-> >RAM. But I see no board with this soc, so at now it is not necessary to
-> >care it.
+> I'm trying to change our current code functionality as little as
+> possible by having this function in the same way as it always has
+> and I do not want to make changes too much outside the scope
+> of this exec_op change.
 
-FWIW, I do not mind if the properties are left inside a CV1800B specific
-file, and moved out at a later date if/when someone actually upstreams
-support for a board with that SoC.
+I understand, and this is probably the best first approach, but if
+there is really an issue here with the behavior of the core (or one of
+its helpers) we need to fix it properly rather than workarounding it.
 
---FyNWdJyZjS0Y1L+C
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZRqzaAAKCRB4tDGHoIJi
-0sxWAQCql3VtfCEXULtNAc+z3zZNdJZhrkP04sdnpjovRzaDNAD/dsALTQv/EuU2
-mQX4mkdJhdPw0TAr6R8LaQ8C66GfsAQ=
-=NoLa
------END PGP SIGNATURE-----
-
---FyNWdJyZjS0Y1L+C--
+Thanks,
+Miqu=C3=A8l
