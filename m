@@ -2,99 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 044327B51D8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3206E7B51DA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236808AbjJBL4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 07:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35966 "EHLO
+        id S236814AbjJBL5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 07:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236780AbjJBL4f (ORCPT
+        with ESMTP id S231338AbjJBL5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 07:56:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE9E94;
-        Mon,  2 Oct 2023 04:56:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696247791; x=1727783791;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=IRRnuOQjo/t+81SN6PQRu1LzvvNzgDfNyCxd/Q98TH4=;
-  b=D6LKC8nIvUlYh++51BDfyD47vm1F0VT6bI4WVwxRImARXTTZnE5U6mm5
-   ZtsrJR0yor6C+eDTQaayXE8P28oWYEAf2gyIeBOUAsB66YyRL8xQR3jQ4
-   lmY+O9I35g2cl/XDRW/1mQ+8A3hqDIvxkcCY/doviK0+6saW547H1sDEU
-   P2CjhckoHwqN3fg2MEWezeG5HF4TncYlZ37/0/nBFFhONsvvHWJlckZB0
-   3JfLzAVce98UPhNBj6nFzRRFHC/9NRF2i/iimWTNXh+3Edjf2pb5frhAl
-   3okX7YLmGKwx+1UFcojUJ035AtpoGjDWlhe0rqVhcxHCSLWvk6ZexB458
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="362004204"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="362004204"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 04:56:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="750560388"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="750560388"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
-  by orsmga002.jf.intel.com with ESMTP; 02 Oct 2023 04:56:31 -0700
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     hdegoede@redhat.com, markgross@kernel.org,
-        ilpo.jarvinen@linux.intel.com, andriy.shevchenko@linux.intel.com
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH] platform/x86/intel-uncore-freq: Conditionally create attribute for read frequency
-Date:   Mon,  2 Oct 2023 04:56:22 -0700
-Message-Id: <20231002115622.1588852-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.40.1
+        Mon, 2 Oct 2023 07:57:53 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C97DA;
+        Mon,  2 Oct 2023 04:57:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Wkp4ZFR4A8eDeB5jRNcWvSfEDmCQBh31225KsSq0CIM=; b=dc8WAugVpShhXR3MSKlvXjPHOC
+        eheG5oU/xn3vn+bQm2fXAvqK7cp+YhZ93zD7SsmprJn6xaPL/61Rau/z2DJcWEFUbDpfbdRH2TF4p
+        LGhPJsMhTui3n7wsD/T4iGkQ2kDa/1yKOMvoijNNVhFdfciB216+i3HkB6rwbtAVKu8uL8r6v+4zA
+        2a9A1z9HllqaPqJYb4O0oLGuKdqSDyTCxVsT0DLOScob8VEG1a3em2llnoVDDrlaUa8JS6BWmqR5m
+        4K4sVByJ879c6JOzej3Fdm+Xgsj8Oz/k1ct9Nli8w49ZkHa2ejxXZ8uGATKfWDYvNqfNCDQrmaak0
+        KpxeuWOA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qnHY5-0090Er-0H;
+        Mon, 02 Oct 2023 11:57:19 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 347FC300410; Mon,  2 Oct 2023 13:57:18 +0200 (CEST)
+Date:   Mon, 2 Oct 2023 13:57:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Dapeng Mi <dapeng1.mi@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Like Xu <likexu@tencent.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Lv Zhiyuan <zhiyuan.lv@intel.com>,
+        Yang Weijiang <weijiang.yang@intel.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Dunn <daviddunn@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [Patch v4 07/13] perf/x86: Add constraint for guest perf metrics
+ event
+Message-ID: <20231002115718.GB13957@noisy.programming.kicks-ass.net>
+References: <20230927033124.1226509-1-dapeng1.mi@linux.intel.com>
+ <20230927033124.1226509-8-dapeng1.mi@linux.intel.com>
+ <20230927113312.GD21810@noisy.programming.kicks-ass.net>
+ <ZRRl6y1GL-7RM63x@google.com>
+ <20230929115344.GE6282@noisy.programming.kicks-ass.net>
+ <ZRbxb15Opa2_AusF@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRbxb15Opa2_AusF@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the current uncore frequency can't be read, don't create attribute
-"current_freq_khz" as any read will fail later. Some user space
-applications like turbostat fail to continue with the failure. So, check
-error during attribute creation.
+On Fri, Sep 29, 2023 at 03:46:55PM +0000, Sean Christopherson wrote:
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
- .../x86/intel/uncore-frequency/uncore-frequency-common.c  | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+> > I will firmly reject anything that takes the PMU away from the host
+> > entirely through.
+> 
+> Why?  What is so wrong with supporting use cases where the platform owner *wants*
+> to give up host PMU and NMI watchdog functionality?  If disabling host PMU usage
+> were complex, highly invasive, and/or difficult to maintain, then I can understand
+> the pushback.  
 
-diff --git a/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-common.c b/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-common.c
-index 1152deaa0078..33ab207493e3 100644
---- a/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-common.c
-+++ b/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-common.c
-@@ -176,7 +176,7 @@ show_uncore_data(initial_max_freq_khz);
- 
- static int create_attr_group(struct uncore_data *data, char *name)
- {
--	int ret, index = 0;
-+	int ret, freq, index = 0;
- 
- 	init_attribute_rw(max_freq_khz);
- 	init_attribute_rw(min_freq_khz);
-@@ -197,7 +197,11 @@ static int create_attr_group(struct uncore_data *data, char *name)
- 	data->uncore_attrs[index++] = &data->min_freq_khz_dev_attr.attr;
- 	data->uncore_attrs[index++] = &data->initial_min_freq_khz_dev_attr.attr;
- 	data->uncore_attrs[index++] = &data->initial_max_freq_khz_dev_attr.attr;
--	data->uncore_attrs[index++] = &data->current_freq_khz_dev_attr.attr;
-+
-+	ret = uncore_read_freq(data, &freq);
-+	if (!ret)
-+		data->uncore_attrs[index++] = &data->current_freq_khz_dev_attr.attr;
-+
- 	data->uncore_attrs[index] = NULL;
- 
- 	data->uncore_attr_group.name = name;
--- 
-2.40.1
+Because it sucks.
+
+You're forcing people to choose between no host PMU or a slow guest PMU.
+And that's simply not a sane choice for most people -- worse it's not a
+choice based in technical reality.
+
+It's a choice out of lazyness, disabling host PMU is not a requirement
+for pass-through. 
+
+Like I wrote, all we need to do is ensure vCPU tasks will never have a
+perf-event scheduled that covers guest mode. Currently this would be
+achievable by having event creation for both:
+
+ - CPU events without attr::exclude_guest=1, and
+ - task events for vCPU task of interest without attr::exclude_guest=1
+
+error with -EBUSY or something.
+
+This ensures there are no events active for those vCPU tasks at VMENTER
+time and you can haz pass-through.
 
