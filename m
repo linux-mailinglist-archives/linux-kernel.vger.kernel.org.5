@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A587B5DAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 01:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551757B5DAF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 01:24:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237213AbjJBXW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 19:22:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45554 "EHLO
+        id S235471AbjJBXYG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 19:24:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237155AbjJBXWX (ORCPT
+        with ESMTP id S229672AbjJBXYF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 19:22:23 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7994DB8
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 16:22:20 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-690d8fb3b7eso242696b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 16:22:20 -0700 (PDT)
+        Mon, 2 Oct 2023 19:24:05 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A63B4
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 16:24:02 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c451541f23so2530985ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 16:24:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1696288940; x=1696893740; darn=vger.kernel.org;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=KD8jdW4f7LnTGgNyds1SAB0XhfYmukFJ+Vsn46QV8HU=;
-        b=Ty+RZYV3wK2haeM4wqDulAXsH47VrrJLfOGBeYsvmo28+DU1LIVksLsMub0HMw3Ed1
-         KEncC7mdYVpBP8HvgerZ2HQdgZ97MH6iCMYzOrB+z2lP5iBtMdIhC3uq6OjRYlMy+bjb
-         lkjNUirhbAWaE5pZAYIlrUNpB6Cg/b15tCJqI=
+        d=broadcom.com; s=google; t=1696289042; x=1696893842; darn=vger.kernel.org;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YRWJ9SxOFBRgn4HxdSBo9PkYHsFfb2jlpBlFre2udu0=;
+        b=Yz+GSzV1vgX8jGi542vDBO6rghHaGzH5OJMw+/RI3ab2VdJ4v1neXHdiC6tb6U18VK
+         922vOTwp4ulRgah5ZCzR5mVaFtfgst52WShoylVWr3rcML2y4vdHn3z553IHuX1GYTZj
+         YWhCBJl76Ngnkqs2+nPXstOAlCBNC4PrAAzjY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696288940; x=1696893740;
-        h=in-reply-to:from:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KD8jdW4f7LnTGgNyds1SAB0XhfYmukFJ+Vsn46QV8HU=;
-        b=bLa3eeORlJdt/Dg3Ran12yYNFcyHyTy1uQOw4vDgzlvZebPidEjjBbqZKPFM7BKY7A
-         guE8S2KF5EPnLfSomyt3V2UYe+fkTv9mm4ZCFhSgQoV8BhdtufJDBV49UF8NlDYXWVQu
-         7Y38T52nBQoiSlmplR0/RJBtgDF1bNXLojlCkdSFiuweq5n944GXO6JNQVNJmaoK2b1r
-         U63qKOxhU2127iNOZeQpFraOARA9rEOUE5LYEfpPEiE52Vy6sJU55X7AXfySKdZJWGcT
-         2LnbulHyi2tJ37ZG/KQeBTIdkTnL9RXKMkFxzwd/mUV02KILL5+YY/OaizdBYlfmIO+D
-         uwxQ==
-X-Gm-Message-State: AOJu0YxhRbkS460YuAnNKns7bq6lfx61PhS6OrEdPZe+rvNzIsTdGi7E
-        awKCWzHUDkQEO01DKjM1ZFHo2w==
-X-Google-Smtp-Source: AGHT+IEkRRx1w6ALGMry1I5aJ20OTFCfTgIMzSJHSadVMXu5tl4WvsiOoElpAI2fkZ7+grh5UT2jgA==
-X-Received: by 2002:a05:6a00:982:b0:690:38b6:b2db with SMTP id u2-20020a056a00098200b0069038b6b2dbmr15630260pfg.6.1696288939868;
-        Mon, 02 Oct 2023 16:22:19 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id fm26-20020a056a002f9a00b00690d4464b94sm39650pfb.7.2023.10.02.16.22.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 16:22:19 -0700 (PDT)
-Message-ID: <48d44203-024c-3956-ba77-5d05da73385e@broadcom.com>
-Date:   Mon, 2 Oct 2023 16:22:18 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 1/1] serial: 8250_bcm7271: Use dev_err_probe() instead
- of dev_err()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Jiri Slaby <jirislaby@kernel.org>
-References: <20230918103648.1185663-1-andriy.shevchenko@linux.intel.com>
+        d=1e100.net; s=20230601; t=1696289042; x=1696893842;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YRWJ9SxOFBRgn4HxdSBo9PkYHsFfb2jlpBlFre2udu0=;
+        b=gZdTGnKwt9oJgy3+Kasu30NIClhl9nHPvvLcgIJJ+6Q3SdmcK9uTUVaZ2EiCJHSsjP
+         CR3bCzzzgs6tN6w9UqX+wpwDfGVJB1I/y8mjDJuhEDfEBHKtO0+295pBFG5p/4c152zv
+         xwzyg3X7IynCS4XPcGy4vFSC8gPNwlvoN6U74oes3QxYzhBb2bz5HZORsTmgaouK2HZk
+         QjKbJsy7j8z4ugPJZmeTPOT60WiT0jT5Qk5RHnWdB0HLrDHbV8VK+AUIsMSs31QUMUtI
+         ZMVJpMwCJz5LJlBD7PZPm8Y8BmkJIzxjWncgLDqVITEPGSoQyuv3w8i7kT3UBJZW9wsq
+         iX2g==
+X-Gm-Message-State: AOJu0YyjV/Tr+cv5x6wFMiuXVF66AnI0monEX/2k3qPAD5+7Sfrdx579
+        NiqSxpVXwCEdI3wRXNYkbLEXDA==
+X-Google-Smtp-Source: AGHT+IEtSTLZLQaS++W6Of/NZWHpe1shQqV8OvocyvlX5ZAbqOCMZSY8ZAIaTtJ9g31xSi2y8A0zAQ==
+X-Received: by 2002:a17:902:8205:b0:1c5:6f4d:d6cc with SMTP id x5-20020a170902820500b001c56f4dd6ccmr10495446pln.22.1696289042412;
+        Mon, 02 Oct 2023 16:24:02 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id l1-20020a170902eb0100b001c75914e4cbsm7544plb.84.2023.10.02.16.24.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 16:24:01 -0700 (PDT)
 From:   Florian Fainelli <florian.fainelli@broadcom.com>
-In-Reply-To: <20230918103648.1185663-1-andriy.shevchenko@linux.intel.com>
+To:     bcm-kernel-feedback-list@broadcom.com,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org,
+        Florian Fainelli <florian.fainelli@broadcom.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh@kernel.org>,
+        Joel Savitz <jsavitz@redhat.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Yuan Can <yuancan@huawei.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>
+Subject: Re: [PATCH] firmware: raspberrypi: Fix devm_rpi_firmware_get documentation
+Date:   Mon,  2 Oct 2023 16:23:59 -0700
+Message-Id: <20231002232359.1290397-1-florian.fainelli@broadcom.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230925151812.142480-1-kieran.bingham+renesas@ideasonboard.com>
+References: <20230925151812.142480-1-kieran.bingham+renesas@ideasonboard.com>
+MIME-Version: 1.0
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000b7c59c0606c40b62"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        boundary="000000000000d45f2e0606c411e0"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,25 +80,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000b7c59c0606c40b62
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+--000000000000d45f2e0606c411e0
+Content-Transfer-Encoding: 8bit
 
-On 9/18/23 03:36, Andy Shevchenko wrote:
-> Make the error messages format unified by switching to use
-> dev_err_probe() where it makes sense.
-> 
-> This also helps simplifing the code.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Florian Fainelli <f.fainelli@gmail.com>
 
-Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
+On Mon, 25 Sep 2023 16:18:11 +0100, Kieran Bingham <kieran.bingham+renesas@ideasonboard.com> wrote:
+> From: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> 
+> The function documentation for devm_rpi_firmware_get() was missing
+> a description for the dev parameter.
+> 
+> Provide it and clear the warning produced here.
+> 
+> Fixes: f663204c9a1f ("firmware: raspberrypi: Introduce devm_rpi_firmware_get()")
+> Signed-off-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
+> Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+> ---
+
+Applied to https://github.com/Broadcom/stblinux/commits/drivers/next, thanks!
+--
 Florian
 
-
---000000000000b7c59c0606c40b62
+--000000000000d45f2e0606c411e0
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -164,14 +173,14 @@ kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
 NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
 AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
 LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIE5GqFmryVhBJJva
-PxejicJzsStIZTVk7HPWfWldoY5AMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTIzMTAwMjIzMjIyMFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIB76votqHPvysAjN
+Xt6HFDO3NlID5A2uEZ92iSLWewJDMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMTAwMjIzMjQwMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
 AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAwbddDSFz6YO91VuM4hstaFQcmmZLNuLJm
-xrJo8r8xo+vtmKsU2QVYdIPJM9LgLWO+TOlR4seBOl3X3kYbR6m8LUgJKtpMTyMSsTfmAaofNX/N
-BgZItyxOX0eV9dDojeFBiocJcsJeJjOsb4amjm4Kx9U4E8B5s54v12FNpDY9V+ioVeSaNOLhhjHh
-+RNr9P6vq/GAdY2w66vOgyBBTh3UIHH9HF2b+gLjBZtrNiZmIXZJ3JT+JaykciAFq+2fx9CTDF5s
-bAEp7NXOZsKnFTeWQzwQa6uBlQ78Mo2G5edTLVtI8R4h8FX1j+GJ8Dxwvz5oEzkjd34GVmF+L4c7
-3xtX
---000000000000b7c59c0606c40b62--
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQCrhdTAtwSoYz4L/92fksY+JKf0oUAPPu51
+gG8r2iTavUj8USqN3hQwFV09/G1PoUqDzsf6FnSKyzQoXFvwOCbJ5B7fX68rBCMiSXDaniC260vq
+r11M98ShyyZGB0bmwKJzI16SKgJJn7KMedDOif7i7NsZPHeAjMUcLyE8jVZnsCridol9I2eW09XI
+9jkqi+nxdGU0mLWVPh5YZ2nRrZFoCV4kmwFzjJ/9N+wWjE038LnJ5FidpdvtMSstScRn7lbYiFx2
+scp2ur7py+ISQxyu8BxAFy77DE/CaxZMnCAuq9WvRrqzjrTZH0qLRWNAulat/+I1sT7SCiTYO3zp
+wBSr
+--000000000000d45f2e0606c411e0--
