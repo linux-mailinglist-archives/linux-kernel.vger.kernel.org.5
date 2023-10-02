@@ -2,149 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3A97B5BC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A13B7B5BC7
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234230AbjJBUHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 16:07:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        id S235499AbjJBUH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 16:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjJBUHB (ORCPT
+        with ESMTP id S235047AbjJBUHW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 16:07:01 -0400
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EFC0B7;
-        Mon,  2 Oct 2023 13:06:57 -0700 (PDT)
-Received: from [192.168.1.103] (178.176.75.5) by msexch01.omp.ru (10.188.4.12)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Mon, 2 Oct 2023
- 23:06:52 +0300
-Subject: Re: [PATCH 4/4] pata_parport-fit3: implement IDE command set
- registers
-To:     Ondrej Zary <linux@zary.sk>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-CC:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Tim Waugh <tim@cyberelk.net>, <linux-block@vger.kernel.org>,
-        <linux-parport@lists.infradead.org>, <linux-ide@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230930191511.24994-1-linux@zary.sk>
- <20230930191511.24994-5-linux@zary.sk>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <e35003ab-4dfe-6154-5873-cc90f65008a8@omp.ru>
-Date:   Mon, 2 Oct 2023 23:06:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Mon, 2 Oct 2023 16:07:22 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A0FD3;
+        Mon,  2 Oct 2023 13:07:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=VaRXBAX+SL8oR5DAJJ33YWK0kg9y3S/tFMs5ErCwV4M=; b=tyTvddQZwjPU4NCyNbqmtBxwTI
+        Kq6g9Qapzu1V2T/1LVfoTymMZ1bb2QONrTl41ltGkcWgO8C3OxMrZO0vUUbterkaPjXQqj5zl5UWY
+        Od/q+nFr5sp3hmR7Q+02+fFUHyfa/unLm/Waq6/NDA+nKY6gA77n1Y4CV6C8E7B9yjTT2MSAhqsX/
+        mE0L1qEHeU9Z8HDcrn4+IgWdTLUacxy76ZOg8LoMQ6Fu1YDKq8FKQmrhzovQYa4Y7jTfB5MNGW7kU
+        vcWu8FBBE/rEktzzt2TIToDZle387TUfE+hHWx0duFsDle3jHlyRiQtp+i2PYtGwvYw5Fx/EDytKW
+        owGUyJog==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qnPCA-00AvU4-SH; Mon, 02 Oct 2023 20:07:10 +0000
+Date:   Mon, 2 Oct 2023 21:07:10 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Greg Ungerer <gregungerer@westnet.com.au>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 09/17] m68k: Implement xor_unlock_is_negative_byte
+Message-ID: <ZRsi7smLotWDwoNP@casper.infradead.org>
+References: <20230915183707.2707298-1-willy@infradead.org>
+ <20230915183707.2707298-10-willy@infradead.org>
+ <6e409d5f-a419-07b7-c82c-4e80fe19c6ba@westnet.com.au>
+ <ZQW849TfSCK6u2f8@casper.infradead.org>
+ <e1fb697714ac408e85c4e3dc573cd7d5@AcuMS.aculab.com>
+ <ZQmvhC+pGWNs9R23@casper.infradead.org>
+ <cffc2a427ae74f62b07345ec9348e43e@AcuMS.aculab.com>
+ <ZQm67lGOBBdC2Dl9@casper.infradead.org>
+ <35a33582-9206-94bb-eca2-a1d9c585f6c1@westnet.com.au>
 MIME-Version: 1.0
-In-Reply-To: <20230930191511.24994-5-linux@zary.sk>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.75.5]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 10/02/2023 19:49:36
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 180294 [Oct 02 2023]
-X-KSE-AntiSpam-Info: Version: 5.9.59.0
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.5 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.75.5 in (user) dbl.spamhaus.org}
-X-KSE-AntiSpam-Info: omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: FromAlignment: s
-X-KSE-AntiSpam-Info: {rdns complete}
-X-KSE-AntiSpam-Info: {fromrtbl complete}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.5
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 10/02/2023 19:54:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 10/2/2023 5:26:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <35a33582-9206-94bb-eca2-a1d9c585f6c1@westnet.com.au>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/30/23 10:15 PM, Ondrej Zary wrote:
-
-> fit3 protocol driver does not support accessing IDE control registers
-> (device control/altstatus). The DOS driver does not use these registers
-> either (as observed from DOSEMU trace). But the HW seems to be capable
-> of accessing these registers - I simply tried bit 3 and it works!
+On Wed, Sep 20, 2023 at 05:22:33PM +1000, Greg Ungerer wrote:
+> On 20/9/23 01:14, Matthew Wilcox wrote:
+> > I have a 68020 book; what I don't have is a Coldfire manual.
 > 
-> The control register is required to properly reset ATAPI devices or
-> they will be detected only once (after a power cycle).
-> 
-> Tested with EXP Computer CD-865 with MC-1285B EPP cable and
-> TransDisk 3000.
-> 
-> Signed-off-by: Ondrej Zary <linux@zary.sk>
-> ---
->  drivers/ata/pata_parport/fit3.c | 16 ++++------------
->  1 file changed, 4 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/ata/pata_parport/fit3.c b/drivers/ata/pata_parport/fit3.c
-> index bad7aa920cdc..86b39966755b 100644
-> --- a/drivers/ata/pata_parport/fit3.c
-> +++ b/drivers/ata/pata_parport/fit3.c
-[...]
-> @@ -35,10 +30,11 @@
->   * cont = 1 - access the IDE command set
->   */
->  
-> +static int cont_map[] = { 0x00, 0x08 };
+> You can find it here: https://www.nxp.com/docs/en/reference-manual/CFPRM.pdf
 
-   const?
+Thanks, Greg.  This is almost good:
 
-> +
->  static void fit3_write_regr(struct pi_adapter *pi, int cont, int regr, int val)
->  {
-> -	if (cont == 1)
-> -		return;
-> +	regr += cont_map[cont];
+static inline bool xor_unlock_is_negative_byte(unsigned long mask,
+                volatile unsigned long *p)
+{
+#ifdef CONFIG_COLDFIRE
+        __asm__ __volatile__ ("eorl %1, %0"
+                : "+m" (*p)
+                : "d" (mask)
+                : "memory");
+        return *p & (1 << 7);
+#else
+        char result;
+        char *cp = (char *)p + 3;       /* m68k is big-endian */
 
-   Perhaps regr += cont << 3 instead?
+        __asm__ __volatile__ ("eor.b %1, %2; smi %0"
+                : "=d" (result)
+                : "di" (mask), "o" (*cp)
+                : "memory");
+        return result;
+#endif
+}
 
->  
->  	switch (pi->mode) {
->  	case 0:
-> @@ -59,11 +55,7 @@ static int fit3_read_regr(struct pi_adapter *pi, int cont, int regr)
->  {
->  	int  a, b;
->  
-> -	if (cont) {
-> -		if (regr != 6)
-> -			return 0xff;
-> -		regr = 7;
-> -	}
-> +	regr += cont_map[cont];
+folio_end_read() does about as well as can be expected:
 
-   Likewise here?
+00000708 <folio_end_read>:
+     708:       206f 0004       moveal %sp@(4),%a0
+     70c:       7009            moveq #9,%d0
+     70e:       4a2f 000b       tstb %sp@(11)
+     712:       6602            bnes 716 <folio_end_read+0xe>
+     714:       7001            moveq #1,%d0
+     716:       b190            eorl %d0,%a0@
+     718:       2010            movel %a0@,%d0
+     71a:       4a00            tstb %d0
+     71c:       6a0c            bpls 72a <folio_end_read+0x22>
+     71e:       42af 0008       clrl %sp@(8)
+     722:       2f48 0004       movel %a0,%sp@(4)
+     726:       6000 fcfe       braw 426 <folio_wake_bit>
+     72a:       4e75            rts
 
-[...]
+However, it seems that folio_unlock() could shave off an instruction:
 
-MBR, Sergey
+00000918 <folio_unlock>:
+     918:       206f 0004       moveal %sp@(4),%a0
+     91c:       7001            moveq #1,%d0
+     91e:       b190            eorl %d0,%a0@
+     920:       2010            movel %a0@,%d0
+     922:       4a00            tstb %d0
+     924:       6a0a            bpls 930 <folio_unlock+0x18>
+     926:       42a7            clrl %sp@-
+     928:       2f08            movel %a0,%sp@-
+     92a:       4eba fafa       jsr %pc@(426 <folio_wake_bit>)
+     92e:       508f            addql #8,%sp
+     930:       4e75            rts
+
+We could use eori instead of eorl, at least according to table 3-9 on
+page 3-8:
+
+EOR Dy,<ea>x L Source ^ Destination → Destination ISA_A
+EORI #<data>,Dx L Immediate Data ^ Destination → Destination ISA_A
+
+but gas is unhappy with everything I've tried to use eori.  I'm building
+with stmark2_defconfig, which I assume should work.
