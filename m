@@ -2,144 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 769ED7B5901
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9B57B58D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238603AbjJBRCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:02:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39360 "EHLO
+        id S238624AbjJBRDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:03:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238523AbjJBRCc (ORCPT
+        with ESMTP id S238594AbjJBRDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:02:32 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB65B3
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:02:29 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id ffacd0b85a97d-3232be274a0so2018686f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:02:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696266147; x=1696870947; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6fBgZzG8H8L+RMO629wwCt+NqtJpm6mxiNYmYMNrioQ=;
-        b=wRcHmiNtZkoDucBVwQH7YeY2ld2BHTYYbcx0DukRKcgCeWkZ+G3d4daBtvISZUVOfl
-         FI7SK0p/lL7ipw8MtWYoWO7rJ/GFmvY5PyC2/sDLvT3sLmjNbEbi5cmzLrF3un/bo8Bp
-         3th1WTBVCI4fVYvAbBuhkjqDWdTJmVyQTXVuEHvJ8SETWgPG6JKxVpfP7O9hXsbWii4d
-         aasBE/o3ssBS0G4YiPgcVGo1xl6aB1IiRkDIR/mmwTv9oOCqhI+cVxSc6rpa5Gfva5ky
-         JBEpwtpW72i0OVLzGdaF1WoL6uKIJxfyQAZb6tn142L0kCMgKxeIaHncczcVq3rZFnR2
-         gktw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696266147; x=1696870947;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6fBgZzG8H8L+RMO629wwCt+NqtJpm6mxiNYmYMNrioQ=;
-        b=k3NwBaWsvOPHHrWLopTQnGTfrIjEI979evQ17YElQLKSstfvGG8AbV9uSCe921Pqc9
-         WKiUO24ZTFQn/hy0r9XQutLleVnwe5/wrHxGzoDcV11c+qizWpmWcb8z186jVMDk9jYq
-         hc1nHc96lTI0SnGYLvwdYFAWs5AaXjKo0XVnEddfF3HZCdmuwOtUI5iO2E3Cj2amQ8Qp
-         eqf/RRsNJb+/NNMthC90yf9s0jeQPVlyNjhWksRA3Jo+SR1E4WbDxWdySx+/z94c2Gfl
-         X37zOumWJ/kTGrfnj9jrbOoESRbTDD52p8dN1rA13RsUtRH/pqhU825Qu+I+TSVbx575
-         53QA==
-X-Gm-Message-State: AOJu0YwGRTExYDZboZ9KSkk3PU0uaNi+Rq3zJP6NteUsGwm3SBsi0QhB
-        hM0B2ewVB0T1Qcs+4pJ9PQpkVATAny+1CfDtFN6Nnw==
-X-Google-Smtp-Source: AGHT+IHAgIMir4wwCM6XdRGvOWBdNLdGzUBf9zrpeeFrzoDCpgeqJzSybRFIgRtYZEdM3xBYZynrqbZu/R1kiLzJi7Y=
-X-Received: by 2002:a05:6000:1050:b0:323:1e69:7b4 with SMTP id
- c16-20020a056000105000b003231e6907b4mr132794wrx.31.1696266147248; Mon, 02 Oct
- 2023 10:02:27 -0700 (PDT)
+        Mon, 2 Oct 2023 13:03:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9221EAB;
+        Mon,  2 Oct 2023 10:03:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB023C433C7;
+        Mon,  2 Oct 2023 17:03:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696266207;
+        bh=eTPkDa6a/QY4l/amWClioZkJAZkSQGjRiz057XQ/UYw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aCy6+hI5eNsm3aL4CMUwUls8d64SXntTTk626CotTyBSXXABXchdii7bUkfTJQ3Pl
+         6NZwzqmBiblpP2gp0NO3RwVrcj+UhCsBkrb//iSMR/4D7SYQVPkGV3m59e7O56s60h
+         GuS1teww0a6KQN1jIouDyPArYnt+i+u82LI3fWYEPN4Q/BB6HE5xZCu3gcAhFX3wut
+         MMZ1HHDwp0wd3/aqZ6fBfgX9yfFtc+SGYBWi/pqjNqCsqB8JYvWqVAUdygD/n6eViX
+         oRzDlVnSnqWc6/JY46787qdZSvuqo47KMILclhGZ56Egiq1DhAy/HV3KRDDrOZDZTw
+         87gK0CQ7F1wqw==
+Received: (nullmailer pid 1941416 invoked by uid 1000);
+        Mon, 02 Oct 2023 17:03:24 -0000
+Date:   Mon, 2 Oct 2023 12:03:24 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Luca Weiss <luca.weiss@fairphone.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Lee Jones <lee@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: mfd: qcom,spmi-pmic: Update gpio example
+Message-ID: <20231002170324.GA1934850-robh@kernel.org>
+References: <20230929-pm7250b-gpio-fixup-v1-0-ef68543c1d3b@fairphone.com>
+ <20230929-pm7250b-gpio-fixup-v1-1-ef68543c1d3b@fairphone.com>
+ <510d6407-8033-4f2e-aabf-bd3fb84875a9@linaro.org>
+ <CVXQXI5E053J.386OVO28LNSYT@otso>
 MIME-Version: 1.0
-References: <20231002165750.1661-1-will@kernel.org> <20231002165750.1661-4-will@kernel.org>
-In-Reply-To: <20231002165750.1661-4-will@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 2 Oct 2023 10:02:16 -0700
-Message-ID: <CAKwvOdmZrU90+jA4ugbqiT=VxvsEdTqwmvo7hk-HEocd8xJbmQ@mail.gmail.com>
-Subject: Re: [PATCH v5 3/3] scripts/faddr2line: Skip over mapping symbols in
- output from readelf
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CVXQXI5E053J.386OVO28LNSYT@otso>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 9:58=E2=80=AFAM Will Deacon <will@kernel.org> wrote:
->
-> Mapping symbols emitted in the readelf output can confuse the
-> 'faddr2line' symbol size calculation, resulting in the erroneous
-> rejection of valid offsets. This is especially prevalent when building
-> an arm64 kernel with CONFIG_CFI_CLANG=3Dy, where most functions are
-> prefixed with a 32-bit data value in a '$d.n' section. For example:
->
-> 447538: ffff800080014b80   548 FUNC    GLOBAL DEFAULT    2 do_one_initcal=
-l
->    104: ffff800080014c74     0 NOTYPE  LOCAL  DEFAULT    2 $x.73
->    106: ffff800080014d30     0 NOTYPE  LOCAL  DEFAULT    2 $x.75
->    111: ffff800080014da4     0 NOTYPE  LOCAL  DEFAULT    2 $d.78
->    112: ffff800080014da8     0 NOTYPE  LOCAL  DEFAULT    2 $x.79
->     36: ffff800080014de0   200 FUNC    LOCAL  DEFAULT    2 run_init_proce=
-ss
->
-> Adding a warning to do_one_initcall() results in:
->
->   | WARNING: CPU: 0 PID: 1 at init/main.c:1236 do_one_initcall+0xf4/0x260
->
-> Which 'faddr2line' refuses to accept:
->
-> $ ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
-> skipping do_one_initcall address at 0xffff800080014c74 due to size mismat=
-ch (0x260 !=3D 0x224)
-> no match for do_one_initcall+0xf4/0x260
->
-> Filter out these entries from readelf using a shell reimplementation of
-> is_mapping_symbol(), so that the size of a symbol is calculated as a
-> delta to the next symbol present in ksymtab.
->
-> Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-> Cc: John Stultz <jstultz@google.com>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Signed-off-by: Will Deacon <will@kernel.org>
+On Mon, Oct 02, 2023 at 08:40:10AM +0200, Luca Weiss wrote:
+> On Sat Sep 30, 2023 at 5:06 PM CEST, Krzysztof Kozlowski wrote:
+> > On 29/09/2023 10:17, Luca Weiss wrote:
+> > > As per commit ea25d61b448a ("arm64: dts: qcom: Use plural _gpios node
+> > > label for PMIC gpios") all dts files now use the plural _gpios instead
+> > > of the singular _gpio as label. Update the schema example also to match.
+> > > 
+> > > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> > > ---
+> > >  Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml | 4 ++--
+> > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
+> > > index 55e931ba5b47..e4842e1fbd65 100644
+> > > --- a/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
+> > > +++ b/Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.yaml
+> > > @@ -245,7 +245,7 @@ examples:
+> > >              #address-cells = <1>;
+> > >              #size-cells = <0>;
+> > >  
+> > > -            pmi8998_gpio: gpio@c000 {
+> > > +            pmi8998_gpios: gpio@c000 
+> >
+> > This does no make sense... you update label only here, but not in any
+> > user of it which proves that label is not used. If it is not used, it
+> > should be dropped, not changed...
+> 
+> Okay, I will drop the label instead of updating it in v2.
 
-Thanks for the patch!
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Or just drop the patch and skip the trivial changes. If you want to fix 
+unused labels, fix it for the whole subsystem (mfd) or treewide.
 
-> ---
->  scripts/faddr2line | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/scripts/faddr2line b/scripts/faddr2line
-> index 6b8206802157..587415a52b6f 100755
-> --- a/scripts/faddr2line
-> +++ b/scripts/faddr2line
-> @@ -179,6 +179,11 @@ __faddr2line() {
->                         local cur_sym_elf_size=3D${fields[2]}
->                         local cur_sym_name=3D${fields[7]:-}
->
-> +                       # is_mapping_symbol(cur_sym_name)
-> +                       if [[ ${cur_sym_name} =3D~ ^(\.L|L0|\$) ]]; then
-> +                               continue
-> +                       fi
-> +
->                         if [[ $cur_sym_addr =3D $sym_addr ]] &&
->                            [[ $cur_sym_elf_size =3D $sym_elf_size ]] &&
->                            [[ $cur_sym_name =3D $sym_name ]]; then
-> --
-> 2.42.0.582.g8ccd20d70d-goog
->
-
-
---=20
-Thanks,
-~Nick Desaulniers
+Rob
