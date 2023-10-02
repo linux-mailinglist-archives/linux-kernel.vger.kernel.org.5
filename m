@@ -2,125 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7385F7B4C9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3EF47B4C9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235774AbjJBHgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 03:36:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
+        id S235785AbjJBHgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 03:36:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235771AbjJBHgb (ORCPT
+        with ESMTP id S235750AbjJBHgh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 03:36:31 -0400
-Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F7BDA7
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:36:28 -0700 (PDT)
-Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-7ab9488f2f0so6259897241.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:36:28 -0700 (PDT)
+        Mon, 2 Oct 2023 03:36:37 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B918D7
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:36:34 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-51b4ef5378bso12645415a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:36:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696232187; x=1696836987; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/kzGcKH51BMhzvkfijbkvJZcq6BeliJjCgiKuHtTrZI=;
-        b=XUBlhCQCluEKPTIeKdQAyXsvycYs0HPKyzJwsKaAlprAGDhvJkWBqmXREA4B4AeVgt
-         g/1+uIOwYGamevIHZEQVWRY6ClzqwSx53B93NdDsKCefWtfGJ37005JkrvVSeshgefaq
-         fhaBnJXTQgMS4XXJVVP1Pa7G5wrj59r3EopY+dGf1+r9epR7KQII32teS/JiSG8QqSlx
-         2bk6UUpeuuBpLLRETmvP2lkfyAOt/zrmPsWgghVeTyTuSwJ2842z70SefXGyG6fpVQ+h
-         dgoEbiySSPXuhZCQgIcYSQzI+AoNtkj0QsfB8x4ZFMfgmzPtsELWzDFWiC+e2PpX8KLo
-         GS4A==
+        d=chromium.org; s=google; t=1696232193; x=1696836993; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=o8TgiYq+wn9fPs2sstUM34/3tbN8lpchGjTxpN3osFc=;
+        b=EYcTIe1rA5iMT9Eckl75edHfhjI2D9SUeW2wCe3HFLYHXWuxwOgTZgpt6Z4iwjUTES
+         s4ersIvJVc++7TZ+J8kJOkFvuOqa2DRihG/rYeoatuYKdMDtbiepbwDoOryk6a6nn9m3
+         y9uwYMVUPlfjSUYEdwLj2h09wNwEfTgEIFC/A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696232187; x=1696836987;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/kzGcKH51BMhzvkfijbkvJZcq6BeliJjCgiKuHtTrZI=;
-        b=tn1inf7OXWUv/VXKd+gMyTIU7yxyvwLLqnLqY6mmi7pHUWEMHoyFtBURrBUDOR+g47
-         lg/tPGmb71E+7SNGAwoW+/k5DIRgUJ7JA+p8tJgT3ugPrU0fl91mG2IvSQocr5GVRgcu
-         muYMYHY21W5RRNc8rWVLZEvXEkAAs6LXSfAdt7W4+xr5phGc4QJ4kD0DUeQHbZwClxfa
-         Zp6aux6MXQwdaDBcLDWL5RSGRa3oQyAsevafxLsKebQKhwrTR2gs3EqRfxcIZDXbayiy
-         8pie5+QPgFEt0JqdNBJY88gSTkA904eSWGgs9BKBnGci/AkgkdsFlhSWFXkhbgmMLE/o
-         ug2Q==
-X-Gm-Message-State: AOJu0Yy9/Ip8hPS7WSSiiWcK9/sqfRVheM7hia7F0+af+x4Y/qxk4AVP
-        OP94MBLf4thyr36Lbey5vtHEvfRxVb+yKAp3UmMuKA==
-X-Google-Smtp-Source: AGHT+IHIgV9UAM4yA8MoechR8q4GLUBkoPowZHLEFw1ZULiGDp+VXiAj3o0rKyl0yWYlk/4LeZK5AfIRMZZY2/x23tg=
-X-Received: by 2002:a67:fe0b:0:b0:452:560e:31a9 with SMTP id
- l11-20020a67fe0b000000b00452560e31a9mr8909087vsr.1.1696232186976; Mon, 02 Oct
- 2023 00:36:26 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696232193; x=1696836993;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=o8TgiYq+wn9fPs2sstUM34/3tbN8lpchGjTxpN3osFc=;
+        b=GSkyT+o+4XlrHCVJw4RwRvxc2jr0h1Tus8bKv5+gpbew89GTw2WtugQLr2dVcl2V2G
+         VwSyPL0Hz77VRf+XY4kUKeg3d6QDJJzASSOOaEWyUY+ZYqg/NUAXO3ZNF3SXosBRXH9j
+         xJQf3RHBhlXEQIWjXO6q81t0PfbtSebEfSc48mr0YkIn/wm4oBH4YXTJ4yi1HDlY0faR
+         ejwyuUKLUwHm2SA0xuLqrvNzHjjdkI2t2+CHvBt+QMogmlOXb0Zp7N6GtUv8OAgpFHYk
+         iRoGcb7lP4a49gm2CPo6IqVmPj21qphZMkVFfyRtir4GPddq1r6zV74vueoRDR4q4One
+         A3Mg==
+X-Gm-Message-State: AOJu0Yy4dtUVG8kPgsxQC2BZRHgFWZTWwOUAsET5Cu8zjUgnguXSyIWa
+        K/aZU5iQFqu6LoofVbhZ/Xh9Dg==
+X-Google-Smtp-Source: AGHT+IE/4RrZBVTAWpHkJyOr41YZ89aixqnrkCQ1kdzSx+Qmep1XqZBJfajMYApMeMqYNsEHfwK1sQ==
+X-Received: by 2002:a17:90b:3644:b0:277:1bd8:abe8 with SMTP id nh4-20020a17090b364400b002771bd8abe8mr9560405pjb.18.1696232193693;
+        Mon, 02 Oct 2023 00:36:33 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 6-20020a17090a194600b00278eb908f78sm6274500pjh.19.2023.10.02.00.36.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 00:36:33 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 00:36:28 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Kees Cook <kees@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-hardening@vger.kernel.org,
+        llvm@lists.linux.dev
+Subject: Re: [PATCH] comedi: Annotate struct comedi_lrange with __counted_by
+Message-ID: <202310020036.864B735D60@keescook>
+References: <5c3b7459b820e22e2ac6ce892d4aadcc119cc919.1696065263.git.christophe.jaillet@wanadoo.fr>
+ <202309301342.5B5BED40A1@keescook>
+ <alpine.DEB.2.22.394.2310010945130.3166@hadrien>
+ <90E2BBA5-8A2D-42DE-B36A-CD37BABBB433@kernel.org>
+ <alpine.DEB.2.22.394.2310012112560.3166@hadrien>
+ <202310011405.7599BA9@keescook>
+ <202310011421.C4F19D45@keescook>
+ <202310011515.D4C9184@keescook>
+ <alpine.DEB.2.22.394.2310020737570.3166@hadrien>
 MIME-Version: 1.0
-References: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr> <20231001-pxa-gpio-v4-2-0f3b975e6ed5@skole.hr>
- <CAHp75VeYduD=uXpNKcxhwqFTkahUbz_Ockqi7KVO88cpeVHbQQ@mail.gmail.com>
-In-Reply-To: <CAHp75VeYduD=uXpNKcxhwqFTkahUbz_Ockqi7KVO88cpeVHbQQ@mail.gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 2 Oct 2023 09:36:16 +0200
-Message-ID: <CAMRc=McgNoz-umhkJKZ-juWukgToEhPh3iex7G-QikmSTgDdnw@mail.gmail.com>
-Subject: Re: [PATCH RFC v4 2/6] ARM: pxa: Convert Spitz LEDs to GPIO descriptors
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-spi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2310020737570.3166@hadrien>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 1, 2023 at 4:35=E2=80=AFPM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Sun, Oct 1, 2023 at 5:13=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovi=
-c@skole.hr> wrote:
-> >
-> > Sharp's Spitz board still uses the legacy GPIO interface for configurin=
-g
-> > its two onboard LEDs.
-> >
-> > Convert them to use the GPIO descriptor interface.
->
-> ...
->
-> >  static void __init spitz_leds_init(void)
-> >  {
-> > +       gpiod_add_lookup_table(&spitz_led_gpio_table);
-> >         platform_device_register(&spitz_led_device);
-> > +       spitz_gpio_leds[0].gpiod =3D gpiod_get_index(&spitz_led_device.=
-dev,
-> > +                       NULL, 0, GPIOD_ASIS);
-> > +       spitz_gpio_leds[1].gpiod =3D gpiod_get_index(&spitz_led_device.=
-dev,
-> > +                       NULL, 1, GPIOD_ASIS);
-> >  }
->
-> What's the point of keeping a lookup table after we got descriptors out o=
-f it?
->
+On Mon, Oct 02, 2023 at 07:38:42AM +0200, Julia Lawall wrote:
+> The sizeof with an expression argument is treated differently than the
+> sizeof with a type argument.  So you need to write:
+> 
+> @allocated@
+> identifier STRUCT, ARRAY;
+> expression COUNT;
+> struct STRUCT *PTR;
+> identifier ALLOC;
+> type ELEMENT_TYPE;
+> @@
+> 
+>         PTR = ALLOC(..., \(sizeof(*PTR)\|sizeof(struct STRUCT)\) +
+>                          COUNT * \(sizeof(*PTR->ARRAY)\|sizeof(PTR->ARRAY[0])\|sizeof(ELEMENT_TYPE)\), ...);
 
-Normally the descriptors would be retrieved in drivers and so lookup
-tables should stay in memory forever as static resources (just like
-device-tree). We have recently added some "temporary" lookup tables to
-address even worse hacks. The tables would be removed immediately
-after the descriptor is retrieved simply because we used that hack in
-drivers which may be unbound and re-bound resulting in adding
-repeating lookup entries.
+Ah! Thank you thank you! Yes, this works great now. :)
 
-Here we're dealing with a board-file so a more classic approach of
-having static lookup tables added once and never removed is in order.
-So I'd leave it like this.
-
-Bart
+-- 
+Kees Cook
