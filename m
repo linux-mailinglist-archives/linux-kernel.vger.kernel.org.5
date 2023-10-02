@@ -2,240 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E871B7B5A38
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD997B5A32
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238617AbjJBSQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 14:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53304 "EHLO
+        id S238319AbjJBSSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229604AbjJBSQd (ORCPT
+        with ESMTP id S229901AbjJBSSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 14:16:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996A59B;
-        Mon,  2 Oct 2023 11:16:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-        In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DTs4MCkWa4O51zLZooaCLs2DXs4Y4+zbpbqGLpSf0ao=; b=NTkcXD38zZT5iyrKmARaSEk1ZH
-        udqqr9czl7TilAW6BKUVMWISXoI5H3cBIfDOOdpZyyGvhNwSdm+hADLXjXNBJnx2mca8JLitq/aF5
-        Q74WXczLPfNt5Ih4JoCMEXE8YOly4/lVJcqn3ljX3xAlljAkeo168V4aGxz/yAOTKzJt8+t8o7i19
-        9tR1SfYeLYFlM/VRkvJ4OdPATX3U1bq4R6BbNwyWz/IstUGQolOC+bQuTeb67hUc9InvnlVCcWFfm
-        KTPb8zIc4cUoboj7JEaWSbcF+meUUrgHEaoJEyDoLsqrDKoIT/jtxFIcdpVVd9NvnJ5RTUFJcZ7WI
-        9KQQ7l6Q==;
-Received: from [2001:8b0:10b:5:5205:71fd:de0:52fd] (helo=u3832b3a9db3152.ant.amazon.com)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qnNSw-00ATMV-Mj; Mon, 02 Oct 2023 18:16:23 +0000
-Message-ID: <52a3cea2084482fc67e35a0bf37453f84dcd6297.camel@infradead.org>
-Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock
- periodically
-From:   David Woodhouse <dwmw2@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
-        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com
-Date:   Mon, 02 Oct 2023 19:16:22 +0100
-In-Reply-To: <ZRrxtagy7vJO5tgU@google.com>
-References: <20230926230649.67852-1-dongli.zhang@oracle.com>
-         <377d9706-cc10-dfb8-5326-96c83c47338d@oracle.com>
-         <36f3dbb1-61d7-e90a-02cf-9f151a1a3d35@oracle.com>
-         <ZRWnVDMKNezAzr2m@google.com>
-         <a461bf3f-c17e-9c3f-56aa-726225e8391d@oracle.com>
-         <884aa233ef46d5209b2d1c92ce992f50a76bd656.camel@infradead.org>
-         <ZRrxtagy7vJO5tgU@google.com>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-        boundary="=-CgKoueqD1RfYvRdpZlra"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 2 Oct 2023 14:18:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A8E9B
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 11:18:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696270685;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JTHelUlse8IqAMEkn3+OwaSpVuDEvR+XOh2gu1M9D5c=;
+        b=SGRPUT4kxFL3U1VTkQU+3wsjKAJLv5jPktqNhwjZdc9S61v9fQyPP+JPQWHKxXNZ51SE+j
+        hqmJWjQQRPY3vfWG2h7TtZapStlmDrhbr5Ca35daGQ6PlKx+Hm02An6mDH2lHQo08WDlmJ
+        /BL6kKebOmjOZSvLJPYTzGtXEdsTIXs=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-682-1x56OxpTMHK_tgLwvnLfMQ-1; Mon, 02 Oct 2023 14:18:04 -0400
+X-MC-Unique: 1x56OxpTMHK_tgLwvnLfMQ-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-775869cf2f5so335280485a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 11:18:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696270684; x=1696875484;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JTHelUlse8IqAMEkn3+OwaSpVuDEvR+XOh2gu1M9D5c=;
+        b=cRONk3sDCwgRcvKM5tiBshDkyCXxSvBTwta8SvAxHS0Os2jGag+wn4Ij2Sk96Ita56
+         71n8udlyCkWdjKm4oaTN87w+CQLKwimdDuK22k2Yx8nd/d9vN8LWFXaiXSdrca+tjP+u
+         qdCN8SmLxn0yON1z8isZjmaER6EebSXAiweHt9ifOJ0tNqgJLo566uVjfRyRU4A8HFcj
+         hjy2IF4XW6kR5Vt1Yp3Rsjzjr7oEWxFMCFwzKWKSLrzAUroSLOmI+udkvy3mITpCOOya
+         yc1vpowTeOzwWxNWMN2+MfIvQnfH2POXq8g4xvVrgnBeD5+JyGByUbODvQuL14L6/0Y+
+         PEaw==
+X-Gm-Message-State: AOJu0Yz+kqG4F0gNuOIMu3k1eSpj5YeVbpEvrBdtZXos0SCCvoEJUOwT
+        RQFu264hcK0/FZY6sBxMjA97jXC5i7i6TmPhNgjQ+xf/eW1pqjs3fu0HIIi30TRt4HLSzAh4UXW
+        TWOLYKQ0o2wycgnmZESop7THq
+X-Received: by 2002:a05:620a:4090:b0:76c:ae1f:201e with SMTP id f16-20020a05620a409000b0076cae1f201emr539266qko.27.1696270684153;
+        Mon, 02 Oct 2023 11:18:04 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFjEc7izGr0GyD8cKh/uiIXCkEVxKgvtniJXa7m5bt13+TPqrNIMC8w/At/Vr4WizGwvTagDA==
+X-Received: by 2002:a05:620a:4090:b0:76c:ae1f:201e with SMTP id f16-20020a05620a409000b0076cae1f201emr539250qko.27.1696270683850;
+        Mon, 02 Oct 2023 11:18:03 -0700 (PDT)
+Received: from brian-x1 (c-73-214-169-22.hsd1.pa.comcast.net. [73.214.169.22])
+        by smtp.gmail.com with ESMTPSA id ld7-20020a056214418700b0065d89f4d537sm3313105qvb.45.2023.10.02.11.18.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 11:18:02 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 14:18:01 -0400
+From:   Brian Masney <bmasney@redhat.com>
+To:     Nikunj Kela <quic_nkela@quicinc.com>
+Cc:     sudeep.holla@arm.com, cristian.marussi@arm.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v4 1/4] firmware: arm_scmi: Add polling support for
+ completion in smc
+Message-ID: <ZRsJWdZVMc+F5ZgF@brian-x1>
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+ <20230911194359.27547-1-quic_nkela@quicinc.com>
+ <20230911194359.27547-2-quic_nkela@quicinc.com>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230911194359.27547-2-quic_nkela@quicinc.com>
+User-Agent: Mutt/2.2.9 (2022-11-12)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 11, 2023 at 12:43:56PM -0700, Nikunj Kela wrote:
+> Currently, the return from the smc call assumes the completion of
+> the scmi request. However this may not be true in virtual platforms
+> that are using hvc doorbell.
+> 
+> This change adds a Kconfig to enable the polling for the request
+> completion.
+> 
+> Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
+> ---
+>  drivers/firmware/arm_scmi/Kconfig | 14 ++++++++++++++
+>  drivers/firmware/arm_scmi/smc.c   | 15 ++++++++++++++-
+>  2 files changed, 28 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
+> index ea0f5083ac47..771d60f8319f 100644
+> --- a/drivers/firmware/arm_scmi/Kconfig
+> +++ b/drivers/firmware/arm_scmi/Kconfig
+> @@ -125,6 +125,20 @@ config ARM_SCMI_TRANSPORT_SMC_ATOMIC_ENABLE
+>  	  in atomic context too, at the price of using a number of busy-waiting
+>  	  primitives all over instead. If unsure say N.
+>  
+> +config ARM_SCMI_TRANSPORT_SMC_POLL_COMPLETION
+> +	bool "Enable polling support for SCMI SMC transport"
+> +	depends on ARM_SCMI_TRANSPORT_SMC
+> +	help
+> +	  Enable completion polling support for SCMI SMC based transport.
+> +
+> +	  If you want the SCMI SMC based transport to poll for the completion,
+> +	  answer Y.
+> +	  Enabling completion polling might be desired in the absence of the a2p
+> +	  irq when the return from smc/hvc call doesn't indicate the completion
+> +	  of the SCMI requests. This might be useful for instances used in
+> +	  virtual platforms.
+> +	  If unsure say N.
+> +
+>  config ARM_SCMI_TRANSPORT_VIRTIO
+>  	bool "SCMI transport based on VirtIO"
+>  	depends on VIRTIO=y || VIRTIO=ARM_SCMI_PROTOCOL
+> diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
+> index c193516a254d..0a0b7e401159 100644
+> --- a/drivers/firmware/arm_scmi/smc.c
+> +++ b/drivers/firmware/arm_scmi/smc.c
+> @@ -250,6 +250,16 @@ static void smc_mark_txdone(struct scmi_chan_info *cinfo, int ret,
+>  	smc_channel_lock_release(scmi_info);
+>  }
+>  
+> +#ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC_POLL_COMPLETION
+> +static bool
+> +smc_poll_done(struct scmi_chan_info *cinfo, struct scmi_xfer *xfer)
+> +{
+> +	struct scmi_smc *scmi_info = cinfo->transport_info;
+> +
+> +	return shmem_poll_done(scmi_info->shmem, xfer);
+> +}
+> +#endif
+> +
+>  static const struct scmi_transport_ops scmi_smc_ops = {
+>  	.chan_available = smc_chan_available,
+>  	.chan_setup = smc_chan_setup,
+> @@ -257,6 +267,9 @@ static const struct scmi_transport_ops scmi_smc_ops = {
+>  	.send_message = smc_send_message,
+>  	.mark_txdone = smc_mark_txdone,
+>  	.fetch_response = smc_fetch_response,
+> +#ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC_POLL_COMPLETION
+> +	.poll_done = smc_poll_done,
+> +#endif
+>  };
+>  
+>  const struct scmi_desc scmi_smc_desc = {
+> @@ -272,6 +285,6 @@ const struct scmi_desc scmi_smc_desc = {
+>  	 * for the issued command will be immmediately ready to be fetched
+>  	 * from the shared memory area.
+>  	 */
+> -	.sync_cmds_completed_on_ret = true,
+> +	.sync_cmds_completed_on_ret = !IS_ENABLED(CONFIG_ARM_SCMI_TRANSPORT_SMC_POLL_COMPLETION),
+>  	.atomic_enabled = IS_ENABLED(CONFIG_ARM_SCMI_TRANSPORT_SMC_ATOMIC_ENABLE),
 
---=-CgKoueqD1RfYvRdpZlra
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From a Linux distributor viewpoint, it would be nice if this was
+determined at runtime, rather than at compile time. We generate a single
+kernel binary that's used on systems from multiple hardware
+manufacturers. We'd run into an issue if one company required this, but
+another one didn't. We may potentially run into this same type of issue
+with the upstream arm64 defconfig.
 
-On Mon, 2023-10-02 at 09:37 -0700, Sean Christopherson wrote:
-> On Mon, Oct 02, 2023, David Woodhouse wrote:
-> > On Fri, 2023-09-29 at 13:15 -0700, Dongli Zhang wrote:
-> > >=20
-> > > 1. The vcpu->hv_clock (kvmclock) is based on its own mult/shift/equat=
-ion.
-> > >=20
-> > > 2. The raw monotonic (tsc_clocksource) uses different mult/shift/equa=
-tion.
-> > >=20
-> >=20
-> > That just seems wrong. I don't mean that you're incorrect; it seems
-> > *morally* wrong.
-> >=20
-> > In a system with X86_FEATURE_CONSTANT_TSC, why would KVM choose to use
-> > a *different* mult/shift/equation (your #1) to convert TSC ticks to
-> > nanoseconds than the host CLOCK_MONOTONIC_RAW does (your #2).
-> >=20
-> > I understand that KVM can't track the host's CLOCK_MONOTONIC, as it's
-> > adjusted by NTP. But CLOCK_MONOTONIC_RAW is supposed to be consistent.
-> >=20
-> > Fix that, and the whole problem goes away, doesn't it?
-> >=20
-> > What am I missing here, that means we can't do that?
->=20
-> I believe the answer is that "struct pvclock_vcpu_time_info" and its math=
- are
-> ABI between KVM and KVM guests.
->=20
-> Like many of the older bits of KVM, my guess is that KVM's behavior is th=
-e product
-> of making things kinda sorta work with old hardware, i.e. was probably th=
-e least
-> awful solution in the days before constant TSCs, but is completely nonsen=
-sical on
-> modern hardware.
+Brian
 
-I still don't understand. The ABI and its math are fine. The ABI is just
- "at time X the TSC was Y, and the TSC frequency is Z"
-
-I understand why on older hardware, those values needed to *change*
-occasionally when TSC stupidity happened.=20
-
-But on newer hardware, surely we can set them precisely *once* when the
-VM starts, and never ever have to change them again? Theoretically not
-even when we pause the VM, kexec into a new kernel, and resume the VM!
-
-But we *are* having to change it, because apparently
-CLOCK_MONOTONIC_RAW is doing something *other* than incrementing at
-precisely the frequency of the known and constant TSC.
-
-But *why* is CLOCK_MONOTONIC_RAW doing that? I thought that the whole
-point of CLOCK_MONOTONIC_RAW was to be consistent and not adjusted by
-NTP etc.? Shouldn't it run at precisely the same rate as the kvmclock,
-with no skew at all?
-
-And if CLOCK_MONOTONIC_RAW is not what I thought it was... do we really
-have to keep resetting the kvmclock to it at all? On modern hardware
-can't the kvmclock be defined by the TSC alone?
-
---=-CgKoueqD1RfYvRdpZlra
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMxMDAyMTgxNjIyWjAvBgkqhkiG9w0BCQQxIgQggfn74aOV
-cWbUUAN6LJfVjv5SaS0LQnCYAz2xyb5qTyAwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgByD/3C5KuUY0+j6eS+44CZIT8spQgZ1n2p
-PSx5k1D8xgPzJ5LLT6VHH6SmssdxzWDVN7ubhNtnWhj1kZt1NjSg1e60h/emcqH1cRb5I2wc70cb
-a/rsahD3JX/DBaPJhi6BhHgnJFc6EhFZhiLBJBp8F10ROb/lou+Su+/sADSXB5Km4MovNAFsoTg9
-QCKetZK8Q91NIc4ioFuD2UzNwR0pFssS7JxHv3x/SbHlxeCtN7+5wizoOpNTzNiKBp0Ya4PiR23O
-Fc8JSmhROOOAa/X2FYg+42++8BFesS14p1xAO/MrccXstoYsG62ObKx0gaQjLc+BR743oWqifzwq
-/QW36QBa9COK1Qqm9Cn80dZ6tdk7jcRIaISTL7cCj9aonzYyIlAUu5gLKiT7cl0biG97AYt3E7VM
-bRZ394j3zr/ZiuqjmmxkVJN50SQEVrOlNQ7+G8ufZc/IzPJX2ODshZ+fXLx7LH4jqBmo530pcTTs
-IloKSU5mkqlZzu3i1aDAkRVoeTUJkMo5Yv1b9xxGz4hbXRPlaYW98nNM1IPwyu/Vif/AAXeZ1Ahx
-w1R5e1Nkqg3FUfDQAZN74QI6EjDgqHnRtETfz8kpkG37Qv2wA/rzd+M5bPJVFCMS8ETQauInEctV
-PCaJeFtti0PJNxukXZz9VanDA61y3kwxpyT9tyLFZwAAAAAAAA==
-
-
---=-CgKoueqD1RfYvRdpZlra--
