@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9092D7B4FC0
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7E67B4FCE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236419AbjJBJ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:59:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
+        id S236418AbjJBKAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 06:00:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236471AbjJBJ6q (ORCPT
+        with ESMTP id S236386AbjJBJ7m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:58:46 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E631701;
-        Mon,  2 Oct 2023 02:58:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1696240699;
-        bh=0/JUjvNFCrqTLBeZW08iULSeezWaCcDvX52IIMuk8OY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VbM0R+4xbgFaAb/Nj2sUi5FqA2WuSaT4FRA1gudCZOXzDuDGxMWu8IQiFOMSJoaMA
-         ItU+ffnOyrdHSu3RIgmRq6Z/usFV1HcOvMe8F3BOepaF3SmsJeaQSiEj0H4t1okEDN
-         L8NivrXvVG2WNkmHvPDG9jkubnLjLvCiB+pzUVXc=
-Date:   Mon, 2 Oct 2023 11:58:18 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Wedson Almeida Filho <wedsonaf@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>
-Subject: Re: [PATCH 01/29] xattr: make the xattr array itself const
-Message-ID: <cf669914-8e9e-4eac-b28a-f307bb080bec@t-8ch.de>
-References: <20230930050033.41174-1-wedsonaf@gmail.com>
- <20230930050033.41174-2-wedsonaf@gmail.com>
+        Mon, 2 Oct 2023 05:59:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947E41BEE;
+        Mon,  2 Oct 2023 02:59:21 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85311C433C7;
+        Mon,  2 Oct 2023 09:59:18 +0000 (UTC)
+Message-ID: <49b1fe75-529d-4663-9e83-b9463d45b0a3@xs4all.nl>
+Date:   Mon, 2 Oct 2023 11:59:16 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230930050033.41174-2-wedsonaf@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [v2] media: platform: cros-ec: Add Taranza to the match table
+Content-Language: en-US, nl
+To:     Ken Lin <ken_lin5@hotmail.com>, LKML <linux-kernel@vger.kernel.org>
+Cc:     groeck@chromium.org, Benson Leung <bleung@chromium.org>,
+        Kevin Chiu <kevin.chiu.17802@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Reka Norman <rekanorman@chromium.org>,
+        Rory Liu <hellojacky0226@hotmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        Zoey Wu <zoey_wu@wistron.corp-partner.google.com>,
+        chrome-platform@lists.linux.dev, linux-media@vger.kernel.org
+References: <KL1PR01MB380907A7B0AD8A53727F87E2AEF7A@KL1PR01MB3809.apcprd01.prod.exchangelabs.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <KL1PR01MB380907A7B0AD8A53727F87E2AEF7A@KL1PR01MB3809.apcprd01.prod.exchangelabs.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-30 02:00:05-0300, Wedson Almeida Filho wrote:
-> From: Wedson Almeida Filho <walmeida@microsoft.com>
+On 14/09/2023 13:30, Ken Lin wrote:
+> Taranza has two HDMI ports which support CEC:
+> Port D is EC port 0
+> Port B is EC port 1
 > 
-> As it is currently declared, the xattr_handler structs are const but the
-> array containing their pointers is not. This patch makes it so that fs
-> modules can place them in .rodata, which makes it harder for
-> accidental/malicious modifications at runtime.
-
-You could also add an entry to scripts/const_structs.checkpatch to make
-sure newly introduced usages of the struct are const.
-
-Could be a single dedicated patch after this patch has been applied.
-
-> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+> Signed-off-by: Ken Lin <ken_lin5@hotmail.com>
 > ---
->  fs/xattr.c         | 6 +++---
->  include/linux/fs.h | 2 +-
->  2 files changed, 4 insertions(+), 4 deletions(-)
 > 
-> diff --git a/fs/xattr.c b/fs/xattr.c
-> index e7bbb7f57557..1905f8ede13d 100644
-> --- a/fs/xattr.c
-> +++ b/fs/xattr.c
-> @@ -56,7 +56,7 @@ strcmp_prefix(const char *a, const char *a_prefix)
->  static const struct xattr_handler *
->  xattr_resolve_name(struct inode *inode, const char **name)
->  {
-> -	const struct xattr_handler **handlers = inode->i_sb->s_xattr;
-> +	const struct xattr_handler * const *handlers = inode->i_sb->s_xattr;
->  	const struct xattr_handler *handler;
->  
->  	if (!(inode->i_opflags & IOP_XATTR)) {
-> @@ -162,7 +162,7 @@ xattr_permission(struct mnt_idmap *idmap, struct inode *inode,
->  int
->  xattr_supports_user_prefix(struct inode *inode)
->  {
-> -	const struct xattr_handler **handlers = inode->i_sb->s_xattr;
-> +	const struct xattr_handler * const *handlers = inode->i_sb->s_xattr;
->  	const struct xattr_handler *handler;
->  
->  	if (!(inode->i_opflags & IOP_XATTR)) {
-> @@ -999,7 +999,7 @@ int xattr_list_one(char **buffer, ssize_t *remaining_size, const char *name)
->  ssize_t
->  generic_listxattr(struct dentry *dentry, char *buffer, size_t buffer_size)
->  {
-> -	const struct xattr_handler *handler, **handlers = dentry->d_sb->s_xattr;
-> +	const struct xattr_handler *handler, * const *handlers = dentry->d_sb->s_xattr;
->  	ssize_t remaining_size = buffer_size;
->  	int err = 0;
->  
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 562f2623c9c9..4d8003f48216 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -1172,7 +1172,7 @@ struct super_block {
->  #ifdef CONFIG_SECURITY
->  	void                    *s_security;
->  #endif
-> -	const struct xattr_handler **s_xattr;
-> +	const struct xattr_handler * const *s_xattr;
->  #ifdef CONFIG_FS_ENCRYPTION
->  	const struct fscrypt_operations	*s_cop;
->  	struct fscrypt_keyring	*s_master_keys; /* master crypto keys in use */
-> -- 
-> 2.34.1
+> Changes in v2:
+>  Use a NULL-terminated conns array for the match table entry
+> ---
+>  drivers/media/cec/platform/cros-ec/cros-ec-cec.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
+> diff --git a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
+> index 920aed0d1929..66e96abc9abf 100644
+> --- a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
+> +++ b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
+> @@ -298,6 +298,7 @@ static const char *const fizz_conns[] = { "Port B", NULL };
+>  static const char *const dibbi_conns[] = { "Port D", "Port B", NULL };
+>  static const char *const constitution_conns[] = { "Port B", "Port A", NULL };
+>  static const char *const boxy_conns[] = { "Port D", NULL };
+> +static const char *const taranza_conns[] = { "Port D", "Port B", NULL };
+
+Just reuse dibbi_conns, just as is done with fizz_conns.
+
+Actually, what would be better is to rename these _conns arrays to something
+like:
+
+static const char *const port_db_conns[] = { "Port D", "Port B", NULL };
+
+That's much cleaner IMHO.
+
+Can you post a small patch series? The first renames these conns arrays,
+the second adds Taranza support.
+
+Thank you!
+
+	Hans
+
+>  
+>  static const struct cec_dmi_match cec_dmi_match_table[] = {
+>  	/* Google Fizz */
+> @@ -322,6 +323,8 @@ static const struct cec_dmi_match cec_dmi_match_table[] = {
+>  	{ "Google", "Constitution", "0000:00:02.0", constitution_conns },
+>  	/* Google Boxy */
+>  	{ "Google", "Boxy", "0000:00:02.0", boxy_conns },
+> +	/* Google Taranza */
+> +	{ "Google", "Taranza", "0000:00:02.0", taranza_conns },
+>  };
+>  
+>  static struct device *cros_ec_cec_find_hdmi_dev(struct device *dev,
+
