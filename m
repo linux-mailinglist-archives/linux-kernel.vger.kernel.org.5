@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 074697B5BF5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B967B5BF3
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235916AbjJBUZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 16:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
+        id S235832AbjJBUZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 16:25:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229881AbjJBUZp (ORCPT
+        with ESMTP id S229989AbjJBUZp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Oct 2023 16:25:45 -0400
 Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A17D3;
-        Mon,  2 Oct 2023 13:25:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413BABF;
+        Mon,  2 Oct 2023 13:25:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
         s=smtpout1; t=1696278340;
-        bh=vYAU4AeTLnE8I/bDRtRMZDB+30vSLOM6ErZFA9kFrHI=;
+        bh=59wn3SGQn5EasbWDlPH2hsibVMaavmRBQEcVCMjx328=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JnGRudYxxav/ozwajmmRrIDkAbC1i2iLjSuXV5BXpqr91oHOJl8sYJWFLHvLD6gAy
-         pMkra1snzoS5vm0q3+m+dLOpoWioI/8zB2jYmeDrT8O+vTl2ybEnLwBa/znFQkCjGz
-         rIw5Ek5gokFbJMSzK4shMWM/0sb/yASsfGTgW8FOt6bePmBMgd1T6eC/uI6wi2MHb/
-         zaXOlZegkRvZktIgrmXoDy596wPgGrSRf+J9/So2jngZbXVjYtMPlV0PVeV/ZEcP0s
-         hcyopxZFGkgv/0ak9TLRUOfp7Bv6r2BP7GtrF1954aaF2T397aQbqxiP3A2LHpg9Yf
-         p0q9tr9571qJw==
+        b=ThHe+mc3wT377xFGOOGTefue/CDbHl8Kt/rUbnKtH4P8SQXiQvbA/vvBecPthNUky
+         HMc6ucjx/uh6jMiRSJQ6Odn3w60MMxbCp6fdIRkvvhACZ7PaIvQw1JrXUF4mxy9p/5
+         yHw2e0ykUWyriz3kuEIf9mgqjgP592qLlyfRNjNJYCqogf64EpB6wATgLbAWNBlwzH
+         sEyCR1I19N7YExHMi9bijPo4eFnA/4NmaHpLZsVRp+P3Uf8ShjJ/8T9zFynMulIeYe
+         Ty3Rs2ZMettMb8Bg36Z/vF/NwNCkMjYdKZbMKMcdmpaQT0rgNuDAi1h8BX+c1nCjNw
+         /hXeTbH1M0BzA==
 Received: from localhost.localdomain (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RzssH6JPHz1Vwc;
-        Mon,  2 Oct 2023 16:25:39 -0400 (EDT)
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RzssJ1rbkz1V7p;
+        Mon,  2 Oct 2023 16:25:40 -0400 (EDT)
 From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     linux-kernel@vger.kernel.org,
@@ -44,9 +44,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Jiri Olsa <jolsa@redhat.com>,
         Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
         Joel Fernandes <joel@joelfernandes.org>
-Subject: [RFC PATCH v3 3/5] tracing/bpf-trace: add support for faultable tracepoints
-Date:   Mon,  2 Oct 2023 16:25:29 -0400
-Message-Id: <20231002202531.3160-4-mathieu.desnoyers@efficios.com>
+Subject: [RFC PATCH v3 4/5] tracing/perf: add support for faultable tracepoints
+Date:   Mon,  2 Oct 2023 16:25:30 -0400
+Message-Id: <20231002202531.3160-5-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231002202531.3160-1-mathieu.desnoyers@efficios.com>
 References: <20231002202531.3160-1-mathieu.desnoyers@efficios.com>
@@ -62,13 +62,13 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 In preparation for converting system call enter/exit instrumentation
-into faultable tracepoints, make sure that bpf can handle registering to
-such tracepoints by explicitly disabling preemption within the bpf
-tracepoint probes to respect the current expectations within bpf tracing
-code.
+into faultable tracepoints, make sure that perf can handle registering
+to such tracepoints by explicitly disabling preemption within the perf
+tracepoint probes to respect the current expectations within perf ring
+buffer code.
 
-This change does not yet allow bpf to take page faults per se within its
-probe, but allows its existing probes to connect to faultable
+This change does not yet allow perf to take page faults per se within
+its probe, but allows its existing probes to connect to faultable
 tracepoints.
 
 Co-developed-by: Michael Jeanson <mjeanson@efficios.com>
@@ -88,85 +88,76 @@ Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: bpf@vger.kernel.org
 Cc: Joel Fernandes <joel@joelfernandes.org>
 ---
- include/trace/bpf_probe.h | 21 +++++++++++++++++----
- kernel/trace/bpf_trace.c  | 11 ++++++++---
- 2 files changed, 25 insertions(+), 7 deletions(-)
+ include/trace/perf.h | 27 +++++++++++++++++++++++----
+ 1 file changed, 23 insertions(+), 4 deletions(-)
 
-diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
-index 1f7fc1fc590c..03cb4045a046 100644
---- a/include/trace/bpf_probe.h
-+++ b/include/trace/bpf_probe.h
-@@ -40,17 +40,30 @@
- /* tracepoints with more than 12 arguments will hit build error */
- #define CAST_TO_U64(...) CONCATENATE(__CAST, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+diff --git a/include/trace/perf.h b/include/trace/perf.h
+index 2c11181c82e0..fb47815f6eff 100644
+--- a/include/trace/perf.h
++++ b/include/trace/perf.h
+@@ -12,8 +12,8 @@
+ #undef __perf_task
+ #define __perf_task(t)	(__task = (t))
  
--#define __BPF_DECLARE_TRACE(call, proto, args)				\
-+#define __BPF_DECLARE_TRACE(call, proto, args, tp_flags)		\
+-#undef DECLARE_EVENT_CLASS
+-#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
++#undef _DECLARE_EVENT_CLASS
++#define _DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print, tp_flags) \
  static notrace void							\
- __bpf_trace_##call(void *__data, proto)					\
+ perf_trace_##call(void *__data, proto)					\
  {									\
- 	struct bpf_prog *prog = __data;					\
-+									\
+@@ -28,13 +28,18 @@ perf_trace_##call(void *__data, proto)					\
+ 	int __data_size;						\
+ 	int rctx;							\
+ 									\
 +	if ((tp_flags) & TRACEPOINT_MAY_FAULT) {			\
 +		might_fault();						\
 +		preempt_disable_notrace();				\
 +	}								\
 +									\
- 	CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));	\
-+									\
+ 	__data_size = trace_event_get_offsets_##call(&__data_offsets, args); \
+ 									\
+ 	head = this_cpu_ptr(event_call->perf_events);			\
+ 	if (!bpf_prog_array_valid(event_call) &&			\
+ 	    __builtin_constant_p(!__task) && !__task &&			\
+ 	    hlist_empty(head))						\
+-		return;							\
++		goto end;						\
+ 									\
+ 	__entry_size = ALIGN(__data_size + sizeof(*entry) + sizeof(u32),\
+ 			     sizeof(u64));				\
+@@ -42,7 +47,7 @@ perf_trace_##call(void *__data, proto)					\
+ 									\
+ 	entry = perf_trace_buf_alloc(__entry_size, &__regs, &rctx);	\
+ 	if (!entry)							\
+-		return;							\
++		goto end;						\
+ 									\
+ 	perf_fetch_caller_regs(__regs);					\
+ 									\
+@@ -53,8 +58,22 @@ perf_trace_##call(void *__data, proto)					\
+ 	perf_trace_run_bpf_submit(entry, __entry_size, rctx,		\
+ 				  event_call, __count, __regs,		\
+ 				  head, __task);			\
++end:									\
 +	if ((tp_flags) & TRACEPOINT_MAY_FAULT)				\
 +		preempt_enable_notrace();				\
  }
  
- #undef DECLARE_EVENT_CLASS
- #define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
--	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))
-+	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args), 0)
++#undef DECLARE_EVENT_CLASS
++#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
++	_DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args),		\
++			     PARAMS(tstruct), PARAMS(assign), PARAMS(print), 0)
 +
 +#undef DECLARE_EVENT_CLASS_MAY_FAULT
 +#define DECLARE_EVENT_CLASS_MAY_FAULT(call, proto, args, tstruct, assign, print) \
-+	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args), TRACEPOINT_MAY_FAULT)
- 
++	_DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args),		\
++			     PARAMS(tstruct), PARAMS(assign), PARAMS(print), \
++			     TRACEPOINT_MAY_FAULT)
++
  /*
   * This part is compiled out, it is only here as a build time check
-@@ -104,13 +117,13 @@ static inline void bpf_test_buffer_##call(void)				\
- 
- #undef DECLARE_TRACE
- #define DECLARE_TRACE(call, proto, args)				\
--	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))		\
-+	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args), 0)	\
- 	__DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), 0)
- 
- #undef DECLARE_TRACE_WRITABLE
- #define DECLARE_TRACE_WRITABLE(call, proto, args, size) \
- 	__CHECK_WRITABLE_BUF_SIZE(call, PARAMS(proto), PARAMS(args), size) \
--	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args)) \
-+	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args), 0) \
- 	__DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), size)
- 
- #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 4accf2f138b8..e9942f8e5c66 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2327,9 +2327,14 @@ static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *
- 	if (prog->aux->max_tp_access > btp->writable_size)
- 		return -EINVAL;
- 
--	return tracepoint_probe_register_prio_flags(tp, (void *)btp->bpf_func,
--						    prog, TRACEPOINT_DEFAULT_PRIO,
--						    TRACEPOINT_MAY_EXIST);
-+	if (tp->flags & TRACEPOINT_MAY_FAULT)
-+		return tracepoint_probe_register_prio_flags(tp, (void *)btp->bpf_func,
-+							    prog, TRACEPOINT_DEFAULT_PRIO,
-+							    TRACEPOINT_MAY_EXIST | TRACEPOINT_MAY_FAULT);
-+	else
-+		return tracepoint_probe_register_prio_flags(tp, (void *)btp->bpf_func,
-+							    prog, TRACEPOINT_DEFAULT_PRIO,
-+							    TRACEPOINT_MAY_EXIST);
- }
- 
- int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+  * to make sure that if the tracepoint handling changes, the
 -- 
 2.25.1
 
