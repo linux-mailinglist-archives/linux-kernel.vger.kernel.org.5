@@ -2,125 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F757B4FA5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58E097B4FA7
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:57:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236309AbjJBJ5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:57:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
+        id S236320AbjJBJ52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:57:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236215AbjJBJ5Q (ORCPT
+        with ESMTP id S236322AbjJBJ5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:57:16 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 923068E
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:57:13 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-50307759b65so24990675e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:57:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696240632; x=1696845432; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iwEtkxsfBhgs6E7OtuujbkpVgU3JMhyc0hqKghcL4RU=;
-        b=Z7+MijikGZyX0P8WDGY3DiOnkJUBLS3chut3OxUvJ91V0nY3rIPx8euKjptZrBi1+H
-         aF2nTcUgaASzqKxNmdaJZY98Z5YgnU+zssk8LKVOvl5eieOTTcQtRyV0GJiXGzC43MQU
-         1ax+6rvYjwFE577Kqmf2ak7F7p64vNSRGx6Qp1FOwrWdalXfIv5LSyS7CTUHOCc6Maj0
-         V/q7QMn6b5G+R1qUtubF+dsYdlvJPp4YmV0r7Om7a+DUdZE6KnJxZmSrLasNdFvmsSsm
-         FgN9bfTP9ouU/gnGZvgov/7YXH5m08h4xyh/9uJlrjaxc/ISSVPI/548II9h1cRiAwY9
-         66rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696240632; x=1696845432;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iwEtkxsfBhgs6E7OtuujbkpVgU3JMhyc0hqKghcL4RU=;
-        b=QiKYgLPFMJSUlKeO85VNq6EfiRNja5NDzpqLpzT2Qsq+jzGYPrAdIOOeXQUvECnb3T
-         T69e3pPwSjlxS8q0pClZlAd5kB+Rz7UXnhpA6WN6dc5Kh4lY/CWFq1Qj5ueRES2C8oTD
-         yW6fz+Y5Rrd1r1npDJlNXF9+UTGbMyM3URSSk9QaWSKNp2ICmAKJ6UNt5o64b8OpfcOP
-         QuARCWWjzwKmfjhYK11mnJ/P5wBHVStz4SU1WWOyULdn/iw0gi4J2PIbC1gbR6YZl/Vv
-         bAbruuYJ55KX6YNYEJIkubnhE0Eg/HzQpDl1V3nkD3ktfEADCqihr1Vxv2XafFxga40s
-         dE3A==
-X-Gm-Message-State: AOJu0Yz9HJnqXgwBfeHZ/kcCQdSDEUDvf/1FQaBPXGpqxzNrJEzfiYe3
-        +JWJ4woK8AKywsD8a5Kv5gV5JA==
-X-Google-Smtp-Source: AGHT+IFdE6YQcfmyUbpQxzt3Mj9yhWkQUIGV2HAIWGVAJzNvPsQqCa1EWZ80dNv5OCeTvDOY0+o5wQ==
-X-Received: by 2002:a05:6512:4011:b0:500:9d6c:913e with SMTP id br17-20020a056512401100b005009d6c913emr10719139lfb.52.1696240631837;
-        Mon, 02 Oct 2023 02:57:11 -0700 (PDT)
-Received: from [172.30.204.164] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id v2-20020a056512096200b005030c533843sm4617893lft.154.2023.10.02.02.57.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 02:57:11 -0700 (PDT)
-Message-ID: <ba5a528d-7e85-77a2-5096-5a143a3b1606@linaro.org>
-Date:   Mon, 2 Oct 2023 11:57:10 +0200
+        Mon, 2 Oct 2023 05:57:25 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA072E0;
+        Mon,  2 Oct 2023 02:57:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696240640; x=1727776640;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=xkucgrf0Gku3sclZsNEmC/t2jO0YvL8B44d22Q1fSaQ=;
+  b=mxhO8IHSTy4K6vDuEiB3qBkUavbLXi5VXnkwtEgxMzXoRPB4sUMe2TQG
+   nEXqrvvPcb4gqahuA3UKqyS7+R5CztabmA91/lAcWL4ARkzqggZ/dDy2o
+   823/5psLEDILq5NItKj4bNsu8cbUC7/d+bLfRZlQiIK9GY+UdGHqETUSe
+   E889RxCfoezNuuWZUVfuYUPDJTfOX9V/obPc86sQBPB0UJUVBFZ8cnPXB
+   Z1Upx54m4dKKbcc8oj6E8y9Wh+S6nAEMC34PcPe6dvG3dDBUVbFZDQNwZ
+   0taBdXjoYrF7D8faxnL5uQhx1kj0WlPK+mUFzX0XjR6drZ9L62mNc93Ve
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="372961768"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="372961768"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:57:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="924221103"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="924221103"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:57:18 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qnFfv-000000027od-18zE;
+        Mon, 02 Oct 2023 12:57:15 +0300
+Date:   Mon, 2 Oct 2023 12:57:14 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v4 03/11] gpiolib: provide gpio_device_find()
+Message-ID: <ZRqT+qZ+Xrz4x1IQ@smile.fi.intel.com>
+References: <20230927142931.19798-1-brgl@bgdev.pl>
+ <20230927142931.19798-4-brgl@bgdev.pl>
+ <ZRqQbzbcNHOtJm7z@smile.fi.intel.com>
+ <CAMRc=MffRnq2ABRGAL9zuQxytfE6E-cJWwUrourgY2k=RNv-Aw@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v6 2/8] hugetlb: restructure pool allocations
-Content-Language: en-US
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Konrad Dybcio <konradybcio@kernel.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Barry Song <21cnbao@gmail.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        linux-kernel@vger.kernel.org
-References: <20230925234837.86786-3-mike.kravetz@oracle.com>
- <ddc10c41-515f-48c9-966d-4ae7756d208c@kernel.org>
- <20230929205731.GA10357@monkey>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20230929205731.GA10357@monkey>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MffRnq2ABRGAL9zuQxytfE6E-cJWwUrourgY2k=RNv-Aw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 02, 2023 at 11:52:52AM +0200, Bartosz Golaszewski wrote:
+> On Mon, Oct 2, 2023 at 11:42 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Wed, Sep 27, 2023 at 04:29:23PM +0200, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
+...
 
-On 9/29/23 22:57, Mike Kravetz wrote:
-> On 09/27/23 13:26, Konrad Dybcio wrote:
->>
->>
->> On 26.09.2023 01:48, Mike Kravetz wrote:
->>> Allocation of a hugetlb page for the hugetlb pool is done by the routine
->>> alloc_pool_huge_page.  This routine will allocate contiguous pages from
->>> a low level allocator, prep the pages for usage as a hugetlb page and
->>> then add the resulting hugetlb page to the pool.
->>>
->>> In the 'prep' stage, optional vmemmap optimization is done.  For
->>> performance reasons we want to perform vmemmap optimization on multiple
->>> hugetlb pages at once.  To do this, restructure the hugetlb pool
->>> allocation code such that vmemmap optimization can be isolated and later
->>> batched.
->>>
->>> The code to allocate hugetlb pages from bootmem was also modified to
->>> allow batching.
->>>
->>> No functional changes, only code restructure.
->>>
->>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->>> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
->>> ---
->> Hi, looks like this patch prevents today's next from booting
->> on at least one Qualcomm ARM64 platform. Reverting it makes
->> the device boot again.
+> > >  struct gpio_chip *gpiochip_find(void *data,
+> > >                               int (*match)(struct gpio_chip *gc,
+> >
+> > > +struct gpio_device *gpio_device_find(void *data,
+> > > +                                  int (*match)(struct gpio_chip *gc,
+> > > +                                               void *data))
+> >
+> > Why not
+> >
+> > typedef int (*gpio_chip_match_fn)(struct gpio_chip *gc, void *data);
 > 
-> Can you share the config used and any other specific information such as
-> kernel command line.
-Later this week.
+> Because gpiochip_find() will go away as soon as we convert all users.
 
-Konrad
+And gpio_device_find() does not. So, I didn't get this argument.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
