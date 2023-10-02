@@ -2,151 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F6AC7B4D43
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA137B4D47
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235844AbjJBIZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 04:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57256 "EHLO
+        id S235845AbjJBI1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 04:27:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229981AbjJBIZn (ORCPT
+        with ESMTP id S229981AbjJBI1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 04:25:43 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9308C6;
-        Mon,  2 Oct 2023 01:25:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696235140; x=1727771140;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=LjUA0WnZOwfBZbOsPWOE8rX33xk0uzpE44wPBaNDwPc=;
-  b=n2cUg4hc3KB3pgqa/MSXJL/Bc6rC5qwHF7mRWyK/6w+HgEc+pwd0dIU9
-   /VZFQjBuGgf2OSrWjLzyY4duz4s2+dM6GMbLeoNR9skiXOvfSRRXOtQLR
-   DLQhX4gTEz/S67Ltp60HJKeP5DTMfQDqBoYuMl+c5S04wAfULGlwzhCcT
-   /WLK8KGOjRxkJXJtSxOFXn5aufagqVJRe+EhtVbphxZIbR5rgeXcxOryb
-   DjiJfgQZniC7+GGuBo4hhO4NaqDbbxaVYh1GvKkl7qW93NiugQjnydWdW
-   LIjM+FGvIICMPIgJUKZ8CMHVRDdyHgG85ASElkoIFJi+QlrsZ/O4Kz+oL
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="468881032"
-X-IronPort-AV: E=Sophos;i="6.03,193,1694761200"; 
-   d="scan'208";a="468881032"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 01:25:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="874286167"
-X-IronPort-AV: E=Sophos;i="6.03,193,1694761200"; 
-   d="scan'208";a="874286167"
-Received: from joe-255.igk.intel.com (HELO localhost) ([10.91.220.57])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 01:25:37 -0700
-From:   Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-Subject: [PATCH] XArray: Make xa_lock_init macro 
-Date:   Mon,  2 Oct 2023 10:25:35 +0200
-Message-Id: <20231002082535.1516405-1-stanislaw.gruszka@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 2 Oct 2023 04:27:41 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5195D3
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 01:27:38 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0C1C26607243;
+        Mon,  2 Oct 2023 09:27:37 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1696235257;
+        bh=5d0H3ooLLwyUXG2ElTtSzQlVCmRg5ncESVD8hW9Pdt8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=DMCg/s4CE5Hr47J1ZGPp9lSS1PjubV/KkwdsufNPvJkUoFdZUJo2PGaJ2lhANj9R3
+         ytO4NT7rFlcQFXKpSeYThp+mMfoSQhjGvgKjyvi54BBPWwIjU1tLkThI4MhycVHS6s
+         HgrmypMwfJxU6Lwp9wajahx5Dn42+sD5H46gDiwxUHUEP/QwwK0ob4elCH7hx2XtMC
+         BTCim7lwYVeiP2J7eQK8foOM7CRopPjLTCI09oCMKZUXRoORGS61FK5a9Wh3KJXU1t
+         2TLqa2ZP6OKrvrsok5k1iN6GFpLmlxlX0qUfLYsLqlwtPT/q18GcVc1hpzdwFkYXx/
+         AKD1YGnM7vpOQ==
+Message-ID: <660c5c93-4a02-0f6b-4640-ddf67a477490@collabora.com>
+Date:   Mon, 2 Oct 2023 10:27:34 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] MAINTAINERS: Add Angelo as MediaTek SoC co-maintainer
+To:     Chen-Yu Tsai <wenst@chromium.org>, Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        =?UTF-8?B?TsOtY29sYXMgRi4gUi4gQS4gUHJhZG8=?= 
+        <nfraprado@collabora.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>, amergnat@baylibre.com,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+References: <20230929082009.71843-1-angelogioacchino.delregno@collabora.com>
+ <84b2de54-8337-42a3-a25c-a95cf2f3349f@app.fastmail.com>
+ <CAGXv+5FtBcHwEhQEoEUBx24Zf4ABrDeSaWo_mDbM7OvmBLF5nA@mail.gmail.com>
+Content-Language: en-US
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <CAGXv+5FtBcHwEhQEoEUBx24Zf4ABrDeSaWo_mDbM7OvmBLF5nA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make xa_init_flags() macro to avoid false positive lockdep splats.
+Il 02/10/23 05:30, Chen-Yu Tsai ha scritto:
+> On Sat, Sep 30, 2023 at 3:37 AM Arnd Bergmann <arnd@arndb.de> wrote:
+>>
+>> On Fri, Sep 29, 2023, at 04:20, AngeloGioacchino Del Regno wrote:
+>>> I am a top reviewer mainly for MediaTek SoC related patches in most
+>>> subsystems and I've also been upstreaming both improvements, fixes
+>>> and new drivers and devicetrees when required.
+>>>
+>>> The MediaTek scene saw a generous increase in number of patches that
+>>> are sent to the lists every week, increasing the amount of required
+>>> efforts to maintain the MTK bits overall, and we will possibly see
+>>> even more of that.
+>>>
+>>> For this reason, and also because of suggestions and encouragement
+>>> coming from the community, I'm stepping up to be a co-maintainer of
+>>> MediaTek SoCs support.
+>>>
+>>> Signed-off-by: AngeloGioacchino Del Regno
+>>> <angelogioacchino.delregno@collabora.com>
+>>> ---
+>>>
+>>> P.S.: I tried to reach to Matthias for almost two months, but I couldn't
+>>> find any way to talk to him and he has been unresponsive on the mailing
+>>> lists as well.
+>>>
+>>> P.P.S.: This also comes after Rob Herring's suggestion to have myself as
+>>> a MediaTek SoC co-maintainer [1] and support from other people.
+>>>
+>>> [1]: https://lore.kernel.org/all/20230804225813.12493-1-robh@kernel.org/
+>>
+>> Thanks for volunteering for this!
+>>
+>> I have no information on what Mattias is doing, but I see that he
+>> has not merged any patches since June, and that he never sent a
+>> pull request for your patches that are still in his for-next
+>> branch.
+>>
+>> I hope he's going to be ok, but let's plan for you to take over
+>> for the moment, at least until Matthias is again able to keep
+>> maintaining the platform in the near future.
+>>
+>> Here is my suggestion for how to continue from here:
+>>
+>> - Please send your MAINTAINERS file update to soc@kernel.org
+>>    along  with any urgent bugfixes you may have, so I can forward
+>>    them for 6.7. I'm wrapping up the current set of fixes at
+>>    the moment, so this would be for next week's rc
+>>
+>> - Create a git tree with the ususal branches (drivers, soc, dt,
+>>    fixes, for-next) and ask Stephen Rothwell (on Cc) to add
+>>    the combined for-next branch  to linux-next for integration testing
+> 
+> I suggest creating a shared git tree from the start. That way when
+> Mattias comes back and does agree to co-maintainership, or if anyone
+> else joins in, you don't have to change the git tree URL in a lot of
+> places.
+> 
 
-When spin_lock_init() is used inside initialization function (like
-in xa_init_flags()) which can be called many times, lockdep assign
-the same key to different locks.
+I agree with creating a shared git tree from the start... I currently don't have
+a kernel.org account yet, as I'm waiting for helpdesk to grant my account request.
 
-For example this splat is seen with intel_vpu driver which uses
-two xarrays and has two separate xa_init_flags() calls:
+They asked me to send a patch adding myself to MAINTAINERS as they would use that
+as a basis to grant the account request... so I guess it's happening soon; seen
+the urgency, I would do anything in my power to speed up the process, but probably
+there's "nothing to do" about it.
 
-[ 1139.148679] WARNING: inconsistent lock state
-[ 1139.152941] 6.6.0-hardening.1+ #2 Tainted: G           OE
-[ 1139.158758] --------------------------------
-[ 1139.163024] inconsistent {HARDIRQ-ON-W} -> {IN-HARDIRQ-W} usage.
-[ 1139.169018] kworker/10:1/109 [HC1[1]:SC0[0]:HE0:SE1] takes:
-[ 1139.174576] ffff888137237150 (&xa->xa_lock#18){?.+.}-{2:2}, at: ivpu_mmu_user_context_mark_invalid+0x1c/0x80 [intel_vpu]
-[ 1139.185438] {HARDIRQ-ON-W} state was registered at:
-[ 1139.190305]   lock_acquire+0x1a3/0x4a0
-[ 1139.194055]   _raw_spin_lock+0x2c/0x40
-[ 1139.197800]   ivpu_submit_ioctl+0xf0b/0x3520 [intel_vpu]
-[ 1139.203114]   drm_ioctl_kernel+0x201/0x3f0 [drm]
-[ 1139.207791]   drm_ioctl+0x47d/0xa20 [drm]
-[ 1139.211846]   __x64_sys_ioctl+0x12e/0x1a0
-[ 1139.215849]   do_syscall_64+0x59/0x90
-[ 1139.219509]   entry_SYSCALL_64_after_hwframe+0x6e/0xd8
-[ 1139.224636] irq event stamp: 45500
-[ 1139.228037] hardirqs last  enabled at (45499): [<ffffffff92ef0314>] _raw_spin_unlock_irq+0x24/0x50
-[ 1139.236961] hardirqs last disabled at (45500): [<ffffffff92eadf8f>] common_interrupt+0xf/0x90
-[ 1139.245457] softirqs last  enabled at (44956): [<ffffffff92ef3430>] __do_softirq+0x4c0/0x712
-[ 1139.253862] softirqs last disabled at (44461): [<ffffffff907df310>] irq_exit_rcu+0xa0/0xd0
-[ 1139.262098]
-               other info that might help us debug this:
-[ 1139.268604]  Possible unsafe locking scenario:
+I am guessing that the right thing to do right now is to just send the mostly
+critical fixes to soc@kernel.org, along with this patch, and wait until a shared
+tree is created to keep things clean?
 
-[ 1139.274505]        CPU0
-[ 1139.276955]        ----
-[ 1139.279403]   lock(&xa->xa_lock#18);
-[ 1139.282978]   <Interrupt>
-[ 1139.285601]     lock(&xa->xa_lock#18);
-[ 1139.289345]
-                *** DEADLOCK ***
+>> - Start each branch on 6.6-rc2 (usually we use rc1, but this time
+>>    rc2 is a better candidate because of the last-minute
+>>    drivers/pmdomain rename), and merge the corresponding branches
+>>    from git://git.kernel.org/pub/scm/linux/kernel/git/matthias.bgg/linux.git
+>>    into those to avoids conflicts with his tree
+>>
+>> - Add any further patches you want in 6.7 on top
+>>
+>> - Send a first set of pull requests to soc@kernel.org for whatever
+>>    you have merged as soon as you are confident about them,
+>>    ideally by the end of next week.
+>>
+>> - Send additional pull requests for fixups or late features in
+>>    the weeks after that as you see fit.
+>>
+>> See Documentation/process/maintainer-soc.rst for more details
+>> on the above. When Mattias comes back, you can work out a new
+>> process together with him.
+> 
+> I can also answer any questions you might have about the process.
+> 
 
-Lockdep falsely identified xa_lock from two different xarrays as the same
-lock and report deadlock. More detailed description of the problem
-is provided in commit c21f11d182c2 ("drm: fix drmm_mutex_init()")
+Many thanks for your support, I greatly appreciate that.
 
-Signed-off-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
----
- include/linux/xarray.h | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
-
-diff --git a/include/linux/xarray.h b/include/linux/xarray.h
-index cb571dfcf4b1..409d9d739ee9 100644
---- a/include/linux/xarray.h
-+++ b/include/linux/xarray.h
-@@ -375,12 +375,12 @@ void xa_destroy(struct xarray *);
-  *
-  * Context: Any context.
-  */
--static inline void xa_init_flags(struct xarray *xa, gfp_t flags)
--{
--	spin_lock_init(&xa->xa_lock);
--	xa->xa_flags = flags;
--	xa->xa_head = NULL;
--}
-+#define xa_init_flags(_xa, _flags)	\
-+do {					\
-+	spin_lock_init(&(_xa)->xa_lock);\
-+	(_xa)->xa_flags = (_flags);	\
-+	(_xa)->xa_head = NULL;		\
-+} while (0)
- 
- /**
-  * xa_init() - Initialise an empty XArray.
-@@ -390,10 +390,7 @@ static inline void xa_init_flags(struct xarray *xa, gfp_t flags)
-  *
-  * Context: Any context.
-  */
--static inline void xa_init(struct xarray *xa)
--{
--	xa_init_flags(xa, 0);
--}
-+#define xa_init(xa) xa_init_flags(xa, 0)
- 
- /**
-  * xa_empty() - Determine if an array has any present entries.
--- 
-2.25.1
+Cheers,
+Angelo
 
