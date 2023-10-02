@@ -2,62 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D75587B59CA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42E1A7B599F
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237897AbjJBRxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45656 "EHLO
+        id S238202AbjJBRxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjJBRxI (ORCPT
+        with ESMTP id S237984AbjJBRxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:53:08 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4609E
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:53:05 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9ae3d7eb7e0so517711566b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:53:05 -0700 (PDT)
+        Mon, 2 Oct 2023 13:53:15 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425D083
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:53:12 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9b2c5664cb4so190904066b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:53:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696269184; x=1696873984; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YMNM0aRdpEfcCNVG8Zt3kh8xBFlOSvcHGJleVt42moA=;
-        b=H2UvYAEihk5hVTLNyJgh6vawLltpmaIkztZa9MxM/aHtsx7tP/zJ1HRsVb1SXlXVpt
-         M/RG88wUlo0GpK97KrnbdFsAtfcODFopTZNseXq5bplf5TJKOCcBZKzicqBc846e7J2K
-         /bLa+6rdL+sr6vsshkXckmED7QZoA6QU13X6aY2q5Zy4RgL2YO7QAZ5AXu/9SeQyZnPg
-         5vPTydc1trJJ4M2HoeZ0mpxa0wgQTNooHes2M1fPfMtcl+VQ6Q7/8dIWY2WqJ9jhPrfJ
-         nvSd/GbodVHyzVGtfEZ4957u1x7q0TZgvoMzPt3QzYggjS+tFrRTRAy7s9uTYgCaNPpZ
-         abfA==
+        d=gmail.com; s=20230601; t=1696269190; x=1696873990; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BFQQ8VYOAr6qNDG5scul8J1mas0KU5lvrUkFm3jfx9c=;
+        b=S7H5BP36OyXRBQ5Rxxyf/KVS0HROdy7TXxhm+dbOjAPTrKq2SlljcJcsPyEaV2UmH9
+         ymEJ6XTn8Dgy8iHpkvQFA8hXrEAopZuyuhoo4ZnyT2yxdBeC3VyEd8zZBRao0i1fXUWm
+         yb0eSOYhcOPpf9xkyqkVfNR/c62xtnfX5c82PbF806rwxf+Lea0YY/d0I50kz1y1R9w6
+         9wr6eaLfimwcOYNzW8tXccUI3Ovg71Ybhp5MdITgMntX0ias7c9WB7XklbzLkHzD0av2
+         xz7FOMsxBP9ca9kNt8sPlFdQeHfqTFt21F9bJT0miPWp7sIYsV7XW4Gdv4RelqK38T5u
+         FO4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696269184; x=1696873984;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YMNM0aRdpEfcCNVG8Zt3kh8xBFlOSvcHGJleVt42moA=;
-        b=T6Yq9Bop1yoZlOYFHmEB7BEKd0xqQEWQl/Z7wWSpAGM9aBOrM0TAIKHypbOvlCBYvA
-         0mwSvVm+bJsyDW4u6I2s+SVJq9KOgZ6xQQbUhYjVjel54g+Ej1YSH9xIK4I3jnP00/GW
-         3XLDUMT33zWQo+0VELNQaT6dP9k/cLzREvYTdkbU68H9Nl2Wq5vgpJzR2q5ezkglHQlB
-         wUqL/5e1m2GB1r5O4o1XNis7+BHIQyZbVs647zNSO2VKxRqYOXfuSDKfytXbSvTrOpSe
-         SnufXRloBUSJipKYiBWWuV3bfUXUdLVEZ0JwJSiAvU6kzGm+bbwcYWvTx51xOxh46lZe
-         f5TA==
-X-Gm-Message-State: AOJu0Yz1fjtozSSiFe1uDpLIRyxWSgWdVBPLxeqijxpUNfPgomZ7MDDu
-        qcOMDcQXYAKEK6DA6Fuhv5k=
-X-Google-Smtp-Source: AGHT+IFWFHOoILjj1gCnBsboKkDjpRRge8iCCyKPGdNXYWEcYyYGtOooNZfCWIUE/yjtLRDDQTbrfw==
-X-Received: by 2002:a17:906:5352:b0:9a1:d79a:4190 with SMTP id j18-20020a170906535200b009a1d79a4190mr10128359ejo.2.1696269183580;
-        Mon, 02 Oct 2023 10:53:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696269190; x=1696873990;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BFQQ8VYOAr6qNDG5scul8J1mas0KU5lvrUkFm3jfx9c=;
+        b=bhtW66D4JdyEcG87kIH04AeGRy69MWlZOh1kTQuG/HnBP8oNGgg2E/seMFZ72ufbbW
+         QpF0H5EHXbIKN5Cf9CSo7dPUe8SH6IVjUiTAI0XryJBcKFXadCcoAkup203nyKCYvgYE
+         7xZHFCiNcflkEZFPRYvABBLLRTK/nh34V7T7T8gcnNA89JjRTb39obhtw7pnKiHKRZJi
+         GMMA6DhRhAQZpHbCQdfXYvvLbQnX+LfBUCTzXB1Ucf21zyRFzO+ZUxT/X2+otiMfpAR6
+         tHeYd13Ko5/0JUwfNiOf7oTfG4H4Cllz8D/b6FpbRMteGbObLLk3ru5EoCeWH56yFw59
+         fusw==
+X-Gm-Message-State: AOJu0Yx6gc/7nWleyD1+CTBlWKxpsqWwMQuVfIX3U8wHpd/L3jKyMiCh
+        WiA4uFek9ujNiiJtuE6AoXNaQ2iuAaA=
+X-Google-Smtp-Source: AGHT+IGMa7Qaxlb1KlygBwVlzi54kQa7AeduKFnqNbPLRX9y8enMpw6ICJzR7bnbu6L2qmOZH/0yCQ==
+X-Received: by 2002:a17:906:25d:b0:9b2:bf2d:6b65 with SMTP id 29-20020a170906025d00b009b2bf2d6b65mr11389311ejl.4.1696269190437;
+        Mon, 02 Oct 2023 10:53:10 -0700 (PDT)
 Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id e8-20020a170906374800b0099cf840527csm17364467ejc.153.2023.10.02.10.53.02
+        by smtp.gmail.com with ESMTPSA id k5-20020a1709062a4500b009934b1eb577sm17589605eje.77.2023.10.02.10.53.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 10:53:03 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 19:53:01 +0200
+        Mon, 02 Oct 2023 10:53:10 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 19:53:08 +0200
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/8] staging: rtl8192e: Remove unused functions related to
- removed reset
-Message-ID: <cover.1696266964.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 1/8] staging: rtl8192e: Remove unused function
+ rtl92e_dm_backup_state()
+Message-ID: <104b248b35b4fda560056fc4ab4ac230dea98d3f.1696266964.git.philipp.g.hortmann@gmail.com>
+References: <cover.1696266964.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <cover.1696266964.git.philipp.g.hortmann@gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -68,36 +71,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unused functions rtl92e_dm_backup_state(), 
-rtl92e_dm_restore_state() and rtl92e_cam_restore(). Remove unused
-variables. Most parts are leftover from the previous patch series.
+rtl92e_dm_backup_state() is unused. Remove dead code.
 
-Tested with rtl8192e (WLL6130-D99) in Mode n (12.5 MB/s)
-Transferred this patch over wlan connection of rtl8192e.
+Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+---
+ drivers/staging/rtl8192e/rtl8192e/rtl_dm.c | 19 -------------------
+ drivers/staging/rtl8192e/rtl8192e/rtl_dm.h |  1 -
+ 2 files changed, 20 deletions(-)
 
-Philipp Hortmann (8):
-  staging: rtl8192e: Remove unused function rtl92e_dm_backup_state()
-  staging: rtl8192e: Remove unused function rtl92e_dm_restore_state()
-  staging: rtl8192e: Remove unused function rtl92e_cam_restore()
-  staging: rtl8192e: Remove unused variable last_ratr
-  staging: rtl8192e: Remove unused variable rate_adaptive_disabled
-  staging: rtl8192e: Remove unused variable rfc_txpowertrackingindex
-  staging: rtl8192e: Remove unused/constant parameter mesh_flag and
-    shutdown
-  staging: rtl8192e: Remove constant parameter from
-    rtllib_stop_protocol()
-
- drivers/staging/rtl8192e/rtl8192e/rtl_cam.c  | 63 ---------------
- drivers/staging/rtl8192e/rtl8192e/rtl_cam.h  |  1 -
- drivers/staging/rtl8192e/rtl8192e/rtl_core.c |  5 +-
- drivers/staging/rtl8192e/rtl8192e/rtl_core.h |  1 -
- drivers/staging/rtl8192e/rtl8192e/rtl_dm.c   | 83 --------------------
- drivers/staging/rtl8192e/rtl8192e/rtl_dm.h   |  2 -
- drivers/staging/rtl8192e/rtllib.h            |  7 +-
- drivers/staging/rtl8192e/rtllib_softmac.c    | 22 +++---
- drivers/staging/rtl8192e/rtllib_softmac_wx.c |  6 +-
- 9 files changed, 16 insertions(+), 174 deletions(-)
-
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+index c29bc85f9577..5217ace3f140 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.c
+@@ -973,25 +973,6 @@ static void _rtl92e_dm_bb_initialgain_restore(struct net_device *dev)
+ 	rtl92e_set_bb_reg(dev, UFWP, bMaskByte1, 0x1);
+ }
+ 
+-void rtl92e_dm_backup_state(struct net_device *dev)
+-{
+-	struct r8192_priv *priv = rtllib_priv(dev);
+-	u32 bit_mask = bMaskByte0;
+-
+-	priv->bswitch_fsync  = false;
+-
+-	if (dm_digtable.dig_algorithm == DIG_ALGO_BY_RSSI)
+-		return;
+-
+-	rtl92e_set_bb_reg(dev, UFWP, bMaskByte1, 0x8);
+-	priv->initgain_backup.xaagccore1 = rtl92e_get_bb_reg(dev, rOFDM0_XAAGCCore1, bit_mask);
+-	priv->initgain_backup.xbagccore1 = rtl92e_get_bb_reg(dev, rOFDM0_XBAGCCore1, bit_mask);
+-	priv->initgain_backup.xcagccore1 = rtl92e_get_bb_reg(dev, rOFDM0_XCAGCCore1, bit_mask);
+-	priv->initgain_backup.xdagccore1 = rtl92e_get_bb_reg(dev, rOFDM0_XDAGCCore1, bit_mask);
+-	bit_mask  = bMaskByte2;
+-	priv->initgain_backup.cca = (u8)rtl92e_get_bb_reg(dev, rCCK0_CCA, bit_mask);
+-}
+-
+ static void _rtl92e_dm_dig_init(struct net_device *dev)
+ {
+ 	struct r8192_priv *priv = rtllib_priv(dev);
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.h b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.h
+index 01587e2fec65..9085a6454cbc 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_dm.h
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_dm.h
+@@ -179,7 +179,6 @@ void    rtl92e_dm_txpower_tracking_wq(void *data);
+ void rtl92e_dm_cck_txpower_adjust(struct net_device *dev, bool binch14);
+ 
+ void    rtl92e_dm_restore_state(struct net_device *dev);
+-void    rtl92e_dm_backup_state(struct net_device *dev);
+ void    rtl92e_dm_init_edca_turbo(struct net_device *dev);
+ void    rtl92e_dm_rf_pathcheck_wq(void *data);
+ void rtl92e_dm_init_txpower_tracking(struct net_device *dev);
 -- 
 2.42.0
 
