@@ -2,133 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B34307B4F02
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA0CA7B4F06
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236083AbjJBJZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60218 "EHLO
+        id S236082AbjJBJ04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236033AbjJBJZQ (ORCPT
+        with ESMTP id S236033AbjJBJ0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:25:16 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E455FA4;
-        Mon,  2 Oct 2023 02:25:13 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id 41be03b00d2f7-5859b06509cso2061975a12.2;
-        Mon, 02 Oct 2023 02:25:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696238713; x=1696843513; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/qXBB0HN9EE99f58WPeeJJXkwIcpeq4j/UjdEMsKhjw=;
-        b=HW/t03TraU2l+PsoVrnL1idz2UWo9Jk86iLHAgjbKidGXH46NZlD8D2VhMm+mCfavW
-         Bh3+7FJzTR1nsOyeMJ25go/MIcfh8ZOO0Pz0kw8C0GsCYU9ZzqSLuVxRY1zEFxrTolg9
-         MvwPfljt+Ds17ROUgm1J3WbOrq+ISZqSXRiG/akeLct3ezdykAa51QDg3eWlYVYHRN3D
-         UpZ9UR4GzsCMHf9u2zJIWazpQQeH2lbhaiTm6OMUqkUpf51G6glHSNsEIy7jqB2QFRpZ
-         9WAAPsrFvvPPoHndr6AhWp44C+AcBrMs8uTBe14zF/7IvPG33Mfz2a9bk+yVqN9NixIm
-         jfUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696238713; x=1696843513;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/qXBB0HN9EE99f58WPeeJJXkwIcpeq4j/UjdEMsKhjw=;
-        b=WXMmjFLaVFFA6B3ZyK+852dNuFBlEVu+BlzrldDKmAMa2HOPQ5H7Uln9fBGdkZp2g+
-         fKUj31AMhxDkngozUyOltbZiR6DDTar+8XhD+5oIuLufmJ+YnC7f+UJMaGTS3Unr+T2J
-         s7oFT1KeQfb/r9rADf8PNj/1x7Tlr+Ddu7pPBYv8ooa1VKtlJq+l3MzfjS/eoKS7MoX9
-         qlFu8JzGDs8+aqekO98QoIOragMFGlfiF1OKU27pmHxSA7y20o1Ds9vD+S0WqOTqjCli
-         U2DjzDR8RHz+1i3DJHCv43NYmNdGlJBywzlvDUYnzatmoy9s7tfWFBY2S6IazqnaSXH+
-         wTNg==
-X-Gm-Message-State: AOJu0YywfkL404E3jr/sqVAXvw8Su8qxlcYCnrUfFBWMW4OEk1ya6CWE
-        ArwZS5WHYdWQ8/IQx0+Wu8s=
-X-Google-Smtp-Source: AGHT+IHpK5n4dWXV9/SW5f/QoW/AwH52cbiDur8cY38t2xxx74IiU+CRIJ4NkW2HkfVGIR26i63yIQ==
-X-Received: by 2002:a17:90a:d513:b0:274:9200:3973 with SMTP id t19-20020a17090ad51300b0027492003973mr8047443pju.36.1696238713240;
-        Mon, 02 Oct 2023 02:25:13 -0700 (PDT)
-Received: from sol ([118.209.204.34])
-        by smtp.gmail.com with ESMTPSA id 25-20020a17090a031900b00279060a0fccsm6387016pje.9.2023.10.02.02.25.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 02:25:12 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 17:25:05 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Yury Norov <yury.norov@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
-        Srinivas Neeli <srinivas.neeli@amd.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: [PATCH v1 5/5] gpiolib: cdev: Utilize more bitmap APIs
-Message-ID: <ZRqMcSffA7V77mqW@sol>
-References: <20230926052007.3917389-1-andriy.shevchenko@linux.intel.com>
- <20230926052007.3917389-6-andriy.shevchenko@linux.intel.com>
- <ZROGG44v5kfktdVs@sol>
- <ZRQdQnL5VbX659cl@smile.fi.intel.com>
- <ZRQy795YoPOKsOcz@sol>
- <ZRQ1RpHEapodQ0xU@smile.fi.intel.com>
- <ZRQ60KBtY09uPxp6@sol>
- <ZRqHx+Ihcxor2Jz4@smile.fi.intel.com>
+        Mon, 2 Oct 2023 05:26:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A908DAB
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:26:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696238761;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u0PdD95eQa7pRzI20cGWxgLJ0k+Wv+3imJtntajjlHo=;
+        b=HogZ+Ul//XYWmuYrd6qdCNdtWKZgXkxqQL9iD+Psp+yN+5mi9I9NQzOe6hwFJAYUKUjsRb
+        sDEMi+rlMrXvXdES7gPv2kAtaHrI+Td/cxGjML+NlQ9mWJB62+Kef+6u2MTNlc2jGy6J0w
+        Jw1JHQPPia0vhIGWGfbPMtmda+IchwY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-329-PQBTnD6gOOy2ZO4-BcF33g-1; Mon, 02 Oct 2023 05:25:55 -0400
+X-MC-Unique: PQBTnD6gOOy2ZO4-BcF33g-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2035D811E7D;
+        Mon,  2 Oct 2023 09:25:55 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.226])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 638B951E3;
+        Mon,  2 Oct 2023 09:25:52 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20230925120309.1731676-9-dhowells@redhat.com>
+References: <20230925120309.1731676-9-dhowells@redhat.com> <20230925120309.1731676-1-dhowells@redhat.com>
+Cc:     dhowells@redhat.com, Jens Axboe <axboe@kernel.dk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 08/12] iov_iter: Don't deal with iter->copy_mc in memcpy_from_iter_mc()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRqHx+Ihcxor2Jz4@smile.fi.intel.com>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1809397.1696238751.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 02 Oct 2023 10:25:51 +0100
+Message-ID: <1809398.1696238751@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.5
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,MISSING_HEADERS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 12:05:11PM +0300, Andy Shevchenko wrote:
-> On Wed, Sep 27, 2023 at 10:23:12PM +0800, Kent Gibson wrote:
-> > On Wed, Sep 27, 2023 at 04:59:34PM +0300, Andy Shevchenko wrote:
-> > > On Wed, Sep 27, 2023 at 09:49:35PM +0800, Kent Gibson wrote:
-> > > > On Wed, Sep 27, 2023 at 03:17:06PM +0300, Andy Shevchenko wrote:
-> > > > > On Wed, Sep 27, 2023 at 09:32:11AM +0800, Kent Gibson wrote:
-> 
-> ...
-> 
-> > > > > Yet, it opens a way to scale this in case we might have v3 ABI that let's say
-> > > > > allows to work with 512 GPIOs at a time. With your code it will be much harder
-> > > > > to achieve and see what you wrote about maintenance (in that case).
-> > > > 
-> > > > v3 ABI?? libgpiod v2 is barely out the door!
-> > > > Do you have any cases where 64 lines per request is limiting?
-> > > 
-> > > IIRC it was SO question where the OP asks exactly about breaking the 64 lines
-> > > limitation in the current ABI.
-> > > 
-> > > > If that sort of speculation isn't premature optimisation then I don't know
-> > > > what is.
-> > > 
-> > > No, based on the real question / discussion, just have no link at hand.
-> > > But it's quite a niche, I can agree.
-> > 
-> > Let me know if you find a ref to that discussion - I'm curious.
-> 
-> Here it is (read comments as well):
-> https://stackoverflow.com/questions/76307370/control-gpio-from-linux-userspace-with-linux-gpio-h
-> 
+David Howells <dhowells@redhat.com> wrote:
 
-That question looks to me to be confusing how many GPIOs can be
-requested per request (64) and in total (effectively unlimited) - thinking
-they are the same.
-That could be due to their desire to use the gpiod_chip_get_all_lines()
-convenience function with a chip with more than 64 lines, rather than
-because they have an actual need for the lines to be managed in a single
-request.
+> +static size_t __copy_from_iter_mc(void *addr, size_t bytes, struct iov_=
+iter *i)
+>  {
+> -	struct iov_iter *iter =3D priv2;
+> +	size_t progress;
+>  =
 
-So that doesn't look like a genuine use case to me - just a "what if I
-want to do X" question.  Certainly not something that would warrant a v3
-ABI.
+> -	if (iov_iter_is_copy_mc(iter))
+> -		return copy_mc_to_kernel(to + progress, iter_from, len);
+> -	return memcpy_from_iter(iter_from, progress, len, to, priv2);
+> +	if (unlikely(i->count < bytes))
+> +		bytes =3D i->count;
+> +	if (unlikely(!bytes))
+> +		return 0;
+> +	progress =3D iterate_bvec(i, bytes, addr, NULL, memcpy_from_iter_mc);
+> +	i->count -=3D progress;
 
-Cheers,
-Kent.
+i->count shouldn't be decreased here as iterate_bvec() now does that.
+
+This causes the LTP abort01 test to log a warning under KASAN (see below).
+I'll remove the line and repush the patches.
+
+David
+
+    LTP: starting abort01
+    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+    BUG: KASAN: stack-out-of-bounds in __copy_from_iter_mc+0x2e6/0x480
+    Read of size 4 at addr ffffc90004777594 by task abort01/708
+
+    CPU: 4 PID: 708 Comm: abort01 Not tainted 99.6.0-rc3-ged6251886a1d #46
+    Hardware name: QEMU Standard PC (Q35 + ICH9, 2009)/Incus, BIOS unknown=
+ 2/2/2022
+    Call Trace:
+     <TASK>
+     dump_stack_lvl+0x3d/0x70
+     print_report+0xce/0x650
+     ? lock_acquire+0x1b1/0x330
+     kasan_report+0xda/0x110
+     ? __copy_from_iter_mc+0x2e6/0x480
+     ? __copy_from_iter_mc+0x2e6/0x480
+     __copy_from_iter_mc+0x2e6/0x480
+     copy_page_from_iter_atomic+0x517/0x1350
+     ? __pfx_copy_page_from_iter_atomic+0x10/0x10
+     ? __filemap_get_folio+0x281/0x6c0
+     ? folio_wait_writeback+0x53/0x1e0
+     ? prepare_pages.constprop.0+0x40b/0x6c0
+     btrfs_copy_from_user+0xc6/0x290
+     btrfs_buffered_write+0x8c9/0x1190
+     ? __pfx_btrfs_buffered_write+0x10/0x10
+     ? _raw_spin_unlock+0x2d/0x50
+     ? btrfs_file_llseek+0x100/0xf00
+     ? follow_page_mask+0x69f/0x1e10
+     btrfs_do_write_iter+0x859/0xff0
+     ? __pfx_btrfs_file_llseek+0x10/0x10
+     ? find_held_lock+0x2d/0x110
+     ? __pfx_btrfs_do_write_iter+0x10/0x10
+     ? __up_read+0x211/0x790
+     ? __pfx___get_user_pages+0x10/0x10
+     ? __pfx___up_read+0x10/0x10
+     ? __kernel_write_iter+0x3be/0x6d0
+     __kernel_write_iter+0x226/0x6d0
+     ? __pfx___kernel_write_iter+0x10/0x10
+     dump_user_range+0x25d/0x650
+     ? __pfx_dump_user_range+0x10/0x10
+     ? __pfx_writenote+0x10/0x10
+     elf_core_dump+0x231f/0x2e90
+     ? __pfx_elf_core_dump+0x10/0x10
+     ? do_coredump+0x12a9/0x38c0
+     ? kasan_set_track+0x25/0x30
+     ? __kasan_kmalloc+0xaa/0xb0
+     ? __kmalloc_node+0x6c/0x1b0
+     ? do_coredump+0x12a9/0x38c0
+     ? get_signal+0x1e7d/0x20f0
+     ? 0xffffffffff600000
+     ? mas_next_slot+0x328/0x1dd0
+     ? lock_acquire+0x162/0x330
+     ? do_coredump+0x2537/0x38c0
+     do_coredump+0x2537/0x38c0
+     ? __pfx_do_coredump+0x10/0x10
+     ? kmem_cache_free+0x114/0x520
+     ? find_held_lock+0x2d/0x110
+     get_signal+0x1e7d/0x20f0
+     ? __pfx_get_signal+0x10/0x10
+     ? do_send_specific+0xf1/0x1c0
+     ? __pfx_do_send_specific+0x10/0x10
+     arch_do_signal_or_restart+0x8b/0x4b0
+     ? __pfx_arch_do_signal_or_restart+0x10/0x10
+     exit_to_user_mode_prepare+0xde/0x210
+     syscall_exit_to_user_mode+0x16/0x50
+     do_syscall_64+0x53/0x90
+     entry_SYSCALL_64_after_hwframe+0x6e/0xd8
 
