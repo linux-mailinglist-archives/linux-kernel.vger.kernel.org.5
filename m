@@ -2,156 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6067B5B6F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326147B5B75
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238931AbjJBTlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 15:41:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44008 "EHLO
+        id S238943AbjJBTlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 15:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238751AbjJBTlK (ORCPT
+        with ESMTP id S238927AbjJBTlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 15:41:10 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A24B3;
-        Mon,  2 Oct 2023 12:41:05 -0700 (PDT)
-Date:   Mon, 02 Oct 2023 19:41:03 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696275664;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KqlF5EVuQLFpWE0VicqrDur8NnlddH+WVSgjgHI93gQ=;
-        b=d1lSSuBT56yRLNBYTUXGs5riRDUOw4o+gByfhuHKyHRVKdXH9TgWm5LC2aY0Pl/h1zy4wB
-        6FLhzbn9+VJQ2hyQKqrWVRy6vSSFJyyh0Z92+sQAx0yuAJQln3dOnPWWUSl40KDZJzdmYU
-        Q7wugn2Kwyk0UxllSY169AUzA43v2jJtDNEc873IeUU1RxpjlvZYOt+Yhz4Ig9o9Twv5YT
-        QO2TZDx2lGDAG1zD2iFYBomKr4NloiFTprEePRd6d3O1uPQdbSZ4h2Sq19Nhy2t08bWgFZ
-        +DKihTSMhal84GFhFqshTn562WdzcO37KCPvMbMcW9Khc/oXEu5GuBlYg3qesQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696275664;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KqlF5EVuQLFpWE0VicqrDur8NnlddH+WVSgjgHI93gQ=;
-        b=8yVNKGn6AKcvR1BdzXfoIzQOrkHakU2C0FzQCXD74Z7OAQ1AmrAWH8Ls4KQ2JOEw/sM2uV
-        BOxmNnK8VsWhYbAw==
-From:   "tip-bot2 for Saurabh Sengar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/platform] x86/of: Move the x86_flattree_get_config() call
- out of x86_dtb_init()
-Cc:     Saurabh Sengar <ssengar@linux.microsoft.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <1692949657-16446-1-git-send-email-ssengar@linux.microsoft.com>
-References: <1692949657-16446-1-git-send-email-ssengar@linux.microsoft.com>
+        Mon, 2 Oct 2023 15:41:50 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01hn2216.outbound.protection.outlook.com [52.100.223.216])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A0E2AC;
+        Mon,  2 Oct 2023 12:41:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NwILTPUvJd7hxrBT+7uFibQZPQ7SyJEIr3SoL39GzYOHGGY0oxgPIU+ofBmSnUjGhQhRBt/ArEJvyYlwTjjxJU2TaX7N7BKLE2CgVW5fjHPSpDloSEC53F//m1FfB3LV9cDbWOUFpQ2aIMklxULbZbjH518w/F2h6isauOgaso9bulrTym4pqcE5JkFfDfcbftJ1tEDLGcwaiT7U8sh8yecNOUQUNpNus6UfPN1fLUr2ZUHZnCbAc8slZlWTV3vJ8aEXaaTOZOWid6QrW7RPLpAeXU4dQln4zpcIoRB6Jlpd9UcAykYNzO0GatNUfxNB9jhy9ZalNp6V+vbJUjaz9g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GWOMOUmkK4cicx9KIoUJU/XuPMlWhl6tysC8B7TKa0c=;
+ b=i1GntVU3eA6FVbvTKNnZRojpBhg9tMmmXLInNeAexh9/8/FBzRng6vP6Ium+Ngx80VUuNT4BqyWod8DbnGf053+WxgxwkR0nNeoGRpUdsHXo+nEyFmNPgJhi0uci1hAsbZhQuVh5dHJA2NkVdKM1yofyHozT+7rMEwN7aehL7M8gJndi4mRV6atKu7M/ffeNACzny1+RXLv/hUbYIhV+StIS7pJmYaGtJ7/b5UbUYyJEHng132PO7Qjy3Nuzc6Lu3Z6/Mj0SsPdGqqKZ+mC/CHIUKMTY07/5wRVyFsJxmWvcM5M2/b/pyDsHbDli4G3xOJ1+2vSZ5oWTup2hBUDlQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 211.75.126.7) smtp.rcpttodomain=antmicro.com smtp.mailfrom=nuvoton.com;
+ dmarc=fail (p=none sp=quarantine pct=100) action=none header.from=gmail.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=nuvoton.onmicrosoft.com; s=selector2-nuvoton-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GWOMOUmkK4cicx9KIoUJU/XuPMlWhl6tysC8B7TKa0c=;
+ b=A/o9EWHkjrEoGpq3y++MiLZvxyWaMljHJh5PvUhYypgasWtKpxrJRgb9GSpJ+XDXpiVvdimnxB9CBT0WjNuzOIz5UWfSxB8N8PnF1RyW2TPY3V+sIZNT+yU6ZX/Iej3E65lm6AbIXSE8VCDGWaGguTVOlFFLXiiClxCtXjxkiB0=
+Received: from SG2PR04CA0201.apcprd04.prod.outlook.com (2603:1096:4:187::23)
+ by JH0PR03MB7343.apcprd03.prod.outlook.com (2603:1096:990:9::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 2 Oct
+ 2023 19:41:42 +0000
+Received: from SG1PEPF000082E4.apcprd02.prod.outlook.com
+ (2603:1096:4:187:cafe::b6) by SG2PR04CA0201.outlook.office365.com
+ (2603:1096:4:187::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.32 via Frontend
+ Transport; Mon, 2 Oct 2023 19:41:42 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 211.75.126.7)
+ smtp.mailfrom=nuvoton.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=gmail.com;
+Received-SPF: Pass (protection.outlook.com: domain of nuvoton.com designates
+ 211.75.126.7 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.75.126.7; helo=NTHCCAS01.nuvoton.com; pr=C
+Received: from NTHCCAS01.nuvoton.com (211.75.126.7) by
+ SG1PEPF000082E4.mail.protection.outlook.com (10.167.240.7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Mon, 2 Oct 2023 19:41:42 +0000
+Received: from NTHCCAS02.nuvoton.com (10.1.9.121) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Tue, 3 Oct
+ 2023 03:41:41 +0800
+Received: from NTHCCAS01.nuvoton.com (10.1.8.28) by NTHCCAS02.nuvoton.com
+ (10.1.9.121) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.14; Tue, 3 Oct
+ 2023 03:41:40 +0800
+Received: from taln60.nuvoton.co.il (10.191.1.180) by NTHCCAS01.nuvoton.com
+ (10.1.8.28) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Tue, 3 Oct 2023 03:41:40 +0800
+Received: by taln60.nuvoton.co.il (Postfix, from userid 10070)
+        id C31006473F; Mon,  2 Oct 2023 22:41:39 +0300 (IDT)
+From:   Tomer Maimon <tmaimon77@gmail.com>
+To:     <ulf.hansson@linaro.org>, <avifishman70@gmail.com>,
+        <tali.perry1@gmail.com>, <joel@jms.id.au>, <venture@google.com>,
+        <yuenn@google.com>, <benjaminfair@google.com>,
+        <adrian.hunter@intel.com>, <skhan@linuxfoundation.org>,
+        <davidgow@google.com>, <pbrobinson@gmail.com>, <gsomlo@gmail.com>,
+        <briannorris@chromium.org>, <arnd@arndb.de>,
+        <krakoczy@antmicro.com>, <andy.shevchenko@gmail.com>
+CC:     <openbmc@lists.ozlabs.org>, <linux-mmc@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Tomer Maimon <tmaimon77@gmail.com>
+Subject: [PATCH v4 0/2] add NPCM SDHCI driver support
+Date:   Mon, 2 Oct 2023 22:41:36 +0300
+Message-ID: <20231002194138.125349-1-tmaimon77@gmail.com>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-Message-ID: <169627566397.3135.7322755812726837535.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NotSetDelaration: True
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG1PEPF000082E4:EE_|JH0PR03MB7343:EE_
+X-MS-Office365-Filtering-Correlation-Id: 79f4e12f-faa5-44ec-b021-08dbc37f9a82
+X-MS-Exchange-SenderADCheck: 0
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?jeFop6wXgGURGi19T0d8ET41Wlr3gBxJnkU1T7d8qgscY7fnY4ftxid5EjE/?=
+ =?us-ascii?Q?qw+w2RaneiB3BkLson5MsLzSDXxAu3nyU603P9OGBcr+T2gT376zmKs/XWUc?=
+ =?us-ascii?Q?GGaDfmJnTcLlq605aN8vT7ykgTUImE+bo84ZQW9DR0/FYgiCXOcmD9Nf5U6Z?=
+ =?us-ascii?Q?HbEvSRnobnwYOkwBAcmSoDHWgAg76qcRrExwDvPhnuQ0+f8upAsiFg8u0Zp2?=
+ =?us-ascii?Q?MOGjMo+AxvmVTxi7S5t99Be1ni2GRN8wBFodIEW0ZvtqGLUPKtdT4/uODJj/?=
+ =?us-ascii?Q?MMXQMHu2p+ANjZpvy66rN3M1vD5ZHdf4o4oKxcmIKQtBkRhmiT1fbHcbUux7?=
+ =?us-ascii?Q?mtRfDPjGW9fZsPzJLFk+yOZnI4D9Rtbe3ngNK1iGzY1fQSi7aVFptKDDSdIS?=
+ =?us-ascii?Q?OUbkWKFC8hAGg1/2OJm2NUjp0OBVCFxTxn6UBdn5HzzoBsBO2jp9j4mvTkRe?=
+ =?us-ascii?Q?X+gx4XxYXYKZtS3kioOwWKTkOaWw7KTlGhbe4iTOqhQHISuuwyZ314IXw/4+?=
+ =?us-ascii?Q?XZrkI5St4g7vj0Z8PJiHbsOFP/6PLaWf1bz9lAR1L50RIjLbB9MOB94Ie6FH?=
+ =?us-ascii?Q?7/qN1OogSNrWkZUeUkn1BTEDaTSwW+CeCK3tZOAaHivdLrT2ZaIJNyhQkRmS?=
+ =?us-ascii?Q?xVs96cLeBIwdY1w7HZiCwsqTbS6sMplks8Vi3f3zXK1oYcUC6miYwQxbqJcR?=
+ =?us-ascii?Q?fgd0W6P+zWx/gW4HoX9g0yo9OfKyjVbOQo1j+SDIDeGIAIfD6RBWwwhqJ4g3?=
+ =?us-ascii?Q?IBGf/5ZJzWVVRblpcaCFIntibi92y0dwb1VWna35DqM017BWw0OxBby1s88L?=
+ =?us-ascii?Q?pcdX1OVJqqAdcmOjr+B+//DAd6ywAESf/nwVH2HYmxiVGZOQB3Wr9+IRpu/M?=
+ =?us-ascii?Q?BW42yXUWeKvmIlzM49rEwdTxe5ibyvc2JFTZQdG9CzOWbePGRaBYZ8qjszMW?=
+ =?us-ascii?Q?ymS5kGPYAMkrSDUx+9B16D6iXwn6Btphkf02C4xiNqw=3D?=
+X-Forefront-Antispam-Report: CIP:211.75.126.7;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:NTHCCAS01.nuvoton.com;PTR:211-75-126-7.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(4636009)(396003)(376002)(39860400002)(346002)(136003)(230922051799003)(64100799003)(5400799018)(186009)(451199024)(61400799006)(82310400011)(48200799006)(40470700004)(46966006)(36840700001)(8936002)(40480700001)(2616005)(83380400001)(40460700003)(356005)(36756003)(81166007)(36860700001)(82740400003)(34020700004)(7416002)(83170400001)(55446002)(336012)(1076003)(76482006)(478600001)(73392003)(5660300002)(82202003)(966005)(41300700001)(4326008)(6666004)(26005)(42882007)(47076005)(6266002)(921005)(8676002)(2906002)(54906003)(70586007)(70206006)(110136005)(6636002)(316002)(42186006)(45356006)(84790400001)(35450700002)(12100799045);DIR:OUT;SFP:1501;
+X-OriginatorOrg: nuvoton.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2023 19:41:42.2482
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 79f4e12f-faa5-44ec-b021-08dbc37f9a82
+X-MS-Exchange-CrossTenant-Id: a3f24931-d403-4b4a-94f1-7d83ac638e07
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=a3f24931-d403-4b4a-94f1-7d83ac638e07;Ip=[211.75.126.7];Helo=[NTHCCAS01.nuvoton.com]
+X-MS-Exchange-CrossTenant-AuthSource: SG1PEPF000082E4.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR03MB7343
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        DKIM_SIGNED,DKIM_VALID,FORGED_GMAIL_RCVD,FREEMAIL_FORGED_FROMDOMAIN,
+        FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,NML_ADSP_CUSTOM_MED,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/platform branch of tip:
+This patch set adds SDHCI support for the Nuvoton NPCM Baseboard 
+Management Controller (BMC).
 
-Commit-ID:     0d294c8c4efa5c0f283a6dfc82dc014a5dbd9308
-Gitweb:        https://git.kernel.org/tip/0d294c8c4efa5c0f283a6dfc82dc014a5dbd9308
-Author:        Saurabh Sengar <ssengar@linux.microsoft.com>
-AuthorDate:    Fri, 25 Aug 2023 00:47:36 -07:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 02 Oct 2023 21:30:09 +02:00
+Deeply sorry it took that long until sending version three, promise to try
+to do better on the next versions (if needed) :-),
 
-x86/of: Move the x86_flattree_get_config() call out of x86_dtb_init()
+The NPCM SDHCI driver tested on NPCM750 and NPCM845 EVB.
 
-Fetching the device tree configuration before initmem_init() is necessary
-to allow the parsing of NUMA node information. However moving the entire
-x86_dtb_init() call before initmem_init() is not correct as APIC/IO-APIC enumeration
-has to be after initmem_init().
+Addressed comments from:
+ - Andy Shevchenko : https://www.spinics.net/lists/devicetree/msg637946.html
 
-Thus, move the x86_flattree_get_config() call out of x86_dtb_init(),
-into setup_arch(), to call it before initmem_init(), and
-leave the ACPI/IOAPIC registration sequence as-is.
+Changes since version 3:
+ - Use devm_clk_get_optional_enabled function.
+ - Add mod_devicetable.h.
+ - Modify copyright year.
 
-[ mingo: Updated the changelog for clarity. ]
+Changes since version 2:
+ - Add data to handle architecture-specific SDHCI parameters.
+ - Change config place in make and kconfig files.
+ - Calling sdhci_pltfm_free to to avoid a memory leak on error.
 
-Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Link: https://lore.kernel.org/r/1692949657-16446-1-git-send-email-ssengar@linux.microsoft.com
----
- arch/x86/include/asm/prom.h  | 5 +++++
- arch/x86/kernel/devicetree.c | 6 +-----
- arch/x86/kernel/setup.c      | 2 ++
- 3 files changed, 8 insertions(+), 5 deletions(-)
+Changes since version 1:
+ - Use correct spaces in the dt-bindings.
+ - Drop unused labels from dt-bindings.
+ - Order by module name in the make a configuration.
+ - Remove unnecessary blank lines.
+ - Using devm_clk_get_optional instead of devm_clk_get.
 
-diff --git a/arch/x86/include/asm/prom.h b/arch/x86/include/asm/prom.h
-index b716d29..65dee24 100644
---- a/arch/x86/include/asm/prom.h
-+++ b/arch/x86/include/asm/prom.h
-@@ -31,6 +31,11 @@ static inline void x86_dtb_init(void) { }
- #define of_ioapic 0
- #endif
- 
-+#ifdef CONFIG_OF_EARLY_FLATTREE
-+void x86_flattree_get_config(void);
-+#else
-+static inline void x86_flattree_get_config(void) { }
-+#endif
- extern char cmd_line[COMMAND_LINE_SIZE];
- 
- #endif /* __ASSEMBLY__ */
-diff --git a/arch/x86/kernel/devicetree.c b/arch/x86/kernel/devicetree.c
-index 87d38f1..afd0992 100644
---- a/arch/x86/kernel/devicetree.c
-+++ b/arch/x86/kernel/devicetree.c
-@@ -278,7 +278,7 @@ static void __init dtb_apic_setup(void)
- }
- 
- #ifdef CONFIG_OF_EARLY_FLATTREE
--static void __init x86_flattree_get_config(void)
-+void __init x86_flattree_get_config(void)
- {
- 	u32 size, map_len;
- 	void *dt;
-@@ -300,14 +300,10 @@ static void __init x86_flattree_get_config(void)
- 	unflatten_and_copy_device_tree();
- 	early_memunmap(dt, map_len);
- }
--#else
--static inline void x86_flattree_get_config(void) { }
- #endif
- 
- void __init x86_dtb_init(void)
- {
--	x86_flattree_get_config();
--
- 	if (!of_have_populated_dt())
- 		return;
- 
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index b9145a6..ef73704 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -1221,6 +1221,8 @@ void __init setup_arch(char **cmdline_p)
- 
- 	early_acpi_boot_init();
- 
-+	x86_flattree_get_config();
-+
- 	initmem_init();
- 	dma_contiguous_reserve(max_pfn_mapped << PAGE_SHIFT);
- 
+Tomer Maimon (2):
+  dt-bindings: mmc: npcm,sdhci: Document NPCM SDHCI controller
+  mmc: sdhci-npcm: Add NPCM SDHCI driver
+
+ .../devicetree/bindings/mmc/npcm,sdhci.yaml   | 45 +++++++++
+ drivers/mmc/host/Kconfig                      |  8 ++
+ drivers/mmc/host/Makefile                     |  1 +
+ drivers/mmc/host/sdhci-npcm.c                 | 96 +++++++++++++++++++
+ 4 files changed, 150 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mmc/npcm,sdhci.yaml
+ create mode 100644 drivers/mmc/host/sdhci-npcm.c
+
+-- 
+2.33.0
+
