@@ -2,119 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A9B7B55E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFD17B55EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237869AbjJBOud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:50:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51610 "EHLO
+        id S237879AbjJBOvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:51:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237862AbjJBOuc (ORCPT
+        with ESMTP id S237860AbjJBOvB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:50:32 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94CC994
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:50:29 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-774141bb415so942180085a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 07:50:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696258228; x=1696863028; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3flX8pvYQpulFjLzINdT1Z6OZiL8rcWR2w9QCAJvARw=;
-        b=yZE5GGJ4SlG3U2OihoNsmoYESUEUX5gx8uv32YURfDzbZcRCaiS276djCvfoUU37OM
-         RKTBdflQLvVOia8YKXEW1tQbU9PMBN7khACVc2FzAvWomhRZ/+sKHG1bUAU0ojhRhnTt
-         BFeth3Zp8JNz7TRbB8Z36+RGwS4ZfP94YfkmbxxFSZrVcIq72+kaBGZFvAohcrfg9NHo
-         gYy0xUOjxvZ1WuhEhzj3vR7CGFkyMn2RJHI5rgXCxc8I2M7BdqjsL759mddEFGWx2KbU
-         k4mcPFnyhaWBv3VpkBVa6t6qMN5v0pjhC8Rv9S82nXZkjk2z8b0Fok4Y1a4NGRb/Qezp
-         z3xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696258228; x=1696863028;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3flX8pvYQpulFjLzINdT1Z6OZiL8rcWR2w9QCAJvARw=;
-        b=odFUT+Edphduywkae93EAwL9i3hBSxcCMXxEuc+RoycPjkfP7bgPYia0POsDL0MUCe
-         1D7aSv21DlIISrGJ8+PNX1aL/NGCTehkGZ05tx/3ViseqivirjvhoEXQbTeaXO4qHm9M
-         t+uOMYF+yOfJf4D8GzO0aF112J5tiynBRr1e4+k8UDWMbWPd/E5Q0biBMmeoaNmeNtjr
-         So3f3hjpyH8DKu+ei47WbBlmnnwd0R+nQf3mvLVpZENcKsOWdH/JPdVpKM5HCTw6T3Rl
-         DNOkB0nfaYZ3mbsGR/DKL9vqE4W4g8b3V/hmsVuIvi+XNsouIZlZHZY8EA+uz7yqXZOw
-         Ld0A==
-X-Gm-Message-State: AOJu0YyHUaz/aJlpdjV9wDpZJRedtqeShpVfDSnE5Kj117NzbjYjeLz4
-        zaEfOlPH/DKSWw71Zj1UJZkAOA==
-X-Google-Smtp-Source: AGHT+IGrhGOcsDvoDEISgACZY/G+y1Ase64mfWV0FDNriKPr/kVTRdJZtPPkZ36hyFu9t+NaOPtfyQ==
-X-Received: by 2002:a05:620a:1920:b0:773:ae67:4b96 with SMTP id bj32-20020a05620a192000b00773ae674b96mr13046574qkb.53.1696258228654;
-        Mon, 02 Oct 2023 07:50:28 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
-        by smtp.gmail.com with ESMTPSA id ou2-20020a05620a620200b0076768dfe53esm8987922qkn.105.2023.10.02.07.50.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 07:50:28 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 10:50:26 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
-        riel@surriel.com, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] hugetlb: memcg: account hugetlb-backed memory in
- memory controller
-Message-ID: <20231002145026.GB4414@cmpxchg.org>
-References: <20230928005723.1709119-1-nphamcs@gmail.com>
- <20230928005723.1709119-2-nphamcs@gmail.com>
- <ZRrI90KcRBwVZn/r@dhcp22.suse.cz>
+        Mon, 2 Oct 2023 10:51:01 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 888E694;
+        Mon,  2 Oct 2023 07:50:57 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54D86C433C7;
+        Mon,  2 Oct 2023 14:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696258257;
+        bh=oCle2xQolRrS//2ZNzGCyX4K5r5ldYzVf098n5iryoE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rSNx8wAfhzbmf/rAkSYfSy/g8xcgWARkygitgnHKqBk9ZlLNmvkU9oOQwDMnuuISM
+         joWE7C6FpMYCmGV6g7WRft+g9fryeTXIaadTKb9XNcYOBz8Vvhpou3M1uVOz2oCr/o
+         TQaWKZnmG1YX9g7lEJlB4YOCrOsr33MWRnoPjXxrwTJYf1tw1QS0lGGDlOELUrkNE5
+         DSABcVScP8VSVSNlfcsyERWsPEzFHkBac/COj4Dqxpc4WQRsOds9YUhUXuabBvoyWL
+         s6uG4f+ojpQx94Z/EAO06S/3U/I4rSC5ub7qsn9JXnt5CBm1ZdbFPTj17CyHX1626Q
+         oZdyS6Op+gcIQ==
+Received: (nullmailer pid 1694626 invoked by uid 1000);
+        Mon, 02 Oct 2023 14:50:52 -0000
+Date:   Mon, 2 Oct 2023 09:50:52 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Claudiu <claudiu.beznea@tuxon.dev>
+Cc:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, magnus.damm@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
+        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 19/28] dt-bindings: pinctrl: renesas: set
+ additionalProperties: false
+Message-ID: <20231002145052.GA1690001-robh@kernel.org>
+References: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com>
+ <20230929053915.1530607-20-claudiu.beznea@bp.renesas.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZRrI90KcRBwVZn/r@dhcp22.suse.cz>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230929053915.1530607-20-claudiu.beznea@bp.renesas.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 03:43:19PM +0200, Michal Hocko wrote:
-> On Wed 27-09-23 17:57:22, Nhat Pham wrote:
-> > Currently, hugetlb memory usage is not acounted for in the memory
-> > controller, which could lead to memory overprotection for cgroups with
-> > hugetlb-backed memory. This has been observed in our production system.
-> > 
-> > This patch rectifies this issue by charging the memcg when the hugetlb
-> > folio is allocated, and uncharging when the folio is freed (analogous to
-> > the hugetlb controller).
+On Fri, Sep 29, 2023 at 08:39:06AM +0300, Claudiu wrote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
-> This changelog is missing a lot of information. Both about the usecase
-> (we do not want to fish that out from archives in the future) and the
-> actual implementation and the reasoning behind that.
+> Set additionalProperties: false.
 > 
-> AFAICS you have decided to charge on the hugetlb use rather than hugetlb
-> allocation to the pool. I suspect the underlying reasoning is that pool
-> pages do not belong to anybody. This is a deliberate decision and it
-> should be documented as such.
+> Suggested-by: Rob Herring <robh@kernel.org>
+
+I did?
+
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> ---
 > 
-> It is also very important do describe subtle behavior properties that
-> might be rather unintuitive to users. Most notably 
-> - there is no hugetlb pool management involved in the memcg
->   controller. One has to use hugetlb controller for that purpose.
->   Also the pre allocated pool as such doesn't belong to anybody so the
->   memcg host overcommit management has to consider it when configuring
->   hard limits.
+> Changes in v2:
+> - this patch is new in v2 and added as suggested by Rob
+> 
+>  .../devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml     | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+> index 4782f96feb7e..eb726770f571 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+> +++ b/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+> @@ -106,8 +106,7 @@ additionalProperties:
+>          line-name: true
+>  
+>      - type: object
+> -      additionalProperties:
+> -        $ref: "#/additionalProperties/anyOf/0"
+> +      additionalProperties: false
 
-+1
+With no properties defined, this only allows an empty node which is 
+probably not what you want. It's the other anyOf entry that needed it, 
+but I already sent a fix which Linus applied.
 
-> - memcg limit reclaim doesn't assist hugetlb pages allocation when
->   hugetlb overcommit is configured (i.e. pages are not consumed from the
->   pool) which means that the page allocation might disrupt workloads
->   from other memcgs.
-> - failure to charge a hugetlb page results in SIGBUS rather
->   than memcg oom killer. That could be the case even if the
->   hugetlb pool still has pages available and there is
->   reclaimable memory in the memcg.
-
-Are these actually true? AFAICS, regardless of whether the page comes
-from the pool or the buddy allocator, the memcg code will go through
-the regular charge path, attempt reclaim, and OOM if that fails.
+Rob
