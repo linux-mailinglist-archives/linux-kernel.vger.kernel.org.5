@@ -2,127 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3EBF7B5678
+	by mail.lfdr.de (Postfix) with ESMTP id 1F1547B5676
 	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238060AbjJBPUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59814 "EHLO
+        id S238070AbjJBPUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238049AbjJBPUK (ORCPT
+        with ESMTP id S238049AbjJBPUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:20:10 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE791A6;
-        Mon,  2 Oct 2023 08:20:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696260007; x=1727796007;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ViEnJFsAYC4Sd3hBb8pdkYegu06ey+mxuYeTKl37N9Y=;
-  b=Z7d17xZ68Qzp3c+5+RK+ukt+Eq2NNnMr8MGlrDSdG8z53mmwF5nsPSiU
-   6sgoHUt2Bhr8qVkM4zgK8zar8XU/45pO1siEPGhgu5pzQiRjpdhoQQMLK
-   bag45KO5QHtI7RNnC5co+7XxcL2pKd1oaHSJK13nWwakGGDmM1e63c23n
-   NoJFzhafGWgwKkcZIRtoKWWjJ2wIFr/cuVyxBDdaaVSgLzdYlbpEt/cTD
-   D6crKkJYEGx2REN/JTi2IR7Cu6QQ2xNoM6cA/e9HtoL2k0lXAGg0DHXxZ
-   qE34qyFbLyaPUiQ15ldlB5aT2QGYP/3BlTT920L4gA8gOA8qHlEp6r/kv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="381549810"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="381549810"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 08:20:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="744142194"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="744142194"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga007.jf.intel.com with ESMTP; 02 Oct 2023 08:20:02 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qnKiG-00069P-0q;
-        Mon, 02 Oct 2023 15:20:00 +0000
-Date:   Mon, 2 Oct 2023 23:19:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rob Herring <robh@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH v2 2/2] amba: bus: Enable compile testing
-Message-ID: <202310022317.qmuYgpwj-lkp@intel.com>
-References: <20231002132635.2595382-2-andriy.shevchenko@linux.intel.com>
+        Mon, 2 Oct 2023 11:20:23 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52ED8BD
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:20:19 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-3526ac53d43so1301185ab.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 08:20:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1696260018; x=1696864818; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Qk/XanOarQnfiowuhKuY6lcAi1WRceRpbvvLoOZFAu8=;
+        b=AcV39l8LY2WGSepA/YLKrpZvNnUAupdKsXT3F7HXwLvLbmSww1ivpQW5ahrIfPTqhr
+         xkU1FAd/jD9y5NUQydkHyxVbPiV4HN2hdd4a23JEJ7s+ZrJZIMlzevZcdCAoXIrozbkY
+         5lEJVOlZcCdAOMWE8TcKEAjdlmIfxf+T7BbpQsa9ECJA5T0Ere8ljwR6qJub7BirzV5l
+         U5x0UEYLqen8kW2Rf7uR/HrOWtBCbz6EHYZ7mgEaTmd3oUp9FgRadoKFD5CoEKYtxFjQ
+         gSYAYhxYkGNSSfz/gSe6CGhv48ObVhEbqYOrb74GAQXLRSrSwha89Qb7IDbcYUikOKB3
+         hPLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696260018; x=1696864818;
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Qk/XanOarQnfiowuhKuY6lcAi1WRceRpbvvLoOZFAu8=;
+        b=N4ulQetw+SHfAcsHzJmhuQT4IoSO90BLKMeGwsZicsnPmOtHp38I6ycX6DQyG9o+Hc
+         Gkf249Y20H9gX9L1mITZaNkV+I5hGboUVXRLaDXm67Evw57kvuBUNb9MXK3tQkpoE5CT
+         8CEhvK5uYeQAAscT1EAKKapTp1cnYT8X1c3QT4YkInZRhUWLKk+Ji+eVBIoxuiW9nCk0
+         /PLGHA3ztL5UEo0x74zODm0vNBUkTXCqcI/KqUpt9yIGmX4Woeb3ujd6vyiM0LGCtNKX
+         sjk/AfgseApiJy9CW6CpMCWjNZ4f29bRPepZCzVW6VFzi5XUsMltuAz0eM6wmDePR5rL
+         VG6w==
+X-Gm-Message-State: AOJu0YxpnZAIxRUs1CKwX2urgmZQdhF9sfO0j7u/pkU7aocROwm2TFeW
+        JixlZXL8CrmvWKAQOxZG6Wz8jg==
+X-Google-Smtp-Source: AGHT+IHVKkWVQ0lo/4Oyfs5TolJm2cfk9mrnoCYmsShqdelK85CdLvLpuhRBgRL8+avCiYHCfEkt2g==
+X-Received: by 2002:a6b:c94d:0:b0:792:9b50:3c3d with SMTP id z74-20020a6bc94d000000b007929b503c3dmr11280301iof.1.1696260018542;
+        Mon, 02 Oct 2023 08:20:18 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id c21-20020a5ea915000000b007a25540c49bsm3068421iod.27.2023.10.02.08.20.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 08:20:18 -0700 (PDT)
+Message-ID: <50d68346-d35b-4d3d-a7e5-07540bea3520@kernel.dk>
+Date:   Mon, 2 Oct 2023 09:20:17 -0600
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231002132635.2595382-2-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [io-uring?] general protection fault in
+ io_get_cqe_overflow
+Content-Language: en-US
+To:     syzbot <syzbot+efc45d4e7ba6ab4ef1eb@syzkaller.appspotmail.com>,
+        asml.silence@gmail.com, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000ab32d40606bcb85e@google.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <000000000000ab32d40606bcb85e@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on rafael-pm/linux-next]
-[also build test ERROR on robh/for-next soc/for-next linus/master v6.6-rc4 next-20230929]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/amba-bus-Enable-compile-testing/20231002-213425
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git linux-next
-patch link:    https://lore.kernel.org/r/20231002132635.2595382-2-andriy.shevchenko%40linux.intel.com
-patch subject: [PATCH v2 2/2] amba: bus: Enable compile testing
-config: powerpc-randconfig-002-20231002 (attached as .config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231002/202310022317.qmuYgpwj-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310022317.qmuYgpwj-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/amba/Kconfig:4: syntax error
-   drivers/amba/Kconfig:3: invalid statement
-   make[3]: *** [scripts/kconfig/Makefile:77: oldconfig] Error 1 shuffle=3457451660
-   make[2]: *** [Makefile:697: oldconfig] Error 2 shuffle=3457451660
-   make[1]: *** [Makefile:234: __sub-make] Error 2 shuffle=3457451660
-   make[1]: Target 'oldconfig' not remade because of errors.
-   make: *** [Makefile:234: __sub-make] Error 2 shuffle=3457451660
-   make: Target 'oldconfig' not remade because of errors.
---
->> drivers/amba/Kconfig:4: syntax error
-   drivers/amba/Kconfig:3: invalid statement
-   make[3]: *** [scripts/kconfig/Makefile:77: olddefconfig] Error 1 shuffle=3457451660
-   make[2]: *** [Makefile:697: olddefconfig] Error 2 shuffle=3457451660
-   make[1]: *** [Makefile:234: __sub-make] Error 2 shuffle=3457451660
-   make[1]: Target 'olddefconfig' not remade because of errors.
-   make: *** [Makefile:234: __sub-make] Error 2 shuffle=3457451660
-   make: Target 'olddefconfig' not remade because of errors.
-
-
-vim +4 drivers/amba/Kconfig
-
-bd968d59ad1bf0 Thierry Reding 2014-07-29 @4  
+diff --git a/io_uring/io_uring.h b/io_uring/io_uring.h
+index 547c30582fb8..6206ae73412a 100644
+--- a/io_uring/io_uring.h
++++ b/io_uring/io_uring.h
+@@ -86,21 +86,6 @@ bool __io_alloc_req_refill(struct io_ring_ctx *ctx);
+ bool io_match_task_safe(struct io_kiocb *head, struct task_struct *task,
+ 			bool cancel_all);
+ 
+-#define io_lockdep_assert_cq_locked(ctx)				\
+-	do {								\
+-		lockdep_assert(in_task());				\
+-									\
+-		if (ctx->flags & IORING_SETUP_IOPOLL) {			\
+-			lockdep_assert_held(&ctx->uring_lock);		\
+-		} else if (!ctx->task_complete) {			\
+-			lockdep_assert_held(&ctx->completion_lock);	\
+-		} else if (ctx->submitter_task->flags & PF_EXITING) {	\
+-			lockdep_assert(current_work());			\
+-		} else {						\
+-			lockdep_assert(current == ctx->submitter_task);	\
+-		}							\
+-	} while (0)
+-
+ static inline void io_req_task_work_add(struct io_kiocb *req)
+ {
+ 	__io_req_task_work_add(req, 0);
+@@ -113,8 +98,6 @@ static inline bool io_get_cqe_overflow(struct io_ring_ctx *ctx,
+ 					struct io_uring_cqe **ret,
+ 					bool overflow)
+ {
+-	io_lockdep_assert_cq_locked(ctx);
+-
+ 	if (unlikely(ctx->cqe_cached >= ctx->cqe_sentinel)) {
+ 		if (unlikely(!io_cqe_cache_refill(ctx, overflow)))
+ 			return false;
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jens Axboe
+
