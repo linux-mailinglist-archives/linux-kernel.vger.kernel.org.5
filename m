@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB1D07B58DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD397B58F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238562AbjJBQ6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 12:58:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51384 "EHLO
+        id S238571AbjJBQ6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 12:58:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238530AbjJBQ6C (ORCPT
+        with ESMTP id S238546AbjJBQ6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 12:58:02 -0400
+        Mon, 2 Oct 2023 12:58:06 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBA9B3;
-        Mon,  2 Oct 2023 09:58:00 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05865C433CC;
-        Mon,  2 Oct 2023 16:57:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0264B8;
+        Mon,  2 Oct 2023 09:58:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CEE9C433C7;
+        Mon,  2 Oct 2023 16:58:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696265880;
-        bh=y6877j2bTNQK/NlDbP64SUFTPt4nOaXWX04vbP+P73g=;
+        s=k20201202; t=1696265882;
+        bh=q5YCA8p0CGC7cTGNfTdRfhSsu0Oi56m79bI+z6AlhIY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hmy8ZejQMQr9mppLprDw2FZUxnXL+GWtTdfc5nxI8WF7LrtdYXmB8aPOcC1PYcs9n
-         EI4Kg0gqqHVkF+v1KN2+CEtMfxb/+iWB19vFi1NDZONKB461wxPKUHdKSeQDoOYxLS
-         /KA7mrChpNt2Rvi1LPGfKgTjMSMPnmtiWvJMNQekpdf2ayWMbE0Tc5ncFh4vqLZU6K
-         +s62izIU3+M4JJKZXJRlWVoTnUYQW3V1vChjWCN38WSUF0vbUgJlRh0nGTBs7BDVV9
-         DsR+fqXIef71qsHr2IXBy031ChUI51Wl3o3Wqo/dFO4mR9pIpTCWFgTao2uiv6b2Vi
-         KPRTgl6Ye96Ww==
+        b=smS5zvrQR+zwmmjSJOrtQGBHEGCoK9wYqujaWmDDRGeHNtGeUZ5yPgbZGMXTK2u+x
+         AW8tODwGP5hVzlD0/G6LuTLfzTslF9o5X2rhAtCDzLOxadA0j66DBebRXWUi1sbp+9
+         TdNm6VV3MivgjNXLYi2V84DAQ0hVShAmQWPUjodVam4s7JTCbMBhPKV73ml/++V3uN
+         jwAvEyLfyzujWkMNOrIRG/MzGBudnLWmnHCjOu0cWcfdKuyOZwsnUSwt7wBCwKrjCG
+         mXABdfgP2hAdr52MbifgZup1jO4ZM6unX39omk5yuoYov7cKTzppRQoOPcTIZOJdzA
+         pG3ghlndlW0wQ==
 From:   Will Deacon <will@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
@@ -36,9 +36,9 @@ Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
         Nicolas Schier <nicolas@fjasle.eu>,
         Josh Poimboeuf <jpoimboe@kernel.org>,
         John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
-Subject: [PATCH v5 1/3] scripts/faddr2line: Don't filter out non-function symbols from readelf
-Date:   Mon,  2 Oct 2023 17:57:47 +0100
-Message-Id: <20231002165750.1661-2-will@kernel.org>
+Subject: [PATCH v5 2/3] scripts/faddr2line: Use LLVM addr2line and readelf if LLVM=1
+Date:   Mon,  2 Oct 2023 17:57:48 +0100
+Message-Id: <20231002165750.1661-3-will@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20231002165750.1661-1-will@kernel.org>
 References: <20231002165750.1661-1-will@kernel.org>
@@ -53,39 +53,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Josh points out in 20230724234734.zy67gm674vl3p3wv@treble:
+GNU utilities cannot necessarily parse objects built by LLVM, which can
+result in confusing errors when using 'faddr2line':
 
-> Problem is, I think the kernel's symbol printing code prints the
-> nearest kallsyms symbol, and there are some valid non-FUNC code
-> symbols.  For example, syscall_return_via_sysret.
+$ CROSS_COMPILE=aarch64-linux-gnu- ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
+aarch64-linux-gnu-addr2line: vmlinux: unknown type [0x13] section `.relr.dyn'
+aarch64-linux-gnu-addr2line: DWARF error: invalid or unhandled FORM value: 0x25
+do_one_initcall+0xf4/0x260:
+aarch64-linux-gnu-addr2line: vmlinux: unknown type [0x13] section `.relr.dyn'
+aarch64-linux-gnu-addr2line: DWARF error: invalid or unhandled FORM value: 0x25
+$x.73 at main.c:?
 
-so we shouldn't be considering only 'FUNC'-type symbols in the output
-from readelf.
+Although this can be worked around by setting CROSS_COMPILE to "llvm=-",
+it's cleaner to follow the same syntax as the top-level Makefile and
+accept LLVM= as an indication to use the llvm- tools, optionally
+specifying their location or specific version number.
 
-Drop the function symbol type filtering from the faddr2line outer loop.
-
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>
 Cc: John Stultz <jstultz@google.com>
-Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Link: https://lore.kernel.org/r/20230724234734.zy67gm674vl3p3wv@treble
+Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Will Deacon <will@kernel.org>
 ---
- scripts/faddr2line | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/faddr2line | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
 diff --git a/scripts/faddr2line b/scripts/faddr2line
-index 0e73aca4f908..a35a420d0f26 100755
+index a35a420d0f26..6b8206802157 100755
 --- a/scripts/faddr2line
 +++ b/scripts/faddr2line
-@@ -260,7 +260,7 @@ __faddr2line() {
- 
- 		DONE=1
- 
--	done < <(${READELF} --symbols --wide $objfile | sed 's/\[.*\]//' | ${AWK} -v fn=$sym_name '$4 == "FUNC" && $8 == fn')
-+	done < <(${READELF} --symbols --wide $objfile | sed 's/\[.*\]//' | ${AWK} -v fn=$sym_name '$8 == fn')
+@@ -58,8 +58,21 @@ die() {
+ 	exit 1
  }
  
- [[ $# -lt 2 ]] && usage
+-READELF="${CROSS_COMPILE:-}readelf"
+-ADDR2LINE="${CROSS_COMPILE:-}addr2line"
++UTIL_SUFFIX=""
++if [[ "${LLVM:-}" == "" ]]; then
++	UTIL_PREFIX=${CROSS_COMPILE:-}
++else
++	UTIL_PREFIX=llvm-
++
++	if [[ "${LLVM}" == *"/" ]]; then
++		UTIL_PREFIX=${LLVM}${UTIL_PREFIX}
++	elif [[ "${LLVM}" == "-"* ]]; then
++		UTIL_SUFFIX=${LLVM}
++	fi
++fi
++
++READELF="${UTIL_PREFIX}readelf${UTIL_SUFFIX}"
++ADDR2LINE="${UTIL_PREFIX}addr2line${UTIL_SUFFIX}"
+ AWK="awk"
+ GREP="grep"
+ 
 -- 
 2.42.0.582.g8ccd20d70d-goog
 
