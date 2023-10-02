@@ -2,77 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F88F7B5334
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:29:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0B67B533C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237052AbjJBM3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 08:29:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
+        id S237068AbjJBM3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 08:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237010AbjJBM3C (ORCPT
+        with ESMTP id S237010AbjJBM3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 08:29:02 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA463AD;
-        Mon,  2 Oct 2023 05:28:52 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qnI2a-0001s7-7U; Mon, 02 Oct 2023 14:28:48 +0200
-Message-ID: <541ac45b-8de7-4fa2-85ee-456d34e60aa9@leemhuis.info>
-Date:   Mon, 2 Oct 2023 14:28:47 +0200
+        Mon, 2 Oct 2023 08:29:21 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA780DC
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 05:29:16 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-3231d67aff2so12939325f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 05:29:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696249755; x=1696854555; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=cTJqVBoOgLxU8zj+PMnKpZEI8SgRr76FsWuJmkP+inE=;
+        b=b2VPz+shcLvZudZI8QobsNHgb6qOWj52cycG3QPRipuvqqDSu3Kqtw9lX7bILuDQ87
+         QMUoYRoOF2Ag3HZRxdpuk/g3BMq4uzyFxg0mkARllB5VUKHfF+jMv5ckgkwUSgkxVdTD
+         XRxgbU9pu8ReZIYLQfHiiZdj/IE9k288a8dicWmUVrpoGNRfPYVOm9qkAVAOn9O2sEe7
+         626TTlAP3oIC5w5GEJP5z3b0r+mM8QINTelUfHz3xvbL/1SYeCdUg0x1M5BSGqONqJqb
+         zfn39ogNReXv4zmK+/iekfVaHtHou+63H0FGRoRUa7XlI7O4ZVhRdR4YsACazO/jtfgj
+         47NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696249755; x=1696854555;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cTJqVBoOgLxU8zj+PMnKpZEI8SgRr76FsWuJmkP+inE=;
+        b=KPBH7Yt0pGHLMEYeotOWrQDf5nlEJ5QJ7HRZID28lpSonJMMMsm31OPt+qvP8HRw2f
+         VvF0utVN6S0UeaXb7aUB5cYSMf0uJYo8yd+mYMMBdxgq1MmG2ubLANNLb56GjuFuDIwj
+         a72Ke94znr4gg/Y7Iw9liHJ6oo4EZgLFovTXBg+oL5b0pKMnIeiByPAEjP2CqNCrM6oE
+         mteYsKdCAsOWzccMiHymMHHoD08+0I11fr3KTm1zFFBkpYBxSJhnb23HRGH8RHmPwNxL
+         4whmGk4oAGF6aNBjZbUnB/yo9sqkBU5n81nAIgy4857pfGKfborHe4gehp+U3DBgb0VR
+         W0JQ==
+X-Gm-Message-State: AOJu0YyAhQhBtnj28p/kqL/4fjAZF2E/7gZu70BYnrSOD+Q85URcHX1J
+        S7j3K4HobopDxr4u4IkQFDTJTQ==
+X-Google-Smtp-Source: AGHT+IFRHHZHyI7q31hR72m2ZJJLYi9dW2DnTOfh6M0zxWL5XbDOqS+zPZ63hr6D6g2MpN9MwxCxSQ==
+X-Received: by 2002:a5d:60cd:0:b0:320:38:9e14 with SMTP id x13-20020a5d60cd000000b0032000389e14mr10225432wrt.7.1696249755020;
+        Mon, 02 Oct 2023 05:29:15 -0700 (PDT)
+Received: from toaster.lan ([2a01:e0a:3c5:5fb1:fcf2:65f1:853c:13be])
+        by smtp.googlemail.com with ESMTPSA id s16-20020a05600c045000b0040536dcec17sm7144819wmb.27.2023.10.02.05.29.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 05:29:14 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [PATCH v2 0/2] usb: misc: onboard_usb_hub: add gl3510 support
+Date:   Mon,  2 Oct 2023 14:29:07 +0200
+Message-Id: <20231002122909.2338049-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] ASoC: amd: yc: Fix non-functional mic on Lenovo 82YM
-Content-Language: en-US, de-DE
-To:     Mark Brown <broonie@kernel.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     Sven Frotscher <sven.frotscher@gmail.com>,
-        mario.limonciello@amd.com, git@augustwikerfors.se,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>
-References: <20230927223758.18870-1-sven.frotscher@gmail.com>
- <46560887-0b6e-42ac-96c3-b4dbc1d7cb61@leemhuis.info>
- <4fa7d39d-dc34-4550-97fa-2b089f364cca@sirena.org.uk>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <4fa7d39d-dc34-4550-97fa-2b089f364cca@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1696249732;b7b8f42f;
-X-HE-SMSGID: 1qnI2a-0001s7-7U
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.10.23 13:52, Mark Brown wrote:
-> On Mon, Oct 02, 2023 at 11:32:48AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
-> 
->> Makes me wonder: How many more such quirk entries will be needed? Will
->> we have all machines listed soon, or do we expect that future Lenovo
->> hardware will need entries as well? If it's the latter: are quirks
->> really the right solution here, or do they just hide some bug or then
->> need for code that automatically handles things?
-> 
-> x86 firmware descriptions are terrible, it's just an endless procession
-> of quirks.  The model for ACPI is not to describe key information in the
-> kernel and instead on Windows load device specific information from
-> separately supplied tables.  On Linux that translates into these endless
-> quirks, on Windows it's platform specific drivers for otherwise generic
-> audio hardware.
+This patchset adds the bindings and driver support to trigger the reset
+pin of the Genesys Logic gl3510 usb hub.
 
-I know all of that, but from the many recent regression reports and
-patches it seems quirks were not needed for a bunch of Lenovo machines
-before c008323fe361bd ("ASoC: amd: yc: Fix a non-functional mic on
-Lenovo 82SJ") [v6.5]. That made me wonder if that commit really did the
-right thing or if there is a underlying bug somewhere that the newly
-added quirks hide, as I had a few such situations during the past few
-months. If you or others the experts in this area say that this is not
-the case here then I'm totally fine with that, it was just a question.
+Changes since v1: [0]
+ - fix typo, replacing '.' with ',' in the bindings
+ - use existing gl852g data structure
 
-Ciao, Thorsten
+[0]: https://lore.kernel.org/all/20230808100746.391365-1-jbrunet@baylibre.com/
+
+Jerome Brunet (2):
+  dt-bindings: usb: add device for Genesys Logic hub gl3510
+  usb: misc: onboard_usb_hub: add Genesys Logic gl3510 hub support
+
+ Documentation/devicetree/bindings/usb/genesys,gl850g.yaml | 3 ++-
+ drivers/usb/misc/onboard_usb_hub.h                        | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+-- 
+2.40.1
+
