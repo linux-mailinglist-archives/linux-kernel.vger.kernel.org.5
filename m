@@ -2,102 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A407B5C6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 23:17:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B117B5C76
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 23:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbjJBVRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 17:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48160 "EHLO
+        id S229907AbjJBVYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 17:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjJBVRY (ORCPT
+        with ESMTP id S229650AbjJBVYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 17:17:24 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD1B9A4;
-        Mon,  2 Oct 2023 14:17:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LauJpiU9vgGJKI+xHtCdZfyl14FEn4Hj7li+RFgP5pk=; b=q2WKSjduqc6gNmUy5+PKB56DmA
-        sO5XkEIeo9TmA9DcELYksbTAZJdotXfki4LFStfRDdRkzaF0coOJxj8BSjKb8yCKbSO8ejbDx+KQK
-        14P8x2caxCfxHcQmfpMwE7/cw/hKvHH2Z6PasExE/uuq57M1nxShgjPDTEJWYe9HhVAiN9ZOB9Ed4
-        KrJuDpOmHAdwimVlF0Lmfw3QFCkH48Ucp3R+gf4aHwoAxNFKdsHKRAzNjXaEW0wxxdGB2zZYwkvy7
-        gg2isWBwYhxL5v7isCEfvXu2QnRfANgtg2WCPi53fmVyfT2BmxatJu/Zp5YkYJDnwQVW7diG6HmZt
-        IGQkmMww==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qnQHa-009IId-2B;
-        Mon, 02 Oct 2023 21:16:53 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 81288300454; Mon,  2 Oct 2023 23:16:51 +0200 (CEST)
-Date:   Mon, 2 Oct 2023 23:16:51 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com
-Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock
- periodically
-Message-ID: <20231002211651.GA3774@noisy.programming.kicks-ass.net>
-References: <20230926230649.67852-1-dongli.zhang@oracle.com>
- <377d9706-cc10-dfb8-5326-96c83c47338d@oracle.com>
- <36f3dbb1-61d7-e90a-02cf-9f151a1a3d35@oracle.com>
- <ZRWnVDMKNezAzr2m@google.com>
- <a461bf3f-c17e-9c3f-56aa-726225e8391d@oracle.com>
- <884aa233ef46d5209b2d1c92ce992f50a76bd656.camel@infradead.org>
- <ZRrxtagy7vJO5tgU@google.com>
- <a8479764-34a1-334f-3865-c01325d772d9@oracle.com>
- <ZRsJiuKdXtWos_Xh@google.com>
- <20231002210607.GD27267@noisy.programming.kicks-ass.net>
+        Mon, 2 Oct 2023 17:24:36 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C7999;
+        Mon,  2 Oct 2023 14:24:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696281872;
+        bh=G4l6q0UgYoSotK/uTS34eAJwo5Z9oXNP+ysveSUxBXI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EWbSr0RBEAxQC8XoyZg08F1smbNufKj2ACXD9pO8frTZc4sjiNUeAa2aw3XS8lPaL
+         fFgZUUVfYqQCZuYfoQexWPxmDbIeBwzGifv94iBk1I6plmxjf9xE3Jq5jMSq6DVBk9
+         TzejHf8njhIk/6ZHkApBngq1o0axQEXcW0HQqjWbf8ddZZA3Pg2JUeDy7+UPMPL9Rk
+         jCWj9gFiO7NdDqduxT6pTfJi7XJlf7qgkg7pJwzN2eI5Lm1+31STniY/NcZAnZ3FO+
+         mcXsz/ryE0ypkrIqQQH42oaxOLMuzlBJSsXdUOBILaz0Pv3FGGRoGIVKMzhXCSDFU4
+         q2HpAQrijUGSQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rzv9D2S3jz4xGT;
+        Tue,  3 Oct 2023 08:24:31 +1100 (AEDT)
+Date:   Tue, 3 Oct 2023 08:24:30 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the vfs-brauner tree
+Message-ID: <20231003082430.2e95925a@canb.auug.org.au>
+In-Reply-To: <20231002112648.rn2o4dvifn7x4zle@quack3>
+References: <20230928105443.1b1ad98c@canb.auug.org.au>
+        <20231002112142.bfjj54ikijf4iwfr@quack3>
+        <20231002112648.rn2o4dvifn7x4zle@quack3>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231002210607.GD27267@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/VujK5u=A0mxf=bL/oA9rgMa";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 11:06:07PM +0200, Peter Zijlstra wrote:
-> On Mon, Oct 02, 2023 at 11:18:50AM -0700, Sean Christopherson wrote:
-> > +PeterZ
-> > 
-> > Thomas and Peter,
-> > 
-> > We're trying to address an issue where KVM's paravirt kvmclock drifts from the
-> > host's TSC-based monotonic raw clock because of historical reasons (at least, AFAICT),
-> > even when the TSC is constant.  Due to some dubious KVM behavior, KVM may sometimes
-> > re-sync kvmclock against the host's monotonic raw clock, which causes non-trivial
-> > jumps in time from the guest's perspective.
-> > 
-> > Linux-as-a-guest demotes all paravirt clock sources when the TSC is constant and
-> > nonstop, and so the goofy KVM behavior isn't likely to affect the guest's clocksource,
-> > but the guest's sched_clock() implementation keeps using the paravirt clock.
-> > 
-> > Irrespective of if/how we fix the KVM host-side mess, using a paravirt clock for
-> > the scheduler when using a constant, nonstop TSC for the clocksource seems at best
-> > inefficient, and at worst unnecessarily complex and risky.
-> > 
-> > Is there any reason not to prefer native_sched_clock() over whatever paravirt
-> > clock is present when the TSC is the preferred clocksource? 
-> 
-> I see none, that whole pv_clock thing is horrible crap.
+--Sig_/VujK5u=A0mxf=bL/oA9rgMa
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-In fact, I don't really see a reason to ever use pv_clock, even on
-non-constant TSC. The sched_clock machinery used on x86 (and ia64 at
-some point) reverts to tick-based + 'TSC-with-monotonicity-filter
-refinement' once it detects the TSC is crap.
+Hi Jan,
 
-And that should work in a guest too I suppose.
+On Mon, 2 Oct 2023 13:26:48 +0200 Jan Kara <jack@suse.cz> wrote:
+>
+> Oh, and one more note - Christian is on vacation this week so Stephen ple=
+ase
+> just revert the commit in the linux-next until he returns and updates his
+> tree. Thanks!
 
-Also, I really should clean all that up -- it's all static_key based,
-but I think I can do a saner version with static_call. But that's stuck
-somewhere on the eternal todo list.
+Thanks for letting me know, I will do so.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/VujK5u=A0mxf=bL/oA9rgMa
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUbNQ8ACgkQAVBC80lX
+0GzfMQgAkA1iyxu0E/VpkfPWIFpDHCNZYys/kxjhmWaTnLiY0wwls8amwglrzlRQ
+6kUE+if159mOs3Y+He6qIGN4g2msAeEnQ1VwkyVUJ5pzVOOLb5MettiqybBcyyzK
+JEmpmnNl1OGis2/SfSgRyN5rb/OvSLNqw3tGi86/eUWXif4XCmpCPTPGnh6vYCv2
+gQvUvPD5Tbq/gUNNXMTKk1RMlo9UdrepFxnae/IjXgNzRTkLD7EdTX75KawYCsts
+CoRaeCyTGUBgBJ3GlrKd/jhZhiElvRqDPR+TRcOIrCEeLwosQvruU6fDITLApKl4
+g7VNOpMsUPI2MyVWRfSAS2L9VCmbHg==
+=c/u+
+-----END PGP SIGNATURE-----
+
+--Sig_/VujK5u=A0mxf=bL/oA9rgMa--
