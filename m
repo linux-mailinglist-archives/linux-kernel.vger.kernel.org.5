@@ -2,82 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C7027B4F36
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BAD7B4F38
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:41:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236160AbjJBJlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57654 "EHLO
+        id S236177AbjJBJlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230366AbjJBJlm (ORCPT
+        with ESMTP id S236172AbjJBJlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:41:42 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792F591
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:41:39 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50307acd445so24810833e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:41:39 -0700 (PDT)
+        Mon, 2 Oct 2023 05:41:49 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993F3B0
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:41:46 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53447d0241eso15190814a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:41:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696239698; x=1696844498; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TGGbdrGosWyKhs9eMc4c70vM7gr6/rbHzqKdNT55QBw=;
-        b=yIXUo/FWe1rjiCASpfPZZAwPUaeTIYWo5gdw5Nz1t2gLZh9xYQE9nJ+Yh0WFhE+XFT
-         p0FjHBjWGNfaq1M1aoGXtLQvLEi3vVD+0l5cNlSqOzycBvCHLvFoI0lFCMmaaZ0bqdL7
-         G6Nyyk2fWbk6qL4GB+rgxBJi2MrfdjE2fps+s8IMB+oevrqQHGYs4gUudnCiWnHzfomH
-         lbyK0vLFNe2iZYVh99jmLF9r73pxdE9NyOurxMSzZAjvcqwxCng6YDPRMh65G5gIGReP
-         r5wFSokvGjY2oUapd6sVv3yLqYAbzIePz1lvwndvhEW/4g6LcD10BzkqXXCIcBlcYIcD
-         CN7g==
+        d=gmail.com; s=20230601; t=1696239705; x=1696844505; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RwQS1I2S/UPYL/Sf2BTeKAyKxjWoqdfF0azKmWY199s=;
+        b=AMAjV1GfbJPJHVoHIXUh2oYRBgs8M/+2XLKzfVekVupIG+xe/Np7M91nLveQuB0Km4
+         U/drtyYD4P7Eh6ObSFdYNbJY+r2PJUqNk9O3PessA64MQavp39m+rsDm9Sxld6kO00aS
+         5IDnYBsmBRcQjEi1KsZPn5XnkSnP4QJYdk+K6cFchcqgIvnuv0fDbMCcmKuouzkWSlz4
+         03qSBNBFkHG5sXXa4X6BlTVrEtEI64yNG9WyxGjVqyPFrqJCorn5r774XOQqoN1V75CM
+         SZnDx/GyqyMtbL1OLj0djY24kK98QX0Ka+FDck09plKEFCTMTlDxTFtbSM7BgOylBN9O
+         CLJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696239698; x=1696844498;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1696239705; x=1696844505;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TGGbdrGosWyKhs9eMc4c70vM7gr6/rbHzqKdNT55QBw=;
-        b=p1qBjufCjXeLqytAHOsIYPdJNZhYyXO7Ra5M+krs7bGQba3Nj4v7T1eeKQ1X5EoiNK
-         l0Un6DgOkzUBL2WlTK7pmV20daF6S68p08Ozg+BKAeHjjpVdwJ0iJlglRGZAao7PHIpR
-         CNmgSzZL7C9EC3mqQVK6tu2NIcK2UqUmGgg+LomRJAkU6sGm/TDf2SHBR/sYlDqT1Rey
-         /Tym0xg5H9Iyd6mq7825azF7ZGNFNpsq3UAqjrPjgR9FEeqOJUpQ1CEC0PZWnl47H/Ye
-         FfKiUWDYvdc+0wfXhH1Wzkh8mzfWy2CdiWIIZOcENKLi+H5bgtX4dkptSTn5J0IjzCj/
-         gfGA==
-X-Gm-Message-State: AOJu0YwSVlgKg3DXNG9Fgr6r93VP5ksyuO5SewySLcDj8gDpBw9frsk5
-        9HbTPrV1+KvByRme53xdalK4tA==
-X-Google-Smtp-Source: AGHT+IHOjsMPg1PwBZaV8sc89dJjIG5yPlfNDVrbGI/AwmTPx8Hi1MlIykByPVKlp/6zS3ldp6kU3w==
-X-Received: by 2002:a05:6512:3b9c:b0:4fe:279b:8a02 with SMTP id g28-20020a0565123b9c00b004fe279b8a02mr10722781lfv.67.1696239697615;
-        Mon, 02 Oct 2023 02:41:37 -0700 (PDT)
-Received: from [172.30.204.164] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id z20-20020a7bc7d4000000b004064e3b94afsm6870847wmk.4.2023.10.02.02.41.36
+        bh=RwQS1I2S/UPYL/Sf2BTeKAyKxjWoqdfF0azKmWY199s=;
+        b=AlydsDicRuFS/1VpFz3O3xhyOOrZocvyPjtKgQmpqvsi3NDJ+eUpzjznutt90bPcCM
+         JGdbmOHiSiORXk+SI1q1gOM1SzlO/FhE/ZpFZLwVVbWk1IKUiN73TNC9baG/EDRVJlMC
+         MDyhsBZxoyATLjkUiyUIf2QKgkVesxhIAlAhm7y5TqrLRzOfoqRu4n+XKkRRQS2EotLM
+         vL3yKqrt00JqHod2RVAg6wuwJsjDT1mVmqMVbFDn7sKKTgwjqabsvg+VGbZRj+WCsoLh
+         /PrKU2GrgzyLmcp7Psg026hrMAIfomIx7YgPxvUXotoPdguf6yWQQoASQUG9TaXCk+0j
+         6VNw==
+X-Gm-Message-State: AOJu0Yyun4hIsYH3vTZBANoWEt8irk5X4qtg3WlXyu4CTug6+/LCMuun
+        EP1vxNhpU4+RAvlzqz2yMck=
+X-Google-Smtp-Source: AGHT+IEo7YjT0mHXU+8kOwIQ0etcMXrU15cDO31hE8GbdKC1lD5TANXkhm2jyPryZoGR1Fn9McKpiA==
+X-Received: by 2002:aa7:c2d7:0:b0:534:2fd8:a9e1 with SMTP id m23-20020aa7c2d7000000b005342fd8a9e1mr8947588edp.22.1696239704650;
+        Mon, 02 Oct 2023 02:41:44 -0700 (PDT)
+Received: from [192.168.2.177] ([207.188.161.188])
+        by smtp.gmail.com with ESMTPSA id b18-20020aa7cd12000000b00537efd5f1a8sm4454057edw.69.2023.10.02.02.41.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 02:41:37 -0700 (PDT)
-Message-ID: <11d0c359-cb33-529c-9430-eb8cf396c7a2@linaro.org>
-Date:   Mon, 2 Oct 2023 11:41:35 +0200
+        Mon, 02 Oct 2023 02:41:43 -0700 (PDT)
+Message-ID: <d26ee3f8-d5d3-e46d-4d79-098992d13790@gmail.com>
+Date:   Mon, 2 Oct 2023 11:41:41 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 6/6] ARM: dts: qcom: add device tree for Nokia Lumia
- 830
-Content-Language: en-US
-To:     Rayyan Ansari <rayyan@ansari.sh>, linux-arm-msm@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        Dominik Kobinski <dominikkobinski314@gmail.com>,
-        Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>,
-        Jack Matthews <jm5112356@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-References: <20230930221323.101289-1-rayyan@ansari.sh>
- <20230930221323.101289-7-rayyan@ansari.sh>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20230930221323.101289-7-rayyan@ansari.sh>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Content-Language: en-US, ca-ES, es-ES
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+Cc:     nfraprado@collabora.com, wenst@chromium.org, robh@kernel.org,
+        amergnat@baylibre.com, arnd@arndb.de
+References: <20230929082009.71843-1-angelogioacchino.delregno@collabora.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: Add Angelo as MediaTek SoC co-maintainer
+In-Reply-To: <20230929082009.71843-1-angelogioacchino.delregno@collabora.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -86,61 +79,69 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 10/1/23 00:08, Rayyan Ansari wrote:
-> Add an initial device tree for the Nokia Lumia 830, codenamed
-> "tesla".
+On 29/09/2023 10:20, AngeloGioacchino Del Regno wrote:
+> I am a top reviewer mainly for MediaTek SoC related patches in most
+> subsystems and I've also been upstreaming both improvements, fixes
+> and new drivers and devicetrees when required.
 > 
-> Co-developed-by: Dominik Kobinski <dominikkobinski314@gmail.com>
-> Signed-off-by: Dominik Kobinski <dominikkobinski314@gmail.com>
-> Co-developed-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-> Signed-off-by: Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-> Co-developed-by: Jack Matthews <jm5112356@gmail.com>
-> Signed-off-by: Jack Matthews <jm5112356@gmail.com>
-> Signed-off-by: Rayyan Ansari <rayyan@ansari.sh>
+> The MediaTek scene saw a generous increase in number of patches that
+> are sent to the lists every week, increasing the amount of required
+> efforts to maintain the MTK bits overall, and we will possibly see
+> even more of that.
+> 
+> For this reason, and also because of suggestions and encouragement
+> coming from the community, I'm stepping up to be a co-maintainer of
+> MediaTek SoCs support.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+Thanks Angelo to volunteer on this. It actually was on my list for the last days 
+to ask you to help me out as I'm not able at the moment to cope with the review 
+process. That's unfortunate and we missed one merge window (August) where I took 
+no patches but after holiday situation didn't get better. I don't want to be 
+break in the MediaTek upstream development, so it's great to see you stepping up.
+
+As I read in the thread, I agree the best will be to have a share tree at 
+kernel.org. It seems I can't share my tree with you, so hopefully you will get 
+access fast.
+
+My idea is to not disappear and create a collaborative process for us on the 
+maintainership in the future.
+
 > ---
->   arch/arm/boot/dts/qcom/Makefile               |  1 +
->   .../dts/qcom/qcom-msm8926-microsoft-tesla.dts | 67 +++++++++++++++++++
->   2 files changed, 68 insertions(+)
->   create mode 100644 arch/arm/boot/dts/qcom/qcom-msm8926-microsoft-tesla.dts
 > 
-> diff --git a/arch/arm/boot/dts/qcom/Makefile b/arch/arm/boot/dts/qcom/Makefile
-> index 7982620ec9f9..a3d293e40820 100644
-> --- a/arch/arm/boot/dts/qcom/Makefile
-> +++ b/arch/arm/boot/dts/qcom/Makefile
-> @@ -33,6 +33,7 @@ dtb-$(CONFIG_ARCH_QCOM) += \
->   	qcom-msm8916-samsung-grandmax.dtb \
->   	qcom-msm8916-samsung-serranove.dtb \
->   	qcom-msm8926-microsoft-superman-lte.dtb \
-> +	qcom-msm8926-microsoft-tesla.dtb \
->   	qcom-msm8960-cdp.dtb \
->   	qcom-msm8960-samsung-expressatt.dtb \
->   	qcom-msm8974-lge-nexus5-hammerhead.dtb \
-> diff --git a/arch/arm/boot/dts/qcom/qcom-msm8926-microsoft-tesla.dts b/arch/arm/boot/dts/qcom/qcom-msm8926-microsoft-tesla.dts
-> new file mode 100644
-> index 000000000000..53a6d4e85959
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/qcom/qcom-msm8926-microsoft-tesla.dts
-> @@ -0,0 +1,67 @@
-> +// SPDX-License-Identifier: BSD-3-Clause
-> +/*
-> + * Copyright (c) 2023, Jack Matthews <jm5112356@gmail.com>
-> + * Copyright (c) 2023, Ivaylo Ivanov <ivo.ivanov.ivanov1@gmail.com>
-> + * Copyright (c) 2023, Dominik Kobinski <dominikkobinski314@gmail.com>
-> + * Copyright (c) 2023, Rayyan Ansari <rayyan@ansari.sh>
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "qcom-msm8226-microsoft-common.dtsi"
-> +
-> +/* This device has touchscreen on i2c1 instead */
-> +/delete-node/ &touchscreen;
-> +
-> +/ {
-> +	model = "Nokia Lumia 830";
-> +	compatible = "microsoft,tesla", "qcom,msm8926", "qcom,msm8226";
-"we have a Tesla at home"
+> P.S.: I tried to reach to Matthias for almost two months, but I couldn't
+> find any way to talk to him and he has been unresponsive on the mailing
+> lists as well.
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+I think you didn't tried matthias.bgg@kernel.org, but that should be no excuse 
+from my side for being unresponsive. Thanks for your help!
 
-Konrad
+Please contact me on IRC for any coordination.
+
+Regards,
+Matthias
+
+
+> 
+> P.P.S.: This also comes after Rob Herring's suggestion to have myself as
+> a MediaTek SoC co-maintainer [1] and support from other people.
+> 
+> [1]: https://lore.kernel.org/all/20230804225813.12493-1-robh@kernel.org/
+> 
+>   MAINTAINERS | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 208cfcc1aee3..211a8322c801 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2330,7 +2330,7 @@ F:	drivers/rtc/rtc-mt7622.c
+>   
+>   ARM/Mediatek SoC support
+>   M:	Matthias Brugger <matthias.bgg@gmail.com>
+> -R:	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> +M:	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>   L:	linux-kernel@vger.kernel.org
+>   L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>   L:	linux-mediatek@lists.infradead.org (moderated for non-subscribers)
