@@ -2,241 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 581D57B4FE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64C87B4FF0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236324AbjJBKJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 06:09:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60114 "EHLO
+        id S236388AbjJBKLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 06:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbjJBKJs (ORCPT
+        with ESMTP id S236346AbjJBKL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 06:09:48 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2073.outbound.protection.outlook.com [40.107.7.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11593B0;
-        Mon,  2 Oct 2023 03:09:45 -0700 (PDT)
+        Mon, 2 Oct 2023 06:11:26 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F66B3;
+        Mon,  2 Oct 2023 03:11:23 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3928XGWA004090;
+        Mon, 2 Oct 2023 10:10:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=tzuLcMg6NEOrC1wSqxPNtfqjb+2gM5CaW09lKGmC+bU=;
+ b=mhx/XTOXw5FgxjAKmflmKjpai1425pgIa88RhbMnQuJ4x7xCMGF7uA+PNLJnvNFJWw3V
+ NKuwmxMvQ00IXyLWy9LzHk++QrKbVPEAhLucja1M51qenqMtAkvyXGKzNoELcvNs0zvQ
+ QQVO0l1P0IDM2CGmabh1TxacBc8Ra/vbRtfDm9BJmG82dZ4eTxJKVqtHUXVhaDSjk3Tl
+ tz8jEvIgiQfIur4d+ZDqZHqqEeAFcJQ4JU3Bq+urxqvm1YpnQOAUjaIIOmfouzREaWfn
+ p9ERpPuq7e6eccUmYHvkSmmjGiMqvhQGcyUtd8PTMKsTokBrZZF92tE51HMAYYE9polZ uw== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tea9226j7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 02 Oct 2023 10:10:51 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3929XMn4024842;
+        Mon, 2 Oct 2023 10:10:51 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2047.outbound.protection.outlook.com [104.47.66.47])
+        by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tea44kjrf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 02 Oct 2023 10:10:51 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jpSDNMFwP2xJN5TCVvM/vqCeUn7mSoCyf5/MZGz59eF5nnyoJxt2jKUu3eTzhsWKrFSgJfavRbWI3pn5BZ0vzgiPU5pYbMoQKTmBT/h7CaNsNVKXNLbC6oXXq/gWRUHp/3sxOiEqMVMqkGIaaaIkN8hva6vqPaFBPw9rh6YmqfJVhfh33u2hGEoRFtrgKIB3sSWaSpqtPhujwkJsO1Gj7QCO4lAB3iTiDqVkR6DBiYz6AXrzE2f8PDkK3i9WTqIWFk5hxsyNg6T+l5Mzxkph6fC5zUFnH3WemyDQwgUiElz8J0isldCxvBTSAE9Asj0cW+VXqap/SVZ8ErTIjDasaw==
+ b=IgHpz8Kl+S4vddRznhc6GfsT85XP6Vt9PIwfConpXnHhXcjvxen7zwA4iLys0dJJTkfcqO+eHtYR4tN81oqOWuaQ/Fyna1371qiz/8UTwNgFJ8vwQWnZkwjMTfQDuPNHbT4IQbF5PZ8Fs6hnLLYTnJtsihxOwCuExBhLSwW/0+TCWn1n1ZSa93zPCWjnmozxFw+XCnX5Ly6P4nKs95SyncxOIoEiQTxu0lLjf2c0joEkFYIQH2013GgeLnPjC388zprf7S4i3LTLAnGYSGnr+bCZcMj/qMOA0LuQJrwqCIRTJR67fUBMZ+k664DbDo6HD+3NDbYwNPR35fZwDVaHZQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e+XK65wn8Ct1iugIrxOEP2P7FvjWb6GFCjLLVDFvjLo=;
- b=XA0oMZ33fD2LxpyfWN5HL5dvKntBaASg08L80lPYfMSabffWQYaBPj90ys+YTHv/XDdV3ZpoCRhqlbkZSgfxqVC7j6fmE8jNkgT1iVZIa4Ns6h0gVRN99bkCJJS6Vf7/L8NVM7jtX0IDfuMsmPrg6Csz12X/YhXev1WZMvniBHxX7zN5EJTX2THu86UQd1I2F5zMAoy/VUxluu+jzGELBRcdPqG40TgOuzH0tmtV0BD0iPkjw8lQS8IPrOOEcGMlQpTPxzSUu15Vc3ZPzA7TzSVP/a4obCZh3dgwoYaf6xPrFRYEafDHd9JURievQEj7yvsfNqCuF2/HkngHivwomg==
+ bh=tzuLcMg6NEOrC1wSqxPNtfqjb+2gM5CaW09lKGmC+bU=;
+ b=PfIRW0ih0+vL+9DtQTElCW3I2wTNMI2WgsHCuXOSsFEp0dEcDLqXs05fZ0qw67vXcrIgH3aW9XB0QIHUBiT8LqXo+/Oc7Z3AYvTr4bQSDli4PjZj6wLlnALA0UHq60xOxX+TphLZBI6afvRJ7+tEiGIYK8BJfVgfJ01fOr1OL4lrvHyGpoQX0pD7qbZ+VgrVshN50/HTYLN+iaKsonG2lr7qMO6Ln1X1woTTaJcZz3K3saiyH42N7RmWyTWxg3Mzyw7/drLvkY3sBlO8Yeunbb0f0q4WEa1lEMRgpdx6INDd0x1DPWDmfjzy2VN21XaJdy0d9UuXtZ5mjsxA/eveQw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e+XK65wn8Ct1iugIrxOEP2P7FvjWb6GFCjLLVDFvjLo=;
- b=OV0P1ln4p5+bUqazwky5+pGBAJ8dZvuX9/NPyei54CwUZa+olBCjSB0obq8c7UrewzBLqxGNCvd0pwlKAcRO5eeBOSQNCpKys5+aRmTV2O/jIK+shyFaHs8JTur3lmLZfWZud95D2YZ8EphqgzXhnxNrIu7WOKO6xCP8tnJnTQ8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by AS8PR04MB8514.eurprd04.prod.outlook.com (2603:10a6:20b:341::24) with
+ bh=tzuLcMg6NEOrC1wSqxPNtfqjb+2gM5CaW09lKGmC+bU=;
+ b=w91maGMKm8IrBFn5gTr3KmyofWTN9nyzo58b8wG6PVdvFyxp9v7OVIDa3v4pvoG5TLRLshjBhV6ZnTZ7/3gh78RGgVPgy0QAV+QfEaFjpteXImJqxSRkoZE1mttjLb1WvWoiNhdGPR76UqcpCWzgmjpw8DLq2+XR9FvM9V65dGo=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by BY5PR10MB4274.namprd10.prod.outlook.com (2603:10b6:a03:206::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.30; Mon, 2 Oct
- 2023 10:09:42 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::568a:57ee:35b5:e454]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::568a:57ee:35b5:e454%3]) with mapi id 15.20.6838.024; Mon, 2 Oct 2023
- 10:09:42 +0000
-Date:   Mon, 2 Oct 2023 13:09:37 +0300
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Camelia Groza <camelia.groza@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor@kernel.org>,
-        Sean Anderson <sean.anderson@seco.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>
-Subject: Re: [RFC PATCH v2 net-next 04/15] phy: allow querying the address of
- protocol converters through phy_get_status()
-Message-ID: <20231002100937.7t2skx2kzscid574@skbuf>
-References: <20230923134904.3627402-1-vladimir.oltean@nxp.com>
- <20230923134904.3627402-5-vladimir.oltean@nxp.com>
- <ZRb5+h4TnGRKl3/6@matsya>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRb5+h4TnGRKl3/6@matsya>
-X-ClientProxiedBy: VI1P195CA0056.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:802:5a::45) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Mon, 2 Oct
+ 2023 10:10:49 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::ebfd:c49c:6b8:6fce]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::ebfd:c49c:6b8:6fce%7]) with mapi id 15.20.6838.030; Mon, 2 Oct 2023
+ 10:10:48 +0000
+Message-ID: <5d26fa3b-ec34-bc39-ecfe-4616a04977ca@oracle.com>
+Date:   Mon, 2 Oct 2023 11:10:43 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 10/21] block: Add fops atomic write support
+To:     Bart Van Assche <bvanassche@acm.org>, axboe@kernel.dk,
+        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chandan.babu@oracle.com, dchinner@redhat.com
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-api@vger.kernel.org
+References: <20230929102726.2985188-1-john.g.garry@oracle.com>
+ <20230929102726.2985188-11-john.g.garry@oracle.com>
+ <17ee1669-5830-4ead-888d-a6a4624b638a@acm.org>
+Content-Language: en-US
+From:   John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <17ee1669-5830-4ead-888d-a6a4624b638a@acm.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: LO2P265CA0046.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:61::34) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AS8PR04MB8514:EE_
-X-MS-Office365-Filtering-Correlation-Id: a0d7d69d-e211-4490-9608-08dbc32fb1b3
-X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|BY5PR10MB4274:EE_
+X-MS-Office365-Filtering-Correlation-Id: b8669442-1318-4437-d5a5-08dbc32fd9a5
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XCwqaFZpdA0730PvaO6ZdvdkEOHq8HSBHIu4gCircO1du44vQVAaAIWOSyYlhExaDN+0KbJj/PkKr6Jnjq5xEry9+6C8QY5quelGxUc81v2kqWj5+QzW5rGelyvF8Sl9pQ9/yj1c8r0vSrvTFDo1Nu2Zlyy8qDvlzwQXuR5BILCU9oH/KAOb9ZJy8fcVoXLxLOlDQIxnZ4tjVMy8cmoYuShb9cXgKo2OCXSb5jXYS0pJD1KN5NesqaAoelbkhHD7W/if9zZ6G1u2PF41eOY3wnEQdGH4Ws1d3DGMacV3b/SYa475zaEMeQ4KV99fyWQJAH02YrLHa817DWXRkyaWcsYAdgHmhMeVwh5zQ+Xu8e6YqcJd6Gn1gOfvQjO0Mv9Pbp8gifx470pa0fkFNYq+gKvUjLTF84BtJz3H+Hdchlk3X+zoKvBExYtWyIke1hzMN0rhBklZnm0T0mGufx1wN/a9DgS74Tq4yqjNmdiNehaiBuiZmIhWpgaIZWBonS96yeUfjrV5UdLpzZNZaFn4GHQKYCgUBzhMIQNEnTkdHkY0Qxhno/87h7kqQ6IBHPcu
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(366004)(376002)(396003)(346002)(136003)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(33716001)(86362001)(38100700002)(6486002)(6512007)(6506007)(4326008)(44832011)(7416002)(6666004)(8676002)(8936002)(9686003)(53546011)(83380400001)(1076003)(26005)(2906002)(66946007)(66556008)(66476007)(316002)(54906003)(6916009)(5660300002)(478600001)(41300700001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: t8xAJnHsuRCOd8RNIEeYoimelRKfDnASqVhvN9zPmiNTNqIei2gUJWF3aR0ODzxMTfK6FUB76IBWgrrJ9AekWkCk4+4iEcoeZwMUP/nKfdaOBxMzPq62cPOtLQRRb4JRGm3JT5YwZLv4PcTJoA/iU2vX10eYOmmYocFVbTHvoEHEvXVuj4LjdK1Gp1obEihreMI/ZNW7PuF77efmtNUZBqer0gRnJlx3IhN4ZwhKkwwIPX1PvsPBcj9p/iSBYKDeuszODKy+5q2WcoHGx1mUfMKOGEcTeS8x4JlapBS8OWml/EWzQ2yUptWvcFQr1spCSe8IAFWnO6hvpd3Owtr1GSV9byeZA1zeaou+sOhM10L1uvZy0FrGd5MJKy7aLpx3s99loyFgSD0lwzfRCJTb1pOXoFxOCJVRV8jFn5BdSSUYBs65x94vIfQnga7jv8uA8Vc1MOVpw3gmlZjLVb4v0BU1Hc4LKB1njR6iHxu1bAR6e8fAmbdzUfT85GOizCgIholk+PdhXOI8LR8HbARUGDEijjoYkP1+eRjYpjkOQBA3RBpIv/h1wOvJFvAlIX/LDND5Lirg+NMGH59KaSEFm9fqrNxWhCIHqujHH2sykY7Jkc142NkmraEwEcLrzTMXpmKbh9bNYPvXhIDb1PHiSGj9JxEf8lD8DWKJQGz9okY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(39860400002)(396003)(376002)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(6512007)(36916002)(6486002)(6506007)(53546011)(2616005)(478600001)(83380400001)(6666004)(26005)(7416002)(2906002)(4326008)(5660300002)(66476007)(8936002)(316002)(8676002)(41300700001)(66556008)(66946007)(86362001)(36756003)(921005)(31696002)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FNr4Q7fH9D8m2enWWRJAf9b16uLwi2zSZSNllsi6pRQfH6tyksvEdEiCjI9E?=
- =?us-ascii?Q?KEojtg1PME+MpiKi7PexgfHWrVkXPV73/NL8ohOy/Tj21JIGHPtijO/Hx8+B?=
- =?us-ascii?Q?DIO2ennOj1AsbyiEkPLyoSr/4S+Pz+XS3NGV+ov91cZCkrcqz8O2aH8d6hZV?=
- =?us-ascii?Q?L1TdaUr3gYOXUTWgphsZWIjUGjDaZa4KyRl7dmYQEADyzyt8dEGcoGZ54zVv?=
- =?us-ascii?Q?aCpAgfssc7IvPV/jPsG9W2k7Z9jDskMcXlq+SKi70fpmP/80tjYmdgLvhGjp?=
- =?us-ascii?Q?9qRwW8X7+vzLr9Icq6BEwByAlakzbMlHrVZ2CQHS6rt4R8CmXxEoJSNWJg+C?=
- =?us-ascii?Q?+cfnEiKTsmx0pnIlG/Tgmhh3YbpIc+lQEoRdlmId5WrussMIUzwoiemcC34G?=
- =?us-ascii?Q?+zqWeRwv/Ewp0Hz+PGelVcfnwfN9/GzByBHUmywN5NB46H+Dn0VfrSWNkJFt?=
- =?us-ascii?Q?G6Iv3VOL4VMR0zoQ1JUtsfn7sYjaYgEFg0LOWMRmm1j5FqNU7CpQV9t9oHnf?=
- =?us-ascii?Q?dyH59zQhsnZUdxfX4vEAC2lXTRUzlJEN8yjsm25NS/7FTNH2f00XplFRcrs1?=
- =?us-ascii?Q?/dNmNSpP9fB7z72dxStOUARqNfmkfCwJud9xX6DhB956oWCRE6cm9XCIAfEZ?=
- =?us-ascii?Q?+MlEZ/kMsPysld8fuz7i5gcr6ron0RHjx0qt5Fi89RWtLzk3lDVD/eTtKP29?=
- =?us-ascii?Q?ECY+6+xSrckP8fHljzLxM7RvRNkdmkL7ZOrvHSOjuHKcXCPaGhW9IpUMGSzc?=
- =?us-ascii?Q?M18q6AxOhZ+d2tG8S08F1zZVjnpZvrQ+srZ3fn5SbsIUqDSgJUh1Wy7vVT2Q?=
- =?us-ascii?Q?s29NqkPBwZTKnwCCOXxkuLK+5zq8OYmh++zorMOgl+mGWVscDSSowcivFy9k?=
- =?us-ascii?Q?HawOZKaOsZvIgig1zv91+7DkIlQgRnPnV52HrU+GrBW2VMZKihr2hv7yt7Br?=
- =?us-ascii?Q?Mx++/bG+FxGerIIriJTOS+fsUqwhgsaSSUE60bCZHz6dMMlUmzRvAmYyJQnc?=
- =?us-ascii?Q?oHxCs71fsJziQtLSNuYMB7tCSmhv9PKP4OY0zais6o15jrzX6/sNizeKHY7D?=
- =?us-ascii?Q?WkiAaEEkvOrV/di6wZFvc02IfXYlaJy1u0uwnRtQiLIxfPbIBFI+fv+q8fZX?=
- =?us-ascii?Q?qI3dvn7/fUTZEG0bpWlwtg3tPYr4I5GUEkgQPehxBptep44UUd8A4yrYnY1U?=
- =?us-ascii?Q?CuzgxvcUb8xCjBE0sh8OtAO1QQLqqaGo2PCviSoQ1h+vaeJQesVT1+YON5fL?=
- =?us-ascii?Q?joF3WhU9B6eG/0EI1jaXnn2rqyM7H76sEclR0Mg7euezm0sxHcnd5TDhpZXR?=
- =?us-ascii?Q?n6Ro8/dJhunQ1jmNx8B7VAXvA10oQTIcYwGuNoR7Yb9dx0271dQUy8gcmH8U?=
- =?us-ascii?Q?kE6UXf6w3zE15hp2iyOg0+9bSxLz2ItT0cbNuIybl5Whn5HdVkU5Gup7VIME?=
- =?us-ascii?Q?68XkT/p+35tnZuGmCCXvnQNK4CylmqvzivfJ4oEm71SbbyIvZ8dX+Knu7KAx?=
- =?us-ascii?Q?ard9vJqGzXV15Xc/qleOyPdsqTCEnbEFSqsfRYHuJnTcyvSWeMBOipr/V1Dd?=
- =?us-ascii?Q?uc5c4dnYbCP5DeDsXBgARFCCHrPb4mQ1d4/BCiPr4q6Qxyrwc5Opl9Iglopw?=
- =?us-ascii?Q?jw=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0d7d69d-e211-4490-9608-08dbc32fb1b3
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?anVoelhJMXhwcG05TzhlYmVDNG0vWlZZc0YwY29lazFNam1JSDVPK3NCNmVu?=
+ =?utf-8?B?Wm5FVDBXcURsNzFuY052OUF3TGZMc0VEQ0w5cE8wSTBwTks5TXM1TllvZURK?=
+ =?utf-8?B?RUxpQkkzZEJJSlEyWEc3Q1VVWjdiRW55d1M4ZDhtNkFUM2VzZGJCcGNhQjdt?=
+ =?utf-8?B?WmEyMmtwV2hWMWpLcHlIa0piTEp5SzVuNHhmMTZUd3J4V1AweXdkMUZvL2F5?=
+ =?utf-8?B?MHpURUN0Z2MybHZ4N3hPeG42V25Wa1VMSDNSU3lIb3JGZE9UcWFKMGNHeDFs?=
+ =?utf-8?B?dUNVTVpxZmFiQ1dzeUlDclQvRCtTK0JxY3RGcXBMd2gxN2xRUWxrLzhkN2hG?=
+ =?utf-8?B?VnZUcGNrQUM2aVFWekd6RGVwSCs5WC8rc3gyTm9sSWlxdGlnczNha1F5SVBX?=
+ =?utf-8?B?c3paNjN2SXFPZTB1YzJ1eGp3YS9YVk1ETkJUeGVHYXpTNUFGNUlNL1JFaUZB?=
+ =?utf-8?B?MGNsQXRTQUZGb3lWSW1aRGh6MllkYXdCMTVsYmROWXJDZGxEVktHRGhOR0Nr?=
+ =?utf-8?B?NEFOMGJKWUc5TmZkRUczYk5QdnY4c0dybGlsTDJrNlRYcFpkS2RiN2gwNm1S?=
+ =?utf-8?B?dHZEcCtYSmk2QVdpL3dIM1JCaGpNS2djeFBya1orS1dnNlVqWFhFeDBpWGJT?=
+ =?utf-8?B?NjRaam9VVHFqYjBPMGN6Mk5GY29iSC9NMnJkUHg0UjJRQjZEbEZpT3A2ZGd0?=
+ =?utf-8?B?cVVzeGR4bUdiNFpvYmxJQkY2ek1yWnpMTTB4NkNCSExDVGNkN1pkNFNyNHhH?=
+ =?utf-8?B?RlJBUE5OZERpWlkvZ3pZYzNiRGlHOThyb1o4QnpyS1RnbnEvUllhVWVFTHI0?=
+ =?utf-8?B?ZzBLWEt6aTR5eHpYTllyWFF1bDM1ZEdma0xNMlV1WEMvV092NzNzQ1kzMUNO?=
+ =?utf-8?B?UEdPbnltNkoyd2dsQWZ0TGREeUFoSFBXeTlSSzJUNmdXcGlhQUlGRXVncUtZ?=
+ =?utf-8?B?aC8zejNENFAweEVyc2k5cWV1QWN2YlVZTEZjeEJKVXlVRDRFVWV2THJWVFcv?=
+ =?utf-8?B?c0dqS3MvaDhBTUU5MHN6alR5OVQxS0ZpTXhVR1I2WEFoMDJxaGNqWjNFVzZi?=
+ =?utf-8?B?enhhV3FTMVlDd3RBeitaNVFRaFIwV0hwRjdLWERFT0VuNGdhMFdxeTkzQlYz?=
+ =?utf-8?B?cC9yVFZKVTJrczhnNFkwTW5oajZwYmpxcUFRWU1ENFh4OW5kc0pWZkt0cFND?=
+ =?utf-8?B?RldteDRRWmNEdTV2c25vdzZEdkgrU3FFRUZIMDV6SnhuUDZqSVlhMlNuNE9n?=
+ =?utf-8?B?eG83WTVoa0UvQzhGNkNKcDJlN0ZmajNxUmdpMlpub3FEMHhSd3l2OGs2blQw?=
+ =?utf-8?B?d1lIZzNNeUNmQlVCTnhoMjBsYmtwRWNmSlRVY2x5UHhSUWxlWUh4ZHNhSjUw?=
+ =?utf-8?B?S2lDaElNcjd6T0xBdENZMGx5SUdTaHcwaUx3WDhrbXc5OGlRQ3FUeUlCVWtT?=
+ =?utf-8?B?RXY2YUVQSUY5N1ZEQUI5Ry9FN2ZNMDZTSFJpZ1Y5SFYvWFlQeTZsY1N6cUU4?=
+ =?utf-8?B?QUtNRlVXUFhncldCenFFWDI4c1BWRTg4dGxXRmI0dlNPSXB4MWd4MjRpcEMy?=
+ =?utf-8?B?K0xkUGVndFdGOGxiWklDMnE1VmZsNHRPTlh5S2lwdm1OMFUwbDhmNjFTQ3N3?=
+ =?utf-8?B?VllBNkozdjY4dWphcWhZK1VaRGp1NlY3OU1PVUQ1TmgzR1dnT2x5WUdJMGhj?=
+ =?utf-8?B?U2x5ZjBMS0lSYzFEYUZvTWpaQi9Ock9GaTFlc2tSYnZubmF3SUZSTUtLSG5o?=
+ =?utf-8?B?YmcxaHR0ZnU5a0xQZ2VPUUcwbHBBUENMbzNmUndRWXl2aHJHUXRuQ3B0OGw5?=
+ =?utf-8?B?Zkswc0Y4TGpNeVRFenBuRmtEa3JUazhPekk3d2tTNEZjNTk4UFROL1pQNlk2?=
+ =?utf-8?B?MTdPb2V3Q05RVjN1SGlNeStMK1BYYktEZkdoYWpyMDBxWW5IYkJtYmI5T0pS?=
+ =?utf-8?B?YWZ6V1FMTnNmOWtDWkVMb2hXWDVFTXVQYUR3dHdHL2pWOHd2a3hBUVd0QWFS?=
+ =?utf-8?B?b0t4S2s3WUVZS0hReElmSnIvbzgrUVFDRkh1MEpRY2E2ZkR0bE9jdnlldUZz?=
+ =?utf-8?B?WGk4L0dXMzJnODZOTlU4UnJUSzVqVVdZcDNaZjZNdzdvQ0d5YUtiNzVNejZ1?=
+ =?utf-8?Q?jMf05T2wGMTTq2mhMVKqH4oQv?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?STlxZGxZZ2FzZWg5ZTd0YWFoMnRTSGg4OXpBZ2Y4RGhNYit6ZWJrUDM1Mjhx?=
+ =?utf-8?B?bWpzOU1EUWtJNXVoTUg3L1hkVjdsZnFqbTl3cmhiYmRaWHlyR1hZaHBGRVJR?=
+ =?utf-8?B?TW1RTENCOGRIMW1MREhDQ2puN0ZjZTVTZXVZcFQvcjFSNjhuUHJGbDlQaytF?=
+ =?utf-8?B?VkVrdHNmU2JhWE4vK3V6TkxMT2ZMMEtUYkUrMVFiS0ZwYUkvbWtSOU1yR1Jh?=
+ =?utf-8?B?Zk4vWlZ0d3VYMDBQekN0cmFWYk42MW5VcWRkbDZQTTcyRk43L1gwNDQ0Z0NN?=
+ =?utf-8?B?aCsvMWpHOFowMGRxQ3hyaCsrbzBpenAxVXh3bHgxNUF5a2IxQVNKREY3Q3ht?=
+ =?utf-8?B?M2xYTElnMlkxMzBjOTFtNW1oZmhDUkFrRi9oNTV6WjdxVWM5ODF0TDlEN2gy?=
+ =?utf-8?B?VnNGOG5iME5zWXJ1Sm1qNUxGQTFEUzhCM1IxR2xiMEp6alEwQzIxcmtkSFZv?=
+ =?utf-8?B?VzR4UDkrSENVRy9GbDZDQVRJZUpCRHEra0pYRmY1UXl5d2RTcHRoLzAzVkFZ?=
+ =?utf-8?B?VkNqdTBlZ3JyWUh2NWlGcGU3SmFPT2pxZzVPUElPRXhsdTA2clNnQjhBY1Ex?=
+ =?utf-8?B?Vmozd3N0VkN4cW5FWTZleE1OdWgvS3FEU0RNdm9XTHBVMEI0SmVjUm9Hd3hh?=
+ =?utf-8?B?VEVNUCs5K3V2aHB1TkdyTWVNQnA4aDhYSG1WRjFOUUtGSnErSkkxYkZrdHZG?=
+ =?utf-8?B?NVVDdFFwcmFPQ1l5bU9JYWIzaXBsK3RoRUtyL2VuczcxRE8rNHRCd3Fva1hh?=
+ =?utf-8?B?Mzd6cTVYZGxkcVdJTHdHWUpDeTBwelhhZjJDb3hkNmtMbVAxYVNNQjlFWkhv?=
+ =?utf-8?B?TW5ZL253Mm9oKzY5NTNPd29IZHhDMWZJVU1iZHAwNGxEdEZvaWFuejBhTzVq?=
+ =?utf-8?B?dVRaaTZyU1VRMjhQOEl4azBXenk0OFpFNGQxU3Qwd1VDQlVWNlBkL1pWMkw1?=
+ =?utf-8?B?M0E1K2d1dCtBRVo1SzVzU0hIaWpIblNmTitUOGhDYnZleHZpVExPWEZlMnVl?=
+ =?utf-8?B?RmF4REV2TnJPaWsxYXFyS3crU1RuT0FKMW9KTmJsbTUrdlVGdElJSkJJRzds?=
+ =?utf-8?B?KzJGdkxDSTRUcFAyRm9MamNENWlHSUFsTldKRUQxMXBRaE5rWVR4bEpYZFhB?=
+ =?utf-8?B?V2xVRjMzL3pSTlJnUzRyNkMyN3BCRHNJblZ4ZDRiemZicHZCeTlnVTNDakU3?=
+ =?utf-8?B?NzljWWpOVldRbXhtd2VZaHA4aFVFZnQyM0xBZnk4SWI2d25xWDFMc20zeVkz?=
+ =?utf-8?B?ekQ1ZHZnWHhmRUhZMEpXaW5ucWRWM2xpK0ttcUZvNXJGeU5lNDVKRUNKTFdY?=
+ =?utf-8?B?b2ljSG9iSDBMckdUQjQ3QXo2UGlYQ1ZMUjlqRkhhcW14bHN3cHdwWXFGMk1K?=
+ =?utf-8?B?czlmQWNRWUQwV0FYemhRdSt0S0VHeFdMS29wamFPeGlWSXZuWGdYMFNGZG50?=
+ =?utf-8?B?MVdlNGlXRUxFeWFQcVhZWThRK3plWEVybDM3dXFkdy9SSVFZcGd3YlRHM1Zn?=
+ =?utf-8?Q?+s8MAI=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8669442-1318-4437-d5a5-08dbc32fd9a5
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2023 10:09:41.9440
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2023 10:10:48.7446
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yFx43psC8fhFCf0Tq3sueMo84GvbeXgTJS8HQCDykWdSV5q42Q+O8shqdyDkYrFs6yLGL1xaeKfvGiZLSo9fGQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8514
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-UserPrincipalName: UM0hXoO1fF8Vq4qAvXWEwWPiu5B0Yv0PeObCW4Vl+1L58MflOPcWoLsRgMrpmpUNHVFs26upm9j0pvCv+WOm8g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB4274
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-02_03,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 malwarescore=0 spamscore=0 bulkscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310020075
+X-Proofpoint-GUID: LQRy9tCWwfZkGzUZLwQkYozNQFNb_agF
+X-Proofpoint-ORIG-GUID: LQRy9tCWwfZkGzUZLwQkYozNQFNb_agF
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
-
-On Fri, Sep 29, 2023 at 09:53:22PM +0530, Vinod Koul wrote:
-> On 23-09-23, 16:48, Vladimir Oltean wrote:
-> > The bit stream handled by a SerDes lane needs protocol converters to be
-> > usable for Ethernet. On Freescale/NXP SoCs, those protocol converters
-> > are located on the internal MDIO buses of the Ethernet MACs that need
-> > them.
-> > 
-> > The location on that MDIO bus, on these SoCs, is not fixed, but given by
-> > some control registers of the SerDes block itself.
-> > 
-> > Because no one modifies those addresses from the power-on default, so
-> > far we've relied on hardcoding the default values in the device trees,
-> > resulting in something like this:
-> > 
-> > 		pcs_mdio1: mdio@8c07000 {
-> > 			compatible = "fsl,fman-memac-mdio";
-> > 
-> > 			pcs1: ethernet-phy@0 {
-> > 				reg = <0>;
-> > 			};
-> > 		};
-> > 
-> > where the "reg" of "pcs1" can actually be retrieved from "serdes_1".
-> > 
-> > That was for the PCS. For AN/LT blocks, that can also be done, but the
-> > MAC to PCS to AN/LT block mapping is non-trivial and extremely easy to
-> > get wrong, which will confuse and frustrate any device tree writers.
-> > 
-> > The proposal is to take advantage of the fact that these protocol
-> > converters *are* discoverable, and to side-step that entire device tree
-> > mapping issue by not putting them in the device tree at all. So, one of
-> > the consumers of the SerDes PHY uses the phy_get_status() API to figure
-> > out the address on the MDIO bus, it also has a reference to the MDIO bus
-> > => it can create the mdio_device in a non OF-based manner.
-> > 
-> > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > ---
-> > v1->v2: patch is new
-> > 
-> >  include/linux/phy/phy.h | 29 +++++++++++++++++++++++++++++
-> >  1 file changed, 29 insertions(+)
-> > 
-> > diff --git a/include/linux/phy/phy.h b/include/linux/phy/phy.h
-> > index f1f03fa66943..ee721067517b 100644
-> > --- a/include/linux/phy/phy.h
-> > +++ b/include/linux/phy/phy.h
-> > @@ -56,6 +56,33 @@ enum phy_media {
-> >  enum phy_status_type {
-> >  	/* Valid for PHY_MODE_ETHERNET and PHY_MODE_ETHTOOL */
-> >  	PHY_STATUS_CDR_LOCK,
-> > +	PHY_STATUS_PCVT_ADDR,
-> > +};
-> > +
-> > +/* enum phy_pcvt_type - PHY protocol converter type
+On 29/09/2023 18:51, Bart Van Assche wrote:
+> On 9/29/23 03:27, John Garry wrote:
+>> +    if (pos % atomic_write_unit_min_bytes)
+>> +        return false;
+>> +    if (iov_iter_count(iter) % atomic_write_unit_min_bytes)
+>> +        return false;
+>> +    if (!is_power_of_2(iov_iter_count(iter)))
+>> +        return false;
+> [ ... ]
+>> +    if (pos % iov_iter_count(iter))
+>> +        return false;
 > 
-> It is not a generic protocol converter but an ethernet phy protocol
-> converter, so i guess we should add that here (we are generic phy and
-> not ethernet phy here!
+> Where do these rules come from? Is there any standard that requires
+> any of the above?
 
-Can you please show, using a diff, what modification you would like to see?
-In my mind, enum phy_pcvt_type could also contain non-Ethernet protocol
-converter types, and so, I didn't want to add "ethernet_" in it.
-The "ETHERNET_" prefix will be part of the individual enum values that
-are applicable to Ethernet.
+SCSI and NVMe have slightly different atomic writes semantics, and the 
+rules are created to work for both.
 
-> > + *
-> > + * @PHY_PCVT_ETHERNET_PCS: Ethernet Physical Coding Sublayer, top-most layer of
-> > + *			   an Ethernet PHY. Connects through MII to the MAC,
-> > + *			   and handles link status detection and the conversion
-> > + *			   of MII signals to link-specific code words (8b/10b,
-> > + *			   64b/66b etc).
-> > + * @PHY_PCVT_ETHERNET_ANLT: Ethernet Auto-Negotiation and Link Training,
-> > + *			    bottom-most layer of an Ethernet PHY, beneath the
-> > + *			    PMA and PMD. Its activity is only visible on the
-> > + *			    physical medium, and it is responsible for
-> > + *			    selecting the most adequate PCS/PMA/PMD set that
-> > + *			    can operate on that medium.
-> > + */
-> > +enum phy_pcvt_type {
-> > +	PHY_PCVT_ETHERNET_PCS,
-> > +	PHY_PCVT_ETHERNET_ANLT,
-> > +};
-> > +
-> > +struct phy_status_opts_pcvt {
-> > +	enum phy_pcvt_type type;
-> > +	union {
-> > +		unsigned int mdio;
-> > +	} addr;
-> >  };
-> >  
-> >  /* If the CDR (Clock and Data Recovery) block is able to lock onto the RX bit
-> > @@ -71,9 +98,11 @@ struct phy_status_opts_cdr {
-> >   * union phy_status_opts - Opaque generic phy status
-> >   *
-> >   * @cdr:	Configuration set applicable for PHY_STATUS_CDR_LOCK.
-> > + * @pcvt:	Configuration set applicable for PHY_STATUS_PCVT_ADDR.
-> >   */
-> >  union phy_status_opts {
-> >  	struct phy_status_opts_cdr		cdr;
-> > +	struct phy_status_opts_pcvt		pcvt;
-> >  };
-> >  
-> >  /**
-> > -- 
-> > 2.34.1
-> 
-> -- 
-> ~Vinod
+In addition, the rules are related to FS extent alignment.
+
+Note that for simplicity and consistency we use the same rules for 
+regular files as for bdev's.
+
+This is the coding for the rules and where they come from:
+
+ > +	if (!atomic_write_unit_min_bytes)
+ > +		return false;
+
+If atomic_write_unit_min_bytes == 0, then we just don't support atomic 
+writes.
+
+ > +	if (pos % atomic_write_unit_min_bytes)
+ > +		return false;
+
+See later rules.
+
+ > +	if (iov_iter_count(iter) % atomic_write_unit_min_bytes)
+ > +		return false;
+
+For SCSI, there is an atomic write granularity, which dictates 
+atomic_write_unit_min_bytes. So here we need to ensure that the length 
+is a multiple of this value.
+
+ > +	if (!is_power_of_2(iov_iter_count(iter)))
+ > +		return false;
+
+This rule comes from FS block alignment and NVMe atomic boundary.
+
+FSes (XFS) have discontiguous extents. We need to ensure that an atomic 
+write does not cross discontiguous extents. To do this we ensure extent 
+length and alignment and limit atomic_write_unit_max_bytes to that.
+
+For NVMe, an atomic write boundary is a boundary in LBA space which an 
+atomic write should not cross. We limit atomic_write_unit_max_bytes such 
+that it is evenly divisible into this atomic write boundary.
+
+To ensure that the write does not cross these alignment boundaries we 
+say that it must be naturally aligned and a power-of-2 in length.
+
+We may be able to relax this rule but I am not sure it buys us anything 
+- typically we want to be writing a 64KB block aligned to 64KB, for example.
+
+ > +	if (iov_iter_count(iter) > atomic_write_unit_max_bytes)
+ > +		return false;
+
+We just can't exceed this length.
+
+ > +	if (pos % iov_iter_count(iter))
+ > +		return false;
+
+As above, ensure naturally aligned.
+
+Thanks,
+John
