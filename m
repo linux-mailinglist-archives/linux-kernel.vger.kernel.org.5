@@ -2,71 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E943E7B5A52
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D94847B5A68
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238099AbjJBSfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 14:35:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33892 "EHLO
+        id S229665AbjJBSgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:36:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjJBSfB (ORCPT
+        with ESMTP id S229450AbjJBSgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 14:35:01 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B34A0AC
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 11:34:57 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3af5b5d7f16so56050b6e.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 11:34:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696271697; x=1696876497; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HYZ0mG+1+QVjGIg5If9O0ArAPvVVYNnY7+gjoXl9mzo=;
-        b=fk2pmspdhWuHu2MrckRunBhxps1phBOY5nQfUtldiN+rOsqeiy0aQocWZB0Dx0Azdd
-         unFEY38sVk1/Y8yw9dqLCvwzd5S+8/TVDddAK4h1S43NQb9e+zDkd+X8bgf7N6AV0t2S
-         Bxa/H4bB7NjCLGYtDWBwktnYebddFBxAViUT8tFjAuiEhBo0boxOxDTv9VT05d64hCr9
-         iObGe1zZvHlIxzpXjSDWcPHyviIOJOr1uOOHatu7jBnTgaiAv8tLFLZ1alVDf3It0+uI
-         /DueyZtOhhoz6ax/QDrk0AECKgB1hzvgIOadIssYg3gro8gAblF21/YVjc9kkIvHZZq2
-         jRNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696271697; x=1696876497;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HYZ0mG+1+QVjGIg5If9O0ArAPvVVYNnY7+gjoXl9mzo=;
-        b=P5F1XSzOaPzzeAGrTqb6s3qUyneaDXQQR+JvikF8CgbSl3OotuDOQDAgxSIuAlrik/
-         QFSnFGNu9uvAv/uY719LOtuDKu/9Cb17HkQfu1J+PHHFsLYAOsNXzzHFwQpj+b6QeaZL
-         5dS/K+jUIl3XIpcXjbkQOqXm3bXgOyfgCECXNUVSX3Z7JLrn3mW6xPelvPYAaKa2Rrbd
-         aPu81+KltKlJCiNy0oIdY6KI9NxGYQ1b5fY7OHbXPOwb0wq/uBeyd1k9HCZGBElELoir
-         s9v/yFZnltheEUEnyoduJcSuzPxbSceNApE8AgbHDvZ2hXrdXgOsXPVU32tIkjHP6Ii/
-         Lc1A==
-X-Gm-Message-State: AOJu0Yy+hI89k8Sldc8+8KnVTIpKsLnTqU+mv7GZuaSHvng6ZkMM1Ar4
-        NTqUVMEh0x9qyJFXN+RjVSeG8dfew3Daobmubxj+0g==
-X-Google-Smtp-Source: AGHT+IFrSNucroAoFPYKzSHS0KRFLI9bSO+V8Flpb1DSqKOAUJFSimWbH4j2jPQlv0ng/oP3xMX7UteRLf895ba4L5o=
-X-Received: by 2002:a05:6808:1484:b0:3a4:316c:8eeb with SMTP id
- e4-20020a056808148400b003a4316c8eebmr16210570oiw.40.1696271696596; Mon, 02
- Oct 2023 11:34:56 -0700 (PDT)
+        Mon, 2 Oct 2023 14:36:42 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6416BAB;
+        Mon,  2 Oct 2023 11:36:39 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 392ILkAg015794;
+        Mon, 2 Oct 2023 18:36:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=luVZOuFEDAuHKP2TvHHHlNuyDeSqZdneQoSyF7czdUk=;
+ b=ngkqdt6imNw7nA+GUyiQ/9A8i9LKiYiiGwAHnqBiyvYzTuwDD3aHMtTGRfXoov1tFM0Y
+ 1i9jk58mniMar7Ou+BYCqgIXb+sS5gZUPtsqFVWN5Zjfyj5+oV3DnGBEdjkcX+CjPaLl
+ TCmr5/NzRWvNbzgy/hxWNG5Blvdv/r1PmjLOWgV0CJs1/LDGp7iuHVKo8Z2w0uyc0Ce3
+ GelY3P9RoJUd75k2MURQdLd9CzibR+Qj2ykn0gKsx3y3oFRkYtA3LNfBoH4YsLggdIdH
+ 1hECfZseIJqPYvQED5HQBkRv/Hl2q8WTzdmVe6XVHvo4cKog5jbH7V0KFRMB8uSi+urh 2w== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3te9cmmnpm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 02 Oct 2023 18:36:11 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 392IaA2F028964
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 2 Oct 2023 18:36:10 GMT
+Received: from [10.110.71.113] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 2 Oct
+ 2023 11:36:10 -0700
+Message-ID: <8d5af4d7-23fc-a03e-bad8-760209b537a0@quicinc.com>
+Date:   Mon, 2 Oct 2023 11:36:01 -0700
 MIME-Version: 1.0
-References: <20230929-hib_zero_bitmap_fix-v1-1-6cfdcb785250@quicinc.com> <CADyq12znHG_VPLVxSe+2ofX-WR1Uha2hu1MhoUAquMnoD_oP0w@mail.gmail.com>
-In-Reply-To: <CADyq12znHG_VPLVxSe+2ofX-WR1Uha2hu1MhoUAquMnoD_oP0w@mail.gmail.com>
-From:   Brian Geffon <bgeffon@google.com>
-Date:   Mon, 2 Oct 2023 14:34:20 -0400
-Message-ID: <CADyq12x1wZb0Yt3sXR21pQSagT7tGvFmXTBaoeNXkOjPi5-Rnw@mail.gmail.com>
-Subject: Re: [PATCH] PM: hibernate: Fix a bug in copying the zero bitmap to
- safe pages
-To:     Pavankumar Kondeti <quic_pkondeti@quicinc.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        kernel@quicinc.com,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH v4 1/4] firmware: arm_scmi: Add polling support for
+ completion in smc
+To:     Brian Masney <bmasney@redhat.com>
+CC:     <sudeep.holla@arm.com>, <cristian.marussi@arm.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+ <20230911194359.27547-1-quic_nkela@quicinc.com>
+ <20230911194359.27547-2-quic_nkela@quicinc.com> <ZRsJWdZVMc+F5ZgF@brian-x1>
+Content-Language: en-US
+From:   Nikunj Kela <quic_nkela@quicinc.com>
+In-Reply-To: <ZRsJWdZVMc+F5ZgF@brian-x1>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: AyPeROoQvaxvd8njlrW4LG-36WoauSg9
+X-Proofpoint-ORIG-GUID: AyPeROoQvaxvd8njlrW4LG-36WoauSg9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-02_12,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ lowpriorityscore=0 adultscore=0 suspectscore=0 bulkscore=0 impostorscore=0
+ mlxlogscore=999 priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1015
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310020144
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,164 +86,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 1:56=E2=80=AFPM Brian Geffon <bgeffon@google.com> wr=
-ote:
->
-> On Fri, Sep 29, 2023 at 1:31=E2=80=AFPM Pavankumar Kondeti
-> <quic_pkondeti@quicinc.com> wrote:
-> >
-> > The following crash is observed 100% of the time during resume from
-> > the hibernation on a x86 QEMU system.
-> >
-> > [   12.931887]  ? __die_body+0x1a/0x60
-> > [   12.932324]  ? page_fault_oops+0x156/0x420
-> > [   12.932824]  ? search_exception_tables+0x37/0x50
-> > [   12.933389]  ? fixup_exception+0x21/0x300
-> > [   12.933889]  ? exc_page_fault+0x69/0x150
-> > [   12.934371]  ? asm_exc_page_fault+0x26/0x30
-> > [   12.934869]  ? get_buffer.constprop.0+0xac/0x100
-> > [   12.935428]  snapshot_write_next+0x7c/0x9f0
-> > [   12.935929]  ? submit_bio_noacct_nocheck+0x2c2/0x370
-> > [   12.936530]  ? submit_bio_noacct+0x44/0x2c0
-> > [   12.937035]  ? hib_submit_io+0xa5/0x110
-> > [   12.937501]  load_image+0x83/0x1a0
-> > [   12.937919]  swsusp_read+0x17f/0x1d0
-> > [   12.938355]  ? create_basic_memory_bitmaps+0x1b7/0x240
-> > [   12.938967]  load_image_and_restore+0x45/0xc0
-> > [   12.939494]  software_resume+0x13c/0x180
-> > [   12.939994]  resume_store+0xa3/0x1d0
-> >
-> > The commit being fixed introduced a bug in copying the zero bitmap
-> > to safe pages. A temporary bitmap is allocated in prepare_image()
-> > to make a copy of zero bitmap after the unsafe pages are marked.
-> > Freeing this temporary bitmap later results in an inconsistent state
-> > of unsafe pages. Since free bit is left as is for this temporary bitmap
-> > after free, these pages are treated as unsafe pages when they are
-> > allocated again. This results in incorrect calculation of the number
-> > of pages pre-allocated for the image.
-> >
-> > nr_pages =3D (nr_zero_pages + nr_copy_pages) - nr_highmem - allocated_u=
-nsafe_pages;
-> >
-> > The allocate_unsafe_pages is estimated to be higher than the actual
-> > which results in running short of pages in safe_pages_list. Hence the
-> > crash is observed in get_buffer() due to NULL pointer access of
-> > safe_pages_list.
->
-> After reading through the code, perhaps I'm missing something, I'm not
-> sure that this is really fixing the problem.
->
-> It seems like the problem would be that memory_bm_create() results in
-> calls to get_image_page() w/ safe_needed =3D PG_ANY =3D=3D 0, meaning tha=
-t
-> get_image_page() will not touch allocated_unsafe_pages and instead
-> will mark the page as in use by setting it in the forbidden_pages_map
-> and the free_pages_map simultaneously. The problem is that the
-> free_pages_map was already populated by the call to mark_unsafe_pages,
-> meaning that if we allocated a safe page in get_image_page() we just
-> set the free bit when it otherwise should not be set.
->
-> When the page is later free'd via the call to memory_bm_free(&tmp,
-> PG_UNSAFE_KEEP), it results in calls to free_image_page() w/
-> clear_page_nosave =3D PG_UNSAFE_KEEP =3D=3D 0. This means that we do not
-> touch the free_pages_map because we don't call
-> swsusp_unset_page_free().
->
-> With all that being said it seems like the correct way to deal with
-> that would be to do:
->    error =3D memory_bm_create(&tmp, GFP_ATOMIC, PG_SAFE);
-> Here we know that the pages were not in the free_pages_map initially.
->
-> Followed by freeing it as:
->     memory_bm_free(&tmp, PG_UNSAFE_CLEAR);
-> And here we know that swsusp_unset_page_free() will be called making
-> sure the page is not in the free_pages_map afterwards.
->
-> And that should result in an unchanged free_pages_map. Does that make
-> sense? Please correct me if I'm misunderstanding something.
->
 
-To restate this another way, if I'm reading it correctly, I think the
-outcome is actually nearly the same, the difference is, when
-allocating the bitmap before w/ PG_ANY we're setting bits in the
-free_page_list which will be unset a few lines later in the call to
-mark_unsafe_pages(), and then we won't touch the free_pages_list
-during the memory_bm_free() because it's called with PG_UNSAFE_KEEP.
+On 10/2/2023 11:18 AM, Brian Masney wrote:
+> On Mon, Sep 11, 2023 at 12:43:56PM -0700, Nikunj Kela wrote:
+>> Currently, the return from the smc call assumes the completion of
+>> the scmi request. However this may not be true in virtual platforms
+>> that are using hvc doorbell.
+>>
+>> This change adds a Kconfig to enable the polling for the request
+>> completion.
+>>
+>> Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
+>> ---
+>>   drivers/firmware/arm_scmi/Kconfig | 14 ++++++++++++++
+>>   drivers/firmware/arm_scmi/smc.c   | 15 ++++++++++++++-
+>>   2 files changed, 28 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/firmware/arm_scmi/Kconfig b/drivers/firmware/arm_scmi/Kconfig
+>> index ea0f5083ac47..771d60f8319f 100644
+>> --- a/drivers/firmware/arm_scmi/Kconfig
+>> +++ b/drivers/firmware/arm_scmi/Kconfig
+>> @@ -125,6 +125,20 @@ config ARM_SCMI_TRANSPORT_SMC_ATOMIC_ENABLE
+>>   	  in atomic context too, at the price of using a number of busy-waiting
+>>   	  primitives all over instead. If unsure say N.
+>>   
+>> +config ARM_SCMI_TRANSPORT_SMC_POLL_COMPLETION
+>> +	bool "Enable polling support for SCMI SMC transport"
+>> +	depends on ARM_SCMI_TRANSPORT_SMC
+>> +	help
+>> +	  Enable completion polling support for SCMI SMC based transport.
+>> +
+>> +	  If you want the SCMI SMC based transport to poll for the completion,
+>> +	  answer Y.
+>> +	  Enabling completion polling might be desired in the absence of the a2p
+>> +	  irq when the return from smc/hvc call doesn't indicate the completion
+>> +	  of the SCMI requests. This might be useful for instances used in
+>> +	  virtual platforms.
+>> +	  If unsure say N.
+>> +
+>>   config ARM_SCMI_TRANSPORT_VIRTIO
+>>   	bool "SCMI transport based on VirtIO"
+>>   	depends on VIRTIO=y || VIRTIO=ARM_SCMI_PROTOCOL
+>> diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
+>> index c193516a254d..0a0b7e401159 100644
+>> --- a/drivers/firmware/arm_scmi/smc.c
+>> +++ b/drivers/firmware/arm_scmi/smc.c
+>> @@ -250,6 +250,16 @@ static void smc_mark_txdone(struct scmi_chan_info *cinfo, int ret,
+>>   	smc_channel_lock_release(scmi_info);
+>>   }
+>>   
+>> +#ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC_POLL_COMPLETION
+>> +static bool
+>> +smc_poll_done(struct scmi_chan_info *cinfo, struct scmi_xfer *xfer)
+>> +{
+>> +	struct scmi_smc *scmi_info = cinfo->transport_info;
+>> +
+>> +	return shmem_poll_done(scmi_info->shmem, xfer);
+>> +}
+>> +#endif
+>> +
+>>   static const struct scmi_transport_ops scmi_smc_ops = {
+>>   	.chan_available = smc_chan_available,
+>>   	.chan_setup = smc_chan_setup,
+>> @@ -257,6 +267,9 @@ static const struct scmi_transport_ops scmi_smc_ops = {
+>>   	.send_message = smc_send_message,
+>>   	.mark_txdone = smc_mark_txdone,
+>>   	.fetch_response = smc_fetch_response,
+>> +#ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC_POLL_COMPLETION
+>> +	.poll_done = smc_poll_done,
+>> +#endif
+>>   };
+>>   
+>>   const struct scmi_desc scmi_smc_desc = {
+>> @@ -272,6 +285,6 @@ const struct scmi_desc scmi_smc_desc = {
+>>   	 * for the issued command will be immmediately ready to be fetched
+>>   	 * from the shared memory area.
+>>   	 */
+>> -	.sync_cmds_completed_on_ret = true,
+>> +	.sync_cmds_completed_on_ret = !IS_ENABLED(CONFIG_ARM_SCMI_TRANSPORT_SMC_POLL_COMPLETION),
+>>   	.atomic_enabled = IS_ENABLED(CONFIG_ARM_SCMI_TRANSPORT_SMC_ATOMIC_ENABLE),
+>  From a Linux distributor viewpoint, it would be nice if this was
+> determined at runtime, rather than at compile time. We generate a single
+> kernel binary that's used on systems from multiple hardware
+> manufacturers. We'd run into an issue if one company required this, but
+> another one didn't. We may potentially run into this same type of issue
+> with the upstream arm64 defconfig.
+>
+> Brian
+This is a transport dependent property. Either the transport supports 
+"completion on return of the smc call" or not. For a given platform, 
+this will be fixed for all channels. This is similar to
 
-> >
-> > Fixes: 005e8dddd497 ("PM: hibernate: don't store zero pages in the imag=
-e file")
-> > Signed-off-by: Pavankumar Kondeti <quic_pkondeti@quicinc.com>
-> > ---
-> >  kernel/power/snapshot.c | 23 ++++++++++++++---------
-> >  1 file changed, 14 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-> > index 87e9f7e2bdc0..cb7341a71a21 100644
-> > --- a/kernel/power/snapshot.c
-> > +++ b/kernel/power/snapshot.c
-> > @@ -2628,7 +2628,7 @@ static int prepare_image(struct memory_bitmap *ne=
-w_bm, struct memory_bitmap *bm,
-> >                 struct memory_bitmap *zero_bm)
-> >  {
-> >         unsigned int nr_pages, nr_highmem;
-> > -       struct memory_bitmap tmp;
-> > +       struct memory_bitmap tmp_zero_bm;
-> >         struct linked_page *lp;
-> >         int error;
-> >
-> > @@ -2636,6 +2636,16 @@ static int prepare_image(struct memory_bitmap *n=
-ew_bm, struct memory_bitmap *bm,
-> >         free_image_page(buffer, PG_UNSAFE_CLEAR);
-> >         buffer =3D NULL;
-> >
-> > +       /*
-> > +        * Allocate a temporary bitmap to create a copy of zero_bm in
-> > +        * safe pages. This allocation needs to be done before marking
-> > +        * unsafe pages below so that it can be freed without altering
-> > +        * the state of unsafe pages.
-> > +        */
-> > +       error =3D memory_bm_create(&tmp_zero_bm, GFP_ATOMIC, PG_ANY);
-> > +       if (error)
-> > +               goto Free;
-> > +
-> >         nr_highmem =3D count_highmem_image_pages(bm);
-> >         mark_unsafe_pages(bm);
-> >
-> > @@ -2646,12 +2656,7 @@ static int prepare_image(struct memory_bitmap *n=
-ew_bm, struct memory_bitmap *bm,
-> >         duplicate_memory_bitmap(new_bm, bm);
-> >         memory_bm_free(bm, PG_UNSAFE_KEEP);
-> >
-> > -       /* Make a copy of zero_bm so it can be created in safe pages */
-> > -       error =3D memory_bm_create(&tmp, GFP_ATOMIC, PG_ANY);
-> > -       if (error)
-> > -               goto Free;
-> > -
-> > -       duplicate_memory_bitmap(&tmp, zero_bm);
-> > +       duplicate_memory_bitmap(&tmp_zero_bm, zero_bm);
-> >         memory_bm_free(zero_bm, PG_UNSAFE_KEEP);
-> >
-> >         /* Recreate zero_bm in safe pages */
-> > @@ -2659,8 +2664,8 @@ static int prepare_image(struct memory_bitmap *ne=
-w_bm, struct memory_bitmap *bm,
-> >         if (error)
-> >                 goto Free;
-> >
-> > -       duplicate_memory_bitmap(zero_bm, &tmp);
-> > -       memory_bm_free(&tmp, PG_UNSAFE_KEEP);
-> > +       duplicate_memory_bitmap(zero_bm, &tmp_zero_bm);
-> > +       memory_bm_free(&tmp_zero_bm, PG_UNSAFE_KEEP);
-> >         /* At this point zero_bm is in safe pages and it can be used fo=
-r restoring. */
-> >
-> >         if (nr_highmem > 0) {
-> >
-> > ---
-> > base-commit: 6465e260f48790807eef06b583b38ca9789b6072
-> > change-id: 20230929-hib_zero_bitmap_fix-bc5884eba0ae
-> >
-> > Best regards,
-> > --
-> > Pavankumar Kondeti <quic_pkondeti@quicinc.com>
-> >
+CONFIG_ARM_SCMI_TRANSPORT_SMC_ATOMIC_ENABLE which is also a Kconfig.
+
