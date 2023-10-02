@@ -2,74 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A557B50C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBFED7B50C4
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236596AbjJBLAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 07:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39986 "EHLO
+        id S236562AbjJBK76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 06:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236601AbjJBLAG (ORCPT
+        with ESMTP id S236192AbjJBK75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 07:00:06 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DE2BF
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 04:00:03 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-4198f67b581so7962771cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 04:00:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696244401; x=1696849201; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zag2FfUNq99ttVshS20BuMzQ5l7ujEO0IQzOyYgkL70=;
-        b=e0TC4acnjxe0jCpLWfAhJsSZsaRkuDW0nqwdTls0QUr3J4qFskX+2m4pEq/3lw6Tgf
-         lvQYqvqt6RAmEEa0hUCQkSeQPSxAfGciuBpG4ugDsO8C05NYXKKsRNh7+4wCUcuVWwZz
-         Z2BTpOy2mJD4t16kHp1Vk7GLVWDn3oVc1VNPI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696244401; x=1696849201;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zag2FfUNq99ttVshS20BuMzQ5l7ujEO0IQzOyYgkL70=;
-        b=WEVkxt1Par60zLUhphSHWbunJF9c7UxsTV+qGvrbITKQYi4O2mXuok4oRLGw0qEtcF
-         SaKQo8Sv0S/AjRyawMrorlQRMPuAZ5xMq6bEqQppiypWzug0Omus77Werh7dwSVhYV07
-         nhrA59BmrsoM3gUh0B+Z1Yd1h7yXc2ldqnuM6Oo2b8jI7cbP6pfClTRwzwI1c3Tp4MVI
-         IOkaVYTOGOT00TU6KUTKUPmrb+FuQWr7ue10c7/gVuupQoVfPJG6XuhtnayXUVzm0qQ8
-         odgDhQKiA8SJIfpckk4HZJ/F3e64j2ob6Xz+ml+OiH+r96h0lL95ZCxJQdWoHuL4q6VB
-         A/rw==
-X-Gm-Message-State: AOJu0YxJp4OuNT1l7jdIN6yW7ciVg9ABcQ1HgOcust4uKsKvmi17TXHN
-        0kqYqUKy8lov8k01AlB8VuP79RLy/YNal/bkSbhF2g==
-X-Google-Smtp-Source: AGHT+IHsF+Y+gplvjz9ADxZs0kqBrs6fzfa28OP8ChpK3udpId0CmYlTOsUZrzilc6aiLrYkh7eKcg==
-X-Received: by 2002:a05:622a:148c:b0:418:fc1:1e9f with SMTP id t12-20020a05622a148c00b004180fc11e9fmr12260554qtx.52.1696244401002;
-        Mon, 02 Oct 2023 04:00:01 -0700 (PDT)
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com. [209.85.219.48])
-        by smtp.gmail.com with ESMTPSA id x14-20020ac8538e000000b0040331f93ee0sm4873618qtp.77.2023.10.02.04.00.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 04:00:00 -0700 (PDT)
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-65b0c9fb673so66717906d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 04:00:00 -0700 (PDT)
-X-Received: by 2002:a05:6214:5f0c:b0:65d:105f:6934 with SMTP id
- lx12-20020a0562145f0c00b0065d105f6934mr10393985qvb.5.1696244399754; Mon, 02
- Oct 2023 03:59:59 -0700 (PDT)
+        Mon, 2 Oct 2023 06:59:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F682BD
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 03:59:54 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06359C433C9;
+        Mon,  2 Oct 2023 10:59:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696244394;
+        bh=lUBPNIWpDvjHX8I98WirEls2JkxV4/o074urcrO7lc4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uFkgOuEtIDIjXaSSXt/PFQcRlOw/GbqlZHzhVadAKGoQmFEXk9IuDCnVku7/bEcOt
+         V8lW3oZ23trVQAcoS5oIS8hmtzQqrmJzT7SROtNsvHqFN1grInXjiA/TuYqXx+EqLT
+         nkUq89SORBvYg6mVUw/I8GYplVJNNGYmWP+PrwnFCzvNk8OViZCLMS6JsjaRgmL2uC
+         blJoFRJq1l+z9KVP9rEm8ZDiofm8lkggAPty8ezQPlbub2Bpg/Ypp5oyqbAc3kQWA8
+         AlcsUBM56q+yklqUJYlU/Jict4HTERCmkaCPvHCmrVz4d9xW+rG1Ji+hXgXKs6aXwK
+         OINs6zWiFd6qQ==
+Date:   Mon, 2 Oct 2023 11:59:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] ASoC: SOF: ipc4-topology: Use size_add() in call
+ to struct_size()
+Message-ID: <b5e0bfc8-88cc-4428-8554-66b4da9c9acf@sirena.org.uk>
+References: <ZQSr15AYJpDpipg6@work>
+ <169601489953.3012131.13922425518082792309.b4-ty@chromium.org>
+ <ZRlJN9qVOv7CIu1N@finisterre.sirena.org.uk>
+ <202310011335.28B55A3BE@keescook>
 MIME-Version: 1.0
-References: <20230924124425.3664024-1-make_ruc2021@163.com> <20e3745b-ed89-4f9e-9ef6-f527122fe204@xs4all.nl>
-In-Reply-To: <20e3745b-ed89-4f9e-9ef6-f527122fe204@xs4all.nl>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Mon, 2 Oct 2023 19:59:43 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5BewuzafQ-ohW6hESRH409ZBRKBZUAPP3OCK5iHuPPHNA@mail.gmail.com>
-Message-ID: <CAAFQd5BewuzafQ-ohW6hESRH409ZBRKBZUAPP3OCK5iHuPPHNA@mail.gmail.com>
-Subject: Re: [PATCH] media: videobuf2: Fix IS_ERR checking in vb2_vmalloc_put_userptr()
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Ma Ke <make_ruc2021@163.com>, m.szyprowski@samsung.com,
-        mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jHjeUkQ9vroTCASR"
+Content-Disposition: inline
+In-Reply-To: <202310011335.28B55A3BE@keescook>
+X-Cookie: Postage will be paid by addressee.
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,62 +65,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 7:16=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl> wr=
-ote:
->
-> Hi Ma Ke,
->
-> On 24/09/2023 14:44, Ma Ke wrote:
-> > In order to avoid error pointers from frame_vector_pages(), we could
-> > use IS_ERR() to check the return value to fix this. This checking
-> > operation could make sure that vector contains pages.
-> >
-> > Signed-off-by: Ma Ke <make_ruc2021@163.com>
-> > ---
-> >  drivers/media/common/videobuf2/videobuf2-vmalloc.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/drivers/media/common/videobuf2/videobuf2-vmalloc.c b/drive=
-rs/media/common/videobuf2/videobuf2-vmalloc.c
-> > index 7c635e292106..c37775080aff 100644
-> > --- a/drivers/media/common/videobuf2/videobuf2-vmalloc.c
-> > +++ b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
-> > @@ -134,6 +134,7 @@ static void vb2_vmalloc_put_userptr(void *buf_priv)
-> >       if (!buf->vec->is_pfns) {
-> >               n_pages =3D frame_vector_count(buf->vec);
-> >               pages =3D frame_vector_pages(buf->vec);
-> > +             BUG_ON(IS_ERR(pages));
 
-Can this even happen? We removed support for pfn maps from
-get_vaddr_frames() quite long ago, so we should always have pages in
-the frame vector if vb2_crate_framevec() in get_userptr() succeeds.
+--jHjeUkQ9vroTCASR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Or am I reading something wrong?
+On Sun, Oct 01, 2023 at 01:37:04PM -0700, Kees Cook wrote:
+> On Sun, Oct 01, 2023 at 11:25:59AM +0100, Mark Brown wrote:
 
-> >               if (vaddr)
-> >                       vm_unmap_ram((void *)vaddr, n_pages);
-> >               if (buf->dma_dir =3D=3D DMA_FROM_DEVICE ||
->
-> The use of BUG_ON is discouraged in the kernel. I did notice that is it
-> also used in the put_userptr callback in videobuf2-dma-contig.c.
->
-> I think it is much better to do something like this:
->
->         if (!buf->vec->is_pfns) {
->                 n_pages =3D frame_vector_count(buf->vec);
->                 if (vaddr)
->                         vm_unmap_ram((void *)vaddr, n_pages);
->                 if (buf->dma_dir =3D=3D DMA_FROM_DEVICE ||
->                     buf->dma_dir =3D=3D DMA_BIDIRECTIONAL) {
->                         pages =3D frame_vector_pages(buf->vec);
->                         if (!WARN_ON_ONCE(IS_ERR(pages)))
->                                 for (i =3D 0; i < n_pages; i++)
->                                         set_page_dirty_lock(pages[i]);
->                 }
->         } else {
->
-> and do something similar in videobuf2-dma-contig.c.
->
-> Regards,
->
->         Hans
+> > Why is this bypassing the ASoC tree?
+
+> Hi! Sorry, I can drop it if you want to take it? I tend to collect trivial
+> hardening changes with reviews that haven't been otherwise commented on
+> for at least 2 weeks.
+
+Yes, it's in my queue - 2 weeks is really rather fast between people not
+being available and waiting for driver authors to review if they
+normally look at things.
+
+--jHjeUkQ9vroTCASR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmUaoqMACgkQJNaLcl1U
+h9Ba+Qf/dXs8T5y+jACKhiUt2Q8jXwBJIZcnab5H86E5MOnONXQyTG+rozhIbvdQ
+5FibdLoYXrDu+EbviyhKagsSr0D4fDTPUvKubBR+DXOjVDWMcaKW+bVQTXHa428T
+xzsMvPVvjVOlmA8vPux7nv26XtV0HLuJE+Ym2EzBlqFiQefjbb+6pwfw5/ZbOc/s
+6DKIpT1kWL8cWb3zlhHsssQhnS5xVj+3qGb77NjiIme07oBr4Vl6PJW+6Nt+HrIy
+GrWfE7kVfTHb5ph7OEesv68rG7bkEcsz/l7KP10XwjBMO/E6bCyqzKum3iIBxhWg
+OSFTopV/X+x+PWLesMM5w7oenKni3A==
+=qPZ5
+-----END PGP SIGNATURE-----
+
+--jHjeUkQ9vroTCASR--
