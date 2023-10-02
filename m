@@ -2,100 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C837B5C5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 23:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 717F37B5C61
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 23:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236591AbjJBVHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 17:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
+        id S236559AbjJBVIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 17:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbjJBVHu (ORCPT
+        with ESMTP id S229841AbjJBVIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 17:07:50 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF08EA;
-        Mon,  2 Oct 2023 14:07:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696280865;
-        bh=95oVmibtNe89rFCe1kmkrQ54XgVNgGgAPEGkAgBRX+o=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ewQXwSXGA7Ooie5ZlwMoanzWZxLNA0xPIjSuYjdT12WS0YSgdb1uSG5JPS65Ul+dI
-         IyO5en0KiNNX2iMToyIzB8d7UjO4QEO/AUF4SI0pI7j9kYeFA4slqKsZ2WUyT35nHn
-         kxAyYEF0EDfzHEUy4A0aYMyXoALQjWuOfG8wAHt/1bQONDbj/vl/26SBFmMk/w+wxA
-         X0zOn/m1myrkOTTikpbEqw8CV5euMUn7ogoC2bqBppR4SB3nw6hTdjG3doZ99DHkqa
-         GTfT2n3NsZN4W6VfrssYg39Kp7Ev1Af8za5R8Li0CtVtMaj5AbAnZsCWbcX9cM3p+l
-         b2nQDu7fMjNOg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Mon, 2 Oct 2023 17:08:45 -0400
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E6B8E
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 14:08:42 -0700 (PDT)
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-390-81ZDJZC5NGOH4LIxnAQpBQ-1; Mon, 02 Oct 2023 17:08:21 -0400
+X-MC-Unique: 81ZDJZC5NGOH4LIxnAQpBQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rztns5cLWz4xPL;
-        Tue,  3 Oct 2023 08:07:45 +1100 (AEDT)
-Date:   Tue, 3 Oct 2023 08:07:44 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the libata tree
-Message-ID: <20231003080744.69ca4ed0@canb.auug.org.au>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 776A3811621;
+        Mon,  2 Oct 2023 21:08:20 +0000 (UTC)
+Received: from hog (unknown [10.45.224.57])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 521022156A27;
+        Mon,  2 Oct 2023 21:08:16 +0000 (UTC)
+Date:   Mon, 2 Oct 2023 23:08:14 +0200
+From:   Sabrina Dubroca <sd@queasysnail.net>
+To:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
+Cc:     sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+        hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org, pabeni@redhat.com, borisp@nvidia.com,
+        saeedm@nvidia.com, leon@kernel.org, andrew@lunn.ch,
+        hkallweit1@gmail.com, linux@armlinux.org.uk,
+        richardcochran@gmail.com, sebastian.tobuschat@oss.nxp.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org
+Subject: Re: [PATCH net-next v6 08/10] net: phy: nxp-c45-tja11xx: add MACsec
+ support
+Message-ID: <ZRsxPvGXJAbgkzYL@hog>
+References: <20230928084430.1882670-1-radu-nicolae.pirea@oss.nxp.com>
+ <20230928084430.1882670-9-radu-nicolae.pirea@oss.nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/QaorJh+iemfgFlv2sz4gWty";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230928084430.1882670-9-radu-nicolae.pirea@oss.nxp.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/QaorJh+iemfgFlv2sz4gWty
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+2023-09-28, 11:44:28 +0300, Radu Pirea (NXP OSS) wrote:
+> +static int nxp_c45_mdo_upd_secy(struct macsec_context *ctx)
+> +{
+> +	u8 encoding_sa = ctx->secy->tx_sc.encoding_sa;
+> +	struct phy_device *phydev = ctx->phydev;
+> +	struct nxp_c45_phy *priv = phydev->priv;
+> +	struct nxp_c45_secy *phy_secy;
+> +	struct nxp_c45_sa next_sa;
+> +	bool can_rx_sc0_impl;
+> +
+> +	phydev_dbg(phydev, "update SecY SCI %016llx\n",
+> +		   sci_to_cpu(ctx->secy->sci));
+> +
+> +	phy_secy = nxp_c45_find_secy(&priv->macsec->secy_list, ctx->secy->sci);
+> +	if (IS_ERR(phy_secy))
+> +		return PTR_ERR(phy_secy);
+> +
+> +	if (!nxp_c45_mac_addr_free(ctx))
+> +		return -EBUSY;
 
-Hi all,
+mdo_upd_secy gets called from macsec_set_mac_address, but the error is ignored:
 
-The following commits are also in Linus Torvalds' tree as different
-commits (but the same patches):
+	static int macsec_set_mac_address(struct net_device *dev, void *p)
+	{
+	[...]
+		/* If h/w offloading is available, propagate to the device */
+		if (macsec_is_offloaded(macsec)) {
+			const struct macsec_ops *ops;
+			struct macsec_context ctx;
+	
+			ops = macsec_get_ops(macsec, &ctx);
+			if (ops) {
+				ctx.secy = &macsec->secy;
+				macsec_offload(ops->mdo_upd_secy, &ctx);
+			}
+		}
+	
+		return 0;
+	}
 
-  0e23330fccd4 ("ata: libata-scsi: Disable scsi device manage_system_start_=
-stop")
-  1cf14228f460 ("scsi: sd: Differentiate system and runtime start/stop mana=
-gement")
-  540bd522a82e ("ata: libata-scsi: link ata port and scsi device")
-  54e5c956a103 ("scsi: sd: Do not issue commands to suspended disks on shut=
-down")
-  6d62f34a6741 ("ata: libata-core: Fix ata_port_request_pm() locking")
-  7c412cfbeecf ("scsi: Do not attempt to rescan suspended devices")
-  9459518aba7b ("ata: libata-scsi: Fix delayed scsi_rescan_device() executi=
-on")
-  cb37013b985e ("ata: libata-eh: Fix compilation warning in ata_eh_link_rep=
-ort()")
-  e4bfeedb3b50 ("ata: libata-core: Fix port and device removal")
-  f215cc816f8f ("ata: libata-core: Do not register PM operations for SAS po=
-rts")
-  fdd57890e769 ("ata: libata-core: Fix compilation warning in ata_dev_confi=
-g_ncq()")
 
---=20
-Cheers,
-Stephen Rothwell
+Should macsec_set_mac_address try to roll back the change when
+mdo_upd_secy fails? Otherwise I guess your device doesn't work.
 
---Sig_/QaorJh+iemfgFlv2sz4gWty
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
 
------BEGIN PGP SIGNATURE-----
+> +static int nxp_c45_mdo_add_txsa(struct macsec_context *ctx)
+> +{
+...
+> +	nxp_c45_select_secy(phydev, phy_secy->secy_id);
+> +	nxp_c45_sa_set_pn(phydev, sa, tx_sa->next_pn, 0);
+> +	nxp_c45_sa_set_key(ctx, sa->regs, tx_sa->key.salt.bytes, tx_sa->ssci);
+> +	if (ctx->secy->tx_sc.encoding_sa  == sa->an)
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUbMSAACgkQAVBC80lX
-0GzLcAgAhzQVl3Y45s//Rq+NfW5IP0+YfeRLUBPvEwugVDDnSerd357y097nYpVR
-xryx2T5ORFmypoAxpkxaa5GLyMlguKRQgUFL/gHrIT1hCjaRfdymnLCIxpPXCM2O
-jHYjHLn2OdoYtEFsDSow9OT00+W1fSVyCravsChvhUPHT5dJQPy1ilVruMq4QhrG
-6d4D4AqSBMOVJyhoecfvVPoaC3EjDatrsHKFdF1p03XjWedjvEMPbEYMsMuKwfsS
-/TOiJSQkaA4gVWaRvyeiTlJsysGnschZXwxljukWyLNjSf7K1AggSLO4bUBsSyKF
-DNAKFX+VXb/pYl5sQc4dPwrUlm3BTQ==
-=mSv2
------END PGP SIGNATURE-----
+nit: double ' ' before '==' (also in nxp_c45_mdo_del_txsa)
 
---Sig_/QaorJh+iemfgFlv2sz4gWty--
+-- 
+Sabrina
+
