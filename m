@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 281AF7B5695
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0167B56BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238127AbjJBPdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
+        id S238131AbjJBPgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237779AbjJBPdN (ORCPT
+        with ESMTP id S237903AbjJBPgL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:33:13 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8462DB3
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:33:10 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c1886777d9so80958411fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 08:33:10 -0700 (PDT)
+        Mon, 2 Oct 2023 11:36:11 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46F4AB3
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:36:08 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-7740729ae12so1138206985a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 08:36:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696260789; x=1696865589; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AurjURdP5ZlZL/smukAb81hKmuzUvXiFYPJa040s804=;
-        b=YLQadow6VWpadkZcnF9aP4Ys+xkAty3Ouvkq+fTtvPIrHOIAkrde+V9LFX81Ipvwye
-         a7VBijkKiTofRhtyBaIC19OeJ5sg/0aIqq4+wO3OJ37ooSO5pVeUZGd02MUgnIAPR7ol
-         2pollSyzXWpJccRtzgPE6s9VtxP9P2GrKzZ3ozHQ/tPcNfJODG6+pKZUOb0E4dHKwbFN
-         joGjKftLsdjKQc1/VQm01pL2gAgC+NGYGdWS6qqie2xsIdD9eoOAaKrok1f1tOdUYfKv
-         kS3SGTgyNluKONZ1vrRgK0I3n0UuugBBKPnqk+SzGHM2n+JsqFrzN+D5X72qvGWbW5ZG
-         1XMA==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696260967; x=1696865767; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RJCeoYI4MdW2Vg1VXnFe6BioTBJsiwn/a/IEZV9MrFI=;
+        b=vmhao5zGzozZ7Ms8y+/iMIXIkW5zs6mPc+QueWp8R8ztfrH68bK7YxmfOZIvW4MsJQ
+         97JXdAlh+bslIDvRiMqknuIuniFgZ8GX0syTc48ldbz8EzuRQpy1cos4amADigtVIlGr
+         rH7kk4xIE52NJSdESd7AkzVIV8VuEu7MJPMa9zWd6H3RXEAOEXXLxyNsIiyTIuLWMjqQ
+         go2MHlZLKJDTBvFxXapGQqyyzA4RMpozYo0JvKDiqVw/YFsjwHzeM8CUQGpH8Poim2OP
+         +hzBNCaenmGTf1iFdZk17a7n96Eo2N9q2dBkDVQEDsEHW2hgilEsuSmJ5WkfI1CRNLBN
+         di8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696260789; x=1696865589;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AurjURdP5ZlZL/smukAb81hKmuzUvXiFYPJa040s804=;
-        b=QUuvKOBSlVQnQm9YE+bsPflvOIk/1O0MYjkqB+IQNc1Z86Qa4oNuMqiQUC4kdjE1Je
-         oOBh4HyUQzhipFfJ0I6MK38C5+cTK0I30QTKwWECSZjqgFoSqBSyaxJt1RGwDbviqY/4
-         /6I4h952kNvppfIBIg5oV28/INYiuxY39hIhn4DQwIYuYotJTNCHubCLRFGVSCmquzrx
-         EynYJfJ1pVyQySpsHTQgNHPTihNsTfolVjQ7xs/znp1JuNdJBi7SXD3fmN7M7T40M5Ig
-         3eo/G0dz2ajckTAp0q8TE7CF20wrPiiHRF2ejld1x0JnfMqVeyWLRfc7I07XjTS39Wri
-         VKEA==
-X-Gm-Message-State: AOJu0Yw08aCuXoX4pDS0/LMSaRduFu1RFsiaQVKFlPHYCqo+ITXZ8FPk
-        GE4iMlNvkW7Q5UMui9y3gx2NCQOGIcFbfAh/lmY=
-X-Google-Smtp-Source: AGHT+IHKX5/Cmt0I3N4/+jkaTuwYAcYj6gJd3d7Qv8r9/mddP7OXp8vB7NnHRV+OkFIzu4dN86GLaB4Qkm2lucLPAm8=
-X-Received: by 2002:a2e:8448:0:b0:2bc:f39b:d1a8 with SMTP id
- u8-20020a2e8448000000b002bcf39bd1a8mr9237063ljh.46.1696260788411; Mon, 02 Oct
- 2023 08:33:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696260967; x=1696865767;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RJCeoYI4MdW2Vg1VXnFe6BioTBJsiwn/a/IEZV9MrFI=;
+        b=Nv108Lkq2S+kFW4TbrXA2ZSeCQy07hG+Ndiio5T1EyV1vBXWACXLpGrhxzq3CTrfzB
+         LUGyoG0/DYO4uCF2Ds0Dybx2toksICXLlFS+L/yh1bGRTl9exHj8Im5zsk4cA/ay/7K4
+         JzPqvE73tttNxfUAZ9Df/fWz+4frxNpQs34NgKvBeAAIYIM4uU+EnkNpBlzeg1K76nYx
+         BOFaXhd7QJ63XInHROkFg04twUFKlg+OWvtDL802wHLcivqUGD/4cloou9U5hcc+Yro4
+         CEAcVRyBApY5+o5a/FfiB6OZ4OvFkan41wO9Nvmiv/amZGbDoZ73asRCEtVg9szQ5flN
+         DJqg==
+X-Gm-Message-State: AOJu0YzdkeSDqMY78G4XDmny2wbvU1qgEk6OgpnZ5ZdgeJ3fICImsq6n
+        F9ndH9D+kZLm63bMWXuS6lGZsA==
+X-Google-Smtp-Source: AGHT+IFF7jCfjDq8C5HlvxijPDsuuv1R1dJYVyC0Ykg+iTQehAD8V0XEHiC5mEXTWNubAjbj8/02RA==
+X-Received: by 2002:a05:620a:29c4:b0:775:6a78:5f9a with SMTP id s4-20020a05620a29c400b007756a785f9amr16126546qkp.6.1696260967363;
+        Mon, 02 Oct 2023 08:36:07 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
+        by smtp.gmail.com with ESMTPSA id h8-20020ae9ec08000000b0076e672f535asm8992682qkg.57.2023.10.02.08.36.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 08:36:07 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 11:36:06 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        riel@surriel.com, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, yosryahmed@google.com, linux-mm@kvack.org,
+        kernel-team@meta.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 0/2] hugetlb memcg accounting
+Message-ID: <20231002153606.GB5054@cmpxchg.org>
+References: <20230926194949.2637078-1-nphamcs@gmail.com>
+ <ZRQQMABiVIcXXcrg@dhcp22.suse.cz>
+ <20230927184738.GC365513@cmpxchg.org>
+ <20231001232730.GA11194@monkey>
+ <20231002144250.GA4414@cmpxchg.org>
+ <ZRrajQSHrwNLnXSe@dhcp22.suse.cz>
 MIME-Version: 1.0
-References: <20230926150316.1129648-1-cleger@rivosinc.com> <20230930-patchy-curdle-ef5ee6e1a17c@spud>
- <8ce6cd97-6d63-4174-a290-40690c81e205@rivosinc.com> <20231002-spearman-doze-70cc026ac13e@spud>
- <693e6584-1e66-48c0-aa7c-61d9f88abd4c@rivosinc.com>
-In-Reply-To: <693e6584-1e66-48c0-aa7c-61d9f88abd4c@rivosinc.com>
-From:   ron minnich <rminnich@gmail.com>
-Date:   Mon, 2 Oct 2023 09:32:56 -0600
-Message-ID: <CAP6exYLtQuyqMgG6jRAhizp-52ebu3OLNSXe8a8xvLALYFD3kA@mail.gmail.com>
-Subject: Re: [PATCH 0/7] Add support to handle misaligned accesses in S-mode
-To:     =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>
-Cc:     Conor Dooley <conor@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atishp@rivosinc.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Evan Green <evan@rivosinc.com>,
-        =?UTF-8?B?QmrDtnJuIFRvcGVs?= <bjorn@rivosinc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Daniel Maslowski <cyrevolt@googlemail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRrajQSHrwNLnXSe@dhcp22.suse.cz>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,103 +80,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was a very interesting read. One other thought crossed my mind,
-which is that a RISC-V implementation might make the alignment
-delegation hard-wired to always delegate to S mode. I.e, the bit might
-be WARL and always 1. For what I'm doing, this would actually be
-pretty convenient. Just want to make sure this code can accommodate
-that -- wdyt?
+On Mon, Oct 02, 2023 at 04:58:21PM +0200, Michal Hocko wrote:
+> Also there is not OOM as hugetlb pages are costly requests and we do not
+> invoke the oom killer.
 
-We have found lots of value in our experiments with delegating
-alignment traps to Linux -- not least because they tend to locate
-problems in the kernel :-) -- we've found issues in module loading,
-early startup (there's a needed .align2 directive for sbi secondary
-startup, AFAICT) and the timing code for misaligned load/store
-handling.
+Ah good point.
 
-I don't know how you test this unaligned trap handling, but it might
-be worthwhile to work that out. You can test via oreboot and the
-visionfive2, save we have not figured out why SMP startup is going
-wrong, yet :-), so we're not as feature-complete as needed. But soon.
+That seems like a policy choice we could make. However, since hugetlb
+users are already set up for and come to expect SIGBUS for physical
+failure as well as hugetlb_cgroup limits, we should have memcg follow
+established precedent and leave the OOM killer out.
 
-Thanks!
-
-On Mon, Oct 2, 2023 at 5:19=E2=80=AFAM Cl=C3=A9ment L=C3=A9ger <cleger@rivo=
-sinc.com> wrote:
->
->
->
-> On 02/10/2023 12:49, Conor Dooley wrote:
-> > On Mon, Oct 02, 2023 at 09:40:04AM +0200, Cl=C3=A9ment L=C3=A9ger wrote=
-:
-> >>
-> >>
-> >> On 30/09/2023 11:23, Conor Dooley wrote:
-> >>> On Tue, Sep 26, 2023 at 05:03:09PM +0200, Cl=C3=A9ment L=C3=A9ger wro=
-te:
-> >>>> Since commit 61cadb9 ("Provide new description of misaligned load/st=
-ore
-> >>>> behavior compatible with privileged architecture.") in the RISC-V IS=
-A
-> >>>> manual, it is stated that misaligned load/store might not be support=
-ed.
-> >>>> However, the RISC-V kernel uABI describes that misaligned accesses a=
-re
-> >>>> supported. In order to support that, this series adds support for S-=
-mode
-> >>>> handling of misaligned accesses as well support for prctl(PR_UNALIGN=
-).
-> >>>>
-> >>>> Handling misaligned access in kernel allows for a finer grain contro=
-l
-> >>>> of the misaligned accesses behavior, and thanks to the prctl call, c=
-an
-> >>>> allow disabling misaligned access emulation to generate SIGBUS. User
-> >>>> space can then optimize its software by removing such access based o=
-n
-> >>>> SIGBUS generation.
-> >>>>
-> >>>> Currently, this series is useful for people that uses a SBI that doe=
-s
-> >>>> not handled misaligned traps. In a near future, this series will mak=
-e
-> >>>> use a SBI extension [1] allowing to request delegation of the
-> >>>> misaligned load/store traps to the S-mode software. This extension h=
-as
-> >>>> been submitted for review to the riscv tech-prs group. An OpenSBI
-> >>>> implementation for this spec is available at [2].
-> >>>>
-> >>>> This series can be tested using the spike simulator [3] and an openS=
-BI
-> >>>> version [4] which allows to always delegate misaligned load/store to
-> >>>> S-mode.
-> >>>
-> >>> Some patches in this series do not build for any configs, some are
-> >>> broken for clang builds and others are broken for nommu. Please try t=
-o> build test this more thoroughly before you submit the next version.
-> >>
-> >> Hi Conor,
-> >>
-> >> Thanks for the feedback, I'll check that.
-> >>
-> >>>
-> >>> Also, AIUI, this series should be marked RFC since the SBI extension
-> >>> this relies on has not been frozen.
-> >>
-> >> This series does not actually uses the SBI extension but provides a wa=
-y
-> >> to detect if misaligned accesses are not handled by hardware nor by th=
-e
-> >> SBI. It has been reported by Ron & Daniel they they have a minimal SBI
-> >> implementation that does not handle misaligned accesses and that they
-> >> would like to make use of the PR_SET_UNALIGN feature. This is what thi=
-s
-> >> series addresses (and thus does not depend on the mentioned SBI extens=
-ion).
-> >
-> > Ah, I must have misread then. Apologies.
->
-> No worries, maybe I should actually remove this from the cover letter to
-> avoid any confusion !
->
-> Cl=C3=A9ment
+Agree that a sentence in the changelog about this makes sense though.
