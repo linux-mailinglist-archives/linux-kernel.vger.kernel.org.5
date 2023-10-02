@@ -2,210 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9127B4F54
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:45:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D61747B4F5C
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236168AbjJBJpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42674 "EHLO
+        id S236229AbjJBJqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:46:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236095AbjJBJpd (ORCPT
+        with ESMTP id S236095AbjJBJqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:45:33 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A3991;
-        Mon,  2 Oct 2023 02:45:30 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-536071e79deso6403973a12.1;
-        Mon, 02 Oct 2023 02:45:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696239929; x=1696844729; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KGsTzw39DzKGKK/TLMQfTsY/wGdV95nt+7dMAry0cG0=;
-        b=TDhK7+59oyATzsX0GMZ4HQN3pHmJhM9Y+RJwdb/vhdPYQVVbTMKVYSmJ3jqf+UeSp6
-         9PHjarO9LiCovK9pHverCd8lemluzB+MmsWhsZM7mh+dlASrlTx3siG7Red0oG7hxjpP
-         5lwuMrZBGYYISXX9TCBQISdGF0VvvsLdU+T91TadXCEV5Kpe1GRzkIdJpSyp610Lx/0+
-         ODZgbP6uWVG0rk+BjKfAt97NIBBU0NslMo1/W/Y3gxFFEeRRN180DGI49f+2wNuGfOFM
-         jadrOKejfJ69LPDFX1HvNnmpmBhD54E1UW6B5VOz8T+mphqC2IzdH2CMPHbjbryAJFb8
-         2y1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696239929; x=1696844729;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KGsTzw39DzKGKK/TLMQfTsY/wGdV95nt+7dMAry0cG0=;
-        b=sSV4OU/muQEhJ5VUaI6yj5ySlaVf6gHa7w6Ox+hhLtg1LkWv4SNCnXeRb6+2Ngd1HK
-         GBZM70gosD5Wzqsp4r1wRnOmtp4vKJvkD1eOrGuhky/Uz62aZVi5j+CZw7yUM9tmYpbn
-         biWP7o1TIfT1PKX3MSto0E+U2pbCF5E7mVpkSSOBZ2VcwPdsNhS5Fe0b7aR9rquniODX
-         CyExwCHJsv+hh0H4L4wQ5yWgwePus9z9Jr/KZsSR2OJD4J8fFFQKC3qyZz1iWtAdoeb1
-         udk+LdIN7WOBBW8UiAtajVJyyDxhWJdFWv54F17QP1QEvbG8BBsd2EfMISyy3qtoOKf2
-         sGUA==
-X-Gm-Message-State: AOJu0YwSuXbYbbu/4uKDpB7fs2HXRZZdiA5wLUeoflZIJYJGFvyFv7QF
-        7y3Mkh++scBVTmt7Wi5siu4=
-X-Google-Smtp-Source: AGHT+IEri3HR4lSj1taxtrBzWim+6JEVtI8cMbP3DbQmlY0nMrCNR5dgGLZShhANdijkosfOGPcLww==
-X-Received: by 2002:aa7:d1c3:0:b0:52f:a763:aab4 with SMTP id g3-20020aa7d1c3000000b0052fa763aab4mr10819115edp.5.1696239929016;
-        Mon, 02 Oct 2023 02:45:29 -0700 (PDT)
-Received: from [192.168.5.6] (PC-176-101-165-146.tvk-net.pl. [176.101.165.146])
-        by smtp.gmail.com with ESMTPSA id y15-20020aa7cccf000000b0053691cacd95sm5334019edt.87.2023.10.02.02.45.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 02:45:28 -0700 (PDT)
-Message-ID: <14e3a4d5-672c-413d-5003-734839674494@gmail.com>
-Date:   Mon, 2 Oct 2023 11:45:27 +0200
+        Mon, 2 Oct 2023 05:46:43 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2020.outbound.protection.outlook.com [40.92.89.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CD3783
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:46:40 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=chbZcVN/O5+eJ3dE0FgcY3s/5hAcAXr7TvaI4bW7OicXA3T6GvpKO8w3e3fKbHLTS1C9KofSr7fkcvXJS5ZjFwK+bTn4BrRm5H+Q8BanAP6gb30PglEaSBSU8gz85bYlXDVt4rNxXoFGZRhZ2b+ksNDwzLrBRYCLwFy8pPzPmepSI3utXKS2Bw8GprRHSxlqiBe/dYw6VItAofLrbLwYVtEEYnVApAYtVfAJCAHTswiwVPYbfKrw+VsQQGylQCKwcnXq61Jr88JDlBVZRY69lJrz9d/wxdM8BFCUAzISG9PqHFUjDXIKyGD5IC+ph6zvayNnR/wznZwjfL6RHr9qcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=86T43f9TamK+kvu+TFXdoV9SdeOeMOG/uQIbv81LF9E=;
+ b=ipszWpLKX+XdQigr4mZJUP7AHg1SFIZgnRsEudGArEQFH8MaYIAHYRRBdME0n55G25ItYrEPNowZDUO/AylHkmx7WsPmfkRF8z0f+ShmvADjs1+TTrZE4kdtaKMAJLlUQcXY8IbRhmXz1d181IV/IF6UHYqztLKD1xmo7avvUqEy1HSPFJ20u4TsizczIydeYKbKpbnSzufuUMmevY25JNVj1gE7GnMvJ8r2glH03nPhovFjlKh+/Jz9WZRTVQgRermEp5YLm2aI++IYLVr8sv3ny+8avNu5OY8XwQu0yO23SfbXVG2mpQqytC3bfDV2MboB2MlcCApaNGQr5z03Ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=86T43f9TamK+kvu+TFXdoV9SdeOeMOG/uQIbv81LF9E=;
+ b=Dgme32J5Quj15yGMXbDWEiDPth+SlI8z+ZQGx3XouJ8Ejzn81XeGGmN7nrZcIcrmzhkewskb93ERGnugKw8mxPUZqcawSuRAq4WJcQERSEl8P/LtWuMghicK0lPk6RnhTX/rWd732tDglHNvYpYPExd3fcKhJ75hWPTbTRhWBiooUhIalVtrDBMgKNbrVdesCot3mWnhbe7oRFPzuzPr5D+zFRIUtOJv81NSS0AiIz0recWsRDV3bpAgIYnsdhL8VoFx9J1xeKxf5sy42cMwl8g2ZzBrgiGCl34moJIx1qjlaAsZvwzixSbYFd6HXyvi9uqPD3CaZ/r+0ZbTLzHJHw==
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
+ by AS8P193MB1672.EURP193.PROD.OUTLOOK.COM (2603:10a6:20b:3fb::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26; Mon, 2 Oct
+ 2023 09:46:38 +0000
+Received: from VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad]) by VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+ ([fe80::3164:ae5c:78f7:23ad%4]) with mapi id 15.20.6838.029; Mon, 2 Oct 2023
+ 09:46:38 +0000
+From:   Juntong Deng <juntong.deng@outlook.com>
+To:     shaggy@kernel.org, wonguk.lee1023@gmail.com, liushixin2@huawei.com,
+        andrew.kanner@gmail.com, wuhoipok@gmail.com
+Cc:     jfs-discussion@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+debee9ab7ae2b34b0307@syzkaller.appspotmail.com
+Subject: [PATCH] fs/jfs: Add check for negative db_l2nbperpage
+Date:   Mon,  2 Oct 2023 17:45:33 +0800
+Message-ID: <VI1P193MB07523CD35EEB81FEEEEC168299C5A@VI1P193MB0752.EURP193.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [u5qeIHH0WzrRnCk60i2QYyA9QLS0n0IU]
+X-ClientProxiedBy: AM0PR03CA0057.eurprd03.prod.outlook.com (2603:10a6:208::34)
+ To VI1P193MB0752.EURP193.PROD.OUTLOOK.COM (2603:10a6:800:32::19)
+X-Microsoft-Original-Message-ID: <20231002094533.511696-1-juntong.deng@outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [RFC kvmtool 00/31] arm64: Support for Arm Confidential Compute
- Architecture
-Content-Language: en-US
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>, kvm@vger.kernel.org,
-        kvmarm@lists.linux.dev
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        Andrew Jones <andrew.jones@linux.dev>,
-        Christoffer Dall <christoffer.dall@arm.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Joey Gouly <Joey.Gouly@arm.com>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Steven Price <steven.price@arm.com>,
-        Thomas Huth <thuth@redhat.com>, Will Deacon <will@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>, linux-coco@lists.linux.dev,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20230127112248.136810-1-suzuki.poulose@arm.com>
- <20230127113932.166089-1-suzuki.poulose@arm.com>
-From:   Piotr Sawicki <piotr.sawickas@gmail.com>
-In-Reply-To: <20230127113932.166089-1-suzuki.poulose@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1P193MB0752:EE_|AS8P193MB1672:EE_
+X-MS-Office365-Filtering-Correlation-Id: 37e8943a-d3a4-46cc-fb73-08dbc32c78d5
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8bhZWxWZlzmbvHWuNJ9x36Q7hAY6AecGJD7HjdfVNH4bFaakP9w/sp1+DCMHwitUGirUBdrOqF/LCPH4XmEG7BZuIs9Rf0/I0T5t0MY0B+RwbyE63bzjrO7tP9mnL6PA266xVFbRBs1r9diT9x2CcFZD4+5ENPU9l6eCpXX25dGbudELxTKlHH5ycmTLb0EA6S8Qw9VlVNqp3uY5dpFhPzO9iYDvRtiX6K8zgE34NK1rZ3k0oaDQwXU/cC3I99P+vgIzgoi/oC7irrzIOcuDWjyKfC3soVlwdEdxtsQV1fTlZjXRh3FV32t7r9Iiw2/SSDidOVaoRKLg3hF16P34+Vj8T7ehfQXZDkPOLzLCrBq9lcf5JIUYF/NxbZQ5YJwsHo+zCMsZ0EuF74whqpSFo3OxBKtCIwdsBDavzBRKb8tmiWmL36VSb0OKjje1+cdQgVroHSoazS+IZZqRET2s/6gKT6wOIu8uQTT4DE4N+Ium8nR8FSRoDK0iFirttVQiNYE3VS8wvT52Eiy+bhVBYxQQ06EepkS0k7Ve66/+7V95mKT3NYVsmvLeAc32Nk7WkLl+xNCzX2lyqJyPyLs9Z+L3cp7dWmghMWbcpMUpRo6bt3gc11wQlwi6jCR7rhsd2nvZCXirfl3Aux4bsuz/ygLcYIGAW4AsjTInVPrYv2iXFzDW6ConjLhHtMecV70rNvYlDKKYbZhEQo+t5Zk8Gp8J4GiEC9Mu+yEVxCu7jC+rAHo76IVvPiU90mp88ODUDd3ekGIPRRrFI59ibSoGISRRAwhrGAxIaoZjQv+wkYG5n7qYtG/huHERyvlYHVTSiWlN0tjf3oTThJe19kQWxXRiy08O4wgpEixW/IxYIE1cy+piRbyVivqHuaXoJofwWD28tsVPXGCyY/WTuamnsIKCffmXr8pnoYAGlsnpVWs=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cmOWIBGnRiUAG17CbyOfutOK6edxIH3WABWYEdGFQD2tJ7nEdyULF/y8nGQZ?=
+ =?us-ascii?Q?ftRBxnzWVivpfqY8EEu5NqIGjyod0gpwMbaUz31co5EdKx2CXj/9u3+CXqqd?=
+ =?us-ascii?Q?isv3joIa3cBchqN5o2j5PHrJvahSvsYKTC95XbzMam/yO0CH2v1YL+empTl8?=
+ =?us-ascii?Q?wcszk35xmhQXlvioOsyreLu3BbMZzdqFAiqDP5uzfwozLIkxETO1q2V1S9qR?=
+ =?us-ascii?Q?UQ9n4gnCk8er5Zb7GXUpVHIfqF8a1NspwfRKLUq4U1J7mp3SS9V3Ab5AAnEY?=
+ =?us-ascii?Q?rCUvwppMPVnbDRH3j+g+wc3NXcZTd+H9H1TWgz9d3czImoJMUqxPrsqD7y/I?=
+ =?us-ascii?Q?HXzR8qoCZjNX/gEmuBMxarBg4sjekoXIcw5qhI1OJlw+yr6rolBVlv1m+zKV?=
+ =?us-ascii?Q?XiClQap7QEvBH3qPwApmzybkS6hI8lgGT1w7kDg/3DgflVKQ1QHmFPyaQlfV?=
+ =?us-ascii?Q?OdcaD4N2V4wqIvT8I4fM5s2vzHf8GjYltvf83x6a5PIhLaJeuLND4nJF5ec1?=
+ =?us-ascii?Q?icpm0wAPnxJ/v398eOUarFXKdcPiDyOxVSICA4dACLyBd3sT4AtNEZt96+5G?=
+ =?us-ascii?Q?bCR1a0qXxJL6+X2V7AAsyG15rDOHkrefQEdtRn0pP+w2OSHdmqiVAPmU5LPy?=
+ =?us-ascii?Q?QxvYd7d7M8mGf1jpnOiyLaJhKmXh8p3WprKDro1qM+fcC2SfwukIc6olZESm?=
+ =?us-ascii?Q?0yIUGNV1MtV4GMfmU968YP71IhmhOe6FQHFrrbBcePLTRpgZhOlYzHhbhPqo?=
+ =?us-ascii?Q?Hi9aTnykLGB/yFWIzeNhiOqQvpSLLi2iL6BXOFUNq7456sbq0NH0J30HM7bC?=
+ =?us-ascii?Q?ZFzirlY+4YnAqnom3GraXIv3i/ULUsTpzL4aMXUNTvi1aSdJSiQv8oG/Y0dO?=
+ =?us-ascii?Q?YnO4fc9HPrnISZW4niJM5C82TQtSmpw8TFvpcM9iBh2Ap4QJwMuiRgdhIbUB?=
+ =?us-ascii?Q?7L3JpGYWljah9dYOhOzfi96eIhnvMW+ta5T9dQB30g1kpb5IKDUVTQg4hCOS?=
+ =?us-ascii?Q?f7tYCi8iw0Sml4wI036ij6cPzwvheAWV1wyvL7tBOg0oPSPh0L168hn+noQ1?=
+ =?us-ascii?Q?g/iYqrzHDkL42tKwdmgEWW0oZKac3bh3DcPtk61JMLLCYwA9Tf1jGyczD74/?=
+ =?us-ascii?Q?2EwirH/eixk7S6OZ8o0kBZ/5vzOcfA+xL89ECZJXaiNtFz9WCYMdNAbpVLn+?=
+ =?us-ascii?Q?GTy8PdaIhlvZq3M6EocB1PepDGt201rYssOgG/U4hm8C9Q4kjXDX0aWcX2w?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37e8943a-d3a4-46cc-fb73-08dbc32c78d5
+X-MS-Exchange-CrossTenant-AuthSource: VI1P193MB0752.EURP193.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2023 09:46:38.0034
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8P193MB1672
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Suzuki
+l2nbperpage is log2(number of blks per page), and the minimum legal
+value should be 0, not negative.
 
-> This series is an initial version of the support for running VMs under the
-> Arm Confidential Compute Architecture. The purpose of the series is to gather
-> feedback on the proposed UABI changes for running Confidential VMs with KVM.
-> More information on the Arm CCA and instructions for how to get, build and run
-> the entire software stack is available here [0].
-> 
-> A new option, `--realm` is added to the the `run` command to mark the VM as a
-> confidential compute VM. This version doesn't use the Guest private memory [1]
-> support yet, instead uses normal anonymous/hugetlbfs backed memory. Our aim is
-> to switch to the guest private memory for the Realm.
-> 
-> The host including the kernel and kvmtool, must not access any memory allocated
-> to the protected IPA of the Realm.
-> 
-> The series adds the support for managing the lifecycle of the Realm, which includes:
->     * Configuration
->     * Creation of Realm (RD)
->     * Load initial memory images
->     * Creation of Realm Execution Contexts (RECs aka VCPUs)a
->     * Activation of the Realm.
-> 
-> Patches are split as follows :
-> 
-> Patches 1 and 2 are fixes to existing code.
-> Patch 3 adds a new option --nocompat to disable compat warnings
-> Patches 4 - 6 are some preparations for Realm specific changes.
-> 
-> The remaining patches adds Realm support and using the --realm option is
-> enabled in patch 30.
-> 
-> The v1.0 of the Realm Management Monitor (RMM) specification doesn't support
-> paging protected memory of a Realm. Thus all of the memory backing the RAM
-> is locked by the VMM.
-> 
-> Since the IPA space of a Realm is split into Protected and Unprotected, with
-> one alias of the other, the VMM doubles the IPA Size for a Realm VM.
-> 
-> The KVM support for Arm CCA is advertised with a new cap KVM_CAP_ARM_RME.
-> A new "VM type" field is defined in the vm_type for CREATE_VM ioctl to indicate
-> that a VM is "Realm". Once the VM is created, the life cycle of the Realm is
-> managed via KVM_ENABLE_CAP of KVM_CAP_ARM_RME.
-> 
-> Command line options are also added to configure the Realm parameters.
-> These include :
->   - Hash algorithm for measurements
->   - Realm personalisation value
->   - SVE vector Length (Optional feature in v1.0 RMM spec. Not yet supported
->     by the TF-RMM. coming soon).
-> 
-> Support for PMU and self-hosted debug (number of watchpoint/breakpoit registers)
-> are not supported yet in the KVM/RMM implementation. This will be added soon.
-> 
-> The UABI doesn't support discovering the "supported" configuration values. In
-> real world, the Realm configuration 'affects' the initial measurement of the
-> Realms and which may be verified by a remote entity. Thus, the VMM is not at
-> liberty to make choices for configurations based on the "host" capabilities.
-> Instead, VMM should launch a Realm with the user requested parameters. If this
-> cannot be satisfied, there is no point in running the Realm. We are happy to
-> change this if there is interest.
-> 
-> Special actions are required to load the initial memory images (e.g, kernel,
-> firmware, DTB, initrd) in to the Realm memory.
-> 
-> For VCPUs, we add a new feature KVM_ARM_VCPU_REC, which will be used to control
-> the creation of the REC object (via KVM_ARM_VCPU_FINALIZE). This must be done
-> after the initial register state of the VCPUs are set.
-> RMM imposes an order in which the RECs are created. i.e., they must be created
-> in the ascending order of the MPIDR. This is for now a responsibility of the
-> VMM.
-> 
-> Once the Realm images are loaded, VCPUs created, Realm is activated before
-> the first vCPU is run.
-> 
-> virtio for the Realms enforces VIRTIO_F_ACCESS_PLATFORM flag.
-> 
-> Also, added support for injecting SEA into the VM for unhandled MMIO.
-> 
+In the case of l2nbperpage being negative, an error will occur
+when subsequently used as shift exponent.
 
-I wonder if there is a plan to develop a dedicated (stand-alone) tool 
-that allows a realm developer to calculate Realm Initial Measurements 
-for realms. I mean a tool that can be compiled and run on a Linux PC 
-machine.
+Syzbot reported this bug:
 
-As you know, the remote attestation mechanism requires a verifier to be 
-provisioned with reference values. In this case, a realm verifier should 
-have access to the initial reference measurement (RIM) of a realm that 
-is intended to be run on a remote Arm CCA platform.
+UBSAN: shift-out-of-bounds in fs/jfs/jfs_dmap.c:799:12
+shift exponent -16777216 is negative
 
-The algorithm that measures the initial state of realms (RIM) is highly 
-sensitive to the content of a realm memory and the order of RMI 
-operations. This means that not only the content of populated realm 
-memory matters but also the implementation of the host components (e.g. 
-kvm, kvmtool/qemu).In the  of kvmtool-cca, the layout of memory and the 
-content of DTB highly depend on the provided options (DTB is generated 
-in run-time). Unfortunately, the content of DTB also depends on the 
-linking order of object files (the order of DTB generation is imposed by 
-__attribute__((constructor)) that is used to register devices). This 
-complicates development of a separate tool for calculating RIM, as the 
-tool would have to emulate all quirks of the kvmtool.
+Signed-off-by: Juntong Deng <juntong.deng@outlook.com>
+Reported-by: syzbot+debee9ab7ae2b34b0307@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=debee9ab7ae2b34b0307
+---
+ fs/jfs/jfs_dmap.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-One of the solution of retrieving Realm Initial Measurements seems to be 
-running the whole firmware/software (e.g. kvmtool/Linux host/TF-RMM) 
-stack on the FVP emulator and gathering the RIM directly from the 
-TF-RMM. This would require a realm developer to have access to the whole 
-firmware/software stack and the emulator of the CCA platform.
+diff --git a/fs/jfs/jfs_dmap.c b/fs/jfs/jfs_dmap.c
+index 88afd108c2dd..3a1842348112 100644
+--- a/fs/jfs/jfs_dmap.c
++++ b/fs/jfs/jfs_dmap.c
+@@ -180,7 +180,8 @@ int dbMount(struct inode *ipbmap)
+ 	bmp->db_nfree = le64_to_cpu(dbmp_le->dn_nfree);
+ 
+ 	bmp->db_l2nbperpage = le32_to_cpu(dbmp_le->dn_l2nbperpage);
+-	if (bmp->db_l2nbperpage > L2PSIZE - L2MINBLOCKSIZE) {
++	if (bmp->db_l2nbperpage > L2PSIZE - L2MINBLOCKSIZE ||
++		bmp->db_l2nbperpage < 0) {
+ 		err = -EINVAL;
+ 		goto err_release_metapage;
+ 	}
+-- 
+2.39.2
 
-The other solution would require the implementation of a dedicated tool. 
-For instance, a sensible approach could be to extend the functionality 
-of kvmtool.
-
-Is Arm going to develop a dedicated, stand-alone tool for calculating RIMs?
-
-What is the recommended way of retrieving/calculating RIMs for realms?
-
-Kind regards,
-Piotr Sawicki
