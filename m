@@ -2,251 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B312E7B52C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F6D7B52C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237407AbjJBMN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 08:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42364 "EHLO
+        id S236914AbjJBMQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 08:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237439AbjJBMNr (ORCPT
+        with ESMTP id S236847AbjJBMQB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 08:13:47 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6947810F6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 05:13:19 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-5333fb34be3so21801723a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 05:13:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696248798; x=1696853598; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lfiORSp7vkrFazG7d92s+XnCzfm7LOjL+FqvHRHqYHs=;
-        b=I9O1jZ7IE6JEXBxn2zpTVwGW9ttidh9tIbrJVos09pAAOpPy2VVFubDTewIo1WjR4I
-         Qq4zb/v9xn0f8ELvhQ4/EkiOZwJkKtFq6l4Y7khh5Q73AN7XcG8bd1+V367+rQIzJf6h
-         mRuLUY25Bkp7ntOTc9ryMvk3oVeiemJ23CHrOMI5u6NjBDcZELdeUMlaezT0dPoAJrAN
-         IrM4HlBiM0Jc6w74NkyM2CAk9bo5H0vYFwF0BP3PWDxBp/Df5mEAHssXNM59ueH9fGFZ
-         a+G1ldJUQc4/3d/RuxQFutHX426KuDUDPYkXL4axgCAdDHC79JGN53sJBkX00gxlH4f5
-         VHaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696248798; x=1696853598;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lfiORSp7vkrFazG7d92s+XnCzfm7LOjL+FqvHRHqYHs=;
-        b=DeD+bQ6o/SIWIi55nAHfnerH5Tbp6z8b+xfStfMd5fZoK7+91jIFzAnQThhkgirRdP
-         lVsag4GXoNchCnTHIO1XjVCKHVRQAuJVuQnemf0e51MWO2e1YqSxmi0Xuo1izkQriJ+M
-         Hhhl9/OjVkHPMvZ5P8fvZyvnVHajvcHjSbWDdXUSHAtHj6lRGxTppvngPJk/mb/53n40
-         GL0B6bRpcw/lMhML9tn1dHVdJgzF0gyv12jrcLdn9ENOY9gTv/ZyzUCaFK5+0TYr+XQ5
-         S9YL2lIGSDdkgXUlbrtV+imTt1cM3a0oL9a7DGOKsCpU0U7l/2zd3srmeBEMIiX0ue/n
-         0F+g==
-X-Gm-Message-State: AOJu0YzaGuMxWFUI8IyW/1mWXdF72FnzWIm9W+nUsRNcCaPgpSyiTrc7
-        RGlbbQwTFKibeiHynDlDkhattB7C/P9qeMClx3w=
-X-Google-Smtp-Source: AGHT+IHaCRvJ+b2a3bnwhqC4HIHXfWi85EeooUKHV/EQpE8n8fvZIao1fDK5LJmgqVQN2qF6A94Tar9rKip991SGCbE=
-X-Received: by 2002:aa7:d3d6:0:b0:533:39da:6ffb with SMTP id
- o22-20020aa7d3d6000000b0053339da6ffbmr8846418edr.14.1696248797315; Mon, 02
- Oct 2023 05:13:17 -0700 (PDT)
+        Mon, 2 Oct 2023 08:16:01 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B766AB7
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 05:15:56 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 56F283201213;
+        Mon,  2 Oct 2023 08:15:52 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 02 Oct 2023 08:15:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1696248951; x=1696335351; bh=N+N+eDyJwbmWM7IQgkOKLUE0MMGHc0rbju4
+        i4SQwITA=; b=o1r4Xi4XRpANR4t1+OSUZfhXOPXLnO41r7vbPsDeVb/+vEdcfs3
+        zx9fvT7d+ZpTFILgo8Br49VSu2yNjOWgIxiJW0O0mJLm/ZZjDiGVmLptlj3HHluo
+        XGm68ltfM2SCPAXIpdnaQISeHqmUVplVIaTRcVbnArlMegzun52FL9S82F6njxMh
+        Iq9ANq67K6qxE2UURxTUDFAS+d6xiFxLOKbUMYUGagxumDKUbI9HEOTFnPYbNryA
+        qOqvasYQvCjQqhrFMV0ordePTlyfR32JaQm0KO9HVByox2u0UTRBvh+5Q9qoh3Bj
+        qySzLUgikjMWIETztxXmiRrSNQyPOqf8eDQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1696248951; x=1696335351; bh=N+N+eDyJwbmWM7IQgkOKLUE0MMGHc0rbju4
+        i4SQwITA=; b=NrBhK+tHsuOJycJmvBrNcCCel/68YdBEklbH/JyGT7hXxWa16xC
+        czCJStwi5e8nArlvM/ewzEIKUS4UVAJNVmc4DUBO/dsun5xbgiUcY/gsE8Cy+Pr4
+        Lgpnf+Ir5sgwq+BLKeyVMQUg0YtFwQo+NVep3rPvqESpa3NyCt5zreALGqgAKzu4
+        eLRPRWDSBa+n3EUfUjqZ/KmoC49DDRjmT/bx1sA8EawdKSbT6cWNowbjWTwdfEW9
+        F2GT285uHFbooZ5PC+fEbk/FXEhqgeXCkxwKp3aC/1M40QjOfkSDgTo/N37Fvsj8
+        BKh/gyHN1Quz4+/Or/eC09BKTUJLSJTkGZA==
+X-ME-Sender: <xms:d7QaZeWFVYs20Nl_qN0f7CdeVrFqdlAO92yZFvTQJPRayR62H2GMWA>
+    <xme:d7QaZancx3bwzBHCuBO4YKYURkF8V9woI9322MzBlcmhSa6U8wxWJh833TqNLRWkg
+    wuiYxmk35KQfP30wjg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelgdehtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
+    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:d7QaZSYihRTIFf6A5I-dGGesd0g8gQggnjw-QoPM-Gou5MrjFvEOWA>
+    <xmx:d7QaZVUaSQ3ST3wrq9ie91ubp-XFxCKEB5wHUNeFCo-yBCJBPaq2bQ>
+    <xmx:d7QaZYlYaI4USvJRuw5lFz9gvwkb6ByrB0FQBQiRAtmdtJ7dbSdXAA>
+    <xmx:d7QaZXuLkkQ0D3Ess4e_3_rHpxdfCUqB16XOlWIE3Hoj9j5gNz4USg>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 5578EB60089; Mon,  2 Oct 2023 08:15:51 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
 MIME-Version: 1.0
-References: <20231001131620.112484-1-ubizjak@gmail.com> <CAHk-=wg6P8pPg-x4BPUQj-wE0xC7HkGzFk89ftuji8MVo+RRxw@mail.gmail.com>
- <CAFULd4Y+HXuditB51Q0LznqiBsvxJr3BjEYvx4_224XmqrycCw@mail.gmail.com>
- <CAHk-=wh+cfn58XxMLnG6dH+Eb9-2dYfABXJF2FtSZ+vfqVvWzA@mail.gmail.com> <CAFULd4atO8uy_5PbjV8vw-yk0tv_=4kh_JwJ+6Xq-2myStCnmw@mail.gmail.com>
-In-Reply-To: <CAFULd4atO8uy_5PbjV8vw-yk0tv_=4kh_JwJ+6Xq-2myStCnmw@mail.gmail.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Mon, 2 Oct 2023 14:13:04 +0200
-Message-ID: <CAFULd4YsPnCfw-NV_0ck1_za=WPc-FxYKV1bb99UcAwMJ=34YA@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/4] x86/percpu: Use segment qualifiers
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Nadav Amit <namit@vmware.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Denys Vlasenko <dvlasenk@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <ccf08724-7b70-4a59-950e-eb56bbfe7df0@app.fastmail.com>
+In-Reply-To: <CAJF2gTTB3dghWivn6HwL8d8L7w5apU6rjYp_fvut1AeybZVe1w@mail.gmail.com>
+References: <20230912072740.2544-1-jszhang@kernel.org>
+ <ZQBDFa0fGNiaqAgh@gmail.com>
+ <C1EDD7DE-A0A9-4F43-9EC1-1C5A212A7033@jrtc27.com>
+ <CAJF2gTTB3dghWivn6HwL8d8L7w5apU6rjYp_fvut1AeybZVe1w@mail.gmail.com>
+Date:   Mon, 02 Oct 2023 14:15:30 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     guoren <guoren@kernel.org>, "Jessica Clarke" <jrtc27@jrtc27.com>
+Cc:     "Jisheng Zhang" <jszhang@kernel.org>,
+        "Paul Walmsley" <paul.walmsley@sifive.com>,
+        "Palmer Dabbelt" <palmer@dabbelt.com>,
+        "Albert Ou" <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: errata: thead: use riscv_nonstd_cache_ops for CMO
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 1, 2023 at 11:47=E2=80=AFPM Uros Bizjak <ubizjak@gmail.com> wro=
-te:
+On Wed, Sep 13, 2023, at 02:06, Guo Ren wrote:
+> On Wed, Sep 13, 2023 at 3:00=E2=80=AFAM Jessica Clarke <jrtc27@jrtc27.=
+com> wrote:
+>>
+>> On 12 Sep 2023, at 11:53, Guo Ren <guoren@kernel.org> wrote:
+>> > Please remove the thead_errata_cache_wback because T-HEAD processors
+>> > would prioritize using an invalid cacheline instead of evicting an
+>> > existing cacheline. When we do dcache clean, the following operatio=
+ns
+>> > are to let other interconnect masters read. So, keeping wback_inv f=
+or
+>> > T-HEAD processors is the best choice, and maybe some other processo=
+rs'
+>> > vendor has a different idea, but please use the wback_inv instead of
+>> > wback_only for the T-HEAD processors.
+>>
+>> Unless you can demonstrate that your cores have significantly worse
+>> performance when using wback instead of wback_inv I do not think the
+>> non-standard implementation should deviate from the semantics of the
+>> standard one. There are efforts to unify the implemented semantics of
+>> the operations across architectures and this would obstruct those.
 >
-> On Sun, Oct 1, 2023 at 10:21=E2=80=AFPM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Sun, 1 Oct 2023 at 12:53, Uros Bizjak <ubizjak@gmail.com> wrote:
-> > >
-> > > Regarding x86 target specific code, the same functionality used for
-> > > explicit address space is used internally to handle __thread
-> > > qualifier.
-> >
-> > Ok, that's interesting, in that __thread is certainly widely used so
-> > it will have seen testing.
-> >
-> > > Even *if* there are some issues with aliasing, the kernel
-> > > is immune to them due to
-> > >
-> > > KBUILD_CFLAGS +=3D -fno-strict-aliasing
-> >
-> > It's not aliasing I'd worry about. It's correctness.
-> >
-> > And indeed, the *very* first thing I tried shows that this is all very
-> > very buggy in gcc.
-> >
-> > What did I try? A simple memory copy with a structure assignment.
-> >
-> > Try to compile this:
-> >
-> >     #include <string.h>
-> >     struct a { long arr[30]; };
-> >
-> >     __seg_fs struct a m;
-> >     void foo(struct a *dst) { *dst =3D m; }
-> >
-> > using the kernel compiler options (it's the "don't use sse/avx" ones
-> > that matter):
-> >
-> >     gcc -mno-avx -mno-sse -O2 -S t.c
-> >
-> > and look at the end result. It's complete and utter sh*t:
-> >
-> >         foo:
-> >                 xorl    %eax, %eax
-> >                 cmpq    $240, %rax
-> >                 jnb     .L5
-> >         .L2:
-> >                 movzbl  %fs:m(%rax), %edx
-> >                 movb    %dl, (%rdi,%rax)
-> >                 addq    $1, %rax
-> >                 cmpq    $240, %rax
-> >                 jb      .L2
-> >         .L5:
-> >                 ret
-> >
-> > to the point that I can only go "WTF"?
-> >
-> > I mean, it's not just that it does the copy one byte at a time. It
-> > literally compares %rax to $240 just after it has cleared it. I look
-> > at that code, and I go "a five-year old with a crayon could have done
-> > better".
-> >
-> > In other words, no, we're not using this thing that generates that
-> > kind of garbage.
-> >
-> > Somebody needs to open a bugzilla entry for this kind of code generatio=
-n.
+> I'm afraid I have to disagree with the view that this obstructs
+> "unifying the implemented semantics of the operations across
+> architectures."
 >
-> Huh, this testcase triggers known issue with IVopts. I opened
-> PR111657, but the issue with IVopts is already reported in PR79649
-> [2].
+> static const struct riscv_nonstd_cache_ops thead_errata_cmo_ops =3D {
+> -       .wback =3D &thead_errata_cache_wback,
+> +      .wback =3D &thead_errata_cache_wback_inv,
+>        .inv =3D &thead_errata_cache_inv,
+>        .wback_inv =3D &thead_errata_cache_wback_inv,
+>
+> I don't see how the above patch obstructs unifying. On the contrary,
+> it decreases the custom function, which could help unify. Could you
+> give the least respect for the vendor's choice?
 
-Actually (or luckily), my preliminary analysis was wrong. This is just
-the case of missing optimization, where target dependent code chose
-the nonoptimal (but still correct) copy algorithm, under very unusual
-circumstances. In GCC, the stringop can be implemented using several
-(8) algorithms:
+Since the email thread popped up after the latest replies, I saw
+that I had not replied yet. I agree with Jessica here: we need to
+ensure that the callback functions do what the interface requires,
+across all architectures and CPU implementations. The choice to
+call wback or wback_inv is a matter of optimization in the caller,
+and we may well end up calling .wback_inv() for cases that currently
+rely on ,wback(), if we can show this to be faster on certain
+CPUs, and other cases (e.g. repeatedly writing and flushing
+individual bytes to single DMA buffer) clearly rely on keeping
+the cache line.
 
-DEF_ALG (libcall, libcall)
-DEF_ALG (rep_prefix_1_byte, rep_byte)
-DEF_ALG (rep_prefix_4_byte, rep_4byte)
-DEF_ALG (rep_prefix_8_byte, rep_8byte)
-DEF_ALG (loop_1_byte, byte_loop)
-DEF_ALG (loop, loop)
-DEF_ALG (unrolled_loop, unrolled_loop)
-DEF_ALG (vector_loop, vector_loop)
+Other policy questions like whether to use .wback or .inv before
+a DMA from device also still need a better answer, which we must
+decide globally rather than per CPU implementation.
 
-but some of them (rep_prefix ones) can not be used with non-default
-address spaces. Obviously, vector_loop can not be used without SSE/AVX
-instructions, so what remains is a severely limited selection of
-algorithms. Target processors (-mtune=3D...) select their own selection
-of algorithms, based on maximum copied block size. The generic tuning
-selects:
-
-static stringop_algs generic_memcpy[2] =3D {
-  {libcall, {{32, loop, false}, {8192, rep_prefix_4_byte, false},
-             {-1, libcall, false}}},
-  {libcall, {{32, loop, false}, {8192, rep_prefix_8_byte, false},
-             {-1, libcall, false}}}};
-
-Now, rep_prefix_8_byte is not available with non-default address
-space, so the algorithm falls back to libcall (the one after
-unavailable algo). However, we can't call into the libc here (library
-function also handles only default address space), so the target
-independent part of the compiler emits "the-most-generic" one-byte
-copy loop.
-
-The "unusual circumstances" here are following:
-- rep_prefix instructions are disabled, these are otherwise used by most ta=
-rgets
-- vector loops are disabled
-- libcall algo still produces correct code, with non-optimal loop instructi=
-ons.
-
-Very few users look into produced assembly to find the difference
-between one-byte loop (admittedly with unwanted compare) and 8-byte
-loop. Since the compiled code works as expected, there were no
-bugreports for this, I would say minor issue.
-
-As shown in the bugreport [1], the fix is to select the "loop"
-fallback algorithm instead of libcall (a patch is effectively a couple
-of lines) when non-default address space is used. The generated
-assembly for the structure copy now reads:
-
-       xorl    %eax, %eax
-.L2:
-       movl    %eax, %edx
-       addl    $8, %eax
-       movq    %gs:m(%rdx), %rcx
-       movq    %rcx, (%rdi,%rdx)
-       cmpl    $240, %eax
-       jb      .L2
-       ret
-
-The same assembly can be generated with -mstringop-strategy=3Dloop
-compiler argument. This argument will affect both, __seg_gs and
-__thread copy loops, so (almost) the same code will be generated for
-both loops (because, as claimed in previous post, the same compiler
-code handles named and implicit name spaces).
-
-> > Clang isn't much better, but at least it doesn't generate bad code. It
-> > just crashes with an internal compiler error on the above trivial
-> > test-case:
-> >
-> >     fatal error: error in backend: cannot lower memory intrinsic in
-> > address space 257
-> >
-> > which at least tells the user that they can't copy memory from that
-> > address space. But once again shows that no, this feature is not ready
-> > for prime-time.
-> >
-> > If literally the *first* thing I thought to test was this broken, what
-> > else is broken in this model?
-> >
-> > And no, the kernel doesn't currently do the above kinds of things.
-> > That's not the point. The point was "how well is this compiler support
-> > tested". The answer is "not at all".
-
-I don't agree with the above claims. The generated code was the
-product of a too limited selection of available copy algorithms in
-unusual circumstances, but even in the case of generic fallback code,
-the generated code was *correct*. As said in the previous post, and
-re-confirmed by the patch in the PR, the same code in GCC handles
-implicit (__thread) and named address spaces. At the end of the day,
-the problematic code was merely a missing-optimization (the bug with
-the lowest severity in GCC).
-
-> [1] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D111657
-> [2] https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D79649
-
-Uros.
+      Arnd
