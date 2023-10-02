@@ -2,120 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5567B5027
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18B5F7B502E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 12:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236482AbjJBKUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 06:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46618 "EHLO
+        id S236428AbjJBKXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 06:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236473AbjJBKUp (ORCPT
+        with ESMTP id S236367AbjJBKXc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 06:20:45 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C9BEBF
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 03:20:36 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-307d20548adso14814081f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 03:20:36 -0700 (PDT)
+        Mon, 2 Oct 2023 06:23:32 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8383F9B
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 03:23:29 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9a9d82d73f9so2215932466b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 03:23:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696242034; x=1696846834; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=toN6r+xeaq1Ts94kNkRkELT8eGStIF+kV6xrpdbRXVs=;
-        b=jrdTl3yqhkFh+jKcRlNdVrtN8ry1R6r+XjyybPQidxc608FhgES2AILMR2CV/kDa61
-         R1XqQUihJL1RMbZFjLCv9pgbW7y+2yWViRTpFjCam9sSa6l2NZw41qfIUiLnLF1NRu71
-         FSD3u4OA8sLOEErW16K3R1nDFXFZ8f4fgfROONXPVOlW+ScGLuXrHzgmqQhkbIRjgHH9
-         MrcjYaKH2ywGGvBMXvzoBTD6OILFpTqCIUj8itB589T9Ksq2F0JIQz+Uwe366fOz/mmj
-         i/IeW/rePShVuwRAOKRZoAMFuVP8Gxsy+/YgahbKLiCre6s+XvUWclpVRbUehmiirEOl
-         f6dQ==
+        d=gmail.com; s=20230601; t=1696242208; x=1696847008; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=47dOvMvPNeJUzh6fLv1kzerhmf6KWlMeYd+nlCsqcNg=;
+        b=M6yE8cjc0JoCVOjq21+ZtZRURXX6LnTeACL2lsbBngwQEUwXx8mM8ifIv1Trdv+GGv
+         jjVkg/SAoo8+4L5d0oEe5hb2aJJaXt/fHPMgODO3t11D8lQFx7lZCYPYHlilE4cdci5L
+         gFDeYjSxnzpILid6wuxGCmLQx3C6Dx+ce/AvxSOS5qcxf9bbYKQTEj0TL5r2waliSsMq
+         Vfo76cb8wL3YjogbzVwtesP+rMgURVny6w3Z3mtQ4k6sEUPDoCyVvYcvDIxwP9zAUWgB
+         H4in/Cw6x0vj6KTLEXDqghm+rzpv/GUTcN7X9A0233+7/YSHzB4ML9XG3ChhJ6M/ANql
+         RG+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696242034; x=1696846834;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=toN6r+xeaq1Ts94kNkRkELT8eGStIF+kV6xrpdbRXVs=;
-        b=DD8T0MdJwS4qvng5emK1L7mg5lHe56M5NlvXnXXjjiwhC8Jk2smPW14OzQP8lXXaIG
-         RH/tNyelVL2Owp/C7/st7uE0QggUD5o0U4ZkldhslOlObK1u5zRii+YiZjD2FB902A+7
-         LR0VR9DJOywaI29B05qYYQDQeyig6A25JQZW28upbdSNb/lbZkf6hyGeKX/bA9m415fi
-         TLRNp64PW+hlJgrDUm1HpA3b4JIrw/Li1Iz86L178trx1+95PxaBAc15lf+a0E/lNAOB
-         IC/nCeaI+ImzXxjmHu5QBXd6Z3u+ukqJjv1YO3lyGhzN/CiTdPycGF3+CzjokUSOKEO0
-         80kw==
-X-Gm-Message-State: AOJu0Yw/qBXwEi6HGUH12YKa+qNIN6pxHkbY6yR39GXZu7NREFV+KiHt
-        Jpxwkk5/SMvF0MMUNuZY+bHeDg==
-X-Google-Smtp-Source: AGHT+IEa/HpWgFyxZ1gMQsf3eytauR+vrzRmuOkkxvteaxITGvbpX7awG4sLKbqd8siwexJ9yWU5jA==
-X-Received: by 2002:adf:cc8c:0:b0:323:117b:9780 with SMTP id p12-20020adfcc8c000000b00323117b9780mr9241476wrj.66.1696242034490;
-        Mon, 02 Oct 2023 03:20:34 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id g18-20020a5d5552000000b003196b1bb528sm27822901wrw.64.2023.10.02.03.20.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 03:20:34 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Mon, 02 Oct 2023 12:20:24 +0200
-Subject: [PATCH v2 4/4] arm64: dts: qcom: sm8550-qrd: add orientation gpio
+        d=1e100.net; s=20230601; t=1696242208; x=1696847008;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=47dOvMvPNeJUzh6fLv1kzerhmf6KWlMeYd+nlCsqcNg=;
+        b=Z4nlqbXx0j0cqMMeE5RojdeHBEIQkrljwe3hIV5ISDSAUmJElP40fENbZEaM0J40j2
+         V2Zdg9p89+G6Ryc3NQL9re3dZPWDganhVT/WcbwKPqUP3XUZ6NzJCFcTpJxPlHiBxwpY
+         46fY5R9+etxqof/njBBdiN6SI1QBqcsnlCANPWP46jaD5gpJp5yf6DrLfx1NlBPXsT/i
+         4eneKozVmLFqcof/iN7QxLpp+1R5EemaurN/c+z4afkHwQ18Cx2/lJJ3OkSCs0yqYmHb
+         24Qb84v4HaohfNxElkU0OtQTpxBvutyOOvaqIXRlNLS2q+kaOazvs8TJucakUI5fLsqa
+         uhHg==
+X-Gm-Message-State: AOJu0Yyy6Gn4Wi8kjYYka4uhF5+d2WhJ84hNV1S8FDoEOCmI7t1rtnyD
+        wnZj6us+E+ZTtrjXhVOOS7U=
+X-Google-Smtp-Source: AGHT+IHRH2LrjXW9Lu/WWNqI+7jo8bUD8PnSg9TNeQ2CyGGAs90FPr4hir+qru1BkGlx4W5bhbRZrg==
+X-Received: by 2002:a17:906:7695:b0:9ae:3d7b:6f46 with SMTP id o21-20020a170906769500b009ae3d7b6f46mr9183734ejm.46.1696242207597;
+        Mon, 02 Oct 2023 03:23:27 -0700 (PDT)
+Received: from [192.168.2.177] ([207.188.161.188])
+        by smtp.gmail.com with ESMTPSA id x18-20020a170906b09200b0099c53c44083sm16737870ejy.79.2023.10.02.03.23.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 03:23:26 -0700 (PDT)
+Message-ID: <d4528015-eda2-e089-1e2b-1de4b54c1408@gmail.com>
+Date:   Mon, 2 Oct 2023 12:23:25 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] MAINTAINERS: Add Angelo as MediaTek SoC co-maintainer
+Content-Language: en-US, ca-ES, es-ES
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
+Cc:     nfraprado@collabora.com, wenst@chromium.org, robh@kernel.org,
+        amergnat@baylibre.com, arnd@arndb.de
+References: <20230929082009.71843-1-angelogioacchino.delregno@collabora.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <20230929082009.71843-1-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231002-topic-sm8550-upstream-type-c-orientation-v2-4-125410d3ff95@linaro.org>
-References: <20231002-topic-sm8550-upstream-type-c-orientation-v2-0-125410d3ff95@linaro.org>
-In-Reply-To: <20231002-topic-sm8550-upstream-type-c-orientation-v2-0-125410d3ff95@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=699;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=a52yWfSl6rve1rSnFAPH6wMN+d5/XtEIEhMbM7TvYMs=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBlGpltnVpQ54f/GOdNOhf0I2L8Ry9vPmPhESsLSJ6G
- flGoj46JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZRqZbQAKCRB33NvayMhJ0cKpD/
- 4orn5zrk4N2XcuZGtLwgUAbQjX4vQ67T/777fuyck0dEQqK8000S7A54oZ7rDaAILASdrW7fOB2MGV
- kkfZlnyfBRUxb6tc6HlFkPL+4P6ECcc1JnHw7bTuKxx3vBvLZZPaJdZRULJc027rfRfYAOs8jIT1CD
- 1hgsCekgQ1yuThhKs5yL8K7IF8UNoxEPiBpryVEsRiA2DpdW+MjD5Dcq5Bd634mQF1zHLXZ3PTVdfT
- 6pLaigxHQxXPq6jfcUjRcrQCJ0FOP1FGX1YJKgvrOGYpa6K9IYLeHnF48jMW+B7jR6LiNI5S1vyy81
- A8eqJ7nQS/H3quqfqZjFrUzcSNPPVak4P1gLGqN8cIOxwtt8h2beQ29Fjss/FiaexxRy3HwCLX566e
- u9Hkn00241kvGBxDD2I/+FhpWLRFcxJ5dQ3mX8wkhpkKqrrKhrG67C533PM38AmEoIAsjIQjag8Tcg
- qcXpaaSaeenUHEcbbw+aFpOX24igjP387JTy1YOXMOuwatsf/CsKL28T8N5OsW9W+ZWZy8EjFuQ/+y
- rNu1WbBT/Xxb6X+qmRkMji/E3ybEQXtj4+mrDVoPRGqD4IntObr+7+cl6R0dMVnA7eIwO2jUdgpjnv
- /OlbV2T2MS0gnkOkipXL0RNSrHrQIi3j30gGOgHAKBD5BkXvTBvj0yQLaKXg==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Specify orientation GPIO to the PMIC GLINK node.
 
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8550-qrd.dts | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
-index 320662024e89..eef811def39b 100644
---- a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
-@@ -77,6 +77,7 @@ pmic-glink {
- 		compatible = "qcom,sm8550-pmic-glink", "qcom,pmic-glink";
- 		#address-cells = <1>;
- 		#size-cells = <0>;
-+		orientation-gpios = <&tlmm 11 GPIO_ACTIVE_HIGH>;
- 
- 		connector@0 {
- 			compatible = "usb-c-connector";
+On 29/09/2023 10:20, AngeloGioacchino Del Regno wrote:
+> I am a top reviewer mainly for MediaTek SoC related patches in most
+> subsystems and I've also been upstreaming both improvements, fixes
+> and new drivers and devicetrees when required.
+> 
+> The MediaTek scene saw a generous increase in number of patches that
+> are sent to the lists every week, increasing the amount of required
+> efforts to maintain the MTK bits overall, and we will possibly see
+> even more of that.
+> 
+> For this reason, and also because of suggestions and encouragement
+> coming from the community, I'm stepping up to be a co-maintainer of
+> MediaTek SoCs support.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
--- 
-2.34.1
+Forgot that in my previous mail. Obviously:
+Acked-by: Matthias Brugger <matthias.bgg@gmail.com>
 
+> ---
+> 
+> P.S.: I tried to reach to Matthias for almost two months, but I couldn't
+> find any way to talk to him and he has been unresponsive on the mailing
+> lists as well.
+> 
+> P.P.S.: This also comes after Rob Herring's suggestion to have myself as
+> a MediaTek SoC co-maintainer [1] and support from other people.
+> 
+> [1]: https://lore.kernel.org/all/20230804225813.12493-1-robh@kernel.org/
+> 
+>   MAINTAINERS | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 208cfcc1aee3..211a8322c801 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2330,7 +2330,7 @@ F:	drivers/rtc/rtc-mt7622.c
+>   
+>   ARM/Mediatek SoC support
+>   M:	Matthias Brugger <matthias.bgg@gmail.com>
+> -R:	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> +M:	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>   L:	linux-kernel@vger.kernel.org
+>   L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>   L:	linux-mediatek@lists.infradead.org (moderated for non-subscribers)
