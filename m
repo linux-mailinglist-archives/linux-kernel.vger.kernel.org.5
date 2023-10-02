@@ -2,60 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB1F7B5928
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C23CA7B5902
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238192AbjJBRiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35158 "EHLO
+        id S231835AbjJBRiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:38:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjJBRiU (ORCPT
+        with ESMTP id S229579AbjJBRiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:38:20 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C06794
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:38:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28F76C433CB;
-        Mon,  2 Oct 2023 17:38:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696268297;
-        bh=iWdE3PqQIPm1Gr1G+cGg8YEe3oOezdwkHyl6G540MoY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CT+4DRXpnC5j+/uds8hb4RkFktfLHPXRzs7ng/fqmchLUYBjSOfxhkVmkzyYWbDQi
-         V2NKwsjYFiNrwDRX9/hqIbvH9C1g7AC3wq0gH4iH1dx7W5JxhwjMPt9D1V+ZVMGkJH
-         ot8nEr/JrPQAHK3yOq58eYA7GmIKvU3QSm8hT2ZnsnaezArtuBJH9OIXFuGo3RTOdS
-         qMwYuSEoExlbap3JJ56Y8Tl+XjF1UuM5ZKexyPZsJVcZM22kQ/1dUGmLIO41GuhAyW
-         ZKDtjfh876sfAeqwiLXAHl+b26xiUchF6LOtNy8YLubK4RSTIUOd/DAU8R0rppFcEp
-         4GXrTwOX+ZI6g==
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5043a01ee20so23238653e87.0;
-        Mon, 02 Oct 2023 10:38:17 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxLyaoUrxT1gSrb4/c8XUfJpKhxLqhVSQltjsR8bHxwy/hqJ24W
-        aMBk/XqwzR42E/MLn+IvU3mh9KyA6BfxcgvM8Q==
-X-Google-Smtp-Source: AGHT+IHZCP1YjecGYLwuoNyiko6dwgVXU8NRIFmzW6rhvr0X9Wrzo354jdzX9XwyQDAw5K8Is07bvjVR175Cr9/ex30=
-X-Received: by 2002:a05:6512:6c7:b0:504:7e12:4846 with SMTP id
- u7-20020a05651206c700b005047e124846mr11636183lff.30.1696268295338; Mon, 02
- Oct 2023 10:38:15 -0700 (PDT)
+        Mon, 2 Oct 2023 13:38:18 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4510F9E
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:38:15 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3ae65e8eb45so14866b6e.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:38:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1696268294; x=1696873094; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nZdjMGhKnja++t4G0+IGwkpRsvCc+P6k0aX0HlX3RbU=;
+        b=Noy6DnfeZ05f/R8ut7vjtHZcFxg6g3oSWTNVXtzhUfVktfxjC2CtusoEE3DLypknrI
+         jzWjB7X4/xSsCvE4/1nU2jJuSNM/2ZplVaBBfJz7aJTdFZoczFgl+yNRnp7Cf8d8hICG
+         4GWoYnAZzwytYNcZRetrXYhorgx9rz4JJhFQ0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696268294; x=1696873094;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nZdjMGhKnja++t4G0+IGwkpRsvCc+P6k0aX0HlX3RbU=;
+        b=TWRNGwSG/JPzP/59IyBmj0ecigNwTQKt4E7dWs0Ql2TVV2VDcQFIZGzFowg2WBVk71
+         7CA6TI6+6eX2JlMutvP+B0qsDxAXZbxnKhonoBRRTXAqwTrUYXjVUA+PB1BvUt2A8Ey9
+         Jg6aiDH6vhD2Vl9RnvG2CX10tuhvUOHfI8iZP/HDgkgIx/D0MZDuSBuc7GP5huJ9MCoo
+         KStewjPXIxeuDTTkq90Wg6hjdBEAOaGjP82qFo1K5AUIJoao6bapojUQtzIFYnz0vm70
+         7rv7p19sA5c04HgdBYe56zw+6RLsIjy13A5lGfYZrwUXc/A5bLcug+OISIBB0hvVgSPT
+         n2KQ==
+X-Gm-Message-State: AOJu0YwkvdlcSPSc7lUmyjkgFmhDaA1GYWpAU36pFLXE4F1m1LvTzvA5
+        Ldt9y4uXVEzxlUjotnvPODvD9A==
+X-Google-Smtp-Source: AGHT+IF62FOVZA3oL8q16eIdT1W2zWITx4eI7ky2roTfIwlDc1mzrjtysFRODnQhS8L/pv5FUCuKdg==
+X-Received: by 2002:a05:6808:f04:b0:3af:6cf3:d62f with SMTP id m4-20020a0568080f0400b003af6cf3d62fmr13262587oiw.29.1696268294499;
+        Mon, 02 Oct 2023 10:38:14 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id s65-20020a17090a69c700b00276d039aecasm7216306pjj.13.2023.10.02.10.38.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 10:38:14 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 10:38:11 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] udf: Fix undefined behavior bug in struct
+ udf_fileident_iter
+Message-ID: <202310021038.9F85D987AE@keescook>
+References: <ZRrsYkKIQe8K6F/t@work>
 MIME-Version: 1.0
-References: <20231002132635.2595382-1-andriy.shevchenko@linux.intel.com> <20231002132635.2595382-2-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231002132635.2595382-2-andriy.shevchenko@linux.intel.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 2 Oct 2023 12:38:03 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKfg14iW2_DjN5NzbDwapeAwHK_r-XBMMPytrOjQdFY+A@mail.gmail.com>
-Message-ID: <CAL_JsqKfg14iW2_DjN5NzbDwapeAwHK_r-XBMMPytrOjQdFY+A@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] amba: bus: Enable compile testing
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRrsYkKIQe8K6F/t@work>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -66,33 +69,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 8:32=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> There is no architecture specific code in the implementation of
-> AMBA bus, let's enable compile testing for it.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->
-> v2: new patch to make it easier to compile test on non-ARM
->
->  drivers/amba/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/amba/Kconfig b/drivers/amba/Kconfig
-> index fb6c7e0b4cce..9ff4638550c8 100644
-> --- a/drivers/amba/Kconfig
-> +++ b/drivers/amba/Kconfig
-> @@ -1,6 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
->  config ARM_AMBA
-> -       bool
-> +       bool "AMBA bus support" || if COMPILE_TEST
+On Mon, Oct 02, 2023 at 06:14:26PM +0200, Gustavo A. R. Silva wrote:
+> `struct fileIdentDesc` is a flexible structure, which means that it
+> contains a flexible-array member at the bottom. This could potentially
+> lead to an overwrite of the objects following `fi` in `struct
+> udf_fileident_iter` at run-time.
+> 
+> Fix this by placing the declaration of object `fi` at the end of
+> `struct udf_fileident_iter`.
+> 
+> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+> ready to enable it globally.
+> 
+> Fixes: d16076d9b684 ("udf: New directory iteration code")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Other than not compile testing a compile test enabling patch, it's
-really "Arm (AMBA) Primecell Device bus". Despite the naming, AMBA
-encompasses lots of Arm defined buses, but what this bus type is is
-just peripherals which have the Primecell device ID registers.
+Looks right.
 
-Rob
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
+-- 
+Kees Cook
