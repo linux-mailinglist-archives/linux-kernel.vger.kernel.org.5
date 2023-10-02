@@ -2,139 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4AA7B5955
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB4597B5924
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238613AbjJBRAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35386 "EHLO
+        id S238641AbjJBRAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238598AbjJBRAd (ORCPT
+        with ESMTP id S238616AbjJBRAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:00:33 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E78CD9
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:00:28 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4EA1C433C8;
-        Mon,  2 Oct 2023 17:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696266028;
-        bh=3UbyqZIFaU6RJC2KOuQvJj8u1FhIUKRifoIKRVKlW9k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Oe7AKrswQVKt5UlDiKVSxuiRD2QnAnHROWGMNBPHHdFj6b3rzg71vcTho3JhcVpsJ
-         EQj/R+RDo3YeYG/I7SMUvMI/WkfXl5pDsWO40OyzoWY6AJnkW8/4cMYv9qbyq/Ly9/
-         /EyvByBCPqTrQ1iVbv0oUG1vE4Hv0vUVoDglY5NZne5XaIz8YUJfClfz8caBlHvTZy
-         4poorrJtt3NdkTsnEWCDrdYShiBq+NmrlbiPJBnXPuDAQLKGbSeF9u/xTf4pGvS7C1
-         wQKOoVsi6SfgJcOtpmUBrY5LbynOLWobJ1JIF2gZkbJ2ABeR8YREvJlCr0vqcuYii3
-         KYCpwq72VoR8g==
-Received: (nullmailer pid 1934730 invoked by uid 1000);
-        Mon, 02 Oct 2023 17:00:25 -0000
-Date:   Mon, 2 Oct 2023 12:00:25 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Piyush Mehta <piyush.mehta@amd.com>
-Cc:     gregkh@linuxfoundation.org, michal.simek@amd.com,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        peter.chen@kernel.org, linus.walleij@linaro.org,
-        paul@crapouillou.net, arnd@arndb.de, linux-usb@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        git@amd.com
-Subject: Re: [RFC PATCH 1/3] dt-binding: usb: ulpi-phy: add ulpi-phy binding
-Message-ID: <20231002170025.GA1928031-robh@kernel.org>
-References: <20230929064852.16642-1-piyush.mehta@amd.com>
- <20230929064852.16642-2-piyush.mehta@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230929064852.16642-2-piyush.mehta@amd.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 2 Oct 2023 13:00:47 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E58C1109
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:00:40 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59ee66806d7so15127b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:00:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696266040; x=1696870840; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rcmSXpEr7h/7NYLqS6yAhuk57JUF4crLTtfNbWK9HLs=;
+        b=TkY+hPKlYAW/93Dxy78mYXFO8KhuN4bu4rUDwR3IqpnivLjCRWrlkicQGe8H3fjDK7
+         uY4Tt0qjFEKDDh8KR5myk8/a+0Qa6w32Se7k4XbeDTcbIcOqDj8olt+97hF0xwsiTEo5
+         NX4V6g3cPtqAi9vgGHa0NS/2VowhoY2e9E5JgUIzPJn6Iuc5Ll2Bf4ioq/0cKkqSO3SM
+         PQ5u+ZrKVN9bGpomeLV7pSj1eZJEOJdwfuSgBBOSkjDld7IPXGqTd5B8Zlu+mJ4dLHhl
+         7jwwOGIAwNRL/Xml+J4SnLdqfZdQOpDNrPSsmJMAmBlJlm+50qD3XzxxrYF+SBI+a67j
+         CxdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696266040; x=1696870840;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rcmSXpEr7h/7NYLqS6yAhuk57JUF4crLTtfNbWK9HLs=;
+        b=VtbDKLVOqPrVcsYPP+NGUUyWv9IwEcebPYK8bZoU6Ey62t+qKNhmcLVGoF00V1YXgM
+         fqOq4PCPeOT8iSTCTHe9ycXhhucbuWzPVGmaXV72vytiwqcERvZTT8alxALmbDoc7hNA
+         hd0/2KX0a8qkDRaDLbfm0IuMWV7B94Rbk1MKe6WO6jrJFJcEgReqAR//o8MLF6FYaTZD
+         zEzr/a4H+HhDV67WAIjTmfjgfv7gYb54W0q1b0hwnXRXpHdtA9QLGZ0KC3NT34QSEBgI
+         /qYGZiCHDjClPds+R79BvGLzGOJ1eZG8cNQDajcVc7LmYus9raevzRXhb+88vUhqGGdZ
+         bN9w==
+X-Gm-Message-State: AOJu0YyqiTokgfQzp2U0X0MenyGTBZ2aL+rvwc5HdVx6ZifrG3IjIC0/
+        qnbdqhJgH41hGn71+VrH+lgstLmFnr4=
+X-Google-Smtp-Source: AGHT+IFwUHLWrCdrNYcMoc0a+MUfKvL6DTsPdvL+2V9nsx1Py05xH7B7ko+5UCpV1sitco+ERQsUJp42Lcg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:aa48:0:b0:59b:eace:d467 with SMTP id
+ z8-20020a81aa48000000b0059beaced467mr231254ywk.3.1696266040026; Mon, 02 Oct
+ 2023 10:00:40 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 10:00:38 -0700
+In-Reply-To: <f21ee3bd852761e7808240d4ecaec3013c649dc7.camel@infradead.org>
+Mime-Version: 1.0
+References: <f21ee3bd852761e7808240d4ecaec3013c649dc7.camel@infradead.org>
+Message-ID: <ZRr3NvZg4OiXyjoq@google.com>
+Subject: Re: [PATCH v3] KVM: x86: Use fast path for Xen timer delivery
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     kvm <kvm@vger.kernel.org>, Paul Durrant <paul@xen.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 12:18:50PM +0530, Piyush Mehta wrote:
-> Create an ulpi-phy binding to read and write PHY registers with explicit
-> control of the address and data using the usb.VIEWPORT register.
-> 
-> Signed-off-by: Piyush Mehta <piyush.mehta@amd.com>
-> ---
-> This binding patch was created to support generic platforms. This binding
-> will be modified in accordance with patch [3/3] procedures. One of the
-> approch may be Create a zynq phy platform driver in "driver/usb/phy" with
-> driver source "phy-ulpi-zynq-usb.c" and then the binding will be particular
-> to the Xilinx/AMD zynq platform.
-> 
-> This binding was built with the Zynq hardware design example in consideration
-> of as a generic platform. The viewport provide access the Chipidea controller
-> to interface with the ULPI PHY.
-> ---
->  .../devicetree/bindings/usb/ulpi-phy.yaml     | 48 +++++++++++++++++++
->  1 file changed, 48 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/usb/ulpi-phy.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/ulpi-phy.yaml b/Documentation/devicetree/bindings/usb/ulpi-phy.yaml
-> new file mode 100644
-> index 000000000000..490b2f610129
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/usb/ulpi-phy.yaml
-> @@ -0,0 +1,48 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/usb/ulpi-phy.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+On Sat, Sep 30, 2023, David Woodhouse wrote:
+> @@ -146,6 +160,14 @@ static enum hrtimer_restart xen_timer_callback(struct hrtimer *timer)
+>  
+>  static void kvm_xen_start_timer(struct kvm_vcpu *vcpu, u64 guest_abs, s64 delta_ns)
+>  {
+> +	/*
+> +	 * Avoid races with the old timer firing. Checking timer_expires
+> +	 * to avoid calling hrtimer_cancel() will only have false positives
+> +	 * so is fine.
+> +	 */
+> +	if (vcpu->arch.xen.timer_expires)
+> +		hrtimer_cancel(&vcpu->arch.xen.timer);
 > +
-> +title: ULPI PHY- Generic platform
-> +
-> +maintainers:
-> +  - Piyush Mehta <piyush.mehta@amd.com>
-> +
-> +properties:
-> +  compatible:
-> +    const: ulpi-phy
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#phy-cells':
-> +    const: 0
-> +
-> +  external-drv-vbus:
-> +    description:
-> +      If present, configure ulpi-phy external supply to drive 5V on VBus.
-> +    type: boolean
-> +
-> +  view-port:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Address to read and write PHY registers with explicit control of
-> +      the address and data using the usb.VIEWPORT register.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - view-port
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    phy0@e0002000 {
-> +        compatible = "ulpi-phy";
-> +        #phy-cells = <0x00>;
-> +        reg = <0xe0002000 0x1000>;
-> +        view-port = <0x170>;
+>  	atomic_set(&vcpu->arch.xen.timer_pending, 0);
+>  	vcpu->arch.xen.timer_expires = guest_abs;
+>  
+> @@ -1019,9 +1041,36 @@ int kvm_xen_vcpu_get_attr(struct kvm_vcpu *vcpu, struct kvm_xen_vcpu_attr *data)
+>  		break;
+>  
+>  	case KVM_XEN_VCPU_ATTR_TYPE_TIMER:
+> +		/*
+> +		 * Ensure a consistent snapshot of state is captured, with a
+> +		 * timer either being pending, or the event channel delivered
+> +		 * to the corresponding bit in the shared_info. Not still
+> +		 * lurking in the timer_pending flag for deferred delivery.
+> +		 * Purely as an optimisation, if the timer_expires field is
+> +		 * zero, that means the timer isn't active (or even in the
+> +		 * timer_pending flag) and there is no need to cancel it.
+> +		 */
 
-I don't understand. Do you have an MMIO address and the VIEWPORT 
-address to the PHY? You need both?
+Ah, kvm_xen_start_timer() zeros timer_pending.
 
-There's already a defined binding for ULPI bus:
+Given that, shouldn't it be impossible for xen_timer_callback() to observe a
+non-zero timer_pending value?  E.g. couldn't this code WARN?
 
-Documentation/devicetree/bindings/usb/ulpi.txt
+	if (atomic_read(&vcpu->arch.xen.timer_pending))
+		return HRTIMER_NORESTART;
 
-Why can't you use/expand that?
-
-Rob
+Obviously not a blocker for this patch, I'm mostly just curious to know if I'm
+missing something.
