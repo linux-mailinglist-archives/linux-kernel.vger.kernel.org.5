@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F86A7B4FC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9092D7B4FC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236399AbjJBJ7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57822 "EHLO
+        id S236419AbjJBJ7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236406AbjJBJ6q (ORCPT
+        with ESMTP id S236471AbjJBJ6q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Oct 2023 05:58:46 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4A21704;
-        Mon,  2 Oct 2023 02:58:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696240703; x=1727776703;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=keZzMkcN0PISim8T5Z34Kx47RiqtJkzIs5J68O3vTQw=;
-  b=J6anhFzYr6GLXhEzUkJIWWOJBgD01V/x3LX55iImTkRVrOrUohYWYBhi
-   36JDhtMWYI04PuNaq1CR9N+hWFCxtrLBiQfwZ+hTt9wlTgxwdIF58/lS8
-   kXTunY6P7D0zIR5XYTFRVbIzcoLG6uBPz2fMkkL54Ya/OqCGjVrK7m2jO
-   rwWoXY3nH0Neb1P14gfdh6gPgFSY29AT2LH3EBoE0ifIv2V4x89PDnYBh
-   kDb+P6v2Ibd6x6Sbq2C93rCM2IyCI+a/wdpzn1DQpUq0Chr3k25+ZHygd
-   w2q5jci1anT5QEmmku32kDozYR2AkLcM9EK89QERd57Vk+QbwVKVNmew4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="382518536"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="382518536"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:58:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="1081595040"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="1081595040"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:58:20 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qnFgv-000000027pr-25Ck;
-        Mon, 02 Oct 2023 12:58:17 +0300
-Date:   Mon, 2 Oct 2023 12:58:17 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v4 05/11] gpiolib: provide gpio_device_get_desc()
-Message-ID: <ZRqUOcssSyTgPJno@smile.fi.intel.com>
-References: <20230927142931.19798-1-brgl@bgdev.pl>
- <20230927142931.19798-6-brgl@bgdev.pl>
- <ZRqRfss5oI+xcS3o@smile.fi.intel.com>
- <CAMRc=MesApEwEQxesBkodtB_4Zu4ubf3XScJ4iNLwn7sWBEcEQ@mail.gmail.com>
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E631701;
+        Mon,  2 Oct 2023 02:58:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1696240699;
+        bh=0/JUjvNFCrqTLBeZW08iULSeezWaCcDvX52IIMuk8OY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VbM0R+4xbgFaAb/Nj2sUi5FqA2WuSaT4FRA1gudCZOXzDuDGxMWu8IQiFOMSJoaMA
+         ItU+ffnOyrdHSu3RIgmRq6Z/usFV1HcOvMe8F3BOepaF3SmsJeaQSiEj0H4t1okEDN
+         L8NivrXvVG2WNkmHvPDG9jkubnLjLvCiB+pzUVXc=
+Date:   Mon, 2 Oct 2023 11:58:18 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Wedson Almeida Filho <wedsonaf@gmail.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wedson Almeida Filho <walmeida@microsoft.com>
+Subject: Re: [PATCH 01/29] xattr: make the xattr array itself const
+Message-ID: <cf669914-8e9e-4eac-b28a-f307bb080bec@t-8ch.de>
+References: <20230930050033.41174-1-wedsonaf@gmail.com>
+ <20230930050033.41174-2-wedsonaf@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MesApEwEQxesBkodtB_4Zu4ubf3XScJ4iNLwn7sWBEcEQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230930050033.41174-2-wedsonaf@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 11:54:40AM +0200, Bartosz Golaszewski wrote:
-> On Mon, Oct 2, 2023 at 11:46 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Wed, Sep 27, 2023 at 04:29:25PM +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > >
-> > > Getting the GPIO descriptor directly from the gpio_chip struct is
-> > > dangerous as we don't take the reference to the underlying GPIO device.
-> > > In order to start working towards removing gpiochip_get_desc(), let's
-> > > provide a safer variant that works with an existing reference to struct
-> > > gpio_device.
-
-...
-
-> > > +EXPORT_SYMBOL_GPL(gpiochip_get_desc);
-> >
-> > > +struct gpio_desc *
-> > > +gpio_device_get_desc(struct gpio_device *gdev, unsigned int hwnum)
-> >
-> > I'm wondering if you move this to be upper than gpiochip_get_desc() and
-> > diff will look better...
+On 2023-09-30 02:00:05-0300, Wedson Almeida Filho wrote:
+> From: Wedson Almeida Filho <walmeida@microsoft.com>
 > 
-> There's a limit to bikeshedding in my book and "making the diff look
-> better" is definitely it. :)
+> As it is currently declared, the xattr_handler structs are const but the
+> array containing their pointers is not. This patch makes it so that fs
+> modules can place them in .rodata, which makes it harder for
+> accidental/malicious modifications at runtime.
 
-Right, but if you are going to send a new version it might makes sense
-to try, no?
+You could also add an entry to scripts/const_structs.checkpatch to make
+sure newly introduced usages of the struct are const.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Could be a single dedicated patch after this patch has been applied.
 
-
+> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+> ---
+>  fs/xattr.c         | 6 +++---
+>  include/linux/fs.h | 2 +-
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/xattr.c b/fs/xattr.c
+> index e7bbb7f57557..1905f8ede13d 100644
+> --- a/fs/xattr.c
+> +++ b/fs/xattr.c
+> @@ -56,7 +56,7 @@ strcmp_prefix(const char *a, const char *a_prefix)
+>  static const struct xattr_handler *
+>  xattr_resolve_name(struct inode *inode, const char **name)
+>  {
+> -	const struct xattr_handler **handlers = inode->i_sb->s_xattr;
+> +	const struct xattr_handler * const *handlers = inode->i_sb->s_xattr;
+>  	const struct xattr_handler *handler;
+>  
+>  	if (!(inode->i_opflags & IOP_XATTR)) {
+> @@ -162,7 +162,7 @@ xattr_permission(struct mnt_idmap *idmap, struct inode *inode,
+>  int
+>  xattr_supports_user_prefix(struct inode *inode)
+>  {
+> -	const struct xattr_handler **handlers = inode->i_sb->s_xattr;
+> +	const struct xattr_handler * const *handlers = inode->i_sb->s_xattr;
+>  	const struct xattr_handler *handler;
+>  
+>  	if (!(inode->i_opflags & IOP_XATTR)) {
+> @@ -999,7 +999,7 @@ int xattr_list_one(char **buffer, ssize_t *remaining_size, const char *name)
+>  ssize_t
+>  generic_listxattr(struct dentry *dentry, char *buffer, size_t buffer_size)
+>  {
+> -	const struct xattr_handler *handler, **handlers = dentry->d_sb->s_xattr;
+> +	const struct xattr_handler *handler, * const *handlers = dentry->d_sb->s_xattr;
+>  	ssize_t remaining_size = buffer_size;
+>  	int err = 0;
+>  
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 562f2623c9c9..4d8003f48216 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1172,7 +1172,7 @@ struct super_block {
+>  #ifdef CONFIG_SECURITY
+>  	void                    *s_security;
+>  #endif
+> -	const struct xattr_handler **s_xattr;
+> +	const struct xattr_handler * const *s_xattr;
+>  #ifdef CONFIG_FS_ENCRYPTION
+>  	const struct fscrypt_operations	*s_cop;
+>  	struct fscrypt_keyring	*s_master_keys; /* master crypto keys in use */
+> -- 
+> 2.34.1
+> 
