@@ -2,192 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0238F7B58E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B2A7B5912
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229509AbjJBRWp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Oct 2023 13:22:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
+        id S229550AbjJBRYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:24:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229463AbjJBRWn (ORCPT
+        with ESMTP id S229475AbjJBRYd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:22:43 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6A07AD
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:22:39 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-71-1NEcmSlANSi22Ru6WZEOTQ-1; Mon, 02 Oct 2023 18:22:36 +0100
-X-MC-Unique: 1NEcmSlANSi22Ru6WZEOTQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 2 Oct
- 2023 18:22:34 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Mon, 2 Oct 2023 18:22:34 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Steven Rostedt' <rostedt@goodmis.org>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mon, 2 Oct 2023 13:24:33 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6EC31AC
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:24:23 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4CD7CC15;
+        Mon,  2 Oct 2023 10:25:01 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.28.139])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7B8073F59C;
+        Mon,  2 Oct 2023 10:24:20 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 18:24:11 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Douglas Anderson <dianders@chromium.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Chen-Yu Tsai <wenst@chromium.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        D Scott Phillips <scott@os.amperecomputing.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Misono Tomohiro <misono.tomohiro@fujitsu.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Paul Turner <pjt@google.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Florian Weimer <fw@deneb.enyo.de>,
-        "carlos@redhat.com" <carlos@redhat.com>,
-        Peter Oskolkov <posk@posk.io>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        Chris Kennelly <ckennelly@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        =?iso-8859-1?Q?Andr=E9_Almeida?= <andrealmeid@igalia.com>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Noah Goldstein <goldstein.w.n@gmail.com>,
-        Daniel Colascione <dancol@google.com>,
-        "longman@redhat.com" <longman@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>
-Subject: RE: [RFC PATCH v2 1/4] rseq: Add sched_state field to struct rseq
-Thread-Topic: [RFC PATCH v2 1/4] rseq: Add sched_state field to struct rseq
-Thread-Index: AQHZ8hog0Ykvpvbq8USYUjzds++7brAwU+jQgAZYaYCAABHzEA==
-Date:   Mon, 2 Oct 2023 17:22:34 +0000
-Message-ID: <845039ad23d24cc687491efa95be5e0d@AcuMS.aculab.com>
-References: <20230529191416.53955-1-mathieu.desnoyers@efficios.com>
-        <20230529191416.53955-2-mathieu.desnoyers@efficios.com>
-        <20230928103926.GI9829@noisy.programming.kicks-ass.net>
-        <20230928104321.490782a7@rorschach.local.home>
-        <40b76cbd00d640e49f727abbd0c39693@AcuMS.aculab.com>
- <20231002125109.55c35030@gandalf.local.home>
-In-Reply-To: <20231002125109.55c35030@gandalf.local.home>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 1/2] arm64: smp: Fix pseudo NMI issues w/ broken Mediatek
+ FW
+Message-ID: <ZRr8r7XMoyDKaitd@FVFF77S0Q05N.cambridge.arm.com>
+References: <20231002094526.1.Ie8f760213053e3d11592f892b30912dbac6b8b48@changeid>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231002094526.1.Ie8f760213053e3d11592f892b30912dbac6b8b48@changeid>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steven Rostedt
-> Sent: 02 October 2023 17:51
+On Mon, Oct 02, 2023 at 09:45:29AM -0700, Douglas Anderson wrote:
+> Some mediatek devices have the property
+> "mediatek,broken-save-restore-fw" in their GIC. This means that,
+> although the hardware supports pseudo-NMI, the firmware has a bug
+> that blocks enabling it. When we're in this state,
+> system_uses_irq_prio_masking() will return true but we'll fail to
+> actually enable the IRQ in the GIC.
 > 
-> On Thu, 28 Sep 2023 15:51:47 +0000
-> David Laight <David.Laight@ACULAB.COM> wrote:
+> Let's make the code handle this. We'll detect that we failed to
+> request an IPI as NMI and fallback to requesting it normally. Though
+> we expect that either all of our requests will fail or all will
+> succeed, it's just as cheap to keep a per-IPI bitmap and that keeps us
+> robust.
 > 
+> Fixes: 331a1b3a836c ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
+> Reported-by: Chen-Yu Tsai <wenst@chromium.org>
+> Closes: https://issuetracker.google.com/issues/197061987#comment68
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
 > 
-> > > This is when I thought that having an adaptive spinner that could get
-> > > hints from the kernel via memory mapping would be extremely useful.
-> >
-> > Did you consider writing a timestamp into the mutex when it was
-> > acquired - or even as the 'acquired' value?
-> > A 'moderately synched TSC' should do.
-> > Then the waiter should be able to tell how long the mutex
-> > has been held for - and then not spin if it had been held ages.
-> 
-> And what heuristic would you use. My experience with picking "time to spin"
-> may work for one workload but cause major regressions in another workload.
-> I came to the conclusion to "hate" heuristics and NACK them whenever
-> someone suggested adding them to the rt_mutex in the kernel (back before
-> adaptive mutexes were introduced).
+>  arch/arm64/kernel/smp.c | 19 ++++++++++++-------
+>  1 file changed, 12 insertions(+), 7 deletions(-)
 
-Isn't that exactly what and adaptive mutex does?
-Spin 'for a bit' before sleeping.
+I'm not too keen on falling back here when we have no idea why the request failed.
 
-> > > The obvious problem with their implementation is that if the owner is
-> > > sleeping, there's no point in spinning. Worse, the owner may even be
-> > > waiting for the spinner to get off the CPU before it can run again. But
-> > > according to Robert, the gain in the general performance greatly
-> > > outweighed the few times this happened in practice.
-> >
-> > Unless you can use atomics (ok for bits and linked lists) you
-> > always have the problem that userspace can't disable interrupts.
-> > So, unlike the kernel, you can't implement a proper spinlock.
-> 
-> Why do you need to disable interrupts? If you know the owner is running on
-> the CPU, you know it's not trying to run on the CPU that is acquiring the
-> lock. Heck, there's normal spin locks outside of PREEMPT_RT that do not
-> disable interrupts. The only time you need to disable interrupts is if the
-> interrupt itself takes the spin lock, and that's just to prevent deadlocks.
+I'd prefer if we could check the `supports_pseudo_nmis` static key directly to
+account for the case of broken FW, e.g. as below.
 
-You need to disable interrupts in order to bound the time the
-spinlock is held for.
-If all you are doing is a dozen instructions (eg to remove an
-item from s list) then you really don't want an interrupt coming in
-while you have the spinlock held.
-It isn't the cost of the ISR - that has to happen sometime, but that
-the cpu waiting for the spinlock also take the cost of the ISR.
+Mark.
 
-A network+softint ISR can run for a long time - I'm sure I've
-seen a good fraction of a millisecond.
-You really don't want another (or many other) cpu spinning while
-that is going on.
-Which (to my mind) pretty much means that you always want to
-disable interrupts on a spinlock.
-If the architecture makes masking ISR expensive then I've seen schemes
-that let the hardware interrupt happen, then disable it and rerun later.
+---->8----
+From 72fdec05c64a74f21871b44c7c760bbe07cac044 Mon Sep 17 00:00:00 2001
+From: Mark Rutland <mark.rutland@arm.com>
+Date: Mon, 2 Oct 2023 18:00:36 +0100
+Subject: [PATCH] arm64: smp: avoid NMI IPIs with broken MediaTek FW
 
-> > I've NFI how CONFIG_RT manages to get anything done with all
-> > the spinlocks replaced by sleep locks.
-> > Clearly there are a spinlocks that are held for far too long.
-> > But you really do want to spin most of the time.
-> 
-> It spins as long as the owner of the lock is running on the CPU. This is
-> what we are looking to get from this patch series for user space.
+Some MediaTek devices have broken firmware which corrupts some GICR
+registers behind the back of the OS, and pseudo-NMIs cannot be used on
+these devices. For more details see commit:
 
-I think you'd need to detect that the cpu was in-kernel running an ISR.
+  44bd78dd2b8897f5 ("irqchip/gic-v3: Disable pseudo NMIs on Mediatek devices w/ firmware issues")
 
-But the multithreaded audio app I was 'fixing' basically failed
-as soon as it had to sleep on one of the futex.
-The real problem was ISR while the mutex was held.
-So deciding to sleep because the lock owner isn't running (in user)
-would already be delaying things too much.
+We did not take this problem into account in commit:
 
-> 
-> Back in 2007, we had an issue with scaling on SMP machines. The RT kernel
-> with the sleeping spin locks would start to exponentially slow down with
-> the more CPUs you had. Once we hit more than 16 CPUs,  the time to boot a
-> kernel took 10s of minutes to boot RT when the normal CONFIG_PREEMPT kernel
-> would only take a couple of minutes. The more CPUs you added, the worse it
-> became.
-> 
-> Then SUSE submitted a patch to have the rt_mutex spin only if the owner of
-> the mutex was still running on another CPU. This actually mimics a real
-> spin lock (because that's exactly what they do, they spin while the owner
-> is running on a CPU). The difference between a true spin lock and an
-> rt_mutex was that the spinner would stop spinning if the owner was
-> preempted (a true spin lock owner could not be preempted).
-> 
-> After applying the adaptive spinning, we were able to scale PREEMPT_RT to
-> any number of CPUs that the normal kernel could do with just a linear
-> performance hit.
+  331a1b3a836c0f38 ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
 
-Sounds like it was spinning for far too long at the best of times.
-But analysing these sort of latencies is hard.
+Since that commit arm64's SMP code will try to setup some IPIs as
+pseudo-NMIs, even on systems with broken FW. The GICv3 code will
+(rightly) reject attempts to request interrupts as pseudo-NMIs,
+resulting in boot-time failures.
 
-	David
+Avoid the problem by taking the broken FW into account when deciding to
+request IPIs as pseudo-NMIs. The GICv3 driver maintains a static_key
+named "supports_pseudo_nmis" which is false on systems with broken FW,
+and we can consult this within ipi_should_be_nmi().
 
-> 
-> This is why I'm very much interested in getting the same ability into user
-> space spin locks.
-> 
-> -- Steve
+Fixes: 331a1b3a836c0f38 ("arm64: smp: Add arch support for backtrace using pseudo-NMI")
+Reported-by: Chen-Yu Tsai <wenst@chromium.org>
+Closes: https://issuetracker.google.com/issues/197061987#comment68
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+Cc: Douglas Anderson <dianders@chromium.org>
+Cc: Marc Zyngier <maz@kernel.org>
+---
+ arch/arm64/kernel/smp.c      | 5 ++++-
+ drivers/irqchip/irq-gic-v3.c | 2 +-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index 814d9aa93b21b..061c69160f90f 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -964,7 +964,10 @@ static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
+ 
+ static bool ipi_should_be_nmi(enum ipi_msg_type ipi)
+ {
+-	if (!system_uses_irq_prio_masking())
++	DECLARE_STATIC_KEY_FALSE(supports_pseudo_nmis);
++
++	if (!system_uses_irq_prio_masking() ||
++	    !static_branch_likely(&supports_pseudo_nmis))
+ 		return false;
+ 
+ 	switch (ipi) {
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index 787ccc880b22d..737da1b9aabf2 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -106,7 +106,7 @@ static DEFINE_STATIC_KEY_TRUE(supports_deactivate_key);
+  * - Figure 4-7 Secure read of the priority field for a Non-secure Group 1
+  *   interrupt.
+  */
+-static DEFINE_STATIC_KEY_FALSE(supports_pseudo_nmis);
++DEFINE_STATIC_KEY_FALSE(supports_pseudo_nmis);
+ 
+ DEFINE_STATIC_KEY_FALSE(gic_nonsecure_priorities);
+ EXPORT_SYMBOL(gic_nonsecure_priorities);
+-- 
+2.30.2
 
+ 
