@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC147B50E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 977817B50E9
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 13:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236659AbjJBLMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 07:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
+        id S236661AbjJBLMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 07:12:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236633AbjJBLMN (ORCPT
+        with ESMTP id S236516AbjJBLMN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Oct 2023 07:12:13 -0400
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3C081E8
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7FC3FDD
         for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 04:12:10 -0700 (PDT)
 Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8Dx_+uIpRplL5IuAA--.22517S3;
+        by gateway (Coremail) with SMTP id _____8BxY_CIpRplNJIuAA--.23684S3;
         Mon, 02 Oct 2023 19:12:08 +0800 (CST)
 Received: from openarena.loongson.cn (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxE+SHpRplEh4XAA--.50320S6;
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxE+SHpRplEh4XAA--.50320S7;
         Mon, 02 Oct 2023 19:12:08 +0800 (CST)
 From:   Sui Jingfeng <suijingfeng@loongson.cn>
 To:     Lucas Stach <l.stach@pengutronix.de>
 Cc:     Christian Gmeiner <christian.gmeiner@gmail.com>,
         etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/5] drm/etnaviv: Add a helper to get the first available GPU device node
-Date:   Mon,  2 Oct 2023 19:12:06 +0800
-Message-Id: <20231002111207.513297-5-suijingfeng@loongson.cn>
+Subject: [PATCH v2 5/5] drm/etnaviv: Using 'dev' instead of 'etnaviv_obj->base.dev'
+Date:   Mon,  2 Oct 2023 19:12:07 +0800
+Message-Id: <20231002111207.513297-6-suijingfeng@loongson.cn>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231002111207.513297-1-suijingfeng@loongson.cn>
 References: <20231002111207.513297-1-suijingfeng@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxE+SHpRplEh4XAA--.50320S6
+X-CM-TRANSID: AQAAf8BxE+SHpRplEh4XAA--.50320S7
 X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoW7Zr4DGFyrWryfJF4UZryfZrc_yoW8KF1fpF
-        43GFyYyrykWFyUK34xXFW5ZFyYkw1Iq3yFy34IkwnY9ws5AryrJr1FgFyUAF9xJFWrJ3W3
-        tr18tr17uF48ZrXCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+X-Coremail-Antispam: 1Uk129KBj93XoW7uF1rZF48Jr4DtFWkZryktFc_yoW8Gry7pF
+        s7JFyqkr1jvFyjk347Awn5CF13Gw43XFWSkF97G3s09w45JryktrZ8KFyDGrs8JryfCFW2
+        qr4ayF17WF1j93gCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
         sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
         0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
         IYs7xG6rWj6s0DM7CIcVAFz4kK6r1a6r1DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
@@ -60,84 +60,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch make the code in the etnaviv_pdev_probe() less twisted, and it
-also make it easier to drop the reference to device node after finished.
-Before apply this patch, there is no call to of_node_put() when done. We
-should call of_node_put() when done.
+As in the etnaviv_gem_get_pages() function, the point to the drm_device
+has already been cached to the 'dev' local variable. We can use it
+directly, While at it, using 'unsigned int' type to count the number of
+pages. As the drm_prime_pages_to_sg() function takes an unsigned int type
+for its third argument. No functional change.
 
 Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
 ---
- drivers/gpu/drm/etnaviv/etnaviv_drv.c | 28 ++++++++++++++++++---------
- 1 file changed, 19 insertions(+), 9 deletions(-)
+ drivers/gpu/drm/etnaviv/etnaviv_gem.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_drv.c b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-index 8fe39e31d22d..a9a1659840ec 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_drv.c
-@@ -29,6 +29,17 @@
-  * DRM operations:
-  */
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem.c b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+index be2f459c66b5..71a6d2b1c80f 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gem.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gem.c
+@@ -100,11 +100,10 @@ struct page **etnaviv_gem_get_pages(struct etnaviv_gem_object *etnaviv_obj)
  
-+static struct device_node *etnaviv_of_first_available_node(void)
-+{
-+	struct device_node *np;
-+
-+	for_each_compatible_node(np, NULL, "vivante,gc") {
-+		if (of_device_is_available(np))
-+			return np;
-+	}
-+
-+	return NULL;
-+}
+ 	if (!etnaviv_obj->sgt) {
+ 		struct drm_device *dev = etnaviv_obj->base.dev;
+-		int npages = etnaviv_obj->base.size >> PAGE_SHIFT;
++		unsigned int npages = etnaviv_obj->base.size >> PAGE_SHIFT;
+ 		struct sg_table *sgt;
  
- static void load_gpu(struct drm_device *dev)
- {
-@@ -597,11 +608,10 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
- 			if (!of_device_is_available(core_node))
- 				continue;
- 
--			if (!first_node)
--				first_node = core_node;
--
- 			drm_of_component_match_add(&pdev->dev, &match,
- 						   component_compare_of, core_node);
-+
-+			of_node_put(core_node);
- 		}
- 	} else {
- 		char **names = dev->platform_data;
-@@ -634,8 +644,11 @@ static int etnaviv_pdev_probe(struct platform_device *pdev)
- 	 * device as the GPU we found. This assumes that all Vivante
- 	 * GPUs in the system share the same DMA constraints.
- 	 */
--	if (first_node)
-+	first_node = etnaviv_of_first_available_node();
-+	if (first_node) {
- 		of_dma_configure(&pdev->dev, first_node, true);
-+		of_node_put(first_node);
-+	}
- 
- 	return component_master_add_with_match(dev, &etnaviv_master_ops, match);
- }
-@@ -709,16 +722,13 @@ static int __init etnaviv_init(void)
- 	 * If the DT contains at least one available GPU device, instantiate
- 	 * the DRM platform device.
- 	 */
--	for_each_compatible_node(np, NULL, "vivante,gc") {
--		if (!of_device_is_available(np))
--			continue;
-+	np = etnaviv_of_first_available_node();
-+	if (np) {
- 		of_node_put(np);
- 
- 		ret = etnaviv_create_platform_device("etnaviv", &etnaviv_drm);
- 		if (ret)
- 			goto unregister_platform_driver;
--
--		break;
- 	}
- 
- 	return 0;
+-		sgt = drm_prime_pages_to_sg(etnaviv_obj->base.dev,
+-					    etnaviv_obj->pages, npages);
++		sgt = drm_prime_pages_to_sg(dev, etnaviv_obj->pages, npages);
+ 		if (IS_ERR(sgt)) {
+ 			dev_err(dev->dev, "failed to allocate sgt: %ld\n",
+ 				PTR_ERR(sgt));
 -- 
 2.34.1
 
