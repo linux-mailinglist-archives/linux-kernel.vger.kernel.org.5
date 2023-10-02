@@ -2,106 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 052D07B4C5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3CB7B4C69
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 09:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235760AbjJBHMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 03:12:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43234 "EHLO
+        id S235710AbjJBHOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 03:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235717AbjJBHL7 (ORCPT
+        with ESMTP id S235667AbjJBHOI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 03:11:59 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC188E
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:11:56 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-50567477b29so4914093e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:11:56 -0700 (PDT)
+        Mon, 2 Oct 2023 03:14:08 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50BD199
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 00:14:05 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-3231d67aff2so12637410f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 00:14:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696230714; x=1696835514; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1696230844; x=1696835644; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ebhLT7Bk8BegSoKqGP/uGHgUFUu9P9Y8HhtEWWMfVHo=;
-        b=xq0S0horA4OdXjx1Os3JqPE8SdoHKDJiKvFhGHQiZ0fMbl8uoU/86R9/AwVfp0CJlu
-         Wl5DFuctcXIXqSwxcXH/ppXO87s+OpWRHQuBcqmO2NbtrrM7HwIcqli5GdqoTYmxQ5bP
-         qiSFyjZmNDmgTWgav4HLT+KpdG/didiJZvXJWN6QXnz+hMAr5NBz0wlKrh/kwKJr3pMf
-         cuQhCOHSeV56v1llzBy+lsaZJ3MroXpvwAfmBPQcMxyMzzQOnSqAH1GatJ5I9yzg7BFb
-         wFfuV3FP0tOni7lBJLz31AT+Hl3RCZDUTCucr7PCIEJBzYB8dSafGITd++4CnT/Q5BA2
-         DwQw==
+        bh=vyEJm0Vs8HzMk1ARIArOtOc0lGgfBnw3jKoPIGWI2IU=;
+        b=ncQqFiFYJTEqjNv9P80BLA3l77PdKx+KpWNHKabUiEP2S56Le9YynoIv3vJ6U/I35a
+         g0htVy2V0Rhc4c/4dJYziE8SO5e0gpxdEaRCNF2ON4VwPPblijzGNadh+C8KGZ/lEcB6
+         5pJ4/M2Li3MmyzyP0LYUJ9ZlVwcWjMx1RWE2/XGxltgUvgq718AmqeQmAdCanPbraSTU
+         OP35OQJT+ItmomTMLbBUuj3/Rwwkm1RY97gHbcZdOqa9mpOBq4JnNkFMP6jK2MVixfxQ
+         igViPAVDbON2q1Bw4eYGZHpLp4SqAy5TdmkT86sn/CgSca7zb+FB228Ff6SoRcVLG6LX
+         W6yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696230714; x=1696835514;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696230844; x=1696835644;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ebhLT7Bk8BegSoKqGP/uGHgUFUu9P9Y8HhtEWWMfVHo=;
-        b=e1g8bZVK1mBfw271Ea857Tk+wyULNy51aqSLQ6Fdub0T02gsT2R8y7j+LQGuz7u8Vb
-         BwURIoGRYo6v2+FMNhD6216GAJVOUX1Dc5o0BX3voVhu62uguXNSTrnciC8ip79gWAt8
-         GzIom7O/kvu+/9clJIHszasVLC3NXnfL9Kn/gbYNPy3jyCTxDk3mPpQDfSvpFUWbd/Rd
-         KuYz+20cw1P/qkesvOVfizaOmQovmznQFwh6ZTlHM/bO4H3J3mwOGHa2kBU4GJ4QXHyh
-         S2aDZAL7JTh118ebj9hDsmhiFy0Bt9emWnOez4KIeSE/SI6/FuNRr7J2rsKBvgxesa7z
-         unDw==
-X-Gm-Message-State: AOJu0YzHi0g0qGHby+4oMQRMPAkhrGFupdN3rBdV3oTLCDXziyzWjDkn
-        CKgt9f5ogV5wnhEeWundILRFsb8Sp4bBVlkWQnAYhlNK
-X-Google-Smtp-Source: AGHT+IHuSrV2k6DA9B2OyyK5jQodlrfkuCDECVUkCMO3P3mkH1WF48HtXVeYwdF/JDJumnd9eE3aWQ==
-X-Received: by 2002:a05:6512:3986:b0:501:bd6f:7c1e with SMTP id j6-20020a056512398600b00501bd6f7c1emr10840429lfu.33.1696230714694;
-        Mon, 02 Oct 2023 00:11:54 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id 25-20020a05600c025900b00405623e0186sm6601371wmj.26.2023.10.02.00.11.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 00:11:54 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-To:     Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Konrad Dybcio <konradybcio@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Luca Weiss <luca.weiss@fairphone.com>
-In-Reply-To: <20230927-topic-fp5_disp-v2-0-7b5e1d1662a6@linaro.org>
-References: <20230927-topic-fp5_disp-v2-0-7b5e1d1662a6@linaro.org>
-Subject: Re: [PATCH v2 0/2] Raydium RM692E5-based BOE panel driver
-Message-Id: <169623071357.3600226.13335704878597295966.b4-ty@linaro.org>
-Date:   Mon, 02 Oct 2023 09:11:53 +0200
+        bh=vyEJm0Vs8HzMk1ARIArOtOc0lGgfBnw3jKoPIGWI2IU=;
+        b=CjNvrbCWk3dif+WW6hgYmD0cgr9UcV1TTZcIYYhkrhkcv1foLLNqDtCmZHAr4r2SQI
+         JCtG15ibV3WJ96Vmnrm/mf4EI5spj1YeKRk7SVDT2NeogNp7v2Mf5mvvTpT8+hsm73ou
+         ANadHFXjRnnA4ACLrZGh/Fnyvg6MNQEn+7IwusMDpjN30yOqhj39in9T9JHBHMQfxapm
+         KhbJjfud18I0sdwYJ7pINLzgJLXi075hlE4O8vkTHD4UWu22CHZaPzFWByqmQZ+WiYS/
+         FBQxQfbBc2oMT0V8gaBXR3CdK/5E/90THh8mXA4k2Ha8igOo9JOFw9sxEJs4MCJMFwot
+         lh1g==
+X-Gm-Message-State: AOJu0Yzfdh3j/vjeZA9RV0ppZB6WWB/NLWoTHL/IO7VWntyhu/b6PiqA
+        ZfUlVv2CMHKiKgv/wTB2oYe6ykZjd+vMQvaHE1IRgw==
+X-Google-Smtp-Source: AGHT+IE1VZdXGHpgzUv4UDd0KzzvuoCETZFBpMqTRickj71vAcjHjYrXq5/yuyrtgxCez/B9xnBlD/+UaNE0EyqoKzE=
+X-Received: by 2002:a5d:674a:0:b0:324:7a6b:d4fe with SMTP id
+ l10-20020a5d674a000000b003247a6bd4femr9856489wrw.9.1696230843723; Mon, 02 Oct
+ 2023 00:14:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <CAHVXubhG2c=ShFHF4hMMFm8=BYDTyDUduOizujbUWQBW+55wTw@mail.gmail.com>
+ <20230929230549.45206-2-twuufnxlz@gmail.com>
+In-Reply-To: <20230929230549.45206-2-twuufnxlz@gmail.com>
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+Date:   Mon, 2 Oct 2023 09:13:52 +0200
+Message-ID: <CAHVXubiBVKJ89fBtV1fvEpoOyLvdvjkWfeDmw2yZsod5ao9hPw@mail.gmail.com>
+Subject: Re: [PATCH] Test for riscv fixes
+To:     Edward AD <twuufnxlz@gmail.com>
+Cc:     alex@ghiti.fr, aou@eecs.berkeley.edu, conor@kernel.org,
+        gregkh@linuxfoundation.org, guoren@kernel.org,
+        jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-serial@vger.kernel.org,
+        liushixin2@huawei.com, palmer@dabbelt.com,
+        paul.walmsley@sifive.com,
+        syzbot+8d2757d62d403b2d9275@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Edward,
 
-On Fri, 29 Sep 2023 14:54:19 +0200, Konrad Dybcio wrote:
-> The Fairphone 5 smartphone ships with a BOE AMOLED panel in conjunction
-> with a Raydium RM692E5 driver IC. This series adds the bindings and driver
-> for that.
-> 
-> 
+On Sat, Sep 30, 2023 at 1:06=E2=80=AFAM Edward AD <twuufnxlz@gmail.com> wro=
+te:
+>
+> Hi Alexandre,
+>
+> On Fri, 29 Sep 2023 10:25:59 +0200 Alexandre Ghiti <alexghiti@rivosinc.co=
+m> wrote:
+> > I'm still not convinced this will fix the kasan out-of-bounds
+> > accesses, the page can be valid but the read can happen at an offset
+> > not initialized and trigger such errors right? I still think there is
+> > something weird about the stack frame, as to me this should not happen
+> > (but admittedly I don't know much about that).
+> The added check can confirm that the physical page is invalid (whether it=
+ is a
+> vmalloc allocated page or a slab allocated page), and exit the for loop w=
+hen it is invalid.
 
-Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
+Yes, but to me this is not what happens in the bug report you link:
 
-[1/2] dt-bindings: display: panel: Add Raydium RM692E5
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=d1fd19e6bd7d276cf2290300cc563e2e5ac4ebf7
-[2/2] drm/panel: Add driver for BOE RM692E5 AMOLED panel
-      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=988d0ff29ecf7ab750b9be29fddae588156c3d03
+| BUG: KASAN: out-of-bounds in walk_stackframe+0x130/0x2f2
+arch/riscv/kernel/stacktrace.c:59
+| Read of size 8 at addr ff20000006d37c38 by task swapper/1/0
 
--- 
-Neil
+So the read at address ff20000006d37c38 is not "normal" according to
+KASAN (you can see there is no trap, meaning the physical mapping
+exists).
 
+| The buggy address belongs to the virtual mapping at
+|  [ff20000006d30000, ff20000006d39000) created by:
+| kernel_clone+0x118/0x896 kernel/fork.c:2909
+
+The virtual address is legitimate since the vma exists ^
+
+| The buggy address belongs to the physical page:
+| page:ff1c00000250dbc0 refcount:1 mapcount:0 mapping:0000000000000000
+index:0x0 pfn:0x9436f
+
+And the physical page also exists ^
+
+So I insist, checking that a physical mapping exists to exit the loop
+is not enough, to me, the error here is that the backtrace goes "too
+far" at an address where nothing was written before and then KASAN
+complains about that, again, we don't take any page fault here so it's
+not a problem of existing physical mapping.
+
+>
+> Perhaps we can trust the test results of syzbot.
+>
+> Thanks,
+> edward
