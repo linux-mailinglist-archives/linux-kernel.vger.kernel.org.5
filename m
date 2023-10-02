@@ -2,166 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D4A7B5850
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:57:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 112C67B5814
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238321AbjJBQsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 12:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
+        id S238353AbjJBQsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 12:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237844AbjJBQsC (ORCPT
+        with ESMTP id S237844AbjJBQsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 12:48:02 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C49B3
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 09:47:58 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1c736b00639so4595ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 09:47:58 -0700 (PDT)
+        Mon, 2 Oct 2023 12:48:51 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D638CA7
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 09:48:46 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9ae7383b7ecso743815066b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 09:48:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696265278; x=1696870078; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=72YupGIakc6xPMIaMfBiPv4QhtUc0gHH3bw4jZTtKPg=;
-        b=eTRHjRhU4DcrJWtVqDz3oBov+abgSky20GFjUcybGFbMWawVYAtR5uKB6mHO1CkoQo
-         hNqjDQ3qoi01wjNwERNQlCV3EC+MYThccTJH4u/MfZeCuqz06E0CoKytMT9E7irz4UyY
-         ZT0sqGUf/01wAJpY8eWw/y5l0mjIGzX7gxbfE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696265278; x=1696870078;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1696265324; x=1696870124; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=72YupGIakc6xPMIaMfBiPv4QhtUc0gHH3bw4jZTtKPg=;
-        b=LHWsvG7ryX7FOf6g1NW9nY80F0hohchedgYFvbuvSXNQDVATVgs1vP6wqkEaQrfh0S
-         sdcxNkcshmJiQFFC+ko+aLLg5jkCLGAM8gx2tSvIEmZ3yGq8aXKsc2TITqjxX7IJmhB1
-         wdsycK1WBcnFegpGnMIA6LQEdeVrI/Z+H5aCuvnkvOVH9nR6cl7LUevOX/IItL8YoU5C
-         AC+DDmbZ6IiDyjc8KjZFgqDMNgh4qCJi5kl6132q3FZcJ/xyv/4VB5wmKGvXkj2o1cvP
-         OEOX2m0PtJL8eayePwKb62SB1h5nUF0NGr72YGmTmcMWywvgj1dqiEYM5O4d2MtYYRB5
-         Xyqw==
-X-Gm-Message-State: AOJu0Yz09vHOsdTCSNrv2T/mKIcK/qqitQHty2zqSprRy0UplQFqFsKV
-        LmB5TsnEc1ZIe2bHQx2uMaEqnjT2flHDZCF9EGM=
-X-Google-Smtp-Source: AGHT+IHq4Thj0DugoO/WYO0sPwDrntba6iCWfaQ/Ia6nS9T/ZB5cfS+kaxMh6i54iikgjbMvZpUA1w==
-X-Received: by 2002:a17:903:41d1:b0:1bc:6861:d746 with SMTP id u17-20020a17090341d100b001bc6861d746mr13533333ple.58.1696265277859;
-        Mon, 02 Oct 2023 09:47:57 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id iz2-20020a170902ef8200b001c5bcc9d916sm5145578plb.176.2023.10.02.09.47.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 09:47:56 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 09:47:54 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "'linux@rasmusvillemoes.dk'" <linux@rasmusvillemoes.dk>,
-        'Steven Rostedt' <rostedt@goodmis.org>,
-        "'bvanassche@acm.org'" <bvanassche@acm.org>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: Re: [PATCH next] compiler.h: Move __is_constexpr() to compiler.h.
-Message-ID: <202310020947.CAF558C6@keescook>
-References: <6d2b584e26544ee6a0810e494352d432@AcuMS.aculab.com>
+        bh=/tGIS2d4IoBhPIJormO2ARUKb4WPqFJw4stm8Ff0wEc=;
+        b=EqZ3hnlW0kWkABLTZ2bv56rY23eCA8qjQ8HHGennZuF3Tn/ebC/DpXVoN2JHmR7rQR
+         qACnrpstM/QOzpuAC684PQvJHfpucxdAmdjgh8sFiPiwg0hliZNhLzFJ6293Rlak77jt
+         OMQiuaukXF9Kx3sbHepF6KzR1MV0h3/7QHD+4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696265324; x=1696870124;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/tGIS2d4IoBhPIJormO2ARUKb4WPqFJw4stm8Ff0wEc=;
+        b=uy91fRNAXc6sMxwTQc9c5mCHnzDzyfvkbbBDOToqXXtDETIdmMXxnx44cgA6t+ktJ9
+         rboayGFSdMSFaE70+RuBFjaIFM2LDF5pqsjTM7twmju/sm3a3soshGtv4d0t5gSzdXe6
+         I7OZZNbKQ8kZ1MgsuGHPpI8lN38oKwtcid4mQVXXfliBSR/7AoXFB8DT9A/3YbHDoB1i
+         LGqb3xXEGzzUpCGDURtOLx8eLVG8GDgkVMMYrnVLTB1aeE98Qk5trLOqrZKdwAFZ1CA3
+         mwuNTi/cafhzum4FYnkHL7g4HoQ4mKdaF0bs2A24TreyccmoPvME4C5Y+EJ6WdbbkS53
+         P+FA==
+X-Gm-Message-State: AOJu0YzRZuUZiftg5Mw3kyPWjAVxH/q8+isv6SASxYKC36O4EPdu9wl/
+        jEaz6PYcvXQrXsEf31mUPBJf6HWkhru2hRerC18jMV2+
+X-Google-Smtp-Source: AGHT+IFeQTeBq/kotKgZoNYHVz0XIx/jK7Vc3KalYucS/PnbFxYtDEcZc27/c20A/FtXD1j6uWeqdA==
+X-Received: by 2002:a17:907:e92:b0:9ae:5879:78dd with SMTP id ho18-20020a1709070e9200b009ae587978ddmr259579ejc.1.1696265324091;
+        Mon, 02 Oct 2023 09:48:44 -0700 (PDT)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id j17-20020a170906051100b0098e2969ed44sm17201681eja.45.2023.10.02.09.48.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 09:48:44 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-536ef8a7dcdso307a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 09:48:43 -0700 (PDT)
+X-Received: by 2002:a50:96d1:0:b0:522:4741:d992 with SMTP id
+ z17-20020a5096d1000000b005224741d992mr2415eda.4.1696265303058; Mon, 02 Oct
+ 2023 09:48:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6d2b584e26544ee6a0810e494352d432@AcuMS.aculab.com>
+References: <20230906160505.2431857-1-dianders@chromium.org>
+ <20230906090246.v13.3.I7209db47ef8ec151d3de61f59005bbc59fe8f113@changeid> <CAD=FV=UBw1-9=LPUydewyOg8oL2WMG+ZCQ=PBpe0CiCs-ToWSg@mail.gmail.com>
+In-Reply-To: <CAD=FV=UBw1-9=LPUydewyOg8oL2WMG+ZCQ=PBpe0CiCs-ToWSg@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 2 Oct 2023 09:48:08 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WCcwc71hSMQVQN4AYi7XhKpOwbOZnt8b9iGUgqmvzuKw@mail.gmail.com>
+Message-ID: <CAD=FV=WCcwc71hSMQVQN4AYi7XhKpOwbOZnt8b9iGUgqmvzuKw@mail.gmail.com>
+Subject: Re: [PATCH v13 3/7] arm64: smp: Remove dedicated wakeup IPI
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Tomohiro Misono <misono.tomohiro@fujitsu.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Stephane Eranian <eranian@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        kgdb-bugreport@lists.sourceforge.net,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-perf-users@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>, ito-yuichi@fujitsu.com,
+        Chen-Yu Tsai <wenst@chromium.org>, jpoimboe@kernel.org,
+        keescook@chromium.org, linux-kernel@vger.kernel.org,
+        philmd@linaro.org, samitolvanen@google.com,
+        scott@os.amperecomputing.com, vschneid@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 02:34:05PM +0000, David Laight wrote:
-> Prior to f747e6667ebb2 __is_constexpr() was in its only user minmax.h.
-> That commit moved it to const.h - but that file just defined ULL(x) and
->   UL(x) so that constants can be defined for .S and .c files.
-> So apart from the word 'const' it wasn't really a good location.
-> Instead move the definition to compiler.h just before the similar
->   is_signed_type() and is_unsigned_type().
-> (Which were moved there by dcf8e5633e2e6)
-> This may not be a good long-term home, but the three definitions
->   belong together.
-> 
-> Signed-off-by: David Laight <david.laight@aculab.com>
-> ---
-> This makes it possible to use __is_constexpr() inside is_signed_type()
-> so that the result is constant integer expression for pointer types.
-> In particular (void *)1 isn't constant enough.
-> 
->  include/linux/compiler.h    | 8 ++++++++
->  include/linux/const.h       | 8 --------
->  tools/include/linux/const.h | 8 --------
->  3 files changed, 8 insertions(+), 16 deletions(-)
-> 
-> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
-> index d7779a18b24f..2efec9bfcc40 100644
-> --- a/include/linux/compiler.h
-> +++ b/include/linux/compiler.h
-> @@ -230,6 +230,14 @@ static inline void *offset_to_ptr(const int *off)
->  /* &a[0] degrades to a pointer: a different type from an array */
->  #define __must_be_array(a)	BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
->  
-> +/*
-> + * This returns a constant expression while determining if an argument is
-> + * a constant expression, most importantly without evaluating the argument.
-> + * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-> + */
-> +#define __is_constexpr(x) \
-> +	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-> +
->  /*
->   * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
->   * bool and also pointer types.
-> diff --git a/include/linux/const.h b/include/linux/const.h
-> index 435ddd72d2c4..81b8aae5a855 100644
-> --- a/include/linux/const.h
-> +++ b/include/linux/const.h
-> @@ -3,12 +3,4 @@
->  
->  #include <vdso/const.h>
->  
-> -/*
-> - * This returns a constant expression while determining if an argument is
-> - * a constant expression, most importantly without evaluating the argument.
-> - * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-> - */
-> -#define __is_constexpr(x) \
-> -	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
-> -
->  #endif /* _LINUX_CONST_H */
-> diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
-> index 435ddd72d2c4..81b8aae5a855 100644
-> --- a/tools/include/linux/const.h
-> +++ b/tools/include/linux/const.h
-> @@ -3,12 +3,4 @@
->  
->  #include <vdso/const.h>
->  
-> -/*
-> - * This returns a constant expression while determining if an argument is
-> - * a constant expression, most importantly without evaluating the argument.
-> - * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
-> - */
-> -#define __is_constexpr(x) \
-> -	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+Hi,
 
-Doesn't tools/ still need its own copy somewhere?
+On Mon, Sep 25, 2023 at 5:39=E2=80=AFPM Doug Anderson <dianders@chromium.or=
+g> wrote:
+>
+> Mark,
+>
+> On Wed, Sep 6, 2023 at 9:06=E2=80=AFAM Douglas Anderson <dianders@chromiu=
+m.org> wrote:
+> >
+> > +#ifdef CONFIG_ARM64_ACPI_PARKING_PROTOCOL
+> > +void arch_send_wakeup_ipi(unsigned int cpu)
+> > +{
+> > +       /*
+> > +        * We use a scheduler IPI to wake the CPU as this avoids the ne=
+ed for a
+> > +        * dedicated IPI and we can safely handle spurious scheduler IP=
+Is.
+> > +        */
+> > +       arch_smp_send_reschedule(cpu);
+>
+> I was backporting this to our ChromeOS kernels and our build test bot
+> noticed that arch_smp_send_reschedule() didn't exist in older kernels.
+> That's fine--I can always adjust this patch when backporting or
+> cherry-pick extra patches, but it made me wonder. Is there a reason
+> you chose to use arch_smp_send_reschedule() directly here instead of
+> smp_send_reschedule()? I guess the only difference is that you're
+> bypassing the tracing. Is that on purpose? Should we add a comment
+> about it, or change this to smp_send_reschedule()?
 
--Kees
+FWIW, I posted a patch changing this to smp_send_reschedule(). Please
+yell if this is incorrect.
 
-> -
->  #endif /* _LINUX_CONST_H */
-> -- 
-> 2.17.1
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-> 
-
--- 
-Kees Cook
+https://lore.kernel.org/r/20231002094526.2.I2e6d22fc42ccbf6b26465a28a10e36e=
+05ccf3075@changeid
