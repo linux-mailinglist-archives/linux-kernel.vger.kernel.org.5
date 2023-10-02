@@ -2,54 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B0A7B540A
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CCFF7B5404
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237443AbjJBNeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:34:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
+        id S237450AbjJBNeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 09:34:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237182AbjJBNeC (ORCPT
+        with ESMTP id S236712AbjJBNeC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Oct 2023 09:34:02 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D18EAD;
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F291FB4;
         Mon,  2 Oct 2023 06:33:59 -0700 (PDT)
-Date:   Mon, 02 Oct 2023 13:33:56 -0000
+Date:   Mon, 02 Oct 2023 13:33:57 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696253637;
+        s=2020; t=1696253638;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Z4vR6z7FcgztoBF309slRuSBwJPiM/3Isa9tBEl+Gr0=;
-        b=mOJ+wbg3OBccfwNWEYBZbcCYMawV5RuSyL8mWFnE1C5W6UDEsuoJRmSyxbm/E+AceRWRDp
-        wCSDTc+zv1QLsin+RWZZ8WQ/tKfRaTiMvikuyjvGT+u+Kfhc7OQ56FPn0BcwDpRXKr9Muz
-        ONIcZq6wdMrA1BryC7pZ17DtQPKA6H4jzhyMo/I+89cCZEywhQl4fM2f2QxN5J6/EFDMO9
-        fRym3PgiRlQXYF8rF1ZL6ZeC7Ks5NMhP8VE0C07vWMvtyNk3MyS5Ya2JOn4ny6n744bnLG
-        GCBnlSKedpvvDjsuQaveqDHMUGbfvztbvsQ7M7sADrIPC2rSYA+2HCfh8GqHzw==
+        bh=P0p2vR7BHS9RuTDzTxnJMgzinuQb+pJ7BDAsPRKwgIQ=;
+        b=R6yncCiP0jLQi4K/8Pj8jlk/k7VAeNo2Ua+3vwgfYrqiOW/bB4kAgxVdr0xxHrPccW0n/g
+        TJbfj+JgkivLmtF3MtVKitGhXe5xm8dNjloWRw6zNO4ESuGE+7+tby+r9bG05Y2bxxaWo6
+        3RZ//VbWRiIZvASn605bygrK3Ms+w5QhHZsWN9hbgYRmRlizLp8TtZLPU4qwpKv6WKHBIY
+        lxq5uiSXywDzkreWi7eXvM5lL6FOT6otRfiHtaG/VUe+V2XtEMEmT4/wVNtG4pcMVemMo2
+        kc3A1rRPEM70Xy0ywJwv0alw5dNHMJu1tbne8HYMyMKGvBIJAoUCE6j6HgT0qQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696253637;
+        s=2020e; t=1696253638;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Z4vR6z7FcgztoBF309slRuSBwJPiM/3Isa9tBEl+Gr0=;
-        b=brH8OE/sPQOW3CTRM+SLFYrHvoA67gjNTKNsBjd4giBKIO3CwBns8VMBzg2FORkMAwJqn2
-        1OkfYOjoxIbLtkBg==
+        bh=P0p2vR7BHS9RuTDzTxnJMgzinuQb+pJ7BDAsPRKwgIQ=;
+        b=DVt8K2eyBHkvQmmPTMKC759va635RCTbRzcYNHQb/dZ8WVRX7v0bpfqVltInNQOVEBCBr+
+        LMjZZpusCSwMGaDg==
 From:   "tip-bot2 for Cyril Hrubis" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/rt/docs: Use 'real-time' instead of 'realtime'
+Subject: [tip: sched/core] sched/rt: Disallow writing invalid values to
+ sched_rt_period_us
 Cc:     Cyril Hrubis <chrubis@suse.cz>, Ingo Molnar <mingo@kernel.org>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231002115553.3007-4-chrubis@suse.cz>
-References: <20231002115553.3007-4-chrubis@suse.cz>
+In-Reply-To: <20231002115553.3007-2-chrubis@suse.cz>
+References: <20231002115553.3007-2-chrubis@suse.cz>
 MIME-Version: 1.0
-Message-ID: <169625363643.3135.2547495399686514705.tip-bot2@tip-bot2>
+Message-ID: <169625363764.3135.15928031760457395657.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -65,108 +66,92 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     83494dc51033506eb60c5e11a335461b2dc42111
-Gitweb:        https://git.kernel.org/tip/83494dc51033506eb60c5e11a335461b2dc42111
+Commit-ID:     079be8fc630943d9fc70a97807feb73d169ee3fc
+Gitweb:        https://git.kernel.org/tip/079be8fc630943d9fc70a97807feb73d169ee3fc
 Author:        Cyril Hrubis <chrubis@suse.cz>
-AuthorDate:    Mon, 02 Oct 2023 13:55:53 +02:00
+AuthorDate:    Mon, 02 Oct 2023 13:55:51 +02:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 02 Oct 2023 15:17:14 +02:00
+CommitterDate: Mon, 02 Oct 2023 15:15:56 +02:00
 
-sched/rt/docs: Use 'real-time' instead of 'realtime'
+sched/rt: Disallow writing invalid values to sched_rt_period_us
 
-Standardize on a single variant.
+The validation of the value written to sched_rt_period_us was broken
+because:
+
+  - the sysclt_sched_rt_period is declared as unsigned int
+  - parsed by proc_do_intvec()
+  - the range is asserted after the value parsed by proc_do_intvec()
+
+Because of this negative values written to the file were written into a
+unsigned integer that were later on interpreted as large positive
+integers which did passed the check:
+
+  if (sysclt_sched_rt_period <= 0)
+	return EINVAL;
+
+This commit fixes the parsing by setting explicit range for both
+perid_us and runtime_us into the sched_rt_sysctls table and processes
+the values with proc_dointvec_minmax() instead.
+
+Alternatively if we wanted to use full range of unsigned int for the
+period value we would have to split the proc_handler and use
+proc_douintvec() for it however even the
+Documentation/scheduller/sched-rt-group.rst describes the range as 1 to
+INT_MAX.
+
+As far as I can tell the only problem this causes is that the sysctl
+file allows writing negative values which when read back may confuse
+userspace.
+
+There is also a LTP test being submitted for these sysctl files at:
+
+  http://patchwork.ozlabs.org/project/ltp/patch/20230901144433.2526-1-chrubis@suse.cz/
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20231002115553.3007-4-chrubis@suse.cz
+Link: https://lore.kernel.org/r/20231002115553.3007-2-chrubis@suse.cz
 ---
- Documentation/scheduler/sched-rt-group.rst | 34 ++++++++++-----------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ kernel/sched/rt.c |  9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/scheduler/sched-rt-group.rst b/Documentation/scheduler/sched-rt-group.rst
-index a16bee8..d685609 100644
---- a/Documentation/scheduler/sched-rt-group.rst
-+++ b/Documentation/scheduler/sched-rt-group.rst
-@@ -39,10 +39,10 @@ Most notable:
- 1.1 The problem
- ---------------
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index 3b627ab..88fc986 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -37,6 +37,8 @@ static struct ctl_table sched_rt_sysctls[] = {
+ 		.maxlen         = sizeof(unsigned int),
+ 		.mode           = 0644,
+ 		.proc_handler   = sched_rt_handler,
++		.extra1         = SYSCTL_ONE,
++		.extra2         = SYSCTL_INT_MAX,
+ 	},
+ 	{
+ 		.procname       = "sched_rt_runtime_us",
+@@ -44,6 +46,8 @@ static struct ctl_table sched_rt_sysctls[] = {
+ 		.maxlen         = sizeof(int),
+ 		.mode           = 0644,
+ 		.proc_handler   = sched_rt_handler,
++		.extra1         = SYSCTL_NEG_ONE,
++		.extra2         = SYSCTL_INT_MAX,
+ 	},
+ 	{
+ 		.procname       = "sched_rr_timeslice_ms",
+@@ -2935,9 +2939,6 @@ static int sched_rt_global_constraints(void)
+ #ifdef CONFIG_SYSCTL
+ static int sched_rt_global_validate(void)
+ {
+-	if (sysctl_sched_rt_period <= 0)
+-		return -EINVAL;
+-
+ 	if ((sysctl_sched_rt_runtime != RUNTIME_INF) &&
+ 		((sysctl_sched_rt_runtime > sysctl_sched_rt_period) ||
+ 		 ((u64)sysctl_sched_rt_runtime *
+@@ -2968,7 +2969,7 @@ static int sched_rt_handler(struct ctl_table *table, int write, void *buffer,
+ 	old_period = sysctl_sched_rt_period;
+ 	old_runtime = sysctl_sched_rt_runtime;
  
--Realtime scheduling is all about determinism, a group has to be able to rely on
-+Real-time scheduling is all about determinism, a group has to be able to rely on
- the amount of bandwidth (eg. CPU time) being constant. In order to schedule
--multiple groups of realtime tasks, each group must be assigned a fixed portion
--of the CPU time available.  Without a minimum guarantee a realtime group can
-+multiple groups of real-time tasks, each group must be assigned a fixed portion
-+of the CPU time available.  Without a minimum guarantee a real-time group can
- obviously fall short. A fuzzy upper limit is of no use since it cannot be
- relied upon. Which leaves us with just the single fixed portion.
+-	ret = proc_dointvec(table, write, buffer, lenp, ppos);
++	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
  
-@@ -50,14 +50,14 @@ relied upon. Which leaves us with just the single fixed portion.
- ----------------
- 
- CPU time is divided by means of specifying how much time can be spent running
--in a given period. We allocate this "run time" for each realtime group which
--the other realtime groups will not be permitted to use.
-+in a given period. We allocate this "run time" for each real-time group which
-+the other real-time groups will not be permitted to use.
- 
--Any time not allocated to a realtime group will be used to run normal priority
-+Any time not allocated to a real-time group will be used to run normal priority
- tasks (SCHED_OTHER). Any allocated run time not used will also be picked up by
- SCHED_OTHER.
- 
--Let's consider an example: a frame fixed realtime renderer must deliver 25
-+Let's consider an example: a frame fixed real-time renderer must deliver 25
- frames a second, which yields a period of 0.04s per frame. Now say it will also
- have to play some music and respond to input, leaving it with around 80% CPU
- time dedicated for the graphics. We can then give this group a run time of 0.8
-@@ -70,7 +70,7 @@ needs only about 3% CPU time to do so, it can do with a 0.03 * 0.005s =
- of 0.00015s.
- 
- The remaining CPU time will be used for user input and other tasks. Because
--realtime tasks have explicitly allocated the CPU time they need to perform
-+real-time tasks have explicitly allocated the CPU time they need to perform
- their tasks, buffer underruns in the graphics or audio can be eliminated.
- 
- NOTE: the above example is not fully implemented yet. We still
-@@ -90,12 +90,12 @@ The system wide settings are configured under the /proc virtual file system:
-   The scheduling period that is equivalent to 100% CPU bandwidth.
- 
- /proc/sys/kernel/sched_rt_runtime_us:
--  A global limit on how much time realtime scheduling may use. This is always
-+  A global limit on how much time real-time scheduling may use. This is always
-   less or equal to the period_us, as it denotes the time allocated from the
--  period_us for the realtime tasks. Even without CONFIG_RT_GROUP_SCHED enabled,
--  this will limit time reserved to realtime processes. With
-+  period_us for the real-time tasks. Even without CONFIG_RT_GROUP_SCHED enabled,
-+  this will limit time reserved to real-time processes. With
-   CONFIG_RT_GROUP_SCHED=y it signifies the total bandwidth available to all
--  realtime groups.
-+  real-time groups.
- 
-   * Time is specified in us because the interface is s32. This gives an
-     operating range from 1us to about 35 minutes.
-@@ -110,7 +110,7 @@ The system wide settings are configured under the /proc virtual file system:
- The default values for sched_rt_period_us (1000000 or 1s) and
- sched_rt_runtime_us (950000 or 0.95s).  This gives 0.05s to be used by
- SCHED_OTHER (non-RT tasks). These defaults were chosen so that a run-away
--realtime tasks will not lock up the machine but leave a little time to recover
-+real-time tasks will not lock up the machine but leave a little time to recover
- it.  By setting runtime to -1 you'd get the old behaviour back.
- 
- By default all bandwidth is assigned to the root group and new groups get the
-@@ -118,10 +118,10 @@ period from /proc/sys/kernel/sched_rt_period_us and a run time of 0. If you
- want to assign bandwidth to another group, reduce the root group's bandwidth
- and assign some or all of the difference to another group.
- 
--Realtime group scheduling means you have to assign a portion of total CPU
--bandwidth to the group before it will accept realtime tasks. Therefore you will
--not be able to run realtime tasks as any user other than root until you have
--done that, even if the user has the rights to run processes with realtime
-+Real-time group scheduling means you have to assign a portion of total CPU
-+bandwidth to the group before it will accept real-time tasks. Therefore you will
-+not be able to run real-time tasks as any user other than root until you have
-+done that, even if the user has the rights to run processes with real-time
- priority!
- 
- 
+ 	if (!ret && write) {
+ 		ret = sched_rt_global_validate();
