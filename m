@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF80B7B593B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB1D07B58DF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238531AbjJBQ6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 12:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51314 "EHLO
+        id S238562AbjJBQ6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 12:58:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238413AbjJBQ6A (ORCPT
+        with ESMTP id S238530AbjJBQ6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 12:58:00 -0400
+        Mon, 2 Oct 2023 12:58:02 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB451D9;
-        Mon,  2 Oct 2023 09:57:57 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B14BC433C8;
-        Mon,  2 Oct 2023 16:57:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CBA9B3;
+        Mon,  2 Oct 2023 09:58:00 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05865C433CC;
+        Mon,  2 Oct 2023 16:57:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696265877;
-        bh=aChbnempkxcoiWrzh9EM6wKUX2YO3KC6v22o5SGsT+M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=SW5WQvT8OhRvEd0clLUaOwZurg1clnffIB5fUH/lrRZ0ewqzunvOG6zhHrH95HJt+
-         RCEpHt/UoqamKKWBBbJaV0UtTL7EQ1zBGS4oj+2kQ5t/FU9bqfKKSpHoaqHUCm7p/X
-         T1o7CxhDw17Edky8oV1jwkQXEWfCD6Dk9q6lovCqoqUIqz9Ls5f+TN5lu3re6tUCxO
-         ug0twuiQzvBDuPaOcV8SXegZNHtqPNuFhjessk6ptVML2/Vpyy2PuUw5mYBI3IMy+d
-         W3i5/ZIhMt3/SklQQTPa7LcDAKNUyB2hQ9EtmHxOnm7iPvB+Ul26QRqPdiAzrScuMV
-         +DvSchqUuxb2Q==
+        s=k20201202; t=1696265880;
+        bh=y6877j2bTNQK/NlDbP64SUFTPt4nOaXWX04vbP+P73g=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Hmy8ZejQMQr9mppLprDw2FZUxnXL+GWtTdfc5nxI8WF7LrtdYXmB8aPOcC1PYcs9n
+         EI4Kg0gqqHVkF+v1KN2+CEtMfxb/+iWB19vFi1NDZONKB461wxPKUHdKSeQDoOYxLS
+         /KA7mrChpNt2Rvi1LPGfKgTjMSMPnmtiWvJMNQekpdf2ayWMbE0Tc5ncFh4vqLZU6K
+         +s62izIU3+M4JJKZXJRlWVoTnUYQW3V1vChjWCN38WSUF0vbUgJlRh0nGTBs7BDVV9
+         DsR+fqXIef71qsHr2IXBy031ChUI51Wl3o3Wqo/dFO4mR9pIpTCWFgTao2uiv6b2Vi
+         KPRTgl6Ye96Ww==
 From:   Will Deacon <will@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
@@ -36,10 +36,12 @@ Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>,
         Nicolas Schier <nicolas@fjasle.eu>,
         Josh Poimboeuf <jpoimboe@kernel.org>,
         John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
-Subject: [PATCH v5 0/3]  Fix 'faddr2line' for LLVM arm64 builds
-Date:   Mon,  2 Oct 2023 17:57:46 +0100
-Message-Id: <20231002165750.1661-1-will@kernel.org>
+Subject: [PATCH v5 1/3] scripts/faddr2line: Don't filter out non-function symbols from readelf
+Date:   Mon,  2 Oct 2023 17:57:47 +0100
+Message-Id: <20231002165750.1661-2-will@kernel.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20231002165750.1661-1-will@kernel.org>
+References: <20231002165750.1661-1-will@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -51,42 +53,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello again.
+As Josh points out in 20230724234734.zy67gm674vl3p3wv@treble:
 
-This is version five of the fadd2line fixes that I previously posted at:
+> Problem is, I think the kernel's symbol printing code prints the
+> nearest kallsyms symbol, and there are some valid non-FUNC code
+> symbols.  For example, syscall_return_via_sysret.
 
-v1: https://lore.kernel.org/r/20230724174517.15736-1-will@kernel.org
-v2: https://lore.kernel.org/r/20230725211157.17031-1-will@kernel.org
-v3: https://lore.kernel.org/r/20230728113415.21067-1-will@kernel.org
-v4: https://lore.kernel.org/r/20230914131225.13415-1-will@kernel.org
+so we shouldn't be considering only 'FUNC'-type symbols in the output
+from readelf.
 
-Changes since v4 include:
-  * Simplify the is_mapping_symbol() regex to reflect the latest version
-    of the C code.
-  * Add Suggested-by and Reviewed-by tags to patch 1.
+Drop the function symbol type filtering from the faddr2line outer loop.
 
-Cheers,
-
-Will
-
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Cc: Nicolas Schier <nicolas@fjasle.eu>
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>
 Cc: John Stultz <jstultz@google.com>
-Cc: linux-kbuild@vger.kernel.org
+Suggested-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Link: https://lore.kernel.org/r/20230724234734.zy67gm674vl3p3wv@treble
+Signed-off-by: Will Deacon <will@kernel.org>
+---
+ scripts/faddr2line | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---->8
-
-Will Deacon (3):
-  scripts/faddr2line: Don't filter out non-function symbols from readelf
-  scripts/faddr2line: Use LLVM addr2line and readelf if LLVM=1
-  scripts/faddr2line: Skip over mapping symbols in output from readelf
-
- scripts/faddr2line | 24 +++++++++++++++++++++---
- 1 file changed, 21 insertions(+), 3 deletions(-)
-
+diff --git a/scripts/faddr2line b/scripts/faddr2line
+index 0e73aca4f908..a35a420d0f26 100755
+--- a/scripts/faddr2line
++++ b/scripts/faddr2line
+@@ -260,7 +260,7 @@ __faddr2line() {
+ 
+ 		DONE=1
+ 
+-	done < <(${READELF} --symbols --wide $objfile | sed 's/\[.*\]//' | ${AWK} -v fn=$sym_name '$4 == "FUNC" && $8 == fn')
++	done < <(${READELF} --symbols --wide $objfile | sed 's/\[.*\]//' | ${AWK} -v fn=$sym_name '$8 == fn')
+ }
+ 
+ [[ $# -lt 2 ]] && usage
 -- 
 2.42.0.582.g8ccd20d70d-goog
 
