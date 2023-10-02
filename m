@@ -2,59 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC1A7B534F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33A27B5355
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237026AbjJBMfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 08:35:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38582 "EHLO
+        id S237097AbjJBMg5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Oct 2023 08:36:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236623AbjJBMfg (ORCPT
+        with ESMTP id S236662AbjJBMgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 08:35:36 -0400
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B38B383
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 05:35:32 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 023FAC000C;
-        Mon,  2 Oct 2023 12:35:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696250131;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nNMuGJL44gj1ZB3e/uIcPx32jrKTbp3WUjy5cGFxIrI=;
-        b=UaYnoZbI9nCRnp+/H4oltdkSs70wxX+I01PxntZGZZYeYIJCrGKSNK5eg7y892Qh6Eolct
-        30aCRk5yz1i4cV5BBApon3dVHnya7+DDwsjYzfDsxW5UGL0Y38C3656zFcjExO3zNvfsKx
-        XzBkxnFwIGfE3b8uN4lCuP0/OCwHinymBiscuCF3/vXjTyhyV+uWtatIj1ZJP/Zwx36rhD
-        ONhPESCrNSzZruBIJtCyK73GNT1cY9eQmyP89tNSMqjw9DOx2cS3sclxSqwDmH9735hEsd
-        oTriY9YKyORJbbr24sw1CqZEczeb6FagqrBM8fcpCtTsKynVd3umVkFdRi5PAw==
-Date:   Mon, 2 Oct 2023 14:35:27 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     dregan@mail.com
-Cc:     bcm-kernel-feedback-list@broadcom.com,
-        linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
-        rafal@milecki.pl, joel.peshkin@broadcom.com,
-        computersforpeace@gmail.com, dan.beygelman@broadcom.com,
-        william.zhang@broadcom.com, frieder.schrempf@kontron.de,
-        linux-kernel@vger.kernel.org, vigneshr@ti.com, richard@nod.at,
-        bbrezillon@kernel.org, kdasu.kdev@gmail.com
-Subject: Re: [PATCH v2] mtd: rawnand: brcmnand: Initial exec_op
- implementation
-Message-ID: <20231002143527.4ccf254a@xps-13>
-In-Reply-To: <trinity-06dd34f4-ab26-4c60-bcf8-f986f1d08058-1696039055941@3c-app-mailcom-lxa04>
-References: <trinity-bb7db9f1-d34d-4fe2-bed3-814d3a63476a-1694571881792@3c-app-mailcom-lxa03>
- <20230922162424.4a7b27ec@xps-13>
- <trinity-06dd34f4-ab26-4c60-bcf8-f986f1d08058-1696039055941@3c-app-mailcom-lxa04>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Mon, 2 Oct 2023 08:36:55 -0400
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A55AC;
+        Mon,  2 Oct 2023 05:36:52 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5a1f00b75aaso84068577b3.2;
+        Mon, 02 Oct 2023 05:36:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696250211; x=1696855011;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j9j0PpNIdrPUDtiR3cxgxShKWUlwOhB2yoLPPXuZS+o=;
+        b=qo612oQLkfCv8FAxj7uOfw5mzS3yuOPNZ7FQsggpL2/xha/U2ngpIL4XbX0SZq9su3
+         iCIw1TzRKMQxI57f3LTHOoZkVLLQ9xsE3s5vQhVqEQnSpwBxzRuk8ZES8oOg6caSaTAK
+         9COjLNjMXZxm9AME8zIstqD72OGxVrbvgj3E+zGSlWqLSZVO+d2+jDvX52WZQXYwl4Ah
+         wqy5nJ4DzcMW8akgxPFuG6wuJPHALPv1o6+t/gTo8KsZVCyWlHRgpg82feKu/3bgt9ij
+         3TPu3lnsSa+yXE8t+hpoGoX5TdAS7fMY3AnlK9k32n00sLjv7TvgJWbPpYCNJrOpoSG0
+         8xsg==
+X-Gm-Message-State: AOJu0YxRvbhticg71WU6bUT4rtVH7eqsVD/sRfjOVnyPa0w3erNz2Wfn
+        zSec9Wcco4rXx1p4wtUtFQP4gUrO1NRkDQ==
+X-Google-Smtp-Source: AGHT+IGIQEyVkOFi0f9ckQusV9TVcCdn4dnHOQcVN3IVkvJrsy/p3A5iU6i576jsl/jzsFEUYQ6Psg==
+X-Received: by 2002:a81:df11:0:b0:59b:dbb7:5c74 with SMTP id c17-20020a81df11000000b0059bdbb75c74mr9932795ywn.32.1696250211439;
+        Mon, 02 Oct 2023 05:36:51 -0700 (PDT)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id d64-20020a0df443000000b0059511008958sm7700588ywf.76.2023.10.02.05.36.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 05:36:51 -0700 (PDT)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5a1f00b75aaso84068407b3.2;
+        Mon, 02 Oct 2023 05:36:51 -0700 (PDT)
+X-Received: by 2002:a81:df11:0:b0:59b:dbb7:5c74 with SMTP id
+ c17-20020a81df11000000b0059bdbb75c74mr9932772ywn.32.1696250210751; Mon, 02
+ Oct 2023 05:36:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+References: <20231002113441.19571-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20231002113441.19571-1-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 2 Oct 2023 14:36:37 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXa7BBKzhLAcruCk7YKumNcCuRLk8bRfXAL+fKWOPkkOA@mail.gmail.com>
+Message-ID: <CAMuHMdXa7BBKzhLAcruCk7YKumNcCuRLk8bRfXAL+fKWOPkkOA@mail.gmail.com>
+Subject: Re: [PATCH RESEND] arm64: dts: renesas: r8a77990: Add Ebisu-4D board support
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Takeshi Kihara <takeshi.kihara.df@renesas.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,103 +72,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Hi Wolfram,
 
-dregan@mail.com wrote on Sat, 30 Sep 2023 03:57:35 +0200:
+On Mon, Oct 2, 2023 at 1:35 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> From: Takeshi Kihara <takeshi.kihara.df@renesas.com>
+>
+> Add initial support for the Renesas Ebisu-4D development board.
+>
+> The Ebisu-4D board is very similar to the Ebisu board, but the memory
+> configuration is different.
+>
+>   - The memory map of Ebisu-4D board is as follows:
+>       Bank0: 2 GiB RAM : 0x000048000000 -> 0x000bfffffff
+>
+>   - The memory map of Ebisu board is as follows:
+>       Bank0: 1 GiB RAM : 0x000048000000 -> 0x0007fffffff
+>
+> Signed-off-by: Takeshi Kihara <takeshi.kihara.df@renesas.com>
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> [wsa: rebased]
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-> Initial exec_op implementation for Broadcom STB, Broadband and iProc SoC
-> This adds exec_op and removes the legacy interface.
->=20
-> Signed-off-by: David Regan <dregan@mail.com>
-> Reviewed-by: William Zhang <william.zhang@broadcom.com>
->=20
-> ---
->=20
+Thanks for your patch!
 
-...
+> Resending this patch because I want to utilize all 2GB of memory on my
+> Ebisu. Since nobody updated U-Boot to handle different RAM sizes on
+> Ebisu in the last 4.5 years, let's add the Ebisu-4D as a seperate board.
 
-> +static int brcmnand_parser_exec_matched_op(struct nand_chip *chip,
-> +					 const struct nand_subop *subop)
-> +{
-> +	struct brcmnand_host *host =3D nand_get_controller_data(chip);
-> +	struct brcmnand_controller *ctrl =3D host->ctrl;
-> +	struct mtd_info *mtd =3D nand_to_mtd(chip);
-> +	const struct nand_op_instr *instr =3D &subop->instrs[0];
-> +	unsigned int i;
-> +	int ret =3D 0;
-> +
-> +	for (i =3D 0; i < subop->ninstrs; i++) {
-> +		instr =3D &subop->instrs[i];
-> +
-> +		if ((instr->type =3D=3D NAND_OP_CMD_INSTR) &&
-> +			(instr->ctx.cmd.opcode =3D=3D NAND_CMD_STATUS))
-> +			ctrl->status_cmd =3D 1;
-> +		else if (ctrl->status_cmd && (instr->type =3D=3D NAND_OP_DATA_IN_INSTR=
-)) {
-> +			/*
-> +			 * need to fake the nand device write protect because nand_base does a
-> +			 * nand_check_wp which calls nand_status_op NAND_CMD_STATUS which che=
-cks
-> +			 * that the nand is not write protected before an operation starts.
-> +			 * The problem with this is it's done outside exec_op so the nand is
-> +			 * write protected and this check will fail until the write or erase
-> +			 * or write back operation actually happens where we turn off wp.
-> +			 */
-> +			u8 *in;
-> +
-> +			ctrl->status_cmd =3D 0;
-> +
-> +			instr =3D &subop->instrs[i];
-> +			in =3D instr->ctx.data.buf.in;
-> +			in[0] =3D brcmnand_status(host) | NAND_STATUS_WP; /* hide WP status */
+This patch is not needed: TF-A passes the memory size to U-Boot,
+which updates the /memory node in the DTB passed to Linux:
 
-I don't understand why you are faking the WP bit. If it's set,
-brcmnand_status() should return it and you should not care about it. If
-it's not however, can you please give me the path used when we have
-this issue? Either we need to modify the core or we need to provide
-additional helpers in this driver to circumvent the faulty path.
+$ dtc -O ebisu/r8a77990-ebisu.dtb | grep -A2 -w memory
+    memory@48000000 {
+            device_type = "memory";
+            reg = <0x00 0x48000000 0x00 0x38000000>;
+    };
 
-> +		} else if (instr->type =3D=3D NAND_OP_WAITRDY_INSTR) {
-> +			ret =3D bcmnand_ctrl_poll_status(host, NAND_CTRL_RDY, NAND_CTRL_RDY, =
-0);
-> +			if (ctrl->wp_cmd) {
-> +				ctrl->wp_cmd =3D 0;
-> +				brcmnand_wp(mtd, 1);
+When booting:
 
-This ideally should disappear.
+    NOTICE:  BL2: R-Car Gen3 Initial Program Loader(CA53) Rev.3.0.3
+    NOTICE:  BL2: PRR is R-Car E3 Ver.1.0
+    NOTICE:  BL2: PLL1 nonSSCG Clock select
+    NOTICE:  BL2: Board is Ebisu-4D Rev.1.0
+    ...
+    NOTICE:  BL2: CH0: 400000000 - 47fffffff, 2 GiB
+    ..
+    U-Boot 2022.04-rc4-00082-g54082b91f22f7a49 (Mar 25 2022 - 11:25:09 +0100)
 
-> +			}
-> +		} else { /* otherwise pass to low level implementation */
-> +			if ((instr->type =3D=3D NAND_OP_CMD_INSTR) &&
-> +				(instr->ctx.cmd.opcode =3D=3D NAND_CMD_RESET)) {
-> +				brcmnand_status(host);
-> +				ctrl->status_cmd =3D 0;
-> +				ctrl->wp_cmd =3D 0;
-> +				brcmnand_wp(mtd, 1);
+    CPU:   Renesas Electronics R8A77990 rev 1.0
+    Model: Renesas Ebisu-4D board rev 1.0
+    DRAM:  1.9 GiB
+    ...
+    Booting Linux on physical CPU 0x0000000000 [0x410fd034]
+    Linux version 6.6.0-rc3-ebisu-03722-g180199a69b82 (geert@rox)
+(aarch64-linux-gnu-gcc (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0, GNU ld
+(GNU Binutils for Ubuntu) 2.38) #546 SMP Tue Sep 26 13:26:12 CEST 2023
+    Machine model: Renesas Ebisu board based on r8a77990
+    printk: debug: ignoring loglevel setting.
+    efi: UEFI not found.
+    Zone ranges:
+       DMA      [mem 0x0000000048000000-0x00000000bfffffff]
+    ...
+    Memory: 1755932K/1966080K available (9088K kernel code, 2496K
+rwdata, 4188K rodata, 3072K init, 17571K bss, 144612K reserved, 65536K
+cma-reserved)
 
-Same
+root@ebisu:~# hd /sys/firmware/devicetree/base/memory@48000000/reg
+00000000  00 00 00 00 48 00 00 00  00 00 00 00 78 00 00 00  |....H.......x...|
+00000010
 
-> +			}
-> +
-> +			if ((instr->type =3D=3D NAND_OP_CMD_INSTR) &&
-> +				((instr->ctx.cmd.opcode =3D=3D NAND_CMD_ERASE1) ||
-> +				(instr->ctx.cmd.opcode =3D=3D NAND_CMD_SEQIN))) {
-> +				brcmnand_wp(mtd, 0);
-> +				ctrl->wp_cmd =3D 1;
+Gr{oetje,eeting}s,
 
-Same
+                        Geert
 
-> +			}
-> +
-> +			ret =3D brcmnand_exec_instr(host, instr, i =3D=3D (subop->ninstrs - 1=
-));
-> +		}
-> +	}
-> +
-> +	return ret;
-> +}
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
-
-Thanks,
-Miqu=C3=A8l
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
