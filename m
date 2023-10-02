@@ -2,52 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B36D67B56A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F357B5699
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238102AbjJBP0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
+        id S238088AbjJBP23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237928AbjJBP0x (ORCPT
+        with ESMTP id S237878AbjJBP22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:26:53 -0400
+        Mon, 2 Oct 2023 11:28:28 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB27899;
-        Mon,  2 Oct 2023 08:26:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B87B3C433C7;
-        Mon,  2 Oct 2023 15:26:48 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A467A6;
+        Mon,  2 Oct 2023 08:28:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99F18C433C8;
+        Mon,  2 Oct 2023 15:28:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696260410;
-        bh=8IILTKrGQU/hoxa4/QqemlhG1ml9gdsLhVJNcvhGTc4=;
+        s=k20201202; t=1696260504;
+        bh=cBsXuH+waMnbRb4zU7K8v3UB85/p7ufJUV9Y1AvcxRI=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=P+s/tFcBRWOWCefwZM/YJXvU2QkWHBHx7Uv4ZlXCMglTa9+DhzkDs8c4izlq2FTq6
-         X2GQJzod5e+/oTemAFeQPspp4zxeM+TZ+9MIRkHkz4BFqcNjxgHFx1aXl5AZgDRe2Y
-         O3JYwqat004rqzOilvO5ZUUllH/d77+fj4vv1gIqwqtiPpzRVk2LBWRjuZjg+PHhr/
-         DlvljSVs8AseaMUKuDD1sqy/7qOYWIBiENeTo3+opcrqA/u+nZdHfdXD7kZScsHWnL
-         fxFXgOQLeoH3YZKkuQKx3jybs30UXJSJvvnVv32RJyxV7p1nCDtNo4jXi0b88u4dza
-         4gwzBjXX3hrQg==
-Date:   Mon, 2 Oct 2023 16:26:45 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        John Stultz <jstultz@google.com>, linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] scripts/faddr2line: Skip over mapping symbols in
- output from readelf
-Message-ID: <20231002152644.GA1519@willie-the-truck>
-References: <20230914131225.13415-1-will@kernel.org>
- <20230914131225.13415-4-will@kernel.org>
- <CAKwvOd=gDX4ebkyHyqr276nrZVuRaoJG9Ptofpq8WjejD3s5AA@mail.gmail.com>
+        b=VdKIGKKOTx6RCCphHOtVS/Dr/s/B5hcvTW3AukByt1zrZOIpZJw0DS+x9GQjStAVx
+         C77Au3XeTTzvbiNUtG824gBmuwqXxgloskfVs+S8AN5nOCfpzi9SbnZlU1arCJREee
+         DcvqT5Ki92KBnFv/YHTsXVpzOQEybww5AmVYUGhwoKPQ5htUUorEwjW05u5sy0w48M
+         cmePtZHUeuyQERcJBWGnU1Khdvf0qyCeiccLQFn6c4n+YyfyBtj3BKI1MIZMT/iA2i
+         7MpJXE3H6AmIGBwDLUkrn6GiJIO50tbZga685E62N1w/+R8n+l0CWpro5kNA+Rijku
+         EJNvViksJFWgw==
+Received: (nullmailer pid 1757850 invoked by uid 1000);
+        Mon, 02 Oct 2023 15:28:19 -0000
+Date:   Mon, 2 Oct 2023 10:28:19 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     jdelvare@suse.com, linux@roeck-us.net,
+        krzysztof.kozlowski+dt@linaro.org, joel@jms.id.au, andrew@aj.id.au,
+        corbet@lwn.net, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, p.zabel@pengutronix.de,
+        naresh.solanki@9elements.com, linux-hwmon@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
+        BMC-SW@aspeedtech.com, patrick@stwcx.xyz
+Subject: Re: [PATCH v9 2/3] dt-bindings: hwmon: Support Aspeed g6 PWM TACH
+ Control
+Message-ID: <20231002152819.GB1747496-robh@kernel.org>
+References: <20230918064111.2221594-1-billy_tsai@aspeedtech.com>
+ <20230918064111.2221594-3-billy_tsai@aspeedtech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKwvOd=gDX4ebkyHyqr276nrZVuRaoJG9Ptofpq8WjejD3s5AA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20230918064111.2221594-3-billy_tsai@aspeedtech.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -57,65 +59,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 08:46:22AM -0700, Nick Desaulniers wrote:
-> On Thu, Sep 14, 2023 at 6:12 AM Will Deacon <will@kernel.org> wrote:
-> >
-> > Mapping symbols emitted in the readelf output can confuse the
-> > 'faddr2line' symbol size calculation, resulting in the erroneous
-> > rejection of valid offsets. This is especially prevalent when building
-> > an arm64 kernel with CONFIG_CFI_CLANG=y, where most functions are
-> > prefixed with a 32-bit data value in a '$d.n' section. For example:
-> >
-> > 447538: ffff800080014b80   548 FUNC    GLOBAL DEFAULT    2 do_one_initcall
-> >    104: ffff800080014c74     0 NOTYPE  LOCAL  DEFAULT    2 $x.73
-> >    106: ffff800080014d30     0 NOTYPE  LOCAL  DEFAULT    2 $x.75
-> >    111: ffff800080014da4     0 NOTYPE  LOCAL  DEFAULT    2 $d.78
-> >    112: ffff800080014da8     0 NOTYPE  LOCAL  DEFAULT    2 $x.79
-> >     36: ffff800080014de0   200 FUNC    LOCAL  DEFAULT    2 run_init_process
-> >
-> > Adding a warning to do_one_initcall() results in:
-> >
-> >   | WARNING: CPU: 0 PID: 1 at init/main.c:1236 do_one_initcall+0xf4/0x260
-> >
-> > Which 'faddr2line' refuses to accept:
-> >
-> > $ ./scripts/faddr2line vmlinux do_one_initcall+0xf4/0x260
-> > skipping do_one_initcall address at 0xffff800080014c74 due to size mismatch (0x260 != 0x224)
-> > no match for do_one_initcall+0xf4/0x260
-> >
-> > Filter out these entries from readelf using a shell reimplementation of
-> > is_mapping_symbol(), so that the size of a symbol is calculated as a
-> > delta to the next symbol present in ksymtab.
-> >
-> > Cc: Josh Poimboeuf <jpoimboe@kernel.org>
-> > Cc: John Stultz <jstultz@google.com>
-> > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> > Signed-off-by: Will Deacon <will@kernel.org>
-> > ---
-> >  scripts/faddr2line | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> >
-> > diff --git a/scripts/faddr2line b/scripts/faddr2line
-> > index 6b8206802157..20d9b3d37843 100755
-> > --- a/scripts/faddr2line
-> > +++ b/scripts/faddr2line
-> > @@ -179,6 +179,11 @@ __faddr2line() {
-> >                         local cur_sym_elf_size=${fields[2]}
-> >                         local cur_sym_name=${fields[7]:-}
-> >
-> > +                       # is_mapping_symbol(cur_sym_name)
-> > +                       if [[ ${cur_sym_name} =~ ^((\.L)|(L0)|(\$[adtx](\.|$))) ]]; then
+On Mon, Sep 18, 2023 at 02:41:10PM +0800, Billy Tsai wrote:
+> Document the compatible for aspeed,ast2600-pwm-tach device, which can
+> support up to 16 PWM outputs and 16 fan tach input.
 > 
-> Thanks for the patch!
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> ---
+>  .../bindings/hwmon/aspeed,g6-pwm-tach.yaml    | 69 +++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
 > 
-> I'm curious about the `|$` in the final part of the regex.  IIUC that
-> will match something like
-> $a
-> Do we have any such symbols without `.<n>` suffixes?
+> diff --git a/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml b/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
+> new file mode 100644
+> index 000000000000..5a679f4ad2fa
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
+> @@ -0,0 +1,69 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2023 Aspeed, Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/hwmon/aspeed,g6-pwm-tach.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: ASPEED G6 PWM and Fan Tach controller device driver
 
-tbh, I just blindly followed the implementation of is_mapping_symbol()
-at the time, but Masahiro has since pointed out that it's been
-significantly simplified so this regex should get much more manageable
-in the next version.
+This is binding for the h/w, not a 'device driver'.
 
-Will
+> +
+> +maintainers:
+> +  - Billy Tsai <billy_tsai@aspeedtech.com>
+> +
+> +description: |
+> +  The ASPEED PWM controller can support up to 16 PWM outputs.
+> +  The ASPEED Fan Tacho controller can support up to 16 fan tach input.
+> +  They are independent hardware blocks, which are different from the
+> +  previous version of the ASPEED chip.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - aspeed,ast2600-pwm-tach
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  "#pwm-cells":
+> +    const: 3
+> +
+> +patternProperties:
+> +  "^fan-[0-9a-f]+$":
+
+foo-<index> naming is decimal, not hex. (unit-addresses are hex)
+
+But if 0 and 1 correspond to something in the h/w, then you should 
+probably be using 'reg' instead (which means a unit-address too).
+
+> +    $ref: fan-common.yaml#
+> +    unevaluatedProperties: false
+> +    required:
+> +      - tach-ch
+> +
+> +required:
+> +  - reg
+> +  - clocks
+> +  - resets
+> +  - "#pwm-cells"
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/aspeed-clock.h>
+> +    pwm_tach: pwm-tach-controller@1e610000 {
+> +      compatible = "aspeed,ast2600-pwm-tach";
+> +      reg = <0x1e610000 0x100>;
+> +      clocks = <&syscon ASPEED_CLK_AHB>;
+> +      resets = <&syscon ASPEED_RESET_PWM>;
+> +      #pwm-cells = <3>;
+> +
+> +      fan-0 {
+> +        tach-ch = /bits/ 8 <0x0>;
+
+What about the PWM connection?
+
+> +      };
+> +
+> +      fan-1 {
+> +        tach-ch = /bits/ 8 <0x1 0x2>;
+> +      };
+> +    };
+> -- 
+> 2.25.1
+> 
