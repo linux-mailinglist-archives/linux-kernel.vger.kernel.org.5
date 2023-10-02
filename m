@@ -2,151 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D4147B5D8C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 01:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2AE7B5D8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 01:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237112AbjJBXJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 19:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
+        id S237176AbjJBXJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 19:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229934AbjJBXJJ (ORCPT
+        with ESMTP id S229934AbjJBXJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 19:09:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DC6AC;
-        Mon,  2 Oct 2023 16:09:06 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D8FAC433C8;
-        Mon,  2 Oct 2023 23:09:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696288145;
-        bh=gu0kj3Vk49NUDMDYLH9k8+xKFSohRBsIFcK4rRhjEUs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lgZ41VgPd/ElBPwEA8nqF4reKV4tw4t1f1QtPTGDsUQ3nNWaH/g9ahzQ74CcYhPgg
-         KKqUlOyfAWUqeJAy7BF7oiZlBf46YiE8L/oVkVvJNgD9XwlWRhnmjvvx7oyolyKA5D
-         Vjn8wbgE+IAzrRQZ0DxZ+iVKaKUBGiCkS7Bx4QeHXXQTl1SSleU4TCRnJ8L4BuW3xX
-         pgCgt37pFE+XPnZL3cwYwL3U/tgrJ/EWoVo7XlkruI94G5eFeiSVUItWeKK0yq3kRt
-         c1TAeJLbNYEP8x/46uBAt94k4mh5bbfxl+DxUyTfXxtBMFYYD91XdZldHK3VOam1KZ
-         urE3rpatkPcJw==
-Date:   Mon, 2 Oct 2023 16:09:03 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>
-Subject: Re: [PATCH] kbuild: rpm-build: generate kernel.spec in
- rpmbuild/SPECS/
-Message-ID: <20231002230903.GB1029006@dev-arch.thelio-3990X>
-References: <20230930103847.1272324-1-masahiroy@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230930103847.1272324-1-masahiroy@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 2 Oct 2023 19:09:42 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 118AAAB
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 16:09:40 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d81486a0382so497906276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 16:09:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696288179; x=1696892979; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=h+VrPtOekhb8+q73onDrKN45JQ6nX1n1Q4LL4kdfewA=;
+        b=hRSehPpjqhUSg6MV5R6FS+cS6YVmzumQXNNzH7UIghZ0vI+KeLotbkC7dgObCX6CBD
+         r9lRmNSRQ+TSIQqIL9YAzHZ+F69FYqavNv6Jih6j5HCxTGYW6++bs9ohglRRYe1QR+xN
+         94b6od9RNMZKMzdkWv18EVrSyW/5kjCcFwPh+PlPXGuzz2gmXekrwlDNzXctujws3HLN
+         sS2n2W+rB+TEKwLvlLy1jlzJTChHEAajZXVV2u0AjUtLz4IBi2atztmVyPfdIJIBH6WP
+         n9QVV4osNRS2dO6cossOjl/91VTapNmvDLrWpNFsZ5g3D/TFZlLruAkvaxvHzghtxnSU
+         1aLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696288179; x=1696892979;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=h+VrPtOekhb8+q73onDrKN45JQ6nX1n1Q4LL4kdfewA=;
+        b=hWRHcZmXre2Ml1eGT5czaTq/cKjXGqSkj55IW4SmNZp5TFROGXmzmm7ZlcCCf57Ba3
+         I74LGN2oTMSXqulIIZjTIB0MpjtZpk0hXoPx7lyCMcUI/VII7l+qCgWL91qwYtTDimIk
+         jq0tgEz/1nsPvqLRRC7t90xiAwbzb/+nPpi0hY+1cvoeT/As1Vw4FbMheKLFDfeDBlyl
+         nAZnsAOQ6vmwutbdBNadLr7BZssRG9zQfAi1cmchR9k5A3bORD5YgOvAlFA5GEU8tHM1
+         OM+wYS3iHYqh0kbw4Xm/whBl0nnCjwrlOm2kIpWPb3NUboUvGUFnj5gEsS/LGHFyFS9v
+         kCeA==
+X-Gm-Message-State: AOJu0YyIOsIUb1BLuVJqkgEZfQJZmBBRr7KPUc3tlyyy9g5UPU3mRPoh
+        Rf8jFOpQAG92bwJYKz/jHiuhdT/Q++0=
+X-Google-Smtp-Source: AGHT+IEiQymAa7emMibbrofWKTUTBTNmFDJ5Vgb2eeRJ4K+AIcSgV+sbogBvdxPrJYARMPwpiTai1QF3ZeE=
+X-Received: from drosen.mtv.corp.google.com ([2620:15c:211:201:459f:6e1a:6be7:55da])
+ (user=drosen job=sendgmr) by 2002:a25:910:0:b0:d86:55b7:97b0 with SMTP id
+ 16-20020a250910000000b00d8655b797b0mr231052ybj.9.1696288179184; Mon, 02 Oct
+ 2023 16:09:39 -0700 (PDT)
+Date:   Mon,  2 Oct 2023 16:09:34 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+Message-ID: <20231002230935.169229-1-drosen@google.com>
+Subject: [PATCH v2 0/1] Add 16K Support for f2fs
+From:   Daniel Rosenberg <drosen@google.com>
+To:     linux-f2fs-devel@lists.sourceforge.net
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 07:38:47PM +0900, Masahiro Yamada wrote:
-> kernel.spec is the last piece that resides outside the rpmbuild/
-> directory. Move all RPM-related files to rpmbuild/ consistently.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+F2fs filesystems currently have two large restrictions around block size.
+The block size must equal the page size, and the block size must be 4096.
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+The following patch, along with the associated f2fs-tools patch set, relax the
+latter restriction, allowing you to use 16K block size f2fs on a 16K page size
+system. It does not allow mounting 4K block size f2fs on a 16k page system.
 
-> ---
-> 
->  .gitignore                 | 1 -
->  Makefile                   | 2 +-
->  scripts/Makefile.package   | 8 ++++----
->  scripts/package/mkspec     | 6 ++++++
->  scripts/remove-stale-files | 2 +-
->  5 files changed, 12 insertions(+), 7 deletions(-)
-> 
-> diff --git a/.gitignore b/.gitignore
-> index 0bbae167bf93..98274e1160d7 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -74,7 +74,6 @@ modules.order
->  #
->  # RPM spec file (make rpm-pkg)
->  #
-> -/kernel.spec
->  /rpmbuild/
->  
->  #
-> diff --git a/Makefile b/Makefile
-> index 3de08c780c74..9e77a58207a8 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1486,7 +1486,7 @@ MRPROPER_FILES += include/config include/generated          \
->  		  certs/signing_key.pem \
->  		  certs/x509.genkey \
->  		  vmlinux-gdb.py \
-> -		  kernel.spec rpmbuild \
-> +		  rpmbuild \
->  		  rust/libmacros.so
->  
->  # clean - Delete most, but leave enough to build external modules
-> diff --git a/scripts/Makefile.package b/scripts/Makefile.package
-> index 2bcab02da965..05b8c3e29aac 100644
-> --- a/scripts/Makefile.package
-> +++ b/scripts/Makefile.package
-> @@ -69,9 +69,9 @@ $(linux-tarballs): .tmp_HEAD FORCE
->  # ---------------------------------------------------------------------------
->  
->  quiet_cmd_mkspec = GEN     $@
-> -      cmd_mkspec = $(srctree)/scripts/package/mkspec > $@
-> +      cmd_mkspec = $(srctree)/scripts/package/mkspec $@
->  
-> -kernel.spec: FORCE
-> +rpmbuild/SPECS/kernel.spec: FORCE
->  	$(call cmd,mkspec)
->  
->  PHONY += rpm-sources
-> @@ -88,8 +88,8 @@ srcrpm-pkg: private build-type := s
->  binrpm-pkg: private build-type := b
->  
->  rpm-pkg srcrpm-pkg: rpm-sources
-> -rpm-pkg srcrpm-pkg binrpm-pkg: kernel.spec
-> -	+$(strip rpmbuild -b$(build-type) kernel.spec \
-> +rpm-pkg srcrpm-pkg binrpm-pkg: rpmbuild/SPECS/kernel.spec
-> +	+$(strip rpmbuild -b$(build-type) rpmbuild/SPECS/kernel.spec \
->  	--define='_topdir $(abspath rpmbuild)' \
->  	$(if $(filter a b, $(build-type)), \
->  		--target $(UTS_MACHINE)-linux --build-in-place --noprep --define='_smp_mflags %{nil}' \
-> diff --git a/scripts/package/mkspec b/scripts/package/mkspec
-> index d41608efb747..ce201bfa8377 100755
-> --- a/scripts/package/mkspec
-> +++ b/scripts/package/mkspec
-> @@ -9,6 +9,12 @@
->  #	Patched for non-x86 by Opencon (L) 2002 <opencon@rio.skydome.net>
->  #
->  
-> +output=$1
-> +
-> +mkdir -p "$(dirname "${output}")"
-> +
-> +exec >"${output}"
-> +
->  if grep -q CONFIG_MODULES=y include/config/auto.conf; then
->  echo '%define with_devel %{?_without_devel: 0} %{?!_without_devel: 1}'
->  else
-> diff --git a/scripts/remove-stale-files b/scripts/remove-stale-files
-> index 8b1a636f8543..385610fe3936 100755
-> --- a/scripts/remove-stale-files
-> +++ b/scripts/remove-stale-files
-> @@ -38,4 +38,4 @@ rm -rf include/ksym
->  
->  find . -name '*.usyms' | xargs rm -f
->  
-> -rm -f binkernel.spec
-> +rm -f *.spec
-> -- 
-> 2.39.2
-> 
+Doing that would require a lot more work, requiring a refactor of all block
+sized struct similar to the userspace patches, as well as handling the block
+reading/writing at sub page boundaries. I'm currently leaving that to future
+work.
+
+changes for v2:
+Adjusted format string
+
+Daniel Rosenberg (1):
+  f2fs: Support Block Size == Page Size
+
+ fs/f2fs/data.c          |  2 +-
+ fs/f2fs/inode.c         |  2 +-
+ fs/f2fs/node.c          |  2 +-
+ fs/f2fs/super.c         |  4 +--
+ include/linux/f2fs_fs.h | 69 ++++++++++++++++++++++++-----------------
+ 5 files changed, 46 insertions(+), 33 deletions(-)
+
+
+base-commit: 3e729e50d01e6a336132d1739866a6463f82faa9
+-- 
+2.42.0.582.g8ccd20d70d-goog
+
