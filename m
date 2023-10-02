@@ -2,147 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 178AE7B4B92
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 08:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7497B4B94
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 08:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235546AbjJBGlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 02:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
+        id S235552AbjJBGm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 02:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235512AbjJBGlQ (ORCPT
+        with ESMTP id S235540AbjJBGm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 02:41:16 -0400
-Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 221179B
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 23:41:12 -0700 (PDT)
-Received: from 8bytes.org (pd9fe9df8.dip0.t-ipconnect.de [217.254.157.248])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.8bytes.org (Postfix) with ESMTPSA id EA6E11A25DB;
-        Mon,  2 Oct 2023 08:41:10 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
-        s=default; t=1696228871;
-        bh=W4Tp5WnCJ54D2BoW9qbc/kq5SmRYARJLysU6XU7xl+s=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ypTQIu+moWXyectBcNgrPPIu1c/q6jjyAtaAcmB2OQ27Ii91wMMq0dLagmlUlknqy
-         NE1y3Axabb8KpaULYy7+RMhHvII9P0i5I7PYrR+abt2s3+9C9S9ke8G024R8TOmnvL
-         rmk5DvEFLmr2KzUb6hSkGHrxpMLdta0voInaMdtBaAwEv5FrqZLdLdbHFbwqyVXUiz
-         qF9r/QCMJ6QjYXUy/BmeoMHPAy4gijfqUkxbt6hCiFWrd18sH0UIoRLhg8i1JQjP5W
-         LNt3jUXsYUz324ImUV9ZMjcsAT8v2Sl/nB89FiWOvd6jM6L/OAMFvIn+/uL7NgqO1w
-         1kWZuFKxBHSGw==
-Date:   Mon, 2 Oct 2023 08:41:09 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        iommu@lists.linux.dev
-Subject: [git pull] IOMMU Fixes for Linux v6.6-rc4
-Message-ID: <ZRpmBaTbF3xPNJHz@8bytes.org>
+        Mon, 2 Oct 2023 02:42:26 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CBEBC
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 23:42:23 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id ffacd0b85a97d-3247cefa13aso5734581f8f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 01 Oct 2023 23:42:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696228941; x=1696833741; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iFLmBMbTAf5mYpVSeF0tgLxlIm+hQtraBWqw0SVaZ1s=;
+        b=naGNygrWouv1YEjdJBD+4287aMp5/GFRojK0NrGzzsdHpmff/N6Io1fiYjlkMD4aw6
+         00oet6LnyjwPxQbu99r1+fu5kyqYPenaYRmQeQ6ffkTh1AE5RtYnPS9ZXtLmiUWHOhhL
+         OJuaYcvCpUtBNYQn2bL2T/6pg6EP+v8C6YMM8NgTfbGPm2CH7fqmZoujoJyvNxEow2HQ
+         mHoXB89mF/4n98+PCVqylfjxp/fHkkho+eANT53vHan+RFgKiy+v1kUeFJWuwjvoKvOp
+         VNpdRNy01htzmY1nnH2VE7SDYyZJFveOVXtMORoIjuhv5j04wfKD9Ckx+uHxMOYL+zVg
+         xsXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696228941; x=1696833741;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iFLmBMbTAf5mYpVSeF0tgLxlIm+hQtraBWqw0SVaZ1s=;
+        b=qdiAl/xvVn/JygNJIJC8ewuEb8GWKNchvOXBJoHUIjZtamqM1iyYoJIr/6v95zwTvi
+         RLxwIwncxf2iOPPRm58KoqpQ0slD33ER2YLLCMNWAeG9S1XQla9BxROKNxyXDTOByOq8
+         W0YuoBWj1au/C0ri6b2Pm6at7ijL96asnmikXLRBT3y5symv8uRW7sli59uHEbl8k+L8
+         OUzYK5NMKXLbbjDgiX6/7AizMWVdGZOfaxa6eVATVnXtZ8xqDoYJi75Qttu19BUz5s35
+         mCjOMXTgfy77gRzDbKyInkL8EzcwD7OhsLf9qhB8uOEsa1YsRV3utvJOTsALfTLZSOuS
+         IaPA==
+X-Gm-Message-State: AOJu0Yz31S4/9JIOfuWKQycaFGb9y/glHZ42m+GxgblmCR2nc/A0qW4b
+        buvR4ly3ZudUKki+tHb5otyyGQ==
+X-Google-Smtp-Source: AGHT+IG5F6WCA+givsf9KFa40Uq2QQ0EtyZVPcp2/kezx1bCSCz837j2NkrcYNJnzvEwO3xWwac9nA==
+X-Received: by 2002:adf:f085:0:b0:320:77f:a97c with SMTP id n5-20020adff085000000b00320077fa97cmr9346986wro.63.1696228941280;
+        Sun, 01 Oct 2023 23:42:21 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id e11-20020a5d594b000000b003140f47224csm9346368wri.15.2023.10.01.23.42.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 01 Oct 2023 23:42:20 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 09:42:06 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Brian Foster <bfoster@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] bcachefs: Use struct_size()
+Message-ID: <ff682afb-a914-4cd7-8d19-202a6cb778de@kadam.mountain>
+References: <120b638f99b088f91d5a4491c800463c554e70b8.1696144401.git.christophe.jaillet@wanadoo.fr>
+ <7ae7737e-e32c-e9e7-880c-cafc240e7c33@embeddedor.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="TGFrNeBVgX5uFluk"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <7ae7737e-e32c-e9e7-880c-cafc240e7c33@embeddedor.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Oct 01, 2023 at 09:23:17AM +0200, Gustavo A. R. Silva wrote:
+> 
+> 
+> On 10/1/23 09:13, Christophe JAILLET wrote:
+> > Use struct_size() instead of hand writing it.
+> > This is less verbose and more robust.
+> > 
+> > While at it, prepare for the coming implementation by GCC and Clang of the
+> > __counted_by attribute. Flexible array members annotated with __counted_by
+> > can have their accesses bounds-checked at run-time checking via
+> > CONFIG_UBSAN_BOUNDS (for array indexing) and CONFIG_FORTIFY_SOURCE (for
+> > strcpy/memcpy-family functions).
+> 
+> I would prefer this as two separate patches.
+> 
 
---TGFrNeBVgX5uFluk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I kind of feel like it's all part of one thing.  It's easier to review
+as one patch.
 
-Hi Linus,
+regards,
+dan carpenter
 
-The following changes since commit 6465e260f48790807eef06b583b38ca9789b6072:
-
-  Linux 6.6-rc3 (2023-09-24 14:31:13 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-fixes-v6.6-rc4
-
-for you to fetch changes up to 59df44bfb0ca4c3ee1f1c3c5d0ee8e314844799e:
-
-  iommu/vt-d: Avoid memory allocation in iommu_suspend() (2023-09-25 16:10:36 +0200)
-
-----------------------------------------------------------------
-IOMMU Fixes for Linux v6.6-rc4
-
-Including:
-
-	- Arm SMMU fixes from Will Deacon:
-	  - Fix TLB range command encoding when TTL, Num and Scale are all zero
-	  - Fix soft lockup by limiting TLB invalidation ops issued by SVA
-	  - Fix clocks description for SDM630 platform in arm-smmu DT binding
-
-	- Intel VT-d fix from Lu Baolu:
-	  - Fix a suspend/hibernation problem in iommu_suspend()
-
-	- Mediatek driver: Fix page table sharing for addresses over 4GiB
-
-	- Apple/Dart: DMA_FQ handling fix in attach_dev()
-
-----------------------------------------------------------------
-Hector Martin (1):
-      iommu/apple-dart: Handle DMA_FQ domains in attach_dev()
-
-Joerg Roedel (1):
-      Merge tag 'arm-smmu-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/will/linux into iommu/fixes
-
-Konrad Dybcio (1):
-      dt-bindings: arm-smmu: Fix SDM630 clocks description
-
-Nicolin Chen (1):
-      iommu/arm-smmu-v3: Fix soft lockup triggered by arm_smmu_mm_invalidate_range
-
-Robin Murphy (1):
-      iommu/arm-smmu-v3: Avoid constructing invalid range commands
-
-Yong Wu (1):
-      iommu/mediatek: Fix share pgtable for iova over 4GB
-
-Zhang Rui (1):
-      iommu/vt-d: Avoid memory allocation in iommu_suspend()
-
- Documentation/devicetree/bindings/iommu/arm,smmu.yaml |  2 +-
- drivers/iommu/apple-dart.c                            |  3 +--
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c       | 18 ++++++++++++++++--
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c           | 15 ++++++++++-----
- drivers/iommu/intel/iommu.c                           | 16 ----------------
- drivers/iommu/intel/iommu.h                           |  2 +-
- drivers/iommu/mtk_iommu.c                             |  9 ++++-----
- 7 files changed, 33 insertions(+), 32 deletions(-)
-
-Please pull.
-
-Thanks,
-
-	Joerg
-
---TGFrNeBVgX5uFluk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAmUaZgUACgkQK/BELZcB
-GuM9yRAAkqY5NPFkF3VVS0ZN2EfXa35LE+ngwJa43Y/HQDEE6NriOyNTlQHLHdlp
-ia7b8qrqVO0vFhQ6XXX1LVqrBA9kep9Nf3G40Gt068Uo6KUiYaSrw7exPszDsSQz
-L0A7WDS5MAHr/5JgzpI5Lmd/shpPxoRo9YMiP7ehKfQY8/WVtfOt5jIU1A30nsf+
-oSegb64EroHrc7aKTXTJwBTQn7pqLusdj0B4DeQB6ohEmx08S6JLHvHuDvhMUJ+0
-nbefpUNLZgPORtXQPiw6CZ5M2vZVKpNBWIEhqAofcUwEYpgizxmt07C4mih22daB
-m+kWwvVDLFKAqvZIbVYQaHVbCmBWvYC8w7DMgmtKAV1QQLpxBibMC/VXGz1Gy5Uh
-F/hTh2d1KCtVGJDpE/uK24O7RaIRyVwlACRbU8jGOamuWYCyiRP39RbioqnBjF5I
-4AJFeop21xBYcoTtQrKdw2+axZOn1OwQlcdEeMoo/5WLfeelCef0EgsmW5jwNcTc
-LrH1FWNiFaEd07pD865DmgDJF/+epZRRGPBq+slIO8lLM69jg47PHsgCFa/eckhI
-q1H8IxUFpe5KoVata0srQc8OC8QjQmULYts4yeiNJB0T7H1JrvNpWiNEiCycRhCk
-uHuTL/T7CBiky4QAgR+DUXaBpa2qivHMTGZQ3tHw2B+mlngI5WY=
-=Gnk2
------END PGP SIGNATURE-----
-
---TGFrNeBVgX5uFluk--
