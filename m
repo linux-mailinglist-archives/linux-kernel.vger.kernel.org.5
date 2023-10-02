@@ -2,83 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2897B5B62
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:35:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93477B5B61
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238887AbjJBTeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 15:34:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44932 "EHLO
+        id S238882AbjJBTe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 15:34:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238879AbjJBTeQ (ORCPT
+        with ESMTP id S238862AbjJBTe4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 15:34:16 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD204D3
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 12:34:12 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-4053c6f0db8so1226135e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 12:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696275251; x=1696880051; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4Pz/zszYZyE+z1VL1nxPoO+pF7/bzU2CO2PuRnZJXyI=;
-        b=AvxWpVWwDLsGAieXe1iULfVyuZN1Sv5x22bBYoK1E14jftZVMlKPTJ23l7zOVhUqM9
-         OhL7xjD8eSSs6idfaH6TJAr6FqCpfuSAIi5AiEzytrUkrXLL5NM5ps76QOWgFfzYYtd1
-         XC9xkmEDmVWXHW+4qY1xfwppHsTNgfTqFm3ipGsHAuqezUaRIwb68ajLsG0lR258vPCG
-         VfxHCQBKlgEAw+UQXs0JGJJ4MyRT856a9Y/McYyQPf3NxTt7wXhZzvdue9r5Cgleo1VH
-         ABHRDx8tw5iscMFhdf+kTN/9i+fosFHaaS6G3Tc5yDYBbsv7rIbL0QY8yKy5j5UH+q4d
-         2QBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696275251; x=1696880051;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4Pz/zszYZyE+z1VL1nxPoO+pF7/bzU2CO2PuRnZJXyI=;
-        b=BxNlG8vaBsVGfDEpU3ns0C7cNrgg2V3WWOrOseOHWLao4Bf5BOUN9/D0DRPI6IEU+5
-         +ycdfkjOI4qqizJKQZDdRPe1ZdLQPTq92ye/h8/3xkHiH0LJV55MSYA87aQJPPa39E8B
-         oe0J1duZYEnMQ/a7CNsdiE2MY2j9Q78TSpiqk4K/Mfsslt8XLlzfKNde93LIrR4LoLN8
-         V8eO/aVPX8X+gvwHysDd3atIe6/aMY5Q/mcBl+jsgS+QY+PzG14jJ9iT9wZZJc7OSqrG
-         N+utdClZpdmL5cRJMaePT4XBYV2vRHSdjW/QxzoC0Dl05U1uYARCKrZ4QZ75lgXBkwJE
-         fElA==
-X-Gm-Message-State: AOJu0Yz8u7J3IVgGMO+yhoYtX4I12gJFrMJ5o1+oOnykracQBAC6pT7L
-        WC06oL6k0o7Z6P4gwu8MtXmR3fEXEJSnWft+EpaB4g==
-X-Google-Smtp-Source: AGHT+IE/XDcbApgyGi2vWDALA9HVtbtfsl01C0bACjHSTSMxs1si+IYmi0/4MCZOMnKZuuCpOGdPMN+KIKfh0A4NSTs=
-X-Received: by 2002:a05:6000:184:b0:31f:ea18:6f6b with SMTP id
- p4-20020a056000018400b0031fea186f6bmr10781947wrx.19.1696275250982; Mon, 02
- Oct 2023 12:34:10 -0700 (PDT)
+        Mon, 2 Oct 2023 15:34:56 -0400
+Received: from mx.skole.hr (mx1.hosting.skole.hr [161.53.165.185])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DCDAD7;
+        Mon,  2 Oct 2023 12:34:49 -0700 (PDT)
+Received: from mx1.hosting.skole.hr (localhost.localdomain [127.0.0.1])
+        by mx.skole.hr (mx.skole.hr) with ESMTP id 9289D83C68;
+        Mon,  2 Oct 2023 21:34:46 +0200 (CEST)
+From:   =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+Date:   Mon, 02 Oct 2023 21:34:37 +0200
+Subject: [PATCH v2] dt-bindings: phy: Convert PXA1928 USB/HSIC PHY to DT
+ schema
 MIME-Version: 1.0
-References: <20230923013148.1390521-1-surenb@google.com> <20230923013148.1390521-3-surenb@google.com>
- <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
- <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com> <ZRWo1daWBnwNz0/O@x1n>
- <98b21e78-a90d-8b54-3659-e9b890be094f@redhat.com> <ZRW2CBUDNks9RGQJ@x1n>
- <85e5390c-660c-ef9e-b415-00ee71bc5cbf@redhat.com> <ZRXHK3hbdjfQvCCp@x1n>
- <fc27ce41-bc97-91a7-deb6-67538689021c@redhat.com> <ZRrf8NligMzwqx97@x1n>
- <CA+EESO5VtrfXv-kvDsotPLXcpMgOK5t5c+tbXZ7KWRU2O_0PBQ@mail.gmail.com>
- <CA+EESO4W2jmBSpyHkkqZV0LHnA_OyWQcvwSkfPcWmWCsAF5UWw@mail.gmail.com> <9434ef94-15e8-889c-0c31-3e875060a2f7@redhat.com>
-In-Reply-To: <9434ef94-15e8-889c-0c31-3e875060a2f7@redhat.com>
-From:   Lokesh Gidra <lokeshgidra@google.com>
-Date:   Mon, 2 Oct 2023 20:33:58 +0100
-Message-ID: <CA+EESO4GuDXZ6newN-oF43WOxrfsZ9Ejq8RJNF2wOYq571zmDA@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Peter Xu <peterx@redhat.com>, Jann Horn <jannh@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20231002-pxa1928-usb-yaml-v2-1-121a7e02d29f@skole.hr>
+X-B4-Tracking: v=1; b=H4sIAEwbG2UC/32NQQ6CMBBFr0Jm7ZiZgqZ1xT0Mi4rFNiIlrTYQ0
+ rtbOYDL95L//gbRBGciXKoNgkkuOj8VEIcKequnh0F3LwyCRM1EjPOiWQmJn3jDVb9GlKRO54a
+ kEA1Dmc3BDG7Zk9eusHXx7cO6PyT+2T+xxMioalJa9tRTPbTx6UdztAG6nPMXgTPhlq8AAAA=
+To:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2723;
+ i=duje.mihanovic@skole.hr; h=from:subject:message-id;
+ bh=OgvaUU8MJ1mJrse/GI+YQsWTLsXAVZ4nX34xt2is75o=;
+ b=owEBbQKS/ZANAwAIAZoRnrBCLZbhAcsmYgBlGxtQAQwZCkgVwqJPXJ3lPoXZFQ3pVhOdoaHX4
+ nrUOGrmN7yJAjMEAAEIAB0WIQRT351NnD/hEPs2LXiaEZ6wQi2W4QUCZRsbUAAKCRCaEZ6wQi2W
+ 4V1HD/90P71Wo7UVPPNCqWe+cw/z5EzghrOwhiefUL2IEbNn+kV4vtonywqNdCLIATP9zhKBcfK
+ GBbeLXRxfo8lHp9QrAIGvv2dZH58NuwLApujmxX8TGaEv7XLanBsKHUf6sBE0bN2wxBldnuaP9R
+ 9JD71DT0rRZs7MnvS+qqMCDupSTBfFy7Nixgjb8cSkzpUSj4KZw32MWGv8asx5CJAvi3hbkMHeD
+ h8Z5CimS5Obgfsdo4nN5HzqVUfihpHISwPJeAvO+ICMljGKOAXQMb4MrPh2092fKCRgqX3xfkS4
+ O8tpOS/BwkwhbuSX1rn1di9uyw265e4y6xWuIGQztnHLcIH6hjkfcZUT2z9uXbLj2BlCm1qq9Fq
+ Gv/n8q8bXihLjNwFhMaWNtEaAX49iLX2RcBXs409bUDLcTNk0/SFZ1oGy7qOZ4MnXwAz7L5xyxM
+ mpOToQiHPeAzOXtDjB3ld9mt2HOCf3FHbiU5YkdvxgbXxrQHSDXP3DIWM1DoGx+fMbxzRoa+noT
+ lxKeqgWi0YFysW0kxdRbm4psxAqmJseL+HaGYckCJedrhsyl9Zcyk8NxVSjwa4vv9xyO5JMFmQO
+ 5mKmWaXXnohrV3Qrd4YlYi5SHBXCMJWt+XcQxOaxPYLDrkPK3Pswjm2/yR1uOnaooTYxqTYQhc2
+ bU2q2QbYhgJBYtg==
+X-Developer-Key: i=duje.mihanovic@skole.hr; a=openpgp;
+ fpr=53DF9D4D9C3FE110FB362D789A119EB0422D96E1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,85 +64,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 6:43=E2=80=AFPM David Hildenbrand <david@redhat.com>=
- wrote:
->
-> On 02.10.23 17:55, Lokesh Gidra wrote:
-> > On Mon, Oct 2, 2023 at 4:46=E2=80=AFPM Lokesh Gidra <lokeshgidra@google=
-.com> wrote:
-> >>
-> >> On Mon, Oct 2, 2023 at 4:21=E2=80=AFPM Peter Xu <peterx@redhat.com> wr=
-ote:
-> >>>
-> >>> On Mon, Oct 02, 2023 at 10:00:03AM +0200, David Hildenbrand wrote:
-> >>>> In case we cannot simply remap the page, the fallback sequence (from=
- the
-> >>>> cover letter) would be triggered.
-> >>>>
-> >>>> 1) UFFDIO_COPY
-> >>>> 2) MADV_DONTNEED
-> >>>>
-> >>>> So we would just handle the operation internally without a fallback.
-> >>>
-> >>> Note that I think there will be a slight difference on whole remap
-> >>> atomicity, on what happens if the page is modified after UFFDIO_COPY =
-but
-> >>> before DONTNEED.
-> >>>
-> >>> UFFDIO_REMAP guarantees full atomicity when moving the page, IOW, thr=
-eads
-> >>> can be updating the pages when ioctl(UFFDIO_REMAP), data won't get lo=
-st
-> >>> during movement, and it will generate a missing event after moved, wi=
-th
-> >>> latest data showing up on dest.
-> >>>
-> >>> I'm not sure that means such a fallback is a problem, Suren may know
-> >>> better with the use case.
-> >>
-> >> Although there is no problem in using fallback with our use case but
-> >> as a user of userfaultfd, I'd suggest leaving it to the developer.
-> >> Failing with appropriate errno makes more sense. If handled in the
-> >> kernel, then the user may assume at the end of the operation that the
-> >> src vma is completely unmapped. And if not correctness issues, it
-> >> could lead to memory leaks.
-> >
-> > I meant that in addition to the possibility of correctness issues due
-> > to lack of atomicity, it could also lead to memory leaks, as the user
-> > may assume that src vma is empty post-operation. IMHO, it's better to
-> > fail with errno so that the user would fix the code with necessary
-> > changes (like using DONTFORK, if forking).
->
-> Leaving the atomicity discussion out because I think this can just be
-> handled (e.g., the src_vma would always be empty post-operation):
->
-> It might not necessarily be a good idea to only expose micro-operations
-> to user space. If the user-space fallback will almost always be
-> "UFFDIO_COPY+MADV_DONTNEED", then clearly the logical operation
-> performed is moving data, ideally with zero-copy.
->
-IMHO, such a fallback will be useful only if it's possible that only
-some pages in the src vma fail due to this. But even then it would be
-really useful to have a flag maybe like UFFDIO_REMAP_FALLBACK_COPY to
-control if the user wants the fallback or not. OTOH, if this is
-something that can be detected for the entire src vma, then failing
-with errno is more appropriate.
+Convert the binding for the Marvell PXA1928 USB and HSIC PHYs from TXT
+to DT schema.
 
-Given that the patch is already quite complicated, I humbly suggest
-leaving the fallback for now as a TODO.
+Signed-off-by: Duje Mihanović <duje.mihanovic@skole.hr>
+---
+Changes in v2:
+- Add myself as maintainer
+- Combine HSIC and USB bindings into one
+- Drop unneeded quotes
+- Remove example as it can't compile (probably because of clock
+  reference)
+- Link to v1: https://lore.kernel.org/r/20231001-pxa1928-usb-yaml-v1-1-9309a8c0c03f@skole.hr
+---
+ .../bindings/phy/marvell,pxa1928-usb-phy.yaml      | 41 ++++++++++++++++++++++
+ .../devicetree/bindings/phy/pxa1928-usb-phy.txt    | 18 ----------
+ 2 files changed, 41 insertions(+), 18 deletions(-)
 
-> [as said as reply to Peter, one could still have magic flags for users
-> that really want to detect when zero-copy is impossible]
->
-> With a logical MOVE API users like compaction [as given in the cover
-> letter], not every such user has to eventually implement fallback paths.
->
-> But just my 2 cents, the UFFDIO_REMAP users probably can share what the
-> exact use cases are and if fallbacks are required at all or if no-KSM +
-> DONTFORK just does the trick.
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+diff --git a/Documentation/devicetree/bindings/phy/marvell,pxa1928-usb-phy.yaml b/Documentation/devicetree/bindings/phy/marvell,pxa1928-usb-phy.yaml
+new file mode 100644
+index 000000000000..60cf3fa8d3bc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/phy/marvell,pxa1928-usb-phy.yaml
+@@ -0,0 +1,41 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/phy/marvell,pxa1928-usb-phy.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Marvell PXA1928 USB/HSIC PHY
++
++maintainers:
++  - Duje Mihanović <duje.mihanovic@skole.hr>
++
++properties:
++  $nodename:
++    pattern: '^phy@[a-f0-9]+$'
++
++  compatible:
++    oneOf:
++      - items:
++          const: marvell,pxa1928-usb-phy
++      - items:
++          const: marvell,pxa1928-hsic-phy
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  '#phy-cells':
++    const: 0
++
++  resets:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - '#phy-cells'
++
++additionalProperties: false
+diff --git a/Documentation/devicetree/bindings/phy/pxa1928-usb-phy.txt b/Documentation/devicetree/bindings/phy/pxa1928-usb-phy.txt
+deleted file mode 100644
+index da94426aa694..000000000000
+--- a/Documentation/devicetree/bindings/phy/pxa1928-usb-phy.txt
++++ /dev/null
+@@ -1,18 +0,0 @@
+-* Marvell PXA1928 USB and HSIC PHYs
+-
+-Required properties:
+-- compatible: "marvell,pxa1928-usb-phy" or "marvell,pxa1928-hsic-phy"
+-- reg: base address and length of the registers
+-- clocks - A single clock. From common clock binding.
+-- #phys-cells: should be 0. From common phy binding.
+-- resets: reference to the reset controller
+-
+-Example:
+-
+-	usbphy: phy@7000 {
+-		compatible = "marvell,pxa1928-usb-phy";
+-		reg = <0x7000 0xe0>;
+-		clocks = <&apmu_clocks PXA1928_CLK_USB>;
+-		#phy-cells = <0>;
+-	};
+-
+
+---
+base-commit: 6465e260f48790807eef06b583b38ca9789b6072
+change-id: 20231001-pxa1928-usb-yaml-809564082241
+
+Best regards,
+-- 
+Duje Mihanović <duje.mihanovic@skole.hr>
+
+
