@@ -2,139 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A10C87B4F7D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852F67B4F82
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236283AbjJBJtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
+        id S236263AbjJBJu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236261AbjJBJtg (ORCPT
+        with ESMTP id S235897AbjJBJuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:49:36 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAB2183;
-        Mon,  2 Oct 2023 02:49:33 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 72D232185C;
-        Mon,  2 Oct 2023 09:49:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696240172; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j+NdBRB608UMGwx19cp+azxH113d9HD7eQvWbnS3E3c=;
-        b=E+VgZxU2q7CeNul975RN62i/o1qDZ41PCZ1yfpJ/5EpmyZ2G8JL3Jn7cukYgFh2niPOfWc
-        SyETRyyDPubwOSlZT1g8pQ9/vahrFzS+iL6blQ33WfjlQMvm98l8e2Juw/3AINPSSM8jtj
-        ayW3HiPv0UwgPQLGj+ef8g7/mj5okiE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696240172;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j+NdBRB608UMGwx19cp+azxH113d9HD7eQvWbnS3E3c=;
-        b=iRcq7NUyaP5be6nrcnYMoyljbjqkeyYLsaQZ4eSy3U1GaWLLWqRA9usXG8xjAdPx+QUsyb
-        9DNRCd1OwrwuHgAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 6381613434;
-        Mon,  2 Oct 2023 09:49:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id LFFDGCySGmUkTwAAMHmgww
-        (envelope-from <jack@suse.cz>); Mon, 02 Oct 2023 09:49:32 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id EEDC5A07C9; Mon,  2 Oct 2023 11:49:31 +0200 (CEST)
-Date:   Mon, 2 Oct 2023 11:49:31 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Wedson Almeida Filho <wedsonaf@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>,
-        Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 09/29] ext2: move ext2_xattr_handlers and
- ext2_xattr_handler_map to .rodata
-Message-ID: <20231002094931.yalzcksclq77qjvx@quack3>
-References: <20230930050033.41174-1-wedsonaf@gmail.com>
- <20230930050033.41174-10-wedsonaf@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230930050033.41174-10-wedsonaf@gmail.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+        Mon, 2 Oct 2023 05:50:23 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9DE8E
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:50:20 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c5db4925f9so20214965ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:50:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=areca-com-tw.20230601.gappssmtp.com; s=20230601; t=1696240220; x=1696845020; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:cc:to:from:subject
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=o8VuC62NpnTeKU5Qh6ig3nt0JiaZT8s+wdPFWHOU5H8=;
+        b=ICN+76aFB5ij0icoZsCTgK0CHrmkkiQvOGhFwUphEgC/xNmAw/jF5lpnSwS893Pfyn
+         40rQ61lZVrjNMq6mUSt0z8B0Z78JMwaly9eLB9niW8pHFRg+V4h++l3tT/rHZcySHSPU
+         FmWWAEIH58ARl70+3HOJFYEaoiMFbVzq+TyiX71yD36t4Rf4SFk785GjnWP14N5FzzlH
+         yyaUSd8ax3q4z/iIfID6vZDj+FkdBkEfHcqpvyzz+F74jHkqlIgu926zb3dmcc4EtBjC
+         qtcknSmrkGhzEL2rCd/ufEHdKbqfJJb8pZGjkYyXu4X/Y2I4yU5c2rgZl14ozZMb3JDq
+         DHmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696240220; x=1696845020;
+        h=content-transfer-encoding:mime-version:date:cc:to:from:subject
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o8VuC62NpnTeKU5Qh6ig3nt0JiaZT8s+wdPFWHOU5H8=;
+        b=niJRJDQ23wPLOU6HC1OtIDF+moYifxV/4YZgZyHFzfkejqiiRNzAbut/Xz2C6sG89F
+         gpNkF1BDPyZWe+8pldnjrmkH9mA1OvrLsGkP1psZhPbFioGcNWyLmeGhdenI8v8W1+aY
+         AeNCYc9LpA6npAkepbCVWCUFAusZuHfpYxygeGfQ3TjNwLi2czRO73xa2xhe31tqYzzF
+         HUUe/tfuDPABKltFVlpSZp7Y0gf34DOwY3sNifHMXzi7RI/lUbRbqrP9tmgHBJNzzP6c
+         elx8HUeus9p7w0uqH2vbLbeqgF9KIpI+2SgTJ6qXmHs+l+cwsVMGgkqHVY5Q8m4UQyDJ
+         fwZA==
+X-Gm-Message-State: AOJu0Yx/0WN4U8px25rvrGADI/44dp/0CWz7Q8MPOwXT8OXqswZcqJwg
+        8K93NBksJ7xp/ysa806C6Y6mKA==
+X-Google-Smtp-Source: AGHT+IFBKesD45x0cNLEJekqdAX+BrSLlBybOAsiaupwvgsZbU5M53ytMHfhMKdaBAGUU4y+AKNSdw==
+X-Received: by 2002:a17:902:ea0e:b0:1c1:fc5c:b31b with SMTP id s14-20020a170902ea0e00b001c1fc5cb31bmr20245585plg.9.1696240220338;
+        Mon, 02 Oct 2023 02:50:20 -0700 (PDT)
+Received: from centos78 (60-248-88-209.hinet-ip.hinet.net. [60.248.88.209])
+        by smtp.googlemail.com with ESMTPSA id jc20-20020a17090325d400b001c5a77715b1sm7932789plb.131.2023.10.02.02.50.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Oct 2023 02:50:19 -0700 (PDT)
+Message-ID: <7732e743eaad57681b1552eec9c6a86c76dbe459.camel@areca.com.tw>
+Subject: [PATCH v3 2/3] scsi: arcmsr:  support new PCI device ID 1883 and
+ 1886
+From:   ching Huang <ching2048@areca.com.tw>
+To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
+        linux-scsi@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     bvanassche@acm.org, kbuild test robot <lkp@intel.com>
+Date:   Mon, 02 Oct 2023 17:50:27 +0800
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat 30-09-23 02:00:13, Wedson Almeida Filho wrote:
-> From: Wedson Almeida Filho <walmeida@microsoft.com>
-> 
-> This makes it harder for accidental or malicious changes to
-> ext2_xattr_handlers or ext2_xattr_handler_map at runtime.
-> 
-> Cc: Jan Kara <jack@suse.com>
-> Cc: linux-ext4@vger.kernel.org
-> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+From: ching Huang <ching2048@areca.com.tw>
 
-Looks good to me. Feel free to add:
+This patch supports Areca new PCI device ID 1883 and 1886 Raid controllers.
 
-Acked-by: Jan Kara <jack@suse.cz>
+Signed-off-by: ching Huang <ching2048@areca.com.tw>
+---
+ drivers/scsi/arcmsr/arcmsr.h     | 4 ++++
+ drivers/scsi/arcmsr/arcmsr_hba.c | 6 ++++++
+ 2 files changed, 10 insertions(+)
 
-								Honza
-
-> ---
->  fs/ext2/xattr.c | 4 ++--
->  fs/ext2/xattr.h | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/ext2/xattr.c b/fs/ext2/xattr.c
-> index 8906ba479aaf..cfbe376da612 100644
-> --- a/fs/ext2/xattr.c
-> +++ b/fs/ext2/xattr.c
-> @@ -98,7 +98,7 @@ static struct buffer_head *ext2_xattr_cache_find(struct inode *,
->  static void ext2_xattr_rehash(struct ext2_xattr_header *,
->  			      struct ext2_xattr_entry *);
->  
-> -static const struct xattr_handler *ext2_xattr_handler_map[] = {
-> +static const struct xattr_handler * const ext2_xattr_handler_map[] = {
->  	[EXT2_XATTR_INDEX_USER]		     = &ext2_xattr_user_handler,
->  #ifdef CONFIG_EXT2_FS_POSIX_ACL
->  	[EXT2_XATTR_INDEX_POSIX_ACL_ACCESS]  = &nop_posix_acl_access,
-> @@ -110,7 +110,7 @@ static const struct xattr_handler *ext2_xattr_handler_map[] = {
->  #endif
->  };
->  
-> -const struct xattr_handler *ext2_xattr_handlers[] = {
-> +const struct xattr_handler * const ext2_xattr_handlers[] = {
->  	&ext2_xattr_user_handler,
->  	&ext2_xattr_trusted_handler,
->  #ifdef CONFIG_EXT2_FS_SECURITY
-> diff --git a/fs/ext2/xattr.h b/fs/ext2/xattr.h
-> index 7925f596e8e2..6a4966949047 100644
-> --- a/fs/ext2/xattr.h
-> +++ b/fs/ext2/xattr.h
-> @@ -72,7 +72,7 @@ extern void ext2_xattr_delete_inode(struct inode *);
->  extern struct mb_cache *ext2_xattr_create_cache(void);
->  extern void ext2_xattr_destroy_cache(struct mb_cache *cache);
->  
-> -extern const struct xattr_handler *ext2_xattr_handlers[];
-> +extern const struct xattr_handler * const ext2_xattr_handlers[];
->  
->  # else  /* CONFIG_EXT2_FS_XATTR */
->  
-> -- 
-> 2.34.1
-> 
+diff --git a/drivers/scsi/arcmsr/arcmsr.h b/drivers/scsi/arcmsr/arcmsr.h
+index 8f20d9cc5..2f80a6acb 100644
+--- a/drivers/scsi/arcmsr/arcmsr.h
++++ b/drivers/scsi/arcmsr/arcmsr.h
+@@ -78,9 +78,13 @@ struct device_attribute;
+ #ifndef PCI_DEVICE_ID_ARECA_1203
+ #define PCI_DEVICE_ID_ARECA_1203	0x1203
+ #endif
++#ifndef PCI_DEVICE_ID_ARECA_1883
++#define PCI_DEVICE_ID_ARECA_1883	0x1883
++#endif
+ #ifndef PCI_DEVICE_ID_ARECA_1884
+ #define PCI_DEVICE_ID_ARECA_1884	0x1884
+ #endif
++#define PCI_DEVICE_ID_ARECA_1886_0	0x1886
+ #define PCI_DEVICE_ID_ARECA_1886	0x188A
+ #define	ARCMSR_HOURS			(1000 * 60 * 60 * 4)
+ #define	ARCMSR_MINUTES			(1000 * 60 * 60)
+diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
+index 0a2d9b66e..2bc726f19 100644
+--- a/drivers/scsi/arcmsr/arcmsr_hba.c
++++ b/drivers/scsi/arcmsr/arcmsr_hba.c
+@@ -214,8 +214,12 @@ static struct pci_device_id arcmsr_device_id_table[] = {
+ 		.driver_data = ACB_ADAPTER_TYPE_A},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1880),
+ 		.driver_data = ACB_ADAPTER_TYPE_C},
++	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1883),
++		.driver_data = ACB_ADAPTER_TYPE_C},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1884),
+ 		.driver_data = ACB_ADAPTER_TYPE_E},
++	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1886_0),
++		.driver_data = ACB_ADAPTER_TYPE_F},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1886),
+ 		.driver_data = ACB_ADAPTER_TYPE_F},
+ 	{0, 0}, /* Terminating entry */
+@@ -4794,9 +4798,11 @@ static const char *arcmsr_info(struct Scsi_Host *host)
+ 	case PCI_DEVICE_ID_ARECA_1680:
+ 	case PCI_DEVICE_ID_ARECA_1681:
+ 	case PCI_DEVICE_ID_ARECA_1880:
++	case PCI_DEVICE_ID_ARECA_1883:
+ 	case PCI_DEVICE_ID_ARECA_1884:
+ 		type = "SAS/SATA";
+ 		break;
++	case PCI_DEVICE_ID_ARECA_1886_0:
+ 	case PCI_DEVICE_ID_ARECA_1886:
+ 		type = "NVMe/SAS/SATA";
+ 		break;
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.39.3
+
+
