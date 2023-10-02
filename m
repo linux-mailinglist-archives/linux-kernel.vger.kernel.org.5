@@ -2,142 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D391E7B5B7D
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8828A7B5B79
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238900AbjJBTgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 15:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
+        id S238896AbjJBTiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 15:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238881AbjJBTgU (ORCPT
+        with ESMTP id S229623AbjJBTip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 15:36:20 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA890AC
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 12:36:15 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:5b9d:c703:a536:8d7b])
-        by michel.telenet-ops.be with bizsmtp
-        id t7cC2A00G0Gl2EY067cCtG; Mon, 02 Oct 2023 21:36:12 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qnOhn-00565P-AV
-        for linux-kernel@vger.kernel.org;
-        Mon, 02 Oct 2023 21:36:12 +0200
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1qnOiC-00FUnr-9G
-        for linux-kernel@vger.kernel.org;
-        Mon, 02 Oct 2023 21:36:12 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     linux-kernel@vger.kernel.org
-Subject: Build regressions/improvements in v6.6-rc4
-Date:   Mon,  2 Oct 2023 21:36:12 +0200
-Message-Id: <20231002193612.3693319-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <CAHk-=wia2-4DRvD-aXz70AV64yrt+Vr50MxHiDunZ71dHATv-Q@mail.gmail.com>
-References: <CAHk-=wia2-4DRvD-aXz70AV64yrt+Vr50MxHiDunZ71dHATv-Q@mail.gmail.com>
+        Mon, 2 Oct 2023 15:38:45 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 406EFAC;
+        Mon,  2 Oct 2023 12:38:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F15A5C433C8;
+        Mon,  2 Oct 2023 19:38:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696275521;
+        bh=3RlTZzQYaC/+oBacen75NhpiynitlSHubKdJ2Nak6tY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZWMakQzjBPIi8XauGl6bSkbTOR50c7ZX03Mm8TQ6dGqzdWCF5fyxj2DiowYBR/dcE
+         EAiYm3QcczaP2m9KSWbGn5TJFvBaT/ChZmDKhIjvrL0SZFgfvHmR91wiXphloE7AJy
+         QQRgBRqJFRkwlKIjr0acdh7NOAIAjNHS95u8ivuqUzXR+/2HavImNmufU0YeXkaA79
+         mCy1F3j70Q0S5WfmMRhZ19FLPsJKNp2frVyIqFaxe7r9x+TgDUTnCJUeU4Z0WsvTgo
+         nf40iiKGsEzAzBfwDOxaEOu6XX5/a2mi/uQ8SL6SMRx5jLOGsms5EH/QDidz/taiJh
+         7bLdV/cYCVTLQ==
+Received: (nullmailer pid 2400172 invoked by uid 1000);
+        Mon, 02 Oct 2023 19:38:35 -0000
+Date:   Mon, 2 Oct 2023 14:38:35 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     "Miclaus, Antoniu" <Antoniu.Miclaus@analog.com>
+Cc:     Conor Dooley <conor@kernel.org>, Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: ltc2991: add bindings
+Message-ID: <20231002193835.GA2386834-robh@kernel.org>
+References: <20231002101835.39624-1-antoniu.miclaus@analog.com>
+ <20231002-babbling-justice-73d3601a71aa@spud>
+ <CY4PR03MB33990FB22E1BB8686AC0CF509BC5A@CY4PR03MB3399.namprd03.prod.outlook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CY4PR03MB33990FB22E1BB8686AC0CF509BC5A@CY4PR03MB3399.namprd03.prod.outlook.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Below is the list of build error/warning regressions/improvements in
-v6.6-rc4[1] compared to v6.5[2].
+On Mon, Oct 02, 2023 at 01:46:53PM +0000, Miclaus, Antoniu wrote:
+> 
+> 
+> --
+> Antoniu Miclăuş
+> 
+> > -----Original Message-----
+> > From: Conor Dooley <conor@kernel.org>
+> > Sent: Monday, October 2, 2023 4:01 PM
+> > To: Miclaus, Antoniu <Antoniu.Miclaus@analog.com>
+> > Cc: Jean Delvare <jdelvare@suse.com>; Guenter Roeck <linux@roeck-
+> > us.net>; Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
+> > <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
+> > <conor+dt@kernel.org>; Jonathan Corbet <corbet@lwn.net>; linux-
+> > hwmon@vger.kernel.org; devicetree@vger.kernel.org; linux-
+> > kernel@vger.kernel.org; linux-doc@vger.kernel.org
+> > Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: ltc2991: add bindings
+> > 
+> > [External]
+> > 
+> > Hey,
+> > 
+> > On Mon, Oct 02, 2023 at 01:18:14PM +0300, Antoniu Miclaus wrote:
+> > > Add dt-bindings for ltc2991 octal i2c voltage, current and temperature
+> > > monitor.
+> > >
+> > > Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+> > > ---
+> > > changes in v2:
+> > >  - make compatible const type
+> > >  - remove `|` where not necessary
+> > >  - switch to micro-ohms for the shunt resistor property
+> > >  - add vendor prefix for temperature-enable
+> > 
+> > Thanks for the updates...
+> > 
+> > >  .../bindings/hwmon/adi,ltc2991.yaml           | 114 ++++++++++++++++++
+> > >  1 file changed, 114 insertions(+)
+> > >  create mode 100644
+> > Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+> > b/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+> > > new file mode 100644
+> > > index 000000000000..3811ea07a04f
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
+> > > @@ -0,0 +1,114 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +
+> > > +$id: http://devicetree.org/schemas/hwmon/adi,ltc2991.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Analog Devices LTC2991 Octal I2C Voltage, Current and Temperature
+> > Monitor
+> > > +
+> > > +maintainers:
+> > > +  - Antoniu Miclaus <antoniu.miclaus@analog.com>
+> > > +
+> > > +description: |
+> > > +  The LTC2991 is used to monitor system temperatures, voltages and
+> > currents.
+> > > +  Through the I2C serial interface, the eight monitors can individually
+> > measure
+> > > +  supply voltages and can be paired for differential measurements of
+> > current
+> > > +  sense resistors or temperature sensing transistors.
+> > > +
+> > > +  Datasheet:
+> > > +    https://www.analog.com/en/products/ltc2991.html
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: adi,ltc2991
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  '#address-cells':
+> > > +    const: 1
+> > > +
+> > > +  '#size-cells':
+> > > +    const: 0
+> > > +
+> > > +  vcc-supply: true
+> > > +
+> > > +patternProperties:
+> > > +  "^channel@[0-3]$":
+> > > +    type: object
+> > > +    description:
+> > > +      Represents the differential/temperature channels.
+> > > +
+> > > +    properties:
+> > > +      reg:
+> > > +        description:
+> > > +          The channel number. LTC2991 can monitor 4 currents/temperatures.
+> > > +        items:
+> > > +          minimum: 0
+> > > +          maximum: 3
+> > > +
+> > > +      shunt-resistor-micro-ohms:
+> > > +        description:
+> > > +          The value of curent sense resistor in miliohms. Enables differential
+> > > +          input pair.
+> > > +
+> > > +      adi,temperature-enable:
+> > > +        description:
+> > > +          Enables temperature readings for a input pair.
+> > > +        type: boolean
+> > 
+> > ...but I did not see an answer to my question on v1:
+> > 	TBH, this seems like it is used just to control software behaviour.
+> > 	Why would you want to actually disable this in DT?
+> > In other words, is there something in that hardware that precludes
+> > measuring temperature for channels that do not contain this property?
+> > 
+> > Thanks,
+> > Conor.
+> > 
+> Sorry for missing that. I took in consideration this approach based on the pin functions
+> described in the datasheet (page 8 of 32). For example the V1 pin of the part can support
+> 3 different configurations: "V1 (Pin 1): First Monitor Input. This pin can be configured
+> as a single-ended input (0V to 4.9V) or the positive inputfor a differential or remote diode
+> temperature measurement (in combination with V2)."
+> Moreover, looking at the multiple typical applications examples at the end of the datasheet
+> there is a specific adjacent hardware circuit connected to this part for the temperature
+> measurements configurations.
 
-Summarized:
-  - build errors: +4/-5
-  - build warnings: +33/-6
+Makes sense. Please expand the description with some of this detail so 
+the purpose is clear. The description should answer when do I set this 
+property or not.
 
-JFYI, when comparing v6.6-rc4[1] to v6.6-rc3[3], the summaries are:
-  - build errors: +0/-0
-  - build warnings: +0/-3
-
-Note that there may be false regressions, as some logs are incomplete.
-Still, they're build errors/warnings.
-
-Happy fixing! ;-)
-
-Thanks to the linux-next team for providing the build service.
-
-[1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/8a749fd1a8720d4619c91c8b6e7528c0a355c0aa/ (all 239 configs)
-[2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/2dde18cd1d8fac735875f2e4987f11817cc0bc2c/ (234 out of 239 configs)
-[3] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/6465e260f48790807eef06b583b38ca9789b6072/ (all 239 configs)
-
-
-*** ERRORS ***
-
-4 error regressions:
-  + error: modpost: ".L872" [drivers/mtd/nand/raw/nand.ko] undefined!:  => N/A
-  + {standard input}: Error: expected comma after name `xpcs_co' in .size directive:  => 1100
-  + {standard input}: Error: expected symbol name:  => 1095
-  + {standard input}: Error: pcrel too far:  => 940, 932, 939
-
-5 error improvements:
-  - error: modpost: ".L856" [drivers/mtd/nand/raw/nand.ko] undefined!: N/A => 
-  - {standard input}: Error: Missing symbol name in directive: 1096 => 
-  - {standard input}: Error: unknown opcode: 1091 => 
-  - {standard input}: Error: unknown pseudo-op: `.glo': 1097 => 
-  - {standard input}: Error: unrecognized symbol type "": 1096 => 
-
-
-*** WARNINGS ***
-
-33 warning regressions:
-  + modpost: WARNING: modpost: "__ashldi3" [fs/ext2/ext2.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__lshrdi3" [drivers/block/ublk_drv.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__ndelay" [drivers/mtd/nand/raw/qcom_nandc.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/geode-rng.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/ingenic-rng.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/intel-rng.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/mxc-rnga.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/char/hw_random/xgene-rng.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/adl_pci9118.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/amplc_pci230.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/cb_das16_cs.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/cb_pcidas.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/das800.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/mpc624.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/ni_atmio.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/ni_labpc_common.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/pcl812.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/pcl816.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/pcl818.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/comedi/drivers/rti800.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/hwmon/hs3001.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/mtd/nand/raw/qcom_nandc.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/net/ethernet/broadcom/asp2/bcm-asp.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/net/wireless/mediatek/mt76/mt792x-lib.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/phy/qualcomm/phy-qcom-m31.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/phy/realtek/phy-rtk-usb2.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/phy/realtek/phy-rtk-usb3.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/phy/rockchip/phy-rockchip-inno-usb2.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/pmdomain/amlogic/meson-ee-pwrc.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/pmdomain/amlogic/meson-gx-pwrc-vpu.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/watchdog/gxp-wdt.ko] has no CRC!:  => N/A
-  + modpost: WARNING: modpost: "__udelay" [drivers/watchdog/smsc37b787_wdt.ko] has no CRC!:  => N/A
-  + {standard input}: Warning: end of file not at end of a line; newline inserted:  => 1094
-
-6 warning improvements:
-  - modpost: WARNING: modpost: "__udelay" [drivers/hwmon/smm665.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/net/wireless/mediatek/mt76/mt7921/mt7921-common.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/net/wireless/mediatek/mt76/mt7996/mt7996e.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/soc/amlogic/meson-ee-pwrc.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [drivers/soc/amlogic/meson-gx-pwrc-vpu.ko] has no CRC!: N/A => 
-  - modpost: WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-l3.ko] has no CRC!: N/A => 
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+Rob
