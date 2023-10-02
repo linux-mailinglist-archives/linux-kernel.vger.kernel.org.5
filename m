@@ -2,77 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6C717B5A8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410FD7B5AB6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:04:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238841AbjJBSuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 14:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47936 "EHLO
+        id S229643AbjJBS5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238791AbjJBSuI (ORCPT
+        with ESMTP id S229629AbjJBS5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 14:50:08 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC45C9
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 11:50:04 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so44865a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 11:50:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696272603; x=1696877403; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Lci7aE9Nr12rnsuBj8lxjXGwqKY+F3Jq4/Wt3MfIP2I=;
-        b=O38wsdmxtsyna4oOXPYL4H+Twdm/qOzAHz9KQdyr4mqdZm+XuEjlfGkoeVFVJcNc5K
-         prA2f9hvBEW4j2GmaGH+mZkZEuZ7vT4tUN2PxFMO2zFWEE78UN/L9tZd8yFrHysdI8bT
-         Sjc3V/qlMwZ1PRlCe0NqqX9v5qQTmI5EF7BTNqXre8YISVLhtQpO6aIJMkmfwql5Lm16
-         NmqVf4qF0BgshIbmiVXajOgmlD8yV61dL7MA9kXd2at14bpFxY5a5eLR8VLZ09cUemol
-         lNY/6flNkYKFezBSqltNp1tBut2dhfOiKHBPJyr93qOwO1KVDXkS3sua5eKiEcvtVpi6
-         eqaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696272603; x=1696877403;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Lci7aE9Nr12rnsuBj8lxjXGwqKY+F3Jq4/Wt3MfIP2I=;
-        b=L3DdhL7KtECTijHGzDznB/usagnQz7z4Gwi5EdMpSpJeI7E+8JjvQZzbnwv1Mi56o6
-         nAGgY3OkHmcGeb0F6W5Lu63z3cXh3hjlHVhgwGNaQHz8NVk7TrW2W88G4DqOr7TvV9Sx
-         GdfEYODUdTUM8tzvgGzapPkjoKNg20gTKC7BhDJXjPQaBr032ic8U/9X/8UoTphXOaWk
-         nJacKOJ5N9oBSKcjwWVI61y1fwC8WaG4p1xPqxTt+YtPoHYxELMLeTBlbwShzTyYApVU
-         mzyVWdoFdBvBUKo/hBm/FPrnT/fTwYyp0s3/bcYIMGAvhZa07+g37HtLFEoOJXuuTeFX
-         DrvA==
-X-Gm-Message-State: AOJu0YyhP1txJ6zqQiwFdQjDkW/OBTpTRNHJuhBtTeu4eTe3sabtoXFQ
-        L+M2njm4YdtqcGFQEIJzJsD68hTEFi1rIq2WuoE7qQ==
-X-Google-Smtp-Source: AGHT+IGL+kcb6ZIi1pHexQ8Fkm4S3zA9EjTyFErM4ZJzlSAeQCJ0yHHY0K9LT47stqhw9jK05IhHUx7c6c+C9uoQT4Y=
-X-Received: by 2002:a05:6402:1a28:b0:531:1241:3e98 with SMTP id
- be8-20020a0564021a2800b0053112413e98mr9957195edb.9.1696272602654; Mon, 02 Oct
- 2023 11:50:02 -0700 (PDT)
+        Mon, 2 Oct 2023 14:57:40 -0400
+X-Greylist: delayed 400 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 02 Oct 2023 11:57:37 PDT
+Received: from mx3.wp.pl (mx3.wp.pl [212.77.101.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06435AC
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 11:57:36 -0700 (PDT)
+Received: (wp-smtpd smtp.wp.pl 42026 invoked from network); 2 Oct 2023 20:50:54 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1696272654; bh=GepljF1EQTI9r70EH4tqi9RpNkoQyh/hyQxu9GZweVk=;
+          h=From:To:Cc:Subject;
+          b=IWGGnhxfjpYf6rC2AzOjOIHwe/vB1LOrIcefmkfFh25VqtFS5EqdYTiKGun2Fim6t
+           rTPdESj/5rszSFz5/JDkHBVs0QDnjJSN+F+QucwuMfLkcDqws+Zccvr28B811SM+SV
+           IKXeZi6JJC6kq7HQCU6AgaNDi7yYEwQz4EmcmTsc=
+Received: from 89-64-13-175.dynamic.chello.pl (HELO localhost) (stf_xl@wp.pl@[89.64.13.175])
+          (envelope-sender <stf_xl@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <bagasdotme@gmail.com>; 2 Oct 2023 20:50:54 +0200
+Date:   Mon, 2 Oct 2023 20:50:53 +0200
+From:   Stanislaw Gruszka <stf_xl@wp.pl>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     enc0der <enc0der@gmail.com>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Wireless <linux-wireless@vger.kernel.org>
+Subject: Re: rt8000usb driver issue (maybe interaction with other drivers)
+Message-ID: <20231002185053.GB402943@wp.pl>
+References: <CAEXpi5Rd6Y4umKOWRsCjX0kit=W5ZrVhn=MuRkyvJPwmjjDVnA@mail.gmail.com>
+ <ZRj_ovMi-Xbb8i-D@debian.me>
 MIME-Version: 1.0
-References: <20230929-ad2s1210-mainline-v3-0-fa4364281745@baylibre.com>
- <20230929-ad2s1210-mainline-v3-26-fa4364281745@baylibre.com>
- <20230930170046.36637e9c@jic23-huawei> <CAMknhBH4+cUSX_j3-Y0xuTEiZHd3Ke4Zm8FdxLZJwn5gr_d-ug@mail.gmail.com>
-In-Reply-To: <CAMknhBH4+cUSX_j3-Y0xuTEiZHd3Ke4Zm8FdxLZJwn5gr_d-ug@mail.gmail.com>
-From:   David Lechner <dlechner@baylibre.com>
-Date:   Mon, 2 Oct 2023 13:49:51 -0500
-Message-ID: <CAMknhBGFpYx3oYqJgVgKZpoeANmVmXtUn+V3VnAW7woc7ytTow@mail.gmail.com>
-Subject: Re: [PATCH v3 26/27] staging: iio: resolver: ad2s1210: implement
- fault events
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-staging@lists.linux.dev,
-        David Lechner <david@lechnology.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRj_ovMi-Xbb8i-D@debian.me>
+X-WP-MailID: 5ca95ff5381d87fae914a0949b3625fa
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [IWPl]                               
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,54 +55,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 11:58=E2=80=AFAM David Lechner <dlechner@baylibre.co=
-m> wrote:
->
-> On Sat, Sep 30, 2023 at 11:00=E2=80=AFAM Jonathan Cameron <jic23@kernel.o=
-rg> wrote:
-> >
-> > On Fri, 29 Sep 2023 12:23:31 -0500
-> > David Lechner <dlechner@baylibre.com> wrote:
-> >
-> > > From: David Lechner <david@lechnology.com>
-> > >
-> > > From: David Lechner <dlechner@baylibre.com>
-> > >
-> > > When reading the position and velocity on the AD2S1210, there is also=
- a
-> > > 3rd byte following the two data bytes that contains the fault flag bi=
-ts.
-> > > This patch adds support for reading this byte and generating events w=
-hen
-> > > faults occur.
-> > >
-> > > The faults are mapped to various channels and event types in order to
-> > > have a unique event for each fault.
-> > >
-> > > Signed-off-by: David Lechner <dlechner@baylibre.com>
-> >
-> > Use of x and y modifiers is a little odd.  What was your reasoning?
-> > Was it just that there was a X_OR_Y modifier?  If so, don't use that!
-> > It seemed like a good idea at the time, but it's not nice to deal with
-> > and requires a channel with that modifier to hang the controls off
-> > + make sure userspace expects that event code.
->
->
-> Regarding the point about "requires a channel with that modifier to
-> hang the controls off...". Although that comment was about modifiers,
-> does it also apply in general.
->
-> There are several fault events that don't have any configurable
-> parameters, namely _sine/cosine inputs clipping_ and _velocity exceeds
-> max tracking rate_. So there won't be any attributes that contain the
-> event specification for those (e.g. no `events/in_angl0_*`
-> attributes). It sounds like this would be a problem as well?
->
-> Should we consider a IIO_EV_INFO_LABEL so that we can have some sort
-> of attribute (namely `events/<dir>_<channel spec>_label`) so that
-> userspace can enumerate expected events for non-configurable events?
 
-Well, I didn't think that all the way through before I hit send.
-IIO_EV_INFO_LABEL is clearly not the right way to implement a
-`events/*_label` attribute, but however we consider going about it,
-the point of adding such an attribute was the main idea.
+(cc list is too big, I shrink it)
+
+On Sun, Oct 01, 2023 at 12:12:02PM +0700, Bagas Sanjaya wrote:
+> On Sat, Sep 30, 2023 at 06:04:22PM -0400, enc0der wrote:
+> > Hello all!
+> > 
+> > This is the first time I have ever reported anything linux related, so
+> > if this is not the proper way, please let me know what the correct way
+> > is.
+> > 
+> > I am using an NVIDIA Jetson Orin Nano developer platform.  They
+> > release what they call a jetpack that comes with linux and their
+> > additions on top.  We are using the latest version they release (just
+> > released about a month ago)
+> 
+> Something like a distro? What version?
+> 
+> > 
+> > When I plug in a USB WiFi adapter that uses the rt8000usb driver, if I
+> > connect to a network it sees, I get a kernel panic.  If I have
+> > "automatically connect" it kernel panics when I plug the USB in.
+> > 
+> > The version of the kernel they ship is:
+> > 
+> > 5.10.120-tegra. (tegra is their additions)
+> > 
+> > I talked with NVIDIA first on what I was seeing and after looking at
+> > my log, they said it is likely a driver problem.
+
+Is possible that this is rt2800usb or usb host driver issue. But without
+full logs we can not be sure.  
+
+> > Right after I plug in the device, this is the sequence of messages I see:
+> > 
+> > [  264.400281] BUG: scheduling while atomic: NetworkManager/622/0x00000203
+
+After that message there should be stack trace visible. To debug this
+you would need to find a way to see the full logs (dmesg/kmsg) after the crash.
+It can be serial console, netconsole, pstore or some other thing. Perhaps
+your platform allow to boot debug kernel with various check, which will
+not panic when the bug occures and will show useful info in the logs.
+
+> > [   28.071586] lr : arm_smmu_dma_sync+0x40/0x70
+> > [   28.075965] sp : ffff8000100231a0
+> > [   28.079365] x29: 0000000000001000 x28: ffff4655c01d0ec0
+> > [   28.084817] x27: ffffaced1f227000 x26: ffff4655c6ee32c0
+> > [   28.090270] x25: 0000000000000000 x24: ffffaced1e405858
+> > [   28.095718] x23: ffff46572e84ae00 x22: ffff4655c6ee2c40
+> > [   28.101165] x21: ffff4655c82c3480 x20: ffffaced1db49e08
+> > [   28.106618] x19: ffff8000100231c0 x18: 0000000000010101
+> > [   28.112073] x17: 0000000000cccccc x16: ffffaced1d23382c
+> > [   28.117520] x15: 0000000000000000 x14: 0000000000000000
+> > [   28.122970] x13: 0000000000000001 x12: 0000000000000000
+> > [   28.128421] x11: 0000000000000008 x10: 0000000000000ab0
+> > [   28.133863] x9 : ffff800010023180 x8 : ffff4655c6ee3750
+> > [   28.139309] x7 : 000000067eb29c20 x6 : 0000000000000238
+> > [   28.144763] x5 : 00000000410fd420 x4 : 0000000000f0000f
+> > [   28.150214] x3 : 0000000000001000 x2 : ffff4655c82c3480
+> > [   28.155658] x1 : ffffaced1db49e08 x0 : ffff465704c37558
+> > [   28.161107] Call trace:
+> > [   28.163620]  0x1000
+> > [   28.165777] Code: bad PC value
+> > [   28.168911] ---[ end trace 62dc42c98ec427ca ]---
+> > [   28.183964] Kernel panic - not syncing: Oops: Fatal exception
+> > [   28.189864] SMP: stopping secondary CPUs
+> > [   29.275883] SMP: failed to stop secondary CPUs 0-5
+> > [   29.280811] Kernel Offset: 0x2ced0d200000 from 0xffff800010000000
+
+This actually suggest that the issue is somewhere in the core.
+But again, without full logs we can not be sure.
+
+> > [   29.287066] PHYS_OFFSET: 0xffffb9ab40000000
+> > [   29.291360] CPU features: 0x08040006,4a80aa38
+> > [   29.295832] Memory Limit: none
+> > [   29.309234] ---[ end Kernel panic - not syncing: Oops: Fatal exception ]---
+> > 
+> > (This one I believe when I started with the wifi adapter connected to
+> > USB3 and networking was set to automatically connect.
+> > 
+> > I see in the git repo that these drivers have been changed over the
+> > last few years.  Given the age of the kernel that NVIDIA is using, I
+> > am not sure how to correlate changes listed in the history of the
+> > files with the release.  I guess I could download and diff them until
+> > I figure out where.
+
+The rt2800 driver wasn't modified for ages. It's rater stable, but
+perhaps there are issues in other involved modules i.e. mac80211.
+
+Regards
+Stanislaw
+
