@@ -2,64 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FBE7B5D01
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 00:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBDE97B5D0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 00:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbjJBWGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 18:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60838 "EHLO
+        id S230007AbjJBWSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 18:18:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbjJBWGj (ORCPT
+        with ESMTP id S229458AbjJBWSw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 18:06:39 -0400
-Received: from out-204.mta0.migadu.com (out-204.mta0.migadu.com [91.218.175.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D1A0B0
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 15:06:36 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 15:06:30 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1696284394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZEY9SxAIE8pwzuAQoIBCO5YWA98xQxOlqIWFVS/2M1I=;
-        b=Vvr2iKAkPzZQLD9VqcfIlV0sg3xjtI4K8hu+bxCUYvnmd6j0nT4AhTOn0CS6YsuhCA0gmf
-        +IH8GSi36LjjcWG1PBLR571DZ9H87slWd9OW+XlWLg3wqhg4ojgsKH6aMk3s8QFtPRgnUa
-        hIabfPn7qrEIloMozagpH56qAJj51xU=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the mm tree
-Message-ID: <ZRs-5gMPrpzONDEQ@P9FQF9L96D>
-References: <20231003075522.0284d2b1@canb.auug.org.au>
+        Mon, 2 Oct 2023 18:18:52 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E199A91;
+        Mon,  2 Oct 2023 15:18:49 -0700 (PDT)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6891A5C0176;
+        Mon,  2 Oct 2023 18:18:46 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Mon, 02 Oct 2023 18:18:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1696285126; x=1696371526; bh=Kf7Ykmgbfdu5N+OfY/OsdIyHSTeSp/sSxrP
+        ybVZP/HQ=; b=lKLZvJ4F3LkgjNkja+6sXy7kK50ZuKGD2mY7H0PA/3PSryjqPNk
+        tc5U/ZFh6WlIBd2FkJO2EcFlWFmHh7G6r2NfRTikNjxivA+BtL3nWlMxA02S7RX+
+        NOLxJL4C1dXNdE3kaV/1xJnttlRTrMp7g2mnGrmUfsY1vm5aD+PjRlujpkDNOaPF
+        b/g0mjXLfGYc7hZESdYItQk2Sdsw7vM6/jnnkyv4GCIYz6E4LFnvzoqeGkE9p7qT
+        k7qi2YxD7sJDod6gpHvkyUq4ITTI+3Jon7pHpAw+8vdfNo1Kh6vyLgB54EdsxlsK
+        z7cCbbawKMHpCBpoJax7azJVAUG45Qy//+Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1696285126; x=1696371526; bh=Kf7Ykmgbfdu5N+OfY/OsdIyHSTeSp/sSxrP
+        ybVZP/HQ=; b=dZpwWqu6puNF7CyKZsmq225hr5AVDmYYRlTxub3v7FoYgl8ZZcM
+        wgqwqvkXIkHKiww7cUHn3n5yzmms8WVXGXYlbm+RlFiBG092V8GbZqQz68roenAR
+        7ndkC8ofwTK11yIBbshuD5gWzRJ/58J3YPIQ0aJEfImYhS1YDcS1T834SwTV0aWk
+        t8evKXyVUtk1W1cOtMBSntaWlHmgIv6R839/or/g4PNPftj5zLatSocfw1zJ3ec2
+        FczWr5/BDG6tVT3pjTfoqURM/5DAQ3nBT3dWBo7nwaYVY2FkaZnBKwlQRUR6dTan
+        NZlRVqr+EIUGJM5XxQr/16hs5SK/EDPqICw==
+X-ME-Sender: <xms:xUEbZc3u324XBuY6c0Ll07VtzDte2gJnsog_bNe5ibyH1LwbQpRbog>
+    <xme:xUEbZXH31pijX1_0FrVNrzNN4zxnlNAaJ0uhy-YyfQDJPGlim6zRkep04KIzDNIDN
+    ic4pQcHJkr19Z-X>
+X-ME-Received: <xmr:xUEbZU45Y0dRcSMTo0v-FEsDetGvy_n96JEx6CGsEgVsibkCPb-QnulrdfuBydoi3Vpa2g0gdGiTq7JAcXbj75IksU3Tdyr9MIXiHLXZSnE9L103dl8D>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedugddtkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepuegvrhhn
+    ugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilh
+    drfhhmqeenucggtffrrghtthgvrhhnpeevhffgvdeltddugfdtgfegleefvdehfeeiveej
+    ieefveeiteeggffggfeulefgjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrihhlrdhf
+    mh
+X-ME-Proxy: <xmx:xUEbZV3mhkeepYT7X8ZkdfbDc_aN33bRvXXRtaeEQvF5UeJgPxW-CA>
+    <xmx:xUEbZfFnZ-eWboMARv_Mqu1RLJ96qQmX0jJrhE7O3Rk1bSZl04oasw>
+    <xmx:xUEbZe9jfL873vlg2_kIiBBY21ytQ9x7JYRZZo73aD4wE0I-CnY7BA>
+    <xmx:xkEbZU6hCqdQ1E84DvskxdXGYbdTz94i2-DAtvH9v3GKnhaP6KaTmQ>
+Feedback-ID: id8a24192:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 2 Oct 2023 18:18:44 -0400 (EDT)
+Message-ID: <97163cdf-ab2c-4fb8-abf2-738a4680c47f@fastmail.fm>
+Date:   Tue, 3 Oct 2023 00:18:42 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003075522.0284d2b1@canb.auug.org.au>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [resend PATCH v2 0/2] virtiofs submounts that are still in use
+ forgotten by shrinker
+To:     Krister Johansen <kjlx@templeofstupid.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel@vger.kernel.org
+Cc:     Miklos Szeredi <mszeredi@redhat.com>, linux-kernel@vger.kernel.org,
+        German Maglione <gmaglione@redhat.com>,
+        Greg Kurz <groug@kaod.org>, Max Reitz <mreitz@redhat.com>
+References: <cover.1696043833.git.kjlx@templeofstupid.com>
+Content-Language: en-US, de-DE
+From:   Bernd Schubert <bernd.schubert@fastmail.fm>
+In-Reply-To: <cover.1696043833.git.kjlx@templeofstupid.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 07:55:22AM +1100, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Commit
-> 
->   e47f255f6365 ("mm-kmem-add-direct-objcg-pointer-to-task_struct-fix")
-> 
-> is missing a Signed-off-by from its author.
 
-Hi Stephen,
 
-this commit is a fixup which will be merged into the main commit before
-the final merge.
+On 10/2/23 17:24, Krister Johansen wrote:
+> Hi,
+> I recently ran into a situation where a virtiofs client began
+> encountering EBADF after the client / guest system had an OOM.  After
+> reproducing the issue and debugging, the problem is caused by a
+> virtiofsd submount having the nodeid of its root dentry fogotten.  This
+> occurs because it borrows the reference for this dentry from the parent
+> that is passed into the function.
 
-Thank you!
+
+Sorry, I didn't forget you, just didn't manage to review the 2nd version 
+yet. Will definitely do this week.
+Please also note that there will be merge conflicts with atomic open 
+patches from Dharmendra/me. Although probably not too difficult to resolve.
+
+
+Thanks,
+Bernd
