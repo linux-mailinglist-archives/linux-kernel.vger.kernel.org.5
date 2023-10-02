@@ -2,121 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD76B7B5BDD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF7E7B5BE6
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235631AbjJBUNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 16:13:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40514 "EHLO
+        id S229756AbjJBUS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 16:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbjJBUNA (ORCPT
+        with ESMTP id S229497AbjJBUS1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 16:13:00 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DAF0A6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 13:12:56 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77412b91c41so13692185a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 13:12:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696277575; x=1696882375; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4ig8P4cQOGE/ZtlmRjRCjZeop9P1BTd8W7jj+VA+9aI=;
-        b=0o3ncYFUuY+VowDql8yoKEm4jD156AkUWgkCakspTyKKENrQzoWyT9LVMULUFmoNAq
-         65B4xG+Rw57tZewQ31g0/fXyOXx5MQTsIi45a/IjAqLTIETvhT0IsUQNAdLWASVYkAXS
-         oXGn6kQHjyjA3+WTTDe6l/Kjk+Curm1vMk0O9hGsaLVdNnLjpHkiZ4cxfg1ZxfPku5uT
-         5vJULhGHXmwgYAsk3/NyfH8tGgXtSvd79b4AQKB0Sx/8l8dqPN3M1X75VYsvj6n1WYVe
-         1siVBFaRj3lqntyINalRF1J0gaH+FzV7tJMcrEUWtFGfEFMkrd80ESGCbLmetl7wFmJg
-         MLGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696277575; x=1696882375;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4ig8P4cQOGE/ZtlmRjRCjZeop9P1BTd8W7jj+VA+9aI=;
-        b=Qy7iDLCDF339Z5Zcaq4VG6Y1AmEhbinh5N2wUbniI54b2/bTssxmPrJg1jTLYpDnRv
-         aO8YN//UVP+zFNVrW287Kcp16gRgcpJiotqRgd2kMGp8/6mkQu51VN9d2HDW7SpIY3HO
-         kp3vAnICvBkAvRsi9zrEWtAW5tUJBvhkVIXPm2H/AEbNs3dlR/h/+wRzdYM4Xv/6zMbf
-         R8t41DI6K585UKAeRzFC0V/BKKiwXD3++QJ/k1ycO8qvvyufUb59LTpgGpqon59Rbt+o
-         85jtdxrsbssURMM3yQDPbaYgkEtYQrS032tAHio9qGVx9hzALvLq+Lc6Auy8k890RnO8
-         rdQA==
-X-Gm-Message-State: AOJu0YzFaXwsABuEcwajHO7v+FZYxIiTPIqNuAJ0xt0TaWhUHeNBXAz6
-        Zs1jB9vI6MBmLVxb6TfKuoL7ZA==
-X-Google-Smtp-Source: AGHT+IEQxVBvmIIyECAYi31Co1WajvJKUAwk2DEdf2g2H2l51M3wsw7tatmmX4E/BLzu5B0qPOINzA==
-X-Received: by 2002:a05:620a:854:b0:774:1d7f:2730 with SMTP id u20-20020a05620a085400b007741d7f2730mr10977679qku.46.1696277575439;
-        Mon, 02 Oct 2023 13:12:55 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
-        by smtp.gmail.com with ESMTPSA id c2-20020a05620a134200b007743360b3fasm6248556qkl.34.2023.10.02.13.12.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 13:12:55 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 16:12:54 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <roman.gushchin@linux.dev>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH rfc 2/5] mm: kmem: add direct objcg pointer to task_struct
-Message-ID: <20231002201254.GA8435@cmpxchg.org>
-References: <20230927150832.335132-1-roman.gushchin@linux.dev>
- <20230927150832.335132-3-roman.gushchin@linux.dev>
+        Mon, 2 Oct 2023 16:18:27 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 594A2B7;
+        Mon,  2 Oct 2023 13:18:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=xn3+HJeASNLi6Bxxpih08r0KtwhwbXCe716RaBhG288=; b=HcBw+VQyOqeJxrqsHPEF14fWR7
+        H3mS1uwbV36Xo6KpGGDeSfPCbJQJoJvsohNSO80ZHrOy+t595RRK9G+qUT0JNYZnotzTcyDBqFm1Z
+        PaDsSn4gmNm7bEs09koDJ1o8c4YxrVDud2vK/HKeoqw9zNydkEUSqsl44MseDvEvwlvQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qnPMj-0083Dd-H5; Mon, 02 Oct 2023 22:18:05 +0200
+Date:   Mon, 2 Oct 2023 22:18:05 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Robert Marko <robimarko@gmail.com>
+Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Marangi <ansuelsmth@gmail.com>
+Subject: Re: [RFC PATCH net-next] net: phy: aquantia: add firmware load
+ support
+Message-ID: <df89a28e-0886-4db0-9e68-5f9af5bec888@lunn.ch>
+References: <20230930104008.234831-1-robimarko@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230927150832.335132-3-roman.gushchin@linux.dev>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230930104008.234831-1-robimarko@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 08:08:29AM -0700, Roman Gushchin wrote:
-> @@ -3001,6 +3001,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
->  	return objcg;
->  }
->  
-> +static DEFINE_SPINLOCK(current_objcg_lock);
-> +
-> +static struct obj_cgroup *current_objcg_update(struct obj_cgroup *old)
+> +/* load data into the phy's memory */
+> +static int aquantia_load_memory(struct phy_device *phydev, u32 addr,
+> +				const u8 *data, size_t len)
 > +{
-> +	struct mem_cgroup *memcg;
-> +	struct obj_cgroup *objcg;
-> +	unsigned long flags;
+> +	u16 crc = 0, up_crc;
+> +	size_t pos;
 > +
-> +	old = current_objcg_clear_update_flag(old);
-> +	if (old)
-> +		obj_cgroup_put(old);
+> +	/* PHY expect addr in LE */
+> +	addr = cpu_to_le32(addr);
 > +
-> +	spin_lock_irqsave(&current_objcg_lock, flags);
-> +	rcu_read_lock();
-> +	memcg = mem_cgroup_from_task(current);
-> +	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
-> +		objcg = rcu_dereference(memcg->objcg);
-> +		if (objcg && obj_cgroup_tryget(objcg))
-> +			break;
-> +		objcg = NULL;
+> +	phy_write_mmd(phydev, MDIO_MMD_VEND1,
+> +		      VEND1_GLOBAL_MAILBOX_INTERFACE1,
+> +		      VEND1_GLOBAL_MAILBOX_INTERFACE1_CRC_RESET);
+> +	phy_write_mmd(phydev, MDIO_MMD_VEND1,
+> +		      VEND1_GLOBAL_MAILBOX_INTERFACE3,
+> +		      VEND1_GLOBAL_MAILBOX_INTERFACE3_MSW_ADDR(addr));
+> +	phy_write_mmd(phydev, MDIO_MMD_VEND1,
+> +		      VEND1_GLOBAL_MAILBOX_INTERFACE4,
+> +		      VEND1_GLOBAL_MAILBOX_INTERFACE4_LSW_ADDR(addr));
+> +
+> +	for (pos = 0; pos < len; pos += min(sizeof(u32), len - pos)) {
+> +		u32 word = 0;
+> +
+> +		memcpy(&word, data + pos, min(sizeof(u32), len - pos));
+> +
+> +		phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE5,
+> +			      VEND1_GLOBAL_MAILBOX_INTERFACE5_MSW_DATA(word));
+> +		phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE6,
+> +			      VEND1_GLOBAL_MAILBOX_INTERFACE6_LSW_DATA(word));
+> +
+> +		phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE1,
+> +			      VEND1_GLOBAL_MAILBOX_INTERFACE1_EXECUTE |
+> +			      VEND1_GLOBAL_MAILBOX_INTERFACE1_WRITE);
+> +
+> +		/* calculate CRC as we load data to the mailbox.
+> +		 * We convert word to big-endiang as PHY is BE and ailbox will
+> +		 * return a BE crc.
+
+_m_ailbox.
+
+And i would consistently uses CRC in comments.
+
+> +static int aqr_fw_boot(struct phy_device *phydev, const u8 *data, size_t size)
+> +{
+> +	const struct aqr_fw_header *header;
+> +	u32 iram_offset = 0, iram_size = 0;
+> +	u32 dram_offset = 0, dram_size = 0;
+> +	char version[VERSION_STRING_SIZE];
+> +	u16 calculated_crc, read_crc;
+> +	u32 primary_offset = 0;
+> +	int ret;
+> +
+> +	/* extract saved crc at the end of the fw */
+> +	memcpy(&read_crc, data + size - 2, sizeof(read_crc));
+> +	/* crc is saved in big-endian as PHY is BE */
+> +	read_crc = be16_to_cpu(read_crc);
+> +	calculated_crc = crc_ccitt_false(0, data, size - 2);
+> +	if (read_crc != calculated_crc) {
+> +		phydev_err(phydev, "bad firmware CRC: file 0x%04x calculated 0x%04x\n",
+> +			   read_crc, calculated_crc);
+> +		return -EINVAL;
 > +	}
-> +	rcu_read_unlock();
-
-Can this tryget() actually fail when this is called on the current
-task during fork() and attach()? A cgroup cannot be offlined while
-there is a task in it.
-
-> @@ -6345,6 +6393,22 @@ static void mem_cgroup_move_task(void)
->  		mem_cgroup_clear_mc();
->  	}
->  }
 > +
-> +#ifdef CONFIG_MEMCG_KMEM
-> +static void mem_cgroup_fork(struct task_struct *task)
-> +{
-> +	task->objcg = (struct obj_cgroup *)0x1;
+> +	/* Get the primary offset to extract DRAM and IRAM sections. */
+> +	memcpy(&primary_offset, data + PRIMARY_OFFSET_OFFSET, sizeof(u16));
 
-dup_task_struct() will copy this pointer from the old task. Would it
-be possible to bump the refcount here instead? That would save quite a
-bit of work during fork().
+Please add some sanity checks. We should not fully trust the
+firmware. Is PRIMARY_OFFSET_OFFSET + sizeof(u16) actually inside the
+firmware blob?
+
+> +	primary_offset = PRIMARY_OFFSET(le32_to_cpu(primary_offset));
+> +
+> +	/* Find the DRAM and IRAM sections within the firmware file. */
+> +	header = (struct aqr_fw_header *)(data + primary_offset + HEADER_OFFSET);
+
+Is header actually inside the firmware blob?
+
+> +	memcpy(&iram_offset, &header->iram_offset, sizeof(u8) * 3);
+> +	memcpy(&iram_size, &header->iram_size, sizeof(u8) * 3);
+> +	memcpy(&dram_offset, &header->dram_offset, sizeof(u8) * 3);
+> +	memcpy(&dram_size, &header->dram_size, sizeof(u8) * 3);
+> +
+> +	/* offset are in LE and values needs to be converted to cpu endian */
+> +	iram_offset = le32_to_cpu(iram_offset);
+> +	iram_size = le32_to_cpu(iram_size);
+> +	dram_offset = le32_to_cpu(dram_offset);
+> +	dram_size = le32_to_cpu(dram_size);
+> +
+> +	/* Increment the offset with the primary offset. */
+> +	iram_offset += primary_offset;
+> +	dram_offset += primary_offset;
+> +
+> +	phydev_dbg(phydev, "primary %d IRAM offset=%d size=%d DRAM offset=%d size=%d\n",
+> +		   primary_offset, iram_offset, iram_size, dram_offset, dram_size);
+> +
+> +	strscpy(version, (char *)data + dram_offset + VERSION_STRING_OFFSET,
+> +		VERSION_STRING_SIZE);
+
+Is version inside the blob....
+
+> +static int aqr_firmware_load_nvmem(struct phy_device *phydev)
+> +{
+> +	struct nvmem_cell *cell;
+> +	size_t size;
+> +	u8 *buf;
+> +	int ret;
+> +
+> +	cell = nvmem_cell_get(&phydev->mdio.dev, "firmware");
+
+Does this need properties in device tree? Please update the binding.
+
+> +
+> +static int aqr_firmware_load_sysfs(struct phy_device *phydev)
+
+_sysfs seems a bit odd here. Does request_firmware still use the user
+mode helper? I _thought_ it just went direct to the filesystem?
+
+> +{
+> +	struct device *dev = &phydev->mdio.dev;
+> +	const struct firmware *fw;
+> +	const char *fw_name;
+> +	int ret;
+> +
+> +	ret = of_property_read_string(dev->of_node, "firmware-name",
+> +				      &fw_name);
+
+Please update the device tree binding.
+
+> +static int aqr_firmware_load(struct phy_device *phydev)
+> +{
+> +	int ret;
+> +
+> +	ret = phy_read_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_FW_ID);
+> +	if (ret > 0)
+> +		goto exit;
+
+I assume this means a value of 0 indicates there is no firmware
+running? Maybe a comment or a #define for 0?
+
+	 Andrew
