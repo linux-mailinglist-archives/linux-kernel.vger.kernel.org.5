@@ -2,113 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0CB7B5916
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084767B5995
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236806AbjJBRl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:41:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41830 "EHLO
+        id S236217AbjJBRoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:44:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236424AbjJBRlz (ORCPT
+        with ESMTP id S231674AbjJBRoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:41:55 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD355C9
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:41:52 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2773f776f49so2365006a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:41:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696268512; x=1696873312; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4PQ5k5L1vf7U2VTih6tAHOOIpHZFCPz9bxhvZ9xLpPg=;
-        b=QnHgHkI54rM2dgH4r1tXPy6tXPBMD5ry1/ifdplX/l0guWws/HGKmd+izNN2lYbyQ8
-         ASsK6Oo5Z7sy1Q/Z0kBNIYuCbzpRqXuKX6VuKTPVDI4BqtUsZz1HroIhIotGjXD5xnh5
-         nFJxMKr5N8enwmuj+YAiIfixs5OqbH54QmgQk=
+        Mon, 2 Oct 2023 13:44:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BAFAC
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:43:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696268609;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wp+uBb3vd++p/TELNcrTFrgdStWMZDT1c1gwMgRnAb0=;
+        b=PRnD0d77mXz1UpQ7+H07YQa7ALwYdjwQTddnfYoYPn2kv+/LU6CrZdGcL7v2oXiE7iUsB4
+        pH0jznBlVykXlfURc85uqoxIXr7vtvTIGE3642RJ6tmOteMpJEYZIn4Y1vlqQU9QlUz2/T
+        zF8daEc3Fr3GWLMJfL9aRUnFE2HwSgI=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-611-Vmi1npfOM-OGNW9LFHDtuQ-1; Mon, 02 Oct 2023 13:43:18 -0400
+X-MC-Unique: Vmi1npfOM-OGNW9LFHDtuQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3232c3df248so33416f8f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:43:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696268512; x=1696873312;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4PQ5k5L1vf7U2VTih6tAHOOIpHZFCPz9bxhvZ9xLpPg=;
-        b=niLq5FbyoUwzVfHEkpEACV7vc1uXgRJeAAbGq7mgHJ8AC098DY3D5KIQAcdGbf2Ysk
-         SRrMmQiOTKln9eDTWQl+Z+RvLZ16RL3n4E8ld5Q8k74DpaS7a/T2KeCtBoKVFGqzI41h
-         ZgZuM8WUWkrEzo61Ndiai/t3u10+qAzmI+yNaR/6NHc49iZXy3g4BOO1e+JamL+YI5NG
-         Yf2dA5lTUxSOw4LLnO1pEHnvfnMVGy7vombtKmRWd2GtkvrbepbqXnNTFzIrj6PlbmRk
-         9sqpOIQltzPLN7+ObIvcRhbWGZLv3aeshEloVv83OlOGpu4lgepi6AdCXOOaoC5G2AzA
-         FPfg==
-X-Gm-Message-State: AOJu0Yysm1P+x9MmZ0FvcBPSBhJbh6BXWsrc17LLMM6HYeHoO3wsVG++
-        LDFo6WrPt1g694ZQT0t7XcbPsQ==
-X-Google-Smtp-Source: AGHT+IEKwoN8US8SbhoaEXG8I/zbZA98vFUpxqN5OwarkAVod2EsBwbtDvEJWjc/sy7+JQaEzvI/Jw==
-X-Received: by 2002:a17:90b:128f:b0:279:c1e:a146 with SMTP id fw15-20020a17090b128f00b002790c1ea146mr341768pjb.23.1696268512222;
-        Mon, 02 Oct 2023 10:41:52 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d24-20020a17090ac25800b00276cb03a0e9sm6392591pjx.46.2023.10.02.10.41.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 10:41:51 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 10:41:48 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] scsi: message: fusion: replace deprecated strncpy with
- strscpy_pad
-Message-ID: <202310021041.FA60C9812@keescook>
-References: <20230927-strncpy-drivers-message-fusion-mptctl-c-v1-1-bb2eddc1743c@google.com>
+        d=1e100.net; s=20230601; t=1696268597; x=1696873397;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :references:cc:to:content-language:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wp+uBb3vd++p/TELNcrTFrgdStWMZDT1c1gwMgRnAb0=;
+        b=AUJPMmfgvXhuM20Cxq6a88eUwStlCs7s5nSZuwZTg0bOs10r+5tVLZHbjfhpKwpyOa
+         olp66RM3Lh9DgZCr0oTcn3C5nUbKKJnZMw8LaEj1adcJYZ+ekzqi01YKuIS8WDSYmqDu
+         hbhezviDIaPLcQWMjxMjSHfNdzRrvxXmUyZY9aJIIdqdFzcFEM7JCGa9t49uH/xP+pCs
+         eVivbR3negwKwU/31vid8+WXZ1RmdcVF+SV8dv+t3VgQOmHyW8BGm42CzZyCaX6sfIT2
+         nWgvDmLnmoxoymeohANXfN0FmGBP5fm86der7e1SR+9DujrZm5CSdkfw36Bkcnu4PMnA
+         xqDQ==
+X-Gm-Message-State: AOJu0YzOgcSGyayBas6M8VYZj1lYxK/LUaYpkgJdXLOFK3aMz6f3Uqa7
+        NIgU58YDUcn56IRv4UedBJcrSRGWBkesur69gkJ50ag580aY7JWzk7q6UJXSa75W5v9CiY583jt
+        1ndBaDl6RgO0+DyRzJQSCJadu
+X-Received: by 2002:a5d:6306:0:b0:31f:eed7:2fdc with SMTP id i6-20020a5d6306000000b0031feed72fdcmr9669349wru.35.1696268596934;
+        Mon, 02 Oct 2023 10:43:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFlnYfzZHHUMm6vDazX7X6pg+Hfr/KO2FNcqHXBe1PdnVdfBy7vPvSIlNwDZzVhMT/U34rc2w==
+X-Received: by 2002:a5d:6306:0:b0:31f:eed7:2fdc with SMTP id i6-20020a5d6306000000b0031feed72fdcmr9669316wru.35.1696268596482;
+        Mon, 02 Oct 2023 10:43:16 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c735:f200:cb49:cb8f:88fc:9446? (p200300cbc735f200cb49cb8f88fc9446.dip0.t-ipconnect.de. [2003:cb:c735:f200:cb49:cb8f:88fc:9446])
+        by smtp.gmail.com with ESMTPSA id m12-20020a056000174c00b003233b554e6esm14288618wrf.85.2023.10.02.10.43.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 10:43:16 -0700 (PDT)
+Message-ID: <9434ef94-15e8-889c-0c31-3e875060a2f7@redhat.com>
+Date:   Mon, 2 Oct 2023 19:43:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230927-strncpy-drivers-message-fusion-mptctl-c-v1-1-bb2eddc1743c@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To:     Lokesh Gidra <lokeshgidra@google.com>, Peter Xu <peterx@redhat.com>
+Cc:     Jann Horn <jannh@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <20230923013148.1390521-1-surenb@google.com>
+ <20230923013148.1390521-3-surenb@google.com>
+ <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
+ <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com> <ZRWo1daWBnwNz0/O@x1n>
+ <98b21e78-a90d-8b54-3659-e9b890be094f@redhat.com> <ZRW2CBUDNks9RGQJ@x1n>
+ <85e5390c-660c-ef9e-b415-00ee71bc5cbf@redhat.com> <ZRXHK3hbdjfQvCCp@x1n>
+ <fc27ce41-bc97-91a7-deb6-67538689021c@redhat.com> <ZRrf8NligMzwqx97@x1n>
+ <CA+EESO5VtrfXv-kvDsotPLXcpMgOK5t5c+tbXZ7KWRU2O_0PBQ@mail.gmail.com>
+ <CA+EESO4W2jmBSpyHkkqZV0LHnA_OyWQcvwSkfPcWmWCsAF5UWw@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
+In-Reply-To: <CA+EESO4W2jmBSpyHkkqZV0LHnA_OyWQcvwSkfPcWmWCsAF5UWw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 04:06:09AM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+On 02.10.23 17:55, Lokesh Gidra wrote:
+> On Mon, Oct 2, 2023 at 4:46 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+>>
+>> On Mon, Oct 2, 2023 at 4:21 PM Peter Xu <peterx@redhat.com> wrote:
+>>>
+>>> On Mon, Oct 02, 2023 at 10:00:03AM +0200, David Hildenbrand wrote:
+>>>> In case we cannot simply remap the page, the fallback sequence (from the
+>>>> cover letter) would be triggered.
+>>>>
+>>>> 1) UFFDIO_COPY
+>>>> 2) MADV_DONTNEED
+>>>>
+>>>> So we would just handle the operation internally without a fallback.
+>>>
+>>> Note that I think there will be a slight difference on whole remap
+>>> atomicity, on what happens if the page is modified after UFFDIO_COPY but
+>>> before DONTNEED.
+>>>
+>>> UFFDIO_REMAP guarantees full atomicity when moving the page, IOW, threads
+>>> can be updating the pages when ioctl(UFFDIO_REMAP), data won't get lost
+>>> during movement, and it will generate a missing event after moved, with
+>>> latest data showing up on dest.
+>>>
+>>> I'm not sure that means such a fallback is a problem, Suren may know
+>>> better with the use case.
+>>
+>> Although there is no problem in using fallback with our use case but
+>> as a user of userfaultfd, I'd suggest leaving it to the developer.
+>> Failing with appropriate errno makes more sense. If handled in the
+>> kernel, then the user may assume at the end of the operation that the
+>> src vma is completely unmapped. And if not correctness issues, it
+>> could lead to memory leaks.
 > 
-> Since all these structs are copied out to userspace let's keep them
-> NUL-padded by using `strscpy_pad` which guarantees NUL-termination of
-> the destination buffer while also providing the NUL-padding behavior
-> that strncpy has.
-> 
-> Let's also opt to use the more idiomatic strscpy usage of:
-> `dest, src, sizeof(dest)` in cases where the compiler can determine the
-> size of the destination buffer. Do this for all cases of strscpy...() in
-> this file.
-> 
-> To be abundantly sure we don't leak stack data out to user space let's
-> also change a strscpy to strscpy_pad. This strscpy was introduced in
-> Commit dbe37c71d1246ec2 ("scsi: message: fusion: Replace all
-> non-returning strlcpy() with strscpy()")
-> 
-> Note that since we are creating these structs with a copy_from_user()
-> and modifying fields and then copying back out to the user it is
-> probably OK not to explicitly NUL-pad everything as any data leak is
-> probably just data from the user themselves. If this is too eager, let's
-> opt for `strscpy` which is still in the spirit of removing deprecated
-> strncpy usage treewide.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> I meant that in addition to the possibility of correctness issues due
+> to lack of atomicity, it could also lead to memory leaks, as the user
+> may assume that src vma is empty post-operation. IMHO, it's better to
+> fail with errno so that the user would fix the code with necessary
+> changes (like using DONTFORK, if forking).
 
-Agreed -- this looks more robust and readable. Thanks!
+Leaving the atomicity discussion out because I think this can just be 
+handled (e.g., the src_vma would always be empty post-operation):
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+It might not necessarily be a good idea to only expose micro-operations 
+to user space. If the user-space fallback will almost always be 
+"UFFDIO_COPY+MADV_DONTNEED", then clearly the logical operation 
+performed is moving data, ideally with zero-copy.
+
+[as said as reply to Peter, one could still have magic flags for users 
+that really want to detect when zero-copy is impossible]
+
+With a logical MOVE API users like compaction [as given in the cover 
+letter], not every such user has to eventually implement fallback paths.
+
+But just my 2 cents, the UFFDIO_REMAP users probably can share what the 
+exact use cases are and if fallbacks are required at all or if no-KSM + 
+DONTFORK just does the trick.
 
 -- 
-Kees Cook
+Cheers,
+
+David / dhildenb
+
