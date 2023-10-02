@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B882C7B5A1E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:34:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0387B5A21
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:34:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238787AbjJBSbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 14:31:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
+        id S238793AbjJBSbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:31:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229486AbjJBSbp (ORCPT
+        with ESMTP id S238792AbjJBSby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 14:31:45 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B85AB;
-        Mon,  2 Oct 2023 11:31:42 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-57bd4e4ada6so24847eaf.3;
-        Mon, 02 Oct 2023 11:31:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696271502; x=1696876302; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pKjHs7tNvXYJ3E6TMRogj11ZeQDv6+I8lDqqMDt8DKk=;
-        b=V4HgAePMk29n5s3QpIo4yF56FHshUkapGi75RYW/sHtm6JG//CwWW0FSknGcySN2XP
-         2JnUHdzXFQsD2dcp0Ow+bkU5T/vAQEAQo+ikH1wedExLTcDSsQZOoEoVobzG4Z8fBbaj
-         cSO3mWeXn++6EfXRcHMYNiA5T/z8FevBMjhFJ2XaQbsNVsIcmzR+eMXnH1wni6xyxS1r
-         EztR3eLjUXfble9Pf4zspK2Hp1tl6KqmdIIJda1EOQ7kFcmqT3YePOCUZBN8yjRznHtl
-         8Eh8S7P9EJsR0wHZCfQuN8LLU4ytXbRsvBcQqqnug4L0awlroUJLcpA57zzgQg6ze6ED
-         OE4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696271502; x=1696876302;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pKjHs7tNvXYJ3E6TMRogj11ZeQDv6+I8lDqqMDt8DKk=;
-        b=RBtdDBjYf/LxlgK4qI28ohrX5vu6MfYs3GtNL3IwVZgi0t7nQXCL90CSEGqeLoBGZg
-         +9zj5Y6Wysq7rPzrk/f/pYcZJ5XsSkPvVazybjWivwJhAl+WLvl41hKD/WFPh+DVQK7H
-         0rNpPsVRolJeL8k4JwYLf1IaQqdaSI0H5VBxzmsbTB2zZAabldWo4gapjQaayVrC9n/3
-         qnoRutOplfdZc1jAi3ld1Oc2sDS5EmQhtbcyF4jk4M2sL1S0URQz1wrK/9QxyQdO+lbT
-         /FuYWOgkMx/bnAnx3UYsPvalaLjTAslw60O65uOBpnngTs9Fi5vjXhGSxF3YdHYFG476
-         Gf7g==
-X-Gm-Message-State: AOJu0YzWUSACmG2S104PN0heXiHj4+BRe3gxbw6rZDA/tVDOKj7qDu59
-        psIVtHOOD+9z3Po0/zdh0N/JoJe1rg9/axzy/Wc=
-X-Google-Smtp-Source: AGHT+IFqSa/RifbLkRi+5SY1jP5NREDCl6ac0ljNJ8cNo5HNK2jj/w6Q2763mLH7m8OXtFSKFFJYqmZgMSSvJyfU/0s=
-X-Received: by 2002:a05:6820:295:b0:57b:e345:43ad with SMTP id
- q21-20020a056820029500b0057be34543admr11373706ood.4.1696271502251; Mon, 02
- Oct 2023 11:31:42 -0700 (PDT)
+        Mon, 2 Oct 2023 14:31:54 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5C9D8
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 11:31:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 290E8C433C7;
+        Mon,  2 Oct 2023 18:31:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696271509;
+        bh=FwOWdXcduUEuYueUYb3WKEmK/UO8XkOGezapIcoLank=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=nXztEeJMKGNe5w7pRztMXGYK/3RIFockMyii4+e+9IvyivRQTAnvy1vyrvzDeO21f
+         iKU2HTcj94fyDABBbgMlwgUC8CTQG89l1KY7S8LVPLMqOt+CDcuW0fQYRISYsaDvos
+         HvE6+8vVtjWuISVyQmW2JPpxrzcAI30tx4w0uZ+cgMSVdNgkM8R6uqiKq/uUe2RZra
+         Zib9hBL+cex/Ey/T3JkJAGJtMDV/iOr5V67gcACD5HLZKxJvB8rLBuSNxuTlg2qbIX
+         NzweXBCSFW9P5Ks5oDRRG/NO7iUyZAV6gyZIboSH+b8a9xVsxeJ0lDMU17k04my2UL
+         cqPirDsCOLtXQ==
+Date:   Mon, 2 Oct 2023 11:31:48 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ayush Sawal <ayush.sawal@chelsio.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Raju Rangoju <Raju.Rangoju@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH 0/5] chelsio: Annotate structs with __counted_by
+Message-ID: <20231002113148.2d6f578b@kernel.org>
+In-Reply-To: <202309291240.BC52203CB@keescook>
+References: <20230929181042.work.990-kees@kernel.org>
+        <202309291240.BC52203CB@keescook>
 MIME-Version: 1.0
-References: <20231002175052.112406-1-tmaimon77@gmail.com> <20231002175052.112406-3-tmaimon77@gmail.com>
- <CAHp75Vd701sE-pkTWYi=PsOpVoBa-fbOm91P3bGLruCn5U1KXA@mail.gmail.com> <CAP6Zq1jM3=D5PBp1z7=K6LRNJaZe3rEPutXm_xxo7p2Z60sWmQ@mail.gmail.com>
-In-Reply-To: <CAP6Zq1jM3=D5PBp1z7=K6LRNJaZe3rEPutXm_xxo7p2Z60sWmQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 2 Oct 2023 21:31:06 +0300
-Message-ID: <CAHp75VczCMaA0Kd7Lhr6PXG_kJJ5iFqe3WdX+v7xJMjdi0KdgA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] mmc: sdhci-npcm: Add NPCM SDHCI driver
-To:     Tomer Maimon <tmaimon77@gmail.com>
-Cc:     ulf.hansson@linaro.org, avifishman70@gmail.com,
-        tali.perry1@gmail.com, joel@jms.id.au, venture@google.com,
-        yuenn@google.com, benjaminfair@google.com, adrian.hunter@intel.com,
-        skhan@linuxfoundation.org, davidgow@google.com,
-        pbrobinson@gmail.com, gsomlo@gmail.com, briannorris@chromium.org,
-        arnd@arndb.de, krakoczy@antmicro.com, openbmc@lists.ozlabs.org,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 9:29=E2=80=AFPM Tomer Maimon <tmaimon77@gmail.com> w=
-rote:
-> On Mon, 2 Oct 2023 at 21:22, Andy Shevchenko <andy.shevchenko@gmail.com> =
-wrote:
-> > On Mon, Oct 2, 2023 at 8:51=E2=80=AFPM Tomer Maimon <tmaimon77@gmail.co=
-m> wrote:
+On Fri, 29 Sep 2023 12:44:45 -0700 Kees Cook wrote:
+> On Fri, Sep 29, 2023 at 11:11:44AM -0700, Kees Cook wrote:
+> > Hi,
+> > 
+> > This annotates several chelsio structures with the coming __counted_by
+> > attribute for bounds checking of flexible arrays at run-time. For more details,
+> > see commit dd06e72e68bc ("Compiler Attributes: Add __counted_by macro").
+> > 
+> > Thanks!
+> > 
+> > -Kees
+> > 
+> > Kees Cook (5):
+> >   chelsio/l2t: Annotate struct l2t_data with __counted_by
+> >   cxgb4: Annotate struct clip_tbl with __counted_by
+> >   cxgb4: Annotate struct cxgb4_tc_u32_table with __counted_by
+> >   cxgb4: Annotate struct sched_table with __counted_by
+> >   cxgb4: Annotate struct smt_data with __counted_by
+> > 
+> >  drivers/net/ethernet/chelsio/cxgb3/l2t.h                | 2 +-
+> >  drivers/net/ethernet/chelsio/cxgb4/clip_tbl.h           | 2 +-
+> >  drivers/net/ethernet/chelsio/cxgb4/cxgb4_tc_u32_parse.h | 2 +-
+> >  drivers/net/ethernet/chelsio/cxgb4/l2t.c                | 2 +-
+> >  drivers/net/ethernet/chelsio/cxgb4/sched.h              | 2 +-
+> >  drivers/net/ethernet/chelsio/cxgb4/smt.h                | 2 +-
+> >  6 files changed, 6 insertions(+), 6 deletions(-)  
+> 
+> Hm, it looks like this is not "Supported" any more? I'm getting bounces
+> from "Raju Rangoju <rajur@chelsio.com>" ...
+> 
+> CXGB4 ETHERNET DRIVER (CXGB4)
+> M:      Raju Rangoju <rajur@chelsio.com>
+> L:      netdev@vger.kernel.org
+> S:      Supported
+> W:      http://www.chelsio.com
+> F:      drivers/net/ethernet/chelsio/cxgb4/
 
-...
+Hi Ayush,
 
-> > + mod_devicetable.h
-> why?
-
-of_device_id is defined there.
-
---=20
-With Best Regards,
-Andy Shevchenko
+any idea who should be maintaining the Ethernet part of cxgb4 
+at this point?
