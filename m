@@ -2,500 +2,651 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB437B5863
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71DFF7B581D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238217AbjJBQfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 12:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
+        id S238256AbjJBQfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 12:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237799AbjJBQf2 (ORCPT
+        with ESMTP id S238218AbjJBQfr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 12:35:28 -0400
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2070.outbound.protection.outlook.com [40.107.237.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57300A7;
-        Mon,  2 Oct 2023 09:35:24 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TuWay0CbDPYI4QSfUxQy2RHUthOugXtNGIpvM7teVRTF76BBWauHk1Nri6BpfydCSGa0m6DGhakW4wX3oAiHHsce+kXByQQkbxnqXT9RZLvrCFvdNq2FAfLHelMtpN47CpwqGxqPSm4gK8ly7NlDoGLCsaUigu0YuPVjb0cLbE+PlsZze/46DREi2I1tcRzwgI2Y9aMW2ytet0lnMD5bYfPP+N0USTGKQ6GfqzNui/ytNhw5kFfVxKPxgt6V61nTA5Tk5ff64BSa466N0AGc4kMDujnCkoz4FFhGGjA1uwI9ylSeWkVLB+rZDX/dHNjLqcGG6koZqg4da/hV1FdY5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PXyEbsdEeRz6RNxFxl5/u2qmhct7MkK5E+7RVddNwLM=;
- b=P1cRh8weJ6Q4sSFOn2/LIRHAsVbO9/QnvaLkRRFZh/DqQSZlS7DvjrWAERIxItSOHAMJHMcD3wzXGGszfxQ3y4/CHrAIjR1OVcGTumf5GdevCgh1NbMTMSLnZg2R679kTSfxkBpVpr+ViAy0QXSd40VFu+IziM93zsaD4Pyk/MlKp/9lY8BovTGIftdroGoVSerHSGQNRSwtzqzayQ66NJBsPlgDs825Ejy5JwxeXSFknimi5cKk6KwTQlPae0wxko2UD+CJNikVcozBa7mC4V8pyEHb0TvAp1sAH6I3u0w0FLoRGV5W9hTzcBRiUTAs/FAkSQ7tD9pyWJkRFLWt+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PXyEbsdEeRz6RNxFxl5/u2qmhct7MkK5E+7RVddNwLM=;
- b=U97wgSePHM5ZWJ6xE2u0RYwN/Nz8lJQuOrQzjeqp58vSxZqtJFLRXLoH4j5ibtRsK8HpGbz3N8/ToAkag8uMr+4Rsefq0w1MZ0MPbdzj8CjqX+VePcjjFchbdYo7kOvbn9S6OhQkPCz1WqwzpS3NBHqtOAn9jP7qJZrQh+Fr16o=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com (2603:10b6:5:398::12)
- by BN9PR12MB5113.namprd12.prod.outlook.com (2603:10b6:408:136::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.31; Mon, 2 Oct
- 2023 16:35:18 +0000
-Received: from DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::2b54:7ddf:9e2e:751c]) by DM4PR12MB5229.namprd12.prod.outlook.com
- ([fe80::2b54:7ddf:9e2e:751c%3]) with mapi id 15.20.6813.027; Mon, 2 Oct 2023
- 16:35:18 +0000
-Message-ID: <c9a06bd0-09aa-5e4b-e2cb-63ebcc93757e@amd.com>
-Date:   Mon, 2 Oct 2023 11:35:16 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 3/5] x86/mm: Mark CoCo VM pages not present while changing
- encrypted state
-Content-Language: en-US
-To:     Michael Kelley <mikelley@microsoft.com>, kys@microsoft.com,
-        haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, luto@kernel.org,
-        peterz@infradead.org, sathyanarayanan.kuppuswamy@linux.intel.com,
-        kirill.shutemov@linux.intel.com, seanjc@google.com,
-        rick.p.edgecombe@intel.com, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, x86@kernel.org
-References: <1696011549-28036-1-git-send-email-mikelley@microsoft.com>
- <1696011549-28036-4-git-send-email-mikelley@microsoft.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-In-Reply-To: <1696011549-28036-4-git-send-email-mikelley@microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR13CA0056.namprd13.prod.outlook.com
- (2603:10b6:5:134::33) To DM4PR12MB5229.namprd12.prod.outlook.com
- (2603:10b6:5:398::12)
+        Mon, 2 Oct 2023 12:35:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366D2A7;
+        Mon,  2 Oct 2023 09:35:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47B74C433C9;
+        Mon,  2 Oct 2023 16:35:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696264541;
+        bh=guOx2smx+ow77WQCvu1SPLLbVYpzPdRYwbrUysSSa/w=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=V/atqQ7QhVUXw+sZKIpkrOY/wGM00nDsKPP9mAQxSeZxTM0W5CtzY1ZrwQhiaL0uA
+         x35AqPaKMoQYznRDLxLM0zuknoiqgWOhERplET+GhOLK1VAVIia8OzwcGAQAEVENwL
+         PmXGBVEQw2w2cQrqCdYO2tvaFFNdZUN0VoNMXokawaO8sz5Dl2oa0+czIdfx0j5/w9
+         whnABry/n4wfUdA58Dz6n/lpUoFTyW8VHxYEk65z6d4TJt1AzV+VaGLl/wvLrn89ah
+         5/C+2aEHX+37RKB+F7Lnqwdd1Z+ggdatvf9TDhru2T3dRhi5qswaiFCecHK8By5nv3
+         C9eS4aCVbvQ4A==
+Message-ID: <1401c432-464f-4f6b-a43a-40b8c9c57247@kernel.org>
+Date:   Mon, 2 Oct 2023 19:35:34 +0300
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB5229:EE_|BN9PR12MB5113:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0221d036-8f2a-404c-c913-08dbc365903b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mo8o8y0nzLNv4ewBN5ltx/LG7pC02qqGrhlJvjdhizUizy/CgJNt01GaxJwWPOVmS93EpDLoI8AtadSqgZS58zrjNDGvw/6hIn2X5T1jyZaNdTvtgPgXLe/moSyc0ND8vaLzziymgw7fFoL+JfwmY//PqS9kjVBn5/S9kasGZycO6PIm2AO3imKARLYl5tk6OWehRAkPMXdLT3htqLTFiiGfRyUlNyS/ypjWlxkoRsqC35LKod0tzQDfFGMnlsPUFAZVfEryU6L0DAzHgq4RDxyVVf+8P+QbPUV6ousd0Ny87WMNXLzaSLBrGQMFkMhA+mXPzXQ2RRDAEskNi2ZWmox4TSW1RHdMaxDSPjHJF2DqszI2yzfC1Hu2z1YQuWXGq22ClJs2/hTYQBoxlNHGN3SOeSRNgTI4v7vdgn5+WDGGJIW3gkX617AH52aUTc3B2NpBZJpBtC4Di9md58k+LRuYYKsGwEE+6cykoI+BH5wd78RbprwMfSO5cTYG9SoD4hcv4C3BxRNSJLA16BSj6xp36t8h9TcZkRkeiv3cKvEIAXYJRY9dSCmzZTksOKvpMVPravH80FcmF6Pbwm6rNeBRsfFKN7Avq5ptAA4ZByT8FagsNbBrntksC3eiO5hkJ9gN/CC+cjIE3zsz3oNN75qC1Z9Qd2CkUcknJaNLDNY=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5229.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(6029001)(136003)(376002)(366004)(346002)(39860400002)(396003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(6512007)(6486002)(6506007)(53546011)(2616005)(83380400001)(45080400002)(7416002)(26005)(2906002)(30864003)(8676002)(5660300002)(66556008)(66946007)(316002)(66476007)(8936002)(41300700001)(478600001)(36756003)(921005)(86362001)(31696002)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?LzlwbmZnQkE0NFk3dFdlN3duSktWcWNmZkV0MFNiNFdwb3Z3S0QvVmZSTlho?=
- =?utf-8?B?Ulo5NUhtTm5UQTJnSE8wV1NCK2VPK0JwQ3ZpSFJyb3YvNjVLQXlQYWRaeHh2?=
- =?utf-8?B?Qi9pc05BY3h6RklBVU5paUp5WTRXdWdwRXB4cmpHSHhsOGM5R3lCSUJlQTMx?=
- =?utf-8?B?SWVGbVZHYU5wVWpUWEhLOU0rUGQ4azhmS1I1RGk0ZVJhWVVSdTEzVUZlTmhJ?=
- =?utf-8?B?YTZqbW5RNDNub0pCNVF5dk9pb1hHcnc1VHlyQnNvaFg2bWtpTlppUmNVVmdU?=
- =?utf-8?B?TmwrYWt1Q0lkS2JydUR2RkczMzVCSlcrQ3kzWDZ4aUh5MUlNL0NBSUNkeUZo?=
- =?utf-8?B?MmtOakh2MjdibU9QN2E4bkdmc2ROYmpPQ0IveEN1bzJwbVFHaWV2ZWtYRWtE?=
- =?utf-8?B?U1dDMTc3TStYUUJPeENUVFIwbi8raE1PVWIySGtxamVPSGhDRTBhazVqUE4y?=
- =?utf-8?B?TXB6bXlNWUJzVlpETzhIdWFXbkxpWTVYMVk1LzdTbm9hYXJvR0dyUE5QKzJn?=
- =?utf-8?B?bGhTWUhrYVRLQzdJcWcrZ3MwalNTSENSNTJDTm8zWVI3QnJKQS9MRy9EalRi?=
- =?utf-8?B?a09NNDNDbGZsTTJERnhzODJES0NvazhETElzcDUybmJUTm5Od3BvNDdoa290?=
- =?utf-8?B?dUljUlpCME1ocklZeGRqZ1RHS0FiNjJyRUpQN3RGbW5sVEJOZUp2UmNsdy9q?=
- =?utf-8?B?cDlGOTBZL0NBK3RoeWRia2dRZ0JQWnBwb0kvaXBac3Jlb3RVNUNtSGpnL1dJ?=
- =?utf-8?B?K081NU4yY1ViaThJQ1AwUFE2ckNqQUZTZ0VtNUErc3VReXNla2VscmdaMEQx?=
- =?utf-8?B?aUZYL0dqWWYxdzlhbGIyWEwvUHdaekJqU1BLQjYzZ21hcHhBaHZhKzRzT2lz?=
- =?utf-8?B?d0pHby9PVEQ4TWFQUE1oNHFlYU0yOEdmeTdqdW5YdXJlTEhGRkNLemtyYTF3?=
- =?utf-8?B?RkhNMGtzbXJSSnd4ZEtBSXlvR1lDY3NXTFhMNWVRWk0rZnVwQlBORXFnbVhk?=
- =?utf-8?B?Y2E0YnhGQTFJT2NPY3kycDhUSEo4R3ZaSE5PdlFJN3ZhZFhHQ3ZoZlp2dldi?=
- =?utf-8?B?VWtsRElZZllraVNPVE5wdlhRT1JtYUtjczFFbEZYR21QU1k0cTFiZ1lWQ0tw?=
- =?utf-8?B?MnlCM1ZkekptZTUyOXJ6VUdrYm13YjJMYXdkMTZIbTd6a3lmb24rRE1zeXV6?=
- =?utf-8?B?MUJkaVFpWUtQQ2FCem5YTjhkalZGTnpVSDBmeHI0S2MyYmRQZ2gycVhrUkpM?=
- =?utf-8?B?dTRvL0E3OHV0MmpSd2Fvd3ZOZmp0TVBaUUM2OHZUbmttakNWYURmY2RxTXVn?=
- =?utf-8?B?cmxyN2dZWTBNSDErTkRYaDE0UENLT3dueDJBN1ZCQVFUUEUzOUxZNzVwU2J5?=
- =?utf-8?B?NTlQeGxWa0dXUU9JZXRlKzBxVnlpN1YxelFTQ2hxWndJdS9TTHozcDUrRTRN?=
- =?utf-8?B?YUhvU3hRSDB1TmJzTFNRcEl1NkZvODh4RGo5Mjh6N1FrZzR0dkFBaU1rZHY1?=
- =?utf-8?B?OE92OERkdG00QkZMSUxJZlZqU3pRTmhoMUIrQ0ovaWlyQmNISVplcEJ0LytJ?=
- =?utf-8?B?YkVVZkxGdzBJZEYwN0Nvb3RxY3hVOXYwZTJtMSs5by9IMFRBTk9kaHo1VTVz?=
- =?utf-8?B?MW9Bc21BODgwaDBaUko1cjNTeFVLcVZQMkM4NEMwY2VmRi8xVXQ2MVNoSlly?=
- =?utf-8?B?dEZQTWJQQnduYndlcVFxTXBVZEx0My9aOXU5ejh2NkthUjJCLzJsTGhQRWU3?=
- =?utf-8?B?UnBpQkprRXg0WElmc0ZWOGJuc1RHZFFwN1p0THNnVTVJUzZaOUQ0cVRyNUhE?=
- =?utf-8?B?WkpMMzBzUnFiOWJUS3JmUjJnRmx5M0xlQ0NhTEdzdm5TM0ZiMU4zbHVJQS9i?=
- =?utf-8?B?enNzUXFhVHBBNzBCaGVpZFpYeFhFUnpLQWRqVHM2d01NS1U4ZHJCWlRaRnN2?=
- =?utf-8?B?cGZmd0c5Y1FuSkRPa2ZFM3FrU2QrdGt1d09kamttak1pNWVvcFJ0Y0JBK1VE?=
- =?utf-8?B?c1kzYWZoVHR6UzVzUVJ0NWFKMlk5TEJLZU11OE5NdXg3aTFCSVJSMzZEbHZM?=
- =?utf-8?B?M1UxL05QR0ZJVVJ4NnBXajJiUzQ5L1Y5VkhmNGFCWHl5UTJkakh1SWtBSWh5?=
- =?utf-8?Q?3PrgaEDqMtWebStytq4IUkrun?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0221d036-8f2a-404c-c913-08dbc365903b
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5229.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2023 16:35:18.4732
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cIfFiuG0VcIPbhoCkCTsF2AGSy69aNuZFdlB8YaHdTzXHr9oTiqReshVg+smzzY4y9kyv+s5ZR9sJCpWSGNozg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5113
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v3] net: ti: icssg_prueth: add TAPRIO offload
+ support
+Content-Language: en-US
+To:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        MD Danish Anwar <danishanwar@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>, vladimir.oltean@nxp.com,
+        Simon Horman <horms@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org, srk@ti.com,
+        r-gunasekaran@ti.com, linux-omap@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Roger Quadros <rogerq@ti.com>
+References: <20230928103000.186304-1-danishanwar@ti.com>
+ <87edig4c9x.fsf@intel.com>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <87edig4c9x.fsf@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/29/23 13:19, Michael Kelley wrote:
-> In a CoCo VM when a page transitions from encrypted to decrypted, or vice
-> versa, attributes in the PTE must be updated *and* the hypervisor must
-> be notified of the change. Because there are two separate steps, there's
-> a window where the settings are inconsistent.  Normally the code that
-> initiates the transition (via set_memory_decrypted() or
-> set_memory_encrypted()) ensures that the memory is not being accessed
-> during a transition, so the window of inconsistency is not a problem.
-> However, the load_unaligned_zeropad() function can read arbitrary memory
-> pages at arbitrary times, which could access a transitioning page during
-> the window.  In such a case, CoCo VM specific exceptions are taken
-> (depending on the CoCo architecture in use).  Current code in those
-> exception handlers recovers and does "fixup" on the result returned by
-> load_unaligned_zeropad().  Unfortunately, this exception handling can't
-> work in paravisor scenarios (TDX Paritioning and SEV-SNP in vTOM mode).
-> The exceptions need to be forwarded from the paravisor to the Linux
-> guest, but there are no architectural specs for how to do that.
+
+
+On 30/09/2023 05:37, Vinicius Costa Gomes wrote:
+> MD Danish Anwar <danishanwar@ti.com> writes:
 > 
-> Fortunately, there's a simpler way to solve the problem by changing
-> the core transition code in __set_memory_enc_pgtable() to do the
-> following:
+>> From: Roger Quadros <rogerq@ti.com>
+>>
+>> ICSSG dual-emac f/w supports Enhanced Scheduled Traffic (EST – defined
+>> in P802.1Qbv/D2.2 that later got included in IEEE 802.1Q-2018)
+>> configuration. EST allows express queue traffic to be scheduled
+>> (placed) on the wire at specific repeatable time intervals. In
+>> Linux kernel, EST configuration is done through tc command and
+>> the taprio scheduler in the net core implements a software only
+>> scheduler (SCH_TAPRIO). If the NIC is capable of EST configuration,
+>> user indicate "flag 2" in the command which is then parsed by
+>> taprio scheduler in net core and indicate that the command is to
+>> be offloaded to h/w. taprio then offloads the command to the
+>> driver by calling ndo_setup_tc() ndo ops. This patch implements
+>> ndo_setup_tc() to offload EST configuration to ICSSG.
+>>
+>> Signed-off-by: Roger Quadros <rogerq@ti.com>
+>> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
+>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>> ---
+>> Cc: Roger Quadros <rogerq@ti.com>
+>> Cc: Andrew Lunn <andrew@lunn.ch>
+>> Cc: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+>>
+>> Changes from v2 to v3:
+>> *) Rebased on the latest next-20230828 linux-next.
+>> *) Retained original authorship of the patch.
+>> *) Addressed Roger's comments and modified emac_setup_taprio() and
+>>    emac_set_taprio() APIs accordingly.
+>> *) Removed netif_running() check from emac_setup_taprio().
+>> *) Addressed Vinicius' comments and added check for MIN and MAX cycle time.
+>> *) Added check for allocation failure of est_new in emac_setup_taprio().
+>>
+>> Changes from v1 to v2:
+>> *) Rebased on the latest next-20230821 linux-next.
+>> *) Dropped the RFC tag as merge window is open now.
+>> *) Splitted this patch from the switch mode series [v1].
+>> *) Removed TODO comment as asked by Andrew and Roger.
+>> *) Changed Copyright to 2023 as asked by Roger.
+>>
+>> v2: https://lore.kernel.org/all/20230921070031.795788-1-danishanwar@ti.com/
+>> v1: https://lore.kernel.org/all/20230830110847.1219515-1-danishanwar@ti.com/
+>>
+>>  drivers/net/ethernet/ti/Makefile             |   3 +-
+>>  drivers/net/ethernet/ti/icssg/icssg_prueth.c |   5 +-
+>>  drivers/net/ethernet/ti/icssg/icssg_prueth.h |   6 +
+>>  drivers/net/ethernet/ti/icssg/icssg_qos.c    | 295 +++++++++++++++++++
+>>  drivers/net/ethernet/ti/icssg/icssg_qos.h    | 124 ++++++++
+>>  5 files changed, 431 insertions(+), 2 deletions(-)
+>>  create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.c
+>>  create mode 100644 drivers/net/ethernet/ti/icssg/icssg_qos.h
+>>
+>> diff --git a/drivers/net/ethernet/ti/Makefile b/drivers/net/ethernet/ti/Makefile
+>> index 34fd7a716ba6..0df60ded1b2d 100644
+>> --- a/drivers/net/ethernet/ti/Makefile
+>> +++ b/drivers/net/ethernet/ti/Makefile
+>> @@ -37,5 +37,6 @@ icssg-prueth-y := k3-cppi-desc-pool.o \
+>>  		  icssg/icssg_config.o \
+>>  		  icssg/icssg_mii_cfg.o \
+>>  		  icssg/icssg_stats.o \
+>> -		  icssg/icssg_ethtool.o
+>> +		  icssg/icssg_ethtool.o \
+>> +		  icssg/icssg_qos.o
+>>  obj-$(CONFIG_TI_ICSS_IEP) += icssg/icss_iep.o
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.c b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+>> index 6635b28bc672..89c301716926 100644
+>> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.c
+>> @@ -1166,7 +1166,7 @@ static int emac_phy_connect(struct prueth_emac *emac)
+>>  	return 0;
+>>  }
+>>  
+>> -static u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts)
+>> +u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts)
+>>  {
+>>  	u32 hi_rollover_count, hi_rollover_count_r;
+>>  	struct prueth_emac *emac = clockops_data;
+>> @@ -1403,6 +1403,8 @@ static int emac_ndo_open(struct net_device *ndev)
+>>  		napi_enable(&emac->tx_chns[i].napi_tx);
+>>  	napi_enable(&emac->napi_rx);
+>>  
+>> +	icssg_qos_tas_init(ndev);
+>> +
+>>  	/* start PHY */
+>>  	phy_start(ndev->phydev);
+>>  
+>> @@ -1669,6 +1671,7 @@ static const struct net_device_ops emac_netdev_ops = {
+>>  	.ndo_set_rx_mode = emac_ndo_set_rx_mode,
+>>  	.ndo_eth_ioctl = emac_ndo_ioctl,
+>>  	.ndo_get_stats64 = emac_ndo_get_stats64,
+>> +	.ndo_setup_tc = icssg_qos_ndo_setup_tc,
+>>  };
+>>  
+>>  /* get emac_port corresponding to eth_node name */
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_prueth.h b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+>> index 8b6d6b497010..7cbf0e561905 100644
+>> --- a/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_prueth.h
+>> @@ -37,6 +37,7 @@
+>>  #include "icssg_config.h"
+>>  #include "icss_iep.h"
+>>  #include "icssg_switch_map.h"
+>> +#include "icssg_qos.h"
+>>  
+>>  #define PRUETH_MAX_MTU          (2000 - ETH_HLEN - ETH_FCS_LEN)
+>>  #define PRUETH_MIN_PKT_SIZE     (VLAN_ETH_ZLEN)
+>> @@ -174,6 +175,8 @@ struct prueth_emac {
+>>  
+>>  	struct pruss_mem_region dram;
+>>  
+>> +	struct prueth_qos qos;
+>> +
+>>  	struct delayed_work stats_work;
+>>  	u64 stats[ICSSG_NUM_STATS];
+>>  };
+>> @@ -285,4 +288,7 @@ u32 icssg_queue_level(struct prueth *prueth, int queue);
+>>  void emac_stats_work_handler(struct work_struct *work);
+>>  void emac_update_hardware_stats(struct prueth_emac *emac);
+>>  int emac_get_stat_by_name(struct prueth_emac *emac, char *stat_name);
+>> +
+>> +u64 prueth_iep_gettime(void *clockops_data, struct ptp_system_timestamp *sts);
+>> +
+>>  #endif /* __NET_TI_ICSSG_PRUETH_H */
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_qos.c b/drivers/net/ethernet/ti/icssg/icssg_qos.c
+>> new file mode 100644
+>> index 000000000000..95a8b1902879
+>> --- /dev/null
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_qos.c
+>> @@ -0,0 +1,295 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/* Texas Instruments ICSSG PRUETH QoS submodule
+>> + * Copyright (C) 2023 Texas Instruments Incorporated - http://www.ti.com/
+>> + */
+>> +
+>> +#include <linux/printk.h>
+>> +#include "icssg_prueth.h"
+>> +#include "icssg_switch_map.h"
+>> +
+>> +static void tas_update_fw_list_pointers(struct prueth_emac *emac)
+>> +{
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +
+>> +	if ((readb(tas->active_list)) == TAS_LIST0) {
+>> +		tas->fw_active_list = emac->dram.va + TAS_GATE_MASK_LIST0;
+>> +		tas->fw_shadow_list = emac->dram.va + TAS_GATE_MASK_LIST1;
+>> +	} else {
+>> +		tas->fw_active_list = emac->dram.va + TAS_GATE_MASK_LIST1;
+>> +		tas->fw_shadow_list = emac->dram.va + TAS_GATE_MASK_LIST0;
+>> +	}
+>> +}
+>> +
+>> +static void tas_update_maxsdu_table(struct prueth_emac *emac)
+>> +{
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	u16 __iomem *max_sdu_tbl_ptr;
+>> +	u8 gate_idx;
+>> +
+>> +	/* update the maxsdu table */
+>> +	max_sdu_tbl_ptr = emac->dram.va + TAS_QUEUE_MAX_SDU_LIST;
+>> +
+>> +	for (gate_idx = 0; gate_idx < TAS_MAX_NUM_QUEUES; gate_idx++)
+>> +		writew(tas->max_sdu_table.max_sdu[gate_idx], &max_sdu_tbl_ptr[gate_idx]);
+>> +}
+>> +
+>> +static void tas_reset(struct prueth_emac *emac)
+>> +{
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	int i;
+>> +
+>> +	for (i = 0; i < TAS_MAX_NUM_QUEUES; i++)
+>> +		tas->max_sdu_table.max_sdu[i] = 2048;
+>> +
+>> +	tas_update_maxsdu_table(emac);
+>> +
+>> +	writeb(TAS_LIST0, tas->active_list);
+>> +
+>> +	memset_io(tas->fw_active_list, 0, sizeof(*tas->fw_active_list));
+>> +	memset_io(tas->fw_shadow_list, 0, sizeof(*tas->fw_shadow_list));
+>> +}
+>> +
+>> +static int tas_set_state(struct prueth_emac *emac, enum tas_state state)
+>> +{
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	int ret;
+>> +
+>> +	if (tas->state == state)
+>> +		return 0;
+>> +
+>> +	switch (state) {
+>> +	case TAS_STATE_RESET:
+>> +		tas_reset(emac);
+>> +		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_RESET);
+>> +		tas->state = TAS_STATE_RESET;
+>> +		break;
+>> +	case TAS_STATE_ENABLE:
+>> +		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_ENABLE);
+>> +		tas->state = TAS_STATE_ENABLE;
+>> +		break;
+>> +	case TAS_STATE_DISABLE:
+>> +		ret = emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_DISABLE);
+>> +		tas->state = TAS_STATE_DISABLE;
+>> +		break;
+>> +	default:
+>> +		netdev_err(emac->ndev, "%s: unsupported state\n", __func__);
+>> +		ret = -EINVAL;
+>> +		break;
+>> +	}
+>> +
+>> +	if (ret)
+>> +		netdev_err(emac->ndev, "TAS set state failed %d\n", ret);
+>> +	return ret;
+>> +}
+>> +
+>> +static int tas_set_trigger_list_change(struct prueth_emac *emac)
+>> +{
+>> +	struct tc_taprio_qopt_offload *admin_list = emac->qos.tas.taprio_admin;
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	struct ptp_system_timestamp sts;
+>> +	u32 change_cycle_count;
+>> +	u32 cycle_time;
+>> +	u64 base_time;
+>> +	u64 cur_time;
+>> +
+>> +	if (admin_list->cycle_time < TAS_MIN_CYCLE_TIME)
+>> +		return -EINVAL;
+>> +
+>> +	cycle_time = admin_list->cycle_time - 4; /* -4ns to compensate for IEP wraparound time */
+>> +	base_time = admin_list->base_time;
+>> +	cur_time = prueth_iep_gettime(emac, &sts);
+>> +
+>> +	if (base_time > cur_time)
+>> +		change_cycle_count = DIV_ROUND_UP_ULL(base_time - cur_time, cycle_time);
+>> +	else
+>> +		change_cycle_count = 1;
+>> +
+>> +	writel(cycle_time, emac->dram.va + TAS_ADMIN_CYCLE_TIME);
+>> +	writel(change_cycle_count, emac->dram.va + TAS_CONFIG_CHANGE_CYCLE_COUNT);
+>> +	writeb(admin_list->num_entries, emac->dram.va + TAS_ADMIN_LIST_LENGTH);
+>> +
+>> +	/* config_change cleared by f/w to ack reception of new shadow list */
+>> +	writeb(1, &tas->config_list->config_change);
+>> +	/* config_pending cleared by f/w when new shadow list is copied to active list */
+>> +	writeb(1, &tas->config_list->config_pending);
+>> +
+>> +	return emac_set_port_state(emac, ICSSG_EMAC_PORT_TAS_TRIGGER);
+>> +}
+>> +
+>> +static int tas_update_oper_list(struct prueth_emac *emac)
+>> +{
+>> +	struct tc_taprio_qopt_offload *admin_list = emac->qos.tas.taprio_admin;
+>> +	struct tas_config *tas = &emac->qos.tas.config;
+>> +	u32 tas_acc_gate_close_time = 0;
+>> +	u8 idx, gate_idx, val;
+>> +	int ret;
+>> +
+>> +	if (admin_list->cycle_time > TAS_MAX_CYCLE_TIME)
+>> +		return -EINVAL;
+>> +
+>> +	tas_update_fw_list_pointers(emac);
+>> +
+>> +	for (idx = 0; idx < admin_list->num_entries; idx++) {
+>> +		writeb(admin_list->entries[idx].gate_mask,
+>> +		       &tas->fw_shadow_list->gate_mask_list[idx]);
+>> +		tas_acc_gate_close_time += admin_list->entries[idx].interval;
+>> +
+>> +		/* extend last entry till end of cycle time */
+>> +		if (idx == admin_list->num_entries - 1)
+>> +			writel(admin_list->cycle_time,
+>> +			       &tas->fw_shadow_list->win_end_time_list[idx]);
+>> +		else
+>> +			writel(tas_acc_gate_close_time,
+>> +			       &tas->fw_shadow_list->win_end_time_list[idx]);
+>> +	}
+>> +
+>> +	/* clear remaining entries */
+>> +	for (idx = admin_list->num_entries; idx < TAS_MAX_CMD_LISTS; idx++) {
+>> +		writeb(0, &tas->fw_shadow_list->gate_mask_list[idx]);
+>> +		writel(0, &tas->fw_shadow_list->win_end_time_list[idx]);
+>> +	}
+>> +
+>> +	/* update the Array of gate close time for each queue in each window */
+>> +	for (idx = 0 ; idx < admin_list->num_entries; idx++) {
+>> +		/* On Linux, only PRUETH_MAX_TX_QUEUES are supported per port */
+>> +		for (gate_idx = 0; gate_idx < PRUETH_MAX_TX_QUEUES; gate_idx++) {
+>> +			u8 gate_mask_list_idx = readb(&tas->fw_shadow_list->gate_mask_list[idx]);
+>> +			u32 gate_close_time = 0;
+>> +
+>> +			if (gate_mask_list_idx & BIT(gate_idx))
+>> +				gate_close_time = readl(&tas->fw_shadow_list->win_end_time_list[idx]);
+>> +
+>> +			writel(gate_close_time,
+>> +			       &tas->fw_shadow_list->gate_close_time_list[idx][gate_idx]);
+>> +		}
+>> +	}
+>> +
+>> +	/* tell f/w to swap active & shadow list */
+>> +	ret = tas_set_trigger_list_change(emac);
+>> +	if (ret) {
+>> +		netdev_err(emac->ndev, "failed to swap f/w config list: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	/* Wait for completion */
+>> +	ret = readb_poll_timeout(&tas->config_list->config_change, val, !val,
+>> +				 USEC_PER_MSEC, 10 * USEC_PER_MSEC);
+>> +	if (ret) {
+>> +		netdev_err(emac->ndev, "TAS list change completion time out\n");
+>> +		return ret;
+>> +	}
+>> +
+>> +	tas_update_fw_list_pointers(emac);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int emac_set_taprio(struct prueth_emac *emac)
+>> +{
+>> +	struct tc_taprio_qopt_offload *taprio = emac->qos.tas.taprio_admin;
+>> +	int ret;
+>> +
+>> +	switch (taprio->cmd) {
+>> +	case TAPRIO_CMD_DESTROY:
+>> +		ret = tas_set_state(emac, TAS_STATE_DISABLE);
+>> +		break;
+>> +	case TAPRIO_CMD_REPLACE:
+>> +		ret = tas_update_oper_list(emac);
+>> +		if (ret)
+>> +			return ret;
+>> +		ret =  tas_set_state(emac, TAS_STATE_ENABLE);
 > 
-> 1.  Remove aliasing mappings
-> 2.  Flush the data cache if needed
-> 3.  Remove the PRESENT bit from the PTEs of all transitioning pages
-> 4.  Set/clear the encryption attribute as appropriate
-> 5.  Flush the TLB so the changed encryption attribute isn't visible
-> 6.  Notify the hypervisor of the encryption status change
-
-Not sure why I didn't notice this before, but I will need to test this to 
-be certain. As part of this notification, the SNP support will issue a 
-PVALIDATE instruction (to either validate or rescind validation to the 
-page). PVALIDATE takes a virtual address. If the PRESENT bit has been 
-removed, the PVALIDATE instruction will take a #PF (see comments below).
-
-> 7.  Add back the PRESENT bit, making the changed attribute visible
+> Double space here.
 > 
-> With this approach, load_unaligned_zeropad() just takes its normal
-> page-fault-based fixup path if it touches a page that is transitioning.
-> As a result, load_unaligned_zeropad() and CoCo VM page transitioning
-> are completely decoupled.  CoCo VM page transitions can proceed
-> without needing to handle architecture-specific exceptions and fix
-> things up. This decoupling reduces the complexity due to separate
-> TDX and SEV-SNP fixup paths, and gives more freedom to revise and
-> introduce new capabilities in future versions of the TDX and SEV-SNP
-> architectures. Paravisor scenarios work properly without needing
-> to forward exceptions.
+>> +		break;
+>> +	default:
+>> +		ret = -EOPNOTSUPP;
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static void emac_cp_taprio(struct tc_taprio_qopt_offload *from,
+>> +			   struct tc_taprio_qopt_offload *to)
+>> +{
+>> +	int i;
+>> +
+>> +	*to = *from;
+>> +	for (i = 0; i < from->num_entries; i++)
+>> +		to->entries[i] = from->entries[i];
+>> +}
+>> +
+>> +static int emac_setup_taprio(struct net_device *ndev, void *type_data)
+>> +{
+>> +	struct tc_taprio_qopt_offload *taprio = type_data;
+>> +	struct prueth_emac *emac = netdev_priv(ndev);
+>> +	struct tc_taprio_qopt_offload *est_new;
+>> +	int ret, idx;
+>> +
+>> +	if (taprio->cycle_time_extension) {
+>> +		netdev_err(ndev, "Failed to set cycle time extension");
+>> +		return -EOPNOTSUPP;
+>> +	}
+>> +
+>> +	if (taprio->num_entries == 0 ||
+>> +	    taprio->num_entries > TAS_MAX_CMD_LISTS) {
+>> +		NL_SET_ERR_MSG_FMT_MOD(taprio->extack, "unsupported num_entries %ld in taprio config\n",
+>> +				       taprio->num_entries);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +	/* If any time_interval is 0 in between the list, then exit */
+>> +	for (idx = 0; idx < taprio->num_entries; idx++) {
+>> +		if (taprio->entries[idx].interval == 0) {
+>> +			NL_SET_ERR_MSG_MOD(taprio->extack, "0 interval in taprio config not supported\n");
+>> +			return -EINVAL;
+>> +		}
+>> +	}
+>> +
+>> +	if (emac->qos.tas.taprio_admin)
+>> +		devm_kfree(&ndev->dev, emac->qos.tas.taprio_admin);
+>> +
+>> +	est_new = devm_kzalloc(&ndev->dev,
+>> +			       struct_size(est_new, entries, taprio->num_entries),
+>> +			       GFP_KERNEL);
+>> +	if (!est_new)
+>> +		return -ENOMEM;
+>> +
+>> +	emac_cp_taprio(taprio, est_new);
+>> +	emac->qos.tas.taprio_admin = est_new;
+>> +	ret = emac_set_taprio(emac);
 > 
-> With this approach, the order of updating the guest PTEs and
-> notifying the hypervisor doesn't matter. As such, only a single
-> hypervisor callback is needed, rather one before and one after
-> the PTE update. Simplify the code by eliminating the extra
-> hypervisor callback along with the TDX and SEV-SNP code that
-> handles the before and after cases. The TLB flush callback is
-> also no longer required and is removed.
+> This looks weird. I am thinking about the case that taprio->cmd is
+> '_DESTROY', the validation that you do will fail, and it will return
+> -EINVAL, right? Am I missing something?
 > 
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
-> ---
->   arch/x86/coco/tdx/tdx.c       | 66 +------------------------------------------
->   arch/x86/hyperv/ivm.c         |  6 ----
->   arch/x86/kernel/x86_init.c    |  4 ---
->   arch/x86/mm/mem_encrypt_amd.c | 27 ++++--------------
->   arch/x86/mm/pat/set_memory.c  | 55 +++++++++++++++++++++++-------------
->   5 files changed, 43 insertions(+), 115 deletions(-)
+> I was expecting to see something similar to what is done in
+> emac_set_taprio() here before the validation.
+
+This is exactly what I had suggested in patch 1 review.
+Use a switch case for tapio->cmd here and do a validation only if
+cmd is CMD_REPLACE.
+
+You can look at other drivers implementing TAPRIO for reference.
+
 > 
-> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-> index 3e6dbd2..1bb2fff 100644
-> --- a/arch/x86/coco/tdx/tdx.c
-> +++ b/arch/x86/coco/tdx/tdx.c
-> @@ -676,24 +676,6 @@ bool tdx_handle_virt_exception(struct pt_regs *regs, struct ve_info *ve)
->   	return true;
->   }
->   
-> -static bool tdx_tlb_flush_required(bool private)
-> -{
-> -	/*
-> -	 * TDX guest is responsible for flushing TLB on private->shared
-> -	 * transition. VMM is responsible for flushing on shared->private.
-> -	 *
-> -	 * The VMM _can't_ flush private addresses as it can't generate PAs
-> -	 * with the guest's HKID.  Shared memory isn't subject to integrity
-> -	 * checking, i.e. the VMM doesn't need to flush for its own protection.
-> -	 *
-> -	 * There's no need to flush when converting from shared to private,
-> -	 * as flushing is the VMM's responsibility in this case, e.g. it must
-> -	 * flush to avoid integrity failures in the face of a buggy or
-> -	 * malicious guest.
-> -	 */
-> -	return !private;
-> -}
-> -
->   static bool tdx_cache_flush_required(void)
->   {
->   	/*
-> @@ -776,30 +758,6 @@ static bool tdx_enc_status_changed(unsigned long vaddr, int numpages, bool enc)
->   	return true;
->   }
->   
-> -static bool tdx_enc_status_change_prepare(unsigned long vaddr, int numpages,
-> -					  bool enc)
-> -{
-> -	/*
-> -	 * Only handle shared->private conversion here.
-> -	 * See the comment in tdx_early_init().
-> -	 */
-> -	if (enc)
-> -		return tdx_enc_status_changed(vaddr, numpages, enc);
-> -	return true;
-> -}
-> -
-> -static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
-> -					 bool enc)
-> -{
-> -	/*
-> -	 * Only handle private->shared conversion here.
-> -	 * See the comment in tdx_early_init().
-> -	 */
-> -	if (!enc)
-> -		return tdx_enc_status_changed(vaddr, numpages, enc);
-> -	return true;
-> -}
-> -
->   void __init tdx_early_init(void)
->   {
->   	struct tdx_module_args args = {
-> @@ -831,30 +789,8 @@ void __init tdx_early_init(void)
->   	 */
->   	physical_mask &= cc_mask - 1;
->   
-> -	/*
-> -	 * The kernel mapping should match the TDX metadata for the page.
-> -	 * load_unaligned_zeropad() can touch memory *adjacent* to that which is
-> -	 * owned by the caller and can catch even _momentary_ mismatches.  Bad
-> -	 * things happen on mismatch:
-> -	 *
-> -	 *   - Private mapping => Shared Page  == Guest shutdown
-> -         *   - Shared mapping  => Private Page == Recoverable #VE
-> -	 *
-> -	 * guest.enc_status_change_prepare() converts the page from
-> -	 * shared=>private before the mapping becomes private.
-> -	 *
-> -	 * guest.enc_status_change_finish() converts the page from
-> -	 * private=>shared after the mapping becomes private.
-> -	 *
-> -	 * In both cases there is a temporary shared mapping to a private page,
-> -	 * which can result in a #VE.  But, there is never a private mapping to
-> -	 * a shared page.
-> -	 */
-> -	x86_platform.guest.enc_status_change_prepare = tdx_enc_status_change_prepare;
-> -	x86_platform.guest.enc_status_change_finish  = tdx_enc_status_change_finish;
-> -
-> +	x86_platform.guest.enc_status_change_finish  = tdx_enc_status_changed;
->   	x86_platform.guest.enc_cache_flush_required  = tdx_cache_flush_required;
-> -	x86_platform.guest.enc_tlb_flush_required    = tdx_tlb_flush_required;
->   
->   	/*
->   	 * TDX intercepts the RDMSR to read the X2APIC ID in the parallel
-> diff --git a/arch/x86/hyperv/ivm.c b/arch/x86/hyperv/ivm.c
-> index 084fab6..fbe2585 100644
-> --- a/arch/x86/hyperv/ivm.c
-> +++ b/arch/x86/hyperv/ivm.c
-> @@ -550,11 +550,6 @@ static bool hv_vtom_set_host_visibility(unsigned long kbuffer, int pagecount, bo
->   	return result;
->   }
->   
-> -static bool hv_vtom_tlb_flush_required(bool private)
-> -{
-> -	return true;
-> -}
-> -
->   static bool hv_vtom_cache_flush_required(void)
->   {
->   	return false;
-> @@ -614,7 +609,6 @@ void __init hv_vtom_init(void)
->   
->   	x86_platform.hyper.is_private_mmio = hv_is_private_mmio;
->   	x86_platform.guest.enc_cache_flush_required = hv_vtom_cache_flush_required;
-> -	x86_platform.guest.enc_tlb_flush_required = hv_vtom_tlb_flush_required;
->   	x86_platform.guest.enc_status_change_finish = hv_vtom_set_host_visibility;
->   
->   	/* Set WB as the default cache mode. */
-> diff --git a/arch/x86/kernel/x86_init.c b/arch/x86/kernel/x86_init.c
-> index a37ebd3..cf5179b 100644
-> --- a/arch/x86/kernel/x86_init.c
-> +++ b/arch/x86/kernel/x86_init.c
-> @@ -131,9 +131,7 @@ struct x86_cpuinit_ops x86_cpuinit = {
->   
->   static void default_nmi_init(void) { };
->   
-> -static bool enc_status_change_prepare_noop(unsigned long vaddr, int npages, bool enc) { return true; }
->   static bool enc_status_change_finish_noop(unsigned long vaddr, int npages, bool enc) { return true; }
-> -static bool enc_tlb_flush_required_noop(bool enc) { return false; }
->   static bool enc_cache_flush_required_noop(void) { return false; }
->   static bool is_private_mmio_noop(u64 addr) {return false; }
->   
-> @@ -154,9 +152,7 @@ struct x86_platform_ops x86_platform __ro_after_init = {
->   	.hyper.is_private_mmio		= is_private_mmio_noop,
->   
->   	.guest = {
-> -		.enc_status_change_prepare = enc_status_change_prepare_noop,
->   		.enc_status_change_finish  = enc_status_change_finish_noop,
-> -		.enc_tlb_flush_required	   = enc_tlb_flush_required_noop,
->   		.enc_cache_flush_required  = enc_cache_flush_required_noop,
->   	},
->   };
-> diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.c
-> index 6faea41..06960ba 100644
-> --- a/arch/x86/mm/mem_encrypt_amd.c
-> +++ b/arch/x86/mm/mem_encrypt_amd.c
-> @@ -278,11 +278,6 @@ static unsigned long pg_level_to_pfn(int level, pte_t *kpte, pgprot_t *ret_prot)
->   	return pfn;
->   }
->   
-> -static bool amd_enc_tlb_flush_required(bool enc)
-> -{
-> -	return true;
-> -}
-> -
->   static bool amd_enc_cache_flush_required(void)
->   {
->   	return !cpu_feature_enabled(X86_FEATURE_SME_COHERENT);
-> @@ -318,18 +313,6 @@ static void enc_dec_hypercall(unsigned long vaddr, unsigned long size, bool enc)
->   #endif
->   }
->   
-> -static bool amd_enc_status_change_prepare(unsigned long vaddr, int npages, bool enc)
-> -{
-> -	/*
-> -	 * To maintain the security guarantees of SEV-SNP guests, make sure
-> -	 * to invalidate the memory before encryption attribute is cleared.
-> -	 */
-> -	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP) && !enc)
-> -		snp_set_memory_shared(vaddr, npages);
-> -
-> -	return true;
-> -}
-> -
->   /* Return true unconditionally: return value doesn't matter for the SEV side */
->   static bool amd_enc_status_change_finish(unsigned long vaddr, int npages, bool enc)
->   {
-> @@ -337,8 +320,12 @@ static bool amd_enc_status_change_finish(unsigned long vaddr, int npages, bool e
->   	 * After memory is mapped encrypted in the page table, validate it
->   	 * so that it is consistent with the page table updates.
->   	 */
-> -	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP) && enc)
-> -		snp_set_memory_private(vaddr, npages);
-> +	if (cc_platform_has(CC_ATTR_GUEST_SEV_SNP)) {
-> +		if (enc)
-> +			snp_set_memory_private(vaddr, npages);
-> +		else
-> +			snp_set_memory_shared(vaddr, npages);
-> +	}
+>> +	if (ret)
+>> +		devm_kfree(&ndev->dev, est_new);
+> 
+> Also, in case of error, 'tas.taprio_admin' has an already freed pointer,
+> and it's possible that you will try to free it again.
+> 
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +int icssg_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
+>> +			   void *type_data)
+>> +{
+>> +	switch (type) {
+>> +	case TC_SETUP_QDISC_TAPRIO:
+>> +		return emac_setup_taprio(ndev, type_data);
+>> +	default:
+>> +		return -EOPNOTSUPP;
+>> +	}
+>> +}
+>> +
+>> +void icssg_qos_tas_init(struct net_device *ndev)
+>> +{
+>> +	struct prueth_emac *emac = netdev_priv(ndev);
+>> +	bool need_setup = false;
+>> +	struct tas_config *tas;
+>> +
+>> +	tas = &emac->qos.tas.config;
+>> +
+>> +	if (tas->state == TAS_STATE_ENABLE)
+>> +		need_setup = true;
+>> +
+>> +	tas->config_list = emac->dram.va + TAS_CONFIG_CHANGE_TIME;
+>> +	tas->active_list = emac->dram.va + TAS_ACTIVE_LIST_INDEX;
+>> +
+>> +	tas_update_fw_list_pointers(emac);
+>> +
+>> +	tas_set_state(emac, TAS_STATE_RESET);
+>> +
+>> +	if (need_setup)
+>> +		emac_set_taprio(emac);
+>> +}
+>> diff --git a/drivers/net/ethernet/ti/icssg/icssg_qos.h b/drivers/net/ethernet/ti/icssg/icssg_qos.h
+>> new file mode 100644
+>> index 000000000000..c3d455adc0f8
+>> --- /dev/null
+>> +++ b/drivers/net/ethernet/ti/icssg/icssg_qos.h
+>> @@ -0,0 +1,124 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/* Copyright (C) 2023 Texas Instruments Incorporated - http://www.ti.com/
+>> + */
+>> +
+>> +#ifndef __NET_TI_ICSSG_QOS_H
+>> +#define __NET_TI_ICSSG_QOS_H
+>> +
+>> +#include <linux/atomic.h>
+>> +#include <linux/netdevice.h>
+>> +#include <net/pkt_sched.h>
+>> +
+>> +/**
+>> + * Maximum number of gate command entries in each list.
+>> + */
+>> +#define TAS_MAX_CMD_LISTS   (16)
+>> +
+>> +/**
+>> + * Maximum number of transmit queues supported by implementation
+>> + */
+>> +#define TAS_MAX_NUM_QUEUES  (8)
+>> +
+>> +/**
+>> + * Minimum cycle time supported by implementation (in ns)
+>> + */
+>> +#define TAS_MIN_CYCLE_TIME  (1000000)
+>> +
+>> +/**
+>> + * Minimum cycle time supported by implementation (in ns)
+>> + */
+>> +#define TAS_MAX_CYCLE_TIME  (4000000000)
+>> +
+>> +/**
+>> + * Minimum TAS window duration supported by implementation (in ns)
+>> + */
+>> +#define TAS_MIN_WINDOW_DURATION  (10000)
+>> +
+>> +/**
+>> + * List number 0 or 1. Also the value at memory location TAS_ACTIVE_LIST_INDEX
+>> + */
+>> +enum tas_list_num {
+>> +	TAS_LIST0 = 0,
+>> +	TAS_LIST1 = 1
+>> +};
+>> +
+>> +/**
+>> + * state of TAS in f/w
+>> + */
+>> +enum tas_state {
+>> +	/* PRU's are idle */
+>> +	TAS_STATE_DISABLE = 0,
+>> +	/* Enable TAS */
+>> +	TAS_STATE_ENABLE = 1,
+>> +	/* Firmware will reset the state machine */
+>> +	TAS_STATE_RESET = 2,
+>> +};
+>> +
+>> +/**
+>> + * Config state machine variables. See IEEE Std 802.1Q-2018 8.6.8.4
+>> + */
+>> +struct tas_config_list {
+>> +	/* New list is copied at this time */
+>> +	u64 config_change_time;
+>> +	/* config change error counter, incremented if
+>> +	 * admin->BaseTime < current time and TAS_enabled is true
+>> +	 */
+>> +	u32 config_change_error_counter;
+>> +	/* True if list update is pending */
+>> +	u8 config_pending;
+>> +	/* Set to true when application trigger updating of admin list
+>> +	 * to active list, cleared when configChangeTime is updated
+>> +	 */
+>> +	u8 config_change;
+>> +};
+>> +
+>> +/**
+>> + * Max SDU table. See IEEE Std 802.1Q-2018 12.29.1.1
+>> + */
+>> +struct tas_max_sdu_table {
+>> +	u16 max_sdu[TAS_MAX_NUM_QUEUES];
+>> +};
+>> +
+>> +/**
+>> + * TAS List Structure based on firmware memory map
+>> + */
+>> +struct tas_firmware_list {
+>> +	/* window gate mask list */
+>> +	u8 gate_mask_list[TAS_MAX_CMD_LISTS];
+>> +	/* window end time list */
+>> +	u32 win_end_time_list[TAS_MAX_CMD_LISTS];
+>> +	/* Array of gate close time for each queue in each window */
+>> +	u32 gate_close_time_list[TAS_MAX_CMD_LISTS][TAS_MAX_NUM_QUEUES];
+>> +};
+>> +
+>> +/**
+>> + * Main Time Aware Shaper Handle
+>> + */
+>> +struct tas_config {
+>> +	enum tas_state state;
+>> +	struct tas_max_sdu_table max_sdu_table;
+>> +	/* Config change variables */
+>> +	struct tas_config_list __iomem *config_list;
+>> +	/* Whether list 1 or list 2 is the operating list */
+>> +	u8 __iomem *active_list;
+>> +	/* active List pointer, used by firmware */
+>> +	struct tas_firmware_list __iomem *fw_active_list;
+>> +	/* shadow List pointer, used by driver */
+>> +	struct tas_firmware_list __iomem *fw_shadow_list;
+>> +};
+>> +
+>> +struct prueth_qos_tas {
+>> +	struct tc_taprio_qopt_offload *taprio_admin;
+>> +	struct tc_taprio_qopt_offload *taprio_oper;
+>> +	struct tas_config config;
+>> +};
+>> +
+>> +struct prueth_qos {
+>> +	/* IET data structure goes here */
+>> +	struct prueth_qos_tas tas;
+>> +};
+>> +
+>> +void icssg_qos_tas_init(struct net_device *ndev);
+>> +int icssg_qos_ndo_setup_tc(struct net_device *ndev, enum tc_setup_type type,
+>> +			   void *type_data);
+>> +#endif /* __NET_TI_ICSSG_QOS_H */
+>> -- 
+>> 2.34.1
+>>
+> 
 
-These calls will both result in a PVALIDATE being issued (either before or 
-after the page state change to the hypervisor) using the virtual address, 
-which will trigger a #PF is the present bit isn't set.
-
->   
->   	if (!cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT))
->   		enc_dec_hypercall(vaddr, npages << PAGE_SHIFT, enc);
-> @@ -498,9 +485,7 @@ void __init sme_early_init(void)
->   	/* Update the protection map with memory encryption mask */
->   	add_encrypt_protection_map();
->   
-> -	x86_platform.guest.enc_status_change_prepare = amd_enc_status_change_prepare;
->   	x86_platform.guest.enc_status_change_finish  = amd_enc_status_change_finish;
-> -	x86_platform.guest.enc_tlb_flush_required    = amd_enc_tlb_flush_required;
->   	x86_platform.guest.enc_cache_flush_required  = amd_enc_cache_flush_required;
->   
->   	/*
-> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-> index d7ef8d3..d062e01 100644
-> --- a/arch/x86/mm/pat/set_memory.c
-> +++ b/arch/x86/mm/pat/set_memory.c
-> @@ -2147,40 +2147,57 @@ static int __set_memory_enc_pgtable(unsigned long addr, int numpages, bool enc)
->   	memset(&cpa, 0, sizeof(cpa));
->   	cpa.vaddr = &addr;
->   	cpa.numpages = numpages;
-> +
-> +	/*
-> +	 * The caller must ensure that the memory being transitioned between
-> +	 * encrypted and decrypted is not being accessed.  But if
-> +	 * load_unaligned_zeropad() touches the "next" page, it may generate a
-> +	 * read access the caller has no control over. To ensure such accesses
-> +	 * cause a normal page fault for the load_unaligned_zeropad() handler,
-> +	 * mark the pages not present until the transition is complete.  We
-> +	 * don't want a #VE or #VC fault due to a mismatch in the memory
-> +	 * encryption status, since paravisor configurations can't cleanly do
-> +	 * the load_unaligned_zeropad() handling in the paravisor.
-> +	 *
-> +	 * There's no requirement to do so, but for efficiency we can clear
-> +	 * _PAGE_PRESENT and set/clr encryption attr as a single operation.
-> +	 */
->   	cpa.mask_set = enc ? pgprot_encrypted(empty) : pgprot_decrypted(empty);
-> -	cpa.mask_clr = enc ? pgprot_decrypted(empty) : pgprot_encrypted(empty);
-> +	cpa.mask_clr = enc ? pgprot_decrypted(__pgprot(_PAGE_PRESENT)) :
-> +				pgprot_encrypted(__pgprot(_PAGE_PRESENT));
-
-This should be lined up with the pgprot_decrypted above, e.g.:
-
-cpa.mask_clr = enc ? pgprot_decrypted(__pgprot(_PAGE_PRESENT)) :
-		     pgprot_encrypted(__pgprot(_PAGE_PRESENT));
-
-or
-
-cpa.mask_clr = enc ? pgprot_decrypted(__pgprot(_PAGE_PRESENT))
-		   : pgprot_encrypted(__pgprot(_PAGE_PRESENT));
-
->   	cpa.pgd = init_mm.pgd;
->   
->   	/* Must avoid aliasing mappings in the highmem code */
->   	kmap_flush_unused();
->   	vm_unmap_aliases();
->   
-> -	/* Flush the caches as needed before changing the encryption attribute. */
-> -	if (x86_platform.guest.enc_tlb_flush_required(enc))
-> -		cpa_flush(&cpa, x86_platform.guest.enc_cache_flush_required());
-> -
-> -	/* Notify hypervisor that we are about to set/clr encryption attribute. */
-> -	if (!x86_platform.guest.enc_status_change_prepare(addr, numpages, enc))
-> -		return -EIO;
-> +	/* Flush the caches as needed before changing the encryption attr. */
-> +	if (x86_platform.guest.enc_cache_flush_required())
-> +		cpa_flush(&cpa, 1);
->   
->   	ret = __change_page_attr_set_clr(&cpa, 1);
-> +	if (ret)
-> +		return ret;
->   
->   	/*
-> -	 * After changing the encryption attribute, we need to flush TLBs again
-> -	 * in case any speculative TLB caching occurred (but no need to flush
-> -	 * caches again).  We could just use cpa_flush_all(), but in case TLB
-> -	 * flushing gets optimized in the cpa_flush() path use the same logic
-> -	 * as above.
-> +	 * After clearing _PAGE_PRESENT and changing the encryption attribute,
-> +	 * we need to flush TLBs to ensure no further accesses to the memory can
-> +	 * be made with the old encryption attribute (but no need to flush caches
-> +	 * again).  We could just use cpa_flush_all(), but in case TLB flushing
-> +	 * gets optimized in the cpa_flush() path use the same logic as above.
->   	 */
->   	cpa_flush(&cpa, 0);
->   
-> -	/* Notify hypervisor that we have successfully set/clr encryption attribute. */
-> -	if (!ret) {
-> -		if (!x86_platform.guest.enc_status_change_finish(addr, numpages, enc))
-> -			ret = -EIO;
-> -	}
-> +	/* Notify hypervisor that we have successfully set/clr encryption attr. */
-> +	if (!x86_platform.guest.enc_status_change_finish(addr, numpages, enc))
-> +		return -EIO;
-
-Here's where the #PF is likely to be triggered.
-
-Thanks,
-Tom
-
->   
-> -	return ret;
-> +	/*
-> +	 * Now that the hypervisor is sync'ed with the page table changes
-> +	 * made here, add back _PAGE_PRESENT. set_memory_p() does not flush
-> +	 * the TLB.
-> +	 */
-> +	return set_memory_p(&addr, numpages);
->   }
->   
->   static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+-- 
+cheers,
+-roger
