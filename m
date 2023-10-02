@@ -2,175 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C594A7B4F0F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:30:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5BE7B4F12
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:32:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236119AbjJBJa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:30:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44268 "EHLO
+        id S236115AbjJBJcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:32:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236118AbjJBJa1 (ORCPT
+        with ESMTP id S236098AbjJBJcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:30:27 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B625A4
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:30:22 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A66AB1BF204;
-        Mon,  2 Oct 2023 09:30:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696239021;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1nvcBaLCmY8mO5vCFGklzXqpSCLTGt+OF1cfRa4tU1I=;
-        b=Gcu7m0Pp90GHp77BmLulIh3lxJ0ZsmBaZP25G4W3qzZoxP5zDxpwxd9xrPi9jXYNVEHQHl
-        gs5ksdF8QBLn0dDh7DneFcTXW7sWyJgEvjsDusTLTZLpdY2bIbfiJ/qCO69QGqCnPEnM1X
-        5v4Zjj2T2t2a1urSFGseCBBWjFk/9JiBLRvr6FC8HksUeu2Fxuj7Xu9eGJD+KVSmqShlqx
-        9mAy6i19fqNtvGZ/y9RLOKrO2s07JQtVmjQjfUM7c9cTLYzzrVj/wCMHeVcmoAfYh/VF2X
-        O2NlsZbI442Ie1NYSl6+Cnptn2zDykeaCUokAp6Gmm1dSL8uIWXqTWtwZnMH1A==
-Date:   Mon, 2 Oct 2023 11:30:17 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Nikita Shubin <nikita.shubin@maquefel.me>
-Cc:     Rouven Czerwinski <r.czerwinski@pengutronix.de>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jean Delvare <jdelvare@suse.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Johan Jonker <jbx6244@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH] mtd: nand: add support for ts72xx
-Message-ID: <20231002113017.481aae31@xps-13>
-In-Reply-To: <8bbe66a23eb5c8a2404b72d754b1bcb6f4d23867.camel@maquefel.me>
-References: <20230927141532.25525-1-nikita.shubin@maquefel.me>
-        <20230927172947.33106fe2@xps-13>
-        <8bbe66a23eb5c8a2404b72d754b1bcb6f4d23867.camel@maquefel.me>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Mon, 2 Oct 2023 05:32:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7409983;
+        Mon,  2 Oct 2023 02:32:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696239149; x=1727775149;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6GmsFUuqnSQcHUaemY2k1EPSCoudlb/4q0uxHkXHGLg=;
+  b=a+bn3uPCR4UZrIpgag8O2X9jqtq65jffs4Agt000By1mIxViZmRgjVDT
+   /SLKL4pvjnaDsgue9N55nkdwvdIo6FJtm5H7JFHUSZmcBI9lM/OS0pfRw
+   wuVfPk7lCucuQe/Aoun/Uc/DFbIZqEY7W8qve2lTO9TXojYhPEsU9kPOu
+   Lt1eDvgxdsBHZcXH8FF2klTRF3JnnS0lIYzLYe3F9XFodfao7BVolkyk3
+   vbSL8JsgaHRsAC7C5jLjgcFa6kw7BC4yEL8et7l5+ZkcCO6Vm1QHa58+u
+   zvjUMcFcPg8YnnxAI0EZ/4mFO7ZflSdEVsVlPTQ83p17HwG+6EE6Ghu/Y
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="382515680"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="382515680"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:32:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="1081591076"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="1081591076"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:32:25 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC0)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qnFHq-000000027Vr-1phY;
+        Mon, 02 Oct 2023 12:32:22 +0300
+Date:   Mon, 2 Oct 2023 12:32:22 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Yury Norov <yury.norov@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
+        Srinivas Neeli <srinivas.neeli@amd.com>,
+        Michal Simek <michal.simek@amd.com>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Subject: Re: [PATCH v1 5/5] gpiolib: cdev: Utilize more bitmap APIs
+Message-ID: <ZRqOJsTAdjN4BsQf@smile.fi.intel.com>
+References: <20230926052007.3917389-1-andriy.shevchenko@linux.intel.com>
+ <20230926052007.3917389-6-andriy.shevchenko@linux.intel.com>
+ <ZROGG44v5kfktdVs@sol>
+ <ZRQdQnL5VbX659cl@smile.fi.intel.com>
+ <ZRQy795YoPOKsOcz@sol>
+ <ZRQ1RpHEapodQ0xU@smile.fi.intel.com>
+ <ZRQ60KBtY09uPxp6@sol>
+ <ZRqHx+Ihcxor2Jz4@smile.fi.intel.com>
+ <ZRqMcSffA7V77mqW@sol>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRqMcSffA7V77mqW@sol>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nikita,
-
-> ```
-> # modprobe technologic-nand-controller
-> nand: device found, Manufacturer ID: 0xec, Chip ID: 0xf1
-> nand: Samsung NAND 128MiB 3,3V 8-bit
-> nand: 128 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 64
-> Scanning device for bad blocks
-> Bad eraseblock 137 at 0x000001120000
-> Bad eraseblock 310 at 0x0000026c0000
-> 3 fixed-partitions partitions found on MTD device 60000000.nand-
-> controller
-> Creating 3 MTD partitions on "60000000.nand-controller":
-> 0x000000000000-0x000000020000 : "TS-BOOTROM"
-> 0x000000020000-0x000007d20000 : "Linux"
-> 0x000007d20000-0x000008000000 : "RedBoot"
-> ```
->=20
-> This looks like Samsung K9F1G08U0D or K9F1G08U0B.
->=20
-> And the patch above totally solves my issues with READCACHE - thank
-> you!
->=20
-
-Great!
-
-> > If you are using a Micron chip that specifies not supporting ECC
-> > correction together with sequential cache reads, then it's a problem
-> > that we will solve soon (you can hardcode
-> > chip->controller->supported_op.cont_read to 0);
-> >=20
-> > Otherwise we can discuss it.
-> >  =20
-> > > - legacy wait implementation had no delays - only timeout and if i
-> > > set=20
-> > > =C2=A0 readb_poll_timeout() to something reasonable i experience speed
-> > > degradation=20
-> > > =C2=A0 on mtd_speedtest, can it be left as 0 ? =20
-> >=20
-> > Looks like the legacy implementation used cond_resched(). The delay
-> > needs to be observed before first checking for the status, it's a
-> > delay
-> > that is described in the spec, if you get the status before you might
-> > just not see a consistent value. I believe that is worth taking into
-> > account in your implementation below (don't wait then delay, it's
-> > not relevant). Can you share the values you've tried and the
-> > performances you've got? =20
->=20
-> The numbers are pretty stable, so indeed legacy is a bit faster,
-> followed up by new one with zero interval.
+On Mon, Oct 02, 2023 at 05:25:05PM +0800, Kent Gibson wrote:
+> On Mon, Oct 02, 2023 at 12:05:11PM +0300, Andy Shevchenko wrote:
+> > On Wed, Sep 27, 2023 at 10:23:12PM +0800, Kent Gibson wrote:
+> > > On Wed, Sep 27, 2023 at 04:59:34PM +0300, Andy Shevchenko wrote:
+> > > > On Wed, Sep 27, 2023 at 09:49:35PM +0800, Kent Gibson wrote:
+> > > > > On Wed, Sep 27, 2023 at 03:17:06PM +0300, Andy Shevchenko wrote:
+> > > > > > On Wed, Sep 27, 2023 at 09:32:11AM +0800, Kent Gibson wrote:
 
 ...
 
-> Legacy speedtest (old version of nand controller):
+> > > > > > Yet, it opens a way to scale this in case we might have v3 ABI that let's say
+> > > > > > allows to work with 512 GPIOs at a time. With your code it will be much harder
+> > > > > > to achieve and see what you wrote about maintenance (in that case).
+> > > > > 
+> > > > > v3 ABI?? libgpiod v2 is barely out the door!
+> > > > > Do you have any cases where 64 lines per request is limiting?
+> > > > 
+> > > > IIRC it was SO question where the OP asks exactly about breaking the 64 lines
+> > > > limitation in the current ABI.
+> > > > 
+> > > > > If that sort of speculation isn't premature optimisation then I don't know
+> > > > > what is.
+> > > > 
+> > > > No, based on the real question / discussion, just have no link at hand.
+> > > > But it's quite a niche, I can agree.
+> > > 
+> > > Let me know if you find a ref to that discussion - I'm curious.
+> > 
+> > Here it is (read comments as well):
+> > https://stackoverflow.com/questions/76307370/control-gpio-from-linux-userspace-with-linux-gpio-h
+> > 
+> 
+> That question looks to me to be confusing how many GPIOs can be
+> requested per request (64) and in total (effectively unlimited) - thinking
+> they are the same.
+> That could be due to their desire to use the gpiod_chip_get_all_lines()
+> convenience function with a chip with more than 64 lines, rather than
+> because they have an actual need for the lines to be managed in a single
+> request.
+> 
+> So that doesn't look like a genuine use case to me - just a "what if I
+> want to do X" question.  Certainly not something that would warrant a v3
+> ABI.
 
-> mtd_speedtest: eraseblock write speed is 3793 KiB/s
-> mtd_speedtest: eraseblock read speed is 3567 KiB/s
-> mtd_speedtest: page write speed is 3682 KiB/s
-> mtd_speedtest: page read speed is 3488 KiB/s
-> mtd_speedtest: 2 page write speed is 3724 KiB/s
-> mtd_speedtest: 2 page read speed is 3521 KiB/s
-> mtd_speedtest: erase speed is 198709 KiB/s
+Sure, and I'm not talking about v3 ABI to go for, see the word "might" in my
+reply in the first paragraph of this message.
 
-...
-=20
-> New version with interval zero:
+-- 
+With Best Regards,
+Andy Shevchenko
 
-> mtd_speedtest: eraseblock write speed is 3685 KiB/s
-> mtd_speedtest: eraseblock read speed is 3517 KiB/s
-> mtd_speedtest: page write speed is 3592 KiB/s
-> mtd_speedtest: page read speed is 3444 KiB/s
-> mtd_speedtest: 2 page write speed is 3608 KiB/s
-> mtd_speedtest: 2 page read speed is 3475 KiB/s
-> mtd_speedtest: erase speed is 194499 KiB/s
 
-Looks almost the same as above, I believe the difference is just noise
-between measurements.
-
-...
-
-> New version with interval 100:
-
-> mtd_speedtest: eraseblock write speed is 2722 KiB/s
-> mtd_speedtest: eraseblock read speed is 2175 KiB/s
-> mtd_speedtest: page write speed is 2598 KiB/s
-> mtd_speedtest: page read speed is 2070 KiB/s
-> mtd_speedtest: 2 page write speed is 2627 KiB/s
-> mtd_speedtest: 2 page read speed is 2106 KiB/s
-> mtd_speedtest: erase speed is 175851 KiB/s
-
-...
-
-> Also providing version with zero interval and "if (instr->delay_ns)"
-> dropped - it's optional as far i understood:
-
-It's not optional, sorry for the wrong comment, please keep it as it
-is, knowing that it will be null after a wait_rdy.
-
-> mtd_speedtest: eraseblock write speed is 3695 KiB/s
-> mtd_speedtest: eraseblock read speed is 3532 KiB/s
-> mtd_speedtest: page write speed is 3593 KiB/s
-> mtd_speedtest: page read speed is 3457 KiB/s
-> mtd_speedtest: 2 page write speed is 3640 KiB/s
-> mtd_speedtest: 2 page read speed is 3488 KiB/s
-> mtd_speedtest: erase speed is 195451 KiB/s
-
-Thanks,
-Miqu=C3=A8l
