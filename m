@@ -2,87 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF1127B4F59
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 919AE7B4F5D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236216AbjJBJqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56640 "EHLO
+        id S236237AbjJBJqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:46:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236227AbjJBJqA (ORCPT
+        with ESMTP id S236174AbjJBJqn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:46:00 -0400
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com [209.85.210.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995F2E3
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:45:57 -0700 (PDT)
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6c4fa7d0da0so14903650a34.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:45:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696239957; x=1696844757;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=j+V/Kas7sPAGONSNF95omM6KA+Zl9oYVho8EqMT7rbM=;
-        b=LBD7WGJ8fpXP3a5ikmYuTharlO/6TTzE549FiV22ufKFBuSyeL1HQMKPlhBNwGmaKP
-         ItW6JVn5qFnSOXP8dsZf+IBRdgf5noqXDzhjOY12l05Sdr9psq4V4qeVKjNlQ4OlqrcA
-         zRg1Ut5uqapWhx9HqClOcb4dHNykBcQZ6QpzoVYBh2kmheMCF+6KqkHZcAUDM6w6fChl
-         qaq+sw2XND16BeRNBNk2M++TsEDwExQQHBxH49g5fcgRA8DO8BpV31fNM0u8DAeAj0J3
-         FxTfsnJMwBc6VCTcOQB2XqTl22vQmOjIilMD21TwEubVCmE2DGcjQBlQqulhDBEg+is0
-         2GHQ==
-X-Gm-Message-State: AOJu0Yyr/LQaDCwN4EQv3kQfphZdacFz1Dn0wAirwsJrw7NbSxFlFsHQ
-        nFYxO++H3xsjbvHY4Lpnw2giZe9kTnPYd2QuznWIGhJFrpzD
-X-Google-Smtp-Source: AGHT+IElUT3xavaqCQKZ2cxGY8UTjgJeI6y9hTzx2P/TqT18EAuMs23S/kpRJXl8aA3EWRB2XmcfIHh+ZTLv+OHC+INg60lnz9ow
+        Mon, 2 Oct 2023 05:46:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E67F91;
+        Mon,  2 Oct 2023 02:46:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696240000; x=1727776000;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=yecl4KQ6cTg1O9LGgRMfjZXbOywvYlyUsjIAYh4QoG4=;
+  b=VVQt3w9tzmYOuQn1xA3lCEjrmt7xnLJTd/VBO9/E+ufowLVH2yvpFK0d
+   fsI/t1XsZ53mDW4Crba5HaQBNv9gOO7xMG8qmEzP2MbuxwIljskaDSx9R
+   G3cHSKuhBvNj5/nhKtKDISexr4cfD9hasZsPC3LcUs2wE1DIYcE64a3UY
+   4/PfnEQSJi/MDV4V8qMynBprvZfGTrqb4YkCvIziLQBOFL67GMxH3DY2N
+   XwbePEd1UhgzN92EnmK7b+k2GOnVuBqOemHwFnYVJP0TGGAyt+cZlLE7f
+   wZ/7QoAIRMSxrjFMuy6B4njcYccwEglLPbX4KzV4hKBTgSv6E1oE7Hynh
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="372960252"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="372960252"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:46:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="1467822"
+Received: from roliveir-mobl1.ger.corp.intel.com ([10.251.222.16])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 02:45:58 -0700
+Date:   Mon, 2 Oct 2023 12:46:35 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+cc:     linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        =?ISO-8859-15?Q?Maciej_Wiecz=F3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>,
+        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v3 1/7] selftests/resctrl: Fix uninitialized .sa_flags
+In-Reply-To: <0df7f82d-de3b-3e51-ffc1-5aa4e23db62a@intel.com>
+Message-ID: <545ef67c-4ca2-9a2-381a-991fda391e8e@linux.intel.com>
+References: <20230929112039.7488-1-ilpo.jarvinen@linux.intel.com> <20230929112039.7488-2-ilpo.jarvinen@linux.intel.com> <0df7f82d-de3b-3e51-ffc1-5aa4e23db62a@intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a9d:7dcc:0:b0:6b9:a955:43bc with SMTP id
- k12-20020a9d7dcc000000b006b9a95543bcmr3119771otn.3.1696239957023; Mon, 02 Oct
- 2023 02:45:57 -0700 (PDT)
-Date:   Mon, 02 Oct 2023 02:45:56 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000017a4bd0606b8a48c@google.com>
-Subject: [syzbot] Monthly can report (Sep 2023)
-From:   syzbot <syzbot+list80422fea79f8c83e326e@syzkaller.appspotmail.com>
-To:     linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mkl@pengutronix.de, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-889719702-1696239999=:2459"
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello can maintainers/developers,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-This is a 31-day syzbot report for the can subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/can
+--8323329-889719702-1696239999=:2459
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-During the period, 0 new issues were detected and 0 were fixed.
-In total, 8 issues are still open and 47 have been fixed so far.
+On Fri, 29 Sep 2023, Reinette Chatre wrote:
 
-Some of the still happening issues:
+> Hi Ilpo,
+> 
+> On 9/29/2023 4:20 AM, Ilpo Järvinen wrote:
+> > signal_handler_unregister() calls sigaction() with uninitializing
+> > sa_flags in the struct sigaction.
+> > 
+> > Make sure sa_flags is always initialized in signal_handler_unregister()
+> > by initializing the struct sigaction when declaring it.
+> > 
+> > Fixes: 73c55fa5ab55 (selftests/resctrl: Commonize the signal handler register/unregister for all tests)
+> 
+> Please place the title line in quotes (checkpatch warning).
 
-Ref Crashes Repro Title
-<1> 279     Yes   possible deadlock in j1939_sk_queue_drop_all
-                  https://syzkaller.appspot.com/bug?extid=3bd970a1887812621b4c
-<2> 60      Yes   possible deadlock in j1939_session_activate
-                  https://syzkaller.appspot.com/bug?extid=f32cbede7fd867ce0d56
-<3> 6       Yes   possible deadlock in j1939_sk_errqueue (2)
-                  https://syzkaller.appspot.com/bug?extid=1591462f226d9cbf0564
+Thanks. I hadn't realize the quotes vanished without an error when I 
+removed the escape from " char in gitconfig alias (I have just migrated to 
+use alias instead of a custom tool).
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
+> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> > Cc: <stable@vger.kernel.org>
+> > ---
+> >  tools/testing/selftests/resctrl/resctrl_val.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
+> > index 51963a6f2186..1e8b90077218 100644
+> > --- a/tools/testing/selftests/resctrl/resctrl_val.c
+> > +++ b/tools/testing/selftests/resctrl/resctrl_val.c
+> > @@ -504,7 +504,7 @@ int signal_handler_register(void)
+> >   */
+> >  void signal_handler_unregister(void)
+> >  {
+> > -	struct sigaction sigact;
+> > +	struct sigaction sigact = {};
+> >  
+> >  	sigact.sa_handler = SIG_DFL;
+> >  	sigemptyset(&sigact.sa_mask);
+> 
+> Could you please add this initialization to signal_handler_register()
+> also? I understand that the particular issue of sa_flags is not 
+> relevant to that function but there are other uninitialized fields.
+> I think initializing the struct makes the code more robust without
+> needing to reason/understand glibc behavior.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+Okay, I'll do that and add a note into the changelog that then correctness 
+is obvious from the code itself.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+-- 
+ i.
 
-You may send multiple commands in a single email message.
+--8323329-889719702-1696239999=:2459--
