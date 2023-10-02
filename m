@@ -2,133 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 852F67B4F82
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A947B4F85
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 11:51:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236263AbjJBJu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 05:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43202 "EHLO
+        id S236154AbjJBJvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 05:51:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235897AbjJBJuX (ORCPT
+        with ESMTP id S231174AbjJBJvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 05:50:23 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9DE8E
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:50:20 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c5db4925f9so20214965ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:50:20 -0700 (PDT)
+        Mon, 2 Oct 2023 05:51:24 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E58783
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 02:51:21 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c135cf2459so239694271fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 02:51:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=areca-com-tw.20230601.gappssmtp.com; s=20230601; t=1696240220; x=1696845020; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:cc:to:from:subject
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=o8VuC62NpnTeKU5Qh6ig3nt0JiaZT8s+wdPFWHOU5H8=;
-        b=ICN+76aFB5ij0icoZsCTgK0CHrmkkiQvOGhFwUphEgC/xNmAw/jF5lpnSwS893Pfyn
-         40rQ61lZVrjNMq6mUSt0z8B0Z78JMwaly9eLB9niW8pHFRg+V4h++l3tT/rHZcySHSPU
-         FmWWAEIH58ARl70+3HOJFYEaoiMFbVzq+TyiX71yD36t4Rf4SFk785GjnWP14N5FzzlH
-         yyaUSd8ax3q4z/iIfID6vZDj+FkdBkEfHcqpvyzz+F74jHkqlIgu926zb3dmcc4EtBjC
-         qtcknSmrkGhzEL2rCd/ufEHdKbqfJJb8pZGjkYyXu4X/Y2I4yU5c2rgZl14ozZMb3JDq
-         DHmA==
+        d=linaro.org; s=google; t=1696240279; x=1696845079; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JLs1VktsLlk8jSlnRreaZgQ/QeUwdA55Dkd4Kqx1630=;
+        b=BHtwBdkxkL7W1WgGrLta0pVAoOEjgWTOWh+BBejwMR9JGzoGXydElJAZ43tN+KUYH+
+         H0Cd6l4UMBImAsIutTmywKSBWzScrylM2/pD+drsDMXucffDFJojuXu4ZNm3ozrqbeyL
+         sB7KEZn+ULgUP3atPyknsMYt24lRXOszT0LfkXmBMRGlR1ElNPfkv10HfdTE3p2WpbbL
+         ZDXqIW0i5sXgJqzczRFhw9T6btwcQStbn8S4C50OX7uTzoKmudPFI0aWIp1vf0+Nok5a
+         +Ejj4JST8ps0svZ7Jen0igygXwXr+o0fIyIfsO/YklVAjMCXtqHpq9q3/x+y8Y1uUOyz
+         w3NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696240220; x=1696845020;
-        h=content-transfer-encoding:mime-version:date:cc:to:from:subject
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o8VuC62NpnTeKU5Qh6ig3nt0JiaZT8s+wdPFWHOU5H8=;
-        b=niJRJDQ23wPLOU6HC1OtIDF+moYifxV/4YZgZyHFzfkejqiiRNzAbut/Xz2C6sG89F
-         gpNkF1BDPyZWe+8pldnjrmkH9mA1OvrLsGkP1psZhPbFioGcNWyLmeGhdenI8v8W1+aY
-         AeNCYc9LpA6npAkepbCVWCUFAusZuHfpYxygeGfQ3TjNwLi2czRO73xa2xhe31tqYzzF
-         HUUe/tfuDPABKltFVlpSZp7Y0gf34DOwY3sNifHMXzi7RI/lUbRbqrP9tmgHBJNzzP6c
-         elx8HUeus9p7w0uqH2vbLbeqgF9KIpI+2SgTJ6qXmHs+l+cwsVMGgkqHVY5Q8m4UQyDJ
-         fwZA==
-X-Gm-Message-State: AOJu0Yx/0WN4U8px25rvrGADI/44dp/0CWz7Q8MPOwXT8OXqswZcqJwg
-        8K93NBksJ7xp/ysa806C6Y6mKA==
-X-Google-Smtp-Source: AGHT+IFBKesD45x0cNLEJekqdAX+BrSLlBybOAsiaupwvgsZbU5M53ytMHfhMKdaBAGUU4y+AKNSdw==
-X-Received: by 2002:a17:902:ea0e:b0:1c1:fc5c:b31b with SMTP id s14-20020a170902ea0e00b001c1fc5cb31bmr20245585plg.9.1696240220338;
-        Mon, 02 Oct 2023 02:50:20 -0700 (PDT)
-Received: from centos78 (60-248-88-209.hinet-ip.hinet.net. [60.248.88.209])
-        by smtp.googlemail.com with ESMTPSA id jc20-20020a17090325d400b001c5a77715b1sm7932789plb.131.2023.10.02.02.50.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Oct 2023 02:50:19 -0700 (PDT)
-Message-ID: <7732e743eaad57681b1552eec9c6a86c76dbe459.camel@areca.com.tw>
-Subject: [PATCH v3 2/3] scsi: arcmsr:  support new PCI device ID 1883 and
- 1886
-From:   ching Huang <ching2048@areca.com.tw>
-To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     bvanassche@acm.org, kbuild test robot <lkp@intel.com>
-Date:   Mon, 02 Oct 2023 17:50:27 +0800
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
-Mime-Version: 1.0
+        d=1e100.net; s=20230601; t=1696240279; x=1696845079;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JLs1VktsLlk8jSlnRreaZgQ/QeUwdA55Dkd4Kqx1630=;
+        b=PDLIBbsVn04NGbF7pEkfKPnUxLrPzv1IIR2cMLuT2E2xXP14Ahr87IaomXapgtael7
+         zn+PBWr1EQyeN11s+Xphie3QfCeVy9SHj9BHCYfGwmGvPHMi8sYW3mycqqwq66aKAzx3
+         EhCSL5mCoIlGxk4brP2LCEfOEMqWKT5TlkKKM7ssgOjmUXQlwXvTvSq7O8rg0Izmpz5T
+         /wByy2s4Ih0Ek74vHaouTe5PKYkxsoYDstmQZtfMCS/jlsYT1WPJBVzgZi63Hc82vf/A
+         a+ucisYb4tK+RRitICphbFMD79n25j8VldyzqymuQ5IBOvhLa+ZJ2C0P5hwd+5fHb6sj
+         JAEg==
+X-Gm-Message-State: AOJu0Yx1uh1ranvz3/4ea5rsXqB9dfhT4j72KaQ6ozEfh7yqmSS0sXj7
+        Q+SYSLiDYh3XgniVzC6J4aJGdw==
+X-Google-Smtp-Source: AGHT+IFOVOzVdjRKpbSkAlo6qh4MyGHDzKp2cGIoMm270v1GTGrFuVJwWEg8an2N9lHrz99nrbSpnw==
+X-Received: by 2002:a05:6512:23a4:b0:500:c765:bbe with SMTP id c36-20020a05651223a400b00500c7650bbemr11447285lfv.0.1696240279333;
+        Mon, 02 Oct 2023 02:51:19 -0700 (PDT)
+Received: from [172.30.204.164] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id a16-20020a056512021000b0050315aa36fbsm4685416lfo.282.2023.10.02.02.51.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 02:51:18 -0700 (PDT)
+Message-ID: <5f3c8a66-aba3-cef0-8df9-f897487f1098@linaro.org>
+Date:   Mon, 2 Oct 2023 11:51:17 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 4/5] phy: qcom: edp: Introduce support for DisplayPort
+Content-Language: en-US
+To:     Johan Hovold <johan@kernel.org>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        quic_jesszhan@quicinc.com
+References: <20220810040745.3582985-1-bjorn.andersson@linaro.org>
+ <20220810040745.3582985-5-bjorn.andersson@linaro.org>
+ <ZRqIHSetajQf7Um1@hovoldconsulting.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <ZRqIHSetajQf7Um1@hovoldconsulting.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ching Huang <ching2048@areca.com.tw>
-
-This patch supports Areca new PCI device ID 1883 and 1886 Raid controllers.
-
-Signed-off-by: ching Huang <ching2048@areca.com.tw>
----
- drivers/scsi/arcmsr/arcmsr.h     | 4 ++++
- drivers/scsi/arcmsr/arcmsr_hba.c | 6 ++++++
- 2 files changed, 10 insertions(+)
-
-diff --git a/drivers/scsi/arcmsr/arcmsr.h b/drivers/scsi/arcmsr/arcmsr.h
-index 8f20d9cc5..2f80a6acb 100644
---- a/drivers/scsi/arcmsr/arcmsr.h
-+++ b/drivers/scsi/arcmsr/arcmsr.h
-@@ -78,9 +78,13 @@ struct device_attribute;
- #ifndef PCI_DEVICE_ID_ARECA_1203
- #define PCI_DEVICE_ID_ARECA_1203	0x1203
- #endif
-+#ifndef PCI_DEVICE_ID_ARECA_1883
-+#define PCI_DEVICE_ID_ARECA_1883	0x1883
-+#endif
- #ifndef PCI_DEVICE_ID_ARECA_1884
- #define PCI_DEVICE_ID_ARECA_1884	0x1884
- #endif
-+#define PCI_DEVICE_ID_ARECA_1886_0	0x1886
- #define PCI_DEVICE_ID_ARECA_1886	0x188A
- #define	ARCMSR_HOURS			(1000 * 60 * 60 * 4)
- #define	ARCMSR_MINUTES			(1000 * 60 * 60)
-diff --git a/drivers/scsi/arcmsr/arcmsr_hba.c b/drivers/scsi/arcmsr/arcmsr_hba.c
-index 0a2d9b66e..2bc726f19 100644
---- a/drivers/scsi/arcmsr/arcmsr_hba.c
-+++ b/drivers/scsi/arcmsr/arcmsr_hba.c
-@@ -214,8 +214,12 @@ static struct pci_device_id arcmsr_device_id_table[] = {
- 		.driver_data = ACB_ADAPTER_TYPE_A},
- 	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1880),
- 		.driver_data = ACB_ADAPTER_TYPE_C},
-+	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1883),
-+		.driver_data = ACB_ADAPTER_TYPE_C},
- 	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1884),
- 		.driver_data = ACB_ADAPTER_TYPE_E},
-+	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1886_0),
-+		.driver_data = ACB_ADAPTER_TYPE_F},
- 	{PCI_DEVICE(PCI_VENDOR_ID_ARECA, PCI_DEVICE_ID_ARECA_1886),
- 		.driver_data = ACB_ADAPTER_TYPE_F},
- 	{0, 0}, /* Terminating entry */
-@@ -4794,9 +4798,11 @@ static const char *arcmsr_info(struct Scsi_Host *host)
- 	case PCI_DEVICE_ID_ARECA_1680:
- 	case PCI_DEVICE_ID_ARECA_1681:
- 	case PCI_DEVICE_ID_ARECA_1880:
-+	case PCI_DEVICE_ID_ARECA_1883:
- 	case PCI_DEVICE_ID_ARECA_1884:
- 		type = "SAS/SATA";
- 		break;
-+	case PCI_DEVICE_ID_ARECA_1886_0:
- 	case PCI_DEVICE_ID_ARECA_1886:
- 		type = "NVMe/SAS/SATA";
- 		break;
--- 
-2.39.3
 
 
+On 10/2/23 11:06, Johan Hovold wrote:
+> On Tue, Aug 09, 2022 at 09:07:44PM -0700, Bjorn Andersson wrote:
+>> The eDP phy can be used to drive either eDP or DP output, with some
+>> minor variations in some of the configuration and seemingly a need for
+>> implementing swing and pre_emphasis calibration.
+>>
+>> Introduce a config object, indicating if the phy is operating in eDP or
+>> DP mode and swing/pre-emphasis calibration to support this.
+>>
+>> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>> ---
+>>   drivers/phy/qualcomm/phy-qcom-edp.c | 80 +++++++++++++++++++++++++++--
+>>   1 file changed, 76 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/phy/qualcomm/phy-qcom-edp.c b/drivers/phy/qualcomm/phy-qcom-edp.c
+>> index 32614fb838b5..301ac422d2fe 100644
+>> --- a/drivers/phy/qualcomm/phy-qcom-edp.c
+>> +++ b/drivers/phy/qualcomm/phy-qcom-edp.c
+>> @@ -70,8 +70,19 @@
+>>   
+>>   #define TXn_TRAN_DRVR_EMP_EN                    0x0078
+>>   
+>> +struct qcom_edp_cfg {
+>> +	bool is_dp;
+>> +
+>> +	/* DP PHY swing and pre_emphasis tables */
+>> +	const u8 (*swing_hbr_rbr)[4][4];
+>> +	const u8 (*swing_hbr3_hbr2)[4][4];
+>> +	const u8 (*pre_emphasis_hbr_rbr)[4][4];
+>> +	const u8 (*pre_emphasis_hbr3_hbr2)[4][4];
+>> +};
+>   
+>>   static int qcom_edp_configure_ssc(const struct qcom_edp *edp)
+>> @@ -315,7 +381,9 @@ static int qcom_edp_set_vco_div(const struct qcom_edp *edp)
+>>   static int qcom_edp_phy_power_on(struct phy *phy)
+>>   {
+>>   	const struct qcom_edp *edp = phy_get_drvdata(phy);
+>> +	const struct qcom_edp_cfg *cfg = edp->cfg;
+>>   	u32 bias0_en, drvr0_en, bias1_en, drvr1_en;
+>> +	u8 ldo_config;
+>>   	int timeout;
+>>   	int ret;
+>>   	u32 val;
+>> @@ -332,8 +400,11 @@ static int qcom_edp_phy_power_on(struct phy *phy)
+>>   	if (timeout)
+>>   		return timeout;
+>>   
+>> -	writel(0x01, edp->tx0 + TXn_LDO_CONFIG);
+>> -	writel(0x01, edp->tx1 + TXn_LDO_CONFIG);
+>> +
+>> +	ldo_config = (cfg && cfg->is_dp) ? 0x1 : 0x0;
+>> +
+>> +	writel(ldo_config, edp->tx0 + TXn_LDO_CONFIG);
+>> +	writel(ldo_config, edp->tx1 + TXn_LDO_CONFIG);
+> 
+> When reviewing a patch from Konrad which will start using the eDP
+> configuration on the X13s, I noticed that this patch inverted these bits
+> for older SoCs (e.g. sc7280 and sc8180xp). They used to be set to 1,
+> but after this patch they will be set to 0.
+> 
+> Was that intentional even if it was never mentioned in the commit
+> message? Or was it a mistake that should be fixed?
++Abhinav, Jessica
+
+Konrad
