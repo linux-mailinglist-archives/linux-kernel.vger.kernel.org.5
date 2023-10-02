@@ -2,118 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD1577B4BA4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 08:47:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72AA17B4BAA
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 08:50:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235549AbjJBGru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 02:47:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
+        id S235559AbjJBGuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 02:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235561AbjJBGrs (ORCPT
+        with ESMTP id S235321AbjJBGuE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 02:47:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D00E0
-        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 23:47:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696229266; x=1727765266;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=f3POr1hTgs9BZkoiQNmow/8HaNbGbSX6TCGj1mzjNcc=;
-  b=QmdYnraiWYnZuqR87E5Ub+IEQa9ojciahPZ/Fw1CyD22s0hYnWZ+zxqM
-   SD1K6HnsIO40NdLT5DOWEq1n2n5YSe0WGZY5WADzy+GU6JyU2mfMU6/IV
-   FN50NQgR9fk1oYP9c5LBoGO8lnGfoI5fO7hKqIJQx8MB/Cui7hOR2T5/I
-   u6agYyn0DYyZ7EtYVV+6wH+t2XPVgGtoQ+YeyUYy4fkXeLJ0sUMfiYHhc
-   zhkvH3EgbDM3EqjihqCZIMDrSxubatKmyvqZfCiAOCdzjGol9FXDfZEK6
-   kbiSz15vRQp7ejKBnGPct2nd5MtzyZOSvBDncQJ+w1xSvx/iglQ+g/Bot
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="449080371"
-X-IronPort-AV: E=Sophos;i="6.03,193,1694761200"; 
-   d="scan'208";a="449080371"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Oct 2023 23:47:45 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10850"; a="779854915"
-X-IronPort-AV: E=Sophos;i="6.03,193,1694761200"; 
-   d="scan'208";a="779854915"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.153])
-  by orsmga008.jf.intel.com with SMTP; 01 Oct 2023 23:47:42 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Mon, 02 Oct 2023 09:47:41 +0300
-Date:   Mon, 2 Oct 2023 09:47:41 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Subject: Re: [PATCH] drm/i915/uapi: fix doc typos
-Message-ID: <ZRpnjU3Myknj81Ff@intel.com>
-References: <20231002010824.14781-1-rdunlap@infradead.org>
+        Mon, 2 Oct 2023 02:50:04 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A837AA6
+        for <linux-kernel@vger.kernel.org>; Sun,  1 Oct 2023 23:50:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=Mug5aMcfidDYMYnLFBdtc2pTxr
+        SJ3IWkYw6/i4oRKENPp+PpptyT9af4UvLX3RSmEhQku3UBxMy29qLAgER6E9aDcRJSHIeSsL1Hh8p
+        rwI05f0/qagVM7nzpBO0uqKvFFgUxL04rszks1q161KD3HpUtsTmA146hBEkS4rn/4XFSFMQBGsk6
+        Q25LSaOCWTX09mygURWIK2obhE8NgqmHWbgwBsJUJUZASFK9U141uVEhjt7RpYEgr3zOZ9GUi+0dz
+        2Rh6SA65+xVmJnev/wRAIgqMR5PwK/h50swckQxDSVYHZucLWzrDY4Z4NFpyae2rcR1+B+0vBlTe9
+        TmWPeS4g==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qnCki-00C2fO-0f;
+        Mon, 02 Oct 2023 06:50:00 +0000
+Date:   Sun, 1 Oct 2023 23:50:00 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Lorenzo Stoakes <lstoakes@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] mm/filemap: clarify filemap_fault() comments for not
+ uptodate case
+Message-ID: <ZRpoGHYwCtW5SWjR@infradead.org>
+References: <20230930231029.88196-1-lstoakes@gmail.com>
+ <ZRpiiq/pUB6hGTl/@infradead.org>
+ <2c7014c0-6343-4e76-8697-3f84f54350bd@lucifer.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231002010824.14781-1-rdunlap@infradead.org>
-X-Patchwork-Hint: comment
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2c7014c0-6343-4e76-8697-3f84f54350bd@lucifer.local>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 01, 2023 at 06:08:24PM -0700, Randy Dunlap wrote:
-> Correct typo of "its".
-> Add a comma for clarity.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Jani Nikula <jani.nikula@linux.intel.com>
-> Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-> Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-> Cc: intel-gfx@lists.freedesktop.org
-> Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-> Cc: Maxime Ripard <mripard@kernel.org>
-> Cc: Thomas Zimmermann <tzimmermann@suse.de>
-> Cc: dri-devel@lists.freedesktop.org
-> ---
->  include/uapi/drm/i915_drm.h |    6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff -- a/include/uapi/drm/i915_drm.h b/include/uapi/drm/i915_drm.h
-> --- a/include/uapi/drm/i915_drm.h
-> +++ b/include/uapi/drm/i915_drm.h
-> @@ -38,13 +38,13 @@ extern "C" {
->   */
->  
->  /**
-> - * DOC: uevents generated by i915 on it's device node
-> + * DOC: uevents generated by i915 on its device node
->   *
->   * I915_L3_PARITY_UEVENT - Generated when the driver receives a parity mismatch
-> - *	event from the gpu l3 cache. Additional information supplied is ROW,
-> + *	event from the GPU l3 cache. Additional information supplied is ROW,
+Looks good:
 
-s/l3/L3/ would also be appropriate if aim to fix the caps.
-
->   *	BANK, SUBBANK, SLICE of the affected cacheline. Userspace should keep
->   *	track of these events and if a specific cache-line seems to have a
-                             ^
-I'd put the comma there, but my grasp of English punctuation isn't
-all that great so I might be wrong. Or maybe both places should have
-one?
-
-> - *	persistent error remap it with the l3 remapping tool supplied in
-> + *	persistent error, remap it with the l3 remapping tool supplied in
->   *	intel-gpu-tools.  The value supplied with the event is always 1.
->   *
->   * I915_ERROR_UEVENT - Generated upon error detection, currently only via
-
--- 
-Ville Syrjälä
-Intel
+Reviewed-by: Christoph Hellwig <hch@lst.de>
