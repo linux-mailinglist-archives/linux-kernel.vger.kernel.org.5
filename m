@@ -2,112 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5055A7B5B8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:51:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1F597B5B97
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238941AbjJBTum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 15:50:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56826 "EHLO
+        id S238960AbjJBTur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 15:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229750AbjJBTul (ORCPT
+        with ESMTP id S229750AbjJBTuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 15:50:41 -0400
-Received: from domac.alu.hr (domac.alu.unizg.hr [161.53.235.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2361791
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 12:50:37 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by domac.alu.hr (Postfix) with ESMTP id C9DEF60171;
-        Mon,  2 Oct 2023 21:50:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1696276235; bh=PdHjwL1WGxFjLAs5xkBLB9K3ip5pkE/ZhbqCR/dn5kg=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=loLzo1HzXfAn8PuT7klzHQF8anAu0c28BRNZuQDxApI/MUA5PVLRHt6JgkhdUGWao
-         tX9jJnzPsd7xkXiVULItIJv81lkPJ11I8gO/+8lHgVxWbbnucUChXwgxx4owqNrWNB
-         BTcXeb+hw0N9ckDnwvgq9p50NQRiPeEnpPbNGCycXLqzdBIxXHN2yi3JoKzvtRu8qb
-         e8fwBC3wi4ydn8o5p0AZRy8hyELJuD3HuJt5j/ptDGr5ekoUUEKaWhijHSMBwI/jIr
-         RPHBGm2TfPBaj4xQZWp1dQr5m38VF4iKY2+ggkn9vHkXut3z+9kOvYIn3vP8HavAPx
-         Nki/8LZlglwfg==
-X-Virus-Scanned: Debian amavisd-new at domac.alu.hr
-Received: from domac.alu.hr ([127.0.0.1])
-        by localhost (domac.alu.hr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id k2HKfI_psZjV; Mon,  2 Oct 2023 21:50:33 +0200 (CEST)
-Received: from [192.168.1.6] (78-1-184-91.adsl.net.t-com.hr [78.1.184.91])
-        by domac.alu.hr (Postfix) with ESMTPSA id 076666016E;
-        Mon,  2 Oct 2023 21:50:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=alu.unizg.hr; s=mail;
-        t=1696276233; bh=PdHjwL1WGxFjLAs5xkBLB9K3ip5pkE/ZhbqCR/dn5kg=;
-        h=Date:Subject:To:References:From:In-Reply-To:From;
-        b=R8SWSfAz/uhUwSx5/3Zsj+hab1aXv1VRXu8P0OOFZ6npR0BT5TRwvPYqbYTwF/bc6
-         3hcMW0umqDbmAm14ZHNLVojtBlnnQyutbIYEmfg8/l2o+XyOuWAz1rYUcHPZ5X7nGW
-         KZZtCCfhyvPfpGmysKKSchfYOJwjWveUqhD0f1LQqnXBolG7nUGOfl5sHIwHDuR93p
-         EomFMD1L12AMQckA/MnqV7GpGgWE4GDA5zn7J7qwNueVGHnVXG0crJxxezqgLd8+3x
-         d6A6NUuXyLYGNt3WAUgqd64FrlJ95Ob8RtgUbuOyThzNrqwuNpnrajNHGkG9rXY59e
-         WkrWAJ2UgknMg==
-Message-ID: <479379a1-110d-4543-89f0-cb584b74ce22@alu.unizg.hr>
-Date:   Mon, 2 Oct 2023 21:50:09 +0200
+        Mon, 2 Oct 2023 15:50:46 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745CCB3;
+        Mon,  2 Oct 2023 12:50:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696276241; x=1727812241;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=PYugQSadN1sU4I76zsSR3ousR9bhAhoozl4QCo+YBEk=;
+  b=eSGXxC87fOl3AWQ8uzZ8BG9p7ZUKSR9rpVEzAS+1iXf9yrEBvWCSvdZi
+   HEBXXFoPlyuvM8NSUEN4ibK/4ndnVWU/XnrrRhdVpgc00Q3hQ1qPTIg2r
+   ZwvJi62eryYEJnxJ9x34g2mGEfY8T10wEcjilFQidnwLOlBJobOmhQ9Is
+   UzPO7nqykTO/7wsaxxXQi4rJnsIUgb3B/9AVh5F2nn/DenbP9um03fSHI
+   Y6JtCZ1aD55khu/cbr/YXt5KKGtCteLhHgfEIfzWNhcXrJFzSyuXZ7iC3
+   PBmvr1dgBkGwzIxvktjjELnmt3J3i+MkQsbl2f46IPL9gr+08jQYdGoXT
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="446882356"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="446882356"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 12:50:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="780049233"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="780049233"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 12:50:29 -0700
+Received: from [10.212.65.113] (kliang2-mobl1.ccr.corp.intel.com [10.212.65.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 4DD90580AFF;
+        Mon,  2 Oct 2023 12:50:26 -0700 (PDT)
+Message-ID: <f6b295f2-966c-f566-14c0-dbe02cad2bd2@linux.intel.com>
+Date:   Mon, 2 Oct 2023 15:50:24 -0400
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: BUG: maple_tree: KCSAN: data-race in mas_topiary_replace /
- mtree_range_walk [EXPERIMENTAL PATCH]
-To:     "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <9c1549f9-78c2-441b-8617-3ea3c080a5a4@alu.unizg.hr>
- <20230922135155.tqrelea66hcj5cog@revolver>
- <5d908c60-88fb-49c0-a150-bfb468eaa513@alu.unizg.hr>
- <20230928195926.ucp7it3c3c75erzk@revolver>
- <5a30110b-2457-4638-8779-baa33326f6a6@alu.unizg.hr>
- <20231002164310.bi62wfekacfxb3ve@revolver>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [Patch v4 07/13] perf/x86: Add constraint for guest perf metrics
+ event
 Content-Language: en-US
-From:   Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-In-Reply-To: <20231002164310.bi62wfekacfxb3ve@revolver>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Sean Christopherson <seanjc@google.com>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Dapeng Mi <dapeng1.mi@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Like Xu <likexu@tencent.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhang Xiong <xiong.y.zhang@intel.com>,
+        Lv Zhiyuan <zhiyuan.lv@intel.com>,
+        Yang Weijiang <weijiang.yang@intel.com>,
+        Dapeng Mi <dapeng1.mi@intel.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Dunn <daviddunn@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20230927033124.1226509-1-dapeng1.mi@linux.intel.com>
+ <20230927033124.1226509-8-dapeng1.mi@linux.intel.com>
+ <20230927113312.GD21810@noisy.programming.kicks-ass.net>
+ <ZRRl6y1GL-7RM63x@google.com>
+ <20230929115344.GE6282@noisy.programming.kicks-ass.net>
+ <ZRbxb15Opa2_AusF@google.com>
+ <20231002115718.GB13957@noisy.programming.kicks-ass.net>
+ <ZRrF38RGllA04R8o@gmail.com> <ZRroQg6flyGBtZTG@google.com>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <ZRroQg6flyGBtZTG@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/23 18:43, Liam R. Howlett wrote:
-> * Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr> [231001 17:09]:
-> 
-> ...
-> 
->>
->> They say that one patch speaks more than a thousand words.
->>
->> I am just running this little patch that actually silences all of the KCSAN warnings.
->>
->> I cannot tell if these reported data races are the actual bugs, but it is possible that
->> the Ubuntu 22.04 gcc is doing some funny stuff when optimising. In Prof. McKenney's
->> book I've read about the load-tearing and store-tearing. AFAICS, memory barriers should
->> prevent load/store reordering, but not the compiler optimisations.
->>
->> Please find two versions of the patch attached.
->>
->> While mas->index and pivots[offset] in maple_range_walk can change concurrently,
->> I am not smart enough to see whether you expect that in your algorithm or is it a potential
->> bug triggered by GCC optimisations and aggressive Ryzen 9 7950X parallelism.
-> 
-> None of this is necessary, for sure.
 
-Thanks for your feedback. If KCSAN is giving false positives, there is quite a lot of them.
 
-I tend to believe on the safe side of the Prof. Paul McKenney, but it is your code.
+On 2023-10-02 11:56 a.m., Sean Christopherson wrote:
+> I am completely ok with either approach, but I am not ok with being nak'd on both.
+> Because unless there's a magical third option lurking, those two options are the
+> only ways for KVM to provide a vPMU that meets the requirements for slice-of-hardware
+> use cases.
 
-> I will have to look at this when I have more time to investigate.  This
-> will likely not be soon, however.
+It may be doable to introduce a knob to enable/disable the "CPU-pinned"
+capability of perf_event. If the capability is disabled, the KVM doesn't
+need to worry about the counters being gone without notification, since
+the "task pinned" has the highest priority at the moment.
 
-I see. I also have some tough stuff at my day job this month. :-P
+It should also keeps the flexibility that sometimes the host wants to
+profile the guest.
 
-Have a nice day.
+Now, the NMI watchdog is using a "CPU-pinned" event. But I think it can
+be replaced by the buddy system, commit 1f423c905a6b
+("watchdog/hardlockup: detect hard lockups using secondary (buddy) CPUs")
 
-Best regards,
-Mirsad
-
-> Thanks,
-> Liam
+Thanks,
+Kan
