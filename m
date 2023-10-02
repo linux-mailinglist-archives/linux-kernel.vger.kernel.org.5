@@ -2,120 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F26667B573C
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594B07B5721
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238185AbjJBPlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:41:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
+        id S238181AbjJBPmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:42:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238170AbjJBPli (ORCPT
+        with ESMTP id S238177AbjJBPmm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:41:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B93B8;
-        Mon,  2 Oct 2023 08:41:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 521EAC433C8;
-        Mon,  2 Oct 2023 15:41:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696261295;
-        bh=OIxjPCr9wkZbCOoxXWBU/u5qVifWIFEkIOgrP/+zrzg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bs7VDzIxp3PxLyxrVFfEnB2W6cL3823xMsPOR9+MVtzOSpvvQmKWsz32La4mqW3Ip
-         FSXsrDi6V8bNib4o/jQ1sxuht04cRXiRD+sxRpStg08EIz8RzQ2/dVmKqQ5TFyh/Mf
-         s+hPEn8B6fX+63vfYq4hw22sb1Z5x8RY00DpaKtD6MXAGNe9TX99t9xPoSwwq8j7lN
-         VG0DKF28gE2HUG4uR/jUBjf1IsyQ86R0Yz/ltfJw1JPrsqi7Ouh1ReJtgzuvRG5N3/
-         vO/bpeJfN3Ve6OluWOHBUmRFiceaTkHbC5kSzKrNgSv6Y0XXanzVET85Qja4EtA/8f
-         qx4X8EB8XJZcA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id C70CFCE0CCF; Mon,  2 Oct 2023 08:41:34 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 08:41:34 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu <rcu@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 05/10] rcu: Assume IRQS disabled from rcu_report_dead()
-Message-ID: <d8c5364e-45ed-47bf-afe3-25cd17ec2f08@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230908203603.5865-1-frederic@kernel.org>
- <20230908203603.5865-6-frederic@kernel.org>
+        Mon, 2 Oct 2023 11:42:42 -0400
+Received: from mail-oa1-x2e.google.com (mail-oa1-x2e.google.com [IPv6:2001:4860:4864:20::2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17953A4
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:42:38 -0700 (PDT)
+Received: by mail-oa1-x2e.google.com with SMTP id 586e51a60fabf-1e141f543b2so1586996fac.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 08:42:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696261357; x=1696866157; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=58gyx6oEc50QSA+3gDO/VREfScg978m8wlhKnpLG5H4=;
+        b=MEeJGuAN2iq7gj6pHSkDrzCPObKrGlqTN1kx3eR3Bn5pKWWfuYMgAnudD9ddAgrW4l
+         dAV6Fdiyp6rqHAsBLz1akSlmORzyAExF3Bs66rCuoux3odTf6gNGV6X+GOYHFQ3Ri/Wv
+         qVPpcGk1gVPERRLB2BmAirBBtCVe84qeWnSLIMFwYNgEy3+nHFMVso73GfLEXWwRRK8u
+         Npd6mYU8q/n/TxFUFqJ6jzX140DnT0XOjlbJnuBpyB9jFE/VtbzqbbUqjj0MbvfF2+KL
+         6Sn4VZJAJCJ5gfAZIw2qjgAbKJdI/dhLE+ZZu00jFNiOUW1+eP0wZxJKPbrcIdrZU/9x
+         X+GQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696261357; x=1696866157;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=58gyx6oEc50QSA+3gDO/VREfScg978m8wlhKnpLG5H4=;
+        b=xHifbcyFreYa3Lv0Qu+XLHr03oXyWlyF0tDORuOW03qpSjFjiqvDT6r3N9/YGn1tKp
+         E9nrXPKyVuh+owe18W6VtbltaUKtSLpWG/1I2+cNfNCxF0GNehsNjiPDs34Tq02roiq2
+         977cEYJaXouMc5o+nthwsg+bETmZRh0Y5LC0yMr+Lol+Oc77c5R2E7EWcq/VAC1NHxYt
+         r5GtpRkZqXwb6Dgga8+nwK9vm5/1bhpLCAh7Jgq5FaXCIBxHa5jzMNaD103HqLeIZj76
+         DgCo63fAEn23281lcTBaeS7rLTs6570sc4u2yQzBVs672ZOWuHV3gG+tlpzffLTkxSVO
+         pcIQ==
+X-Gm-Message-State: AOJu0YxvV5Q4UJEKJIZZPBUZlW7deOl70xPAPwcjUHUKoRxHE4UvwR5E
+        pERrfgeExcmiUNCedtFvcNw4jA/Sw8SLe8ZDsrE=
+X-Google-Smtp-Source: AGHT+IF1L56vI3YQQv53yGIQ1a46lmAD2KVRzqSjh+qVHKoefqWUH/aZXtXUupExWwKw2Ge/7vbvsl6V5Pa9JNRqgQs=
+X-Received: by 2002:a05:6870:b612:b0:1dd:bd0:aa45 with SMTP id
+ cm18-20020a056870b61200b001dd0bd0aa45mr6683398oab.18.1696261356863; Mon, 02
+ Oct 2023 08:42:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230908203603.5865-6-frederic@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20231002010835.14798-1-rdunlap@infradead.org> <1d2ad4d8-49ff-17cd-ab2a-befcaf356dd9@gmail.com>
+In-Reply-To: <1d2ad4d8-49ff-17cd-ab2a-befcaf356dd9@gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 2 Oct 2023 11:42:25 -0400
+Message-ID: <CADnq5_PXf0uq07iPFFbtR-W4HMR6bmtU8PoemNY0P7vcUoU9Kg@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: amdgpu_drm.h: fix comment typos
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        amd-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 08, 2023 at 10:35:58PM +0200, Frederic Weisbecker wrote:
-> rcu_report_dead() is the last RCU word from the CPU down through the
-> hotplug path. It is called in the idle loop right before the CPU shuts
-> down for good. Because it removes the CPU from the grace period state
-> machine and reports an ultimate quiescent state if necessary, no further
-> use of RCU is allowed. Therefore it is expected that IRQs are disabled
-> upon calling this function and are not to be re-enabled again until the
-> CPU shuts down.
-> 
-> Remove the IRQs disablement from that function and verify instead that
-> it is actually called with IRQs disabled as it is expected at that
-> special point in the idle path.
-> 
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Applied.  Thanks!
 
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-
-> ---
->  kernel/rcu/tree.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index a83ecab77917..8b5ebef32e17 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -4553,11 +4553,16 @@ void rcu_cpu_starting(unsigned int cpu)
->   */
->  void rcu_report_dead(unsigned int cpu)
->  {
-> -	unsigned long flags, seq_flags;
-> +	unsigned long flags;
->  	unsigned long mask;
->  	struct rcu_data *rdp = per_cpu_ptr(&rcu_data, cpu);
->  	struct rcu_node *rnp = rdp->mynode;  /* Outgoing CPU's rdp & rnp. */
->  
-> +	/*
-> +	 * IRQS must be disabled from now on and until the CPU dies, or an interrupt
-> +	 * may introduce a new READ-side while it is actually off the QS masks.
-> +	 */
-> +	lockdep_assert_irqs_disabled();
->  	// Do any dangling deferred wakeups.
->  	do_nocb_deferred_wakeup(rdp);
->  
-> @@ -4565,7 +4570,6 @@ void rcu_report_dead(unsigned int cpu)
->  
->  	/* Remove outgoing CPU from mask in the leaf rcu_node structure. */
->  	mask = rdp->grpmask;
-> -	local_irq_save(seq_flags);
->  	arch_spin_lock(&rcu_state.ofl_lock);
->  	raw_spin_lock_irqsave_rcu_node(rnp, flags); /* Enforce GP memory-order guarantee. */
->  	rdp->rcu_ofl_gp_seq = READ_ONCE(rcu_state.gp_seq);
-> @@ -4579,8 +4583,6 @@ void rcu_report_dead(unsigned int cpu)
->  	WRITE_ONCE(rnp->qsmaskinitnext, rnp->qsmaskinitnext & ~mask);
->  	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
->  	arch_spin_unlock(&rcu_state.ofl_lock);
-> -	local_irq_restore(seq_flags);
-> -
->  	rdp->cpu_started = false;
->  }
->  
-> -- 
-> 2.41.0
-> 
+On Mon, Oct 2, 2023 at 6:32=E2=80=AFAM Christian K=C3=B6nig
+<ckoenig.leichtzumerken@gmail.com> wrote:
+>
+> Am 02.10.23 um 03:08 schrieb Randy Dunlap:
+> > Correct typos of "occurred".
+> >
+> > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: Christian K=C3=B6nig <christian.koenig@amd.com>
+> > Cc: "Pan, Xinhui" <Xinhui.Pan@amd.com>
+> > Cc: amd-gfx@lists.freedesktop.org
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> > ---
+> >   include/uapi/drm/amdgpu_drm.h |    4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff -- a/include/uapi/drm/amdgpu_drm.h b/include/uapi/drm/amdgpu_drm.h
+> > --- a/include/uapi/drm/amdgpu_drm.h
+> > +++ b/include/uapi/drm/amdgpu_drm.h
+> > @@ -249,9 +249,9 @@ union drm_amdgpu_bo_list {
+> >   /* unknown cause */
+> >   #define AMDGPU_CTX_UNKNOWN_RESET    3
+> >
+> > -/* indicate gpu reset occured after ctx created */
+> > +/* indicate gpu reset occurred after ctx created */
+> >   #define AMDGPU_CTX_QUERY2_FLAGS_RESET    (1<<0)
+> > -/* indicate vram lost occured after ctx created */
+> > +/* indicate vram lost occurred after ctx created */
+> >   #define AMDGPU_CTX_QUERY2_FLAGS_VRAMLOST (1<<1)
+> >   /* indicate some job from this context once cause gpu hang */
+> >   #define AMDGPU_CTX_QUERY2_FLAGS_GUILTY   (1<<2)
+>
