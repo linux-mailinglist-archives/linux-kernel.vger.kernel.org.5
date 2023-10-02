@@ -2,161 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 910687B59DF
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:12:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BE967B59BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 20:11:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238121AbjJBR6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:58:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60004 "EHLO
+        id S238757AbjJBSET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 14:04:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbjJBR6A (ORCPT
+        with ESMTP id S238720AbjJBSEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:58:00 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9F65CB7;
-        Mon,  2 Oct 2023 10:57:56 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C9281C15;
-        Mon,  2 Oct 2023 10:58:34 -0700 (PDT)
-Received: from pluto (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 349313F59C;
-        Mon,  2 Oct 2023 10:57:54 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 18:57:51 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     Sudeep Holla <sudeep.holla@arm.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH v3 2/2] clk: scmi: add set/get_parent support
-Message-ID: <ZRsEnze1htH_2ORf@pluto>
-References: <20231001-scmi-clock-v2-v3-0-898bd92d8939@nxp.com>
- <20231001-scmi-clock-v2-v3-2-898bd92d8939@nxp.com>
+        Mon, 2 Oct 2023 14:04:10 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5135FDA;
+        Mon,  2 Oct 2023 11:04:07 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id af39c7079f2a98ab; Mon, 2 Oct 2023 20:04:05 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 51AB66658DF;
+        Mon,  2 Oct 2023 20:04:05 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH v1 0/4] thermal: Improve iteration over trip points
+Date:   Mon, 02 Oct 2023 19:58:11 +0200
+Message-ID: <4871671.31r3eYUQgx@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231001-scmi-clock-v2-v3-2-898bd92d8939@nxp.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrvdelgdduvdduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepffffffekgfehheffleetieevfeefvefhleetjedvvdeijeejledvieehueevueffnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepjedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgrtghpihesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopegurghnihgvlhdrlhgviigtrghnoheslhhinhgrrhhordhorhhgpdhrtghpthht
+ oheprhhuihdriihhrghnghesihhnthgvlhdrtghomhdprhgtphhtthhopehsrhhinhhivhgrshdrphgrnhgurhhuvhgruggrsehlihhnuhigrdhinhhtvghlrdgtohhm
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 01, 2023 at 12:38:44PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> SCMI v3.2 adds set/get parent clock commands, so update the clk driver
-> to support them.
-> 
+Hi All,
 
-Hi,
+It turns out that the notification-handling code in the ACPI thermal driver
+can be rearranged to iterate over trip points once, with the help of
+for_each_thermal_trip() called directly under the zone lock, so patch [1/4]
+adds a helper function for that and patch [2/4] changes the ACPI thermal driver
+in accordance with this observation.
 
-a few notes down below.
+Next, patch [3/4] drops thermal_zone_device_exec() that is not used any more
+and patch [4/4] changes the int340x thermal driver to also use the new helper
+to iterate over trip points, so it need not make risky assumptions regarding
+the core functionality.
 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/clk/clk-scmi.c | 50 +++++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 49 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-> index 2e1337b511eb..5aaca674830f 100644
-> --- a/drivers/clk/clk-scmi.c
-> +++ b/drivers/clk/clk-scmi.c
-> @@ -24,6 +24,7 @@ struct scmi_clk {
->  	struct clk_hw hw;
->  	const struct scmi_clock_info *info;
->  	const struct scmi_protocol_handle *ph;
-> +	struct clk_parent_data *parent_data;
->  };
->  
->  #define to_scmi_clk(clk) container_of(clk, struct scmi_clk, hw)
-> @@ -78,6 +79,35 @@ static int scmi_clk_set_rate(struct clk_hw *hw, unsigned long rate,
->  	return scmi_proto_clk_ops->rate_set(clk->ph, clk->id, rate);
->  }
->  
-> +static int scmi_clk_set_parent(struct clk_hw *hw, u8 parent_index)
-> +{
-> +	struct scmi_clk *clk = to_scmi_clk(hw);
-> +
-> +	return scmi_proto_clk_ops->parent_set(clk->ph, clk->id, parent_index);
-> +}
-> +
-> +static u8 scmi_clk_get_parent(struct clk_hw *hw)
-> +{
-> +	struct scmi_clk *clk = to_scmi_clk(hw);
-> +	u32 parent_id;
-> +	int ret;
-> +
-> +	ret = scmi_proto_clk_ops->parent_get(clk->ph, clk->id, &parent_id);
-> +	if (ret)
-> +		return 0;
-> +
-> +	return parent_id;
-> +}
-> +
+Thanks!
 
-While testing using CLK Debugfs with CLOCK_ALLOW_WRITE_DEBUGFS 1 I
-noticed that I can correctly change the clk_parent and then read back the
-clk_possible_parents, BUT if I read clk_parent right after boot (OR
-after loading the clk-scmi module) I cannot get back any value from debugfs
-even though I can see the correct SCMI messages being exchanged from the
-traces.
 
-My guess was that, while scmi_clk_set_parent is invoked by the CLK core
-with a parent_index that has been remapped by the core to the SCMI clock
-domain ID, this is not done by scmi_clk_get_parent() so you are
-returning to the clock framework as parent_id the raw SCMI clock domain
-id as returned by the platform instead of the clk parent id used by the
-core.
-
-This does not happen after you issue at first a reparent because in that
-case on the following read of clk_parent the CLK framework returns the last
-value you have set that it had cached previously.
-
-This fixes for me the issue:
-
----8<----
-
-diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c
-index 5aaca674830f..fd47232d4021 100644
---- a/drivers/clk/clk-scmi.c
-+++ b/drivers/clk/clk-scmi.c
-@@ -89,14 +89,21 @@ static int scmi_clk_set_parent(struct clk_hw *hw, u8 parent_index)
- static u8 scmi_clk_get_parent(struct clk_hw *hw)
- {
- 	struct scmi_clk *clk = to_scmi_clk(hw);
--	u32 parent_id;
-+	u32 parent_id, p_idx;
- 	int ret;
- 
- 	ret = scmi_proto_clk_ops->parent_get(clk->ph, clk->id, &parent_id);
- 	if (ret)
- 		return 0;
- 
--	return parent_id;
-+	for (p_idx = 0; p_idx < clk->info->num_parents; p_idx++)
-+		if (clk->parent_data[p_idx].index == parent_id)
-+			break;
-+
-+	if (p_idx == clk->info->num_parents)
-+		return 0;
-+
-+	return p_idx;
- }
- 
- ----8<-----
-
- Not sure if there is a clever way to do it.
-
-Aside from this, another inherent issue is that you cannot really return
-an error from .get_parent() so if the SCMI get_parent ops should fail
-(ex. timeout) you return 0... (and me too in the above fix) but this is due
-to the CLK framework callback definition itself.
-
-Thanks,
-Cristian
 
