@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32AE57B53DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F88F7B53D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237408AbjJBNSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:18:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59438 "EHLO
+        id S237340AbjJBNVI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 09:21:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237399AbjJBNSD (ORCPT
+        with ESMTP id S236717AbjJBNVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 09:18:03 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E03FD9;
-        Mon,  2 Oct 2023 06:17:59 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CD3681BF216;
-        Mon,  2 Oct 2023 13:17:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696252677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uFnqrIivznbc7iY4pOaLEZYZBXChdROSQsmwT2VMB+U=;
-        b=BKaiwBuMn/fwnRgXKNjIC2RC1raMjrtxyygUVqr8E4DjTT5BJUYlw/QkKwl1i+8a39Pwm/
-        5Lq3WOnihBFL2GG+YOCcHZde8jefLLukH24pDbGyOSM2mvfS4ZGbamse1lWt+k3gG+a4aI
-        sU3q1Sn1YiIiKrbaSlTqWD3U+/R/n02Bfz+NB/n6VaFw62F+Nst+eKhaR74cnltoMBxfJb
-        wBkUM5sxVmWC4Vl8P9Wu+HlrjMttDLKlgWy7zlvGVm00epzRo5IAkgAWg4/Kmza/EDRZX3
-        TSiHUyt2nEmra7XQKXcwCNjEnVBgaisd+8ifZ/9Ae9SUPiKN3aV9BsRf8V55LQ==
-From:   =?UTF-8?q?K=C3=B6ry=20Maincent?= <kory.maincent@bootlin.com>
-To:     Cai Huoqing <cai.huoqing@linux.dev>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Herve Codina <herve.codina@bootlin.com>,
-        Kory Maincent <kory.maincent@bootlin.com>
-Subject: [PATCH v2 5/5] dmaengine: dw-edma: eDMA: Add sync read before starting the DMA transfer in remote setup
-Date:   Mon,  2 Oct 2023 15:17:49 +0200
-Message-Id: <20231002131749.2977952-6-kory.maincent@bootlin.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231002131749.2977952-1-kory.maincent@bootlin.com>
-References: <20231002131749.2977952-1-kory.maincent@bootlin.com>
+        Mon, 2 Oct 2023 09:21:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61BEB0;
+        Mon,  2 Oct 2023 06:21:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696252862; x=1727788862;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=fUFfbgGjJz6tv9OfY0S0wOao3CYBuChbfMLdgABf2U4=;
+  b=gNueukOY2gkIcNl6pcw8Smjc4YR5K0Hc1XEd+pDuzOEVROmDUMgvs7g/
+   72YjNErK+M1Z3Kfn0OFvN4Zqu+34E4SjbmUKtbpeyvNfUDJWjHkYzmzCO
+   XSdB8DszFxTTXvK1Nl059sY/lJfS6DDyHBf1MVkVFvP8MazF64mpt7yWn
+   AnX1wkgZaWa0MunRUi2pobQBdro7T/pnSTqMML/zNT1DwcQHj5kKYasPf
+   Rm5Pe9X5mbXKI5bKxHI6qqGqeDIDT/JvMNp765fiG+RN/DiXDAXLMzfiM
+   +DIjbVtHUNHZZguCcv9FrI9ZWqs0sUkICMVfxNcXI3vcXFhY+Mzox4Evd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="382546833"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="382546833"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 06:18:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="997617882"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="997617882"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.14])
+  by fmsmga006.fm.intel.com with ESMTP; 02 Oct 2023 06:18:27 -0700
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     hdegoede@redhat.com, markgross@kernel.org,
+        ilpo.jarvinen@linux.intel.com, andriy.shevchenko@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Subject: [UPDATE][PATCH] platform/x86/intel-uncore-freq: Conditionally create attribute for read frequency
+Date:   Mon,  2 Oct 2023 06:18:17 -0700
+Message-Id: <20231002131817.1590966-1-srinivas.pandruvada@linux.intel.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kory Maincent <kory.maincent@bootlin.com>
+When the current uncore frequency can't be read, don't create attribute
+"current_freq_khz" as any read will fail later. Some user space
+applications like turbostat fail to continue with the failure. So, check
+error during attribute creation.
 
-The Linked list element and pointer are not stored in the same memory as
-the eDMA controller register. If the doorbell register is toggled before
-the full write of the linked list a race condition error can appears.
-In remote setup we can only use a readl to the memory to assured the full
-write has occurred.
-
-Fixes: 7e4b8a4fbe2c ("dmaengine: Add Synopsys eDMA IP version 0 support")
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+Fixes: 8a54e2253e4c ("platform/x86/intel-uncore-freq: Uncore frequency control via TPMI")
+Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 ---
- drivers/dma/dw-edma/dw-edma-v0-core.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+update
+- Added Fixes tag
 
-diff --git a/drivers/dma/dw-edma/dw-edma-v0-core.c b/drivers/dma/dw-edma/dw-edma-v0-core.c
-index b38786f0ad79..75c0b1fa9c40 100644
---- a/drivers/dma/dw-edma/dw-edma-v0-core.c
-+++ b/drivers/dma/dw-edma/dw-edma-v0-core.c
-@@ -346,6 +346,25 @@ static void dw_edma_v0_core_write_chunk(struct dw_edma_chunk *chunk)
- 	dw_edma_v0_write_ll_link(chunk, i, control, chunk->ll_region.paddr);
- }
+ .../x86/intel/uncore-frequency/uncore-frequency-common.c  | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-common.c b/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-common.c
+index 1152deaa0078..33ab207493e3 100644
+--- a/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-common.c
++++ b/drivers/platform/x86/intel/uncore-frequency/uncore-frequency-common.c
+@@ -176,7 +176,7 @@ show_uncore_data(initial_max_freq_khz);
  
-+/**
-+ * dw_edma_v0_sync_ll_data() - sync the ll data write
-+ * @chunk: dma chunk
-+ *
-+ * In case of remote eDMA engine setup, the DW PCIe RP/EP internals
-+ * configuration registers and Application memory are normally accesse
-+ * over different buses. We need to insure ll data has been written before
-+ * toggling the doorbell register.
-+ */
-+static void dw_edma_v0_sync_ll_data(struct dw_edma_chunk *chunk)
-+{
-+	if (!(chunk->chan->dw->chip->flags & DW_EDMA_CHIP_LOCAL))
-+		/* Linux memory barriers don't cater for what's required here.
-+		 * What's required is what's here - a read of the linked
-+		 * list region.
-+		 */
-+		readl(chunk->ll_region.vaddr.io);
-+}
-+
- static void dw_edma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
+ static int create_attr_group(struct uncore_data *data, char *name)
  {
- 	struct dw_edma_chan *chan = chunk->chan;
-@@ -412,6 +431,9 @@ static void dw_edma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
- 		SET_CH_32(dw, chan->dir, chan->id, llp.msb,
- 			  upper_32_bits(chunk->ll_region.paddr));
- 	}
+-	int ret, index = 0;
++	int ret, freq, index = 0;
+ 
+ 	init_attribute_rw(max_freq_khz);
+ 	init_attribute_rw(min_freq_khz);
+@@ -197,7 +197,11 @@ static int create_attr_group(struct uncore_data *data, char *name)
+ 	data->uncore_attrs[index++] = &data->min_freq_khz_dev_attr.attr;
+ 	data->uncore_attrs[index++] = &data->initial_min_freq_khz_dev_attr.attr;
+ 	data->uncore_attrs[index++] = &data->initial_max_freq_khz_dev_attr.attr;
+-	data->uncore_attrs[index++] = &data->current_freq_khz_dev_attr.attr;
 +
-+	dw_edma_v0_sync_ll_data(chunk);
++	ret = uncore_read_freq(data, &freq);
++	if (!ret)
++		data->uncore_attrs[index++] = &data->current_freq_khz_dev_attr.attr;
 +
- 	/* Doorbell */
- 	SET_RW_32(dw, chan->dir, doorbell,
- 		  FIELD_PREP(EDMA_V0_DOORBELL_CH_MASK, chan->id));
+ 	data->uncore_attrs[index] = NULL;
+ 
+ 	data->uncore_attr_group.name = name;
 -- 
-2.25.1
+2.40.1
 
