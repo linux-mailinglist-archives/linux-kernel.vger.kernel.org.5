@@ -2,167 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE997B5D5E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 00:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6564F7B5D66
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 00:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236756AbjJBWvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 18:51:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45780 "EHLO
+        id S236518AbjJBWz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 18:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237021AbjJBWvQ (ORCPT
+        with ESMTP id S229753AbjJBWz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 18:51:16 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E911A4
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 15:51:08 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-405497850dbso3129605e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 15:51:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696287066; x=1696891866; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PiBVYtIuOlLuFNiBVRUMfSfexf+qnE+0Tc8CZdcfjOg=;
-        b=M8Fm+mEVTI/GlhdgIj9u2YOaWNIdNofx75b8kACJZtWXrPXkYleJs6BTHBWgedwI0U
-         cgZ3JOAjlhp7Tc9qOERxSsKKTuvNeJnPI+zg9T8kdSvEdfsXML8chcV+EzF1ZNAwrz5H
-         B87oj76jtJ8/1yTGycjeQFE5j0NNtuMDdFYLQ7vmgpk8xCHahivkgs2OE0VHOk4z7+2g
-         a2cQqmv0+VKpU7msO8d7C/G9U3q57eYg72erCrXmB72+t9q+u43/a0FO6EVn+phLeXEc
-         s35HfWXbpIQuO1ZpCuue5HUaRpD+9+urgI3XIjYDn9eBEbQQ0hr+mDdvntdWgRJsKxB0
-         2KWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696287066; x=1696891866;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PiBVYtIuOlLuFNiBVRUMfSfexf+qnE+0Tc8CZdcfjOg=;
-        b=KznoHxp+2u/l+V086h02OolGfZINsqNOregVL8DT7m422QG8p2ZTJNxHd8DYnWLQN8
-         5BMJ5VJKWbAhwjZpDkXjqbVY5Ph8Yk1Th0teRBS09exqOaG3gpevCWz/PZWqJQonA0JE
-         QlCB5NgomwZEbh23OZuGDWkY+e+wy+ecxTL+xEusvlqIDUcjZpZZ6zEkN0A7vO5vB3n8
-         9BfzUyJxHVUpMIMMIHke+fixBo+0p8tP03K009NJufeYOYM0XxnAv9X7xRQdzBI+kBKD
-         jc9C0ttkYpmlA2YO6/AP/UvknncX4o0HQEzO4Dv4BXwsuLR3rq7MQzCc5aztEvGowRib
-         7yxQ==
-X-Gm-Message-State: AOJu0Yz/am2GrFC9S/Ogtb95sSjbi+4P7wVWFZnFWw+u2zgHy+BvkR/J
-        vLfXUPo11oOwfq5atAbIc/Q=
-X-Google-Smtp-Source: AGHT+IEqBIX71QHlHmjXxlsBxqravil/edeaibGDoUYymDPdHZAtqf7Z5cLRPMS2JvwRgC2LpRcY9A==
-X-Received: by 2002:a05:600c:2113:b0:405:1ba2:4fd1 with SMTP id u19-20020a05600c211300b004051ba24fd1mr12423351wml.24.1696287066108;
-        Mon, 02 Oct 2023 15:51:06 -0700 (PDT)
-Received: from localhost ([2a00:23c5:dc8c:8701:1663:9a35:5a7b:1d76])
-        by smtp.gmail.com with ESMTPSA id f14-20020a7bc8ce000000b00402d34ea099sm8045752wml.29.2023.10.02.15.51.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 15:51:04 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 23:51:04 +0100
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 3/4] mm/gup: make failure to pin an error if FOLL_NOWAIT
- not specified
-Message-ID: <6a421da0-8479-4873-8e46-6f92aed342c6@lucifer.local>
-References: <cover.1696174961.git.lstoakes@gmail.com>
- <c7bfaf30cb682b92766e35ec85d93a84798b37f4.1696174961.git.lstoakes@gmail.com>
- <6161e8a8-64a4-c4ea-626d-daac45ccd836@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6161e8a8-64a4-c4ea-626d-daac45ccd836@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 2 Oct 2023 18:55:28 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F84B4;
+        Mon,  2 Oct 2023 15:55:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B25CDC433C8;
+        Mon,  2 Oct 2023 22:55:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696287324;
+        bh=gmdRKizE3oTVXTlKcTqPrbSyT6DkwUQHbEcrgV5Lbik=;
+        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+        b=EjB/Tpuf7nIqhQQh1mNjV42RYxAVimZmhMyTZPwNPVZsZM52f4N0/PEqZJd6YeeRO
+         R3ROXTVmszEzYthyI/NuSVmaFAGOlpF0y2mUJ+vGRDkRn07HlFlLnhBTS3OwcCfS5q
+         +ZFRxpWiwsxEI2Cjni5hE3PgB7lFAg8LM0Aki/ZR4bAMXxa6RKJ1BcoFEKV2OiRWgF
+         tHEQF01FW7oS4Th1d7urGTxmJZhv5rFb2lcNDiln2GRLYKBuidRlI5BqD5gudQi55U
+         3HdUCcsB4wZyFMFfzxKz8tw4DHPCZlwK/Cajw38vdHzl0oq1m1acl6wJpEFL7HXya8
+         oc5FUEsIgAb2Q==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 03 Oct 2023 01:55:14 +0300
+Message-Id: <CVYBO2F1D1NC.1N7LNWPTDRG04@seitikki>
+Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
+        <seanjc@google.com>, <zhanb@microsoft.com>,
+        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
+        <yangjie@microsoft.com>
+Subject: Re: [PATCH v5 01/18] cgroup/misc: Add per resource callbacks for
+ CSS events
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Jarkko Sakkinen" <jarkko@kernel.org>,
+        "Haitao Huang" <haitao.huang@linux.intel.com>,
+        <dave.hansen@linux.intel.com>, <tj@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
+        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
+        <sohil.mehta@intel.com>
+X-Mailer: aerc 0.14.0
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-2-haitao.huang@linux.intel.com>
+ <CVS5XFKKTTUZ.XRMYK1ADHSPG@suppilovahvero>
+ <op.2buytfetwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <CVSVH3ARQBRC.1QUTEQE3YNN5T@qgv27q77ld-mac>
+ <CVSVJ8DYAME8.SMTH7VYG7ER@qgv27q77ld-mac>
+ <op.2bwqct0rwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+ <CVYBI76N4PTF.38BQ9KIBIOGEH@seitikki>
+In-Reply-To: <CVYBI76N4PTF.38BQ9KIBIOGEH@seitikki>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 01:04:51PM +0200, David Hildenbrand wrote:
-> On 01.10.23 18:00, Lorenzo Stoakes wrote:
-> > There really should be no circumstances under which a non-FOLL_NOWAIT GUP
-> > operation fails to return any pages, so make this an error.
+On Tue Oct 3, 2023 at 1:47 AM EEST, Jarkko Sakkinen wrote:
+> On Wed Sep 27, 2023 at 4:56 AM EEST, Haitao Huang wrote:
+> > On Tue, 26 Sep 2023 08:13:18 -0500, Jarkko Sakkinen <jarkko@kernel.org>=
+ =20
+> > wrote:
 > >
-> > To catch the trivial case, simply exit early if nr_pages == 0.
+> > ...
+> > >> > >>  /**
+> > >> > >> @@ -410,7 +429,14 @@ misc_cg_alloc(struct cgroup_subsys_state
+> > >> > >> *parent_css)
+> > >> > >>   */
+> > >> > >>  static void misc_cg_free(struct cgroup_subsys_state *css)
+> > >> > >>  {
+> > >> > >> -	kfree(css_misc(css));
+> > >> > >> +	struct misc_cg *cg =3D css_misc(css);
+> > >> > >> +	enum misc_res_type i;
+> > >> > >> +
+> > >> > >> +	for (i =3D 0; i < MISC_CG_RES_TYPES; i++)
+> > >> > >> +		if (cg->res[i].free)
+> > >> > >> +			cg->res[i].free(cg);
+> > >> > >> +
+> > >> > >> +	kfree(cg);
+> > >> > >>  }
+> > >> > >>
+> > >> > >>  /* Cgroup controller callbacks */
+> > >> > >> --
+> > >> > >> 2.25.1
+> > >> > >
+> > >> > > Since the only existing client feature requires all callbacks, =
+=20
+> > >> should
+> > >> > > this not have that as an invariant?
+> > >> > >
+> > >> > > I.e. it might be better to fail unless *all* ops are non-nil (e.=
+g. =20
+> > >> to
+> > >> > > catch issues in the kernel code).
+> > >> > >
+> > >> >
+> > >> > These callbacks are chained from cgroup_subsys, and they are defin=
+ed
+> > >> > separately so it'd be better follow the same pattern.  Or change =
+=20
+> > >> together
+> > >> > with cgroup_subsys if we want to do that. Reasonable?
+> > >>
+> > >> I noticed this one later:
+> > >>
+> > >> It would better to create a separate ops struct and declare the inst=
+ance
+> > >> as const at minimum.
+> > >>
+> > >> Then there is no need for dynamic assigment of ops and all that is i=
+n
+> > >> rodata. This is improves both security and also allows static analys=
+is
+> > >> bit better.
+> > >>
+> > >> Now you have to dynamically trace the struct instance, e.g. in case =
+of
+> > >> a bug. If this one done, it would be already in the vmlinux.
+> > >I.e. then in the driver you can have static const struct declaration
+> > > with *all* pointers pre-assigned.
+> > >
+> > > Not sure if cgroups follows this or not but it is *objectively*
+> > > better. Previous work is not always best possible work...
+> > >
 > >
-> > This brings __get_user_pages_locked() in line with the behaviour of its
-> > nommu variant.
+> > IIUC, like vm_ops field in vma structs. Although function pointers in =
+=20
+> > vm_ops are assigned statically, but you still need dynamically assign =
+=20
+> > vm_ops for each instance of vma.
 > >
-> > Signed-off-by: Lorenzo Stoakes <lstoakes@gmail.com>
-> > ---
-> >   mm/gup.c | 11 +++++++++++
-> >   1 file changed, 11 insertions(+)
+> > So the code will look like this:
 > >
-> > diff --git a/mm/gup.c b/mm/gup.c
-> > index b21b33d1787e..fb2218d74ca5 100644
-> > --- a/mm/gup.c
-> > +++ b/mm/gup.c
-> > @@ -1471,6 +1471,9 @@ static __always_inline long __get_user_pages_locked(struct mm_struct *mm,
-> >   	long ret, pages_done;
-> >   	bool must_unlock = false;
-> > +	if (!nr_pages)
-> > +		return 0;
-> > +
+> > if (parent_cg->res[i].misc_ops && parent_cg->res[i].misc_ops->alloc)
+> > {
+> > ...
+> > }
+> >
+> > I don't see this is the pattern used in cgroups and no strong opinion =
+=20
+> > either way.
+> >
+> > TJ, do you have preference on this?
 >
-> Probably unlikely() is reasonable. I even wonder if WARN_ON_ONCE() would be
-> appropriate, but likely there are weird callers that end up calling this
-> with nr_pages==0 ... probably they should be identified and changed. Future
-> work.
+> I do have strong opinion on this. In the client side we want as much
+> things declared statically as we can because it gives more tools for
+> statical analysis.
 >
-> >   	/*
-> >   	 * The internal caller expects GUP to manage the lock internally and the
-> >   	 * lock must be released when this returns.
-> > @@ -1595,6 +1598,14 @@ static __always_inline long __get_user_pages_locked(struct mm_struct *mm,
-> >   		mmap_read_unlock(mm);
-> >   		*locked = 0;
-> >   	}
-> > +
-> > +	/*
-> > +	 * Failing to pin anything implies something has gone wrong except when
-> > +	 * FOLL_NOWAIT is specified, so explicitly make this an error.
-> > +	 */
-> > +	if (pages_done == 0 && !(flags & FOLL_NOWAIT))
-> > +		return -EFAULT;
-> > +
->
-> But who would be affected by that and why do we care about adding this
-> check?
->
-> This smells like a "if (WARN_ON_ONCE())", correct?
+> I don't want to see dynamic assignments in the SGX driver, when they
+> are not actually needed, no matter things are done in cgroups.
 
-Sure it does somewhat, however there are 'ordinary' (maybe) scenarios where
-this could possibly happen - FOLL_UNLOCKABLE and __get_user_pages() returns
-0, or lock retained for non-FOLL_NOWAIT scenario and __get_user_pages() 0
-also.
+I.e. I don't really even care what crazy things cgroups subsystem
+might do or not do. It's not my problem.
 
-So I think the safest option might be to leave without-WARN, however you
-could argue since we're making it an error now maybe we want to draw
-attention to it by warning.
+All I care is that we *do not* have any use for assigning those
+pointers at run-time. So do whatever you want with cgroups side
+as long as this is not the case.
 
-I just want to avoid a warning that _might_ be a product of a particular
-faulting scenario.
-
-Jason or John may have an opinion on this.
-
-Actually having written all this, given we're changing this into an error
-now anyway and this is just not a correct or expected scenario, yeah I
-think WARN_ON_ONCE() would make sense, will update on v2.
-
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+BR, Jarkko
