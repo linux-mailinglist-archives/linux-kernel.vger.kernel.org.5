@@ -2,170 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D637B58D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0CB7B5916
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 19:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235489AbjJBRlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 13:41:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54294 "EHLO
+        id S236806AbjJBRl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 13:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjJBRlW (ORCPT
+        with ESMTP id S236424AbjJBRlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 13:41:22 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5396294
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:41:19 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a1f12cf1ddso53143217b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:41:19 -0700 (PDT)
+        Mon, 2 Oct 2023 13:41:55 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD355C9
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 10:41:52 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-2773f776f49so2365006a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 10:41:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696268478; x=1696873278; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I2qKfz7FtuCEEAr+FcQImglSqV/M/oqG44A6BkuudUw=;
-        b=dPHhWy+hGEDlRGcGkulurwXrOCxu9sBMcdnT8nqQc5I2JcP3p2ejk4MjobB8ILhQMf
-         VIPkgNob7GM0BE6n0M+5HuZMUOdcTyxKAVXKn9GqUKwtSpJvDbNtGpcLHcHSql3KVet4
-         hHLiUS0qisE5YPoWVw6O/W7IwWxsJJ4XH9Vt5LcRXXoDdXsZsWMm4+2Bxwes2uiWC0AP
-         zC4Jl8p/RTgjfzXw8eBg/i4rv0ukHBozybhbEqyvAXj9GuxlqvbMBwiRHDyflovkJ3Uz
-         eqKDp9pN9uSRa0revh0VhBw8W5VTNjRyaBpz99LDVelHykN1W3JbzbgJvd7ogzuyu2vJ
-         TR/g==
+        d=chromium.org; s=google; t=1696268512; x=1696873312; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4PQ5k5L1vf7U2VTih6tAHOOIpHZFCPz9bxhvZ9xLpPg=;
+        b=QnHgHkI54rM2dgH4r1tXPy6tXPBMD5ry1/ifdplX/l0guWws/HGKmd+izNN2lYbyQ8
+         ASsK6Oo5Z7sy1Q/Z0kBNIYuCbzpRqXuKX6VuKTPVDI4BqtUsZz1HroIhIotGjXD5xnh5
+         nFJxMKr5N8enwmuj+YAiIfixs5OqbH54QmgQk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696268478; x=1696873278;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=I2qKfz7FtuCEEAr+FcQImglSqV/M/oqG44A6BkuudUw=;
-        b=ojdv4+cQTPMiDKRfIYDknsvi6/xrTPJIHoT6zC4uZIQzVQ0LJXiXnM/DJxSRd1a2k+
-         24Ljz1nGcvUhaEeJ8u72cmsmdRPIOr466WN8UoICUNcTDsWNryYJSbQ2mISnnIbIPvCw
-         wC/D5sAj2E3K9d8ka0fbuPi44TV1/Cp86jw8KEqx2T6hwva7ZjutZavj9DLJWNP7xFuC
-         LD2ZkZnCKQPbWeZuz1PbMtUMzIUv7+PWVvaora36KJ9QNAOn1GWiHck9Gzh3J5B0mN2M
-         antj6hOsNcFL7fNzPb6I6VFoROL9pSakSlfyyCwXUqKqrEp92zPoTVk9p1P/WlxaAPWV
-         gVFg==
-X-Gm-Message-State: AOJu0YwbjOl+r0Q27BnmXsD3ASbhFuPU55xreijANFxoazGwV7+c0Z2U
-        E9URHHDDywywnV6attpmkcMfngvlsi0=
-X-Google-Smtp-Source: AGHT+IHEfLylolE41hjtA1PRNg0WE3J1NkB5TECLhGNKVi8nzwEN9Z2OvDPsveGb70LKFunCP8Z8cDFWBLQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:98c7:0:b0:ca3:3341:6315 with SMTP id
- m7-20020a2598c7000000b00ca333416315mr6944ybo.0.1696268478540; Mon, 02 Oct
- 2023 10:41:18 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 10:41:17 -0700
-In-Reply-To: <ee679de20e3a53772f9d233b9653fdc642781577.camel@infradead.org>
-Mime-Version: 1.0
-References: <a3989e7ff9cca77f680f9bdfbaee52b707693221.camel@infradead.org>
- <ZRbolEa6RI3IegyF@google.com> <ee679de20e3a53772f9d233b9653fdc642781577.camel@infradead.org>
-Message-ID: <ZRsAvYecCOpeHvPY@google.com>
-Subject: Re: [PATCH v2] KVM: x86: Use fast path for Xen timer delivery
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     kvm <kvm@vger.kernel.org>, Paul Durrant <paul@xen.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        d=1e100.net; s=20230601; t=1696268512; x=1696873312;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4PQ5k5L1vf7U2VTih6tAHOOIpHZFCPz9bxhvZ9xLpPg=;
+        b=niLq5FbyoUwzVfHEkpEACV7vc1uXgRJeAAbGq7mgHJ8AC098DY3D5KIQAcdGbf2Ysk
+         SRrMmQiOTKln9eDTWQl+Z+RvLZ16RL3n4E8ld5Q8k74DpaS7a/T2KeCtBoKVFGqzI41h
+         ZgZuM8WUWkrEzo61Ndiai/t3u10+qAzmI+yNaR/6NHc49iZXy3g4BOO1e+JamL+YI5NG
+         Yf2dA5lTUxSOw4LLnO1pEHnvfnMVGy7vombtKmRWd2GtkvrbepbqXnNTFzIrj6PlbmRk
+         9sqpOIQltzPLN7+ObIvcRhbWGZLv3aeshEloVv83OlOGpu4lgepi6AdCXOOaoC5G2AzA
+         FPfg==
+X-Gm-Message-State: AOJu0Yysm1P+x9MmZ0FvcBPSBhJbh6BXWsrc17LLMM6HYeHoO3wsVG++
+        LDFo6WrPt1g694ZQT0t7XcbPsQ==
+X-Google-Smtp-Source: AGHT+IEKwoN8US8SbhoaEXG8I/zbZA98vFUpxqN5OwarkAVod2EsBwbtDvEJWjc/sy7+JQaEzvI/Jw==
+X-Received: by 2002:a17:90b:128f:b0:279:c1e:a146 with SMTP id fw15-20020a17090b128f00b002790c1ea146mr341768pjb.23.1696268512222;
+        Mon, 02 Oct 2023 10:41:52 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id d24-20020a17090ac25800b00276cb03a0e9sm6392591pjx.46.2023.10.02.10.41.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 10:41:51 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 10:41:48 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] scsi: message: fusion: replace deprecated strncpy with
+ strscpy_pad
+Message-ID: <202310021041.FA60C9812@keescook>
+References: <20230927-strncpy-drivers-message-fusion-mptctl-c-v1-1-bb2eddc1743c@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230927-strncpy-drivers-message-fusion-mptctl-c-v1-1-bb2eddc1743c@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023, David Woodhouse wrote:
-> On Fri, 2023-09-29 at 08:16 -0700, Sean Christopherson wrote:
-> > On Fri, Sep 29, 2023, David Woodhouse wrote:
-> > > From: David Woodhouse <dwmw@amazon.co.uk>
-> > >=20
-> > > Most of the time there's no need to kick the vCPU and deliver the tim=
-er
-> > > event through kvm_xen_inject_timer_irqs(). Use kvm_xen_set_evtchn_fas=
-t()
-> > > directly from the timer callback, and only fall back to the slow path
-> > > when it's necessary to do so.
-> >=20
-> > It'd be helpful for non-Xen folks to explain "when it's necessary".=C2=
-=A0 IIUC, the
-> > only time it's necessary is if the gfn=3D>pfn cache isn't valid/fresh.
->=20
-> That's an implementation detail.
+On Wed, Sep 27, 2023 at 04:06:09AM +0000, Justin Stitt wrote:
+> `strncpy` is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
+> 
+> Since all these structs are copied out to userspace let's keep them
+> NUL-padded by using `strscpy_pad` which guarantees NUL-termination of
+> the destination buffer while also providing the NUL-padding behavior
+> that strncpy has.
+> 
+> Let's also opt to use the more idiomatic strscpy usage of:
+> `dest, src, sizeof(dest)` in cases where the compiler can determine the
+> size of the destination buffer. Do this for all cases of strscpy...() in
+> this file.
+> 
+> To be abundantly sure we don't leak stack data out to user space let's
+> also change a strscpy to strscpy_pad. This strscpy was introduced in
+> Commit dbe37c71d1246ec2 ("scsi: message: fusion: Replace all
+> non-returning strlcpy() with strscpy()")
+> 
+> Note that since we are creating these structs with a copy_from_user()
+> and modifying fields and then copying back out to the user it is
+> probably OK not to explicitly NUL-pad everything as any data leak is
+> probably just data from the user themselves. If this is too eager, let's
+> opt for `strscpy` which is still in the spirit of removing deprecated
+> strncpy usage treewide.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Cc: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
 
-And?  The target audience of changelogs are almost always people that care =
-about
-the implementation.
+Agreed -- this looks more robust and readable. Thanks!
 
-> Like all of the fast path functions that can be called from
-> kvm_arch_set_irq_inatomic(), it has its own criteria for why it might ret=
-urn
-> -EWOULDBLOCK or not. Those are *its* business.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-And all of the KVM code is the business of the people who contribute to the=
- kernel,
-now and in the future.  Yeah, there's a small chance that a detailed change=
-log can
-become stale if the patch races with some other in-flight change, but even =
-*that*
-is a useful data point.  E.g. if Paul's patches somehow broke/degraded this=
- code,
-then knowing that what the author (you) intended/observed didn't match real=
-ity when
-the patch was applied would be extremely useful information for whoever enc=
-ountered
-the hypothetical breakage.
-
-> And in fact one of Paul's current patches is tweaking them subtly, but th=
-at
-> isn't relevant here. (But yes, you are broadly correct in your
-> understanding.)
->=20
-> > > This gives a significant improvement in timer latency testing (using
-> > > nanosleep() for various periods and then measuring the actual time
-> > > elapsed).
-> > >=20
-> > > However, there was a reason=C2=B9 the fast path was dropped when this=
- support
-> >=20
-> > Heh, please use [1] or [*] like everyone else.=C2=A0 I can barely see t=
-hat tiny little =C2=B9.
->=20
-> Isn't that the *point*? The reference to the footnote isn't supposed to
-> detract from the flow of the main text. It's exactly how you'll see it
-> when typeset properly.
-=20
-Footnotes that are "typeset properly" have the entire footnote in a differe=
-nt
-font+size.  A tiny number next to normal sized text just looks weird to me.
-
-And I often do a "reverse lookup" when I get to footnotes that are links, e=
-.g. to
-gauge whether or not it's worth my time to follow the link.  Trying to find=
- the
-tiny =C2=B9 via a quick visual scan is an exercise in frustration, at least=
- for the
-monospace font I use for reading mail, e.g. it's much more readable on my e=
-nd in
-an editor using a different font.
-
-Which is a big benefit to sticking to the old and kludgly ASCII: it provide=
-s a
-fairly consistent experience regardless of what client/font/etc each reader=
- is
-using.  I'm not completely against using unicode characters, e.g. for names=
- with
-characters not found in the Latin alphabet, but for code and things like th=
-is,
-IMO simpler is better.
-
-> I've always assumed the people using [1] or [*] just haven't yet realised
-> that it's the 21st century and we are no longer limited to 7-bit ASCII. O=
-r
-> haven't worked out how to type anything but ASCII.
-
-Please don't devolve into ad hominem attacks against other reviews and cont=
-ributors.
-If you want to argue that using footnote notation unicode is superior in so=
-me way,
-then by all means, present your arguments.
+-- 
+Kees Cook
