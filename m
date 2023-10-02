@@ -2,151 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2777B5847
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE2107B5869
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 18:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbjJBQhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 12:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55888 "EHLO
+        id S231132AbjJBQjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 12:39:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230107AbjJBQhP (ORCPT
+        with ESMTP id S231587AbjJBQj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 12:37:15 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 413769B
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 09:37:12 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a22029070bso60644277b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 09:37:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696264631; x=1696869431; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L+EcUpz1fNgfQrh7LLts+jbrgy/+j0YPHuBsINvIDrQ=;
-        b=3fWQmz5Rf2WxXH9DPI+5+itorXo7AjThxrb/fKYVCrScsTAwx/hAkB2hoHdg8sVUFA
-         7rOEvI8B15JEt5mmwOJqhb2OIbQhCzvxjhOrEZfBgS6sXYnnozUv/OA4hn6nt9NgnpgM
-         GdgcKUn9ABskCNSJXaBmxDRAs/qlsy4wMsOdSsK16QWt1isle3LFJZfj2ECRFn0tHzXI
-         F6RumftOUkYGY/NDqbboX5EZ78T4IKEkg3wYG6TCDhDTdZHq79n6J/b2h2G/3P+mCyik
-         1lHybnwrq7v830sBSygp1k2BaqzrnxaUDO8ThTJv9gjVMNc0WDhD5tU9jwyRk9+oedLg
-         PFEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696264631; x=1696869431;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=L+EcUpz1fNgfQrh7LLts+jbrgy/+j0YPHuBsINvIDrQ=;
-        b=ii1//o6rLZh/UDpvZOyKj2xqHIhcZ/oJlj24X6AfkzExx2CF8xxfVkYk6NJ91Kt9WM
-         UEdVnzgg3Q8jNToarzn0zQuAnt+Xi0wIG2pLXEB0ihgK8cfl8e1UhlKcOLGtnyMq3hSD
-         JqRDLreG3uhU5R0YSBXqnpJf57gicSc0EXEdzGHNWO6uXnpAn9EleI6HJjIpmUJaUv5v
-         1u8d2zB0IUYxUOzrhS/FwUX+/mhRcn1r/4EVgJBREvDOyktIOs6LiB9c5AGys2KsYBWz
-         zritlPsUEdjLeT7SJZCFzj4eQ9DeVoUcPQwbfQvs0cV8PAMz8z20sVQCgb0juBj0V2ZG
-         4lDg==
-X-Gm-Message-State: AOJu0YxtumbT+IHmE1LoQYpQuSjB0C4e7fZkBc5NDbBjge28NM7zfpEb
-        qekpCLldD77UAm+lL/GzcO5Y8/YsJaE=
-X-Google-Smtp-Source: AGHT+IEV5L+j/C1nV3eQIMCUX7B3iFZq5jh5tRrMs0tGOt9NN2mF9eB5tmjLOupbUmkPs+Rb3BOsdgqL7MY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:b8b:b0:589:a9fd:8257 with SMTP id
- ck11-20020a05690c0b8b00b00589a9fd8257mr207253ywb.6.1696264631460; Mon, 02 Oct
- 2023 09:37:11 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 09:37:09 -0700
-In-Reply-To: <884aa233ef46d5209b2d1c92ce992f50a76bd656.camel@infradead.org>
-Mime-Version: 1.0
-References: <20230926230649.67852-1-dongli.zhang@oracle.com>
- <377d9706-cc10-dfb8-5326-96c83c47338d@oracle.com> <36f3dbb1-61d7-e90a-02cf-9f151a1a3d35@oracle.com>
- <ZRWnVDMKNezAzr2m@google.com> <a461bf3f-c17e-9c3f-56aa-726225e8391d@oracle.com>
- <884aa233ef46d5209b2d1c92ce992f50a76bd656.camel@infradead.org>
-Message-ID: <ZRrxtagy7vJO5tgU@google.com>
-Subject: Re: [PATCH RFC 1/1] KVM: x86: add param to update master clock periodically
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
-        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 2 Oct 2023 12:39:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D8A9D;
+        Mon,  2 Oct 2023 09:39:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 748F8C433C8;
+        Mon,  2 Oct 2023 16:39:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696264765;
+        bh=1KljVs59GNs3YLWEBOpm0jXM1fwMAHbGPRDbcFPmKSE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XfUo7ls3fLZWe3zMKg77o4avQtuPEoX3dM5jrhpngqo2nZ/PWfZbVq8OZP7xiEjGp
+         /Z3oHtLwFIuuUFC84PLZhzZTrEhVHMLzTMdvfNzHQly1RIrXSFLAI0s9CP9G0q5wqk
+         Jkh8V7JX6OZeIYxRxSBvLYEa0wjQpDFdTNr5CYGyDMAseWbmrM+W6dxYhNSLlnqb+w
+         3iU24Z6NoQ4c9pxzGwa/a3DY8inmS57TwhusZsQYPjeqe+xxIbFBgskvs2f9a8M91T
+         CWYX/W5PyPjkQHiDDHXW3D3Gxhsbh49ORC1eCHqb8o34jTzaBercl2JEQRNh+9d5io
+         CGRLxrY6/ANWA==
+Received: (nullmailer pid 1910965 invoked by uid 1000);
+        Mon, 02 Oct 2023 16:39:22 -0000
+Date:   Mon, 2 Oct 2023 11:39:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Francesco Dolcini <francesco@dolcini.it>
+Cc:     Sebastian Reichel <sre@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Stefan Eichenberger <stefan.eichenberger@toradex.com>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: Re: [PATCH v1 3/4] dt-bindings: power: reset: gpio-poweroff: Add
+ priority property
+Message-ID: <20231002163922.GA1905958-robh@kernel.org>
+References: <20230928123204.20345-1-francesco@dolcini.it>
+ <20230928123728.21901-1-francesco@dolcini.it>
+ <20230928123728.21901-3-francesco@dolcini.it>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230928123728.21901-3-francesco@dolcini.it>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023, David Woodhouse wrote:
-> On Fri, 2023-09-29 at 13:15 -0700, Dongli Zhang wrote:
-> >=20
-> >=20
-> > We want more frequent KVM_REQ_MASTERCLOCK_UPDATE.
-> >=20
-> > This is because:
-> >=20
-> > 1. The vcpu->hv_clock (kvmclock) is based on its own mult/shift/equatio=
-n.
-> >=20
-> > 2. The raw monotonic (tsc_clocksource) uses different mult/shift/equati=
-on.
-> >=20
-> > 3. As a result, given the same rdtsc, kvmclock and raw monotonic may re=
-turn
-> > different results (this is expected because they have different
-> > mult/shift/equation).
-> >=20
-> > 4. However, the base in=C2=A0 kvmclock calculation (tsc_timestamp and s=
-ystem_time)
-> > are derived from raw monotonic clock (master clock)
->=20
-> That just seems wrong. I don't mean that you're incorrect; it seems
-> *morally* wrong.
->=20
-> In a system with X86_FEATURE_CONSTANT_TSC, why would KVM choose to use
-> a *different* mult/shift/equation (your #1) to convert TSC ticks to
-> nanoseconds than the host CLOCK_MONOTONIC_RAW does (your #2).
->=20
-> I understand that KVM can't track the host's CLOCK_MONOTONIC, as it's
-> adjusted by NTP. But CLOCK_MONOTONIC_RAW is supposed to be consistent.
->=20
-> Fix that, and the whole problem goes away, doesn't it?
->=20
-> What am I missing here, that means we can't do that?
+On Thu, Sep 28, 2023 at 02:37:27PM +0200, Francesco Dolcini wrote:
+> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+> 
+> Add the priority property to the gpio-poweroff bindings description.
+> 
+> Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+> ---
+>  .../devicetree/bindings/power/reset/gpio-poweroff.yaml        | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
+> index b54ec003a1e0..c6404841bcd7 100644
+> --- a/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
+> +++ b/Documentation/devicetree/bindings/power/reset/gpio-poweroff.yaml
+> @@ -40,6 +40,10 @@ properties:
+>      default: 100
+>      description: Delay to wait after driving gpio inactive
+>  
+> +  priority:
+> +    default: 0
+> +    description: Priority of the power off handler
+> +
 
-I believe the answer is that "struct pvclock_vcpu_time_info" and its math a=
-re
-ABI between KVM and KVM guests.
+You also need a $ref to restart-handler.yaml (at the top level).
 
-Like many of the older bits of KVM, my guess is that KVM's behavior is the =
-product
-of making things kinda sorta work with old hardware, i.e. was probably the =
-least
-awful solution in the days before constant TSCs, but is completely nonsensi=
-cal on
-modern hardware.
-
-> Alternatively... with X86_FEATURE_CONSTANT_TSC, why do the sync at all?
-> If KVM wants to decide that the TSC runs at a different frequency to
-> the frequency that the host uses for CLOCK_MONOTONIC_RAW, why can't KVM
-> just *stick* to that?
-
-Yeah, bouncing around guest time when the TSC is constant seems counterprod=
-uctive.
-
-However, why does any of this matter if the host has a constant TSC?  If th=
-at's
-the case, a sane setup will expose a constant TSC to the guest and the gues=
-t will
-use the TSC instead of kvmclock for the guest clocksource.
-
-Dongli, is this for long-lived "legacy" guests that were created on hosts w=
-ithout
-a constant TSC?  If not, then why is kvmclock being used?  Or heaven forbid=
-, are
-you running on hardware without a constant TSC? :-)
-
-Not saying we shouldn't sanitize the kvmclock behavior, but knowing the exa=
-ct
-problematic configuration(s) will help us make a better decision on how to =
-fix
-the mess.
+>    timeout-ms:
+>      default: 3000
+>      description: Time to wait before assuming the power off sequence failed.
+> -- 
+> 2.25.1
+> 
