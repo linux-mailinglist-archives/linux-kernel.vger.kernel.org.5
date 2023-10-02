@@ -2,195 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF337B5516
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DA87B55B7
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237793AbjJBOaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:30:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
+        id S237740AbjJBOcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237779AbjJBOaq (ORCPT
+        with ESMTP id S237474AbjJBOcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:30:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382BCB0
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:30:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696257002;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Tnnd1i96YoBpg2Wk1+SUJX4WepSITGLgtW2LVCbh8ow=;
-        b=gdxffqR5WYhgRxe/ZADdLcraC3CbWZeOZUdt8MfBQM7Gd+1makCMtW+CtEKPY3yxgK3iXc
-        RpxEaNA7Q0G0Gqxmz8v455aPxEJlexwNM2v3giSWL4GiS6hj2fM1Zuamd1k3OQ7yjX4OD7
-        1FMN2ToaymwixrqypLYGjPphpvIcY/U=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-596-SD06yepTPyaOIWqDKjRAKw-1; Mon, 02 Oct 2023 10:29:56 -0400
-X-MC-Unique: SD06yepTPyaOIWqDKjRAKw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 805873826D2C;
-        Mon,  2 Oct 2023 14:29:55 +0000 (UTC)
-Received: from t14s.fritz.box (unknown [10.39.194.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5F47B1005B90;
-        Mon,  2 Oct 2023 14:29:54 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: [PATCH v1 3/3] memory: move exclusivity detection in do_wp_page() into wp_can_reuse_anon_folio()
-Date:   Mon,  2 Oct 2023 16:29:49 +0200
-Message-ID: <20231002142949.235104-4-david@redhat.com>
-In-Reply-To: <20231002142949.235104-1-david@redhat.com>
-References: <20231002142949.235104-1-david@redhat.com>
+        Mon, 2 Oct 2023 10:32:18 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 12BE0B4
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:32:16 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 43F0CC15;
+        Mon,  2 Oct 2023 07:32:54 -0700 (PDT)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0FCAA3F762;
+        Mon,  2 Oct 2023 07:32:14 -0700 (PDT)
+Message-ID: <ec116189-c087-0b2c-180b-d6a369f21a60@arm.com>
+Date:   Mon, 2 Oct 2023 15:32:10 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v4 2/7] iommu: Decouple iommu_present() from bus ops
+Content-Language: en-GB
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     joro@8bytes.org, will@kernel.org, iommu@lists.linux.dev,
+        baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org
+References: <cover.1696253096.git.robin.murphy@arm.com>
+ <c734557f46fa5ea79b766ce847b003e31096d0bb.1696253096.git.robin.murphy@arm.com>
+ <20231002141704.GG339126@nvidia.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20231002141704.GG339126@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's clean up do_wp_page() a bit, removing two labels and making it
-a easier to read.
+On 02/10/2023 3:17 pm, Jason Gunthorpe wrote:
+> On Mon, Oct 02, 2023 at 02:49:10PM +0100, Robin Murphy wrote:
+>> Much as I'd like to remove iommu_present(), the final remaining users
+>> are proving stubbornly difficult to clean up, so kick that can down the
+>> road and just rework it to preserve the current behaviour without
+>> depending on bus ops. Since commit 57365a04c921 ("iommu: Move bus setup
+>> to IOMMU device registration"), any registered IOMMU instance is already
+>> considered "present" for every entry in iommu_buses, so it's simply a
+>> case of validating the bus and checking we have at least once IOMMU.
+>>
+>> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+>>
+>> ---
+>>
+>> v3: Tweak to use the ops-based check rather than group-based, to
+>>      properly match the existing behaviour
+>> v4: Just look for IOMMU instances instead of managed devices
+>> ---
+>>   drivers/iommu/iommu.c | 21 ++++++++++++++++++++-
+>>   1 file changed, 20 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index f7793d1b5c3e..ef7feb0acc34 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -1988,9 +1988,28 @@ int bus_iommu_probe(const struct bus_type *bus)
+>>   	return 0;
+>>   }
+>>   
+>> +/**
+>> + * iommu_present() - make platform-specific assumptions about an IOMMU
+>> + * @bus: bus to check
+>> + *
+>> + * Do not use this function. You want device_iommu_mapped() instead.
+>> + *
+>> + * Return: true if some IOMMU is present and aware of devices on the given bus;
+>> + * in general it may not be the only IOMMU, and it may not have anything to do
+>> + * with whatever device you are ultimately interested in.
+>> + */
+>>   bool iommu_present(const struct bus_type *bus)
+>>   {
+>> -	return bus->iommu_ops != NULL;
+>> +	bool ret = false;
+>> +
+>> +	for (int i = 0; i < ARRAY_SIZE(iommu_buses); i++) {
+>> +		if (iommu_buses[i] == bus) {
+>> +			spin_lock(&iommu_device_lock);
+>> +			ret = !list_empty(&iommu_device_list);
+>> +			spin_unlock(&iommu_device_lock);
+>> +		}
+> 
+> Add here:
+> 
+> return ret;
+> 
+>> +	}
+>> +	return ret;
+> 
+> And this becomes
+> 
+> return false
+> 
+> ?
 
-wp_can_reuse_anon_folio() now only operates on the whole folio. Move the
-SetPageAnonExclusive() out into do_wp_page(). No need to do this under
-page lock -- the page table lock is sufficient.
+My aim here was for the smallest, simplest code, given that what we 
+still really want is no code, and this is basically only being retained 
+to serve that one tricky Tegra callsite. I guess I could have also added 
+"&& !ret" to the loop condition, but either way since this should never 
+be on a hot path I figured it's not worth the bother just to save a 
+handful of extra comparisons.
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- mm/memory.c | 88 +++++++++++++++++++++++++++--------------------------
- 1 file changed, 45 insertions(+), 43 deletions(-)
+> Regardless
+> 
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 1f0e3317cbdd..512f6f05620e 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3358,6 +3358,44 @@ static vm_fault_t wp_page_shared(struct vm_fault *vmf, struct folio *folio)
- 	return ret;
- }
- 
-+static bool wp_can_reuse_anon_folio(struct folio *folio,
-+				    struct vm_area_struct *vma)
-+{
-+	/*
-+	 * We have to verify under folio lock: these early checks are
-+	 * just an optimization to avoid locking the folio and freeing
-+	 * the swapcache if there is little hope that we can reuse.
-+	 *
-+	 * KSM doesn't necessarily raise the folio refcount.
-+	 */
-+	if (folio_test_ksm(folio) || folio_ref_count(folio) > 3)
-+		return false;
-+	if (!folio_test_lru(folio))
-+		/*
-+		 * We cannot easily detect+handle references from
-+		 * remote LRU caches or references to LRU folios.
-+		 */
-+		lru_add_drain();
-+	if (folio_ref_count(folio) > 1 + folio_test_swapcache(folio))
-+		return false;
-+	if (!folio_trylock(folio))
-+		return false;
-+	if (folio_test_swapcache(folio))
-+		folio_free_swap(folio);
-+	if (folio_test_ksm(folio) || folio_ref_count(folio) != 1) {
-+		folio_unlock(folio);
-+		return false;
-+	}
-+	/*
-+	 * Ok, we've got the only folio reference from our mapping
-+	 * and the folio is locked, it's dark out, and we're wearing
-+	 * sunglasses. Hit it.
-+	 */
-+	folio_move_anon_rmap(folio, vma);
-+	folio_unlock(folio);
-+	return true;
-+}
-+
- /*
-  * This routine handles present pages, when
-  * * users try to write to a shared page (FAULT_FLAG_WRITE)
-@@ -3444,49 +3482,14 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
- 	/*
- 	 * Private mapping: create an exclusive anonymous page copy if reuse
- 	 * is impossible. We might miss VM_WRITE for FOLL_FORCE handling.
-+	 *
-+	 * If we encounter a page that is marked exclusive, we must reuse
-+	 * the page without further checks.
- 	 */
--	if (folio && folio_test_anon(folio)) {
--		/*
--		 * If the page is exclusive to this process we must reuse the
--		 * page without further checks.
--		 */
--		if (PageAnonExclusive(vmf->page))
--			goto reuse;
--
--		/*
--		 * We have to verify under folio lock: these early checks are
--		 * just an optimization to avoid locking the folio and freeing
--		 * the swapcache if there is little hope that we can reuse.
--		 *
--		 * KSM doesn't necessarily raise the folio refcount.
--		 */
--		if (folio_test_ksm(folio) || folio_ref_count(folio) > 3)
--			goto copy;
--		if (!folio_test_lru(folio))
--			/*
--			 * We cannot easily detect+handle references from
--			 * remote LRU caches or references to LRU folios.
--			 */
--			lru_add_drain();
--		if (folio_ref_count(folio) > 1 + folio_test_swapcache(folio))
--			goto copy;
--		if (!folio_trylock(folio))
--			goto copy;
--		if (folio_test_swapcache(folio))
--			folio_free_swap(folio);
--		if (folio_test_ksm(folio) || folio_ref_count(folio) != 1) {
--			folio_unlock(folio);
--			goto copy;
--		}
--		/*
--		 * Ok, we've got the only folio reference from our mapping
--		 * and the folio is locked, it's dark out, and we're wearing
--		 * sunglasses. Hit it.
--		 */
--		folio_move_anon_rmap(folio, vma);
--		SetPageAnonExclusive(vmf->page);
--		folio_unlock(folio);
--reuse:
-+	if (folio && folio_test_anon(folio) &&
-+	    (PageAnonExclusive(vmf->page) || wp_can_reuse_anon_folio(folio, vma))) {
-+		if (!PageAnonExclusive(vmf->page))
-+			SetPageAnonExclusive(vmf->page);
- 		if (unlikely(unshare)) {
- 			pte_unmap_unlock(vmf->pte, vmf->ptl);
- 			return 0;
-@@ -3494,7 +3497,6 @@ static vm_fault_t do_wp_page(struct vm_fault *vmf)
- 		wp_page_reuse(vmf);
- 		return 0;
- 	}
--copy:
- 	/*
- 	 * Ok, we need to copy. Oh, well..
- 	 */
--- 
-2.41.0
+Thanks!
 
+Robin.
