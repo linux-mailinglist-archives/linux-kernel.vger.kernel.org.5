@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 895007B533E
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA9BF7B533D
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 14:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237122AbjJBM3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 08:29:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
+        id S237016AbjJBM3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 08:29:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237028AbjJBM3m (ORCPT
+        with ESMTP id S237028AbjJBM3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 08:29:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55191EB;
-        Mon,  2 Oct 2023 05:29:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KL1v3ERuqGAckhQouBuxqqIbYjdQyTtkhHki0C/q84c=; b=YP5xSF1Oemu2I0hFWrgo43pZ4h
-        fCiZhQofphigB6JQOLIKI/85S60pcMYf1mSHKG39Qsw1JPGo+kXmrufEBFbb+X7zBIQsztHNbTVVD
-        +DjOXt1FD2ZYeisEBDVigdkdAIqZTlY6hWxGBbWQOdtURVMGlg7J9Qw/NXiWPz46GC9WVdLPwuDZx
-        Vn3YHkqkwGFvsm2qDNP4Fe+DV/Z1i0NU5bMns0C73DW25bNMz9NXviIf2iR99M4zXS4KdwNQhJ2pw
-        UeCnkQP33VhvHvHzin+hhLfMRzHFjbIEADlEhAjD0rQI2m+0yNBQkIxbFnY7LvXlc9ECyaQCD1Ly1
-        l0EOqJNw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qnI2v-0091Eh-Ne; Mon, 02 Oct 2023 12:29:09 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 64E33300454; Mon,  2 Oct 2023 14:29:09 +0200 (CEST)
-Date:   Mon, 2 Oct 2023 14:29:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ravi Bangoria <ravi.bangoria@amd.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <likexu@tencent.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Lv Zhiyuan <zhiyuan.lv@intel.com>,
-        Yang Weijiang <weijiang.yang@intel.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Dunn <daviddunn@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Manali Shukla <manali.shukla@amd.com>
-Subject: Re: [Patch v4 07/13] perf/x86: Add constraint for guest perf metrics
- event
-Message-ID: <20231002122909.GC13957@noisy.programming.kicks-ass.net>
-References: <20230927033124.1226509-1-dapeng1.mi@linux.intel.com>
- <20230927033124.1226509-8-dapeng1.mi@linux.intel.com>
- <20230927113312.GD21810@noisy.programming.kicks-ass.net>
- <ZRRl6y1GL-7RM63x@google.com>
- <20230929115344.GE6282@noisy.programming.kicks-ass.net>
- <957d37c8-c833-e1d3-2afb-45e5ef695b22@amd.com>
+        Mon, 2 Oct 2023 08:29:21 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8664CA6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 05:29:18 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4054f790190so156450875e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 05:29:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696249756; x=1696854556; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TjtZbkwdpi5si6/60UmQ8elk6PzuUnVoXbmSTS24hh4=;
+        b=kvzDiVPBJcoM0lxiTfEdxRfR1uzNe3zxlkE1wmUHzAeppa1FzTCYmkmQxLfpNNJlqd
+         ydks87WYg0n7cgpNZaF5RWMPJrLSUyWI/qdov4FCWc0PRCThuQ/+L4L7hirS7Q93i+jE
+         SX/cImg5iFnWgZAixyqdQnxgar5FnNWTqxCOjEoIWN0zhwh9DKlQzy4H18KyoftdmgM0
+         SNhJrFucAOFf4vplQQbGzksqDIkmYSDMHVDeBdDDmRjuAB5/lCmtu0rNNy4BpX8GeBQW
+         0UwRRUIOspcdPSN5C7qZaida+gQZS2QFJYePA09EGOMsMi6z5WlDxg6naFtv4VPZKCpb
+         VL9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696249756; x=1696854556;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TjtZbkwdpi5si6/60UmQ8elk6PzuUnVoXbmSTS24hh4=;
+        b=nH+inAUHjdV9wAdge1S0dTRwGa+N9aKLq4EL2IwwBJa1mx/4IsAW9oU8Wjb8ZFR23z
+         MUtUGy72j9OTWNxkbfqsCCd1LdGWWsV5vKEM8RNZb/9Uw2/zKSWyRH8LpRQMbl9cpztt
+         6HYGYacaprFitIaJ/2CjwNqK0uDAX2JR5TNLIQeYNnbPsKXBGFZeZYUT70yCptZT7pNJ
+         OVjepxR46U84P/2PXKaxfmqPilTkghmagfQUg80AY53/HNZd4X68D4LgIEY6L5QW2l+H
+         krBUgL3nK3XBQzYvi9EIcKPT3nPSB3pTRv+h5HSpERVjBp/KsZMdtBjv+wiljTQShyEs
+         MdGw==
+X-Gm-Message-State: AOJu0YxicBZhvV5dCbny1VPfzL/wL/SrZ7qCOWJJQzl39wWx2BDCY2s1
+        0qpEub8KSUAuWP7T8PiGIM9CfA==
+X-Google-Smtp-Source: AGHT+IH8isDJwI38R+Jr+Y0fVPCC1GD2OBeFxwa7NTNH6jyRP11hujd1uNryVGx6f0C1STiu8GM1/A==
+X-Received: by 2002:a05:600c:1c1a:b0:406:53c0:3c71 with SMTP id j26-20020a05600c1c1a00b0040653c03c71mr9496024wms.37.1696249756516;
+        Mon, 02 Oct 2023 05:29:16 -0700 (PDT)
+Received: from toaster.lan ([2a01:e0a:3c5:5fb1:fcf2:65f1:853c:13be])
+        by smtp.googlemail.com with ESMTPSA id s16-20020a05600c045000b0040536dcec17sm7144819wmb.27.2023.10.02.05.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 05:29:16 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [PATCH v2 2/2] usb: misc: onboard_usb_hub: add Genesys Logic gl3510 hub support
+Date:   Mon,  2 Oct 2023 14:29:09 +0200
+Message-Id: <20231002122909.2338049-3-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231002122909.2338049-1-jbrunet@baylibre.com>
+References: <20231002122909.2338049-1-jbrunet@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <957d37c8-c833-e1d3-2afb-45e5ef695b22@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 08:50:07PM +0530, Ravi Bangoria wrote:
-> On 29-Sep-23 5:23 PM, Peter Zijlstra wrote:
+Add support for the gl3510 4 ports USB3.1 hub. This allows to control its
+reset pins with a gpio.
 
-> > I don't think you need to go that far, host can use PMU just fine as
-> > long as it doesn't overlap with a vCPU. Basically, if you force
-> > perf_attr::exclude_guest on everything your vCPU can haz the full thing.
+No public documentation is available for this hub. Using the same reset
+duration as the gl852g which seems OK.
 
-^ this..
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ drivers/usb/misc/onboard_usb_hub.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-> How about keying off based on PMU specific KVM module parameter? Something
-> like what Manali has proposed for AMD VIBS? Please see solution 1.1:
-> 
-> https://lore.kernel.org/r/3a6c693e-1ef4-6542-bc90-d4468773b97d@amd.com
+diff --git a/drivers/usb/misc/onboard_usb_hub.h b/drivers/usb/misc/onboard_usb_hub.h
+index 4026ba64c592..a9e2f6023c1c 100644
+--- a/drivers/usb/misc/onboard_usb_hub.h
++++ b/drivers/usb/misc/onboard_usb_hub.h
+@@ -56,6 +56,7 @@ static const struct of_device_id onboard_hub_match[] = {
+ 	{ .compatible = "usb5e3,608", .data = &genesys_gl850g_data, },
+ 	{ .compatible = "usb5e3,610", .data = &genesys_gl852g_data, },
+ 	{ .compatible = "usb5e3,620", .data = &genesys_gl852g_data, },
++	{ .compatible = "usb5e3,626", .data = &genesys_gl852g_data, },
+ 	{ .compatible = "usbbda,411", .data = &realtek_rts5411_data, },
+ 	{ .compatible = "usbbda,5411", .data = &realtek_rts5411_data, },
+ 	{ .compatible = "usbbda,414", .data = &realtek_rts5411_data, },
+-- 
+2.40.1
 
-So I hadn't read that, but isn't that more or less what I proposed
-above?
