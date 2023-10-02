@@ -2,166 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DD57B55CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E0467B55BF
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237810AbjJBOfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
+        id S237555AbjJBOeQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 2 Oct 2023 10:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237820AbjJBOfV (ORCPT
+        with ESMTP id S237538AbjJBOeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:35:21 -0400
-Received: from mx0a-002e3701.pphosted.com (mx0a-002e3701.pphosted.com [148.163.147.86])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B85ED7;
-        Mon,  2 Oct 2023 07:35:14 -0700 (PDT)
-Received: from pps.filterd (m0150242.ppops.net [127.0.0.1])
-        by mx0a-002e3701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 392ENRAq010318;
-        Mon, 2 Oct 2023 14:33:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pps0720; bh=8kcAx3CglGRn94aeo1HK8iAjrJB5McccnOtaRuGBhlE=;
- b=UDDV9blwhOqG6lS3UsYzzUODsb3/Jv7uk7fyfcblbVHD3X/OLXl4ruM75aG/o029gXU4
- wZf0e0FS+UT7qSUuJhyOAyZlj0F1UOHpXDeBwm3+RPme4yGaLrJ9gQFKalvxH7zeW0Q2
- 9Wal0xHDrZAv4zZfk2yPVG5x6KKVR+62Inf2e5CoAJFSvGqa9XRuymOmZ+CVSG7WUZ0j
- MfjwZN1qCeG6CzxC3CgEIgBeZqSkhI/EtLkuSZrJ0vADwcdmTnlSr+XumB84vemz7JXe
- W34mDYx8DuQrTdltPS/YsslQCZKNQYb9m+YSqJL+3jk+uYK+YsSwbmURt2WthssC/6Wq Jw== 
-Received: from p1lg14881.it.hpe.com ([16.230.97.202])
-        by mx0a-002e3701.pphosted.com (PPS) with ESMTPS id 3tfyk4g34b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Oct 2023 14:33:28 +0000
-Received: from p1lg14886.dc01.its.hpecorp.net (unknown [10.119.18.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by p1lg14881.it.hpe.com (Postfix) with ESMTPS id 20CF0804DF1;
-        Mon,  2 Oct 2023 14:33:14 +0000 (UTC)
-Received: from swahl-home.5wahls.com (unknown [16.231.227.39])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by p1lg14886.dc01.its.hpecorp.net (Postfix) with ESMTPS id 1031080139E;
-        Mon,  2 Oct 2023 14:33:05 +0000 (UTC)
-Date:   Mon, 2 Oct 2023 09:33:04 -0500
-From:   Steve Wahl <steve.wahl@hpe.com>
-To:     j.granados@samsung.com
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, willy@infradead.org,
-        josh@joshtriplett.org, Kees Cook <keescook@chromium.org>,
-        Phillip Potter <phil@philpotter.co.uk>,
-        Clemens Ladisch <clemens@ladisch.de>,
+        Mon, 2 Oct 2023 10:34:15 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E244FAD
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:34:11 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-323-BFh42y3gPLOfgOGwjWsmYQ-1; Mon, 02 Oct 2023 15:34:07 +0100
+X-MC-Unique: BFh42y3gPLOfgOGwjWsmYQ-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 2 Oct
+ 2023 15:34:05 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 2 Oct 2023 15:34:05 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "'linux@rasmusvillemoes.dk'" <linux@rasmusvillemoes.dk>,
+        'Steven Rostedt' <rostedt@goodmis.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "'bvanassche@acm.org'" <bvanassche@acm.org>,
+        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
         Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Doug Gilbert <dgilbert@interlog.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Corey Minyard <minyard@acm.org>, Theodore Ts'o <tytso@mit.edu>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        David Ahern <dsahern@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Robin Holt <robinmholt@gmail.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Russ Weight <russell.h.weight@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Song Liu <song@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-serial@vger.kernel.org,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-rdma@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-raid@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v2 11/15] sgi-xp: Remove the now superfluous sentinel
- element from ctl_table array
-Message-ID: <ZRrUoISghotzEeu/@swahl-home.5wahls.com>
-References: <20231002-jag-sysctl_remove_empty_elem_drivers-v2-0-02dd0d46f71e@samsung.com>
- <=?utf-8?q?=3C20231002-jag-sysctl=5Fremove=5Fempty=5Felem=5Fdrive?=>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <=?utf-8?q?=3C20231002-jag-sysctl=5Fremove=5Fempty=5Felem=5Fdrive?=>
-X-Proofpoint-ORIG-GUID: FvQlGBIC2T_f8YdHb4chZeOBKZ5wjbmW
-X-Proofpoint-GUID: FvQlGBIC2T_f8YdHb4chZeOBKZ5wjbmW
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Subject: [PATCH next] compiler.h: Move __is_constexpr() to compiler.h.
+Thread-Topic: [PATCH next] compiler.h: Move __is_constexpr() to compiler.h.
+Thread-Index: Adn1PNrdhhFKapOtSdeAhH/r8REupw==
+Date:   Mon, 2 Oct 2023 14:34:05 +0000
+Message-ID: <6d2b584e26544ee6a0810e494352d432@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-02_09,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
- adultscore=0 bulkscore=0 malwarescore=0 priorityscore=1501
- lowpriorityscore=0 suspectscore=0 mlxlogscore=999 phishscore=0
- clxscore=1015 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310020109
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 10:55:28AM +0200, Joel Granados via B4 Relay wrote:
-> From: Joel Granados <j.granados@samsung.com>
-> 
-> This commit comes at the tail end of a greater effort to remove the
-> empty elements at the end of the ctl_table arrays (sentinels) which
-> will reduce the overall build time size of the kernel and run time
-> memory bloat by ~64 bytes per sentinel (further information Link :
-> https://lore.kernel.org/all/ZO5Yx5JFogGi%2FcBo@bombadil.infradead.org/)
-> 
-> Remove sentinel from xpc_sys_xpc_hb and xpc_sys_xpc
-> 
-> Signed-off-by: Joel Granados <j.granados@samsung.com>
-> ---
->  drivers/misc/sgi-xp/xpc_main.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/drivers/misc/sgi-xp/xpc_main.c b/drivers/misc/sgi-xp/xpc_main.c
-> index 6da509d692bb..3186421e82c3 100644
-> --- a/drivers/misc/sgi-xp/xpc_main.c
-> +++ b/drivers/misc/sgi-xp/xpc_main.c
-> @@ -110,7 +110,6 @@ static struct ctl_table xpc_sys_xpc_hb[] = {
->  	 .proc_handler = proc_dointvec_minmax,
->  	 .extra1 = &xpc_hb_check_min_interval,
->  	 .extra2 = &xpc_hb_check_max_interval},
-> -	{}
->  };
->  static struct ctl_table xpc_sys_xpc[] = {
->  	{
-> @@ -121,7 +120,6 @@ static struct ctl_table xpc_sys_xpc[] = {
->  	 .proc_handler = proc_dointvec_minmax,
->  	 .extra1 = &xpc_disengage_min_timelimit,
->  	 .extra2 = &xpc_disengage_max_timelimit},
-> -	{}
->  };
->  
->  static struct ctl_table_header *xpc_sysctl;
-> 
-> -- 
-> 2.30.2
-> 
+Prior to f747e6667ebb2 __is_constexpr() was in its only user minmax.h.
+That commit moved it to const.h - but that file just defined ULL(x) and
+  UL(x) so that constants can be defined for .S and .c files.
+So apart from the word 'const' it wasn't really a good location.
+Instead move the definition to compiler.h just before the similar
+  is_signed_type() and is_unsigned_type().
+(Which were moved there by dcf8e5633e2e6)
+This may not be a good long-term home, but the three definitions
+  belong together.
 
-Reviewed-by: Steve Wahl <steve.wahl@hpe.com>
+Signed-off-by: David Laight <david.laight@aculab.com>
+---
+This makes it possible to use __is_constexpr() inside is_signed_type()
+so that the result is constant integer expression for pointer types.
+In particular (void *)1 isn't constant enough.
 
+ include/linux/compiler.h    | 8 ++++++++
+ include/linux/const.h       | 8 --------
+ tools/include/linux/const.h | 8 --------
+ 3 files changed, 8 insertions(+), 16 deletions(-)
+
+diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+index d7779a18b24f..2efec9bfcc40 100644
+--- a/include/linux/compiler.h
++++ b/include/linux/compiler.h
+@@ -230,6 +230,14 @@ static inline void *offset_to_ptr(const int *off)
+ /* &a[0] degrades to a pointer: a different type from an array */
+ #define __must_be_array(a)	BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+ 
++/*
++ * This returns a constant expression while determining if an argument is
++ * a constant expression, most importantly without evaluating the argument.
++ * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
++ */
++#define __is_constexpr(x) \
++	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
++
+ /*
+  * Whether 'type' is a signed type or an unsigned type. Supports scalar types,
+  * bool and also pointer types.
+diff --git a/include/linux/const.h b/include/linux/const.h
+index 435ddd72d2c4..81b8aae5a855 100644
+--- a/include/linux/const.h
++++ b/include/linux/const.h
+@@ -3,12 +3,4 @@
+ 
+ #include <vdso/const.h>
+ 
+-/*
+- * This returns a constant expression while determining if an argument is
+- * a constant expression, most importantly without evaluating the argument.
+- * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
+- */
+-#define __is_constexpr(x) \
+-	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+-
+ #endif /* _LINUX_CONST_H */
+diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
+index 435ddd72d2c4..81b8aae5a855 100644
+--- a/tools/include/linux/const.h
++++ b/tools/include/linux/const.h
+@@ -3,12 +3,4 @@
+ 
+ #include <vdso/const.h>
+ 
+-/*
+- * This returns a constant expression while determining if an argument is
+- * a constant expression, most importantly without evaluating the argument.
+- * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
+- */
+-#define __is_constexpr(x) \
+-	(sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+-
+ #endif /* _LINUX_CONST_H */
 -- 
-Steve Wahl, Hewlett Packard Enterprise
+2.17.1
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
