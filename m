@@ -2,168 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 829407B5BEE
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2DB87B5BF1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 22:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbjJBUXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 16:23:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
+        id S229741AbjJBUZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 16:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjJBUXv (ORCPT
+        with ESMTP id S229497AbjJBUZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 16:23:51 -0400
-Received: from mx0b-00128a01.pphosted.com (mx0b-00128a01.pphosted.com [148.163.139.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33F5FB7;
-        Mon,  2 Oct 2023 13:23:47 -0700 (PDT)
-Received: from pps.filterd (m0167091.ppops.net [127.0.0.1])
-        by mx0b-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 392IRgL2030101;
-        Mon, 2 Oct 2023 16:23:39 -0400
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
-        by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3tfpccc705-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Oct 2023 16:23:39 -0400 (EDT)
+        Mon, 2 Oct 2023 16:25:24 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D1CB8;
+        Mon,  2 Oct 2023 13:25:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696278321; x=1727814321;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=tKGGZVcBX9xbjceWOjzPxTutCea4iH2SGwAjAkgaoJQ=;
+  b=KLbTma9Ke9LGpmc1FWCTv5B56jZBZ7PI1xceRQ0iq1DvTNssDVCs1jfL
+   W8lao0aGvE/1Bzu79RSt00TsJ1swikIF75Z7vkp3Qa5Erd190R9oZWTUs
+   apFNLj9cibkzMLVI4OiWMHWkzYcrYjYEkGkbVVV6EmBsJy12ZBSjvSg5k
+   EGaq47ZUWEOLL6kbCwax8YCCUcvSNUdWedHfLO3WG4LCGC39iTWQvyeOC
+   lOoRqQXS0lNPzFm3GTAGY2FLP4rhDBeH+hXOQXGoMOck9REtrpR4sI3u1
+   uMcufYcM2lC0haden4CaEOyZzaWaMTlcX981sXgvVhbHbAs7E8TacMdBS
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="1321911"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="1321911"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 13:25:14 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="820991335"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="820991335"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 02 Oct 2023 13:25:12 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 2 Oct 2023 13:25:11 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Mon, 2 Oct 2023 13:25:11 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Mon, 2 Oct 2023 13:25:11 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Mon, 2 Oct 2023 13:25:11 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=apcvwC/+miDW5H7x7M5YYIi8cxIxmuk8m6sLwiMK8DbjjP3Cwcjjlu8dP90FIsKFW4XKX89SKcCzURAQv9Q82nQLI2pnOojyEVyvAVjGwCAzUvnIQm2GDYDa7/nGgNq8XZ6WDnbOFh7It/vkGrpRPUcwLfhI/+UZj3+fvG3FkthNDLj/Z7SbgF/z1VrgTq2MIiKXcvWCnItEeyNVJPXO+jC2MfbAscCNAHHJvFLHagRc47NPk+fVT6mj5UiNG0lKNd2JP8UmnYsjrw/8BXHgp2mrMjqhHSgEBBkBOlprxMmRQe7NXQxfoPXi9sen1sU7akRra3XA8yIGBOfWN4UeCA==
+ b=YGrWtPNEyV5so9jraJ0RIsziDsqhCkN7WUYRt4C1i6p3u+90kF6qbW8nCi0F76rEMbUYDc1R+Ti2csdm1RkjdHVBO/Htyr+Q4oEEKCt4w3Pqdys3GUy8Y4fJ8pIox2/rvkRsRzt+RqP+jjbEsciAKQVNXr1FSieXt2n86wmD/9qMUPWF3zIaQInhHXfjPLi8ACZLUsCbnnTjOrjxn7kwe9xv9yIM7kjcbd3AgeIjSEHH/mGyD728LC8ZGrpVIHT7qrtiOsmJLxLeTQycDLMT3zUn0MlS4Xnyq2h8jooTIH1MnzediT9mKrtFubwDUZpWfCsl9S0MLuLZ2YZ3lXrZ4A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LfnsJ2UOCuutYORiKgssUQ8dkoSHDXaCvLmkNfdcwL4=;
- b=aWh65WKB30pJJaNmFcoWbLuOmkuhEhdvBd0dHqnt4Wdth/ZVGwHSFyPLpWkleTw3I0XNy+mZnzi20XdceZufSn/0rlar0uBMm/xftzZHDnrxvKQrEH9dC07aMG6OZ7ZtYa+ChXld2JOxYL3lZNSuxk0CZtyqx+Lh9WnWCLgfgBgihnQ6L+rR+5dQ5o5poMGCfnEnJctw7kXFAfW71YJGZW/5qjJFObOrqExv5v8PIwapPMi6JAhndiQdAr087wLj+XHzbzqwyxtWCb9JcXhiGlqOyH8btnW5CeKZ3L5YbdIXxP8ZN+w/Tr+vV7H70nrqSe/3ywkx/1C8zEFYWS2HDw==
+ bh=LNveHoB3OUy5RFQwBk6dPDndLUnzAs5L6Ok0618XCgk=;
+ b=D/Ko1MqPqq0YeSruFxIdpnFyGolDV8lNx6BL9fcinVlrqmEcJ0tDXdZUuwOhsnXc2dGcdGWcRINO6gFmB8vuj7kMrUTq73Rp3xOwKbE1nHK+gMUkXpn6+zkFtxXqq9X49ucurMg/62pa/Ejx6tU08Z4K1Sf0sd5aJ+a7+8lJytbDM/+QwI6zMJWBT+k6q7p1L/LJKm27KU6sjEB7UM/JofIkF/B6sJNJffBGsb1AbxHMEqjQ0sao+Fb2AZz83JKpnHDeZE1ZztdaChHNfulIpFCs9MQ3pswt9BLfg0NMdGnmyC9qNEfo8u05UJcw2FOUgzjwzNfiYFgjWdWX/PXrfg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
- dkim=pass header.d=analog.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LfnsJ2UOCuutYORiKgssUQ8dkoSHDXaCvLmkNfdcwL4=;
- b=HYwFREISvqFp+J6TUboYc+8v7RkZ0xpVhLLYkv9Qx9hl98yuj7kEDNJVLYo1meJ/xYokJIvzW6DXYXTrz06+BwAj4mGTK9YrUYPeNDuoYyKQlTeHnlSxJ3IZAD7NiZvrjx4DKSQEmKzsuGxyKA89E2INs10aKDhz2b9fkKcee2Y=
-Received: from BN7PR03MB4545.namprd03.prod.outlook.com (2603:10b6:408:e::31)
- by DS7PR03MB5509.namprd03.prod.outlook.com (2603:10b6:5:2cb::13) with
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from IA1PR11MB6097.namprd11.prod.outlook.com (2603:10b6:208:3d7::17)
+ by DM4PR11MB5360.namprd11.prod.outlook.com (2603:10b6:5:397::17) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.23; Mon, 2 Oct
- 2023 20:23:35 +0000
-Received: from BN7PR03MB4545.namprd03.prod.outlook.com
- ([fe80::e1d5:636a:bda7:1c81]) by BN7PR03MB4545.namprd03.prod.outlook.com
- ([fe80::e1d5:636a:bda7:1c81%2]) with mapi id 15.20.6813.027; Mon, 2 Oct 2023
- 20:23:35 +0000
-From:   "Balas, Eliza" <Eliza.Balas@analog.com>
-To:     Conor Dooley <conor@kernel.org>
-CC:     Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Derek Kiernan <derek.kiernan@amd.com>,
-        Dragan Cvetic <dragan.cvetic@amd.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH v2 1/2] dt-bindings: misc: adi,axi-tdd: Add device-tree
- binding for TDD engine
-Thread-Topic: [PATCH v2 1/2] dt-bindings: misc: adi,axi-tdd: Add device-tree
- binding for TDD engine
-Thread-Index: AQHZ8e6/zUxp0vYDHECkHhwPalTB6rA2uEYAgAABCqCAAC37AIAAA+iAgAAI/ACAAALAMA==
-Date:   Mon, 2 Oct 2023 20:23:35 +0000
-Message-ID: <BN7PR03MB4545715CBC44232EEA81FF7697C5A@BN7PR03MB4545.namprd03.prod.outlook.com>
-References: <20230928092804.22612-1-eliza.balas@analog.com>
- <20230928092804.22612-2-eliza.balas@analog.com>
- <20231002163244.GA1886905-robh@kernel.org>
- <BN7PR03MB454508AF350D2DC96FE1743A97C5A@BN7PR03MB4545.namprd03.prod.outlook.com>
- <20231002-aggregate-scanner-3ca2ae69cf0c@spud>
- <BN7PR03MB4545090CC2F859333E9C3AB297C5A@BN7PR03MB4545.namprd03.prod.outlook.com>
- <20231002-carnivore-clapped-33140a07ff67@spud>
-In-Reply-To: <20231002-carnivore-clapped-33140a07ff67@spud>
-Accept-Language: en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.28; Mon, 2 Oct
+ 2023 20:25:09 +0000
+Received: from IA1PR11MB6097.namprd11.prod.outlook.com
+ ([fe80::cdca:c91f:da79:a1db]) by IA1PR11MB6097.namprd11.prod.outlook.com
+ ([fe80::cdca:c91f:da79:a1db%3]) with mapi id 15.20.6792.024; Mon, 2 Oct 2023
+ 20:25:08 +0000
+Message-ID: <6b75b244-0575-ac34-4c7d-c2e070918e62@intel.com>
+Date:   Mon, 2 Oct 2023 13:25:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: [PATCH] dmaengine: idxd: add wq driver name support for
+ accel-config user tool
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: =?us-ascii?Q?PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcZWJhbGFzXGFw?=
- =?us-ascii?Q?cGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEy?=
- =?us-ascii?Q?OWUzNWJcbXNnc1xtc2ctOGRmZjgzMWUtNjE2MS0xMWVlLThkYjMtNzQwNGYx?=
- =?us-ascii?Q?NTcwNWY3XGFtZS10ZXN0XDhkZmY4MzFmLTYxNjEtMTFlZS04ZGIzLTc0MDRm?=
- =?us-ascii?Q?MTU3MDVmN2JvZHkudHh0IiBzej0iMTYxOTgiIHQ9IjEzMzQwNzUxODEyOTc2?=
- =?us-ascii?Q?OTM1MCIgaD0ibk04Qi9CUkxZVFRjbG5TQ0RZUC9OMm1DR2g0PSIgaWQ9IiIg?=
- =?us-ascii?Q?Ymw9IjAiIGJvPSIxIiBjaT0iY0FBQUFFUkhVMVJTUlVGTkNnVUFBRW9DQUFD?=
- =?us-ascii?Q?R3kzMVFidlhaQVg4eHJRKzJHd0VuZnpHdEQ3WWJBU2NEQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUhBQUFBRGFBUUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUVBQVFBQkFBQUFsR1RHVmdBQUFBQUFBQUFBQUFBQUFKNEFBQUJoQUdRQWFR?=
- =?us-ascii?Q?QmZBSE1BWlFCakFIVUFjZ0JsQUY4QWNBQnlBRzhBYWdCbEFHTUFkQUJ6QUY4?=
- =?us-ascii?Q?QVpnQmhBR3dBY3dCbEFGOEFaZ0J2QUhNQWFRQjBBR2tBZGdCbEFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?RUFBQUFBQUFBQUFnQUFBQUFBbmdBQUFHRUFaQUJwQUY4QWN3QmxBR01BZFFC?=
- =?us-ascii?Q?eUFHVUFYd0J3QUhJQWJ3QnFBR1VBWXdCMEFITUFYd0IwQUdrQVpRQnlBREVB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQVFBQUFBQUFBQUFDQUFB?=
- =?us-ascii?Q?QUFBQ2VBQUFBWVFCa0FHa0FYd0J6QUdVQVl3QjFBSElBWlFCZkFIQUFjZ0J2?=
- =?us-ascii?Q?QUdvQVpRQmpBSFFBY3dCZkFIUUFhUUJsQUhJQU1nQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFB?=
- =?us-ascii?Q?QUFBQUFBQUFBQUFBQUFBQUJBQUFBQUFBQUFBSUFBQUFBQUE9PSIvPjwvbWV0?=
- =?us-ascii?Q?YT4=3D?=
-x-dg-rorf: true
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN7PR03MB4545:EE_|DS7PR03MB5509:EE_
-x-ms-office365-filtering-correlation-id: 6634390d-855d-4ed3-35ff-08dbc3857492
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Jk0S8iO5ENAx9mUZozSlbcyLYvI42PLCegu9v5nAlJXfrUwLFdYJTO8PClxQVytvOGoWsGVwCXOtW4YaVT4gbCUzx2WoYF1Z4FipAjBg8D86V88AqZTkjD/6iYOYOKT6paFozqBlMVHJaAl4Uc/UV4rCOycGvhveOxs5/cUeG2nNtc2fifgYBg7pDZluOFFG1D402Z5Y0oXmtz2NRfSKcZiLRDgVEZZ8X/NlR3s3ggeR4cizSUyqnmRwc9ySQ7EEVDfzrghF9gB2jIX+8D5zHeqxm18paVMITbtVckHek8AOU928adzy+AO3h+osREk571yYspjJwC/AuH5PnIPPFBsEmUc4Q092AwAxkX63KYdrVTDFnOMQVe7iDUTfGWdbheczrEMSA7/0EFCDdMwhBeqHieFuVOHjkDWkI6i/0QWI/X6QVMK77Gpty+EdWqCvvaLs9xYYOnMH6yGxq0IVwNXD0NxH+jOmJXQ8L6Y2MzRyHQBZnDHQ/kxob0/EXliEK32TBlNqQP7JJ2XKrwfAUBH/wKHUHKtA/+5zwxaSphtV5zsdtVcHelnWfONJcRwax6DOT+KCVZuFozgaMAPLmfTIZAbe7AwAdlRsjAPT3Xi1lxuSaNiDFpOtM0VHUs1iKEfwVxSafmp6A76jGDlHzQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR03MB4545.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(366004)(396003)(346002)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(52536014)(7696005)(5660300002)(8936002)(2906002)(6916009)(8676002)(7416002)(6506007)(41300700001)(64756008)(76116006)(9686003)(478600001)(66476007)(966005)(66946007)(316002)(66446008)(4326008)(66556008)(53546011)(54906003)(71200400001)(26005)(83380400001)(38070700005)(38100700002)(86362001)(33656002)(122000001)(55016003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?wULEzZeFloAd8j5fRbcXTzWszlQKNCKs8S6OktvxSj/oROjohy+nig9PONNd?=
- =?us-ascii?Q?G92bnm18268rXvZI0EHQreDt0OxGFFcDQ0thrqeoAUo4c8YZQzDI1ysHYEIv?=
- =?us-ascii?Q?pRYYacawfN8Zx46aSy9zNLFx5nW7XipCGYchmCE0LLzGH3v00SteOaUSS7nN?=
- =?us-ascii?Q?SjaC/uY6hC2YuILSAvPbbtOC1ZOBh9PPpBG8j5bugSGSvXnbnVoH/QJZ7v9P?=
- =?us-ascii?Q?edxDGHaRVy5TC+mgNmCuWbB8bGEnWrfGLiBofY7n23Tua9905wksnylbkf8g?=
- =?us-ascii?Q?N7B477stLxC06eTkskJWwn+n44WB//NEGgJx3lcl0hm3kxN8xGX/xiA1NYcl?=
- =?us-ascii?Q?Sny0alXsSAXXfvpaYmFNUsn/zd9LCi2YwsNlBT72LoYgyl5imZORj+0gO4uu?=
- =?us-ascii?Q?oifnMUwjXT6ZysEiR+ct1XsOPf1ZmBXdV3fhMMOsGTPUx/y5V0ho9i7Emrms?=
- =?us-ascii?Q?MlDk2zHe1B/IDbK5GGl9rPmjvv78R89PlYOz0Y1ncgnOZ6mqy4dH9yYVqgQq?=
- =?us-ascii?Q?/rgdruaoaES5oijX7EBiF5i5IjlMDKV/7kSa002mdA0Fy3IrgNuKWI9WrBN7?=
- =?us-ascii?Q?trswxHLj1XVOiy6yejAcnRBZITftfTM3088jnlro9mEPXuxbkXNk1eZtqfCQ?=
- =?us-ascii?Q?Qojkxm8B7DL8JLl1et3P6/zZ2pHS08L5eLvFs81iU/FT0coYNVLaSXa6EwH9?=
- =?us-ascii?Q?0XleLhsdIGZk+VkWjpLBoucmGhE8lPGcvf6aQafR/mz1yrMuM8nvlARDrhlz?=
- =?us-ascii?Q?GIkHiAp8B65Z3JJ6pz39vwZo8DikLlSANdpTgBxu7aJACp7BI9oQkF4/ljrO?=
- =?us-ascii?Q?CC4qKHlt9tXwPkFr+Pj7aA1lm22FtWPgGru+pLcSFWn18TLVPpESKwv5Q99e?=
- =?us-ascii?Q?8hTdQExqlzdv8UR1IlKXC+FsNzu5kSCdzEJi72E68NPsRu2TDNMsZ2goImmh?=
- =?us-ascii?Q?QTMIM6uS2LiOxHFULoHZ36VpnxlDfnjEtd8Hd2xLg7nRvvQsMtPHNFj4XfFB?=
- =?us-ascii?Q?mIj40m1RviWphZ/JU+oWR5T6iKVQ9eXgkspGzmq6weSTOLGQ+v3MIDmeQi/L?=
- =?us-ascii?Q?TMsRAR2NmIrG+0KraewF9u7jJoR5suVJm8dceLjZOwrsX9yaVoAvI+26acxM?=
- =?us-ascii?Q?mseIyjOcQdeKEqETq8N/TH+GHmiCADnz1MN5EpHC/UaS3YPXpytW6VOMpyH7?=
- =?us-ascii?Q?kYLa+sH0DGgRCucq/H+dWz+nuax5AAZsedk+ktwTitRQIfHaP7PuirShMVEq?=
- =?us-ascii?Q?/+OrTUFZwWWpO8xStFO8z1jaT1OTHOzRkkxCuJbbyf7GPNMcLVRe1oojOY+i?=
- =?us-ascii?Q?acJShTGWhlpilS0d9MHWtyvvWFXC/3xAEytJ9piOQalyM9gYDKivlgy4atnz?=
- =?us-ascii?Q?qmxqlxRGogAh4WnxAfqaRb9X9iAvXDrVE0hUYcDs2piBDrfOuREUWwYhrObD?=
- =?us-ascii?Q?OjaXym1u+UN9TX82RLrbfD/WeK659fVTe1R8arr1KOhKEoootce8xq7s1H1F?=
- =?us-ascii?Q?Xi2Fp8vct4xGixDafSGuzZm3jmHlDgxJkzT2ugPRLNbNW/AWHxo4wBbLbcqm?=
- =?us-ascii?Q?QrTq8CiyJlzIqU512htJnqMtYonFWAItkJnjgk1/?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+To:     Vinod Koul <vkoul@kernel.org>, Dave Jiang <dave.jiang@intel.com>
+CC:     <dmaengine@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Tom Zanussi <tom.zanussi@linux.intel.com>
+References: <20230908201045.4115614-1-fenghua.yu@intel.com>
+From:   Fenghua Yu <fenghua.yu@intel.com>
+In-Reply-To: <20230908201045.4115614-1-fenghua.yu@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0197.namprd03.prod.outlook.com
+ (2603:10b6:a03:2ef::22) To IA1PR11MB6097.namprd11.prod.outlook.com
+ (2603:10b6:208:3d7::17)
 MIME-Version: 1.0
-X-OriginatorOrg: analog.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR11MB6097:EE_|DM4PR11MB5360:EE_
+X-MS-Office365-Filtering-Correlation-Id: 688cdee9-4ece-44ee-5477-08dbc385ac03
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NXKSmQCWkeyZcFWoTju1cWvWziaayk4aD0BLMybHuqElUNHRe4df7MOkjWWMMSriZ/G1LxQPTy2vIKDDXXCq4Y1G7vSZyAfQUHk24+4iqQCiTT5cejpYnI1PKU7ttodb3oe+5sxvKemwQgwAMFfP/zGcL9+cnUrizh9jOFFhz405tweRvl0ZS7WUVkvIawCNSxnl1TtQaR7gs41FxT8CvWhmB1HhFRN7DKeaLovwAv5AI143Heu7dv0GqdMAavFqEzy4/pkSgRwIYaKBKa/SeA9fDFxi6uMV8aJ8hPU5WNw7kV6b1mpc4o622evZb3goY2UgLlxEANDwTtZkKEuYbpAGb8LpqPpdWVPXcM8BwmW/0sEAOBR0HZw+IzsFKPw2HeaaaAEtobZVmzldcoYB5ErYwTJ9cWd7D/mcB8W0Muv7cvCf0c2w1kyNdzs3iBr26jblbmsRMCy66BS9MFTndKa50MH85/IOGIkqjaWZFJmad30s9Cb8iRl6bGB79kR7gTKFivlRVF5kXd/PyEaBh5v/LoNr0RjiKcWifFJ9c590jGrzybL5NAR7hzivZxNcK/iYs4f75dlzi8XKDS+rS+1YDsFn7XE8lOZs7ARptNtD0U63FQdFTkQbI7QGv+B6ZRmT5bFQKwk1R/Fv4TmcZ6u954urpVFPHoVFFkWQEjues+UNHtoiSppmEEd7k2hA
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6097.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(396003)(366004)(39860400002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(31686004)(53546011)(6666004)(478600001)(2906002)(6506007)(6486002)(966005)(8936002)(38100700002)(6512007)(26005)(31696002)(66946007)(110136005)(86362001)(2616005)(36756003)(83380400001)(54906003)(6636002)(41300700001)(82960400001)(66556008)(8676002)(66476007)(5660300002)(44832011)(316002)(4326008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RTBMZXo3TGR3ZVl0bmk1UnhTKzd4T0gveDJNb3FIbkJYdUNDNW82S1dON1M2?=
+ =?utf-8?B?d25wMXhjaGdGWkNCMGp1NlVlUDMzTWVTWDQzcGNNeTVhUUVxL0dCZnlqcks0?=
+ =?utf-8?B?c3JDVmtLaGFxWS9FRFdVajVRMG94aHpaVzk5elhFOEJhOG9qWUkrQUZjMTRi?=
+ =?utf-8?B?eGtEOURlUHJSNmptWjlvdkRGV1FkN1FqbUZyYmhYaDk1MEJzRnczTWJVd21W?=
+ =?utf-8?B?dmhzV2dsY1R1OFVGSzFvclVYRHlmOWVIRWxyeXA1UWFWWlc2Z25UNEpQaXpB?=
+ =?utf-8?B?aFhJcmU0QVRFK3l5NjdGZFVpRkJMdndpVXVNbXkwUFhna1BaeU5QSXpFblpC?=
+ =?utf-8?B?aEZrYkxnSE8zcDRoYWV0WWg2Tk5hTktybmxiYnI3TlNhc1ExN1Fnb0ZrY3lL?=
+ =?utf-8?B?TVpJN0Z4NkU3SmhFYXpSbGpqRkU2eE1BOTAxZ2JVdkVXTDU3WEdWRnlSbVZF?=
+ =?utf-8?B?K1p5UkZkZC9ydUk4MHhleDRoTVZjU2k2dklvRDZUbVhrcjlKY3ZzTEd1WVBE?=
+ =?utf-8?B?Q1VTVXlkZTNscTQ3bDFSSTlFdE9sOTBZZllSZXZtL2czVVNoWEI3T2FBVDYz?=
+ =?utf-8?B?cURRblRqVEwxWkVEMU9hcmdqVmh4SitYZkFVQUY5MkpPRitaaWlNRVh4aWNR?=
+ =?utf-8?B?QWMwUCsyQVQvU2h0SVJqNkd2bjJ4TFdXRWFRUGJFWGRPeWVqY1VzQWdQTmFj?=
+ =?utf-8?B?R0ZMcXd6RHNwS3dMTTFKdEZQL1dGYVFGMEF2YXEvQytyYmw5OEljMW9qczI3?=
+ =?utf-8?B?VTRKTlhDcndHSEx2SlFHT2pYMmhDSnRHZnlnUE5LQnBwSkxwSS96TUxHS0FU?=
+ =?utf-8?B?YjFqT3A3WDAxa0ZSZzh3TnlYRUhoVWlUOEp0eDJxemlSZGlDVStZdk1OV1FY?=
+ =?utf-8?B?N0NsY3NuYklzYnEvQnlLczNPWlZlM3RCV2x4NG1QVjVLeDVBbXV1eHNpZzdJ?=
+ =?utf-8?B?Vk1OOTZHRUhOcHNiQmdlTmluVDIrNE5RR3VXcmJ0eGh6WnhBVGIxbWRPQXBs?=
+ =?utf-8?B?ZDViNDM5V1h3cGFycVhXSm1qdnU1M3cwZFY1c3g2M3VjeWUzUWV5QUJzQko0?=
+ =?utf-8?B?SW42c3JZRFVKbiszL1hyVXBRcEw1dVlqYTNjUVZ1VFI4Q2hFL1NuRHo1YVNN?=
+ =?utf-8?B?SHVJeHl6eUkrL1JWWERTaTdVUUZuaGdiR0xIMDczWHZFYm9jOVJsZGs4Lzc3?=
+ =?utf-8?B?eXBkRUU3eHdFTVB2Y1AxZ2pNSk9ySTZ3VGVvcGVGWnRjTndyWmJhRUsweEJo?=
+ =?utf-8?B?WmpPaGF3ZHJ6Nnp0Z01BV3VBY1EyeTVmQ0pEeTRiUWZSMXNwbUttaEE0YnZ6?=
+ =?utf-8?B?L2tudHU4UDI0OThNOENkeDB0d0pCSnZ2eG94eG1pUjQwblNSZjd5Y0o0UGsv?=
+ =?utf-8?B?ZVBqelRkSDRCbXdWYlVDaDlPcTJRSkRiREV0S0ZkM0NhYW9oVzA1QzdsUGdU?=
+ =?utf-8?B?cGIyYW9tSVdPRnhKdmwwam1TZWFycGQ1amtrc0dJZ3lqbHQ1UmJOaFdEVjZ0?=
+ =?utf-8?B?UDFOMmlQKzRFdVlkN1pta2dqalNyalV1MitoWjN2bjFHblZUZ2FRaVlyWGtP?=
+ =?utf-8?B?RnQ0WUZVNlI4RWxYWGlBVkU4REg5M1hQQW1Cbk1janpBYVpTQ1p5aStzZTky?=
+ =?utf-8?B?QmdUdHI3Rlo0TDBmR2pQUzdDdlg1d2VSNXF3NkNYSzhROVNHWGlxY3lNVFZ4?=
+ =?utf-8?B?Q2gwSDFUTnQyZ1FvcndTOXhnNWhkbUcyeVlPREZFZnltWkJnU0xnaXJmR3J0?=
+ =?utf-8?B?OWllaytkUXpKcE5jZFVVOW05WkVzWmxVZ0JadmU2aHorbWV1Q0MvdWtITnFU?=
+ =?utf-8?B?UTdJcWY3MVVGczZ1ZEJ0SzBLeEVCcXQxSHRaRUdCTEd1a3J0Y0U3Z2VzSnpZ?=
+ =?utf-8?B?cjNtbUk4VSs0RVBTNE1UODNMSk1LLzgvQXNBL2s0MTltRDFOK0xucDVjUnVq?=
+ =?utf-8?B?cGVPUVQwekhNSVk3VVE0aUVNMFpNOHNYbEFoc1F6M3N3K04xTzlFUTVGUnVE?=
+ =?utf-8?B?SURIUDlBdXNXaWRpS0hSRGtTRVo4Wm1XZzlqQk0wSDFhMUxZLzB1SEtQZVN2?=
+ =?utf-8?B?eUJEd1U2Um9rOC9reUNaRGNWdS9haGxpUVUyVUF5RUc4ckVYS1lUN2N6cHRB?=
+ =?utf-8?Q?r6vxLkMA6uFgvZOqgAul6Cfsw?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 688cdee9-4ece-44ee-5477-08dbc385ac03
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6097.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN7PR03MB4545.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6634390d-855d-4ed3-35ff-08dbc3857492
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Oct 2023 20:23:35.6329
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Oct 2023 20:25:08.9334
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hcNRAN7diml6euYAjf5KoJmEesK54MigcbiW28Q1ciOJFME9/wYv3V1n8C7WSDhrmJ84181zyN3HedJxr3HFSg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR03MB5509
-X-Proofpoint-GUID: zFGki6lHDycCWqKdi88wLAcTcOaI9eFj
-X-Proofpoint-ORIG-GUID: zFGki6lHDycCWqKdi88wLAcTcOaI9eFj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-02_15,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- mlxlogscore=999 mlxscore=0 phishscore=0 suspectscore=0 impostorscore=0
- adultscore=0 spamscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2309180000
- definitions=main-2310020157
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eIgaI0P0zuJcqOt+HFAQ+KjkPOKi68GCeF/pm1LOi+wt1mt/6VNyoHqvv1Q4WmIsQIBDrJbDudDNf6KwwJS43A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5360
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -171,187 +162,215 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Vinod,
+
+I see you applied a couple of IDXD patches to dmaengine tree last week. 
+Really appreciate that!
+
+This patch and another patch that fixes a split lock issue: 
+https://lore.kernel.org/dmaengine/20230916060619.3744220-1-rex.zhang@intel.com/ 
+are not applied yet.
+
+Any concern on these two patches? Are they good to be applied to 
+dmaengine tree?
+
+Thank you very much!
+
+-Fenghua
 
 
-> -----Original Message-----
-> From: Conor Dooley <conor@kernel.org>
-> Sent: Monday, October 2, 2023 23:07
-> To: Balas, Eliza <Eliza.Balas@analog.com>
-> Cc: Rob Herring <robh@kernel.org>; Krzysztof Kozlowski <krzysztof.kozlows=
-ki+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
-> Derek Kiernan <derek.kiernan@amd.com>; Dragan Cvetic <dragan.cvetic@amd.c=
-om>; Arnd Bergmann <arnd@arndb.de>; Greg
-> Kroah-Hartman <gregkh@linuxfoundation.org>; linux-kernel@vger.kernel.org;=
- devicetree@vger.kernel.org
-> Subject: Re: [PATCH v2 1/2] dt-bindings: misc: adi,axi-tdd: Add device-tr=
-ee binding for TDD engine
->=20
-> [External]
->=20
-> On Mon, Oct 02, 2023 at 07:48:42PM +0000, Balas, Eliza wrote:
-> > > -----Original Message-----
-> > > From: Conor Dooley <conor@kernel.org>
-> > > Sent: Monday, October 2, 2023 22:21
-> > > To: Balas, Eliza <Eliza.Balas@analog.com>
-> > > Cc: Rob Herring <robh@kernel.org>; Krzysztof Kozlowski <krzysztof.koz=
-lowski+dt@linaro.org>; Conor Dooley
-> <conor+dt@kernel.org>;
-> > > Derek Kiernan <derek.kiernan@amd.com>; Dragan Cvetic <dragan.cvetic@a=
-md.com>; Arnd Bergmann <arnd@arndb.de>; Greg
-> > > Kroah-Hartman <gregkh@linuxfoundation.org>; linux-kernel@vger.kernel.=
-org; devicetree@vger.kernel.org
-> > > Subject: Re: [PATCH v2 1/2] dt-bindings: misc: adi,axi-tdd: Add devic=
-e-tree binding for TDD engine
-> > >
-> > > [External]
-> > >
-> > > On Mon, Oct 02, 2023 at 04:46:26PM +0000, Balas, Eliza wrote:
-> > > > > -----Original Message-----
-> > > > > From: Rob Herring <robh@kernel.org>
-> > > > > Sent: Monday, October 2, 2023 19:33
-> > > > > To: Balas, Eliza <Eliza.Balas@analog.com>
-> > > > > Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Cono=
-r Dooley <conor+dt@kernel.org>; Derek Kiernan
-> > > > > <derek.kiernan@amd.com>; Dragan Cvetic <dragan.cvetic@amd.com>; A=
-rnd Bergmann <arnd@arndb.de>; Greg Kroah-
-> Hartman
-> > > > > <gregkh@linuxfoundation.org>; linux-kernel@vger.kernel.org; devic=
-etree@vger.kernel.org
-> > > > > Subject: Re: [PATCH v2 1/2] dt-bindings: misc: adi,axi-tdd: Add d=
-evice-tree binding for TDD engine
-> > > > >
-> > > > > [External]
-> > > > >
-> > > > > On Thu, Sep 28, 2023 at 12:28:03PM +0300, Eliza Balas wrote:
-> > > > > > Add device tree documentation for the AXI TDD Core.
-> > > > > > The generic TDD controller is in essence a waveform generator
-> > > > > > capable of addressing RF applications which require Time Divisi=
-on
-> > > > > > Duplexing, as well as controlling other modules of general
-> > > > > > applications through its dedicated 32 channel outputs.
-> > > > > >
-> > > > > > The reason of creating the generic TDD controller was to reduce
-> > > > > > the naming confusion around the existing repurposed TDD core
-> > > > > > built for AD9361, as well as expanding its number of output
-> > > > > > channels for systems which require more than six controlling si=
-gnals.
-> > > > > >
-> > > > > > Signed-off-by: Eliza Balas <eliza.balas@analog.com>
-> > > > > > ---
-> > > > > >  .../devicetree/bindings/misc/adi,axi-tdd.yaml | 65 +++++++++++=
-++++++++
-> > > > > >  MAINTAINERS                                   |  7 ++
-> > > > > >  2 files changed, 72 insertions(+)
-> > > > > >  create mode 100644 Documentation/devicetree/bindings/misc/adi,=
-axi-tdd.yaml
-> > > > > >
-> > > > > > diff --git a/Documentation/devicetree/bindings/misc/adi,axi-tdd=
-.yaml b/Documentation/devicetree/bindings/misc/adi,axi-
-> > > tdd.yaml
-> > > > > > new file mode 100644
-> > > > > > index 000000000000..8938da801b95
-> > > > > > --- /dev/null
-> > > > > > +++ b/Documentation/devicetree/bindings/misc/adi,axi-tdd.yaml
-> > > > > > @@ -0,0 +1,65 @@
-> > > > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > > > +# Copyright 2023 Analog Devices Inc.
-> > > > > > +%YAML 1.2
-> > > > > > +---
-> > > > > > +$id: https://urldefense.com/v3/__http://devicetree.org/schemas=
-/misc/adi,axi-
-> > > > > tdd.yaml*__;Iw!!A3Ni8CS0y2Y!5Cxus2huppjhkiJZLWTpJEgA0IXdLZx4t0fS9=
-J1yt0xgjp9g3Y1N5PbZ7pAcIkKU4WPbS_TR9yjTKw$
-> > > > > > +$schema: https://urldefense.com/v3/__http://devicetree.org/met=
-a-
-> > > > >
-> > >
-> schemas/core.yaml*__;Iw!!A3Ni8CS0y2Y!5Cxus2huppjhkiJZLWTpJEgA0IXdLZx4t0fS=
-9J1yt0xgjp9g3Y1N5PbZ7pAcIkKU4WPbS_RK8aQ9xw$
-> > > > > > +
-> > > > > > +title: Analog Devices AXI TDD Core
-> > > > > > +
-> > > > > > +maintainers:
-> > > > > > +  - Eliza Balas <eliza.balas@analog.com>
-> > > > > > +
-> > > > > > +description: |
-> > > > > > +  The TDD controller is a waveform generator capable of addres=
-sing RF
-> > > > > > +  applications which require Time Division Duplexing, as well =
-as controlling
-> > > > > > +  other modules of general applications through its dedicated =
-32 channel
-> > > > > > +  outputs. It solves the synchronization issue when transmitti=
-ng and receiving
-> > > > > > +  multiple frames of data through multiple buffers.
-> > > > > > +  The TDD IP core is part of the Analog Devices hdl reference =
-designs and has
-> > > > > > +  the following features:
-> > > > > > +    * Up to 32 independent output channels
-> > > > > > +    * Start/stop time values per channel
-> > > > > > +    * Enable and polarity bit values per channel
-> > > > > > +    * 32 bit-max internal reference counter
-> > > > > > +    * Initial startup delay before waveform generation
-> > > > > > +    * Configurable frame length and number of frames per burst
-> > > > > > +    * 3 sources of synchronization: external, internal and sof=
-tware generated
-> > > > > > +  For more information see the wiki:
-> > > > > > +  https://wiki.analog.com/resources/fpga/docs/axi_tdd
-> > > > > > +
-> > > > > > +properties:
-> > > > > > +  compatible:
-> > > > > > +    enum:
-> > > > > > +      - adi,axi-tdd-2.00.a
-> > > > >
-> > > > > Where does this version number come from? I looked at the above l=
-ink and
-> > > > > see versions such as '2021_R2', '2019_r2', etc. I didn't dig deep=
-er
-> > > > > whether there's some per IP version.
-> > > > >
-> > > > > If you want to use version numbers, please document the versionin=
-g
-> > > > > scheme. For example, see
-> > > > > Documentation/devicetree/bindings/sifive/sifive-blocks-ip-version=
-ing.txt.
-> > > > >
-> > > > > Rob
-> > > >
-> > > > The version refers to the IP version. The version of the IP is also
-> > > > specified in its VERSION register (there is a drop down to expand t=
-he
-> > > > register map on the wiki page) which is verified by the driver duri=
-ng
-> > > > probe. "2021_R2" refers to the compatible tool version used for
-> > > > creating the FPGAIP Core.
-> > >
-> > > If you have version registers in these IPs, what benefit does version
-> > > numbers in the compatible string bring?
-> > > Rather than using the version numbers to validate what the DT gave yo=
-u,
-> > > which not the kernel's job IMO, why not just use the information from
-> > > the register to determine the version?
-> > >
-> > > Cheers,
-> > > Conor.
-> >
-> > As the description of this patch says, we want to resolve the naming co=
-nfusion around the existing repurposed TDD core
-> (https://wiki.analog.com/resources/eval/user-guides/ad-pzsdr2400tdd-eb/re=
-ference_hdl#tdd_controller)
-> > built for AD9361 and this TDD Engine IP core (https://wiki.analog.com/r=
-esources/fpga/docs/axi_tdd) which is a similar core, with
-> more output channels and some extra features. The version numbers in the =
-compatible string are used to differentiate between the
-> two IPs.
->=20
-> Firstly, please fix your mail client to wrap text at a sane width :)
-> Secondly, where is the binding for that TDD ad9361 specific core that
-> calling this generic one "adi,axi-tdd" would conflict with?
-> Grepping the bindings directory of the kernel tree for "adi.*tdd" returns
-> nothing. If there is an ad9361 specific tdd, I would expect it to have a
-> compatible like "adi,ad9361-tdd".
-
-We didn't upstream the ad9361 tdd driver, but we are using it
-in our internal kernel. If this is an issue, I will change the=20
-compatible string to "adi,axi-tdd".
-
+On 9/8/23 13:10, Fenghua Yu wrote:
+> From: Dave Jiang <dave.jiang@intel.com>
+> 
+> With the possibility of multiple wq drivers that can be bound to the wq,
+> the user config tool accel-config needs a way to know which wq driver to
+> bind to the wq. Introduce per wq driver_name sysfs attribute where the user
+> can indicate the driver to be bound to the wq. This allows accel-config to
+> just bind to the driver using wq->driver_name.
+> 
+> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+> Signed-off-by: Tom Zanussi <tom.zanussi@linux.intel.com>
+> Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
+> Acked-by: Vinod Koul <vkoul@kernel.org>
+> ---
+> 
+> Hi, Vinod,
+> 
+> This patch is part of IAA crypto patch series:
+> https://lore.kernel.org/all/20230731212939.1391453-2-tom.zanussi@linux.intel.com/
+> I'm sending this patch indepentantly here because:
+> 1. the IAA crypto patch series is unlikely to be merged into 6.7
+> 2. this patch is useful by itself in a few other places
+> 3. this patch doesn't depend on the IAA crypto patch set and can
+>     be used and applied cleanly by itself
+> 4. this patch has only dmaengine code
+> 
+> So it would be good to merge this patch into 6.7 first. An updated
+> IAA crypto patch set will be submitted later after 6.7 time frame
+> and merged in a later kernel version.
+> 
+>   .../ABI/stable/sysfs-driver-dma-idxd          |  6 ++++
+>   drivers/dma/idxd/cdev.c                       |  7 ++++
+>   drivers/dma/idxd/dma.c                        |  6 ++++
+>   drivers/dma/idxd/idxd.h                       |  9 +++++
+>   drivers/dma/idxd/sysfs.c                      | 34 +++++++++++++++++++
+>   include/uapi/linux/idxd.h                     |  1 +
+>   6 files changed, 63 insertions(+)
+> 
+> diff --git a/Documentation/ABI/stable/sysfs-driver-dma-idxd b/Documentation/ABI/stable/sysfs-driver-dma-idxd
+> index 825e619250bf..982e9f3b80e2 100644
+> --- a/Documentation/ABI/stable/sysfs-driver-dma-idxd
+> +++ b/Documentation/ABI/stable/sysfs-driver-dma-idxd
+> @@ -270,6 +270,12 @@ Description:	Shows the operation capability bits displayed in bitmap format
+>   		correlates to the operations allowed. It's visible only
+>   		on platforms that support the capability.
+>   
+> +What:		/sys/bus/dsa/devices/wq<m>.<n>/driver_name
+> +Date:		Sept 8, 2023
+> +KernelVersion:	6.7.0
+> +Contact:	dmaengine@vger.kernel.org
+> +Description:	Name of driver to be bounded to the wq.
+> +
+>   What:           /sys/bus/dsa/devices/engine<m>.<n>/group_id
+>   Date:           Oct 25, 2019
+>   KernelVersion:  5.6.0
+> diff --git a/drivers/dma/idxd/cdev.c b/drivers/dma/idxd/cdev.c
+> index d32deb9b4e3d..0423655f5a88 100644
+> --- a/drivers/dma/idxd/cdev.c
+> +++ b/drivers/dma/idxd/cdev.c
+> @@ -509,6 +509,7 @@ void idxd_wq_del_cdev(struct idxd_wq *wq)
+>   
+>   static int idxd_user_drv_probe(struct idxd_dev *idxd_dev)
+>   {
+> +	struct device *dev = &idxd_dev->conf_dev;
+>   	struct idxd_wq *wq = idxd_dev_to_wq(idxd_dev);
+>   	struct idxd_device *idxd = wq->idxd;
+>   	int rc;
+> @@ -536,6 +537,12 @@ static int idxd_user_drv_probe(struct idxd_dev *idxd_dev)
+>   
+>   	mutex_lock(&wq->wq_lock);
+>   
+> +	if (!idxd_wq_driver_name_match(wq, dev)) {
+> +		idxd->cmd_status = IDXD_SCMD_WQ_NO_DRV_NAME;
+> +		rc = -ENODEV;
+> +		goto wq_err;
+> +	}
+> +
+>   	wq->wq = create_workqueue(dev_name(wq_confdev(wq)));
+>   	if (!wq->wq) {
+>   		rc = -ENOMEM;
+> diff --git a/drivers/dma/idxd/dma.c b/drivers/dma/idxd/dma.c
+> index 07623fb0f52f..47a01893cfdb 100644
+> --- a/drivers/dma/idxd/dma.c
+> +++ b/drivers/dma/idxd/dma.c
+> @@ -306,6 +306,12 @@ static int idxd_dmaengine_drv_probe(struct idxd_dev *idxd_dev)
+>   		return -ENXIO;
+>   
+>   	mutex_lock(&wq->wq_lock);
+> +	if (!idxd_wq_driver_name_match(wq, dev)) {
+> +		idxd->cmd_status = IDXD_SCMD_WQ_NO_DRV_NAME;
+> +		rc = -ENODEV;
+> +		goto err;
+> +	}
+> +
+>   	wq->type = IDXD_WQT_KERNEL;
+>   
+>   	rc = drv_enable_wq(wq);
+> diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
+> index e269ca1f4862..1e89c80a07fc 100644
+> --- a/drivers/dma/idxd/idxd.h
+> +++ b/drivers/dma/idxd/idxd.h
+> @@ -159,6 +159,8 @@ struct idxd_cdev {
+>   	int minor;
+>   };
+>   
+> +#define DRIVER_NAME_SIZE		128
+> +
+>   #define IDXD_ALLOCATED_BATCH_SIZE	128U
+>   #define WQ_NAME_SIZE   1024
+>   #define WQ_TYPE_SIZE   10
+> @@ -227,6 +229,8 @@ struct idxd_wq {
+>   	/* Lock to protect upasid_xa access. */
+>   	struct mutex uc_lock;
+>   	struct xarray upasid_xa;
+> +
+> +	char driver_name[DRIVER_NAME_SIZE + 1];
+>   };
+>   
+>   struct idxd_engine {
+> @@ -646,6 +650,11 @@ static inline void idxd_wqcfg_set_max_batch_shift(int idxd_type, union wqcfg *wq
+>   		wqcfg->max_batch_shift = max_batch_shift;
+>   }
+>   
+> +static inline int idxd_wq_driver_name_match(struct idxd_wq *wq, struct device *dev)
+> +{
+> +	return (strncmp(wq->driver_name, dev->driver->name, strlen(dev->driver->name)) == 0);
+> +}
+> +
+>   int __must_check __idxd_driver_register(struct idxd_device_driver *idxd_drv,
+>   					struct module *module, const char *mod_name);
+>   #define idxd_driver_register(driver) \
+> diff --git a/drivers/dma/idxd/sysfs.c b/drivers/dma/idxd/sysfs.c
+> index 7caba90d85b3..523ae0dff7d4 100644
+> --- a/drivers/dma/idxd/sysfs.c
+> +++ b/drivers/dma/idxd/sysfs.c
+> @@ -1259,6 +1259,39 @@ static ssize_t wq_op_config_store(struct device *dev, struct device_attribute *a
+>   static struct device_attribute dev_attr_wq_op_config =
+>   		__ATTR(op_config, 0644, wq_op_config_show, wq_op_config_store);
+>   
+> +static ssize_t wq_driver_name_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct idxd_wq *wq = confdev_to_wq(dev);
+> +
+> +	return sysfs_emit(buf, "%s\n", wq->driver_name);
+> +}
+> +
+> +static ssize_t wq_driver_name_store(struct device *dev, struct device_attribute *attr,
+> +				    const char *buf, size_t count)
+> +{
+> +	struct idxd_wq *wq = confdev_to_wq(dev);
+> +	char *input, *pos;
+> +
+> +	if (wq->state != IDXD_WQ_DISABLED)
+> +		return -EPERM;
+> +
+> +	if (strlen(buf) > DRIVER_NAME_SIZE || strlen(buf) == 0)
+> +		return -EINVAL;
+> +
+> +	input = kstrndup(buf, count, GFP_KERNEL);
+> +	if (!input)
+> +		return -ENOMEM;
+> +
+> +	pos = strim(input);
+> +	memset(wq->driver_name, 0, DRIVER_NAME_SIZE + 1);
+> +	sprintf(wq->driver_name, "%s", pos);
+> +	kfree(input);
+> +	return count;
+> +}
+> +
+> +static struct device_attribute dev_attr_wq_driver_name =
+> +		__ATTR(driver_name, 0644, wq_driver_name_show, wq_driver_name_store);
+> +
+>   static struct attribute *idxd_wq_attributes[] = {
+>   	&dev_attr_wq_clients.attr,
+>   	&dev_attr_wq_state.attr,
+> @@ -1278,6 +1311,7 @@ static struct attribute *idxd_wq_attributes[] = {
+>   	&dev_attr_wq_occupancy.attr,
+>   	&dev_attr_wq_enqcmds_retries.attr,
+>   	&dev_attr_wq_op_config.attr,
+> +	&dev_attr_wq_driver_name.attr,
+>   	NULL,
+>   };
+>   
+> diff --git a/include/uapi/linux/idxd.h b/include/uapi/linux/idxd.h
+> index 606b52e88ce3..3d1987e1bb2d 100644
+> --- a/include/uapi/linux/idxd.h
+> +++ b/include/uapi/linux/idxd.h
+> @@ -31,6 +31,7 @@ enum idxd_scmd_stat {
+>   	IDXD_SCMD_WQ_IRQ_ERR = 0x80100000,
+>   	IDXD_SCMD_WQ_USER_NO_IOMMU = 0x80110000,
+>   	IDXD_SCMD_DEV_EVL_ERR = 0x80120000,
+> +	IDXD_SCMD_WQ_NO_DRV_NAME = 0x80200000,
+>   };
+>   
+>   #define IDXD_SCMD_SOFTERR_MASK	0x80000000
