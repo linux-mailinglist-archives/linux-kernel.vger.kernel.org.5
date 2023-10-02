@@ -2,96 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D78C7B4E45
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28A6D7B4E44
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 10:58:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236034AbjJBI6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 04:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60798 "EHLO
+        id S236137AbjJBI6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 04:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236130AbjJBI5y (ORCPT
+        with ESMTP id S236102AbjJBI5y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Oct 2023 04:57:54 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ED9519B6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 01:54:28 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59c215f2f4aso201391117b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 01:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696236867; x=1696841667; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SAHGe0Dh0hTiu77ede4jd3f5FD+aqZVWssvCBucRdDw=;
-        b=x+rCB5P0HkIE4YZ0A0EF23AnFJ6/bHqPz17K2I0HhU69pCtY8vnw4nVu1mN7jOqZOk
-         uRKEAfz5IWwj82uwdBNh9BtZWmgWfL31yejXEm2cwIRCaux7vs3/yRrayCuQ/jsDHzDi
-         +abzVezajzIhLbUYC0CKP3tjl4q9Lv3MN0juTymENW4u6j19RSBK+9Ku6EhnlCjLsbmT
-         3E9qgIrCtATJsFWiUbmgn4ZAMoaRMxumE1tDlIZzeiWfa6Q1opTQ0DE5QhW994Nt0oVD
-         4P+f3LTFuubQ6eOGoTR4UrBuwTiDHxSIrPKNvlqxITWR9/dRdaGZtyufKhlwv3a6ql9w
-         k+UA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696236867; x=1696841667;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SAHGe0Dh0hTiu77ede4jd3f5FD+aqZVWssvCBucRdDw=;
-        b=VHw65B9UsZX85dOjePOFY1FQf+9fjzf3KSwhDpZyG2Fch/QDhaBbjxZJTizC+M8q9d
-         A+5KjwbpCg2evnyss4PMJf3/inLy12mAF8HpyrAed8rEtyECVEEgZOUtsJvsy6TMrpjL
-         KU+TtLi3FCxG7HrJMHxBdNhPuuTsEGq2bb9LwF/mS6FEnR0BOJjhbOfhxwWXMd208PDJ
-         z1Bel2T1AznIVfywdlw7irrVaKmK8Hg/Hoi2FPMDRUSvQt5E+GPhNf7nYgvn7Ux/TzPK
-         df5MCVVe3a2R7PtY7W9CTsjDkAN9aoUTeCnW+G0LRsU6mtqza97vr1ALOaGwFt+eqWqg
-         qflA==
-X-Gm-Message-State: AOJu0Yx5wqrjv8k0chfiHkMgY7vIQcmPNXqN0teoP1AsFL04uYdEoERd
-        0nJ+9z9YUoTb56IdyuHfE54Acz1SkarA7ysMktmhGA==
-X-Google-Smtp-Source: AGHT+IH3xhl+OqZLFGjc/FIIZK7vVneZIRUfkgmVwUJ1Lbcx2j8iWEa2u1r3zv87HGXUt/qD+sekTdSLdXL30TNvBos=
-X-Received: by 2002:a0d:dc01:0:b0:599:b59f:5280 with SMTP id
- f1-20020a0ddc01000000b00599b59f5280mr10777800ywe.28.1696236866969; Mon, 02
- Oct 2023 01:54:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ADD830D5;
+        Mon,  2 Oct 2023 01:54:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67249C433C8;
+        Mon,  2 Oct 2023 08:54:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696236890;
+        bh=mY7V5HpyJPC8BlHMafAISBNk/3kEqWunRznr/2Tfk3E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OipTIeg3+nGvXaWjN+6iARoJvRvz3G8QwnLJ/o9uYn13LOPWEs0WBfV+s1KK4o2Pb
+         bu/jacqCEImLQszaTUgOf5wFYzaQZMDwNSDVPtkQHg3TsgjR0xMiJ6U1EEQ5clySi2
+         SsmRHN8y3nHaKNmRCweEOGaN9Nsd3HC/9N5K7h65qq6tCFEx4zM33qKPzo6e3OZ/Yb
+         eRSidAB3ekvpJ7k1x6E5JhmjBxGlpeQXkAJl7iQl4gZAJPFLfHhSreIeXulkm4Xv95
+         CAU/izHn0X1q0Rv2FmP+aAvIOgOvQcY869Y8RKjbxI+Kvb9TmgO6JjFpmuvh9iAJbK
+         DIGlQZMUH12OQ==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qnEhd-0004bV-2m;
+        Mon, 02 Oct 2023 10:54:57 +0200
+Date:   Mon, 2 Oct 2023 10:54:57 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: sc8280xp-x13s: Use the correct DP PHY
+ compatible
+Message-ID: <ZRqFYWtEcuSCauCf@hovoldconsulting.com>
+References: <20230929-topic-x13s_edpphy-v1-1-ce59f9eb4226@linaro.org>
 MIME-Version: 1.0
-References: <20231001-pxa-gpio-v4-0-0f3b975e6ed5@skole.hr> <20231001-pxa-gpio-v4-2-0f3b975e6ed5@skole.hr>
-In-Reply-To: <20231001-pxa-gpio-v4-2-0f3b975e6ed5@skole.hr>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 2 Oct 2023 10:54:15 +0200
-Message-ID: <CACRpkdbi9fcna_giYR9HubWYoR-ZfrxZK7dPOJR9vX1n5A8Vtg@mail.gmail.com>
-Subject: Re: [PATCH RFC v4 2/6] ARM: pxa: Convert Spitz LEDs to GPIO descriptors
-To:     =?UTF-8?Q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-spi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230929-topic-x13s_edpphy-v1-1-ce59f9eb4226@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 1, 2023 at 4:13=E2=80=AFPM Duje Mihanovi=C4=87 <duje.mihanovic@=
-skole.hr> wrote:
+On Fri, Sep 29, 2023 at 06:02:57PM +0200, Konrad Dybcio wrote:
+> The DP PHY needs different settings when an eDP display is used.
+> Make sure these apply on the X13s.
 
-> Sharp's Spitz board still uses the legacy GPIO interface for configuring
-> its two onboard LEDs.
->
-> Convert them to use the GPIO descriptor interface.
->
-> Signed-off-by: Duje Mihanovi=C4=87 <duje.mihanovic@skole.hr>
+Good catch. This looks to be more in line with what Bjorn intended.
 
-LGTM:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+You should fix up sc8280xp-crd and sa8295p-adp.dts as well however.
 
-Yours,
-Linus Walleij
+> FWIW
+> I could not notice any user-facing change stemming from this commit.
+
+I've seen some infrequent link-training failures (e.g. on resume) even if
+it's been a while since last time now.
+
+> Fixes: f48c70b111b4 ("arm64: dts: qcom: sc8280xp-x13s: enable eDP display")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+> I have no idea whether DP3 is hardwired to be eDP, like it
+> seems to be on the last DP controller of SC7280. In that
+> case this would be moved to the SoC DTSI.
+
+sa8295p-adp appears to use mdss[01]_dp[23] for eDP.
+
+> ---
+>  arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+> index 38edaf51aa34..6a4c6cc19c09 100644
+> --- a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+> +++ b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+> @@ -601,6 +601,7 @@ mdss0_dp3_out: endpoint {
+>  };
+>  
+>  &mdss0_dp3_phy {
+> +	compatible = "qcom,sc8280xp-edp-phy";
+
+Nit: Can you add a newline here after the compatible, please?
+
+>  	vdda-phy-supply = <&vreg_l6b>;
+>  	vdda-pll-supply = <&vreg_l3b>;
+
+Johan
