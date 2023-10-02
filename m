@@ -2,114 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1547B5676
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ECF77B568A
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238070AbjJBPUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 11:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42000 "EHLO
+        id S238108AbjJBPWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 11:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238049AbjJBPUX (ORCPT
+        with ESMTP id S238100AbjJBPWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 11:20:23 -0400
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52ED8BD
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:20:19 -0700 (PDT)
-Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-3526ac53d43so1301185ab.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 08:20:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1696260018; x=1696864818; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Qk/XanOarQnfiowuhKuY6lcAi1WRceRpbvvLoOZFAu8=;
-        b=AcV39l8LY2WGSepA/YLKrpZvNnUAupdKsXT3F7HXwLvLbmSww1ivpQW5ahrIfPTqhr
-         xkU1FAd/jD9y5NUQydkHyxVbPiV4HN2hdd4a23JEJ7s+ZrJZIMlzevZcdCAoXIrozbkY
-         5lEJVOlZcCdAOMWE8TcKEAjdlmIfxf+T7BbpQsa9ECJA5T0Ere8ljwR6qJub7BirzV5l
-         U5x0UEYLqen8kW2Rf7uR/HrOWtBCbz6EHYZ7mgEaTmd3oUp9FgRadoKFD5CoEKYtxFjQ
-         gSYAYhxYkGNSSfz/gSe6CGhv48ObVhEbqYOrb74GAQXLRSrSwha89Qb7IDbcYUikOKB3
-         hPLA==
+        Mon, 2 Oct 2023 11:22:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D27290
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 08:21:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696260086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QlAybfgmV/uY/HzoMoKn7tEAOtApMgJqX5rJGiOaxmY=;
+        b=hX3PucNNdHTNLVh/t9TX6wqXWFYLGuvi4hUd6wXA5c2r9/HUD0psbOkdnbeY8Ks/YjwCEJ
+        pDC5/P5fROwGOtAgQV19fm+o6TgFcpTvXOEJ9DWj+L1w4WgNYrGSLZvwDfBwgTLzkajl2q
+        Gz8RHMkV+PPF/mWnQvfOSYCdRfu4b6s=
+Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com
+ [209.85.222.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-638-efDq-XzAOvmjjZfBIZa0DA-1; Mon, 02 Oct 2023 11:21:25 -0400
+X-MC-Unique: efDq-XzAOvmjjZfBIZa0DA-1
+Received: by mail-ua1-f72.google.com with SMTP id a1e0cc1a2514c-79499607027so1337187241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 08:21:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696260018; x=1696864818;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qk/XanOarQnfiowuhKuY6lcAi1WRceRpbvvLoOZFAu8=;
-        b=N4ulQetw+SHfAcsHzJmhuQT4IoSO90BLKMeGwsZicsnPmOtHp38I6ycX6DQyG9o+Hc
-         Gkf249Y20H9gX9L1mITZaNkV+I5hGboUVXRLaDXm67Evw57kvuBUNb9MXK3tQkpoE5CT
-         8CEhvK5uYeQAAscT1EAKKapTp1cnYT8X1c3QT4YkInZRhUWLKk+Ji+eVBIoxuiW9nCk0
-         /PLGHA3ztL5UEo0x74zODm0vNBUkTXCqcI/KqUpt9yIGmX4Woeb3ujd6vyiM0LGCtNKX
-         sjk/AfgseApiJy9CW6CpMCWjNZ4f29bRPepZCzVW6VFzi5XUsMltuAz0eM6wmDePR5rL
-         VG6w==
-X-Gm-Message-State: AOJu0YxpnZAIxRUs1CKwX2urgmZQdhF9sfO0j7u/pkU7aocROwm2TFeW
-        JixlZXL8CrmvWKAQOxZG6Wz8jg==
-X-Google-Smtp-Source: AGHT+IHVKkWVQ0lo/4Oyfs5TolJm2cfk9mrnoCYmsShqdelK85CdLvLpuhRBgRL8+avCiYHCfEkt2g==
-X-Received: by 2002:a6b:c94d:0:b0:792:9b50:3c3d with SMTP id z74-20020a6bc94d000000b007929b503c3dmr11280301iof.1.1696260018542;
-        Mon, 02 Oct 2023 08:20:18 -0700 (PDT)
-Received: from [192.168.1.94] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id c21-20020a5ea915000000b007a25540c49bsm3068421iod.27.2023.10.02.08.20.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 08:20:18 -0700 (PDT)
-Message-ID: <50d68346-d35b-4d3d-a7e5-07540bea3520@kernel.dk>
-Date:   Mon, 2 Oct 2023 09:20:17 -0600
+        d=1e100.net; s=20230601; t=1696260084; x=1696864884;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QlAybfgmV/uY/HzoMoKn7tEAOtApMgJqX5rJGiOaxmY=;
+        b=E7EPoUsKCR/mS7HyqOXzJOLtfLCE35pyUW220O+RoxiDMIjT80sepBMqjSVos/MOUZ
+         fdb262IjvOliiVzjWb/Q5wiyUV4rfhYvSv4xvillmJHZgYOeXXHGOveERytdLp+ZcvfC
+         agJd930ff2TL4ka2wrxz41b7jM63vt+VOFazXSNfiSyXcw/JHXzPjg+7LkAKsrJDku9C
+         +Kdc7Xoz0qVhfTi20qrWxJDs5YVhaumu3HQoZIH2HRKyXqQlhWC00i7vrHIE+Xsf2p8e
+         bZkU4p46UuQUDNbphTBWJPYndFRWJCTZKGcmpcXUv8QpUfQuQjCNVJ9545eHZvp9+RuF
+         OFBQ==
+X-Gm-Message-State: AOJu0YxgCmCFByqI55dJwA3j0zGg3VMo3UOPgUI5/PaYaAeFuNIPUuzJ
+        Ss+2QwALSReu2QlJstYTBWh90tb3N7txdko00YosiXNdyQFnISrYCPdd9u7u7uXuaEncaDnjsqG
+        Z+vtmWDwNK1lSfd/ryDpYienu
+X-Received: by 2002:a05:6102:358e:b0:452:67eb:43cc with SMTP id h14-20020a056102358e00b0045267eb43ccmr5101346vsu.2.1696260084343;
+        Mon, 02 Oct 2023 08:21:24 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFn8glcUatTtqxL6ORAuKISgs+lhCwObGpl8dZ1+0G3Dbu/BgHizje+srQxQLZctE7w0kbPpw==
+X-Received: by 2002:a05:6102:358e:b0:452:67eb:43cc with SMTP id h14-20020a056102358e00b0045267eb43ccmr5101323vsu.2.1696260084067;
+        Mon, 02 Oct 2023 08:21:24 -0700 (PDT)
+Received: from x1n (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id f5-20020a0cf3c5000000b0065cfec43097sm4215956qvm.39.2023.10.02.08.21.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 08:21:23 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 11:21:20 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Jann Horn <jannh@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        lokeshgidra@google.com, hughd@google.com, mhocko@suse.com,
+        axelrasmussen@google.com, rppt@kernel.org, willy@infradead.org,
+        Liam.Howlett@oracle.com, zhangpeng362@huawei.com,
+        bgeffon@google.com, kaleshsingh@google.com, ngeoffray@google.com,
+        jdduke@google.com, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
+Message-ID: <ZRrf8NligMzwqx97@x1n>
+References: <20230923013148.1390521-1-surenb@google.com>
+ <20230923013148.1390521-3-surenb@google.com>
+ <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
+ <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com>
+ <ZRWo1daWBnwNz0/O@x1n>
+ <98b21e78-a90d-8b54-3659-e9b890be094f@redhat.com>
+ <ZRW2CBUDNks9RGQJ@x1n>
+ <85e5390c-660c-ef9e-b415-00ee71bc5cbf@redhat.com>
+ <ZRXHK3hbdjfQvCCp@x1n>
+ <fc27ce41-bc97-91a7-deb6-67538689021c@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [io-uring?] general protection fault in
- io_get_cqe_overflow
-Content-Language: en-US
-To:     syzbot <syzbot+efc45d4e7ba6ab4ef1eb@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000ab32d40606bcb85e@google.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <000000000000ab32d40606bcb85e@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <fc27ce41-bc97-91a7-deb6-67538689021c@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/io_uring/io_uring.h b/io_uring/io_uring.h
-index 547c30582fb8..6206ae73412a 100644
---- a/io_uring/io_uring.h
-+++ b/io_uring/io_uring.h
-@@ -86,21 +86,6 @@ bool __io_alloc_req_refill(struct io_ring_ctx *ctx);
- bool io_match_task_safe(struct io_kiocb *head, struct task_struct *task,
- 			bool cancel_all);
- 
--#define io_lockdep_assert_cq_locked(ctx)				\
--	do {								\
--		lockdep_assert(in_task());				\
--									\
--		if (ctx->flags & IORING_SETUP_IOPOLL) {			\
--			lockdep_assert_held(&ctx->uring_lock);		\
--		} else if (!ctx->task_complete) {			\
--			lockdep_assert_held(&ctx->completion_lock);	\
--		} else if (ctx->submitter_task->flags & PF_EXITING) {	\
--			lockdep_assert(current_work());			\
--		} else {						\
--			lockdep_assert(current == ctx->submitter_task);	\
--		}							\
--	} while (0)
--
- static inline void io_req_task_work_add(struct io_kiocb *req)
- {
- 	__io_req_task_work_add(req, 0);
-@@ -113,8 +98,6 @@ static inline bool io_get_cqe_overflow(struct io_ring_ctx *ctx,
- 					struct io_uring_cqe **ret,
- 					bool overflow)
- {
--	io_lockdep_assert_cq_locked(ctx);
--
- 	if (unlikely(ctx->cqe_cached >= ctx->cqe_sentinel)) {
- 		if (unlikely(!io_cqe_cache_refill(ctx, overflow)))
- 			return false;
+On Mon, Oct 02, 2023 at 10:00:03AM +0200, David Hildenbrand wrote:
+> In case we cannot simply remap the page, the fallback sequence (from the
+> cover letter) would be triggered.
+> 
+> 1) UFFDIO_COPY
+> 2) MADV_DONTNEED
+> 
+> So we would just handle the operation internally without a fallback.
+
+Note that I think there will be a slight difference on whole remap
+atomicity, on what happens if the page is modified after UFFDIO_COPY but
+before DONTNEED.
+
+UFFDIO_REMAP guarantees full atomicity when moving the page, IOW, threads
+can be updating the pages when ioctl(UFFDIO_REMAP), data won't get lost
+during movement, and it will generate a missing event after moved, with
+latest data showing up on dest.
+
+I'm not sure that means such a fallback is a problem, Suren may know
+better with the use case.
+
+Thanks,
 
 -- 
-Jens Axboe
+Peter Xu
 
