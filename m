@@ -2,110 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3407B7B5B72
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:42:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8CD7B5B7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 21:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238901AbjJBTkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 15:40:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
+        id S238936AbjJBTlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 15:41:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229623AbjJBTkD (ORCPT
+        with ESMTP id S229623AbjJBTlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 15:40:03 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE78A9;
-        Mon,  2 Oct 2023 12:40:00 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 0096A3200938;
-        Mon,  2 Oct 2023 15:39:58 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 02 Oct 2023 15:40:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1696275598; x=1696361998; bh=cR
-        5FbbI1lqxiB+qg6Zn8X90jiVThNPnVu7FeZ8sfAZw=; b=fOSacZgYq/lloDMgcZ
-        kmWlto4/kkhiERdf+7acBJj0SpSd8VTdwCLZS0dGW2xckckf0xkUTR3k2DrW982V
-        hWM8l2M3lpwcpdZXhYHg3eAFHTtbIopR6/Hf8PrKoagTRtjIVkbOKEXVKBcSDADx
-        NhxbgrhfLC6qoiAnYchZB0OuHHaWKDc5lJ122suYDuPdPZ9VL858jf2AWTcxJYU6
-        jipDeZDr8999ad5P6nZdojt01AyeArHpHCIE+lX+LF421EP+KfSv6Oz5rsaiveus
-        krBCefEdv3YaVHDBGVtiKuboyry7MIEDZVFOEC0oQjpOWshiE60TzMu2c5jLssJB
-        2Otw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1696275598; x=1696361998; bh=cR5FbbI1lqxiB
-        +qg6Zn8X90jiVThNPnVu7FeZ8sfAZw=; b=p9qPWXMjmowPXbbtC3ETYwGHqutJA
-        DprpZx1X6mXfVWnHjMUk9DmzFM9N/UiNj4CiRzjOJ1cTIBHQHnDRNJ8GTK+Ms2Y1
-        7lpZfOT7wV7HGvdL6BWyzFnXeSqfdV/P76d/o6cC9yWvbev0NwFC1Qs9egQchqtB
-        rwpUx1T+NXZa6WUjYNhieAltn2ZY18pmT5RFndZsslF1UWZd7Ftghh+FG9fDnfHQ
-        J6iOLjiIhYm8lMz9WLWYfh+XUt0rFy61eWk4IIN61eJ7R/QVHu8zg7T+wV/EKqGe
-        fpdYJSTtlZDIHYL3ibu1/oMJJTfpYicYguTQaxS0wzUMtJp55vkG39FTA==
-X-ME-Sender: <xms:jhwbZe6zekTDeV4YNKJN-xjfElS_DAy0KriuXORQj1uoQ6ADoJwrZw>
-    <xme:jhwbZX6MRPH-PVMc5rnjl0Nav6w971eaUGaZEEzv35DDWEwvXyl3s4QjxTAwTbk18
-    JmNG5jHRhjGZaLRhqU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtgddtlecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:jhwbZddd8Q-JqW8wf6JogexRpGgRoh3uVJ-73U9GWyQbtT-aZlQIYw>
-    <xmx:jhwbZbKKK91GnIUzwHUswbyUcOj5DRJOEmisHrbf0RohYHJ8Y2f-pA>
-    <xmx:jhwbZSK-gb6fn8KNCFSHQ2_k5VxW-u_uckZdAD1y5CJ3Tc8B85jneQ>
-    <xmx:jhwbZToyAqdoqu8eWqF8266BWU330edIn07g6yr-rcDgQvrDHNNqdw>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 124A7B6008D; Mon,  2 Oct 2023 15:39:58 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
+        Mon, 2 Oct 2023 15:41:10 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76A63A9;
+        Mon,  2 Oct 2023 12:41:05 -0700 (PDT)
+Date:   Mon, 02 Oct 2023 19:41:02 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1696275664;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TA8px2Gs5zicIf3ntSyEajmuGJx7VXeR5XlyhlMdO4o=;
+        b=v6zqlENEQnGO4kWR/9Nx7ejWOe62pY6AYBvpPLgKiY1qucegi+0N2uZF+Is82M49QFzE91
+        rJeAYp7L5yMD1akzeocaobLysn+sBNZMYA1mhXNjAFy9p4e0lu1sm+GZit7Pr6PnBSCddM
+        Cf6eqrImQXmMwAHZrqFCGh43+QPd2gYjnpO3NXIDB1UfFawDYkVRRI9pXVbGkOJviIhPZZ
+        ei9DNuRaw3YtATxMmcmKFmOxI6aNqr1AOMarEs+ZYUm+xrC0AUJ31bXiAuI/mjQjGSH+n0
+        O3mflOHRq2zomivmyJPzcrMj2hmFSaG1miW28mkEGuLTjzCK5OYZO0j7Yg535A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1696275664;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TA8px2Gs5zicIf3ntSyEajmuGJx7VXeR5XlyhlMdO4o=;
+        b=DnHtqKhIrFeqqu+r+mohesOs43Edd0brDinvYpKAwy12DQD+D3Wxvk3wkJ8rKVvgd7NMwl
+        j9Jyy8mH9Su5onDw==
+From:   "tip-bot2 for Saurabh Sengar" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/platform] x86/numa: Add Devicetree support
+Cc:     Saurabh Sengar <ssengar@linux.microsoft.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1692949657-16446-2-git-send-email-ssengar@linux.microsoft.com>
+References: <1692949657-16446-2-git-send-email-ssengar@linux.microsoft.com>
 MIME-Version: 1.0
-Message-Id: <77c827ac-06a3-44fc-97ff-45db82ac0206@app.fastmail.com>
-In-Reply-To: <ZRsU2gfjxAAOiHyy@lizhi-Precision-Tower-5810>
-References: <20231002183750.552759-1-Frank.Li@nxp.com>
- <20231002183750.552759-2-Frank.Li@nxp.com>
- <7f39410a-72fc-463e-b41c-64674ab4f129@app.fastmail.com>
- <ZRsU2gfjxAAOiHyy@lizhi-Precision-Tower-5810>
-Date:   Mon, 02 Oct 2023 21:39:37 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Frank Li" <Frank.li@nxp.com>
-Cc:     "Vinod Koul" <vkoul@kernel.org>, "Baoquan He" <bhe@redhat.com>,
-        dmaengine@vger.kernel.org,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        imx@lists.linux.dev, linux-kernel@vger.kernel.org,
-        "kernel test robot" <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
-        "Rafael J . Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH v5 1/3] debugfs_create_regset32() support 8/16 bit width registers
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-ID: <169627566214.3135.17645034772157973524.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023, at 21:07, Frank Li wrote:
-> On Mon, Oct 02, 2023 at 08:55:23PM +0200, Arnd Bergmann wrote:
->
->> A few other thoughts from my side, all of which could be ignored:
->> 
->> - if the ioport access is not an important feature, we can instead
->>   support 64-bit readl() as I commented in a previous email. We just
->>   can't easily have both.
->
-> We will get 64bit dma edma soon. So I can test and upstream it when I get
-> it.
+The following commit has been merged into the x86/platform branch of tip:
 
-Ok, so if we already know this is going to be needed, then I would skip
-the PIO support and just use read{bwlq}() with the optional swab() instead
-of the ioread variants. Otherwise there is a risk that someone starts
-relying on the port I/O feature and make it harder to remove.
+Commit-ID:     0c436a58292d0ca1af213ede75b2508995c8af0b
+Gitweb:        https://git.kernel.org/tip/0c436a58292d0ca1af213ede75b2508995c8af0b
+Author:        Saurabh Sengar <ssengar@linux.microsoft.com>
+AuthorDate:    Fri, 25 Aug 2023 00:47:37 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 02 Oct 2023 21:30:20 +02:00
 
-     Arnd
+x86/numa: Add Devicetree support
+
+Hyper-V has usecases where it needs to fetch NUMA information from
+Devicetree. Currently, it is not possible to extract the NUMA information
+from Devicetree for the x86 arch.
+
+Add support for Devicetree in the x86_numa_init() function, allowing the
+retrieval of NUMA node information from the Devicetree.
+
+Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Link: https://lore.kernel.org/r/1692949657-16446-2-git-send-email-ssengar@linux.microsoft.com
+---
+ arch/x86/Kconfig   | 1 +
+ arch/x86/mm/numa.c | 3 +++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 66bfaba..aab5e32 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1534,6 +1534,7 @@ config NUMA
+ 	depends on X86_64 || (X86_32 && HIGHMEM64G && X86_BIGSMP)
+ 	default y if X86_BIGSMP
+ 	select USE_PERCPU_NUMA_NODE_ID
++	select OF_NUMA if OF
+ 	help
+ 	  Enable NUMA (Non-Uniform Memory Access) support.
+ 
+diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+index 2aadb20..c79f12e 100644
+--- a/arch/x86/mm/numa.c
++++ b/arch/x86/mm/numa.c
+@@ -3,6 +3,7 @@
+ #include <linux/acpi.h>
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
++#include <linux/of.h>
+ #include <linux/string.h>
+ #include <linux/init.h>
+ #include <linux/memblock.h>
+@@ -733,6 +734,8 @@ void __init x86_numa_init(void)
+ 		if (!numa_init(amd_numa_init))
+ 			return;
+ #endif
++		if (acpi_disabled && !numa_init(of_numa_init))
++			return;
+ 	}
+ 
+ 	numa_init(dummy_numa_init);
