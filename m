@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFE87B5510
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFDD37B54EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237571AbjJBONe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:13:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
+        id S237680AbjJBONl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237540AbjJBONc (ORCPT
+        with ESMTP id S237555AbjJBONc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 2 Oct 2023 10:13:32 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B20AD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A6EE1
         for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:13:29 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 756C1C433C7;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87DC3C433C8;
         Mon,  2 Oct 2023 14:13:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1696256009;
-        bh=WPPWNMT1FiFMDjv1uri72nHhTSI3cPkpTP7tQta4Kpg=;
+        bh=7LLNcmYsHftHQa0+CuSBVHyYkjyXZIHGAdDDTLzjrsk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dOSJiZtjpjEeAC0IXYCiOsnjTt7neLOofcuKlPEx6D7CErnEB5emCMJVMIDg3/294
-         k3g0054NhpUzBWZaXWfIfXDeFcug42bR7W6b9D4CNFKhkqKOw57jcnGeaPmN0cZWyV
-         Uh+bEgAfgAVAtpgdHzXOPrdzEmU4Sq7verhvf1aP/hsa//twtJE/KoYFUxaKZwOgDY
-         GBFJIQ+Ft/aiPxvqLKoY7nT1dM05evOBsptt8ijX1HEajUQKQMaLL4ubSeuaL/1hLL
-         zvnxG5Z843vYOeyel2uDO22Nh6GBGeMXpJQKjiMtVkkw7InEmQdVQCNrVuoy4VgNfl
-         AhmiC5oi0f5PA==
+        b=emJKdRUieLmsYIGjP8HySHxbGnlGadYlxJW987xvY0AdoRp/1qjhRCD34VFRfHhQe
+         e3gyOZjTYQ/MqV05tyW86++f3FuYcL5LB2n895W1UtB1/Wk+jhZLTCQbg+BSzv12zK
+         Bgd6sL4xcovcyhhuDI8eAmhjQj3MLVBJkUobxdun3Lqy4Tb8b6wK9Zql4tDOacIbSL
+         40HyHseeu7lwmbFbbPyy6zzRdyJeu23AEcOUxWwBCOSEs3bJ1NzwKQ68bjYdO+R8+s
+         1O7oLHa2FRChIdizIPBtvVj1B8GUtb19zEj4NhQD3+muGWUl4XixXKt0PHhPctpDNW
+         q7huKoZUonxXQ==
 Received: from sofa.misterjones.org ([185.219.108.64] helo=valley-girl.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.95)
         (envelope-from <maz@kernel.org>)
-        id 1qnJfr-000Nzy-87;
+        id 1qnJfr-000Nzy-Dx;
         Mon, 02 Oct 2023 15:13:27 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
@@ -39,9 +39,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Will Deacon <will@kernel.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH 1/2] MAINTAINERS: Add myself as the ARM GIC maintainer
-Date:   Mon,  2 Oct 2023 15:13:01 +0100
-Message-Id: <20231002141302.3409485-2-maz@kernel.org>
+Subject: [PATCH 2/2] MAINTAINERS: Remove myself from the general IRQ subsystem maintenance
+Date:   Mon,  2 Oct 2023 15:13:02 +0100
+Message-Id: <20231002141302.3409485-3-maz@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231002141302.3409485-1-maz@kernel.org>
 References: <20231002141302.3409485-1-maz@kernel.org>
@@ -61,36 +61,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ARM GIC maintenance is currently covered by the blanket
-IRQCHIP DRIVERS entry, which I'm about to remove myself from.
+It is pretty obvious that I haven't done much on the IRQ side
+for a while, and it is unlikely that I'll have more bandwidth
+for it any time soon. People keep sending me patches that
+I end-up reviewing in a cursory manner, which isn't great for
+anyone.
 
-It is unlikely that anyone is mad enough to pick this up,
-so I'll keep doing that for the foreseable future.
+So in everyone's interest, I'm removing myself from the list
+of maintainers and leave the irqchip and irqdomain subsystems
+in Thomas' capable hands.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ MAINTAINERS | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 35977b269d5e..f37f4ee96b20 100644
+index f37f4ee96b20..0ffe42932d5b 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -1585,6 +1585,14 @@ F:	arch/arm/include/asm/arch_timer.h
- F:	arch/arm64/include/asm/arch_timer.h
- F:	drivers/clocksource/arm_arch_timer.c
+@@ -11071,7 +11071,7 @@ F:	Documentation/devicetree/bindings/sound/irondevice,*
+ F:	sound/soc/codecs/sma*
  
-+ARM GENERIC INTERRUPT CONTROLLER DRIVERS
-+M:	Marc Zyngier <maz@kernel.org>
-+L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	arch/arm/include/asm/arch_gicv3.h
-+F:	arch/arm64/include/asm/arch_gicv3.h
-+F:	drivers/irqchip/irq-gic*.[ch]
-+
- ARM HDLCD DRM DRIVER
- M:	Liviu Dudau <liviu.dudau@arm.com>
- S:	Supported
+ IRQ DOMAINS (IRQ NUMBER MAPPING LIBRARY)
+-M:	Marc Zyngier <maz@kernel.org>
++M:	Thomas Gleixner <tglx@linutronix.de>
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+ F:	Documentation/core-api/irq/irq-domain.rst
+@@ -11090,7 +11090,6 @@ F:	lib/group_cpus.c
+ 
+ IRQCHIP DRIVERS
+ M:	Thomas Gleixner <tglx@linutronix.de>
+-M:	Marc Zyngier <maz@kernel.org>
+ L:	linux-kernel@vger.kernel.org
+ S:	Maintained
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
 -- 
 2.34.1
 
