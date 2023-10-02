@@ -2,192 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3252A7B5479
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E22237B5487
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 16:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237509AbjJBNuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:50:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
+        id S237521AbjJBNua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 09:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237525AbjJBNuJ (ORCPT
+        with ESMTP id S237624AbjJBNuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 09:50:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F9BEE;
-        Mon,  2 Oct 2023 06:49:52 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1566C433C8;
-        Mon,  2 Oct 2023 13:49:47 +0000 (UTC)
-Message-ID: <71d5e43f-fab8-49ea-b5d1-441beb6cf351@xs4all.nl>
-Date:   Mon, 2 Oct 2023 15:49:45 +0200
+        Mon, 2 Oct 2023 09:50:22 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB09CCF1
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 06:50:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696254609; x=1727790609;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=s9l8KtiDUMAOrre33EYGPbaXdBleiPjNZzcomHstG4Y=;
+  b=KxAmyIwayaKmM+kphkVE+LgIEnSsJ76negPLG4e0FNEr/CVYFt/pWxzi
+   2QRG53OBldkDfBkSiyh6FIWFmzsx+ftDQWj/crc4PoXOxvy+zoMisaDwe
+   86OAMtSbvLwbXSQC2Poa0D2lyixnWhW+qprAU3Jpvaf3yT7HRjvFuX7ZK
+   aN9PSzLaQhDYRdRVL3xL3SW19p/lQrJmpd42FPKkeqUqgDX/DgGuLnESG
+   hJo5LKaUeMBpq356EwdBfxONnj3D5LE2zlkajvdCqNexZPysTpGkT31Eq
+   F4YOPhiHWe1AqBQdME1wLO4Bt92XWO5szPr6Z9aKh+fYNqne9CK+PnFtA
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="4220231"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="4220231"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 06:50:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="816290432"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="816290432"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 06:50:07 -0700
+Received: from [10.212.65.113] (kliang2-mobl1.ccr.corp.intel.com [10.212.65.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 9BB8D580AFF;
+        Mon,  2 Oct 2023 06:50:01 -0700 (PDT)
+Message-ID: <e173ab1b-f739-1ed0-bbb9-a546b06d2812@linux.intel.com>
+Date:   Mon, 2 Oct 2023 09:49:55 -0400
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 13/53] media: Report the maximum possible number of
- buffers for the queue
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230927153558.159278-1-benjamin.gaignard@collabora.com>
- <20230927153558.159278-14-benjamin.gaignard@collabora.com>
- <cf73025e-0bb0-44c2-9ab3-e426c09bebd8@xs4all.nl>
- <2f1d1983-6038-c216-e362-d08a05c344fc@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <2f1d1983-6038-c216-e362-d08a05c344fc@collabora.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RESEND PATCH V3 1/6] perf: Add branch stack extra
+To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
+        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+References: <20230911154822.2559213-1-kan.liang@linux.intel.com>
+Content-Language: en-US
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20230911154822.2559213-1-kan.liang@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/10/2023 15:46, Benjamin Gaignard wrote:
+Hi Peter,
+
+Could you please share your comments for this series?
+
+Thanks,
+Kan
+
+On 2023-09-11 11:48 a.m., kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
-> Le 02/10/2023 à 15:37, Hans Verkuil a écrit :
->> On 27/09/2023 17:35, Benjamin Gaignard wrote:
->>> Use one of the struct v4l2_create_buffers reserved bytes to report
->>> the maximum possible number of buffers for the queue.
->>> V4l2 framework set V4L2_BUF_CAP_SUPPORTS_SET_MAX_BUFS flags in queue
->>> capabilities so userland can know when the field is valid.
->>>
->>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->>> ---
->>>   .../userspace-api/media/v4l/vidioc-create-bufs.rst       | 8 ++++++--
->>>   Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst | 1 +
->>>   drivers/media/common/videobuf2/videobuf2-v4l2.c          | 9 +++++++--
->>>   drivers/media/v4l2-core/v4l2-ioctl.c                     | 4 ++--
->>>   include/uapi/linux/videodev2.h                           | 7 ++++++-
->>>   5 files changed, 22 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst b/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
->>> index a048a9f6b7b6..1a46549e7462 100644
->>> --- a/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
->>> +++ b/Documentation/userspace-api/media/v4l/vidioc-create-bufs.rst
->>> @@ -116,9 +116,13 @@ than the number requested.
->>>         - ``flags``
->>>         - Specifies additional buffer management attributes.
->>>       See :ref:`memory-flags`.
->>> -
->>>       * - __u32
->>> -      - ``reserved``\ [6]
->>> +      - ``max_buffers``
->>> +      - If V4L2_BUF_CAP_SUPPORTS_SET_MAX_BUFS capability flag is set
->>> +        this field indicate the maximum possible number of buffers
->>> +        for this queue.
->>> +    * - __u32
->>> +      - ``reserved``\ [5]
->>>         - A place holder for future extensions. Drivers and applications
->>>       must set the array to zero.
->>>   diff --git a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
->>> index 099fa6695167..0395187e1a5a 100644
->>> --- a/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
->>> +++ b/Documentation/userspace-api/media/v4l/vidioc-reqbufs.rst
->>> @@ -120,6 +120,7 @@ aborting or finishing any DMA in progress, an implicit
->>>   .. _V4L2-BUF-CAP-SUPPORTS-ORPHANED-BUFS:
->>>   .. _V4L2-BUF-CAP-SUPPORTS-M2M-HOLD-CAPTURE-BUF:
->>>   .. _V4L2-BUF-CAP-SUPPORTS-MMAP-CACHE-HINTS:
->>> +.. _V4L2-BUF-CAP-SUPPORTS-SET-MAX-BUFS:
->>>     .. raw:: latex
->>>   diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->>> index 278ea1107b01..655133f1ae2b 100644
->>> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
->>> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
->>> @@ -686,6 +686,7 @@ EXPORT_SYMBOL(vb2_querybuf);
->>>   static void fill_buf_caps(struct vb2_queue *q, u32 *caps)
->>>   {
->>>       *caps = V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS;
->>> +    *caps |= V4L2_BUF_CAP_SUPPORTS_SET_MAX_BUFS;
->>>       if (q->io_modes & VB2_MMAP)
->>>           *caps |= V4L2_BUF_CAP_SUPPORTS_MMAP;
->>>       if (q->io_modes & VB2_USERPTR)
->>> @@ -767,9 +768,13 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
->>>         fill_buf_caps(q, &create->capabilities);
->>>       validate_memory_flags(q, create->memory, &create->flags);
->>> -    create->index = q->num_buffers;
->>> -    if (create->count == 0)
->>> +
->>> +    create->max_buffers = q->max_num_buffers;
->>> +
->>> +    if (create->count == 0) {
->>> +        create->index = vb2_get_num_buffers(q);
->> This breaks git bisect: this function isn't introduced until patch 21/53.
->>
->> Note: with the build scripts you can just run it with:
->>
->> ./build.sh -patches 53 ...
->>
->> and it will apply each patch in sequence and attempt to compile it.
+> Currently, the additional information of a branch entry is stored in a
+> u64 space. With more and more information added, the space is running
+> out. For example, the information of occurrences of events will be added
+> for each branch.
 > 
-> It should  be create->index = q->num_buffers;
-> The error is also in v9...
-
-Sorry, I meant to reply to the v9 patch, so yes, it is also in v9 :-)
-
-	Hans
-
+> Add a new branch sample type, PERF_SAMPLE_BRANCH_EXTRA, to indicate
+> whether to support an extra space.
 > 
->>
->> Regards,
->>
->>     Hans
->>
->>>           return ret != -EBUSY ? ret : 0;
->>> +    }
->>>         switch (f->type) {
->>>       case V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE:
->>> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
->>> index f4d9d6279094..700db197e371 100644
->>> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
->>> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
->>> @@ -483,9 +483,9 @@ static void v4l_print_create_buffers(const void *arg, bool write_only)
->>>   {
->>>       const struct v4l2_create_buffers *p = arg;
->>>   -    pr_cont("index=%d, count=%d, memory=%s, capabilities=0x%08x, ",
->>> +    pr_cont("index=%d, count=%d, memory=%s, capabilities=0x%08x, max buffers=%u",
->>>           p->index, p->count, prt_names(p->memory, v4l2_memory_names),
->>> -        p->capabilities);
->>> +        p->capabilities, p->max_buffers);
->>>       v4l_print_format(&p->format, write_only);
->>>   }
->>>   diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
->>> index 78260e5d9985..b0dbb1be728c 100644
->>> --- a/include/uapi/linux/videodev2.h
->>> +++ b/include/uapi/linux/videodev2.h
->>> @@ -1034,6 +1034,7 @@ struct v4l2_requestbuffers {
->>>   #define V4L2_BUF_CAP_SUPPORTS_ORPHANED_BUFS        (1 << 4)
->>>   #define V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF    (1 << 5)
->>>   #define V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS        (1 << 6)
->>> +#define V4L2_BUF_CAP_SUPPORTS_SET_MAX_BUFS        (1 << 7)
->>>     /**
->>>    * struct v4l2_plane - plane info for multi-planar buffers
->>> @@ -2604,6 +2605,9 @@ struct v4l2_dbg_chip_info {
->>>    * @flags:    additional buffer management attributes (ignored unless the
->>>    *        queue has V4L2_BUF_CAP_SUPPORTS_MMAP_CACHE_HINTS capability
->>>    *        and configured for MMAP streaming I/O).
->>> + * @max_buffers: if V4L2_BUF_CAP_SUPPORTS_SET_MAX_BUFS capability flag is set
->>> + *         this field indicate the maximum possible number of buffers
->>> + *         for this queue.
->>>    * @reserved:    future extensions
->>>    */
->>>   struct v4l2_create_buffers {
->>> @@ -2613,7 +2617,8 @@ struct v4l2_create_buffers {
->>>       struct v4l2_format    format;
->>>       __u32            capabilities;
->>>       __u32            flags;
->>> -    __u32            reserved[6];
->>> +    __u32            max_buffers;
->>> +    __u32            reserved[5];
->>>   };
->>>     /*
->>
-
+> Two places were suggested to append the extra space.
+> https://lore.kernel.org/lkml/20230802215814.GH231007@hirez.programming.kicks-ass.net/
+> One place is right after the flags of each branch entry. It changes the
+> existing struct perf_branch_entry. In the later Intel-specific
+> implementation, two separate spaces have to be created in the
+> struct cpu_hw_events to store different branch entry structures. That
+> duplicates space.
+> The other place is right after the entire struct perf_branch_stack.
+> Only adding the new extra space in the struct cpu_hw_event is necessary.
+> The disadvantage is that the pointer of the extra space has to be
+> recorded. The common interface perf_sample_save_brstack() has to be
+> updated as well.
+> 
+> The latter requires less space and is much straight forward. It is
+> implemented in the patch.
+> 
+> Also, add a new branch sample type, PERF_SAMPLE_BRANCH_EVT_CNTRS, to
+> indicate whether include occurrences of events in branch info. The
+> information will be stored in the extra space.
+> 
+> Add two helper functions for the new branch sample types.
+> 
+> Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> Cc: Sandipan Das <sandipan.das@amd.com>
+> Cc: Ravi Bangoria <ravi.bangoria@amd.com>
+> Cc: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+> ---
+> 
+> Changes since V2:
+> - Drop the new bit in struct perf_branch_entry
+> - Introduce a new sample type PERF_SAMPLE_BRANCH_EXTRA
+> 
+>  arch/powerpc/perf/core-book3s.c |  2 +-
+>  arch/x86/events/amd/core.c      |  2 +-
+>  arch/x86/events/core.c          |  2 +-
+>  arch/x86/events/intel/core.c    |  2 +-
+>  arch/x86/events/intel/ds.c      |  4 ++--
+>  include/linux/perf_event.h      | 22 +++++++++++++++++++++-
+>  include/uapi/linux/perf_event.h |  9 +++++++++
+>  kernel/events/core.c            |  8 ++++++++
+>  8 files changed, 44 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
+> index 8c1f7def596e..3c14596bbfaf 100644
+> --- a/arch/powerpc/perf/core-book3s.c
+> +++ b/arch/powerpc/perf/core-book3s.c
+> @@ -2313,7 +2313,7 @@ static void record_and_restart(struct perf_event *event, unsigned long val,
+>  			struct cpu_hw_events *cpuhw;
+>  			cpuhw = this_cpu_ptr(&cpu_hw_events);
+>  			power_pmu_bhrb_read(event, cpuhw);
+> -			perf_sample_save_brstack(&data, event, &cpuhw->bhrb_stack);
+> +			perf_sample_save_brstack(&data, event, &cpuhw->bhrb_stack, NULL);
+>  		}
+>  
+>  		if (event->attr.sample_type & PERF_SAMPLE_DATA_SRC &&
+> diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
+> index abadd5f23425..01c0619d12d5 100644
+> --- a/arch/x86/events/amd/core.c
+> +++ b/arch/x86/events/amd/core.c
+> @@ -930,7 +930,7 @@ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
+>  			continue;
+>  
+>  		if (has_branch_stack(event))
+> -			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack);
+> +			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack, NULL);
+>  
+>  		if (perf_event_overflow(event, &data, regs))
+>  			x86_pmu_stop(event, 0);
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 185f902e5f28..2919bb5a53a0 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -1702,7 +1702,7 @@ int x86_pmu_handle_irq(struct pt_regs *regs)
+>  		perf_sample_data_init(&data, 0, event->hw.last_period);
+>  
+>  		if (has_branch_stack(event))
+> -			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack);
+> +			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack, NULL);
+>  
+>  		if (perf_event_overflow(event, &data, regs))
+>  			x86_pmu_stop(event, 0);
+> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+> index 64a3533997e1..0f4ce79de4f8 100644
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -3058,7 +3058,7 @@ static int handle_pmi_common(struct pt_regs *regs, u64 status)
+>  		perf_sample_data_init(&data, 0, event->hw.last_period);
+>  
+>  		if (has_branch_stack(event))
+> -			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack);
+> +			perf_sample_save_brstack(&data, event, &cpuc->lbr_stack, NULL);
+>  
+>  		if (perf_event_overflow(event, &data, regs))
+>  			x86_pmu_stop(event, 0);
+> diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+> index eb8dd8b8a1e8..7566190389f0 100644
+> --- a/arch/x86/events/intel/ds.c
+> +++ b/arch/x86/events/intel/ds.c
+> @@ -1755,7 +1755,7 @@ static void setup_pebs_fixed_sample_data(struct perf_event *event,
+>  		setup_pebs_time(event, data, pebs->tsc);
+>  
+>  	if (has_branch_stack(event))
+> -		perf_sample_save_brstack(data, event, &cpuc->lbr_stack);
+> +		perf_sample_save_brstack(data, event, &cpuc->lbr_stack, NULL);
+>  }
+>  
+>  static void adaptive_pebs_save_regs(struct pt_regs *regs,
+> @@ -1912,7 +1912,7 @@ static void setup_pebs_adaptive_sample_data(struct perf_event *event,
+>  
+>  		if (has_branch_stack(event)) {
+>  			intel_pmu_store_pebs_lbrs(lbr);
+> -			perf_sample_save_brstack(data, event, &cpuc->lbr_stack);
+> +			perf_sample_save_brstack(data, event, &cpuc->lbr_stack, NULL);
+>  		}
+>  	}
+>  
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index e83f13ce4a9f..c4877924d43c 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -1137,6 +1137,15 @@ static inline bool branch_sample_priv(const struct perf_event *event)
+>  	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_PRIV_SAVE;
+>  }
+>  
+> +static inline bool branch_sample_extra(const struct perf_event *event)
+> +{
+> +	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_EXTRA;
+> +}
+> +
+> +static inline bool branch_sample_evt_cntrs(const struct perf_event *event)
+> +{
+> +	return event->attr.branch_sample_type & PERF_SAMPLE_BRANCH_EVT_CNTRS;
+> +}
+>  
+>  struct perf_sample_data {
+>  	/*
+> @@ -1171,6 +1180,7 @@ struct perf_sample_data {
+>  	struct perf_callchain_entry	*callchain;
+>  	struct perf_raw_record		*raw;
+>  	struct perf_branch_stack	*br_stack;
+> +	u64				*br_stack_ext;
+>  	union perf_sample_weight	weight;
+>  	union  perf_mem_data_src	data_src;
+>  	u64				txn;
+> @@ -1248,7 +1258,8 @@ static inline void perf_sample_save_raw_data(struct perf_sample_data *data,
+>  
+>  static inline void perf_sample_save_brstack(struct perf_sample_data *data,
+>  					    struct perf_event *event,
+> -					    struct perf_branch_stack *brs)
+> +					    struct perf_branch_stack *brs,
+> +					    u64 *brs_ext)
+>  {
+>  	int size = sizeof(u64); /* nr */
+>  
+> @@ -1256,7 +1267,16 @@ static inline void perf_sample_save_brstack(struct perf_sample_data *data,
+>  		size += sizeof(u64);
+>  	size += brs->nr * sizeof(struct perf_branch_entry);
+>  
+> +	/*
+> +	 * The extension space is appended after the struct perf_branch_stack.
+> +	 * It is used to store the extra data of each branch, e.g.,
+> +	 * the occurrences of events since the last branch entry for Intel LBR.
+> +	 */
+> +	if (branch_sample_extra(event))
+> +		size += brs->nr * sizeof(u64);
+> +
+>  	data->br_stack = brs;
+> +	data->br_stack_ext = brs_ext;
+>  	data->dyn_size += size;
+>  	data->sample_flags |= PERF_SAMPLE_BRANCH_STACK;
+>  }
+> diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+> index 39c6a250dd1b..252066579dae 100644
+> --- a/include/uapi/linux/perf_event.h
+> +++ b/include/uapi/linux/perf_event.h
+> @@ -204,6 +204,10 @@ enum perf_branch_sample_type_shift {
+>  
+>  	PERF_SAMPLE_BRANCH_PRIV_SAVE_SHIFT	= 18, /* save privilege mode */
+>  
+> +	PERF_SAMPLE_BRANCH_EXTRA_SHIFT		= 19, /* support extra space */
+> +
+> +	PERF_SAMPLE_BRANCH_EVT_CNTRS_SHIFT	= 20, /* save occurrences of events on a branch */
+> +
+>  	PERF_SAMPLE_BRANCH_MAX_SHIFT		/* non-ABI */
+>  };
+>  
+> @@ -235,6 +239,10 @@ enum perf_branch_sample_type {
+>  
+>  	PERF_SAMPLE_BRANCH_PRIV_SAVE	= 1U << PERF_SAMPLE_BRANCH_PRIV_SAVE_SHIFT,
+>  
+> +	PERF_SAMPLE_BRANCH_EXTRA	= 1U << PERF_SAMPLE_BRANCH_EXTRA_SHIFT,
+> +
+> +	PERF_SAMPLE_BRANCH_EVT_CNTRS	= 1U << PERF_SAMPLE_BRANCH_EVT_CNTRS_SHIFT,
+> +
+>  	PERF_SAMPLE_BRANCH_MAX		= 1U << PERF_SAMPLE_BRANCH_MAX_SHIFT,
+>  };
+>  
+> @@ -982,6 +990,7 @@ enum perf_event_type {
+>  	 *	{ u64                   nr;
+>  	 *	  { u64	hw_idx; } && PERF_SAMPLE_BRANCH_HW_INDEX
+>  	 *        { u64 from, to, flags } lbr[nr];
+> +	 *        { u64 extra; } ext[nr] && PERF_SAMPLE_BRANCH_EXTRA
+>  	 *      } && PERF_SAMPLE_BRANCH_STACK
+>  	 *
+>  	 * 	{ u64			abi; # enum perf_sample_regs_abi
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index f84e2640ea2f..482e7efe365c 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -7324,6 +7324,14 @@ void perf_output_sample(struct perf_output_handle *handle,
+>  			if (branch_sample_hw_index(event))
+>  				perf_output_put(handle, data->br_stack->hw_idx);
+>  			perf_output_copy(handle, data->br_stack->entries, size);
+> +			/*
+> +			 * Add the extension space which is appended
+> +			 * right after the struct perf_branch_stack.
+> +			 */
+> +			if (branch_sample_extra(event) && data->br_stack_ext) {
+> +				size = data->br_stack->nr * sizeof(u64);
+> +				perf_output_copy(handle, data->br_stack_ext, size);
+> +			}
+>  		} else {
+>  			/*
+>  			 * we always store at least the value of nr
