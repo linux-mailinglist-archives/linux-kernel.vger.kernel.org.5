@@ -2,112 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E2D7B55D4
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F6D7B5597
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 17:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237833AbjJBOnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 10:43:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41140 "EHLO
+        id S237831AbjJBOoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 10:44:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237823AbjJBOnr (ORCPT
+        with ESMTP id S237823AbjJBOn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 10:43:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BADB0
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 07:42:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696257775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JyF1pnZ6qkmXa4qXcGzIhipUJOWvJDJpCe2ELEDUqZE=;
-        b=Tx/PcI0aIJ6Dj5VWmraIIglYrfDpvJ7WUKFO16hFtZ2Za6O5jmxKHp83Z/tU6x1pOJ10iw
-        4QUzpW9Q8zjR7oet9hjTKzR4XfcswZ02QenYP/NBzAxRylQLktHaWkrm8rCfwCfPDqzeYp
-        vLqgqA1zydudr1vHgFJ5ev7Y+gobuRo=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-86-VyBoLyQYNY67slij8-PGRQ-1; Mon, 02 Oct 2023 10:42:54 -0400
-X-MC-Unique: VyBoLyQYNY67slij8-PGRQ-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-325a78c806eso2026906f8f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 07:42:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696257773; x=1696862573;
-        h=content-transfer-encoding:in-reply-to:organization:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JyF1pnZ6qkmXa4qXcGzIhipUJOWvJDJpCe2ELEDUqZE=;
-        b=lkAv+/S17Z/19el+ZjTNcQoSlyb/1E7HEf6frEo81DZ7KXsPK3XxkNnEDhs4qdhXCP
-         fxiqURHp75CceZbIeDq/z5SbqbCpZpveM1Pko04LZQvM6W4BUAsb5l2GNA6yIcue1rif
-         ugDCSbWAYip+Haqn4w0g1v6stk6X66oEPpEyqt4Lxp+zoUXjDvhhOVqVS3oscVBO2rP+
-         +gSIZWrolf9lkaRyCWLX9XyCgBEM7wINg2YGA41IoDZEWBgIzUCLe7Zn+HamUB3YyzKj
-         Emtxsb/K7mRxPMptU2nhTsHUVVwDYYPwdf+7c9uDT3osK5/u/AznIbBJ0M+W/u8CcC4d
-         88IA==
-X-Gm-Message-State: AOJu0YyKbGFf/diuNi0ZXSWVLN8kCv0/KMOJVrXmo2Lw9Qo7HBGICGaM
-        RYv1PV4UJGApbuRoGxsMjlg5S6MZrnT3nP+K+WT2DB7dK/GxCqz72bOatopWsJVo6GL1Qq5+KZp
-        Y/Ho8GqnXLvGeYWdSXLm+wew2
-X-Received: by 2002:a05:6000:1d0:b0:322:707e:a9fd with SMTP id t16-20020a05600001d000b00322707ea9fdmr8891402wrx.34.1696257772808;
-        Mon, 02 Oct 2023 07:42:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGymUSv8zl2ClRiKwhAr/NLjZAkFh/vu2pxeK/KZTOMETVSkxSO89mrdgd615CqhPnR+vID4A==
-X-Received: by 2002:a05:6000:1d0:b0:322:707e:a9fd with SMTP id t16-20020a05600001d000b00322707ea9fdmr8891355wrx.34.1696257772272;
-        Mon, 02 Oct 2023 07:42:52 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c735:f200:cb49:cb8f:88fc:9446? (p200300cbc735f200cb49cb8f88fc9446.dip0.t-ipconnect.de. [2003:cb:c735:f200:cb49:cb8f:88fc:9446])
-        by smtp.gmail.com with ESMTPSA id j6-20020a5d6046000000b003259b068ba6sm7972412wrt.7.2023.10.02.07.42.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 07:42:51 -0700 (PDT)
-Message-ID: <27f177c9-1035-3277-cd62-dc81c12acec4@redhat.com>
-Date:   Mon, 2 Oct 2023 16:42:50 +0200
+        Mon, 2 Oct 2023 10:43:59 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E46EB7;
+        Mon,  2 Oct 2023 07:43:55 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RzkGn2yJ5z67Zjl;
+        Mon,  2 Oct 2023 22:43:45 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 2 Oct
+ 2023 15:43:52 +0100
+Date:   Mon, 2 Oct 2023 15:43:51 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Robert Richter <rrichter@amd.com>
+CC:     Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Ben Widawsky <bwidawsk@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Davidlohr Bueso" <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>, <linux-cxl@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Terry Bowman <terry.bowman@amd.com>
+Subject: Re: [PATCH v11 07/20] cxl/hdm: Use stored Component Register
+ mappings to map HDM decoder capability
+Message-ID: <20231002154351.0000136a@Huawei.com>
+In-Reply-To: <20230927154339.1600738-8-rrichter@amd.com>
+References: <20230927154339.1600738-1-rrichter@amd.com>
+        <20230927154339.1600738-8-rrichter@amd.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 1/3] userfaultfd: UFFDIO_REMAP: rmap preparation
-To:     Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, lokeshgidra@google.com, peterx@redhat.com,
-        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
-        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
-        jannh@google.com, zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-References: <20230923013148.1390521-1-surenb@google.com>
- <20230923013148.1390521-2-surenb@google.com>
-Content-Language: en-US
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230923013148.1390521-2-surenb@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.09.23 03:31, Suren Baghdasaryan wrote:
-> From: Andrea Arcangeli <aarcange@redhat.com>
+On Wed, 27 Sep 2023 17:43:26 +0200
+Robert Richter <rrichter@amd.com> wrote:
+
+> Now, that the Component Register mappings are stored, use them to
+> enable and map the HDM decoder capabilities. The Component Registers
+> do not need to be probed again for this, remove probing code.
 > 
-> As far as the rmap code is concerned, UFFDIO_REMAP only alters the
-> page->mapping and page->index. It does it while holding the page
-> lock. However folio_referenced() is doing rmap walks without taking the
-> folio lock first, so folio_lock_anon_vma_read() must be updated to
-> re-check that the folio->mapping didn't change after we obtained the
-> anon_vma read lock.
+> The HDM capability applies to Endpoints, USPs and VH Host Bridges. The
+> Endpoint's component register mappings are located in the cxlds and
+> else in the port's structure. Duplicate the cxlds->reg_map in
+> port->reg_map for endpoint ports.
+> 
+> Signed-off-by: Terry Bowman <terry.bowman@amd.com>
+> Signed-off-by: Robert Richter <rrichter@amd.com>
+> Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> [rework to drop cxl_port_get_comp_map()]
+> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+A few comments inline.
 
-I'm curious: why don't we need this for existing users of 
-page_move_anon_rmap()? What's special about UFFDIO_REMAP?
+Also, Dan's SoB doesn't make sense if you are the Author and he's not
+the one sending the email.  The fun of patches bounced back and forwards
+is sometimes you have to tweak this stuff on each posting... :(
+
+> ---
+>  drivers/cxl/core/hdm.c  | 48 ++++++++++++++++-------------------------
+>  drivers/cxl/core/port.c | 29 +++++++++++++++++++------
+>  drivers/cxl/mem.c       |  5 ++---
+>  3 files changed, 43 insertions(+), 39 deletions(-)
+> 
+> diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
+> index 11d9971f3e8c..14a0d0017df3 100644
+> --- a/drivers/cxl/core/hdm.c
+> +++ b/drivers/cxl/core/hdm.c
+> @@ -81,26 +81,6 @@ static void parse_hdm_decoder_caps(struct cxl_hdm *cxlhdm)
+>  		cxlhdm->interleave_mask |= GENMASK(14, 12);
+>  }
+>  
+> -static int map_hdm_decoder_regs(struct cxl_port *port, void __iomem *crb,
+> -				struct cxl_component_regs *regs)
+> -{
+> -	struct cxl_register_map map = {
+> -		.host = &port->dev,
+> -		.resource = port->component_reg_phys,
+> -		.base = crb,
+> -		.max_size = CXL_COMPONENT_REG_BLOCK_SIZE,
+> -	};
+> -
+> -	cxl_probe_component_regs(&port->dev, crb, &map.component_map);
+> -	if (!map.component_map.hdm_decoder.valid) {
+> -		dev_dbg(&port->dev, "HDM decoder registers not implemented\n");
+> -		/* unique error code to indicate no HDM decoder capability */
+> -		return -ENODEV;
+> -	}
+> -
+> -	return cxl_map_component_regs(&map, regs, BIT(CXL_CM_CAP_CAP_ID_HDM));
+> -}
+> -
+>  static bool should_emulate_decoders(struct cxl_endpoint_dvsec_info *info)
+>  {
+>  	struct cxl_hdm *cxlhdm;
+> @@ -155,7 +135,7 @@ struct cxl_hdm *devm_cxl_setup_hdm(struct cxl_port *port,
+>  {
+>  	struct device *dev = &port->dev;
+>  	struct cxl_hdm *cxlhdm;
+> -	void __iomem *crb;
+> +	struct cxl_register_map *reg_map;
+>  	int rc;
+>  
+>  	cxlhdm = devm_kzalloc(dev, sizeof(*cxlhdm), GFP_KERNEL);
+> @@ -164,19 +144,29 @@ struct cxl_hdm *devm_cxl_setup_hdm(struct cxl_port *port,
+>  	cxlhdm->port = port;
+>  	dev_set_drvdata(dev, cxlhdm);
+>  
+> -	crb = ioremap(port->component_reg_phys, CXL_COMPONENT_REG_BLOCK_SIZE);
+> -	if (!crb && info && info->mem_enabled) {
+> -		cxlhdm->decoder_count = info->ranges;
+> -		return cxlhdm;
+> -	} else if (!crb) {
+> +	reg_map = &port->reg_map;
+
+Could you set this where it's defined above?
+
+> +	if (reg_map->resource == CXL_RESOURCE_NONE) {
+
+A reminder comment on why/when this happens might be a good addition.
+
+> +		if (info && info->mem_enabled) {
+> +			cxlhdm->decoder_count = info->ranges;
+> +			return cxlhdm;
+> +		}
+
+Trivial (and true before this patch) but I'd rather see the error path out of line
 
 
--- 
-Cheers,
+		if (!info || !info->mem_enabled) {
+			WARN_ON(1);
+			dev_err(dev, "No ...
+			...
+		}
 
-David / dhildenb
+		cxlhdm->decoder_count = info->ranges;
+		return cxlhdm;
+	}
+
+
+> +		WARN_ON(1);
+>  		dev_err(dev, "No component registers mapped\n");
+>  		return ERR_PTR(-ENXIO);
+>  	}
+>  
+> -	rc = map_hdm_decoder_regs(port, crb, &cxlhdm->regs);
+> -	iounmap(crb);
+> -	if (rc)
+> +	if (!reg_map->component_map.hdm_decoder.valid) {
+> +		dev_dbg(&port->dev, "HDM decoder registers not implemented\n");
+> +		/* unique error code to indicate no HDM decoder capability */
+> +		return ERR_PTR(-ENODEV);
+> +	}
+> +
+> +	rc = cxl_map_component_regs(reg_map, &cxlhdm->regs,
+> +				    BIT(CXL_CM_CAP_CAP_ID_HDM));
+> +	if (rc) {
+> +		dev_dbg(dev, "Failed to map HDM capability.\n");
+dev_err() seems appropriate here.
+
+>  		return ERR_PTR(rc);
+> +	}
+>  
+>  	parse_hdm_decoder_caps(cxlhdm);
+>  	if (cxlhdm->decoder_count == 0) {
 
