@@ -2,257 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C61037B5391
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2627B5397
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237240AbjJBM6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 08:58:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57454 "EHLO
+        id S237172AbjJBM66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 08:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbjJBM56 (ORCPT
+        with ESMTP id S237214AbjJBM64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 08:57:58 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5726FA9;
-        Mon,  2 Oct 2023 05:57:55 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 392Ck5WE005867;
-        Mon, 2 Oct 2023 12:57:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=CsW8NwOaV8wWxbPyc76XBBzA/vmUSka8OHKF2tY0eMo=;
- b=ZtVLCuYYD5uwhD5X5cHPuJlgxQ81PrvHIu1JkwV1Eqp5pzqwmWO4x098xmMgCr8YS3oP
- I/qGzoMsDZ25wp7jo6AQ8ycPscRG15XdBEDgiCsFlPXCbr0NF9lwHUWXqYH2ioELNcbq
- PnFaOwUQIlTHo8WB4jd7RIau3nm4Vj+apzoJtvIvSTB41nXvAqtKJ2ALwd3j8qUy1GbD
- WqxrazAw0ENcbN0nKIGSezHdB4thWtwlzfcv5chSQicJYm9mf+q62QbG54EiPYfEJEQy
- bXZRWvmun3mGy7aiFfNahYqb+igPfflcBWKFrrF/WgcEzjYDVa3myUWheEuDk9FKIXMd MQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tfwvcrrcy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Oct 2023 12:57:42 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 392CRECd003964;
-        Mon, 2 Oct 2023 12:57:42 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3tfwvcrrcr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Oct 2023 12:57:42 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 392CQE3s005868;
-        Mon, 2 Oct 2023 12:57:41 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3tex0s9u6y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 02 Oct 2023 12:57:41 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-        by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 392Cve9L5964460
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 2 Oct 2023 12:57:40 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 73BA158061;
-        Mon,  2 Oct 2023 12:57:40 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C511558058;
-        Mon,  2 Oct 2023 12:57:39 +0000 (GMT)
-Received: from sbct-3.bos2.lab (unknown [9.47.158.153])
-        by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  2 Oct 2023 12:57:39 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.vnet.ibm.com>
-To:     amir73il@gmail.com, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, Tyler Hicks <code@tyhicks.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Christian Brauner <brauner@kernel.org>
-Subject: [PATCH] fs: Pass AT_GETATTR_NOSEC flag to getattr interface function
-Date:   Mon,  2 Oct 2023 08:57:33 -0400
-Message-ID: <20231002125733.1251467-1-stefanb@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.41.0
+        Mon, 2 Oct 2023 08:58:56 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD007AD
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 05:58:51 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-40572aeb6d0so131105015e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 05:58:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696251530; x=1696856330; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YAAsB+v6PNBlL4wIgKPSfMRB3+wsDhZmLZER5vEnd88=;
+        b=gpd3v/HIcL2y9d8HiWHP7edy/MPvPPS66V0EQsOdrELhw0kqyYdAvuSl/GNhTvvQQj
+         g0JFD+v/3A+L50AZogK8zxgj03ahuNBYW2eEcoAj4n0ZFxRDY2OWlENeGHTiFQYdIZBp
+         T1knty6xVuUEYlUorTwCWRcVIeYHOGgid7efGTEUYDwOuXyy4DDP9Uw7qlhl5FaOC3LS
+         C3moEwYGjO5t/xTRAVxlpUICgHsGxSurc89qIPnfjueTRf5w7k7F1/9wqKdVCqfJre1Z
+         tWOBNQGvBFSirprYzH1UUVb0YVj4j3OdkqMiXAYz3uszKXlk/TWSBHHjeEfVZWtVUNx+
+         lnJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696251530; x=1696856330;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YAAsB+v6PNBlL4wIgKPSfMRB3+wsDhZmLZER5vEnd88=;
+        b=n8RNhSJ8TM6jys9YBY2x4yFYblL1w7MSeIZ1kft08SE6B0EHI3Y45UkaxcUcW5H+Pf
+         z6V+FLnekpHOrQHWp3Vd/7NQ8rjWfCbRGm3szetM6NDa9nKjPi8oRTPI3iYPXsxIFJfB
+         EaE6NFrQKt8po7Yqqa27sDNtbnvUOtCQrR25GqerPAzqyOtiFKQjBRd9U3cwUtXJF0gk
+         YhuD0OIVQR33JoKKx6LWvb/TJ+HgG4rNktF3WbF0Yofsmvf/rkyATiXp1x/Ru6GzX2fr
+         lXUjPhd+XrcvYbRd5euRQlf/HdnLpK6N6cpZneKXFhdn2NCiqnxBX8BH8PPwznq5IzQ7
+         RYRg==
+X-Gm-Message-State: AOJu0YwUTrt6FRoZN8LiSlvUwy6KoCsx1MZVDmFxhQnnQxrWFiuhZ7QG
+        gJHTJBZj7BgqMIHGcf18GzmLWg==
+X-Google-Smtp-Source: AGHT+IHSfOL8RFR//ckMOxB5y/HaSFn98XZ+xD9T5oC2hez8ssN2gTnQO8qiE59Y70eEAj2Gsx3u/Q==
+X-Received: by 2002:a05:600c:4f45:b0:404:7462:1f6f with SMTP id m5-20020a05600c4f4500b0040474621f6fmr9795803wmq.8.1696251530162;
+        Mon, 02 Oct 2023 05:58:50 -0700 (PDT)
+Received: from [172.30.204.164] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id k9-20020a7bc409000000b00402f713c56esm7247590wmi.2.2023.10.02.05.58.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 05:58:49 -0700 (PDT)
+Message-ID: <e9d49264-feee-18bd-e78a-ab743546a10c@linaro.org>
+Date:   Mon, 2 Oct 2023 14:58:46 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: u6GgColEd6jPXabk_efQ-n0r_w7uUimK
-X-Proofpoint-ORIG-GUID: sZs_zsMAdw5SE_Fq7Pc1i3Crp0uFK2yl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-02_06,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 phishscore=0 bulkscore=0 malwarescore=0
- suspectscore=0 priorityscore=1501 mlxscore=0 impostorscore=0
- mlxlogscore=987 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310020094
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2] arm64: dts: qcom: qcm6490-fairphone-fp5: Enable UFS
+Content-Language: en-US
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Nitin Rawat <quic_nitirawa@quicinc.com>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231002-fp5-ufs-v2-1-e2d7de522134@fairphone.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <20231002-fp5-ufs-v2-1-e2d7de522134@fairphone.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Berger <stefanb@linux.ibm.com>
 
-When vfs_getattr_nosec() calls a filesystem's getattr interface function
-then the 'nosec' should propagate into this function so that
-vfs_getattr_nosec() can again be called from the filesystem's gettattr
-rather than vfs_getattr(). The latter would add unnecessary security
-checks that the initial vfs_getattr_nosec() call wanted to avoid.
-Therefore, introduce the getattr flag GETATTR_NOSEC and allow to pass
-with the new getattr_flags parameter to the getattr interface function.
-In overlayfs and ecryptfs use this flag to determine which one of the
-two functions to call.
 
-In a recent code change introduced to IMA vfs_getattr_nosec() ended up
-calling vfs_getattr() in overlayfs, which in turn called
-security_inode_getattr() on an exiting process that did not have
-current->fs set anymore, which then caused a kernel NULL pointer
-dereference. With this change the call to security_inode_getattr() can
-be avoided, thus avoiding the NULL pointer dereference.
+On 10/2/23 14:30, Luca Weiss wrote:
+> Enable the UFS phy and controller so that we can access the internal
+> storage of the phone.
+> 
+> At the same time we need to bump the minimum voltage used for UFS VCC,
+> otherwise it doesn't initialize properly. The 2.952V is taken from the
+> vcc-voltage-level property downstream.
+> 
+> See also the following link for more information about the VCCQ/VCCQ2:
+> https://gerrit-public.fairphone.software/plugins/gitiles/kernel/msm-extra/devicetree/+/1590a3739e7dc29d2597307881553236d492f188/fp5/yupik-idp-pm7250b.dtsi#207
+> 
+> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> ---
+> Depends on: https://lore.kernel.org/linux-arm-msm/20230927081858.15961-1-quic_nitirawa@quicinc.com/
+> ---
+> Changes in v2:
+> - Constrain UFS voltage to only 2.952V
+> - Link to v1: https://lore.kernel.org/r/20230929-fp5-ufs-v1-1-122941e28b06@fairphone.com
+> ---
+Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-Reported-by: syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com
-Fixes: db1d1e8b9867 ("IMA: use vfs_getattr_nosec to get the i_version")
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org
-Cc: Miklos Szeredi <miklos@szeredi.hu>
-Cc: Amir Goldstein <amir73il@gmail.com>
-Cc: Tyler Hicks <code@tyhicks.com>
-Cc: Mimi Zohar <zohar@linux.ibm.com>
-Suggested-by: Christian Brauner <brauner@kernel.org>
-Co-developed-by: Amir Goldstein <amir73il@gmail.com>
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
----
- fs/ecryptfs/inode.c        | 12 ++++++++++--
- fs/overlayfs/inode.c       | 10 +++++-----
- fs/overlayfs/overlayfs.h   |  8 ++++++++
- fs/stat.c                  |  6 +++++-
- include/uapi/linux/fcntl.h |  3 +++
- 5 files changed, 31 insertions(+), 8 deletions(-)
-
-diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
-index 992d9c7e64ae..5ab4b87888a7 100644
---- a/fs/ecryptfs/inode.c
-+++ b/fs/ecryptfs/inode.c
-@@ -998,6 +998,14 @@ static int ecryptfs_getattr_link(struct mnt_idmap *idmap,
- 	return rc;
- }
- 
-+static int ecryptfs_do_getattr(const struct path *path, struct kstat *stat,
-+			       u32 request_mask, unsigned int flags)
-+{
-+	if (flags & AT_GETATTR_NOSEC)
-+		return vfs_getattr_nosec(path, stat, request_mask, flags);
-+	return vfs_getattr(path, stat, request_mask, flags);
-+}
-+
- static int ecryptfs_getattr(struct mnt_idmap *idmap,
- 			    const struct path *path, struct kstat *stat,
- 			    u32 request_mask, unsigned int flags)
-@@ -1006,8 +1014,8 @@ static int ecryptfs_getattr(struct mnt_idmap *idmap,
- 	struct kstat lower_stat;
- 	int rc;
- 
--	rc = vfs_getattr(ecryptfs_dentry_to_lower_path(dentry), &lower_stat,
--			 request_mask, flags);
-+	rc = ecryptfs_do_getattr(ecryptfs_dentry_to_lower_path(dentry),
-+				 &lower_stat, request_mask, flags);
- 	if (!rc) {
- 		fsstack_copy_attr_all(d_inode(dentry),
- 				      ecryptfs_inode_to_lower(d_inode(dentry)));
-diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
-index 83ef66644c21..fca29dba7b14 100644
---- a/fs/overlayfs/inode.c
-+++ b/fs/overlayfs/inode.c
-@@ -171,7 +171,7 @@ int ovl_getattr(struct mnt_idmap *idmap, const struct path *path,
- 
- 	type = ovl_path_real(dentry, &realpath);
- 	old_cred = ovl_override_creds(dentry->d_sb);
--	err = vfs_getattr(&realpath, stat, request_mask, flags);
-+	err = ovl_do_getattr(&realpath, stat, request_mask, flags);
- 	if (err)
- 		goto out;
- 
-@@ -196,8 +196,8 @@ int ovl_getattr(struct mnt_idmap *idmap, const struct path *path,
- 					(!is_dir ? STATX_NLINK : 0);
- 
- 			ovl_path_lower(dentry, &realpath);
--			err = vfs_getattr(&realpath, &lowerstat,
--					  lowermask, flags);
-+			err = ovl_do_getattr(&realpath, &lowerstat, lowermask,
-+					     flags);
- 			if (err)
- 				goto out;
- 
-@@ -249,8 +249,8 @@ int ovl_getattr(struct mnt_idmap *idmap, const struct path *path,
- 
- 			ovl_path_lowerdata(dentry, &realpath);
- 			if (realpath.dentry) {
--				err = vfs_getattr(&realpath, &lowerdatastat,
--						  lowermask, flags);
-+				err = ovl_do_getattr(&realpath, &lowerdatastat,
-+						     lowermask, flags);
- 				if (err)
- 					goto out;
- 			} else {
-diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
-index 9817b2dcb132..09ca82ed0f8c 100644
---- a/fs/overlayfs/overlayfs.h
-+++ b/fs/overlayfs/overlayfs.h
-@@ -397,6 +397,14 @@ static inline bool ovl_open_flags_need_copy_up(int flags)
- 	return ((OPEN_FMODE(flags) & FMODE_WRITE) || (flags & O_TRUNC));
- }
- 
-+static inline int ovl_do_getattr(const struct path *path, struct kstat *stat,
-+				 u32 request_mask, unsigned int flags)
-+{
-+	if (flags & AT_GETATTR_NOSEC)
-+		return vfs_getattr_nosec(path, stat, request_mask, flags);
-+	return vfs_getattr(path, stat, request_mask, flags);
-+}
-+
- /* util.c */
- int ovl_want_write(struct dentry *dentry);
- void ovl_drop_write(struct dentry *dentry);
-diff --git a/fs/stat.c b/fs/stat.c
-index d43a5cc1bfa4..5375be5f97cc 100644
---- a/fs/stat.c
-+++ b/fs/stat.c
-@@ -133,7 +133,8 @@ int vfs_getattr_nosec(const struct path *path, struct kstat *stat,
- 	idmap = mnt_idmap(path->mnt);
- 	if (inode->i_op->getattr)
- 		return inode->i_op->getattr(idmap, path, stat,
--					    request_mask, query_flags);
-+					    request_mask,
-+					    query_flags | AT_GETATTR_NOSEC);
- 
- 	generic_fillattr(idmap, request_mask, inode, stat);
- 	return 0;
-@@ -166,6 +167,9 @@ int vfs_getattr(const struct path *path, struct kstat *stat,
- {
- 	int retval;
- 
-+	if (WARN_ON_ONCE(query_flags & AT_GETATTR_NOSEC))
-+		return -EPERM;
-+
- 	retval = security_inode_getattr(path);
- 	if (retval)
- 		return retval;
-diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
-index 6c80f96049bd..282e90aeb163 100644
---- a/include/uapi/linux/fcntl.h
-+++ b/include/uapi/linux/fcntl.h
-@@ -116,5 +116,8 @@
- #define AT_HANDLE_FID		AT_REMOVEDIR	/* file handle is needed to
- 					compare object identity and may not
- 					be usable to open_by_handle_at(2) */
-+#if defined(__KERNEL__)
-+#define AT_GETATTR_NOSEC	0x80000000
-+#endif
- 
- #endif /* _UAPI_LINUX_FCNTL_H */
--- 
-2.40.1
-
+Konrad
