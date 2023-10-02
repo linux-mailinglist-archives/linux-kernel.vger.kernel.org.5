@@ -2,270 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 614877B53EA
-	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:25:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAA67B53E1
+	for <lists+linux-kernel@lfdr.de>; Mon,  2 Oct 2023 15:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237399AbjJBNWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 09:22:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50268 "EHLO
+        id S237156AbjJBNZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 09:25:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237379AbjJBNWk (ORCPT
+        with ESMTP id S235717AbjJBNZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 09:22:40 -0400
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D9F9AD;
-        Mon,  2 Oct 2023 06:22:37 -0700 (PDT)
-Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-7ab4c86eeb0so5520783241.2;
-        Mon, 02 Oct 2023 06:22:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696252956; x=1696857756; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IVsMtZasrJtEby/cWp2K2MNSFEAPM2DmMjcEMUEk2rg=;
-        b=QA+e4iatRG6shuVP6s54Kwzt+/kB3PjlQJI6m51mUFQj0Q5SDGgA6RUFqER82swpzH
-         bL5frKvlZCS9EH90amZIAs1dbI6kfsCN1+J5bbMUARr8SvHbYMqwq6gCOJDOV8jRwjvF
-         +k05KwzjEsrd34atc+g1r8bZkP2KN6yDACixlrp22Vdbj/2x//XbtYOGxPKWRxvh2H0W
-         YnvGAc7OdQBK1maHDWwvnKJxwLvT+IrHwEkTztlqMZq/iHdyGoXkfg5olFKhHtX7FM7e
-         kxRwVpAE9tQZAyoDFjK/Y+aMcpWlMC+7GWUI5NzfkJlwlUUhu0Exw9OW2bUTeFU5hzBm
-         aVgQ==
+        Mon, 2 Oct 2023 09:25:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BACB3
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 06:24:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696253056;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KviN0X/RCx/xPsHBoxNjf84tjjuoc20Hd49jrGxldSk=;
+        b=gyvTOujIbu2/H76jJ0l3Q/AXzX04wzFG/bqahMNusfYb8nWr45KYaD47VVKTnGgaW8OOBN
+        6nMyUIAilA2UlLqtDIshruJtHl+mPqLjITsf45l5V+KDSWxnwI4fWq6WjdGAHr4/EoJDPH
+        ACWiRN6x5ga4BpE+nB/pP52MD/xPZaM=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-450-X2omKhzRPfig3rQzC3OJuQ-1; Mon, 02 Oct 2023 09:24:13 -0400
+X-MC-Unique: X2omKhzRPfig3rQzC3OJuQ-1
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3af64a4c931so7511058b6e.2
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 06:24:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696252956; x=1696857756;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IVsMtZasrJtEby/cWp2K2MNSFEAPM2DmMjcEMUEk2rg=;
-        b=QbMke1rvYPoVZpaCRfN2ls1msoHxYnfVVpmoIo8TGWcThbH4lhhUokr/28fwD7bOWB
-         t8DTf5IQmwba2NPjC1iDIeuR1WFE+9r1Az2H7FgxtnkzkvLlvbZD1TxYApeoS3hawzJh
-         RsDh5ocJHYGvHYsLeOWxze/EafhOmCJyYetx3foZStZmyjUk5j3VNqqjNYfzi/WfCTRT
-         Lse9u/2/DSWY/949EbojMGnhTRe8YQsODBoDVwjGd6zWZpFFiREH8rQeWipSy5cxD+u1
-         1o9ma1PVvN71GDfgJUQReBHgT305hd9odyUKFRXsLz6xw13gSSMZ82WouMFQminLI6aw
-         udUg==
-X-Gm-Message-State: AOJu0Ywnp8ZJdO1RQYFKBYXL5N5xMwtH2VWdvbS2VVN9pMOLoi/VD+Zp
-        xqmTduRBRTi/JRM/B3VrnxOJpxzffnsH++DVixg=
-X-Google-Smtp-Source: AGHT+IFEgHiwDYxWJCCCP4Dn2vbruH+ZDPDbE2jLy9mehhlbjWAHx6f13KHylzPOKRRvQxlVA1Nd0fOVlOQKS83hLLw=
-X-Received: by 2002:a67:e9ca:0:b0:452:6764:4f8e with SMTP id
- q10-20020a67e9ca000000b0045267644f8emr8676333vso.34.1696252956237; Mon, 02
- Oct 2023 06:22:36 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696253052; x=1696857852;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KviN0X/RCx/xPsHBoxNjf84tjjuoc20Hd49jrGxldSk=;
+        b=nSkyrs7VjggJnZONfD3zwbgD0ZLxzvH3r2zM13dM2Qbab4Xg8xnMiFkkTMIqNnIujU
+         C9nWHnrtetWdAK3nQ8bferuOTk1wRThJ/Ng9mM9mw9e4dM3mrpc/FLhFjBtkcT52pi3g
+         cKdJGGJdRxtsIj2Pryo0G/9GXZZaoIhR2MIpVyoxY8dBNenow4HSFHVitZin3TlOWNeb
+         UnD+WD963tcAhTBJ0zHhKCylVfKJfNu/w6S4gkHvl/af/buJHbkw8Q0MhVk47nvEdYfN
+         hHqUlV1uoaWT0grttFYOHQr2ivgrsJj65EpRfNQsGKqqtmOnBxGxhr4/qeqN8d/t2/Vp
+         iJBA==
+X-Gm-Message-State: AOJu0YzhMLDlBTgB6yjmVTv7gVdFiV3tmYrlF71y4dlLgqDDVC811plo
+        HVme3sgDRaymWWW20amQvnD+mWRBfJfeAEw4pE9pCIVmN2QiT2cq+f0b4VfU5eiHWSq90z5whg4
+        mtfyAQbfibER0Suj8qoaW9ewA
+X-Received: by 2002:a05:6808:309c:b0:3ab:84f0:b491 with SMTP id bl28-20020a056808309c00b003ab84f0b491mr14899218oib.19.1696253052512;
+        Mon, 02 Oct 2023 06:24:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFNYuViafwDqus6MokKeZpafc4TpjWvt/q4KRQ8mzGcIJB5yeDpFD4cy3LJZRgwtWeWRw2zNA==
+X-Received: by 2002:a05:6808:309c:b0:3ab:84f0:b491 with SMTP id bl28-20020a056808309c00b003ab84f0b491mr14899186oib.19.1696253051886;
+        Mon, 02 Oct 2023 06:24:11 -0700 (PDT)
+Received: from fedora ([2600:1700:1ff0:d0e0::37])
+        by smtp.gmail.com with ESMTPSA id c15-20020a0cf2cf000000b0065d05c8bb5dsm3775747qvm.64.2023.10.02.06.24.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 06:24:11 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 08:24:09 -0500
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Elliot Berman <quic_eberman@quicinc.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        kernel@quicinc.com,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v2 06/11] firmware: qcom: scm: make
+ qcom_scm_pas_init_image() use the SCM allocator
+Message-ID: <5puhrnpw2rww6kawt77krges6aj4re6nfblqkomuw5njtwydya@cuarfakzv62i>
+References: <20230928092040.9420-1-brgl@bgdev.pl>
+ <20230928092040.9420-7-brgl@bgdev.pl>
+ <gwflmag5pq7osprj25l7i4tgyln2nauuqcwdhth2eomareooag@4dw4lwk4vr36>
+ <CAMRc=Mfxt1DLinxMcKivQqqnHvFv5P8WXNnfAwnfrHgoz+q-5w@mail.gmail.com>
+ <20230929204404.enzsjanohdqqpmk4@halaney-x13s>
+ <2539186e-e0ec-4eba-9d6a-d966e00f0eb9@quicinc.com>
 MIME-Version: 1.0
-References: <20231002125733.1251467-1-stefanb@linux.vnet.ibm.com>
-In-Reply-To: <20231002125733.1251467-1-stefanb@linux.vnet.ibm.com>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Mon, 2 Oct 2023 16:22:25 +0300
-Message-ID: <CAOQ4uxiuQxTDqn4F62ueGf_9f4KC4p7xqRZdwPvL8rEYrCOWbg@mail.gmail.com>
-Subject: Re: [PATCH] fs: Pass AT_GETATTR_NOSEC flag to getattr interface function
-To:     Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, Tyler Hicks <code@tyhicks.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Christian Brauner <brauner@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2539186e-e0ec-4eba-9d6a-d966e00f0eb9@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 3:57=E2=80=AFPM Stefan Berger <stefanb@linux.vnet.ib=
-m.com> wrote:
->
-> From: Stefan Berger <stefanb@linux.ibm.com>
->
-> When vfs_getattr_nosec() calls a filesystem's getattr interface function
-> then the 'nosec' should propagate into this function so that
-> vfs_getattr_nosec() can again be called from the filesystem's gettattr
-> rather than vfs_getattr(). The latter would add unnecessary security
-> checks that the initial vfs_getattr_nosec() call wanted to avoid.
-> Therefore, introduce the getattr flag GETATTR_NOSEC and allow to pass
-> with the new getattr_flags parameter to the getattr interface function.
-> In overlayfs and ecryptfs use this flag to determine which one of the
-> two functions to call.
->
-> In a recent code change introduced to IMA vfs_getattr_nosec() ended up
-> calling vfs_getattr() in overlayfs, which in turn called
-> security_inode_getattr() on an exiting process that did not have
-> current->fs set anymore, which then caused a kernel NULL pointer
-> dereference. With this change the call to security_inode_getattr() can
-> be avoided, thus avoiding the NULL pointer dereference.
->
-> Reported-by: syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com
-> Fixes: db1d1e8b9867 ("IMA: use vfs_getattr_nosec to get the i_version")
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: Miklos Szeredi <miklos@szeredi.hu>
-> Cc: Amir Goldstein <amir73il@gmail.com>
-> Cc: Tyler Hicks <code@tyhicks.com>
-> Cc: Mimi Zohar <zohar@linux.ibm.com>
-> Suggested-by: Christian Brauner <brauner@kernel.org>
-> Co-developed-by: Amir Goldstein <amir73il@gmail.com>
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
+On Fri, Sep 29, 2023 at 03:48:37PM -0700, Elliot Berman wrote:
+> Hi Andrew,
+> 
+> On 9/29/2023 1:44 PM, Andrew Halaney wrote:
+> > On Fri, Sep 29, 2023 at 12:22:16PM -0700, Bartosz Golaszewski wrote:
+> >> On Fri, 29 Sep 2023 21:16:51 +0200, Andrew Halaney <ahalaney@redhat.com> said:
+> >>> On Thu, Sep 28, 2023 at 11:20:35AM +0200, Bartosz Golaszewski wrote:
+> >>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >>>>
+> >>>> Let's use the new SCM memory allocator to obtain a buffer for this call
+> >>>> instead of using dma_alloc_coherent().
+> >>>>
+> >>>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >>>> ---
+> >>>>  drivers/firmware/qcom/qcom_scm.c | 16 +++++-----------
+> >>>>  1 file changed, 5 insertions(+), 11 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+> >>>> index 02a773ba1383..c0eb81069847 100644
+> >>>> --- a/drivers/firmware/qcom/qcom_scm.c
+> >>>> +++ b/drivers/firmware/qcom/qcom_scm.c
+> >>>> @@ -532,7 +532,7 @@ static void qcom_scm_set_download_mode(bool enable)
+> >>>>  int qcom_scm_pas_init_image(u32 peripheral, const void *metadata, size_t size,
+> >>>>  			    struct qcom_scm_pas_metadata *ctx)
+> >>>>  {
+> >>>> -	dma_addr_t mdata_phys;
+> >>>> +	phys_addr_t mdata_phys;
+> >>>
+> >>>>  	void *mdata_buf;
+> >>>>  	int ret;
+> >>>>  	struct qcom_scm_desc desc = {
+> >>>> @@ -544,13 +544,7 @@ int qcom_scm_pas_init_image(u32 peripheral, const void *metadata, size_t size,
+> >>>>  	};
+> >>>>  	struct qcom_scm_res res;
+> >>>>
+> >>>> -	/*
+> >>>> -	 * During the scm call memory protection will be enabled for the meta
+> >>>> -	 * data blob, so make sure it's physically contiguous, 4K aligned and
+> >>>> -	 * non-cachable to avoid XPU violations.
+> >>>> -	 */
+> >>>> -	mdata_buf = dma_alloc_coherent(__scm->dev, size, &mdata_phys,
+> >>>> -				       GFP_KERNEL);
+> >>>> +	mdata_buf = qcom_scm_mem_alloc(size, GFP_KERNEL);
+> >>>
+> >>> mdata_phys is never initialized now, and its what's being shoved into
+> >>> desc.args[1] later, which I believe is what triggered the -EINVAL
+> >>> with qcom_scm_call() that I reported in my cover letter reply this
+> >>> morning.
+> >>>
+> >>> Prior with the DMA API that would have been the device view of the buffer.
+> >>>
+> >>
+> >> Gah! Thanks for finding this.
+> >>
+> >> Can you try the following diff?
+> >>
+> >> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+> >> index 794388c3212f..b0d4ea237034 100644
+> >> --- a/drivers/firmware/qcom/qcom_scm.c
+> >> +++ b/drivers/firmware/qcom/qcom_scm.c
+> >> @@ -556,6 +556,7 @@ int qcom_scm_pas_init_image(u32 peripheral, const
+> >> void *metadata, size_t size,
+> >>  		dev_err(__scm->dev, "Allocation of metadata buffer failed.\n");
+> >>  		return -ENOMEM;
+> >>  	}
+> >> +	mdata_phys = qcom_scm_mem_to_phys(mdata_buf);
+> >>  	memcpy(mdata_buf, metadata, size);
+> >>
+> >>  	ret = qcom_scm_clk_enable();
+> >> @@ -578,7 +579,7 @@ int qcom_scm_pas_init_image(u32 peripheral, const
+> >> void *metadata, size_t size,
+> >>  		qcom_scm_mem_free(mdata_buf);
+> >>  	} else if (ctx) {
+> >>  		ctx->ptr = mdata_buf;
+> >> -		ctx->phys = qcom_scm_mem_to_phys(mdata_buf);
+> >> +		ctx->phys = mdata_phys;
+> >>  		ctx->size = size;
+> >>  	}
+> >>
+> >> Bart
+> >>
+> > 
+> > For some reason that I can't explain that is still not working. It seems
+> > the SMC call is returning !0 and then we return -EINVAL from there
+> > with qcom_scm_remap_error().
+> > 
+> > Here's a really crummy diff of what I hacked in during lunch to debug (don't
+> > judge my primitive debug skills):
+> > 
+> 
+> I don't know what you're talking about :-)
+> 
+> > diff --git a/drivers/firmware/qcom/qcom_scm-smc.c b/drivers/firmware/qcom/qcom_scm-smc.c
+> > index 0d5554df1321..56eab0ae5f3a 100644
+> > --- a/drivers/firmware/qcom/qcom_scm-smc.c
+> > +++ b/drivers/firmware/qcom/qcom_scm-smc.c
+> > @@ -162,6 +162,8 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
+> >         struct arm_smccc_res smc_res;
+> >         struct arm_smccc_args smc = {0};
+> >  
+> > +       dev_err(dev, "%s: %d: We are in this function\n", __func__, __LINE__);
+> > +
+> >         smc.args[0] = ARM_SMCCC_CALL_VAL(
+> >                 smccc_call_type,
+> >                 qcom_smccc_convention,
+> > @@ -174,6 +176,7 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
+> >         if (unlikely(arglen > SCM_SMC_N_REG_ARGS)) {
+> >                 alloc_len = SCM_SMC_N_EXT_ARGS * sizeof(u64);
+> >                 args_virt = qcom_scm_mem_alloc(PAGE_ALIGN(alloc_len), flag);
+> > +               dev_err(dev, "%s: %d: Hit the unlikely case!\n", __func__, __LINE__);
+> >  
+> >                 if (!args_virt)
+> >                         return -ENOMEM;
+> > @@ -197,6 +200,7 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
+> >  
+> >         /* ret error check follows after args_virt cleanup*/
+> >         ret = __scm_smc_do(dev, &smc, &smc_res, atomic);
+> > +       dev_err(dev, "%s: %d: ret: %d\n", __func__, __LINE__, ret);
+> >  
+> >         if (ret)
+> >                 return ret;
+> > @@ -205,8 +209,10 @@ int __scm_smc_call(struct device *dev, const struct qcom_scm_desc *desc,
+> >                 res->result[0] = smc_res.a1;
+> >                 res->result[1] = smc_res.a2;
+> >                 res->result[2] = smc_res.a3;
+> > +               dev_err(dev, "%s: %d: 0: %llu, 1: %llu: 2: %llu\n", __func__, __LINE__, res->result[0], res->result[1], res->result[2]);
+> >         }
+> >  
+> > +       dev_err(dev, "%s: %d: smc_res.a0: %lu\n", __func__, __LINE__, smc_res.a0);
+> >         return (long)smc_res.a0 ? qcom_scm_remap_error(smc_res.a0) : 0;
+> > 
+> > 
+> > And that all spams dmesg successfully for most cases, but the
+> > pas_init_image calls log this out:
+> > 
+> > [   16.362965] remoteproc remoteproc1: powering up 1b300000.remoteproc
+> > [   16.364897] remoteproc remoteproc1: Booting fw image qcom/sc8280xp/LENOVO/21BX/qccdsp8280.mbn, size 3575808
+> > [   16.365009] qcom_scm firmware:scm: __scm_smc_call: 165: We are in this function
+> > [   16.365251] qcom_scm firmware:scm: __scm_smc_call: 203: ret: 0
+> > [   16.365256] qcom_scm firmware:scm: __scm_smc_call: 212: 0: 0, 1: 0: 2: 0
+> > [   16.365261] qcom_scm firmware:scm: __scm_smc_call: 215: smc_res.a0: 4291821558
+> > 
+> > At the moment I am unsure why...
+> > 
+> Does the issue appear right after taking patch 6 or does it only appear after taking
+> the whole series? If it's just to this patch, then maybe something wrong with
+> the refactor: shm bridge isn't enabled at this point in the series.
+> 
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-
-Now let's see what vfs maintainers think about this...
+I've only been testing the series as a whole on top of a 6.6 based
+branch, I'm going to try and test some more today to see if just the
+allocator bits (but not the SHM bridge enablement) works alright for
+me.
 
 Thanks,
-Amir.
+Andrew
 
->  fs/ecryptfs/inode.c        | 12 ++++++++++--
->  fs/overlayfs/inode.c       | 10 +++++-----
->  fs/overlayfs/overlayfs.h   |  8 ++++++++
->  fs/stat.c                  |  6 +++++-
->  include/uapi/linux/fcntl.h |  3 +++
->  5 files changed, 31 insertions(+), 8 deletions(-)
->
-> diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
-> index 992d9c7e64ae..5ab4b87888a7 100644
-> --- a/fs/ecryptfs/inode.c
-> +++ b/fs/ecryptfs/inode.c
-> @@ -998,6 +998,14 @@ static int ecryptfs_getattr_link(struct mnt_idmap *i=
-dmap,
->         return rc;
->  }
->
-> +static int ecryptfs_do_getattr(const struct path *path, struct kstat *st=
-at,
-> +                              u32 request_mask, unsigned int flags)
-> +{
-> +       if (flags & AT_GETATTR_NOSEC)
-> +               return vfs_getattr_nosec(path, stat, request_mask, flags)=
-;
-> +       return vfs_getattr(path, stat, request_mask, flags);
-> +}
-> +
->  static int ecryptfs_getattr(struct mnt_idmap *idmap,
->                             const struct path *path, struct kstat *stat,
->                             u32 request_mask, unsigned int flags)
-> @@ -1006,8 +1014,8 @@ static int ecryptfs_getattr(struct mnt_idmap *idmap=
-,
->         struct kstat lower_stat;
->         int rc;
->
-> -       rc =3D vfs_getattr(ecryptfs_dentry_to_lower_path(dentry), &lower_=
-stat,
-> -                        request_mask, flags);
-> +       rc =3D ecryptfs_do_getattr(ecryptfs_dentry_to_lower_path(dentry),
-> +                                &lower_stat, request_mask, flags);
->         if (!rc) {
->                 fsstack_copy_attr_all(d_inode(dentry),
->                                       ecryptfs_inode_to_lower(d_inode(den=
-try)));
-> diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
-> index 83ef66644c21..fca29dba7b14 100644
-> --- a/fs/overlayfs/inode.c
-> +++ b/fs/overlayfs/inode.c
-> @@ -171,7 +171,7 @@ int ovl_getattr(struct mnt_idmap *idmap, const struct=
- path *path,
->
->         type =3D ovl_path_real(dentry, &realpath);
->         old_cred =3D ovl_override_creds(dentry->d_sb);
-> -       err =3D vfs_getattr(&realpath, stat, request_mask, flags);
-> +       err =3D ovl_do_getattr(&realpath, stat, request_mask, flags);
->         if (err)
->                 goto out;
->
-> @@ -196,8 +196,8 @@ int ovl_getattr(struct mnt_idmap *idmap, const struct=
- path *path,
->                                         (!is_dir ? STATX_NLINK : 0);
->
->                         ovl_path_lower(dentry, &realpath);
-> -                       err =3D vfs_getattr(&realpath, &lowerstat,
-> -                                         lowermask, flags);
-> +                       err =3D ovl_do_getattr(&realpath, &lowerstat, low=
-ermask,
-> +                                            flags);
->                         if (err)
->                                 goto out;
->
-> @@ -249,8 +249,8 @@ int ovl_getattr(struct mnt_idmap *idmap, const struct=
- path *path,
->
->                         ovl_path_lowerdata(dentry, &realpath);
->                         if (realpath.dentry) {
-> -                               err =3D vfs_getattr(&realpath, &lowerdata=
-stat,
-> -                                                 lowermask, flags);
-> +                               err =3D ovl_do_getattr(&realpath, &lowerd=
-atastat,
-> +                                                    lowermask, flags);
->                                 if (err)
->                                         goto out;
->                         } else {
-> diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
-> index 9817b2dcb132..09ca82ed0f8c 100644
-> --- a/fs/overlayfs/overlayfs.h
-> +++ b/fs/overlayfs/overlayfs.h
-> @@ -397,6 +397,14 @@ static inline bool ovl_open_flags_need_copy_up(int f=
-lags)
->         return ((OPEN_FMODE(flags) & FMODE_WRITE) || (flags & O_TRUNC));
->  }
->
-> +static inline int ovl_do_getattr(const struct path *path, struct kstat *=
-stat,
-> +                                u32 request_mask, unsigned int flags)
-> +{
-> +       if (flags & AT_GETATTR_NOSEC)
-> +               return vfs_getattr_nosec(path, stat, request_mask, flags)=
-;
-> +       return vfs_getattr(path, stat, request_mask, flags);
-> +}
-> +
->  /* util.c */
->  int ovl_want_write(struct dentry *dentry);
->  void ovl_drop_write(struct dentry *dentry);
-> diff --git a/fs/stat.c b/fs/stat.c
-> index d43a5cc1bfa4..5375be5f97cc 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -133,7 +133,8 @@ int vfs_getattr_nosec(const struct path *path, struct=
- kstat *stat,
->         idmap =3D mnt_idmap(path->mnt);
->         if (inode->i_op->getattr)
->                 return inode->i_op->getattr(idmap, path, stat,
-> -                                           request_mask, query_flags);
-> +                                           request_mask,
-> +                                           query_flags | AT_GETATTR_NOSE=
-C);
->
->         generic_fillattr(idmap, request_mask, inode, stat);
->         return 0;
-> @@ -166,6 +167,9 @@ int vfs_getattr(const struct path *path, struct kstat=
- *stat,
->  {
->         int retval;
->
-> +       if (WARN_ON_ONCE(query_flags & AT_GETATTR_NOSEC))
-> +               return -EPERM;
-> +
->         retval =3D security_inode_getattr(path);
->         if (retval)
->                 return retval;
-> diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
-> index 6c80f96049bd..282e90aeb163 100644
-> --- a/include/uapi/linux/fcntl.h
-> +++ b/include/uapi/linux/fcntl.h
-> @@ -116,5 +116,8 @@
->  #define AT_HANDLE_FID          AT_REMOVEDIR    /* file handle is needed =
-to
->                                         compare object identity and may n=
-ot
->                                         be usable to open_by_handle_at(2)=
- */
-> +#if defined(__KERNEL__)
-> +#define AT_GETATTR_NOSEC       0x80000000
-> +#endif
->
->  #endif /* _UAPI_LINUX_FCNTL_H */
-> --
-> 2.40.1
->
