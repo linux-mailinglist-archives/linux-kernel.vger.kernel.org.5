@@ -2,71 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 363D57B69AA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FDC7B69AB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231127AbjJCNAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37896 "EHLO
+        id S232412AbjJCNBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjJCNAS (ORCPT
+        with ESMTP id S230283AbjJCNBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:00:18 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB2349B
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:00:14 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-533d31a8523so1567896a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 06:00:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696338013; x=1696942813; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=G4pO2/tsigRqoegPlNF8cRpnRDUBY1p5NereI6k6PlI=;
-        b=XBZ5lwTyfrNv9bQ2iuOq86RXrMPq4t+c3OzQYaxSgQbEazVX5fhDRV4rQY+5vxKe80
-         k9OeFzKD4JTk56GzBNlyfkxNf7N8bB7v+3TNIL6+PSTCigIGvVSo2u7QyqAfFnN8VYmD
-         r4To/msYcJXWVTKDrbKwBcB833vJAN/KliNbkebIpw7Eyezrzk01If6GcnQnKpkV1oHL
-         f5coAeKSNfkoqWiYQXKIaQLXAT/weqiHr3Ye2cM0m9+/mhfT7Gsa2GXcOn3YxponJ62u
-         FTpmFFr8paPhzuNkJQgaxsWft/JvSA8K4Vl7S1Dkovv5DA6DLGe9EGSIcYfdfI5LvKOP
-         3O8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696338013; x=1696942813;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G4pO2/tsigRqoegPlNF8cRpnRDUBY1p5NereI6k6PlI=;
-        b=TsoMD4MFxTFo7u3Dc5gQ7Pm2l+7OIXpeFVhAwA/aYc8APGCtLy4Ev88CJFO7YSnLYF
-         WxVClhIy+rXbp9xZbtuDNs0ObhaCZDAgnFZjBuM1Wn6GcPkzfaVpeHNOG/yC3cc2JdU3
-         NAp5CaedF4RxmMnA++qqIDEIehxFhhDZFWZ5be7OVyB8fgx7jxHdv9dClEytkPprajsz
-         Anp8g/1SptTHpatmV8pLe2VQLQtiyKvxLmtBGJ79RkIINj1uF5ohZUqVYqMZCSuGb5Ax
-         sEYD4UtEnSCLy11xRoOviYZ4QyzA37PC4M1IuUB8dgPWufKKxDg0x0i6dUbqmX1uz+SC
-         Ojtg==
-X-Gm-Message-State: AOJu0YyVXd/YZuz0tmWEdIYt+MQpghGrC0UoOsRrajMmA6vFgQGIZ9Mi
-        tfuYagEatlnisMgkeazu7g==
-X-Google-Smtp-Source: AGHT+IHKJkVEPT1uUitcKyRJufl4sNlbv+Xr9xS5LV19QXQlnA+XybgUJKz/RwMxpU3A14Reok0Niw==
-X-Received: by 2002:a17:907:2711:b0:9b6:f0e2:3c00 with SMTP id w17-20020a170907271100b009b6f0e23c00mr1036577ejk.71.1696338012979;
-        Tue, 03 Oct 2023 06:00:12 -0700 (PDT)
-Received: from p183 ([46.53.254.179])
-        by smtp.gmail.com with ESMTPSA id d10-20020a170906344a00b00992b71d8f19sm1029159ejb.133.2023.10.03.06.00.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 06:00:11 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 16:00:10 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] x86_64: test that userspace stack is in fact NX
-Message-ID: <d468d13c-6c4b-4d8d-8e2d-e4314b4bb1a7@p183>
-References: <4b78a714-5ac3-4783-8256-1dda4673db01@p183>
- <1d5223b8-0275-619d-db1c-e2aaaddb173e@intel.com>
+        Tue, 3 Oct 2023 09:01:12 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 64DCA93
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:01:09 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ABB561FB;
+        Tue,  3 Oct 2023 06:01:47 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6FE73F59C;
+        Tue,  3 Oct 2023 06:01:08 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 14:01:06 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] firmware: arm_ffa: Assign the missing IDR allocation ID
+ to the FFA device
+Message-ID: <20231003130106.ahzajd46kqyevyex@bogus>
+References: <20231003085932.3553985-1-sudeep.holla@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1d5223b8-0275-619d-db1c-e2aaaddb173e@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20231003085932.3553985-1-sudeep.holla@arm.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,40 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 07:23:10AM -0700, Dave Hansen wrote:
-> On 10/1/23 09:31, Alexey Dobriyan wrote:
-> > Here is how it works:
-> > 
-> > * fault and fill the stack from rsp with int3 down until rlimit allows,
-> > * fill upwards with int3 too, overwrite libc stuff, argv, envp,
-> > * try to exec int3 on each page and catch it with either SIGSEGV or
-> >   SIGTRAP handler.
-> > 
-> > Note: trying to execute _every_ int3 takes 30-40 seconds even on fast
-> > machine, so only 1 int3 per page is tried.
-> > 
-> > Tested on F37 kernel and on custom kernel which did
-> > 
-> > 	vm_flags |= VM_EXEC;
-> > 
-> > to stack VMA.
+On Tue, Oct 03, 2023 at 09:59:32AM +0100, Sudeep Holla wrote:
+> Commit 19b8766459c4 ("firmware: arm_ffa: Fix FFA device names for logical
+> partitions") added an ID to the FFA device using ida_alloc() and append
+> the same to "arm-ffa" to make up a unique device name. However it missed
+> to stash the id value in ffa_dev to help freeing the ID later when the
+> device is destroyed.
 > 
-> I guess the subject implies it, but it's probably worth a sentence or
-> two in the changelog about this being 64-bit only.
-> 
-> IIRC, there _are_ x86_64 CPUs that don't support NX.  It's also entirely
-> possible for a hypervisor to disable NX enumeration for a guest.  Those
-> two are (probably) rare enough that they can be ignored for now.  But it
-> might mean adding a CPUID check at some point.
-> 
-> Basically, could you spend a moment in the changelog to talk about:
-> 
-> 1. 32-bit kernels on NX hardware
-> and
-> 2. 64-bit kernels on non-NX hardware
+> Due to the missing/unassigned ID in FFA device, we get the following
+> warning when the FF-A device is unregistered. Fix the same by actually
+> assigning the ID in the FFA device this time for real.
+>
 
-Sure. My logic whas that i386 is dead arch, but this test is easy to
-port to i386, only 2 simple functions.
+Missed the below warning:
 
-I don't want to parse /proc/cpuinfo. If someone knows they're shipping
-NX-incapable hardware, just let them disable the test.
+  |   ida_free called for id=0 which is not allocated.
+  |   WARNING: CPU: 7 PID: 1 at lib/idr.c:525 ida_free+0x114/0x164
+  |   CPU: 7 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc4 #209
+  |   pstate: 61400009 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
+  |   pc : ida_free+0x114/0x164
+  |   lr : ida_free+0x114/0x164
+  |   Call trace:
+  |    ida_free+0x114/0x164
+  |    ffa_release_device+0x24/0x3c
+  |    device_release+0x34/0x8c
+  |    kobject_put+0x94/0xf8
+  |    put_device+0x18/0x24
+  |    klist_devices_put+0x14/0x20
+  |    klist_next+0xc8/0x114
+  |    bus_for_each_dev+0xd8/0x144
+  |    arm_ffa_bus_exit+0x30/0x54
+  |    ffa_init+0x68/0x330
+  |    do_one_initcall+0xdc/0x250
+  |    do_initcall_level+0x8c/0xac
+  |    do_initcalls+0x54/0x94
+  |    do_basic_setup+0x1c/0x28
+  |    kernel_init_freeable+0x104/0x170
+  |    kernel_init+0x20/0x1a0
+  |    ret_from_fork+0x10/0x20
+
+> Fixes: 19b8766459c4 ("firmware: arm_ffa: Fix FFA device names for logical partitions")
+> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> ---
+>  drivers/firmware/arm_ffa/bus.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/firmware/arm_ffa/bus.c b/drivers/firmware/arm_ffa/bus.c
+> index 2b8bfcd010f5..7865438b3696 100644
+> --- a/drivers/firmware/arm_ffa/bus.c
+> +++ b/drivers/firmware/arm_ffa/bus.c
+> @@ -193,6 +193,7 @@ struct ffa_device *ffa_device_register(const uuid_t *uuid, int vm_id,
+>  	dev->release = ffa_release_device;
+>  	dev_set_name(&ffa_dev->dev, "arm-ffa-%d", id);
+>  
+> +	ffa_dev->id = id;
+>  	ffa_dev->vm_id = vm_id;
+>  	ffa_dev->ops = ops;
+>  	uuid_copy(&ffa_dev->uuid, uuid);
+> -- 
+> 2.42.0
+> 
+
+-- 
+Regards,
+Sudeep
