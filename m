@@ -2,71 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24E567B70CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 913CA7B70D0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240053AbjJCS3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 14:29:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
+        id S240760AbjJCSaA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 14:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231592AbjJCS3q (ORCPT
+        with ESMTP id S231857AbjJCS37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:29:46 -0400
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2BE990;
-        Tue,  3 Oct 2023 11:29:42 -0700 (PDT)
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-690d8fb3b7eso973644b3a.1;
-        Tue, 03 Oct 2023 11:29:42 -0700 (PDT)
+        Tue, 3 Oct 2023 14:29:59 -0400
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ACA9AF;
+        Tue,  3 Oct 2023 11:29:57 -0700 (PDT)
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-57ddba5ba84so104083eaf.0;
+        Tue, 03 Oct 2023 11:29:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696357782; x=1696962582;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1696357796; x=1696962596;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=C8sQRY8roqNIFk3L84KXVcV0uLeEhN7pGXERpmeZkvg=;
-        b=tSsnzmPHOEL25bHOw6FAZ/iyMLFWSzFn/0rVtdyQqhPzBhipYpdLw9mwwpMyKj++Kx
-         sBzK7kSWJMrjgDnf848dEsO35fjwFu2ACbPW2IfwCTMRQ5eWkZyTysloipwVBdt66eB4
-         uD9Fjnm9tzfrTTT8y4dRSbuHZn6SrH4NaOUqm1LIXrLGWtVhVqDFh0eVzl4dLZIBnyVI
-         bBBzlbRLeOUEV7SJaC7mjlp/xHiZmKUhvd46KvRnQk9NpGuUidoM1bGG5vDCN+uHaFX2
-         P1hznFHTEp61W+3wmKhgP6GZAE2emxYsNsaLErp1v8Y2szdB+gxd7QJfo8izesjngFuT
-         tJ1g==
-X-Gm-Message-State: AOJu0YyjczOMTF9vzGSBVxMNuFd9CsHwHOCJ+Gh+QjdY9bwMeFSjJBoq
-        DxrmbrjwxigBvz8rkhtzEbw=
-X-Google-Smtp-Source: AGHT+IG6HIs+20OBGFQ3lm7n7+ND1W09MC3dl849h2sUlCWqAAFTtkCxzugKEheYLuy2Iq/oRGCZLg==
-X-Received: by 2002:a05:6a20:144c:b0:13c:ca8b:7e29 with SMTP id a12-20020a056a20144c00b0013cca8b7e29mr345308pzi.12.1696357782138;
-        Tue, 03 Oct 2023 11:29:42 -0700 (PDT)
-Received: from maniforge ([2620:10d:c090:400::4:d6ec])
-        by smtp.gmail.com with ESMTPSA id c9-20020a62e809000000b00690b8961bf4sm1724032pfi.146.2023.10.03.11.29.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 11:29:41 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 13:29:36 -0500
-From:   David Vernet <void@manifault.com>
-To:     Song Liu <songliubraving@meta.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        "andrii@kernel.org" <andrii@kernel.org>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        "song@kernel.org" <song@kernel.org>,
-        "yonghong.song@linux.dev" <yonghong.song@linux.dev>,
-        "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-        "kpsingh@kernel.org" <kpsingh@kernel.org>,
-        "sdf@google.com" <sdf@google.com>,
-        "haoluo@google.com" <haoluo@google.com>,
-        "jolsa@kernel.org" <jolsa@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@meta.com>,
-        "himadrispandya@gmail.com" <himadrispandya@gmail.com>,
-        "julia.lawall@inria.fr" <julia.lawall@inria.fr>
-Subject: Re: [PATCH bpf-next 2/2] bpf/selftests: Test pinning bpf timer to a
- core
-Message-ID: <20231003182936.GC5902@maniforge>
-References: <20231002234708.331192-1-void@manifault.com>
- <20231002234708.331192-2-void@manifault.com>
- <4EC94A6E-B3C5-4D2D-BD4B-FF7C4F149FD1@fb.com>
+        bh=XKuLyXDaUOfq1uIfw6OusMnl9KqNTsb0JtRvHzmk/hI=;
+        b=qQe3AcuO6rLideDcZTfQ2gt6avF+1WZhWg0sDR2ItXn0hz1IY80PmSSZaSQh/IF/g3
+         VguzuGSEDwTzDCEmtBzZBhonRqSKLvfvQhwCs30zV2yvEmsaq553PmDNb9Jse4edtEfD
+         dWuXxSdTUFBl8RyB0OP1HXi9d8f4q+tmDiR+UDO22bhH+hza/ZRwuniNK77wHFpMJ59Q
+         XpTNrcHKdhCmvQmworzI3XsBjQA7MVaZK33NQbPlApTMe34MTgM0P1nqF59gX24174HN
+         DoYqwQjCxer5EgwFMGxuePjkcLjh/25qHDf9vbv87FWhPU7L54BZ07hRygO930rdB+g4
+         PjCA==
+X-Gm-Message-State: AOJu0Yx9COnjXyfCPLi6ByeeYZthNYYtegFXD5EAV8jM03A+/iip6DQ4
+        4v6wXJB4jrY1U7j9nrahYgSsNC3y8wgnhSklBdw=
+X-Google-Smtp-Source: AGHT+IGfYbL8E3JNC+wKvzaKai74tZwW1E6GU4g6CClDy5JW4gC42y+OnApY8XJwxgpeKFJARKmcdzK14ndUdbcCDDA=
+X-Received: by 2002:a4a:b588:0:b0:578:c2af:45b5 with SMTP id
+ t8-20020a4ab588000000b00578c2af45b5mr209370ooo.0.1696357796460; Tue, 03 Oct
+ 2023 11:29:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4EC94A6E-B3C5-4D2D-BD4B-FF7C4F149FD1@fb.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
+References: <20230930090248.34759-1-bergh.jonathan@gmail.com>
+In-Reply-To: <20230930090248.34759-1-bergh.jonathan@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 3 Oct 2023 20:29:45 +0200
+Message-ID: <CAJZ5v0gDBNzUP8_9ayHniObOz0LriV0=sg4Kqw5GizMH8Aox0w@mail.gmail.com>
+Subject: Re: [PATCH 1/3] drivers: acpi: Fix pointer declarations in parameter
+ lists which included whitespace spuriously
+To:     Jonathan Bergh <bergh.jonathan@gmail.com>
+Cc:     rafael@kernel.org, lenb@kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
@@ -77,88 +58,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 06:15:03PM +0000, Song Liu wrote:
-> 
-> 
-> > On Oct 2, 2023, at 4:47 PM, David Vernet <void@manifault.com> wrote:
-> > 
-> > Now that we support pinning a BPF timer to the current core, we should
-> > test it with some selftests. This patch adds two new testcases to the
-> > timer suite, which verifies that a BPF timer both with and without
-> > BPF_F_TIMER_ABS, can be pinned to the calling core with
-> > BPF_F_TIMER_CPU_PIN.
-> > 
-> > Signed-off-by: David Vernet <void@manifault.com>
-> 
-> Acked-by: Song Liu <song@kernel.org>
-> 
-> With one nit/question below. 
-> 
-> > ---
-> > .../testing/selftests/bpf/prog_tests/timer.c  |  4 +
-> > tools/testing/selftests/bpf/progs/timer.c     | 75 +++++++++++++++++++
-> > 2 files changed, 79 insertions(+)
-> > 
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testing/selftests/bpf/prog_tests/timer.c
-> > index 290c21dbe65a..d8bc838445ec 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/timer.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/timer.c
-> > @@ -14,6 +14,7 @@ static int timer(struct timer *timer_skel)
-> > 
-> > ASSERT_EQ(timer_skel->data->callback_check, 52, "callback_check1");
-> > ASSERT_EQ(timer_skel->data->callback2_check, 52, "callback2_check1");
-> > + ASSERT_EQ(timer_skel->bss->pinned_callback_check, 0, "pinned_callback_check1");
-> > 
-> > prog_fd = bpf_program__fd(timer_skel->progs.test1);
-> > err = bpf_prog_test_run_opts(prog_fd, &topts);
-> > @@ -32,6 +33,9 @@ static int timer(struct timer *timer_skel)
-> > /* check that timer_cb3() was executed twice */
-> > ASSERT_EQ(timer_skel->bss->abs_data, 12, "abs_data");
-> > 
-> > + /* check that timer_cb_pinned() was executed twice */
-> > + ASSERT_EQ(timer_skel->bss->pinned_callback_check, 2, "pinned_callback_check");
-> > +
-> > /* check that there were no errors in timer execution */
-> > ASSERT_EQ(timer_skel->bss->err, 0, "err");
-> > 
-> > diff --git a/tools/testing/selftests/bpf/progs/timer.c b/tools/testing/selftests/bpf/progs/timer.c
-> > index 9a16d95213e1..0112b9c038b4 100644
-> > --- a/tools/testing/selftests/bpf/progs/timer.c
-> > +++ b/tools/testing/selftests/bpf/progs/timer.c
-> > @@ -53,12 +53,28 @@ struct {
-> > __type(value, struct elem);
-> > } abs_timer SEC(".maps");
-> > 
-> > +struct {
-> > + __uint(type, BPF_MAP_TYPE_ARRAY);
-> > + __uint(max_entries, 1);
-> > + __type(key, int);
-> > + __type(value, struct elem);
-> > +} soft_timer_pinned SEC(".maps");
-> > +
-> > +struct {
-> > + __uint(type, BPF_MAP_TYPE_ARRAY);
-> > + __uint(max_entries, 1);
-> > + __type(key, int);
-> > + __type(value, struct elem);
-> > +} abs_timer_pinned SEC(".maps");
-> 
-> nit: I think we can also do something like the following, but I am not 
-> sure whether this style is not recommended. 
-> 
-> diff --git i/tools/testing/selftests/bpf/progs/timer.c w/tools/testing/selftests/bpf/progs/timer.c
-> index 9a16d95213e1..638eeebcd6c9 100644
-> --- i/tools/testing/selftests/bpf/progs/timer.c
-> +++ w/tools/testing/selftests/bpf/progs/timer.c
-> @@ -51,7 +51,7 @@ struct {
->         __uint(max_entries, 1);
->         __type(key, int);
->         __type(value, struct elem);
-> -} abs_timer SEC(".maps");
-> +} abs_timer SEC(".maps"), soft_timer_pinned SEC(".maps"), abs_timer_pinned SEC(".maps");
+On Sat, Sep 30, 2023 at 11:03 AM Jonathan Bergh
+<bergh.jonathan@gmail.com> wrote:
+>
+> Fixed issues where pointer declarations in parameter lists included
+> whitespace before the parameter names and should not.
+>
+> Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+> ---
+>  drivers/acpi/osl.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+> index f725813d0cce..29e0005c30aa 100644
+> --- a/drivers/acpi/osl.c
+> +++ b/drivers/acpi/osl.c
+> @@ -493,7 +493,7 @@ EXPORT_SYMBOL(acpi_os_unmap_generic_address);
+>
+>  #ifdef ACPI_FUTURE_USAGE
+>  acpi_status
+> -acpi_os_get_physical_address(void *virt, acpi_physical_address * phys)
+> +acpi_os_get_physical_address(void *virt, acpi_physical_address *phys)
+>  {
+>         if (!phys || !virt)
+>                 return AE_BAD_PARAMETER;
+> @@ -784,7 +784,7 @@ acpi_os_write_memory(acpi_physical_address phys_addr, u64 value, u32 width)
+>
+>  #ifdef CONFIG_PCI
+>  acpi_status
+> -acpi_os_read_pci_configuration(struct acpi_pci_id * pci_id, u32 reg,
+> +acpi_os_read_pci_configuration(struct acpi_pci_id *pci_id, u32 reg,
+>                                u64 *value, u32 width)
+>  {
+>         int result, size;
+> @@ -816,7 +816,7 @@ acpi_os_read_pci_configuration(struct acpi_pci_id * pci_id, u32 reg,
+>  }
+>
+>  acpi_status
+> -acpi_os_write_pci_configuration(struct acpi_pci_id * pci_id, u32 reg,
+> +acpi_os_write_pci_configuration(struct acpi_pci_id *pci_id, u32 reg,
+>                                 u64 value, u32 width)
+>  {
+>         int result, size;
+> @@ -1197,7 +1197,7 @@ bool acpi_queue_hotplug_work(struct work_struct *work)
+>  }
+>
+>  acpi_status
+> -acpi_os_create_semaphore(u32 max_units, u32 initial_units, acpi_handle * handle)
+> +acpi_os_create_semaphore(u32 max_units, u32 initial_units, acpi_handle *handle)
+>  {
+>         struct semaphore *sem = NULL;
+>
+> @@ -1554,7 +1554,7 @@ void acpi_os_release_lock(acpi_spinlock lockp, acpi_cpu_flags flags)
+>   ******************************************************************************/
+>
+>  acpi_status
+> -acpi_os_create_cache(char *name, u16 size, u16 depth, acpi_cache_t ** cache)
+> +acpi_os_create_cache(char *name, u16 size, u16 depth, acpi_cache_t **cache)
+>  {
+>         *cache = kmem_cache_create(name, size, 0, 0, NULL);
+>         if (*cache == NULL)
+> @@ -1575,7 +1575,7 @@ acpi_os_create_cache(char *name, u16 size, u16 depth, acpi_cache_t ** cache)
+>   *
+>   ******************************************************************************/
+>
+> -acpi_status acpi_os_purge_cache(acpi_cache_t * cache)
+> +acpi_status acpi_os_purge_cache(acpi_cache_t *cache)
+>  {
+>         kmem_cache_shrink(cache);
+>         return (AE_OK);
+> @@ -1594,7 +1594,7 @@ acpi_status acpi_os_purge_cache(acpi_cache_t * cache)
+>   *
+>   ******************************************************************************/
+>
+> -acpi_status acpi_os_delete_cache(acpi_cache_t * cache)
+> +acpi_status acpi_os_delete_cache(acpi_cache_t *cache)
+>  {
+>         kmem_cache_destroy(cache);
+>         return (AE_OK);
+> @@ -1614,7 +1614,7 @@ acpi_status acpi_os_delete_cache(acpi_cache_t * cache)
+>   *
+>   ******************************************************************************/
+>
+> -acpi_status acpi_os_release_object(acpi_cache_t * cache, void *object)
+> +acpi_status acpi_os_release_object(acpi_cache_t *cache, void *object)
+>  {
+>         kmem_cache_free(cache, object);
+>         return (AE_OK);
+> --
 
-This looks like a nice readability improvement / cleanup to me. If
-nobody objects, I'd say let's apply it.
+Applied along with the [2-3/3] as 6.7 material with edits in the
+subjects and changelogs.
 
-Thanks,
-David
+Thanks!
