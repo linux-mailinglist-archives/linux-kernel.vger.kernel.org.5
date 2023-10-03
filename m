@@ -2,248 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CFB7B5FC0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 06:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A057B5FC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 06:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239063AbjJCERZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 00:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53116 "EHLO
+        id S230142AbjJCETN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 00:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbjJCERN (ORCPT
+        with ESMTP id S230105AbjJCETL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 00:17:13 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6A3BB
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 21:17:10 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a234ffeb90so7691417b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 21:17:10 -0700 (PDT)
+        Tue, 3 Oct 2023 00:19:11 -0400
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFAF0BF
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 21:19:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1696306749; x=1727842749;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=w+wH1nIEYfqdOiQ3dPqdgQf6oUWPkQnhVd95q2BX08s=;
+  b=gzA8hpACAY8vHUdiw7N5+tW2Fg6qGz/cXJQW5CRHFBewwKI2XrBmAwnA
+   ZFHR4k2HDvJDQ1foJxabwNsagelE+j1Pd3yIwbitekD7+kLkiDqDZpPUZ
+   Fnyt+kSAbu0ILCI7qap3T5tJR4FTqZMSFdXDMvuwFlkJhIeJt2Y4t7aUE
+   nD8nrplcLSHcWTY5nmEPbnKgHACkhkx9XDxjvuLJkGdMxUsrus5onCjvM
+   I5KpMiMeSmX8Z4MbcpoWbyrlzfkLxgaRvqP+l7LWmRJYLbZ0drw5QRRPb
+   nZvqg/pE7tznYZEJiSa7R1DWmbJEgnxc6LTFWv8E3jYNMV5sXV2lKym7j
+   g==;
+X-CSE-ConnectionGUID: iRXXdZPaS+e6eTa3iqcIiA==
+X-CSE-MsgGUID: udZpWNJwSK+qfAHGDIoKuA==
+X-ThreatScanner-Verdict: Negative
+X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
+   d="scan'208";a="238350352"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Oct 2023 21:19:09 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Mon, 2 Oct 2023 21:18:41 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Mon, 2 Oct 2023 21:18:41 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PHIuS/NFad4v2xP9g5vm0PNhVbc6EeM1kBczRUZL54yuee46FbGsVzlqC5V+CN4/Gv7PlRWulMv3Mbi4vZ2VA7RqRw1ib9srYh1fwibn4rgNRZxW9RLnhj0bm7gFSu4wKjJsBsfv8Kb6LckCYTykUS9jUGpIR94B/QTEOJ0AUnNZ4OHbboRN29MuDbu5hKN6hq32sxGihp5SSu3PYM3Aht3rd/xJOz7dJ7DolMQICFNRL0IC4WqzzgZiWScE9WcKMabqwYjlnOTVLZoSSsZcosQd/tOSjxvDtQkTNzqMeODg2tfbuoG+0qOttlJL2r297wDDiGanhr5uFG2+e22KCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=w+wH1nIEYfqdOiQ3dPqdgQf6oUWPkQnhVd95q2BX08s=;
+ b=D9YC5xG7nQeeSZ9D5r3vboMWyazgToGeT51IQsABo6qHZsE3hwC1kBoWLCu8RKyFpyN1wGrjWxC0Uze1xo8vMhdlv+4k02btRHsugDzdD5PHyZm9qyOsvr78KttguuM5NjEuTe42XquZ/GJTWtNFIuQT8YMDaEPXIK/N4/45xgPvZmLIMTsG6aLxlz06nQY4UkXTHUqIbhKpt5zh/ddobkgdSSlQMTYxShMrwyYLVGciX+V6HDhYkMJitm0+K/MCCcbhMpxep0tV5QBjpF7+Im2B15jUwbf+HvMHAWwM93rOnUTBLzWJIw/OzDrDYXXxZLxhv5dPwJO9t09QxYHgoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696306629; x=1696911429; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xVHKEQiikdMgbU+y27225hg2LnDyDOWoRLfGIfsc16c=;
-        b=B9VnI/1U+P3xlO4fshby72X1h0LoXSFnHMrojuo6YWrsKx3lPVsRzgBGYUPvKTcBGK
-         FcDjpFGTsF8FMbho+oWi11Zr2vpj/IrIDZm4firEiv0SkSPlnyZKPlvcj/CM9DK976cA
-         xAITZzRrXuR6nGTe6iPkLbJbvGQK1ukPIEOXVVHuDGbPH4G0MICihiBssgdWgPbWzEIW
-         ju0iCM2CC8ow2EIEUNXUFgKh4eSUUS5N6SQyEMz9fyga3VF8Wom/LeWIinyTyLNKHpfy
-         NcHJe67AvH1rq8VVyX/7hA7zZTG1kVWSaO9FezEwWZGi9IoiV8mRia8fsG8Ff+KyzGAY
-         aLXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696306629; x=1696911429;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xVHKEQiikdMgbU+y27225hg2LnDyDOWoRLfGIfsc16c=;
-        b=tfvRUQm0QvSHLbpKkgNS91LxeDTIt2YJCsWAO8ZdkWiwykMAbBaJU4GfccYcVnhu3u
-         jhpHYFgdlAucA1O2TUGqg1LWy0IO89c820emI5k8G1kdqU/ChcSbTnIDB0wPrj6ZMndD
-         dTeSKWmFJ+EHOfHoBzfjU8MoS6Qe7k13W0xvLMweH4smuKT2hFZ5jXmAkcWky3q3nDWU
-         Y4FbM5DwZKHxDyaxC5UoESo09iyGPQGcz516+QuRweiky3Z5TJ3zROlFepkgCyzN/JCW
-         EIdxqw5AxpPa7tvsLuSKP84bP9F9o4pXmOxOFw80D7TJkAKOsVszuhNbnzs5XbhE6qkU
-         b0fg==
-X-Gm-Message-State: AOJu0Yyrr0uGMT2IvzsorrkLVpA4zhghKmiNOMhKknb81R1TMHH3BT0c
-        eEtktuzjPBJfO1ITaya+bONO32wrEuuo
-X-Google-Smtp-Source: AGHT+IFqdsv7HPhJyVpjFa70cd8lqSqqjzyGMmf+x/TfZsWhqaKDgORtG52OMlda2Z5v7xXb0p2XiHtPY4bs
-X-Received: from coldfire.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:2b7a])
- (user=maheshb job=sendgmr) by 2002:a25:abaf:0:b0:d7b:9830:c172 with SMTP id
- v44-20020a25abaf000000b00d7b9830c172mr211752ybi.0.1696306629637; Mon, 02 Oct
- 2023 21:17:09 -0700 (PDT)
-Date:   Mon,  2 Oct 2023 21:17:06 -0700
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20231003041706.1746634-1-maheshb@google.com>
-Subject: [PATCHv2 next 3/3] selftes/ptp: extend test to include ptp_gettimex64any()
-From:   Mahesh Bandewar <maheshb@google.com>
-To:     Netdev <netdev@vger.kernel.org>,
-        Linux <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, John Stultz <jstultz@google.com>,
-        Don Hatchett <hatch@google.com>,
-        Yuliang Li <yuliangli@google.com>,
-        Mahesh Bandewar <mahesh@bandewar.net>,
-        Mahesh Bandewar <maheshb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Rahul Rameshbabu <rrameshbabu@nvidia.com>,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=w+wH1nIEYfqdOiQ3dPqdgQf6oUWPkQnhVd95q2BX08s=;
+ b=J/o/3cgatfjgupA5y+JChmBzwdqNgqC56RoX21Ot65R7oHpLvzMnfNREC5bQK/OluBD/uC/Bc4dC/TkxQnlBPkQ93jC1cQ0qhx/XTrlwP7v94wICZqKLBd60oUfg0ixMtQphZ8W0+3dYNv8dMErpPwQs2FThv6H+a7YgBTHDwA8=
+Received: from IA1PR11MB6193.namprd11.prod.outlook.com (2603:10b6:208:3eb::19)
+ by BL3PR11MB6313.namprd11.prod.outlook.com (2603:10b6:208:3b0::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26; Tue, 3 Oct
+ 2023 04:18:38 +0000
+Received: from IA1PR11MB6193.namprd11.prod.outlook.com
+ ([fe80::8bf2:b185:cfb9:de89]) by IA1PR11MB6193.namprd11.prod.outlook.com
+ ([fe80::8bf2:b185:cfb9:de89%5]) with mapi id 15.20.6813.017; Tue, 3 Oct 2023
+ 04:18:38 +0000
+From:   <Manikandan.M@microchip.com>
+To:     <claudiu.beznea@tuxon.dev>, <sam@ravnborg.org>,
+        <bbrezillon@kernel.org>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+        <Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <lee@kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <Hari.PrasathGE@microchip.com>,
+        <Balamanikandan.Gunasundar@microchip.com>,
+        <Durai.ManickamKR@microchip.com>, <Nayabbasha.Sayed@microchip.com>,
+        <Dharma.B@microchip.com>, <Varshini.Rajendran@microchip.com>,
+        <Balakrishnan.S@microchip.com>
+Subject: Re: [PATCH v6 1/7] drm: atmel-hlcdc: add flag and driver ops to
+ differentiate XLCDC and HLCDC IP
+Thread-Topic: [PATCH v6 1/7] drm: atmel-hlcdc: add flag and driver ops to
+ differentiate XLCDC and HLCDC IP
+Thread-Index: AQHZ8SfBdAZUB301qEihS7VC9aVTxbAvwDQAgAe+2IA=
+Date:   Tue, 3 Oct 2023 04:18:38 +0000
+Message-ID: <8b721bd5-187c-6aad-39ee-e9a5ded6cee5@microchip.com>
+References: <20230927094732.490228-1-manikandan.m@microchip.com>
+ <20230927094732.490228-2-manikandan.m@microchip.com>
+ <35d861b5-eca0-c817-684c-e39a841f17db@tuxon.dev>
+In-Reply-To: <35d861b5-eca0-c817-684c-e39a841f17db@tuxon.dev>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microchip.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA1PR11MB6193:EE_|BL3PR11MB6313:EE_
+x-ms-office365-filtering-correlation-id: a3467262-2651-4e95-396f-08dbc3c7d19b
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: W96jlU05Kh9Hc3eIPHPuI/rYIr5Ims/lpb6Yt8qlO35HRbUU+UjdyKVj1j+eFXWc59jjGlJQp4nLEszZB34SIHnn4ZCX8XBYmWu3jg3srf2xoyNjso5w5+Up1/Zgq6BdwTBl5mFQ5hJe4so7AjioOeURBcnR5EI4CFcWY5koNkomU//sqmusiPCzsoGM74OsfUo5MFV6Dvw8pIQjRdWGzGsRA9FTBY87J9TiwjkgAXhFLtiRruQMcLKFSIZ2WMv6hrBVLMeJiZhP/RfwrEi6C/lE/KVrx6+xfdttv4UvAzybVEB1699rRPtp6XkUeJRE+XiQBbB/bJRwxmejHXtIgWXj67WajDwcENiWOV1VaW+YXhouY70w68h9h9SXETEKRJkGapOV+QmQ2kAHEaRnLjUECJQaWX4s9mMSIuhIwXMnr4iHGOrDHc+Fe2i+8Pm0HH0gxxMVGJk0vVbUc78Y+DJsZs57ZAb1zLbgIYt1x2hGbHdjRpb1v3ZwDa4jg8WsdjOYOLtOZEKIE/r6/3E+UJ85XMS464aOi7fhu3apHXd7IlDAh2nj73Wdgz2ndfdc6ZT4AVWyPu9A7gPND1x7Q7/7wLXTpFEOpGCvnGVzwZ1S2pr7uoiW88uzRO2zi8JGkA0E5961lo2jvH08N0mXyizt+qzw6mOHvLFY38quMno=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6193.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(366004)(136003)(39860400002)(376002)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(76116006)(316002)(66446008)(66476007)(66946007)(66556008)(64756008)(54906003)(8676002)(107886003)(8936002)(26005)(41300700001)(2616005)(36756003)(478600001)(83380400001)(53546011)(6486002)(71200400001)(6506007)(122000001)(38070700005)(86362001)(6512007)(38100700002)(921005)(31696002)(110136005)(91956017)(2906002)(7416002)(31686004)(5660300002)(4326008)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?R2IzQmFhNlJYeTBhVDFPUVR1dVpQalFzMnZXQm5Xb240VkhsckdYM1pVRW1i?=
+ =?utf-8?B?amtnMEd3K25PdEdLZmhFUjJuOGpZNFR5T21wbm5HS2RleW9UekFNTVByT2Za?=
+ =?utf-8?B?Q3MwR2U0b3ZCMEhvWnp5SU9qR1lDbC9QMnhRYWFkd0FXSlEwYWp2MFJTdENS?=
+ =?utf-8?B?WDhaWDFpNVJhdnZjOVpJalBHQzRJNCtnbXpndHQweVF3Vnl1ejkzY2tsRlFm?=
+ =?utf-8?B?Y3FobG5HR1ZpQW8vdEN5azBaaVlmN0k2dzhkaG9QdSthUXYzZjZqTVlIajFU?=
+ =?utf-8?B?TE1VN2hKRXlIZENidDJZTVJwK05HSjYreDNpeGJNSVpSa3ZVZllPYTZ4TkpP?=
+ =?utf-8?B?Ti9MSFVXeEo5L3NnWm1GVERQZjNoMFBaeUM2dXBqN3BMdlVhMytDTmJBQVBa?=
+ =?utf-8?B?NlNVZHVGdUxIYjVUSUxXZmtFUHZSV3d5ZWVpRG5mditoUHBmL1BFNmlObjJo?=
+ =?utf-8?B?eFhOUzhta3Bld1FCQzVrcHM3R01xQllneTFYYW52dmxSMkhsalFVL3BBWDd1?=
+ =?utf-8?B?WE9neTM2Rjh2Qk5WdEl4KzEvQXBBTHNHTC9SWVlOVkE1UDd1SWRZRjJUZjZi?=
+ =?utf-8?B?ZzllSEtDYmh0a1BubGtpNTYwTEJHeC8yS2VteDhySCtFTnlDNEVYSjlGUUgv?=
+ =?utf-8?B?dWh5aFFMUVNMa3JMY3NYQm5jMXNsQk9qMG9XVTJTWk82aENBdTdYS2pFOGQ4?=
+ =?utf-8?B?NUJKQTJWYjhyZitjTkVOK3Z3cmhCWWswWXZGbEc5ejVYOEVuRXZYV3hEQUhD?=
+ =?utf-8?B?RkxBQzFDK3hnRk1qWkU2YjQ3c3BTNGFRRGJGR0laQ0YyNFJpdWtKdnZlaUtP?=
+ =?utf-8?B?VjZ2czdjK1M2SVVSUU5sSVlVM2JUZkFPWCt3aWtaQTViR2JPb1RPMjNJdWFY?=
+ =?utf-8?B?MktuNjJUSTdKQnoyL0F3d1ROdUh0NGdkaEhZcGtTMWtzTThoUTBvTDlUN3p1?=
+ =?utf-8?B?SGlZN3VHY1BSY3FUenRHS1QwRmJUMnhpcmJta044aVJwc3ZNajdsMEpMSW5J?=
+ =?utf-8?B?cjkrMWVQMkhNT1pEUUI0ZXpXeUJVNFdjWlpsRjhhRys1VlVKSnlvMmMyNzVD?=
+ =?utf-8?B?aVlwOUd1MXZoMzhLYmQxOERjL1orSjVBdnM1Mml1WFZMellEUlF4UFprN1lO?=
+ =?utf-8?B?RlpLditzOXdibzFjQ2dKMEJ2TzZjVzlqMVhLZWRHSU16ZitON0l6UWZ5SDJh?=
+ =?utf-8?B?SUY2MVMvM1VTUFNTV1A1M2EzSjNXYjhuZlZxU1FVL3NVRkp6cW9aWXA5NVJ5?=
+ =?utf-8?B?U1hRd0Y1SEJ2T2tsNEJjL0J1VktmcnVNa295MmtyRmg4dWMwa0FLVW9zTUh4?=
+ =?utf-8?B?aENGSWR4ZmVxTktsWXRiWXZ1anRjdkhLZ2xGODZnaFRjd0Q3WmN0U2JDNHA0?=
+ =?utf-8?B?OFoxaEtUWFpJQjc4R0djNGxHM3E2VnJQYytheXVtMmMweHJwbjNGb1hHV0Rh?=
+ =?utf-8?B?YlluMENUL1pyRThKaEIybGZueWRkc0thSHNOTWZUVFE1UjRycjAwV3JnbThB?=
+ =?utf-8?B?MFVoTkVIKzNkRU1udVZLNDNEcklOVk9aWUhuZVQ1VllnaGFGeUZMQlM5bCsy?=
+ =?utf-8?B?STRXV1BwNjZONk1lQTNzS3RkM1F4K0VyakVYUFJway92RnIrUWROT3NCZzRn?=
+ =?utf-8?B?eG56bzR6Y2dNZlJvSGEzQ2YvUHhoREtEcGhIbkVic2NjcGs2VGNIOERVdkU3?=
+ =?utf-8?B?bjBBRG56QjdJdm16NDdHYWNRMHducGp5bjByNHVCck9FUkhsZjhJNDRjeU1J?=
+ =?utf-8?B?Y0lSd3lERHloeEpoQ010MCtmL0hGR2ZtMDVGa3JNOXJCazhYWTQzNWl5Z3c1?=
+ =?utf-8?B?SitaVFF2V0hNYSsrNlh5L3pMVE54VzJMSGpkMmQrYXNta3E0RjlTdmpqVXhG?=
+ =?utf-8?B?RUlabUJFRG9KSFY2c0tVenFsVDczODJmS08zVm9UekZDQWpzSmV0b1BYOG5z?=
+ =?utf-8?B?Z3J6Qm93allEZm5YTDJ2U0xoOWd0bEFodks2YVJnc0xsUzJKUlFNR3cwUUMy?=
+ =?utf-8?B?T0ZlUEhJdUl2NHd0UzJmdzhUdmNGTE9kZ1BNTFc4SGVuWm52VFZIVEFnc3ZL?=
+ =?utf-8?B?cVdqcndDZm1zZTZ5ajVBeml1SER4OWpTQ2dyaHlpeXp5cE9ETzE4R3BVQ3A3?=
+ =?utf-8?Q?6jGxITLpbRKLlGA96mJNXSpu+?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <940A85C27D443345A3A3E423EC700FBA@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6193.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3467262-2651-4e95-396f-08dbc3c7d19b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Oct 2023 04:18:38.5383
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: qpSrmzJCGwFY/+hfh3r7IZ324C+UYbUG6iiyTO+gCei7koD+qOP8+O9QG9fHAItYoG4byCdF/PNoZvBHRLE5gw/8eTsxOXcG8HOOftktwhk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR11MB6313
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add -y/-Y options to support PTP_SYS_OFFSET_ANY2 op. where -y represents
-samples to collect while -Y is to choose the timebase from available
-options of cycles, real, mono, or raw.
-
-Signed-off-by: Mahesh Bandewar <maheshb@google.com>
-CC: Shuah Khan <shuah@kernel.org>
-CC: Richard Cochran <richardcochran@gmail.com>
-CC: "David S. Miller" <davem@davemloft.net>
-CC: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-CC: Jakub Kicinski <kuba@kernel.org>
-CC: linux-kselftest@vger.kernel.org
-CC: netdev@vger.kernel.org
----
- tools/testing/selftests/Makefile      |  1 +
- tools/testing/selftests/ptp/testptp.c | 76 ++++++++++++++++++++++++++-
- 2 files changed, 75 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index 42806add0114..c5e59cfc9830 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -66,6 +66,7 @@ TARGETS += powerpc
- TARGETS += prctl
- TARGETS += proc
- TARGETS += pstore
-+TARGETS += ptp
- TARGETS += ptrace
- TARGETS += openat2
- TARGETS += resctrl
-diff --git a/tools/testing/selftests/ptp/testptp.c b/tools/testing/selftests/ptp/testptp.c
-index c9f6cca4feb4..549f0861e897 100644
---- a/tools/testing/selftests/ptp/testptp.c
-+++ b/tools/testing/selftests/ptp/testptp.c
-@@ -37,6 +37,12 @@
- 
- #define NSEC_PER_SEC 1000000000LL
- 
-+static char *time_base_arr[PTP_TS_MAX] = {
-+	"system time",
-+	"monotonic time",
-+	"raw-monotonic time",
-+};
-+
- /* clock_adjtime is not available in GLIBC < 2.14 */
- #if !__GLIBC_PREREQ(2, 14)
- #include <sys/syscall.h>
-@@ -145,8 +151,10 @@ static void usage(char *progname)
- 		" -T val     set the ptp clock time to 'val' seconds\n"
- 		" -x val     get an extended ptp clock time with the desired number of samples (up to %d)\n"
- 		" -X         get a ptp clock cross timestamp\n"
-+		" -y val     get an extended-any ptp clock time with the desired number of samples (up to %d) with given time-base for sandwich (with -Y opt)\n"
-+		" -Y val     sandwich timebase to use {real|mono|raw}\n"
- 		" -z         test combinations of rising/falling external time stamp flags\n",
--		progname, PTP_MAX_SAMPLES);
-+		progname, PTP_MAX_SAMPLES, PTP_MAX_SAMPLES);
- }
- 
- int main(int argc, char *argv[])
-@@ -162,6 +170,7 @@ int main(int argc, char *argv[])
- 	struct ptp_sys_offset *sysoff;
- 	struct ptp_sys_offset_extended *soe;
- 	struct ptp_sys_offset_precise *xts;
-+	struct ptp_sys_offset_any *ats;
- 
- 	char *progname;
- 	unsigned int i;
-@@ -182,6 +191,8 @@ int main(int argc, char *argv[])
- 	int pct_offset = 0;
- 	int getextended = 0;
- 	int getcross = 0;
-+	int get_ext_any = 0;
-+	int ext_any_type = -1;
- 	int n_samples = 0;
- 	int pin_index = -1, pin_func;
- 	int pps = -1;
-@@ -196,7 +207,7 @@ int main(int argc, char *argv[])
- 
- 	progname = strrchr(argv[0], '/');
- 	progname = progname ? 1+progname : argv[0];
--	while (EOF != (c = getopt(argc, argv, "cd:e:f:ghH:i:k:lL:n:o:p:P:sSt:T:w:x:Xz"))) {
-+	while (EOF != (c = getopt(argc, argv, "cd:e:f:ghH:i:k:lL:n:o:p:P:sSt:T:w:x:Xy:Y:z"))) {
- 		switch (c) {
- 		case 'c':
- 			capabilities = 1;
-@@ -273,6 +284,29 @@ int main(int argc, char *argv[])
- 		case 'X':
- 			getcross = 1;
- 			break;
-+		case 'y':
-+			get_ext_any = atoi(optarg);
-+			if (get_ext_any < 1 || get_ext_any > PTP_MAX_SAMPLES) {
-+				fprintf(stderr,
-+					"number of extended-any timestamp samples must be between 1 and %d; was asked for %d\n",
-+					PTP_MAX_SAMPLES, get_ext_any);
-+				return -1;
-+			}
-+			break;
-+		case 'Y':
-+			if (!strcasecmp(optarg, "real"))
-+				ext_any_type = PTP_TS_REAL;
-+			else if (!strcasecmp(optarg, "mono"))
-+				ext_any_type = PTP_TS_MONO;
-+			else if (!strcasecmp(optarg, "raw"))
-+				ext_any_type = PTP_TS_RAW;
-+			else {
-+				fprintf(stderr,
-+					"type needs to be one of real,mono,raw only; was given %s\n",
-+					optarg);
-+				return -1;
-+			}
-+			break;
- 		case 'z':
- 			flagtest = 1;
- 			break;
-@@ -286,6 +320,14 @@ int main(int argc, char *argv[])
- 		}
- 	}
- 
-+	/* For ptp_sys_offset_any both options 'y' and 'Y' must be given */
-+	if (get_ext_any > 0 && ext_any_type == -1) {
-+		fprintf(stderr,
-+			"For extended-any TS both options -y, and -Y are required.\n");
-+		usage(progname);
-+		return -1;
-+	}
-+
- 	fd = open(device, O_RDWR);
- 	if (fd < 0) {
- 		fprintf(stderr, "opening %s: %s\n", device, strerror(errno));
-@@ -604,6 +646,36 @@ int main(int argc, char *argv[])
- 		free(xts);
- 	}
- 
-+	if (get_ext_any) {
-+		ats = calloc(1, sizeof(*ats));
-+		if (!ats) {
-+			perror("calloc");
-+			return -1;
-+		}
-+
-+		ats->n_samples = get_ext_any;
-+		ats->ts_type = ext_any_type;
-+
-+		if (ioctl(fd, PTP_SYS_OFFSET_ANY2, ats)) {
-+			perror("PTP_SYS_OFFSET_ANY2");
-+		} else {
-+			printf("extended-any timestamp request returned %d samples\n",
-+			       get_ext_any);
-+
-+			for (i = 0; i < get_ext_any; i++) {
-+				printf("sample #%2d: %s before: %lld.%09u\n",
-+				       i, time_base_arr[ext_any_type],
-+				       ats->ts[i][0].sec, ats->ts[i][0].nsec);
-+				printf("            phc time: %lld.%09u\n",
-+				       ats->ts[i][1].sec, ats->ts[i][1].nsec);
-+				printf("            %s after: %lld.%09u\n",
-+				       time_base_arr[ext_any_type],
-+				       ats->ts[i][2].sec, ats->ts[i][2].nsec);
-+			}
-+		}
-+
-+		free(ats);
-+	}
- 	close(fd);
- 	return 0;
- }
--- 
-2.42.0.582.g8ccd20d70d-goog
-
+T24gMjgvMDkvMjMgMTE6MzEgYW0sIGNsYXVkaXUgYmV6bmVhIHdyb3RlOg0KPiBFWFRFUk5BTCBF
+TUFJTDogRG8gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5sZXNzIHlvdSBr
+bm93IHRoZSBjb250ZW50IGlzIHNhZmUNCj4gDQo+IEhpLCBNYW5pa2FuZGFuLA0KPiANCj4gT24g
+MjcuMDkuMjAyMyAxMjo0NywgTWFuaWthbmRhbiBNdXJhbGlkaGFyYW4gd3JvdGU6DQo+PiArdm9p
+ZCBhdG1lbF9obGNkY19wbGFuZV9zZXR1cF9zY2FsZXIoc3RydWN0IGF0bWVsX2hsY2RjX3BsYW5l
+ICpwbGFuZSwNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgYXRt
+ZWxfaGxjZGNfcGxhbmVfc3RhdGUgKnN0YXRlKTsNCj4+ICt2b2lkIGF0bWVsX3hsY2RjX3BsYW5l
+X3NldHVwX3NjYWxlcihzdHJ1Y3QgYXRtZWxfaGxjZGNfcGxhbmUgKnBsYW5lLA0KPj4gKyAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBhdG1lbF9obGNkY19wbGFuZV9zdGF0
+ZSAqc3RhdGUpOw0KPj4gK3ZvaWQgdXBkYXRlX2hsY2RjX2J1ZmZlcnMoc3RydWN0IGF0bWVsX2hs
+Y2RjX3BsYW5lICpwbGFuZSwNCj4+ICsgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBhdG1l
+bF9obGNkY19wbGFuZV9zdGF0ZSAqc3RhdGUsDQo+PiArICAgICAgICAgICAgICAgICAgICAgICB1
+MzIgc3IsIGludCBpKTsNCj4+ICt2b2lkIHVwZGF0ZV94bGNkY19idWZmZXJzKHN0cnVjdCBhdG1l
+bF9obGNkY19wbGFuZSAqcGxhbmUsDQo+PiArICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3Qg
+YXRtZWxfaGxjZGNfcGxhbmVfc3RhdGUgKnN0YXRlLA0KPj4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgdTMyIHNyLCBpbnQgaSk7DQo+PiArdm9pZCBobGNkY19hdG9taWNfZGlzYWJsZShzdHJ1Y3Qg
+YXRtZWxfaGxjZGNfcGxhbmUgKnBsYW5lKTsNCj4+ICt2b2lkIHhsY2RjX2F0b21pY19kaXNhYmxl
+KHN0cnVjdCBhdG1lbF9obGNkY19wbGFuZSAqcGxhbmUpOw0KPj4gK3ZvaWQNCj4+ICthdG1lbF9o
+bGNkY19wbGFuZV91cGRhdGVfZ2VuZXJhbF9zZXR0aW5ncyhzdHJ1Y3QgYXRtZWxfaGxjZGNfcGxh
+bmUgKnBsYW5lLA0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0
+cnVjdCBhdG1lbF9obGNkY19wbGFuZV9zdGF0ZSAqc3RhdGUpOw0KPj4gK3ZvaWQNCj4+ICthdG1l
+bF94bGNkY19wbGFuZV91cGRhdGVfZ2VuZXJhbF9zZXR0aW5ncyhzdHJ1Y3QgYXRtZWxfaGxjZGNf
+cGxhbmUgKnBsYW5lLA0KPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IHN0cnVjdCBhdG1lbF9obGNkY19wbGFuZV9zdGF0ZSAqc3RhdGUpOw0KPj4gK3ZvaWQgaGxjZGNf
+YXRvbWljX3VwZGF0ZShzdHJ1Y3QgYXRtZWxfaGxjZGNfcGxhbmUgKnBsYW5lLA0KPj4gKyAgICAg
+ICAgICAgICAgICAgICAgICBzdHJ1Y3QgYXRtZWxfaGxjZGNfZGMgKmRjKTsNCj4+ICt2b2lkIHhs
+Y2RjX2F0b21pY191cGRhdGUoc3RydWN0IGF0bWVsX2hsY2RjX3BsYW5lICpwbGFuZSwNCj4+ICsg
+ICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGF0bWVsX2hsY2RjX2RjICpkYyk7DQo+PiArdm9p
+ZCBobGNkY19jc2NfaW5pdChzdHJ1Y3QgYXRtZWxfaGxjZGNfcGxhbmUgKnBsYW5lLA0KPj4gKyAg
+ICAgICAgICAgICAgICAgY29uc3Qgc3RydWN0IGF0bWVsX2hsY2RjX2xheWVyX2Rlc2MgKmRlc2Mp
+Ow0KPj4gK3ZvaWQgeGxjZGNfY3NjX2luaXQoc3RydWN0IGF0bWVsX2hsY2RjX3BsYW5lICpwbGFu
+ZSwNCj4+ICsgICAgICAgICAgICAgICAgIGNvbnN0IHN0cnVjdCBhdG1lbF9obGNkY19sYXllcl9k
+ZXNjICpkZXNjKTsNCj4+ICt2b2lkIGhsY2RjX2lycV9kYmcoc3RydWN0IGF0bWVsX2hsY2RjX3Bs
+YW5lICpwbGFuZSwNCj4+ICsgICAgICAgICAgICAgICAgY29uc3Qgc3RydWN0IGF0bWVsX2hsY2Rj
+X2xheWVyX2Rlc2MgKmRlc2MpOw0KPj4gK3ZvaWQgeGxjZGNfaXJxX2RiZyhzdHJ1Y3QgYXRtZWxf
+aGxjZGNfcGxhbmUgKnBsYW5lLA0KPj4gKyAgICAgICAgICAgICAgICBjb25zdCBzdHJ1Y3QgYXRt
+ZWxfaGxjZGNfbGF5ZXJfZGVzYyAqZGVzYyk7DQo+PiArDQo+IA0KPiBUaGVzZSBhcmUgc3RpbGwg
+aGVyZS4uLiBJc24ndCB0aGUgc29sdXRpb24gSSBwcm9wb3NlZCB0byB5b3UgaW4gdGhlDQo+IHBy
+ZXZpb3VzIHZlcnNpb24gZ29vZCBlbm91Z2g/DQpIaSBDbGF1ZGl1DQoNClRoZXNlIGNoYW5nZXMg
+d2VyZSBpbnRlZ3JhdGVkIGluIHRoZSBjdXJyZW50IHBhdGNoIHNldCBiYXNlZCBvbiB0aGUgDQpz
+b2x1dGlvbiB3aGljaCB5b3UgcHJvcG9zZWQgaW4gdGhlIHByZXZpb3VzIHNlcmllcy4NClRoZSBY
+TENEQyBhbmQgSExDREMgZnVuY3Rpb25zIGNhbGxzIGFyZSBtb3ZlZCB0byBJUCBzcGVjaWZpYyBk
+cml2ZXItPm9wcw0KYW5kIHRoZWlyIGZ1bmN0aW9uIGRlY2xhcmF0aW9ucyBhcmUgbWFkZSBoZXJl
+IGluIGF0bWVsX2hsY2RjX2RjLmgNClJlc3Qgb2YgdGhlIGNoYW5nZXMgYXJlIGludGVncmF0ZWQg
+aW4gUGF0Y2ggNC83Lg0KPiANCj4gVGhhbmsgeW91LA0KPiBDbGF1ZGl1IEJlem5lYQ0KDQotLSAN
+ClRoYW5rcyBhbmQgUmVnYXJkcywNCk1hbmlrYW5kYW4gTS4NCg0K
