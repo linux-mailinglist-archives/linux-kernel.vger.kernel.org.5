@@ -2,51 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 545A07B6D11
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02CF7B6D28
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231871AbjJCP2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 11:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50528 "EHLO
+        id S240061AbjJCPaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 11:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbjJCP2b (ORCPT
+        with ESMTP id S240233AbjJCPaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 11:28:31 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D20683;
-        Tue,  3 Oct 2023 08:28:29 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id B2C0D381;
-        Tue,  3 Oct 2023 15:28:28 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net B2C0D381
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1696346908; bh=RSy9yvL4W1Cu9T7AF0rbbsqRV+E7dse1w3wvltkALnE=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=OCKiwsmb1dMTalzna5izUhvcHzilXRzbdi5vIzb5ohHPZCUS01Zi73MZi/32CSpO7
-         MYBb0nh8Af8d0oG/MHr1bvybYYw+0Ul/YPsiij3Kdz36onaTBrMcSz2CCVcP77kpAn
-         3RO9h0qtKY49lx09pht44Pq70s2ZavjRt3QU2B+rVHRtpZnR6jDl2TZzgMDCmF7W9o
-         CZ/SPS1mgNCsASH6J03YQKUI3yGXtyC29N9NhrelrHJ1nvtT4JYlny5KZvdxijRkjD
-         gG7Q1iO0b6y/NASjENCXB+vB7QBlru98P15ZcdfOMfbqXMZ1pRpks9tWRRvq+swagT
-         RFFGFvTqJAN0Q==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Glauber Costa <glommer@openvz.org>
-Subject: Re: [PATCH] docs: admin-guide: sysctl: fix details of struct
- dentry_stat_t
-In-Reply-To: <20230923195144.26043-1-rdunlap@infradead.org>
-References: <20230923195144.26043-1-rdunlap@infradead.org>
-Date:   Tue, 03 Oct 2023 09:28:27 -0600
-Message-ID: <877co3g1yc.fsf@meer.lwn.net>
+        Tue, 3 Oct 2023 11:30:02 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E155BD
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:29:57 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5033918c09eso1242959e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 08:29:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696346995; x=1696951795; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=amro8Gq6QWRGZvPI8kQ8K9MaGGmsh2qAsN2cjlX45YQ=;
+        b=C4vwP/YRS+PaN1DO/5xZBx/3P8upUxPw87HBcOcnh+QWDLvmv4pLsi1bQButNXigkz
+         rrVKBZz6xfmJldDWDyt4LJb5NmxFXarIqprw8jf4Y84Msittsjgp2w1tiLpLlsacsK/l
+         N1/c62Zyq8jI2jc+DCpwXZ7mQtlMJSjoGk0QbG41NQSnV5x913mgYLdXS6RVFjNFzoRT
+         k8yQP1f7vNkNbIMk7F4NAfer3//gM2LDxLyYjo5NGhCum7UKMSn0tEtEKCIrLlmUmqZK
+         sZaWGmlmZGB3MmzrtxZaiIICpgNcyi4kXuJnc1gPKESTJMRRxdcaJ+58oak5+8a/Fgpg
+         2ZRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696346995; x=1696951795;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=amro8Gq6QWRGZvPI8kQ8K9MaGGmsh2qAsN2cjlX45YQ=;
+        b=mvSz8RPEZ87FQ0toLerA5tlFxVjRw4Gu3CeudtEne4fmaMwgeFF5yCOlvjAXkzfyTY
+         AIvCD9msBaS7WlggzgFKDbezkQxOmnbmYT0Un8+z8bu9S6Ln2YsYqpqlwFykQBvNOnmq
+         v1ys7Eo24JnV7VrG+TMyp8coO30OPk00FG/JyTImnQPe0RrMbKUigCHkqDEU3tvZjtaq
+         jjYun+L/X/AANaDb2idkXq8ceufoJP3ssS9Dgk8qazDb4hLvpUQlm82GgL299b8TWUQ7
+         2sAXzNynVZlJLH1Mo7i5lbbybfZOROCFqZ+xjHsFZxZxoemqig4AAtEJX/ZK/To0tcFa
+         3zIQ==
+X-Gm-Message-State: AOJu0Yw979NoTefyIayeyaNWCnxtWHRQ6xeOLOEKpNY45vOWAP9OQtjg
+        0OApUmmmqgXI/rP4iDE+bmG53Sb7Hstw0SbH+xyVjg==
+X-Google-Smtp-Source: AGHT+IGx0FgrW2Ah4ADgj45zfcrPkZEtVTpoj4C20Ji+ONiK6KoICzW/yWQ22hIx9FDK7G+rLghZBNV93m9mJQ5IaUo=
+X-Received: by 2002:a05:6512:1246:b0:502:cc8d:f1fc with SMTP id
+ fb6-20020a056512124600b00502cc8df1fcmr16458163lfb.37.1696346995109; Tue, 03
+ Oct 2023 08:29:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20231001003846.29541-1-rdunlap@infradead.org>
+In-Reply-To: <20231001003846.29541-1-rdunlap@infradead.org>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Tue, 3 Oct 2023 18:29:18 +0300
+Message-ID: <CAC_iWj+rqx1v1s6p3c92iv_nyzNOA7bRX=vLZPsHOSryXrmycw@mail.gmail.com>
+Subject: Re: [PATCH] page_pool: fix documentation typos
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -56,40 +70,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> writes:
+Thanks Randy!
 
-> Commit c8c0c239d5ab moved struct dentry_stat_t to fs/dcache.c but
-> did not update its location in Documentation, so update that now.
-> Also change each struct member from int to long as done in
-> commit 3942c07ccf98.
+On Sun, 1 Oct 2023 at 03:38, Randy Dunlap <rdunlap@infradead.org> wrote:
 >
-> Fixes: c8c0c239d5ab ("fs: move dcache sysctls to its own file")
-> Fixes: 3942c07ccf98 ("fs: bump inode and dentry counters to long")
+> Correct grammar for better readability.
+>
 > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: linux-doc@vger.kernel.org
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: linux-fsdevel@vger.kernel.org
-> Cc: Luis Chamberlain <mcgrof@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Glauber Costa <glommer@openvz.org>
+> Cc: Jesper Dangaard Brouer <hawk@kernel.org>
+> Cc: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> Cc: netdev@vger.kernel.org
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
 > ---
->  Documentation/admin-guide/sysctl/fs.rst |   16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
+>  include/net/page_pool/helpers.h |    6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 >
-> diff -- a/Documentation/admin-guide/sysctl/fs.rst b/Documentation/admin-guide/sysctl/fs.rst
-> --- a/Documentation/admin-guide/sysctl/fs.rst
-> +++ b/Documentation/admin-guide/sysctl/fs.rst
-> @@ -42,16 +42,16 @@ pre-allocation or re-sizing of any kerne
->  dentry-state
->  ------------
->  
-> -This file shows the values in ``struct dentry_stat``, as defined in
-> -``linux/include/linux/dcache.h``::
-> +This file shows the values in ``struct dentry_stat_t``, as defined in
-> +``fs/dcache.c``::
+> diff -- a/include/net/page_pool/helpers.h b/include/net/page_pool/helpers.h
+> --- a/include/net/page_pool/helpers.h
+> +++ b/include/net/page_pool/helpers.h
+> @@ -16,13 +16,13 @@
+>   * page_pool_alloc_pages() call.  Drivers should use
+>   * page_pool_dev_alloc_pages() replacing dev_alloc_pages().
+>   *
+> - * API keeps track of in-flight pages, in order to let API user know
+> + * The API keeps track of in-flight pages, in order to let API users know
+>   * when it is safe to free a page_pool object.  Thus, API users
+>   * must call page_pool_put_page() to free the page, or attach
+> - * the page to a page_pool-aware objects like skbs marked with
+> + * the page to a page_pool-aware object like skbs marked with
+>   * skb_mark_for_recycle().
+>   *
+> - * API user must call page_pool_put_page() once on a page, as it
+> + * API users must call page_pool_put_page() once on a page, as it
+>   * will either recycle the page, or in case of refcnt > 1, it will
+>   * release the DMA mapping and in-flight state accounting.
+>   */
 
-Applied, thanks.
-
-jon
+Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
