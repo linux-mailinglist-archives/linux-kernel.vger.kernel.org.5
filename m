@@ -2,90 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDEC7B6957
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF1D37B6958
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:47:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbjJCMrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 08:47:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43826 "EHLO
+        id S231182AbjJCMr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 08:47:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231182AbjJCMre (ORCPT
+        with ESMTP id S229849AbjJCMr6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 08:47:34 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA73B8
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 05:47:31 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-7742be66bd3so66269885a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 05:47:31 -0700 (PDT)
+        Tue, 3 Oct 2023 08:47:58 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8B35A6;
+        Tue,  3 Oct 2023 05:47:54 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-565e54cb93aso463480a12.3;
+        Tue, 03 Oct 2023 05:47:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696337250; x=1696942050; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=eUkMz1YjApYBY4q8XnyR26sJ3sHZxbJl6pE8WfOZ43o=;
-        b=RXn3AqahD75HG6sn6VYB8PD/Lv1VxvaW2k1S+rBjHeiHv0R6QS1MY/LW5TpNpdgPAl
-         zqDerYO5d0VDPt/all232a62m1uKWLaM78bYIykBHR9aYIJr3ASQ2P8pQdnS7JjTNrYK
-         u314S+Sw5zpCxmfILSNFyPiKFMnxBf3UShuIkv8fSkwnRzBApQBNpPqQsy33PGy1npFa
-         icKZagD3Sg1U4m9/UqK60L21CSptg0vQUYgqs+1/rAjg7V1He3zU5LnTBmcTPppdejlz
-         Lf0VoHdKL/y2zR59PLTTWuWN/iQq/XJirQgw1+9lfx1rc4C1EO6w5SGQQTcPSymyopSW
-         XL4Q==
+        d=gmail.com; s=20230601; t=1696337274; x=1696942074; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Vjl1Ep1JqHB2U/AgaW1DmtTzRpgVOsnx8TJ7GUMj9hQ=;
+        b=DuvzrO1qqpMHvQDvkzY7jEhv2HqPCZoqrFZY/lfCpMWIVL7zGibOQWMdZb0HZKWkt9
+         2x9t79260m3E41YPKsVaMwp24/Y3AXGHif11z3GRDBn42ySEUgRbQTNC7ggclO5bqrbe
+         /0q8m5NtI4dMd0Nogl0oF/fR0JjrAXvqcvZy90su/9pOemErP71lRAkNYIhrEdllA0cU
+         N442Vois5AkT5Atq1U0IZ3w4xdisAxLIV16upuYtw8zo4WZw+Vz/Ji4pqZGZ9JbdE+jE
+         lgOlX/p11G2LJUMzZYOIuApI/aaWB/j+nqiwxZrm6qpIkFJe/6z+ux6hSWdRIX3PGK5+
+         ln2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696337250; x=1696942050;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eUkMz1YjApYBY4q8XnyR26sJ3sHZxbJl6pE8WfOZ43o=;
-        b=E9K2N+vQ5BA/Zu2MCBdhIcLQU8zz+MlrKcnTgQnxn1quq2v+pzZIi6Km64LwSGcQUq
-         cCShN6fhoVDemeqVJlGw2bupCeLN7wzNO0FrY2gqfWPolLVk1/oGsM4xdTMQjTp8Cbfq
-         U0rXGrscU+KGmHXz2KZmZ69517RCH6QvFyyA0WZqqDNd4vaK1GJfhr3/TZzfDmvISmj2
-         a2kDVX58UzV/8JnnVXOOd3RYYHimTaMLniwTp0fSjDSRrFdhSpUZ6FDVCgyKIqZ1P6MY
-         4h09++JMFezwimYmNNYaNVMMtJuseIpVACjExQFgpFRUhFo0KdN5hiVapkD0/4xlD5O2
-         RZNA==
-X-Gm-Message-State: AOJu0Yy2kp69dLQDklhb3X2tE9Zef0sAgd5HdzXYtPVrTFAIHb8ykJng
-        JBrfuK6gJ1TBgFfneVzu8w3Ztg==
-X-Google-Smtp-Source: AGHT+IFhFWnhz9e/oRrty0zOmjYHb3ht16GyazvZjzXu7zZmdVWPgBoZK/6p/JkRPgFustsN2/J8bg==
-X-Received: by 2002:a05:620a:306:b0:76f:11d5:6532 with SMTP id s6-20020a05620a030600b0076f11d56532mr13558305qkm.76.1696337250044;
-        Tue, 03 Oct 2023 05:47:30 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
-        by smtp.gmail.com with ESMTPSA id q16-20020a05620a039000b00770f2a690a8sm421173qkm.53.2023.10.03.05.47.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 05:47:29 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 08:47:28 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     akpm@linux-foundation.org, riel@surriel.com, mhocko@kernel.org,
-        roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
-        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
-        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] memcontrol: add helpers for hugetlb memcg
- accounting
-Message-ID: <20231003124728.GA17012@cmpxchg.org>
-References: <20231003001828.2554080-1-nphamcs@gmail.com>
- <20231003001828.2554080-2-nphamcs@gmail.com>
+        d=1e100.net; s=20230601; t=1696337274; x=1696942074;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vjl1Ep1JqHB2U/AgaW1DmtTzRpgVOsnx8TJ7GUMj9hQ=;
+        b=vBGZd6YeWX6FF2GOWU1HnCs783pofap69Qb4S1WgHkmPFhm4U83uRaVKOEcBSldS+Y
+         rOAysW10zCfo200WMeMxzLVaLioVRHuJDzpWq06rnhrYl1kD0K2Kg+5S3R3KuHMqts4X
+         Z3GWkFYLnpf2rzV1iRJ719UtcpjTqrCy81LVY5AHmsspxcYT2IbwhZVK5ri74wtssARS
+         9d7lkJ38FSlekSVcQh8hFhUIpphhKU90lOXEtLb9aCQbj5P6iTgPU7PUSFN8WkrdTUz+
+         mkv0+OVJNhqwrVZcuCdRgsrPM19B3qfFUgSqBXr1jLCDUjfLnWwlZevpkuvsIL41KUV6
+         VL8Q==
+X-Gm-Message-State: AOJu0YySIPhhtUeUaGlRZFcbXXOqCfrC3kp3EabUILQXO3Pigy8jGdwB
+        8XTqmJ4E6lmy7XfTpiCmazYvF0LLUsavzw==
+X-Google-Smtp-Source: AGHT+IGXpyVVBkt4ltfXSecY1pXkuWIkChNBZU/8K5myl+wp5qa4gSCF4OHfYwz2XfejSCpnSGjJmQ==
+X-Received: by 2002:a05:6a20:1008:b0:14d:cca3:a100 with SMTP id gs8-20020a056a20100800b0014dcca3a100mr11444815pzc.36.1696337273833;
+        Tue, 03 Oct 2023 05:47:53 -0700 (PDT)
+Received: from [172.16.116.58] ([103.15.228.93])
+        by smtp.gmail.com with ESMTPSA id u11-20020a170902b28b00b001b890009634sm1436879plr.139.2023.10.03.05.47.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Oct 2023 05:47:53 -0700 (PDT)
+Message-ID: <706a8f30-847c-2641-aeee-6c4d4692e573@gmail.com>
+Date:   Tue, 3 Oct 2023 18:17:48 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003001828.2554080-2-nphamcs@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6 1/3] dt-bindings: Add beaglecc1352
+Content-Language: en-US
+To:     Nishanth Menon <nm@ti.com>
+Cc:     greybus-dev@lists.linaro.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        vaishnav@beagleboard.org, jkridner@beagleboard.org,
+        krzysztof.kozlowski+dt@linaro.org, vigneshr@ti.com,
+        kristo@kernel.org, robh+dt@kernel.org, conor+dt@kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20231002182454.211165-1-ayushdevel1325@gmail.com>
+ <20231002182454.211165-2-ayushdevel1325@gmail.com>
+ <20231003113017.z3yyjscvvinwnyy7@putdown>
+From:   Ayush Singh <ayushdevel1325@gmail.com>
+In-Reply-To: <20231003113017.z3yyjscvvinwnyy7@putdown>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 05:18:26PM -0700, Nhat Pham wrote:
-> This patch exposes charge committing and cancelling as parts of the
-> memory controller interface. These functionalities are useful when the
-> try_charge() and commit_charge() stages have to be separated by other
-> actions in between (which can fail). One such example is the new hugetlb
-> accounting behavior in the following patch.
-> 
-> The patch also adds a helper function to obtain a reference to the
-> current task's memcg.
-> 
-> Signed-off-by: Nhat Pham <nphamcs@gmail.com>
+>> +
+>> +  reset-gpios:
+>> +    maxItems: 1
+>> +
+>> +  power-gpios:
+>> +    maxItems: 3
+>> +    description:
+>> +      The device has three power rails that are exposed on external pins VDDS,
+>> +      VDDR and DCOUPL.
+> Shouldn't these be regulators? The power rails are input to the MCU,
+> correct?
+> The properties should be something like:
+> vdds-supply
+> vddr-supply
+> dcoupl-supply ? (not sure what dcoupl is, but description should provide
+> 		that info).
+>
+> the gpio controls for those can be modelled by regulator-gpio ?
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+I picked up power lines from "CC13xx/CC26xx Hardware Configuration and 
+PCB Design Considerations Application Report" present under "8.14 
+Network Processor" of CC1352P7 data sheet.
+
+But now looking closer, it doesn't seem like DCOUPL can be supplied 
+externally for CC1352P7 and thus should probably be removed.
+
+Also, it seems like for CC1352P7, VDDR must always be supplied 
+internally (The data sheet states: "Internal supply, must be powered 
+from the internal DC/DC converter or the internal LDO"). Thus, it should 
+be safe to remove VDDR as well.
+
+
+That means only VDDS needs to be present for power line.
+
+
+CC13xx/CC26xx Hardware Configuration and PCB Design Considerations 
+Application Report: https://www.ti.com/lit/pdf/swra640
+
+CC1352P7 Data sheet: https://www.ti.com/lit/gpn/CC1352P7
+
+
+Sincerely,
+
+Ayush Singh
+
