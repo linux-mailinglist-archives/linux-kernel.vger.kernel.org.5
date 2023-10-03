@@ -2,220 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6CD7B6731
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E457B6737
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239715AbjJCLGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 07:06:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
+        id S231776AbjJCLHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 07:07:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbjJCLGc (ORCPT
+        with ESMTP id S231292AbjJCLHs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 07:06:32 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F41A9B;
-        Tue,  3 Oct 2023 04:06:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=GaXzZoipvnxCVI1GArmacT2FQhMefy+jlKRcH6UZtd8=; b=NwufeYsdaY1OhMFMKdSIwMXStP
-        n2c4RGkyfcmfXF4VJ8D9D5QmNz6zjcxuSdw5XI/C/jOEfhBUkxBP6DURGl16lGlMdQPR/SOflie3I
-        V19ehP9j52oEBwzjTCSxl6g53y/Sci01Kn7IhAGbhvA7GLP9lmZNFE9T7sPjoKfe7bbLy7I8/W4AP
-        HqgoJMkFSSTsUbBCNhUcBt2+Cv82LmQMgWtyz0LBQc0oMcaGBXWuxlgyjsobVzMIrLGVwgkUGR1Aq
-        /m3SQKiRmw9j5XJw0JA9tI3jL1ZUx0Sx4gqrE2HER5BhU7K3W8lO9PhX3hTXz1OUb9j8Q9+enuoVS
-        H23iiI6A==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33198)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qndEI-0001Xy-32;
-        Tue, 03 Oct 2023 12:06:19 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qndEI-0007oo-Vj; Tue, 03 Oct 2023 12:06:18 +0100
-Date:   Tue, 3 Oct 2023 12:06:18 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Camelia Groza <camelia.groza@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor@kernel.org>,
-        Sean Anderson <sean.anderson@seco.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>
-Subject: Re: [RFC PATCH v2 net-next 08/15] net: phylink: allow PCS to handle
- C73 autoneg for phy-mode = "internal"
-Message-ID: <ZRv1qt7+WbQd457L@shell.armlinux.org.uk>
-References: <20230923134904.3627402-1-vladimir.oltean@nxp.com>
- <20230923134904.3627402-9-vladimir.oltean@nxp.com>
- <20231002141743.lbmb66q22dmuyi6f@skbuf>
+        Tue, 3 Oct 2023 07:07:48 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4C7A1;
+        Tue,  3 Oct 2023 04:07:44 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3939SCNL016483;
+        Tue, 3 Oct 2023 11:07:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=D4oUZ8kfQKPTdcqTl4WRNkRlvKVgbbEpc84zKOpgbNI=;
+ b=jLNKXJRxSkUXQNnmmyGbBCFs3BCCoEoS5P9y2N0mLOZqE/y6aAVXtBEAkS/Stvr1kWpl
+ emXm+hWCNroYgdhcIyzPZzGYiLtD2k3jkgbmejHgatVmx2g9ilQLXEIeLaTuGHS+MWQu
+ G8SRMF+LfwcwtLml9d+s75DuqyqQq/BGy44WxYlja5xQDAVXxO+tXM8r3X7BEwx+hywz
+ m5GEMt+9xgfIgXqBMFbM2+pRurkX7Orrlb557Q5kUjzV8xzevnm4jFK7oAkUJ74SS0pp
+ QLhN/8St/2N582uaIiM7MXKBbXZs/dvKd3ljtHi1tNaG2MlWkc6O4NKnaUn+MWy90udw 2w== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tg77es4dp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Oct 2023 11:07:37 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 393B7aCO012337
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 3 Oct 2023 11:07:36 GMT
+Received: from [10.204.67.150] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 3 Oct
+ 2023 04:07:34 -0700
+Message-ID: <856929f7-7e6e-8dd5-a12f-9f4de524ce61@quicinc.com>
+Date:   Tue, 3 Oct 2023 16:37:30 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231002141743.lbmb66q22dmuyi6f@skbuf>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v1 2/3] misc: fastrpc: Free DMA handles for RPC calls with
+ no arguments
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>
+CC:     <ekangupt@qti.qualcomm.com>, <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        <fastrpc.upstream@qti.qualcomm.com>, stable <stable@kernel.org>
+References: <1695973360-14369-1-git-send-email-quic_ekangupt@quicinc.com>
+ <1695973360-14369-3-git-send-email-quic_ekangupt@quicinc.com>
+ <92db4a0d-c416-6a1c-ad71-15c2156d59aa@linaro.org>
+Content-Language: en-US
+From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
+In-Reply-To: <92db4a0d-c416-6a1c-ad71-15c2156d59aa@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: JqGyO4giKgrIVUUtVZwsksOA_ciFTEtr
+X-Proofpoint-GUID: JqGyO4giKgrIVUUtVZwsksOA_ciFTEtr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-03_08,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ mlxscore=0 bulkscore=0 clxscore=1015 malwarescore=0 suspectscore=0
+ spamscore=0 priorityscore=1501 mlxlogscore=999 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310030079
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
 
-On Mon, Oct 02, 2023 at 05:17:43PM +0300, Vladimir Oltean wrote:
-> Hi Russell,
+
+On 10/2/2023 3:00 PM, Srinivas Kandagatla wrote:
 > 
-> On Sat, Sep 23, 2023 at 04:48:57PM +0300, Vladimir Oltean wrote:
-> > Some phylink and phylib based systems might want to operate on backplane
-> > media types ("K" in the name), and thus, picking a phy_interface_t for
-> > them becomes a challenge.
-> > 
-> > phy_interface_t is a description of the connection between the MAC and
-> > the PHY, or if a MAC-side PCS is present, the connection between that
-> > and the next link segment (which can be remote).
-> > 
-> > A MAC-side PCS is so far considered to be a PCS handling link modes with
-> > optional C37 autoneg. But C73 autoneg (for backplanes and SFP28 modules)
-> > is not at the same level in the OSI layering, so that existing model may
-> > or may not apply.
-> > 
-> > (a) If we say that the PCS is MAC-side for C73 modes as well, the
-> >     implication seems to be that the phy-mode should be one of
-> >     PHY_INTERFACE_MODE_10GBASEKR, PHY_INTERFACE_MODE_1000BASEKX, etc.
-> >     Similar to PHY_INTERFACE_MODE_1000BASEX which imitates the link mode
-> >     ETHTOOL_LINK_MODE_1000baseX_Full_BIT.
-> > 
-> > (b) If we say that the PCS is not MAC-side, but rather that the
-> >     phylink_pcs represents an entire non-phylib backplane PHY which may
-> >     negotiate one of many link modes (like a copper phylib PHY), then
-> >     the phy-mode should probably be one of PHY_INTERFACE_MODE_XGMII,
-> >     XLGMII etc. Or rather, because there is no MII pinout per se and the
-> >     backplane PHY / phylink_pcs is internal, we can also use
-> >     PHY_INTERFACE_MODE_INTERNAL.
-> > 
-> > The trouble with (a), in my opinion, is that if we let the phy_interface_t
-> > follow the link mode like in the case of Base-X fiber modes, we have to
-> > consider the fact that C73 PHYs can advertise multiple link modes, so
-> > the phy_interface_t selection will be arbitrary, and any phy_interface_t
-> > selection will have to leave in the "supported" and "advertised" masks
-> > of link modes all the other backplane modes. This may be hard to justify.
-> > 
-> > That is the reasoning based on which I selected this phy-mode to
-> > describe the setup in Layerscape SoCs which have integrated backplane
-> > autoneg support. The changes in phylink permit the managed =
-> > "in-band-status" fwnode property to be extended for C73 autoneg, which
-> > is then controllable through ethtool. With phy-mode = "internal" in an
-> > in-band autoneg mode, we advertise all backplane link modes. The list is
-> > not exhaustive and may be extended in the future.
-> > 
-> > Link: https://lore.kernel.org/netdev/ZOXlpkbcAZ4okric@shell.armlinux.org.uk/
-> > Link: https://lore.kernel.org/netdev/ZGIkGmyL8yL1q1zp@shell.armlinux.org.uk/
-> > Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> > ---
-> > v1->v2: patch is new
-> > 
-> >  drivers/net/phy/phylink.c | 19 ++++++++++++++++++-
-> >  include/linux/phylink.h   |  1 +
-> >  2 files changed, 19 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-> > index 548130d77302..88ace7e203c3 100644
-> > --- a/drivers/net/phy/phylink.c
-> > +++ b/drivers/net/phy/phylink.c
-> > @@ -972,6 +972,21 @@ static int phylink_parse_mode(struct phylink *pl,
-> >  			phylink_set(pl->supported, 100000baseDR2_Full);
-> >  			break;
-> >  
-> > +		case PHY_INTERFACE_MODE_INTERNAL:
-> > +			phylink_set(pl->supported, 1000baseKX_Full);
-> > +			phylink_set(pl->supported, 10000baseKX4_Full);
-> > +			phylink_set(pl->supported, 10000baseKR_Full);
-> > +			phylink_set(pl->supported, 25000baseCR_Full);
-> > +			phylink_set(pl->supported, 25000baseKR_Full);
-> > +			phylink_set(pl->supported, 25000baseCR_S_Full);
-> > +			phylink_set(pl->supported, 25000baseKR_S_Full);
-> > +			phylink_set(pl->supported, 40000baseKR4_Full);
-> > +			phylink_set(pl->supported, 50000baseKR2_Full);
-> > +			phylink_set(pl->supported, 50000baseKR_Full);
-> > +			phylink_set(pl->supported, 100000baseKR4_Full);
-> > +			phylink_set(pl->supported, 100000baseKR2_Full);
-> > +			break;
+> 
+> On 29/09/2023 08:42, Ekansh Gupta wrote:
+>> The FDs for DMA handles to be freed is updated in fdlist by DSP over
+>> a remote call. This holds true even for remote calls with no
+>> arguments. To handle this, get_args and put_args are needed to
+>> be called for remote calls with no arguments also as fdlist
+>> is allocated in get_args and FDs updated in fdlist is freed
+>> in put_args.
+>>
+>> Fixes: 8f6c1d8c4f0c ("misc: fastrpc: Add fdlist implementation")
+>> Cc: stable <stable@kernel.org>
+>> Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
+>> ---
+>>   drivers/misc/fastrpc.c | 23 ++++++++++-------------
+>>   1 file changed, 10 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
+>> index fb92197..a52701c 100644
+>> --- a/drivers/misc/fastrpc.c
+>> +++ b/drivers/misc/fastrpc.c
+>> @@ -1091,6 +1091,7 @@ static int fastrpc_put_args(struct 
+>> fastrpc_invoke_ctx *ctx,
+>>           }
+>>       }
+>> +    /* Clean up fdlist which is updated by DSP */
+>>       for (i = 0; i < FASTRPC_MAX_FDLIST; i++) {
+>>           if (!fdlist[i])
+>>               break;
+>> @@ -1157,11 +1158,9 @@ static int fastrpc_internal_invoke(struct 
+>> fastrpc_user *fl,  u32 kernel,
+>>       if (IS_ERR(ctx))
+>>           return PTR_ERR(ctx);
+> <---
+>> -    if (ctx->nscalars) {
+>> -        err = fastrpc_get_args(kernel, ctx);
+>> -        if (err)
+>> -            goto bail;
+>> -    }
+>> +    err = fastrpc_get_args(kernel, ctx);
+>> +    if (err)
+>> +        goto bail;
+> -->
+> I dont see any point of the above change as fastrpc_internal_invoke will 
+> be called from kernel with nscalars always set.
+> 
+> do you see a path that does not set this?
+> 
+The context specific rpra buffer is allocated as part of 
+fastrpc_get_args and there is a possibility that the DSP intends to 
+update fdlist for a call with 0 nscalars. In that scenario, the driver 
+needs to ensure that the rpra is allocated which will carry the fdlist. 
+The same can be extended to crc and dsp perf memory(to be added, patches 
+shared for missing features) for remote calls with 0 nscalars.
 
-I wonder whether this should just set all link modes, much like
-phylink_get_capabilities() allows.
+Thanks for taking your time to review the patches Srini, please let me 
+know if you have more queries.
 
-I'm also wondering whether the contents of this switch() statement
-should now just do:
-
-		case PHY_INTERFACE_... (for each supported mode):
-			cals = ~(MAC_SYM_PAUSE | MAC_ASYM_PAUSE);
-			caps = phylink_get_capabilities(interface, caps,
-							RATE_MATCH_NONE);
-			phylink_caps_to_linkmodes(pl->supported, caps);
-			break;
-
-rather than duplicating the logic.
-
-That said, 10GBASER and 10GKR are treated slightly differently because
-of the problem with PHYs like 88x3310, and I think it's now difficult
-to undo that bit of history.
-
-> > +
-> >  		default:
-> >  			phylink_err(pl,
-> >  				    "incorrect link mode %s for in-band status\n",
-> > @@ -1109,7 +1124,9 @@ static void phylink_mac_config(struct phylink *pl,
-> >  
-> >  static bool phylink_pcs_handles_an(phy_interface_t iface, unsigned int mode)
-> >  {
-> > -	return phy_interface_mode_is_8023z(iface) && phylink_autoneg_inband(mode);
-> > +	return (phy_interface_mode_is_8023z(iface) ||
-> > +		iface == PHY_INTERFACE_MODE_INTERNAL) &&
-> > +	       phylink_autoneg_inband(mode);
-
-Is this true also for DSA devices that use "internal" mode? I'm
-wondering whether this will cause the PHY to be ignored/remain
-unattached in DSA switches because of the changes in patch 7.
-
-> >  }
-> >  
-> >  static void phylink_pcs_an_restart(struct phylink *pl)
-> > diff --git a/include/linux/phylink.h b/include/linux/phylink.h
-> > index 2b886ea654bb..7e8e26001587 100644
-> > --- a/include/linux/phylink.h
-> > +++ b/include/linux/phylink.h
-> > @@ -141,6 +141,7 @@ static inline unsigned int phylink_pcs_neg_mode(unsigned int mode,
-> >  
-> >  	case PHY_INTERFACE_MODE_1000BASEX:
-> >  	case PHY_INTERFACE_MODE_2500BASEX:
-> > +	case PHY_INTERFACE_MODE_INTERNAL:
-> >  		/* 1000base-X is designed for use media-side for Fibre
-> >  		 * connections, and thus the Autoneg bit needs to be
-> >  		 * taken into account. We also do this for 2500base-X
-
-Thinking about DSA cases, I don't think this change would be an issue
-because where DSA uses "internal" there isn't a PCS, so this won't
-matter.
-
-Note that as there is now no need for anything outside phylink.c to
-reference this function, I have plans at some point to move it into
-the .c file rather than keeping it as an inline in the header file.
-It was temporarily necessary while introducing it to be in the
-header.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+-ekansh
+> --srini
+>>       /* make sure that all CPU memory writes are seen by DSP */
+>>       dma_wmb();
+>> @@ -1185,14 +1184,12 @@ static int fastrpc_internal_invoke(struct 
+>> fastrpc_user *fl,  u32 kernel,
+>>       if (err)
+>>           goto bail;
+>> -    if (ctx->nscalars) {
+>> -        /* make sure that all memory writes by DSP are seen by CPU */
+>> -        dma_rmb();
+>> -        /* populate all the output buffers with results */
+>> -        err = fastrpc_put_args(ctx, kernel);
+>> -        if (err)
+>> -            goto bail;
+>> -    }
+>> +    /* make sure that all memory writes by DSP are seen by CPU */
+>> +    dma_rmb();
+>> +    /* populate all the output buffers with results */
+>> +    err = fastrpc_put_args(ctx, kernel);
+>> +    if (err)
+>> +        goto bail;
+>>   bail:
+>>       if (err != -ERESTARTSYS && err != -ETIMEDOUT) {
