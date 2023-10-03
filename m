@@ -2,127 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 239907B631A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325867B631D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230373AbjJCIEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 04:04:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
+        id S239234AbjJCIEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 04:04:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjJCIEh (ORCPT
+        with ESMTP id S239205AbjJCIEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 04:04:37 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23F7A3
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 01:04:34 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9936b3d0286so100949266b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 01:04:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696320273; x=1696925073; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FMsF5DJh2guzU9Ha3ynv7ZZbV5goApHMc/5lrWxMlbE=;
-        b=q7x1iK1hLx/t0W9PW4b35vi46jw6LKf/wHkuceuRGHJAJa+YN0Ulmv9hbq07dN4kZ8
-         Qy7Jh7IBBY2XpBDZ7NV2RDmxEPzGHpShtn3n4LokVr05L0n1H1S2ppZdlnozcHK2mT6G
-         U+H/T9SxTinP1KIf0b80LaX7F28UEH8ZsKAGQ1Vra/cXlpjYYX/gPG91SrchhitRd88B
-         jwvmTqkOqn48fZlaEtMPEZhxI9h5aAqH2DUgdWYlQdNfeQo0i+l9ZNSLlkx+SpCfnUVG
-         rEnttUCiTM+WKpnNSOgTLJUP8XARK76xB4WWe10ZqWHMXbJPsvaDIVnmCe9J/L5OLsZA
-         0TNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696320273; x=1696925073;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FMsF5DJh2guzU9Ha3ynv7ZZbV5goApHMc/5lrWxMlbE=;
-        b=d824q4Y3g9NswfCeWehz5uDpw7BmCkIHRj/XyXIQpOoTH3hSbN/oSp5CUXcjikUf6f
-         CLkJ7TJOAb3I8pMYqsJF38Lfr2J85YVDRoA44iwzQTkfkQg4lqLlXqkGRXGdtqF4+rR3
-         04jek+nx0VjyuDLSM7oDOtaGQbEhh7JBa1uwrxM+NEZKxMhgftDu70Wex5R8YcIKudsv
-         qBxTEQGMukF1Hg7XTjtCmABmvqf+dFNQmGadU7DJwR7FMGSuOl6NEoj1DonbDvsgTSYv
-         sj3slFM68rlJvIha0PqW5MbduWTDl4RGaypGIYDtmrX4e8e4mbyBBVFceHfVudi4+zD3
-         ojEg==
-X-Gm-Message-State: AOJu0YyJdqPbIR7J59G0K+MmGOTl8Hi+wWqUtUv4lnGOvUjbqLabsoFg
-        HUE44vw/8+cBNPMLCgns+4Q+si5dQKdGoIMrfu1BGQ==
-X-Google-Smtp-Source: AGHT+IG2uo37ARAdywaEtmkYOWQSz05+CYQvGoVZhU8Pbx7tJgpOURX/cqhR+9o9gcmWrJVEWr8MEY3rQcWHLHjPsNk=
-X-Received: by 2002:a17:906:20dd:b0:9ae:729c:f647 with SMTP id
- c29-20020a17090620dd00b009ae729cf647mr10694745ejc.77.1696320273081; Tue, 03
- Oct 2023 01:04:33 -0700 (PDT)
+        Tue, 3 Oct 2023 04:04:42 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC2FA3;
+        Tue,  3 Oct 2023 01:04:39 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3937UXkH029952;
+        Tue, 3 Oct 2023 08:04:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=/VgCu5h1nT1rdcGyJuB5n5ilmO0Vmv6JYljZEWurec0=;
+ b=Dy3D6+GWlqV0MLxGJJwCA/glEYktMe5ihNFbs6SAnoUI9iSpIMuL+oeTpsNOJj2tu+Q/
+ ktxJiZOxMB2WMEog/UYmYH2aUsy+n5qQ4p1sWvJTnrzt+mTJN5DeAp+6A1BpUUP41UTf
+ LPsl2anTHYoeS1eWY61Gy+WdGIHA9EHCcjHd/eFiKolAniOJ4Kmz+Ljo4sGTTjdlYgVQ
+ wjrQ1j6Y3bx/Gl/vL8oUpfjNGA1F9etvFd8JDeOMU4CopjEYwTccUdLSFhCFAffY166r
+ kZ3Y3OoYQWFIHolzc/8CSbD6N92fCVtXn3UIckeqHjD28ctZlk+/Z2BFdmY6rDci8pID 0Q== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tgbjgrd21-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Oct 2023 08:04:31 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39384UjL025473
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 3 Oct 2023 08:04:30 GMT
+Received: from [10.214.66.58] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 3 Oct
+ 2023 01:04:26 -0700
+Message-ID: <5d99708e-95a0-401b-b636-4f535fdd5905@quicinc.com>
+Date:   Tue, 3 Oct 2023 13:34:23 +0530
 MIME-Version: 1.0
-References: <20230922175741.635002-1-yosryahmed@google.com>
- <ZRGQIhWF02SRzN4D@dhcp22.suse.cz> <CAJD7tkbWz7mx6mUrvFQHP10ncqL-iVwD4ymHTm=oXW5qGgrZtA@mail.gmail.com>
- <ZRvJa1Hza1RS28+G@dhcp22.suse.cz>
-In-Reply-To: <ZRvJa1Hza1RS28+G@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 3 Oct 2023 01:03:53 -0700
-Message-ID: <CAJD7tkaOfsKC=F1inymxz8C0UT5=Sjo830bYLsoPd6WOOShyDQ@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] mm: memcg: fix tracking of pending stats updates values
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] arm64: dts: qcom: Add interconnect nodes for SDX75
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <dmitry.baryshkov@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1695720564-2978-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1695720564-2978-2-git-send-email-quic_rohiagar@quicinc.com>
+ <35703a29-5c5a-47a8-9a4b-04953dc3faba@linaro.org>
+Content-Language: en-US
+From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
+In-Reply-To: <35703a29-5c5a-47a8-9a4b-04953dc3faba@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: voej0zTun7aGK_ecJJ7QpyWL5kctmoBL
+X-Proofpoint-GUID: voej0zTun7aGK_ecJJ7QpyWL5kctmoBL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-03_04,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 spamscore=0 priorityscore=1501 adultscore=0
+ suspectscore=0 bulkscore=0 impostorscore=0 mlxlogscore=694 phishscore=0
+ malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310030056
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 12:57=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
-e:
->
-> On Mon 25-09-23 10:11:05, Yosry Ahmed wrote:
-> > On Mon, Sep 25, 2023 at 6:50=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
-wrote:
-> > >
-> > > On Fri 22-09-23 17:57:38, Yosry Ahmed wrote:
-> > > > While working on adjacent code [1], I realized that the values pass=
-ed
-> > > > into memcg_rstat_updated() to keep track of the magnitude of pendin=
-g
-> > > > updates is consistent. It is mostly in pages, but sometimes it can =
-be in
-> > > > bytes or KBs. Fix that.
-> > >
-> > > What kind of practical difference does this change make? Is it worth
-> > > additional code?
-> >
-> > As explained in patch 2's commit message, the value passed into
-> > memcg_rstat_updated() is used for the "flush only if not worth it"
-> > heuristic. As we have discussed in different threads in the past few
-> > weeks, unnecessary flushes can cause increased global lock contention
-> > and/or latency.
-> >
-> > Byte-sized paths (percpu, slab, zswap, ..) feed bytes into the
-> > heuristic, but those are interpreted as pages, which means we will
-> > flush earlier than we should. This was noticed by code inspection. How
-> > much does this matter in practice? I would say it depends on the
-> > workload: how many percpu/slab allocations are being made vs. how many
-> > flushes are requested.
-> >
-> > On a system with 100 cpus, 25M of stat updates are needed for a flush
-> > usually, but ~6K of slab/percpu updates will also (mistakenly) cause a
-> > flush.
->
-> This surely depends on workload and that is understandable. But it would
-> be really nice to provide some numbers for typical workloads which
-> exercise slab heavily.
 
-If you have a workload in mind I can run it and see how many flushes
-we get with/without this patch. The first thing that pops into my head
-is creating a bunch of empty files but I don't know if that's the best
-thing to get numbers from.
+On 9/27/2023 4:17 PM, Konrad Dybcio wrote:
+> On 26.09.2023 11:29, Rohit Agarwal wrote:
+>> Add interconnect nodes to support interconnects on SDX75.
+>> Also parallely add the interconnect property for UART required
+>> so that the bootup to shell does not break with interconnects
+>> in place.
+>>
+>> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+>> ---
+> [...]
+>
+>>   		scm: scm {
+>>   			compatible = "qcom,scm-sdx75", "qcom,scm";
+>> @@ -434,6 +448,8 @@
+>>   			clock-names = "m-ahb",
+>>   				      "s-ahb";
+>>   			iommus = <&apps_smmu 0xe3 0x0>;
+>> +			interconnects = <&clk_virt MASTER_QUP_CORE_0 0 &clk_virt SLAVE_QUP_CORE_0 0>;
+> 0 -> QCOM_ICC_TAG_ALWAYS (dt-bindings/interconnect/qcom,icc.h)
+Ok, Let me update this.
 
-> --
-> Michal Hocko
-> SUSE Labs
+Thanks,
+Rohit.
+>
+> Konrad
