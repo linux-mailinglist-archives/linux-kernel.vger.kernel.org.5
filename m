@@ -2,96 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE8B7B6EC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5C77B6EC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231390AbjJCQnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:43:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52488 "EHLO
+        id S231450AbjJCQnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbjJCQna (ORCPT
+        with ESMTP id S231255AbjJCQnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:43:30 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 177E3A7;
-        Tue,  3 Oct 2023 09:43:24 -0700 (PDT)
-X-QQ-mid: bizesmtp77t1696351393tys816h6
-Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Wed, 04 Oct 2023 00:43:10 +0800 (CST)
-X-QQ-SSF: 01200000004000B06000B00A0000000
-X-QQ-FEAT: rZJGTgY0+YOUZ7bEZUW/04TLkOEPwIzf85azerfjIvKCpbffmSPTMh+v0i1qs
-        tgGncN4m1gwYkonbPq1eThUWyRnw2TvHRdPkhotwvL4yixGCsT2jXlN4skTNt6MvuA6kwSQ
-        rhXcCeAhBRTLiHe0qE0ZhLWYOUF5Dk9VfcH8eilV2t870tu6DR2i23OeALoXGmUNJBJvfnJ
-        Z1IFcy2cWKUb3kNJtAb1ehtVQ9ouvPZD4ZecOK61t58ulaeEklH1YJvF9cZ4RNXxlsjLup+
-        PNMUTGSq0O02jlqadVdMZDLXHDb7LwUO1VGnIQ5EapioiWpzabTBgqQ3fobnD6OUDOJuSc5
-        vrBIkkZjpB6HD4lm3j595L+yYCuyXPLf0lUshBD
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 5112236808884648054
-From:   Yuan Tan <tanyuan@tinylab.org>
-To:     falcon@tinylab.org
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux@weissschuh.net, palmer@rivosinc.com,
-        paul.walmsley@sifive.com, paulburton@kernel.org,
-        paulmck@kernel.org, tim.bird@sony.com, tsbogend@alpha.franken.de,
-        w@1wt.eu
-Subject: Re: [PATCH v1 0/7] DCE/DSE: Add Dead Syscalls Elimination support, part1
-Date:   Wed,  4 Oct 2023 00:43:09 +0800
-Message-Id: <20231003164309.463912-1-tanyuan@tinylab.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1695679700.git.falcon@tinylab.org>
-References: <cover.1695679700.git.falcon@tinylab.org>
+        Tue, 3 Oct 2023 12:43:40 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 85FE79E;
+        Tue,  3 Oct 2023 09:43:37 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D04B8C15;
+        Tue,  3 Oct 2023 09:44:15 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 722483F762;
+        Tue,  3 Oct 2023 09:43:35 -0700 (PDT)
+Message-ID: <acc2a406-2cff-eb3b-7661-1a93d4749bf2@arm.com>
+Date:   Tue, 3 Oct 2023 17:43:34 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: Yes, score=6.1 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_PBL,RCVD_IN_SBL_CSS,RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  3.3 RCVD_IN_SBL_CSS RBL: Received via a relay in Spamhaus SBL-CSS
-        *      [43.154.54.12 listed in zen.spamhaus.org]
-        *  3.3 RCVD_IN_PBL RBL: Received via a relay in Spamhaus PBL
-        * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        * -0.0 RCVD_IN_DNSWL_NONE RBL: Sender listed at
-        *      https://www.dnswl.org/, no trust
-        *      [43.154.54.12 listed in list.dnswl.org]
-        *  1.3 RCVD_IN_VALIDITY_RPBL RBL: Relay in Validity RPBL,
-        *      https://senderscore.org/blocklistlookup/
-        *      [43.154.54.12 listed in bl.score.senderscore.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-X-Spam-Level: ******
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 5/7] coresight: tmc: Add support for reading tracedata
+ from previous boot
+Content-Language: en-US
+To:     Linu Cherian <lcherian@marvell.com>, suzuki.poulose@arm.com,
+        mike.leach@linaro.org, leo.yan@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, sgoutham@marvell.com,
+        gcherian@marvell.com, Anil Kumar Reddy <areddy3@marvell.com>,
+        Tanmay Jagdale <tanmay@marvell.com>
+References: <20230929133754.857678-1-lcherian@marvell.com>
+ <20230929133754.857678-6-lcherian@marvell.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20230929133754.857678-6-lcherian@marvell.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I didn't test DSE with explicit KEEP() in the previous mail. So, I will make up
-for it now.
-
-This test result is about DEAD_CODE_DATA_ELIMINATION (DCE) and dead syscalls
-elimination (DSE). It's based on config[1] and a simple hello.c initramfs.
-
-We set CONFIG_SYSCALLS_USED="sys_write sys_exit sys_reboot", which is used by
-hello.c to simply print "Hello" then exit and shut down qemu.
-
-|                                                              | syscall remain | vmlinux size     | vmlinux after strip |
-| ------------------------------------------------------------ | -------------- | ---------------- | ------------------- |
-| disable DCE                                                  | 236            | 2559632          | 1963400             |
-| enable DCE                                                   | 208            | 2037384 (-20.4%) | 1485776 (-24.3%)    |
-| enable DCE and DSE with explicit KEEP() of except table      | 17             | 1899208 (-25.8%) | 1387272 (-29.3%)    |
-| enable DCE and DSE without KEEP() (By SHF_GROUP method)      | 3              | 1856640 (-27.6%) | 1354424 (-31.0%)    |
-| enable DCE and DSE without KEEP() (By SHE_LINK_ORDER method) | 3              | 1856664 (-27.6%) | 1354424 (-31.0%)    |
 
 
-It shows that dead syscalls elimination can save 7% of space based on DCE.
+On 29/09/2023 14:37, Linu Cherian wrote:
+> * Introduce a new mode CS_MODE_READ_PREVBOOT for reading tracedata
+>   captured in previous boot.
+> 
+> * Add special handlers for preparing ETR/ETF for this special mode
+> 
+> * User can read the trace data as below
+> 
+>   For example, for reading trace data from tmc_etf sink
+> 
+>   1. cd /sys/bus/coresight/devices/tmc_etfXX/
+> 
+>   2. Change mode to READ_PREVBOOT
+> 
+>      #echo 1 > read_prevboot
+> 
+>   3. Dump trace buffer data to a file,
+> 
+>      #dd if=/dev/tmc_etrXX of=~/cstrace.bin
+> 
+>   4. Reset back to normal mode
+> 
+>      #echo 0 > read_prevboot
+> 
+> Signed-off-by: Anil Kumar Reddy <areddy3@marvell.com>
+> Signed-off-by: Tanmay Jagdale <tanmay@marvell.com>
+> Signed-off-by: Linu Cherian <lcherian@marvell.com>
+> ---
+>  .../coresight/coresight-etm4x-core.c          |   1 +
+>  .../hwtracing/coresight/coresight-tmc-core.c  |  81 +++++++++-
+>  .../hwtracing/coresight/coresight-tmc-etf.c   |  62 ++++++++
+>  .../hwtracing/coresight/coresight-tmc-etr.c   | 145 +++++++++++++++++-
+>  drivers/hwtracing/coresight/coresight-tmc.h   |   6 +
+>  include/linux/coresight.h                     |  13 ++
+>  6 files changed, 306 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index 77b0271ce6eb..513baf681280 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -1010,6 +1010,7 @@ static void etm4_disable(struct coresight_device *csdev,
+>  
+>  	switch (mode) {
+>  	case CS_MODE_DISABLED:
+> +	case CS_MODE_READ_PREVBOOT:
+>  		break;
+>  	case CS_MODE_SYSFS:
+>  		etm4_disable_sysfs(csdev);
+> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
+> index 6658ce76777b..65c15c9f821b 100644
+> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
+> @@ -103,6 +103,45 @@ u32 tmc_get_memwidth_mask(struct tmc_drvdata *drvdata)
+>  	return mask;
+>  }
+>  
+> +int tmc_read_prepare_prevboot(struct tmc_drvdata *drvdata)
+> +{
+> +	int ret = 0;
+> +	struct tmc_register_snapshot *reg_ptr;
+> +	struct coresight_device *csdev = drvdata->csdev;
+> +
+> +	if (!drvdata->metadata.vaddr) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	reg_ptr = drvdata->metadata.vaddr;
+> +	if (!reg_ptr->valid) {
+> +		dev_err(&drvdata->csdev->dev,
+> +			"Invalid metadata captured from previous boot\n");
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
 
-Although no KEEP() can only save up 2% space, it can reduce the attack surface
-and eliminate the misuse of KEEP(). It ensures that every orphan section is not
-orphaned anymore.
+I'm wondering if a more robust check is needed than the valid flag, like
+a checksum or something. I didn't debug it yet but I ended up with an
+invalid set of metadata after a panic reboot, see below. I'm not sure if
+it's just a logic bug or something got lost during the reboot, I didn't
+debug it yet. But I suppose unless you assume the panic didn't affect
+writing the metadata, then it could be partially written and shouldn't
+be trusted?
 
-[1]: https://pastebin.com/KG4fd7aT
+[...]
+> +
+> +static int tmc_etr_sync_prevboot_buf(struct tmc_drvdata *drvdata)
+> +{
+> +	u32 status;
+> +	u64 rrp, rwp, dba;
+> +	struct tmc_register_snapshot *reg_ptr;
+> +	struct etr_buf *etr_buf = drvdata->prevboot_buf;
+> +
+> +	reg_ptr = drvdata->metadata.vaddr;
+> +
+> +	rrp = reg_ptr->rrp;
+> +	rwp = reg_ptr->rwp;
+> +	dba = reg_ptr->dba;
+> +	status = reg_ptr->sts;
+> +
+> +	etr_buf->full = !!(status & TMC_STS_FULL);
+> +
+> +	/* Sync the buffer pointers */
+> +	etr_buf->offset = rrp - dba;
+> +	if (etr_buf->full)
+> +		etr_buf->len = etr_buf->size;
+> +	else
+> +		etr_buf->len = rwp - rrp;
+> +
+> +	/* Sanity checks for validating metadata */
+> +	if ((etr_buf->offset > etr_buf->size) ||
+> +	    (etr_buf->len > etr_buf->size))
+> +		return -EINVAL;
+
+The values I got here are 0x781b67182aa346f9 0x8000000 0x8000000 for
+offset, size and len respectively. This fails the first check. It would
+also be nice to have a dev_dbg here as well, it's basically the same as
+the valid check above which does have one.
 
