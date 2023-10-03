@@ -2,261 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE9667B6489
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BFC7B64A3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbjJCInn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 04:43:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53800 "EHLO
+        id S239417AbjJCIq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 04:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbjJCInm (ORCPT
+        with ESMTP id S239370AbjJCIqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 04:43:42 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BF9A9
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 01:43:35 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-98377c5d53eso105841566b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 01:43:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696322614; x=1696927414; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SL97zAxIUC9k1IlgpaOnwdtJoVdfWSEq6aWQGA8726w=;
-        b=UavXr8+dG7sEVWzswx8sHPDVXI/4uXgY6ufNiyYp//dvWWZ6AGDIAO5sioNyaGct/Q
-         BwHnpo8QsPtJvLbWMbdRA/2tMes3lm/sS7BSYt/MWrL68oneuwyduOgof/SGoDNBdlid
-         P5XsdJGhAKSJf7aaY9LlAJ6vm0J5Myx8THdq8VMo1QqcpNHjdUDSp9xwEGwytoXP3K93
-         c/wjQozCWLrkIvT6Ljw3Nlpyi1/05T1pGuSCojuqQ7FgZiBqiahftfD/dzM/Z/yJeteV
-         Ssx7eM7ygZ+UjTRYBXtTByy/I3nm8w3GBqUBTpk8MhX8wOy923DCUQ5g086aXLft8ePg
-         zUGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696322614; x=1696927414;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SL97zAxIUC9k1IlgpaOnwdtJoVdfWSEq6aWQGA8726w=;
-        b=Zjw4UyJ1nX/coFMc/egF9yl50H9TQavv/rA/q6Q6vPjrq+Sy1yTbkZXSqNaVNOGGHH
-         6xZ6wsSj0rJ6t+dpCZ1qrRfk9fJOtjh6Qb6FU3L0Y7V0FtnuZKp0o4Z6GuW5wX0rjOmL
-         HAlRdFyws9Mdmub03n3GFbDp1ZxI/Ri51bhSYaTgaKVesw70kmP1feaXpzkfa2D6UlH3
-         LjFTIxAlzOZ43tJnwgsSwqSa4q/gfli50ZjQ20CVCEniQXfH6VxSjYMwCBRJFE83nvz1
-         rUUvnIOIR9tnhN0BGhav0HiD1ScgjZdnd7zBw99N6Th/wmORuHczHvstjlbkrl5rMSRB
-         VuIQ==
-X-Gm-Message-State: AOJu0Yxg2ipQWv3a738rO0RP2ehfee7uJsDjqPCONm3chQAL08O9ZlW7
-        8J3OWvWofrZNhOugQcepOhGgyg==
-X-Google-Smtp-Source: AGHT+IFGr95v474knEptRc4sLKxzKmvwMMtESgm8+6/Pm/LNuwEWolFDlu+ZB8H9cPZ3SjLCKg69PQ==
-X-Received: by 2002:a17:906:24d:b0:9ae:5db5:149 with SMTP id 13-20020a170906024d00b009ae5db50149mr14054363ejl.35.1696322614150;
-        Tue, 03 Oct 2023 01:43:34 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id v8-20020a1709063bc800b009ad8338aafasm693458ejf.13.2023.10.03.01.43.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 01:43:33 -0700 (PDT)
-Message-ID: <ca6f8f30-c305-42bf-a812-b43561c4da2b@linaro.org>
-Date:   Tue, 3 Oct 2023 10:43:31 +0200
+        Tue, 3 Oct 2023 04:46:53 -0400
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2089.outbound.protection.outlook.com [40.107.15.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3909AC;
+        Tue,  3 Oct 2023 01:46:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O3FR+XsUkAb07K1BsVq2myWzXOMLFKW2bf9kUJfgJso=;
+ b=lZ2lksXhDK5uw9p/vLR7uXp8ivWY4qjD425YWW/ouRf7tL+7GbDeFZYHCRASIk6n8iAJV47wmY/YIbnjM5T+o4QAfGv+wTJuGpDE1Leq7EGSgu1cTeZlzthuXvCU0bXb7BPjXMHWyc0lD+WTDCw4+ZxAZwgcqL182RIJyjW6mqw=
+Received: from DB7PR05CA0010.eurprd05.prod.outlook.com (2603:10a6:10:36::23)
+ by AS2PR08MB8383.eurprd08.prod.outlook.com (2603:10a6:20b:55a::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.21; Tue, 3 Oct
+ 2023 08:46:27 +0000
+Received: from DBAEUR03FT011.eop-EUR03.prod.protection.outlook.com
+ (2603:10a6:10:36:cafe::43) by DB7PR05CA0010.outlook.office365.com
+ (2603:10a6:10:36::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.30 via Frontend
+ Transport; Tue, 3 Oct 2023 08:46:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 63.35.35.123)
+ smtp.mailfrom=arm.com; dkim=pass (signature was verified)
+ header.d=armh.onmicrosoft.com;dmarc=pass action=none header.from=arm.com;
+Received-SPF: Pass (protection.outlook.com: domain of arm.com designates
+ 63.35.35.123 as permitted sender) receiver=protection.outlook.com;
+ client-ip=63.35.35.123; helo=64aa7808-outbound-1.mta.getcheckrecipient.com;
+ pr=C
+Received: from 64aa7808-outbound-1.mta.getcheckrecipient.com (63.35.35.123) by
+ DBAEUR03FT011.mail.protection.outlook.com (100.127.142.132) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6863.24 via Frontend Transport; Tue, 3 Oct 2023 08:46:27 +0000
+Received: ("Tessian outbound ab4fc72d2cd4:v211"); Tue, 03 Oct 2023 08:46:27 +0000
+X-CheckRecipientChecked: true
+X-CR-MTA-CID: 74118f93a405798c
+X-CR-MTA-TID: 64aa7808
+Received: from 52bafdcfe683.2
+        by 64aa7808-outbound-1.mta.getcheckrecipient.com id A54C3ABA-CB31-4A35-8381-D2F938FA5FC2.1;
+        Tue, 03 Oct 2023 08:46:16 +0000
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com
+    by 64aa7808-outbound-1.mta.getcheckrecipient.com with ESMTPS id 52bafdcfe683.2
+    (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384);
+    Tue, 03 Oct 2023 08:46:16 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wt0RuRQA74jRHar8hfIU8lWwKaxJJdgG7jU4y66nEz9F2dES0A07DTYyVA9YARASp27b+3J7SQ1r7vaULpD+ify3FzLSaLTimmqBcCGjBoVTkvW3dzlpW+3L5QJjaCdeW3Z9KxaFENt1wCtoJ+4KCh5MO2Ke3ZgnWTTlbaLgjUlWjXrWq/BFbWVWfVNkO3f3TZT4cas3VGeyk19TlN3ehO8SqmbQsU4g41ELgk49sv+wE2ZiKM/D2z1TF38cZBJdIejMfa+Kjn61R3AmzCQ60zfD+ljtiX5dVlZMVHTJr6EdjpejMDy+EXIbtorNAqanBBLkvjdY/eqWwIxhGO6jcA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=O3FR+XsUkAb07K1BsVq2myWzXOMLFKW2bf9kUJfgJso=;
+ b=ciZ5mG++PRC7FIN/Iy2iHL3l5ro6QNpIJ2VtESA1Zcu3pdn8eWFdfiOBxcRsLU0pGZ59n40gCs4DdH4pXsWo20ABIhYvinj3dRzFny04QGZLKGc+8CruI35Bfa8wLtwqY76JZst+8hN7+VgezkHh6T4HTQwdoyeQUuMrx8YlY9amvDpunvLmhfyJtUUeCaLfIkgKzyscIALCZAJ294KrPlylurdD8p00lew0+OSWaOd137HX/6ysG0JeVfbXc1I9wc/azx6QWiTgs+gNGLirxVT7qwfDT84jDIYBj8KnbyNwKKUriwx2ys+R1C4Rz4h89rRxk30efmO214sswyS/Lg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=arm.com; dmarc=pass action=none header.from=arm.com; dkim=pass
+ header.d=arm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=armh.onmicrosoft.com;
+ s=selector2-armh-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O3FR+XsUkAb07K1BsVq2myWzXOMLFKW2bf9kUJfgJso=;
+ b=lZ2lksXhDK5uw9p/vLR7uXp8ivWY4qjD425YWW/ouRf7tL+7GbDeFZYHCRASIk6n8iAJV47wmY/YIbnjM5T+o4QAfGv+wTJuGpDE1Leq7EGSgu1cTeZlzthuXvCU0bXb7BPjXMHWyc0lD+WTDCw4+ZxAZwgcqL182RIJyjW6mqw=
+Authentication-Results-Original: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+Received: from DB9PR08MB7179.eurprd08.prod.outlook.com (2603:10a6:10:2cc::19)
+ by AS8PR08MB9219.eurprd08.prod.outlook.com (2603:10a6:20b:5a2::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26; Tue, 3 Oct
+ 2023 08:46:13 +0000
+Received: from DB9PR08MB7179.eurprd08.prod.outlook.com
+ ([fe80::e34a:7a41:96db:8aba]) by DB9PR08MB7179.eurprd08.prod.outlook.com
+ ([fe80::e34a:7a41:96db:8aba%4]) with mapi id 15.20.6838.029; Tue, 3 Oct 2023
+ 08:46:11 +0000
+Date:   Tue, 3 Oct 2023 09:45:56 +0100
+From:   Szabolcs Nagy <Szabolcs.Nagy@arm.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Oleg Nesterov <oleg@redhat.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        kvmarm@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v4 03/36] arm64/gcs: Document the ABI for Guarded Control
+ Stacks
+Message-ID: <ZRvUxLgMse8QYlGS@arm.com>
+References: <ZNOhjrYleGBR6Pbs@arm.com>
+ <f4cec4b3-c386-4873-aa1d-90528e062f2a@sirena.org.uk>
+ <ZN+qki9EaZ6f9XNi@arm.com>
+ <aaea542c-929c-4c9b-8caa-ca67e0eb9c1e@sirena.org.uk>
+ <ZOTnL1SDJWZjHPUW@arm.com>
+ <43ec219d-bf20-47b8-a5f8-32bc3b64d487@sirena.org.uk>
+ <ZOXa98SqwYPwxzNP@arm.com>
+ <ZOYFazB1gYjzDRdA@arm.com>
+ <ZRWw7aa3C0LlMPTH@arm.com>
+ <38edb5c3-367e-4ab7-8cb7-aa1a5c0e330c@sirena.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <38edb5c3-367e-4ab7-8cb7-aa1a5c0e330c@sirena.org.uk>
+X-ClientProxiedBy: LO2P265CA0320.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:a4::20) To DB9PR08MB7179.eurprd08.prod.outlook.com
+ (2603:10a6:10:2cc::19)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 4/4] dt-bindings: gpio: Add bindings for SCMI pinctrl based
- gpio
-Content-Language: en-US
-To:     AKASHI Takahiro <takahiro.akashi@linaro.org>,
-        Rob Herring <robh@kernel.org>, sudeep.holla@arm.com,
-        cristian.marussi@arm.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linus.walleij@linaro.org,
-        Oleksii_Moisieiev@epam.com, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-References: <20231002021602.260100-1-takahiro.akashi@linaro.org>
- <20231002021602.260100-5-takahiro.akashi@linaro.org>
- <20231002144155.GA1675188-robh@kernel.org> <ZRtjVnWhAK2CZaRM@octopus>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZRtjVnWhAK2CZaRM@octopus>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-TrafficTypeDiagnostic: DB9PR08MB7179:EE_|AS8PR08MB9219:EE_|DBAEUR03FT011:EE_|AS2PR08MB8383:EE_
+X-MS-Office365-Filtering-Correlation-Id: 25b8dd71-f44d-4926-bca2-08dbc3ed3b62
+x-checkrecipientrouted: true
+NoDisclaimer: true
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original: lwz41uy8E/+WYL8kGSYOQ7mGoDrnRSVYD4GEiKcfSwpcMkhTiU2OvEIShlAK/0Rn8kKzfIwUPAMvNSZ3kwd5qUo4tFhzEXYDYp2R4X1ciXWgSi82QZEGxcG5VGpZyPeNViZom/Lyqk4g1qiMh5R5x0NK3kEaH5lWdu7NYCjtTGsBzL5i8zvNZQC0EwL9143mKDhTFjEHV/SeOrQlWrrCbL+t6+0qCPhvDkTNnznixNI7Ex82DjnirYqZ83iSw3/cYW5bo5WINLQ/2ZEJKwJYBbeLfoSZw3bvh5WLX6bS2HWWHYseErTct5OpUHcHcBuVQko2g4TYWJppYzuTIltaBsSTraiq0rhIkxUsSd2oiQoIdHYjzKFQGy//A4/2NItSpmFcfY1lJ7I5/Aj+CaVy6+O4wZiNjA/j4L+nvowg0YrGcl3Xd2aUjbOfjJa4A5zemg+SskQy0or+qhnwb4VzxWEYEap+ugQ8b5W0yxYbfiep935qeI9+mBYyW/LDz7yl7GGfOB0PWumcBx4391y7Qq3b54j2pygwE3hpU+ISirp9Pw+bH1HXCs1pQDmzv/Z5
+X-Forefront-Antispam-Report-Untrusted: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR08MB7179.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(376002)(346002)(136003)(396003)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(5660300002)(8936002)(8676002)(4326008)(26005)(2906002)(478600001)(316002)(66556008)(66946007)(54906003)(7416002)(6916009)(66476007)(6486002)(41300700001)(6506007)(6666004)(6512007)(36756003)(2616005)(83380400001)(38100700002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR08MB9219
+Original-Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=arm.com;
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped: DBAEUR03FT011.eop-EUR03.prod.protection.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id-Prvs: ced56863-5bee-4f49-b9e1-08dbc3ed31e4
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cB1zBN3bkRX4sDAE1bFONfZKIjgtXhs0nC9CM1wxYZ6D59SHcCxF/AHqYE5BL185Rt09AndqcvAuzev4rkmfRbTq68TBzM5aL6nOj/7FDb1XRVSMB2ADqFR4fkRTPlXKUKKpjzuvkcI2750Gfjon293p/zGtCU3rW9YhrSjpt8pCuRErSK80kbLUrJNo7Lg5egotrt7CPMr+0hQG9Unt2SqmKZXyzcHYUR/I6JM3rMt04sSsUadH3qBe81cp9Wm1hP6r4dstRXhSwrsVS1mMIUCOd7qTTemHGsQr0BJWVh1/pgCM7r8c8Fuy9JupGDJ9j+0FOppXdLMYDTCP9oCMs5vJNFxB611Mqj6aNxZkj0rce5yMyqLNX5UB8GyGEqX4ZC47I1lyYYWN1zxezYZCiKNZvypc3WqGtQvAg63rTm6BXz4pnvUwhrEQj93lDjXbkLB3pwJGj4K/259S5N292RVWhrcLR2XAhpZsZmk8IcTivmr44LD5bYR3lJ3E5tNJCHgMU9ZlO5WLKQWJ+vG4JO+JDUOXAfHwQkGbNmMtXDk0uHyul4tIRuCH7xGgz6PBPTWBhU4eb1i8tYdAjngslUYEvv3Y3HRqElwEIMcRFXBUXLAVxuJUncHJ2Rpu+G0aJAuIMDbSHew5bSXmDZ04emc6QLkUWPNlWHbsMneFAIAQRS3j65N2Zn91ay9m8E8OIENlmk0EJLjn9OzP9EqmP6SXE6C4CSj/n57QMhQz+3eDTU9UDOajEnWxqL5DfznG
+X-Forefront-Antispam-Report: CIP:63.35.35.123;CTRY:IE;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:64aa7808-outbound-1.mta.getcheckrecipient.com;PTR:ec2-63-35-35-123.eu-west-1.compute.amazonaws.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(39860400002)(136003)(396003)(230922051799003)(82310400011)(186009)(1800799009)(64100799003)(451199024)(46966006)(40470700004)(36840700001)(86362001)(40460700003)(40480700001)(36756003)(2906002)(5660300002)(450100002)(107886003)(36860700001)(83380400001)(336012)(41300700001)(6512007)(4326008)(316002)(2616005)(8676002)(6862004)(26005)(47076005)(8936002)(70586007)(6486002)(81166007)(70206006)(356005)(54906003)(82740400003)(6506007)(478600001)(6666004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: arm.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 08:46:27.3111
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 25b8dd71-f44d-4926-bca2-08dbc3ed3b62
+X-MS-Exchange-CrossTenant-Id: f34e5979-57d9-4aaa-ad4d-b122a662184d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=f34e5979-57d9-4aaa-ad4d-b122a662184d;Ip=[63.35.35.123];Helo=[64aa7808-outbound-1.mta.getcheckrecipient.com]
+X-MS-Exchange-CrossTenant-AuthSource: DBAEUR03FT011.eop-EUR03.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR08MB8383
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_NONE,UNPARSEABLE_RELAY autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2023 02:41, AKASHI Takahiro wrote:
-> Hi Rob,
+The 10/02/2023 20:49, Mark Brown wrote:
+> On Thu, Sep 28, 2023 at 05:59:25PM +0100, Szabolcs Nagy wrote:
+> > The 08/23/2023 14:11, Catalin Marinas wrote:
 > 
-> On Mon, Oct 02, 2023 at 09:41:55AM -0500, Rob Herring wrote:
->> On Mon, Oct 02, 2023 at 11:16:02AM +0900, AKASHI Takahiro wrote:
->>> A dt binding for SCMI pinctrl based gpio driver is defined in this
->>> commit. It basically conforms to generic pinctrl-gpio mapping framework.
->>
->> What is "generic pinctrl-gpio mapping framework"? DT doesn't have 
->> frameworks.
+> > > > and there is user code doing raw clone threads (such threads are
+> > > > technically not allowed to call into libc) it's not immediately
+> > > > clear to me if having gcs in those threads is better or worse.
 > 
-> I meant to refer to section 2.1-2.3 in "Documentation/devicetree/bindings/gpio/gpio.txt". The semantics is implemented in drivers/gpio/gpiolib(-of).c.
+> > i think raw clone / clone3 users may be relevant so we need a
+> > solution such that they don't fail when gcs args are missing.
+> 
+> Are we sure about that?  Old binaries shouldn't be affected since they
+> won't turn GCS so we're just talking about new binaries here - are there
+> really so many of them that we won't be able to get them all converted
+> over to clone3() and GCS in the timescales we're talking about for GCS
+> deployment?  I obviously don't particularly mind having the default size
+> logic but if we allow clone() then that's keeping the existing behaviour
+> and layering allocation via clone3() on top of it which Catalin didn't
+> want.  Catalin?
 
-Linux specific GPIO library is as well outside of DT scope. Please focus
-here on hardware, not Linux specifics.
+clone3 seems to have features that are only available in clone3 and
+not exposed (reasonably) in libc apis so ppl will use clone3 directly
+and those will be hard to fix for gcs (you have to convince upstream
+to add future arm64 arch specific changes that they cannot test).
+where this analysis might be wrong is that raw clone3 is more likely
+used as fork/vfork without a new stack and thus no gcs issue.
 
-> 
->>>
->>> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
->>> ---
->>>  .../bindings/gpio/arm,scmi-gpio.yaml          | 71 +++++++++++++++++++
->>>  1 file changed, 71 insertions(+)
->>>  create mode 100644 Documentation/devicetree/bindings/gpio/arm,scmi-gpio.yaml
->>>
->>> diff --git a/Documentation/devicetree/bindings/gpio/arm,scmi-gpio.yaml b/Documentation/devicetree/bindings/gpio/arm,scmi-gpio.yaml
->>> new file mode 100644
->>> index 000000000000..2601c5594567
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/gpio/arm,scmi-gpio.yaml
->>> @@ -0,0 +1,71 @@
->>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/gpio/arm,scmi-gpio.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: SCMI pinctrl based generic GPIO controller
->>> +
->>> +maintainers:
->>> +  - AKASHI Takahiro <akashi.takahiro@linaro.org>
->>> +
->>> +properties:
->>> +  $nodename:
->>> +    pattern: "^scmi_gpio(@[0-9a-f]+)$"
->>
->> Not the correct name.
-> 
-> How not?
+even if we have time to fix code, we don't want too many ifdef hacks
+just for gcs so it matters how many projects are affected.
 
-Underscores are no allowed and are pointed by dtc (W=2). scmi is
-redundant here, because names should be generic. Anyway, we do not add
-node name requirements to device schema.
+> > userspace allocated gcs works for me, but maybe the alternative
+> > with size only is more consistent (thread gcs is kernel mapped
+> > with fallback size logic if gcs size is missing):
+> 
+> If we have size only then the handling of GCS and normal stack in struct
+> clone_args would be inconsistent.  Given that it seems better to have
+> the field present, we can allow it to be NULL and do the allocation with
+> the specified size but it should be there.
 
-> 
->>> +
->>> +  compatible:
->>> +    const: arm,scmi-gpio-generic
->>
->> What makes it generic? No such thing. Just drop '-generic'.
-> 
-> I will discuss this issue in following Cristian's comment.
-> 
->>
->>> +
->>> +  gpio-controller: true
->>> +
->>> +  "#gpio-cells":
->>> +    const: 2
->>> +
->>> +  gpio-ranges: true
->>> +
->>> +  gpio-ranges-group-names: true
->>> +
->>> +patternProperties:
->>> +  "^.+-hog(-[0-9]+)?$":
->>> +    type: object
->>> +    properties:
->>> +      gpio-hog: true
->>> +      gpios: true
->>> +      input: true
->>> +      output-high: true
->>> +      output-low: true
->>> +      line-name: true
->>> +
->>> +    required:
->>> +      - gpio-hog
->>> +      - gpios
->>
->> You don't need all this just 'required: [ gpio-hog ]'. Then the hog 
->> schema will check the rest.
-> 
-> Okay.
-> 
->>> +
->>> +    additionalProperties: false
->>> +
->>> +required:
->>> +  - compatible
->>> +  - gpio-controller
->>> +  - "#gpio-cells"
->>> +  - gpio-ranges
->>> +
->>> +additionalProperties: false
->>> +
->>> +examples:
->>> +  - |
->>> +    #include <dt-bindings/gpio/gpio.h>
->>> +
->>> +    scmi_gpio_0: scmi_gpio@0 {
->>
->> gpio {
->>
->> But doesn't SCMI have protocol numbers?
->>
->>> +        compatible = "arm,scmi-gpio";
->>> +        gpio-controller;
->>> +        #gpio-cells = <2>;
->>> +        gpio-ranges = <&scmi_pinctrl 0 10 5>,
->>> +                      <&scmi_pinctrl 5 0 0>;
->>> +        gpio-ranges-group-names = "",
->>> +                                  "pinmux_gpio";
->>> +    };
->>> +
->>> +    // Consumer:
->>
->> Outside the scope of this binding. Drop this node.
-> 
-> Even though it's in an example?
-> "#gpio-cells" has a meaning in consumer side.
+i see, then try the original plan.
 
-Just look at any other bindings.
+> > the main thread gcs is still special: the size is provided
+> > via prctl (if at all).
+> 
+> Either that or we have it do a map_shadow_stack() but that's an extra
+> syscall during startup.
 
-Best regards,
-Krzysztof
-
+an extra syscall is not too bad for the gcs enabled case.
