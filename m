@@ -2,105 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75AB77B6B4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0314E7B6B4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239068AbjJCOW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47330 "EHLO
+        id S239188AbjJCOWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:22:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239479AbjJCOWZ (ORCPT
+        with ESMTP id S232459AbjJCOWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 10:22:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA52AB;
-        Tue,  3 Oct 2023 07:22:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696342943; x=1727878943;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=cjks6CkF+4bewzoomLbEOwdv2hYLwa0cZHBRPyA2qlk=;
-  b=Cn6+tXrhcr4Rh01hVJM3p6mPXtIiFhDRNG1+0xoHVAqEURBIseoVbjVW
-   E1Iljanns4mz/9S0D9NuZ48FeuVkNBb2ctZXqGRySw5Qpt+mjAc2p60wa
-   U1xRv4m0f06uhjn2czfjl7EeQjdCfgU4STg5ty8AcbTuEIMegDRudpRSN
-   Zs6TYUd8DJJqEerz6UN5gU33a4ttb3FzfIHLJhSW1VXzVxcujdNxB/yIV
-   t5Yx53tBg5tfb1IRE2AtMjK5frcN08h6O/iSW4aC9h+qviWMDIiKoDcHT
-   dIGXsmbl8MhTrspumbdA5Nf4wi1JECV+ka7V3B/OZNgEmavEkIz33fzTz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="382794208"
-X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="382794208"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 07:22:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="816701888"
-X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="816701888"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 03 Oct 2023 07:22:18 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qngHu-0007B6-1v;
-        Tue, 03 Oct 2023 14:22:15 +0000
-Date:   Tue, 3 Oct 2023 22:21:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     David Lechner <dlechner@baylibre.com>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-staging@lists.linux.dev
-Cc:     oe-kbuild-all@lists.linux.dev,
-        David Lechner <david@lechnology.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 22/27] staging: iio: resolver: ad2s1210: convert LOS
- threshold to event attr
-Message-ID: <202310032242.jYDq0057-lkp@intel.com>
-References: <20230929-ad2s1210-mainline-v3-22-fa4364281745@baylibre.com>
+        Tue, 3 Oct 2023 10:22:20 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D29393
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:22:17 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 393DCOkb031857;
+        Tue, 3 Oct 2023 09:21:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=B
+        b3GpnlgSqQLro9IisI3/aE52cZDpykC3Lf7qb/4cGc=; b=RVybI8Rhe1c3GAYCQ
+        sBWTBAInWeD3BHnOKW0tXBn0j6muCVIYLPKZVyz8jKw6cL0LmB+vJRfnhVrhGQsA
+        GC4pcysTKpeq/k/WtqzJmBfgbC3BJa4FFnGEb+o6R4/w2HoAiu8DkH+NQ1s2NJao
+        yqqwiGmyx7FgfdPSLMukCegBySUJPBKYgCO0ype9Na1CzsCR2TJTN8IpFPKIKQXR
+        qKoJBdlmpFmwxQulK+izZ6yrRkiqbKoGxlcLE8ohBZE3NaUV5XhjQju4y9h13lOW
+        vHyR0fCtsSEY1OL9seugl3WjA8/XLuEiIIymihasSjaf5BgSOsVmfx9tSN7Lfgck
+        Smoaw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3teg3k41wg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Oct 2023 09:21:50 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 3 Oct
+ 2023 15:21:48 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Tue, 3 Oct 2023 15:21:48 +0100
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.165])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7E0D211AC;
+        Tue,  3 Oct 2023 14:21:48 +0000 (UTC)
+From:   Stefan Binding <sbinding@opensource.cirrus.com>
+To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Stefan Binding <sbinding@opensource.cirrus.com>,
+        kernel test robot <lkp@intel.com>,
+        "Dan Carpenter" <dan.carpenter@linaro.org>
+Subject: [PATCH v1] ALSA: hda: cs35l41: Cleanup and fix double free in firmware request
+Date:   Tue, 3 Oct 2023 15:21:38 +0100
+Message-ID: <20231003142138.180108-1-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230929-ad2s1210-mainline-v3-22-fa4364281745@baylibre.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: 2yldpt3QjVh-CIwuzVOKdDE5ttRfCRio
+X-Proofpoint-ORIG-GUID: 2yldpt3QjVh-CIwuzVOKdDE5ttRfCRio
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+There is an unlikely but possible double free when loading firmware,
+and a missing free calls if a firmware is successfully requested but
+the coefficient file request fails, leading to the fallback firmware
+request occurring without clearing the previously loaded firmware.
 
-kernel test robot noticed the following build warnings:
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/r/202309291331.0JUUQnPT-lkp@intel.com/
 
-[auto build test WARNING on 5e99f692d4e32e3250ab18d511894ca797407aec]
+Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+---
+ sound/pci/hda/cs35l41_hda.c | 115 +++++++++++++++++++++++++-----------
+ 1 file changed, 79 insertions(+), 36 deletions(-)
 
-url:    https://github.com/intel-lab-lkp/linux/commits/David-Lechner/dt-bindings-iio-resolver-add-devicetree-bindings-for-ad2s1210/20230930-014031
-base:   5e99f692d4e32e3250ab18d511894ca797407aec
-patch link:    https://lore.kernel.org/r/20230929-ad2s1210-mainline-v3-22-fa4364281745%40baylibre.com
-patch subject: [PATCH v3 22/27] staging: iio: resolver: ad2s1210: convert LOS threshold to event attr
-config: i386-randconfig-062-20231003 (https://download.01.org/0day-ci/archive/20231003/202310032242.jYDq0057-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231003/202310032242.jYDq0057-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310032242.jYDq0057-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
-   drivers/staging/iio/resolver/ad2s1210.c:896:1: sparse: sparse: symbol 'iio_const_attr_in_phase0_mag_value_available' was not declared. Should it be static?
->> drivers/staging/iio/resolver/ad2s1210.c:901:1: sparse: sparse: symbol 'iio_const_attr_in_altvoltage0_thresh_falling_value_available' was not declared. Should it be static?
-   drivers/staging/iio/resolver/ad2s1210.c:902:1: sparse: sparse: symbol 'iio_dev_attr_in_angl1_thresh_rising_value_available' was not declared. Should it be static?
-   drivers/staging/iio/resolver/ad2s1210.c:903:1: sparse: sparse: symbol 'iio_dev_attr_in_angl1_thresh_rising_hysteresis_available' was not declared. Should it be static?
-
+diff --git a/sound/pci/hda/cs35l41_hda.c b/sound/pci/hda/cs35l41_hda.c
+index dd10b4cd3d1a..28cb10ddd191 100644
+--- a/sound/pci/hda/cs35l41_hda.c
++++ b/sound/pci/hda/cs35l41_hda.c
+@@ -188,10 +188,14 @@ static int cs35l41_request_firmware_files_spkid(struct cs35l41_hda *cs35l41,
+ 					    cs35l41->speaker_id, "wmfw");
+ 	if (!ret) {
+ 		/* try cirrus/part-dspN-fwtype-sub<-spkidN><-ampname>.bin */
+-		return cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
+-						     CS35L41_FIRMWARE_ROOT,
+-						     cs35l41->acpi_subsystem_id, cs35l41->amp_name,
+-						     cs35l41->speaker_id, "bin");
++		ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
++						    CS35L41_FIRMWARE_ROOT,
++						    cs35l41->acpi_subsystem_id, cs35l41->amp_name,
++						    cs35l41->speaker_id, "bin");
++		if (ret)
++			goto coeff_err;
++
++		return 0;
+ 	}
+ 
+ 	/* try cirrus/part-dspN-fwtype-sub<-ampname>.wmfw */
+@@ -200,10 +204,14 @@ static int cs35l41_request_firmware_files_spkid(struct cs35l41_hda *cs35l41,
+ 					    cs35l41->amp_name, -1, "wmfw");
+ 	if (!ret) {
+ 		/* try cirrus/part-dspN-fwtype-sub<-spkidN><-ampname>.bin */
+-		return cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
+-						     CS35L41_FIRMWARE_ROOT,
+-						     cs35l41->acpi_subsystem_id, cs35l41->amp_name,
+-						     cs35l41->speaker_id, "bin");
++		ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
++						    CS35L41_FIRMWARE_ROOT,
++						    cs35l41->acpi_subsystem_id, cs35l41->amp_name,
++						    cs35l41->speaker_id, "bin");
++		if (ret)
++			goto coeff_err;
++
++		return 0;
+ 	}
+ 
+ 	/* try cirrus/part-dspN-fwtype-sub<-spkidN>.wmfw */
+@@ -218,10 +226,14 @@ static int cs35l41_request_firmware_files_spkid(struct cs35l41_hda *cs35l41,
+ 						    cs35l41->amp_name, cs35l41->speaker_id, "bin");
+ 		if (ret)
+ 			/* try cirrus/part-dspN-fwtype-sub<-spkidN>.bin */
+-			return cs35l41_request_firmware_file(cs35l41, coeff_firmware,
+-							     coeff_filename, CS35L41_FIRMWARE_ROOT,
+-							     cs35l41->acpi_subsystem_id, NULL,
+-							     cs35l41->speaker_id, "bin");
++			ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware,
++							    coeff_filename, CS35L41_FIRMWARE_ROOT,
++							    cs35l41->acpi_subsystem_id, NULL,
++							    cs35l41->speaker_id, "bin");
++		if (ret)
++			goto coeff_err;
++
++		return 0;
+ 	}
+ 
+ 	/* try cirrus/part-dspN-fwtype-sub.wmfw */
+@@ -236,12 +248,50 @@ static int cs35l41_request_firmware_files_spkid(struct cs35l41_hda *cs35l41,
+ 						    cs35l41->speaker_id, "bin");
+ 		if (ret)
+ 			/* try cirrus/part-dspN-fwtype-sub<-spkidN>.bin */
+-			return cs35l41_request_firmware_file(cs35l41, coeff_firmware,
+-							     coeff_filename, CS35L41_FIRMWARE_ROOT,
+-							     cs35l41->acpi_subsystem_id, NULL,
+-							     cs35l41->speaker_id, "bin");
++			ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware,
++							    coeff_filename, CS35L41_FIRMWARE_ROOT,
++							    cs35l41->acpi_subsystem_id, NULL,
++							    cs35l41->speaker_id, "bin");
++		if (ret)
++			goto coeff_err;
++	}
++
++	return ret;
++coeff_err:
++	release_firmware(*wmfw_firmware);
++	kfree(*wmfw_filename);
++	return ret;
++}
++
++static int cs35l41_fallback_firmware_file(struct cs35l41_hda *cs35l41,
++					  const struct firmware **wmfw_firmware,
++					  char **wmfw_filename,
++					  const struct firmware **coeff_firmware,
++					  char **coeff_filename)
++{
++	int ret;
++
++	/* Handle fallback */
++	dev_warn(cs35l41->dev, "Falling back to default firmware.\n");
++
++	/* fallback try cirrus/part-dspN-fwtype.wmfw */
++	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
++					    CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "wmfw");
++	if (ret)
++		goto err;
++
++	/* fallback try cirrus/part-dspN-fwtype.bin */
++	ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
++					    CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "bin");
++	if (ret) {
++		release_firmware(*wmfw_firmware);
++		kfree(*wmfw_filename);
++		goto err;
+ 	}
++	return 0;
+ 
++err:
++	dev_warn(cs35l41->dev, "Unable to find firmware and tuning\n");
+ 	return ret;
+ }
+ 
+@@ -257,7 +307,6 @@ static int cs35l41_request_firmware_files(struct cs35l41_hda *cs35l41,
+ 		ret = cs35l41_request_firmware_files_spkid(cs35l41, wmfw_firmware, wmfw_filename,
+ 							   coeff_firmware, coeff_filename);
+ 		goto out;
+-
+ 	}
+ 
+ 	/* try cirrus/part-dspN-fwtype-sub<-ampname>.wmfw */
+@@ -270,6 +319,9 @@ static int cs35l41_request_firmware_files(struct cs35l41_hda *cs35l41,
+ 						    CS35L41_FIRMWARE_ROOT,
+ 						    cs35l41->acpi_subsystem_id, cs35l41->amp_name,
+ 						    -1, "bin");
++		if (ret)
++			goto coeff_err;
++
+ 		goto out;
+ 	}
+ 
+@@ -289,32 +341,23 @@ static int cs35l41_request_firmware_files(struct cs35l41_hda *cs35l41,
+ 							    CS35L41_FIRMWARE_ROOT,
+ 							    cs35l41->acpi_subsystem_id, NULL, -1,
+ 							    "bin");
++		if (ret)
++			goto coeff_err;
+ 	}
+ 
+ out:
+-	if (!ret)
+-		return 0;
++	if (ret)
++		/* if all attempts at finding firmware fail, try fallback */
++		goto fallback;
+ 
+-	/* Handle fallback */
+-	dev_warn(cs35l41->dev, "Falling back to default firmware.\n");
++	return 0;
+ 
++coeff_err:
+ 	release_firmware(*wmfw_firmware);
+ 	kfree(*wmfw_filename);
+-
+-	/* fallback try cirrus/part-dspN-fwtype.wmfw */
+-	ret = cs35l41_request_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
+-					    CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "wmfw");
+-	if (!ret)
+-		/* fallback try cirrus/part-dspN-fwtype.bin */
+-		ret = cs35l41_request_firmware_file(cs35l41, coeff_firmware, coeff_filename,
+-						    CS35L41_FIRMWARE_ROOT, NULL, NULL, -1, "bin");
+-
+-	if (ret) {
+-		release_firmware(*wmfw_firmware);
+-		kfree(*wmfw_filename);
+-		dev_warn(cs35l41->dev, "Unable to find firmware and tuning\n");
+-	}
+-	return ret;
++fallback:
++	return cs35l41_fallback_firmware_file(cs35l41, wmfw_firmware, wmfw_filename,
++					      coeff_firmware, coeff_filename);
+ }
+ 
+ #if IS_ENABLED(CONFIG_EFI)
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
