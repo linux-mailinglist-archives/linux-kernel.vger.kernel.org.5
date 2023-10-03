@@ -2,173 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BEAF7B6C01
+	by mail.lfdr.de (Postfix) with ESMTP id 224597B6C00
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240129AbjJCOqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41288 "EHLO
+        id S240138AbjJCOqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240119AbjJCOqJ (ORCPT
+        with ESMTP id S240106AbjJCOqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Oct 2023 10:46:09 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D025AF;
-        Tue,  3 Oct 2023 07:46:03 -0700 (PDT)
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 393Du05u007308;
-        Tue, 3 Oct 2023 14:45:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-03-30;
- bh=xjNAU7duT3Y7dvWfiFIXYIaaG7xrGHtocFB7IBdTdXU=;
- b=c1loemysrqBbZYZsSNbVqf+BJaFqFnIaTP7CzM5kS0AZh43xAtamBpoHCyMyekfDjEPJ
- RYMj1ikh43mgTPADzdFbLzBYAy2LPB2dre2QmkN3W7DXoEuKJoGAdN1fke9OmNXHQ75M
- hxAyZOYvAtPPcSvYb2UWJrqSRzT6kjagdMRD8BRYSu9vnhurTOLjiHCHPxZeYHPNqCV6
- n+zHgtZopqkjN4rd3c6b8IUNr+n8+Cm8fCrpX747hLGC9hegZ3I2eC+Y3Uqbz/uiCqMH
- njPepyBk/d/CIkYAv05qXuILhygwvVNsxxDBlOjaQMf8KyRu/zCg6uIFeB790KuyIyyJ zQ== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tea924xaf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Oct 2023 14:45:33 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 393DqwLs000448;
-        Tue, 3 Oct 2023 14:45:31 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3tea462q93-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Oct 2023 14:45:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J4xqwxGMl+2ZcL65bTwhVyLLVN+TDo+Oto2oUtHTeaWaQUS3+MOdxlLBt68p+AU2Z3dVmzp7HlBts2IbuJr7pAzKanH+/iDRZ/SZOfOpJQcOg+I69tSfcEMmPbA5F44m2QmUL+xIEs9yczR68ZoQg2FYEfKkPIICBFaWxtt5CsBsfpz2aSbTzeBLjhS9ag0wY58lwIu0GkdfreF982jIhYgsky9CuBYhecJLEeJlMLgQrBWZdbLY7fyD+Av6WH7j4cvudkQc7bMuuEnBNX5HxqkAPlBAOmdHa3qt+LAmn9amAUmSmGyfJXQXQo3UVFhmUZrghFoAvIfaSd5Tq2DYHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xjNAU7duT3Y7dvWfiFIXYIaaG7xrGHtocFB7IBdTdXU=;
- b=aqAIN0rW+Uvn62x8x+5/EBSsyBsCJu6BfSOxuTNr9fMBHU5jpXC92SlXE54IJmnTdhHh4Y5nVK608A+XaghMqdJLQagMECs9rfDmuV5YtixIjGoxypMJ+eeCEA9LZud83xdqgaQwqEiKYtApoEVk5pWviAr/6weTm2DrecxellBCMoztj7PdECh/+Jc/HhaXpa2C0YR0VLcthtwKe9y3tDghIOBbSS26rlbrz2UzxYmVdMoGm5TKplnmr88liMtlnwZZ7NzUgaogww6jsB/oa0a1kzuDoVNRb9aMuJzmIZhZ067aL3gHghr/ySPuZMKxl5qM2Ue+ug0UHRm6Z8LzpQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xjNAU7duT3Y7dvWfiFIXYIaaG7xrGHtocFB7IBdTdXU=;
- b=FvH2bbBLWq035K8G2DEcLuWv7PfyFyhAAujB6ix9XetYW2gcBiHU10MO9F5hw3yIaSwyFXTy33ZH00Ikz8Q4rNLL5yUB7iJS+uMcRPD9Vn38i6P0gRZt+XIw8whIdDl2s53/avXulUvjOIbXti841aPMOMaJ6OG3lMJ0K9+aTdc=
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com (2603:10b6:805:d8::25)
- by CH3PR10MB6788.namprd10.prod.outlook.com (2603:10b6:610:14b::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.34; Tue, 3 Oct
- 2023 14:45:29 +0000
-Received: from SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::8979:3e3f:c3e0:8dfa]) by SN6PR10MB3022.namprd10.prod.outlook.com
- ([fe80::8979:3e3f:c3e0:8dfa%4]) with mapi id 15.20.6838.033; Tue, 3 Oct 2023
- 14:45:29 +0000
-Date:   Tue, 3 Oct 2023 10:45:26 -0400
-From:   "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] mmap: Fix error paths with dup_anon_vma()
-Message-ID: <20231003144526.upn62oqknscpwci2@revolver>
-Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Matthew Wilcox <willy@infradead.org>, stable@vger.kernel.org
-References: <20230929183041.2835469-1-Liam.Howlett@oracle.com>
- <20230929183041.2835469-3-Liam.Howlett@oracle.com>
- <843f059f-dd54-4481-b46a-e87e56274db3@lucifer.local>
- <db77d8e7-4b29-2348-c034-3a2cf120b7b2@suse.cz>
- <6f85e46d-78e3-426d-9a24-3aadfd91bdc6@lucifer.local>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6f85e46d-78e3-426d-9a24-3aadfd91bdc6@lucifer.local>
-User-Agent: NeoMutt/20220429
-X-ClientProxiedBy: YT4PR01CA0445.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:10d::27) To SN6PR10MB3022.namprd10.prod.outlook.com
- (2603:10b6:805:d8::25)
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C0A0B0
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:46:03 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id DE2AC5C0358;
+        Tue,  3 Oct 2023 10:46:02 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 03 Oct 2023 10:46:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm3; t=1696344362; x=1696430762; bh=cf
+        Lg0FTt870s90m6D5NuIv5XQXp/nmAmNe4tSouovjA=; b=eZGA4ngRNhIErLzsV+
+        HXf0v/3NAWge7/pxxpnYxZPncEJo/AQHoE6kDY1hGgtiy+AeDHg+6D4XvG4sQF0/
+        t812v+As9dan2YmvlfE1dlEeJG1KMfufOsBPc+0xTVddG69V/hhOn6hZysFk9ndv
+        dkmGjuzeWJCj1UChoGXuocv1xuuJ4wKx34e41qVHEecCLtqOLcDCyvGX8i6q7GD7
+        y8O1F78DM/ePjldP3mxUDJYS4fWCpKcgUfTk+7PKpDxYSTwo20xX34NXGBCnmEM6
+        fjEy0rWGAlUXA2+d7oyKjQ9G3jKk9IeMctt3uv6jklEOc3pPbn9GybTYulZKpehV
+        p/zw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696344362; x=1696430762; bh=cfLg0FTt870s9
+        0m6D5NuIv5XQXp/nmAmNe4tSouovjA=; b=EHEfnzl8tlq/P4QeGBl5+lJnwmOAm
+        LaMc4FAXeSOADDplXL2nGQWraiko89Gq3BNVX5E/xZd1NKLRmp72U+M+XTjfbYnY
+        eng1tnSOGTKDmuV0GRJfRTHROHwKVp8Yk/UrJM9oXe6euREwVhNaMYDhO8m7Um34
+        1DiD0vlHC5k1E0Buii5WjEO6n3girOGj0H7Gfaoso0xleD4SI3Cb0PI5ZG/yM2gN
+        o9mwejAaM5X5Hfn4vbjNP5Mv3xM4etDWmEkkvK1aVPEGnVcNzxn1cW6R1uz286Md
+        qOGf1hfy0SOW8GkaGj7TP+IHgX+dS118qBsf5BB90tI9A6C0D8j0D0rEA==
+X-ME-Sender: <xms:KikcZZaUPbgMW3l1fSp6PaOxllXetWT42hLV4ZvIyACbOUBBVNacHQ>
+    <xme:KikcZQYk9Rsofd-97HwDugbcVdAyC2hM1Oom8rwee4ua7ERA2JHAwqA2zhASTSb6_
+    Qw0a3oliDjg-KzNWxo>
+X-ME-Received: <xmr:KikcZb8SpoaMRye3HGk_jOrcEyX2yoxb_1gRHhkf0FyYJ13aXkvQ3lVNduSQNdnFcyYtlS_LOOvNJtdmAzJjq94BRfNWepD0q2MPxF2fFDIK9VTYW5m09fw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeeigdejkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffuvfevkfgjfhfogggtsehttdertdertddvnecuhfhrohhmpefnuhhkvgcu
+    lfhonhgvshcuoehluhhkvgeslhhjohhnvghsrdguvghvqeenucggtffrrghtthgvrhhnpe
+    dvvdegledtheefieejgfevgeefiefhtdevteefteduhfevtdefleethfetgeeludenucev
+    lhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslh
+    hjohhnvghsrdguvghv
+X-ME-Proxy: <xmx:KikcZXoBhbifQpMtTpbXxWPGDs4rlfuZeo8jnj26pxfKb-W5-iNxKQ>
+    <xmx:KikcZUoBsXRqJiaVBZPF6HGMqZYJF0-AqfVBHX8BlwJRZz17R36dRQ>
+    <xmx:KikcZdSkpJPNrUWGMIzhsS1YuvM6FVSfnkzZtSKdXZyxfNBGHkRpxg>
+    <xmx:KikcZVdLMYKUORhWJYv-lz9rGU4q5CYeHfw_crK6WnEG17H1VQ3ikw>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 3 Oct 2023 10:45:57 -0400 (EDT)
+Date:   Tue, 03 Oct 2023 16:45:44 +0200
+From:   Luke Jones <luke@ljones.dev>
+Subject: RE: [PATCH] ALSA: hda: cs35l41: Support ASUS 2023 laptops with
+ missing DSD
+To:     Stefan Binding <sbinding@opensource.cirrus.com>
+Cc:     'Takashi Iwai' <tiwai@suse.de>, tiwai@suse.com,
+        james.schulman@cirrus.com, david.rhodes@cirrus.com,
+        rf@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        'Jonathan LoBue' <jlobue10@gmail.com>,
+        patches@opensource.cirrus.com
+Message-Id: <8OJY1S.X7HJ24U4D5AG2@ljones.dev>
+In-Reply-To: <UB2VZR.B7HP6HUMGFA03@ljones.dev>
+References: <20230823011008.13146-1-luke@ljones.dev>
+        <87v8d6cm30.wl-tiwai@suse.de> <R32UZR.6AQKQL1J6UQI3@ljones.dev>
+        <87lee2ciqj.wl-tiwai@suse.de> <NN3UZR.VNYA824H66Q8@ljones.dev>
+        <87il96cfnb.wl-tiwai@suse.de>
+        <000601d9d5b0$8d6817f0$a83847d0$@opensource.cirrus.com>
+        <UB2VZR.B7HP6HUMGFA03@ljones.dev>
+X-Mailer: geary/44.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR10MB3022:EE_|CH3PR10MB6788:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0699c1f7-420b-4b67-268a-08dbc41f6331
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rK8INviaDH8/zf8DtxvWVca85zFSKBYl9KVYejwU78Xs9JFnjgZXcatTgUObnChd0LKGxEx4Xx+OwM2eXL8M4omJsioygf3IHmx9CUQZssq01c1md6Lm818eA3aBdYGT/sBFMcka4ECAfwp8rrXM6VVcAoiGRVfq3jZwZsVc4DAIAZ7juDezV4fR7HTy0YsC/QuLHfRuPWjBhUigbI93m3QiL/x8EkprRxHqMcjsaQuxo5KKpLpNDj/atzi2OQ2ciBHzZMWGnoPQ7Ijz52dszCw7wRKJJVeqHG09QlqsD76mY/3/hTtk/JEW4P5RIXDzIznPXzKEs1lWh+qUU6DSb6jkSvTOSXEXW0Po6Dv0IxCO8OuQj71xt289qa4UwuZNEbduuWoJKEG2pPLilz5yZKK0OhBe+XyE9hJbcNTFDgponjEL0qjEJgJRkdPMxRhyisJSEGLRJ3wGivjGrAQ6pqHG1vXc8SK4pXthfJMBGRgSDEIgNcGZF3anqVQeADSItcWMkdDuICLfyApZ0a+Ia690iFREF91dKquySWAFpbpQuWqJvdXF1mV325F/eqol
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR10MB3022.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(396003)(39860400002)(346002)(136003)(376002)(366004)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(53546011)(6512007)(6506007)(9686003)(478600001)(1076003)(6666004)(83380400001)(26005)(2906002)(33716001)(5660300002)(66476007)(6916009)(54906003)(66556008)(66946007)(316002)(8676002)(8936002)(41300700001)(4326008)(6486002)(38100700002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FXa8KE+9qTe5Dvf23sc6HrC3wheuy7Je4+LZnUfvQhpNluW9hwX0e5Gt56uy?=
- =?us-ascii?Q?JP+qUwHL+QnCy/E49CG9N5pjbeeHYnEXsiC+sXwMEiYzCSqb9wkS4ILVBiZY?=
- =?us-ascii?Q?F2ZqhvXwqHlEm6prvMqkHDUW0LvnaDBzKtuMcaZ0bMzBYv8zbQKNUSs0L6mh?=
- =?us-ascii?Q?LsiiODY2L9YaE7U3fnU8oKUgywwkf24tpMvEo9aTiTC5FCZIb+GdFj+dF8fJ?=
- =?us-ascii?Q?eqNzhArUrvetUUU+q8wV41r00C++iWeg/icKCi1mJ2TInNXTotq9Oe5Gqipg?=
- =?us-ascii?Q?a2DQ1vlAU42G8Ysp6Yywdgbl2ScucHHoAUahX9d7t6MXfIgAnFNKYXC8F5mB?=
- =?us-ascii?Q?dK1C+dGyNVVZpLtSIdZhlD1QM8kfJoW9cDf2EN62MCtFXJpnBL5cuuPZ1Pxo?=
- =?us-ascii?Q?TRHDjqbyfHi7KkS1W9SDNaHkptxNuSLvHU0kqL874gR/AZgRObz5q0PShkkb?=
- =?us-ascii?Q?rWJoz07T4J3Lxomz14yqkgaK3MZIejZH3w2xzihkM8q0sh88iGt+L7OtAILV?=
- =?us-ascii?Q?hNnrVkMSMykYoSGDkxG8wQEIZzN2xou0GNV51kf6QheaI8SrMYDBc2VQiZlI?=
- =?us-ascii?Q?XfKGSS5kLVHyouPKnR2BSfM9oNaj3B/6mdgam1Lo59uFOJVcHJrFMBZ+FgiM?=
- =?us-ascii?Q?MxYFykDZkrEfnIWLN/BYBBKmDLC+3jgcEC0Ae5A7qJcVw94aT2w9nwJR6l/N?=
- =?us-ascii?Q?51hq5AeC7axnyN6ncqsgiLCYqhmWl4L1HUzTz/RClIHPBcmlE+l6HalHmmkp?=
- =?us-ascii?Q?affvLMZY9HsOhZImmD0LctKHoED93H6/+iUVnCSrVYSBavvGmkXq3LQCx4om?=
- =?us-ascii?Q?Wxl54tbnLDS3j1ZguBhvLWosfZBfyyZBYpPBxhU6avYGHLkHOSxtZgf8gavf?=
- =?us-ascii?Q?egLDamU00iEfDgJ6lKY7+anqDUxkvk1F3xcLQbrG9iDpEqyQVmTcKtPuXIOR?=
- =?us-ascii?Q?w+ZZ3vSfRBi+Vyj9QMyos5L/fnmOY5HIaT75Hk7vRK8cfHf94QWYTTZA8OIO?=
- =?us-ascii?Q?N9jRZ5Xmn2VnJGBfi0SQmkXxA8NOrydNg/7+DqCexvwh5yB4eFt8gidE3bW7?=
- =?us-ascii?Q?za4QO6Nnef2rPJhqWdN993vHK5WjAXU8DEFnOAT5m/n0XqMryRNjgtA2ggC0?=
- =?us-ascii?Q?fmymR9ip5XumjJBtlyIiOr4I+iSdtDmClb5EuelZW9dFxYapfhOYHsRFGB9+?=
- =?us-ascii?Q?eCrLxj5PkGeF6dHE5Dvv5aCcWv5ZTsE6Y5eaGx8ksYKptvtLwPC+RD+ipQ8r?=
- =?us-ascii?Q?M6dwV0+sKpAgKW76onHlpqs05TPHf+ykLVxoUawBCXGCr0VcCi9FedU2EsHA?=
- =?us-ascii?Q?9/PZY4iFTkazSCz4R4gbsK5KlGedKh4I+k7GLw2Vx3e4+VfaSJS06qnQiVbi?=
- =?us-ascii?Q?KnkMXnB6M9EXkLStSqDdrMuicDrrGtFQtEnzHytNm9vnXuNz6HLqySXX6P2v?=
- =?us-ascii?Q?qq8VPZpBDUJNNgaGVmSvSJMHK+UCr0b6piOKGHN2VLVAoIMOKv/4a9bYGRa0?=
- =?us-ascii?Q?NbUFLPV0zKguaTC315Se85RK+rWBJZgjgmwUnuRolPCcyytjr/bPUMCOaG6H?=
- =?us-ascii?Q?qzpZvPrUVqILtikcVx+mlRhQeAgY5ZtzBmYBL9VD?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?yqp2wkrmQDXifa+g56vg/hKp5lGoDRnjTrQiKag/hcHtPC63/UehCymC+0rO?=
- =?us-ascii?Q?J88OzkHIutNZxIsT4v1zDF+M+tIW0l6CdYXC8kIwBUQXwj4hUdV5mrPF45YY?=
- =?us-ascii?Q?ft0BXEaK5f5h91wZpA1GdQwZWwqsQV1NQHGIWdoFh98vjSY4GgUo1lS6wZrH?=
- =?us-ascii?Q?aIW6xxnflIR4qWhozJ1Udb5Qzf9ETOV5Gt3P+BYn6SgmwvUYMwBWmQry7ubo?=
- =?us-ascii?Q?t8GewDk4ssKqMg+zht/MCCoyYhvfbP7VR0M1lFcHsJO6oJ7afLTZfn2mzRYm?=
- =?us-ascii?Q?prAbISTxyI2ICEg/pO5vMK2hbxm1gXIbfBuEDbaeMCjkIIWeXu1To7P9PXRr?=
- =?us-ascii?Q?nLRL1/pF8BbPg8RPUs1IoSYy2qrr4DRz5KlnW3wJUf4y/n8VA8NHMiahiPEh?=
- =?us-ascii?Q?GTUHMtxIm8wW5i9k108Y1a2z4ccZhBek7gBS/tMtIUEuRiuC8fMeOzIdtjFD?=
- =?us-ascii?Q?4zoq201bYaeRRE+D79UuWmUrZIt9xkJlTQhhSoNpRS3FjoomL0D2YKfi6CTn?=
- =?us-ascii?Q?YqDs0x3ycBSpPtZFhxWsfirH4/wjO81ON/aNwlkupeQHNYuU4tnsUn+bgroj?=
- =?us-ascii?Q?cOD/hITuBvq3rd7yTfZUQ3PwA/pskctcjh0JwOuT5w9FtpKTuvm3fJhcZyK4?=
- =?us-ascii?Q?Jna8Tx44Rf+WG5OIhtFI9MPoQq/aicwsEyqHyEnvmjjS9B1Z6bKGvBgPpFar?=
- =?us-ascii?Q?OdYYdOejqauqcujJ3GJwhcylNgnbHuje75Y5ijfHlgAalIdceAo5oI1qndgF?=
- =?us-ascii?Q?UEUmtrOCHaNQHmc763EHZXRIoRSJ/GP7UwaX7sBZrPb7Kigu55e44iX5Ak7t?=
- =?us-ascii?Q?YvLB1RyDOLIHfs8kO+Q7iRUsi3KnbxmH5p3N1oVggicndSH//eOTxwesuXjQ?=
- =?us-ascii?Q?/jlsKDeU/A7XDzd7M2uwH51py6GFXwdRZl25gz8ZMuWDIV2QPCyAr5mqmPQJ?=
- =?us-ascii?Q?y07BCEyqw3pPwfWvLt/mpA=3D=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0699c1f7-420b-4b67-268a-08dbc41f6331
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR10MB3022.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 14:45:29.2126
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1AShsTeQB473SGaro8BVXuyM1J3KoLDeoSBPDLG5yBKQj0cGN7tdhObBDGMtlUuslgN+dVwipqNR3P9obUaTXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB6788
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-03_12,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 malwarescore=0
- adultscore=0 suspectscore=0 mlxlogscore=952 bulkscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310030109
-X-Proofpoint-GUID: Eqrv8WUX_VC9v5aE1G2jXgJDUIMxifd7
-X-Proofpoint-ORIG-GUID: Eqrv8WUX_VC9v5aE1G2jXgJDUIMxifd7
+Content-Type: text/plain; charset=us-ascii; format=flowed
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -176,75 +93,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Lorenzo Stoakes <lstoakes@gmail.com> [231002 03:43]:
-> On Mon, Oct 02, 2023 at 09:26:03AM +0200, Vlastimil Babka wrote:
-> > On 9/30/23 00:28, Lorenzo Stoakes wrote:
-> > > On Fri, Sep 29, 2023 at 02:30:40PM -0400, Liam R. Howlett wrote:
-> > >> When the calling function fails after the dup_anon_vma(), the
-> > >> duplication of the anon_vma is not being undone.  Add the necessary
-> > >> unlink_anon_vma() call to the error paths that are missing them.
-> > >>
-> > >> This issue showed up during inspection of the error path in vma_merge()
-> > >> for an unrelated vma iterator issue.
-> > >>
-> > >> Users may experience increased memory usage, which may be problematic as
-> > >> the failure would likely be caused by a low memory situation.
-> > >>
-> > >> Fixes: d4af56c5c7c6 ("mm: start tracking VMAs with maple tree")
-> > >> Cc: stable@vger.kernel.org
-> > >> Cc: Jann Horn <jannh@google.com>
-> > >> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-> > >> ---
-> > >>  mm/mmap.c | 30 ++++++++++++++++++++++--------
-> > >>  1 file changed, 22 insertions(+), 8 deletions(-)
-> > >>
-> > >> diff --git a/mm/mmap.c b/mm/mmap.c
-> > >> index acb7dea49e23..f9f0a5fe4db4 100644
-> > >> --- a/mm/mmap.c
-> > >> +++ b/mm/mmap.c
-> > >> @@ -583,11 +583,12 @@ static inline void vma_complete(struct vma_prepare *vp,
-> > >>   * dup_anon_vma() - Helper function to duplicate anon_vma
-> > >>   * @dst: The destination VMA
-> > >>   * @src: The source VMA
-> > >> + * @dup: Pointer to the destination VMA when successful.
-> > >>   *
-> > >>   * Returns: 0 on success.
-> > >
-> > > Being a bit nitpicky/refactory here, but anon_vma_clone() appears to have
-> > > two possible return values - 0 for success, and -ENOMEM.
-> > >
-> > > As a result, it's not really gaining us much passing through this value.
 
-Passing through the pointer simplifies the success code path, in most
-cases.. for these callers though, it doesn't appear to matter.
 
-> > >
-> > > It'd be nice if dup_anon_vma() and anon_vma_clone() were therefore updated
-> > > to instead return NULL on ENOMEM and the dst otherwise.
-> >
-> > But we also need to represent that dup_anon_vma() had nothing to do, because
-> > "(src->anon_vma && !dst->anon_vma)" was false, and in that case we should
-> > not be returning dst from there?
-> >
-> > So maybe we could return NULL for that case and ERR_PTR(ret) for the -ENOMEM
-> > from anon_vma_clone() ?
+On Thu, Aug 24 2023 at 08:31:06 AM +12:00:00, Luke Jones 
+<luke@ljones.dev> wrote:
 > 
-> Yeah, you're right, actually I think that would probably be the best
-> approach as you'd both eliminate the awkward out parameter but retain the
-> fact that there's 3 possible return states (dup'd, no need to dup, error).
+>> 
+>> The second member variable in cs35l41_prop_model_table is the SSID to
+>> match against.
+>> The Lenovo laptops in the initial patch didn't have different SSIDs 
+>> so
+>> the entry was set to NULL for those.
+>> Future entries using CSC3551 MUST always have an accompanying SSID
+>> with this entry.
+>> Takashi was correct, the implementation is intended to also be used 
+>> to
+>> patch incorrect DSD.
+>> 
+>> We have a potential solution to workaround the SPI cs-gpios issue
+>> inside here,
+>> though the drawback for that is that it only works for laptops with 2
+>> SPI amps.
+> 
+> Can you provide me this so I can test? I have laptops with SPI 2 and 
+> 4 speaker setups.
 
-I don't like 3 possible returns as it makes things less readable, IMO.
-But, since the two callers to the function don't use the assigned
-variable again it won't make things too bad here.  We can document it by
-using the variable name.  eg: anon_duped = dup_anon_vma() instead of
-err = dup_anon_vma().
+Hi Stefan,
+
+Do you have any further information about the status of this in regards 
+to the 2023 laptops?
 
 > 
-> >
-> > > Then we could de-clunk this whole code path, and the quite natural fact of
-> > > 'thing didn't return a pointer therefore had no memory to allocate it' fals
-> > > out.
-> > >
-> > > But this isn't exactly an earth-shattering concern :)
-> > >
-> >
+>> I also took a look at the function for applying DSD properties for 
+>> the
+>> 2023 ROG laptops.
+>> Unfortunately the one-size-fits-all approach will not work, some of
+>> these laptops are i2c
+>> and some are SPI, meaning the GPIO indexes are different for 
+>> different
+>> laptops.
+> 
+> Do you mean "spk-id-gpios"? For all the laptops I know of this seems 
+> to be
+> Package () { "spk-id-gpios", Package () {
+>    SPK1, 0x02, Zero, Zero,
+>    SPK1, 0x02, Zero, Zero
+> } },
+> 
+> There is one laptop where it is One not 0x02 (the GA402N)
+> 
+>> Some of the laptops do no have Speaker IDs.
+>> Also, no laptop other than the 2 I added already should ever use
+>> CS35L41_EXT_BOOST_NO_VSPK_SWITCH (in fact I believe all these laptops
+>> are internal
+>> boost anyway).
+> 
+> Grazie.
+> 
+>> 
+>> We are currently working internally on adding support for the 2023 
+>> ROG
+>> laptops, so we
+>> ask for you guys to hold off on trying to upstream support for these
+>> laptops.
+> 
+> Ah great. Thank you. I apologise for trying to rush things, but I do 
+> have a discord server of over 4000 people, many of whom have laptops 
+> with cirrus amps.
+> 
+> For now I'm including a patch in my kernel builds with this mapping:
+> 
+> const struct cs35l41_prop_model cs35l41_prop_model_table[] = {
+> 	{ "CLSA0100", NULL, lenovo_legion_no_acpi },
+> 	{ "CLSA0101", NULL, lenovo_legion_no_acpi },
+> 	{ "CSC3551", "10431433", asus_rog_2023_no_acpi }, // ASUS GS650P - 
+> i2c
+> 	{ "CSC3551", "10431463", asus_rog_2023_no_acpi }, // ASUS GA402X - 
+> i2c
+> 	{ "CSC3551", "10431473", asus_rog_2023_no_acpi }, // ASUS GU604V - 
+> spi
+> 	{ "CSC3551", "10431483", asus_rog_2023_no_acpi }, // ASUS GU603V - 
+> spi
+> 	{ "CSC3551", "10431493", asus_rog_2023_no_acpi }, // ASUS GV601V - 
+> spi
+> 	{ "CSC3551", "10431573", asus_rog_2023_no_acpi }, // ASUS GZ301V - 
+> spi
+> 	{ "CSC3551", "104317F3", asus_rog_2023_no_acpi }, // ASUS ROG ALLY - 
+> i2c
+> 	{ "CSC3551", "10431B93", asus_rog_2023_no_acpi }, // ASUS G614J - spi
+> 	{ "CSC3551", "10431CAF", asus_rog_2023_no_acpi }, // ASUS G634J - spi
+> 	{ "CSC3551", "10431C9F", asus_rog_2023_no_acpi }, // ASUS G614JI -spi
+> 	{ "CSC3551", "10431D1F", asus_rog_2023_no_acpi }, // ASUS G713P - i2c
+> 	{ "CSC3551", "10431F1F", asus_rog_2023_no_acpi }, // ASUS H7604JV - 
+> spi
+> 	{}
+> };
+> 
+> These are the machines I have verified the gpios and such for.
+
+I have a new version of this patch with all listed models confirmed as 
+working, and with slightly different settings for some. The only thing 
+missing in a solution to the gpio-cs issue.
+
+Can you please provide an update on where you are with ASUS support in 
+particular so that I may consider if it is worth my time submitting the 
+updated patch.
+
+> 
+> Cheers,
+> Luke.
+> 
+> 
+
+
