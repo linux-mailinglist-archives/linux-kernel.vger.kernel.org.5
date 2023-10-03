@@ -2,317 +2,318 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CEC7B6A4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623327B6A58
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236835AbjJCNUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:20:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60216 "EHLO
+        id S237473AbjJCNWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:22:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237434AbjJCNUs (ORCPT
+        with ESMTP id S236917AbjJCNWG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:20:48 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C626FCE5;
-        Tue,  3 Oct 2023 06:20:23 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 72B761F45B;
-        Tue,  3 Oct 2023 13:20:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696339222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Tue, 3 Oct 2023 09:22:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD691A7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696339279;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=xl5gigzuD0h4X4xgTTFSoyDOAJ3zte6LU/Pt2TNQDWg=;
-        b=LX7yAnk1oFogEakJ4UHCjeq0tRQkgtClQkAz2L218mA4W5MaFHK5++w73biAtN7mLUZLQh
-        H1G5Y8oJuNw+5BiS5tbhhHMLlntTaxDJFDcF0bjuDxeQQ6+XufPpBK6qi9Ei/uKKPGoJKa
-        c4hhc3YhvPPAQ1B8qlIoIoVldkZcA7Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696339222;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xl5gigzuD0h4X4xgTTFSoyDOAJ3zte6LU/Pt2TNQDWg=;
-        b=AMJn+HCPklbH3ujzNdvTB6dcLMkRthFI+c3eRtyAOoRXDNzqOrANM7D0QYVcUCtDmAGzAk
-        sBOIgKQk37IlsoDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 627A5132D4;
-        Tue,  3 Oct 2023 13:20:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 65EJGBYVHGXMNAAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 03 Oct 2023 13:20:22 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id E8C1CA07CC; Tue,  3 Oct 2023 15:20:21 +0200 (CEST)
-Date:   Tue, 3 Oct 2023 15:20:21 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Carlos Maiolino <cem@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 4/8] shmem: trivial tidyups, removing extra blank lines,
- etc
-Message-ID: <20231003132021.3l3xe2wjtatwoell@quack3>
-References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com>
- <b3983d28-5d3f-8649-36af-b819285d7a9e@google.com>
+        bh=DsSmi/Zt5uME6pvWTbk/N7D0/KT5w+J1b0pUC4h/oVU=;
+        b=WPl4+n1qBHhYJD4DGHLfhzq/oDcozTZCLKmBwASpBb7563/+pnxpaL4LAspI6W7QNoEOnB
+        9505oDB4rZVbQIMFFyQmvGhJn+qHJ3RNwq45JbQxknj9kq2jHyYdIK+Qc5EgdnHDHtLjAy
+        1YGx2fvEukyACtyPmuWx40K315iYRi8=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-304-n2zzl4W7N8Wrk30mvTR-SQ-1; Tue, 03 Oct 2023 09:21:18 -0400
+X-MC-Unique: n2zzl4W7N8Wrk30mvTR-SQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-3249655593dso783251f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 06:21:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696339277; x=1696944077;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DsSmi/Zt5uME6pvWTbk/N7D0/KT5w+J1b0pUC4h/oVU=;
+        b=mULUgTZqN4tB2HVnb9+B0fCICkJn03LG4PScVCKxef0y2hJ5oDCspLXWVSLO8oGtPp
+         CC/wchmgdNACHfdM5HAEfwMc6BymrwJkGvGmiKqCDkp8nmO5TPfTmmul3W95GycSv+43
+         6PNNID4S2gNiiCv+DlJz/XSw6dkfcZxhZsTiQKgE5aBZ0I2ZHtYJC/LQ1r91FT/pYF2l
+         I1dXtkS111wj4NlJZXYtnARdEp8NUGZxxCLOfv2vJzBHP4GygKpOywKzRaI36DwQHaTY
+         tcbz+ZtVaL7EFG2LK6BFUXgvbZoaJW5n7yn8bmPRF4R1v7NmvbtEiwN/9ldBRlQMfsTw
+         84WA==
+X-Gm-Message-State: AOJu0Yww3/PB+miVP8BaquEQnSeYElAtTfzUnozMY2SpmA/txTOZvUjP
+        XA8iao/I7s9ScVjNyOFt8TPvn5gpN3p/OyQTkAn8NZd0sB3tGn9YyA7VyqSGIEtXLoflMO4g8Go
+        lqGm7gAflD+ybEGN+uiNFYaWF
+X-Received: by 2002:a5d:568e:0:b0:321:5d9f:2d9f with SMTP id f14-20020a5d568e000000b003215d9f2d9fmr12401805wrv.47.1696339276762;
+        Tue, 03 Oct 2023 06:21:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF8jHDDQmTthN89Peo1PU8EJm/OLgNDz81/4SvjYgSZiWjXE3UuxBzNPv1BWoXgEuGYxf3wJg==
+X-Received: by 2002:a5d:568e:0:b0:321:5d9f:2d9f with SMTP id f14-20020a5d568e000000b003215d9f2d9fmr12401757wrv.47.1696339276284;
+        Tue, 03 Oct 2023 06:21:16 -0700 (PDT)
+Received: from redhat.com ([2.52.132.27])
+        by smtp.gmail.com with ESMTPSA id j17-20020a5d5651000000b0031f82743e25sm1569843wrw.67.2023.10.03.06.20.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 06:21:15 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 09:20:27 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Jiqian Chen <Jiqian.Chen@amd.com>
+Cc:     Gerd Hoffmann <kraxel@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        David Airlie <airlied@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>,
+        =?iso-8859-1?Q?Marc-Andr=E9?= Lureau <marcandre.lureau@gmail.com>,
+        Robert Beckett <bob.beckett@collabora.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        qemu-devel@nongnu.org,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Roger Pau =?iso-8859-1?Q?Monn=E9?= <roger.pau@citrix.com>,
+        Alex Deucher <Alexander.Deucher@amd.com>,
+        Christian Koenig <Christian.Koenig@amd.com>,
+        Stewart Hildebrand <Stewart.Hildebrand@amd.com>,
+        Xenia Ragiadakou <burzalodowa@gmail.com>,
+        Honglei Huang <Honglei1.Huang@amd.com>,
+        Julia Zhang <Julia.Zhang@amd.com>,
+        Huang Rui <Ray.Huang@amd.com>
+Subject: Re: [LINUX KERNEL PATCH v5 1/2] virtio_pci: Add freeze_mode for
+ virtio_pci_common_cfg
+Message-ID: <20231003091644-mutt-send-email-mst@kernel.org>
+References: <20230919104607.2282248-1-Jiqian.Chen@amd.com>
+ <20230919104607.2282248-2-Jiqian.Chen@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b3983d28-5d3f-8649-36af-b819285d7a9e@google.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230919104607.2282248-2-Jiqian.Chen@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 29-09-23 20:28:50, Hugh Dickins wrote:
-> Mostly removing a few superfluous blank lines, joining short arglines,
-> imposing some 80-column observance, correcting a couple of comments.
-> None of it more interesting than deleting a repeated INIT_LIST_HEAD().
+On Tue, Sep 19, 2023 at 06:46:06PM +0800, Jiqian Chen wrote:
+> When guest vm does S3, Qemu will reset and clear some things of virtio
+> devices, but guest can't aware that, so that may cause some problems.
+> For excample, Qemu calls virtio_reset->virtio_gpu_gl_reset, that will
+> destroy render resources of virtio-gpu. As a result, after guest resume,
+> the display can't come back and we only saw a black screen. Due to guest
+> can't re-create all the resources, so we need to let Qemu not to destroy
+> them when S3.
 > 
-> Signed-off-by: Hugh Dickins <hughd@google.com>
-
-Autumn cleaning ;). Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+> For above purpose, this patch add a new parameter named freeze_mode to
+> struct virtio_pci_common_cfg, and when guest suspends, it can set
+> freeze_mode to be FREEZE_S3, so that virtio devices can change their
+> reset behavior on Qemu side according to that mode.
+> 
+> Signed-off-by: Jiqian Chen <Jiqian.Chen@amd.com>
 > ---
->  mm/shmem.c | 56 ++++++++++++++++++++----------------------------------
->  1 file changed, 21 insertions(+), 35 deletions(-)
+>  drivers/virtio/virtio.c                | 13 +++++++++++++
+>  drivers/virtio/virtio_pci_modern.c     |  9 +++++++++
+>  drivers/virtio/virtio_pci_modern_dev.c | 16 ++++++++++++++++
+>  include/linux/virtio_config.h          |  1 +
+>  include/linux/virtio_pci_modern.h      |  2 ++
+>  include/uapi/linux/virtio_pci.h        | 16 ++++++++++++++--
+>  6 files changed, 55 insertions(+), 2 deletions(-)
 > 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 5501a5bc8d8c..caee8ba841f7 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -756,7 +756,7 @@ static unsigned long shmem_unused_huge_shrink(struct shmem_sb_info *sbinfo,
->  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+> diff --git a/drivers/virtio/virtio.c b/drivers/virtio/virtio.c
+> index 3893dc29eb26..b4eb8369d5a1 100644
+> --- a/drivers/virtio/virtio.c
+> +++ b/drivers/virtio/virtio.c
+> @@ -7,6 +7,7 @@
+>  #include <linux/idr.h>
+>  #include <linux/of.h>
+>  #include <uapi/linux/virtio_ids.h>
+> +#include <uapi/linux/virtio_pci.h>
 >  
->  /*
-> - * Like filemap_add_folio, but error if expected item has gone.
-> + * Somewhat like filemap_add_folio, but error if expected item has gone.
->   */
->  static int shmem_add_to_page_cache(struct folio *folio,
->  				   struct address_space *mapping,
-> @@ -825,7 +825,7 @@ static int shmem_add_to_page_cache(struct folio *folio,
->  }
+>  /* Unique numbering for virtio devices. */
+>  static DEFINE_IDA(virtio_index_ida);
+> @@ -486,10 +487,20 @@ void unregister_virtio_device(struct virtio_device *dev)
+>  EXPORT_SYMBOL_GPL(unregister_virtio_device);
 >  
->  /*
-> - * Like delete_from_page_cache, but substitutes swap for @folio.
-> + * Somewhat like filemap_remove_folio, but substitutes swap for @folio.
->   */
->  static void shmem_delete_from_page_cache(struct folio *folio, void *radswap)
+>  #ifdef CONFIG_PM_SLEEP
+> +static void virtio_set_freeze_mode(struct virtio_device *dev, u16 mode)
+> +{
+> +	if (!dev->config->set_freeze_mode)
+> +		return;
+> +	might_sleep();
+> +	dev->config->set_freeze_mode(dev, mode);
+> +}
+> +
+>  int virtio_device_freeze(struct virtio_device *dev)
 >  {
-> @@ -887,7 +887,6 @@ unsigned long shmem_partial_swap_usage(struct address_space *mapping,
->  			cond_resched_rcu();
->  		}
->  	}
-> -
->  	rcu_read_unlock();
+>  	struct virtio_driver *drv = drv_to_virtio(dev->dev.driver);
 >  
->  	return swapped << PAGE_SHIFT;
-> @@ -1213,7 +1212,6 @@ static int shmem_setattr(struct mnt_idmap *idmap,
->  	if (i_uid_needs_update(idmap, attr, inode) ||
->  	    i_gid_needs_update(idmap, attr, inode)) {
->  		error = dquot_transfer(idmap, inode, attr);
-> -
->  		if (error)
->  			return error;
->  	}
-> @@ -2456,7 +2454,6 @@ static struct inode *__shmem_get_inode(struct mnt_idmap *idmap,
->  	if (err)
->  		return ERR_PTR(err);
+> +	virtio_set_freeze_mode(dev, VIRTIO_PCI_FREEZE_MODE_FREEZE_S3);
+> +
+>  	virtio_config_disable(dev);
 >  
-> -
->  	inode = new_inode(sb);
->  	if (!inode) {
->  		shmem_free_inode(sb, 0);
-> @@ -2481,11 +2478,10 @@ static struct inode *__shmem_get_inode(struct mnt_idmap *idmap,
->  		shmem_set_inode_flags(inode, info->fsflags);
->  	INIT_LIST_HEAD(&info->shrinklist);
->  	INIT_LIST_HEAD(&info->swaplist);
-> -	INIT_LIST_HEAD(&info->swaplist);
-> -	if (sbinfo->noswap)
-> -		mapping_set_unevictable(inode->i_mapping);
->  	simple_xattrs_init(&info->xattrs);
->  	cache_no_acl(inode);
-> +	if (sbinfo->noswap)
-> +		mapping_set_unevictable(inode->i_mapping);
->  	mapping_set_large_folios(inode->i_mapping);
+>  	dev->failed = dev->config->get_status(dev) & VIRTIO_CONFIG_S_FAILED;
+> @@ -544,6 +555,8 @@ int virtio_device_restore(struct virtio_device *dev)
 >  
->  	switch (mode & S_IFMT) {
-> @@ -2697,7 +2693,6 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
->  	}
+>  	virtio_config_enable(dev);
 >  
->  	ret = shmem_get_folio(inode, index, &folio, SGP_WRITE);
-> -
->  	if (ret)
->  		return ret;
->  
-> @@ -3229,8 +3224,7 @@ shmem_mknod(struct mnt_idmap *idmap, struct inode *dir,
->  	error = simple_acl_create(dir, inode);
->  	if (error)
->  		goto out_iput;
-> -	error = security_inode_init_security(inode, dir,
-> -					     &dentry->d_name,
-> +	error = security_inode_init_security(inode, dir, &dentry->d_name,
->  					     shmem_initxattrs, NULL);
->  	if (error && error != -EOPNOTSUPP)
->  		goto out_iput;
-> @@ -3259,14 +3253,11 @@ shmem_tmpfile(struct mnt_idmap *idmap, struct inode *dir,
->  	int error;
->  
->  	inode = shmem_get_inode(idmap, dir->i_sb, dir, mode, 0, VM_NORESERVE);
-> -
->  	if (IS_ERR(inode)) {
->  		error = PTR_ERR(inode);
->  		goto err_out;
->  	}
-> -
-> -	error = security_inode_init_security(inode, dir,
-> -					     NULL,
-> +	error = security_inode_init_security(inode, dir, NULL,
->  					     shmem_initxattrs, NULL);
->  	if (error && error != -EOPNOTSUPP)
->  		goto out_iput;
-> @@ -3303,7 +3294,8 @@ static int shmem_create(struct mnt_idmap *idmap, struct inode *dir,
->  /*
->   * Link a file..
->   */
-> -static int shmem_link(struct dentry *old_dentry, struct inode *dir, struct dentry *dentry)
-> +static int shmem_link(struct dentry *old_dentry, struct inode *dir,
-> +		      struct dentry *dentry)
->  {
->  	struct inode *inode = d_inode(old_dentry);
->  	int ret = 0;
-> @@ -3334,7 +3326,7 @@ static int shmem_link(struct dentry *old_dentry, struct inode *dir, struct dentr
->  	inode_inc_iversion(dir);
->  	inc_nlink(inode);
->  	ihold(inode);	/* New dentry reference */
-> -	dget(dentry);		/* Extra pinning count for the created dentry */
-> +	dget(dentry);	/* Extra pinning count for the created dentry */
->  	d_instantiate(dentry, inode);
->  out:
->  	return ret;
-> @@ -3354,7 +3346,7 @@ static int shmem_unlink(struct inode *dir, struct dentry *dentry)
->  					     inode_set_ctime_current(inode));
->  	inode_inc_iversion(dir);
->  	drop_nlink(inode);
-> -	dput(dentry);	/* Undo the count from "create" - this does all the work */
-> +	dput(dentry);	/* Undo the count from "create" - does all the work */
+> +	virtio_set_freeze_mode(dev, VIRTIO_PCI_FREEZE_MODE_UNFREEZE);
+> +
 >  	return 0;
+>  
+>  err:
+> diff --git a/drivers/virtio/virtio_pci_modern.c b/drivers/virtio/virtio_pci_modern.c
+> index d6bb68ba84e5..846b70919cbd 100644
+> --- a/drivers/virtio/virtio_pci_modern.c
+> +++ b/drivers/virtio/virtio_pci_modern.c
+> @@ -491,6 +491,13 @@ static bool vp_get_shm_region(struct virtio_device *vdev,
+>  	return true;
 >  }
 >  
-> @@ -3464,7 +3456,6 @@ static int shmem_symlink(struct mnt_idmap *idmap, struct inode *dir,
+> +static void vp_set_freeze_mode(struct virtio_device *vdev, u16 mode)
+> +{
+> +	struct virtio_pci_device *vp_dev = to_vp_device(vdev);
+> +
+> +	vp_modern_set_freeze_mode(&vp_dev->mdev, mode);
+> +}
+> +
+>  static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
+>  	.get		= NULL,
+>  	.set		= NULL,
+> @@ -509,6 +516,7 @@ static const struct virtio_config_ops virtio_pci_config_nodev_ops = {
+>  	.get_shm_region  = vp_get_shm_region,
+>  	.disable_vq_and_reset = vp_modern_disable_vq_and_reset,
+>  	.enable_vq_after_reset = vp_modern_enable_vq_after_reset,
+> +	.set_freeze_mode = vp_set_freeze_mode,
+>  };
 >  
->  	inode = shmem_get_inode(idmap, dir->i_sb, dir, S_IFLNK | 0777, 0,
->  				VM_NORESERVE);
-> -
->  	if (IS_ERR(inode))
->  		return PTR_ERR(inode);
+>  static const struct virtio_config_ops virtio_pci_config_ops = {
+> @@ -529,6 +537,7 @@ static const struct virtio_config_ops virtio_pci_config_ops = {
+>  	.get_shm_region  = vp_get_shm_region,
+>  	.disable_vq_and_reset = vp_modern_disable_vq_and_reset,
+>  	.enable_vq_after_reset = vp_modern_enable_vq_after_reset,
+> +	.set_freeze_mode = vp_set_freeze_mode,
+>  };
 >  
-> @@ -3518,8 +3509,7 @@ static void shmem_put_link(void *arg)
->  	folio_put(arg);
+>  /* the PCI probing function */
+> diff --git a/drivers/virtio/virtio_pci_modern_dev.c b/drivers/virtio/virtio_pci_modern_dev.c
+> index aad7d9296e77..4a6f7d130b6e 100644
+> --- a/drivers/virtio/virtio_pci_modern_dev.c
+> +++ b/drivers/virtio/virtio_pci_modern_dev.c
+> @@ -203,6 +203,8 @@ static inline void check_offsets(void)
+>  		     offsetof(struct virtio_pci_common_cfg, queue_used_lo));
+>  	BUILD_BUG_ON(VIRTIO_PCI_COMMON_Q_USEDHI !=
+>  		     offsetof(struct virtio_pci_common_cfg, queue_used_hi));
+> +	BUILD_BUG_ON(VIRTIO_PCI_COMMON_F_MODE !=
+> +		     offsetof(struct virtio_pci_common_cfg, freeze_mode));
 >  }
 >  
-> -static const char *shmem_get_link(struct dentry *dentry,
-> -				  struct inode *inode,
-> +static const char *shmem_get_link(struct dentry *dentry, struct inode *inode,
->  				  struct delayed_call *done)
->  {
->  	struct folio *folio = NULL;
-> @@ -3593,8 +3583,7 @@ static int shmem_fileattr_set(struct mnt_idmap *idmap,
->   * Callback for security_inode_init_security() for acquiring xattrs.
->   */
->  static int shmem_initxattrs(struct inode *inode,
-> -			    const struct xattr *xattr_array,
-> -			    void *fs_info)
-> +			    const struct xattr *xattr_array, void *fs_info)
->  {
->  	struct shmem_inode_info *info = SHMEM_I(inode);
->  	struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
-> @@ -3778,7 +3767,6 @@ static struct dentry *shmem_find_alias(struct inode *inode)
->  	return alias ?: d_find_any_alias(inode);
+>  /*
+> @@ -714,6 +716,20 @@ void __iomem *vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
 >  }
+>  EXPORT_SYMBOL_GPL(vp_modern_map_vq_notify);
 >  
-> -
->  static struct dentry *shmem_fh_to_dentry(struct super_block *sb,
->  		struct fid *fid, int fh_len, int fh_type)
->  {
-> @@ -4362,8 +4350,8 @@ static int shmem_fill_super(struct super_block *sb, struct fs_context *fc)
->  	}
->  #endif /* CONFIG_TMPFS_QUOTA */
+> +/*
+> + * vp_modern_set_freeze_mode - set freeze mode to device
+> + * @mdev: the modern virtio-pci device
+> + * @mode: the mode set to device
+> + */
+> +void vp_modern_set_freeze_mode(struct virtio_pci_modern_device *mdev,
+> +				 u16 mode)
+> +{
+> +	struct virtio_pci_common_cfg __iomem *cfg = mdev->common;
+> +
+> +	vp_iowrite16(mode, &cfg->freeze_mode);
+> +}
+> +EXPORT_SYMBOL_GPL(vp_modern_set_freeze_mode);
+> +
+>  MODULE_VERSION("0.1");
+>  MODULE_DESCRIPTION("Modern Virtio PCI Device");
+>  MODULE_AUTHOR("Jason Wang <jasowang@redhat.com>");
+> diff --git a/include/linux/virtio_config.h b/include/linux/virtio_config.h
+> index 2b3438de2c4d..2a7443ff7f12 100644
+> --- a/include/linux/virtio_config.h
+> +++ b/include/linux/virtio_config.h
+> @@ -120,6 +120,7 @@ struct virtio_config_ops {
+>  			       struct virtio_shm_region *region, u8 id);
+>  	int (*disable_vq_and_reset)(struct virtqueue *vq);
+>  	int (*enable_vq_after_reset)(struct virtqueue *vq);
+> +	void (*set_freeze_mode)(struct virtio_device *vdev, u16 mode);
+>  };
 >  
-> -	inode = shmem_get_inode(&nop_mnt_idmap, sb, NULL, S_IFDIR | sbinfo->mode, 0,
-> -				VM_NORESERVE);
-> +	inode = shmem_get_inode(&nop_mnt_idmap, sb, NULL,
-> +				S_IFDIR | sbinfo->mode, 0, VM_NORESERVE);
->  	if (IS_ERR(inode)) {
->  		error = PTR_ERR(inode);
->  		goto failed;
-> @@ -4666,11 +4654,9 @@ static ssize_t shmem_enabled_show(struct kobject *kobj,
+>  /* If driver didn't advertise the feature, it will never appear. */
+> diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
+> index 067ac1d789bc..ba6eed216ded 100644
+> --- a/include/linux/virtio_pci_modern.h
+> +++ b/include/linux/virtio_pci_modern.h
+> @@ -121,4 +121,6 @@ int vp_modern_probe(struct virtio_pci_modern_device *mdev);
+>  void vp_modern_remove(struct virtio_pci_modern_device *mdev);
+>  int vp_modern_get_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
+>  void vp_modern_set_queue_reset(struct virtio_pci_modern_device *mdev, u16 index);
+> +void vp_modern_set_freeze_mode(struct virtio_pci_modern_device *mdev,
+> +		   u16 mode);
+>  #endif
+> diff --git a/include/uapi/linux/virtio_pci.h b/include/uapi/linux/virtio_pci.h
+> index f703afc7ad31..725ace458a1b 100644
+> --- a/include/uapi/linux/virtio_pci.h
+> +++ b/include/uapi/linux/virtio_pci.h
+> @@ -140,6 +140,15 @@ struct virtio_pci_notify_cap {
+>  	__le32 notify_off_multiplier;	/* Multiplier for queue_notify_off. */
+>  };
 >  
->  	for (i = 0; i < ARRAY_SIZE(values); i++) {
->  		len += sysfs_emit_at(buf, len,
-> -				     shmem_huge == values[i] ? "%s[%s]" : "%s%s",
-> -				     i ? " " : "",
-> -				     shmem_format_huge(values[i]));
-> +				shmem_huge == values[i] ? "%s[%s]" : "%s%s",
-> +				i ? " " : "", shmem_format_huge(values[i]));
->  	}
-> -
->  	len += sysfs_emit_at(buf, len, "\n");
+> +typedef enum {
+> +       VIRTIO_PCI_FREEZE_MODE_UNFREEZE = 0,
+> +       VIRTIO_PCI_FREEZE_MODE_FREEZE_S3 = 3,
+> +} virtio_pci_freeze_mode_t;
+
+we don't normally do typedefs.
+
+> +
+> +#define VIRTIO_PCI_FREEZE_MODE_MASK \
+> +	((1 << VIRTIO_PCI_FREEZE_MODE_UNFREEZE) | \
+> +	(1 << VIRTIO_PCI_FREEZE_MODE_FREEZE_S3))
+> +
+
+not sure why is this useful generally.
+
+>  /* Fields in VIRTIO_PCI_CAP_COMMON_CFG: */
+>  struct virtio_pci_common_cfg {
+>  	/* About the whole device. */
+> @@ -164,6 +173,8 @@ struct virtio_pci_common_cfg {
+>  	__le32 queue_avail_hi;		/* read-write */
+>  	__le32 queue_used_lo;		/* read-write */
+>  	__le32 queue_used_hi;		/* read-write */
+> +
+> +	__le16 freeze_mode;		/* read-write */
+>  };
+>
+
+Your patch will likely break uses of sizeof(struct virtio_pci_common_cfg)
+on existing devices.
+  
+>  /* Fields in VIRTIO_PCI_CAP_PCI_CFG: */
+> @@ -202,8 +213,9 @@ struct virtio_pci_cfg_cap {
+>  #define VIRTIO_PCI_COMMON_Q_AVAILHI	44
+>  #define VIRTIO_PCI_COMMON_Q_USEDLO	48
+>  #define VIRTIO_PCI_COMMON_Q_USEDHI	52
+> -#define VIRTIO_PCI_COMMON_Q_NDATA	56
+> -#define VIRTIO_PCI_COMMON_Q_RESET	58
+> +#define VIRTIO_PCI_COMMON_F_MODE	56
+
+
+F_ here stands for freeze? Please don't abbreviate.
+Q for queue is a pun that works, F for freeze doesn't.
+
+
+> +#define VIRTIO_PCI_COMMON_Q_NDATA	58
+> +#define VIRTIO_PCI_COMMON_Q_RESET	60
 >  
->  	return len;
-> @@ -4767,8 +4753,9 @@ EXPORT_SYMBOL_GPL(shmem_truncate_range);
->  #define shmem_acct_size(flags, size)		0
->  #define shmem_unacct_size(flags, size)		do {} while (0)
+>  #endif /* VIRTIO_PCI_NO_MODERN */
 >  
-> -static inline struct inode *shmem_get_inode(struct mnt_idmap *idmap, struct super_block *sb, struct inode *dir,
-> -					    umode_t mode, dev_t dev, unsigned long flags)
-> +static inline struct inode *shmem_get_inode(struct mnt_idmap *idmap,
-> +				struct super_block *sb, struct inode *dir,
-> +				umode_t mode, dev_t dev, unsigned long flags)
->  {
->  	struct inode *inode = ramfs_get_inode(sb, dir, mode, dev);
->  	return inode ? inode : ERR_PTR(-ENOSPC);
-> @@ -4778,8 +4765,8 @@ static inline struct inode *shmem_get_inode(struct mnt_idmap *idmap, struct supe
->  
->  /* common code */
->  
-> -static struct file *__shmem_file_setup(struct vfsmount *mnt, const char *name, loff_t size,
-> -				       unsigned long flags, unsigned int i_flags)
-> +static struct file *__shmem_file_setup(struct vfsmount *mnt, const char *name,
-> +			loff_t size, unsigned long flags, unsigned int i_flags)
->  {
->  	struct inode *inode;
->  	struct file *res;
-> @@ -4798,7 +4785,6 @@ static struct file *__shmem_file_setup(struct vfsmount *mnt, const char *name, l
->  
->  	inode = shmem_get_inode(&nop_mnt_idmap, mnt->mnt_sb, NULL,
->  				S_IFREG | S_IRWXUGO, 0, flags);
-> -
->  	if (IS_ERR(inode)) {
->  		shmem_unacct_size(flags, size);
->  		return ERR_CAST(inode);
 > -- 
-> 2.35.3
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> 2.34.1
+
