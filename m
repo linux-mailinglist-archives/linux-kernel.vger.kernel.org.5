@@ -2,147 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3387B6E28
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BBF7B6E2A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239189AbjJCQM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
+        id S240079AbjJCQNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:13:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231983AbjJCQM4 (ORCPT
+        with ESMTP id S231669AbjJCQNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:12:56 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0BB9E
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:12:52 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d8660e23801so1335325276.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 09:12:52 -0700 (PDT)
+        Tue, 3 Oct 2023 12:13:43 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6348A7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:13:40 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-69361132a60so133131b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 09:13:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696349572; x=1696954372; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9uQBvm4Fq+54VpMXbG4kdkrjzOsWloPr068ysYSR6Hc=;
-        b=gD7QkIvWwo4VOqcoa9KhtXJzngPKzcJTUGzOHooVnlfS0ENN5gTxOqXOxthtAErH5+
-         hHW6rgwv9jUDz++15e/ldOFl2RxbXfgnegykle48CJ5El/hhPoQ17avDfSM4Xg539soz
-         t/u0eYzpM8jmf51TFQCMQhw3fU9gh5nhBlbPzAPqpSLkpwnLOjoz7dyj1MqjEk5hcBlb
-         bwQX7ZrJPi1j5AIHxFfbgWJDxhls1/lsdmPsc75mEpn4/HDOpxZrJvl3dk8KfvLksW99
-         fIDqv37qp5R8vsKBHKjqiaJfg0hej3o02x/29yrC0CzTspE7qqmM3TB1W7CU+9V9ZB3B
-         +KRQ==
+        d=gmail.com; s=20230601; t=1696349620; x=1696954420; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WDJF4HDvdbvC8HGpA321wCqM7eAE7ZDYuka+f9gbHrE=;
+        b=Cgj+uUZlKOGXlcvbQboOBHPRFwX6YFuijFdS3wWNimLgNAKc2MLMOqkTxVyv1oBvAX
+         SxPRlxBAk3ytcT6TnfWij3fea0W0fPsZKERDA5ZusJ00ejQ+sqfO8ZbqgDXWxp6UTZxy
+         Vvys5uEhkHtSIwZyBynaHof4nzjMyqmKqcxttYCG01az4cQHGsLWt5qLG7KcV1/ayyrp
+         HijkeFsxN2lS6g/QRA3yYcLlYjBgKrGb6MRnaIi90TxK7LYNPyWcGMgp8SR2w9LTnqTZ
+         +gpCIJaH2buEOLX3CZgxXtPUSMObjupJfjeGHSRrnzgiahNZGjG6z5OOuCTmW9E0h9wX
+         N9Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696349572; x=1696954372;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=9uQBvm4Fq+54VpMXbG4kdkrjzOsWloPr068ysYSR6Hc=;
-        b=vYMTraMRwfTd4ydEXGymq/tLfTs9g6HprVfMia+opm/9bI2mjpJmnRQNWeF+kmGPPf
-         8m1opL1PccMfg/+wUiVepNnGw+9/Yz/8bfiE2+oOsAGdDenKd3m+qAstnUZKVd/4edtH
-         fc60hPs5atJYrLKTTqXslCfYcttcUYHdWqITb5JQ717nwiQLgH3swP37XMjg6LTbcly+
-         h7ApghwHKnybOAMv7IRSSWIU7z540ZQ0vnOVXg8YTAhYEhPWeEBimFp3K2QITw/jb+lJ
-         OBi6vnYje05poNJZS9DusouysSWik5fdCxbi7l4ZUgKd284frjH/vvbMtOyXvFUZE2Qn
-         Uh2w==
-X-Gm-Message-State: AOJu0Ywka1yQX7wUYh3Jg958sb5v3u0MsBfYcOfXOgfmPtB069xEy7OG
-        7kaq0VsxcbZNiWNbgeRAsb81v8TlFVo=
-X-Google-Smtp-Source: AGHT+IEuYMJ8BCAtWpB91NPtpLQDE9hAcvYeMB8lwLvla7gu+qCLAH3DB4DSeDhHFqEi3H2ViX6mUFc2S8U=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:6dc1:0:b0:d8b:737f:8246 with SMTP id
- i184-20020a256dc1000000b00d8b737f8246mr188298ybc.2.1696349572099; Tue, 03 Oct
- 2023 09:12:52 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 09:12:50 -0700
-In-Reply-To: <b50afadea577065d90ae3dc8ca2aa67dcffcc50e.camel@infradead.org>
-Mime-Version: 1.0
-References: <a3989e7ff9cca77f680f9bdfbaee52b707693221.camel@infradead.org>
- <ZRbolEa6RI3IegyF@google.com> <ee679de20e3a53772f9d233b9653fdc642781577.camel@infradead.org>
- <ZRsAvYecCOpeHvPY@google.com> <ac097a26e96ded73e19200066b9063354096a8fd.camel@infradead.org>
- <ZRsP5cvyqLaihb76@google.com> <b50afadea577065d90ae3dc8ca2aa67dcffcc50e.camel@infradead.org>
-Message-ID: <ZRw9gstj8TWiiBvd@google.com>
-Subject: Re: [PATCH v2] KVM: x86: Use fast path for Xen timer delivery
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Woodhouse <dwmw2@infradead.org>
-Cc:     kvm <kvm@vger.kernel.org>, Paul Durrant <paul@xen.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696349620; x=1696954420;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WDJF4HDvdbvC8HGpA321wCqM7eAE7ZDYuka+f9gbHrE=;
+        b=Hu44y742nVzmpnsbBDjnTLRFc8ee2/3PqHMRH2JrVH1iShuQ9JTc8V9Ci5eoi3MFbq
+         8PzlVk+w4aXs0b+rfJzDREO6yQGxfbwjXNqcVllRbXTbsTwXbaAZyyToJwkoRifh68DY
+         A4WNR4BvV5O4E10r/Gbl0sRNaPf4lFNHyinTy3Hvp/lTBNjS7XUH3tzfOWIA7f8Xbttq
+         tL+7JXboWRu/EBmSmO2lTXPZ8UjRr/6L4AtLi7ETffUFpqDnER5cSKAfk3LNcn1eVGbB
+         VO+s5zTZ+/9YO9VfHcerdh7ZuwD+A5996dLdZMBUInGrrNfP92YKol6E6/BGrwYtmq6C
+         FQBA==
+X-Gm-Message-State: AOJu0YwVgsOS2rKNVhA7vuBf3N3DEylxtWbEsHZTMRBOsmOV9Qw70sCo
+        1lt4NaiaGXeqTDggkN654ECLleJ+wy116w==
+X-Google-Smtp-Source: AGHT+IEJgy33K1p1hRRj4EQyl5p2mFyZjvGPJ87E1fmfKGOBuPiMPo9tCAw/afY1/NB3OJ8XP92IHw==
+X-Received: by 2002:a05:6a00:1d22:b0:693:38c5:4d6d with SMTP id a34-20020a056a001d2200b0069338c54d6dmr30438pfx.2.1696349620270;
+        Tue, 03 Oct 2023 09:13:40 -0700 (PDT)
+Received: from localhost.localdomain ([140.116.154.65])
+        by smtp.gmail.com with ESMTPSA id j7-20020a62b607000000b0068bbd43a6e2sm1600697pff.10.2023.10.03.09.13.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 09:13:39 -0700 (PDT)
+From:   Kuan-Wei Chiu <visitorckw@gmail.com>
+To:     jpoimboe@kernel.org, peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org, Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH] objtool: Fix memory leak in check.c
+Date:   Wed,  4 Oct 2023 00:13:35 +0800
+Message-Id: <20231003161335.1403094-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023, David Woodhouse wrote:
-> On Mon, 2023-10-02 at 11:45 -0700, Sean Christopherson wrote:
-> > E.g. there's an assumption that -EWOULDBLOCK is the only non-zero retur=
-n code where
-> > the correct response is to go down the slow path.
-> >=20
-> > I'm not asking to spell out every single condition, I'm just asking for=
- clarification
-> > on what the intended behavior is, e.g.
-> >=20
-> > =C2=A0 Use kvm_xen_set_evtchn_fast() directly from the timer callback, =
-and fall
-> > =C2=A0 back to the slow path if the event is valid but fast delivery is=
-n't
-> > =C2=A0 possible, which currently can only happen if delivery needs to b=
-lock,
-> > =C2=A0 e.g. because the gfn=3D>pfn cache is invalid or stale.
-> >=20
-> > instead of simply saying "when it's necessary to do so" and leaving it =
-up to the
-> > reader to figure what _they_ think that means, which might not always a=
-lign with
-> > what the author actually meant.
->=20
->=20
-> Fair enough. There's certainly scope for something along the lines of
->=20
->=20
-> +	rc =3D kvm_xen_set_evtchn_fast(&e, vcpu->kvm);
-> +	if (rc !=3D -EWOULDBLOCK) {
->=20
->    /*
->     * If kvm_xen_set_evtchn_fast() returned -EWOULDBLOCK, then set the
->     * timer_pending flag and kick the vCPU, to defer delivery of the=C2=
-=A0
->     * event channel to a context which can sleep. If it fails for any
->     * other reasons, just let it fail silently. The slow path fails=C2=A0
->     * silently too; a warning in that case may be guest triggerable,
->     * should never happen anyway, and guests are generally going to
->     * *notice* timers going missing.
->     */
->=20
-> +		vcpu->arch.xen.timer_expires =3D 0;
-> +		return HRTIMER_NORESTART;
-> +	}
->=20
-> That's documenting *this* code, not the function it happens to call.
-> It's more verbose than I would normally have bothered to be, but I'm
-> all for improving the level of commenting in our code as long as it's
-> adding value.=20
+In the 'disas_funcs' function of check.c, the 'cmd' string used to store
+a command is not being freed after it's used, leading to a memory leak.
+This patch adds the necessary 'free(cmd)' statement to release the
+allocated memory.
 
-I'm completely ok with no comment, I just want something in the changelog. =
- I'm
-also not opposed to a comment, but I don't think it's necessary.
+Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+---
+ tools/objtool/check.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I don't have a problem with digging around code to understand the subtletie=
-s, or
-even the high level "what" in many cases.  What I don't like is encounterin=
-g code
-where *nothing* explains the author's intent.  All too often I've encounter=
-ed
-historical code in KVM where it's not at all obvious if code does what the =
-author
-intended, e.g. if a bug was a simple goof or a completely misguided design =
-choice.
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index e308d1ba664e..b010b883c1ee 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -4589,6 +4589,7 @@ static int disas_funcs(const char *funcs)
+ 	/* real snprintf() */
+ 	snprintf(cmd, size, objdump_str, cross_compile, objname, funcs);
+ 	ret = system(cmd);
++	free(cmd);
+ 	if (ret) {
+ 		WARN("disassembly failed: %d", ret);
+ 		return -1;
+-- 
+2.25.1
 
-Holler if you plan on sending a v4 with the comment.  I'm a-ok applying v3 =
-with a
-massaged changelog to fold in the gist of the comment.
