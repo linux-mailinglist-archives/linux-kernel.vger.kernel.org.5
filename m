@@ -2,93 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 347357B65B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D25C7B65BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239695AbjJCJkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
+        id S239669AbjJCJn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239685AbjJCJki (ORCPT
+        with ESMTP id S231626AbjJCJnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:40:38 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F3BAB;
-        Tue,  3 Oct 2023 02:40:33 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9adb9fa7200so146734466b.0;
-        Tue, 03 Oct 2023 02:40:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696326032; x=1696930832; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7CyRh4kQaOdknBgWyMmgJve4C/+MYGcjkmbGU4vHGSk=;
-        b=kAfxjOXRzPLD6U/MqWsJxEV75CpMQ2EeQL/sgjpAp7oXcijS2KRX0bxfNhjpn8YI3o
-         DUcJ7hFQO3USCu1f4V+q3I3RHSDR1GozmzP6V+sa8Jyybz75Rv80ZwPx372bDPAYlgNS
-         otvCQ8GBjGT+JDOdqYI/OjsGGK+80zjq0YKobOMREw204NwUwicLuorEWXm3ELjuxlNT
-         kG8N355kzRXTUmegxjQhchAOfNGtcIXsify0tr0DOPeMv7TRSmzyAN/7jH9ddqI3zg7r
-         BFogMdMAhSNvvHV+uz7nRvlM3fxc1RZjHQjcFuKqB3rNxU1ScjNHsTbhVDkGI1HAlbHz
-         ueGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696326032; x=1696930832;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7CyRh4kQaOdknBgWyMmgJve4C/+MYGcjkmbGU4vHGSk=;
-        b=gF7BUGI+2bA/s6OR6bNsR+dF6jA2RMsarGpJVyITzwHKg09ln4EACcGu0+9DGKA0AH
-         na8caODF3jEBQiKKliPQsypqBciM/nnC3ZyVKpeQZd9u9ZPNDEfAOv1VYH3C2OcKeEzR
-         qW3i26XIO1Lsv15FwH8+Hw5C0Nz+f0Gtn15GMgIHvtEtsjhHKafQ6X5LnGq6iC3/Wnb/
-         glIOF1ZBbZu+lsWNV4J66ay5wBPMltteOjDukmqzGUAJeEjPuXG+rPCxuohwyWTRvNh8
-         fG0MpJfk30K9GUJ2/223HI0y+cPD/bGVkKX/RAbxOtkUF3ZKhcIfgg03xzjPWNGSFWhh
-         J+0g==
-X-Gm-Message-State: AOJu0Yyzo3Z1RcWuC1RrXBhBo+H8QTIwS6ADsFc5/zROAt9opDqVPX5N
-        FsYTMCKycnxGZgrsEFREq8g=
-X-Google-Smtp-Source: AGHT+IEn38FV2RHMM1HqKtteE6m3acfP4+wNwDoKg0nQehp6GxiyBRTrcI2FUoRcydg3Xdprf5qxBQ==
-X-Received: by 2002:a17:906:6a10:b0:9ad:8641:e91b with SMTP id qw16-20020a1709066a1000b009ad8641e91bmr1730320ejc.11.1696326031915;
-        Tue, 03 Oct 2023 02:40:31 -0700 (PDT)
-Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
-        by smtp.gmail.com with ESMTPSA id h14-20020a170906590e00b00992b2c55c67sm760112ejq.156.2023.10.03.02.40.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 02:40:31 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 3 Oct 2023 11:40:29 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Jinank Jain <jinankjain@linux.microsoft.com>
-Cc:     seanjc@google.com, pbonzini@redhat.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        x86@kernel.org, hpa@zytor.com, jinankjain@microsoft.com,
-        thomas.lendacky@amd.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, wei.liu@kernel.org,
-        tiala@microsoft.com
-Subject: Re: [PATCH] arch/x86: Set XSS while handling #VC intercept for CPUID
-Message-ID: <ZRvhjd48oHq2gXB2@gmail.com>
-References: <20231003092835.18974-1-jinankjain@linux.microsoft.com>
+        Tue, 3 Oct 2023 05:43:25 -0400
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2053.outbound.protection.outlook.com [40.107.7.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0454A1;
+        Tue,  3 Oct 2023 02:43:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BuUKddtX5YjGCxZq5RP6eVlza+Izp7H0wDO/uHaENzD7E5TEUvtM1/qa9Jx8IITbwzSXNSMFDKLHxpyrBUslCzptKcPHW+ryj1cmrSgP48Zg+3kJxiM8pDo2iye6rRnFKjZWBwdQokjLa8ZbydiIK6A6DEgJXdxuCZq2kSXDahLJNg4x5Xp3hebpQ758Xdyki95SWc8u5aUOFoheFpzFwigvGC9n/C02U5hFr8OWUiGZFg4dHOsRVg3jJPB5dPC4EQBRVUNOy/khebOZiToqKoCq3BT0PCwnUsp0nKUbzFCCZ7l6euOlBfKY2/8a5OZ/Cw6Jfoe0fEqrXVbogUVDlg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=M4TPV1SvH5xoswYo0hNT/oATHJJfoV12pNxvCJotvsY=;
+ b=f+jA1rehHt51YswNcbVrKyK5ouYRicRAMU/TZEdGauG+EfO8I6A141ofesqWdEl+7p3nHd5zh/hYBfYhBEUaBZXj9jVg3G27div4s6bedX5FalpgeSaB2ZO9sCdDOmX4aRlXQk0osFDGHCU5bgJa13bOZqrn7TpvdZMFa6qyCm1pySI+mvjaTm18JcEPxMmP1Gysy6oLz/rNpufNTTnHiysYsdEj83mdqUFoVacEL1U339poK68DXQxzfFnFldMFDZLu/41i9/xgoz1B6Vty+UyeNKqH/T7rd9X1lYk0Mm61QBoVf67cI8SCOJ1+vVAqH5JZuNMOolJoqtON/qeDvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=asem.it; dmarc=pass action=none header.from=asem.it; dkim=pass
+ header.d=asem.it; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=M4TPV1SvH5xoswYo0hNT/oATHJJfoV12pNxvCJotvsY=;
+ b=atsxCEhNg9ggubIwsWq82uJD8sILa9YVrgYLzALIFcKf/y0LoFT1N6wYA+NqkJB8G9zI6SgNTtTVqAnuBb9HqLWbi1GmdxlPi1Y36BxF5Ao/U3r0L5SczKRU7PuM7clSIAFp3Qvx2MGaIzZcBga/qOLLE+e+zuNmPJd6n/ocjko=
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ (2603:10a6:10:273::14) by VI1PR01MB6301.eurprd01.prod.exchangelabs.com
+ (2603:10a6:800:144::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.26; Tue, 3 Oct
+ 2023 09:43:15 +0000
+Received: from DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::ad2b:a1e7:8828:ba2f]) by DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+ ([fe80::ad2b:a1e7:8828:ba2f%7]) with mapi id 15.20.6838.024; Tue, 3 Oct 2023
+ 09:43:15 +0000
+From:   Flavio Suligoi <f.suligoi@asem.it>
+To:     Daniel Thompson <daniel.thompson@linaro.org>
+CC:     Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+        Helge Deller <deller@gmx.de>, Pavel Machek <pavel@ucw.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh@kernel.org>
+Subject: RE: [PATCH v3 1/2] dt-bindings: backlight: Add MPS MP3309C
+Thread-Topic: [PATCH v3 1/2] dt-bindings: backlight: Add MPS MP3309C
+Thread-Index: AQHZ76uO1Fb/EPNT/k67j1TrFzld37AtE7aAgAmVcBA=
+Date:   Tue, 3 Oct 2023 09:43:15 +0000
+Message-ID: <DU2PR01MB8034F448F6E66BAC3823CDB1F9C4A@DU2PR01MB8034.eurprd01.prod.exchangelabs.com>
+References: <20230925122609.78849-1-f.suligoi@asem.it>
+ <20230926130113.GB4356@aspen.lan>
+In-Reply-To: <20230926130113.GB4356@aspen.lan>
+Accept-Language: it-IT, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=asem.it;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU2PR01MB8034:EE_|VI1PR01MB6301:EE_
+x-ms-office365-filtering-correlation-id: ae921ce4-b6f5-43b5-6b8e-08dbc3f52a8d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Nymp5wqakQRrJ4KUsF3fkMisbmYygth/TVhor0xMmjDeZsXE5rdrS+FCC3TzCp2991QwMA4CP6z63rRhx8zf24jAaRoLJmjPk18zDN59Ka69mhawxm622VifAhQqohdBHnwIdjToXxJVsAuReqhpj2t0I49pWlmIMH9K9vTiy3VFp4qX18QRSC5xwZCWAXNRuIgzdOOl7QE8g/fRuZ49Rps5+tOYtCoZ6Ol5PHVXE2AmzZQOZqU9DlmUzl/psMbXKdGYO72E/fcrvhNZG0CJWbSu7uER6ZYR9iM5tbrriRldZa18Y6ncqDB6xyGln3IrJK8EOG9oW+nHcGPH4K+iwSepYKFgdYcyhh3X4LDZarhTHy2L1fi33RX8H9YzKAIv46hQtF/9QZ1uC8kQIfrBw2X5FhWH6yAxuhDjcmtrfyYlfGIN+AopBkmjV99RAsB7nKB5IuFAhnK2g0gpMNJ6lmuUNjqxCmKXLq4TN433A/8s1C7GUhUU0djVmWzbMzPJZcaEJQmx1qvnerPg5GRXIAVvrYa+Op+IzymqKP0xm9oOf7/n6b7GEtN011VnVywMo6+smzOENBDb/A8KAsloYsAaR000CK/QXYyq5/n4PUYcXhiVfLcu4froMZSLXHZV
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU2PR01MB8034.eurprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(39840400004)(136003)(366004)(376002)(346002)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(6506007)(9686003)(7696005)(478600001)(71200400001)(316002)(41300700001)(66946007)(64756008)(76116006)(54906003)(66556008)(6916009)(66446008)(66476007)(26005)(8676002)(8936002)(52536014)(5660300002)(122000001)(7416002)(38100700002)(2906002)(38070700005)(4326008)(55016003)(86362001)(33656002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?S5iMIa0ehqMGwt7WQI7/W7OMXSqlgqp4IKJ7sWGPiCWUTvH9PVn9mCWE6eZ8?=
+ =?us-ascii?Q?OjmOHIEQnCSAU4ZFTKEIhf41AQwfZpm/pM8AuO5waUNjxUzupMc3zkhLcTDR?=
+ =?us-ascii?Q?tZuQixDjUP2sndcrLqZmMlHRhAgWlhnoEhp6bW3tZfroBlqIXJ9Q/uKn47g3?=
+ =?us-ascii?Q?rkdZuB3dtxtoEob7aNzUA5nNAkAFKjk3vSmNfJVRW8Uzqo4R4pNyqtqUTMCH?=
+ =?us-ascii?Q?Vx3rLvUB1OEz9yQXsWtVdwfq8b3T1RWqbwpgwL5W7eR/wErmdD0PuyebAIjR?=
+ =?us-ascii?Q?phUmgCNSbTriKPeX3KZ4p67D8ZeHc/QJdaWwvSYBMxDvERP3kdDg6Ns4w+bB?=
+ =?us-ascii?Q?i+IUj4KnaVikFGDTvV8jE7LR2HE99J0NTem4g7nhrYOykqwEzEaMh501KtVy?=
+ =?us-ascii?Q?n+BXrzQNl4SaNbR4cMcYAA92MqGCkvppxQrR5loTn8gK61hGqjkE8D04j5sN?=
+ =?us-ascii?Q?vC04gEKMI0vb67Y/mMIDmfjT0CC8P0wjUYc4kWXGkBNforh1q9nfBvmVsga6?=
+ =?us-ascii?Q?jaGTYsv7Q2Q0MOCjgpJXxzg41Avn6WS7FIOAI0co5O4kd5mvevizv6aPoJZG?=
+ =?us-ascii?Q?JnU7nyLE3ZJC5t1sNgz0f/czRqfZAdbaqFgC09ASGJqJrTVJyZATQwygGOrD?=
+ =?us-ascii?Q?FZvIlvabsah7ftpMFKOpNiQahJIu46IaLQX61WuQzORuBM4uWqVRt3X6Rc3P?=
+ =?us-ascii?Q?8ME2/mZx8m02/tWzeqwgrrS2IcpcGVaOpV+qP8mJE2L9gcTcYW5oLIfFCd4x?=
+ =?us-ascii?Q?+CB4fgNkJQ2OU+ORHqkBPG+GdxUd2JYRa5EfNTMP/FJI8/BFUCNNmsyUpAXC?=
+ =?us-ascii?Q?X+F4MyPlmOh6cGa7LhCbx4EOdi4s+y9CQgtQMLFirsmQuvobreria+gvJ5Oe?=
+ =?us-ascii?Q?XudA+tJhNyEFPXs9ZIIusH7fmW+4FinzxzfT+kfZZrZHMkmSd22vekPUVpFD?=
+ =?us-ascii?Q?CLBj/bL5Kw+JRUgMePq+7pTMlvxvM89w4kFtZrH44yWUFVXocQT9aRaA037V?=
+ =?us-ascii?Q?dSPu0rAVJBA5p/wTRfgzCV2srkNWOYbp94SaZ5iVtFOvVAbFnNaqG+vH3iv/?=
+ =?us-ascii?Q?Kf9YLWpxmoHhk3iEtxDLbJWQKV4m65w66C2E80Mz5Ei/jt2y1S4YWoiWZTPn?=
+ =?us-ascii?Q?KsuHfjCNAgXcw/G+qecqdo9j0++lYxYaonySrZiIlY/QMkBoblj7giJYzLXd?=
+ =?us-ascii?Q?WMZ2uEgQxoneYN/zv0C4jJfeXbXJwMAPiLzHlsFDppmLDqITljWUNthOSUkx?=
+ =?us-ascii?Q?9EpFWGJAKI2HFtus3PaKeYv0wl5yo6G/hJBHjBUNRSj7/EobYVX7BFVQ4hw9?=
+ =?us-ascii?Q?tgyDpvYjTMtfmSAslbgYdXtUKIywwuRIk522khUuVCgicLQrNwfjU2NqLtW9?=
+ =?us-ascii?Q?RKDYlroMnfttvBdFZmSreyTHRVYGr+UINrdkmG5S17LFTRh5q/HuIi1LO5nL?=
+ =?us-ascii?Q?Z+jKCTZ2iow4IHEN1WGEdgSEOY8TtHgWggVS2km/kn8L6wBGqcziSrw2iz5S?=
+ =?us-ascii?Q?XNIFdQIRDi6A2eOfGnYhXmi7+E8CePJvPR4ZNxbj8FPipP7ohCWF9Rl7j64S?=
+ =?us-ascii?Q?+0Li5IRzztLMqJ5b6RM=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003092835.18974-1-jinankjain@linux.microsoft.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-OriginatorOrg: asem.it
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU2PR01MB8034.eurprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae921ce4-b6f5-43b5-6b8e-08dbc3f52a8d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Oct 2023 09:43:15.0853
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d0a766c6-7992-4344-a4a2-a467a7bb1ed2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Lu/H6EQ/JAnLCA5FjtNy3BBsqIKJQsxYCnu3rxArvzCSuxnD2MXDN/2n+oqFfcfAakp2AI1G7WZLlRxgL0eLIQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR01MB6301
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Daniel,
 
-* Jinank Jain <jinankjain@linux.microsoft.com> wrote:
+...
 
-> According to [1], while handling the #VC intercept for CPUID leaf
-> 0x0000_000D, we need to supply the value of XSS in the GHCB page. If
-> this value is not provided then a spec compliant hypervisor can fail the
-> GHCB request and kill the guest.
-> 
-> [1] https://www.amd.com/system/files/TechDocs/56421-guest-hypervisor-communication-block-standardization.pdf
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - max-brightness
+>=20
+> Why is this mandatory?
+>=20
+> There's no point in setting max-brightness when running in I2C mode (max-
+> brightness should default to 31 in that case).
+>=20
+>=20
+> > +  - default-brightness
+>=20
+> Again. I'm not clear why this needs to be mandatory.
+>=20
+>=20
 
-URL doesn't seem to exist, I get redirected to AMD's 404 page.
+Ok, you are right, I'll remove max-brightness and default-brightness from r=
+equired properties list.
+I think to change these properties, for the pwm dimming, into a clearer:
 
-Thanks,
+- brightness-levels (uint32)=20
+- default-brightness-levels (uint32).
 
-	Ingo
+For example:
+
+  brightness-levels:
+    description:
+      Number of brightness levels. The actual brightness
+      level (PWM duty cycle) will be interpolated from 0 to this value.
+      0 means a  0% duty cycle (darkest/off), while the brightness-levels r=
+epresents
+      a 100% duty cycle (brightest).
+    $ref: /schemas/types.yaml#/definitions/uint32
+
+  default-brightness-level:
+    description:
+      The default brightness level (from 0 to brightness-levels)
+    $ref: /schemas/types.yaml#/definitions/uint32
+
+Example:
+brightness-levels =3D <10>;
+default-brightness-level =3D <6>;
+
+What do you think about this solution?
+
+> Daniel.
+
+Thanks for your help,
+Flavio
