@@ -2,150 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B65927B652F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EC567B6538
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbjJCJOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
+        id S231491AbjJCJP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbjJCJN6 (ORCPT
+        with ESMTP id S231509AbjJCJPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:13:58 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961D6B8
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:13:53 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9ad8bf9bfabso117514966b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 02:13:53 -0700 (PDT)
+        Tue, 3 Oct 2023 05:15:24 -0400
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6F57AB
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:15:19 -0700 (PDT)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59c268676a9so8601177b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 02:15:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696324431; x=1696929231; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Wy+qYX85walSXmmdwQsV/A/vhQrgoI8zrA9EtruEg4w=;
-        b=h8irs/DZYaR/m8ZJeo3ppMJ2Hpzkmrpob53sva71UwD+15AinOviPeuNHxoquPmegT
-         gi+RzXJvFqpsyVoF2WuRjbujU9dnkpgJooT/PydUzIv+0KMEmSu2gmhLpMI+x3WfvYuj
-         4XF+4x0Mg5/qwhci3/ER8vhp807S0sHMZghy8BxnINczoEsOM0/N5bT8yHvilAuji7mB
-         +YHkxq/Sb08MwS9hdgM6hLZDSgQNuiH4es+cSuwhZ8ufVP7hL2n8y1ycmZ6DlzJYz+Ro
-         Zv6S8qCjP4YV6++lLToRUKENvjbiCuZlfdmNulluKI9BxJKhK99kXiRRFddq6+8Jghv1
-         7PJA==
+        d=google.com; s=20230601; t=1696324519; x=1696929319; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=VwYZSOOB/glvz2EnW/qnimnVXLIQ+wJ0Ri+lf09J6gI=;
+        b=OnZFZ40Azgj3uWjlyJMTLvLXYlxokqrNuXf+bhobnWBUVAfcXDn78w24FTdLCn/7WH
+         yKQ5JEcuiKlonNiOl7rJiFODJeflZEINrcKG7B10BHqifAJaRNLc+9kzPowPSqFD2Wmz
+         qRlgt96bzNoom+QD74fwSo5alglnbFuFprHeZrRlA8vQMubH+3oGNtSeyjv2jEODUMFp
+         qoqLkpuJ0XX4f1FEPdPWXcZLtT0PhpLnwTkAPhvVWPB9Xb0aUi0hJEbQ0+ZDu4qTvYwZ
+         nzOB/aoqMxEm9+ctSuimi4NQvWJE0bzsR3LmpG0RTYOht7LHQzGOkthmp//S5kwgUZY4
+         tA8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696324431; x=1696929231;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wy+qYX85walSXmmdwQsV/A/vhQrgoI8zrA9EtruEg4w=;
-        b=n8VwdyM8kRhGC6i9N5JZBudCs6Ha3kHAv5bA8CWOtsXOqWhPYT/5MYDBZVzwNUStrn
-         jMwnQLuf3+1S6xNLsFay/kwzCyLaHOPFcPnPhfcvLM7PxrIbWfhTyh0lKW4PJw1GXhc/
-         72PTrdlrwaRnUGo1RjO+621Zub1/bix52iPlBT1EPX1R6DnD1XTunAMAeTwdg91QRO66
-         0xX3ygxsKsQRcpFeoaYE8kjZTuk9xMjZ4+XgdHQf46sE1MVd3EI3hDbACFqnU92r0P/t
-         Gv0mP76P0/M/L346w6diHnYtTi7g16tIOMLTMB59vioTfJs8+dXMfXLa+rmVS1V0wGQm
-         zQkQ==
-X-Gm-Message-State: AOJu0YyOE2xJPgWQf46FbIBIzqpdq4L203Fl5TR7e3BVrHVRXUVcR7R4
-        HZVrSeU9bUt8bvWT0omTQNmjWA==
-X-Google-Smtp-Source: AGHT+IGbCPuR1XPUtWX3X/T9TqQTZb/GhbgV2D+KJNOAJLA727OZY6doasClCa06FovLV+tf7J12WQ==
-X-Received: by 2002:a17:907:b11:b0:9a2:225a:8d01 with SMTP id h17-20020a1709070b1100b009a2225a8d01mr10397507ejl.7.1696324431573;
-        Tue, 03 Oct 2023 02:13:51 -0700 (PDT)
-Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
-        by smtp.gmail.com with ESMTPSA id pj7-20020a170906d78700b00977eec7b7e8sm731939ejb.68.2023.10.03.02.13.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 02:13:51 -0700 (PDT)
-Message-ID: <35c6c36d-c6a7-4ed3-8a56-db4a82809da6@linaro.org>
-Date:   Tue, 3 Oct 2023 11:13:49 +0200
+        d=1e100.net; s=20230601; t=1696324519; x=1696929319;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VwYZSOOB/glvz2EnW/qnimnVXLIQ+wJ0Ri+lf09J6gI=;
+        b=gmVMnZPDwbOe2z+n74rJhSmnddksScwh7U3VXke6TBaP2Gh5tMaQMBcjBu4kRH64/a
+         Ccs606GH0c/gSQOkUuEL83O/QxppdkmXSXgNYgn9swuFqXYrvJYDF2aHwvcWdqYo9DWQ
+         avN9UdcLqiQ3g5PcHpw3tVg8gmZr6xd4PyOioxUig6gb2O5T5k39tmaVHntJQFeo/wzF
+         hR0e6DiK9U7EsDSao8UGyJwu9HV3qgKERZ2DkBK0Vt1ixRjnNAP6pfcCNEdFC+UeAEnq
+         0E0AJf5h9tgso8B73ID6Jzj+vQElJJkT5kIji4/DNSvKJKZ2NVUEo1XBDrmea4kcRdhr
+         1OaA==
+X-Gm-Message-State: AOJu0YycllyLtB3qKeeEjd68BffeGmY05NbcasdITmAxA4irv2jkMahz
+        uOm2A1Sz0+mDBaww03Z/Yt7eCw==
+X-Google-Smtp-Source: AGHT+IHGzltakHVdO+OL/afC9cmnMy82Tb0Z7wP4Wxec5m1WelVAghemXtF1xjfUCVDqbZcaUXYemA==
+X-Received: by 2002:a81:8907:0:b0:59b:518a:639c with SMTP id z7-20020a818907000000b0059b518a639cmr14262844ywf.36.1696324518906;
+        Tue, 03 Oct 2023 02:15:18 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id m131-20020a817189000000b005950e1bbf11sm244244ywc.60.2023.10.03.02.15.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 02:15:18 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 02:15:09 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Andi Kleen <ak@linux.intel.com>, Christoph Lameter <cl@linux.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        "Huang, Ying" <ying.huang@intel.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v2 01/12] hugetlbfs: drop shared NUMA mempolicy pretence
+In-Reply-To: <ebc0987e-beff-8bfb-9283-234c2cbd17c5@google.com>
+Message-ID: <cae82d4b-904a-faaf-282a-34fcc188c81f@google.com>
+References: <ebc0987e-beff-8bfb-9283-234c2cbd17c5@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] dt-bindings: crypto: qcom,prng: document that RNG
- on SM8450 is a TRNG
-Content-Language: en-US
-To:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Om Prakash Singh <quic_omprsing@quicinc.com>
-References: <20231003-topic-sm8550-rng-v4-0-255e4d0ba08e@linaro.org>
- <20231003-topic-sm8550-rng-v4-1-255e4d0ba08e@linaro.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231003-topic-sm8550-rng-v4-1-255e4d0ba08e@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2023 09:10, Neil Armstrong wrote:
-> It has been reported at [1] the RNG HW on SM8450 is in fact a True Random
-> Number Generator and no more Pseudo, document this by adding
-> a new qcom,trng and the corresponding SoC specific sm8450 compatible.
-> 
-> [1] https://lore.kernel.org/all/20230818161720.3644424-1-quic_omprsing@quicinc.com/
-> 
-> Suggested-by: Om Prakash Singh <quic_omprsing@quicinc.com>
-> Suggested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> Reviewed-by: Om Prakash Singh <quic_omprsing@quicinc.com>
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
+hugetlbfs_fallocate() goes through the motions of pasting a shared NUMA
+mempolicy onto its pseudo-vma, but how could there ever be a shared NUMA
+mempolicy for this file?  hugetlb_vm_ops has never offered a set_policy
+method, and hugetlbfs_parse_param() has never supported any mpol options
+for a mount-wide default policy.
 
+It's just an illusion: clean it away so as not to confuse others, giving
+us more freedom to adjust shmem's set_policy/get_policy implementation.
+But hugetlbfs_inode_info is still required, just to accommodate seals.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Yes, shared NUMA mempolicy support could be added to hugetlbfs, with a
+set_policy method and/or mpol mount option (Andi's first posting did
+include an admitted-unsatisfactory hugetlb_set_policy()); but it seems
+that nobody has bothered to add that in the nineteen years since v2.6.7
+made it possible, and there is at least one company that has invested
+enough into hugetlbfs, that I guess they have learnt well enough how to
+manage its NUMA, without needing shared mempolicy.
 
-Best regards,
-Krzysztof
+Remove linux/mempolicy.h from linux/hugetlb.h: include linux/pagemap.h in
+its place, because hugetlb.h's recently added use of filemap_lock_folio()
+requires that (although most .configs and .c's get it in some other way).
+
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/hugetlbfs/inode.c    | 41 +----------------------------------------
+ include/linux/hugetlb.h |  3 +--
+ 2 files changed, 2 insertions(+), 42 deletions(-)
+
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 926d01c493fb..0586c90cb9a5 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -83,29 +83,6 @@ static const struct fs_parameter_spec hugetlb_fs_parameters[] = {
+ 	{}
+ };
+ 
+-#ifdef CONFIG_NUMA
+-static inline void hugetlb_set_vma_policy(struct vm_area_struct *vma,
+-					struct inode *inode, pgoff_t index)
+-{
+-	vma->vm_policy = mpol_shared_policy_lookup(&HUGETLBFS_I(inode)->policy,
+-							index);
+-}
+-
+-static inline void hugetlb_drop_vma_policy(struct vm_area_struct *vma)
+-{
+-	mpol_cond_put(vma->vm_policy);
+-}
+-#else
+-static inline void hugetlb_set_vma_policy(struct vm_area_struct *vma,
+-					struct inode *inode, pgoff_t index)
+-{
+-}
+-
+-static inline void hugetlb_drop_vma_policy(struct vm_area_struct *vma)
+-{
+-}
+-#endif
+-
+ /*
+  * Mask used when checking the page offset value passed in via system
+  * calls.  This value will be converted to a loff_t which is signed.
+@@ -853,8 +830,7 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
+ 
+ 	/*
+ 	 * Initialize a pseudo vma as this is required by the huge page
+-	 * allocation routines.  If NUMA is configured, use page index
+-	 * as input to create an allocation policy.
++	 * allocation routines.
+ 	 */
+ 	vma_init(&pseudo_vma, mm);
+ 	vm_flags_init(&pseudo_vma, VM_HUGETLB | VM_MAYSHARE | VM_SHARED);
+@@ -902,9 +878,7 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
+ 		 * folios in these areas, we need to consume the reserves
+ 		 * to keep reservation accounting consistent.
+ 		 */
+-		hugetlb_set_vma_policy(&pseudo_vma, inode, index);
+ 		folio = alloc_hugetlb_folio(&pseudo_vma, addr, 0);
+-		hugetlb_drop_vma_policy(&pseudo_vma);
+ 		if (IS_ERR(folio)) {
+ 			mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+ 			error = PTR_ERR(folio);
+@@ -1283,18 +1257,6 @@ static struct inode *hugetlbfs_alloc_inode(struct super_block *sb)
+ 		hugetlbfs_inc_free_inodes(sbinfo);
+ 		return NULL;
+ 	}
+-
+-	/*
+-	 * Any time after allocation, hugetlbfs_destroy_inode can be called
+-	 * for the inode.  mpol_free_shared_policy is unconditionally called
+-	 * as part of hugetlbfs_destroy_inode.  So, initialize policy here
+-	 * in case of a quick call to destroy.
+-	 *
+-	 * Note that the policy is initialized even if we are creating a
+-	 * private inode.  This simplifies hugetlbfs_destroy_inode.
+-	 */
+-	mpol_shared_policy_init(&p->policy, NULL);
+-
+ 	return &p->vfs_inode;
+ }
+ 
+@@ -1306,7 +1268,6 @@ static void hugetlbfs_free_inode(struct inode *inode)
+ static void hugetlbfs_destroy_inode(struct inode *inode)
+ {
+ 	hugetlbfs_inc_free_inodes(HUGETLBFS_SB(inode->i_sb));
+-	mpol_free_shared_policy(&HUGETLBFS_I(inode)->policy);
+ }
+ 
+ static const struct address_space_operations hugetlbfs_aops = {
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 3c4427a2396d..a574e26e18a2 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -30,7 +30,7 @@ void free_huge_folio(struct folio *folio);
+ 
+ #ifdef CONFIG_HUGETLB_PAGE
+ 
+-#include <linux/mempolicy.h>
++#include <linux/pagemap.h>
+ #include <linux/shm.h>
+ #include <asm/tlbflush.h>
+ 
+@@ -513,7 +513,6 @@ static inline struct hugetlbfs_sb_info *HUGETLBFS_SB(struct super_block *sb)
+ }
+ 
+ struct hugetlbfs_inode_info {
+-	struct shared_policy policy;
+ 	struct inode vfs_inode;
+ 	unsigned int seals;
+ };
+-- 
+2.35.3
 
