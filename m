@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 665557B7375
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 618237B7379
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241264AbjJCVkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 17:40:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44314 "EHLO
+        id S241261AbjJCVoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 17:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232084AbjJCVkc (ORCPT
+        with ESMTP id S232084AbjJCVoJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 17:40:32 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721E6A1;
-        Tue,  3 Oct 2023 14:40:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F2EDC433C8;
-        Tue,  3 Oct 2023 21:40:23 +0000 (UTC)
-Date:   Tue, 3 Oct 2023 17:41:29 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ross Zwisler <zwisler@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Ross Zwisler <zwisler@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Daniel Almeida <daniel.almeida@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Subject: Re: [PATCH] visl: use canonical ftrace path
-Message-ID: <20231003174129.11c79c18@gandalf.local.home>
-In-Reply-To: <20230829204600.3210276-2-zwisler@kernel.org>
-References: <20230829204600.3210276-2-zwisler@kernel.org>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 3 Oct 2023 17:44:09 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25AB8A1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:44:05 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bdeae1d0aso261557166b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 14:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1696369443; x=1696974243; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=2r9XDedZRlJTxEOPklXIhMdVqYBus7aG5IbrsC5Wym4=;
+        b=KQTAC2dwCeln5FCr846fwYl9wicbVqUVvW1coDCRBnupCO4BoWCi/LjDFKtKxvIYu4
+         Iu8FvUPPxG0byXCQia0WbeCsEo07nt8Py+a+4ZUGPXhaFc+vrff5pusn8Q5gLMaTup8K
+         ShexSv2ySKeEFWJLJjPnUfTWgav3L9mImXccg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696369443; x=1696974243;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2r9XDedZRlJTxEOPklXIhMdVqYBus7aG5IbrsC5Wym4=;
+        b=ajlvZF3N0G7NPC1L3UYETQbcTq+SdBsMK/h8+8KuN1trMeBTUx9CsP6TAON6Z7toBD
+         yZ+ELavK1uaQFwX3gn67TViXZz0OUp8RB9TDICLiNMJgs/yOJSA/4/6uSXHVP2uz47zp
+         SHm7WScOIIr2rAj4V/9/fcCPnniCFCddry0AV2OpVUh+YxMKNOROqCWFY0khZRPwTf9i
+         9l54DlPoCFs7B1elF4aeawgizFTkdT1FV4U0ztKc1OqhxVcKaa1vqrVn5ipyEU3L5c6i
+         euIiwUXJt4nFWGexnEyp/CO6SuXtGKuZiKeKFcdE0PWCC5NQo5NctFej41FJ7rardDgt
+         kF9g==
+X-Gm-Message-State: AOJu0YwznY6b8HiKLM53X7w+W78+DwmC52sDYJn5RrmzRE1WAAWDsi/J
+        /7niRHLJIzT6ciV0S4gUqHzgv+sTn+fZXXEyGiVheMNA
+X-Google-Smtp-Source: AGHT+IGfbPSXh3VBl70w3ODL9RsDZ6bKu44KeWpl8lQJHhZtZ09ZtCXBq5Aa9rUwKvwQcy6+yDAmQw==
+X-Received: by 2002:a17:906:30cf:b0:9ae:695a:fed0 with SMTP id b15-20020a17090630cf00b009ae695afed0mr344866ejb.11.1696369443289;
+        Tue, 03 Oct 2023 14:44:03 -0700 (PDT)
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com. [209.85.208.51])
+        by smtp.gmail.com with ESMTPSA id w26-20020a1709064a1a00b009ae54eba5casm1651567eju.102.2023.10.03.14.44.02
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Oct 2023 14:44:02 -0700 (PDT)
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5363227cc80so2388129a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 14:44:02 -0700 (PDT)
+X-Received: by 2002:aa7:dc0f:0:b0:52c:b469:bafd with SMTP id
+ b15-20020aa7dc0f000000b0052cb469bafdmr334046edu.41.1696369441779; Tue, 03 Oct
+ 2023 14:44:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20231001131620.112484-1-ubizjak@gmail.com> <CAHk-=wg6P8pPg-x4BPUQj-wE0xC7HkGzFk89ftuji8MVo+RRxw@mail.gmail.com>
+ <CAFULd4Y+HXuditB51Q0LznqiBsvxJr3BjEYvx4_224XmqrycCw@mail.gmail.com>
+ <CAHk-=wh+cfn58XxMLnG6dH+Eb9-2dYfABXJF2FtSZ+vfqVvWzA@mail.gmail.com>
+ <CAFULd4atO8uy_5PbjV8vw-yk0tv_=4kh_JwJ+6Xq-2myStCnmw@mail.gmail.com>
+ <CAFULd4YsPnCfw-NV_0ck1_za=WPc-FxYKV1bb99UcAwMJ=34YA@mail.gmail.com>
+ <ZRrECdIoKCXALl39@gmail.com> <CAFULd4bBzAWoY7MDQN+YV5tpw7vDitFNMuSVt53KGofdZRvTpg@mail.gmail.com>
+ <ZRwZOtANkcwtL+5B@gmail.com> <CAHk-=wi2d159z-KgZTAk52GZHB8=B-HZ-fQ_890fN7CL6Yt89g@mail.gmail.com>
+ <ZRxu9+ZJqjY/u8ku@gmail.com>
+In-Reply-To: <ZRxu9+ZJqjY/u8ku@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 3 Oct 2023 14:43:44 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg5kiiJ+LUChmw73mmi-=uyQrAO-fBTG6yr2ON_UnAoPg@mail.gmail.com>
+Message-ID: <CAHk-=wg5kiiJ+LUChmw73mmi-=uyQrAO-fBTG6yr2ON_UnAoPg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/4] x86/percpu: Use segment qualifiers
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Nadav Amit <namit@vmware.com>, Brian Gerst <brgerst@gmail.com>,
+        Denys Vlasenko <dvlasenk@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 3 Oct 2023 at 12:43, Ingo Molnar <mingo@kernel.org> wrote:
+>
+> So we could do this: we let it live in -tip for a cycle, in a separate
+> branch, and observe what happens - it gets picked up by -next on
+> a daily basis and most x86 developers test it. It won't be merged by other
+> branches in -tip, it won't be pulled by others or relied on. If it
+> conflicts with other bits we rebase it cleanly, no questions asked.
 
-Could this go through the linux-media tree, or if you give it an Ack, I'll
-take it through the tracing tree.
+Sounds like a plan,
 
--- Steve
-
-
-On Tue, 29 Aug 2023 14:46:01 -0600
-Ross Zwisler <zwisler@kernel.org> wrote:
-
-> From: Ross Zwisler <zwisler@google.com>
-> 
-> The canonical location for the tracefs filesystem is at /sys/kernel/tracing.
-> 
-> But, from Documentation/trace/ftrace.rst:
-> 
->   Before 4.1, all ftrace tracing control files were within the debugfs
->   file system, which is typically located at /sys/kernel/debug/tracing.
->   For backward compatibility, when mounting the debugfs file system,
->   the tracefs file system will be automatically mounted at:
-> 
->   /sys/kernel/debug/tracing
-> 
-> Update the visl decoder driver documentation to use this tracefs path.
-> 
-> Signed-off-by: Ross Zwisler <zwisler@google.com>
-> ---
->  Documentation/admin-guide/media/visl.rst | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/media/visl.rst b/Documentation/admin-guide/media/visl.rst
-> index 7d2dc78341c9..4328c6c72d30 100644
-> --- a/Documentation/admin-guide/media/visl.rst
-> +++ b/Documentation/admin-guide/media/visl.rst
-> @@ -78,7 +78,7 @@ The trace events are defined on a per-codec basis, e.g.:
->  
->  .. code-block:: bash
->  
-> -        $ ls /sys/kernel/debug/tracing/events/ | grep visl
-> +        $ ls /sys/kernel/tracing/events/ | grep visl
->          visl_fwht_controls
->          visl_h264_controls
->          visl_hevc_controls
-> @@ -90,13 +90,13 @@ For example, in order to dump HEVC SPS data:
->  
->  .. code-block:: bash
->  
-> -        $ echo 1 >  /sys/kernel/debug/tracing/events/visl_hevc_controls/v4l2_ctrl_hevc_sps/enable
-> +        $ echo 1 >  /sys/kernel/tracing/events/visl_hevc_controls/v4l2_ctrl_hevc_sps/enable
->  
->  The SPS data will be dumped to the trace buffer, i.e.:
->  
->  .. code-block:: bash
->  
-> -        $ cat /sys/kernel/debug/tracing/trace
-> +        $ cat /sys/kernel/tracing/trace
->          video_parameter_set_id 0
->          seq_parameter_set_id 0
->          pic_width_in_luma_samples 1920
-
+              Linus
