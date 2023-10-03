@@ -2,127 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 717217B6F96
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7447B6F9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240665AbjJCRUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 13:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54694 "EHLO
+        id S240644AbjJCRVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 13:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231571AbjJCRUh (ORCPT
+        with ESMTP id S231974AbjJCRVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 13:20:37 -0400
-Received: from hosting.gsystem.sk (hosting.gsystem.sk [212.5.213.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 47F719B;
-        Tue,  3 Oct 2023 10:20:34 -0700 (PDT)
-Received: from [192.168.0.2] (chello085216244195.chello.sk [85.216.244.195])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by hosting.gsystem.sk (Postfix) with ESMTPSA id 0DCA17A0090;
-        Tue,  3 Oct 2023 19:20:33 +0200 (CEST)
-From:   Ondrej Zary <linux@zary.sk>
-To:     Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: Re: [PATCH 3/4] pata_parport: add custom version of wait_after_reset
-Date:   Tue, 3 Oct 2023 19:20:29 +0200
-User-Agent: KMail/1.9.10
-Cc:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Tim Waugh <tim@cyberelk.net>,
-        linux-parport@lists.infradead.org, linux-ide@vger.kernel.org,
+        Tue, 3 Oct 2023 13:21:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2830FAF;
+        Tue,  3 Oct 2023 10:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696353688; x=1727889688;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=m63g1gNKTI5G9AU4v2NJZq6BCzlj3PUdfIwwcDby6Lw=;
+  b=ck3ZCIV1DatqvkrvnXDkHXq5pr1n55t/SYVaw9RyJ2iiDrCkUKLAwQOb
+   fOlHW6/TywcL2hZ6cpr6Q3TvrXP10xcFKNkYHnSz4WFHYBnUS0q+/RS64
+   ysnlgBqM/w5QZekztE2dVwz8tDraWehKJVc2wGDBKbb+cIpk37my6ECyE
+   KnetZftX/HiCn9IG/i0fodJNjERJKcIaYJTwuOTOK8wrmwDbnb10kfmmk
+   WQ8OxM7bX4nv0S7BIAfHV9RYx4419o3sS7eBC3iZoNJ0ksJvvdPBf9/pk
+   YxF1ens8wRl1C6wkTOARum7LJg1NIWLhUjvWXXoM6spt1jrPaC7aEvxJQ
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="469212695"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="469212695"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 10:21:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="780386287"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="780386287"
+Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 03 Oct 2023 10:21:23 -0700
+Received: from kbuild by c3b01524d57c with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qnj5F-0007jp-0c;
+        Tue, 03 Oct 2023 17:21:21 +0000
+Date:   Wed, 4 Oct 2023 01:21:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     David Lechner <dlechner@baylibre.com>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-staging@lists.linux.dev
+Cc:     oe-kbuild-all@lists.linux.dev,
+        David Lechner <david@lechnology.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
         linux-kernel@vger.kernel.org
-References: <20230930191511.24994-1-linux@zary.sk> <20230930191511.24994-4-linux@zary.sk> <a164fc88-ef57-f957-25df-e149540830c0@omp.ru>
-In-Reply-To: <a164fc88-ef57-f957-25df-e149540830c0@omp.ru>
-X-KMail-QuotePrefix: > 
+Subject: Re: [PATCH v3 23/27] staging: iio: resolver: ad2s1210: convert DOS
+ overrange threshold to event attr
+Message-ID: <202310040023.rI6mfueI-lkp@intel.com>
+References: <20230929-ad2s1210-mainline-v3-23-fa4364281745@baylibre.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <202310031920.29288.linux@zary.sk>
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230929-ad2s1210-mainline-v3-23-fa4364281745@baylibre.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 02 October 2023 22:48:59 Sergey Shtylyov wrote:
-> On 9/30/23 10:15 PM, Ondrej Zary wrote:
-> 
-> > Some parallel adapters (e.g. EXP Computer MC-1285B EPP Cable) return
-> > bogus values when there's no master device present. This can cause
-> > reset to fail, preventing the lone slave device (such as EXP Computer
-> > CD-865) from working.
-> > 
-> > Add custom version of wait_after_reset that ignores master failure when
-> > a slave device is present. The custom version is also needed because
-> > the generic ata_sff_wait_after_reset uses direct port I/O for slave
-> > device detection.
-> > 
-> > Signed-off-by: Ondrej Zary <linux@zary.sk>
-> > ---
-> >  drivers/ata/pata_parport/pata_parport.c | 65 ++++++++++++++++++++++++-
-> >  1 file changed, 64 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/ata/pata_parport/pata_parport.c b/drivers/ata/pata_parport/pata_parport.c
-> > index cf87bbb52f1f..b3db953e615a 100644
-> > --- a/drivers/ata/pata_parport/pata_parport.c
-> > +++ b/drivers/ata/pata_parport/pata_parport.c
-> > @@ -80,6 +80,69 @@ static bool pata_parport_devchk(struct ata_port *ap, unsigned int device)
-> >  	return (nsect == 0x55) && (lbal == 0xaa);
-> >  }
-> >  
-> > +static int pata_parport_wait_after_reset(struct ata_link *link,
-> > +					 unsigned int devmask,
-> > +					 unsigned long deadline)
-> > +{
-> > +	struct ata_port *ap = link->ap;
-> > +	struct pi_adapter *pi = ap->host->private_data;
-> > +	unsigned int dev0 = devmask & (1 << 0);
-> > +	unsigned int dev1 = devmask & (1 << 1);
-> > +	int rc, ret = 0;
-> > +
-> > +	ata_msleep(ap, ATA_WAIT_AFTER_RESET);
-> > +
-> > +	/* always check readiness of the master device */
-> > +	rc = ata_sff_wait_ready(link, deadline);
-> > +	/* some adapters return bogus values if master device is not present,
-> 
->    The multiline comments should start with /* on its own line.
->    Have you run scripts/checkpatch.pl on the patches?
+Hi David,
 
-Checkpatch doesn't complain.
+kernel test robot noticed the following build warnings:
 
-> > +	 * so don't abort now if a slave device is present
-> > +	 */
-> > +	if (rc) {
-> > +		if (!dev1)
-> > +			return rc;
-> > +		ret = -ENODEV;
-> > +	}
-> > +
-> > +	/* if device 1 was found in ata_devchk, wait for register
-> 
->    Likewise here...
-> 
-> > +	 * access briefly, then wait for BSY to clear.
-> > +	 */
-> > +	if (dev1) {
-> > +		int i;
-> > +
-> > +		pata_parport_dev_select(ap, 1);
-> > +
-> > +		/* Wait for register access.  Some ATAPI devices fail
-> 
->    And here...
-> 
-> [...]
-> 
-> MBR, Sergey
-> 
+[auto build test WARNING on 5e99f692d4e32e3250ab18d511894ca797407aec]
 
+url:    https://github.com/intel-lab-lkp/linux/commits/David-Lechner/dt-bindings-iio-resolver-add-devicetree-bindings-for-ad2s1210/20230930-014031
+base:   5e99f692d4e32e3250ab18d511894ca797407aec
+patch link:    https://lore.kernel.org/r/20230929-ad2s1210-mainline-v3-23-fa4364281745%40baylibre.com
+patch subject: [PATCH v3 23/27] staging: iio: resolver: ad2s1210: convert DOS overrange threshold to event attr
+config: i386-randconfig-062-20231003 (https://download.01.org/0day-ci/archive/20231004/202310040023.rI6mfueI-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231004/202310040023.rI6mfueI-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202310040023.rI6mfueI-lkp@intel.com/
+
+sparse warnings: (new ones prefixed by >>)
+   drivers/staging/iio/resolver/ad2s1210.c:899:1: sparse: sparse: symbol 'iio_const_attr_in_phase0_mag_value_available' was not declared. Should it be static?
+   drivers/staging/iio/resolver/ad2s1210.c:904:1: sparse: sparse: symbol 'iio_const_attr_in_altvoltage0_thresh_falling_value_available' was not declared. Should it be static?
+>> drivers/staging/iio/resolver/ad2s1210.c:905:1: sparse: sparse: symbol 'iio_const_attr_in_altvoltage0_thresh_rising_value_available' was not declared. Should it be static?
+   drivers/staging/iio/resolver/ad2s1210.c:906:1: sparse: sparse: symbol 'iio_dev_attr_in_angl1_thresh_rising_value_available' was not declared. Should it be static?
+   drivers/staging/iio/resolver/ad2s1210.c:907:1: sparse: sparse: symbol 'iio_dev_attr_in_angl1_thresh_rising_hysteresis_available' was not declared. Should it be static?
 
 -- 
-Ondrej Zary
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
