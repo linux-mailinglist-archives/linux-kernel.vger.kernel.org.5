@@ -2,176 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E2017B65EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791DC7B65F1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239819AbjJCJ6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
+        id S239822AbjJCJ66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239820AbjJCJ6D (ORCPT
+        with ESMTP id S239782AbjJCJ64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:58:03 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195E8BB;
-        Tue,  3 Oct 2023 02:57:59 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-502e7d66c1eso849270e87.1;
-        Tue, 03 Oct 2023 02:57:58 -0700 (PDT)
+        Tue, 3 Oct 2023 05:58:56 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E09CAC
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:58:53 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-d865685f515so4793709276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 02:58:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696327077; x=1696931877; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=itn+jp9DqMJguXGxeI/EyyIrxZjnVISE01BS8qN3dyg=;
-        b=HWEHy5W0JGmUi2jdakt+ia773lejEEEq1G5f5AojpRkhbWaGapHZs18Dfg5yxOZGuq
-         f8qWxhhVbkeN0Or44NfLrt+wujR6MDsukW2/T9OuhCA9bkbNgDnBkS6ueEsnSfUzWhr+
-         dOQDkMlkpg2Pb/QyCeIpsimF54/PlcBPtbMbyTmmhNONV8Ia3MSvE0j5aH74qtH5iHYZ
-         g/zWAY+J7hwc9AdatDVLVoVgM/sZgaAGliNNkkZqtGhobOr75lIV3MKSfqy7uZdriqSv
-         WW7m6GfYfMNCtBbtnwkY/FKQx4G5iRqVzTGo8v/PVa39HpEPbYnbKNL2cznuAeExLgrH
-         sI6Q==
+        d=linaro.org; s=google; t=1696327133; x=1696931933; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=znrOVYIM3TgYWJ+uG1Asu14WG/jKlSZIDknBX8rEXMs=;
+        b=H+OqqOoxj3kvNqMBQgjkn19cJV37rshMzVtStcV0zsXzO1CKLVa/bD8qsabWbipy8f
+         13qP6hJK9OIF7lv5yU3ns6PogcNPhwIvYGOowBhUPJGDPNx3Cpy8Es6sn/FCU9bX5Uez
+         tDCQXBkYvrq4evI8blKqWR9D8nPU8GFudG3rQXXhPCsPQAdluxv0+72UZIkBzWfw4vyc
+         MISX1lDmnDxgjLFUorFsEGqqoWzPoGCEB3bMZud8SA2iVvqF3KY0VCVTSYEyLAKcA40y
+         mKYh2+SUZYFHdc9ysj1FUsQ14OPNx+O0PeDmMauprOusvbWn0Y4BrqDINfAz1vWN81bv
+         1qyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696327077; x=1696931877;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=itn+jp9DqMJguXGxeI/EyyIrxZjnVISE01BS8qN3dyg=;
-        b=D+cAGrj67+lrxklQ3e1VftJZCr5O4ELXqI9EtcSXw+B5W+6cFYUS3GtFvPnfq76tT8
-         QuHTcQiII3U2cX2DwFE4qhUQVUJNDOrnbsGTT3+FcmN8iiHfMg6liUFpdEYSinLgRvsO
-         V9DVRmBaJa0QHKPc1gmT3my9aAHouoEKZI6/Oemv2iH9+2u2/G8ZqUTo2XNfk2nNyaVa
-         jdRAkQ9IRmYhsgkteV+NHLr4zt9Bg50IrKpg8M9/DGMvYeEzozVmNvZrJfC7/aGb2bEX
-         LqipksDKNWVInGoipifWB1MRCoEbdXdQbDxLsjjSo1fcOlfeYXcvI9jEFDxWV06fte2x
-         K/Jg==
-X-Gm-Message-State: AOJu0YyDBHjSofhS86xCQOfgicKblymXmjFNdDN4tLmT105jJij5Dwqo
-        6Ye43JjmIQCxKFQxafm2kXA=
-X-Google-Smtp-Source: AGHT+IFdijcQl/2mpTmHsUb2wvWwGJhb4kCp3u9fmLvo3Rh8+5MRyVRQrMwl8/qM5UlckIlYrfDaFw==
-X-Received: by 2002:a05:6512:4819:b0:505:6ede:20b0 with SMTP id eo25-20020a056512481900b005056ede20b0mr8846121lfb.58.1696327076936;
-        Tue, 03 Oct 2023 02:57:56 -0700 (PDT)
-Received: from dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi (dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::7])
-        by smtp.gmail.com with ESMTPSA id l19-20020a19c213000000b005042ae2baf8sm132270lfc.258.2023.10.03.02.57.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 02:57:55 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 12:57:47 +0300
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-To:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6] tools: iio: iio_generic_buffer ensure alignment
-Message-ID: <ZRvlm4ktNLu+qmlf@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
+        d=1e100.net; s=20230601; t=1696327133; x=1696931933;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=znrOVYIM3TgYWJ+uG1Asu14WG/jKlSZIDknBX8rEXMs=;
+        b=tIFwML1BbIghcnDtiiqlAhzGb6yyjiiI5dMIhFjDxRnfQ7932pwG5ew++3xyPgqAfg
+         SJhi/t8wtMLH+qSTlUnQSonR5pJIv/T9YE9apGmEL5W0RFpFEYTf0JwBCoRm9FMKnOxJ
+         RjMo0nDSnXSzBbmYX/+kR3DIR1+stHaEBvCv1N7jEG+eF02uTchqx01s+Cpmt8UviAK/
+         g5qOQBMGzLppyz0TApvKOs3pA+f32dIZx4ix1CK3EZmwwRijRjwJhwXnP8fbkzKeP2bv
+         VO0yqvW0b2IHiQt73hdDMVLMxPNBa6bTNJJEJxymY13qDjie0ytlKtBUp757qaeFDoIq
+         yygg==
+X-Gm-Message-State: AOJu0YweoCOkT3hHY+550pX/vExbs40xqQ1FIE+RUQVPxIlwoE26qmTJ
+        1xn8bzqUXxGGWjp2w0xiYcgY0AZCcViF8pVzIVBEPqzRLvxhJvPw6K0=
+X-Google-Smtp-Source: AGHT+IHOABImhHJaaAE1q8BneZDvSrnMU/2KbtgnUSN9zby4FOmr+mJVXE7EryPRqvcEvH697Oy130x/J8DeF5Wx7ZU=
+X-Received: by 2002:a25:accd:0:b0:d85:ae0d:20eb with SMTP id
+ x13-20020a25accd000000b00d85ae0d20ebmr1606305ybd.14.1696327132702; Tue, 03
+ Oct 2023 02:58:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="X2pRPnCTlVZaKbsj"
-Content-Disposition: inline
+References: <20230915094351.11120-1-victorshihgli@gmail.com> <20230915094351.11120-13-victorshihgli@gmail.com>
+In-Reply-To: <20230915094351.11120-13-victorshihgli@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 3 Oct 2023 11:58:17 +0200
+Message-ID: <CAPDyKFpzuds6Ttbhw1cqZwisa+M6167DT3DUihcDqFjYJX95eA@mail.gmail.com>
+Subject: Re: [PATCH V12 12/23] mmc: sdhci-uhs2: skip signal_voltage_switch()
+To:     Victor Shih <victorshihgli@gmail.com>
+Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
+        HL.Liu@genesyslogic.com.tw, Greg.tu@genesyslogic.com.tw,
+        takahiro.akashi@linaro.org, dlunev@chromium.org,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        Victor Shih <victor.shih@genesyslogic.com.tw>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 15 Sept 2023 at 11:44, Victor Shih <victorshihgli@gmail.com> wrote:
+>
+> From: Victor Shih <victor.shih@genesyslogic.com.tw>
+>
+> For UHS2, the signal voltage is supplied by vdd2 which is already 1.8v,
+> so no voltage switch required.
 
---X2pRPnCTlVZaKbsj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Can you please elaborate on this? I don't get anything of the above, sorry.
 
-The iio_generic_buffer can return garbage values when the total size of
-scan data is not a multiple of the largest element in the scan. This can be
-demonstrated by reading a scan, consisting, for example of one 4-byte and
-one 2-byte element, where the 4-byte element is first in the buffer.
+>
+> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>
+> Updates in V5:
+>  - Use sdhci_uhs2_mode() to simplify code in
+>    sdhci_uhs2_start_signal_voltage_switch().
+>
+> ---
+>
+>  drivers/mmc/host/sdhci-uhs2.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+>
+> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
+> index fc37a34629c2..92fb69b7e209 100644
+> --- a/drivers/mmc/host/sdhci-uhs2.c
+> +++ b/drivers/mmc/host/sdhci-uhs2.c
+> @@ -142,6 +142,27 @@ static void sdhci_uhs2_set_power(struct sdhci_host *host, unsigned char mode, un
+>         }
+>  }
+>
+> +/*****************************************************************************\
+> + *                                                                           *
+> + * MMC callbacks                                                             *
+> + *                                                                           *
+> +\*****************************************************************************/
+> +
+> +static int sdhci_uhs2_start_signal_voltage_switch(struct mmc_host *mmc,
+> +                                                 struct mmc_ios *ios)
+> +{
+> +       struct sdhci_host *host = mmc_priv(mmc);
+> +
+> +       /*
+> +        * For UHS2, the signal voltage is supplied by vdd2 which is
+> +        * already 1.8v so no voltage switch required.
+> +        */
+> +       if (sdhci_uhs2_mode(host))
+> +               return 0;
 
-The IIO generic buffer code does not take into account the last two
-padding bytes that are needed to ensure that the 4-byte data for next
-scan is correctly aligned.
+This is just wrong. If we are initializing a uhs2 card, we certainly
+should call ->start_signal_voltage_switch() callback at all. This is
+for UHS-I cards, right?
 
-Add the padding bytes required to align the next sample with the scan size.
+> +
+> +       return sdhci_start_signal_voltage_switch(mmc, ios);
+> +}
+> +
+>  /*****************************************************************************\
+>   *                                                                           *
+>   * Driver init/exit                                                          *
+> @@ -150,6 +171,9 @@ static void sdhci_uhs2_set_power(struct sdhci_host *host, unsigned char mode, un
+>
+>  static int sdhci_uhs2_host_ops_init(struct sdhci_host *host)
+>  {
+> +       host->mmc_host_ops.start_signal_voltage_switch =
+> +               sdhci_uhs2_start_signal_voltage_switch;
+> +
+>         return 0;
+>  }
+>
 
-Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
-Fixes: e58537ccce73 ("staging: iio: update example application.")
-
----
-Revision history
-v5 =3D> v6:
- - fix typo pointed by Andy (wan't =3D> want).
-v4 =3D> v5:
- - drop unnecessary comment.
- - drop all other patches as those were already applied.
- - add Fixes-tag.
-v3 =3D> v4:
- - drop extra print and TODO coment
- - add comment clarifying alignment sizes
----
- tools/iio/iio_generic_buffer.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
-index 44bbf80f0cfd..0d0a7a19d6f9 100644
---- a/tools/iio/iio_generic_buffer.c
-+++ b/tools/iio/iio_generic_buffer.c
-@@ -54,9 +54,12 @@ enum autochan {
- static unsigned int size_from_channelarray(struct iio_channel_info *channe=
-ls, int num_channels)
- {
- 	unsigned int bytes =3D 0;
--	int i =3D 0;
-+	int i =3D 0, max =3D 0;
-+	unsigned int misalignment;
-=20
- 	while (i < num_channels) {
-+		if (channels[i].bytes > max)
-+			max =3D channels[i].bytes;
- 		if (bytes % channels[i].bytes =3D=3D 0)
- 			channels[i].location =3D bytes;
- 		else
-@@ -66,6 +69,14 @@ static unsigned int size_from_channelarray(struct iio_ch=
-annel_info *channels, in
- 		bytes =3D channels[i].location + channels[i].bytes;
- 		i++;
- 	}
-+	/*
-+	 * We want the data in next sample to also be properly aligned so
-+	 * we'll add padding at the end if needed. Adding padding only
-+	 * works for channel data which size is 2^n bytes.
-+	 */
-+	misalignment =3D bytes % max;
-+	if (misalignment)
-+		bytes +=3D max - misalignment;
-=20
- 	return bytes;
- }
-
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
---=20
-2.41.0
-
-
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
-
---X2pRPnCTlVZaKbsj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmUb5ZsACgkQeFA3/03a
-ocW5wggAlOggIxqFVoJD+8TnfOgo9flg0eq3Cj9dq8lTa1fKH3emYtXpdHkoRS3S
-pd8ZuCSFOmQ9r4ijAd4B2488fdtjf+XJPnStVO8eRDKAwgih4o+ri0p05HJzC56l
-Ih4fujrRzl1oDtdIJOaGISYTELPF52uvkd7Yw6O6IubgWloZYQ9jzXEQ8ZCFsvMR
-Q/SwRomSBroNAUtJwSWthAAteXPZ8lPFxcFUjg84sMKIqR6G9xyx0QioijnCDDwM
-eRDzEbKTDGFojVpFYz7ReSl5/YyICM+gHCo5ldueGi2jX86ngrh5rfYEW85qxLG6
-w/nqWWm3dmqbRV4313ZfqE16iFkfiA==
-=EdzQ
------END PGP SIGNATURE-----
-
---X2pRPnCTlVZaKbsj--
+Kind regards
+Uffe
