@@ -2,370 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 981CE7B7319
+	by mail.lfdr.de (Postfix) with ESMTP id ECD177B731A
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:12:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241153AbjJCVL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 17:11:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57394 "EHLO
+        id S241142AbjJCVLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 17:11:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232343AbjJCVLy (ORCPT
+        with ESMTP id S232343AbjJCVLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 17:11:54 -0400
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D6083
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:11:50 -0700 (PDT)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-59f57ad6126so16534997b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 14:11:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696367510; x=1696972310; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TfxDtijsU/A62NyvsK23Kej6jVvl6v8DWcOLSJPA8yU=;
-        b=m8+TezgTbFlYLEVZhDOb3nmU3vV+C+dCZZH6DLM09FLf9xHS6x2B1XYN21YJ2UZMdQ
-         vo370D0bOn01+qjYhlIh6lYZ4M3/eA/P18xfOiVc/htygbBmbgvubOW2dztpjsHSD1xL
-         KwkH+HfsHybxg0cOlTwCVBuaWOtvBaFPi+nYWXVDP0mnAQbB1HSg8ZGevRh2AUQ+UnOp
-         6tHMi4DKooK/EXYM3Ss4AFKm/kteAYp45Kl2vUC5SsWZ8hfXK9t9O7RT0rlYpdN/xyVN
-         axPtRIAFEhS9rer/Ea8sZra1aWpJ0EkfBWTLjEA1xAFXWRELvP9HNXegSf8rFdy79hzJ
-         IwSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696367510; x=1696972310;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TfxDtijsU/A62NyvsK23Kej6jVvl6v8DWcOLSJPA8yU=;
-        b=uwvSETji/hVyCzXUjSa4CzfH7pKykZ+idS4CHd5YXv6/IzwrNqmR+jOoDoNjpkHVq0
-         NU6h7Tr7ndWCpK32XrpVlIj728WtLeUIvySPiJTmY88SwGXWMWcM0pX9QoQ0WoyH0cIu
-         smVRESXgpRlWsmBiN5oBNj1yI4ioBoxcsqe6Y1RUBQWJSca9pJEOz/4U/AFQZ/p3eX+B
-         QFp6W3tL8uqQH8tuAmlKmxUlrSeYZjWPjxEpLoprC7VXjLUPFX9jOf5ZqWux0Ty32+Lw
-         mQRZimCIn7m7eT75xQ1CdqE4IfDGSSxNrGpl7jEVTgRzaA+vgZnDSBNVG3WBBQ0YbZDL
-         fSng==
-X-Gm-Message-State: AOJu0Yxoostjcmxaf+cBevUVlHLM07KPi3WWVvIE7M9gX466bJ/jKu/V
-        JSQVnEhXdpmvpNJQa1HD56Q15TZL3JCxCvTnbPO9pw==
-X-Google-Smtp-Source: AGHT+IFLs3Up9mRrT7uqjVWQ2HpVwb7VjjO/TsJKD4Hf68gSmLT/bVUgVrKHnaoe5fJZNFQ3RM24w/I1lIFVM8Qk+04=
-X-Received: by 2002:a0d:ca02:0:b0:589:a4c6:a4ed with SMTP id
- m2-20020a0dca02000000b00589a4c6a4edmr791250ywd.3.1696367509732; Tue, 03 Oct
- 2023 14:11:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <1695848028-18023-1-git-send-email-quic_khsieh@quicinc.com>
- <1695848028-18023-9-git-send-email-quic_khsieh@quicinc.com>
- <CAA8EJprfjt7w+3YJAieBabuMso=-obRXss7-9Jrif23WmOJw5w@mail.gmail.com>
- <2d8d4354-6dbb-e810-6efb-ca6b31f71b45@quicinc.com> <e7576c3b-82d2-4902-a19c-af2878ef7dbd@linaro.org>
- <f2fbcf6e-65cf-c078-e11f-1ca74960a71e@quicinc.com>
-In-Reply-To: <f2fbcf6e-65cf-c078-e11f-1ca74960a71e@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 4 Oct 2023 00:11:38 +0300
-Message-ID: <CAA8EJpq6VOBx+E94bs39qXzNN1KBJL+Cbf_KMPJC1PcNoHO3wA@mail.gmail.com>
-Subject: Re: [PATCH v4 8/8] drm/msm/dp: move of_dp_aux_populate_bus() to eDP probe()
-To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
-Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
-        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
-        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
-        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
-        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+        Tue, 3 Oct 2023 17:11:50 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C95FBD
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:11:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696367507; x=1727903507;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=OtE8Sq6x2/UQJ+4lg2vTBhiwB3lut4qANGiHdW1jIO4=;
+  b=WQYwxvMC6P0K78GwLZXw+lbj9maE8w5LJ0y5P37SXNv66rVvGDXYRxJ+
+   8rLJmH2lDWo+8RqQ1NbgYazpMtHrmQPsnUhNJxkVRsj83bqXwNwlnav8+
+   j1f6OZVqvwZMRhaQX2bEVado0j7wpAOcPJFYi8zplpJtCJxnCJbMcQvSx
+   TiyVIBwZqH0IM4mK/dLDMdI7Vns2nzfexb6tr0TqFSYl0ICZBg+dvbZHo
+   7MJd6hTlb1ZVt945fTn5cC2PEqfrxoG1NtllkxSEryD/sP50Nnz8d2SPo
+   smzoIhZlIFiTzJiUW9vIF1ZOjJEqEawCyfGshOo9DW2eW8XFPR6qhXIT+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="385797750"
+X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
+   d="scan'208";a="385797750"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 14:11:46 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="786237324"
+X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
+   d="scan'208";a="786237324"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Oct 2023 14:11:47 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Tue, 3 Oct 2023 14:11:45 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Tue, 3 Oct 2023 14:11:45 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32 via Frontend Transport; Tue, 3 Oct 2023 14:11:45 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.104)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.32; Tue, 3 Oct 2023 14:11:45 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iNEtuzEQPbDNWptTJ0+ba3daNrtHQKFV16ivkovXgdmrgRV26vuaNhxoVkza6j/zRSx3UbRlvxmkgqg2Em95wUZr77G+arHvqB+7Xeo8/Xy1+g46hByT4NxJx/3imHkE6CbdL4Eu2qU9o34Y77Z8yvGVjGv8yPYZZ9so2Nf2CvlfBuh1QVqF9XYOckrsTjVgS+6Z59bZRmjIXTuRiGlZ6lpUAI1S7vRp0hdAVu5bpbGkLE2wjNFCigtspSNr/uDUg2l+T+bNDNeEmeyEWXZhkM6PHVcD+Bbsd3x11GLTvWTII7agCU+VanrxBAwaPyCt01o/71O5PO8bwDM/sDOCAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nsgaXXvZRrkHatQjqEeKNPWKEzCrDomfCWx2j+CKzCs=;
+ b=aRXygkZiMiw6dD9Q5QZBIfZbLPahONpBo/q8GsfW6Sd0p4IrKFmaY+fLPdYdAs7dAXxFsABLRbiwOrFl1zpbwjQtl2snK0wOoIgQvRuqn24cB8eGplxY+M41LxIBhrUe7SiKuhQl0N/GskhfDIN3FDmxrPxRd8h2oLZSMkqwv5VmZZpJdnO/PfFuDZlqfq/c5zvsTIs1G09a4tniGlguLSVRy/utQeWuSEeLxEJXrGWQuOWcwp1LRlEcYtPVycGXENy/2tFgIiTL8Gqi5yoGt1a0tyTmCnAb5SpygeyB4GRXUhVTOwYUa5ErGNVtfZIQh2ox3lGKm78j/eSmjXIliA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by DS0PR11MB7577.namprd11.prod.outlook.com (2603:10b6:8:142::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.27; Tue, 3 Oct
+ 2023 21:11:43 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6838.033; Tue, 3 Oct 2023
+ 21:11:43 +0000
+Message-ID: <a362e485-f063-e53e-87e7-ac87bca9baac@intel.com>
+Date:   Tue, 3 Oct 2023 14:11:39 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.15.1
+Subject: Re: [PATCH v6 05/24] x86/resctrl: Track the closid with the rmid
+Content-Language: en-US
+To:     James Morse <james.morse@arm.com>, <x86@kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        H Peter Anvin <hpa@zytor.com>,
+        Babu Moger <Babu.Moger@amd.com>,
+        <shameerali.kolothum.thodi@huawei.com>,
+        D Scott Phillips OS <scott@os.amperecomputing.com>,
+        <carl@os.amperecomputing.com>, <lcherian@marvell.com>,
+        <bobo.shaobowang@huawei.com>, <tan.shaopeng@fujitsu.com>,
+        <xingxin.hx@openanolis.org>, <baolin.wang@linux.alibaba.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        Xin Hao <xhao@linux.alibaba.com>, <peternewman@google.com>,
+        <dfustini@baylibre.com>, <amitsinght@marvell.com>
+References: <20230914172138.11977-1-james.morse@arm.com>
+ <20230914172138.11977-6-james.morse@arm.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <20230914172138.11977-6-james.morse@arm.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0351.namprd03.prod.outlook.com
+ (2603:10b6:303:dc::26) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DS0PR11MB7577:EE_
+X-MS-Office365-Filtering-Correlation-Id: 92405f64-8b8c-4498-e9b8-08dbc4555834
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RReRAaPEizZ8fUXjw/vNKyF+ol2INbh4l6cWDZQcPGOfI/c2bCMVLaeQk3UcNiLrFfsgQp7e6TQqfqFgQNb2CP6KhgrrjiDXrwXA065Bi079LJaGL2SGnAYIn/4/BlXD1XtzIldGFHtOX/UtWSFWbTAB1yRW7pcPmXCfxSr3gKV8awpP5vAfoCuwpgWQeyYKffofXoktHzByY/cyRh+sRByEu4v+VuXkLJMjvqGlAfQN3vNWjMLE1fk4ujK4H4wiFdmo/4Tp+8GZxeZIl/NlVn1plIyX+GPFJnqequ62J2qyKxOUoFOSoVThKWbBelBkUdiNoCF2rrARCHj4ZzQgnppdEyEWQtL0Gbw99YdcysuI6saHiG0tOocPEDKjoHzcNRcs20DsBnxUH73lb7M/FTBvOYTcFInIZKWr6NHlaQSrFjl/cWx0iKR/jUZwGvLyapO4ImCDZcKwmNFBH+w4vfX/yw8MzGoq7U+OPt8ptl/w6oWosDwSpnyLwrccVf8u3z10IF5aF+Qrwbmvy5pBM+Qk91qYhY5Rmp+ohc+84ZMBmkFVu/Ti39yilr29ZXT5xH+sM4fXx7QqwCK2hrQPh3JOvKshf4FUcYQdZJwQKKiI7Vgef60EvhKHrfTPS6xLekrBIMICygvkZc7+D5usaw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(366004)(396003)(376002)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(66476007)(66556008)(6486002)(66946007)(54906003)(2616005)(8676002)(41300700001)(8936002)(4326008)(26005)(36756003)(478600001)(6666004)(86362001)(83380400001)(38100700002)(31696002)(6506007)(82960400001)(6512007)(316002)(53546011)(2906002)(7416002)(31686004)(5660300002)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SjJ5M0dtWkZZQ0J0UUdTbTdkc2RsOURoT01OenhTQkw0My8vZXVaNnhERVcv?=
+ =?utf-8?B?cVNUZW5zT3BObXdZMlJ2SlVxaUovRUpTWThGc0RtNDUvWk5XMHV2YkZsUWFC?=
+ =?utf-8?B?azF1cjlldDFrdHNrWmVPTkl2aFo4RjNZcVBHc2xYSWRlR3hMODdpMjFOWnlY?=
+ =?utf-8?B?KzZ3NVFTL3NLRGpvb0FKMHRwU2h5MXJob2lrMC9KMlNhODQzZkJBMWJxNnlK?=
+ =?utf-8?B?VnROWndoUGlScjZ3QkpSUjVxUmhONGF2cEFLM2JFVUlrMFRESUVqRFZLQmFL?=
+ =?utf-8?B?V2RHNjBPTEpBNTlHUUVIOExjZkNJSXBoZ1poUXhLSnJidWE5MUZTYkhZSUxC?=
+ =?utf-8?B?NlV0cGIvZGpLalYxREhlcE04VCswdkMrOC9RSlhBSGxzbExuajRpR0kzNVFS?=
+ =?utf-8?B?UWpsNThMVnlRNnRRTldXalM5WjNKMjNYTVZ2TWptQ3V2M1BFT0VYQ0Vvck1K?=
+ =?utf-8?B?Z0wrWHpmQ1BHRWtIbDhkL255RXVqcTlWd3NmOHZCMW5BRmt3L3FDQWp5aXVy?=
+ =?utf-8?B?NDVXSjgzYXhpUDZsRHdOcUh4OHh2TTViVVk3NUZKekVXTmhVWjMvb2NEd29i?=
+ =?utf-8?B?ZzViSU1kUXJpRG9BLzR1empmWXBRNlpOUlpSL1EyUk1vYkg2UnZ4MG1iTGFr?=
+ =?utf-8?B?QWFqN3RHdVlnL0l4bHg3Vjhhd0dzWEVjZmxEZ3FCUDh4UmxpZS9RY2EwcHE1?=
+ =?utf-8?B?VUxjc3hmY29jKzFpSmtnOVJ0OFVYY081dUlIRCtHUXNpMmVQVWJneVRqZzQ4?=
+ =?utf-8?B?cHdCMENhZURzaXF6dTNaWldoc3EvRjMrQ2h4SldONkt3QmRLT0FiaWRvdW42?=
+ =?utf-8?B?TTV3cE5rZTRMTUFWRXQrbVBJT0pzZHZ0OGFhd3ZiOE1xQWY2ZE02dTZJdGJG?=
+ =?utf-8?B?MXFwZ2tSK1FRRWxaYTNEckJtblQzU1ZLYUlxSGhIUTU0UCtNREI3QzJNeFl3?=
+ =?utf-8?B?Zm9BTEkvT2JwamlLdjE1MnlmYUt6SERmRDNaYktXL3hJUjk2Q0RMVTJObHpj?=
+ =?utf-8?B?dEhxYXB6TXdkRUtaOEJ4SmI0OWVPZlp2Um5pWnR4SllUWjQ2L0RlUE5SNzVE?=
+ =?utf-8?B?eWNaOEZKZVo1ZEFKempLbWRVMlRuTFhONGxzYzBoVG1zczQ1NFJ2cXBlb0l4?=
+ =?utf-8?B?S04rRlI1eXN2YTQxZFh5WEZ2Smkzb1BFMGZ6aGdnZ1Z5Mml6Um5qb2ZaWWQv?=
+ =?utf-8?B?VitJTDBCcVl1ZDJKK2JJdGJteTJKY2RPYS9LRzB3MjBEeVlZVW5Ec1d1elNX?=
+ =?utf-8?B?bERnazU5V0xOWDRmWUkwaDg4b3NQeG9xaWhzcysyeHBPemVVY0Z5dzIrb3ZT?=
+ =?utf-8?B?OWt0TWRBaDRsU0dKUlByeTRZYlVwU0tDSkU5QUFvV2Q2bklxeGJUdDZaY3Vq?=
+ =?utf-8?B?VmVRZGp1NW9NWm5sc20yeE9zNk45by9XYUkxaEpvZUlYYTkxTGJjZnZBdGdU?=
+ =?utf-8?B?RG5nZEhxYk9VekFESHY3OGNKVXRCbHNmS2E2dFIzZENhZGZvUWUydCtkMnFQ?=
+ =?utf-8?B?M2t1aHJYeTBhQ0tIWi9hOE5RYmowc1liWEROeG1SVWorbDNJY2tseTI2UFhQ?=
+ =?utf-8?B?WlVQd0txTWNhZXhrYmRtMDZwNVBLWHFvSHE4NjNDckIxMlIwcEhsZW51WUhL?=
+ =?utf-8?B?aFNNVWVkc0NVRlBnSytBUEkwbnRQbUwzY1Ixc0xPdFV5WFAwMVdyS3VhL3hR?=
+ =?utf-8?B?clYzTHpkbk9kWlNxTmIwemwwMmk2Ym1XMzVjTno5YmJOYUdST01nN2JhRkVz?=
+ =?utf-8?B?aGh2YnhjbW5EcmNpcVhPcDNvWFlEaXV4T3dSenhDcnJtNUFKanJEMDlYRm9a?=
+ =?utf-8?B?ZmtYQjBhNWNYK1R2OGUyeXhLdThpaXd3cmtDZUVGS2VpdldPa0wybzRmUWRa?=
+ =?utf-8?B?VG5zSE1JbTVqVDNlRzhReDJKemFvcE1TLzlmM3p3N2Z5TWE0dEc5NERBTFlY?=
+ =?utf-8?B?TW1oT3hXWCtCY3lReWE2THZ2cWNrRUY2MkttUGkySmNqd3p0NUJoU0sya1RJ?=
+ =?utf-8?B?NXZENXljSm1RcHliT1A3SmtIOXFSaVBxM0pxaEZuVEJtNDJ0Uy9kVFNJaGc4?=
+ =?utf-8?B?TjRvQ0N0M3FJc3dVc082ZnpYSVJ3MDhlb3Y2RmdrY0svSkNRWG9HV09MWnp5?=
+ =?utf-8?B?ajZwT0RPbG51TEdtUEVXanV5R0pOaVd2dlhSSzJxbnZhbE5nazFCdVRUQkNE?=
+ =?utf-8?B?ckE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 92405f64-8b8c-4498-e9b8-08dbc4555834
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 21:11:43.5515
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: io8Q8SAHrZAMqntfshSZ/V+6gJ3m3QAsA2bMA6+K7fDWR4DaUuEH9EbXpB1rkIV4leMSCr5vK/1HaXRP5FfwdpjT57/HVWF0EbZ9l/yuLbw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7577
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Oct 2023 at 23:18, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
->
->
-> On 10/3/2023 10:56 AM, Dmitry Baryshkov wrote:
-> > On 03/10/2023 20:25, Kuogee Hsieh wrote:
-> >>
-> >> On 9/27/2023 2:57 PM, Dmitry Baryshkov wrote:
-> >>> On Wed, 27 Sept 2023 at 23:54, Kuogee Hsieh
-> >>> <quic_khsieh@quicinc.com> wrote:
-> >>>> Currently eDP population is done at msm_dp_modeset_init() which happen
-> >>>> at binding time. Move eDP population to be done at display probe time
-> >>>> so that probe deferral cases can be handled effectively.
-> >>>> wait_for_hpd_asserted callback is added during drm_dp_aux_init()
-> >>>> to ensure eDP's HPD is up before proceeding eDP population.
-> >>>>
-> >>>> Changes in v4:
-> >>>> -- delete duplicate initialize code to dp_aux before
-> >>>> drm_dp_aux_register()
-> >>>> -- delete of_get_child_by_name(dev->of_node, "aux-bus") and inline
-> >>>> the function
-> >>>> -- not initialize rc = 0
-> >>>>
-> >>>> Changes in v3:
-> >>>> -- add done_probing callback into devm_of_dp_aux_populate_bus()
-> >>>>
-> >>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> >>>> ---
-> >>>>   drivers/gpu/drm/msm/dp/dp_aux.c     | 34 ++++++++++++++----
-> >>>>   drivers/gpu/drm/msm/dp/dp_display.c | 69
-> >>>> ++++++++++++++++++-------------------
-> >>>>   2 files changed, 60 insertions(+), 43 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c
-> >>>> b/drivers/gpu/drm/msm/dp/dp_aux.c
-> >>>> index 22eb774..425b5c5 100644
-> >>>> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
-> >>>> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-> >>>> @@ -480,7 +480,6 @@ void dp_aux_deinit(struct drm_dp_aux *dp_aux)
-> >>>>
-> >>>>   int dp_aux_register(struct drm_dp_aux *dp_aux)
-> >>>>   {
-> >>>> -       struct dp_aux_private *aux;
-> >>>>          int ret;
-> >>>>
-> >>>>          if (!dp_aux) {
-> >>>> @@ -488,12 +487,7 @@ int dp_aux_register(struct drm_dp_aux *dp_aux)
-> >>>>                  return -EINVAL;
-> >>>>          }
-> >>>>
-> >>>> -       aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
-> >>>> -
-> >>>> -       aux->dp_aux.name = "dpu_dp_aux";
-> >>>> -       aux->dp_aux.dev = aux->dev;
-> >>>> -       aux->dp_aux.transfer = dp_aux_transfer;
-> >>>> -       ret = drm_dp_aux_register(&aux->dp_aux);
-> >>>> +       ret = drm_dp_aux_register(dp_aux);
-> >>>>          if (ret) {
-> >>>>                  DRM_ERROR("%s: failed to register drm aux: %d\n",
-> >>>> __func__,
-> >>>>                                  ret);
-> >>>> @@ -508,6 +502,21 @@ void dp_aux_unregister(struct drm_dp_aux *dp_aux)
-> >>>>          drm_dp_aux_unregister(dp_aux);
-> >>>>   }
-> >>>>
-> >>>> +static int dp_wait_hpd_asserted(struct drm_dp_aux *dp_aux,
-> >>>> +                                unsigned long wait_us)
-> >>>> +{
-> >>>> +       int ret;
-> >>>> +       struct dp_aux_private *aux;
-> >>>> +
-> >>>> +       aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
-> >>>> +
-> >>>> +       pm_runtime_get_sync(aux->dev);
-> >>>> +       ret = dp_catalog_aux_wait_for_hpd_connect_state(aux->catalog);
-> >>>> +       pm_runtime_put_sync(aux->dev);
-> >>> Ok, so here you have used put_sync instead of autosuspend. Can we have
-> >>> some uniformity? (I'd prefer to see put_sync or just put everywhere)
-> >>
-> >>
-> >> my point is,
-> >>
-> >> since display is user interface,
-> >>
-> >> if there has any inputs before timer expire then there is no reason
-> >> to execute  pm_runtime_suspend().
-> >>
-> >> otherwise pm_runtime_suspend() should be executed.
-> >>
-> >> Therefore I used autosuspend  at aux_transfer() an
-> >> ddp_bridge_atomic_post_disable().
-> >>
-> >> here is not related to user interface so that i use put_sysn() directly.
-> >>
-> >> is my point make sense?
-> >>
-> >>   or should I drop all autosuspend and replace them with put_sync()?
-> >
-> > This was my question from the beginning: what was the reason for using
-> > autosuspend? Did it bring any sensible improvement in the disable &
-> > reenable path?
->
-> ok, i got your point.
->
-> 1) I will use put_sync() at dp_bridge_atomic_dsiable() and
-> dp_bridge_hpd_disable() instead of put_autosuspend().
->
-> 2) keep pm_runtime_put_autosuspend() at dp_aux_transfer().
+Hi James,
 
-Why? The panel driver should take care about keeping DP on between transfers.
+On 9/14/2023 10:21 AM, James Morse wrote:
 
->
-> Is this good?
->
-> >
-> >>
-> >>
-> >>>
-> >>>> +
-> >>>> +       return ret;
-> >>>> +}
-> >>>> +
-> >>>>   struct drm_dp_aux *dp_aux_get(struct device *dev, struct
-> >>>> dp_catalog *catalog,
-> >>>>                                bool is_edp)
-> >>>>   {
-> >>>> @@ -531,6 +540,17 @@ struct drm_dp_aux *dp_aux_get(struct device
-> >>>> *dev, struct dp_catalog *catalog,
-> >>>>          aux->catalog = catalog;
-> >>>>          aux->retry_cnt = 0;
-> >>>>
-> >>>> +       /*
-> >>>> +        * Use the drm_dp_aux_init() to use the aux adapter
-> >>>> +        * before registering aux with the DRM device so that
-> >>>> +        * msm edp panel can be detected by generic_dep_panel_probe().
-> >>> eDP, AUX, generic_edp_panel_probe().
-> >>>
-> >>>> +        */
-> >>>> +       aux->dp_aux.name = "dpu_dp_aux";
-> >>>> +       aux->dp_aux.dev = dev;
-> >>>> +       aux->dp_aux.transfer = dp_aux_transfer;
-> >>>> +       aux->dp_aux.wait_hpd_asserted = dp_wait_hpd_asserted;
-> >>>> +       drm_dp_aux_init(&aux->dp_aux);
-> >>>> +
-> >>>>          return &aux->dp_aux;
-> >>>>   }
-> >>>>
-> >>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c
-> >>>> b/drivers/gpu/drm/msm/dp/dp_display.c
-> >>>> index 711d262..9a2b403 100644
-> >>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
-> >>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
-> >>>> @@ -1203,6 +1203,28 @@ static const struct msm_dp_desc
-> >>>> *dp_display_get_desc(struct platform_device *pde
-> >>>>          return NULL;
-> >>>>   }
-> >>>>
-> >>>> +static int dp_auxbus_done_probe(struct drm_dp_aux *aux)
-> >>>> +{
-> >>>> +       int rc;
-> >>>> +
-> >>>> +       rc = component_add(aux->dev, &dp_display_comp_ops);
-> >>>> +       if (rc)
-> >>>> +               DRM_ERROR("eDP component add failed, rc=%d\n", rc);
-> >>> drop.
-> >>>
-> >>>> +
-> >>>> +       return rc;
-> >>>> +}
-> >>>> +
-> >>>> +static inline int dp_display_auxbus_population(struct
-> >>>> dp_display_private *dp)
-> >>> It's not `population`. It is just `populate`.
-> >>>
-> >>> Also please inline this function.
-> >>>
-> >>>
-> >>>> +{
-> >>>> +       int ret;
-> >>>> +
-> >>>> +       ret = devm_of_dp_aux_populate_bus(dp->aux,
-> >>>> dp_auxbus_done_probe);
-> >>>> +       if (ret == -ENODEV)
-> >>>> +               DRM_ERROR("aux-bus not found\n");
-> >>>> +
-> >>>> +       return ret;
-> >>>> +}
-> >>>> +
-> >>>>   static int dp_display_probe(struct platform_device *pdev)
-> >>>>   {
-> >>>>          int rc = 0;
-> >>>> @@ -1271,10 +1293,16 @@ static int dp_display_probe(struct
-> >>>> platform_device *pdev)
-> >>>>          if (rc)
-> >>>>                  return rc;
-> >>>>
-> >>>> -       rc = component_add(&pdev->dev, &dp_display_comp_ops);
-> >>>> -       if (rc) {
-> >>>> -               DRM_ERROR("component add failed, rc=%d\n", rc);
-> >>>> -               dp_display_deinit_sub_modules(dp);
-> >>>> +       if (dp->dp_display.is_edp) {
-> >>>> +               rc = dp_display_auxbus_population(dp);
-> >>>> +               if (rc)
-> >>>> +                       DRM_ERROR("eDP auxbus population failed,
-> >>>> rc=%d\n", rc);
-> >>>> +       } else {
-> >>>> +               rc = component_add(&pdev->dev, &dp_display_comp_ops);
-> >>>> +               if (rc) {
-> >>>> +                       DRM_ERROR("component add failed, rc=%d\n",
-> >>>> rc);
-> >>>> +                       dp_display_deinit_sub_modules(dp);
-> >>>> +               }
-> >>>>          }
-> >>>>
-> >>>>          return rc;
-> >>>> @@ -1285,8 +1313,6 @@ static int dp_display_remove(struct
-> >>>> platform_device *pdev)
-> >>>>          struct dp_display_private *dp =
-> >>>> dev_get_dp_display_private(&pdev->dev);
-> >>>>
-> >>>>          component_del(&pdev->dev, &dp_display_comp_ops);
-> >>>> -       dp_display_deinit_sub_modules(dp);
-> >>>> -
-> >>>>          platform_set_drvdata(pdev, NULL);
-> >>>>
-> >>>>          dp_display_deinit_sub_modules(dp);
-> >>>> @@ -1385,29 +1411,8 @@ static int dp_display_get_next_bridge(struct
-> >>>> msm_dp *dp)
-> >>>>   {
-> >>>>          int rc;
-> >>>>          struct dp_display_private *dp_priv;
-> >>>> -       struct device_node *aux_bus;
-> >>>> -       struct device *dev;
-> >>>>
-> >>>>          dp_priv = container_of(dp, struct dp_display_private,
-> >>>> dp_display);
-> >>>> -       dev = &dp_priv->pdev->dev;
-> >>>> -       aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
-> >>>> -
-> >>>> -       if (aux_bus && dp->is_edp) {
-> >>>> -               /*
-> >>>> -                * The code below assumes that the panel will
-> >>>> finish probing
-> >>>> -                * by the time devm_of_dp_aux_populate_ep_devices()
-> >>>> returns.
-> >>>> -                * This isn't a great assumption since it will fail
-> >>>> if the
-> >>>> -                * panel driver is probed asynchronously but is the
-> >>>> best we
-> >>>> -                * can do without a bigger driver reorganization.
-> >>>> -                */
-> >>>> -               rc = of_dp_aux_populate_bus(dp_priv->aux, NULL);
-> >>>> -               of_node_put(aux_bus);
-> >>>> -               if (rc)
-> >>>> -                       goto error;
-> >>>> -       } else if (dp->is_edp) {
-> >>>> -               DRM_ERROR("eDP aux_bus not found\n");
-> >>>> -               return -ENODEV;
-> >>>> -       }
-> >>>>
-> >>>>          /*
-> >>>>           * External bridges are mandatory for eDP interfaces: one
-> >>>> has to
-> >>>> @@ -1420,17 +1425,9 @@ static int dp_display_get_next_bridge(struct
-> >>>> msm_dp *dp)
-> >>>>          if (!dp->is_edp && rc == -ENODEV)
-> >>>>                  return 0;
-> >>>>
-> >>>> -       if (!rc) {
-> >>>> +       if (!rc)
-> >>>>                  dp->next_bridge = dp_priv->parser->next_bridge;
-> >>>> -               return 0;
-> >>>> -       }
-> >>>>
-> >>>> -error:
-> >>>> -       if (dp->is_edp) {
-> >>>> -               of_dp_aux_depopulate_bus(dp_priv->aux);
-> >>>> -               dp_display_host_phy_exit(dp_priv);
-> >>>> -               dp_display_host_deinit(dp_priv);
-> >>>> -       }
-> >>>>          return rc;
-> >>>>   }
-> >>>>
-> >>>> --
-> >>>> 2.7.4
-> >>>>
-> >>>
-> >
+> diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+> index cfb3f632a4b2..42b9a694fe2f 100644
+> --- a/arch/x86/kernel/cpu/resctrl/monitor.c
+> +++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+> @@ -24,7 +24,21 @@
+>  
+>  #include "internal.h"
+>  
+> +/**
+> + * struct rmid_entry - dirty tracking for all RMID.
+> + * @closid:	The CLOSID for this entry.
+> + * @rmid:	The RMID for this entry.
+> + * @busy:	The number of domains with cached data using this RMID.
+> + * @list:	Member of the rmid_free_lru list when busy == 0.
+> + *
+> + * Some architectures's resctrl_arch_rmid_read() needs the CLOSID value
+> + * in order to access the correct monitor. @closid provides the value to
+> + * list walkers like __check_limbo(). On x86 this is ignored.
+
+I do not think this is correct. At this point in the series
+__check_limbo() uses @rmid as index, at end of series it uses the
+(@closid, @rmid) index. Never does the list walker use @closid.
+
+Perhaps something like below that matches your later similar comments:
+
+	Depending on the architecture the correct monitor is accessed
+	using both @closid and @rmid, or @rmid only.
 
 
+...
 
--- 
-With best wishes
-Dmitry
+  
+> @@ -685,11 +706,11 @@ void mbm_handle_overflow(struct work_struct *work)
+>  	d = container_of(work, struct rdt_domain, mbm_over.work);
+>  
+>  	list_for_each_entry(prgrp, &rdt_all_groups, rdtgroup_list) {
+> -		mbm_update(r, d, prgrp->mon.rmid);
+> +		mbm_update(r, d, prgrp->closid, prgrp->mon.rmid);
+>  
+>  		head = &prgrp->mon.crdtgrp_list;
+>  		list_for_each_entry(crgrp, head, mon.crdtgrp_list)
+> -			mbm_update(r, d, crgrp->mon.rmid);
+> +			mbm_update(r, d, crgrp->closid, crgrp->mon.rmid);
+>  
+>  		if (is_mba_sc(NULL))
+>  			update_mba_bw(prgrp, d);
+> @@ -732,10 +753,11 @@ static int dom_data_init(struct rdt_resource *r)
+>  	}
+>  
+>  	/*
+> -	 * RMID 0 is special and is always allocated. It's used for all
+> -	 * tasks that are not monitored.
+> +	 * RESCTRL_RESERVED_CLOSID and RESCTRL_RESERVED_RMID are special and
+> +	 * are always allocated. These are used for rdtgroup_default control
+> +	 * group, which will be setup later. See rdtgroup_setup_root().
+>  	 */
+
+This comment will not be accurate after Babu's changes are merged (the function will
+be rdtgroup_setup_default()). To avoid that conflict you could perhaps change
+last two sentences to something like below that will be accurate no matter the
+order of merging between your and Babu's work:
+
+	These are used for rdtgroup_default control group, which will be
+	setup later in rdtgroup_init().
+
+> -	entry = __rmid_entry(0);
+> +	entry = __rmid_entry(RESCTRL_RESERVED_CLOSID, RESCTRL_RESERVED_RMID);
+>  	list_del(&entry->list);
+>  
+>  	return 0;
+
+
+My feedback only relates to the comments. The rest of the patch looks good to
+me. I could give a review tag with expectation that comments be addressed in next
+version but since some review feedback fell through the cracks in this version I
+feel that I need to confirm first before providing review tag.
+
+Reinette
