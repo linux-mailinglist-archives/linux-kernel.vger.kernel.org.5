@@ -2,131 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 213C57B5E69
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 800B37B5E6B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238944AbjJCA4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 20:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33940 "EHLO
+        id S238933AbjJCA6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 20:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjJCA4g (ORCPT
+        with ESMTP id S229839AbjJCA6F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 20:56:36 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4219AAD;
-        Mon,  2 Oct 2023 17:56:33 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5652CC433CB;
-        Tue,  3 Oct 2023 00:56:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696294592;
-        bh=olLlimnWhkeDBquUxrrCAb+tBw4ZjRVCdKdts8iJ1bw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=sXgeUyNFQa9IbtkGptuokc2Yc2YDBuIrrF5xYFInVXQnl6SzaQGJzzpdmq5JBRLIE
-         qbSYkToNvy6RpWYSytU3hZpO1/g0N/i9va6OX9pm8GuOBdXRodxz7BLCKVnb26vTLl
-         wPMPiLL/9qcl78w8QNQJ6CRle4qU2CvF1aD3R5Rb0MOS/u9C5wnc+1Yf41lQtIClA6
-         Srx2AIqJT+mhCy1HdZX/IDwY1MXRo9iuZlqlhEwOP/KS3uDiMVJPmmaxp6GG7RLrMX
-         qY2vDHklP27X3WQLc6AY/I929R75ZrmDL8XvUJZxfjjI1SaSZ01h1MVCNzk4nBnI2c
-         9zR30UrLT3i8Q==
-Message-ID: <ef22ae11-ae72-d92e-7f17-a8a706c40614@kernel.org>
-Date:   Tue, 3 Oct 2023 09:56:30 +0900
+        Mon, 2 Oct 2023 20:58:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0B52B7
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:58:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696294682; x=1727830682;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=9ElHeu35WB3FN5ywyVYMmUbielz++Q1fz01ylClzBW8=;
+  b=i4VQZrwJNmD+OXstsJOXuI8FYtWBUOVZSpbme04tlY2HsvZTKTUn9CGK
+   hNMRE7qLzPSd/Bm4pY0IHrzB0BVCzgIoq0hli4j0jJKBo0+vCWaiziaCU
+   acCLYBEIr0CjPpHXMghSIgCUfwXJsARZh5QgXfmkIus0ynawS4oF9f/Vy
+   KDkoq9ntgTCJoyN6ZH0Z4GEpAZiPW3H7l4ckCpk+XklPisus00CrsyWQ6
+   ieWCUi2GBGbLiEjpHbdyrjGY/gGWIlNUopDpgqcv3Iks2pYvdd9TB5TNY
+   Hy7j27gYS1HICfME7zbX/rY6PJIBCMR0pBuQJlEWmsJJQl6Je4CQMLZVe
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="413688812"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="413688812"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 17:58:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="894299176"
+X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
+   d="scan'208";a="894299176"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 17:56:39 -0700
+Received: from [10.212.65.113] (kliang2-mobl1.ccr.corp.intel.com [10.212.65.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 360A8580CBC;
+        Mon,  2 Oct 2023 17:57:59 -0700 (PDT)
+Message-ID: <ed169d4d-76d5-c134-c685-ad3d812028be@linux.intel.com>
+Date:   Mon, 2 Oct 2023 20:57:57 -0400
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.15.1
-Subject: Re: [PATCH 4/4] pata_parport-fit3: implement IDE command set
- registers
+Subject: Re: [RESEND PATCH V3 1/6] perf: Add branch stack extra
 Content-Language: en-US
-To:     Ondrej Zary <linux@zary.sk>,
-        Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Jens Axboe <axboe@kernel.dk>, Tim Waugh <tim@cyberelk.net>,
-        linux-block@vger.kernel.org, linux-parport@lists.infradead.org,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230930191511.24994-1-linux@zary.sk>
- <20230930191511.24994-5-linux@zary.sk>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20230930191511.24994-5-linux@zary.sk>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, acme@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, ak@linux.intel.com, eranian@google.com,
+        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+References: <20230911154822.2559213-1-kan.liang@linux.intel.com>
+ <20231002154535.GB35785@noisy.programming.kicks-ass.net>
+ <ce16c6c1-9bdc-35e2-fe85-155bd7edbaa4@linux.intel.com>
+ <20231002213752.GB1539@noisy.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20231002213752.GB1539@noisy.programming.kicks-ass.net>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/1/23 04:15, Ondrej Zary wrote:
-> fit3 protocol driver does not support accessing IDE control registers
-> (device control/altstatus). The DOS driver does not use these registers
-> either (as observed from DOSEMU trace). But the HW seems to be capable
-> of accessing these registers - I simply tried bit 3 and it works!
+
+
+On 2023-10-02 5:37 p.m., Peter Zijlstra wrote:
+> On Mon, Oct 02, 2023 at 03:19:04PM -0400, Liang, Kan wrote:
 > 
-> The control register is required to properly reset ATAPI devices or
-> they will be detected only once (after a power cycle).
+>>>> Also, add a new branch sample type, PERF_SAMPLE_BRANCH_EVT_CNTRS, to
+>>>> indicate whether include occurrences of events in branch info. The
+>>>> information will be stored in the extra space.
+>>>
+>>> This... why do we need two flags?
+>>
+>> Users may only collect the occurrences of some events in a group. The
+>> EVT_CNTRS flag is used to indicate those events. E.g.,
+>> perf record -e "{cpu/branch-instructions,branch_type=call/,
+>> cpu/branch-misses,branch_type=event/}"
+>>
+>> Only the occurrences of the branch-misses event is collected in LBR and
+>> finally dumped into the extra buffer.
+>>
+>> While the first flag, PERF_SAMPLE_BRANCH_EXTRA, only tells that the
+>> extra space is required.
 > 
-> Tested with EXP Computer CD-865 with MC-1285B EPP cable and
-> TransDisk 3000.
+> Or have it implicit, I reallt don't see the point of having two bits
+> here.
+
+Perf has to traverse the whole group to decide whether using the extra
+space. But It should be possible to use an internal flag to avoid the
+traverse every time. Let me have a try.
+
 > 
-> Signed-off-by: Ondrej Zary <linux@zary.sk>
-
-For all patches of this series: please change the commit title to:
-
-ata: pata_parport: xxx
-
-> ---
->  drivers/ata/pata_parport/fit3.c | 16 ++++------------
->  1 file changed, 4 insertions(+), 12 deletions(-)
+>>> Also, I can't find this in the SDM, how wide are these counter deltas?
+>>> ISTR they're saturating, but not how wide they are.
+>>
+>> Now, it's documented in the Intel® Architecture Instruction Set
+>> Extensions and Future Features, Chapter 8, 8.6 LBR ENHANCEMENTS. It
+>> should be moved to SDM later.
+>> https://cdrdv2.intel.com/v1/dl/getContent/671368
+>>
+>> Only 2 bits for each counter. Saturating at a value of 3.
 > 
-> diff --git a/drivers/ata/pata_parport/fit3.c b/drivers/ata/pata_parport/fit3.c
-> index bad7aa920cdc..86b39966755b 100644
-> --- a/drivers/ata/pata_parport/fit3.c
-> +++ b/drivers/ata/pata_parport/fit3.c
-> @@ -9,11 +9,6 @@
->   *
->   * The TD-2000 and certain older devices use a different protocol.
->   * Try the fit2 protocol module with them.
-> - *
-> - * NB:  The FIT adapters do not appear to support the control
-> - * registers.  So, we map ALT_STATUS to STATUS and NO-OP writes
-> - * to the device control register - this means that IDE reset
-> - * will not work on these devices.
->   */
->  
->  #include <linux/module.h>
-> @@ -35,10 +30,11 @@
->   * cont = 1 - access the IDE command set
->   */
->  
-> +static int cont_map[] = { 0x00, 0x08 };
-> +
->  static void fit3_write_regr(struct pi_adapter *pi, int cont, int regr, int val)
->  {
-> -	if (cont == 1)
-> -		return;
-> +	regr += cont_map[cont];
->  
->  	switch (pi->mode) {
->  	case 0:
-> @@ -59,11 +55,7 @@ static int fit3_read_regr(struct pi_adapter *pi, int cont, int regr)
->  {
->  	int  a, b;
->  
-> -	if (cont) {
-> -		if (regr != 6)
-> -			return 0xff;
-> -		regr = 7;
-> -	}
-> +	regr += cont_map[cont];
->  
->  	switch (pi->mode) {
->  	case 0:
+> Urgh, this ISE document is shite, that thing don't say how many
+> IA32_LBR_INFO.PMCx_CNT fields there are, I think your later patch says
+> 4, right? And is this for arch LBR or the other thing?
+>
 
--- 
-Damien Le Moal
-Western Digital Research
+It's for Arch LBR. Yes, the current CPUID enumeration implies that only
+4 counters.
 
+"Per-counter support for LBR Event Logging is indicated by the “Event
+Logging Supported” bitmap in CPUID.(EAX=01CH, ECX=0).ECX[19:16]"
+
+> (Also, what is IA32_LER_x_INFO ?)
+
+Last Event Record (LER). It records the last taken branch preceding the
+last exception, hardware interrupt, or software interrupt.
+Linux doesn't have it supported.
+
+> 
+> This is then a grant total of 8 bits.
+> 
+> And we still have 31 spare bits in perf_branch_entry.
+> 
+> Why again do we need the extra u64 ?!?
+>
+
+The first version utilizes the spare bits in perf_branch_entry.
+https://lore.kernel.org/lkml/20230414145324.GB761523@hirez.programming.kicks-ass.net/
+
+To address the similar concern (what should we do if more counters and a
+wider bits are added later), I changed it to the extra space method
+since V2.
+
+Another consideration is that the 'events' field in the
+perf_branch_entry from V1 is Intel specific. The u64 extra space is more
+generic. Other ARCHs can utilize it to store other extra information if
+they want.
+
+Please let me know if I'm overthinking. I can switch back to the
+'events' field of V1.
+
+> More specifically, this interface is pretty crap -- suppose the next
+> generation of things feels that 2 bits aint' enough and goes and gives
+> us 4. Then what do we do?
+>
+
+The current LBR is an architectural feature. The existed fields of 2
+bits 4 counters should not be changed.
+But yes, it's possible to add more bits and counters into the reserved
+bits. The reserved bits of the IA32_LBR_x_INFO are only 31 now. The u64
+extra space should be good enough.
+If more information is introduced later (e.g., a brand new
+LBR_x_INFO_2), then we can add a extra_2 space.
+
+But I don't see there is a plan to extend the IA32_LBR_x_INFO again in
+the near future.
+
+> Did I already say that the ISE document raises more questions than it
+> provides answers?
+
+Yes. Would an improved CPUID enumeration can address the questions? For
+example, the CPUID enumeration can give the maximum number of counters
+and supported width? I think we can discuss it with the architect.
+
+Thanks,
+Kan
