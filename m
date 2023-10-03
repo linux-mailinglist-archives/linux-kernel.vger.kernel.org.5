@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABDAF7B71D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C7477B71D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:35:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240922AbjJCTfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 15:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43236 "EHLO
+        id S240951AbjJCTfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 15:35:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240962AbjJCTe7 (ORCPT
+        with ESMTP id S240863AbjJCTfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 15:34:59 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC05BF;
-        Tue,  3 Oct 2023 12:34:56 -0700 (PDT)
-Date:   Tue, 03 Oct 2023 19:34:54 -0000
+        Tue, 3 Oct 2023 15:35:13 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2991AC;
+        Tue,  3 Oct 2023 12:35:09 -0700 (PDT)
+Date:   Tue, 03 Oct 2023 19:35:07 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696361695;
+        s=2020; t=1696361708;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sMSuIBX68wCUaN9OMC0iJXW11FBBQZmVSrB0umTnwnA=;
-        b=kX+EjTk5lvv2J8+GRWmzKd/T0sTYU/rHd9Il0MzWQH4JCu23KFdZWICShuTXL0c5G4QZgm
-        zsgNF1YBEXWHV6JJleulLkOuebXcTScPAnZQVuzyVKeKg593YO8Hh1zySahb8NOsJd1Jjg
-        tECnLLlJxnbdrjrBLyE9vZ3HZ0TXNYq4LKtOpnRVsCt/qwOY86H56QSHZGhPa50v4u7E2w
-        C/rschhnluYDdDKGUkz2aFZ7DDmGqrRCIpkwPkNmg/MwO3h/mlAoCt+U1Rr/glSnZNbYl0
-        o/kbt2UX+LZqHt7an8UIZmj/8qa2x7zjUlQFmpFuHQ48njKHt4RJyZQ00lSTmw==
+        bh=/l4G+biN+V3AM4d7wOYKSw2LMeg2qO6SavzJZSqjzOc=;
+        b=pOYlLhoG3yOIEGlhKrP/cXxn+jbWhrTNtddqhdRG/Ccu08QNydZvyBbe6eQ/xZ0dXpdwye
+        69QGYRnZar+SrSH7w+sW/ilwm6X3CfSmWGSV7OBoXqIks5TQY6R/nNxaAF5/O5zPWfgIk+
+        DWZLhamYb7NIUdj1IYGTG4wJB4QTL3GfbUtAcrtEJEooUJbyAVeCDHxdJXFHZ9kS91613e
+        m6JSZEXMWwJ/PjLiAUlOz7+xFTdtQp53I09nHp32g8G3YKkbf7ACiE5QnEA556mCR02Unn
+        jKOXaJb7YKQu9Uboy3ucMgOkBWyECZavd9bPNKqz5Cdi/653NVoud4V7egQuYQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696361695;
+        s=2020e; t=1696361708;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sMSuIBX68wCUaN9OMC0iJXW11FBBQZmVSrB0umTnwnA=;
-        b=RU3to7Rf32EWwrVEtaqin8qdVuk7WNTMCDNvlA+e/plT06k+aG8as7ilH0dpgsveP4X01n
-        q0mnsScVJoESvNDg==
-From:   "tip-bot2 for David Reaver" <tip-bot2@linutronix.de>
+        bh=/l4G+biN+V3AM4d7wOYKSw2LMeg2qO6SavzJZSqjzOc=;
+        b=iwxgdqwXmwRZMhqOvLV5/m+Z7d8RfAF/+gCKn5O7ie8eOr3HOQeNjDJmpwICNV3xntfF5t
+        E0W5pASVG3fYhXAg==
+From:   "tip-bot2 for Yu Liao" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/rapl: Fix "Using plain integer as NULL
- pointer" Sparse warning
-Cc:     David Reaver <me@davidreaver.com>, Ingo Molnar <mingo@kernel.org>,
+Subject: [tip: sched/core] sched/headers: Remove duplicate header inclusions
+Cc:     Yu Liao <liaoyu15@huawei.com>, Ingo Molnar <mingo@kernel.org>,
         x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230801155651.108076-1-me@davidreaver.com>
-References: <20230801155651.108076-1-me@davidreaver.com>
+In-Reply-To: <20230802021501.2511569-1-liaoyu15@huawei.com>
+References: <20230802021501.2511569-1-liaoyu15@huawei.com>
 MIME-Version: 1.0
-Message-ID: <169636169438.3135.16959912732564389921.tip-bot2@tip-bot2>
+Message-ID: <169636170770.3135.292145012976825156.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -64,53 +63,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     618e77d77494bfd6273256d43eafe4368445c745
-Gitweb:        https://git.kernel.org/tip/618e77d77494bfd6273256d43eafe4368445c745
-Author:        David Reaver <me@davidreaver.com>
-AuthorDate:    Tue, 01 Aug 2023 08:56:51 -07:00
+Commit-ID:     d4d6596b43868a1e05fe5b047e73c3aff96444c6
+Gitweb:        https://git.kernel.org/tip/d4d6596b43868a1e05fe5b047e73c3aff96444c6
+Author:        Yu Liao <liaoyu15@huawei.com>
+AuthorDate:    Wed, 02 Aug 2023 10:15:01 +08:00
 Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 03 Oct 2023 21:25:56 +02:00
+CommitterDate: Tue, 03 Oct 2023 21:27:55 +02:00
 
-perf/x86/rapl: Fix "Using plain integer as NULL pointer" Sparse warning
+sched/headers: Remove duplicate header inclusions
 
-Change 0 to NULL when initializing the test field of perf_msr structs to
-avoid the following sparse warnings:
+<linux/psi.h> and "autogroup.h" are included twice, remove the duplicate header
+inclusion.
 
-  make C=2 arch/x86/events/rapl.o
-
-  CHECK   arch/x86/events/rapl.c
-  ...
-  arch/x86/events/rapl.c:540:59: warning: Using plain integer as NULL pointer
-  arch/x86/events/rapl.c:542:59: warning: Using plain integer as NULL pointer
-  arch/x86/events/rapl.c:543:59: warning: Using plain integer as NULL pointer
-  arch/x86/events/rapl.c:544:59: warning: Using plain integer as NULL pointer
-
-Signed-off-by: David Reaver <me@davidreaver.com>
+Signed-off-by: Yu Liao <liaoyu15@huawei.com>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230801155651.108076-1-me@davidreaver.com
+Link: https://lore.kernel.org/r/20230802021501.2511569-1-liaoyu15@huawei.com
 ---
- arch/x86/events/rapl.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/sched/build_utility.c | 1 -
+ kernel/sched/core.c          | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
-index 6d3e738..c2c37fb 100644
---- a/arch/x86/events/rapl.c
-+++ b/arch/x86/events/rapl.c
-@@ -533,11 +533,11 @@ static struct perf_msr intel_rapl_spr_msrs[] = {
-  * - want to use same event codes across both architectures
-  */
- static struct perf_msr amd_rapl_msrs[] = {
--	[PERF_RAPL_PP0]  = { 0, &rapl_events_cores_group, 0, false, 0 },
-+	[PERF_RAPL_PP0]  = { 0, &rapl_events_cores_group, NULL, false, 0 },
- 	[PERF_RAPL_PKG]  = { MSR_AMD_PKG_ENERGY_STATUS,  &rapl_events_pkg_group,   test_msr, false, RAPL_MSR_MASK },
--	[PERF_RAPL_RAM]  = { 0, &rapl_events_ram_group,   0, false, 0 },
--	[PERF_RAPL_PP1]  = { 0, &rapl_events_gpu_group,   0, false, 0 },
--	[PERF_RAPL_PSYS] = { 0, &rapl_events_psys_group,  0, false, 0 },
-+	[PERF_RAPL_RAM]  = { 0, &rapl_events_ram_group,   NULL, false, 0 },
-+	[PERF_RAPL_PP1]  = { 0, &rapl_events_gpu_group,   NULL, false, 0 },
-+	[PERF_RAPL_PSYS] = { 0, &rapl_events_psys_group,  NULL, false, 0 },
- };
+diff --git a/kernel/sched/build_utility.c b/kernel/sched/build_utility.c
+index 99bdd96..80a3df4 100644
+--- a/kernel/sched/build_utility.c
++++ b/kernel/sched/build_utility.c
+@@ -34,7 +34,6 @@
+ #include <linux/nospec.h>
+ #include <linux/proc_fs.h>
+ #include <linux/psi.h>
+-#include <linux/psi.h>
+ #include <linux/ptrace_api.h>
+ #include <linux/sched_clock.h>
+ #include <linux/security.h>
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 324980e..27aff98 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -85,7 +85,6 @@
  
- static int rapl_cpu_offline(unsigned int cpu)
+ #include "sched.h"
+ #include "stats.h"
+-#include "autogroup.h"
+ 
+ #include "autogroup.h"
+ #include "pelt.h"
