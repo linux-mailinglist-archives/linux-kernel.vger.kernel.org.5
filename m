@@ -2,163 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B85C7B6966
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA8267B696C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbjJCMtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 08:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
+        id S231192AbjJCMus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 08:50:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjJCMtU (ORCPT
+        with ESMTP id S229689AbjJCMur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 08:49:20 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADB09A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 05:49:16 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6910ea9cca1so622223b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 05:49:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1696337356; x=1696942156; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SN3E964ODCJjpz85I+WSpRkPsUEBZcxQzYCTWvMspok=;
-        b=FSR/D/BGssyVjkBE3jLTpQOdL2tRItJq+u4rAEFew31UK4bf0BrQBKM6WqxGR1GRii
-         H82vTH2wciOLlkDT+IoUnIfkV15RZb96WZM0IzOjgLjwaaojyoJQtdOEPVPeCib7Cw4K
-         Gl3IZn74Gs7M6vJ/2VOdXdztWfnTjdPdf7Zz6pV4nEUQ7E0k/HjYUnC7erwf7Le/LArJ
-         yhGwl1WY9lzMo76UHHLEUYDfAKbtK6MrqegPQXMi9M22tqHJ03TKjtxs2Tty6UBCewHq
-         faL6HxefbQfOdo5pqVxEFXZsD4iIAup04vkVaS0Xo5VLjnCVxhvOP8Fj/abRu9+xgU2N
-         akxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696337356; x=1696942156;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SN3E964ODCJjpz85I+WSpRkPsUEBZcxQzYCTWvMspok=;
-        b=YZyfJb+Fqs+CGw5992vH+HigP7WbOFOxikgewZM7y8XQ55q7K5CQnW9dOf4djeeZSp
-         S+1Dq2apUdDvNnmAy/nmPgzNsyRe3knhNRbynL2ldzTwYXoWzpjZtC3C40BdqWwb7wdA
-         Md51uev0EZ3y6P+QqQG/yR/cndWDIKK0ilI66OzeNyQMW/vnPEWsQqRcy7A9/+ePhiDc
-         aANHTS6FSlKLXzGHAOcJr//GyERk0sYnOOFib6diLipijDEgtIKtHWVgFYbC9zGFDgND
-         Unfr12zPEY4vzSlthc39bhzt9ibFSaVpf7E1lrj4GZPkblO0M9nJMh9Nqo3lRqI/nMRt
-         iWKQ==
-X-Gm-Message-State: AOJu0YyGg58UP8QgsLnYiN9qgix4CIEt+4fwtknUJodAudJeEc0cT53z
-        ZS6tOSpnbJ+RPKE41zHdlxEsQA==
-X-Google-Smtp-Source: AGHT+IGmzT37smXXRQ4PsSss9CA8pDZ6W57Ijm1sqNx8jWDBtXv6OD9Mq/KH3oO/wvqAbx4zHux8dg==
-X-Received: by 2002:a05:6a00:1254:b0:691:2d4:238e with SMTP id u20-20020a056a00125400b0069102d4238emr12585943pfi.6.1696337356110;
-        Tue, 03 Oct 2023 05:49:16 -0700 (PDT)
-Received: from [10.254.175.124] ([139.177.225.240])
-        by smtp.gmail.com with ESMTPSA id q17-20020a62e111000000b0068ff6d21563sm1311489pfh.148.2023.10.03.05.49.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 05:49:15 -0700 (PDT)
-Message-ID: <7551924f-a9b6-4bb8-bfe9-e3efcf0da438@bytedance.com>
-Date:   Tue, 3 Oct 2023 20:49:08 +0800
+        Tue, 3 Oct 2023 08:50:47 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0172BB8;
+        Tue,  3 Oct 2023 05:50:42 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08C5CC433C8;
+        Tue,  3 Oct 2023 12:50:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1696337442;
+        bh=j+yGGSzRCSvGI/VJZ5tDD+R9hNuauFXWos6gg7ksK9g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MJ/oN8aJ2bpGvvD6dW8Tl/VepfemAorPEeTPmXgk+EErVwRslYPEqRtn2CFCG+9bC
+         Kdham49WtkR5Afs9wCaVRtcEPN52xWOxV74AR2FqZFbtQV1GB1QabIZuJF076ivub1
+         KcGbEYaDsOVuqk9rEUlR8EwP7tSHh4zrGN0UySKk=
+Date:   Tue, 3 Oct 2023 14:50:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Dan Raymond <raymod2@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-serial <linux-serial@vger.kernel.org>, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, peterz@infradead.org,
+        andriy.shevchenko@linux.intel.com
+Subject: Re: [PATCH v3] arch/x86: port I/O tracing on x86
+Message-ID: <2023100344-dart-jailbreak-c371@gregkh>
+References: <b8eae358-a3b3-fd68-82f1-b2c53534b922@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Re: [PATCH net-next 2/2] sock: Fix improper heuristic on raising
- memory
-Content-Language: en-US
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Breno Leitao <leitao@debian.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        Xin Long <lucien.xin@gmail.com>,
-        KAMEZAWA Hiroyuki <kamezawa.hiroyu@jp.fujtsu.com>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20230920132545.56834-1-wuyun.abel@bytedance.com>
- <20230920132545.56834-2-wuyun.abel@bytedance.com>
- <20230921190156.s4oygohw4hud42tx@google.com>
- <82c0a442-c7d7-d0f1-54de-7a5e7e6a31d5@bytedance.com>
- <71ac08d3-9f36-e0de-870e-3e252abcb66a@bytedance.com>
- <20230924072816.6ywgoe7ab2max672@google.com>
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <20230924072816.6ywgoe7ab2max672@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b8eae358-a3b3-fd68-82f1-b2c53534b922@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/24/23 3:28 PM, Shakeel Butt wrote:
-> On Fri, Sep 22, 2023 at 06:10:06PM +0800, Abel Wu wrote:
-> [...]
->>
->> After a second thought, it is still vague to me about the position
->> the memcg pressure should be in socket memory allocation. It lacks
->> convincing design. I think the above hunk helps, but not much.
->>
->> I wonder if we should take option (3) first. Thoughts?
->>
+On Fri, Sep 29, 2023 at 01:15:41PM -0600, Dan Raymond wrote:
+> Add support for port I/O tracing on x86.  Memory mapped I/O tracing is
+> available on x86 via CONFIG_MMIOTRACE but that relies on page faults
+> so it doesn't work with port I/O.  This feature uses tracepoints in a
+> similar manner as CONFIG_TRACE_MMIO_ACCESS.
 > 
-> Let's take a step further. Let's decouple the memcg accounting and
-> global skmem accounting. __sk_mem_raise_allocated is already very hard
-> to reason. There are couple of heuristics in it which may or may not
-> apply to both accounting infrastructures.
+> Signed-off-by: Dan Raymond <raymod2@gmail.com>
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> V1 -> V2:
+>   - create header file for prototypes to silence new compiler warning
+>   - reduce CPU overhead to 2 instructions (no branching) when tracing disabled
+>   - fix imprecise IP logging by retrieving the IP off the stack instead of using
+>     compile time labels
 > 
-> Let's explicitly document what heurisitics allows to forcefully succeed
-> the allocations i.e. irrespective of pressure or over limit for both
-> accounting infras. I think decoupling them would make the flow of the
-> code very clear.
-
-I can't agree more.
-
+> V2 -> V3:
+>   - restore missing semicolon
 > 
-> There are three heuristics:
-
-I found all of them were first introduced in linux-2.4.0-test7pre1 for
-TCP only, and then migrated to socket core in linux-2.6.8-rc1 without
-functional change.
-
+>  arch/x86/include/asm/shared/io.h | 25 ++++++++++++++++
+>  arch/x86/lib/Makefile            |  1 +
+>  arch/x86/lib/trace_portio.c      | 21 ++++++++++++++
+>  include/linux/trace_portio.h     |  6 ++++
+>  include/trace/events/portio.h    | 49 ++++++++++++++++++++++++++++++++
+>  5 files changed, 102 insertions(+)
+>  create mode 100644 arch/x86/lib/trace_portio.c
+>  create mode 100644 include/linux/trace_portio.h
+>  create mode 100644 include/trace/events/portio.h
 > 
-> 1. minimum buffer size even under pressure.
+> diff --git a/arch/x86/include/asm/shared/io.h b/arch/x86/include/asm/shared/io.h
+> index c0ef921c0586..9e5dce1cb62d 100644
+> --- a/arch/x86/include/asm/shared/io.h
+> +++ b/arch/x86/include/asm/shared/io.h
+> @@ -2,13 +2,36 @@
+>  #ifndef _ASM_X86_SHARED_IO_H
+>  #define _ASM_X86_SHARED_IO_H
+>  
+> +#include <linux/trace_portio.h>
+>  #include <linux/types.h>
+>  
+> +/*
+> + * We don't want the tracing logic included in the early boot modules (under
+> + * arch/x86/boot) so we check for their include guards here.  If we don't do
+> + * this we will get compiler errors.  These checks are not present in
+> + * arch/x86/include/asm/msr.h which contains similar tracing logic.  That is
+> + * possible only because none of the msr inline functions are instantiated in
+> + * the early boot modules.  If that changes this issue will need to be addressed
+> + * there as well.  Therefore it might be better to handle this centrally in
+> + * tracepoint-defs.h.
+> + */
+> +
+> +#if defined(CONFIG_TRACEPOINTS) && !defined(BOOT_COMPRESSED_MISC_H) && !defined(BOOT_BOOT_H)
 
-This is required by RFC 7323 (TCP Extensions for High Performance) to
-make features like Window Scale option work as expected, and should be
-succeeded under global pressure by tcp_{r,w}mem's definition. And IMHO
-for same reason, it should also be succeeded under memcg pressure, or
-else workloads might suffer performance drop due to bottleneck on
-network.
+I see what you are doing here in trying to see if a .h file has been
+included already, but now you are making an assumption on both the .h
+file ordering, and the #ifdef guard for those .h files, which are
+something that we almost never remember or even consider when dealing
+with .h files files.
 
-The allocation must not be succeeded either exceed global or memcg's
-hard limit, or else a DoS attack can be taken place by spawning lots
-of sockets that are under minimum buffer size.
 
-> 
-> 2. allow allocation for a socket whose usage is below average of the
-> system.
+> +#include <linux/tracepoint-defs.h>
+> +DECLARE_TRACEPOINT(portio_write);
+> +DECLARE_TRACEPOINT(portio_read);
+> +#define _tracepoint_enabled(tracepoint) tracepoint_enabled(tracepoint)
+> +#else
+> +#define _tracepoint_enabled(tracepoint) false
+> +#endif
+> +
+>  #define BUILDIO(bwl, bw, type)						\
+>  static inline void __out##bwl(type value, u16 port)			\
+>  {									\
+>  	asm volatile("out" #bwl " %" #bw "0, %w1"			\
+>  		     : : "a"(value), "Nd"(port));			\
+> +	if (_tracepoint_enabled(portio_write))				\
+> +		do_trace_portio_write(value, port, #bwl[0]);		\
+>  }									\
 
-Since 'average' is within the scope of global accounting, this one
-only makes sense under global memory pressure. Actually this exists
-before cgroup was born, hence doesn't take memcg into consideration.
+Who wants/needs port tracing these days?  What types of systems still
+rely on that for their primary form of I/O other than some old-school
+serial ports?
 
-While OTOH the intention of throttling under memcg pressure is to
-relief the memcg from heavy reclaim pressure, this heuristic does no
-help. And there also seems to be no reason to succeed the allocation
-when global or memcg's hard limit is exceeded.
+The MMIO tracing was added because there are crazy out-of-tree SoC
+devices out there that "insisted" that they need to hook into the mmio
+access path, so they added traceing there under the auspicious of trying
+to log all mmio accesses so that they could then override the access
+path in the tracehook to do who-knows-what other things.  Hopefully you
+are not wanting to do the same thing here as well?
 
-> 
-> 3. socket is over its sndbuf.
+And have you addressed all of Peter's previous review comments?
 
-TBH I don't get its point..
 
-> 
-> Let's discuss which heuristic applies to which accounting infra and
-> under which state (under pressure or over limit).
 
-I will follow your suggestion to post a patch to explicitly document
-the behaviors once things are cleared.
+>  									\
+>  static inline type __in##bwl(u16 port)					\
+> @@ -16,6 +39,8 @@ static inline type __in##bwl(u16 port)					\
+>  	type value;							\
+>  	asm volatile("in" #bwl " %w1, %" #bw "0"			\
+>  		     : "=a"(value) : "Nd"(port));			\
+> +	if (_tracepoint_enabled(portio_read))				\
+> +		do_trace_portio_read(value, port, #bwl[0]);		\
+>  	return value;							\
+>  }
+>  
+> diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
+> index f76747862bd2..254f223c025d 100644
+> --- a/arch/x86/lib/Makefile
+> +++ b/arch/x86/lib/Makefile
+> @@ -40,6 +40,7 @@ $(obj)/inat.o: $(obj)/inat-tables.c
+>  clean-files := inat-tables.c
+>  
+>  obj-$(CONFIG_SMP) += msr-smp.o cache-smp.o
+> +obj-$(CONFIG_TRACEPOINTS) += trace_portio.o
 
-Thanks,
-	Abel
+So this is always enabled?  No separate config option?  Why not?
+
+>  lib-y := delay.o misc.o cmdline.o cpu.o
+>  lib-y += usercopy_$(BITS).o usercopy.o getuser.o putuser.o
+> diff --git a/arch/x86/lib/trace_portio.c b/arch/x86/lib/trace_portio.c
+> new file mode 100644
+> index 000000000000..c048dffcfe05
+> --- /dev/null
+> +++ b/arch/x86/lib/trace_portio.c
+> @@ -0,0 +1,21 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +
+> +#include <linux/instruction_pointer.h>
+> +#include <linux/trace_portio.h>
+> +
+> +#define CREATE_TRACE_POINTS
+> +#include <trace/events/portio.h>
+> +
+> +void do_trace_portio_read(u32 value, u16 port, char width)
+> +{
+> +	trace_portio_read(value, port, width, _RET_IP_);
+> +}
+> +EXPORT_SYMBOL_GPL(do_trace_portio_read);
+> +EXPORT_TRACEPOINT_SYMBOL_GPL(portio_read);
+> +
+> +void do_trace_portio_write(u32 value, u16 port, char width)
+> +{
+> +	trace_portio_write(value, port, width, _RET_IP_);
+> +}
+> +EXPORT_SYMBOL_GPL(do_trace_portio_write);
+> +EXPORT_TRACEPOINT_SYMBOL_GPL(portio_write);
+> diff --git a/include/linux/trace_portio.h b/include/linux/trace_portio.h
+> new file mode 100644
+> index 000000000000..013418d3d2ae
+> --- /dev/null
+> +++ b/include/linux/trace_portio.h
+> @@ -0,0 +1,6 @@
+> +/* SPDX-License-Identifier: GPL-2.0+ */
+
+Why "+"?  (I have to ask).
+
+> +
+> +#include <linux/types.h>
+> +
+> +extern void do_trace_portio_read(u32 value, u16 port, char width);
+> +extern void do_trace_portio_write(u32 value, u16 port, char width);
+> diff --git a/include/trace/events/portio.h b/include/trace/events/portio.h
+> new file mode 100644
+> index 000000000000..3591a75a475e
+> --- /dev/null
+> +++ b/include/trace/events/portio.h
+> @@ -0,0 +1,49 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+
+This is -only, which is fine, but your patch doesn't seem to be uniform
+here for new files being added in the same patch, right?  So documenting
+this somewhere (i.e. in the changelog), is essential.
+
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM portio
+> +
+> +#if !defined(_TRACE_PORTIO_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_PORTIO_H
+> +
+> +#include <linux/tracepoint.h>
+> +
+> +DECLARE_EVENT_CLASS(portio_class,
+> +	TP_PROTO(u32 value, u16 port, char width, long ip_addr),
+
+Memory locations are stored in "unsigned long" not "long", right?
+
+> +
+> +	TP_ARGS(value, port, width, ip_addr),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(u32, value)
+> +		__field(u16, port)
+> +		__field(char, width)
+> +		__field(long, ip_addr)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->value = value;
+> +		__entry->port = port;
+> +		__entry->width = width;
+> +		__entry->ip_addr = ip_addr;
+> +	),
+> +
+> +	TP_printk("port=0x%04x value=0x%0*x %pS",
+> +		__entry->port,
+> +		__entry->width == 'b' ? 2 :
+> +		__entry->width == 'w' ? 4 : 8,
+> +		__entry->value, (void *)__entry->ip_addr)
+
+Logging kernel memory locations, why?  Where is this format documented?
+
+thanks,
+
+greg k-h
