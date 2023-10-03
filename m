@@ -2,77 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B2A7B65F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560C37B65FC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239837AbjJCKAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 06:00:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46812 "EHLO
+        id S239828AbjJCKCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 06:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239782AbjJCKAB (ORCPT
+        with ESMTP id S229758AbjJCKCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 06:00:01 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A319A91;
-        Tue,  3 Oct 2023 02:59:58 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c3bd829b86so5451065ad.0;
-        Tue, 03 Oct 2023 02:59:58 -0700 (PDT)
+        Tue, 3 Oct 2023 06:02:33 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66A191;
+        Tue,  3 Oct 2023 03:02:30 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-533c8f8f91dso1139507a12.0;
+        Tue, 03 Oct 2023 03:02:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696327198; x=1696931998; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7mfj166RZXa6+OGlC23mV90s8HoMj5oVIl7zgyFgTFU=;
-        b=H5pXYzVKJ1cluuOdb6AzUVrEXCvkaWBzOpmca0uk5N55iZ4vdfEjt5Pqg3U4hUXfUh
-         k0BE9clJEXJclFb6rs0iBJk3Lfm+mxF1wQYieUdwZNxaa/c7sF1p70UvDDOPCS4KeUbu
-         mEhSLN6plucjtGDRvTRmRTpTKkFbq7fhkEXmXf9ios1Z/kS1iTy4G6/FPuIJRVDpJkIK
-         3IgcFyyY3Vd/qgW9teFdF9q3SC2PPAFqZgWTxUTAt8Wg09/bG6RawnmlmOHQVlNVUq1t
-         VUxEJrkvdfDXxW4zXcKKKq/z8+Qr0pWZt/q1ys0Yv0ndqdBP+BFDu09h7w/ZR8ddArqL
-         4A8w==
+        d=gmail.com; s=20230601; t=1696327349; x=1696932149; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0D9ErtnzA2GpIpQYRTV/PEhl9qcHXadLDJ8uRkyriWg=;
+        b=c7/VYGxgZ0CqBogVAf9FH8yWKciLCMyxiT1iAy2uaE/2n7pmYp6pKvY8WGaQhxHY6k
+         3TMHbTaKDiDYEZ/EgxWsmWgVorfWrWsWgye3DCh1T+gp0P3rPdd/rTVNj88IAra21Hx1
+         Qf8cROXy3nEi3/QK5DGNNDyKOvR3QuIJc7aD7sBy8Hhz/ic+0RyLxgFVOxGTGtdN0nFd
+         mT4YjS5c9MSJlsw732OURb3Rne5f6DtfVE0E9oPjKd40a2oeIv1EVw0TtDKgddN0Vxud
+         xxU0Cqbz0l2AjrzkwXT/g+4oJfpfdXxEUZCTxP8z7PgUa1Y8QR95M3XFotco9uZ2P8cK
+         B2gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696327198; x=1696931998;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7mfj166RZXa6+OGlC23mV90s8HoMj5oVIl7zgyFgTFU=;
-        b=NXjpIHWUwIMVFX0NqvhwrNBbVHFjVwtzz6ijJcIvnt5K0dE7q7loW3vOTjhXFqnQKc
-         zLP8y+W3fEPXKL7FUi1/hcHzUVJ482q6vMZaQqE7FJOwWDw0ZYerGAjWW9L2c842hIIj
-         Nn7Wk/y4ZZy08h4HAmzOc/Dqu8buv26P24MKq2W0er+RI7G4sCvyCbbwgsoTDGmBFnWI
-         d+/D07qZrlcmNelPEthdDnxjlntYgTu5Y50K2B7TsMy97+gP4sGSUmSiEqurfahbTqjx
-         Gb9yhqC3LCsfrlguBHNFITzog2UnVg9wm0As9+BbqKQe9Gr6CACn9q3H7jgc8Gx4owVm
-         Da5g==
-X-Gm-Message-State: AOJu0YyKJuNf7c3avwY2A7GEHiUBRKvGWOVaMThIh9mSFJbsZM5q/+6v
-        oNz69SvU3kju2P2hvd1F5GI=
-X-Google-Smtp-Source: AGHT+IEcFB0/Nf7z2acAywtjf22FDYWrA9IDkrD58mbuzHGOwLkPwm0grCEuAMx9zkt09wQq3hfj/Q==
-X-Received: by 2002:a17:902:d2cb:b0:1c4:fae:bf28 with SMTP id n11-20020a170902d2cb00b001c40faebf28mr14401254plc.32.1696327197979;
-        Tue, 03 Oct 2023 02:59:57 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id u9-20020a17090341c900b001c1f161949fsm1088243ple.96.2023.10.03.02.59.57
+        d=1e100.net; s=20230601; t=1696327349; x=1696932149;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0D9ErtnzA2GpIpQYRTV/PEhl9qcHXadLDJ8uRkyriWg=;
+        b=wHXu4Lbr+n9+4HnI2QObbs+D7ojWx6V6r0hhKvLLgvXf02FvrsgsF7ljO2PL/osgEG
+         Jyx35vWGSVgC4u6ZcOxGfSsEIxA+RkSkeH7ly/QAb2BwJySJCf5migN3+iJMc17tRCYQ
+         yn6TeTCT1FMQ3S1UGOCMu07YEb2opSqFUtxjFcRhJcLfuuSdgCq8WfHGpsotT91m0Sl2
+         9dKMRtCn0CiaBvG6h36OyRbEvwYPPyDbECPatCagRFlfX/cmDb6098IPUpuLtbcoYKCA
+         p5ZME9x6XDidXhbfC8BOpLOtNmGeajLQ5i1Ue1prMdPNmKw0zSF+ms5xyVZbQpPy6Bc0
+         +YgQ==
+X-Gm-Message-State: AOJu0Yz6A2MOWFG2BSUuUiOCmjVlqixloTh9G9mMFfpKIyHhvqCgmHoU
+        9Uh7TVkmpVj8Q7CWZq0l1XdLQno2/ws=
+X-Google-Smtp-Source: AGHT+IH0k5yMa/0iYCiPQ1fuG/HKEuGdzG1sxKEBA5/Y49MjGitabCCmKzp2v1l1prAMschwvTRcUQ==
+X-Received: by 2002:a05:6402:1257:b0:530:77e6:849f with SMTP id l23-20020a056402125700b0053077e6849fmr12709177edw.27.1696327348717;
+        Tue, 03 Oct 2023 03:02:28 -0700 (PDT)
+Received: from sauvignon.fi.muni.cz (laomedon.fi.muni.cz. [147.251.42.107])
+        by smtp.gmail.com with ESMTPSA id s7-20020aa7c547000000b0052595b17fd4sm607137edr.26.2023.10.03.03.02.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 02:59:57 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id CEF7581193F1; Tue,  3 Oct 2023 16:59:52 +0700 (WIB)
-Date:   Tue, 3 Oct 2023 16:59:52 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Xin Li <xin3.li@intel.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, kvm@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        luto@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        peterz@infradead.org, jgross@suse.com, ravi.v.shankar@intel.com,
-        mhiramat@kernel.org, andrew.cooper3@citrix.com,
-        jiangshanlai@gmail.com, nik.borisov@suse.com
-Subject: Re: [PATCH v12 06/37] Documentation/x86/64: Add a documentation for
- FRED
-Message-ID: <ZRvmGNRZ4IvmguAY@debian.me>
-References: <20231003062458.23552-1-xin3.li@intel.com>
- <20231003062458.23552-7-xin3.li@intel.com>
+        Tue, 03 Oct 2023 03:02:28 -0700 (PDT)
+From:   Milan Broz <gmazyland@gmail.com>
+To:     linux-block@vger.kernel.org
+Cc:     gjoyce@linux.vnet.ibm.com, jonathan.derrick@linux.dev,
+        axboe@kernel.dk, linux-kernel@vger.kernel.org,
+        Milan Broz <gmazyland@gmail.com>,
+        Ondrej Kozina <okozina@redhat.com>
+Subject: [PATCH] block: Fix regression in sed-opal for a saved key.
+Date:   Tue,  3 Oct 2023 12:02:09 +0200
+Message-ID: <20231003100209.380037-1-gmazyland@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="LN8xCBDRRuLQePIA"
-Content-Disposition: inline
-In-Reply-To: <20231003062458.23552-7-xin3.li@intel.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -83,137 +71,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The commit 3bfeb61256643281ac4be5b8a57e9d9da3db4335
+introduced the use of keyring for sed-opal.
 
---LN8xCBDRRuLQePIA
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Unfortunately, there is also a possibility to save
+the Opal key used in opal_lock_unlock().
 
-On Mon, Oct 02, 2023 at 11:24:27PM -0700, Xin Li wrote:
-> diff --git a/Documentation/arch/x86/x86_64/fred.rst b/Documentation/arch/=
-x86/x86_64/fred.rst
-> new file mode 100644
-> index 000000000000..9f57e7b91f7e
-> --- /dev/null
-> +++ b/Documentation/arch/x86/x86_64/fred.rst
-> @@ -0,0 +1,96 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +Flexible Return and Event Delivery (FRED)
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +Overview
-> +=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +The FRED architecture defines simple new transitions that change
-> +privilege level (ring transitions). The FRED architecture was
-> +designed with the following goals:
-> +
-> +1) Improve overall performance and response time by replacing event
-> +   delivery through the interrupt descriptor table (IDT event
-> +   delivery) and event return by the IRET instruction with lower
-> +   latency transitions.
-> +
-> +2) Improve software robustness by ensuring that event delivery
-> +   establishes the full supervisor context and that event return
-> +   establishes the full user context.
-> +
-> +The new transitions defined by the FRED architecture are FRED event
-> +delivery and, for returning from events, two FRED return instructions.
-> +FRED event delivery can effect a transition from ring 3 to ring 0, but
-> +it is used also to deliver events incident to ring 0. One FRED
-> +instruction (ERETU) effects a return from ring 0 to ring 3, while the
-> +other (ERETS) returns while remaining in ring 0. Collectively, FRED
-> +event delivery and the FRED return instructions are FRED transitions.
-> +
-> +In addition to these transitions, the FRED architecture defines a new
-> +instruction (LKGS) for managing the state of the GS segment register.
-> +The LKGS instruction can be used by 64-bit operating systems that do
-> +not use the new FRED transitions.
-> +
-> +Furthermore, the FRED architecture is easy to extend for future CPU
-> +architectures.
-> +
-> +Software based event dispatching
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +FRED operates differently from IDT in terms of event handling. Instead
-> +of directly dispatching an event to its handler based on the event
-> +vector, FRED requires the software to dispatch an event to its handler
-> +based on both the event's type and vector. Therefore, an event dispatch
-> +framework must be implemented to facilitate the event-to-handler
-> +dispatch process. The FRED event dispatch framework takes control
-> +once an event is delivered, and employs a two-level dispatch.
-> +
-> +The first level dispatching is event type based, and the second level
-> +dispatching is event vector based.
-> +
-> +Full supervisor/user context
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-> +
-> +FRED event delivery atomically save and restore full supervisor/user
-> +context upon event delivery and return. Thus it avoids the problem of
-> +transient states due to %cr2 and/or %dr6, and it is no longer needed
-> +to handle all the ugly corner cases caused by half baked entry states.
-> +
-> +FRED allows explicit unblock of NMI with new event return instructions
-> +ERETS/ERETU, avoiding the mess caused by IRET which unconditionally
-> +unblocks NMI, e.g., when an exception happens during NMI handling.
-> +
-> +FRED always restores the full value of %rsp, thus ESPFIX is no longer
-> +needed when FRED is enabled.
-> +
-> +LKGS
-> +=3D=3D=3D=3D
-> +
-> +LKGS behaves like the MOV to GS instruction except that it loads the
-> +base address into the IA32_KERNEL_GS_BASE MSR instead of the GS
-> +segment=E2=80=99s descriptor cache. With LKGS, it ends up with avoiding
-> +mucking with kernel GS, i.e., an operating system can always operate
-> +with its own GS base address.
-> +
-> +Because FRED event delivery from ring 3 and ERETU both swap the value
-> +of the GS base address and that of the IA32_KERNEL_GS_BASE MSR, plus
-> +the introduction of LKGS instruction, the SWAPGS instruction is no
-> +longer needed when FRED is enabled, thus is disallowed (#UD).
-> +
-> +Stack levels
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> +
-> +4 stack levels 0~3 are introduced to replace the nonreentrant IST for
-> +event handling, and each stack level should be configured to use a
-> +dedicated stack.
-> +
-> +The current stack level could be unchanged or go higher upon FRED
-> +event delivery. If unchanged, the CPU keeps using the current event
-> +stack. If higher, the CPU switches to a new event stack specified by
-> +the MSR of the new stack level, i.e., MSR_IA32_FRED_RSP[123].
-> +
-> +Only execution of a FRED return instruction ERET[US], could lower the
-> +current stack level, causing the CPU to switch back to the stack it was
-> +on before a previous event delivery that promoted the stack level.
+This patch switches the order of operation, so the cached
+key is used instead of failure for opal_get_key.
 
-LGTM, thanks!
+The problem was found by the cryptsetup Opal test recently
+added to the cryptsetup tree.
 
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Fixes: 3bfeb6125664 ("block: sed-opal: keyring support for SED keys")
+Tested-by: Ondrej Kozina <okozina@redhat.com>
+Signed-off-by: Milan Broz <gmazyland@gmail.com>
+---
+ block/sed-opal.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
---=20
-An old man doll... just what I always wanted! - Clara
+diff --git a/block/sed-opal.c b/block/sed-opal.c
+index 6d7f25d1711b..04f38a3f5d95 100644
+--- a/block/sed-opal.c
++++ b/block/sed-opal.c
+@@ -2888,12 +2888,11 @@ static int opal_lock_unlock(struct opal_dev *dev,
+ 	if (lk_unlk->session.who > OPAL_USER9)
+ 		return -EINVAL;
+ 
+-	ret = opal_get_key(dev, &lk_unlk->session.opal_key);
+-	if (ret)
+-		return ret;
+ 	mutex_lock(&dev->dev_lock);
+ 	opal_lock_check_for_saved_key(dev, lk_unlk);
+-	ret = __opal_lock_unlock(dev, lk_unlk);
++	ret = opal_get_key(dev, &lk_unlk->session.opal_key);
++	if (!ret)
++		ret = __opal_lock_unlock(dev, lk_unlk);
+ 	mutex_unlock(&dev->dev_lock);
+ 
+ 	return ret;
+-- 
+2.42.0
 
---LN8xCBDRRuLQePIA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZRvmEwAKCRD2uYlJVVFO
-o5qOAQDw8M+2297q5X5j+JlTjJmKURsOh0vN4+TkT6xGTw1/oAEA7lexKTaNoRJm
-dwxTvxrQ6FWCfYMKDNZLsLpxSIwB3AQ=
-=e3m/
------END PGP SIGNATURE-----
-
---LN8xCBDRRuLQePIA--
