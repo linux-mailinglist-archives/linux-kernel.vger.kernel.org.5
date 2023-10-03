@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 425277B6558
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 751A97B655D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239604AbjJCJVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:21:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45930 "EHLO
+        id S239614AbjJCJWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231509AbjJCJVl (ORCPT
+        with ESMTP id S239583AbjJCJWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:21:41 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0652690
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:21:38 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-77410032cedso54870485a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 02:21:37 -0700 (PDT)
+        Tue, 3 Oct 2023 05:22:54 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49BFCA9;
+        Tue,  3 Oct 2023 02:22:50 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5033918c09eso781688e87.2;
+        Tue, 03 Oct 2023 02:22:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696324897; x=1696929697; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TKEb9Cd3xCSrgbL40B7c6RQSPbdbractxdPzCveSCj4=;
-        b=wVEBzCa6TWI1w/l66MYDermvG1lhghYe0MvLeHM41NvjIQ869kXawkgSADOZQI10SQ
-         1C6MEI3fRrJo+E/zuB5iY8EzzBicy+bLy6GKsPewlj86KZQVqi1lswt8kKiS+6/3NRR3
-         FoiADPOGAuC5suC+uoeMA+uISKXTtS95rx2eNNZwxVE3ON/Hrq5l7hVsKOZAB1qHrJ43
-         VyWWb5c60RL5oGP6Mvx2ARLd8MG4KQbxlUc2Urx1xJpA1aTIzmh65d79tG2o41DXQY4H
-         cMvv3lgr0PwSpSAD4mgICRiAq7dUIjFLM5cdszkGn5lp8/lQOZXkypF8kZh1JtKahIm/
-         /SmA==
+        d=gmail.com; s=20230601; t=1696324968; x=1696929768; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AI28QGsrmaOeIfp5/dnkKIs2m3ja8fuDploYXCzyMN8=;
+        b=iVj5Yc6OnzcOemy4Jf4cEMY1B7VVzvT+oyWyrgBYY3MmfBo/H0gDmFS+ckLatD8kVu
+         ssBaW5V63Gey0Q0RCKbFWnMQdzMfVIzGZJPDGjnDA6JL69BAMymnmFJAIYKgBhnyqFiK
+         XEXl2qZXQ9qlcYiw8zVesoM85bbC9DnClglHTeVfvoYF+YsUG2WejYrlMjWoGjWl7/Q2
+         MMQhD4HO6biRQOIId1O0lTFoLaooc3WjhRxLAPkwLbh9UYm2WPPpwxNno39zY5wO4ylA
+         tt7YZWxo20ilsDHD41RaNjls4YezuiHMAgE958DLhrHzu5fhMDbyA3s+Xn+VEc8nMWfE
+         RE6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696324897; x=1696929697;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TKEb9Cd3xCSrgbL40B7c6RQSPbdbractxdPzCveSCj4=;
-        b=AWTM55ZZsAIOkVTl9F3nCSatL95WLXjUzpXRUenCy0oEnwuO6+1IkZrpdlojGdJSAQ
-         qy3gXicIv1qGogpVDCv1r4hdUszLWjxe/2imS84vB1RLnm0FSCIu97G54u51nSjXXeQ3
-         xIkAan5LNRQLiwJrwMwuKanfYf02Yf1nwYqGUIxBQKB4x2H0tYncfgEoCvc2QP3Zee46
-         i54hMzomDGXu321t9KZnMNHwdZbY12ZXbC3Buy/OQz97yLAkkw0hGTnZ/rZnTOe8GKhF
-         vfRubRAGwCmCr0JsHKPMagGNAi1hkDexWVU0Oh6fXCe9Iv6dPbH41lZyUO53ZIJDkazg
-         ZF3A==
-X-Gm-Message-State: AOJu0Yy17ryH3Mu39aUSTFlXlMHHrJDkCGgLQNhMmL4GaAv1Bpxc1FAF
-        sS6+NUZ5u1iaU7wqD2joxGUCwA==
-X-Google-Smtp-Source: AGHT+IGmyNX1mGOvsxjDJ+VgdVzrziqLJLl2hhCUT+uZ6s1yuT2hqDhi9cPwKTZ3QGcrdlo0VxUawQ==
-X-Received: by 2002:a05:620a:95c:b0:774:1d91:e41a with SMTP id w28-20020a05620a095c00b007741d91e41amr13254046qkw.77.1696324897011;
-        Tue, 03 Oct 2023 02:21:37 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id a14-20020a81bb4e000000b0059be6a5fcffsm247867ywl.44.2023.10.03.02.21.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 02:21:36 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 02:21:34 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Andrew Morton <akpm@linux-foundation.org>
-cc:     Andi Kleen <ak@linux.intel.com>, Christoph Lameter <cl@linux.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
-        Vishal Moola <vishal.moola@gmail.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tejun Heo <tj@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Michal Hocko <mhocko@suse.com>,
-        "Huang, Ying" <ying.huang@intel.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH v2 06/12] mempolicy trivia: use pgoff_t in shared mempolicy
- tree
-In-Reply-To: <ebc0987e-beff-8bfb-9283-234c2cbd17c5@google.com>
-Message-ID: <5451157-3818-4af5-fd2c-5d26a5d1dc53@google.com>
-References: <ebc0987e-beff-8bfb-9283-234c2cbd17c5@google.com>
+        d=1e100.net; s=20230601; t=1696324968; x=1696929768;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AI28QGsrmaOeIfp5/dnkKIs2m3ja8fuDploYXCzyMN8=;
+        b=cSJEKviZ02T/vVHH/O834cegZOT70/l4uAw29Gl/IrvQlkwD/t9pfeaaObwKg/82Nd
+         6cRPTiSvbwJyMSM+++tLJ6ISD+f7lixEHB2PoSxYrUTkGAXbCFnhK9MIHdGuQb4tAyja
+         8Pe240GbrogMhgBBh3nKyDiE05mPsWnm6hW/toGzfqycQB2sd3360urYSaRRSm9iXw+G
+         yrHtODWHRyNnhOXkdaZFZ/m5j3u8HhMliuhLO3byinaV/QNrIEDfTHOt2nkpiMafEOqo
+         SqfOEluhm5DF46T62YNeVU24SUL5NGQuxRX/3b1qiDRiDJm9294KZSQLTh05xlnIbLj/
+         JPNQ==
+X-Gm-Message-State: AOJu0Yxh4sUPmwgNSgpRXOtYwDHca1aWVNacQNhcK6RJsCYsuQJj/iXa
+        2V/gr6X11xKpFYNQfrdAVh8Z20KWXbCwq0ilLDI=
+X-Google-Smtp-Source: AGHT+IEiM4K2h16qnD5cluahgHpj68PkC/JY1V9W6Ee3KLmHPuO3ZMsCY7A+TWPBXNM/4tDuWAbqLfJHbH0T+suu36I=
+X-Received: by 2002:ac2:5453:0:b0:4fe:8c4:44fb with SMTP id
+ d19-20020ac25453000000b004fe08c444fbmr11849690lfn.38.1696324968125; Tue, 03
+ Oct 2023 02:22:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+References: <CAEPPPKu=yxS6SgdLZiuhbF2DRURKVUBNgNbUQ96LxHHbtsJ6Sg@mail.gmail.com>
+ <c6a974ce-511c-47f8-b6cb-baeec5283af9@linaro.org>
+In-Reply-To: <c6a974ce-511c-47f8-b6cb-baeec5283af9@linaro.org>
+From:   Sophon Wu <wuxilin123@gmail.com>
+Date:   Tue, 3 Oct 2023 17:22:36 +0800
+Message-ID: <CAEPPPKtf6mo7YrUYdT57TiTjWO=NJ61aMDR0W-D2z95EJxQppQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] clk: qcom: add SM8550 DISPCC driver
+To:     neil.armstrong@linaro.org
+Cc:     Andy Gross <agross@kernel.org>, andersson@kernel.org,
+        devicetree@vger.kernel.org,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
+        Rob Herring <robh+dt@kernel.org>, sboyd@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,102 +75,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prefer the more explicit "pgoff_t" to "unsigned long" when dealing with
-a shared mempolicy tree.  Delete confusing comment about pseudo mm vmas.
+<neil.armstrong@linaro.org> =E4=BA=8E2023=E5=B9=B410=E6=9C=883=E6=97=A5=E5=
+=91=A8=E4=BA=8C 15:16=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Hi,
+>
+> On 03/10/2023 04:17, Sophon Wu wrote:
+> > On 09/01/2023 16:47, Neil Armstrong wrote:
+> >
+> >> Add support for the display clock controller found in SM8550
+> >> based devices.
+> >
+> >> This clock controller feeds the Multimedia Display SubSystem (MDSS).
+> >> This driver is based on the SM8450 support.
+> >
+> >> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> >> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> >> ---
+> >
+> > Hi Neil,
+> >
+> > I'm trying to enable display on SM8550 but having trouble with clocks. =
+Do you
+> > have any idea on this maybe? Full dmesg here: https://bpa.st/7E6Q
+>
+> You may need to remove the cont-splash memory zone and the simple-framebu=
+ffer,
+> if you leave the cont-splash the bootloader will leave the MDSS on and Li=
+nux
+> will fail to take over and initialize the clocks.
+>
+> This is known issue, and for now we re-initialize everything from Linux a=
+fter
+> ABL disables the display subsystem entirely.
+>
+> Neil
 
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
- include/linux/mempolicy.h | 20 +++++++-------------
- mm/mempolicy.c            | 12 ++++++------
- 2 files changed, 13 insertions(+), 19 deletions(-)
+It works! Thanks a lot for the tip.
 
-diff --git a/include/linux/mempolicy.h b/include/linux/mempolicy.h
-index 325b7200c311..c69f9480d5e4 100644
---- a/include/linux/mempolicy.h
-+++ b/include/linux/mempolicy.h
-@@ -107,22 +107,16 @@ static inline bool mpol_equal(struct mempolicy *a, struct mempolicy *b)
- 
- /*
-  * Tree of shared policies for a shared memory region.
-- * Maintain the policies in a pseudo mm that contains vmas. The vmas
-- * carry the policy. As a special twist the pseudo mm is indexed in pages, not
-- * bytes, so that we can work with shared memory segments bigger than
-- * unsigned long.
-  */
--
--struct sp_node {
--	struct rb_node nd;
--	unsigned long start, end;
--	struct mempolicy *policy;
--};
--
- struct shared_policy {
- 	struct rb_root root;
- 	rwlock_t lock;
- };
-+struct sp_node {
-+	struct rb_node nd;
-+	pgoff_t start, end;
-+	struct mempolicy *policy;
-+};
- 
- int vma_dup_policy(struct vm_area_struct *src, struct vm_area_struct *dst);
- void mpol_shared_policy_init(struct shared_policy *sp, struct mempolicy *mpol);
-@@ -130,7 +124,7 @@ int mpol_set_shared_policy(struct shared_policy *sp,
- 			   struct vm_area_struct *vma, struct mempolicy *mpol);
- void mpol_free_shared_policy(struct shared_policy *sp);
- struct mempolicy *mpol_shared_policy_lookup(struct shared_policy *sp,
--					    unsigned long idx);
-+					    pgoff_t idx);
- 
- struct mempolicy *get_task_policy(struct task_struct *p);
- struct mempolicy *__get_vma_policy(struct vm_area_struct *vma,
-@@ -216,7 +210,7 @@ static inline void mpol_free_shared_policy(struct shared_policy *sp)
- }
- 
- static inline struct mempolicy *
--mpol_shared_policy_lookup(struct shared_policy *sp, unsigned long idx)
-+mpol_shared_policy_lookup(struct shared_policy *sp, pgoff_t idx)
- {
- 	return NULL;
- }
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index c7906a034959..1d3f9e1ecbb8 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -2448,8 +2448,8 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
-  * lookup first element intersecting start-end.  Caller holds sp->lock for
-  * reading or for writing
-  */
--static struct sp_node *
--sp_lookup(struct shared_policy *sp, unsigned long start, unsigned long end)
-+static struct sp_node *sp_lookup(struct shared_policy *sp,
-+					pgoff_t start, pgoff_t end)
- {
- 	struct rb_node *n = sp->root.rb_node;
- 
-@@ -2503,8 +2503,8 @@ static void sp_insert(struct shared_policy *sp, struct sp_node *new)
- }
- 
- /* Find shared policy intersecting idx */
--struct mempolicy *
--mpol_shared_policy_lookup(struct shared_policy *sp, unsigned long idx)
-+struct mempolicy *mpol_shared_policy_lookup(struct shared_policy *sp,
-+						pgoff_t idx)
- {
- 	struct mempolicy *pol = NULL;
- 	struct sp_node *sn;
-@@ -2672,8 +2672,8 @@ static struct sp_node *sp_alloc(unsigned long start, unsigned long end,
- }
- 
- /* Replace a policy range. */
--static int shared_policy_replace(struct shared_policy *sp, unsigned long start,
--				 unsigned long end, struct sp_node *new)
-+static int shared_policy_replace(struct shared_policy *sp, pgoff_t start,
-+				 pgoff_t end, struct sp_node *new)
- {
- 	struct sp_node *n;
- 	struct sp_node *n_new = NULL;
--- 
-2.35.3
-
+Regards,
+Xilin
