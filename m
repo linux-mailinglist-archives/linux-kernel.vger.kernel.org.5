@@ -2,152 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 550577B65CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4677F7B65D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:48:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239796AbjJCJrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54318 "EHLO
+        id S239413AbjJCJsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231734AbjJCJrC (ORCPT
+        with ESMTP id S231931AbjJCJsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:47:02 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6438FAB;
-        Tue,  3 Oct 2023 02:46:55 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50433d8385cso878664e87.0;
-        Tue, 03 Oct 2023 02:46:55 -0700 (PDT)
+        Tue, 3 Oct 2023 05:48:04 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C9EAB;
+        Tue,  3 Oct 2023 02:48:01 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9ae7383b7ecso906865966b.0;
+        Tue, 03 Oct 2023 02:48:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696326413; x=1696931213; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Pjcnc813AQNriCrzkI748osWJLP9CPteXDrIUaw4UpI=;
-        b=Q9rf7tygJX92aFz4FO7hklhFg0b0v6p13iEY+Zy4x1p/cZUb6GMe7OUZZaPxF8JFoy
-         m4IKn8fEjcXPbCBd6zu/ZOs+5hmDa+nsnXX7VKMLVaC/R1NslILAxVlxtMf6Hu3lMuLW
-         H3XwXpx1KVQpo1qGVcCYA6ja6aw6rd4mMdWx0g5bF7YZ4nWbtpxkpChWIkGrcq2ioQbY
-         BcEK9IWqcreJCSP+eOK2BMcamVNKNYf7djiLdP3/APEaSexUmtMCJybehXG67FOdLEnq
-         3HId3JL3ix2Yz572KeQPyfBmce7n97j4WzLyZBRuj3m9IGHRkLmg7R399jnwmIQAX8GQ
-         zkZg==
+        d=gmail.com; s=20230601; t=1696326480; x=1696931280; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fSO0bN4wxCWQoR1ffLDq1SwoPvsZiN1HuMrXKXx4kYs=;
+        b=LPDrvq6LQodPlTaidG9rx7MK6i4od4lNdtNHfW4s9uVnOjCOc1cQUbUHoR8BgR80Su
+         uiznrVB3+OHWJuI2idrzKUciihKxpUuj0VQWz16L16+8YyUGe7EFcOCP0/3uGsvXQYC7
+         NSi+pEf2hUJgCLuX+wQbnaiDY/M9egHDa0UoAH09zr7G7l5kxs2Jn35M/voIFi11aqDS
+         vFEcK9AJ84HYrO217bX6G3cbVN8gywpCn+yLZpOz55YK9UV4fNor3A69UfFOwuyUOlw2
+         6Itbf0r0+wn69d77iHWitXyPE7QDgu5bshzdAikW7GrpJ3WLf370sTIZ4BX/O10P+PyO
+         7vXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696326413; x=1696931213;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Pjcnc813AQNriCrzkI748osWJLP9CPteXDrIUaw4UpI=;
-        b=DjWi1bOV85LCge0+SYQa62uAavVAfBmq6xpEr0uQtEbrl6O3MSTrF/BFNw1Y4xeLR8
-         jnhUZTubM3DbB9GNM90LE0EMc+Wv6IwnTTh1TZTsya74FIiYZ6ydRroWGD0zljIf+ehg
-         qwY0qcurZVVRJWd8lufIyaSZL3j9QJazg+Rb+2G+7248mvP4NBs0sBZAHli1pUX/owOL
-         /iGMSYx3TR25O6ykLfD5CbdwSp/ZYcVdKOHkL8l0XcXhjnvRuFtH9nctDVqlckrPqnOn
-         Z2m3g4RSmRgcU+vwY2VtznMUYog05Yf8rLUNHt1zzLCcU7d1J4BNkSDbQugJrGJ1O6gU
-         YIqw==
-X-Gm-Message-State: AOJu0YzIQyePgkdJEvl3wjyMsbzHU2p0OwP2LcDr8N0VzSwNS7FWPRCU
-        SRA5ah88juL7bV+zsxvB+eCzo0TLubc=
-X-Google-Smtp-Source: AGHT+IFmixYJy0/vl5++bZej9bmelyUH6l5bptdqRMseLCH6t6Z/KZJOPQQILa9NWs1cuYRByRotLQ==
-X-Received: by 2002:ac2:46ee:0:b0:502:bdbd:8442 with SMTP id q14-20020ac246ee000000b00502bdbd8442mr12369581lfo.50.1696326413383;
-        Tue, 03 Oct 2023 02:46:53 -0700 (PDT)
-Received: from ?IPV6:2001:14ba:16f8:1500::7? (dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::7])
-        by smtp.gmail.com with ESMTPSA id w20-20020ac254b4000000b00505656b98adsm129884lfk.245.2023.10.03.02.46.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 02:46:52 -0700 (PDT)
-Message-ID: <e1aca4f0-d705-ba13-c391-ffe251803ef3@gmail.com>
-Date:   Tue, 3 Oct 2023 12:46:51 +0300
+        d=1e100.net; s=20230601; t=1696326480; x=1696931280;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fSO0bN4wxCWQoR1ffLDq1SwoPvsZiN1HuMrXKXx4kYs=;
+        b=EKJ3roTexaa313Hbtfoxy0HfJr1Cdn4XcBZF1erJUjFJrkEHC254E3r361WgsCyOth
+         DUQY9bH5GQnpgnkLJhNcAUMGvl7WRtqYZB59hnSAGe/iDOlqY4+eIJBvkcec3fIET2uI
+         DOAO/k+qyzB3yzHdrkz2QtjYtpxumdt1jJmxs1w35hm+CYmwkbUQK0o4Gjmq4T5+YZyt
+         f8xFHavo/5zeeH/mfiSdqD1xTsfFQ+1LzsN/+Ms0WKCI1TJA4m2mERQ7dfMq3697i4eb
+         T6VIsEp+HbdZWPg3IbusgxCnaIqQgj+E2A/kHCfUQMuxiAujTu6Kk9kZ6raEduzq7c1n
+         fMEQ==
+X-Gm-Message-State: AOJu0YzEummC44M35bSnz1EE3Z/rgTwhPGxSrCGxG0T9tmKPAejRor1X
+        andkhL0ynxeUJTihg6huTUc=
+X-Google-Smtp-Source: AGHT+IEN69vXY6H/V81B5pwO5LsN5OeXTGJm5dn5NQmdMicTNk7eguebs0y066OCE8Zz0MKL8YE3Ng==
+X-Received: by 2002:a17:906:13:b0:9ad:8a9e:23ee with SMTP id 19-20020a170906001300b009ad8a9e23eemr2112990eja.13.1696326479613;
+        Tue, 03 Oct 2023 02:47:59 -0700 (PDT)
+Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
+        by smtp.gmail.com with ESMTPSA id rn4-20020a170906d92400b009b2cc87b8c3sm760511ejb.52.2023.10.03.02.47.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 02:47:59 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 3 Oct 2023 11:47:57 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Leo Yan <leo.yan@linaro.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v3] perf doc: Document ring buffer mechanism
+Message-ID: <ZRvjTW4PACGaU2h+@gmail.com>
+References: <20230803114613.1786849-1-leo.yan@linaro.org>
+ <ZRvda2QwdFYCp1F1@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v5] tools: iio: iio_generic_buffer ensure alignment
-Content-Language: en-US, en-GB
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <ZRq9lm/C7g9m9zen@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
-From:   Matti Vaittinen <mazziesaccount@gmail.com>
-In-Reply-To: <ZRq9lm/C7g9m9zen@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRvda2QwdFYCp1F1@gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/23 15:54, Matti Vaittinen wrote:
-> The iio_generic_buffer can return garbage values when the total size of
-> scan data is not a multiple of the largest element in the scan. This can be
-> demonstrated by reading a scan, consisting, for example of one 4-byte and
-> one 2-byte element, where the 4-byte element is first in the buffer.
-> 
-> The IIO generic buffer code does not take into account the last two
-> padding bytes that are needed to ensure that the 4-byte data for next
-> scan is correctly aligned.
-> 
-> Add the padding bytes required to align the next sample with the scan size.
-> 
-> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
-> Fixes: e58537ccce73 ("staging: iio: update example application.")
-> 
-> ---
-> Revision history
-> v4 => v5:
->   - drop unnecessary comment.
->   - drop all other patches as those were already applied.
->   - add Fixes-tag.
-> v3 => v4:
->   - drop extra print and TODO coment
->   - add comment clarifying alignment sizes
-> ---
->   tools/iio/iio_generic_buffer.c | 13 ++++++++++++-
->   1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
-> index 44bbf80f0cfd..c1c037ee0071 100644
-> --- a/tools/iio/iio_generic_buffer.c
-> +++ b/tools/iio/iio_generic_buffer.c
-> @@ -54,9 +54,12 @@ enum autochan {
->   static unsigned int size_from_channelarray(struct iio_channel_info *channels, int num_channels)
->   {
->   	unsigned int bytes = 0;
-> -	int i = 0;
-> +	int i = 0, max = 0;
-> +	unsigned int misalignment;
->   
->   	while (i < num_channels) {
-> +		if (channels[i].bytes > max)
-> +			max = channels[i].bytes;
->   		if (bytes % channels[i].bytes == 0)
->   			channels[i].location = bytes;
->   		else
-> @@ -66,6 +69,14 @@ static unsigned int size_from_channelarray(struct iio_channel_info *channels, in
->   		bytes = channels[i].location + channels[i].bytes;
->   		i++;
->   	}
-> +	/*
-> +	 * We wan't the data in next sample to also be properly aligned so
 
-I just realized I didn't fix the typo mentioned by Andy. I can re-spin 
-this with wan't => want. Sorry!
+* Ingo Molnar <mingo@kernel.org> wrote:
 
-> +	 * we'll add padding at the end if needed. Adding padding only
-> +	 * works for channel data which size is 2^n bytes.
-> +	 */
-> +	misalignment = bytes % max;
-> +	if (misalignment)
-> +		bytes += max - misalignment;
->   
->   	return bytes;
->   }
 > 
-> base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+> * Leo Yan <leo.yan@linaro.org> wrote:
+> 
+> > In the Linux perf tool, the ring buffer serves not only as a medium for
+> > transferring PMU event data but also as a vital mechanism for hardware
+> > tracing using technologies like Intel PT and Arm CoreSight, etc.
+> > 
+> > Consequently, the ring buffer mechanism plays a crucial role by ensuring
+> > high throughput for data transfer between the kernel and user space
+> > while avoiding excessive overhead caused by the ring buffer itself.
+> > 
+> > This commit documents the ring buffer mechanism in detail.  It provides
+> > an in-depth explanation of the implementation of both the generic ring
+> > buffer and the AUX ring buffer.  Additionally, it covers how these ring
+> > buffers support various tracing modes and explains the synchronization
+> > with memory barriers.
+> > 
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> > ---
+> > 
+> > Changes from v2:
+> > - Refined doc for Thomas's suggestions (Thomas Richter).
+> > 
+> > Changes from v1:
+> > - Addressed Ian's comments and suggestions (Ian Rogers).
+> > 
+> > 
+> >  tools/perf/Documentation/perf-ring-buffer.txt | 762 ++++++++++++++++++
+> >  1 file changed, 762 insertions(+)
+> >  create mode 100644 tools/perf/Documentation/perf-ring-buffer.txt
+> 
+> Nice addition!
+> 
+> If it hasn't been picked up yet:
+> 
+>   Acked-by: Ingo Molnar <mingo@kernel.org>
 
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
+Note that my ack is conditional on the conversion to RST and moving to 
+Documentation/ - this documents an important aspect of the primary perf 
+ABI, it deserves to be on the kernel side.
 
-~~ When things go utterly wrong vim users can always type :help! ~~
+Thanks,
 
+	Ingo
