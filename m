@@ -2,704 +2,507 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B116C7B69CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4847B6998
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232494AbjJCNEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36646 "EHLO
+        id S232448AbjJCM4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 08:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232455AbjJCNEi (ORCPT
+        with ESMTP id S232208AbjJCM4O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:04:38 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4835493
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:04:32 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-323168869daso931126f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 06:04:32 -0700 (PDT)
+        Tue, 3 Oct 2023 08:56:14 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B3E9B;
+        Tue,  3 Oct 2023 05:56:08 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3930iF1d019046;
+        Tue, 3 Oct 2023 12:55:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-03-30;
+ bh=mPSWvd23dXXMVZaG7jRae3SkaLt0Uey0jQWZ+IhA+RY=;
+ b=xNZo0CrzAE6VIXUFM040Nu86NAUAwmhp8RbTEhYsFGX9s8mA92SsyMZOFOve0TCoOfDu
+ zuUC3U6r4U+cAs24JWanmH9VPjW6vxSXtdiL3bo15Web/9PCE2MTAE7gR0XckTQldujx
+ 9Bhy1CnHdMl8+LJsv93XdzNi7+xOURE7P3fHNIZsZMelJD0QKyWjVgTNjFTdmiwoZ7AJ
+ 9bgCIsNMiimaH9GVPZ/4bFicPnK+GX92QoshMzWKGnTx4NLXfHb5X13dm2VARm94C2lB
+ TaLLdVQbotX7+VlUCeXYkK/xiDhBEjtV7I8svbPkCPP//6wAJgVemdZ7sp7nrWHHyZUu hA== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3tea3ecmbr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Oct 2023 12:55:40 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 393C31PJ005851;
+        Tue, 3 Oct 2023 12:55:39 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2109.outbound.protection.outlook.com [104.47.58.109])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3tea45y9jj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Oct 2023 12:55:39 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Kd1DkxDNUoaFLuHHI+Lp969EVoFLW7cuNYrv9Z5ZNtnri9EZbd0FP2hzOHFy+pWlrc5MZ+iqyl0qH81/NC32i/aLV8zi8+OJ0WIlDt7at5MIW2J4L2/lmW8xds7GVO7D8PH3tKOyBNnm5aT9Q3UC8z45g8ovcslkHt+lR2a5wcU/GHrHRh5u1DelWfTcHiTxTzu7gS1HpSyGXZ40ZFiEhBZ9GxgCx/hoDAp1kveC1ttJqisiknvaDdxles2WYsZutxmSxsr2XkjI/1KEbnpI8hk9Hda0QfHSdLTfxsflNEEcnaJHeMM7WawCYzkrzuFh/TPl3pRyin6arg75c3gG6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mPSWvd23dXXMVZaG7jRae3SkaLt0Uey0jQWZ+IhA+RY=;
+ b=F0nunXonHlFueqCMnmmnQ4dqd9OsxukObefgunm60tffNxbSIIT93XpHCnk0IaKRTCvPbA3tg6hUs5Ab6pHzU+MCyKBaZsBVcTh7pFacvm5r433nQkl1dI7Juyrt0H91TeNDWIGKzB6aBrMndh8KmJVAsX7aVhWCl5k0tLkQW0op4ccssWQWGdegQ3c3Kx/SwFL3YXkxufJ8Svc5tvS1cPzvE2zpSKw0n+BBWAT7o81JpA2eelzxf00ChHQARzvkYQghyCLxD04+AsTMEh1+OeKogTAjfS/xbuHZEv/UnNX/Hk0kxNINj/8YS1PK5LVgCVmIZkMWcagNCgjUBpPe9g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696338271; x=1696943071; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=6l4nXBOkljtpuX+G5EH5zp+H5kZ23Sa7wF7kBuzhJ9k=;
-        b=Uh59upzsBfkSimVSNJmwlLIO5Xd/2EguQlNpvi8M3/cJpZFdOYgEy/IaSYwrbbXbmh
-         KTyZaFsIrfF0/e/nXyqjLTJWuSf7FcA599KqhMh4VqDvf+Vq5nmjW5akT+3Eq0KDyqH0
-         90JSqIhzUf4pEIgcageFifVX5bVl7qV4C4dKk+1mErg5lnyOy324fgCKHRwNkCt/2BSV
-         dmOu37kixQcYQnlUUGLFgNlQgXEbhpW6xEqAHaiU3tO5PKQgg9TIsb0P7EOW02xHi56Y
-         bhEpcIcKXPmttTxbILiXWTjwH5F+50wk7UB2HMemcKMj1HG1rxnCtuW9VbvStGPV1FhZ
-         T6zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696338271; x=1696943071;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6l4nXBOkljtpuX+G5EH5zp+H5kZ23Sa7wF7kBuzhJ9k=;
-        b=L4+NsAjU9lZYBzZbn0nWhZNGxf0d5R1tQQdlZhtuE9t/HpwzzaYMKEEKRmudxK1Kum
-         Se3JjS94/5t5l9q+sqm/jtPe/1QyHYCqTbRRUcxRdds3c7+j7LuA0tKAMd8MTDUhhVdR
-         DhmoGsiJHs9TAG/SB8aBEynKEyvwBeTJoTtznhfNi2hJ6er3uRyl2MpMUWaxPNa/tiDG
-         G+PT0tIYKv7WBcT3FMNCluCGQF2ksjWcoJNcviXoCe9cd6kr9HtPKqHaM7uVaQi2mUtM
-         LPIwRFJk7OkMld2LYYbg2p7m6Z4eQPUdYmF1p7E65NuTgRR3K0IlmXe1zxn4Z3nx8aRP
-         HwJA==
-X-Gm-Message-State: AOJu0YxY6u+//0S4EqXsgs/LsCPALsDKl2muG5T+wig3g/5spr8eofQI
-        pMfXsmnJVc7y1QL/ilPgBNPXjQ==
-X-Google-Smtp-Source: AGHT+IEKJkPlwmwr8JLiRKpNtbJZn5qHxOt9LVua9L0OtRCZhK4Rc0FALZ8BVV5x976WfIkZ1WQ5zw==
-X-Received: by 2002:a5d:6084:0:b0:323:3ab5:990c with SMTP id w4-20020a5d6084000000b003233ab5990cmr13244084wrt.44.1696338269719;
-        Tue, 03 Oct 2023 06:04:29 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:15bf:5b59:3e24:71fe])
-        by smtp.gmail.com with ESMTPSA id o4-20020adfcf04000000b00326f0ca3566sm1524195wrj.50.2023.10.03.06.04.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 06:04:29 -0700 (PDT)
-References: <20230928063448.3544464-1-xianwei.zhao@amlogic.com>
- <20230928063448.3544464-4-xianwei.zhao@amlogic.com>
-User-agent: mu4e 1.8.13; emacs 29.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Xianwei Zhao <xianwei.zhao@amlogic.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: Re: [PATCH 3/4] clk: meson: C3: add support for the C3 SoC PLL clock
-Date:   Tue, 03 Oct 2023 14:55:01 +0200
-In-reply-to: <20230928063448.3544464-4-xianwei.zhao@amlogic.com>
-Message-ID: <1jwmw3yi03.fsf@starbuckisacylon.baylibre.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mPSWvd23dXXMVZaG7jRae3SkaLt0Uey0jQWZ+IhA+RY=;
+ b=u3P6R33UZJQ2sY2yzUyNuBL33t8a7w6Vn+yglgkDtmvkIt/b+9oS1K1L/KacR+yhQFvmKxSeXGSMI7AliGf5m1kFvY/8iimrr7iQYhZiqOvLkVpEEOBEqEy/GJtgEZL/OA3yoEeAWh2jRuiln5JmJcL1NycNfcCBlzy8J5+AguE=
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
+ by SA3PR10MB7070.namprd10.prod.outlook.com (2603:10b6:806:311::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.34; Tue, 3 Oct
+ 2023 12:55:36 +0000
+Received: from DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::ebfd:c49c:6b8:6fce]) by DM6PR10MB4313.namprd10.prod.outlook.com
+ ([fe80::ebfd:c49c:6b8:6fce%7]) with mapi id 15.20.6838.033; Tue, 3 Oct 2023
+ 12:55:36 +0000
+Message-ID: <fc98c53e-8043-807a-6dfd-37be726832eb@oracle.com>
+Date:   Tue, 3 Oct 2023 13:55:30 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 16/21] fs: iomap: Atomic write support
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chandan.babu@oracle.com, dchinner@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-api@vger.kernel.org
+References: <20230929102726.2985188-1-john.g.garry@oracle.com>
+ <20230929102726.2985188-17-john.g.garry@oracle.com>
+ <ZRuXd/iG1kyeFQDh@dread.disaster.area>
+Content-Language: en-US
+From:   John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <ZRuXd/iG1kyeFQDh@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0232.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1a6::21) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|SA3PR10MB7070:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2b1f2751-98a8-41f0-7ff6-08dbc41009ac
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Vk3Q9cZpVOusMn70eIIA74nfVil2exavgsxB5o+AqpyJZ3j4htRbBioT1PhSztpeet521FazyrTClOgxZLdt5vo34tksrbg1zmL4w32sDKRbpj6V4So3fsDmeutJ7JuIfaHqS3FHMxvFpe32CPTQY+cMRSwlntRVSSual8xHowwO35o+N5M8JMdFoe0p0IZ6+5VjFdi5E/R+YXphKT0jW2XW/RPRseennicUC6VBIE5utcdkjCpxOXZP1r7gxQSx/IGkw5DuUc21DTArR/e7jYknu5E1yXUFvMZqgmJ7BL/APWvFJcxrFqVIc4hy+ICkZVOBi12MKhcZWXIyLNazkp7bF9lLn+MSqnlEjtvejx37BCQ6HYuqRCSm281SFNJjfQat+8oglp8DdKYrTC9IOdETfu391MLpHrg63ysWzAsoFGCqcaeoyYpNwmB1HIQXC6bSLV4ZpC3/ZWDB5OLkAOsz8SH9RWd/4Mn/eraNFkzZN+BE7Z94cHFqFZpBvSv9ZNKHoia0ggU93L29XM1frjuXKyhUCvlMF8GBKiV/jh7RjU7xsdzbj6PByqb1XgM1ezbJPzZgwktp8WqMkgxT4H76dd4YMaeqokoYGImy5JJFiDgyBexhb1xTsqGcLA8YI+z7nelEc2az4cgXsGlIsg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(396003)(136003)(39860400002)(366004)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(2906002)(30864003)(7416002)(36756003)(86362001)(31696002)(38100700002)(316002)(6916009)(66476007)(66556008)(66946007)(2616005)(6512007)(6506007)(53546011)(4326008)(8676002)(26005)(41300700001)(8936002)(6486002)(478600001)(6666004)(36916002)(31686004)(5660300002)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VXlwQm5hSjYzV3c3SmtNSEFkUmx4ZHlhNlk5VnBpbkVqZHN2MnNQZkRqNjV1?=
+ =?utf-8?B?MElPK0g5QXQrN29ySm5hZGlGNG0zN0IrRmZvQXFBaXlOcENDL1Zuck9IdC9i?=
+ =?utf-8?B?TWRQYVN4dC9GSnFpb24vK3pVTnpjM1l1aVNQQWFsRnBIaDlYM3lyaDJsZ2h4?=
+ =?utf-8?B?eVFiNUR5ZUpIdGN4MHp4blpyR1phUVAwRDdlTVBuRnI4TDE5YnZnbWV5cWda?=
+ =?utf-8?B?Mm5DaEhvZEhlcS9naEx5eXNqMW9PMWR3bDlpak9YcFNpR0dKRG1JOTZvRll6?=
+ =?utf-8?B?d0NYSnlLbzRkNGVXcGV5Q2NtQ1V1ZWkwYklBL3Nrekdldm5QNytYTVJ5Z21j?=
+ =?utf-8?B?Nmx4b05taE9lZHVUV1k1eXhtYjdsenU4VmtxanBtOFFJbytEMkVDK0xpN1Nw?=
+ =?utf-8?B?WndaSG1Hd000Y29zNThkMUExYUc2Q0NXeUJlOHp0WlBZalBwaEU0cCthMmli?=
+ =?utf-8?B?a1A2R3VxY1pkdVBuZFNDZ3M3SnErMkJDTnJvcVV5aURWZzJBRnVJaWpBTEli?=
+ =?utf-8?B?cXpKOWQ4QVZlNkRna1UxUWI3NHlzU0hJZ2FHbjRzc1RjdjVuck9uUUxqQm5J?=
+ =?utf-8?B?bndBdE5aTTVwQXVUWm00YVR3VjlPUlFaRWNYMkhCVENYa3F5anl4MDZzay9F?=
+ =?utf-8?B?dGtQNE5NQkNFcndsMitzNkRXd3d3TytlMFFjcWVvZnUyZ2hYalMzWExBMDhp?=
+ =?utf-8?B?SUI0SjV6N29oTDAxTVpMNktQWFhxcmM0TmFLMjlndENodytuMER0YTJGd3NF?=
+ =?utf-8?B?RWVRamtUMkZxUm12dXAvaGR3MzRhbjdFU0V6MUFpTWhRR2I5TllQbVZCempR?=
+ =?utf-8?B?OTB5TS80UzFPN2h6a1AzKzZzbUFTUmI5Rm9ha0V6M3hSWEFRaHVqUUt6U01w?=
+ =?utf-8?B?eWNYMHF6YlBiM1RBTnNBa29rbytOR0FvVVVJNHlRZmRpZWtSY2NxYXM3NTQx?=
+ =?utf-8?B?VVE5MDFWUmpGdzl4V1hRWFNIdDJMRHlaRmsxNGlvV2x4WkFSaEZWc1FXZ3Vt?=
+ =?utf-8?B?UDM3WHFtc2pUUWJ6cGpXNlNiSEh1OVVwc2dlaElDVVUvVVVwdWlHaysxR205?=
+ =?utf-8?B?UFczdExGa2tJYjlLeFN1Ykw0bTNhbGwrNks5bkp0bksvYTVmNEIwQnZJYWdG?=
+ =?utf-8?B?d0pQYWY0SDc3cHRmeUR6UzFuVk1mTEhTaGcyZ0J2MFJhYktJVnJnUUt6WDFV?=
+ =?utf-8?B?R3lKdmRwalVOOUFScHYwRTI3OU4xY204VmtuUlZ5eDRmbTBLcHRlYmRYM0xu?=
+ =?utf-8?B?Tk54aThTdzhZbU13bjNrTDI5RkNjVzRKbFNnbjdzY1N1ZWlaU2lZRGhTV3Fw?=
+ =?utf-8?B?eExHQ3VFOTREYzFEa0RyeWdBekJudi9GcjNjNFVsNkFDNFBvVm1DbmxmRktB?=
+ =?utf-8?B?TFlKcE5TMzFOTngvVXJzSDA5S2dmb0kyK3NwVlhPRWR6dklicEFDc0ZSOFVV?=
+ =?utf-8?B?UHl6M1lOU0xSRTY0Z0VxRVNXU1E5ODl1SGNWem5BYmd1TjcwbkcvcHRtKy93?=
+ =?utf-8?B?SjlHbmlNVnFZclhUOEYvSTJDNFJxaUJrcTh2cHdqVE00cW52cWFwenJXbEx3?=
+ =?utf-8?B?RkhZZS9vK1EydWpSUFRoRnFEakgrMkgvNi82VGhuTjdUbXJ2dWM4SDRtRzVW?=
+ =?utf-8?B?UEJyWmNmS1ZiSXNSTWxrQ0t4Z0QzamtkV3J2aXpSZ1hlbmJ5Yk1mTmpIV2ZK?=
+ =?utf-8?B?OXNHL3VVMjFKdnBKMFpOM3FiQjBuckxEZGtHdDdSQ2hLM2VXanNJWHNOUjdE?=
+ =?utf-8?B?Z2gxTEtZbEpHS0JiU1BvWVBMemNDWUczcHFITGl1R3JlS0o2SFNTNy9BRDNP?=
+ =?utf-8?B?dXFBb0NWbE82dUEwSnBWcWFSRVpIOW82YjBPY2dHYW10SHZWUlRwVm9tS2Na?=
+ =?utf-8?B?d0dCTmN5MS9WNFhPYzVxRFkrME84SE5TeW9YS2FZZFJpaVptUTVYNGR4UXFS?=
+ =?utf-8?B?VHBZTHU0UFdpNEpGY0hPb1lMcXBtREtEc092US9YM0xvdGpXWFoxWFBldWZ4?=
+ =?utf-8?B?enR4YzdUcXNyUVdiUUgzV015dTdJVE5IRzZWNk9oYmsxV1pNRE1wOU1xRWZk?=
+ =?utf-8?B?NUw5QlFOQXdNbUNEMDY2UzRhOHJ1N1hFeXhrVEhSdnhleWxIRDlYa09Td0ky?=
+ =?utf-8?Q?4MOUQk+5Li8quwDf2SlIIuRZK?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?aEtaYUZyU00wdktmUWJtU09neGhwU1VweTZPNllCK3ZGKzlNZXdGM3pIaVpL?=
+ =?utf-8?B?QnVWcTVxTlY1elR1aTkya2hFQlZ6b3VtV2UvVmw1UytNYytZOEdBZkMyaTIr?=
+ =?utf-8?B?SjJRUmQ5NzNUVlhoWDFwc0JwWTJINThnTmd5SmNKWkkrYkcxS0thUXB3dmFO?=
+ =?utf-8?B?WWEwQUplbTFQUFRzRUZ5RUY3M25Qbmh6VS85azc2NTV1QWlPM2I2V0kvUHFP?=
+ =?utf-8?B?TnpocDFQWnM0NnhtQjJYd0NDSWJ4Mi8vQ09ZQjJNMmE5NHRxTy94QUVUek5w?=
+ =?utf-8?B?cUROUVVwRFhoc0NBdVYwTUJzYms0VHRiRmhEaXZGNXE1T0sxRHBIMXF1QWRw?=
+ =?utf-8?B?a1JmSk9kamxrMDdwM1F3cG5pVEprRVh4cWdhc1MxSVhMV3BGQytycmVrQk9G?=
+ =?utf-8?B?NHlZcVFxTUdUcGNBV1h2ZVMyREdFaGQyaElVd3R4Z1hkVFhIN0E5bERpWVlX?=
+ =?utf-8?B?UTZRQklUV3hwTUJMM1RiN3VweVl5YlJRWDE2cXZvWklrM2ZFQzZQWXRIK3VU?=
+ =?utf-8?B?UHlPZGhMRFNlWkhuVStZYkhXZU5YMDhwd0x5M1NVUXBOM2VpbTJRcHNyWVFI?=
+ =?utf-8?B?MkFFdmZ5OWRObU0xSWo3MExOMnh2S2JPREJtdkZFYmtUT1ZvU3ZmRS9Gd0Ny?=
+ =?utf-8?B?Zk5IMjV5SHFxazRVbW02dzlONjZrQWdTNXZnRERSSlZ5aVJ1VTJBbnJ1SFQx?=
+ =?utf-8?B?a01xNUVsYm9qUnVsMk1ZSmtocWEzVEZJMG1KM1ZmK3o3TjdUS1hqZk1PVlU0?=
+ =?utf-8?B?YStaYzVFME9FV205Y28vd2YyTzNDT0ZPZEQzS3BiQ05oUDg4bkswRmx4NXhm?=
+ =?utf-8?B?NlJ5ZVl1Yy9UU1huckVxbzhmbVcySDIzbFZXQ2tMRjl5MVdVTlVlT1ZQQlBG?=
+ =?utf-8?B?T0ZKVXhOdDRpbTBqV0RDY1UwVkZRNkVRbGZhay9OR09qUmYxcjBEM0FhaXVX?=
+ =?utf-8?B?bHdhWUxUVUZ4V2YwM3FCVDdLdHI0MmJyWCtGQ0pEbVRrbENEdUg1QWpyNzM5?=
+ =?utf-8?B?WURlWEhpTDA2L1hwZnMyb05qWFJXN0tMMnFDVUU2YnFkVU9OeTQ4dDhsamY3?=
+ =?utf-8?B?RDdIcFQ0Z3pOT3pveC9BQVd4a01NY2phRnV3UnpCMFc5QXBJQ2lDbkdTRUph?=
+ =?utf-8?B?VjJ4MlY0VVZvU2pmcnRPd1ljQ0hnVUUzUzkvQXNIbmJ0V0Vlbk90QjlMYnpU?=
+ =?utf-8?B?TkpORUtnekYrR2U5WnVpb1pzVi9ZYm83ZEJobThxdVZHZXdvYmpZRXBnSFla?=
+ =?utf-8?B?TG9HODBCblhIMTRXNCtsZ3A4cU50VFpscWwvRXV5TTRkV25TdVdFMkpsMWZN?=
+ =?utf-8?B?RlNGcGZadkxoQ2Q1UWR1SC9UQnpxWmY3U0c4MXdaVUV3Y245MTZ1Z2FOci9a?=
+ =?utf-8?B?S3ZPZWI5N3FIenhKS0FzMm9adld2MHY1YzVyZFMvSFJUd25za2VKdks5YXJm?=
+ =?utf-8?B?SHlYTldvMEs4NDV5d2pUOUV0eWd0NFoxTHhQNFdmQk1mRG5ORExlNlpaNDBs?=
+ =?utf-8?Q?/6vPxSd89qJuv8QU28GphAST/de?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2b1f2751-98a8-41f0-7ff6-08dbc41009ac
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 12:55:36.6348
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iqWc+EHt1qqgVYmUj6RaLbQj4hLDOlzZIS7bhpnvqGnmFPDDCCeNG8OUg55dn8cIyNHa2HM8zW7KYA0Msy8qXA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR10MB7070
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-03_10,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 bulkscore=0
+ adultscore=0 mlxlogscore=999 phishscore=0 spamscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2309180000
+ definitions=main-2310030094
+X-Proofpoint-ORIG-GUID: 3uVbSpNM_tjzqob_pYxJEO1hSMiCzPMV
+X-Proofpoint-GUID: 3uVbSpNM_tjzqob_pYxJEO1hSMiCzPMV
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 03/10/2023 05:24, Dave Chinner wrote:
+> On Fri, Sep 29, 2023 at 10:27:21AM +0000, John Garry wrote:
+>> Add flag IOMAP_ATOMIC_WRITE to indicate to the FS that an atomic write
+>> bio is being created and all the rules there need to be followed.
+>>
+>> It is the task of the FS iomap iter callbacks to ensure that the mapping
+>> created adheres to those rules, like size is power-of-2, is at a
+>> naturally-aligned offset, etc.
+> 
+> The mapping being returned by the filesystem can span a much greater
+> range than the actual IO needs - the iomap itself is not guaranteed
+> to be aligned to anything in particular, but the IO location within
+> that map can still conform to atomic IO constraints. See how
+> iomap_sector() calculates the actual LBA address of the IO from
+> the iomap and the current file position the IO is being done at.
 
-On Thu 28 Sep 2023 at 14:34, Xianwei Zhao <xianwei.zhao@amlogic.com> wrote:
+I see, but I was working on the basis that the filesystem produces an 
+iomap which itself conforms to all the rules. And that is because the 
+atomic write unit min and max for the file depend on the extent 
+alignment, which only the filesystem is aware of.
 
-> Add the C3 PLL clock controller driver for the Amlogic C3 SoC family.
->
-> Signed-off-by: Xianwei Zhao <xianwei.zhao@amlogic.com>
-> ---
->  drivers/clk/meson/Kconfig  |  12 +
->  drivers/clk/meson/Makefile |   1 +
->  drivers/clk/meson/c3-pll.c | 510 +++++++++++++++++++++++++++++++++++++
->  drivers/clk/meson/c3-pll.h |  35 +++
->  4 files changed, 558 insertions(+)
->  create mode 100644 drivers/clk/meson/c3-pll.c
->  create mode 100644 drivers/clk/meson/c3-pll.h
->
-> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
-> index c5303e4c1604..76be4bbd2afb 100644
-> --- a/drivers/clk/meson/Kconfig
-> +++ b/drivers/clk/meson/Kconfig
-> @@ -128,6 +128,18 @@ config COMMON_CLK_A1_PERIPHERALS
->  	  device, A1 SoC Family. Say Y if you want A1 Peripherals clock
->  	  controller to work.
->  
-> +config COMMON_CLK_C3_PLL
-> +	tristate "Amlogic C3 PLL clock controller"
-> +	default y
-> +	select COMMON_CLK_MESON_REGMAP
-> +	select COMMON_CLK_MESON_PLL
-> +	select COMMON_CLK_MESON_CLKC_UTILS
-> +	help
-> +	  Support for the PLL clock controller on Amlogic C302X and C308L devices,
-> +	  AKA c3. Amlogic C302X and C308L devices include AW402, AW409 and AW419.
-> +	  Say Y if you want the board to work, because PLLs are the parent of most
-> +	  peripherals.
-> +
->  config COMMON_CLK_G12A
->  	tristate "G12 and SM1 SoC clock controllers support"
->  	depends on ARM64
-> diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
-> index 9ee4b954c896..4420af628b31 100644
-> --- a/drivers/clk/meson/Makefile
-> +++ b/drivers/clk/meson/Makefile
-> @@ -19,6 +19,7 @@ obj-$(CONFIG_COMMON_CLK_AXG) += axg.o axg-aoclk.o
->  obj-$(CONFIG_COMMON_CLK_AXG_AUDIO) += axg-audio.o
->  obj-$(CONFIG_COMMON_CLK_A1_PLL) += a1-pll.o
->  obj-$(CONFIG_COMMON_CLK_A1_PERIPHERALS) += a1-peripherals.o
-> +obj-$(CONFIG_COMMON_CLK_C3_PLL) += c3-pll.o
->  obj-$(CONFIG_COMMON_CLK_GXBB) += gxbb.o gxbb-aoclk.o
->  obj-$(CONFIG_COMMON_CLK_G12A) += g12a.o g12a-aoclk.o
->  obj-$(CONFIG_COMMON_CLK_MESON8B) += meson8b.o meson8-ddr.o
-> diff --git a/drivers/clk/meson/c3-pll.c b/drivers/clk/meson/c3-pll.c
-> new file mode 100644
-> index 000000000000..5244dc19ab6e
-> --- /dev/null
-> +++ b/drivers/clk/meson/c3-pll.c
-> @@ -0,0 +1,510 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Amlogic C3 PLL Controller Driver
-> + *
-> + * Copyright (c) 2023 Amlogic, inc.
-> + * Author: Chuan Liu <chuan.liu@amlogic.com>
+> 
+> hence I think saying "the filesysetm should make sure all IO
+> alignment adheres to atomic IO rules is probably wrong. The iomap
+> layer doesn't care what the filesystem does, all it cares about is
+> whether the IO can be done given the extent map that was returned to
+> it.
+> 
+> Indeed, iomap_dio_bio_iter() is doing all these alignment checks for
+> normal DIO reads and writes which must be logical block sized
+> aligned. i.e. this check:
+> 
+>          if ((pos | length) & (bdev_logical_block_size(iomap->bdev) - 1) ||
+>              !bdev_iter_is_aligned(iomap->bdev, dio->submit.iter))
+>                  return -EINVAL;
+> 
+> Hence I think that atomic IO units, which are similarly defined by
+> the bdev, should be checked at the iomap layer, too. e.g, by
+> following up with:
+> 
+> 	if ((dio->iocb->ki_flags & IOCB_ATOMIC) &&
+> 	    ((pos | length) & (bdev_atomic_unit_min(iomap->bdev) - 1) ||
+> 	     !bdev_iter_is_atomic_aligned(iomap->bdev, dio->submit.iter))
+> 		return -EINVAL;
 
-If Chuan is Author, shouldn't get his Signed-off-by ?
-Maybe Co-developed-by as well ?
+Seems ok for at least enforcing alignment for the bdev. Again, 
+filesystem extent alignment is my concern.
 
-> + */
-> +
-> +#include <linux/clk-provider.h>
-> +#include <linux/of_device.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/clk.h>
-> +#include "clk-regmap.h"
-> +#include "clk-pll.h"
-> +#include "c3-pll.h"
-> +#include "meson-clkc-utils.h"
-> +#include <dt-bindings/clock/amlogic,c3-pll-clkc.h>
-> +
-> +#define MEMBER_REG_PARM(_member_name, _reg, _shift, _width)		\
-> +	._member_name = {						\
-> +		.reg_off = _reg,					\
-> +		.shift   = _shift,					\
-> +		.width   = _width,					\
-> +}
-> +
-> +#define __AML_CLK_PLL(_name, _en_reg, _en_shift, _en_width,		\
-> +			_m_reg, _m_shift, _m_width,			\
-> +			_f_reg, _f_shift, _f_width,			\
-> +			_n_reg, _n_shift, _n_width,			\
-> +			_l_reg, _l_shift, _l_width,			\
-> +			_r_reg, _r_shift, _r_width,			\
-> +			_init_reg, _init_reg_cnt, _range, _table,	\
-> +			_dflags, _ops, _pname, _pdata, _phw, _iflags)	\
-> +static struct clk_regmap _name = {					\
-> +	.data = &(struct meson_clk_pll_data){				\
-> +		MEMBER_REG_PARM(en,					\
-> +			_en_reg, _en_shift, _en_width),			\
-> +		MEMBER_REG_PARM(m,					\
-> +			_m_reg, _m_shift, _m_width),			\
-> +		MEMBER_REG_PARM(frac,					\
-> +			_f_reg, _f_shift, _f_width),			\
-> +		MEMBER_REG_PARM(n,					\
-> +			_n_reg, _n_shift, _n_width),			\
-> +		MEMBER_REG_PARM(l,					\
-> +			_l_reg, _l_shift, _l_width),			\
-> +		MEMBER_REG_PARM(rst,					\
-> +			_r_reg, _r_shift, _r_width),			\
-> +		.range = _range,					\
-> +		.table = _table,					\
-> +		.init_regs = _init_reg,					\
-> +		.init_count = _init_reg_cnt,				\
-> +		.flags = _dflags,					\
-> +	},								\
-> +	.hw.init = &(struct clk_init_data){				\
-> +		.name = #_name,						\
-> +		.ops = _ops,						\
-> +		.parent_names = _pname,					\
-> +		.parent_data = _pdata,					\
-> +		.parent_hws = (const struct clk_hw *[]) {_phw},		\
-> +		.num_parents = 1,					\
-> +		.flags = _iflags,					\
-> +	},								\
-> +}
-> +
-> +#define __AML_CLK_MUX(_name, _reg, _mask, _shift, _table, _dflags,	\
-> +			_ops, _pname, _pdata, _phw, _pnub, _iflags)	\
-> +static struct clk_regmap _name = {					\
-> +	.data = &(struct clk_regmap_mux_data){				\
-> +		.offset = _reg,						\
-> +		.mask = _mask,						\
-> +		.shift = _shift,					\
-> +		.table = _table,					\
-> +		.flags = _dflags,					\
-> +	},								\
-> +	.hw.init = &(struct clk_init_data){				\
-> +		.name = #_name,						\
-> +		.ops = _ops,						\
-> +		.parent_names = _pname,					\
-> +		.parent_data = _pdata,					\
-> +		.parent_hws = (const struct clk_hw *[]) { _phw },	\
-> +		.num_parents = _pnub,					\
-> +		.flags = _iflags,					\
-> +	},								\
-> +}
-> +
-> +#define __AML_CLK_DIV(_name, _reg, _shift, _width, _table, _dflags,	\
-> +			_ops, _pname, _pdata, _phw, _iflags)		\
-> +static struct clk_regmap _name = {					\
-> +	.data = &(struct clk_regmap_div_data){				\
-> +		.offset = _reg,						\
-> +		.shift = _shift,					\
-> +		.width = _width,					\
-> +		.table = _table,					\
-> +		.flags = _dflags,					\
-> +	},								\
-> +	.hw.init = &(struct clk_init_data){				\
-> +		.name = #_name,						\
-> +		.ops = _ops,						\
-> +		.parent_names = _pname,					\
-> +		.parent_data = _pdata,					\
-> +		.parent_hws = (const struct clk_hw *[]) { _phw },	\
-> +		.num_parents = 1,					\
-> +		.flags = _iflags,					\
-> +	},								\
-> +}
-> +
-> +#define __AML_CLK_GATE(_name, _reg, _bit, _gflags,			\
-> +			 _ops, _pname, _pdata, _phw, _iflags)		\
-> +static struct clk_regmap _name = {					\
-> +	.data = &(struct clk_regmap_gate_data){				\
-> +		.offset = _reg,						\
-> +		.bit_idx = _bit,					\
-> +		.flags = _gflags,					\
-> +	},								\
-> +	.hw.init = &(struct clk_init_data) {				\
-> +		.name = #_name,						\
-> +		.ops = _ops,						\
-> +		.parent_names = _pname,					\
-> +		.parent_data = _pdata,					\
-> +		.parent_hws = (const struct clk_hw *[]) { _phw },	\
-> +		.num_parents = 1,					\
-> +		.flags = _iflags,					\
-> +	},								\
-> +}
-> +
-> +#define __AML_CLK_FIXED_FACTOR(_name, _mult, _div, _ops,		\
-> +				 _pname, _pdata, _phw, _iflags)		\
-> +	static struct clk_fixed_factor _name = {			\
-> +		.mult = _mult,						\
-> +		.div = _div,						\
-> +		.hw.init = &(struct clk_init_data){			\
-> +		.name = #_name,						\
-> +		.ops = _ops,						\
-> +		.parent_names = _pname,					\
-> +		.parent_data = _pdata,					\
-> +		.parent_hws = (const struct clk_hw *[]) { _phw },	\
-> +		.num_parents = 1,					\
-> +		.flags = _iflags,					\
-> +	},								\
-> +}
-> +
-> +#define AML_CLK_PLL_RW(_name, _en_reg, _en_shift, _en_width,		\
-> +		      _m_reg, _m_shift, _m_width,			\
-> +		      _f_reg, _f_shift, _f_width,			\
-> +		      _n_reg, _n_shift, _n_width,			\
-> +		      _l_reg, _l_shift, _l_width,			\
-> +		      _r_reg, _r_shift, _r_width,			\
-> +		      _init_reg, _init_reg_cnt, _range, _table, _dflags,\
-> +		      _pdata, _iflags)					\
-> +	__AML_CLK_PLL(_name, _en_reg, _en_shift, _en_width,		\
-> +			_m_reg, _m_shift, _m_width,			\
-> +			_f_reg, _f_shift, _f_width,			\
-> +			_n_reg, _n_shift, _n_width,			\
-> +			_l_reg, _l_shift, _l_width,			\
-> +			_r_reg, _r_shift, _r_width,			\
-> +			_init_reg, _init_reg_cnt, _range, _table,	\
-> +			_dflags, &meson_clk_pll_ops,			\
-> +			NULL, _pdata, NULL, _iflags)
-> +
-> +#define AML_CLK_PLL_RO(_name, _en_reg, _en_shift, _en_width,		\
-> +			 _m_reg, _m_shift, _m_width,			\
-> +			 _f_reg, _f_shift, _f_width,			\
-> +			 _n_reg, _n_shift, _n_width,			\
-> +			 _l_reg, _l_shift, _l_width,			\
-> +			 _r_reg, _r_shift, _r_width,			\
-> +			 _init_reg, _init_reg_cnt, _range, _table,	\
-> +			 _dflags, _pdata, _iflags)			\
-> +	__AML_CLK_PLL(_name, _en_reg, _en_shift, _en_width,		\
-> +			_m_reg, _m_shift, _m_width,			\
-> +			_f_reg, _f_shift, _f_width,			\
-> +			_n_reg, _n_shift, _n_width,			\
-> +			_l_reg, _l_shift, _l_width,			\
-> +			_r_reg, _r_shift, _r_width,			\
-> +			_init_reg, _init_reg_cnt, _range, _table,	\
-> +			_dflags, &meson_clk_pll_ro_ops,			\
-> +			NULL, _pdata, NULL, _iflags)
-> +
-> +#define AML_CLK_MUX_RW(_name, _reg, _mask, _shift, _table, _dflags,	\
-> +			 _pdata, _iflags)				\
-> +	__AML_CLK_MUX(_name, _reg, _mask, _shift, _table, _dflags,	\
-> +			&clk_regmap_mux_ops, NULL, _pdata, NULL,	\
-> +			ARRAY_SIZE(_pdata), _iflags)
-> +
-> +#define AML_CLK_DIV_RW(_name, _reg, _shift, _width, _table, _dflags,	\
-> +			 _phw, _iflags)					\
-> +	__AML_CLK_DIV(_name, _reg, _shift, _width, _table, _dflags,	\
-> +			&clk_regmap_divider_ops, NULL, NULL,		\
-> +			       _phw, _iflags)
-> +
-> +#define AML_CLK_DIV_RO(_name, _reg, _shift, _width, _table, _dflags,	\
-> +			 _phw, _iflags)					\
-> +	__AML_CLK_DIV(_name, _reg, _shift, _width, _table, _dflags,	\
-> +			&clk_regmap_divider_ro_ops, NULL, NULL,		\
-> +			_phw, _iflags)
-> +
-> +#define AML_CLK_GATE_RW(_name, _reg, _bit, _dflags, _phw, _iflags)	\
-> +	__AML_CLK_GATE(_name, _reg, _bit, _dflags,			\
-> +			 &clk_regmap_gate_ops, NULL, NULL, _phw,	\
-> +			 _iflags)
-> +
-> +#define AML_CLK_GATE_RO(_name, _reg, _bit, _dflags, _phw, _iflags)	\
-> +	__AML_CLK_GATE(_name, _reg, _bit, _dflags,			\
-> +			 &clk_regmap_gate_ro_ops, NULL, NULL, _phw,	\
-> +			 _iflags)
-> +
-> +#define AML_CLK_FIXED_FACTOR(_name, _mult, _div, _phw, _iflags)	\
-> +	__AML_CLK_FIXED_FACTOR(_name, _mult, _div,			\
-> +				 &clk_fixed_factor_ops, NULL, NULL,	\
-> +				 _phw, _iflags)
-> +
+> 
+> At this point, filesystems don't really need to know anything about
+> atomic IO - if they've allocated a large contiguous extent (e.g. via
+> fallocate()), then RWF_ATOMIC will just work for the cases where the
+> block device supports it...
+> 
+> This then means that stuff like XFS extent size hints only need to
+> check when the hint is set that it is aligned to the underlying
+> device atomic IO constraints. Then when it sees the IOMAP_ATOMIC
+> modifier, it can fail allocation if it can't get extent size hint
+> aligned allocation.
 
-I don't get why all these macro are needed ? I don't see a 10 instances
-of the very same clock that would justify this.
+I am not sure what you mean by allocation in this context. I assume that 
+fallocate allocates the extents, but they remain unwritten. So if we 
+then dd into that file to zero it or init it any other way, they become 
+written and the extent size hint or bdev atomic write constraints would 
+be just ignored then.
 
-It makes this driver borderline un-reviewable.
+BTW, if you remember, we did propose an XFS fallocate extension for 
+extent alignment in the initial RFC, but decided to drop it.
 
-Unless you can provide a very reason why it is better like this, please
-have a look a the a1 and s4 controllers and re-submit.
+> 
+> IOWs, I'm starting to think this doesn't need any change to the
+> on-disk format for XFS - it can be driven entirely through two
+> dynamic mechanisms:
+> 
+> 1. (IOMAP_WRITE | IOMAP_ATOMIC) requests from the direct IO layer
+> which causes mapping/allocation to fail if it can't allocate (or
+> map) atomic IO compatible extents for the IO.
+> 
+> 2. FALLOC_FL_ATOMIC preallocation flag modifier to tell fallocate()
+> to force alignment of all preallocated extents to atomic IO
+> constraints.
 
-Same goes for patch #4
+Would that be a sticky flag? What stops the extents mutating before the 
+atomic write?
 
+> 
+> This doesn't require extent size hints at all. The filesystem can
+> query the bdev at mount time, store the min/max atomic write sizes,
+> and then use them for all requests that have _ATOMIC modifiers set
+> on them.
 
-> +static const struct clk_parent_data pll_dco_parent = {
-> +	.fw_name = "pll_in",
-> +};
-> +
-> +static const struct clk_parent_data mclk_pll_dco_parent = {
-> +	.fw_name = "mclk_pll_in",
-> +};
-> +
-> +AML_CLK_PLL_RO(fixed_pll_dco, ANACTRL_FIXPLL_CTRL0, 28, 1,  /* en */
-> +		ANACTRL_FIXPLL_CTRL0, 0,  8,  /* m */
-> +		0, 0,  0,  /* frac */
-> +		ANACTRL_FIXPLL_CTRL0, 16, 5,  /* n */
-> +		ANACTRL_FIXPLL_CTRL0, 31, 1,  /* lock */
-> +		ANACTRL_FIXPLL_CTRL0, 29, 1,  /* rst */
-> +		NULL, 0, NULL, NULL, 0, &pll_dco_parent, 0);
-> +AML_CLK_DIV_RO(fixed_pll, ANACTRL_FIXPLL_CTRL0, 12, 3, NULL,
-> +		 CLK_DIVIDER_POWER_OF_TWO, &fixed_pll_dco.hw, 0);
-> +AML_CLK_FIXED_FACTOR(fclk_div40_div, 1, 40, &fixed_pll.hw, 0);
-> +AML_CLK_GATE_RO(fclk_div40, ANACTRL_FIXPLL_CTRL4, 0, 0, &fclk_div40_div.hw, 0);
-> +AML_CLK_FIXED_FACTOR(fclk_div2_div, 1, 2, &fixed_pll.hw, 0);
-> +AML_CLK_GATE_RO(fclk_div2, ANACTRL_FIXPLL_CTRL4, 24, 0, &fclk_div2_div.hw, 0);
-> +AML_CLK_FIXED_FACTOR(fclk_div2p5_div, 2, 5, &fixed_pll.hw, 0);
-> +AML_CLK_GATE_RO(fclk_div2p5, ANACTRL_FIXPLL_CTRL4, 4, 0, &fclk_div2p5_div.hw, 0);
-> +AML_CLK_FIXED_FACTOR(fclk_div3_div, 1, 3, &fixed_pll.hw, 0);
-> +AML_CLK_GATE_RO(fclk_div3, ANACTRL_FIXPLL_CTRL4, 20, 0, &fclk_div3_div.hw, 0);
-> +AML_CLK_FIXED_FACTOR(fclk_div4_div, 1, 4, &fixed_pll.hw, 0);
-> +AML_CLK_GATE_RO(fclk_div4, ANACTRL_FIXPLL_CTRL4, 21, 0, &fclk_div4_div.hw, 0);
-> +AML_CLK_FIXED_FACTOR(fclk_div5_div, 1, 5, &fixed_pll.hw, 0);
-> +AML_CLK_GATE_RO(fclk_div5, ANACTRL_FIXPLL_CTRL4, 22, 0, &fclk_div5_div.hw, 0);
-> +AML_CLK_FIXED_FACTOR(fclk_div7_div, 1, 7, &fixed_pll.hw, 0);
-> +AML_CLK_GATE_RO(fclk_div7, ANACTRL_FIXPLL_CTRL4, 23, 0, &fclk_div7_div.hw, 0);
-> +
-> +static const struct reg_sequence c3_gp0_init_regs[] = {
-> +	{ .reg = ANACTRL_GP0PLL_CTRL1,	.def = 0x0 },
-> +	{ .reg = ANACTRL_GP0PLL_CTRL2,	.def = 0x0 },
-> +	{ .reg = ANACTRL_GP0PLL_CTRL3,	.def = 0x48681c00 },
-> +	{ .reg = ANACTRL_GP0PLL_CTRL4,  .def = 0x88770290 },
-> +	{ .reg = ANACTRL_GP0PLL_CTRL5,  .def = 0x3927200a },
-> +	{ .reg = ANACTRL_GP0PLL_CTRL6,	.def = 0x56540000, .delay_us = 10 },
-> +	{ .reg = ANACTRL_GP0PLL_CTRL0,	.def = 0x080304fa },
-> +	{ .reg = ANACTRL_GP0PLL_CTRL0,	.def = 0x380304fa, .delay_us = 10 },
-> +	{ .reg = ANACTRL_GP0PLL_CTRL0,	.def = 0X180304fa }
-> +};
-> +
-> +static const struct pll_params_table c3_gp0_pll_params_table[] = {
-> +	PLL_PARAMS(150, 1), /* DCO = 3600M */
-> +	PLL_PARAMS(130, 1), /* DCO = 3120M */
-> +	PLL_PARAMS(192, 1), /* DCO = 4608M */
-> +	PLL_PARAMS(125, 1), /* DCO = 3000M */
-> +	{ /* sentinel */  }
-> +};
-> +
-> +/* The maximum frequency divider supports is 32, not 128(2^7) */
-> +static const struct clk_div_table c3_gp0_pll_od_table[] = {
-> +	{ 0,  1 },
-> +	{ 1,  2 },
-> +	{ 2,  4 },
-> +	{ 3,  8 },
-> +	{ 4, 16 },
-> +	{ 5, 32 },
-> +	{ /* sentinel */ }
-> +};
-> +
-> +AML_CLK_PLL_RW(gp0_pll_dco, ANACTRL_GP0PLL_CTRL0, 28, 1,  /* en */
-> +		ANACTRL_GP0PLL_CTRL0, 0,  9,  /* m */
-> +		ANACTRL_GP0PLL_CTRL1, 0, 19,  /* frac */
-> +		ANACTRL_GP0PLL_CTRL0, 10, 5,  /* n */
-> +		ANACTRL_GP0PLL_CTRL0, 31, 1,  /* lock */
-> +		ANACTRL_GP0PLL_CTRL0, 29, 1,  /* rst */
-> +		c3_gp0_init_regs, ARRAY_SIZE(c3_gp0_init_regs),
-> +		NULL, c3_gp0_pll_params_table, 0,
-> +		&pll_dco_parent, 0);
-> +AML_CLK_DIV_RW(gp0_pll, ANACTRL_GP0PLL_CTRL0, 16, 3,
-> +		c3_gp0_pll_od_table, 0,
-> +		&gp0_pll_dco.hw, CLK_SET_RATE_PARENT);
-> +
-> +static const struct reg_sequence c3_hifi_init_regs[] = {
-> +	{ .reg = ANACTRL_HIFIPLL_CTRL0,	.def = 0x08010496 },
-> +	{ .reg = ANACTRL_HIFIPLL_CTRL0,	.def = 0x38010496 },
-> +	{ .reg = ANACTRL_HIFIPLL_CTRL1,	.def = 0x0000ce40 },
-> +	{ .reg = ANACTRL_HIFIPLL_CTRL2,	.def = 0x00000000 },
-> +	{ .reg = ANACTRL_HIFIPLL_CTRL3,	.def = 0x6a285c00 },
-> +	{ .reg = ANACTRL_HIFIPLL_CTRL4, .def = 0x65771290 },
-> +	{ .reg = ANACTRL_HIFIPLL_CTRL5, .def = 0x3927200a },
-> +	{ .reg = ANACTRL_HIFIPLL_CTRL6,	.def = 0x56540000, .delay_us = 50 },
-> +	{ .reg = ANACTRL_HIFIPLL_CTRL0,	.def = 0x18010496, .delay_us = 20 },
-> +};
-> +
-> +static const struct pll_params_table c3_hifi_pll_params_table[] = {
-> +	PLL_PARAMS(150, 1), /* DCO = 3600M */
-> +	PLL_PARAMS(130, 1), /* DCO = 3120M */
-> +	PLL_PARAMS(192, 1), /* DCO = 4608M */
-> +	PLL_PARAMS(125, 1), /* DCO = 3000M */
-> +	{ /* sentinel */  }
-> +};
-> +
-> +AML_CLK_PLL_RW(hifi_pll_dco, ANACTRL_HIFIPLL_CTRL0, 28, 1,  /* en */
-> +		ANACTRL_HIFIPLL_CTRL0, 0,  8,  /* m */
-> +		ANACTRL_HIFIPLL_CTRL1, 0, 19,  /* frac */
-> +		ANACTRL_HIFIPLL_CTRL0, 10, 5,  /* n */
-> +		ANACTRL_HIFIPLL_CTRL0, 31, 1,  /* lock */
-> +		ANACTRL_HIFIPLL_CTRL0, 29, 1,  /* rst */
-> +		c3_hifi_init_regs, ARRAY_SIZE(c3_hifi_init_regs),
-> +		NULL, c3_hifi_pll_params_table, 0,
-> +		&pll_dco_parent, 0);
-> +AML_CLK_DIV_RW(hifi_pll, ANACTRL_HIFIPLL_CTRL0, 16, 2,
-> +		NULL, CLK_DIVIDER_POWER_OF_TWO,
-> +		&hifi_pll_dco.hw, CLK_SET_RATE_PARENT);
-> +
-> +static const struct reg_sequence c3_mclk_init_regs[] = {
-> +	{ .reg = ANACTRL_MPLL_CTRL0,	.def = 0x20011063 },
-> +	{ .reg = ANACTRL_MPLL_CTRL0,	.def = 0x30011063 },
-> +	{ .reg = ANACTRL_MPLL_CTRL1,	.def = 0x1420500f },
-> +	{ .reg = ANACTRL_MPLL_CTRL2,	.def = 0x00023041 },
-> +	{ .reg = ANACTRL_MPLL_CTRL3,	.def = 0x18180000 },
-> +	{ .reg = ANACTRL_MPLL_CTRL0,	.def = 0x10011063 },
-> +	{ .reg = ANACTRL_MPLL_CTRL2,	.def = 0x00023001 }
-> +};
-> +
-> +static const struct pll_params_table c3_mclk_pll_params_table[] = {
-> +	PLL_PARAMS(99, 1), /* VCO = 2376M */
-> +	{ /* sentinel */  }
-> +};
-> +
-> +static const struct clk_div_table c3_mpll_od_table[] = {
-> +	{ 0,  1 },
-> +	{ 1,  2 },
-> +	{ 2,  4 },
-> +	{ 3,  8 },
-> +	{ 4, 16 },
-> +	{ /* sentinel */ }
-> +};
-> +
-> +AML_CLK_PLL_RW(mclk_pll_dco, ANACTRL_MPLL_CTRL0, 28, 1,  /* en */
-> +		ANACTRL_MPLL_CTRL0, 0,  8,  /* m */
-> +		0, 0, 0,  /* frac */
-> +		ANACTRL_MPLL_CTRL0, 16, 5,  /* n */
-> +		ANACTRL_MPLL_CTRL0, 31, 1,  /* lock */
-> +		ANACTRL_MPLL_CTRL0, 29, 1,  /* rst */
-> +		c3_mclk_init_regs, ARRAY_SIZE(c3_mclk_init_regs),
-> +		NULL, c3_mclk_pll_params_table, 0,
-> +		&mclk_pll_dco_parent, 0);
-> +AML_CLK_DIV_RW(mclk_pll, ANACTRL_MPLL_CTRL0, 12, 3,
-> +		c3_mpll_od_table, 0,
-> +		&mclk_pll_dco.hw, CLK_SET_RATE_PARENT);
-> +AML_CLK_DIV_RW(mclk_pll_clk, ANACTRL_MPLL_CTRL4, 16, 5, NULL,
-> +		CLK_DIVIDER_ONE_BASED | CLK_DIVIDER_ALLOW_ZERO,
-> +		&mclk_pll.hw, CLK_SET_RATE_PARENT);
-> +
-> +static const struct clk_parent_data mclk_parent[] = {
-> +	{ .hw = &mclk_pll_clk.hw },
-> +	{ .fw_name = "mclk_pll_in" },
-> +	{ .hw = &fclk_div40.hw }
-> +};
-> +
-> +AML_CLK_MUX_RW(mclk0_sel, ANACTRL_MPLL_CTRL4, 0x3, 4, NULL, 0,
-> +		mclk_parent, 0);
-> +AML_CLK_GATE_RW(mclk0_sel_out, ANACTRL_MPLL_CTRL4, 1, 0,
-> +		&mclk0_sel.hw, CLK_SET_RATE_PARENT);
-> +AML_CLK_DIV_RW(mclk0_div, ANACTRL_MPLL_CTRL4, 2, 1, NULL, 0,
-> +		&mclk0_sel_out.hw, CLK_SET_RATE_PARENT);
-> +AML_CLK_GATE_RW(mclk0, ANACTRL_MPLL_CTRL4, 0, 0,
-> +		&mclk0_div.hw, CLK_SET_RATE_PARENT);
-> +
-> +AML_CLK_MUX_RW(mclk1_sel, ANACTRL_MPLL_CTRL4, 0x3, 12, NULL, 0,
-> +		mclk_parent, 0);
-> +AML_CLK_GATE_RW(mclk1_sel_out, ANACTRL_MPLL_CTRL4, 9, 0,
-> +		&mclk1_sel.hw, CLK_SET_RATE_PARENT);
-> +AML_CLK_DIV_RW(mclk1_div, ANACTRL_MPLL_CTRL4, 10, 1, NULL, 0,
-> +		&mclk1_sel_out.hw, CLK_SET_RATE_PARENT);
-> +AML_CLK_GATE_RW(mclk1, ANACTRL_MPLL_CTRL4, 8, 0,
-> +		&mclk1_div.hw, CLK_SET_RATE_PARENT);
-> +
-> +static struct clk_hw *c3_pll_hw_clks[] = {
-> +	[CLKID_FIXED_PLL_DCO]	= &fixed_pll_dco.hw,
-> +	[CLKID_FIXED_PLL]	= &fixed_pll.hw,
-> +	[CLKID_FCLK_DIV40_DIV]	= &fclk_div40_div.hw,
-> +	[CLKID_FCLK_DIV40]	= &fclk_div40.hw,
-> +	[CLKID_FCLK_DIV2_DIV]	= &fclk_div2_div.hw,
-> +	[CLKID_FCLK_DIV2]	= &fclk_div2.hw,
-> +	[CLKID_FCLK_DIV2P5_DIV]	= &fclk_div2p5_div.hw,
-> +	[CLKID_FCLK_DIV2P5]	= &fclk_div2p5.hw,
-> +	[CLKID_FCLK_DIV3_DIV]	= &fclk_div3_div.hw,
-> +	[CLKID_FCLK_DIV3]	= &fclk_div3.hw,
-> +	[CLKID_FCLK_DIV4_DIV]	= &fclk_div4_div.hw,
-> +	[CLKID_FCLK_DIV4]	= &fclk_div4.hw,
-> +	[CLKID_FCLK_DIV5_DIV]	= &fclk_div5_div.hw,
-> +	[CLKID_FCLK_DIV5]	= &fclk_div5.hw,
-> +	[CLKID_FCLK_DIV7_DIV]	= &fclk_div7_div.hw,
-> +	[CLKID_FCLK_DIV7]	= &fclk_div7.hw,
-> +	[CLKID_GP0_PLL_DCO]	= &gp0_pll_dco.hw,
-> +	[CLKID_GP0_PLL]		= &gp0_pll.hw,
-> +	[CLKID_HIFI_PLL_DCO]	= &hifi_pll_dco.hw,
-> +	[CLKID_HIFI_PLL]	= &hifi_pll.hw,
-> +	[CLKID_MCLK_PLL_DCO]	= &mclk_pll_dco.hw,
-> +	[CLKID_MCLK_PLL]	= &mclk_pll.hw,
-> +	[CLKID_MCLK_PLL_CLK]	= &mclk_pll_clk.hw,
-> +	[CLKID_MCLK0_SEL]	= &mclk0_sel.hw,
-> +	[CLKID_MCLK0_SEL_OUT]	= &mclk0_sel_out.hw,
-> +	[CLKID_MCLK0_DIV]	= &mclk0_div.hw,
-> +	[CLKID_MCLK0]		= &mclk0.hw,
-> +	[CLKID_MCLK1_SEL]	= &mclk1_sel.hw,
-> +	[CLKID_MCLK1_SEL_OUT]	= &mclk1_sel_out.hw,
-> +	[CLKID_MCLK1_DIV]	= &mclk1_div.hw,
-> +	[CLKID_MCLK1]		= &mclk1.hw
-> +};
-> +
-> +/* Convenience table to populate regmap in .probe */
-> +static struct clk_regmap *const c3_pll_clk_regmaps[] = {
-> +	&fixed_pll_dco,
-> +	&fixed_pll,
-> +	&fclk_div40,
-> +	&fclk_div2,
-> +	&fclk_div2p5,
-> +	&fclk_div3,
-> +	&fclk_div4,
-> +	&fclk_div5,
-> +	&fclk_div7,
-> +	&gp0_pll_dco,
-> +	&gp0_pll,
-> +	&hifi_pll_dco,
-> +	&hifi_pll,
-> +	&mclk_pll_dco,
-> +	&mclk_pll,
-> +	&mclk_pll_clk,
-> +	&mclk0_sel,
-> +	&mclk0_sel_out,
-> +	&mclk0_div,
-> +	&mclk0,
-> +	&mclk1_sel,
-> +	&mclk1_sel_out,
-> +	&mclk1_div,
-> +	&mclk1,
-> +};
-> +
-> +static struct regmap_config clkc_regmap_config = {
-> +	.reg_bits       = 32,
-> +	.val_bits       = 32,
-> +	.reg_stride     = 4,
-> +};
-> +
-> +static struct meson_clk_hw_data c3_pll_clks = {
-> +	.hws = c3_pll_hw_clks,
-> +	.num = ARRAY_SIZE(c3_pll_hw_clks),
-> +};
-> +
-> +static int aml_c3_pll_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct regmap *regmap;
-> +	void __iomem *base;
-> +	int clkid, ret, i;
-> +
-> +	base = devm_platform_ioremap_resource(pdev, 0);
-> +	if (IS_ERR(base))
-> +		return PTR_ERR(base);
-> +
-> +	regmap = devm_regmap_init_mmio(dev, base, &clkc_regmap_config);
-> +	if (IS_ERR(regmap))
-> +		return PTR_ERR(regmap);
-> +
-> +	/* Populate regmap for the regmap backed clocks */
-> +	for (i = 0; i < ARRAY_SIZE(c3_pll_clk_regmaps); i++)
-> +		c3_pll_clk_regmaps[i]->map = regmap;
-> +
-> +	for (clkid = 0; clkid < c3_pll_clks.num; clkid++) {
-> +		/* array might be sparse */
-> +		if (!c3_pll_clks.hws[clkid])
-> +			continue;
-> +
-> +		ret = devm_clk_hw_register(dev, c3_pll_clks.hws[clkid]);
-> +		if (ret) {
-> +			dev_err(dev, "Clock registration failed\n");
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return devm_of_clk_add_hw_provider(dev, meson_clk_hw_get,
-> +					   &c3_pll_clks);
-> +}
-> +
-> +static const struct of_device_id c3_pll_clkc_match_table[] = {
-> +	{
-> +		.compatible = "amlogic,c3-pll-clkc",
-> +	},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, c3_pll_clkc_match_table);
-> +
-> +static struct platform_driver c3_pll_driver = {
-> +	.probe		= aml_c3_pll_probe,
-> +	.driver		= {
-> +		.name	= "c3-pll-clkc",
-> +		.of_match_table = c3_pll_clkc_match_table,
-> +	},
-> +};
-> +
-> +module_platform_driver(c3_pll_driver);
-> +MODULE_AUTHOR("Chuan Liu <chuan.liu@amlogic.com>");
-> +MODULE_LICENSE("GPL");
-> diff --git a/drivers/clk/meson/c3-pll.h b/drivers/clk/meson/c3-pll.h
-> new file mode 100644
-> index 000000000000..92a08196a46f
-> --- /dev/null
-> +++ b/drivers/clk/meson/c3-pll.h
-> @@ -0,0 +1,35 @@
-> +/* SPDX-License-Identifier: (GPL-2.0-only OR MIT) */
-> +/*
-> + * Copyright (c) 2023 Amlogic, inc.
-> + * Author: Chuan Liu <chuan.liu@amlogic.com>
-> + */
-> +
-> +#ifndef __AML_C3_PLL_H__
-> +#define __AML_C3_PLL_H__
-> +
-> +#define ANACTRL_FIXPLL_CTRL0			0x0040
-> +#define ANACTRL_FIXPLL_CTRL4			0x0050
-> +#define ANACTRL_GP0PLL_CTRL0			0x0080
-> +#define ANACTRL_GP0PLL_CTRL1			0x0084
-> +#define ANACTRL_GP0PLL_CTRL2			0x0088
-> +#define ANACTRL_GP0PLL_CTRL3			0x008c
-> +#define ANACTRL_GP0PLL_CTRL4			0x0090
-> +#define ANACTRL_GP0PLL_CTRL5			0x0094
-> +#define ANACTRL_GP0PLL_CTRL6			0x0098
-> +#define ANACTRL_GP0PLL_STS			0x009c
-> +#define ANACTRL_HIFIPLL_CTRL0			0x0100
-> +#define ANACTRL_HIFIPLL_CTRL1			0x0104
-> +#define ANACTRL_HIFIPLL_CTRL2			0x0108
-> +#define ANACTRL_HIFIPLL_CTRL3			0x010c
-> +#define ANACTRL_HIFIPLL_CTRL4			0x0110
-> +#define ANACTRL_HIFIPLL_CTRL5			0x0114
-> +#define ANACTRL_HIFIPLL_CTRL6			0x0118
-> +#define ANACTRL_HIFIPLL_STS			0x011c
-> +#define ANACTRL_MPLL_CTRL0			0x0180
-> +#define ANACTRL_MPLL_CTRL1			0x0184
-> +#define ANACTRL_MPLL_CTRL2			0x0188
-> +#define ANACTRL_MPLL_CTRL3			0x018c
-> +#define ANACTRL_MPLL_CTRL4			0x0190
-> +#define ANACTRL_MPLL_STS			0x01a4
-> +
-> +#endif  /* __AML_C3_PLL_H__ */
+A drawback is that the storage device may support atomic write unit max 
+much bigger than the user requires and cause inefficient alignment, e.g. 
+  bdev atomic write unit max = 1M, and we only ever want 8KB atomic 
+writes. But you are mentioning extent size hints can be paid attention 
+to, below.
+
+> 
+> With iomap doing the same "get the atomic constraints from the bdev"
+> style lookups for per-IO file offset and size checking, I don't
+> think we actually need extent size hints or an on-disk flag to force
+> extent size hint alignment.
+> 
+> That doesn't mean extent size hints can't be used - it just means
+> that extent size hints have to be constrained to being aligned to
+> atomic IOs (e.g. extent size hint must be an integer multiple of the
+> max atomic IO size). 
+
+Yeah, well I think that we already agreed something like this.
+
+> This then acts as a modifier for _ATOMIC
+> context allocations, much like it is a modifier for normal
+> allocations now.
+> 
+>> In iomap_dio_bio_iter(), ensure that for a non-dsync iocb that the mapping
+>> is not dirty nor unmapped.
+>>
+>> A write should only produce a single bio, so error when it doesn't.
+> 
+> I comment on both these things below.
+> 
+>>
+>> Signed-off-by: John Garry <john.g.garry@oracle.com>
+>> ---
+>>   fs/iomap/direct-io.c  | 26 ++++++++++++++++++++++++--
+>>   fs/iomap/trace.h      |  3 ++-
+>>   include/linux/iomap.h |  1 +
+>>   3 files changed, 27 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+>> index bcd3f8cf5ea4..6ef25e26f1a1 100644
+>> --- a/fs/iomap/direct-io.c
+>> +++ b/fs/iomap/direct-io.c
+>> @@ -275,10 +275,11 @@ static inline blk_opf_t iomap_dio_bio_opflags(struct iomap_dio *dio,
+>>   static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>>   		struct iomap_dio *dio)
+>>   {
+>> +	bool atomic_write = iter->flags & IOMAP_ATOMIC_WRITE;
+>>   	const struct iomap *iomap = &iter->iomap;
+>>   	struct inode *inode = iter->inode;
+>>   	unsigned int fs_block_size = i_blocksize(inode), pad;
+>> -	loff_t length = iomap_length(iter);
+>> +	const loff_t length = iomap_length(iter);
+>>   	loff_t pos = iter->pos;
+>>   	blk_opf_t bio_opf;
+>>   	struct bio *bio;
+>> @@ -292,6 +293,13 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>>   	    !bdev_iter_is_aligned(iomap->bdev, dio->submit.iter))
+>>   		return -EINVAL;
+>>   
+>> +	if (atomic_write && !iocb_is_dsync(dio->iocb)) {
+>> +		if (iomap->flags & IOMAP_F_DIRTY)
+>> +			return -EIO;
+>> +		if (iomap->type != IOMAP_MAPPED)
+>> +			return -EIO;
+>> +	}
+> 
+> How do we get here without space having been allocated for the
+> write?
+
+I don't think that we can, but we are checking that the space is also 
+written.
+
+> 
+> Perhaps what this is trying to do is make RWF_ATOMIC only be valid
+> into written space? 
+
+Yes, and we now detail this in the man pages.
+
+> I mean, this will fail with preallocated space
+> (IOMAP_UNWRITTEN) even though we still have exactly the RWF_ATOMIC
+> all-or-nothing behaviour guaranteed after a crash because of journal
+> recovery behaviour. i.e. if the unwritten conversion gets written to
+> the journal, the data will be there. If it isn't written to the
+> journal, then the space remains unwritten and there's no data across
+> that entire range....
+> 
+> So I'm not really sure that either of these checks are valid or why
+> they are actually needed....
+
+I think that the idea is that the space is already written and the 
+metadata for the space is persisted or going to be. Darrick guided me on 
+this, so hopefully can comment more.
+
+> 
+>> +
+>>   	if (iomap->type == IOMAP_UNWRITTEN) {
+>>   		dio->flags |= IOMAP_DIO_UNWRITTEN;
+>>   		need_zeroout = true;
+>> @@ -381,6 +389,9 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>>   					  GFP_KERNEL);
+>>   		bio->bi_iter.bi_sector = iomap_sector(iomap, pos);
+>>   		bio->bi_ioprio = dio->iocb->ki_ioprio;
+>> +		if (atomic_write)
+>> +			bio->bi_opf |= REQ_ATOMIC;
+>> +
+>>   		bio->bi_private = dio;
+>>   		bio->bi_end_io = iomap_dio_bio_end_io;
+>>   
+>> @@ -397,6 +408,12 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+>>   		}
+>>   
+>>   		n = bio->bi_iter.bi_size;
+>> +		if (atomic_write && n != length) {
+>> +			/* This bio should have covered the complete length */
+>> +			ret = -EINVAL;
+>> +			bio_put(bio);
+>> +			goto out;
+> 
+> Why? The actual bio can be any length that meets the aligned
+> criteria between min and max, yes?
+
+The write also needs to be a power-of-2 in length. atomic write min and 
+max will always be a power-of-2.
+
+> So it's valid to split a
+> RWF_ATOMIC write request up into multiple min unit sized bios, is it
+> not?
+
+It is not. In the RFC we sent in May there was a scheme to break up the 
+atomic write into multiple userspace block-sized bios, but that is no 
+longer supported.
+
+Now an atomic write only produces a single bio. So userspace may do a 
+16KB atomic write, for example, and we only ever issue that as a single 
+16KB operation to the storage device.
+
+> I mean, that's the whole point of the min/max unit setup, isn't
+> it?
+
+The point of min/max is to ensure that userspace executes an atomic 
+write which is guaranteed to be only ever issued as a single write to 
+the storage device. In addition, the length and position for that write 
+conforms to the storage device atomic write constraints.
+
+> That the max sized write only guarantees that it will tear at
+> min unit boundaries, not within those min unit boundaries?
+
+There is no tearing. As mentioned, the RFC in May did support some 
+splitting but we decided to drop it.
+
+> If
+> I've understood this correctly, then why does this "single bio for
+> large atomic write" constraint need to exist?
+
+atomic write means that a write will never we torn.
+
+> 
+> 
+>> +		}
+>>   		if (dio->flags & IOMAP_DIO_WRITE) {
+>>   			task_io_account_write(n);
+>>   		} else {
+>> @@ -554,6 +571,8 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+>>   	struct blk_plug plug;
+>>   	struct iomap_dio *dio;
+>>   	loff_t ret = 0;
+>> +	bool is_read = iov_iter_rw(iter) == READ;
+>> +	bool atomic_write = (iocb->ki_flags & IOCB_ATOMIC) && !is_read;
+> 
+> This does not need to be done here, because....
+> 
+>>   
+>>   	trace_iomap_dio_rw_begin(iocb, iter, dio_flags, done_before);
+>>   
+>> @@ -579,7 +598,7 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+>>   	if (iocb->ki_flags & IOCB_NOWAIT)
+>>   		iomi.flags |= IOMAP_NOWAIT;
+>>   
+>> -	if (iov_iter_rw(iter) == READ) {
+>> +	if (is_read) {
+>>   		/* reads can always complete inline */
+>>   		dio->flags |= IOMAP_DIO_INLINE_COMP;
+>>   
+>> @@ -605,6 +624,9 @@ __iomap_dio_rw(struct kiocb *iocb, struct iov_iter *iter,
+>>   		if (iocb->ki_flags & IOCB_DIO_CALLER_COMP)
+>>   			dio->flags |= IOMAP_DIO_CALLER_COMP;
+>>   
+>> +		if (atomic_write)
+>> +			iomi.flags |= IOMAP_ATOMIC_WRITE;
+> 
+> .... it is only checked once in the write path, so
+
+ok
+
+> 
+> 		if (iocb->ki_flags & IOCB_ATOMIC)
+> 			iomi.flags |= IOMAP_ATOMIC;
+> 
+>> +
+>>   		if (dio_flags & IOMAP_DIO_OVERWRITE_ONLY) {
+>>   			ret = -EAGAIN;
+>>   			if (iomi.pos >= dio->i_size ||
+>> diff --git a/fs/iomap/trace.h b/fs/iomap/trace.h
+>> index c16fd55f5595..f9932733c180 100644
+>> --- a/fs/iomap/trace.h
+>> +++ b/fs/iomap/trace.h
+>> @@ -98,7 +98,8 @@ DEFINE_RANGE_EVENT(iomap_dio_rw_queued);
+>>   	{ IOMAP_REPORT,		"REPORT" }, \
+>>   	{ IOMAP_FAULT,		"FAULT" }, \
+>>   	{ IOMAP_DIRECT,		"DIRECT" }, \
+>> -	{ IOMAP_NOWAIT,		"NOWAIT" }
+>> +	{ IOMAP_NOWAIT,		"NOWAIT" }, \
+>> +	{ IOMAP_ATOMIC_WRITE,	"ATOMIC" }
+> 
+> We already have an IOMAP_WRITE flag, so IOMAP_ATOMIC is the modifier
+> for the write IO behaviour (like NOWAIT), not a replacement write
+> flag.
+
+The name IOMAP_ATOMIC_WRITE is the issue then. The iomap trace still 
+just has "ATOMIC" as the trace modifier.
+
+Thanks,
+John
 
