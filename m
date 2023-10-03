@@ -2,143 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1798F7B62A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D859A7B62A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239187AbjJCHk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 03:40:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
+        id S239183AbjJCHmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 03:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239190AbjJCHk4 (ORCPT
+        with ESMTP id S230359AbjJCHmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 03:40:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D9F6BB;
-        Tue,  3 Oct 2023 00:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696318852; x=1727854852;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=oAHPwKBx2VXXhwErA1g4BrQu3mmm/TsAggXL8ezzFFM=;
-  b=kPasbqhgYFdiYPbhJSee95HEwFkfEp7+/bfDgc/j/KztMVRfr8bKJb2p
-   /18zFSH0ECL3NfIwFmxg7d0zLfG/1ihf1h9cVoPq2rW7ssyKkijFFd9q+
-   wVEuzdvurJfPgTs0gla4n0I8WGyH6L3GudL7Iut1ZdC3kYwYljUWm98q4
-   uTfIgGHq9n3/UKG6ZyRZ2OnCSCk7aEXzaS+vH7NrX7keLVtZRRaEDfVAp
-   PRbwYPmkUq0IFbR926LT1WIxchgKZS8UDRwwaJpI7JGcIrFM3sj9sYxvz
-   SCD9C4O4izA2vh5L9B2vuSqUPLBWRxeJkzcg80HSG7QECTacVywVPoo+U
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="446974838"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="446974838"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 00:40:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="821140725"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="821140725"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 03 Oct 2023 00:40:48 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qna1O-0006tZ-25;
-        Tue, 03 Oct 2023 07:40:46 +0000
-Date:   Tue, 3 Oct 2023 15:40:31 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ayush Singh <ayushdevel1325@gmail.com>,
-        greybus-dev@lists.linaro.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Ayush Singh <ayushdevel1325@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, vaishnav@beagleboard.org,
-        jkridner@beagleboard.org, nm@ti.com,
-        krzysztof.kozlowski+dt@linaro.org, johan@kernel.org,
-        elder@kernel.org
-Subject: Re: [PATCH v6 2/3] greybus: Add BeaglePlay Linux Driver
-Message-ID: <202310031521.Iq3S1RE9-lkp@intel.com>
-References: <20231002182454.211165-3-ayushdevel1325@gmail.com>
+        Tue, 3 Oct 2023 03:42:07 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8143C90
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 00:42:03 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-533c8f8f91dso895559a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 00:42:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1696318922; x=1696923722; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EarP/K2+7ngez1EJdI5nUP41kOhzqNXkW1CqtE7G6xA=;
+        b=WkFKAGXMhEgVW2r1eL+M6C9ygLffm2SxcrWzXSASgvwbrnEq3HLxh1BB2LAvEwfJKr
+         Ly5JJeoW1oqQQY1D2AtuPi4a+jsh5QYG6W0Gw2BzU/JX9fzkO2G5C270H7lhLTHVFWyt
+         fW4Bp2AimKKm5jt0dzjvucpUZtvf3Qb9JSYheZlBcVJcf1YNg9xXPN/dLPURi0jltmY6
+         7LrJnpT/g3mKUuDXMEGxRNgEfexz/YpTvGxXm3mwotfkk29+X57FWzC0WYhc9XURQXhF
+         zulAaLwVk+AnHG5ctC1vKcuEgYv7ASBu6OVZtfteqvo7Q2sSiuN21x9zyM5qedm+3uBC
+         CazQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696318922; x=1696923722;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EarP/K2+7ngez1EJdI5nUP41kOhzqNXkW1CqtE7G6xA=;
+        b=wcqVsly7rvWVUBUbXROGJEYqJeh2lyRkGwYEvS2/Gy9ad4Nc2DYCH/8OUwopSsQPGw
+         CMKtTTy8CLsXy/iFDvem5CxRIwBrJeIS8Lg5bIjuPirkcdW0U2rlInergM8+U6tvwF2d
+         NkbzpJNsrS3TJCIlJYUQG6i34zCBlxAqZVvzkSzgQEzgk3XD//X2WWoYLrB1PiVgJa9o
+         cB4zbUxkWelK4Jh3ltueNA1CPzHIlKicZiEjRPCYXmw5pYrD/ZqA8TYSiA/HglfVSERg
+         OXeUG3BdJyJbcl60hZvaxEzSkNUeeBODLTgtvovpTeRpygsaxE3diDWXU4LG3Khd8JhN
+         aPAg==
+X-Gm-Message-State: AOJu0Yz48osU+Ioxk5anCET8QJ95lA2lJ/D8QkK/4cC/vjN/Nh/G3nu3
+        AftTR89vi1TDacGNziiT/CefsA==
+X-Google-Smtp-Source: AGHT+IG1N2+LCXuxOd0Vv82Jtne0d7kp6cgoSOTpGsutcsoXHxeibNyA9BF+dcEU1nuk7EPT5XbNLg==
+X-Received: by 2002:aa7:d90f:0:b0:531:5126:cd5e with SMTP id a15-20020aa7d90f000000b005315126cd5emr11963080edr.34.1696318921994;
+        Tue, 03 Oct 2023 00:42:01 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id v26-20020aa7d65a000000b0053495596f42sm419143edr.30.2023.10.03.00.42.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 00:42:01 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 09:42:00 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Qinglin Pan <panqinglin2020@iscas.ac.cn>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -fixes 2/2] riscv: Fix set_huge_pte_at() for NAPOT
+ mappings when a swap entry is set
+Message-ID: <20231003-555f517e872d4d53ff8d2b02@orel>
+References: <20230928151846.8229-1-alexghiti@rivosinc.com>
+ <20230928151846.8229-3-alexghiti@rivosinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231002182454.211165-3-ayushdevel1325@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230928151846.8229-3-alexghiti@rivosinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ayush,
+On Thu, Sep 28, 2023 at 05:18:46PM +0200, Alexandre Ghiti wrote:
+> We used to determine the number of page table entries to set for a NAPOT
+> hugepage by using the pte value which actually fails when the pte to set is
+> a swap entry.
+> 
+> So take advantage of a recent fix for arm64 reported in [1] which
+> introduces the size of the mapping as an argument of set_huge_pte_at(): we
+> can then use this size to compute the number of page table entries to set
+> for a NAPOT region.
+> 
+> Fixes: 82a1a1f3bfb6 ("riscv: mm: support Svnapot in hugetlb page")
+> Reported-by: Ryan Roberts <ryan.roberts@arm.com>
+> Closes: https://lore.kernel.org/linux-arm-kernel/20230922115804.2043771-1-ryan.roberts@arm.com/ [1]
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> ---
+>  arch/riscv/mm/hugetlbpage.c | 19 +++++++++++++------
+>  1 file changed, 13 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/riscv/mm/hugetlbpage.c b/arch/riscv/mm/hugetlbpage.c
+> index e4a2ace92dbe..b52f0210481f 100644
+> --- a/arch/riscv/mm/hugetlbpage.c
+> +++ b/arch/riscv/mm/hugetlbpage.c
+> @@ -183,15 +183,22 @@ void set_huge_pte_at(struct mm_struct *mm,
+>  		     pte_t pte,
+>  		     unsigned long sz)
+>  {
+> +	unsigned long hugepage_shift;
+>  	int i, pte_num;
+>  
+> -	if (!pte_napot(pte)) {
+> -		set_pte_at(mm, addr, ptep, pte);
+> -		return;
+> -	}
+> +	if (sz >= PGDIR_SIZE)
+> +		hugepage_shift = PGDIR_SHIFT;
+> +	else if (sz >= P4D_SIZE)
+> +		hugepage_shift = P4D_SHIFT;
+> +	else if (sz >= PUD_SIZE)
+> +		hugepage_shift = PUD_SHIFT;
+> +	else if (sz >= PMD_SIZE)
+> +		hugepage_shift = PMD_SHIFT;
+> +	else
+> +		hugepage_shift = PAGE_SHIFT;
+>  
+> -	pte_num = napot_pte_num(napot_cont_order(pte));
+> -	for (i = 0; i < pte_num; i++, ptep++, addr += PAGE_SIZE)
+> +	pte_num = sz >> hugepage_shift;
+> +	for (i = 0; i < pte_num; i++, ptep++, addr += (1 << hugepage_shift))
+>  		set_pte_at(mm, addr, ptep, pte);
+>  }
+>
 
-kernel test robot noticed the following build warnings:
+So a 64k napot, for example, will fall into the PAGE_SHIFT arm, but then
+we'll calculate 16 for pte_num. Looks good to me.
 
-[auto build test WARNING on 6269320850097903b30be8f07a5c61d9f7592393]
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ayush-Singh/dt-bindings-Add-beaglecc1352/20231003-031225
-base:   6269320850097903b30be8f07a5c61d9f7592393
-patch link:    https://lore.kernel.org/r/20231002182454.211165-3-ayushdevel1325%40gmail.com
-patch subject: [PATCH v6 2/3] greybus: Add BeaglePlay Linux Driver
-config: sh-allmodconfig (https://download.01.org/0day-ci/archive/20231003/202310031521.Iq3S1RE9-lkp@intel.com/config)
-compiler: sh4-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231003/202310031521.Iq3S1RE9-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310031521.Iq3S1RE9-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/greybus/gb-beagleplay.c:45: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * BeaglePlay Greybus driver
-   drivers/greybus/gb-beagleplay.c:78: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Structure to represent part of HDCL frame payload data.
-   drivers/greybus/gb-beagleplay.c:107: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Consume HDLC Buffer. This function assumes that consumer lock has been acquired.
-   drivers/greybus/gb-beagleplay.c:127: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
-    * Queue HDLC data for sending. This function assumes that producer lock as been acquired.
-
-
-vim +45 drivers/greybus/gb-beagleplay.c
-
-    43	
-    44	/**
-  > 45	 * BeaglePlay Greybus driver
-    46	 *
-    47	 * @sd: underlying serdev device
-    48	 *
-    49	 * @gb_hd: greybus host device of this driver
-    50	 *
-    51	 * @tx_work: hdlc transmit work
-    52	 * @tx_producer_lock: hdlc transmit data producer lock. acquired when appending data to buffer.
-    53	 * @tx_consumer_lock: hdlc transmit data consumer lock. acquired when sending data over uart.
-    54	 * @tx_circ_buf: hdlc transmit circular buffer.
-    55	 * @tx_crc: hdlc transmit crc-ccitt fcs
-    56	 *
-    57	 * @rx_buffer_len: length of receive buffer filled.
-    58	 * @rx_buffer: hdlc frame receive buffer
-    59	 * @rx_in_esc: hdlc rx flag to indicate ESC frame
-    60	 */
-    61	struct gb_beagleplay {
-    62		struct serdev_device *sd;
-    63	
-    64		struct gb_host_device *gb_hd;
-    65	
-    66		struct work_struct tx_work;
-    67		spinlock_t tx_producer_lock;
-    68		spinlock_t tx_consumer_lock;
-    69		struct circ_buf tx_circ_buf;
-    70		u16 tx_crc;
-    71	
-    72		u16 rx_buffer_len;
-    73		bool rx_in_esc;
-    74		u8 rx_buffer[MAX_RX_HDLC];
-    75	};
-    76	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
+drew
