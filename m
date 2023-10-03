@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9427B651A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82797B6531
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239552AbjJCJMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:12:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53976 "EHLO
+        id S239463AbjJCJOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239515AbjJCJMO (ORCPT
+        with ESMTP id S231424AbjJCJOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:12:14 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD83A9;
-        Tue,  3 Oct 2023 02:12:11 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3939C0eU066359;
-        Tue, 3 Oct 2023 04:12:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696324320;
-        bh=o0ED1kfJG1RufpI9CAgyV1TxWurfgTv4TIBc7Zp6N1g=;
-        h=From:Date:Subject:References:In-Reply-To:To:CC;
-        b=vmStWs+HGM6w0K3EsMxfA7VdsXP4O6Aq1CPdHrik6dybqVsE284HDd7oWxazPYnq8
-         vC0yn2p+8F5X+X71wHnhBAF/zL+JSOVsF7loB+0w+pVTD+5HzQNc0gh2jO7lrUgxAS
-         hJoHaAk5UBQoyLGdBkqp6WikXrHvRJ5uQQ6PnMM8=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3939C05A034797
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Oct 2023 04:12:00 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 3
- Oct 2023 04:12:00 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 3 Oct 2023 04:12:00 -0500
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3939BxV1036852;
-        Tue, 3 Oct 2023 04:11:59 -0500
-From:   Jai Luthra <j-luthra@ti.com>
-Date:   Tue, 3 Oct 2023 14:41:35 +0530
-Subject: [PATCH v3 6/6] arm64: defconfig: Enable TPS6593 PMIC for SK-AM62A
+        Tue, 3 Oct 2023 05:14:30 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89985B4;
+        Tue,  3 Oct 2023 02:14:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=3fkeKLu8eKsK/dT8AEb6sGG8jQihJxdjqGhWs7rpjjo=; b=dcIgzB49dsVS4CJ4I13EIALnoH
+        xwjOHX2P+qvbaPZ4imstnQaHVFHiw8eibyGT8BpPoP5/FsDAd/IkGmPBuULL3MwaGI5o4J9/kx4nq
+        EHBqPbtScHTE6/DF4Rvb8cH7eANHI5A1EtSurce1kIGblPvfNsFZDqBx4/Fp3/AOjJYrqui+YAiMT
+        gjbQ5DnNhnE5j+k8IkA+UgXryxJoil+v+K/2LDh0vAwvDqRw/TBAwgUXF5926d7wislBnXxNaI2am
+        RIwTy4Nf5TzW9SWYAX0nxo0YdcQTbxUX3h1H1fYf07D5zA6r99xfSUPsLM6bQETreGysoy2gtZhb0
+        LE0KFDxw==;
+Received: from [2a00:23ee:1830:6abb:c7c0:8714:54ca:8840] (helo=[IPv6:::1])
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qnbRt-009m9t-03;
+        Tue, 03 Oct 2023 09:14:17 +0000
+Date:   Tue, 03 Oct 2023 10:12:09 +0100
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+CC:     Dongli Zhang <dongli.zhang@oracle.com>,
+        Joe Jin <joe.jin@oracle.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_RFC_1/1=5D_KVM=3A_x86=3A_add_par?= =?US-ASCII?Q?am_to_update_master_clock_periodically?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <ZRtl94_rIif3GRpu@google.com>
+References: <20230926230649.67852-1-dongli.zhang@oracle.com> <377d9706-cc10-dfb8-5326-96c83c47338d@oracle.com> <36f3dbb1-61d7-e90a-02cf-9f151a1a3d35@oracle.com> <ZRWnVDMKNezAzr2m@google.com> <a461bf3f-c17e-9c3f-56aa-726225e8391d@oracle.com> <884aa233ef46d5209b2d1c92ce992f50a76bd656.camel@infradead.org> <ZRrxtagy7vJO5tgU@google.com> <52a3cea2084482fc67e35a0bf37453f84dcd6297.camel@infradead.org> <ZRtl94_rIif3GRpu@google.com>
+Message-ID: <20EAA3C4-A9F4-4EC1-AE0C-D540CC2E024A@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231003-mcasp_am62a-v3-6-2b631ff319ca@ti.com>
-References: <20231003-mcasp_am62a-v3-0-2b631ff319ca@ti.com>
-In-Reply-To: <20231003-mcasp_am62a-v3-0-2b631ff319ca@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devarsht@ti.com>, <a-bhatia1@ti.com>, Jai Luthra <j-luthra@ti.com>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=867; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=/Lj5kyUdXlkA9yGStAcfh52IUoBdgRQoHn/afCOf6+c=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBlG9rSoc7jBFiH69KKePPfR0TAho2Tyl8+v48gC
- YmXvD5K1CGJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZRva0gAKCRBD3pH5JJpx
- RcVgD/9HqCgJDE8mu1VtzHLYBv0oo6PjkcesEaNZXOC7H/jEUVBLHxyVhaouICVlOXsGGRt386Z
- mJln2Oljvc4iaVOnBzAnWpK3hb3qaVSAYWZLH5VNuUkJjPqbpKLFREa2yu4EibhPQp9sdFJWsrh
- 0wlj8GonyFgEdhOp1OWcWRHa2FGoB/wY/N6qKa8IyK4dXb2O5f68AFVP+reQxZ5Od9R8R3LVlbc
- j0yF2FvX8DoZMMbOz00XozNbQMVa70ciMWKcINUuBdw+AewlkpSX7F7k7QIJUQvMU8EmtMMK5mh
- +tnuNVegNPuY0tw/hMv8K78vyF65NimxVCg4ROqLiBgs+MePMZcFujJGdg/R7G7OohIvPx20tB3
- XK01dgLgj1FGIOU9LQW9g7d8y619poedhdAQD3qu5YUH6DFgNHeoC7SF+VIHtB63LiAtZo98Pz4
- T8R2uEWcBdcKFBmvU1TTwnK6NKNYv37HVSb2RkRVWPIAjmqnzzATtmhBsMI7LQJgIs1Yylov6Aa
- EC5wOyS09ZYsU+MIG0KzCc1NOMt7l8JRomEzsNa87z9sbzFwrh1VQ9VozmwuyNS/8Cz0kytoBuE
- h66N+leHWbBoxlStpepxNFzy5bs7h1wGBUg6CpCtPgnxbt01tzIZfofGql4VMAPPO5xO1dr21MB
- 5KwZ++XS2UCurbw==
-X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
- fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SK-AM62A-LP uses TPS6593x PMIC (interfaced over I2C) to power the SoC
-and various other peripherals on the board [1].
 
-Specifically, the audio codec (TLV320AIC3106) on the board relies on the
-PMIC for the DVDD (1.8V) supply.
 
-[1]: https://www.ti.com/lit/zip/sprr459
+On 3 October 2023 01:53:11 BST, Sean Christopherson <seanjc@google=2Ecom> =
+wrote:
+>I think there is still use for synchronizing with the host's view of time=
+, e=2Eg=2E
+>to deal with lost time across host suspend+resume=2E
+>
+>So I don't think we can completely sever KVM's paravirt clocks from host =
+time,
+>at least not without harming use cases that rely on the host's view to ke=
+ep
+>accurate time=2E  And honestly at that point, the right answer would be t=
+o stop
+>advertising paravirt clocks entirely=2E
+>
+>But I do think we can address the issues that Dongli and David are obvers=
+ing
+>where guest time drifts even though the host kernel's base time hasn't ch=
+anged=2E
+>If I've pieced everything together correctly, the drift can be eliminated=
+ simply
+>by using the paravirt clock algorithm when converting the delta from the =
+raw TSC
+>to nanoseconds=2E
+>
+>This is *very* lightly tested, as in it compiles and doesn't explode, but=
+ that's
+>about all I've tested=2E
 
-Reviewed-by: Devarsh Thakkar <devarsht@ti.com>
-Signed-off-by: Jai Luthra <j-luthra@ti.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Hm, I don't think I like this=2E
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 66bfbef73324..38f0ce9cd2a3 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -725,6 +725,7 @@ CONFIG_MFD_SEC_CORE=y
- CONFIG_MFD_SL28CPLD=y
- CONFIG_RZ_MTU3=y
- CONFIG_MFD_TPS65219=y
-+CONFIG_MFD_TPS6594_I2C=m
- CONFIG_MFD_TI_AM335X_TSCADC=m
- CONFIG_MFD_ROHM_BD718XX=y
- CONFIG_MFD_WCD934X=m
+You're making get_monotonic_raw() not *actually* return the monotonic_raw =
+clock, but basically return the kvmclock instead? And why? So that when KVM=
+ attempts to synchronize the kvmclock to the monotonic_raw clock, it gets t=
+ricked into actually synchronizing the kvmclock to *itself*?
 
--- 
-2.42.0
+If you get this right, don't we have a fairly complex piece of code that h=
+as precisely *no* effect?=20
 
+Can't we just *refrain* from synchronizing the kvmclock to *anything*, in =
+the CONSTANT_TSC case? Why do we do that anyway?
+
+(Suspend/resume, live update and live migration are different=2E In *those=
+* cases we may need to preserve both the guest TSC and kvmclock based on ei=
+ther the host TSC or CLOCK_TAI=2E But that's different=2E)
