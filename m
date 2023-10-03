@@ -2,135 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E37EB7B746B
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15757B747F
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232411AbjJCXCe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 19:02:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50964 "EHLO
+        id S232357AbjJCXGq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 19:06:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232328AbjJCXCd (ORCPT
+        with ESMTP id S231504AbjJCXGp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 19:02:33 -0400
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 277EDCC;
-        Tue,  3 Oct 2023 16:02:29 -0700 (PDT)
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so1027696a12.1;
-        Tue, 03 Oct 2023 16:02:29 -0700 (PDT)
+        Tue, 3 Oct 2023 19:06:45 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D02CAB
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:06:42 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c136ee106so268182466b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 16:06:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696374401; x=1696979201; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BED3t2aRrxtx0D0q4ZEBs+ApkSmWh8HJDsZNXZO2H1E=;
+        b=TJhdldhY/lq5NAoTeyNdXfSWa2OwK0PBlKYQII4OhYv7/eTz26t8J7BnCKJSEH40JC
+         +BpPvq7HOxdk3r3JFa17jtKJPJ1ZfLa+FWbBrO6pHWiH4UsLrP/KH6t5xbzPEQtgVHTR
+         Tj2nxh+2AtYbqzcAlpUM6LJBBDFwet6JXVB1WfrQ9N0rO6oUPIPqsIllni53MFANCRMq
+         FfU7UKZfAs4EWCv5uOISuUtguyUISA/C9JPm5SnKjkbFGUmYYAHESoxyhhZCxjl/ZwDz
+         cVAGW7c4uS9XDYb4NsdexcnD1lxc6r8BYsVQNhMr4aBsAYoBGAJXKrgNATKVcZGfflbu
+         HcmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696374148; x=1696978948;
+        d=1e100.net; s=20230601; t=1696374401; x=1696979201;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Bc75ZLj27HqA99qp9BegB2tmAdW+msTPeqxif7xbAds=;
-        b=c3iTPSvpAIuxsy5yNxtHdeeDfrqN4j2fN9yJYyNj0UZxdwCdaEOZ/KTTQJY53ZBenb
-         VPi3lP+1MzPnL6hv6FralCteLDvZ2etoyBYP01gROD3XyOfK2ODccFKq8FmChy/h+n07
-         AGHl8BjTf/d2Eh5bHZ+t/RaOIijqi6cTUG9AHsStGEz5lXgusXYhc3i61THXCaHN6dCH
-         u78CQ7zJ1tb8XXRq1zbbV1tfS/izc4xu9BZeq1UVQp2Zlv/ot3EfiFUqmudk5ksUe7gV
-         RH5gajfam9H2lbh54Oram2mHhQd/bOU5HW+1H3/vgd0WLWNZ7IM5DgdOgWqGtG+VKH3i
-         /1/g==
-X-Gm-Message-State: AOJu0Yy28/Ry0D/WHMXcWv9J0Q19cHeEJcFhO7Vc/f6xXS8H89SwpuTT
-        2KstOuYiXujs78aDqCgT4f6+6vdYYTBbeaEQ7I8=
-X-Google-Smtp-Source: AGHT+IGAkoQiMFTXkbVvOxFELSTwKSi5Kx8u6/d/wdATKmcGrHUGgEhpNZTlcEuSPPK+Aj0GSgPlI+1C0Cy+KHRn7K8=
-X-Received: by 2002:a17:90a:c293:b0:268:18e:9dfa with SMTP id
- f19-20020a17090ac29300b00268018e9dfamr731538pjt.5.1696374148336; Tue, 03 Oct
- 2023 16:02:28 -0700 (PDT)
+        bh=BED3t2aRrxtx0D0q4ZEBs+ApkSmWh8HJDsZNXZO2H1E=;
+        b=ruIUQbMtwXPcdCFQs59bMc1m33AojBLkUBrM+J9aTm26c3C5QFXWmJKi/geUmPrWw3
+         HUjSvR6x5IPYxLfSXX3mzGKzwx6r7V/kcR1vX7as+EB+zfMB158k9ap2jJwzAbq/73+N
+         yTazfajWqtq42RwvQmDrgqHhGeNUgYr7g+xW2kXY7fJK8+3Y3ps2Dn4V66jSW1qSjIB6
+         q4mhpc+n4tzDmGdkA8R7C/GHhRct1ByjB2iVyiz03/vDWKUEi6buUiFz9qRybaMrSIe5
+         AAzLGEvNmR5XSIUNEn6cxPOrCLqGbvIbItfk1DeVIXVgr/1CuA1lmYk7Af2IpKeFq9x/
+         C6bw==
+X-Gm-Message-State: AOJu0YwcvUd48aiypEcwA80bavCEjMF3/vwdMW8VgzUs9Z8QSPFC0oqR
+        nwZu8PdP37EMFlAAdrMDYAVZx1D8ftiuaSnfHjYejQ==
+X-Google-Smtp-Source: AGHT+IHB2pzA3bg1Fesj416efcT1N1xTYVtbEVVGRJW14+RdrX8v8VDBTH1EuOSCUOzjyMf3H2XQMrs2+N3Lkip4XW8=
+X-Received: by 2002:a17:906:74cc:b0:99b:ead0:2733 with SMTP id
+ z12-20020a17090674cc00b0099bead02733mr593265ejl.72.1696374400964; Tue, 03 Oct
+ 2023 16:06:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230916040915.1075620-1-irogers@google.com> <CAL715WJxmMbXkZSE3p_+ODGxabgrXREsBo9aFu9G9=qkYZeH9A@mail.gmail.com>
- <CAP-5=fUjNiDv=KQ7t8jqfOfOt5i8HGvt8Vv1hn2-hLxX_Kqucg@mail.gmail.com>
- <CAL715W+GQuCJm-1SEsNN2qnHghNL1SrzwH9Km5K8UxubEFfYVw@mail.gmail.com>
- <CAM9d7cgKWi0fafwTxSrKLrVZxcwnhwMGz=oNkAsNdOjDwF6pEA@mail.gmail.com> <CAP-5=fWXXi7Y=6Q0k8oLOZmYon+vvg-k4dNUSex_ijcL8ti9sQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fWXXi7Y=6Q0k8oLOZmYon+vvg-k4dNUSex_ijcL8ti9sQ@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 3 Oct 2023 16:02:16 -0700
-Message-ID: <CAM9d7cjJxR5bvx5UvywEkwazkzpRZiKo8s7GLWutNiBKYa1J7g@mail.gmail.com>
-Subject: Re: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
-To:     Ian Rogers <irogers@google.com>
-Cc:     Mingwei Zhang <mizhang@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Stephane Eranian <eranian@google.com>
+References: <20230929180611.work.870-kees@kernel.org> <20230929180746.3005922-5-keescook@chromium.org>
+In-Reply-To: <20230929180746.3005922-5-keescook@chromium.org>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Tue, 3 Oct 2023 16:06:28 -0700
+Message-ID: <CAFhGd8pCJa=qevxwhtQDvXMwdhF-33fV87m90GGaUFkOa6eRuA@mail.gmail.com>
+Subject: Re: [PATCH 5/5] mlxsw: spectrum_span: Annotate struct mlxsw_sp_span
+ with __counted_by
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Ido Schimmel <idosch@nvidia.com>, Petr Machata <petrm@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 3:36 PM Ian Rogers <irogers@google.com> wrote:
+On Fri, Sep 29, 2023 at 11:08=E2=80=AFAM Kees Cook <keescook@chromium.org> =
+wrote:
 >
-> On Tue, Oct 3, 2023 at 1:08 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > Hello,
-> >
-> > On Wed, Sep 20, 2023 at 10:05 PM Mingwei Zhang <mizhang@google.com> wrote:
-> > >
-> > > On Mon, Sep 18, 2023 at 3:43 PM Ian Rogers <irogers@google.com> wrote:
-> > > >
-> > > > On Sat, Sep 16, 2023 at 5:46 PM Mingwei Zhang <mizhang@google.com> wrote:
-> > > > > Thank you very much for the change. I have one quick question about
-> > > > > the PMU unthrottling logic. When I am looking into the function
-> > > > > perf_adjust_freq_unthr_context(), I see the loop with PMU stop and
-> > > > > start in each iteration. Is there a good way to avoid this PMU reset
-> > > > > operation while quickly figuring out the event in frequency mode?
-> > > >
-> > > > Agreed. I think before the pmu_disable could be avoided for this condition:
-> > > > ```
-> > > > if (event->hw.interrupts != MAX_INTERRUPTS &&
-> > > >     (!event->attr.freq || !event->attr.sample_freq))
-> > > >         continue;
-> > > > ```
-> > > > Fixing up the event stop/start looks harder.
-> > > >
-> > >
-> > > Right, I think putting the check early before pmu_disable() is already
-> > > a great optimization. The only concern I initially had was whether
-> > > event->hw.interrupts can be accessed before we disable the pmu. But
-> > > after checking this field in other locations, I don't see any problem
-> > > at all.
-> >
-> > The event->hw.interrupts would be increased in the NMI handler
-> > so there is a race between the check and the NMI.  That's why
-> > I think it checks that after disabling the PMU.
-> >
-> > But I think we can skip non-sampling events for sure.  Then it
-> > would be better to set attr.sample_period = 0 rather than attr.freq.
-> >
-> >     if (!is_sampling_event(event))
-> >         continue;
-> >
-> >     perf_pmu_disable(event->pmu);
-> >     ...
-> >
-> > Thanks,
-> > Namhyung
+> Prepare for the coming implementation by GCC and Clang of the __counted_b=
+y
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUND=
+S
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
 >
-> With the PMU disabled, isn't there still a risk of an interrupt still
-> being in flight? In other words the disable doesn't prevent a race and
-> we'll catch this on the next timer call to
-> perf_adjust_freq_unthr_context. I think we can also improve the code
-> by just disabling a PMU once, we can take advantage of the
-> perf_event_pmu_context and disable that PMU, iterate its events and
-> then re-enable the PMU - i.e. no need for an enable and disable per
-> event. I'll put a patch together.
+> As found with Coccinelle[1], add __counted_by for struct mlxsw_sp_span.
+>
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/c=
+ounted_by.cocci
+>
+> Cc: Ido Schimmel <idosch@nvidia.com>
+> Cc: Petr Machata <petrm@nvidia.com>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: netdev@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
 
-Thanks, I was thinking about that too.  It's also a side effect of
-the context rewrite.  Maybe we could iterate pmu_ctx's active lists
-and skip pmus with PERF_PMU_CAP_NO_INTERRUPT and
-individual non-sampling events.
+Great patch!
 
-Thanks,
-Namhyung
+Crucially, span->entries_count is assigned before any flexible array
+accesses.
+
+        span->entries_count =3D entries_count;
+        ...
+        for (i =3D 0; i < mlxsw_sp->span->entries_count; i++)
+                mlxsw_sp->span->entries[i].id =3D i;
+
+
+Reviewed-by: Justin Stitt <justinstitt@google.com>
+
+>  drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c b/driver=
+s/net/ethernet/mellanox/mlxsw/spectrum_span.c
+> index b3472fb94617..af50ff9e5f26 100644
+> --- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c
+> +++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c
+> @@ -31,7 +31,7 @@ struct mlxsw_sp_span {
+>         refcount_t policer_id_base_ref_count;
+>         atomic_t active_entries_count;
+>         int entries_count;
+> -       struct mlxsw_sp_span_entry entries[];
+> +       struct mlxsw_sp_span_entry entries[] __counted_by(entries_count);
+>  };
+>
+>  struct mlxsw_sp_span_analyzed_port {
+> --
+> 2.34.1
+>
+>
+Thanks
+Justin
