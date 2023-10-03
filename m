@@ -2,115 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 103447B603E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 07:09:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091D77B603F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 07:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbjJCFJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 01:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47124 "EHLO
+        id S239133AbjJCFKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 01:10:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbjJCFJy (ORCPT
+        with ESMTP id S239122AbjJCFKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 01:09:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3977A9;
-        Mon,  2 Oct 2023 22:09:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696309791; x=1727845791;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=OUIez8Ogzr+c9hyQecnF675tecZjvzRqAbgkBev4cU8=;
-  b=Vt+cbidYNsTo4JkCLYYAjLkr6WZDoHMTJXBtOwWRuRztQq3RIFUnTpxx
-   BGGbEJlUMoSxuhxLti24/3062+PXdIv9DxWgzRsRdXQ+1zqmgW6C6y73D
-   wfXnEuc5ay35HNhbGPaNqWADhN0SuT1er5mCkRr5q76oOcMk872SrTidp
-   Ow3iHVIa/Z3KkZxPsSSsf2RIsdwB1FGhhoVIMpf0WzwessVeCJim/L5CB
-   9UA9kcLXSqhTsh8m6YgI9bDGbOv0V293hunv7fA18hK2d1jOCYrYQHf+J
-   lqqo0jgUEaaeKAgGaGMZx9r4EiFPkWY/dY4QiYu072dqBpUCgF/Vp/gga
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="382706587"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="382706587"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 22:09:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="700566974"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="700566974"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 02 Oct 2023 22:09:48 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>
-Subject: Re: [PATCH v5 08/18] x86/sgx: Use a list to track to-be-reclaimed
- pages
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-9-haitao.huang@linux.intel.com>
- <830b789caa2a6cfd735c83dee1aad3591b9272f0.camel@intel.com>
-Date:   Tue, 03 Oct 2023 00:09:46 -0500
+        Tue, 3 Oct 2023 01:10:05 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EA8E3
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 22:10:00 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-50348c54439so2109e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 22:10:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696309799; x=1696914599; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nuCQrq07t28e/w8SE3k84A5e3jrsGC5/Njzxci1gOnM=;
+        b=vImCd6G1Y+pKOMGE2CajqhHxMzgQHmJugXVu3fvu0SAGfc+M0NFkn7DcVlJpSjYuFU
+         vM2EZkN7CNWLF/LIH1az4Gsz5u8F28APE6mfkCwKPpzRff3NWeWlwsxR2ZDh5lejsDCj
+         Pl0bPQyJV7X46dAeb5TOfPiLy3tKrT/IvtY95XZaX9+j/eJvRK/5tBemBHms5a6h2TT8
+         TZkQkGoRooRxg6L2CU7Fycy4iBUCW8GQ/6Kdn7/jmm8hmzCohTz8PTUkZzgeLec2Yzbc
+         Pe6VaRp3rZyPluUirJXpj6EaU3+F8U9WTK6pPzzT72lcrQpzMpaIpnADeD4G72675Syx
+         DT6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696309799; x=1696914599;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nuCQrq07t28e/w8SE3k84A5e3jrsGC5/Njzxci1gOnM=;
+        b=Qg4Vj4jPpBqOshl3J3rtO0C1fKgStPBd9b++DaauM75ZR72tBPGG64k3Ma4lV0RqLM
+         elHsU1bRwG1OXYwMUQXoilyFMkjuxPnjvqKe6Nic481UKPdi+iuDTAPiXh614gyf5aP+
+         nu5NDilTck9yE+NbLPETy2GnGe8x9L+52hfoF8BFr5zGIA+wKjX00Pye6y8kIJgFdDvf
+         E3Ah0GBMcL9Ye68hodku7fthR6ZC6GfrSdaSBSgaXVlDmaotX8lPoRNmQ7bTQ3HIEjFP
+         NeZx9/JqKYL0mSWPgW7yNiJIZcatGdpTthvZlCvLry4cVgloHcssTihYdcUVkh5XwBlD
+         2rAQ==
+X-Gm-Message-State: AOJu0Yyjsyzu6Ls0TJbsTfvK20WbNPaFXbAh/+Ine5YiwAVhX3PIjXwP
+        3tLDe8cGFWAUrJ9Ys9Z77o32ElrFEq7P5OLeKXDt/A==
+X-Google-Smtp-Source: AGHT+IFyKRAs1nSnT7gvq2u//Gg7pZ51XcU9iClk/bEw0hlTaiaSYD7AI5ZrfWX42ndTU40I/DwZlI/gmpWW64Pxa7A=
+X-Received: by 2002:ac2:4ade:0:b0:505:7c88:9e45 with SMTP id
+ m30-20020ac24ade000000b005057c889e45mr57996lfp.0.1696309798688; Mon, 02 Oct
+ 2023 22:09:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2b73akfkwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <830b789caa2a6cfd735c83dee1aad3591b9272f0.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230930060206.2353141-1-irogers@google.com> <CAM9d7chAvXoU90uCNAqr6DxH1-pUYqd82_BAdoZjjs1Uscm8Vw@mail.gmail.com>
+In-Reply-To: <CAM9d7chAvXoU90uCNAqr6DxH1-pUYqd82_BAdoZjjs1Uscm8Vw@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 2 Oct 2023 22:09:47 -0700
+Message-ID: <CAP-5=fWDzjtkf7cSZVgSYUzFohH0tp81A7muke_+bH7rgnGJxw@mail.gmail.com>
+Subject: Re: [PATCH v1] perf test: Avoid system wide when not privileged
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 28 Sep 2023 04:28:34 -0500, Huang, Kai <kai.huang@intel.com> wrote:
-
-> On Fri, 2023-09-22 at 20:06 -0700, Haitao Huang wrote:
->> @@ -314,18 +313,22 @@ static void sgx_reclaim_pages(void)
->>   		if (kref_get_unless_zero(&encl_page->encl->refcount) != 0) {
->>  			sgx_epc_page_set_state(epc_page, SGX_EPC_PAGE_RECLAIM_IN_PROGRESS);
->> -			chunk[cnt++] = epc_page;
->> +			list_move_tail(&epc_page->list, &iso);
->>  		} else {
->> -			/* The owner is freeing the page. No need to add the
->> -			 * page back to the list of reclaimable pages.
->> +			/* The owner is freeing the page, remove it from the
->> +			 * LRU list
->>  			 */
+On Mon, Oct 2, 2023 at 9:47=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
 >
-> Please fix comment style.
-
-Sure
-
+> Hi Ian,
 >
->>  			sgx_epc_page_reset_state(epc_page);
->> +			list_del_init(&epc_page->list);
+> On Fri, Sep 29, 2023 at 11:02=E2=80=AFPM Ian Rogers <irogers@google.com> =
+wrote:
+> >
+> > Switch the test program to sleep that makes more sense for system wide
+> > events. Only enable system wide when root or not paranoid. This avoids
+> > failures under some testing conditions like ARM cloud.
+> >
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 >
-> Is this still needed?  It seems list_del_init() has been done when the  
-> EPC page
-> is taken off from the global active list?
+> While I'm ok with the change, I wonder why it doesn't have the same
+> code structure as in the stat_all_metrics.sh which checks the actual resu=
+lt.
 >
+> Acked-by: Namhyung Kim <namhyung@kernel.org>
 
-Good catch. I'll remove it.
+The metric group isn't printed when we print the metrics within it.
+This could be changed.
 
-Thanks
-Haitao
+Thanks,
+Ian
+
+> Thanks,
+> Namhyung
+>
+> > ---
+> >  tools/perf/tests/shell/stat_all_metricgroups.sh | 16 ++++++++++++++--
+> >  1 file changed, 14 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/perf/tests/shell/stat_all_metricgroups.sh b/tools/pe=
+rf/tests/shell/stat_all_metricgroups.sh
+> > index cb35e488809a..f3e305649e2c 100755
+> > --- a/tools/perf/tests/shell/stat_all_metricgroups.sh
+> > +++ b/tools/perf/tests/shell/stat_all_metricgroups.sh
+> > @@ -4,9 +4,21 @@
+> >
+> >  set -e
+> >
+> > -for m in $(perf list --raw-dump metricgroups); do
+> > +function ParanoidAndNotRoot()
+> > +{
+> > +  [ "$(id -u)" !=3D 0 ] && [ "$(cat /proc/sys/kernel/perf_event_parano=
+id)" -gt $1 ]
+> > +}
+> > +
+> > +system_wide_flag=3D"-a"
+> > +if ParanoidAndNotRoot 0
+> > +then
+> > +  system_wide_flag=3D""
+> > +fi
+> > +
+> > +for m in $(perf list --raw-dump metricgroups)
+> > +do
+> >    echo "Testing $m"
+> > -  perf stat -M "$m" -a true
+> > +  perf stat -M "$m" $system_wide_flag sleep 0.01
+> >  done
+> >
+> >  exit 0
+> > --
+> > 2.42.0.582.g8ccd20d70d-goog
+> >
