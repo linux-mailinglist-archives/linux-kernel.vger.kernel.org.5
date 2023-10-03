@@ -2,94 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1E97B6CF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2F67B6CF4
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231480AbjJCPVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 11:21:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58456 "EHLO
+        id S231602AbjJCPVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 11:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjJCPVV (ORCPT
+        with ESMTP id S231545AbjJCPU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 11:21:21 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C054083;
-        Tue,  3 Oct 2023 08:21:17 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6c67060fdfaso720837a34.2;
-        Tue, 03 Oct 2023 08:21:17 -0700 (PDT)
+        Tue, 3 Oct 2023 11:20:58 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA0FB0
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:20:55 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c5ff5f858dso8046385ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 08:20:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696346477; x=1696951277; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1z9Omi3EfSCh5yQBotfP7z50wuoV8LxiixPm+3LhYpQ=;
-        b=W/uABWY7+nWORqtxp2xxh3C9pESQRDAXnESbr9XkTG9k3BVAWuHFom+I1PrAhimvtY
-         mqKu1JBNvVP5gL5mJdRFgztku2SJ0DJNtMSnArNeOdJ+KThWZRKUQjp1vwYT5R2lwLCu
-         ZxTHb2iG0zHN6geSe4B2Hx9urNjNUVvuh04dDz6Kvp8oHDLz6f+HMqXm08XIk9CU1avL
-         CAQiVxYc7QY83rVFIwTrhv5JDQY1TBXimvREC/n1jF0OA+iFIX51+LIoyyn9iO76gj2x
-         9SwBokj/p/7z3aAj1WRTq7gyGOUi4bxvizUB1FDkuvHfdDxJGp96dsxpNr2cJOiUSBaM
-         kevw==
+        d=linaro.org; s=google; t=1696346454; x=1696951254; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Fi0GvVL1UlJlWvA6+wPBTvjnYAhizI6Olhrf8X5QnE=;
+        b=jYWxL9eXcRXRPLUxOd7IetRBizK/L8Wos1jlIpu8XpdOntEIg096Nqtl0/ArP/BPpJ
+         2EWTeBf1zZo4ZH0cOE9v9EesI5H/EkG7/2Q0RlJmjpCNAFPu2CEHtshC8IcHoVJzqTUw
+         b2F1iVKbbrAVby/eotyeJSBeMMCYLCNHxbxk1fTqdO2UtczNQYsx4ksJq8goNd9euZ81
+         RXH+30LAzuWbhiSY2LOm59o/bmEp3IUfOM9XtUNVGXtSX2c7s+CFVort8qv3TZTM7QFB
+         yiWwQQhP2aI1U+yuGbaC4OLSIwygP5zhlSpDKUUMvuxHXk2e7StSyLe/Xor51PBZRyaf
+         14cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696346477; x=1696951277;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1z9Omi3EfSCh5yQBotfP7z50wuoV8LxiixPm+3LhYpQ=;
-        b=CWtujNoZaur6xqGH5d6HpYilwtlw2x6teeMya8wMhoSho0TItzy/fb21CXv/mDbpGY
-         ZBl5crE1NufgbsF5Wp2Y4mZI2FVQJQRj/cGBJxjjEbKxemzE8y5dANHdUX5KjO2rTTOy
-         MmuZ86WT+8far9eYrcLTc5pKL0rYSQD7dt9aGiJXWvPS5AOcvwmODU4vQkY2frbW8Ul+
-         UAMigfC0YDISOM7SXbj1LgdpoXzbqe0d/Z+rHRpLkMmTGow7r/YhPkOSdrwsR3MJnEOa
-         MSE0FsdociA1FVHu4G+a0kS7/gfhfUyM7OTldw7EuCmcskAhocROvO3tQLXM2p59TQdq
-         ew1g==
-X-Gm-Message-State: AOJu0YxShHN0valcvhHvWegu88zJah3uxMLLCBKf+iDOZoABtPrsZFh9
-        +pHxSaMuutHeyW2dHkgT0RAXOTIN8VBCWsVjN44=
-X-Google-Smtp-Source: AGHT+IETV0LxOFOFHvGdReEo1wLRQ8Ox2E/7FPUFivgbHbFlkNM6gGwPKhV0dJeUxwQtnlsDb11uHiHvgJ37tK2KI/c=
-X-Received: by 2002:a05:6808:92:b0:3a8:5fd6:f4cf with SMTP id
- s18-20020a056808009200b003a85fd6f4cfmr15159009oic.22.1696346477021; Tue, 03
- Oct 2023 08:21:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696346454; x=1696951254;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+Fi0GvVL1UlJlWvA6+wPBTvjnYAhizI6Olhrf8X5QnE=;
+        b=T08ShdbVqJzRL7IwsU6f7FuVNUJa/NceASzuEgZP0Ii6zjEmojSFCv4C5rcz3UyDak
+         Nv1TbBnTMMQhK46+0CEkLbRlj7qVq02UmcXlwi8EKtN+Z0HObdCi4/H5MtDrYsCdpMf8
+         gIGhnyBS2yU12I23YEEMKGebY5TfN/42Q+VwAmJJTFKE4ekj/H8RYNi1Mtj06LOp+28m
+         cAMrnANPd6FAO5XG1c9XXB6AQTJzUzYhoGu+9IDQv4g2EvR+VOcVLA4GNjQEE+l5TdDF
+         sIbaqz5NIqKWMXsYSBj7nUuvaKfmyESog5mqYmgDjkKMICt0jEsXWnS/lYX3Jp4bxtlj
+         oEbQ==
+X-Gm-Message-State: AOJu0YxseoaB2rl5rz4XNDkDnGy3UzrH2zXqmscQ/1QIyU/hsLWSa5X8
+        roEbSBtjbslJPFl8yOtYqwUjng==
+X-Google-Smtp-Source: AGHT+IHbk4360AQXMEM8OHKJjDDmSkblY5FgQIBA5Fra9XDJdxKFPKgQIzSaAMDLRapNNLqBYtu7wQ==
+X-Received: by 2002:a17:902:d512:b0:1c4:c5d:d7fa with SMTP id b18-20020a170902d51200b001c40c5dd7famr13112626plg.45.1696346454478;
+        Tue, 03 Oct 2023 08:20:54 -0700 (PDT)
+Received: from p14s ([2604:3d09:148c:c800:9379:e1e1:dd3c:a271])
+        by smtp.gmail.com with ESMTPSA id w5-20020a170902d3c500b001c74df14e72sm1684106plb.212.2023.10.03.08.20.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 08:20:53 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 09:20:51 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Miles Chen <miles.chen@mediatek.com>,
+        Macpaul Lin <macpaul.lin@mediatek.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Sam Shih <sam.shih@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Jieyy Yang <jieyy.yang@mediatek.com>,
+        Tinghan Shen <tinghan.shen@mediatek.com>,
+        Seiya Wang <seiya.wang@mediatek.com>, soc@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 1/5] MAINTAINERS: Add Angelo as MediaTek SoC co-maintainer
+Message-ID: <ZRwxUz+K1SwGVQU3@p14s>
+References: <20231003-mediatek-fixes-v6-7-v1-0-dad7cd62a8ff@collabora.com>
+ <20231003-mediatek-fixes-v6-7-v1-1-dad7cd62a8ff@collabora.com>
 MIME-Version: 1.0
-References: <20231003145114.21637-1-brgl@bgdev.pl> <20231003145114.21637-31-brgl@bgdev.pl>
-In-Reply-To: <20231003145114.21637-31-brgl@bgdev.pl>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 3 Oct 2023 18:20:40 +0300
-Message-ID: <CAHp75VdvUUw77MuuhY3Ts9L0ezOdakyppQcnikpYCu672Ghb9Q@mail.gmail.com>
-Subject: Re: [PATCH 30/36] pinctrl: remove old GPIO helpers
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003-mediatek-fixes-v6-7-v1-1-dad7cd62a8ff@collabora.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 5:51=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl> =
-wrote:
->
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->
-> Old variants of pinctrl GPIO helpers are no longer used. Let's remove
-> them as well as convert all static functions in pinctrl/core.c that
-> still deal with global GPIO numbers to using the gpio_chip + offset
-> pairs.
+On Tue, Oct 03, 2023 at 01:13:43PM +0200, AngeloGioacchino Del Regno wrote:
+> I am a top reviewer mainly for MediaTek SoC related patches in most
+> subsystems and I've also been upstreaming both improvements, fixes
+> and new drivers and devicetrees when required.
+> 
+> The MediaTek scene saw a generous increase in number of patches that
+> are sent to the lists every week, increasing the amount of required
+> efforts to maintain the MTK bits overall, and we will possibly see
+> even more of that.
+> 
+> For this reason, and also because of suggestions and encouragement
+> coming from the community, I'm stepping up to be a co-maintainer of
+> MediaTek SoCs support.
+> 
+> Acked-by: Matthias Brugger <matthias.bgg@gmail.com>
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> Link: https://lore.kernel.org/r/20230929082009.71843-1-angelogioacchino.delregno@collabora.com
+> ---
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 90f13281d297..57f82fcea1e7 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2327,7 +2327,7 @@ F:	drivers/rtc/rtc-mt7622.c
+>  
+>  ARM/Mediatek SoC support
+>  M:	Matthias Brugger <matthias.bgg@gmail.com>
+> -R:	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> +M:	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-This patch does three thighs as I see it.
+Acked-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-First of all, it silently converts to RAII. Please, do this separately.
-Second, it shuffles a lot of code between old and new implementations.
-What I prefer to see is what the subject tells: only "-" (minus)
-lines.
-Third, it will become easier if you name the "new" functions better to
-begin with, it will help a lot here.
-
---=20
-With Best Regards,
-Andy Shevchenko
+>  L:	linux-kernel@vger.kernel.org
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+>  L:	linux-mediatek@lists.infradead.org (moderated for non-subscribers)
+> 
+> -- 
+> 2.42.0
+> 
+> 
