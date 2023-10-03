@@ -2,96 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25BAE7B69ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486617B69EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:14:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbjJCNNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58100 "EHLO
+        id S232634AbjJCNOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:14:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232177AbjJCNNw (ORCPT
+        with ESMTP id S232177AbjJCNOt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:13:52 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56613A3
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:13:49 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-405361bba99so8752675e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 06:13:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696338828; x=1696943628; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JvJMFPN5XnfTryJd6+O+n7ZB7bWg89FdCPQdvOsvcr4=;
-        b=soAZbw6jmNVjeh6/UtRaQcV7puJBnxWddrgWrdbrVqsm8mzJR7bt/hhkAXXdLIdqOZ
-         G3mSQhZOC5kJLNNUefguldj8lvAoNWcPsAtJtofVovVENH5jjy8bJZXYzhmAguCzNOVY
-         NXO+CP/KPLEBQ+SGz/JUFAft3UVupfwjyli09i3uVW8ZGld4f5Y31U2VsL0/sRoK5d4X
-         tD+OYGzgMO3Hgszz5VMtodd4Dvqm5GPIBLEMLTo8lWMdvSnR8xLJxfaJYW6BiIQqH3P5
-         g5SiNVA3y7NBBQLbWtKHdL/n2s7sHpQ0q0+eEEo5OCmqXNvFU/yvrcjELhWaw3QSlvSs
-         XFZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696338828; x=1696943628;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JvJMFPN5XnfTryJd6+O+n7ZB7bWg89FdCPQdvOsvcr4=;
-        b=Lt9fh5gvT7aej01g7Gnyhv+S43H6J45BBlxdKfhI6SMpM9DeDWyDxxsM4pBb4G46jl
-         iCpMnkHX46YT7mXZwRJ56hfdVWnclTo04rdgzjnPkIEilGYQiadA8ixFQXZ/q7Foubwq
-         nJM4Q2XTzJxOZN4RVFR9j/hQu0p+0zmdd/RjSH9PDorDB0E3mRz1zS4mtA6PGo11Up79
-         xbNl+UjwLWgqfRG6cltwOPpDPGlqKlRn5IEIFb0V21/VbGtG6PZFIpdqXKt2lXCxG6sN
-         afUO2ktXQ4NOOROEQvxBBZ+bOqjec6ngp4mfBprvi6RAT7IAx9NpC900hitARbANm4iz
-         Y7CQ==
-X-Gm-Message-State: AOJu0YxDPSLN6rVZdX4uLi19DQqGE71RvR3fyWqWgarIhiY9GKLYWCg1
-        13mCWzWF7vdtXaIQl+kIlPg4yI5o5sJvsDAGGhqbfA==
-X-Google-Smtp-Source: AGHT+IExPEFcZuoTnw4s70mC2iDssgJUPOn8skie5JIgUxQqRtwkBoV1wW0AgUE33byl9ZMwcWTAgA==
-X-Received: by 2002:a05:600c:207:b0:3fe:f74c:b4f6 with SMTP id 7-20020a05600c020700b003fef74cb4f6mr13419469wmi.17.1696338827645;
-        Tue, 03 Oct 2023 06:13:47 -0700 (PDT)
-Received: from loic-ThinkPad-T470p.. ([2a01:e0a:82c:5f0:6937:1bb0:405c:b59c])
-        by smtp.gmail.com with ESMTPSA id c4-20020a05600c0ac400b00405442edc69sm9385112wmr.14.2023.10.03.06.13.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 06:13:46 -0700 (PDT)
-From:   Loic Poulain <loic.poulain@linaro.org>
-To:     srinivas.kandagatla@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Loic Poulain <loic.poulain@linaro.org>
-Subject: [PATCH] nvmem: core: Fix possible buffer overflow on nvmem cell write
-Date:   Tue,  3 Oct 2023 15:13:43 +0200
-Message-Id: <20231003131343.1324962-1-loic.poulain@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        Tue, 3 Oct 2023 09:14:49 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E05F90;
+        Tue,  3 Oct 2023 06:14:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ZBWxmjNd8vCby7186bpocAw7l6dn7FqP/N8fvvIhwNQ=; b=ZbZ5sNuyOVjEKuk2Kc6owm9Oi+
+        CVbKdlROVMemxNuPYLOm079PCNAxkqdn4FkkzHPaSiU9q0vd2xEwwJTLyUjb7sxEkJ9v6Se+YR+mO
+        hyMHF6d2oMlZaBrzFAiWx0N5ARTRfQipZyGr28fZWLkAQfYIy1bRiOaRD2/jWOamKQD5/W8Rodx1t
+        EZXxuHLGJBUvOFkHWeqIOCy45AXwGibkSc0bqIy27Um1+1UC0vQzlqX6CSDkf9vPyCSvEZPDhz9WV
+        cui5XvDfIapsKVW+mDOebBgACDtLVTHwl3AlSmnPOOB/5KoWZS3z7Y3ZT3iGso8tvkovDyikqzr49
+        EwUqFH0Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38818)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qnfEW-0001l1-2j;
+        Tue, 03 Oct 2023 14:14:40 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qnfEX-0007v4-3o; Tue, 03 Oct 2023 14:14:41 +0100
+Date:   Tue, 3 Oct 2023 14:14:41 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Camelia Groza <camelia.groza@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor@kernel.org>,
+        Sean Anderson <sean.anderson@seco.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>
+Subject: Re: [RFC PATCH v2 net-next 15/15] net: pcs: lynx: use MTIP AN/LT
+ block for copper backplanes
+Message-ID: <ZRwTwd18xWczDnur@shell.armlinux.org.uk>
+References: <20230923134904.3627402-1-vladimir.oltean@nxp.com>
+ <20230923134904.3627402-16-vladimir.oltean@nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230923134904.3627402-16-vladimir.oltean@nxp.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nothing prevents a nvmem consumer to try writing excessive data to a
-given nvmem cell (except when bit_offset is 0). The allocated buffer
-of size 'cell->bytes' in nvmem_cell_prepare_write_buffer may not be
-large enough to host the copied 'len' bytes.
+On Sat, Sep 23, 2023 at 04:49:04PM +0300, Vladimir Oltean wrote:
+> +static int lynx_pcs_parse_fwnode(struct lynx_pcs *lynx)
+> +{
+> +	struct fwnode_handle *node = lynx->mdio->dev.fwnode;
+> +	enum mtip_model model = MTIP_MODEL_AUTODETECT;
+> +	struct device_node *np = to_of_node(node);
+> +	struct mdio_device *mdio = lynx->mdio;
+> +	struct device *dev = &mdio->dev;
+> +	struct phy *phy;
+> +	int i, err;
+> +
+> +	if (!node)
+> +		return 0;
+> +
+> +	lynx->backplane_mode = fwnode_property_present(node, "fsl,backplane-mode");
+> +	if (!lynx->backplane_mode)
+> +		return 0;
+> +
+> +	if (fwnode_device_is_compatible(node, "fsl,lx2160a-lynx-pcs"))
+> +		model = MTIP_MODEL_LX2160A;
+> +
+> +	lynx->num_lanes = of_count_phandle_with_args(np, "phys", "#phy-cells");
+> +	if (lynx->num_lanes < 0)
+> +		return lynx->num_lanes;
 
-Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
----
- drivers/nvmem/core.c | 3 +++
- 1 file changed, 3 insertions(+)
+Is it possible for ->num_lanes to be zero at this point? If that is
+possible, then ->anlt[PRIMARY_LANE] will be NULL but ->backplane_mode
+will be set, so won't that cause the mtip_* calls above to pass a
+NULL pointer into those functions? Is that safe? Should we trap that
+case here?
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index eaf6a3fe8ca6..0b27ab3b3b86 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -1654,6 +1654,9 @@ static void *nvmem_cell_prepare_write_buffer(struct nvmem_cell_entry *cell,
- 	int i, rc, nbits, bit_offset = cell->bit_offset;
- 	u8 v, *p, *buf, *b, pbyte, pbits;
- 
-+	if (len > cell->bytes)
-+		return ERR_PTR(-EINVAL);
-+
- 	nbits = cell->nbits;
- 	buf = kzalloc(cell->bytes, GFP_KERNEL);
- 	if (!buf)
+If that's correct, then I don't see any point in storing
+->backplane_mode, since we can then use ->num_lanes > PRIMARY_LANE
+or similar instead.
+
+> +
+> +	if (WARN_ON(lynx->num_lanes > MAX_NUM_LANES))
+> +		return -EINVAL;
+
+Do we need to use WARN_ON() here, or would it be better to print a short
+error-level message?
+
+> +
+> +	for (i = 0; i < lynx->num_lanes; i++) {
+> +		phy = devm_of_phy_get_by_index(dev, np, i);
+> +		if (IS_ERR(phy))
+> +			return dev_err_probe(dev, PTR_ERR(phy),
+> +					     "Failed to get SerDes PHY %d\n", i);
+> +
+> +		lynx->anlt[i] = mtip_backplane_create(mdio, phy, model);
+> +		if (IS_ERR(lynx->anlt[i])) {
+> +			err = PTR_ERR(lynx->anlt[i]);
+> +
+> +			while (i-- > 0)
+> +				mtip_backplane_destroy(lynx->anlt[i]);
+> +
+> +			return err;
+> +		}
+> +	}
+> +
+> +	for (i = 1; i < lynx->num_lanes; i++) {
+> +		err = mtip_backplane_add_subordinate(lynx->anlt[PRIMARY_LANE],
+> +						     lynx->anlt[i]);
+> +		if (WARN_ON(err)) {
+
+Again, does this need to be a backtrace-producing WARN_ON()?
+
+> +			/* Too many SerDes lanes in the device tree? */
+> +			for (i = 0; i < lynx->num_lanes; i++)
+> +				mtip_backplane_destroy(lynx->anlt[i]);
+> +			return err;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static struct phylink_pcs *lynx_pcs_create(struct mdio_device *mdio)
+>  {
+>  	struct lynx_pcs *lynx;
+> +	int err;
+>  
+>  	lynx = kzalloc(sizeof(*lynx), GFP_KERNEL);
+>  	if (!lynx)
+> @@ -327,6 +451,12 @@ static struct phylink_pcs *lynx_pcs_create(struct mdio_device *mdio)
+>  	lynx->pcs.neg_mode = true;
+>  	lynx->pcs.poll = true;
+>  
+> +	err = lynx_pcs_parse_fwnode(lynx);
+> +	if (err) {
+> +		kfree(lynx);
+> +		return ERR_PTR(err);
+> +	}
+> +
+>  	return lynx_to_phylink_pcs(lynx);
+>  }
+>  
+> @@ -392,6 +522,11 @@ EXPORT_SYMBOL_GPL(lynx_pcs_create_fwnode);
+>  void lynx_pcs_destroy(struct phylink_pcs *pcs)
+>  {
+>  	struct lynx_pcs *lynx = phylink_pcs_to_lynx(pcs);
+> +	int i;
+> +
+> +	if (lynx->backplane_mode)
+> +		for (i = 0; i < lynx->num_lanes; i++)
+> +			mtip_backplane_destroy(lynx->anlt[i]);
+
+Won't ->num_lanes only be non-zero when ->backplane_mode is set, so
+isn't the test for ->backplane_mode redundant here?
+
+>  
+>  	mdio_device_put(lynx->mdio);
+>  	kfree(lynx);
+> -- 
+> 2.34.1
+> 
+> 
+
 -- 
-2.34.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
