@@ -2,220 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C97C97B6A6F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 437407B6A82
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234645AbjJCN0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57592 "EHLO
+        id S238087AbjJCN1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:27:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbjJCN0s (ORCPT
+        with ESMTP id S238655AbjJCN1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:26:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB274A1
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:26:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696339604; x=1727875604;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=KbgIEUN3KVqwnf1BzBp9QZHuTVKZ3J1u5/5OyhJsaEI=;
-  b=IqrX/JrSc6zSXbWuihhz2nnDGuBmtyaNmiMbuqgl7VVeyuICOh3i/k6t
-   2Z9SZ2G/z+/CAP2FIQp1+WvnreJHDk3qaEME01EpnU2jtVECblF7AWN6z
-   KkXNkGPi99jEqsv43EmDjXGtE48AoWNX2isah2eR0vaRmUhnAJ+5TTs2n
-   Kw+DxdALN1dfkv1Umo1uhGoDsJ+GMPBZaIvf7a2+fF71U0Gm6X5GcwyJR
-   X8HXWbTNhN90LX8sWUXgnenRe3PCSfoaKqgYIu7ed9v4yIRsnZbIwl6xE
-   1tTB4Zouq3VT+rZbsveyAJaauq4vJwoXIU/Fk3eYLZu6aaAfVlaNhrvt4
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="381750602"
-X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="381750602"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 06:26:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="786091478"
-X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="786091478"
-Received: from sknagara-mobl2.amr.corp.intel.com (HELO [10.209.121.241]) ([10.209.121.241])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 06:26:44 -0700
-Message-ID: <483ee0eb-cc14-44a4-9c3b-77a6d0860359@linux.intel.com>
-Date:   Tue, 3 Oct 2023 06:26:45 -0700
+        Tue, 3 Oct 2023 09:27:30 -0400
+Received: from out-197.mta1.migadu.com (out-197.mta1.migadu.com [95.215.58.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C36A10D5
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:27:18 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 09:27:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696339636;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Mjv6DuwAujLXffMtSe4op7ceXjyiGwTzOh9m+cMi8Vs=;
+        b=e771mcc5uBUlgfXKpvdmXwBVHpXjNKLgMN5fgedhVWgWdr2nalKTR+mIV0ADMsTo70/CjF
+        /w7jkesimDLcpMACnxNZZynTcxvUjqJ7JElwbaOx6/KsW9JuFhB5GJweYT3W+PrjkOHlER
+        KJOlGI0tg8lEXk9+XF8/lne5ltnUhQU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christian Brauner <brauner@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the vfs-brauner tree
+Message-ID: <20231003132711.djftyh7vltljy2hh@moria.home.lan>
+References: <20230928105443.1b1ad98c@canb.auug.org.au>
+ <20231002112142.bfjj54ikijf4iwfr@quack3>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] x86/tdx: Dump TDX version During the TD Bootup
-Content-Language: en-US
-To:     Yi Sun <yi.sun@intel.com>, kirill.shutemov@linux.intel.com,
-        linux-kernel@vger.kernel.org
-Cc:     heng.su@intel.com, yi.sun@linux.intel.com,
-        Dongcheng Yan <dongcheng.yan@intel.com>
-References: <20230930161110.3251107-1-yi.sun@intel.com>
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20230930161110.3251107-1-yi.sun@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231002112142.bfjj54ikijf4iwfr@quack3>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/30/2023 9:11 AM, Yi Sun wrote:
-> It is essential for TD users to be aware of the vendor and version of
-> the current TDX. Additionally, they can reference the TDX version when
-> reporting bugs or issues.
+On Mon, Oct 02, 2023 at 01:21:42PM +0200, Jan Kara wrote:
+> Hi!
 > 
-> Furthermore, the applications or device drivers running in TD can achieve
-> enhanced reliability and flexibility by following the TDX Module ABI
-> specification, because there are significant differences between different
-> versions of TDX, as mentioned in the "Intel® TDX Module Incompatibilities
-> between v1.0 and v1.5" reference. Here are a few examples:
+> On Thu 28-09-23 10:54:43, Stephen Rothwell wrote:
+> > After merging the vfs-brauner tree, today's linux-next build (x86_64
+> > allmodconfig) failed like this:
+> > 
+> > fs/bcachefs/super-io.c: In function 'bch2_free_super':
+> > fs/bcachefs/super-io.c:166:17: error: implicit declaration of function 'blkdev_put'; did you mean 'bdi_put'? [-Werror=implicit-function-declaration]
+> >   166 |                 blkdev_put(sb->bdev, sb->holder);
+> >       |                 ^~~~~~~~~~
+> >       |                 bdi_put
+> > fs/bcachefs/super-io.c: In function 'bch2_read_super':
+> > fs/bcachefs/super-io.c:687:20: error: implicit declaration of function 'blkdev_get_by_path'; did you mean 'bdev_open_by_path'? [-Werror=implicit-function-declaration]
+> >   687 |         sb->bdev = blkdev_get_by_path(path, sb->mode, sb->holder, &bch2_sb_handle_bdev_ops);
+> >       |                    ^~~~~~~~~~~~~~~~~~
+> >       |                    bdev_open_by_path
+> > fs/bcachefs/super-io.c:687:18: error: assignment to 'struct block_device *' from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
+> >   687 |         sb->bdev = blkdev_get_by_path(path, sb->mode, sb->holder, &bch2_sb_handle_bdev_ops);
+> >       |                  ^
+> > fs/bcachefs/super-io.c:693:26: error: assignment to 'struct block_device *' from 'int' makes pointer from integer without a cast [-Werror=int-conversion]
+> >   693 |                 sb->bdev = blkdev_get_by_path(path, sb->mode, sb->holder, &bch2_sb_handle_bdev_ops);
+> >       |                          ^
+> > cc1: all warnings being treated as errors
+> > 
+> > Caused by commit
+> > 
+> >   953863a5a2ff ("block: Remove blkdev_get_by_*() functions")
+> > 
+> > interacting with commit(s) from the bcachefs tree.
+> > 
+> > I would have reverted that commit for today, except I used the old
+> > vfs-brauner tree due to another build failure.  Can we just delay this
+> > one commit until after bcachefs has been converted (and any other
+> > references that may be added are fixed)?
 > 
-> MSR Name		Index		Reason
-> ----------------------------------------------
-> IA32_UARCH_MISC_CTL	0x1B01		From v1.5
-> IA32_ARCH_CAPABILITIES	0x010A		Changed in v1.5
-> IA32_TSX_CTRL		0x0122		Changed in v1.5
-> 
-> CPUID Leaf	Sub-leaf	Reason
-> ---------------------------------------
-> 0x7		2		From v1.5
-> 0x22		0		From v1.5
-> 0x23		0~3		From v1.5
-> 0x80000007	0		From v1.5
-> 
-> During TD initialization, the TDX version info can be obtained by calling
-> TDG.SYS.RD. This will fetch the current version of TDX, including the major
-> and minor version numbers and vendor ID.
-> 
-> The TDCALL TDG.SYS.RD originates from TDX version 1.5. If the error
-> TDCALL_INVALID_OPERAND occurs, it should be treated as TDX version 1.0.
-> 
-> Co-developed-by: Dongcheng Yan <dongcheng.yan@intel.com>
-> Signed-off-by: Dongcheng Yan <dongcheng.yan@intel.com>
-> Signed-off-by: Yi Sun <yi.sun@intel.com>
-> 
-> diff --git a/arch/x86/coco/tdx/tdx.c b/arch/x86/coco/tdx/tdx.c
-> index 1d6b863c42b0..052376d521d1 100644
-> --- a/arch/x86/coco/tdx/tdx.c
-> +++ b/arch/x86/coco/tdx/tdx.c
-> @@ -37,6 +37,24 @@
->  
->  #define TDREPORT_SUBTYPE_0	0
->  
-> +/*
-> + * TDX metadata base field id, used by TDCALL TDG.SYS.RD
-> + * See TDX ABI Spec section 3.3.2.3 Global Metadata Fields
-> + */
-> +#define TDX_SYS_VENDOR_ID_FID		0x0800000200000000ULL
-> +#define TDX_SYS_MINOR_FID		0x0800000100000003ULL
-> +#define TDX_SYS_MAJOR_FID		0x0800000100000004ULL
-> +#define TDX_VENDOR_INTEL		0x8086
-> +
-> +/*
-> + * The global-scope metadata field via TDG.SYS.RD TDCALL
-> + */
-> +struct tdg_sys_info {
-> +	u32 vendor_id;
-> +	u16 major_version;
-> +	u16 minor_version;
-> +};
-> +
->  /* Called from __tdx_hypercall() for unrecoverable failure */
->  noinstr void __tdx_hypercall_failed(void)
->  {
-> @@ -757,10 +775,54 @@ static bool tdx_enc_status_change_finish(unsigned long vaddr, int numpages,
->  	return true;
->  }
->  
-> +/*
-> + * Parse the tdx module version info from the global-scope metadata fields.
-> + */
-> +static int tdg_get_sysinfo(struct tdg_sys_info *td_sys)
-> +{
-> +	struct tdx_module_output out;
-> +	u64 ret;
-> +
-> +	if (!td_sys)
-> +		return -EINVAL;
-> +
-> +	ret = __tdx_module_call(TDX_SYS_RD, 0, TDX_SYS_VENDOR_ID_FID, 0, 0,
-> +				&out);
-> +	if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
-> +		goto version_1_0;
-> +	else if (ret)
-> +		return ret;
+> Yeah, I guess removing the final commit is the easiest solution at this
+> point. It complicates a bit the series to disallow writing to mounted block
+> devices which bases on this - either I have to pospone that to the next
+> cycle after we convert bcachefs or I have to find a way for the old
+> blkdev_get_by_path() API and the new functionality to coexist. I'll think
+> about that.
 
-For this failure case, do you want to reset tdg_sys_info to some value like zero
-or some constants to specify unknown?
-
-> +
-> +	td_sys->vendor_id = (u32)out.r8;
-> +
-> +	ret = __tdx_module_call(TDX_SYS_RD, 0, TDX_SYS_MAJOR_FID, 0, 0, &out);
-> +	if (ret)
-> +		return ret;
-> +
-> +	td_sys->major_version = (u16)out.r8;
-> +
-> +	ret = __tdx_module_call(TDX_SYS_RD, 0, TDX_SYS_MINOR_FID, 0, 0, &out);
-> +	if (ret)
-> +		return ret;
-> +
-> +	td_sys->minor_version = (u16)out.r8;
-> +
-> +	return 0;
-> +
-> +	/* TDX 1.0 does not have the TDCALL TDG.SYS.RD */
-> +version_1_0:
-> +	td_sys->vendor_id = TDX_VENDOR_INTEL;
-> +	td_sys->major_version = 1;
-> +	td_sys->minor_version = 0;
-> +
-> +	return 0;
-> +}
-> +
->  void __init tdx_early_init(void)
->  {
->  	u64 cc_mask;
->  	u32 eax, sig[3];
-> +	struct tdg_sys_info td_sys_info;
->  
->  	cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2],  &sig[1]);
->  
-> @@ -820,5 +882,9 @@ void __init tdx_early_init(void)
->  	 */
->  	x86_cpuinit.parallel_bringup = false;
->  
-> -	pr_info("Guest detected\n");
-> +	tdg_get_sysinfo(&td_sys_info);
-
-Why not check the return value before dumping the info?
-
-> +
-> +	pr_info("Guest detected. TDX version:%u.%u VendorID: %x\n",
-> +		td_sys_info.major_version, td_sys_info.minor_version,
-> +		td_sys_info.vendor_id);
->  }
-> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-> index 7513b3bb69b7..10ecb5dece84 100644
-> --- a/arch/x86/include/asm/shared/tdx.h
-> +++ b/arch/x86/include/asm/shared/tdx.h
-> @@ -16,6 +16,7 @@
->  #define TDX_GET_REPORT			4
->  #define TDX_ACCEPT_PAGE			6
->  #define TDX_WR				8
-> +#define TDX_SYS_RD			11
->  
->  /* TDCS fields. To be used by TDG.VM.WR and TDG.VM.RD module calls */
->  #define TDCS_NOTIFY_ENABLES		0x9100000000000010
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Jan, Christain - what do you need from me for the conversion?
