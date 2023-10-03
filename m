@@ -2,82 +2,382 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2CC7B6271
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A117B626E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230324AbjJCHXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 03:23:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50600 "EHLO
+        id S231281AbjJCHWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 03:22:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbjJCHXO (ORCPT
+        with ESMTP id S230235AbjJCHWH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 03:23:14 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903A183
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 00:23:07 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40572aeb73cso5281475e9.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 00:23:07 -0700 (PDT)
+        Tue, 3 Oct 2023 03:22:07 -0400
+Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE0F683;
+        Tue,  3 Oct 2023 00:22:00 -0700 (PDT)
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3933ip2h022325;
+        Tue, 3 Oct 2023 00:21:39 -0700
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
+        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3tgbas8me7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Oct 2023 00:21:39 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GI0yaCpYTeHAMRxtkO1kaMR37JFuGdSL1+KyXhzhK1+4WqugG6IrrK3aoU53bLTMc9sscXUJMyhkB5IZ6WIRgIDjouCH4y6/nmL46P9hOhdzWb6uxp3DHelc/y5hftT0AuMAke/qsirF1O9e6CmADQ/LMN++0kjMxiimnfcCvAEQt2pcleIJ0Q73cy85k0EDXmQKOX4WhKsSff9cLLkbDFzPmz1IQkDtJLmsuRszW+wU1XTPkslTrBxQoUH6ICwGPsLs9xDJ/zyIqp0v/W5bDBfsDSsgGdQZDscmv+JGcLjX9JdLGBGP2RoR7QrybZW1whJGbuZkAgi6AftXMHCXpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kzsDD4sdgj0zLbATAb4DP62My280aEsdlkVxL8wdRBo=;
+ b=WX9kl2oOvmWWVAtQ/qri1/9EPUCSmGh1YPQENUyIdbmDQuoP0SCJbcQ9ujLixoSXnRwlin0OcQ8Rb8lBJy5ujhpy0OoILX+sJk64dtSiUmw1oq/aXfBGl+PItmtyuYlEvWW3gUeX1v30d8etmXkMstUbsy3HfrH8rcUootXcGyInB5UZK5h1hGszXSjTmj8+/ZBp1KCNoqx1oe3Gl0p/CYGMrhd2tlxMYb13G56RhkPsAUvVL8GEK0dXjv02bGEjrDOLr3X6T0eULoQOueENQBHvJmij0ABA6X+hpt4p0l/QMOKWf6jhJAbnmJ7fqG3RrLT1vnRBRwTxrOcgS7NAAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696317786; x=1696922586; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5QrndL+T4UVghnit9CdCX9Kh475HxuHUkfCxYb36QnY=;
-        b=HCzlc6Q9Pv+XXeBvYD14nkClDitZINsSy3LDEbbBPjZL5ztmHKXDxO4hUoUFoSZM+O
-         UPO4M5Ao+63yUkOddfM8tmB7QpCAoiaSHH6m2EGA9ofbTpUplMmCyRRunAX6wtFYcnMD
-         gv7qGI3yNM3AgfFw5z3qAwpZ8xjjeBnV41kuOWqM5WyMK7njBa7EQdGZuespW99ZhAVG
-         LUB2zaHGZ5oJL1FoJ5zBDEm2C/OCjMeXX0Hz6rUBxgit195usKt6RXEqb9ezb8WEVSbk
-         FH/tDVyWvw+ZXEyGzvgn/DLRJL6/R4P7IL2HsIpzKaodNDurv2d8cUY5YXZNTkyYIeZ9
-         b1uA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696317786; x=1696922586;
-        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
-         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=5QrndL+T4UVghnit9CdCX9Kh475HxuHUkfCxYb36QnY=;
-        b=c++m6pTOqFdbfBoXYTtvFO6/cZvty8izHir3os0UBljmcjRKGW5OGhEG5zx1occPwY
-         Kr+pcnJkSwSY/gZtmwvYXVsJWB71ZT8w8fAOzCnDmEiaK6SYjpkD4NpiIV2tnZYyfNab
-         QVfGAI0oSYpoj/bevBS2D5ZXztldzFUWe/R53vvMGqJfyH4PRa4En5wgymqxrwMUNs02
-         X9q97oX1Z36Q7VQnxqNwIhE5roVE6lP2je+UvFUqz7yN7feZ6v61nss2iu1NaWoZKjeN
-         CwRR7E2D9JTjhrHqpRRQsHKVpoSHgE04pTltYU1/PHMs0NF3GoWokPMXjwix9f5EQ42Y
-         v2RQ==
-X-Gm-Message-State: AOJu0Ywn7rQxqIwIP6qQWxAIl7UM5f/ZUc9LkUp9Olzx2LMylPbk/2F4
-        ZZKdnRb/xGqEj1UbmL/hW9i3JQ==
-X-Google-Smtp-Source: AGHT+IH55KRTvunywUpTwl57DsPsubRXbWKIce91cW4qaEd2n1pkc08O2Q0MjvWPfLZZsGerPFFmvg==
-X-Received: by 2002:a5d:46cb:0:b0:321:8181:601e with SMTP id g11-20020a5d46cb000000b003218181601emr11718734wrs.8.1696317785163;
-        Tue, 03 Oct 2023 00:23:05 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:15bf:5b59:3e24:71fe])
-        by smtp.gmail.com with ESMTPSA id bl40-20020adfe268000000b003233b554e6esm863318wrb.85.2023.10.03.00.23.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 00:23:04 -0700 (PDT)
-References: <20231002141020.2403652-1-jbrunet@baylibre.com>
- <20231002141020.2403652-3-jbrunet@baylibre.com>
- <b81a296d-0640-4b2e-aab6-c9de37d10206@linaro.org>
- <1j5y3ozvmk.fsf@starbuckisacylon.baylibre.com>
- <CACdvmAgzBxja-oJkS9c88=P0Wmc1ptkJExz6YjaJUyyv6yxh0Q@mail.gmail.com>
- <DF61DA82-29E4-4504-B548-14F880A6221E@gmail.com>
-User-agent: mu4e 1.8.13; emacs 29.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Christian Hewitt <christianshewitt@gmail.com>,
-        Da Xue <da@lessconfused.com>
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Da Xue <da.xue@libretech.co>,
-        devicetree <devicetree@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-amlogic@lists.infradead.org
-Subject: Re: [PATCH 2/2] arm64: dts: amlogic: add libretech cottonwood support
-Date:   Tue, 03 Oct 2023 09:21:25 +0200
-In-reply-to: <DF61DA82-29E4-4504-B548-14F880A6221E@gmail.com>
-Message-ID: <1j1qecyxt4.fsf@starbuckisacylon.baylibre.com>
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kzsDD4sdgj0zLbATAb4DP62My280aEsdlkVxL8wdRBo=;
+ b=DSTJ9kujCIPavAlCNgBqUrxBtGiVJzen+Lk5jJPKNRhuldSr0LaBjATDN11drPth6yvsY0SMQO2AGFqCL7iimtuaY5BFBpRDPaqY0K7q0gSsTWkw3PpOtFWsc4OccxEtiTfHWiECpvD25VYd1OrMiDGn5tU3lc/KI9lzErUtB2E=
+Received: from BY3PR18MB4707.namprd18.prod.outlook.com (2603:10b6:a03:3ca::23)
+ by SA3PR18MB5348.namprd18.prod.outlook.com (2603:10b6:806:301::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33; Tue, 3 Oct
+ 2023 07:21:35 +0000
+Received: from BY3PR18MB4707.namprd18.prod.outlook.com
+ ([fe80::1fb6:90d6:b40d:a5c3]) by BY3PR18MB4707.namprd18.prod.outlook.com
+ ([fe80::1fb6:90d6:b40d:a5c3%4]) with mapi id 15.20.6838.033; Tue, 3 Oct 2023
+ 07:21:35 +0000
+From:   Sai Krishna Gajula <saikrishnag@marvell.com>
+To:     Jacob Keller <jacob.e.keller@intel.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
+        Hariprasad Kelam <hkelam@marvell.com>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
+Subject: Re: [net PATCH] octeontx2-af: Enable hardware timestamping for VFs
+Thread-Topic: [net PATCH] octeontx2-af: Enable hardware timestamping for VFs
+Thread-Index: AQHZ9co9RL6oXzZMl0m+xbDNEy3ZAw==
+Date:   Tue, 3 Oct 2023 07:21:35 +0000
+Message-ID: <BY3PR18MB4707B18E60AF632C4A9501BDA0C4A@BY3PR18MB4707.namprd18.prod.outlook.com>
+References: <20230929071621.853570-1-saikrishnag@marvell.com>
+ <278de035-67a7-19dc-c97e-ec2e0b80d3b4@intel.com>
+In-Reply-To: <278de035-67a7-19dc-c97e-ec2e0b80d3b4@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
+ =?utf-8?B?bk5jYzJGcGEzSnBjMmh1WVdkY1lYQndaR0YwWVZ4eWIyRnRhVzVuWERBNVpE?=
+ =?utf-8?B?ZzBPV0kyTFRNeVpETXROR0UwTUMwNE5XVmxMVFppT0RSaVlUSTVaVE0xWWx4?=
+ =?utf-8?B?dGMyZHpYRzF6WnkwM09UbGtNVE5qTXkwMk1XSmtMVEV4WldVdFlXUXlOeTB4?=
+ =?utf-8?B?WTJNeE1HTTBNR1E1WlRSY1lXMWxMWFJsYzNSY056azVaREV6WXpVdE5qRmla?=
+ =?utf-8?B?QzB4TVdWbExXRmtNamN0TVdOak1UQmpOREJrT1dVMFltOWtlUzUwZUhRaUlI?=
+ =?utf-8?B?TjZQU0kzTVRJeUlpQjBQU0l4TXpNME1EYzVNVEk1TWpJeU5qYzBNek1pSUdn?=
+ =?utf-8?B?OUlubGlLMVJxUjFST2VHWnRlVVZRWjA1RGJ6WlBMMEprZVhVMlJUMGlJR2xr?=
+ =?utf-8?B?UFNJaUlHSnNQU0l3SWlCaWJ6MGlNU0lnWTJrOUltTkJRVUZCUlZKSVZURlNV?=
+ =?utf-8?B?MUpWUms1RFoxVkJRVUpuVjBGQlFYQlFMMVUzZVhaWVdrRmxTMloyYzJkd1pU?=
+ =?utf-8?B?Tm9NalJ3S3l0NVEydzNaVWhaV2tGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZJUVVGQlFVSjFSSGRCUVRObk9FRkJSRzlIUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkZRVUZSUlVKQlFVRkJPWGxHV0hGblEwRkJVVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCU2pSQlFVRkNhRUZIVVVGYVFVSjVRVWRWUVdOM1FucEJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVVkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJaMEZCUVVGQlFXNW5RVUZCUjAxQlpGRkNla0ZJVVVGaWQwSjBRVVk0?=
+ =?utf-8?B?UVdOQlFteEJTRWxCWTNkQ2RrRkhORUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVZGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZSUVVGQlFVRkJRVUZCUTBGQlFVRkJRVU5sUVVGQlFWbDNRakZCU0UxQlpF?=
+ =?utf-8?B?RkNka0ZITUVGWWQwSjNRVWRuUVdKM1FuVkJSMVZCWW1kQ01VRkhNRUZaWjBK?=
+ =?utf-8?B?c1FVaEpRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQ1FVRkJRVUZCUVVGQlFVbEJRVUZCUVVGS05FRkJRVUpx?=
+ =?utf-8?B?UVVoVlFXTjNRakJCUnpoQllsRkNaa0ZJVFVGamQwSjFRVVk0UVZwQlFtaEJT?=
+ =?utf-8?B?RTFCWVVGQ1prRklXVUZOUVVGNVFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?Q?FBQUFB?=
+x-dg-rorf: true
+x-dg-refone: =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJSVUZCUVVGQlFVRkJRVUZuUVVGQlFVRkJibWRC?=
+ =?utf-8?B?UVVGSFRVRmtVVUo2UVVoUlFXSjNRblJCUmpoQlkzZENla0ZITkVGWWQwSnlR?=
+ =?utf-8?B?VWRWUVdWUlFqTkJSemhCWTJkQ2EwRklUVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVZGQlFVRkJRVUZCUVVGRFFV?=
+ =?utf-8?B?RkJRVUZCUTJWQlFVRkJXWGRDTVVGSVRVRmtRVUoyUVVjd1FWaDNRbnBCU0Ux?=
+ =?utf-8?B?QlltZENaa0ZITkVGaWQwSnJRVWRWUVdKQlFuQkJSekJCWVZGQ01FRkhWVUZq?=
+ =?utf-8?B?WjBKbVFVaFpRVTFCUVhsQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVSkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJTVUZCUVVGQlFVbzBRVUZCUW1wQlNGVkJZM2RDTUVGSE9FRmlV?=
+ =?utf-8?B?VUptUVVoTlFXTjNRblZCUmpoQlkzZENkMEZIUlVGWmQwSnNRVVk0UVdSblFY?=
+ =?utf-8?B?ZEJSRWxCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZGUVVGQlFVRkJRVUZCUVdkQlFVRkJRVUZ1WjBGQlFVZFJRV0pCUW5k?=
+ =?utf-8?B?QlJqaEJZM2RDY2tGSWEwRmpRVUpzUVVZNFFWbDNRbTlCUjBWQlpFRkNaa0ZI?=
+ =?utf-8?B?TUVGYVVVSjZRVWhOUVZsUlFtNUJSMVZCV0hkQ01rRkVRVUZOWjBGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlVVRkJRVUZCUVVGQlFVTkJRVUZCUVVGRFpVRkJR?=
+ =?utf-8?B?VUZhUVVKelFVaEJRVmgzUW5wQlIzZEJXVkZDYWtGSGMwRllkMEpxUVVkblFW?=
+ =?utf-8?B?bFJRakJCUmpoQllsRkNiRUZJVFVGamQwSm9RVWRqUVZwUlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?Q?FBQUFB?=
+x-dg-reftwo: =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRa0ZCUVVGQlFVRkJRVUZKUVVGQlFVRkJT?=
+ =?utf-8?B?alJCUVVGQ2EwRkhkMEZqUVVKbVFVaFJRVnBSUW1oQlJ6QkJZM2RDWmtGSE9F?=
+ =?utf-8?B?RmlaMEpzUVVkUlFXTm5RbkJCU0ZsQldsRkNaa0ZIV1VGaFVVSnpRVWRWUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVWQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlowRkJRVUZCUVc1blFVRkJSMVZCWWxGQ2FFRkhhMEZpUVVKbVFVZEZRVnBC?=
+ =?utf-8?B?UW10QlNFbEJXbEZDZWtGSVRVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJSV2RCUVVGQlFVRkJRVUZCUVVGQlFVRlJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRMEZCUVVGQlFVTmxRVUZCUVdKUlFtaEJTRWxCWkdkQ2JF?=
+ =?utf-8?B?RkhkMEZZZDBKM1FVaEpRV0ozUW5GQlIxVkJXWGRDTUVGR09FRmlaMEpvUVVj?=
+ =?utf-8?B?d1FWcFJRbnBCUmpoQldYZENka0ZITkVGYVowSndRVWRSUVZwUlFuVkJTRkZC?=
+ =?utf-8?B?WVZGQ2FFRkhkMEZZZDBKb1FVZDNRV0ozUW5WQlIxVkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZDUVVGQlFVRkJRVUZCUVVsQlFVRkJRVUZLTkVGQlFVSjBRVWRG?=
+ =?utf-8?B?UVdOblFqSkJSMVZCWWtGQ1prRklRVUZqWjBKMlFVZHZRVnBSUW1wQlNGRkJX?=
+ =?utf-8?B?SGRDZFVGSFJVRmlVVUpzUVVoTlFWaDNRbmxCUjFWQlkzZENNRUZJU1VGaFVV?=
+ =?utf-8?B?SnFRVWhSUVZwUlFtdEJSamhCV1ZGQ2MwRkhPRUZpWjBKc1FVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlJVRkJRVUZCUVVGQlFVRm5RVUZCUVVGQmJt?=
+ =?utf-8?B?ZEJRVUZITUVGWlVVSjVRVWhaUVZwUlFuTkJSamhCWTBGQ2VVRkhPRUZoWjBK?=
+ =?utf-8?B?c1FVZE5RV1JCUW1aQlJ6UkJXVkZDZEVGSFZVRmpkMEptUVVoSlFWcFJRbnBC?=
+ =?utf-8?B?U0ZGQlkyZENjRUZIVFVGa1FVSnNRVWRSUVZoM1FtOUJSMVZCWlVGQ2FrRkhP?=
+ =?utf-8?B?RUZhUVVKc1FVaE5RVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVkZCUVVGQlFVRkJRVUZE?=
+ =?utf-8?B?UVVGQlFVRkJRMlZCUVVGQllsRkNhRUZJU1VGa1owSnNRVWQzUVdKQlFtWkJS?=
+ =?utf-8?B?MFZCWTJkQ2RFRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?Q?FBQUFB?=
+x-dg-refthree: =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVKQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlNVRkJRVUZCUVVvMFFVRkJRblJCUjBWQlkyZENNa0ZIVlVGaVFVSnpR?=
+ =?utf-8?B?VVk0UVZwM1FuWkJSemhCV25kQ2MwRkhWVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkZRVUZCUVVGQlFVRkJRV2RCUVVGQlFVRnVaMEZCUVVjd1FWbFJRbmxCU0Zs?=
+ =?utf-8?B?QldsRkNjMEZIZDBGWWQwSjNRVWhKUVdKM1FuRkJSMVZCV1hkQ01FRkdPRUZa?=
+ =?utf-8?B?ZDBKMlFVZFJRVnBSUW5wQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCVVVGQlFVRkJRVUZCUVVOQlFVRkJRVUZEWlVGQlFVRmlV?=
+ =?utf-8?B?VUpvUVVoSlFXUm5RbXhCUjNkQllrRkNaa0ZJUVVGalowSjJRVWR2UVZwUlFt?=
+ =?utf-8?B?cEJTRkZCV0hkQ2FrRkhPRUZhUVVKc1FVaE5RVmgzUW10QlIydEJXWGRDTUVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFrRkJRVUZCUVVGQlFVRkpRVUZCUVVG?=
+ =?utf-8?B?QlNqUkJRVUZDZEVGSFJVRmpaMEl5UVVkVlFXSkJRbk5CUmpoQlkwRkNlVUZI?=
+ =?utf-8?B?T0VGaFowSnNRVWROUVdSQlFtWkJSelJCV1ZGQ2RFRkhWVUZqZDBKbVFVZE5R?=
+ =?utf-8?B?V0ozUW5WQlIxbEJZVkZDYTBGSFZVRmlaMEl3UVVkclFWbFJRbk5CUmpoQlls?=
+ =?utf-8?B?RkNhRUZJU1VGa1owSnNRVWQzUVdKQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVVZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCWjBGQlFVRkJRVzVuUVVGQlJ6QkJXVkZDZVVGSVdVRmFVVUp6UVVkM1FW?=
+ =?utf-8?B?aDNRbmRCU0VsQlluZENjVUZIVlVGWmQwSXdRVVk0UVdKblFtaEJSekJCV2xG?=
+ =?utf-8?B?Q2VrRkdPRUZaZDBKMlFVYzBRVnBuUW5CQlIxRkJXbEZDZFVGSVVVRmhVVUpv?=
+ =?utf-8?B?UVVkM1FWaDNRblJCUjBWQlkyZENNa0ZIVlVGaVFVSnpRVVk0UVdKM1FubEJS?=
+ =?utf-8?B?amhCV1ZGQ2VVRkhNRUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?Q?FBQUFB?=
+x-dg-reffour: =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGUlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlEwRkJRVUZCUVVObFFVRkJRV0pSUW1oQlNFbEJaR2RDYkVGSGQw?=
+ =?utf-8?B?RmlRVUptUVVoQlFXTm5RblpCUjI5QldsRkNha0ZJVVVGWWQwSjFRVWRGUVdK?=
+ =?utf-8?B?UlFteEJTRTFCV0hkQ2FrRkhPRUZpWjBKdFFVZHJRVnBCUW14QlJ6UkJaRUZD?=
+ =?utf-8?B?Y0VGSFJVRmlRVUptUVVjd1FWbFJRbmxCU0ZsQldsRkNjMEZIZDBGWWQwSjJR?=
+ =?utf-8?B?VWhKUVZoM1FtNUJSemhCWW5kQ2JrRkhkMEZhVVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkNRVUZCUVVGQlFVRkJRVWxCUVVGQlFVRktORUZCUVVKMFFVZEZRV05u?=
+ =?utf-8?B?UWpKQlIxVkJZa0ZDYzBGR09FRmpRVUo1UVVjNFFXRm5RbXhCUjAxQlpFRkNa?=
+ =?utf-8?B?a0ZITkVGWlVVSjBRVWRWUVdOM1FtWkJTRWxCV2xGQ2VrRklVVUZqWjBKd1FV?=
+ =?utf-8?B?ZE5RV1JCUW14QlIxRkJXSGRDZEVGSFJVRmpaMEl5UVVkVlFXSkJRbk5CUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUlVGQlFVRkJRVUZCUVVGblFVRkJRVUZCYm1kQlFV?=
+ =?utf-8?B?RkhNRUZaVVVKNVFVaFpRVnBSUW5OQlIzZEJXSGRDZDBGSVNVRmlkMEp4UVVk?=
+ =?utf-8?B?VlFWbDNRakJCUmpoQlltZENhRUZITUVGYVVVSjZRVVk0UVdOblFteEJTRTFC?=
+ =?utf-8?B?WkVGQ2VVRkhhMEZaZDBJd1FVZFZRVnBCUW1aQlJ6QkJXVkZDZVVGSVdVRmFV?=
+ =?utf-8?B?VUp6UVVkM1FWaDNRblpCU0VsQldIZENhRUZJU1VGaVVVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFWRkJRVUZCUVVGQlFVRkRRVUZC?=
+ =?utf-8?B?UVVGQlEyVkJRVUZCWWxGQ2FFRklTVUZrWjBKc1FVZDNRV0pCUW1aQlNGRkJX?=
+ =?utf-8?B?bEZDZVVGSE1FRmhVVUoxUVVoVlFXTjNRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUpCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCU1VGQlFVRkJRVW8wUVVGQlFuUkJSMFZCWTJkQ01rRkhWVUZpUVVK?=
+ =?utf-8?B?elFVWTRRV1IzUW5aQlNFbEJXa0ZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFWVkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGRlFVRkJRVUZCUVVGQlFXZEJRVUZCUVVGUFoxbEJRVUZCUVVGQlFVbEJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJaMEZCUVVGQlFVRkJRVU5CUVVGQlFVRkJRVUZCWVVKblFV?=
+ =?utf-8?Q?FHUUFB?=
+x-dg-reffive: =?utf-8?B?UVVKblFVRkJRVUZCUVVGQldWRkNhMEZIVVVGalowSnNRVWhOUVdOM1FVRkJR?=
+ =?utf-8?B?MUZCUVVGQlFrRkJRVUZaZDBJeFFVaE5RV1JCUW5aQlJ6QkJXSGRDZDBGSFZV?=
+ =?utf-8?B?RmpaMEo2UVVjNFFXSm5RVUZCUXpSQlFVRkJRVUZCUVVGWmQwSXhRVWhOUVdS?=
+ =?utf-8?B?QlFuWkJSekJCV0hkQ2QwRkhaMEZpZDBKMVFVZFZRV0puUWpGQlJ6QkJXV2RD?=
+ =?utf-8?B?YkVGSVNVRkJRVUYzUVVGQlFVRkJRVUZCUjAxQlpGRkNla0ZJVVVGaWQwSjBR?=
+ =?utf-8?B?VVk0UVdOM1FucEJSelJCV0hkQ2EwRkhSVUZqZDBKdlFVWTRRV1JuUVhkQlJF?=
+ =?utf-8?B?bEJRVUZCZDBGQlFVRkJRVUZCUVVkTlFXUlJRbnBCU0ZGQlluZENkRUZHT0VG?=
+ =?utf-8?B?amQwSjZRVWMwUVZoM1FuSkJSMVZCWlZGQ00wRkhPRUZqWjBKclFVaE5RVUZC?=
+ =?utf-8?B?UVN0QlFVRkJRVUZCUVVGSFRVRmtVVUo2UVVoUlFXSjNRblJCUmpoQlkzZENl?=
+ =?utf-8?B?a0ZITkVGWWQwSjFRVWM0UVZwQlFteEJSM2RCWVZGQ2RFRkhhMEZrUVVKc1FV?=
+ =?utf-8?B?aEpRVmgzUWpKQlJFRkJUV2RCUVVGRVNVRkJRVUZCUVVGQlFWbDNRakZCU0Ux?=
+ =?utf-8?B?QlpFRkNka0ZITUVGWWQwSjZRVWhOUVdKblFtWkJTRTFCWTBGQ2FFRkhUVUZh?=
+ =?utf-8?B?VVVKbVFVaFpRVTFCUVhsQlFVRkJVR2RCUVVGQlFVRkJRVUpyUVVkM1FXTkJR?=
+ =?utf-8?B?bVpCU0UxQllYZENOVUZJUVVGYVVVSm1RVWROUVdGQlFtaEJTRkZCV0hkQ2RF?=
+ =?utf-8?B?RkhWVUZqZDBKNlFVZEZRVnAzUW14QlJqaEJaR2RCZDBGRVNVRkJRVUV5UVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUjFGQllrRkNkMEZHT0VGamQwSnpRVWRGUVZsM1FuSkJSamhC?=
+ =?utf-8?B?V1hkQ2IwRkhSVUZrUVVKbVFVY3dRVnBSUW5wQlNFMUJXVkZDYmtGSFZVRkJR?=
+ =?utf-8?B?VUUwUVVGQlFVRkJRVUZCUjFGQllrRkNkMEZHT0VGa1FVSnNRVWRGUVdKUlFu?=
+ =?utf-8?B?cEJSamhCWW5kQ2RVRkhWVUZhUVVKNVFVZHJRV1JuUW14QlJqaEJXbWRDY0VG?=
+ =?utf-8?B?SGQwRmFVVUZCUVVOUlFVRkJRVk5CUVVGQldsRkNkRUZIUlVGaFVVSnpRVVk0?=
+ =?utf-8?B?UVZsUlFtdEJSMUZCWTJkQ2JFRklUVUZqZDBGQlFVWm5RVUZCUVVGQlFVRkJZ?=
+ =?utf-8?B?bEZDYUVGSVNVRmtaMEpzUVVkM1FWaDNRbmRCU0VsQlluZENjVUZIVlVGWmQw?=
+ =?utf-8?B?SXdRVVk0UVdKblFtaEJSekJCV2xGQ2VrRkdPRUZaZDBKMlFVYzBRVnBuUW5C?=
+ =?utf-8?B?QlIxRkJXbEZDZFVGSVVVRmhVVUpvUVVkM1FWaDNRbWhCUjNkQlluZENkVUZI?=
+ =?utf-8?B?VlVGQlFVSlZRVUZCUVVGQlFVRkJSekJCV1ZGQ2VVRklXVUZhVVVKelFVWTRR?=
+ =?utf-8?B?V05CUW5sQlJ6aEJZV2RDYkVGSFRVRmtRVUptUVVjMFFWbFJRblJCUjFWQlkz?=
+ =?utf-8?B?ZENaa0ZJU1VGYVVVSjZRVWhSUVdOblFuQkJSMDFCWkVGQ2JFRkhVVUZZZDBK?=
+ =?utf-8?B?b1FVZDNRV0ozUW5WQlIxVkJRVUZDWVVGQlFVRkJRVUZCUVVjd1FWbFJRbmxC?=
+ =?utf-8?B?U0ZsQldsRkNjMEZHT0VGalFVSjVRVWM0UVdGblFteEJSMDFCWkVGQ1prRkhO?=
+ =?utf-8?B?RUZaVVVKMFFVZFZRV04zUW1aQlNFbEJXbEZDZWtGSVVVRmpaMEp3UVVkTlFX?=
+ =?utf-8?B?UkJRbXhCUjFGQldIZENiMEZIVlVGbFFVSnFRVWM0UVZwQlFteEJTRTFCUVVG?=
+ =?utf-8?B?QlowRkJRVUZCUVVGQlFVY3dRVmxSUW5sQlNGbEJXbEZDYzBGSGQwRllkMEpv?=
+ =?utf-8?B?UVVoSlFXSlJRVUZCUTFsQlFVRkJRVUZCUVVGaVVVSm9RVWhKUVdSblFteEJS?=
+ =?utf-8?B?M2RCWWtGQ1prRkhZMEZpZDBKMlFVZGpRV0pCUW14QlFVRkJUa0ZCUVVGQlFV?=
+ =?utf-8?Q?FBQUJ0?=
+x-dg-refsix: =?utf-8?B?UVVkRlFXTm5RakpCUjFWQllrRkNjMEZHT0VGalFVSjVRVWM0UVdGblFteEJS?=
+ =?utf-8?B?MDFCWkVGQ1prRkhUVUZpZDBKclFVZFZRV04zUVVGQlJEUkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RmlVVUpvUVVoSlFXUm5RbXhCUjNkQllrRkNaa0ZJUVVGalowSjJRVWR2UVZw?=
+ =?utf-8?B?UlFtcEJTRkZCV0hkQ2FrRkhPRUZhUVVKc1FVaE5RVmgzUW10QlIydEJXWGRD?=
+ =?utf-8?B?TUVGQlFVRllaMEZCUVVGQlFVRkJRblJCUjBWQlkyZENNa0ZIVlVGaVFVSnpR?=
+ =?utf-8?B?VVk0UVdOQlFubEJSemhCWVdkQ2JFRkhUVUZrUVVKbVFVYzBRVmxSUW5SQlIx?=
+ =?utf-8?B?VkJZM2RDWmtGSFRVRmlkMEoxUVVkWlFXRlJRbXRCUjFWQlltZENNRUZIYTBG?=
+ =?utf-8?B?WlVVSnpRVVk0UVdKUlFtaEJTRWxCWkdkQ2JFRkhkMEZpUVVGQlFVZDNRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJZbEZDYUVGSVNVRmtaMEpzUVVkM1FXSkJRbVpCU0VGQlkyZENk?=
+ =?utf-8?B?a0ZIYjBGYVVVSnFRVWhSUVZoM1FuVkJSMFZCWWxGQ2JFRklUVUZZZDBKcVFV?=
+ =?utf-8?B?YzRRV0puUW0xQlIydEJXa0ZDYkVGSE5FRmtRVUp3UVVkRlFXSkJRbVpCUnpC?=
+ =?utf-8?B?QldWRkNlVUZJV1VGYVVVSnpRVWQzUVZoM1FuWkJTRWxCV0hkQ2FFRklTVUZp?=
+ =?utf-8?B?VVVGQlFVaEpRVUZCUVVGQlFVRkJZbEZDYUVGSVNVRmtaMEpzUVVkM1FXSkJR?=
+ =?utf-8?B?bVpCU0VGQlkyZENka0ZIYjBGYVVVSnFRVWhSUVZoM1FuVkJSMFZCWWxGQ2JF?=
+ =?utf-8?B?RklUVUZZZDBKcVFVYzRRV0puUW0xQlIydEJXa0ZDYkVGSE5FRmtRVUp3UVVk?=
+ =?utf-8?B?RlFXSkJRbVpCUnpCQldWRkNlVUZJV1VGYVVVSnpRVWQzUVZoM1FuWkJTRWxC?=
+ =?utf-8?B?V0hkQ2JrRkhPRUZpZDBKdVFVZDNRVnBSUVVGQlJtOUJRVUZCUVVGQlFVRmlV?=
+ =?utf-8?B?VUpvUVVoSlFXUm5RbXhCUjNkQllrRkNaa0ZJUVVGalowSjJRVWR2UVZwUlFt?=
+ =?utf-8?B?cEJTRkZCV0hkQ2RVRkhSVUZpVVVKc1FVaE5RVmgzUW5sQlIxVkJZM2RDTUVG?=
+ =?utf-8?B?SVNVRmhVVUpxUVVoUlFWcFJRbXRCUmpoQllsRkNhRUZJU1VGa1owSnNRVWQz?=
+ =?utf-8?B?UVdKQlFVRkJSMmRCUVVGQlFVRkJRVUZpVVVKb1FVaEpRV1JuUW14QlIzZEJZ?=
+ =?utf-8?B?a0ZDWmtGSVFVRmpaMEoyUVVkdlFWcFJRbXBCU0ZGQldIZENkVUZIUlVGaVVV?=
+ =?utf-8?B?SnNRVWhOUVZoM1FubEJSMVZCWTNkQ01FRklTVUZoVVVKcVFVaFJRVnBSUW10?=
+ =?utf-8?B?QlJqaEJZbEZDYUVGSVNVRmtaMEpzUVVkM1FXSkJRbVpCUnpoQlkyZENaa0ZI?=
+ =?utf-8?B?UlVGalowSjBRVUZCUVV0blFVRkJRVUZCUVVGQ2RFRkhSVUZqWjBJeVFVZFZR?=
+ =?utf-8?B?V0pCUW5OQlJqaEJaRUZDYkVGSVNVRmlVVUp3UVVjMFFXUlJRbnBCUVVGQlNX?=
+ =?utf-8?B?ZEJRVUZCVlVGQlFVSjBRVWRGUVdOblFqSkJSMVZCWWtGQ2MwRkdPRUZrZDBK?=
+ =?utf-8?B?MlFVaEpRVnBCUVVGQlFUMDlJaTgrUEM5dFpYUmhQZz09?=
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY3PR18MB4707:EE_|SA3PR18MB5348:EE_
+x-ms-office365-filtering-correlation-id: 3576fe1d-6d1b-450f-eff6-08dbc3e1605c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UCPfuNDW+W2EhqL7VjKI/rJwAiNO+0oRR8oG9dOlRXc1OnTSac62rtwAaIlcUGgj7uJrD8Xj3Jn/Gfxf9MUKqoqqcjQPzQpkmEzSWr40s5y85xRY2knXyab6BGQ0RQcqgPPonRGmFH5aq8mWrjc0bF69cpauMOMPcMkIUXm/BA4UVSkfd6sXUk+V7xg1gSODYjIKb7ToPRXIJy4IbV6aTeDAxlYFGIykXhNmR+HWXOqqCfHqQFf4SEELqt1qr8QdfGui+kTCc0D3ZyL9MupbRK9i8B0UJMtIm4qCKTrlkB/gBW+B8l9gkC52TLxOiYFATy6mq2OCrK++mGzUQsBGo+EgI1+TKwcnl0FNGuL6axtUtTIy6RTi4bWgvNNVmycm0x4FAsPFs8Qo6revnPE+4lsoDAfwJ1YKwg5rl4cVXqaAgp0qVNJ8r4Jqb34ApnaBk/Jq43Ytw+U0JR6aycb+DB6r7buihXLvOBmd/WEcW/tX4soFVpDfVW3PQ163MDsqcImzi9noZ2pwRAZz8vgI6f4cgGhipYoMo5bKM/ump/pTpdhjOdXrJ+aEW5Sn5Ze0cu40hnThURf5/84vQvMXgnkMjwvFws+mODQ79FklEWOqDVmHUThhY2yXy0FfVQc8
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY3PR18MB4707.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(376002)(39860400002)(366004)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(83380400001)(33656002)(52536014)(86362001)(8676002)(5660300002)(8936002)(71200400001)(53546011)(26005)(6506007)(7696005)(921005)(122000001)(9686003)(55016003)(38070700005)(38100700002)(2906002)(478600001)(110136005)(66556008)(66446008)(316002)(6636002)(41300700001)(64756008)(66476007)(76116006)(66946007);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?NXlaU3hUT0VLcW1acmtZWC96d09YWk43RTFOcktWSWhUNDB1ZTZma2JxUHRZ?=
+ =?utf-8?B?TkwwMkxVWGJJVmY5TTgxMDYwR1hBSFpGdWVRd1ZaVmFhaGhJanA2MmZQUWVy?=
+ =?utf-8?B?Zk5CQUMzTzI3UmtkMm5ERTlraXgxd1FFYm1PWjBjOVFpYm9ldjBPdEplZUty?=
+ =?utf-8?B?UVRKUWw4c28zd0FsaFloK29UdnBjTUkrWkFvUjlXcDB0ZklNSDVZNFBDNmpW?=
+ =?utf-8?B?cFc2RElRZVF0dFA0NllhZTk2Wnk5V1N4U0UyanYwNjFmc0didXo2anBOaGNT?=
+ =?utf-8?B?WlFpcVlpbFAvVThhRlJ4Ui9zQkxSL1ZSemhsbnJra1pNWDhPdnJXOEF3SHBY?=
+ =?utf-8?B?dXp3aURpenRFTnV5ZktqSXMvQ2gwYXErQmNXa3lOWkxUc1Q4SmVaRmdPeVVj?=
+ =?utf-8?B?NmJiVllIRzhHanZ3U3ZrdW5VOE1SOHRvc2wySWttRWdIS3NoN1Z5SW52WjRN?=
+ =?utf-8?B?L21VVHhtalNMaG0vTEd5dTNsWGovVnFYbzNHeGFrU0cvRVg3WmZjZUtPYjhV?=
+ =?utf-8?B?Qmt5c25DNnVDdnJkQ1FQc1g3c2xQRk0rSjNtWWpoVHFRbXNIVm4xUVRXQTBM?=
+ =?utf-8?B?cWQzdlVvTGUzSk1VZThENGNDTUpyQXdabUVpeWRyRHNqTTBRYm15T0lCQXVw?=
+ =?utf-8?B?NDRPN1FaK0FLNU5JTmNNL1YrNzAyY21BYUl4YW5aYXRaLy9peTgwVzRiS2ow?=
+ =?utf-8?B?amU3OXJ5bExJZ2FOSEJUeU1yb2tkUGhodmlOL09LZzFqSVk2Y0tzUldaU0dI?=
+ =?utf-8?B?UkNrNEdlcVhhTVlLVTJUZ3ZnNm5UcHJlclhnMHA3ajJtZm1LSzVxd09DajhS?=
+ =?utf-8?B?bVR6cVVEekhlUGh2M3JvVlNySzBTaFhPZHJZNW9ZQUt6K0ZhckhlQkRBak1z?=
+ =?utf-8?B?VFQrTVlDVi9ac0VMSVV3VEN0MmlVU1ZPd3VMU2JGTFBiTWFManExVldwTmhn?=
+ =?utf-8?B?MnBvdGd2K1BDK0hDOUVnWnZBUmVrRGtoUXBaTXNWNHdnNE52ZFBzVGZSRE9Z?=
+ =?utf-8?B?cVRscFFFQk1ydGNYREMxbHNhSXo2M3RvZGFxWWJHTVRuK0FIMXZxUXJFdko3?=
+ =?utf-8?B?Sk9ObCtvVldFZjlla0RpcnJUbW90Yk5YUFFNZmVMNElkR2I5QXZVV21KV3h2?=
+ =?utf-8?B?Vi9GOGdKMjd3TVc3VENFekFoc21rd0xNcWpWQ092ci8wSXYrdXlzUDFCaWpw?=
+ =?utf-8?B?YWhTQVF1Wi9xMVM1UXdDZDlkVjVNVWV5R0lXRDhIN2pQT3dUbXcrM2YxZmNu?=
+ =?utf-8?B?T1hmNVlZRmxzSnBHbEtHY2NxTmtHRDl0V2JndU9pS01WVGlqVFRNRk1XT2cv?=
+ =?utf-8?B?d2JhcTBOcjEvTlUyVmtiL1ZkdjErQWRtdUw0aXFFRDRMdGE4N3A0d0ZnbDhK?=
+ =?utf-8?B?eW9rUXRZeVVjbXdtcUNzNXdNUkFGOHdDa2plN3Fjem5VTE0rdkxBVm8vQWVT?=
+ =?utf-8?B?b3dYN0t0d2lCZG1iNm1jZzdjS0JrVUpuMFNReUtyVUJyVlQ4ZEpVc1JtS3gx?=
+ =?utf-8?B?UHBIVy92aU8rb0VsOW9aSnd6ckFaS3pSU3B6T2M3YnNta241M291STBVWi9O?=
+ =?utf-8?B?WVh0NEk1RnZENzlaaHpMK0xRa3VoVUhhWERzRVZXUUEwYnJ4MHdjdmQ5L1N0?=
+ =?utf-8?B?Vkp6Q21xaWZkTkxNWkphQUY5OUYwNDBEcjhYQlpGSmZxY05nRVBqMWp6bkxl?=
+ =?utf-8?B?YzdvRHNhL3BFRTFsVThnK1R3eGRhV0ZEeXVSNzBLQzFlZUhQUXBPMUVZUU8y?=
+ =?utf-8?B?d0t4NU1hblFubTB6T1AxYlNuby9INGhNVGcvQ0J6SDRFSE9jZ2RIcm1FZ054?=
+ =?utf-8?B?TU1NUXBtZG5qN2I2UEpySWd2U2ppUTBhNlQxaWd3UkEvTlMzRHQ0SGtLYmRP?=
+ =?utf-8?B?VDQ5dlhXUXdJWTNLaEoycnFwTzBFVmJJQkNOakpFUGVUaGI2b2lQTDN3RnFq?=
+ =?utf-8?B?Y1NSVk90L3ZpZmkxQ3VUZWJET0tJd2tGQU42TlpEdG9WYVQ2eGdRUWZlWWRa?=
+ =?utf-8?B?SFpERU1JWWFLa2ZkR3kvVDVkd3dRakVNNXVCb0pvb2FBdjJUN0taVVQwNGVz?=
+ =?utf-8?B?Z0RKSmhpQlBoZ3hFbnM4cE1JSmVCSkVseWJ3OWNqak1CcU5ZYnc2cyswZ0xS?=
+ =?utf-8?Q?vZ1foJVFgr2XUlZHASl412BOg?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY3PR18MB4707.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3576fe1d-6d1b-450f-eff6-08dbc3e1605c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Oct 2023 07:21:35.4584
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZaGer7zTvG43GjI/FwSSaKZaUbTDzNerIIFgzWvNIIJ8FbCB6xLhcovRqUBaXubydKXkmsWyjpSxBiIzPQ8dFA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR18MB5348
+X-Proofpoint-ORIG-GUID: V0f3oK94Du9RLNhBzCzd0mmJRx18K5Iu
+X-Proofpoint-GUID: V0f3oK94Du9RLNhBzCzd0mmJRx18K5Iu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-03_04,2023-10-02_01,2023-05-22_02
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,1097 +385,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue 03 Oct 2023 at 05:23, Christian Hewitt <christianshewitt@gmail.com> =
-wrote:
-
->> On 3 Oct 2023, at 1:15 am, Da Xue <da@lessconfused.com> wrote:
->>=20
->> On Tue, Oct 3, 2023 at 3:13=E2=80=AFAM Jerome Brunet <jbrunet@baylibre.c=
-om> wrote:
->>>=20
->>>=20
->>> On Mon 02 Oct 2023 at 18:45, Neil Armstrong <neil.armstrong@linaro.org>=
- wrote:
->>>=20
->>>> Hi,
->>>>=20
->>>> On 02/10/2023 16:10, Jerome Brunet wrote:
->>>>> Add support for the Libretech cottonwood board family.
->>>>> These 2 boards are based on the same PCB, with an RPi B form factor.
->>>>> The "Alta" board uses an a311d while the "Solitude" variant uses an
->>>>> s905d3.
->>>>> Co-developed-by: Da Xue <da.xue@libretech.co>
->>>>> Signed-off-by: Da Xue <da.xue@libretech.co>
->>>>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
->>>>> ---
->>>>>  arch/arm64/boot/dts/amlogic/Makefile          |   2 +
->>>>>  .../amlogic/meson-g12b-a311d-libretech-cc.dts | 133 ++++
->>>>>  .../amlogic/meson-libretech-cottonwood.dtsi   | 610 ++++++++++++++++=
-++
->>>>>  .../amlogic/meson-sm1-s905d3-libretech-cc.dts |  89 +++
->>>>>  4 files changed, 834 insertions(+)
->>>>>  create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libr=
-etech-cc.dts
->>>>>  create mode 100644 arch/arm64/boot/dts/amlogic/meson-libretech-cotto=
-nwood.dtsi
->>>>>  create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libr=
-etech-cc.dts
->>>>> diff --git a/arch/arm64/boot/dts/amlogic/Makefile
->>>>> b/arch/arm64/boot/dts/amlogic/Makefile
->>>>> index 4ce401d17b63..cc8b34bd583d 100644
->>>>> --- a/arch/arm64/boot/dts/amlogic/Makefile
->>>>> +++ b/arch/arm64/boot/dts/amlogic/Makefile
->>>>> @@ -18,6 +18,7 @@ dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-bananapi-c=
-m4-cm4io.dtb
->>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-gsking-x.dtb
->>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-gtking-pro.dtb
->>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-gtking.dtb
->>>>> +dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-a311d-libretech-cc.dtb
->>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-odroid-go-ultra.dtb
->>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-odroid-n2-plus.dtb
->>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-odroid-n2.dtb
->>>>> @@ -73,6 +74,7 @@ dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-bananapi-m2=
--pro.dtb
->>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-bananapi-m5.dtb
->>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-h96-max.dtb
->>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-khadas-vim3l.dtb
->>>>> +dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-s905d3-libretech-cc.dtb
->>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-odroid-c4.dtb
->>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-odroid-hc4.dtb
->>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-sei610.dtb
->>>>> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-c=
-c.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts
->>>>> new file mode 100644
->>>>> index 000000000000..fc890e235dbd
->>>>> --- /dev/null
->>>>> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts
->>>>> @@ -0,0 +1,133 @@
->>>>> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
->>>>> +/*
->>>>> + * Copyright (c) 2023 BayLibre, SAS.
->>>>> + * Author: Jerome Brunet <jbrunet@baylibre.com>
->>>>> + */
->>>>> +
->>>>> +/dts-v1/;
->>>>> +
->>>>> +#include <dt-bindings/clock/g12a-clkc.h>
->>>>> +#include "meson-g12b-a311d.dtsi"
->>>>> +#include "meson-libretech-cottonwood.dtsi"
->>>>> +
->>>>> +/ {
->>>>> +    compatible =3D "libretech,aml-a311d-cc", "amlogic,a311d", "amlog=
-ic,g12b";
->>>>> +    model =3D "Libre Computer AML-A311D-CC Alta";
->>>>> +
->>>>> +    vddcpu_a: regulator-vddcpu-a {
->>>>> +            compatible =3D "pwm-regulator";
->>>>> +            regulator-name =3D "VDDCPU_A";
->>>>> +            regulator-min-microvolt =3D <730000>;
->>>>> +            regulator-max-microvolt =3D <1011000>;
->>>>> +            regulator-boot-on;
->>>>> +            regulator-always-on;
->>>>> +            pwm-supply =3D <&dc_in>;
->>>>> +            pwms =3D <&pwm_ab 0 1250 0>;
->>>>> +            pwm-dutycycle-range =3D <100 0>;
->>>>> +    };
->>>>> +
->>>>> +    sound {
->>>>> +            model =3D "Alta";
->>>>=20
->>>> I think those sound model properties should be coherent with the
->>>> other Libre Computer boards:
->>>> arch/arm64/boot/dts/amlogic/meson-gx-libretech-pc.dtsi:         model =
-=3D "LIBRETECH-PC";
->>>> arch/arm64/boot/dts/amlogic/meson-gxl-s805x-libretech-ac.dts:         =
-  model =3D "LIBRETECH-AC";
->>>> arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts:      =
-          model =3D "LIBRETECH-CC-V2";
->>>> arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc.dts:         =
-  model =3D "LIBRETECH-CC";
->>>=20
->>> "LIBRETECH-CC-" leave very little room to play with
->>> That's not really something that could have been anticipated 5+ years a=
-go
->>>=20
->>=20
->> I think the formal model name is best, maybe with LC prefix.
->> eg. LC-AML-A311D-CC and LC-AML-S905D3-CC
->
-> The first is valid. The second will be truncated to LC-AML-S905D3-C by the
-> alsa 15-character naming limit (mentioned below).
->
-> So name/rename them to:
->
-> LC-XXXXXXXXXXXX <=3D MAX SIZE (15 Chars)
-> LC-LEPOTATO
-> LC-LEPOTATO-V2
-> LC-LAFRITE
-> LC-TARTIFLETTE
-> LC-ALTA
-> LC-SOLITUDE
->
-> Personally I think the plain codenames (no "LC-=E2=80=9C) work best as th=
-ey are all
-> distinctive. Whenever I see lists of the official board names they look/r=
-ead
-> the same at first glance and then I have to spot-the-difference to tell t=
-hem
-> apart.
->
-> At the moment AFAIK these names are just cosmetic as there=E2=80=99s no A=
-mlogic alsa
-> ucm confs using board model (only downstream confs based on driver name).=
- So
-> IMHO rework the names now before the confs go upstream.
->
-
-No they are not cosmetic. It can be used to match the card.
-Changing old names may break userspace.
-
-> CH.
->
->> https://hub.libre.computer/t/libre-computer-board-naming-and-conventions=
-/100
->>=20
->>>>=20
->>>> It's ok to change the scheme since it's tried to keep the name under t=
-he 15 characters limit,
->>>> will the next board keep this naming ?
->>>=20
->>> I don't know what the next board will be so I can hardly make any predi=
-ction
->>> I'm open to suggestion if you prefer something else
->>>=20
->>>>=20
->>>>=20
->>>>> +            audio-routing =3D "TDMOUT_A IN 0", "FRDDR_A OUT 0",
->>>>> +                            "TDMOUT_A IN 1", "FRDDR_B OUT 0",
->>>>> +                            "TDMOUT_A IN 2", "FRDDR_C OUT 0",
->>>>> +                            "TDM_A Playback", "TDMOUT_A OUT",
->>>>> +                            "TDMOUT_B IN 0", "FRDDR_A OUT 1",
->>>>> +                            "TDMOUT_B IN 1", "FRDDR_B OUT 1",
->>>>> +                            "TDMOUT_B IN 2", "FRDDR_C OUT 1",
->>>>> +                            "TDM_B Playback", "TDMOUT_B OUT",
->>>>> +                            "TDMOUT_C IN 0", "FRDDR_A OUT 2",
->>>>> +                            "TDMOUT_C IN 1", "FRDDR_B OUT 2",
->>>>> +                            "TDMOUT_C IN 2", "FRDDR_C OUT 2",
->>>>> +                            "TDM_C Playback", "TDMOUT_C OUT",
->>>>> +                            "TDMIN_A IN 0", "TDM_A Capture",
->>>>> +                            "TDMIN_B IN 0", "TDM_A Capture",
->>>>> +                            "TDMIN_C IN 0", "TDM_A Capture",
->>>>> +                            "TDMIN_A IN 3", "TDM_A Loopback",
->>>>> +                            "TDMIN_B IN 3", "TDM_A Loopback",
->>>>> +                            "TDMIN_C IN 3", "TDM_A Loopback",
->>>>> +                            "TDMIN_A IN 1", "TDM_B Capture",
->>>>> +                            "TDMIN_B IN 1", "TDM_B Capture",
->>>>> +                            "TDMIN_C IN 1", "TDM_B Capture",
->>>>> +                            "TDMIN_A IN 4", "TDM_B Loopback",
->>>>> +                            "TDMIN_B IN 4", "TDM_B Loopback",
->>>>> +                            "TDMIN_C IN 4", "TDM_B Loopback",
->>>>> +                            "TDMIN_A IN 2", "TDM_C Capture",
->>>>> +                            "TDMIN_B IN 2", "TDM_C Capture",
->>>>> +                            "TDMIN_C IN 2", "TDM_C Capture",
->>>>> +                            "TDMIN_A IN 5", "TDM_C Loopback",
->>>>> +                            "TDMIN_B IN 5", "TDM_C Loopback",
->>>>> +                            "TDMIN_C IN 5", "TDM_C Loopback",
->>>>> +                            "TODDR_A IN 0", "TDMIN_A OUT",
->>>>> +                            "TODDR_B IN 0", "TDMIN_A OUT",
->>>>> +                            "TODDR_C IN 0", "TDMIN_A OUT",
->>>>> +                            "TODDR_A IN 1", "TDMIN_B OUT",
->>>>> +                            "TODDR_B IN 1", "TDMIN_B OUT",
->>>>> +                            "TODDR_C IN 1", "TDMIN_B OUT",
->>>>> +                            "TODDR_A IN 2", "TDMIN_C OUT",
->>>>> +                            "TODDR_B IN 2", "TDMIN_C OUT",
->>>>> +                            "TODDR_C IN 2", "TDMIN_C OUT",
->>>>> +                            "Lineout", "ACODEC LOLP",
->>>>> +                            "Lineout", "ACODEC LORP";
->>>>> +    };
->>>>> +};
->>>>> +
->>>>> +&cpu_opp_table_0 {
->>>>> +            opp-1800000000 {
->>>>> +                    opp-hz =3D /bits/ 64 <1800000000>;
->>>>> +                    opp-microvolt =3D <1001000>;
->>>>> +            };
->>=20
->> This seems to match
->> https://github.com/torvalds/linux/blob/master/arch/arm64/boot/dts/amlogi=
-c/meson-g12b-a311d.dtsi#L44
->>=20
->>>>> +
->>>>> +            opp-2016000000 {
->>>>> +                    opp-hz =3D /bits/ 64 <2016000000>;
->>>>> +                    opp-microvolt =3D <1011000>;
->>>>> +            };
->>=20
->> We run manufacturing verification at this speed but I don't think we
->> should include this in upstream.
->>=20
->>>>> +};
->>>>> +
->>>>> +&cpu0 {
->>>>> +    cpu-supply =3D <&vddcpu_b>;
->>>>> +    operating-points-v2 =3D <&cpu_opp_table_0>;
->>>>> +    clocks =3D <&clkc CLKID_CPU_CLK>;
->>>>> +    clock-latency =3D <50000>;
->>>>> +};
->>>>> +
->>>>> +&cpu1 {
->>>>> +    cpu-supply =3D <&vddcpu_b>;
->>>>> +    operating-points-v2 =3D <&cpu_opp_table_0>;
->>>>> +    clocks =3D <&clkc CLKID_CPU_CLK>;
->>>>> +    clock-latency =3D <50000>;
->>>>> +};
->>>>> +
->>>>> +&cpu100 {
->>>>> +    cpu-supply =3D <&vddcpu_a>;
->>>>> +    operating-points-v2 =3D <&cpub_opp_table_1>;
->>>>> +    clocks =3D <&clkc CLKID_CPUB_CLK>;
->>>>> +    clock-latency =3D <50000>;
->>>>> +};
->>>>> +
->>>>> +&cpu101 {
->>>>> +    cpu-supply =3D <&vddcpu_a>;
->>>>> +    operating-points-v2 =3D <&cpub_opp_table_1>;
->>>>> +    clocks =3D <&clkc CLKID_CPUB_CLK>;
->>>>> +    clock-latency =3D <50000>;
->>>>> +};
->>>>> +
->>>>> +&cpu102 {
->>>>> +    cpu-supply =3D <&vddcpu_a>;
->>>>> +    operating-points-v2 =3D <&cpub_opp_table_1>;
->>>>> +    clocks =3D <&clkc CLKID_CPUB_CLK>;
->>>>> +    clock-latency =3D <50000>;
->>>>> +};
->>>>> +
->>>>> +&cpu103 {
->>>>> +    cpu-supply =3D <&vddcpu_a>;
->>>>> +    operating-points-v2 =3D <&cpub_opp_table_1>;
->>>>> +    clocks =3D <&clkc CLKID_CPUB_CLK>;
->>>>> +    clock-latency =3D <50000>;
->>>>> +};
->>>>> +
->>>>> +&pwm_ab {
->>>>> +    pinctrl-0 =3D <&pwm_a_e_pins>, <&pwm_b_x7_pins>;
->>>>> +    clocks =3D <&xtal>, <&xtal>;
->>>>> +    clock-names =3D "clkin0", "clkin1";
->>>>> +};
->>>>> diff --git a/arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.d=
-tsi b/arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
->>>>> new file mode 100644
->>>>> index 000000000000..a7fc8963ff54
->>>>> --- /dev/null
->>>>> +++ b/arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
->>>>> @@ -0,0 +1,610 @@
->>>>> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
->>>>> +/*
->>>>> + * Copyright (c) 2023 BayLibre, SAS.
->>>>> + * Author: Jerome Brunet <jbrunet@baylibre.com>
->>>>> + */
->>>>> +
->>>>> +#include <dt-bindings/clock/g12a-clkc.h>
->>>>> +#include <dt-bindings/input/input.h>
->>>>> +#include <dt-bindings/leds/common.h>
->>>>> +#include <dt-bindings/gpio/gpio.h>
->>>>> +#include <dt-bindings/gpio/meson-g12a-gpio.h>
->>>>> +#include <dt-bindings/sound/meson-g12a-toacodec.h>
->>>>> +#include <dt-bindings/sound/meson-g12a-tohdmitx.h>
->>>>> +
->>>>> +/ {
->>>>> +    aliases {
->>>>> +            serial0 =3D &uart_AO;
->>>>> +            ethernet0 =3D &ethmac;
->>>>> +            spi0 =3D &spifc;
->>>>> +    };
->>>>> +
->>>>> +    memory@0 {
->>>>> +            device_type =3D "memory";
->>>>> +            reg =3D <0x0 0x0 0x0 0x80000000>;
->>>>> +    };
->>>>> +
->>>>> +    chosen {
->>>>> +            stdout-path =3D "serial0:115200n8";
->>>>> +    };
->>>>> +
->>>>> +    dioo2133: audio-amplifier-0 {
->>>>> +            compatible =3D "simple-audio-amplifier";
->>>>> +            enable-gpios =3D <&gpio GPIOX_0 GPIO_ACTIVE_HIGH>;
->>>>> +            VCC-supply =3D <&vcc_5v>;
->>>>> +            sound-name-prefix =3D "10U2";
->>>>> +    };
->>>>> +
->>>>> +    /* TOFIX: handle CVBS_DET on SARADC channel 0 */
->>>>> +    cvbs-connector {
->>>>> +            compatible =3D "composite-video-connector";
->>>>> +
->>>>> +            port {
->>>>> +                    cvbs_connector_in: endpoint {
->>>>> +                            remote-endpoint =3D <&cvbs_vdac_out>;
->>>>> +                    };
->>>>> +            };
->>>>> +    };
->>>>> +
->>>>> +    emmc_pwrseq: emmc-pwrseq {
->>>>> +            compatible =3D "mmc-pwrseq-emmc";
->>>>> +            reset-gpios =3D <&gpio BOOT_12 GPIO_ACTIVE_LOW>;
->>>>> +    };
->>>>> +
->>>>> +    hdmi-connector {
->>>>> +            compatible =3D "hdmi-connector";
->>>>> +            type =3D "a";
->>>>> +
->>>>> +            port {
->>>>> +                    hdmi_connector_in: endpoint {
->>>>> +                            remote-endpoint =3D <&hdmi_tx_tmds_out>;
->>>>> +                    };
->>>>> +            };
->>>>> +    };
->>>>> +
->>>>> +    leds-pwm {
->>>>> +            compatible =3D "pwm-leds";
->>>>> +
->>>>> +            led-green {
->>>>> +                    color =3D <LED_COLOR_ID_GREEN>;
->>>>> +                    function =3D LED_FUNCTION_STATUS;
->>>>> +                    linux,default-trigger =3D "default-on";
->>>>> +                    panic-indicator;
->>>>> +                    max-brightness =3D <255>;
->>>>> +                    pwms =3D <&pwm_cd 1 1250 0>;
->>>>> +                    active-low;
->>>>> +            };
->>>>> +
->>>>> +            led-blue {
->>>>> +                    color =3D <LED_COLOR_ID_BLUE>;
->>>>> +                    function =3D LED_FUNCTION_ACTIVITY;
->>>>> +                    linux,default-trigger =3D "activity";
->>>>> +                    max-brightness =3D <255>;
->>>>> +                    pwms =3D <&pwm_ab 1 1250 0>;
->>>>> +                    active-low;
->>>>> +            };
->>>>> +    };
->>>>> +
->>>>> +    leds-gpio {
->>>>> +            compatible =3D "gpio-leds";
->>>>> +
->>>>> +            led-orange {
->>>>> +                    color =3D <LED_COLOR_ID_AMBER>;
->>=20
->> Should this be LED_COLOR_ID_ORANGE?
->>=20
->>>>> +                    function =3D LED_FUNCTION_STANDBY;
->>>>> +                    gpios =3D <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
->>>>> +            };
->>>>> +    };
->>>>> +
->>>>> +    dc_in: regulator-dc-in {
->>>>> +            compatible =3D "regulator-fixed";
->>>>> +            regulator-name =3D "5V_IN";
->>>>> +            regulator-min-microvolt =3D <5000000>;
->>>>> +            regulator-max-microvolt =3D <5000000>;
->>>>> +            regulator-always-on;
->>>>> +    };
->>>>> +
->>>>> +    flash_1v8: regulator-flash-1v8 {
->>>>> +            compatible =3D "regulator-fixed";
->>>>> +            regulator-name =3D "FLASH_1V8";
->>>>> +            regulator-min-microvolt =3D <1800000>;
->>>>> +            regulator-max-microvolt =3D <1800000>;
->>>>> +            regulator-always-on;
->>>>> +            vin-supply =3D <&vcc_3v3>;
->>>>> +    };
->>>>> +
->>>>> +    vcc_card: regulator-vcc-card {
->>>>> +            compatible =3D "regulator-fixed";
->>>>> +            regulator-name =3D "VCC_CARD";
->>>>> +            regulator-min-microvolt =3D <3300000>;
->>>>> +            regulator-max-microvolt =3D <3300000>;
->>>>> +            vin-supply =3D <&vddao_3v3>;
->>>>> +            gpio =3D <&gpio GPIOX_2 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DR=
-AIN)>;
->>>>> +            enable-active-high;
->>>>> +            gpio-open-drain;
->>>>> +    };
->>>>> +
->>>>> +    vcc_3v3: regulator-vcc-3v3 {
->>>>> +            compatible =3D "regulator-fixed";
->>>>> +            regulator-name =3D "VCC_3V3";
->>>>> +            regulator-min-microvolt =3D <3300000>;
->>>>> +            regulator-max-microvolt =3D <3300000>;
->>>>> +            regulator-always-on;
->>>>> +            vin-supply =3D <&vddao_3v3>;
->>>>> +
->>>>> +            /* FIXME: controlled by TEST_N */
->>>>> +    };
->>>>> +
->>>>> +    vcc_5v: regulator-vcc-5v {
->>>>> +            compatible =3D "regulator-fixed";
->>>>> +            regulator-name =3D "VCC_5V";
->>>>> +            regulator-min-microvolt =3D <5000000>;
->>>>> +            regulator-max-microvolt =3D <5000000>;
->>>>> +            regulator-always-on;
->>>>> +            vin-supply =3D <&dc_in>;
->>>>> +            gpio =3D <&gpio GPIOH_8 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DR=
-AIN)>;
->>>>> +            enable-active-high;
->>>>> +            gpio-open-drain;
->>>>> +    };
->>>>> +
->>>>> +    vddao_3v3: regulator-vddao_3v3 {
->>>>> +            compatible =3D "regulator-fixed";
->>>>> +            regulator-name =3D "VDDAO_3V3";
->>>>> +            regulator-min-microvolt =3D <3300000>;
->>>>> +            regulator-max-microvolt =3D <3300000>;
->>>>> +            regulator-always-on;
->>>>> +            vin-supply =3D <&dc_in>;
->>>>> +    };
->>>>> +
->>>>> +    vddcpu_b: regulator-vddcpu-b {
->>>>> +            compatible =3D "pwm-regulator";
->>>>> +            regulator-name =3D "VDDCPU_B";
->>>>> +            regulator-min-microvolt =3D <730000>;
->>>>> +            regulator-max-microvolt =3D <1011000>;
->>>>> +            regulator-boot-on;
->>>>> +            regulator-always-on;
->>>>> +            pwm-supply =3D <&dc_in>;
->>>>> +            pwms =3D <&pwm_AO_cd 1 1250 0>;
->>>>> +            pwm-dutycycle-range =3D <100 0>;
->>>>> +    };
->>>>> +
->>>>> +    vddio_ao18: regulator-vddio_ao18 {
->>>>> +            compatible =3D "regulator-fixed";
->>>>> +            regulator-name =3D "VDDIO_AO18";
->>>>> +            regulator-min-microvolt =3D <1800000>;
->>>>> +            regulator-max-microvolt =3D <1800000>;
->>>>> +            regulator-always-on;
->>>>> +            vin-supply =3D <&vddao_3v3>;
->>>>> +    };
->>>>> +
->>>>> +    vddio_c: regulator-vddio_c {
->>>>> +            compatible =3D "regulator-gpio";
->>>>> +            regulator-name =3D "VDDIO_C";
->>>>> +            regulator-min-microvolt =3D <1800000>;
->>>>> +            regulator-max-microvolt =3D <3300000>;
->>>>> +            regulator-settling-time-up-us =3D <200>;
->>>>> +            regulator-settling-time-down-us =3D <50000>;
->>>>> +            vin-supply =3D <&vddao_3v3>;
->>>>> +            gpios =3D <&gpio GPIOX_4 GPIO_ACTIVE_HIGH>;
->>>>> +            states =3D <3300000 0>,
->>>>> +                     <1800000 1>;
->>>>> +    };
->>>>> +
->>>>> +    sound {
->>>>> +            compatible =3D "amlogic,axg-sound-card";
->>>>> +            audio-widgets =3D "Line", "Lineout";
->>>>> +            audio-aux-devs =3D <&tdmout_a>, <&tdmout_b>, <&tdmout_c>,
->>>>> +                             <&tdmin_a>, <&tdmin_b>, <&tdmin_c>,
->>>>> +                             <&dioo2133>;
->>>>> +
->>>>> +            assigned-clocks =3D <&clkc CLKID_MPLL2>,
->>>>> +                              <&clkc CLKID_MPLL0>,
->>>>> +                              <&clkc CLKID_MPLL1>;
->>>>> +            assigned-clock-parents =3D <0>, <0>, <0>;
->>>>> +            assigned-clock-rates =3D <294912000>,
->>>>> +                                   <270950400>,
->>>>> +                                   <393216000>;
->>>>> +
->>>>> +            dai-link-0 {
->>>>> +                    sound-dai =3D <&frddr_a>;
->>>>> +            };
->>>>> +
->>>>> +            dai-link-1 {
->>>>> +                    sound-dai =3D <&frddr_b>;
->>>>> +            };
->>>>> +
->>>>> +            dai-link-2 {
->>>>> +                    sound-dai =3D <&frddr_c>;
->>>>> +            };
->>>>> +
->>>>> +            dai-link-3 {
->>>>> +                    sound-dai =3D <&toddr_a>;
->>>>> +            };
->>>>> +
->>>>> +            dai-link-4 {
->>>>> +                    sound-dai =3D <&toddr_b>;
->>>>> +            };
->>>>> +
->>>>> +            dai-link-5 {
->>>>> +                    sound-dai =3D <&toddr_c>;
->>>>> +            };
->>>>> +
->>>>> +            /*
->>>>> +             * Audio setup: The 40 pins header provides access to 2 =
-TDMs,
->>>>> +             * SPDIF In/Out and PDM inputs.
->>>>> +             * - TDM A: 2 lanes
->>>>> +             *    D0:    40/X9
->>>>> +             *    D1:    38/X8
->>>>> +             *    BCLK:  12/X11
->>>>> +             *    FS:    35/X10
->>>>> +             * - TDM B: 4 lanes
->>>>> +             *    D0:    37/A3
->>>>> +             *    D1:    16/A4
->>>>> +             *    D2:    18/A5 or 7/AO6
->>>>> +             *    D3:    22/A6 or 21/H5
->>>>> +             *    BCLK:  29/A1 or 8/AO8
->>>>> +             *    FS:    31/A2 or 11/AO7
->>>>> +             * - 2 Master Clocks:
->>>>> +             *    MCLK0: 15/A0 or 10/AO9
->>>>> +             *    MCLK1: 33/X15
->>>>> +             * - SPDIF:
->>>>> +             *    OUT:   32/A11
->>>>> +             *    IN:    21/H5
->>>>> +             * - PDM Input:
->>>>> +             *    DO:    13/A8
->>>>> +             *    D1:    26/A9
->>>>> +             *    D2:    22/A6
->>>>> +             *    D3:    18/A5
->>>>> +             *    DCLK:  36/A7
->>>>> +             *
->>>>> +             * TDM C is not usable on the 40 pins connector so it is
->>>>> +             * setup for the HDMI 4 lanes i2s.
->>>>> +             *
->>>>> +             * No pinctrl is enabled by default to preserve the
->>>>> +             * genericity of the 40 pins header. Many configurations=
- are
->>>>> +             * possible based on the desired use case. Please adjust=
- TDM
->>>>> +             * masks, clock setups and pinctrl accordingly.
->>>>> +             */
->>>>> +
->>>>> +            dai-link-6 {
->>>>> +                    sound-dai =3D <&tdmif_a>;
->>>>> +                    dai-format =3D "dsp_a";
->>>>> +                    dai-tdm-slot-tx-mask-0 =3D <1 1>;
->>>>> +                    mclk-fs =3D <256>;
->>>>> +
->>>>> +                    codec-0 {
->>>>> +                            sound-dai =3D <&tohdmitx TOHDMITX_I2S_IN=
-_A>;
->>>>> +                    };
->>>>> +
->>>>> +                    codec-1 {
->>>>> +                            sound-dai =3D <&toacodec TOACODEC_IN_A>;
->>>>> +                    };
->>>>> +            };
->>>>> +
->>>>> +            dai-link-7 {
->>>>> +                    sound-dai =3D <&tdmif_b>;
->>>>> +                    dai-format =3D "i2s";
->>>>> +                    dai-tdm-slot-tx-mask-0 =3D <1 1>;
->>>>> +                    dai-tdm-slot-rx-mask-1 =3D <1 1>;
->>>>> +                    mclk-fs =3D <256>;
->>>>> +
->>>>> +                    codec-0 {
->>>>> +                            sound-dai =3D <&tohdmitx TOHDMITX_I2S_IN=
-_B>;
->>>>> +                    };
->>>>> +
->>>>> +                    codec-1 {
->>>>> +                            sound-dai =3D <&toacodec TOACODEC_IN_B>;
->>>>> +                    };
->>>>> +            };
->>>>> +
->>>>> +            dai-link-8 {
->>>>> +                    sound-dai =3D <&tdmif_c>;
->>>>> +                    dai-format =3D "i2s";
->>>>> +                    dai-tdm-slot-tx-mask-0 =3D <1 1>;
->>>>> +                    dai-tdm-slot-tx-mask-1 =3D <1 1>;
->>>>> +                    dai-tdm-slot-tx-mask-2 =3D <1 1>;
->>>>> +                    dai-tdm-slot-tx-mask-3 =3D <1 1>;
->>>>> +                    mclk-fs =3D <256>;
->>>>> +
->>>>> +                    codec-0 {
->>>>> +                            sound-dai =3D <&tohdmitx TOHDMITX_I2S_IN=
-_C>;
->>>>> +                    };
->>>>> +
->>>>> +                    codec-1 {
->>>>> +                            sound-dai =3D <&toacodec TOACODEC_IN_C>;
->>>>> +                    };
->>>>> +            };
->>>>> +
->>>>> +            dai-link-9 {
->>>>> +                    sound-dai =3D <&tohdmitx TOHDMITX_I2S_OUT>;
->>>>> +
->>>>> +                    codec {
->>>>> +                            sound-dai =3D <&hdmi_tx>;
->>>>> +                    };
->>>>> +            };
->>>>> +
->>>>> +            dai-link-10 {
->>>>> +                    sound-dai =3D <&toacodec TOACODEC_OUT>;
->>>>> +
->>>>> +                    codec {
->>>>> +                            sound-dai =3D <&acodec>;
->>>>> +                    };
->>>>> +            };
->>>>> +    };
->>>>> +};
->>>>> +
->>>>> +&acodec {
->>>>> +    status =3D "okay";
->>>>> +    AVDD-supply =3D <&vddio_ao18>;
->>>>> +};
->>>>> +
->>>>> +&arb {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&cecb_AO {
->>>>> +    status =3D "okay";
->>>>> +    pinctrl-0 =3D <&cec_ao_b_h_pins>;
->>>>> +    pinctrl-names =3D "default";
->>>>> +    hdmi-phandle =3D <&hdmi_tx>;
->>>>> +};
->>>>> +
->>>>> +&clkc_audio {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&cvbs_vdac_port {
->>>>> +    cvbs_vdac_out: endpoint {
->>>>> +            remote-endpoint =3D <&cvbs_connector_in>;
->>>>> +    };
->>>>> +};
->>>>> +
->>>>> +&ethmac {
->>>>> +    pinctrl-0 =3D <&eth_pins>, <&eth_rgmii_pins>, <&eth_phy_irq_pins=
->;
->>>>> +    pinctrl-names =3D "default";
->>>>> +    status =3D "okay";
->>>>> +    phy-mode =3D "rgmii";
->>>>> +    phy-handle =3D <&external_phy>;
->>>>> +    amlogic,tx-delay-ns =3D <2>;
->>>>> +};
->>>>> +
->>>>> +&ext_mdio {
->>>>> +    external_phy: ethernet-phy@0 {
->>>>> +            /* Realtek RTL8211F (0x001cc916) */
->>>>> +            reg =3D <0>;
->>>>> +            max-speed =3D <1000>;
->>>>> +
->>>>> +            reset-assert-us =3D <100000>;
->>>>> +            reset-deassert-us =3D <100000>;
->>>>> +            reset-gpios =3D <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW | GPIO_=
-OPEN_DRAIN)>;
->>>>> +
->>>>> +            interrupt-parent =3D <&gpio_intc>;
->>>>> +            /* MAC_INTR on GPIOZ_14 */
->>>>> +            interrupts =3D <26 IRQ_TYPE_LEVEL_LOW>;
->>>>> +    };
->>>>> +};
->>>>> +
->>>>> +&frddr_a {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&frddr_b {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&frddr_c {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&hdmi_tx {
->>>>> +    status =3D "okay";
->>>>> +    pinctrl-0 =3D <&hdmitx_hpd_pins>, <&hdmitx_ddc_pins>;
->>>>> +    pinctrl-names =3D "default";
->>>>> +    hdmi-supply =3D <&vcc_5v>;
->>>>> +};
->>>>> +
->>>>> +&hdmi_tx_tmds_port {
->>>>> +    hdmi_tx_tmds_out: endpoint {
->>>>> +            remote-endpoint =3D <&hdmi_connector_in>;
->>>>> +    };
->>>>> +};
->>>>> +
->>>>> +&ir {
->>>>> +    status =3D "okay";
->>>>> +    pinctrl-0 =3D <&remote_input_ao_pins>;
->>>>> +    pinctrl-names =3D "default";
->>>>> +};
->>>>> +
->>>>> +&npu {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>=20
->>>> Are you sure you want this enabled ?
->>>> AFAIK if etnaviv is enabled, it will be used first as a render node by=
- mesa and fail.
->>>>=20
->>>=20
->>> AFAIK, it is enabled in the pre-flashed bootloader that is running
->>> debian, fedora and opensuse ... but etnaviv is blacklisted there
->>>=20
->>> It should indeed be removed.
->>>=20
->>>=20
->>=20
->> Yes, let's remove this until there are future developments in this
->> area. We will add it to our tooling to enable separately.
->>=20
->>>>> +
->>>>> +&periphs_pinctrl {
->>>>> +    spi_cs_disable_pins: spi-cs-disable {
->>>>> +            mux {
->>>>> +                    groups =3D "BOOT_14";
->>>>> +                    function =3D "gpio_periphs";
->>>>> +                    bias-disable;
->>>>> +                    output-high;
->>>>> +            };
->>>>> +    };
->>>>> +
->>>>> +    eth_phy_irq_pins: eth-phy-irq {
->>>>> +            mux {
->>>>> +                    groups =3D "GPIOZ_14";
->>>>> +                    function =3D "gpio_periphs";
->>>>> +                    bias-pull-up;
->>>>> +                    output-disable;
->>>>> +            };
->>>>> +    };
->>>>> +};
->>>>> +
->>>>> +&pwm_AO_cd {
->>>>> +    status =3D "okay";
->>>>> +    pinctrl-0 =3D <&pwm_ao_d_e_pins>;
->>>>> +    pinctrl-names =3D "default";
->>>>> +    clocks =3D <&xtal>;
->>>>> +    clock-names =3D "clkin1";
->>>>> +};
->>>>> +
->>>>> +&pwm_ab {
->>>>> +    status =3D "okay";
->>>>> +    pinctrl-0 =3D <&pwm_b_x7_pins>;
->>>>> +    pinctrl-names =3D "default";
->>>>> +    clocks =3D <&xtal>;
->>>>> +    clock-names =3D "clkin1";
->>>>> +};
->>>>> +
->>>>> +&pwm_cd {
->>>>> +    status =3D "okay";
->>>>> +    pinctrl-0 =3D <&pwm_d_x3_pins>;
->>>>> +    pinctrl-names =3D "default";
->>>>> +    clocks =3D <&xtal>;
->>>>> +    clock-names =3D "clkin1";
->>>>> +};
->>>>> +
->>>>> +&saradc {
->>>>> +    status =3D "okay";
->>>>> +    vref-supply =3D <&vddio_ao18>;
->>>>> +};
->>>>> +
->>>>> +/* SD card */
->>>>> +&sd_emmc_b {
->>>>> +    status =3D "okay";
->>>>> +    pinctrl-0 =3D <&sdcard_c_pins>;
->>>>> +    pinctrl-1 =3D <&sdcard_clk_gate_c_pins>;
->>>>> +    pinctrl-names =3D "default", "clk-gate";
->>>>> +
->>>>> +    bus-width =3D <4>;
->>>>> +    cap-sd-highspeed;
->>>>> +    sd-uhs-sdr12;
->>>>> +    sd-uhs-sdr25;
->>>>> +    sd-uhs-sdr50;
->>>>> +    sd-uhs-sdr104;
->>>>> +    max-frequency =3D <200000000>;
->>>>> +    disable-wp;
->>>>> +
->>>>> +    cd-gpios =3D <&gpio GPIOC_6 GPIO_ACTIVE_LOW>;
->>>>> +    vmmc-supply =3D <&vcc_card>;
->>>>> +    vqmmc-supply =3D <&vddio_c>;
->>>>> +};
->>>>> +
->>>>> +/*
->>>>> + * EMMC_D4, EMMC_D5, EMMC_D6 and EMMC_D7 pins are shared between SPI=
- NOR CS
->>>>> + * and eMMC Data 4 to 7 pins.
->>>>> + * Replace emmc_data_8b_pins to emmc_data_4b_pins from sd_emmc_c pin=
-ctrl-0,
->>>>> + * and change bus-width to 4 then spifc can be enabled.
->>>>> + */
->>>>> +&sd_emmc_c {
->>>>> +    status =3D "okay";
->>>>> +    pinctrl-0 =3D <&emmc_ctrl_pins>, <&emmc_data_8b_pins>, <&emmc_ds=
-_pins>,
->>>>> +                <&spi_cs_disable_pins>;
->>>>> +    pinctrl-1 =3D <&emmc_clk_gate_pins>;
->>>>> +    pinctrl-names =3D "default", "clk-gate";
->>>>> +
->>>>> +    bus-width =3D <8>;
->>>>> +    cap-mmc-highspeed;
->>>>> +    mmc-hs200-1_8v;
->>>>> +    max-frequency =3D <200000000>;
->>>>> +    disable-wp;
->>>>> +
->>>>> +    mmc-pwrseq =3D <&emmc_pwrseq>;
->>>>> +    vmmc-supply =3D <&vcc_3v3>;
->>>>> +    vqmmc-supply =3D <&flash_1v8>;
->>>>> +};
->>>>> +
->>>>> +&spifc {
->>>>> +    status =3D "disabled";
->>>>> +    pinctrl-0 =3D <&nor_pins>;
->>>>> +    pinctrl-names =3D "default";
->>>>> +    cs-gpios =3D <&gpio BOOT_14 GPIO_ACTIVE_LOW>;
->>>>> +
->>>>> +    w25lq128d: flash@0 {
->>>>> +            compatible =3D "jedec,spi-nor";
->>>>> +            reg =3D <0>;
->>>>> +            #address-cells =3D <1>;
->>>>> +            #size-cells =3D <1>;
->>>>> +            spi-max-frequency =3D <80000000>;
->>>>> +    };
->>>>> +};
->>>>> +
->>>>> +&tdmif_a {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&tdmif_b {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&tdmif_c {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&tdmin_a {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&tdmin_b {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&tdmin_c {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&tdmout_a {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&tdmout_b {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&tdmout_c {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&toacodec {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&toddr_a {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&toddr_b {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&toddr_c {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&tohdmitx {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> +
->>>>> +&uart_AO {
->>>>> +    status =3D "okay";
->>>>> +    pinctrl-0 =3D <&uart_ao_a_pins>;
->>>>> +    pinctrl-names =3D "default";
->>>>> +};
->>>>> +
->>>>> +&usb2_phy1 {
->>>>> +    phy-supply =3D <&dc_in>;
->>>>> +};
->>>>> +
->>>>> +&usb3_pcie_phy {
->>>>> +    #address-cells =3D <1>;
->>>>> +    #size-cells =3D <0>;
->>>>> +    phy-supply =3D <&vcc_5v>;
->>>>> +
->>>>> +    hub: hub@1 {
->>>>> +            compatible =3D "usb5e3,626";
->>>>> +            reg =3D <1>;
->>>>> +            reset-gpios =3D <&gpio GPIOC_7 (GPIO_ACTIVE_LOW | GPIO_O=
-PEN_DRAIN)>;
->>>>> +    };
->>>>=20
->>>> Not sure the PHY is the right place to put the USB HUB,
->>>> and it's probable the HUB is connected to both the USB2 and USB3 lines
->>>=20
->>> It is connected to the USB3.0 only
->>=20
->> https://drive.google.com/file/d/17WNK9m8VZ9CfS7GMiTLdq1zHsmHR4OcV/view
->>=20
->> USBHOST_A_DM and USBHOST_A_DP are connected to the USB 3 hub DM0 and DP0.
->> Not sure if this counts?
->>=20
->>>=20
->>>> so you should have both USB IDs in DT like it'd done for the Odroid-C4:
->>>>=20
->>>> / {
->>>> ...
->>>>         /* USB hub supports both USB 2.0 and USB 3.0 root hub */
->>>>         usb-hub {
->>>>                 dr_mode =3D "host";
->>>>                 #address-cells =3D <1>;
->>>>                 #size-cells =3D <0>;
->>>>=20
->>>>                 /* 2.0 hub on port 1 */
->>>>                 hub_2_0: hub@1 {
->>>>                         compatible =3D "usb2109,2817";
->>>>                         reg =3D <1>;
->>>>                         peer-hub =3D <&hub_3_0>;
->>>>                         reset-gpios =3D <&gpio GPIOH_4 GPIO_ACTIVE_LOW=
->;
->>>>                         vdd-supply =3D <&vcc_5v>;
->>>>                 };
->>>>=20
->>>>                 /* 3.1 hub on port 4 */
->>>>                 hub_3_0: hub@2 {
->>>>                         compatible =3D "usb2109,817";
->>>>                         reg =3D <2>;
->>>>                         peer-hub =3D <&hub_2_0>;
->>>>                         reset-gpios =3D <&gpio GPIOH_4 GPIO_ACTIVE_LOW=
->;
->>>>                         vdd-supply =3D <&vcc_5v>;
->>>>                 };
->>>>         };
->>>> ...
->>>> };
->>>>=20
->>>> if it only has a single USB ID, then it should go under the dwc3 node.
->>>=20
->>> The usb controller is connected to the PHY and what's coming out of the=
- PHY
->>> goes to the hub. It seems logical to hub the hub under it.
->>>=20
->>> Why bypass the PHY ?
->>>=20
->>>>=20
->>>>> +};
->>>>> +
->>>>> +&usb {
->>>>> +    status =3D "okay";
->>>>> +};
->>>>> diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-c=
-c.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-cc.dts
->>>>> new file mode 100644
->>>>> index 000000000000..077e7506ce4f
->>>>> --- /dev/null
->>>>> +++ b/arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-cc.dts
->>>>> @@ -0,0 +1,89 @@
->>>>> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
->>>>> +/*
->>>>> + * Copyright (c) 2023 BayLibre, SAS.
->>>>> + * Author: Jerome Brunet <jbrunet@baylibre.com>
->>>>> + */
->>>>> +
->>>>> +/dts-v1/;
->>>>> +
->>>>> +#include <dt-bindings/clock/g12a-clkc.h>
->>>>> +#include "meson-sm1.dtsi"
->>>>> +#include "meson-libretech-cottonwood.dtsi"
->>>>> +
->>>>> +/ {
->>>>> +    compatible =3D "libretech,aml-s905d3-cc", "amlogic,sm1";
->>>>> +    model =3D "Libre Computer AML-S905D3-CC Solitude";
->>>>> +
->>>>> +    sound {
->>>>> +            model =3D "Solitude";
->>>>> +            audio-routing =3D "TDMOUT_A IN 0", "FRDDR_A OUT 0",
->>>>> +                            "TDMOUT_A IN 1", "FRDDR_B OUT 0",
->>>>> +                            "TDMOUT_A IN 2", "FRDDR_C OUT 0",
->>>>> +                            "TDM_A Playback", "TDMOUT_A OUT",
->>>>> +                            "TDMOUT_B IN 0", "FRDDR_A OUT 1",
->>>>> +                            "TDMOUT_B IN 1", "FRDDR_B OUT 1",
->>>>> +                            "TDMOUT_B IN 2", "FRDDR_C OUT 1",
->>>>> +                            "TDM_B Playback", "TDMOUT_B OUT",
->>>>> +                            "TDMOUT_C IN 0", "FRDDR_A OUT 2",
->>>>> +                            "TDMOUT_C IN 1", "FRDDR_B OUT 2",
->>>>> +                            "TDMOUT_C IN 2", "FRDDR_C OUT 2",
->>>>> +                            "TDM_C Playback", "TDMOUT_C OUT",
->>>>> +                            "TDMIN_A IN 0", "TDM_A Capture",
->>>>> +                            "TDMIN_B IN 0", "TDM_A Capture",
->>>>> +                            "TDMIN_C IN 0", "TDM_A Capture",
->>>>> +                            "TDMIN_A IN 13", "TDM_A Loopback",
->>>>> +                            "TDMIN_B IN 13", "TDM_A Loopback",
->>>>> +                            "TDMIN_C IN 13", "TDM_A Loopback",
->>>>> +                            "TDMIN_A IN 1", "TDM_B Capture",
->>>>> +                            "TDMIN_B IN 1", "TDM_B Capture",
->>>>> +                            "TDMIN_C IN 1", "TDM_B Capture",
->>>>> +                            "TDMIN_A IN 14", "TDM_B Loopback",
->>>>> +                            "TDMIN_B IN 14", "TDM_B Loopback",
->>>>> +                            "TDMIN_C IN 14", "TDM_B Loopback",
->>>>> +                            "TDMIN_A IN 2", "TDM_C Capture",
->>>>> +                            "TDMIN_B IN 2", "TDM_C Capture",
->>>>> +                            "TDMIN_C IN 2", "TDM_C Capture",
->>>>> +                            "TDMIN_A IN 15", "TDM_C Loopback",
->>>>> +                            "TDMIN_B IN 15", "TDM_C Loopback",
->>>>> +                            "TDMIN_C IN 15", "TDM_C Loopback",
->>>>> +                            "TODDR_A IN 0", "TDMIN_A OUT",
->>>>> +                            "TODDR_B IN 0", "TDMIN_A OUT",
->>>>> +                            "TODDR_C IN 0", "TDMIN_A OUT",
->>>>> +                            "TODDR_A IN 1", "TDMIN_B OUT",
->>>>> +                            "TODDR_B IN 1", "TDMIN_B OUT",
->>>>> +                            "TODDR_C IN 1", "TDMIN_B OUT",
->>>>> +                            "TODDR_A IN 2", "TDMIN_C OUT",
->>>>> +                            "TODDR_B IN 2", "TDMIN_C OUT",
->>>>> +                            "TODDR_C IN 2", "TDMIN_C OUT",
->>>>> +                            "Lineout", "ACODEC LOLP",
->>>>> +                            "Lineout", "ACODEC LORP";
->>>>> +    };
->>>>> +};
->>>>> +
->>>>> +&cpu0 {
->>>>> +    cpu-supply =3D <&vddcpu_b>;
->>>>> +    operating-points-v2 =3D <&cpu_opp_table>;
->>>>> +    clocks =3D <&clkc CLKID_CPU_CLK>;
->>>>> +    clock-latency =3D <50000>;
->>>>> +};
->>>>> +
->>>>> +&cpu1 {
->>>>> +    cpu-supply =3D <&vddcpu_b>;
->>>>> +    operating-points-v2 =3D <&cpu_opp_table>;
->>>>> +    clocks =3D <&clkc CLKID_CPU1_CLK>;
->>>>> +    clock-latency =3D <50000>;
->>>>> +};
->>>>> +
->>>>> +&cpu2 {
->>>>> +    cpu-supply =3D <&vddcpu_b>;
->>>>> +    operating-points-v2 =3D <&cpu_opp_table>;
->>>>> +    clocks =3D <&clkc CLKID_CPU2_CLK>;
->>>>> +    clock-latency =3D <50000>;
->>>>> +};
->>>>> +
->>>>> +&cpu3 {
->>>>> +    cpu-supply =3D <&vddcpu_b>;
->>>>> +    operating-points-v2 =3D <&cpu_opp_table>;
->>>>> +    clocks =3D <&clkc CLKID_CPU3_CLK>;
->>>>> +    clock-latency =3D <50000>;
->>>>> +};
->>>>=20
->>>> Apart that, it looks fine,
->>>>=20
->>>>=20
->>>> Thanks,
->>>> Neil
->>>=20
->>>=20
->>> _______________________________________________
->>> linux-amlogic mailing list
->>> linux-amlogic@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/linux-amlogic
->>=20
->> _______________________________________________
->> linux-amlogic mailing list
->> linux-amlogic@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-amlogic
-
+DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEphY29iIEtlbGxlciA8amFj
+b2IuZS5rZWxsZXJAaW50ZWwuY29tPg0KPiBTZW50OiBGcmlkYXksIFNlcHRlbWJlciAyOSwgMjAy
+MyAxMToyNCBQTQ0KPiBUbzogU2FpIEtyaXNobmEgR2FqdWxhIDxzYWlrcmlzaG5hZ0BtYXJ2ZWxs
+LmNvbT47IGRhdmVtQGRhdmVtbG9mdC5uZXQ7DQo+IGVkdW1hemV0QGdvb2dsZS5jb207IGt1YmFA
+a2VybmVsLm9yZzsgcGFiZW5pQHJlZGhhdC5jb207DQo+IG5ldGRldkB2Z2VyLmtlcm5lbC5vcmc7
+IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IFN1bmlsIEtvdnZ1cmkNCj4gR291dGhhbSA8
+c2dvdXRoYW1AbWFydmVsbC5jb20+OyBHZWV0aGFzb3dqYW55YSBBa3VsYQ0KPiA8Z2FrdWxhQG1h
+cnZlbGwuY29tPjsgcmljaGFyZGNvY2hyYW5AZ21haWwuY29tOyBMaW51IENoZXJpYW4NCj4gPGxj
+aGVyaWFuQG1hcnZlbGwuY29tPjsgSmVyaW4gSmFjb2IgS29sbGFudWtrYXJhbiA8amVyaW5qQG1h
+cnZlbGwuY29tPjsNCj4gSGFyaXByYXNhZCBLZWxhbSA8aGtlbGFtQG1hcnZlbGwuY29tPjsgU3Vi
+YmFyYXlhIFN1bmRlZXAgQmhhdHRhDQo+IDxzYmhhdHRhQG1hcnZlbGwuY29tPg0KPiBTdWJqZWN0
+OiBSZTogW25ldCBQQVRDSF0gb2N0ZW9udHgyLWFmOiBFbmFibGUgaGFyZHdhcmUgdGltZXN0YW1w
+aW5nDQo+IGZvciBWRnMNCj4gDQo+IA0KPiBPbiA5LzI5LzIwMjMgMTI6MTYgQU0sIFNhaSBLcmlz
+aG5hIHdyb3RlOg0KPiA+IEN1cnJlbnRseSBmb3IgVkZzLCBtYWlsYm94IHJldHVybnMgZXJyb3Ig
+d2hlbiBoYXJkd2FyZSB0aW1lc3RhbXBpbmcNCj4gPiBlbmFibGUgaXMgcmVxdWVzdGVkLiBUaGlz
+IHBhdGNoIGZpeGVzIHRoaXMgaXNzdWUuDQo+ID4NCj4gDQo+IFRoZSBzdWJqZWN0IHRpdGxlIGlt
+cGxpZXMgdGhhdCB0aGlzIGlzIGltcGxlbWVudGluZyBhIG5ldyBmZWF0dXJlIChhbmQgdGh1cw0K
+PiBub3QgcmVhbGx5IGEgZ29vZCBjYW5kaWRhdGUgZm9yIG5ldCksIGJ1dCB0aGUgY29udGVudCBp
+bXBsaWVzIHRoaXMgaXMgYSBmaXggZm9yIGFuDQo+IGV4aXN0aW5nIGZlYXR1cmUgdGhhdHMgbm90
+IHdvcmtpbmcgcHJvcGVybHkuDQo+IA0KPiBJdCBjb3VsZCB1c2UgYSBzbGlnaHRseSBpbXByb3Zl
+ZCBjb21taXQgbWVzc2FnZS4NCg0KQWNrLCBJIHdpbGwgbW9kaWZ5IHRoZSBjb21taXQgbWVzc2Fn
+ZSBpbiBWMg0KDQo+IA0KPiA+IEZpeGVzOiA0MjE1NzIxNzViYTUgKCJvY3Rlb250eDItYWY6IFN1
+cHBvcnQgdG8gZW5hYmxlL2Rpc2FibGUgSFcNCj4gPiB0aW1lc3RhbXBpbmciKQ0KPiA+IFNpZ25l
+ZC1vZmYtYnk6IFN1YmJhcmF5YSBTdW5kZWVwIDxzYmhhdHRhQG1hcnZlbGwuY29tPg0KPiA+IFNp
+Z25lZC1vZmYtYnk6IFN1bmlsIEtvdnZ1cmkgR291dGhhbSA8c2dvdXRoYW1AbWFydmVsbC5jb20+
+DQo+ID4gU2lnbmVkLW9mZi1ieTogU2FpIEtyaXNobmEgPHNhaWtyaXNobmFnQG1hcnZlbGwuY29t
+Pg0KPiANCj4gVHlwaWNhbGx5IHRoZSBhdXRob3Igc2lnbmVkLW9mZi1ieSBzaG91bGQgZ28gZmly
+c3QsIGFuZCB0aGVuIG90aGVyIHNpZ25lZC1vZmYtDQo+IGJ5IGFyZSBmb3IgcGVvcGxlIGluIHRo
+ZSBjaGFpbiBvZiBwYXRjaCBkZWxpdmVyeS4gSWYgdGhlIG90aGVyIHR3byBjby1hdXRob3JlZA0K
+PiB0aGUgcGF0Y2ggdGhleSBzaG91bGQgaGF2ZSBDby1kZXZlbG9wZWQtYnkgdGFnIG9yIHNvbWV0
+aGluZy4gT3RoZXJ3aXNlIEkNCj4gd291bGQgZXhwZWN0IHRoYXQgU3ViYmFyYXlhIFN1bmRlZXBk
+IHdvdWxkIGJlIHRoZSBwYXRjaCBhdXRob3Igc2luY2UNCj4gdGhhdCBzaWduZWQtb2ZmLWJ5IGlz
+IGZpcnN0Lg0KDQpBY2ssIEkgd2lsbCBjaGFuZ2UgdGhlIGF1dGhvciBuYW1lIGluIFYyDQoNCj4g
+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbmV0L2V0aGVybmV0L21hcnZlbGwvb2N0ZW9udHgyL2Fm
+L3J2dV9jZ3guYyB8IDcgKysrLS0tLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25z
+KCspLCA0IGRlbGV0aW9ucygtKQ0KPiA+DQo+IA0KPiBUaGUgZml4IGl0c2VsZiBzZWVtcyBzdHJh
+aWdodCBmb3J3YXJkLCB0aG91Z2ggdGhlIGNvbW1lbnQgaXMgY29uZnVzaW5nIHRvDQo+IG1lLiBZ
+b3UgYWxzbyBjaGFuZ2VkIHRoZSByZXR1cm4gZnJvbSAtRU5PREVWIHRvIC1FUEVSTSB3aGljaCBt
+YWtlcw0KPiBzZW5zZSBlbm91Z2ggSSBzdXBwb3NlLCBidXQgdGhhdHMgbm90IGNhbGxlZCBvdXQg
+aW4gdGhlIGNoYW5nZS4NCj4gDQoNCkFjaywgSSB3aWxsIG1vZGlmeSB0aGUgY29tbWl0IG1lc3Nh
+Z2UgaW4gVjINCg0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9ldGhlcm5ldC9tYXJ2ZWxs
+L29jdGVvbnR4Mi9hZi9ydnVfY2d4LmMNCj4gPiBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L21hcnZl
+bGwvb2N0ZW9udHgyL2FmL3J2dV9jZ3guYw0KPiA+IGluZGV4IGYyYjFlZGYxYmI0My4uYWJhMGM1
+MzAxNjBjIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvbmV0L2V0aGVybmV0L21hcnZlbGwvb2N0
+ZW9udHgyL2FmL3J2dV9jZ3guYw0KPiA+ICsrKyBiL2RyaXZlcnMvbmV0L2V0aGVybmV0L21hcnZl
+bGwvb2N0ZW9udHgyL2FmL3J2dV9jZ3guYw0KPiA+IEBAIC03NTYsMTIgKzc1NiwxMSBAQCBzdGF0
+aWMgaW50IHJ2dV9jZ3hfcHRwX3J4X2NmZyhzdHJ1Y3QgcnZ1ICpydnUsIHUxNg0KPiBwY2lmdW5j
+LCBib29sIGVuYWJsZSkNCj4gPiAgCWlmICghaXNfbWFjX2ZlYXR1cmVfc3VwcG9ydGVkKHJ2dSwg
+cGYsIFJWVV9MTUFDX0ZFQVRfUFRQKSkNCj4gPiAgCQlyZXR1cm4gMDsNCj4gPg0KPiA+IC0JLyog
+VGhpcyBtc2cgaXMgZXhwZWN0ZWQgb25seSBmcm9tIFBGcyB0aGF0IGFyZSBtYXBwZWQgdG8gQ0dY
+DQo+IExNQUNzLA0KPiA+ICsJLyogVGhpcyBtc2cgaXMgZXhwZWN0ZWQgb25seSBmcm9tIFBGcyB0
+aGF0IGFyZSBtYXBwZWQgdG8gQ0dYL1JQTQ0KPiA+ICtMTUFDcywNCj4gPiAgCSAqIGlmIHJlY2Vp
+dmVkIGZyb20gb3RoZXIgUEYvVkYgc2ltcGx5IEFDSywgbm90aGluZyB0byBkby4NCj4gPiAgCSAq
+Lw0KPiANCj4gVGhpcyBjb21tZW50IGltcGxpZXMgdG8gbWUgdGhhdCB3ZSB3b3VsZG4ndCBleHBl
+Y3QgdGhpcyBtZXNzYWdlIGZyb20gYQ0KPiBWRj8NCg0KQWNrLCBJIHdpbGwgbW9kaWZ5IHRoZSBj
+b21tZW50IGluIFYyDQoNCj4gDQo+ID4gLQlpZiAoKHBjaWZ1bmMgJiBSVlVfUEZWRl9GVU5DX01B
+U0spIHx8DQo+ID4gLQkgICAgIWlzX3BmX2NneG1hcHBlZChydnUsIHBmKSkNCj4gPiAtCQlyZXR1
+cm4gLUVOT0RFVjsNCj4gPiArCWlmICghaXNfcGZfY2d4bWFwcGVkKHJ2dSwgcnZ1X2dldF9wZihw
+Y2lmdW5jKSkpDQo+ID4gKwkJcmV0dXJuIC1FUEVSTTsNCj4gPg0KPiA+ICAJcnZ1X2dldF9jZ3hf
+bG1hY19pZChydnUtPnBmMmNneGxtYWNfbWFwW3BmXSwgJmNneF9pZCwNCj4gJmxtYWNfaWQpOw0K
+PiA+ICAJY2d4ZCA9IHJ2dV9jZ3hfcGRhdGEoY2d4X2lkLCBydnUpOw0K
