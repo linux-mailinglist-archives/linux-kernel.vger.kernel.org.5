@@ -2,145 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B067B5F3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 05:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F30587B5F45
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 05:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbjJCDIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 23:08:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58680 "EHLO
+        id S230096AbjJCDPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 23:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbjJCDIm (ORCPT
+        with ESMTP id S229933AbjJCDPh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 23:08:42 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA84BD;
-        Mon,  2 Oct 2023 20:08:39 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3932iduH019401;
-        Tue, 3 Oct 2023 03:08:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=qcppdkim1;
- bh=+sWsm5qtm4vswHnIfyAJk3RpqFmAXoJi+tBhHkSooFE=;
- b=GdmZGGQhvhcXN7eBvCUUs0N0hmYy1NvPP2R3e7P5Wpjjgmx94GCtzPVzXkY8UBUCdYTv
- WIzeSwBzp27rN3JV8tcWI5PbRxLJg8F4x9NijBLTYzaPBUOFaUQ6fLX4v7zAYYBpVhjj
- OyJEAiLnwY11fY2lTaRoZgjY8GynpgfWlfRPG+lk5RbgntJ1xAyQdFu1SXkykl9WfSDD
- JsgLtnajXLnPX9k+71pVr3qTWRPL3nx50yLNE5QQk2bn26riwNiPx9Ob9xWo+ketjfrP
- voUDF0H1TV0SXovsstKYW+Bv/uGR5bdNE5DoLh71b9Lzrm/eErw0myazJ2tmhnAAapYC Vg== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tg9hdr3sj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Oct 2023 03:08:26 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39338PcM016133
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 3 Oct 2023 03:08:25 GMT
-Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Mon, 2 Oct 2023 20:08:20 -0700
-Date:   Tue, 3 Oct 2023 08:38:17 +0530
-From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
-To:     Brian Geffon <bgeffon@google.com>
-CC:     Pavankumar Kondeti <quic_pkondeti@quicinc.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        <kernel@quicinc.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] PM: hibernate: Fix a bug in copying the zero bitmap to
- safe pages
-Message-ID: <990198cf-59bb-484d-9383-dd7d133c8105@quicinc.com>
-References: <20230929-hib_zero_bitmap_fix-v1-1-6cfdcb785250@quicinc.com>
- <CADyq12wRVJURCuB0ZjL878J-U9kCxNE0pSoihRWBP8OJWk1M1A@mail.gmail.com>
+        Mon, 2 Oct 2023 23:15:37 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2055.outbound.protection.outlook.com [40.107.117.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34A3BBD;
+        Mon,  2 Oct 2023 20:15:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fFDZfi1GwndQrA+Tf/I411B+lHBRXVjxvSxmHIoiQ/OrWXNOR+kfVdNQ9Iz5MnKPBf0JBhOyZepWC67ltdy0frQeXnKwNELWA9WZko+JClugQE2obsBvR+SD3asDnlVS1i8jF/HLmCDsy91b5Nw+BpdtyuPKY/W7BA/H5XxFQzwWE3GNuB1yxX6JzV1OIm2sSOLqh694HgWrj0tSwZjjtsrAXsJJSpB4V7w9PzC+AMADD9FdmyA8AOtPVcTIpTVDmCiSWfB+G9q5hiyd5fBEIJHAvjRpX+6HAFOn29KlbP+SQ8PglJeTJWixFJxiZPiHozmcdQjIsngFHyAzfkohkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/ABculsaNL2r+stL5Qp6KI32MY/C3wxBxj9evnp7U6w=;
+ b=VjAWvf0awgBOshBtzcIO0cMOBDDIodMjvSdNcpK5MK2zW/PUl7+8gP+/LWcMMpSOa/NY+dDQNp62emTylYwn9NHe6S9qsRdrffQ+h7dvQCs4emOqcZDs7UKPBzmTWNaih0neyPUuAUyqv1MqvfFp1NVNKyQyyaug4LrJZMRCYxaWBsJo9l1CnG+3kNiWqHEch9kHQPGfRLm9+XyagU3R9Jo8KJ1X4nOzLSsGX35CZMe/dR/lQE83K2AVp/M/xBpXgmO5+xwBY00d6HgDWbg7PbHljdxqmtQKJET4Ab8jhX5FGRwkZYu4yMR5jpjpNnKXF3QiLsElEtz89H44xzYTzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
+ (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/ABculsaNL2r+stL5Qp6KI32MY/C3wxBxj9evnp7U6w=;
+ b=eCrt5l3inxSLOZLqEaed+pmV7XEDa03fz9JHiSiFe6fal5Jq7tH6ViPl+Jo71vaDsYS/fd4FT19neWXHBxecVWkGZxOHAJjLd0PVVmeyaHFr2Cf536HUaaOGy24XWqgi3VRDuk0U+b+YuMcDKd7e2+3/EsIHsIx1cK4F5BeTkFE6uitgNpFgB2+myb4DqxmQkFW7pZz7SNTyEzMrFQHc+g3e9J6nE3fuArezL2gxXWAOL3JBQLQ9UMECBtgeHo5qio8OkuM/h9xP8HhfcEZEUw5GjOIlVyUb2+wU5o7U5aWDqTM1oUOnNJqEgC1FzVGRtKl8ASFKx/pJUdv5DaPVGw==
+Received: from SG2P153CA0010.APCP153.PROD.OUTLOOK.COM (2603:1096::20) by
+ SEYPR04MB6776.apcprd04.prod.outlook.com (2603:1096:101:dd::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6838.28; Tue, 3 Oct 2023 03:15:25 +0000
+Received: from SG1PEPF000082E5.apcprd02.prod.outlook.com
+ (2603:1096::cafe:0:0:18) by SG2P153CA0010.outlook.office365.com
+ (2603:1096::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6886.6 via Frontend
+ Transport; Tue, 3 Oct 2023 03:15:25 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ SG1PEPF000082E5.mail.protection.outlook.com (10.167.240.8) with Microsoft
+ SMTP Server id 15.20.6838.14 via Frontend Transport; Tue, 3 Oct 2023 03:15:24
+ +0000
+From:   Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>
+To:     patrick@stwcx.xyz
+Cc:     Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/2] hwmon: max31790: support to config PWM as TACH
+Date:   Tue,  3 Oct 2023 11:15:16 +0800
+Message-Id: <20231003031520.3091047-1-Delphine_CC_Chiu@wiwynn.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADyq12wRVJURCuB0ZjL878J-U9kCxNE0pSoihRWBP8OJWk1M1A@mail.gmail.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: xWW8-eUTp8WOrdZacg7tD8qMByB0i1l5
-X-Proofpoint-GUID: xWW8-eUTp8WOrdZacg7tD8qMByB0i1l5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-02_16,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 phishscore=0 clxscore=1015 mlxscore=0 suspectscore=0
- impostorscore=0 mlxlogscore=574 malwarescore=0 spamscore=0
- priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2309180000 definitions=main-2310030024
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SG1PEPF000082E5:EE_|SEYPR04MB6776:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 9d73efa7-5b88-4a5a-37db-08dbc3befc59
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 814/qhOo5a4VqCQ1+sEFeF1l1OR4Xf3f4+0bTZBZGYDr5ZzvhTnBNG+XKtkAfQslbXi7unfAMKlJvtUK+Rs+luvC8Saxsz9C/7CPh7bwYFWWObQO/atdNZqEWetxrG47mxr94wkpIXHZc+0uF7JOL3M6eud+27xwE5rFlLPk09bSDtz/TV05Vf2mb3vR675lSLTEZy4m830dDpeZ7B3CdamOBxVCls3CaIstiyv04V0ww2cfLKNm6tympf62fFFeVzlcBHqtCbkLO/UcFu0k0jzIF9bcXJHtEQblmAVkd6P9ROn+SWZxOFAMg5wT6Lwzj8z68w0e2M9QMBQd2tYvWn4yDIINwF3vtc0zBswoxU6CWzPAgLvqgwuFg3JNVYgW9uzB0yJ7sPZn5D51N5eD80AIaY/5Svf3JEdpL/7BI6ebWJh7tiZHmbPcixmNRxKHx4xyMGncUmL6CD0bfu5m0c2NhEYol3JV75IfnBGt82mKZVqgT8j/B1PPmRtOWZBuiSPvgmu7b3w7bVg2nT49k9eDKiMBLfNqqV486IAfuIx9r9WoaI59TQEWjnIAflNUyTkkVEAaNbf5++z4K+8IgJ5fXmn9UkkwoMKQ1MeXNFPG1b+gWxXiJP7DCF+19bBzqbvLXLNy6cYcwX9rXFKRVe1/GJWVTKB1I+R0ChCP1k14WBq10uzfyTvuRe+SX+eLpa+YhHCX5e3PyNyQKreqKw==
+X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(396003)(346002)(376002)(136003)(39860400002)(451199024)(1800799009)(82310400011)(186009)(64100799003)(46966006)(36840700001)(70206006)(6506007)(6512007)(82740400003)(2906002)(316002)(4744005)(8676002)(4326008)(5660300002)(36756003)(36736006)(8936002)(41300700001)(36860700001)(86362001)(9316004)(40480700001)(47076005)(478600001)(70586007)(956004)(6916009)(356005)(81166007)(6666004)(54906003)(6486002)(26005)(336012)(2616005)(1076003);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 03:15:24.1558
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9d73efa7-5b88-4a5a-37db-08dbc3befc59
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource: SG1PEPF000082E5.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR04MB6776
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 07:37:13AM -0400, Brian Geffon wrote:
-> On Fri, Sep 29, 2023 at 1:31 PM Pavankumar Kondeti
-> <quic_pkondeti@quicinc.com> wrote:
-> >
-> Hi Pavankumar,
-> 
-> > The following crash is observed 100% of the time during resume from
-> > the hibernation on a x86 QEMU system.
-> >
-> > [   12.931887]  ? __die_body+0x1a/0x60
-> > [   12.932324]  ? page_fault_oops+0x156/0x420
-> > [   12.932824]  ? search_exception_tables+0x37/0x50
-> > [   12.933389]  ? fixup_exception+0x21/0x300
-> > [   12.933889]  ? exc_page_fault+0x69/0x150
-> > [   12.934371]  ? asm_exc_page_fault+0x26/0x30
-> > [   12.934869]  ? get_buffer.constprop.0+0xac/0x100
-> > [   12.935428]  snapshot_write_next+0x7c/0x9f0
-> > [   12.935929]  ? submit_bio_noacct_nocheck+0x2c2/0x370
-> > [   12.936530]  ? submit_bio_noacct+0x44/0x2c0
-> > [   12.937035]  ? hib_submit_io+0xa5/0x110
-> > [   12.937501]  load_image+0x83/0x1a0
-> > [   12.937919]  swsusp_read+0x17f/0x1d0
-> > [   12.938355]  ? create_basic_memory_bitmaps+0x1b7/0x240
-> > [   12.938967]  load_image_and_restore+0x45/0xc0
-> > [   12.939494]  software_resume+0x13c/0x180
-> > [   12.939994]  resume_store+0xa3/0x1d0
-> >
-> > The commit being fixed introduced a bug in copying the zero bitmap
-> > to safe pages. A temporary bitmap is allocated in prepare_image()
-> > to make a copy of zero bitmap after the unsafe pages are marked.
-> > Freeing this temporary bitmap later results in an inconsistent state
-> > of unsafe pages. Since free bit is left as is for this temporary bitmap
-> > after free, these pages are treated as unsafe pages when they are
-> > allocated again. This results in incorrect calculation of the number
-> > of pages pre-allocated for the image.
-> >
-> > nr_pages = (nr_zero_pages + nr_copy_pages) - nr_highmem - allocated_unsafe_pages;
-> >
-> > The allocate_unsafe_pages is estimated to be higher than the actual
-> > which results in running short of pages in safe_pages_list. Hence the
-> > crash is observed in get_buffer() due to NULL pointer access of
-> > safe_pages_list.
-> 
-> Rafael pulled https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/commit/?h=linux-next&id=f0c7183008b41e92fa676406d87f18773724b48b
-> which addresses the null pointer dereference which regardless
-> shouldn't be touching the list directly and should be using
-> __get_safe_page().
+Support to config PWM as TACH in MAX31790 driver.
+Add binding document for MAX31790 driver.
 
-Thanks for pointing me to this. I have verified hibernation by pulling this
-commit to v6.6-rc3 and it works as expected.
+---
+Changelog:
+v3 - Use 'sensor-type' in 'channel' node to config pwm as tach.
+   - Changed the status in MAINTAINERS to 'Maintained'. 
+v2 - Remove unnecessary parentheses.
+   - Add more error handling.
+   - Change the type of "pwm-as-tach" from u8 to u32 to match binding
+     document.
+   - Add dt-bindings for the MAXIM MAX31790.
+v1 - Support to config PWM as TACH
 
-This commit is currently queued for v6.7, can it be included in next -rc or 
-we have to apply the patch I have sent to make sure that hibernation works on
-v6.6 when it gets released.
+Delphine CC Chiu (2):
+  hwmon: max31790: support to config PWM as TACH
+  dt-bindings: hwmon: add MAX31790
 
-> 
-> >
-> > Fixes: 005e8dddd497 ("PM: hibernate: don't store zero pages in the image file")
-> > Signed-off-by: Pavankumar Kondeti <quic_pkondeti@quicinc.com>
+ .../bindings/hwmon/maxim,max31790.yaml        | 89 +++++++++++++++++++
+ MAINTAINERS                                   |  6 ++
+ drivers/hwmon/max31790.c                      | 83 +++++++++++++++++
+ 3 files changed, 178 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/maxim,max31790.yaml
 
-Thanks,
-Pavan
+-- 
+2.25.1
+
