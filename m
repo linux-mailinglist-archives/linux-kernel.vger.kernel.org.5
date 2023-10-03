@@ -2,62 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 520C87B6C22
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A73557B6C20
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240199AbjJCOvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:51:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
+        id S240204AbjJCOvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240186AbjJCOv2 (ORCPT
+        with ESMTP id S240197AbjJCOv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 10:51:28 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6A75AB
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:51:25 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-40666aa674fso10075725e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 07:51:25 -0700 (PDT)
+        Tue, 3 Oct 2023 10:51:29 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3DAAAF
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:51:26 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-4064876e8b8so10425265e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 07:51:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696344684; x=1696949484; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696344685; x=1696949485; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=m+cAT0NJxUIuqflU1cBfM6vQPrUJJd4UlghEqs5YsBY=;
-        b=LFNdR+dp4rIVI1EYTfKCEFUufwfItUQ9v/T8U0/sMedgyzvNAZTZJpsRGBUBGkZAJi
-         gJagrqCK1lf9vndHIqNkIGbeGseePrXKlrzL726CLqTD3+7KGynrfFRMHeE/EcHauTCi
-         P8JJe8BBS78kH6N+BiJR6jdl5hSJGg/hntlzfHHahaLhZoDhCaISyTpbhk4EFLXoFO4U
-         jBjsCOWlY3BGBWNt6osytY7te3GyFMbqWKzl4cXkdZdbrlx3AnieG5g9ex2Sua/TCloy
-         9j94/cEfpZygogEmUI4SkrPKXNFxgPCnwEjW8GELXO+LjLXRNUYOnusEVZUBXCJARS7O
-         g7mw==
+        bh=YhFi4LGhC2Y5nFrUut/uRJGJvyUMlfTO1AC2VY89hk8=;
+        b=iuvyjCbZ78hdbjmZ0dri6ZMBHVwGLWdrU60z4En12fGtM4w10l3wqAWLJBP2mL6bak
+         kDMkgLbKCdovizExDeH4YikokkSLdoxrmDkwnTWGNiouuy/WX3EBCtHSi3fPU+e40Ejj
+         mZ7Za5VTFyUJpHhnr6YyE0RRXUQyOMgkg5ue5LxKZhVIvLYnrNsRChHSmMV3tt3B752g
+         NwKnAsXAGLvmKqLmn5HeD1iugQHA8KOsrvAkLkUypFb9m/r+OW15a4pRcwwQgz+eN5u+
+         HtAzzxMwBuD+oychOBL9Jpt/vhviSIHhPWkKhcYS89yu0VE2XV03dZPMpOmP7ZRlIb0X
+         fURg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696344684; x=1696949484;
+        d=1e100.net; s=20230601; t=1696344685; x=1696949485;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=m+cAT0NJxUIuqflU1cBfM6vQPrUJJd4UlghEqs5YsBY=;
-        b=dyn6ZsWFz7YeikmHcpgyW++SDepdcS4ONrx7eKdNX94ku5Z3cPZFPR0Vo3m+l2D2dV
-         WCLLsS+AZdcE6/Vxv6sxJp2tS0hpPz8B/F5De21h09Ne20ISlhs4Fv2oiFU4HBKS1vrt
-         46xHbLhxi/XFHtiv+pnB8XM1Bv/52qcSconoFfVt882O8AkHaF+XtYNgvNSbuzCz4ouQ
-         JVlk4Rc4BLqH6Wp0yw7K8cvlX6bcnnaRCZAytru8Qi5POTC/w3sdZdLMtodtOjTiefTU
-         E+uyi/4X2G5XFUQ90gruQUZyzCzWlgBQx83oxM+G10exdViLrd717zV6gX05gFVJbGD6
-         n7gw==
-X-Gm-Message-State: AOJu0Yw6j99liRFrhg42ITWX6lnImlwnuo/aVBuqdP+dEEVT2lCp67ck
-        azJkDXY2AneRWGicsCi0YOLqNA==
-X-Google-Smtp-Source: AGHT+IHioWDnG6xJL3DIbbqz/tDyFKQ3NBP6THRHpZJAOU282meIzEKqGKDI+KX0axm5yV3Yi64EjA==
-X-Received: by 2002:a05:600c:ac9:b0:402:f55c:faee with SMTP id c9-20020a05600c0ac900b00402f55cfaeemr12308302wmr.26.1696344684393;
-        Tue, 03 Oct 2023 07:51:24 -0700 (PDT)
+        bh=YhFi4LGhC2Y5nFrUut/uRJGJvyUMlfTO1AC2VY89hk8=;
+        b=UBW7eQX/JaYqVIUf9EQXi4maH2cPjVa7aZZO0nTwnMrvJHJGTbKRyUahconFLBhDpr
+         js03PDYzQBlfCcA+dXvd72jaivgRxRuUoNtP0/vhD8cOqbsFsMHmc7zrD8hb6w17OrnN
+         D8Mm+auOiNbwksopZOjl11ysh7e0tO97KUCg3wRV2DVJIVSbpq1qRNqdJLEj1SLFIY1E
+         HfMiu7mEejtsYcZrLIPKsDeQh71CYaqS9QGsY+bDC/G6GrAlsizeAjgRpsAhVGfcQOnE
+         3xiBnXoHekwR+C7h3bIMGgQbb9z+A/i+mx1OGr2qaWPIZ7fMTHpaTtVTCAegLzBUSAML
+         jBHg==
+X-Gm-Message-State: AOJu0Yz2g8fB0SciNHSAM0Rvc1JBVkPm6IOG9tSm9wkQIFlYcfi6NPaL
+        IFLRMdV+IcKgDx7IcU40zvgEkA==
+X-Google-Smtp-Source: AGHT+IHVVhROTMLzaecR+DvOqv/ba9hFEK8QHFfIA8RToQZ6zwZgN+HwXCdWNlveOssebExeEvFh6Q==
+X-Received: by 2002:a05:600c:3d98:b0:406:52e4:cd23 with SMTP id bi24-20020a05600c3d9800b0040652e4cd23mr12565592wmb.0.1696344685191;
+        Tue, 03 Oct 2023 07:51:25 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:1f2d:3479:a5de:fa35])
-        by smtp.gmail.com with ESMTPSA id c15-20020a05600c0acf00b003fe29f6b61bsm1462773wmr.46.2023.10.03.07.51.23
+        by smtp.gmail.com with ESMTPSA id c15-20020a05600c0acf00b003fe29f6b61bsm1462773wmr.46.2023.10.03.07.51.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 03 Oct 2023 07:51:24 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Andy Shevchenko <andy@kernel.org>
 Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 03/36] gpiolib: generic: use new pinctrl GPIO helpers
-Date:   Tue,  3 Oct 2023 16:50:41 +0200
-Message-Id: <20231003145114.21637-4-brgl@bgdev.pl>
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>
+Subject: [PATCH 04/36] gpio: cdev: use pinctrl_gpio_can_use_line_new()
+Date:   Tue,  3 Oct 2023 16:50:42 +0200
+Message-Id: <20231003145114.21637-5-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231003145114.21637-1-brgl@bgdev.pl>
 References: <20231003145114.21637-1-brgl@bgdev.pl>
@@ -74,45 +75,27 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Replace the pinctrl helpers taking the global GPIO number as argument
-with the improved variants that instead take a pointer to the GPIO chip
-and the controller-relative offset.
+Use the improved variant of pinctrl_gpio_can_use_line() which takes a
+pointer to the gpio_chip and a controller-relative offset.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/gpio/gpiolib.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpio/gpiolib-cdev.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 7c27a1efc1b0..511f6220071d 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -1854,7 +1854,7 @@ int gpiochip_generic_request(struct gpio_chip *gc, unsigned int offset)
- 		return 0;
- #endif
+diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+index 31fc71a612c2..54ee075410db 100644
+--- a/drivers/gpio/gpiolib-cdev.c
++++ b/drivers/gpio/gpiolib-cdev.c
+@@ -2287,8 +2287,7 @@ static void gpio_desc_to_lineinfo(struct gpio_desc *desc,
+ 	 * FIXME: find a non-racy way to retrieve this information. Maybe a
+ 	 * lock common to both frameworks?
+ 	 */
+-	ok_for_pinctrl =
+-		pinctrl_gpio_can_use_line(gc->base + info->offset);
++	ok_for_pinctrl = pinctrl_gpio_can_use_line_new(gc, info->offset);
  
--	return pinctrl_gpio_request(gc->gpiodev->base + offset);
-+	return pinctrl_gpio_request_new(gc, offset);
- }
- EXPORT_SYMBOL_GPL(gpiochip_generic_request);
- 
-@@ -1870,7 +1870,7 @@ void gpiochip_generic_free(struct gpio_chip *gc, unsigned int offset)
- 		return;
- #endif
- 
--	pinctrl_gpio_free(gc->gpiodev->base + offset);
-+	pinctrl_gpio_free_new(gc, offset);
- }
- EXPORT_SYMBOL_GPL(gpiochip_generic_free);
- 
-@@ -1883,7 +1883,7 @@ EXPORT_SYMBOL_GPL(gpiochip_generic_free);
- int gpiochip_generic_config(struct gpio_chip *gc, unsigned int offset,
- 			    unsigned long config)
- {
--	return pinctrl_gpio_set_config(gc->gpiodev->base + offset, config);
-+	return pinctrl_gpio_set_config_new(gc, offset, config);
- }
- EXPORT_SYMBOL_GPL(gpiochip_generic_config);
+ 	spin_lock_irqsave(&gpio_lock, flags);
  
 -- 
 2.39.2
