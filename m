@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C696C7B6F39
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6A37B6F3D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbjJCREo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 13:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55590 "EHLO
+        id S231397AbjJCRFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 13:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbjJCREn (ORCPT
+        with ESMTP id S231601AbjJCRE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 13:04:43 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E8EB0;
-        Tue,  3 Oct 2023 10:04:39 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9DBEC433C7;
-        Tue,  3 Oct 2023 17:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696352679;
-        bh=ojhTT5gbz7npnJ9U/90ySd8WkHi5+4JKHxAn4AYgke8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=PXhoVkKbpNQi/DK3FrmfqY+MwrwilW7pkXKe7+HQap+P4a7QAfZ3eBo+KJNWliyrL
-         v3KFw7bu5Y/oVJE6JWR4pH4n1okAU2KBWvJ2tU7YIv96FEbWQdT5LUWWgXLDzrGHiZ
-         YBrZ8qP/ZwZd7sSZ25jEvN8hbpnpm1N2woKVY8YHd9Lkuc1d9pa4f/gFmnaVOEf2bT
-         45UPBF87Mej4mPiZPIJVW5/QLLICqVhbeBpYZd1QfDLD793FGuRxO2g0WnpSzlV357
-         3r2rDBYNM29LdyTR2B9JCpOak+KEbCHxumzCxRpvmf94WNRSGGG0/5/hXvuZg8ZbiL
-         xykSOt2a65VAA==
-Date:   Tue, 3 Oct 2023 12:04:36 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-acpi@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>
-Subject: Re: [PATCH v1 1/1] PCI: ACPI: Switch to use acpi_evaluate_dsm_typed()
-Message-ID: <20231003170436.GA678206@bhelgaas>
+        Tue, 3 Oct 2023 13:04:59 -0400
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B77C6;
+        Tue,  3 Oct 2023 10:04:57 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id D52552B4;
+        Tue,  3 Oct 2023 17:04:56 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net D52552B4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1696352697; bh=yfhmtqCCvv97Y2SWhdu1bHhleLPoOqHF30l72GJ9Ltk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=H/05ERPWSImHNqwm9Zq8R0utmS9epf+7PtA/NbNBp4uw/BxS+wjtzIi0PldP1COFh
+         MkFuhIiYlGzA58hMCRpnhYT5MUDBXHantIdnjEiplg+OBqAEsbXvvdgy4czrH+ws4p
+         YLDpwrBc1/Rvx1rEYKMJ56nADEEsKnSW1JZQb/PVzQZEJn3lTRoxWvyLNvAumh3cFm
+         KJyTT8cdpe34bWGRJEi1aah7eQR3VXKs6OV3qlkDqmUP4qyZigGvkn8xXUhGKAiDGP
+         F4fn3Jth6eje/gFxZlir+3YpF5isP2V7b0KhqOw/oxfmagBXBH3RDYsDfqU6Nwr3hO
+         j6nN5q8SIfUbQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Christian =?utf-8?Q?K?= =?utf-8?Q?=C3=B6nig?= 
+        <christian.koening@amd.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        =?utf-8?Q?Ma=C3=ADra?= Canal <mairacanal@riseup.net>,
+        Arthur Grillo <arthurgrillo@riseup.net>,
+        Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        David Gow <davidgow@google.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] drm: add documentation for drm_buddy_test kUnit test
+In-Reply-To: <da7e150c65b85b414f2f9790e04442408678877d.1693550658.git.mchehab@kernel.org>
+References: <cover.1693550658.git.mchehab@kernel.org>
+ <da7e150c65b85b414f2f9790e04442408678877d.1693550658.git.mchehab@kernel.org>
+Date:   Tue, 03 Oct 2023 11:04:56 -0600
+Message-ID: <87lecjd4cn.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231002135352.2603096-1-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 04:53:52PM +0300, Andy Shevchenko wrote:
-> The acpi_evaluate_dsm_typed() provides a way to check the type of the
-> object evaluated by _DSM call. Use it instead of open coded variant.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+One other little thing...
 
-Applied with Rafael's ack to pci/enumeration for v6.7, thanks!
+Mauro Carvalho Chehab <mchehab@kernel.org> writes:
 
+> As an example for the new documentation tool, add a documentation
+> for drm_buddy_test.
+>
+> I opted to place this on a completely different directory, in order
+> to make easier to test the feature with:
+>
+> 	$ make SPHINXDIRS=3D"tests" htmldocs
+>
+> Acked-by: Christian K=C3=B6nig <christian.koening@amd.com>
+> Reviewed-by: Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab@kernel.org>
 > ---
->  drivers/pci/pci-acpi.c | 13 +++++++------
->  1 file changed, 7 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> index a05350a4e49c..cf108259aef6 100644
-> --- a/drivers/pci/pci-acpi.c
-> +++ b/drivers/pci/pci-acpi.c
-> @@ -1215,12 +1215,12 @@ void acpi_pci_add_bus(struct pci_bus *bus)
->  	if (!pci_is_root_bus(bus))
->  		return;
->  
-> -	obj = acpi_evaluate_dsm(ACPI_HANDLE(bus->bridge), &pci_acpi_dsm_guid, 3,
-> -				DSM_PCI_POWER_ON_RESET_DELAY, NULL);
-> +	obj = acpi_evaluate_dsm_typed(ACPI_HANDLE(bus->bridge), &pci_acpi_dsm_guid, 3,
-> +				      DSM_PCI_POWER_ON_RESET_DELAY, NULL, ACPI_TYPE_INTEGER);
->  	if (!obj)
->  		return;
->  
-> -	if (obj->type == ACPI_TYPE_INTEGER && obj->integer.value == 1) {
-> +	if (obj->integer.value == 1) {
->  		bridge = pci_find_host_bridge(bus);
->  		bridge->ignore_reset_delay = 1;
->  	}
-> @@ -1376,12 +1376,13 @@ static void pci_acpi_optimize_delay(struct pci_dev *pdev,
->  	if (bridge->ignore_reset_delay)
->  		pdev->d3cold_delay = 0;
->  
-> -	obj = acpi_evaluate_dsm(handle, &pci_acpi_dsm_guid, 3,
-> -				DSM_PCI_DEVICE_READINESS_DURATIONS, NULL);
-> +	obj = acpi_evaluate_dsm_typed(handle, &pci_acpi_dsm_guid, 3,
-> +				      DSM_PCI_DEVICE_READINESS_DURATIONS, NULL,
-> +				      ACPI_TYPE_PACKAGE);
->  	if (!obj)
->  		return;
->  
-> -	if (obj->type == ACPI_TYPE_PACKAGE && obj->package.count == 5) {
-> +	if (obj->package.count == 5) {
->  		elements = obj->package.elements;
->  		if (elements[0].type == ACPI_TYPE_INTEGER) {
->  			value = (int)elements[0].integer.value / 1000;
-> -- 
-> 2.40.0.1.gaa8946217a0b
-> 
+>  Documentation/index.rst                |  2 +-
+>  Documentation/tests/index.rst          |  6 ++++++
+>  Documentation/tests/kunit.rst          |  5 +++++
+>  drivers/gpu/drm/tests/drm_buddy_test.c | 12 ++++++++++++
+>  4 files changed, 24 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/tests/index.rst
+>  create mode 100644 Documentation/tests/kunit.rst
+>
+> diff --git a/Documentation/index.rst b/Documentation/index.rst
+> index 9dfdc826618c..80a6ce14a61a 100644
+> --- a/Documentation/index.rst
+> +++ b/Documentation/index.rst
+> @@ -60,7 +60,7 @@ Various other manuals with useful information for all k=
+ernel developers.
+>     fault-injection/index
+>     livepatch/index
+>     rust/index
+> -
+> +   test/index
+
+Since you called the directory "tests", this generates a couple of
+warnings in the htmldocs build.
+
+(but, again, I think it should be dev-tools/tests, and perhaps
+referenced from the selftest docs already there)
+
+jon
