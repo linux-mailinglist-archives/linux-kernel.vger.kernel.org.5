@@ -2,82 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8347B64FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11FCB7B6506
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231515AbjJCJI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
+        id S239488AbjJCJLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231416AbjJCJI0 (ORCPT
+        with ESMTP id S239490AbjJCJK5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:08:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA4979E;
-        Tue,  3 Oct 2023 02:08:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696324103; x=1727860103;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GNdDkE0295DLsorKWTDOi5Sj8aKZsui3/WlnS5ZyMJI=;
-  b=gm5LQ/zwyWcEFCLRw43vdFbiC2aS2rchGoXYZm+K17QNcmErB/2F4vk9
-   2KDw6pCqr6fiHssjUPG61WNveyrWzlEPqv0DQ42i+EU/k9YBq/3XPZ+8c
-   YEKOuV4adiIoXWF7VfwilhXRWkn8II1oqwsTPcQWVx6UARQJjT3vHw6YI
-   GDyEoWWxMlGmpRSbqlsw1WDuCsiPW0Gpys0Es69EnbBnMapDQU+fh6/Gn
-   Qco8X8BcFagXQNpvQq6peoQHY6ckzU9tbFtiN4kIOkJK72+sLNncFOEW4
-   EH2iWhB7b4Imr8a5sGpp/Ghf8L+l5A+IQ14JYOi53eKRUwPOFe96J8yxT
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="367876985"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="367876985"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 02:08:23 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="816615399"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="816615399"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 02:08:21 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qnbO6-00000002RQC-1J8S;
-        Tue, 03 Oct 2023 12:08:18 +0300
-Date:   Tue, 3 Oct 2023 12:08:18 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Raag Jadav <raag.jadav@intel.com>
-Cc:     linus.walleij@linaro.org, mika.westerberg@linux.intel.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
-Subject: Re: [PATCH v1] pinctrl: intel: refine intel_config_set_pull()
- function
-Message-ID: <ZRvaAhpMEypapy26@smile.fi.intel.com>
-References: <20231003081824.28810-1-raag.jadav@intel.com>
+        Tue, 3 Oct 2023 05:10:57 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1F2AC;
+        Tue,  3 Oct 2023 02:10:51 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 595A2C433C7;
+        Tue,  3 Oct 2023 09:10:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696324250;
+        bh=Z+wmAtHqbMWcV1UFwatglg3NhgUKFXMT7eH43M0T72c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FegFeLZElKhpoAIbd9qwFCXONwOtsHoZTiYZXtPRg6Ak67D634u1p66W01secUEoF
+         kyWnoYJSqVmwb6uoWaEdeLQjP/ssn4EGZX3OOipsiDIXxYbSWLfJ4JeuPRMnaplfdJ
+         mkc4SJW1Bt6++VMx2eS5io+Ex2ag3LaTgH/HrB7WpjWl97oYlZM5ti7H0i7ctOKDtT
+         6xJ1c4UaFxohIgv3uw9JYYBc6rjVceCH/ypSmF+RJLCdPZ2m8kD6OGcK2iGiLnlUWh
+         U8rr+np2v8N+5+vlpo4+BkYu0sACTbfLb2gV5wVs0PSBRwbAm0pn0o6R4y2ZaDPZIo
+         qMw+2tL280e9A==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan@kernel.org>)
+        id 1qnbQh-0008P5-0z;
+        Tue, 03 Oct 2023 11:11:00 +0200
+Date:   Tue, 3 Oct 2023 11:10:59 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        dianders@chromium.org, vkoul@kernel.org, daniel@ffwll.ch,
+        airlied@gmail.com, agross@kernel.org, dmitry.baryshkov@linaro.org,
+        andersson@kernel.org, marijn.suijten@somainline.org,
+        quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com,
+        quic_sbillaka@quicinc.com, freedreno@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] drm/msm/dp: do not reinitialize phy unless retry
+ during link training
+Message-ID: <ZRvaoz7CbNncM3t6@hovoldconsulting.com>
+References: <1691533190-19335-1-git-send-email-quic_khsieh@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231003081824.28810-1-raag.jadav@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1691533190-19335-1-git-send-email-quic_khsieh@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 01:48:24PM +0530, Raag Jadav wrote:
-> Improve intel_config_set_pull() implementation in Intel pinctrl driver by:
+On Tue, Aug 08, 2023 at 03:19:50PM -0700, Kuogee Hsieh wrote:
+> DP PHY re-initialization done using dp_ctrl_reinitialize_mainlink() will
+> cause PLL unlocked initially and then PLL gets locked at the end of
+> initialization. PLL_UNLOCKED interrupt will fire during this time if the
+> interrupt mask is enabled.
+> However currently DP driver link training implementation incorrectly
+> re-initializes PHY unconditionally during link training as the PHY was
+> already configured in dp_ctrl_enable_mainlink_clocks().
 > 
-> - Reducing scope of spinlock by moving unneeded operations out of it.
-> - Utilizing temporary variables for common operations.
-> - Limiting IO operations to positive cases.
+> Fix this by re-initializing the PHY only if the previous link training
+> failed.
+> 
+> [drm:dp_aux_isr] *ERROR* Unexpected DP AUX IRQ 0x01000000 when not busy
+> 
+> Fixes: c943b4948b58 ("drm/msm/dp: add displayPort driver support")
+> Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/30
+> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
 
-Pushed to my review and testing queue, thanks!
+This fixes the above warning and avoids the unnecessary PHY power-off
+and power-on during boot of the ThinkPad X13s:
 
--- 
-With Best Regards,
-Andy Shevchenko
+Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
+Tested-by: Johan Hovold <johan+linaro@kernel.org>
 
+I guess this one should go to stable as well:
 
+Cc: stable@vger.kernel.org	# 5.10
+
+Is anyone planning on getting this fixed in 6.6-rc? I noticed that this
+one still hasn't shown up linux-next.
+
+> ---
+>  drivers/gpu/drm/msm/dp/dp_ctrl.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> index a7a5c7e..77a8d93 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+> @@ -1774,13 +1774,6 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+>  		return rc;
+>  
+>  	while (--link_train_max_retries) {
+> -		rc = dp_ctrl_reinitialize_mainlink(ctrl);
+> -		if (rc) {
+> -			DRM_ERROR("Failed to reinitialize mainlink. rc=%d\n",
+> -					rc);
+> -			break;
+> -		}
+> -
+>  		training_step = DP_TRAINING_NONE;
+>  		rc = dp_ctrl_setup_main_link(ctrl, &training_step);
+>  		if (rc == 0) {
+> @@ -1832,6 +1825,12 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
+>  			/* stop link training before start re training  */
+>  			dp_ctrl_clear_training_pattern(ctrl);
+>  		}
+> +
+> +		rc = dp_ctrl_reinitialize_mainlink(ctrl);
+> +		if (rc) {
+> +			DRM_ERROR("Failed to reinitialize mainlink. rc=%d\n", rc);
+> +			break;
+> +		}
+>  	}
+>  
+>  	if (ctrl->link->sink_request & DP_TEST_LINK_PHY_TEST_PATTERN)
+
+Johan
