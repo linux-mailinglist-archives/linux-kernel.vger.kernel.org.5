@@ -2,89 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BEB7B652D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B65927B652F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231673AbjJCJN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35434 "EHLO
+        id S231486AbjJCJOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:14:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231503AbjJCJN4 (ORCPT
+        with ESMTP id S231509AbjJCJN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:13:56 -0400
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7DAAEAD;
-        Tue,  3 Oct 2023 02:13:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=aB39z
-        3nEFhlQiheQaPa4Ujx4EJgUHKZv82T0iigXc/4=; b=m3rAuWNM23ugb+YjbCMIK
-        P0Qr3/8b5b338lExi0XTsAa1JImayRTTC1VW/umLAU1GarBnshOfgIrzxEWSn2/W
-        MHzwaSUmT2qbXxAgekGDzNM5RBJGeL3OUxPf/xNo8lvksbaCls/2MAGZSlHDJ2qc
-        vzT2ejnTGaitO5rdlB1cEc=
-Received: from icess-ProLiant-DL380-Gen10.. (unknown [183.174.60.14])
-        by zwqz-smtp-mta-g2-1 (Coremail) with SMTP id _____wCnGDMt2xtlDF8gDw--.40780S4;
-        Tue, 03 Oct 2023 17:13:28 +0800 (CST)
-From:   Ma Ke <make_ruc2021@163.com>
-To:     tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ma Ke <make_ruc2021@163.com>
-Subject: [PATCH v2] media: videobuf2: Fix IS_ERR checking in vb2_vmalloc_put_userptr()
-Date:   Tue,  3 Oct 2023 17:13:15 +0800
-Message-Id: <20231003091315.3919528-1-make_ruc2021@163.com>
-X-Mailer: git-send-email 2.37.2
+        Tue, 3 Oct 2023 05:13:58 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961D6B8
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:13:53 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9ad8bf9bfabso117514966b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 02:13:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696324431; x=1696929231; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Wy+qYX85walSXmmdwQsV/A/vhQrgoI8zrA9EtruEg4w=;
+        b=h8irs/DZYaR/m8ZJeo3ppMJ2Hpzkmrpob53sva71UwD+15AinOviPeuNHxoquPmegT
+         gi+RzXJvFqpsyVoF2WuRjbujU9dnkpgJooT/PydUzIv+0KMEmSu2gmhLpMI+x3WfvYuj
+         4XF+4x0Mg5/qwhci3/ER8vhp807S0sHMZghy8BxnINczoEsOM0/N5bT8yHvilAuji7mB
+         +YHkxq/Sb08MwS9hdgM6hLZDSgQNuiH4es+cSuwhZ8ufVP7hL2n8y1ycmZ6DlzJYz+Ro
+         Zv6S8qCjP4YV6++lLToRUKENvjbiCuZlfdmNulluKI9BxJKhK99kXiRRFddq6+8Jghv1
+         7PJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696324431; x=1696929231;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Wy+qYX85walSXmmdwQsV/A/vhQrgoI8zrA9EtruEg4w=;
+        b=n8VwdyM8kRhGC6i9N5JZBudCs6Ha3kHAv5bA8CWOtsXOqWhPYT/5MYDBZVzwNUStrn
+         jMwnQLuf3+1S6xNLsFay/kwzCyLaHOPFcPnPhfcvLM7PxrIbWfhTyh0lKW4PJw1GXhc/
+         72PTrdlrwaRnUGo1RjO+621Zub1/bix52iPlBT1EPX1R6DnD1XTunAMAeTwdg91QRO66
+         0xX3ygxsKsQRcpFeoaYE8kjZTuk9xMjZ4+XgdHQf46sE1MVd3EI3hDbACFqnU92r0P/t
+         Gv0mP76P0/M/L346w6diHnYtTi7g16tIOMLTMB59vioTfJs8+dXMfXLa+rmVS1V0wGQm
+         zQkQ==
+X-Gm-Message-State: AOJu0YyOE2xJPgWQf46FbIBIzqpdq4L203Fl5TR7e3BVrHVRXUVcR7R4
+        HZVrSeU9bUt8bvWT0omTQNmjWA==
+X-Google-Smtp-Source: AGHT+IGbCPuR1XPUtWX3X/T9TqQTZb/GhbgV2D+KJNOAJLA727OZY6doasClCa06FovLV+tf7J12WQ==
+X-Received: by 2002:a17:907:b11:b0:9a2:225a:8d01 with SMTP id h17-20020a1709070b1100b009a2225a8d01mr10397507ejl.7.1696324431573;
+        Tue, 03 Oct 2023 02:13:51 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id pj7-20020a170906d78700b00977eec7b7e8sm731939ejb.68.2023.10.03.02.13.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Oct 2023 02:13:51 -0700 (PDT)
+Message-ID: <35c6c36d-c6a7-4ed3-8a56-db4a82809da6@linaro.org>
+Date:   Tue, 3 Oct 2023 11:13:49 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wCnGDMt2xtlDF8gDw--.40780S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW7WrWDZw45tFykWFW3trWfGrg_yoW8Gr1DpF
-        WFyF9IyFW5J347uw17Jws7uay5Ka95WrW0k3y7Ww1F9wn5Gr9agFyqq34kur17CFZ2yFs0
-        yayjqw43JF1xurUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0p_NtxrUUUUU=
-X-Originating-IP: [183.174.60.14]
-X-CM-SenderInfo: 5pdnvshuxfjiisr6il2tof0z/1tbiyBr9C1p7L-EpmgAAso
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/5] dt-bindings: crypto: qcom,prng: document that RNG
+ on SM8450 is a TRNG
+Content-Language: en-US
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Om Prakash Singh <quic_omprsing@quicinc.com>
+References: <20231003-topic-sm8550-rng-v4-0-255e4d0ba08e@linaro.org>
+ <20231003-topic-sm8550-rng-v4-1-255e4d0ba08e@linaro.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231003-topic-sm8550-rng-v4-1-255e4d0ba08e@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to avoid error pointers from frame_vector_pages(), we could
-use IS_ERR() to check the return value to fix this. This checking
-operation could make sure that vector contains pages.
+On 03/10/2023 09:10, Neil Armstrong wrote:
+> It has been reported at [1] the RNG HW on SM8450 is in fact a True Random
+> Number Generator and no more Pseudo, document this by adding
+> a new qcom,trng and the corresponding SoC specific sm8450 compatible.
+> 
+> [1] https://lore.kernel.org/all/20230818161720.3644424-1-quic_omprsing@quicinc.com/
+> 
+> Suggested-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+> Suggested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Reviewed-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> ---
 
-Signed-off-by: Ma Ke <make_ruc2021@163.com>
----
- drivers/media/common/videobuf2/videobuf2-vmalloc.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/common/videobuf2/videobuf2-vmalloc.c b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
-index 7c635e292106..5aa66305546d 100644
---- a/drivers/media/common/videobuf2/videobuf2-vmalloc.c
-+++ b/drivers/media/common/videobuf2/videobuf2-vmalloc.c
-@@ -133,13 +133,15 @@ static void vb2_vmalloc_put_userptr(void *buf_priv)
- 
- 	if (!buf->vec->is_pfns) {
- 		n_pages = frame_vector_count(buf->vec);
--		pages = frame_vector_pages(buf->vec);
- 		if (vaddr)
- 			vm_unmap_ram((void *)vaddr, n_pages);
- 		if (buf->dma_dir == DMA_FROM_DEVICE ||
--		    buf->dma_dir == DMA_BIDIRECTIONAL)
--			for (i = 0; i < n_pages; i++)
--				set_page_dirty_lock(pages[i]);
-+		    buf->dma_dir == DMA_BIDIRECTIONAL){
-+			pages = frame_vector_pages(buf->vec);
-+			if (!WARN_ON_ONCE(IS_ERR(pages)))
-+				for (i = 0; i < n_pages; i++)
-+					set_page_dirty_lock(pages[i]);
-+		}
- 	} else {
- 		iounmap((__force void __iomem *)buf->vaddr);
- 	}
--- 
-2.37.2
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Best regards,
+Krzysztof
 
