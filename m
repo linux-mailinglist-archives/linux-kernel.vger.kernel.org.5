@@ -2,54 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B727B66B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 697147B66B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbjJCKqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 06:46:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47078 "EHLO
+        id S231709AbjJCKrl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 06:47:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231553AbjJCKqJ (ORCPT
+        with ESMTP id S231173AbjJCKrj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 06:46:09 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 55D77B0;
-        Tue,  3 Oct 2023 03:46:04 -0700 (PDT)
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-        id B8C4620B74C0; Tue,  3 Oct 2023 03:46:03 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B8C4620B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1696329963;
-        bh=A/JzxQYqx0L95oDaP99JeHhU08q4Gp3osyahR3qmoOY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=COPhpXVTfaZ2zAGsvAX772Ne+p8Av91/mdpaEiuftJyQQ3yi5xGKkqRdDPiBAzEvj
-         Y8xOJzH43Ie6yHbaRnyp28rh+SOg0tTCIJZQpFNcBjOZ0JKBaZMm3jEs2oysHkcP9w
-         1vb1hk7Alh7/G/pD1/8sVWqXgtoxPugJG6xHVDZk=
-Date:   Tue, 3 Oct 2023 03:46:03 -0700
-From:   Shradha Gupta <shradhagupta@linux.microsoft.com>
-To:     Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
-        decui@microsoft.com, stephen@networkplumber.org, kys@microsoft.com,
-        paulros@microsoft.com, olaf@aepfle.de, vkuznets@redhat.com,
-        davem@davemloft.net, wei.liu@kernel.org, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
-        longli@microsoft.com, ssengar@linux.microsoft.com,
-        linux-rdma@vger.kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, bpf@vger.kernel.org, ast@kernel.org,
-        sharmaajay@microsoft.com, hawk@kernel.org, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net,v2, 3/3] net: mana: Fix oversized sge0 for GSO packets
-Message-ID: <20231003104603.GC32191@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-References: <1696020147-14989-1-git-send-email-haiyangz@microsoft.com>
- <1696020147-14989-4-git-send-email-haiyangz@microsoft.com>
+        Tue, 3 Oct 2023 06:47:39 -0400
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF00AD
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 03:47:34 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 393Akc7U045116;
+        Tue, 3 Oct 2023 05:46:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696329998;
+        bh=kBRAUO6favdD8VoxbEZGoFsIKRMDsC3ue1rjqIaMYcY=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To;
+        b=ugMv2U2ZQdsIH+1d3iVShIzHhw1MZ9+uKCcm14OVOorSYCH3fTebt9dNiSYghNCKP
+         kmv50YTFcvYsTJUHnVK3+YRjDwLNZfFFtlfIwbBnHaQ6Y+ff3J46vz0c4YqgqnvVWd
+         riu2oLLhUEGnEX/MuvPpqbg0bI1075Gs9L7MPRVE=
+Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 393AkcWH123050
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Oct 2023 05:46:38 -0500
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 3
+ Oct 2023 05:46:37 -0500
+Received: from DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c]) by
+ DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c%18]) with mapi id
+ 15.01.2507.023; Tue, 3 Oct 2023 05:46:37 -0500
+From:   "Ding, Shenghao" <shenghao-ding@ti.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+CC:     "broonie@kernel.org" <broonie@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "Lu, Kevin" <kevin-lu@ti.com>,
+        "13916275206@139.com" <13916275206@139.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
+        "mengdong.lin@intel.com" <mengdong.lin@intel.com>,
+        "Xu, Baojun" <baojun.xu@ti.com>,
+        "thomas.gfeller@q-drop.com" <thomas.gfeller@q-drop.com>,
+        "Gupta, Peeyush" <peeyush@ti.com>,
+        "Navada Kanyana, Mukund" <navada@ti.com>,
+        "tiwai@suse.de" <tiwai@suse.de>
+Subject: RE: [EXTERNAL] Re: [PATCH v1] ASoC: tas2781: fixed compiling issue in
+ m68k
+Thread-Topic: [EXTERNAL] Re: [PATCH v1] ASoC: tas2781: fixed compiling issue
+ in m68k
+Thread-Index: AQHZ9Q98WH2DuXFcNE+9p+JTDyUKy7A3NcmAgACtiIA=
+Date:   Tue, 3 Oct 2023 10:46:37 +0000
+Message-ID: <79c4d534ad20452c992d8ace138e4384@ti.com>
+References: <20231002090434.1896-1-shenghao-ding@ti.com>
+ <CAMuHMdXr5oRgkFqYZnPe3Xdyq_QjtzhfL8Wa_e9JA0S1XhEhWw@mail.gmail.com>
+In-Reply-To: <CAMuHMdXr5oRgkFqYZnPe3Xdyq_QjtzhfL8Wa_e9JA0S1XhEhWw@mail.gmail.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.250.162.101]
+x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1696020147-14989-4-git-send-email-haiyangz@microsoft.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,331 +86,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 01:42:27PM -0700, Haiyang Zhang wrote:
-> Handle the case when GSO SKB linear length is too large.
-> 
-> MANA NIC requires GSO packets to put only the header part to SGE0,
-> otherwise the TX queue may stop at the HW level.
-> 
-> So, use 2 SGEs for the skb linear part which contains more than the
-> packet header.
-> 
-> Fixes: ca9c54d2d6a5 ("net: mana: Add a driver for Microsoft Azure Network Adapter (MANA)")
-> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
-> ---
-> v2: coding style updates suggested by Simon Horman
-> 
-> ---
->  drivers/net/ethernet/microsoft/mana/mana_en.c | 191 +++++++++++++-----
->  include/net/mana/mana.h                       |   5 +-
->  2 files changed, 138 insertions(+), 58 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> index 86e724c3eb89..48ea4aeeea5d 100644
-> --- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-> +++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-> @@ -91,63 +91,137 @@ static unsigned int mana_checksum_info(struct sk_buff *skb)
->  	return 0;
->  }
->  
-> +static void mana_add_sge(struct mana_tx_package *tp, struct mana_skb_head *ash,
-> +			 int sg_i, dma_addr_t da, int sge_len, u32 gpa_mkey)
-> +{
-> +	ash->dma_handle[sg_i] = da;
-> +	ash->size[sg_i] = sge_len;
-> +
-> +	tp->wqe_req.sgl[sg_i].address = da;
-> +	tp->wqe_req.sgl[sg_i].mem_key = gpa_mkey;
-> +	tp->wqe_req.sgl[sg_i].size = sge_len;
-> +}
-> +
->  static int mana_map_skb(struct sk_buff *skb, struct mana_port_context *apc,
-> -			struct mana_tx_package *tp)
-> +			struct mana_tx_package *tp, int gso_hs)
->  {
->  	struct mana_skb_head *ash = (struct mana_skb_head *)skb->head;
-> +	int hsg = 1; /* num of SGEs of linear part */
->  	struct gdma_dev *gd = apc->ac->gdma_dev;
-> +	int skb_hlen = skb_headlen(skb);
-> +	int sge0_len, sge1_len = 0;
->  	struct gdma_context *gc;
->  	struct device *dev;
->  	skb_frag_t *frag;
->  	dma_addr_t da;
-> +	int sg_i;
->  	int i;
->  
->  	gc = gd->gdma_context;
->  	dev = gc->dev;
-> -	da = dma_map_single(dev, skb->data, skb_headlen(skb), DMA_TO_DEVICE);
->  
-> +	if (gso_hs && gso_hs < skb_hlen) {
-> +		sge0_len = gso_hs;
-> +		sge1_len = skb_hlen - gso_hs;
-> +	} else {
-> +		sge0_len = skb_hlen;
-> +	}
-> +
-> +	da = dma_map_single(dev, skb->data, sge0_len, DMA_TO_DEVICE);
->  	if (dma_mapping_error(dev, da))
->  		return -ENOMEM;
->  
-> -	ash->dma_handle[0] = da;
-> -	ash->size[0] = skb_headlen(skb);
-> +	mana_add_sge(tp, ash, 0, da, sge0_len, gd->gpa_mkey);
->  
-> -	tp->wqe_req.sgl[0].address = ash->dma_handle[0];
-> -	tp->wqe_req.sgl[0].mem_key = gd->gpa_mkey;
-> -	tp->wqe_req.sgl[0].size = ash->size[0];
-> +	if (sge1_len) {
-> +		sg_i = 1;
-> +		da = dma_map_single(dev, skb->data + sge0_len, sge1_len,
-> +				    DMA_TO_DEVICE);
-> +		if (dma_mapping_error(dev, da))
-> +			goto frag_err;
-> +
-> +		mana_add_sge(tp, ash, sg_i, da, sge1_len, gd->gpa_mkey);
-> +		hsg = 2;
-> +	}
->  
->  	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
-> +		sg_i = hsg + i;
-> +
->  		frag = &skb_shinfo(skb)->frags[i];
->  		da = skb_frag_dma_map(dev, frag, 0, skb_frag_size(frag),
->  				      DMA_TO_DEVICE);
-> -
->  		if (dma_mapping_error(dev, da))
->  			goto frag_err;
->  
-> -		ash->dma_handle[i + 1] = da;
-> -		ash->size[i + 1] = skb_frag_size(frag);
-> -
-> -		tp->wqe_req.sgl[i + 1].address = ash->dma_handle[i + 1];
-> -		tp->wqe_req.sgl[i + 1].mem_key = gd->gpa_mkey;
-> -		tp->wqe_req.sgl[i + 1].size = ash->size[i + 1];
-> +		mana_add_sge(tp, ash, sg_i, da, skb_frag_size(frag),
-> +			     gd->gpa_mkey);
->  	}
->  
->  	return 0;
->  
->  frag_err:
-> -	for (i = i - 1; i >= 0; i--)
-> -		dma_unmap_page(dev, ash->dma_handle[i + 1], ash->size[i + 1],
-> +	for (i = sg_i - 1; i >= hsg; i--)
-> +		dma_unmap_page(dev, ash->dma_handle[i], ash->size[i],
->  			       DMA_TO_DEVICE);
->  
-> -	dma_unmap_single(dev, ash->dma_handle[0], ash->size[0], DMA_TO_DEVICE);
-> +	for (i = hsg - 1; i >= 0; i--)
-> +		dma_unmap_single(dev, ash->dma_handle[i], ash->size[i],
-> +				 DMA_TO_DEVICE);
->  
->  	return -ENOMEM;
->  }
->  
-> +/* Handle the case when GSO SKB linear length is too large.
-> + * MANA NIC requires GSO packets to put only the packet header to SGE0.
-> + * So, we need 2 SGEs for the skb linear part which contains more than the
-> + * header.
-> + * Return a positive value for the number of SGEs, or a negative value
-> + * for an error.
-> + */
-> +static int mana_fix_skb_head(struct net_device *ndev, struct sk_buff *skb,
-> +			     int gso_hs)
-> +{
-> +	int num_sge = 1 + skb_shinfo(skb)->nr_frags;
-> +	int skb_hlen = skb_headlen(skb);
-> +
-> +	if (gso_hs < skb_hlen) {
-> +		num_sge++;
-> +	} else if (gso_hs > skb_hlen) {
-> +		if (net_ratelimit())
-> +			netdev_err(ndev,
-> +				   "TX nonlinear head: hs:%d, skb_hlen:%d\n",
-> +				   gso_hs, skb_hlen);
-> +
-> +		return -EINVAL;
-> +	}
-> +
-> +	return num_sge;
-> +}
-> +
-> +/* Get the GSO packet's header size */
-> +static int mana_get_gso_hs(struct sk_buff *skb)
-> +{
-> +	int gso_hs;
-> +
-> +	if (skb->encapsulation) {
-> +		gso_hs = skb_inner_tcp_all_headers(skb);
-> +	} else {
-> +		if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
-> +			gso_hs = skb_transport_offset(skb) +
-> +				 sizeof(struct udphdr);
-> +		} else {
-> +			gso_hs = skb_tcp_all_headers(skb);
-> +		}
-> +	}
-> +
-> +	return gso_hs;
-> +}
-> +
->  netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  {
->  	enum mana_tx_pkt_format pkt_fmt = MANA_SHORT_PKT_FMT;
->  	struct mana_port_context *apc = netdev_priv(ndev);
-> +	int gso_hs = 0; /* zero for non-GSO pkts */
->  	u16 txq_idx = skb_get_queue_mapping(skb);
->  	struct gdma_dev *gd = apc->ac->gdma_dev;
->  	bool ipv4 = false, ipv6 = false;
-> @@ -159,7 +233,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  	struct mana_txq *txq;
->  	struct mana_cq *cq;
->  	int err, len;
-> -	u16 ihs;
->  
->  	if (unlikely(!apc->port_is_up))
->  		goto tx_drop;
-> @@ -209,19 +282,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  	pkg.wqe_req.client_data_unit = 0;
->  
->  	pkg.wqe_req.num_sge = 1 + skb_shinfo(skb)->nr_frags;
-> -	WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
-> -
-> -	if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
-> -		pkg.wqe_req.sgl = pkg.sgl_array;
-> -	} else {
-> -		pkg.sgl_ptr = kmalloc_array(pkg.wqe_req.num_sge,
-> -					    sizeof(struct gdma_sge),
-> -					    GFP_ATOMIC);
-> -		if (!pkg.sgl_ptr)
-> -			goto tx_drop_count;
-> -
-> -		pkg.wqe_req.sgl = pkg.sgl_ptr;
-> -	}
->  
->  	if (skb->protocol == htons(ETH_P_IP))
->  		ipv4 = true;
-> @@ -229,6 +289,26 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  		ipv6 = true;
->  
->  	if (skb_is_gso(skb)) {
-> +		int num_sge;
-> +
-> +		gso_hs = mana_get_gso_hs(skb);
-> +
-> +		num_sge = mana_fix_skb_head(ndev, skb, gso_hs);
-> +		if (num_sge > 0)
-> +			pkg.wqe_req.num_sge = num_sge;
-> +		else
-> +			goto tx_drop_count;
-> +
-> +		u64_stats_update_begin(&tx_stats->syncp);
-> +		if (skb->encapsulation) {
-> +			tx_stats->tso_inner_packets++;
-> +			tx_stats->tso_inner_bytes += skb->len - gso_hs;
-> +		} else {
-> +			tx_stats->tso_packets++;
-> +			tx_stats->tso_bytes += skb->len - gso_hs;
-> +		}
-> +		u64_stats_update_end(&tx_stats->syncp);
-> +
->  		pkg.tx_oob.s_oob.is_outer_ipv4 = ipv4;
->  		pkg.tx_oob.s_oob.is_outer_ipv6 = ipv6;
->  
-> @@ -252,26 +332,6 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  						 &ipv6_hdr(skb)->daddr, 0,
->  						 IPPROTO_TCP, 0);
->  		}
-> -
-> -		if (skb->encapsulation) {
-> -			ihs = skb_inner_tcp_all_headers(skb);
-> -			u64_stats_update_begin(&tx_stats->syncp);
-> -			tx_stats->tso_inner_packets++;
-> -			tx_stats->tso_inner_bytes += skb->len - ihs;
-> -			u64_stats_update_end(&tx_stats->syncp);
-> -		} else {
-> -			if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4) {
-> -				ihs = skb_transport_offset(skb) + sizeof(struct udphdr);
-> -			} else {
-> -				ihs = skb_tcp_all_headers(skb);
-> -			}
-> -
-> -			u64_stats_update_begin(&tx_stats->syncp);
-> -			tx_stats->tso_packets++;
-> -			tx_stats->tso_bytes += skb->len - ihs;
-> -			u64_stats_update_end(&tx_stats->syncp);
-> -		}
-> -
->  	} else if (skb->ip_summed == CHECKSUM_PARTIAL) {
->  		csum_type = mana_checksum_info(skb);
->  
-> @@ -294,11 +354,25 @@ netdev_tx_t mana_start_xmit(struct sk_buff *skb, struct net_device *ndev)
->  		} else {
->  			/* Can't do offload of this type of checksum */
->  			if (skb_checksum_help(skb))
-> -				goto free_sgl_ptr;
-> +				goto tx_drop_count;
->  		}
->  	}
->  
-> -	if (mana_map_skb(skb, apc, &pkg)) {
-> +	WARN_ON_ONCE(pkg.wqe_req.num_sge > MAX_TX_WQE_SGL_ENTRIES);
-> +
-> +	if (pkg.wqe_req.num_sge <= ARRAY_SIZE(pkg.sgl_array)) {
-> +		pkg.wqe_req.sgl = pkg.sgl_array;
-> +	} else {
-> +		pkg.sgl_ptr = kmalloc_array(pkg.wqe_req.num_sge,
-> +					    sizeof(struct gdma_sge),
-> +					    GFP_ATOMIC);
-> +		if (!pkg.sgl_ptr)
-> +			goto tx_drop_count;
-> +
-> +		pkg.wqe_req.sgl = pkg.sgl_ptr;
-> +	}
-> +
-> +	if (mana_map_skb(skb, apc, &pkg, gso_hs)) {
->  		u64_stats_update_begin(&tx_stats->syncp);
->  		tx_stats->mana_map_err++;
->  		u64_stats_update_end(&tx_stats->syncp);
-> @@ -1256,11 +1330,16 @@ static void mana_unmap_skb(struct sk_buff *skb, struct mana_port_context *apc)
->  	struct mana_skb_head *ash = (struct mana_skb_head *)skb->head;
->  	struct gdma_context *gc = apc->ac->gdma_dev->gdma_context;
->  	struct device *dev = gc->dev;
-> -	int i;
-> +	int hsg, i;
-> +
-> +	/* Number of SGEs of linear part */
-> +	hsg = (skb_is_gso(skb) && skb_headlen(skb) > ash->size[0]) ? 2 : 1;
->  
-> -	dma_unmap_single(dev, ash->dma_handle[0], ash->size[0], DMA_TO_DEVICE);
-> +	for (i = 0; i < hsg; i++)
-> +		dma_unmap_single(dev, ash->dma_handle[i], ash->size[i],
-> +				 DMA_TO_DEVICE);
->  
-> -	for (i = 1; i < skb_shinfo(skb)->nr_frags + 1; i++)
-> +	for (i = hsg; i < skb_shinfo(skb)->nr_frags + hsg; i++)
->  		dma_unmap_page(dev, ash->dma_handle[i], ash->size[i],
->  			       DMA_TO_DEVICE);
->  }
-> diff --git a/include/net/mana/mana.h b/include/net/mana/mana.h
-> index 9f70b4332238..4d43adf18606 100644
-> --- a/include/net/mana/mana.h
-> +++ b/include/net/mana/mana.h
-> @@ -103,9 +103,10 @@ struct mana_txq {
->  
->  /* skb data and frags dma mappings */
->  struct mana_skb_head {
-> -	dma_addr_t dma_handle[MAX_SKB_FRAGS + 1];
-> +	/* GSO pkts may have 2 SGEs for the linear part*/
-> +	dma_addr_t dma_handle[MAX_SKB_FRAGS + 2];
->  
-> -	u32 size[MAX_SKB_FRAGS + 1];
-> +	u32 size[MAX_SKB_FRAGS + 2];
->  };
->  
->  #define MANA_HEADROOM sizeof(struct mana_skb_head)
-> -- 
-> 2.25.1
-Reviewed-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogR2VlcnQgVXl0dGVyaG9l
+dmVuIDxnZWVydEBsaW51eC1tNjhrLm9yZz4NCj4gU2VudDogVHVlc2RheSwgT2N0b2JlciAzLCAy
+MDIzIDM6MjQgQU0NCj4gVG86IERpbmcsIFNoZW5naGFvIDxzaGVuZ2hhby1kaW5nQHRpLmNvbT4N
+Cj4gQ2M6IGJyb29uaWVAa2VybmVsLm9yZzsgcm9iaCtkdEBrZXJuZWwub3JnOw0KPiBhbmRyaXku
+c2hldmNoZW5rb0BsaW51eC5pbnRlbC5jb207IGxnaXJkd29vZEBnbWFpbC5jb207IHBlcmV4QHBl
+cmV4LmN6Ow0KPiBwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb207IEx1LCBLZXZp
+biA8a2V2aW4tbHVAdGkuY29tPjsNCj4gMTM5MTYyNzUyMDZAMTM5LmNvbTsgYWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnOyBsaW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGlhbS5y
+LmdpcmR3b29kQGludGVsLmNvbTsgbWVuZ2RvbmcubGluQGludGVsLmNvbTsNCj4gWHUsIEJhb2p1
+biA8YmFvanVuLnh1QHRpLmNvbT47IHRob21hcy5nZmVsbGVyQHEtZHJvcC5jb207IEd1cHRhLCBQ
+ZWV5dXNoDQo+IDxwZWV5dXNoQHRpLmNvbT47IE5hdmFkYSBLYW55YW5hLCBNdWt1bmQgPG5hdmFk
+YUB0aS5jb20+Ow0KPiB0aXdhaUBzdXNlLmRlDQo+IFN1YmplY3Q6IFtFWFRFUk5BTF0gUmU6IFtQ
+QVRDSCB2MV0gQVNvQzogdGFzMjc4MTogZml4ZWQgY29tcGlsaW5nIGlzc3VlIGluDQo+IG02OGsN
+Cj4gDQo+IEhpIFNoZW5naGFvLA0KPiANCj4gVGhhbmtzIGZvciB5b3VyIHBhdGNoIQ0KPiANCj4g
+T24gTW9uLCBPY3QgMiwgMjAyMyBhdCA0OjM44oCvUE0gU2hlbmdoYW8gRGluZyA8c2hlbmdoYW8t
+ZGluZ0B0aS5jb20+DQo+IHdyb3RlOg0KPiA+IGZpeGVkIG02OGsgY29tcGlsaW5nIGlzc3VlOiBt
+YXBwaW5nIHRhYmxlIGNhbiBzYXZlIGNvZGUgZmllbGQ7IHN0b3JpbmcNCj4gPiB0aGUNCj4gDQo+
+IFBsZWFzZSByZXBsaWNhdGUgdGhlIGFjdHVhbCBlcnJvciBtZXNzYWdlIGZyb20gdGhlIGNvbXBp
+bGVyLCBzbyBpdCBpcyByZWNvcmRlZCBpbg0KPiB0aGUgY29tbWl0IGRlc2NyaXB0aW9uLCBhbmQg
+ZWFzeSB0byBmaW5kIHdoZW4gc29tZW9uZSBzZWFyY2hlcyBmb3IgdGhlIGFjdHVhbA0KPiBlcnJv
+ciBtZXNzYWdlDQo+IA0KPiBGcm9tIHRoZSBSZXBvcnRlZC1ieSAod2hpY2ggaXMgbm90IGluY2x1
+ZGVkIGluIHRoZSBhY3R1YWwgZGVzY3JpcHRpb24sIGFzIGl0IGlzDQo+IGJlbG93IHRoZSAiLS0t
+Iik6DQo+IA0KPiAgICAgICAge3N0YW5kYXJkIGlucHV0fTogQXNzZW1ibGVyIG1lc3NhZ2VzOg0K
+PiAgICAgPj4ge3N0YW5kYXJkIGlucHV0fTo5OTI6IEVycm9yOiB2YWx1ZSAtMTQ4IG91dCBvZiBy
+YW5nZQ0KPiAgICAgICAge3N0YW5kYXJkIGlucHV0fTo5OTI6IEVycm9yOiB2YWx1ZSBvZiBmZmZm
+ZmY2YyB0b28gbGFyZ2UgZm9yIGZpZWxkIG9mIDEgYnl0ZSBhdA0KPiAwMDAwMDQ1Zg0KPiANCj4g
+PiBkZXZfaWR4IGFzIGEgbWVtYmVyIG9mIGJsb2NrIGNhbiByZWR1Y2UgdW5uZWNlc3NhcnkgIHRp
+bWUgYW5kIHN5c3RlbQ0KPiA+IHJlc291cmNlIGNvbXN1bXB0aW9uIG9mIGRldl9pZHggbWFwcGlu
+ZyBldmVyeSB0aW1lIHRoZSBibG9jayBkYXRhDQo+ID4gd3JpdGluZyB0byB0aGUgZHNwLg0KPiAN
+Cj4gSSBhbSBzb3JyeSwgYnV0IEkgZG9uJ3QgdW5kZXJzdGFuZCB3aGF0IHRoaXMgbWVhbnMuDQo+
+IENhbiB5b3UgcGxlYXNlIGVsYWJvcmF0ZT8NCj4gDQo+IEFsc28sIGNhbiB5b3UgcGxlYXNlIGV4
+cGxhaW4gd2hhdCB0aGUgcmVhbCBpc3N1ZSBpcz8NCj4gKE15IGZpcnN0IGd1ZXNzIHdoZW4gc2Vl
+aW5nIHRoZSBlcnJvciBtZXNzYWdlIGJlZm9yZSB3YXMgdGhhdCBhICBzaWduZWQNCj4gaW50ZWdl
+ciBpcyB0cnVuY2F0ZWQgdG8gYW4gdW5zaWduZWQgY2hhciBvciBzbywgYnV0IEkgY291bGRuJ3Qg
+c2VlICBpbW1lZGlhdGVseQ0KPiB3aGVyZSB0aGF0IGlzIGhhcHBlbmluZykNClNvcnJ5IHRvIGxh
+dGUgZmVlZGJhY2suIEkgaGFkIGJlZW4gdHJvdWJsZWQgYnkgdGhpcyBpc3N1ZSBmb3Igc2V2ZXJh
+bCB3ZWVrcy4gQXQgZmlyc3QsIEkgYWxzbyB0aGluayBpdCB3b3VsZCBvbmUgb2YgdmFyaWFibGVz
+IG92ZXJmbG93LCBhY2NvcmRpbmcgdG8gdGhlIGNvbXBpbGluZyBlcnJvciBtZXNzYWdlLiBIb3dl
+dmVyLCBhZnRlciBpbnZlc3RpZ2F0aW9uLCBubyByZXN1bHQgY2FtZSBvdXQuIEluIGZhY3QsIGNv
+bXBpbGVyIHdpbGwgcmVwb3J0IHRoZSBsaW5lIG51bWJlciB3aGVyZSB0aGUgdmFyaWFibGUgb3Zl
+cmZsb3cgaXMsIGlmIHRoZXJlIHdhcyByaXNrIG9uIHRoZSB2YXJpYWJsZSBvdmVyZmxvdy4gWWV0
+LCB0aGlzIGNvbXBpbGluZyBlcnJvciBkaWQgbm90IHJlcG9ydCBhbnkgbGluZSBudW1iZXIuIEZp
+bmFsbHksIEkgZGlkbuKAmXQgcmVhbGl6ZSB0aGF0IGl0IHdvdWxkIGJlIHRoZSBjb2RlIHNlY3Rp
+b24gb3ZlcmZsb3cgdW50aWwgdGhhdCBjb21waWxpbmcgZXJyb3IgbWVzc2FnZSBtYWdpY2FsbHkg
+ZGlzYXBwZWFyZWQsIG9uZSBkYXkgSSByZW1vdmVkIHNvbWUgZnVuY3Rpb25zIGluIHRoZSB0YXMy
+NzgxLWZ3bGliLmMuIFNvLCBJIGJlZ2FuIHRvIHNpbXBsaWZ5IHNvbWUgZnVuY3Rpb25zIGluIHRo
+ZSBjb2RlLg0KPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBTaGVuZ2hhbyBEaW5nIDxzaGVuZ2hhby1k
+aW5nQHRpLmNvbT4NCj4gPg0KPiA+IC0tLQ0KPiA+IENoYW5nZXMgaW4gdjE6DQo+ID4gIC0gfCBS
+ZXBvcnRlZC1ieToga2VybmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+DQo+ID4gICAgfCBD
+bG9zZXM6DQo+ID4gICAgfCBodHRwczovL2xvcmUua2VybmVsLm9yZy9vZS1rYnVpbGQtYWxsLzIw
+MjMwOTIyMjA0OC5SblNxRUlLNS1sa3BAaW50ZWwuDQo+ID4gICAgfCBjb20vDQo+IA0KPiA+IC0t
+LSBhL2luY2x1ZGUvc291bmQvdGFzMjc4MS1kc3AuaA0KPiA+ICsrKyBiL2luY2x1ZGUvc291bmQv
+dGFzMjc4MS1kc3AuaA0KPiA+IEBAIC03Nyw2ICs3NywxMSBAQCBzdHJ1Y3QgdGFzZGV2X2JsayB7
+DQo+ID4gICAgICAgICB1bnNpZ25lZCBpbnQgbnJfY21kczsNCj4gPiAgICAgICAgIHVuc2lnbmVk
+IGludCBibGtfc2l6ZTsNCj4gPiAgICAgICAgIHVuc2lnbmVkIGludCBucl9zdWJibG9ja3M7DQo+
+ID4gKyAgICAgICAvKiBmaXhlZCBtNjhrIGNvbXBpbGluZyBpc3N1ZSwgc3RvcmluZyB0aGUgZGV2
+X2lkeCBhcyBhIG1lbWJlciBvZiBibG9jaw0KPiA+ICsgICAgICAgICogY2FuIHJlZHVjZSB1bm5l
+Y2Vzc2FyeSB0aW1lYW5kIHN5c3RlbSByZXNvdXJjZSBjb21zdW1wdGlvbiBvZg0KPiA+ICsgICAg
+ICAgICogZGV2X2lkeCBtYXBwaW5nIGV2ZXJ5IHRpbWUgdGhlIGJsb2NrIGRhdGEgd3JpdGluZyB0
+byB0aGUgZHNwLg0KPiA+ICsgICAgICAgICovDQo+IA0KPiBXaGF0IGlzIHNvIHNwZWNpYWwgYWJv
+dXQgIm02OGsiIHRoYXQgaXQgKDEpIGZhaWxzIHRoZXJlIChhbmQgb25seSB0aGVyZT8NCj4gYW5k
+IG9ubHkgZm9yIHNvbWUgY29uZmlnL2NvbXBpbGVyIGNvbWJvcywgYXMgaXQgYnVpbGRzIGZpbmUg
+Zm9yIG1lPyksIGFuZCAoMikgaXMNCj4gbmVlZGVkIHRvIG1lbnRpb24gdGhpcyBpbiBjb21tZW50
+cyBhbGwgb3ZlciB0aGUgcGxhY2U/DQo+IA0KPiA+ICsgICAgICAgdW5zaWduZWQgY2hhciBkZXZf
+aWR4Ow0KPiA+ICAgICAgICAgdW5zaWduZWQgY2hhciAqZGF0YTsNCj4gPiAgfTsNCj4gPg0KPiA+
+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3RhczI3ODEtZm13bGliLmMNCj4gPiBiL3Nv
+dW5kL3NvYy9jb2RlY3MvdGFzMjc4MS1mbXdsaWIuYw0KPiA+IGluZGV4IGViNTVhYmFlMGQ3Yi4u
+ZTI3Nzc1ZDgzNGU5IDEwMDY0NA0KPiA+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvdGFzMjc4MS1m
+bXdsaWIuYw0KPiA+ICsrKyBiL3NvdW5kL3NvYy9jb2RlY3MvdGFzMjc4MS1mbXdsaWIuYw0KPiA+
+IEBAIC04MCwxMCArODAsNzIgQEAgc3RydWN0IHRhc19jcmMgew0KPiA+ICAgICAgICAgdW5zaWdu
+ZWQgY2hhciBsZW47DQo+ID4gIH07DQo+ID4NCj4gPiArc3RydWN0IGJsa3R5cF9kZXZpZHhfbWFw
+IHsNCj4gPiArICAgICAgIHVuc2lnbmVkIGNoYXIgYmxrdHlwOw0KPiA+ICsgICAgICAgdW5zaWdu
+ZWQgY2hhciBkZXZfaWR4Ow0KPiA+ICt9Ow0KPiA+ICsNCj4gPiAgc3RhdGljIGNvbnN0IGNoYXIg
+ZGV2aWNlTnVtYmVyW1RBU0RFVklDRV9EU1BfVEFTX01BWF9ERVZJQ0VdID0gew0KPiA+ICAgICAg
+ICAgMSwgMiwgMSwgMiwgMSwgMSwgMCwgMiwgNCwgMywgMSwgMiwgMywgNCAgfTsNCj4gPg0KPiA+
+ICsvKiBmaXhlZCBtNjhrIGNvbXBpbGluZyBpc3N1ZTogbWFwcGluZyB0YWJsZSBjYW4gc2F2ZSBj
+b2RlIGZpZWxkICovDQo+ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgYmxrdHlwX2RldmlkeF9tYXAg
+cHBjM190YXMyNzgxX21hcHBpbmdfdGFibGVbXSA9IHsNCj4gPiArICAgICAgIHsgTUFJTl9BTExf
+REVWSUNFU18xWCwgMHg4MCB9LA0KPiA+ICsgICAgICAgeyBNQUlOX0RFVklDRV9BXzFYLCAweDgx
+IH0sDQo+ID4gKyAgICAgICB7IENPRUZGX0RFVklDRV9BXzFYLCAweEMxIH0sDQo+ID4gKyAgICAg
+ICB7IFBSRV9ERVZJQ0VfQV8xWCwgMHhDMSB9LA0KPiA+ICsgICAgICAgeyBQUkVfU09GVFdBUkVf
+UkVTRVRfREVWSUNFX0EsIDB4QzEgfSwNCj4gPiArICAgICAgIHsgUE9TVF9TT0ZUV0FSRV9SRVNF
+VF9ERVZJQ0VfQSwgMHhDMSB9LA0KPiA+ICsgICAgICAgeyBNQUlOX0RFVklDRV9CXzFYLCAweDgy
+IH0sDQo+ID4gKyAgICAgICB7IENPRUZGX0RFVklDRV9CXzFYLCAweEMyIH0sDQo+ID4gKyAgICAg
+ICB7IFBSRV9ERVZJQ0VfQl8xWCwgMHhDMiB9LA0KPiA+ICsgICAgICAgeyBQUkVfU09GVFdBUkVf
+UkVTRVRfREVWSUNFX0IsIDB4QzIgfSwNCj4gPiArICAgICAgIHsgUE9TVF9TT0ZUV0FSRV9SRVNF
+VF9ERVZJQ0VfQiwgMHhDMiB9LA0KPiA+ICsgICAgICAgeyBNQUlOX0RFVklDRV9DXzFYLCAweDgz
+IH0sDQo+ID4gKyAgICAgICB7IENPRUZGX0RFVklDRV9DXzFYLCAweEMzIH0sDQo+ID4gKyAgICAg
+ICB7IFBSRV9ERVZJQ0VfQ18xWCwgMHhDMyB9LA0KPiA+ICsgICAgICAgeyBQUkVfU09GVFdBUkVf
+UkVTRVRfREVWSUNFX0MsIDB4QzMgfSwNCj4gPiArICAgICAgIHsgUE9TVF9TT0ZUV0FSRV9SRVNF
+VF9ERVZJQ0VfQywgMHhDMyB9LA0KPiA+ICsgICAgICAgeyBNQUlOX0RFVklDRV9EXzFYLCAweDg0
+IH0sDQo+ID4gKyAgICAgICB7IENPRUZGX0RFVklDRV9EXzFYLCAweEM0IH0sDQo+ID4gKyAgICAg
+ICB7IFBSRV9ERVZJQ0VfRF8xWCwgMHhDNCB9LA0KPiA+ICsgICAgICAgeyBQUkVfU09GVFdBUkVf
+UkVTRVRfREVWSUNFX0QsIDB4QzQgfSwNCj4gPiArICAgICAgIHsgUE9TVF9TT0ZUV0FSRV9SRVNF
+VF9ERVZJQ0VfRCwgMHhDNCB9LCB9Ow0KPiA+ICsNCj4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBi
+bGt0eXBfZGV2aWR4X21hcCBwcGMzX21hcHBpbmdfdGFibGVbXSA9IHsNCj4gPiArICAgICAgIHsg
+TUFJTl9BTExfREVWSUNFU18xWCwgMHg4MCB9LA0KPiA+ICsgICAgICAgeyBNQUlOX0RFVklDRV9B
+XzFYLCAweDgxIH0sDQo+ID4gKyAgICAgICB7IENPRUZGX0RFVklDRV9BXzFYLCAweEMxIH0sDQo+
+ID4gKyAgICAgICB7IFBSRV9ERVZJQ0VfQV8xWCwgMHhDMSB9LA0KPiA+ICsgICAgICAgeyBNQUlO
+X0RFVklDRV9CXzFYLCAweDgyIH0sDQo+ID4gKyAgICAgICB7IENPRUZGX0RFVklDRV9CXzFYLCAw
+eEMyIH0sDQo+ID4gKyAgICAgICB7IFBSRV9ERVZJQ0VfQl8xWCwgMHhDMiB9LA0KPiA+ICsgICAg
+ICAgeyBNQUlOX0RFVklDRV9DXzFYLCAweDgzIH0sDQo+ID4gKyAgICAgICB7IENPRUZGX0RFVklD
+RV9DXzFYLCAweEMzIH0sDQo+ID4gKyAgICAgICB7IFBSRV9ERVZJQ0VfQ18xWCwgMHhDMyB9LA0K
+PiA+ICsgICAgICAgeyBNQUlOX0RFVklDRV9EXzFYLCAweDg0IH0sDQo+ID4gKyAgICAgICB7IENP
+RUZGX0RFVklDRV9EXzFYLCAweEM0IH0sDQo+ID4gKyAgICAgICB7IFBSRV9ERVZJQ0VfRF8xWCwg
+MHhDNCB9LA0KPiA+ICt9Ow0KPiA+ICsNCj4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBibGt0eXBf
+ZGV2aWR4X21hcCBub25fcHBjM19tYXBwaW5nX3RhYmxlW10gPSB7DQo+ID4gKyAgICAgICB7IE1B
+SU5fQUxMX0RFVklDRVMsIDB4ODAgfSwNCj4gPiArICAgICAgIHsgTUFJTl9ERVZJQ0VfQSwgMHg4
+MSB9LA0KPiA+ICsgICAgICAgeyBDT0VGRl9ERVZJQ0VfQSwgMHhDMSB9LA0KPiA+ICsgICAgICAg
+eyBQUkVfREVWSUNFX0EsIDB4QzEgfSwNCj4gPiArICAgICAgIHsgTUFJTl9ERVZJQ0VfQiwgMHg4
+MiB9LA0KPiA+ICsgICAgICAgeyBDT0VGRl9ERVZJQ0VfQiwgMHhDMiB9LA0KPiA+ICsgICAgICAg
+eyBQUkVfREVWSUNFX0IsIDB4QzIgfSwNCj4gPiArICAgICAgIHsgTUFJTl9ERVZJQ0VfQywgMHg4
+MyB9LA0KPiA+ICsgICAgICAgeyBDT0VGRl9ERVZJQ0VfQywgMHhDMyB9LA0KPiA+ICsgICAgICAg
+eyBQUkVfREVWSUNFX0MsIDB4QzMgfSwNCj4gPiArICAgICAgIHsgTUFJTl9ERVZJQ0VfRCwgMHg4
+NCB9LA0KPiA+ICsgICAgICAgeyBDT0VGRl9ERVZJQ0VfRCwgMHhDNCB9LA0KPiA+ICsgICAgICAg
+eyBQUkVfREVWSUNFX0QsIDB4QzQgfSwNCj4gPiArfTsNCj4gPiArDQo+ID4gIHN0YXRpYyBzdHJ1
+Y3QgdGFzZGV2aWNlX2NvbmZpZ19pbmZvICp0YXNkZXZpY2VfYWRkX2NvbmZpZygNCj4gPiAgICAg
+ICAgIHN0cnVjdCB0YXNkZXZpY2VfcHJpdiAqdGFzX3ByaXYsIHVuc2lnbmVkIGNoYXIgKmNvbmZp
+Z19kYXRhLA0KPiA+ICAgICAgICAgdW5zaWduZWQgaW50IGNvbmZpZ19zaXplLCBpbnQgKnN0YXR1
+cykgQEAgLTMxNiw2ICszNzgsMzcgQEANCj4gPiBpbnQgdGFzZGV2aWNlX3JjYV9wYXJzZXIodm9p
+ZCAqY29udGV4dCwgY29uc3Qgc3RydWN0IGZpcm13YXJlICpmbXcpICB9DQo+ID4gRVhQT1JUX1NZ
+TUJPTF9OU19HUEwodGFzZGV2aWNlX3JjYV9wYXJzZXIsDQo+IFNORF9TT0NfVEFTMjc4MV9GTVdM
+SUIpOw0KPiA+DQo+ID4gKy8qIGZpeGVkIG02OGsgY29tcGlsaW5nIGlzc3VlOiBtYXBwaW5nIHRh
+YmxlIGNhbiBzYXZlIGNvZGUgZmllbGQgKi8NCj4gPiArc3RhdGljIHVuc2lnbmVkIGNoYXIgbWFw
+X2Rldl9pZHgoc3RydWN0IHRhc2RldmljZV9mdyAqdGFzX2ZtdywNCj4gPiArICAgICAgIHN0cnVj
+dCB0YXNkZXZfYmxrICpibG9jaykNCj4gPiArew0KPiA+ICsNCj4gPiArICAgICAgIHN0cnVjdCBi
+bGt0eXBfZGV2aWR4X21hcCAqcCA9DQo+ID4gKyAgICAgICAgICAgICAgIChzdHJ1Y3QgYmxrdHlw
+X2RldmlkeF9tYXAgKilub25fcHBjM19tYXBwaW5nX3RhYmxlOw0KPiANCj4gUGxlYXNlIGRvIG5v
+dCBjYXN0IGF3YXkgY29uc3RuZXNzIHdoZW4gbm90IG5lZWRlZCAoYWxzbyBiZWxvdykuDQo+IA0K
+PiA+ICsgICAgICAgc3RydWN0IHRhc2RldmljZV9kc3Bmd19oZHIgKmZ3X2hkciA9ICYodGFzX2Zt
+dy0+ZndfaGRyKTsNCj4gPiArICAgICAgIHN0cnVjdCB0YXNkZXZpY2VfZndfZml4ZWRfaGRyICpm
+d19maXhlZF9oZHIgPQ0KPiA+ICsgJihmd19oZHItPmZpeGVkX2hkcik7DQo+ID4gKw0KPiA+ICsg
+ICAgICAgaW50IGksIG4gPSBBUlJBWV9TSVpFKG5vbl9wcGMzX21hcHBpbmdfdGFibGUpOw0KPiAN
+Cj4gc2l6ZV90DQo+IA0KPiA+ICsgICAgICAgdW5zaWduZWQgY2hhciBkZXZfaWR4ID0gMDsNCj4g
+PiArDQo+ID4gKyAgICAgICBpZiAoZndfZml4ZWRfaGRyLT5wcGN2ZXIgPj0gUFBDM19WRVJTSU9O
+X1RBUzI3ODEpIHsNCj4gPiArICAgICAgICAgICAgICAgcCA9IChzdHJ1Y3QgYmxrdHlwX2Rldmlk
+eF9tYXAgKilwcGMzX3RhczI3ODFfbWFwcGluZ190YWJsZTsNCj4gPiArICAgICAgICAgICAgICAg
+biA9IEFSUkFZX1NJWkUocHBjM190YXMyNzgxX21hcHBpbmdfdGFibGUpOw0KPiA+ICsgICAgICAg
+fSBlbHNlIGlmIChmd19maXhlZF9oZHItPnBwY3ZlciA+PSBQUEMzX1ZFUlNJT04pIHsNCj4gPiAr
+ICAgICAgICAgICAgICAgcCA9IChzdHJ1Y3QgYmxrdHlwX2RldmlkeF9tYXAgKilwcGMzX21hcHBp
+bmdfdGFibGU7DQo+ID4gKyAgICAgICAgICAgICAgIG4gPSBBUlJBWV9TSVpFKHBwYzNfbWFwcGlu
+Z190YWJsZSk7DQo+ID4gKyAgICAgICB9DQo+ID4gKw0KPiA+ICsgICAgICAgZm9yIChpID0gMDsg
+aSA8IG47IGkrKykgew0KPiA+ICsgICAgICAgICAgICAgICBpZiAoYmxvY2stPnR5cGUgPT0gcFtp
+XS5ibGt0eXApIHsNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBkZXZfaWR4ID0gcFtpXS5k
+ZXZfaWR4Ow0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOw0KPiA+ICsgICAgICAg
+ICAgICAgICB9DQo+ID4gKyAgICAgICB9DQo+ID4gKw0KPiA+ICsgICAgICAgcmV0dXJuIGRldl9p
+ZHg7DQo+ID4gK30NCj4gDQo+IEdye29ldGplLGVldGluZ31zLA0KPiANCj4gICAgICAgICAgICAg
+ICAgICAgICAgICAgR2VlcnQNCj4gDQo+IC0tDQo+IEdlZXJ0IFV5dHRlcmhvZXZlbiAtLSBUaGVy
+ZSdzIGxvdHMgb2YgTGludXggYmV5b25kIGlhMzIgLS0gZ2VlcnRAbGludXgtDQo+IG02OGsub3Jn
+DQo+IA0KPiBJbiBwZXJzb25hbCBjb252ZXJzYXRpb25zIHdpdGggdGVjaG5pY2FsIHBlb3BsZSwg
+SSBjYWxsIG15c2VsZiBhIGhhY2tlci4gQnV0DQo+IHdoZW4gSSdtIHRhbGtpbmcgdG8gam91cm5h
+bGlzdHMgSSBqdXN0IHNheSAicHJvZ3JhbW1lciIgb3Igc29tZXRoaW5nIGxpa2UgdGhhdC4NCj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAtLSBMaW51cyBUb3J2YWxkcw0K
