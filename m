@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABAE7B675F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074D77B6768
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:13:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239907AbjJCLNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 07:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54542 "EHLO
+        id S239904AbjJCLNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 07:13:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239899AbjJCLNC (ORCPT
+        with ESMTP id S239914AbjJCLNP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 07:13:02 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4269B4
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 04:12:58 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c760b34d25so5524385ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 04:12:58 -0700 (PDT)
+        Tue, 3 Oct 2023 07:13:15 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E7EB7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 04:13:07 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c5c91bece9so5746965ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 04:13:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696331578; x=1696936378; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1696331587; x=1696936387; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DJn/XE5IZh1ViEk2mkl0oILYWUWFd3CGaoQa/Tto8Gw=;
-        b=RyuDWkD9tJhj5YN44ILORB5JNlwqb7EWKT0HChFRPblJusW1iqG2/K50sDPDDB1cUb
-         iAEWdgB4mrL+LDrIscqfodLBikbf/RY+FNewkDCK53ZfNYkSum239RDFQaHWani6Ztru
-         3GopquKiM2t3nw23lvcR4GBFr9oOVon/8fbRwxtMAOGSZsnMvy2bgxmHHNMtjWkoXBGZ
-         chI8y+UdM3LjUARDnlSc3qfLvIKbLBgGeVgIaTQsmMVA10PFuxyLVpcaa6yqi3t8HJLO
-         C4VOl2At+RbgdaP9ImxRWMtjJNAY6URmfBRo2EIfSfSJFbQ1QywnJ7iT6QB0Wmgz2rmK
-         edXA==
+        bh=1SXdGgyqDUIjaVfyup8+XvosqsNJQG+PbqUrtIaIrGg=;
+        b=lYryP//Y8916Dw9T7yefaMuDEGicVgm/JsSYCgQlHygLhbpvoBmkhQsNj1SfdxGDzn
+         JVL4W54WWmsaf4tZGoxDqkuTVRkmSwYepihRlDvnzh1hLeD5Mvbv5RJk1CZ9E7UOwGFB
+         s5ZqowBr8R0rzZRk/XLdztMhwcmArvNe0w9Lg5EaH4ZhNDziOud7MQxzfGOxpqiLjSxf
+         zPbYMQkNkszRUXTO0SBV6Q82/sksoFCrDl1xRe+5f+2Nk9/BjcW6dWBUHM3y/zhgWFTe
+         JxWP4rpAupqVpeWWxW5lQTcO1TGvjiH69UPj9RLflHds/IsVd/NKu/MAil33szzpAygU
+         uUNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696331578; x=1696936378;
+        d=1e100.net; s=20230601; t=1696331587; x=1696936387;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DJn/XE5IZh1ViEk2mkl0oILYWUWFd3CGaoQa/Tto8Gw=;
-        b=qjLmxJwmvvLvgizNutE2kxGKPYrqGyI8HBiQbT70kWl4cXlR8PaAJhvcEXcpim+zPe
-         YrqC4nFxaj9x5SPEMqEdLsSM4tiBREtgbzkDHE3F926Nn8oUKuLZ7cxulBGADaFwejRW
-         OET440By9k18wJAI9tFL0qnB9Q6/+82TvYErvmkEXCvSvJO6jaSD0bViqItsljDwFDit
-         wieWYECZ+C5ITlJ3MR7NlAQ9G22cK662mQlQjhgVc6mIzD9v8zOIxkSb2p0jTpFaiFhQ
-         0EjK4IcQZT8RHQ0E+n4j6fkWNHM7WoS4f7JrmFYHF50j/V1+pHEQ2B3mm8Hq7dVD5Bzv
-         5TYA==
-X-Gm-Message-State: AOJu0Yxu6z4AetKoyeeNKcEc94ds8X88WyLoIqVBqgZQaksK1zK68zfd
-        KKvF6+a/ChtS+i/7WMRlGcXb
-X-Google-Smtp-Source: AGHT+IE0lSrF6SzJLMpQ/0kKJ9ghVS9vUDi4JoGX11BrkGN8gx1tpMxZTsY4ro8fWAvXE1LqKDxu4w==
-X-Received: by 2002:a17:902:8649:b0:1c3:1f0c:fb82 with SMTP id y9-20020a170902864900b001c31f0cfb82mr10669936plt.41.1696331578185;
-        Tue, 03 Oct 2023 04:12:58 -0700 (PDT)
+        bh=1SXdGgyqDUIjaVfyup8+XvosqsNJQG+PbqUrtIaIrGg=;
+        b=xFNTD81RKSexpcBPabkrdOTU2AC6nrvX0rhAMZXOMSV7eJPmUA2NI7ivWVb7CAZ24D
+         01gjol7PsdNNS+IYOS+vfu0ITO52yXf9RqGa4UloT+KMhozIWKphgeHjcb/yWa63vL6H
+         Ts2BWuOGxnNU8g8p8a+jF6GVAqej84QsG+l2hU1kXgoDjuWmXYL4OVQs++XWL6x9gimn
+         U/l9D+fvUN29wBpb7nlXxz2xqYzzpzIRCh5MFunsCDLn8TPtILqSwCJuo2lavL7Hc+to
+         ge8jx1RhsRaPuDYmP0xpqYTaEwAynaWyCmAgysRFCusO3qcyrwrPzupQgZNKXmeq2TOB
+         7iLQ==
+X-Gm-Message-State: AOJu0Yxcl0tC/NIftzcwlYQ83dIryJiLq4Pz9JSGo97BzNVdtGDzrpMF
+        jm2AgJD33Po0qBVP2q8dqn/4
+X-Google-Smtp-Source: AGHT+IEgaRwzsJlpUNc98pJxuNEdzXPM+dY/VQGRsbnG0oy5jS6mOtXRh9qNLqUl5w0ZhfLRV88q3Q==
+X-Received: by 2002:a17:902:f54c:b0:1c7:2476:c977 with SMTP id h12-20020a170902f54c00b001c72476c977mr13404192plf.33.1696331586819;
+        Tue, 03 Oct 2023 04:13:06 -0700 (PDT)
 Received: from localhost.localdomain ([117.217.185.220])
-        by smtp.gmail.com with ESMTPSA id d9-20020a170903230900b001ab2b4105ddsm1250328plh.60.2023.10.03.04.12.49
+        by smtp.gmail.com with ESMTPSA id d9-20020a170903230900b001ab2b4105ddsm1250328plh.60.2023.10.03.04.12.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 04:12:57 -0700 (PDT)
+        Tue, 03 Oct 2023 04:13:06 -0700 (PDT)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     vireshk@kernel.org, nm@ti.com, sboyd@kernel.org,
         myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
@@ -65,101 +65,93 @@ Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
         quic_bhaskarv@quicinc.com, quic_richardp@quicinc.com,
         quic_nguyenb@quicinc.com, quic_ziqichen@quicinc.com,
         bmasney@redhat.com, krzysztof.kozlowski@linaro.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        linux-kernel@vger.kernel.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v4 1/6] dt-bindings: ufs: common: add OPP table
-Date:   Tue,  3 Oct 2023 16:42:27 +0530
-Message-Id: <20231003111232.42663-2-manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v4 2/6] PM / devfreq: Switch to dev_pm_opp_find_freq_{ceil/floor}_indexed() APIs
+Date:   Tue,  3 Oct 2023 16:42:28 +0530
+Message-Id: <20231003111232.42663-3-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231003111232.42663-1-manivannan.sadhasivam@linaro.org>
 References: <20231003111232.42663-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Some devfreq consumers like UFS driver need to work with multiple clocks
+through the OPP framework. For this reason, OPP framework exposes the
+_indexed() APIs for finding the floor/ceil of the supplied frequency of
+the indexed clock. So let's use them in the devfreq driver.
 
-Except scaling UFS and bus clocks, it's necessary to scale also the
-voltages of regulators or power domain performance state levels.  Adding
-Operating Performance Points table allows to adjust power domain
-performance state, depending on the UFS clock speed.
+Currently, the clock index of 0 is used which works fine for multiple as
+well as single clock.
 
-OPPv2 deprecates previous property limited to clock scaling:
-freq-table-hz.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- .../devicetree/bindings/ufs/ufs-common.yaml   | 36 ++++++++++++++++---
- 1 file changed, 32 insertions(+), 4 deletions(-)
+ drivers/devfreq/devfreq.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/ufs/ufs-common.yaml b/Documentation/devicetree/bindings/ufs/ufs-common.yaml
-index bbaee4f5f7b2..d7d2c8a136bb 100644
---- a/Documentation/devicetree/bindings/ufs/ufs-common.yaml
-+++ b/Documentation/devicetree/bindings/ufs/ufs-common.yaml
-@@ -20,11 +20,24 @@ properties:
-       items:
-         - description: Minimum frequency for given clock in Hz
-         - description: Maximum frequency for given clock in Hz
-+    deprecated: true
-     description: |
-+      Preferred is operating-points-v2.
-+
-       Array of <min max> operating frequencies in Hz stored in the same order
--      as the clocks property. If this property is not defined or a value in the
--      array is "0" then it is assumed that the frequency is set by the parent
--      clock or a fixed rate clock source.
-+      as the clocks property. If either this property or operating-points-v2 is
-+      not defined or a value in the array is "0" then it is assumed that the
-+      frequency is set by the parent clock or a fixed rate clock source.
-+
-+  operating-points-v2:
-+    description:
-+      Preferred over freq-table-hz.
-+      If present, each OPP must contain array of frequencies stored in the same
-+      order for each clock.  If clock frequency in the array is "0" then it is
-+      assumed that the frequency is set by the parent clock or a fixed rate
-+      clock source.
-+
-+  opp-table: true
+diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+index 474d81831ad3..b3a68d5833bd 100644
+--- a/drivers/devfreq/devfreq.c
++++ b/drivers/devfreq/devfreq.c
+@@ -88,7 +88,7 @@ static unsigned long find_available_min_freq(struct devfreq *devfreq)
+ 	struct dev_pm_opp *opp;
+ 	unsigned long min_freq = 0;
  
-   interrupts:
-     maxItems: 1
-@@ -74,9 +87,24 @@ properties:
-       Specifies max. load that can be drawn from VCCQ2 supply.
+-	opp = dev_pm_opp_find_freq_ceil(devfreq->dev.parent, &min_freq);
++	opp = dev_pm_opp_find_freq_ceil_indexed(devfreq->dev.parent, &min_freq, 0);
+ 	if (IS_ERR(opp))
+ 		min_freq = 0;
+ 	else
+@@ -102,7 +102,7 @@ static unsigned long find_available_max_freq(struct devfreq *devfreq)
+ 	struct dev_pm_opp *opp;
+ 	unsigned long max_freq = ULONG_MAX;
  
- dependencies:
--  freq-table-hz: [ clocks ]
-+  freq-table-hz: [ 'clocks' ]
-+  operating-points-v2: [ 'clocks', 'clock-names' ]
+-	opp = dev_pm_opp_find_freq_floor(devfreq->dev.parent, &max_freq);
++	opp = dev_pm_opp_find_freq_floor_indexed(devfreq->dev.parent, &max_freq, 0);
+ 	if (IS_ERR(opp))
+ 		max_freq = 0;
+ 	else
+@@ -196,7 +196,7 @@ static int set_freq_table(struct devfreq *devfreq)
+ 		return -ENOMEM;
  
- required:
-   - interrupts
+ 	for (i = 0, freq = 0; i < devfreq->max_state; i++, freq++) {
+-		opp = dev_pm_opp_find_freq_ceil(devfreq->dev.parent, &freq);
++		opp = dev_pm_opp_find_freq_ceil_indexed(devfreq->dev.parent, &freq, 0);
+ 		if (IS_ERR(opp)) {
+ 			devm_kfree(devfreq->dev.parent, devfreq->freq_table);
+ 			return PTR_ERR(opp);
+@@ -2036,18 +2036,18 @@ struct dev_pm_opp *devfreq_recommended_opp(struct device *dev,
  
-+allOf:
-+  - if:
-+      required:
-+        - freq-table-hz
-+    then:
-+      properties:
-+        operating-points-v2: false
-+  - if:
-+      required:
-+        - operating-points-v2
-+    then:
-+      properties:
-+        freq-table-hz: false
-+
- additionalProperties: true
+ 	if (flags & DEVFREQ_FLAG_LEAST_UPPER_BOUND) {
+ 		/* The freq is an upper bound. opp should be lower */
+-		opp = dev_pm_opp_find_freq_floor(dev, freq);
++		opp = dev_pm_opp_find_freq_floor_indexed(dev, freq, 0);
+ 
+ 		/* If not available, use the closest opp */
+ 		if (opp == ERR_PTR(-ERANGE))
+-			opp = dev_pm_opp_find_freq_ceil(dev, freq);
++			opp = dev_pm_opp_find_freq_ceil_indexed(dev, freq, 0);
+ 	} else {
+ 		/* The freq is an lower bound. opp should be higher */
+-		opp = dev_pm_opp_find_freq_ceil(dev, freq);
++		opp = dev_pm_opp_find_freq_ceil_indexed(dev, freq, 0);
+ 
+ 		/* If not available, use the closest opp */
+ 		if (opp == ERR_PTR(-ERANGE))
+-			opp = dev_pm_opp_find_freq_floor(dev, freq);
++			opp = dev_pm_opp_find_freq_floor_indexed(dev, freq, 0);
+ 	}
+ 
+ 	return opp;
 -- 
 2.25.1
 
