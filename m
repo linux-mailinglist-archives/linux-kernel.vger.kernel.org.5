@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 395F67B6721
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:03:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC15A7B6723
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:04:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239985AbjJCLD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 07:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44658 "EHLO
+        id S239996AbjJCLEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 07:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231732AbjJCLDx (ORCPT
+        with ESMTP id S240010AbjJCLEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 07:03:53 -0400
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5857FB0;
-        Tue,  3 Oct 2023 04:03:49 -0700 (PDT)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 393B3gaR059014;
-        Tue, 3 Oct 2023 06:03:42 -0500
+        Tue, 3 Oct 2023 07:04:02 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71D30D9;
+        Tue,  3 Oct 2023 04:03:57 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 393B3nAW060545;
+        Tue, 3 Oct 2023 06:03:49 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1696331022;
-        bh=dPofiJ+IdtbsGt9VOmNF6gy5xD9Yz7NjPnSVk/RE86I=;
+        s=ti-com-17Q1; t=1696331029;
+        bh=O+F7Xh2LuYuME1pYB+4cgyIxjuLmt4ZcCErpxMypkfs=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=pIudeaWoFrurmUM0C7tl8BdA4knqL+ocSYMsokyUL2wAEtfCBhQvZUBRSWK9Bmy75
-         aCYjPc5M+hQXAP/uGl8aP31WGwFFCInQiS2RhvJHz0qzmreUJ1oylObARe5iB/hR7d
-         gY3omOQfERh6bgpawpdj+KGJqVxo393MfTTqWsSo=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 393B3g0C010710
+        b=BexdHVsfvyTHaPmothipE7+5XM7EgVrQD0KIN5OvAEcJbgAowQl8nV8SuTewabZmC
+         JVhGe/v1F8aIxk5BzMt+Tol3MCQDtPbSKNXK2ztAZgvwbvnDWTONPPKiLxPpLRTm2C
+         vfP8keXHN49tjRpdt1Qq+NExnXvaQCyGHEDeh7WA=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 393B3nNO001661
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Oct 2023 06:03:42 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+        Tue, 3 Oct 2023 06:03:49 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 3
- Oct 2023 06:03:41 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ Oct 2023 06:03:49 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 3 Oct 2023 06:03:41 -0500
+ Frontend Transport; Tue, 3 Oct 2023 06:03:48 -0500
 Received: from uda0132425.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 393B1Dvn129223;
-        Tue, 3 Oct 2023 06:03:38 -0500
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 393B1Dvo129223;
+        Tue, 3 Oct 2023 06:03:45 -0500
 From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     <nm@ti.com>, <afd@ti.com>, <robh+dt@kernel.org>,
-        Roger Quadros <rogerq@kernel.org>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+To:     <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <srk@ti.com>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/2] arm64: dts: ti: Add overlay for AM642-EVM NAND expansion card
-Date:   Tue, 3 Oct 2023 16:30:50 +0530
-Message-ID: <169633065055.2221719.1027083613762487403.b4-ty@ti.com>
+        Siddharth Vadapalli <s-vadapalli@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
+        <srk@ti.com>
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-j721s2-evm-gesi: Specify base dtb for overlay file
+Date:   Tue, 3 Oct 2023 16:30:51 +0530
+Message-ID: <169633065053.2221719.849594826146111804.b4-ty@ti.com>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230923080046.5373-1-rogerq@kernel.org>
-References: <20230923080046.5373-1-rogerq@kernel.org>
+In-Reply-To: <20230912043308.20629-1-s-vadapalli@ti.com>
+References: <20230912043308.20629-1-s-vadapalli@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -67,31 +68,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roger Quadros,
+Hi Siddharth Vadapalli,
 
-On Sat, 23 Sep 2023 11:00:44 +0300, Roger Quadros wrote:
-> This series adds device tree overlay for NAND expansion card for AM642-EVM.
+On Tue, 12 Sep 2023 10:03:08 +0530, Siddharth Vadapalli wrote:
+> Specify the base dtb file k3-j721s2-common-proc-board.dtb on which the
+> k3-j721s2-evm-gesi-exp-board.dtbo overlay has to be applied. Name the
+> resulting dtb as k3-j721s2-evm.dtb.
 > 
-> cheers,
-> -roger
 > 
-> Changelog:
-> ---------
-> v2:
-> - Drop patch "arm64: dts: ti: Enable support for overlays for relevant boards"
-> - Don't leave k3-am642-evm-nand.dtbo as an orphan. Make k3-am642-evm-nand.dtb
->   with the overlay applied on the base board.
-> - Add patch "arm64: dts: ti: k3-am64: Add GPIO expander on I2C0"
-> 
-> [...]
 
 I have applied the following to branch ti-k3-dts-next on [1].
 Thank you!
 
-[1/2] arm64: dts: ti: am642-evm: Add overlay for NAND expansion card
-      commit: 45a0c06571e1388f8cd3e0e0b1db9927db06cf2a
-[2/2] arm64: dts: ti: k3-am64: Add GPIO expander on I2C0
-      commit: 0ce486452bf216d502017b1db066a80b546d0f87
+[1/1] arm64: dts: ti: k3-j721s2-evm-gesi: Specify base dtb for overlay file
+      commit: 35be6ac964450687ab39b846d65ee1cb2a352280
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent up the chain during
