@@ -2,106 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C77847B7570
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B207B7572
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238240AbjJCXqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 19:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51392 "EHLO
+        id S238361AbjJCXqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 19:46:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237659AbjJCXp7 (ORCPT
+        with ESMTP id S237659AbjJCXqb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 19:45:59 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2395DB8
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:45:56 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-277336b8717so1012492a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 16:45:56 -0700 (PDT)
+        Tue, 3 Oct 2023 19:46:31 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898D990
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:46:28 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-27911ce6206so1316547a91.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 16:46:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696376755; x=1696981555; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RtHYjR3XxoRF+iJTkvp+E/jMMzI/Fs5RNWq+H0ugZaQ=;
-        b=Uv+54UEBZvITyMjEPII19CZmsTxTZvB5NDyFvUS5nkcYu7rsLrGfwtaxdwjj7+JYOW
-         INlN5xBxwlyY/IxesJp44tCcAW05pW5ACZ/4CqNs7+0CSGRFuSRd6tEFa5oSFWCaU8bU
-         XZUqzdUa7jp42b/HYHusuibM+HM3PWkhob+vU=
+        d=google.com; s=20230601; t=1696376788; x=1696981588; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gaHRh+iyoB6/OttqFX2Q86pGvl0bhGVCVyqFTvtoGcw=;
+        b=zeSJ/jk87sZLLQE3qHWB5Onl/GnOQfZiDOraNhrrCtssbqZAA1MS1ukg7TKv596X2v
+         r9dBnSAFnEYzXw1YhYt+pLvoCa0omHCo/CDL9PWdgws7U+/nf6DLhti/pVo6DBZisBJq
+         6pAtIkBTtcSU4yGLlSew038ojTMHlLqRqzPj6wzUoO1WJvYJlWDQ2/x4Mm8CUAUYD6k9
+         6yOdRPNNieeXwa2j8xrRZUw1YvmPYXilCWLgoMQ497c7mVsWMp7f9rPgHAc/OBm47B3g
+         YAmu8QrG9A2PvbfMF94kbzWWt2mpHDgC5yMHMnSxYTb+gReZXWk51QzfPLS9JefE8ZcU
+         Zvdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696376755; x=1696981555;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RtHYjR3XxoRF+iJTkvp+E/jMMzI/Fs5RNWq+H0ugZaQ=;
-        b=hD1bg3GaJ3hpKDYo/Oo7BCyOky+mV9fF12BfdTxMYbollJct08CYlagsftKqiVpatR
-         M/QfqMBOmivTpDo013YAJydm73MqMpOHKpxzQvdFoNcHhe/0NQWGJbT7LjHxXSCvnvKl
-         BnX2kiAt+A3pXz56LjKkH2JjBBoZgKSAjtyP7pauf7CrguAHNXVM34kdibVi3ePFLscQ
-         J7oJKxe+9WyCcM3UaT72D5+e0IafZ+wznSCCthZxPHPtFNg9Ezq9t36VJBbYZE5v1IWK
-         pj4D2Q+Fajfa9rxMguBa3lDl57uRwYRZuCKLeu28RKa40xFCOD0CblOWr9spiPTMhk1N
-         mevQ==
-X-Gm-Message-State: AOJu0YxuoXdjB5s62uygu4+J1pgxQud8/nO28JvNsA57Mt6nLIE6ReJ1
-        kK3/alobUKx9Uwy6ZH0hNid8bg==
-X-Google-Smtp-Source: AGHT+IHujQcVFHUY7j+G/kYmbSjiEDK3lKj5pw/1RC5Ut3/Cx7sRwL7lI9kZJjkyqrtiKpo0Jw7Fag==
-X-Received: by 2002:a17:902:e850:b0:1c5:d1a2:c3e8 with SMTP id t16-20020a170902e85000b001c5d1a2c3e8mr1097347plg.5.1696376755493;
-        Tue, 03 Oct 2023 16:45:55 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ji13-20020a170903324d00b001c726147a45sm2196482plb.190.2023.10.03.16.45.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 16:45:55 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 16:45:52 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Justin Stitt <justinstitt@google.com>
-Cc:     Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] scsi: message: fusion: replace deprecated strncpy
- with strscpy
-Message-ID: <202310031645.FBD5955@keescook>
-References: <20231003-strncpy-drivers-message-fusion-mptsas-c-v2-1-5ce07e60bd21@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003-strncpy-drivers-message-fusion-mptsas-c-v2-1-5ce07e60bd21@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20230601; t=1696376788; x=1696981588;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gaHRh+iyoB6/OttqFX2Q86pGvl0bhGVCVyqFTvtoGcw=;
+        b=VEXiArZvUBN8wLfsZA54j0o2pSXtzvU0EGmZWwP1lS/8yoI+pu/F5HJN+EEq4AdUS9
+         GnsJUfrqA5vH6TaJSf9Urf5EIkqj/g90AEjzqHODpGKHzbp4BuQzCECFIUqNUwQuyWhE
+         cHC6eXsfq1EF5Xb7R1KVFYwL3MArsD2fjZfg+XSeQaRsbJ6I+avLelrCpVn64Micu3p5
+         +QOcyw83Ex3ZEjLI1AASxCpLFybmhAotLVgNd/468HaY7PPOvb2OE1aGvHKqqBBU0XqW
+         eYXB3ok4EF3RfY/SSTrLZz/L+bJIfNp/JIJrdpTHpQ5uS5xtvGmQiIdT7o8maCloc2ft
+         5BFg==
+X-Gm-Message-State: AOJu0Yy0J5E4KyTp9RUI5E8WVb2JNB/otTL1Xh4AxnpCtAmMOo8Nuh0G
+        B62Nf7dadU5wpk4Zht8xQkerbE+PUtc=
+X-Google-Smtp-Source: AGHT+IE1XHpyO3fF4751nYD6L1cufL1XUM2b3xSCMQMb58rp5yQSCvcWy8YfsNAskAty/E/22t80Ux7giMw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90a:8186:b0:274:6af0:d75b with SMTP id
+ e6-20020a17090a818600b002746af0d75bmr12051pjn.7.1696376787828; Tue, 03 Oct
+ 2023 16:46:27 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 16:46:26 -0700
+In-Reply-To: <CAF7b7mqyU059YpBBVYjTMNXf9VHSc6tbKrQ8avFXYtP6LWMh8Q@mail.gmail.com>
+Mime-Version: 1.0
+References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-8-seanjc@google.com>
+ <117db856-9aec-e91c-b1d4-db2b90ae563d@intel.com> <ZQ3AmLO2SYv3DszH@google.com>
+ <CAF7b7mrf-y9DNdsreOAedGJueOThnYE=ascFd4=rvW0Z4rhTQg@mail.gmail.com>
+ <ZRtxoaJdVF1C2Mvy@google.com> <CAF7b7mqyU059YpBBVYjTMNXf9VHSc6tbKrQ8avFXYtP6LWMh8Q@mail.gmail.com>
+Message-ID: <ZRyn0nPQpbVpz8ah@google.com>
+Subject: Re: [RFC PATCH v12 07/33] KVM: Add KVM_EXIT_MEMORY_FAULT exit to
+ report faults to userspace
+From:   Sean Christopherson <seanjc@google.com>
+To:     Anish Moorthy <amoorthy@google.com>
+Cc:     Xiaoyao Li <xiaoyao.li@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
+        kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 10:15:45PM +0000, Justin Stitt wrote:
-> `strncpy` is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> The only caller of mptsas_exp_repmanufacture_info() is
-> mptsas_probe_one_phy() which can allocate rphy in either
-> sas_end_device_alloc() or sas_expander_alloc(). Both of which
-> zero-allocate:
-> |       rdev = kzalloc(sizeof(*rdev), GFP_KERNEL);
-> ... this is supplied to mptsas_exp_repmanufacture_info() as edev meaning
-> that no future NUL-padding of edev members is needed.
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Also use the more idiomatic strscpy pattern of (dest, src, sizeof(dest))
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Cc: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+On Tue, Oct 03, 2023, Anish Moorthy wrote:
+> On Mon, Oct 2, 2023 at 6:43=E2=80=AFPM Sean Christopherson <seanjc@google=
+.com> wrote:
+> >
+> > > - I should go drop the patches annotating kvm_vcpu_read/write_page
+> > > from my series
+> >
+> > Hold up on that.  I'd prefer to keep them as there's still value in giv=
+ing userspace
+> > debug information.  All I'm proposing is that we would firmly state in =
+the
+> > documentation that those paths must be treated as informational-only.
+>=20
+> Userspace would then need to know whether annotations were performed
+> from reliable/unreliable paths though, right? That'd imply another
+> flag bit beyond the current R/W/E bits.
 
-Thanks for adjusting the sizes. Looks good!
+No, what's missing is a guarantee in KVM that every attempt to exit will ac=
+tually
+make it to userspace.  E.g. if a different exit, including another memory_f=
+ault
+exit, clobbers an attempt to exit, the "unreliable" annotation will never b=
+e seen
+by userspace.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+The only way a KVM_EXIT_MEMORY_FAULT that actually reaches userspace could =
+be
+"unreliable" is if something other than a memory_fault exit clobbered the u=
+nion,
+but didn't signal its KVM_EXIT_* reason.  And that would be an egregious bu=
+g that
+isn't unique to KVM_EXIT_MEMORY_FAULT, i.e. the same data corruption would =
+affect
+each and every other KVM_EXIT_* reason.
 
--- 
-Kees Cook
+The "informational only" part is that userspace can't develop features that
+*require* KVM to exit.
+
+> > > - The helper function [a] for filling the memory_fault field
+> > > (downgraded back into the current union) can drop the "has the field
+> > > already been filled?" check/WARN.
+> >
+> > That would need to be dropped regardless because it's user-triggered (s=
+adly).
+>=20
+> Well the current v5 of the series uses a non-userspace visible canary-
+> it seems like there'd still be value in that if we were to keep the
+> annotations in potentially unreliable spots. Although perhaps that
+> test failure you noticed [1] is a good counter-argument, since it
+> shows a known case where a current flow does multiple writes to the
+> memory_fault member.
+
+The problem is that anything but a WARN will go unnoticed, and we can't hav=
+e any
+WARNs that are user-triggerable, at least not in upstream.  Internally, we =
+can
+and probably should add a canary, and an aggressive one at that, but I can'=
+t think
+of a sane way to add a canary in upstream while avoiding the known offender=
+s. :-(
+
+> [1] https://lore.kernel.org/all/202309141107.30863e9d-oliver.sang@intel.c=
+om
+>=20
+> > Anyways, don't do anything just yet.
+>=20
+> :salutes:
+
+LOL
