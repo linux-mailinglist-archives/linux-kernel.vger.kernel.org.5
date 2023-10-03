@@ -2,149 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B24F37B69D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B78127B69D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231266AbjJCNHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:07:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56388 "EHLO
+        id S232632AbjJCNIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:08:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232578AbjJCNHf (ORCPT
+        with ESMTP id S232562AbjJCNIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:07:35 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF66893;
-        Tue,  3 Oct 2023 06:07:31 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id A76911F45B;
-        Tue,  3 Oct 2023 13:07:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696338450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FrpETq8twusJ5sdH9d+XrhUFsRvR1gF/4TiRFUUmkNo=;
-        b=tOXjeMZGVlb97/Zga+TON5k8gXv2c7gmG4KxASLu0sE/TvavPKgmvnkSVcpY5tCwIgqIMJ
-        JdgDc1Hx1IuePwvXuFIRv9VJMtfufVzx6B8B1RPpjjOF8rfyiHvgKAYr3VGQLitpsCbAl3
-        fiVAJ0Oh6Dnx/oe7HtEjBFRLL1WG5JI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696338450;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=FrpETq8twusJ5sdH9d+XrhUFsRvR1gF/4TiRFUUmkNo=;
-        b=Tc5HhKdZU8QKXE3JUQyWi4uE30im3D3QubNCSrnQjD7NHbDOKkdpTAkHv1shINBQYVdCIF
-        jz/GIVFtdYoFfJBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9A6D4132D4;
-        Tue,  3 Oct 2023 13:07:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0Aa4JRISHGWVLgAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 03 Oct 2023 13:07:30 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 48209A07CC; Tue,  3 Oct 2023 15:07:30 +0200 (CEST)
-Date:   Tue, 3 Oct 2023 15:07:30 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Carlos Maiolino <cem@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 2/8] shmem: remove vma arg from shmem_get_folio_gfp()
-Message-ID: <20231003130730.hiag5s6ubditcazg@quack3>
-References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com>
- <d9ce6f65-a2ed-48f4-4299-fdb0544875c5@google.com>
+        Tue, 3 Oct 2023 09:08:14 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D985F90;
+        Tue,  3 Oct 2023 06:08:10 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 393D7xtu090568;
+        Tue, 3 Oct 2023 08:07:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696338479;
+        bh=Zp1B+zFrIeVSClx3EFpcOSTc44sv/meIKlkORkGW3I4=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=GW2og72aWeylJQLIaR5npYOz2CojwYHS2ZG3DOegeb26K5qc5vB8YUqNyucAcUqZG
+         X9Lk31lKtTeNENwkIz9Oj57R0kSdCSHOg/8sMbw/WHoehoXuXeUhRTJ56EUqu0Ga8a
+         eMN5cq6GULauidqPkGFNU5QD8nzMnbyE4OD6D5fA=
+Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 393D7xEG013176
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Oct 2023 08:07:59 -0500
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 3
+ Oct 2023 08:07:59 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 3 Oct 2023 08:07:59 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 393D7xQD010350;
+        Tue, 3 Oct 2023 08:07:59 -0500
+Date:   Tue, 3 Oct 2023 08:07:59 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Ayush Singh <ayushdevel1325@gmail.com>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <greybus-dev@lists.linaro.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <gregkh@linuxfoundation.org>,
+        <vaishnav@beagleboard.org>, <jkridner@beagleboard.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <robh+dt@kernel.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v6 1/3] dt-bindings: Add beaglecc1352
+Message-ID: <20231003130759.ipr5s7n573c3ijyn@sponge>
+References: <20231002182454.211165-1-ayushdevel1325@gmail.com>
+ <20231002182454.211165-2-ayushdevel1325@gmail.com>
+ <55f63415-781a-4107-8643-9f77c7ee38d1@linaro.org>
+ <2105b93c-0502-e909-ea09-dba73d43b912@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <d9ce6f65-a2ed-48f4-4299-fdb0544875c5@google.com>
-X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <2105b93c-0502-e909-ea09-dba73d43b912@gmail.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 29-09-23 20:26:53, Hugh Dickins wrote:
-> The vma is already there in vmf->vma, so no need for a separate arg.
+On 17:39-20231003, Ayush Singh wrote:
+> > > driver.
+> > > 
+> > > Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
+> > > ---
+> > >   .../devicetree/bindings/net/ti,cc1352p7.yaml  | 48 +++++++++++++++++++
+> > >   MAINTAINERS                                   |  6 +++
+> > >   2 files changed, 54 insertions(+)
+> > >   create mode 100644 Documentation/devicetree/bindings/net/ti,cc1352p7.yaml
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/net/ti,cc1352p7.yaml b/Documentation/devicetree/bindings/net/ti,cc1352p7.yaml
+> > > new file mode 100644
+> > > index 000000000000..57bc2c43e5b1
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/net/ti,cc1352p7.yaml
+> > > @@ -0,0 +1,48 @@
+> > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/net/ti,cc1352p7.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Texas Instruments Simplelink CC1352P7 wireless MCU
+> > > +
+> > > +description:
+> > > +  The cc1352p7 mcu can be connected via SPI or UART.
+> > If over SPI, then the binding is incomplete. This is fine for now, I guess.
+> > 
+> > Best regards,
+> > Krzysztof
 > 
-> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Well, I added the line about SPI because the data sheet states that CC1352P7
+> can be connected over SPI or UART when used as wireless MCU. But yes, I do
+> not have much knowledge about SPI itself, so the bindings might be
+> incomplete for SPI usage. Should I remove it or leave it be?
 
-Sure. Feel free to add:
+I'd suggest to leave it for now, we can expand as there is a need.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  mm/shmem.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 69595d341882..824eb55671d2 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1921,14 +1921,13 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
->   * vm. If we swap it in we mark it dirty since we also free the swap
->   * entry since a page cannot live in both the swap and page cache.
->   *
-> - * vma, vmf, and fault_type are only supplied by shmem_fault:
-> - * otherwise they are NULL.
-> + * vmf and fault_type are only supplied by shmem_fault: otherwise they are NULL.
->   */
->  static int shmem_get_folio_gfp(struct inode *inode, pgoff_t index,
->  		struct folio **foliop, enum sgp_type sgp, gfp_t gfp,
-> -		struct vm_area_struct *vma, struct vm_fault *vmf,
-> -		vm_fault_t *fault_type)
-> +		struct vm_fault *vmf, vm_fault_t *fault_type)
->  {
-> +	struct vm_area_struct *vma = vmf ? vmf->vma : NULL;
->  	struct address_space *mapping = inode->i_mapping;
->  	struct shmem_inode_info *info = SHMEM_I(inode);
->  	struct shmem_sb_info *sbinfo;
-> @@ -2141,7 +2140,7 @@ int shmem_get_folio(struct inode *inode, pgoff_t index, struct folio **foliop,
->  		enum sgp_type sgp)
->  {
->  	return shmem_get_folio_gfp(inode, index, foliop, sgp,
-> -			mapping_gfp_mask(inode->i_mapping), NULL, NULL, NULL);
-> +			mapping_gfp_mask(inode->i_mapping), NULL, NULL);
->  }
->  
->  /*
-> @@ -2225,7 +2224,7 @@ static vm_fault_t shmem_fault(struct vm_fault *vmf)
->  	}
->  
->  	err = shmem_get_folio_gfp(inode, vmf->pgoff, &folio, SGP_CACHE,
-> -				  gfp, vma, vmf, &ret);
-> +				  gfp, vmf, &ret);
->  	if (err)
->  		return vmf_error(err);
->  	if (folio)
-> @@ -4897,7 +4896,7 @@ struct folio *shmem_read_folio_gfp(struct address_space *mapping,
->  
->  	BUG_ON(!shmem_mapping(mapping));
->  	error = shmem_get_folio_gfp(inode, index, &folio, SGP_CACHE,
-> -				  gfp, NULL, NULL, NULL);
-> +				    gfp, NULL, NULL);
->  	if (error)
->  		return ERR_PTR(error);
->  
-> -- 
-> 2.35.3
-> 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
