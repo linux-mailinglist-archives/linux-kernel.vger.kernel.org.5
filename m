@@ -2,95 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD307B6AD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272637B6AE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236567AbjJCNpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:45:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53412 "EHLO
+        id S237119AbjJCNsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232284AbjJCNpc (ORCPT
+        with ESMTP id S237311AbjJCNsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:45:32 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D74EAB;
-        Tue,  3 Oct 2023 06:45:29 -0700 (PDT)
-Date:   Tue, 03 Oct 2023 13:45:25 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696340726;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=VZ16lJZp2GcZbyxe8LA5HOa8XPXLW36KpKHUXqtXlSY=;
-        b=3yVNPx61a2Y9WVV2+CP+p1flXJHfsO1gwC9k4DX047l4KnCm8LC7Qqjv5risT9GXm4c/Dg
-        H8KTU7Rm823/cDBL/0yVMUcSa2oMsLVcmStSyxAmMmWG4ngJ/UMtioNlsmYSM0v+yYx+Tf
-        LlNL7SeV5xrUyb7O96/1Qfj0GQe9ivDCTHYuFmA3TJ9Nd1kYPz9w7llYin27hU08DoCejR
-        J2oWbhfh4o9qZw2X0s5J8B1ISxcorVz+F/kCDxjdqFQewWVV9FJfEcj47lCMbD5OYI4Eyi
-        tqecBpikgOkrDQc69Fj4/tc27vepUGVg3eBnfXiGph6jbPF2RZjMGaUsCNlQuw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696340726;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=VZ16lJZp2GcZbyxe8LA5HOa8XPXLW36KpKHUXqtXlSY=;
-        b=nERqZSbR+/ohXIlGKvhhN21wZOK5HUEwFI3M2l0993NLoxmPVlwhuA4sSnYEkwns2+5T+h
-        kBzHBP8UHRj+x2Cg==
-From:   "tip-bot2 for GUO Zihua" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/mm] x86/sev: Make boot_ghcb_page[] static
-Cc:     GUO Zihua <guozihua@huawei.com>, Ingo Molnar <mingo@kernel.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+        Tue, 3 Oct 2023 09:48:36 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE989CE;
+        Tue,  3 Oct 2023 06:48:32 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d9443c01a7336-1c3bd829b86so7269635ad.0;
+        Tue, 03 Oct 2023 06:48:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696340912; x=1696945712; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AXx12Xh5OdYtcd2fycn71joB20ZrxlQW7gPZtnETXlo=;
+        b=mKLq2HCLhhDbAHq8pgijmTb4r8AecHT82AFn8KNdFz1t0P78zthCotoMDghTSVLqmz
+         uSBOGDYpxCKtr+AQ5XoqFFYZWpAsa3NtH30Z8WJtAEe/lnStogNVYyZTdClwf1iwkebA
+         /Dsv/vkBHiA3J/A5J/SjJcBaGV8SFtlyYz5gjv9rRSNUUkx3BMxBK8I2rVmHQAg25NLw
+         g5Hsfn2oD2nmlhSonFvRZKZcueAL3RZFoC8/KzjTNGvLoUwSNG/sh3+22+en/nCvrpEF
+         9i04W0Nmp7W1nnraYkd/WZmr6PRBiPIauDzSq+MiVHixrmkbzdT28jL5Z61h3j7otMZK
+         neYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696340912; x=1696945712;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AXx12Xh5OdYtcd2fycn71joB20ZrxlQW7gPZtnETXlo=;
+        b=Q5DF+QGbcFeBQMDDFyRJ+P1gP4KqjFgoh3dKJHtKpHcj40pt9W/hCKtZN+wEgHRFpo
+         KiDYEc1uKRyH4iFaEludd/9d6UmSFzhQ5AkFeg7TLtEE4Sbrxm42N3XmS8u+l2qPyzOU
+         JRLTVI5c0SLYTYyf/yEXVbyF/uhueDI4E2t4drCOmrsV+6smuF+OCnViU1N7ZcsrSTev
+         pRGAG7pVK6Vi+Dw5j9kL82l6cbkCM2AoJLllepJh9D/RXWf/Pz8UcKzq/P02bzT+95Vl
+         EyINWXok5GL6IDW0Sk2zL8fRDp4MtOsgWzeMxG18YmwYtu0iZyndS/X47wQgMYx86mSl
+         on0Q==
+X-Gm-Message-State: AOJu0YyZN2wtLTuBOBSw7Q1lsgfB/Wp2j+Qxx5QaBF3mmDT1O0Fz+p/y
+        1G5gu1T+uWTMSlnZDISdWXA=
+X-Google-Smtp-Source: AGHT+IGtPt1XVtqOzSLe+Y3WiKfioYBDClQ2Vrf/pQc1OE1nxhWQT7+sKkPapeNUz5KRMqBCjwFElA==
+X-Received: by 2002:a17:903:22c7:b0:1bf:3c10:1d70 with SMTP id y7-20020a17090322c700b001bf3c101d70mr14808390plg.6.1696340912142;
+        Tue, 03 Oct 2023 06:48:32 -0700 (PDT)
+Received: from localhost ([216.228.127.131])
+        by smtp.gmail.com with ESMTPSA id v7-20020a170902b7c700b001c627413e87sm1543164plz.290.2023.10.03.06.48.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 06:48:31 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 06:46:17 -0700
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, Tariq Toukan <ttoukan.linux@gmail.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Maher Sanalla <msanalla@nvidia.com>,
+        Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@suse.de>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Pawel Chmielewski <pawel.chmielewski@intel.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Yury Norov <ynorov@nvidia.com>
+Subject: Re: [PATCH 1/4] net: mellanox: drop mlx5_cpumask_default_spread()
+Message-ID: <ZRwbKRnnKY/tDqCF@yury-ThinkPad>
+References: <20230925020528.777578-1-yury.norov@gmail.com>
+ <20230925020528.777578-2-yury.norov@gmail.com>
+ <2fd12c42d3dd60b2e9b56e9f7dd37d5f994fd9ac.camel@redhat.com>
 MIME-Version: 1.0
-Message-ID: <169634072599.3135.3729990591785308336.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2fd12c42d3dd60b2e9b56e9f7dd37d5f994fd9ac.camel@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/mm branch of tip:
+On Tue, Oct 03, 2023 at 12:04:01PM +0200, Paolo Abeni wrote:
+> On Sun, 2023-09-24 at 19:05 -0700, Yury Norov wrote:
+> > The function duplicates existing cpumask_local_spread(), and it's O(N),
+> > while cpumask_local_spread() implementation is based on bsearch, and
+> > thus is O(log n), so drop mlx5_cpumask_default_spread() and use generic
+> > cpumask_local_spread().
+> > 
+> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> > Signed-off-by: Yury Norov <ynorov@nvidia.com>
+> > ---
+> >  drivers/net/ethernet/mellanox/mlx5/core/eq.c | 28 ++------------------
+> >  1 file changed, 2 insertions(+), 26 deletions(-)
+> > 
+> > diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+> > index ea0405e0a43f..bd9f857cc52d 100644
+> > --- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+> > +++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+> > @@ -828,30 +828,6 @@ static void comp_irq_release_pci(struct mlx5_core_dev *dev, u16 vecidx)
+> >  	mlx5_irq_release_vector(irq);
+> >  }
+> >  
+> > -static int mlx5_cpumask_default_spread(int numa_node, int index)
+> > -{
+> > -	const struct cpumask *prev = cpu_none_mask;
+> > -	const struct cpumask *mask;
+> > -	int found_cpu = 0;
+> > -	int i = 0;
+> > -	int cpu;
+> > -
+> > -	rcu_read_lock();
+> > -	for_each_numa_hop_mask(mask, numa_node) {
+> > -		for_each_cpu_andnot(cpu, mask, prev) {
+> > -			if (i++ == index) {
+> > -				found_cpu = cpu;
+> > -				goto spread_done;
+> > -			}
+> > -		}
+> > -		prev = mask;
+> > -	}
+> > -
+> > -spread_done:
+> > -	rcu_read_unlock();
+> > -	return found_cpu;
+> > -}
+> > -
+> >  static struct cpu_rmap *mlx5_eq_table_get_pci_rmap(struct mlx5_core_dev *dev)
+> >  {
+> >  #ifdef CONFIG_RFS_ACCEL
+> > @@ -873,7 +849,7 @@ static int comp_irq_request_pci(struct mlx5_core_dev *dev, u16 vecidx)
+> >  	int cpu;
+> >  
+> >  	rmap = mlx5_eq_table_get_pci_rmap(dev);
+> > -	cpu = mlx5_cpumask_default_spread(dev->priv.numa_node, vecidx);
+> > +	cpu = cpumask_local_spread(vecidx, dev->priv.numa_node);
+> >  	irq = mlx5_irq_request_vector(dev, cpu, vecidx, &rmap);
+> >  	if (IS_ERR(irq))
+> >  		return PTR_ERR(irq);
+> > @@ -1125,7 +1101,7 @@ int mlx5_comp_vector_get_cpu(struct mlx5_core_dev *dev, int vector)
+> >  	if (mask)
+> >  		cpu = cpumask_first(mask);
+> >  	else
+> > -		cpu = mlx5_cpumask_default_spread(dev->priv.numa_node, vector);
+> > +		cpu = cpumask_local_spread(vector, dev->priv.numa_node);
+> >  
+> >  	return cpu;
+> >  }
+> 
+> It looks like this series is going to cause some later conflicts
+> regardless of the target tree. I think the whole series could go via
+> the net-next tree, am I missing any relevant point?
 
-Commit-ID:     bfb32e2008e278507bd93bff91662422d9cda9da
-Gitweb:        https://git.kernel.org/tip/bfb32e2008e278507bd93bff91662422d9cda9da
-Author:        GUO Zihua <guozihua@huawei.com>
-AuthorDate:    Wed, 02 Aug 2023 10:14:36 +08:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 03 Oct 2023 15:31:27 +02:00
+Hi Paolo,
 
-x86/sev: Make boot_ghcb_page[] static
+Can you elaborate on the conflicts you see? For me it applies cleanly
+on current master, and with some 3-way merging on latest -next...
 
-boot_ghcb_page is not used by any other file, so make it static.
-
-This also resolves sparse warning:
-
-  arch/x86/boot/compressed/sev.c:28:13: warning: symbol 'boot_ghcb_page' was not declared. Should it be static?
-
-Signed-off-by: GUO Zihua <guozihua@huawei.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: linux-kernel@vger.kernel.org
----
- arch/x86/boot/compressed/sev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
-index dc8c876..ba4868f 100644
---- a/arch/x86/boot/compressed/sev.c
-+++ b/arch/x86/boot/compressed/sev.c
-@@ -25,7 +25,7 @@
- #include "error.h"
- #include "../msr.h"
- 
--struct ghcb boot_ghcb_page __aligned(PAGE_SIZE);
-+static struct ghcb boot_ghcb_page __aligned(PAGE_SIZE);
- struct ghcb *boot_ghcb;
- 
- /*
+Thanks,
+Yury
