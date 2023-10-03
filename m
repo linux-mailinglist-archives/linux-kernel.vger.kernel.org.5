@@ -2,198 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE927B5F57
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 05:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA5C7B5F5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 05:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238532AbjJCD3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 23:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41748 "EHLO
+        id S230118AbjJCDc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 23:32:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229738AbjJCD3X (ORCPT
+        with ESMTP id S230094AbjJCDcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 23:29:23 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 248B5B3;
-        Mon,  2 Oct 2023 20:29:15 -0700 (PDT)
-X-UUID: 01944202619d11ee8051498923ad61e6-20231003
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=ssNpYi9eGIqq6NoSH2wdzSLFbNRAHN+hh71MDNLkklY=;
-        b=S9m0X8ZkoGz0yQgPqLejyNyiGV1z1LWbqv0JzpgIiIHKRikVhv6dFgbZ6dMDnhkRmYYMwtF6AIXzEPwVJ/tcy+Zzd+BK/+CyPn3eoRUC+tF2Ccqy4HpOk0ePB53vNnCXRsrRGuwndT9p538uoV7fHwDp1n8cAIDN/oclm3+Asfc=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:d2de912b-f6fc-4329-980f-7dcc725124fc,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:5f78ec9,CLOUDID:6b5f9e14-4929-4845-9571-38c601e9c3c9,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 01944202619d11ee8051498923ad61e6-20231003
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <moudy.ho@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1661224151; Tue, 03 Oct 2023 11:29:05 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 3 Oct 2023 11:29:04 +0800
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 3 Oct 2023 11:29:04 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mgBmohnPs66+7AZHN0ozdr25bP6KSGAvqnWgpSWxO7HwtGKU3lT7xpV744ReU4cXN9h39De3jzjbZd328znCvqcttmIIKmXhnPRY5YDjN4N5Vptq1NunqTlbx/hFZ5KQh8++jptW9jHews3mu1qHZnwAZpctcaKUV5/9NEw6OuXBn8hNZZKdwA7txTCclJiqQW7qVrlk9S1T8ZVq+I+Y2JqwjJJtaloySxYOEt+JQVjqQS8DgFrOfvIYna9Z6IkLfR98xsFecmWf93cFN2p6WU5OIKjzJEAu2X24sETd81f9hJRhMDPFoyujQDtUsgpxEPoZHAZAnjDennk1BbiCXg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ssNpYi9eGIqq6NoSH2wdzSLFbNRAHN+hh71MDNLkklY=;
- b=RXRrrJtCC7X9eY7tu7laK1/LDAv34HpN2LfifS2lN0JfNX28dtwNUkqer6IVV860+lO0LNku9u27jqkGsMLibBOHOMaQw1dI6QvJZNqZE8tK8MZMT4XkvdwpAor49Yodhe5p1IewhcrmMiU5vGdn/SvNJ7er9icrDTalG20UWpUBSkAoSLBj3qTDZUVnDZjwusMClAdKC/PkfK9wPZKH3uJTuHJV5MmDTYpU7TtUWhfkroCGTg8iJmKT/lHiDvLQdfPjOGovDS4BKkogkubKS73ERjWnh0SJFMI2AW+jJ74rVCE0wrlGfH5D2Uql5SdsNmfqginOtWGfEipDwU95sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
+        Mon, 2 Oct 2023 23:32:24 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1870ABF
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 20:32:20 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-57b811a6ce8so245322eaf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 20:32:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ssNpYi9eGIqq6NoSH2wdzSLFbNRAHN+hh71MDNLkklY=;
- b=QdAgduaijWq3wtw/EeoNv0h/85oRmt4mNHSMZZS5mc0M35tYzH4ok5AOdZQUAP/WMfe/LwkyUQtE1+ZM+lvy3+x6OsFFAGZJZJmlD50UsU8BavGZGi/tgW45tbJCIshMPGZzHsTKV9FaOqyGtIW/YeUBNg5sT5hAnHpAzBs0MkU=
-Received: from SG2PR03MB6343.apcprd03.prod.outlook.com (2603:1096:4:17a::6) by
- PUZPR03MB7253.apcprd03.prod.outlook.com (2603:1096:301:103::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6838.28; Tue, 3 Oct 2023 03:29:01 +0000
-Received: from SG2PR03MB6343.apcprd03.prod.outlook.com
- ([fe80::10c2:a420:e409:a1b8]) by SG2PR03MB6343.apcprd03.prod.outlook.com
- ([fe80::10c2:a420:e409:a1b8%7]) with mapi id 15.20.6838.033; Tue, 3 Oct 2023
- 03:29:00 +0000
-From:   =?utf-8?B?TW91ZHkgSG8gKOS9leWul+WOnyk=?= <Moudy.Ho@mediatek.com>
-To:     "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v6 02/16] dt-bindings: media: mediatek: mdp3: split out
- general properties
-Thread-Topic: [PATCH v6 02/16] dt-bindings: media: mediatek: mdp3: split out
- general properties
-Thread-Index: AQHZ7SVi6wBhd7H0BkCcC9cdpgTqabAon7WAgA7ZfQA=
-Date:   Tue, 3 Oct 2023 03:29:00 +0000
-Message-ID: <392f0603d6a753611de56dc64e36a43291e2bf5b.camel@mediatek.com>
-References: <20230922072116.11009-1-moudy.ho@mediatek.com>
-         <20230922072116.11009-3-moudy.ho@mediatek.com>
-         <4fdfe29b-aea7-8180-d2e3-5caa1beb7232@linaro.org>
-In-Reply-To: <4fdfe29b-aea7-8180-d2e3-5caa1beb7232@linaro.org>
-Accept-Language: zh-TW, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SG2PR03MB6343:EE_|PUZPR03MB7253:EE_
-x-ms-office365-filtering-correlation-id: 6d80a59e-0ea2-4333-df9e-08dbc3c0e251
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 95vdrkIL0QZOzyRBbVtHUm8xij/pwLo+2ooXxbWbLoRj4NdTJqL6vkAXBckOZ7FZA39EpH++fD8l1JGKqXrq+qqnOjoLu/+4beOEcgRhoHEt9wnFBHODQjDnkA0vz5c2Ayceo4DxmFi0sDORfEWEQpVDMAcTLnHkVDvkwYVFHN76SxeSrr4tFpwzpqajrTiK66Wm9TF4A7wHMfxA295769Ocm+71+SkXzoSgx7JxxXCu5G4W9na7RWhdApE4q+i/G9VlDBi+g/HmMyXzWJpb3P8Tdym3Es5gVF0laL8lnC00aqALR2KU7KJ1uZPNTOQP6vwZRykDna75VZ/07Lz5mOD6RcgMz/fyJ41vEHWdim8Qa0r+Zn1NX0t+fha2o3oV0L1QAEMZc4CqjGVvPdcz2yuZ9S1Yb7trv3RbVRxQJB7fjoIb2zBKjoGukheb0c0F1qY4WqrnA0MN2ikQ6NiZHrP6/9Ok3CubpL3QSL7ts0S4sGPyMmk2GxQ9OcMX493TEoSg+BVFHqNDks70Bv+bqJp1wDGLdcQUIaLumAwLwuq3G8zikLCC/JG4N2gEaP9o6xxPXAMU/Cvo0ZScGFW7Bwo+CQPmJCxpmAzpBaNUIJYoY+631ObTuQNxg8P/JOzkI/yFiOGh0+BRgq+g5srHL5RJTJuVu7MkO6jMgtoIqONuAnxUjl0xXfXuQVDGx2PxfwmIGZ9nrVabSMd3H8nsGg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR03MB6343.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(39860400002)(136003)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(122000001)(38070700005)(921005)(8676002)(7416002)(83380400001)(38100700002)(110136005)(91956017)(53546011)(66946007)(66556008)(6512007)(71200400001)(66446008)(4326008)(66476007)(6506007)(6486002)(478600001)(54906003)(64756008)(8936002)(26005)(2906002)(5660300002)(41300700001)(76116006)(316002)(2616005)(36756003)(85182001)(86362001)(99106002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Q1MwR25yMXBabDQ5bkhlK3JpRWoyMzZBZnlnanN4d0thd1h5WUlrSGpEWDlW?=
- =?utf-8?B?emk3RXFWbktjOUVBYlVQV2FsSUVCaTlIUWtGRzExUjRuV0hqR1FmcjdvN0xQ?=
- =?utf-8?B?Wm5MK3JxNmpZdXZVbmxkR2trVjg1bTZJODJWbUVOS3Vld2lxNjJIV2VKZzhw?=
- =?utf-8?B?T0lrYUFBVEVFcDljN0J0cngwaXkxdHlIeHM0bmgxb2x0ZktwcDlFVXNpNTFJ?=
- =?utf-8?B?ekN3dC9abndiUnVyMUJTazA1d1RLS25EclJZUC9iQndyWnNJcGpva0JnRk5m?=
- =?utf-8?B?SkZMbmZQV21JbmlhZFFpOXNwbG5mRXlOYWUvZllwTUtpMnFwc2YxYjE2K0R0?=
- =?utf-8?B?eG1KQTVYM1M0QVNoR2pHejdhc3ZzZjA5d3VIK2xwZHY3STRTMVI1SHVHaVNm?=
- =?utf-8?B?d0duOTRMTVN3TlRwdHU2YWFsWDVvZHJCenZTZUliNENTVjVZeDY2Y25teGh2?=
- =?utf-8?B?ZDlZNUxyVzlsRHZPUFVLcTFMTThmL3l0YUVDQVFjbUhrNHRPcVM5cnVQRjVK?=
- =?utf-8?B?YlpOSW5nbzkybERRcHpOU28yaVlQVHhzVE5NemIzNGk2YU9FMzlVeno4cXpo?=
- =?utf-8?B?UTJ1emgzRUZDQzNKM041QTJ3aXpzdW5sWWZvcmh2MzE3VE5ZNG9La2RjdjZF?=
- =?utf-8?B?YzBoakFOSkZETkJoWjlMTWF2M1FabWd4V2hVaE5yNTJQei9ISTZ6VC9WK1Jp?=
- =?utf-8?B?Nlk0SytpVGtHTThnWXkwQ0c2cFhWT1FyY1E4SlljY2s4N1FJUG9Jd3ZnNnlE?=
- =?utf-8?B?dVQ4VkFMUWdlV1NwRy9TUUp1NUxRejd1Ym1zNjhEMGZ6ZStDYm9EUk5ibFhJ?=
- =?utf-8?B?TDBwZ2FNRWxFblY4S1RpY3J0UVVkY0oyWVJjc2N5V1FkN1I5ZWlseVc4MWZo?=
- =?utf-8?B?Z3dIbnJDTjhwUVhuQXcvb3FoYk9UWVVSZXo4UHd3SG83Z3JNYTdxYlRRa1pT?=
- =?utf-8?B?eUljc2d1bzZRaFhCUytOV1Zhc291eExQeksvTW1QeU9mMW9RWXBqSkxvSjhw?=
- =?utf-8?B?SkdMRllaU245c0REdHpkT29TRjdDSzFSVjM2eE9FV2VYREdIZHVnZ29XOFgz?=
- =?utf-8?B?a2Q4OUpaNUxZM0ZuZnNEUWFWMG5Rc05DaStBR0VpYVRDdmtXbHU5QzlpM1Z4?=
- =?utf-8?B?WGJGVDBHZHFyZlFpUFVqOFprQlJkelp6UU1nTnJkRjFyVUZVbkQ5Z0prTmVp?=
- =?utf-8?B?UzlZQUVCbzJBL08rcGZsME4xNFJVaWJyZGh6WldoVEVRWkFqSGo1RW1wbU9x?=
- =?utf-8?B?eG50c0tiZFovNWYrMHFzWlBhM3k0am9sYVVDaXdNYXpXd2M3eDc5WENQRzFv?=
- =?utf-8?B?SEFleVNyeHgxOGhZTHJxeDlrdGw2V0hpUG02alpzRFFJWDNmTUNjWXNMby83?=
- =?utf-8?B?aUZ3cGhIT1lxU01LQjBRRE5FeWFiQkVZNVBqMlU2QmRPNnVyeG1mazVwMFBo?=
- =?utf-8?B?ejBYdnNNWmh0ZjQ4Q1VGZXVaWVArZzlOWUxMNnUxY3V0dWxzRll3NlRHYS9x?=
- =?utf-8?B?SEp6anJ4THg2a0pIUmQrZlZzOWltVHlDQ0g2dG01RWZCT2ZURlFnWjFIVldj?=
- =?utf-8?B?M080NGxGQkNBTHFFUTVZS3NTaVhNU0V1dXIvMlptMGVLSEtnYmw5NHlybUNQ?=
- =?utf-8?B?Nk5MbkFCNDBiQmdqMUtpdmZwTGc4QWhyWGNxemZock5JZnJNQ25TOVpheGVr?=
- =?utf-8?B?bEFnWnpLekJ5SUxTNG1ucWFCMlNzM0FNUmNSbDhEaDZlc05tUkxBaHAvZkQx?=
- =?utf-8?B?OENSUEFhU0tOdEJCUTdnbndHdHFZMy9uSCtVY1pxc0RVUkFSYjFheVc3bEZi?=
- =?utf-8?B?UXRJVTMrWkliOGVEOXZFa0N0TEFSakplTldpZ2kxNy9PYWcxWS9xWEJ0WUJT?=
- =?utf-8?B?eHpXKzBjL0ErYklnOXBrT0Y2V3FJLzJYYndzVzVSZFNMNDZwYUtxdi9NMEZ6?=
- =?utf-8?B?dTd4VXFQMTdNM2tndG81MHViYmR4SnFqVGZYSXdHL1dMejc0cktzZ0RQTHd2?=
- =?utf-8?B?WkZMeDVqamVjTFRCZjd1YTF2ZDRFY2wrdnh6OUNmUDVtWkI2enNKejVTNEM3?=
- =?utf-8?B?aGpmWHFFdE83MGdVcURic0JOaittQmZoR1Y5bnhQbHBONWNhY0k2VVk4K2R0?=
- =?utf-8?B?eWt0R09hUkpOcnFwaU95MXd2YWI5Nmd0NTRlbEtjVlF6Y2ZCRC9uVXRVNmUw?=
- =?utf-8?B?Vnc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <EC2745B4806AA84CABCE09CB95203BA6@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696303939; x=1696908739; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RU41F7Q6OV/0/KdhPXX+Zr4mK7H3+EqyDj/vuFMgUwY=;
+        b=XT6E4nEe2lpvHtnwQcZENIeLzw+dHyxIav2hEzJi3HEMLxhzQGbUCsiJuuY6Ptohg1
+         EpAHAoMJiNr124BR0eGbirI9jDEqPbKbLHndbftA1Uo4N+3pi9Yz7TC9iJMDkCTk7TfD
+         tsWNkVvgvMJED2SSeWPy6qVPrRd7sLmeS+IlIp3Mc4bAcgminkq8abwG5snQNSHmUR+z
+         vAFwbHtJRYixbYr+eDZ75i3r8ptzfRpm5lxpwcHryyjgmNpseu928GP7KUNaHjavU+Sk
+         MTTvTGitt+lHDUZbJ/TMqf5ge3n57gA/I8fZ1TNkPBqfpJrODIXHoNyJenQYdHQ7859H
+         z1UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696303939; x=1696908739;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RU41F7Q6OV/0/KdhPXX+Zr4mK7H3+EqyDj/vuFMgUwY=;
+        b=vU9ewM7ESooV/QjiXkf/rXnb4DkDxcT8ktdc/mUiUALCtgIDdbzZUZbWCcDmOyu6rY
+         b5+D2HAmGeCAjQfRN+mNqsYMIb/SUh5CLNyyHe9OueF9XUfhbZoaW41s5djYKt6NZoIg
+         fC4mCsybzazC+uEFhVmk2bz26yV8j9hLFhp97FCKPSmcGjEX2d6eTMRJF6d7fOQ5EMdH
+         1cI9FMWb48vfB1yZfud6vzeaWg6FVwJrLPhLXnmaNvrh3E3FdQZ8UBJO+rfpZkiWYjJx
+         b0l4hUjxgxj6vmnNRBiHReK6AIvQ7xcrFPApiyXjx4Ad+wiyO7OeZE5Wn4MlDEe3ivTh
+         gakw==
+X-Gm-Message-State: AOJu0YwFmpnJ/1+lq/7hu/g2oisiDtMW6O8/DVTrYkPqKf1xBAVa/Lc4
+        BTIgUwJXRIKEXBLQ7GMeDiEDtA==
+X-Google-Smtp-Source: AGHT+IE+l0s5pjMPvA3XUiId2MHvVR/AZFGjyb3rFVyjmEnq89vMNSByVxUcQTQOlmK6z2/vj7dVDg==
+X-Received: by 2002:a05:6358:2496:b0:134:c682:213f with SMTP id m22-20020a056358249600b00134c682213fmr13720441rwc.31.1696303939244;
+        Mon, 02 Oct 2023 20:32:19 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id v22-20020aa78516000000b0068fde95aa93sm244484pfn.135.2023.10.02.20.32.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 20:32:18 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qnW8u-008jvm-0S;
+        Tue, 03 Oct 2023 14:32:16 +1100
+Date:   Tue, 3 Oct 2023 14:32:16 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chandan.babu@oracle.com, dchinner@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH 15/21] fs: xfs: Support atomic write for statx
+Message-ID: <ZRuLQKKPCzyUZtC9@dread.disaster.area>
+References: <20230929102726.2985188-1-john.g.garry@oracle.com>
+ <20230929102726.2985188-16-john.g.garry@oracle.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR03MB6343.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6d80a59e-0ea2-4333-df9e-08dbc3c0e251
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Oct 2023 03:29:00.0881
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fbf9blA1NXLE3WtD66PynNI9FoutEXgQ8VhxOsVne7Pa5se7vhw2iJYHs7exI8MxH1x3c5Rq4hSNHul6MEcqcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR03MB7253
-X-MTK:  N
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,RDNS_NONE,SPF_HELO_PASS,T_SPF_TEMPERROR,
-        UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230929102726.2985188-16-john.g.garry@oracle.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIzLTA5LTIzIGF0IDE4OjQyICswMjAwLCBLcnp5c3p0b2YgS296bG93c2tpIHdy
-b3RlOg0KPiAgCSANCj4gRXh0ZXJuYWwgZW1haWwgOiBQbGVhc2UgZG8gbm90IGNsaWNrIGxpbmtz
-IG9yIG9wZW4gYXR0YWNobWVudHMgdW50aWwNCj4geW91IGhhdmUgdmVyaWZpZWQgdGhlIHNlbmRl
-ciBvciB0aGUgY29udGVudC4NCj4gIE9uIDIyLzA5LzIwMjMgMDk6MjEsIE1vdWR5IEhvIHdyb3Rl
-Og0KPiA+IEluIG9yZGVyIHRvIG1pbmltaXplIGR1cGxpY2F0aW9uIGFuZCBzdGFuZGFyZGl6ZSB0
-aGUgZG9jdW1lbnQNCj4gc3R5bGUsDQo+ID4gaXQgaXMgbmVjZXNzYXJ5IHRvIHNlcGFyYXRlIHRo
-ZSBnZW5lcmFsIHByb3BlcnRpZXMgc3BlY2lmaWMgdG8NCj4gPiBNZWRpYVRlayBNRFAzIFJETUEu
-DQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogTW91ZHkgSG8gPG1vdWR5LmhvQG1lZGlhdGVrLmNv
-bT4NCj4gPiAtLS0NCj4gPiAgLi4uL21lZGlhL21lZGlhdGVrLG1kcDMtcmRtYS1jb21tb24ueWFt
-bCAgICAgIHwgNzINCj4gKysrKysrKysrKysrKysrKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwg
-NzIgaW5zZXJ0aW9ucygrKQ0KPiANCj4gSSBkb24ndCB1bmRlcnN0YW5kIHdoeSB0aGlzIGlzIGEg
-c2VwYXJhdGUgcGF0Y2guIEl0J3Mgbm90IHVzZWQsIG5vdA0KPiBlZmZlY3RpdmUgYW5kIG5vdCB2
-aXNpYmxlIGZvciB1cyBob3cgaXQgZXh0cmFjdHMgY29tbW9uIHBhcnRzLg0KPiANCj4gQmVzdCBy
-ZWdhcmRzLA0KPiBLcnp5c3p0b2YNCj4gDQoNCkhpIEtyenlzenRvZiwNCg0KSSBjb21wbGV0ZWx5
-IG1pc3VuZGVyc3Rvb2QgdGhlIHN1Z2dlc3Rpb25zIGdpdmVuIGluIFY1LCB3aGljaCBsZWQgdG8N
-CmluY29ycmVjdCBtb2RpZmljYXRpb25zIGFuZCBjb25mdXNpb24gaW4gcGF0Y2hlcyAyfjUuIEkn
-bSBpbiB0aGUNCnByb2Nlc3Mgb2YgcmVjdGlmeWluZyB0aGVzZSBlcnJvcnMgYW5kIHJlc3BlY3Rm
-dWxseSBhc2sgZXZlcnlvbmUgdG8NCmRpc3JlZ2FyZCB0aGUgaW1wcm9wZXIgY2hhbmdlcy4gSSBz
-aW5jZXJlbHkgcmVncmV0IGFueSBpbmNvbnZlbmllbmNlIG15DQphY3Rpb25zIG1heSBoYXZlIGNh
-dXNlZC4NCg0KUmVnYXJkcywNCk1vdWR5DQo=
+On Fri, Sep 29, 2023 at 10:27:20AM +0000, John Garry wrote:
+> Support providing info on atomic write unit min and max for an inode.
+> 
+> For simplicity, currently we limit the min at the FS block size, but a
+> lower limit could be supported in future.
+> 
+> The atomic write unit min and max is limited by the guaranteed extent
+> alignment for the inode.
+> 
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
+> ---
+>  fs/xfs/xfs_iops.c | 51 +++++++++++++++++++++++++++++++++++++++++++++++
+>  fs/xfs/xfs_iops.h |  4 ++++
+>  2 files changed, 55 insertions(+)
+> 
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index 1c1e6171209d..5bff80748223 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -546,6 +546,46 @@ xfs_stat_blksize(
+>  	return PAGE_SIZE;
+>  }
+>  
+> +void xfs_ip_atomic_write_attr(struct xfs_inode *ip,
+> +			xfs_filblks_t *unit_min_fsb,
+> +			xfs_filblks_t *unit_max_fsb)
+
+Formatting.
+
+Also, we don't use variable name shorthand for function names -
+xfs_get_atomic_write_hint(ip) to match xfs_get_extsz_hint(ip)
+would be appropriate, right?
+
+
+
+> +{
+> +	xfs_extlen_t		extsz_hint = xfs_get_extsz_hint(ip);
+> +	struct xfs_buftarg	*target = xfs_inode_buftarg(ip);
+> +	struct block_device	*bdev = target->bt_bdev;
+> +	struct xfs_mount	*mp = ip->i_mount;
+> +	xfs_filblks_t		atomic_write_unit_min,
+> +				atomic_write_unit_max,
+> +				align;
+> +
+> +	atomic_write_unit_min = XFS_B_TO_FSB(mp,
+> +		queue_atomic_write_unit_min_bytes(bdev->bd_queue));
+> +	atomic_write_unit_max = XFS_B_TO_FSB(mp,
+> +		queue_atomic_write_unit_max_bytes(bdev->bd_queue));
+
+These should be set in the buftarg at mount time, like we do with
+sector size masks. Then we don't need to convert them to fsbs on
+every single lookup.
+
+> +	/* for RT, unset extsize gives hint of 1 */
+> +	/* for !RT, unset extsize gives hint of 0 */
+> +	if (extsz_hint && (XFS_IS_REALTIME_INODE(ip) ||
+> +	    (ip->i_diflags2 & XFS_DIFLAG2_FORCEALIGN)))
+
+Logic is non-obvious. The compound is (rt || force), not
+(extsz && rt), so it took me a while to actually realise I read this
+incorrectly.
+
+	if (extsz_hint &&
+	    (XFS_IS_REALTIME_INODE(ip) ||
+	     (ip->i_diflags2 & XFS_DIFLAG2_FORCEALIGN))) {
+
+> +		align = extsz_hint;
+> +	else
+> +		align = 1;
+
+And now the logic looks wrong to me. We don't want to use extsz hint
+for RT inodes if force align is not set, this will always use it
+regardless of the fact it has nothing to do with force alignment.
+
+Indeed, if XFS_DIFLAG2_FORCEALIGN is not set, then shouldn't this
+always return min/max = 0 because atomic alignments are not in us on
+this inode?
+
+i.e. the first thing this code should do is:
+
+	*unit_min_fsb = 0;
+	*unit_max_fsb = 0;
+	if (!(ip->i_diflags2 & XFS_DIFLAG2_FORCEALIGN))
+		return;
+
+Then we can check device support:
+
+	if (!buftarg->bt_atomic_write_max)
+		return;
+
+Then we can check for extent size hints. If that's not set:
+
+	align = xfs_get_extsz_hint(ip);
+	if (align <= 1) {
+		unit_min_fsb = 1;
+		unit_max_fsb = 1;
+		return;
+	}
+
+And finally, if there is an extent size hint, we can return that.
+
+> +	if (atomic_write_unit_max == 0) {
+> +		*unit_min_fsb = 0;
+> +		*unit_max_fsb = 0;
+> +	} else if (atomic_write_unit_min == 0) {
+> +		*unit_min_fsb = 1;
+> +		*unit_max_fsb = min_t(xfs_filblks_t, atomic_write_unit_max,
+> +					align);
+
+Why is it valid for a device to have a zero minimum size? If it can
+set a maximum, it should -always- set a minimum size as logical
+sector size is a valid lower bound, yes?
+
+> +	} else {
+> +		*unit_min_fsb = min_t(xfs_filblks_t, atomic_write_unit_min,
+> +					align);
+> +		*unit_max_fsb = min_t(xfs_filblks_t, atomic_write_unit_max,
+> +					align);
+> +	}
+
+Nothing here guarantees the power-of-2 sizes that the RWF_ATOMIC
+user interface requires....
+
+It also doesn't check that the extent size hint is aligned with
+atomic write units.
+
+It also doesn't check either against stripe unit alignment....
+
+> +}
+> +
+>  STATIC int
+>  xfs_vn_getattr(
+>  	struct mnt_idmap	*idmap,
+> @@ -614,6 +654,17 @@ xfs_vn_getattr(
+>  			stat->dio_mem_align = bdev_dma_alignment(bdev) + 1;
+>  			stat->dio_offset_align = bdev_logical_block_size(bdev);
+>  		}
+> +		if (request_mask & STATX_WRITE_ATOMIC) {
+> +			xfs_filblks_t unit_min_fsb, unit_max_fsb;
+> +
+> +			xfs_ip_atomic_write_attr(ip, &unit_min_fsb,
+> +				&unit_max_fsb);
+> +			stat->atomic_write_unit_min = XFS_FSB_TO_B(mp, unit_min_fsb);
+> +			stat->atomic_write_unit_max = XFS_FSB_TO_B(mp, unit_max_fsb);
+
+That's just nasty. We pull byte units from the bdev, convert them to
+fsb to round them, then convert them back to byte counts. We should
+be doing all the work in one set of units....
+
+> +			stat->attributes |= STATX_ATTR_WRITE_ATOMIC;
+> +			stat->attributes_mask |= STATX_ATTR_WRITE_ATOMIC;
+> +			stat->result_mask |= STATX_WRITE_ATOMIC;
+
+If the min/max are zero, then atomic writes are not supported on
+this inode, right? Why would we set any of the attributes or result
+mask to say it is supported on this file?
+
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
