@@ -2,162 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE117B5F29
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 04:52:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF687B5F30
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 04:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbjJCCwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 22:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57938 "EHLO
+        id S231142AbjJCC5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 22:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbjJCCwX (ORCPT
+        with ESMTP id S229464AbjJCC5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 22:52:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25E7F9E;
-        Mon,  2 Oct 2023 19:52:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696301541; x=1727837541;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TkKvNoN2m3qKuguFoIpXxzhKimeY0bARgIpvKk9JdAA=;
-  b=e912WU0uBe7Wi/SHDhr2UBfLdD0Qbd3J9sxa8FuKt7MpLpD3+yI/VWGe
-   bqvEO5B9WVmC6tUbq7R0vk3eyn1mQZ0v+yNJvNNdeGijvYdDfpHB0UC1b
-   i0clwkHHLGSd+cr8lcQXS8sdqhuGlq86sUgjyRQM66PIMQoWWOrxhKYlr
-   BAvyzXxOnhSPzIfaaMeLlWwgdlSCHYd+gmy81MYiFtLa/D5yw8i81HbzY
-   CHMaezCRcP7JVe/cJfn4aEV2OKE+Qqk46Fq7kTk3JTx70xhBc63V8y1AE
-   4iVKQWnW93v+/5CFcKthGuZ+RuZuSvfcqBJEZFvq5JW+WxNTjg/dTEItF
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="382693099"
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="382693099"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 19:52:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,194,1694761200"; 
-   d="scan'208";a="1731264"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmviesa001.fm.intel.com with ESMTP; 02 Oct 2023 19:52:16 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qnVW8-0006gn-0P;
-        Tue, 03 Oct 2023 02:52:12 +0000
-Date:   Tue, 3 Oct 2023 10:51:58 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, patches@lists.linux.dev,
-        mikelley@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
-        gregkh@linuxfoundation.org, haiyangz@microsoft.com,
-        decui@microsoft.com, apais@linux.microsoft.com,
-        Tianyu.Lan@microsoft.com, ssengar@linux.microsoft.com,
-        mukeshrathor@microsoft.com, stanislav.kinsburskiy@gmail.com,
-        jinankjain@linux.microsoft.com, vkuznets@redhat.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, will@kernel.org,
-        catalin.marinas@arm.com
-Subject: Re: [PATCH v4 07/15] Drivers: hv: Move hv_call_deposit_pages and
- hv_call_create_vp to common code
-Message-ID: <202310031047.K8WOyczC-lkp@intel.com>
-References: <1696010501-24584-8-git-send-email-nunodasneves@linux.microsoft.com>
+        Mon, 2 Oct 2023 22:57:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 835AAA1;
+        Mon,  2 Oct 2023 19:57:04 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A19CC433C7;
+        Tue,  3 Oct 2023 02:57:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696301824;
+        bh=VaFWFM5fxDWGkb8H1vk6Bq8dR22TjRNx4fMlMFNeYbA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Fcq3zcCoO8Cw3fSu03I/MN7v4SZVVerKmQLt2XdPAdd7oRhQuf/3qGM718GYYKXHr
+         XYLU3kV10AQEcShXicFobffOpIo33qy2nJhifxPjZROX1vPVEEt0c8Pz3JkK/8jbIT
+         6LVV4LblD5xEPcQDCvNh7+FXEWbywSAq5R7Arlb9QueR6vapcefnZ2kHNvdW/OyJP/
+         9eY+eZ0+4caJ2Nx2QB6+hdzRq61ZL115VvKrna6IYqrqH1D680fWp8IxG+bAtUNo7O
+         ZG4OuNPJzfpH1L6gTDg2BwvvXSB5MDg3XIwWbOQa7fnSrhQeGW/0/YK4SrYySgvCkB
+         zS58IZ7Vc1rzw==
+Date:   Mon, 2 Oct 2023 19:57:03 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     John Garry <john.g.garry@oracle.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Eric Biggers <ebiggers@kernel.org>, axboe@kernel.dk,
+        kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chandan.babu@oracle.com, dchinner@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-api@vger.kernel.org,
+        Prasad Singamsetty <prasad.singamsetty@oracle.com>
+Subject: Re: [PATCH 03/21] fs/bdev: Add atomic write support info to statx
+Message-ID: <20231003025703.GD21298@frogsfrogsfrogs>
+References: <20230929102726.2985188-1-john.g.garry@oracle.com>
+ <20230929102726.2985188-4-john.g.garry@oracle.com>
+ <20230929224922.GB11839@google.com>
+ <b9c266d2-d5d6-4294-9a95-764641e295b4@acm.org>
+ <d3a8b9b0-b24c-a002-e77d-56380ee785a5@oracle.com>
+ <ZRtztUQvaWV8FgXW@dread.disaster.area>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <1696010501-24584-8-git-send-email-nunodasneves@linux.microsoft.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZRtztUQvaWV8FgXW@dread.disaster.area>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nuno,
+On Tue, Oct 03, 2023 at 12:51:49PM +1100, Dave Chinner wrote:
+> On Mon, Oct 02, 2023 at 10:51:36AM +0100, John Garry wrote:
+> > On 01/10/2023 14:23, Bart Van Assche wrote:
+> > > On 9/29/23 15:49, Eric Biggers wrote:
+> > > > On Fri, Sep 29, 2023 at 10:27:08AM +0000, John Garry wrote:
+> > > > > diff --git a/include/uapi/linux/stat.h b/include/uapi/linux/stat.h
+> > > > > index 7cab2c65d3d7..c99d7cac2aa6 100644
+> > > > > --- a/include/uapi/linux/stat.h
+> > > > > +++ b/include/uapi/linux/stat.h
+> > > > > @@ -127,7 +127,10 @@ struct statx {
+> > > > >       __u32    stx_dio_mem_align;    /* Memory buffer alignment
+> > > > > for direct I/O */
+> > > > >       __u32    stx_dio_offset_align;    /* File offset alignment
+> > > > > for direct I/O */
+> > > > >       /* 0xa0 */
+> > > > > -    __u64    __spare3[12];    /* Spare space for future expansion */
+> > > > > +    __u32    stx_atomic_write_unit_max;
+> > > > > +    __u32    stx_atomic_write_unit_min;
+> > > > 
+> > > > Maybe min first and then max?  That seems a bit more natural, and a
+> > > > lot of the
+> > > > code you've written handle them in that order.
+> > 
+> > ok, I think it's fine to reorder
+> > 
+> > > > 
+> > > > > +#define STATX_ATTR_WRITE_ATOMIC        0x00400000 /* File
+> > > > > supports atomic write operations */
+> > > > 
+> > > > How would this differ from stx_atomic_write_unit_min != 0?
+> > 
+> > Yeah, I suppose that we can just not set this for the case of
+> > stx_atomic_write_unit_min == 0.
+> 
+> Please use the STATX_ATTR_WRITE_ATOMIC flag to indicate that the
+> filesystem, file and underlying device support atomic writes when
+> the values are non-zero. The whole point of the attribute mask is
+> that the caller can check the mask for supported functionality
+> without having to read every field in the statx structure to
+> determine if the functionality it wants is present.
 
-kernel test robot noticed the following build errors:
+^^ Seconding what Dave said.
 
-[auto build test ERROR on arnd-asm-generic/master]
-[also build test ERROR on arm64/for-next/core linus/master v6.6-rc4 next-20230929]
-[cannot apply to tip/x86/core]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+--D
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Nuno-Das-Neves/hyperv-tlfs-Change-shared-HV_REGISTER_-defines-to-HV_MSR_/20230930-041305
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/arnd/asm-generic.git master
-patch link:    https://lore.kernel.org/r/1696010501-24584-8-git-send-email-nunodasneves%40linux.microsoft.com
-patch subject: [PATCH v4 07/15] Drivers: hv: Move hv_call_deposit_pages and hv_call_create_vp to common code
-config: arm64-allyesconfig (https://download.01.org/0day-ci/archive/20231003/202310031047.K8WOyczC-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231003/202310031047.K8WOyczC-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310031047.K8WOyczC-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   drivers/hv/hv_common.c: In function 'hv_call_create_vp':
->> drivers/hv/hv_common.c:596:29: error: 'hv_current_partition_id' undeclared (first use in this function); did you mean 'hv_get_partition_id'?
-     596 |         if (partition_id != hv_current_partition_id) {
-         |                             ^~~~~~~~~~~~~~~~~~~~~~~
-         |                             hv_get_partition_id
-   drivers/hv/hv_common.c:596:29: note: each undeclared identifier is reported only once for each function it appears in
-
-
-vim +596 drivers/hv/hv_common.c
-
-   587	
-   588	int hv_call_create_vp(int node, u64 partition_id, u32 vp_index, u32 flags)
-   589	{
-   590		struct hv_create_vp *input;
-   591		u64 status;
-   592		unsigned long irq_flags;
-   593		int ret = HV_STATUS_SUCCESS;
-   594	
-   595		/* Root VPs don't seem to need pages deposited */
- > 596		if (partition_id != hv_current_partition_id) {
-   597			/* The value 90 is empirically determined. It may change. */
-   598			ret = hv_call_deposit_pages(node, partition_id, 90);
-   599			if (ret)
-   600				return ret;
-   601		}
-   602	
-   603		do {
-   604			local_irq_save(irq_flags);
-   605	
-   606			input = *this_cpu_ptr(hyperv_pcpu_input_arg);
-   607	
-   608			input->partition_id = partition_id;
-   609			input->vp_index = vp_index;
-   610			input->flags = flags;
-   611			input->subnode_type = HvSubnodeAny;
-   612			input->proximity_domain_info =
-   613				numa_node_to_proximity_domain_info(node);
-   614			status = hv_do_hypercall(HVCALL_CREATE_VP, input, NULL);
-   615			local_irq_restore(irq_flags);
-   616	
-   617			if (hv_result(status) != HV_STATUS_INSUFFICIENT_MEMORY) {
-   618				if (!hv_result_success(status)) {
-   619					pr_err("%s: vcpu %u, lp %u, %s\n", __func__,
-   620					       vp_index, flags, hv_status_to_string(status));
-   621					ret = hv_status_to_errno(status);
-   622				}
-   623				break;
-   624			}
-   625			ret = hv_call_deposit_pages(node, partition_id, 1);
-   626	
-   627		} while (!ret);
-   628	
-   629		return ret;
-   630	}
-   631	EXPORT_SYMBOL_GPL(hv_call_create_vp);
-   632	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> -Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
