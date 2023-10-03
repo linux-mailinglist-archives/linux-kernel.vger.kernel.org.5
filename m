@@ -2,193 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F397B6DAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637187B6DB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240175AbjJCP7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 11:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52756 "EHLO
+        id S240243AbjJCP7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 11:59:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231669AbjJCP7f (ORCPT
+        with ESMTP id S240276AbjJCP7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 11:59:35 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF2DAD
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:59:29 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a2318df875so14997327b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 08:59:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696348769; x=1696953569; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xP89tk8jeFUDqiHwgtcyinENLLmFDFAo+sp2wFgmRBw=;
-        b=3VHfewwIV0zOljG/ol2pjU+0vBAWkOLQRPOSIDg5brqaS+50EHIiCl+ps7d84LasCC
-         jz7EfaUe1TP4lksfzPRXjmqvTy2qhmWi6rE0bUp0X2soN22L9f7Tpzv33HVo7nNh1DpK
-         xVGLumlTXW1AIwOdhs8KaR033H4JRtK7qJDnzZJbOZVOAIuVgRgMfBtgHnv9p3YdnuwS
-         poxsb3AIswlAkEV08xxGKdQ+PCQ4u8RqOWnx7mo22z94u7AEoRP+Ocm9CDkjVMbyosWx
-         CaUYYlWPcDj5t6s+bBhCEmtwG+DQmiZ1F93IWvadR9nnbUGaPS4AG69AHcpqDEFwXAXk
-         PMAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696348769; x=1696953569;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xP89tk8jeFUDqiHwgtcyinENLLmFDFAo+sp2wFgmRBw=;
-        b=e9UF62hfZwNW8ZgLPfIAKZjlhZybOinbcMUR4RG2hdSXPMhC/MtumzMOA6wC11Hp6A
-         8DfaACSHT9Yp47TRatPE1pwMYnHAVPrgO2VHDHiHo8IYK4Quk2HfvjHISG6K30CBDy1B
-         fwFTWivW3dfbp02tZH21ASbGvdXaPBZdNIcJ+NptJUEXUshDaufhSVq2DPTTwxDRg6Ei
-         Gvgf+HbiDy4pUkflfWF0CGTGDSHARCWoF/m9m28/JK6/003yqXJqtiTWs21Qbr6+V4gx
-         DTu1QXF466ata+zpIUzYRbt3SyQPjwU5A+eIZevYz+r2D4gx21pY+UE253QZgJJ16ZjS
-         lobw==
-X-Gm-Message-State: AOJu0YwtCmoZq2Amrmud7Ai5Z206WbI+NKdrKYpJLlnsTi7acLV1mq0D
-        u5I4O10NLFk+YbD1DOALUiyRw6Go6qk=
-X-Google-Smtp-Source: AGHT+IHlsTPxnmIroL8cntBugIBpa7VGBcPZjKPldlj/dItcEWdxSvIkKSkj76hPSiTFqWvviFkle9Hc81s=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:3604:0:b0:d7a:c85c:725b with SMTP id
- d4-20020a253604000000b00d7ac85c725bmr227114yba.7.1696348768967; Tue, 03 Oct
- 2023 08:59:28 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 08:59:27 -0700
-In-Reply-To: <CA+EHjTzSUXx8P9gWmUERg4owxH6r6yNPm1_RL-BzS_2CNPtRKw@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-12-seanjc@google.com>
- <CA+EHjTzSUXx8P9gWmUERg4owxH6r6yNPm1_RL-BzS_2CNPtRKw@mail.gmail.com>
-Message-ID: <ZRw6X2BptZnRPNK7@google.com>
-Subject: Re: [RFC PATCH v12 11/33] KVM: Introduce per-page memory attributes
-From:   Sean Christopherson <seanjc@google.com>
-To:     Fuad Tabba <tabba@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 3 Oct 2023 11:59:50 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CA3FF;
+        Tue,  3 Oct 2023 08:59:41 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 393BBP3D018834;
+        Tue, 3 Oct 2023 15:59:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=qcppdkim1;
+ bh=GBSM88InbwDK3bTPT0KFlAm3hF10rrJO6ZNeblY1c44=;
+ b=hUd9Sq/R6GdoJZE4qS3pOc5PSXhOITfsBR0/iWQz/HWZmBOTMm2Hnuur9xiko1teF06P
+ NUqrn1SXjo6gf/O/DP6wAFjaO0b06OT6ffPZYDrzHtXVbfh6P5GtseRIwUzwOuR1B0dD
+ bgk2YNlRT4TIKrGZRFJIEGCILZWQOwuB+OeYWrVyWoVR9WkpkvbgwOZVHw1mIVvzIWUl
+ bLFA9eBoXS6+aby6PaQm4k2R4GQOljZ7QLxt5jr/2ikyZpOKx9yTKNadqU84LplxJIdN
+ vhiYTkCi6aMEyT+kb3q2SXII8IUq0kBBu5py6PqMmH4ODR5GSGFR+u1Cnj5w/bAdBYp5 Bw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tgbjj9fpk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Oct 2023 15:59:32 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 393FxWIT006952
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 3 Oct 2023 15:59:32 GMT
+Received: from localhost (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 3 Oct
+ 2023 08:59:31 -0700
+From:   Oza Pawandeep <quic_poza@quicinc.com>
+To:     <sudeep.holla@arm.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <rafael@kernel.org>, <lenb@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>
+CC:     Oza Pawandeep <quic_poza@quicinc.com>
+Subject: [PATCH v9] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
+Date:   Tue, 3 Oct 2023 08:59:30 -0700
+Message-ID: <20231003155930.2829763-1-quic_poza@quicinc.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: H-19d9mMQ3zuB0YjKgwOwadn3YU4-RQp
+X-Proofpoint-ORIG-GUID: H-19d9mMQ3zuB0YjKgwOwadn3YU4-RQp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-03_12,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=6 mlxscore=6 spamscore=6
+ clxscore=1015 impostorscore=0 phishscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=123 adultscore=0 suspectscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310030119
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023, Fuad Tabba wrote:
-> Hi,
-> 
-> > diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> > index d2d913acf0df..f8642ff2eb9d 100644
-> > --- a/include/uapi/linux/kvm.h
-> > +++ b/include/uapi/linux/kvm.h
-> > @@ -1227,6 +1227,7 @@ struct kvm_ppc_resize_hpt {
-> >  #define KVM_CAP_ARM_EAGER_SPLIT_CHUNK_SIZE 228
-> >  #define KVM_CAP_ARM_SUPPORTED_BLOCK_SIZES 229
-> >  #define KVM_CAP_USER_MEMORY2 230
-> > +#define KVM_CAP_MEMORY_ATTRIBUTES 231
-> >
-> >  #ifdef KVM_CAP_IRQ_ROUTING
-> >
-> > @@ -2293,4 +2294,17 @@ struct kvm_s390_zpci_op {
-> >  /* flags for kvm_s390_zpci_op->u.reg_aen.flags */
-> >  #define KVM_S390_ZPCIOP_REGAEN_HOST    (1 << 0)
-> >
-> > +/* Available with KVM_CAP_MEMORY_ATTRIBUTES */
-> > +#define KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES    _IOR(KVMIO,  0xd2, __u64)
-> > +#define KVM_SET_MEMORY_ATTRIBUTES              _IOW(KVMIO,  0xd3, struct kvm_memory_attributes)
-> > +
-> > +struct kvm_memory_attributes {
-> > +       __u64 address;
-> > +       __u64 size;
-> > +       __u64 attributes;
-> > +       __u64 flags;
-> > +};
-> > +
-> > +#define KVM_MEMORY_ATTRIBUTE_PRIVATE           (1ULL << 3)
-> > +
-> 
-> In pKVM, we don't want to allow setting (or clearing) of PRIVATE/SHARED
-> attributes from userspace.
+Arm® Functional Fixed Hardware Specification defines LPI states,
+which provide an architectural context loss flags field that can
+be used to describe the context that might be lost when an LPI
+state is entered.
 
-Why not?  The whole thing falls apart if userspace doesn't *know* the state of a
-page, and the only way for userspace to know the state of a page at a given moment
-in time is if userspace controls the attributes.  E.g. even if KVM were to provide
-a way for userspace to query attributes, the attributes exposed to usrspace would
-become stale the instant KVM drops slots_lock (or whatever lock protects the attributes)
-since userspace couldn't prevent future changes.
+- Core context Lost
+        - General purpose registers.
+        - Floating point and SIMD registers.
+        - System registers, include the System register based
+        - generic timer for the core.
+        - Debug register in the core power domain.
+        - PMU registers in the core power domain.
+        - Trace register in the core power domain.
+- Trace context loss
+- GICR
+- GICD
 
-Why does pKVM need to prevent userspace from stating *its* view of attributes?
+Qualcomm's custom CPUs preserves the architectural state,
+including keeping the power domain for local timers active.
+when core is power gated, the local timers are sufficient to
+wake the core up without needing broadcast timer.
 
-If the goal is to reduce memory overhead, that can be solved by using an internal,
-non-ABI attributes flag to track pKVM's view of SHARED vs. PRIVATE.  If the guest
-attempts to access memory where pKVM and userspace don't agree on the state,
-generate an exit to userspace.  Or kill the guest.  Or do something else entirely.
+The patch fixes the evaluation of cpuidle arch_flags, and moves only to
+broadcast timer if core context lost is defined in ACPI LPI.
 
-> However, we'd like to use the attributes xarray to track the sharing state of
-> guest pages at the host kernel.
-> 
-> Moreover, we'd rather the default guest page state be PRIVATE, and
-> only specify which pages are shared. All pKVM guest pages start off as
-> private, and the majority will remain so.
+Fixes: a36a7fecfe607 ("Add support for Low Power Idle(LPI) states")
+Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
+---
 
-I would rather optimize kvm_vm_set_mem_attributes() to generate range-based
-xarray entries, at which point it shouldn't matter all that much whether PRIVATE
-or SHARED is the default "empty" state.  We opted not to do that for the initial
-merge purely to keep the code as simple as possible (which is obviously still not
-exactly simple).
+Notes:
+    Will/Catalin: Rafael has acked and he prefers to take it via arm64 tree
 
-With range-based xarray entries, the cost of tagging huge chunks of memory as
-PRIVATE should be a non-issue.  And if that's not enough for whatever reason, I
-would rather define the polarity of PRIVATE on a per-VM basis, but only for internal
-storage.
+diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+index 4d537d56eb84..6792a1f83f2a 100644
+--- a/arch/arm64/include/asm/acpi.h
++++ b/arch/arm64/include/asm/acpi.h
+@@ -9,6 +9,7 @@
+ #ifndef _ASM_ACPI_H
+ #define _ASM_ACPI_H
  
-> I'm not sure if this is the best way to do this: One idea would be to move
-> the definition of KVM_MEMORY_ATTRIBUTE_PRIVATE to
-> arch/*/include/asm/kvm_host.h, which is where kvm_arch_supported_attributes()
-> lives as well. This would allow different architectures to specify their own
-> attributes (i.e., instead we'd have a KVM_MEMORY_ATTRIBUTE_SHARED for pKVM).
-> This wouldn't help in terms of preventing userspace from clearing attributes
-> (i.e., setting a 0 attribute) though.
-> 
-> The other thing, which we need for pKVM anyway, is to make
-> kvm_vm_set_mem_attributes() global, so that it can be called from outside of
-> kvm_main.c (already have a local patch for this that declares it in
-> kvm_host.h),
++#include <linux/cpuidle.h>
+ #include <linux/efi.h>
+ #include <linux/memblock.h>
+ #include <linux/psci.h>
+@@ -44,6 +45,24 @@
+ 
+ #define ACPI_MADT_GICC_TRBE  (offsetof(struct acpi_madt_generic_interrupt, \
+ 	trbe_interrupt) + sizeof(u16))
++/*
++ * Arm® Functional Fixed Hardware Specification Version 1.2.
++ * Table 2: Arm Architecture context loss flags
++ */
++#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
++
++static inline unsigned int arch_get_idle_state_flags(u32 arch_flags)
++{
++	if (arch_flags & CPUIDLE_CORE_CTXT)
++		return CPUIDLE_FLAG_TIMER_STOP;
++
++	return 0;
++}
++#define arch_get_idle_state_flags arch_get_idle_state_flags
++
++#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
++#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
++#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
+ 
+ /* Basic configuration for ACPI */
+ #ifdef	CONFIG_ACPI
+diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
+index dc615ef6550a..3a34a8c425fe 100644
+--- a/drivers/acpi/processor_idle.c
++++ b/drivers/acpi/processor_idle.c
+@@ -1217,8 +1217,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
+ 		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
+ 		state->exit_latency = lpi->wake_latency;
+ 		state->target_residency = lpi->min_residency;
+-		if (lpi->arch_flags)
+-			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
++		state->flags |= arch_get_idle_state_flags(lpi->arch_flags);
+ 		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
+ 			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
+ 		state->enter = acpi_idle_lpi_enter;
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index a73246c3c35e..afd94c9b8b8a 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -1480,6 +1480,15 @@ static inline int lpit_read_residency_count_address(u64 *address)
+ }
+ #endif
+ 
++#ifdef CONFIG_ACPI_PROCESSOR_IDLE
++#ifndef arch_get_idle_state_flags
++static inline unsigned int arch_get_idle_state_flags(u32 arch_flags)
++{
++	return 0;
++}
++#endif
++#endif /* CONFIG_ACPI_PROCESSOR_IDLE */
++
+ #ifdef CONFIG_ACPI_PPTT
+ int acpi_pptt_cpu_is_thread(unsigned int cpu);
+ int find_acpi_cpu_topology(unsigned int cpu, int level);
+-- 
+2.25.1
 
-That's no problem, but I am definitely opposed to KVM modifying attributes that
-are owned by userspace.
-
-> and not gate this function by KVM_GENERIC_MEMORY_ATTRIBUTES.
-
-As above, I am opposed to pKVM having a completely different ABI for managing
-PRIVATE vs. SHARED.  I have no objection to pKVM using unclaimed flags in the
-attributes to store extra metadata, but if KVM_SET_MEMORY_ATTRIBUTES doesn't work
-for pKVM, then we've failed miserably and should revist the uAPI.
