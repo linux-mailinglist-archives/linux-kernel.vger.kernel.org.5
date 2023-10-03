@@ -2,158 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F897B6E25
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:11:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3387B6E28
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240331AbjJCQLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:11:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37962 "EHLO
+        id S239189AbjJCQM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231669AbjJCQLC (ORCPT
+        with ESMTP id S231983AbjJCQM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:11:02 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFBEA7;
-        Tue,  3 Oct 2023 09:10:58 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id 3f1490d57ef6-d86574d9bcaso1147294276.2;
-        Tue, 03 Oct 2023 09:10:58 -0700 (PDT)
+        Tue, 3 Oct 2023 12:12:56 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0BB9E
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:12:52 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d8660e23801so1335325276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 09:12:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696349458; x=1696954258; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KJIb/JY4n8tGZSqHXme95COkElXYXHHoPPYozHgYq+o=;
-        b=KGpK32eiIH9wsfEk35xkw7NyQk2hNMfln2JHvbGANmqHzMoh2NnaK2cLwNRYwexLwH
-         UpGkndb4Rk4w1UoJjqFQfQHCe40j5ZDIqwRqTApUttjJzMS+rh7YgnqlFa504AzEFEyG
-         44nksJhDP7RWbM3oJRKbL+J7u84Bp0N2RJq5bdufoxF0HGNzkCq0peq4XsfYdF1oUdtO
-         JddKJrzNysMXTVQ+yNj/0TEs1UFUj7ClfOxrH1Vh2z0WNomsjl/Hg8+lnlnHcYFdN3cl
-         hA94nAos+MNsdIE3vLqx+UksKWXBuDta1+MFvfRvlvsigTHenQbIY60LYtbFnm4lPVNt
-         IYfg==
+        d=google.com; s=20230601; t=1696349572; x=1696954372; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9uQBvm4Fq+54VpMXbG4kdkrjzOsWloPr068ysYSR6Hc=;
+        b=gD7QkIvWwo4VOqcoa9KhtXJzngPKzcJTUGzOHooVnlfS0ENN5gTxOqXOxthtAErH5+
+         hHW6rgwv9jUDz++15e/ldOFl2RxbXfgnegykle48CJ5El/hhPoQ17avDfSM4Xg539soz
+         t/u0eYzpM8jmf51TFQCMQhw3fU9gh5nhBlbPzAPqpSLkpwnLOjoz7dyj1MqjEk5hcBlb
+         bwQX7ZrJPi1j5AIHxFfbgWJDxhls1/lsdmPsc75mEpn4/HDOpxZrJvl3dk8KfvLksW99
+         fIDqv37qp5R8vsKBHKjqiaJfg0hej3o02x/29yrC0CzTspE7qqmM3TB1W7CU+9V9ZB3B
+         +KRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696349458; x=1696954258;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KJIb/JY4n8tGZSqHXme95COkElXYXHHoPPYozHgYq+o=;
-        b=EaG5vGmFr0BJ3jvA/kLennQuoVf/vy+GzOxRKlMPH2FNt7asRkuRoHVV7ni31iripz
-         GGwFkVjjxY5ltyhJKwNjzxp4UaBgrcpkBW3oVqzZcgf1Ah9ge3iX9q7GB2LcEUa2Gq3Y
-         Afkz4ygh47YZBPEh4KmrksJsQrPeoNLwRPX44C5HkMJs3tb9u9mNcHqjg32z/UHCci/0
-         lm3L8Xx0Bg1xdIbIi3sg9hjob+CKqnd0b6iy15PjJmhMq3PYvby/VZLbeXDuQE3Q4c3N
-         bYb0iZAhzm7rivzi/4PP5tq2UOxTcxElKo9cM1tsnk8O4KFy3yWblEhsMe6463nVojDQ
-         Z0Vw==
-X-Gm-Message-State: AOJu0YxcfQSb3fgUXhTwIYGwBDYG/elOb3p7xN5KmnYnLg25b+D8reDU
-        +iXrTuizFxxIsXdV1jYU+Rp62+IwprpvaMtlEOY=
-X-Google-Smtp-Source: AGHT+IG/rOtVRw7F1FQYoc2gJxlkY9rYdDDcV+U8qqwVIQAeOKxjsSAmjvcNMnfvzHJq5/eE+kYTAKspnaDSyL4EZ10=
-X-Received: by 2002:a25:cf95:0:b0:d80:1161:5ec1 with SMTP id
- f143-20020a25cf95000000b00d8011615ec1mr13414568ybg.20.1696349457871; Tue, 03
- Oct 2023 09:10:57 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAH7-e5sb+kT_LRb1_y-c5JaFN0=KrrRT97otUPKzTCgzGsVdrQ@mail.gmail.com>
- <ZRtWcgiH5JhD5NU2@debian.me> <CAH7-e5uspavg_VBJxKLOKJfU3nAq-OrPqzihF2opffY-ReiC-w@mail.gmail.com>
- <834062302e6a98e773dc4b03d7ed568a0f1c44fc.camel@nordicsemi.no>
- <CAH7-e5uZzmnFJAJrG664G6_JbK--DfbKC50aeVN5gMMxDJ51UA@mail.gmail.com> <ba7aaaed859ea2c4f5aac597deb382cceab33d65.camel@nordicsemi.no>
-In-Reply-To: <ba7aaaed859ea2c4f5aac597deb382cceab33d65.camel@nordicsemi.no>
-From:   =?UTF-8?Q?Erik_Dob=C3=A1k?= <erik.dobak@gmail.com>
-Date:   Tue, 3 Oct 2023 18:10:46 +0200
-Message-ID: <CAH7-e5unq6ggNjVkSsriUAmpvk4s7-NCYJrZnLK_3BjFO_Dceg@mail.gmail.com>
-Subject: Re: bluetooth issues since kernel 6.4 - not discovering other bt
- devices - /linux/drivers/bluetooth/btusb.c
-To:     =?UTF-8?Q?Tomasz_Mo=C5=84?= <tomasz.mon@nordicsemi.no>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Stable <stable@vger.kernel.org>,
-        Linux Bluetooth <linux-bluetooth@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Mediatek <linux-mediatek@lists.infradead.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
+        d=1e100.net; s=20230601; t=1696349572; x=1696954372;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9uQBvm4Fq+54VpMXbG4kdkrjzOsWloPr068ysYSR6Hc=;
+        b=vYMTraMRwfTd4ydEXGymq/tLfTs9g6HprVfMia+opm/9bI2mjpJmnRQNWeF+kmGPPf
+         8m1opL1PccMfg/+wUiVepNnGw+9/Yz/8bfiE2+oOsAGdDenKd3m+qAstnUZKVd/4edtH
+         fc60hPs5atJYrLKTTqXslCfYcttcUYHdWqITb5JQ717nwiQLgH3swP37XMjg6LTbcly+
+         h7ApghwHKnybOAMv7IRSSWIU7z540ZQ0vnOVXg8YTAhYEhPWeEBimFp3K2QITw/jb+lJ
+         OBi6vnYje05poNJZS9DusouysSWik5fdCxbi7l4ZUgKd284frjH/vvbMtOyXvFUZE2Qn
+         Uh2w==
+X-Gm-Message-State: AOJu0Ywka1yQX7wUYh3Jg958sb5v3u0MsBfYcOfXOgfmPtB069xEy7OG
+        7kaq0VsxcbZNiWNbgeRAsb81v8TlFVo=
+X-Google-Smtp-Source: AGHT+IEuYMJ8BCAtWpB91NPtpLQDE9hAcvYeMB8lwLvla7gu+qCLAH3DB4DSeDhHFqEi3H2ViX6mUFc2S8U=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:6dc1:0:b0:d8b:737f:8246 with SMTP id
+ i184-20020a256dc1000000b00d8b737f8246mr188298ybc.2.1696349572099; Tue, 03 Oct
+ 2023 09:12:52 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 09:12:50 -0700
+In-Reply-To: <b50afadea577065d90ae3dc8ca2aa67dcffcc50e.camel@infradead.org>
+Mime-Version: 1.0
+References: <a3989e7ff9cca77f680f9bdfbaee52b707693221.camel@infradead.org>
+ <ZRbolEa6RI3IegyF@google.com> <ee679de20e3a53772f9d233b9653fdc642781577.camel@infradead.org>
+ <ZRsAvYecCOpeHvPY@google.com> <ac097a26e96ded73e19200066b9063354096a8fd.camel@infradead.org>
+ <ZRsP5cvyqLaihb76@google.com> <b50afadea577065d90ae3dc8ca2aa67dcffcc50e.camel@infradead.org>
+Message-ID: <ZRw9gstj8TWiiBvd@google.com>
+Subject: Re: [PATCH v2] KVM: x86: Use fast path for Xen timer delivery
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     kvm <kvm@vger.kernel.org>, Paul Durrant <paul@xen.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry Tomasz,
+On Mon, Oct 02, 2023, David Woodhouse wrote:
+> On Mon, 2023-10-02 at 11:45 -0700, Sean Christopherson wrote:
+> > E.g. there's an assumption that -EWOULDBLOCK is the only non-zero retur=
+n code where
+> > the correct response is to go down the slow path.
+> >=20
+> > I'm not asking to spell out every single condition, I'm just asking for=
+ clarification
+> > on what the intended behavior is, e.g.
+> >=20
+> > =C2=A0 Use kvm_xen_set_evtchn_fast() directly from the timer callback, =
+and fall
+> > =C2=A0 back to the slow path if the event is valid but fast delivery is=
+n't
+> > =C2=A0 possible, which currently can only happen if delivery needs to b=
+lock,
+> > =C2=A0 e.g. because the gfn=3D>pfn cache is invalid or stale.
+> >=20
+> > instead of simply saying "when it's necessary to do so" and leaving it =
+up to the
+> > reader to figure what _they_ think that means, which might not always a=
+lign with
+> > what the author actually meant.
+>=20
+>=20
+> Fair enough. There's certainly scope for something along the lines of
+>=20
+>=20
+> +	rc =3D kvm_xen_set_evtchn_fast(&e, vcpu->kvm);
+> +	if (rc !=3D -EWOULDBLOCK) {
+>=20
+>    /*
+>     * If kvm_xen_set_evtchn_fast() returned -EWOULDBLOCK, then set the
+>     * timer_pending flag and kick the vCPU, to defer delivery of the=C2=
+=A0
+>     * event channel to a context which can sleep. If it fails for any
+>     * other reasons, just let it fail silently. The slow path fails=C2=A0
+>     * silently too; a warning in that case may be guest triggerable,
+>     * should never happen anyway, and guests are generally going to
+>     * *notice* timers going missing.
+>     */
+>=20
+> +		vcpu->arch.xen.timer_expires =3D 0;
+> +		return HRTIMER_NORESTART;
+> +	}
+>=20
+> That's documenting *this* code, not the function it happens to call.
+> It's more verbose than I would normally have bothered to be, but I'm
+> all for improving the level of commenting in our code as long as it's
+> adding value.=20
 
-that must have been a reality glitch with your commit (cant find the
-page refering to your commit now). But yes it is probably a kernel bug
-as it manifests kernels 6.4 and not in the 6.1 LTS version.
+I'm completely ok with no comment, I just want something in the changelog. =
+ I'm
+also not opposed to a comment, but I don't think it's necessary.
 
-Yours
+I don't have a problem with digging around code to understand the subtletie=
+s, or
+even the high level "what" in many cases.  What I don't like is encounterin=
+g code
+where *nothing* explains the author's intent.  All too often I've encounter=
+ed
+historical code in KVM where it's not at all obvious if code does what the =
+author
+intended, e.g. if a bug was a simple goof or a completely misguided design =
+choice.
 
-E
-
-On Tue, 3 Oct 2023 at 15:08, Tomasz Mo=C5=84 <tomasz.mon@nordicsemi.no> wro=
-te:
->
-> On Tue, 2023-10-03 at 14:42 +0200, Erik Dob=C3=A1k wrote:
-> > Sure here you go:
-> >
-> > # lsusb -d 04c5:1670 -v
-> >
-> > Bus 001 Device 004: ID 04c5:1670 Fujitsu, Ltd Bluetooth Radio
-> > Device Descriptor:
-> >   bLength                18
-> >   bDescriptorType         1
-> >   bcdUSB               1.00
-> >   bDeviceClass          224 Wireless
-> >   bDeviceSubClass         1 Radio Frequency
-> >   bDeviceProtocol         1 Bluetooth
-> >   bMaxPacketSize0        64
-> >   idVendor           0x04c5 Fujitsu, Ltd
-> >   idProduct          0x1670
-> >   bcdDevice            0.00
-> >   iManufacturer           1 Realtek
-> >   iProduct                2 Bluetooth Radio
-> >   iSerial                 3 00e04c000001
-> >   bNumConfigurations      1
-> >   Configuration Descriptor:
-> >     bLength                 9
-> >     bDescriptorType         2
-> >     wTotalLength       0x00b1
-> >     bNumInterfaces          2
-> >     bConfigurationValue     1
-> >     iConfiguration          0
-> >     bmAttributes         0xe0
-> >       Self Powered
-> >       Remote Wakeup
-> >     MaxPower              500mA
-> >     Interface Descriptor:
-> >       bLength                 9
-> >       bDescriptorType         4
-> >       bInterfaceNumber        0
-> >       bAlternateSetting       0
-> >       bNumEndpoints           3
-> >       bInterfaceClass       224 Wireless
-> >       bInterfaceSubClass      1 Radio Frequency
-> >       bInterfaceProtocol      1 Bluetooth
-> >       iInterface              4 Bluetooth Radio
->
-> I have no idea why you referred to my commits, i.e. c13380a55522
-> ("Bluetooth: btusb: Do not require hardcoded interface numbers") later
-> fixed by eaac6e223a0d ("Bluetooth: btusb: Fix bluetooth on Intel
-> Macbook 2014") in the first place.
->
-> BTUSB_IFNUM_2 is not even getting set for this device and therefore the
-> patches have no impact on your issue. If you were affected, like the
-> Intel Macbook 2014 was, then bear in mind that the issue would manifest
-> as btusb driver not even binding to the device. From your emails
-> however it appears that the issue is something different.
->
-> I honestly don't think it has anything to do with my patches. If you
-> know a Linux version where your bluetooth device works, then the next
-> step would be to bisect to find the first bad commit.
->
-> Best Regards,
-> Tomasz Mo=C5=84
+Holler if you plan on sending a v4 with the comment.  I'm a-ok applying v3 =
+with a
+massaged changelog to fold in the gist of the comment.
