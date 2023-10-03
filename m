@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84D797B6316
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239907B631A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbjJCIEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 04:04:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54596 "EHLO
+        id S230373AbjJCIEj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 04:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjJCIEL (ORCPT
+        with ESMTP id S229835AbjJCIEh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 04:04:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E97A1;
-        Tue,  3 Oct 2023 01:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696320248; x=1727856248;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=3K4aURGVYOaf5OVDO2plBOvkP7ewKrn9eW1RfQj1b6I=;
-  b=L7jj7pgNQ2qO7camTwfPOGoGn1etZr5CB7V1SevmQPQePfG9875L59xI
-   n7b3mwJFL4zi2LsInF3XvnR9a8q9EmEZD+gz0AH89rGHxW5gUbNpZaHkX
-   ZnPgs82+lMSxgKo9vFtNWHMISVBM/CG8asis/feV6FRsBW+XlcbMUa7E9
-   e8hBYIurJ9hc6deUb8a9c5nUY0cJGZDwhILsWfYe06vEjpZV/Et1WCutt
-   T0XXdNDcesqIiupb3aUvbgHh+9LxG5tjoeZxd25gwYm3a8PB21apNyvNV
-   dJAxD11DePmgo1saCkqfYstFmW4/PHx6aWo1lj8HUcHLVCoKsrUK6ZBSX
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="1408400"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="1408400"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 01:04:08 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="866781970"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="866781970"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by fmsmga002.fm.intel.com with ESMTP; 03 Oct 2023 01:04:03 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qnaNt-0006uN-12;
-        Tue, 03 Oct 2023 08:04:01 +0000
-Date:   Tue, 3 Oct 2023 16:03:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     David Lechner <dlechner@baylibre.com>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-staging@lists.linux.dev
-Cc:     oe-kbuild-all@lists.linux.dev,
-        David Lechner <david@lechnology.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
-        Axel Haslam <ahaslam@baylibre.com>,
-        Philip Molloy <pmolloy@baylibre.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 19/27] staging: iio: resolver: ad2s1210: add phase
- lock range support
-Message-ID: <202310031533.yGtxQ3t0-lkp@intel.com>
-References: <20230929-ad2s1210-mainline-v3-19-fa4364281745@baylibre.com>
+        Tue, 3 Oct 2023 04:04:37 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C23F7A3
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 01:04:34 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9936b3d0286so100949266b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 01:04:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696320273; x=1696925073; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FMsF5DJh2guzU9Ha3ynv7ZZbV5goApHMc/5lrWxMlbE=;
+        b=q7x1iK1hLx/t0W9PW4b35vi46jw6LKf/wHkuceuRGHJAJa+YN0Ulmv9hbq07dN4kZ8
+         Qy7Jh7IBBY2XpBDZ7NV2RDmxEPzGHpShtn3n4LokVr05L0n1H1S2ppZdlnozcHK2mT6G
+         U+H/T9SxTinP1KIf0b80LaX7F28UEH8ZsKAGQ1Vra/cXlpjYYX/gPG91SrchhitRd88B
+         jwvmTqkOqn48fZlaEtMPEZhxI9h5aAqH2DUgdWYlQdNfeQo0i+l9ZNSLlkx+SpCfnUVG
+         rEnttUCiTM+WKpnNSOgTLJUP8XARK76xB4WWe10ZqWHMXbJPsvaDIVnmCe9J/L5OLsZA
+         0TNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696320273; x=1696925073;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FMsF5DJh2guzU9Ha3ynv7ZZbV5goApHMc/5lrWxMlbE=;
+        b=d824q4Y3g9NswfCeWehz5uDpw7BmCkIHRj/XyXIQpOoTH3hSbN/oSp5CUXcjikUf6f
+         CLkJ7TJOAb3I8pMYqsJF38Lfr2J85YVDRoA44iwzQTkfkQg4lqLlXqkGRXGdtqF4+rR3
+         04jek+nx0VjyuDLSM7oDOtaGQbEhh7JBa1uwrxM+NEZKxMhgftDu70Wex5R8YcIKudsv
+         qBxTEQGMukF1Hg7XTjtCmABmvqf+dFNQmGadU7DJwR7FMGSuOl6NEoj1DonbDvsgTSYv
+         sj3slFM68rlJvIha0PqW5MbduWTDl4RGaypGIYDtmrX4e8e4mbyBBVFceHfVudi4+zD3
+         ojEg==
+X-Gm-Message-State: AOJu0YyJdqPbIR7J59G0K+MmGOTl8Hi+wWqUtUv4lnGOvUjbqLabsoFg
+        HUE44vw/8+cBNPMLCgns+4Q+si5dQKdGoIMrfu1BGQ==
+X-Google-Smtp-Source: AGHT+IG2uo37ARAdywaEtmkYOWQSz05+CYQvGoVZhU8Pbx7tJgpOURX/cqhR+9o9gcmWrJVEWr8MEY3rQcWHLHjPsNk=
+X-Received: by 2002:a17:906:20dd:b0:9ae:729c:f647 with SMTP id
+ c29-20020a17090620dd00b009ae729cf647mr10694745ejc.77.1696320273081; Tue, 03
+ Oct 2023 01:04:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230929-ad2s1210-mainline-v3-19-fa4364281745@baylibre.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230922175741.635002-1-yosryahmed@google.com>
+ <ZRGQIhWF02SRzN4D@dhcp22.suse.cz> <CAJD7tkbWz7mx6mUrvFQHP10ncqL-iVwD4ymHTm=oXW5qGgrZtA@mail.gmail.com>
+ <ZRvJa1Hza1RS28+G@dhcp22.suse.cz>
+In-Reply-To: <ZRvJa1Hza1RS28+G@dhcp22.suse.cz>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 3 Oct 2023 01:03:53 -0700
+Message-ID: <CAJD7tkaOfsKC=F1inymxz8C0UT5=Sjo830bYLsoPd6WOOShyDQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] mm: memcg: fix tracking of pending stats updates values
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On Tue, Oct 3, 2023 at 12:57=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Mon 25-09-23 10:11:05, Yosry Ahmed wrote:
+> > On Mon, Sep 25, 2023 at 6:50=E2=80=AFAM Michal Hocko <mhocko@suse.com> =
+wrote:
+> > >
+> > > On Fri 22-09-23 17:57:38, Yosry Ahmed wrote:
+> > > > While working on adjacent code [1], I realized that the values pass=
+ed
+> > > > into memcg_rstat_updated() to keep track of the magnitude of pendin=
+g
+> > > > updates is consistent. It is mostly in pages, but sometimes it can =
+be in
+> > > > bytes or KBs. Fix that.
+> > >
+> > > What kind of practical difference does this change make? Is it worth
+> > > additional code?
+> >
+> > As explained in patch 2's commit message, the value passed into
+> > memcg_rstat_updated() is used for the "flush only if not worth it"
+> > heuristic. As we have discussed in different threads in the past few
+> > weeks, unnecessary flushes can cause increased global lock contention
+> > and/or latency.
+> >
+> > Byte-sized paths (percpu, slab, zswap, ..) feed bytes into the
+> > heuristic, but those are interpreted as pages, which means we will
+> > flush earlier than we should. This was noticed by code inspection. How
+> > much does this matter in practice? I would say it depends on the
+> > workload: how many percpu/slab allocations are being made vs. how many
+> > flushes are requested.
+> >
+> > On a system with 100 cpus, 25M of stat updates are needed for a flush
+> > usually, but ~6K of slab/percpu updates will also (mistakenly) cause a
+> > flush.
+>
+> This surely depends on workload and that is understandable. But it would
+> be really nice to provide some numbers for typical workloads which
+> exercise slab heavily.
 
-kernel test robot noticed the following build warnings:
+If you have a workload in mind I can run it and see how many flushes
+we get with/without this patch. The first thing that pops into my head
+is creating a bunch of empty files but I don't know if that's the best
+thing to get numbers from.
 
-[auto build test WARNING on 5e99f692d4e32e3250ab18d511894ca797407aec]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/David-Lechner/dt-bindings-iio-resolver-add-devicetree-bindings-for-ad2s1210/20230930-014031
-base:   5e99f692d4e32e3250ab18d511894ca797407aec
-patch link:    https://lore.kernel.org/r/20230929-ad2s1210-mainline-v3-19-fa4364281745%40baylibre.com
-patch subject: [PATCH v3 19/27] staging: iio: resolver: ad2s1210: add phase lock range support
-config: i386-randconfig-062-20231003 (https://download.01.org/0day-ci/archive/20231003/202310031533.yGtxQ3t0-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231003/202310031533.yGtxQ3t0-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310031533.yGtxQ3t0-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> drivers/staging/iio/resolver/ad2s1210.c:667:1: sparse: sparse: symbol 'iio_const_attr_in_phase0_mag_value_available' was not declared. Should it be static?
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> --
+> Michal Hocko
+> SUSE Labs
