@@ -2,139 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B8D7B7001
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D4217B701C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:42:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240680AbjJCRiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 13:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56296 "EHLO
+        id S231899AbjJCRm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 13:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231892AbjJCRiF (ORCPT
+        with ESMTP id S231782AbjJCRm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 13:38:05 -0400
+        Tue, 3 Oct 2023 13:42:56 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46930A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 10:38:01 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA6D4C433C8;
-        Tue,  3 Oct 2023 17:37:53 +0000 (UTC)
-Date:   Tue, 3 Oct 2023 13:38:56 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Jeanson <mjeanson@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [RFC PATCH v3 1/5] tracing: Introduce faultable tracepoints
- (v3)
-Message-ID: <20231003133856.2879f36f@gandalf.local.home>
-In-Reply-To: <99ec6025-c170-459c-8b43-58cf1a85f832@paulmck-laptop>
-References: <20231002202531.3160-1-mathieu.desnoyers@efficios.com>
-        <20231002202531.3160-2-mathieu.desnoyers@efficios.com>
-        <20231002191023.6175294d@gandalf.local.home>
-        <97c559c9-51cf-415c-8b0b-39eba47b8898@paulmck-laptop>
-        <20231002211936.5948253e@gandalf.local.home>
-        <5d0771e9-332c-42cd-acf3-53d46bb691f3@paulmck-laptop>
-        <20231003100854.7285d2a9@gandalf.local.home>
-        <99ec6025-c170-459c-8b43-58cf1a85f832@paulmck-laptop>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962C6AB;
+        Tue,  3 Oct 2023 10:42:52 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 441DCC433C7;
+        Tue,  3 Oct 2023 17:42:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696354972;
+        bh=sr31N4h3bq02A/ddKJ/WDzDhSutvV5w7GfrIuqiakpI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M8z/PNZbksvHrABXDOZg64hkD56vVavPYEouOcdhLLy/telDwVu4pXPBuCth5vR+F
+         WwJJJkSmXYXh+UwSjtSJPogexkZFSDOCWxjXOMHw8PieAakXbS94fDbBrc7wV8JzUA
+         +MP/vxx8BlBf1jYeLKt0iUWP1PVKFdqhFbCJul1SzdESHga31kwDG5EY98VX2PHc4q
+         2puaKf4eXJncUKYPej2a8jsBW9uQ0GLVkOSq21wHgXHnx7jYE9fpFHSDzIlAD0nYwu
+         rd4B8WQcNOLdwnaY0VwHhU0X5xsuYm7BeJDBypARXd0u86W8GJEzPgofJAQ0ssHYru
+         AIqaSck7LuQUQ==
+Date:   Tue, 3 Oct 2023 19:42:46 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Alain Volmat <alain.volmat@foss.st.com>
+Cc:     Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        M'boumba Cedric Madianga <cedric.madianga@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@st.com>,
+        linux-i2c@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c: stm32f7: Fix PEC handling in case of SMBUS transfers
+Message-ID: <20231003174246.vdazyls3c7kykd63@zenone.zhora.eu>
+References: <20231002084211.1108940-1-alain.volmat@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231002084211.1108940-1-alain.volmat@foss.st.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Oct 2023 10:33:33 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+Hi Alain,
 
-> On Tue, Oct 03, 2023 at 10:08:54AM -0400, Steven Rostedt wrote:
-> > On Tue, 3 Oct 2023 06:44:50 -0700
-> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> >   
-> > > > That way it is clear what uses what, as I read the original paragraph a
-> > > > couple of times and could have sworn that rcu_read_lock_trace() required
-> > > > tasks to not block.    
-> > > 
-> > > That would work for me.  Would you like to send a patch, or would you
-> > > rather we made the adjustments?  
-> > 
-> > Which ever.  
-> 
-> OK, how about like this?
+On Mon, Oct 02, 2023 at 10:42:10AM +0200, Alain Volmat wrote:
+> The PECBYTE bit allows to generate (in case of write) or
+> compute/compare the PEC byte (in case of read).  In case
+> of reading a value (performed by first sending a write
+> command, then followed by a read command) the PECBYTE should
+> only be set before starting the read command and not before
+> the first write command.
 
-Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+What is this patch fixing?
 
-Link: https://lore.kernel.org/all/20231002211936.5948253e@gandalf.local.home/
+Can you please point this detail in the documentation, I haven't
+found it[*]
 
--- Steve
+> Fixes: 9e48155f6bfe ("i2c: i2c-stm32f7: Add initial SMBus protocols support")
+> 
+> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
 
+please, don't leave blank lines between tags.
 
+Thanks,
+Andi
+
+[*] Hope this is the correct one:
+https://www.st.com/resource/en/reference_manual/rm0385-stm32f75xxx-and-stm32f74xxx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf
+
+> ---
+>  drivers/i2c/busses/i2c-stm32f7.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
 > 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit 973eb79ec46c16f13bb5b47ad14d44a1f1c79dc9
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Tue Oct 3 10:30:01 2023 -0700
-> 
->     doc: Clarify RCU Tasks reader/updater checklist
->     
->     Currently, the reader/updater compatibility rules for the three RCU
->     Tasks flavors are squished together in a single paragraph, which can
->     result in confusion.  This commit therefore splits them out into a list,
->     clearly showing the distinction between these flavors.
->     
->     Reported-by: Steven Rostedt <rostedt@goodmis.org>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
-> index bd3c58c44bef..c432899aff22 100644
-> --- a/Documentation/RCU/checklist.rst
-> +++ b/Documentation/RCU/checklist.rst
-> @@ -241,15 +241,22 @@ over a rather long period of time, but improvements are always welcome!
->  	srcu_struct.  The rules for the expedited RCU grace-period-wait
->  	primitives are the same as for their non-expedited counterparts.
+> diff --git a/drivers/i2c/busses/i2c-stm32f7.c b/drivers/i2c/busses/i2c-stm32f7.c
+> index 579b30581725..0d3c9a041b56 100644
+> --- a/drivers/i2c/busses/i2c-stm32f7.c
+> +++ b/drivers/i2c/busses/i2c-stm32f7.c
+> @@ -1059,9 +1059,10 @@ static int stm32f7_i2c_smbus_xfer_msg(struct stm32f7_i2c_dev *i2c_dev,
+>  	/* Configure PEC */
+>  	if ((flags & I2C_CLIENT_PEC) && f7_msg->size != I2C_SMBUS_QUICK) {
+>  		cr1 |= STM32F7_I2C_CR1_PECEN;
+> -		cr2 |= STM32F7_I2C_CR2_PECBYTE;
+> -		if (!f7_msg->read_write)
+> +		if (!f7_msg->read_write) {
+> +			cr2 |= STM32F7_I2C_CR2_PECBYTE;
+>  			f7_msg->count++;
+> +		}
+>  	} else {
+>  		cr1 &= ~STM32F7_I2C_CR1_PECEN;
+>  		cr2 &= ~STM32F7_I2C_CR2_PECBYTE;
+> @@ -1149,8 +1150,10 @@ static void stm32f7_i2c_smbus_rep_start(struct stm32f7_i2c_dev *i2c_dev)
+>  	f7_msg->stop = true;
 >  
-> -	If the updater uses call_rcu_tasks() or synchronize_rcu_tasks(),
-> -	then the readers must refrain from executing voluntary
-> -	context switches, that is, from blocking.  If the updater uses
-> -	call_rcu_tasks_trace() or synchronize_rcu_tasks_trace(), then
-> -	the corresponding readers must use rcu_read_lock_trace() and
-> -	rcu_read_unlock_trace().  If an updater uses call_rcu_tasks_rude()
-> -	or synchronize_rcu_tasks_rude(), then the corresponding readers
-> -	must use anything that disables preemption, for example,
-> -	preempt_disable() and preempt_enable().
-> +	Similarly, it is necssary to correctly use the RCU Tasks flavors:
-> +
-> +	a.	If the updater uses synchronize_rcu_tasks() or
-> +		call_rcu_tasks(), then the readers must refrain from
-> +		executing voluntary context switches, that is, from
-> +		blocking.
-> +
-> +	b.	If the updater uses call_rcu_tasks_trace()
-> +		or synchronize_rcu_tasks_trace(), then the
-> +		corresponding readers must use rcu_read_lock_trace()
-> +		and rcu_read_unlock_trace().
-> +
-> +	c.	If an updater uses call_rcu_tasks_rude() or
-> +		synchronize_rcu_tasks_rude(), then the corresponding
-> +		readers must use anything that disables preemption,
-> +		for example, preempt_disable() and preempt_enable().
+>  	/* Add one byte for PEC if needed */
+> -	if (cr1 & STM32F7_I2C_CR1_PECEN)
+> +	if (cr1 & STM32F7_I2C_CR1_PECEN) {
+> +		cr2 |= STM32F7_I2C_CR2_PECBYTE;
+>  		f7_msg->count++;
+> +	}
 >  
->  	Mixing things up will result in confusion and broken kernels, and
->  	has even resulted in an exploitable security issue.  Therefore,
-
+>  	/* Set number of bytes to be transferred */
+>  	cr2 &= ~(STM32F7_I2C_CR2_NBYTES_MASK);
+> -- 
+> 2.25.1
+> 
