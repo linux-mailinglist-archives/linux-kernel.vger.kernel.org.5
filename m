@@ -2,172 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 699DA7B7195
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B06EA7B7192
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240902AbjJCTPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 15:15:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49664 "EHLO
+        id S240441AbjJCTOc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 15:14:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbjJCTPM (ORCPT
+        with ESMTP id S230239AbjJCTOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 15:15:12 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6E008E
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 12:15:09 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59f53027158so21103817b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 12:15:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696360509; x=1696965309; darn=vger.kernel.org;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6N4htVJIGGb5h3erLQS3Hd93PuTJER9wVr3iHSknNQY=;
-        b=UFcwdhuuCbyuM9r8KJhOm8K7BhN5+pS+CtOGM3l/0IvsEnA1tiC2mnu9jFWkcHE/Kb
-         TWEYpPbi2vdIyHbih0y68SHVGdX6K2QTn+EQWvNGfdUAInEbMZg0SHy/cTNiZCum7tXg
-         mQFUVSoBm2LnKHNel8V6j1Otww5Tcp31ZCaws2QrQgLBbhg/k6kcfND8goBaLj1wwlk6
-         pRXsQtmbmzdiNHPnjbBbqbfZnnYwgljubGwP8Czu4QITDq2qq+2KLPxTddEvDnACl1Jc
-         WtufP0K18NXD+QJtLRj6uwJm7lMiVYV1coCOjKbBac1DZXa69AIb9LUuz23i6K45F5iu
-         /gLQ==
+        Tue, 3 Oct 2023 15:14:31 -0400
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55DB88E;
+        Tue,  3 Oct 2023 12:14:28 -0700 (PDT)
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-57ddba5ba84so109659eaf.0;
+        Tue, 03 Oct 2023 12:14:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696360509; x=1696965309;
-        h=cc:to:from:subject:references:mime-version:message-id:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6N4htVJIGGb5h3erLQS3Hd93PuTJER9wVr3iHSknNQY=;
-        b=mRGQOnA6FycHHb9Tg6U2W5oDkDxDUpIjBK4xqfApa9J0nzlFk0+3ctvgSWr9HstIEY
-         COaXsmfQH8HLgopsPIhnn2C3u1QMbYkOJoHgWL7WiAs8oNff0+n+x3BxvlgNJL/Csjlc
-         SV5tnBWulcQu51xvPZ91kimPlE3QkzNZdzQt7MShqMiEj/4mt6iawA4QNaDAPlied836
-         S3cvFNgOFc1sUMOt0ZXxFG/xTzP10pRIfSDR8uUdOxlFMFqHHIMOnTauZUCeU/VrQ/i4
-         Zcth/jP/AOezq7fkuZX5TOLU2eGkZbsn9fN9abDJMJjWXngyJ/Xhup2uEzsVCFLZHA2u
-         JASw==
-X-Gm-Message-State: AOJu0Yyb2cX/H1qIiaAc6S4MZVp4LWbYoKkkmkYRG+IAmY/Wefuk8M5L
-        btLTf8e50GCv9XjZkzlcdZ2LW7kvVvm1
-X-Google-Smtp-Source: AGHT+IEYZ1pBWCmXLN1j2N35fPF2rv8nARnMlWixIYVn+j22HysMgdNODZ6bnzSYzPGqFXn01/UUVNBsXHhZ
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:51d:1f25:c2d8:4514])
- (user=irogers job=sendgmr) by 2002:a81:d444:0:b0:59b:ebe0:9fcd with SMTP id
- g4-20020a81d444000000b0059bebe09fcdmr9061ywl.7.1696360508657; Tue, 03 Oct
- 2023 12:15:08 -0700 (PDT)
-Date:   Tue,  3 Oct 2023 12:14:12 -0700
-In-Reply-To: <20231003191412.3171385-1-irogers@google.com>
-Message-Id: <20231003191412.3171385-2-irogers@google.com>
-Mime-Version: 1.0
-References: <20231003191412.3171385-1-irogers@google.com>
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Subject: [PATCH v2 2/2] bpftool: Align bpf_load_and_run_opts insns and data
-From:   Ian Rogers <irogers@google.com>
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ian Rogers <irogers@google.com>
+        d=1e100.net; s=20230601; t=1696360467; x=1696965267;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GLnxI+9L7q2hlugZd5feFm7zHcxH+KjWd0T7wlo3ADI=;
+        b=v1TVmZNx4eI341piPL9lK8D0TwkNaGEQw4A/ddwWtkyx56OaELlwBNYObszBCJ4q/C
+         w3jGiZ1eBLvr/x68YP4BJ1lbkEBIOeACIgsxKbCOJ4EitUd4oLUiIF9cyi2s0st6iuKc
+         2p4koZAm/8T50Fl0RDGC9sX21hY7J9wmvCypYsQgMfApraXKwJnJgj3zJtgkbQtYNEPk
+         1B1Al4Vtdx2b0hVZ8u/i83hDWLuiGQnI2EDsCWGH43EFDW2XB7x0i37GaSY23WUKjFCM
+         By/oNzy2BvBAmobgCiBVvr6Hzu9OPK/Bjd5JNmBB4jf7ehPdK3FK1ishQUPiytisPohK
+         fQVw==
+X-Gm-Message-State: AOJu0YzvQ9EKTad8POJTLKeMUgAXn+ZT9W0kqKAkuydTjZKBD1onyRkL
+        /hQ/riI/LFHNl73GIEYeWlPcx+KKOz/hUp1Kr+Q=
+X-Google-Smtp-Source: AGHT+IEDCjGTpWeYK5y5ChirNp8+//sSGWalh6YtnjNXarMJX525NELg/Fo1WneB/mwT/A2IVVdrn2CyBICzzkpm+9Y=
+X-Received: by 2002:a4a:b588:0:b0:578:c2af:45b5 with SMTP id
+ t8-20020a4ab588000000b00578c2af45b5mr314352ooo.0.1696360467236; Tue, 03 Oct
+ 2023 12:14:27 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230927195035.2174949-1-anarsoul@gmail.com>
+In-Reply-To: <20230927195035.2174949-1-anarsoul@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 3 Oct 2023 21:14:16 +0200
+Message-ID: <CAJZ5v0gUOt3v+rsfD0D8JrHCTR_5qrp7PZxCF=0_ZVFVpg6XMQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ACPI: FPDT: properly handle invalid FPDT subtables
+To:     Vasily Khoruzhick <anarsoul@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>, Zhang Rui <rui.zhang@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A C string lacks alignment so use aligned arrays to avoid potential
-alignment problems. Switch to using sizeof (less 1 for the \0
-terminator) rather than a hardcode size constant.
+On Wed, Sep 27, 2023 at 9:50 PM Vasily Khoruzhick <anarsoul@gmail.com> wrote:
+>
+> Buggy BIOSes may have invalid FPDT subtables, e.g. on my hardware:
+>
+> S3PT subtable:
+>
+> 7F20FE30: 53 33 50 54 24 00 00 00-00 00 00 00 00 00 18 01  *S3PT$...........*
+> 7F20FE40: 00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  *................*
+> 7F20FE50: 00 00 00 00
+>
+> Here the first record has zero length.
+>
+> FBPT subtable:
+>
+> 7F20FE50:             46 42 50 54-3C 00 00 00 46 42 50 54  *....FBPT<...FBPT*
+> 7F20FE60: 02 00 30 02 00 00 00 00-00 00 00 00 00 00 00 00  *..0.............*
+> 7F20FE70: 2A A6 BC 6E 0B 00 00 00-1A 44 41 70 0B 00 00 00  **..n.....DAp....*
+> 7F20FE80: 00 00 00 00 00 00 00 00-00 00 00 00 00 00 00 00  *................*
+>
+> And here FBPT table has FBPT signature repeated instead of the first
+> record.
+>
+> Current code will be looping indefinitely due to zero length records, so
+> break out of the loop if record length is zero.
+>
+> While we are here, add proper handling for fpdt_process_subtable()
+> failures.
+>
+> Fixes: d1eb86e59be0 ("ACPI: tables: introduce support for FPDT table")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+> ---
+> v2: return error from fpdt_process_subtable() if zero-length record is
+> found and handle fpdt_process_subtable() failures
+>
+>  drivers/acpi/acpi_fpdt.c | 42 ++++++++++++++++++++++++++++++++--------
+>  1 file changed, 34 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/acpi/acpi_fpdt.c b/drivers/acpi/acpi_fpdt.c
+> index a2056c4c8cb7..c97c6e3936cc 100644
+> --- a/drivers/acpi/acpi_fpdt.c
+> +++ b/drivers/acpi/acpi_fpdt.c
+> @@ -194,12 +194,19 @@ static int fpdt_process_subtable(u64 address, u32 subtable_type)
+>                 record_header = (void *)subtable_header + offset;
+>                 offset += record_header->length;
+>
+> +               if (!record_header->length) {
+> +                       pr_err(FW_BUG "Zero-length record found.\n");
+> +                       result = -EINVAL;
+> +                       goto err;
+> +               }
+> +
+>                 switch (record_header->type) {
+>                 case RECORD_S3_RESUME:
+>                         if (subtable_type != SUBTABLE_S3PT) {
+>                                 pr_err(FW_BUG "Invalid record %d for subtable %s\n",
+>                                      record_header->type, signature);
+> -                               return -EINVAL;
+> +                               result = -EINVAL;
+> +                               goto err;
+>                         }
+>                         if (record_resume) {
+>                                 pr_err("Duplicate resume performance record found.\n");
+> @@ -208,7 +215,7 @@ static int fpdt_process_subtable(u64 address, u32 subtable_type)
+>                         record_resume = (struct resume_performance_record *)record_header;
+>                         result = sysfs_create_group(fpdt_kobj, &resume_attr_group);
+>                         if (result)
+> -                               return result;
+> +                               goto err;
+>                         break;
+>                 case RECORD_S3_SUSPEND:
+>                         if (subtable_type != SUBTABLE_S3PT) {
+> @@ -223,13 +230,14 @@ static int fpdt_process_subtable(u64 address, u32 subtable_type)
+>                         record_suspend = (struct suspend_performance_record *)record_header;
+>                         result = sysfs_create_group(fpdt_kobj, &suspend_attr_group);
+>                         if (result)
+> -                               return result;
+> +                               goto err;
+>                         break;
+>                 case RECORD_BOOT:
+>                         if (subtable_type != SUBTABLE_FBPT) {
+>                                 pr_err(FW_BUG "Invalid %d for subtable %s\n",
+>                                      record_header->type, signature);
+> -                               return -EINVAL;
+> +                               result = -EINVAL;
+> +                               goto err;
+>                         }
+>                         if (record_boot) {
+>                                 pr_err("Duplicate boot performance record found.\n");
+> @@ -238,7 +246,7 @@ static int fpdt_process_subtable(u64 address, u32 subtable_type)
+>                         record_boot = (struct boot_performance_record *)record_header;
+>                         result = sysfs_create_group(fpdt_kobj, &boot_attr_group);
+>                         if (result)
+> -                               return result;
+> +                               goto err;
+>                         break;
+>
+>                 default:
+> @@ -247,6 +255,16 @@ static int fpdt_process_subtable(u64 address, u32 subtable_type)
+>                 }
+>         }
+>         return 0;
+> +
+> +err:
+> +       if (record_boot)
+> +               sysfs_remove_group(fpdt_kobj, &boot_attr_group);
+> +       if (record_suspend)
+> +               sysfs_remove_group(fpdt_kobj, &suspend_attr_group);
+> +       if (record_resume)
+> +               sysfs_remove_group(fpdt_kobj, &resume_attr_group);
+> +
+> +       return result;
+>  }
+>
+>  static int __init acpi_init_fpdt(void)
+> @@ -255,6 +273,7 @@ static int __init acpi_init_fpdt(void)
+>         struct acpi_table_header *header;
+>         struct fpdt_subtable_entry *subtable;
+>         u32 offset = sizeof(*header);
+> +       int result;
+>
+>         status = acpi_get_table(ACPI_SIG_FPDT, 0, &header);
+>
+> @@ -263,8 +282,8 @@ static int __init acpi_init_fpdt(void)
+>
+>         fpdt_kobj = kobject_create_and_add("fpdt", acpi_kobj);
+>         if (!fpdt_kobj) {
+> -               acpi_put_table(header);
+> -               return -ENOMEM;
+> +               result = -ENOMEM;
+> +               goto err_nomem;
+>         }
+>
+>         while (offset < header->length) {
+> @@ -272,8 +291,10 @@ static int __init acpi_init_fpdt(void)
+>                 switch (subtable->type) {
+>                 case SUBTABLE_FBPT:
+>                 case SUBTABLE_S3PT:
+> -                       fpdt_process_subtable(subtable->address,
+> +                       result = fpdt_process_subtable(subtable->address,
+>                                               subtable->type);
+> +                       if (result)
+> +                               goto err_subtable;
+>                         break;
+>                 default:
+>                         /* Other types are reserved in ACPI 6.4 spec. */
+> @@ -282,6 +303,11 @@ static int __init acpi_init_fpdt(void)
+>                 offset += sizeof(*subtable);
+>         }
+>         return 0;
+> +err_subtable:
+> +       kobject_put(fpdt_kobj);
+> +err_nomem:
+> +       acpi_put_table(header);
+> +       return result;
+>  }
+>
+>  fs_initcall(acpi_init_fpdt);
+> --
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
-I was unable to find a test case for this part of the codegen using
-Linux perf and libbpf tools code bases.
----
- tools/bpf/bpftool/gen.c | 43 ++++++++++++++++++++++-------------------
- 1 file changed, 23 insertions(+), 20 deletions(-)
-
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index b8ebcee9bc56..e9a59b254c66 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -708,17 +708,22 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 
- 		codegen("\
- 		\n\
--			skel->%1$s = skel_prep_map_data((void *)\"\\	    \n\
--		", ident);
-+			{						    \n\
-+				static const char data[] __attribute__((aligned__(8))) = \"\\\n\
-+		");
- 		mmap_data = bpf_map__initial_value(map, &mmap_size);
- 		print_hex(mmap_data, mmap_size);
- 		codegen("\
- 		\n\
--		\", %1$zd, %2$zd);					    \n\
--			if (!skel->%3$s)				    \n\
--				goto cleanup;				    \n\
--			skel->maps.%3$s.initial_value = (__u64) (long) skel->%3$s;\n\
--		", bpf_map_mmap_sz(map), mmap_size, ident);
-+		\";							    \n\
-+									    \n\
-+				skel->%1$s = skel_prep_map_data((void *)data, %2$zd,\n\
-+								sizeof(data) - 1);\n\
-+				if (!skel->%1$s)			    \n\
-+					goto cleanup;			    \n\
-+				skel->maps.%1$s.initial_value = (__u64) (long) skel->%1$s;\n\
-+			}						    \n \
-+		", ident, bpf_map_mmap_sz(map));
- 	}
- 	codegen("\
- 		\n\
-@@ -733,32 +738,30 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- 		{							    \n\
- 			struct bpf_load_and_run_opts opts = {};		    \n\
- 			int err;					    \n\
--									    \n\
--			opts.ctx = (struct bpf_loader_ctx *)skel;	    \n\
--			opts.data_sz = %2$d;				    \n\
--			opts.data = (void *)\"\\			    \n\
-+			static const char opts_data[] __attribute__((aligned__(8))) = \"\\\n\
- 		",
--		obj_name, opts.data_sz);
-+		obj_name);
- 	print_hex(opts.data, opts.data_sz);
- 	codegen("\
- 		\n\
- 		\";							    \n\
-+			static const char opts_insn[] __attribute__((aligned__(8))) = \"\\\n\
- 		");
--
--	codegen("\
--		\n\
--			opts.insns_sz = %d;				    \n\
--			opts.insns = (void *)\"\\			    \n\
--		",
--		opts.insns_sz);
- 	print_hex(opts.insns, opts.insns_sz);
- 	codegen("\
- 		\n\
- 		\";							    \n\
-+									    \n\
-+			opts.ctx = (struct bpf_loader_ctx *)skel;	    \n\
-+			opts.data_sz = sizeof(opts_data) - 1;		    \n\
-+			opts.data = (void *)opts_data;			    \n\
-+			opts.insns_sz = sizeof(opts_insn) - 1;		    \n\
-+			opts.insns = (void *)opts_insn;			    \n\
-+									    \n\
- 			err = bpf_load_and_run(&opts);			    \n\
- 			if (err < 0)					    \n\
- 				return err;				    \n\
--		", obj_name);
-+		");
- 	bpf_object__for_each_map(map, obj) {
- 		const char *mmap_flags;
- 
--- 
-2.42.0.582.g8ccd20d70d-goog
-
+Applied (with some minor tweaks) as 6.7 material, thanks!
