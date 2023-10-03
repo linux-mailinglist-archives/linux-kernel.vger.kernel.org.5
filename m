@@ -2,411 +2,351 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 466DF7B6E33
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:17:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69ED87B6E3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240376AbjJCQRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:17:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40866 "EHLO
+        id S240332AbjJCQSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240345AbjJCQRx (ORCPT
+        with ESMTP id S230486AbjJCQSx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:17:53 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A984AF;
-        Tue,  3 Oct 2023 09:17:46 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4S0NGw0PMnz6K5tf;
-        Wed,  4 Oct 2023 00:16:08 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 3 Oct
- 2023 17:17:43 +0100
-Date:   Tue, 3 Oct 2023 17:17:42 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Konstantin Aladyshev <aladyshev22@gmail.com>
-CC:     <minyard@acm.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <avifishman70@gmail.com>, <tmaimon77@gmail.com>,
-        <tali.perry1@gmail.com>, <venture@google.com>, <yuenn@google.com>,
-        <benjaminfair@google.com>, <jk@codeconstruct.com.au>,
-        <matt@codeconstruct.com.au>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <openipmi-developer@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
-        <netdev@vger.kernel.org>
-Subject: Re: [PATCH 3/3] mctp: Add MCTP-over-KCS transport binding
-Message-ID: <20231003171742.00004a14@Huawei.com>
-In-Reply-To: <CACSj6VUS+cjsvjzY=wggMXXO1DEH0=9aHi1ADp0F-O8AKL5cCg@mail.gmail.com>
-References: <20230928123009.2913-1-aladyshev22@gmail.com>
-        <20230928123009.2913-4-aladyshev22@gmail.com>
-        <20230929120835.0000108e@Huawei.com>
-        <CACSj6VUS+cjsvjzY=wggMXXO1DEH0=9aHi1ADp0F-O8AKL5cCg@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Tue, 3 Oct 2023 12:18:53 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B302FA7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:18:47 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-99357737980so202643866b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 09:18:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696349926; x=1696954726; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=e3IAZVAhNGDrAQRqda8leHtR3ZOavaUNDvRo/y1rlfI=;
+        b=HgaldzDPHACNBX4cK95/a1cDTgFDAXdYGcviV2cSKoo2tkETOysqBTyX7GeCoGGWNc
+         KgFXZRo0ZJESs3BY84zNbF+KCrDL+DAwFtgofzeeFsN4IqsN4NRA5LWrNSAe6tPU41CO
+         qddeU6PRLcPbcZG634uGuuHQr4K7iZgpqRjRo2NYPdo1B1k9pDitseiPhhlI7B+lcaoS
+         PZju5fXTW1cvmzDkW6qBsNsTZp5B3UlBP+6mhIWMKJ0Otr97N04oDgyWDJn+zvc+7Ssc
+         qoXl2YYXJy1psMppj+3RkPnhKSZqw66Gla1f2Y1P8+yul6crF+41Sx/AapIyflHSmbzU
+         gvXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696349926; x=1696954726;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e3IAZVAhNGDrAQRqda8leHtR3ZOavaUNDvRo/y1rlfI=;
+        b=h+GgKggz/O1r8/nuL8/zK7D+UVVYSedpbhRqAoFPwJliOqE+U/C9O6iJZ/KMSsOFvo
+         Dz+H0dQT3V+5JA0PPQxMJGIiyHdqWE5pFijWtSqeWnvbY4oEySelELSINd9mbGqUejZm
+         slE/62O3wsX594GbPGVVfLkH2E652kddOtSk9uC7hX/H0iUoUFqr2ZiyyIaV27fSb5QF
+         OaJy3l/qqHLQaMUwLgyb0lEFOwFh2kf8AWX1WLd2s71CZq82nMDYJ3g0jrOhWKNEg/r1
+         9ztdUz56bU8IoSm8LHYZihTtdpJJZDfVXBpx6g/xKwGw19DBFl4mgwktG0s4lrbdghn9
+         UWwA==
+X-Gm-Message-State: AOJu0Yzu8qW0LB5540j6AjIe09xcEbzyCdCYEX/t87md1DAhFl+q74B5
+        IDIp9i6P9eHBNfby3XkzJw==
+X-Google-Smtp-Source: AGHT+IHD6UeDLdPGJK/UZ8BRn7OiJD55r8cal1FzgkTH/Sj6Rv62/z6XnBEHlSG4cr1YWUvL5y9FlQ==
+X-Received: by 2002:a17:907:8b8c:b0:9a1:b950:abab with SMTP id tb12-20020a1709078b8c00b009a1b950ababmr16873365ejc.32.1696349925770;
+        Tue, 03 Oct 2023 09:18:45 -0700 (PDT)
+Received: from p183 ([46.53.254.179])
+        by smtp.gmail.com with ESMTPSA id l21-20020a170906231500b009930c80b87csm1315312eja.142.2023.10.03.09.18.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 09:18:45 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 19:18:43 +0300
+From:   Alexey Dobriyan <adobriyan@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        x86@kernel.org
+Subject: [PATCH v2] x86: test that userspace stack is in fact NX
+Message-ID: <4cef8266-ad6d-48af-a5f1-fc2b6a8eb422@p183>
+References: <4b78a714-5ac3-4783-8256-1dda4673db01@p183>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <4b78a714-5ac3-4783-8256-1dda4673db01@p183>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Oct 2023 17:41:42 +0300
-Konstantin Aladyshev <aladyshev22@gmail.com> wrote:
+Here is how it works:
 
-> Thanks for the review!
-> I've corrected many things from your comments and have sent the V2 patch.
-> I'm not sure about the LIST thing and all the devres management. I've
-> written the KCS handling the same way it is done in the standard IPMI
-> KCS driver (https://github.com/torvalds/linux/blob/master/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c)
-> Not sure if we need to do any different here.
-> Please see detailed response below:
-> 
-> > > +#include <linux/module.h>
-> > > +#include <linux/mutex.h>  
-> > Check these.  There aren't any mutex's in here that I noticed...
-> >  
-> 
-> Currently there are no mutex's in the driver. Where do you think they
-> are needed?
-> For example there no mutex's in the 'mctp-serial.c' driver
-> (https://github.com/torvalds/linux/blob/master/drivers/net/mctp/mctp-serial.c)
+* fault and fill the stack from rsp with int3 down until rlimit allows,
+* fill upwards with int3 too, overwrite libc stuff, argv, envp,
+* try to exec int3 on each page and catch it in either SIGSEGV or
+  SIGTRAP handler.
 
-I don't think you need a mutex.  Hence don't include the header either! :)
-> 
-> > > +#include <linux/netdevice.h>
+Note: trying to execute _every_ int3 on a 8 MiB stack takes 30-40 seconds
+even on fast machine which is too much for kernel selftesting
+(not for LTP!) so only 1 int3 per page is tried.
 
-...
+Tested on F37 kernel and on a custom kernel which does
 
-> > > +
-> > > +static DEFINE_SPINLOCK(kcs_bmc_mctp_instances_lock);
-> > > +static LIST_HEAD(kcs_bmc_mctp_instances);  
-> > As mentioned below, this seems to be only used to find some data again
-> > in remove. Lots of cleaner ways to do that than a list in the driver.
-> > I'd explore the alternatives.
-> >  
-> 
-> This was copied from the other KCS drivers. For example please see
-> 'kcs_bmc_cdev_ipmi.c':
-> https://github.com/torvalds/linux/blob/8a749fd1a8720d4619c91c8b6e7528c0a355c0aa/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c#L469
+	vm_flags |= VM_EXEC;
 
-Sure, I spotted it was copied but doesn't mean I like that code either :)
+to stack VMA.
 
+Report from the buggy kernel:
 
-> 
-> > > +
-> > > +static int kcs_bmc_mctp_add_device(struct kcs_bmc_device *kcs_bmc)
-> > > +{
-> > > +     struct mctp_kcs *mkcs;
-> > > +     struct net_device *ndev;
-> > > +     char name[32];
-> > > +     int rc;
-> > > +
-> > > +     snprintf(name, sizeof(name), "mctpkcs%d", kcs_bmc->channel);
-> > > +
-> > > +     ndev = alloc_netdev(sizeof(*mkcs), name, NET_NAME_ENUM, mctp_kcs_setup);  
-> > Interesting that there is an explicit devm_register_netdev() but not one for
-> > this simple allocation case (there is one for the ethernet specific version).
-> > Never mind, we have devm_add_action_or_reset() for that.  Just create a
-> > small wrapper for free_netdev() (which will look like devm_free_netdev()
-> > in net/devres.c but that's local to that file) and add
-> >
-> >         rc = devm_add_action_or_reset(&kcs_bmc->dev,
-> >                                       wrapper_for_free_netdev(), ndev);
-> >         if (rc)
-> >                 return rc;
-> >  
-> 
-> 
-> Did you mean something like this?
-> ```
-> static void devm_free_netdev(struct device *dev, void *this)
-> {
-> struct net_device_devres *res = this;
-> 
-> free_netdev(res->ndev);
-> }
+	$ ./nx_stack_32
+	stack min ff007000
+	stack max ff807000
+	FAIL    executable page on the stack: eip ff806001
 
-No. That would be unwind for a devm_alloc_netdev() which doesn't
-exist for the case where you want to override the manual version.
+	$ ./nx_stack_64
+	stack min 7ffe65bb0000
+	stack max 7ffe663b0000
+	FAIL    executable page on the stack: rip 7ffe663af001
 
-Here would be
-static void kcs_bmc_mctp_free_netdev(void *priv)
-{
-	free_netdev(priv);
-}
+Changes since v1:
 
+	i386 support
+	nice pretty printing of test result
+	cld in the SIGSEGV handler for robustness
+	SIGSTKSZ is recommended not MINSIGSTKSZ
+	better comments
 
-> 
-> 
-> ...
-> 
-> static int kcs_bmc_mctp_add_device(struct kcs_bmc_device *kcs_bmc)
-> {
-> 
-> // Instead of:
-> //ndev = alloc_netdev
-> //rc = register_netdev(ndev);
-> 
-> // Use
-> ...
-> if (!devm_register_netdev(kcs_bmc->dev, ndev)) {
-> dev_err_probe(kcs_bmc->dev,
->         "alloc_netdev failed for KCS channel %d\n",
->         kcs_bmc->channel);
-> return -ENOMEM;
-> }
-> 
-> rc = devm_add_action_or_reset(&kcs_bmc->dev,
->                               devm_free_netdev(),
->                               ndev);
-> if (rc)
-> return rc;
-> ...
-> }
-> ```
-> What calls do I need to perform in `kcs_bmc_mctp_remove_device` in this case?
-> Do I still have to perform `unregister_netdev` and `free_netdev` for example?
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
 
-Ideally none at all once everthing has moved over to device managed (devm) based
-handling.  The purpose of devm is to automatically call all the release functions
-in reverse order of the setup calls (gets more complex but in this case it will
-simply be reverse order).  That will occur on an error in probe() or after
-remove() callback is called. Happens without the remove() callback as well which
-is what we want here.
-> 
-> Anyway I don't see anything similar in the current mctp-i2c/mctp-serial drivers.
+ tools/testing/selftests/x86/Makefile   |    4 
+ tools/testing/selftests/x86/nx_stack.c |  212 +++++++++++++++++++++++++++++++++
+ 2 files changed, 216 insertions(+)
 
-True - lots of examples elsewhere though :)
-
-> 
-> 
-> > > +     if (!ndev) {
-> > > +             dev_err(kcs_bmc->dev,
-> > > +                     "alloc_netdev failed for KCS channel %d\n",
-> > > +                     kcs_bmc->channel);  
-> > No idea if the kcs subsystem handles deferred probing right, but in general
-> > anything called just in 'probe' routines can use dev_err_probe() to pretty
-> > print errors and also register any deferred cases with the logging stuff that
-> > lets you find out why they were deferred.
-> >  
-> 
-> Done
-> 
-> > > +             rc = -ENOMEM;
-> > > +             goto err;  
-> > In general I find it easier to follow code that only uses a goto if there
-> > is shared cleanup to do.
-> >                 return -ENOMEM; and for this path I don't need to read further.  
-> 
-> Done
-> 
-> > > +     }
-> > > +
-> > > +     mkcs = netdev_priv(ndev);
-> > > +     mkcs->netdev = ndev;
-> > > +     mkcs->client.dev = kcs_bmc;
-> > > +     mkcs->client.ops = &kcs_bmc_mctp_client_ops;
-> > > +     mkcs->data_in = devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
-> > > +     mkcs->data_out = devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUFSIZ, GFP_KERNEL);  
-> >
-> > You should not be mixing device manged cleanup and manual cleanup.  Rule of thumb
-> > is don't call any devm_ functions in a 'probe / add' type routine after you pass
-> > the first element that requires manual cleanup. Otherwise you get horrible
-> > race conditions or if not that, just code that is hard to check for them.
-> >  
-> 
-> Not sure how to fix
-
-Some simple rules of thumb.
-
-1. The first call in probe() that you make that does not have automated cleanup
-   (so non devm_ * or you haven't manually added a cleanup callback via
-    devm_add_action_or_reset()) ends devm usage in probe.
-2. In remove() and in error paths in probe() don't do anything at all to cleanup
-   stuff that was registered with devm_ calls as they will be automatically
-   cleaned up for you.
-
-In a simple driver it's often possible to move everything over to devm_ 
-calls so there is no manual cleanup to do at all. If that's the case
-don't provide a remove() callback.  However the subsystem may insist
-on one in which case either fix that (they should be optional) or
-provide an empty one.
-
-
-
-> > > +
-> > > +static int kcs_bmc_mctp_remove_device(struct kcs_bmc_device *kcs_bmc)
-> > > +{
-> > > +     struct mctp_kcs *mkcs = NULL, *pos;
-> > > +
-> > > +     dev_info(kcs_bmc->dev, "Remove MCTP client for the KCS channel %d",
-> > > +              kcs_bmc->channel);
-> > > +     spin_lock_irq(&kcs_bmc_mctp_instances_lock);
-> > > +     list_for_each_entry(pos, &kcs_bmc_mctp_instances, entry) {
-> > > +             if (pos->client.dev == kcs_bmc) {
-> > > +                     mkcs = pos;
-> > > +                     list_del(&pos->entry);
-> > > +                     break;  
-> > I don't know the kcs stuff at all but these seems 'unusual'.
-> > Can't you stash  device_set_drvdata(kcs_bmc->dev) or does it
-> > just match the structure containing the client pointed to
-> > by kcs_bmc_device? If so use something like
-> > container_of(kcs_bmc->client, struct mctp_kcs, client);
-> > Ah. You already have a function for that.  Why not use that here?
-> >
-> > There isn't normally a reason for a driver to maintain an
-> > additional list like this.
-> >  
-> 
-> Once again this logic was copied from the KCS IPMI driver:
-> https://github.com/torvalds/linux/blob/8a749fd1a8720d4619c91c8b6e7528c0a355c0aa/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c#L520
-
-Understood - should be able to do better than that though ;)
-
-> 
-> > > +             }
-> > > +     }
-> > > +     spin_unlock_irq(&kcs_bmc_mctp_instances_lock);
-> > > +
-> > > +     if (!mkcs)
-> > > +             return -ENODEV;
-> > > +
-> > > +     unregister_netdev(mkcs->netdev);
-> > > +     free_netdev(mkcs->netdev);  
-> >
-> > This stuff should be opposite order of add above, or leave it to devm to clean up.  
-> 
-> Which things are exact things that are currently in the incorrect order?
-
-Allocations occur in probe just before register_netdev, so they should be
-before free_netdev() for example.
-
-> 
-> >  
-> > > +     kcs_bmc_disable_device(mkcs->client.dev, &mkcs->client);  
-> >
-> > This doesn't match with stuff in add - so I'd like a comment to explain
-> > why it is here.  Also needs a comment on the ordering.  Perhaps this
-> > is why you can't use devm for all the above, in which case I'd use it
-> > nowhere in this driver.
-> > I'm also confused on relationship between mks->client.dev and kcs_bmc
-> > (I'm fairly sure they are the same, so just use kcs_bmc here).
-> >  
-> 
-> I've changed the variable. Not sure about `kcs_bmc_disable_device`.
-> I've added it since it is also present in the IPMI KCS driver.
-> https://github.com/torvalds/linux/blob/8a749fd1a8720d4619c91c8b6e7528c0a355c0aa/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c#L533
-
-Understood. Would need some experimenting to figure
-out a path where it does something rather than it already
-being disabled.
-
-> 
-> >  
-> > > +     devm_kfree(kcs_bmc->dev, mkcs->data_in);
-> > > +     devm_kfree(kcs_bmc->dev, mkcs->data_out);  
-> >
-> > Alarm bells occur whenever an explicit devm_kfree turns up in
-> > except in complex corner cases. Please look at how devm based
-> > resource management works. These should not be here.
-> >
-> > Also, remove_device should either do things in the opposite order
-> > to add_device, or it should have comments saying why not!
-> >
-> >  
-> 
-> https://github.com/torvalds/linux/blob/8a749fd1a8720d4619c91c8b6e7528c0a355c0aa/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c#L534C2-L534C2
-
-Yeah. That's bad :(  Seems devm being relied on for error paths, but not
-remove() 
-
-
-> 
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static const struct kcs_bmc_driver_ops kcs_bmc_mctp_driver_ops = {
-> > > +     .add_device = kcs_bmc_mctp_add_device,
-> > > +     .remove_device = kcs_bmc_mctp_remove_device,
-> > > +};
-> > > +
-> > > +static struct kcs_bmc_driver kcs_bmc_mctp_driver = {
-> > > +     .ops = &kcs_bmc_mctp_driver_ops,
-> > > +};
-> > > +
-> > > +static int __init mctp_kcs_init(void)
-> > > +{
-> > > +     kcs_bmc_register_driver(&kcs_bmc_mctp_driver);
-> > > +     return 0;
-> > > +}
-> > > +
-> > > +static void __exit mctp_kcs_exit(void)
-> > > +{
-> > > +     kcs_bmc_unregister_driver(&kcs_bmc_mctp_driver);
-> > > +}  
-> >
-> > Hmm. So kcs is a very small subsystem hence no one has done the usual
-> > module_kcs_driver() wrapper (see something like module_i2c_driver)
-> > for an example.  You can just use the underlying macro directly
-> > though to get rid of most of this boilerplate.
-> >
-> >
-> > module_driver(kcs_bmc_mctp_driver, kcs_bmc_register_driver,
-> >               kcs_bmc_uregister_driver);
-> >  
-> 
-> Not possible. If I understand error message correctly it is from the
-> fact that 'kcs_bmc_register_driver' returns void:
-
-That's annoying..  Could fix it by making it return an int so it
-could report the failure it handles to the caller module instead
-of always returning success...  That smells like a bug to me though
-I haven't checked if the module_init() return value gets used
-for anything much.
-
-
-> ```
-> | drivers/net/mctp/mctp-kcs.c: In function 'kcs_bmc_mctp_driver_init':
-> | drivers/net/mctp/mctp-kcs.c:576:36: error: void value not ignored as
-> it ought to be
-> |   576 | module_driver(kcs_bmc_mctp_driver, kcs_bmc_register_driver,
-> kcs_bmc_unregister_driver);
-> | include/linux/device/driver.h:265:16: note: in definition of macro
-> 'module_driver'
-> |   265 |         return __register(&(__driver) , ##__VA_ARGS__); \
-> |       |                ^~~~~~~~~~
-> | include/linux/device/driver.h:266:1: error: control reaches end of
-> non-void function [-Werror=return-type]
-> |   266 | } \
-> |       | ^
-> | drivers/net/mctp/mctp-kcs.c:576:1: note: in expansion of macro 'module_driver'
-> |   576 | module_driver(kcs_bmc_mctp_driver, kcs_bmc_register_driver,
-> kcs_bmc_unregister_driver);
-> |       | ^~~~~~~~~~~~~
-> | cc1: some warnings being treated as errors
-> ```
-> 
-> > > +
-> > > +module_init(mctp_kcs_init);
-> > > +module_exit(mctp_kcs_exit);
-> > > +
-> > > +MODULE_LICENSE("GPL");
-> > > +MODULE_AUTHOR("Konstantin Aladyshev <aladyshev22@gmail.com>");
-> > > +MODULE_DESCRIPTION("MCTP KCS transport");  
-> >  
-> 
-> Best regards,
-> Konstantin Aladyshev
-> 
-
+--- a/tools/testing/selftests/x86/Makefile
++++ b/tools/testing/selftests/x86/Makefile
+@@ -14,6 +14,7 @@ TARGETS_C_BOTHBITS := single_step_syscall sysret_ss_attrs syscall_nt test_mremap
+ 			check_initial_reg_state sigreturn iopl ioperm \
+ 			test_vsyscall mov_ss_trap \
+ 			syscall_arg_fault fsgsbase_restore sigaltstack
++TARGETS_C_BOTHBITS += nx_stack
+ TARGETS_C_32BIT_ONLY := entry_from_vm86 test_syscall_vdso unwind_vdso \
+ 			test_FCMOV test_FCOMI test_FISTTP \
+ 			vdso_restorer
+@@ -109,3 +110,6 @@ $(OUTPUT)/test_syscall_vdso_32: thunks_32.S
+ # state.
+ $(OUTPUT)/check_initial_reg_state_32: CFLAGS += -Wl,-ereal_start -static
+ $(OUTPUT)/check_initial_reg_state_64: CFLAGS += -Wl,-ereal_start -static
++
++$(OUTPUT)/nx_stack_32: CFLAGS += -Wl,-z,noexecstack
++$(OUTPUT)/nx_stack_64: CFLAGS += -Wl,-z,noexecstack
+new file mode 100644
+--- /dev/null
++++ b/tools/testing/selftests/x86/nx_stack.c
+@@ -0,0 +1,212 @@
++/*
++ * Copyright (c) 2023 Alexey Dobriyan <adobriyan@gmail.com>
++ *
++ * Permission to use, copy, modify, and distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++/*
++ * Test that userspace stack is NX. Requires linking with -Wl,-z,noexecstack
++ * because I don't want to bother with PT_GNU_STACK detection.
++ *
++ * Fill the stack with int3's and then try to execute some of them:
++ * SIGSEGV -- good, SIGTRAP -- bad.
++ *
++ * Regular stack is completely overwritten before testing.
++ * Test doesn't exit SIGSEGV handler after first fault at int3.
++ */
++#undef _GNU_SOURCE
++#define _GNU_SOURCE
++#undef NDEBUG
++#include <assert.h>
++#include <signal.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/mman.h>
++#include <sys/resource.h>
++#include <unistd.h>
++
++#define PAGE_SIZE 4096
++
++/*
++ * This is memset(rsp, 0xcc, -1); but down.
++ * It will SIGSEGV when bottom of the stack is reached.
++ * Byte-size access is important! (see rdi tweak in the signal handler).
++ */
++void make_stack1(void);
++asm(
++".pushsection .text\n"
++".globl make_stack1\n"
++".align 16\n"
++"make_stack1:\n"
++	"mov $0xcc, %al\n"
++#if defined __amd64__
++	"mov %rsp, %rdi\n"
++	"mov $-1, %rcx\n"
++#elif defined __i386__
++	"mov %esp, %edi\n"
++	"mov $-1, %ecx\n"
++#else
++#error
++#endif
++	"std\n"
++	"rep stosb\n"
++	/* unreachable */
++	"hlt\n"
++".type make_stack1,@function\n"
++".size make_stack1,.-make_stack1\n"
++".popsection\n"
++);
++
++/*
++ * memset(p, 0xcc, -1);
++ * It will SIGSEGV when top of the stack is reached.
++ */
++void make_stack2(uint64_t p);
++asm(
++".pushsection .text\n"
++".globl make_stack2\n"
++".align 16\n"
++"make_stack2:\n"
++	"mov $0xcc, %al\n"
++#if defined __amd64__
++	"mov $-1, %rcx\n"
++#elif defined __i386__
++	"mov $-1, %ecx\n"
++#else
++#error
++#endif
++	"cld\n"
++	"rep stosb\n"
++	/* unreachable */
++	"hlt\n"
++".type make_stack2,@function\n"
++".size make_stack2,.-make_stack2\n"
++".popsection\n"
++);
++
++static volatile int test_state = 0;
++static volatile unsigned long stack_min_addr;
++
++#if defined __amd64__
++#define RDI	REG_RDI
++#define RIP	REG_RIP
++#define RIP_STRING "rip"
++#elif defined __i386__
++#define RDI	REG_EDI
++#define RIP	REG_EIP
++#define RIP_STRING "eip"
++#else
++#error
++#endif
++
++static void sigsegv(int _, siginfo_t *__, void *uc_)
++{
++	/*
++	 * Some Linux versions didn't clear DF before entering signal
++	 * handler. make_stack1() doesn't have a chance to clear DF
++	 * either so we clear it by hand here.
++	 */
++	asm volatile ("cld" ::: "memory");
++
++	ucontext_t *uc = uc_;
++
++	if (test_state == 0) {
++		/* Stack is faulted and cleared from rsp to the lowest address. */
++		stack_min_addr = ++uc->uc_mcontext.gregs[RDI];
++		if (1) {
++			printf("stack min %lx\n", stack_min_addr);
++		}
++		uc->uc_mcontext.gregs[RIP] = (uintptr_t)&make_stack2;
++		test_state = 1;
++	} else if (test_state == 1) {
++		/* Stack has been cleared from top to bottom. */
++		unsigned long stack_max_addr = uc->uc_mcontext.gregs[RDI];
++		if (1) {
++			printf("stack max %lx\n", stack_max_addr);
++		}
++		/* Start faulting pages on stack and see what happens. */
++		uc->uc_mcontext.gregs[RIP] = stack_max_addr - PAGE_SIZE;
++		test_state = 2;
++	} else if (test_state == 2) {
++		/* Stack page is NX -- good, test next page. */
++		uc->uc_mcontext.gregs[RIP] -= PAGE_SIZE;
++		if (uc->uc_mcontext.gregs[RIP] == stack_min_addr) {
++			/* One more SIGSEGV and test ends. */
++			test_state = 3;
++		}
++	} else {
++		printf("PASS\tAll stack pages are NX\n");
++		_exit(EXIT_SUCCESS);
++	}
++}
++
++static void sigtrap(int _, siginfo_t *__, void *uc_)
++{
++	const ucontext_t *uc = uc_;
++	unsigned long rip = uc->uc_mcontext.gregs[RIP];
++	printf("FAIL\texecutable page on the stack: " RIP_STRING " %lx\n", rip);
++	_exit(EXIT_FAILURE);
++}
++
++int main(void)
++{
++	{
++		struct sigaction act = {};
++		sigemptyset(&act.sa_mask);
++		act.sa_flags = SA_SIGINFO;
++		act.sa_sigaction = &sigsegv;
++		int rv = sigaction(SIGSEGV, &act, NULL);
++		assert(rv == 0);
++	}
++	{
++		struct sigaction act = {};
++		sigemptyset(&act.sa_mask);
++		act.sa_flags = SA_SIGINFO;
++		act.sa_sigaction = &sigtrap;
++		int rv = sigaction(SIGTRAP, &act, NULL);
++		assert(rv == 0);
++	}
++	{
++		struct rlimit rlim;
++		int rv = getrlimit(RLIMIT_STACK, &rlim);
++		assert(rv == 0);
++		/* Cap stack at time-honored 8 MiB value. */
++		rlim.rlim_max = rlim.rlim_cur;
++		if (rlim.rlim_max > 8 * 1024 * 1024) {
++			rlim.rlim_max = 8 * 1024 * 1024;
++		}
++		rv = setrlimit(RLIMIT_STACK, &rlim);
++		assert(rv == 0);
++	}
++	{
++		/*
++		 * We don't know now much stack SIGSEGV handler uses.
++		 * Bump this by 1 page every time someone complains,
++		 * or rewrite it in assembly.
++		 */
++		const size_t len = SIGSTKSZ;
++		void *p = mmap(NULL, len, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
++		assert(p != MAP_FAILED);
++		stack_t ss = {};
++		ss.ss_sp = p;
++		ss.ss_size = len;
++		int rv = sigaltstack(&ss, NULL);
++		assert(rv == 0);
++	}
++	make_stack1();
++	/*
++	 * Unreachable, but if _this_ int3 is ever reached, it's a bug somewhere.
++	 * Fold it into main SIGTRAP pathway.
++	 */
++	__builtin_trap();
++}
