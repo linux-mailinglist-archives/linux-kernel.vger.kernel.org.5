@@ -2,102 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F887B6018
+	by mail.lfdr.de (Postfix) with ESMTP id F12707B6019
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 06:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239105AbjJCEsa convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 00:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47956 "EHLO
+        id S239113AbjJCEtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 00:49:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbjJCEs3 (ORCPT
+        with ESMTP id S229704AbjJCEtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 00:48:29 -0400
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DAFDA4;
-        Mon,  2 Oct 2023 21:48:26 -0700 (PDT)
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-27752a1e184so357257a91.3;
-        Mon, 02 Oct 2023 21:48:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696308505; x=1696913305;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uHjgW31Cb5JX+I43pXyDF3Bh+g0Rd3vo+Stu0+l1IzE=;
-        b=vyDby3qmsaQugR9NXzsvtOo8haQgnyz0tjdKGeuugANVoGnvz6G2crObx8WnrkclHN
-         bvR1CdMZ+7Tpk72ryr6mNyIxkxQFubvgCQAJgbhJ7/5u1zi26mJr9apOa9QY0pXYuPP0
-         Ow/37Z01TQwBga455GGUnwAXRf5xu9JNptSB5z+MWAvLOk1qrcS35m8WB05nED/af/Dj
-         oTJE1J+1h5r2QdrYir8c0/kLeSmABn1vzZFjs6KVK1Vkz5mu14heJdP1ULOiviYNwDNc
-         GHQPTBys02UjkCvlE2+oCsCV4eM3tIGQ+m0OdRtA1FO+HxENBF/hbNcjfVifBuK0cIuD
-         1dkA==
-X-Gm-Message-State: AOJu0Yx1Rrz9BqoxRQkHfIQyAj/ACRYEv3EUDaSczu3nZ0pDxb8cKj0q
-        QGJ/xhu3nxJW24ix/gJQ9yS/EXUZRUTRt6dxKnM=
-X-Google-Smtp-Source: AGHT+IEV4t6wvfg22C/Cso+AWQw5qEu1JJCBuW+otkjfmIJCi4YdUqo3IdZaxvCHUAEuE7sA1po+pHhgXxotpSYaSOA=
-X-Received: by 2002:a17:90a:68ce:b0:25e:a8ab:9157 with SMTP id
- q14-20020a17090a68ce00b0025ea8ab9157mr11756381pjj.22.1696308505450; Mon, 02
- Oct 2023 21:48:25 -0700 (PDT)
+        Tue, 3 Oct 2023 00:49:52 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A35D8A4;
+        Mon,  2 Oct 2023 21:49:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696308590; x=1727844590;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=E8tc/R+/OkMXWfpnzaO1qr4nhCDXJTuo1ZnSC3tCpro=;
+  b=Ezi3S/s4DtRPOb8WwUB7nfik2+FzpNcNIC97X4fV9DA6e3D3+wBG85g7
+   zHyWIbA9c7Vbo9dd+XzpXYIPaNbQyjQFiEy+L9ZS5NJe+UYgQkUbsFeSY
+   jg5zuXC+b0EZPthCgX4a0lxZRMEBfjPdDtH40fAYkI0lYEYPURwPEhIu7
+   2sJDb+Miv35FZaXJwDmHX/0DUCJxZCRoHPKHTDCy7xXE+hZuiRL5W0Te6
+   w1a7Tn/1GQpeAgAJSMrpFwCCFzXRnKfnbThfbueS0WUrghpbnEcMdWMYo
+   p06HldxEsAecBcYOX1p7DEn2DVl+ZXHgQOX3/XLnOFXaOiWdJpVKMErHa
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="1379595"
+X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
+   d="scan'208";a="1379595"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 21:49:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="997857606"
+X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
+   d="scan'208";a="997857606"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 02 Oct 2023 21:49:46 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>
+Subject: Re: [PATCH v5 06/18] x86/sgx: Introduce EPC page states
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-7-haitao.huang@linux.intel.com>
+ <b1d7199262b9da496a04a36447541e9166f35f19.camel@intel.com>
+Date:   Mon, 02 Oct 2023 23:49:42 -0500
 MIME-Version: 1.0
-References: <20230930072719.1267784-1-visitorckw@gmail.com>
-In-Reply-To: <20230930072719.1267784-1-visitorckw@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 2 Oct 2023 21:48:14 -0700
-Message-ID: <CAM9d7ciJZsCaVo6m_VtJ=QKNGAtBkAncidQjHzwexd3H8+3Usw@mail.gmail.com>
-Subject: Re: [PATCH] perf hisi-ptt: Fix memory leak in lseek failure handling
-To:     Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc:     yangyicong@hisilicon.com, jonathan.cameron@huawei.com,
-        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2b72c4brwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <b1d7199262b9da496a04a36447541e9166f35f19.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, 27 Sep 2023 05:28:36 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-On Sat, Sep 30, 2023 at 12:27 AM Kuan-Wei Chiu <visitorckw@gmail.com> wrote:
+> On Fri, 2023-09-22 at 20:06 -0700, Haitao Huang wrote:
+>> Use the lower 3 bits in the flags field of sgx_epc_page struct to
+>> track EPC states in its life cycle and define an enum for possible
+>> states. More state(s) will be added later.
 >
-> In the previous code, there was a memory leak issue where the previously
-> allocated memory was not freed upon a failed lseek operation. This patch
-> addresses the problem by releasing the old memory before returning -errno
-> in case of a lseek failure. This ensures that memory is properly managed
-> and avoids potential memory leaks.
+> This patch does more than what the changelog claims to do.  AFAICT it  
+> does
+> below:
 >
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+>  1) Use the lower 3 bits to track EPC page status
+>  2) Rename SGX_EPC_PAGE_RECLAIMER_TRACKED to SGX_EPC_PAGE_RERCLAIMABLE
+>  3) Introduce a new state SGX_EPC_PAGE_UNRECLAIMABLE
+>  4) Track SECS and VA pages as SGX_EPC_PAGE_UNRECLAIMABLE
+>
+> The changelog only says 1) IIUC.
+>
+I don't quite get why you would view 3) as a separate item from 1).
+In my view, 4) is not done as long as there is not separate list to track  
+it.
+Maybe I should make it clear the "states" vs "tracking". States are just  
+bits in the flags, "tracking" is done using the lists by ksgxd/cgroup. And  
+this patch is really about "states"
+Would that clarify the intention of the patch?
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-
-Thanks,
-Namhyung
-
-
-> ---
->  tools/perf/util/hisi-ptt.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> If we really want to do all these in one patch, then the changelog  
+> should at
+> least mention the justification of all of them.
 >
-> diff --git a/tools/perf/util/hisi-ptt.c b/tools/perf/util/hisi-ptt.c
-> index 45b614bb73bf..43bd1ca62d58 100644
-> --- a/tools/perf/util/hisi-ptt.c
-> +++ b/tools/perf/util/hisi-ptt.c
-> @@ -108,8 +108,10 @@ static int hisi_ptt_process_auxtrace_event(struct perf_session *session,
->                 data_offset = 0;
->         } else {
->                 data_offset = lseek(fd, 0, SEEK_CUR);
-> -               if (data_offset == -1)
-> +               if (data_offset == -1) {
-> +                       free(data);
->                         return -errno;
-> +               }
->         }
+> But I don't see why 3) and 4) need to be done here.  Instead, IMHO they  
+> should
+> be done in a separate patch, and do it after the unreclaimable list is
+> introduced (or you need to bring that patch forward).
 >
->         err = readn(fd, data, size);
-> --
-> 2.25.1
 >
+> For instance, ...
+>
+> [snip]
+>
+>> +
+>> +	/* Page is in use but tracked in an unreclaimable LRU list. These are
+>> +	 * only reclaimable when the whole enclave is OOM killed or the  
+>> enclave
+>> +	 * is released, e.g., VA, SECS pages
+>> +	 * Becomes NOT_TRACKED after sgx_drop_epc()
+>> +	 */
+>> +	SGX_EPC_PAGE_UNRECLAIMABLE = 3,
+>
+> ... We even don't have the unreclaimable LRU list yet.  It's odd to have  
+> this
+> comment here.
+>
+
+Yeah, I should take out the mentioning of the LRUs from definitions of the  
+states.
+
+Thanks
+Haitao
