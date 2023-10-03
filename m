@@ -2,193 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8D57B6C18
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A773C7B6C1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240135AbjJCOuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56396 "EHLO
+        id S240169AbjJCOvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239511AbjJCOut (ORCPT
+        with ESMTP id S240171AbjJCOv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 10:50:49 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04981A7;
-        Tue,  3 Oct 2023 07:50:46 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 393CVwju002045;
-        Tue, 3 Oct 2023 14:50:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=qcppdkim1;
- bh=fQyq13eSj4y6UdArCi6DtNxpAUAz2ZeWNxOn/5XVvGo=;
- b=PZiBdyAphtTqQHUU9tQcs+BjyhS+OUZ/LrN5lB0T2OsSPCLdoOPxBMtC1ua+pc6lrzuI
- PemSin+tG/0JT/YZQSCVm62NUnBPe+iF432vwdDmPzWYPsrW47zAsVUiFmKOwbNaWiq+
- WAjD4Jb/rDfc+laK4PwOY8AM1c0/Bu0QvHCEB4wi7sNjUTrKjEkR2R44p39nc6oD7owX
- zI9TSfSCY0+X9ArQWc43eDF458WnMfb+xVzBUvJcRgVxxGWoEZdPdiGQW82VyfvmQkuh
- XRC5eWWYeKnc0OYvNcYuK69ymN1M/N7lj8/ab293umL36U6QllEDsNzm5NKWx8cdbIUt kQ== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tgbjj98mj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Oct 2023 14:50:32 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 393EoWQQ031358
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 3 Oct 2023 14:50:32 GMT
-Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 3 Oct 2023 07:50:26 -0700
-Date:   Tue, 3 Oct 2023 20:20:23 +0530
-From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
-To:     Brian Geffon <bgeffon@google.com>
-CC:     Pavan Kondeti <quic_pkondeti@quicinc.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        <kernel@quicinc.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] PM: hibernate: Fix a bug in copying the zero bitmap to
- safe pages
-Message-ID: <4c9e1932-681f-4854-a04d-af9fbc35fc5e@quicinc.com>
-References: <20230929-hib_zero_bitmap_fix-v1-1-6cfdcb785250@quicinc.com>
- <CADyq12znHG_VPLVxSe+2ofX-WR1Uha2hu1MhoUAquMnoD_oP0w@mail.gmail.com>
- <CADyq12x1wZb0Yt3sXR21pQSagT7tGvFmXTBaoeNXkOjPi5-Rnw@mail.gmail.com>
- <e75a57a9-c9df-4dd5-a109-9ae8c49fb3ae@quicinc.com>
- <CADyq12wmda6B1pJvOVhM4=VLwun9n4ef232td70-uGz435SSvg@mail.gmail.com>
+        Tue, 3 Oct 2023 10:51:26 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC9EA1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:51:23 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-406589e5765so10043045e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 07:51:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696344682; x=1696949482; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=o/W8eJ+0Pcb//fcKPN1AN7H3u5QuqVTPS8j+U5FCs0E=;
+        b=xTgdsRPKiUj1fZecW5rG+L9OGQjI0oZMeV+jiKBC3Wz0ncQXoEJ6E3bFtOTWkawFxi
+         hdfSZTBcDqfbc/tmNsMN/eqnOZ+TlvjBAwB4GlZ3GnGQlHdsHiqip5V8QgQ8GRpTcaEB
+         QyLFO7e11Q0K3yQ2j3jaxcxGGOex4uHtbCme4d/67wrid4e1yaZgr3s7qY6k317a/MsT
+         IpptLibe76ZjD3jsnZmS8PGIJ0Mfwml2Dkz8+sunvYkp9Bwq8fMjlRX5wkyTb+f+oLbC
+         ijqpT00400SwtBrSrA5+Q9cGhEdxDjrE9zO0Zhh9enrRgBtL3B6mMAVFey6z/OVOTYpj
+         XZ3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696344682; x=1696949482;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o/W8eJ+0Pcb//fcKPN1AN7H3u5QuqVTPS8j+U5FCs0E=;
+        b=ShRaHfd7LopPcKNCu1vw2ig6N9yf7HZS7tfJQrg5LWQGgXTi4zKEU6nPntcVVNoFKS
+         6fcE1ECQfCWap7KGYRX+o/HgorPUp5ExoOjbHB6rSRiAHzEEEr6sk04C7xNjunzAkALT
+         l0I23W1A0xN0Bftzv0Ujtv4ovaaLbC9NXH0JZ7Z+4E1d3KOFkYwJfXq09SqGMGgYpBxy
+         YL8rIEHzDGih5whQHH8r7W35rJPmPmg8nPRO4Mo0sDEFVmKYJQq9EN/27tr/q89x8V8u
+         zkukg5I0HHIN0tPLw/4i/bpMt+E8WEyPv8dSTSKgFoRayUCK9iPLYrKi2qdYa8LmNg1+
+         WUzQ==
+X-Gm-Message-State: AOJu0YzsdfBn2ezdRdbwWltL1/d12iWdOOiT8g87bXnU7hqIlbKcAv75
+        1xYjr+isNL2Xoo9DGedEMHPG2w==
+X-Google-Smtp-Source: AGHT+IFy2Vv4LFP1Wf6d2Z1prL3WxLofH2xAoHM5lnZKRi17zCgvjazkNIxOqlAXivnRdYWkep5XCQ==
+X-Received: by 2002:a05:600c:28f:b0:402:bcac:5773 with SMTP id 15-20020a05600c028f00b00402bcac5773mr13873968wmk.38.1696344681738;
+        Tue, 03 Oct 2023 07:51:21 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:1f2d:3479:a5de:fa35])
+        by smtp.gmail.com with ESMTPSA id c15-20020a05600c0acf00b003fe29f6b61bsm1462773wmr.46.2023.10.03.07.51.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 07:51:21 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH 00/36] pinctrl: don't use GPIOLIB global numberspace in helpers
+Date:   Tue,  3 Oct 2023 16:50:38 +0200
+Message-Id: <20231003145114.21637-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADyq12wmda6B1pJvOVhM4=VLwun9n4ef232td70-uGz435SSvg@mail.gmail.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: SnhBvkjRGwMo1_QqvnQPyLQ0GXuG-O0W
-X-Proofpoint-ORIG-GUID: SnhBvkjRGwMo1_QqvnQPyLQ0GXuG-O0W
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-03_12,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- clxscore=1015 impostorscore=0 phishscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=475 adultscore=0 suspectscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310030110
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 10:36:25AM -0400, Brian Geffon wrote:
-> On Mon, Oct 2, 2023 at 11:05 PM Pavan Kondeti <quic_pkondeti@quicinc.com> wrote:
-> >
-> > On Mon, Oct 02, 2023 at 02:34:20PM -0400, Brian Geffon wrote:
-> > > On Mon, Oct 2, 2023 at 1:56 PM Brian Geffon <bgeffon@google.com> wrote:
-> > > >
-> > > > On Fri, Sep 29, 2023 at 1:31 PM Pavankumar Kondeti
-> > > > <quic_pkondeti@quicinc.com> wrote:
-> > > > >
-> > > > > The following crash is observed 100% of the time during resume from
-> > > > > the hibernation on a x86 QEMU system.
-> > > > >
-> > > > > [   12.931887]  ? __die_body+0x1a/0x60
-> > > > > [   12.932324]  ? page_fault_oops+0x156/0x420
-> > > > > [   12.932824]  ? search_exception_tables+0x37/0x50
-> > > > > [   12.933389]  ? fixup_exception+0x21/0x300
-> > > > > [   12.933889]  ? exc_page_fault+0x69/0x150
-> > > > > [   12.934371]  ? asm_exc_page_fault+0x26/0x30
-> > > > > [   12.934869]  ? get_buffer.constprop.0+0xac/0x100
-> > > > > [   12.935428]  snapshot_write_next+0x7c/0x9f0
-> > > > > [   12.935929]  ? submit_bio_noacct_nocheck+0x2c2/0x370
-> > > > > [   12.936530]  ? submit_bio_noacct+0x44/0x2c0
-> > > > > [   12.937035]  ? hib_submit_io+0xa5/0x110
-> > > > > [   12.937501]  load_image+0x83/0x1a0
-> > > > > [   12.937919]  swsusp_read+0x17f/0x1d0
-> > > > > [   12.938355]  ? create_basic_memory_bitmaps+0x1b7/0x240
-> > > > > [   12.938967]  load_image_and_restore+0x45/0xc0
-> > > > > [   12.939494]  software_resume+0x13c/0x180
-> > > > > [   12.939994]  resume_store+0xa3/0x1d0
-> > > > >
-> > > > > The commit being fixed introduced a bug in copying the zero bitmap
-> > > > > to safe pages. A temporary bitmap is allocated in prepare_image()
-> > > > > to make a copy of zero bitmap after the unsafe pages are marked.
-> > > > > Freeing this temporary bitmap later results in an inconsistent state
-> > > > > of unsafe pages. Since free bit is left as is for this temporary bitmap
-> > > > > after free, these pages are treated as unsafe pages when they are
-> > > > > allocated again. This results in incorrect calculation of the number
-> > > > > of pages pre-allocated for the image.
-> > > > >
-> > > > > nr_pages = (nr_zero_pages + nr_copy_pages) - nr_highmem - allocated_unsafe_pages;
-> > > > >
-> > > > > The allocate_unsafe_pages is estimated to be higher than the actual
-> > > > > which results in running short of pages in safe_pages_list. Hence the
-> > > > > crash is observed in get_buffer() due to NULL pointer access of
-> > > > > safe_pages_list.
-> > > >
-> > > > After reading through the code, perhaps I'm missing something, I'm not
-> > > > sure that this is really fixing the problem.
-> > > >
-> > > > It seems like the problem would be that memory_bm_create() results in
-> > > > calls to get_image_page() w/ safe_needed = PG_ANY == 0, meaning that
-> > > > get_image_page() will not touch allocated_unsafe_pages and instead
-> > > > will mark the page as in use by setting it in the forbidden_pages_map
-> > > > and the free_pages_map simultaneously. The problem is that the
-> > > > free_pages_map was already populated by the call to mark_unsafe_pages,
-> > > > meaning that if we allocated a safe page in get_image_page() we just
-> > > > set the free bit when it otherwise should not be set.
-> > > >
-> > > > When the page is later free'd via the call to memory_bm_free(&tmp,
-> > > > PG_UNSAFE_KEEP), it results in calls to free_image_page() w/
-> > > > clear_page_nosave = PG_UNSAFE_KEEP == 0. This means that we do not
-> > > > touch the free_pages_map because we don't call
-> > > > swsusp_unset_page_free().
-> > > >
-> > > > With all that being said it seems like the correct way to deal with
-> > > > that would be to do:
-> > > >    error = memory_bm_create(&tmp, GFP_ATOMIC, PG_SAFE);
-> > > > Here we know that the pages were not in the free_pages_map initially.
-> > > >
-> > > > Followed by freeing it as:
-> > > >     memory_bm_free(&tmp, PG_UNSAFE_CLEAR);
-> > > > And here we know that swsusp_unset_page_free() will be called making
-> > > > sure the page is not in the free_pages_map afterwards.
-> > > >
-> > > > And that should result in an unchanged free_pages_map. Does that make
-> > > > sense? Please correct me if I'm misunderstanding something.
-> > > >
-> >
-> > Thanks for your review. Appreciate the detailed summary.
-> >
-> > >
-> > > To restate this another way, if I'm reading it correctly, I think the
-> > > outcome is actually nearly the same, the difference is, when
-> > > allocating the bitmap before w/ PG_ANY we're setting bits in the
-> > > free_page_list which will be unset a few lines later in the call to
-> > > mark_unsafe_pages(), and then we won't touch the free_pages_list
-> > > during the memory_bm_free() because it's called with PG_UNSAFE_KEEP.
-> > >
-> >
-> > The current patch and your suggestion both gives the same effect like
-> > you said. Since it is a temporary buffer to hold the zero bit map page, I
-> > did not allocate safe pages. Allocating safe pages means a bit more
-> > work. In this case this it is not completely throw away work but
-> > re-ordering the call seems to be simple here. Pls let me know if you
-> > want to me incorporate your suggestion.
-> 
-> My personal opinion is that PG_SAFE makes a bit more sense, it's not
-> really wasted work as any pages which are not safe end up being added
-> to the allocated_unsafe_pages pool.
-> 
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Yes, the extra bit of works does not go waste. I will send v2 with your
-suggestion. Thanks a lot for your review and detailed comments.
+We have a set of pinctrl helpers for GPIOLIB drivers that take a number
+from the global GPIO numberspace as argument. We are trying to get rid
+of this global numbering. Let's rework these helpers to use the
+recommended gpio_chip + controller-relative offset instead.
 
-Thanks,
-Pavan
+This work is split into phases: first let's introduce the new variants
+of the helpers. Next: let's convert all users one-by-one for easier
+review. Finally let's remove the old helpers and rename the new variants
+to take the place of the old ones.
+
+Bartosz Golaszewski (36):
+  pinctrl: remove unneeded extern specifiers from consumer.h
+  pinctrl: provide new GPIO-to-pinctrl glue helpers
+  gpiolib: generic: use new pinctrl GPIO helpers
+  gpio: cdev: use pinctrl_gpio_can_use_line_new()
+  gpio: rcar: use new pinctrl GPIO helpers
+  gpio: tegra: use new pinctrl GPIO helpers
+  gpio: em: use new pinctrl GPIO helpers
+  gpio: aspeed: use new pinctrl GPIO helpers
+  gpio: mvebu: use new pinctrl GPIO helpers
+  gpio: pxa: use new pinctrl GPIO helpers
+  gpio: rockchip: use new pinctrl GPIO helpers
+  gpio: vf610: use new pinctrl GPIO helpers
+  pinctrl: nuvoton: use new pinctrl GPIO helpers
+  pinctrl: renesas: use new pinctrl GPIO helpers
+  pinctrl: bcm: use new pinctrl GPIO helpers
+  pinctrl: stm32: use new pinctrl GPIO helpers
+  pinctrl: spear: use new pinctrl GPIO helpers
+  pinctrl: starfive: use new pinctrl GPIO helpers
+  pinctrl: ocelot: use new pinctrl GPIO helpers
+  pinctrl: rk805: use new pinctrl GPIO helpers
+  pinctrl: cirrus: use new pinctrl GPIO helpers
+  pinctrl: mediatek: use new pinctrl GPIO helpers
+  pinctrl: axp209: use new pinctrl GPIO helpers
+  pinctrl: vt8500: use new pinctrl GPIO helpers
+  pinctrl: cy8c95x0: use new pinctrl GPIO helpers
+  pinctrl: as3722: use new pinctrl GPIO helpers
+  pinctrl: ingenic: use new pinctrl GPIO helpers
+  pinctrl: intel: use new pinctrl GPIO helpers
+  pinctrl: st: use new pinctrl GPIO helpers
+  pinctrl: remove old GPIO helpers
+  treewide: rename pinctrl_gpio_can_use_line_new()
+  treewide: rename pinctrl_gpio_request_new()
+  treewide: rename pinctrl_gpio_free_new()
+  treewide: rename pinctrl_gpio_direction_input_new()
+  treewide: rename pinctrl_gpio_direction_output_new()
+  treewide: rename pinctrl_gpio_set_config_new()
+
+ drivers/gpio/gpio-aspeed.c                    |   6 +-
+ drivers/gpio/gpio-em.c                        |   4 +-
+ drivers/gpio/gpio-mvebu.c                     |   4 +-
+ drivers/gpio/gpio-pxa.c                       |   4 +-
+ drivers/gpio/gpio-rcar.c                      |   4 +-
+ drivers/gpio/gpio-rockchip.c                  |   4 +-
+ drivers/gpio/gpio-tegra.c                     |   8 +-
+ drivers/gpio/gpio-vf610.c                     |   4 +-
+ drivers/gpio/gpiolib-cdev.c                   |   3 +-
+ drivers/gpio/gpiolib.c                        |   6 +-
+ drivers/pinctrl/bcm/pinctrl-iproc-gpio.c      |   6 +-
+ drivers/pinctrl/cirrus/pinctrl-cs42l43.c      |   4 +-
+ drivers/pinctrl/cirrus/pinctrl-lochnagar.c    |   2 +-
+ drivers/pinctrl/core.c                        | 182 +++++++++---------
+ drivers/pinctrl/intel/pinctrl-cherryview.c    |   4 +-
+ drivers/pinctrl/intel/pinctrl-intel.c         |   4 +-
+ drivers/pinctrl/intel/pinctrl-lynxpoint.c     |   4 +-
+ drivers/pinctrl/mediatek/pinctrl-moore.c      |   4 +-
+ drivers/pinctrl/mediatek/pinctrl-mtk-common.c |   4 +-
+ drivers/pinctrl/mediatek/pinctrl-paris.c      |   4 +-
+ drivers/pinctrl/nuvoton/pinctrl-npcm7xx.c     |   8 +-
+ drivers/pinctrl/nuvoton/pinctrl-npcm8xx.c     |   8 +-
+ drivers/pinctrl/pinctrl-as3722.c              |   4 +-
+ drivers/pinctrl/pinctrl-axp209.c              |   2 +-
+ drivers/pinctrl/pinctrl-cy8c95x0.c            |   4 +-
+ drivers/pinctrl/pinctrl-ingenic.c             |  11 +-
+ drivers/pinctrl/pinctrl-ocelot.c              |   4 +-
+ drivers/pinctrl/pinctrl-rk805.c               |   4 +-
+ drivers/pinctrl/pinctrl-st.c                  |   4 +-
+ drivers/pinctrl/renesas/gpio.c                |   8 +-
+ drivers/pinctrl/renesas/pinctrl-rzg2l.c       |   4 +-
+ drivers/pinctrl/renesas/pinctrl-rzv2m.c       |   4 +-
+ drivers/pinctrl/spear/pinctrl-plgpio.c        |   8 +-
+ .../starfive/pinctrl-starfive-jh7100.c        |   4 +-
+ .../starfive/pinctrl-starfive-jh7110.c        |   4 +-
+ drivers/pinctrl/stm32/pinctrl-stm32.c         |   8 +-
+ drivers/pinctrl/vt8500/pinctrl-wmt.c          |   4 +-
+ include/linux/pinctrl/consumer.h              |  57 +++---
+ 38 files changed, 210 insertions(+), 205 deletions(-)
+
+-- 
+2.39.2
 
