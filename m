@@ -2,103 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E517B5FB6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 06:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 069DE7B5FB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 06:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239029AbjJCEQ0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 00:16:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57094 "EHLO
+        id S238022AbjJCERL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 00:17:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbjJCEQX (ORCPT
+        with ESMTP id S230142AbjJCERH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 00:16:23 -0400
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4157EA1;
-        Mon,  2 Oct 2023 21:16:21 -0700 (PDT)
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-278eaffd81dso329654a91.0;
-        Mon, 02 Oct 2023 21:16:21 -0700 (PDT)
+        Tue, 3 Oct 2023 00:17:07 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC72C6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 21:17:01 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d81486a0382so772501276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 21:17:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696306621; x=1696911421; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9kMAxl7wnzbYfSitqyqtdz7yD/9Z7wPKR2cHV1SDeLQ=;
+        b=m8vxQ8rV0UaHl6IF+fnDSbaw0v9JpXzQdk5grGUeYImsBr/oUjQ1+jOcs0VMcw3Isg
+         veN5haPpKgjswFEvNXzDipwNXxWJxy3cleyNxWEjXx6842zrrxpz1fnS3GUfz+0YoK7f
+         rlKrWhYeSHrxGEHOAwTibaGQggqrgQP1xQbcmc3rkRxOWzUHrTcuEWL9O7+yTV0rKXrS
+         5/ZJKOxDeom2C31YCyrj4BFCjMr54HYMlRJ7p1uB1u2cuo+MyyxbKsSh5DilykEtupul
+         E9O3AUCE3fHe2mr4Bbrl5vCXMjqolJVgaLTKE6pKWx/h5ybD5gly7mUOK8Fj8CIwsAZC
+         1gVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696306581; x=1696911381;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=roNIt2Fvqox3p9gNk4uqUQWHOaR3aQGBkVYARrazd/o=;
-        b=l1ghURz5BBytBe69uzqLREOfW7l/+Nd4Eak14ICKbt/1OSouEdacCGhUdUF+R4V8w9
-         vl4eClbd5HiXdcKpeA1+uy9QMAicLgmgO4xOg2Hv7wh/fCpQ03ACHVNNbux9gM33fC3l
-         y1OJcc87dJm8wh5m2uRq5aaw4qPW6KjU6UB4f04IPzV8Q5Bg9KL5MXPW+5PULu/Ax2Fr
-         AlC/TZtZ7EkZowskGNJAt1oUq70SiVSkfYJ1YNx+EQCmWbou1j+jVROXTGiJUS4I+3JQ
-         SH3lrgjV6J4vaBqG2HaYdPGF5gZQJL++WjdDC/pITABIpbagZUOiHpgPhPimbxa1SFsi
-         Zpfg==
-X-Gm-Message-State: AOJu0Yx1/HQB+8IoL11c7xYF90WQ9fBDO6OCWAIny10Gmww/6icbKMkp
-        29HOUnOVQ2n667BE/5jklOQ8mIc53OHhPJGcXi8=
-X-Google-Smtp-Source: AGHT+IFZS7x/FhnJZ79uhKVgJHrxjrpHUXDyShy2EH8n3EXXp13HvEl6knpBA+1QtSGReY75u0+/5ztV3phzF+HL8zQ=
-X-Received: by 2002:a17:90a:53a5:b0:276:757d:8c89 with SMTP id
- y34-20020a17090a53a500b00276757d8c89mr10859669pjh.44.1696306580571; Mon, 02
- Oct 2023 21:16:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231001131047.15176-1-april@acab.dev>
-In-Reply-To: <20231001131047.15176-1-april@acab.dev>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 2 Oct 2023 21:16:08 -0700
-Message-ID: <CAM9d7cgB6GfJSQhWJwmi=FodKwsYdVy_FnRJ+jzt1DpmO-J3cg@mail.gmail.com>
-Subject: Re: [PATCH] /bin/dmesg to dmesg Path
-To:     April John <april@acab.dev>
-Cc:     linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "open list:PERFORMANCE EVENTS SUBSYSTEM" 
-        <linux-perf-users@vger.kernel.org>
+        d=1e100.net; s=20230601; t=1696306621; x=1696911421;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9kMAxl7wnzbYfSitqyqtdz7yD/9Z7wPKR2cHV1SDeLQ=;
+        b=iQoVlg7wKJqfX3RpVJX1L5wYHyM6PgzzHT5mJx2JbT7a2phZZY4Q1d/Aq57p1cY/9u
+         ofBfHuMjCUUq3/BaRZ9xhN98eFp0BAdBQV9BwZtJBaK7Nd6wqKc/dE8h8SxE/FKj0aIA
+         6dWJvFPd2Mj4tRVGi94uuBiZLMCouEEfasRSjXBDy5qqeVMXr8CgmiBVTcL2QcCCt5jw
+         cbki8Y1v+VUXxL2S352//imkzvCYKj1nWo+CY3q0UxBkaj3+sFHHMexADD/SMLT733Kd
+         2F9j5nu65olMiqZkKBK6Qk2UjaZI8a9Yq0thIc0JOMEUrV0WhEmfUCi+82oFYvV4iFtP
+         dnBA==
+X-Gm-Message-State: AOJu0YzQwzSR2GhifVtBLllBVAJh6FoneFb6l+D6mjPqVbIJGsZuTI+5
+        7sVSdOkEHM4HfAJ6OhC7POaC6sAsK3np
+X-Google-Smtp-Source: AGHT+IFTh73WutQg1HKHRN6gvVmsnoyBnUIIdRWVnhGRA/0U2dv77uh8riZh7TSwPg5ujv/BPkrdVQMikN4x
+X-Received: from coldfire.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:2b7a])
+ (user=maheshb job=sendgmr) by 2002:a5b:882:0:b0:d7f:f3e:74ab with SMTP id
+ e2-20020a5b0882000000b00d7f0f3e74abmr214972ybq.1.1696306621178; Mon, 02 Oct
+ 2023 21:17:01 -0700 (PDT)
+Date:   Mon,  2 Oct 2023 21:16:57 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+Message-ID: <20231003041657.1745487-1-maheshb@google.com>
+Subject: [PATCHv2 next 0/3] add ptp_gettimex64any() API
+From:   Mahesh Bandewar <maheshb@google.com>
+To:     Netdev <netdev@vger.kernel.org>,
+        Linux <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>, John Stultz <jstultz@google.com>,
+        Don Hatchett <hatch@google.com>,
+        Yuliang Li <yuliangli@google.com>,
+        Mahesh Bandewar <mahesh@bandewar.net>,
+        Mahesh Bandewar <maheshb@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The current API to get the sandwich TS for the master-PTP clock read
+supports only the sys-time sandwich. This is not really suitable for
+all the use cases of sandwich TS needs. Ideally it should
+allow a choice of a timebase to use for ts-sandwich need. Updating
+the existing API [gettimex64()] is not an option since it would
+break compatibility.
 
-On Sun, Oct 1, 2023 at 6:10 AM April John <april@acab.dev> wrote:
->
-> Dmesg is not in every distro at /bin/dmesg, in NixOS for example, this fails,
-> but the path should in most cases contain dmesg.
-> This follows the example of replacing /bin/bash with bash Path in the codebase.
->
-> ---
-> tools/perf/util/evsel.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-> index a8a5ff87c..aa602aae6 100644
-> --- a/tools/perf/util/evsel.c
-> +++ b/tools/perf/util/evsel.c
-> @@ -3053,7 +3053,7 @@ int evsel__open_strerror(struct evsel *evsel, struct target *target,
->
-> return scnprintf(msg, size,
-> "The sys_perf_event_open() syscall returned with %d (%s) for event (%s).\n"
-> - "/bin/dmesg | grep -i perf may provide additional information.\n",
-> + "dmesg | grep -i perf may provide additional information.\n",
-> err, str_error_r(err, sbuf, sizeof(sbuf)), evsel__name(evsel));
-> }
->
-> --
-> 2.42.0
->
-> Signed-off-by: April John <april@acab.dev>
+About the name - This is a superset of current gettimex64. Since 
+the timebase for gettimex64 is fixed and is only 'sys-time / real-time'. 
+I'm appending "any" to add the choice factor. so gettimex64any() would
+give you eXtended time with sandwitch TS of a timebase of your choice.
+If there is a better name, I won't mind changing.
 
-It is usual to put a tag after the patch, it should be at the end of the
-commit message.  With that,
+The timebase options are -
+   CLOCK_REALTIME, CLOCK_MONOTONIC, & CLOCK_MONOTONIC_RAW
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+The CLOCK_REALTIME option is equivalent of using current gettimex64()
+method.
 
-Thanks,
-Namhyung
+The first patch adds this new PTP method while the second patch
+adds the ioctl support for this method.
+
+The last patch in the series updates the selftest to exercise this
+new method.
+
+Mahesh Bandewar (3):
+  ptp: add ptp_gettimex64any() support
+  ptp: add ioctl interface for ptp_gettimex64any()
+  selftes/ptp: extend test to include ptp_gettimex64any()
+
+ drivers/ptp/ptp_chardev.c             | 34 ++++++++++++
+ include/linux/ptp_clock_kernel.h      | 51 ++++++++++++++++++
+ include/uapi/linux/ptp_clock.h        | 21 ++++++++
+ tools/testing/selftests/Makefile      |  1 +
+ tools/testing/selftests/ptp/testptp.c | 76 ++++++++++++++++++++++++++-
+ 5 files changed, 181 insertions(+), 2 deletions(-)
+
+v1 -> v2
+  * Removed ktime_get_cycles64() implementation
+  * Removed CYCLES as an option
+-- 
+2.42.0.582.g8ccd20d70d-goog
+
