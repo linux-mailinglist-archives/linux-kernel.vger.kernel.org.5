@@ -2,76 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCEF67B69D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:06:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F077B69D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232555AbjJCNGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60630 "EHLO
+        id S232573AbjJCNHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232455AbjJCNGk (ORCPT
+        with ESMTP id S231266AbjJCNHa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:06:40 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24ECAC4;
-        Tue,  3 Oct 2023 06:06:37 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C0E9A1F45B;
-        Tue,  3 Oct 2023 13:06:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1696338395; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hBW6aALkPO3CT6TaCsu8tN/6UcJj9gFut487AL5616w=;
-        b=QcRQPssugIvbxgWLAS2VGtKXSx5CY+ZdaiiMLY/XHjeNBNDY9OvYCcKBYgNN59N2Ca9Ujt
-        v9DWcdQk/XBqS9rfr/U1yUBwv7XK0fJXdts9d4QEXRdZPW4OIqFv1d/7TioCl6X+rIlGnE
-        /8kAOQVAL1yabk1Ph3hrWl1Knj/wMvc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1696338395;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hBW6aALkPO3CT6TaCsu8tN/6UcJj9gFut487AL5616w=;
-        b=LlKeH0O8KpUR1zRBRWw/IGDhqnN8yAglhJMlsJSXEM9+ntps/cNngnCnQkSIL9gIP8APUw
-        MHCgdFAKRgkXWnAw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B0EBD132D4;
-        Tue,  3 Oct 2023 13:06:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HSUnK9sRHGUvLgAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 03 Oct 2023 13:06:35 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id 3C9D0A07CC; Tue,  3 Oct 2023 15:06:35 +0200 (CEST)
-Date:   Tue, 3 Oct 2023 15:06:35 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Carlos Maiolino <cem@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/8] shmem: shrink shmem_inode_info: dir_offsets in a
- union
-Message-ID: <20231003130635.hn2ljuorlf7rdodx@quack3>
-References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com>
- <86ebb4b-c571-b9e8-27f5-cb82ec50357e@google.com>
+        Tue, 3 Oct 2023 09:07:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DA993;
+        Tue,  3 Oct 2023 06:07:27 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1115CC433C8;
+        Tue,  3 Oct 2023 13:07:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696338447;
+        bh=ArFpsG+rmsCSYEIB4kkM8QPGFJQJDJOHz7UBLDI+9zE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gVPVFPEs1/OCC8qjCciwFIU3setxljjE5Q0Nh12gpiXrCBm9YrwGGTLL2Sll2nnhE
+         xAMKRJ6B6fsIaABPHnnbZfVRbUrFGePnVkrdlppa8RyN1Z4gEMfLbKOjI5oywxUJBk
+         Cq5NltCK3+O6rDxH0Qpy0Uq9bln0sPMiJiPZnhxZS6po30gpPOzFnzsrxDa4O90TQL
+         zNm9yd8tHbjBhEOdayrG3eI3/Hz2QNqwcmgHbutDi8Yy2c9d7PDirN6x0uRw4BMT4b
+         b6hXS+0+aMwKD3xgJeEk33u1xRYcX7JUtwSp31Xa/b8I1bY9AYdRqUr/QcyxEIRmL5
+         +0NjjPeTuc8/g==
+Date:   Tue, 3 Oct 2023 15:07:24 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>
+Cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        bcm-kernel-feedback-list@broadcom.com, jonathan.derrick@linux.dev,
+        kw@linux.com, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-renesas-soc@vger.kernel.org,
+        lpieralisi@kernel.org, marek.vasut+renesas@gmail.com,
+        minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        m.karthikeyan@mobiveil.co.in, nirmal.patel@linux.intel.com,
+        rjui@broadcom.com, robh@kernel.org, roy.zang@nxp.com,
+        sbranden@broadcom.com, yoshihiro.shimoda.uh@renesas.com,
+        Zhiqiang.Hou@nxp.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] PCI: Use PCI_HEADER_TYPE_* instead of literals
+Message-ID: <ZRwSDNOlZwUu+vqE@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        bcm-kernel-feedback-list@broadcom.com, jonathan.derrick@linux.dev,
+        kw@linux.com, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-renesas-soc@vger.kernel.org,
+        lpieralisi@kernel.org, marek.vasut+renesas@gmail.com,
+        minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        m.karthikeyan@mobiveil.co.in, nirmal.patel@linux.intel.com,
+        rjui@broadcom.com, robh@kernel.org, roy.zang@nxp.com,
+        sbranden@broadcom.com, yoshihiro.shimoda.uh@renesas.com,
+        Zhiqiang.Hou@nxp.com, linux-kernel@vger.kernel.org
+References: <20231003125300.5541-1-ilpo.jarvinen@linux.intel.com>
+ <20231003125300.5541-4-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8/zJ+jH2FaDITq/3"
 Content-Disposition: inline
-In-Reply-To: <86ebb4b-c571-b9e8-27f5-cb82ec50357e@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+In-Reply-To: <20231003125300.5541-4-ilpo.jarvinen@linux.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,62 +70,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 29-09-23 20:25:38, Hugh Dickins wrote:
-> Shave 32 bytes off (the 64-bit) shmem_inode_info.  There was a 4-byte
-> pahole after stop_eviction, better filled by fsflags.  And the 24-byte
-> dir_offsets can only be used by directories, whereas shrinklist and
-> swaplist only by shmem_mapping() inodes (regular files or long symlinks):
-> so put those into a union.  No change in mm/shmem.c is required for this.
-> 
-> Signed-off-by: Hugh Dickins <hughd@google.com>
 
-Looks good to me. Feel free to add:
+--8/zJ+jH2FaDITq/3
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+On Tue, Oct 03, 2023 at 03:53:00PM +0300, Ilpo J=C3=A4rvinen wrote:
+> Replace literals under drivers/pci/ with PCI_HEADER_TYPE_MASK,
+> PCI_HEADER_TYPE_NORMAL, and PCI_HEADER_TYPE_MFD.
+>=20
+> While at it, replace !! boolean conversion with FIELD_GET().
+>=20
+> Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
 
-								Honza
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com> # for Renesas =
+R-Car
 
 
-> ---
->  include/linux/shmem_fs.h | 16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
-> index 6b0c626620f5..2caa6b86106a 100644
-> --- a/include/linux/shmem_fs.h
-> +++ b/include/linux/shmem_fs.h
-> @@ -23,18 +23,22 @@ struct shmem_inode_info {
->  	unsigned long		flags;
->  	unsigned long		alloced;	/* data pages alloced to file */
->  	unsigned long		swapped;	/* subtotal assigned to swap */
-> -	pgoff_t			fallocend;	/* highest fallocate endindex */
-> -	struct list_head        shrinklist;     /* shrinkable hpage inodes */
-> -	struct list_head	swaplist;	/* chain of maybes on swap */
-> +	union {
-> +	    struct offset_ctx	dir_offsets;	/* stable directory offsets */
-> +	    struct {
-> +		struct list_head shrinklist;	/* shrinkable hpage inodes */
-> +		struct list_head swaplist;	/* chain of maybes on swap */
-> +	    };
-> +	};
-> +	struct timespec64	i_crtime;	/* file creation time */
->  	struct shared_policy	policy;		/* NUMA memory alloc policy */
->  	struct simple_xattrs	xattrs;		/* list of xattrs */
-> +	pgoff_t			fallocend;	/* highest fallocate endindex */
-> +	unsigned int		fsflags;	/* for FS_IOC_[SG]ETFLAGS */
->  	atomic_t		stop_eviction;	/* hold when working on inode */
-> -	struct timespec64	i_crtime;	/* file creation time */
-> -	unsigned int		fsflags;	/* flags for FS_IOC_[SG]ETFLAGS */
->  #ifdef CONFIG_TMPFS_QUOTA
->  	struct dquot		*i_dquot[MAXQUOTAS];
->  #endif
-> -	struct offset_ctx	dir_offsets;	/* stable entry offsets */
->  	struct inode		vfs_inode;
->  };
->  
-> -- 
-> 2.35.3
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+--8/zJ+jH2FaDITq/3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUcEgwACgkQFA3kzBSg
+KbbwZQ/+OWN+pr0W3mgNuEkqIJy1gENxgZSQwTuDfc50jkQ+QvaDabXZyduk5uDf
+QDqFHQCwuodVcB2FkK+WUddSmLHChpSSX4imzxhhd21YAAd2mZMwKxvW1T0theCe
+ZdRnxE1S0H/B4OsULDMppn+3DZVW2aGre32u7lq7hIpmj2dRbpH4TBbTLchXoMQY
+RCOUJ0baTYSXiDjgbmq+urT98IqO4gMxuEmzuoICqZCsb1gFUOz+aM3Jfxc/9BJw
+su9LoOCg/Ud447vnOkzs6BlkBgocWXFJPb/dIPPiaMkDIPyxrljWU9S8MVpcC2/7
+Fhd0phffcjTn1W0cSRwTJPpS9fagWYduMrLjFimhR1a9ERmTzzI8QAOH5/Dk9zoO
+b4AQ4dysH08lHur+o+tMnlhtGS3xbcvymorR4uqA35gzCTVDSdNbnmIi+K/WutuR
+8N1DsSwyvMpwAMLvoFeQZGY2zNAP83/CGbITi6Gj3RUmEMP9jCkEl1r+YKOC5bjQ
+rkv1pRvPgG/am6hzVx3RyIdOUddcKCsgQt+3nBfby6HG+PbuxxKtrthxXUHmunDX
+p/zlkUzjNKryvwL09lzLs3Ys13EBazLZAbPWN0lZYuekcbKrL//m0N7qvNmLo8oy
+ZcMD9javfLimKe1u3MffJ7RMnEjwcPViS/7Ym54dm5YjNmLMTrI=
+=KypN
+-----END PGP SIGNATURE-----
+
+--8/zJ+jH2FaDITq/3--
