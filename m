@@ -2,61 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 521B97B6A91
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B76DA7B6A95
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbjJCNbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49938 "EHLO
+        id S232131AbjJCNeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231296AbjJCNbU (ORCPT
+        with ESMTP id S230371AbjJCNeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:31:20 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C544FA3;
-        Tue,  3 Oct 2023 06:31:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696339878; x=1727875878;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xxqxS0x5dYC4fVbGucgwjPASbXwI7a727oCG19nYfBo=;
-  b=e4IDrobHB92BSfB9sjBDnKldDpDicAZtKzr8oz3/B/CKBfQGKLekfXIJ
-   Bt11IcS7I/1qD7Xhl0+t8Z9mGzr8kPsznD+lNL+Z64aAG+mOc3386mexm
-   wyJbYc2uxmpk1j5Hnnzw69sLDaQikmNkP3RIKMsqBvqFRG6Ckw/cPCoGR
-   LDl+l/t/ZQ+meFOWyNjvbfTU9Vux8hYoCSlb1qYWAQBCLM9zIbjo/0PSn
-   J/wU4XC/a5HmdCDKf//EYLjJcZYHimhmx19rCFRTblds1sdCp3dcx201H
-   2pMachrkpDhkOVVkhAmGKS/Njf1W/ys63126Zd57tR2QnAcHnPtoh6uRM
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="4439820"
-X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="4439820"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 06:31:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="744506253"
-X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="744506253"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 06:31:14 -0700
-Date:   Tue, 3 Oct 2023 16:31:12 +0300
-From:   Raag Jadav <raag.jadav@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linus.walleij@linaro.org, mika.westerberg@linux.intel.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
-Subject: Re: [PATCH v2 0/2] Drop runtime PM support for Baytrail and
- Lynxpoint pinctrl
-Message-ID: <ZRwXoK2fca3buQ9y@black.fi.intel.com>
-References: <20231003114036.27674-1-raag.jadav@intel.com>
- <ZRwGGS+Uilr/egln@smile.fi.intel.com>
+        Tue, 3 Oct 2023 09:34:12 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8608CA9
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:34:09 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F5BDC433C8;
+        Tue,  3 Oct 2023 13:34:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696340049;
+        bh=YgpznB6UVwDAk8kZkqvYggW8dN/E0S+mAdS++LtlF0Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cCwNRSLhR7ueBItEphJhcR6bYjpJmtiCtyuUcsw6+oL1oQvvtP6muvlQ8XBNEK6OF
+         Aa+SEEiKKBzyKSZf3pMJoPsBo7DGy6gdpJbMpKTUwHCGReYzO+4Na8lITqKDfQFOT0
+         oXnDX6nHmYIzfHEHEGnyeN/dDJU8PLv1RhxaZPnqWfaSayPgn3j9WT5XIqzKaYUuIG
+         ThoCB8ccZYGcN/mcPyrWRz4jpRI1PsOiy0JUVos0tU9h/lDeG9TV+TAdOT4SQcly4h
+         ZT6HAeUSjxub4ybVMDGyrHCEHgzmUmQAzmDMA8PzfdI4l9MfloMn5GHY9PYLQj6KYy
+         TQbJh3AJiODaw==
+Date:   Tue, 3 Oct 2023 06:34:01 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Lukasz Majewski <lukma@denx.de>, Tristram.Ha@microchip.com,
+        Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [[RFC PATCH v4 net-next] 0/2] net: dsa: hsr: Enable HSR HW
+ offloading for KSZ9477
+Message-ID: <20231003063401.5fc0ffb9@kernel.org>
+In-Reply-To: <20230911170222.hip2pcyzbfu3olau@skbuf>
+References: <20230906152801.921664-1-lukma@denx.de>
+        <20230911165848.0741c03c@wsk>
+        <20230911160501.5vc4nttz6fnww56h@skbuf>
+        <20230911170222.hip2pcyzbfu3olau@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRwGGS+Uilr/egln@smile.fi.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,38 +60,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 03:16:25PM +0300, Andy Shevchenko wrote:
-> On Tue, Oct 03, 2023 at 05:10:34PM +0530, Raag Jadav wrote:
-> > This series removes runtime PM support for the devices that are not
-> > explicitly attached to acpi_lpss_pm_domain as it is dead code anyway.
-> > 
-> > This has no functional impact and helps reduce their code and memory
-> > footprint.
-> > 
-> > bloat-o-meter:
-> > ==============
-> > 
-> > Baytrail:
-> > add/remove: 2/4 grow/shrink: 0/3 up/down: 49/-103 (-54)
-> > Total: Before=16104, After=16050, chg -0.34%
-> > 
-> > Lynxpoint:
-> > add/remove: 7/10 grow/shrink: 1/3 up/down: 152/-223 (-71)
-> > Total: Before=7506, After=7435, chg -0.95%
-> > 
-> > Changes since v1:
-> > - Add missing pm.h
-> > 
-> > Raag Jadav (2):
-> >   pinctrl: baytrail: drop runtime PM support
-> >   pinctrl: lynxpoint: drop runtime PM support
-> > 
-> >  drivers/pinctrl/intel/pinctrl-baytrail.c  | 19 ++------------
-> >  drivers/pinctrl/intel/pinctrl-lynxpoint.c | 32 +++--------------------
-> >  2 files changed, 5 insertions(+), 46 deletions(-)
+On Mon, 11 Sep 2023 20:02:22 +0300 Vladimir Oltean wrote:
+> Hi @Jakub, I remember you fixed some issues with the dev->dev_addr writes,
+> after dev_addr_lists.c was changed to a rbtree. Is it easy for you to
+> tell if the change below is safe from an API perspective?
 > 
-> You forgot --base... :-(
+> Is the answer "yes, because dev_uc_add() uses an addr_type of NETDEV_HW_ADDR_T_UNICAST,
+> and dev->dev_addr uses NETDEV_HW_ADDR_T_LAN, so they never share a struct netdev_hw_addr
+> for the same MAC address, and thus, they never collide"?
+> 
+> The DSA and 8021q drivers currently have this pattern, from around 2008.
+> But 8021q also tracks NETDEV_CHANGEADDR events on the real_dev, which is
+> absent in DSA. If the change below is safe, it would be a simpler solution.
 
-Sorry, I need to go figure out some send-email automation.
-
-Raag
+FWIW I think it should be fine from the rbtree perspective, but IDK how
+the user space would react to having a duplicate lladdr.
