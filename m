@@ -2,102 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F917B6568
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100F37B656C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239635AbjJCJYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41088 "EHLO
+        id S239634AbjJCJY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:24:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239606AbjJCJYD (ORCPT
+        with ESMTP id S239647AbjJCJYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:24:03 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24EC2AB;
-        Tue,  3 Oct 2023 02:24:00 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c00df105f8so8236731fa.2;
-        Tue, 03 Oct 2023 02:24:00 -0700 (PDT)
+        Tue, 3 Oct 2023 05:24:25 -0400
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F584D8
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:24:22 -0700 (PDT)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-59e77e4f707so8703087b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 02:24:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696325038; x=1696929838; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=o02q/FIkDaGrgLqoN/Aj/vG1/YJOsTbj5fKhJBGnD2E=;
-        b=MnxE3v6QRLo92+y+2fiAfySUbDOh6InYpNKU1hzuWvyyhtYdOS1bOQL+43d+Zt5+ho
-         jTvp2EKPSrdktA8XrJwZwrhf6K+xLXkeWiFSG77AmouKm4SHO/fW4jU/FQmjMDfXe1YF
-         Znx/mXwcHj0mOT3+Bmwmc/d+Cl65Uou9qIX9Q/x62buBnIzZV7NCcQUr+MFB7GOAFVim
-         mh7WOAAGw4E+PgFCgmmDtO/Y9Q/Od+kv3kFfT+hkA9IcnzHq5a6uYB9o/Bd+aIMIDajA
-         VUZgvxX/+fIHWfM0EZLIper7c4as0lnMfKhKL3CTpaRSTfaf2pXjcbtGRaWnKQXzbgvO
-         XoIw==
+        d=google.com; s=20230601; t=1696325061; x=1696929861; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ooRbfvgflrDJY0S/ihm6kiwAA3KtmVPaxx1CoMlS90Q=;
+        b=fQhXw5qOFrZ+qe5pfcTUSkuk7nURhFWkGQ6lxdt4sX/fzZmHedjnxQAI/8xRJu7ohs
+         wEHBzC6oCYe+NvDRiDOCobj3OWG4JaHCzJhdI24oS/BeCOxbsI3bhQ/EWjRp6ogYgrjk
+         fL3EDNEXsl/EEG67YYHz+embQVFNVuAqdfbsWI6+iqqWgHD9JiTadqSO58v5fjYuFuRu
+         T892yINe2+ADCsL+kGn5GvLU6E7P7aRHp0gcu6/xMsr/QQdMGM3+Y8kIPWgWzfwYrQAF
+         skMj7PQm/snd8HKnFlv16jsbbHV45BhdHJWoj9RWrcPsYrbVPC+mhgoTlnZ5evEkHXGl
+         7tig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696325038; x=1696929838;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o02q/FIkDaGrgLqoN/Aj/vG1/YJOsTbj5fKhJBGnD2E=;
-        b=Bjwyv0hEuuxT1ynUg00yvCKfTKOBxs+lsmKMqfZC7dgKXfYmDlOk6Q2sXg8wWwdD+k
-         DNyoDBtZFwIkjp87P29U6CRstouzco5bFCETqepyLh/uxz0xundvlGxBE65WGXDBEgZB
-         PfyMpJidJyLrFNLu3A/9Rr40giQLbhKSL8FyRF/eZAob+9ZRfuDL82Xr+HM3YBuOkmI3
-         fUwqfD174cThIn6MtZGI+5O9P8L/Va3xzH+WN9XxH4TsNK5Y0hzhi2k0sunNJ5fPM6G6
-         1utmFzonQAEOOlzaNyfmXBMm+Vo/4Oy/teXUYdLOoIzXrTFE+T3Dm2Ag81Na8u2d+gGf
-         lRtA==
-X-Gm-Message-State: AOJu0Yxfq7PlOlhEFJ0SXj0eRtssFDjTYk2bsyU8136gpsN/9q0X4Q47
-        lBZ0LYFSobyi7jUlmF5AbunudclfmfFueyCxMoE=
-X-Google-Smtp-Source: AGHT+IG3BDQNI/pILbidS9xryMvAbSkn6Y/6bkHT63bOwqPMoRRoTSL7+zz03ry1Fl2f/uI9CfxqrOri93gbzoU0eQc=
-X-Received: by 2002:a2e:9b04:0:b0:2bd:e3e:1a23 with SMTP id
- u4-20020a2e9b04000000b002bd0e3e1a23mr10574736lji.45.1696325038173; Tue, 03
- Oct 2023 02:23:58 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696325061; x=1696929861;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ooRbfvgflrDJY0S/ihm6kiwAA3KtmVPaxx1CoMlS90Q=;
+        b=bKnEPGLK82mgCVkMZggfeiJt7toZ5b016ziUiWiCR13Cm6cnQKOuacXocC8HTh1Rj7
+         Z4EGILGL6Tf9El7zOb9Sf5WCBMcyu0gnqHKk6ZKG1cyNwBDgoiNPi515ULHSViP+iIl0
+         fIcWXh0aBjReUsb3EtWCCmHwcYtg4iHvFbtNmnQbAp+t9OJMCRJ7ZNF0+ObNGspeWyAO
+         haMoLWHlzNUJcar2yJA/7e51jXvRxSpmdaKC0YJFcJBgOltBBdcdmmhQL+Nyk+Bxwsbm
+         QCHhTodR6XwC5FKcWXPDht7OfCVzTpviYbEmccx9j2jHmKhKSDln5QbAbaNXTyEhPWze
+         19lQ==
+X-Gm-Message-State: AOJu0YzmKdkyQXTtGBI8CPTDOTYPSuW9K4y5WaHeyTEWd85q0pQVeR8g
+        ZUn4T3uXW5js9jRUkyQyjIRI9A==
+X-Google-Smtp-Source: AGHT+IF7dS6FmToNAISxPIKOdrXv16fI38OSw83FP5I+O2/LMzV34kyuZxVB4HUMbC6kZMjwwcoTsQ==
+X-Received: by 2002:a81:a08b:0:b0:58f:ae13:462b with SMTP id x133-20020a81a08b000000b0058fae13462bmr14655078ywg.4.1696325061140;
+        Tue, 03 Oct 2023 02:24:21 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id x9-20020a814a09000000b005463e45458bsm251441ywa.123.2023.10.03.02.24.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 02:24:20 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 02:24:18 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     Andi Kleen <ak@linux.intel.com>, Christoph Lameter <cl@linux.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        David Hildenbrand <david@redhat.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Sidhartha Kumar <sidhartha.kumar@oracle.com>,
+        Vishal Moola <vishal.moola@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        "Huang, Ying" <ying.huang@intel.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v2 08/12] mempolicy: remove confusing MPOL_MF_LAZY dead
+ code
+In-Reply-To: <ebc0987e-beff-8bfb-9283-234c2cbd17c5@google.com>
+Message-ID: <80c9665c-1c3f-17ba-21a3-f6115cebf7d@google.com>
+References: <ebc0987e-beff-8bfb-9283-234c2cbd17c5@google.com>
 MIME-Version: 1.0
-References: <20231002161350.64229-1-tmaimon77@gmail.com> <2023100323-reunite-upfront-8922@gregkh>
- <CAP6Zq1jHzRP1Ytzk8YXyR8ppAP=ZoPvPkYvC2yMRfTt5140zqw@mail.gmail.com> <0298e4a7-0f40-41d6-82f3-327d2fe493cc@linaro.org>
-In-Reply-To: <0298e4a7-0f40-41d6-82f3-327d2fe493cc@linaro.org>
-From:   Tomer Maimon <tmaimon77@gmail.com>
-Date:   Tue, 3 Oct 2023 12:23:46 +0300
-Message-ID: <CAP6Zq1ghiUhecvtC7gpKtbP11QTU8Js0wCk_sTFqjUf=d6KK1A@mail.gmail.com>
-Subject: Re: [PATCH RESEND v3 0/3] usb: ChipIdea: add Nuvoton NPCM UDC support
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, peter.chen@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        xu.yang_2@nxp.com, peng.fan@nxp.com, avifishman70@gmail.com,
-        tali.perry1@gmail.com, joel@jms.id.au, venture@google.com,
-        yuenn@google.com, benjaminfair@google.com, j.neuschaefer@gmx.net,
-        openbmc@lists.ozlabs.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+v3.8 commit b24f53a0bea3 ("mm: mempolicy: Add MPOL_MF_LAZY") introduced
+MPOL_MF_LAZY, and included it in the MPOL_MF_VALID flags; but a720094ded8
+("mm: mempolicy: Hide MPOL_NOOP and MPOL_MF_LAZY from userspace for now")
+immediately removed it from MPOL_MF_VALID flags, pending further review.
+"This will need to be revisited", but it has not been reinstated.
 
-Appreciate your clarifications
+The present state is confusing: there is dead code in mm/mempolicy.c to
+handle MPOL_MF_LAZY cases which can never occur.  Remove that: it can be
+resurrected later if necessary.  But keep the definition of MPOL_MF_LAZY,
+which must remain in the UAPI, even though it always fails with EINVAL.
 
-Thanks,
+https://lore.kernel.org/linux-mm/1553041659-46787-1-git-send-email-yang.shi@linux.alibaba.com/
+links to a previous request to remove MPOL_MF_LAZY.
 
-Tomer
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ include/uapi/linux/mempolicy.h |  2 +-
+ mm/mempolicy.c                 | 18 ------------------
+ 2 files changed, 1 insertion(+), 19 deletions(-)
 
-On Tue, 3 Oct 2023 at 11:32, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 03/10/2023 08:56, Tomer Maimon wrote:
-> > Hi Greg,
-> >
-> > Forgot to add in Acked-by: Peter Chen <peter.chen@kernel.org> in V3,
-> > Resend the patch set with the Ack.
-> >
-> > Should I do it differently?
->
-> If it is RESEND after some time (min. 2 weeks), then it is fine. If you
-> added tags or changed something, make a new version. If you resend for
-> any other reason (assuming resend is valid), please mention shortly why
-> do you resend (e.g. "My company email servers maybe blocked it, so
-> resending without changes").
->
-> Best regards,
-> Krzysztof
->
+diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
+index 046d0ccba4cd..a8963f7ef4c2 100644
+--- a/include/uapi/linux/mempolicy.h
++++ b/include/uapi/linux/mempolicy.h
+@@ -48,7 +48,7 @@ enum {
+ #define MPOL_MF_MOVE	 (1<<1)	/* Move pages owned by this process to conform
+ 				   to policy */
+ #define MPOL_MF_MOVE_ALL (1<<2)	/* Move every page to conform to policy */
+-#define MPOL_MF_LAZY	 (1<<3)	/* Modifies '_MOVE:  lazy migrate on fault */
++#define MPOL_MF_LAZY	 (1<<3)	/* UNSUPPORTED FLAG: Lazy migrate on fault */
+ #define MPOL_MF_INTERNAL (1<<4)	/* Internal flags start here */
+ 
+ #define MPOL_MF_VALID	(MPOL_MF_STRICT   | 	\
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 5d99fd5cd60b..f3224a8b0f6c 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -636,12 +636,6 @@ unsigned long change_prot_numa(struct vm_area_struct *vma,
+ 
+ 	return nr_updated;
+ }
+-#else
+-static unsigned long change_prot_numa(struct vm_area_struct *vma,
+-			unsigned long addr, unsigned long end)
+-{
+-	return 0;
+-}
+ #endif /* CONFIG_NUMA_BALANCING */
+ 
+ static int queue_pages_test_walk(unsigned long start, unsigned long end,
+@@ -680,14 +674,6 @@ static int queue_pages_test_walk(unsigned long start, unsigned long end,
+ 	if (endvma > end)
+ 		endvma = end;
+ 
+-	if (flags & MPOL_MF_LAZY) {
+-		/* Similar to task_numa_work, skip inaccessible VMAs */
+-		if (!is_vm_hugetlb_page(vma) && vma_is_accessible(vma) &&
+-			!(vma->vm_flags & VM_MIXEDMAP))
+-			change_prot_numa(vma, start, endvma);
+-		return 1;
+-	}
+-
+ 	/*
+ 	 * Check page nodes, and queue pages to move, in the current vma.
+ 	 * But if no moving, and no strict checking, the scan can be skipped.
+@@ -1274,9 +1260,6 @@ static long do_mbind(unsigned long start, unsigned long len,
+ 	if (IS_ERR(new))
+ 		return PTR_ERR(new);
+ 
+-	if (flags & MPOL_MF_LAZY)
+-		new->flags |= MPOL_F_MOF;
+-
+ 	/*
+ 	 * If we are using the default policy then operation
+ 	 * on discontinuous address spaces is okay after all
+@@ -1321,7 +1304,6 @@ static long do_mbind(unsigned long start, unsigned long len,
+ 
+ 	if (!err) {
+ 		if (!list_empty(&pagelist)) {
+-			WARN_ON_ONCE(flags & MPOL_MF_LAZY);
+ 			nr_failed |= migrate_pages(&pagelist, new_folio, NULL,
+ 				start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND, NULL);
+ 		}
+-- 
+2.35.3
+
