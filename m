@@ -2,178 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34EEA7B6038
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 07:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8751A7B603A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 07:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230206AbjJCFIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 01:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37300 "EHLO
+        id S230200AbjJCFJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 01:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbjJCFIV (ORCPT
+        with ESMTP id S230049AbjJCFJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 01:08:21 -0400
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2071.outbound.protection.outlook.com [40.107.101.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C66D5A9;
-        Mon,  2 Oct 2023 22:08:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gMOjGpnYYR+RC0s9R2tmflu3g0DbezHa0CBaMSVbOjNwgilDGVdU6z2SuL2TffHkoIGs/DHMfGKtuma2fuf+tVHkBiiK0pcV8++JS4tAc6HBIL/T+YNMHO2FZo+KQEP0SFspuMFl4lL8VU8K/HvArb7O9/aFnmKORCj6QF+ZRzKyQ3KhYHr8BsM4dRB4Fm/cIk6Ff9UTWGZHDRH9aNYFd3AKW+g37P4Kwb5EgHWOnPAcZKNOKQkH0GKo+Lk3BwtPrO0kqe1CZTB60TKhJKwy6oO4kqCYtonHP1mDPgJNeDBFeHmtc1hLzlZuAyjDe36cmSpMpw5aF18sNVM7i5WjFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ls2njgOD9cfeawnlxD7Qv1Dg6rtvUUrVVuq55rS+C/M=;
- b=GlrNpYBATrrOhFPbIH1o87HODgRnxD7X3nsNsmC8QjOfV3lIDx4LH6bWHj8FmaMY7QPW8EFOSI3cKnH7sbbBQxTeGbKd6FVTLRU3w5SQz+Ahbt/gec+kkvkdFCgT3/7wFDcwWy9xHNHjQDKtRItxppYnkc/5Zmw9Npt0033tHhn/6du+96A/PNkpgeZgLN8AtH152fH+dh1PAX6onvSWcJ8IpJb6kgziuNCSiFu+H4MNi5sWf7AmByjh7h6Zest85URVTpna5IGOvxsxeT658/crxMF4w4sf57QYa9n7+KeTjFcETKazvAT2ofSshw96NsrgDqDd8E+nXfgsyM6VnQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ls2njgOD9cfeawnlxD7Qv1Dg6rtvUUrVVuq55rS+C/M=;
- b=iRjLPLzvDuJHLikmssbaWtNUwlLBfn6nX8dFq1ceaAhDjD6GrQkZ1dBMgN53DsRB/MyZieZdh6s5s5YQF+UVJ8+feNEzPAXJ8oTWwNK/8VDG2ZtrJu6rnNYuQkhhVJk9mOILtKBhtHeIDSTrVyuUiZpvtlYC/DMlxGNtt2niG4k=
-Received: from MW4PR04CA0046.namprd04.prod.outlook.com (2603:10b6:303:6a::21)
- by PH8PR12MB7303.namprd12.prod.outlook.com (2603:10b6:510:220::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6792.26; Tue, 3 Oct
- 2023 05:08:13 +0000
-Received: from CO1PEPF000042AA.namprd03.prod.outlook.com
- (2603:10b6:303:6a:cafe::3a) by MW4PR04CA0046.outlook.office365.com
- (2603:10b6:303:6a::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.34 via Frontend
- Transport; Tue, 3 Oct 2023 05:08:13 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000042AA.mail.protection.outlook.com (10.167.243.39) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6838.14 via Frontend Transport; Tue, 3 Oct 2023 05:08:13 +0000
-Received: from beas.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 3 Oct
- 2023 00:08:10 -0500
-From:   Wyes Karny <wyes.karny@amd.com>
-To:     <lenb@kernel.org>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Wyes Karny <wyes.karny@amd.com>,
-        Doug Smythies <dsmythies@telus.net>
-Subject: [PATCH v2] tools/power turbostat: Increase the limit for fd opened
-Date:   Tue, 3 Oct 2023 05:07:51 +0000
-Message-ID: <20231003050751.525932-1-wyes.karny@amd.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 3 Oct 2023 01:09:35 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 042DFA9;
+        Mon,  2 Oct 2023 22:09:32 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3934JecJ024965;
+        Tue, 3 Oct 2023 05:09:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=APyqbOeY3JUwP/mrqXaV6eKWfacch9S+zZjNV+vSlp0=;
+ b=SPDdo8fu7r5gVFtBJzWI1jOy/XMrpnZy9sndipRxr5e/vr1TMFOUzuoJ3wc6qmO/Pkp9
+ W+qe2CdsnBpYKP6Vlurwo8zCRaamdIERTPXuwgTCrBXUvq26F1r5hitkAxMC8RfrbroX
+ sjq+4XXk0TY3RcwyawptRh4+IriuhJjTPrW9aeTmUOBkf8dlr8MEKtIRR5Ea4ddwQq+b
+ 1oVwiXmbTM9t2hN6EJ0vsckC3H6VIo3knvk3VxkRKIO9t6ky24LuEtwuE5+iYeZyF4LA
+ wsqXOSTyJQES8qHEj3BBkRoWaaETa+4SyM8YxT7/5K9QpT1SSbp21Vwd7PA7CQ7dG9E2 lA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tgbjkg39a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Oct 2023 05:09:26 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 39359Ap8006230
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 3 Oct 2023 05:09:10 GMT
+Received: from [10.216.33.128] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Mon, 2 Oct
+ 2023 22:09:06 -0700
+Message-ID: <eaf9759c-946b-a2fd-042d-235709201908@quicinc.com>
+Date:   Tue, 3 Oct 2023 10:39:02 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] dt-bindings: arm: qcom: drop the IPQ board types
+Content-Language: en-US
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230927093130.4098385-1-quic_sridsn@quicinc.com>
+ <3b7a6266-e2fc-4b56-8b41-a26042248c64@linaro.org>
+From:   Sridharan S N <quic_sridsn@quicinc.com>
+In-Reply-To: <3b7a6266-e2fc-4b56-8b41-a26042248c64@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000042AA:EE_|PH8PR12MB7303:EE_
-X-MS-Office365-Filtering-Correlation-Id: bca22eee-9ced-4f80-01a7-08dbc3cebec8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KKV1YD0JCLuts7yGak6p8nO+ncPW+YFMDkHv3INChty2jM5IwNqmURxIhae4JIXu5EiHnmA1gXrY5Cps2/VUFbX6RovwOtIPLZS41Zu/1f06yPyBSWJFKCIpq/bpUKU9nJl+NNWoV/zSPFyXD+zrk+htPyZt+530Q30nOgbeug7Lq9hkReHrRb2gQHc7tuteE9NlpFjzyQVp508iVbE3Z0FaAmYg01B4aQW6JNE7j9kp+ObcPPf3L0hTyjyl4g08k2meabCbMlJfUlMyD0ibRhMKVdyyRQCtZwROv++V/7BghysXeBNkz4f0ONwLL1dNfWvR3UWjJLIhSNnrXtIywB/tEiLyAGhdnoAJlhbMPljYreltWA9Hy/Ep3vTWAsFq/4CaNHAGvCMZWKC2TvaV+Hh2hxWWd0c+lvj4/zbe/7yytoMoOEyOYciv/6pRNK83SZWpaZvsQwnc1LMNEbBO6bFvWHVlCYVxstyYlMYC4vwLOLFhNBW9YqJPN3Q/nz8yGeGabDblsKS/cyyWOPe+DJ1lJc4uCz4qh/uWAf8ADlWe3lpmmlCDzrxWVDxiDkIb9FTC6YM867J2GRlpr1OuO9GIjWAQgjuxFMKaAnBESwyIFNnHkRpB3+52X/x/4MnF1/GR1B6w0SqaZCQ8S1c4pQTLyFqiJdrFjGuwHEd0wOZVvNqsTLlTwc5TKQeSRA2R4gEIVWJFd8kWQlw9NNyEuUEX0qM++ZTP1ukraJU3+73FrE63XxuhaZjDXx2XcBVQoF1/L8Q2o28XFgFxQaGYCA==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(136003)(39860400002)(376002)(230922051799003)(64100799003)(451199024)(82310400011)(186009)(1800799009)(40470700004)(46966006)(36840700001)(83380400001)(7696005)(2616005)(47076005)(6666004)(36756003)(40140700001)(356005)(478600001)(36860700001)(40480700001)(86362001)(82740400003)(40460700003)(426003)(16526019)(6916009)(41300700001)(26005)(2906002)(8936002)(8676002)(70206006)(1076003)(5660300002)(336012)(4326008)(54906003)(81166007)(70586007)(44832011)(316002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 05:08:13.3108
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bca22eee-9ced-4f80-01a7-08dbc3cebec8
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042AA.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7303
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: y4kYZUoYcOqwTzT9s0RmF-rVO9o4g1cJ
+X-Proofpoint-GUID: y4kYZUoYcOqwTzT9s0RmF-rVO9o4g1cJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-03_02,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=877 spamscore=0
+ malwarescore=0 clxscore=1015 priorityscore=1501 mlxscore=0 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310030041
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When running turbostat, a system with 512 cpus reaches the limit for
-maximum number of file descriptors that can be opened. To solve this
-problem, the limit is raised to 2^15, which is a large enough number.
 
-Below data is collected from AMD server systems while running turbostat:
+On 9/27/2023 5:01 PM, Bryan O'Donoghue wrote:
+> On 27/09/2023 10:31, Sridharan S N wrote:
+>> IPQ bootloaders do not need these information to select the
+>> the DTB blob. So dropping the board names from board section.
+>>
+>> Signed-off-by: Sridharan S N <quic_sridsn@quicinc.com>
+>> ---
+>>   Documentation/devicetree/bindings/arm/qcom.yaml | 14 --------------
+>>   1 file changed, 14 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml 
+>> b/Documentation/devicetree/bindings/arm/qcom.yaml
+>> index 7f80f48a0954..5b56f3d90d4d 100644
+>> --- a/Documentation/devicetree/bindings/arm/qcom.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+>> @@ -91,24 +91,10 @@ description: |
+>>     The 'board' element must be one of the following strings:
+>>             adp
+>> -        ap-al02-c2
+>> -        ap-al02-c6
+>> -        ap-al02-c7
+>> -        ap-al02-c8
+>> -        ap-al02-c9
+>> -        ap-mi01.2
+>> -        ap-mi01.3
+>> -        ap-mi01.6
+>> -        ap-mi01.9
+>>           cdp
+>> -        cp01-c1
+>>           dragonboard
+>> -        hk01
+>> -        hk10-c1
+>> -        hk10-c2
+>>           idp
+>>           liquid
+>> -        rdp432-c2
+>>           mtp
+>>           qrd
+>>           rb2
+>
+> All bootloaders ? You are 100% sure that all versions of downstream 
+> u-boot don't rely on these strings ? Upstream u-boot too ?
+>
+> ---
+> bod
 
-|-----------+-------------------------------|
-| # of cpus | # of opened fds for turbostat |
-|-----------+-------------------------------|
-| 128       | 260                           |
-|-----------+-------------------------------|
-| 192       | 388                           |
-|-----------+-------------------------------|
-| 512       | 1028                          |
-|-----------+-------------------------------|
+Yes , we don't rely on these strings , instead downstream u-boot uses 
+machid to identify the DTB.
 
-So, the new max limit would be sufficient up to 2^14 cpus (but this
-also depends on how many counters are enabled).
+Thanks,
 
-Reviewed-by: Doug Smythies <dsmythies@telus.net>
-Tested-by: Doug Smythies <dsmythies@telus.net>
-Signed-off-by: Wyes Karny <wyes.karny@amd.com>
----
-v1 -> v2:
-- Take care of already higher rlim_max, rlim_curr
-- Minor tweak in commit text
-
- tools/power/x86/turbostat/turbostat.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-diff --git a/tools/power/x86/turbostat/turbostat.c b/tools/power/x86/turbostat/turbostat.c
-index 9a10512e3407..1563a0ae7e4c 100644
---- a/tools/power/x86/turbostat/turbostat.c
-+++ b/tools/power/x86/turbostat/turbostat.c
-@@ -53,6 +53,8 @@
- #define	NAME_BYTES 20
- #define PATH_BYTES 128
- 
-+#define MAX_NOFILE 0x8000
-+
- enum counter_scope { SCOPE_CPU, SCOPE_CORE, SCOPE_PACKAGE };
- enum counter_type { COUNTER_ITEMS, COUNTER_CYCLES, COUNTER_SECONDS, COUNTER_USEC };
- enum counter_format { FORMAT_RAW, FORMAT_DELTA, FORMAT_PERCENT };
-@@ -6717,6 +6719,22 @@ void cmdline(int argc, char **argv)
- 	}
- }
- 
-+void set_rlimit(void)
-+{
-+	struct rlimit limit;
-+
-+	if (getrlimit(RLIMIT_NOFILE, &limit) < 0)
-+		err(1, "Failed to get rlimit");
-+
-+	if (limit.rlim_max < MAX_NOFILE)
-+		limit.rlim_max = MAX_NOFILE;
-+	if (limit.rlim_cur < MAX_NOFILE)
-+		limit.rlim_cur = MAX_NOFILE;
-+
-+	if (setrlimit(RLIMIT_NOFILE, &limit) < 0)
-+		err(1, "Failed to set rlimit");
-+}
-+
- int main(int argc, char **argv)
- {
- 	outf = stderr;
-@@ -6729,6 +6747,9 @@ int main(int argc, char **argv)
- 
- 	probe_sysfs();
- 
-+	if (!getuid())
-+		set_rlimit();
-+
- 	turbostat_init();
- 
- 	msr_sum_record();
--- 
-2.34.1
+Sridharan S N
 
