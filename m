@@ -2,86 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79AFE7B6D4A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4157B6D4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232027AbjJCPjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 11:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50614 "EHLO
+        id S237250AbjJCPke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 11:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231833AbjJCPjn (ORCPT
+        with ESMTP id S231766AbjJCPk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 11:39:43 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0AB195
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:39:39 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-503397ee920so1316520e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 08:39:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696347578; x=1696952378; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0ExDWs22CqouqpPu+z2OTT2+Lny2f2DrlLFQpikfKgc=;
-        b=JIb/uNT3XeRqcVwJXYX+nV50CpAfzSrATpQcA7GG2Kbc1vzNkb7CyTWdXpjyv0M2nC
-         j8AWaFSVAfRjprgh50SUUH7mjvKgB/64bbbs+v1nFoOFPXXPtfg9GZd/nAx83wJFk59l
-         a4uhWOTMP9fy5ZdGT0Ta32rFEgrsnqtHbal3E7FEWhpChhiZHNbDmEqImVHTm2G5azG2
-         K0/s0v8GUBIlUAgWBs8HHLZWKzFe20G6StjjVfuCgcz4NnxTpUzxMXkp27wnJJv5w5tl
-         kSr2ktFPfotjEDohdEA1n85nWmciaxZbUesWw+opfIHT86z9OUzqjto3k2sH/Sz+AKOR
-         2ATA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696347578; x=1696952378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0ExDWs22CqouqpPu+z2OTT2+Lny2f2DrlLFQpikfKgc=;
-        b=t3sgPK8kU5zvt/SfOaSIy5k7sPVcn2RJ1Arn7OnVwcJq+RSf1yLFLXqzMnRnLAEQjC
-         yNiiRZ2cOSvm2dtR54fg+vOODqLoWYPiO1kXItH7RHuiMFnNyg7JhvkAmpySg43e8eDS
-         Fm/kHI4WfhJsgdszhYk8Ibssf0o49a269cWEmjFq77HoRTMXSdu0GUzwADFmrYZoGMAY
-         LLhw3Ad9loSrHlOYiK6Nfwuvn1+QHXxvc22dxbrXj43mSGdzOQ7xc3CsvydttLsF7L/s
-         /YmJwqwKZ5pxU067xHLESG1Jsy2pQFEmfz+juFS+dxR4/D7SYe7M6cRENBpP63+SWXiT
-         ZU+w==
-X-Gm-Message-State: AOJu0YzAOztXW2Ett4XXw4F5SWGyM83HCl+6OcPJXmWuTCiieZoDDtP9
-        66BtkPPTLGXWm1mICZDo4kLvF/z9FXIOmGZMnTo=
-X-Google-Smtp-Source: AGHT+IFZ5IvMYGEoG5wA5ML1toOnz+99UBbJfQ355ZBlwsVuO/M288NZFve5quihP9al8o8wuaVELi19PSmiEquHsoE=
-X-Received: by 2002:a19:7716:0:b0:503:1875:5ae5 with SMTP id
- s22-20020a197716000000b0050318755ae5mr11001875lfc.38.1696347577773; Tue, 03
- Oct 2023 08:39:37 -0700 (PDT)
+        Tue, 3 Oct 2023 11:40:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDF6A7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:40:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4B6DEC433C7;
+        Tue,  3 Oct 2023 15:40:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696347626;
+        bh=4+yCcSXsHd4MoVdHEC0vZG1u38JdAj+K8E7ian4dU50=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KNRUf2+O982oI0YZStrKSg7NLTF/nckCdyzp0lC3uT/zepAJ0yubT6igXCerIQuIS
+         uaccbYO08cGhksLHIAWIvLCzafHkMzwgn3YBnPEeD8g5kpIGqOyk9hiMljT01T9+DO
+         pIkUf2FNIcnwUcJ9TPT+YoJ04xhZr7s9NyL1bMeALMLvtHfcro/g/FEUwFFRrjQSRs
+         EzyCaWMSasHLeaMFAtgxqmOwnnvFJFK6sDaaREkK8q7XI7NOMdqkllVzHnFtDDQaOG
+         kn57Hy2ozFuVKzCGZrFAshPk3RqsCFvnOTE2lVXZIA3JEpZvz0f8NBPzyy4JlBtTVt
+         SdLBAC1jVAi6A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2F89BE270EF;
+        Tue,  3 Oct 2023 15:40:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20230926150316.1129648-1-cleger@rivosinc.com> <CALs-Hss+OK-vJy_ZKjVbGh7rTBZA+GditWcdM1XjDDskGF76Dw@mail.gmail.com>
- <10997d30-e6b7-4a24-a43e-e22679e8d450@rivosinc.com> <CALs-HssAAgbdUuoCyPEdjs+8yH+a8Gzz7jCpMre-6k21aE_sdQ@mail.gmail.com>
- <CAHBxVyEOvJy8gBfqW9v96XwW6_XFoWb3RdrL=AqMHJLHS7n2ww@mail.gmail.com>
-In-Reply-To: <CAHBxVyEOvJy8gBfqW9v96XwW6_XFoWb3RdrL=AqMHJLHS7n2ww@mail.gmail.com>
-From:   ron minnich <rminnich@gmail.com>
-Date:   Tue, 3 Oct 2023 09:39:26 -0600
-Message-ID: <CAP6exYJOvjvuyBBk81+wndFqONKZXn6aCgVPeksGe5rQXZ0xNg@mail.gmail.com>
-Subject: Re: [PATCH 0/7] Add support to handle misaligned accesses in S-mode
-To:     Atish Kumar Patra <atishp@rivosinc.com>
-Cc:     Evan Green <evan@rivosinc.com>,
-        =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        =?UTF-8?B?QmrDtnJuIFRvcGVs?= <bjorn@rivosinc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Daniel Maslowski <cyrevolt@googlemail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 net] net: nfc: llcp: Add lock when modifying device list
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169634762619.3806.17902886441122676535.git-patchwork-notify@kernel.org>
+Date:   Tue, 03 Oct 2023 15:40:26 +0000
+References: <20230925192351.40744-1-jeremy@jcline.org>
+In-Reply-To: <20230925192351.40744-1-jeremy@jcline.org>
+To:     Jeremy Cline <jeremy@jcline.org>
+Cc:     krzysztof.kozlowski@linaro.org, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        linma@zju.edu.cn, horms@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        syzbot+c1d0a03d305972dbbe14@syzkaller.appspotmail.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 2:40=E2=80=AFAM Atish Kumar Patra <atishp@rivosinc.c=
-om> wrote:
+Hello:
 
-> IMO, it should be sticky until a reset.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-that's a wonderful idea; perhaps this discussion needs to be held
-elsewhere, esp. as it regards possible violation of the spec. Thanks!
+On Mon, 25 Sep 2023 15:23:51 -0400 you wrote:
+> The device list needs its associated lock held when modifying it, or the
+> list could become corrupted, as syzbot discovered.
+> 
+> Reported-and-tested-by: syzbot+c1d0a03d305972dbbe14@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=c1d0a03d305972dbbe14
+> Fixes: 6709d4b7bc2e ("net: nfc: Fix use-after-free caused by nfc_llcp_find_local")
+> Signed-off-by: Jeremy Cline <jeremy@jcline.org>
+> 
+> [...]
+
+Here is the summary with links:
+  - [v2,net] net: nfc: llcp: Add lock when modifying device list
+    https://git.kernel.org/netdev/net/c/dfc7f7a988da
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
