@@ -2,260 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 714B57B70EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:33:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18AA37B70FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:33:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240786AbjJCSdL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 14:33:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49390 "EHLO
+        id S240790AbjJCSdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 14:33:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231670AbjJCSdK (ORCPT
+        with ESMTP id S240781AbjJCSdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:33:10 -0400
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A877683;
-        Tue,  3 Oct 2023 11:33:07 -0700 (PDT)
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-57c0775d4fcso236489eaf.0;
-        Tue, 03 Oct 2023 11:33:07 -0700 (PDT)
+        Tue, 3 Oct 2023 14:33:52 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B06ABB
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 11:33:48 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-65b0a54d436so7090746d6.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 11:33:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696358027; x=1696962827; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=R9RZg3twPdN7SJarZ/3IsJk/93o/jgnrY3ylxDmEVWY=;
+        b=eRtKp9K05iEcq6czK8WWvk3WTZ++XgFDyLqcu6+1oX0ugzs8SjqUerdeOsn8Jn+S+a
+         Rpy8LEd552jIM6/9NM7DAXHJHLHqrqEU9NkfUoEkAJsUCI4BBoOpbhMm2G1dEj63V9fv
+         /GYqc7rk7Ox2I814AlsLCgXMhhIGZ3uN5dkK/9Njfh/kuHoBPue1SCkb//S7UQQjvIwm
+         3dkBcWU5wQzUGxI2n4IsVN3KFkCvOu5/a7L0L1DgESfayIvlDgdBurP8CVKwG/KPWgtd
+         vToJJ9OFs+FK9KcJByAuVo/wM10OAXozd8GmN+xOsbcI+ovtuuCBE965+d1yFEMfZ+LE
+         LSFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696357987; x=1696962787;
+        d=1e100.net; s=20230601; t=1696358027; x=1696962827;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eEV1DyG9Qc64Bv5Nj/cVJ3Nlaofe0o2A5B76dhvJOR0=;
-        b=fyvx1VIyKJPzMNqtEWFxn+sceSxEeoNKH09rLT7l4oOeM9kc27ZGnPLJfylUgLCx24
-         RVvzlp9+j2V+lk5b3bXkHLRoJg2/Wl+jj/NqGO1Dh8APilEtIUxCkbRkzEW/XLnFfs5x
-         9peIPWQdRdGx71mkSUxTGxJvhYJkZ1c77L4zD1IHTdnxQWxz7+JQCdeziKI6kkMu8bcp
-         QHrhCKgY7ijGq0bvjtGXpQSKGrz+pFnVGoGNvR0tXfbm7p8QgAzhu516drrAmqd4BURV
-         P4Lxc5mWpFMj2L1UX3I+Wj44oH/ZW/rqSF3l6m0Odpdhr9VUvB/AZbaDfgF0y9UlB9jD
-         11Ew==
-X-Gm-Message-State: AOJu0Yzg+nnmjGplGr70SNVblUwFykZWQ+uUNzQmT2K7dxCKPX7XifSN
-        S9nWK7wHuDFx1nrpygEhixgunBlimPEU8yRmZBxLgtep
-X-Google-Smtp-Source: AGHT+IGgXGqt1HA2YNsmay2fzB7axy43vTxCwdNlq/iCy9H9wp+Amb6dGvxlkRaebr5vYEXXId6F5LasarxZdTLL/m8=
-X-Received: by 2002:a4a:de08:0:b0:56e:94ed:c098 with SMTP id
- y8-20020a4ade08000000b0056e94edc098mr219991oot.0.1696357986930; Tue, 03 Oct
- 2023 11:33:06 -0700 (PDT)
+        bh=R9RZg3twPdN7SJarZ/3IsJk/93o/jgnrY3ylxDmEVWY=;
+        b=RWUzvq/CPNm8uqD8mfLKfhsERQgeld5b2eryA0lpvWDH80ju2Frz8Q9ZWG5dxKJJDZ
+         4fB8WCM03XNdZv3tw3uhv1gScX7mXLaNp9O+BELl52mTuxTQwV+RtRDM/9LAZu6RJFDq
+         nihFJyNQk5T53OGRP1ZArZbzeacLfYhqIklT+A+fafHj6ipSAWSlEM0RCmZk9OL/Rats
+         tXJTwO01oBsRZeRWgpfsaIU6il2huiR6PI/DqIZ7a6eZBdUBowQOYtyRe3lpZrayPw5f
+         hM/pO39TMgv47oldFzAlVmUR01PPlB0HllCTet52E7yjm8VCoyO8Gpb3PeJd204f8vAj
+         Fs3w==
+X-Gm-Message-State: AOJu0Yw8Besi7NETWaqTvaID/oXO0jkCxpkcvyZAhS636itvMDT8gSjh
+        aSrbsnx6iHmGURDOTIArZFBAHWCtTOKHigOWYvYG4A==
+X-Google-Smtp-Source: AGHT+IFD9MiWpIrPl+X1KG+mF8SaIxZsGnEuN1WGAxrVYz5JoBkTLtzwKfCvY0TUsCLlDtWXvgqIVLrhKrhnAnrWPa0=
+X-Received: by 2002:a0c:c409:0:b0:64f:3699:90cd with SMTP id
+ r9-20020a0cc409000000b0064f369990cdmr170157qvi.42.1696358027177; Tue, 03 Oct
+ 2023 11:33:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230930002036.6491-1-scott@os.amperecomputing.com> <20230930002036.6491-2-scott@os.amperecomputing.com>
-In-Reply-To: <20230930002036.6491-2-scott@os.amperecomputing.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 3 Oct 2023 20:32:55 +0200
-Message-ID: <CAJZ5v0ggY7r2u26vBARy=WGxh0p_72fa7=mbxz1jJAH9dkDBpg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] PCI: hotplug: Add extension driver for Ampere
- Altra hotplug LED control
-To:     D Scott Phillips <scott@os.amperecomputing.com>
-Cc:     linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>,
-        Darren Hart <darren@os.amperecomputing.com>,
-        patches@amperecomputing.com
+References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-12-seanjc@google.com>
+ <CA+EHjTzSUXx8P9gWmUERg4owxH6r6yNPm1_RL-BzS_2CNPtRKw@mail.gmail.com> <ZRw6X2BptZnRPNK7@google.com>
+In-Reply-To: <ZRw6X2BptZnRPNK7@google.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Tue, 3 Oct 2023 19:33:09 +0100
+Message-ID: <CA+EHjTzx+0pxh7DYONZUeJsm1GCiC6L8Vg_Tm9MLVEae-FKuQg@mail.gmail.com>
+Subject: Re: [RFC PATCH v12 11/33] KVM: Introduce per-page memory attributes
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 2:20 AM D Scott Phillips
-<scott@os.amperecomputing.com> wrote:
->
-> On Ampere Altra, PCIe hotplug is handled through ACPI. A side interface is
-> also present to request system firmware control of attention LEDs. Add an
-> ACPI PCI Hotplug companion driver to support attention LED control.
->
-> Signed-off-by: D Scott Phillips <scott@os.amperecomputing.com>
+Hi Sean,
 
-Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-for the probing part.
+On Tue, Oct 3, 2023 at 4:59=E2=80=AFPM Sean Christopherson <seanjc@google.c=
+om> wrote:
+>
+> On Tue, Oct 03, 2023, Fuad Tabba wrote:
+> > Hi,
+> >
+> > > diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> > > index d2d913acf0df..f8642ff2eb9d 100644
+> > > --- a/include/uapi/linux/kvm.h
+> > > +++ b/include/uapi/linux/kvm.h
+> > > @@ -1227,6 +1227,7 @@ struct kvm_ppc_resize_hpt {
+> > >  #define KVM_CAP_ARM_EAGER_SPLIT_CHUNK_SIZE 228
+> > >  #define KVM_CAP_ARM_SUPPORTED_BLOCK_SIZES 229
+> > >  #define KVM_CAP_USER_MEMORY2 230
+> > > +#define KVM_CAP_MEMORY_ATTRIBUTES 231
+> > >
+> > >  #ifdef KVM_CAP_IRQ_ROUTING
+> > >
+> > > @@ -2293,4 +2294,17 @@ struct kvm_s390_zpci_op {
+> > >  /* flags for kvm_s390_zpci_op->u.reg_aen.flags */
+> > >  #define KVM_S390_ZPCIOP_REGAEN_HOST    (1 << 0)
+> > >
+> > > +/* Available with KVM_CAP_MEMORY_ATTRIBUTES */
+> > > +#define KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES    _IOR(KVMIO,  0xd2, __=
+u64)
+> > > +#define KVM_SET_MEMORY_ATTRIBUTES              _IOW(KVMIO,  0xd3, st=
+ruct kvm_memory_attributes)
+> > > +
+> > > +struct kvm_memory_attributes {
+> > > +       __u64 address;
+> > > +       __u64 size;
+> > > +       __u64 attributes;
+> > > +       __u64 flags;
+> > > +};
+> > > +
+> > > +#define KVM_MEMORY_ATTRIBUTE_PRIVATE           (1ULL << 3)
+> > > +
+> >
+> > In pKVM, we don't want to allow setting (or clearing) of PRIVATE/SHARED
+> > attributes from userspace.
+>
+> Why not?  The whole thing falls apart if userspace doesn't *know* the sta=
+te of a
+> page, and the only way for userspace to know the state of a page at a giv=
+en moment
+> in time is if userspace controls the attributes.  E.g. even if KVM were t=
+o provide
+> a way for userspace to query attributes, the attributes exposed to usrspa=
+ce would
+> become stale the instant KVM drops slots_lock (or whatever lock protects =
+the attributes)
+> since userspace couldn't prevent future changes.
 
-> ---
-> Changes since v1:
-> - remove build-as-module restriction
-> - add some more description
-> - don't open code PCI_SLOT()
-> - convert to a platform driver
+I think I might not quite understand the purpose of the
+KVM_SET_MEMORY_ATTRIBUTES ABI. In pKVM, all of a protected guest's
+memory is private by default, until the guest shares it with the host
+(via a hypercall), or another guest (future work). When the guest
+shares it, userspace is notified via KVM_EXIT_HYPERCALL. In many use
+cases, userspace doesn't need to keep track directly of all of this,
+but can reactively un/map the memory being un/shared.
+
+> Why does pKVM need to prevent userspace from stating *its* view of attrib=
+utes?
 >
->  drivers/pci/hotplug/Kconfig                |  12 ++
->  drivers/pci/hotplug/Makefile               |   1 +
->  drivers/pci/hotplug/acpiphp_ampere_altra.c | 127 +++++++++++++++++++++
->  3 files changed, 140 insertions(+)
->  create mode 100644 drivers/pci/hotplug/acpiphp_ampere_altra.c
+> If the goal is to reduce memory overhead, that can be solved by using an =
+internal,
+> non-ABI attributes flag to track pKVM's view of SHARED vs. PRIVATE.  If t=
+he guest
+> attempts to access memory where pKVM and userspace don't agree on the sta=
+te,
+> generate an exit to userspace.  Or kill the guest.  Or do something else =
+entirely.
+
+For the pKVM hypervisor the guest's view of the attributes doesn't
+matter. The hypervisor at the end of the day is the ultimate arbiter
+for what is shared and with how. For pKVM (at least in my port of
+guestmem), we use the memory attributes from guestmem essentially to
+control which memory can be mapped by the host.
+
+One difference between pKVM and TDX (as I understand it), is that TDX
+uses the msb of the guest's IPA to indicate whether memory is shared
+or private, and that can generate a mismatch on guest memory access
+between what it thinks the state is, and what the sharing state in
+reality is. pKVM doesn't have that. Memory is private by default, and
+can be shared in-place, both in the guest's IPA space as well as the
+underlying physical page.
+
+> > However, we'd like to use the attributes xarray to track the sharing st=
+ate of
+> > guest pages at the host kernel.
+> >
+> > Moreover, we'd rather the default guest page state be PRIVATE, and
+> > only specify which pages are shared. All pKVM guest pages start off as
+> > private, and the majority will remain so.
 >
-> diff --git a/drivers/pci/hotplug/Kconfig b/drivers/pci/hotplug/Kconfig
-> index 48113b210cf93..1472aef0fb812 100644
-> --- a/drivers/pci/hotplug/Kconfig
-> +++ b/drivers/pci/hotplug/Kconfig
-> @@ -61,6 +61,18 @@ config HOTPLUG_PCI_ACPI
+> I would rather optimize kvm_vm_set_mem_attributes() to generate range-bas=
+ed
+> xarray entries, at which point it shouldn't matter all that much whether =
+PRIVATE
+> or SHARED is the default "empty" state.  We opted not to do that for the =
+initial
+> merge purely to keep the code as simple as possible (which is obviously s=
+till not
+> exactly simple).
 >
->           When in doubt, say N.
+> With range-based xarray entries, the cost of tagging huge chunks of memor=
+y as
+> PRIVATE should be a non-issue.  And if that's not enough for whatever rea=
+son, I
+> would rather define the polarity of PRIVATE on a per-VM basis, but only f=
+or internal
+> storage.
+
+Sounds good.
+
+> > I'm not sure if this is the best way to do this: One idea would be to m=
+ove
+> > the definition of KVM_MEMORY_ATTRIBUTE_PRIVATE to
+> > arch/*/include/asm/kvm_host.h, which is where kvm_arch_supported_attrib=
+utes()
+> > lives as well. This would allow different architectures to specify thei=
+r own
+> > attributes (i.e., instead we'd have a KVM_MEMORY_ATTRIBUTE_SHARED for p=
+KVM).
+> > This wouldn't help in terms of preventing userspace from clearing attri=
+butes
+> > (i.e., setting a 0 attribute) though.
+> >
+> > The other thing, which we need for pKVM anyway, is to make
+> > kvm_vm_set_mem_attributes() global, so that it can be called from outsi=
+de of
+> > kvm_main.c (already have a local patch for this that declares it in
+> > kvm_host.h),
 >
-> +config HOTPLUG_PCI_ACPI_AMPERE_ALTRA
-> +       tristate "ACPI PCI Hotplug driver Ampere Altra extensions"
-> +       depends on HOTPLUG_PCI_ACPI
-> +       depends on HAVE_ARM_SMCCC_DISCOVERY
-> +       help
-> +         Say Y here if you have an Ampere Altra system.
-> +
-> +         To compile this driver as a module, choose M here: the
-> +         module will be called acpiphp_ampere_altra.
-> +
-> +         When in doubt, say N.
-> +
->  config HOTPLUG_PCI_ACPI_IBM
->         tristate "ACPI PCI Hotplug driver IBM extensions"
->         depends on HOTPLUG_PCI_ACPI
-> diff --git a/drivers/pci/hotplug/Makefile b/drivers/pci/hotplug/Makefile
-> index 5196983220df6..240c99517d5e9 100644
-> --- a/drivers/pci/hotplug/Makefile
-> +++ b/drivers/pci/hotplug/Makefile
-> @@ -23,6 +23,7 @@ obj-$(CONFIG_HOTPLUG_PCI_S390)                += s390_pci_hpc.o
+> That's no problem, but I am definitely opposed to KVM modifying attribute=
+s that
+> are owned by userspace.
 >
->  # acpiphp_ibm extends acpiphp, so should be linked afterwards.
+> > and not gate this function by KVM_GENERIC_MEMORY_ATTRIBUTES.
 >
-> +obj-$(CONFIG_HOTPLUG_PCI_ACPI_AMPERE_ALTRA)    += acpiphp_ampere_altra.o
->  obj-$(CONFIG_HOTPLUG_PCI_ACPI_IBM)     += acpiphp_ibm.o
->
->  pci_hotplug-objs       :=      pci_hotplug_core.o
-> diff --git a/drivers/pci/hotplug/acpiphp_ampere_altra.c b/drivers/pci/hotplug/acpiphp_ampere_altra.c
-> new file mode 100644
-> index 0000000000000..1b1fe5d6a3fbf
-> --- /dev/null
-> +++ b/drivers/pci/hotplug/acpiphp_ampere_altra.c
-> @@ -0,0 +1,127 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * ACPI PCI Hot Plug Extension for Ampere Altra. Allows control of
-> + * attention LEDs via requests to system firmware.
-> + *
-> + * Copyright (C) 2023 Ampere Computing LLC
-> + */
-> +
-> +#define pr_fmt(fmt) "acpiphp_ampere_altra: " fmt
-> +
-> +#include <linux/init.h>
-> +#include <linux/module.h>
-> +#include <linux/pci.h>
-> +#include <linux/pci_hotplug.h>
-> +#include <linux/platform_device.h>
-> +
-> +#include "acpiphp.h"
-> +
-> +#define HANDLE_OPEN    0xb0200000
-> +#define HANDLE_CLOSE   0xb0300000
-> +#define REQUEST                0xf0700000
-> +#define LED_CMD                0x00000004
-> +#define LED_ATTENTION  0x00000002
-> +#define LED_SET_ON     0x00000001
-> +#define LED_SET_OFF    0x00000002
-> +#define LED_SET_BLINK  0x00000003
-> +
-> +static u32 led_service_id[4];
-> +
-> +static int led_status(u8 status)
-> +{
-> +       switch (status) {
-> +       case 1: return LED_SET_ON;
-> +       case 2: return LED_SET_BLINK;
-> +       default: return LED_SET_OFF;
-> +       }
-> +}
-> +
-> +static int set_attention_status(struct hotplug_slot *slot, u8 status)
-> +{
-> +       struct arm_smccc_res res;
-> +       struct pci_bus *bus;
-> +       struct pci_dev *root_port;
-> +       unsigned long flags;
-> +       u32 handle;
-> +       int ret = 0;
-> +
-> +       bus = slot->pci_slot->bus;
-> +       root_port = pcie_find_root_port(bus->self);
-> +       if (!root_port)
-> +               return -ENODEV;
-> +
-> +       local_irq_save(flags);
-> +       arm_smccc_smc(HANDLE_OPEN, led_service_id[0], led_service_id[1],
-> +                     led_service_id[2], led_service_id[3], 0, 0, 0, &res);
-> +       if (res.a0) {
-> +               ret = -ENODEV;
-> +               goto out;
-> +       }
-> +       handle = res.a1 & 0xffff0000;
-> +
-> +       arm_smccc_smc(REQUEST, LED_CMD, led_status(status), LED_ATTENTION,
-> +                     pci_domain_nr(bus) | (PCI_SLOT(root_port->devfn) << 4), 0, 0,
-> +                     handle, &res);
-> +       if (res.a0)
-> +               ret = -ENODEV;
-> +
-> +       arm_smccc_smc(HANDLE_CLOSE, handle, 0, 0, 0, 0, 0, 0, &res);
-> +
-> + out:
-> +       local_irq_restore(flags);
-> +       return ret;
-> +}
-> +
-> +static int get_attention_status(struct hotplug_slot *slot, u8 *status)
-> +{
-> +       return -EINVAL;
-> +}
-> +
-> +static struct acpiphp_attention_info ampere_altra_attn = {
-> +       .set_attn = set_attention_status,
-> +       .get_attn = get_attention_status,
-> +       .owner = THIS_MODULE,
-> +};
-> +
-> +static int altra_led_probe(struct platform_device *pdev)
-> +{
-> +       struct fwnode_handle *fwnode = dev_fwnode(&pdev->dev);
-> +       int ret;
-> +
-> +       ret = fwnode_property_read_u32_array(fwnode, "uuid", led_service_id, 4);
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "can't find uuid\n");
-> +               return ret;
-> +       }
-> +
-> +       ret = acpiphp_register_attention(&ampere_altra_attn);
-> +       if (ret) {
-> +               dev_err(&pdev->dev, "can't register driver\n");
-> +               return ret;
-> +       }
-> +       return 0;
-> +}
-> +
-> +static void altra_led_remove(struct platform_device *pdev)
-> +{
-> +       acpiphp_unregister_attention(&ampere_altra_attn);
-> +}
-> +
-> +static const struct acpi_device_id altra_led_ids[] = {
-> +       { "AMPC0008", 0 },
-> +       { }
-> +};
-> +MODULE_DEVICE_TABLE(acpi, altra_led_ids);
-> +
-> +static struct platform_driver altra_led_driver = {
-> +       .driver = {
-> +               .name = "ampere-altra-leds",
-> +               .acpi_match_table = altra_led_ids,
-> +       },
-> +       .probe = altra_led_probe,
-> +       .remove_new = altra_led_remove,
-> +};
-> +module_platform_driver(altra_led_driver);
-> +
-> +MODULE_AUTHOR("D Scott Phillips <scott@os.amperecomputing.com>");
-> +MODULE_LICENSE("GPL");
-> --
-> 2.41.0
->
+> As above, I am opposed to pKVM having a completely different ABI for mana=
+ging
+> PRIVATE vs. SHARED.  I have no objection to pKVM using unclaimed flags in=
+ the
+> attributes to store extra metadata, but if KVM_SET_MEMORY_ATTRIBUTES does=
+n't work
+> for pKVM, then we've failed miserably and should revist the uAPI.
+
+Like I said, pKVM doesn't need a userspace ABI for managing
+PRIVATE/SHARED, just a way of tracking in the host kernel of what is
+shared (as opposed to the hypervisor, which already has the
+knowledge). The solution could simply be that pKVM does not enable
+KVM_GENERIC_MEMORY_ATTRIBUTES, has its own tracking of the status of
+the guest pages, and only selects KVM_PRIVATE_MEM.
+
+Thanks!
+/fuad
