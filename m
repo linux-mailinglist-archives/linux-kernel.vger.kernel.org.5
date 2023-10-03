@@ -2,66 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D11DA7B5DE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 01:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70AE7B5DEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbjJBXyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 19:54:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52288 "EHLO
+        id S230046AbjJCABg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 20:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbjJBXyO (ORCPT
+        with ESMTP id S229711AbjJCABf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 19:54:14 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12CE590
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 16:54:11 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c434c33ec0so2583655ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 16:54:11 -0700 (PDT)
+        Mon, 2 Oct 2023 20:01:35 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5D5B9D;
+        Mon,  2 Oct 2023 17:01:32 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c3bd829b86so2854495ad.0;
+        Mon, 02 Oct 2023 17:01:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696290850; x=1696895650; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ri2H++HoCXFAmUL0q2wpktG5mORN8GB1kk/7QHCMaos=;
-        b=YZkgpR1zirPII/O6NeTEUh28T46qP5l6LA4dnLoXoae9eojCuNrf+NSqHdmX/LFf/V
-         C2+mfFaO4t0x6ziL7zXT6L9BAKeUxQYKxigRvNCfwcLrK6jgLhjwpDzqMfNDGbpbGoid
-         sbSR3LOTZrFtOazurohvpmzeUNE/FOSPmz/GI=
+        d=gmail.com; s=20230601; t=1696291292; x=1696896092; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=giEViECLPwO3fjVio1lGB0IuquaLWAMa99YP4JVkHs0=;
+        b=lWBnigzEi0868fNrMPuAqfJ2/7isfP0nFkADvzfsZ0c5ZIM0Pf+umcUwmEkRspUnxA
+         lcBgd2tvo+4uf8PIVEs8OjydlrQQ9WmwqOhH5j/Cqm++mwMxWqRes4EPR2hYG1DRDe3c
+         1wYkAeYzta20rhVekRMPFtaMrWFVZ5NxRViYlFI5fumkRFWd6Fz3+5stdvmlQmwgKc7D
+         bBs0WEbj8Q/pLfARq3Tof3hwLqmMBk7Lu+stzOO6pPhKakTyWxdWA0fQPSF9yDsbtBId
+         CIFDo/MASxh2omSNLG7/973zxVJ2V1wjIjkaRNsVXZ2toPwKbIYPq1q4n2CQndHMrSAy
+         DF8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696290850; x=1696895650;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ri2H++HoCXFAmUL0q2wpktG5mORN8GB1kk/7QHCMaos=;
-        b=YG3TwTdVu/9pVNHTNNanHvoPdvAY+elDv5Bhzi4TcUa0PbOUe1KWhLlc7FVjyzjDPr
-         J2msC3WNBg+d6fgeem7Fw4Vhq5CLhHFLIT+EnS81Awx2xMBNo9kxAqFXf4XdHkyTYssS
-         oaDxwRQ4TrK5vi1tVyyiVlJftEnO3z6gQUy7dYGi0oAPcKs+bOecTeKK9hp8t7pAwwIJ
-         oby50iVZfU8pSxxTvl3IZ25j9VAkQT9NPYX9qzqOp02gVRJOUWe+Vl5BEFYgq5mejHce
-         b2ULOkv6NQ44kNks/WSEp2hN5UNbASCHwEJEwvNiiVUAAlSI+c7TsMgHdxeINjFZhbtA
-         aMww==
-X-Gm-Message-State: AOJu0YxtNz9DTkLIttjBU0F2OAGsGkDNTcBx1ptA2dJa3xId6CQrzKZk
-        prqMbevY2mCHHqjXqNj9gXlsLw==
-X-Google-Smtp-Source: AGHT+IGOU6FXeF+Mqr7pHXMQjIlmKusQnIePSZpUSkDMPro+oP9wmgspqehR3tapjacP7Wamne+/hg==
-X-Received: by 2002:a17:903:48c:b0:1c5:dfe9:b1f3 with SMTP id jj12-20020a170903048c00b001c5dfe9b1f3mr10596391plb.16.1696290850436;
-        Mon, 02 Oct 2023 16:54:10 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:11a:201:f676:8db:8677:aefe])
-        by smtp.gmail.com with ESMTPSA id 12-20020a170902ee4c00b001c3ea6073e0sm32167plo.37.2023.10.02.16.54.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 16:54:09 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        dri-devel@lists.freedesktop.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: [PATCH] drm/bridge: ti-sn65dsi86: Associate DSI device lifetime with auxiliary device
-Date:   Mon,  2 Oct 2023 16:54:06 -0700
-Message-ID: <20231002235407.769399-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+        d=1e100.net; s=20230601; t=1696291292; x=1696896092;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=giEViECLPwO3fjVio1lGB0IuquaLWAMa99YP4JVkHs0=;
+        b=tUAmrRfAghYiQRwRbzO9XBxV9Z42owYmR2YMQfKRfMibzBGV9TKhjaxHdGvsCGbyUD
+         kdVZDh+gdtrvwAsjeWUIHelt4aM5BUTPayrnhaAhFdn3En9wPhlEW1PBtpy0sl86yJ0E
+         8CBcjNdb6jip5XoiZd8CXXE8c5iSKBJcUU8nlOv0xcMbdimXXVbpvDYiVOQ8MyVGn7rt
+         9VWP6ftibB58hBa131WCAMJa2ewutEYiwfRbf7fYHTDMJhplfYg6n6beywuR8zqrL56H
+         ca40caRi2wxvKPq+vzu3sOwN2EVXPOIQ2bcGzNeaWt6r916FwnSsbXvWqbTb0kq0pFWG
+         aVXQ==
+X-Gm-Message-State: AOJu0Ywj+BvAIJA9mC7sBHuXnx+Sm+q3duboUt2n7aEueelIJ8F9HIkF
+        x26pBWbMorkPeP68dcZFjqo=
+X-Google-Smtp-Source: AGHT+IGep+h5CidOt2lcVjKUFb4zmJXRx2tKw56kYtoQ+HJ/ZjrNIMHluFLqPHgBUHTuzM0fYarC5A==
+X-Received: by 2002:a17:903:4284:b0:1c3:2423:8e24 with SMTP id ju4-20020a170903428400b001c324238e24mr10866641plb.8.1696291292342;
+        Mon, 02 Oct 2023 17:01:32 -0700 (PDT)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id jb9-20020a170903258900b001b89a6164desm36792plb.118.2023.10.02.17.01.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 17:01:31 -0700 (PDT)
+Message-ID: <c68ff294-0060-4621-82d9-61b6bbc12078@gmail.com>
+Date:   Tue, 3 Oct 2023 07:01:25 +0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla Thunderbird
+Subject: Re: rt8000usb driver issue (maybe interaction with other drivers)
+To:     Stanislaw Gruszka <stf_xl@wp.pl>
+Cc:     enc0der <enc0der@gmail.com>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Wireless <linux-wireless@vger.kernel.org>
+References: <CAEXpi5Rd6Y4umKOWRsCjX0kit=W5ZrVhn=MuRkyvJPwmjjDVnA@mail.gmail.com>
+ <ZRj_ovMi-Xbb8i-D@debian.me> <20231002185053.GB402943@wp.pl>
+Content-Language: en-US
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <20231002185053.GB402943@wp.pl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,87 +77,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel produces a warning splat and the DSI device fails to register
-in this driver if the i2c driver probes, populates child auxiliary
-devices, and then somewhere in ti_sn_bridge_probe() a function call
-returns -EPROBE_DEFER. When the auxiliary driver probe defers, the dsi
-device created by devm_mipi_dsi_device_register_full() is left
-registered because the devm managed device used to manage the lifetime
-of the DSI device is the parent i2c device, not the auxiliary device
-that is being probed.
+On 03/10/2023 01:50, Stanislaw Gruszka wrote:
+> 
+> (cc list is too big, I shrink it)
+> 
+> On Sun, Oct 01, 2023 at 12:12:02PM +0700, Bagas Sanjaya wrote:
+>> On Sat, Sep 30, 2023 at 06:04:22PM -0400, enc0der wrote:
+>>> [   28.071586] lr : arm_smmu_dma_sync+0x40/0x70
+>>> [   28.075965] sp : ffff8000100231a0
+>>> [   28.079365] x29: 0000000000001000 x28: ffff4655c01d0ec0
+>>> [   28.084817] x27: ffffaced1f227000 x26: ffff4655c6ee32c0
+>>> [   28.090270] x25: 0000000000000000 x24: ffffaced1e405858
+>>> [   28.095718] x23: ffff46572e84ae00 x22: ffff4655c6ee2c40
+>>> [   28.101165] x21: ffff4655c82c3480 x20: ffffaced1db49e08
+>>> [   28.106618] x19: ffff8000100231c0 x18: 0000000000010101
+>>> [   28.112073] x17: 0000000000cccccc x16: ffffaced1d23382c
+>>> [   28.117520] x15: 0000000000000000 x14: 0000000000000000
+>>> [   28.122970] x13: 0000000000000001 x12: 0000000000000000
+>>> [   28.128421] x11: 0000000000000008 x10: 0000000000000ab0
+>>> [   28.133863] x9 : ffff800010023180 x8 : ffff4655c6ee3750
+>>> [   28.139309] x7 : 000000067eb29c20 x6 : 0000000000000238
+>>> [   28.144763] x5 : 00000000410fd420 x4 : 0000000000f0000f
+>>> [   28.150214] x3 : 0000000000001000 x2 : ffff4655c82c3480
+>>> [   28.155658] x1 : ffffaced1db49e08 x0 : ffff465704c37558
+>>> [   28.161107] Call trace:
+>>> [   28.163620]  0x1000
+>>> [   28.165777] Code: bad PC value
+>>> [   28.168911] ---[ end trace 62dc42c98ec427ca ]---
+>>> [   28.183964] Kernel panic - not syncing: Oops: Fatal exception
+>>> [   28.189864] SMP: stopping secondary CPUs
+>>> [   29.275883] SMP: failed to stop secondary CPUs 0-5
+>>> [   29.280811] Kernel Offset: 0x2ced0d200000 from 0xffff800010000000
+> 
+> This actually suggest that the issue is somewhere in the core.
+> But again, without full logs we can not be sure.
+> 
 
-Associate the DSI device created and managed by this driver to the
-lifetime of the auxiliary device, not the i2c device, so that the DSI
-device is removed when the auxiliary driver unbinds. Similarly change
-the device pointer used for dev_err_probe() so the deferred probe errors
-are associated with the auxiliary device instead of the parent i2c
-device so we can narrow down future problems faster.
+The reason why I added RCU subsystem maintainers to the Cc: list
+was because the log the reporter provided points warning to
+kernel/rcu/tree_plugin.h.
 
-Cc: Douglas Anderson <dianders@chromium.org>
-Cc: Maxime Ripard <maxime@cerno.tech>
-Fixes: c3b75d4734cb ("drm/bridge: sn65dsi86: Register and attach our DSI device at probe")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/gpu/drm/bridge/ti-sn65dsi86.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+Thanks.
 
-diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-index f448b903e190..84148a79414b 100644
---- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-+++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
-@@ -692,7 +692,7 @@ static struct ti_sn65dsi86 *bridge_to_ti_sn65dsi86(struct drm_bridge *bridge)
- 	return container_of(bridge, struct ti_sn65dsi86, bridge);
- }
- 
--static int ti_sn_attach_host(struct ti_sn65dsi86 *pdata)
-+static int ti_sn_attach_host(struct auxiliary_device *adev, struct ti_sn65dsi86 *pdata)
- {
- 	int val;
- 	struct mipi_dsi_host *host;
-@@ -707,7 +707,7 @@ static int ti_sn_attach_host(struct ti_sn65dsi86 *pdata)
- 	if (!host)
- 		return -EPROBE_DEFER;
- 
--	dsi = devm_mipi_dsi_device_register_full(dev, host, &info);
-+	dsi = devm_mipi_dsi_device_register_full(&adev->dev, host, &info);
- 	if (IS_ERR(dsi))
- 		return PTR_ERR(dsi);
- 
-@@ -725,7 +725,7 @@ static int ti_sn_attach_host(struct ti_sn65dsi86 *pdata)
- 
- 	pdata->dsi = dsi;
- 
--	return devm_mipi_dsi_attach(dev, dsi);
-+	return devm_mipi_dsi_attach(&adev->dev, dsi);
- }
- 
- static int ti_sn_bridge_attach(struct drm_bridge *bridge,
-@@ -1298,9 +1298,9 @@ static int ti_sn_bridge_probe(struct auxiliary_device *adev,
- 	struct device_node *np = pdata->dev->of_node;
- 	int ret;
- 
--	pdata->next_bridge = devm_drm_of_get_bridge(pdata->dev, np, 1, 0);
-+	pdata->next_bridge = devm_drm_of_get_bridge(&adev->dev, np, 1, 0);
- 	if (IS_ERR(pdata->next_bridge))
--		return dev_err_probe(pdata->dev, PTR_ERR(pdata->next_bridge),
-+		return dev_err_probe(&adev->dev, PTR_ERR(pdata->next_bridge),
- 				     "failed to create panel bridge\n");
- 
- 	ti_sn_bridge_parse_lanes(pdata, np);
-@@ -1319,9 +1319,9 @@ static int ti_sn_bridge_probe(struct auxiliary_device *adev,
- 
- 	drm_bridge_add(&pdata->bridge);
- 
--	ret = ti_sn_attach_host(pdata);
-+	ret = ti_sn_attach_host(adev, pdata);
- 	if (ret) {
--		dev_err_probe(pdata->dev, ret, "failed to attach dsi host\n");
-+		dev_err_probe(&adev->dev, ret, "failed to attach dsi host\n");
- 		goto err_remove_bridge;
- 	}
- 
-
-base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
 -- 
-https://chromeos.dev
+An old man doll... just what I always wanted! - Clara
 
