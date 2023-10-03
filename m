@@ -2,45 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA8267B696C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A3B7B696F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:51:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231192AbjJCMus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 08:50:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53440 "EHLO
+        id S230500AbjJCMvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 08:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjJCMur (ORCPT
+        with ESMTP id S229689AbjJCMvV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 08:50:47 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0172BB8;
-        Tue,  3 Oct 2023 05:50:42 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08C5CC433C8;
-        Tue,  3 Oct 2023 12:50:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1696337442;
-        bh=j+yGGSzRCSvGI/VJZ5tDD+R9hNuauFXWos6gg7ksK9g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MJ/oN8aJ2bpGvvD6dW8Tl/VepfemAorPEeTPmXgk+EErVwRslYPEqRtn2CFCG+9bC
-         Kdham49WtkR5Afs9wCaVRtcEPN52xWOxV74AR2FqZFbtQV1GB1QabIZuJF076ivub1
-         KcGbEYaDsOVuqk9rEUlR8EwP7tSHh4zrGN0UySKk=
-Date:   Tue, 3 Oct 2023 14:50:39 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Dan Raymond <raymod2@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-serial <linux-serial@vger.kernel.org>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-        hpa@zytor.com, peterz@infradead.org,
-        andriy.shevchenko@linux.intel.com
-Subject: Re: [PATCH v3] arch/x86: port I/O tracing on x86
-Message-ID: <2023100344-dart-jailbreak-c371@gregkh>
-References: <b8eae358-a3b3-fd68-82f1-b2c53534b922@gmail.com>
+        Tue, 3 Oct 2023 08:51:21 -0400
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED6D91;
+        Tue,  3 Oct 2023 05:51:15 -0700 (PDT)
+Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 1C85687102;
+        Tue,  3 Oct 2023 14:51:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1696337473;
+        bh=aaprkLAz8M28X4vHEFfK4xuZcsmFV8/uA9susaQBpHI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gUy6gV7Jf2LmC+75CGPiHiNeLdQZqdbjOXHDGCWy2IVIny+rTbN0fjqN1FO5z4Mgh
+         AnuxgZrU5yy8FI4edE5i46BvziysCcF3FhxL3BqaSe4Q0ggW2GHUDbFmY6zKMJh3ja
+         juiXSzXboZewVRIKjTZKxkRwjcDGyoTTTewijkPqkzbyIV6rrjafLgeiQvncpjTuti
+         a5fCeLJJvMocllC96iDPP9A6oITP10g/Chr6b4YrJrvf0ozPoHVOSuSzGJS0J5t0U1
+         ayAYjXGp0k4svj0ufq53k5UxWinq4/Ed8mX8C4PXGzubg4uYkV3AXxKAqG+j/nKOlH
+         cpc789T6qLz2Q==
+Date:   Tue, 3 Oct 2023 14:51:06 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        davem@davemloft.net, Oleksij Rempel <o.rempel@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 net-next 0/5] net: dsa: hsr: Enable HSR HW offloading
+ for KSZ9477
+Message-ID: <20231003145106.3cd5a19f@wsk>
+In-Reply-To: <20231003104410.dhngn3vvdfdcurga@skbuf>
+References: <20230922133108.2090612-1-lukma@denx.de>
+        <20230926225401.bganxwmtrgkiz2di@skbuf>
+        <20230928124127.379115e6@wsk>
+        <20231003095832.4bec4c72@wsk>
+        <20231003104410.dhngn3vvdfdcurga@skbuf>
+Organization: denx.de
+X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b8eae358-a3b3-fd68-82f1-b2c53534b922@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+Content-Type: multipart/signed; boundary="Sig_/DeKx4JaPtFZ3VK4fxaRFAgh";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,214 +67,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 01:15:41PM -0600, Dan Raymond wrote:
-> Add support for port I/O tracing on x86.  Memory mapped I/O tracing is
-> available on x86 via CONFIG_MMIOTRACE but that relies on page faults
-> so it doesn't work with port I/O.  This feature uses tracepoints in a
-> similar manner as CONFIG_TRACE_MMIO_ACCESS.
-> 
-> Signed-off-by: Dan Raymond <raymod2@gmail.com>
-> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> V1 -> V2:
->   - create header file for prototypes to silence new compiler warning
->   - reduce CPU overhead to 2 instructions (no branching) when tracing disabled
->   - fix imprecise IP logging by retrieving the IP off the stack instead of using
->     compile time labels
-> 
-> V2 -> V3:
->   - restore missing semicolon
-> 
->  arch/x86/include/asm/shared/io.h | 25 ++++++++++++++++
->  arch/x86/lib/Makefile            |  1 +
->  arch/x86/lib/trace_portio.c      | 21 ++++++++++++++
->  include/linux/trace_portio.h     |  6 ++++
->  include/trace/events/portio.h    | 49 ++++++++++++++++++++++++++++++++
->  5 files changed, 102 insertions(+)
->  create mode 100644 arch/x86/lib/trace_portio.c
->  create mode 100644 include/linux/trace_portio.h
->  create mode 100644 include/trace/events/portio.h
-> 
-> diff --git a/arch/x86/include/asm/shared/io.h b/arch/x86/include/asm/shared/io.h
-> index c0ef921c0586..9e5dce1cb62d 100644
-> --- a/arch/x86/include/asm/shared/io.h
-> +++ b/arch/x86/include/asm/shared/io.h
-> @@ -2,13 +2,36 @@
->  #ifndef _ASM_X86_SHARED_IO_H
->  #define _ASM_X86_SHARED_IO_H
->  
-> +#include <linux/trace_portio.h>
->  #include <linux/types.h>
->  
-> +/*
-> + * We don't want the tracing logic included in the early boot modules (under
-> + * arch/x86/boot) so we check for their include guards here.  If we don't do
-> + * this we will get compiler errors.  These checks are not present in
-> + * arch/x86/include/asm/msr.h which contains similar tracing logic.  That is
-> + * possible only because none of the msr inline functions are instantiated in
-> + * the early boot modules.  If that changes this issue will need to be addressed
-> + * there as well.  Therefore it might be better to handle this centrally in
-> + * tracepoint-defs.h.
-> + */
-> +
-> +#if defined(CONFIG_TRACEPOINTS) && !defined(BOOT_COMPRESSED_MISC_H) && !defined(BOOT_BOOT_H)
+--Sig_/DeKx4JaPtFZ3VK4fxaRFAgh
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I see what you are doing here in trying to see if a .h file has been
-included already, but now you are making an assumption on both the .h
-file ordering, and the #ifdef guard for those .h files, which are
-something that we almost never remember or even consider when dealing
-with .h files files.
+Hi Vladimir,
+
+> On Tue, Oct 03, 2023 at 09:58:32AM +0200, Lukasz Majewski wrote:
+> > I'm a bit puzzled with this patch series - will it be pulled
+> > directly to net-next [1] or is there any other (KSZ maintainer's?)
+> > tree to which it will be first pulled and then PR will be send to
+> > net-next?
+> >=20
+> > Thanks in advance for the clarification.
+> >=20
+> > Links:
+> >=20
+> > [1] -
+> > https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/log/
+> > =20
+>=20
+> No, there's no other tree than net-next. I see your patch was marked
+> as "Changes requested", let me see if I can transition it back to
+> "Under review" so that it gains the netdev maintainers' attention
+> again:
+>=20
+> https://patchwork.kernel.org/project/netdevbpf/cover/20230922133108.20906=
+12-1-lukma@denx.de/
+>=20
+> pw-bot: under-review
+
+Thanks!
+
+I've just noticed that there is a WARNING:
+https://patchwork.kernel.org/project/netdevbpf/patch/20230922133108.2090612=
+-6-lukma@denx.de/
+
+but then on the newest kernel checkpatch.pl is silent:
+./scripts/checkpatch.pl
+0005-net-dsa-microchip-Enable-HSR-offloading-for-KSZ9477.patch total: 0
+errors, 0 warnings, 0 checks, 277 lines checked
+
+0005-net-dsa-microchip-Enable-HSR-offloading-for-KSZ9477.patch has no
+obvious style problems and is ready for submission.
+
+Does the checkpatch for patchwork differs in any way from mainline?
 
 
-> +#include <linux/tracepoint-defs.h>
-> +DECLARE_TRACEPOINT(portio_write);
-> +DECLARE_TRACEPOINT(portio_read);
-> +#define _tracepoint_enabled(tracepoint) tracepoint_enabled(tracepoint)
-> +#else
-> +#define _tracepoint_enabled(tracepoint) false
-> +#endif
-> +
->  #define BUILDIO(bwl, bw, type)						\
->  static inline void __out##bwl(type value, u16 port)			\
->  {									\
->  	asm volatile("out" #bwl " %" #bw "0, %w1"			\
->  		     : : "a"(value), "Nd"(port));			\
-> +	if (_tracepoint_enabled(portio_write))				\
-> +		do_trace_portio_write(value, port, #bwl[0]);		\
->  }									\
+Best regards,
 
-Who wants/needs port tracing these days?  What types of systems still
-rely on that for their primary form of I/O other than some old-school
-serial ports?
+Lukasz Majewski
 
-The MMIO tracing was added because there are crazy out-of-tree SoC
-devices out there that "insisted" that they need to hook into the mmio
-access path, so they added traceing there under the auspicious of trying
-to log all mmio accesses so that they could then override the access
-path in the tracehook to do who-knows-what other things.  Hopefully you
-are not wanting to do the same thing here as well?
+--
 
-And have you addressed all of Peter's previous review comments?
+DENX Software Engineering GmbH,      Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
 
+--Sig_/DeKx4JaPtFZ3VK4fxaRFAgh
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
+-----BEGIN PGP SIGNATURE-----
 
->  									\
->  static inline type __in##bwl(u16 port)					\
-> @@ -16,6 +39,8 @@ static inline type __in##bwl(u16 port)					\
->  	type value;							\
->  	asm volatile("in" #bwl " %w1, %" #bw "0"			\
->  		     : "=a"(value) : "Nd"(port));			\
-> +	if (_tracepoint_enabled(portio_read))				\
-> +		do_trace_portio_read(value, port, #bwl[0]);		\
->  	return value;							\
->  }
->  
-> diff --git a/arch/x86/lib/Makefile b/arch/x86/lib/Makefile
-> index f76747862bd2..254f223c025d 100644
-> --- a/arch/x86/lib/Makefile
-> +++ b/arch/x86/lib/Makefile
-> @@ -40,6 +40,7 @@ $(obj)/inat.o: $(obj)/inat-tables.c
->  clean-files := inat-tables.c
->  
->  obj-$(CONFIG_SMP) += msr-smp.o cache-smp.o
-> +obj-$(CONFIG_TRACEPOINTS) += trace_portio.o
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmUcDjoACgkQAR8vZIA0
+zr383Qf/UDs6iZwqUh3JPM8lRrI19Hze1fJ2qEnCAinjhHYz5KFN2kpzFsOJvYN9
+ESkNWN2mYJe55GyWs/BiV7vwGmtDR5PjcBvXSu/h8MkOnaJndK7ArvhscyssqyWv
+M4jFjLRAA7UKAS83gkm4ANa9aIs0MM3Q8dqg0akJq/QZFNYko7WyDLvZYBTe9psE
++jsmzqTvRkqDFr4YwY0yflCdRO8ykYCdXsfgJaPz8uEQ5B271OpVhJMYNuJjpjh6
+dL+8baMb1sqDF6OvkWq/pUl5DhY3c0SICRMPJGOoZBqf6HUO/6753e3rhq4U7dC7
+9C2tMT/sYG31cCwhTLWXG06n3IERDw==
+=E0iA
+-----END PGP SIGNATURE-----
 
-So this is always enabled?  No separate config option?  Why not?
-
->  lib-y := delay.o misc.o cmdline.o cpu.o
->  lib-y += usercopy_$(BITS).o usercopy.o getuser.o putuser.o
-> diff --git a/arch/x86/lib/trace_portio.c b/arch/x86/lib/trace_portio.c
-> new file mode 100644
-> index 000000000000..c048dffcfe05
-> --- /dev/null
-> +++ b/arch/x86/lib/trace_portio.c
-> @@ -0,0 +1,21 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +
-> +#include <linux/instruction_pointer.h>
-> +#include <linux/trace_portio.h>
-> +
-> +#define CREATE_TRACE_POINTS
-> +#include <trace/events/portio.h>
-> +
-> +void do_trace_portio_read(u32 value, u16 port, char width)
-> +{
-> +	trace_portio_read(value, port, width, _RET_IP_);
-> +}
-> +EXPORT_SYMBOL_GPL(do_trace_portio_read);
-> +EXPORT_TRACEPOINT_SYMBOL_GPL(portio_read);
-> +
-> +void do_trace_portio_write(u32 value, u16 port, char width)
-> +{
-> +	trace_portio_write(value, port, width, _RET_IP_);
-> +}
-> +EXPORT_SYMBOL_GPL(do_trace_portio_write);
-> +EXPORT_TRACEPOINT_SYMBOL_GPL(portio_write);
-> diff --git a/include/linux/trace_portio.h b/include/linux/trace_portio.h
-> new file mode 100644
-> index 000000000000..013418d3d2ae
-> --- /dev/null
-> +++ b/include/linux/trace_portio.h
-> @@ -0,0 +1,6 @@
-> +/* SPDX-License-Identifier: GPL-2.0+ */
-
-Why "+"?  (I have to ask).
-
-> +
-> +#include <linux/types.h>
-> +
-> +extern void do_trace_portio_read(u32 value, u16 port, char width);
-> +extern void do_trace_portio_write(u32 value, u16 port, char width);
-> diff --git a/include/trace/events/portio.h b/include/trace/events/portio.h
-> new file mode 100644
-> index 000000000000..3591a75a475e
-> --- /dev/null
-> +++ b/include/trace/events/portio.h
-> @@ -0,0 +1,49 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-
-This is -only, which is fine, but your patch doesn't seem to be uniform
-here for new files being added in the same patch, right?  So documenting
-this somewhere (i.e. in the changelog), is essential.
-
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM portio
-> +
-> +#if !defined(_TRACE_PORTIO_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_PORTIO_H
-> +
-> +#include <linux/tracepoint.h>
-> +
-> +DECLARE_EVENT_CLASS(portio_class,
-> +	TP_PROTO(u32 value, u16 port, char width, long ip_addr),
-
-Memory locations are stored in "unsigned long" not "long", right?
-
-> +
-> +	TP_ARGS(value, port, width, ip_addr),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(u32, value)
-> +		__field(u16, port)
-> +		__field(char, width)
-> +		__field(long, ip_addr)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->value = value;
-> +		__entry->port = port;
-> +		__entry->width = width;
-> +		__entry->ip_addr = ip_addr;
-> +	),
-> +
-> +	TP_printk("port=0x%04x value=0x%0*x %pS",
-> +		__entry->port,
-> +		__entry->width == 'b' ? 2 :
-> +		__entry->width == 'w' ? 4 : 8,
-> +		__entry->value, (void *)__entry->ip_addr)
-
-Logging kernel memory locations, why?  Where is this format documented?
-
-thanks,
-
-greg k-h
+--Sig_/DeKx4JaPtFZ3VK4fxaRFAgh--
