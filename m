@@ -2,84 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45DFB7B63EB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE22A7B63ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239281AbjJCIUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 04:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54364 "EHLO
+        id S239213AbjJCIVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 04:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231169AbjJCIT7 (ORCPT
+        with ESMTP id S231160AbjJCIVj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 04:19:59 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 207E79B;
-        Tue,  3 Oct 2023 01:19:56 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3936IMQB006279;
-        Tue, 3 Oct 2023 08:19:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=qcppdkim1; bh=TcTNHIkQ4u7p4BAUZJiauYpzglJBMjfppSZlDSU/BEs=;
- b=oHJiWFNg6t5Ubk5u9+3JUmnKliT7XK3vX+clNZUkabl5fLO3rkCM+/UooqvYaDnUZBgm
- rQLGBXcxjnRfqM78RRDMzk1sKAfnby6sA1zr4P4Gml8MLEefm0PeGpfg4N4/kO38WhMD
- LWTSBst9O2vgpkWxw+doh4veN9KKDdCV4zCV1fGrKkxIS9wHBubD+/lKHq4X1HJKfD+P
- 3XGI//1y252OxCoSfyCD0JYCpEdc4p0tlXza8QWupBMuqWE7pWcK2cN76lt9b8u37wdS
- CliLgCJMjL9G8Nm48XMRM4i8+/44P09rKLtEpzLknUHrxvjr7E+bdz78GDYyNpHmr99/ GA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3teb0sdfmn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Oct 2023 08:19:41 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3938JdPG028623
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 3 Oct 2023 08:19:39 GMT
-Received: from hu-pkondeti-hyd.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Tue, 3 Oct 2023 01:19:33 -0700
-Date:   Tue, 3 Oct 2023 13:49:31 +0530
-From:   Pavan Kondeti <quic_pkondeti@quicinc.com>
-To:     Nikhil V <quic_nprakash@quicinc.com>
-CC:     Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <quic_pkondeti@quicinc.com>,
-        <quic_kprasan@quicinc.com>, <quic_mpilaniy@quicinc.com>,
-        <quic_shrekk@quicinc.com>, <mpleshivenkov@google.com>,
-        <ericyin@google.com>
-Subject: Re: [RFC PATCH 4/4] PM: hibernate: Support to select compression
- algorithm
-Message-ID: <a1b86dcb-8783-4038-83a9-278e5ddc109b@quicinc.com>
-References: <cover.1695711299.git.quic_nprakash@quicinc.com>
- <b49a7bdd957bf86913700220b6c1f8f12c753b52.1695711299.git.quic_nprakash@quicinc.com>
+        Tue, 3 Oct 2023 04:21:39 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A90FA1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 01:21:36 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6910ea9cca1so446718b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 01:21:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696321296; x=1696926096; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+aaNV5nSy/KAd8iihL3GhD9w/b0Q3KbrKmVSuy4p2tc=;
+        b=PWPgaXr8X0cPCJMc2asGO8sO+NCgXKi+h49M9bQ+PgCIppYB5MBiUo22hwnyNXbtg4
+         YmAv09shQ/WH1veiKJ8Tm3zhA6+9/bwydQjo3oFR9VPVVvJ9lk7WOOd95rr1t9wzjXlK
+         IfowtaVmDMkEamA+AtLWeJrMGEx6dyR2exqw/X0nps1cRX+JjwHOonypSGDpI4UmaOzY
+         rXtnAi9oxDjjxv2aauvJAe3y41xo1ccPqvfmcgWPLoSALShsCiqryXB2UNpP41mgC1hA
+         ffirKKGhsh+Z6VPahYhKKTh1WusNIStlKJ54TRy79ZAi4VLTbcs723AX1G38kcogVdH9
+         BmDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696321296; x=1696926096;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+aaNV5nSy/KAd8iihL3GhD9w/b0Q3KbrKmVSuy4p2tc=;
+        b=nkhUifvKIoCEn4+3D/e/LZ1pG2JlpPPuXG/le45j9owrFxKSfaj8AOvUbuFZPWX9tr
+         R5+zNcwCRkz20SibEGAcfallC6/pB0UJdb4S0WnNb2uQrEbihj8Duec+FJZeZIn1m9Fh
+         Pf0juPIhdcf4o7TZ0kHi+rq2lZ4bC0+otOJKmzALyHkCk0e2DLtywQFiXvHqkmS84VWM
+         ZQTqEIFLRmRzcTwgZjlv1cB879NDNkbn9334/g06vYAdqz3f8nyJ/XsikSsYQjMw/RB+
+         cTHxXwzT/fIzroJg5p47N5xFSUZMBhvf44UlJK+ErHsMBKPmI1Npw63hseMQQdp2WWnc
+         w1fQ==
+X-Gm-Message-State: AOJu0Yxg5KOnFDh2Zn+gXFeaO6k3CV0cP7L6L4BYKScBNSMx3uEzg9QT
+        irDKKzXFP8gAvv7acvtScpPOvg==
+X-Google-Smtp-Source: AGHT+IEATzV7abUZFF6xFfy/+Rr7GpXpiBqELT+NPng/a9aV8AItxjSjSR/Hxv3zjFlurKxuA19ewg==
+X-Received: by 2002:a05:6a00:80e:b0:666:e1f4:5153 with SMTP id m14-20020a056a00080e00b00666e1f45153mr14118407pfk.0.1696321295977;
+        Tue, 03 Oct 2023 01:21:35 -0700 (PDT)
+Received: from localhost ([122.172.81.92])
+        by smtp.gmail.com with ESMTPSA id gu17-20020a056a004e5100b0068fe9f23bf4sm773809pfb.103.2023.10.03.01.21.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 01:21:35 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 13:51:33 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        Nikunj Kela <nkela@quicinc.com>,
+        Prasad Sodagudi <psodagud@quicinc.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 9/9] firmware: arm_scmi: Add generic OPP support to the
+ SCMI performance domain
+Message-ID: <20231003082133.xyu46szs3jfm6fks@vireshk-i7>
+References: <20230925131715.138411-1-ulf.hansson@linaro.org>
+ <20230925131715.138411-10-ulf.hansson@linaro.org>
+ <20230929162522.zjoh5d2tqspzm3nc@bogus>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b49a7bdd957bf86913700220b6c1f8f12c753b52.1695711299.git.quic_nprakash@quicinc.com>
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: u0CueN4UH5JRGEfWEM-_T2cJQeyN29GJ
-X-Proofpoint-ORIG-GUID: u0CueN4UH5JRGEfWEM-_T2cJQeyN29GJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-03_05,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- impostorscore=0 bulkscore=0 suspectscore=0 adultscore=0 mlxscore=0
- clxscore=1015 phishscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310030056
+In-Reply-To: <20230929162522.zjoh5d2tqspzm3nc@bogus>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,46 +81,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 26, 2023 at 02:27:14PM +0530, Nikhil V wrote:
-> +static const char * const comp_alg_enabled[] = {
-> +#if IS_ENABLED(CONFIG_CRYPTO_LZO)
-> +	COMPRESSION_ALGO_LZO,
-> +#endif
-> +#if IS_ENABLED(CONFIG_CRYPTO_LZ4)
-> +	COMPRESSION_ALGO_LZ4,
-> +#endif
-> +};
-> +
-> +static int __init compression_setup(char *str)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(comp_alg_enabled); i++) {
-> +		if (!strcmp(str, comp_alg_enabled[i])) {
-> +			strscpy(hib_comp_algo, str, sizeof(hib_comp_algo));
-> +			goto setup_done;
-> +		}
-> +	}
-> +	strscpy(hib_comp_algo, default_compressor, sizeof(hib_comp_algo));
-> +
-> +setup_done:
-> +	return 1;
-> +}
-> +
->  __setup("noresume", noresume_setup);
->  __setup("resume_offset=", resume_offset_setup);
->  __setup("resume=", resume_setup);
-> @@ -1423,3 +1449,4 @@ __setup("hibernate=", hibernate_setup);
->  __setup("resumewait", resumewait_setup);
->  __setup("resumedelay=", resumedelay_setup);
->  __setup("nohibernate", nohibernate_setup);
-> +__setup("hib_compression=", compression_setup);
-> -- 
+On 29-09-23, 17:25, Sudeep Holla wrote:
+> On Mon, Sep 25, 2023 at 03:17:15PM +0200, Ulf Hansson wrote:
+> > To allow a consumer driver to use the OPP library to scale the performance
+> > for its device, let's dynamically add the OPP table when the device gets
+> > attached to its SCMI performance domain.
+> >
+> 
+> The SCMI changes(patches 7-9) look fine to me. Rafael was fine with genpd
+> changes, Viresh if you are OK with OPP changes I can take it via SCMI as
+> there are some dependent patches as Ulf has pointed out in the cover letter.
 
-If I pass hib_compression=lz4 without enabling CONFIG_CRYPTO_LZ4, It
-silently makes the compression to lzo which is expected from this code.
-It would be good if an error/info message is printed in
-compression_setup() which this happens.
+I would like to take OPP patches via my tree as there are some changes in my
+tree and I plan to add some more changes on top of this. I can give an immutable
+branch though.
 
-Thanks,
-Pavan
+-- 
+viresh
