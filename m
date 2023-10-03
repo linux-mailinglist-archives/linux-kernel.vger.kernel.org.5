@@ -2,201 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEAC7B7419
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D299F7B741B
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230049AbjJCW34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 18:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
+        id S230192AbjJCWaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 18:30:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229776AbjJCW3z (ORCPT
+        with ESMTP id S229776AbjJCWaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 18:29:55 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7218DB0
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 15:29:51 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-59b59e1ac70so21888777b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 15:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696372190; x=1696976990; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dAD+NyD8rwm68rv+KcO6kIHA2BI/1BAlT5OkmuE/mvM=;
-        b=fZb6IBe5rRmR0jkZKZdQoc2lOLcUyNJeVJv6ov3fv8MSZ1hBDbV+eKcmXW/Re5aTOF
-         BfpzDYe1DO1B63SKJJ6vKvCiRZjmM02KdQgYzQ7wgShFAGdnPXWmaj2kO/c9lH+Xl5dT
-         EyLscf27lygnuqE7ugZ5NTXfRXti2O00V/MmFF0E09PveSgOhm9SrwjJCQx7LzZbaqwc
-         mkQ+XY4TL3lkv07cFvl6EiWVi1JD5D6um28REq/WV78T5JYX6PvPrg6ESas0jzmCV7oL
-         bgH8CteMSIXuvPeSIjpeTjkEGT1p8GTNZK3+mFPr0MAvtvXMkbG6L9s/Vztt6Om5xO14
-         Z2xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696372190; x=1696976990;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dAD+NyD8rwm68rv+KcO6kIHA2BI/1BAlT5OkmuE/mvM=;
-        b=lat2ot4pxrXSzmOkrSeHCQbPuRB7imP66UnpnrUUZxGHsyPnSWx9Ji14grUhh9jl2z
-         Ot4Wn9Q3wlzupnoD80JvRD0jkbCNsEoVFdo3A3B5hw8WDfBRsO5Iin8Fb+F6bcGlo4Ub
-         wcFJtV+/ZbZqQLngCHpa79w8oQqsCNkh3PzV+9gBr/6MfLFgosB9gdqeEpY6vWRtzJon
-         to9EQAWpzGn0++VQ5JmCy+9WrqpofLfiZlIlEBF7XNZ6BZxGNmU5s+zXRqJwty7qUACn
-         xwAaUZCj4piR1JkCTmmPy1Vj70DkN6Iq6T9/LNk1X4pqauZPB+7IsAMdd8TUcOLgt+V7
-         KgvQ==
-X-Gm-Message-State: AOJu0YyhlgPXULHVQg9HokIkQkkg5gd2feZwtTjGt2vgk9I8A42R6Uea
-        wfTk0o8r5hNC7Q4FX+Y/bIZ8QonedtjbxP8=
-X-Google-Smtp-Source: AGHT+IEkB0IrCc6Hhu4Q5FKQXGRZYIEeC/u6PqBK0M9bMkwyR8qfAToV0+g3PXMwAURU6yARQ/hdo4TlOU5ndFY=
-X-Received: from aliceryhl.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:6c8])
- (user=aliceryhl job=sendgmr) by 2002:a25:248:0:b0:d8c:cc9b:81cc with SMTP id
- 69-20020a250248000000b00d8ccc9b81ccmr8747ybc.3.1696372190665; Tue, 03 Oct
- 2023 15:29:50 -0700 (PDT)
-Date:   Tue,  3 Oct 2023 22:29:47 +0000
-In-Reply-To: <CVZ2KU4KK5YH.2HVL1F6X93YLL@pogg>
-Mime-Version: 1.0
-References: <CVZ2KU4KK5YH.2HVL1F6X93YLL@pogg>
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20231003222947.374039-1-aliceryhl@google.com>
-Subject: Re: [PATCH v4 7/7] rust: workqueue: add examples
-From:   Alice Ryhl <aliceryhl@google.com>
-To:     k.shelekhin@ftml.net
-Cc:     alex.gaynor@gmail.com, aliceryhl@google.com,
-        benno.lossin@proton.me, bjorn3_gh@protonmail.com,
-        boqun.feng@gmail.com, gary@garyguo.net, jiangshanlai@gmail.com,
-        linux-kernel@vger.kernel.org, nmi@metaspace.dk, ojeda@kernel.org,
-        patches@lists.linux.dev, rust-for-linux@vger.kernel.org,
-        tj@kernel.org, wedsonaf@gmail.com, yakoyoku@gmail.com
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-7.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=no autolearn_force=no version=3.4.6
+        Tue, 3 Oct 2023 18:30:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FEA6B4;
+        Tue,  3 Oct 2023 15:30:13 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79514C433C7;
+        Tue,  3 Oct 2023 22:30:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696372212;
+        bh=rn0rOWjIDB6/7GQlidfe1eVKXGJ9GKrMWvhbYPzPdB0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=fSuMCjd+ZcFrlc5XBSO+QtpHqHKHN2WZ9KYYXlX6T26/P5latDGOvcHwk+JpHUlch
+         AtkdRS8Pvc+Scw+sxVwXj/iO73M+lzfmRAihujmQMFlhIZyEzKnCBKJNbe5gdwzbfi
+         1ipZIC7jpBVseebSecq3X4VRHO8B79i6Il9DtJgf6hnrNTJZL7VTTyIM7zONmObPoJ
+         w2Vsf508a4WgG7lTlVNBDbfdJPa8js799mvyx6MQEcvPcvF3v6cnfHRqkOy+jEOzKW
+         gVVV1lOFTN7IgCYsgtypv0Fv8j5/TCs2cuhTvslB4FPSZiVOdxMwCitbfwkioeigRs
+         8Wx082pkQyNFw==
+Date:   Tue, 3 Oct 2023 17:30:10 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2][next] PCI/P2PDMA: Fix potential undefined behavior
+ bug in struct pci_p2pdma_pagemap
+Message-ID: <20231003223010.GA692794@bhelgaas>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRsUL/hATNruwtla@work>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 10:13PM Konstantin Shelekhin <k.shelekhin@ftml.net> wrote:
-> +//! #[pin_data]
-> +//! struct MyStruct {
-> +//!     value: i32,
-> +//!     #[pin]
-> +//!     work: Work<MyStruct>,
-> +//! }
-> +//!
-> +//! impl_has_work! {
-> +//!     impl HasWork<Self> for MyStruct { self.work }
-> +//! }
-> +//!
-> +//! impl MyStruct {
-> +//!     fn new(value: i32) -> Result<Arc<Self>> {
-> +//!         Arc::pin_init(pin_init!(MyStruct {
-> +//!             value,
-> +//!             work <- new_work!("MyStruct::work"),
-> +//!         }))
-> +//!     }
-> +//! }
-> +//!
-> +//! impl WorkItem for MyStruct {
-> +//!     type Pointer = Arc<MyStruct>;
-> +//!
-> +//!     fn run(this: Arc<MyStruct>) {
-> +//!         pr_info!("The value is: {}", this.value);
-> +//!     }
-> +//! }
-> +//!
-> +//! /// This method will enqueue the struct for execution on the system workqueue, where its value
-> +//! /// will be printed.
-> +//! fn print_later(val: Arc<MyStruct>) {
-> +//!     let _ = workqueue::system().enqueue(val);
-> +//! }
->
-> I understand that this is highly opionated, but is it possible to make
-> the initialization less verbose?
-
-The short answer is yes. There are safe alternatives that are much less
-verbose. Unfortunately, those alternatives give up some of the features
-that this design has. Specifically, they give up the feature that allows
-you to embed the work_struct inside custom structs. I need to be able to
-embed the work_struct inside of custom structs, so I did not go that
-route.
-
-There are also some parts of this (mainly `impl_has_work!`) that I am
-unhappy with. I would be happy to see a solution that doesn't need it,
-but I couldn't figure out how to avoid it.
-
-> Because the C version looks much, much cleaner and easier to grasp:
->
->     struct my_struct {
->         i32 value;
->         struct work_struct work;
->     };
+On Mon, Oct 02, 2023 at 09:04:15PM +0200, Gustavo A. R. Silva wrote:
+> `struct dev_pagemap` is a flexible structure, which means that it
+> contains a flexible-array member at the bottom. This could potentially
+> lead to an overwrite of the objects following `pgmap` in `struct
+> pci_p2pdma_pagemap`, when `nr_range > 1`. This is currently not the
+> case (notice that `nr_range` is hardcoded to `1`), however as commit
+> b7b3c01b1915 ("mm/memremap_pages: support multiple ranges per invocation")
+> mentions in the subject line, this code can `support multiple
+> ranges per invocation`. So, we'd better prevent any problems that may
+> arise in the future.
 > 
->     void log_value(struct work_struct *work)
->     {
->         struct my_struct *s = container_of(work, struct my_struct, work);
->         pr_info("The value is: %d\n", s->value);
->     }
+> Fix this by placing the declaration of object `pgmap` at the end of
+> `struct pci_p2pdma_pagemap`.
 > 
->     void print_later(struct my_struct &s)
->     {
->         INIT_WORK(&s->work, log_value);
->         schedule_work(&s->work);
->     }
+> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+> ready to enable it globally.
+> 
+> Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Although I think that a part of this is just whether you are familiar
-with Rust syntax, there is definitely some truth to this. Your code is a
-lot closer to the machine code of what actually happens here. Perhaps it
-would be interesting to see what you get if you just unsafely do exactly
-the same thing in Rust? It would look something like this:
+Applied to pci/p2pdma for v6.7.  Since it's not a current problem, I
+assume there's no reason to apply it for v6.6 (or tag it for stable);
+let me know if otherwise.
 
-    struct MyStruct {
-        value: i32,
-        work: bindings::work_struct,
-    }
-
-    unsafe fn log_value(work: *mut bindings::work_struct) {
-        unsafe {
-            let s = container_of!(work, MyStruct, work);
-            pr_info!("The value is: {}", (*s).value);
-        }
-    }
-
-    unsafe fn print_later(s: *mut bindings::work_struct) {
-        unsafe {
-            bindings::INIT_WORK(&mut (*s).work, log_value);
-            bindings::schedule_work(&mut (*s).work);
-        }
-    }
-
-(I didn't try to compile this.)
-
-The problem with this approach is that it uses unsafe in driver code,
-but the goal behind Rust abstractions is to isolate all of the related
-unsafe code. The idea being that drivers using the workqueue do not need
-any unsafe code to use it. This means that, assuming these workqueue
-abstractions are correct, no driver can accidentally cause memory
-unsafety by using the workqueue wrong.
-
-The main difficult part of making this happen is the container_of
-operation. We need to somehow verify *at compile time* that the
-container_of in log_value really is given a pointer to the work field of
-a MyStruct. Other than the things that are just how Rust looks, most of
-the verbosity is necessary to make this compile-time check possible.
-
-Another thing it does is handle proper transfer of ownership. In my
-original example, MyStruct is reference counted (due to the use of Arc),
-so the workqueue passes ownership of one refcount to the workqueue,
-which eventually passes the refcount to run. When `this` goes out of
-scope at the end of `run`, the refcount is decremented and the struct is
-freed if the refcount dropped to zero.
-
-If you wanted to just have exclusive ownership of my_struct, you could
-do that by using Box instead of Arc. In either case, the ownership is
-correctly passed to run, and you cannot accidentally forget to free it
-at the end of log_value.
-
-So, ultimately there's a tradeoff here. The code corresponds less
-directly to what the machine code will be. On the other hand, it will be
-*more* difficult to use incorrectly since incorrect uses will usually
-result in compilation errors. The claim of Rust is that this tradeoff is
-worth it.
-
-Alice
-
+> ---
+> Changes in v2:
+>  - Remove `Fixes:` tags. (Logan Gunthorpe)
+>  - Update changelog text. Make it clear that `nr_range` is hardcoded to `1`
+>    (Logan Gunthorpe)
+>  - Update subject.
+>  - Add Logan's RB.
+> 
+> v1:
+>  Link: https://lore.kernel.org/linux-hardening/ZRnf6wVOu0IJQ2Ok@work/
+> 
+>  drivers/pci/p2pdma.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+> index fa7370f9561a..ab34d3d36a64 100644
+> --- a/drivers/pci/p2pdma.c
+> +++ b/drivers/pci/p2pdma.c
+> @@ -28,9 +28,9 @@ struct pci_p2pdma {
+>  };
+>  
+>  struct pci_p2pdma_pagemap {
+> -	struct dev_pagemap pgmap;
+>  	struct pci_dev *provider;
+>  	u64 bus_offset;
+> +	struct dev_pagemap pgmap;
+>  };
+>  
+>  static struct pci_p2pdma_pagemap *to_p2p_pgmap(struct dev_pagemap *pgmap)
+> -- 
+> 2.34.1
+> 
