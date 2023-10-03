@@ -2,44 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D307B6FD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375DC7B6FD8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:33:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbjJCRdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 13:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38340 "EHLO
+        id S231956AbjJCRdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 13:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbjJCRdW (ORCPT
+        with ESMTP id S230245AbjJCRdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 13:33:22 -0400
+        Tue, 3 Oct 2023 13:33:37 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D595D9B;
-        Tue,  3 Oct 2023 10:33:18 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FA5EC433C8;
-        Tue,  3 Oct 2023 17:33:18 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71AFAC
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 10:33:34 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F5A6C433C7;
+        Tue,  3 Oct 2023 17:33:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696354398;
-        bh=PQdnMeXAjhP6tZYTGv5AYxPws/vb5p3nfnwhAt47/LU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ouq0LTrVu61iySOqqm5O2auMfuCrpnUMDz9gfuaA3YzXByVnHzjMoMIApl3dONpTO
-         W8dOdmyW96N/R42rrfidj8sOpOtldjHDEA6XDyvuKvQRq9deU9Tcc7cKLd9BA4XuA7
-         wDr2K1lliZUCWKXSuUXs7K8Gxr1dhZep8x3pJ5RHlWwxZFPnqCSxfWnp/JCE0j13eu
-         UbXOrofDQ/Gy4+OFhkoqaGKLvgzzvDmr+73Wod0Xn9YgK0zusJ7c0YgfehKCD00z8/
-         zDhrwXPsEYdaOpehEEXZNDlt8x9j5aeAurk02qyD5NihJrOMo5BIjKyARzIBNuIYsT
-         np1ETV0mpw/4Q==
-Date:   Tue, 3 Oct 2023 10:33:17 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     cheng.lin130@zte.com.cn, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jiang.yong5@zte.com.cn,
-        wang.liang82@zte.com.cn, liu.dong3@zte.com.cn
-Subject: Re: [PATCH v3] xfs: introduce protection for drop nlink
-Message-ID: <20231003173317.GI21298@frogsfrogsfrogs>
-References: <ZQqI5KNgghI5iFrC@dread.disaster.area>
+        s=k20201202; t=1696354414;
+        bh=rzlml4twXPG1yYnrvCDoBzosHm5mKs/NlXodh5FZlzE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=mZ7tRiqHLm4DAf/mBnMc9s1/fADt+ai33WM5iWk8D0gFiyHfAwx+x8yjJkFHfCQRo
+         SKj4h5P5fZ9Hl2iYplfWNA/QvZYUuJow6xe+XW1xi9vCjo0nP2sP8AZGFhzJgZ/AAX
+         twidMdGNTwP8HwZHDx5gpkmQrrbiARndi5uIJZiOJIzZg8i/L58vVLcTtmb9xVAbE/
+         KQwm837497ZXJtiz3mJZkwXww00yJvztrel+Lbc210+0VlKKN0fY9fIJuj14XXcFHr
+         N1viKd7SQ2bLIDmqhhF77onBmFoajPywZRSFInsXg07Gp0eiXyZKWRX2ezbO844UfF
+         86LtoYbkcpN4w==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id CEA1ACE1104; Tue,  3 Oct 2023 10:33:33 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 10:33:33 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel@vger.kernel.org,
+        Michael Jeanson <mjeanson@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [RFC PATCH v3 1/5] tracing: Introduce faultable tracepoints (v3)
+Message-ID: <99ec6025-c170-459c-8b43-58cf1a85f832@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231002202531.3160-1-mathieu.desnoyers@efficios.com>
+ <20231002202531.3160-2-mathieu.desnoyers@efficios.com>
+ <20231002191023.6175294d@gandalf.local.home>
+ <97c559c9-51cf-415c-8b0b-39eba47b8898@paulmck-laptop>
+ <20231002211936.5948253e@gandalf.local.home>
+ <5d0771e9-332c-42cd-acf3-53d46bb691f3@paulmck-laptop>
+ <20231003100854.7285d2a9@gandalf.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZQqI5KNgghI5iFrC@dread.disaster.area>
+In-Reply-To: <20231003100854.7285d2a9@gandalf.local.home>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -50,106 +68,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 20, 2023 at 03:53:40PM +1000, Dave Chinner wrote:
-> On Mon, Sep 18, 2023 at 08:33:35PM -0700, Darrick J. Wong wrote:
-> > On Mon, Sep 18, 2023 at 03:48:38PM +1000, Dave Chinner wrote:
-> > > It is only when we are trying to modify something that corruption
-> > > becomes a problem with fatal consequences. Once we've made a
-> > > modification, the in-memory state is different to the on-disk state
-> > > and whilst we are in that state any corruption we discover becomes
-> > > fatal. That is because there is no way to reconcile the changes
-> > > we've already made in memory with what is on-disk - we don't know
-> > > that the in-memory changes are good because we tripped over
-> > > corruption, and so we must not propagate bad in-memory state and
-> > > metadata to disk over the top of what may be still be uncorrupted
-> > > metadata on disk.
+On Tue, Oct 03, 2023 at 10:08:54AM -0400, Steven Rostedt wrote:
+> On Tue, 3 Oct 2023 06:44:50 -0700
+> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> 
+> > > That way it is clear what uses what, as I read the original paragraph a
+> > > couple of times and could have sworn that rcu_read_lock_trace() required
+> > > tasks to not block.  
 > > 
-> > It'd be a massive effort, but wouldn't it be fun if one could attach
-> > defer ops to a transaction that updated incore state on commit but
-> > otherwise never appeared on disk?
-> >
-> > Let me cogitate on that during part 2 of vacation...
+> > That would work for me.  Would you like to send a patch, or would you
+> > rather we made the adjustments?
 > 
-> Sure, I'm interested to see what you might come up with.
-> 
-> My thoughts on rollback of dirty transactions come from a different
-> perspective.
-> 
-> Conceptually being able to roll back individual transactions isn't
-> that difficult. All it takes is a bit more memory and CPU - when we
-> join the item to the transaction we take a copy of the item we are
-> about to modify.
-> 
-> If we then cancel a dirty transaction, we then roll back all the
-> dirty items to their original state before we unlock them.  This
-> works fine for all the on-disk stuff we track in log items.
-> 
-> I have vague thoughts about how this could potentially be tied into
-> the shadow buffers we already use for keeping a delta copy of all
-> the committed in-memory changes in the CIL that we haven't yet
-> committed to the journal - that's actually the entire delta between
-> what is on disk and what we've changed prior to the current
-> transaction we are cancelling.
-> 
-> Hence, in theory, a rollback for a dirty log item is simply "read it
-> from disk again, copy the CIL shadow buffer delta into it".
+> Which ever.
 
-<nod> That's more or less the same as what I was thinking.
+OK, how about like this?
 
-> However, the complexity comes with trying to roll back associated
-> in-memory state changes that we don't track as log items.  e.g.
-> incore extent list changes, in memory inode flag state (e.g.
-> XFS_ISTALE), etc. that's where all the hard problems to solve lie, I
-> think.
+							Thanx, Paul
 
-Yeah.  I was thinking that each of those incore state changes could be
-implemented as a defer_ops that have NOP ->create_intent and
-->create_done functions.  The ->finish_item would actually update the
-incore structure.  This would be a very large project, and I'm not sure
-that it wouldn't be easier to snapshot the xfs_inode fields themselves,
-similar to how inode log items snapshot xfs_dinode fields.
+------------------------------------------------------------------------
 
-(Snapshotting probably doesn't work for the more complex incore
-inode structures.)
+commit 973eb79ec46c16f13bb5b47ad14d44a1f1c79dc9
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Tue Oct 3 10:30:01 2023 -0700
 
-Kent has been wrangling with this problem for a while in bcachefs and I
-think he's actually gotten the rollbacks to work more or less correctly.
-He told me that it was a significant restructuring of his codebase even
-though *everything* is tracked in btrees and the cursor abstraction
-there is more robust than xfs.
+    doc: Clarify RCU Tasks reader/updater checklist
+    
+    Currently, the reader/updater compatibility rules for the three RCU
+    Tasks flavors are squished together in a single paragraph, which can
+    result in confusion.  This commit therefore splits them out into a list,
+    clearly showing the distinction between these flavors.
+    
+    Reported-by: Steven Rostedt <rostedt@goodmis.org>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 
-> Another problem is how do we rollback from the middle of an intent
-> (defer ops) chain? We have to complete that chain for things to end
-> up consistent on disk, so we can't just cancel the current
-> transaction and say we are done and everything is clean.  Maybe
-> that's what you are thinking of here - each chain has an "undo"
-> intent chain that can roll back all the changes already made?
-
-Yes.  Every time we call ->finish_item on a log intent item, we also log
-a new intent item that undoes whatever that step did.  These items we'll
-call "log undo intent" items, and put them on a separate list, e.g.
-tp->t_undoops.  If the chain completes successfully then the last step
-is to abort everything on t_undoops to release all that memory.
-
-If the chain does not succeed, then we'd abort the intents on t_dfops,
-splice t_undoops onto t_dfops, and call xfs_defer_finish to write the
-log undo intent items to disk and finish them.  If /that/ fails then we
-have to shutdown.
-
-I think this also means that buffer updates that are logged from a
-->finish_item function should not be cancelled per above, since the undo
-intent item will take care of that.  That would be easy if btree updates
-made by an efi/cui/rui items used ordered buffers instead of logging
-them directly like we do now.
-
-For bui items, I think we'd need ordered buffers for bmbt updates and
-snapshotting inode items for the inode updates themselves.
-
---D
-
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
+index bd3c58c44bef..c432899aff22 100644
+--- a/Documentation/RCU/checklist.rst
++++ b/Documentation/RCU/checklist.rst
+@@ -241,15 +241,22 @@ over a rather long period of time, but improvements are always welcome!
+ 	srcu_struct.  The rules for the expedited RCU grace-period-wait
+ 	primitives are the same as for their non-expedited counterparts.
+ 
+-	If the updater uses call_rcu_tasks() or synchronize_rcu_tasks(),
+-	then the readers must refrain from executing voluntary
+-	context switches, that is, from blocking.  If the updater uses
+-	call_rcu_tasks_trace() or synchronize_rcu_tasks_trace(), then
+-	the corresponding readers must use rcu_read_lock_trace() and
+-	rcu_read_unlock_trace().  If an updater uses call_rcu_tasks_rude()
+-	or synchronize_rcu_tasks_rude(), then the corresponding readers
+-	must use anything that disables preemption, for example,
+-	preempt_disable() and preempt_enable().
++	Similarly, it is necssary to correctly use the RCU Tasks flavors:
++
++	a.	If the updater uses synchronize_rcu_tasks() or
++		call_rcu_tasks(), then the readers must refrain from
++		executing voluntary context switches, that is, from
++		blocking.
++
++	b.	If the updater uses call_rcu_tasks_trace()
++		or synchronize_rcu_tasks_trace(), then the
++		corresponding readers must use rcu_read_lock_trace()
++		and rcu_read_unlock_trace().
++
++	c.	If an updater uses call_rcu_tasks_rude() or
++		synchronize_rcu_tasks_rude(), then the corresponding
++		readers must use anything that disables preemption,
++		for example, preempt_disable() and preempt_enable().
+ 
+ 	Mixing things up will result in confusion and broken kernels, and
+ 	has even resulted in an exploitable security issue.  Therefore,
