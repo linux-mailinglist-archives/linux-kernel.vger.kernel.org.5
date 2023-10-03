@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4FC7B6940
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 620167B6942
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbjJCMnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 08:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34806 "EHLO
+        id S230182AbjJCMoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 08:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjJCMnH (ORCPT
+        with ESMTP id S229689AbjJCMoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 08:43:07 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346FF83;
-        Tue,  3 Oct 2023 05:43:04 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d862533ea85so1006543276.0;
-        Tue, 03 Oct 2023 05:43:04 -0700 (PDT)
+        Tue, 3 Oct 2023 08:44:15 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B40883
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 05:44:12 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7b08ac3ce7fso442306241.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 05:44:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696336983; x=1696941783; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696337051; x=1696941851; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4D5yrQwAB5o2ihQ86wqsOMYFEN0hjw1F6HyvBzf1fiE=;
-        b=N7xCFCx+c3B9EHsZqBLrjvalPyPXL/pgNuL2ckc400gpkhwk26yDRlNBVcYy4kQe8/
-         HVLTK8sjd6+qsnAy5Ho/Hb//LbSOxN+GTpZaZF2P6tsRAV3kMX003/NYzEHHNCV4F8zP
-         RueS3ZfpJ/Plmdrv8bGUT6khqlnGLU6ddemMf3L+YtkxHjXzgglKekhuuMoeulsbRzDl
-         CMT2Fkx/7QU3LTAkAkYJEqMbCP+puLV0R/eMGEU78kF1lqWN7JoSv9FCwtqP5Oxv91FM
-         PPqvCWbnv4WSCm4OVK2vnKhv6/SByEtV1LPrhtTXoOs61eb2jPkpFm72hsbY3XfcRDig
-         mnBw==
+        bh=A2Pno/JhxzC81iyArk4MRwQPITa8ij+SuPHaUkw0Zzo=;
+        b=3HF3H8BsTslLk7/1e4ZCNOzHtXjVGKplDxezdpHV3+eXZPSa+WzfYJfw4UyRpA1hJZ
+         uI9izc8QzfzXcR9CGxjZ+QtR5WPEJW7fkN6pDuuqMjC86/K20wSRH9WLn5sQYAXBiLmB
+         yG7F4e4I0YcsBpI7LrH7FA1JVes9QX8U6SC12RTFHZFjm8K/1v98eqnVdZPNJYpWRj4Q
+         LL5TGezjyLmE2RFNPFX8N7U0P8BLSwnE3pdsMbF4ANrbRZEq3MBLSwMjqdsTovhvgPCy
+         iK74w0Do3EylK49Y7X70ZkHljegXAunOdpCegw2WRFEgb5DhaP2G2Pjr64SGDprwKq85
+         K1ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696336983; x=1696941783;
+        d=1e100.net; s=20230601; t=1696337051; x=1696941851;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4D5yrQwAB5o2ihQ86wqsOMYFEN0hjw1F6HyvBzf1fiE=;
-        b=UjbBRsb6Tgp/GuiV4kXAXbw2hIyZTo58eptBpuTkXw5BFJxPtE3VurN0K2hi+ZJYZ7
-         l69FUhmq4QPyG8bj/3oAt/OXdGxjF89wtkj7pWt+5vGj/36Bxaddj40k585May2ra1oP
-         op8DODVOY1NxaFMajk9Qvdq2PLx4CUz8HEmU5v5qm9vn76zwAR6u0c0wQWNxyx5VSeRZ
-         /xw5+rqs32vNCpF7TJvpaiiS9XOwKgzTau424Dz3nfDQ0u5ihVq1RgOYGxYmJsKl36vR
-         KCUoW6TJdLmmQvMcv23JyIfjOxT5FKyCvwpHx+oFj7S5z8tXTwZrOAEFW/nd9NzzAq6y
-         DlSA==
-X-Gm-Message-State: AOJu0YwvmgGMNPdGwyBlLnEo9L3U3No5mWVv80gP0zH9KYd9S0qpI37C
-        sI65FhX6vqsqfHhMT6HDU4NqiQ6x3uFxq1lKkJQ=
-X-Google-Smtp-Source: AGHT+IGKRsmT9DgPHuTJmO3N9CH6pljRjBRrifC5fsGPjYUKRDiNean3VywF0pwdC17BP1/gPJNHu4wjqF28NCD2LIU=
-X-Received: by 2002:a25:cbd7:0:b0:d06:f0ab:e17b with SMTP id
- b206-20020a25cbd7000000b00d06f0abe17bmr12013032ybg.55.1696336983056; Tue, 03
- Oct 2023 05:43:03 -0700 (PDT)
+        bh=A2Pno/JhxzC81iyArk4MRwQPITa8ij+SuPHaUkw0Zzo=;
+        b=jR0pVAUHzSGEYuQj32HRaBvL6kaEXGWsNGxDlJFl1hyrkSRGQAP6Zo6QgQc8hT9dep
+         NwFffC30CHE7qPiGr1aUg/ixxODrO945bKDRR19mhkQxl0LW9e+WIPzZi4IyzKrI0/TE
+         u3Ec3b4peccCfoCfEYeATVhTOGqC4MG+iY1lLbXrf9+jIFfQeB5yHno1Vf9G8HGXyKhU
+         mQ8dWkUvQbx3o1M4go70ba2cK22dLryOXbrcqTD2Sz1HU88zbcEp4djSDaSrhiyoJyeF
+         lMHTMN+cne9DYUsm337FdfFGX/9mkV4pd9+NaupgM0WUvH48ALl14NmcI12PagN2y3rA
+         oXjA==
+X-Gm-Message-State: AOJu0YxKoCZqDqGV32o3wrm3naxL8gj1RkMizWoGR3IwoiNL2Tm/BLAw
+        XLE6/5zb5muhMT75UxNZ0gxvWI/WPRzuVStI73ajng==
+X-Google-Smtp-Source: AGHT+IErCFcuSqB4wWvRMBRfCVGEHv974hU2g6PLQPWynHZYSInHq6KRvT1h4y5s5BMLVOtfJ+GUaa1l3/Yhk9D5obo=
+X-Received: by 2002:ac5:cfe1:0:b0:49d:af5:95df with SMTP id
+ m33-20020ac5cfe1000000b0049d0af595dfmr10851727vkf.0.1696337051205; Tue, 03
+ Oct 2023 05:44:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAH7-e5sb+kT_LRb1_y-c5JaFN0=KrrRT97otUPKzTCgzGsVdrQ@mail.gmail.com>
- <ZRtWcgiH5JhD5NU2@debian.me> <CAH7-e5uspavg_VBJxKLOKJfU3nAq-OrPqzihF2opffY-ReiC-w@mail.gmail.com>
- <834062302e6a98e773dc4b03d7ed568a0f1c44fc.camel@nordicsemi.no>
-In-Reply-To: <834062302e6a98e773dc4b03d7ed568a0f1c44fc.camel@nordicsemi.no>
-From:   =?UTF-8?Q?Erik_Dob=C3=A1k?= <erik.dobak@gmail.com>
-Date:   Tue, 3 Oct 2023 14:42:52 +0200
-Message-ID: <CAH7-e5uZzmnFJAJrG664G6_JbK--DfbKC50aeVN5gMMxDJ51UA@mail.gmail.com>
-Subject: Re: bluetooth issues since kernel 6.4 - not discovering other bt
- devices - /linux/drivers/bluetooth/btusb.c
-To:     =?UTF-8?Q?Tomasz_Mo=C5=84?= <tomasz.mon@nordicsemi.no>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Stable <stable@vger.kernel.org>,
-        Linux Bluetooth <linux-bluetooth@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Mediatek <linux-mediatek@lists.infradead.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
+References: <20230927142931.19798-1-brgl@bgdev.pl> <20230927142931.19798-5-brgl@bgdev.pl>
+ <ZRqQ9KZe619vx7pz@smile.fi.intel.com> <CAMRc=MfGPHk9vyS1iDJnB8PQEowB+mWBGM-9CKxDvMrNKnNuhw@mail.gmail.com>
+In-Reply-To: <CAMRc=MfGPHk9vyS1iDJnB8PQEowB+mWBGM-9CKxDvMrNKnNuhw@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 3 Oct 2023 14:44:00 +0200
+Message-ID: <CAMRc=MeiqkENbaJ0SHXJENFoA=+3DZc-kuY4-zUa5Lv5xvw_eg@mail.gmail.com>
+Subject: Re: [PATCH v4 04/11] gpiolib: provide gpio_device_find_by_label()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -83,272 +72,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Oct 2023 at 14:32, Tomasz Mo=C5=84 <tomasz.mon@nordicsemi.no> wro=
-te:
+On Mon, Oct 2, 2023 at 11:53=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 >
-> On Tue, 2023-10-03 at 14:25 +0200, Erik Dob=C3=A1k wrote:
-> > Hi i booted now into linux-6.6-rc4 and the issue is still there. No
-> > bluetooth devices are discovered.
-> > with this device: Bus 001 Device 004: ID 04c5:1670 Fujitsu, Ltd Bluetoo=
-th Radio
+> On Mon, Oct 2, 2023 at 11:44=E2=80=AFAM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Wed, Sep 27, 2023 at 04:29:24PM +0200, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > >
+> > > By far the most common way of looking up GPIO devices is using their
+> > > label. Provide a helpers for that to avoid every user implementing th=
+eir
+> > > own matching function.
+> >
+> > ...
+> >
+> > > +struct gpio_device *gpio_device_find_by_label(const char *label)
+> > > +{
+> > > +     return gpio_device_find((void *)label, gpio_chip_match_by_label=
+);
+> > > +}
+> >
+> > Are we expecting that data referenced by the first parameter to the
+> > gpio_device_find() can be altered? If not, why not using const void *
+> > there and here as well?
+> >
 >
-> Can you please be more specific and for example attach the full
-> descriptor? One way to get the descriptor would be to run:
->   lsusb -d 04c5:1760 -v
+> I guess it's a good idea.
 >
-> Best Regards,
-> Tomasz Mo=C5=84
+> Bart
 
-Sure here you go:
+Scratch that. When we know that we're passing a label, it's fine to
+have it const but almost treewide, various matching functions take
+"void *data" as argument. I'll leave it this way.
 
-# lsusb -d 04c5:1670 -v
-
-Bus 001 Device 004: ID 04c5:1670 Fujitsu, Ltd Bluetooth Radio
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.00
-  bDeviceClass          224 Wireless
-  bDeviceSubClass         1 Radio Frequency
-  bDeviceProtocol         1 Bluetooth
-  bMaxPacketSize0        64
-  idVendor           0x04c5 Fujitsu, Ltd
-  idProduct          0x1670
-  bcdDevice            0.00
-  iManufacturer           1 Realtek
-  iProduct                2 Bluetooth Radio
-  iSerial                 3 00e04c000001
-  bNumConfigurations      1
-  Configuration Descriptor:
-    bLength                 9
-    bDescriptorType         2
-    wTotalLength       0x00b1
-    bNumInterfaces          2
-    bConfigurationValue     1
-    iConfiguration          0
-    bmAttributes         0xe0
-      Self Powered
-      Remote Wakeup
-    MaxPower              500mA
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        0
-      bAlternateSetting       0
-      bNumEndpoints           3
-      bInterfaceClass       224 Wireless
-      bInterfaceSubClass      1 Radio Frequency
-      bInterfaceProtocol      1 Bluetooth
-      iInterface              4 Bluetooth Radio
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x81  EP 1 IN
-        bmAttributes            3
-          Transfer Type            Interrupt
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0010  1x 16 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x02  EP 2 OUT
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               0
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x82  EP 2 IN
-        bmAttributes            2
-          Transfer Type            Bulk
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0040  1x 64 bytes
-        bInterval               0
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       0
-      bNumEndpoints           2
-      bInterfaceClass       224 Wireless
-      bInterfaceSubClass      1 Radio Frequency
-      bInterfaceProtocol      1 Bluetooth
-      iInterface              4 Bluetooth Radio
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0000  1x 0 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0000  1x 0 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       1
-      bNumEndpoints           2
-      bInterfaceClass       224 Wireless
-      bInterfaceSubClass      1 Radio Frequency
-      bInterfaceProtocol      1 Bluetooth
-      iInterface              4 Bluetooth Radio
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0009  1x 9 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0009  1x 9 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       2
-      bNumEndpoints           2
-      bInterfaceClass       224 Wireless
-      bInterfaceSubClass      1 Radio Frequency
-      bInterfaceProtocol      1 Bluetooth
-      iInterface              4 Bluetooth Radio
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0011  1x 17 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0011  1x 17 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       3
-      bNumEndpoints           2
-      bInterfaceClass       224 Wireless
-      bInterfaceSubClass      1 Radio Frequency
-      bInterfaceProtocol      1 Bluetooth
-      iInterface              4 Bluetooth Radio
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0019  1x 25 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0019  1x 25 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       4
-      bNumEndpoints           2
-      bInterfaceClass       224 Wireless
-      bInterfaceSubClass      1 Radio Frequency
-      bInterfaceProtocol      1 Bluetooth
-      iInterface              4 Bluetooth Radio
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0021  1x 33 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0021  1x 33 bytes
-        bInterval               1
-    Interface Descriptor:
-      bLength                 9
-      bDescriptorType         4
-      bInterfaceNumber        1
-      bAlternateSetting       5
-      bNumEndpoints           2
-      bInterfaceClass       224 Wireless
-      bInterfaceSubClass      1 Radio Frequency
-      bInterfaceProtocol      1 Bluetooth
-      iInterface              4 Bluetooth Radio
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x03  EP 3 OUT
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0031  1x 49 bytes
-        bInterval               1
-      Endpoint Descriptor:
-        bLength                 7
-        bDescriptorType         5
-        bEndpointAddress     0x83  EP 3 IN
-        bmAttributes            1
-          Transfer Type            Isochronous
-          Synch Type               None
-          Usage Type               Data
-        wMaxPacketSize     0x0031  1x 49 bytes
-        bInterval               1
-Device Status:     0x0001
-  Self Powered
+Bart
