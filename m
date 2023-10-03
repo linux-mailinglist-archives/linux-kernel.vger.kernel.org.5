@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B9D17B6AE9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F37F7B6AEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237393AbjJCNvb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 09:51:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
+        id S237308AbjJCNwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:52:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbjJCNva (ORCPT
+        with ESMTP id S232068AbjJCNwu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:51:30 -0400
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECE5A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:51:27 -0700 (PDT)
-Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6bc57401cb9so202176a34.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 06:51:27 -0700 (PDT)
+        Tue, 3 Oct 2023 09:52:50 -0400
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F555A9;
+        Tue,  3 Oct 2023 06:52:43 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so1607257a12.1;
+        Tue, 03 Oct 2023 06:52:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696341087; x=1696945887;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4HUgt17OFEhb9rcSXf7tWTR4CCIRUcfN3jzW9uvMrWE=;
-        b=kB5OEuOSDSt9mCJxQ2VJoMTGN5zbPrKMoGOnH0LtSys9tO9MMp3EEAUoB7dinm9AYK
-         almicQp8mDJdAy0OWDGDn/6V2atTvFHRg3Ap729Lsbjw8jijm3D1WVOe5Xtbt6nPpTa1
-         YV9QIE2OFvpzQiZiRk7/EXQX4CyCjjN4le2/RVP1AAHTPSJQUflX1TcDZWdBv4jtC4Ib
-         P9jyLWdZQv98hS/2wBYwySoxD+6nJq06Qs7Mkype6NLeQHIsyJlqNmJANHjyQdx2YmwW
-         49GKXtPcuXfZIRG8ftrXWKoLk2E8VIDJR+wLFBzlmipnHJa0xUucMWPhDcSoXD5Y9+ff
-         +RzQ==
-X-Gm-Message-State: AOJu0YyagzhQqFL0XC5p6PwZyOd+ku8zjPaC4MiTtMm9EmY3gHw668hF
-        Ju2WQuux7pjpT5hKxVRrkn5Ih6qxhADVVP/uVkMg3gx+
-X-Google-Smtp-Source: AGHT+IG84rISyrfnp/k89hhLUxJUWr1q8TmM0AGEwUyw/oUxT9NWecgoQPvGyjVs1L3Grnpk3yexW6Eow9Bbj58FZoU=
-X-Received: by 2002:a05:6808:2029:b0:3a9:e85d:b689 with SMTP id
- q41-20020a056808202900b003a9e85db689mr16958494oiw.0.1696341086920; Tue, 03
- Oct 2023 06:51:26 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696341161; x=1696945961;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qbhD19S6zLeOtT2FNUeshWF95fV8Y1/bPKyfIl12gP0=;
+        b=YT0XI35Z4m+v3MsnQ+bYMJfWA8a9DJJw56nZcLT23qRV0p1ldrx7nAap67AvoZCGQt
+         sun3MVpvWCCnVAOSrYZu0af0Jsoq92WT4QQJle692N+1YAjvUoJ+EoyNjw0HdddlfBSp
+         +yjQwdex+RmhMg9cu/dp6oADfa4sjNsT+IU7a2QIBZOreU1hv4iMVgj7BNq5eXBgY62+
+         bJVRcaf2YRRUCcTKc6J1/kvgfNFbYKZ7n0/UBHYaAjt16qNEuUrZxzrZ0RL6UWCfj9b2
+         sgVQsAYPGXBNLArENQiWgX+jH/2NDfiXdt2kbXlwwTkCo7xOqVCzywGTVJT4SqHuKfH5
+         WS9w==
+X-Gm-Message-State: AOJu0YyxQp7Wp+7bKIOwk4Dq9giyYzp34n9jQQZ8zplwTcxieKldO0Q9
+        B1JhdYwAtisJei1KT21uGvhOEWg9VTU=
+X-Google-Smtp-Source: AGHT+IFAGpUa7LltnP297SnJgjG9wRsCbtvps1bDOeBiWN2XiNo4p9pu/ruLocu0YnYfIcTd2D2GJg==
+X-Received: by 2002:a17:906:5393:b0:9ae:3fdd:4dd with SMTP id g19-20020a170906539300b009ae3fdd04ddmr12445147ejo.24.1696341160973;
+        Tue, 03 Oct 2023 06:52:40 -0700 (PDT)
+Received: from gmail.com (fwdproxy-cln-120.fbsv.net. [2a03:2880:31ff:78::face:b00c])
+        by smtp.gmail.com with ESMTPSA id d10-20020a170906344a00b00992b71d8f19sm1100772ejb.133.2023.10.03.06.52.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 06:52:40 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 06:52:38 -0700
+From:   Breno Leitao <leitao@debian.org>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Cc:     rcu@vger.kernel.org, rbc@meta.com
+Subject: kvm/x86: perf: Softlockup issue
+Message-ID: <ZRwcpki67uhpAUKi@gmail.com>
 MIME-Version: 1.0
-References: <20231002135218.2602969-1-andriy.shevchenko@linux.intel.com> <29d92a79-cfc5-41f1-b930-8789ad17fdda@amd.com>
-In-Reply-To: <29d92a79-cfc5-41f1-b930-8789ad17fdda@amd.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 3 Oct 2023 15:51:15 +0200
-Message-ID: <CAJZ5v0hULhbDwziVfCt4rc-TO74zaB2H3a928RGgJmA=qfK63w@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] ACPI: x86: s2idle: Switch to use acpi_evaluate_dsm_typed()
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 4:05 PM Mario Limonciello
-<mario.limonciello@amd.com> wrote:
->
-> On 10/2/2023 08:52, Andy Shevchenko wrote:
-> > The acpi_evaluate_dsm_typed() provides a way to check the type of the
-> > object evaluated by _DSM call. Use it instead of open coded variant.
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->
-> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
+I've been pursuing a bug in a virtual machine (KVM) that I would like to share
+in here. The VM gets stuck when running perf in a VM and getting soft lockups.
 
-Applied as 6.7 material, thanks!
+The bug happens upstream (Linux 6.6-rc4 - 8a749fd1a8720d461). The same kernel
+is being used in the host and in the guest.
 
-> > ---
-> >   drivers/acpi/x86/s2idle.c | 5 ++---
-> >   1 file changed, 2 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
-> > index 08f7c6708206..7d64e655f1b8 100644
-> > --- a/drivers/acpi/x86/s2idle.c
-> > +++ b/drivers/acpi/x86/s2idle.c
-> > @@ -417,11 +417,10 @@ static int validate_dsm(acpi_handle handle, const char *uuid, int rev, guid_t *d
-> >       int ret = -EINVAL;
-> >
-> >       guid_parse(uuid, dsm_guid);
-> > -     obj = acpi_evaluate_dsm(handle, dsm_guid, rev, 0, NULL);
-> >
-> >       /* Check if the _DSM is present and as expected. */
-> > -     if (!obj || obj->type != ACPI_TYPE_BUFFER || obj->buffer.length == 0 ||
-> > -         obj->buffer.length > sizeof(u32)) {
-> > +     obj = acpi_evaluate_dsm_typed(handle, dsm_guid, rev, 0, NULL, ACPI_TYPE_BUFFER);
-> > +     if (!obj || obj->buffer.length == 0 || obj->buffer.length > sizeof(u32)) {
-> >               acpi_handle_debug(handle,
-> >                               "_DSM UUID %s rev %d function 0 evaluation failed\n", uuid, rev);
-> >               goto out;
->
+The problem only happens in a very specific circumstances:
+
+1) PMU needs to be enabled in the guest
+
+2) Libvirt/QEMU needs to use a custom CPU:
+	* Here is the qemu line:
+		-cpu Skylake-Server,kvm-pv-eoi=on,pmu=on
+	* Any other CPU seems to hit the problem
+		* Even using Skylake-Server on a Skylake server
+	* Using CPU passthrough workaround the problem
+
+3) You need to use 6 or more events in perf.
+	* This is a line that reproduces the problem:
+	  # perf stat -e cpu-clock -e context-switches -e cpu-migrations  -e page-faults -e cycles -e instructions  -e branches ls
+	* Removing any of these events (totaling 5 events) makes `perf` work again
+
+4) This problem happens on upstream, 6.4 and 5.19
+	* This problem doesn't seem to happen on 5.12
+
+Problem
+========
+
+When running perf in the circumstances above, the VM is stuck, with a lot of
+stack traces. This is some messages:
+
+	 kernel:[  400.314381] watchdog: BUG: soft lockup - CPU#3 stuck for 26s! [kworker/u68:11:6853]
+	 kernel:[  400.324380] watchdog: BUG: soft lockup - CPU#8 stuck for 26s! [dynoKernelMon:9781]
+	 kernel:[  404.368380] watchdog: BUG: soft lockup - CPU#30 stuck for 22s! [kworker/30:2:1326]
+
+Here is part of the stack. The full stack is in the pastebin below:
+
+	 nmi_cpu_backtrace (lib/nmi_backtrace.c:115)
+	 nmi_cpu_backtrace_handler (arch/x86/kernel/apic/hw_nmi.c:47)
+	 nmi_handle (arch/x86/kernel/nmi.c:149)
+	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
+	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
+	 default_do_nmi (arch/x86/kernel/nmi.c:347)
+	 exc_nmi (arch/x86/kernel/nmi.c:543)
+	 end_repeat_nmi (arch/x86/entry/entry_64.S:1471)
+	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
+	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
+	 __intel_pmu_enable_all (arch/x86/include/asm/jump_label.h:27 include/linux/jump_label.h:207 arch/x86/include/asm/msr.h:147 arch/x86/include/asm/msr.h:262 arch/x86/events/intel/core.c:2239)
+
+
+
+More info
+=========
+
+Soft lockup messages in the guest:
+	https://paste.debian.net/1293888/
+Full log from the guest:
+	https://paste.debian.net/1293891/
+vCPU stacks dumped from the host (cat /proc/<vcpu>/stack):
+	https://paste.debian.net/1293887/
+Qemu (version 7.1.0) command line
+	https://paste.debian.net/1293894/
