@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CDF67B69F2
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B15AC7B69F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbjJCNPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50398 "EHLO
+        id S234391AbjJCNPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232682AbjJCNPP (ORCPT
+        with ESMTP id S232614AbjJCNPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:15:15 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD73BF;
-        Tue,  3 Oct 2023 06:15:12 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c1854bebf5so10981851fa.1;
-        Tue, 03 Oct 2023 06:15:12 -0700 (PDT)
+        Tue, 3 Oct 2023 09:15:17 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F7C2A6;
+        Tue,  3 Oct 2023 06:15:14 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2bffa8578feso10759131fa.2;
+        Tue, 03 Oct 2023 06:15:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696338911; x=1696943711; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=D3fi78NvQEfjOfWzfX4wAjQLrovVfB04wfletul8KM0=;
-        b=S9GmHOvAhFD9hQer6A8ULWnVm7H8SfV2h07OdO45w1ORexZHOBUCQ2QG7xwPdFKta/
-         tz72ww9BaMgrA0zCZVmAylKC6zr2UcNQNIUaGRFgmHTcisMr73F4uGF6K32FCnO0HHz3
-         jyrg9Ruw9nvHCwp+X4k5JpJ6iR7dcVct6SCrnpUsxtiTPz6yAJlamTslLjaNSDw8Z7CN
-         OffJf8n6uWUGFdi8qiyV1HYGPEzaCx90h+sJenqzgc+4u1IQya0WIo78Wodm4kUuNdvR
-         V68UUzGtK/kgBTtJ+1cBwdAsqC+hSKhCBr6aSrAjhFaWn77gtSIYDUfQmZ/ulYQszJP+
-         oJbw==
+        d=gmail.com; s=20230601; t=1696338912; x=1696943712; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YUX/UAbHIqbeqOjhPaMPY2ZesCBPS6XxII45ueUUUxU=;
+        b=JVWjd2K82Ilc1TLOaq4wnGZFs9ay8T2VmCyss+j7ZYS9I/l9Em9gg2x1WTrTkVQLiR
+         8YrF1AY1S5OCT2o1zyxKureO82QKPuGxMYtP6K/rcXuBhLhoQHI+RjLOds0rk+mQUCgz
+         JOc7QmX+3Ykx7LIQxSNUI68kN/ASfkaOEWU7byKAZNh+8YLOUpLmLS57k4r6DVKCVfjQ
+         BFlGm49xuC080dRqy1KnD20oS8Z1ZP2WqutTuW8wShBOAe0W6IQolD6GqAUoWFs9mxbe
+         3qat5yJdVE2t3KyoBiAY98fJA4w9V05gKlXJEXW6Uf0RBzv+cdYrnYzch/dHVMYlN2wn
+         i3zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696338911; x=1696943711;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=D3fi78NvQEfjOfWzfX4wAjQLrovVfB04wfletul8KM0=;
-        b=nAyfEjGDm/2LMiioEbNydCwHMQ9mhVF1+Ax6UwXIcV2xBUkoI10EIlUNkx+40kyKvW
-         5TPikUgtn75518lPGKHI4ceZ1mFl31VTavGrN+EgRxgbIa/Gsx7VALWvm7rXP8FlX5FX
-         bGUBAbeMB5bXTjUozYcltRVmbEVo/IP+Sw03pf3GWh506nmLTWoLe/OsGgnIX8731CrH
-         MpKE6FrauOHtTUbOhvRs8X4nUmki3V6IlOl13a+x1jIeQ6icVHXSOwfbpr4ZWqp6lXqU
-         ZiXBYn3SHxekVfXWs8HAjJS1Tz5eC8B4AbFO84mN4I2XHpvIGCIOIPlcPeGAOhjKt7af
-         NenQ==
-X-Gm-Message-State: AOJu0YwTmVYcTqpt9Ml0p71WecB5fQuYuNZAlZI4tM5l+ix5O4f3XFy4
-        zOy+07yieLdr6rSeC7AWmKk=
-X-Google-Smtp-Source: AGHT+IGtOe4J8GfD2HhulRf4hZgg+Q4XRQ/Bo4dVYtzPaSqmA5wmNUiaHv9t6UFcrUVi5fzVNQWg5w==
-X-Received: by 2002:a2e:3a07:0:b0:2c0:ff6:984a with SMTP id h7-20020a2e3a07000000b002c00ff6984amr11636722lja.50.1696338909804;
-        Tue, 03 Oct 2023 06:15:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696338912; x=1696943712;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YUX/UAbHIqbeqOjhPaMPY2ZesCBPS6XxII45ueUUUxU=;
+        b=X+y65aCmjufZ5I0m4QOXkvPh0qglcR5macWP+SCd2+NT9OLuabAn/2cMgiYJhmgLy2
+         2IQdignWInOQHV2l/ARzbYPomnLmhcJUQkOB52Ya0HhUO7mAK7JKHu2C6NTyMR/d1kXZ
+         vwNgpRnmBrARMMl8ZZWO8eiN1V+0E6G0GXAbdkfZ7yLY9qF9CeRENXPSXWG1AOgitrK9
+         nf5Mi+VkG9opyBcKgZm1lg0ZaTnv8UUM4AGj+iNGvT77+/gr0WoUSzU222MSIn+fom3i
+         6F6cRXQN6DAxcahw7yP6TM5BO1VZTjAO6OM0Dw4gpOr/EAJuyONhK6h9HAttwBQj9GWV
+         tiYg==
+X-Gm-Message-State: AOJu0YxcNAA+aVzrlSIGWkyii02fDHg+TyPifAvidyG/g9jHdHwpoRut
+        mqS8ZrBWRwpTZsyMNlDZ3fQ=
+X-Google-Smtp-Source: AGHT+IFvHJ7bKb4elVs/FhutCiBQKG7ZmBVYOXV8sf2znLah3iVhSTJ7k0OjwrNKoQQi2aBODXZMAg==
+X-Received: by 2002:a2e:681a:0:b0:2bc:da4a:4649 with SMTP id c26-20020a2e681a000000b002bcda4a4649mr13466120lja.22.1696338911573;
+        Tue, 03 Oct 2023 06:15:11 -0700 (PDT)
 Received: from PC10319.67 ([82.97.198.254])
-        by smtp.googlemail.com with ESMTPSA id t25-20020a2e7819000000b002b9de06f119sm228657ljc.67.2023.10.03.06.15.08
+        by smtp.googlemail.com with ESMTPSA id t25-20020a2e7819000000b002b9de06f119sm228657ljc.67.2023.10.03.06.15.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 06:15:09 -0700 (PDT)
+        Tue, 03 Oct 2023 06:15:11 -0700 (PDT)
 From:   Konstantin Aladyshev <aladyshev22@gmail.com>
 Cc:     minyard@acm.org, joel@jms.id.au, andrew@aj.id.au,
         avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
@@ -60,10 +61,12 @@ Cc:     minyard@acm.org, joel@jms.id.au, andrew@aj.id.au,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
         netdev@vger.kernel.org
-Subject: [PATCH v3 0/3] Add MCTP-over-KCS transport binding
-Date:   Tue,  3 Oct 2023 16:15:02 +0300
-Message-Id: <20231003131505.337-1-aladyshev22@gmail.com>
+Subject: [PATCH v3 1/3] ipmi: Move KCS headers to common include folder
+Date:   Tue,  3 Oct 2023 16:15:03 +0300
+Message-Id: <20231003131505.337-2-aladyshev22@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231003131505.337-1-aladyshev22@gmail.com>
+References: <20231003131505.337-1-aladyshev22@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,64 +80,165 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change adds a MCTP KCS transport binding, as defined by the DMTF
-specificiation DSP0254 - "MCTP KCS Transport Binding".
-A MCTP protocol network device is created for each KCS channel found in
-the system.
-The interrupt code for the KCS state machine is based on the current
-IPMI KCS driver.
-Since the KCS subsystem code is now used both in IPMI and MCTP drivers
-the separate patchsets move KCS subsystem includes to a common folder.
+The current KCS header files can be utilized by both IPMI drivers
+(drivers/char/ipmi) and MCTP driver (drivers/net/mctp). To be able to
+use them in both cases move the headers to 'include/linux' folder.
 
-Tested:
-PLDM communication between the HOST and BMC was tested with both
-components implemented via open-source software:
-- The HOST (UEFI firmware) part was based one the edk2 [1] and
-edk2-platforms [2] code,
-- The BMC part was based on the openbmc [3] distribution.
-
-The testing process and all the necessary utilities are described in
-the [4] repository.
-
-[1]: https://github.com/tianocore/edk2
-[2]: https://github.com/tianocore/edk2-platforms
-[3]: https://github.com/openbmc/openbmc
-[4]: https://github.com/Kostr/PLDM
-
-Changes v2 -> v3:
- - use 'dev_err_probe' correctly
-
-Changes v1 -> v2:
- - correct warning found by kernel test robot
- - use 'i2c_smbus_pec' library function for PEC calculation
- - several code style corrections based on Jonathan Cameron comments
-Original patchset can be found here:
-https://lwn.net/ml/linux-kernel/20230928123009.2913-1-aladyshev22@gmail.com/
-
-Konstantin Aladyshev (3):
-  ipmi: Move KCS headers to common include folder
-  ipmi: Create header with KCS interface defines
-  mctp: Add MCTP-over-KCS transport binding
-
- drivers/char/ipmi/kcs_bmc.c                   |   8 +-
- drivers/char/ipmi/kcs_bmc_aspeed.c            |   3 +-
- drivers/char/ipmi/kcs_bmc_cdev_ipmi.c         |  73 +--
- drivers/char/ipmi/kcs_bmc_npcm7xx.c           |   2 +-
- drivers/char/ipmi/kcs_bmc_serio.c             |   2 +-
- drivers/net/mctp/Kconfig                      |   8 +
- drivers/net/mctp/Makefile                     |   1 +
- drivers/net/mctp/mctp-kcs.c                   | 594 ++++++++++++++++++
- include/linux/ipmi_kcs.h                      |  80 +++
- .../char/ipmi => include/linux}/kcs_bmc.h     |   0
- .../ipmi => include/linux}/kcs_bmc_client.h   |   3 +-
- .../ipmi => include/linux}/kcs_bmc_device.h   |   3 +-
- 12 files changed, 693 insertions(+), 84 deletions(-)
- create mode 100644 drivers/net/mctp/mctp-kcs.c
- create mode 100644 include/linux/ipmi_kcs.h
+Signed-off-by: Konstantin Aladyshev <aladyshev22@gmail.com>
+---
+ drivers/char/ipmi/kcs_bmc.c                           | 8 +++-----
+ drivers/char/ipmi/kcs_bmc_aspeed.c                    | 3 +--
+ drivers/char/ipmi/kcs_bmc_cdev_ipmi.c                 | 2 +-
+ drivers/char/ipmi/kcs_bmc_npcm7xx.c                   | 2 +-
+ drivers/char/ipmi/kcs_bmc_serio.c                     | 2 +-
+ {drivers/char/ipmi => include/linux}/kcs_bmc.h        | 0
+ {drivers/char/ipmi => include/linux}/kcs_bmc_client.h | 3 +--
+ {drivers/char/ipmi => include/linux}/kcs_bmc_device.h | 3 +--
+ 8 files changed, 9 insertions(+), 14 deletions(-)
  rename {drivers/char/ipmi => include/linux}/kcs_bmc.h (100%)
  rename {drivers/char/ipmi => include/linux}/kcs_bmc_client.h (97%)
  rename {drivers/char/ipmi => include/linux}/kcs_bmc_device.h (96%)
 
+diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
+index 8b1161d5194a..d29a8505d6ed 100644
+--- a/drivers/char/ipmi/kcs_bmc.c
++++ b/drivers/char/ipmi/kcs_bmc.c
+@@ -5,15 +5,13 @@
+  */
+ 
+ #include <linux/device.h>
++#include <linux/kcs_bmc.h>
++#include <linux/kcs_bmc_client.h>
++#include <linux/kcs_bmc_device.h>
+ #include <linux/list.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ 
+-#include "kcs_bmc.h"
+-
+-/* Implement both the device and client interfaces here */
+-#include "kcs_bmc_device.h"
+-#include "kcs_bmc_client.h"
+ 
+ /* Record registered devices and drivers */
+ static DEFINE_MUTEX(kcs_bmc_lock);
+diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c b/drivers/char/ipmi/kcs_bmc_aspeed.c
+index 72640da55380..3dc0dfb448f5 100644
+--- a/drivers/char/ipmi/kcs_bmc_aspeed.c
++++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
+@@ -10,6 +10,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/irq.h>
++#include <linux/kcs_bmc_device.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+@@ -21,8 +22,6 @@
+ #include <linux/slab.h>
+ #include <linux/timer.h>
+ 
+-#include "kcs_bmc_device.h"
+-
+ 
+ #define DEVICE_NAME     "ast-kcs-bmc"
+ 
+diff --git a/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c b/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
+index cf670e891966..bf1001130a6c 100644
+--- a/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
++++ b/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
+@@ -8,6 +8,7 @@
+ #include <linux/errno.h>
+ #include <linux/io.h>
+ #include <linux/ipmi_bmc.h>
++#include <linux/kcs_bmc_client.h>
+ #include <linux/list.h>
+ #include <linux/miscdevice.h>
+ #include <linux/module.h>
+@@ -17,7 +18,6 @@
+ #include <linux/sched.h>
+ #include <linux/slab.h>
+ 
+-#include "kcs_bmc_client.h"
+ 
+ /* Different phases of the KCS BMC module.
+  *  KCS_PHASE_IDLE:
+diff --git a/drivers/char/ipmi/kcs_bmc_npcm7xx.c b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
+index 7961fec56476..160553248a93 100644
+--- a/drivers/char/ipmi/kcs_bmc_npcm7xx.c
++++ b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
+@@ -10,6 +10,7 @@
+ #include <linux/errno.h>
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
++#include <linux/kcs_bmc_device.h>
+ #include <linux/mfd/syscon.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+@@ -17,7 +18,6 @@
+ #include <linux/regmap.h>
+ #include <linux/slab.h>
+ 
+-#include "kcs_bmc_device.h"
+ 
+ #define DEVICE_NAME	"npcm-kcs-bmc"
+ #define KCS_CHANNEL_MAX	3
+diff --git a/drivers/char/ipmi/kcs_bmc_serio.c b/drivers/char/ipmi/kcs_bmc_serio.c
+index 1793358be782..24df7144a189 100644
+--- a/drivers/char/ipmi/kcs_bmc_serio.c
++++ b/drivers/char/ipmi/kcs_bmc_serio.c
+@@ -5,12 +5,12 @@
+ #include <linux/device.h>
+ #include <linux/errno.h>
+ #include <linux/list.h>
++#include <linux/kcs_bmc_client.h>
+ #include <linux/module.h>
+ #include <linux/sched/signal.h>
+ #include <linux/serio.h>
+ #include <linux/slab.h>
+ 
+-#include "kcs_bmc_client.h"
+ 
+ struct kcs_bmc_serio {
+ 	struct list_head entry;
+diff --git a/drivers/char/ipmi/kcs_bmc.h b/include/linux/kcs_bmc.h
+similarity index 100%
+rename from drivers/char/ipmi/kcs_bmc.h
+rename to include/linux/kcs_bmc.h
+diff --git a/drivers/char/ipmi/kcs_bmc_client.h b/include/linux/kcs_bmc_client.h
+similarity index 97%
+rename from drivers/char/ipmi/kcs_bmc_client.h
+rename to include/linux/kcs_bmc_client.h
+index 6fdcde0a7169..f6350c9366dd 100644
+--- a/drivers/char/ipmi/kcs_bmc_client.h
++++ b/include/linux/kcs_bmc_client.h
+@@ -5,8 +5,7 @@
+ #define __KCS_BMC_CONSUMER_H__
+ 
+ #include <linux/irqreturn.h>
+-
+-#include "kcs_bmc.h"
++#include <linux/kcs_bmc.h>
+ 
+ struct kcs_bmc_driver_ops {
+ 	int (*add_device)(struct kcs_bmc_device *kcs_bmc);
+diff --git a/drivers/char/ipmi/kcs_bmc_device.h b/include/linux/kcs_bmc_device.h
+similarity index 96%
+rename from drivers/char/ipmi/kcs_bmc_device.h
+rename to include/linux/kcs_bmc_device.h
+index 17c572f25c54..65333b68c0af 100644
+--- a/drivers/char/ipmi/kcs_bmc_device.h
++++ b/include/linux/kcs_bmc_device.h
+@@ -5,8 +5,7 @@
+ #define __KCS_BMC_DEVICE_H__
+ 
+ #include <linux/irqreturn.h>
+-
+-#include "kcs_bmc.h"
++#include <linux/kcs_bmc.h>
+ 
+ struct kcs_bmc_device_ops {
+ 	void (*irq_mask_update)(struct kcs_bmc_device *kcs_bmc, u8 mask, u8 enable);
 -- 
 2.25.1
 
