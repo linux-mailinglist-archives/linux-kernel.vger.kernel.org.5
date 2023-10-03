@@ -2,257 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2C97B65CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:46:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B2A7B65D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:47:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239787AbjJCJqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:46:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
+        id S231772AbjJCJrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239782AbjJCJqE (ORCPT
+        with ESMTP id S239775AbjJCJrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:46:04 -0400
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2057.outbound.protection.outlook.com [40.107.22.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72DC4A1;
-        Tue,  3 Oct 2023 02:46:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m0/yl5uDbM/TSBJOLsuJfITvDgLLCEJfoKlgOSXTfQCkJdEFgqrs8d4GedTxQgiVCtUwQ51WweIGVQ8j1PPUN1drfbkHdVrZIKg9W+OjR7Y0sDpljgnRGyEoj3uBatEIbN31+nD6lz/Wdoj6fQLo9BXkJb3h3ZRnGtf508GolbVvVFnQ3ZVWvWJs3uhtY9kSD/ZsxcLRO4bbk2D6qcgCW5B+N6ms8uP2A7mqwizl1Env8eLyNYfXhMbKY8jF94gKxx9Z/NhG6w4j+e2JVIMSYjsh0N8AJVuv6vQ9WfYiPzWpxq7QR3kfUI9uZ2h3Aup2xsPU7Ql26qAO1OnHBy4AsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OFUGi7Kq8OpoXHrLwwL5E1PeQdkkxaxvYg8+wapgW6s=;
- b=ALtDa2SCIQy5KhOkDmf3iLorrF8L+eb/MMEWq8tKLLbEQwU0kbzJIuDcdWEhMN4mX/IH5c/3eiLOpkNy1mCwSB79N/SK/GasB686h6nLMIfv5J9K0eGn0Inm+JGlJ/zOJ+mU3dDMB49oqMzIAd+sc6H/Sy02671J9NLONBuUdVQaaqfynZgECNvk0oXgWdzN31GBi4A1M7NeNLrwgDhT1FvIST2r0mfmw3mNX1XPE7ritRR4ZYZ2Ji1WIAmVIXLQoy7nNnIFdp64wqrsnVFc9cfUZ4rK5/hduy7S/9vHUeQWuGC5sOhCOjD8ob5zfGPKqv9olYrqwR6J8sp2x8lWVA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OFUGi7Kq8OpoXHrLwwL5E1PeQdkkxaxvYg8+wapgW6s=;
- b=B0aooyhfrLr8sKVHwid+MtmJrPkvgY+hOoFM2wxnDqkz9y3Q+/CWKZo+6iS2ApXnOsvV67LW8R4I4MArp8mlJqjThu0FAssNsAb/0Zd2l+kvjHYFwl0EKsVjyrBkWlh6FM2k2/em2GahkebdpiIpg8wNkYaDpAmH+w7guVquSJg=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AS1PR04MB9583.eurprd04.prod.outlook.com (2603:10a6:20b:472::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.24; Tue, 3 Oct
- 2023 09:45:57 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::2b3:d8de:95c8:b28b]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::2b3:d8de:95c8:b28b%3]) with mapi id 15.20.6838.024; Tue, 3 Oct 2023
- 09:45:57 +0000
-From:   Peng Fan <peng.fan@nxp.com>
-To:     Cristian Marussi <cristian.marussi@arm.com>,
-        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-CC:     Sudeep Holla <sudeep.holla@arm.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>
-Subject: RE: [PATCH v3 2/2] clk: scmi: add set/get_parent support
-Thread-Topic: [PATCH v3 2/2] clk: scmi: add set/get_parent support
-Thread-Index: AQHZ9CCG+e+RtSIUGEOgYwpQRluyfLA2y6qAgAEIDtA=
-Date:   Tue, 3 Oct 2023 09:45:57 +0000
-Message-ID: <DU0PR04MB94174DDEBBC7C73D3A7B2D8D88C4A@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20231001-scmi-clock-v2-v3-0-898bd92d8939@nxp.com>
- <20231001-scmi-clock-v2-v3-2-898bd92d8939@nxp.com> <ZRsEnze1htH_2ORf@pluto>
-In-Reply-To: <ZRsEnze1htH_2ORf@pluto>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AS1PR04MB9583:EE_
-x-ms-office365-filtering-correlation-id: 6c9be950-2b89-4819-f31f-08dbc3f58b34
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +Ta8rlyPqrLfNKhjF6msWjh3bhHSzJr3stHBi7G8D6gXUkhEEgQ9232Lv7JGrpXwM265ML7DeSWl6OkdgkQMfvN+jLIJFsBsGsjGK26CJSQMe5GuiHYXNRs0+6wBsP/8Zp19L7MDImddbcPlAGSaa2oWgEjyhakTrwHE+T3Jg1a7wuUm2sz8b6u7jL8m3B5Osxt+yOxR6Tl9ELRxbSRXfe6nTAMWxy891D2iJKL0HEkSPF+XGOSpcEsLwu/ZiIrc8i+X6T0tp2HUiW/KMjN/tJRRqRfWQcAFd6o85R9zy/rJ6+Lu0LUgEb3J0lQjCi1Bgf3OSe9jTVq654PbeXdAA6dnWqUUvrwogqSUFBncrTIB01gy5+WSuH74hqvyJCJXJbko25NkEnCkZ54R3a9C4bbxTnbEJ/LQJul6kmsF+D0ZuuK2RtioIKkPFZOyZONvK11NYfLC8NeISDoPWwcrXbVBaxzL7BoCsmnIWZA9VHNCYTW/+5UFaj98moitvh1dWqZ7+7+gHZhariY5zyWkRjTNXXbFXiokfHDqWtVA5/alxtIYy6IeyBmu6inn0tttmifaQcfm3YPeVUyJwMX3xglQ5s7QvV/6yFxuQyDg2t2W4xHxGD7/s831DyNKD03w
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(39860400002)(346002)(136003)(230922051799003)(186009)(1800799009)(451199024)(64100799003)(8936002)(55016003)(76116006)(7696005)(9686003)(6506007)(478600001)(26005)(38100700002)(38070700005)(122000001)(86362001)(2906002)(110136005)(71200400001)(66476007)(66556008)(66946007)(33656002)(316002)(83380400001)(41300700001)(64756008)(54906003)(44832011)(5660300002)(52536014)(4326008)(66446008)(8676002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?e4ZRayfoB2LSH9EvFzr/qynXJeRfu9++KWMs59LDUL3MPKrJ84/KLLFgAl5k?=
- =?us-ascii?Q?XzMq6as2D57ciqIotHkdYlvj+T3p6+OO+N7RqAbAj2SUbsrwXzwt9UzQ9RG9?=
- =?us-ascii?Q?YvSinmMrBvMNq561Hwbj9rmwIKwhrRdqohZ+y2rBmWiU66lfyFSKZC1JOPRz?=
- =?us-ascii?Q?Z1np9HHPoaazQUYhu8ig6tlE8CJSvqXWUgL0RG5k2gYcnAOcdGddN8MX4mss?=
- =?us-ascii?Q?GTQfSnQWcaTWfFysvplUoyFWqAEzHsHKH8kF1YP7WcXm3RXXPeOaRcCGba0K?=
- =?us-ascii?Q?9rfa+f44vuhFPGBNx/5EXpTGu6NBRw3k8o8E40oOvvjnparN1b+rHyfm0rg+?=
- =?us-ascii?Q?b3maqzOS8WIR1sKuvClTuNpzSBonpyP7LMI+5+85rovUX0sjPA2qq047EH2h?=
- =?us-ascii?Q?bOX1QmU8zNSeVipVkXc//lVrB7mKoyxyXURYvjxQsFcjIJ8W/WwnmGEklDDl?=
- =?us-ascii?Q?yFXRHREYIlR9sAgmwqmwqykzUclNMn8dbycC4g/zjmgvrVO7jVgyPCL541JP?=
- =?us-ascii?Q?IbE/KqffX13MyXKw8IhcCfH3LAW8F2f0YU4bHKOCu19DZrx/tJ5/ySR5s9++?=
- =?us-ascii?Q?Hgqj7U3VynllE1YeszIPEKooJlSxZahrbcilxQ4FNrfl1LNbBWIh635jJAvf?=
- =?us-ascii?Q?+mVRVv5xhUsSCh3wkB9zFK9C8WjHRTD1nIGVvo3WLPJg6YcYTxwMI4I2hWIY?=
- =?us-ascii?Q?OAb/djXfjzYMwFD7Zi987qbNyPw5qAzKorgzilKybjS5A3W199QaOHkryW1d?=
- =?us-ascii?Q?8+DEjO9aVLYx02TJO1RJmTyA9fE4FBS1/iTXrknTLrpgJQ0Pm+VOWO6A6uge?=
- =?us-ascii?Q?o3+b+3jGHm/vVlJcddAFoh/Sg/quGiY4iSZ6kCGZED4xNFwAGuoeGdjENIiH?=
- =?us-ascii?Q?yVti50dNyovXfJwDBBqmYDpcYSRED/D87X8NcVRHH/Pk/yBigBTJOkEOvjZH?=
- =?us-ascii?Q?HkK4+Cs23DcYqj0MNB3KlWPOyRRfDfed1ntwNgSP6FR4gvdzWV+fNSchVArE?=
- =?us-ascii?Q?G82YSY5fqf7BCbKnp+6wiSUtCKYNLK7lZ1Ma2A1JhFkJb8crVBaOCdYf9DnH?=
- =?us-ascii?Q?wRWRpmDE0xQLM/qMV3c7EfLMrjdocQIM398O61KZla/pD/ei8AIRdyLlPqfn?=
- =?us-ascii?Q?WWNINty+HHtJ6GfHoqcGsIxdhUMzaTcy/ACA2q/rVINlckWBYeFH0RPlQ7yR?=
- =?us-ascii?Q?wSm3Y6NTqdjgTl/Rl1X/lpiwQ5zUsJJEt1ZqxORVge0+6E5vOj41oYC8Ewin?=
- =?us-ascii?Q?zanZwDasjNSoLbqt+qTuUoRi5aL92oydWmcq87oqK1HTPy6QlqA3C7hlSObl?=
- =?us-ascii?Q?XS5KLJX0AqGhPDl+HUugBVR4Ph3XJHMaTLFxXnNFGiy91a8QR7x7I5fobvOd?=
- =?us-ascii?Q?6IVE1Fgbjohiq2zp8FkFSlI4yrsJDoHg2spKsocLkXyVPIWI9Udi9fAIcByK?=
- =?us-ascii?Q?4vUtzkhF7C8u3Yt0RHU3azKGNzkBslrUVRZ48MgTesekp3YKVuMxlry2wRMu?=
- =?us-ascii?Q?tS3OXa0T78NUs7SM4hVNL3zHvaCeucYPm8fxxA+DFYVMTH3RNBIQ8cIwev4G?=
- =?us-ascii?Q?mPnmNu0wsByLmfBP50Q=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Tue, 3 Oct 2023 05:47:04 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9257AD
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:46:55 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d81afd5273eso728461276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 02:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696326415; x=1696931215; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EWXnbKCGMKRxWFwVeSaYnuznQwZrR+ai+1tVVhaF48Q=;
+        b=qLodcR07eseAJ9KFLO4l7TO5J8bWWSCPQLEJXpC76aps5b7v4MMoTQ9SeTpk23+3Dx
+         hw/TMP4zJAUgqVnGuAneJeMLFWx/XuwULpvpvNaljCaY6jK48VEhKrZ503+qhz7xbzxh
+         HxYQPpUltsZmvF/IkltFALuhNOLNC0k4am+q7EkOU0RWME/Di462iO2aJsDsxxgFP+Fu
+         CW7x97EDMJG5lwBQp4SXFI7ujG2xcAKOzj/3M+pKA7SCbYvGbkaNOV45lU+xeLABYI0b
+         RxG2NfiD1/m8mFK9Kr5Wr0gEOA8KvlTRcY7JzeiGgubbhPwYNHo+pTjxtGnAmwsyz+5t
+         Qvxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696326415; x=1696931215;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EWXnbKCGMKRxWFwVeSaYnuznQwZrR+ai+1tVVhaF48Q=;
+        b=tBPe7R7TvACUBgQ+fFKF3PIH5fuFICiU5L90gNt/r88Zq8Tf/HOAa4iRornymK1Z9/
+         B0AwteKGPC4tydThQ2lu1NeEc38i1lEH3FvYIm2IM8WDiHxGk2HXtBmDbnOcgLkxJnvN
+         WukqdChxtOZGhJ5Ry9iK/U0Kl9PW+3JItxhAe5GpH5DAUaOHjRRbSo37tHXhT8lezBPz
+         qNGlOByWAoXfXJpD0aZKAYkbuKROviM1QlyEEDQt6XUvxjV+I5YIi14KVlnVv556cblX
+         tmNyJkrPtFDXIjQI5U3bUxVBf26KbyLtQKnXFtgbhV+KUFF8rArz6mCAJO9Mg+FeIHR/
+         U5eQ==
+X-Gm-Message-State: AOJu0Ywu9ol64qdb6tztcxKr4tWql+JSxuey707zsw4+CzL+/zBVwYYr
+        TBF2BKFfN40iFNs7aEgshF9PgFJh5v+t5Upw9vp5UQ==
+X-Google-Smtp-Source: AGHT+IGqHU/uHTRCpUjdPRgnr30EjfpfaPr7DiNzxfBFI3+32gm3A/PhdxWE9u4nN49eKa8f3LqebwyFBLilDfoN1Xc=
+X-Received: by 2002:a5b:748:0:b0:d7f:13da:f773 with SMTP id
+ s8-20020a5b0748000000b00d7f13daf773mr12748090ybq.6.1696326414938; Tue, 03 Oct
+ 2023 02:46:54 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c9be950-2b89-4819-f31f-08dbc3f58b34
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Oct 2023 09:45:57.2719
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: YE+2JRLay8a+8YEUAqYsTTBTW6cT1/xPnMxyt5rEuUvcAZ3oMsqiNWlPL5Tkpj/9FroYvbhXacxcj0kAsgWDOA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9583
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+References: <20230915094351.11120-1-victorshihgli@gmail.com> <20230915094351.11120-12-victorshihgli@gmail.com>
+In-Reply-To: <20230915094351.11120-12-victorshihgli@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 3 Oct 2023 11:46:18 +0200
+Message-ID: <CAPDyKFqpT3Z99gv=5W8sWquq8ogSjEuwyL97nqm8xZP2ce9QMw@mail.gmail.com>
+Subject: Re: [PATCH V12 11/23] mmc: sdhci-uhs2: add set_power() to support vdd2
+To:     Victor Shih <victorshihgli@gmail.com>
+Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
+        HL.Liu@genesyslogic.com.tw, Greg.tu@genesyslogic.com.tw,
+        takahiro.akashi@linaro.org, dlunev@chromium.org,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        Victor Shih <victor.shih@genesyslogic.com.tw>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cristian,
+On Fri, 15 Sept 2023 at 11:44, Victor Shih <victorshihgli@gmail.com> wrote:
+>
+> From: Victor Shih <victor.shih@genesyslogic.com.tw>
+>
+> This is a UHS-II version of sdhci's set_power operation.
+> VDD2, as well as VDD, is handled here.
 
-> Subject: Re: [PATCH v3 2/2] clk: scmi: add set/get_parent support
->=20
-> On Sun, Oct 01, 2023 at 12:38:44PM +0800, Peng Fan (OSS) wrote:
-> > From: Peng Fan <peng.fan@nxp.com>
-> >
-> > SCMI v3.2 adds set/get parent clock commands, so update the clk driver
-> > to support them.
-> >
->=20
-> Hi,
->=20
-> a few notes down below.
->=20
-> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > ---
-> >  drivers/clk/clk-scmi.c | 50
-> > +++++++++++++++++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 49 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c index
-> > 2e1337b511eb..5aaca674830f 100644
-> > --- a/drivers/clk/clk-scmi.c
-> > +++ b/drivers/clk/clk-scmi.c
-> > @@ -24,6 +24,7 @@ struct scmi_clk {
-> >  	struct clk_hw hw;
-> >  	const struct scmi_clock_info *info;
-> >  	const struct scmi_protocol_handle *ph;
-> > +	struct clk_parent_data *parent_data;
-> >  };
-> >
-> >  #define to_scmi_clk(clk) container_of(clk, struct scmi_clk, hw) @@
-> > -78,6 +79,35 @@ static int scmi_clk_set_rate(struct clk_hw *hw, unsigne=
-d
-> long rate,
-> >  	return scmi_proto_clk_ops->rate_set(clk->ph, clk->id, rate);  }
-> >
-> > +static int scmi_clk_set_parent(struct clk_hw *hw, u8 parent_index) {
-> > +	struct scmi_clk *clk =3D to_scmi_clk(hw);
-> > +
-> > +	return scmi_proto_clk_ops->parent_set(clk->ph, clk->id,
-> > +parent_index); }
-> > +
-> > +static u8 scmi_clk_get_parent(struct clk_hw *hw) {
-> > +	struct scmi_clk *clk =3D to_scmi_clk(hw);
-> > +	u32 parent_id;
-> > +	int ret;
-> > +
-> > +	ret =3D scmi_proto_clk_ops->parent_get(clk->ph, clk->id, &parent_id);
-> > +	if (ret)
-> > +		return 0;
-> > +
-> > +	return parent_id;
-> > +}
-> > +
->=20
-> While testing using CLK Debugfs with CLOCK_ALLOW_WRITE_DEBUGFS 1 I
-> noticed that I can correctly change the clk_parent and then read back the
-> clk_possible_parents, BUT if I read clk_parent right after boot (OR after
-> loading the clk-scmi module) I cannot get back any value from debugfs eve=
-n
-> though I can see the correct SCMI messages being exchanged from the trace=
-s.
->=20
-> My guess was that, while scmi_clk_set_parent is invoked by the CLK core w=
-ith
-> a parent_index that has been remapped by the core to the SCMI clock
-> domain ID, this is not done by scmi_clk_get_parent() so you are returning=
- to
-> the clock framework as parent_id the raw SCMI clock domain id as returned
-> by the platform instead of the clk parent id used by the core.
->=20
-> This does not happen after you issue at first a reparent because in that =
-case
-> on the following read of clk_parent the CLK framework returns the last va=
-lue
-> you have set that it had cached previously.
->=20
-> This fixes for me the issue:
->=20
-> ---8<----
->=20
-> diff --git a/drivers/clk/clk-scmi.c b/drivers/clk/clk-scmi.c index
-> 5aaca674830f..fd47232d4021 100644
-> --- a/drivers/clk/clk-scmi.c
-> +++ b/drivers/clk/clk-scmi.c
-> @@ -89,14 +89,21 @@ static int scmi_clk_set_parent(struct clk_hw *hw, u8
-> parent_index)  static u8 scmi_clk_get_parent(struct clk_hw *hw)  {
->  	struct scmi_clk *clk =3D to_scmi_clk(hw);
-> -	u32 parent_id;
-> +	u32 parent_id, p_idx;
->  	int ret;
->=20
->  	ret =3D scmi_proto_clk_ops->parent_get(clk->ph, clk->id, &parent_id);
->  	if (ret)
->  		return 0;
->=20
-> -	return parent_id;
-> +	for (p_idx =3D 0; p_idx < clk->info->num_parents; p_idx++)
-> +		if (clk->parent_data[p_idx].index =3D=3D parent_id)
-> +			break;
+Okay, but why?
+
+Please justify the change in the commit messages, don't just tell what
+is being done. This applied to the whole series - and I believe I have
+said this before too.
+
+>
+> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> ---
+>
+> Updates in V10:
+>  - Move some definitions of PatchV9[05/23] to PatchV10[11/23].
+>
+> Updates in V9:
+>  - Modify annotations in sdhci_get_vdd_value().
+>
+> Updates in V8:
+>  - Adjust the position of matching brackets.
+>  - Add the initial value of the pwr in sdhci_uhs2_set_power().
+>
+> Updates in V7:
+>  - Add clear the power reg before setting a new value
+>    in sdhci_uhs2_set_power().
+>  - Add MMC_VDD_34_35 case and MMC_VDD_35_36 case in sdhci_get_vdd_value().
+>  - Drop pwr variable in sdhci_get_vdd_value().
+>
+> Updates in V6:
+>  - Add mmc_opt_regulator_set_ocr().
+>  - Remove unnecessary functions.
+>
+> ---
+>
+>  drivers/mmc/host/sdhci-uhs2.c | 48 +++++++++++++++++++++++++++
+>  drivers/mmc/host/sdhci.c      | 61 +++++++++++++++++++----------------
+>  drivers/mmc/host/sdhci.h      |  1 +
+>  include/linux/mmc/host.h      |  1 +
+>  4 files changed, 83 insertions(+), 28 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
+> index dfc80a7f1bad..fc37a34629c2 100644
+> --- a/drivers/mmc/host/sdhci-uhs2.c
+> +++ b/drivers/mmc/host/sdhci-uhs2.c
+> @@ -57,6 +57,13 @@ EXPORT_SYMBOL_GPL(sdhci_uhs2_dump_regs);
+>   *                                                                           *
+>  \*****************************************************************************/
+>
+> +static inline int mmc_opt_regulator_set_ocr(struct mmc_host *mmc,
+> +                                           struct regulator *supply,
+> +                                           unsigned short vdd_bit)
+> +{
+> +       return IS_ERR_OR_NULL(supply) ? 0 : mmc_regulator_set_ocr(mmc, supply, vdd_bit);
+> +}
 > +
-> +	if (p_idx =3D=3D clk->info->num_parents)
-> +		return 0;
-> +
-> +	return p_idx;
+>  bool sdhci_uhs2_mode(struct sdhci_host *host)
+>  {
+>         return host->mmc->flags & MMC_UHS2_SUPPORT;
+> @@ -94,6 +101,47 @@ void sdhci_uhs2_reset(struct sdhci_host *host, u16 mask)
 >  }
->=20
+>  EXPORT_SYMBOL_GPL(sdhci_uhs2_reset);
+>
+> +static void sdhci_uhs2_set_power(struct sdhci_host *host, unsigned char mode, unsigned short vdd)
+> +{
+> +       struct mmc_host *mmc = host->mmc;
+> +       u8 pwr = 0;
+> +
+> +       if (mode != MMC_POWER_OFF) {
+> +               pwr = sdhci_get_vdd_value(vdd);
+> +               if (!pwr)
+> +                       WARN(1, "%s: Invalid vdd %#x\n",
+> +                            mmc_hostname(host->mmc), vdd);
+> +               pwr |= SDHCI_VDD2_POWER_180;
+> +       }
+> +
+> +       if (host->pwr == pwr)
+> +               return;
+> +       host->pwr = pwr;
+> +
+> +       if (pwr == 0) {
+> +               sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
+> +
+> +               mmc_opt_regulator_set_ocr(mmc, mmc->supply.vmmc, 0);
+> +               mmc_opt_regulator_set_ocr(mmc, mmc->supply.vmmc2, 0);
 
+We added mmc_regulator_set_vqmmc2() in patch4. Please use that instead.
 
-You are right. Thanks for doing the fix.
+> +       } else {
+> +               mmc_opt_regulator_set_ocr(mmc, mmc->supply.vmmc, vdd);
+> +               /* support 1.8v only for now */
+> +               mmc_opt_regulator_set_ocr(mmc, mmc->supply.vmmc2, fls(MMC_VDD_165_195) - 1);
+> +
+> +               /* Clear the power reg before setting a new value */
+> +               sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
+> +
+> +               /* vdd first */
+> +               pwr |= SDHCI_POWER_ON;
+> +               sdhci_writeb(host, pwr & 0xf, SDHCI_POWER_CONTROL);
+> +               mdelay(5);
+> +
+> +               pwr |= SDHCI_VDD2_POWER_ON;
+> +               sdhci_writeb(host, pwr, SDHCI_POWER_CONTROL);
+> +               mdelay(5);
+> +       }
+> +}
+> +
+>  /*****************************************************************************\
+>   *                                                                           *
+>   * Driver init/exit                                                          *
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index 753b251179f2..eca54a16e7fc 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -23,7 +23,7 @@
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/of.h>
+> -
+> +#include <linux/bug.h>
+>  #include <linux/leds.h>
+>
+>  #include <linux/mmc/mmc.h>
+> @@ -2061,41 +2061,46 @@ static void sdhci_set_power_reg(struct sdhci_host *host, unsigned char mode,
+>                 sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
+>  }
+>
+> +unsigned short sdhci_get_vdd_value(unsigned short vdd)
+> +{
+> +       switch (1 << vdd) {
+> +       case MMC_VDD_165_195:
+> +       /*
+> +        * Without a regulator, SDHCI does not support 2.0v
+> +        * so we only get here if the driver deliberately
+> +        * added the 2.0v range to ocr_avail. Map it to 1.8v
+> +        * for the purpose of turning on the power.
+> +        */
+> +       case MMC_VDD_20_21:
+> +               return SDHCI_POWER_180;
+> +       case MMC_VDD_29_30:
+> +       case MMC_VDD_30_31:
+> +               return SDHCI_POWER_300;
+> +       case MMC_VDD_32_33:
+> +       case MMC_VDD_33_34:
+> +       /*
+> +        * 3.4V ~ 3.6V are valid only for those platforms where it's
+> +        * known that the voltage range is supported by hardware.
+> +        */
+> +       case MMC_VDD_34_35:
+> +       case MMC_VDD_35_36:
+> +               return SDHCI_POWER_330;
+> +       default:
+> +               return 0;
+> +       }
+> +}
+> +EXPORT_SYMBOL_GPL(sdhci_get_vdd_value);
+> +
+>  void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
+>                            unsigned short vdd)
+>  {
+>         u8 pwr = 0;
+>
+>         if (mode != MMC_POWER_OFF) {
+> -               switch (1 << vdd) {
+> -               case MMC_VDD_165_195:
+> -               /*
+> -                * Without a regulator, SDHCI does not support 2.0v
+> -                * so we only get here if the driver deliberately
+> -                * added the 2.0v range to ocr_avail. Map it to 1.8v
+> -                * for the purpose of turning on the power.
+> -                */
+> -               case MMC_VDD_20_21:
+> -                       pwr = SDHCI_POWER_180;
+> -                       break;
+> -               case MMC_VDD_29_30:
+> -               case MMC_VDD_30_31:
+> -                       pwr = SDHCI_POWER_300;
+> -                       break;
+> -               case MMC_VDD_32_33:
+> -               case MMC_VDD_33_34:
+> -               /*
+> -                * 3.4 ~ 3.6V are valid only for those platforms where it's
+> -                * known that the voltage range is supported by hardware.
+> -                */
+> -               case MMC_VDD_34_35:
+> -               case MMC_VDD_35_36:
+> -                       pwr = SDHCI_POWER_330;
+> -                       break;
+> -               default:
+> +               pwr = sdhci_get_vdd_value(vdd);
+> +               if (!pwr) {
+>                         WARN(1, "%s: Invalid vdd %#x\n",
+>                              mmc_hostname(host->mmc), vdd);
+> -                       break;
+>                 }
+>         }
+>
+> diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+> index 43ad3f4b7672..f3bd558b337f 100644
+> --- a/drivers/mmc/host/sdhci.h
+> +++ b/drivers/mmc/host/sdhci.h
+> @@ -837,6 +837,7 @@ void sdhci_set_power(struct sdhci_host *host, unsigned char mode,
+>  void sdhci_set_power_and_bus_voltage(struct sdhci_host *host,
+>                                      unsigned char mode,
+>                                      unsigned short vdd);
+> +unsigned short sdhci_get_vdd_value(unsigned short vdd);
+>  void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode,
+>                            unsigned short vdd);
+>  int sdhci_get_cd_nogpio(struct mmc_host *mmc);
+> diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+> index 6c8258310641..610644a0ace5 100644
+> --- a/include/linux/mmc/host.h
+> +++ b/include/linux/mmc/host.h
+> @@ -363,6 +363,7 @@ struct mmc_pwrseq;
+>
+>  struct mmc_supply {
+>         struct regulator *vmmc;         /* Card power supply */
+> +       struct regulator *vmmc2;        /* UHS2 VDD2 power supply */
 
->  ----8<-----
->=20
->  Not sure if there is a clever way to do it.
->=20
-> Aside from this, another inherent issue is that you cannot really return =
-an
-> error from .get_parent() so if the SCMI get_parent ops should fail (ex. t=
-imeout)
-> you return 0... (and me too in the above fix) but this is due to the CLK
-> framework callback definition itself.
+In patch4 we added vqmmc2. Please use that instead.
 
-Yes. Right. I will include your fix and do a test, then out v4, should be s=
-oon.
+>         struct regulator *vqmmc;        /* Optional Vccq supply */
+>         struct regulator *vqmmc2;       /* Optional supply for phy */
+>  };
+> --
+> 2.25.1
+>
 
-Thanks,
-Peng.
-
->=20
-> Thanks,
-> Cristian
-
+Kind regards
+Uffe
