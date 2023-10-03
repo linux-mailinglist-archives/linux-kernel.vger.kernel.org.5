@@ -2,124 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A50E7B6FA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7787B6FA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:24:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240636AbjJCRXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 13:23:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45284 "EHLO
+        id S231974AbjJCRYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 13:24:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240524AbjJCRXt (ORCPT
+        with ESMTP id S240045AbjJCRYQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 13:23:49 -0400
-Received: from mail-oi1-f205.google.com (mail-oi1-f205.google.com [209.85.167.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A3819B
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 10:23:46 -0700 (PDT)
-Received: by mail-oi1-f205.google.com with SMTP id 5614622812f47-3ae214a02a6so1942975b6e.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 10:23:46 -0700 (PDT)
+        Tue, 3 Oct 2023 13:24:16 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67694AF
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 10:24:12 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-59f6492b415so463827b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 10:24:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696353851; x=1696958651; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=thG43+UboCLsh1Q91ZvIyopFQTEYZrf70FwL33ZjCMU=;
+        b=QYzlmEwg1cl2xgv8eA4kBEEoF95sNcClBA9WQVh1mvCbedevX1/XPaBwDBerkXtGAZ
+         TscQjxQfIGgqzTBK5yHj53AlDYCRN4irJk2ozNqmQKz+mSMHuGk/GMbInfOnRgpJaF1s
+         oOerLJT5vtVrslncn+MYIqrVBnn6XqJaKv4noR1VpzB0PdH7Ufwa5Qnb1ItDY0JNMOCH
+         tCBHvruYPzsyXXybJ+Qst9yctVPkjpDKMtJSUsbAPT5Onek7ix7qz6azmX6rEUiLLq6u
+         QeCS5ZbFCaMtsBszGIwkgHwqjA98MqLxJFmTpneyWu5O7gR9a6nyaell54QqxA/Dcfft
+         j6lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696353825; x=1696958625;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Q/jMRNvciL7RWMYPwOstUOUPSkgXKQCTerJtq33CsU=;
-        b=kxtSXfTHIH9dJssHLV5nOa6wE5N/Kex8ECEkxi6JYeBcoqGqZ+itz2zxLDZZQGeaCb
-         SVPnKGwra2XokIBT4sn/8txDu3VuJJXVFOI2V2TH0hRdlKcxcO1ZRNVHet0ghTtSvi6a
-         9Uk2tPZN6WTeqqlLEtZqhE/q0tQ+yWhWM2vm9F294Sd417+6Hk4FOciM+lSDgtnHb9G2
-         S/vygHIES253bdVnIYWw+0W74y6UReUHUP5zr/mE8OgucPl8B9sBSCnVBD5W6JE89Sje
-         jfpJSY0JXIZr30jHOnw+ixmuklfCgpDZ5GJ5AtozP1+OVOppfqs6pDEn8KYLpTZ4wg+3
-         Z7lA==
-X-Gm-Message-State: AOJu0YwflZ3ResPFgtYALLbls1ZTPQRHybBzRN2xO4g23OwNLlcx+/R5
-        cpYrs72o5cMnjszsbVOqBE+hJfKLt8sBesipzHS1z9wsymtM
-X-Google-Smtp-Source: AGHT+IF0UvHcrWu4KqYurdVyxOcYLc/Qu5WttUcFgRgpwnKzZePD29nwpy2bx5yZKHHh5WQ6CsMLWFAoaSGlxvJhsZmvt1ASpYXR
+        d=1e100.net; s=20230601; t=1696353851; x=1696958651;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=thG43+UboCLsh1Q91ZvIyopFQTEYZrf70FwL33ZjCMU=;
+        b=abosyUeXQVzbZYtkZByzhiBHb2tP7XA9SElgoEqfQ+a+Vi7EZmQzFj+6wH2TExU+O0
+         /yBMuaLKU3RKWES3BSHjY8U/+sUHMyFne+Lu5ecpTpue6nG7OgWkPx1Ps139jM2lOxdX
+         stpj1ZFLs7qTphdD8w7tiTNhFfNUV+JZn1GojFizy6UBtk1xO4jr3dxv9ieUpW1UvCri
+         /YrzRyh83DgYfQC2kGR7SgSmXQNJDgk471XKTxMy1Z2cRnzdvXeGwK2Mn/J2DX+m1uK0
+         FanMvrThV9AiRpskY1QOGeyn/T10MzxvrZZCLe0j/vva5aq+ts7Wo6Aq0amOT9TwMAd8
+         WBmA==
+X-Gm-Message-State: AOJu0YwQDb624SfSg4fUVlNDgREmwyJsdQJ8j3WPuMwCAehNoKoskXbY
+        hYgxJOq4ehax5itlvKmebevCeF8QAJspIQ/pGYB+ng==
+X-Google-Smtp-Source: AGHT+IH5j0fbG7NgjzWevuE/HObPmlPu9noPzeMJCjDPQNUhLIUyFJgh+GLeEaZJSWodaBgSINVEcmZWOm2carpu1Fs=
+X-Received: by 2002:a81:a1d3:0:b0:59b:e743:630 with SMTP id
+ y202-20020a81a1d3000000b0059be7430630mr2726908ywg.22.1696353851538; Tue, 03
+ Oct 2023 10:24:11 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:200c:b0:3a1:f2a4:3d7 with SMTP id
- q12-20020a056808200c00b003a1f2a403d7mr109423oiw.1.1696353825681; Tue, 03 Oct
- 2023 10:23:45 -0700 (PDT)
-Date:   Tue, 03 Oct 2023 10:23:45 -0700
-In-Reply-To: <0000000000005f05820606a0838a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003179510606d327e5@google.com>
-Subject: Re: [syzbot] [mm?] WARNING in copy_hugetlb_page_range
-From:   syzbot <syzbot+ec78016e3d67860eec28@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, llvm@lists.linux.dev, mike.kravetz@oracle.com,
-        muchun.song@linux.dev, nathan@kernel.org, ndesaulniers@google.com,
-        syzkaller-bugs@googlegroups.com, trix@redhat.com
+References: <1695848028-18023-1-git-send-email-quic_khsieh@quicinc.com>
+ <1695848028-18023-9-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJprfjt7w+3YJAieBabuMso=-obRXss7-9Jrif23WmOJw5w@mail.gmail.com> <456136f5-1e4d-3866-603f-16f308f06028@quicinc.com>
+In-Reply-To: <456136f5-1e4d-3866-603f-16f308f06028@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 3 Oct 2023 20:24:00 +0300
+Message-ID: <CAA8EJprW72+oDL4vsQp9RKcAv9iAz2m0vfT1X3OLGxGNmJ=Y8Q@mail.gmail.com>
+Subject: Re: [PATCH v4 8/8] drm/msm/dp: move of_dp_aux_populate_bus() to eDP probe()
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Tue, 3 Oct 2023 at 20:16, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+>
+>
+> On 9/27/2023 2:57 PM, Dmitry Baryshkov wrote:
+> > On Wed, 27 Sept 2023 at 23:54, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+> >> Currently eDP population is done at msm_dp_modeset_init() which happen
+> >> at binding time. Move eDP population to be done at display probe time
+> >> so that probe deferral cases can be handled effectively.
+> >> wait_for_hpd_asserted callback is added during drm_dp_aux_init()
+> >> to ensure eDP's HPD is up before proceeding eDP population.
+> >>
+> >> Changes in v4:
+> >> -- delete duplicate initialize code to dp_aux before drm_dp_aux_register()
+> >> -- delete of_get_child_by_name(dev->of_node, "aux-bus") and inline the function
+> >> -- not initialize rc = 0
+> >>
+> >> Changes in v3:
+> >> -- add done_probing callback into devm_of_dp_aux_populate_bus()
+> >>
+> >> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> >> ---
+> >>   drivers/gpu/drm/msm/dp/dp_aux.c     | 34 ++++++++++++++----
+> >>   drivers/gpu/drm/msm/dp/dp_display.c | 69 ++++++++++++++++++-------------------
+> >>   2 files changed, 60 insertions(+), 43 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_aux.c
+> >> index 22eb774..425b5c5 100644
+> >> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
+> >> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
+> >> @@ -480,7 +480,6 @@ void dp_aux_deinit(struct drm_dp_aux *dp_aux)
+> >>
+> >>   int dp_aux_register(struct drm_dp_aux *dp_aux)
+> >>   {
+> >> -       struct dp_aux_private *aux;
+> >>          int ret;
+> >>
+> >>          if (!dp_aux) {
+> >> @@ -488,12 +487,7 @@ int dp_aux_register(struct drm_dp_aux *dp_aux)
+> >>                  return -EINVAL;
+> >>          }
+> >>
+> >> -       aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
+> >> -
+> >> -       aux->dp_aux.name = "dpu_dp_aux";
+> >> -       aux->dp_aux.dev = aux->dev;
+> >> -       aux->dp_aux.transfer = dp_aux_transfer;
+> >> -       ret = drm_dp_aux_register(&aux->dp_aux);
+> >> +       ret = drm_dp_aux_register(dp_aux);
+> >>          if (ret) {
+> >>                  DRM_ERROR("%s: failed to register drm aux: %d\n", __func__,
+> >>                                  ret);
+> >> @@ -508,6 +502,21 @@ void dp_aux_unregister(struct drm_dp_aux *dp_aux)
+> >>          drm_dp_aux_unregister(dp_aux);
+> >>   }
+> >>
+> >> +static int dp_wait_hpd_asserted(struct drm_dp_aux *dp_aux,
+> >> +                                unsigned long wait_us)
+> >> +{
+> >> +       int ret;
+> >> +       struct dp_aux_private *aux;
+> >> +
+> >> +       aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
+> >> +
+> >> +       pm_runtime_get_sync(aux->dev);
+> >> +       ret = dp_catalog_aux_wait_for_hpd_connect_state(aux->catalog);
+> >> +       pm_runtime_put_sync(aux->dev);
+> > Ok, so here you have used put_sync instead of autosuspend. Can we have
+> > some uniformity? (I'd prefer to see put_sync or just put everywhere)
+> >
+> >> +
+> >> +       return ret;
+> >> +}
+> >> +
+> >>   struct drm_dp_aux *dp_aux_get(struct device *dev, struct dp_catalog *catalog,
+> >>                                bool is_edp)
+> >>   {
+> >> @@ -531,6 +540,17 @@ struct drm_dp_aux *dp_aux_get(struct device *dev, struct dp_catalog *catalog,
+> >>          aux->catalog = catalog;
+> >>          aux->retry_cnt = 0;
+> >>
+> >> +       /*
+> >> +        * Use the drm_dp_aux_init() to use the aux adapter
+> >> +        * before registering aux with the DRM device so that
+> >> +        * msm edp panel can be detected by generic_dep_panel_probe().
+> > eDP, AUX, generic_edp_panel_probe().
+> >
+> >> +        */
+> >> +       aux->dp_aux.name = "dpu_dp_aux";
+> >> +       aux->dp_aux.dev = dev;
+> >> +       aux->dp_aux.transfer = dp_aux_transfer;
+> >> +       aux->dp_aux.wait_hpd_asserted = dp_wait_hpd_asserted;
+> >> +       drm_dp_aux_init(&aux->dp_aux);
+> >> +
+> >>          return &aux->dp_aux;
+> >>   }
+> >>
+> >> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> >> index 711d262..9a2b403 100644
+> >> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> >> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> >> @@ -1203,6 +1203,28 @@ static const struct msm_dp_desc *dp_display_get_desc(struct platform_device *pde
+> >>          return NULL;
+> >>   }
+> >>
+> >> +static int dp_auxbus_done_probe(struct drm_dp_aux *aux)
+> >> +{
+> >> +       int rc;
+> >> +
+> >> +       rc = component_add(aux->dev, &dp_display_comp_ops);
+> >> +       if (rc)
+> >> +               DRM_ERROR("eDP component add failed, rc=%d\n", rc);
+> > drop.
+> are you mean dropping this line?
+> >> +
+> >> +       return rc;
+> >> +}
+> >> +
+> >> +static inline int dp_display_auxbus_population(struct dp_display_private *dp)
+> > It's not `population`. It is just `populate`.
+> >
+> > Also please inline this function.
+> Are you means moving this function to header file?
 
-HEAD commit:    c9f2baaa18b5 Add linux-next specific files for 20231003
-git tree:       linux-next
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=154df992680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3fe9c462fee1649f
-dashboard link: https://syzkaller.appspot.com/bug?extid=ec78016e3d67860eec28
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11e4b011680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11772062680000
+No. I mean inlining this function.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5361e41384fe/disk-c9f2baaa.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7028b209124d/vmlinux-c9f2baaa.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a167dc667ee5/bzImage-c9f2baaa.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ec78016e3d67860eec28@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5054 at include/linux/hugetlb.h:1289 hugetlb_walk include/linux/hugetlb.h:1289 [inline]
-WARNING: CPU: 0 PID: 5054 at include/linux/hugetlb.h:1289 copy_hugetlb_page_range+0x675/0x3520 mm/hugetlb.c:4940
-Modules linked in:
-CPU: 0 PID: 5054 Comm: syz-executor329 Not tainted 6.6.0-rc4-next-20231003-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-RIP: 0010:hugetlb_walk include/linux/hugetlb.h:1289 [inline]
-RIP: 0010:copy_hugetlb_page_range+0x675/0x3520 mm/hugetlb.c:4940
-Code: 00 be ff ff ff ff 48 81 c7 a0 01 00 00 e8 b3 2f 6c 08 31 ff 89 c5 89 c6 e8 68 77 ae ff 85 ed 0f 85 dd fd ff ff e8 eb 7b ae ff <0f> 0b e9 d1 fd ff ff e8 df 7b ae ff 49 89 ec 31 ff 41 81 e4 ff 0f
-RSP: 0018:ffffc90003a2f4a0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000020000000 RCX: ffffffff81d9dcf8
-RDX: ffff8880675d0000 RSI: ffffffff81d9dd05 RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: ffffffff910df9a8 R12: ffff88807905b900
-R13: ffff88801efab500 R14: 0000000020000000 R15: dffffc0000000000
-FS:  0000555557543380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fcd71918140 CR3: 000000007b828000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- copy_page_range+0x1dc2/0x3c70 mm/memory.c:1293
- dup_mmap+0x13f3/0x1d80 kernel/fork.c:758
- dup_mm kernel/fork.c:1684 [inline]
- copy_mm kernel/fork.c:1733 [inline]
- copy_process+0x6cc9/0x74b0 kernel/fork.c:2495
- kernel_clone+0xfd/0x920 kernel/fork.c:2900
- __do_sys_clone3+0x1f1/0x260 kernel/fork.c:3201
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:81
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fcd71930ab9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc79f4f9b8 EFLAGS: 00000246 ORIG_RAX: 00000000000001b3
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fcd71930ab9
-RDX: 00007ffc79f4f9c0 RSI: 0000000000000058 RDI: 00007ffc79f4f9c0
-RBP: 00007fcd719a35f0 R08: 0000000000000000 R09: 0000000000000000
-R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000000001
-R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+-- 
+With best wishes
+Dmitry
