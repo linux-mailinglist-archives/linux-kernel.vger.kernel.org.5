@@ -2,78 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E497B67D6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01D227B67D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239900AbjJCL05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 07:26:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
+        id S232524AbjJCL2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 07:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbjJCL0z (ORCPT
+        with ESMTP id S232042AbjJCL2D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 07:26:55 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B79B09B;
-        Tue,  3 Oct 2023 04:26:51 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EE1BFC15;
-        Tue,  3 Oct 2023 04:27:29 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6C863F762;
-        Tue,  3 Oct 2023 04:26:49 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 12:26:47 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
-        Nikunj Kela <nkela@quicinc.com>,
-        Prasad Sodagudi <psodagud@quicinc.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 9/9] firmware: arm_scmi: Add generic OPP support to the
- SCMI performance domain
-Message-ID: <20231003112647.bbqwnre5bzijw5sg@bogus>
-References: <20230925131715.138411-1-ulf.hansson@linaro.org>
- <20230925131715.138411-10-ulf.hansson@linaro.org>
- <20230929162522.zjoh5d2tqspzm3nc@bogus>
- <20231003082133.xyu46szs3jfm6fks@vireshk-i7>
+        Tue, 3 Oct 2023 07:28:03 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB7398E;
+        Tue,  3 Oct 2023 04:28:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=tK8pzkcsxIaL3oiwk6+iWM2JEPMsTxZXWPkeUbBVdRk=; b=nofYjpUbyQd0PTxPAjDablBAUV
+        kF9bPAbgGYPHQaHk13Ek8xwnG/fs4mx+dyWyCEcvDv87s7wipvXC+2+uFrdswoSCOFaGrLd+QFHrU
+        do+E8ZSsR4/rxwPLj99FNyQP5wC/YNRQPnKwnbQcz82mlbF67W80bRVzdYCpuQrIdTNLbiroFgj7p
+        kM80hUhUY/67hjSqkOBZmBgoOdLhetxIgGhcIw0jZkcMyqHd2rxc7J8qp3riwa5kKH3x0DmOAmFCC
+        aBsOF0hpnhZwCT+G/WDT1V1oq9oXJkmn1jK5mEPClpOY63wVijsIQljA5Zy09ujZVV42NhVAISEZ5
+        kGs/6WpQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51456)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qndZD-0001bn-2k;
+        Tue, 03 Oct 2023 12:27:56 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qndZE-0007q8-7J; Tue, 03 Oct 2023 12:27:56 +0100
+Date:   Tue, 3 Oct 2023 12:27:56 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Camelia Groza <camelia.groza@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor@kernel.org>,
+        Sean Anderson <sean.anderson@seco.com>,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>
+Subject: Re: [RFC PATCH v2 net-next 07/15] net: phylink: centralize
+ phy_interface_mode_is_8023z() && phylink_autoneg_inband() checks
+Message-ID: <ZRv6vNJhvVI9/1RX@shell.armlinux.org.uk>
+References: <20230923134904.3627402-1-vladimir.oltean@nxp.com>
+ <20230923134904.3627402-8-vladimir.oltean@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231003082133.xyu46szs3jfm6fks@vireshk-i7>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230923134904.3627402-8-vladimir.oltean@nxp.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 01:51:33PM +0530, Viresh Kumar wrote:
-> On 29-09-23, 17:25, Sudeep Holla wrote:
-> > On Mon, Sep 25, 2023 at 03:17:15PM +0200, Ulf Hansson wrote:
-> > > To allow a consumer driver to use the OPP library to scale the performance
-> > > for its device, let's dynamically add the OPP table when the device gets
-> > > attached to its SCMI performance domain.
-> > >
-> > 
-> > The SCMI changes(patches 7-9) look fine to me. Rafael was fine with genpd
-> > changes, Viresh if you are OK with OPP changes I can take it via SCMI as
-> > there are some dependent patches as Ulf has pointed out in the cover letter.
-> 
-> I would like to take OPP patches via my tree as there are some changes in my
-> tree and I plan to add some more changes on top of this. I can give an immutable
-> branch though.
->
+On Sat, Sep 23, 2023 at 04:48:56PM +0300, Vladimir Oltean wrote:
+> In a future change, we will extend the PHY interface modes for which
+> phylink allows the PCS to handle autoneg. Group the existing occurences
+> into a common phylink_pcs_handles_an().
 
-Works for me. Please do share it once you have it ready.
+I don't see anything wrong with this change, despite my comments on the
+next patch. However, including INTERNAL in this may cause problems with
+DSA. I think maybe these two patches need to be tested on DSA setups
+that make use of INTERNAL.
 
 -- 
-Regards,
-Sudeep
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
