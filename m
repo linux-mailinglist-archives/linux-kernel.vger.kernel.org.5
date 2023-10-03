@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4E37B6DD0
+	by mail.lfdr.de (Postfix) with ESMTP id EDBDE7B6DD1
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240198AbjJCQBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:01:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47464 "EHLO
+        id S240247AbjJCQBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:01:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240209AbjJCQA4 (ORCPT
+        with ESMTP id S240126AbjJCQA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:00:56 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92B4ED7;
-        Tue,  3 Oct 2023 09:00:52 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9adb9fa7200so237147266b.0;
-        Tue, 03 Oct 2023 09:00:52 -0700 (PDT)
+        Tue, 3 Oct 2023 12:00:59 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC24BAB;
+        Tue,  3 Oct 2023 09:00:54 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9b275afb6abso993260666b.1;
+        Tue, 03 Oct 2023 09:00:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696348851; x=1696953651; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696348853; x=1696953653; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0FvVCrqOKh6HKC+bZxE5jYuqFOTddVesEzvzag91z+o=;
-        b=H4fYLDJpSzS3ZnfKkMzl4GNG+XdRVq0tPvGi7ziTqTT4YVgAbQVRj4uASv2FFA6Zyw
-         nCCZvI40zCjwCU/KP1FHLnQ9Gl8EMD0ZD8j8w4c/7gKz1otxGyokcU8KRyq35JBHooPY
-         jo0kSOtAaHTGr1iWJKQRs7WR9pCE8EfuxyhK4A221558glQxU2Ogxc45wHqZMOSTWm/3
-         /f3cuAeozbETSgFCVTaKrhDFQOXDTtonCNqe/eVR4d8l5+o3DUrSu4qbU7njpEhuIhta
-         dmqWG5aljKft3ArjfZCrsNu9ABt0jWTE1p/9vxQ8rwUrTUzcqRIpPBif9VdldGqzYTZQ
-         V6ug==
+        bh=2odeYCYvYbI+e91XdeKG6gxQVau5QUuMP9zEc+Df9BQ=;
+        b=SLatTvuN9opIFiIqKRSRCwdzIcHMX74OuyuNTtfSX4nyC1lM1qlV9uAFE/Dc2ARM85
+         96i4hvvpk4HmU06W1HdRWpeBmlExAkPy0RDBQ/g1FCMOy1vg3jhuczQLXwuQI5d+Fev8
+         HUuAJ6O0nMlvjxLa4ZLxKsrKcOHJpZL2d8ZJtwwjuBGQFRNwTrsW9ST0cdudNbbcBTEH
+         Vos1GFcGtJqU4YYTSM3b0JSuL0VFLvGjgxrZHWuli/VC9UvoxHxLgjRFHBvlAJ/3qcSR
+         fpiRjfNubBdwDcJHRQ42h4fsJIwPznWx1ZduuwX6i3XVhWoEwMGNIgCt12P/RuoP9dR5
+         rVaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696348851; x=1696953651;
+        d=1e100.net; s=20230601; t=1696348853; x=1696953653;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0FvVCrqOKh6HKC+bZxE5jYuqFOTddVesEzvzag91z+o=;
-        b=Y/JAqRkfTXAl5808cVAqpS+jrcKxNDYwd6aL6jRc+JhN+JyTatBIPseTce/j+j4qYW
-         wO9WTKIvjYuEsMRKDCI+2pyi0hFdyHn8CaZglToDvZYg7wRcKOns69Ew4W719NGXh0dx
-         4Qdhwp/qD4xIC1Zrlnbzie7k0400vmzI3PATj7mjUOSrVDY3TrsOxSKfnY+sTqmjes7/
-         nryZHJTxXgb95KI2kMxFBSEib2J9up8aWK/UK4xXk2mgTtCqOL6qLOSLD2QFj8ScdA4w
-         fdaRfrjAi+Ay8nk5LdcYGN8Jbp/+Awha28NI9HvlDXrN9IJxCbreZgxkI8EKi28Q5njp
-         8sQQ==
-X-Gm-Message-State: AOJu0YyLb1Zh/z6vyn/h/aKX84Qwx7Vw7SIsHpiayX80dCOOyliHS5h2
-        +0iozeSYHSMDi7KDK4mdEgo=
-X-Google-Smtp-Source: AGHT+IHs5e4PJhQyU/pO6caDVGwEi3PeF9fcqlPPalxYgjZKoqStuM7a+mDYM96CPyILV75Ia2uu+A==
-X-Received: by 2002:a17:907:74a:b0:9ad:93c8:c483 with SMTP id xc10-20020a170907074a00b009ad93c8c483mr2722943ejb.2.1696348850790;
-        Tue, 03 Oct 2023 09:00:50 -0700 (PDT)
+        bh=2odeYCYvYbI+e91XdeKG6gxQVau5QUuMP9zEc+Df9BQ=;
+        b=IhdgRx3nPP1opthDrLLbZ7hh7SFCQjRUWFzsY6+CMp72/VFsTpTvaDS6AM1ZBNj2Ve
+         mGof90lQ/tidMEEPzIQIfqjtcedlvreyjfsYSJqIL67cuiEl8s28vu9OaCnQdZbCXxmk
+         W8dbX4ApieFRvHB87NSYu/Q1UbNzL9EpADBRsDgiaXRamiOnf2XET1tq3wvQVh55935V
+         cUCsvmqKfFm3etOMmgdqIBUFPRUnX59/KJCcxccf33VTih2Vj2pDntn1xj381ONJa+/K
+         3kDG2SBdBL6sQPli5oM+upydQoWdjwn6X/CLi3TGpDv0iJ+0wYrLMU85rTHSufE9t6RD
+         Ou9A==
+X-Gm-Message-State: AOJu0YxT5GY5ywuGBRpvC55h9U5trlvMX3vZLI1Y2CohwsPIfAxH6k8Q
+        FdyjXMQ/FQnl60xDCazb3/I=
+X-Google-Smtp-Source: AGHT+IG35CcbkIuT82YHi632EHE54tO2/LR4eglmh+UpcytjAYpylxz746gsFzW1vQwsZ7TugQIy4w==
+X-Received: by 2002:a17:907:c24:b0:9a1:8993:9532 with SMTP id ga36-20020a1709070c2400b009a189939532mr3183444ejc.30.1696348852706;
+        Tue, 03 Oct 2023 09:00:52 -0700 (PDT)
 Received: from primary.. ([213.139.52.198])
-        by smtp.gmail.com with ESMTPSA id jo3-20020a170906f6c300b0099df2ddfc37sm1270526ejb.165.2023.10.03.09.00.49
+        by smtp.gmail.com with ESMTPSA id jo3-20020a170906f6c300b0099df2ddfc37sm1270526ejb.165.2023.10.03.09.00.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 09:00:50 -0700 (PDT)
+        Tue, 03 Oct 2023 09:00:52 -0700 (PDT)
 From:   Abdel Alkuor <alkuor@gmail.com>
 To:     heikki.krogerus@linux.intel.com, krzysztof.kozlowski+dt@linaro.org,
         bryan.odonoghue@linaro.org
@@ -57,9 +57,9 @@ Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
         robh+dt@kernel.org, conor+dt@kernel.org,
         devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>
-Subject: [PATCH v10 2/9] USB: typec: tsp6598x: Add cmd timeout and response delay
-Date:   Tue,  3 Oct 2023 11:58:35 -0400
-Message-Id: <20231003155842.57313-3-alkuor@gmail.com>
+Subject: [PATCH v10 3/9] USB: typec: tps6598x: Add patch mode to tps6598x
+Date:   Tue,  3 Oct 2023 11:58:36 -0400
+Message-Id: <20231003155842.57313-4-alkuor@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231003155842.57313-1-alkuor@gmail.com>
 References: <20231003155842.57313-1-alkuor@gmail.com>
@@ -77,80 +77,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Abdel Alkuor <abdelalkuor@geotab.com>
 
-Some commands in tps25750 take longer than 1 second
-to complete, and some responses need some delay before
-the result becomes available.
+TPS25750 has a patch mode indicating the device requires
+a configuration to get the device into operational mode
 
 Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
 Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 ---
 Changes in v10:
-  - No changes
+  - Add Reviewed-by
 Changes in v9:
   - No changes
 Changes in v8:
-  - Add Reviewed-by
+  - Revert mode check return
 Changes in v7:
-  - Add driver name to commit subject 
+  - Add driver name to commit subject
 Changes in v6:
-  - Use tps6598x_exec_cmd as a wrapper
+  - Return current mode and check it directly
 Changes in v5:
   - Incorporating tps25750 into tps6598x driver
- drivers/usb/typec/tipd/core.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ drivers/usb/typec/tipd/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index 37b56ce75f39..32420c61660d 100644
+index 32420c61660d..c5bbf03cb74a 100644
 --- a/drivers/usb/typec/tipd/core.c
 +++ b/drivers/usb/typec/tipd/core.c
-@@ -282,9 +282,10 @@ static void tps6598x_disconnect(struct tps6598x *tps, u32 status)
- 	power_supply_changed(tps->psy);
- }
+@@ -68,6 +68,7 @@ enum {
+ 	TPS_MODE_BOOT,
+ 	TPS_MODE_BIST,
+ 	TPS_MODE_DISC,
++	TPS_MODE_PTCH,
+ };
  
--static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
-+static int tps6598x_exec_cmd_tmo(struct tps6598x *tps, const char *cmd,
- 			     size_t in_len, u8 *in_data,
--			     size_t out_len, u8 *out_data)
-+			     size_t out_len, u8 *out_data,
-+			     u32 cmd_timeout_ms, u32 res_delay_ms)
- {
- 	unsigned long timeout;
- 	u32 val;
-@@ -307,8 +308,7 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
- 	if (ret < 0)
- 		return ret;
+ static const char *const modes[] = {
+@@ -75,6 +76,7 @@ static const char *const modes[] = {
+ 	[TPS_MODE_BOOT]	= "BOOT",
+ 	[TPS_MODE_BIST]	= "BIST",
+ 	[TPS_MODE_DISC]	= "DISC",
++	[TPS_MODE_PTCH] = "PTCH",
+ };
  
--	/* XXX: Using 1s for now, but it may not be enough for every command. */
--	timeout = jiffies + msecs_to_jiffies(1000);
-+	timeout = jiffies + msecs_to_jiffies(cmd_timeout_ms);
+ /* Unrecognized commands will be replaced with "!CMD" */
+@@ -595,6 +597,7 @@ static int tps6598x_check_mode(struct tps6598x *tps)
  
- 	do {
- 		ret = tps6598x_read32(tps, TPS_REG_CMD1, &val);
-@@ -321,6 +321,9 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
- 			return -ETIMEDOUT;
- 	} while (val);
- 
-+	/* some commands require delay for the result to be available */
-+	mdelay(res_delay_ms);
-+
- 	if (out_len) {
- 		ret = tps6598x_block_read(tps, TPS_REG_DATA1,
- 					  out_data, out_len);
-@@ -345,6 +348,14 @@ static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
- 	return 0;
- }
- 
-+static int tps6598x_exec_cmd(struct tps6598x *tps, const char *cmd,
-+			     size_t in_len, u8 *in_data,
-+			     size_t out_len, u8 *out_data)
-+{
-+	return tps6598x_exec_cmd_tmo(tps, cmd, in_len, in_data,
-+				     out_len, out_data, 1000, 0);
-+}
-+
- static int tps6598x_dr_set(struct typec_port *port, enum typec_data_role role)
- {
- 	const char *cmd = (role == TYPEC_DEVICE) ? "SWUF" : "SWDF";
+ 	switch (match_string(modes, ARRAY_SIZE(modes), mode)) {
+ 	case TPS_MODE_APP:
++	case TPS_MODE_PTCH:
+ 		return 0;
+ 	case TPS_MODE_BOOT:
+ 		dev_warn(tps->dev, "dead-battery condition\n");
 -- 
 2.34.1
 
