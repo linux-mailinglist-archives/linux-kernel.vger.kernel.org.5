@@ -2,195 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 486617B69EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CDF67B69F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232634AbjJCNOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39704 "EHLO
+        id S232691AbjJCNPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232177AbjJCNOt (ORCPT
+        with ESMTP id S232682AbjJCNPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:14:49 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E05F90;
-        Tue,  3 Oct 2023 06:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ZBWxmjNd8vCby7186bpocAw7l6dn7FqP/N8fvvIhwNQ=; b=ZbZ5sNuyOVjEKuk2Kc6owm9Oi+
-        CVbKdlROVMemxNuPYLOm079PCNAxkqdn4FkkzHPaSiU9q0vd2xEwwJTLyUjb7sxEkJ9v6Se+YR+mO
-        hyMHF6d2oMlZaBrzFAiWx0N5ARTRfQipZyGr28fZWLkAQfYIy1bRiOaRD2/jWOamKQD5/W8Rodx1t
-        EZXxuHLGJBUvOFkHWeqIOCy45AXwGibkSc0bqIy27Um1+1UC0vQzlqX6CSDkf9vPyCSvEZPDhz9WV
-        cui5XvDfIapsKVW+mDOebBgACDtLVTHwl3AlSmnPOOB/5KoWZS3z7Y3ZT3iGso8tvkovDyikqzr49
-        EwUqFH0Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38818)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qnfEW-0001l1-2j;
-        Tue, 03 Oct 2023 14:14:40 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qnfEX-0007v4-3o; Tue, 03 Oct 2023 14:14:41 +0100
-Date:   Tue, 3 Oct 2023 14:14:41 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Camelia Groza <camelia.groza@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor@kernel.org>,
-        Sean Anderson <sean.anderson@seco.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>
-Subject: Re: [RFC PATCH v2 net-next 15/15] net: pcs: lynx: use MTIP AN/LT
- block for copper backplanes
-Message-ID: <ZRwTwd18xWczDnur@shell.armlinux.org.uk>
-References: <20230923134904.3627402-1-vladimir.oltean@nxp.com>
- <20230923134904.3627402-16-vladimir.oltean@nxp.com>
+        Tue, 3 Oct 2023 09:15:15 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD73BF;
+        Tue,  3 Oct 2023 06:15:12 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c1854bebf5so10981851fa.1;
+        Tue, 03 Oct 2023 06:15:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696338911; x=1696943711; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=D3fi78NvQEfjOfWzfX4wAjQLrovVfB04wfletul8KM0=;
+        b=S9GmHOvAhFD9hQer6A8ULWnVm7H8SfV2h07OdO45w1ORexZHOBUCQ2QG7xwPdFKta/
+         tz72ww9BaMgrA0zCZVmAylKC6zr2UcNQNIUaGRFgmHTcisMr73F4uGF6K32FCnO0HHz3
+         jyrg9Ruw9nvHCwp+X4k5JpJ6iR7dcVct6SCrnpUsxtiTPz6yAJlamTslLjaNSDw8Z7CN
+         OffJf8n6uWUGFdi8qiyV1HYGPEzaCx90h+sJenqzgc+4u1IQya0WIo78Wodm4kUuNdvR
+         V68UUzGtK/kgBTtJ+1cBwdAsqC+hSKhCBr6aSrAjhFaWn77gtSIYDUfQmZ/ulYQszJP+
+         oJbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696338911; x=1696943711;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D3fi78NvQEfjOfWzfX4wAjQLrovVfB04wfletul8KM0=;
+        b=nAyfEjGDm/2LMiioEbNydCwHMQ9mhVF1+Ax6UwXIcV2xBUkoI10EIlUNkx+40kyKvW
+         5TPikUgtn75518lPGKHI4ceZ1mFl31VTavGrN+EgRxgbIa/Gsx7VALWvm7rXP8FlX5FX
+         bGUBAbeMB5bXTjUozYcltRVmbEVo/IP+Sw03pf3GWh506nmLTWoLe/OsGgnIX8731CrH
+         MpKE6FrauOHtTUbOhvRs8X4nUmki3V6IlOl13a+x1jIeQ6icVHXSOwfbpr4ZWqp6lXqU
+         ZiXBYn3SHxekVfXWs8HAjJS1Tz5eC8B4AbFO84mN4I2XHpvIGCIOIPlcPeGAOhjKt7af
+         NenQ==
+X-Gm-Message-State: AOJu0YwTmVYcTqpt9Ml0p71WecB5fQuYuNZAlZI4tM5l+ix5O4f3XFy4
+        zOy+07yieLdr6rSeC7AWmKk=
+X-Google-Smtp-Source: AGHT+IGtOe4J8GfD2HhulRf4hZgg+Q4XRQ/Bo4dVYtzPaSqmA5wmNUiaHv9t6UFcrUVi5fzVNQWg5w==
+X-Received: by 2002:a2e:3a07:0:b0:2c0:ff6:984a with SMTP id h7-20020a2e3a07000000b002c00ff6984amr11636722lja.50.1696338909804;
+        Tue, 03 Oct 2023 06:15:09 -0700 (PDT)
+Received: from PC10319.67 ([82.97.198.254])
+        by smtp.googlemail.com with ESMTPSA id t25-20020a2e7819000000b002b9de06f119sm228657ljc.67.2023.10.03.06.15.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 06:15:09 -0700 (PDT)
+From:   Konstantin Aladyshev <aladyshev22@gmail.com>
+Cc:     minyard@acm.org, joel@jms.id.au, andrew@aj.id.au,
+        avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        aladyshev22@gmail.com, jk@codeconstruct.com.au,
+        matt@codeconstruct.com.au, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        netdev@vger.kernel.org
+Subject: [PATCH v3 0/3] Add MCTP-over-KCS transport binding
+Date:   Tue,  3 Oct 2023 16:15:02 +0300
+Message-Id: <20231003131505.337-1-aladyshev22@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230923134904.3627402-16-vladimir.oltean@nxp.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 23, 2023 at 04:49:04PM +0300, Vladimir Oltean wrote:
-> +static int lynx_pcs_parse_fwnode(struct lynx_pcs *lynx)
-> +{
-> +	struct fwnode_handle *node = lynx->mdio->dev.fwnode;
-> +	enum mtip_model model = MTIP_MODEL_AUTODETECT;
-> +	struct device_node *np = to_of_node(node);
-> +	struct mdio_device *mdio = lynx->mdio;
-> +	struct device *dev = &mdio->dev;
-> +	struct phy *phy;
-> +	int i, err;
-> +
-> +	if (!node)
-> +		return 0;
-> +
-> +	lynx->backplane_mode = fwnode_property_present(node, "fsl,backplane-mode");
-> +	if (!lynx->backplane_mode)
-> +		return 0;
-> +
-> +	if (fwnode_device_is_compatible(node, "fsl,lx2160a-lynx-pcs"))
-> +		model = MTIP_MODEL_LX2160A;
-> +
-> +	lynx->num_lanes = of_count_phandle_with_args(np, "phys", "#phy-cells");
-> +	if (lynx->num_lanes < 0)
-> +		return lynx->num_lanes;
+This change adds a MCTP KCS transport binding, as defined by the DMTF
+specificiation DSP0254 - "MCTP KCS Transport Binding".
+A MCTP protocol network device is created for each KCS channel found in
+the system.
+The interrupt code for the KCS state machine is based on the current
+IPMI KCS driver.
+Since the KCS subsystem code is now used both in IPMI and MCTP drivers
+the separate patchsets move KCS subsystem includes to a common folder.
 
-Is it possible for ->num_lanes to be zero at this point? If that is
-possible, then ->anlt[PRIMARY_LANE] will be NULL but ->backplane_mode
-will be set, so won't that cause the mtip_* calls above to pass a
-NULL pointer into those functions? Is that safe? Should we trap that
-case here?
+Tested:
+PLDM communication between the HOST and BMC was tested with both
+components implemented via open-source software:
+- The HOST (UEFI firmware) part was based one the edk2 [1] and
+edk2-platforms [2] code,
+- The BMC part was based on the openbmc [3] distribution.
 
-If that's correct, then I don't see any point in storing
-->backplane_mode, since we can then use ->num_lanes > PRIMARY_LANE
-or similar instead.
+The testing process and all the necessary utilities are described in
+the [4] repository.
 
-> +
-> +	if (WARN_ON(lynx->num_lanes > MAX_NUM_LANES))
-> +		return -EINVAL;
+[1]: https://github.com/tianocore/edk2
+[2]: https://github.com/tianocore/edk2-platforms
+[3]: https://github.com/openbmc/openbmc
+[4]: https://github.com/Kostr/PLDM
 
-Do we need to use WARN_ON() here, or would it be better to print a short
-error-level message?
+Changes v2 -> v3:
+ - use 'dev_err_probe' correctly
 
-> +
-> +	for (i = 0; i < lynx->num_lanes; i++) {
-> +		phy = devm_of_phy_get_by_index(dev, np, i);
-> +		if (IS_ERR(phy))
-> +			return dev_err_probe(dev, PTR_ERR(phy),
-> +					     "Failed to get SerDes PHY %d\n", i);
-> +
-> +		lynx->anlt[i] = mtip_backplane_create(mdio, phy, model);
-> +		if (IS_ERR(lynx->anlt[i])) {
-> +			err = PTR_ERR(lynx->anlt[i]);
-> +
-> +			while (i-- > 0)
-> +				mtip_backplane_destroy(lynx->anlt[i]);
-> +
-> +			return err;
-> +		}
-> +	}
-> +
-> +	for (i = 1; i < lynx->num_lanes; i++) {
-> +		err = mtip_backplane_add_subordinate(lynx->anlt[PRIMARY_LANE],
-> +						     lynx->anlt[i]);
-> +		if (WARN_ON(err)) {
+Changes v1 -> v2:
+ - correct warning found by kernel test robot
+ - use 'i2c_smbus_pec' library function for PEC calculation
+ - several code style corrections based on Jonathan Cameron comments
+Original patchset can be found here:
+https://lwn.net/ml/linux-kernel/20230928123009.2913-1-aladyshev22@gmail.com/
 
-Again, does this need to be a backtrace-producing WARN_ON()?
+Konstantin Aladyshev (3):
+  ipmi: Move KCS headers to common include folder
+  ipmi: Create header with KCS interface defines
+  mctp: Add MCTP-over-KCS transport binding
 
-> +			/* Too many SerDes lanes in the device tree? */
-> +			for (i = 0; i < lynx->num_lanes; i++)
-> +				mtip_backplane_destroy(lynx->anlt[i]);
-> +			return err;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static struct phylink_pcs *lynx_pcs_create(struct mdio_device *mdio)
->  {
->  	struct lynx_pcs *lynx;
-> +	int err;
->  
->  	lynx = kzalloc(sizeof(*lynx), GFP_KERNEL);
->  	if (!lynx)
-> @@ -327,6 +451,12 @@ static struct phylink_pcs *lynx_pcs_create(struct mdio_device *mdio)
->  	lynx->pcs.neg_mode = true;
->  	lynx->pcs.poll = true;
->  
-> +	err = lynx_pcs_parse_fwnode(lynx);
-> +	if (err) {
-> +		kfree(lynx);
-> +		return ERR_PTR(err);
-> +	}
-> +
->  	return lynx_to_phylink_pcs(lynx);
->  }
->  
-> @@ -392,6 +522,11 @@ EXPORT_SYMBOL_GPL(lynx_pcs_create_fwnode);
->  void lynx_pcs_destroy(struct phylink_pcs *pcs)
->  {
->  	struct lynx_pcs *lynx = phylink_pcs_to_lynx(pcs);
-> +	int i;
-> +
-> +	if (lynx->backplane_mode)
-> +		for (i = 0; i < lynx->num_lanes; i++)
-> +			mtip_backplane_destroy(lynx->anlt[i]);
-
-Won't ->num_lanes only be non-zero when ->backplane_mode is set, so
-isn't the test for ->backplane_mode redundant here?
-
->  
->  	mdio_device_put(lynx->mdio);
->  	kfree(lynx);
-> -- 
-> 2.34.1
-> 
-> 
+ drivers/char/ipmi/kcs_bmc.c                   |   8 +-
+ drivers/char/ipmi/kcs_bmc_aspeed.c            |   3 +-
+ drivers/char/ipmi/kcs_bmc_cdev_ipmi.c         |  73 +--
+ drivers/char/ipmi/kcs_bmc_npcm7xx.c           |   2 +-
+ drivers/char/ipmi/kcs_bmc_serio.c             |   2 +-
+ drivers/net/mctp/Kconfig                      |   8 +
+ drivers/net/mctp/Makefile                     |   1 +
+ drivers/net/mctp/mctp-kcs.c                   | 594 ++++++++++++++++++
+ include/linux/ipmi_kcs.h                      |  80 +++
+ .../char/ipmi => include/linux}/kcs_bmc.h     |   0
+ .../ipmi => include/linux}/kcs_bmc_client.h   |   3 +-
+ .../ipmi => include/linux}/kcs_bmc_device.h   |   3 +-
+ 12 files changed, 693 insertions(+), 84 deletions(-)
+ create mode 100644 drivers/net/mctp/mctp-kcs.c
+ create mode 100644 include/linux/ipmi_kcs.h
+ rename {drivers/char/ipmi => include/linux}/kcs_bmc.h (100%)
+ rename {drivers/char/ipmi => include/linux}/kcs_bmc_client.h (97%)
+ rename {drivers/char/ipmi => include/linux}/kcs_bmc_device.h (96%)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.25.1
+
