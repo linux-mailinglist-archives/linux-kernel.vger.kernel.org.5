@@ -2,175 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48EE77B74B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38F357B74B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232680AbjJCXUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 19:20:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59714 "EHLO
+        id S234997AbjJCXUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 19:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbjJCXUD (ORCPT
+        with ESMTP id S229805AbjJCXUG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 19:20:03 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6D4B7
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:20:00 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-65b05a45046so8864206d6.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 16:20:00 -0700 (PDT)
+        Tue, 3 Oct 2023 19:20:06 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 243CEAB
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:20:02 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d848694462aso1848093276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 16:20:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696375199; x=1696979999; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gr7ytQSJEM4PWJG3owCYuTV0LHc0RIEGtoAXWdi3SNg=;
-        b=yYw8l/1eiy1Myk1W16vewJKyq8FpO+KWXY4vJdD+R+VF2xjMwv3GH+ri9Upmyc3jpw
-         g9DrOpaHno8je8n86wkovmFhfbnJmTekG26j7eGxPkXpiRyOX/FiyXQwAXxj6MTm5QEV
-         6K4ODDXnV8ycZ11A44gl6hrIhysjooPI025iD06lcF+sEU96Zym9iDVz8TazJwLZlH3J
-         Oq++uv83zRQMeKKDTcm3yLj9Tu4m219B8fhaFY+qwpem5YYrXINpOWyeXjoKdt1yy1oa
-         cA5j13k4gnk7j0ClrMnkfUAfD6jRAWkqC6i8vBHl6ora3CsAV32+y0aZrCOYLEbYnOdc
-         SvVw==
+        d=google.com; s=20230601; t=1696375201; x=1696980001; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=a9F/CsgN+I3aKYDGh78e89+RvKvnGhCoOINQE/TaiJM=;
+        b=2Al8PCCAeqOt2ZY/IpRVRAfx99jz0+W4MKczNHNcarodPdjda2d5FNBCLASTb5fPRc
+         UlugbHFdKap274tFo9MhrAyh2z+W6fxdOcLJH+TEH+KRshPUAi2a3Q8SInnfo59pUR44
+         DREPnG6h8mHW4Y/XTvdWZYu7grX1JWCGOA7QyLdRex+yRf+EP4bx6Zrk6Qq/7eOG04QL
+         QSMy0aPK7CtKdh7G68tF3ckp/y8IFc44ZdteWuVOb8LgNZKGnVh+U30jlNBMS+xuBmpm
+         H/0EToLTneRxmHzxFweqBvtjfVQqM6w7vONiEG1Il7XhaWBpCTYxWUEO6GidDMPOMY2F
+         EVqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696375199; x=1696979999;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gr7ytQSJEM4PWJG3owCYuTV0LHc0RIEGtoAXWdi3SNg=;
-        b=AF68PYi5cAZ3DhSBXjvmQiz06P7f4hKG6E1Et58Zkgna/RfXyNZw1HsvkjkJy3omLo
-         +enWhF4D3hxcK54KVNIsUJmNiY8XcSe93vSHabDCjCyuU2xT8GBQlQiVtaTb5G+HeI0O
-         dw7vZ6tKmuhMXOROAtf0gW+qsA/ahqeJxXzh3wI+IX6tH1vio/wvG4IcozIWi19IV6c9
-         dwWIqimN8WnLAvlin9d4O+n453I+T77dGsmLC4Nk9whZ116NYlszEE7j6L/5JgL40L4R
-         l5Wc0ZTLLy0JSC+KF8BfR9/zkgyM/ChlaYBNavsTAa2fYaa94VSD2yNE42PfI6iqZ6Vs
-         f6Fg==
-X-Gm-Message-State: AOJu0YyC21E56qxs08pO5djY6N8x6LN07yMxvbETO9r7zMgcK8qN3FZt
-        CVKdkA2MACwbZ2XiaEJLzA01wX8eK/UFeiGhqsOK/uMfQ61wlWDKQZQpjQ==
-X-Google-Smtp-Source: AGHT+IEvcQMu5FYspnUWqyzdr864IyyKrLUeCq8snH2RJ9JYBBcfVNju2ylFkqYJnFUTc3dhG3NAbzygacLHjcPfK18=
-X-Received: by 2002:a0c:f04c:0:b0:64f:43e9:b34d with SMTP id
- b12-20020a0cf04c000000b0064f43e9b34dmr703500qvl.50.1696375198976; Tue, 03 Oct
- 2023 16:19:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230916040915.1075620-1-irogers@google.com> <CAL715WJxmMbXkZSE3p_+ODGxabgrXREsBo9aFu9G9=qkYZeH9A@mail.gmail.com>
- <CAP-5=fUjNiDv=KQ7t8jqfOfOt5i8HGvt8Vv1hn2-hLxX_Kqucg@mail.gmail.com>
- <CAL715W+GQuCJm-1SEsNN2qnHghNL1SrzwH9Km5K8UxubEFfYVw@mail.gmail.com>
- <CAM9d7cgKWi0fafwTxSrKLrVZxcwnhwMGz=oNkAsNdOjDwF6pEA@mail.gmail.com> <CAP-5=fWXXi7Y=6Q0k8oLOZmYon+vvg-k4dNUSex_ijcL8ti9sQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fWXXi7Y=6Q0k8oLOZmYon+vvg-k4dNUSex_ijcL8ti9sQ@mail.gmail.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Tue, 3 Oct 2023 16:19:22 -0700
-Message-ID: <CAL715WJ8w+q_=0_NVZJ=rs0GLs=pYqDiRLcCxxO0gDcGdcvZnw@mail.gmail.com>
-Subject: Re: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
-To:     Ian Rogers <irogers@google.com>, Jim Mattson <jmattson@google.com>
-Cc:     Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Stephane Eranian <eranian@google.com>
+        d=1e100.net; s=20230601; t=1696375201; x=1696980001;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a9F/CsgN+I3aKYDGh78e89+RvKvnGhCoOINQE/TaiJM=;
+        b=ESTp0dsNBjf6aJ/hp/UXFkPceKKd2rY5jBfIZENSlWWMcdJB0JD+L7Dt0LF7K/jiDz
+         hZC5yQR3vA33MTLJAsq4o72Isfmjgo+qNBvrVTKKUVgCLmmlULKu9gZSvVTeF0bDwiEe
+         zniaX71EK28UDnHTApuEWODaaznLMBMVJjeMFWffIcYQncQwttNZbV/dgBCbND0wlzyC
+         eYHOdJdLcASYmXnyHEmgv9171wj1fWi6HaPLR3J9Fql2fxemDkglX5jXtQq5sBgSqtbP
+         zHhoh/cuP/CuQvMuxj0yZo7hpSalfysIIEJ0EW5d1j4cN3xSz7YyOX2vzI6EOyJpTvWm
+         fJPg==
+X-Gm-Message-State: AOJu0YwvmmVYfHHzA4x68Qv+WuLlvFv1cYejrI8WzOGfq8dGHBpxRzis
+        rBsQKCxydwhoq+RAD7FWr7fj5dEISQ+U
+X-Google-Smtp-Source: AGHT+IEqxIxPiX43dqxacLO7c7zk2DqU5E+LmJjAXC6P+m0sQhzYCJ5/5OXuDzjYANESHSkndu7IG3gLONvI
+X-Received: from hi-h2o-specialist.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:3cef])
+ (user=arakesh job=sendgmr) by 2002:a25:bcd:0:b0:d7f:2cb6:7d8c with SMTP id
+ 196-20020a250bcd000000b00d7f2cb67d8cmr10653ybl.13.1696375201361; Tue, 03 Oct
+ 2023 16:20:01 -0700 (PDT)
+Date:   Tue,  3 Oct 2023 16:19:58 -0700
+In-Reply-To: <20230930184821.310143-3-arakesh@google.com>
+Mime-Version: 1.0
+References: <20230930184821.310143-3-arakesh@google.com>
+X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
+Message-ID: <20231003231958.2592275-1-arakesh@google.com>
+Subject: [PATCH v2 2/3] usb: gadget: uvc: Allocate uvc_requests one at a time
+From:   Avichal Rakesh <arakesh@google.com>
+To:     arakesh@google.com, dan.scally@ideasonboard.com,
+        gregkh@linuxfoundation.org, laurent.pinchart@ideasonboard.com,
+        m.grzeschik@pengutronix.de, mgr@pengutronix.de
+Cc:     etalvala@google.com, jchowdhary@google.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 3:36=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
-e:
->
-> On Tue, Oct 3, 2023 at 1:08=E2=80=AFPM Namhyung Kim <namhyung@kernel.org>=
- wrote:
-> >
-> > Hello,
-> >
-> > On Wed, Sep 20, 2023 at 10:05=E2=80=AFPM Mingwei Zhang <mizhang@google.=
-com> wrote:
-> > >
-> > > On Mon, Sep 18, 2023 at 3:43=E2=80=AFPM Ian Rogers <irogers@google.co=
-m> wrote:
-> > > >
-> > > > On Sat, Sep 16, 2023 at 5:46=E2=80=AFPM Mingwei Zhang <mizhang@goog=
-le.com> wrote:
-> > > > > Thank you very much for the change. I have one quick question abo=
-ut
-> > > > > the PMU unthrottling logic. When I am looking into the function
-> > > > > perf_adjust_freq_unthr_context(), I see the loop with PMU stop an=
-d
-> > > > > start in each iteration. Is there a good way to avoid this PMU re=
-set
-> > > > > operation while quickly figuring out the event in frequency mode?
-> > > >
-> > > > Agreed. I think before the pmu_disable could be avoided for this co=
-ndition:
-> > > > ```
-> > > > if (event->hw.interrupts !=3D MAX_INTERRUPTS &&
-> > > >     (!event->attr.freq || !event->attr.sample_freq))
-> > > >         continue;
-> > > > ```
-> > > > Fixing up the event stop/start looks harder.
-> > > >
-> > >
-> > > Right, I think putting the check early before pmu_disable() is alread=
-y
-> > > a great optimization. The only concern I initially had was whether
-> > > event->hw.interrupts can be accessed before we disable the pmu. But
-> > > after checking this field in other locations, I don't see any problem
-> > > at all.
-> >
-> > The event->hw.interrupts would be increased in the NMI handler
-> > so there is a race between the check and the NMI.  That's why
-> > I think it checks that after disabling the PMU.
-> >
-> > But I think we can skip non-sampling events for sure.  Then it
-> > would be better to set attr.sample_period =3D 0 rather than attr.freq.
-> >
-> >     if (!is_sampling_event(event))
-> >         continue;
-> >
-> >     perf_pmu_disable(event->pmu);
-> >     ...
-> >
-> > Thanks,
-> > Namhyung
->
-> With the PMU disabled, isn't there still a risk of an interrupt still
-> being in flight? In other words the disable doesn't prevent a race and
-> we'll catch this on the next timer call to
-> perf_adjust_freq_unthr_context. I think we can also improve the code
-> by just disabling a PMU once, we can take advantage of the
-> perf_event_pmu_context and disable that PMU, iterate its events and
-> then re-enable the PMU - i.e. no need for an enable and disable per
-> event. I'll put a patch together.
->
-> Thanks,
-> Ian
+Currently, the uvc gadget driver allocates all uvc_requests as one array
+and deallocates them all when the video stream stops. This includes
+de-allocating all the usb_requests associated with those uvc_requests.
+This can lead to use-after-free issues if any of those de-allocated
+usb_requests were still owned by the usb controller.
 
-+Jim Mattson
+This patch is 1 of 2 patches addressing the use-after-free issue.
+Instead of bulk allocating all uvc_requests as an array, this patch
+allocates uvc_requests one at a time, which should allows for similar
+granularity when deallocating the uvc_requests. This patch has no
+functional changes other than allocating each uvc_request separately,
+and similarly freeing each of them separately.
 
-I initially thought this idea was just an alternative, or a more
-professional fix in the perf subsystem. I was wrong...
+Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.com
+Suggested-by: Michael Grzeschik <mgr@pengutronix.de>
+Signed-off-by: Avichal Rakesh <arakesh@google.com>
+---
+v1 -> v2: Rebased to ToT
 
-This would be way better than just skipping frequency events in the
-loop. Since if we just skip by event, we may still suffer from huge
-overhead if the event list contains many sampling events in frequency
-mode. Unfortunately, that is the general case when we do perf record
--e 'eventlist' (IIUC all events in eventlist are in frequency mode if
-we don't specify period=3D). So the problem actually remains whenever we
-do perf sampling unless we use something like Intel vtune.
+ drivers/usb/gadget/function/uvc.h       |  3 +-
+ drivers/usb/gadget/function/uvc_video.c | 90 ++++++++++++++-----------
+ 2 files changed, 51 insertions(+), 42 deletions(-)
 
-On the other hand, since all of the events are presumably CPU core
-events, with the fix we pay only once for the PMU reset per hrtimer
-regardless of how many events are in frequency mode.
+diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
+index 989bc6b4e93d..993694da0bbc 100644
+--- a/drivers/usb/gadget/function/uvc.h
++++ b/drivers/usb/gadget/function/uvc.h
+@@ -81,6 +81,7 @@ struct uvc_request {
+ 	struct sg_table sgt;
+ 	u8 header[UVCG_REQUEST_HEADER_LEN];
+ 	struct uvc_buffer *last_buf;
++	struct list_head list;
+ };
 
-Looking forward to the patch! Please keep us posted if possible.
+ struct uvc_video {
+@@ -102,7 +103,7 @@ struct uvc_video {
 
-Thanks.
--Mingwei
+ 	/* Requests */
+ 	unsigned int req_size;
+-	struct uvc_request *ureq;
++	struct list_head ureqs; /* all uvc_requests allocated by uvc_video */
+ 	struct list_head req_free;
+ 	spinlock_t req_lock;
+
+diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
+index 97d875c27dcf..3c4d286d81c0 100644
+--- a/drivers/usb/gadget/function/uvc_video.c
++++ b/drivers/usb/gadget/function/uvc_video.c
+@@ -227,6 +227,23 @@ uvc_video_encode_isoc(struct usb_request *req, struct uvc_video *video,
+  * Request handling
+  */
+
++static void uvc_video_free_request(struct uvc_request *ureq, struct usb_ep *ep)
++{
++	sg_free_table(&ureq->sgt);
++	if (ureq->req && ep) {
++		usb_ep_free_request(ep, ureq->req);
++		ureq->req = NULL;
++	}
++
++	kfree(ureq->req_buffer);
++	ureq->req_buffer = NULL;
++
++	if (!list_empty(&ureq->list))
++		list_del_init(&ureq->list);
++
++	kfree(ureq);
++}
++
+ static int uvcg_video_ep_queue(struct uvc_video *video, struct usb_request *req)
+ {
+ 	int ret;
+@@ -299,27 +316,13 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
+ static int
+ uvc_video_free_requests(struct uvc_video *video)
+ {
+-	unsigned int i;
+-
+-	if (video->ureq) {
+-		for (i = 0; i < video->uvc_num_requests; ++i) {
+-			sg_free_table(&video->ureq[i].sgt);
+-
+-			if (video->ureq[i].req) {
+-				usb_ep_free_request(video->ep, video->ureq[i].req);
+-				video->ureq[i].req = NULL;
+-			}
++	struct uvc_request *ureq, *temp;
+
+-			if (video->ureq[i].req_buffer) {
+-				kfree(video->ureq[i].req_buffer);
+-				video->ureq[i].req_buffer = NULL;
+-			}
+-		}
+-
+-		kfree(video->ureq);
+-		video->ureq = NULL;
++	list_for_each_entry_safe(ureq, temp, &video->ureqs, list) {
++		uvc_video_free_request(ureq, video->ep);
+ 	}
+
++	INIT_LIST_HEAD(&video->ureqs);
+ 	INIT_LIST_HEAD(&video->req_free);
+ 	video->req_size = 0;
+ 	return 0;
+@@ -328,6 +331,7 @@ uvc_video_free_requests(struct uvc_video *video)
+ static int
+ uvc_video_alloc_requests(struct uvc_video *video)
+ {
++	struct uvc_request *ureq;
+ 	unsigned int req_size;
+ 	unsigned int i;
+ 	int ret = -ENOMEM;
+@@ -338,29 +342,31 @@ uvc_video_alloc_requests(struct uvc_video *video)
+ 		 * max_t(unsigned int, video->ep->maxburst, 1)
+ 		 * (video->ep->mult);
+
+-	video->ureq = kcalloc(video->uvc_num_requests, sizeof(struct uvc_request), GFP_KERNEL);
+-	if (video->ureq == NULL)
+-		return -ENOMEM;
+-
+-	for (i = 0; i < video->uvc_num_requests; ++i) {
+-		video->ureq[i].req_buffer = kmalloc(req_size, GFP_KERNEL);
+-		if (video->ureq[i].req_buffer == NULL)
++	INIT_LIST_HEAD(&video->ureqs);
++	for (i = 0; i < video->uvc_num_requests; i++) {
++		ureq = kzalloc(sizeof(struct uvc_request), GFP_KERNEL);
++		if (ureq == NULL)
+ 			goto error;
++		INIT_LIST_HEAD(&ureq->list);
++		list_add_tail(&ureq->list, &video->ureqs);
++	}
+
+-		video->ureq[i].req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
+-		if (video->ureq[i].req == NULL)
++	list_for_each_entry(ureq, &video->ureqs, list) {
++		ureq->req_buffer = kmalloc(req_size, GFP_KERNEL);
++		if (ureq->req_buffer == NULL)
+ 			goto error;
+-
+-		video->ureq[i].req->buf = video->ureq[i].req_buffer;
+-		video->ureq[i].req->length = 0;
+-		video->ureq[i].req->complete = uvc_video_complete;
+-		video->ureq[i].req->context = &video->ureq[i];
+-		video->ureq[i].video = video;
+-		video->ureq[i].last_buf = NULL;
+-
+-		list_add_tail(&video->ureq[i].req->list, &video->req_free);
++		ureq->req = usb_ep_alloc_request(video->ep, GFP_KERNEL);
++		if (ureq->req == NULL)
++			goto error;
++		ureq->req->buf = ureq->req_buffer;
++		ureq->req->length = 0;
++		ureq->req->complete = uvc_video_complete;
++		ureq->req->context = ureq;
++		ureq->video = video;
++		ureq->last_buf = NULL;
++		list_add_tail(&ureq->req->list, &video->req_free);
+ 		/* req_size/PAGE_SIZE + 1 for overruns and + 1 for header */
+-		sg_alloc_table(&video->ureq[i].sgt,
++		sg_alloc_table(&ureq->sgt,
+ 			       DIV_ROUND_UP(req_size - UVCG_REQUEST_HEADER_LEN,
+ 					    PAGE_SIZE) + 2, GFP_KERNEL);
+ 	}
+@@ -504,7 +510,7 @@ static void uvcg_video_pump(struct work_struct *work)
+ int uvcg_video_enable(struct uvc_video *video, int enable)
+ {
+ 	struct uvc_device *uvc = video->uvc;
+-	unsigned int i;
++	struct uvc_request *ureq;
+ 	int ret;
+
+ 	if (video->ep == NULL) {
+@@ -519,9 +525,10 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
+ 		cancel_work_sync(&video->pump);
+ 		uvcg_queue_cancel(&video->queue, 0);
+
+-		for (i = 0; i < video->uvc_num_requests; ++i)
+-			if (video->ureq && video->ureq[i].req)
+-				usb_ep_dequeue(video->ep, video->ureq[i].req);
++		list_for_each_entry(ureq, &video->ureqs, list) {
++			if (ureq->req)
++				usb_ep_dequeue(video->ep, ureq->req);
++		}
+
+ 		uvc_video_free_requests(video);
+ 		uvcg_queue_enable(&video->queue, 0);
+@@ -555,6 +562,7 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
+  */
+ int uvcg_video_init(struct uvc_video *video, struct uvc_device *uvc)
+ {
++	INIT_LIST_HEAD(&video->ureqs);
+ 	INIT_LIST_HEAD(&video->req_free);
+ 	spin_lock_init(&video->req_lock);
+ 	INIT_WORK(&video->pump, uvcg_video_pump);
+--
+2.42.0.582.g8ccd20d70d-goog
+
