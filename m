@@ -2,105 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 954597B6481
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A9F27B6484
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbjJCIkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 04:40:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55432 "EHLO
+        id S231217AbjJCIkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 04:40:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230441AbjJCIkD (ORCPT
+        with ESMTP id S230259AbjJCIkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 04:40:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C1B97;
-        Tue,  3 Oct 2023 01:40:00 -0700 (PDT)
-Date:   Tue, 03 Oct 2023 08:39:57 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696322398;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Tue, 3 Oct 2023 04:40:33 -0400
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46D9A3;
+        Tue,  3 Oct 2023 01:40:29 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2FBB660005;
+        Tue,  3 Oct 2023 08:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696322428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=qh+KBuPKg3zOxbyl3qdxgTFuvx+rQ61ZCEuRvw4p5qA=;
-        b=DAN3eu7UVcKi68fFPvkfSkxMb7MC7WvcakDcRMGxLl7NFqKr9Sdgs/zXZrhYAv8mo5Jpgz
-        fTNvmM4hM145DfG6D0QTVEucM/L/9JYzQzz7CGfyCMsY0Uw08eLCjPB67CLhetc5pvEixy
-        ra6vS6NqBwtLfFUUf9pzz6LAxB/kLqivSWQRRmXI7wUmFUt+LzPHNRWRolfhZk19q7AKaV
-        Zu7U5KiowlFi+tpc9HlEXF622AN4KnsxuYBwE9Xg7sEGh+5fF6dYvIoH7uHqttF8ZyaUZi
-        UIpKsKWWVtFHsAvfz6sNHL5m8PGuMyYWvYgdV3SARCMnGBK36V8XZl/eYyR+wg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696322398;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qh+KBuPKg3zOxbyl3qdxgTFuvx+rQ61ZCEuRvw4p5qA=;
-        b=JEb8DR3EE0vc3TPb3DJ5rsYyYRUq1+4Dr2YvH4YHwwstDKrtYhVjsnVXlRS2UxKr0sXvTG
-        45YSowApvpodFwDA==
-From:   "tip-bot2 for Yuntao Wang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/boot] x86/boot: Fix incorrect startup_gdt_descr.size
-Cc:     Yuntao Wang <ytcoode@gmail.com>, Ingo Molnar <mingo@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230807084547.217390-1-ytcoode@gmail.com>
-References: <20230807084547.217390-1-ytcoode@gmail.com>
+        bh=YD9yrtCBZymzxDesfTQGfoyNHVBYtaajgX0MUzZwAM4=;
+        b=it9nvDErLS3Dkumv3tt0+U8MyhdevvVnbQwCziN4asSKSbyARA7h9PvLo2sfSHeQ6e5jnb
+        JyeqldpAwATrCmH2XtT9x8Uw3Kn+BtEvm96fyJkzGiTW/dj/1eeamkmoliQ0dLQcNsp9Cr
+        tC5Jj9xnsOUIYT1LC0IlFPyGpWbUXbncdlz2ve6LVYaAWeKEFaSJ1J1fpJHRSmMie8N2C5
+        peoKR0TaXLkVUFr6dYTvhoEAReeN2XF9TrNgVavMYJcRI9yj8lskfA4XGUssgqclYZoHzi
+        WOkyfGmE4MfbaGOXlwkNmtNL2iCsou3zL9/P1oQ4sDqQMQb/tvQiK4/TcmOv2w==
+Date:   Tue, 3 Oct 2023 10:40:22 +0200
+From:   Mehdi Djait <mehdi.djait@bootlin.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     mchehab@kernel.org, heiko@sntech.de, ezequiel@vanguardiasur.com.ar,
+        hverkuil-cisco@xs4all.nl, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, paul.kocialkowski@bootlin.com,
+        miquel.raynal@bootlin.com, maxime.chevallier@bootlin.com,
+        luca.ceresoli@bootlin.com, thomas.petazzoni@bootlin.com,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v6 1/3] media: dt-bindings: media: add rockchip-vip
+Message-ID: <ZRvTdm5cTMT1tHlM@pc-86.home>
+References: <cover.1695981374.git.mehdi.djait@bootlin.com>
+ <6fa90df50c201dec70165c5138bc837f5a8829b5.1695981374.git.mehdi.djait@bootlin.com>
+ <20231002171801.GA1942512-robh@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169632239730.3135.5499875554711156270.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231002171801.GA1942512-robh@kernel.org>
+X-GND-Sasl: mehdi.djait@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/boot branch of tip:
+Hello Rob,
 
-Commit-ID:     001470fed5959d01faecbd57fcf2f60294da0de1
-Gitweb:        https://git.kernel.org/tip/001470fed5959d01faecbd57fcf2f60294da0de1
-Author:        Yuntao Wang <ytcoode@gmail.com>
-AuthorDate:    Mon, 07 Aug 2023 16:45:47 +08:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 03 Oct 2023 10:28:29 +02:00
+Thank you for the review!
 
-x86/boot: Fix incorrect startup_gdt_descr.size
+On Mon, Oct 02, 2023 at 12:18:01PM -0500, Rob Herring wrote:
+> On Fri, Sep 29, 2023 at 12:08:00PM +0200, Mehdi Djait wrote:
+> > Add a documentation for the Rockchip Camera Interface controller
+> > binding.
+> > 
+> > This controller can be found on platforms such as the PX30 or
+> > RK1808, RK3128 and RK3288. The PX30 is the only platform
+> > supported so far.
+> > 
+> > Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
+> > ---
+> >  .../bindings/media/rockchip-vip.yaml          | 91 +++++++++++++++++++
+> 
+> filename should match compatible.
+> 
+> >  1 file changed, 91 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/media/rockchip-vip.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/media/rockchip-vip.yaml b/Documentation/devicetree/bindings/media/rockchip-vip.yaml
+> > new file mode 100644
+> > index 000000000000..33c603209c39
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/media/rockchip-vip.yaml
+> > @@ -0,0 +1,91 @@
+> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/media/rockchip-vip.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Rockchip VIP Camera Interface
+> > +
+> > +maintainers:
+> > +  - Mehdi Djait <mehdi.djait@bootlin.com>
+> > +
+> > +description: |-
+> 
+> Don't need '|-'.
+> 
+> > +  Rockchip Video Input Processor present on PX30, RK1808, RK3128 and RK3288
+> 
+> Write complete sentences.
+> 
+> 
+> 
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: rockchip,px30-vip
+> 
+> I see 4 SoCs listed, but only 1 compatible.
+> 
 
-Since the size value is added to the base address to yield the last valid
-byte address of the GDT, the current size value of startup_gdt_descr is
-incorrect (too large by one), fix it.
+PX30 is the only SoC I have used to test the driver. What is the best
+way to proceed here ? Change the description ?
 
-[ mingo: This probably never mattered, because startup_gdt[] is only used
-         in a very controlled fashion - but make it consistent nevertheless. ]
+ack for all the other comments. 
 
-Fixes: 866b556efa12 ("x86/head/64: Install startup GDT")
-Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Link: https://lore.kernel.org/r/20230807084547.217390-1-ytcoode@gmail.com
----
- arch/x86/kernel/head64.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/head64.c b/arch/x86/kernel/head64.c
-index 49f7629..bbc2179 100644
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -80,7 +80,7 @@ static struct desc_struct startup_gdt[GDT_ENTRIES] = {
-  * while the kernel still uses a direct mapping.
-  */
- static struct desc_ptr startup_gdt_descr = {
--	.size = sizeof(startup_gdt),
-+	.size = sizeof(startup_gdt)-1,
- 	.address = 0,
- };
- 
+--
+Kind Regards
+Mehdi Djait
