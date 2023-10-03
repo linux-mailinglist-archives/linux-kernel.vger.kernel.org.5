@@ -2,218 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 309587B67BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1E37B67C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240466AbjJCLTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 07:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53010 "EHLO
+        id S239870AbjJCLUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 07:20:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239900AbjJCLTW (ORCPT
+        with ESMTP id S231337AbjJCLUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 07:19:22 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0D1899E;
-        Tue,  3 Oct 2023 04:19:19 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41F69C15;
-        Tue,  3 Oct 2023 04:19:57 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3FB283F762;
-        Tue,  3 Oct 2023 04:19:17 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 12:19:14 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Nikunj Kela <quic_nkela@quicinc.com>
-Cc:     cristian.marussi@arm.com, robh+dt@kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v4 4/4] firmware: arm_scmi: Add qcom hvc/shmem transport
- support
-Message-ID: <20231003111914.63z35sn3r3k7drtp@bogus>
-References: <20230718160833.36397-1-quic_nkela@quicinc.com>
- <20230911194359.27547-1-quic_nkela@quicinc.com>
- <20230911194359.27547-5-quic_nkela@quicinc.com>
+        Tue, 3 Oct 2023 07:20:19 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047C3BD
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 04:20:15 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d81afd5273eso808805276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 04:20:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696332015; x=1696936815; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SV7XmIxzktZdavHHX3szB4DEQlE77NYAzIBoxF50w1k=;
+        b=uTdveJqnim0fLi87b1Gi9uGY1+s9mhLcsRL/hApzzLq3qbbAoBDFOP8QtRxRk4lH4Q
+         smctIic3onjKnipUet3Zhl4m4C5cmDFAf1FwARhAFirnCjXwpwWe/7vBjUBd/chZXQ+n
+         qza8+KuCcKzpFVvTGMDHlmqbHW3Bt217xCDn7NAVZwTKdKEQhaejmZ3VSW0XIZwjy1nM
+         2+IOU+gocmBPr4o9kXjeqEi1dDaiMeGGmfi/QPzifHetqYlTqD6BB+VNx7WCmGEJd+NT
+         ixwlLVnEGKboJzo87xhGGJ21mY+VVRPkB4Fz+gsx2DrGwCq9iLcV/Fpfy9KggyCEIjaV
+         AeAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696332015; x=1696936815;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SV7XmIxzktZdavHHX3szB4DEQlE77NYAzIBoxF50w1k=;
+        b=CAeaEPuIOwJc0Zl/oVbXwTuksg0m400u1mDPQ9cSD2oVE/+H6B6W0+tkWDYovgx1Y0
+         7P+qD7N2Lngx4KWfKS7/6vPUft/KPt09kL2KeOCi/jUXcs1O5yW9B+95w0NPprQqWZ42
+         1oxTYHWrhzsqqdRR4rAJsSUFl8nVXCiK7yk1PqzfDzNkEhZvujfc6rFV90388czfI0Nc
+         VEpDgcBFDZ3cHHNdqG52rtcoZ0swURK6HuhATu33Gl/d1j+bmtxenDj1Yd5F+lqLA2mS
+         bsfZvNSSx0KaHcuWw84lQ0Pxtf0UqxyTbzRt4EbfnCbV9U+YghM6fRpMjlilYZhB+nL0
+         cjrg==
+X-Gm-Message-State: AOJu0YzN0eQYiULKD7fw72XnwPUu6ZWCClPITuwiH5wjZfmJ48rKdWTI
+        gtgWG73nzIosfY031jHKq8CR8CmX2n4aCizBrNDhCA==
+X-Google-Smtp-Source: AGHT+IEzJGmLvmLvuA6XEaLFU/wA4m1BCEpX+e9zMo4eIbVm1bF9Jtdktrn4hN8UYD0CAi5dkSiZEFSdfIgx2PSpSVA=
+X-Received: by 2002:a25:6fc1:0:b0:d81:c412:183c with SMTP id
+ k184-20020a256fc1000000b00d81c412183cmr13131966ybc.17.1696332015108; Tue, 03
+ Oct 2023 04:20:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230911194359.27547-5-quic_nkela@quicinc.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230915094351.11120-1-victorshihgli@gmail.com> <20230915094351.11120-18-victorshihgli@gmail.com>
+In-Reply-To: <20230915094351.11120-18-victorshihgli@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 3 Oct 2023 13:19:39 +0200
+Message-ID: <CAPDyKFoQY=y-aZQa3GBGayE6=Ei=hw_Nu=1_tmQ-ckv94ujf4A@mail.gmail.com>
+Subject: Re: [PATCH V12 17/23] mmc: sdhci-uhs2: add uhs2_control() to
+ initialise the interface
+To:     Victor Shih <victorshihgli@gmail.com>
+Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
+        HL.Liu@genesyslogic.com.tw, Greg.tu@genesyslogic.com.tw,
+        takahiro.akashi@linaro.org, dlunev@chromium.org,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        Victor Shih <victor.shih@genesyslogic.com.tw>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 11, 2023 at 12:43:59PM -0700, Nikunj Kela wrote:
-> This change adds the support for SCMI message exchange on Qualcomm
-> virtual platforms.
-> 
-> The hypervisor associates an object-id also known as capability-id
-> with each hvc doorbell object. The capability-id is used to identify the
-> doorbell from the VM's capability namespace, similar to a file-descriptor.
-> 
-> The hypervisor, in addition to the function-id, expects the capability-id
-> to be passed in x1 register when HVC call is invoked.
-> 
-> The function-id & capability-id are allocated by the hypervisor on bootup
-> and are stored in the shmem region by the firmware before starting Linux.
-> 
-> Signed-off-by: Nikunj Kela <quic_nkela@quicinc.com>
+On Fri, 15 Sept 2023 at 11:44, Victor Shih <victorshihgli@gmail.com> wrote:
+>
+> From: Victor Shih <victor.shih@genesyslogic.com.tw>
+>
+> This is a sdhci version of mmc's uhs2_set_reg operation.
+> UHS-II interface (related registers) will be initialised here.
+
+Please clarify this. It's not entirely easy to understand what goes on
+by reading the commit message above.
+
+Again, the similar comments as I provided for patch15 applies to
+$subject patch too.
+
+>
+> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 > ---
->  drivers/firmware/arm_scmi/driver.c |  1 +
->  drivers/firmware/arm_scmi/smc.c    | 47 ++++++++++++++++++++++++++----
->  2 files changed, 43 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> index 87383c05424b..ea344bc6ae49 100644
-> --- a/drivers/firmware/arm_scmi/driver.c
-> +++ b/drivers/firmware/arm_scmi/driver.c
-> @@ -2915,6 +2915,7 @@ static const struct of_device_id scmi_of_match[] = {
->  #ifdef CONFIG_ARM_SCMI_TRANSPORT_SMC
->  	{ .compatible = "arm,scmi-smc", .data = &scmi_smc_desc},
->  	{ .compatible = "arm,scmi-smc-param", .data = &scmi_smc_desc},
-> +	{ .compatible = "qcom,scmi-hvc-shmem", .data = &scmi_smc_desc},
->  #endif
->  #ifdef CONFIG_ARM_SCMI_TRANSPORT_VIRTIO
->  	{ .compatible = "arm,scmi-virtio", .data = &scmi_virtio_desc},
-> diff --git a/drivers/firmware/arm_scmi/smc.c b/drivers/firmware/arm_scmi/smc.c
-> index 0a0b7e401159..94ec07fdc14a 100644
-> --- a/drivers/firmware/arm_scmi/smc.c
-> +++ b/drivers/firmware/arm_scmi/smc.c
-> @@ -50,6 +50,9 @@
->   * @func_id: smc/hvc call function id
->   * @param_page: 4K page number of the shmem channel
->   * @param_offset: Offset within the 4K page of the shmem channel
-> + * @cap_id: hvc doorbell's capability id to be used on Qualcomm virtual
-> + *	    platforms
-> + * @qcom_xport: Flag to indicate the transport on Qualcomm virtual platforms
->   */
->  
->  struct scmi_smc {
-> @@ -63,6 +66,8 @@ struct scmi_smc {
->  	u32 func_id;
->  	u32 param_page;
->  	u32 param_offset;
-> +	u64 cap_id;
-
-Can it be unsigned long instead so that it just works for both 32 and 64 bit.
-
-> +	bool qcom_xport;
-
-Do we really need this ?
-
->  };
->  
->  static irqreturn_t smc_msg_done_isr(int irq, void *data)
-> @@ -129,6 +134,7 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
->  	struct resource res;
->  	struct device_node *np;
->  	u32 func_id;
-> +	u64 cap_id;
-
-Ditto..
-
->  	int ret;
->  
->  	if (!tx)
-> @@ -158,9 +164,34 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
->  		return -EADDRNOTAVAIL;
->  	}
->  
-> -	ret = of_property_read_u32(dev->of_node, "arm,smc-id", &func_id);
-> -	if (ret < 0)
-> -		return ret;
-> +	if (of_device_is_compatible(dev->of_node, "qcom,scmi-hvc-shmem")) {
-> +		scmi_info->qcom_xport = true;
+>
+> Updates in V8:
+>  - Reorder the definitions and lose the parentheses in
+>    sdhci_uhs2_set_config().
+>  - read_poll_timeout() to instead of read_poll_timeout_atomic()
+>    in sdhci_uhs2_check_dormant().
+>
+> Updates in V7:
+>  - Remove unnecessary function.
+>
+> Updates in V6:
+>  - Remove unnecessary function.
+>  - Remove unnecessary parameter when call the DBG().
+>  - Cancel export state of some functions.
+>
+> ---
+>
+>  drivers/mmc/host/sdhci-uhs2.c | 88 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 88 insertions(+)
+>
+> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
+> index af1b0c5e48fd..09b86fec9f7b 100644
+> --- a/drivers/mmc/host/sdhci-uhs2.c
+> +++ b/drivers/mmc/host/sdhci-uhs2.c
+> @@ -278,6 +278,48 @@ static void __sdhci_uhs2_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
+>         sdhci_set_clock(host, host->clock);
+>  }
+>
+> +static void sdhci_uhs2_set_config(struct sdhci_host *host)
+> +{
+> +       u32 value;
+> +       u16 sdhci_uhs2_set_ptr = sdhci_readw(host, SDHCI_UHS2_SETTINGS_PTR);
+> +       u16 sdhci_uhs2_gen_set_reg      = sdhci_uhs2_set_ptr;
+> +       u16 sdhci_uhs2_phy_set_reg      = sdhci_uhs2_set_ptr + 4;
+> +       u16 sdhci_uhs2_tran_set_reg     = sdhci_uhs2_set_ptr + 8;
+> +       u16 sdhci_uhs2_tran_set_1_reg   = sdhci_uhs2_set_ptr + 12;
 > +
-> +		/* The func-id & capability-id are kept in last 16 bytes of shmem.
-> +		 *     +-------+
-> +		 *     |       |
-> +		 *     | shmem |
-> +		 *     |       |
-> +		 *     |       |
-> +		 *     +-------+ <-- (size - 16)
-> +		 *     | funcId|
-> +		 *     +-------+ <-- (size - 8)
-> +		 *     | capId |
-> +		 *     +-------+ <-- size
-> +		 */
+> +       /* Set Gen Settings */
+> +       value = FIELD_PREP(SDHCI_UHS2_GEN_SETTINGS_N_LANES_MASK, host->mmc->uhs2_caps.n_lanes_set);
+> +       sdhci_writel(host, value, sdhci_uhs2_gen_set_reg);
 > +
-> +		func_id = readl((void __iomem *)(scmi_info->shmem) + size - 16);
+> +       /* Set PHY Settings */
+> +       value = FIELD_PREP(SDHCI_UHS2_PHY_N_LSS_DIR_MASK, host->mmc->uhs2_caps.n_lss_dir_set) |
+> +               FIELD_PREP(SDHCI_UHS2_PHY_N_LSS_SYN_MASK, host->mmc->uhs2_caps.n_lss_sync_set);
+> +       if (host->mmc->ios.timing == MMC_TIMING_UHS2_SPEED_B ||
+> +           host->mmc->ios.timing == MMC_TIMING_UHS2_SPEED_B_HD)
+> +               value |= SDHCI_UHS2_PHY_SET_SPEED_B;
+> +       sdhci_writel(host, value, sdhci_uhs2_phy_set_reg);
+> +
+> +       /* Set LINK-TRAN Settings */
+> +       value = FIELD_PREP(SDHCI_UHS2_TRAN_RETRY_CNT_MASK, host->mmc->uhs2_caps.max_retry_set) |
+> +               FIELD_PREP(SDHCI_UHS2_TRAN_N_FCU_MASK, host->mmc->uhs2_caps.n_fcu_set);
+> +       sdhci_writel(host, value, sdhci_uhs2_tran_set_reg);
+> +       sdhci_writel(host, host->mmc->uhs2_caps.n_data_gap_set, sdhci_uhs2_tran_set_1_reg);
+> +}
+> +
+> +static int sdhci_uhs2_check_dormant(struct sdhci_host *host)
+> +{
+> +       int timeout = 100000; /* 100ms */
 
-So unlike 'arm,scmi-smc', you don't want 'arm,smc-id' in the DT ? Any
-particular reason ? Just to get both FID and cap ID from shmem ?
+Define.
 
-> +#ifdef CONFIG_ARM64
+> +       u32 val;
+> +
+> +       if (read_poll_timeout(sdhci_readl, val, (val & SDHCI_UHS2_IN_DORMANT_STATE),
+> +                             100, timeout, true, host, SDHCI_PRESENT_STATE)) {
+> +               pr_warn("%s: UHS2 IN_DORMANT fail in 100ms.\n", mmc_hostname(host->mmc));
+> +               sdhci_dumpregs(host);
+> +               return -EIO;
+> +       }
+> +       return 0;
+> +}
+> +
+>  /*****************************************************************************\
+>   *                                                                           *
+>   * MMC callbacks                                                             *
+> @@ -359,6 +401,51 @@ static int sdhci_uhs2_enable_clk(struct mmc_host *mmc)
+>         return 0;
+>  }
+>
+> +static int sdhci_uhs2_do_detect_init(struct mmc_host *mmc);
 
-I would rather make this arch agnostic using CONFIG_64BIT
+Please re-order the code so this declaration isn't needed. And make it
+part of the patch that introduced the function, not in the $subject
+patch.
 
-> +		cap_id = readq((void __iomem *)(scmi_info->shmem) + size - 8);
+> +
+> +static int sdhci_uhs2_control(struct mmc_host *mmc, enum sd_uhs2_operation op)
+> +{
+> +       struct sdhci_host *host = mmc_priv(mmc);
+> +       struct mmc_ios *ios = &mmc->ios;
+> +       int err = 0;
+> +
+> +       DBG("Begin uhs2 control, act %d.\n", op);
+> +
+> +       switch (op) {
+> +       case UHS2_PHY_INIT:
+> +               err = sdhci_uhs2_do_detect_init(mmc);
+> +               break;
+> +       case UHS2_SET_CONFIG:
+> +               sdhci_uhs2_set_config(host);
+> +               break;
+> +       case UHS2_ENABLE_INT:
+> +               sdhci_uhs2_clear_set_irqs(host, 0, SDHCI_INT_CARD_INT);
+> +               break;
+> +       case UHS2_DISABLE_INT:
+> +               sdhci_uhs2_clear_set_irqs(host, SDHCI_INT_CARD_INT, 0);
+> +               break;
+> +       case UHS2_CHECK_DORMANT:
+> +               err = sdhci_uhs2_check_dormant(host);
+> +               break;
+> +       case UHS2_DISABLE_CLK:
+> +               err = sdhci_uhs2_disable_clk(mmc);
+> +               break;
+> +       case UHS2_ENABLE_CLK:
+> +               err = sdhci_uhs2_enable_clk(mmc);
+> +               break;
+> +       case UHS2_SET_IOS:
+> +               err = sdhci_uhs2_set_ios(mmc, ios);
+> +               break;
+> +       default:
+> +               pr_err("%s: input sd uhs2 operation %d is wrong!\n",
+> +                      mmc_hostname(host->mmc), op);
+> +               err = -EIO;
+> +               break;
+> +       }
+> +
+> +       return err;
+> +}
+> +
+>  /*****************************************************************************\
+>   *                                                                           *
+>   * Driver init/exit                                                          *
+> @@ -481,6 +568,7 @@ static int sdhci_uhs2_host_ops_init(struct sdhci_host *host)
+>  {
+>         host->mmc_host_ops.start_signal_voltage_switch =
+>                 sdhci_uhs2_start_signal_voltage_switch;
+> +       host->mmc_host_ops.uhs2_control = sdhci_uhs2_control;
+>
+>         return 0;
+>  }
 
-Do you need __iomem typecast here ? Is scmi_info->shmem not already __iomem ?
-Also scmi_info->shmem is ioremapped just few steps above and you are using
-read* here, is that safe ?
-
-> +#else
-> +		/* capability-id is 32 bit wide on 32bit machines */
-> +		cap_id = rieadl((void __iomem *)(scmi_info->shmem) + size - 8);
-
-Other thought once you move for u64 to unsigned long you need not have
-#ifdeffery, just do copy of sizeof(unsigned long)
-
-> +#endif
-> +	} else {
-> +		ret = of_property_read_u32(dev->of_node, "arm,smc-id", &func_id);
-> +		if (ret < 0)
-> +			return ret;
-> +	}
->  
->  	if (of_device_is_compatible(dev->of_node, "arm,scmi-smc-param")) {
->  		scmi_info->param_page = SHMEM_PAGE(res.start);
-> @@ -184,6 +215,7 @@ static int smc_chan_setup(struct scmi_chan_info *cinfo, struct device *dev,
->  	}
->  
->  	scmi_info->func_id = func_id;
-> +	scmi_info->cap_id = cap_id;
->  	scmi_info->cinfo = cinfo;
->  	smc_channel_lock_init(scmi_info);
->  	cinfo->transport_info = scmi_info;
-> @@ -213,6 +245,7 @@ static int smc_send_message(struct scmi_chan_info *cinfo,
->  	struct arm_smccc_res res;
->  	unsigned long page = scmi_info->param_page;
->  	unsigned long offset = scmi_info->param_offset;
-> +	unsigned long cap_id = (unsigned long)scmi_info->cap_id;
->  
->  	/*
->  	 * Channel will be released only once response has been
-> @@ -222,8 +255,12 @@ static int smc_send_message(struct scmi_chan_info *cinfo,
->  
->  	shmem_tx_prepare(scmi_info->shmem, xfer, cinfo);
->  
-> -	arm_smccc_1_1_invoke(scmi_info->func_id, page, offset, 0, 0, 0, 0, 0,
-> -			     &res);
-> +	if (scmi_info->qcom_xport)
-
-Just make sure cap_id is set only for qcom and just use that as your flag.
-No point in setting always true scmi_info->qcom_xport and using it here.
-
-> +		arm_smccc_1_1_hvc(scmi_info->func_id, cap_id, 0, 0, 0, 0, 0, 0,
-> +				  &res);
-> +	else
-> +		arm_smccc_1_1_invoke(scmi_info->func_id, page, offset, 0, 0, 0,
-> +				     0, 0, &res);
->  
->  	/* Only SMCCC_RET_NOT_SUPPORTED is valid error code */
->  	if (res.a0) {
-> -- 
-> 2.17.1
-> 
-
--- 
-Regards,
-Sudeep
+Kind regards
+Uffe
