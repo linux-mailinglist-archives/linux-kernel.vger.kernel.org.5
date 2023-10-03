@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F117B63B9
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F3897B63B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239800AbjJCIJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 04:09:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47136 "EHLO
+        id S231159AbjJCII7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 04:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239443AbjJCIHg (ORCPT
+        with ESMTP id S239453AbjJCIHg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 3 Oct 2023 04:07:36 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F99FA;
-        Tue,  3 Oct 2023 01:07:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C8DFD;
+        Tue,  3 Oct 2023 01:07:27 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:b6df:b784:6a0f:8451])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 58DF56607353;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id D2E356607355;
         Tue,  3 Oct 2023 09:07:25 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696320445;
-        bh=ZEZh/1jz6LKW7llMFxu5ts8tvF/3dDwXLVtLxVrQsiY=;
+        s=mail; t=1696320446;
+        bh=rFkYvrsLIxo1F3JyDJJ7M8J5xfn6Sk0yrCHC7ra2U7I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dUB7Zp9TtJlX7vcgy2qMpzBC6McncVMZg6xRpfBrZ+llPsL14RTXOlX4h4Q138FqW
-         /aHz9cqUgfVRdX/CNCC17tmVsJP3p9dDRiiv4VbUT/CfZF3zo/3xr1ao9dxv0H7fL0
-         +817VxBq56jxIpBk6oeL3d9zu3bEaJHvUKRrdEoD1LF/lxypp3XyE8OzPh2cq231wN
-         0qOwO0hlS2mrRWQ17Z/EsPdbcHwTT67C27fuPpMosyWepNl0TXzM6/DcEXE6GY4wRt
-         //hesVP/BqnkBYvX2ZwLz7ib7nBrhJBMDMIadDDDR7DY5UXr1nHNWd0eMKB7GeIwoB
-         auHEZ+C/n3U0g==
+        b=c4FiWMZ2kFjTILE1eg1120K+BXPvF5F/v+HIpp33sF+j1YS60kO5mDxH3FlaLKGf9
+         rvzXHc0UDuQx4/vH5a4AkBQViE3sS5Qrpbv+4CnVvr98HtxyhHZMrhMaZxq0jdAmWh
+         /JCKL9+vS0E4NJYHBlZz2gF4kKLSS4Bpl1ww6NMEcEC9cIixykT0hLuUtYy21yLD/W
+         XyV1SuSLfOyoCuFBNYhTninS0fvTzjKFIA9g9cuynZlEmBMHZIYUStFBFr7f22LW6I
+         HPed5c8iPsyG24jMEoWPbijycjJBVJeWovNq3QmLzeANFLTEZENDKwQgMz+yI8SyTY
+         69vhnyRLrh1uQ==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v10 24/54] media: video-i2c: Set min_buffers_needed to 2
-Date:   Tue,  3 Oct 2023 10:06:33 +0200
-Message-Id: <20231003080704.43911-25-benjamin.gaignard@collabora.com>
+Subject: [PATCH v10 25/54] media: pci: cx18: Set correct value to min_buffers_needed field
+Date:   Tue,  3 Oct 2023 10:06:34 +0200
+Message-Id: <20231003080704.43911-26-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231003080704.43911-1-benjamin.gaignard@collabora.com>
 References: <20231003080704.43911-1-benjamin.gaignard@collabora.com>
@@ -60,38 +60,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vb2 queue_setup checks for a minimum number of buffers so set
-min_buffers_needed to 2 and remove the useless check in video-i2c
-queue_setup().
+Set queue min_buffers_needed field to 3 and remove the useless
+check.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- drivers/media/i2c/video-i2c.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/media/pci/cx18/cx18-streams.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/i2c/video-i2c.c b/drivers/media/i2c/video-i2c.c
-index 178bd06cc2ed..0a38b9614764 100644
---- a/drivers/media/i2c/video-i2c.c
-+++ b/drivers/media/i2c/video-i2c.c
-@@ -406,9 +406,6 @@ static int queue_setup(struct vb2_queue *vq,
- 	struct video_i2c_data *data = vb2_get_drv_priv(vq);
- 	unsigned int size = data->chip->buffer_size;
+diff --git a/drivers/media/pci/cx18/cx18-streams.c b/drivers/media/pci/cx18/cx18-streams.c
+index 597472754c4c..6ed2c9fb882c 100644
+--- a/drivers/media/pci/cx18/cx18-streams.c
++++ b/drivers/media/pci/cx18/cx18-streams.c
+@@ -117,13 +117,6 @@ static int cx18_queue_setup(struct vb2_queue *vq,
+ 	else
+ 		szimage = cx->cxhdl.height * 720 * 2;
  
--	if (vq->num_buffers + *nbuffers < 2)
--		*nbuffers = 2;
+-	/*
+-	 * Let's request at least three buffers: two for the
+-	 * DMA engine and one for userspace.
+-	 */
+-	if (vq->num_buffers + *nbuffers < 3)
+-		*nbuffers = 3 - vq->num_buffers;
 -
- 	if (*nplanes)
- 		return sizes[0] < size ? -EINVAL : 0;
- 
-@@ -794,7 +791,7 @@ static int video_i2c_probe(struct i2c_client *client)
- 	queue->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
- 	queue->drv_priv = data;
- 	queue->buf_struct_size = sizeof(struct video_i2c_buffer);
--	queue->min_buffers_needed = 1;
-+	queue->min_buffers_needed = 2;
- 	queue->ops = &video_i2c_video_qops;
- 	queue->mem_ops = &vb2_vmalloc_memops;
- 
+ 	if (*nplanes) {
+ 		if (*nplanes != 1 || sizes[0] < szimage)
+ 			return -EINVAL;
+@@ -286,7 +279,11 @@ static int cx18_stream_init(struct cx18 *cx, int type)
+ 		s->vidq.ops = &cx18_vb2_qops;
+ 		s->vidq.mem_ops = &vb2_vmalloc_memops;
+ 		s->vidq.timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+-		s->vidq.min_buffers_needed = 2;
++		/*
++		 * Let's request at least three buffers: two for the
++		 * DMA engine and one for userspace.
++		 */
++		s->vidq.min_buffers_needed = 3;
+ 		s->vidq.gfp_flags = GFP_DMA32;
+ 		s->vidq.dev = &cx->pci_dev->dev;
+ 		s->vidq.lock = &cx->serialize_lock;
 -- 
 2.39.2
 
