@@ -2,127 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 613D87B6AF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E897B6AF9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237939AbjJCN7m convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 09:59:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51990 "EHLO
+        id S238001AbjJCOBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236750AbjJCN7l (ORCPT
+        with ESMTP id S230468AbjJCOBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:59:41 -0400
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA271AB;
-        Tue,  3 Oct 2023 06:59:38 -0700 (PDT)
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-57b68555467so81057eaf.0;
-        Tue, 03 Oct 2023 06:59:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696341578; x=1696946378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Lq1Clg4a1kKbu7pmXR4HdVffolvp2P+JTuU/UrDnGUQ=;
-        b=EC6wudZeSVJtwtc9NEoz17y3ukbVOOzhosy/qaoVpniclG1P6sLnMtqHcv5B1+21CA
-         BIopuxTnZx/hNOefH02unwlFzYt3cS5EcY70pWyWJM7V9rajCvcznup5GmkuU5aVxk8l
-         t2SqkmsmC7fkJsPCzDI8xkn3xEgQR8IouCUmuYgcsre3ug0DzIDorWM2DF8QVL3nTbC7
-         l6FOJxxQWmUP/1/79T9WBHMqpXzHfWfiuOGuskKAJSzWuXsw7rn60wfE5V8/F1X5fUo+
-         /bF15IiOFvV/p1uSZMlcLiNxuj3Z9sFMvcx+UjafTRZ1frIjnZwNKXDz24hy2PkGIFgf
-         9svg==
-X-Gm-Message-State: AOJu0YxSriwA5aHeTt76azPs59g6PoZAc6hI//h8f4ov7mgQ0eyc5Cdn
-        rmoH7G8Wpixljm6J1QjxHi+MTcHClaOND9qZfZA=
-X-Google-Smtp-Source: AGHT+IFPU3gZRpubYTBPXLnn2ap+DdEYPgfKr0BV5Ro2mPw3Pj481PgTJd+av7mBFohs06B5Vaojab+D16Dgp+FbQf4=
-X-Received: by 2002:a4a:2542:0:b0:57b:3b64:7ea5 with SMTP id
- v2-20020a4a2542000000b0057b3b647ea5mr12208047ooe.1.1696341578006; Tue, 03 Oct
- 2023 06:59:38 -0700 (PDT)
+        Tue, 3 Oct 2023 10:01:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9608DA3
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:01:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696341704; x=1727877704;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=uePwa7VPltT+jw5/W9K9jgZRk0qXIMPCBgYp21qPHok=;
+  b=D6MiQroaQ51XgqdSu5EmjYser4f9tJLmQE1XI2UGAVYnJajZtimd7ddk
+   wVIwcwqQcdSOnU6rvlWRRCJJhgHbpxh1/xBQMHjeR/Y9sVxHjFxNfEmRr
+   TaoQd7Y9a+RxF9oMjoh7B7fOENhgLFeo99wUq7Kh/eYJd08+ijYSg3Jgn
+   44cFyYoaYCVF/uzA7CRVmnkxiN0F1IGpjabqnuIgMpuFEOE5y2cynjBMZ
+   rXoOUJQ1Py7OKG/XBApYc9N/KdwbQHERqH0vJSPP1Wq+6TwsBJ5IQc8wY
+   +v5zdh6v4u77dXbJgJJvYZHfdmaBQW7RNT/L65BA4HTtvohkzw2zIAfes
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="1475228"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="1475228"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 07:01:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="780303304"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="780303304"
+Received: from sknagara-mobl2.amr.corp.intel.com (HELO [10.209.121.241]) ([10.209.121.241])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 07:01:42 -0700
+Message-ID: <1019158c-a854-4e29-b9ec-961fb878bab3@linux.intel.com>
+Date:   Tue, 3 Oct 2023 07:01:44 -0700
 MIME-Version: 1.0
-References: <20231002134630.2601294-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231002134630.2601294-1-andriy.shevchenko@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 3 Oct 2023 15:59:26 +0200
-Message-ID: <CAJZ5v0ib_N_ojhoC_z9YCOgmT7q2zy1jMBAFc=pmBmrX-j5Drg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] ACPI: property: Allow _DSD buffer data only for
- byte accessors
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] x86/tdx: Dump TDX version During the TD Bootup
+Content-Language: en-US
+To:     Yi Sun <yi.sun@intel.com>
+Cc:     kirill.shutemov@linux.intel.com, linux-kernel@vger.kernel.org,
+        heng.su@intel.com, yi.sun@linux.intel.com,
+        Dongcheng Yan <dongcheng.yan@intel.com>
+References: <20230930161110.3251107-1-yi.sun@intel.com>
+ <483ee0eb-cc14-44a4-9c3b-77a6d0860359@linux.intel.com>
+ <ZRwdj9mZz+Qt5FPP@ysun46-mobl.ccr.corp.intel.com>
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <ZRwdj9mZz+Qt5FPP@ysun46-mobl.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 3:46 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> In accordance with ACPI specificication and _DSD data buffer
-> representation the data there is an array of bytes. Hence,
-> accessing it with something longer will create a sparse data
-> which is against of how device property APIs work in general
-> and also not defined in the ACPI specification (see [1]).
-> Fix the code to emit an error if non-byte accessor is used to
-> retrieve _DSD buffer data.
->
-> Fixes: 369af6bf2c28 ("ACPI: property: Read buffer properties as integers")
-> Link: https://uefi.org/specs/ACPI/6.5/19_ASL_Reference.html#buffer-declare-buffer-object [1]
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Applied along with the [2/2] as 6.7 material.
 
-> ---
->  drivers/acpi/property.c | 18 +++++++++---------
->  1 file changed, 9 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
-> index 413e4fcadcaf..06550d8c619d 100644
-> --- a/drivers/acpi/property.c
-> +++ b/drivers/acpi/property.c
-> @@ -1102,25 +1102,25 @@ static int acpi_data_prop_read(const struct acpi_device_data *data,
->         switch (proptype) {
->         case DEV_PROP_STRING:
->                 break;
-> -       case DEV_PROP_U8 ... DEV_PROP_U64:
-> +       default:
->                 if (obj->type == ACPI_TYPE_BUFFER) {
->                         if (nval > obj->buffer.length)
->                                 return -EOVERFLOW;
-> -                       break;
-> +               } else {
-> +                       if (nval > obj->package.count)
-> +                               return -EOVERFLOW;
->                 }
-> -               fallthrough;
-> -       default:
-> -               if (nval > obj->package.count)
-> -                       return -EOVERFLOW;
->                 break;
->         }
->         if (nval == 0)
->                 return -EINVAL;
->
-> -       if (obj->type != ACPI_TYPE_BUFFER)
-> -               items = obj->package.elements;
-> -       else
-> +       if (obj->type == ACPI_TYPE_BUFFER) {
-> +               if (proptype != DEV_PROP_U8)
-> +                       return -EPROTO;
->                 items = obj;
-> +       } else
-> +               items = obj->package.elements;
+On 10/3/2023 6:56 AM, Yi Sun wrote:
+> On 03.10.2023 06:26, Kuppuswamy Sathyanarayanan wrote:
+>>
+>>
+>> On 9/30/2023 9:11 AM, Yi Sun wrote:
+>>> +static int tdg_get_sysinfo(struct tdg_sys_info *td_sys)
+>>> +{
+>>> +    struct tdx_module_output out;
+>>> +    u64 ret;
+>>> +
+>>> +    if (!td_sys)
+>>> +        return -EINVAL;
+>>> +
+>>> +    ret = __tdx_module_call(TDX_SYS_RD, 0, TDX_SYS_VENDOR_ID_FID, 0, 0,
+>>> +                &out);
+>>> +    if (TDCALL_RETURN_CODE(ret) == TDCALL_INVALID_OPERAND)
+>>> +        goto version_1_0;
+>>> +    else if (ret)
+>>> +        return ret;
+>>
+>> For this failure case, do you want to reset tdg_sys_info to some value like zero
+>> or some constants to specify unknown?
+> Yes, that would be better for this case.
+> 
+>>> +
+>>> +    td_sys->vendor_id = (u32)out.r8;
+>>> +
+>>> +    ret = __tdx_module_call(TDX_SYS_RD, 0, TDX_SYS_MAJOR_FID, 0, 0, &out);
+>>> +    if (ret)
+>>> +        return ret;
+>>> +
+>>> +    td_sys->major_version = (u16)out.r8;
+>>> +
+>>> +    ret = __tdx_module_call(TDX_SYS_RD, 0, TDX_SYS_MINOR_FID, 0, 0, &out);
+>>> +    if (ret)
+>>> +        return ret;
+>>> +
+>>> +    td_sys->minor_version = (u16)out.r8;
+>>> +
+>>> +    return 0;
+>>> +
+>>> +    /* TDX 1.0 does not have the TDCALL TDG.SYS.RD */
+>>> +version_1_0:
+>>> +    td_sys->vendor_id = TDX_VENDOR_INTEL;
+>>> +    td_sys->major_version = 1;
+>>> +    td_sys->minor_version = 0;
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>>  void __init tdx_early_init(void)
+>>>  {
+>>>      u64 cc_mask;
+>>>      u32 eax, sig[3];
+>>> +    struct tdg_sys_info td_sys_info;
+>>>
+>>>      cpuid_count(TDX_CPUID_LEAF_ID, 0, &eax, &sig[0], &sig[2],  &sig[1]);
+>>>
+>>> @@ -820,5 +882,9 @@ void __init tdx_early_init(void)
+>>>       */
+>>>      x86_cpuinit.parallel_bringup = false;
+>>>
+>>> -    pr_info("Guest detected\n");
+>>> +    tdg_get_sysinfo(&td_sys_info);
+>>
+>> Why not check the return value before dumping the info?
+>>
+> I overlooked that. I will add it in the next version.
+> Thanks Sathya for your comments.
 
-The braces that are missing here (as per the coding style) were added
-while applying the patch.
+if you plan to zero out the td_sys_info value in error case, I think it
+is better to make the tdg_get_sysinfo as void
 
->
->         switch (proptype) {
->         case DEV_PROP_U8:
-> --
+> 
+> Thanks
+>      --Yi Sun
 
-Thanks!
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
