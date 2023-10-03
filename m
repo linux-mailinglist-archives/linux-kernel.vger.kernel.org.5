@@ -2,123 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E1D7B655E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98137B6560
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239619AbjJCJXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:23:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54780 "EHLO
+        id S239631AbjJCJXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239612AbjJCJW7 (ORCPT
+        with ESMTP id S239596AbjJCJXF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:22:59 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB2EAB;
-        Tue,  3 Oct 2023 02:22:55 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9adb9fa7200so142942766b.0;
-        Tue, 03 Oct 2023 02:22:55 -0700 (PDT)
+        Tue, 3 Oct 2023 05:23:05 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63C5DA
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:23:01 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9b281a2aa94so112749666b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 02:23:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696324974; x=1696929774; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=GmFmuhb3o4N93peu/dgTVubGPBS25MoLfRETsrWJw90=;
-        b=BoV11+YrJPxx4qohFpLt+zRZJ7PoNeoG9TonnWyZP9yQ3Vmt2RnIGEToWP9BNfhsC6
-         QdpvL2Tm7fHmSuiD9urgryPFmOT1fFD+8IkkO4GoqpMPy+hIDuLwNIqj1qjVvlUods+L
-         gYgqBc22b5u2xc8tqx7E4LvuarJUiJ30mu7M3nncMD+qasaBlHkhF5PN5MSYebGRnjHO
-         2ZgtkACZlREzpZJUlXaYL9nYZ/oQfDBRUa6FFAOCkIXV76cw2IP2MGfNRTwaUGHjfM1m
-         jEymhFXNjyGXk478P93N+Ia0xzEITGiL7n4MEh4CJ9QBxmM544kNjA2zVlEk8ps2JK+e
-         MThw==
+        d=linaro.org; s=google; t=1696324980; x=1696929780; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HnOkHwByTjjkEvzBTwCNw0j+k22LND4/hJeZu2SKbsU=;
+        b=p1NZ93Ws2HbNeAOwB79QNQzvdr2wZI+RzZpuhw6fAVvloUcyxNUatV8CQvsLGBjFGe
+         fJJ8MkEHMVIbJb26VJYE25U7BKBSaDnSv2fScn+7s+RxZfLa4Adc12pVx1UKcRfh9oSM
+         XzhQzxuiE+OFFJPsBy8PLJvbE5pIGkdBN8HRfSIpu3POK49XZyMaiEvqgFJYsDFDXBBi
+         jQRhczlz7JQN6DlDqMZ4MaIwZ/J2t4cAdhVE/j34b0zV7Ko/5UOCNIbGXSO4AxhzEQvh
+         IWdSuj2IFn4KItI0Er2HT7duCAd0z6+kJ0EeU+r4tv0VkTy0ROheYumbyAWdAURFU+2L
+         dReQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696324974; x=1696929774;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GmFmuhb3o4N93peu/dgTVubGPBS25MoLfRETsrWJw90=;
-        b=k/RksNfIPpJUTLp/gX28/jOnq6nQ6ztfzYZBufNaZ0aJ5q3+1Ky2tux0DrXiPeV4/T
-         30F8yYZsl/UthCG83TTqxx8g2QuepBYXTQzDKSfiKA9Ztq1verxOurBrbtF6Bybeol+l
-         uacs69cVdFZ6YX1Za36o2JoC3PPwUOHYvnBGDPQRTiSurh4+ehw7MKYYE0y2jOqcuQuA
-         iNGGb0IB/xUos4oDxXukmhf27nfCIAKDOH0IEzc95ZT5KSRWxiPetT4sNvmEbj3Jt2yH
-         juL/khoSjLEZP4JsyJecDU/Z0ruUI3KqP5g6/gjYV011e77SwLi+4YclYbRaGa6MaKFQ
-         PNFg==
-X-Gm-Message-State: AOJu0YyugZ8cNiRd1yA20yM6lG3x932NmLNfHi3XCcCGpTYM60UKAkdE
-        dz3Q7ph+HPopHF3NXAr0G68xNHPImlo=
-X-Google-Smtp-Source: AGHT+IFD57PPr3QRwaAri1zjb70uxu4sLNgYbtg7CsIssMuw9sVz6vmAWwMUKwVOw/vC22+1PW72Iw==
-X-Received: by 2002:a17:906:32d3:b0:9a1:b528:d0f6 with SMTP id k19-20020a17090632d300b009a1b528d0f6mr1739532ejk.27.1696324973680;
-        Tue, 03 Oct 2023 02:22:53 -0700 (PDT)
-Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
-        by smtp.gmail.com with ESMTPSA id sa18-20020a170906edb200b0098733a40bb7sm734169ejb.155.2023.10.03.02.22.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 02:22:53 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 3 Oct 2023 11:22:51 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Thomas Richter <tmricht@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH v3] perf doc: Document ring buffer mechanism
-Message-ID: <ZRvda2QwdFYCp1F1@gmail.com>
-References: <20230803114613.1786849-1-leo.yan@linaro.org>
+        d=1e100.net; s=20230601; t=1696324980; x=1696929780;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HnOkHwByTjjkEvzBTwCNw0j+k22LND4/hJeZu2SKbsU=;
+        b=NTc8uXbvwNqZMqWcU1SY9m104mMqjHVXF7cOEk4DODND8GnupDd7iryG04FNpIJmJY
+         7Q+rM6D6YV69S18jAdSsxlh5QzCIyvgzuu2coqbLkClNsf35yn1I7+FswTZxLmEL8hpq
+         gjipQkPn3G2Y2EBF7qmUqRl8fqDMwz3wleZs5ue37FZYjcYUY11yrlkyKwGI8timQT1m
+         AnOfDCGKwWRrTgeNV6f9ygplPRsAdAH0PakgxKzcz77XS6Nbu3K0E9aYuDFfQ2j9oidW
+         9c1EHWN0Sl4DGpI02AYKqDNfVTiO1z+ZHucRs+gzq9DTk3+8J2xIz64RDjzBhS7OwFfP
+         qFgw==
+X-Gm-Message-State: AOJu0YzBjM6hmr0HDG0eoXOuKRlDLgTSGld5XxunsuJEW7cO2cZFT/aM
+        teDBUoqS0jUw8/syX3tsjcWGMA==
+X-Google-Smtp-Source: AGHT+IHn3FqEBLDQsr7OcNDUqS3eJLPKgiFSA75d/nmt46cKe2GadNwJsVa89Hqf+6e/jOAs0Zq1nA==
+X-Received: by 2002:a17:907:2e01:b0:9ae:6389:911 with SMTP id ig1-20020a1709072e0100b009ae63890911mr12314193ejc.31.1696324980160;
+        Tue, 03 Oct 2023 02:23:00 -0700 (PDT)
+Received: from [192.168.1.197] (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id fy33-20020a1709069f2100b009ae4ead6c01sm718636ejc.163.2023.10.03.02.22.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Oct 2023 02:22:59 -0700 (PDT)
+Message-ID: <7ed841ee-765b-47a6-8a28-3c4df6b21185@linaro.org>
+Date:   Tue, 3 Oct 2023 11:22:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230803114613.1786849-1-leo.yan@linaro.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] dt-bindings: mfd: sie,cronos-cpld: Add initial DT
+ binding
+Content-Language: en-US
+To:     Shawn Anastasio <sanastasio@raptorengineering.com>,
+        devicetree@vger.kernel.org, lee@kernel.org,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Timothy Pearson <tpearson@raptorengineering.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1696285339.git.sanastasio@raptorengineering.com>
+ <8b014f8b302f8b41c45c4f6fb114cf18e84a76fa.1696285339.git.sanastasio@raptorengineering.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <8b014f8b302f8b41c45c4f6fb114cf18e84a76fa.1696285339.git.sanastasio@raptorengineering.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 03/10/2023 00:32, Shawn Anastasio wrote:
+> The SIE Cronos Platform Controller CPLD is a multi-purpose platform
 
-* Leo Yan <leo.yan@linaro.org> wrote:
+What is SIE? Vendor prefix says sony.
 
-> In the Linux perf tool, the ring buffer serves not only as a medium for
-> transferring PMU event data but also as a vital mechanism for hardware
-> tracing using technologies like Intel PT and Arm CoreSight, etc.
+What is Cronos?
+
+
+> controller that provides both a watchdog timer and an LED controller. As
+> both functions are provided by the same CPLD, a multi-function device is
+> exposed as the parent of both functions.
+
+A nit, subject: drop second/last, redundant "DT binding". The
+"dt-bindings" prefix is already stating that these are bindings.
+
 > 
-> Consequently, the ring buffer mechanism plays a crucial role by ensuring
-> high throughput for data transfer between the kernel and user space
-> while avoiding excessive overhead caused by the ring buffer itself.
+> Add a DT binding for this device.
 > 
-> This commit documents the ring buffer mechanism in detail.  It provides
-> an in-depth explanation of the implementation of both the generic ring
-> buffer and the AUX ring buffer.  Additionally, it covers how these ring
-> buffers support various tracing modes and explains the synchronization
-> with memory barriers.
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Shawn Anastasio <sanastasio@raptorengineering.com>
+
+Except that this was clearly no tested...
+
 > ---
-> 
-> Changes from v2:
-> - Refined doc for Thomas's suggestions (Thomas Richter).
-> 
-> Changes from v1:
-> - Addressed Ian's comments and suggestions (Ian Rogers).
-> 
-> 
->  tools/perf/Documentation/perf-ring-buffer.txt | 762 ++++++++++++++++++
->  1 file changed, 762 insertions(+)
->  create mode 100644 tools/perf/Documentation/perf-ring-buffer.txt
 
-Nice addition!
+...
 
-If it hasn't been picked up yet:
+> +properties:
+> +  compatible:
+> +    const: sie,cronos-cpld
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#address-cells':
+> +    const: 1
 
-  Acked-by: Ingo Molnar <mingo@kernel.org>
+Why do you need it?
 
-Thanks,
+> +
+> +  '#size-cells':
+> +    const: 1
 
-	Ingo
+Also looks unneeded.
+
+> +
+> +  leds:
+> +    type: object
+> +    description: Cronos Platform Status LEDs
+
+Missing additionalProperties:false... but anyway this is just empty. No
+resources? Drop the node.
+
+> +
+> +    properties:
+> +      compatible:
+> +        const: sie,cronos-leds
+> +
+> +  watchdog:
+> +    type: object
+> +    description: Cronos Platform Watchdog Timer
+> +
+> +    properties:
+> +      compatible:
+> +        const: sie,cronos-watchdog
+
+No resources? Drop the node.
+
+Best regards,
+Krzysztof
+
