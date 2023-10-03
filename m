@@ -2,161 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 936067B706A
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957577B7067
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240727AbjJCR4W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 13:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
+        id S240710AbjJCR4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 13:56:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240714AbjJCR4U (ORCPT
+        with ESMTP id S232089AbjJCR4P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 13:56:20 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FAADBF
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 10:56:17 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a22f9e2f40so14303107b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 10:56:17 -0700 (PDT)
+        Tue, 3 Oct 2023 13:56:15 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA40AB
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 10:56:11 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5041d6d8b10so1509646e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 10:56:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696355776; x=1696960576; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4vl0fsz4J68Cnn2M5AWsY3O6OVBkAbz573ZVyP6v8RU=;
-        b=byIujj7LX5PdeWfGJNc840K2lhqEXxX9Prx44oyQiYxprBc+c79C24Yfsuy/14+W5i
-         3mLVJHJoBLxL3OHxgR0SzsZV37HwJ6PCKYVRLSYWkt/EcEIMYhXGm8vgNCqO9S99VBH0
-         RzAINzChqyw3qR0lUi1Hkp/hx+EERiZLtQr6hiGefnz/ySUbSHxK+BOC7rkEIpxvY+2D
-         smBTwwQLcQnnLubr3WJ5i3hp1wjn8p/PODzy5ynz4lZhyEwoPMHQBpVVw7wKVogXFB+Y
-         uw50S/J9pZG/pejizAewVKuznLAg/ueFWjPhZ/Hjw47icvKe4ddL5t+U46U8BFgPN0g1
-         Ho9g==
+        d=linaro.org; s=google; t=1696355769; x=1696960569; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1JZhuE5j+iZE4J9mPwY5TV04FryZBb7bk3P/vsKpdYA=;
+        b=JqESwYSCRBsKPPFZNXtCG3UikO4hnJ813CauROOXybOgwXt4qhQKyZ/nrlQyaMsVWD
+         1sAp7K8OPZoof5+zj4F/kKcug52s3vnksxfiluCSsMwx21Wm5H/Vt5A1Ev5PVdyy73Fg
+         ZSKj5XCYlAYJ7GptUJptZ7X9MVnQf2bkm3x62oNCGlJB8y8+rtoDnt1JqFT4gBfSmh5X
+         9NY91QRUj3bcFH359mM3RyYuZeygiYznCF0kSwxr3VnHK826ESxTjNewb7D79/Esplwn
+         F45s/wCTqe8sQgnazVVZCzyLzbpL6CJKqT8SFMqIw6j/tb/hq0dxS1C9+GC3mpc5txV/
+         1Ffw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696355776; x=1696960576;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4vl0fsz4J68Cnn2M5AWsY3O6OVBkAbz573ZVyP6v8RU=;
-        b=euhXD7GJsWyd75nOIXmUGVNdvmrdQjNnb0xoJYn6XZklZOgesFngvrccyeUlhRLb9Z
-         j/0BNx/U5ox2t8wK5FjhRtfaAYlyQ3U9XKGyjVgQJOLpzHMhdUl9qbMZnCY343EHu85V
-         MLDxOnUj77i54wqXrlm6FYrtbQmRbzkyTl8tMC09SD7iFsiMZrS5KspotnmzJgwm3QE6
-         8f8zLBsVzzt8Wcq5Ha8MxoyoV0vO/pXzUL1wgUHo4DnUneSjVNAW6TrAi/F8YK9hDB/t
-         2I5MPb3VrWrABHr6CtorefkVurh2PEjXR7VTxfeO1ze7BwLHmECSaW1FQ8qASY/2tSyQ
-         RCdw==
-X-Gm-Message-State: AOJu0YxdRvtZRjEXHWnP8bqG5MvCFyC/30vJzTUNY4PkiHfh3qjB4IaI
-        n8oRZ7Y/fPTElYHBmfw8ME0syYCvBOtemVKtYN8BRw==
-X-Google-Smtp-Source: AGHT+IEifyQz0qts6gjrIdCK30AQEhCj5PiL6BEQwSEb2u68tS34wFFdTdChNXs/1KRYo9kZ+DiSyEy6xlNrljCDdCQ=
-X-Received: by 2002:a0d:df46:0:b0:5a0:c0d0:1c48 with SMTP id
- i67-20020a0ddf46000000b005a0c0d01c48mr331306ywe.6.1696355776271; Tue, 03 Oct
- 2023 10:56:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696355769; x=1696960569;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1JZhuE5j+iZE4J9mPwY5TV04FryZBb7bk3P/vsKpdYA=;
+        b=WM2rAEUs2q6YYB7I/eaDDawb3GkTM32EzvjHxNB8P7Wqbv3IYSFxzMfkTUOxrsSO8U
+         9V13zNhPH4FG9Do2eP6bcY5OXWSZkmXACCtcweA4iEUA9jXwwl+yrWr8wuhCpIa4zRO7
+         i2dYACAsoy4eeTM+nbQ5w/u7JKeKkqMcjakd6eLILbsMIgiQ/Vq+3ZqHklnEK7nex0vP
+         27vc6SqmahFE7WIlrtsINNxqREB1JaH4YKkRBG+stIiPJotDIxPlLsAD1IXjQynsSGNo
+         1KsEAkcVLs8tXq4Oo7TOnmNbe1lqTMqcJp6YuU6QW2S/pK62yul/1vMM60LgdtAu1jx2
+         ClFA==
+X-Gm-Message-State: AOJu0Yyh2LXPOCQDM2v5mOe48kTe8bfT1A06qmvwf/vrHBf5E73bHv52
+        c6IGAE1UN33IqPZPhUnZ0NuDYA==
+X-Google-Smtp-Source: AGHT+IFNBTJc3E8wqGittkfs0CjrrMkLQqlQpI0ZdIa1dknPPv1CsHI/nQqXOnxcOdxURhyhB6xk1g==
+X-Received: by 2002:a19:9103:0:b0:500:a0a3:80ff with SMTP id t3-20020a199103000000b00500a0a380ffmr11195126lfd.58.1696355769477;
+        Tue, 03 Oct 2023 10:56:09 -0700 (PDT)
+Received: from [10.10.15.130] ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id c14-20020ac2530e000000b005057184ae62sm273632lfh.96.2023.10.03.10.56.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Oct 2023 10:56:09 -0700 (PDT)
+Message-ID: <e7576c3b-82d2-4902-a19c-af2878ef7dbd@linaro.org>
+Date:   Tue, 3 Oct 2023 20:56:08 +0300
 MIME-Version: 1.0
-References: <20230923013148.1390521-1-surenb@google.com> <20230923013148.1390521-2-surenb@google.com>
- <27f177c9-1035-3277-cd62-dc81c12acec4@redhat.com> <ZRrgWVgjVfQu4RGX@x1n> <e5d41fbe-a91b-9491-7b93-733f67e75a54@redhat.com>
-In-Reply-To: <e5d41fbe-a91b-9491-7b93-733f67e75a54@redhat.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 3 Oct 2023 10:56:01 -0700
-Message-ID: <CAJuCfpEaz_6T0uShTYn-PMzNrs1waCRhCFceyYUn7rKZZGPAtQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] userfaultfd: UFFDIO_REMAP: rmap preparation
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Peter Xu <peterx@redhat.com>, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, brauner@kernel.org, shuah@kernel.org,
-        aarcange@redhat.com, lokeshgidra@google.com, hughd@google.com,
-        mhocko@suse.com, axelrasmussen@google.com, rppt@kernel.org,
-        willy@infradead.org, Liam.Howlett@oracle.com, jannh@google.com,
-        zhangpeng362@huawei.com, bgeffon@google.com,
-        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 8/8] drm/msm/dp: move of_dp_aux_populate_bus() to eDP
+ probe()
+Content-Language: en-GB
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1695848028-18023-1-git-send-email-quic_khsieh@quicinc.com>
+ <1695848028-18023-9-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJprfjt7w+3YJAieBabuMso=-obRXss7-9Jrif23WmOJw5w@mail.gmail.com>
+ <2d8d4354-6dbb-e810-6efb-ca6b31f71b45@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <2d8d4354-6dbb-e810-6efb-ca6b31f71b45@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 10:30=E2=80=AFAM David Hildenbrand <david@redhat.com=
-> wrote:
->
-> On 02.10.23 17:23, Peter Xu wrote:
-> > On Mon, Oct 02, 2023 at 04:42:50PM +0200, David Hildenbrand wrote:
-> >> On 23.09.23 03:31, Suren Baghdasaryan wrote:
-> >>> From: Andrea Arcangeli <aarcange@redhat.com>
-> >>>
-> >>> As far as the rmap code is concerned, UFFDIO_REMAP only alters the
-> >>> page->mapping and page->index. It does it while holding the page
-> >>> lock. However folio_referenced() is doing rmap walks without taking t=
-he
-> >>> folio lock first, so folio_lock_anon_vma_read() must be updated to
-> >>> re-check that the folio->mapping didn't change after we obtained the
-> >>> anon_vma read lock.
-> >>
-> >> I'm curious: why don't we need this for existing users of
-> >> page_move_anon_rmap()? What's special about UFFDIO_REMAP?
-> >
-> > Totally no expert on anon vma so I'm prone to errors, but IIUC the
-> > difference here is root anon vma cannot change in page_move_anon_rmap()=
-,
-> > while UFFDIO_REMAP can.
->
-> That does sound reasonable, thanks.
->
-> Probably we can do better with the patch description (once [1] is used
-> to move the folio to the other anon_vma).
+On 03/10/2023 20:25, Kuogee Hsieh wrote:
+> 
+> On 9/27/2023 2:57 PM, Dmitry Baryshkov wrote:
+>> On Wed, 27 Sept 2023 at 23:54, Kuogee Hsieh <quic_khsieh@quicinc.com> 
+>> wrote:
+>>> Currently eDP population is done at msm_dp_modeset_init() which happen
+>>> at binding time. Move eDP population to be done at display probe time
+>>> so that probe deferral cases can be handled effectively.
+>>> wait_for_hpd_asserted callback is added during drm_dp_aux_init()
+>>> to ensure eDP's HPD is up before proceeding eDP population.
+>>>
+>>> Changes in v4:
+>>> -- delete duplicate initialize code to dp_aux before 
+>>> drm_dp_aux_register()
+>>> -- delete of_get_child_by_name(dev->of_node, "aux-bus") and inline 
+>>> the function
+>>> -- not initialize rc = 0
+>>>
+>>> Changes in v3:
+>>> -- add done_probing callback into devm_of_dp_aux_populate_bus()
+>>>
+>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+>>> ---
+>>>   drivers/gpu/drm/msm/dp/dp_aux.c     | 34 ++++++++++++++----
+>>>   drivers/gpu/drm/msm/dp/dp_display.c | 69 
+>>> ++++++++++++++++++-------------------
+>>>   2 files changed, 60 insertions(+), 43 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c 
+>>> b/drivers/gpu/drm/msm/dp/dp_aux.c
+>>> index 22eb774..425b5c5 100644
+>>> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
+>>> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
+>>> @@ -480,7 +480,6 @@ void dp_aux_deinit(struct drm_dp_aux *dp_aux)
+>>>
+>>>   int dp_aux_register(struct drm_dp_aux *dp_aux)
+>>>   {
+>>> -       struct dp_aux_private *aux;
+>>>          int ret;
+>>>
+>>>          if (!dp_aux) {
+>>> @@ -488,12 +487,7 @@ int dp_aux_register(struct drm_dp_aux *dp_aux)
+>>>                  return -EINVAL;
+>>>          }
+>>>
+>>> -       aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
+>>> -
+>>> -       aux->dp_aux.name = "dpu_dp_aux";
+>>> -       aux->dp_aux.dev = aux->dev;
+>>> -       aux->dp_aux.transfer = dp_aux_transfer;
+>>> -       ret = drm_dp_aux_register(&aux->dp_aux);
+>>> +       ret = drm_dp_aux_register(dp_aux);
+>>>          if (ret) {
+>>>                  DRM_ERROR("%s: failed to register drm aux: %d\n", 
+>>> __func__,
+>>>                                  ret);
+>>> @@ -508,6 +502,21 @@ void dp_aux_unregister(struct drm_dp_aux *dp_aux)
+>>>          drm_dp_aux_unregister(dp_aux);
+>>>   }
+>>>
+>>> +static int dp_wait_hpd_asserted(struct drm_dp_aux *dp_aux,
+>>> +                                unsigned long wait_us)
+>>> +{
+>>> +       int ret;
+>>> +       struct dp_aux_private *aux;
+>>> +
+>>> +       aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
+>>> +
+>>> +       pm_runtime_get_sync(aux->dev);
+>>> +       ret = dp_catalog_aux_wait_for_hpd_connect_state(aux->catalog);
+>>> +       pm_runtime_put_sync(aux->dev);
+>> Ok, so here you have used put_sync instead of autosuspend. Can we have
+>> some uniformity? (I'd prefer to see put_sync or just put everywhere)
+> 
+> 
+> my point is,
+> 
+> since display is user interface,
+> 
+> if there has any inputs before timer expire then there is no reason to 
+> execute  pm_runtime_suspend().
+> 
+> otherwise pm_runtime_suspend() should be executed.
+> 
+> Therefore I used autosuspend  at aux_transfer() an 
+> ddp_bridge_atomic_post_disable().
+> 
+> here is not related to user interface so that i use put_sysn() directly.
+> 
+> is my point make sense?
+> 
+>   or should I drop all autosuspend and replace them with put_sync()?
 
-I'll develop the next version with your patches in the baseline.
-Hopefully by the time of my posting your patches will be in the
-mm-unstable.
+This was my question from the beginning: what was the reason for using 
+autosuspend? Did it bring any sensible improvement in the disable & 
+reenable path?
 
->
-> "mm/rmap: support move to different root anon_vma in folio_move_anon_rmap=
-()
->
-> For now, folio_move_anon_rmap() was only used to move a folio to a
-> different anon_vma after fork(), whereby the root anon_vma stayed
-> unchanged. For that, it was sufficient to hold the page lock when
-> calling folio_move_anon_rmap().
->
-> However, we want to make use of folio_move_anon_rmap() to move folios
-> between VMAs that have a different root anon_vma. As folio_referenced()
-> performs an RMAP walk without holding the page lock but only holding the
-> anon_vma in read mode, holding the page lock is insufficient.
->
-> When moving to an anon_vma with a different root anon_vma, we'll have to
-> hold both, the page lock and the anon_vma lock in write mode.
-> Consequently, whenever we succeeded in folio_lock_anon_vma_read() to
-> read-lock the anon_vma, we have to re-check if the mapping was changed
-> in the meantime. If that was the case, we have to retry.
->
-> Note that folio_move_anon_rmap() must only be called if the anon page is
-> exclusive to a process, and must not be called on KSM folios.
->
-> This is a preparation for UFFDIO_REMAP, which will hold the page lock,
-> the anon_vma lock in write mode, and the mmap_lock in read mode.
-> "
+> 
+> 
+>>
+>>> +
+>>> +       return ret;
+>>> +}
+>>> +
+>>>   struct drm_dp_aux *dp_aux_get(struct device *dev, struct dp_catalog 
+>>> *catalog,
+>>>                                bool is_edp)
+>>>   {
+>>> @@ -531,6 +540,17 @@ struct drm_dp_aux *dp_aux_get(struct device 
+>>> *dev, struct dp_catalog *catalog,
+>>>          aux->catalog = catalog;
+>>>          aux->retry_cnt = 0;
+>>>
+>>> +       /*
+>>> +        * Use the drm_dp_aux_init() to use the aux adapter
+>>> +        * before registering aux with the DRM device so that
+>>> +        * msm edp panel can be detected by generic_dep_panel_probe().
+>> eDP, AUX, generic_edp_panel_probe().
+>>
+>>> +        */
+>>> +       aux->dp_aux.name = "dpu_dp_aux";
+>>> +       aux->dp_aux.dev = dev;
+>>> +       aux->dp_aux.transfer = dp_aux_transfer;
+>>> +       aux->dp_aux.wait_hpd_asserted = dp_wait_hpd_asserted;
+>>> +       drm_dp_aux_init(&aux->dp_aux);
+>>> +
+>>>          return &aux->dp_aux;
+>>>   }
+>>>
+>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
+>>> b/drivers/gpu/drm/msm/dp/dp_display.c
+>>> index 711d262..9a2b403 100644
+>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+>>> @@ -1203,6 +1203,28 @@ static const struct msm_dp_desc 
+>>> *dp_display_get_desc(struct platform_device *pde
+>>>          return NULL;
+>>>   }
+>>>
+>>> +static int dp_auxbus_done_probe(struct drm_dp_aux *aux)
+>>> +{
+>>> +       int rc;
+>>> +
+>>> +       rc = component_add(aux->dev, &dp_display_comp_ops);
+>>> +       if (rc)
+>>> +               DRM_ERROR("eDP component add failed, rc=%d\n", rc);
+>> drop.
+>>
+>>> +
+>>> +       return rc;
+>>> +}
+>>> +
+>>> +static inline int dp_display_auxbus_population(struct 
+>>> dp_display_private *dp)
+>> It's not `population`. It is just `populate`.
+>>
+>> Also please inline this function.
+>>
+>>
+>>> +{
+>>> +       int ret;
+>>> +
+>>> +       ret = devm_of_dp_aux_populate_bus(dp->aux, 
+>>> dp_auxbus_done_probe);
+>>> +       if (ret == -ENODEV)
+>>> +               DRM_ERROR("aux-bus not found\n");
+>>> +
+>>> +       return ret;
+>>> +}
+>>> +
+>>>   static int dp_display_probe(struct platform_device *pdev)
+>>>   {
+>>>          int rc = 0;
+>>> @@ -1271,10 +1293,16 @@ static int dp_display_probe(struct 
+>>> platform_device *pdev)
+>>>          if (rc)
+>>>                  return rc;
+>>>
+>>> -       rc = component_add(&pdev->dev, &dp_display_comp_ops);
+>>> -       if (rc) {
+>>> -               DRM_ERROR("component add failed, rc=%d\n", rc);
+>>> -               dp_display_deinit_sub_modules(dp);
+>>> +       if (dp->dp_display.is_edp) {
+>>> +               rc = dp_display_auxbus_population(dp);
+>>> +               if (rc)
+>>> +                       DRM_ERROR("eDP auxbus population failed, 
+>>> rc=%d\n", rc);
+>>> +       } else {
+>>> +               rc = component_add(&pdev->dev, &dp_display_comp_ops);
+>>> +               if (rc) {
+>>> +                       DRM_ERROR("component add failed, rc=%d\n", rc);
+>>> +                       dp_display_deinit_sub_modules(dp);
+>>> +               }
+>>>          }
+>>>
+>>>          return rc;
+>>> @@ -1285,8 +1313,6 @@ static int dp_display_remove(struct 
+>>> platform_device *pdev)
+>>>          struct dp_display_private *dp = 
+>>> dev_get_dp_display_private(&pdev->dev);
+>>>
+>>>          component_del(&pdev->dev, &dp_display_comp_ops);
+>>> -       dp_display_deinit_sub_modules(dp);
+>>> -
+>>>          platform_set_drvdata(pdev, NULL);
+>>>
+>>>          dp_display_deinit_sub_modules(dp);
+>>> @@ -1385,29 +1411,8 @@ static int dp_display_get_next_bridge(struct 
+>>> msm_dp *dp)
+>>>   {
+>>>          int rc;
+>>>          struct dp_display_private *dp_priv;
+>>> -       struct device_node *aux_bus;
+>>> -       struct device *dev;
+>>>
+>>>          dp_priv = container_of(dp, struct dp_display_private, 
+>>> dp_display);
+>>> -       dev = &dp_priv->pdev->dev;
+>>> -       aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
+>>> -
+>>> -       if (aux_bus && dp->is_edp) {
+>>> -               /*
+>>> -                * The code below assumes that the panel will finish 
+>>> probing
+>>> -                * by the time devm_of_dp_aux_populate_ep_devices() 
+>>> returns.
+>>> -                * This isn't a great assumption since it will fail 
+>>> if the
+>>> -                * panel driver is probed asynchronously but is the 
+>>> best we
+>>> -                * can do without a bigger driver reorganization.
+>>> -                */
+>>> -               rc = of_dp_aux_populate_bus(dp_priv->aux, NULL);
+>>> -               of_node_put(aux_bus);
+>>> -               if (rc)
+>>> -                       goto error;
+>>> -       } else if (dp->is_edp) {
+>>> -               DRM_ERROR("eDP aux_bus not found\n");
+>>> -               return -ENODEV;
+>>> -       }
+>>>
+>>>          /*
+>>>           * External bridges are mandatory for eDP interfaces: one 
+>>> has to
+>>> @@ -1420,17 +1425,9 @@ static int dp_display_get_next_bridge(struct 
+>>> msm_dp *dp)
+>>>          if (!dp->is_edp && rc == -ENODEV)
+>>>                  return 0;
+>>>
+>>> -       if (!rc) {
+>>> +       if (!rc)
+>>>                  dp->next_bridge = dp_priv->parser->next_bridge;
+>>> -               return 0;
+>>> -       }
+>>>
+>>> -error:
+>>> -       if (dp->is_edp) {
+>>> -               of_dp_aux_depopulate_bus(dp_priv->aux);
+>>> -               dp_display_host_phy_exit(dp_priv);
+>>> -               dp_display_host_deinit(dp_priv);
+>>> -       }
+>>>          return rc;
+>>>   }
+>>>
+>>> -- 
+>>> 2.7.4
+>>>
+>>
 
-Thanks for taking time to write this up! Looks really clear to me.
-I'll reuse it.
+-- 
+With best wishes
+Dmitry
 
->
-> In addition, we should document these locking details for
-> folio_move_anon_rmap() and probably not mention UFFDIO_REMAP in the
-> comment in folio_lock_anon_vma_read(), but instead say
-> "folio_move_anon_rmap() might have changed the anon_vma as we might not
-> hold the page lock here."
-
-Sounds good. Will add.
-
->
->
-> [1] https://lkml.kernel.org/r/20231002142949.235104-3-david@redhat.com
->
-> --
-> Cheers,
->
-> David / dhildenb
->
