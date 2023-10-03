@@ -2,85 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A88987B74CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500F67B74D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234787AbjJCXZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 19:25:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54152 "EHLO
+        id S234324AbjJCX0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 19:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231855AbjJCXZV (ORCPT
+        with ESMTP id S236088AbjJCX02 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 19:25:21 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37A1AA6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:25:17 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-692c02adeefso1114597b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 16:25:17 -0700 (PDT)
+        Tue, 3 Oct 2023 19:26:28 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B028190;
+        Tue,  3 Oct 2023 16:26:24 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-79fa416b7ffso60613939f.2;
+        Tue, 03 Oct 2023 16:26:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696375516; x=1696980316; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=WklzNBegPgB5uEE+/qy7qfvk7e8XBByJu1huJ3exKM8=;
-        b=ktHr7mrBoOPg3ka7pz2js6pvB4rAKVf1iaLj+EGNax3ASTc8p6stvVbNKPcFPdi+Sx
-         zNjLEIZuQniYAjuyicNUknDkeY8uqicSGDwAs+tBtdn3ihqzWDcV5cS8vBiHBH6sDTs5
-         ahz2Ven8cFUKH0orHCrAUTILjNaGbySNCHAm4=
+        d=gmail.com; s=20230601; t=1696375584; x=1696980384; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4ny5iyIo3c29FhVEcNOS9Ddt74DJ5wZg8ueoeeWyydk=;
+        b=kcqrmZdRZK9aP/XHIB1s4ejBTooThbcaIoPxzapwmAFBvv6WHYKcyjKmwvPpHhFsQx
+         EMlfcnrACcRhkhuD0PfM/uMuBIE0WWk2kOPIN1/KqlXseQUKDts4BIPGlvw2SjAeGXyc
+         8+6SsGd9H+HZSpE7sh+TOSM4GBbNUaMj2Stwkq7bqA2W0KIoEBlnaP4h3rTJjsU/gUS7
+         WD5T1F7vhHSyN3IqnM4bK9BMBPXHU/GjTkRI9jNA8m4hWpBeM0K45YJiDGUhlUp10o4d
+         /jGSPXfI6t+RSPHv4rHJZnwl7oSmyAAeKZUjQf2alWrS0NZ8nYttRGRQ+iVXg+9vhg1M
+         O7Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696375516; x=1696980316;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WklzNBegPgB5uEE+/qy7qfvk7e8XBByJu1huJ3exKM8=;
-        b=M1GE3X+AlmRZ4Yg264w4D+lObZaXg5ktHv7DIojoZzDR4qizuN0sG1HTlFmLs3FMaJ
-         h+y9MajXrx8W1FsgEKcOoWTHmySjjl6CJDTu1bCTTcz+FRnhCmS9RoZO2P14T7oTR/jN
-         2isTaWtpAUoJQtAtkgNb6qWDGHM4r7dxPvDW9gVriGeOuhA39uco6SESlSHkPdW0qjmV
-         wUrK8GjHr5/LQm7pYe6XLjpMlJOKbyRFQDLzecUbigdo4dGkRzr32ONojzsuxZZcugLI
-         hDe3X9y6SCS0JqBnxoP/9/iHWZkTFrblr1kE+4iJEns/qEK2OyBZQg7uYojMuwQllvhZ
-         NHAQ==
-X-Gm-Message-State: AOJu0YyKBqm4G+OmgaPE0kFMdQxBP53pOR9C0SZMba5WrWDWtZ2ymIow
-        vMZPURdwt61aaLuWsWxlPJlgWg==
-X-Google-Smtp-Source: AGHT+IFl++NjbnmUViIRhL35xEk4qT1W55vhw9500eQEtSz35fzgRPo8LMRfK60rOfBTWrFsvpIK1Q==
-X-Received: by 2002:a05:6a00:1592:b0:68f:cf6f:e212 with SMTP id u18-20020a056a00159200b0068fcf6fe212mr945019pfk.20.1696375516672;
-        Tue, 03 Oct 2023 16:25:16 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d8-20020aa78688000000b0068fece22469sm1911902pfo.4.2023.10.03.16.25.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 16:25:16 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     James Smart <james.smart@broadcom.com>
-Cc:     Kees Cook <keescook@chromium.org>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <kch@nvidia.com>,
-        linux-nvme@lists.infradead.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, llvm@lists.linux.dev
-Subject: [PATCH] nvmet-fc: Annotate struct nvmet_fc_tgt_queue with __counted_by
-Date:   Tue,  3 Oct 2023 16:25:11 -0700
-Message-Id: <20231003232511.work.459-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1696375584; x=1696980384;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4ny5iyIo3c29FhVEcNOS9Ddt74DJ5wZg8ueoeeWyydk=;
+        b=nQUY03bOQGzKBvpZ36ti8eJoQ2rKrkXOkDmcVost/fKQFfetijTuCTUfabSzl1eZhP
+         OQw50bIcfyanWmChF6yqBZJn35UxffNNuJtSd2K97jSW4XJAlWFhr6a+zUxgSXswkbd5
+         58dAQjthTxr/B6ICEym4wJNSqQDYn6EbxY8+KS36wzJqDySAisSVm7gg93/wx8jLu++Y
+         /KEPRv+IoaUwiZb0fYeWyuv6xsGaci4mbVVvcXi/hV3aPH5ZpQuWrpEyqRcQXwgQrCGq
+         /CbDOl6IGwzUMLRuEMQOw2FZR7X3sq0gwG2zinRHhhMtvQ0SeXEc0Zg+0rdxBCPDphCf
+         p7mg==
+X-Gm-Message-State: AOJu0Yw7Pp1K2QmApFyJQyTkG+wxZIdPQawMH+yWcpbyePcOIedtcHlq
+        IqCDBngh5M3z+9QVbPX/4f/t6uPkCOMOpfxLCXU=
+X-Google-Smtp-Source: AGHT+IFIfHB1/JD1gmiRZKngRz/4e5Chk2T8BrzRwvNrmCYseeO/v2iFv+ET8tm+jBP4rg99nzpSdoR615FyoHKPLd0=
+X-Received: by 2002:a5e:8345:0:b0:78b:d0a9:34fb with SMTP id
+ y5-20020a5e8345000000b0078bd0a934fbmr783370iom.20.1696375583948; Tue, 03 Oct
+ 2023 16:26:23 -0700 (PDT)
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1347; i=keescook@chromium.org;
- h=from:subject:message-id; bh=ByABuAYNlIfLs+7c20JDBpw/8yvTeM5CPvmgxbAXfYw=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlHKLXpRHdUq+lFLSfO9gJWqiFNgTu8fSB9J2BJ
- zZ8tvEohwaJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRyi1wAKCRCJcvTf3G3A
- JgoeEACsVLmbCD8bMb+riXBw2TqwsW891pJ49jgwyOXsxUB/C3ZZ7ENjEQN6LGSkaLdqYzfmWwi
- YDaW6EbTBn5KcSU1Hw4F1S2hC/yfbryopBQFy7UUPJ1h97vHG1WklXODb15HTcpXnqdzPEExmFI
- 2XHy7Ynrdw038ZEWiX437eAzH5XQ6D+7IiuBD6qIBDzeXsD6/bfd+vuujGpp7IhVhhhDuEKxeW8
- xte4TTr+fKEK5gpyPsViXn0Om67AzEfyUzWP9jm56AzQ44uFSs/BaIvbDhk4pCkaExfdjsLn1hr
- TnQLubChT6GFHgF1ibh3aQbAWU8JvDFhf0hfOjFO3HaLF0QpoAzjTyfC0LJjZq90mWYCsbujmT2
- fB2KG03D9y3Zx8RiEvhC51j18hMf+2VF7qoFhtccckeg48gvmFTFgwUtuXwiM1xQB1YfThnFj+o
- DH71gvobUcMNBsnE3QIGtog5q6ctnfm3DnLqskdz/HRisn521b6p8EHKrt2f7Ue1x5XfYDQc5dG
- bog1lOJ/LORrJEZs/cd6yndXzT6vd7boBB5i51/cwGXbSlSA/qTBo4c1Qlhv0U8pJPplNY5ZSx2
- jyZXfX8030a4B+JGxqoaiUJjYqySNBjwHDUPVdQA0BmeUkDgeQ3HHlTErvAlLJMwAf9s3Sk+VXC
- d4vCaB3 AqjDvhAw==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+References: <20231003001828.2554080-1-nphamcs@gmail.com> <20231003001828.2554080-3-nphamcs@gmail.com>
+ <20231003171329.GB314430@monkey> <CAKEwX=POd1DZc2K5ym14R2DpU74DqV30_A6QGfsCAaOTMK2WJA@mail.gmail.com>
+ <20231003183928.GC20979@cmpxchg.org> <CAKEwX=O8X+ZRNEzzs+NYBAh9QJLObxKPOpmFo-ci4Aw=MR=0+Q@mail.gmail.com>
+ <20231003224214.GE314430@monkey>
+In-Reply-To: <20231003224214.GE314430@monkey>
+From:   Nhat Pham <nphamcs@gmail.com>
+Date:   Tue, 3 Oct 2023 16:26:10 -0700
+Message-ID: <CAKEwX=MqV5CThRxTXs3DKqGNw04w2j=4hmE+Wi7x4Gu_ykATmw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] hugetlb: memcg: account hugetlb-backed memory in
+ memory controller
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, akpm@linux-foundation.org,
+        riel@surriel.com, mhocko@kernel.org, roman.gushchin@linux.dev,
+        shakeelb@google.com, muchun.song@linux.dev, tj@kernel.org,
+        lizefan.x@bytedance.com, shuah@kernel.org, yosryahmed@google.com,
+        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,38 +77,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Prepare for the coming implementation by GCC and Clang of the __counted_by
-attribute. Flexible array members annotated with __counted_by can have
-their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
-array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
-functions).
+On Tue, Oct 3, 2023 at 3:42=E2=80=AFPM Mike Kravetz <mike.kravetz@oracle.co=
+m> wrote:
+>
+> On 10/03/23 15:09, Nhat Pham wrote:
+> > On Tue, Oct 3, 2023 at 11:39=E2=80=AFAM Johannes Weiner <hannes@cmpxchg=
+.org> wrote:
+> > > On Tue, Oct 03, 2023 at 11:01:24AM -0700, Nhat Pham wrote:
+> > > > On Tue, Oct 3, 2023 at 10:13=E2=80=AFAM Mike Kravetz <mike.kravetz@=
+oracle.com> wrote:
+> > > > > On 10/02/23 17:18, Nhat Pham wrote:
+> > > > >
+> > > > > IIUC, huge page usage is charged in alloc_hugetlb_folio and uncha=
+rged in
+> > > > > free_huge_folio.  During migration, huge pages are allocated via
+> > > > > alloc_migrate_hugetlb_folio, not alloc_hugetlb_folio.  So, there =
+is no
+> > > > > charging for the migration target page and we uncharge the source=
+ page.
+> > > > > It looks like there will be no charge for the huge page after mig=
+ration?
+> > > > >
+> > > >
+> > > > Ah I see! This is a bit subtle indeed.
+> > > >
+> > > > For the hugetlb controller, it looks like they update the cgroup in=
+fo
+> > > > inside move_hugetlb_state(), which calls hugetlb_cgroup_migrate()
+> > > > to transfer the hugetlb cgroup info to the destination folio.
+> > > >
+> > > > Perhaps we can do something analogous here.
+> > > >
+> > > > > If my analysis above is correct, then we may need to be careful a=
+bout
+> > > > > this accounting.  We may not want both source and target pages to=
+ be
+> > > > > charged at the same time.
+> > > >
+> > > > We can create a variant of mem_cgroup_migrate that does not double
+> > > > charge, but instead just copy the mem_cgroup information to the new
+> > > > folio, and then clear that info from the old folio. That way the me=
+mory
+> > > > usage counters are untouched.
+> > > >
+> > > > Somebody with more expertise on migration should fact check me
+> > > > of course :)
+> > >
+> > > The only reason mem_cgroup_migrate() double charges right now is
+> > > because it's used by replace_page_cache_folio(). In that context, the
+> > > isolation of the old page isn't quite as thorough as with migration,
+> > > so it cannot transfer and uncharge directly. This goes back a long
+> > > time: 0a31bc97c80c3fa87b32c091d9a930ac19cd0c40
+> > >
+> > > If you rename the current implementation to mem_cgroup_replace_page()
+> > > for that one caller, you can add a mem_cgroup_migrate() variant which
+> > > is charge neutral and clears old->memcg_data. This can be used for
+> > > regular and hugetlb page migration. Something like this (totally
+> > > untested):
+> > >
+> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > index a4d3282493b6..17ec45bf3653 100644
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@ -7226,29 +7226,14 @@ void mem_cgroup_migrate(struct folio *old, st=
+ruct folio *new)
+> > >         if (mem_cgroup_disabled())
+> > >                 return;
+> > >
+> > > -       /* Page cache replacement: new folio already charged? */
+> > > -       if (folio_memcg(new))
+> > > -               return;
+> > > -
+> > >         memcg =3D folio_memcg(old);
+> > >         VM_WARN_ON_ONCE_FOLIO(!memcg, old);
+> > >         if (!memcg)
+> > >                 return;
+> > >
+> > > -       /* Force-charge the new page. The old one will be freed soon =
+*/
+> > > -       if (!mem_cgroup_is_root(memcg)) {
+> > > -               page_counter_charge(&memcg->memory, nr_pages);
+> > > -               if (do_memsw_account())
+> > > -                       page_counter_charge(&memcg->memsw, nr_pages);
+> > > -       }
+> > > -
+> > > -       css_get(&memcg->css);
+> > > +       /* Transfer the charge and the css ref */
+> > >         commit_charge(new, memcg);
+> > > -
+> > > -       local_irq_save(flags);
+> > > -       mem_cgroup_charge_statistics(memcg, nr_pages);
+> > > -       memcg_check_events(memcg, folio_nid(new));
+> > > -       local_irq_restore(flags);
+> > > +       old->memcg_data =3D 0;
+> > >  }
+> > >
+> > >  DEFINE_STATIC_KEY_FALSE(memcg_sockets_enabled_key);
+> > >
+> >
+> > Ah, I like this. Will send a fixlet based on this :)
+> > I was scratching my head trying to figure out why we were
+> > doing the double charging in the first place. Thanks for the context,
+> > Johannes!
+>
+> Be sure to check for code similar to this in folio_migrate_flags:
+>
+> void folio_migrate_flags(struct folio *newfolio, struct folio *folio)
+> {
+> ...
+>         if (!folio_test_hugetlb(folio))
+>                 mem_cgroup_migrate(folio, newfolio);
+> }
+>
+> There are many places where hugetlb is special cased.
 
-As found with Coccinelle[1], add __counted_by for struct nvmet_fc_tgt_queue.
+Yeah makes sense. I'm actually gonna take advantage of this,
+and remove the test hugetlb check here, so that it will also
+migrate the memcg metadata in this case too.  See the new patch
+I just sent out.
 
-Cc: James Smart <james.smart@broadcom.com>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Sagi Grimberg <sagi@grimberg.me>
-Cc: Chaitanya Kulkarni <kch@nvidia.com>
-Cc: linux-nvme@lists.infradead.org
-Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/nvme/target/fc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/nvme/target/fc.c b/drivers/nvme/target/fc.c
-index 1ab6601fdd5c..0fa2d658cdeb 100644
---- a/drivers/nvme/target/fc.c
-+++ b/drivers/nvme/target/fc.c
-@@ -146,7 +146,7 @@ struct nvmet_fc_tgt_queue {
- 	struct workqueue_struct		*work_q;
- 	struct kref			ref;
- 	struct rcu_head			rcu;
--	struct nvmet_fc_fcp_iod		fod[];		/* array of fcp_iods */
-+	struct nvmet_fc_fcp_iod		fod[] __counted_by(sqsize); /* array of fcp_iods */
- } __aligned(sizeof(unsigned long long));
- 
- struct nvmet_fc_hostport {
--- 
-2.34.1
-
+> --
+> Mike Kravetz
