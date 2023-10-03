@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 248417B708D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18CCA7B7094
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240747AbjJCSJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 14:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
+        id S240766AbjJCSJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 14:09:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231622AbjJCSJQ (ORCPT
+        with ESMTP id S231598AbjJCSJp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:09:16 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219C8AC
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 11:09:13 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c6185cafb3so20855ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 11:09:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696356552; x=1696961352; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Z5ADml8UEYFyYxVl60KXFq6v7496GwJKAXl/Dq0m1dI=;
-        b=RRxdlsuQc0jVRVXE9oQ6YyG4Q3I6bHV4f9kTbEr9/AvfmyMEOr8eYivSIsuF0T4Gh8
-         eHH05eftwvm8/ZFQxEaP0+NKz5xNZ6BGeOETtoW1oacstw2MbGly5G24p1L4ANK0tX8r
-         Ay4NdgBNv+5fWg3DE5mAHbt/b3Rs4sYRXyL3Rt7n2dOTpyiMLwUH97p40WQKFFwxmgVJ
-         coPZ6CSJXV2wYzsSvr+L37xwnmSO3HqLt5RHlCuGqudkBynYUsRVI7CbbQndnhy6+NH9
-         vn/fdXPgmdM3+wOpxM1aKESOKV5+VNtxC3kTCUEnpxqQiDnfxLZV/ehQOMUIjX5ys3Tf
-         skZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696356552; x=1696961352;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Z5ADml8UEYFyYxVl60KXFq6v7496GwJKAXl/Dq0m1dI=;
-        b=M38jGhvrl6Ees/ervdjpw4ZpqYaLxCtEqiz6IclmgH24PvoDs/78BaUsY3xLa15FD9
-         qrTDWIcjO2QoU33USG+YBz33PNBSUmWUdOEH7Qxx1ewK/efGINdoA//OMJaGzkAP7wuq
-         90sDKf+lZnKTRrv4Fmi37NNxFtl7i0q7YqRHwPwAc21QWYJbVcQc+mViyv1wD9nxIP4K
-         OFjMjRMzbbeLNGDclSUJwupa8apr0HPF5KoCkYZ88MYcMIhbQ86XeRLJR0NYQZW9+DfM
-         qpb72P8B5A9AQhJDesLQpp7FKYhIDT9HNzUot+jd48y8zsI2aFrL50arF8i1/3gp4Oo9
-         Lt3g==
-X-Gm-Message-State: AOJu0YwDhGIPz3rFnYaoH2+V6HtgOsOr8MXQ31tZPFi2hTmbJpThYu82
-        BKmlRzrY1Zx4mFP5qpH0WBveBa07yfvlDg5IcT2V
-X-Google-Smtp-Source: AGHT+IEl6IJ3DsIw7oyXRf7R7HS8s4r59Isc2f9JN+K4IY+u/eiaCuHNxh0RznXZ+FmVCsNdWoBLHGhb923Bp4V1USc=
-X-Received: by 2002:a17:902:dad1:b0:1c6:1e4e:b770 with SMTP id
- q17-20020a170902dad100b001c61e4eb770mr19311plx.28.1696356552314; Tue, 03 Oct
- 2023 11:09:12 -0700 (PDT)
+        Tue, 3 Oct 2023 14:09:45 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29461AC;
+        Tue,  3 Oct 2023 11:09:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=SR5hzwt7zM//0GbzM35Ia3E9iKMTwd/DCYDjYKbU5Ig=; b=ZXKjBEaHWD1Qo3XGspilT/vQRg
+        vSh8MKQ9EEVH/Y8NPGTsc3bLicNR1GX1Jk1DWEKyfbjeG15aUpxDe1KkKHvl530pl2NYiKE4Ir8w2
+        51GClqB+aEqMoGDxbnLBVe7YKZ/9eMGcsN8Q20CzqmAyGjBN0jstAUV2RbXZZVGtmK9NajuC8CXG2
+        KQlZ0Yu84WGDTz49172j5CMhbRIPTy0k8zaXqPaYQbR+4imnXzzVcxo+AcTZFeGRoUZ4cObk863xL
+        owQMVuoL6KoYdFSEWkE4I+CsqEDHjnSNO1Oq5mM2gj0xFCZbboiv6n6i89hvPnRfPXxUdNtZbCPnD
+        xo4KshaQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54130)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qnjpr-00023q-1t;
+        Tue, 03 Oct 2023 19:09:31 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qnjpm-00087H-G1; Tue, 03 Oct 2023 19:09:26 +0100
+Date:   Tue, 3 Oct 2023 19:09:26 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Xin Li <xin@zytor.com>
+Cc:     Gavin Shan <gshan@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-acpi@vger.kernel.org, James Morse <james.morse@arm.com>,
+        loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-ia64@vger.kernel.org
+Subject: Re: [PATCH] cpu-hotplug: provide prototypes for arch CPU registration
+Message-ID: <ZRxY1l+79XqOHZk1@shell.armlinux.org.uk>
+References: <E1qkoRr-0088Q8-Da@rmk-PC.armlinux.org.uk>
+ <dd4dee9e-4d75-e1e6-04c8-82d84b28fd35@redhat.com>
+ <ZRIU/yFrbFbIR7zZ@shell.armlinux.org.uk>
+ <ZRwmj/e+jAXFfvCm@shell.armlinux.org.uk>
+ <7aee5021-8bb6-4343-b746-a8417af030a9@zytor.com>
 MIME-Version: 1.0
-From:   Jeffrey Kardatzke <jkardatzke@google.com>
-Date:   Tue, 3 Oct 2023 11:09:01 -0700
-Message-ID: <CA+ddPcPS8oUsMk0ziumwdTTWetekE37cK0Gkt9x5w2ig1m2pXQ@mail.gmail.com>
-Subject: Re: [PATCH 01/10] drm/mediatek: Add interface to allocate MediaTek
- GEM buffer.
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-Cc:     Project_Global_Chrome_Upstream_Group 
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, drinkcat@chromium.org,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linaro-mm-sig@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7aee5021-8bb6-4343-b746-a8417af030a9@zytor.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You can remove the DRIVER_RENDER flag from this patchset. That should
-not be upstreamed. The IOCTLs are still needed though because of the
-flag for allocating a secure surface that is in the next patch. If
-that flag wasn't needed, then dumb buffer allocations could be used
-instead.
+On Tue, Oct 03, 2023 at 10:37:02AM -0700, Xin Li wrote:
+> On 10/3/2023 7:34 AM, Russell King (Oracle) wrote:
+> > > > > 
+> > > > > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> > > > > ---
+> > > > > Changes since RFC v2:
+> > > > >    - drop ia64 changes, as ia64 has already been removed.
+> > > > > 
+> 
+> If this is RFC v2, we put "RFC v2" in the subject, then people know you
+> are sending a newer version.
 
-Thanks,
-Jeff Kardatzke
+Sorry, but this is yet another illustration why the kernel process is
+broken. Clearly, people do NOT bother reading what is actually written,
+but instead make up in their minds something completely different.
+
+This is *NOT* RFC v2. This is RFC v2:
+
+https://lore.kernel.org/all/E1qgnh2-007ZRZ-WD@rmk-PC.armlinux.org.uk/
+
+And what I wrote was "changes **** SINCE **** RFC v2". For those who
+find English difficult, this means that what follows is the list of
+changes that are in THIS posting that WERE NOT IN THE PREVIOUS POSTING
+which was RFC v2.
+
+Thanks for making me even more frustrated than I was.
+
+> People are busy, and your patch could be
+> skipped if it appears the same as a previous one.
+
+Yet another reason why the kernel process is just completely broken.
+"appears to be". Even when the changes are spelled out. Yes, right,
+people don't have time to read. If that's the case, then it's a
+waste of time adding a change log. It's a waste of time to add a
+commit message. In fact, it's a total waste of time trying to
+contribute to a rotten-to-the-core open source project that Linux
+seems to have turned into.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
