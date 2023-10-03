@@ -2,50 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01C867B5FAE
+	by mail.lfdr.de (Postfix) with ESMTP id 293FF7B5FAF
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 06:11:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbjJCEIV convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 00:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
+        id S237829AbjJCELB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 00:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjJCEIT (ORCPT
+        with ESMTP id S230061AbjJCEK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 00:08:19 -0400
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EBABB;
-        Mon,  2 Oct 2023 21:08:17 -0700 (PDT)
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7ab8696d047so227128241.1;
-        Mon, 02 Oct 2023 21:08:17 -0700 (PDT)
+        Tue, 3 Oct 2023 00:10:59 -0400
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E8FA1;
+        Mon,  2 Oct 2023 21:10:55 -0700 (PDT)
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3ae65e8eb45so316000b6e.1;
+        Mon, 02 Oct 2023 21:10:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696306096; x=1696910896;
+        d=1e100.net; s=20230601; t=1696306255; x=1696911055;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sVF5dM/rD7LrEJ/cCejTv0aLhKjQq20c8kLgg4F7Lyc=;
-        b=ZEDcwIn3bsATz4z6y65NQvBNdmzvX8LWfrP6NiCuxyDbVfcJsbU6ONntB0MmGi2nmJ
-         YjYxUR5ziiqyDLNSSeX7Yc0H3SLF/CyB7l876Exho8UKHZWCLt9mB3emKHNzrB8PH8KO
-         mfcBiaV5EeS3tYNuc/fa4u9gfjf5RHj/Gm5/lyufhN467MJJr3OVUTtJckTVZYv9Q2Kz
-         P68WW8Lgn+2v8APrDirixNAheVAU0u2Zst5Ap/m1SaqY3WMzAb0h/28UrallAfNE93KB
-         E/iaeF5je8Qc5GDrzoZdZmigapbd2sLuqDkMgA5poXcd95aJqcN7AwsK4TOAGfCVbzS8
-         3cPQ==
-X-Gm-Message-State: AOJu0YwswbECQeDRXJ1ZhF4IvN3+jpJX2FwerLpuZqp/Gar/JiJINQUz
-        QyEejs+ii1hSUBSzKncYRHSjy+TBglZeTCCrTvMWeNrF
-X-Google-Smtp-Source: AGHT+IF3E/i3i9D9ywq9im0ZC5Eg+bu/jlvkAsmHW0QM7gZBVjjrCtSpzOB7r5P7ik2CvXhXSW94GKqR3DqwwvZ+BGY=
-X-Received: by 2002:a1f:de43:0:b0:49a:7a5b:dab2 with SMTP id
- v64-20020a1fde43000000b0049a7a5bdab2mr10173027vkg.16.1696306096177; Mon, 02
- Oct 2023 21:08:16 -0700 (PDT)
+        bh=KtulQHPAbaWeljs345WA/V0ckv6ygveCfUecnvBzx/Y=;
+        b=G6Xvutkr8alX72OsnQHL28HiVVfJP4wC0+yRhYWixab/Sr9L9Z+AiOypAh2o5TuhX8
+         27mYWQ83FdgFqJSt0C22Q0wpYnWT0MiGsq2D+jMaQUlynGEK2SNl5+6001lKMqyissvd
+         rKsz8cMRpVd5ks7aqgh+k0MqTp73FlITwORr/4c9TeyuxkTUn78uiqnJrgkDnEFhGSkZ
+         uET82NAFvTUMT6jrXoZ8JwsToK/1T7XHNcCnqqu7e2kbpqMe52ywuvemDAabsaP3uvP7
+         3jKcI2LT1pPYz7ZmdCM+wNwbj+6GdXOaCTkgR463p7RNzFlpC40XWFpQkyFenrH32eP5
+         R0hw==
+X-Gm-Message-State: AOJu0Ywt9gTNvY0llfd4cwf0kXDeLknYQT8MZ36yIphn+XzzBiiyvG4X
+        JXMXgPYRvPeKFHSBQGDx3VJpRG596z6++cIsPAo=
+X-Google-Smtp-Source: AGHT+IFNfQWSTfwTDLDY10LA9umKMRMqQvq4o6bJBU7kUrBOugNYs+qfQCBwasfHDg92ArEi0lV7HC99vAap2dZhvRU=
+X-Received: by 2002:a05:6808:f90:b0:3af:9fc4:26c6 with SMTP id
+ o16-20020a0568080f9000b003af9fc426c6mr2718038oiw.20.1696306254776; Mon, 02
+ Oct 2023 21:10:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230928071605.17624-1-adrian.hunter@intel.com> <CAM9d7ch5yZZU_bY=d+5wkvQDJKCuctabBu3AMuyp4UYRO0upYA@mail.gmail.com>
-In-Reply-To: <CAM9d7ch5yZZU_bY=d+5wkvQDJKCuctabBu3AMuyp4UYRO0upYA@mail.gmail.com>
+References: <20230925062323.840799-1-irogers@google.com> <CAM9d7chaKGciJgDLyN1hhDXNuFuCHRFcYAjTHY0bEMKpfBDZBg@mail.gmail.com>
+ <CAP-5=fUqVB7W+a3o72VrhccWbos_XDu=jc53TmEZC26h_hBacA@mail.gmail.com>
+In-Reply-To: <CAP-5=fUqVB7W+a3o72VrhccWbos_XDu=jc53TmEZC26h_hBacA@mail.gmail.com>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Mon, 2 Oct 2023 21:08:04 -0700
-Message-ID: <CAM9d7cix+H0dddFJ-cy-+pf_SXy4prrGywDc6rj9-iCxpOm_gw@mail.gmail.com>
-Subject: Re: [PATCH] perf dlfilter: Fix use of addr_location__exit() in dlfilter__object_code()
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Date:   Mon, 2 Oct 2023 21:10:43 -0700
+Message-ID: <CAM9d7cieEnuVZ7S0Yab6c3N=qKqgNSP3DL2JNFje1HFA7dcTtA@mail.gmail.com>
+Subject: Re: [PATCH v1] perf pmus: Make PMU alias name loading lazy
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        James Clark <james.clark@arm.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,
@@ -58,19 +68,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 11:40 PM Namhyung Kim <namhyung@kernel.org> wrote:
+On Wed, Sep 27, 2023 at 10:19 PM Ian Rogers <irogers@google.com> wrote:
 >
-> Hi Adrian,
->
-> On Thu, Sep 28, 2023 at 12:16 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+> On Wed, Sep 27, 2023 at 10:00 PM Namhyung Kim <namhyung@kernel.org> wrote:
 > >
-> > Stop calling addr_location__exit() when addr_location__init() was not
-> > called.
+> > Hi Ian,
 > >
-> > Fixes: 0dd5041c9a0e ("perf addr_location: Add init/exit/copy functions")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> > On Sun, Sep 24, 2023 at 11:24 PM Ian Rogers <irogers@google.com> wrote:
+> > >
+> > > PMU alias names were computed when the first perf_pmu is created,
+> > > scanning all PMUs in event sources for a file called alias that
+> > > generally doesn't exist. Switch to trying to load the file when all
+> > > PMU related files are loaded in lookup. This would cause a PMU name
+> > > lookup of an alias name to fail if no PMUs were loaded, so in that
+> > > case all PMUs are loaded and the find repeated. The overhead is
+> > > similar but in the (very) general case not all PMUs are scanned for
+> > > the alias file.
+> > >
+> > > As the overhead occurs once per invocation it doesn't show in perf
+> > > bench internals pmu-scan. On a tigerlake machine, the number of openat
+> > > system calls for an event of cpu/cycles/ with perf stat reduces from
+> > > 94 to 69 (ie 25 fewer openat calls).
+> >
+> > I think the pmu-scan bench could show the difference as it
+> > calls perf_pmu__destroy() in the loop body.  So every call to
+> > perf_pmu__scan() should start from nothing, right?
 >
-> Acked-by: Namhyung Kim <namhyung@kernel.org>
+> The PMU alias name list was funny. It is/was maintained in the x86
+> specific PMU code and the destroy didn't clear the list. This change
+> adds an openat to loading a PMU for the alias, so pmu-scan shows a
+> very small slow down. However, in the more normal cases we're reducing
+> the number of openats by 25%.
 
-Applied this and the test code to perf-tools, thanks!
+I think that's ok.  Applied to perf-tools-next, thanks!
