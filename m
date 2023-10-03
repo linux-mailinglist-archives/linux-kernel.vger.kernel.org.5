@@ -2,113 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB067B6265
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2CC7B6271
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbjJCHR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 03:17:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
+        id S230324AbjJCHXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 03:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbjJCHR5 (ORCPT
+        with ESMTP id S230072AbjJCHXO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 03:17:57 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2049.outbound.protection.outlook.com [40.107.215.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724F7A4;
-        Tue,  3 Oct 2023 00:17:54 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Pjw1GBNIYeg35gbbgzrP4j+m9njVwnbGJB0G7IzJu4QOy3Vl3gwQQcDY7gHnFxxSG3V3v1Z7bSbNdvnb3rQ+1fp8sK/TTNHzlbEETwjAQ8sH1FY2EnKDkCjrR4iEGPg4Ihct8k+5HEZIifA7cqRQ6cKVgDATK9vq8rmYKajjU4GDjQQp8N0Y65bob6a5e93N4KeADWqiS7necEYZmLQUYleQWap1efMnZELbYgvPlHm62dK3wbiSBPa81h0cosUFy01i957Sg6yteYnOftp06K/n6L/n70/Ed2V1gT4dv8MVI6MgR+mgC+E1/qMylmAxOxJTN+iQlvLDsCGoOWSDvg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0Imku/5zekNnyYTt4iyoG25CKKMU1i4LmrFScT0c+0Q=;
- b=lNIFyRla4A7Ny0p1RtLO4L9A0hQsi3GiYIwvHCmfiZLDj+KSEG+H2QaR1X0nrdDIqaz4D97F4Vc51FHOH1z+uFaNgL5f1y3iJ+Al/SdyM+1+k3rMNbOhq+M1pRMZaAlq3E19Wji4Kno5hrrwGp7xh3aEWcHMnQ91RXdjpsyca9kh5wGZnInE/EWSOIJPVzj2nqfz4Me1hfWeBPrVkEapOSNMtsJwSrG+DxkcdNnWHSXabvXumJL+Z5rlhSHWiB5aE304cZ9xP6Or0GjuIRnF2My0vWbsxDCkn/C3kcfCz6pytZCtfCGMFc9VG3OQD9Wr9B++w1z2pFv0K9FOeEyPWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
- dkim=pass header.d=moxa.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0Imku/5zekNnyYTt4iyoG25CKKMU1i4LmrFScT0c+0Q=;
- b=Nj0TYj//fH1wMOzskBefbwyuspMNtEmmcxhX/RGLj/hP5x71UMB2l+FheWDnPuBTa2SaTAIzgJu8vR9f4EFUct7lnIoBjUVvIjhnx6/JXs4RUTr1poJiENpfNMNIQmgTY1dCyfROxayyX8ggDAeek5n27TH6gEsj3B8+5KB2qBo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=moxa.com;
-Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
- (2603:1096:301:115::14) by TYSPR01MB5906.apcprd01.prod.exchangelabs.com
- (2603:1096:400:46b::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.32; Tue, 3 Oct
- 2023 07:17:51 +0000
-Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
- ([fe80::3f1:6c0e:dec3:714b]) by PUZPR01MB5405.apcprd01.prod.exchangelabs.com
- ([fe80::3f1:6c0e:dec3:714b%5]) with mapi id 15.20.6838.024; Tue, 3 Oct 2023
- 07:17:50 +0000
-Date:   Tue, 3 Oct 2023 15:17:47 +0800
-From:   Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH 1/4] tty: serial: 8250: Cleanup MOXA configurations in
- 8250_pci.c
-Message-ID: <ZRvAG5336KxuugVd@moxa-ThinkCentre-M90t>
-References: <20231002015702.30509-1-crescentcy.hsieh@moxa.com>
- <20231002015702.30509-2-crescentcy.hsieh@moxa.com>
- <68d533d5-dbc8-4be3-a1fc-b3dd28b8f9df@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <68d533d5-dbc8-4be3-a1fc-b3dd28b8f9df@kernel.org>
-X-ClientProxiedBy: PS2PR03CA0015.apcprd03.prod.outlook.com
- (2603:1096:300:5b::27) To PUZPR01MB5405.apcprd01.prod.exchangelabs.com
- (2603:1096:301:115::14)
+        Tue, 3 Oct 2023 03:23:14 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 903A183
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 00:23:07 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40572aeb73cso5281475e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 00:23:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1696317786; x=1696922586; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
+         :subject:cc:to:from:user-agent:references:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5QrndL+T4UVghnit9CdCX9Kh475HxuHUkfCxYb36QnY=;
+        b=HCzlc6Q9Pv+XXeBvYD14nkClDitZINsSy3LDEbbBPjZL5ztmHKXDxO4hUoUFoSZM+O
+         UPO4M5Ao+63yUkOddfM8tmB7QpCAoiaSHH6m2EGA9ofbTpUplMmCyRRunAX6wtFYcnMD
+         gv7qGI3yNM3AgfFw5z3qAwpZ8xjjeBnV41kuOWqM5WyMK7njBa7EQdGZuespW99ZhAVG
+         LUB2zaHGZ5oJL1FoJ5zBDEm2C/OCjMeXX0Hz6rUBxgit195usKt6RXEqb9ezb8WEVSbk
+         FH/tDVyWvw+ZXEyGzvgn/DLRJL6/R4P7IL2HsIpzKaodNDurv2d8cUY5YXZNTkyYIeZ9
+         b1uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696317786; x=1696922586;
+        h=content-transfer-encoding:mime-version:message-id:in-reply-to:date
+         :subject:cc:to:from:user-agent:references:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=5QrndL+T4UVghnit9CdCX9Kh475HxuHUkfCxYb36QnY=;
+        b=c++m6pTOqFdbfBoXYTtvFO6/cZvty8izHir3os0UBljmcjRKGW5OGhEG5zx1occPwY
+         Kr+pcnJkSwSY/gZtmwvYXVsJWB71ZT8w8fAOzCnDmEiaK6SYjpkD4NpiIV2tnZYyfNab
+         QVfGAI0oSYpoj/bevBS2D5ZXztldzFUWe/R53vvMGqJfyH4PRa4En5wgymqxrwMUNs02
+         X9q97oX1Z36Q7VQnxqNwIhE5roVE6lP2je+UvFUqz7yN7feZ6v61nss2iu1NaWoZKjeN
+         CwRR7E2D9JTjhrHqpRRQsHKVpoSHgE04pTltYU1/PHMs0NF3GoWokPMXjwix9f5EQ42Y
+         v2RQ==
+X-Gm-Message-State: AOJu0Ywn7rQxqIwIP6qQWxAIl7UM5f/ZUc9LkUp9Olzx2LMylPbk/2F4
+        ZZKdnRb/xGqEj1UbmL/hW9i3JQ==
+X-Google-Smtp-Source: AGHT+IH55KRTvunywUpTwl57DsPsubRXbWKIce91cW4qaEd2n1pkc08O2Q0MjvWPfLZZsGerPFFmvg==
+X-Received: by 2002:a5d:46cb:0:b0:321:8181:601e with SMTP id g11-20020a5d46cb000000b003218181601emr11718734wrs.8.1696317785163;
+        Tue, 03 Oct 2023 00:23:05 -0700 (PDT)
+Received: from localhost ([2a01:e0a:3c5:5fb1:15bf:5b59:3e24:71fe])
+        by smtp.gmail.com with ESMTPSA id bl40-20020adfe268000000b003233b554e6esm863318wrb.85.2023.10.03.00.23.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 00:23:04 -0700 (PDT)
+References: <20231002141020.2403652-1-jbrunet@baylibre.com>
+ <20231002141020.2403652-3-jbrunet@baylibre.com>
+ <b81a296d-0640-4b2e-aab6-c9de37d10206@linaro.org>
+ <1j5y3ozvmk.fsf@starbuckisacylon.baylibre.com>
+ <CACdvmAgzBxja-oJkS9c88=P0Wmc1ptkJExz6YjaJUyyv6yxh0Q@mail.gmail.com>
+ <DF61DA82-29E4-4504-B548-14F880A6221E@gmail.com>
+User-agent: mu4e 1.8.13; emacs 29.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Christian Hewitt <christianshewitt@gmail.com>,
+        Da Xue <da@lessconfused.com>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Da Xue <da.xue@libretech.co>,
+        devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH 2/2] arm64: dts: amlogic: add libretech cottonwood support
+Date:   Tue, 03 Oct 2023 09:21:25 +0200
+In-reply-to: <DF61DA82-29E4-4504-B548-14F880A6221E@gmail.com>
+Message-ID: <1j1qecyxt4.fsf@starbuckisacylon.baylibre.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR01MB5405:EE_|TYSPR01MB5906:EE_
-X-MS-Office365-Filtering-Correlation-Id: 18faab63-9cbd-4aca-564d-08dbc3e0da42
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tw/3PVIF01IyyGX1zCn5/0bLgTjc5cPJ71VZs3pTVEujCw+HVpXHmthq5vEEAR5xcQ3poi3uKRXeIV9kUzafg1XKkYOSRn62m2qskE8JDm9vfPnj+95Hdf3sNmYD2WuFwjMJmtLoQb0mdZ7tT48HaYJX76dIQrEHdJDGaAIHdjFPlyYsO5QNh3OVdXFE/Nfv4aQg95LY0aAWznjPWtOOu8ztq06WhzwpVVrV9cSFByR4VHErm/DXsjbYhgcHNqPqhc8CDlGP7iW7d02pg7uGJyiaTmR9BNUX3SVnGKbnp+3sYItHTj9fXx3PCstdfVK1q6vY4eYJxMebcYIWOa2CB/Gu9kw2eQCb+c5xOO3d2ZqeC0GnHVSnqgKT4AavrWQKynrlidfAY0eQpeMjItL/K6wgzt2WdX/iCs3fV7k5dJLGfMPfipLq0Cti2x6OL4Bu6N39oKgJz0p4/75yalX9ls2R81V264FI2ZNeL7J1Je3m21XHY61Has7GWCpFdSQGzQWaz+UfYhbXJRL5Yx1QxvVCTAXCPH51ZsQLxcEBji/O1JQfktqG1wcJu1ROaP8klztkQ1coCrDtRtYPRjJKDaY3l6+pwnq/TVLgxEyLWqL8P6BVvDTbqBcyBY04slNW
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR01MB5405.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(136003)(396003)(366004)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(6512007)(6666004)(6506007)(478600001)(52116002)(6486002)(38350700002)(38100700002)(2906002)(86362001)(4744005)(33716001)(26005)(9686003)(83380400001)(66556008)(5660300002)(316002)(41300700001)(66476007)(6916009)(66946007)(4326008)(8676002)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9zMdY0lVf+M9g2De+2ckoDKEY8mqFX5gaB3zyXqItPJEy8oi0Duykx/eoHVj?=
- =?us-ascii?Q?4JjKKrfn+l7AoHcimNTSrB/139vRMSG57p/EMcwsUBz68yQETEWYtCRLMJgF?=
- =?us-ascii?Q?6ZnXJdpxTfh1d4xtK649gxffZBFHWYh7K8uREr2SRd6huFMYH0WyVLgluY5M?=
- =?us-ascii?Q?5Fn9gbYJ0zFoUg3NdB5Cgy0MU22FXbj0A2K4hUTjcBf8CWpkEC85Ahs7LkXl?=
- =?us-ascii?Q?nI1hHC4pxZoXmsX5arKVPjUa4yMP9ar1H+FEss/jqumfrGWNZ/rZeUW/XtM9?=
- =?us-ascii?Q?SXXqRB6X5fEMWzNhNu93N0xUPIuz8g5OxbC3jz1ArBtotdiAVJfdClHAud1C?=
- =?us-ascii?Q?Bbi9+fFFsew8VdtqAuMVzL74XaAgykMLnFBEw4HIBmlcaWKCFQshF8HYl0RX?=
- =?us-ascii?Q?zThrUEQs80H/jCqDFtVxnWoUga16W67auTIRkoxR++eAffHAwpB6ZEndWb6L?=
- =?us-ascii?Q?EqNkryNpEA8RIF6w6ANKoBaxykOFuPUnUGamIYVKP1FGmM5Rg3SZ7+Lc+kRV?=
- =?us-ascii?Q?zKT2vcCu0YoCzCQyVJGNfCWMV4pzk3/OLzpIvQ7tN5fJw/iYTcLvzFzcGBU+?=
- =?us-ascii?Q?zexTs8SQYnKN92OURML1LWv1ZCoh/PzPN72DrTVK1+uDFtpT/qNMhHpeGSZQ?=
- =?us-ascii?Q?2TvuQ3mmIzxUHVVwYA6rkALKjflOvf8M9/KT4UronHhal7MS3eLHsIgoAQJM?=
- =?us-ascii?Q?7i33k4Vb2uAZWrubt/1cAqi/3w8mb9C5PNC3gLqzaZrjrQNs4ll6t5w7yqry?=
- =?us-ascii?Q?8nkjJevm3zD+9FDVInjbJHdMqc9Q6eDSTJ0q5X9RRMOWJ0ugHakzGDDnxTAt?=
- =?us-ascii?Q?PdGnVyHoMrfoh8693f1MCE6rt9EBc1RrfUPn7vkGPqWsdVsq+Z0wbOzDevVL?=
- =?us-ascii?Q?OhHuapl9wI3iZtU4G6wEmLdqyiEFrewO5tRYWqpL1JV5znP6SMJFIKmwq+d7?=
- =?us-ascii?Q?RmRJ/83GTBUU24fDstykNXSnBjy2pQ2PW+3+Lm8PeRW2sAAmhkhiCQm+hB5E?=
- =?us-ascii?Q?jkEcy7cCDREtui/oaGbaJKMfyPZDlB/wbBxCJg1OGdwnkjEkki88VjHotwcZ?=
- =?us-ascii?Q?ASn2NOioP/IQraG2TAqktJG7JOjiiHvM3vtLurv21qro4QqXnDYIru1jdLuL?=
- =?us-ascii?Q?8mrz3lSgR2LYLni1VezUYtJTZpQuphbf/sP1Vk25JFjrd6WE8bcvlfwuIbhs?=
- =?us-ascii?Q?qHp1mp1D5q1RwU9rQ/5oXS9UCWDI88sE/A+fmr70pOic4Q5QqpoKBDr8Ajpl?=
- =?us-ascii?Q?QAMiv1ryprc4SwXnyzytqzodeSgrTwtgrNNq7P77VCK0ouSS9RQYOkVhsCdw?=
- =?us-ascii?Q?uE2Dlb6F/ViklDSY9QFNhm2ELmzL6WsO++4PKNw6PIwDyTZKEB+4337VVNfx?=
- =?us-ascii?Q?Z/nttgtxyK1T+mt4fuhAqTgMzdd3eUzZEF/1tV+zmQTL/krTaeuRRDvlwGdy?=
- =?us-ascii?Q?KSZC7V4w3KnF5/dPZfNN4dK+ut4x4M/uI3S96xNf0jvgvxmT3jyE/A262d/3?=
- =?us-ascii?Q?/MvDB6WedyWw9CJCCrWc5Js+sam3mZvvoNsoRgrY3p9oPYRf/acDG3U1lshW?=
- =?us-ascii?Q?gXUofZ0Cd9XXeSDI9dkdvDPdYM/NA1Mz0dKQQ2N0qdpXkQcti9q6SzsS1Crv?=
- =?us-ascii?Q?Xw=3D=3D?=
-X-OriginatorOrg: moxa.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18faab63-9cbd-4aca-564d-08dbc3e0da42
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR01MB5405.apcprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 07:17:50.6904
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8geCx7C0kceCJdTcXk0syyhE3F5eZfy2ioC+w2dKCKEc3X67ExiQ0BPqgA0r+FQ/GFcNPs6qeBckQWBwSNATaJaUTQRy7aPO4BuppFFi8w8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR01MB5906
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,29 +85,1097 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 08:51:03AM +0200, Jiri Slaby wrote:
-> On 02. 10. 23, 3:56, Crescent CY Hsieh wrote:
-> > @@ -1958,6 +1958,9 @@ pci_moxa_setup(struct serial_private *priv,
-> >   #define PCIE_DEVICE_ID_WCH_CH384_8S	0x3853
-> >   #define PCIE_DEVICE_ID_WCH_CH382_2S	0x3253
-> > +/* MOXA */
-> > +#define PCI_VENDOR_ID_MOXA	0x1393
-> 
-> Isn't this a redefinition of the pci-ids.h one?
 
-At first, I attempt to place DEVICE_ID macros into pci_ids.h to enable
-their usage throughout 8250_pci.c and to establish centralized
-management. However, I notice the comment in pci_ids.h which is:
+On Tue 03 Oct 2023 at 05:23, Christian Hewitt <christianshewitt@gmail.com> =
+wrote:
 
-'Do not add new entries to this file unless the definitions are shared
-between multiple drivers'
+>> On 3 Oct 2023, at 1:15 am, Da Xue <da@lessconfused.com> wrote:
+>>=20
+>> On Tue, Oct 3, 2023 at 3:13=E2=80=AFAM Jerome Brunet <jbrunet@baylibre.c=
+om> wrote:
+>>>=20
+>>>=20
+>>> On Mon 02 Oct 2023 at 18:45, Neil Armstrong <neil.armstrong@linaro.org>=
+ wrote:
+>>>=20
+>>>> Hi,
+>>>>=20
+>>>> On 02/10/2023 16:10, Jerome Brunet wrote:
+>>>>> Add support for the Libretech cottonwood board family.
+>>>>> These 2 boards are based on the same PCB, with an RPi B form factor.
+>>>>> The "Alta" board uses an a311d while the "Solitude" variant uses an
+>>>>> s905d3.
+>>>>> Co-developed-by: Da Xue <da.xue@libretech.co>
+>>>>> Signed-off-by: Da Xue <da.xue@libretech.co>
+>>>>> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+>>>>> ---
+>>>>>  arch/arm64/boot/dts/amlogic/Makefile          |   2 +
+>>>>>  .../amlogic/meson-g12b-a311d-libretech-cc.dts | 133 ++++
+>>>>>  .../amlogic/meson-libretech-cottonwood.dtsi   | 610 ++++++++++++++++=
+++
+>>>>>  .../amlogic/meson-sm1-s905d3-libretech-cc.dts |  89 +++
+>>>>>  4 files changed, 834 insertions(+)
+>>>>>  create mode 100644 arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libr=
+etech-cc.dts
+>>>>>  create mode 100644 arch/arm64/boot/dts/amlogic/meson-libretech-cotto=
+nwood.dtsi
+>>>>>  create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libr=
+etech-cc.dts
+>>>>> diff --git a/arch/arm64/boot/dts/amlogic/Makefile
+>>>>> b/arch/arm64/boot/dts/amlogic/Makefile
+>>>>> index 4ce401d17b63..cc8b34bd583d 100644
+>>>>> --- a/arch/arm64/boot/dts/amlogic/Makefile
+>>>>> +++ b/arch/arm64/boot/dts/amlogic/Makefile
+>>>>> @@ -18,6 +18,7 @@ dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-bananapi-c=
+m4-cm4io.dtb
+>>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-gsking-x.dtb
+>>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-gtking-pro.dtb
+>>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-gtking.dtb
+>>>>> +dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-a311d-libretech-cc.dtb
+>>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-odroid-go-ultra.dtb
+>>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-odroid-n2-plus.dtb
+>>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-g12b-odroid-n2.dtb
+>>>>> @@ -73,6 +74,7 @@ dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-bananapi-m2=
+-pro.dtb
+>>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-bananapi-m5.dtb
+>>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-h96-max.dtb
+>>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-khadas-vim3l.dtb
+>>>>> +dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-s905d3-libretech-cc.dtb
+>>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-odroid-c4.dtb
+>>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-odroid-hc4.dtb
+>>>>>  dtb-$(CONFIG_ARCH_MESON) +=3D meson-sm1-sei610.dtb
+>>>>> diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-c=
+c.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts
+>>>>> new file mode 100644
+>>>>> index 000000000000..fc890e235dbd
+>>>>> --- /dev/null
+>>>>> +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-a311d-libretech-cc.dts
+>>>>> @@ -0,0 +1,133 @@
+>>>>> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>>>>> +/*
+>>>>> + * Copyright (c) 2023 BayLibre, SAS.
+>>>>> + * Author: Jerome Brunet <jbrunet@baylibre.com>
+>>>>> + */
+>>>>> +
+>>>>> +/dts-v1/;
+>>>>> +
+>>>>> +#include <dt-bindings/clock/g12a-clkc.h>
+>>>>> +#include "meson-g12b-a311d.dtsi"
+>>>>> +#include "meson-libretech-cottonwood.dtsi"
+>>>>> +
+>>>>> +/ {
+>>>>> +    compatible =3D "libretech,aml-a311d-cc", "amlogic,a311d", "amlog=
+ic,g12b";
+>>>>> +    model =3D "Libre Computer AML-A311D-CC Alta";
+>>>>> +
+>>>>> +    vddcpu_a: regulator-vddcpu-a {
+>>>>> +            compatible =3D "pwm-regulator";
+>>>>> +            regulator-name =3D "VDDCPU_A";
+>>>>> +            regulator-min-microvolt =3D <730000>;
+>>>>> +            regulator-max-microvolt =3D <1011000>;
+>>>>> +            regulator-boot-on;
+>>>>> +            regulator-always-on;
+>>>>> +            pwm-supply =3D <&dc_in>;
+>>>>> +            pwms =3D <&pwm_ab 0 1250 0>;
+>>>>> +            pwm-dutycycle-range =3D <100 0>;
+>>>>> +    };
+>>>>> +
+>>>>> +    sound {
+>>>>> +            model =3D "Alta";
+>>>>=20
+>>>> I think those sound model properties should be coherent with the
+>>>> other Libre Computer boards:
+>>>> arch/arm64/boot/dts/amlogic/meson-gx-libretech-pc.dtsi:         model =
+=3D "LIBRETECH-PC";
+>>>> arch/arm64/boot/dts/amlogic/meson-gxl-s805x-libretech-ac.dts:         =
+  model =3D "LIBRETECH-AC";
+>>>> arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc-v2.dts:      =
+          model =3D "LIBRETECH-CC-V2";
+>>>> arch/arm64/boot/dts/amlogic/meson-gxl-s905x-libretech-cc.dts:         =
+  model =3D "LIBRETECH-CC";
+>>>=20
+>>> "LIBRETECH-CC-" leave very little room to play with
+>>> That's not really something that could have been anticipated 5+ years a=
+go
+>>>=20
+>>=20
+>> I think the formal model name is best, maybe with LC prefix.
+>> eg. LC-AML-A311D-CC and LC-AML-S905D3-CC
+>
+> The first is valid. The second will be truncated to LC-AML-S905D3-C by the
+> alsa 15-character naming limit (mentioned below).
+>
+> So name/rename them to:
+>
+> LC-XXXXXXXXXXXX <=3D MAX SIZE (15 Chars)
+> LC-LEPOTATO
+> LC-LEPOTATO-V2
+> LC-LAFRITE
+> LC-TARTIFLETTE
+> LC-ALTA
+> LC-SOLITUDE
+>
+> Personally I think the plain codenames (no "LC-=E2=80=9C) work best as th=
+ey are all
+> distinctive. Whenever I see lists of the official board names they look/r=
+ead
+> the same at first glance and then I have to spot-the-difference to tell t=
+hem
+> apart.
+>
+> At the moment AFAIK these names are just cosmetic as there=E2=80=99s no A=
+mlogic alsa
+> ucm confs using board model (only downstream confs based on driver name).=
+ So
+> IMHO rework the names now before the confs go upstream.
+>
 
-So I add this VENDOR_ID just for the clarity, even though it results in
-duplication.
+No they are not cosmetic. It can be used to match the card.
+Changing old names may break userspace.
 
-Should I put these macros into pci_ids.h? If so, I am willing to help
-relocate all other macros.
+> CH.
+>
+>> https://hub.libre.computer/t/libre-computer-board-naming-and-conventions=
+/100
+>>=20
+>>>>=20
+>>>> It's ok to change the scheme since it's tried to keep the name under t=
+he 15 characters limit,
+>>>> will the next board keep this naming ?
+>>>=20
+>>> I don't know what the next board will be so I can hardly make any predi=
+ction
+>>> I'm open to suggestion if you prefer something else
+>>>=20
+>>>>=20
+>>>>=20
+>>>>> +            audio-routing =3D "TDMOUT_A IN 0", "FRDDR_A OUT 0",
+>>>>> +                            "TDMOUT_A IN 1", "FRDDR_B OUT 0",
+>>>>> +                            "TDMOUT_A IN 2", "FRDDR_C OUT 0",
+>>>>> +                            "TDM_A Playback", "TDMOUT_A OUT",
+>>>>> +                            "TDMOUT_B IN 0", "FRDDR_A OUT 1",
+>>>>> +                            "TDMOUT_B IN 1", "FRDDR_B OUT 1",
+>>>>> +                            "TDMOUT_B IN 2", "FRDDR_C OUT 1",
+>>>>> +                            "TDM_B Playback", "TDMOUT_B OUT",
+>>>>> +                            "TDMOUT_C IN 0", "FRDDR_A OUT 2",
+>>>>> +                            "TDMOUT_C IN 1", "FRDDR_B OUT 2",
+>>>>> +                            "TDMOUT_C IN 2", "FRDDR_C OUT 2",
+>>>>> +                            "TDM_C Playback", "TDMOUT_C OUT",
+>>>>> +                            "TDMIN_A IN 0", "TDM_A Capture",
+>>>>> +                            "TDMIN_B IN 0", "TDM_A Capture",
+>>>>> +                            "TDMIN_C IN 0", "TDM_A Capture",
+>>>>> +                            "TDMIN_A IN 3", "TDM_A Loopback",
+>>>>> +                            "TDMIN_B IN 3", "TDM_A Loopback",
+>>>>> +                            "TDMIN_C IN 3", "TDM_A Loopback",
+>>>>> +                            "TDMIN_A IN 1", "TDM_B Capture",
+>>>>> +                            "TDMIN_B IN 1", "TDM_B Capture",
+>>>>> +                            "TDMIN_C IN 1", "TDM_B Capture",
+>>>>> +                            "TDMIN_A IN 4", "TDM_B Loopback",
+>>>>> +                            "TDMIN_B IN 4", "TDM_B Loopback",
+>>>>> +                            "TDMIN_C IN 4", "TDM_B Loopback",
+>>>>> +                            "TDMIN_A IN 2", "TDM_C Capture",
+>>>>> +                            "TDMIN_B IN 2", "TDM_C Capture",
+>>>>> +                            "TDMIN_C IN 2", "TDM_C Capture",
+>>>>> +                            "TDMIN_A IN 5", "TDM_C Loopback",
+>>>>> +                            "TDMIN_B IN 5", "TDM_C Loopback",
+>>>>> +                            "TDMIN_C IN 5", "TDM_C Loopback",
+>>>>> +                            "TODDR_A IN 0", "TDMIN_A OUT",
+>>>>> +                            "TODDR_B IN 0", "TDMIN_A OUT",
+>>>>> +                            "TODDR_C IN 0", "TDMIN_A OUT",
+>>>>> +                            "TODDR_A IN 1", "TDMIN_B OUT",
+>>>>> +                            "TODDR_B IN 1", "TDMIN_B OUT",
+>>>>> +                            "TODDR_C IN 1", "TDMIN_B OUT",
+>>>>> +                            "TODDR_A IN 2", "TDMIN_C OUT",
+>>>>> +                            "TODDR_B IN 2", "TDMIN_C OUT",
+>>>>> +                            "TODDR_C IN 2", "TDMIN_C OUT",
+>>>>> +                            "Lineout", "ACODEC LOLP",
+>>>>> +                            "Lineout", "ACODEC LORP";
+>>>>> +    };
+>>>>> +};
+>>>>> +
+>>>>> +&cpu_opp_table_0 {
+>>>>> +            opp-1800000000 {
+>>>>> +                    opp-hz =3D /bits/ 64 <1800000000>;
+>>>>> +                    opp-microvolt =3D <1001000>;
+>>>>> +            };
+>>=20
+>> This seems to match
+>> https://github.com/torvalds/linux/blob/master/arch/arm64/boot/dts/amlogi=
+c/meson-g12b-a311d.dtsi#L44
+>>=20
+>>>>> +
+>>>>> +            opp-2016000000 {
+>>>>> +                    opp-hz =3D /bits/ 64 <2016000000>;
+>>>>> +                    opp-microvolt =3D <1011000>;
+>>>>> +            };
+>>=20
+>> We run manufacturing verification at this speed but I don't think we
+>> should include this in upstream.
+>>=20
+>>>>> +};
+>>>>> +
+>>>>> +&cpu0 {
+>>>>> +    cpu-supply =3D <&vddcpu_b>;
+>>>>> +    operating-points-v2 =3D <&cpu_opp_table_0>;
+>>>>> +    clocks =3D <&clkc CLKID_CPU_CLK>;
+>>>>> +    clock-latency =3D <50000>;
+>>>>> +};
+>>>>> +
+>>>>> +&cpu1 {
+>>>>> +    cpu-supply =3D <&vddcpu_b>;
+>>>>> +    operating-points-v2 =3D <&cpu_opp_table_0>;
+>>>>> +    clocks =3D <&clkc CLKID_CPU_CLK>;
+>>>>> +    clock-latency =3D <50000>;
+>>>>> +};
+>>>>> +
+>>>>> +&cpu100 {
+>>>>> +    cpu-supply =3D <&vddcpu_a>;
+>>>>> +    operating-points-v2 =3D <&cpub_opp_table_1>;
+>>>>> +    clocks =3D <&clkc CLKID_CPUB_CLK>;
+>>>>> +    clock-latency =3D <50000>;
+>>>>> +};
+>>>>> +
+>>>>> +&cpu101 {
+>>>>> +    cpu-supply =3D <&vddcpu_a>;
+>>>>> +    operating-points-v2 =3D <&cpub_opp_table_1>;
+>>>>> +    clocks =3D <&clkc CLKID_CPUB_CLK>;
+>>>>> +    clock-latency =3D <50000>;
+>>>>> +};
+>>>>> +
+>>>>> +&cpu102 {
+>>>>> +    cpu-supply =3D <&vddcpu_a>;
+>>>>> +    operating-points-v2 =3D <&cpub_opp_table_1>;
+>>>>> +    clocks =3D <&clkc CLKID_CPUB_CLK>;
+>>>>> +    clock-latency =3D <50000>;
+>>>>> +};
+>>>>> +
+>>>>> +&cpu103 {
+>>>>> +    cpu-supply =3D <&vddcpu_a>;
+>>>>> +    operating-points-v2 =3D <&cpub_opp_table_1>;
+>>>>> +    clocks =3D <&clkc CLKID_CPUB_CLK>;
+>>>>> +    clock-latency =3D <50000>;
+>>>>> +};
+>>>>> +
+>>>>> +&pwm_ab {
+>>>>> +    pinctrl-0 =3D <&pwm_a_e_pins>, <&pwm_b_x7_pins>;
+>>>>> +    clocks =3D <&xtal>, <&xtal>;
+>>>>> +    clock-names =3D "clkin0", "clkin1";
+>>>>> +};
+>>>>> diff --git a/arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.d=
+tsi b/arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
+>>>>> new file mode 100644
+>>>>> index 000000000000..a7fc8963ff54
+>>>>> --- /dev/null
+>>>>> +++ b/arch/arm64/boot/dts/amlogic/meson-libretech-cottonwood.dtsi
+>>>>> @@ -0,0 +1,610 @@
+>>>>> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>>>>> +/*
+>>>>> + * Copyright (c) 2023 BayLibre, SAS.
+>>>>> + * Author: Jerome Brunet <jbrunet@baylibre.com>
+>>>>> + */
+>>>>> +
+>>>>> +#include <dt-bindings/clock/g12a-clkc.h>
+>>>>> +#include <dt-bindings/input/input.h>
+>>>>> +#include <dt-bindings/leds/common.h>
+>>>>> +#include <dt-bindings/gpio/gpio.h>
+>>>>> +#include <dt-bindings/gpio/meson-g12a-gpio.h>
+>>>>> +#include <dt-bindings/sound/meson-g12a-toacodec.h>
+>>>>> +#include <dt-bindings/sound/meson-g12a-tohdmitx.h>
+>>>>> +
+>>>>> +/ {
+>>>>> +    aliases {
+>>>>> +            serial0 =3D &uart_AO;
+>>>>> +            ethernet0 =3D &ethmac;
+>>>>> +            spi0 =3D &spifc;
+>>>>> +    };
+>>>>> +
+>>>>> +    memory@0 {
+>>>>> +            device_type =3D "memory";
+>>>>> +            reg =3D <0x0 0x0 0x0 0x80000000>;
+>>>>> +    };
+>>>>> +
+>>>>> +    chosen {
+>>>>> +            stdout-path =3D "serial0:115200n8";
+>>>>> +    };
+>>>>> +
+>>>>> +    dioo2133: audio-amplifier-0 {
+>>>>> +            compatible =3D "simple-audio-amplifier";
+>>>>> +            enable-gpios =3D <&gpio GPIOX_0 GPIO_ACTIVE_HIGH>;
+>>>>> +            VCC-supply =3D <&vcc_5v>;
+>>>>> +            sound-name-prefix =3D "10U2";
+>>>>> +    };
+>>>>> +
+>>>>> +    /* TOFIX: handle CVBS_DET on SARADC channel 0 */
+>>>>> +    cvbs-connector {
+>>>>> +            compatible =3D "composite-video-connector";
+>>>>> +
+>>>>> +            port {
+>>>>> +                    cvbs_connector_in: endpoint {
+>>>>> +                            remote-endpoint =3D <&cvbs_vdac_out>;
+>>>>> +                    };
+>>>>> +            };
+>>>>> +    };
+>>>>> +
+>>>>> +    emmc_pwrseq: emmc-pwrseq {
+>>>>> +            compatible =3D "mmc-pwrseq-emmc";
+>>>>> +            reset-gpios =3D <&gpio BOOT_12 GPIO_ACTIVE_LOW>;
+>>>>> +    };
+>>>>> +
+>>>>> +    hdmi-connector {
+>>>>> +            compatible =3D "hdmi-connector";
+>>>>> +            type =3D "a";
+>>>>> +
+>>>>> +            port {
+>>>>> +                    hdmi_connector_in: endpoint {
+>>>>> +                            remote-endpoint =3D <&hdmi_tx_tmds_out>;
+>>>>> +                    };
+>>>>> +            };
+>>>>> +    };
+>>>>> +
+>>>>> +    leds-pwm {
+>>>>> +            compatible =3D "pwm-leds";
+>>>>> +
+>>>>> +            led-green {
+>>>>> +                    color =3D <LED_COLOR_ID_GREEN>;
+>>>>> +                    function =3D LED_FUNCTION_STATUS;
+>>>>> +                    linux,default-trigger =3D "default-on";
+>>>>> +                    panic-indicator;
+>>>>> +                    max-brightness =3D <255>;
+>>>>> +                    pwms =3D <&pwm_cd 1 1250 0>;
+>>>>> +                    active-low;
+>>>>> +            };
+>>>>> +
+>>>>> +            led-blue {
+>>>>> +                    color =3D <LED_COLOR_ID_BLUE>;
+>>>>> +                    function =3D LED_FUNCTION_ACTIVITY;
+>>>>> +                    linux,default-trigger =3D "activity";
+>>>>> +                    max-brightness =3D <255>;
+>>>>> +                    pwms =3D <&pwm_ab 1 1250 0>;
+>>>>> +                    active-low;
+>>>>> +            };
+>>>>> +    };
+>>>>> +
+>>>>> +    leds-gpio {
+>>>>> +            compatible =3D "gpio-leds";
+>>>>> +
+>>>>> +            led-orange {
+>>>>> +                    color =3D <LED_COLOR_ID_AMBER>;
+>>=20
+>> Should this be LED_COLOR_ID_ORANGE?
+>>=20
+>>>>> +                    function =3D LED_FUNCTION_STANDBY;
+>>>>> +                    gpios =3D <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
+>>>>> +            };
+>>>>> +    };
+>>>>> +
+>>>>> +    dc_in: regulator-dc-in {
+>>>>> +            compatible =3D "regulator-fixed";
+>>>>> +            regulator-name =3D "5V_IN";
+>>>>> +            regulator-min-microvolt =3D <5000000>;
+>>>>> +            regulator-max-microvolt =3D <5000000>;
+>>>>> +            regulator-always-on;
+>>>>> +    };
+>>>>> +
+>>>>> +    flash_1v8: regulator-flash-1v8 {
+>>>>> +            compatible =3D "regulator-fixed";
+>>>>> +            regulator-name =3D "FLASH_1V8";
+>>>>> +            regulator-min-microvolt =3D <1800000>;
+>>>>> +            regulator-max-microvolt =3D <1800000>;
+>>>>> +            regulator-always-on;
+>>>>> +            vin-supply =3D <&vcc_3v3>;
+>>>>> +    };
+>>>>> +
+>>>>> +    vcc_card: regulator-vcc-card {
+>>>>> +            compatible =3D "regulator-fixed";
+>>>>> +            regulator-name =3D "VCC_CARD";
+>>>>> +            regulator-min-microvolt =3D <3300000>;
+>>>>> +            regulator-max-microvolt =3D <3300000>;
+>>>>> +            vin-supply =3D <&vddao_3v3>;
+>>>>> +            gpio =3D <&gpio GPIOX_2 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DR=
+AIN)>;
+>>>>> +            enable-active-high;
+>>>>> +            gpio-open-drain;
+>>>>> +    };
+>>>>> +
+>>>>> +    vcc_3v3: regulator-vcc-3v3 {
+>>>>> +            compatible =3D "regulator-fixed";
+>>>>> +            regulator-name =3D "VCC_3V3";
+>>>>> +            regulator-min-microvolt =3D <3300000>;
+>>>>> +            regulator-max-microvolt =3D <3300000>;
+>>>>> +            regulator-always-on;
+>>>>> +            vin-supply =3D <&vddao_3v3>;
+>>>>> +
+>>>>> +            /* FIXME: controlled by TEST_N */
+>>>>> +    };
+>>>>> +
+>>>>> +    vcc_5v: regulator-vcc-5v {
+>>>>> +            compatible =3D "regulator-fixed";
+>>>>> +            regulator-name =3D "VCC_5V";
+>>>>> +            regulator-min-microvolt =3D <5000000>;
+>>>>> +            regulator-max-microvolt =3D <5000000>;
+>>>>> +            regulator-always-on;
+>>>>> +            vin-supply =3D <&dc_in>;
+>>>>> +            gpio =3D <&gpio GPIOH_8 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DR=
+AIN)>;
+>>>>> +            enable-active-high;
+>>>>> +            gpio-open-drain;
+>>>>> +    };
+>>>>> +
+>>>>> +    vddao_3v3: regulator-vddao_3v3 {
+>>>>> +            compatible =3D "regulator-fixed";
+>>>>> +            regulator-name =3D "VDDAO_3V3";
+>>>>> +            regulator-min-microvolt =3D <3300000>;
+>>>>> +            regulator-max-microvolt =3D <3300000>;
+>>>>> +            regulator-always-on;
+>>>>> +            vin-supply =3D <&dc_in>;
+>>>>> +    };
+>>>>> +
+>>>>> +    vddcpu_b: regulator-vddcpu-b {
+>>>>> +            compatible =3D "pwm-regulator";
+>>>>> +            regulator-name =3D "VDDCPU_B";
+>>>>> +            regulator-min-microvolt =3D <730000>;
+>>>>> +            regulator-max-microvolt =3D <1011000>;
+>>>>> +            regulator-boot-on;
+>>>>> +            regulator-always-on;
+>>>>> +            pwm-supply =3D <&dc_in>;
+>>>>> +            pwms =3D <&pwm_AO_cd 1 1250 0>;
+>>>>> +            pwm-dutycycle-range =3D <100 0>;
+>>>>> +    };
+>>>>> +
+>>>>> +    vddio_ao18: regulator-vddio_ao18 {
+>>>>> +            compatible =3D "regulator-fixed";
+>>>>> +            regulator-name =3D "VDDIO_AO18";
+>>>>> +            regulator-min-microvolt =3D <1800000>;
+>>>>> +            regulator-max-microvolt =3D <1800000>;
+>>>>> +            regulator-always-on;
+>>>>> +            vin-supply =3D <&vddao_3v3>;
+>>>>> +    };
+>>>>> +
+>>>>> +    vddio_c: regulator-vddio_c {
+>>>>> +            compatible =3D "regulator-gpio";
+>>>>> +            regulator-name =3D "VDDIO_C";
+>>>>> +            regulator-min-microvolt =3D <1800000>;
+>>>>> +            regulator-max-microvolt =3D <3300000>;
+>>>>> +            regulator-settling-time-up-us =3D <200>;
+>>>>> +            regulator-settling-time-down-us =3D <50000>;
+>>>>> +            vin-supply =3D <&vddao_3v3>;
+>>>>> +            gpios =3D <&gpio GPIOX_4 GPIO_ACTIVE_HIGH>;
+>>>>> +            states =3D <3300000 0>,
+>>>>> +                     <1800000 1>;
+>>>>> +    };
+>>>>> +
+>>>>> +    sound {
+>>>>> +            compatible =3D "amlogic,axg-sound-card";
+>>>>> +            audio-widgets =3D "Line", "Lineout";
+>>>>> +            audio-aux-devs =3D <&tdmout_a>, <&tdmout_b>, <&tdmout_c>,
+>>>>> +                             <&tdmin_a>, <&tdmin_b>, <&tdmin_c>,
+>>>>> +                             <&dioo2133>;
+>>>>> +
+>>>>> +            assigned-clocks =3D <&clkc CLKID_MPLL2>,
+>>>>> +                              <&clkc CLKID_MPLL0>,
+>>>>> +                              <&clkc CLKID_MPLL1>;
+>>>>> +            assigned-clock-parents =3D <0>, <0>, <0>;
+>>>>> +            assigned-clock-rates =3D <294912000>,
+>>>>> +                                   <270950400>,
+>>>>> +                                   <393216000>;
+>>>>> +
+>>>>> +            dai-link-0 {
+>>>>> +                    sound-dai =3D <&frddr_a>;
+>>>>> +            };
+>>>>> +
+>>>>> +            dai-link-1 {
+>>>>> +                    sound-dai =3D <&frddr_b>;
+>>>>> +            };
+>>>>> +
+>>>>> +            dai-link-2 {
+>>>>> +                    sound-dai =3D <&frddr_c>;
+>>>>> +            };
+>>>>> +
+>>>>> +            dai-link-3 {
+>>>>> +                    sound-dai =3D <&toddr_a>;
+>>>>> +            };
+>>>>> +
+>>>>> +            dai-link-4 {
+>>>>> +                    sound-dai =3D <&toddr_b>;
+>>>>> +            };
+>>>>> +
+>>>>> +            dai-link-5 {
+>>>>> +                    sound-dai =3D <&toddr_c>;
+>>>>> +            };
+>>>>> +
+>>>>> +            /*
+>>>>> +             * Audio setup: The 40 pins header provides access to 2 =
+TDMs,
+>>>>> +             * SPDIF In/Out and PDM inputs.
+>>>>> +             * - TDM A: 2 lanes
+>>>>> +             *    D0:    40/X9
+>>>>> +             *    D1:    38/X8
+>>>>> +             *    BCLK:  12/X11
+>>>>> +             *    FS:    35/X10
+>>>>> +             * - TDM B: 4 lanes
+>>>>> +             *    D0:    37/A3
+>>>>> +             *    D1:    16/A4
+>>>>> +             *    D2:    18/A5 or 7/AO6
+>>>>> +             *    D3:    22/A6 or 21/H5
+>>>>> +             *    BCLK:  29/A1 or 8/AO8
+>>>>> +             *    FS:    31/A2 or 11/AO7
+>>>>> +             * - 2 Master Clocks:
+>>>>> +             *    MCLK0: 15/A0 or 10/AO9
+>>>>> +             *    MCLK1: 33/X15
+>>>>> +             * - SPDIF:
+>>>>> +             *    OUT:   32/A11
+>>>>> +             *    IN:    21/H5
+>>>>> +             * - PDM Input:
+>>>>> +             *    DO:    13/A8
+>>>>> +             *    D1:    26/A9
+>>>>> +             *    D2:    22/A6
+>>>>> +             *    D3:    18/A5
+>>>>> +             *    DCLK:  36/A7
+>>>>> +             *
+>>>>> +             * TDM C is not usable on the 40 pins connector so it is
+>>>>> +             * setup for the HDMI 4 lanes i2s.
+>>>>> +             *
+>>>>> +             * No pinctrl is enabled by default to preserve the
+>>>>> +             * genericity of the 40 pins header. Many configurations=
+ are
+>>>>> +             * possible based on the desired use case. Please adjust=
+ TDM
+>>>>> +             * masks, clock setups and pinctrl accordingly.
+>>>>> +             */
+>>>>> +
+>>>>> +            dai-link-6 {
+>>>>> +                    sound-dai =3D <&tdmif_a>;
+>>>>> +                    dai-format =3D "dsp_a";
+>>>>> +                    dai-tdm-slot-tx-mask-0 =3D <1 1>;
+>>>>> +                    mclk-fs =3D <256>;
+>>>>> +
+>>>>> +                    codec-0 {
+>>>>> +                            sound-dai =3D <&tohdmitx TOHDMITX_I2S_IN=
+_A>;
+>>>>> +                    };
+>>>>> +
+>>>>> +                    codec-1 {
+>>>>> +                            sound-dai =3D <&toacodec TOACODEC_IN_A>;
+>>>>> +                    };
+>>>>> +            };
+>>>>> +
+>>>>> +            dai-link-7 {
+>>>>> +                    sound-dai =3D <&tdmif_b>;
+>>>>> +                    dai-format =3D "i2s";
+>>>>> +                    dai-tdm-slot-tx-mask-0 =3D <1 1>;
+>>>>> +                    dai-tdm-slot-rx-mask-1 =3D <1 1>;
+>>>>> +                    mclk-fs =3D <256>;
+>>>>> +
+>>>>> +                    codec-0 {
+>>>>> +                            sound-dai =3D <&tohdmitx TOHDMITX_I2S_IN=
+_B>;
+>>>>> +                    };
+>>>>> +
+>>>>> +                    codec-1 {
+>>>>> +                            sound-dai =3D <&toacodec TOACODEC_IN_B>;
+>>>>> +                    };
+>>>>> +            };
+>>>>> +
+>>>>> +            dai-link-8 {
+>>>>> +                    sound-dai =3D <&tdmif_c>;
+>>>>> +                    dai-format =3D "i2s";
+>>>>> +                    dai-tdm-slot-tx-mask-0 =3D <1 1>;
+>>>>> +                    dai-tdm-slot-tx-mask-1 =3D <1 1>;
+>>>>> +                    dai-tdm-slot-tx-mask-2 =3D <1 1>;
+>>>>> +                    dai-tdm-slot-tx-mask-3 =3D <1 1>;
+>>>>> +                    mclk-fs =3D <256>;
+>>>>> +
+>>>>> +                    codec-0 {
+>>>>> +                            sound-dai =3D <&tohdmitx TOHDMITX_I2S_IN=
+_C>;
+>>>>> +                    };
+>>>>> +
+>>>>> +                    codec-1 {
+>>>>> +                            sound-dai =3D <&toacodec TOACODEC_IN_C>;
+>>>>> +                    };
+>>>>> +            };
+>>>>> +
+>>>>> +            dai-link-9 {
+>>>>> +                    sound-dai =3D <&tohdmitx TOHDMITX_I2S_OUT>;
+>>>>> +
+>>>>> +                    codec {
+>>>>> +                            sound-dai =3D <&hdmi_tx>;
+>>>>> +                    };
+>>>>> +            };
+>>>>> +
+>>>>> +            dai-link-10 {
+>>>>> +                    sound-dai =3D <&toacodec TOACODEC_OUT>;
+>>>>> +
+>>>>> +                    codec {
+>>>>> +                            sound-dai =3D <&acodec>;
+>>>>> +                    };
+>>>>> +            };
+>>>>> +    };
+>>>>> +};
+>>>>> +
+>>>>> +&acodec {
+>>>>> +    status =3D "okay";
+>>>>> +    AVDD-supply =3D <&vddio_ao18>;
+>>>>> +};
+>>>>> +
+>>>>> +&arb {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&cecb_AO {
+>>>>> +    status =3D "okay";
+>>>>> +    pinctrl-0 =3D <&cec_ao_b_h_pins>;
+>>>>> +    pinctrl-names =3D "default";
+>>>>> +    hdmi-phandle =3D <&hdmi_tx>;
+>>>>> +};
+>>>>> +
+>>>>> +&clkc_audio {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&cvbs_vdac_port {
+>>>>> +    cvbs_vdac_out: endpoint {
+>>>>> +            remote-endpoint =3D <&cvbs_connector_in>;
+>>>>> +    };
+>>>>> +};
+>>>>> +
+>>>>> +&ethmac {
+>>>>> +    pinctrl-0 =3D <&eth_pins>, <&eth_rgmii_pins>, <&eth_phy_irq_pins=
+>;
+>>>>> +    pinctrl-names =3D "default";
+>>>>> +    status =3D "okay";
+>>>>> +    phy-mode =3D "rgmii";
+>>>>> +    phy-handle =3D <&external_phy>;
+>>>>> +    amlogic,tx-delay-ns =3D <2>;
+>>>>> +};
+>>>>> +
+>>>>> +&ext_mdio {
+>>>>> +    external_phy: ethernet-phy@0 {
+>>>>> +            /* Realtek RTL8211F (0x001cc916) */
+>>>>> +            reg =3D <0>;
+>>>>> +            max-speed =3D <1000>;
+>>>>> +
+>>>>> +            reset-assert-us =3D <100000>;
+>>>>> +            reset-deassert-us =3D <100000>;
+>>>>> +            reset-gpios =3D <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW | GPIO_=
+OPEN_DRAIN)>;
+>>>>> +
+>>>>> +            interrupt-parent =3D <&gpio_intc>;
+>>>>> +            /* MAC_INTR on GPIOZ_14 */
+>>>>> +            interrupts =3D <26 IRQ_TYPE_LEVEL_LOW>;
+>>>>> +    };
+>>>>> +};
+>>>>> +
+>>>>> +&frddr_a {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&frddr_b {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&frddr_c {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&hdmi_tx {
+>>>>> +    status =3D "okay";
+>>>>> +    pinctrl-0 =3D <&hdmitx_hpd_pins>, <&hdmitx_ddc_pins>;
+>>>>> +    pinctrl-names =3D "default";
+>>>>> +    hdmi-supply =3D <&vcc_5v>;
+>>>>> +};
+>>>>> +
+>>>>> +&hdmi_tx_tmds_port {
+>>>>> +    hdmi_tx_tmds_out: endpoint {
+>>>>> +            remote-endpoint =3D <&hdmi_connector_in>;
+>>>>> +    };
+>>>>> +};
+>>>>> +
+>>>>> +&ir {
+>>>>> +    status =3D "okay";
+>>>>> +    pinctrl-0 =3D <&remote_input_ao_pins>;
+>>>>> +    pinctrl-names =3D "default";
+>>>>> +};
+>>>>> +
+>>>>> +&npu {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>=20
+>>>> Are you sure you want this enabled ?
+>>>> AFAIK if etnaviv is enabled, it will be used first as a render node by=
+ mesa and fail.
+>>>>=20
+>>>=20
+>>> AFAIK, it is enabled in the pre-flashed bootloader that is running
+>>> debian, fedora and opensuse ... but etnaviv is blacklisted there
+>>>=20
+>>> It should indeed be removed.
+>>>=20
+>>>=20
+>>=20
+>> Yes, let's remove this until there are future developments in this
+>> area. We will add it to our tooling to enable separately.
+>>=20
+>>>>> +
+>>>>> +&periphs_pinctrl {
+>>>>> +    spi_cs_disable_pins: spi-cs-disable {
+>>>>> +            mux {
+>>>>> +                    groups =3D "BOOT_14";
+>>>>> +                    function =3D "gpio_periphs";
+>>>>> +                    bias-disable;
+>>>>> +                    output-high;
+>>>>> +            };
+>>>>> +    };
+>>>>> +
+>>>>> +    eth_phy_irq_pins: eth-phy-irq {
+>>>>> +            mux {
+>>>>> +                    groups =3D "GPIOZ_14";
+>>>>> +                    function =3D "gpio_periphs";
+>>>>> +                    bias-pull-up;
+>>>>> +                    output-disable;
+>>>>> +            };
+>>>>> +    };
+>>>>> +};
+>>>>> +
+>>>>> +&pwm_AO_cd {
+>>>>> +    status =3D "okay";
+>>>>> +    pinctrl-0 =3D <&pwm_ao_d_e_pins>;
+>>>>> +    pinctrl-names =3D "default";
+>>>>> +    clocks =3D <&xtal>;
+>>>>> +    clock-names =3D "clkin1";
+>>>>> +};
+>>>>> +
+>>>>> +&pwm_ab {
+>>>>> +    status =3D "okay";
+>>>>> +    pinctrl-0 =3D <&pwm_b_x7_pins>;
+>>>>> +    pinctrl-names =3D "default";
+>>>>> +    clocks =3D <&xtal>;
+>>>>> +    clock-names =3D "clkin1";
+>>>>> +};
+>>>>> +
+>>>>> +&pwm_cd {
+>>>>> +    status =3D "okay";
+>>>>> +    pinctrl-0 =3D <&pwm_d_x3_pins>;
+>>>>> +    pinctrl-names =3D "default";
+>>>>> +    clocks =3D <&xtal>;
+>>>>> +    clock-names =3D "clkin1";
+>>>>> +};
+>>>>> +
+>>>>> +&saradc {
+>>>>> +    status =3D "okay";
+>>>>> +    vref-supply =3D <&vddio_ao18>;
+>>>>> +};
+>>>>> +
+>>>>> +/* SD card */
+>>>>> +&sd_emmc_b {
+>>>>> +    status =3D "okay";
+>>>>> +    pinctrl-0 =3D <&sdcard_c_pins>;
+>>>>> +    pinctrl-1 =3D <&sdcard_clk_gate_c_pins>;
+>>>>> +    pinctrl-names =3D "default", "clk-gate";
+>>>>> +
+>>>>> +    bus-width =3D <4>;
+>>>>> +    cap-sd-highspeed;
+>>>>> +    sd-uhs-sdr12;
+>>>>> +    sd-uhs-sdr25;
+>>>>> +    sd-uhs-sdr50;
+>>>>> +    sd-uhs-sdr104;
+>>>>> +    max-frequency =3D <200000000>;
+>>>>> +    disable-wp;
+>>>>> +
+>>>>> +    cd-gpios =3D <&gpio GPIOC_6 GPIO_ACTIVE_LOW>;
+>>>>> +    vmmc-supply =3D <&vcc_card>;
+>>>>> +    vqmmc-supply =3D <&vddio_c>;
+>>>>> +};
+>>>>> +
+>>>>> +/*
+>>>>> + * EMMC_D4, EMMC_D5, EMMC_D6 and EMMC_D7 pins are shared between SPI=
+ NOR CS
+>>>>> + * and eMMC Data 4 to 7 pins.
+>>>>> + * Replace emmc_data_8b_pins to emmc_data_4b_pins from sd_emmc_c pin=
+ctrl-0,
+>>>>> + * and change bus-width to 4 then spifc can be enabled.
+>>>>> + */
+>>>>> +&sd_emmc_c {
+>>>>> +    status =3D "okay";
+>>>>> +    pinctrl-0 =3D <&emmc_ctrl_pins>, <&emmc_data_8b_pins>, <&emmc_ds=
+_pins>,
+>>>>> +                <&spi_cs_disable_pins>;
+>>>>> +    pinctrl-1 =3D <&emmc_clk_gate_pins>;
+>>>>> +    pinctrl-names =3D "default", "clk-gate";
+>>>>> +
+>>>>> +    bus-width =3D <8>;
+>>>>> +    cap-mmc-highspeed;
+>>>>> +    mmc-hs200-1_8v;
+>>>>> +    max-frequency =3D <200000000>;
+>>>>> +    disable-wp;
+>>>>> +
+>>>>> +    mmc-pwrseq =3D <&emmc_pwrseq>;
+>>>>> +    vmmc-supply =3D <&vcc_3v3>;
+>>>>> +    vqmmc-supply =3D <&flash_1v8>;
+>>>>> +};
+>>>>> +
+>>>>> +&spifc {
+>>>>> +    status =3D "disabled";
+>>>>> +    pinctrl-0 =3D <&nor_pins>;
+>>>>> +    pinctrl-names =3D "default";
+>>>>> +    cs-gpios =3D <&gpio BOOT_14 GPIO_ACTIVE_LOW>;
+>>>>> +
+>>>>> +    w25lq128d: flash@0 {
+>>>>> +            compatible =3D "jedec,spi-nor";
+>>>>> +            reg =3D <0>;
+>>>>> +            #address-cells =3D <1>;
+>>>>> +            #size-cells =3D <1>;
+>>>>> +            spi-max-frequency =3D <80000000>;
+>>>>> +    };
+>>>>> +};
+>>>>> +
+>>>>> +&tdmif_a {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&tdmif_b {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&tdmif_c {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&tdmin_a {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&tdmin_b {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&tdmin_c {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&tdmout_a {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&tdmout_b {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&tdmout_c {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&toacodec {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&toddr_a {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&toddr_b {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&toddr_c {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&tohdmitx {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> +
+>>>>> +&uart_AO {
+>>>>> +    status =3D "okay";
+>>>>> +    pinctrl-0 =3D <&uart_ao_a_pins>;
+>>>>> +    pinctrl-names =3D "default";
+>>>>> +};
+>>>>> +
+>>>>> +&usb2_phy1 {
+>>>>> +    phy-supply =3D <&dc_in>;
+>>>>> +};
+>>>>> +
+>>>>> +&usb3_pcie_phy {
+>>>>> +    #address-cells =3D <1>;
+>>>>> +    #size-cells =3D <0>;
+>>>>> +    phy-supply =3D <&vcc_5v>;
+>>>>> +
+>>>>> +    hub: hub@1 {
+>>>>> +            compatible =3D "usb5e3,626";
+>>>>> +            reg =3D <1>;
+>>>>> +            reset-gpios =3D <&gpio GPIOC_7 (GPIO_ACTIVE_LOW | GPIO_O=
+PEN_DRAIN)>;
+>>>>> +    };
+>>>>=20
+>>>> Not sure the PHY is the right place to put the USB HUB,
+>>>> and it's probable the HUB is connected to both the USB2 and USB3 lines
+>>>=20
+>>> It is connected to the USB3.0 only
+>>=20
+>> https://drive.google.com/file/d/17WNK9m8VZ9CfS7GMiTLdq1zHsmHR4OcV/view
+>>=20
+>> USBHOST_A_DM and USBHOST_A_DP are connected to the USB 3 hub DM0 and DP0.
+>> Not sure if this counts?
+>>=20
+>>>=20
+>>>> so you should have both USB IDs in DT like it'd done for the Odroid-C4:
+>>>>=20
+>>>> / {
+>>>> ...
+>>>>         /* USB hub supports both USB 2.0 and USB 3.0 root hub */
+>>>>         usb-hub {
+>>>>                 dr_mode =3D "host";
+>>>>                 #address-cells =3D <1>;
+>>>>                 #size-cells =3D <0>;
+>>>>=20
+>>>>                 /* 2.0 hub on port 1 */
+>>>>                 hub_2_0: hub@1 {
+>>>>                         compatible =3D "usb2109,2817";
+>>>>                         reg =3D <1>;
+>>>>                         peer-hub =3D <&hub_3_0>;
+>>>>                         reset-gpios =3D <&gpio GPIOH_4 GPIO_ACTIVE_LOW=
+>;
+>>>>                         vdd-supply =3D <&vcc_5v>;
+>>>>                 };
+>>>>=20
+>>>>                 /* 3.1 hub on port 4 */
+>>>>                 hub_3_0: hub@2 {
+>>>>                         compatible =3D "usb2109,817";
+>>>>                         reg =3D <2>;
+>>>>                         peer-hub =3D <&hub_2_0>;
+>>>>                         reset-gpios =3D <&gpio GPIOH_4 GPIO_ACTIVE_LOW=
+>;
+>>>>                         vdd-supply =3D <&vcc_5v>;
+>>>>                 };
+>>>>         };
+>>>> ...
+>>>> };
+>>>>=20
+>>>> if it only has a single USB ID, then it should go under the dwc3 node.
+>>>=20
+>>> The usb controller is connected to the PHY and what's coming out of the=
+ PHY
+>>> goes to the hub. It seems logical to hub the hub under it.
+>>>=20
+>>> Why bypass the PHY ?
+>>>=20
+>>>>=20
+>>>>> +};
+>>>>> +
+>>>>> +&usb {
+>>>>> +    status =3D "okay";
+>>>>> +};
+>>>>> diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-c=
+c.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-cc.dts
+>>>>> new file mode 100644
+>>>>> index 000000000000..077e7506ce4f
+>>>>> --- /dev/null
+>>>>> +++ b/arch/arm64/boot/dts/amlogic/meson-sm1-s905d3-libretech-cc.dts
+>>>>> @@ -0,0 +1,89 @@
+>>>>> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>>>>> +/*
+>>>>> + * Copyright (c) 2023 BayLibre, SAS.
+>>>>> + * Author: Jerome Brunet <jbrunet@baylibre.com>
+>>>>> + */
+>>>>> +
+>>>>> +/dts-v1/;
+>>>>> +
+>>>>> +#include <dt-bindings/clock/g12a-clkc.h>
+>>>>> +#include "meson-sm1.dtsi"
+>>>>> +#include "meson-libretech-cottonwood.dtsi"
+>>>>> +
+>>>>> +/ {
+>>>>> +    compatible =3D "libretech,aml-s905d3-cc", "amlogic,sm1";
+>>>>> +    model =3D "Libre Computer AML-S905D3-CC Solitude";
+>>>>> +
+>>>>> +    sound {
+>>>>> +            model =3D "Solitude";
+>>>>> +            audio-routing =3D "TDMOUT_A IN 0", "FRDDR_A OUT 0",
+>>>>> +                            "TDMOUT_A IN 1", "FRDDR_B OUT 0",
+>>>>> +                            "TDMOUT_A IN 2", "FRDDR_C OUT 0",
+>>>>> +                            "TDM_A Playback", "TDMOUT_A OUT",
+>>>>> +                            "TDMOUT_B IN 0", "FRDDR_A OUT 1",
+>>>>> +                            "TDMOUT_B IN 1", "FRDDR_B OUT 1",
+>>>>> +                            "TDMOUT_B IN 2", "FRDDR_C OUT 1",
+>>>>> +                            "TDM_B Playback", "TDMOUT_B OUT",
+>>>>> +                            "TDMOUT_C IN 0", "FRDDR_A OUT 2",
+>>>>> +                            "TDMOUT_C IN 1", "FRDDR_B OUT 2",
+>>>>> +                            "TDMOUT_C IN 2", "FRDDR_C OUT 2",
+>>>>> +                            "TDM_C Playback", "TDMOUT_C OUT",
+>>>>> +                            "TDMIN_A IN 0", "TDM_A Capture",
+>>>>> +                            "TDMIN_B IN 0", "TDM_A Capture",
+>>>>> +                            "TDMIN_C IN 0", "TDM_A Capture",
+>>>>> +                            "TDMIN_A IN 13", "TDM_A Loopback",
+>>>>> +                            "TDMIN_B IN 13", "TDM_A Loopback",
+>>>>> +                            "TDMIN_C IN 13", "TDM_A Loopback",
+>>>>> +                            "TDMIN_A IN 1", "TDM_B Capture",
+>>>>> +                            "TDMIN_B IN 1", "TDM_B Capture",
+>>>>> +                            "TDMIN_C IN 1", "TDM_B Capture",
+>>>>> +                            "TDMIN_A IN 14", "TDM_B Loopback",
+>>>>> +                            "TDMIN_B IN 14", "TDM_B Loopback",
+>>>>> +                            "TDMIN_C IN 14", "TDM_B Loopback",
+>>>>> +                            "TDMIN_A IN 2", "TDM_C Capture",
+>>>>> +                            "TDMIN_B IN 2", "TDM_C Capture",
+>>>>> +                            "TDMIN_C IN 2", "TDM_C Capture",
+>>>>> +                            "TDMIN_A IN 15", "TDM_C Loopback",
+>>>>> +                            "TDMIN_B IN 15", "TDM_C Loopback",
+>>>>> +                            "TDMIN_C IN 15", "TDM_C Loopback",
+>>>>> +                            "TODDR_A IN 0", "TDMIN_A OUT",
+>>>>> +                            "TODDR_B IN 0", "TDMIN_A OUT",
+>>>>> +                            "TODDR_C IN 0", "TDMIN_A OUT",
+>>>>> +                            "TODDR_A IN 1", "TDMIN_B OUT",
+>>>>> +                            "TODDR_B IN 1", "TDMIN_B OUT",
+>>>>> +                            "TODDR_C IN 1", "TDMIN_B OUT",
+>>>>> +                            "TODDR_A IN 2", "TDMIN_C OUT",
+>>>>> +                            "TODDR_B IN 2", "TDMIN_C OUT",
+>>>>> +                            "TODDR_C IN 2", "TDMIN_C OUT",
+>>>>> +                            "Lineout", "ACODEC LOLP",
+>>>>> +                            "Lineout", "ACODEC LORP";
+>>>>> +    };
+>>>>> +};
+>>>>> +
+>>>>> +&cpu0 {
+>>>>> +    cpu-supply =3D <&vddcpu_b>;
+>>>>> +    operating-points-v2 =3D <&cpu_opp_table>;
+>>>>> +    clocks =3D <&clkc CLKID_CPU_CLK>;
+>>>>> +    clock-latency =3D <50000>;
+>>>>> +};
+>>>>> +
+>>>>> +&cpu1 {
+>>>>> +    cpu-supply =3D <&vddcpu_b>;
+>>>>> +    operating-points-v2 =3D <&cpu_opp_table>;
+>>>>> +    clocks =3D <&clkc CLKID_CPU1_CLK>;
+>>>>> +    clock-latency =3D <50000>;
+>>>>> +};
+>>>>> +
+>>>>> +&cpu2 {
+>>>>> +    cpu-supply =3D <&vddcpu_b>;
+>>>>> +    operating-points-v2 =3D <&cpu_opp_table>;
+>>>>> +    clocks =3D <&clkc CLKID_CPU2_CLK>;
+>>>>> +    clock-latency =3D <50000>;
+>>>>> +};
+>>>>> +
+>>>>> +&cpu3 {
+>>>>> +    cpu-supply =3D <&vddcpu_b>;
+>>>>> +    operating-points-v2 =3D <&cpu_opp_table>;
+>>>>> +    clocks =3D <&clkc CLKID_CPU3_CLK>;
+>>>>> +    clock-latency =3D <50000>;
+>>>>> +};
+>>>>=20
+>>>> Apart that, it looks fine,
+>>>>=20
+>>>>=20
+>>>> Thanks,
+>>>> Neil
+>>>=20
+>>>=20
+>>> _______________________________________________
+>>> linux-amlogic mailing list
+>>> linux-amlogic@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/linux-amlogic
+>>=20
+>> _______________________________________________
+>> linux-amlogic mailing list
+>> linux-amlogic@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-amlogic
 
----
-Sincerely,
-Crescent CY Hsieh
