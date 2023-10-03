@@ -2,248 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1077B712C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:39:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A6527B7131
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:40:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240820AbjJCSjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 14:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48286 "EHLO
+        id S232038AbjJCSku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 14:40:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240823AbjJCSjf (ORCPT
+        with ESMTP id S232127AbjJCSks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:39:35 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0112D3
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 11:39:30 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-77432add7caso86718785a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 11:39:30 -0700 (PDT)
+        Tue, 3 Oct 2023 14:40:48 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C3B695
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 11:40:40 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-4527d7f7305so645751137.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 11:40:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696358370; x=1696963170; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ctR4Qss20hNlLcuTpt2GjwPGaaqxpILrMeXzriM3900=;
-        b=Ri6Xwu9cUGzINSt9kMvZ0b8bNlHK697lgtf39cX6ppPfzbnJHS+6WxXWjWkLhbKV/G
-         O+nmwi/8TXfJLs2nlJfH9jCXU8unG7J0tIgKLSwnQrtIa0eRvC90F12x86h8pkHOTrsB
-         syXSgHSOYHz9zpqgsTF9uEjiQUaD3H09E6wBR0HONfUZ57LshzzHrJnIxjXMbsgtHW8n
-         tpJTpU/Ba22IB7sW+TqDPZB1CaRs3Z/m+rq9bhfB8d1FJtnsfvTVMIIb/Zzopmnmr3GW
-         Bb1Pzz0eDQFvqDXnIOVZiENaoTPPDM5AYsh8cbc5ZlMHtMzS9lxlEzGqDnyN2kkBpplo
-         48+w==
+        d=google.com; s=20230601; t=1696358439; x=1696963239; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E4EHhQcGy2VS2JlcOPiKLjlIFfrg/psFf5RMRLEP3YE=;
+        b=NVtywLp8/m1kTVnO0jYxdh9jx11prD5iwZL/YqB/oMwyO4tFVZxoQP2h2ZE0JbpHT0
+         Wy1M/eGPM9IViLC/2ECIxhMjJYoQ2JjZIcsGqqLAM255BX/DYocKVflc2Z8YkIPT/Eac
+         w/DIfDT4+EmgDlReX/GfMNolUro/9r3LB+3SwUCKegITK8iMoOP9iBtGBmJrxLYv0H4K
+         EY/G7dLU4xEqEF+SbxDVlihDtikfidTk4kJTpZNGzpWCiyKD7XohoGEfGZokkv8oMbN8
+         Hv2Do20wBlQUS60xofEdFGWUxurLRfeAu4AO/F4K7YTZE8LuZYMjj6zgbQiqS0FI/7Wb
+         2x6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696358370; x=1696963170;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ctR4Qss20hNlLcuTpt2GjwPGaaqxpILrMeXzriM3900=;
-        b=ih+a98cRHRvjaUFFz8GMaTAoOGbeoPOQM637Opc6Cf1KrhUwAtrvBy3fCVjIdBrKzE
-         rHREOn0o+NTrAjQ+XC/7JWJFoViRteh/6M917VH9Y9yZX50ujgo5dp8/jOXQ1mADWg8R
-         nER9XRk1kp661qAdki7H2ANTOlvjvk13AOUkPBvSiTq/RZmbgJvNF3XM3J3iYoy0pHG7
-         rZPNGJsfAvof4CBd8UwjYqDcmXSl5yxsv44Bk22SSUnH2dcnuitnbwW/3GqOrb2NujGC
-         IMLzYp83v68Hh8c4SYMNeWLQS8SBKdliXKn2JBLCeFcyJJpxHv/EZ9dfci3cprWHeHJk
-         xewQ==
-X-Gm-Message-State: AOJu0Yx42u+BC1DuexNVREGSxJvusytXKODIkt9/SgBEp6SrSUNfqAuV
-        H9+XHA/bZJoHAetguJoBFyEpDA==
-X-Google-Smtp-Source: AGHT+IFJsgnCuHI5XnWSVYHlvhhimI0gL5pQbE6bdVmrvG4Sb4ugSd4dt+Kkwo8wesQqBgOoiOPooA==
-X-Received: by 2002:a0c:c407:0:b0:658:243e:3084 with SMTP id r7-20020a0cc407000000b00658243e3084mr163657qvi.55.1696358369899;
-        Tue, 03 Oct 2023 11:39:29 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:400::5:753d])
-        by smtp.gmail.com with ESMTPSA id c19-20020a0ce153000000b0065b17ec4b49sm691220qvl.46.2023.10.03.11.39.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 11:39:29 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 14:39:28 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>, akpm@linux-foundation.org,
-        riel@surriel.com, mhocko@kernel.org, roman.gushchin@linux.dev,
-        shakeelb@google.com, muchun.song@linux.dev, tj@kernel.org,
-        lizefan.x@bytedance.com, shuah@kernel.org, yosryahmed@google.com,
-        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] hugetlb: memcg: account hugetlb-backed memory in
- memory controller
-Message-ID: <20231003183928.GC20979@cmpxchg.org>
-References: <20231003001828.2554080-1-nphamcs@gmail.com>
- <20231003001828.2554080-3-nphamcs@gmail.com>
- <20231003171329.GB314430@monkey>
- <CAKEwX=POd1DZc2K5ym14R2DpU74DqV30_A6QGfsCAaOTMK2WJA@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1696358439; x=1696963239;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=E4EHhQcGy2VS2JlcOPiKLjlIFfrg/psFf5RMRLEP3YE=;
+        b=ehXURBVeFCXHpVWBBwF9zcAn6zA8HHEWn4B5SG4YxQhkDBEujiU3rbSsGhkDMvEuTg
+         MPz+BKGQOEypuZonxmAAFyHPKdSjITRH16x+bNwPhPKDecdJbjZW1id1dAQncX3EkqKm
+         /ac/3j59UWnFH1nRcG1d7vaMWHcfdDpkwYY8uQ2PyUzwzE1s7tjhj3p/2esvmeANaoDR
+         E3xgiwfxp8taezloJzFxa5fR+0VXCgB2aNmwT5dDECOsM8f1OF3jy03gSVGsKxdvPI42
+         H34Vx7rDKuPG7up09Dy6WajT+D0BCzURgpUMvnBu8WE5oAW2blpE+A3uch9nrKpHbjN0
+         y92g==
+X-Gm-Message-State: AOJu0YyDxTJRnSNqvnRR24gDuAyknjk/dEtt82CQNxqigb8tKs09KVpb
+        vwb6zoQLBZwjMLZ2QwS8dbjVoSvy76IFRDGiW4d6Pg==
+X-Google-Smtp-Source: AGHT+IEXyXPbfnJlsOBki7NVmiAFCgLoSOf3hPuUmd5KFCUolgJZY900HDpzR6daqk+k9LaODgXmolUHPsjA5BASddI=
+X-Received: by 2002:a67:b40b:0:b0:452:74b1:63d7 with SMTP id
+ x11-20020a67b40b000000b0045274b163d7mr210462vsl.6.1696358439487; Tue, 03 Oct
+ 2023 11:40:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKEwX=POd1DZc2K5ym14R2DpU74DqV30_A6QGfsCAaOTMK2WJA@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231003182407.32198-1-alexghiti@rivosinc.com>
+In-Reply-To: <20231003182407.32198-1-alexghiti@rivosinc.com>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Tue, 3 Oct 2023 11:40:03 -0700
+Message-ID: <CABCJKud=VqYNuQmw1y7JUSBDuPXpPGDv-WwPOeSmBZtf0RUM=w@mail.gmail.com>
+Subject: Re: [PATCH -fixes] riscv: Fix ftrace syscall handling which are now
+ prefixed with __riscv_
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 11:01:24AM -0700, Nhat Pham wrote:
-> On Tue, Oct 3, 2023 at 10:13 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >
-> > On 10/02/23 17:18, Nhat Pham wrote:
-> > > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > > index de220e3ff8be..74472e911b0a 100644
-> > > --- a/mm/hugetlb.c
-> > > +++ b/mm/hugetlb.c
-> > > @@ -1902,6 +1902,7 @@ void free_huge_folio(struct folio *folio)
-> > >                                    pages_per_huge_page(h), folio);
-> > >       hugetlb_cgroup_uncharge_folio_rsvd(hstate_index(h),
-> > >                                         pages_per_huge_page(h), folio);
-> > > +     mem_cgroup_uncharge(folio);
-> > >       if (restore_reserve)
-> > >               h->resv_huge_pages++;
-> > >
-> > > @@ -3009,11 +3010,20 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
-> > >       struct hugepage_subpool *spool = subpool_vma(vma);
-> > >       struct hstate *h = hstate_vma(vma);
-> > >       struct folio *folio;
-> > > -     long map_chg, map_commit;
-> > > +     long map_chg, map_commit, nr_pages = pages_per_huge_page(h);
-> > >       long gbl_chg;
-> > > -     int ret, idx;
-> > > +     int memcg_charge_ret, ret, idx;
-> > >       struct hugetlb_cgroup *h_cg = NULL;
-> > > +     struct mem_cgroup *memcg;
-> > >       bool deferred_reserve;
-> > > +     gfp_t gfp = htlb_alloc_mask(h) | __GFP_RETRY_MAYFAIL;
-> > > +
-> > > +     memcg = get_mem_cgroup_from_current();
-> > > +     memcg_charge_ret = mem_cgroup_hugetlb_try_charge(memcg, gfp, nr_pages);
-> > > +     if (memcg_charge_ret == -ENOMEM) {
-> > > +             mem_cgroup_put(memcg);
-> > > +             return ERR_PTR(-ENOMEM);
-> > > +     }
-> > >
-> > >       idx = hstate_index(h);
-> > >       /*
-> > > @@ -3022,8 +3032,12 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
-> > >        * code of zero indicates a reservation exists (no change).
-> > >        */
-> > >       map_chg = gbl_chg = vma_needs_reservation(h, vma, addr);
-> > > -     if (map_chg < 0)
-> > > +     if (map_chg < 0) {
-> > > +             if (!memcg_charge_ret)
-> > > +                     mem_cgroup_cancel_charge(memcg, nr_pages);
-> > > +             mem_cgroup_put(memcg);
-> > >               return ERR_PTR(-ENOMEM);
-> > > +     }
-> > >
-> > >       /*
-> > >        * Processes that did not create the mapping will have no
-> > > @@ -3034,10 +3048,8 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
-> > >        */
-> > >       if (map_chg || avoid_reserve) {
-> > >               gbl_chg = hugepage_subpool_get_pages(spool, 1);
-> > > -             if (gbl_chg < 0) {
-> > > -                     vma_end_reservation(h, vma, addr);
-> > > -                     return ERR_PTR(-ENOSPC);
-> > > -             }
-> > > +             if (gbl_chg < 0)
-> > > +                     goto out_end_reservation;
-> > >
-> > >               /*
-> > >                * Even though there was no reservation in the region/reserve
-> > > @@ -3119,6 +3131,11 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
-> > >                       hugetlb_cgroup_uncharge_folio_rsvd(hstate_index(h),
-> > >                                       pages_per_huge_page(h), folio);
-> > >       }
-> > > +
-> > > +     if (!memcg_charge_ret)
-> > > +             mem_cgroup_commit_charge(folio, memcg);
-> > > +     mem_cgroup_put(memcg);
-> > > +
-> > >       return folio;
-> > >
-> > >  out_uncharge_cgroup:
-> > > @@ -3130,7 +3147,11 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
-> > >  out_subpool_put:
-> > >       if (map_chg || avoid_reserve)
-> > >               hugepage_subpool_put_pages(spool, 1);
-> > > +out_end_reservation:
-> > >       vma_end_reservation(h, vma, addr);
-> > > +     if (!memcg_charge_ret)
-> > > +             mem_cgroup_cancel_charge(memcg, nr_pages);
-> > > +     mem_cgroup_put(memcg);
-> > >       return ERR_PTR(-ENOSPC);
-> > >  }
-> > >
-> >
-> > IIUC, huge page usage is charged in alloc_hugetlb_folio and uncharged in
-> > free_huge_folio.  During migration, huge pages are allocated via
-> > alloc_migrate_hugetlb_folio, not alloc_hugetlb_folio.  So, there is no
-> > charging for the migration target page and we uncharge the source page.
-> > It looks like there will be no charge for the huge page after migration?
-> >
-> 
-> Ah I see! This is a bit subtle indeed.
-> 
-> For the hugetlb controller, it looks like they update the cgroup info
-> inside move_hugetlb_state(), which calls hugetlb_cgroup_migrate()
-> to transfer the hugetlb cgroup info to the destination folio.
-> 
-> Perhaps we can do something analogous here.
-> 
-> > If my analysis above is correct, then we may need to be careful about
-> > this accounting.  We may not want both source and target pages to be
-> > charged at the same time.
-> 
-> We can create a variant of mem_cgroup_migrate that does not double
-> charge, but instead just copy the mem_cgroup information to the new
-> folio, and then clear that info from the old folio. That way the memory
-> usage counters are untouched.
-> 
-> Somebody with more expertise on migration should fact check me
-> of course :)
+On Tue, Oct 3, 2023 at 11:24=E2=80=AFAM Alexandre Ghiti <alexghiti@rivosinc=
+.com> wrote:
+>
+> ftrace creates entries for each syscall in the tracefs but has failed
+> since commit 08d0ce30e0e4 ("riscv: Implement syscall wrappers") which
+> prefixes all riscv syscalls with __riscv_.
+>
+> So fix this by implementing arch_syscall_match_sym_name() which allows us
+> to ignore this prefix.
+>
+> And also ignore compat syscalls like x86/arm64 by implementing
+> arch_trace_is_compat_syscall().
+>
+> Fixes: 08d0ce30e0e4 ("riscv: Implement syscall wrappers")
+> Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/ftrace.h | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>
+> diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftr=
+ace.h
+> index 740a979171e5..2b2f5df7ef2c 100644
+> --- a/arch/riscv/include/asm/ftrace.h
+> +++ b/arch/riscv/include/asm/ftrace.h
+> @@ -31,6 +31,27 @@ static inline unsigned long ftrace_call_adjust(unsigne=
+d long addr)
+>         return addr;
+>  }
+>
+> +/*
+> + * Let's do like x86/arm64 and ignore the compat syscalls.
+> + */
+> +#define ARCH_TRACE_IGNORE_COMPAT_SYSCALLS
+> +static inline bool arch_trace_is_compat_syscall(struct pt_regs *regs)
+> +{
+> +       return is_compat_task();
+> +}
+> +
+> +#define ARCH_HAS_SYSCALL_MATCH_SYM_NAME
+> +static inline bool arch_syscall_match_sym_name(const char *sym,
+> +                                              const char *name)
+> +{
+> +       /*
+> +        * Since all syscall functions have __riscv_ prefix, we must skip=
+ it.
+> +        * However, as we described above, we decided to ignore compat
+> +        * syscalls, so we don't care about __riscv_compat_ prefix here.
+> +        */
+> +       return !strcmp(sym + 8, name);
+> +}
 
-The only reason mem_cgroup_migrate() double charges right now is
-because it's used by replace_page_cache_folio(). In that context, the
-isolation of the old page isn't quite as thorough as with migration,
-so it cannot transfer and uncharge directly. This goes back a long
-time: 0a31bc97c80c3fa87b32c091d9a930ac19cd0c40
+Good catch, thanks for fixing this!
 
-If you rename the current implementation to mem_cgroup_replace_page()
-for that one caller, you can add a mem_cgroup_migrate() variant which
-is charge neutral and clears old->memcg_data. This can be used for
-regular and hugetlb page migration. Something like this (totally
-untested):
+Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a4d3282493b6..17ec45bf3653 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7226,29 +7226,14 @@ void mem_cgroup_migrate(struct folio *old, struct folio *new)
- 	if (mem_cgroup_disabled())
- 		return;
- 
--	/* Page cache replacement: new folio already charged? */
--	if (folio_memcg(new))
--		return;
--
- 	memcg = folio_memcg(old);
- 	VM_WARN_ON_ONCE_FOLIO(!memcg, old);
- 	if (!memcg)
- 		return;
- 
--	/* Force-charge the new page. The old one will be freed soon */
--	if (!mem_cgroup_is_root(memcg)) {
--		page_counter_charge(&memcg->memory, nr_pages);
--		if (do_memsw_account())
--			page_counter_charge(&memcg->memsw, nr_pages);
--	}
--
--	css_get(&memcg->css);
-+	/* Transfer the charge and the css ref */
- 	commit_charge(new, memcg);
--
--	local_irq_save(flags);
--	mem_cgroup_charge_statistics(memcg, nr_pages);
--	memcg_check_events(memcg, folio_nid(new));
--	local_irq_restore(flags);
-+	old->memcg_data = 0;
- }
- 
- DEFINE_STATIC_KEY_FALSE(memcg_sockets_enabled_key);
-
+Sami
