@@ -2,139 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 559097B6A7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749817B6A53
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbjJCN1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:27:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57654 "EHLO
+        id S235608AbjJCNVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235077AbjJCN0x (ORCPT
+        with ESMTP id S231891AbjJCNVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:26:53 -0400
-Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06C5AAB;
-        Tue,  3 Oct 2023 06:26:49 -0700 (PDT)
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
- id a243c055453c96a8; Tue, 3 Oct 2023 15:26:48 +0200
-Received: from kreacher.localnet (unknown [195.136.19.94])
+        Tue, 3 Oct 2023 09:21:37 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43465A6;
+        Tue,  3 Oct 2023 06:21:33 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id F01D96659AF;
-        Tue,  3 Oct 2023 15:26:47 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux PM <linux-pm@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH v2 3/6] ACPI: thermal: Combine passive and active trip update functions
-Date:   Tue, 03 Oct 2023 15:21:30 +0200
-Message-ID: <8288399.T7Z3S40VBb@kreacher>
-In-Reply-To: <4846448.GXAFRqVoOG@kreacher>
-References: <4846448.GXAFRqVoOG@kreacher>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id EFB6B2188C;
+        Tue,  3 Oct 2023 13:21:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1696339291; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iozkCg85Ccozy8MyCle8fR6zkI5m8e4LQYBL4ht/UCc=;
+        b=MvDWSdDZHoI5Z8yy34FreQsOactXQbXnmKhrjaC36zgWmJFPP7cpJWAif38fdw3Rp7tu3F
+        VGjQGp/fSV1dz4Mgda5z0dsoy+E3ihzbtgGUJe4MihO/KicX3+apT66ewfpseXWtUuTNmq
+        GZnAuXtF3JAbLU3BNxo+/FNqSMnOaZg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1696339291;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iozkCg85Ccozy8MyCle8fR6zkI5m8e4LQYBL4ht/UCc=;
+        b=51K0h5Yaz9ZwJey9g5fagh6ZQx+yCjsMBrgvMLKyaXCpGLMKKkN3qZgj75B7Cwa577Bjry
+        GdFPkR//rU3RiqAg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id DD95A132D4;
+        Tue,  3 Oct 2023 13:21:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 8dIRNlsVHGVWNQAAMHmgww
+        (envelope-from <jack@suse.cz>); Tue, 03 Oct 2023 13:21:31 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+        id 5AE2FA07CC; Tue,  3 Oct 2023 15:21:31 +0200 (CEST)
+Date:   Tue, 3 Oct 2023 15:21:31 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Carlos Maiolino <cem@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 5/8] shmem: shmem_acct_blocks() and
+ shmem_inode_acct_blocks()
+Message-ID: <20231003132131.j4mnrryyftbmzvtb@quack3>
+References: <c7441dc6-f3bb-dd60-c670-9f5cbd9f266@google.com>
+ <9124094-e4ab-8be7-ef80-9a87bdc2e4fc@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 195.136.19.94
-X-CLIENT-HOSTNAME: 195.136.19.94
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfeeigdeifecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphht
- thhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9124094-e4ab-8be7-ef80-9a87bdc2e4fc@google.com>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Fri 29-09-23 20:30:03, Hugh Dickins wrote:
+> By historical accident, shmem_acct_block() and shmem_inode_acct_block()
+> were never pluralized when the pages argument was added, despite their
+> complements being shmem_unacct_blocks() and shmem_inode_unacct_blocks()
+> all along.  It has been an irritation: fix their naming at last.
+> 
+> Signed-off-by: Hugh Dickins <hughd@google.com>
 
-Combine acpi_thermal_update_passive_trip() and
-acpi_thermal_update_active_trip() into one common function called
-acpi_thermal_update_trip(), so as to reduce code duplication and
-prepare the code in question for subsequent changes.
+OK. Feel free to add:
 
-No intentional functional impact.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/thermal.c |   35 +++++++++++++++++------------------
- 1 file changed, 17 insertions(+), 18 deletions(-)
+								Honza
 
-Index: linux-pm/drivers/acpi/thermal.c
-===================================================================
---- linux-pm.orig/drivers/acpi/thermal.c
-+++ linux-pm/drivers/acpi/thermal.c
-@@ -212,14 +212,25 @@ static long get_active_temp(struct acpi_
- 	return tmp;
- }
- 
--static void acpi_thermal_update_passive_trip(struct acpi_thermal *tz)
-+static void acpi_thermal_update_trip(struct acpi_thermal *tz,
-+				     int index)
- {
--	struct acpi_thermal_trip *acpi_trip = &tz->trips.passive.trip;
-+	struct acpi_thermal_trip *acpi_trip;
- 
--	if (!acpi_thermal_trip_valid(acpi_trip) || psv > 0)
-+	acpi_trip = index == ACPI_THERMAL_TRIP_PASSIVE ?
-+			&tz->trips.passive.trip : &tz->trips.active[index].trip;
-+	if (!acpi_thermal_trip_valid(acpi_trip))
- 		return;
- 
--	acpi_trip->temp_dk = get_passive_temp(tz);
-+	if (index == ACPI_THERMAL_TRIP_PASSIVE) {
-+		if (psv > 0)
-+			return;
-+
-+		acpi_trip->temp_dk = get_passive_temp(tz);
-+	} else {
-+		acpi_trip->temp_dk = get_active_temp(tz, index);
-+	}
-+
- 	if (!acpi_thermal_trip_valid(acpi_trip))
- 		ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
- }
-@@ -273,18 +284,6 @@ static void acpi_thermal_update_trip_dev
- 	ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
- }
- 
--static void acpi_thermal_update_active_trip(struct acpi_thermal *tz, int index)
--{
--	struct acpi_thermal_trip *acpi_trip = &tz->trips.active[index].trip;
--
--	if (!acpi_thermal_trip_valid(acpi_trip))
--		return;
--
--	acpi_trip->temp_dk = get_active_temp(tz, index);
--	if (!acpi_thermal_trip_valid(acpi_trip))
--		ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
--}
--
- static int acpi_thermal_adjust_trip(struct thermal_trip *trip, void *data)
- {
- 	struct acpi_thermal_trip *acpi_trip = trip->priv;
-@@ -308,9 +307,9 @@ static void acpi_thermal_adjust_thermal_
- 	int i;
- 
- 	if (data == ACPI_THERMAL_NOTIFY_THRESHOLDS) {
--		acpi_thermal_update_passive_trip(tz);
-+		acpi_thermal_update_trip(tz, ACPI_THERMAL_TRIP_PASSIVE);
- 		for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++)
--			acpi_thermal_update_active_trip(tz, i);
-+			acpi_thermal_update_trip(tz, i);
- 	} else {
- 		acpi_thermal_update_trip_devices(tz, ACPI_THERMAL_TRIP_PASSIVE);
- 		for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++)
-
-
-
-
+> ---
+>  mm/shmem.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index caee8ba841f7..63ba6037b23a 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -189,10 +189,10 @@ static inline int shmem_reacct_size(unsigned long flags,
+>  /*
+>   * ... whereas tmpfs objects are accounted incrementally as
+>   * pages are allocated, in order to allow large sparse files.
+> - * shmem_get_folio reports shmem_acct_block failure as -ENOSPC not -ENOMEM,
+> + * shmem_get_folio reports shmem_acct_blocks failure as -ENOSPC not -ENOMEM,
+>   * so that a failure on a sparse tmpfs mapping will give SIGBUS not OOM.
+>   */
+> -static inline int shmem_acct_block(unsigned long flags, long pages)
+> +static inline int shmem_acct_blocks(unsigned long flags, long pages)
+>  {
+>  	if (!(flags & VM_NORESERVE))
+>  		return 0;
+> @@ -207,13 +207,13 @@ static inline void shmem_unacct_blocks(unsigned long flags, long pages)
+>  		vm_unacct_memory(pages * VM_ACCT(PAGE_SIZE));
+>  }
+>  
+> -static int shmem_inode_acct_block(struct inode *inode, long pages)
+> +static int shmem_inode_acct_blocks(struct inode *inode, long pages)
+>  {
+>  	struct shmem_inode_info *info = SHMEM_I(inode);
+>  	struct shmem_sb_info *sbinfo = SHMEM_SB(inode->i_sb);
+>  	int err = -ENOSPC;
+>  
+> -	if (shmem_acct_block(info->flags, pages))
+> +	if (shmem_acct_blocks(info->flags, pages))
+>  		return err;
+>  
+>  	might_sleep();	/* when quotas */
+> @@ -447,7 +447,7 @@ bool shmem_charge(struct inode *inode, long pages)
+>  {
+>  	struct address_space *mapping = inode->i_mapping;
+>  
+> -	if (shmem_inode_acct_block(inode, pages))
+> +	if (shmem_inode_acct_blocks(inode, pages))
+>  		return false;
+>  
+>  	/* nrpages adjustment first, then shmem_recalc_inode() when balanced */
+> @@ -1671,7 +1671,7 @@ static struct folio *shmem_alloc_and_acct_folio(gfp_t gfp, struct inode *inode,
+>  		huge = false;
+>  	nr = huge ? HPAGE_PMD_NR : 1;
+>  
+> -	err = shmem_inode_acct_block(inode, nr);
+> +	err = shmem_inode_acct_blocks(inode, nr);
+>  	if (err)
+>  		goto failed;
+>  
+> @@ -2572,7 +2572,7 @@ int shmem_mfill_atomic_pte(pmd_t *dst_pmd,
+>  	int ret;
+>  	pgoff_t max_off;
+>  
+> -	if (shmem_inode_acct_block(inode, 1)) {
+> +	if (shmem_inode_acct_blocks(inode, 1)) {
+>  		/*
+>  		 * We may have got a page, returned -ENOENT triggering a retry,
+>  		 * and now we find ourselves with -ENOMEM. Release the page, to
+> -- 
+> 2.35.3
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
