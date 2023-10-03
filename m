@@ -2,73 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 246ED7B6B50
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AE37B6B57
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:23:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239780AbjJCOWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47344 "EHLO
+        id S239821AbjJCOXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:23:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232459AbjJCOW0 (ORCPT
+        with ESMTP id S238685AbjJCOXB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 10:22:26 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8640BAF
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:22:22 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-533c71c5f37so288559a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 07:22:22 -0700 (PDT)
+        Tue, 3 Oct 2023 10:23:01 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28317B0
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:22:57 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-65b0dad1f98so6595806d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 07:22:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696342941; x=1696947741; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gZTPVZjw5Q7ID9PafpDtUtk+upIY6bWyOZZUesf6B3U=;
-        b=OhrRXrNJv8g2/DFy3BwXBtzISCfIomG6W9cQ6rhrsaKLMr7lvlfupsamQXZo9tnwTU
-         caL56QwTDUDEVWJSlmgbjq0gmkveVYG6bu7BXnhmdcUFoxv5D9guy7xgseKXboWYwq9t
-         WUk00c/CFPXsocCxXFlARbVvP7ZR1I6d3RTcymg6bviiXAHgjOJwkWxqdLw+1GdK7CdZ
-         Y4eL1KP6vY93mh2PkT2cQQ/xNjetP7nPlkwri8oe2OThP8itdu/bssoXw73/oqsqdDCG
-         3t3KnfDkWdCdUzeYculgm290RAALMCoCfC8rlfsJjcizNcyYt2j7tQ8guigeP7+tgAgp
-         Rq9g==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696342976; x=1696947776; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mQJcLp1PNbZ/HCxUuAL8GIttYWoNS8rEFxPDJqSSreg=;
+        b=mCsHqU4TyV4ikwllGDTn0FCGSV87iPHWPpRwhJ8lUdb3OF2/hInibMKNtrA9fxkDRJ
+         1WNmNp241LuiiBoCAs+1ZEQ5E/BvP15QOGezVGTOn4zQFIFfXY5hCemoVyR4fjt/O46F
+         UA9nt5qv6D/LrKoqKL27RJ/Wc8HQ7COjjPk5/fPA7zg0ZLZ3JNGVf0n7z9ZXDmePWSSb
+         ZZPUFUNyN7KNLcnQ5qeIiWYycDLK1EbjKIR0EVn3hRb4SVskcpV+BzhAouk/iGNok3Zo
+         9oFkWZ/8JSzz7ymzQ3OF3FvDJk5R0uvWO8G/bcUI7MUVhE+yzrMLfbD8O9w3qoJ5ighl
+         lCBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696342941; x=1696947741;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gZTPVZjw5Q7ID9PafpDtUtk+upIY6bWyOZZUesf6B3U=;
-        b=Wj2t4MSRvFjOgmABE3VlbAvg/GmCs9gM4/NYaLk8PqNDlkEzGrA615zvWOYZAIeGWP
-         FN2n++LluEdwEU4RLoL2clpEvFpg6oPEmjE69c92AJgLaFGF3LWMtUJyOBusMLYf3L4y
-         ZyUefU7kR/sY4crIm+MJDKoz4yJgM5PktKGFSDIffTJVR4KITrqzYs5oxQu71aH39iUC
-         jKFgc4k93reiRGukAiFCsOhRkLACnJ9H3rRmidKzZzk/Qz9Ajqxe45WyQEGVZcSDubNA
-         5t2uXlO3Me3sPWLDkJYy7+HCHG67mytSodRgU9ag0IoMC4w6fb7lfjvw3ZaG1cXN/8/M
-         lonQ==
-X-Gm-Message-State: AOJu0YxOpzJKKreLpW5uTT6usUGpktiDeGW8uEywl5QSEifUCWm5ACkq
-        W5GNLm3ILCYLBgJ23mZLbUw=
-X-Google-Smtp-Source: AGHT+IEKi6grJ6nrHdtMgB67yD68xZ3JEqIPy/wfgBeOm8Ihw8L+7hmvQPEaDZoWlKlGtpF189MLNA==
-X-Received: by 2002:a05:6402:5243:b0:51d:cfeb:fc3b with SMTP id t3-20020a056402524300b0051dcfebfc3bmr11140823edd.1.1696342940653;
-        Tue, 03 Oct 2023 07:22:20 -0700 (PDT)
-Received: from [192.168.0.106] (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id s3-20020aa7d783000000b0053404772535sm935532edq.81.2023.10.03.07.22.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 07:22:20 -0700 (PDT)
-Message-ID: <7a8e0c9e-4662-ffab-50e8-f0f9e73dbb10@gmail.com>
-Date:   Tue, 3 Oct 2023 16:22:19 +0200
+        d=1e100.net; s=20230601; t=1696342976; x=1696947776;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mQJcLp1PNbZ/HCxUuAL8GIttYWoNS8rEFxPDJqSSreg=;
+        b=P7WxjbF0Yi5Mzk4ySqHs2wmnwwYq40waVbiDYosDBrdPPlWlNcTHif6jgB+wrvpkul
+         rG2j7pitbcMKiojCrwDQLt/DtOOJ4Me+Q9rX9IOyfX0yskH6e0V0UOgEUnxpU/sCOj0G
+         Y9xumL9fDJGkGLzUl+JV1us2xPT4Ut4njLu+iBvHB9nttP/yieixARtZyUUzMvCuS2za
+         f5MqUvvEU7RG/SczWrGaDdW8CkPhvG5RjME0A1CXZM+VbuRxNsG7so6AZpCvfBS0yR32
+         q/HFd9zlSSDS0m65v/JFhBUv6MRt4bEjb7qzNPqtDzafEEO1b8SK6yG1bIlTUClQ1vUN
+         YckQ==
+X-Gm-Message-State: AOJu0YyREF+7y3Asvvlt6SI5XUJkEhCYXmIMa3VXrk3HDx1WALgWF5b3
+        IGL/5wLvCfeDzEq7eIYstVfLHg==
+X-Google-Smtp-Source: AGHT+IGv7PLU7uRYjnFUgK7YvvEdjfi3advrrLLcN7FRUz6vDMpEs0fGL3cW+2lAdwL2wIvXdR0haw==
+X-Received: by 2002:a0c:e18a:0:b0:65d:d:a114 with SMTP id p10-20020a0ce18a000000b0065d000da114mr15681428qvl.55.1696342976103;
+        Tue, 03 Oct 2023 07:22:56 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
+        by smtp.gmail.com with ESMTPSA id h9-20020a0cab09000000b006616fbcc077sm519329qvb.129.2023.10.03.07.22.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 07:22:55 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 10:22:55 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <roman.gushchin@linux.dev>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH rfc 2/5] mm: kmem: add direct objcg pointer to task_struct
+Message-ID: <20231003142255.GE17012@cmpxchg.org>
+References: <20230927150832.335132-1-roman.gushchin@linux.dev>
+ <20230927150832.335132-3-roman.gushchin@linux.dev>
+ <20231002201254.GA8435@cmpxchg.org>
+ <ZRs-RKsOhtO3eclx@P9FQF9L96D>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 0/3] Type encoding info dropped from arrary name
- "abyBBVGA" and variable names "byBBVGACurrent", "byBBVGANew"
-Content-Language: en-US
-To:     Pavan Bobba <opensource206@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <cover.1696141471.git.opensource206@gmail.com>
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <cover.1696141471.git.opensource206@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRs-RKsOhtO3eclx@P9FQF9L96D>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,32 +77,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/3/23 16:15, Pavan Bobba wrote:
-> This patchset series consist of fixes to issues found by checkpatch
+On Mon, Oct 02, 2023 at 03:03:48PM -0700, Roman Gushchin wrote:
+> On Mon, Oct 02, 2023 at 04:12:54PM -0400, Johannes Weiner wrote:
+> > On Wed, Sep 27, 2023 at 08:08:29AM -0700, Roman Gushchin wrote:
+> > > @@ -3001,6 +3001,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
+> > >  	return objcg;
+> > >  }
+> > >  
+> > > +static DEFINE_SPINLOCK(current_objcg_lock);
+> > > +
+> > > +static struct obj_cgroup *current_objcg_update(struct obj_cgroup *old)
+> > > +{
+> > > +	struct mem_cgroup *memcg;
+> > > +	struct obj_cgroup *objcg;
+> > > +	unsigned long flags;
+> > > +
+> > > +	old = current_objcg_clear_update_flag(old);
+> > > +	if (old)
+> > > +		obj_cgroup_put(old);
+> > > +
+> > > +	spin_lock_irqsave(&current_objcg_lock, flags);
+> > > +	rcu_read_lock();
+> > > +	memcg = mem_cgroup_from_task(current);
+> > > +	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
+> > > +		objcg = rcu_dereference(memcg->objcg);
+> > > +		if (objcg && obj_cgroup_tryget(objcg))
+> > > +			break;
+> > > +		objcg = NULL;
+> > > +	}
+> > > +	rcu_read_unlock();
+> > 
+> > Can this tryget() actually fail when this is called on the current
+> > task during fork() and attach()? A cgroup cannot be offlined while
+> > there is a task in it.
 > 
-> Pavan Bobba (3):
->    staging: vt6655: Type encoding info dropped from array name "abyBBVGA"
->    staging: vt6655: Type encoding info dropped from variable name
->      "byBBVGACurrent"
->    staging: vt6655: Type encoding info dropped from variable name
->      "byBBVGANew"
+> Highly theoretically it can if it races against a migration of the current
+> task to another memcg and the previous memcg is getting offlined.
+
+Ah right, if this runs between css_set_move_task() and ->attach(). The
+cache would be briefly updated to a parent in the old hierarchy, but
+then quickly reset from the ->attach().
+
+Can you please add a comment along these lines?
+
+> I actually might make sense to apply the same approach for memcgs as well
+> (saving a lazily-updating memcg pointer on task_struct). Then it will be
+> possible to ditch this "for" loop. But I need some time to master the code
+> and run benchmarks. Idk if it will make enough difference to justify the change.
+
+Yeah the memcg pointer is slightly less attractive from an
+optimization POV because it already is a pretty direct pointer from
+task through the cset array.
+
+If you still want to look into it from a simplification POV that
+sounds reasonable, but IMO it would be fine with a comment.
+
+> > > @@ -6345,6 +6393,22 @@ static void mem_cgroup_move_task(void)
+> > >  		mem_cgroup_clear_mc();
+> > >  	}
+> > >  }
+> > > +
+> > > +#ifdef CONFIG_MEMCG_KMEM
+> > > +static void mem_cgroup_fork(struct task_struct *task)
+> > > +{
+> > > +	task->objcg = (struct obj_cgroup *)0x1;
+> > 
+> > dup_task_struct() will copy this pointer from the old task. Would it
+> > be possible to bump the refcount here instead? That would save quite a
+> > bit of work during fork().
 > 
->   drivers/staging/vt6655/baseband.c    | 40 ++++++++++++++--------------
->   drivers/staging/vt6655/channel.c     |  6 ++---
->   drivers/staging/vt6655/device.h      |  6 ++---
->   drivers/staging/vt6655/device_main.c | 24 ++++++++---------
->   4 files changed, 38 insertions(+), 38 deletions(-)
-> 
+> Yeah, it should be possible. It won't save a lot, but I agree it makes
+> sense. I'll take a look and will prepare a separate patch for this.
 
-Hi Pavan,
+I guess the hairiest part would be synchronizing against a migration
+because all these cgroup core callbacks are unlocked.
 
-please do not send your patches in one email.
-
-You need to send it in 4 separate emails.
-Have a look at this example:
-https://lore.kernel.org/linux-staging/
-It was just send by Tree Davies.
-
-Thanks for your support.
-
-Bye Philipp
+Would it make sense to add ->fork_locked() and ->attach_locked()
+callbacks that are dispatched under the css_set_lock? Then this could
+be a simple if (p && !(p & 0x1)) obj_cgroup_get(), which would
+certainly be nice to workloads where fork() is hot, with little
+downside otherwise.
