@@ -2,79 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 05FDE7B65AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347357B65B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239670AbjJCJkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56298 "EHLO
+        id S239695AbjJCJkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239669AbjJCJka (ORCPT
+        with ESMTP id S239685AbjJCJki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:40:30 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DB0B7
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:40:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6AEE5C433C7;
-        Tue,  3 Oct 2023 09:40:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696326025;
-        bh=IlM7vNLyYOgOVkMA9M5pBtwppAuMiD0RWKVDF7JJY5Q=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Sv4PsUsEx4OpAKJDgJ5D3j/UTfW7fC30A+hLDUnSoAwg2YZcRpYjWKEg2MUHhwEQV
-         02l/qFC04f03sHNoqAtWk8rK4D9aclKpPa2iZ0EGpwj9mwy6G57o+Fp4imBWcFNkzu
-         71JvimYYejq9VqDQu4cs/XkfRt31M+BkJM+xqqRWozB9AatQ6BxkCInQfYEUeoUCDh
-         GmOGFov+aU4WCfetWYfc1jwg07DCis/WjIeQOxjkMuI1io/B/hYGxwEa8RkONXjaK5
-         HyTjRHeGL6blKGgqD33/bZUVYzzHTOHlMYSWI3FZV5CAgykhLHPUDhofJ5T6B3V1ku
-         haMqSETohWyVA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 48558E632D0;
-        Tue,  3 Oct 2023 09:40:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 3 Oct 2023 05:40:38 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F3BAB;
+        Tue,  3 Oct 2023 02:40:33 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9adb9fa7200so146734466b.0;
+        Tue, 03 Oct 2023 02:40:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696326032; x=1696930832; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7CyRh4kQaOdknBgWyMmgJve4C/+MYGcjkmbGU4vHGSk=;
+        b=kAfxjOXRzPLD6U/MqWsJxEV75CpMQ2EeQL/sgjpAp7oXcijS2KRX0bxfNhjpn8YI3o
+         DUcJ7hFQO3USCu1f4V+q3I3RHSDR1GozmzP6V+sa8Jyybz75Rv80ZwPx372bDPAYlgNS
+         otvCQ8GBjGT+JDOdqYI/OjsGGK+80zjq0YKobOMREw204NwUwicLuorEWXm3ELjuxlNT
+         kG8N355kzRXTUmegxjQhchAOfNGtcIXsify0tr0DOPeMv7TRSmzyAN/7jH9ddqI3zg7r
+         BFogMdMAhSNvvHV+uz7nRvlM3fxc1RZjHQjcFuKqB3rNxU1ScjNHsTbhVDkGI1HAlbHz
+         ueGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696326032; x=1696930832;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7CyRh4kQaOdknBgWyMmgJve4C/+MYGcjkmbGU4vHGSk=;
+        b=gF7BUGI+2bA/s6OR6bNsR+dF6jA2RMsarGpJVyITzwHKg09ln4EACcGu0+9DGKA0AH
+         na8caODF3jEBQiKKliPQsypqBciM/nnC3ZyVKpeQZd9u9ZPNDEfAOv1VYH3C2OcKeEzR
+         qW3i26XIO1Lsv15FwH8+Hw5C0Nz+f0Gtn15GMgIHvtEtsjhHKafQ6X5LnGq6iC3/Wnb/
+         glIOF1ZBbZu+lsWNV4J66ay5wBPMltteOjDukmqzGUAJeEjPuXG+rPCxuohwyWTRvNh8
+         fG0MpJfk30K9GUJ2/223HI0y+cPD/bGVkKX/RAbxOtkUF3ZKhcIfgg03xzjPWNGSFWhh
+         J+0g==
+X-Gm-Message-State: AOJu0Yyzo3Z1RcWuC1RrXBhBo+H8QTIwS6ADsFc5/zROAt9opDqVPX5N
+        FsYTMCKycnxGZgrsEFREq8g=
+X-Google-Smtp-Source: AGHT+IEn38FV2RHMM1HqKtteE6m3acfP4+wNwDoKg0nQehp6GxiyBRTrcI2FUoRcydg3Xdprf5qxBQ==
+X-Received: by 2002:a17:906:6a10:b0:9ad:8641:e91b with SMTP id qw16-20020a1709066a1000b009ad8641e91bmr1730320ejc.11.1696326031915;
+        Tue, 03 Oct 2023 02:40:31 -0700 (PDT)
+Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
+        by smtp.gmail.com with ESMTPSA id h14-20020a170906590e00b00992b2c55c67sm760112ejq.156.2023.10.03.02.40.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 02:40:31 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 3 Oct 2023 11:40:29 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Jinank Jain <jinankjain@linux.microsoft.com>
+Cc:     seanjc@google.com, pbonzini@redhat.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        x86@kernel.org, hpa@zytor.com, jinankjain@microsoft.com,
+        thomas.lendacky@amd.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, wei.liu@kernel.org,
+        tiala@microsoft.com
+Subject: Re: [PATCH] arch/x86: Set XSS while handling #VC intercept for CPUID
+Message-ID: <ZRvhjd48oHq2gXB2@gmail.com>
+References: <20231003092835.18974-1-jinankjain@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: ixp4xx_eth: Specify min/max MTU
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169632602529.26043.5537275057934582250.git-patchwork-notify@kernel.org>
-Date:   Tue, 03 Oct 2023 09:40:25 +0000
-References: <20230923-ixp4xx-eth-mtu-v1-1-9e88b908e1b2@linaro.org>
-In-Reply-To: <20230923-ixp4xx-eth-mtu-v1-1-9e88b908e1b2@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     khalasa@piap.pl, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003092835.18974-1-jinankjain@linux.microsoft.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+* Jinank Jain <jinankjain@linux.microsoft.com> wrote:
 
-On Sat, 23 Sep 2023 20:38:22 +0200 you wrote:
-> As we don't specify the MTU in the driver, the framework
-> will fall back to 1500 bytes and this doesn't work very
-> well when we try to attach a DSA switch:
+> According to [1], while handling the #VC intercept for CPUID leaf
+> 0x0000_000D, we need to supply the value of XSS in the GHCB page. If
+> this value is not provided then a spec compliant hypervisor can fail the
+> GHCB request and kill the guest.
 > 
->   eth1: mtu greater than device maximum
->   ixp4xx_eth c800a000.ethernet eth1: error -22 setting
->   MTU to 1504 to include DSA overhead
-> 
-> [...]
+> [1] https://www.amd.com/system/files/TechDocs/56421-guest-hypervisor-communication-block-standardization.pdf
 
-Here is the summary with links:
-  - [net-next] net: ixp4xx_eth: Specify min/max MTU
-    https://git.kernel.org/netdev/net-next/c/13efc44ca644
+URL doesn't seem to exist, I get redirected to AMD's 404 page.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Thanks,
 
-
+	Ingo
