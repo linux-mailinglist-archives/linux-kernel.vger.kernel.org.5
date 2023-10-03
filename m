@@ -2,704 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B097B6312
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D9B7B6308
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:01:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239222AbjJCICB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 04:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
+        id S239201AbjJCIBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 04:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231340AbjJCIB5 (ORCPT
+        with ESMTP id S230237AbjJCIBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 04:01:57 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED610A1;
-        Tue,  3 Oct 2023 01:01:52 -0700 (PDT)
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3936q77d006789;
-        Tue, 3 Oct 2023 04:01:32 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3tf0tfcvx4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Oct 2023 04:01:32 -0400 (EDT)
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 39381UgJ027350
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 3 Oct 2023 04:01:30 -0400
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 3 Oct 2023 04:01:29 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Tue, 3 Oct 2023 04:01:29 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Tue, 3 Oct 2023 04:01:29 -0400
-Received: from amiclaus-VirtualBox.ad.analog.com (AMICLAUS-L02.ad.analog.com [10.48.65.194])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 393814N0012373;
-        Tue, 3 Oct 2023 04:01:24 -0400
-From:   Antoniu Miclaus <antoniu.miclaus@analog.com>
-To:     Antoniu Miclaus <antoniu.miclaus@analog.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
-Subject: [PATCH v3 2/2] drivers: hwmon: ltc2991: add driver support
-Date:   Tue, 3 Oct 2023 11:00:40 +0300
-Message-ID: <20231003080059.8041-2-antoniu.miclaus@analog.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231003080059.8041-1-antoniu.miclaus@analog.com>
-References: <20231003080059.8041-1-antoniu.miclaus@analog.com>
+        Tue, 3 Oct 2023 04:01:13 -0400
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFF29AD
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 01:01:08 -0700 (PDT)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-59e77e4f707so7964667b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 01:01:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696320068; x=1696924868; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z8UNK8jjHO3j+XhJ8hgifUB4wEZkucPxPTntH8sr6bo=;
+        b=SEYCFJcAiJDRnXHARaPMiRX+1OiFkj9POytTw9u25xpV74i6o7P1Eu/n9jp+vfM/0B
+         7Aa6YHO/5FKuticWu4Tg7ZhlgCNSDhl5igPUcbDrrECdHSZcVm3eztzevkifGQc+GX+F
+         ZCBBiKiM+oQXE65qO7V8ZR1seG1ZdZGlZ48XSpdPH/0tIVGa+TZj8P0ftNdp4Ea4cJIR
+         q8mXSL7eGSBwt1lEENecIHHQrhdoWsWV9OHbZYeAte+fn2Fmu0vTYAqo+PULPPHtlvXV
+         V90HpdLxYfaN4+IEv5lQsv/J3w/tbNzp8SjEPlTDgJYgflo+RAfYkJsDUCZBGD0jzcfM
+         BbOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696320068; x=1696924868;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z8UNK8jjHO3j+XhJ8hgifUB4wEZkucPxPTntH8sr6bo=;
+        b=upO35A3Sj6sH00pPCNXPlBe11TtreQA8artB9u6QQe6mP45SwuB67hqPox22v6+ty9
+         P/4tzTbSxKgmErCTinyPOX6Wg3hBROa3DYU685rMN/VzFWic1N9OtQuTQoAGZvF/6yZv
+         Y/exZDcp6Oa1Six5PvT4uVMWeN3X/5zV9eaB2Vy+9JvuBL69wt33S/qQ2PLI++ewjNKw
+         XvxeyjAW+rCkjKQjx5AQAFLxDPvMBISMLJB8Ae/86QM63jmw4ZJu5nafGZu2y8Wm2R1Q
+         g5GGxZRfVIvZMUmvIKDP7YWGCFvWOc9CHuM+VifSnchtbdIQC4LiWTT1hvYnRpFOztQK
+         Y41g==
+X-Gm-Message-State: AOJu0Yz3Bpr02IJm17DLRrSe0EWfyqqPuBltzlNWbky7wEvFjstFmQIy
+        48LGnfldOiZH04K2bz9UXFf3uVSeTFS2kazSPtOA5RVycB8OYguEkS4=
+X-Google-Smtp-Source: AGHT+IE+/CazD7WPLFjjvYPVPNhuviavjNh2ISOII73m27jele67HS6ZBQ1QSauV1lTmIrRGFsiwTD4brCHFPK6dMhg=
+X-Received: by 2002:a81:72c5:0:b0:59b:2458:f612 with SMTP id
+ n188-20020a8172c5000000b0059b2458f612mr13268838ywc.28.1696320067941; Tue, 03
+ Oct 2023 01:01:07 -0700 (PDT)
 MIME-Version: 1.0
+References: <1694813901-26952-1-git-send-email-quic_khsieh@quicinc.com>
+ <1694813901-26952-7-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJpqPXoFX4LXyXYgfh07Vpxg-KgD8VBR6x5bXf4GOJmbOtw@mail.gmail.com>
+ <2f98d5f1-57c1-d9fe-cb1c-b975db057287@quicinc.com> <CAA8EJpr2wRq6Txi7YAQpJKa_9UGqH_nmHzvVOaAPkwOrtDg4Tw@mail.gmail.com>
+ <CAE-0n53dqHONzMTd_ZC-fKWTzDVq6Wqwo4OFZMUcghZ5SD5RhA@mail.gmail.com>
+ <65566a68-3510-2e5f-7d57-e4dba08c008c@quicinc.com> <1d9bf80d-0267-937b-4dd9-c57db7a89cb4@quicinc.com>
+ <CAE-0n51Hrs66oG4NF5rDETkVO-ocG_6_=Aqc5cE-qPDViSgKyA@mail.gmail.com>
+ <58701008-bb93-e5c6-9ca0-5bc43f9a46f0@quicinc.com> <CAE-0n50N6hXM7qQZzccKy2X-kcru9n7Nvgn_V4tOHTnLn64qjw@mail.gmail.com>
+ <b9bd5423-f6e3-e511-613c-b6535c27b205@quicinc.com>
+In-Reply-To: <b9bd5423-f6e3-e511-613c-b6535c27b205@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 3 Oct 2023 11:00:56 +0300
+Message-ID: <CAA8EJprK8W5qysWGD5pv=6A6mqnEZqPAF0DDpDgF0pa+=do-yg@mail.gmail.com>
+Subject: Re: [PATCH v3 6/7] drm/msm/dp: add pm_runtime_force_suspend()/resume()
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, dianders@chromium.org, vkoul@kernel.org,
+        daniel@ffwll.ch, airlied@gmail.com, agross@kernel.org,
+        andersson@kernel.org, quic_jesszhan@quicinc.com,
+        quic_sbillaka@quicinc.com, marijn.suijten@somainline.org,
+        freedreno@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: UpdYXxe3QVaMoZlMzaUeuJ0Vl1ziXSuY
-X-Proofpoint-ORIG-GUID: UpdYXxe3QVaMoZlMzaUeuJ0Vl1ziXSuY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-03_04,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- malwarescore=0 bulkscore=0 phishscore=0 clxscore=1015 adultscore=0
- suspectscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2309180000 definitions=main-2310030056
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for LTC2991 Octal I2C Voltage, Current, and Temperature
-Monitor.
+On Tue, 3 Oct 2023 at 04:33, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+>
+>
+> On 10/2/2023 3:58 PM, Stephen Boyd wrote:
+> > Quoting Abhinav Kumar (2023-09-28 17:46:11)
+> >> On 9/27/2023 3:01 PM, Stephen Boyd wrote:
+> >>> Quoting Kuogee Hsieh (2023-09-25 09:07:18)
+> >>>>
+> >>>> However for external DP case, link training can not be guarantee always
+> >>>> success without link rate or lane being reduced as Abhinav mentioned.
+> >>>>
+> >>>> In addition,  CTS (compliance test) it required to complete link
+> >>>> training within 10ms after hpd asserted.
+> >>>
+> >>> Is it possible to change that timeout? I have to look around for the CTS
+> >>> parameters because I'm pretty confused how it can work. What do we do if
+> >>> DP wakes the system from suspend and asserts HPD? We need resume time to
+> >>> be < 10ms?  That's not realistic.
+> >>>
+> >>
+> >> No, the CTS doesnt say we need to finish link training within 10ms after
+> >> HPD is asserted. It says it must be completed in 10ms after
+> >> TRAINING_PATTERN_SET dpcd write.
+> >>
+> >> "Wait until the Source DUT writes 00h to the TRAINING_PATTERN_SET byte
+> >> of Reference Sink DPCD Link Configuration Field to indicate the end of
+> >> the link training. Stop the link training timer. Verify that link
+> >> training completed in 10ms or less"
+> >>
+> >> That needs to be done independent of HPD so we can ignore the CTS point.
+> >
+> > Great!
+> >
+> >>
+> >>>>
+> >>>> I am not sure do link training at atomic_enable() can meet this timing
+> >>>> requirement.
+> >
+> > Why? It's putting some time bound on link training in general to only
+> > take 10ms, right?
+> >
+>
+> Like I said, CTS is mentioning 10ms to finish link training after the
+> DUT writes 00h to the TRAINING_PATTERN_SET byte. So for this discussion
+> lets leave out CTS for now.
+>
+> >>>>
+> >>>
+> >>> At least in the DP spec itself it doesn't require the link to be trained
+> >>> within 10ms of HPD being asserted. Instead it simply recommends that the
+> >>> OS start configuring the display promptly after HPD is asserted, e.g.
+> >>> within 100ms. There's some strict timing on IRQ_HPD, so the driver must
+> >>> read DPCD registers within 100ms of IRQ_HPD rising edge; maybe that is
+> >>> what CTS is checking for?
+> >>>
+> >>> TL;DR: I don't see why CTS should stop us from link training in
+> >>> atomic_enable(). It would be beneficial to do so to make eDP and DP the
+> >>> same. It would also help to report a drm connector being connected
+> >>> _before_ link training so that userspace knows the link itself is the
+> >>> bad part of the equation (and not that the DP connector looks
+> >>> disconnected to userspace when in fact it really is connected and the
+> >>> monitor is asserting HPD, just the link training failed).
+> >>
+> >> Its the corrective action of the userspace when it finds link is bad is
+> >> the concern as I highlighted in the other response. Just reading and
+> >> resetting link_status is not enough to recover.
+> >
+> > What needs to be done to recover? Userspace will try to set a mode on
+> > the connector again if the link status is bad and there were some modes
+> > available. If there are zero modes and the link is bad, then it ignores
+> > the connector. I'm not sure what else could be done to recover besides
+> > try again and stop trying if no modes exist.
+> >
+>
+> Let me re-explain if I didnt make this clear last time.
+>
+> You are right. Thats all the "userspace" can do which is basically retry
+> the mode. And like I said, its again only going to fail. All the
+> corrective actions you mentioned below like ignoring the connector
+> entirely or consider that the display has link training problems are not
+> something we decided to go with on a commercial device where we expect
+> things to be more reliable.
 
-The LTC2991 is used to monitor system temperatures, voltages and
-currents. Through the I2C serial interface, the eight monitors can
-individually measure supply voltages and can be paired for
-differential measurements of current sense resistors or temperature
-sensing transistors. Additional measurements include internal
-temperature and internal VCC.
+I have had link training issues with one of my laptops (x86) and USB-C
+dock. Usually switching to lower resolution works in such cases.
+Moreover, in some cases after switching to low res, I can successfully
+switch to high res.
 
-Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
----
- Documentation/hwmon/index.rst   |   1 +
- Documentation/hwmon/ltc2991.rst |  43 +++
- MAINTAINERS                     |   8 +
- drivers/hwmon/Kconfig           |  11 +
- drivers/hwmon/Makefile          |   1 +
- drivers/hwmon/ltc2991.c         | 479 ++++++++++++++++++++++++++++++++
- 6 files changed, 543 insertions(+)
- create mode 100644 Documentation/hwmon/ltc2991.rst
- create mode 100644 drivers/hwmon/ltc2991.c
+>
+> Let me re-explain what I explained in the prev response.
+>
+> If driver issues hot-plug after link-training:
+>
+> It would have implemented all the link training mechanisms such as
+> trying lower rates/number of lanes and made sure that when the usermode
+> queries the list of modes, only the modes which fit into the link rate
+> which was link trained successfully will be exposed and the chances of a
+> user ending up with a blank screen on connection are pretty high.
+>
+> This reduces the dependency on usermodes to be smart enough to implement
+> such policies and we would rather not depend on those unless we have
+> some reference to a compositor which is more sturdy. I do not think the
+> CrOS code you have pointed to is more sturdy than the driver mechanism
+> explained above.
+>
+> As opposed to this, if we just issue hotplug without any of this,
+> usermode does not know which mode to retry as we do not remove or edit
+> the mode list once link training fails.
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index 88dadea85cfc..0ec96abe3f7d 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -121,6 +121,7 @@ Hardware Monitoring Kernel Drivers
-    ltc2947
-    ltc2978
-    ltc2990
-+   ltc2991
-    ltc3815
-    ltc4151
-    ltc4215
-diff --git a/Documentation/hwmon/ltc2991.rst b/Documentation/hwmon/ltc2991.rst
-new file mode 100644
-index 000000000000..9ab29dd85012
---- /dev/null
-+++ b/Documentation/hwmon/ltc2991.rst
-@@ -0,0 +1,43 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Kernel driver ltc2991
-+=====================
-+
-+Supported chips:
-+
-+  * Analog Devices LTC2991
-+
-+    Prefix: 'ltc2991'
-+
-+    Addresses scanned: I2C 0x48 - 0x4f
-+
-+    Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/2991ff.pdf
-+
-+Authors:
-+
-+  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-+
-+
-+Description
-+-----------
-+
-+This driver supports hardware monitoring for Analog Devices LTC2991 Octal I2C
-+Voltage, Current and Temperature Monitor.
-+
-+The LTC2991 is used to monitor system temperatures, voltages and currents.
-+Through the I2C serial interface, the eight monitors can individually measure
-+supply voltages and can be paired for differential measurements of current sense
-+resistors or temperature sensing transistors. Additional measurements include
-+internal temperatureand internal VCC.
-+
-+
-+sysfs-Interface
-+-------------
-+
-+The following attributes are supported. Limits are read-only.
-+
-+=============== =================
-+inX_input:      voltage input
-+currX_input:    current input
-+tempX_input:    temperature input
-+=============== =================
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b19995690904..98dd8a8e1f84 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12451,6 +12451,14 @@ F:	drivers/hwmon/ltc2947-i2c.c
- F:	drivers/hwmon/ltc2947-spi.c
- F:	drivers/hwmon/ltc2947.h
- 
-+LTC2991 HARDWARE MONITOR DRIVER
-+M:	Antoniu Miclaus <antoniu.miclaus@analog.com>
-+L:	linux-hwmon@vger.kernel.org
-+S:	Supported
-+W:	https://ez.analog.com/linux-software-drivers
-+F:	Documentation/devicetree/bindings/hwmon/adi,ltc2991.yaml
-+F:	drivers/hwmon/ltc2991.c
-+
- LTC2983 IIO TEMPERATURE DRIVER
- M:	Nuno Sá <nuno.sa@analog.com>
- L:	linux-iio@vger.kernel.org
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index ec38c8892158..818a67328fcd 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -932,6 +932,17 @@ config SENSORS_LTC2990
- 	  This driver can also be built as a module. If so, the module will
- 	  be called ltc2990.
- 
-+config SENSORS_LTC2991
-+	tristate "Analog Devices LTC2991"
-+	depends on I2C
-+	help
-+	  If you say yes here you get support for Analog Devices LTC2991
-+	  Octal I2C Voltage, Current, and Temperature Monitor. The LTC2991
-+	  supports a combination of voltage, current and temperature monitoring.
-+
-+	  This driver can also be built as a module. If so, the module will
-+	  be called ltc2991.
-+
- config SENSORS_LTC2992
- 	tristate "Linear Technology LTC2992"
- 	depends on I2C
-diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-index 4ac9452b5430..f324d057535a 100644
---- a/drivers/hwmon/Makefile
-+++ b/drivers/hwmon/Makefile
-@@ -127,6 +127,7 @@ obj-$(CONFIG_SENSORS_LTC2947)	+= ltc2947-core.o
- obj-$(CONFIG_SENSORS_LTC2947_I2C) += ltc2947-i2c.o
- obj-$(CONFIG_SENSORS_LTC2947_SPI) += ltc2947-spi.o
- obj-$(CONFIG_SENSORS_LTC2990)	+= ltc2990.o
-+obj-$(CONFIG_SENSORS_LTC2991)	+= ltc2991.o
- obj-$(CONFIG_SENSORS_LTC2992)	+= ltc2992.o
- obj-$(CONFIG_SENSORS_LTC4151)	+= ltc4151.o
- obj-$(CONFIG_SENSORS_LTC4215)	+= ltc4215.o
-diff --git a/drivers/hwmon/ltc2991.c b/drivers/hwmon/ltc2991.c
-new file mode 100644
-index 000000000000..b5333c25cb31
---- /dev/null
-+++ b/drivers/hwmon/ltc2991.c
-@@ -0,0 +1,479 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2023 Analog Devices, Inc.
-+ * Author: Antoniu Miclaus <antoniu.miclaus@analog.com>
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/err.h>
-+#include <linux/hwmon.h>
-+#include <linux/hwmon-sysfs.h>
-+#include <linux/i2c.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/property.h>
-+#include <linux/regmap.h>
-+#include <linux/regulator/consumer.h>
-+
-+#include <asm/unaligned.h>
-+
-+#define LTC2991_STATUS_LOW		0x00
-+#define LTC2991_CH_EN_TRIGGER		0x01
-+#define LTC2991_V1_V4_CTRL		0x06
-+#define LTC2991_V5_V8_CTRL		0x07
-+#define LTC2991_PWM_TH_LSB_T_INT	0x08
-+#define LTC2991_PWM_TH_MSB		0x09
-+#define LTC2991_CHANNEL_V_MSB(x)	(0x0A + ((x) * 2))
-+#define LTC2991_CHANNEL_T_MSB(x)	(0x0A + ((x) * 4))
-+#define LTC2991_CHANNEL_C_MSB(x)	(0x0C + ((x) * 4))
-+#define LTC2991_T_INT_MSB		0x1A
-+#define LTC2991_VCC_MSB			0x1C
-+
-+#define LTC2991_V7_V8_EN		BIT(7)
-+#define LTC2991_V5_V6_EN		BIT(6)
-+#define LTC2991_V3_V4_EN		BIT(5)
-+#define LTC2991_V1_V2_EN		BIT(4)
-+#define LTC2991_T_INT_VCC_EN		BIT(3)
-+
-+#define LTC2991_V3_V4_FILT_EN		BIT(7)
-+#define LTC2991_V3_V4_TEMP_EN		BIT(5)
-+#define LTC2991_V3_V4_DIFF_EN		BIT(4)
-+#define LTC2991_V1_V2_FILT_EN		BIT(3)
-+#define LTC2991_V1_V2_TEMP_EN		BIT(1)
-+#define LTC2991_V1_V2_DIFF_EN		BIT(0)
-+
-+#define LTC2991_V7_V8_FILT_EN		BIT(7)
-+#define LTC2991_V7_V8_TEMP_EN		BIT(5)
-+#define LTC2991_V7_V8_DIFF_EN		BIT(4)
-+#define LTC2991_V5_V6_FILT_EN		BIT(7)
-+#define LTC2991_V5_V6_TEMP_EN		BIT(5)
-+#define LTC2991_V5_V6_DIFF_EN		BIT(4)
-+
-+#define LTC2991_REPEAT_ACQ_EN		BIT(4)
-+#define LTC2991_T_INT_FILT_EN		BIT(3)
-+
-+#define LTC2991_MAX_CHANNEL		4
-+#define LTC2991_T_INT_CH_NR		4
-+#define LTC2991_VCC_CH_NR		0
-+
-+static const char *const label_voltages[] = {
-+	"vcc",
-+	"voltage1",
-+	"voltage2",
-+	"voltage3",
-+	"voltage4",
-+	"voltage5",
-+	"voltage6",
-+	"voltage7",
-+	"voltage8"
-+};
-+
-+static const char *const label_temp[] = {
-+	"t1",
-+	"t2",
-+	"t3",
-+	"t4",
-+	"t_int"
-+};
-+
-+static const char *const label_curr[] = {
-+	"v1-v2",
-+	"v3-v4",
-+	"v5-v6",
-+	"v7-v8"
-+};
-+
-+struct ltc2991_state {
-+	struct i2c_client	*client;
-+	struct regmap		*regmap;
-+	u32			r_sense_uohm[LTC2991_MAX_CHANNEL];
-+	bool			temp_en[LTC2991_MAX_CHANNEL];
-+};
-+
-+static int ltc2991_read_reg(struct ltc2991_state *st, u8 addr, u8 reg_len,
-+			    int *val)
-+{
-+	u8 regvals[2];
-+	int ret;
-+
-+	if (reg_len > 2 || !reg_len)
-+		return -EINVAL;
-+
-+	ret = regmap_bulk_read(st->regmap, addr, regvals, reg_len);
-+	if (ret)
-+		return ret;
-+
-+	if (reg_len == 2)
-+		*val = get_unaligned_be16(&regvals[0]);
-+	else
-+		*val = regvals[0];
-+
-+	return 0;
-+}
-+
-+static int ltc2991_get_voltage(struct ltc2991_state *st, u32 reg, long *val)
-+{
-+	int reg_val, ret, offset = 0;
-+
-+	ret = ltc2991_read_reg(st, reg, 2, &reg_val);
-+	if (ret)
-+		return ret;
-+
-+	if (reg == LTC2991_VCC_MSB)
-+		/* Vcc 2.5V offset */
-+		offset = 2500;
-+
-+	/* Vx, 305.18uV/LSB */
-+	*val = DIV_ROUND_CLOSEST(sign_extend32(reg_val, 14) * 30518,
-+				 1000 * 100) + offset;
-+
-+	return 0;
-+}
-+
-+static int ltc2991_read_in(struct device *dev, u32 attr, int channel, long *val)
-+{
-+	struct ltc2991_state *st = dev_get_drvdata(dev);
-+	u32 reg;
-+
-+	switch (attr) {
-+	case hwmon_in_input:
-+		if (channel == LTC2991_VCC_CH_NR)
-+			reg = LTC2991_VCC_MSB;
-+		else
-+			reg = LTC2991_CHANNEL_V_MSB(channel - 1);
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return ltc2991_get_voltage(st, reg, val);
-+}
-+
-+static int ltc2991_get_curr(struct ltc2991_state *st, u32 reg, int channel,
-+			    long *val)
-+{
-+	int reg_val, ret;
-+
-+	ret = ltc2991_read_reg(st, reg, 2, &reg_val);
-+	if (ret)
-+		return ret;
-+
-+	/* Vx-Vy, 19.075uV/LSB */
-+	*val = DIV_ROUND_CLOSEST(sign_extend32(reg_val, 14) * 19075, 1000)
-+				 / (st->r_sense_uohm[channel] / 1000);
-+
-+	return 0;
-+}
-+
-+static int ltc2991_read_curr(struct device *dev, u32 attr, int channel,
-+			     long *val)
-+{
-+	struct ltc2991_state *st = dev_get_drvdata(dev);
-+	u32 reg;
-+
-+	switch (attr) {
-+	case hwmon_curr_input:
-+		reg = LTC2991_CHANNEL_C_MSB(channel);
-+		return ltc2991_get_curr(st, reg, channel, val);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static int ltc2991_get_temp(struct ltc2991_state *st, u32 reg, int channel,
-+			    long *val)
-+{
-+	int reg_val, ret;
-+
-+	ret = ltc2991_read_reg(st, reg, 2, &reg_val);
-+	if (ret)
-+		return ret;
-+
-+	/* Temp LSB = 0.0625 Degrees */
-+	*val = DIV_ROUND_CLOSEST(sign_extend32(reg_val, 12) * 1000, 16);
-+
-+	return 0;
-+}
-+
-+static int ltc2991_read_temp(struct device *dev, u32 attr, int channel,
-+			     long *val)
-+{
-+	struct ltc2991_state *st = dev_get_drvdata(dev);
-+	u32 reg;
-+
-+	switch (attr) {
-+	case hwmon_temp_input:
-+		if (channel == LTC2991_T_INT_CH_NR)
-+			reg = LTC2991_T_INT_MSB;
-+		else
-+			reg = LTC2991_CHANNEL_T_MSB(channel);
-+
-+		return ltc2991_get_temp(st, reg, channel, val);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static int ltc2991_read(struct device *dev, enum hwmon_sensor_types type,
-+			u32 attr, int channel, long *val)
-+{
-+	switch (type) {
-+	case hwmon_in:
-+		return ltc2991_read_in(dev, attr, channel, val);
-+	case hwmon_curr:
-+		return ltc2991_read_curr(dev, attr, channel, val);
-+	case hwmon_temp:
-+		return ltc2991_read_temp(dev, attr, channel, val);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static umode_t ltc2991_is_visible(const void *data,
-+				  enum hwmon_sensor_types type, u32 attr,
-+				  int channel)
-+{
-+	const struct ltc2991_state *st = data;
-+
-+	switch (type) {
-+	case hwmon_in:
-+		switch (attr) {
-+		case hwmon_in_input:
-+		case hwmon_in_label:
-+			return 0444;
-+		}
-+		break;
-+	case hwmon_curr:
-+		switch (attr) {
-+		case hwmon_curr_input:
-+		case hwmon_curr_label:
-+			if (st->r_sense_uohm[channel])
-+				return 0444;
-+			break;
-+		}
-+		break;
-+	case hwmon_temp:
-+		switch (attr) {
-+		case hwmon_temp_input:
-+		case hwmon_temp_label:
-+			if (st->temp_en[channel] ||
-+			    channel == LTC2991_T_INT_CH_NR)
-+				return 0444;
-+			break;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ltc2991_read_string(struct device *dev, enum hwmon_sensor_types type,
-+			       u32 attr, int channel, const char **str)
-+{
-+	switch (type) {
-+	case hwmon_temp:
-+		*str = label_temp[channel];
-+		break;
-+	case hwmon_curr:
-+		*str = label_curr[channel];
-+		break;
-+	case hwmon_in:
-+		*str = label_voltages[channel];
-+		break;
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct hwmon_ops ltc2991_hwmon_ops = {
-+	.is_visible = ltc2991_is_visible,
-+	.read = ltc2991_read,
-+	.read_string = ltc2991_read_string,
-+};
-+
-+static const struct hwmon_channel_info *ltc2991_info[] = {
-+	HWMON_CHANNEL_INFO(temp,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL,
-+			   HWMON_T_INPUT | HWMON_T_LABEL
-+			   ),
-+	HWMON_CHANNEL_INFO(curr,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL,
-+			   HWMON_C_INPUT | HWMON_C_LABEL
-+			   ),
-+	HWMON_CHANNEL_INFO(in,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL
-+			   ),
-+	NULL
-+};
-+
-+static const struct hwmon_chip_info ltc2991_chip_info = {
-+	.ops = &ltc2991_hwmon_ops,
-+	.info = ltc2991_info,
-+};
-+
-+static const struct regmap_config ltc2991_regmap_config = {
-+	.reg_bits = 8,
-+	.val_bits = 8,
-+	.max_register = 0x1D,
-+};
-+
-+static int ltc2991_init(struct ltc2991_state *st)
-+{
-+	struct fwnode_handle *child;
-+	int ret;
-+	u32 val, addr;
-+	u8 v5_v8_reg_data = 0, v1_v4_reg_data = 0;
-+
-+	ret = devm_regulator_get_enable(&st->client->dev, "vcc");
-+	if (ret)
-+		return dev_err_probe(&st->client->dev, ret,
-+				     "failed to enable regulator\n");
-+
-+	device_for_each_child_node(&st->client->dev, child) {
-+		ret = fwnode_property_read_u32(child, "reg", &addr);
-+		if (ret < 0) {
-+			fwnode_handle_put(child);
-+			return ret;
-+		}
-+
-+		if (addr > 3) {
-+			fwnode_handle_put(child);
-+			return -EINVAL;
-+		}
-+
-+		ret = fwnode_property_read_u32(child, "shunt-resistor-micro-ohms", &val);
-+		if (!ret) {
-+			st->r_sense_uohm[addr] = val;
-+			switch (addr) {
-+			case 0:
-+				v1_v4_reg_data |= LTC2991_V1_V2_DIFF_EN;
-+				break;
-+			case 1:
-+				v1_v4_reg_data |= LTC2991_V3_V4_DIFF_EN;
-+				break;
-+			case 2:
-+				v5_v8_reg_data |= LTC2991_V5_V6_DIFF_EN;
-+				break;
-+			case 3:
-+				v5_v8_reg_data |= LTC2991_V7_V8_DIFF_EN;
-+				break;
-+			default:
-+				break;
-+			}
-+		}
-+
-+		ret = fwnode_property_read_bool(child, "adi,temperature-enable");
-+		if (ret) {
-+			st->temp_en[addr] = ret;
-+			switch (addr) {
-+			case 0:
-+				v1_v4_reg_data |= LTC2991_V1_V2_TEMP_EN;
-+				break;
-+			case 1:
-+				v1_v4_reg_data |= LTC2991_V3_V4_TEMP_EN;
-+				break;
-+			case 2:
-+				v5_v8_reg_data |= LTC2991_V5_V6_TEMP_EN;
-+				break;
-+			case 3:
-+				v5_v8_reg_data |= LTC2991_V7_V8_TEMP_EN;
-+				break;
-+			default:
-+				break;
-+			}
-+		}
-+	}
-+
-+	ret = regmap_write(st->regmap, LTC2991_V5_V8_CTRL, v5_v8_reg_data);
-+	if (ret)
-+		return dev_err_probe(&st->client->dev, ret,
-+				     "Error: Failed to set V5-V8 CTRL reg.\n");
-+
-+	ret = regmap_write(st->regmap, LTC2991_V1_V4_CTRL, v1_v4_reg_data);
-+	if (ret)
-+		return dev_err_probe(&st->client->dev, ret,
-+				     "Error: Failed to set V1-V4 CTRL reg.\n");
-+
-+	ret = regmap_write(st->regmap, LTC2991_PWM_TH_LSB_T_INT,
-+			   LTC2991_REPEAT_ACQ_EN);
-+	if (ret)
-+		return dev_err_probe(&st->client->dev, ret,
-+				     "Error: Failed to set contiuous mode.\n");
-+
-+	/* Enable all channels and trigger conversions */
-+	return regmap_write(st->regmap, LTC2991_CH_EN_TRIGGER,
-+			    LTC2991_V7_V8_EN | LTC2991_V5_V6_EN |
-+			    LTC2991_V3_V4_EN | LTC2991_V1_V2_EN |
-+			    LTC2991_T_INT_VCC_EN);
-+}
-+
-+static int ltc2991_i2c_probe(struct i2c_client *client)
-+{
-+	int ret;
-+	struct device *hwmon_dev;
-+	struct ltc2991_state *st;
-+
-+	st = devm_kzalloc(&client->dev, sizeof(*st), GFP_KERNEL);
-+	if (!st)
-+		return -ENOMEM;
-+
-+	st->client = client;
-+	st->regmap = devm_regmap_init_i2c(client, &ltc2991_regmap_config);
-+	if (IS_ERR(st->regmap))
-+		return PTR_ERR(st->regmap);
-+
-+	ret = ltc2991_init(st);
-+	if (ret)
-+		return ret;
-+
-+	hwmon_dev = devm_hwmon_device_register_with_info(&client->dev,
-+							 client->name, st,
-+							 &ltc2991_chip_info,
-+							 NULL);
-+
-+	return PTR_ERR_OR_ZERO(hwmon_dev);
-+}
-+
-+static const struct of_device_id ltc2991_of_match[] = {
-+	{ .compatible = "adi,ltc2991" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, ltc2991_of_match);
-+
-+static const struct i2c_device_id ltc2991_i2c_id[] = {
-+	{ "ltc2991", 0 },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, ltc2991_i2c_id);
-+
-+static struct i2c_driver ltc2991_i2c_driver = {
-+	.driver = {
-+		.name = "ltc2991",
-+		.of_match_table = ltc2991_of_match,
-+	},
-+	.probe = ltc2991_i2c_probe,
-+	.id_table = ltc2991_i2c_id,
-+};
-+
-+module_i2c_driver(ltc2991_i2c_driver);
-+
-+MODULE_AUTHOR("Antoniu Miclaus <antoniu.miclaus@analog.com>");
-+MODULE_DESCRIPTION("Analog Devices LTC2991 HWMON Driver");
-+MODULE_LICENSE("GPL");
+I think we are trying to be overprotective here. From my point of
+view, there are two kinds of issues:
+1) We know that some modes can not be supported (e.g. because of the
+amount of lanes available or because of the board link rate
+limitations).
+Of course the kernel should not present these modes to userspace
+
+2) Modes that pass known limitations, but can not be set e.g. because
+of the bad cable or dirty connector.
+Neither kernel nor userspace have control here. Judging from my
+experience with x86, we should pass all these modes to userspace. Then
+the user can select what seems to be working.
+
+>
+> > Acting like the connector isn't connected makes the situation worse for
+> > ChromeOS because userspace thinks there's nothing there so it can't try
+> > to retrain the link again. Instead, userspace has to rely on the kernel
+> > driver to train the link again. The kernel should just tell userspace
+> > the link is bad so userspace can implement the policy to either ignore
+> > the connector entirely or to consider it a display that is having link
+> > training problems.
+> >
+>
+> What gain will it give if it retries the same mode blindly as opposed to
+> the safer option I have explained above. None of the policies you have
+> highlighted seem like something an end user will be satisfied with.
+>
+> > So again, I see no reason why the kernel driver thinks it can implement
+> > a policy to train the link before indicating the drm connector is
+> > connected. It should stop doing that. Instead it should tell userspace
+> > that the connector is connected and then train the link when there's a
+> > modeset. If the modeset fails then userspace can take action to either
+> > figure out that the link is bad, or notify the user that the cable is
+> > bad, or to try replugging or power cycle the monitor, etc. None of that
+> > can be done if the kernel lies about the state of the connector because
+> > the link training failed.
+>
+> Usermode is unable to take the corrective action without proper support
+> from the kernel like removing unsupported modes etc and I dont see other
+> drivers taking an action like that. Kernel is not lying. Its delaying
+> the status to a point where usermode can safely handle.
+>
+> Please explain to me how any of the policies you have explained usermode
+> can take are safer and have more chance of success than what we have now.
+
+
+
 -- 
-2.42.0
-
+With best wishes
+Dmitry
