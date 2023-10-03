@@ -2,108 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F36427B6A8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 521B97B6A91
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236497AbjJCN3c convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 09:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53178 "EHLO
+        id S232637AbjJCNbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:31:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234951AbjJCN3b (ORCPT
+        with ESMTP id S231296AbjJCNbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:29:31 -0400
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EA2AB;
-        Tue,  3 Oct 2023 06:29:28 -0700 (PDT)
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3ae0df6494bso81534b6e.1;
-        Tue, 03 Oct 2023 06:29:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696339768; x=1696944568;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EgTheVskLJNxwiIux7F+HpZW9rPZyOHwxwNzj7ZHzWs=;
-        b=pTQGlo8F0KaNU1hYktJ01OiTsZ+GSovTdWmWfMuFJWFvnlqxflykx6jSqhuSpEU6lz
-         UjcCgGYrV6TrR3Skssat1+89DDV5tahbcfh2aZFHcsatvcwqGU4qkSl3sofJS3XXo3tw
-         f5lRyJqSvS61PVz31tIt9BT3P3KIZccJR/3rHHhF0XB+yQeC5buCde1RUvgEI/dtVFA2
-         DmBsaZSUoF2CFySwSLs93qGq9EVPJplzn5zjoTp0PDMfTkn1UfxE4m7efXCPeo0LiWgk
-         0MkFwQUx4zvU0htw265NjQ1GIhsE3hYfOv21aX6WQLCpZW8XYX6zl04nprahWXDeo9KY
-         2dZA==
-X-Gm-Message-State: AOJu0YzX7J61IALeh5RL+UPg8V9EPLPG6erdDzHBQ73KRByyje9ex3UR
-        B3XDcO9XyqT10cVErjkFNNUdVl7cTpFMSJUeq60malGi
-X-Google-Smtp-Source: AGHT+IFvgpZtGFxEjqXVRDrG6th4u6a1MW/1xTy8JY7Gv+arPmgxWjCuEpnzmbbNt/DLfD2NoURtROARl1sR/F3p+QU=
-X-Received: by 2002:a05:6808:2029:b0:3a9:e85d:b689 with SMTP id
- q41-20020a056808202900b003a9e85db689mr16893352oiw.0.1696339767998; Tue, 03
- Oct 2023 06:29:27 -0700 (PDT)
+        Tue, 3 Oct 2023 09:31:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C544FA3;
+        Tue,  3 Oct 2023 06:31:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696339878; x=1727875878;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=xxqxS0x5dYC4fVbGucgwjPASbXwI7a727oCG19nYfBo=;
+  b=e4IDrobHB92BSfB9sjBDnKldDpDicAZtKzr8oz3/B/CKBfQGKLekfXIJ
+   Bt11IcS7I/1qD7Xhl0+t8Z9mGzr8kPsznD+lNL+Z64aAG+mOc3386mexm
+   wyJbYc2uxmpk1j5Hnnzw69sLDaQikmNkP3RIKMsqBvqFRG6Ckw/cPCoGR
+   LDl+l/t/ZQ+meFOWyNjvbfTU9Vux8hYoCSlb1qYWAQBCLM9zIbjo/0PSn
+   J/wU4XC/a5HmdCDKf//EYLjJcZYHimhmx19rCFRTblds1sdCp3dcx201H
+   2pMachrkpDhkOVVkhAmGKS/Njf1W/ys63126Zd57tR2QnAcHnPtoh6uRM
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="4439820"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="4439820"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 06:31:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="744506253"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="744506253"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 06:31:14 -0700
+Date:   Tue, 3 Oct 2023 16:31:12 +0300
+From:   Raag Jadav <raag.jadav@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linus.walleij@linaro.org, mika.westerberg@linux.intel.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v2 0/2] Drop runtime PM support for Baytrail and
+ Lynxpoint pinctrl
+Message-ID: <ZRwXoK2fca3buQ9y@black.fi.intel.com>
+References: <20231003114036.27674-1-raag.jadav@intel.com>
+ <ZRwGGS+Uilr/egln@smile.fi.intel.com>
 MIME-Version: 1.0
-References: <20230927-pcc_defines-v2-0-0b8ffeaef2e5@arm.com> <20230927-pcc_defines-v2-1-0b8ffeaef2e5@arm.com>
-In-Reply-To: <20230927-pcc_defines-v2-1-0b8ffeaef2e5@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 3 Oct 2023 15:29:16 +0200
-Message-ID: <CAJZ5v0hG0sDJ4VOY+Gk0Fg1gebNft+z3YK9Jf-7NHb9Ow-C2mg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] ACPI: PCC: Add PCC shared memory region command
- and status bitfields
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Huisong Li <lihuisong@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRwGGS+Uilr/egln@smile.fi.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 27, 2023 at 6:32 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> Define the common macros to use when referring to various bitfields in
-> the PCC generic communications channel command and status fields.
->
-> Currently different drivers that need to use these bitfields have defined
-> these locally. This common macro is intended to consolidate and replace
-> those.
->
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
->  include/acpi/pcc.h | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->
-> diff --git a/include/acpi/pcc.h b/include/acpi/pcc.h
-> index 73e806fe7ce7..021891a7434f 100644
-> --- a/include/acpi/pcc.h
-> +++ b/include/acpi/pcc.h
-> @@ -18,7 +18,20 @@ struct pcc_mbox_chan {
->         u16 min_turnaround_time;
->  };
->
-> +/* Generic Communications Channel Shared Memory Region */
-> +#define PCC_SIGNATURE                  0x50424300
-> +/* Generic Communications Channel Command Field */
-> +#define PCC_CMD_GENERATE_DB_INTR       BIT(15)
-> +/* Generic Communications Channel Status Field */
-> +#define PCC_STATUS_CMD_COMPLETE                BIT(0)
-> +#define PCC_STATUS_SCI_DOORBELL                BIT(1)
-> +#define PCC_STATUS_ERROR               BIT(2)
-> +#define PCC_STATUS_PLATFORM_NOTIFY     BIT(3)
-> +/* Initiator Responder Communications Channel Flags */
-> +#define PCC_CMD_COMPLETION_NOTIFY      BIT(0)
-> +
->  #define MAX_PCC_SUBSPACES      256
-> +
->  #ifdef CONFIG_PCC
->  extern struct pcc_mbox_chan *
->  pcc_mbox_request_channel(struct mbox_client *cl, int subspace_id);
->
-> --
+On Tue, Oct 03, 2023 at 03:16:25PM +0300, Andy Shevchenko wrote:
+> On Tue, Oct 03, 2023 at 05:10:34PM +0530, Raag Jadav wrote:
+> > This series removes runtime PM support for the devices that are not
+> > explicitly attached to acpi_lpss_pm_domain as it is dead code anyway.
+> > 
+> > This has no functional impact and helps reduce their code and memory
+> > footprint.
+> > 
+> > bloat-o-meter:
+> > ==============
+> > 
+> > Baytrail:
+> > add/remove: 2/4 grow/shrink: 0/3 up/down: 49/-103 (-54)
+> > Total: Before=16104, After=16050, chg -0.34%
+> > 
+> > Lynxpoint:
+> > add/remove: 7/10 grow/shrink: 1/3 up/down: 152/-223 (-71)
+> > Total: Before=7506, After=7435, chg -0.95%
+> > 
+> > Changes since v1:
+> > - Add missing pm.h
+> > 
+> > Raag Jadav (2):
+> >   pinctrl: baytrail: drop runtime PM support
+> >   pinctrl: lynxpoint: drop runtime PM support
+> > 
+> >  drivers/pinctrl/intel/pinctrl-baytrail.c  | 19 ++------------
+> >  drivers/pinctrl/intel/pinctrl-lynxpoint.c | 32 +++--------------------
+> >  2 files changed, 5 insertions(+), 46 deletions(-)
+> 
+> You forgot --base... :-(
 
-Do you want me to pick up this lot?
+Sorry, I need to go figure out some send-email automation.
+
+Raag
