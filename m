@@ -2,107 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4FDC7B69AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:01:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE31A7B69AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbjJCNBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47942 "EHLO
+        id S232408AbjJCNBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbjJCNBM (ORCPT
+        with ESMTP id S230283AbjJCNBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:01:12 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 64DCA93
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:01:09 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ABB561FB;
-        Tue,  3 Oct 2023 06:01:47 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B6FE73F59C;
-        Tue,  3 Oct 2023 06:01:08 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 14:01:06 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] firmware: arm_ffa: Assign the missing IDR allocation ID
- to the FFA device
-Message-ID: <20231003130106.ahzajd46kqyevyex@bogus>
-References: <20231003085932.3553985-1-sudeep.holla@arm.com>
+        Tue, 3 Oct 2023 09:01:51 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0756693;
+        Tue,  3 Oct 2023 06:01:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696338109; x=1727874109;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=5BuiHCbUGxDTXwBye3t5k+Ijkv31TrOL/+KCudCyRS8=;
+  b=FqUn7KpepFTyNqXzdElUcBDwZoLpH+mPPbz7O2O2c3Xs3AbrOtJXpUha
+   7cj9RRxKoC4PDlBHccCS+IQtA6bsHc8+L2HeW7F1fAyyFrXEHuOdv4Ygr
+   PqnEOLDHiPP8a5BzZb3YLXQU1Jne5bYd6sij91YS9L2+0ebVJxiTqueR1
+   HQlg0VpR+keKEP+0WGETeWTqv205JNCaWMMg+2frIT+GopxjySzCFT8YC
+   FOAMe62ZFIvA5ok97jLK27zWufP2akDY3/52trYKcIibhIm4bsJ7lDDo7
+   13yhlRzVgEGiHwEtqCm/hTNBXP4B19WR2KB4d3uVLCC+C81RhjaQbG27S
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="381745967"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="381745967"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 06:01:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="786085405"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="786085405"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga001.jf.intel.com with ESMTP; 03 Oct 2023 06:01:46 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 9AEE118A0; Tue,  3 Oct 2023 16:01:45 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy@kernel.org>
+Subject: [PATCH v1 1/1] kernel.h: Move lib/cmdline.c prototypes to string.h
+Date:   Tue,  3 Oct 2023 16:01:42 +0300
+Message-Id: <20231003130142.2936503-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003085932.3553985-1-sudeep.holla@arm.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 09:59:32AM +0100, Sudeep Holla wrote:
-> Commit 19b8766459c4 ("firmware: arm_ffa: Fix FFA device names for logical
-> partitions") added an ID to the FFA device using ida_alloc() and append
-> the same to "arm-ffa" to make up a unique device name. However it missed
-> to stash the id value in ffa_dev to help freeing the ID later when the
-> device is destroyed.
-> 
-> Due to the missing/unassigned ID in FFA device, we get the following
-> warning when the FF-A device is unregistered. Fix the same by actually
-> assigning the ID in the FFA device this time for real.
->
+The lib/cmdline.c is basically a set of some small string parsers
+which are wide used in the kernel. Their prototypes belong to the
+string.h rather then kernel.h.
 
-Missed the below warning:
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/linux/kernel.h | 6 ------
+ include/linux/string.h | 8 ++++++++
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-  |   ida_free called for id=0 which is not allocated.
-  |   WARNING: CPU: 7 PID: 1 at lib/idr.c:525 ida_free+0x114/0x164
-  |   CPU: 7 PID: 1 Comm: swapper/0 Not tainted 6.6.0-rc4 #209
-  |   pstate: 61400009 (nZCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-  |   pc : ida_free+0x114/0x164
-  |   lr : ida_free+0x114/0x164
-  |   Call trace:
-  |    ida_free+0x114/0x164
-  |    ffa_release_device+0x24/0x3c
-  |    device_release+0x34/0x8c
-  |    kobject_put+0x94/0xf8
-  |    put_device+0x18/0x24
-  |    klist_devices_put+0x14/0x20
-  |    klist_next+0xc8/0x114
-  |    bus_for_each_dev+0xd8/0x144
-  |    arm_ffa_bus_exit+0x30/0x54
-  |    ffa_init+0x68/0x330
-  |    do_one_initcall+0xdc/0x250
-  |    do_initcall_level+0x8c/0xac
-  |    do_initcalls+0x54/0x94
-  |    do_basic_setup+0x1c/0x28
-  |    kernel_init_freeable+0x104/0x170
-  |    kernel_init+0x20/0x1a0
-  |    ret_from_fork+0x10/0x20
-
-> Fixes: 19b8766459c4 ("firmware: arm_ffa: Fix FFA device names for logical partitions")
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
->  drivers/firmware/arm_ffa/bus.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/firmware/arm_ffa/bus.c b/drivers/firmware/arm_ffa/bus.c
-> index 2b8bfcd010f5..7865438b3696 100644
-> --- a/drivers/firmware/arm_ffa/bus.c
-> +++ b/drivers/firmware/arm_ffa/bus.c
-> @@ -193,6 +193,7 @@ struct ffa_device *ffa_device_register(const uuid_t *uuid, int vm_id,
->  	dev->release = ffa_release_device;
->  	dev_set_name(&ffa_dev->dev, "arm-ffa-%d", id);
->  
-> +	ffa_dev->id = id;
->  	ffa_dev->vm_id = vm_id;
->  	ffa_dev->ops = ops;
->  	uuid_copy(&ffa_dev->uuid, uuid);
-> -- 
-> 2.42.0
-> 
-
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index c07f9c779d45..3e6c5ac08f8b 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -195,12 +195,6 @@ static inline void might_fault(void) { }
+ 
+ void do_exit(long error_code) __noreturn;
+ 
+-extern int get_option(char **str, int *pint);
+-extern char *get_options(const char *str, int nints, int *ints);
+-extern unsigned long long memparse(const char *ptr, char **retptr);
+-extern bool parse_option_str(const char *str, const char *option);
+-extern char *next_arg(char *args, char **param, char **val);
+-
+ extern int core_kernel_text(unsigned long addr);
+ extern int __kernel_text_address(unsigned long addr);
+ extern int kernel_text_address(unsigned long addr);
+diff --git a/include/linux/string.h b/include/linux/string.h
+index 3c920b6d609b..0995f2a737ef 100644
+--- a/include/linux/string.h
++++ b/include/linux/string.h
+@@ -181,9 +181,17 @@ extern void *kmemdup(const void *src, size_t len, gfp_t gfp) __realloc_size(2);
+ extern void *kvmemdup(const void *src, size_t len, gfp_t gfp) __realloc_size(2);
+ extern char *kmemdup_nul(const char *s, size_t len, gfp_t gfp);
+ 
++/* lib/argv_split.c */
+ extern char **argv_split(gfp_t gfp, const char *str, int *argcp);
+ extern void argv_free(char **argv);
+ 
++/* lib/cmdline.c */
++extern int get_option(char **str, int *pint);
++extern char *get_options(const char *str, int nints, int *ints);
++extern unsigned long long memparse(const char *ptr, char **retptr);
++extern bool parse_option_str(const char *str, const char *option);
++extern char *next_arg(char *args, char **param, char **val);
++
+ extern bool sysfs_streq(const char *s1, const char *s2);
+ int match_string(const char * const *array, size_t n, const char *string);
+ int __sysfs_match_string(const char * const *array, size_t n, const char *s);
 -- 
-Regards,
-Sudeep
+2.40.0.1.gaa8946217a0b
+
