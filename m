@@ -2,99 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F867B7186
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3867E7B718B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240872AbjJCTHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 15:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56560 "EHLO
+        id S240868AbjJCTI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 15:08:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240854AbjJCTHO (ORCPT
+        with ESMTP id S231976AbjJCTI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 15:07:14 -0400
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCB5CB7;
-        Tue,  3 Oct 2023 12:07:09 -0700 (PDT)
-Received: from fabians-envy.localnet ([84.177.92.38]) by
- mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MVv4X-1rDDg82zZ7-00RsGI; Tue, 03 Oct 2023 21:07:01 +0200
-From:   Fabian Vogt <fabian@ritter-vogt.de>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] HID: Add quirk to ignore the touchscreen battery on HP ENVY
- 15-eu0556ng
-Date:   Tue, 03 Oct 2023 21:07:00 +0200
-Message-ID: <4537226.LvFx2qVVIh@fabians-envy>
+        Tue, 3 Oct 2023 15:08:56 -0400
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B525CAD
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 12:08:53 -0700 (PDT)
+Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-7a7e11a53c3so87377241.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 12:08:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696360132; x=1696964932; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=k/Toie28zXPW8FfewTFAVCjeW/cgtQsi6duZD0uScmk=;
+        b=bfe1XC4TKGKmYmacMEAhGxitJZPpVuLOFAiAZSsaseytvBhnSheVUBWP69ibR/EaKy
+         5ifPae2k6XNWSxzOXFGw8kt6/yDHQIEFHduQex3qc3xhE+uvjpd91+h9s5DPOafr1aHn
+         XcU7goexTi/OJn1nkzotE29hsn8wRRjgkrPFW8EDWXITqeaqILSaIgbyRcySa57u5Ei6
+         AVGRT3+dhBtX3JbwApsN1MkB3M7f/ffajZZ9l4SWvqnSvjHEI9NRoY6oKbu3i4CATv+a
+         zmq+sEhpBjRMzFZwYYGHb5hWASPabFhNvOapRGkFQaxSxzqXEDWO06tL1Q3JzXA1FvmO
+         BQBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696360132; x=1696964932;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=k/Toie28zXPW8FfewTFAVCjeW/cgtQsi6duZD0uScmk=;
+        b=dbwyFDwdAYJARvXeNcBzNAIao/4KWWbuDf1gGEcaIijnPixGba3m1WwoiupszbggbY
+         qRZ7McoUXoRJYV8dec+Mos6/QkX7vYrtA/pTx/Ab0w+Lr/mS8cRlAin8QDQjWu3cuqdE
+         uXAMTbECnWfv+aLZ/t0i6lQuU15Q3sMDh5RQzZ+2EX46PkrUarEwSei+BukwHKOLbWWs
+         oQVAfw01hdfWVW8uYgJwrTWOdqyz0vHRIcokxCuJBJFMUzQfUpSs2LCWO9Woo+CK7E/v
+         9ctjijsX1qOLno+1kp20DiWPn5it+mbSD+rTNG7xR6/tVfI12CNKiHyIUIdbu6T/bwZV
+         Bx7A==
+X-Gm-Message-State: AOJu0Ywz2NHZAe7kMUKTaZihudyCAYzLV/6KgsmYW0eXwpou7a2O4VAc
+        dqRmn/GqxXYtGZyjCuIT2CebaBg1k6wEIrsFU/XWBQ==
+X-Google-Smtp-Source: AGHT+IEdOURDSAJo+8ANEpeEnTTxvlhDOkJQ6D3sLDrJMt6ob3YMhdrJ3vHpctjXpcX/qmr0E5tCyf0PGHnBpQo1bFI=
+X-Received: by 2002:a67:f9d6:0:b0:452:7246:652e with SMTP id
+ c22-20020a67f9d6000000b004527246652emr117979vsq.0.1696360132657; Tue, 03 Oct
+ 2023 12:08:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+References: <20231003145114.21637-1-brgl@bgdev.pl> <20231003145114.21637-35-brgl@bgdev.pl>
+ <CAHp75VexazbYskr2pxOPzZe8q=o4ZCHnhcN6U1XX=Th8sxXCgQ@mail.gmail.com>
+In-Reply-To: <CAHp75VexazbYskr2pxOPzZe8q=o4ZCHnhcN6U1XX=Th8sxXCgQ@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 3 Oct 2023 21:08:41 +0200
+Message-ID: <CAMRc=Mf9O0MKHKM0v3tongx+Aj3wxUaDcvSdNC+FZdXD3C_P0A@mail.gmail.com>
+Subject: Re: [PATCH 34/36] treewide: rename pinctrl_gpio_direction_input_new()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:6/bSl0GhbFvOJLdGRjw2uoW+LTJqqIhl8zbVzb0If4Zp+E66czE
- z0ufViNhmJdjdf5UaipN3qhvVNaZvEa36+HcIWNp1YBQeF8NRLPrCU7WWNZusNUC5dlVws1
- jpOR3qIZYORA3o+y0a5koNL448XTboJ1Po0mi21Jo53jNivJqXizhwNNSyMFzG/sEbcD3fE
- aw1iOjLRSDc5nxDn4wutw==
-UI-OutboundReport: notjunk:1;M01:P0:uuS7Q6s66iE=;OYS7ZZD1k+3WOSTUJyYVBzwAjEa
- ElQ1E6W3xPzJmtVu/ei0kRhiaqG+FQGaWsCYf9MCmfy4dSiuQPiqDt+5CcjoqNYQg6MsVlPn0
- zmqbTmvBsBBkKPszF/s2SEg6l4OZaSJoNr4v0ehiw851EU5KG/QfjCZzlkRcc102rLAynPtPW
- Mm0WqsAYzHCK/Vo/1va/6FU0CU8U+YcNzNYQSbh3hWL7r4SOVw60bIpkSiOZn0bWuebyRTF/Y
- tKIbgBuipeBefrzErqwhg7foAu1PTIBfpwhdITWGUDEmfpTJw8AxdBA1rsJvJssjK7jzwrKBH
- RpPiahYiz2Izxs/518WOT6CMB7KF57kvModzT/JIRjHahekxUxBZBRWWFcSdGuKaf+xHNkGQj
- vDYSai5dnlMPzh16+757QmPa5nlc39lQLMJKa1OSdJWjFqs1T8AJE3RVXxsPidPU6Dt5YTVDl
- qtVRUmTu73uxl3mEmRsvIaV5hnhVQ9R4FIenpF32j3RLc4WgzQXUlT326i9M3TOP5GmgCb18t
- GMm1iuAC6XB+A4fM/8BHMPsbE5U9YVEwpkDcjz8zn3EGIF6K8g24i2iG8nUSD8O2584aKacQV
- 0nOIx31+NQ+EB4eUhZRUY5uijqIjuaCLZSL2yniR5zcZRZLOyEueFolQATFuzoJPuzP9kSvgV
- ZmZj2Rzs21oBU6jjz8EjaM8RZsw4iV6q4XBNMOtOxCF0YiYGOF6bLtl4veGizjDTtBeDz5SIF
- pUv60JI75w4+hm08f2obkq+ZxWcGAZIGjVXe5w3i5VhvM8SUwC1Gz2LHGl2+a5lkPgzfJO9j/
- blizskXN/b5kN4AakU3nVUvpK/15lvgCpmiY2uiVNbgkWi69alJmFTtl58ZPDR3MzvuUCiS22
- XgQHmS04EjzlNcT9yeGKzKFCL5Z2FvSMsgo8=
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like various other devices using similar hardware, this model reports a
-perpetually empty battery (0-1%).
+On Tue, Oct 3, 2023 at 5:16=E2=80=AFPM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Tue, Oct 3, 2023 at 5:51=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
+> >
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Now that pinctrl_gpio_direction_input() is no longer used, let's drop t=
+he
+> > '_new' suffix from its improved variant.
+>
+> This and other "treewide" patches in the series are redundant. Just
+> name the functions better to begin with.
+>
 
-Join the others and apply HID_BATTERY_QUIRK_IGNORE.
+I don't want to rename these functions. They have perfectly fine
+names. I want to change their signatures and the renaming part is
+there only to make the reviewing easier.
 
-Signed-off-by: Fabian Vogt <fabian@ritter-vogt.de>
----
- drivers/hid/hid-ids.h   | 1 +
- drivers/hid/hid-input.c | 2 ++
- 2 files changed, 3 insertions(+)
-
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 7e499992a793..e4d2dfd5d253 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -425,6 +425,7 @@
- #define I2C_DEVICE_ID_HP_SPECTRE_X360_13T_AW100	0x29F5
- #define I2C_DEVICE_ID_HP_SPECTRE_X360_14T_EA100_V1	0x2BED
- #define I2C_DEVICE_ID_HP_SPECTRE_X360_14T_EA100_V2	0x2BEE
-+#define I2C_DEVICE_ID_HP_ENVY_X360_15_EU0556NG		0x2D02
- 
- #define USB_VENDOR_ID_ELECOM		0x056e
- #define USB_DEVICE_ID_ELECOM_BM084	0x0061
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index 0235cc1690a1..c8b20d44b147 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -409,6 +409,8 @@ static const struct hid_device_id hid_battery_quirks[] = {
- 	  HID_BATTERY_QUIRK_IGNORE },
- 	{ HID_I2C_DEVICE(USB_VENDOR_ID_ELAN, I2C_DEVICE_ID_HP_SPECTRE_X360_14T_EA100_V2),
- 	  HID_BATTERY_QUIRK_IGNORE },
-+	{ HID_I2C_DEVICE(USB_VENDOR_ID_ELAN, I2C_DEVICE_ID_HP_ENVY_X360_15_EU0556NG),
-+	  HID_BATTERY_QUIRK_IGNORE },
- 	{}
- };
- 
--- 
-2.42.0
-
-
-
-
+Bart
