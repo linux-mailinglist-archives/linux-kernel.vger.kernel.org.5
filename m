@@ -2,127 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6205C7B5E6E
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 03:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FA57B5E74
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 03:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjJCBET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 21:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43166 "EHLO
+        id S238926AbjJCBGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 21:06:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229837AbjJCBET (ORCPT
+        with ESMTP id S229880AbjJCBGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 21:04:19 -0400
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB99B4;
-        Mon,  2 Oct 2023 18:04:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1696295054;
-        bh=xsf9tIw5a6T3R+Pom55EWLjfIAm3f6Ai/hp/EsxCLXE=;
-        h=Date:From:To:Cc:Subject:From;
-        b=j8twwBzmjkuslN1x5RHY0DwyGNwM4fvJq3AYuF4KDlgktjhRwkkIBPRk9q+j6Pvi/
-         Cksp2YV93qdxDwRbOU3RIVakM6blpKd8i5szwyTYlN0Y0GbmynvnekoLmHVvPQ6ngT
-         waD/aoQXHRzx1oqV7vDzKNR6vpFGD6gOMl6vjPbXUfgY7MPdmQE+0dKd6e08nJaTDa
-         Kq7eFJDcfs7t6Q0NGEe85X7YOT+FRn9rUh34wMX41gXk3LgOrIuYJVreqD7qBtnKEL
-         om/wouqNP8Au1lRaY59ExcD2LZkPFIvgxM2Qckce7TM6tr+h1HWddxW0L/pKsvQ8Kd
-         W016rKXOW+K7g==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S002j1sdWz4xPf;
-        Tue,  3 Oct 2023 12:04:12 +1100 (AEDT)
-Date:   Tue, 3 Oct 2023 12:04:10 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Joerg Roedel <joro@8bytes.org>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Niklas Schnelle <schnelle@linux.ibm.com>
-Subject: linux-next: manual merge of the iommu tree with the asm-generic
- tree
-Message-ID: <20231003120410.3c408680@canb.auug.org.au>
+        Mon, 2 Oct 2023 21:06:07 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5830FB4;
+        Mon,  2 Oct 2023 18:06:02 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99EB4C433C8;
+        Tue,  3 Oct 2023 01:05:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696295161;
+        bh=F4f0krFznweIk4taQ98VjdjNBbxdo6qbxD3mNrr0nSM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Qjo96mCWqTKW7xGjcbugvTHPxzMEDCajwcw1va4Y2FbcHxO3ZcGKJhTfC83106ARL
+         tU6n9aOW7ZWhDLjnQiboRRQ82EVD3td822hvni2XK2g9yNk3HSm2Ur7Z555ck5rG+o
+         12dhoHDmpsg6GbUi7vFsQpePSjmL7y7isIq5rL6cYanqyxddTPGOhvh9UX6i8cVIA7
+         ZNczfsHMS606tgeAt9grrKxT2FqCR0UULw6bIjRTIClFh9JhkLAVjJWQ9lZKETlzhR
+         YTYWmLkKqRpNbxBQIivk0G2e/6Y+0MGkQudKU03TMbdV9ij8lvPLibuVE8O1+k6oVB
+         UoMFwMLszD8rA==
+From:   Bjorn Andersson <andersson@kernel.org>
+To:     Joel Stanley <joel@jms.id.au>, Li Yang <leoyang.li@nxp.com>,
+        Herve Codina <herve.codina@bootlin.com>,
+        Qiang Zhao <qiang.zhao@nxp.com>,
+        Hitomi Hasegawa <hasegawa-hitomi@fujitsu.com>,
+        Huisong Li <lihuisong@huawei.com>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Gabriel Somlo <gsomlo@gmail.com>,
+        Yinbo Zhu <zhuyinbo@loongson.cn>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Daire McNamara <daire.mcnamara@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Sumit Gupta <sumitg@nvidia.com>,
+        Shang XiaoJing <shangxiaojing@huawei.com>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Rob Herring <robh@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Michal Simek <michal.simek@amd.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Andrew Jeffery <andrew@aj.id.au>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Zev Weiss <zev@bewilderbeest.net>,
+        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-mediatek@lists.infradead.org,
+        linux-riscv@lists.infradead.org,
+        zhang songyi <zhang.songyi@zte.com.cn>,
+        Lubomir Rintel <lkundrak@v3.sk>, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        linux-samsung-soc@vger.kernel.org,
+        Nick Alcock <nick.alcock@oracle.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        Ruan Jinjie <ruanjinjie@huawei.com>, kernel@pengutronix.de
+Subject: Re: (subset) [PATCH 00/40] soc: Convert to platform remove callback returning void
+Date:   Mon,  2 Oct 2023 18:10:02 -0700
+Message-ID: <169629539848.1944895.16954663145011378401.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
+References: <20230925095532.1984344-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/3jZx8B.5TOmVuygG6eAZsh_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/3jZx8B.5TOmVuygG6eAZsh_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Mon, 25 Sep 2023 11:54:51 +0200, Uwe Kleine-König wrote:
+> this series converts all platform drivers below drivers/soc to use
+> .remove_new(). The motivation is to get rid of an integer return code
+> that is (mostly) ignored by the platform driver core and error prone on
+> the driver side.
+> 
+> See commit 5c5a7680e67b ("platform: Provide a remove callback that
+> returns no value") for an extended explanation and the eventual goal.
+> 
+> [...]
 
-Today's linux-next merge of the iommu tree got a conflict in:
+Applied, thanks!
 
-  drivers/iommu/Kconfig
+[18/40] soc/qcom: icc-bwmon: Convert to platform remove callback returning void
+        commit: dd714c568ed4e6f79017be45077de71e9908af03
+[19/40] soc/qcom: llcc-qcom: Convert to platform remove callback returning void
+        commit: d85a9d18a58156fc8b5ab185e00e078adaaeefde
+[20/40] soc/qcom: ocmem: Convert to platform remove callback returning void
+        commit: 0b742c498bcd7d215501b10fe9df72a16237735a
+[21/40] soc/qcom: pmic_glink: Convert to platform remove callback returning void
+        commit: 4b3373e42dc2caa34394ac090c8c70bed49badd6
+[22/40] soc/qcom: qcom_aoss: Convert to platform remove callback returning void
+        commit: ffbe84a514f863a46a85c1e47b2b6d930b1b463e
+[23/40] soc/qcom: qcom_gsbi: Convert to platform remove callback returning void
+        commit: 57b31729bd2c72b00d400106e18db91e9d95d3c3
+[24/40] soc/qcom: qcom_stats: Convert to platform remove callback returning void
+        commit: a47ff90bf2f93ce4ca99858948a74a0c10a2bc45
+[25/40] soc/qcom: rmtfs_mem: Convert to platform remove callback returning void
+        commit: 7c93da5b8b69d4e4e7270c33ba3206af43930e1d
+[26/40] soc/qcom: smem: Convert to platform remove callback returning void
+        commit: 4b8dee9a34d51a61f60add996fae6a7140a20ae5
+[27/40] soc/qcom: smp2p: Convert to platform remove callback returning void
+        commit: 1cd966c2dc19654ed08c843e5c933db8c1349636
+[28/40] soc/qcom: smsm: Convert to platform remove callback returning void
+        commit: bdd7cc62cf69fe989557445d65d6c8cb2f956518
+[29/40] soc/qcom: socinfo: Convert to platform remove callback returning void
+        commit: c0989f7d1264b2b1885345a28a32fd5e1e61f9c7
 
-between commit:
-
-  cf8e8658100d ("arch: Remove Itanium (IA-64) architecture")
-
-from the asm-generic tree and commit:
-
-  c76c067e488c ("s390/pci: Use dma-iommu layer")
-
-from the iommu tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/iommu/Kconfig
-index 7f04491ca5f0,3199fd54b462..000000000000
---- a/drivers/iommu/Kconfig
-+++ b/drivers/iommu/Kconfig
-@@@ -91,7 -91,7 +91,7 @@@ config IOMMU_DEBUGF
-  choice
-  	prompt "IOMMU default domain type"
-  	depends on IOMMU_API
-- 	default IOMMU_DEFAULT_DMA_LAZY if X86
- -	default IOMMU_DEFAULT_DMA_LAZY if X86 || IA64 || S390
-++	default IOMMU_DEFAULT_DMA_LAZY if X86 || S390
-  	default IOMMU_DEFAULT_DMA_STRICT
-  	help
-  	  Choose the type of IOMMU domain used to manage DMA API usage by
-@@@ -146,7 -146,7 +146,7 @@@ config OF_IOMM
- =20
-  # IOMMU-agnostic DMA-mapping layer
-  config IOMMU_DMA
-- 	def_bool ARM64 || X86
- -	def_bool ARM64 || IA64 || X86 || S390
-++	def_bool ARM64 || X86 || S390
-  	select DMA_OPS
-  	select IOMMU_API
-  	select IOMMU_IOVA
-
---Sig_/3jZx8B.5TOmVuygG6eAZsh_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUbaIoACgkQAVBC80lX
-0Gwf+gf/fTm1ValJxmMBwATFJLZLLpSDO7uf+N2P3c6dYXckucL302QmPaSrX/5w
-DyuRSqhnL3EsxK6oMMfSS6HqinSCPjktpnIptMzcan/1WoHAQ1Nr/O1GG1LChK5d
-CkdullLHJGhaJqdnZWAkY6/7C17IayZAMJhbdZ5GsERLYlyqibgUpMUOuSbw5UAt
-MdRc9J1Pe/KheLMoB1XbDdjOVU5dIbmuj2NAKb4RjvyVqHadCvZMSKo0fzAKstZv
-wbQLA4TgUi8K6Pt+E9xoILRjXQVv1j203sEYFgO7rQOsEibrAJnSHlrksb5hArjD
-YS15B48Y6yqei1V7VR26fWyaR5OGzQ==
-=8ZmM
------END PGP SIGNATURE-----
-
---Sig_/3jZx8B.5TOmVuygG6eAZsh_--
+Best regards,
+-- 
+Bjorn Andersson <andersson@kernel.org>
