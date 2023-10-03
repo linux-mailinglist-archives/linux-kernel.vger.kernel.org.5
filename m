@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B351B7B6596
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A136D7B659C
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:37:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239642AbjJCJe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51212 "EHLO
+        id S239664AbjJCJhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:37:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231199AbjJCJe0 (ORCPT
+        with ESMTP id S231626AbjJCJhe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:34:26 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D344090;
-        Tue,  3 Oct 2023 02:34:23 -0700 (PDT)
-Date:   Tue, 03 Oct 2023 09:34:21 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696325662;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wiaEifUQZM+72IROgiZLrf+fS5npBuehugw6N+3/MPA=;
-        b=4IaB+AD9kQCJZoD8zsu8wudfovUnF5pDakpY2OOYNqQgt74qSQ+r81471OiDjFazbBt1YL
-        yVAEA5YWqQmq1AWw42qbIJxW2LC2q7pW9wKXn5xTOIhbtS+cdIu8LMDLjFc2TUjSVGy5dp
-        WDeUmK9li7dJ7OnhpFmXpyCZ7qm1SwEgBegj1Zf3PVN9VZiXbCRQV/oaRVMvh26BffTVYS
-        AtDYtKQRKKe8bHatXNrL6+VMqPTPRSDBi3LwH91X29aBO4ZimdsQzF8/axkxCFTJxIANGA
-        +pidHH2c13rQg7Nd7LsBWG5nmo5CScuoc2zRAsoDvY77sUjWSMXDPZqt2DIFkw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696325662;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wiaEifUQZM+72IROgiZLrf+fS5npBuehugw6N+3/MPA=;
-        b=oJZ9AFF/qSaT1hMHEkpp0RC3cviUkFlExRZmV7XLQmKxMfsw+VUma9g/DEYq1pU4fx4PM9
-        v8g6FR8oZWYqORCA==
-From:   "tip-bot2 for Yazen Ghannam" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/platform] x86/amd_nb: Use Family 19h Models 60h-7Fh Function 4 IDs
-Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Ingo Molnar <mingo@kernel.org>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230803150430.3542854-1-yazen.ghannam@amd.com>
-References: <20230803150430.3542854-1-yazen.ghannam@amd.com>
+        Tue, 3 Oct 2023 05:37:34 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA5EAAB;
+        Tue,  3 Oct 2023 02:37:31 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D560C433C8;
+        Tue,  3 Oct 2023 09:37:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696325851;
+        bh=B/iAAs2ePsgWsNpeeLQ+e32y/CM8Jf9SdJ3FS1CPSPc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=umOfp6Pih7ivlxJgoGuHJsDbR990MULTMt3Q7dH02lW9KtVz1EWAHfrwoR/Hl+xht
+         p7v62EzjzYn0QURcJmMdxPbF/0IuKH9kkWF//vJ5EPq0NoQI1M1gJWH1/PgcbwdO2h
+         t3g80oNW3pPcoTWbF8nCBx1unYnmdYjh/+/CA0OKqn7RiU6hVJDgddowPM4kjPTmqx
+         YgnxsoJa7DVzwP+sNdcGChhhbV2HoTllQ7w+G7htKqyGXNDndwRv0qFdWL0M0Br7K7
+         vxZtCmjboc+pJFle8KKuvskVQaKC9GuNo/olf+9EKpQ14pFDq796IQ/AwoRanCGE2r
+         WMiLmyg12DcdA==
+Received: from johan by xi.lan with local (Exim 4.96)
+        (envelope-from <johan+linaro@kernel.org>)
+        id 1qnbqW-00010i-2k;
+        Tue, 03 Oct 2023 11:37:41 +0200
+From:   Johan Hovold <johan+linaro@kernel.org>
+To:     Bjorn Andersson <andersson@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Johan Hovold <johan+linaro@kernel.org>
+Subject: [PATCH] arm64: dts: qcom: sc8280xp-x13s: add missing camera LED pin config
+Date:   Tue,  3 Oct 2023 11:36:47 +0200
+Message-ID: <20231003093647.3840-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Message-ID: <169632566187.3135.7497896905004308037.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/platform branch of tip:
+Add the missing pin configuration for the recently added camera
+indicator LED.
 
-Commit-ID:     2a565258b3f4bbdc7a3c09cd02082cb286a7bffc
-Gitweb:        https://git.kernel.org/tip/2a565258b3f4bbdc7a3c09cd02082cb286a7bffc
-Author:        Yazen Ghannam <yazen.ghannam@amd.com>
-AuthorDate:    Thu, 03 Aug 2023 10:04:30 -05:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 03 Oct 2023 11:25:01 +02:00
-
-x86/amd_nb: Use Family 19h Models 60h-7Fh Function 4 IDs
-
-Three PCI IDs for DF Function 4 were defined but not used.
-
-Add them to the "link" list.
-
-Fixes: f8faf3496633 ("x86/amd_nb: Add AMD PCI IDs for SMN communication")
-Fixes: 23a5b8bb022c ("x86/amd_nb: Add PCI ID for family 19h model 78h")
-Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20230803150430.3542854-1-yazen.ghannam@amd.com
+Fixes: 1c63dd1c5fda ("arm64: dts: qcom: sc8280xp-x13s: Add camera activity LED")
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- arch/x86/kernel/amd_nb.c | 3 +++
- 1 file changed, 3 insertions(+)
+ .../boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts    | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/arch/x86/kernel/amd_nb.c b/arch/x86/kernel/amd_nb.c
-index 10c2a3c..43238ac 100644
---- a/arch/x86/kernel/amd_nb.c
-+++ b/arch/x86/kernel/amd_nb.c
-@@ -116,6 +116,9 @@ static const struct pci_device_id amd_nb_link_ids[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M10H_DF_F4) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M40H_DF_F4) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M50H_DF_F4) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M60H_DF_F4) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M70H_DF_F4) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M78H_DF_F4) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CNB17H_F4) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_1AH_M00H_DF_F4) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_MI200_DF_F4) },
+diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+index 387907e14afc..467e1d8b081f 100644
+--- a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
++++ b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+@@ -82,6 +82,9 @@ switch-lid {
+ 	leds {
+ 		compatible = "gpio-leds";
+ 
++		pinctrl-names = "default";
++		pinctrl-0 = <&cam_indicator_en>;
++
+ 		led-camera-indicator {
+ 			label = "white:camera-indicator";
+ 			function = LED_FUNCTION_INDICATOR;
+@@ -1434,6 +1437,13 @@ hstp-sw-ctrl-pins {
+ 		};
+ 	};
+ 
++	cam_indicator_en: cam-indicator-en-state {
++		pins = "gpio28";
++		function = "gpio";
++		drive-strength = <2>;
++		bias-disable;
++	};
++
+ 	edp_reg_en: edp-reg-en-state {
+ 		pins = "gpio25";
+ 		function = "gpio";
+-- 
+2.41.0
+
