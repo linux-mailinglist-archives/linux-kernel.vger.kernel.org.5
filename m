@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10E6A7B6F18
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE887B6F0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240720AbjJCQ4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:56:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
+        id S240656AbjJCQ4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240666AbjJCQ4W (ORCPT
+        with ESMTP id S240561AbjJCQzk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:56:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200DCC9
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:55:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696352126;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=U7tfHP4kmRXiaICtPd4tqtaPxNkyYEUzIvHl3BC2KeQ=;
-        b=GLq4bUgDLaqpy0WJnma/PIcoimBzSIJPpwXvxFiF+kpgUbi356L3qIEEKynXHAyNUwfSI4
-        Sf+MkxKT8qwTWkLs0x3QfPUlV+nXG7XubVGcIzVLzFbthD5T9r27OtD8VYa9uhD/RzKIC+
-        cvU2bGp6e4gDVU5jxvjdKXyJUpmNgp4=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-661-_iD7FBGtMeemelk0gpYWBA-1; Tue, 03 Oct 2023 12:55:19 -0400
-X-MC-Unique: _iD7FBGtMeemelk0gpYWBA-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9a62adedadbso96943866b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 09:55:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696352118; x=1696956918;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=U7tfHP4kmRXiaICtPd4tqtaPxNkyYEUzIvHl3BC2KeQ=;
-        b=ZNRvneGQzo++/lNqM3/zh91o+TjwxHh+/OD7K5tGYhaLVsqDn6MsQ3kmNyaaUxIyuS
-         Z5rkIYO7pOiisUHRwUDZ7rLLbnPmsX3vnEvprFoX2aRk0In7is2wuFZ9IOTYZKAqr074
-         Ft1oodLT+CGJkeDYpENh6fxT9PF67y5mbvmQlALVBV7WM/pRgTLSGXGqgsGSeZ7HXV79
-         vZXfHi/v/IxH3oJD6CCrO7urbEEI9lwvdazd5Bv1h5F0hMV+dZkgzsRZNMHF4HAwwehf
-         jugjjqZdtomMvyX9xMdlrgX48HgOPwY6M43Iw8ZN0GqZtuvBhaCnwf712w6pCasLadeY
-         TlQw==
-X-Gm-Message-State: AOJu0Yw10TVecjYmbF2/7AbtXNGj7TrygRsvEdog76UZ/0kA3F8Oj2v+
-        l0xnDu179ktJlBGq54z0869pRsUfXDstXG3njrqEIRPy/Inj43d+aOvkxAwdH1ibZfQGAHn57tn
-        kT59KDCDink4lvKcrg97BrcYo
-X-Received: by 2002:a17:906:3582:b0:9b2:9e44:222e with SMTP id o2-20020a170906358200b009b29e44222emr13968994ejb.19.1696352118541;
-        Tue, 03 Oct 2023 09:55:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG0BlhYJTy/eGpPg/g7Kj2hxrX0S6xOFKK/n+JvzSroe+HOFvr7h1DKLjxtdlUBZaQYPZuHxw==
-X-Received: by 2002:a17:906:3582:b0:9b2:9e44:222e with SMTP id o2-20020a170906358200b009b29e44222emr13968962ejb.19.1696352117956;
-        Tue, 03 Oct 2023 09:55:17 -0700 (PDT)
-Received: from pollux ([2a02:810d:4b3f:de9c:642:1aff:fe31:a15c])
-        by smtp.gmail.com with ESMTPSA id sb8-20020a170906edc800b0099cf840527csm1321057ejb.153.2023.10.03.09.55.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 09:55:17 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 18:55:15 +0200
-From:   Danilo Krummrich <dakr@redhat.com>
-To:     Boris Brezillon <boris.brezillon@collabora.com>,
-        Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        sarah.walker@imgtec.com, donald.robson@imgtec.com,
-        christian.koenig@amd.com, faith@gfxstrand.net,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v5 4/6] drm/gpuvm: track/lock/validate
- external/evicted objects
-Message-ID: <ZRxHcwYUbp5/fS+v@pollux>
-References: <20230928191624.13703-1-dakr@redhat.com>
- <20230928191624.13703-5-dakr@redhat.com>
- <e4e68970-c7c9-55e2-9483-01252f38c956@linux.intel.com>
- <20231003120554.547090bc@collabora.com>
- <f551ee9059e52d46343f5fa997b7d9f8ab6654d9.camel@linux.intel.com>
- <20231003162143.490e3ef0@collabora.com>
+        Tue, 3 Oct 2023 12:55:40 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34AB6136
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:55:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696352133; x=1727888133;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pOmDbgmKcuR1roL2tpS4qxKkRr99cuVsIxqAedHHY30=;
+  b=hl+rTVuFffzSCFHmqCz9ICBuQmXM5kpRMV9GRrJWEOXkXrANyNSTdl/1
+   y69jERJ46mnkPO89xjVSSqgUmr35zNOjXEKPzqm83zBon0OYVUcbG9BLy
+   IbGG0SHm/31E8phyhalO+6GqW/AplBWPsmrOuZy6iGfeTPa4gb/cJvzNa
+   OS+3LZ1sOEJDgYTxW+M8l+85K0Brxsq6+Ehwlx1bsGsfbwd5h2TNOhucO
+   5Tp2v3bVpeFKjNQc8aDleMUgeJ1l/s+R0gVbnGPre2XKO1Cym6n7z5yhB
+   2znvCzYz6JJjU75vh4xdayzr/FZu7LkTAEiZRcrB/zDUro6Z+RsVdbCvi
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="413836513"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="413836513"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 09:55:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="816755076"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="816755076"
+Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 09:55:26 -0700
+Date:   Tue, 3 Oct 2023 09:55:25 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Liang, Kan" <kan.liang@linux.intel.com>, mingo@redhat.com,
+        acme@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@kernel.org, namhyung@kernel.org, irogers@google.com,
+        adrian.hunter@intel.com, eranian@google.com,
+        alexey.v.bayduraev@linux.intel.com, tinghao.zhang@intel.com,
+        Sandipan Das <sandipan.das@amd.com>,
+        Ravi Bangoria <ravi.bangoria@amd.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+Subject: Re: [RESEND PATCH V3 1/6] perf: Add branch stack extra
+Message-ID: <ZRxHfTF1YrlONXPL@tassilo>
+References: <20230911154822.2559213-1-kan.liang@linux.intel.com>
+ <20231002154535.GB35785@noisy.programming.kicks-ass.net>
+ <ce16c6c1-9bdc-35e2-fe85-155bd7edbaa4@linux.intel.com>
+ <20231002213752.GB1539@noisy.programming.kicks-ass.net>
+ <ed169d4d-76d5-c134-c685-ad3d812028be@linux.intel.com>
+ <20231003102733.GC1539@noisy.programming.kicks-ass.net>
+ <ZRwuE8LPkwtkjX5C@tassilo>
+ <20231003163300.GF1539@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231003162143.490e3ef0@collabora.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+In-Reply-To: <20231003163300.GF1539@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,335 +75,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems like we're mostly aligned on this series, except for the key
-controversy we're discussing for a few versions now: locking of the internal
-lists. Hence, let's just re-iterate the options we have to get this out of the
-way.
-
-(1) The spinlock dance. This basically works for every use case, updating the VA
-    space from the IOCTL, from the fence signaling path or anywhere else.
-    However, it has the downside of requiring spin_lock() / spin_unlock() for
-    *each* list element when locking all external objects and validating all
-    evicted objects. Typically, the amount of extobjs and evicted objects
-    shouldn't be excessive, but there might be exceptions, e.g. Xe.
-
-(2) The dma-resv lock dance. This is convinient for drivers updating the VA
-    space from a VM_BIND ioctl() and is especially efficient if such drivers
-    have a huge amount of external and/or evicted objects to manage. However,
-    the downsides are that it requires a few tricks in drivers updating the VA
-    space from the fence signaling path (e.g. job_run()). Design wise, I'm still
-    skeptical that it is a good idea to protect internal data structures with
-    external locks in a way that it's not clear to callers that a certain
-    function would access one of those resources and hence needs protection.
-    E.g. it is counter intuitive that drm_gpuvm_bo_put() would require both the
-    dma-resv lock of the corresponding object and the VM's dma-resv lock held.
-    (Additionally, there were some concerns from amdgpu regarding flexibility in
-    terms of using GPUVM for non-VM_BIND uAPIs and compute, however, AFAICS
-    those discussions did not complete and to me it's still unclear why it
-    wouldn't work.)
-
-(3) Simply use an internal mutex per list. This adds a tiny (IMHO negligible)
-    overhead for drivers updating the VA space from a VM_BIND ioctl(), namely
-    a *single* mutex_lock()/mutex_unlock() when locking all external objects
-    and validating all evicted objects. And it still requires some tricks for
-    drivers updating the VA space from the fence signaling path. However, it's
-    as simple as it can be and hence way less error prone as well as
-    self-contained and hence easy to use. Additionally, it's flexible in a way
-    that we don't have any expections on drivers to already hold certain locks
-    that the driver in some situation might not be able to acquire in the first
-    place.
-
-(4) Arbitrary combinations of the above. For instance, the current V5 implements
-    both (1) and (2) (as either one or the other). But also (1) and (3) (as in
-    (1) additionally to (3)) would be an option, where a driver could opt-in for
-    the spinlock dance in case it updates the VA space from the fence signaling
-    path.
-
-I also considered a few other options as well, however, they don't seem to be
-flexible enough. For instance, as by now we could use SRCU for the external
-object list. However, this falls apart once a driver wants to remove and re-add
-extobjs for the same VM_BO instance. (For the same reason it wouldn't work for
-evicted objects.)
-
-Personally, after seeing the weird implications of (1), (2) and a combination of
-both, I tend to go with (3). Optionally, with an opt-in for (1). The reason for
-the latter is that with (3) the weirdness of (1) by its own mostly disappears.
-
-Please let me know what you think, and, of course, other ideas than the
-mentioned ones above are still welcome.
-
-- Danilo
-
-On Tue, Oct 03, 2023 at 04:21:43PM +0200, Boris Brezillon wrote:
-> On Tue, 03 Oct 2023 14:25:56 +0200
-> Thomas Hellström <thomas.hellstrom@linux.intel.com> wrote:
-> 
-> > > > > +/**
-> > > > > + * get_next_vm_bo_from_list() - get the next vm_bo element
-> > > > > + * @__gpuvm: The GPU VM
-> > > > > + * @__list_name: The name of the list we're iterating on
-> > > > > + * @__local_list: A pointer to the local list used to store
-> > > > > already iterated items
-> > > > > + * @__prev_vm_bo: The previous element we got from
-> > > > > drm_gpuvm_get_next_cached_vm_bo()
-> > > > > + *
-> > > > > + * This helper is here to provide lockless list iteration.
-> > > > > Lockless as in, the
-> > > > > + * iterator releases the lock immediately after picking the
-> > > > > first element from
-> > > > > + * the list, so list insertion deletion can happen concurrently.
-> > > > > + *
-> > > > > + * Elements popped from the original list are kept in a local
-> > > > > list, so removal
-> > > > > + * and is_empty checks can still happen while we're iterating
-> > > > > the list.
-> > > > > + */
-> > > > > +#define get_next_vm_bo_from_list(__gpuvm, __list_name,
-> > > > > __local_list, __prev_vm_bo)     \
-> > > > > +       ({                                                       
-> > > > >                        \
-> > > > > +               struct drm_gpuvm_bo *__vm_bo =
-> > > > > NULL;                                    \
-> > > > > +                                                                
-> > > > >                        \
-> > > > > +               drm_gpuvm_bo_put(__prev_vm_bo);                  
-> > > > >                        \
-> > > > > +                                                                
-> > > > >                        \
-> > > > > +               spin_lock(&(__gpuvm)-  
-> > > > > >__list_name.lock);                                \    
-> > > > 
-> > > > Here we unconditionally take the spinlocks while iterating, and the
-> > > > main 
-> > > > point of DRM_GPUVM_RESV_PROTECTED was really to avoid that?
-> > > > 
-> > > >   
-> > > > > +               if (!(__gpuvm)-  
-> > > > > >__list_name.local_list)                                 \  
-> > > > > +                       (__gpuvm)->__list_name.local_list =
-> > > > > __local_list;               \
-> > > > > +               else                                             
-> > > > >                        \
-> > > > > +                       WARN_ON((__gpuvm)->__list_name.local_list
-> > > > > != __local_list);     \
-> > > > > +                                                                
-> > > > >                        \
-> > > > > +               while (!list_empty(&(__gpuvm)->__list_name.list))
-> > > > > {                     \
-> > > > > +                       __vm_bo = list_first_entry(&(__gpuvm)-  
-> > > > > >__list_name.list,        \  
-> > > > > +                                                  struct
-> > > > > drm_gpuvm_bo,                 \
-> > > > > +                                                 
-> > > > > list.entry.__list_name);             \
-> > > > > +                       if (kref_get_unless_zero(&__vm_bo->kref))
-> > > > > {    
-> > > > And unnecessarily grab a reference in the RESV_PROTECTED case.  
-> > > > >                         \
-> > > > > +                               list_move_tail(&(__vm_bo)-  
-> > > > > >list.entry.__list_name,      \  
-> > > > > +                                             
-> > > > > __local_list);                           \
-> > > > > +                               break;                           
-> > > > >                        \
-> > > > > +                       } else
-> > > > > {                                                        \
-> > > > > +                               list_del_init(&(__vm_bo)-  
-> > > > > >list.entry.__list_name);      \  
-> > > > > +                               __vm_bo =
-> > > > > NULL;                                         \
-> > > > > +                       }                                        
-> > > > >                        \
-> > > > > +               }                                                
-> > > > >                        \
-> > > > > +               spin_unlock(&(__gpuvm)-  
-> > > > > >__list_name.lock);                              \  
-> > > > > +                                                                
-> > > > >                        \
-> > > > > +               __vm_bo;                                         
-> > > > >                        \
-> > > > > +       })    
-> > > > 
-> > > > IMHO this lockless list iteration looks very complex and should be 
-> > > > pretty difficult to maintain while moving forward, also since it
-> > > > pulls 
-> > > > the gpuvm_bos off the list, list iteration needs to be protected by
-> > > > an 
-> > > > outer lock anyway.  
+On Tue, Oct 03, 2023 at 06:33:00PM +0200, Peter Zijlstra wrote:
+> On Tue, Oct 03, 2023 at 08:06:59AM -0700, Andi Kleen wrote:
+> > > I'm thinking we should do something like expose branch_counter_nr and
+> > > branch_counter_width in the sysfs node, and then rename this extra field
+> > > to counters.
 > > > 
-> > > As being partly responsible for this convoluted list iterator, I must
-> > > say I agree with you. There's so many ways this can go wrong if the
-> > > user doesn't call it the right way, or doesn't protect concurrent
-> > > list
-> > > iterations with a separate lock (luckily, this is a private
-> > > iterator). I
-> > > mean, it works, so there's certainly a way to get it right, but gosh,
-> > > this is so far from the simple API I had hoped for.
-> > >   
-> > > > Also from what I understand from Boris, the extobj 
-> > > > list would typically not need the fine-grained locking; only the
-> > > > evict 
-> > > > list?  
+> > > Then userspace can do something like:
 > > > 
-> > > Right, I'm adding the gpuvm_bo to extobj list in the ioctl path, when
-> > > the GEM and VM resvs are held, and I'm deferring the
-> > > drm_gpuvm_bo_put()
-> > > call to a work that's not in the dma-signalling path. This being
-> > > said,
-> > > I'm still not comfortable with the
+> > > 	for (i = 0; i < branch_counter_nr; i++) {
+> > > 		counter[i] = counters & ((1 << branch_counter_width) - 1);
+> > > 		counters >>= branch_counter_width;
+> > > 	}
 > > > 
-> > > gem = drm_gem_object_get(vm_bo->gem);
-> > > dma_resv_lock(gem->resv);
-> > > drm_gpuvm_bo_put(vm_bo);
-> > > dma_resv_unlock(gem->resv);
-> > > drm_gem_object_put(gem);
-> > > 
-> > > dance that's needed to avoid a UAF when the gpuvm_bo is the last GEM
-> > > owner, not to mention that drm_gpuva_unlink() calls
-> > > drm_gpuvm_bo_put()
-> > > after making sure the GEM gpuvm_list lock is held, but this lock
-> > > might
-> > > differ from the resv lock (custom locking so we can call
-> > > gpuvm_unlink() in the dma-signalling path). So we now have paths
-> > > where
-> > > drm_gpuvm_bo_put() are called with the resv lock held, and others
-> > > where
-> > > they are not, and that only works because we're relying on the the
-> > > fact
-> > > those drm_gpuvm_bo_put() calls won't make the refcount drop to zero,
-> > > because the deferred vm_bo_put() work still owns a vm_bo ref.  
+> > > to extract the actual counter values.
 > > 
-> > I'm not sure I follow to 100% here, but in the code snippet above it's
-> > pretty clear to me that it needs to hold an explicit gem object
-> > reference when calling dma_resv_unlock(gem->resv). Each time you copy a
-> > referenced pointer (here from vm_bo->gem to gem) you need to up the
-> > refcount unless you make sure (by locks or other means) that the source
-> > of the copy has a strong refcount and stays alive, so that's no weird
-> > action to me. Could possibly add a drm_gpuvm_bo_get_gem() to access the
-> > gem member (and that also takes a refcount) for driver users to avoid
-> > the potential pitfall.
-> 
-> Except this is only needed because of the GEM-resv-must-be-held locking
-> constraint that was added on vm_bo_put(). I mean, the usual way we do
-> object un-referencing is by calling _put() and letting the internal
-> logic undo things when the refcount drops to zero. If the object needs
-> to be removed from some list, it's normally the responsibility of the
-> destruction method to lock the list, remove the object and unlock the
-> list. Now, we have a refcounted object that's referenced by vm_bo, and
-> whose lock needs to be taken when the destruction happens, which leads
-> to this weird dance described above, when, in normal situations, we'd
-> just call drm_gpuvm_bo_put(vm_bo) and let drm_gpuvm do its thing.
-> 
+> > perf script/report won't necessarily have access to the sysfs
+> > values if they run on a different system
 > > 
-> > > 
-> > > All these tiny details add to the overall complexity of this common
-> > > layer, and to me, that's not any better than the
-> > > get_next_vm_bo_from_list() complexity you were complaining about
-> > > (might
-> > > be even worth, because this sort of things leak to users).
-> > > 
-> > > Having an internal lock partly solves that, in that the locking of
-> > > the
-> > > extobj list is now entirely orthogonal to the GEM that's being
-> > > removed
-> > > from this list, and we can lock/unlock internally without forcing the
-> > > caller to take weird actions to make sure things don't explode. Don't
-> > > get me wrong, I get that this locking overhead is not acceptable for
-> > > Xe, but I feel like we're turning drm_gpuvm into a white elephant
-> > > that
-> > > only few people will get right.  
+> > It would need extra PT style metadata written by perf record to
+> > perf.data and read by the user tools.
 > > 
-> > I tend to agree, but to me the big complication comes from the async
-> > (dma signalling path) state updates.
+> > Seems complicated. It would be better if it just parsed on its own.
 > 
-> I don't deny updating the VM state from the dma signalling path adds
-> some amount of complexity, but the fact we're trying to use dma_resv
-> locks for everything, including protection of internal datasets doesn't
-> help. Anyway, I think both of us are biased when it comes to judging
-> which approach adds the most complexity :P.
-> 
-> Also note that, right now, the only thing I'd like to be able to update
-> from the dma signalling path is the VM mapping tree. Everything else
-> (drm_gpuva_[un]link(), add/remove extobj), we could do outside this
-> path:
-> 
-> - for MAP operations, we could call drm_gpuva_link() in the ioctl path
->   (we'd just need to initialize the drm_gpuva object)
-> - for MAP operations, we're already calling drm_gpuvm_bo_obtain() from
->   the ioctl path
-> - for UNMAP operations, we could add the drm_gpuva_unlink() call to the
->   VM op cleanup worker
-> 
-> The only problem we'd have is that drm_gpuva_link() needs to be called
-> inside drm_gpuvm_ops::sm_step_remap() when a remap with next/prev !=
-> NULL occurs, otherwise we lose track of these mappings.
-> 
-> > 
-> > Let's say for example we have a lower level lock for the gem object's
-> > gpuvm_bo list. Some drivers grab it from the dma fence signalling path,
-> > other drivers need to access all vm's of a bo to grab their dma_resv
-> > locks using a WW transaction. There will be problems, although probably
-> > solveable.
-> 
-> To me, the gpuvm extobj vm_bo list is just an internal list and has an
-> internal lock associated. The lock that's protecting the GEM vm_bo list
-> is a bit different in that the driver gets to decide when a vm_bo is
-> inserted/removed by calling drm_gpuvm_[un]link(), and can easily make
-> sure the lock is held when this happens, while the gpuvm internal lists
-> are kinda transparently updated (for instance, the first caller of
-> drm_gpuvm_bo_obtain() adds the vm_bo to the extobj and the last vm_bo
-> owner calling drm_gpuvm_bo_put() removes it from this list, which is
-> certainly not obvious based on the name of these functions).
-> 
-> If we want to let drivers iterate over the extobj/evict lists, and
-> assuming they are considered internal lists maintained by the core and
-> protected with an internal lock, we should indeed provide iteration
-> helpers that:
-> 
-> 1/ make sure all the necessary external locks are held (VM resv, I
->    guess)
-> 2/ make sure the internal lock is not held during iteration (the sort
->    of snapshot list trick you're using for the evict list in Xe)
-> 
-> > > > Also it seems that if we are to maintain two modes here, for 
-> > > > reasonably clean code we'd need two separate instances of 
-> > > > get_next_bo_from_list().
-> > > > 
-> > > > For the !RESV_PROTECTED case, perhaps one would want to consider
-> > > > the 
-> > > > solution used currently in xe, where the VM maintains two evict
-> > > > lists. 
-> > > > One protected by a spinlock and one protected by the VM resv. When
-> > > > the 
-> > > > VM resv is locked to begin list traversal, the spinlock is locked
-> > > > *once* 
-> > > > and the spinlock-protected list is looped over and copied into the
-> > > > resv 
-> > > > protected one. For traversal, the resv protected one is used.  
-> > > 
-> > > Oh, so you do have the same sort of trick where you move the entire
-> > > list to another list, such that you can let other paths update the
-> > > list
-> > > while you're iterating your own snapshot. That's interesting...  
-> > 
-> > Yes, it's instead of the "evicted" bool suggested here. I thought the
-> > latter would be simpler. Although that remains to be seen after all
-> > use-cases are implemented.
-> > 
-> > But in general I think the concept of copying from a staging list to
-> > another with different protection rather than traversing the first list
-> > and unlocking between items is a good way of solving the locking
-> > inversion problem with minimal overhead. We use it also for O(1)
-> > userptr validation.
-> 
-> That's more or less the idea behind get_next_vm_bo_from_list() except
-> it's dequeuing one element at a time, instead of moving all items at
-> once. Note that, if you allow concurrent removal protected only by the
-> spinlock, you still need to take/release this spinlock when iterating
-> over elements of this snapshot list, because all the remover needs to
-> remove an element is the element itself, and it doesn't care in which
-> list it's currently inserted (real or snapshot/staging list), so you'd
-> be iterating over a moving target if you don't protect the iteration
-> with the spinlock.
-> 
+> Well, you really don't want to repeat the 4,2 thing in every event, that
+> seems daft (and a waste of space, because how large do we want those
+> fields to be etc..).
+
+It's just a few bits? It could be an extra 16bit field or so per event.
+
+There are probably other self describing encodings for the numbers
+(e.g. some variant of LEB128 on a sub byte level), but that might be more
+expensive to store it.
+
+What would worry me is that various users would just hard code and then
+fail later. There are lots of non perf tools perf.data parsers around
+these days.
+
+-Andi
 
