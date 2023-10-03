@@ -2,78 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7BB7B7088
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248417B708D
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240761AbjJCSHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 14:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47036 "EHLO
+        id S240747AbjJCSJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 14:09:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240756AbjJCSHX (ORCPT
+        with ESMTP id S231622AbjJCSJQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:07:23 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA978AB
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 11:07:19 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B712C433CA;
-        Tue,  3 Oct 2023 18:07:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696356439;
-        bh=Fd4WUD/vikcPxP0MMTf6MFE3KSLS7O7g3JQDsmMO0jk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=b2mlhvW2SuqLdPBx5esfF/bKPpYaJhg1WuvY9fCwHyJMAxB6E+E+1piZzkf8VGhc9
-         9a1EM4b+0Kz4Qz3pNLJ1M9hEKrW4raqLaFmoFq8qoR2sVBVLmfnmcpIF1OJvtYDrRh
-         gJDd7H3RqLN0OD9cL6M5TDL/f6jyNZvDkfYL1XjexlNze00R9/CShUDgz/MzxySeA7
-         2y3Tfz2slMTVkIbQhQunWc/2a6dMiIDyrMmQfD/wbyJLr6+VvNC62H3mnIJtqCMQ2H
-         uga5u2yPrxmceF4W7UtHnW0QSg7yAXNrHBPQCccHYcS6oimh9pP5a0W25suYceorEI
-         +9wrIZQ8SFChw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] regulator fixes for v6.6-rc4
-Date:   Tue, 03 Oct 2023 19:07:11 +0100
-Message-Id: <20231003180719.2B712C433CA@smtp.kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Tue, 3 Oct 2023 14:09:16 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219C8AC
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 11:09:13 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c6185cafb3so20855ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 11:09:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696356552; x=1696961352; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Z5ADml8UEYFyYxVl60KXFq6v7496GwJKAXl/Dq0m1dI=;
+        b=RRxdlsuQc0jVRVXE9oQ6YyG4Q3I6bHV4f9kTbEr9/AvfmyMEOr8eYivSIsuF0T4Gh8
+         eHH05eftwvm8/ZFQxEaP0+NKz5xNZ6BGeOETtoW1oacstw2MbGly5G24p1L4ANK0tX8r
+         Ay4NdgBNv+5fWg3DE5mAHbt/b3Rs4sYRXyL3Rt7n2dOTpyiMLwUH97p40WQKFFwxmgVJ
+         coPZ6CSJXV2wYzsSvr+L37xwnmSO3HqLt5RHlCuGqudkBynYUsRVI7CbbQndnhy6+NH9
+         vn/fdXPgmdM3+wOpxM1aKESOKV5+VNtxC3kTCUEnpxqQiDnfxLZV/ehQOMUIjX5ys3Tf
+         skZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696356552; x=1696961352;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Z5ADml8UEYFyYxVl60KXFq6v7496GwJKAXl/Dq0m1dI=;
+        b=M38jGhvrl6Ees/ervdjpw4ZpqYaLxCtEqiz6IclmgH24PvoDs/78BaUsY3xLa15FD9
+         qrTDWIcjO2QoU33USG+YBz33PNBSUmWUdOEH7Qxx1ewK/efGINdoA//OMJaGzkAP7wuq
+         90sDKf+lZnKTRrv4Fmi37NNxFtl7i0q7YqRHwPwAc21QWYJbVcQc+mViyv1wD9nxIP4K
+         OFjMjRMzbbeLNGDclSUJwupa8apr0HPF5KoCkYZ88MYcMIhbQ86XeRLJR0NYQZW9+DfM
+         qpb72P8B5A9AQhJDesLQpp7FKYhIDT9HNzUot+jd48y8zsI2aFrL50arF8i1/3gp4Oo9
+         Lt3g==
+X-Gm-Message-State: AOJu0YwDhGIPz3rFnYaoH2+V6HtgOsOr8MXQ31tZPFi2hTmbJpThYu82
+        BKmlRzrY1Zx4mFP5qpH0WBveBa07yfvlDg5IcT2V
+X-Google-Smtp-Source: AGHT+IEl6IJ3DsIw7oyXRf7R7HS8s4r59Isc2f9JN+K4IY+u/eiaCuHNxh0RznXZ+FmVCsNdWoBLHGhb923Bp4V1USc=
+X-Received: by 2002:a17:902:dad1:b0:1c6:1e4e:b770 with SMTP id
+ q17-20020a170902dad100b001c61e4eb770mr19311plx.28.1696356552314; Tue, 03 Oct
+ 2023 11:09:12 -0700 (PDT)
+MIME-Version: 1.0
+From:   Jeffrey Kardatzke <jkardatzke@google.com>
+Date:   Tue, 3 Oct 2023 11:09:01 -0700
+Message-ID: <CA+ddPcPS8oUsMk0ziumwdTTWetekE37cK0Gkt9x5w2ig1m2pXQ@mail.gmail.com>
+Subject: Re: [PATCH 01/10] drm/mediatek: Add interface to allocate MediaTek
+ GEM buffer.
+To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
+Cc:     Project_Global_Chrome_Upstream_Group 
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, drinkcat@chromium.org,
+        Jason-ch Chen <jason-ch.chen@mediatek.com>,
+        Johnson Wang <johnson.wang@mediatek.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Nancy Lin <nancy.lin@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Sung <shawn.sung@mediatek.com>,
+        Singo Chang <singo.chang@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        PP_MIME_FAKE_ASCII_TEXT,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 6223e073db78458f8846c380ccd224a7a73a3867:
+You can remove the DRIVER_RENDER flag from this patchset. That should
+not be upstreamed. The IOCTLs are still needed though because of the
+flag for allocating a secure surface that is in the next patch. If
+that flag wasn't needed, then dumb buffer allocations could be used
+instead.
 
-  regulator: Fix voltage range selection (2023-09-11 13:51:36 +0100)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v6.6-rc4
-
-for you to fetch changes up to 6e800968f6a715c0661716d2ec5e1f56ed9f9c08:
-
-  regulator/core: Revert "fix kobject release warning and memory leak in regulator_register()" (2023-09-26 17:26:08 +0200)
-
-----------------------------------------------------------------
-regulator: Fixes for v6.6
-
-Two things here, one is an improved fix for issues around freeing
-devices when registration fails which replaces a half baked fix with a
-more complete one which uses the device model release() function
-properly.  The other fix is a device specific fix for mt6358, the driver
-said that the LDOs supported mode configuration but this is not actually
-the case and could cause issues.
-
-----------------------------------------------------------------
-Chen-Yu Tsai (1):
-      regulator: mt6358: split ops for buck and linear range LDO regulators
-
-Michał Mirosław (2):
-      regulator/core: regulator_register: set device->class earlier
-      regulator/core: Revert "fix kobject release warning and memory leak in regulator_register()"
-
- drivers/regulator/core.c             | 10 +++-------
- drivers/regulator/mt6358-regulator.c | 18 +++++++++++++++---
- 2 files changed, 18 insertions(+), 10 deletions(-)
+Thanks,
+Jeff Kardatzke
