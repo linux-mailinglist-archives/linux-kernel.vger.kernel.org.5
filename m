@@ -2,188 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 376157B6F0B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130DF7B6EFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240566AbjJCQzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47654 "EHLO
+        id S240525AbjJCQz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:55:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240501AbjJCQzf (ORCPT
+        with ESMTP id S231388AbjJCQzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:55:35 -0400
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C2ED7;
-        Tue,  3 Oct 2023 09:55:24 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 70DFF3200B6E;
-        Tue,  3 Oct 2023 12:55:22 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 03 Oct 2023 12:55:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1696352121; x=1696438521; bh=bM
-        N3ahYNWDfnd39aNSh3WGWAh25s8Cnm4TD3ZVFC+Qc=; b=We9PtvKNlGv7dvx37W
-        gvw7JROLcaGwJW81HX+bOX0v2ZSUP/FkK60Nja7JSezA8Ob2D0JJaM7KQC/4B6dg
-        3FkAc8zXsJvBYYrEiEGhlts0rBcAQBkEEkZxcRD8wblX+A+aVbt0zSkJeOlrXFgi
-        dN7ZDRXkZlF1ngYu9L3h3KTZz5wgJT15OaClA6MhdE+Ie2/n9E4FdAEqBCke7V45
-        qgCQglaN5c/rDOtC4r/ZFMPK1B8A74TPfSdNjeAAtBOx42ADjrvDSWXND2UhaJYD
-        5YvLx9+ARgBv0tNv8EitzYh4jhk3nwcKhWO2EtFf3FYOQpe+Kzwo0886VIYCSSak
-        FbiQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1696352121; x=1696438521; bh=bMN3ahYNWDfnd
-        39aNSh3WGWAh25s8Cnm4TD3ZVFC+Qc=; b=edST69BZgCUs+ZJ5Nwm6y0b6a7XVj
-        LnT6QaEQ1fCdfOq8oJrgP+uusP0BOtTgrKIYuWxLUTxC9bJzfbgS+bOwL8TkPZ8n
-        gzUIAj61U8YvG4zqACt88GvvJWIHP2aWutbDQ8lpMTCxocYi7tD7Rn5MA0+5no+O
-        4vmTwvg32YQPkeWZIBdyj8xBY/Emsv1vpyJA73bIy+cjoWSq9VVwuegpBMEIkwY7
-        2G6ULyIH236et9sQ5eRKYfYs9ktCxNHMF6sR8Sx3PEIPcaCOLvFoJ5UWS/szXZB/
-        6SR7SQ+60qLHjSOD8gR/StWwKTyRCCGoLP9UjNXJtYiixRKvOkDMWAG5w==
-X-ME-Sender: <xms:eUccZf3QD16gRjigQ-lnvux8KWufYA-tMrz4OmKvx9beKPG-rMK71Q>
-    <xme:eUccZeFlsZlc2R7zU0sC_H0pnDxakM1VzHn_5OQQH7FPcmbIv1ffaq5Fr1omoKxT7
-    t-9JNQyrtScrBniFq4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeejgdduhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
-    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:eUccZf7e3NINH8fFhSQFtACK-Iav_OJuOH9V1Rc8v-iFOBNtWwMvRw>
-    <xmx:eUccZU2SblP8ob6jk4qVAkiKY_cyvr0uR7YceifT1iHcvDA-3O3fzg>
-    <xmx:eUccZSE9xb4wRT9nXRtG9aZW26cHNMY4DwnVstiYc0I_8aejN9YsMw>
-    <xmx:eUccZeFKEletdmbu8CfqX7M2xGLOaFB1G6i4zj7LgSNncIPAD6-uWA>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 48524B60089; Tue,  3 Oct 2023 12:55:21 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
+        Tue, 3 Oct 2023 12:55:22 -0400
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EBE8B7;
+        Tue,  3 Oct 2023 09:55:18 -0700 (PDT)
+Received: from [192.168.1.103] (178.176.78.48) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Tue, 3 Oct 2023
+ 19:55:08 +0300
+Subject: Re: [PATCH 3/4] pata_parport: add custom version of wait_after_reset
+To:     Damien Le Moal <dlemoal@kernel.org>, Ondrej Zary <linux@zary.sk>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+CC:     Christoph Hellwig <hch@lst.de>, Tim Waugh <tim@cyberelk.net>,
+        <linux-parport@lists.infradead.org>, <linux-ide@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230930191511.24994-1-linux@zary.sk>
+ <20230930191511.24994-4-linux@zary.sk>
+ <d2fd9a3c-3efd-dbfe-7b2a-dc36989b8379@kernel.org>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <14129ea5-1597-efce-e782-23a95f3c0bd9@omp.ru>
+Date:   Tue, 3 Oct 2023 19:55:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Message-Id: <231994b0-ca11-4347-8d93-ce66fdbe3d25@app.fastmail.com>
-In-Reply-To: <487836fc-7c9f-2662-66a4-fa5e3829cf6b@intel.com>
-References: <20230914185804.2000497-1-sohil.mehta@intel.com>
- <487836fc-7c9f-2662-66a4-fa5e3829cf6b@intel.com>
-Date:   Tue, 03 Oct 2023 18:54:59 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Sohil Mehta" <sohil.mehta@intel.com>, linux-api@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>
-Cc:     "Richard Henderson" <richard.henderson@linaro.org>,
-        "Ivan Kokshaysky" <ink@jurassic.park.msu.ru>,
-        "Matt Turner" <mattst88@gmail.com>,
-        "Russell King" <linux@armlinux.org.uk>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        "Will Deacon" <will@kernel.org>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Michal Simek" <monstr@monstr.eu>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        "Helge Deller" <deller@gmx.de>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        "Nicholas Piggin" <npiggin@gmail.com>,
-        "Christophe Leroy" <christophe.leroy@csgroup.eu>,
-        "Heiko Carstens" <hca@linux.ibm.com>,
-        "Vasily Gorbik" <gor@linux.ibm.com>,
-        "Alexander Gordeev" <agordeev@linux.ibm.com>,
-        "Christian Borntraeger" <borntraeger@linux.ibm.com>,
-        "Sven Schnelle" <svens@linux.ibm.com>,
-        "Yoshinori Sato" <ysato@users.sourceforge.jp>,
-        "Rich Felker" <dalias@libc.org>,
-        "John Paul Adrian Glaubitz" <glaubitz@physik.fu-berlin.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        "Andy Lutomirski" <luto@kernel.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Chris Zankel" <chris@zankel.net>,
-        "Max Filippov" <jcmvbkbc@gmail.com>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
-        "Jiri Olsa" <jolsa@kernel.org>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        "Ian Rogers" <irogers@google.com>,
-        "Adrian Hunter" <adrian.hunter@intel.com>,
-        "Lukas Bulwahn" <lukas.bulwahn@gmail.com>,
-        "Sergei Trofimovich" <slyich@gmail.com>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Rohan McLure" <rmclure@linux.ibm.com>,
-        "Andreas Schwab" <schwab@linux-m68k.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Brian Gerst" <brgerst@gmail.com>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        "Rick Edgecombe" <rick.p.edgecombe@intel.com>,
-        "Mark Brown" <broonie@kernel.org>,
-        "Deepak Gupta" <debug@rivosinc.com>, linux-alpha@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v2] arch: Reserve map_shadow_stack() syscall number for all
- architectures
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <d2fd9a3c-3efd-dbfe-7b2a-dc36989b8379@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.78.48]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 10/03/2023 16:33:34
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 180330 [Oct 03 2023]
+X-KSE-AntiSpam-Info: Version: 5.9.59.0
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;178.176.78.48:7.1.2
+X-KSE-AntiSpam-Info: FromAlignment: s
+X-KSE-AntiSpam-Info: {rdns complete}
+X-KSE-AntiSpam-Info: {fromrtbl complete}
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.78.48
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 10/03/2023 16:37:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 10/3/2023 12:09:00 PM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=0.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023, at 18:35, Sohil Mehta wrote:
-> On 9/14/2023 11:58 AM, Sohil Mehta wrote:
->> commit c35559f94ebc ("x86/shstk: Introduce map_shadow_stack syscall")
->> recently added support for map_shadow_stack() but it is limited to x86
->> only for now. There is a possibility that other architectures (namely,
->> arm64 and RISC-V), that are implementing equivalent support for shadow
->> stacks, might need to add support for it.
->> 
->> Independent of that, reserving arch-specific syscall numbers in the
->> syscall tables of all architectures is good practice and would help
->> avoid future conflicts. map_shadow_stack() is marked as a conditional
->> syscall in sys_ni.c. Adding it to the syscall tables of other
->> architectures is harmless and would return ENOSYS when exercised.
->> 
->> Note, map_shadow_stack() was assigned #453 during the merge process
->> since #452 was taken by fchmodat2().
->> 
->> For Powerpc, map it to sys_ni_syscall() as is the norm for Powerpc
->> syscall tables.
->> 
->> For Alpha, map_shadow_stack() takes up #563 as Alpha still diverges from
->> the common syscall numbering system in the other architectures.
->> 
->> Link: https://lore.kernel.org/lkml/20230515212255.GA562920@debug.ba.rivosinc.com/
->> Link: https://lore.kernel.org/lkml/b402b80b-a7c6-4ef0-b977-c0f5f582b78a@sirena.org.uk/
->> 
->> Signed-off-by: Sohil Mehta <sohil.mehta@intel.com>
+On 10/3/23 3:55 AM, Damien Le Moal wrote:
+
+[...]
+>> Some parallel adapters (e.g. EXP Computer MC-1285B EPP Cable) return
+>> bogus values when there's no master device present. This can cause
+>> reset to fail, preventing the lone slave device (such as EXP Computer
+>> CD-865) from working.
+>>
+>> Add custom version of wait_after_reset that ignores master failure when
+>> a slave device is present. The custom version is also needed because
+>> the generic ata_sff_wait_after_reset uses direct port I/O for slave
+>> device detection.
+>>
+>> Signed-off-by: Ondrej Zary <linux@zary.sk>
 >> ---
->
-> Gentle ping...
->
-> Are there any additional comments? It applies cleanly on 6.6-rc4.
->
-> Or does it seem ready to be merged? It has the following
-> acknowledgements until now:
->
-> Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
->
+>>  drivers/ata/pata_parport/pata_parport.c | 65 ++++++++++++++++++++++++-
+>>  1 file changed, 64 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/ata/pata_parport/pata_parport.c b/drivers/ata/pata_parport/pata_parport.c
+>> index cf87bbb52f1f..b3db953e615a 100644
+>> --- a/drivers/ata/pata_parport/pata_parport.c
+>> +++ b/drivers/ata/pata_parport/pata_parport.c
+>> @@ -80,6 +80,69 @@ static bool pata_parport_devchk(struct ata_port *ap, unsigned int device)
+>>  	return (nsect == 0x55) && (lbal == 0xaa);
+>>  }
+>>  
+>> +static int pata_parport_wait_after_reset(struct ata_link *link,
+>> +					 unsigned int devmask,
+>> +					 unsigned long deadline)
+>> +{
+>> +	struct ata_port *ap = link->ap;
+>> +	struct pi_adapter *pi = ap->host->private_data;
+>> +	unsigned int dev0 = devmask & (1 << 0);
+>> +	unsigned int dev1 = devmask & (1 << 1);
+>> +	int rc, ret = 0;
+>> +
+>> +	ata_msleep(ap, ATA_WAIT_AFTER_RESET);
+>> +
+>> +	/* always check readiness of the master device */
+>> +	rc = ata_sff_wait_ready(link, deadline);
+>> +	/* some adapters return bogus values if master device is not present,
+>> +	 * so don't abort now if a slave device is present
+>> +	 */
+> 
+> In addition to Sergey's comment, please move this comment inside the "if", or
+> even better, merge it with the otherwise not very useful "always check
+> readiness..." comment.
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+   That comment was copied from ata_sff_wait_after_reset(), I think...
 
-If you like, I can pick this up for 6.7 through the asm-generic
-tree. If you think this should be part of 6.6, I would suggest
-to merge it through the tree that originally contained the
-syscall code.
+[...]
+>> +	/* if device 1 was found in ata_devchk, wait for register
+>> +	 * access briefly, then wait for BSY to clear.
+>> +	 */
+>> +	if (dev1) {
+>> +		int i;
+>> +
+>> +		pata_parport_dev_select(ap, 1);
+>> +
+>> +		/* Wait for register access.  Some ATAPI devices fail
+>> +		 * to set nsect/lbal after reset, so don't waste too
+>> +		 * much time on it.  We're gonna wait for !BSY anyway.
+>> +		 */
+>> +		for (i = 0; i < 2; i++) {
+>> +			u8 nsect, lbal;
+>> +
+>> +			nsect = pi->proto->read_regr(pi, 0, ATA_REG_NSECT);
+>> +			lbal = pi->proto->read_regr(pi, 0, ATA_REG_LBAL);
+>> +			if ((nsect == 1) && (lbal == 1))
+>> +				break;
+>> +			ata_msleep(ap, 50);	/* give drive a breather */
+> 
+> Please move the comment on its own line above the sleep call.
 
-      Arnd
+   Again, copied verbatim from ata_sff_wait_after_reset()...
+
+>> +		}
+>> +
+>> +		rc = ata_sff_wait_ready(link, deadline);
+>> +		if (rc) {
+>> +			if (rc != -ENODEV)
+>> +				return rc;
+>> +			ret = rc;
+>> +		}
+>> +	}
+>> +
+>> +	/* is all this really necessary? */
+> 
+> I don't know. It is your driver... So either drop this comment, or clearly
+> explain why this is done.
+
+   And again, copied verbatim from ata_sff_wait_after_reset()...
+
+>> +	pata_parport_dev_select(ap, 0);
+>> +	if (dev1)
+>> +		pata_parport_dev_select(ap, 1);
+>> +	if (dev0)
+>> +		pata_parport_dev_select(ap, 0);
+> 
+> Can you have dev1 && dev0 == true ? This seems like the second if should be an
+> "else if", but it is not clear what this is doing.
+
+   I guess this tries to leave the valid taskfile regs readable on a channel, instead
+of just 0xff...
+
+[...]
+
+MBR, Sergey
