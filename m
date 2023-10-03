@@ -2,194 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7CD7B71E0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4207B71E3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240923AbjJCTjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 15:39:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55524 "EHLO
+        id S240945AbjJCTkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 15:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232069AbjJCTjh (ORCPT
+        with ESMTP id S232069AbjJCTk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 15:39:37 -0400
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 233549E;
-        Tue,  3 Oct 2023 12:39:34 -0700 (PDT)
-Received: from [192.168.1.103] (178.176.73.165) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.986.14; Tue, 3 Oct 2023
- 22:39:29 +0300
-Subject: Re: [PATCH v4] net: ravb: Fix possible UAF bug in ravb_remove
-To:     Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Zheng Wang <zyytlz.wz@163.com>
-CC:     "lee@kernel.org" <lee@kernel.org>,
-        "linyunsheng@huawei.com" <linyunsheng@huawei.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "richardcochran@gmail.com" <richardcochran@gmail.com>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "geert+renesas@glider.be" <geert+renesas@glider.be>,
-        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        "wsa+renesas@sang-engineering.com" <wsa+renesas@sang-engineering.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "hackerzheng666@gmail.com" <hackerzheng666@gmail.com>,
-        "1395428693sheep@gmail.com" <1395428693sheep@gmail.com>,
-        "alex000young@gmail.com" <alex000young@gmail.com>
-References: <20230725030026.1664873-1-zyytlz.wz@163.com>
- <20230725201952.2f23bb3b@kernel.org>
- <9cfa70cca3cb1dd20bb2cab70a213e5a4dd28f89.camel@redhat.com>
- <607f4fe4-5a59-39dd-71c2-0cf769b48187@omp.ru>
- <OSYPR01MB53341CFDBB49A3BA41A6752CD8F9A@OSYPR01MB5334.jpnprd01.prod.outlook.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <872cf8d7-3bd6-b11a-82ac-a9f4c82d0a02@omp.ru>
-Date:   Tue, 3 Oct 2023 22:39:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 3 Oct 2023 15:40:29 -0400
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB2AA1
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 12:40:23 -0700 (PDT)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-59bebd5bdadso16270287b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 12:40:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696362022; x=1696966822; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lfr2egyOR1+C8mShorjIOzO6y7VY3Fj1mtMvJxoOK94=;
+        b=PQQqyYd+6uXF9D80Z40ld/X+JOpKdDMrgI1lB1FVGEowbemslL8lvrbY+GZZV0u349
+         LuktTORcUrE/PssAcwYuRPqB6Q6AJjUS33kg1bPX1ueikglwVACWevDjHgH3yDbn3fha
+         VtxxRaIAKhoeLu7jIiYB6BBnAfIncsKEQXN7ktHutF4/R2BnvnUGk9uSVdlt2ZAAzdtg
+         sqoDRgAO5qhazmggFZKDrNtm9z5hyrOt4ipbNRTlI8ZGXlPsxWXo3yTKMOlMsWtU92zi
+         yzPUoxC6dMm06FPmg3yOzyIAj1li21u622jep2tUrcKYSb5JfvOc4ZZVgOI0Jr3HR5eO
+         Q2Eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696362022; x=1696966822;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lfr2egyOR1+C8mShorjIOzO6y7VY3Fj1mtMvJxoOK94=;
+        b=a2NQ8m+i2XW/f6+sYiHC5wGbXy7o0u/YRZglkGoMvG4MXqGlJ4q7xcdhyL0HnVn/HL
+         MFcphGhdrl9bCqJ6LptMM1pzfOMhlcn7wdkbb6Wq7VJCD0UbSrcruuLBKXV1TP5YLN+A
+         gOrR74yimT1XwUeTJlvnvQ9rxzvmynZE0u2IR54UJU3K0iOizi1UTvUeGXu/Uv8B4QKm
+         gg5aQbjQuld6aZ6iQDHkfGpMQby86DsXd+LRUtjl/diUUzoN79vLrEY7SM60+K5SlPnA
+         iWShGdJ5nZJ7/vS5jSwuYVpvvigB5FqkLPTqjOFqKuAOlZ9kL/GB8RWhHe5O4ilRRrnT
+         9oTw==
+X-Gm-Message-State: AOJu0Yz/l4zMk+eTmLHe9Tn1JiJ6iDn+5Z9F7Nd8csqwUWIvObjTax7h
+        VXkl7wOE+bcSKdzjWi25mIX3z2gfq6pKur46sDmxUA==
+X-Google-Smtp-Source: AGHT+IHMRHSRLs+lH7EW8L10zxsOV/xPpBMFnE87yJyz8Bgq+zHVJ8yFa+IWyhMreU9et69QGkrqkHneSbi5sLXaf+4=
+X-Received: by 2002:a0d:e001:0:b0:59e:7fc1:dba0 with SMTP id
+ j1-20020a0de001000000b0059e7fc1dba0mr523083ywe.44.1696362022441; Tue, 03 Oct
+ 2023 12:40:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <OSYPR01MB53341CFDBB49A3BA41A6752CD8F9A@OSYPR01MB5334.jpnprd01.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.73.165]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.59, Database issued on: 10/03/2023 19:21:04
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 180331 [Oct 03 2023]
-X-KSE-AntiSpam-Info: Version: 5.9.59.0
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.73.165 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.73.165 in (user)
- dbl.spamhaus.org}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;omp.ru:7.1.1;elixir.bootlin.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: FromAlignment: s
-X-KSE-AntiSpam-Info: {rdns complete}
-X-KSE-AntiSpam-Info: {fromrtbl complete}
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.73.165
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=none header.from=omp.ru;spf=none
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 10/03/2023 19:25:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 10/3/2023 4:06:00 PM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-3.0 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230929183041.2835469-1-Liam.Howlett@oracle.com>
+ <20230929183041.2835469-3-Liam.Howlett@oracle.com> <CAJuCfpFx3zxv1ZgkLh4dkafOCHvL_674cysJiuQPQhKXX9BuzQ@mail.gmail.com>
+ <20231003185149.brbzyu2ivn25tkeu@revolver>
+In-Reply-To: <20231003185149.brbzyu2ivn25tkeu@revolver>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 3 Oct 2023 12:40:07 -0700
+Message-ID: <CAJuCfpGh6pnX_bcV0ArdAdbE=Dkru0EKf=zLd_tAATcqyx6i2w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] mmap: Fix error paths with dup_anon_vma()
+To:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Jann Horn <jannh@google.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Tue, Oct 3, 2023 at 11:51=E2=80=AFAM Liam R. Howlett <Liam.Howlett@oracl=
+e.com> wrote:
+>
+> * Suren Baghdasaryan <surenb@google.com> [231003 12:21]:
+> > On Fri, Sep 29, 2023 at 11:30=E2=80=AFAM Liam R. Howlett
+> > <Liam.Howlett@oracle.com> wrote:
+> > >
+> > > When the calling function fails after the dup_anon_vma(), the
+> > > duplication of the anon_vma is not being undone.  Add the necessary
+> > > unlink_anon_vma() call to the error paths that are missing them.
+> > >
+> > > This issue showed up during inspection of the error path in vma_merge=
+()
+> > > for an unrelated vma iterator issue.
+> > >
+> > > Users may experience increased memory usage, which may be problematic=
+ as
+> > > the failure would likely be caused by a low memory situation.
+> > >
+> > > Fixes: d4af56c5c7c6 ("mm: start tracking VMAs with maple tree")
+> > > Cc: stable@vger.kernel.org
+> > > Cc: Jann Horn <jannh@google.com>
+> > > Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+> > > ---
+> > >  mm/mmap.c | 30 ++++++++++++++++++++++--------
+> > >  1 file changed, 22 insertions(+), 8 deletions(-)
+> > >
+> > > diff --git a/mm/mmap.c b/mm/mmap.c
+> > > index acb7dea49e23..f9f0a5fe4db4 100644
+> > > --- a/mm/mmap.c
+> > > +++ b/mm/mmap.c
+> > > @@ -583,11 +583,12 @@ static inline void vma_complete(struct vma_prep=
+are *vp,
+> > >   * dup_anon_vma() - Helper function to duplicate anon_vma
+> > >   * @dst: The destination VMA
+> > >   * @src: The source VMA
+> > > + * @dup: Pointer to the destination VMA when successful.
+> > >   *
+> > >   * Returns: 0 on success.
+> > >   */
+> > >  static inline int dup_anon_vma(struct vm_area_struct *dst,
+> > > -                              struct vm_area_struct *src)
+> > > +               struct vm_area_struct *src, struct vm_area_struct **d=
+up)
+> > >  {
+> > >         /*
+> > >          * Easily overlooked: when mprotect shifts the boundary, make=
+ sure the
+> > > @@ -595,9 +596,15 @@ static inline int dup_anon_vma(struct vm_area_st=
+ruct *dst,
+> > >          * anon pages imported.
+> > >          */
+> > >         if (src->anon_vma && !dst->anon_vma) {
+> > > +               int ret;
+> > > +
+> > >                 vma_assert_write_locked(dst);
+> > >                 dst->anon_vma =3D src->anon_vma;
+> > > -               return anon_vma_clone(dst, src);
+> > > +               ret =3D anon_vma_clone(dst, src);
+> > > +               if (ret)
+> > > +                       return ret;
+> > > +
+> > > +               *dup =3D dst;
+> > >         }
+> > >
+> > >         return 0;
+> > > @@ -624,6 +631,7 @@ int vma_expand(struct vma_iterator *vmi, struct v=
+m_area_struct *vma,
+> > >                unsigned long start, unsigned long end, pgoff_t pgoff,
+> > >                struct vm_area_struct *next)
+> > >  {
+> > > +       struct vm_area_struct *anon_dup =3D NULL;
+> > >         bool remove_next =3D false;
+> > >         struct vma_prepare vp;
+> > >
+> > > @@ -633,7 +641,7 @@ int vma_expand(struct vma_iterator *vmi, struct v=
+m_area_struct *vma,
+> > >
+> > >                 remove_next =3D true;
+> > >                 vma_start_write(next);
+> > > -               ret =3D dup_anon_vma(vma, next);
+> > > +               ret =3D dup_anon_vma(vma, next, &anon_dup);
+> > >                 if (ret)
+> > >                         return ret;
+> >
+> > Shouldn't the above be changed to a "goto nomem" instead of "return ret=
+" ?
+> >
+> >
+> > >         }
+> > > @@ -661,6 +669,8 @@ int vma_expand(struct vma_iterator *vmi, struct v=
+m_area_struct *vma,
+> > >         return 0;
+> > >
+> > >  nomem:
+> > > +       if (anon_dup)
+> > > +               unlink_anon_vmas(anon_dup);
+> > >         return -ENOMEM;
+> > >  }
+> > >
+> > > @@ -860,6 +870,7 @@ struct vm_area_struct *vma_merge(struct vma_itera=
+tor *vmi, struct mm_struct *mm,
+> > >  {
+> > >         struct vm_area_struct *curr, *next, *res;
+> > >         struct vm_area_struct *vma, *adjust, *remove, *remove2;
+> > > +       struct vm_area_struct *anon_dup =3D NULL;
+> > >         struct vma_prepare vp;
+> > >         pgoff_t vma_pgoff;
+> > >         int err =3D 0;
+> > > @@ -927,18 +938,18 @@ struct vm_area_struct *vma_merge(struct vma_ite=
+rator *vmi, struct mm_struct *mm,
+> > >                 vma_start_write(next);
+> > >                 remove =3D next;                          /* case 1 *=
+/
+> > >                 vma_end =3D next->vm_end;
+> > > -               err =3D dup_anon_vma(prev, next);
+> > > +               err =3D dup_anon_vma(prev, next, &anon_dup);
+> > >                 if (curr) {                             /* case 6 */
+> > >                         vma_start_write(curr);
+> > >                         remove =3D curr;
+> > >                         remove2 =3D next;
+> > >                         if (!next->anon_vma)
+> > > -                               err =3D dup_anon_vma(prev, curr);
+> > > +                               err =3D dup_anon_vma(prev, curr, &ano=
+n_dup);
+> > >                 }
+> > >         } else if (merge_prev) {                        /* case 2 */
+> > >                 if (curr) {
+> > >                         vma_start_write(curr);
+> > > -                       err =3D dup_anon_vma(prev, curr);
+> > > +                       err =3D dup_anon_vma(prev, curr, &anon_dup);
+> > >                         if (end =3D=3D curr->vm_end) {      /* case 7=
+ */
+> > >                                 remove =3D curr;
+> > >                         } else {                        /* case 5 */
+> > > @@ -954,7 +965,7 @@ struct vm_area_struct *vma_merge(struct vma_itera=
+tor *vmi, struct mm_struct *mm,
+> > >                         vma_end =3D addr;
+> > >                         adjust =3D next;
+> > >                         adj_start =3D -(prev->vm_end - addr);
+> > > -                       err =3D dup_anon_vma(next, prev);
+> > > +                       err =3D dup_anon_vma(next, prev, &anon_dup);
+> > >                 } else {
+> > >                         /*
+> > >                          * Note that cases 3 and 8 are the ONLY ones =
+where prev
+> > > @@ -968,7 +979,7 @@ struct vm_area_struct *vma_merge(struct vma_itera=
+tor *vmi, struct mm_struct *mm,
+> > >                                 vma_pgoff =3D curr->vm_pgoff;
+> > >                                 vma_start_write(curr);
+> > >                                 remove =3D curr;
+> > > -                               err =3D dup_anon_vma(next, curr);
+> > > +                               err =3D dup_anon_vma(next, curr, &ano=
+n_dup);
+> > >                         }
+> > >                 }
+> > >         }
+> > > @@ -1018,6 +1029,9 @@ struct vm_area_struct *vma_merge(struct vma_ite=
+rator *vmi, struct mm_struct *mm,
+> > >         return res;
+> > >
+> > >  prealloc_fail:
+> > > +       if (anon_dup)
+> > > +               unlink_anon_vmas(anon_dup);
+> >
+> > Maybe a stupid question, but why can't we do this unlinking inside
+> > dup_anon_vma() itself when anon_vma_clone() fails? That would
+> > eliminate the need for the out parameter in that function. I suspect
+> > that there is a reason for that which I'm missing.
+>
+> It's too late.  This is to undo the link when the preallocation for the
+> maple tree fails.  So we had memory to dup the anon vma, but not to put
+> it in the tree.
 
-   Concerning the subject: I doubt that UAF acronym is known to
-everybody (e.g. it wasn't known to me), I think we should be able
-to afford spelling out use-after-free there...
+Ah, I see what I missed now. Sorry for the noise.
 
-On 9/20/23 5:37 AM, Yoshihiro Shimoda wrote:
-[...]
-
->>>>> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
->>>>> index 4d6b3b7d6abb..ce2da5101e51 100644
->>>>> --- a/drivers/net/ethernet/renesas/ravb_main.c
->>>>> +++ b/drivers/net/ethernet/renesas/ravb_main.c
->>>>> @@ -2885,6 +2885,9 @@ static int ravb_remove(struct platform_device *pdev)
->>>>>  	struct ravb_private *priv = netdev_priv(ndev);
->>>>>  	const struct ravb_hw_info *info = priv->info;
->>>>>
->>>>> +	netif_carrier_off(ndev);
->>>>> +	netif_tx_disable(ndev);
->>>>> +	cancel_work_sync(&priv->work);
->>>>
->>>> Still racy, the carrier can come back up after canceling the work.
->>>
->>> I must admit I don't see how/when this driver sets the carrier on ?!?
->>
->>    The phylib code does it for this MAC driver, see the call tree of
->> phy_link_change(), on e.g.
->> https://elixir.bootlin.com/linux/v6.5-rc3/source
->>
->>>> But whatever, this is a non-issue in the first place.
->>>
->>> Do you mean the UaF can't happen? I think that is real.
->>
->>    Looks possible to me, at least now... and anyway, shouldn't we clean up
->> after ourselves if we call schedule_work()?However my current impression is
->> that cancel_work_sync() should be called from ravb_close(), after calling
->> phy_{stop|disconnect}()...
-> 
-> I also think so.
-> 
-> ravb_remove() calls unregister_netdev().
->  -> unregister_netdev() calls rtnl_lock() and unregister_netdevice().
->  --> unregiter_netdevice_queue()
->  ---> unregiter_netdevice_many()
->  ----> unregiter_netdevice_many_notify().
->  -----> dev_close_many()
->  ------> __dev_close_many()
->  -------> ops->ndo_stop()
-> 
-> ravb_close() calls phy_stop()
->  -> phy_state_machine() with PHY_HALTED
->  --> phy_link_down()
->  ---> phy_link_change()
->  ----> netif_carrier_off()
-
-   Thanks for sharing the call chain, I've followed it once again... :-)
-
-> The patch will be the following:
-> ---
->  drivers/net/ethernet/renesas/ravb_main.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index 7df9f9f8e134..e452d90de7c2 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -2167,6 +2167,8 @@ static int ravb_close(struct net_device *ndev)
->  			of_phy_deregister_fixed_link(np);
->  	}
->  
-> +	cancel_work_sync(&priv->work);
-> +
->  	if (info->multi_irqs) {
->  		free_irq(priv->tx_irqs[RAVB_NC], ndev);
->  		free_irq(priv->rx_irqs[RAVB_NC], ndev);
-> ---
-> 
-> If this patch is acceptable, I'll submit it. But, what do you think?
-
-   I think it should do the job. And I suspect you can even test it... :-)
-
-> Best regards,
-> Yoshihiro Shimoda
-
-[...]
-
-MBR, Sergey
+>
+> >
+> > > +
+> > >  anon_vma_fail:
+> > >         vma_iter_set(vmi, addr);
+> > >         vma_iter_load(vmi);
+> > > --
+> > > 2.40.1
+> > >
