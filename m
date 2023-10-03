@@ -2,97 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C62F7B68E8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B137B68EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:26:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232353AbjJCMY6 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 08:24:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44048 "EHLO
+        id S232435AbjJCM0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 08:26:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230404AbjJCMY5 (ORCPT
+        with ESMTP id S231440AbjJCM0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 08:24:57 -0400
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1877A6;
-        Tue,  3 Oct 2023 05:24:54 -0700 (PDT)
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-59c268676a9so10591817b3.0;
-        Tue, 03 Oct 2023 05:24:54 -0700 (PDT)
+        Tue, 3 Oct 2023 08:26:03 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9686B8;
+        Tue,  3 Oct 2023 05:25:58 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d8162698f0dso917009276.0;
+        Tue, 03 Oct 2023 05:25:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696335958; x=1696940758; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LNO5GJBfVgDppnnjLs8Ey/aGvi+SY8q8n/RPtqg6Lb0=;
+        b=hsK9jHxmOtLJ2VlYpbe5A0BRGU/6RDLVwpPRxUb0G1oC85PnNiA52gzFW2ObtQVlQL
+         iQ2zTKF6rKkpISQFpKJ+X4dUzNmD9iFsSO4F+c58xpvoj3jcfsprEDV+bNrfeGVsDB4s
+         yC4iZbmASYhXgWa2L0fw1DtJFzInEJBb8SDldCwtT+2weRTfVuDou98lFk6OUYiF1Phk
+         5NkqUZE2W2rkVfrV6J37Sv/kdggOGseURs+SukdCAdTeyLXKhDDzHMS8EkhGrJ3acBhs
+         zhWeFL11SZ/X4Pl/6ieo0fClJGLt3IzvHeOWOeJAdXbNpbkOUaZvOu26mYMjj6tk0COQ
+         AZUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696335893; x=1696940693;
+        d=1e100.net; s=20230601; t=1696335958; x=1696940758;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FM7F2ErDCT18gWR6Yw2KxppndzFMwSzkF3KAWh0GJec=;
-        b=Lo+etlKTkS9tjGgySqyr8cDdpXFLe2/CSA8Gr1xfHkf//7t9Yj7WvkYqhzJ3GBRgUB
-         XSqY5N8y4IAP4TkUBW9Sto48qzPUgKu7QmeXtFzlyUcu+LNgPbTQZwfvPqvTPqO5NMuF
-         GwphvsA5txVgC0Ag+iF6AZ54MHPanN5Y5XwNaK/capJf0g0MQO1tDS9fK38aAj654UyG
-         d5cjLFFefTkESWVv87oKIPCXptvdF7EvEcOBfzmO//fPEF4Vhr29b+qn7LVibNchkNsQ
-         5oJqivjuMaMawt9g1VMxjeyMUkPX7nbeDB5ayf2x4yk/m1fnq6+OeLh0AgFwVcd3ets5
-         yixw==
-X-Gm-Message-State: AOJu0YxNJ+Wix34WMFO5yh4zQuAZ9V68AvKY6CgcofV9PpGA3ljoOsC/
-        LzZEWfHrR4gMmBm+KplCdAiEti8JHgb/DQ==
-X-Google-Smtp-Source: AGHT+IEPjvDnWoVfpY8flp1oUsiBJ8fgb2P2bQ9+ZqH67xkxpOI0DGgjsefkYn/MBo3nVmnxkahcxA==
-X-Received: by 2002:a81:5246:0:b0:592:97c3:18d2 with SMTP id g67-20020a815246000000b0059297c318d2mr13867273ywb.15.1696335893573;
-        Tue, 03 Oct 2023 05:24:53 -0700 (PDT)
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com. [209.85.128.169])
-        by smtp.gmail.com with ESMTPSA id u81-20020a816054000000b005956b451fb8sm334717ywb.100.2023.10.03.05.24.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 05:24:52 -0700 (PDT)
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-59bc956b029so10355077b3.2;
-        Tue, 03 Oct 2023 05:24:52 -0700 (PDT)
-X-Received: by 2002:a81:a182:0:b0:59f:5013:b19d with SMTP id
- y124-20020a81a182000000b0059f5013b19dmr13601255ywg.17.1696335892593; Tue, 03
- Oct 2023 05:24:52 -0700 (PDT)
+        bh=LNO5GJBfVgDppnnjLs8Ey/aGvi+SY8q8n/RPtqg6Lb0=;
+        b=f+uOcryYhMYlLLC0HYOFWaCEY/jEsPMqwojaHDkpErDjlNufs/UIV937Z78TwvAeDK
+         wz1WvxSX+ttvRaULy7Lod+BA4b+T15xcPbe2O3c2D6z0tCxwg6yZhnWT8t+vhtoNEonL
+         FvFdxWu2fV6qwVug9n8yAgNUgIgdjW9IELcD16toWr6aWy//fLtKQRIihR3IVh8qf0DQ
+         lwuk3OcRy+eRej2jNxWyxN9Czpl/i/uU+84XoRtyJbxwNb/u+QCdV1SeAqjDiLUrJDDl
+         L4ffkfvI2gyB+QEq8rlilh1iziLxt9q3El2WBYuU+DndqnVOJW0VlpqtmClwo2p7Zl0w
+         bqow==
+X-Gm-Message-State: AOJu0YzD3/8uxZCcJ1PwrmK5CYbRE+oS0N2//prvH1T+eOMnwIFzX2TW
+        Hx7TWYLX4QLamVrDLBmDxWMnQYq5ICmPWC9tdiw=
+X-Google-Smtp-Source: AGHT+IH3vFPI8wkZPSB+huGryIAf1o97KjtxkawCjpbmFqLZ7a060PcmeyqhgyDquT7PF4ujt0bcej93HgDs77wHvAQ=
+X-Received: by 2002:a05:6902:707:b0:d85:aa81:53f0 with SMTP id
+ k7-20020a056902070700b00d85aa8153f0mr16641798ybt.4.1696335957740; Tue, 03 Oct
+ 2023 05:25:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230929000704.53217-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20230929000704.53217-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20230929000704.53217-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 3 Oct 2023 14:24:40 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXQK=7uaow7Yazusi8vtL+U_fwxBXjH6UFu53XhU31zCg@mail.gmail.com>
-Message-ID: <CAMuHMdXQK=7uaow7Yazusi8vtL+U_fwxBXjH6UFu53XhU31zCg@mail.gmail.com>
-Subject: Re: [PATCH 2/5] riscv: dts: renesas: r9a07g043f: Add dma-noncoherent property
-To:     Prabhakar <prabhakar.csengg@gmail.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <CAH7-e5sb+kT_LRb1_y-c5JaFN0=KrrRT97otUPKzTCgzGsVdrQ@mail.gmail.com>
+ <ZRtWcgiH5JhD5NU2@debian.me>
+In-Reply-To: <ZRtWcgiH5JhD5NU2@debian.me>
+From:   =?UTF-8?Q?Erik_Dob=C3=A1k?= <erik.dobak@gmail.com>
+Date:   Tue, 3 Oct 2023 14:25:46 +0200
+Message-ID: <CAH7-e5uspavg_VBJxKLOKJfU3nAq-OrPqzihF2opffY-ReiC-w@mail.gmail.com>
+Subject: Re: bluetooth issues since kernel 6.4 - not discovering other bt
+ devices - /linux/drivers/bluetooth/btusb.c
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Linux Stable <stable@vger.kernel.org>,
+        Linux Bluetooth <linux-bluetooth@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Mediatek <linux-mediatek@lists.infradead.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        =?UTF-8?Q?Tomasz_Mo=C5=84?= <tomasz.mon@nordicsemi.no>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 2:07 AM Prabhakar <prabhakar.csengg@gmail.com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Tue, 3 Oct 2023 at 01:47, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
 >
-> RZ/Five is a noncoherent SoC so to indicate this add dma-noncoherent
-> property to RZ/Five SoC DTSI.
+> On Sun, Oct 01, 2023 at 07:47:54AM +0200, Erik Dob=C3=A1k wrote:
+> > Hello!
+> >
+> > I bought a new laptop fujitsu life book and everything is going fine
+> > on artix just the bt makes trouble:
+> >
+> > /var/log/error.log
+> > Sep 30 18:43:48 nexus bluetoothd[2266]:
+> > src/adapter.c:reset_adv_monitors_complete() Failed to reset Adv
+> > Monitors: Failed (0x03)
+> > Sep 30 18:43:48 nexus bluetoothd[2266]: Failed to clear UUIDs: Failed (=
+0x03)
+> > Sep 30 18:43:48 nexus bluetoothd[2266]: Failed to add UUID: Failed (0x0=
+3)
+> > Sep 30 18:43:48 nexus bluetoothd[2266]: Failed to add UUID: Failed (0x0=
+3)
+> >
+> > i searched a bit the webs and found a new commit at kernel org that
+> > does do the trouble:
+> > https://bugs.archlinux.org/task/78980
+> >
+> > follow the linkeys inside the commits there or read this one:
+> >
+> > ---------------before------------------------------------
+> > /* interface numbers are hardcoded in the spec */
+> >         if (intf->cur_altsetting->desc.bInterfaceNumber !=3D 0) {
+> >                 if (!(id->driver_info & BTUSB_IFNUM_2))
+> >                         return -ENODEV;
+> >                 if (intf->cur_altsetting->desc.bInterfaceNumber !=3D 2)
+> >                         return -ENODEV;
+> >         }
+> > -----------after----------------------------------------------------
+> > if ((id->driver_info & BTUSB_IFNUM_2) &&
+> >     (intf->cur_altsetting->desc.bInterfaceNumber !=3D 0) &&
+> >     (intf->cur_altsetting->desc.bInterfaceNumber !=3D 2))
+> > return -ENODEV;
+> > --------------------------------------------------------
+> >
+> > the dude just hooked up 3 conditions in a row with && where before it
+> > was 2 conditions in 1 condition. + the comment was removed.
+> >
+> >
 >
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Try latest mainline first (currently v6.6-rc4). Because you have to
+> compile your own kernel, please refer to
+> Documentation/admin-guide/quickly-build-trimmed-linux.rst if you don't kn=
+ow how to do the compilation.
+>
+> Also, don't top-post when replying; reply inline with appropriate context
+> instead.
+>
+> Thanks.
+>
+> --
+> An old man doll... just what I always wanted! - Clara
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v6.7.
+Hi i booted now into linux-6.6-rc4 and the issue is still there. No
+bluetooth devices are discovered.
+with this device: Bus 001 Device 004: ID 04c5:1670 Fujitsu, Ltd Bluetooth R=
+adio
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+E
