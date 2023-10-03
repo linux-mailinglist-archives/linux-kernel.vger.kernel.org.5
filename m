@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 336287B6B06
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E56857B6B0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238036AbjJCOHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:07:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45696 "EHLO
+        id S238471AbjJCOHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:07:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230468AbjJCOHJ (ORCPT
+        with ESMTP id S238043AbjJCOHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 10:07:09 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDD7A3
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:07:05 -0700 (PDT)
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 393C90t3008905;
+        Tue, 3 Oct 2023 10:07:11 -0400
+Received: from mx08-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28899AB
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:07:07 -0700 (PDT)
+Received: from pps.filterd (m0369457.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 393Bv3Pq029740;
         Tue, 3 Oct 2023 16:06:49 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=lcwd+C48ijlEy81oSLTN9qdrj4GIhJ04xo6jGud0Nmg=; b=uy
-        dA4m0jiVqWVeVCwSyHSiRFDjfEIcbpKlWxGhAnKR0XezI7JtlpXUGCYRGX8PH6Tq
-        SZbD0xHJCjjUyaz1lIFp32CTk54kS5nMm2A4lDmk6zd1DlLBPx5H+F8V4W3Ewmn/
-        IZjslHDzDNQFS/zUFatk/Ze23mYKErJvJUQoAX55Ug/8YFKtxXuHFvX88ry5xWTo
-        Fe44IW+rr6ZjHvzQh5hnp3OoXLBbR/mHdkIug3uxZUpYNUR0gQvxm5paF4wyriND
-        W5ysIzPcuBfbfaWa6AmU9LIzCKQ+cKoxBtYV04ptihovEcsFJKgJ+DsEcITuolWE
-        IFk4RLYBKeIjBpUCn2uA==
+        selector1; bh=2vVG68qKGR1o1X2zz9Zf7c8pKOPt5h+j39QeCuRRJQE=; b=La
+        I0P+Cp9m6qw9gfpF2XijY85bHT3FO7Lz2eG/qfyKGVLrfhpdliqDexpO6r6sjU6z
+        MkM7PLOW37KrrBhKowE8g8IotAqV94bT5yufGLkExvqLtCSM4HGLcJxsZFKLHVpv
+        0xm8dod75wZX3mafvicYmq8Qwi2/ji1nC6gHYfjGP8qLOz4y4SieHjgVP3Z2bCTa
+        NK2VaEtPOD3GRvVV6RdHYT76C4619Xmdh3xCIz/D3wnu/smwSpG8oR81yIOXUGof
+        is5/vI9ZkBb+4nqxHAg8jfB47oGVcT/2mIMrBNa5BHLOSprnpAjbc11Ni0evIlP9
+        DuVRXtcowIDM3f3BNqZQ==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3te8t4vup0-1
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3texmj2bsa-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Tue, 03 Oct 2023 16:06:49 +0200 (MEST)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CBF7E10005A;
-        Tue,  3 Oct 2023 16:06:47 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8235E10005C;
+        Tue,  3 Oct 2023 16:06:48 +0200 (CEST)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C1EE12634FA;
-        Tue,  3 Oct 2023 16:06:47 +0200 (CEST)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 7A1062634F9;
+        Tue,  3 Oct 2023 16:06:48 +0200 (CEST)
 Received: from localhost (10.201.20.20) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 3 Oct
- 2023 16:06:47 +0200
+ 2023 16:06:48 +0200
 From:   Etienne Carriere <etienne.carriere@foss.st.com>
 To:     <linux-kernel@vger.kernel.org>
 CC:     Jens Wiklander <jens.wiklander@linaro.org>,
@@ -50,9 +50,9 @@ CC:     Jens Wiklander <jens.wiklander@linaro.org>,
         <op-tee@lists.trustedfirmware.org>,
         Jerome Forissier <jerome.forissier@linaro.org>,
         Etienne Carriere <etienne.carriere@foss.st.com>
-Subject: [PATCH v10 1/4] tee: optee: system call property
-Date:   Tue, 3 Oct 2023 16:06:34 +0200
-Message-ID: <20231003140637.31346-2-etienne.carriere@foss.st.com>
+Subject: [PATCH v10 2/4] tee: system session
+Date:   Tue, 3 Oct 2023 16:06:35 +0200
+Message-ID: <20231003140637.31346-3-etienne.carriere@foss.st.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231003140637.31346-1-etienne.carriere@foss.st.com>
 References: <20231003140637.31346-1-etienne.carriere@foss.st.com>
@@ -74,12 +74,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds an argument to do_call_with_arg() handler to tell whether the call
-is a system call or nor. This change always sets this info to false
-hence no functional change.
+Adds kernel client API function tee_client_system_session() for a client
+to request a system service entry in TEE context.
 
-This change prepares management of system invocation proposed in a later
-change.
+This feature is needed to prevent a system deadlock when several TEE
+client applications invoke TEE, consuming all TEE thread contexts
+available in the secure world. The deadlock can happen in the OP-TEE
+driver for example if all these TEE threads issue an RPC call from TEE
+to Linux OS to access an eMMC RPMB partition (TEE secure storage) which
+device clock or regulator controller is accessed through an OP-TEE SCMI
+services. In that case, Linux SCMI driver must reach OP-TEE SCMI service
+without waiting until one of the consumed TEE threads is freed.
 
 Reviewed-by: Sumit Garg <sumit.garg@linaro.org>
 Co-developed-by: Jens Wiklander <jens.wiklander@linaro.org>
@@ -87,322 +92,108 @@ Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 Signed-off-by: Etienne Carriere <etienne.carriere@foss.st.com>
 ---
 Changes since v9:
-- Applied Sumit R-b tag:
-  https://lore.kernel.org/lkml/CAFA6WYMwWFRUo719wHHsjaAUOSdo4cMa8gdHBMWidP4vC4z31g@mail.gmail.com/
 - Updated my e-mail address.
 
 No change since v8
 No change since v7
 
 Changes since v6:
-- Squashed a part of patch v6 3/4 changes into this patch v7 1/4
-  related to adding boolean system thread attribute into optee
-  driver call queue and SMC/FF-A ABIs API functions.
-- Removed local variable sys_thread set to constant false value
-  and use false straight as function argument instead.
-- Comment on struct optee_session::use_sys_thread being read with
-  optee mutex locked is not addressed as still under discussion.
+- Fixed commit message from review comments.
+- Applied Sumit's R-b tag.
 
-No changes since v5
+No change since v5
 
 Changes since v4:
-- New change, extracted from PATCH v4 1/2 (tee: system invocation") and
-  revised to cover preparatory changes in optee driver for system session
-  support with contribution from Jens.
----
- drivers/tee/optee/call.c          | 24 +++++++++++++++++-------
- drivers/tee/optee/core.c          |  5 +++--
- drivers/tee/optee/ffa_abi.c       | 10 ++++++----
- drivers/tee/optee/optee_private.h |  9 ++++++---
- drivers/tee/optee/smc_abi.c       | 15 ++++++++-------
- 5 files changed, 40 insertions(+), 23 deletions(-)
+- Changes extracted from "[PATCH v4 1/2] tee: system invocation" and
+  revised with Jens contribution to cover only definition of tee driver
+  new API function tee_client_system_session() for kernel clients to
+  register their session as a system session.
+- Commit message rephrased, including header line changed from
+  "tee: system invocation" to "tee: system session" has the feature
+  relates to system attributes of tee sessions.
 
-diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-index df5fb5410b72..152ae9bb1785 100644
---- a/drivers/tee/optee/call.c
-+++ b/drivers/tee/optee/call.c
-@@ -40,7 +40,7 @@ struct optee_shm_arg_entry {
- };
- 
- void optee_cq_wait_init(struct optee_call_queue *cq,
--			struct optee_call_waiter *w)
-+			struct optee_call_waiter *w, bool sys_thread)
- {
- 	/*
- 	 * We're preparing to make a call to secure world. In case we can't
-@@ -328,7 +328,8 @@ int optee_open_session(struct tee_context *ctx,
- 		goto out;
- 	}
- 
--	if (optee->ops->do_call_with_arg(ctx, shm, offs)) {
-+	if (optee->ops->do_call_with_arg(ctx, shm, offs,
-+					 sess->use_sys_thread)) {
- 		msg_arg->ret = TEEC_ERROR_COMMUNICATION;
- 		msg_arg->ret_origin = TEEC_ORIGIN_COMMS;
- 	}
-@@ -360,7 +361,8 @@ int optee_open_session(struct tee_context *ctx,
- 	return rc;
+Changes since v3:
+- Fixed new SMC funcIDs to reserved/unreserve OP-TEE thread contexts:
+  minor renaming + define as fastcall funcIDs.
+- Moved system_ctx_count from generic struct tee_context to optee's
+  private struct optee_context_data. This changes optee smc_abi.c
+  to release reserved thread contexts when the optee device is released.
+- Fixed inline description comments.
+
+No change since v2
+
+Change since v1
+- Addressed comment on Linux client to claim reservation on TEE context.
+  This brings 2 new operations from client to TEE to request and release
+  system thread contexts: 2 new tee_drv.h API functions, 2 new ops
+  functions in struct tee_driver_ops. The OP-TEE implement shall implement
+  2 new fastcall SMC funcIDs.
+- Fixed typos in commit message.
+---
+ drivers/tee/tee_core.c  |  8 ++++++++
+ include/linux/tee_drv.h | 16 ++++++++++++++++
+ 2 files changed, 24 insertions(+)
+
+diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
+index 0eb342de0b00..91932835d0f7 100644
+--- a/drivers/tee/tee_core.c
++++ b/drivers/tee/tee_core.c
+@@ -1170,6 +1170,14 @@ int tee_client_close_session(struct tee_context *ctx, u32 session)
  }
+ EXPORT_SYMBOL_GPL(tee_client_close_session);
  
--int optee_close_session_helper(struct tee_context *ctx, u32 session)
-+int optee_close_session_helper(struct tee_context *ctx, u32 session,
-+			       bool system_thread)
- {
- 	struct optee *optee = tee_get_drvdata(ctx->teedev);
- 	struct optee_shm_arg_entry *entry;
-@@ -374,7 +376,7 @@ int optee_close_session_helper(struct tee_context *ctx, u32 session)
- 
- 	msg_arg->cmd = OPTEE_MSG_CMD_CLOSE_SESSION;
- 	msg_arg->session = session;
--	optee->ops->do_call_with_arg(ctx, shm, offs);
-+	optee->ops->do_call_with_arg(ctx, shm, offs, system_thread);
- 
- 	optee_free_msg_arg(ctx, entry, offs);
- 
-@@ -385,6 +387,7 @@ int optee_close_session(struct tee_context *ctx, u32 session)
- {
- 	struct optee_context_data *ctxdata = ctx->data;
- 	struct optee_session *sess;
-+	bool system_thread;
- 
- 	/* Check that the session is valid and remove it from the list */
- 	mutex_lock(&ctxdata->mutex);
-@@ -394,9 +397,10 @@ int optee_close_session(struct tee_context *ctx, u32 session)
- 	mutex_unlock(&ctxdata->mutex);
- 	if (!sess)
- 		return -EINVAL;
-+	system_thread = sess->use_sys_thread;
- 	kfree(sess);
- 
--	return optee_close_session_helper(ctx, session);
-+	return optee_close_session_helper(ctx, session, system_thread);
- }
- 
- int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
-@@ -408,12 +412,15 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
- 	struct optee_msg_arg *msg_arg;
- 	struct optee_session *sess;
- 	struct tee_shm *shm;
-+	bool system_thread;
- 	u_int offs;
- 	int rc;
- 
- 	/* Check that the session is valid */
- 	mutex_lock(&ctxdata->mutex);
- 	sess = find_session(ctxdata, arg->session);
-+	if (sess)
-+		system_thread = sess->use_sys_thread;
- 	mutex_unlock(&ctxdata->mutex);
- 	if (!sess)
- 		return -EINVAL;
-@@ -432,7 +439,7 @@ int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
- 	if (rc)
- 		goto out;
- 
--	if (optee->ops->do_call_with_arg(ctx, shm, offs)) {
-+	if (optee->ops->do_call_with_arg(ctx, shm, offs, system_thread)) {
- 		msg_arg->ret = TEEC_ERROR_COMMUNICATION;
- 		msg_arg->ret_origin = TEEC_ORIGIN_COMMS;
- 	}
-@@ -457,12 +464,15 @@ int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session)
- 	struct optee_shm_arg_entry *entry;
- 	struct optee_msg_arg *msg_arg;
- 	struct optee_session *sess;
-+	bool system_thread;
- 	struct tee_shm *shm;
- 	u_int offs;
- 
- 	/* Check that the session is valid */
- 	mutex_lock(&ctxdata->mutex);
- 	sess = find_session(ctxdata, session);
-+	if (sess)
-+		system_thread = sess->use_sys_thread;
- 	mutex_unlock(&ctxdata->mutex);
- 	if (!sess)
- 		return -EINVAL;
-@@ -474,7 +484,7 @@ int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 session)
- 	msg_arg->cmd = OPTEE_MSG_CMD_CANCEL;
- 	msg_arg->session = session;
- 	msg_arg->cancel_id = cancel_id;
--	optee->ops->do_call_with_arg(ctx, shm, offs);
-+	optee->ops->do_call_with_arg(ctx, shm, offs, system_thread);
- 
- 	optee_free_msg_arg(ctx, entry, offs);
- 	return 0;
-diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-index 2a258bd3b6b5..d01ca47f7bde 100644
---- a/drivers/tee/optee/core.c
-+++ b/drivers/tee/optee/core.c
-@@ -129,7 +129,8 @@ int optee_open(struct tee_context *ctx, bool cap_memref_null)
- 
- static void optee_release_helper(struct tee_context *ctx,
- 				 int (*close_session)(struct tee_context *ctx,
--						      u32 session))
-+						      u32 session,
-+						      bool system_thread))
- {
- 	struct optee_context_data *ctxdata = ctx->data;
- 	struct optee_session *sess;
-@@ -141,7 +142,7 @@ static void optee_release_helper(struct tee_context *ctx,
- 	list_for_each_entry_safe(sess, sess_tmp, &ctxdata->sess_list,
- 				 list_node) {
- 		list_del(&sess->list_node);
--		close_session(ctx, sess->session_id);
-+		close_session(ctx, sess->session_id, sess->use_sys_thread);
- 		kfree(sess);
- 	}
- 	kfree(ctxdata);
-diff --git a/drivers/tee/optee/ffa_abi.c b/drivers/tee/optee/ffa_abi.c
-index 0828240f27e6..5fde9d4100e3 100644
---- a/drivers/tee/optee/ffa_abi.c
-+++ b/drivers/tee/optee/ffa_abi.c
-@@ -528,7 +528,8 @@ static void optee_handle_ffa_rpc(struct tee_context *ctx, struct optee *optee,
- 
- static int optee_ffa_yielding_call(struct tee_context *ctx,
- 				   struct ffa_send_direct_data *data,
--				   struct optee_msg_arg *rpc_arg)
-+				   struct optee_msg_arg *rpc_arg,
-+				   bool system_thread)
- {
- 	struct optee *optee = tee_get_drvdata(ctx->teedev);
- 	struct ffa_device *ffa_dev = optee->ffa.ffa_dev;
-@@ -541,7 +542,7 @@ static int optee_ffa_yielding_call(struct tee_context *ctx,
- 	int rc;
- 
- 	/* Initialize waiter */
--	optee_cq_wait_init(&optee->call_queue, &w);
-+	optee_cq_wait_init(&optee->call_queue, &w, system_thread);
- 	while (true) {
- 		rc = msg_ops->sync_send_receive(ffa_dev, data);
- 		if (rc)
-@@ -612,7 +613,8 @@ static int optee_ffa_yielding_call(struct tee_context *ctx,
++int tee_client_system_session(struct tee_context *ctx, u32 session)
++{
++	if (!ctx->teedev->desc->ops->system_session)
++		return -EINVAL;
++	return ctx->teedev->desc->ops->system_session(ctx, session);
++}
++EXPORT_SYMBOL_GPL(tee_client_system_session);
++
+ int tee_client_invoke_func(struct tee_context *ctx,
+ 			   struct tee_ioctl_invoke_arg *arg,
+ 			   struct tee_param *param)
+diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
+index 17eb1c5205d3..911ddf92dcee 100644
+--- a/include/linux/tee_drv.h
++++ b/include/linux/tee_drv.h
+@@ -84,6 +84,7 @@ struct tee_param {
+  * @release:		release this open file
+  * @open_session:	open a new session
+  * @close_session:	close a session
++ * @system_session:	declare session as a system session
+  * @invoke_func:	invoke a trusted function
+  * @cancel_req:		request cancel of an ongoing invoke or open
+  * @supp_recv:		called for supplicant to get a command
+@@ -100,6 +101,7 @@ struct tee_driver_ops {
+ 			    struct tee_ioctl_open_session_arg *arg,
+ 			    struct tee_param *param);
+ 	int (*close_session)(struct tee_context *ctx, u32 session);
++	int (*system_session)(struct tee_context *ctx, u32 session);
+ 	int (*invoke_func)(struct tee_context *ctx,
+ 			   struct tee_ioctl_invoke_arg *arg,
+ 			   struct tee_param *param);
+@@ -429,6 +431,20 @@ int tee_client_open_session(struct tee_context *ctx,
   */
+ int tee_client_close_session(struct tee_context *ctx, u32 session);
  
- static int optee_ffa_do_call_with_arg(struct tee_context *ctx,
--				      struct tee_shm *shm, u_int offs)
-+				      struct tee_shm *shm, u_int offs,
-+				      bool system_thread)
- {
- 	struct ffa_send_direct_data data = {
- 		.data0 = OPTEE_FFA_YIELDING_CALL_WITH_ARG,
-@@ -642,7 +644,7 @@ static int optee_ffa_do_call_with_arg(struct tee_context *ctx,
- 	if (IS_ERR(rpc_arg))
- 		return PTR_ERR(rpc_arg);
- 
--	return optee_ffa_yielding_call(ctx, &data, rpc_arg);
-+	return optee_ffa_yielding_call(ctx, &data, rpc_arg, system_thread);
- }
- 
- /*
-diff --git a/drivers/tee/optee/optee_private.h b/drivers/tee/optee/optee_private.h
-index 72685ee0d53f..b68273051454 100644
---- a/drivers/tee/optee/optee_private.h
-+++ b/drivers/tee/optee/optee_private.h
-@@ -154,7 +154,8 @@ struct optee;
-  */
- struct optee_ops {
- 	int (*do_call_with_arg)(struct tee_context *ctx,
--				struct tee_shm *shm_arg, u_int offs);
-+				struct tee_shm *shm_arg, u_int offs,
-+				bool system_thread);
- 	int (*to_msg_param)(struct optee *optee,
- 			    struct optee_msg_param *msg_params,
- 			    size_t num_params, const struct tee_param *params);
-@@ -204,6 +205,7 @@ struct optee {
- struct optee_session {
- 	struct list_head list_node;
- 	u32 session_id;
-+	bool use_sys_thread;
- };
- 
- struct optee_context_data {
-@@ -252,7 +254,8 @@ int optee_supp_send(struct tee_context *ctx, u32 ret, u32 num_params,
- int optee_open_session(struct tee_context *ctx,
- 		       struct tee_ioctl_open_session_arg *arg,
- 		       struct tee_param *param);
--int optee_close_session_helper(struct tee_context *ctx, u32 session);
-+int optee_close_session_helper(struct tee_context *ctx, u32 session,
-+			       bool system_thread);
- int optee_close_session(struct tee_context *ctx, u32 session);
- int optee_invoke_func(struct tee_context *ctx, struct tee_ioctl_invoke_arg *arg,
- 		      struct tee_param *param);
-@@ -301,7 +304,7 @@ static inline void optee_to_msg_param_value(struct optee_msg_param *mp,
- }
- 
- void optee_cq_wait_init(struct optee_call_queue *cq,
--			struct optee_call_waiter *w);
-+			struct optee_call_waiter *w, bool sys_thread);
- void optee_cq_wait_for_completion(struct optee_call_queue *cq,
- 				  struct optee_call_waiter *w);
- void optee_cq_wait_final(struct optee_call_queue *cq,
-diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
-index d5b28fd35d66..1033d7da03ea 100644
---- a/drivers/tee/optee/smc_abi.c
-+++ b/drivers/tee/optee/smc_abi.c
-@@ -283,7 +283,7 @@ static void optee_enable_shm_cache(struct optee *optee)
- 	struct optee_call_waiter w;
- 
- 	/* We need to retry until secure world isn't busy. */
--	optee_cq_wait_init(&optee->call_queue, &w);
-+	optee_cq_wait_init(&optee->call_queue, &w, false);
- 	while (true) {
- 		struct arm_smccc_res res;
- 
-@@ -308,7 +308,7 @@ static void __optee_disable_shm_cache(struct optee *optee, bool is_mapped)
- 	struct optee_call_waiter w;
- 
- 	/* We need to retry until secure world isn't busy. */
--	optee_cq_wait_init(&optee->call_queue, &w);
-+	optee_cq_wait_init(&optee->call_queue, &w, false);
- 	while (true) {
- 		union {
- 			struct arm_smccc_res smccc;
-@@ -507,7 +507,7 @@ static int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
- 	msg_arg->params->u.tmem.buf_ptr = virt_to_phys(pages_list) |
- 	  (tee_shm_get_page_offset(shm) & (OPTEE_MSG_NONCONTIG_PAGE_SIZE - 1));
- 
--	if (optee->ops->do_call_with_arg(ctx, shm_arg, 0) ||
-+	if (optee->ops->do_call_with_arg(ctx, shm_arg, 0, false) ||
- 	    msg_arg->ret != TEEC_SUCCESS)
- 		rc = -EINVAL;
- 
-@@ -550,7 +550,7 @@ static int optee_shm_unregister(struct tee_context *ctx, struct tee_shm *shm)
- 	msg_arg->params[0].attr = OPTEE_MSG_ATTR_TYPE_RMEM_INPUT;
- 	msg_arg->params[0].u.rmem.shm_ref = (unsigned long)shm;
- 
--	if (optee->ops->do_call_with_arg(ctx, shm_arg, 0) ||
-+	if (optee->ops->do_call_with_arg(ctx, shm_arg, 0, false) ||
- 	    msg_arg->ret != TEEC_SUCCESS)
- 		rc = -EINVAL;
- out:
-@@ -885,7 +885,8 @@ static void optee_handle_rpc(struct tee_context *ctx,
-  * Returns return code from secure world, 0 is OK
-  */
- static int optee_smc_do_call_with_arg(struct tee_context *ctx,
--				      struct tee_shm *shm, u_int offs)
-+				      struct tee_shm *shm, u_int offs,
-+				      bool system_thread)
- {
- 	struct optee *optee = tee_get_drvdata(ctx->teedev);
- 	struct optee_call_waiter w;
-@@ -926,7 +927,7 @@ static int optee_smc_do_call_with_arg(struct tee_context *ctx,
- 		reg_pair_from_64(&param.a1, &param.a2, parg);
- 	}
- 	/* Initialize waiter */
--	optee_cq_wait_init(&optee->call_queue, &w);
-+	optee_cq_wait_init(&optee->call_queue, &w, system_thread);
- 	while (true) {
- 		struct arm_smccc_res res;
- 
-@@ -977,7 +978,7 @@ static int simple_call_with_arg(struct tee_context *ctx, u32 cmd)
- 		return PTR_ERR(msg_arg);
- 
- 	msg_arg->cmd = cmd;
--	optee_smc_do_call_with_arg(ctx, shm, offs);
-+	optee_smc_do_call_with_arg(ctx, shm, offs, false);
- 
- 	optee_free_msg_arg(ctx, entry, offs);
- 	return 0;
++/**
++ * tee_client_system_session() - Declare session as a system session
++ * @ctx:	TEE Context
++ * @session:	Session id
++ *
++ * This function requests TEE to provision an entry context ready to use for
++ * that session only. The provisioned entry context is used for command
++ * invocation and session closure, not for command cancelling requests.
++ * TEE releases the provisioned context upon session closure.
++ *
++ * Return < 0 on error else 0 if an entry context has been provisioned.
++ */
++int tee_client_system_session(struct tee_context *ctx, u32 session);
++
+ /**
+  * tee_client_invoke_func() - Invoke a function in a Trusted Application
+  * @ctx:	TEE Context
 -- 
 2.25.1
 
