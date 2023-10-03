@@ -2,161 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8CB7B6AC1
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29297B6AC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235334AbjJCNk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:40:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53466 "EHLO
+        id S236352AbjJCNmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:42:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbjJCNkx (ORCPT
+        with ESMTP id S231627AbjJCNmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:40:53 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14591AD;
-        Tue,  3 Oct 2023 06:40:49 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 8AB133200B40;
-        Tue,  3 Oct 2023 09:40:45 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Tue, 03 Oct 2023 09:40:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1696340445; x=1696426845; bh=pFiUCM0Cn00jPD1kU6gNbpIBQuIHykihdnF
-        gCoeT11M=; b=N1rsup18Lf/e/7bOBtifmqIztvYO5QZengtcNpzCJUyAeIOrTTQ
-        RwSPWXxrpgkpGub37RnfhA4l8kNZQ2/6ISAtp4cXBp4pd3EKcIhdhuISJbqMH3QW
-        VqmrZPyWiiojsQA5j+Bq7TWvI7emjjNTTN97CZt1V3mWhIJWVUJQuhxqkN9PWg/v
-        LRsQuH3JdNmtHO9nOBgsU8298q1dSBXlrhbpGNJfHdzpTlRkTe1EgY800b63u7Kb
-        BE87xNSa8uC4A/ZlPsfVjAUyBOFSn3Vdg+iypFhO55M2CVb0AeST8iyxupVigOkg
-        ZzNy4a+XxzwvQjdzhcXceRKkfi/dSkqG9TA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1696340445; x=1696426845; bh=pFiUCM0Cn00jPD1kU6gNbpIBQuIHykihdnF
-        gCoeT11M=; b=X8xWX1F87dFRO3w8fBnHCxAjOlmej7UIeTtFEDQO3JFj/z8xhhD
-        aqjCsFoshVqquyrxj81l2OdqYMGnfHAoT/nqTkKtWiJf1IHJu7mnbaf3Z3PuCYs9
-        b2sM7M3PJmxAbYOTRr89zA4YghcmGNN23VyItGXPLMnhNfFmxRHKF2Y/p31zrZv3
-        DF9LC44mfcQ40ZFJUDlywjvAn5wtDgx+gcB11wfUg46FGB+GOkxW2me4VD3jXMEt
-        HEjHxcA4Regb8zAABd97Eh+CtQ3ZujpuRyzA5jWMBKBNjnLTgdEOeerC58PD2e44
-        lyRKaXA+a0Lr+HSchP8KNTHjK15YI4eq2cw==
-X-ME-Sender: <xms:3BkcZWwjGs7LvcVC55nvMdLGmR9riSdPjYORODr6gtPz9GK-cGTc-g>
-    <xme:3BkcZSQ5etQsozNBvMakkeCpck1-cuwFp8qsdzYhcDYWMnIzwv3bf1CflTP_ep1Jz
-    q_qiNJY6B2xjdIbGVg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeeigdeihecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgfekueelgeeigefhudduledtkeefffejueelheelfedutedttdfgveeufeef
-    ieegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
-    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:3BkcZYUE8SN8HerVPa3OcBXQR5czyY9JUEKot_I15wNz2yoWT1VMDw>
-    <xmx:3BkcZcjWLZ1RDOhC-0EiDQtl_E_FbQc6oFR5BbIP0uTIq5yMO9Maaw>
-    <xmx:3BkcZYDnH8g49iUq2pL8bFWVz9yW9vTeazdOY-kBlLTanv0l-TuHtg>
-    <xmx:3RkcZRJZ3hxVzxVnwd3RLlepQE3kDRSWegZNuC_ltIWliSaKyMIg3w>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 0F0E8B6008D; Tue,  3 Oct 2023 09:40:44 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
+        Tue, 3 Oct 2023 09:42:22 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F92EA9
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:42:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68F7AC433C7;
+        Tue,  3 Oct 2023 13:42:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696340539;
+        bh=HvH1Q1z92W9hdqkCNnVvSV1dvkn66o/wVbN4IpbbyWo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=grYxISXlNYov8M8r0twN1gillga5LQqMIC24ujlJP/o8k/u0/3PpkWscYWy4n4AEK
+         PsK3V+Cd46gw2XaSa9kOWFdHRop1w9xqBpaSBSQ5V1aZ8BGeX//N48ROpmy4mm7ic5
+         0qM0lbJoGLqG5je2PqIQRNaXeuUOd36yALjX5obugnCRK+U3xU9DwZA1StdtEtC3US
+         SegqiqX/LaBsRtxX68KlsDlKrRkSRKFhBwOvTI5oqDCYLe/ISNZrzrmMJxbp9k+94F
+         jVwurMYMNfLAzBAjr6bD8nGpsYiUj9RAkSs/LuDIF7mZAHwwqMfwAENFh0D3lEESpj
+         lQ5IY7xOndrOA==
+Date:   Tue, 3 Oct 2023 06:42:13 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        davem@davemloft.net, Oleksij Rempel <o.rempel@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 net-next 0/5] net: dsa: hsr: Enable HSR HW offloading
+ for KSZ9477
+Message-ID: <20231003064213.4886626f@kernel.org>
+In-Reply-To: <20231003145106.3cd5a19f@wsk>
+References: <20230922133108.2090612-1-lukma@denx.de>
+        <20230926225401.bganxwmtrgkiz2di@skbuf>
+        <20230928124127.379115e6@wsk>
+        <20231003095832.4bec4c72@wsk>
+        <20231003104410.dhngn3vvdfdcurga@skbuf>
+        <20231003145106.3cd5a19f@wsk>
 MIME-Version: 1.0
-Message-Id: <0174c612-ed97-44f3-bec5-1f512f135d21@app.fastmail.com>
-In-Reply-To: <20231003.ahPha5bengee@digikod.net>
-References: <20231003.ahPha5bengee@digikod.net>
-Date:   Tue, 03 Oct 2023 15:40:23 +0200
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-        "Stephen Rothwell" <sfr@canb.auug.org.au>
-Cc:     "Konstantin Meskhidze" <konstantin.meskhidze@huawei.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        linux-next <linux-next@vger.kernel.org>,
-        "Willem de Bruijn" <willemdebruijn.kernel@gmail.com>,
-        gnoack3000@gmail.com, linux-security-module@vger.kernel.org,
-        Netdev <netdev@vger.kernel.org>, netfilter-devel@vger.kernel.org,
-        yusongping@huawei.com, artem.kuzin@huawei.com,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Randy Dunlap" <rdunlap@infradead.org>
-Subject: Re: linux-next: build warning after merge of the landlock tree
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023, at 15:15, Micka=C3=ABl Sala=C3=BCn wrote:
-> PowerPC-64 follows the LP64 data model and then uses int-l64.h (instea=
-d of
-> int-ll64.h like most architectures) for user space code.
->
-> Here is the same code with the (suggested) "%lu" token on x86_86:
->
->   samples/landlock/sandboxer.c: In function =E2=80=98populate_ruleset_=
-net=E2=80=99:
->   samples/landlock/sandboxer.c:170:77: error: format =E2=80=98%lu=E2=80=
-=99 expects=20
-> argument of type =E2=80=98long unsigned int=E2=80=99, but argument 3 h=
-as type =E2=80=98__u64=E2=80=99=20
-> {aka =E2=80=98long long unsigned int=E2=80=99} [-Werror=3Dformat=3D]
->     170 |                                 "Failed to update the rulese=
-t=20
-> with port \"%lu\": %s\n",
->         |                                                             =
- =20
->             ~~^
->         |                                                             =
- =20
->               |
->         |                                                             =
- =20
->               long unsigned int
->         |                                                             =
- =20
->             %llu
->     171 |                                 net_port.port,=20
-> strerror(errno));
->         |                                 ~~~~~~~~~~~~~
->         |                                         |
->         |                                         __u64 {aka long long=20
-> unsigned int}
->
->
-> We would then need to cast __u64 to unsigned long long to avoid this w=
-arning,
-> which may look useless, of even buggy, for people taking a look at thi=
-s sample.
->
-> Anyway, it makes more sense to cast it to __u16 because it is the
-> expected type for a TCP port. I'm updating the patch with that.
-> Konstantin, please take this fix for the next series:
-> https://git.kernel.org/mic/c/fc9de206a61a
->
->
-> On Tue, Oct 03, 2023 at 02:27:37PM +1100, Stephen Rothwell wrote:
->> Hi all,
->>=20
->> After merging the landlock tree, today's linux-next build (powerpc
->> allyesconfig) produced this warning:
->>=20
->> samples/landlock/sandboxer.c: In function 'populate_ruleset_net':
->> samples/landlock/sandboxer.c:170:78: warning: format '%llu' expects a=
-rgument of type 'long long unsigned int', but argument 3 has type '__u64=
-' {aka 'long unsigned int'} [-Wformat=3D]
->>   170 |                                 "Failed to update the ruleset=
- with port \"%llu\": %s\n"
+On Tue, 3 Oct 2023 14:51:06 +0200 Lukasz Majewski wrote:
+> I've just noticed that there is a WARNING:
+> https://patchwork.kernel.org/project/netdevbpf/patch/20230922133108.2090612-6-lukma@denx.de/
+> 
+> but then on the newest kernel checkpatch.pl is silent:
+> ./scripts/checkpatch.pl
+> 0005-net-dsa-microchip-Enable-HSR-offloading-for-KSZ9477.patch total: 0
+> errors, 0 warnings, 0 checks, 277 lines checked
+> 
+> 0005-net-dsa-microchip-Enable-HSR-offloading-for-KSZ9477.patch has no
+> obvious style problems and is ready for submission.
+> 
+> Does the checkpatch for patchwork differs in any way from mainline?
 
-I think defining the __SANE_USERSPACE_TYPES__ macro should take care of =
-this,
-then __u64 has the same type as it does in the kernel.
+We run:
 
-        Arnd
+checkpatch with --strict --max-line-length=80
+
+https://github.com/kuba-moo/nipa/blob/master/tests/patch/checkpatch/checkpatch.sh
+
+The "multiple new lines" warning on patch 2 looks legit, no?
