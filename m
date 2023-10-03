@@ -2,108 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3C1D7B7453
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6ED7B7459
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbjJCWyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 18:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36740 "EHLO
+        id S232000AbjJCWzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 18:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230237AbjJCWyk (ORCPT
+        with ESMTP id S230237AbjJCWy6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 18:54:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC7FAF;
-        Tue,  3 Oct 2023 15:54:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D8A9C433C7;
-        Tue,  3 Oct 2023 22:54:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696373677;
-        bh=9Oft35Q1R1+kG+ADxClgAanF3/fHDbeRHG97EroNmi0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jxK5C/JATXAL5TIu1lyaXWewPzHW/nqlXuV5LlsnA6sfucQfzBrO+HsjJ7aNIK47T
-         rlMHv4I27UWPwP8KFeArZ65rAnDybVL5oesYmfAvSWZRYZ4D+3f+oB+n0ArGOK1BpY
-         G8I8x27mo15usD5zuQhYcfkxhln4cqshu121eEiGe3C7VB5YvM+/B44bxqlGLahB4G
-         IL29143bJIMsHDeAifGLJZ7zkSnIcHcUiPI4DHgABcNAbTr55ZQmBtbmQaOnCBPP/t
-         CnfBdCdEMwmiszQTDeW5lSYSvV9GL8DYi4zNZkMx9wQjchjE/04um3CQSabMop+xZW
-         EOcExskCuiQNA==
-Date:   Wed, 4 Oct 2023 00:54:31 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Jian Zhang <zhangjian.3032@bytedance.com>
-Cc:     brendan.higgins@linux.dev, benh@kernel.crashing.org,
-        joel@jms.id.au, andrew@aj.id.au, zhangjian3032@gmail.com,
-        yulei.sh@bytedance.com, xiexinnan@bytedance.com,
-        Tommy Huang <tommy_huang@aspeedtech.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        "open list:ARM/ASPEED I2C DRIVER" <linux-i2c@vger.kernel.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v2] i2c: aspeed: Fix i2c bus hang in slave
- read
-Message-ID: <20231003225431.owtpcds7rrijj7yf@zenone.zhora.eu>
-References: <20230927154244.3774670-1-zhangjian.3032@bytedance.com>
- <20230928145128.tjflbgvena4apivs@zenone.zhora.eu>
- <CA+J-oUsgZuFmKor_thfehf2T8Y9T4NHcDp713YHyZC=fQvvZgA@mail.gmail.com>
+        Tue, 3 Oct 2023 18:54:58 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80EDB4;
+        Tue,  3 Oct 2023 15:54:55 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 185A63200B49;
+        Tue,  3 Oct 2023 18:54:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Tue, 03 Oct 2023 18:54:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1696373692; x=1696460092; bh=2jVHXmEhNGnLoThDwRPTaiXQ4VgtqdFS0mA
+        cLW+bbUo=; b=IFhkv836Ujjzz4C2Te8jaNK4yy5yagWg1P/KMPmBtP+4n2IQXBa
+        BmL3DpoJYO2BiYOvgijAusiv/52+c83Q921gn4qrPC/03dVyvKOUUqIu4Azidibo
+        sRA3I06mXeBlA1GANIpHRvDl94FVtkQOjEEwL43OlqysU43s3v8k9godLZQhXk6d
+        mwx6s7htmDB8P3+tienqK8LriGaCCTllrpfJ3GojqbnJGCLRNsWjSj7EVJ3gYEFN
+        m/Td9YaTngsxXGj4+tLli/NArQ09DPboAH7C7oMSB1NLnma1u/OYB7qHtlhaVtDW
+        K/a1Ec2RmdC+NPWnZDjncviLe3SpooAnrig==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1696373692; x=1696460092; bh=2jVHXmEhNGnLoThDwRPTaiXQ4VgtqdFS0mA
+        cLW+bbUo=; b=egPLEMD8Ni268aQlNmn/ScE2MzX3hNgSvoVz75KIExlNmuMPNxw
+        g60ujvzGsPgMQSmY7K5b3KPbors8ma0tP29W0gdl1/wLrsN3NZfje2IItjQlyTZV
+        +oIG0Syv7SNFl2yomimmjRnw2bkqH+r+NoBda8F7y/c25t4N2IvkYJR6PGrNs1AR
+        sT12oLzNTRXj3SMhZj6RbWDdGFo9EGO7CpEkrpFI9YNO8jVp1sSpHvCniAmZIuGS
+        ymIPtBsL8rx/HVvdG33J7X4tYNUc2Xk4GqfmWOqbX9ekpBlicQLZG9T8b6gSuEXj
+        RCELFVTHbzZglTF93G6wfihWJ1biZPxqL2A==
+X-ME-Sender: <xms:vJscZUSv2fYXzRGw20oUnwcZ3Q4T0imITWJuVM_Aqr2pViCqkKb1yg>
+    <xme:vJscZRzUzIAIWHGvi2mM9mPj0F0zw_Y8Lf9qNc79IyvWqS-84A0k_pWP1xRjsxS19
+    XQMYnlKWRl_kTWz>
+X-ME-Received: <xmr:vJscZR3Q96bH2QPgsQU1g7-P0Onbw9TLZ4CquMq9fsm2hXE1fcjAiWIjSiEZHbSjTeXUqhy6WBwpZ9nW3mBe5x0lHesb0g1qja6JHwm2umo0Mkj5Rd60>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeekgdduhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepuegvrhhn
+    ugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilh
+    drfhhmqeenucggtffrrghtthgvrhhnpeffjeevfeefjefghfefhfeiueffffetledtgffh
+    hfdttdefueevledvleetfeevtdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsggvrhhnugdr
+    shgthhhusggvrhhtsehfrghsthhmrghilhdrfhhm
+X-ME-Proxy: <xmx:vJscZYAWHQLGn3S0qDd8h39sj5HpVNq5cvNmdZZPu5uwOLy9DXrkFw>
+    <xmx:vJscZdhY3QLrNT9VtLzU57kWMW0-96_yPQDtP-AbZOxp-F4ve6-CQw>
+    <xmx:vJscZUqAF84SyIre1hTcxXKwUtjp69QbAYfkreL8jpbTyp1OU01Qeg>
+    <xmx:vJscZYVt4fZ9Ysdx_vOh_23eASNJgdxCdfugvdpM27I-jN27FTWauQ>
+Feedback-ID: id8a24192:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 3 Oct 2023 18:54:51 -0400 (EDT)
+Message-ID: <18552fc7-184c-4bc7-9154-c885fae06d31@fastmail.fm>
+Date:   Wed, 4 Oct 2023 00:54:49 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+J-oUsgZuFmKor_thfehf2T8Y9T4NHcDp713YHyZC=fQvvZgA@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [resend PATCH v2 0/2] virtiofs submounts that are still in use
+ forgotten by shrinker
+To:     Krister Johansen <kjlx@templeofstupid.com>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>, linux-fsdevel@vger.kernel.org,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        German Maglione <gmaglione@redhat.com>,
+        Greg Kurz <groug@kaod.org>, Max Reitz <mreitz@redhat.com>
+References: <cover.1696043833.git.kjlx@templeofstupid.com>
+ <97163cdf-ab2c-4fb8-abf2-738a4680c47f@fastmail.fm>
+ <20231003164823.GA1995@templeofstupid.com>
+Content-Language: en-US, de-DE
+From:   Bernd Schubert <bernd.schubert@fastmail.fm>
+In-Reply-To: <20231003164823.GA1995@templeofstupid.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jian,
 
-On Thu, Sep 28, 2023 at 11:04:23AM -0400, Jian Zhang wrote:
-> > From: "Andi Shyti"<andi.shyti@kernel.org>
-> > Date:  Thu, Sep 28, 2023, 22:51
-> > Subject:  [External] Re: [PATCH v2] i2c: aspeed: Fix i2c bus hang in slave read
-> > To: "Jian Zhang"<zhangjian.3032@bytedance.com>
-> > Cc: <brendan.higgins@linux.dev>, <benh@kernel.crashing.org>, <joel@jms.id.au>, <andrew@aj.id.au>, <zhangjian3032@gmail.com>, <yulei.sh@bytedance.com>, <xiexinnan@bytedance.com>, "Tommy Huang"<tommy_huang@aspeedtech.com>, "Wolfram Sang"<wsa@kernel.org>, "open list:ARM/ASPEED I2C DRIVER"<linux-i2c@vger.kernel.org>, "moderated list:ARM/ASPEED I2C DRIVER"<openbmc@lists.ozlabs.org>, "moderated list:ARM/ASPEED MACHINE SUPPORT"<linux-arm-kernel@lists.infradead.org>, "moderated list:ARM/ASPEED MACHINE SUPPORT"<linux-aspeed@lists.ozlabs.org>, "open list"<linux-kernel@vger.kernel.org>
-> > Hi Jian,
-> >
-> > On Wed, Sep 27, 2023 at 11:42:43PM +0800, Jian Zhang wrote:
-> > > When the `CONFIG_I2C_SLAVE` option is enabled and the device operates
-> > > as a slave, a situation arises where the master sends a START signal
-> > > without the accompanying STOP signal. This action results in a
-> > > persistent I2C bus timeout. The core issue stems from the fact that
-> > > the i2c controller remains in a slave read state without a timeout
-> > > mechanism. As a consequence, the bus perpetually experiences timeouts.
-> > >
-> > > In this case, the i2c bus will be reset, but the slave_state reset is
-> > > missing.
 
-Acked-by: Andi Shyti <andi.shyti@kernel.org> 
-
-I checked the flow in the driver and makes sense to me. I'd also
-love a last minute comment from Brendan or Benjamin or Joel.
-
-> > > Fixes: fee465150b45 ("i2c: aspeed: Reset the i2c controller when timeout occurs")
-> > > Signed-off-by: Jian Zhang <zhangjian.3032@bytedance.com>
-> >
-> > Why I'm failing to find your v1 patch? And where is the
-> > changelog?
-> Sorry, something was missing,
-> v2:
-> * remove the i2c slave reset and only move the `bus->slave_state =
-> ASPEED_I2C_SLAVE_INACTIVE` to the aspeed_i2c_init
+On 10/3/23 18:48, Krister Johansen wrote:
+> On Tue, Oct 03, 2023 at 12:18:42AM +0200, Bernd Schubert wrote:
+>>
+>>
+>> On 10/2/23 17:24, Krister Johansen wrote:
+>>> Hi,
+>>> I recently ran into a situation where a virtiofs client began
+>>> encountering EBADF after the client / guest system had an OOM.  After
+>>> reproducing the issue and debugging, the problem is caused by a
+>>> virtiofsd submount having the nodeid of its root dentry fogotten.  This
+>>> occurs because it borrows the reference for this dentry from the parent
+>>> that is passed into the function.
+>>
+>>
+>> Sorry, I didn't forget you, just didn't manage to review the 2nd version
+>> yet. Will definitely do this week.
 > 
-> [0]: https://lore.kernel.org/linux-arm-kernel/20230810072155.3726352-1-zhangjian.3032@bytedance.com/T/
+> Thanks; I appreciate the feedback you've provided so far.
+> 
+>> Please also note that there will be merge conflicts with atomic open patches
+>> from Dharmendra/me. Although probably not too difficult to resolve.
+> 
+> Sure. I'm happy to reparent, resolve those conflicts, re-test, and send
+> another revision when we're ready.  I suspect there are going to be
+> additional changes requested on the v2.  With that in mind, I'll hold
+> off for the moment unless it is going to cause headaches for you.
 
-Thanks! I should really check my filters here.
+I certainly also didn't mean that you should check for merge conflicts, 
+it was more an annotation that it might come up - depending on the merge 
+order. Please don't stop to do improvements, resolving merge conflicts 
+shouldn't be difficult.
+I'm going to add you to the atomic open patch series to keep you 
+updated, if you don't mind.
 
-Andi
 
-> Jian
-> >
-> > Andi
+> 
+> For the atomic-open-revalidate changes: should I be working from what's
+> on the list?  This is the most recent patchset I see:
+> 
+> https://lore.kernel.org/linux-fsdevel/20230920173445.3943581-1-bschubert@ddn.com/
+> 
+> I found a 6.5 relative tree of yours on GitHub by following the libfuse
+> pull request, but nothing that seemed in sync with fuse/for-next.
+
+I don't think there are conflicts with fuse-next right now, but I can 
+check.
+
+
+Thanks,
+Bernd
