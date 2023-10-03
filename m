@@ -2,70 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C40F77B72F7
+	by mail.lfdr.de (Postfix) with ESMTP id 770EC7B72F6
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241098AbjJCVAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 17:00:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
+        id S232290AbjJCVAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 17:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232120AbjJCVAi (ORCPT
+        with ESMTP id S241094AbjJCVAn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 17:00:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A601AD
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:00:36 -0700 (PDT)
+        Tue, 3 Oct 2023 17:00:43 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5E3B0
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:00:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696366836; x=1727902836;
+  t=1696366838; x=1727902838;
   h=date:from:to:cc:subject:message-id;
-  bh=BRYc1i+Fk+vAqwRmYDozDXxGD9fRDwCQYsN0Yl9flaA=;
-  b=hhXyOuOWy9T0qccmZ5r+xdUpi91UE13vXPOtzVXN9e68NIa432nUI49Y
-   CUVyEubnZiyV1iHUYJ8uJcfbRgXiNxaofv3kDgd5vrT83bx1L3y4Z/Hnq
-   +GS8o8PLHdVA+Pycx/bfoSL4ylpFZjz5B3ZeObJpR9PlwDqXMUhi7FF08
-   S3jiVDlnZ705wJKJEFXFIs7lEZejNX/VMqPJDPdEo6ORoxynktKlixGMq
-   AGcGk3iHfpn1o9PvKuI3Q0xZcElJv7RZV41jK5zNydpHNm9TkZaPR97DJ
-   Ot82WxTuusJuqdxKlXSOU/dkGbrXGmqzg1XmU2vy1dqkrVLTkAXyLFBN2
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="362338122"
+  bh=LNurVcbGWdjMjpBf7D13sNADi/UkSwpr/cB4fsmF8tg=;
+  b=EQa2GdTEoVkAQOHZIqasNpgdW4EU63uPkVyz44SQY4GTh/qo/lyKBous
+   f3KVMunhT2l7DosMUzIAjKKVljE6ha09jl3u6nduKzqm04lWrYeZht90k
+   KTP/Qv5Ci+zZrLJKGHaKyDLXmLDx8/lX7Gmlto8Fc8RLn2T2j1dIS5sDT
+   ohfUn4QxsqHSZMm9RKD2mnUcrRXoYWp2VvTkbUmQzkcQGjkKLjhJWFIPb
+   dAgoQvaGrZnTGsIkM0DTeAvjaZNH8qLdW4URJ383BtYKaGJ5wTYx0QLFz
+   YvtU5kKyU0Fi4gPC73F6CO/meOT3Hi3erx5kpCtDMo1qhv2K5LbTY9HPt
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="4543020"
 X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
-   d="scan'208";a="362338122"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 14:00:35 -0700
+   d="scan'208";a="4543020"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 14:00:36 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="924795717"
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="874824373"
 X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
-   d="scan'208";a="924795717"
+   d="scan'208";a="874824373"
 Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 03 Oct 2023 14:00:34 -0700
+  by orsmga004.jf.intel.com with ESMTP; 03 Oct 2023 14:00:34 -0700
 Received: from kbuild by c3b01524d57c with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1qnmVM-00099R-0U;
+        id 1qnmVM-00099b-0s;
         Tue, 03 Oct 2023 21:00:32 +0000
-Date:   Wed, 04 Oct 2023 04:59:53 +0800
+Date:   Wed, 04 Oct 2023 05:00:04 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:locking/core] BUILD SUCCESS
- 8788c6c2feb3600ba1a2f84ac5d258af4a284cea
-Message-ID: <202310040450.zbdwuegs-lkp@intel.com>
+Subject: [tip:x86/headers] BUILD SUCCESS
+ 8b01de80306cbd914be9c45bce30206a49699141
+Message-ID: <202310040501.uaDHU6Wo-lkp@intel.com>
 User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
-branch HEAD: 8788c6c2feb3600ba1a2f84ac5d258af4a284cea  locking/debug: Fix debugfs API return value checks to use IS_ERR()
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/headers
+branch HEAD: 8b01de80306cbd914be9c45bce30206a49699141  x86/headers: Remove <asm/export.h>
 
 elapsed time: 730m
 
-configs tested: 122
-configs skipped: 2
+configs tested: 119
+configs skipped: 105
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -86,10 +86,7 @@ arm                              allyesconfig   gcc
 arm                                 defconfig   gcc  
 arm                   randconfig-001-20231003   gcc  
 arm                   randconfig-001-20231004   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
+csky                             alldefconfig   gcc  
 csky                             allmodconfig   gcc  
 csky                              allnoconfig   gcc  
 csky                             allyesconfig   gcc  
@@ -137,9 +134,6 @@ microblaze                       allmodconfig   gcc
 microblaze                        allnoconfig   gcc  
 microblaze                       allyesconfig   gcc  
 microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
 nios2                            allmodconfig   gcc  
 nios2                             allnoconfig   gcc  
 nios2                            allyesconfig   gcc  
@@ -156,6 +150,8 @@ parisc64                            defconfig   gcc
 powerpc                          allmodconfig   gcc  
 powerpc                           allnoconfig   gcc  
 powerpc                          allyesconfig   gcc  
+powerpc                      ep88xc_defconfig   gcc  
+powerpc                      ppc40x_defconfig   gcc  
 riscv                            allmodconfig   gcc  
 riscv                             allnoconfig   gcc  
 riscv                            allyesconfig   gcc  
@@ -169,6 +165,8 @@ sh                               allmodconfig   gcc
 sh                                allnoconfig   gcc  
 sh                               allyesconfig   gcc  
 sh                                  defconfig   gcc  
+sh                           se7751_defconfig   gcc  
+sh                        sh7757lcr_defconfig   gcc  
 sparc                            allmodconfig   gcc  
 sparc                             allnoconfig   gcc  
 sparc                            allyesconfig   gcc  
@@ -176,9 +174,6 @@ sparc                               defconfig   gcc
 sparc64                          allmodconfig   gcc  
 sparc64                          allyesconfig   gcc  
 sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
 um                                  defconfig   gcc  
 um                             i386_defconfig   gcc  
 um                           x86_64_defconfig   gcc  
@@ -193,6 +188,8 @@ x86_64                randconfig-005-20231003   gcc
 x86_64                randconfig-006-20231003   gcc  
 x86_64                          rhel-8.3-rust   clang
 x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
 
 -- 
 0-DAY CI Kernel Test Service
