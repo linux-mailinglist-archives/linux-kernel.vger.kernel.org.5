@@ -2,80 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2F67B6CF4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA29F7B6CFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231602AbjJCPVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 11:21:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36930 "EHLO
+        id S231462AbjJCPXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 11:23:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231545AbjJCPU6 (ORCPT
+        with ESMTP id S230238AbjJCPXQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 11:20:58 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA0FB0
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:20:55 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c5ff5f858dso8046385ad.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 08:20:55 -0700 (PDT)
+        Tue, 3 Oct 2023 11:23:16 -0400
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8605CA7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:23:12 -0700 (PDT)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-59f4bc88f9fso11914477b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 08:23:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696346454; x=1696951254; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Fi0GvVL1UlJlWvA6+wPBTvjnYAhizI6Olhrf8X5QnE=;
-        b=jYWxL9eXcRXRPLUxOd7IetRBizK/L8Wos1jlIpu8XpdOntEIg096Nqtl0/ArP/BPpJ
-         2EWTeBf1zZo4ZH0cOE9v9EesI5H/EkG7/2Q0RlJmjpCNAFPu2CEHtshC8IcHoVJzqTUw
-         b2F1iVKbbrAVby/eotyeJSBeMMCYLCNHxbxk1fTqdO2UtczNQYsx4ksJq8goNd9euZ81
-         RXH+30LAzuWbhiSY2LOm59o/bmEp3IUfOM9XtUNVGXtSX2c7s+CFVort8qv3TZTM7QFB
-         yiWwQQhP2aI1U+yuGbaC4OLSIwygP5zhlSpDKUUMvuxHXk2e7StSyLe/Xor51PBZRyaf
-         14cQ==
+        d=linaro.org; s=google; t=1696346591; x=1696951391; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=AyCUhxsC/xRzFI1DSiEJgfkyYQMNQ9zjzH0+8vXmLBg=;
+        b=K++eX539O7clRjv33R/SyQvfn1y/rLk1g+8DrLizmADn8MQFy9Hi5M5/ymJebRyAXd
+         t359xbhsZihSpuyLsgt15d8OkvsLICGHeB+Ueata9QGrWKCN4/6gwtv8cQC9tJo7pX0y
+         W2LwaIXTLKVV8uhUwNkHy5gB6BJcKeFLlW3Xh42CsiC3dEVAgW8FrXtkI1rL54iIXCD3
+         cUlkOD2+sLLb5lRlF18QGZYc87TFnjaR5AVNNMFcraCYVgbYi7EEYSIkGjan27NdKJoX
+         rjygKFgrn3hOonPhhUsq+37Hn6c+ypYH/EXrW69UoRwW6G90f3ta+WkF5bkJol2uUNTU
+         hCSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696346454; x=1696951254;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Fi0GvVL1UlJlWvA6+wPBTvjnYAhizI6Olhrf8X5QnE=;
-        b=T08ShdbVqJzRL7IwsU6f7FuVNUJa/NceASzuEgZP0Ii6zjEmojSFCv4C5rcz3UyDak
-         Nv1TbBnTMMQhK46+0CEkLbRlj7qVq02UmcXlwi8EKtN+Z0HObdCi4/H5MtDrYsCdpMf8
-         gIGhnyBS2yU12I23YEEMKGebY5TfN/42Q+VwAmJJTFKE4ekj/H8RYNi1Mtj06LOp+28m
-         cAMrnANPd6FAO5XG1c9XXB6AQTJzUzYhoGu+9IDQv4g2EvR+VOcVLA4GNjQEE+l5TdDF
-         sIbaqz5NIqKWMXsYSBj7nUuvaKfmyESog5mqYmgDjkKMICt0jEsXWnS/lYX3Jp4bxtlj
-         oEbQ==
-X-Gm-Message-State: AOJu0YxseoaB2rl5rz4XNDkDnGy3UzrH2zXqmscQ/1QIyU/hsLWSa5X8
-        roEbSBtjbslJPFl8yOtYqwUjng==
-X-Google-Smtp-Source: AGHT+IHbk4360AQXMEM8OHKJjDDmSkblY5FgQIBA5Fra9XDJdxKFPKgQIzSaAMDLRapNNLqBYtu7wQ==
-X-Received: by 2002:a17:902:d512:b0:1c4:c5d:d7fa with SMTP id b18-20020a170902d51200b001c40c5dd7famr13112626plg.45.1696346454478;
-        Tue, 03 Oct 2023 08:20:54 -0700 (PDT)
-Received: from p14s ([2604:3d09:148c:c800:9379:e1e1:dd3c:a271])
-        by smtp.gmail.com with ESMTPSA id w5-20020a170902d3c500b001c74df14e72sm1684106plb.212.2023.10.03.08.20.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 08:20:53 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 09:20:51 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Miles Chen <miles.chen@mediatek.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Sam Shih <sam.shih@mediatek.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Jieyy Yang <jieyy.yang@mediatek.com>,
-        Tinghan Shen <tinghan.shen@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>, soc@kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/5] MAINTAINERS: Add Angelo as MediaTek SoC co-maintainer
-Message-ID: <ZRwxUz+K1SwGVQU3@p14s>
-References: <20231003-mediatek-fixes-v6-7-v1-0-dad7cd62a8ff@collabora.com>
- <20231003-mediatek-fixes-v6-7-v1-1-dad7cd62a8ff@collabora.com>
+        d=1e100.net; s=20230601; t=1696346591; x=1696951391;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AyCUhxsC/xRzFI1DSiEJgfkyYQMNQ9zjzH0+8vXmLBg=;
+        b=N5gDZcrUo0WHRDPBpMJ2YSGE4lXLcATkkA/Oysi4ES/HpRZ3lKgJqdZ9e+HdC4fh2H
+         OZC4nABM+rZgVGxCaIRrlilyQRx77ZcBxooEfL5dH7GOp6sMMsmzCbofNsRocgceTrRi
+         WtYXbBt5s0ydWn6VNuWnvGDxxl3DM4pI7r4zZYldHT7JqSOHPWYykuHzE5kloRVH8oKI
+         hqReakFORrlGXJVR0yGlaz6zo3GUXzfdU+kbNv4ueH8KgR5p7qqy1WtCmek4ppEQ2gR2
+         qgfahd64KmwNt1iUXCUbXbJi5lsLlQZXImIvEr+Au304HRILI4f7WUpNckDWxwn7Xusr
+         FYUg==
+X-Gm-Message-State: AOJu0YxQg4zcpWMTdPEsOQgqsCc53SzOqZTC31fR+CqALdJcNt3u193A
+        IUC6A/uM5LvdiF3ObAPKBkya7p7oa8Roa3176nh3Xg==
+X-Google-Smtp-Source: AGHT+IH+PZ35FemJUWRj0WSQP7VIqgEZCKVT1MRfpltpmQOh6qjNq2qjOeZ0AIBw73huKepSXzObXMFSiH+lvZk+70A=
+X-Received: by 2002:a0d:d587:0:b0:59f:4c52:2f5d with SMTP id
+ x129-20020a0dd587000000b0059f4c522f5dmr14784646ywd.2.1696346591660; Tue, 03
+ Oct 2023 08:23:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003-mediatek-fixes-v6-7-v1-1-dad7cd62a8ff@collabora.com>
+References: <20231003120846.28626-1-quic_nsekar@quicinc.com> <20231003120846.28626-6-quic_nsekar@quicinc.com>
+In-Reply-To: <20231003120846.28626-6-quic_nsekar@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 3 Oct 2023 18:23:00 +0300
+Message-ID: <CAA8EJpoKq4TVzNHKLjgezTk9je-3OPv4g852anr7SnECJNw2xQ@mail.gmail.com>
+Subject: Re: [PATCH 5/6] arm64: dts: qcom: ipq5018: Add PCIe related nodes
+To:     Nitheesh Sekar <quic_nsekar@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
+        bhelgaas@google.com, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, vkoul@kernel.org, kishon@kernel.org,
+        mani@kernel.org, p.zabel@pengutronix.de, quic_srichara@quicinc.com,
+        quic_varada@quicinc.com, quic_ipkumar@quicinc.com,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -86,45 +74,251 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 01:13:43PM +0200, AngeloGioacchino Del Regno wrote:
-> I am a top reviewer mainly for MediaTek SoC related patches in most
-> subsystems and I've also been upstreaming both improvements, fixes
-> and new drivers and devicetrees when required.
-> 
-> The MediaTek scene saw a generous increase in number of patches that
-> are sent to the lists every week, increasing the amount of required
-> efforts to maintain the MTK bits overall, and we will possibly see
-> even more of that.
-> 
-> For this reason, and also because of suggestions and encouragement
-> coming from the community, I'm stepping up to be a co-maintainer of
-> MediaTek SoCs support.
-> 
-> Acked-by: Matthias Brugger <matthias.bgg@gmail.com>
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> Link: https://lore.kernel.org/r/20230929082009.71843-1-angelogioacchino.delregno@collabora.com
+On Tue, 3 Oct 2023 at 15:10, Nitheesh Sekar <quic_nsekar@quicinc.com> wrote:
+>
+> Add phy and controller nodes for PCIe_x2 and PCIe_x1.
+> PCIe_x2 is 2-lane Gen2 and PCIe_x1 is 1-lane Gen2.
+>
+> Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
 > ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 90f13281d297..57f82fcea1e7 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -2327,7 +2327,7 @@ F:	drivers/rtc/rtc-mt7622.c
->  
->  ARM/Mediatek SoC support
->  M:	Matthias Brugger <matthias.bgg@gmail.com>
-> -R:	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-> +M:	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+>  arch/arm64/boot/dts/qcom/ipq5018.dtsi | 186 +++++++++++++++++++++++++-
+>  1 file changed, 184 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+> index 38ffdc3cbdcd..0818fdd1e693 100644
+> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
+> @@ -8,6 +8,7 @@
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/clock/qcom,gcc-ipq5018.h>
+>  #include <dt-bindings/reset/qcom,gcc-ipq5018.h>
+> +#include <dt-bindings/gpio/gpio.h>
+>
+>  / {
+>         interrupt-parent = <&intc>;
+> @@ -94,6 +95,38 @@
+>                 #size-cells = <1>;
+>                 ranges = <0 0 0 0xffffffff>;
+>
+> +               pcie_x1phy: phy@7e000{
+> +                       compatible = "qcom,ipq5018-uniphy-pcie-gen2x1";
+> +                       reg = <0x0007e000 0x800>;
+> +                       #phy-cells = <0>;
+> +                       #clock-cells = <0>;
+> +                       clocks = <&gcc GCC_PCIE1_PIPE_CLK>;
+> +                       clock-names = "pipe_clk";
+> +                       clock-output-names = "pcie1_pipe_clk";
+> +                       assigned-clocks = <&gcc GCC_PCIE1_PIPE_CLK>;
+> +                       assigned-clock-rates = <125000000>;
+> +                       resets = <&gcc GCC_PCIE1_PHY_BCR>,
+> +                                <&gcc GCC_PCIE1PHY_PHY_BCR>;
+> +                       reset-names = "phy", "phy_phy";
+> +                       status = "disabled";
+> +               };
+> +
+> +               pcie_x2phy: phy@86000{
+> +                       compatible = "qcom,ipq5018-uniphy-pcie-gen2x2";
+> +                       reg = <0x00086000 0x800>;
+> +                       #phy-cells = <0>;
+> +                       #clock-cells = <0>;
+> +                       clocks = <&gcc GCC_PCIE0_PIPE_CLK>;
+> +                       clock-names = "pipe_clk";
+> +                       clock-output-names = "pcie0_pipe_clk";
+> +                       assigned-clocks = <&gcc GCC_PCIE0_PIPE_CLK>;
+> +                       assigned-clock-rates = <125000000>;
 
-Acked-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Can this go into the PHY driver?
 
->  L:	linux-kernel@vger.kernel.org
->  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
->  L:	linux-mediatek@lists.infradead.org (moderated for non-subscribers)
-> 
-> -- 
-> 2.42.0
-> 
-> 
+> +                       resets = <&gcc GCC_PCIE0_PHY_BCR>,
+> +                                <&gcc GCC_PCIE0PHY_PHY_BCR>;
+> +                       reset-names = "phy", "phy_phy";
+> +                       status = "disabled";
+> +               };
+> +
+>                 tlmm: pinctrl@1000000 {
+>                         compatible = "qcom,ipq5018-tlmm";
+>                         reg = <0x01000000 0x300000>;
+> @@ -117,8 +150,8 @@
+>                         reg = <0x01800000 0x80000>;
+>                         clocks = <&xo_board_clk>,
+>                                  <&sleep_clk>,
+> -                                <0>,
+> -                                <0>,
+> +                                <&pcie_x2phy>,
+> +                                <&pcie_x1phy>,
+>                                  <0>,
+>                                  <0>,
+>                                  <0>,
+> @@ -246,6 +279,155 @@
+>                                 status = "disabled";
+>                         };
+>                 };
+> +
+> +               pcie_x1: pci@80000000 {
+> +                       compatible = "qcom,pcie-ipq5018";
+> +                       reg =  <0x80000000 0xf1d
+
+Each address/size tuple should be a separate <> entry.
+
+> +                               0x80000F20 0xa8
+
+lowercase
+
+> +                               0x80001000 0x1000
+> +                               0x78000 0x3000
+
+Would you notice why this line stands away from the rest of entries here?
+
+> +                               0x80100000 0x1000>;
+> +                       reg-names = "dbi", "elbi", "atu", "parf", "config";
+> +                       device_type = "pci";
+> +                       linux,pci-domain = <0>;
+> +                       bus-range = <0x00 0xff>;
+> +                       num-lanes = <1>;
+> +                       max-link-speed = <2>;
+> +                       #address-cells = <3>;
+> +                       #size-cells = <2>;
+> +
+> +                       phys = <&pcie_x1phy>;
+> +                       phy-names ="pciephy";
+> +
+> +                       ranges = <0x81000000 0 0x80200000 0x80200000
+> +                                 0 0x00100000   /* downstream I/O */
+> +                                 0x82000000 0 0x80300000 0x80300000
+> +                                 0 0x10000000>; /* non-prefetchable memory */
+> +
+> +                       #interrupt-cells = <1>;
+> +                       interrupt-map-mask = <0 0 0 0x7>;
+> +                       interrupt-map = <0 0 0 1 &intc 0 142
+> +                                        IRQ_TYPE_LEVEL_HIGH>, /* int_a */
+> +                                       <0 0 0 2 &intc 0 143
+> +                                        IRQ_TYPE_LEVEL_HIGH>, /* int_b */
+> +                                       <0 0 0 3 &intc 0 144
+> +                                        IRQ_TYPE_LEVEL_HIGH>, /* int_c */
+> +                                       <0 0 0 4 &intc 0 145
+> +                                        IRQ_TYPE_LEVEL_HIGH>; /* int_d */
+> +
+> +                       interrupts = <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH>;
+> +                       interrupt-names = "global_irq";
+> +
+> +                       clocks = <&gcc GCC_SYS_NOC_PCIE1_AXI_CLK>,
+> +                                <&gcc GCC_PCIE1_AXI_M_CLK>,
+> +                                <&gcc GCC_PCIE1_AXI_S_CLK>,
+> +                                <&gcc GCC_PCIE1_AHB_CLK>,
+> +                                <&gcc GCC_PCIE1_AUX_CLK>,
+> +                                <&gcc GCC_PCIE1_AXI_S_BRIDGE_CLK>;
+> +
+> +                       clock-names = "iface",
+> +                                     "axi_m",
+> +                                     "axi_s",
+> +                                     "ahb",
+> +                                     "aux",
+> +                                     "axi_bridge";
+> +
+> +                       resets = <&gcc GCC_PCIE1_PIPE_ARES>,
+> +                                <&gcc GCC_PCIE1_SLEEP_ARES>,
+> +                                <&gcc GCC_PCIE1_CORE_STICKY_ARES>,
+> +                                <&gcc GCC_PCIE1_AXI_MASTER_ARES>,
+> +                                <&gcc GCC_PCIE1_AXI_SLAVE_ARES>,
+> +                                <&gcc GCC_PCIE1_AHB_ARES>,
+> +                                <&gcc GCC_PCIE1_AXI_MASTER_STICKY_ARES>,
+> +                                <&gcc GCC_PCIE1_AXI_SLAVE_STICKY_ARES>;
+> +
+> +                       reset-names = "pipe",
+> +                                     "sleep",
+> +                                     "sticky",
+> +                                     "axi_m",
+> +                                     "axi_s",
+> +                                     "ahb",
+> +                                     "axi_m_sticky",
+> +                                     "axi_s_sticky";
+> +
+> +                       msi-map = <0x0 &v2m0 0x0 0xff8>;
+> +                       status = "disabled";
+> +               };
+> +
+> +               pcie_x2: pci@a0000000 {
+> +                       compatible = "qcom,pcie-ipq5018";
+> +                       reg =  <0xa0000000 0xf1d
+> +                               0xa0000F20 0xa8
+> +                               0xa0001000 0x1000
+> +                               0x80000 0x3000
+> +                               0xa0100000 0x1000>;
+> +                       reg-names = "dbi", "elbi", "atu", "parf", "config";
+> +                       device_type = "pci";
+> +                       linux,pci-domain = <1>;
+> +                       bus-range = <0x00 0xff>;
+> +                       num-lanes = <2>;
+> +                       max-link-speed = <2>;
+> +                       #address-cells = <3>;
+> +                       #size-cells = <2>;
+> +
+> +                       phys = <&pcie_x2phy>;
+> +                       phy-names ="pciephy";
+> +
+> +                       ranges = <0x81000000 0 0xa0200000 0xa0200000
+> +                                 0 0x00100000   /* downstream I/O */
+> +                                 0x82000000 0 0xa0300000 0xa0300000
+> +                                 0 0x10000000>; /* non-prefetchable memory */
+> +
+> +                       #interrupt-cells = <1>;
+> +                       interrupt-map-mask = <0 0 0 0x7>;
+> +                       interrupt-map = <0 0 0 1 &intc 0 75
+> +                                        IRQ_TYPE_LEVEL_HIGH>, /* int_a */
+> +                                       <0 0 0 2 &intc 0 78
+> +                                        IRQ_TYPE_LEVEL_HIGH>, /* int_b */
+> +                                       <0 0 0 3 &intc 0 79
+> +                                        IRQ_TYPE_LEVEL_HIGH>, /* int_c */
+> +                                       <0 0 0 4 &intc 0 83
+> +                                        IRQ_TYPE_LEVEL_HIGH>; /* int_d */
+> +
+> +                       interrupts = <GIC_SPI 51 IRQ_TYPE_LEVEL_HIGH>;
+> +                       interrupt-names = "global_irq";
+> +
+> +                       clocks = <&gcc GCC_SYS_NOC_PCIE0_AXI_CLK>,
+> +                                <&gcc GCC_PCIE0_AXI_M_CLK>,
+> +                                <&gcc GCC_PCIE0_AXI_S_CLK>,
+> +                                <&gcc GCC_PCIE0_AHB_CLK>,
+> +                                <&gcc GCC_PCIE0_AUX_CLK>,
+> +                                <&gcc GCC_PCIE0_AXI_S_BRIDGE_CLK>;
+> +
+> +                       clock-names = "iface",
+> +                                     "axi_m",
+> +                                     "axi_s",
+> +                                     "ahb",
+> +                                     "aux",
+> +                                     "axi_bridge";
+> +
+> +                       resets = <&gcc GCC_PCIE0_PIPE_ARES>,
+> +                                <&gcc GCC_PCIE0_SLEEP_ARES>,
+> +                                <&gcc GCC_PCIE0_CORE_STICKY_ARES>,
+> +                                <&gcc GCC_PCIE0_AXI_MASTER_ARES>,
+> +                                <&gcc GCC_PCIE0_AXI_SLAVE_ARES>,
+> +                                <&gcc GCC_PCIE0_AHB_ARES>,
+> +                                <&gcc GCC_PCIE0_AXI_MASTER_STICKY_ARES>,
+> +                                <&gcc GCC_PCIE0_AXI_SLAVE_STICKY_ARES>;
+> +
+> +                       reset-names = "pipe",
+> +                                     "sleep",
+> +                                     "sticky",
+> +                                     "axi_m",
+> +                                     "axi_s",
+> +                                     "ahb",
+> +                                     "axi_m_sticky",
+> +                                     "axi_s_sticky";
+> +
+> +                       msi-map = <0x0 &v2m0 0x0 0xff8>;
+> +                       status = "disabled";
+> +               };
+> +
+>         };
+>
+>         timer {
+> --
+> 2.17.1
+>
+
+
+-- 
+With best wishes
+Dmitry
