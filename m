@@ -2,124 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F13E67B7103
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4750D7B7120
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240796AbjJCSgY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 14:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
+        id S240795AbjJCSh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 14:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240642AbjJCSgW (ORCPT
+        with ESMTP id S240827AbjJCShY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:36:22 -0400
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5887E95;
-        Tue,  3 Oct 2023 11:36:19 -0700 (PDT)
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6c61dd1c229so263909a34.0;
-        Tue, 03 Oct 2023 11:36:19 -0700 (PDT)
+        Tue, 3 Oct 2023 14:37:24 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7111AF9
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 11:37:16 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-502f29ed596so1059e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 11:37:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696358234; x=1696963034; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Nm+7cYOviUtknmQJho1MKtDViZUMXc6rKNxLrNChrFE=;
+        b=PKkNrlXyllguVwJ+6XyvgLNVccFf4czr/8MUIj/9qgZ/FV0DyVTuJIbwwk8nG5SQI1
+         k0vullpFZY5/4NZphihSGJ067yY7xWn2jKgDkycsyr2ciL/SEYti/f3p4QGT2yv/+UTj
+         kWJbnP5jgkEtcgQ+1RlHDNlnMG1Ac4BCJtYhtfW5aOgHNu1snrVPUuVjxvCai32LKqOE
+         I08n7zGnagdbMwRKIEOxAHunpxLnYY/isrkZODX2fvhhWO2lRQBdJFBgOfz8qYeItWDS
+         WyTdCNcLx5Kf6JZCdCgNg42vfmUeWQcLLA7rjxc4ZdO441snADD9kQ/ZCebBHPQM6qxg
+         1A2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696358178; x=1696962978;
+        d=1e100.net; s=20230601; t=1696358234; x=1696963034;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xy90cq1kuMyI11xZOKPFY3MxuNUWTItrB3fMlvJOfd4=;
-        b=O9dLGlfaQu9dsp0LkMFVvkMVK9NXoFp9BD2ib+m6UkECPMwgttPL9+hxP1bK0bLuzy
-         Ll/QY+gYRGA5g0chO+WX8vAOiJaAgc12ROBambSLISHZp2GxTr6O/Yyv6pDFMK3OsHW/
-         +Bi99lprj7takUSJnKSn+iUBKB0O1lG2gWC6+VzPoLT3kD9eEKUF8ufYKnP7CHF2eKbO
-         91CF6RVFvIJb4UocHewnnscmiWnvNoyMnqe7DxZ9JEYyjQD195KbvCOqn8SZNaYJyGoo
-         EbfFboOlKix6iDKLaa3IAuY1jGL8FeqVwg8kgpPVgP8qAZvcctJGDkI9bFwfopHWCnpy
-         dtuQ==
-X-Gm-Message-State: AOJu0YwyLxHy/E3OJf7rhHDI1LKLmNSgqTwbF9GpkyP//WJjEfkKjdYb
-        LHoUrFgQRJXKi0srNIdSF9TGpgrfvyBZtObenjU=
-X-Google-Smtp-Source: AGHT+IFOz8NfzaTm+TQNu/A6JnOferW/Rsbvp5a+Se/KmXjyxbJucR7lDLEgD8KYWY1iGfGprX4gu2qrFiskX8eQ040=
-X-Received: by 2002:a05:6808:2286:b0:3ae:100d:5320 with SMTP id
- bo6-20020a056808228600b003ae100d5320mr386644oib.2.1696358178605; Tue, 03 Oct
- 2023 11:36:18 -0700 (PDT)
+        bh=Nm+7cYOviUtknmQJho1MKtDViZUMXc6rKNxLrNChrFE=;
+        b=U8OOg2kS3lj5Uraae6ckZ3KhP/lYaaaZVc3/wZHfXdh4f3kxe89k6LuF4FIvKq0Tq+
+         mEnnF+/C6lLAW27mklCpmbr229pbXDUc1Edrdxw51Rx3o1bR3mulFJMLMihlev2TEeI8
+         vXR//bxZrEngJJAmU7A9xM3UfGYsQKIFD1mvC6Xm1ku+Bbxs4me/BwkGBMd42ZgelYaa
+         vVU86X21dvIoVkRENdA9Wpra7LdLRI81sf5AsCiPDVFw97mFglXcrxwfw+IUNfUx1FQZ
+         2RFrclxgbSe8RPCBZq0J8zUatjOKjbQQdqimmqrHJYpmq551gjQBvjly476DSHXZoTbJ
+         KK8g==
+X-Gm-Message-State: AOJu0Yy6g2z/Gix+Xejg0WWfo2jEWI3T3zVzIPVPvb0fv7vAD4YhW4sX
+        o3KQtQ5TSCLnsndsxZR0CGX1YnmKeOyAvx3pZ/PFgw==
+X-Google-Smtp-Source: AGHT+IGdkJLAOSTaCP9iR1nSmb71LB9wabpp+OpwtH+LOFpxDpXBbaAswNhzmlQFVKxR07+Cfxc89jVmUpKwnd3OSP0=
+X-Received: by 2002:ac2:51a7:0:b0:502:cdb6:f316 with SMTP id
+ f7-20020ac251a7000000b00502cdb6f316mr4633lfk.3.1696358234460; Tue, 03 Oct
+ 2023 11:37:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230929202055.12724-1-linux@zary.sk>
-In-Reply-To: <20230929202055.12724-1-linux@zary.sk>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 3 Oct 2023 20:36:07 +0200
-Message-ID: <CAJZ5v0gqywy7o69fD4F4Snjb5Oh1Z44GD=C_WfkiSyW7NrxsGw@mail.gmail.com>
-Subject: =?UTF-8?Q?Re=3A_=5BPATCH=5D_ACPI=3A_video=3A_Add_acpi=5Fbacklight=3Dvendor_q?=
-        =?UTF-8?Q?uirk_for_Toshiba_Port=C3=A9g=C3=A9_R100?=
-To:     Ondrej Zary <linux@zary.sk>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <169570181657.596431.6178773442587231200.stgit@dwillia2-xfh.jf.intel.com>
+ <169570185411.596431.3153227201984845022.stgit@dwillia2-xfh.jf.intel.com>
+ <CAMkAt6r2VPPMZ__SQfJse8qWsUyYW3AgYbOUVM0S_Vtk=KvkxQ@mail.gmail.com>
+ <651602dc4c6e3_91c1e2947f@dwillia2-xfh.jf.intel.com.notmuch> <CAMkAt6rrzS85ZT9T7r6iwQHoVyEPwaxQ3Xayp_6XMbU+RJzS4w@mail.gmail.com>
+In-Reply-To: <CAMkAt6rrzS85ZT9T7r6iwQHoVyEPwaxQ3Xayp_6XMbU+RJzS4w@mail.gmail.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Tue, 3 Oct 2023 12:37:00 -0600
+Message-ID: <CAMkAt6rwSwES_hEac=_7Gg8wcGosHMPXA3J2g_BGC_c+NbVp1w@mail.gmail.com>
+Subject: Re: [PATCH v4 6/6] virt: tdx-guest: Add Quote generation support
+ using TSM_REPORTS
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     linux-coco@lists.linux.dev,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Erdem Aktas <erdemaktas@google.com>, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        dave.hansen@linux.intel.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 10:21 PM Ondrej Zary <linux@zary.sk> wrote:
+On Fri, Sep 29, 2023 at 11:26=E2=80=AFAM Peter Gonda <pgonda@google.com> wr=
+ote:
 >
-> Toshiba Portégé R100 has both acpi_video and toshiba_acpi vendor
-> backlight driver working. But none of them gets activated as it has
-> a VGA with no kernel driver (Trident CyberBlade XP4m32).
+> On Thu, Sep 28, 2023 at 4:49=E2=80=AFPM Dan Williams <dan.j.williams@inte=
+l.com> wrote:
+> >
+> > Peter Gonda wrote:
+> > > On Mon, Sep 25, 2023 at 10:17=E2=80=AFPM Dan Williams <dan.j.williams=
+@intel.com> wrote:
+> > > >
+> > > > From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.=
+intel.com>
+> > > >
+> > > > In TDX guest, the attestation process is used to verify the TDX gue=
+st
+> > > > trustworthiness to other entities before provisioning secrets to th=
+e
+> > > > guest. The first step in the attestation process is TDREPORT
+> > > > generation, which involves getting the guest measurement data in th=
+e
+> > > > format of TDREPORT, which is further used to validate the authentic=
+ity
+> > > > of the TDX guest. TDREPORT by design is integrity-protected and can
+> > > > only be verified on the local machine.
+> > > >
+> > > > To support remote verification of the TDREPORT in a SGX-based
+> > > > attestation, the TDREPORT needs to be sent to the SGX Quoting Encla=
+ve
+> > > > (QE) to convert it to a remotely verifiable Quote. SGX QE by design=
+ can
+> > > > only run outside of the TDX guest (i.e. in a host process or in a
+> > > > normal VM) and guest can use communication channels like vsock or
+> > > > TCP/IP to send the TDREPORT to the QE. But for security concerns, t=
+he
+> > > > TDX guest may not support these communication channels. To handle s=
+uch
+> > > > cases, TDX defines a GetQuote hypercall which can be used by the gu=
+est
+> > > > to request the host VMM to communicate with the SGX QE. More detail=
+s
+> > > > about GetQuote hypercall can be found in TDX Guest-Host Communicati=
+on
+> > > > Interface (GHCI) for Intel TDX 1.0, section titled
+> > > > "TDG.VP.VMCALL<GetQuote>".
+> > > >
+> > > > Trusted Security Module (TSM) [1] exposes a common ABI for Confiden=
+tial
+> > > > Computing Guest platforms to get the measurement data via ConfigFS.
+> > > > Extend the TSM framework and add support to allow an attestation ag=
+ent
+> > > > to get the TDX Quote data (included usage example below).
+> > > >
+> > > >   report=3D/sys/kernel/config/tsm/report/report0
+> > > >   mkdir $report
+> > > >   dd if=3D/dev/urandom bs=3D64 count=3D1 > $report/inblob
+> > > >   hexdump -C $report/outblob
+> > > >   rmdir $report
+> > > >
+> > > > GetQuote TDVMCALL requires TD guest pass a 4K aligned shared buffer
+> > > > with TDREPORT data as input, which is further used by the VMM to co=
+py
+> > > > the TD Quote result after successful Quote generation. To create th=
+e
+> > > > shared buffer, allocate a large enough memory and mark it shared us=
+ing
+> > > > set_memory_decrypted() in tdx_guest_init(). This buffer will be re-=
+used
+> > > > for GetQuote requests in the TDX TSM handler.
+> > > >
+> > > > Although this method reserves a fixed chunk of memory for GetQuote
+> > > > requests, such one time allocation can help avoid memory fragmentat=
+ion
+> > > > related allocation failures later in the uptime of the guest.
+> > > >
+> > > > Since the Quote generation process is not time-critical or frequent=
+ly
+> > > > used, the current version uses a polling model for Quote requests a=
+nd
+> > > > it also does not support parallel GetQuote requests.
+> > > >
+> > > > Link: https://lore.kernel.org/lkml/169342399185.3934343.30358453483=
+26944519.stgit@dwillia2-xfh.jf.intel.com/ [1]
+> > > > Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswa=
+my@linux.intel.com>
+> > > > Reviewed-by: Erdem Aktas <erdemaktas@google.com>
+> > > > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+> > >
+> > > Hey Dan,
+> > >
+> > > I tried running your test commands on an SNP enabled guest. To build
+> > > the kernel I just checked out linus/master and applied your series. I
+> > > haven't done any debugging yet, so I will update with what I find.
+> > >
+> > > root@Ubuntu2004:~#   hexdump -C $report/outblob
+> > > [  219.871875] ------------[ cut here ]------------
+> > > [  219.876642] kernel BUG at include/linux/scatterlist.h:187!
+> >
+> > Ok, it does not like virtual address of one of the buffers, but my
+> > changes "should" not have affected that as get_ext_report() internally
+> > uses snp_dev->certs_data and snp_dev->response for bounce buffering the
+> > actual request / response memory. First test I want to try once I can
+> > get on an SNP system is compare this to the ioctl path just make sure
+> > that succeeds.
 >
-> The DMI strings are very generic ("Portable PC") so add a custom
-> callback function to check for Trident CyberBlade XP4m32 PCI device
-> before enabling the vendor backlight driver (better than acpi_video
-> as it has more brightness steps).
->
-> Fixes: 5aa9d943e9b6 ("ACPI: video: Don't enable fallback path for creating ACPI backlight by default")
-> Signed-off-by: Ondrej Zary <linux@zary.sk>
-> ---
->  drivers/acpi/video_detect.c | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
->
-> diff --git a/drivers/acpi/video_detect.c b/drivers/acpi/video_detect.c
-> index 442396f6ed1f..31205fee59d4 100644
-> --- a/drivers/acpi/video_detect.c
-> +++ b/drivers/acpi/video_detect.c
-> @@ -130,6 +130,16 @@ static int video_detect_force_native(const struct dmi_system_id *d)
->         return 0;
->  }
->
-> +static int video_detect_portege_r100(const struct dmi_system_id *d)
-> +{
-> +       struct pci_dev *dev;
-> +       /* Search for Trident CyberBlade XP4m32 to confirm Portégé R100 */
-> +       dev = pci_get_device(PCI_VENDOR_ID_TRIDENT, 0x2100, NULL);
-> +       if (dev)
-> +               acpi_backlight_dmi = acpi_backlight_vendor;
-> +       return 0;
-> +}
-> +
->  static const struct dmi_system_id video_detect_dmi_table[] = {
->         /*
->          * Models which should use the vendor backlight interface,
-> @@ -270,6 +280,22 @@ static const struct dmi_system_id video_detect_dmi_table[] = {
->                 },
->         },
->
-> +       /*
-> +        * Toshiba Portégé R100 has working both acpi_video and toshiba_acpi
-> +        * vendor driver. But none of them gets activated as it has a VGA with
-> +        * no kernel driver (Trident CyberBlade XP4m32).
-> +        * The DMI strings are generic so check for the VGA chip in callback.
-> +        */
-> +       {
-> +        .callback = video_detect_portege_r100,
-> +        .matches = {
-> +               DMI_MATCH(DMI_SYS_VENDOR, "TOSHIBA"),
-> +               DMI_MATCH(DMI_PRODUCT_NAME, "Portable PC"),
-> +               DMI_MATCH(DMI_PRODUCT_VERSION, "Version 1.0"),
-> +               DMI_MATCH(DMI_BOARD_NAME, "Portable PC")
-> +               },
-> +       },
-> +
->         /*
->          * Models which need acpi_video backlight control where the GPU drivers
->          * do not call acpi_video_register_backlight() because no internal panel
-> --
 
-Applied as 6.7 material, thanks!
+I think there may be an issue with CONFIG_DEBUG_SG. That was the
+warning we were getting in my above stack trace:
+
+> [  219.876642] kernel BUG at include/linux/scatterlist.h:187!
+
+This was for this line in enc_dec_message():
+
+        sg_set_buf(&src[1], src_buf, hdr->msg_sz);
+
+I am not sure why in sg_set_buf() virt_addr_valid() returns false for
+the address given in the sev_report_new() which is from the variable
+'ext_req' which is stack allocated?
+
+static inline void sg_set_buf(struct scatterlist *sg, const void *buf,
+     unsigned int buflen)
+{
+#ifdef CONFIG_DEBUG_SG
+    BUG_ON(!virt_addr_valid(buf));
+#endif
+    sg_set_page(sg, virt_to_page(buf), buflen, offset_in_page(buf));
+}
+
+When I disable CONFIG_DEBUG_SG in my config. Your patch seems to work,
+well at least it doesn't crash the guest. I haven't checked if the
+report is valid yet.
