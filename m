@@ -2,67 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCD87B74BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C8C7B74C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 01:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235743AbjJCXV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 19:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55130 "EHLO
+        id S235566AbjJCXVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 19:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236029AbjJCXV1 (ORCPT
+        with ESMTP id S235694AbjJCXVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 19:21:27 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C8BA6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:21:23 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a2318df875so21389207b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 16:21:23 -0700 (PDT)
+        Tue, 3 Oct 2023 19:21:53 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3DEC9
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 16:21:49 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c1e3a4a06fso11349915ad.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 16:21:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696375283; x=1696980083; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xX0umRmiZ0cLGmGD38f/MibuOBTvqO+eaoVVtdmVDCY=;
-        b=nd4Vi0j/kzWHsBJ17zftBwdc6C/M7Msob9+RgKP5gBZxYSHK3vfmFbpJ0RncMTgpu/
-         R6RGKa8jBe96fK3O+YKKvkxGJipEsMkwQrQLTV9xPytZcHP6R91aON1heMWcSG+boVmF
-         CUkQpvyVhDReZWgzmuOo2/v+kvleNInOiWsIq+LL3Ss/9D+tQK/prAMsH5ur6kyAHOPy
-         H12705hfVo5Z7kchSOvXhxHCOALaS/hH6xNlYF6rKHuQOTBnYrnEIosYkAJMqX61MbTP
-         W5w52YKfbRhj6+c9qlzr8fteVsxli236ZXDKHtkrehs3YogjxT4OzIacA+t6Fr4VyXZV
-         8MJQ==
+        d=chromium.org; s=google; t=1696375309; x=1696980109; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=l821elQAUH489dU69En7IQT6h8j9FiBoZuXMgRZSCxE=;
+        b=Fdeb4adbtdqz/24mWufniLj32ERNRutwl+yzYVmAdpMarLlfudwUva4UlFTUsEOBBA
+         2BRoqrfkmOqzRk9SXuWr4EbwhlsOWJadUfl4PZ12BjlmXGHANlc70oQcb8paDixsJotW
+         2/xva/gFta5E6/bcWmL3b5p9aVuABCvPUkTnc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696375283; x=1696980083;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xX0umRmiZ0cLGmGD38f/MibuOBTvqO+eaoVVtdmVDCY=;
-        b=Ix4TuQxLzeV1Qcek9cfyQ8yebvI2u4qIa+WuTRvJyeyWIZ1FPCdq735PvA1Os2x9KJ
-         haqfqWuGQdTUVfyvNPE6N4aRgYWgQDLyFYPZH/8XQDBWSTT6bqQ2llTxS63U6h29Jo9r
-         K0Fm3Ujp8xa2f7xUrWy8iKba7P1Eu4/YCtNYBeMun5pkqekvAvGumbjXVoRIhpvxvWtI
-         7o7gcJzeY9RDDMWTuhVQzkEkmO9sBGLLO1ycUeFXPhYf93KdR0aCvL5n7mejlFhlXP6U
-         zkYDv+6RquWeENv2joJla10r410ZN07TBMcnvj3tiHc3aBpjv0NwIP+DkaHSzgRmL4n7
-         QQBA==
-X-Gm-Message-State: AOJu0YwZvyK4Gn+K8Pp5WJl6YJ0tK/kgzjlR8jBtWqCrgBpwUziigrD2
-        LjEhoQ3O+MN9lnqd7znKCsbPmy3UyFRQ
-X-Google-Smtp-Source: AGHT+IGSrWanjAkruP+Az1MmmFYTVYaT8bPHGsJb3wfDLC5Ra2CutV+dDmO/2/x+1U3Y1LlA5xpJrA9Ay0LN
-X-Received: from hi-h2o-specialist.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:3cef])
- (user=arakesh job=sendgmr) by 2002:a81:b3c3:0:b0:59b:eb63:4beb with SMTP id
- r186-20020a81b3c3000000b0059beb634bebmr18764ywh.7.1696375283016; Tue, 03 Oct
- 2023 16:21:23 -0700 (PDT)
-Date:   Tue,  3 Oct 2023 16:21:20 -0700
-In-Reply-To: <20230930184821.310143-4-arakesh@google.com>
-Mime-Version: 1.0
-References: <20230930184821.310143-4-arakesh@google.com>
-X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
-Message-ID: <20231003232120.2594176-1-arakesh@google.com>
-Subject: [PATCH v2 3/3] usb: gadget: uvc: Fix use-after-free for inflight usb_requests
-From:   Avichal Rakesh <arakesh@google.com>
-To:     arakesh@google.com, dan.scally@ideasonboard.com,
-        gregkh@linuxfoundation.org, laurent.pinchart@ideasonboard.com,
-        m.grzeschik@pengutronix.de, mgr@pengutronix.de
-Cc:     etalvala@google.com, jchowdhary@google.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
+        d=1e100.net; s=20230601; t=1696375309; x=1696980109;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=l821elQAUH489dU69En7IQT6h8j9FiBoZuXMgRZSCxE=;
+        b=YE/l3Qlf+5HLcQMnECVWDL3WhXgXfxzgnB1bqIekM6KUNkYAwiauV38f1cQ5imkZ2r
+         5bAfBKh5hskgjR68IUgfUMg1Q5zlpF9nVFZjg7w0OU4xLoypApThv8ycsBJh64cKWY/U
+         ZDodRB/MEPghb7kKUJsdIfEADPN4uwfGBAIVlGM6bxS6QgNxC88M+Rb4B2enQ2XzkYn6
+         xV9r9YOuDKJOy+5Mbfd3ogjZ6pZ2CmBsrAoSO2+8DbOxSJAEWXFe2gdKuyeYCkZpFsl1
+         UEyTNBSuN0XTjSbAkjgw0LdrTUcFK8Y8xNRFz3AU+8xRG4ccokcegUKCmt+bZ2wu02Xg
+         RvjQ==
+X-Gm-Message-State: AOJu0YwVAtyzNi79gUgKSOo8RfSyx2MHZfhYO1mJg9t9/dk8q+Fy1wDc
+        ZOswG7h8RkbfzLPibOmUNQsH6g==
+X-Google-Smtp-Source: AGHT+IGaEniPXHFRb7z5ff9Cq3HhY2bLKc/jWHQPtMoMKRK/fjd3yxeIZoXmuPydpHGtfi4+KyU8kQ==
+X-Received: by 2002:a17:902:a504:b0:1c3:308b:ecb9 with SMTP id s4-20020a170902a50400b001c3308becb9mr849979plq.11.1696375309168;
+        Tue, 03 Oct 2023 16:21:49 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id u16-20020a170902e81000b001bb1f0605b2sm2169114plg.214.2023.10.03.16.21.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 16:21:48 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     David Ahern <dsahern@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, netdev@vger.kernel.org,
+        llvm@lists.linux.dev,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] nexthop: Annotate struct nh_notifier_grp_info with __counted_by
+Date:   Tue,  3 Oct 2023 16:21:47 -0700
+Message-Id: <20231003232146.work.248-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1454; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=JVLfI2oulF09wCbNbUhJ4YM8+UHf0mCkNjgh/7VPPgs=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlHKIKGEdBVKlol3rm9nZ9aXAU4vP8gZt56RsYV
+ djO/OWGvI2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZRyiCgAKCRCJcvTf3G3A
+ Jg8AEACzM35r9K8GvdD23G76rSA5TZ9Q9H5scIvzrAcMMmEtWuziZzhyidCD4bWAsC9Fa5mE5+q
+ 8/0u35x12yMOrXdAHymBrDf3oXavSsaN+Imj21NjXBHagA/g6+KKf+W/efejbX3zEX50AkoJQ3v
+ cAaWB7WsKljtJixfZXiRTcE5eQdxwslhQg2WZ4k8Lq2N+Ky9ZeS6p3BGlSjzKeeALIkslSAYJCq
+ FRGCLQ4Gb0hiwPFOlNow7KeCkxblsr5oCg9j04rhzP7oqDuK1w7pq4AjaT53BlgW9OoMbZDqQr3
+ 7rlwBM0zFtHvj3z43+yas9peHlkX9KJ3DUSzYwDUwXDpyoeO6ORk6S1eIqw7jqwDY8d8x3h+xpK
+ 97kOoG5tCO6jw47CHr2Z9P+relUQvnQU6HLnTxB1MQfs0MXZZ6C/i7TJQfwNO9lAUQ/5NOLWwsX
+ /jnYLaLmcgFD4a/ZTxEByUrX2PGHsB/B41vBvYLzrIGFUxk5zQ3h3zMAvSdIyf3qPXhgMmlAsAH
+ JbiI58uWOj5xbpYifQRGSKFLbLiZr8IS6Z9lKy57DPgbDiRXSZSLsY75Gtvp4lEWQHnyqlmw+jM
+ 72fWourBpD/QcbvjZ27w3BbMrGwnH05xnzOc/16reg0vwnMsqoAMAuaGc881nvkdeGBDGffjA0e
+ 0vnSOeS H76Y5MMA==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,216 +90,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the uvc gadget driver allocates all uvc_requests as one array
-and deallocates them all when the video stream stops. This includes
-de-allocating all the usb_requests associated with those uvc_requests.
-This can lead to use-after-free issues if any of those de-allocated
-usb_requests were still owned by the usb controller.
+Prepare for the coming implementation by GCC and Clang of the __counted_by
+attribute. Flexible array members annotated with __counted_by can have
+their accesses bounds-checked at run-time via CONFIG_UBSAN_BOUNDS (for
+array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+functions).
 
-This is patch 2 of 2 in fixing the use-after-free issue. It adds a new
-flag to uvc_request to mark it as 'abandoned'. When disabling the video
-stream, instead of de-allocating all uvc_requests and usb_requests, the
-gadget driver only de-allocates those usb_requests that are currently
-owned by the gadget driver (as present in req_free). Other usb_requests
-have their corresponding 'is_abandoned' flag tripped, and the
-usb_requests complete handler takes care of freeing the usb_request and
-its corresponding uvc_request.
+As found with Coccinelle[1], add __counted_by for struct nh_notifier_grp_info.
 
-This should ensure that uvc gadget driver never accidentally de-allocates
-a usb_request that it doesn't own.
-
-Link: https://lore.kernel.org/7cd81649-2795-45b6-8c10-b7df1055020d@google.com
-Suggested-by: Michael Grzeschik <mgr@pengutronix.de>
-Signed-off-by: Avichal Rakesh <arakesh@google.com>
+Cc: David Ahern <dsahern@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Nathan Chancellor <nathan@kernel.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Tom Rix <trix@redhat.com>
+Cc: netdev@vger.kernel.org
+Cc: llvm@lists.linux.dev
+Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
-v1 -> v2: Rebased to ToT, and fixed deadlock reported in
-          https://lore.kernel.org/all/ZRv2UnKztgyqk2pt@pengutronix.de/
+ include/net/nexthop.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/usb/gadget/function/uvc.h       |   1 +
- drivers/usb/gadget/function/uvc_video.c | 118 ++++++++++++++++++++----
- 2 files changed, 102 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
-index 993694da0bbc..e69cfb7cced1 100644
---- a/drivers/usb/gadget/function/uvc.h
-+++ b/drivers/usb/gadget/function/uvc.h
-@@ -82,6 +82,7 @@ struct uvc_request {
- 	u8 header[UVCG_REQUEST_HEADER_LEN];
- 	struct uvc_buffer *last_buf;
- 	struct list_head list;
-+	bool is_abandoned;
+diff --git a/include/net/nexthop.h b/include/net/nexthop.h
+index 2b12725de9c0..5dc4b4bba8a5 100644
+--- a/include/net/nexthop.h
++++ b/include/net/nexthop.h
+@@ -187,7 +187,7 @@ struct nh_notifier_grp_entry_info {
+ struct nh_notifier_grp_info {
+ 	u16 num_nh;
+ 	bool is_fdb;
+-	struct nh_notifier_grp_entry_info nh_entries[];
++	struct nh_notifier_grp_entry_info nh_entries[] __counted_by(num_nh);
  };
-
- struct uvc_video {
-diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-index 3c4d286d81c0..69521886d599 100644
---- a/drivers/usb/gadget/function/uvc_video.c
-+++ b/drivers/usb/gadget/function/uvc_video.c
-@@ -271,7 +271,21 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
- 	struct uvc_video *video = ureq->video;
- 	struct uvc_video_queue *queue = &video->queue;
- 	struct uvc_device *uvc = video->uvc;
-+	struct uvc_buffer *last_buf;
- 	unsigned long flags;
-+	bool is_abandoned;
-+
-+	spin_lock_irqsave(&video->req_lock, flags);
-+	is_abandoned = ureq->is_abandoned;
-+	last_buf = ureq->last_buf;
-+	ureq->last_buf = NULL;
-+	spin_unlock_irqrestore(&video->req_lock, flags);
-+
-+	if (is_abandoned) {
-+		uvcg_dbg(&video->uvc->func, "Freeing abandoned usb_request\n");
-+		uvc_video_free_request(ureq, ep);
-+		return;
-+	}
-
- 	if (uvc->state == UVC_STATE_CONNECTED) {
- 		usb_ep_free_request(video->ep, ureq->req);
-@@ -300,15 +314,29 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
- 		uvcg_queue_cancel(queue, 0);
- 	}
-
--	if (ureq->last_buf) {
--		uvcg_complete_buffer(&video->queue, ureq->last_buf);
--		ureq->last_buf = NULL;
-+	if (last_buf) {
-+		spin_lock_irqsave(&video->queue.irqlock, flags);
-+		uvcg_complete_buffer(&video->queue, last_buf);
-+		spin_unlock_irqrestore(&video->queue.irqlock, flags);
- 	}
-
-+	/*
-+	 * request might have been abandoned while being processed.
-+	 * do a last minute check before queueing the request back.
-+	 */
- 	spin_lock_irqsave(&video->req_lock, flags);
--	list_add_tail(&req->list, &video->req_free);
-+	is_abandoned = ureq->is_abandoned;
-+	if (!is_abandoned)
-+		list_add_tail(&req->list, &video->req_free);
- 	spin_unlock_irqrestore(&video->req_lock, flags);
-
-+	if (is_abandoned) {
-+		uvcg_dbg(&video->uvc->func,
-+			 "usb_request abandoned mid-processing - freeing.\n");
-+		uvc_video_free_request(ureq, ep);
-+		return;
-+	}
-+
- 	if (uvc->state == UVC_STATE_STREAMING)
- 		queue_work(video->async_wq, &video->pump);
- }
-@@ -372,7 +400,6 @@ uvc_video_alloc_requests(struct uvc_video *video)
- 	}
-
- 	video->req_size = req_size;
--
- 	return 0;
-
- error:
-@@ -504,13 +531,80 @@ static void uvcg_video_pump(struct work_struct *work)
- 	return;
- }
-
-+/*
-+ * Disable video stream. This ensures that any inflight usb requests are marked
-+ * for clean up and all video buffers are dropped before returning.
-+ */
-+static void uvcg_video_disable(struct uvc_video *video)
-+{
-+	struct uvc_buffer *buf, *tmp_buf;
-+	struct uvc_request *ureq, *temp;
-+	struct list_head buf_list; /* track in-flight video buffers */
-+	struct usb_request *req;
-+	unsigned long flags;
-+
-+	INIT_LIST_HEAD(&buf_list);
-+
-+	cancel_work_sync(&video->pump);
-+	uvcg_queue_cancel(&video->queue, 0);
-+
-+	list_for_each_entry(ureq, &video->ureqs, list) {
-+		if (ureq->req)
-+			usb_ep_dequeue(video->ep, ureq->req);
-+	}
-+
-+	/**
-+	 * acquiring req_lock here should prevent any more complete
-+	 * callbacks from processing until we've abandoned the
-+	 * requests that are still in-flight and let the complete
-+	 * callback handle cleanup
-+	 */
-+	spin_lock_irqsave(&video->req_lock, flags);
-+	/* abandon all usb requests */
-+	list_for_each_entry_safe(ureq, temp, &video->ureqs, list) {
-+		ureq->is_abandoned = true;
-+		if (ureq->last_buf) {
-+			list_add(&ureq->last_buf->queue, &buf_list);
-+			ureq->last_buf = NULL;
-+		}
-+		list_del_init(&ureq->list);
-+	}
-+	/*
-+	 * re-add uvc_requests currently owned by the gadget to
-+	 * video->ureqs to be deallocated. This effectively leaves
-+	 * video->ureqs with the requests that we currently own.
-+	 */
-+	list_for_each_entry(req, &video->req_free, list) {
-+		ureq = req->context;
-+		list_add_tail(&ureq->list, &video->ureqs);
-+	}
-+	spin_unlock_irqrestore(&video->req_lock, flags);
-+
-+	/*
-+	 * drop abandoned uvc_buffers, as the completion handler
-+	 * no longer will
-+	 */
-+	if (!list_empty(&buf_list)) {
-+		spin_lock_irqsave(&video->queue.irqlock, flags);
-+		list_for_each_entry_safe(buf, tmp_buf,
-+						&buf_list, queue) {
-+			video->queue.flags |= UVC_QUEUE_DROP_INCOMPLETE;
-+			uvcg_complete_buffer(&video->queue, buf);
-+			list_del(&buf->queue);
-+		}
-+		spin_unlock_irqrestore(&video->queue.irqlock, flags);
-+	}
-+
-+	uvc_video_free_requests(video);
-+	uvcg_queue_enable(&video->queue, 0);
-+}
-+
- /*
-  * Enable or disable the video stream.
-  */
- int uvcg_video_enable(struct uvc_video *video, int enable)
- {
- 	struct uvc_device *uvc = video->uvc;
--	struct uvc_request *ureq;
- 	int ret;
-
- 	if (video->ep == NULL) {
-@@ -521,17 +615,7 @@ int uvcg_video_enable(struct uvc_video *video, int enable)
-
- 	if (!enable) {
- 		uvc->state = UVC_STATE_CONNECTED;
--
--		cancel_work_sync(&video->pump);
--		uvcg_queue_cancel(&video->queue, 0);
--
--		list_for_each_entry(ureq, &video->ureqs, list) {
--			if (ureq->req)
--				usb_ep_dequeue(video->ep, ureq->req);
--		}
--
--		uvc_video_free_requests(video);
--		uvcg_queue_enable(&video->queue, 0);
-+		uvcg_video_disable(video);
- 		return 0;
- 	}
-
---
-2.42.0.582.g8ccd20d70d-goog
+ 
+ struct nh_notifier_res_bucket_info {
+-- 
+2.34.1
 
