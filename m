@@ -2,139 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 993A17B6A69
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5507B6A7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234847AbjJCNXl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 09:23:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33724 "EHLO
+        id S236142AbjJCN1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232479AbjJCNXj (ORCPT
+        with ESMTP id S234880AbjJCN0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:23:39 -0400
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3E5A1;
-        Tue,  3 Oct 2023 06:23:36 -0700 (PDT)
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-5a22eaafd72so11219977b3.3;
-        Tue, 03 Oct 2023 06:23:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696339415; x=1696944215;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RyqO5Si8x9tH0yrrGtUM2VgzCztD//mXgGUJcJBODIM=;
-        b=a7vcZ9tiYUhbWGbLRzuEPbyxTT93C8FXysXVB4bAtaldp0D5/VtQR06OqRGMW40Twl
-         oKV5tbTFweAs15zo/XospIWSqCZb7jA5tcLqotTkz4CXpl1uAQn8qQIt7f4ZuXIsy7pR
-         PyZ0peXBHIctqpGNzjAZ9hgLA7BT/3FgR8Hee3/jOeIajNYEXODjMGfVkpcIenrLXUXj
-         qKdiOwOM3HMeAl78kJrponz48R4dn9nUknOoqvSKyZoeqSfZK3QCvyxzwRcrLxqNo2hb
-         WiO1wDKbhsBaMMLP1tiWJV8FjJQXpzPaaC4btiWb111RUTf3ftFfSVuHYi1IAWVkDJ6L
-         rpGg==
-X-Gm-Message-State: AOJu0YyP2hgQNRdagr89U6xVBubNOMbc2TxL8h+l1vly+geGMdCntv1f
-        aUVZtd6dijEw0uaEVKuoGF4DnbIeg1HhPA==
-X-Google-Smtp-Source: AGHT+IFU8dFMsoL99k55rFKjS/yIgR33TCJviv7HWMdQfJry+Qoxbwlp3gGKuVh8MnaTpRTsccW0aA==
-X-Received: by 2002:a81:6c88:0:b0:5a1:c610:1154 with SMTP id h130-20020a816c88000000b005a1c6101154mr14046953ywc.10.1696339415219;
-        Tue, 03 Oct 2023 06:23:35 -0700 (PDT)
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com. [209.85.128.170])
-        by smtp.gmail.com with ESMTPSA id j13-20020a81920d000000b0059f61be458esm367746ywg.82.2023.10.03.06.23.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 06:23:35 -0700 (PDT)
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-5a200028437so11327487b3.1;
-        Tue, 03 Oct 2023 06:23:35 -0700 (PDT)
-X-Received: by 2002:a81:a0d2:0:b0:57a:9b2c:51f1 with SMTP id
- x201-20020a81a0d2000000b0057a9b2c51f1mr14931488ywg.1.1696339414847; Tue, 03
- Oct 2023 06:23:34 -0700 (PDT)
+        Tue, 3 Oct 2023 09:26:52 -0400
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D237A7;
+        Tue,  3 Oct 2023 06:26:49 -0700 (PDT)
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 5.2.0)
+ id d9a2b773432a5c26; Tue, 3 Oct 2023 15:26:47 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 37B3F6659AF;
+        Tue,  3 Oct 2023 15:26:47 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH v2 4/6] ACPI: thermal: Use thermal_zone_for_each_trip() for updating trips
+Date:   Tue, 03 Oct 2023 15:24:12 +0200
+Message-ID: <1954465.PYKUYFuaPT@kreacher>
+In-Reply-To: <4846448.GXAFRqVoOG@kreacher>
+References: <4846448.GXAFRqVoOG@kreacher>
 MIME-Version: 1.0
-References: <20231003142737.381e7dcb@canb.auug.org.au> <20230920092641.832134-12-konstantin.meskhidze@huawei.com>
- <20231003.ahPha5bengee@digikod.net>
-In-Reply-To: <20231003.ahPha5bengee@digikod.net>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 3 Oct 2023 15:23:22 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVZsA4H47od6FV9+OzgWB2hnTQGr8YOcAL3yyURdm1AoA@mail.gmail.com>
-Message-ID: <CAMuHMdVZsA4H47od6FV9+OzgWB2hnTQGr8YOcAL3yyURdm1AoA@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the landlock tree
-To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        willemdebruijn.kernel@gmail.com, gnoack3000@gmail.com,
-        linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, yusongping@huawei.com,
-        artem.kuzin@huawei.com, Arnd Bergmann <arnd@arndb.de>,
-        Randy Dunlap <rdunlap@infradead.org>
+Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrfeeigdeifecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvvefufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvffeuiedtgfdvtddugeeujedtffetteegfeekffdvfedttddtuefhgeefvdejhfenucfkphepudelhedrudefiedrudelrdelgeenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepihhnvghtpeduleehrddufeeirdduledrleegpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhnsggprhgtphhtthhopeejpdhrtghpthhtoheplhhinhhugidqphhmsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqrggtphhisehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrghdprhgtphht
+ thhopehruhhirdiihhgrnhhgsehinhhtvghlrdgtohhmpdhrtghpthhtohepshhrihhnihhvrghsrdhprghnughruhhvrggurgeslhhinhhugidrihhnthgvlhdrtghomh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=7 Fuz1=7 Fuz2=7
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mickaël,
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-On Tue, Oct 3, 2023 at 3:15 PM Mickaël Salaün <mic@digikod.net> wrote:
-> On Tue, Oct 03, 2023 at 02:27:37PM +1100, Stephen Rothwell wrote:
-> > After merging the landlock tree, today's linux-next build (powerpc
-> > allyesconfig) produced this warning:
-> >
-> > samples/landlock/sandboxer.c: In function 'populate_ruleset_net':
-> > samples/landlock/sandboxer.c:170:78: warning: format '%llu' expects argument of type 'long long unsigned int', but argument 3 has type '__u64' {aka 'long unsigned int'} [-Wformat=]
-> >   170 |                                 "Failed to update the ruleset with port \"%llu\": %s\n",
-> >       |                                                                           ~~~^
-> >       |                                                                              |
-> >       |                                                                              long long unsigned int
-> >       |                                                                           %lu
-> >   171 |                                 net_port.port, strerror(errno));
-> >       |                                 ~~~~~~~~~~~~~
-> >       |                                         |
-> >       |                                         __u64 {aka long unsigned int}
-> >
-> > Introduced by commit
-> >
-> >   24889e7a2079 ("samples/landlock: Add network demo")
->
-> PowerPC-64 follows the LP64 data model and then uses int-l64.h (instead of
-> int-ll64.h like most architectures) for user space code.
->
-> Here is the same code with the (suggested) "%lu" token on x86_86:
->
->   samples/landlock/sandboxer.c: In function ‘populate_ruleset_net’:
->   samples/landlock/sandboxer.c:170:77: error: format ‘%lu’ expects argument of type ‘long unsigned int’, but argument 3 has type ‘__u64’ {aka ‘long long unsigned int’} [-Werror=format=]
->     170 |                                 "Failed to update the ruleset with port \"%lu\": %s\n",
->         |                                                                           ~~^
->         |                                                                             |
->         |                                                                             long unsigned int
->         |                                                                           %llu
->     171 |                                 net_port.port, strerror(errno));
->         |                                 ~~~~~~~~~~~~~
->         |                                         |
->         |                                         __u64 {aka long long unsigned int}
->
->
-> We would then need to cast __u64 to unsigned long long to avoid this warning,
-> which may look useless, of even buggy, for people taking a look at this sample.
+Rearrange the code handling notifications from the platform firmware
+regarding trip point updates to carry out one loop over trip points
+instead of two of them by using thermal_zone_for_each_trip() for that,
+which is more straightforward than using a combination of
+thermal_zone_device_exec() and for_each_thermal_trip(), each with its
+own callback function.
 
-In userspace code, you are supposed to #include <inttypes.h>
-and use PRIu64.
+No intentional functional impact.
 
-> Anyway, it makes more sense to cast it to __u16 because it is the
-> expected type for a TCP port. I'm updating the patch with that.
-> Konstantin, please take this fix for the next series:
-> https://git.kernel.org/mic/c/fc9de206a61a
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-Until someone passes a too large number, and it becomes truncated...
+v1 -> v2:
+   * Rebase on top of the previous patches.
+   * Add active_trip_index() for computing active trip point indices instead
+     of storing them.
 
-Gr{oetje,eeting}s,
+---
+ drivers/acpi/thermal.c |   78 +++++++++++++++++++++++--------------------------
+ 1 file changed, 37 insertions(+), 41 deletions(-)
 
-                        Geert
+Index: linux-pm/drivers/acpi/thermal.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/thermal.c
++++ linux-pm/drivers/acpi/thermal.c
+@@ -177,6 +177,15 @@ static bool acpi_thermal_trip_valid(stru
+ 	return acpi_trip->temp_dk != THERMAL_TEMP_INVALID;
+ }
+ 
++static int active_trip_index(struct acpi_thermal *tz,
++			     struct acpi_thermal_trip *acpi_trip)
++{
++	struct acpi_thermal_active *active;
++
++	active = container_of(acpi_trip, struct acpi_thermal_active, trip);
++	return active - tz->trips.active;
++}
++
+ static long get_passive_temp(struct acpi_thermal *tz)
+ {
+ 	unsigned long long tmp;
+@@ -213,21 +222,18 @@ static long get_active_temp(struct acpi_
+ }
+ 
+ static void acpi_thermal_update_trip(struct acpi_thermal *tz,
+-				     int index)
++				     const struct thermal_trip *trip)
+ {
+-	struct acpi_thermal_trip *acpi_trip;
+-
+-	acpi_trip = index == ACPI_THERMAL_TRIP_PASSIVE ?
+-			&tz->trips.passive.trip : &tz->trips.active[index].trip;
+-	if (!acpi_thermal_trip_valid(acpi_trip))
+-		return;
++	struct acpi_thermal_trip *acpi_trip = trip->priv;
+ 
+-	if (index == ACPI_THERMAL_TRIP_PASSIVE) {
++	if (trip->type == THERMAL_TRIP_PASSIVE) {
+ 		if (psv > 0)
+ 			return;
+ 
+ 		acpi_trip->temp_dk = get_passive_temp(tz);
+ 	} else {
++		int index = active_trip_index(tz, acpi_trip);
++
+ 		acpi_trip->temp_dk = get_active_temp(tz, index);
+ 	}
+ 
+@@ -267,31 +273,39 @@ static bool update_trip_devices(struct a
+ 	return true;
+ }
+ 
+-static void acpi_thermal_update_trip_devices(struct acpi_thermal *tz, int index)
++static void acpi_thermal_update_trip_devices(struct acpi_thermal *tz,
++					     struct thermal_trip *trip)
+ {
+-	struct acpi_thermal_trip *acpi_trip;
+-
+-	acpi_trip = index == ACPI_THERMAL_TRIP_PASSIVE ?
+-			&tz->trips.passive.trip : &tz->trips.active[index].trip;
+-	if (!acpi_thermal_trip_valid(acpi_trip))
+-		return;
++	struct acpi_thermal_trip *acpi_trip = trip->priv;
++	int index = trip->type == THERMAL_TRIP_PASSIVE ?
++			ACPI_THERMAL_TRIP_PASSIVE : active_trip_index(tz, acpi_trip);
+ 
+-	if (update_trip_devices(tz, acpi_trip, index, true)) {
++	if (update_trip_devices(tz, acpi_trip, index, true))
+ 		return;
+-	}
+ 
+ 	acpi_trip->temp_dk = THERMAL_TEMP_INVALID;
+ 	ACPI_THERMAL_TRIPS_EXCEPTION(tz, "state");
+ }
+ 
++struct adjust_trip_data {
++	struct acpi_thermal *tz;
++	u32 event;
++};
++
+ static int acpi_thermal_adjust_trip(struct thermal_trip *trip, void *data)
+ {
+ 	struct acpi_thermal_trip *acpi_trip = trip->priv;
+-	struct acpi_thermal *tz = data;
++	struct adjust_trip_data *atd = data;
++	struct acpi_thermal *tz = atd->tz;
+ 
+-	if (!acpi_trip)
++	if (!acpi_trip || !acpi_thermal_trip_valid(acpi_trip))
+ 		return 0;
+ 
++	if (atd->event == ACPI_THERMAL_NOTIFY_THRESHOLDS)
++		acpi_thermal_update_trip(tz, trip);
++	else
++		acpi_thermal_update_trip_devices(tz, trip);
++
+ 	if (acpi_thermal_trip_valid(acpi_trip))
+ 		trip->temperature = acpi_thermal_temp(tz, acpi_trip->temp_dk);
+ 	else
+@@ -300,25 +314,6 @@ static int acpi_thermal_adjust_trip(stru
+ 	return 0;
+ }
+ 
+-static void acpi_thermal_adjust_thermal_zone(struct thermal_zone_device *thermal,
+-					     unsigned long data)
+-{
+-	struct acpi_thermal *tz = thermal_zone_device_priv(thermal);
+-	int i;
+-
+-	if (data == ACPI_THERMAL_NOTIFY_THRESHOLDS) {
+-		acpi_thermal_update_trip(tz, ACPI_THERMAL_TRIP_PASSIVE);
+-		for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++)
+-			acpi_thermal_update_trip(tz, i);
+-	} else {
+-		acpi_thermal_update_trip_devices(tz, ACPI_THERMAL_TRIP_PASSIVE);
+-		for (i = 0; i < ACPI_THERMAL_MAX_ACTIVE; i++)
+-			acpi_thermal_update_trip_devices(tz, i);
+-	}
+-
+-	for_each_thermal_trip(tz->thermal_zone, acpi_thermal_adjust_trip, tz);
+-}
+-
+ static void acpi_queue_thermal_check(struct acpi_thermal *tz)
+ {
+ 	if (!work_pending(&tz->thermal_check_work))
+@@ -327,17 +322,18 @@ static void acpi_queue_thermal_check(str
+ 
+ static void acpi_thermal_trips_update(struct acpi_thermal *tz, u32 event)
+ {
++	struct adjust_trip_data atd = { .tz = tz, .event = event };
+ 	struct acpi_device *adev = tz->device;
+ 
+ 	/*
+-	 * Use thermal_zone_device_exec() to carry out the trip points
++	 * Use thermal_zone_for_each_trip() to carry out the trip points
+ 	 * update, so as to protect thermal_get_trend() from getting stale
+ 	 * trip point temperatures and to prevent thermal_zone_device_update()
+ 	 * invoked from acpi_thermal_check_fn() from producing inconsistent
+ 	 * results.
+ 	 */
+-	thermal_zone_device_exec(tz->thermal_zone,
+-				 acpi_thermal_adjust_thermal_zone, event);
++	thermal_zone_for_each_trip(tz->thermal_zone,
++				   acpi_thermal_adjust_trip, &atd);
+ 	acpi_queue_thermal_check(tz);
+ 	acpi_bus_generate_netlink_event(adev->pnp.device_class,
+ 					dev_name(&adev->dev), event, 0);
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
