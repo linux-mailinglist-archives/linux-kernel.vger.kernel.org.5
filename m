@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C88D27B7392
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C9B97B7396
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:58:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232386AbjJCV4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 17:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49894 "EHLO
+        id S232467AbjJCV6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 17:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbjJCV4e (ORCPT
+        with ESMTP id S232161AbjJCV6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 17:56:34 -0400
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD76FA6;
-        Tue,  3 Oct 2023 14:56:29 -0700 (PDT)
-Received: from [IPv6:::1] ([172.56.208.25])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 393LuLfx1774372
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Tue, 3 Oct 2023 14:56:22 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 393LuLfx1774372
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023091101; t=1696370182;
-        bh=JGXoPDpVIwpDAQlAmBH7cVkr1uUMtGdTK2Hqhc1cWn4=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=eTdINgIeNHw/7g3Si2TcTTh7m6TFd3tOiAe9TwxyLGQX9E/EJQl0PUtSg07F+iO17
-         aolP4DVZLJoJSvmWlt8an9bvhlKUsdt4giue8oz+YjS27W/8mJdR/mnItouUlQAHh+
-         ibLnCi7D/OVgUg4XdX85OsQrPteYqvkr2smMXvTWYE842FUSagdJSNO6FjJR/xcE05
-         T18QWXwcQ6iNEGtH2hBFsmawVxQL6mEz+FRgDOMRiekbBcapSXPQhjXhxZJO/Divi8
-         DfsIheb0tlYCShJVxIGZM1sNMSuog9DPTSpj9lsmBjkHtDqC8YGFyK25mWrl15Ohm7
-         55LmKyABtEl3A==
-Date:   Tue, 03 Oct 2023 14:56:09 -0700
-From:   "H. Peter Anvin" <hpa@zytor.com>
-To:     linux-kernel@vger.kernel.org,
-        tip-bot2 for Yuntao Wang <tip-bot2@linutronix.de>,
-        linux-tip-commits@vger.kernel.org
-CC:     Yuntao Wang <ytcoode@gmail.com>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org
-Subject: Re: [tip: x86/boot] x86/boot: Fix incorrect startup_gdt_descr.size
-User-Agent: K-9 Mail for Android
-In-Reply-To: <169632239730.3135.5499875554711156270.tip-bot2@tip-bot2>
-References: <20230807084547.217390-1-ytcoode@gmail.com> <169632239730.3135.5499875554711156270.tip-bot2@tip-bot2>
-Message-ID: <CBF7285B-C6F9-4539-ADA2-A626EAE1A73F@zytor.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 3 Oct 2023 17:58:02 -0400
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0787A1;
+        Tue,  3 Oct 2023 14:57:58 -0700 (PDT)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id 65953C01F; Tue,  3 Oct 2023 23:57:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1696370274; bh=VaMPR9vTSeNuv9UUlAuWQrxY0o/yWBumBbUme/UtQSY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r2VlZnQFgPYscwuU/pQZTOyXezD4821oSbFctUhbb4g4ohKxF6x7ztA1Bkw0qHEzJ
+         hdwkfxcPRIBK79hdyHdQeM0EQpTQWX8N/3djGQOoopGQaQ8ObreLFwPRmTRJED9bH5
+         afcgP1jOjMHPOiE6PlvenYftH6sVhxXuxsSoQH5vrgGfDZYmycc8hGyisVP9MWRC6S
+         XPTOKHIeMMkEW41a70rMjnV5qRXu+sIioFx6phdhBm0IbHApdeqpdHZlkKwFlsjcqq
+         nnYmf8rllBtVv8/UWQp448KZxyePogqqMzr+ne0vXDoHvOE/29J6LtobARGuP8ZHbg
+         zW9zPt3hzuSwA==
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: from gaia (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with ESMTPS id D62F3C009;
+        Tue,  3 Oct 2023 23:57:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1696370272; bh=VaMPR9vTSeNuv9UUlAuWQrxY0o/yWBumBbUme/UtQSY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ntNDqYJUj3LKdZOSYPLAxo7SwyvXz+PePGLQ45IvwZhnt2wpkxYD4aiLjXr4Igvub
+         boDbsOqDr7GeBojwmuO5WOyHVvWQ0i7pgeuw0nJp5JUdW4cTAlCzueDvcVwWcDpJ94
+         Se6Ra3D1jmd0iTqEe4SkYQivZEkJ/7Qs2fM0zLWh2pMPRkXUWiwk6FizZqZOWZzS27
+         2xnUy8qhRwbY0CEA8fn0jyB5qRruc0zZ6luV6Zoj9Up48R5Rqh/fb2id46ZzxzBF+3
+         MLqrrpJzmcS3HANBbUzuylNH1ywKCw0WJy+sq+lGUo5MxaJCzGn6yMCyI7G6d2irxN
+         grsR4aEmfW+OQ==
+Received: from localhost (gaia [local])
+        by gaia (OpenSMTPD) with ESMTPA id 3fe28c50;
+        Tue, 3 Oct 2023 21:57:46 +0000 (UTC)
+Date:   Wed, 4 Oct 2023 06:57:31 +0900
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Wedson Almeida Filho <wedsonaf@gmail.com>
+Cc:     Eric Van Hensbergen <ericvh@kernel.org>,
+        Christian Schoenebeck <linux_oss@crudebyte.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Wedson Almeida Filho <walmeida@microsoft.com>,
+        Latchesar Ionkov <lucho@ionkov.net>, v9fs@lists.linux.dev
+Subject: Re: [PATCH 03/29] 9p: move xattr-related structs to .rodata
+Message-ID: <ZRyOSzUKFNOXaSZf@codewreck.org>
+References: <20230930050033.41174-1-wedsonaf@gmail.com>
+ <20230930050033.41174-4-wedsonaf@gmail.com>
+ <41368837.HejemxxR3G@silver>
+ <ZRfkVWyuNaapaOOO@codewreck.org>
+ <CANeycqptxu1qWAHLc76krDmfgesANPX+FLEV51qhtXam6Ky9nQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CANeycqptxu1qWAHLc76krDmfgesANPX+FLEV51qhtXam6Ky9nQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On October 3, 2023 1:39:57 AM PDT, tip-bot2 for Yuntao Wang <tip-bot2@linut=
-ronix=2Ede> wrote:
->The following commit has been merged into the x86/boot branch of tip:
->
->Commit-ID:     001470fed5959d01faecbd57fcf2f60294da0de1
->Gitweb:        https://git=2Ekernel=2Eorg/tip/001470fed5959d01faecbd57fcf=
-2f60294da0de1
->Author:        Yuntao Wang <ytcoode@gmail=2Ecom>
->AuthorDate:    Mon, 07 Aug 2023 16:45:47 +08:00
->Committer:     Ingo Molnar <mingo@kernel=2Eorg>
->CommitterDate: Tue, 03 Oct 2023 10:28:29 +02:00
->
->x86/boot: Fix incorrect startup_gdt_descr=2Esize
->
->Since the size value is added to the base address to yield the last valid
->byte address of the GDT, the current size value of startup_gdt_descr is
->incorrect (too large by one), fix it=2E
->
->[ mingo: This probably never mattered, because startup_gdt[] is only used
->         in a very controlled fashion - but make it consistent neverthele=
-ss=2E ]
->
->Fixes: 866b556efa12 ("x86/head/64: Install startup GDT")
->Signed-off-by: Yuntao Wang <ytcoode@gmail=2Ecom>
->Signed-off-by: Ingo Molnar <mingo@kernel=2Eorg>
->Cc: "H=2E Peter Anvin" <hpa@zytor=2Ecom>
->Link: https://lore=2Ekernel=2Eorg/r/20230807084547=2E217390-1-ytcoode@gma=
-il=2Ecom
->---
-> arch/x86/kernel/head64=2Ec | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/arch/x86/kernel/head64=2Ec b/arch/x86/kernel/head64=2Ec
->index 49f7629=2E=2Ebbc2179 100644
->--- a/arch/x86/kernel/head64=2Ec
->+++ b/arch/x86/kernel/head64=2Ec
->@@ -80,7 +80,7 @@ static struct desc_struct startup_gdt[GDT_ENTRIES] =3D =
-{
->  * while the kernel still uses a direct mapping=2E
->  */
-> static struct desc_ptr startup_gdt_descr =3D {
->-	=2Esize =3D sizeof(startup_gdt),
->+	=2Esize =3D sizeof(startup_gdt)-1,
-> 	=2Eaddress =3D 0,
-> };
->=20
+Wedson Almeida Filho wrote on Tue, Oct 03, 2023 at 10:55:44AM -0300:
+> > Looks good to me on principle as well (and it should blow up immediately
+> > on testing in the unlikely case there's a problem...)
+> >
+> > Eric, I don't think you have anything planned for this round?
+> > There's another data race patch laying around that we didn't submit for
+> > 6.6, shall I take these two for now?
+> >
+> > (Assuming this patch series is meant to be taken up by individual fs
+> > maintainers independantly, it's never really clear with such large
+> > swatches of patchs and we weren't in Cc of a cover letter if there was
+> > any... In the future it'd help if either there's a clear cover letter
+> > everyone is in Cc at (some would say keep everyone in cc of all
+> > patches!), or just send these in a loop so they don't appear to be part
+> > of a series and each maintainer deals with it as they see fit)
+> 
+> There is a cover letter
+> (https://lore.kernel.org/all/20230930050033.41174-1-wedsonaf@gmail.com/),
+> apologies for not CCing you there. I was trying to avoid spamming
+> maintainers with unrelated changes.
+> 
+> We need changes in fs/xattr.c (which are in the first patch of the
+> series) to avoid warnings, so unfortunately this can't be taken
+> individually. My thought was that individual fs maintainers would
+> review/ack the patches and this would be taken through the fs tree.
 
-Well, it never mattered because there wasn't enough space at the end for a=
-n extra entry, but it is still Technically Correct=E2=84=A2=2E
+Please include all related maintainers in cover letter and any "common"
+patch: I'd have complained about the warning if I had taken the time to
+try it out :)
+
+(b4 made it easy to download a whole thread, but it was't obvious this
+was required -- I honestly prefer receiving the whole thread than too
+little patch but I know some maintainers are split on this... At least I
+think we'll all agree cover letter and required dependencies are useful
+though -- I now see David Sterba told you something similar, but only
+after having written that so leaving it in)
+
+By the way the shmem patch failed to apply to 6.6-rc4 and will need
+rebasing.
+
+With all that said, I've taken a few minutes to check it didn't blow up,
+so:
+Acked-by: Dominique Martinet <asmadeus@codewreck.org>
+
+-- 
+Dominique Martinet | Asmadeus
