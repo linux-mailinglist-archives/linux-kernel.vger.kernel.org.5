@@ -2,107 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BEA77B62DF
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A2D7B62E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbjJCH4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 03:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41414 "EHLO
+        id S231209AbjJCH4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 03:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229835AbjJCH4B (ORCPT
+        with ESMTP id S229835AbjJCH4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 03:56:01 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9193590;
-        Tue,  3 Oct 2023 00:55:57 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1c3f97f2239so4869835ad.0;
-        Tue, 03 Oct 2023 00:55:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696319757; x=1696924557; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=sG3es9LOJNepHfcbLIqaZEQhm2bx01GFyqQ4WaVdb2o=;
-        b=AzzwuUwdt/S5aYIUoGTNW8de342rxLkF4Dy3eeO9vsoGP0iz0oKaESEBJT1d1qYwVo
-         CFuxxoNUn3/GzOhBYDGgGSpWjXcabpfUEcHrTdOI4M/EdaUh2lGSb6vOdIEmooV5PG+x
-         Ll+Jko9RABzlIW8VmHbvMlVzafMnCh2qYOKHBo5grND8VzP7mSLkpCoJuvqZ6224Z/4W
-         anulHA+eRfBCe8YVR4uqDgPR/48l2FuNYBoVkeT6T6tPwrsH32UVazmezrPiv49t/P9O
-         zpRAnO7JrBWR1aXMCrJQ5TmEK+B8uaqTuUcLrOb3McPTYB26SZnCLufw+Oq/me/eQ2EW
-         zQ4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696319757; x=1696924557;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=sG3es9LOJNepHfcbLIqaZEQhm2bx01GFyqQ4WaVdb2o=;
-        b=UArfUsnyhNpSIf9CjhsSu6fxjLH4bCglESB1jtw0FGla/YpvdRiuiGASt8lYDYIVpi
-         pH2xW3tsQM558PvmmNkklM/168mSmtaZT/woXFt+KljfqE6NAKh55xW5QJkvDdXO4YE0
-         T4vFVXJBBOU1GQfm3qDeqToOLHgysVtFA34erJeOyl6tEw5Up8fLKNnwetwPev7PguQl
-         EI+Jmq6AQp8GQEzPSnDTdAaGy37LnPc5bBX8dpRbADEHVVAhP+bDyY36GPPR7u3HLsE5
-         O74fMwyvg9lOFzokB00DYPwUL4nTIeTqDhcs5ebD1233DZeEji0HEO7TYsgMe5DurQOC
-         grvA==
-X-Gm-Message-State: AOJu0YyPL1fkwmuYX24cVNLVVuVI2tN6v4hp8l6SyZ8X2QqVJ+YbpW3H
-        jd81pxJSEUiO8+8hi0LhgVA=
-X-Google-Smtp-Source: AGHT+IHhmZBOFn6Hs3oxgHYi5uC5mu3CgaLNKzsBGSmH19XKhhnKWblUyoME4YnWdi7174VdRHyNzA==
-X-Received: by 2002:a17:902:9b8e:b0:1c0:cbaf:6930 with SMTP id y14-20020a1709029b8e00b001c0cbaf6930mr12697266plp.54.1696319756505;
-        Tue, 03 Oct 2023 00:55:56 -0700 (PDT)
-Received: from hcdev-d520mt2.. (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
-        by smtp.gmail.com with ESMTPSA id q16-20020a170902dad000b001c75d7f2597sm786442plx.141.2023.10.03.00.55.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 00:55:56 -0700 (PDT)
-From:   Marvin Lin <milkfafa@gmail.com>
-To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl
-Cc:     dan.carpenter@linaro.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
-        avifishman70@gmail.com, tmaimon77@gmail.com, kwliu@nuvoton.com,
-        kflin@nuvoton.com, Marvin Lin <milkfafa@gmail.com>
-Subject: [PATCH] media: nuvoton: npcm-video: Fix sleeping in atomic context
-Date:   Tue,  3 Oct 2023 15:55:12 +0800
-Message-Id: <20231003075512.2081141-1-milkfafa@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 3 Oct 2023 03:56:32 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E2090
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 00:56:29 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CB0BC433C8;
+        Tue,  3 Oct 2023 07:56:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696319789;
+        bh=WJrq9pvqjjq+UgwdFJc03n5UstUwK2CTaZTIfJNnE60=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=Qy6vYmF91Ai1mQb1GLlAghMU9z7UOEwYSDAVtsMuuyoKVY3/ox60QqCsxrAstnMiU
+         nSJ1yDf2h0X534Nj2e1OjKiDXV6z35/fipVku89/CG41TGN2yGqklL4VpB7Zy7/fZb
+         Tx6F7i8e4DT/b8zeDxFppHMi2AWzvUTtdziyrh8QT6617OXE8qmKbdwqwCQAt9C1k/
+         01z2JGboHR7C8sidyXX2ZH6C8NxGcXa9C1+/iCBqR2e3zRtfsBRlqGYy/RsjutjGX7
+         5IrqOR3/DQL8f6CJC83npj6u6AaQlMUeIDQye9JfLRb2VPh2xUPOp6UtRE4OKWpf31
+         QdbCvFPG3iqCw==
+Date:   Tue, 03 Oct 2023 08:56:25 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Chen Wang <unicorn_wang@outlook.com>,
+        Jisheng Zhang <jszhang@kernel.org>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Anup Patel <anup@brainfault.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Inochi Amaoto <inochiama@outlook.com>, chao.wei@sophgo.com,
+        xiaoguang.xing@sophgo.com
+Subject: Re: [PATCH 0/5] Add Milk-V Duo board support
+User-Agent: K-9 Mail for Android
+In-Reply-To: <MA0P287MB03323A58B068D400E8225E80FEC4A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+References: <20230930123937.1551-1-jszhang@kernel.org> <20231002-slurp-anime-a2308245174e@spud> <MA0P287MB03323A58B068D400E8225E80FEC4A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+Message-ID: <F026F534-26E6-4EEC-BC93-2C85D6F9E446@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix sleeping in atomic context warnings reported by the Smatch static
-analysis tool. Use GFP_ATOMIC instead of GFP_KERNEL in atomic context.
 
-Fixes: 70721089985c ("media: nuvoton: Add driver for NPCM video capture and encoding engine")
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Signed-off-by: Marvin Lin <milkfafa@gmail.com>
----
- drivers/media/platform/nuvoton/npcm-video.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/platform/nuvoton/npcm-video.c b/drivers/media/platform/nuvoton/npcm-video.c
-index ac8d73b794d3..5d160978f7b3 100644
---- a/drivers/media/platform/nuvoton/npcm-video.c
-+++ b/drivers/media/platform/nuvoton/npcm-video.c
-@@ -412,7 +412,7 @@ static unsigned int npcm_video_add_rect(struct npcm_video *video,
- 	struct rect_list *list = NULL;
- 	struct v4l2_rect *r;
- 
--	list = kzalloc(sizeof(*list), GFP_KERNEL);
-+	list = kzalloc(sizeof(*list), GFP_ATOMIC);
- 	if (!list)
- 		return 0;
- 
-@@ -467,7 +467,7 @@ static struct rect_list *npcm_video_new_rect(struct npcm_video *video,
- 	struct rect_list *list = NULL;
- 	struct v4l2_rect *r;
- 
--	list = kzalloc(sizeof(*list), GFP_KERNEL);
-+	list = kzalloc(sizeof(*list), GFP_ATOMIC);
- 	if (!list)
- 		return NULL;
- 
--- 
-2.34.1
+On 3 October 2023 03:32:20 IST, Chen Wang <unicorn_wang@outlook=2Ecom> wro=
+te:
+>
+>=E5=9C=A8 2023/10/2 20:22, Conor Dooley =E5=86=99=E9=81=93:
+>> Hey,
+>>=20
+>> On Sat, Sep 30, 2023 at 08:39:32PM +0800, Jisheng Zhang wrote:
+>>> Milk-V Duo[1] board is an embedded development platform based on the
+>>> CV1800B[2] chip=2E Add minimal device tree files for the development b=
+oard=2E
+>>> Currently, now it's supported to boot to a basic shell=2E
+>>>=20
+>>> NOTE: this series is based on the SG2042 upstream series for the vendo=
+r
+>>> prefix and ARCH_SOPHGO option=2E
+>>>=20
+>>> Link: https://milkv=2Eio/duo [1]
+>>> Link: https://en=2Esophgo=2Ecom/product/introduce/cv180xB=2Ehtml [2]
+>>> Link: https://lore=2Ekernel=2Eorg/linux-riscv/cover=2E1695804418=2Egit=
+=2Eunicornxw@gmail=2Ecom/ [3]
+>> Other than the comment I left, this seems fine to me=2E I'd be happy
+>> enough to pick up the pre-reqs from the other series & this one if one
+>> of the Sophgo maintainers acked these patches=2E
+>
+>Conor, just FYI, sophgo maintainers are located in China, and they are in=
+ National holiday vacation these days=2E I think they may reply to emails l=
+ater this weekend=2E
 
+Firstly, there isn't some super rush here that a few days holiday will int=
+erfere with=2E
+I'm actually on holidays myself at the moment :)
+Secondly, you're one of the sophgo maintainers,
+right? It's the people listed in MAINTAINERS that I am talking about here,
+being an employee doesn't matter=2E
+
+Cheers,
+Conor=2E
+
+>
+>Thanks,
+>
+>Chen
+>
+>>=20
+>> Thanks,
+>> Conor=2E
+>>=20
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists=2Einfradead=2Eorg
+>> http://lists=2Einfradead=2Eorg/mailman/listinfo/linux-riscv
