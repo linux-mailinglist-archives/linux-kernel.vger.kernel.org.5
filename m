@@ -2,184 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 637187B6DB2
+	by mail.lfdr.de (Postfix) with ESMTP id 1638F7B6DB1
 	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240243AbjJCP7z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 11:59:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
+        id S231922AbjJCP7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 11:59:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240276AbjJCP7u (ORCPT
+        with ESMTP id S240235AbjJCP7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 11:59:50 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49CA3FF;
-        Tue,  3 Oct 2023 08:59:41 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 393BBP3D018834;
-        Tue, 3 Oct 2023 15:59:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=qcppdkim1;
- bh=GBSM88InbwDK3bTPT0KFlAm3hF10rrJO6ZNeblY1c44=;
- b=hUd9Sq/R6GdoJZE4qS3pOc5PSXhOITfsBR0/iWQz/HWZmBOTMm2Hnuur9xiko1teF06P
- NUqrn1SXjo6gf/O/DP6wAFjaO0b06OT6ffPZYDrzHtXVbfh6P5GtseRIwUzwOuR1B0dD
- bgk2YNlRT4TIKrGZRFJIEGCILZWQOwuB+OeYWrVyWoVR9WkpkvbgwOZVHw1mIVvzIWUl
- bLFA9eBoXS6+aby6PaQm4k2R4GQOljZ7QLxt5jr/2ikyZpOKx9yTKNadqU84LplxJIdN
- vhiYTkCi6aMEyT+kb3q2SXII8IUq0kBBu5py6PqMmH4ODR5GSGFR+u1Cnj5w/bAdBYp5 Bw== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tgbjj9fpk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Oct 2023 15:59:32 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 393FxWIT006952
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 3 Oct 2023 15:59:32 GMT
-Received: from localhost (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 3 Oct
- 2023 08:59:31 -0700
-From:   Oza Pawandeep <quic_poza@quicinc.com>
-To:     <sudeep.holla@arm.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <rafael@kernel.org>, <lenb@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-acpi@vger.kernel.org>
-CC:     Oza Pawandeep <quic_poza@quicinc.com>
-Subject: [PATCH v9] cpuidle, ACPI: Evaluate LPI arch_flags for broadcast timer
-Date:   Tue, 3 Oct 2023 08:59:30 -0700
-Message-ID: <20231003155930.2829763-1-quic_poza@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 3 Oct 2023 11:59:48 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45AFEFB
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:59:33 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-65b051a28b3so6981196d6.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 08:59:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1696348772; x=1696953572; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=L9u6M/qg0tY6l2Kd5bsxAtI2pU7AK646ndJLozYLDOY=;
+        b=RxnqM2rctBvIne417JHVEVWEdV+SP+0ZxG55fpPTPq04SuETvDMDeyxh3G/ZRjnsiR
+         Su7gWpdiglr2NABUjLSFpjzE0AdkcMdczdF677s9VPPpGevxJCwTQBaqQb4TwE4uzdK1
+         4mSXYsqHW6tqQrcn9h5hd19/ZXspEZb+l167cO8mnG9OB5w3vmGFfQueH9TLL0kGNT7R
+         emLbnKqqhQiuaLEQD7iSRUhfkWA6TlRU4oA58yeJjoPSRczkMLUFUaFIeWSwJdqhIrc4
+         PDvHowfNnx1XmJ5U9sVedKABNQ+KkIMdG6jtdc5BevnHv6dJM2qZXtWIuN22XFxXborV
+         9Nqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696348772; x=1696953572;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L9u6M/qg0tY6l2Kd5bsxAtI2pU7AK646ndJLozYLDOY=;
+        b=JsPwl7iVxy5eE4YFJ1L7iHMF9uHcyr4jxX/8ka/ZxXnvPVor8/5G3qrYDZ8bVxcVF8
+         ZiL0m3x3O6X5vWAbRkmL/l4kBw+rj4JF0sh0GVOLm3mh6zbG1p7WzURVVzPxLuZTK9+c
+         TM/5zyVWLBksuYJIeN0hMvAIeki9oaX7P2h7yG3eearIKVzJwOAFyomyi23zopeZiOpF
+         5rjSLbZc5Ya8bDFnKR2dr+sEsGFUdlwj+VhvgTCQ/qbB5bUviSuvBBcC+F4eqrn+G0Os
+         e+U8BIoNBbTuvXr0HPVmiBhk18Zvs1dfrg2Witd78TivzX4Lhw73fEPzkuq7BsEpqezf
+         RQCw==
+X-Gm-Message-State: AOJu0YybCd1n2vSXTa9ZMw265UPhPiPH5EO3UznegfnQIZ+n1EYV6sUk
+        +mEFONmD3+EYOzs6ohuDcJ1oog==
+X-Google-Smtp-Source: AGHT+IHqGr4J+qukUaSisJrYlEvvxoW/auCoCxrT+jkY3iF56XKG6U4RM8wS4bSzjDtmCxHmSD3aRw==
+X-Received: by 2002:a0c:a9db:0:b0:655:71df:4c7d with SMTP id c27-20020a0ca9db000000b0065571df4c7dmr14977510qvb.56.1696348772174;
+        Tue, 03 Oct 2023 08:59:32 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-3012-16a2-6bc2-2937.res6.spectrum.com. [2603:7000:c01:2716:3012:16a2:6bc2:2937])
+        by smtp.gmail.com with ESMTPSA id o10-20020a0cf4ca000000b0065862497fd2sm591100qvm.22.2023.10.03.08.59.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 08:59:31 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 11:59:31 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+        riel@surriel.com, roman.gushchin@linux.dev, shakeelb@google.com,
+        muchun.song@linux.dev, tj@kernel.org, lizefan.x@bytedance.com,
+        shuah@kernel.org, mike.kravetz@oracle.com, yosryahmed@google.com,
+        fvdl@google.com, linux-mm@kvack.org, kernel-team@meta.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] hugetlb: memcg: account hugetlb-backed memory in
+ memory controller
+Message-ID: <20231003155931.GF17012@cmpxchg.org>
+References: <20231003001828.2554080-1-nphamcs@gmail.com>
+ <20231003001828.2554080-3-nphamcs@gmail.com>
+ <ZRwQEv62Ex4+H2CZ@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: H-19d9mMQ3zuB0YjKgwOwadn3YU4-RQp
-X-Proofpoint-ORIG-GUID: H-19d9mMQ3zuB0YjKgwOwadn3YU4-RQp
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-03_12,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=6 mlxscore=6 spamscore=6
- clxscore=1015 impostorscore=0 phishscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=123 adultscore=0 suspectscore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310030119
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRwQEv62Ex4+H2CZ@dhcp22.suse.cz>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arm® Functional Fixed Hardware Specification defines LPI states,
-which provide an architectural context loss flags field that can
-be used to describe the context that might be lost when an LPI
-state is entered.
+On Tue, Oct 03, 2023 at 02:58:58PM +0200, Michal Hocko wrote:
+> On Mon 02-10-23 17:18:27, Nhat Pham wrote:
+> > Currently, hugetlb memory usage is not acounted for in the memory
+> > controller, which could lead to memory overprotection for cgroups with
+> > hugetlb-backed memory. This has been observed in our production system.
+> > 
+> > For instance, here is one of our usecases: suppose there are two 32G
+> > containers. The machine is booted with hugetlb_cma=6G, and each
+> > container may or may not use up to 3 gigantic page, depending on the
+> > workload within it. The rest is anon, cache, slab, etc. We can set the
+> > hugetlb cgroup limit of each cgroup to 3G to enforce hugetlb fairness.
+> > But it is very difficult to configure memory.max to keep overall
+> > consumption, including anon, cache, slab etc. fair.
+> > 
+> > What we have had to resort to is to constantly poll hugetlb usage and
+> > readjust memory.max. Similar procedure is done to other memory limits
+> > (memory.low for e.g). However, this is rather cumbersome and buggy.
+> 
+> Could you expand some more on how this _helps_ memory.low? The
+> hugetlb memory is not reclaimable so whatever portion of its memcg
+> consumption will be "protected from the reclaim". Consider this
+> 	      parent
+> 	/		\
+>        A		 B
+>        low=50%		 low=0
+>        current=40%	 current=60%
+> 
+> We have an external memory pressure and the reclaim should prefer B as A
+> is under its low limit, correct? But now consider that the predominant
+> consumption of B is hugetlb which would mean the memory reclaim cannot
+> do much for B and so the A's protection might be breached.
+> 
+> As an admin (or a tool) you need to know about hugetlb as a potential
+> contributor to this behavior (sure mlocked memory would behave the same
+> but mlock rarely consumes huge amount of memory in my experience).
+> Without the accounting there might not be any external pressure in the
+> first place.
+> 
+> All that being said, I do not see how adding hugetlb into accounting
+> makes low, min limits management any easier.
 
-- Core context Lost
-        - General purpose registers.
-        - Floating point and SIMD registers.
-        - System registers, include the System register based
-        - generic timer for the core.
-        - Debug register in the core power domain.
-        - PMU registers in the core power domain.
-        - Trace register in the core power domain.
-- Trace context loss
-- GICR
-- GICD
+It's important to differentiate the cgroup usecases. One is of course
+the cloud/virtual server scenario, where you set the hard limits to
+whatever the customer paid for, and don't know and don't care about
+the workload running inside. In that case, memory.low and overcommit
+aren't really safe to begin with due to unknown unreclaimable mem.
 
-Qualcomm's custom CPUs preserves the architectural state,
-including keeping the power domain for local timers active.
-when core is power gated, the local timers are sufficient to
-wake the core up without needing broadcast timer.
+The other common usecase is the datacenter where you run your own
+applications. You understand their workingset and requirements, and
+configure and overcommit the containers in a way where jobs always
+meet their SLAs. E.g. if multiple containers spike, memory.low is set
+such that interactive workloads are prioritized over batch jobs, and
+both have priority over routine system management tasks.
 
-The patch fixes the evaluation of cpuidle arch_flags, and moves only to
-broadcast timer if core context lost is defined in ACPI LPI.
+This is arguably the only case where it's safe to use memory.low. You
+have to know what's reclaimable and what isn't, otherwise you cannot
+know that memory.low will even do anything, and isolation breaks down.
+So we already have that knowledge: mlocked sections, how much anon is
+without swap space, and how much memory must not be reclaimed (even if
+it is reclaimable) for the workload to meet its SLAs. Hugetlb doesn't
+really complicate this equation - we already have to consider it
+unreclaimable workingset from an overcommit POV on those hosts.
 
-Fixes: a36a7fecfe607 ("Add support for Low Power Idle(LPI) states")
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
-Signed-off-by: Oza Pawandeep <quic_poza@quicinc.com>
----
+The reason this patch helps in this scenario is that the service teams
+are usually different from the containers/infra team. The service
+understands their workload and declares its workingset. But it's the
+infra team running the containers that currently has to go and find
+out if they're using hugetlb and tweak the cgroups. Bugs and
+untimeliness in the tweaking have caused multiple production incidents
+already. And both teams are regularly confused when there are large
+parts of the workload that don't show up in memory.current which both
+sides monitor. Keep in mind that these systems are already pretty
+complex, with multiple overcommitted containers and system-level
+activity. The current hugetlb quirk can heavily distort what a given
+container is doing on the host.
 
-Notes:
-    Will/Catalin: Rafael has acked and he prefers to take it via arm64 tree
+With this patch, the service can declare its workingset, the container
+team can configure the container, and memory.current makes sense to
+everybody. The workload parameters are pretty reliable, but if the
+service team gets it wrong and we underprotect the workload, and/or
+its unreclaimable memory exceeds what was declared, the infra team
+gets alarms on elevated LOW breaching events and investigates if its
+an infra problem or a service spec problem that needs escalation.
 
-diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
-index 4d537d56eb84..6792a1f83f2a 100644
---- a/arch/arm64/include/asm/acpi.h
-+++ b/arch/arm64/include/asm/acpi.h
-@@ -9,6 +9,7 @@
- #ifndef _ASM_ACPI_H
- #define _ASM_ACPI_H
- 
-+#include <linux/cpuidle.h>
- #include <linux/efi.h>
- #include <linux/memblock.h>
- #include <linux/psci.h>
-@@ -44,6 +45,24 @@
- 
- #define ACPI_MADT_GICC_TRBE  (offsetof(struct acpi_madt_generic_interrupt, \
- 	trbe_interrupt) + sizeof(u16))
-+/*
-+ * Arm® Functional Fixed Hardware Specification Version 1.2.
-+ * Table 2: Arm Architecture context loss flags
-+ */
-+#define CPUIDLE_CORE_CTXT		BIT(0) /* Core context Lost */
-+
-+static inline unsigned int arch_get_idle_state_flags(u32 arch_flags)
-+{
-+	if (arch_flags & CPUIDLE_CORE_CTXT)
-+		return CPUIDLE_FLAG_TIMER_STOP;
-+
-+	return 0;
-+}
-+#define arch_get_idle_state_flags arch_get_idle_state_flags
-+
-+#define CPUIDLE_TRACE_CTXT		BIT(1) /* Trace context loss */
-+#define CPUIDLE_GICR_CTXT		BIT(2) /* GICR */
-+#define CPUIDLE_GICD_CTXT		BIT(3) /* GICD */
- 
- /* Basic configuration for ACPI */
- #ifdef	CONFIG_ACPI
-diff --git a/drivers/acpi/processor_idle.c b/drivers/acpi/processor_idle.c
-index dc615ef6550a..3a34a8c425fe 100644
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -1217,8 +1217,7 @@ static int acpi_processor_setup_lpi_states(struct acpi_processor *pr)
- 		strscpy(state->desc, lpi->desc, CPUIDLE_DESC_LEN);
- 		state->exit_latency = lpi->wake_latency;
- 		state->target_residency = lpi->min_residency;
--		if (lpi->arch_flags)
--			state->flags |= CPUIDLE_FLAG_TIMER_STOP;
-+		state->flags |= arch_get_idle_state_flags(lpi->arch_flags);
- 		if (i != 0 && lpi->entry_method == ACPI_CSTATE_FFH)
- 			state->flags |= CPUIDLE_FLAG_RCU_IDLE;
- 		state->enter = acpi_idle_lpi_enter;
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index a73246c3c35e..afd94c9b8b8a 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -1480,6 +1480,15 @@ static inline int lpit_read_residency_count_address(u64 *address)
- }
- #endif
- 
-+#ifdef CONFIG_ACPI_PROCESSOR_IDLE
-+#ifndef arch_get_idle_state_flags
-+static inline unsigned int arch_get_idle_state_flags(u32 arch_flags)
-+{
-+	return 0;
-+}
-+#endif
-+#endif /* CONFIG_ACPI_PROCESSOR_IDLE */
-+
- #ifdef CONFIG_ACPI_PPTT
- int acpi_pptt_cpu_is_thread(unsigned int cpu);
- int find_acpi_cpu_topology(unsigned int cpu, int level);
--- 
-2.25.1
-
+So the case you describe above only happens when mistakes are made,
+and we detect and rectify them. In the common case, hugetlb is part of
+the recognized workingset, and we configure memory.low to cut off only
+known optional and reclaimable memory under pressure.
