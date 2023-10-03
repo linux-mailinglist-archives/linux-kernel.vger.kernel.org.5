@@ -2,90 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E23E7B5E7C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 03:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4917B5E83
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 03:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238969AbjJCBN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 21:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53488 "EHLO
+        id S238964AbjJCBQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 21:16:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229880AbjJCBNz (ORCPT
+        with ESMTP id S238950AbjJCBQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 21:13:55 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0722C6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 18:13:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=JZrgAFcocfmJ7wr8txtlkIWUzzd0SjphU1ZT0UcIUj8=; b=Ihpa+wmITsTi43mwt/V3xZUuUq
-        VqebiD33iHqOUu2ob/xLb7m1foi6aYUqIBT3TAfJVEUQ/XvXdD6oayeQ7ZTC+s0KM69jArTiwLWC7
-        GZsgipBgX4hQ9Yb61MTEu8mbNHd4uwNdOGsXi2cLY4CyzNhBZjGIEYT6ban9no+wrRQboLdXQdex0
-        EOKzQlTW0LyTVnNCgRjnzBq3V9Fi5PhNroohu0qpBwjZpOrG3ggfzZz0XMRvKw96u2oIP2NeO0Voi
-        HezlkPDY/eNpfdHpxGvyfebR8EaS9ydZnfBjVfj5czZM3lbZfAJDQq1O4MOsD33ANlNpe5VrJBFZq
-        0G7Pdj0Q==;
-Received: from [50.53.46.231] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qnTyx-00DcHx-1c;
-        Tue, 03 Oct 2023 01:13:51 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH 3/3] drm/rect: fix kernel-doc typos
-Date:   Mon,  2 Oct 2023 18:13:49 -0700
-Message-ID: <20231003011349.27593-3-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231003011349.27593-1-rdunlap@infradead.org>
-References: <20231003011349.27593-1-rdunlap@infradead.org>
+        Mon, 2 Oct 2023 21:16:36 -0400
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C90C6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 18:16:32 -0700 (PDT)
+Received: by mail-vk1-xa2d.google.com with SMTP id 71dfb90a1353d-49d0d90a7ddso188632e0c.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 18:16:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1696295791; x=1696900591; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BB3iEMAprkU5w0PW0FKGJedlQe7dl0je9yUM666sRNU=;
+        b=2l9DQ2caNkgwt4KBMb3fa0dTqG31I9wCJaeyp2u577goNIthX5eM2eFph50kCnn5je
+         jnhgmr4v3cht6a9/ScikbRMElDKAhq21NjSDiICouLyQ6c7cIdWTUR/kN0uDRCNACzod
+         9IxjtXbGhHLQrOJ7fccrAMU2xr1Y/piifR0F6kDmBYttJsSx1E93hl/ZA38BUxPQHIwx
+         NAjmhGUhJpP9MRe4KTkmJYVFLucA8+0bK8cjdLdnewceGkucZaYy7JplJW2fhsTgTrj9
+         zn400jcIxVQH8sR7waSziz7eaQ/O7MScr8g8/+vFPGCzr1WDCJQhVL8e/0OWHWra62Ln
+         r6oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696295791; x=1696900591;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BB3iEMAprkU5w0PW0FKGJedlQe7dl0je9yUM666sRNU=;
+        b=MQf6tJufvDOLvtdNfDJU+wHOwj3rgrzSV1ftboBgqXpZCKJUh8gTRey2gbbNeN3+wj
+         lTX459Z6p6KnoI100ThrH9vOL6tdx31XUQek6sfKYesMY7HH+ns7HX7JEjJDAxQQnOf2
+         TIRmVRt4Hb2+Vjt01CbD9nLCX1tdi3UGNIVHfyvEooJt8UGVhri2kPPbzvEpW7XvolwI
+         UWzmTNHcf6O/HBwzgCk2mraXdsk1vLwQ30Ia14Wd8Hj0/R13FrnTEz6Fyt/QG+HLFT/Z
+         n4JJRe8pkNh3VTY3XVmV0/rmsAPbYqPw2pC1OTrDHB5XgVAG96WEpLVfezeZTnTvri62
+         cC8A==
+X-Gm-Message-State: AOJu0YwfOO7qXPfLB0P3iDrQq29/OFf9waeSTJQ5gsYcQt618SfiUlAL
+        7C+ePt0y2+LF2ihrXhEqNYYvpQ==
+X-Google-Smtp-Source: AGHT+IE35X8Sz7vQVe8EdhhrT+0QOjqYkjnQDhJaF4R5rYBMaePmI4d2ce5eF4SjFNEwfyHeQyalJQ==
+X-Received: by 2002:a1f:4ac1:0:b0:49a:b737:4dfa with SMTP id x184-20020a1f4ac1000000b0049ab7374dfamr9143255vka.4.1696295791419;
+        Mon, 02 Oct 2023 18:16:31 -0700 (PDT)
+Received: from dread.disaster.area (pa49-180-20-59.pa.nsw.optusnet.com.au. [49.180.20.59])
+        by smtp.gmail.com with ESMTPSA id 11-20020a17090a004b00b00273fc850342sm7572762pjb.20.2023.10.02.18.16.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Oct 2023 18:16:30 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qnU1S-008hIN-36;
+        Tue, 03 Oct 2023 12:16:26 +1100
+Date:   Tue, 3 Oct 2023 12:16:26 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     John Garry <john.g.garry@oracle.com>
+Cc:     axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+        jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chandan.babu@oracle.com, dchinner@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+        linux-api@vger.kernel.org
+Subject: Re: [PATCH 11/21] fs: xfs: Don't use low-space allocator for
+ alignment > 1
+Message-ID: <ZRtrap9v9xJrf6nq@dread.disaster.area>
+References: <20230929102726.2985188-1-john.g.garry@oracle.com>
+ <20230929102726.2985188-12-john.g.garry@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230929102726.2985188-12-john.g.garry@oracle.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct typos of "translated".
+On Fri, Sep 29, 2023 at 10:27:16AM +0000, John Garry wrote:
+> The low-space allocator doesn't honour the alignment requirement, so don't
+> attempt to even use it (when we have an alignment requirement).
+> 
+> Signed-off-by: John Garry <john.g.garry@oracle.com>
+> ---
+>  fs/xfs/libxfs/xfs_bmap.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/fs/xfs/libxfs/xfs_bmap.c b/fs/xfs/libxfs/xfs_bmap.c
+> index 30c931b38853..328134c22104 100644
+> --- a/fs/xfs/libxfs/xfs_bmap.c
+> +++ b/fs/xfs/libxfs/xfs_bmap.c
+> @@ -3569,6 +3569,10 @@ xfs_bmap_btalloc_low_space(
+>  {
+>  	int			error;
+>  
+> +	/* The allocator doesn't honour args->alignment */
+> +	if (args->alignment > 1)
+> +		return 0;
+> +
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: David Airlie <airlied@gmail.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>
----
- include/drm/drm_rect.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+How does this happen?
 
-diff -- a/include/drm/drm_rect.h b/include/drm/drm_rect.h
---- a/include/drm/drm_rect.h
-+++ b/include/drm/drm_rect.h
-@@ -129,7 +129,7 @@ static inline void drm_rect_adjust_size(
- 
- /**
-  * drm_rect_translate - translate the rectangle
-- * @r: rectangle to be tranlated
-+ * @r: rectangle to be translated
-  * @dx: horizontal translation
-  * @dy: vertical translation
-  *
-@@ -146,7 +146,7 @@ static inline void drm_rect_translate(st
- 
- /**
-  * drm_rect_translate_to - translate the rectangle to an absolute position
-- * @r: rectangle to be tranlated
-+ * @r: rectangle to be translated
-  * @x: horizontal position
-  * @y: vertical position
-  *
+The earlier failing aligned allocations will clear alignment before
+we get here....
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
