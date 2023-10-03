@@ -2,100 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C3C7B6B42
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF287B6B45
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:21:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238344AbjJCOUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:20:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41562 "EHLO
+        id S239512AbjJCOVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232459AbjJCOUx (ORCPT
+        with ESMTP id S238725AbjJCOVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 10:20:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43FC3A3
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:20:50 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 673EDC433C8;
-        Tue,  3 Oct 2023 14:20:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696342849;
-        bh=kijvf7JbMse2Pa56drfQ4oD20Lx+m2oWU3VtMOZGsPE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lSgAGnbQfr7tHgoiwKO/rNA1dl/Zxqmh0lmh3HxZxe8HEsShwZy9yRL7Vu7TsUcI7
-         GIwvAnwtlUHJt5YOLVp0kn2Q37A4g1GNVVSqQ1V0URKg0k0GAhFUnTIGw6tTwYe7cJ
-         gUs1GFE3wzu5vyIEhvVrOhKGw0h9FD5DMnDQ3ypJhIXHnab7Cu0T8kAoQFjZ+183/Q
-         Evnlvxy764/PuXtXIS42FdnS8ZjMOJ+WiVXc8Vh/teYch7gYVAMA8JW9wNZl0nbT5E
-         wHSykFeXb8Dd21N/Z2QG7800lXgnH7hHmmxyt6hDpR2cfb7hGPPMmGIJnbvGq98LbM
-         rWlW1ZMrarLvw==
-Date:   Tue, 3 Oct 2023 16:20:45 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Mahesh Bandewar <maheshb@google.com>
-Cc:     Netdev <netdev@vger.kernel.org>,
-        Linux <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        John Stultz <jstultz@google.com>,
-        Don Hatchett <hatch@google.com>,
-        Yuliang Li <yuliangli@google.com>,
-        Mahesh Bandewar <mahesh@bandewar.net>,
-        Richard Cochran <richardcochran@gmail.com>
-Subject: Re: [PATCHv2 next 1/3] ptp: add ptp_gettimex64any() support
-Message-ID: <ZRwjPegND0V4jF6U@kernel.org>
-References: <20231003041701.1745953-1-maheshb@google.com>
+        Tue, 3 Oct 2023 10:21:32 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E619893
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696342888; x=1727878888;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=UNPVCanQ8fEVNqQ/JvnKXDotriqSfW9QDv37icj0u2Q=;
+  b=Uerom15XuPN3UwXKMnFqSECqld6QXjSvXGMVG71z0u03VePf/NB08g2w
+   7lH6fg7DT6Qrm550cXAI/NRGvny+j4N6NMB1k77W6s2TDo+VP/aeCckIm
+   FZSEmTZb1bJHWa4FSy8kjuu4rKgzoUsd2MfLL5GoqF18bYzfcGQ7HTryV
+   p6BIZK6g5+X9KEsVyESowLwWbM3dZCAYvJLK4ocvYlf8lSl5UlF1MeS3e
+   qGJ9CQiMASxWs4QOiQ5A/pXDN9MEvhold2/2TQ4g6UZoqgrM1H2AKqidS
+   /f4bID+c3qcYSaKWx4dzogPZLDQFCaXT3/VGnV72XS0PrB7cLg8epLNJd
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="380162456"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="380162456"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 07:21:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="841374161"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="841374161"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by FMSMGA003.fm.intel.com with ESMTP; 03 Oct 2023 07:21:26 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 3B3C618AE; Tue,  3 Oct 2023 17:21:25 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/4] driver core: platform: Drop redundant check in platform_device_add()
+Date:   Tue,  3 Oct 2023 17:21:19 +0300
+Message-Id: <20231003142122.3072824-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231003041701.1745953-1-maheshb@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 09:17:01PM -0700, Mahesh Bandewar wrote:
-> add support for TS sandwich of the user preferred timebase. The options
-> supported are PTP_TS_REAL (CLOCK_REALTIME), PTP_TS_MONO (CLOCK_MONOTONIC),
-> and PTP_TS_RAW (CLOCK_MONOTONIC_RAW)
-> 
-> Option of PTP_TS_REAL is equivalent of using ptp_gettimex64().
-> 
-> Signed-off-by: Mahesh Bandewar <maheshb@google.com>
-> CC: Richard Cochran <richardcochran@gmail.com>
-> CC: "David S. Miller" <davem@davemloft.net>
-> CC: netdev@vger.kernel.org
-> ---
->  include/linux/ptp_clock_kernel.h | 51 ++++++++++++++++++++++++++++++++
->  include/uapi/linux/ptp_clock.h   |  7 +++++
->  2 files changed, 58 insertions(+)
-> 
-> diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
-> index 1ef4e0f9bd2a..fd7be98e7bba 100644
-> --- a/include/linux/ptp_clock_kernel.h
-> +++ b/include/linux/ptp_clock_kernel.h
-> @@ -102,6 +102,15 @@ struct ptp_system_timestamp {
->   *               reading the lowest bits of the PHC timestamp and the second
->   *               reading immediately follows that.
->   *
-> + * @gettimex64any:  Reads the current time from the hardware clock and
-> +                 optionally also any of the MONO, MONO_RAW, or SYS clock.
+Starting from the commit 37c12e7497b6 ("[DRIVER MODEL] Improved
+dynamically allocated platform_device interface") the pdev expects
+to be allocated beforehand or guaranteed to be non-NULL.
 
-nit: I think a '*' is needed on the line above.
+Hence the leftover check is now redundant (as we have no combined
+calls like platform_device_add(platform_device_alloc(...)) in the
+entire kernel source code.
 
-> + *               parameter ts: Holds the PHC timestamp.
-> + *               parameter sts: If not NULL, it holds a pair of timestamps from
-> + *               the clock of choice. The first reading is made right before
-> + *               reading the lowest bits of the PHC timestamp and the second
-> + *               reading immediately follows that.
-> + *               parameter type: any one of the TS opt from ptp_timestamp_types.
-> + *
->   * @getcrosststamp:  Reads the current time from the hardware clock and
->   *                   system clock simultaneously.
->   *                   parameter cts: Contains timestamp (device,system) pair,
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/base/platform.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-...
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 76bfcba25003..d81f05c4fccd 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -658,9 +658,6 @@ int platform_device_add(struct platform_device *pdev)
+ 	u32 i;
+ 	int ret;
+ 
+-	if (!pdev)
+-		return -EINVAL;
+-
+ 	if (!pdev->dev.parent)
+ 		pdev->dev.parent = &platform_bus;
+ 
+-- 
+2.40.0.1.gaa8946217a0b
+
