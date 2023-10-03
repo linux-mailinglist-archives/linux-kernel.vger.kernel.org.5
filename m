@@ -2,100 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 866F07B6AB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932717B6ABB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234318AbjJCNiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55036 "EHLO
+        id S232146AbjJCNkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:40:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232165AbjJCNiP (ORCPT
+        with ESMTP id S231627AbjJCNkK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:38:15 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3659FAD;
-        Tue,  3 Oct 2023 06:38:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16DE4C433C8;
-        Tue,  3 Oct 2023 13:38:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696340291;
-        bh=NlZyxNkQIumtF9Q9n/tAacWuxbXBIywHbpZoKHCSE+s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tpp9bM6C4l9kDVx1k4oyStFZWxRMSksjZl716JrVk9Sq+++BVo6NUtXVeR7NfW8V+
-         UPobtpwYLj1jZBx4hfamN3KfK5SW4eYwnBZA+VIeKmptvM6mUnGkvje3wrCePSAG/O
-         Lsf4wXDhLfqbO4GYvHSasBSPU782q28FIsY2mAvHcb8scEw2lrO/mN06gPJL0710Gi
-         Xbc8l4rYEkbjAQoyJKtkIP+GvDiUslFaFI1H1+mVwr+e0SC3X4bEHg8wpxTWV75Q3J
-         BrfzBwF24u+MXKQ/kIB69XZpgnG7fyFJ3udmNhf8ZOnIXyj6WrYhtFlWf1zaBzdRTw
-         qo5W5OLpkHHfg==
-Date:   Tue, 3 Oct 2023 15:38:06 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, miklos@szeredi.hu,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, Tyler Hicks <code@tyhicks.com>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Subject: Re: [PATCH] fs: Pass AT_GETATTR_NOSEC flag to getattr interface
- function
-Message-ID: <20231003-bespielbar-tarnt-c61162656db5@brauner>
-References: <20231002125733.1251467-1-stefanb@linux.vnet.ibm.com>
- <CAOQ4uxiuQxTDqn4F62ueGf_9f4KC4p7xqRZdwPvL8rEYrCOWbg@mail.gmail.com>
+        Tue, 3 Oct 2023 09:40:10 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F0AADA9
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:40:06 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1AFA2C15;
+        Tue,  3 Oct 2023 06:40:45 -0700 (PDT)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 92D613F59C;
+        Tue,  3 Oct 2023 06:40:05 -0700 (PDT)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Peter Collingbourne <pcc@google.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] arm64/mm: Hoist synchronization out of set_ptes() loop
+Date:   Tue,  3 Oct 2023 14:39:55 +0100
+Message-Id: <20231003133955.637353-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxiuQxTDqn4F62ueGf_9f4KC4p7xqRZdwPvL8rEYrCOWbg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 04:22:25PM +0300, Amir Goldstein wrote:
-> On Mon, Oct 2, 2023 at 3:57 PM Stefan Berger <stefanb@linux.vnet.ibm.com> wrote:
-> >
-> > From: Stefan Berger <stefanb@linux.ibm.com>
-> >
-> > When vfs_getattr_nosec() calls a filesystem's getattr interface function
-> > then the 'nosec' should propagate into this function so that
-> > vfs_getattr_nosec() can again be called from the filesystem's gettattr
-> > rather than vfs_getattr(). The latter would add unnecessary security
-> > checks that the initial vfs_getattr_nosec() call wanted to avoid.
-> > Therefore, introduce the getattr flag GETATTR_NOSEC and allow to pass
-> > with the new getattr_flags parameter to the getattr interface function.
-> > In overlayfs and ecryptfs use this flag to determine which one of the
-> > two functions to call.
-> >
-> > In a recent code change introduced to IMA vfs_getattr_nosec() ended up
-> > calling vfs_getattr() in overlayfs, which in turn called
-> > security_inode_getattr() on an exiting process that did not have
-> > current->fs set anymore, which then caused a kernel NULL pointer
-> > dereference. With this change the call to security_inode_getattr() can
-> > be avoided, thus avoiding the NULL pointer dereference.
-> >
-> > Reported-by: syzbot+a67fc5321ffb4b311c98@syzkaller.appspotmail.com
-> > Fixes: db1d1e8b9867 ("IMA: use vfs_getattr_nosec to get the i_version")
-> > Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-> > Cc: linux-fsdevel@vger.kernel.org
-> > Cc: Miklos Szeredi <miklos@szeredi.hu>
-> > Cc: Amir Goldstein <amir73il@gmail.com>
-> > Cc: Tyler Hicks <code@tyhicks.com>
-> > Cc: Mimi Zohar <zohar@linux.ibm.com>
-> > Suggested-by: Christian Brauner <brauner@kernel.org>
-> > Co-developed-by: Amir Goldstein <amir73il@gmail.com>
-> > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> > ---
-> 
-> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> 
-> Now let's see what vfs maintainers think about this...
+set_ptes() sets a physically contiguous block of memory (which all
+belongs to the same folio) to a contiguous block of ptes. The arm64
+implementation of this previously just looped, operating on each
+individual pte. But the __sync_icache_dcache() and mte_sync_tags()
+operations can both be hoisted out of the loop so that they are
+performed once for the contiguous set of pages (which may be less than
+the whole folio). This should result in minor performance gains.
 
-Seems fine overall. We kind of need to propagate the knowledge through
-the layers. But I don't like that we need something like it...
+__sync_icache_dcache() already acts on the whole folio, and sets a flag
+in the folio so that it skips duplicate calls. But by hoisting the call,
+all the pte testing is done only once.
+
+mte_sync_tags() operates on each individual page with its own loop. But
+by passing the number of pages explicitly, we can rely solely on its
+loop and do the checks only once. This approach also makes it robust for
+the future, rather than assuming if a head page of a compound page is
+being mapped, then the whole compound page is being mapped, instead we
+explicitly know how many pages are being mapped. The old assumption may
+not continue to hold once the "anonymous large folios" feature is
+merged.
+
+Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+---
+ arch/arm64/include/asm/mte.h     |  4 ++--
+ arch/arm64/include/asm/pgtable.h | 27 +++++++++++++++++----------
+ arch/arm64/kernel/mte.c          |  4 ++--
+ 3 files changed, 21 insertions(+), 14 deletions(-)
+
+diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+index 4cedbaa16f41..91fbd5c8a391 100644
+--- a/arch/arm64/include/asm/mte.h
++++ b/arch/arm64/include/asm/mte.h
+@@ -90,7 +90,7 @@ static inline bool try_page_mte_tagging(struct page *page)
+ }
+
+ void mte_zero_clear_page_tags(void *addr);
+-void mte_sync_tags(pte_t pte);
++void mte_sync_tags(pte_t pte, unsigned int nr_pages);
+ void mte_copy_page_tags(void *kto, const void *kfrom);
+ void mte_thread_init_user(void);
+ void mte_thread_switch(struct task_struct *next);
+@@ -122,7 +122,7 @@ static inline bool try_page_mte_tagging(struct page *page)
+ static inline void mte_zero_clear_page_tags(void *addr)
+ {
+ }
+-static inline void mte_sync_tags(pte_t pte)
++static inline void mte_sync_tags(pte_t pte, unsigned int nr_pages)
+ {
+ }
+ static inline void mte_copy_page_tags(void *kto, const void *kfrom)
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index 7f7d9b1df4e5..374c1c1485f9 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -325,8 +325,7 @@ static inline void __check_safe_pte_update(struct mm_struct *mm, pte_t *ptep,
+ 		     __func__, pte_val(old_pte), pte_val(pte));
+ }
+
+-static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+-				pte_t *ptep, pte_t pte)
++static inline void __sync_cache_and_tags(pte_t pte, unsigned int nr_pages)
+ {
+ 	if (pte_present(pte) && pte_user_exec(pte) && !pte_special(pte))
+ 		__sync_icache_dcache(pte);
+@@ -339,20 +338,18 @@ static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
+ 	 */
+ 	if (system_supports_mte() && pte_access_permitted(pte, false) &&
+ 	    !pte_special(pte) && pte_tagged(pte))
+-		mte_sync_tags(pte);
+-
+-	__check_safe_pte_update(mm, ptep, pte);
+-
+-	set_pte(ptep, pte);
++		mte_sync_tags(pte, nr_pages);
+ }
+
+ static inline void set_ptes(struct mm_struct *mm, unsigned long addr,
+ 			      pte_t *ptep, pte_t pte, unsigned int nr)
+ {
+ 	page_table_check_ptes_set(mm, ptep, pte, nr);
++	__sync_cache_and_tags(pte, nr);
+
+ 	for (;;) {
+-		__set_pte_at(mm, addr, ptep, pte);
++		__check_safe_pte_update(mm, ptep, pte);
++		set_pte(ptep, pte);
+ 		if (--nr == 0)
+ 			break;
+ 		ptep++;
+@@ -531,18 +528,28 @@ static inline pmd_t pmd_mkdevmap(pmd_t pmd)
+ #define pud_pfn(pud)		((__pud_to_phys(pud) & PUD_MASK) >> PAGE_SHIFT)
+ #define pfn_pud(pfn,prot)	__pud(__phys_to_pud_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
+
++static inline void __set_pte_at(struct mm_struct *mm, unsigned long addr,
++				pte_t *ptep, pte_t pte, unsigned int nr)
++{
++	__sync_cache_and_tags(pte, nr);
++	__check_safe_pte_update(mm, ptep, pte);
++	set_pte(ptep, pte);
++}
++
+ static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
+ 			      pmd_t *pmdp, pmd_t pmd)
+ {
+ 	page_table_check_pmd_set(mm, pmdp, pmd);
+-	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd));
++	return __set_pte_at(mm, addr, (pte_t *)pmdp, pmd_pte(pmd),
++						PMD_SHIFT - PAGE_SHIFT);
+ }
+
+ static inline void set_pud_at(struct mm_struct *mm, unsigned long addr,
+ 			      pud_t *pudp, pud_t pud)
+ {
+ 	page_table_check_pud_set(mm, pudp, pud);
+-	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud));
++	return __set_pte_at(mm, addr, (pte_t *)pudp, pud_pte(pud),
++						PUD_SHIFT - PAGE_SHIFT);
+ }
+
+ #define __p4d_to_phys(p4d)	__pte_to_phys(p4d_pte(p4d))
+diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+index 4edecaac8f91..2fb5e7a7a4d5 100644
+--- a/arch/arm64/kernel/mte.c
++++ b/arch/arm64/kernel/mte.c
+@@ -35,10 +35,10 @@ DEFINE_STATIC_KEY_FALSE(mte_async_or_asymm_mode);
+ EXPORT_SYMBOL_GPL(mte_async_or_asymm_mode);
+ #endif
+
+-void mte_sync_tags(pte_t pte)
++void mte_sync_tags(pte_t pte, unsigned int nr_pages)
+ {
+ 	struct page *page = pte_page(pte);
+-	long i, nr_pages = compound_nr(page);
++	unsigned int i;
+
+ 	/* if PG_mte_tagged is set, tags have already been initialised */
+ 	for (i = 0; i < nr_pages; i++, page++) {
+--
+2.25.1
+
