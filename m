@@ -2,79 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B64E7B6613
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523D57B6618
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:10:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239851AbjJCKGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 06:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55604 "EHLO
+        id S239834AbjJCKKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 06:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239870AbjJCKGY (ORCPT
+        with ESMTP id S229758AbjJCKK3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 06:06:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1A48B7
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 03:06:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y1+tmyaL0mfLqyg9z7m8D+U6L4leAfoeDobjpunPmas=; b=kdcx664bWi3Ru6v29rSrH8Hwpz
-        cul/BFAED2HQh/qZ1qwkwiDaoc9zNyaNf0rLMaqdfDACc//gjLmAuxwAZAmiAg0HH0WfskpzEyxue
-        LH6BeiZy0QTR/sanI/1QvB+xx/NhL6IpkjoO4mLnOTIoViDRzJ4uj3n0gcLJZAeRFO/Feyxd5nUeD
-        FO1kNxgWlvFkw8riI66HEPDT40IrDFkNCjde0dsNWcYDuVMTSBUzzV5/spFekza3PgrqeGRFF5KGu
-        Grnb9WCq1lEdcb8UKEFIepXc93QR3+ENN+vkIMhuoldvJEM0MGpCyE8sxqTQkqx1ubPantjd0Wi3i
-        fRRqN/cw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1qncHz-00EP60-AM; Tue, 03 Oct 2023 10:06:03 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 023A2300348; Tue,  3 Oct 2023 12:06:03 +0200 (CEST)
-Date:   Tue, 3 Oct 2023 12:06:02 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
-        Brent Rowsell <browsell@redhat.com>,
-        Peter Hunt <pehunt@redhat.com>
-Subject: Re: [PATCH v3] sched/core: Use empty mask to reset cpumasks in
- sched_setaffinity()
-Message-ID: <20231003100602.GF27267@noisy.programming.kicks-ass.net>
-References: <20230804023218.75544-1-longman@redhat.com>
+        Tue, 3 Oct 2023 06:10:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17066A3
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 03:10:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9DD33C433C8;
+        Tue,  3 Oct 2023 10:10:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696327825;
+        bh=uXqJyKIEjoRjDoUyS9dLAC8UnkEHjOxuTUIcvQjD/x0=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Gde5yY8GdNxo/cFr8EPOZtRU43fyfBC4BHFflrxiwW0CubZ6hwrL6huhPjjlRvboZ
+         4gxuByUDdNyOcxgE0hRrpciZsHktKTqzVhA9A0QT/TdkttDMSS808iD65A8vzDADrn
+         tqEO2aH7+VaxNjBf4hzavYFEFJK/89NMJi4iAFDN/efiF4HM24wTGNgYJ0zdOSZg3A
+         Vq+a05tFGycY6Jgo9OjQfPE2wbJluxt0x1Aob62CHKB3X8xrLs629PbG2FeH9xVgp+
+         E9/EJMZa1GXqvudVzGl7BnAryi3BTKbCvW4m7koihQQ/25qL+qRfwQv9IAJhrQqONq
+         m/3cN9C/67ihQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 85312E632D1;
+        Tue,  3 Oct 2023 10:10:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230804023218.75544-1-longman@redhat.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] ipv6: mark address parameters of
+ udp_tunnel6_xmit_skb() as const
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169632782553.9249.11688827949033557863.git-patchwork-notify@kernel.org>
+Date:   Tue, 03 Oct 2023 10:10:25 +0000
+References: <20230924153014.786962-1-b.galvani@gmail.com>
+In-Reply-To: <20230924153014.786962-1-b.galvani@gmail.com>
+To:     Beniamino Galvani <b.galvani@gmail.com>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        pabeni@redhat.com, dsahern@kernel.org, gnault@redhat.com,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 03, 2023 at 10:32:18PM -0400, Waiman Long wrote:
-> Since commit 8f9ea86fdf99 ("sched: Always preserve the user requested
-> cpumask"), user provided CPU affinity via sched_setaffinity(2) is
-> perserved even if the task is being moved to a different cpuset. However,
-> that affinity is also being inherited by any subsequently created child
-> processes which may not want or be aware of that affinity.
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
+
+On Sun, 24 Sep 2023 17:30:14 +0200 you wrote:
+> The function doesn't modify the addresses passed as input, mark them
+> as 'const' to make that clear.
 > 
-> One way to solve this problem is to provide a way to back off from
-> that user provided CPU affinity.  This patch implements such a scheme
-> by using an empty cpumask to signal a reset of the cpumasks to the
-> default as allowed by the current cpuset.
+> Signed-off-by: Beniamino Galvani <b.galvani@gmail.com>
+> ---
+>  include/net/udp_tunnel.h  | 5 +++--
+>  net/ipv6/ip6_udp_tunnel.c | 5 +++--
+>  2 files changed, 6 insertions(+), 4 deletions(-)
 
-So I still don't like this much, the normal state is all bits set:
+Here is the summary with links:
+  - [net-next] ipv6: mark address parameters of udp_tunnel6_xmit_skb() as const
+    https://git.kernel.org/netdev/net-next/c/f25e621f5d4c
 
-  $ grep allowed /proc/self/status
-  Cpus_allowed:   ff,ffffffff
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-The all clear bitmask just feels weird for this.
+
