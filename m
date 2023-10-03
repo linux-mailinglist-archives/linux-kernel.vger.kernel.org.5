@@ -2,320 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 117437B66CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6593C7B66CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:53:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239698AbjJCKx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 06:53:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34164 "EHLO
+        id S239720AbjJCKxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 06:53:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231173AbjJCKx1 (ORCPT
+        with ESMTP id S239700AbjJCKxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 06:53:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0AAAC;
-        Tue,  3 Oct 2023 03:53:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86458C433C9;
-        Tue,  3 Oct 2023 10:53:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696330403;
-        bh=7d34zM3dSi1EmvJgpJwjtxHg10NsCJyhiek6+F843Y8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=EQkQHDTWT6z/gaHpgwuStT/S52T8Nf29hPQfCJKSE2XJbSh/Ogui1YytZKzCtp+pj
-         hFNwP/3NfIErcPYeZLgMPUXOSM0LieiWUTTRRdbv2t479UsM7KQaN5JwVj3Y4psTrl
-         3vv/YvkSB+zhumtPcoRaNQVsch+QZuxiszfRnvUSd7zmJe0bbEyplLW6QF5fzEH9Ef
-         K/oVVp3cHe9UOoL3F9vNLFxk2+j1R+KyQ7EFUyobNXBjrBehiuj2+DZ+nzjQvq1xko
-         lAbRDroglCpBQpE+Q8r3rkx60q7rN9zcGUvFk6so4sTTWoF1VhaLXYA9kGOYEiL9AV
-         kUd0WjV4h9dbw==
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5a1d0fee86aso9389107b3.2;
-        Tue, 03 Oct 2023 03:53:23 -0700 (PDT)
-X-Gm-Message-State: AOJu0YysggT8ssBDVcsDXLS2a8b3BzFtBC9QnGt59Dvpff/y8V8xj+Yq
-        1vzhcWwr3BQi3X00bX/ajFKbvr+h72IkhMDz7y4=
-X-Google-Smtp-Source: AGHT+IF2TuEXNqjyoHzZJGiFNKYpH2AwuP2gHprrQtMQX2U5OKpI9sE1JlSk05NcXqJediHv3nKNXAV+lZv4RAW+0sg=
-X-Received: by 2002:a81:4f88:0:b0:5a1:cc37:7c91 with SMTP id
- d130-20020a814f88000000b005a1cc377c91mr15138418ywb.19.1696330402461; Tue, 03
- Oct 2023 03:53:22 -0700 (PDT)
+        Tue, 3 Oct 2023 06:53:34 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90827BB
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 03:53:30 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4056ce55e7eso7249225e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 03:53:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696330409; x=1696935209; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y1zEdiBl0ExGGXae3livewx7OK91KyMJUhCwm90pFhU=;
+        b=dAbVnjeTtuGXmH22VTPslFg0+3MgTbf3jbQKWpVP+DHFK3FWL0t8nt7whadL1q6jxy
+         B/RJDH0gr8ojdF0iZ9enlqVsCi4T+yco3zI11rJUsigsg2P9i5sCVisGpdPLxp3fpuZq
+         IlHjgmaqhkDoEj0HBiLjeHwhW3A+Pl8pjw94lZNk8QJx/hn05zjsDzCLRJMac4Y77FYE
+         Ek2qMkkaYSFdCRc+w0zL9Vi26rQsyzDxEHDZPlwLyf+PKW3mGOOgEMBin9Kr8m+k7pC/
+         bLmppTep3yMcYgBJ46Gj91iTuySEhCVyofp6CpUKNoPwTNw3yR0Y4+6I5tXzbHVGjB6L
+         m83g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696330409; x=1696935209;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Y1zEdiBl0ExGGXae3livewx7OK91KyMJUhCwm90pFhU=;
+        b=Gkracp3Hz24w/gis19emyrzrjEoazzGBRrALq6fVU7Xh25wa9zMp5l6w/KRU8o8hhI
+         C/PGePzM/ogw/Tk+WASFF9MvUIANJsdG7ARfvGCy1Zt4H+XduT+0nZdaAc4Y0u/XrdaA
+         00k88ABeo/plIqrSHz1C8z5preU7xMf7g0TGP/yL5QJVyVBhivnC1yW2clkSmDBNzwRT
+         3LSZroEN2vbJOYG0ozoWAqQxnIuhC439hCV4pAAGOX+hZ1JS0HPXtFJBM23l5BLiVzCd
+         S+9H+PmH/6kU/zhgs6eH9Bq7XBL88BdgNuQgUkBBG+090Ch/wlP7p7pVwD34IP3ww/Vp
+         chMQ==
+X-Gm-Message-State: AOJu0YzbKA6a/q3UqDRpVrAXUYgVqhaUsJQIy0HitZrsLk1CV4SPMJ5n
+        x19NI2Do+rHJPTcrKxr2sCf0Eg==
+X-Google-Smtp-Source: AGHT+IFrlFTbWNC8M7mfAowD4//qf9eH7koPKNnANa5WAno4xaY32Mn62vsE1r4OcW8lmx133LVOGQ==
+X-Received: by 2002:a5d:4951:0:b0:31f:fb02:4dcd with SMTP id r17-20020a5d4951000000b0031ffb024dcdmr12544705wrs.4.1696330408555;
+        Tue, 03 Oct 2023 03:53:28 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id e11-20020a056000194b00b0032320a9b010sm1305878wry.28.2023.10.03.03.53.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 03:53:27 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 13:53:25 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     oe-kbuild@lists.linux.dev, David Lechner <dlechner@baylibre.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Cc:     lkp@intel.com, oe-kbuild-all@lists.linux.dev,
+        David Lechner <david@lechnology.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+        Axel Haslam <ahaslam@baylibre.com>,
+        Philip Molloy <pmolloy@baylibre.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 26/27] staging: iio: resolver: ad2s1210: implement
+ fault events
+Message-ID: <d54a43ad-0044-465c-92f4-2ffd46ccf983@kadam.mountain>
 MIME-Version: 1.0
-References: <SEYPR03MB704641091854162959578D7E9AFFA@SEYPR03MB7046.apcprd03.prod.outlook.com>
- <CA+VMnFyhp9D8cjtvLVzdKGETouOuH=MKgjOu1pn00WDRB=5oUg@mail.gmail.com>
- <CAFCwf12sUL5bcXhYKwRkMxLtSDtLfTK003oxkRDVmThx1ARV-A@mail.gmail.com>
- <SEYPR03MB70462A385A52A317427E93B59AFCA@SEYPR03MB7046.apcprd03.prod.outlook.com>
- <CAFCwf11hxBpg3T6MoVrL0GaOD_=xB+-dWeEtDH0cCyzyQ-q1tg@mail.gmail.com>
- <SEYPR03MB70463AEED951A0E2C18481099AC2A@SEYPR03MB7046.apcprd03.prod.outlook.com>
- <CAFCwf13ZiYYoXE+S_wQ_EhjiACPGJGT+70_stwpY_=aD=VYa4A@mail.gmail.com>
- <SEYPR03MB704690FD9116A31D6FBCF32A9AC1A@SEYPR03MB7046.apcprd03.prod.outlook.com>
- <CAFCwf128vYZ+EGHvZD0_ND2CGBzwMKk6OyhVRW_z=xCOSmi47w@mail.gmail.com> <SEYPR03MB7046F74834B7D789C2DD4E459AC1A@SEYPR03MB7046.apcprd03.prod.outlook.com>
-In-Reply-To: <SEYPR03MB7046F74834B7D789C2DD4E459AC1A@SEYPR03MB7046.apcprd03.prod.outlook.com>
-From:   Oded Gabbay <ogabbay@kernel.org>
-Date:   Tue, 3 Oct 2023 13:52:56 +0300
-X-Gmail-Original-Message-ID: <CAFCwf10HAi+HEEWy=C4395eaHh_iSmcW1v87A+1J8QN9_P7tUQ@mail.gmail.com>
-Message-ID: <CAFCwf10HAi+HEEWy=C4395eaHh_iSmcW1v87A+1J8QN9_P7tUQ@mail.gmail.com>
-Subject: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC)
-To:     Cancan Chang <Cancan.Chang@amlogic.com>
-Cc:     Jagan Teki <jagan@edgeble.ai>,
-        linux-media <linux-media@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Dave Airlie <airlied@redhat.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230929-ad2s1210-mainline-v3-26-fa4364281745@baylibre.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 28, 2023 at 11:16=E2=80=AFAM Cancan Chang <Cancan.Chang@amlogic=
-.com> wrote:
->
-> =E2=80=9CWhat happens if you call this again without waiting for the prev=
-ious
-> inference to complete ?=E2=80=9D
->    --- There is a work-queue in the driver to manage inference tasks.
->          When two consecutive inference tasks occur, the second inference=
- task will be add to
->          the "pending list". While the previous inference task ends, the =
-second inference task will
->          switch to the "scheduled list", and be executed.
->          Each inference task has an id,  "inferece" and "wait until finis=
-h" are paired.
->
->          thanks
-Thanks for the clarification.
-I'll wait for your driver's code link. It doesn't have to be a patch
-series at this point. A link to a git repo is enough.
-I just want to do a quick pass.
+Hi David,
 
-Thanks,
-Oded
+kernel test robot noticed the following build warnings:
 
+url:    https://github.com/intel-lab-lkp/linux/commits/David-Lechner/dt-bindings-iio-resolver-add-devicetree-bindings-for-ad2s1210/20230930-014031
+base:   5e99f692d4e32e3250ab18d511894ca797407aec
+patch link:    https://lore.kernel.org/r/20230929-ad2s1210-mainline-v3-26-fa4364281745%40baylibre.com
+patch subject: [PATCH v3 26/27] staging: iio: resolver: ad2s1210: implement fault events
+config: x86_64-randconfig-161-20231002 (https://download.01.org/0day-ci/archive/20231003/202310031839.tKR53HoP-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231003/202310031839.tKR53HoP-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202310031839.tKR53HoP-lkp@intel.com/
 
->
-> ________________________________________
-> =E5=8F=91=E4=BB=B6=E4=BA=BA: Oded Gabbay <ogabbay@kernel.org>
-> =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2023=E5=B9=B49=E6=9C=8828=E6=97=A5 =
-15:40
-> =E6=94=B6=E4=BB=B6=E4=BA=BA: Cancan Chang
-> =E6=8A=84=E9=80=81: Jagan Teki; linux-media; linux-kernel; Dave Airlie; D=
-aniel Vetter
-> =E4=B8=BB=E9=A2=98: Re: kernel.org 6.5.4 , NPU driver, --not support (RFC=
-)
->
-> [ EXTERNAL EMAIL ]
->
-> On Thu, Sep 28, 2023 at 10:25=E2=80=AFAM Cancan Chang <Cancan.Chang@amlog=
-ic.com> wrote:
-> >
-> > =E2=80=9CCould you please post a link to the driver's source code ?
-> > In addition, could you please elaborate which userspace libraries
-> > exists that work with your driver ? Are any of them open-source ?=E2=80=
-=9D
-> > --- We will prepare the adla driver link after the holiday on October 6=
-th.
-> >      It's a pity that there is no open-source userspace library.
-> >      But you can probably understand it through a workflow, which can b=
-e simplified as:
-> >      1. create model context
-> >           ret =3D ioctl(context->fd, ADLAK_IOCTL_REGISTER_NETWORK, &des=
-c);
-> >      2.  set inputs
-> >      3.  inference
-> >            ret =3D ioctl(context->fd, ADLAK_IOCTL_INVOKE, &invoke_dec);
-> What happens if you call this again without waiting for the previous
-> inference to complete ?
-> Oded
-> >      4.  wait for the inference to complete
-> >            ret =3D ioctl(context->fd, ADLAK_IOCTL_WAIT_UNTIL_FINISH, &s=
-tat_req_desc);
-> >      5.  destroy model context
-> >            ret =3D ioctl(context->fd, ADLAK_IOCTL_DESTROY_NETWORK, &sub=
-mit_del);
-> >
-> >
-> >       thanks
-> >
-> >
-> > ________________________________________
-> > =E5=8F=91=E4=BB=B6=E4=BA=BA: Oded Gabbay <ogabbay@kernel.org>
-> > =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2023=E5=B9=B49=E6=9C=8828=E6=97=
-=A5 13:28
-> > =E6=94=B6=E4=BB=B6=E4=BA=BA: Cancan Chang
-> > =E6=8A=84=E9=80=81: Jagan Teki; linux-media; linux-kernel; Dave Airlie;=
- Daniel Vetter
-> > =E4=B8=BB=E9=A2=98: Re: kernel.org 6.5.4 , NPU driver, --not support (R=
-FC)
-> >
-> > [ EXTERNAL EMAIL ]
-> >
-> > On Wed, Sep 27, 2023 at 10:01=E2=80=AFAM Cancan Chang <Cancan.Chang@aml=
-ogic.com> wrote:
-> > >
-> > > =E2=80=9COr do you handle one cmd at a time, where the user sends a c=
-md buffer
-> > > to the driver and the driver then submit it by writing to a couple of
-> > > registers and polls on some status register until its done, or waits
-> > > for an interrupt to mark it as done ?=E2=80=9D
-> > >   --- yes=EF=BC=8C user sends a cmd buffer to driver, and driver trig=
-gers hardware by writing to register,
-> > >         and then, waits for an interrupt to mark it  as done.
-> > >
-> > >     My current driver is very different from drm, so I want to know i=
-f I have to switch to drm=EF=BC=9F
-> > Could you please post a link to the driver's source code ?
-> > In addition, could you please elaborate which userspace libraries
-> > exists that work with your driver ? Are any of them open-source ?
-> >
-> > >     Maybe I can refer to /driver/accel/habanalabs.
-> > That's definitely a possibility.
-> >
-> > Oded
-> > >
-> > > thanks
-> > >
-> > > ________________________________________
-> > > =E5=8F=91=E4=BB=B6=E4=BA=BA: Oded Gabbay <ogabbay@kernel.org>
-> > > =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2023=E5=B9=B49=E6=9C=8826=E6=97=
-=A5 20:54
-> > > =E6=94=B6=E4=BB=B6=E4=BA=BA: Cancan Chang
-> > > =E6=8A=84=E9=80=81: Jagan Teki; linux-media; linux-kernel; Dave Airli=
-e; Daniel Vetter
-> > > =E4=B8=BB=E9=A2=98: Re: kernel.org 6.5.4 , NPU driver, --not support =
-(RFC)
-> > >
-> > > [ EXTERNAL EMAIL ]
-> > >
-> > > On Mon, Sep 25, 2023 at 12:29=E2=80=AFPM Cancan Chang <Cancan.Chang@a=
-mlogic.com> wrote:
-> > > >
-> > > > Thank you for your reply from Jagan & Oded.
-> > > >
-> > > > It is very appropritate for my driver to be placed in driver/accel.
-> > > >
-> > > > My accelerator is named ADLA(Amlogic Deep Learning Accelerator).
-> > > > It is an IP in SOC,mainly used for neural network models accelerati=
-on.
-> > > > It will split and compile the neural network model into a private f=
-ormat cmd buffer,
-> > > > and submit this cmd buffer to ADLA hardware. It is not programmable=
- device.
-> > > What exactly does it mean to "submit this cmd buffer to ADLA hardware=
-" ?
-> > >
-> > > Does your h/w provides queues for the user/driver to put their
-> > > workloads/cmd-bufs on them ? And does it provide some completion queu=
-e
-> > > to notify when the work is completed?
-> > >
-> > > Or do you handle one cmd at a time, where the user sends a cmd buffer
-> > > to the driver and the driver then submit it by writing to a couple of
-> > > registers and polls on some status register until its done, or waits
-> > > for an interrupt to mark it as done ?
-> > >
-> > > >
-> > > > ADLA includes four hardware engines:
-> > > > RS engines             : working for the reshape operators
-> > > > MAC engines         : working for the convolution operators
-> > > > DW engines           : working for the planer & Elementwise operato=
-rs
-> > > > Activation engines : working for activation operators(ReLu,tanh..)
-> > > >
-> > > > By the way, my IP is mainly used for SOC, and the current driver re=
-gistration is through the platform_driver,
-> > > > is it necessary to switch to drm?
-> > > This probably depends on the answer to my question above. btw, there
-> > > are drivers in drm that handle IPs that are part of an SOC, so
-> > > platform_driver is supported.
-> > >
-> > > Oded
-> > >
-> > > >
-> > > > thanks.
-> > > >
-> > > > ________________________________________
-> > > > =E5=8F=91=E4=BB=B6=E4=BA=BA: Oded Gabbay <ogabbay@kernel.org>
-> > > > =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2023=E5=B9=B49=E6=9C=8822=E6=
-=97=A5 23:08
-> > > > =E6=94=B6=E4=BB=B6=E4=BA=BA: Jagan Teki
-> > > > =E6=8A=84=E9=80=81: Cancan Chang; linux-media; linux-kernel; Dave A=
-irlie; Daniel Vetter
-> > > > =E4=B8=BB=E9=A2=98: Re: kernel.org 6.5.4 , NPU driver, --not suppor=
-t (RFC)
-> > > >
-> > > > [=E4=BD=A0=E9=80=9A=E5=B8=B8=E4=B8=8D=E4=BC=9A=E6=94=B6=E5=88=B0=E6=
-=9D=A5=E8=87=AA ogabbay@kernel.org =E7=9A=84=E7=94=B5=E5=AD=90=E9=82=AE=E4=
-=BB=B6=E3=80=82=E8=AF=B7=E8=AE=BF=E9=97=AE https://aka.ms/LearnAboutSenderI=
-dentification=EF=BC=8C=E4=BB=A5=E4=BA=86=E8=A7=A3=E8=BF=99=E4=B8=80=E7=82=
-=B9=E4=B8=BA=E4=BB=80=E4=B9=88=E5=BE=88=E9=87=8D=E8=A6=81]
-> > > >
-> > > > [ EXTERNAL EMAIL ]
-> > > >
-> > > > On Fri, Sep 22, 2023 at 12:38=E2=80=AFPM Jagan Teki <jagan@edgeble.=
-ai> wrote:
-> > > > >
-> > > > > On Fri, 22 Sept 2023 at 15:04, Cancan Chang <Cancan.Chang@amlogic=
-.com> wrote:
-> > > > > >
-> > > > > > Dear Media Maintainers:
-> > > > > >      Thanks for your attention. Before describing my problem=EF=
-=BC=8Clet me introduce to you what I  mean by NPU.
-> > > > > >      NPU is Neural Processing Unit, It is designed for deep lea=
-rning acceleration, It is also called TPU, APU ..
-> > > > > >
-> > > > > >      The real problems:
-> > > > > >       When I was about to upstream my NPU driver codes to linux=
- mainline, i meet two problems:
-> > > > > >         1.  According to my research, There is no NPU module pa=
-th in the linux (base on linux 6.5.4) , I have searched all linux projects =
-and found no organization or comany that has submitted NPU code. Is there a=
- path prepared for NPU driver currently?
-> > > > > >         2.   If there is no NPU driver path currently, I am goi=
-ng to put my NPU driver code in the drivers/media/platform/amlogic/ =EF=BB=
-=BF, because my NPU driver belongs to amlogic. and amlogic NPU is mainly us=
-ed for AI vision applications. Is this plan suitabe for you?
-> > > > >
-> > > > > If I'm correct about the discussion with Oded Gabby before. I thi=
-nk
-> > > > > the drivers/accel/ is proper for AI Accelerators including NPU.
-> > > > >
-> > > > > + Oded in case he can comment.
-> > > > >
-> > > > > Thanks,
-> > > > > Jagan.
-> > > > Thanks Jagan for adding me to this thread. Adding Dave & Daniel as =
-well.
-> > > >
-> > > > Indeed, the drivers/accel is the place for Accelerators, mainly for
-> > > > AI/Deep-Learning accelerators.
-> > > > We currently have 3 drivers there already.
-> > > >
-> > > > The accel subsystem is part of the larger drm subsystem. Basically,=
- to
-> > > > get into accel, you need to integrate your driver with the drm at t=
-he
-> > > > basic level (registering a device, hooking up with the proper
-> > > > callbacks). ofc the more you use code from drm, the better.
-> > > > You can take a look at the drivers under accel for some examples on
-> > > > how to do that.
-> > > >
-> > > > Could you please describe in a couple of sentences what your
-> > > > accelerator does, which engines it contains, how you program it. i.=
-e.
-> > > > Is it a fixed-function device where you write to a couple of regist=
-ers
-> > > > to execute workloads, or is it a fully programmable device where yo=
-u
-> > > > load compiled code into it (GPU style) ?
-> > > >
-> > > > For better background on the accel subsystem, please read the follo=
-wing:
-> > > > https://docs.kernel.org/accel/introduction.html
-> > > > This introduction also contains links to other important email thre=
-ads
-> > > > and to Dave Airlie's BOF summary in LPC2022.
-> > > >
-> > > > Thanks,
-> > > > Oded
+smatch warnings:
+drivers/staging/iio/resolver/ad2s1210.c:436 ad2s1210_single_conversion() error: buffer overflow 'st->rx' 2 <= 2
+
+vim +436 drivers/staging/iio/resolver/ad2s1210.c
+
+ecf16f4922f691 David Lechner    2023-09-29  391  static int ad2s1210_single_conversion(struct iio_dev *indio_dev,
+29148543c52146 Jonathan Cameron 2011-10-05  392  				      struct iio_chan_spec const *chan,
+e9336a85ceb885 David Lechner    2023-09-29  393  				      int *val)
+817e5c65c511d4 Graf Yang        2010-10-27  394  {
+ecf16f4922f691 David Lechner    2023-09-29  395  	struct ad2s1210_state *st = iio_priv(indio_dev);
+ecf16f4922f691 David Lechner    2023-09-29  396  	s64 timestamp;
+69cc7fbdcdf2e3 David Lechner    2023-09-29  397  	int ret;
+817e5c65c511d4 Graf Yang        2010-10-27  398  
+817e5c65c511d4 Graf Yang        2010-10-27  399  	mutex_lock(&st->lock);
+69cc7fbdcdf2e3 David Lechner    2023-09-29  400  	gpiod_set_value(st->sample_gpio, 1);
+ecf16f4922f691 David Lechner    2023-09-29  401  	timestamp = iio_get_time_ns(indio_dev);
+817e5c65c511d4 Graf Yang        2010-10-27  402  	/* delay (6 * tck + 20) nano seconds */
+817e5c65c511d4 Graf Yang        2010-10-27  403  	udelay(1);
+817e5c65c511d4 Graf Yang        2010-10-27  404  
+29148543c52146 Jonathan Cameron 2011-10-05  405  	switch (chan->type) {
+29148543c52146 Jonathan Cameron 2011-10-05  406  	case IIO_ANGL:
+69cc7fbdcdf2e3 David Lechner    2023-09-29  407  		ret = ad2s1210_set_mode(st, MOD_POS);
+29148543c52146 Jonathan Cameron 2011-10-05  408  		break;
+29148543c52146 Jonathan Cameron 2011-10-05  409  	case IIO_ANGL_VEL:
+69cc7fbdcdf2e3 David Lechner    2023-09-29  410  		ret = ad2s1210_set_mode(st, MOD_VEL);
+29148543c52146 Jonathan Cameron 2011-10-05  411  		break;
+29148543c52146 Jonathan Cameron 2011-10-05  412  	default:
+29148543c52146 Jonathan Cameron 2011-10-05  413  		ret = -EINVAL;
+29148543c52146 Jonathan Cameron 2011-10-05  414  		break;
+29148543c52146 Jonathan Cameron 2011-10-05  415  	}
+29148543c52146 Jonathan Cameron 2011-10-05  416  	if (ret < 0)
+29148543c52146 Jonathan Cameron 2011-10-05  417  		goto error_ret;
+ecf16f4922f691 David Lechner    2023-09-29  418  	ret = spi_read(st->sdev, &st->sample, 3);
+29148543c52146 Jonathan Cameron 2011-10-05  419  	if (ret < 0)
+817e5c65c511d4 Graf Yang        2010-10-27  420  		goto error_ret;
+29148543c52146 Jonathan Cameron 2011-10-05  421  
+29148543c52146 Jonathan Cameron 2011-10-05  422  	switch (chan->type) {
+29148543c52146 Jonathan Cameron 2011-10-05  423  	case IIO_ANGL:
+ecf16f4922f691 David Lechner    2023-09-29  424  		*val = be16_to_cpu(st->sample.raw);
+29148543c52146 Jonathan Cameron 2011-10-05  425  		ret = IIO_VAL_INT;
+29148543c52146 Jonathan Cameron 2011-10-05  426  		break;
+29148543c52146 Jonathan Cameron 2011-10-05  427  	case IIO_ANGL_VEL:
+ecf16f4922f691 David Lechner    2023-09-29  428  		*val = (s16)be16_to_cpu(st->sample.raw);
+29148543c52146 Jonathan Cameron 2011-10-05  429  		ret = IIO_VAL_INT;
+29148543c52146 Jonathan Cameron 2011-10-05  430  		break;
+29148543c52146 Jonathan Cameron 2011-10-05  431  	default:
+5e99f692d4e32e David Lechner    2023-09-21  432  		ret = -EINVAL;
+5e99f692d4e32e David Lechner    2023-09-21  433  		break;
+29148543c52146 Jonathan Cameron 2011-10-05  434  	}
+29148543c52146 Jonathan Cameron 2011-10-05  435  
+ecf16f4922f691 David Lechner    2023-09-29 @436  	ad2s1210_push_events(indio_dev, st->rx[2], timestamp);
+                                                                                          ^^^^^^
+Apparently ->rx only has 2 elements.
+
+ecf16f4922f691 David Lechner    2023-09-29  437  
+817e5c65c511d4 Graf Yang        2010-10-27  438  error_ret:
+69cc7fbdcdf2e3 David Lechner    2023-09-29  439  	gpiod_set_value(st->sample_gpio, 0);
+817e5c65c511d4 Graf Yang        2010-10-27  440  	/* delay (2 * tck + 20) nano seconds */
+817e5c65c511d4 Graf Yang        2010-10-27  441  	udelay(1);
+817e5c65c511d4 Graf Yang        2010-10-27  442  	mutex_unlock(&st->lock);
+29148543c52146 Jonathan Cameron 2011-10-05  443  	return ret;
+817e5c65c511d4 Graf Yang        2010-10-27  444  }
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
