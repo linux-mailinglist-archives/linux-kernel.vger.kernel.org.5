@@ -2,236 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2ADE7B60EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 08:43:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32AA67B60F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 08:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbjJCGnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 02:43:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
+        id S230364AbjJCGpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 02:45:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJCGnj (ORCPT
+        with ESMTP id S229453AbjJCGpX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 02:43:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5922BAC;
-        Mon,  2 Oct 2023 23:43:34 -0700 (PDT)
+        Tue, 3 Oct 2023 02:45:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F9EAD;
+        Mon,  2 Oct 2023 23:45:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696315414; x=1727851414;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=AvOwi0cnTJOn8GMWGwytu1+ms7MaRvbJQFq+zu+RxOg=;
-  b=ATwFqnzEHUpKwrErHlY6Muyo6C8ORLONN2pTTTk+c4Z7XAHMulmvFFE1
-   vw9WhmgTbRCsFkczTFCAm2D3R/uaBna/ixHB4L3iD3Uhg7GgHHPqCGGE7
-   bT35AAOOsLxKUiOJer4SaK7+G2uWyH8qIpyOu+aFDAPrPxjcFhWcNI20X
-   IDxAxl64Z6jWWTJHZoXr9fwSm9nmnANB6/YnAKeNzXxOCj8oYO4eMeTg7
-   nH2LcLW44K64AgwxYBgYJt5k5nZ1MdrnhvQkZo2pl6gaqTod7hpA/8IZI
-   yMeIOtXxqJ4Lqq3sv/MzE9+734pdT1R62eoSUAtCu7qVD6UyomnzpzOqM
+  t=1696315520; x=1727851520;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=Em/FrrctLJh6Y71ZEU3Iwy2aMxZLwNO0KD4a2A0zeiA=;
+  b=E+gY6P/U8hNxpiWJ7IA642pS4MxfH/W9KYyntGkUqlOHBMc4yWhArkW2
+   a+1UDPGHtFFKkYgRxB6ssKv5rIMAQHfOzpyOl08ewDNSW3f1tSDNE201s
+   06B3DplPeqACFV9XWy60YKQvbngzmjj8e+VaaLsxnirYd2qozVR9AYEQI
+   l2n0hc6x7V5j5kk+XjeNOeW48HWUUR2MibaXuVzKrEiJZTvLCr0s2QCGA
+   b4Imibkbchjm1dnGJirbG8/lpEtFnAANd5AB5L0X1lAjqD4XOzzSdPT2j
+   d6wez/y3BYhQ/+HPIwy4tgAUH1QCs/EQNat400qMPxlTV4PyQX08D7spj
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="1395689"
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="469079236"
 X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="1395689"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 23:43:34 -0700
+   d="scan'208";a="469079236"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 23:45:19 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="894369495"
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="754300404"
 X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="894369495"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 02 Oct 2023 23:42:07 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 03 Oct 2023 09:43:28 +0300
-Date:   Tue, 3 Oct 2023 09:43:28 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Abdel Alkuor <alkuor@gmail.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
-        robh+dt@kernel.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>
-Subject: Re: [PATCH v9 09/14] USB: typec: tps6598x: Refactor tps6598x port
- registration
-Message-ID: <ZRu4EGVcZU+r0H0I@kuha.fi.intel.com>
-References: <20231001081134.37101-1-alkuor@gmail.com>
- <20231001081134.37101-10-alkuor@gmail.com>
+   d="scan'208";a="754300404"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 02 Oct 2023 23:45:17 -0700
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To:     "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Mehta, Sohil" <sohil.mehta@intel.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "Huang, Kai" <kai.huang@intel.com>
+Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
+        "yangjie@microsoft.com" <yangjie@microsoft.com>,
+        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
+        "Christopherson,, Sean" <seanjc@google.com>,
+        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
+        "Zhang, Bo" <zhanb@microsoft.com>,
+        "anakrish@microsoft.com" <anakrish@microsoft.com>
+Subject: Re: [PATCH v5 09/18] x86/sgx: Store struct sgx_encl when allocating
+ new VA pages
+References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
+ <20230923030657.16148-10-haitao.huang@linux.intel.com>
+ <ac66cb2b6e057f5e5e78345bcddea13a3e72ee5e.camel@intel.com>
+Date:   Tue, 03 Oct 2023 01:45:15 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231001081134.37101-10-alkuor@gmail.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+From:   "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2b77pp0wwjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <ac66cb2b6e057f5e5e78345bcddea13a3e72ee5e.camel@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 01, 2023 at 04:11:29AM -0400, Abdel Alkuor wrote:
-> From: Abdel Alkuor <abdelalkuor@geotab.com>
-> 
-> tps6598x and cd321x use TPS_REG_SYSTEM_CONF to get dr/pr roles
-> where other similar devices don't have this register such as tps25750.
-> 
-> Move tps6598x port registration to its own function
-> 
-> Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
+On Wed, 27 Sep 2023 06:35:57 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-This one can be moved to the beginning of the series.
+> On Fri, 2023-09-22 at 20:06 -0700, Haitao Huang wrote:
+>> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>>
+>> In a later patch, when a cgroup has exceeded the max capacity for EPC
+>> pages, it may need to identify and OOM kill a less active enclave to
+>> make room for other enclaves within the same group. Such a victim
+>> enclave would have no active pages other than the unreclaimable Version
+>> Array (VA) and SECS pages.
+>
+> What does "no active pages" mean?
+>
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+EPC pages in use.
 
-> ---
-> Changes in v9:
->   - No changes
-> Changes in v8:
->   - No changes
-> Changes in v7:
->   - Add driver name to commit subject
-> Changes in v6:
->   - No changes
-> Changes in v5:
->   - Incorporating tps25750 into tps6598x driver
-> 
->  drivers/usb/typec/tipd/core.c | 99 +++++++++++++++++++----------------
->  1 file changed, 54 insertions(+), 45 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-> index 52dc1cc16bed..0195eabd96bf 100644
-> --- a/drivers/usb/typec/tipd/core.c
-> +++ b/drivers/usb/typec/tipd/core.c
-> @@ -1032,14 +1032,64 @@ static int tps25750_apply_patch(struct tps6598x *tps)
->  	return 0;
->  };
->  
-> +static int
-> +tps6598x_register_port(struct tps6598x *tps, struct fwnode_handle *fwnode)
-> +{
-> +	int ret;
-> +	u32 conf;
-> +	struct typec_capability typec_cap = { };
-> +
-> +	ret = tps6598x_read32(tps, TPS_REG_SYSTEM_CONF, &conf);
-> +	if (ret)
-> +		return ret;
-> +
-> +	typec_cap.revision = USB_TYPEC_REV_1_2;
-> +	typec_cap.pd_revision = 0x200;
-> +	typec_cap.prefer_role = TYPEC_NO_PREFERRED_ROLE;
-> +	typec_cap.driver_data = tps;
-> +	typec_cap.ops = &tps6598x_ops;
-> +	typec_cap.fwnode = fwnode;
-> +
-> +	switch (TPS_SYSCONF_PORTINFO(conf)) {
-> +	case TPS_PORTINFO_SINK_ACCESSORY:
-> +	case TPS_PORTINFO_SINK:
-> +		typec_cap.type = TYPEC_PORT_SNK;
-> +		typec_cap.data = TYPEC_PORT_UFP;
-> +		break;
-> +	case TPS_PORTINFO_DRP_UFP_DRD:
-> +	case TPS_PORTINFO_DRP_DFP_DRD:
-> +		typec_cap.type = TYPEC_PORT_DRP;
-> +		typec_cap.data = TYPEC_PORT_DRD;
-> +		break;
-> +	case TPS_PORTINFO_DRP_UFP:
-> +		typec_cap.type = TYPEC_PORT_DRP;
-> +		typec_cap.data = TYPEC_PORT_UFP;
-> +		break;
-> +	case TPS_PORTINFO_DRP_DFP:
-> +		typec_cap.type = TYPEC_PORT_DRP;
-> +		typec_cap.data = TYPEC_PORT_DFP;
-> +		break;
-> +	case TPS_PORTINFO_SOURCE:
-> +		typec_cap.type = TYPEC_PORT_SRC;
-> +		typec_cap.data = TYPEC_PORT_DFP;
-> +		break;
-> +	default:
-> +		return -ENODEV;
-> +	}
-> +
-> +	tps->port = typec_register_port(tps->dev, &typec_cap);
-> +	if (IS_ERR(tps->port))
-> +		return PTR_ERR(tps->port);
-> +
-> +	return 0;
-> +}
-> +
->  static int tps6598x_probe(struct i2c_client *client)
->  {
->  	struct device_node *np = client->dev.of_node;
-> -	struct typec_capability typec_cap = { };
->  	struct tps6598x *tps;
->  	struct fwnode_handle *fwnode;
->  	u32 status;
-> -	u32 conf;
->  	u32 vid;
->  	int ret;
->  	u64 mask1;
-> @@ -1112,10 +1162,6 @@ static int tps6598x_probe(struct i2c_client *client)
->  		goto err_clear_mask;
->  	trace_tps6598x_status(status);
->  
-> -	ret = tps6598x_read32(tps, TPS_REG_SYSTEM_CONF, &conf);
-> -	if (ret < 0)
-> -		goto err_clear_mask;
-> -
->  	/*
->  	 * This fwnode has a "compatible" property, but is never populated as a
->  	 * struct device. Instead we simply parse it to read the properties.
-> @@ -1133,50 +1179,13 @@ static int tps6598x_probe(struct i2c_client *client)
->  		goto err_fwnode_put;
->  	}
->  
-> -	typec_cap.revision = USB_TYPEC_REV_1_2;
-> -	typec_cap.pd_revision = 0x200;
-> -	typec_cap.prefer_role = TYPEC_NO_PREFERRED_ROLE;
-> -	typec_cap.driver_data = tps;
-> -	typec_cap.ops = &tps6598x_ops;
-> -	typec_cap.fwnode = fwnode;
-> -
-> -	switch (TPS_SYSCONF_PORTINFO(conf)) {
-> -	case TPS_PORTINFO_SINK_ACCESSORY:
-> -	case TPS_PORTINFO_SINK:
-> -		typec_cap.type = TYPEC_PORT_SNK;
-> -		typec_cap.data = TYPEC_PORT_UFP;
-> -		break;
-> -	case TPS_PORTINFO_DRP_UFP_DRD:
-> -	case TPS_PORTINFO_DRP_DFP_DRD:
-> -		typec_cap.type = TYPEC_PORT_DRP;
-> -		typec_cap.data = TYPEC_PORT_DRD;
-> -		break;
-> -	case TPS_PORTINFO_DRP_UFP:
-> -		typec_cap.type = TYPEC_PORT_DRP;
-> -		typec_cap.data = TYPEC_PORT_UFP;
-> -		break;
-> -	case TPS_PORTINFO_DRP_DFP:
-> -		typec_cap.type = TYPEC_PORT_DRP;
-> -		typec_cap.data = TYPEC_PORT_DFP;
-> -		break;
-> -	case TPS_PORTINFO_SOURCE:
-> -		typec_cap.type = TYPEC_PORT_SRC;
-> -		typec_cap.data = TYPEC_PORT_DFP;
-> -		break;
-> -	default:
-> -		ret = -ENODEV;
-> -		goto err_role_put;
-> -	}
-> -
->  	ret = devm_tps6598_psy_register(tps);
->  	if (ret)
->  		goto err_role_put;
->  
-> -	tps->port = typec_register_port(&client->dev, &typec_cap);
-> -	if (IS_ERR(tps->port)) {
-> -		ret = PTR_ERR(tps->port);
-> +	ret = tps6598x_register_port(tps, fwnode);
-> +	if (ret)
->  		goto err_role_put;
-> -	}
->  
->  	if (status & TPS_STATUS_PLUG_PRESENT) {
->  		ret = tps6598x_read16(tps, TPS_REG_POWER_STATUS, &tps->pwr_status);
-> -- 
-> 2.34.1
+> A "less active enclave" doesn't necessarily mean it has "no active  
+> pages"?
+>
 
--- 
-heikki
+I'll rephrase the above sentences
+
+>
+>> Therefore, the cgroup needs examine its
+> 			^
+> 			needs to
+>
+>> unreclaimable page list, and finding an enclave given a SECS page or a
+> 				^
+> 				find
+>
+>> VA page. This will require a backpointer from a page to an enclave,
+>> which is not available for VA pages.
+>>
+>> Because struct sgx_epc_page instances of VA pages are not owned by an
+>> sgx_encl_page instance, mark their owner as sgx_encl: pass the struct
+>> sgx_encl of the enclave allocating the VA page to sgx_alloc_epc_page(),
+>> which will store this value in the owner field of the struct
+>> sgx_epc_page.
+>
+> IMHO this paragraph is hard to understand and can be more concise:
+>
+> One VA page can be shared by multiple enclave pages thus cannot be  
+> associated
+> with any 'struct sgx_encl_page' instance.  Set the owner of VA page to  
+> the
+> enclave instead.
+>
+>
+
+Agreed
+
+>> In a later patch, VA pages will be placed in an
+>> unreclaimable queue that can be examined by the cgroup to select the OOM
+>> killed enclave.
+>
+> The code to "place the VA page to unreclaimable queue" has been done in  
+> earlier
+> patch ("x86/sgx: Introduce EPC page states").  Just the unreclaimable  
+> list isn't
+> introduced yet.  I think you should just introduce it first then you can  
+> get rid
+> of those "in a later patch" staff.
+>
+
+I hope I was able to clarify to you in other threads that VA pages are not  
+placed in any queue/list until [PATCH v5 11/18] x86/sgx: store  
+unreclaimable pages in LRU lists.
+
+This patch is the first one to implement tracking for unreclaimable pages.  
+I'll add that as a transition hint.
+
+> And nit: please use "unreclaimable list" consistently (not queue).
+>
+
+Yes will do
+
+>
+> Btw, probably a dumb question:
+>
+> Theoretically if you only need to find a victim enclave you don't need  
+> to put VA
+> pages to the unreclaimable list, because those VA pages will be freed  
+> anyway
+> when enclave is killed.  So keeping VA pages in the list is for  
+> accounting all
+> the pages that the cgroup is having?
+
+Yes basically tracking them in cgroups as they are allocated.
+
+VAs and SECS may also come and go as swapping/unswapping happens. But if a  
+cgroup is OOM, and all reclaimables are gone (swapped out), it'd have to  
+reclaim VAs/SECs in the same cgroup starting from the front of the LRU  
+list. To reclaim a VA/SECS, it identifies the enclave from the owner of  
+the VA/SECS page and kills it, as killing enclave is the only way to  
+reclaim VA/SECS pages.
