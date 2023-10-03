@@ -2,272 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 441477B6263
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB067B6265
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbjJCHRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 03:17:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
+        id S231213AbjJCHR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 03:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbjJCHRA (ORCPT
+        with ESMTP id S230235AbjJCHR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 03:17:00 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17F44A4
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 00:16:55 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-323168869daso642216f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 00:16:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696317413; x=1696922213; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QpUUFq9QU9L0qfPCVG8CBY0uJ76VkGAs+iJNl+MP9Es=;
-        b=sJhBBrN3GaeDcqOU+p77oBSarlc6PW3ioar4bWxsoAoFz2GosjbFvVd25SNEx2THqm
-         Z18tTBadB0XBAw5jXl90yLV5Nah1ALSenD8NNDynn/u3AbxzWu9ljdGBxSr6GpsZCw4b
-         E7Lk16MRF99QK7UNjHFHsj1DfQRAXXqCGOeO4StrX+1IcrC0K46Xg4enrKldlw/3EVUz
-         BFTKq5VlEKfJYO12wLFBpMvqeS5vDAtUcHauPqpKEB7Wrru5b5xOaCVq/+4bPgoYTB0R
-         6NabZIh696r1vfgxAZHwf78A243fIqtRPbsjkLOF8n8gaqQV7RmS6JFIjLm7wOdA3V68
-         d3dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696317413; x=1696922213;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=QpUUFq9QU9L0qfPCVG8CBY0uJ76VkGAs+iJNl+MP9Es=;
-        b=HJu1C7QpcnAjQvKQzsHRoWGl8qZ4hSYm8yM7eOZ6NuMCu4Fyp3WNypXBmD0idFhRYu
-         MIl+Xd/cyCdxaNbiadpmi7cbSzFDS09YBxjfJYqN3Bqx51prA/fjZJtbA7vgAA3lhsf0
-         zvxr+2gj9OPQGtCKJCd+PGIWEnrrDmgFxvokApWBkVV9kQIQL6gsyu847fGgbPVDw6eU
-         78hiSafTvzBLyP/nhUGJrGvHj5nLEAfO76PFD+4/P2euL6CX16mdymK81V9omVtFdVcB
-         9NkA0W1c1RYeYD3SiQGrVUub4YqIwLMBfcy+5v5Vs2NS0J1swWsBFjHptSeqRoMVwD6x
-         TZOw==
-X-Gm-Message-State: AOJu0YyVpK/fJw3ejhMUvmTZBnMaeElxpX1VqP4+ngEz/dgbu++ZZZPX
-        P59RCu0Lkog75Lj3AMDFKaqyJg==
-X-Google-Smtp-Source: AGHT+IEWu0xac32pksXzwZMIWt3brB8UIquOiYKnIp7HkLnrNNbaheTXCpeC2KPbOOWCbiefqofD8A==
-X-Received: by 2002:adf:ed02:0:b0:321:6936:c217 with SMTP id a2-20020adfed02000000b003216936c217mr12497257wro.14.1696317413483;
-        Tue, 03 Oct 2023 00:16:53 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:e31a:fe1c:e925:9858? ([2a01:e0a:982:cbb0:e31a:fe1c:e925:9858])
-        by smtp.gmail.com with ESMTPSA id j16-20020a056000125000b00326f5d0ce0asm852877wrx.21.2023.10.03.00.16.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 00:16:52 -0700 (PDT)
-Message-ID: <c6a974ce-511c-47f8-b6cb-baeec5283af9@linaro.org>
-Date:   Tue, 3 Oct 2023 09:16:50 +0200
+        Tue, 3 Oct 2023 03:17:57 -0400
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2049.outbound.protection.outlook.com [40.107.215.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 724F7A4;
+        Tue,  3 Oct 2023 00:17:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pjw1GBNIYeg35gbbgzrP4j+m9njVwnbGJB0G7IzJu4QOy3Vl3gwQQcDY7gHnFxxSG3V3v1Z7bSbNdvnb3rQ+1fp8sK/TTNHzlbEETwjAQ8sH1FY2EnKDkCjrR4iEGPg4Ihct8k+5HEZIifA7cqRQ6cKVgDATK9vq8rmYKajjU4GDjQQp8N0Y65bob6a5e93N4KeADWqiS7necEYZmLQUYleQWap1efMnZELbYgvPlHm62dK3wbiSBPa81h0cosUFy01i957Sg6yteYnOftp06K/n6L/n70/Ed2V1gT4dv8MVI6MgR+mgC+E1/qMylmAxOxJTN+iQlvLDsCGoOWSDvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0Imku/5zekNnyYTt4iyoG25CKKMU1i4LmrFScT0c+0Q=;
+ b=lNIFyRla4A7Ny0p1RtLO4L9A0hQsi3GiYIwvHCmfiZLDj+KSEG+H2QaR1X0nrdDIqaz4D97F4Vc51FHOH1z+uFaNgL5f1y3iJ+Al/SdyM+1+k3rMNbOhq+M1pRMZaAlq3E19Wji4Kno5hrrwGp7xh3aEWcHMnQ91RXdjpsyca9kh5wGZnInE/EWSOIJPVzj2nqfz4Me1hfWeBPrVkEapOSNMtsJwSrG+DxkcdNnWHSXabvXumJL+Z5rlhSHWiB5aE304cZ9xP6Or0GjuIRnF2My0vWbsxDCkn/C3kcfCz6pytZCtfCGMFc9VG3OQD9Wr9B++w1z2pFv0K9FOeEyPWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
+ dkim=pass header.d=moxa.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0Imku/5zekNnyYTt4iyoG25CKKMU1i4LmrFScT0c+0Q=;
+ b=Nj0TYj//fH1wMOzskBefbwyuspMNtEmmcxhX/RGLj/hP5x71UMB2l+FheWDnPuBTa2SaTAIzgJu8vR9f4EFUct7lnIoBjUVvIjhnx6/JXs4RUTr1poJiENpfNMNIQmgTY1dCyfROxayyX8ggDAeek5n27TH6gEsj3B8+5KB2qBo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=moxa.com;
+Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:115::14) by TYSPR01MB5906.apcprd01.prod.exchangelabs.com
+ (2603:1096:400:46b::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.32; Tue, 3 Oct
+ 2023 07:17:51 +0000
+Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ ([fe80::3f1:6c0e:dec3:714b]) by PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ ([fe80::3f1:6c0e:dec3:714b%5]) with mapi id 15.20.6838.024; Tue, 3 Oct 2023
+ 07:17:50 +0000
+Date:   Tue, 3 Oct 2023 15:17:47 +0800
+From:   Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: Re: [PATCH 1/4] tty: serial: 8250: Cleanup MOXA configurations in
+ 8250_pci.c
+Message-ID: <ZRvAG5336KxuugVd@moxa-ThinkCentre-M90t>
+References: <20231002015702.30509-1-crescentcy.hsieh@moxa.com>
+ <20231002015702.30509-2-crescentcy.hsieh@moxa.com>
+ <68d533d5-dbc8-4be3-a1fc-b3dd28b8f9df@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <68d533d5-dbc8-4be3-a1fc-b3dd28b8f9df@kernel.org>
+X-ClientProxiedBy: PS2PR03CA0015.apcprd03.prod.outlook.com
+ (2603:1096:300:5b::27) To PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+ (2603:1096:301:115::14)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v3 3/3] clk: qcom: add SM8550 DISPCC driver
-Content-Language: en-US, fr
-To:     Sophon Wu <wuxilin123@gmail.com>
-Cc:     Andy Gross <agross@kernel.org>, andersson@kernel.org,
-        devicetree@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mturquette@baylibre.com,
-        Rob Herring <robh+dt@kernel.org>, sboyd@kernel.org
-References: <CAEPPPKu=yxS6SgdLZiuhbF2DRURKVUBNgNbUQ96LxHHbtsJ6Sg@mail.gmail.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <CAEPPPKu=yxS6SgdLZiuhbF2DRURKVUBNgNbUQ96LxHHbtsJ6Sg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PUZPR01MB5405:EE_|TYSPR01MB5906:EE_
+X-MS-Office365-Filtering-Correlation-Id: 18faab63-9cbd-4aca-564d-08dbc3e0da42
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tw/3PVIF01IyyGX1zCn5/0bLgTjc5cPJ71VZs3pTVEujCw+HVpXHmthq5vEEAR5xcQ3poi3uKRXeIV9kUzafg1XKkYOSRn62m2qskE8JDm9vfPnj+95Hdf3sNmYD2WuFwjMJmtLoQb0mdZ7tT48HaYJX76dIQrEHdJDGaAIHdjFPlyYsO5QNh3OVdXFE/Nfv4aQg95LY0aAWznjPWtOOu8ztq06WhzwpVVrV9cSFByR4VHErm/DXsjbYhgcHNqPqhc8CDlGP7iW7d02pg7uGJyiaTmR9BNUX3SVnGKbnp+3sYItHTj9fXx3PCstdfVK1q6vY4eYJxMebcYIWOa2CB/Gu9kw2eQCb+c5xOO3d2ZqeC0GnHVSnqgKT4AavrWQKynrlidfAY0eQpeMjItL/K6wgzt2WdX/iCs3fV7k5dJLGfMPfipLq0Cti2x6OL4Bu6N39oKgJz0p4/75yalX9ls2R81V264FI2ZNeL7J1Je3m21XHY61Has7GWCpFdSQGzQWaz+UfYhbXJRL5Yx1QxvVCTAXCPH51ZsQLxcEBji/O1JQfktqG1wcJu1ROaP8klztkQ1coCrDtRtYPRjJKDaY3l6+pwnq/TVLgxEyLWqL8P6BVvDTbqBcyBY04slNW
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR01MB5405.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(136003)(396003)(366004)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(6512007)(6666004)(6506007)(478600001)(52116002)(6486002)(38350700002)(38100700002)(2906002)(86362001)(4744005)(33716001)(26005)(9686003)(83380400001)(66556008)(5660300002)(316002)(41300700001)(66476007)(6916009)(66946007)(4326008)(8676002)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?9zMdY0lVf+M9g2De+2ckoDKEY8mqFX5gaB3zyXqItPJEy8oi0Duykx/eoHVj?=
+ =?us-ascii?Q?4JjKKrfn+l7AoHcimNTSrB/139vRMSG57p/EMcwsUBz68yQETEWYtCRLMJgF?=
+ =?us-ascii?Q?6ZnXJdpxTfh1d4xtK649gxffZBFHWYh7K8uREr2SRd6huFMYH0WyVLgluY5M?=
+ =?us-ascii?Q?5Fn9gbYJ0zFoUg3NdB5Cgy0MU22FXbj0A2K4hUTjcBf8CWpkEC85Ahs7LkXl?=
+ =?us-ascii?Q?nI1hHC4pxZoXmsX5arKVPjUa4yMP9ar1H+FEss/jqumfrGWNZ/rZeUW/XtM9?=
+ =?us-ascii?Q?SXXqRB6X5fEMWzNhNu93N0xUPIuz8g5OxbC3jz1ArBtotdiAVJfdClHAud1C?=
+ =?us-ascii?Q?Bbi9+fFFsew8VdtqAuMVzL74XaAgykMLnFBEw4HIBmlcaWKCFQshF8HYl0RX?=
+ =?us-ascii?Q?zThrUEQs80H/jCqDFtVxnWoUga16W67auTIRkoxR++eAffHAwpB6ZEndWb6L?=
+ =?us-ascii?Q?EqNkryNpEA8RIF6w6ANKoBaxykOFuPUnUGamIYVKP1FGmM5Rg3SZ7+Lc+kRV?=
+ =?us-ascii?Q?zKT2vcCu0YoCzCQyVJGNfCWMV4pzk3/OLzpIvQ7tN5fJw/iYTcLvzFzcGBU+?=
+ =?us-ascii?Q?zexTs8SQYnKN92OURML1LWv1ZCoh/PzPN72DrTVK1+uDFtpT/qNMhHpeGSZQ?=
+ =?us-ascii?Q?2TvuQ3mmIzxUHVVwYA6rkALKjflOvf8M9/KT4UronHhal7MS3eLHsIgoAQJM?=
+ =?us-ascii?Q?7i33k4Vb2uAZWrubt/1cAqi/3w8mb9C5PNC3gLqzaZrjrQNs4ll6t5w7yqry?=
+ =?us-ascii?Q?8nkjJevm3zD+9FDVInjbJHdMqc9Q6eDSTJ0q5X9RRMOWJ0ugHakzGDDnxTAt?=
+ =?us-ascii?Q?PdGnVyHoMrfoh8693f1MCE6rt9EBc1RrfUPn7vkGPqWsdVsq+Z0wbOzDevVL?=
+ =?us-ascii?Q?OhHuapl9wI3iZtU4G6wEmLdqyiEFrewO5tRYWqpL1JV5znP6SMJFIKmwq+d7?=
+ =?us-ascii?Q?RmRJ/83GTBUU24fDstykNXSnBjy2pQ2PW+3+Lm8PeRW2sAAmhkhiCQm+hB5E?=
+ =?us-ascii?Q?jkEcy7cCDREtui/oaGbaJKMfyPZDlB/wbBxCJg1OGdwnkjEkki88VjHotwcZ?=
+ =?us-ascii?Q?ASn2NOioP/IQraG2TAqktJG7JOjiiHvM3vtLurv21qro4QqXnDYIru1jdLuL?=
+ =?us-ascii?Q?8mrz3lSgR2LYLni1VezUYtJTZpQuphbf/sP1Vk25JFjrd6WE8bcvlfwuIbhs?=
+ =?us-ascii?Q?qHp1mp1D5q1RwU9rQ/5oXS9UCWDI88sE/A+fmr70pOic4Q5QqpoKBDr8Ajpl?=
+ =?us-ascii?Q?QAMiv1ryprc4SwXnyzytqzodeSgrTwtgrNNq7P77VCK0ouSS9RQYOkVhsCdw?=
+ =?us-ascii?Q?uE2Dlb6F/ViklDSY9QFNhm2ELmzL6WsO++4PKNw6PIwDyTZKEB+4337VVNfx?=
+ =?us-ascii?Q?Z/nttgtxyK1T+mt4fuhAqTgMzdd3eUzZEF/1tV+zmQTL/krTaeuRRDvlwGdy?=
+ =?us-ascii?Q?KSZC7V4w3KnF5/dPZfNN4dK+ut4x4M/uI3S96xNf0jvgvxmT3jyE/A262d/3?=
+ =?us-ascii?Q?/MvDB6WedyWw9CJCCrWc5Js+sam3mZvvoNsoRgrY3p9oPYRf/acDG3U1lshW?=
+ =?us-ascii?Q?gXUofZ0Cd9XXeSDI9dkdvDPdYM/NA1Mz0dKQQ2N0qdpXkQcti9q6SzsS1Crv?=
+ =?us-ascii?Q?Xw=3D=3D?=
+X-OriginatorOrg: moxa.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18faab63-9cbd-4aca-564d-08dbc3e0da42
+X-MS-Exchange-CrossTenant-AuthSource: PUZPR01MB5405.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 07:17:50.6904
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8geCx7C0kceCJdTcXk0syyhE3F5eZfy2ioC+w2dKCKEc3X67ExiQ0BPqgA0r+FQ/GFcNPs6qeBckQWBwSNATaJaUTQRy7aPO4BuppFFi8w8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR01MB5906
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Oct 02, 2023 at 08:51:03AM +0200, Jiri Slaby wrote:
+> On 02. 10. 23, 3:56, Crescent CY Hsieh wrote:
+> > @@ -1958,6 +1958,9 @@ pci_moxa_setup(struct serial_private *priv,
+> >   #define PCIE_DEVICE_ID_WCH_CH384_8S	0x3853
+> >   #define PCIE_DEVICE_ID_WCH_CH382_2S	0x3253
+> > +/* MOXA */
+> > +#define PCI_VENDOR_ID_MOXA	0x1393
+> 
+> Isn't this a redefinition of the pci-ids.h one?
 
-On 03/10/2023 04:17, Sophon Wu wrote:
-> On 09/01/2023 16:47, Neil Armstrong wrote:
-> 
->> Add support for the display clock controller found in SM8550
->> based devices.
-> 
->> This clock controller feeds the Multimedia Display SubSystem (MDSS).
->> This driver is based on the SM8450 support.
-> 
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->> Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
-> 
-> Hi Neil,
-> 
-> I'm trying to enable display on SM8550 but having trouble with clocks. Do you
-> have any idea on this maybe? Full dmesg here: https://bpa.st/7E6Q
+At first, I attempt to place DEVICE_ID macros into pci_ids.h to enable
+their usage throughout 8250_pci.c and to establish centralized
+management. However, I notice the comment in pci_ids.h which is:
 
-You may need to remove the cont-splash memory zone and the simple-framebuffer,
-if you leave the cont-splash the bootloader will leave the MDSS on and Linux
-will fail to take over and initialize the clocks.
+'Do not add new entries to this file unless the definitions are shared
+between multiple drivers'
 
-This is known issue, and for now we re-initialize everything from Linux after
-ABL disables the display subsystem entirely.
+So I add this VENDOR_ID just for the clarity, even though it results in
+duplication.
 
-Neil
+Should I put these macros into pci_ids.h? If so, I am willing to help
+relocate all other macros.
 
-> 
-> Regards,
-> Xilin
-> 
->   ------------[ cut here ]------------
->   disp_cc_mdss_mdp_clk_src: rcg didn't update its configuration.
->   WARNING: CPU: 4 PID: 73 at drivers/clk/qcom/clk-rcg2.c:133
-> update_config+0xd4/0xf0
->   Modules linked in:
->   CPU: 4 PID: 73 Comm: kworker/u16:2 Tainted: G S
-> 6.6.0-rc3-next-20230929-00006-g019d41d2e78e-dirty #252
-> d692e32c53d7001f1537e28f80b45291db95a48f
->   Hardware name: AYN Odin 2 (DT)
->   Workqueue: events_unbound deferred_probe_work_func
->   pstate: 614000c5 (nZCv daIF +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
->   pc : update_config+0xd4/0xf0
->   lr : update_config+0xd4/0xf0
->   sp : ffff8000861435d0
->   x29: ffff8000861435d0 x28: 0000000000000000 x27: 0000000000000000
->   x26: ffff0008011da0f4 x25: 0000000000000000 x24: 0000000000000000
->   x23: 0000000000000004 x22: ffff000804f0eac0 x21: ffff800082395f68
->   x20: ffff800085109c20 x19: 0000000000000000 x18: 0000000000000014
->   x17: 0000000043567dcd x16: 00000000c6ba16a0 x15: 0000000040b16970
->   x14: 0000000000000001 x13: 2e6e6f6974617275 x12: 6769666e6f632073
->   x11: 7469206574616470 x10: 752074276e646964 x9 : ffff8000801bfc5c
->   x8 : 2073746920657461 x7 : 6470752074276e64 x6 : 0000000000000010
->   x5 : 40000000ffff0254 x4 : ffff8000848907d0 x3 : 00000000ffffffff
->   x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff000801320000
->   Call trace:
->    update_config+0xd4/0xf0
->    clk_rcg2_shared_enable+0x58/0x98
->    clk_core_enable+0x78/0x1f8
->    clk_core_enable+0x58/0x1f8
->    clk_enable+0x34/0x60
->    clk_bulk_enable+0x54/0xe8
->    msm_mdss_enable+0xac/0x250
->    mdss_runtime_resume+0x3c/0x58
->    pm_generic_runtime_resume+0x34/0x58
->    __genpd_runtime_resume+0x38/0x90
->    genpd_runtime_resume+0x11c/0x2b0
->    __rpm_callback+0x50/0x1f0
->    rpm_callback+0x74/0x88
->    rpm_resume+0x534/0x760
->    __pm_runtime_resume+0x64/0xc0
->    __device_attach+0x8c/0x1c0
->    device_initial_probe+0x1c/0x30
->    bus_probe_device+0xb4/0xc0
->    device_add+0x64c/0x848
->    of_device_add+0x4c/0x70
->    of_platform_device_create_pdata+0x94/0x130
->    of_platform_bus_create+0x188/0x4c8
->    of_platform_populate+0x60/0x160
->    mdss_probe+0x278/0x398
->    platform_probe+0x70/0xd8
->    really_probe+0x190/0x3d8
->    __driver_probe_device+0x84/0x180
->    driver_probe_device+0x44/0x120
->    __device_attach_driver+0xc4/0x168
->    bus_for_each_drv+0x8c/0xf0
->    __device_attach+0xa4/0x1c0
->    device_initial_probe+0x1c/0x30
->    bus_probe_device+0xb4/0xc0
->    deferred_probe_work_func+0xbc/0x118
->    process_one_work+0x154/0x3c8
->    worker_thread+0x2bc/0x3e0
->    kthread+0x118/0x128
->    ret_from_fork+0x10/0x20
->   ---[ end trace 0000000000000000 ]---
->   Failed to enable clk '(null)': -16
->   msm-mdss ae00000.display-subsystem: clock enable failed, ret:-16
->   ------------[ cut here ]------------
->   disp_cc_mdss_ahb_clk status stuck at 'off'
->   WARNING: CPU: 4 PID: 73 at drivers/clk/qcom/clk-branch.c:86
-> clk_branch_wait+0x148/0x168
->   Modules linked in:
->   CPU: 4 PID: 73 Comm: kworker/u16:2 Tainted: G S      W
-> 6.6.0-rc3-next-20230929-00006-g019d41d2e78e-dirty #252
-> d692e32c53d7001f1537e28f80b45291db95a48f
->   Hardware name: AYN Odin 2 (DT)
->   Workqueue: events_unbound deferred_probe_work_func
->   pstate: 614000c5 (nZCv daIF +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
->   pc : clk_branch_wait+0x148/0x168
->   lr : clk_branch_wait+0x148/0x168
->   sp : ffff800086143650
->   x29: ffff800086143650 x28: 0000000000000000 x27: 0000000000000000
->   x26: 0000000000000000 x25: ffff000a7e7b50d8 x24: ffff80008517ac90
->   x23: ffff800082395ed0 x22: 0000000000000001 x21: ffff800080bb09f0
->   x20: 0000000000000000 x19: ffff8000851094d0 x18: 0000000000000006
->   x17: 0000000000000000 x16: 0000000000000020 x15: 0000000000000002
->   x14: 0000000000000001 x13: 0000000000000004 x12: 0000000000000000
->   x11: 0000000000000000 x10: 0000000000000020 x9 : ffff8000801bfc5c
->   x8 : 0000000000000020 x7 : 00000000ffffffff x6 : 0000000000000000
->   x5 : 0000000000000050 x4 : ffff800083df7e80 x3 : 00000000ffffffff
->   x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff000801320000
->   Call trace:
->    clk_branch_wait+0x148/0x168
->    clk_branch2_enable+0x38/0x50
->    clk_core_enable+0x78/0x1f8
->    clk_enable+0x34/0x60
->    dsi_phy_enable_resource+0x98/0xb8
->    dsi_phy_driver_probe+0x26c/0x408
->    platform_probe+0x70/0xd8
->    really_probe+0x190/0x3d8
->    __driver_probe_device+0x84/0x180
->    driver_probe_device+0x44/0x120
->    __device_attach_driver+0xc4/0x168
->    bus_for_each_drv+0x8c/0xf0
->    __device_attach+0xa4/0x1c0
->    device_initial_probe+0x1c/0x30
->    bus_probe_device+0xb4/0xc0
->    device_add+0x64c/0x848
->    of_device_add+0x4c/0x70
->    of_platform_device_create_pdata+0x94/0x130
->    of_platform_bus_create+0x188/0x4c8
->    of_platform_populate+0x60/0x160
->    mdss_probe+0x278/0x398
->    platform_probe+0x70/0xd8
->    really_probe+0x190/0x3d8
->    __driver_probe_device+0x84/0x180
->    driver_probe_device+0x44/0x120
->    __device_attach_driver+0xc4/0x168
->    bus_for_each_drv+0x8c/0xf0
->    __device_attach+0xa4/0x1c0
->    device_initial_probe+0x1c/0x30
->    bus_probe_device+0xb4/0xc0
->    deferred_probe_work_func+0xbc/0x118
->    process_one_work+0x154/0x3c8
->    worker_thread+0x2bc/0x3e0
->    kthread+0x118/0x128
->    ret_from_fork+0x10/0x20
->   ---[ end trace 0000000000000000 ]---
->   msm_dsi_phy ae97000.phy: [drm:dsi_phy_enable_resource] *ERROR*
-> dsi_phy_enable_resource: can't enable ahb clk, -16
->   msm_dsi_phy: probe of ae97000.phy failed with error -16
-
+---
+Sincerely,
+Crescent CY Hsieh
