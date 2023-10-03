@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FA27B6AE8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B9D17B6AE9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237114AbjJCNu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60704 "EHLO
+        id S237393AbjJCNvb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 09:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232137AbjJCNu2 (ORCPT
+        with ESMTP id S232068AbjJCNva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:50:28 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB91AD
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:50:25 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 468F2C433C9;
-        Tue,  3 Oct 2023 13:50:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696341025;
-        bh=YxifJ1Z73CgHj4OSVngWsMFOdhHCFakmIXaPX8loJAg=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=U3w+v3OQt67baH5tcXryivMpQhVCwD8oQN6LenlOVd/tiQFTo1ax/WdcMEBtQsDHh
-         +yBo0RIMDAcueVsMGMRUedq0wOtScqvo4CXbB1iReUrhrl7/q+vdjk3/lpvrubOKiN
-         du8ffYp/SHwmfdQCN+RHl6eBCRIGB3JgcccOyWIK6cqlHUX+7VmRsrDSf1fn/rSuJe
-         Moax/XZW2C8AE8vinreKc01GNosceeMDvi+cyJDNUwi8UQEVfEqkCpfzZfxzwJwD80
-         3sfyvGw0x4PiiKUhaMGlEwGK8iJu3jcdItVjVoCHM327wf+L5n7GbG+zQEHNmHCx3m
-         zKt4HidNINc0g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 29F01E632D0;
-        Tue,  3 Oct 2023 13:50:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 3 Oct 2023 09:51:30 -0400
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECE5A6
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:51:27 -0700 (PDT)
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6bc57401cb9so202176a34.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 06:51:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696341087; x=1696945887;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4HUgt17OFEhb9rcSXf7tWTR4CCIRUcfN3jzW9uvMrWE=;
+        b=kB5OEuOSDSt9mCJxQ2VJoMTGN5zbPrKMoGOnH0LtSys9tO9MMp3EEAUoB7dinm9AYK
+         almicQp8mDJdAy0OWDGDn/6V2atTvFHRg3Ap729Lsbjw8jijm3D1WVOe5Xtbt6nPpTa1
+         YV9QIE2OFvpzQiZiRk7/EXQX4CyCjjN4le2/RVP1AAHTPSJQUflX1TcDZWdBv4jtC4Ib
+         P9jyLWdZQv98hS/2wBYwySoxD+6nJq06Qs7Mkype6NLeQHIsyJlqNmJANHjyQdx2YmwW
+         49GKXtPcuXfZIRG8ftrXWKoLk2E8VIDJR+wLFBzlmipnHJa0xUucMWPhDcSoXD5Y9+ff
+         +RzQ==
+X-Gm-Message-State: AOJu0YyagzhQqFL0XC5p6PwZyOd+ku8zjPaC4MiTtMm9EmY3gHw668hF
+        Ju2WQuux7pjpT5hKxVRrkn5Ih6qxhADVVP/uVkMg3gx+
+X-Google-Smtp-Source: AGHT+IG84rISyrfnp/k89hhLUxJUWr1q8TmM0AGEwUyw/oUxT9NWecgoQPvGyjVs1L3Grnpk3yexW6Eow9Bbj58FZoU=
+X-Received: by 2002:a05:6808:2029:b0:3a9:e85d:b689 with SMTP id
+ q41-20020a056808202900b003a9e85db689mr16958494oiw.0.1696341086920; Tue, 03
+ Oct 2023 06:51:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v6 net-next 0/5] net: dsa: hsr: Enable HSR HW offloading for
- KSZ9477
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169634102516.4627.9648416567742706220.git-patchwork-notify@kernel.org>
-Date:   Tue, 03 Oct 2023 13:50:25 +0000
-References: <20230922133108.2090612-1-lukma@denx.de>
-In-Reply-To: <20230922133108.2090612-1-lukma@denx.de>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Tristram.Ha@microchip.com, edumazet@google.com, andrew@lunn.ch,
-        davem@davemloft.net, woojung.huh@microchip.com, olteanv@gmail.com,
-        o.rempel@pengutronix.de, f.fainelli@gmail.com, kuba@kernel.org,
-        pabeni@redhat.com, UNGLinuxDriver@microchip.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231002135218.2602969-1-andriy.shevchenko@linux.intel.com> <29d92a79-cfc5-41f1-b930-8789ad17fdda@amd.com>
+In-Reply-To: <29d92a79-cfc5-41f1-b930-8789ad17fdda@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 3 Oct 2023 15:51:15 +0200
+Message-ID: <CAJZ5v0hULhbDwziVfCt4rc-TO74zaB2H3a928RGgJmA=qfK63w@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] ACPI: x86: s2idle: Switch to use acpi_evaluate_dsm_typed()
+To:     Mario Limonciello <mario.limonciello@amd.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Mon, Oct 2, 2023 at 4:05 PM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
+>
+> On 10/2/2023 08:52, Andy Shevchenko wrote:
+> > The acpi_evaluate_dsm_typed() provides a way to check the type of the
+> > object evaluated by _DSM call. Use it instead of open coded variant.
+> >
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>
+> Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
 
-This series was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+Applied as 6.7 material, thanks!
 
-On Fri, 22 Sep 2023 15:31:03 +0200 you wrote:
-> This patch series provides support for HSR HW offloading in KSZ9477
-> switch IC.
-> 
-> To test this feature:
-> ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 version 1
-> ip link set dev lan1 up
-> ip link set dev lan2 up
-> ip a add 192.168.0.1/24 dev hsr0
-> ip link set dev hsr0 up
-> 
-> [...]
-
-Here is the summary with links:
-  - [v6,net-next,1/5] net: dsa: propagate extack to ds->ops->port_hsr_join()
-    https://git.kernel.org/netdev/net-next/c/fefe5dc4afea
-  - [v6,net-next,2/5] net: dsa: notify drivers of MAC address changes on user ports
-    https://git.kernel.org/netdev/net-next/c/6715042cd112
-  - [v6,net-next,3/5] net: dsa: tag_ksz: Extend ksz9477_xmit() for HSR frame duplication
-    https://git.kernel.org/netdev/net-next/c/5e5db71a92c5
-  - [v6,net-next,4/5] net: dsa: microchip: move REG_SW_MAC_ADDR to dev->info->regs[]
-    https://git.kernel.org/netdev/net-next/c/e5de2ad163e7
-  - [v6,net-next,5/5] net: dsa: microchip: Enable HSR offloading for KSZ9477
-    https://git.kernel.org/netdev/net-next/c/2d61298fdd7b
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> > ---
+> >   drivers/acpi/x86/s2idle.c | 5 ++---
+> >   1 file changed, 2 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
+> > index 08f7c6708206..7d64e655f1b8 100644
+> > --- a/drivers/acpi/x86/s2idle.c
+> > +++ b/drivers/acpi/x86/s2idle.c
+> > @@ -417,11 +417,10 @@ static int validate_dsm(acpi_handle handle, const char *uuid, int rev, guid_t *d
+> >       int ret = -EINVAL;
+> >
+> >       guid_parse(uuid, dsm_guid);
+> > -     obj = acpi_evaluate_dsm(handle, dsm_guid, rev, 0, NULL);
+> >
+> >       /* Check if the _DSM is present and as expected. */
+> > -     if (!obj || obj->type != ACPI_TYPE_BUFFER || obj->buffer.length == 0 ||
+> > -         obj->buffer.length > sizeof(u32)) {
+> > +     obj = acpi_evaluate_dsm_typed(handle, dsm_guid, rev, 0, NULL, ACPI_TYPE_BUFFER);
+> > +     if (!obj || obj->buffer.length == 0 || obj->buffer.length > sizeof(u32)) {
+> >               acpi_handle_debug(handle,
+> >                               "_DSM UUID %s rev %d function 0 evaluation failed\n", uuid, rev);
+> >               goto out;
+>
