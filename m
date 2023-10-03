@@ -2,144 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFB97B715D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC207B7161
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240811AbjJCSzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 14:55:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37112 "EHLO
+        id S240851AbjJCS5X convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 14:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232086AbjJCSzI (ORCPT
+        with ESMTP id S231376AbjJCS5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:55:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DAD99B;
-        Tue,  3 Oct 2023 11:55:05 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55796C433C8;
-        Tue,  3 Oct 2023 18:55:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696359304;
-        bh=NFKhnj+jEO3QAJ7YWzF+twV7T5lsxhFLQX1vu6FAjtA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iydG4IaZiHYTjC/gHXlx8VgRUoLtUy5Kbv+c3Fx7JfLbmZW6haKxTAdJ52IuCyg0e
-         wZrzZ/9lV9QazYC7ziaD7V6pzDR83XLmaNmwss3DQpZvQZ/JxX7FqGC5YcPTOaWvHH
-         7cHac1r0n7yhaLbj6yFU0QCTixxPEGQxxpjM28+tIcejCA7QjXFyS2vKKHwdySN2hS
-         570FzNYpumwRrNHBuLCfKcjflq0IBy5nBvCRs5WXkmwlErla96FmETEwGnGQA0KCwB
-         hEpB+RkJ/fE7pKX5+Ikas5G5/PGaYJ3uZyAQjVrfUZV0AWta4uEFAY/FFhxUUEiBAv
-         uWiL8afRccabA==
-Date:   Tue, 3 Oct 2023 19:55:00 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Daniel Starke <daniel.starke@siemens.com>,
-        Fedor Pchelkin <pchelkin@ispras.ru>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-serial@vger.kernel.org,
-        syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com
-Subject: Re: [PATCH 1/1] tty: n_gsm: Avoid sleeping during .write() whilst
- atomic
-Message-ID: <20231003185500.GD8453@google.com>
-References: <20231003170020.830242-1-lee@kernel.org>
- <2023100320-immorally-outboard-573a@gregkh>
+        Tue, 3 Oct 2023 14:57:21 -0400
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1706A7;
+        Tue,  3 Oct 2023 11:57:18 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-57bf04841ccso247500eaf.0;
+        Tue, 03 Oct 2023 11:57:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696359438; x=1696964238;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ox0Selfc/25SDV9Q5jkJTLaDuAWtxvahlx8boOX57z8=;
+        b=YcnTAg8kuFhLnBSF/ajXTqCijE7q1lPIPyXXhorWXBCKq6hBBPWl1AlmQCIoYycB/o
+         S2ysuRlP8u3epd7msNJ5onE8LNLU/3DBUdN4iZOVgaFL+hwHFncqFDYxDWmpbjTe+Xz8
+         R3JJpHxiAb02T7KT13kjoLrQkLW6O3zc6RQkV9zGIHlaQocwa9+TBsYwy8RYm3aZ9Dsd
+         2DkRYAQ0QulEWKxrIjX3CQARwGnNWiflhtsXwLOZ5SQggNYrdOzPMD5pRxjH9rWgRyuU
+         UWHh31XHMlqIcXDZP1NPCdOhb9cRfFVF1F8pweDF7Pfwfn8LiVlFYNs9iJPmv7n2of1t
+         42kA==
+X-Gm-Message-State: AOJu0YxvhHicb8Mnqtyd8wetB0b1uh3N2kN1grCNB7hIkEfv8jK5n+n4
+        H147wtUe7a4fsjxag4oYX4FjIzYRX5kgyeWJ+WU=
+X-Google-Smtp-Source: AGHT+IFc770QxCiRdEXoSuA4LwACsS/D4asXOGsel4is2Y9vaiEzom8WVcKBQ+RnwVSORl2YT/uuqD89QXrny6x10vA=
+X-Received: by 2002:a4a:ee90:0:b0:57b:94b7:c6ba with SMTP id
+ dk16-20020a4aee90000000b0057b94b7c6bamr278994oob.0.1696359438232; Tue, 03 Oct
+ 2023 11:57:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2023100320-immorally-outboard-573a@gregkh>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230928221344.44289-1-bergh.jonathan@gmail.com>
+In-Reply-To: <20230928221344.44289-1-bergh.jonathan@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 3 Oct 2023 20:57:06 +0200
+Message-ID: <CAJZ5v0i2h875LC6pxUcusJqPULKyQtTK3e_Fjz7RAM=mBN+bBw@mail.gmail.com>
+Subject: Re: [PATCH] drivers: acpi: Fix formatting issues where braces should
+ be on newlines
+To:     Jonathan Bergh <bergh.jonathan@gmail.com>
+Cc:     lenb@kernel.org, rui.zhang@intel.com, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 03 Oct 2023, Greg Kroah-Hartman wrote:
+On Fri, Sep 29, 2023 at 12:31 AM Jonathan Bergh
+<bergh.jonathan@gmail.com> wrote:
+>
+> Fix the following formatting issues in thermal.c:
+>  * braces following function declarations should be on a new line
+>  * add single line between function declarations
+>
+> Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+> ---
+>  drivers/acpi/thermal.c | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
+> index 312730f8272e..dea5f8a51f87 100644
+> --- a/drivers/acpi/thermal.c
+> +++ b/drivers/acpi/thermal.c
+> @@ -1046,7 +1046,8 @@ static struct acpi_driver acpi_thermal_driver = {
+>         .drv.pm = &acpi_thermal_pm,
+>  };
+>
+> -static int thermal_act(const struct dmi_system_id *d) {
+> +static int thermal_act(const struct dmi_system_id *d)
+> +{
+>         if (act == 0) {
+>                 pr_notice("%s detected: disabling all active thermal trip points\n",
+>                           d->ident);
+> @@ -1054,13 +1055,17 @@ static int thermal_act(const struct dmi_system_id *d) {
+>         }
+>         return 0;
+>  }
+> -static int thermal_nocrt(const struct dmi_system_id *d) {
+> +
+> +static int thermal_nocrt(const struct dmi_system_id *d)
+> +{
+>         pr_notice("%s detected: disabling all critical thermal trip point actions.\n",
+>                   d->ident);
+>         crt = -1;
+>         return 0;
+>  }
+> -static int thermal_tzp(const struct dmi_system_id *d) {
+> +
+> +static int thermal_tzp(const struct dmi_system_id *d)
+> +{
+>         if (tzp == 0) {
+>                 pr_notice("%s detected: enabling thermal zone polling\n",
+>                           d->ident);
+> @@ -1068,7 +1073,9 @@ static int thermal_tzp(const struct dmi_system_id *d) {
+>         }
+>         return 0;
+>  }
+> -static int thermal_psv(const struct dmi_system_id *d) {
+> +
+> +static int thermal_psv(const struct dmi_system_id *d)
+> +{
+>         if (psv == 0) {
+>                 pr_notice("%s detected: disabling all passive thermal trip points\n",
+>                           d->ident);
+> --
 
-> On Tue, Oct 03, 2023 at 06:00:20PM +0100, Lee Jones wrote:
-> > The important part of the call stack being:
-> > 
-> >   gsmld_write()             # Takes a lock and disables IRQs
-> >     con_write()
-> >       console_lock()
-> 
-> Wait, why is the n_gsm line discipline being used for a console?
-> 
-> What hardware/protocol wants this to happen?
-> 
-> gsm I thought was for a very specific type of device, not a console.
-> 
-> As per:
-> 	https://www.kernel.org/doc/html/v5.9/driver-api/serial/n_gsm.html
-> this is a specific modem protocol, why is con_write() being called?
-
-What it's meant for and what random users can make it do are likely to
-be quite separate questions.  This scenario is user driven and can be
-replicated simply by issuing a few syscalls (open, ioctl, write).
-
-> >         __might_sleep()
-> >           __might_resched() # Complains that IRQs are disabled
-> > 
-> > To fix this, let's ensure mutual exclusion by using a protected shared
-> > variable (busy) instead.  We'll use the current locking mechanism to
-> > protect it, but ensure that the locks are released and IRQs re-enabled
-> > by the time we transit further down the call chain which may sleep.
-> > 
-> > Cc: Daniel Starke <daniel.starke@siemens.com>
-> > Cc: Fedor Pchelkin <pchelkin@ispras.ru>
-> > Cc: Jiri Slaby <jirislaby@kernel.org>
-> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Cc: linux-serial@vger.kernel.org
-> > Reported-by: syzbot+5f47a8cea6a12b77a876@syzkaller.appspotmail.com
-> > Signed-off-by: Lee Jones <lee@kernel.org>
-> > ---
-> >  drivers/tty/n_gsm.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> > 
-> > diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-> > index 1f3aba607cd51..b83a97d58381f 100644
-> > --- a/drivers/tty/n_gsm.c
-> > +++ b/drivers/tty/n_gsm.c
-> > @@ -270,6 +270,7 @@ struct gsm_mux {
-> >  	struct tty_struct *tty;		/* The tty our ldisc is bound to */
-> >  	spinlock_t lock;
-> >  	struct mutex mutex;
-> > +	bool busy;
-> >  	unsigned int num;
-> >  	struct kref ref;
-> >  
-> > @@ -3253,6 +3254,7 @@ static struct gsm_mux *gsm_alloc_mux(void)
-> >  	gsm->dead = true;	/* Avoid early tty opens */
-> >  	gsm->wait_config = false; /* Disabled */
-> >  	gsm->keep_alive = 0;	/* Disabled */
-> > +	gsm->busy = false;
-> >  
-> >  	/* Store the instance to the mux array or abort if no space is
-> >  	 * available.
-> > @@ -3718,11 +3720,21 @@ static ssize_t gsmld_write(struct tty_struct *tty, struct file *file,
-> >  
-> >  	ret = -ENOBUFS;
-> >  	spin_lock_irqsave(&gsm->tx_lock, flags);
-> > +	if (gsm->busy) {
-> > +		spin_unlock_irqrestore(&gsm->tx_lock, flags);
-> > +		return -EBUSY;
-> 
-> So you just "busted" the re-entrant call chain here, are you sure this
-> is ok for this protocl?  Can it handle -EBUSY?
-
-I should have marked this submission as RFC.  Mea culpa.  Please
-consider it as such going forward.  Feedback like this is highly
-valuable.
-
-> Daniel, any thoughts?
-> 
-> And Lee, you really don't have this hardware, right?  So why are you
-> dealing with bug reports for it?  :)
-
-'cos Syzkaller.
-
-And no, as per the splat above, this was reproduced in qemu.
-
--- 
-Lee Jones [李琼斯]
+Applied as 6.7 material (with edited subject and changelog), thanks!
