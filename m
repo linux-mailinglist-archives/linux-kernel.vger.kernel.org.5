@@ -2,59 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 524177B660D
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF44B7B6611
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 12:06:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239841AbjJCKGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 06:06:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
+        id S239848AbjJCKGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 06:06:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230392AbjJCKGD (ORCPT
+        with ESMTP id S239838AbjJCKGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 06:06:03 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C269C91
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 03:05:59 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id C32B76607181;
-        Tue,  3 Oct 2023 11:05:57 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696327558;
-        bh=Uea1kzbzCEAJv9egM0FbWhO2rAR8f8GiAjog6bbqjK8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ipi2QljETxWw6nUTpWbl4ctzFrUaNHlu+c2+q65SXjz+KjG3uvVXHvwBOY+QYHm+B
-         RDJ/ZcNSJDP63J/DdmRPx/GZuCRFzufzwEP1rPK7deEt/+vRMgbNSMxLVuprskN88J
-         dgukou0kAa2sTvJkZe1EJZunYHx6MT8WOUNmAbiOazJklYNk8RB0Vb9Z4hXcKxHF70
-         IAcAVWsVp3b1Gn2lwXkD+V9HquYu4hEdqf5uXgUjTe6baAvXeUE+3cAmPQZo6Ut+rF
-         3IufimnoHfz9IhkMm0x3C7x9+J7hYAPrwZKBz6gSthEkDUHWMDmbtr0V51wnor7GHh
-         0+DlndPNGz4ng==
-Date:   Tue, 3 Oct 2023 12:05:54 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Thomas =?UTF-8?B?SGVsbHN0csO2bQ==?= 
-        <thomas.hellstrom@linux.intel.com>
-Cc:     Danilo Krummrich <dakr@redhat.com>, airlied@gmail.com,
-        daniel@ffwll.ch, matthew.brost@intel.com, sarah.walker@imgtec.com,
-        donald.robson@imgtec.com, christian.koenig@amd.com,
-        faith@gfxstrand.net, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH drm-misc-next v5 4/6] drm/gpuvm: track/lock/validate
- external/evicted objects
-Message-ID: <20231003120554.547090bc@collabora.com>
-In-Reply-To: <e4e68970-c7c9-55e2-9483-01252f38c956@linux.intel.com>
-References: <20230928191624.13703-1-dakr@redhat.com>
-        <20230928191624.13703-5-dakr@redhat.com>
-        <e4e68970-c7c9-55e2-9483-01252f38c956@linux.intel.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 3 Oct 2023 06:06:14 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9262FB0
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 03:06:10 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d8162698f0dso779862276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 03:06:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696327570; x=1696932370; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kYY6vWSNKTYmeOsWDutWjp0Dy6WB1jcBj72iJmFRNeI=;
+        b=hZv12M4ax010irFg/GAeEbYpI9KBMLl/iReEqiqjnnuVEYDJ5qYu3R5pPF7m1hY1pt
+         PehaCD1R/44YP1gNdmgoE0VBS4NDm8KhWSLm5kUp/NgRV5q5EpObPvLsqqx5qsBFnjwe
+         EgrfojmlndaxafuF5byfLRg1BC7GKGk5nwTw/zQchbxkx9OiZIwOytjEHlA0qNsAlyui
+         /OA54p7pXDtW85Y7K7YB0y/wbQ3kWwPAx9tPrkNk58/iE2zw7HkDdkQMsrZQgqxb+ht1
+         nYitg7jHrm2wld0ZB8GQ0XagVjKg9ORJfLO7qCgMyd2TBU344PCigckVqHP6w/mMvxkH
+         tepg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696327570; x=1696932370;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kYY6vWSNKTYmeOsWDutWjp0Dy6WB1jcBj72iJmFRNeI=;
+        b=IqGur9Jhjeajy3f3HdNKy952nvO7zi9Ah6Y42idQX08mrIwbDoyl1F+Efo2eI2dNgN
+         GXCEUNCiyG6psoKLnDBi7zqu0Me2N/A2tCzO89vDevVb29d5iPABzyqGS/Us/MuAPZco
+         xVJqAm+uGuORIqQLDqvgBm83FPqiFLhsfTkYF25aoF822I8t+1UUPEWGRHOA8BGW5AMa
+         N6aD0gjP2U/mHBNDDzJvfzDfBzkYN/ODfkNz+JFxztdvAfhdfMBL+qHth5FuM8A7SpYI
+         LfD5Jgke5f4W7E8d5j9yj6DYC8ryCHaToFXXxbC3ubec3NFyOSDNLUr8t2wXyR8DDpUa
+         U00g==
+X-Gm-Message-State: AOJu0YzjljRpNhyxoNXCS5FkIZtLFeFkYmgDeYhsHs5m9NtckUWkgtXl
+        nJqXmE/FOPTD1jcf8DuNx6l+7wFQMUs2Z51F+ZkUZg==
+X-Google-Smtp-Source: AGHT+IEDEkigzAbnvMlvaSmR+AEMY+sHV+2ys05HA/+WcAgzhebgJvzC/TVDaIgh0Bvv8g81P7mvrJdNShphvBDncwU=
+X-Received: by 2002:a25:a545:0:b0:d62:6838:74b9 with SMTP id
+ h63-20020a25a545000000b00d62683874b9mr12769755ybi.55.1696327569696; Tue, 03
+ Oct 2023 03:06:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <1696327472-21776-1-git-send-email-quic_rohiagar@quicinc.com> <1696327472-21776-2-git-send-email-quic_rohiagar@quicinc.com>
+In-Reply-To: <1696327472-21776-2-git-send-email-quic_rohiagar@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 3 Oct 2023 13:05:58 +0300
+Message-ID: <CAA8EJpp0+8FBtrmC7MGRkAdiavGSBUH7oAcQ0rN1OzLCWnsk8Q@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] arm64: dts: qcom: Add interconnect nodes for SDX75
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,141 +68,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Thomas,
+On Tue, 3 Oct 2023 at 13:04, Rohit Agarwal <quic_rohiagar@quicinc.com> wrote:
+>
+> Add interconnect nodes to support interconnects on SDX75.
+> Also parallely add the interconnect property for UART required
+> so that the bootup to shell does not break with interconnects
+> in place.
+>
+> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/sdx75.dtsi | 52 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sdx75.dtsi b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+> index e180aa4..ac0b785 100644
+> --- a/arch/arm64/boot/dts/qcom/sdx75.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+> @@ -8,6 +8,8 @@
+>
+>  #include <dt-bindings/clock/qcom,rpmh.h>
+>  #include <dt-bindings/clock/qcom,sdx75-gcc.h>
+> +#include <dt-bindings/interconnect/qcom,icc.h>
+> +#include <dt-bindings/interconnect/qcom,sdx75.h>
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+> @@ -197,6 +199,19 @@
+>                 };
+>         };
+>
+> +       clk_virt: interconnect-0 {
+> +               compatible = "qcom,sdx75-clk-virt";
+> +               #interconnect-cells = <2>;
+> +               qcom,bcm-voters = <&apps_bcm_voter>;
+> +               clocks = <&rpmhcc RPMH_QPIC_CLK>;
+> +       };
+> +
+> +       mc_virt: interconnect-1 {
+> +               compatible = "qcom,sdx75-mc-virt";
+> +               #interconnect-cells = <2>;
+> +               qcom,bcm-voters = <&apps_bcm_voter>;
+> +       };
 
-On Tue, 3 Oct 2023 10:36:10 +0200
-Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
+Interconnect comes after firmware, 'i' > 'f'.
 
-> > +/**
-> > + * get_next_vm_bo_from_list() - get the next vm_bo element
-> > + * @__gpuvm: The GPU VM
-> > + * @__list_name: The name of the list we're iterating on
-> > + * @__local_list: A pointer to the local list used to store already it=
-erated items
-> > + * @__prev_vm_bo: The previous element we got from drm_gpuvm_get_next_=
-cached_vm_bo()
-> > + *
-> > + * This helper is here to provide lockless list iteration. Lockless as=
- in, the
-> > + * iterator releases the lock immediately after picking the first elem=
-ent from
-> > + * the list, so list insertion deletion can happen concurrently.
-> > + *
-> > + * Elements popped from the original list are kept in a local list, so=
- removal
-> > + * and is_empty checks can still happen while we're iterating the list.
-> > + */
-> > +#define get_next_vm_bo_from_list(__gpuvm, __list_name, __local_list, _=
-_prev_vm_bo)	\
-> > +	({										\
-> > +		struct drm_gpuvm_bo *__vm_bo =3D NULL;					\
-> > +											\
-> > +		drm_gpuvm_bo_put(__prev_vm_bo);						\
-> > +											\
-> > +		spin_lock(&(__gpuvm)->__list_name.lock);				\ =20
->=20
-> Here we unconditionally take the spinlocks while iterating, and the main=
-=20
-> point of DRM_GPUVM_RESV_PROTECTED was really to avoid that?
->=20
->=20
-> > +		if (!(__gpuvm)->__list_name.local_list)					\
-> > +			(__gpuvm)->__list_name.local_list =3D __local_list;		\
-> > +		else									\
-> > +			WARN_ON((__gpuvm)->__list_name.local_list !=3D __local_list);	\
-> > +											\
-> > +		while (!list_empty(&(__gpuvm)->__list_name.list)) {			\
-> > +			__vm_bo =3D list_first_entry(&(__gpuvm)->__list_name.list,	\
-> > +						   struct drm_gpuvm_bo,			\
-> > +						   list.entry.__list_name);		\
-> > +			if (kref_get_unless_zero(&__vm_bo->kref)) { =20
-> And unnecessarily grab a reference in the RESV_PROTECTED case.
-> > 			\
-> > +				list_move_tail(&(__vm_bo)->list.entry.__list_name,	\
-> > +					       __local_list);				\
-> > +				break;							\
-> > +			} else {							\
-> > +				list_del_init(&(__vm_bo)->list.entry.__list_name);	\
-> > +				__vm_bo =3D NULL;						\
-> > +			}								\
-> > +		}									\
-> > +		spin_unlock(&(__gpuvm)->__list_name.lock);				\
-> > +											\
-> > +		__vm_bo;								\
-> > +	}) =20
->=20
-> IMHO this lockless list iteration looks very complex and should be=20
-> pretty difficult to maintain while moving forward, also since it pulls=20
-> the gpuvm_bos off the list, list iteration needs to be protected by an=20
-> outer lock anyway.
+> +
+>         firmware {
+>                 scm: scm {
+>                         compatible = "qcom,scm-sdx75", "qcom,scm";
+> @@ -434,6 +449,9 @@
+>                         clock-names = "m-ahb",
+>                                       "s-ahb";
+>                         iommus = <&apps_smmu 0xe3 0x0>;
+> +                       interconnects = <&clk_virt MASTER_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS
+> +                                        &clk_virt SLAVE_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS>;
+> +                       interconnect-names = "qup-core";
+>                         #address-cells = <2>;
+>                         #size-cells = <2>;
+>                         ranges;
+> @@ -444,6 +462,12 @@
+>                                 reg = <0x0 0x00984000 0x0 0x4000>;
+>                                 clocks = <&gcc GCC_QUPV3_WRAP0_S1_CLK>;
+>                                 clock-names = "se";
+> +                               interconnects = <&clk_virt MASTER_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS
+> +                                                &clk_virt SLAVE_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS>,
+> +                                               <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ALWAYS
+> +                                                &system_noc SLAVE_QUP_0 QCOM_ICC_TAG_ALWAYS>;
+> +                               interconnect-names = "qup-core",
+> +                                                    "qup-config";
+>                                 interrupts = <GIC_SPI 338 IRQ_TYPE_LEVEL_HIGH>;
+>                                 pinctrl-0 = <&qupv3_se1_2uart_active>;
+>                                 pinctrl-1 = <&qupv3_se1_2uart_sleep>;
+> @@ -453,6 +477,20 @@
+>                         };
+>                 };
+>
+> +               system_noc: interconnect@1640000 {
+> +                       compatible = "qcom,sdx75-system-noc";
+> +                       reg = <0x0 0x01640000 0x0 0x4b400>;
+> +                       #interconnect-cells = <2>;
+> +                       qcom,bcm-voters = <&apps_bcm_voter>;
+> +               };
+> +
+> +               pcie_anoc: interconnect@16c0000 {
+> +                       compatible = "qcom,sdx75-pcie-anoc";
+> +                       reg = <0x0 0x016c0000 0x0 0x14200>;
+> +                       #interconnect-cells = <2>;
+> +                       qcom,bcm-voters = <&apps_bcm_voter>;
+> +               };
+> +
+>                 tcsr_mutex: hwlock@1f40000 {
+>                         compatible = "qcom,tcsr-mutex";
+>                         reg = <0x0 0x01f40000 0x0 0x40000>;
+> @@ -733,6 +771,20 @@
+>                         #freq-domain-cells = <1>;
+>                         #clock-cells = <1>;
+>                 };
+> +
+> +               dc_noc: interconnect@190e0000 {
+> +                       compatible = "qcom,sdx75-dc-noc";
+> +                       reg = <0x0 0x190e0000 0x0 0x8200>;
+> +                       #interconnect-cells = <2>;
+> +                       qcom,bcm-voters = <&apps_bcm_voter>;
+> +               };
+> +
+> +               gem_noc: interconnect@19100000 {
+> +                       compatible = "qcom,sdx75-gem-noc";
+> +                       reg = <0x0 0x19100000 0x0 0x34080>;
+> +                       #interconnect-cells = <2>;
+> +                       qcom,bcm-voters = <&apps_bcm_voter>;
+> +               };
+>         };
+>
+>         timer {
+> --
+> 2.7.4
+>
 
-As being partly responsible for this convoluted list iterator, I must
-say I agree with you. There's so many ways this can go wrong if the
-user doesn't call it the right way, or doesn't protect concurrent list
-iterations with a separate lock (luckily, this is a private iterator). I
-mean, it works, so there's certainly a way to get it right, but gosh,
-this is so far from the simple API I had hoped for.
 
-> Also from what I understand from Boris, the extobj=20
-> list would typically not need the fine-grained locking; only the evict=20
-> list?
-
-Right, I'm adding the gpuvm_bo to extobj list in the ioctl path, when
-the GEM and VM resvs are held, and I'm deferring the drm_gpuvm_bo_put()
-call to a work that's not in the dma-signalling path. This being said,
-I'm still not comfortable with the
-
-gem =3D drm_gem_object_get(vm_bo->gem);
-dma_resv_lock(gem->resv);
-drm_gpuvm_bo_put(vm_bo);
-dma_resv_unlock(gem->resv);
-drm_gem_object_put(gem);
-
-dance that's needed to avoid a UAF when the gpuvm_bo is the last GEM
-owner, not to mention that drm_gpuva_unlink() calls drm_gpuvm_bo_put()
-after making sure the GEM gpuvm_list lock is held, but this lock might
-differ from the resv lock (custom locking so we can call
-gpuvm_unlink() in the dma-signalling path). So we now have paths where
-drm_gpuvm_bo_put() are called with the resv lock held, and others where
-they are not, and that only works because we're relying on the the fact
-those drm_gpuvm_bo_put() calls won't make the refcount drop to zero,
-because the deferred vm_bo_put() work still owns a vm_bo ref.
-
-All these tiny details add to the overall complexity of this common
-layer, and to me, that's not any better than the
-get_next_vm_bo_from_list() complexity you were complaining about (might
-be even worth, because this sort of things leak to users).
-
-Having an internal lock partly solves that, in that the locking of the
-extobj list is now entirely orthogonal to the GEM that's being removed
-from this list, and we can lock/unlock internally without forcing the
-caller to take weird actions to make sure things don't explode. Don't
-get me wrong, I get that this locking overhead is not acceptable for
-Xe, but I feel like we're turning drm_gpuvm into a white elephant that
-only few people will get right.
-
-This is just my personal view on this, and I certainly don't want to
-block or delay the merging of this patchset, but I thought I'd share my
-concerns. As someone who's been following the evolution of this
-drm_gpuva/vm series for weeks, and who's still sometimes getting lost,
-I can't imagine how new drm_gpuvm users would feel...
-
-> Also it seems that if we are to maintain two modes here, for=20
-> reasonably clean code we'd need two separate instances of=20
-> get_next_bo_from_list().
->=20
-> For the !RESV_PROTECTED case, perhaps one would want to consider the=20
-> solution used currently in xe, where the VM maintains two evict lists.=20
-> One protected by a spinlock and one protected by the VM resv. When the=20
-> VM resv is locked to begin list traversal, the spinlock is locked *once*=
-=20
-> and the spinlock-protected list is looped over and copied into the resv=20
-> protected one. For traversal, the resv protected one is used.
-
-Oh, so you do have the same sort of trick where you move the entire
-list to another list, such that you can let other paths update the list
-while you're iterating your own snapshot. That's interesting...
-
-Regards,
-
-Boris
+-- 
+With best wishes
+Dmitry
