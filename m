@@ -2,179 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32AA67B60F0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 08:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1C37B60F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 08:48:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbjJCGpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 02:45:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47442 "EHLO
+        id S230378AbjJCGsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 02:48:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbjJCGpX (ORCPT
+        with ESMTP id S229453AbjJCGsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 02:45:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F9EAD;
-        Mon,  2 Oct 2023 23:45:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696315520; x=1727851520;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=Em/FrrctLJh6Y71ZEU3Iwy2aMxZLwNO0KD4a2A0zeiA=;
-  b=E+gY6P/U8hNxpiWJ7IA642pS4MxfH/W9KYyntGkUqlOHBMc4yWhArkW2
-   a+1UDPGHtFFKkYgRxB6ssKv5rIMAQHfOzpyOl08ewDNSW3f1tSDNE201s
-   06B3DplPeqACFV9XWy60YKQvbngzmjj8e+VaaLsxnirYd2qozVR9AYEQI
-   l2n0hc6x7V5j5kk+XjeNOeW48HWUUR2MibaXuVzKrEiJZTvLCr0s2QCGA
-   b4Imibkbchjm1dnGJirbG8/lpEtFnAANd5AB5L0X1lAjqD4XOzzSdPT2j
-   d6wez/y3BYhQ/+HPIwy4tgAUH1QCs/EQNat400qMPxlTV4PyQX08D7spj
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="469079236"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="469079236"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 23:45:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="754300404"
-X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
-   d="scan'208";a="754300404"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.96.100])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 02 Oct 2023 23:45:17 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To:     "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Mehta, Sohil" <sohil.mehta@intel.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "Huang, Kai" <kai.huang@intel.com>
-Cc:     "kristen@linux.intel.com" <kristen@linux.intel.com>,
-        "yangjie@microsoft.com" <yangjie@microsoft.com>,
-        "Li, Zhiquan1" <zhiquan1.li@intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
-        "Zhang, Bo" <zhanb@microsoft.com>,
-        "anakrish@microsoft.com" <anakrish@microsoft.com>
-Subject: Re: [PATCH v5 09/18] x86/sgx: Store struct sgx_encl when allocating
- new VA pages
-References: <20230923030657.16148-1-haitao.huang@linux.intel.com>
- <20230923030657.16148-10-haitao.huang@linux.intel.com>
- <ac66cb2b6e057f5e5e78345bcddea13a3e72ee5e.camel@intel.com>
-Date:   Tue, 03 Oct 2023 01:45:15 -0500
+        Tue, 3 Oct 2023 02:48:51 -0400
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF96AC;
+        Mon,  2 Oct 2023 23:48:47 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3936mV70002180;
+        Tue, 3 Oct 2023 01:48:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1696315711;
+        bh=L8cq9ILA9YOFfOTbj/R2hPdyw38+X5l8GX2variqNi8=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=nTaMkc6+Vl+dsPdyJQfH6ifS+pfB2L1XQlQ+8ZNFPNqXppaG9FQsQ8e5yJmyLwloD
+         TbymWz5VZLfBMH71yZQl9iMdhC/YiROE3OJrKAtYUvbGBFYZRbKsAWhLxn/yICC54h
+         CyquA27Vpmru/8AZQtpZa9xI8HybKQvT2D3NtP7Q=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3936mU7G077467
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 3 Oct 2023 01:48:30 -0500
+Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 3
+ Oct 2023 01:48:30 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 3 Oct 2023 01:48:30 -0500
+Received: from [172.24.227.94] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3936mRUx021423;
+        Tue, 3 Oct 2023 01:48:27 -0500
+Message-ID: <a8749e98-7ead-939e-6fa6-35779593a5f4@ti.com>
+Date:   Tue, 3 Oct 2023 12:18:26 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v6 4/7] arm64: dts: ti: k3-j784s4-main: Add the main
+ domain watchdog instances
+Content-Language: en-US
+To:     Keerthy <j-keerthy@ti.com>, <robh+dt@kernel.org>, <nm@ti.com>,
+        <conor+dt@kernel.org>, <kristo@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>
+CC:     <u-kumar1@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230927023357.9883-1-j-keerthy@ti.com>
+ <20230927023357.9883-5-j-keerthy@ti.com>
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <20230927023357.9883-5-j-keerthy@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-From:   "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2b77pp0wwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <ac66cb2b6e057f5e5e78345bcddea13a3e72ee5e.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Sep 2023 06:35:57 -0500, Huang, Kai <kai.huang@intel.com> wrote:
 
-> On Fri, 2023-09-22 at 20:06 -0700, Haitao Huang wrote:
->> From: Sean Christopherson <sean.j.christopherson@intel.com>
->>
->> In a later patch, when a cgroup has exceeded the max capacity for EPC
->> pages, it may need to identify and OOM kill a less active enclave to
->> make room for other enclaves within the same group. Such a victim
->> enclave would have no active pages other than the unreclaimable Version
->> Array (VA) and SECS pages.
->
-> What does "no active pages" mean?
->
 
-EPC pages in use.
+On 27/09/23 08:03, Keerthy wrote:
+> +	/*
+> +	 * The following RTI instances are coupled with MCU R5Fs, c7x and
+> +	 * GPU so keeping them disabled as these will be used by their
+> +	 * respective firmware
+> +	 */
+> +	watchdog16: watchdog@2300000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2300000 0x00 0x100>;
+> +		clocks = <&k3_clks 356 1>;
+> +		power-domains = <&k3_pds 356 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 356 0>;
+> +		assigned-clock-parents = <&k3_clks 356 4>;
+> +		status = "disabled";
+> +	};
+> +
+> +	watchdog17: watchdog@2310000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2310000 0x00 0x100>;
+> +		clocks = <&k3_clks 357 1>;
+> +		power-domains = <&k3_pds 357 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 357 0>;
+> +		assigned-clock-parents = <&k3_clks 357 4>;
+> +		status = "disabled";
+> +	};
+> +
+> +	watchdog18: watchdog@2320000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2320000 0x00 0x100>;
+> +		clocks = <&k3_clks 358 1>;
+> +		power-domains = <&k3_pds 358 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 358 0>;
+> +		assigned-clock-parents = <&k3_clks 358 4>;
+> +		status = "disabled";
+> +	};
+> +
+> +	watchdog19: watchdog@2330000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2330000 0x00 0x100>;
+> +		clocks = <&k3_clks 359 1>;
+> +		power-domains = <&k3_pds 359 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 359 0>;
+> +		assigned-clock-parents = <&k3_clks 359 4>;
+> +		status = "disabled";
+> +	};
+> +
+> +	watchdog15: watchdog@22f0000 {
 
-> A "less active enclave" doesn't necessarily mean it has "no active  
-> pages"?
->
 
-I'll rephrase the above sentences
+I understand you are arranging based on Firmware Device ID. But these
+numbers don't have much meaning when user maps to TRM. So, I suggest
+nodes to be arranged by TRM numbering or ascending order of register
+address so that its easier for end user to map the nodes to IP  instance
+in TRM.
 
->
->> Therefore, the cgroup needs examine its
-> 			^
-> 			needs to
->
->> unreclaimable page list, and finding an enclave given a SECS page or a
-> 				^
-> 				find
->
->> VA page. This will require a backpointer from a page to an enclave,
->> which is not available for VA pages.
->>
->> Because struct sgx_epc_page instances of VA pages are not owned by an
->> sgx_encl_page instance, mark their owner as sgx_encl: pass the struct
->> sgx_encl of the enclave allocating the VA page to sgx_alloc_epc_page(),
->> which will store this value in the owner field of the struct
->> sgx_epc_page.
->
-> IMHO this paragraph is hard to understand and can be more concise:
->
-> One VA page can be shared by multiple enclave pages thus cannot be  
-> associated
-> with any 'struct sgx_encl_page' instance.  Set the owner of VA page to  
-> the
-> enclave instead.
->
->
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x22f0000 0x00 0x100>;
+> +		clocks = <&k3_clks 360 1>;
+> +		power-domains = <&k3_pds 360 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 360 0>;
+> +		assigned-clock-parents = <&k3_clks 360 4>;
+> +		status = "disabled";
+> +	};
+> +
+> +	watchdog28: watchdog@23c0000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x23c0000 0x00 0x100>;
+> +		clocks = <&k3_clks 361 1>;
+> +		power-domains = <&k3_pds 361 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 361 0>;
+> +		assigned-clock-parents = <&k3_clks 361 4>;
+> +		status = "disabled";
+> +	};
+> +
+> +	watchdog29: watchdog@23d0000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x23d0000 0x00 0x100>;
+> +		clocks = <&k3_clks 362 1>;
+> +		power-domains = <&k3_pds 362 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 362 0>;
+> +		assigned-clock-parents = <&k3_clks 362 4>;
+> +		status = "disabled";
+> +	};
+> +
+> +	watchdog30: watchdog@23e0000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x23e0000 0x00 0x100>;
+> +		clocks = <&k3_clks 363 1>;
+> +		power-domains = <&k3_pds 363 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 363 0>;
+> +		assigned-clock-parents = <&k3_clks 363 4>;
+> +		status = "disabled";
+> +	};
+> +
+> +	watchdog31: watchdog@23f0000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x23f0000 0x00 0x100>;
+> +		clocks = <&k3_clks 364 1>;
+> +		power-domains = <&k3_pds 364 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 364 0>;
+> +		assigned-clock-parents = <&k3_clks 364 4>;
+> +		status = "disabled";
+> +	};
+> +
+> +	watchdog32: watchdog@2540000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2540000 0x00 0x100>;
+> +		clocks = <&k3_clks 365 1>;
+> +		power-domains = <&k3_pds 365 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 365 0>;
+> +		assigned-clock-parents = <&k3_clks 366 4>;
+> +		status = "disabled";
+> +	};
+> +
+> +	watchdog33: watchdog@2550000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x00 0x2550000 0x00 0x100>;
+> +		clocks = <&k3_clks 366 1>;
+> +		power-domains = <&k3_pds 366 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 366 0>;
+> +		assigned-clock-parents = <&k3_clks 366 4>;
+> +		status = "disabled";
+> +	};
+>  };
+> -- 2.17.1
 
-Agreed
-
->> In a later patch, VA pages will be placed in an
->> unreclaimable queue that can be examined by the cgroup to select the OOM
->> killed enclave.
->
-> The code to "place the VA page to unreclaimable queue" has been done in  
-> earlier
-> patch ("x86/sgx: Introduce EPC page states").  Just the unreclaimable  
-> list isn't
-> introduced yet.  I think you should just introduce it first then you can  
-> get rid
-> of those "in a later patch" staff.
->
-
-I hope I was able to clarify to you in other threads that VA pages are not  
-placed in any queue/list until [PATCH v5 11/18] x86/sgx: store  
-unreclaimable pages in LRU lists.
-
-This patch is the first one to implement tracking for unreclaimable pages.  
-I'll add that as a transition hint.
-
-> And nit: please use "unreclaimable list" consistently (not queue).
->
-
-Yes will do
-
->
-> Btw, probably a dumb question:
->
-> Theoretically if you only need to find a victim enclave you don't need  
-> to put VA
-> pages to the unreclaimable list, because those VA pages will be freed  
-> anyway
-> when enclave is killed.  So keeping VA pages in the list is for  
-> accounting all
-> the pages that the cgroup is having?
-
-Yes basically tracking them in cgroups as they are allocated.
-
-VAs and SECS may also come and go as swapping/unswapping happens. But if a  
-cgroup is OOM, and all reclaimables are gone (swapped out), it'd have to  
-reclaim VAs/SECs in the same cgroup starting from the front of the LRU  
-list. To reclaim a VA/SECS, it identifies the enclave from the owner of  
-the VA/SECS page and kills it, as killing enclave is the only way to  
-reclaim VA/SECS pages.
+-- 
+Regards
+Vignesh
