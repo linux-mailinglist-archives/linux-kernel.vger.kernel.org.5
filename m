@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B13647B5E00
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D767B5E04
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237510AbjJCAMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 20:12:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37466 "EHLO
+        id S237541AbjJCAOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 20:14:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbjJCAMx (ORCPT
+        with ESMTP id S229789AbjJCAOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 20:12:53 -0400
-Received: from mail-oa1-x43.google.com (mail-oa1-x43.google.com [IPv6:2001:4860:4864:20::43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6BDC6
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:12:50 -0700 (PDT)
-Received: by mail-oa1-x43.google.com with SMTP id 586e51a60fabf-1dd94578a4fso52547fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 17:12:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1696291969; x=1696896769; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3ZYFOCnJg3JB+NMDyiBkV1Ci3jAh1uzwfMkuIhs6hs0=;
-        b=ZxK+ppqIAwBoLU4Zrlxbxl99bJyWSPO4YXpbA+aA5+U6dM6VaTw63DAV7ypdcRALLK
-         yBwp4EY5sxDocSj8s/C6z13uZXD3A09KH5mBLmmig3gV6XiG29EY/mB2Tf1PfFWxRSUR
-         FoX8DYHyYO1FWJEzZC/67CVuBck8rz8XOvIjFo9SAm1AosXqQmPdB7nVsSZsBzJKPV3i
-         v8vB26ygaMFeX9CQ5p4xdisvL+xmkVDrCap42GCGd2AfyEQo6GlFFwQrWKv78ZHFv/Nz
-         lmla6ezeiAA8EGRBRUkUSKsVFQ/GJFfKq3Ctl140G0Vgwic81uR3FlsWTKJuBAhFENrQ
-         BsKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696291969; x=1696896769;
-        h=content-transfer-encoding:in-reply-to:references:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3ZYFOCnJg3JB+NMDyiBkV1Ci3jAh1uzwfMkuIhs6hs0=;
-        b=r82xJFCfe3K8CO7Kez3j60Mrn4ThdM9VLP/LnGNXjQe2NnnMp4k5cF50zyy4hoG9gH
-         Ov6uClpPAud1lIubIg9sgwS+ikT2rp5uC8CYC/t8cVLC4zCr7ors75B160NJ/bzveMma
-         HZus0/xDwI2Kqq7Iha3koCecJ92eAe1VAMURYevkBABLGG51Edan+F4H/miJk4ajmDlo
-         abAAsy5j6GIxFbCetMDjvmSyY5wbVpJV4JjMWbwqrfPCcAmmVZIxDYVABloFLRUFdDkt
-         c0Xu9xC2X/rH5zS8VOZFwjFNRs//aGyhf4/V/WZ0g/Gpq0R98kHkFfu/j44+U1MxrMy5
-         Q0Bw==
-X-Gm-Message-State: AOJu0YyYze9FJA6mKt7b16yAUSJGfVUog6p6DS6brMVaWicXXIlHQgRM
-        /ucHZ0/EDtkCKp4LTGA0JE+pAVNdZgVzFXfOxFKRWw==
-X-Google-Smtp-Source: AGHT+IF9baUR9p6DAKFjII/kVTO/AjJMvz3lg30gHWN7cn7bssakhG73wKi092cOJs92S3iO0TpdEQ==
-X-Received: by 2002:a05:6358:c610:b0:147:eb87:3665 with SMTP id fd16-20020a056358c61000b00147eb873665mr10087049rwb.3.1696291969642;
-        Mon, 02 Oct 2023 17:12:49 -0700 (PDT)
-Received: from [192.168.1.136] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id f17-20020aa782d1000000b0068bc6a75848sm71459pfn.156.2023.10.02.17.12.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Oct 2023 17:12:48 -0700 (PDT)
-Message-ID: <fa467e6b-12be-4234-914f-02ec5c787412@kernel.dk>
-Date:   Mon, 2 Oct 2023 18:12:47 -0600
+        Mon, 2 Oct 2023 20:14:43 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FB37A7
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:14:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA786C433C7;
+        Tue,  3 Oct 2023 00:14:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696292080;
+        bh=q1MBaMUELwCBG5jdmdvbG7aW24fu4ICBu0JhJ4Wa7Kk=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=G9sAs9ryEXpRgW3lD1+uOjxvV9o4z0Sz49ZGn5zsl5CK3lc1bqH0chCCQ1wRGRyrn
+         GjgACnglfZ4qpNDykToOyb0CYbGh18gFwkJtqgOh6ErnSvU5VgtRA5oMslGsBB9g4Y
+         fIHSKTM+bxjDki9ryZH8jWKa2SM7FTV3sUVyfpRm0jWVURvyeUuu9YQdAmz8lH29B8
+         oFZU+0uSVK5IEC9CxNt7Z12TY0AZpwFoY87ErRlFqxxnITxc4rgQS0TtouzTN+wvuD
+         OtgxNkLriQgvRFOn4/zcdJ+fo0vMtNEsS4s2kTipWmqrduevPylx5mvZ+nnAHldRKk
+         W++Q0m6uNWhTQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 81D86CE13B5; Mon,  2 Oct 2023 17:14:39 -0700 (PDT)
+Date:   Mon, 2 Oct 2023 17:14:39 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel@vger.kernel.org,
+        Michael Jeanson <mjeanson@efficios.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: [RFC PATCH v3 1/5] tracing: Introduce faultable tracepoints (v3)
+Message-ID: <97c559c9-51cf-415c-8b0b-39eba47b8898@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20231002202531.3160-1-mathieu.desnoyers@efficios.com>
+ <20231002202531.3160-2-mathieu.desnoyers@efficios.com>
+ <20231002191023.6175294d@gandalf.local.home>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [io-uring?] BUG: unable to handle kernel NULL pointer
- dereference in __io_remove_buffers (2)
-Content-Language: en-US
-From:   Jens Axboe <axboe@kernel.dk>
-To:     syzbot <syzbot+2113e61b8848fa7951d8@syzkaller.appspotmail.com>,
-        asml.silence@gmail.com, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000af635c0606bcb889@google.com>
- <7567c27a-b5d0-41fc-a7e5-d65ed168b39c@kernel.dk>
-In-Reply-To: <7567c27a-b5d0-41fc-a7e5-d65ed168b39c@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231002191023.6175294d@gandalf.local.home>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/2/23 10:43 AM, Jens Axboe wrote:
-> On 10/2/23 8:38 AM, syzbot wrote:
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    ec8c298121e3 Merge tag 'x86-urgent-2023-10-01' of git://gi..
->> git tree:       upstream
->> console output: https://syzkaller.appspot.com/x/log.txt?x=16ef0ed6680000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=3be743fa9361d5b0
->> dashboard link: https://syzkaller.appspot.com/bug?extid=2113e61b8848fa7951d8
->> compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
->> userspace arch: arm
+On Mon, Oct 02, 2023 at 07:10:23PM -0400, Steven Rostedt wrote:
+> On Mon,  2 Oct 2023 16:25:27 -0400
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
 > 
-> I tried the syz repro in the console output, but can't trigger it. It
-> also makes very little sense to me... For when there is a reproducer,
-> the below would perhaps shed some light on it. We have bl->is_mapped ==
-> 1, yet bl->buf_ring is NULL. Probably some artifact of 32-bit arm?
+> > @@ -202,8 +198,12 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+> >  		if (WARN_ON_ONCE(RCUIDLE_COND(rcuidle)))		\
+> >  			return;						\
+> >  									\
+> > -		/* keep srcu and sched-rcu usage consistent */		\
+> > -		preempt_disable_notrace();				\
+> > +		if (mayfault) {						\
+> > +			rcu_read_lock_trace();				\
+> 
+> I thought rcu_trace was for the case that a task can not voluntarily call
+> schedule. If this tracepoint tries to read user space memory that isn't
+> paged in, and faults, can't the faulting logic call schedule and break this
+> requirement?
 
-I think this is 32-bit and highmem... The page being mapped into the
-kernel is a highmem page, and this won't really fly with having a
-permanent ->buf_ring address which we get from page_address().
+Well, additional new uses of rcu_read_lock_trace() do bear close scrutiny,
+but RCU Tasks Trace readers are permitted to block for page faults.
+The BPF folks already use it for this purpose, so this should be OK.
+(If for some unknown-to-me reason it isn't, I am sure that Alexei,
+who is on CC, will not suffer in silence.)
 
--- 
-Jens Axboe
+One way of thinking of RCU Tasks Trace is as a form of SRCU with
+lightweight readers.  Except that, unlike SRCU, there is only one global
+RCU Tasks Trace.  This means that all RCU Tasks Trace users need to keep
+each other informed, because one users' unruly readers will affect all
+RCU Tasks Trace users.
 
+But given that the BPF folks already have page faults in RCU Tasks Trace
+readers, this one should be OK.
+
+							Thanx, Paul
+
+> -- Steve
+> 
+> 
+> > +		} else {						\
+> > +			/* keep srcu and sched-rcu usage consistent */	\
+> > +			preempt_disable_notrace();			\
+> > +		}							\
+> >  									\
+> >  		/*							\
+> >  		 * For rcuidle callers, use srcu since sched-rcu	\
