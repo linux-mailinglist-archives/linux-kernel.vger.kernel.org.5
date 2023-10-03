@@ -2,158 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC2FB7B5FA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 05:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F17DD7B5FA9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 05:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239094AbjJCDxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 23:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40026 "EHLO
+        id S230153AbjJCD5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 23:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239024AbjJCDxV (ORCPT
+        with ESMTP id S230120AbjJCD5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 23:53:21 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93244CC7
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 20:53:10 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c61acd1285so3404545ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 20:53:10 -0700 (PDT)
+        Mon, 2 Oct 2023 23:57:51 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3CF5C4
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 20:57:46 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-5333fb34be3so662884a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 20:57:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1696305190; x=1696909990; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wscE/VATjNkVY1Hz8a3BGt+QWcAqJYfhFG+cRpEMwCY=;
-        b=V5cqu9hKtsprSisU/UDECgPeMnk6LWXOOvjNGR3+PVsLfJjKJGg6MmbYeOXQeLf8dN
-         IfUP0yRsHiKnvDVu203+WhzHe6HLYqTqbKaJB3hweaqwaP0sHx+t8g8acaZIkYngwLUt
-         1nvZ79qym+KsARkqGVAovFQOb2jWIkR77HUQCRahR1lNa7sprrd4RFAvqE13Fk8bUqWr
-         QKtvvLCrvI8ZDtfhD6dwFeCYbKucxT3MaJlzxtb7F8/4oKOtiyHfG1C2T7Ny+bdGUOxJ
-         /uAYJbJPVQsuI4dGdzidN1vXUcsFwsBEigrhlSSon6TpVOz8OpB6rDNrAIGNchfIs1Td
-         O7kA==
+        d=tuxon.dev; s=google; t=1696305465; x=1696910265; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Vcj38yNtA7k/3hr4qGHtjbsEU4GTIRzNMyspAkCjhCA=;
+        b=p3zo2HGEr+2OvrXEoU/Zye/b9aSgFuQ/6Cn7dI+WhkfiRd4RZIr6GEHOBeC2BSX8tJ
+         uqp1SHn/SvcqCMew2MjGS+ooNVKU9t0g2/tR/kjh2uTBXWKX5c9kuhjNxkCoM5fiH/dm
+         +i9aD/Yc3nv9V05xzEh+j3rMzWC8sHi52iIoWvEC0+kFo2H+PHr8znb9Z2q1CPzrXFvu
+         KF4yBL/6uBN3w5zJM4YKXyeLB+qyDxbIs6nDjrXMqT9WJzT7d7/J/hDtdrWmftrVpq3z
+         UIKnj5ci5Dfk0R0ch9bS7xcZDJLMEjvfLGYlxLJZKh59FgBr0qW/sm0j96/LBJOSTnmn
+         /RAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696305190; x=1696909990;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wscE/VATjNkVY1Hz8a3BGt+QWcAqJYfhFG+cRpEMwCY=;
-        b=cmGLFJo00S9WIXPSH8Z59o5vIUdvRtbCwP8REH+G3YMCFVi4FX3kiaLeP/dhaTTr/R
-         +ja8OiyxhvqgJIVVLW9wHkJf5Z6TQ+yBszuDYkrgUK0FjjM4Vx926VsZYsa41QG4YteX
-         r2gSKRxgzxyytBN5N+vpC5iaGx3ZcU5xjgnFze3KhQlsh1ijI3auxJx2obtTc2ipUCpv
-         kejppTXACl1dwWv6WOveBK2gtYMSq9wcM6mLDgs177W08hvmTnXg8V4KZR3Bafg7ElQG
-         sbrrP2y7kpAzuxLw3FQSlCUvOR47EeZ+sl7TFNxXJIIP0joW768WNnv4MPVqI8M4rn69
-         NeEw==
-X-Gm-Message-State: AOJu0YyzOuc644jeHnrYdZZDl6v61yCv6/6TxjXqOLtJGdO/YZTewwUS
-        QZV+PxY3FSazj9Og1dGdNRap0Q==
-X-Google-Smtp-Source: AGHT+IGkzr82JWDhLVFUCV6JSAUgaCxQMIRqm/FYTV446+qx3qJIHp1jBs7+mM31fhfiKw48k352OQ==
-X-Received: by 2002:a17:902:c40a:b0:1c7:5a63:43bb with SMTP id k10-20020a170902c40a00b001c75a6343bbmr7861019plk.8.1696305190011;
-        Mon, 02 Oct 2023 20:53:10 -0700 (PDT)
-Received: from anup-ubuntu-vm.localdomain ([171.76.84.132])
-        by smtp.gmail.com with ESMTPSA id ja7-20020a170902efc700b001bf846dd2d0sm277381plb.13.2023.10.02.20.53.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 20:53:09 -0700 (PDT)
-From:   Anup Patel <apatel@ventanamicro.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Atish Patra <atishp@atishpatra.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Andrew Jones <ajones@ventanamicro.com>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        devicetree@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Anup Patel <apatel@ventanamicro.com>
-Subject: [PATCH v3 6/6] KVM: riscv: selftests: Add condops extensions to get-reg-list test
-Date:   Tue,  3 Oct 2023 09:22:26 +0530
-Message-Id: <20231003035226.1945725-7-apatel@ventanamicro.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231003035226.1945725-1-apatel@ventanamicro.com>
-References: <20231003035226.1945725-1-apatel@ventanamicro.com>
+        d=1e100.net; s=20230601; t=1696305465; x=1696910265;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vcj38yNtA7k/3hr4qGHtjbsEU4GTIRzNMyspAkCjhCA=;
+        b=B9N0oZul3GTnaz7MvQvzCoPFsDsM3UcIP7b8uMdWTJYFpEOsUkco2MPaLAmm73/pG9
+         j77DT9Jj6kzs0WPUDsvIztihFi2hZshLOfGzhnBgWgH3KVmaYJOYLQ75Psv6i4FeIdfr
+         OF4x88yBoTFdlWAFfw3osD5B24gtfO06iIRVyDg+WZr5XsT7QPD+Q1uMZqVvbsvqC3TK
+         o5kOHIrdeNaFBBWijGDaT6wxDj0lgzBct7QsKXpraXYH1xkZVGBDS4nsJRGlYiUCWuWa
+         xdtQoxEB5mHptjfSnKK+dQN1mIJDgARzMovchurl+TPUWSCS+OZKvq/z6m2J563KXcid
+         FFrw==
+X-Gm-Message-State: AOJu0Ywjzf2BhELYWQfnKdQyym9OrnjXBgyyuJ6H/res+Cm4aIj9PDgc
+        A5rf/mBttvDKxvsvjIzMfxDwUw==
+X-Google-Smtp-Source: AGHT+IEifMyPHsZPopKOT2VslyFdEw8uEukP8H3uRKxwv6r121ZBGIoVbrBHyNp4qTycGECLs+Yl3A==
+X-Received: by 2002:a50:fa85:0:b0:534:63e:d0b7 with SMTP id w5-20020a50fa85000000b00534063ed0b7mr11688359edr.23.1696305465098;
+        Mon, 02 Oct 2023 20:57:45 -0700 (PDT)
+Received: from [192.168.32.2] ([82.78.167.190])
+        by smtp.gmail.com with ESMTPSA id q17-20020aa7da91000000b00537f44827a8sm160947eds.64.2023.10.02.20.57.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Oct 2023 20:57:44 -0700 (PDT)
+Message-ID: <ae156c07-955a-1257-2b1a-19ee938c1bcd@tuxon.dev>
+Date:   Tue, 3 Oct 2023 06:57:41 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v2 19/28] dt-bindings: pinctrl: renesas: set
+ additionalProperties: false
+To:     Rob Herring <robh@kernel.org>
+Cc:     geert+renesas@glider.be, mturquette@baylibre.com, sboyd@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linus.walleij@linaro.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, magnus.damm@gmail.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        quic_bjorande@quicinc.com, konrad.dybcio@linaro.org, arnd@arndb.de,
+        neil.armstrong@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        biju.das.jz@bp.renesas.com, linux-renesas-soc@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20230929053915.1530607-1-claudiu.beznea@bp.renesas.com>
+ <20230929053915.1530607-20-claudiu.beznea@bp.renesas.com>
+ <20231002145052.GA1690001-robh@kernel.org>
+Content-Language: en-US
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20231002145052.GA1690001-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have a new conditional operations related ISA extensions so let us
-add these extensions to get-reg-list test.
 
-Signed-off-by: Anup Patel <apatel@ventanamicro.com>
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
----
- .../testing/selftests/kvm/riscv/get-reg-list.c  | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
 
-diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-index 625118d53b74..77dc5221c465 100644
---- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-+++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-@@ -48,6 +48,7 @@ bool filter_reg(__u64 reg)
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICBOM:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICBOZ:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICNTR:
-+	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICOND:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICSR:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIFENCEI:
- 	case KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZIHINTPAUSE:
-@@ -361,6 +362,7 @@ static const char *isa_ext_id_to_str(__u64 id)
- 		KVM_ISA_EXT_ARR(ZICBOM),
- 		KVM_ISA_EXT_ARR(ZICBOZ),
- 		KVM_ISA_EXT_ARR(ZICNTR),
-+		KVM_ISA_EXT_ARR(ZICOND),
- 		KVM_ISA_EXT_ARR(ZICSR),
- 		KVM_ISA_EXT_ARR(ZIFENCEI),
- 		KVM_ISA_EXT_ARR(ZIHINTPAUSE),
-@@ -632,6 +634,10 @@ static __u64 zicntr_regs[] = {
- 	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICNTR,
- };
- 
-+static __u64 zicond_regs[] = {
-+	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICOND,
-+};
-+
- static __u64 zicsr_regs[] = {
- 	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_ISA_EXT | KVM_RISCV_ISA_EXT_ZICSR,
- };
-@@ -759,6 +765,8 @@ static __u64 fp_d_regs[] = {
- 	{"zbs", .feature = KVM_RISCV_ISA_EXT_ZBS, .regs = zbs_regs, .regs_n = ARRAY_SIZE(zbs_regs),}
- #define ZICNTR_REGS_SUBLIST \
- 	{"zicntr", .feature = KVM_RISCV_ISA_EXT_ZICNTR, .regs = zicntr_regs, .regs_n = ARRAY_SIZE(zicntr_regs),}
-+#define ZICOND_REGS_SUBLIST \
-+	{"zicond", .feature = KVM_RISCV_ISA_EXT_ZICOND, .regs = zicond_regs, .regs_n = ARRAY_SIZE(zicond_regs),}
- #define ZICSR_REGS_SUBLIST \
- 	{"zicsr", .feature = KVM_RISCV_ISA_EXT_ZICSR, .regs = zicsr_regs, .regs_n = ARRAY_SIZE(zicsr_regs),}
- #define ZIFENCEI_REGS_SUBLIST \
-@@ -864,6 +872,14 @@ static struct vcpu_reg_list zicntr_config = {
- 	},
- };
- 
-+static struct vcpu_reg_list zicond_config = {
-+	.sublists = {
-+	BASE_SUBLIST,
-+	ZICOND_REGS_SUBLIST,
-+	{0},
-+	},
-+};
-+
- static struct vcpu_reg_list zicsr_config = {
- 	.sublists = {
- 	BASE_SUBLIST,
-@@ -932,6 +948,7 @@ struct vcpu_reg_list *vcpu_configs[] = {
- 	&zbb_config,
- 	&zbs_config,
- 	&zicntr_config,
-+	&zicond_config,
- 	&zicsr_config,
- 	&zifencei_config,
- 	&zihpm_config,
--- 
-2.34.1
+On 02.10.2023 17:50, Rob Herring wrote:
+> On Fri, Sep 29, 2023 at 08:39:06AM +0300, Claudiu wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> Set additionalProperties: false.
+>>
+>> Suggested-by: Rob Herring <robh@kernel.org>
+> 
+> I did?
 
+It is what I've understood from this:
+
+https://patchwork.kernel.org/project/linux-renesas-soc/patch/20230912045157.177966-30-claudiu.beznea.uj@bp.renesas.com/
+
+> 
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> ---
+>>
+>> Changes in v2:
+>> - this patch is new in v2 and added as suggested by Rob
+>>
+>>  .../devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml     | 3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+>> index 4782f96feb7e..eb726770f571 100644
+>> --- a/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+>> +++ b/Documentation/devicetree/bindings/pinctrl/renesas,rzg2l-pinctrl.yaml
+>> @@ -106,8 +106,7 @@ additionalProperties:
+>>          line-name: true
+>>  
+>>      - type: object
+>> -      additionalProperties:
+>> -        $ref: "#/additionalProperties/anyOf/0"
+>> +      additionalProperties: false
+> 
+> With no properties defined, this only allows an empty node which is 
+> probably not what you want. It's the other anyOf entry that needed it, 
+> but I already sent a fix which Linus applied.
+
+Thanks!
+
+> 
+> Rob
