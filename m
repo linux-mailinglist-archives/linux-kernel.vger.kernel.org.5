@@ -2,178 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 284DE7B72FE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9ED17B7301
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:05:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241120AbjJCVDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 17:03:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50162 "EHLO
+        id S232107AbjJCVFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 17:05:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241038AbjJCVDN (ORCPT
+        with ESMTP id S241134AbjJCVFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 17:03:13 -0400
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2046.outbound.protection.outlook.com [40.107.104.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D773AB;
-        Tue,  3 Oct 2023 14:03:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AxV+02jPru9LFm2Yh+4Ijy0HrmKqGFTNjXjtfLTUlMB6Y/v60SBkBnZDUcA1+Qn1ThJN7U7LB9dn8qAsv9O8n+73dPl0I7fwmWSY+Xhd0qgeCoBDPPBCIBldvUl0Xi7TIEUVsRQf1BlpCe/mbkcz4LZ344O8xMWefNi4wCFcvsenb17afbLrddnof7D/snheV8cUWzPSj2oZV9k7LfhNDUCcZj1+1k31Pje6e5kD0Rk2Ydh6nfq04Al1PqcCoPpHWtmBP0VfD5SGAJpmUfWXRTCIS2Kzm0iBe2ggeMwLtdWHRAvoRghJiGx2I+9kEBnX7SHx5W3t6X144NF4FRtsGw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=64KRXe9lAEsvqO4h72TkhDPfpP0Ec9+Teo9EB5gp9U8=;
- b=hfDcbfJ1n7VGSIn5gSICdCNKpoQtrZCydOE9Se+90k95Dndisgcn1lDpEOGFaivNExymfet7Hx1vj2AapvKtXDvUMZoRloOeEok/L4EGb5q6FUEyJbSOVMgdscD0rOGh0sBae/nIWYMWsTHyllRJfYpetYIpEXwh5c1sHIGhSsw0KPSqjD6KcuLqrfHk9XPlfwxQgs2W4Q9UJc9fppCS0NoW2ZZlJIeSmgcyFfK1Sdkh0ppgNC8TEY8F4mUHK41NiAljZdEQ3MC1G9ucqx81bZb0Vb54LUQiWd3/SzxitXs2AV0i9eTcNOXxhvJEfGQWkd6nyenr+k+tYGITiHtofQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=64KRXe9lAEsvqO4h72TkhDPfpP0Ec9+Teo9EB5gp9U8=;
- b=q9VKRsn6DRzKY3pE0mB8CyiZPGTZWUakb5GAhpziLLYq7I/XXrsi6VsbLe6tfc+P6Ir/FlTf81+HtqV0vBQmT7s3ez8kdILF00L5WqIHxSl6DEioScr1LjGWCi1W64STodAi1xTnwRRPgyks6vn+WIJn9rrOnHnG2tdF1LTzIew=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by DU0PR04MB9442.eurprd04.prod.outlook.com (2603:10a6:10:35a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6813.34; Tue, 3 Oct
- 2023 21:03:07 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::568a:57ee:35b5:e454]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::568a:57ee:35b5:e454%3]) with mapi id 15.20.6838.024; Tue, 3 Oct 2023
- 21:03:07 +0000
-Date:   Wed, 4 Oct 2023 00:03:02 +0300
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Madalin Bucur <madalin.bucur@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Camelia Groza <camelia.groza@nxp.com>,
-        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor@kernel.org>,
-        Sean Anderson <sean.anderson@seco.com>,
-        Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>
-Subject: Re: [RFC PATCH v2 net-next 07/15] net: phylink: centralize
- phy_interface_mode_is_8023z() && phylink_autoneg_inband() checks
-Message-ID: <20231003210302.sxz6jmcs7t5jmcqz@skbuf>
-References: <20230923134904.3627402-1-vladimir.oltean@nxp.com>
- <20230923134904.3627402-8-vladimir.oltean@nxp.com>
- <ZRv6vNJhvVI9/1RX@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZRv6vNJhvVI9/1RX@shell.armlinux.org.uk>
-X-ClientProxiedBy: AM0PR02CA0008.eurprd02.prod.outlook.com
- (2603:10a6:208:3e::21) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
+        Tue, 3 Oct 2023 17:05:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864DE83
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:04:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696367083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9cUoqfdOw5XZHcgjUV+sI5thBgqq8pWph++w1cw0LK0=;
+        b=AjtA78v1aG+o5BjkMmbkRL8mhmCpEfiFwYPWMtrUe3yPzYr0k1fV/RKhBAH6lX80I+zWKn
+        rE8luWW4Wif+QNgTj9BEsScnB9pExi8LnOu8rFl8ruoL9HepZayNbTQjqPazMGwFFVyxer
+        wEa90XqkLyVJSa4iJJkrm6fX0xINVOo=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-323-lv_4mFwOPlqgARNyra6E5A-1; Tue, 03 Oct 2023 17:04:42 -0400
+X-MC-Unique: lv_4mFwOPlqgARNyra6E5A-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4065d52a83aso9821495e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 14:04:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696367081; x=1696971881;
+        h=content-transfer-encoding:in-reply-to:subject:organization:from
+         :content-language:references:cc:to:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9cUoqfdOw5XZHcgjUV+sI5thBgqq8pWph++w1cw0LK0=;
+        b=KLtWLZEOTdc0/TkayNk+o0uAfQcySvCu98A7FtA4J1cAe2jGepPvncn1axK8Wv22yh
+         64AKNHf30qVUy//oXPa+jICKRhwcV45G05OQvFvRzgl5ULcXDZ9ft9XZK5lcvOzYQO8C
+         3ZsumLDIlOo7LtkFvheMcQzf5eA8H1uhByUP+oXJsPK3M9OLlSJ9cVOr6RlqbLA0iEyY
+         8i/6K9t8RFHeLNUinvEJ9UL8ucuSGaHpW6Cc6lV9Cfc4WzXEl2BKUpMcnITKIHaf+Iig
+         koRBxEvHLIAU0PwoGrVz0RZ2gkn9+5W+5LncmtHAXseYHcBjajNJ9vpLMSGixlBMSO+T
+         XUKQ==
+X-Gm-Message-State: AOJu0Yw1PBQQSv5RFUTDSdb2ytLFLUWv/OTkihvVfKej3/I7mm6MNIuj
+        5FNroacbUco7UEQTHxOs9pszZT1mx4Hbd1zrW9HG3YqAb5W9Z7goMaME/qm4w1xo7mqsSWdNnf4
+        aue84JyKbeIMkHpHiMbQRBajU
+X-Received: by 2002:a7b:cb8b:0:b0:3fb:e189:3532 with SMTP id m11-20020a7bcb8b000000b003fbe1893532mr591787wmi.20.1696367081197;
+        Tue, 03 Oct 2023 14:04:41 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGCEM3CW7oIUIpk49usru6wH655xRCmLet2S1OOC6d3hz6/2QR8k4YhBQDCY3vQccozPA5b7Q==
+X-Received: by 2002:a7b:cb8b:0:b0:3fb:e189:3532 with SMTP id m11-20020a7bcb8b000000b003fbe1893532mr591768wmi.20.1696367080771;
+        Tue, 03 Oct 2023 14:04:40 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c736:1b00:e1fc:b01b:70f5:1985? (p200300cbc7361b00e1fcb01b70f51985.dip0.t-ipconnect.de. [2003:cb:c736:1b00:e1fc:b01b:70f5:1985])
+        by smtp.gmail.com with ESMTPSA id m11-20020a7bce0b000000b004064741f855sm23560wmc.47.2023.10.03.14.04.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Oct 2023 14:04:40 -0700 (PDT)
+Message-ID: <2e2dfe74-8185-5f10-a5ce-5f6252ad0d42@redhat.com>
+Date:   Tue, 3 Oct 2023 23:04:38 +0200
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|DU0PR04MB9442:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7a0b560b-658b-4269-734f-08dbc454247e
-X-LD-Processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bknmfz09as6TJkXstb8BEwbXqOaOM8JpU2ILcl5W9QtXApOqqFoSXdKUENpeOvgLBzmKJ9RnJG5sTqhuJpdyWIcEJlmYel3uIKq5p1VNT5wVo6RiL/srn74kfdoLx3Em9BYTyMxTip73/MK2dr/NKJGux9DZ/EppFni3FFZ3UkTkkzbC1ytmvpaKEBcyeC/vZaCOnJfh3XdkfbZtmSai5/3PXz7ptevoyhNDg5t00dGhlctqvTm9erKBOfIvJji49c9ytx7+xKcAIHwM7Cq6Zbsztmpy2bHP7xvm++eRbL7soyDKV9My1OI/LqggarYZyYUrceLFaBG1mGzgpll4X/z1S8+cXI53wFlk/reQbH3zuhQcrkTcauevZQkmIMRrWm5LSQqMXe4sKJ81aOxGR7qW49+VVwPdvMGriRbilbdOFnE6Myz2kZUYiDx1vE0m2SN2Vk7e6Vo61gJ+/UCedS431FQo3YMxjU1R1FLbOHVJho/PPZ04sWHll9QcMG5DPPcYYL4PWaBDYnch7+E28CVqZi/IHsUvI5Kd0EchE/NpztJrvki8iGvfj6P0zkQ/
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(136003)(39860400002)(346002)(396003)(366004)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(478600001)(6506007)(6666004)(6486002)(6512007)(9686003)(1076003)(7416002)(83380400001)(316002)(41300700001)(6916009)(8676002)(5660300002)(44832011)(66476007)(66556008)(4326008)(8936002)(66946007)(54906003)(2906002)(33716001)(86362001)(38100700002)(26005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UlKYPLsub8ZAKMB5ILhjYMsx0KHaaNQt5NlveuArefdIn/Xak5Hr5mfs0Qls?=
- =?us-ascii?Q?vRX5SIkNzk52BSKZjEWXQoOV+tI2osMrVF4WmIKT3Agbd+NavuCB/tHKmuyi?=
- =?us-ascii?Q?PZdIFi7KC7Ww7qb4EL+Gk2GeWa7E6a62T1Oblw1NroFHojZpSJthYEx/C4d0?=
- =?us-ascii?Q?WCPA9KLxvszgcepz2JwuYLBxkjj7U3SeYF7q4pUTC8mFvtwskx8GEleD4hAe?=
- =?us-ascii?Q?cKEuRHQ4kzjHStcB0xagQralVDl7Lmkk57uBGBRiSuKK//VLbQ07EHDWP0/e?=
- =?us-ascii?Q?O5XZZWiSMfIWstk3H+L4I/1llmBrRwFei1b5ZWaiRcPWWQF8QrzHQZoN1wWp?=
- =?us-ascii?Q?J6aEj3ZcVypcYdWj7W88kfffbR2A9Rs/WLhjdsuDQgz9sb1ymUDSjAsUt+FP?=
- =?us-ascii?Q?mwYGM8V6e78CxUk1zzS63W0h8NAALIKNzb+GL9bpPzC8nkryghsxCj89HRJf?=
- =?us-ascii?Q?HuK6el1eXDq/gU3akIIowzbLquhuLsgN1+Odr5kD4eXop0vLAgpDq28gPOc2?=
- =?us-ascii?Q?ry8qX4lQcds8fId8cCxHBI0oQ0/D7O+9IlhiD3dPNKU2k74tMGcWywlzNQGi?=
- =?us-ascii?Q?WHXtA/sxzp7WXZmVnIOt1GEMFjBqA8XvgA5njWDEOVXw3G8Bwb66L/NRgHaX?=
- =?us-ascii?Q?Sp0EjN/GkKsO+vWIq5D/IQrdr18bjnD23H8lYXX/jzObU1drhAFKYNs+REeA?=
- =?us-ascii?Q?B0PZcDBjOEulPpJgYBA2E9WE6ucEfCpjJc11aZGJ7J9xrcYYAsEt66A6ccw6?=
- =?us-ascii?Q?S0OohbfFva2AbTnoKlhYMaSzK85ZyNAT2S8lGFcLySwU+foeDRQZrlwZ544n?=
- =?us-ascii?Q?QLuxDa9JTfOjiXq9PU+QZgSYU9r39QEjU7XkmkrGAQsEeeaswG2tajhXZwJN?=
- =?us-ascii?Q?mxEDs/sIbqn4fesLxxwnWDNx+FAW8zKCupvqRGFc2PrZKzDd7GPALfniQeCz?=
- =?us-ascii?Q?j8ZOWlMFYMKxOZqFTWtP9cP8hK37JugUJubnlds7QoVcLxGkM8z8hTz06Bgb?=
- =?us-ascii?Q?lHYcKr0k9wm2PMdAYKMOKOZA/WMgOauKa/IblsUp+WNP6F5DXnngA4jV5tVe?=
- =?us-ascii?Q?1A+rW5IEcZkjquVtg4u5VR0cFSisc1u9wjoyGJ6nLY3dGIySNjlS5xNwcsga?=
- =?us-ascii?Q?SlbQ9/GQAS8Cux828Wln9dprPrE7LAuSucXjnu8YLOlFaLXK9+p5jorMBRsn?=
- =?us-ascii?Q?HHTp94VKs7V/AEpo9kf05mv/dzlwExGkuiwWADxhVM9GjM4N5a9V3nf7swlz?=
- =?us-ascii?Q?DwGmGgKxUifXZ2cQ7VNZHLYMx+4Octr2JkixdXzCsWgKRj8ZvIq4hs7d3NQZ?=
- =?us-ascii?Q?844/SwnE5G8E6YCOY+HxaWw230S3WQ0IGybtX7oEaU7qnAA1+lXII8z/ckgH?=
- =?us-ascii?Q?rLKP/cJ+X7SqZzssmvabdYHoxbTXBzLlkmz4x5AU7VCT84i6ivEj60QZr8uI?=
- =?us-ascii?Q?mHpd2y/6Lv+r4nyhsVUOM31+sTku6sD1OQrKwrSnwCblcTaF0duOc8sXzcC9?=
- =?us-ascii?Q?v8que06ToShHAPpwSSlO4gHwuCUWdjkdyl16QBEX/1J80xGrTuYMxOlBfeBL?=
- =?us-ascii?Q?O3LEfBj6J+czuLgmvX8drr8Z06r+i5XY+Zf77UEtukAUl51bZQftxUZ4Izwz?=
- =?us-ascii?Q?IQ=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a0b560b-658b-4269-734f-08dbc454247e
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 21:03:07.4556
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ePzfbjoo93wuAAbjOqZL7SFV6WdvBNOv+2crxQ4T1oBru1eHH+nTDJUJrYijuxyNy6W/A/MpNf5mYibb9ng22Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9442
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+To:     Suren Baghdasaryan <surenb@google.com>,
+        Lokesh Gidra <lokeshgidra@google.com>
+Cc:     Peter Xu <peterx@redhat.com>, Jann Horn <jannh@google.com>,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, shuah@kernel.org, aarcange@redhat.com,
+        hughd@google.com, mhocko@suse.com, axelrasmussen@google.com,
+        rppt@kernel.org, willy@infradead.org, Liam.Howlett@oracle.com,
+        zhangpeng362@huawei.com, bgeffon@google.com,
+        kaleshsingh@google.com, ngeoffray@google.com, jdduke@google.com,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kernel-team@android.com
+References: <20230923013148.1390521-1-surenb@google.com>
+ <20230923013148.1390521-3-surenb@google.com>
+ <CAG48ez1N2kryy08eo0dcJ5a9O-3xMT8aOrgrcD+CqBN=cBfdDw@mail.gmail.com>
+ <03f95e90-82bd-6ee2-7c0d-d4dc5d3e15ee@redhat.com> <ZRWo1daWBnwNz0/O@x1n>
+ <98b21e78-a90d-8b54-3659-e9b890be094f@redhat.com> <ZRW2CBUDNks9RGQJ@x1n>
+ <85e5390c-660c-ef9e-b415-00ee71bc5cbf@redhat.com> <ZRXHK3hbdjfQvCCp@x1n>
+ <fc27ce41-bc97-91a7-deb6-67538689021c@redhat.com> <ZRrf8NligMzwqx97@x1n>
+ <CA+EESO5VtrfXv-kvDsotPLXcpMgOK5t5c+tbXZ7KWRU2O_0PBQ@mail.gmail.com>
+ <CA+EESO4W2jmBSpyHkkqZV0LHnA_OyWQcvwSkfPcWmWCsAF5UWw@mail.gmail.com>
+ <9434ef94-15e8-889c-0c31-3e875060a2f7@redhat.com>
+ <CA+EESO4GuDXZ6newN-oF43WOxrfsZ9Ejq8RJNF2wOYq571zmDA@mail.gmail.com>
+ <CAJuCfpE_h7Bj41sBiADswkUfVCoLXANuQmctdYUEgYjn6fHSCw@mail.gmail.com>
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v2 2/3] userfaultfd: UFFDIO_REMAP uABI
+In-Reply-To: <CAJuCfpE_h7Bj41sBiADswkUfVCoLXANuQmctdYUEgYjn6fHSCw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 12:27:56PM +0100, Russell King (Oracle) wrote:
-> On Sat, Sep 23, 2023 at 04:48:56PM +0300, Vladimir Oltean wrote:
-> > In a future change, we will extend the PHY interface modes for which
-> > phylink allows the PCS to handle autoneg. Group the existing occurences
-> > into a common phylink_pcs_handles_an().
+On 03.10.23 22:04, Suren Baghdasaryan wrote:
+> On Mon, Oct 2, 2023 at 12:34 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+>>
+>> On Mon, Oct 2, 2023 at 6:43 PM David Hildenbrand <david@redhat.com> wrote:
+>>>
+>>> On 02.10.23 17:55, Lokesh Gidra wrote:
+>>>> On Mon, Oct 2, 2023 at 4:46 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+>>>>>
+>>>>> On Mon, Oct 2, 2023 at 4:21 PM Peter Xu <peterx@redhat.com> wrote:
+>>>>>>
+>>>>>> On Mon, Oct 02, 2023 at 10:00:03AM +0200, David Hildenbrand wrote:
+>>>>>>> In case we cannot simply remap the page, the fallback sequence (from the
+>>>>>>> cover letter) would be triggered.
+>>>>>>>
+>>>>>>> 1) UFFDIO_COPY
+>>>>>>> 2) MADV_DONTNEED
+>>>>>>>
+>>>>>>> So we would just handle the operation internally without a fallback.
+>>>>>>
+>>>>>> Note that I think there will be a slight difference on whole remap
+>>>>>> atomicity, on what happens if the page is modified after UFFDIO_COPY but
+>>>>>> before DONTNEED.
+>>>>>>
+>>>>>> UFFDIO_REMAP guarantees full atomicity when moving the page, IOW, threads
+>>>>>> can be updating the pages when ioctl(UFFDIO_REMAP), data won't get lost
+>>>>>> during movement, and it will generate a missing event after moved, with
+>>>>>> latest data showing up on dest.
+>>>>>>
+>>>>>> I'm not sure that means such a fallback is a problem, Suren may know
+>>>>>> better with the use case.
+>>>>>
+>>>>> Although there is no problem in using fallback with our use case but
+>>>>> as a user of userfaultfd, I'd suggest leaving it to the developer.
+>>>>> Failing with appropriate errno makes more sense. If handled in the
+>>>>> kernel, then the user may assume at the end of the operation that the
+>>>>> src vma is completely unmapped. And if not correctness issues, it
+>>>>> could lead to memory leaks.
+>>>>
+>>>> I meant that in addition to the possibility of correctness issues due
+>>>> to lack of atomicity, it could also lead to memory leaks, as the user
+>>>> may assume that src vma is empty post-operation. IMHO, it's better to
+>>>> fail with errno so that the user would fix the code with necessary
+>>>> changes (like using DONTFORK, if forking).
+>>>
+>>> Leaving the atomicity discussion out because I think this can just be
+>>> handled (e.g., the src_vma would always be empty post-operation):
+>>>
+>>> It might not necessarily be a good idea to only expose micro-operations
+>>> to user space. If the user-space fallback will almost always be
+>>> "UFFDIO_COPY+MADV_DONTNEED", then clearly the logical operation
+>>> performed is moving data, ideally with zero-copy.
+>>>
+>> IMHO, such a fallback will be useful only if it's possible that only
+>> some pages in the src vma fail due to this. But even then it would be
+>> really useful to have a flag maybe like UFFDIO_REMAP_FALLBACK_COPY to
+>> control if the user wants the fallback or not. OTOH, if this is
+>> something that can be detected for the entire src vma, then failing
+>> with errno is more appropriate.
+>>
+>> Given that the patch is already quite complicated, I humbly suggest
+>> leaving the fallback for now as a TODO.
+
+I agree about the complexity, and I hope we can reduce that further. 
+Otherwise such things end up being a maintainance nightmare.
+
 > 
-> I don't see anything wrong with this change, despite my comments on the
-> next patch. However, including INTERNAL in this may cause problems with
-> DSA. I think maybe these two patches need to be tested on DSA setups
-> that make use of INTERNAL.
+> Ok, I think it makes sense to implement the strict remap logic but in
+> a way that we can easily add copy fallback if that's needed in the
 
-Prompted by your observation in a different comment, I've searched for
-PHY_INTERFACE_MODE_10GKR and found aqr107_read_status(), which sets
-phydev->interface to this value based on the MDIO_MMD_PHYXS :
-MDIO_PHYXS_VEND_IF_STATUS field.
+I think whatever we do, we should
 
-I am now of the opinion that phy_interface_t is a phylib-only property,
-more than anything else, and a slightly obsolete/hard to extend concept,
-at that.
+a) never talk about any of the implementation details (mapcount, 
+swapcount, PAE) towards the users
 
-The selling point of phylink_pcs is the possibility to have an optional
-phylink PHY, so I wouldn't want to reinterpret phy-mode = "internal" and
-managed = "in-band-status" to mean "clause 73 autoneg in the phylink_pcs",
-because that would quickly clash with the phylib PHY's desire to see the
-phy-mode set to something else (it is definitely not "internal").
+b) make it clear from the start that we might change the decision when 
+we fail (to the better or the worse); users should be prepared to 
+implement backup paths. We certainly don't want such behavior to be ABI.
 
-I don't have access to an AQR107 with firmware provisioning for KR on
-the system interface, but presuming the feature isn't entirely bogus,
-I shouldn't deliberately close the door for it.
+I'd suggest documenting something like the following
 
-I am exploring the possibility of adding support for 'managed = "c73"'
-as another autoneg mode in phylink, among the existing MLO_AN_FIXED,
-MLO_AN_PHY and MLO_AN_INBAND. It is quite clear that MLO_AN_INBAND !=
-MLO_AN_C73, because the former is the PCS doing the negotiation and the
-latter is a dedicated block selecting a technology-specific PCS. So I
-think there is room for this extra autoneg mode.
+"The operation may fail for various reasons. Usually, remapping of pages 
+that are not exclusive to the given process fail; once KSM might 
+dedduplicate pages or fork() COW-shares pages during fork() with child 
+processes, they are no longer exclusive. Further, the kernel might only 
+perform lightweight checks for detecting whether the pages are 
+exclusive, and return -EWHATSOEVER in case that check fails. To make the 
+operation more likely to succeed, KSM should be disabled, fork() should 
+be avoided or MADV_DONTFORK should be configured for the source VMA 
+before fork()."
 
-I am also trying to see if there's anything hardwired into phylink to
-require a phy-mode when a phylib PHY is absent. I will find that out in
-the following days, while working on the v3. I guess for optical SFPs,
-it just made sense to reuse the same data structures, to present MAC
-drivers the same kind of API as for SFP modules with PHYs. But with C73
-autoneg, I don't think it makes as much sense.
+> future. So, I'll change UFFDIO_REMAP to UFFDIO_MOVE and will return
+> some unique error, like EBUSY when the page is not PAE. If we need to
+> add a copy fallback in the future, we will add a
+> UFFDIO_MOVE_MODE_ALLOW_COPY flag and will implement the copy
+> mechanism. Does that sound good?
 
-If phylink can be made to not require a phy-mode, I would prefer to pass
-PHY_INTERFACE_MODE_NA, and for it to be completely ignored for MLO_AN_C73,
-both in phylink and in phylink-using drivers.
+To me, if we're talking about moving data, then zero-copy is the 
+optimization and copy+delete would be the (slower) default.
+
+If we're talking about remapping, then there is no copy; we're remapping 
+pages.
+
+
+So if we'd ever want to support the copy case, one combination would be
+
+UFFDIO_MOVE + UFFDIO_MOVE_ZERO_COPY_ONLY
+
+whereby we would fail if the latter is not specified.
+
+But just my thoughts.
+
+-- 
+Cheers,
+
+David / dhildenb
+
