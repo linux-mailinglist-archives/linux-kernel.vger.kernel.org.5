@@ -2,197 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A79D47B731B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:12:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8758C7B7320
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 23:12:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241144AbjJCVM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 17:12:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44394 "EHLO
+        id S241149AbjJCVMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 17:12:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232236AbjJCVMZ (ORCPT
+        with ESMTP id S232236AbjJCVMm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 17:12:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9FFAB
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:12:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696367542; x=1727903542;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=iY+kpTT4Ge+kVYqqvDkHMdwMUHmLR+tU6rOVEQf/nfg=;
-  b=bvBVHWRcHGe1tfk9Cy2f4T1okc0sAsBwTNDRgqAhO2e5/BZNREgdtba6
-   3CEeC4w6/L5hYZ/ZWW8QK2YZZVSoDnGgmtMfMe9Q5s85dsnGhM5ZwQOB5
-   ZAjOJrnuQuNy3teR227W+8ZAcjh636U5KKi4Fua+oVTa7BeaW6xDmTEHx
-   h1p2xfK3ydvda3dnZFY22iwzaDxV0C3v6Sht/Di2uW52mrbMWX9RgVDzd
-   MAzwM3KLK9izV2xGWeGVN6JMQjEiK5t8bBGSzXwKL9h89coeDNxpSi3z4
-   Zjf1eTUi9EJnX1suQLBH1ZmT03+OIyKkXGQ3mESAPwiCW0zuwOxGupaLP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="385798066"
-X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
-   d="scan'208";a="385798066"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 14:12:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="786237494"
-X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
-   d="scan'208";a="786237494"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Oct 2023 14:12:22 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 3 Oct 2023 14:12:21 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Tue, 3 Oct 2023 14:12:20 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Tue, 3 Oct 2023 14:12:20 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.106)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Tue, 3 Oct 2023 14:12:20 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Op3GDN40GQxzA7jEP4aXDTp82rFCPjMVqaz6/0ui9hhUdREJDAyMzFT8yD9diTYpGVqIEN0Z2S75FvnvErNgAewgCDejiUxhc8LSFVASQFKfbVpXqichvMIfz7gDUuUlmk1JrdOEOZ69yPHC9Dg8B0nShlI2iMPqKviTAp9rnhk7QQkSAOKegVEQ/S4X++histiFNiXXd+csWauXtxl1RBJr5vDrZAr73MA+WNIAMBpahPryzhI+RMMi1ZeY6jnbGXCvhXk9QczwWsvtEMGs688MuWUQKxokagOdD8rfu5GilOMozbObx24O4fXikHaJUYIGXaOfQU5Vnduar/I1WA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ApvDRE+KsxjHkXg8RnYqIS7DnuoSoFuI0EfCZXxkagM=;
- b=T5lkBfdOrpl9aaGaD/ca4D86tHRalU7ArxdYN3EFuLPaVj0M8Ksz1kPXdxI9sjQwzb/8O+RGTGuTOX8Qj5COsnVJTf0h96qzZYaEdLE8Vtw7PE2G7Hwh/ZKz3SPGgMrRGHWpSh0DH9PI5bm5EymtcNXvfM9YofGwJ6bJhACV0ffEUHTol104R2y28m23f34vWN/DMJ35bRJ9nPGjpeypz5NQFOoOjMjto40UZc4m+m2bUAfIEZAWH1Dx6ik68jbHPIajk1Rt/xEQKugFkqiwDojo8BcDGVVaPwDYjsx45hkll0nZBNA7219QhbtZtfErbGA52GlBJsEQd0suQ4hwPQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by DS0PR11MB7577.namprd11.prod.outlook.com (2603:10b6:8:142::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.27; Tue, 3 Oct
- 2023 21:12:19 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bd70:f215:4a97:c84e]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::bd70:f215:4a97:c84e%6]) with mapi id 15.20.6838.033; Tue, 3 Oct 2023
- 21:12:18 +0000
-Message-ID: <603835ae-b96a-6b42-b6bb-ea19699e38bc@intel.com>
-Date:   Tue, 3 Oct 2023 14:12:15 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.15.1
-Subject: Re: [PATCH v6 06/24] x86/resctrl: Access per-rmid structures by index
-Content-Language: en-US
-To:     James Morse <james.morse@arm.com>, <x86@kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        H Peter Anvin <hpa@zytor.com>,
-        Babu Moger <Babu.Moger@amd.com>,
-        <shameerali.kolothum.thodi@huawei.com>,
-        D Scott Phillips OS <scott@os.amperecomputing.com>,
-        <carl@os.amperecomputing.com>, <lcherian@marvell.com>,
-        <bobo.shaobowang@huawei.com>, <tan.shaopeng@fujitsu.com>,
-        <xingxin.hx@openanolis.org>, <baolin.wang@linux.alibaba.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Xin Hao <xhao@linux.alibaba.com>, <peternewman@google.com>,
-        <dfustini@baylibre.com>, <amitsinght@marvell.com>
-References: <20230914172138.11977-1-james.morse@arm.com>
- <20230914172138.11977-7-james.morse@arm.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20230914172138.11977-7-james.morse@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR03CA0358.namprd03.prod.outlook.com
- (2603:10b6:303:dc::33) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+        Tue, 3 Oct 2023 17:12:42 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C750D7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 14:12:39 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BF8AC433C9;
+        Tue,  3 Oct 2023 21:12:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696367559;
+        bh=l0FCnY5pU4umvfRCAPFiudSeIIRtVXn2RLWvb73Xh1w=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=JZ+hjmuTQJ6ZY1ZVp2rv2I8Y82Iw3KMHK8FM4ne8KNFdSbb0NlNMUN+Wt0Ao4lNaR
+         vI6v2rguqIlmzLviz3UAZFs94zR8LmRjxkCGKGqIFVSI5ztp4dgjGgPQaCg2ImoQn4
+         RFsxSJ4T7gb75RNvSJsoUurVoRoLvdVMMNfhP6QBbnLXI0TQlN+Fp3Lxoo5ynxkqlc
+         z3hBniVPjdK+Z1X/LOi/xd7mjrQdaz2N9HzTa2C3Q66L/F9ZKQrohkvPrewWzc69PF
+         X5lEAx3TvFGvegOcl6wxaNzazG4MFWasSY8CT/lE3ICCmBw0kBuiT1wDVfGMhT9W5Z
+         8PQYoajkzkMTg==
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-503065c4b25so1709661e87.1;
+        Tue, 03 Oct 2023 14:12:39 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxNwPWbndYjWynFvUOVe3kjMJhAHrvbI2hndPMAV/2eQn+I1sqg
+        RelIb22Uc6buaj9E8l6hvcRhverMOwjNVGG2ww==
+X-Google-Smtp-Source: AGHT+IEI5Koj+rpPumZOdUd5lqY3ameNoqIdKlN4yxluWHb83LK1bdeZ/zS6p1KPV2LAQpn8xO+fisvS4yG5aWs3cyU=
+X-Received: by 2002:a05:6512:3f18:b0:503:35bb:1e74 with SMTP id
+ y24-20020a0565123f1800b0050335bb1e74mr297292lfa.61.1696367557235; Tue, 03 Oct
+ 2023 14:12:37 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|DS0PR11MB7577:EE_
-X-MS-Office365-Filtering-Correlation-Id: a743b5b2-00fe-4d3d-55dd-08dbc4556d47
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PM/pXBiIx1DfSlO04WH01T5RedpfwifzpYkfxYP7xH4gMtDASnwpmavvPEJis5Iz8HSuF9ncBHZVygjmhEzRFhCwX5/TpXyV7sPUvGzX6OIE/Pn289mf1YkqiYrYvj3Qbt8552ELPAdURmTvfSb7XoaAxQCLJjLmGl8x/S8mufxoplC0AGDgKhi0Ed/URIOAMQmuS7BYL/NvfbYLASyi7b5kP8cPj5qFRx+oYyhY9gpWSpCZAexchRXvvaAGp2ijLxQRKdjCISlrNThnbgd1tpLP/O3jPrT8HQHqD5RN7HaDc9DaVIHj7AB0UO889cLOCwvPuhQ9xQ1Eof2E5mFx7r8aq165KJNA2Ur/QVMXt1bA08VTfKMOfEO2qsILkGwwA+fySd4KD839Chnim7UGFZeQ3Rk09SABH4XtDTX+0sHe7SENPS+FMM/upt+hhC80mB3wsa2fAY9QIX6HesSgGBmq+hIsU32ZaNVq9hKs5yW0Sv+AyK1Vw0wci62BFqbJAS1wqe385FDMIyPo+l9KTzjpA74/yarEJFKTSMHnuXsWZ2JUVHgUvP1iNh2k/Ws/Se4r1gwbhcOJXnrRev40UW6vcwBLY+cYboNZSO/oQsP13h6I+g+iO+ONduoR78Gpv+RwtwRD62Ffe4aY7jQJOw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(366004)(396003)(376002)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(66476007)(66556008)(6486002)(66946007)(54906003)(2616005)(8676002)(41300700001)(8936002)(4326008)(26005)(36756003)(478600001)(6666004)(86362001)(38100700002)(31696002)(6506007)(82960400001)(6512007)(316002)(53546011)(2906002)(4744005)(7416002)(31686004)(5660300002)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OHZpd1h4SERuMEVpK3hXZnZFZUwrc1ZINFlGUHJSZlZVdjh0NDAyU0tNNXNI?=
- =?utf-8?B?U05xRzBReTgzaTZscm5YZlFHSitrMkVMRVJsQzg3SHFBQU8rTG5yVkNFakdv?=
- =?utf-8?B?Q1VKUmJjTUZVYVAwUU1wbGZ6Vll3QkNWWXFCbFFTM05GajlOSDRRUEU5TFZo?=
- =?utf-8?B?ckxIYm9Fc3JXY1hsK1hTMmErODdwL1dwQis2bnFkTTI4RUZ2NnhaTnlKZWJw?=
- =?utf-8?B?dGl0QzNjaTdQTWFqa2ovOVl2NHJVTHY5MEFmNjBFMjdyYi9DK0tKRTZqZ05W?=
- =?utf-8?B?OTNsV2ZOZFZoR0ZoNEx2NzJLSXdKQ0RaTkpEM0daR3l6TVdlaVZqKzBYcEVt?=
- =?utf-8?B?VzBJd1g1enQ1ZVRWb1lIcWlLQ2ZmQlJpakhsLzY5MkVvNHByS0U5aVhZNFBU?=
- =?utf-8?B?SzFBdFFHd3JpbTJSaG53VnhKVEZ5RjYzRzB2NllvUTVta0VJbHIyOWRYZjd5?=
- =?utf-8?B?MWM1T1Zzb0Zoekw2UzRURUxCM2ZSM3ZIRDlZeXN0UHQ2QkwzYXpISlF4Qjda?=
- =?utf-8?B?a3F2cHY0ajNIRE82d3djYjkrbnhHbG5GbVlGcG9JMDRuejNwZGs3c24wbWVy?=
- =?utf-8?B?Y1FieHBudVU4anBjNk9mbzFaQVVyV3VLdndoTmEwb0tTNWdhYmkwYnlvaUVC?=
- =?utf-8?B?UXQ4MkduSllYUHlyT3pmbkVLQWNEM2JtQjVlKzdobzNra1kvQnlxcjRzQTFX?=
- =?utf-8?B?VzU2c0RVTURQa0tEMFhaRWdkOXNvRjFSYUd1a0FlVWgxRHJMUTh3dGJGQVJr?=
- =?utf-8?B?V0xpU0djZjZuQzRWYkN1Q3Exek0yUnhoendGbmNqYmVDc3VYV3ZyWHZOODA4?=
- =?utf-8?B?bEF0Tk1wTXgyd0RCSDI0S2M4MVJuckpwYnByYVJ4bzJBbW00OEsvMFZFTkgv?=
- =?utf-8?B?ZzNHYWhvL0NwUjMwM3ZKa0NxcFREeVFxdTJZMmFRZit0amFHSmZsbk9XZVhV?=
- =?utf-8?B?a1c5YXRWaTlxWmlRT0ViSy93VVRvYmNJcjdaaXh1bUZWM0FXVUJaamhWdTRY?=
- =?utf-8?B?bFpxYmsrenFhU2loODYyRjhPdDlQeTEyUDYxTFBkUHQ1RjQ1TXJWVnVaUXB1?=
- =?utf-8?B?cmFMUG5QalZjakx1dHVITzZoaUlyVkVtMHF4dlowK1dXMElCbFFEV013VzJZ?=
- =?utf-8?B?RkpHVVdJbE9KWkRiUUI4VDRkekcxUlY5WkUrMk9XY2ZHYzRJZmgzcXd1R25z?=
- =?utf-8?B?L1B1bk9SY3RIeGZvT1lKbkwwTTVaTzVXWU1FeG5sakkzWXQzR3dsczMrYlh2?=
- =?utf-8?B?ZENJWmh0RWZUY0ZQbkEzamhJSktTbzBQM3hUM05ocHordldkb1I5K2pBWVBn?=
- =?utf-8?B?emNwMTAvS3krMGtBUUhQdzF3bU9YYUR2RklERnp4MW1oOU1WdzZwSG0rQzhx?=
- =?utf-8?B?T2cxMURSNExqbm1oOVpiZ2tQY3JXL2dEbWRHVDFHU2RuZnNqNnYzcEZEeG9Z?=
- =?utf-8?B?VXNSVmVZaWQ2MnFiK1pTemdsNnEyNkdEZCswUG8xa3BkcHFsREg4Q3Yrbno2?=
- =?utf-8?B?L01uZlMvWHBDT1oralBsa0Y3V3ExcTRlZWwrRVdLcUVkTVhxcjZyU0lpQ0hu?=
- =?utf-8?B?Sm5TODhKcVhPc3I3TDltOHBlYy9hRC9vRVNHMmM0QkxOdklGM3p2MzNDU1Rt?=
- =?utf-8?B?ZGh4UkxyUnl5UERUTDEvQ2pGUDA0OFVnYTNrdktPbWx0WEx5bmZTaEVkcGNN?=
- =?utf-8?B?eXVqc05nMHNDU0FyRm5XRWZNeTJhWGdLU0xzTFM4Sys4MnRWUS8zYTRHTEVX?=
- =?utf-8?B?UlF5TlgzakdQUVBRWUMyS090emUzYzJxZDJYTXMvK0RoMjZLWjdxT3dOV1pP?=
- =?utf-8?B?TWsydE9rYjJJd2VJVEgvNWlBRThXYXIvZGQrMFVmcXN1cVB1dktRRHk1QW16?=
- =?utf-8?B?WGpIUENNSDQ3MFFQT3crdjY5cEgwNTlLQlJhdXlrU0JTTU5vaWRUQWlsL1N1?=
- =?utf-8?B?aitUWGhrQTRjQ2EySkJRWGNTMlNEaG12ZWVUSWtNL1hvbG9lbFI1aWJkWTJu?=
- =?utf-8?B?cjN4V0VyZGt3d0RDOUZKSmRaRUZXL3c2WnRIOGppUXlMRWNEai9xeFYra3Jh?=
- =?utf-8?B?THJDNmJxVW9ycDVSKy9LMjM4M2tJRlhQbHdGWWxUemtMWExaUmh5YVoyQU1o?=
- =?utf-8?B?U1VwakhpeFlLWmFJSlFhSzVqWXhOQ1JWUTA0Tkdxbm8zN1FBcm50b1EwRWdy?=
- =?utf-8?B?eEE9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a743b5b2-00fe-4d3d-55dd-08dbc4556d47
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 21:12:18.9181
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: S5GB6Zb2NHeBItxTP+r+Bna23CO7OgKJEK+nRlxkJZipgiEzDDXXRx9Odk5LVRxrAe5Nj1OFtrCoBJ/IOoLegjQ5nbabfuWZseYWGDhZGqQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7577
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231003065236.121987-1-herve.codina@bootlin.com>
+In-Reply-To: <20231003065236.121987-1-herve.codina@bootlin.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Tue, 3 Oct 2023 16:12:25 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+O245=TZQG5UsQS2xxBp0BRC2szg9vgbNsxKFBpPcvag@mail.gmail.com>
+Message-ID: <CAL_Jsq+O245=TZQG5UsQS2xxBp0BRC2szg9vgbNsxKFBpPcvag@mail.gmail.com>
+Subject: Re: [PATCH 1/1] of: address: Fix address translation when
+ address-size is greater than 2
+To:     Herve Codina <herve.codina@bootlin.com>,
+        Lizhi Hou <lizhi.hou@amd.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+On Tue, Oct 3, 2023 at 1:53=E2=80=AFAM Herve Codina <herve.codina@bootlin.c=
+om> wrote:
+>
+> With the recent addition of of_pci_prop_ranges() in commit 407d1a51921e
+> ("PCI: Create device tree node for bridge"), the ranges property can
+> have a 3 cells child address, a 3 cells parent address and a 2 cells
+> child size.
 
-On 9/14/2023 10:21 AM, James Morse wrote:
+Sigh. I'm starting to regret applying this for 6.6... You failed to Cc
+the AMD folks too. Lizhi now added.
 
-...
+What's different here from the test cases? The having 3 cells in
+parent and child?
 
-> diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-> index 91a6ea783200..ab96af8d9953 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -7,6 +7,7 @@
->  #include <linux/kernfs.h>
->  #include <linux/fs_context.h>
->  #include <linux/jump_label.h>
-> +#include <asm/resctrl.h>
->  
+>
+> A range item property for a PCI device is filled as follow:
+>   <BAR_nbr> 0 0 <phys.hi> <phys.mid> <phys.low> <BAR_sizeh> <BAR_sizel>
+>   <-- Child --> <-- Parent (PCI definition) --> <- BAR size (64bit) -->
+>
+> This allow to translate BAR addresses from the DT. For instance:
+> pci@0,0 {
+>   #address-cells =3D <0x03>;
+>   #size-cells =3D <0x02>;
+>   device_type =3D "pci";
+>   compatible =3D "pci11ab,100\0pciclass,060400\0pciclass,0604";
+>   ranges =3D <0x82000000 0x00 0xe8000000
+>             0x82000000 0x00 0xe8000000
+>             0x00 0x4400000>;
+>   ...
+>   dev@0,0 {
+>     #address-cells =3D <0x03>;
+>     #size-cells =3D <0x02>;
+>     compatible =3D "pci1055,9660\0pciclass,020000\0pciclass,0200";
+>     /* Translations for BAR0 to BAR5 */
+>     ranges =3D <0x00 0x00 0x00 0x82010000 0x00 0xe8000000 0x00 0x2000000
+>               0x01 0x00 0x00 0x82010000 0x00 0xea000000 0x00 0x1000000
+>               0x02 0x00 0x00 0x82010000 0x00 0xeb000000 0x00 0x800000
+>               0x03 0x00 0x00 0x82010000 0x00 0xeb800000 0x00 0x800000
+>               0x04 0x00 0x00 0x82010000 0x00 0xec000000 0x00 0x20000
+>               0x05 0x00 0x00 0x82010000 0x00 0xec020000 0x00 0x2000>;
+>     ...
+>     pci-ep-bus@0 {
+>       #address-cells =3D <0x01>;
+>       #size-cells =3D <0x01>;
+>       compatible =3D "simple-bus";
+>       /* Translate 0xe2000000 to BAR0 and 0xe0000000 to BAR1 */
+>       ranges =3D <0xe2000000 0x00 0x00 0x00 0x2000000
+>                 0xe0000000 0x01 0x00 0x00 0x1000000>;
 
-Please use empty line between the different groups of headers.
+Why are you reusing a PCI bus address value for the child bus? I'm
+wondering if this is some hackery because the child devices need PCI
+addresses to work. What address does a device need for DMA for
+example?
 
-The rest of the patch looks good to me.
+Also, I think each BAR should be a separate child. We need to
+formalize this BAR addressing in a schema.
 
-Reinette
+>       ...
+>     };
+>   };
+> };
+>
+> During the translation process, the "default-flags" map() function is
+> used to select the matching item in the ranges table and determine the
+> address offset from this matching item.
+> This map() function simply calls of_read_number() and when address-size
+> is greater than 2, the map() function skips the extra high address part
+> (ie part over 64bit). This lead to a wrong matching item and a wrong
+> offset computation.
+> Also during the translation itself, the extra high part related to the
+> parent address is not present in the translated address.
+>
+> Fix the "default-flags" map() and translate() in order to take into
+> account the child extra high address part in map() and the parent extra
+> high address part in translate() and so having a correct address
+> translation for ranges patterns such as the one given in the example
+> above.
+
+Please add a test case for this.
+
+>
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> ---
+>  drivers/of/address.c | 56 ++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 54 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/of/address.c b/drivers/of/address.c
+> index e692809ff822..8665de3a6344 100644
+> --- a/drivers/of/address.c
+> +++ b/drivers/of/address.c
+> @@ -100,6 +100,58 @@ static unsigned int of_bus_default_get_flags(const _=
+_be32 *addr)
+>         return IORESOURCE_MEM;
+>  }
+>
+> +static bool of_addr_is_equal(const __be32 *addr1, const __be32 *addr2, i=
+nt na)
+> +{
+> +       int i;
+> +       u32 a1;
+> +       u32 a2;
+> +
+> +       for (i =3D 0; i < na; i++) {
+> +               a1 =3D be32_to_cpup(addr1 + i);
+> +               a2 =3D be32_to_cpup(addr2 + i);
+
+You don't need to do the swap. Then isn't this just a memcmp?
+
+> +               if (a1 =3D=3D a2)
+> +                       continue;
+> +               return false;
+> +       }
+> +       return true;
+> +}
+> +
+> +static u64 of_bus_default_flags_map(__be32 *addr, const __be32 *range, i=
+nt na,
+> +                                   int ns, int pna)
+> +{
+> +       u64 cp, s, da;
+> +       int extra =3D 0;
+> +
+> +       if (na > 2) {
+
+I believe this clause works for na=3D=3D2. It wouldn't for na=3D=3D1 though=
+.
+All you really need is:
+
+if (na =3D=3D 3)
+  extra =3D 1;
+
+But at this point, don't we know we have a 3rd cell? We've only
+matched if we do, right? If "extra" is always 1, then this function is
+pretty much the same as the PCI and ISA versions after the flags
+comparison.
+
+> +               /*
+> +                * Given address contains more than 2 cells.
+> +                * The address high extra part must match the range extra=
+ part
+> +                * and must be filtered-out from 64bit offset computation=
+.
+> +                */
+> +               extra =3D na - 2;
+> +               if (!of_addr_is_equal(addr, range, extra))
+
+A bit misleading as all you are doing is comparing the 3rd (top) cell.
+
+> +                       return OF_BAD_ADDR;
+> +
+> +               cp =3D of_read_number(range + extra, na - extra);
+> +               s  =3D of_read_number(range + na + pna, ns);
+> +               da =3D of_read_number(addr + extra, na - extra);
+> +       } else {
+> +               cp =3D of_read_number(range, na);
+> +               s  =3D of_read_number(range + na + pna, ns);
+> +               da =3D of_read_number(addr, na);
+> +       }
+> +       pr_debug("default flags map, extra=3D%d cp=3D%llx, s=3D%llx, da=
+=3D%llx\n", extra, cp, s, da);
+> +
+> +       if (da < cp || da >=3D (cp + s))
+> +               return OF_BAD_ADDR;
+> +       return da - cp;
+> +}
+> +
+> +static int of_bus_default_flags_translate(__be32 *addr, u64 offset, int =
+na)
+
+Same as of_bus_pci_translate() and of_bus_isa_translate(). 3rd case
+gets to rename and consolidate.
+
+> +{
+> +       /* Keep "flags" part in translated address */
+> +       return of_bus_default_translate(addr + 1, offset, na - 1);
+> +}
+>
+>  #ifdef CONFIG_PCI
+>  static unsigned int of_bus_pci_get_flags(const __be32 *addr)
+> @@ -374,8 +426,8 @@ static struct of_bus of_busses[] =3D {
+>                 .addresses =3D "reg",
+>                 .match =3D of_bus_default_flags_match,
+>                 .count_cells =3D of_bus_default_count_cells,
+> -               .map =3D of_bus_default_map,
+> -               .translate =3D of_bus_default_translate,
+> +               .map =3D of_bus_default_flags_map,
+> +               .translate =3D of_bus_default_flags_translate,
+>                 .has_flags =3D true,
+>                 .get_flags =3D of_bus_default_flags_get_flags,
+>         },
+> --
+> 2.41.0
+>
