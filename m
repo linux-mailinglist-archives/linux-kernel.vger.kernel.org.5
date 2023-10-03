@@ -2,57 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B76DA7B6A95
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 249EC7B6A99
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:35:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbjJCNeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:34:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45300 "EHLO
+        id S231869AbjJCNfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbjJCNeM (ORCPT
+        with ESMTP id S231627AbjJCNfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:34:12 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8608CA9
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:34:09 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F5BDC433C8;
-        Tue,  3 Oct 2023 13:34:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696340049;
-        bh=YgpznB6UVwDAk8kZkqvYggW8dN/E0S+mAdS++LtlF0Y=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=cCwNRSLhR7ueBItEphJhcR6bYjpJmtiCtyuUcsw6+oL1oQvvtP6muvlQ8XBNEK6OF
-         Aa+SEEiKKBzyKSZf3pMJoPsBo7DGy6gdpJbMpKTUwHCGReYzO+4Na8lITqKDfQFOT0
-         oXnDX6nHmYIzfHEHEGnyeN/dDJU8PLv1RhxaZPnqWfaSayPgn3j9WT5XIqzKaYUuIG
-         ThoCB8ccZYGcN/mcPyrWRz4jpRI1PsOiy0JUVos0tU9h/lDeG9TV+TAdOT4SQcly4h
-         ZT6HAeUSjxub4ybVMDGyrHCEHgzmUmQAzmDMA8PzfdI4l9MfloMn5GHY9PYLQj6KYy
-         TQbJh3AJiODaw==
-Date:   Tue, 3 Oct 2023 06:34:01 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Lukasz Majewski <lukma@denx.de>, Tristram.Ha@microchip.com,
-        Eric Dumazet <edumazet@google.com>,
-        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [[RFC PATCH v4 net-next] 0/2] net: dsa: hsr: Enable HSR HW
- offloading for KSZ9477
-Message-ID: <20231003063401.5fc0ffb9@kernel.org>
-In-Reply-To: <20230911170222.hip2pcyzbfu3olau@skbuf>
-References: <20230906152801.921664-1-lukma@denx.de>
-        <20230911165848.0741c03c@wsk>
-        <20230911160501.5vc4nttz6fnww56h@skbuf>
-        <20230911170222.hip2pcyzbfu3olau@skbuf>
+        Tue, 3 Oct 2023 09:35:41 -0400
+Received: from nikam.ms.mff.cuni.cz (nikam.ms.mff.cuni.cz [195.113.20.16])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88597A6;
+        Tue,  3 Oct 2023 06:35:37 -0700 (PDT)
+Received: from gimli.ms.mff.cuni.cz (gimli.ms.mff.cuni.cz [195.113.20.176])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by nikam.ms.mff.cuni.cz (Postfix) with ESMTPS id 76537284EB5;
+        Tue,  3 Oct 2023 15:35:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gimli.ms.mff.cuni.cz;
+        s=gen1; t=1696340134;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=B4vTHC41c5OG36z6s8T2SbcOR+HJgCfAGARZnZUjEAE=;
+        b=VBOMG7Q81Jman43aAtHd0D7FWgWK9uNi9aK2KNa84U0a0n99AsmTQB6iKZfHUUOg906Up/
+        nIW/pq22xKx+ivGtYFKZrrUgMqChcPLqzvAZHoQgZTNo9unTPT5gi+ZJNgJEojI/ItnXEi
+        SlbuoJIxlgpl2tOYRNn8wYEAUZRqrTs=
+Received: from localhost (koleje-wifi-0029.koleje.cuni.cz [78.128.191.29])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: karelb)
+        by gimli.ms.mff.cuni.cz (Postfix) with ESMTPSA id 541BE441AC5;
+        Tue,  3 Oct 2023 15:35:34 +0200 (CEST)
+From:   karelb@gimli.ms.mff.cuni.cz
+To:     Markuss Broks <markuss.broks@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Cc:     =?UTF-8?q?Duje=20Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+        Karel Balej <karelb@gimli.ms.mff.cuni.cz>
+Subject: [PATCH v2 0/5] input/touchscreen: imagis: add support for IST3032C
+Date:   Tue,  3 Oct 2023 15:34:14 +0200
+Message-ID: <20231003133440.4696-1-karelb@gimli.ms.mff.cuni.cz>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,18 +64,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 11 Sep 2023 20:02:22 +0300 Vladimir Oltean wrote:
-> Hi @Jakub, I remember you fixed some issues with the dev->dev_addr writes,
-> after dev_addr_lists.c was changed to a rbtree. Is it easy for you to
-> tell if the change below is safe from an API perspective?
-> 
-> Is the answer "yes, because dev_uc_add() uses an addr_type of NETDEV_HW_ADDR_T_UNICAST,
-> and dev->dev_addr uses NETDEV_HW_ADDR_T_LAN, so they never share a struct netdev_hw_addr
-> for the same MAC address, and thus, they never collide"?
-> 
-> The DSA and 8021q drivers currently have this pattern, from around 2008.
-> But 8021q also tracks NETDEV_CHANGEADDR events on the real_dev, which is
-> absent in DSA. If the change below is safe, it would be a simpler solution.
+From: Karel Balej <karelb@gimli.ms.mff.cuni.cz>
 
-FWIW I think it should be fine from the rbtree perspective, but IDK how
-the user space would react to having a duplicate lladdr.
+This patch series generalizes the Imagis touchscreen driver to support
+other Imagis chips, namely IST3038B, which use a slightly different
+protocol.
+
+It also adds necessary information to the driver so that the IST3032C
+touchscreen can be used with it. The motivation for this is the
+samsung,coreprimevelte smartphone with which this series has been
+tested. However, the support for this device is not yet in-tree, the
+effort is happening at [1]. In particular, the driver for the regulator
+needed by the touchscreen on this device has not been rewritten for
+mainline yet.
+
+[1] https://lore.kernel.org/all/20230812-pxa1908-lkml-v5-0-a5d51937ee34@skole.hr/
+---
+Changes in v2:
+- Do not rename the driver.
+- Do not hardcode voltage required by the IST3032C.
+- Use Markuss' series which generalizes the driver.
+- Separate bindings into separate patch.
+- v1: https://lore.kernel.org/all/20230926173531.18715-1-balejk@matfyz.cz/
+---
+
+Karel Balej (2):
+  dt-bindings: input/touchscreen: imagis: add compatible for IST3032C
+  input/touchscreen: imagis: add support for IST3032C
+
+Markuss Broks (3):
+  input/touchscreen: imagis: Correct the maximum touch area value
+  dt-bindings: input/touchscreen: Add compatible for IST3038B
+  input/touchscreen: imagis: Add support for Imagis IST3038B
+
+ .../input/touchscreen/imagis,ist3038c.yaml    |  2 +
+ drivers/input/touchscreen/imagis.c            | 70 +++++++++++++++----
+ 2 files changed, 60 insertions(+), 12 deletions(-)
+
+-- 
+2.42.0
+
