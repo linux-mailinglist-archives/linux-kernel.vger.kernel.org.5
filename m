@@ -2,177 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DFF7B6DE5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F397B6DAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240113AbjJCQBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43050 "EHLO
+        id S240175AbjJCP7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 11:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240338AbjJCQBW (ORCPT
+        with ESMTP id S231669AbjJCP7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:01:22 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E873D8;
-        Tue,  3 Oct 2023 09:01:09 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9ad8a822508so201894866b.0;
-        Tue, 03 Oct 2023 09:01:09 -0700 (PDT)
+        Tue, 3 Oct 2023 11:59:35 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF2DAD
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:59:29 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a2318df875so14997327b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 08:59:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696348868; x=1696953668; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7JiuLEh/EFeAiwa7GG3VhbS7idJtkE2WcLfe5eSvI9M=;
-        b=VMgtQUGqg4yClX4Fj9ypQGjwGtsKLsvboRXwDG/gptgGRNJWiZ5+Pv/uDXxYbRPbZ1
-         g0ohsZsOJHeBbREEfSYTMoI7xBSDAl5GnGUBrBhPg6KznNZZY+5XgPAGjwvQ3nZRNyHJ
-         0a+Kh4dkj72MjgX+IfhRUh8uhH1WcPk+6+Hjk/qYBMs4317tCG9NLtB/ibyLgt0ub93i
-         bXVA3PyH15ySMTSpzeJdv/xQtxnMLAe8+d603IFY1o+kA6Jugp2A5qvt9/vP4u5o1EVG
-         VNKeBXm8RVPzeiNeEaQpJEZmDhKFxBFOFNfLwEXEr6Zmypuw62URGcrOESanIfps+7za
-         yxqA==
+        d=google.com; s=20230601; t=1696348769; x=1696953569; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xP89tk8jeFUDqiHwgtcyinENLLmFDFAo+sp2wFgmRBw=;
+        b=3VHfewwIV0zOljG/ol2pjU+0vBAWkOLQRPOSIDg5brqaS+50EHIiCl+ps7d84LasCC
+         jz7EfaUe1TP4lksfzPRXjmqvTy2qhmWi6rE0bUp0X2soN22L9f7Tpzv33HVo7nNh1DpK
+         xVGLumlTXW1AIwOdhs8KaR033H4JRtK7qJDnzZJbOZVOAIuVgRgMfBtgHnv9p3YdnuwS
+         poxsb3AIswlAkEV08xxGKdQ+PCQ4u8RqOWnx7mo22z94u7AEoRP+Ocm9CDkjVMbyosWx
+         CaUYYlWPcDj5t6s+bBhCEmtwG+DQmiZ1F93IWvadR9nnbUGaPS4AG69AHcpqDEFwXAXk
+         PMAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696348868; x=1696953668;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7JiuLEh/EFeAiwa7GG3VhbS7idJtkE2WcLfe5eSvI9M=;
-        b=S0uzVmH0PoQTgvx9NBKzKn9KK0F51I1Se4d9jrTp3iHa7BYvYQhg+2lQPfI4QqjjbA
-         JSdDighInttE2BXyVmZZ3/oTgp1R6FiJsoztsxz69PJTRJRNAN2Q5Psf/s02rcYR8lDw
-         yaRBOfqvec+UFeX8wHpcT8GV1+YFGq+elNo7kQSjXZ/hALSjExI98Pce6v2mNcdtWprN
-         vQ/c+5MWOStUDvEjIAwtNag9kNtckpBnfxHuSdOD5Q5bQCfJRw0+ofezD0jA7rxtlbsA
-         FYryY6narU5EMF1Le2IksL/il94x8mKIvfDOP+k4Er4k9FPme/jZYQxQ60hzhAMm3jNG
-         X0Tw==
-X-Gm-Message-State: AOJu0Yymz1dassj6pXClYi0ZDS9Lmsxw6G381jgvn22jP/DRY5eMRyNl
-        QwB6SInFfdjt7ZPhbJNECmk=
-X-Google-Smtp-Source: AGHT+IGhK7wJSetq7gxvJEf+CENG+M6shmXrxbwZPXDLJB+pwvhRNkB4Z/nZvun9LwBueEyrTM5nJw==
-X-Received: by 2002:a17:906:28e:b0:9ae:552a:3d3f with SMTP id 14-20020a170906028e00b009ae552a3d3fmr13530474ejf.28.1696348866722;
-        Tue, 03 Oct 2023 09:01:06 -0700 (PDT)
-Received: from primary.. ([213.139.52.198])
-        by smtp.gmail.com with ESMTPSA id jo3-20020a170906f6c300b0099df2ddfc37sm1270526ejb.165.2023.10.03.09.01.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 09:01:06 -0700 (PDT)
-From:   Abdel Alkuor <alkuor@gmail.com>
-To:     heikki.krogerus@linux.intel.com, krzysztof.kozlowski+dt@linaro.org,
-        bryan.odonoghue@linaro.org
-Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
-        robh+dt@kernel.org, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>
-Subject: [PATCH v10 9/9] USB: typec: tps6598x: Add status trace for tps25750
-Date:   Tue,  3 Oct 2023 11:58:42 -0400
-Message-Id: <20231003155842.57313-10-alkuor@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231003155842.57313-1-alkuor@gmail.com>
-References: <20231003155842.57313-1-alkuor@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1696348769; x=1696953569;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xP89tk8jeFUDqiHwgtcyinENLLmFDFAo+sp2wFgmRBw=;
+        b=e9UF62hfZwNW8ZgLPfIAKZjlhZybOinbcMUR4RG2hdSXPMhC/MtumzMOA6wC11Hp6A
+         8DfaACSHT9Yp47TRatPE1pwMYnHAVPrgO2VHDHiHo8IYK4Quk2HfvjHISG6K30CBDy1B
+         fwFTWivW3dfbp02tZH21ASbGvdXaPBZdNIcJ+NptJUEXUshDaufhSVq2DPTTwxDRg6Ei
+         Gvgf+HbiDy4pUkflfWF0CGTGDSHARCWoF/m9m28/JK6/003yqXJqtiTWs21Qbr6+V4gx
+         DTu1QXF466ata+zpIUzYRbt3SyQPjwU5A+eIZevYz+r2D4gx21pY+UE253QZgJJ16ZjS
+         lobw==
+X-Gm-Message-State: AOJu0YwtCmoZq2Amrmud7Ai5Z206WbI+NKdrKYpJLlnsTi7acLV1mq0D
+        u5I4O10NLFk+YbD1DOALUiyRw6Go6qk=
+X-Google-Smtp-Source: AGHT+IHlsTPxnmIroL8cntBugIBpa7VGBcPZjKPldlj/dItcEWdxSvIkKSkj76hPSiTFqWvviFkle9Hc81s=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:3604:0:b0:d7a:c85c:725b with SMTP id
+ d4-20020a253604000000b00d7ac85c725bmr227114yba.7.1696348768967; Tue, 03 Oct
+ 2023 08:59:28 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 08:59:27 -0700
+In-Reply-To: <CA+EHjTzSUXx8P9gWmUERg4owxH6r6yNPm1_RL-BzS_2CNPtRKw@mail.gmail.com>
+Mime-Version: 1.0
+References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-12-seanjc@google.com>
+ <CA+EHjTzSUXx8P9gWmUERg4owxH6r6yNPm1_RL-BzS_2CNPtRKw@mail.gmail.com>
+Message-ID: <ZRw6X2BptZnRPNK7@google.com>
+Subject: Re: [RFC PATCH v12 11/33] KVM: Introduce per-page memory attributes
+From:   Sean Christopherson <seanjc@google.com>
+To:     Fuad Tabba <tabba@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Abdel Alkuor <abdelalkuor@geotab.com>
+On Tue, Oct 03, 2023, Fuad Tabba wrote:
+> Hi,
+> 
+> > diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> > index d2d913acf0df..f8642ff2eb9d 100644
+> > --- a/include/uapi/linux/kvm.h
+> > +++ b/include/uapi/linux/kvm.h
+> > @@ -1227,6 +1227,7 @@ struct kvm_ppc_resize_hpt {
+> >  #define KVM_CAP_ARM_EAGER_SPLIT_CHUNK_SIZE 228
+> >  #define KVM_CAP_ARM_SUPPORTED_BLOCK_SIZES 229
+> >  #define KVM_CAP_USER_MEMORY2 230
+> > +#define KVM_CAP_MEMORY_ATTRIBUTES 231
+> >
+> >  #ifdef KVM_CAP_IRQ_ROUTING
+> >
+> > @@ -2293,4 +2294,17 @@ struct kvm_s390_zpci_op {
+> >  /* flags for kvm_s390_zpci_op->u.reg_aen.flags */
+> >  #define KVM_S390_ZPCIOP_REGAEN_HOST    (1 << 0)
+> >
+> > +/* Available with KVM_CAP_MEMORY_ATTRIBUTES */
+> > +#define KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES    _IOR(KVMIO,  0xd2, __u64)
+> > +#define KVM_SET_MEMORY_ATTRIBUTES              _IOW(KVMIO,  0xd3, struct kvm_memory_attributes)
+> > +
+> > +struct kvm_memory_attributes {
+> > +       __u64 address;
+> > +       __u64 size;
+> > +       __u64 attributes;
+> > +       __u64 flags;
+> > +};
+> > +
+> > +#define KVM_MEMORY_ATTRIBUTE_PRIVATE           (1ULL << 3)
+> > +
+> 
+> In pKVM, we don't want to allow setting (or clearing) of PRIVATE/SHARED
+> attributes from userspace.
 
-tps25750 status register is a subset of tps6598x status register, hence
-a trace for tps25750 status register is added.
+Why not?  The whole thing falls apart if userspace doesn't *know* the state of a
+page, and the only way for userspace to know the state of a page at a given moment
+in time is if userspace controls the attributes.  E.g. even if KVM were to provide
+a way for userspace to query attributes, the attributes exposed to usrspace would
+become stale the instant KVM drops slots_lock (or whatever lock protects the attributes)
+since userspace couldn't prevent future changes.
 
-Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
----
-Changes in v10:
-  - Move 0014-USB-typec-tps6598x-Add-status-trace-for-tps25750.patch to patch 9
-  - Remove status trace prototype from device data
-Changes in v9:
-  - No changes
-Changes in v8:
-  - No changes
-Changes in v7:
-  - Add driver name to commit subject
-Changes in v6:
-  - No changes
-Changes in v5:
-  - Incorporating tps25750 into tps6598x driver
- drivers/usb/typec/tipd/core.c  |  1 +
- drivers/usb/typec/tipd/trace.h | 37 ++++++++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+)
+Why does pKVM need to prevent userspace from stating *its* view of attributes?
 
-diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
-index 7bdf1ef5dd1a..0e867f531d34 100644
---- a/drivers/usb/typec/tipd/core.c
-+++ b/drivers/usb/typec/tipd/core.c
-@@ -1412,6 +1412,7 @@ static const struct tipd_data tps25750_data = {
- 	.irq_handler = tps25750_interrupt,
- 	.register_port = tps25750_register_port,
- 	.trace_power_status = trace_tps25750_power_status,
-+	.trace_status = trace_tps25750_status,
- 	.apply_patch = tps25750_apply_patch,
- };
- 
-diff --git a/drivers/usb/typec/tipd/trace.h b/drivers/usb/typec/tipd/trace.h
-index 739b0a2a867d..0669cca12ea1 100644
---- a/drivers/usb/typec/tipd/trace.h
-+++ b/drivers/usb/typec/tipd/trace.h
-@@ -91,6 +91,14 @@
- 						      TPS_STATUS_USB_HOST_PRESENT_MASK | \
- 						      TPS_STATUS_LEGACY_MASK))
- 
-+#define TPS25750_STATUS_FLAGS_MASK (GENMASK(31, 0) ^ (TPS_STATUS_CONN_STATE_MASK | \
-+						      GENMASK(19, 7) | \
-+						      TPS_STATUS_VBUS_STATUS_MASK | \
-+						      TPS_STATUS_USB_HOST_PRESENT_MASK | \
-+						      TPS_STATUS_LEGACY_MASK | \
-+						      BIT(26) | \
-+						      GENMASK(31, 28)))
-+
- #define show_status_conn_state(status) \
- 	__print_symbolic(TPS_STATUS_CONN_STATE((status)), \
- 		{ TPS_STATUS_CONN_STATE_CONN_WITH_R_A,	"conn-Ra"  }, \
-@@ -148,6 +156,14 @@
- 		      { TPS_STATUS_HIGH_VOLAGE_WARNING,	"HIGH_VOLAGE_WARNING" }, \
- 		      { TPS_STATUS_HIGH_LOW_VOLTAGE_WARNING, "HIGH_LOW_VOLTAGE_WARNING" })
- 
-+#define show_tps25750_status_flags(flags) \
-+	__print_flags((flags & TPS25750_STATUS_FLAGS_MASK), "|", \
-+		      { TPS_STATUS_PLUG_PRESENT,	"PLUG_PRESENT" }, \
-+		      { TPS_STATUS_PLUG_UPSIDE_DOWN,	"UPSIDE_DOWN" }, \
-+		      { TPS_STATUS_PORTROLE,		"PORTROLE" }, \
-+		      { TPS_STATUS_DATAROLE,		"DATAROLE" }, \
-+		      { TPS_STATUS_BIST,		"BIST" })
-+
- #define show_power_status_source_sink(power_status) \
- 	__print_symbolic(TPS_POWER_STATUS_SOURCESINK(power_status), \
- 		{ 1, "sink" }, \
-@@ -292,6 +308,27 @@ TRACE_EVENT(tps6598x_status,
- 		    )
- );
- 
-+TRACE_EVENT(tps25750_status,
-+	    TP_PROTO(u32 status),
-+	    TP_ARGS(status),
-+
-+	    TP_STRUCT__entry(
-+			     __field(u32, status)
-+			     ),
-+
-+	    TP_fast_assign(
-+			   __entry->status = status;
-+			   ),
-+
-+	    TP_printk("conn: %s, vbus: %s, usb-host: %s, legacy: %s, flags: %s",
-+		      show_status_conn_state(__entry->status),
-+		      show_status_vbus_status(__entry->status),
-+		      show_status_usb_host_present(__entry->status),
-+		      show_status_legacy(__entry->status),
-+		      show_tps25750_status_flags(__entry->status)
-+		    )
-+);
-+
- TRACE_EVENT(tps6598x_power_status,
- 	    TP_PROTO(u16 power_status),
- 	    TP_ARGS(power_status),
--- 
-2.34.1
+If the goal is to reduce memory overhead, that can be solved by using an internal,
+non-ABI attributes flag to track pKVM's view of SHARED vs. PRIVATE.  If the guest
+attempts to access memory where pKVM and userspace don't agree on the state,
+generate an exit to userspace.  Or kill the guest.  Or do something else entirely.
 
+> However, we'd like to use the attributes xarray to track the sharing state of
+> guest pages at the host kernel.
+> 
+> Moreover, we'd rather the default guest page state be PRIVATE, and
+> only specify which pages are shared. All pKVM guest pages start off as
+> private, and the majority will remain so.
+
+I would rather optimize kvm_vm_set_mem_attributes() to generate range-based
+xarray entries, at which point it shouldn't matter all that much whether PRIVATE
+or SHARED is the default "empty" state.  We opted not to do that for the initial
+merge purely to keep the code as simple as possible (which is obviously still not
+exactly simple).
+
+With range-based xarray entries, the cost of tagging huge chunks of memory as
+PRIVATE should be a non-issue.  And if that's not enough for whatever reason, I
+would rather define the polarity of PRIVATE on a per-VM basis, but only for internal
+storage.
+ 
+> I'm not sure if this is the best way to do this: One idea would be to move
+> the definition of KVM_MEMORY_ATTRIBUTE_PRIVATE to
+> arch/*/include/asm/kvm_host.h, which is where kvm_arch_supported_attributes()
+> lives as well. This would allow different architectures to specify their own
+> attributes (i.e., instead we'd have a KVM_MEMORY_ATTRIBUTE_SHARED for pKVM).
+> This wouldn't help in terms of preventing userspace from clearing attributes
+> (i.e., setting a 0 attribute) though.
+> 
+> The other thing, which we need for pKVM anyway, is to make
+> kvm_vm_set_mem_attributes() global, so that it can be called from outside of
+> kvm_main.c (already have a local patch for this that declares it in
+> kvm_host.h),
+
+That's no problem, but I am definitely opposed to KVM modifying attributes that
+are owned by userspace.
+
+> and not gate this function by KVM_GENERIC_MEMORY_ATTRIBUTES.
+
+As above, I am opposed to pKVM having a completely different ABI for managing
+PRIVATE vs. SHARED.  I have no objection to pKVM using unclaimed flags in the
+attributes to store extra metadata, but if KVM_SET_MEMORY_ATTRIBUTES doesn't work
+for pKVM, then we've failed miserably and should revist the uAPI.
