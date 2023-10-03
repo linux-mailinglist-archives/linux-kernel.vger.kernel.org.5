@@ -2,202 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2137B745C
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:55:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBF87B745D
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231958AbjJCWzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 18:55:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
+        id S231915AbjJCW5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 18:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231504AbjJCWzj (ORCPT
+        with ESMTP id S231504AbjJCW5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 18:55:39 -0400
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F4369E
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 15:55:32 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2193D20002;
-        Tue,  3 Oct 2023 22:55:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696373731;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=URmNuKdevm4LxKsOW1JK28nG3SSACbwi+Sok++gB3OQ=;
-        b=ZwCwEho1chdHhVUIoizblQAitK9IQ20h6KgjR4v5EQEEDKMiojtMoIb3mMUli12+SdJpvj
-        RpgQUjijZJa1qKD2ZS2/bT+c8XXvEtQ0LJ6ocNGCP9PArNgvGXj9Tq4xkrGCu3jAU5KHjU
-        mpqMRddxETvsOSGGMK/SCM7+qM+Hi2CTaNM8TlkEztDDsKfEojXd8cKRJXAzjSchsyXal7
-        uDK8HTBVaUnVFeOjqhyEQUDWp1VksJYIwsjuoi0ERmQd18MvjhuMT5tt+rnBIHSXH4/f0b
-        TExVD3Ac7JZZSnCC4EIB4LlDXghPeUbgH6DOmSdwvARQ6S5nS76bHu5w7uofug==
-Date:   Wed, 4 Oct 2023 00:55:25 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     William Zhang <william.zhang@broadcom.com>
-Cc:     dregan@mail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-mtd@lists.infradead.org, f.fainelli@gmail.com,
-        rafal@milecki.pl, joel.peshkin@broadcom.com,
-        computersforpeace@gmail.com, dan.beygelman@broadcom.com,
-        frieder.schrempf@kontron.de, linux-kernel@vger.kernel.org,
-        vigneshr@ti.com, richard@nod.at, bbrezillon@kernel.org,
-        kdasu.kdev@gmail.com
-Subject: Re: [PATCH v2] mtd: rawnand: brcmnand: Initial exec_op
- implementation
-Message-ID: <20231004005525.3f406823@xps-13>
-In-Reply-To: <37416f2e-f150-cc8f-76bd-3d54f9e25d08@broadcom.com>
-References: <trinity-bb7db9f1-d34d-4fe2-bed3-814d3a63476a-1694571881792@3c-app-mailcom-lxa03>
-        <20230922162424.4a7b27ec@xps-13>
-        <trinity-06dd34f4-ab26-4c60-bcf8-f986f1d08058-1696039055941@3c-app-mailcom-lxa04>
-        <20231002143527.4ccf254a@xps-13>
-        <04350e70-6ef0-4998-664f-20b96b63b0f4@broadcom.com>
-        <20231003112819.53707d54@xps-13>
-        <37416f2e-f150-cc8f-76bd-3d54f9e25d08@broadcom.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Tue, 3 Oct 2023 18:57:15 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EFCFB0
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 15:57:11 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53639fb0ba4so2640912a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 15:57:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696373829; x=1696978629; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HNJ4V21M91PAJnutJlU6BdqwkvAfNI28YR+w3lb7qz0=;
+        b=FlzORDkkg7tyvRYrDZ31U0Z2lEs+wu93DA5sSpR2UV3YqRfU5BRcG3bUoaydaox5ki
+         lTp9WJrTlPrzX1OuW2vzeqqnIKtowcXcVGKipKR6nwNR2prDZbD3n4ENwL+VJb6F/jih
+         YkExgjBcMYKpnNkrpqbXLfR+jEthWcX+BoMtLNoQWzRz9Srptk8gSH3x9ptCz5p/WB8b
+         s8hKuw6eI91+WkUxEZ8QuhptZEVOmhV7Bu0ai428Ia0oupD7fCF+XqBGDX2RW+qza25R
+         MNG9VmV4vM5W9m0FekxDmhxd75maou7o+7TgfI8Wv935k+O4i3eRFNIg6G05HRrBY4sG
+         P3Cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696373829; x=1696978629;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HNJ4V21M91PAJnutJlU6BdqwkvAfNI28YR+w3lb7qz0=;
+        b=T3eVXUOsmggw0ZUfUJFtHPDBX67kCpctHaANktY3CN0cI5Gq8Eaqil9vdfwAkbS107
+         NV3NY6YubpSTpGXaAuEHekGRb2Qrp9hC03n3xlrds8Cuz0o93vVtRGBPVP1K1MMxHUHf
+         p5d6bOzcC61bbacWg7sHePbd+YbWPWtVwz0/4Sk8yz0QWTjFK8aQF56Jen8Z2o6GJeNS
+         7tSJTgDm4BKFEF8JsaYO1oUODzxFSxIRpKc/Z3i2Yu8Ih3S0kk5lNTvp9mNeHGlWPvAK
+         BddLUZJgIvFFRj0dcjEcpwZh47tM7azDENeWC0Lyu2NBvmERP8TXzU3yjCpizJqb+b2A
+         3GwA==
+X-Gm-Message-State: AOJu0YySK0feQdg5Jy7nGMZRCXlQOdQsIVZN9TSaiGShzaHFNE4NJbG4
+        ZrNYpHJckhreYhAoHSAfG5TWOUij6LyAddQOL+jt+w==
+X-Google-Smtp-Source: AGHT+IGU3gyaT977jvt9iRD1Ew9XlWTiuArkryKIRq2HRhld6gv/M4qSWfTxLUS5n5K9yVhjHJogubJlzCAW0Ey3Gyk=
+X-Received: by 2002:a17:906:210a:b0:9ae:56da:6068 with SMTP id
+ 10-20020a170906210a00b009ae56da6068mr563304ejt.57.1696373829597; Tue, 03 Oct
+ 2023 15:57:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20230922175351.work.018-kees@kernel.org>
+In-Reply-To: <20230922175351.work.018-kees@kernel.org>
+From:   Justin Stitt <justinstitt@google.com>
+Date:   Tue, 3 Oct 2023 15:56:57 -0700
+Message-ID: <CAFhGd8pHzbdcSaxjJHVHTAVrsxVPptn+OfwNjQ0RMEsOS3xRiw@mail.gmail.com>
+Subject: Re: [PATCH] mailbox: zynqmp: Annotate struct zynqmp_ipi_pdata with __counted_by
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Michal Simek <michal.simek@amd.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi William,
+On Fri, Sep 22, 2023 at 10:54=E2=80=AFAM Kees Cook <keescook@chromium.org> =
+wrote:
+>
+> Prepare for the coming implementation by GCC and Clang of the __counted_b=
+y
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUND=
+S
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+>
+> As found with Coccinelle[1], add __counted_by for struct zynqmp_ipi_pdata=
+.
+>
+> [1] https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/c=
+ounted_by.cocci
+>
+> Cc: Jassi Brar <jassisinghbrar@gmail.com>
+> Cc: Michal Simek <michal.simek@amd.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
 
-william.zhang@broadcom.com wrote on Tue, 3 Oct 2023 11:46:25 -0700:
+Great patch! Crucially, the count is _correctly_ assigned
+to before the flexible array member is accessed.
 
-> Hi Miquel,
->=20
-> On 10/03/2023 02:28 AM, Miquel Raynal wrote:
-> > Hi William,
-> >=20
-> > william.zhang@broadcom.com wrote on Mon, 2 Oct 2023 12:57:01 -0700:
-> >  =20
-> >> Hi Miquel,
-> >>
-> >> On 10/02/2023 05:35 AM, Miquel Raynal wrote: =20
-> >>> Hi David,
-> >>>
-> >>> dregan@mail.com wrote on Sat, 30 Sep 2023 03:57:35 +0200: =20
-> >>>    >>>> Initial exec_op implementation for Broadcom STB, Broadband an=
-d iProc SoC =20
-> >>>> This adds exec_op and removes the legacy interface.
-> >>>>
-> >>>> Signed-off-by: David Regan <dregan@mail.com>
-> >>>> Reviewed-by: William Zhang <william.zhang@broadcom.com>
-> >>>>
-> >>>> --- =20
-> >>>>   >>> =20
-> >>> ... =20
-> >>>    >>>> +static int brcmnand_parser_exec_matched_op(struct nand_chip =
-*chip, =20
-> >>>> +					 const struct nand_subop *subop)
-> >>>> +{
-> >>>> +	struct brcmnand_host *host =3D nand_get_controller_data(chip);
-> >>>> +	struct brcmnand_controller *ctrl =3D host->ctrl;
-> >>>> +	struct mtd_info *mtd =3D nand_to_mtd(chip);
-> >>>> +	const struct nand_op_instr *instr =3D &subop->instrs[0];
-> >>>> +	unsigned int i;
-> >>>> +	int ret =3D 0;
-> >>>> +
-> >>>> +	for (i =3D 0; i < subop->ninstrs; i++) {
-> >>>> +		instr =3D &subop->instrs[i];
-> >>>> +
-> >>>> +		if ((instr->type =3D=3D NAND_OP_CMD_INSTR) &&
-> >>>> +			(instr->ctx.cmd.opcode =3D=3D NAND_CMD_STATUS))
-> >>>> +			ctrl->status_cmd =3D 1;
-> >>>> +		else if (ctrl->status_cmd && (instr->type =3D=3D NAND_OP_DATA_IN_=
-INSTR)) {
-> >>>> +			/*
-> >>>> +			 * need to fake the nand device write protect because nand_base =
-does a
-> >>>> +			 * nand_check_wp which calls nand_status_op NAND_CMD_STATUS whic=
-h checks
-> >>>> +			 * that the nand is not write protected before an operation star=
-ts.
-> >>>> +			 * The problem with this is it's done outside exec_op so the nan=
-d is
-> >>>> +			 * write protected and this check will fail until the write or e=
-rase
-> >>>> +			 * or write back operation actually happens where we turn off wp.
-> >>>> +			 */
-> >>>> +			u8 *in;
-> >>>> +
-> >>>> +			ctrl->status_cmd =3D 0;
-> >>>> +
-> >>>> +			instr =3D &subop->instrs[i];
-> >>>> +			in =3D instr->ctx.data.buf.in;
-> >>>> +			in[0] =3D brcmnand_status(host) | NAND_STATUS_WP; /* hide WP sta=
-tus */ =20
-> >>>
-> >>> I don't understand why you are faking the WP bit. If it's set,
-> >>> brcmnand_status() should return it and you should not care about it. =
-If
-> >>> it's not however, can you please give me the path used when we have
-> >>> this issue? Either we need to modify the core or we need to provide
-> >>> additional helpers in this driver to circumvent the faulty path. =20
-> >>
-> >> The reason we have to hide wp status for status command is because
-> >> nand_base calls nand_check_wp at the very beginning of write and erase
-> >> function. This applies to both exec_op path and legacy path. With
-> >> Broadcom nand controller and most of our board design using the WP pin
-> >> and have it asserted by default, the nand_check_wp function will fail
-> >> and write/erase aborts.  This workaround has been there before this
-> >> exec_op patch.
-> >>
-> >> I agree it is ugly and better to be addressed in the nand base code. A=
-nd
-> >> I understand Broadcom's WP approach may sound a bit over cautious but =
-we
-> >> want to make sure no spurious erase/write can happen under any
-> >> circumstance except software explicitly want to write and erase.  WP is
-> >> standard nand chip pin and I think most the nand controller has that
-> >> that pin in the design too but it is possible it is not used and
-> >> bootloader can de-assert the pin and have a always-writable nand flash
-> >> for linux. So maybe we can add nand controller dts option "nand-use-wp=
-".
-> >> If this property exist and set to 1,  wp control is in use and nand
-> >> driver need to control the pin on/ff as needed when doing write and
-> >> erase function. Also nand base code should not call nand_check_wp when
-> >> wp is in use. Then we can remove the faking WP status workaround.
-> >> =20
-> >>>    >>>> +		} else if (instr->type =3D=3D NAND_OP_WAITRDY_INSTR) { =20
-> >>>> +			ret =3D bcmnand_ctrl_poll_status(host, NAND_CTRL_RDY, NAND_CTRL_=
-RDY, 0);
-> >>>> +			if (ctrl->wp_cmd) {
-> >>>> +				ctrl->wp_cmd =3D 0;
-> >>>> +				brcmnand_wp(mtd, 1); =20
-> >>>
-> >>> This ideally should disappear. =20
-> >>>    >> Maybe we can have the destructive operation patch from Borris. =
-=20
-> >> Controller driver still need to assert/deassert the pin if it uses nand
-> >> wp feature but at least it does not need to guess the op code. =20
-> >=20
-> > Ah, yeah, I get it.
-> >=20
-> > Please be my guest, you can revive this patch series (might need light
-> > tweaking, nothing big) and also take inspiration from it if necessary:
-> > https://github.com/bbrezillon/linux/commit/e612e1f2c69a33ac5f2c91d13669=
-f0f172d58717
-> > https://github.com/bbrezillon/linux/commit/4ec6f8d8d83f5aaca5d1877f02d4=
-8da96d41fcba
-> > https://github.com/bbrezillon/linux/commit/11b4acffd761c4928652d7028d19=
-fcd6f45e4696
-> >  =20
-> Sure we will incorporate the destructive operation patch and provide a
-> new revision.
->=20
-> The WP status workaround will stay at least for this change. If you
-> think my suggestion using a dts setting above is okay, we can provide a
-> patch for that as well.  Or if you have any other idea or suggestion,
-> we'd like to hear too.
+Reviewed-by: Justin Stitt <justinstitt@google.com>
 
-I thought this was not needed as Boris initial conversion did not need
-it. The goal is to get rid of this workaround.
-
-Thanks,
-Miqu=C3=A8l
+>  drivers/mailbox/zynqmp-ipi-mailbox.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/mailbox/zynqmp-ipi-mailbox.c b/drivers/mailbox/zynqm=
+p-ipi-mailbox.c
+> index e4fcac97dbfa..7fa533e80dd9 100644
+> --- a/drivers/mailbox/zynqmp-ipi-mailbox.c
+> +++ b/drivers/mailbox/zynqmp-ipi-mailbox.c
+> @@ -108,7 +108,7 @@ struct zynqmp_ipi_pdata {
+>         unsigned int method;
+>         u32 local_id;
+>         int num_mboxes;
+> -       struct zynqmp_ipi_mbox ipi_mboxes[];
+> +       struct zynqmp_ipi_mbox ipi_mboxes[] __counted_by(num_mboxes);
+>  };
+>
+>  static struct device_driver zynqmp_ipi_mbox_driver =3D {
+> --
+> 2.34.1
+>
+>
+Thanks
+Justin
