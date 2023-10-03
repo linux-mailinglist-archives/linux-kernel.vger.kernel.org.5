@@ -2,260 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 796317B627F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7F27B6283
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbjJCHaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 03:30:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55068 "EHLO
+        id S231409AbjJCHb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 03:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230461AbjJCHa2 (ORCPT
+        with ESMTP id S230323AbjJCHbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 03:30:28 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7143290;
-        Tue,  3 Oct 2023 00:30:24 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qnZrJ-0008Vn-Gd; Tue, 03 Oct 2023 09:30:21 +0200
-Message-ID: <906cfb11-ee93-4251-a6ff-1c4d9656b577@leemhuis.info>
-Date:   Tue, 3 Oct 2023 09:30:18 +0200
+        Tue, 3 Oct 2023 03:31:55 -0400
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2061.outbound.protection.outlook.com [40.107.243.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA48A83
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 00:31:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DEiaA6q5YBinzWdbffTJl/XY5IjiDvNmm6W77A/Opzprj1rOsUTHbj1yDvLhuZn0jQhTkjrkr8ZHrWuHPq6WQeAolY8/A4SXupFaUml2f9RSsRJpKbqQCte5UwcOI3MDcFvuDsN/QQAcuI0z1GJAMLER081e6DrDMV25fZRtdj9AjKs5uVSwMxvqGzS1FBoMWju6YIldkVUY6UY9yZSuyiqL8IuXnGEDIBHPdUJUC+ei4NdaZaNIRruVPZqNOukBaUq3Uc67/Fe2d3KfNgTcoR0j06jO/Gj3XepYsuarbvJFu5NJX4qWcQww64hwdY3xeRAU1wowxS8tHlH8MQoz0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TisWu+VLPNfEYcip/BDkc1glSc5VhFgBpx4jUXyMFF8=;
+ b=dFVgW2aeSEnEQ8PBtMW2k/gdHnvNM/FHJ3EL43K0RivGXNy42+0X4HQZ6JlYwBfj+u4oA2Aef7tW1k7+xq7nx8JYqIxIKyWdEAe7x23w7eKEarz4sFjhT/MlY51ebJUi/rkdMuinVa6L9GiHCwIt4DRexe7Tl1lTzGdVJS6Huwt2mVvhOGgZ9DOQdCj9+FMaMgSOsGhAcEWGIp7HUSLz24OYk/Uhrm8y9VEfFEfjStrKtiOZ/EaZFh4rfujeKwS3U86j8SR1dBgeLq57hnjGeWVAVFuoS6Ne5y1tzQh2bR3Ukh3GVNiXo3YUHb2chh7FpfAyFp65+gg9VLrOhVBHaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TisWu+VLPNfEYcip/BDkc1glSc5VhFgBpx4jUXyMFF8=;
+ b=dufQDHuYQiARPbDB39UAsvDiDelHdULdIZIt2GEEj68dSt/NTavxsnbB0l5JXa+dvAYkbgcbSNkm1S/r+8r6ZlpWm/Q2an2GfGc0JNsS0svrfEHp0NpfLIlUob5NL3jSKe4lQu9vYid50w61QNP/YRTWrMeMpAtJ0RhkRU/tq1U=
+Received: from CH2PR16CA0027.namprd16.prod.outlook.com (2603:10b6:610:50::37)
+ by DS7PR12MB6240.namprd12.prod.outlook.com (2603:10b6:8:94::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.31; Tue, 3 Oct
+ 2023 07:31:50 +0000
+Received: from DS3PEPF000099D9.namprd04.prod.outlook.com
+ (2603:10b6:610:50:cafe::3d) by CH2PR16CA0027.outlook.office365.com
+ (2603:10b6:610:50::37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.33 via Frontend
+ Transport; Tue, 3 Oct 2023 07:31:50 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS3PEPF000099D9.mail.protection.outlook.com (10.167.17.10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.6838.14 via Frontend Transport; Tue, 3 Oct 2023 07:31:50 +0000
+Received: from aiemdee.2.ozlabs.ru (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 3 Oct
+ 2023 02:31:45 -0500
+From:   Alexey Kardashevskiy <aik@amd.com>
+To:     <x86@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Alexey Kardashevskiy" <aik@amd.com>
+Subject: [PATCH kernel v3] x86/compressed/64: reduce #VC nesting for intercepted CPUID for SEV-SNP guest
+Date:   Tue, 3 Oct 2023 18:31:23 +1100
+Message-ID: <20231003073123.1763564-1-aik@amd.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [regression] Resume broken on T14s Gen1 (AMD) due to "Input:
- psmouse - add delay when deactivating for SMBus mode"
-To:     Jeffery Miller <jefferymiller@google.com>
-Cc:     Andrew Duggan <aduggan@synaptics.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-References: <ca0109fa-c64b-43c1-a651-75b294d750a1@leemhuis.info>
- <CAAzPG9NkoaUz_JRtZt_JomsYj-8ZPn4QH0w0eeR-oxd55-18Qg@mail.gmail.com>
- <CAAzPG9NWp8yPU52o7d2-jLjxjLodFOiE_AjoxmCAZ=MXtV__Aw@mail.gmail.com>
- <cf87d6a5-7ff3-4add-8c48-fd3447b32697@leemhuis.info>
- <1b3f8dd2-6364-4f00-a33e-8b15b8911dbf@leemhuis.info>
- <CAAzPG9MD+UQb_RdiMkPkpQGYe-arD1nMKWngMj4P5s3_zJvphQ@mail.gmail.com>
-Content-Language: en-US, de-DE
-Autocrypt: addr=linux@leemhuis.info; keydata=
- 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 n7RI
-In-Reply-To: <CAAzPG9MD+UQb_RdiMkPkpQGYe-arD1nMKWngMj4P5s3_zJvphQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1696318224;be12618c;
-X-HE-SMSGID: 1qnZrJ-0008Vn-Gd
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099D9:EE_|DS7PR12MB6240:EE_
+X-MS-Office365-Filtering-Correlation-Id: f4753995-f295-485e-90b3-08dbc3e2ced0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ASfCNUv+8gD/qK2mnFSEMzoa/rLHtlVlr8bcspotj+J5CMnkorp66eM8ZXPAKWRbG2Bibl4ZXWmoX13vTd9ZauKtCeZEX+Q1G51YNR3dgmyAu/WHLhhooxuzTTJz/sfYQeH7nrSwwb2rRrFcK/mxVedLyabGd7OrUOSF/t5UgzGXF/9zOzqpU5bDBcg569SQ8oWt2Keb46mEpFXpJ8NUPFPO6GwkjSuIwSUeuwmNElPKcDJMgL7Vj0t/D8PBjXtuXMGiNdPvDHd5IBwWlF4WrqfRtIKVKKMjCRVdVpt92lbwJVAMmh9bxRVvhXEoTUE4zA20yJwKUud9TndFPIn/uUewIitErMyEYDTieeONa0vXgKXy8p6vrlwFPn/YNOhAzG9g5uITFLitNSlPGr2smr1DAJ6+kS+C5uxscCNb0TC/dMCBiCDnw6BY27yxPCGT5/+uKxq0x51MYti1jRqM7Znh7lbnpaJ+XbE0sIsR7ln9Ft0hk27JVhaLyUme+vF79TANL0+6nYUugWNp8nCZn8aVL5p+jTB2PbOmuTiY6dzskQMBqo59QyvtQwYNIPtQzkXN6ajcoRA1fGx3uXnZIY3bZRJM4EGLj5GVBgaNqH9sWs966ShzS9kpfd1D4MPZSSgO+9/8tqUox5HGIxGzSLLUsFcsfqTiMhSoEyvGEIgJPoeJNKEi7mnR6DBTxpoQ3djmXg5JX7L+V5o955qyLAwu3X6nWhJraZ/vjmTVCe5XPjNWZ4Mbcg/ddXNj+coC
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(346002)(136003)(396003)(230922051799003)(1800799009)(186009)(451199024)(82310400011)(64100799003)(40470700004)(36840700001)(46966006)(2616005)(2906002)(40460700003)(356005)(82740400003)(83380400001)(81166007)(336012)(26005)(47076005)(40480700001)(36756003)(36860700001)(1076003)(16526019)(426003)(966005)(316002)(8936002)(4326008)(8676002)(478600001)(5660300002)(6916009)(41300700001)(54906003)(70206006)(70586007)(6666004)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 07:31:50.2076
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: f4753995-f295-485e-90b3-08dbc3e2ced0
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS3PEPF000099D9.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6240
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.10.23 18:52, Jeffery Miller wrote:
-> On Sat, Sep 30, 2023 at 4:04 AM Thorsten Leemhuis <linux@leemhuis.info> wrote:
->> """
->>> diff --git a/drivers/input/mouse/psmouse-smbus.c b/drivers/input/mouse/psmouse-smbus.c
->>> index 7b13de979908..fe12385bb856 100644
->>> --- a/drivers/input/mouse/psmouse-smbus.c
->>> +++ b/drivers/input/mouse/psmouse-smbus.c
->>> @@ -121,11 +121,11 @@ static psmouse_ret_t psmouse_smbus_process_byte(struct psmouse *psmouse)
->>>
->>>  static void psmouse_activate_smbus_mode(struct psmouse_smbus_dev *smbdev)
->>>  {
->>> -       if (smbdev->need_deactivate) {
->>> -               psmouse_deactivate(smbdev->psmouse);
->>> -               /* Give the device time to switch into SMBus mode */
->>> -               msleep(30);
->>> -       }
->>> +        if (smbdev->psmouse == NULL) {
->>> +           printk("XXX: smbdev->psmouse is null\n");
->>> +        } else {
->>> +           printk("XXX: smbdev->psmouse is set\n");
->>> +        }
->>>  }
->>>
->>>  static int psmouse_smbus_reconnect(struct psmouse *psmouse)
->> """
->>
->> During boot this prints "XXX: smbdev->psmouse is set". But it helped, as
->> the machine now resumes from s2idle again -- while printing "XXX:
->> smbdev->psmouse is null". And that should not be the case I assume. Or
->> did my brute force test go sideways due to my limited skills?
-> 
-> This was a good test. You've identified where it is crashing.
-> 
-> Maybe we could confirm that `psmouse->private` is not-NULL?:
-> ```
-> diff --git a/drivers/input/mouse/psmouse-smbus.c
-> b/drivers/input/mouse/psmouse-smbus.c
-> index 7b13de979908..432615df9ae8 100644
-> --- a/drivers/input/mouse/psmouse-smbus.c
-> +++ b/drivers/input/mouse/psmouse-smbus.c
-> @@ -130,7 +130,10 @@ static void psmouse_activate_smbus_mode(struct
-> psmouse_smbus_dev *smbdev)
-> 
->  static int psmouse_smbus_reconnect(struct psmouse *psmouse)
->  {
-> -       psmouse_activate_smbus_mode(psmouse->private);
-> +       if (psmouse->private == NULL) {
-> +               printk("XXX smbdev is null");
-> +       }
-> +       //psmouse_activate_smbus_mode(psmouse->private);
->         return 0;
->  }
-> ```
+For certain intercepts an SNP guest uses the GHCB protocol to talk to
+the hypervisor from the #VC handler. The protocol requires a shared page so
+there is one per vCPU. In case NMI arrives in a middle of #VC or the NMI
+handler triggers a #VC, there is another "backup" GHCB page which stores
+the content of the first one while SVM_VMGEXIT_NMI_COMPLETE is sent.
+The vc_raw_handle_exception() handler manages main and backup GHCB pages
+via __sev_get_ghcb/__sev_put_ghcb.
 
-This didn't print anything on resume, so `psmouse->private` apparently
-is set.
+This works fine for #VC and occasional NMIs but not so fine when the #VC
+handler causes intercept + another #VC. If NMI arrives during
+the second #VC, there are no more pages for SVM_VMGEXIT_NMI_COMPLETE.
+The problem place is the #VC CPUID handler which reads an MSR which
+triggers another #VC and if "perf" was running, panic happens:
 
-Tried brute force again afterwards to find what might unset
-smbdev->psmouse by adding printk statements to
-psmouse_smbus_disconnect() and psmouse_smbus_cleanup() but those didn't
-fire, so it must be something else I didn't spot.
+Kernel panic - not syncing: Unable to handle #VC exception! GHCB and Backup GHCB are already in use
 
-Ciao, Thorsten
+Add a helper similar to native_read_msr_safe() for making a direct hypercall
+in the SEV-ES environment. Use the new helper instead of the raw "rdmsr" to
+avoid the extra #VC event.
 
-> On Thu, Sep 28, 2023 at 4:08 AM Thorsten Leemhuis <linux@leemhuis.info> wrote:
->>
->> On 27.09.23 19:23, Thorsten Leemhuis wrote:
->>> On 27.09.23 17:55, Jeffery Miller wrote:
->>>> On Wed, Sep 27, 2023 at 10:43 AM Jeffery Miller
->>>> <jefferymiller@google.com> wrote:
->>>>> On Wed, Sep 27, 2023 at 3:54 AM Thorsten Leemhuis <linux@leemhuis.info> wrote:
->>>>>>
->>>>>> My dmesg from a kernel with the revert:
->>>>>> https://www.leemhuis.info/files/misc/dmesg
->>>
->>> Thx for looking into this!
->>>
->>>>> In this dmesg output it shows that this is an elantech smbus device:
->>>>> ```
->>>>> [    4.260415] psmouse serio1: elantech: assuming hardware version 4 (with firmware version 0x7f3001)
->>>>> [    4.279297] psmouse serio1: elantech: Synaptics capabilities query result 0x90, 0x18, 0x0f.
->>>>> [    4.292788] psmouse serio1: elantech: Elan sample query result 00, 80, c9
->>>>> [    4.319184] psmouse serio1: elantech: Elan ic body: 0x10, current fw version: 0x3
->>>>> ...
->>>>> [    4.346951] psmouse serio1: elantech: Trying to set up SMBus access
->>>>> [    4.346986] psmouse serio1: elantech: SMbus companion is not ready yet
->>>>> [    4.369993] input: ETPS/2 Elantech TrackPoint as /devices/platform/i8042/serio1/input/input7
->>>>> [    4.376200] systemd[1]: bpf-lsm: LSM BPF program attached
->>>>> [    4.385192] input: ETPS/2 Elantech Touchpad as /devices/platform/i8042/serio1/input/input5
->>>>> ```
->>>>> The change in 92e24e0e57f72e shouldn't affect the elantouch device as  elantech_setup_smbus
->>>>> initializes `psmouse_smbus_init` with need_deactivate = false.
->>>
->>> Hmmm. Wondering if I should warm up the compiler again to recheck my
->>> result one more time[1].
->>
->> Just did that. Ran "make clean" and compiled mainline as of now
->> (633b47cb009d) and the machine does never resume from s2idle; then I
->> reverted 92e24e0e57f7 and compiled again (for completeness: without
->> running "make clean" beforehand) and with that kernel s2idle resume
->> works perfectly fine.
->>
->> Wondering if I or the compiler is doing something stupid here -- or if
->> we missed some small but important detail somewhere.
->>
->> Ciao, Thorsten
->>
->>>>> Did you store dmesg logs from boot without the applied patch?
->>>> I intended to ask if you have logs from a boot without 92e24e0e57f72e reverted.
->>>
->>> https://www.leemhuis.info/files/misc/dmesg-6.6-rc3-vanilla
->>>
->>>>> If the delay was being applied the timestamps should show the 30ms delay between
->>>>> `psmouse serio1: elantech: Trying to set up SMBus access`
->>>>> and
->>>>> `psmouse serio1: elantech: SMbus companion is not ready yet`
->>>
->>> Unless I missed something there is not difference. :-/
->>>
->>> Ciao, Thorsten
->>>
->>> [1] FWIW, this is my bisect log
->>>
->>> """
->>>> git bisect start
->>>> # status: waiting for both good and bad commits
->>>> # bad: [6465e260f48790807eef06b583b38ca9789b6072] Linux 6.6-rc3
->>>> git bisect bad 6465e260f48790807eef06b583b38ca9789b6072
->>>> # status: waiting for good commit(s), bad commit known
->>>> # good: [2dde18cd1d8fac735875f2e4987f11817cc0bc2c] Linux 6.5
->>>> git bisect good 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
->>>> # good: [4fb0dacb78c6a041bbd38ddd998df806af5c2c69] Merge tag 'sound-6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
->>>> git bisect good 4fb0dacb78c6a041bbd38ddd998df806af5c2c69
->>>> # good: [307d59039fb26212a84a9aa6a134a7d2bdea34ca] Merge tag 'media/v6.6-1' of git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media
->>>> git bisect good 307d59039fb26212a84a9aa6a134a7d2bdea34ca
->>>> # bad: [4a0fc73da97efd23a383ca839e6fe86410268f6b] Merge tag 's390-6.6-2' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux
->>>> git bisect bad 4a0fc73da97efd23a383ca839e6fe86410268f6b
->>>> # good: [e4f1b8202fb59c56a3de7642d50326923670513f] Merge tag 'for_linus' of git://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost
->>>> git bisect good e4f1b8202fb59c56a3de7642d50326923670513f
->>>> # good: [5eea5820c7340d39e56e169e1b87199391105f6b] Merge tag 'mm-stable-2023-09-04-14-00' of git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm
->>>> git bisect good 5eea5820c7340d39e56e169e1b87199391105f6b
->>>> # good: [65d6e954e37872fd9afb5ef3fc0481bb3c2f20f4] Merge tag 'gfs2-v6.5-rc5-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2
->>>> git bisect good 65d6e954e37872fd9afb5ef3fc0481bb3c2f20f4
->>>> # bad: [744a759492b5c57ff24a6e8aabe47b17ad8ee964] Merge tag 'input-for-v6.6-rc0' of git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input
->>>> git bisect bad 744a759492b5c57ff24a6e8aabe47b17ad8ee964
->>>> # good: [dbce1a7d5dce7318d8465b1e0d052ef1d2202237] Input: Explicitly include correct DT includes
->>>> git bisect good dbce1a7d5dce7318d8465b1e0d052ef1d2202237
->>>> # good: [29057cc5bddc785ea0a11534d7ad2546fa0872d3] Merge tag 'linux-watchdog-6.6-rc1' of git://www.linux-watchdog.org/linux-watchdog
->>>> git bisect good 29057cc5bddc785ea0a11534d7ad2546fa0872d3
->>>> # bad: [3e4bb047b23375a34dbf5885709ac3729d9cfb22] Input: qt2160 - convert to use devm_* api
->>>> git bisect bad 3e4bb047b23375a34dbf5885709ac3729d9cfb22
->>>> # good: [e175eae16c1bf92062f1f431a95f476a61a77c48] Input: mcs-touchkey - convert to use devm_* api
->>>> git bisect good e175eae16c1bf92062f1f431a95f476a61a77c48
->>>> # bad: [92e24e0e57f72e06c2df87116557331fd2d4dda2] Input: psmouse - add delay when deactivating for SMBus mode
->>>> git bisect bad 92e24e0e57f72e06c2df87116557331fd2d4dda2
->>>> # good: [8362bf82fb5441613aac7c6c9dbb6b83def6ad3b] Input: mcs-touchkey - fix uninitialized use of error in mcs_touchkey_probe()
->>>> git bisect good 8362bf82fb5441613aac7c6c9dbb6b83def6ad3b
->>>> # first bad commit: [92e24e0e57f72e06c2df87116557331fd2d4dda2] Input: psmouse - add delay when deactivating for SMBus mode
->>> """
->>>
->>>
-> 
-> 
+Fixes: ee0bfa08a345 ("x86/compressed/64: Add support for SEV-SNP CPUID table in #VC handlers")
+Signed-off-by: Alexey Kardashevskiy <aik@amd.com>
+---
 
+Based on:
+https://git.kernel.org/pub/scm/linux/kernel/git/bp/bp.git/log/?h=tip-x86-urgent
+which top at the time was:
+62d5e970d022 "x86/sev: Change npages to unsigned long in snp_accept_memory()"
+
+---
+Changes:
+v3:
+* made it a function, mimic native_read_msr_safe() which 1) returns value 2) returns an error
+* removed debug backtraces the commit log as these were added for debugging and never
+appear with actual kernels
+
+
+v2:
+* de-uglify by defining rdmsr_safe_GHCB()
+---
+ arch/x86/kernel/sev-shared.c | 27 +++++++++++++++++---
+ 1 file changed, 23 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/kernel/sev-shared.c b/arch/x86/kernel/sev-shared.c
+index dcf325b7b022..494d92a71986 100644
+--- a/arch/x86/kernel/sev-shared.c
++++ b/arch/x86/kernel/sev-shared.c
+@@ -241,6 +241,25 @@ static enum es_result sev_es_ghcb_hv_call(struct ghcb *ghcb,
+ 	return verify_exception_info(ghcb, ctxt);
+ }
+ 
++
++/* Paravirt SEV-ES rdmsr which avoids extra #VC event */
++static unsigned long long ghcb_prot_read_msr(unsigned int msr, struct ghcb *ghcb,
++					     struct es_em_ctxt *ctxt, int *err)
++{
++	unsigned long long ret = 0;
++
++	ghcb_set_rcx(ghcb, msr);
++
++	*err = sev_es_ghcb_hv_call(ghcb, ctxt, SVM_EXIT_MSR, 0, 0);
++	if (*err == ES_OK)
++		ret = (ghcb->save.rdx << 32) | ghcb->save.rax;
++
++	/* Invalidate qwords for likely another following GHCB call */
++	vc_ghcb_invalidate(ghcb);
++
++	return ret;
++}
++
+ static int __sev_cpuid_hv(u32 fn, int reg_idx, u32 *reg)
+ {
+ 	u64 val;
+@@ -477,11 +496,11 @@ static int snp_cpuid_postprocess(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
+ 		if (leaf->subfn == 1) {
+ 			/* Get XSS value if XSAVES is enabled. */
+ 			if (leaf->eax & BIT(3)) {
+-				unsigned long lo, hi;
++				int err = 0;
+ 
+-				asm volatile("rdmsr" : "=a" (lo), "=d" (hi)
+-						     : "c" (MSR_IA32_XSS));
+-				xss = (hi << 32) | lo;
++				xss = ghcb_prot_read_msr(MSR_IA32_XSS, ghcb, ctxt, &err);
++				if (err != ES_OK)
++					return -EINVAL;
+ 			}
+ 
+ 			/*
+-- 
+2.41.0
 
