@@ -2,244 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 117D07B6CF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA067B6CF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231604AbjJCPUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 11:20:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
+        id S231470AbjJCPUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 11:20:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbjJCPUQ (ORCPT
+        with ESMTP id S231545AbjJCPUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 11:20:16 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BEBB0
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:20:12 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B73DC433CC;
-        Tue,  3 Oct 2023 15:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696346412;
-        bh=B9aRfdqIE7RbWkkETKISrpJ4KaIc5r01R4PIwvSQEV0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e07kazDDDZwmEg3SFgO/ITwOA07wD2ap4EuBIRXPMNkfm1GV/nMnb5rTKXxBNP/mJ
-         nkLOGuAiWdtN1ENiwrUG8p9+zuMKqw7zg9zOfHOIkYLTXtO/rbHgwAleExAAmVqxFA
-         GYfWcu/WYyZDgpZ9YrlyqVItJI3sQTwM4W8Kc9Gts5WVy2mGyhL+uiAmdpwijTZT1i
-         sTJHdoLePLaq0jmiGdxG1QOm+dF4ZvFr+ZKpVh9A79uh2W0cXX7a2c4856E0A5DyML
-         N1T27ClljF1bnFI4m126mNJ5PWzEt5YUr5Zm6CvAr9jjCvY1HiaqJUmGXFusca5wmn
-         aghr7kQvFTjcg==
-Date:   Tue, 3 Oct 2023 17:20:07 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Robert Marko <robimarko@gmail.com>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Christian Marangi <ansuelsmth@gmail.com>
-Subject: Re: [RFC PATCH net-next] net: phy: aquantia: add firmware load
- support
-Message-ID: <ZRwxJwtAsU/z76+5@kernel.org>
-References: <20230930104008.234831-1-robimarko@gmail.com>
+        Tue, 3 Oct 2023 11:20:32 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E35C6;
+        Tue,  3 Oct 2023 08:20:29 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50573e85ee0so1247974e87.3;
+        Tue, 03 Oct 2023 08:20:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696346428; x=1696951228; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=6W20St9AUDpDFBNyugoMYR8+Qn4dlil3atLZEE5i40k=;
+        b=Ua8+QRV3sZ99sRKlKC25DSkqwE23CHq+Eos3vQ8Ae08CB9YS7O6/ttrGAP3+/EA1wN
+         XcrWIVxlzK6PntT06foDf8ZsO04PEdST1lIoowKqDngsEg6q78y51ZyT1jvZX3BrRx7I
+         2Mb+TkjlqOIdxF4sHEYR/dsRspQsW/H/eHoZwHwyfphtYzWWixsIdVvoeRkJJ4ImgCbt
+         yGbSlm9I5yygyAfnA7b05DhaLUkvtYHdbRzYltqcxq3KazZXXW8Dm/q2qoGMvLNO8sXX
+         6c7bFat0cVHL9Dx/+75B8i+amoIjh5Y976/A9nEhQ9g/YbNUUjwpJO42ccyeM0SrGAjK
+         9kXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696346428; x=1696951228;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6W20St9AUDpDFBNyugoMYR8+Qn4dlil3atLZEE5i40k=;
+        b=Y5nOnUKbUtyDgdeNORhs3VNIFqkpWd5ZSEpUW7VEzy0wunOiSDbGxHKG6EvpSi9SuT
+         i4NfaNsuBC5Rec0JUt+mjwxScAX6iwbGJtbL/njzXBNCxSYI8i+PBxxZQDGpRvmygrPr
+         qlWttRS5a1mvdWBRlpuyHvec9n+DSksNlHP/jnSkISlhcVsNXEN+fyfFQPDAEslkzYgj
+         c4o571f+AtghwkaXuCNngVGRq0fxsra8zmLwXXJ/DbIKLzKrJvLGS942XKc3zER4dywm
+         DqMuVrUhUBZl+Y7D2PReTjDqrASDMpAibuRf1b1yiR23tF4fa3VdAJIiGPxrbP9Fba5+
+         MT/w==
+X-Gm-Message-State: AOJu0YyZBt8nh5EF+VNAsdiBo9Vg2CO4lX2pbuUvZMdVm9m0A6ESFWUr
+        AGL7Hv8pEyDvITPpI6ueEI4=
+X-Google-Smtp-Source: AGHT+IHqPWs0sH1E101Rja23QIH+UT00iRKC9sEArefggB80uHbjbDH1bSl/u09z8I41ZW8fvH2Liw==
+X-Received: by 2002:a05:6512:10cd:b0:503:5d8:da33 with SMTP id k13-20020a05651210cd00b0050305d8da33mr14322552lfg.20.1696346427546;
+        Tue, 03 Oct 2023 08:20:27 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id u25-20020ac248b9000000b0050318721b62sm223813lfg.6.2023.10.03.08.20.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 08:20:27 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 18:20:23 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+Cc:     Cai Huoqing <cai.huoqing@linux.dev>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Herve Codina <herve.codina@bootlin.com>
+Subject: Re: [PATCH v2 4/5] dmaengine: dw-edma: HDMA: Add sync read before
+ starting the DMA transfer in remote setup
+Message-ID: <2yh3lus7qqhvewva6dr4p2g7azbgov4ls57xvzefbrw24h2t7m@cbx26pwj73zn>
+References: <m6mxnmppc7hybs2tz57anoxq6afu2x63tigjya2eooaninpe4h@ayupt4qauq7v>
+ <20231003121542.3139696-1-kory.maincent@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230930104008.234831-1-robimarko@gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231003121542.3139696-1-kory.maincent@bootlin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 12:39:44PM +0200, Robert Marko wrote:
-> Aquantia PHY-s require firmware to be loaded before they start operating.
-> It can be automatically loaded in case when there is a SPI-NOR connected
-> to Aquantia PHY-s or can be loaded from the host via MDIO.
+On Tue, Oct 03, 2023 at 02:15:42PM +0200, Köry Maincent wrote:
+> From: Kory Maincent <kory.maincent@bootlin.com>
 > 
-> This patch adds support for loading the firmware via MDIO as in most cases
-> there is no SPI-NOR being used to save on cost.
-> Firmware loading code itself is ported from mainline U-boot with cleanups.
+> The Linked list element and pointer are not stored in the same memory as
+> the HDMA controller register. If the doorbell register is toggled before
+> the full write of the linked list a race condition error can appears.
+> In remote setup we can only use a readl to the memory to assured the full
+> write has occurred.
 > 
-> The firmware has mixed values both in big and little endian.
-> PHY core itself is big-endian but it expects values to be in little-endian.
-> The firmware is little-endian but CRC-16 value for it is stored at the end
-> of firmware in big-endian.
+> Fixes: e74c39573d35 ("dmaengine: dw-edma: Add support for native HDMA")
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> ---
 > 
-> It seems the PHY does the conversion internally from firmware that is
-> little-endian to the PHY that is big-endian on using the mailbox
-> but mailbox returns a big-endian CRC-16 to verify the written data
-> integrity.
+> Changes in v2:
+> - Move the sync read in a function.
+> - Add commments
+
+Note you need to resubmit the entire series if any of its part has
+changed. So please add these patches to your patchset (in place of the
+4/5 and 5/5 patches I commented) and resend it as v3.
+
+-Serge(y)
+
+> ---
+>  drivers/dma/dw-edma/dw-hdma-v0-core.c | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
 > 
-> Co-developed-by: Christian Marangi <ansuelsmth@gmail.com>
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
-
-...
-
-> diff --git a/drivers/net/phy/aquantia_main.c b/drivers/net/phy/aquantia_main.c
-
-...
-
-> @@ -677,6 +735,142 @@ static int aqr107_wait_processor_intensive_op(struct phy_device *phydev)
->  	return 0;
+> diff --git a/drivers/dma/dw-edma/dw-hdma-v0-core.c b/drivers/dma/dw-edma/dw-hdma-v0-core.c
+> index 0cce1880cfdc..9109dd6c2e76 100644
+> --- a/drivers/dma/dw-edma/dw-hdma-v0-core.c
+> +++ b/drivers/dma/dw-edma/dw-hdma-v0-core.c
+> @@ -221,6 +221,20 @@ static void dw_hdma_v0_core_write_chunk(struct dw_edma_chunk *chunk)
+>  	dw_hdma_v0_write_ll_link(chunk, i, control, chunk->ll_region.paddr);
 >  }
 >  
-> +/* load data into the phy's memory */
-> +static int aquantia_load_memory(struct phy_device *phydev, u32 addr,
-> +				const u8 *data, size_t len)
+> +static void dw_hdma_v0_sync_ll_data(struct dw_edma_chunk *chunk)
 > +{
-> +	u16 crc = 0, up_crc;
-> +	size_t pos;
-> +
-> +	/* PHY expect addr in LE */
-> +	addr = cpu_to_le32(addr);
-
-Hi Christian and Robert,
-
-
-The type of addr us u32, but here it is assigned a __le32 value.
-
-As flagged by Sparse.
-
-> +
-> +	phy_write_mmd(phydev, MDIO_MMD_VEND1,
-> +		      VEND1_GLOBAL_MAILBOX_INTERFACE1,
-> +		      VEND1_GLOBAL_MAILBOX_INTERFACE1_CRC_RESET);
-> +	phy_write_mmd(phydev, MDIO_MMD_VEND1,
-> +		      VEND1_GLOBAL_MAILBOX_INTERFACE3,
-> +		      VEND1_GLOBAL_MAILBOX_INTERFACE3_MSW_ADDR(addr));
-> +	phy_write_mmd(phydev, MDIO_MMD_VEND1,
-> +		      VEND1_GLOBAL_MAILBOX_INTERFACE4,
-> +		      VEND1_GLOBAL_MAILBOX_INTERFACE4_LSW_ADDR(addr));
-> +
-> +	for (pos = 0; pos < len; pos += min(sizeof(u32), len - pos)) {
-> +		u32 word = 0;
-> +
-> +		memcpy(&word, data + pos, min(sizeof(u32), len - pos));
-> +
-> +		phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE5,
-> +			      VEND1_GLOBAL_MAILBOX_INTERFACE5_MSW_DATA(word));
-> +		phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE6,
-> +			      VEND1_GLOBAL_MAILBOX_INTERFACE6_LSW_DATA(word));
-> +
-> +		phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE1,
-> +			      VEND1_GLOBAL_MAILBOX_INTERFACE1_EXECUTE |
-> +			      VEND1_GLOBAL_MAILBOX_INTERFACE1_WRITE);
-> +
-> +		/* calculate CRC as we load data to the mailbox.
-> +		 * We convert word to big-endiang as PHY is BE and ailbox will
-> +		 * return a BE crc.
-> +		 */
-> +		word = cpu_to_be32(word);
-> +		crc = crc_ccitt_false(crc, (u8 *)&word, sizeof(word));
-> +	}
-> +
-> +	up_crc = phy_read_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE2);
-> +	if (crc != up_crc) {
-> +		phydev_err(phydev, "CRC mismatch: calculated 0x%04x PHY 0x%04x\n",
-> +			   crc, up_crc);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
+> +	/*
+> +	 * In case of remote HDMA engine setup, the DW PCIe RP/EP internals
+> +	 * configuration registers and Application memory are normally accessed
+> +	 * over different buses. Ensure LL-data reaches the memory before the
+> +	 * doorbell register is toggled by issuing the dummy-read from the remote
+> +	 * LL memory in a hope that the posted MRd TLP will return only after the
+> +	 * last MWr TLP is completed
+> +	 */
+> +	if (!(chunk->chan->dw->chip->flags & DW_EDMA_CHIP_LOCAL))
+> +		readl(chunk->ll_region.vaddr.io);
 > +}
 > +
-> +static int aqr_fw_boot(struct phy_device *phydev, const u8 *data, size_t size)
-> +{
-> +	const struct aqr_fw_header *header;
-> +	u32 iram_offset = 0, iram_size = 0;
-> +	u32 dram_offset = 0, dram_size = 0;
-> +	char version[VERSION_STRING_SIZE];
-> +	u16 calculated_crc, read_crc;
-> +	u32 primary_offset = 0;
-> +	int ret;
+>  static void dw_hdma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
+>  {
+>  	struct dw_edma_chan *chan = chunk->chan;
+> @@ -251,6 +265,9 @@ static void dw_hdma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
+>  	/* Set consumer cycle */
+>  	SET_CH_32(dw, chan->dir, chan->id, cycle_sync,
+>  		  HDMA_V0_CONSUMER_CYCLE_STAT | HDMA_V0_CONSUMER_CYCLE_BIT);
 > +
-> +	/* extract saved crc at the end of the fw */
-> +	memcpy(&read_crc, data + size - 2, sizeof(read_crc));
-> +	/* crc is saved in big-endian as PHY is BE */
-> +	read_crc = be16_to_cpu(read_crc);
-
-The type of read_crc is u16.
-But be16_to_cpu expects a __be16 argument.
-
-As flagged by Sparse.
-
-
-> +	calculated_crc = crc_ccitt_false(0, data, size - 2);
-> +	if (read_crc != calculated_crc) {
-> +		phydev_err(phydev, "bad firmware CRC: file 0x%04x calculated 0x%04x\n",
-> +			   read_crc, calculated_crc);
-> +		return -EINVAL;
-> +	}
+> +	dw_hdma_v0_sync_ll_data(chunk);
 > +
-> +	/* Get the primary offset to extract DRAM and IRAM sections. */
-> +	memcpy(&primary_offset, data + PRIMARY_OFFSET_OFFSET, sizeof(u16));
-> +	primary_offset = PRIMARY_OFFSET(le32_to_cpu(primary_offset));
-
-Similarly here.
-
-> +
-> +	/* Find the DRAM and IRAM sections within the firmware file. */
-> +	header = (struct aqr_fw_header *)(data + primary_offset + HEADER_OFFSET);
-> +	memcpy(&iram_offset, &header->iram_offset, sizeof(u8) * 3);
-> +	memcpy(&iram_size, &header->iram_size, sizeof(u8) * 3);
-> +	memcpy(&dram_offset, &header->dram_offset, sizeof(u8) * 3);
-> +	memcpy(&dram_size, &header->dram_size, sizeof(u8) * 3);
-> +
-> +	/* offset are in LE and values needs to be converted to cpu endian */
-> +	iram_offset = le32_to_cpu(iram_offset);
-> +	iram_size = le32_to_cpu(iram_size);
-> +	dram_offset = le32_to_cpu(dram_offset);
-> +	dram_size = le32_to_cpu(dram_size);
-
-And here (x4).
-
-> +
-> +	/* Increment the offset with the primary offset. */
-> +	iram_offset += primary_offset;
-> +	dram_offset += primary_offset;
-> +
-> +	phydev_dbg(phydev, "primary %d IRAM offset=%d size=%d DRAM offset=%d size=%d\n",
-> +		   primary_offset, iram_offset, iram_size, dram_offset, dram_size);
-> +
-> +	strscpy(version, (char *)data + dram_offset + VERSION_STRING_OFFSET,
-> +		VERSION_STRING_SIZE);
-> +	phydev_info(phydev, "loading firmware version '%s'\n", version);
-> +
-> +	/* stall the microcprocessor */
-> +	phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_CONTROL2,
-> +		      VEND1_GLOBAL_CONTROL2_UP_RUN_STALL | VEND1_GLOBAL_CONTROL2_UP_RUN_STALL_OVD);
-> +
-> +	phydev_dbg(phydev, "loading DRAM 0x%08x from offset=%d size=%d\n",
-> +		   DRAM_BASE_ADDR, dram_offset, dram_size);
-> +	ret = aquantia_load_memory(phydev, DRAM_BASE_ADDR, data + dram_offset,
-> +				   dram_size);
-> +	if (ret)
-> +		return ret;
-> +
-> +	phydev_dbg(phydev, "loading IRAM 0x%08x from offset=%d size=%d\n",
-> +		   IRAM_BASE_ADDR, iram_offset, iram_size);
-> +	ret = aquantia_load_memory(phydev, IRAM_BASE_ADDR, data + iram_offset,
-> +				   iram_size);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* make sure soft reset and low power mode are clear */
-> +	phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_SC,
-> +			   VEND1_GLOBAL_SC_SOFT_RESET | VEND1_GLOBAL_SC_LOW_POWER);
-> +
-> +	/* Release the microprocessor. UP_RESET must be held for 100 usec. */
-> +	phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_CONTROL2,
-> +		      VEND1_GLOBAL_CONTROL2_UP_RUN_STALL |
-> +		      VEND1_GLOBAL_CONTROL2_UP_RUN_STALL_OVD |
-> +		      VEND1_GLOBAL_CONTROL2_UP_RUN_STALL_RST);
-> +	usleep_range(UP_RESET_SLEEP, UP_RESET_SLEEP * 2);
-> +
-> +	phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_CONTROL2,
-> +		      VEND1_GLOBAL_CONTROL2_UP_RUN_STALL_OVD);
-> +
-> +	return 0;
-> +}
-
-...
+>  	/* Doorbell */
+>  	SET_CH_32(dw, chan->dir, chan->id, doorbell, HDMA_V0_DOORBELL_START);
+>  }
+> -- 
+> 2.25.1
+> 
