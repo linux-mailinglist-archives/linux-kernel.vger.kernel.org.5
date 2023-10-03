@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB827B5F9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 05:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DA5B7B5F96
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 05:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239069AbjJCDxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 23:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
+        id S239032AbjJCDxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 23:53:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239033AbjJCDxF (ORCPT
+        with ESMTP id S239065AbjJCDxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 23:53:05 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55428DA
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 20:52:56 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1c736b00639so3340705ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 20:52:56 -0700 (PDT)
+        Mon, 2 Oct 2023 23:53:08 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DA4197
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 20:53:01 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c752caeaa6so3434285ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 20:53:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1696305175; x=1696909975; darn=vger.kernel.org;
+        d=ventanamicro.com; s=google; t=1696305180; x=1696909980; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PR9YD+pr7hv0tmO2NOz2gpQmVbaE/cJ/IAsO/LYC7Pc=;
-        b=XndW1qrhTVSGZgMXpNzg31W8cUV7jQiFtUtpcG8iZmQmgibFRs4af+6llaF/WgscTR
-         bhJU3jLvF+1MzNzf9MvoXDAIRAaGy0ZCx34pMBVh0fmoN+p+Xl7GxQ9CZDg69mXsglzz
-         K4JAYafHcHA8Xr4efF83MALAK0eOgEy779VYsKIqwLwfjt8BK16vzHq1XcC01lXA/g3C
-         sDHOQmdxdYvWocjiPuKgXiDg1n8544wAEOIxl6Lk1SN8oD39k5AdClp3DLMlW7lZZ/Wb
-         bRVVBsobZ0hYOdI5ruv6WejKVSNrCpn90ar8weL6zY7dRQ6tEtoFMdm5VRtp9om0PEnh
-         29Kg==
+        bh=qPmuiSFVvpuLv2dpw8j40AU0MURCdJR8iWnmtgcJS7I=;
+        b=nBqT1V8Yesyrd0U06mYSOfd7mgYTFRnLheFr0ZLaZ+iNG4gFv+B4U91dDjdCh/x6be
+         CFKWr6ZuiUQr+BAGD7VK7X8fxnzeuezgwqn9+q0tqW5a2x8kwTf59Vnrer5OZ7l7jG+k
+         i6Dwx/63Vj0u39qBGL+vtxEeS7lPE5Uk5G9ghxEaHn7zAKjs2pUX5Tu1uK6wMmSc0JvR
+         jcSAccOUinzBh9xCNWDoRfGos+YSL4o98N0bwuBtsu8b4kjsxW9gXAFM4rP1mejSgbD0
+         ZsjeFRxg+1VZMClQHFY6pNvXbYcGY2PsFfoLip+g3ROk7NFcIgfosGvyuoNxd6oOPR16
+         6DRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696305175; x=1696909975;
+        d=1e100.net; s=20230601; t=1696305180; x=1696909980;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PR9YD+pr7hv0tmO2NOz2gpQmVbaE/cJ/IAsO/LYC7Pc=;
-        b=La+fVpQJo2my7qMfG7b9tKh93xsEprJhHKm44qEYv51909NczTURw6/Z2Hy/tofkj0
-         gO8Kh+K0rIp9xWV7lkir6/NSmKnOeHjvmZJcPGKjva9+mks9el+jXraPxUCccJAmhQ3M
-         zQUYscfrExWD1oM7rpAeKAse7mwjQuXuohCvUY5TojtNPHc/75MREnmx/AgOykjYLaXH
-         1T5XcIysRkI4w25EG20TuQI8u6FC50DnMUKhuiYnyggOFvtZYBzHEhgowKLC9w4h432O
-         jU62iVWqleiV2g/0olbK0jepIIZfhpDlQoXwHD2JmK4bJPfKwY0qskDD2e4Lee0n7kcJ
-         iyYQ==
-X-Gm-Message-State: AOJu0YwxpcybIx3obmVWQTW0OHNZqm1xesvAUuzFFvc7EZsW50ReFOkf
-        faI94LUN5rX95v8Net9OxytSIQ==
-X-Google-Smtp-Source: AGHT+IHVWdwg/sK94Dq4Rgb1USUh5bXBpGZ0ZnKGbSP+03oAaRBZUxn2NXa8Zq60ZS2d7KJ4sbaXhg==
-X-Received: by 2002:a17:903:244d:b0:1c3:2ee6:3802 with SMTP id l13-20020a170903244d00b001c32ee63802mr13278709pls.47.1696305175387;
-        Mon, 02 Oct 2023 20:52:55 -0700 (PDT)
+        bh=qPmuiSFVvpuLv2dpw8j40AU0MURCdJR8iWnmtgcJS7I=;
+        b=pEVF6unPr6hrbpJ8q7pPmSXFlSBYbDdTpth0PKhiAu3Q0P8yzpRApfIhq12O/8mY+i
+         r2zKXJ6N56aZJFENAqd6vjrDol4hf8vdIdTulUYsrnWRO9dR/F6YzUgwb/wjGc6MvyiD
+         6QPpmlyCavpKdejhj0rzZ1OSDPUw7Z1nJF1S0eNCYDjp1QPFiDsBCPjE0IG+uBAtTKV9
+         pEOU3OAAdZUz6hhKPXGTOGcACSjWe/dtSMFZiw9qqdn8mesvTQo795DAolnyWPGI1gZs
+         nMJ528g7hxfSZUKb6XOwPtQfpp0yE/jNF721EiWs8+CAw8SY/zBgkB1lQ00VM1JjCTdk
+         PWhA==
+X-Gm-Message-State: AOJu0YwroiZ93jx69xh4kLUIBqx3z+N2zwHzZTR4A+0XFcbHgL4B0G2r
+        KwhIvo8OMuiMX09IFF3M632vAA==
+X-Google-Smtp-Source: AGHT+IHam7uEpuZxRNzndfsTMEK/VL2fjCzPC87o5phTd4UvXj5ySMEaSTGduC8zgkkya1ayeGrlQQ==
+X-Received: by 2002:a17:903:2305:b0:1c6:e4b:bbeb with SMTP id d5-20020a170903230500b001c60e4bbbebmr13020119plh.56.1696305180186;
+        Mon, 02 Oct 2023 20:53:00 -0700 (PDT)
 Received: from anup-ubuntu-vm.localdomain ([171.76.84.132])
-        by smtp.gmail.com with ESMTPSA id ja7-20020a170902efc700b001bf846dd2d0sm277381plb.13.2023.10.02.20.52.50
+        by smtp.gmail.com with ESMTPSA id ja7-20020a170902efc700b001bf846dd2d0sm277381plb.13.2023.10.02.20.52.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 20:52:54 -0700 (PDT)
+        Mon, 02 Oct 2023 20:52:59 -0700 (PDT)
 From:   Anup Patel <apatel@ventanamicro.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>,
         Atish Patra <atishp@atishpatra.org>,
@@ -65,9 +65,9 @@ Cc:     Andrew Jones <ajones@ventanamicro.com>,
         kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
         Anup Patel <apatel@ventanamicro.com>
-Subject: [PATCH v3 3/6] RISC-V: KVM: Allow Zicond extension for Guest/VM
-Date:   Tue,  3 Oct 2023 09:22:23 +0530
-Message-Id: <20231003035226.1945725-4-apatel@ventanamicro.com>
+Subject: [PATCH v3 4/6] KVM: riscv: selftests: Add senvcfg register to get-reg-list test
+Date:   Tue,  3 Oct 2023 09:22:24 +0530
+Message-Id: <20231003035226.1945725-5-apatel@ventanamicro.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231003035226.1945725-1-apatel@ventanamicro.com>
 References: <20231003035226.1945725-1-apatel@ventanamicro.com>
@@ -83,48 +83,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We extend the KVM ISA extension ONE_REG interface to allow KVM
-user space to detect and enable Zicond extension for Guest/VM.
+We have a new senvcfg register in the general CSR ONE_REG interface
+so let us add it to get-reg-list test.
 
 Signed-off-by: Anup Patel <apatel@ventanamicro.com>
 Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 ---
- arch/riscv/include/uapi/asm/kvm.h | 1 +
- arch/riscv/kvm/vcpu_onereg.c      | 2 ++
- 2 files changed, 3 insertions(+)
+ tools/testing/selftests/kvm/riscv/get-reg-list.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/riscv/include/uapi/asm/kvm.h b/arch/riscv/include/uapi/asm/kvm.h
-index b1baf6f096a3..917d8cc2489e 100644
---- a/arch/riscv/include/uapi/asm/kvm.h
-+++ b/arch/riscv/include/uapi/asm/kvm.h
-@@ -138,6 +138,7 @@ enum KVM_RISCV_ISA_EXT_ID {
- 	KVM_RISCV_ISA_EXT_ZIFENCEI,
- 	KVM_RISCV_ISA_EXT_ZIHPM,
- 	KVM_RISCV_ISA_EXT_SMSTATEEN,
-+	KVM_RISCV_ISA_EXT_ZICOND,
- 	KVM_RISCV_ISA_EXT_MAX,
- };
+diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/testing/selftests/kvm/riscv/get-reg-list.c
+index a61b706a8778..6cec0ef75cc7 100644
+--- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
++++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
+@@ -211,6 +211,8 @@ static const char *general_csr_id_to_str(__u64 reg_off)
+ 		return RISCV_CSR_GENERAL(satp);
+ 	case KVM_REG_RISCV_CSR_REG(scounteren):
+ 		return RISCV_CSR_GENERAL(scounteren);
++	case KVM_REG_RISCV_CSR_REG(senvcfg):
++		return RISCV_CSR_GENERAL(senvcfg);
+ 	}
  
-diff --git a/arch/riscv/kvm/vcpu_onereg.c b/arch/riscv/kvm/vcpu_onereg.c
-index 388599fcf684..c6ebce6126b5 100644
---- a/arch/riscv/kvm/vcpu_onereg.c
-+++ b/arch/riscv/kvm/vcpu_onereg.c
-@@ -46,6 +46,7 @@ static const unsigned long kvm_isa_ext_arr[] = {
- 	KVM_ISA_EXT_ARR(ZICBOM),
- 	KVM_ISA_EXT_ARR(ZICBOZ),
- 	KVM_ISA_EXT_ARR(ZICNTR),
-+	KVM_ISA_EXT_ARR(ZICOND),
- 	KVM_ISA_EXT_ARR(ZICSR),
- 	KVM_ISA_EXT_ARR(ZIFENCEI),
- 	KVM_ISA_EXT_ARR(ZIHINTPAUSE),
-@@ -93,6 +94,7 @@ static bool kvm_riscv_vcpu_isa_disable_allowed(unsigned long ext)
- 	case KVM_RISCV_ISA_EXT_ZBB:
- 	case KVM_RISCV_ISA_EXT_ZBS:
- 	case KVM_RISCV_ISA_EXT_ZICNTR:
-+	case KVM_RISCV_ISA_EXT_ZICOND:
- 	case KVM_RISCV_ISA_EXT_ZICSR:
- 	case KVM_RISCV_ISA_EXT_ZIFENCEI:
- 	case KVM_RISCV_ISA_EXT_ZIHINTPAUSE:
+ 	TEST_FAIL("Unknown general csr reg: 0x%llx", reg_off);
+@@ -540,6 +542,7 @@ static __u64 base_regs[] = {
+ 	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_GENERAL | KVM_REG_RISCV_CSR_REG(sip),
+ 	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_GENERAL | KVM_REG_RISCV_CSR_REG(satp),
+ 	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_GENERAL | KVM_REG_RISCV_CSR_REG(scounteren),
++	KVM_REG_RISCV | KVM_REG_SIZE_ULONG | KVM_REG_RISCV_CSR | KVM_REG_RISCV_CSR_GENERAL | KVM_REG_RISCV_CSR_REG(senvcfg),
+ 	KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_REG_RISCV_TIMER_REG(frequency),
+ 	KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_REG_RISCV_TIMER_REG(time),
+ 	KVM_REG_RISCV | KVM_REG_SIZE_U64 | KVM_REG_RISCV_TIMER | KVM_REG_RISCV_TIMER_REG(compare),
 -- 
 2.34.1
 
