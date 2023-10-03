@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BE67B71CE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEAD7B71CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240957AbjJCTeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 15:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
+        id S240961AbjJCTeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 15:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240956AbjJCTd5 (ORCPT
+        with ESMTP id S231966AbjJCTeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 15:33:57 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40D0AF
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 12:33:50 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9ae65c0e46fso53973066b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 12:33:50 -0700 (PDT)
+        Tue, 3 Oct 2023 15:34:04 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF89B0
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 12:33:58 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9b27f99a356so44431566b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 12:33:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696361629; x=1696966429; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696361637; x=1696966437; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o0RrMuYVrq3C/m7QhaLpLvy+gp+gXjLQFOpM9VmMeE8=;
-        b=iwoIcPttLzx6IH16t+lS2xK0hLtXCfq7lrNyN4pyNL0jS83yk07Lj+VfRIMbgTnCZ9
-         LuRDwVF6zYXyECW2mziwWSVCU9OCH741fknCOBJZTfv5NphHLFj8iMp0mBQH1unIs2pe
-         SfUS+y9L8ldURcniaigBxmI84GOm7WbkMpnt+lPw4we+iqlLY3E5HshEFsQDwdgOnMuc
-         MBIPF0tnnqwQSphtXhA0gSTtF5X+hIIrSstMskbng2F6M7Bq76xyXthU1OhD9v7peDj1
-         mS9wodYNgoyFlWH3CdI+/o0u+C65tRIp94hXBkOR4aP8adDzX4QGBI1LwQ3pEJ65GIPr
-         KBYQ==
+        bh=65qY9p1JHLXsscBYDiGb2B/qb5l0KlsXBI1MwO5lht4=;
+        b=JV9lLg0oEE2f6wPIcl2o+uLSphbiiWkl9Q4y2NvcZhN1iky1tL1tjKS7McOwP2z7vL
+         Ra6OAIAoxkTW4dlzYOtbUCgsKIU9EZeO98Ct/yRDSde7Ugb7BWvm4WgZcKuSnJvyoZ4b
+         s+76ljhkVE8ulTrKF4f6Rs+nxreH4kazNcNm2D5zncnMliCDIlsJUfJ4gLmCnW6bo1Ka
+         3BHhQ2vSSAeUJl3i0CFzKtw5nLiTChC/5zxZr+PA7AKKWStyikjCQxytUPNgo2WBYRBR
+         IPZunHxzueCYKY/8HB7zeTUrcPSNAIN9jY9Ci5SCFfAnimUB4TCLHrljxnVNqWt6EKsv
+         64MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696361629; x=1696966429;
+        d=1e100.net; s=20230601; t=1696361637; x=1696966437;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=o0RrMuYVrq3C/m7QhaLpLvy+gp+gXjLQFOpM9VmMeE8=;
-        b=GgB1sakdpoxWFM/l6YWWBZRcw6ZCFjm7uSJHJuONPw/rSEDlJ44He10KCR7Jy8l1+N
-         uCThJ1AAZvsC7bP0aoldpMVIpZ8BPCiM52Xef0WOBatSsQyZERA/mCzW3o5VvAVhCjgz
-         M/maaiVyATin/5Whgnyjm3vYRtEtsTozxAMim/NuUEn9uQvhoEUTQQVv1Z0TskNPL4Uu
-         /E8jYWyF+zXHi0j3Cr4EbMXQBfWEY9M1An88hwCQuqXKaP3oEbS3iP7iw8BvS3yaBMAJ
-         9f+6r2ALA3uDtgVHfz4GHwKQupYa7GHC+yeAWHirsuJaz0hphU1ePF2WI5G3wa7tUv7+
-         yCiQ==
-X-Gm-Message-State: AOJu0YyWOUXPM7yUiEvt1evMG39VdNWklm0YHjkDjO3EXrf02aEq9OB7
-        hS+m417ecQQMXF1w31Frt6Y=
-X-Google-Smtp-Source: AGHT+IHobplVFBd7oTI8JXZLs5UOsJpJEOw3+xuRTqAxwNWNs97e7p5j/GdH4pDpzGTJdRNktyW79g==
-X-Received: by 2002:a17:906:29a:b0:9a6:ae76:d6ae with SMTP id 26-20020a170906029a00b009a6ae76d6aemr101117ejf.3.1696361629349;
-        Tue, 03 Oct 2023 12:33:49 -0700 (PDT)
+        bh=65qY9p1JHLXsscBYDiGb2B/qb5l0KlsXBI1MwO5lht4=;
+        b=N34Q+dLASrSmrjCqifTv0Qlri6ZG+pPW5U62ScdRUHV2xpOWS7QEeC8ipzCawf/Fz7
+         r7uVH0iCddIVCCZYMvDZmuqiWvbtuSn3qiJHnS03ODDmnDXnbsSzspCiGcZzZGPxNqus
+         ApSX77M4oEXRqULVdfAXMoJyCCbeWZ056mTG3cj4atyNSX5bn00Zj5V/RWjeGcmvlX9B
+         amY40I2Zcx0JQbyuf3Qx9Dj/kFboRSARkKBqQ6EpXhJXisZhefbtI112YCI71a47srDJ
+         5+3ANV8XvG/Kr19+XCGdBb6BUDVgL+zDkQkJVbnBG1Yg7hmWWkcbpYIa/Pj008RIFozb
+         Ps4A==
+X-Gm-Message-State: AOJu0YzlZ4G1LSVmyl9iCR1NW2Aw2ncbEVBT6MovypU0rf9hI0lLXPQ+
+        LUN9XjI24xnI7n6JKiGP4SrR4961FA8=
+X-Google-Smtp-Source: AGHT+IFm0kslgEQE8tTlmftu25T7l4uOUCBmcDzctq6F4trkmT85/5QpkQC8MDJIQln4FY8tpQR5jQ==
+X-Received: by 2002:a17:906:2c9:b0:9a6:5340:c331 with SMTP id 9-20020a17090602c900b009a65340c331mr136764ejk.2.1696361637066;
+        Tue, 03 Oct 2023 12:33:57 -0700 (PDT)
 Received: from matrix-ESPRIMO-P710 (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id kj6-20020a170907764600b009b2c9476726sm1535909ejc.21.2023.10.03.12.33.48
+        by smtp.gmail.com with ESMTPSA id mb15-20020a170906eb0f00b00993470682e5sm1526372ejb.32.2023.10.03.12.33.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 12:33:49 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 21:33:47 +0200
+        Tue, 03 Oct 2023 12:33:56 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 21:33:55 +0200
 From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 07/11] staging: rtl8192e: Remove function
- _rtl92e_wx_get_promisc_mode()
-Message-ID: <8b1735a3f249b1cf73189e98a07e134c5cd50974.1696360404.git.philipp.g.hortmann@gmail.com>
+Subject: [PATCH 08/11] staging: rtl8192e: Remove constant variable
+ fltr_src_sta_frame
+Message-ID: <1a37a8be464bb25531657aa7c868201676d7abb6.1696360404.git.philipp.g.hortmann@gmail.com>
 References: <cover.1696360403.git.philipp.g.hortmann@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -71,73 +71,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove function _rtl92e_wx_get_promisc_mode() as this functionality is
-not commonly used and the tool to access it is deprecated.
+Remove variable fltr_src_sta_frame as it is set to 0 and unchanged. The
+equation results accordingly. Remove dead code.
 
 Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 ---
- drivers/staging/rtl8192e/rtl8192e/rtl_wx.c | 34 ----------------------
- 1 file changed, 34 deletions(-)
+ drivers/staging/rtl8192e/rtl8192e/rtl_core.c |  2 --
+ drivers/staging/rtl8192e/rtllib.h            |  1 -
+ drivers/staging/rtl8192e/rtllib_rx.c         | 10 ----------
+ 3 files changed, 13 deletions(-)
 
-diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-index 2f5acdd71339..d0b68b258af7 100644
---- a/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-+++ b/drivers/staging/rtl8192e/rtl8192e/rtl_wx.c
-@@ -918,25 +918,6 @@ static int _rtl92e_wx_get_gen_ie(struct net_device *dev,
- 	return ret;
- }
+diff --git a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
+index 9c872819969a..f15f73be41a2 100644
+--- a/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
++++ b/drivers/staging/rtl8192e/rtl8192e/rtl_core.c
+@@ -741,8 +741,6 @@ static void _rtl92e_init_priv_variable(struct net_device *dev)
+ 	priv->rtllib->iw_mode = IW_MODE_INFRA;
+ 	priv->rtllib->net_promiscuous_md = false;
+ 	priv->rtllib->intel_promiscuous_md_info.promiscuous_on = false;
+-	priv->rtllib->intel_promiscuous_md_info.fltr_src_sta_frame =
+-								 false;
+ 	priv->rtllib->ieee_up = 0;
+ 	priv->retry_rts = DEFAULT_RETRY_RTS;
+ 	priv->retry_data = DEFAULT_RETRY_DATA;
+diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
+index a02e8c976ca0..748ae8d35c1a 100644
+--- a/drivers/staging/rtl8192e/rtllib.h
++++ b/drivers/staging/rtl8192e/rtllib.h
+@@ -1177,7 +1177,6 @@ struct rt_pmkid_list {
  
--static int _rtl92e_wx_get_promisc_mode(struct net_device *dev,
--				       struct iw_request_info *info,
--				       union iwreq_data *wrqu, char *extra)
--{
--	struct r8192_priv *priv = rtllib_priv(dev);
--	struct rtllib_device *ieee = priv->rtllib;
--
--	mutex_lock(&priv->wx_mutex);
--
--	snprintf(extra, 45, "PromiscuousMode:%d, FilterSrcSTAFrame:%d",
--		 ieee->intel_promiscuous_md_info.promiscuous_on,
--		 ieee->intel_promiscuous_md_info.fltr_src_sta_frame);
--	wrqu->data.length = strlen(extra) + 1;
--
--	mutex_unlock(&priv->wx_mutex);
--
--	return 0;
--}
--
- #define IW_IOCTL(x) ((x) - SIOCSIWCOMMIT)
- static iw_handler r8192_wx_handlers[] = {
- 	[IW_IOCTL(SIOCGIWNAME)] = _rtl92e_wx_get_name,
-@@ -995,9 +976,6 @@ static const struct iw_priv_args r8192_private_args[] = {
- 		SIOCIWFIRSTPRIV + 0xb,
- 		IW_PRIV_TYPE_INT | IW_PRIV_SIZE_FIXED | 1, IW_PRIV_TYPE_NONE,
- 		"lps_force"
--	}, {
--		SIOCIWFIRSTPRIV + 0x17,
--		0, IW_PRIV_TYPE_CHAR | IW_PRIV_SIZE_FIXED | 45, "getpromisc"
+ struct rt_intel_promisc_mode {
+ 	bool promiscuous_on;
+-	bool fltr_src_sta_frame;
+ };
+ 
+ /*************** DRIVER STATUS   *****/
+diff --git a/drivers/staging/rtl8192e/rtllib_rx.c b/drivers/staging/rtl8192e/rtllib_rx.c
+index a7b6f837024d..1086dd0809be 100644
+--- a/drivers/staging/rtl8192e/rtllib_rx.c
++++ b/drivers/staging/rtl8192e/rtllib_rx.c
+@@ -956,16 +956,6 @@ static int rtllib_rx_data_filter(struct rtllib_device *ieee, struct ieee80211_hd
+ 		return -1;
  	}
  
- };
-@@ -1015,18 +993,6 @@ static iw_handler r8192_private_handler[] = {
- 	(iw_handler)NULL,
- 	(iw_handler)_rtl92e_wx_set_lps_awake_interval,
- 	(iw_handler)_rtl92e_wx_set_force_lps,
--	(iw_handler)NULL,
--	(iw_handler)NULL,
--	(iw_handler)NULL,
--	(iw_handler)NULL,
--	(iw_handler)NULL,
--	(iw_handler)NULL,
--	(iw_handler)NULL,
--	(iw_handler)NULL,
--	(iw_handler)NULL,
--	(iw_handler)NULL,
--	(iw_handler)NULL,
--	(iw_handler)_rtl92e_wx_get_promisc_mode,
- };
- 
- static struct iw_statistics *_rtl92e_get_wireless_stats(struct net_device *dev)
+-	/* Filter packets sent by an STA that will be forwarded by AP */
+-	if (ieee->intel_promiscuous_md_info.promiscuous_on  &&
+-		ieee->intel_promiscuous_md_info.fltr_src_sta_frame) {
+-		if ((fc & IEEE80211_FCTL_TODS) && !(fc & IEEE80211_FCTL_FROMDS) &&
+-		    !ether_addr_equal(dst, ieee->current_network.bssid) &&
+-		    ether_addr_equal(bssid, ieee->current_network.bssid)) {
+-			return -1;
+-		}
+-	}
+-
+ 	/* Nullfunc frames may have PS-bit set, so they must be passed to
+ 	 * hostap_handle_sta_rx() before being dropped here.
+ 	 */
 -- 
 2.42.0
 
