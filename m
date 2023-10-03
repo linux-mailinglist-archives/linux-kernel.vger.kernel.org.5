@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D367B5E46
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C63F7B5E47
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 02:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238911AbjJCAer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 20:34:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
+        id S238891AbjJCAeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 20:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbjJCAei (ORCPT
+        with ESMTP id S230045AbjJCAek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 20:34:38 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3740CA1
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:34:35 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-694f3444f94so263224b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 17:34:35 -0700 (PDT)
+        Mon, 2 Oct 2023 20:34:40 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E057C6
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 17:34:36 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-692779f583fso279364b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 17:34:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1696293274; x=1696898074; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1696293276; x=1696898076; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=L5aF3XmMYuXB9m+K+yR4UudzmAD6ahXZqfX5b3PlkQE=;
-        b=IytwKypdFdUkI8XLCrk8w3O0hr8I2t72AyHHEWFlg897Se2Ngtm8B/uJ9S1H3KKh7S
-         HS53rojFm/iBjoscCiBHmnHpAPaF+GYQC/hsLetXemp7Edj2IcnLBCFZaF0XbSnYsL95
-         Qwd+M4SFEmqf/l06NNu1ftVIRLpu7QUrsu/KE=
+        bh=ULFaUXbFksMdiOTX7EFeIrZO1zGruO/Y5COdeG+mbmw=;
+        b=aCkqFxpoJ1W/FvxslnLgbXWH7lmfgtEJ/BY9wVHdupH/enLEg1qCiifjUePo5vCvbs
+         iC2AFdU4y1ufFuKo0J2z1ud5g7HhhA7Y7UodaHOUqI3m8I5osY2FZIL0PVEXkwNByqRH
+         XMhGrOxFxTTZ4ZKwFvkztkQ+QOOIChQwOUTbM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696293274; x=1696898074;
+        d=1e100.net; s=20230601; t=1696293276; x=1696898076;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=L5aF3XmMYuXB9m+K+yR4UudzmAD6ahXZqfX5b3PlkQE=;
-        b=GaI6auzW7s+kiqXm3XvL00asAJltysRxkh1SrIgD5IoEyTSh9IH2or7t55lhpJoRZt
-         nIZm2M0anU3Qt1/kLCCHDj+SqjPFSSLY90fEQBVAlOMa7g1bIbNjGVaRpPetz0U5g15Y
-         dorJ4RfneIAzOirA5HpJngreINpMZz4SgLBcwRcyMMZCD5XyTkil9v2HotUvHba8bXxR
-         2YnsGNMpIdlZnMpI7tccGzWLHy8xa6XEe13j/0KgNhJX4dqW1mrVAVswiyYBVEPSyjlE
-         snOqVfRSwz+0IpMkn/muB2baBcrhgF2AE1end0z8nfMeCrDeLELi8v4lD05LabrwEurW
-         073w==
-X-Gm-Message-State: AOJu0Yzl/fwItTroZxMRVTr9y8r22OCTr030PtqENENKQO5L5ufZ3qvR
-        pNvg0X4UHt+TELWM5H+6OKGmnw==
-X-Google-Smtp-Source: AGHT+IENc/i97QiaKLX8ED7u8WLA/M8LbyfJtn+ap0kJa0WKwfajkcwqigch9jifv0DXhEQbmHsRWg==
-X-Received: by 2002:a05:6a00:b87:b0:693:3d55:2ba6 with SMTP id g7-20020a056a000b8700b006933d552ba6mr16207301pfj.9.1696293274608;
-        Mon, 02 Oct 2023 17:34:34 -0700 (PDT)
+        bh=ULFaUXbFksMdiOTX7EFeIrZO1zGruO/Y5COdeG+mbmw=;
+        b=MRuF+dGONLbGbaaBS204u4ygVeiwglw7iemLpy5wx74utg2NSDKyWVyve9dziX32Wh
+         HEIa9n3bAmfWEPbcn3KLxdvjPKPT+1m4f83Ba9TfA/d3T7FHxSOGqvhecK5pfTxN3bvp
+         0JTc+goQ97r7TCs9zqDBgiJSX8jEM+stzO8dsijwivvQeOi9Lyv7fB/GKtzoUeANGA5f
+         t2BYykbPXcMHW4BtU+smt5A4c6NFwYyYa5Xf9YnOIFsupt88PP5AESJMVZbWiz43Q3Ux
+         14daJCr/MqRBCz1JwTIS7espiUzTb9BKT2UNEPf/m91r9xxjn0RgsoHeFdobfnqHrW9X
+         KMzw==
+X-Gm-Message-State: AOJu0Yyq6wGIEuLJIFMWJzWZnbi/vKsNGgOC+gCegY4VqWG68mKK0NJM
+        U++QKes40usJAuOJNkNQjpXEUAvNUlr8iHJ/IIs=
+X-Google-Smtp-Source: AGHT+IFEG97ZEYV1LjW9w3tPX6P9RnwrvT9boD1/FLSuHTy5NIliBpsfZfToads/4dmEdvczCCLX0Q==
+X-Received: by 2002:a05:6a00:1787:b0:68e:2478:d6c9 with SMTP id s7-20020a056a00178700b0068e2478d6c9mr13123617pfg.2.1696293275992;
+        Mon, 02 Oct 2023 17:34:35 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:11a:201:f676:8db:8677:aefe])
-        by smtp.gmail.com with ESMTPSA id bm2-20020a056a00320200b0068a13b0b300sm101368pfb.11.2023.10.02.17.34.33
+        by smtp.gmail.com with ESMTPSA id bm2-20020a056a00320200b0068a13b0b300sm101368pfb.11.2023.10.02.17.34.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Oct 2023 17:34:34 -0700 (PDT)
+        Mon, 02 Oct 2023 17:34:35 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Benson Leung <bleung@chromium.org>,
         Tzung-Bi Shih <tzungbi@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
         chrome-platform@lists.linux.dev,
         Prashant Malani <pmalani@chromium.org>
-Subject: [PATCH 3/4] platform/chrome: cros_typec_vdm: Mark port_amode_ops const
-Date:   Mon,  2 Oct 2023 17:34:27 -0700
-Message-ID: <20231003003429.1378109-4-swboyd@chromium.org>
+Subject: [PATCH 4/4] platform/chrome: cros_ec_proto: Mark outdata as const
+Date:   Mon,  2 Oct 2023 17:34:28 -0700
+Message-ID: <20231003003429.1378109-5-swboyd@chromium.org>
 X-Mailer: git-send-email 2.42.0.582.g8ccd20d70d-goog
 In-Reply-To: <20231003003429.1378109-1-swboyd@chromium.org>
 References: <20231003003429.1378109-1-swboyd@chromium.org>
@@ -71,41 +71,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark this struct of functions const so it moves to RO memory.
+The 'outdata' is copied to the data buffer in cros_ec_cmd() before being
+sent over to the EC. Mark the argument as const so that callers can pass
+const pointers to this function and so that callers know the data won't
+be modified.
 
 Cc: Prashant Malani <pmalani@chromium.org>
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- drivers/platform/chrome/cros_typec_vdm.c | 2 +-
- drivers/platform/chrome/cros_typec_vdm.h | 2 +-
+ drivers/platform/chrome/cros_ec_proto.c     | 2 +-
+ include/linux/platform_data/cros_ec_proto.h | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/platform/chrome/cros_typec_vdm.c b/drivers/platform/chrome/cros_typec_vdm.c
-index 20515ee0a20e..3f632fd35000 100644
---- a/drivers/platform/chrome/cros_typec_vdm.c
-+++ b/drivers/platform/chrome/cros_typec_vdm.c
-@@ -142,7 +142,7 @@ static int cros_typec_port_amode_vdm(struct typec_altmode *amode, const u32 hdr,
- 			   sizeof(req), NULL, 0);
- }
+diff --git a/drivers/platform/chrome/cros_ec_proto.c b/drivers/platform/chrome/cros_ec_proto.c
+index 475a6dd72db6..945b1b15a04c 100644
+--- a/drivers/platform/chrome/cros_ec_proto.c
++++ b/drivers/platform/chrome/cros_ec_proto.c
+@@ -1004,7 +1004,7 @@ EXPORT_SYMBOL_GPL(cros_ec_get_sensor_count);
+ int cros_ec_cmd(struct cros_ec_device *ec_dev,
+ 		unsigned int version,
+ 		int command,
+-		void *outdata,
++		const void *outdata,
+ 		size_t outsize,
+ 		void *indata,
+ 		size_t insize)
+diff --git a/include/linux/platform_data/cros_ec_proto.h b/include/linux/platform_data/cros_ec_proto.h
+index 4f9f756bc17c..8865e350c12a 100644
+--- a/include/linux/platform_data/cros_ec_proto.h
++++ b/include/linux/platform_data/cros_ec_proto.h
+@@ -258,7 +258,7 @@ bool cros_ec_check_features(struct cros_ec_dev *ec, int feature);
  
--struct typec_altmode_ops port_amode_ops = {
-+const struct typec_altmode_ops port_amode_ops = {
- 	.enter = cros_typec_port_amode_enter,
- 	.vdm = cros_typec_port_amode_vdm,
- };
-diff --git a/drivers/platform/chrome/cros_typec_vdm.h b/drivers/platform/chrome/cros_typec_vdm.h
-index 95a6a75d32b6..631bd2ce4b00 100644
---- a/drivers/platform/chrome/cros_typec_vdm.h
-+++ b/drivers/platform/chrome/cros_typec_vdm.h
-@@ -5,7 +5,7 @@
+ int cros_ec_get_sensor_count(struct cros_ec_dev *ec);
  
- #include <linux/usb/typec_altmode.h>
+-int cros_ec_cmd(struct cros_ec_device *ec_dev, unsigned int version, int command, void *outdata,
++int cros_ec_cmd(struct cros_ec_device *ec_dev, unsigned int version, int command, const void *outdata,
+ 		    size_t outsize, void *indata, size_t insize);
  
--extern struct typec_altmode_ops port_amode_ops;
-+extern const struct typec_altmode_ops port_amode_ops;
- 
- void cros_typec_handle_vdm_attention(struct cros_typec_data *typec, int port_num);
- void cros_typec_handle_vdm_response(struct cros_typec_data *typec, int port_num);
+ /**
 -- 
 https://chromeos.dev
 
