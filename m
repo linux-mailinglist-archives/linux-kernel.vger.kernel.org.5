@@ -2,92 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F0D957B73E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2AA7B73EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241189AbjJCWDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 18:03:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52128 "EHLO
+        id S241192AbjJCWGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 18:06:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232161AbjJCWDd (ORCPT
+        with ESMTP id S232382AbjJCWGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 18:03:33 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC8BA7
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 15:03:30 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-65b0c9fb673so8064346d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 15:03:30 -0700 (PDT)
+        Tue, 3 Oct 2023 18:06:04 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F51AB;
+        Tue,  3 Oct 2023 15:06:01 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bdcade7fbso252875666b.1;
+        Tue, 03 Oct 2023 15:06:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696370609; x=1696975409; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1696370759; x=1696975559; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=nrSkqGEV7zYALyig+dy2qkh8ACgD/TSMuqcTHGTL0uA=;
-        b=MPc4zMyhRZlUz1/PYKadBgW83YJ/C0nxGYu/8NJKqRWBGRYzuVi39FgoYKQKD/JtS7
-         lRr+b38xJo8h+c2Ssuq8PWUS8thgCCD83sAJqfNaMmwAxI/Sr8+KZ4RuFxE5VHRgUXq+
-         PE7tEavvqZN8UEuiqps4YCFaXvN36r8tF4gUeLvnqj4RAVdOBPiSHnAZTuo6OLaUYURW
-         4m7B2TdqHi9h6oAx9Ddy/7XDi1xUYTUFGXBND+HrhgeSRc3keiDrxnPK1etmem2ocLcx
-         v4NSboBcYeazkRO/mN464F1Mw0dl6pYIY4tBpx+90KRw72gXNrBWQ69AxJ4THr1BZHKp
-         9lCg==
+        bh=Bb2LqPjMbwJRZLLZfDqFHvEph2LGzkrbcYsXckT8ZG8=;
+        b=PkksXR90l+i+ik5ser2+jKb2i0hGdwV1kP52CSOce9uwscfn8E7+K196IWKd/gZoxh
+         yUAi7AOqt6NX39TL0VsRdZfZbomdwBB9OfjqVRlb4PrTzR6HuZYSLJ4iN13Msn5gg7LL
+         CNgyE6vmzu48X+WNH07THUKirDpJsr4BWDuLb9tMH4hQ/XcN9is11t1UZsQjXN3lD35q
+         jNYChRANQPQ7tRvuWY8RPqgKoGiojVuWtHR35G9IRVlC+HbQmuo73h4wZ9x+IAZl9xSN
+         mEcSDwvUKS8fGogKo+tKqjMbBUEmCyPgkSJCJQw+oZ6gq1MeWQyqpW6Q0grEAU0Jb6Dh
+         AADg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696370609; x=1696975409;
+        d=1e100.net; s=20230601; t=1696370759; x=1696975559;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=nrSkqGEV7zYALyig+dy2qkh8ACgD/TSMuqcTHGTL0uA=;
-        b=SS0pN/pDjLjHukSmK7RTwBmdFv9YjmzbqnMOZYPglEQdQLWpm76M6AV3iqFQjVgN4C
-         NhNCh4kPxmFizs2DOMYtl42mWLbDqih9kdpwW8wMD68aHwmX5z1YZhA5pYnPFtPCYiNT
-         Oqo6ZNtIAclowzBLCQ4+m3/DIiED+RyjKZni+5KrqwniMTkpG8XJeMRvaEMY+lm8aNvL
-         5OWOhj3lmnga/SS4olOeihmMaQUjbUKdmiZyLXUVf9Yt/2eBEduW+UjhnoNMNMOmFA1c
-         Bdl6sYhtZKlDiA+2ztD4acBVUFjimXIClfMJET+sr5AY+pWeR9qJus6erFbnddmdLEaU
-         1h/A==
-X-Gm-Message-State: AOJu0YxcYaBWjt+tFbdYw2xLjDmfKK1Wmw7DLLNLY4uiRiQXA4aQXxEX
-        58jrJUTadVHLbNhrN8ycQVTCwQH0K9HwSKDzS2X+lQ==
-X-Google-Smtp-Source: AGHT+IHEOZCsS0mVwbHXXQUK8lL8I1Neq+QgI2XV25twUjgll1vTrMvhs5/MvZ8CYpB2qBR3TPu+PLW/AQx2wkxdlLE=
-X-Received: by 2002:a05:6214:449d:b0:65b:771:f2d5 with SMTP id
- on29-20020a056214449d00b0065b0771f2d5mr575468qvb.61.1696370609164; Tue, 03
- Oct 2023 15:03:29 -0700 (PDT)
+        bh=Bb2LqPjMbwJRZLLZfDqFHvEph2LGzkrbcYsXckT8ZG8=;
+        b=k5NKmdxqdOHNIKvTbrZxj22kcW8AHa7qekYopuDZU9+KRO1CY27lnHS3pAZVz+MNqS
+         0wPmeBXEUg4cpzEWWYaPiM551AFKuvCuq5FwSGQcEBpSz3ew+z9HWsoHnsJzj5zKOoD7
+         oo6R80jdi7ZdDdO+nwHvNERBpjJk1N8YeZ/Jwwy+pazVkZApCDxTQ8Z+2gDmEQtmfsdJ
+         dqZELcyo/j0nyoT5a/ZNl+A42RTkigcA3cwyjBsc3vG0aBBNQRbS9EfZLxPg5cGyhmx4
+         IdNWuR4qOI2+V7GERfbP5C2YSgsHcFWQMqSSAyszuYjHQxetCXqzz2OqsKzW+G6jHrKs
+         6Q2Q==
+X-Gm-Message-State: AOJu0Yz08ohTU2zLhqPw+YDmJsyYxyN4LRi1vx4UZZigNPCH6E1VU7Yp
+        Xru2lQJj9+Gu1N8L3vkOhMjfGs1KMhlsdiGL0g0=
+X-Google-Smtp-Source: AGHT+IE9QYjgYTfRgis4+m0quxq+X6/K28YEOygL7f/Rr1xTxrPF4Wv35BwpKls4r+1BZfIGXhyJ7mdx++234ECZv3I=
+X-Received: by 2002:a17:907:75f4:b0:9ae:7d2d:f2b1 with SMTP id
+ jz20-20020a17090775f400b009ae7d2df2b1mr433380ejc.73.1696370759158; Tue, 03
+ Oct 2023 15:05:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230927033124.1226509-1-dapeng1.mi@linux.intel.com>
- <20230927033124.1226509-8-dapeng1.mi@linux.intel.com> <20230927113312.GD21810@noisy.programming.kicks-ass.net>
- <ZRRl6y1GL-7RM63x@google.com> <20230929115344.GE6282@noisy.programming.kicks-ass.net>
- <ZRbxb15Opa2_AusF@google.com> <20231002115718.GB13957@noisy.programming.kicks-ass.net>
- <ZRrF38RGllA04R8o@gmail.com> <ZRroQg6flyGBtZTG@google.com>
- <20231002204017.GB27267@noisy.programming.kicks-ass.net> <ZRtmvLJFGfjcusQW@google.com>
-In-Reply-To: <ZRtmvLJFGfjcusQW@google.com>
-From:   Mingwei Zhang <mizhang@google.com>
-Date:   Tue, 3 Oct 2023 15:02:52 -0700
-Message-ID: <CAL715WLbAnnGUiTdHPO0L7v2FHGa5qmTnWJDi8k9qVkGry5GGQ@mail.gmail.com>
-Subject: Re: [Patch v4 07/13] perf/x86: Add constraint for guest perf metrics event
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Dapeng Mi <dapeng1.mi@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Like Xu <likexu@tencent.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Adrian Hunter <adrian.hunter@intel.com>, kvm@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Zhenyu Wang <zhenyuw@linux.intel.com>,
-        Zhang Xiong <xiong.y.zhang@intel.com>,
-        Lv Zhiyuan <zhiyuan.lv@intel.com>,
-        Yang Weijiang <weijiang.yang@intel.com>,
-        Dapeng Mi <dapeng1.mi@intel.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Dunn <daviddunn@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>
+References: <20230925105552.817513-1-zhouchuyi@bytedance.com>
+ <20230925105552.817513-4-zhouchuyi@bytedance.com> <CAEf4BzZFBFPMBs6t4GM7GRt-c-Po9KkQqxQ_Zo9vuG=KuqeLzQ@mail.gmail.com>
+ <716adfa5-bd5d-3fe2-108c-ff24b2e81420@bytedance.com> <CAEf4BzaAtybx=Cbb6zD1otgQ-Jm+Xta0_8rwmL_ZYb3GzjSwWg@mail.gmail.com>
+ <425309da-ec03-df8b-3565-d226dd1a1715@bytedance.com>
+In-Reply-To: <425309da-ec03-df8b-3565-d226dd1a1715@bytedance.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 3 Oct 2023 15:05:47 -0700
+Message-ID: <CAEf4BzZmS7wY5XgzMtXReiTG2RXhu23Ss7Q61OxxaUhQYFK=PA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 3/7] bpf: Introduce task open coded iterator kfuncs
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc:     bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        andrii@kernel.org, martin.lau@kernel.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,199 +73,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 5:56=E2=80=AFPM Sean Christopherson <seanjc@google.c=
-om> wrote:
+On Sun, Oct 1, 2023 at 1:21=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.com>=
+ wrote:
 >
-> On Mon, Oct 02, 2023, Peter Zijlstra wrote:
-> > On Mon, Oct 02, 2023 at 08:56:50AM -0700, Sean Christopherson wrote:
-> > > > > worse it's not a choice based in technical reality.
-> > >
-> > > The technical reality is that context switching the PMU between host =
-and guest
-> > > requires reading and writing far too many MSRs for KVM to be able to =
-context
-> > > switch at every VM-Enter and every VM-Exit.  And PMIs skidding past V=
-M-Exit adds
-> > > another layer of complexity to deal with.
+> Hello, Andrii
+>
+> =E5=9C=A8 2023/9/30 05:27, Andrii Nakryiko =E5=86=99=E9=81=93:
+> > On Wed, Sep 27, 2023 at 8:29=E2=80=AFPM Chuyi Zhou <zhouchuyi@bytedance=
+.com> wrote:
+> >>
+> >> Hello,
+> >>
+> >> =E5=9C=A8 2023/9/28 07:20, Andrii Nakryiko =E5=86=99=E9=81=93:
+> >>> On Mon, Sep 25, 2023 at 3:56=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedan=
+ce.com> wrote:
+> >>>>
+> >>>> This patch adds kfuncs bpf_iter_task_{new,next,destroy} which allow
+> >>>> creation and manipulation of struct bpf_iter_task in open-coded iter=
+ator
+> >>>> style. BPF programs can use these kfuncs or through bpf_for_each mac=
+ro to
+> >>>> iterate all processes in the system.
+> >>>>
+> >>>> The API design keep consistent with SEC("iter/task"). bpf_iter_task_=
+new()
+> >>>> accepts a specific task and iterating type which allows:
+> >>>> 1. iterating all process in the system
+> >>>>
+> >>>> 2. iterating all threads in the system
+> >>>>
+> >>>> 3. iterating all threads of a specific task
+> >>>> Here we also resuse enum bpf_iter_task_type and rename BPF_TASK_ITER=
+_TID
+> >>>> to BPF_TASK_ITER_THREAD, rename BPF_TASK_ITER_TGID to BPF_TASK_ITER_=
+PROC.
+> >>>>
+> >>>> The newly-added struct bpf_iter_task has a name collision with a sel=
+ftest
+> >>>> for the seq_file task iter's bpf skel, so the selftests/bpf/progs fi=
+le is
+> >>>> renamed in order to avoid the collision.
+> >>>>
+> >>>> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> >>>> ---
+> >>>>    include/linux/bpf.h                           |  8 +-
+> >>>>    kernel/bpf/helpers.c                          |  3 +
+> >>>>    kernel/bpf/task_iter.c                        | 96 ++++++++++++++=
+++---
+> >>>>    .../testing/selftests/bpf/bpf_experimental.h  |  5 +
+> >>>>    .../selftests/bpf/prog_tests/bpf_iter.c       | 18 ++--
+> >>>>    .../{bpf_iter_task.c =3D> bpf_iter_tasks.c}     |  0
+> >>>>    6 files changed, 106 insertions(+), 24 deletions(-)
+> >>>>    rename tools/testing/selftests/bpf/progs/{bpf_iter_task.c =3D> bp=
+f_iter_tasks.c} (100%)
+> >>>>
+> >>>
+>
+>
+> [...]
+>
+> >>>> +get_next_task:
+> >>>> +       kit->pos =3D next_task(kit->pos);
+> >>>> +       kit->task =3D kit->pos;
+> >>>> +       if (kit->pos =3D=3D &init_task)
+> >>>> +               kit->pos =3D NULL;
+> >>>
+> >>> I can't say I completely follow the logic (e.g., for
+> >>> BPF_TASK_ITER_PROC, why do we do next_task() on first next() call)?
+> >>> Can you elabore the expected behavior for various combinations of
+> >>> types and starting task argument?
+> >>>
+> >>
+> >> Thanks for the review.
+> >>
+> >> The expected behavior of current implementation is:
+> >>
+> >> BPF_TASK_ITER_PROC:
+> >>
+> >> init_task->first_process->second_process->...->last_process->init_task
+> >>
+> >> We would exit before visiting init_task again.
 > >
-> > I'm not sure what you're suggesting here. It will have to save/restore
-> > all those MSRs anyway. Suppose it switches between vCPUs.
->
-> The "when" is what's important.   If KVM took a literal interpretation of
-> "exclude guest" for pass-through MSRs, then KVM would context switch all =
-those
-> MSRs twice for every VM-Exit=3D>VM-Enter roundtrip, even when the VM-Exit=
- isn't a
-> reschedule IRQ to schedule in a different task (or vCPU).  The overhead t=
-o save
-> all the host/guest MSRs and load all of the guest/host MSRs *twice* for e=
-very
-> VM-Exit would be a non-starter.  E.g. simple VM-Exits are completely hand=
-led in
-> <1500 cycles, and "fastpath" exits are something like half that.  Switchi=
-ng all
-> the MSRs is likely 1000+ cycles, if not double that.
-
-Hi Sean,
-
-Sorry, I have no intention to interrupt the conversation, but this is
-slightly confusing to me.
-
-I remember when doing AMX, we added gigantic 8KB memory in the FPU
-context switch. That works well in Linux today. Why can't we do the
-same for PMU? Assuming we context switch all counters, selectors and
-global stuff there?
-
-On the VM boundary, all we need is for global ctrl, right? We stop all
-counters when we exit from the guest and restore the guest value of
-global control when entering it. But the actual PMU context switch
-should be deferred roughly to the same time we switch FPU (xsave
-state). This means we do that when switching task_struct and/or
-returning to userspace.
-
-Please kindly correct me if this is flawed.
-
-ah, I think I understand what you are saying... So, "If KVM took a
-literal interpretation of "exclude guest" for pass-through MSRs..."
-
-perf_event.attr.exclude_guest might need a different meaning, if we
-have a pass-through PMU for KVM. exclude_guest=3D1 does not mean the
-counters are restored at the VMEXIT boundary, which is a disaster if
-we do that.
-
-Thanks.
--Mingwei
-
-
--Mingwei
-
-
->
-> FWIW, the primary use case we care about is for slice-of-hardware VMs, wh=
-ere each
-> vCPU is pinned 1:1 with a host pCPU.  I suspect it's a similar story for =
-the other
-> CSPs that are trying to provide accurate PMUs to guests.  If a vCPU is sc=
-heduled
-> out, then yes, a bunch of context switching will need to happen.  But for=
- the
-> types of VMs that are the target audience, their vCPUs will rarely be sch=
-eduled
-> out.
->
-> > > > > It's a choice out of lazyness, disabling host PMU is not a requir=
-ement
-> > > > > for pass-through.
-> > >
-> > > The requirement isn't passthrough access, the requirements are that t=
-he guest's
-> > > PMU has accuracy that is on par with bare metal, and that exposing a =
-PMU to the
-> > > guest doesn't have a meaningful impact on guest performance.
+> > ah, ok, so in this case it's more like BPF_TASK_ITER_ALL_PROCS, i.e.,
+> > we iterate all processes in the system. Input `task` that we provide
+> > is ignored/meaningless, right? Maybe we should express it as
+> > ALL_PROCS?
 > >
-> > Given you don't think that trapping MSR accesses is viable, what else
-> > besides pass-through did you have in mind?
->
-> Sorry, I didn't mean to imply that we don't want pass-through of MSRs.  W=
-hat I was
-> trying to say is that *just* passthrough MSRs doesn't solve the problem, =
-because
-> again I thought the whole "context switch PMU state less often" approach =
-had been
-> firmly nak'd.
->
-> > > > Not just a choice of laziness, but it will clearly be forced upon u=
-sers
-> > > > by external entities:
-> > > >
-> > > >    "Pass ownership of the PMU to the guest and have no host PMU, or=
- you
-> > > >     won't have sane guest PMU support at all. If you disagree, plea=
-se open
-> > > >     a support ticket, which we'll ignore."
-> > >
-> > > We don't have sane guest PMU support today.
+> >>
+> >> BPF_TASK_ITER_THREAD:
+> >>
+> >> group_task->first_thread->second_thread->...->last_thread->group_task
+> >>
+> >> We would exit before visiting group_task again.
+> >>
 > >
-> > Because KVM is too damn hard to use, rebooting a machine is *sooo* much
-> > easier -- and I'm really not kidding here.
+> > And this one is iterating threads of a process specified by given
+> > `task`, right?   This is where my confusion comes from. ITER_PROC and
+> > ITER_THREAD, by their name, seems to be very similar, but in reality
+> > ITER_PROC is more like ITER_ALL (except process vs thread iteration),
+> > while ITER_THREAD is parameterized by input `task`.
 > >
-> > Anyway, you want pass-through, but that doesn't mean host cannot use
-> > PMU when vCPU thread is not running.
+> > I'm not sure what's the least confusing way to name and organize
+> > everything, but I think it's quite confusing right now, unfortunately.
+> > I wonder if you or someone else have a better suggestion on making
+> > this more straightforward?
 > >
-> > > If y'all are willing to let KVM redefined exclude_guest to be KVM's o=
-uter run
-> > > loop, then I'm all for exploring that option.  But that idea got shot=
- down over
-> > > a year ago[*].
-> >
-> > I never saw that idea in that thread. You virt people keep talking like
-> > I know how KVM works -- I'm not joking when I say I have no clue about
-> > virt.
-> >
-> > Sometimes I get a little clue after y'all keep bashing me over the head=
-,
-> > but it quickly erases itself.
-> >
-> > > Or at least, that was my reading of things.  Maybe it was just a
-> > > misunderstanding because we didn't do a good job of defining the beha=
-vior.
-> >
-> > This might be the case. I don't particularly care where the guest
-> > boundary lies -- somewhere in the vCPU thread. Once the thread is gone,
-> > PMU is usable again etc..
 >
-> Well drat, that there would have saved a wee bit of frustration.  Better =
-late
-> than never though, that's for sure.
+> Maybe here we can introduce new enums and not reuse or rename
+> BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID?
+
+Yep, probably it's cleaner
+
 >
-> Just to double confirm: keeping guest PMU state loaded until the vCPU is =
-scheduled
-> out or KVM exits to userspace, would mean that host perf events won't be =
-active
-> for potentially large swaths of non-KVM code.  Any function calls or even=
-t/exception
-> handlers that occur within the context of ioctl(KVM_RUN) would run with h=
-ost
-> perf events disabled.
+> {
+> BPF_TASK_ITER_ALL_PROC,
+
+BPF_TASK_ITER_ALL_PROCS
+
+> BPF_TASK_ITER_ALL_THREAD,
+
+BPF_TASK_ITER_ALL_THREADS
+
+> BPF_TASK_ITER_THREAD
+
+BPF_TASK_ITER_PROC_THREADS ?
+
+> }
 >
-> Are you ok with that approach?  Assuming we don't completely botch things=
-, the
-> interfaces are sane, we can come up with a clean solution for handling NM=
-Is, etc.
+> BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID are inner flags. Looking at the
+> example usage of SEC("iter/task"), unlike
+> BPF_CGROUP_ITER_DESCENDANTS_PRE/BPF_CGROUP_ITER_DESCENDANTS_POST, we
+> actually don't use BPF_TASK_ITER_TID/BPF_TASK_ITER_TGID directly. When
+> using SEC("iter/task"), we just set pid/tid for struct
+> bpf_iter_link_info. Exposing new enums to users for open coded
+> task_iters will not confuse users.
 >
-> > Re-reading parts of that linked thread, I see mention of
-> > PT_MODE_HOST_GUEST -- see I knew we had something there, but I can neve=
-r
-> > remember all that nonsense. Worst part is that I can't find the relevan=
-t
-> > perf code when I grep for that string :/
+> Thanks.
 >
-> The PT stuff is actually an example of what we don't want, at least not e=
-xactly.
-> The concept of a hard switch between guest and host is ok, but as-is, KVM=
-'s PT
-> code does a big pile of MSR reads and writes on every VM-Enter and VM-Exi=
-t.
->
-> > Anyway, what I don't like is KVM silently changing all events to
-> > ::exclude_guest=3D1. I would like all (pre-existing) ::exclude_guest=3D=
-0
-> > events to hard error when they run into a vCPU with pass-through on
-> > (PERF_EVENT_STATE_ERROR). I would like event-creation to error out on
-> > ::exclude_guest=3D0 events when a vCPU with pass-through exists -- with
-> > minimal scope (this probably means all CPU events, but only relevant
-> > vCPU events).
->
-> Agreed, I am definitely against KVM silently doing anything.  And the mor=
-e that
-> is surfaced to the user, the better.
->
-> > It also means ::exclude_guest should actually work -- it often does not
-> > today -- the IBS thing for example totally ignores it.
->
-> Is that already an in-tree, or are you talking about Manali's proposed se=
-ries to
-> support virtualizing IBS?
->
-> > Anyway, none of this means host cannot use PMU because virt muck wants
-> > it.
