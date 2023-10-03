@@ -2,344 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 691307B6BAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11BA7B6BB3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240041AbjJCOcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:32:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
+        id S240055AbjJCOeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:34:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234771AbjJCOcp (ORCPT
+        with ESMTP id S235755AbjJCOeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 10:32:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AE5D7
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:31:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1696343514;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VkFkREvMpIFY75MsS4WugWdjffEi9yEFVFPUdYjBa9M=;
-        b=avu/trrnfBie2l8RvRYLRFQT4/fsKowDFFb0RZjujG2XvbsjR8L8XpuHUUM/hVZ1Fqm8l9
-        y2Q3mg5tteV5ITwKwpxYQ1aMJ5nWvP348cyd+lSUx+WdlkqDBheibYuOu1j4mATEpskJkN
-        OHATSmll0EaoDeYB1JiQ05GrzteCVOY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-197-k8wuuBU_NECoJpRWcOW2pQ-1; Tue, 03 Oct 2023 10:31:45 -0400
-X-MC-Unique: k8wuuBU_NECoJpRWcOW2pQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C1FF28893CD;
-        Tue,  3 Oct 2023 14:31:43 +0000 (UTC)
-Received: from [10.22.10.176] (unknown [10.22.10.176])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 042B840C2013;
-        Tue,  3 Oct 2023 14:31:42 +0000 (UTC)
-Message-ID: <de67d8f5-b830-7546-94d7-396e3ed30ac8@redhat.com>
-Date:   Tue, 3 Oct 2023 10:31:42 -0400
+        Tue, 3 Oct 2023 10:34:18 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CED5CAB
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:34:15 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id 98e67ed59e1d1-278eaffd81dso715122a91.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 07:34:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696343655; x=1696948455; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VrQlyNTcBpU1f1rZ80Y8vZ/aGweIhaB8Z84P7zZh5GA=;
+        b=XFrGzurnB7Mbz00SnVItTA6ll/V49d0/FX8r/cBCsq0ba2+97YboGotBy4I0WRpLnu
+         T0A7HLgCEf6QEB0jXt9BIFOkyhdfK2qTqp1w1lCeqK8Ar+5Awz/0pvoB9K/jXVjeNCPm
+         t7UDgoFfi6kKpDx+3Ty6/8iaHm407bPrdupMWdDklztffMl0uIYeTT2CeMECtm5fdZax
+         o2Q1SjR+UXkrZWja1jwnRupXQ9NCL+AnW1uyx07+rvD1ul0vqZkMc8k4SFxBr3s9DbZ2
+         kpEEnV+m4dk0hR+puQpcDnVB8YmhXihPi2WvokQpYMFStpXhzHg38p9uKzh5EukQKJJx
+         JXEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696343655; x=1696948455;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VrQlyNTcBpU1f1rZ80Y8vZ/aGweIhaB8Z84P7zZh5GA=;
+        b=tQTMEto7g2dwMMNpu8CB6/S8uR0viUqDcoi6kA4dJjyPu7GHy3xGnx2icR+EUk5+g+
+         DFWPcx9lKL92LhPyZ9Tcln4l0jyl6TAre3xRRMqItRDtI8Z32CYEJh2FPZSchVkAX56K
+         MJ5jWI42cYCI62EoLdRuW2Qj7soweenrcvidJCa8OozxK1DvZemxB5VxX01NUtMyTxK0
+         rbXAQq4vwzphXlKXp0rjWEVwI/krVmQ4h3WXKO0OVrgk2RBMR+Rnmi0/jwcL74BL8Uk+
+         ApxAxI+eDYJTyk7CehPa1ak7armXAoRtLkgzlrhJ+vfgZMZPSGzrIIMw9Ru8v8dbVDM9
+         wMkw==
+X-Gm-Message-State: AOJu0YwA53aE9WiTWPGYK+V7rVVGWOzlokgfhV8GEpqoKTCTlNhpGBg/
+        jCdQ02Q1RD2kszimGaLsGVFSgsf8MsCrYEav939qWg==
+X-Google-Smtp-Source: AGHT+IFIiYZLHH48AhfdT6YjFlv0v4C9r4DWhzUUTISfCnF9IZXkjlGQyV8klqJTMp0sA9qYSM1Oa1m5drFm2TGL/9A=
+X-Received: by 2002:a17:90a:ab84:b0:274:abbc:4ef2 with SMTP id
+ n4-20020a17090aab8400b00274abbc4ef2mr11604020pjq.30.1696343655060; Tue, 03
+ Oct 2023 07:34:15 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH-cgroup] cgroup/cpuset: Enable invalid to valid local
- partition transition
-Content-Language: en-US
-To:     Pierre Gondois <pierre.gondois@arm.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20230930034402.2776278-1-longman@redhat.com>
- <ed8e013a-ece2-4a9c-142f-e9f62883e7b1@arm.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ed8e013a-ece2-4a9c-142f-e9f62883e7b1@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230929-hib_zero_bitmap_fix-v1-1-6cfdcb785250@quicinc.com>
+ <CADyq12wRVJURCuB0ZjL878J-U9kCxNE0pSoihRWBP8OJWk1M1A@mail.gmail.com> <990198cf-59bb-484d-9383-dd7d133c8105@quicinc.com>
+In-Reply-To: <990198cf-59bb-484d-9383-dd7d133c8105@quicinc.com>
+From:   Brian Geffon <bgeffon@google.com>
+Date:   Tue, 3 Oct 2023 10:33:38 -0400
+Message-ID: <CADyq12y9r373gH3Zsnov8TtFFryG6cLbe1S5N-kPdvzjCjxfuQ@mail.gmail.com>
+Subject: Re: [PATCH] PM: hibernate: Fix a bug in copying the zero bitmap to
+ safe pages
+To:     Pavan Kondeti <quic_pkondeti@quicinc.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        kernel@quicinc.com,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 2, 2023 at 11:08=E2=80=AFPM Pavan Kondeti <quic_pkondeti@quicin=
+c.com> wrote:
+>
+> On Sat, Sep 30, 2023 at 07:37:13AM -0400, Brian Geffon wrote:
+> > On Fri, Sep 29, 2023 at 1:31=E2=80=AFPM Pavankumar Kondeti
+> > <quic_pkondeti@quicinc.com> wrote:
+> > >
+> > Hi Pavankumar,
+> >
+> > > The following crash is observed 100% of the time during resume from
+> > > the hibernation on a x86 QEMU system.
+> > >
+> > > [   12.931887]  ? __die_body+0x1a/0x60
+> > > [   12.932324]  ? page_fault_oops+0x156/0x420
+> > > [   12.932824]  ? search_exception_tables+0x37/0x50
+> > > [   12.933389]  ? fixup_exception+0x21/0x300
+> > > [   12.933889]  ? exc_page_fault+0x69/0x150
+> > > [   12.934371]  ? asm_exc_page_fault+0x26/0x30
+> > > [   12.934869]  ? get_buffer.constprop.0+0xac/0x100
+> > > [   12.935428]  snapshot_write_next+0x7c/0x9f0
+> > > [   12.935929]  ? submit_bio_noacct_nocheck+0x2c2/0x370
+> > > [   12.936530]  ? submit_bio_noacct+0x44/0x2c0
+> > > [   12.937035]  ? hib_submit_io+0xa5/0x110
+> > > [   12.937501]  load_image+0x83/0x1a0
+> > > [   12.937919]  swsusp_read+0x17f/0x1d0
+> > > [   12.938355]  ? create_basic_memory_bitmaps+0x1b7/0x240
+> > > [   12.938967]  load_image_and_restore+0x45/0xc0
+> > > [   12.939494]  software_resume+0x13c/0x180
+> > > [   12.939994]  resume_store+0xa3/0x1d0
+> > >
+> > > The commit being fixed introduced a bug in copying the zero bitmap
+> > > to safe pages. A temporary bitmap is allocated in prepare_image()
+> > > to make a copy of zero bitmap after the unsafe pages are marked.
+> > > Freeing this temporary bitmap later results in an inconsistent state
+> > > of unsafe pages. Since free bit is left as is for this temporary bitm=
+ap
+> > > after free, these pages are treated as unsafe pages when they are
+> > > allocated again. This results in incorrect calculation of the number
+> > > of pages pre-allocated for the image.
+> > >
+> > > nr_pages =3D (nr_zero_pages + nr_copy_pages) - nr_highmem - allocated=
+_unsafe_pages;
+> > >
+> > > The allocate_unsafe_pages is estimated to be higher than the actual
+> > > which results in running short of pages in safe_pages_list. Hence the
+> > > crash is observed in get_buffer() due to NULL pointer access of
+> > > safe_pages_list.
+> >
+> > Rafael pulled https://git.kernel.org/pub/scm/linux/kernel/git/rafael/li=
+nux-pm.git/commit/?h=3Dlinux-next&id=3Df0c7183008b41e92fa676406d87f18773724=
+b48b
+> > which addresses the null pointer dereference which regardless
+> > shouldn't be touching the list directly and should be using
+> > __get_safe_page().
+>
+> Thanks for pointing me to this. I have verified hibernation by pulling th=
+is
+> commit to v6.6-rc3 and it works as expected.
+>
+> This commit is currently queued for v6.7, can it be included in next -rc =
+or
+> we have to apply the patch I have sent to make sure that hibernation work=
+s on
+> v6.6 when it gets released.
 
-On 10/2/23 06:06, Pierre Gondois wrote:
-> Hello Waiman,
->
-> I could test the patch using the for-next branch in your tree.
-> Just a NIT, it seemed that the message indicating the reason
-> the isolated configuration was invalid is not printed anymore:
->
-> Commands:
-> # mkdir cgroup
-> # mount -t cgroup2 none cgroup/
-> # mkdir cgroup/A1 cgroup/B1
-> # echo "+cpuset" > cgroup/cgroup.subtree_control
-> # echo 0-3 > cgroup/A1/cpuset.cpus
-> # echo isolated > cgroup/A1/cpuset.cpus.partition
-> # echo 4-6 > cgroup/B1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated
-> # echo 0-4 > cgroup/A1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated invalid                      <--- used to have '(Cpu list in 
-> cpuset.cpus not exclusive)'
-> # echo 0-3 > cgroup/A1/cpuset.cpus
-> # cat cgroup/A1/cpuset.cpus.partition
-> isolated                              <--- now working!
->
->
-> But when creating an isolated partition from overlapping cpusets,
-> the message is printed:
-> # mkdir cgroup
-> # mount -t cgroup2 none cgroup/
-> # mkdir cgroup/A1 cgroup/B1
-> # echo "+cpuset" > cgroup/cgroup.subtree_control
-> # echo 0-4 > cgroup/A1/cpuset.cpus
-> # echo 4-6 > cgroup/B1/cpuset.cpus
-> # echo isolated > cgroup/B1/cpuset.cpus.partition
->
-> # cat cgroup/A1/cpuset.cpus.partition
-> member
-> # cat cgroup/B1/cpuset.cpus.partition
-> isolated invalid (Cpu list in cpuset.cpus not exclusive) <--- Complete 
-> message printed
-
-I might have misread it yesterday. The current behavior is correct. A 
-valid partition requires exclusive access to the CPUs among the 
-siblings. So it won't allow the cpuset to become valid partition if that 
-is the not case. This behavior is the same as cgroup v1's  
-"cpuset.cpu_exclusive".
-
-As soon as the cpu list is adjusted in B1 to avoid cpu list overlap, it 
-will become a valid partition. However, change to A1 to avoid cpu 
-overlap won't affect the state of B1. You will have to echo "root" to 
-B1's cpuset.cpus.partition to make it valid again.
+It was CCed to stable, so it will be included in stable kernels.
 
 >
+> >
+> > >
+> > > Fixes: 005e8dddd497 ("PM: hibernate: don't store zero pages in the im=
+age file")
+> > > Signed-off-by: Pavankumar Kondeti <quic_pkondeti@quicinc.com>
 >
-> On 9/30/23 05:44, Waiman Long wrote:
->> When a local partition becomes invalid, it won't transition back to
->> valid partition automatically if a proper "cpuset.cpus.exclusive" or
->> "cpuset.cpus" change is made. Instead, system administrators have to
->> explicitly echo "root" or "isolated" into the "cpuset.cpus.partition"
->> file at the partition root.
->>
->> This patch now enables the automatic transition of an invalid local
->> partition back to valid when there is a proper "cpuset.cpus.exclusive"
->> or "cpuset.cpus" change.
->>
->> Automatic transition of an invalid remote partition to a valid one,
->> however, is not covered by this patch. They still need an explicit
->> write to "cpuset.cpus.partition" to become valid again.
->
-> I'm not sure I understand what is meant by 'remote partition',
-> is it possible to explain ? Or is the following illustrating what you
-> mean ?
-Remote partition is a newly added feature where the parent of a 
-partition root needs not be a partition root at all. In this case, we 
-will have to use the new cpuset.cpus.exclusive control file to pass down 
-the hierarchy exclusive CPUs that can be used to form a partition. It is 
-a feature request from Red Hat's OpenShift team to create containers 
-with isolated CPUs which is at least 2 layers down from the root.
->
->>
->> The test_cpuset_prs.sh test script is updated to add new test cases to
->> test this automatic state transition.
->>
->> Reported-by: Pierre Gondois <pierre.gondois@arm.com>
->> Link: 
->> https://lore.kernel.org/lkml/9777f0d2-2fdf-41cb-bd01-19c52939ef42@arm.com
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> ---
->>   kernel/cgroup/cpuset.c                        | 79 +++++++++++--------
->>   .../selftests/cgroup/test_cpuset_prs.sh       | 17 ++--
->>   2 files changed, 59 insertions(+), 37 deletions(-)
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index 15f399153a2e..93facdab513c 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -1806,17 +1806,28 @@ static int 
->> update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->>            *
->>            * Compute add/delete mask to/from effective_cpus
->>            *
->> -         * addmask = effective_xcpus & ~newmask & 
->> parent->effective_xcpus
->> -         * delmask = newmask & ~cs->effective_xcpus
->> -         *             & parent->effective_xcpus
->> +         * For valid partition:
->> +         *   addmask = exclusive_cpus & ~newmask
->> +         *                  & parent->effective_xcpus
->> +         *   delmask = newmask & ~exclusive_cpus
->> +         *               & parent->effective_xcpus
->> +         *
->> +         * For invalid partition:
->> +         *   delmask = newmask & parent->effective_xcpus
->>            */
->> -        cpumask_andnot(tmp->addmask, xcpus, newmask);
->> -        adding = cpumask_and(tmp->addmask, tmp->addmask,
->> -                     parent->effective_xcpus);
->> +        if (is_prs_invalid(old_prs)) {
->> +            adding = false;
->> +            deleting = cpumask_and(tmp->delmask,
->> +                    newmask, parent->effective_xcpus);
->> +        } else {
->> +            cpumask_andnot(tmp->addmask, xcpus, newmask);
->> +            adding = cpumask_and(tmp->addmask, tmp->addmask,
->> +                         parent->effective_xcpus);
->>   -        cpumask_andnot(tmp->delmask, newmask, xcpus);
->> -        deleting = cpumask_and(tmp->delmask, tmp->delmask,
->> -                       parent->effective_xcpus);
->> +            cpumask_andnot(tmp->delmask, newmask, xcpus);
->> +            deleting = cpumask_and(tmp->delmask, tmp->delmask,
->> +                           parent->effective_xcpus);
->> +        }
->>           /*
->>            * Make partition invalid if parent's effective_cpus could
->>            * become empty and there are tasks in the parent.
->> @@ -1910,9 +1921,11 @@ static int 
->> update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->>         /*
->>        * Transitioning between invalid to valid or vice versa may 
->> require
->> -     * changing CS_CPU_EXCLUSIVE.
->> +     * changing CS_CPU_EXCLUSIVE. In the case of partcmd_update,
->> +     * validate_change() has already been successfully called and
->> +     * CPU lists in cs haven't been updated yet. So defer it to later.
->>        */
->> -    if (old_prs != new_prs) {
->> +    if ((old_prs != new_prs) && (cmd != partcmd_update))  {
->>           int err = update_partition_exclusive(cs, new_prs);
->>             if (err)
->> @@ -1960,6 +1973,9 @@ static int 
->> update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->>         spin_unlock_irq(&callback_lock);
->>   +    if ((old_prs != new_prs) && (cmd == partcmd_update))
->> +        update_partition_exclusive(cs, new_prs);
->> +
->>       if (adding || deleting) {
->>           update_tasks_cpumask(parent, tmp->addmask);
->>           update_sibling_cpumasks(parent, cs, tmp);
->> @@ -2356,8 +2372,9 @@ static int update_cpumask(struct cpuset *cs, 
->> struct cpuset *trialcs,
->>       if (alloc_cpumasks(NULL, &tmp))
->>           return -ENOMEM;
->>   -    if (is_partition_valid(cs)) {
->> -        if (cpumask_empty(trialcs->effective_xcpus)) {
->> +    if (old_prs) {
->> +        if (is_partition_valid(cs) &&
->> +            cpumask_empty(trialcs->effective_xcpus)) {
->>               invalidate = true;
->>               cs->prs_err = PERR_INVCPUS;
->>           } else if (prstate_housekeeping_conflict(old_prs, 
->> trialcs->effective_xcpus)) {
->> @@ -2391,13 +2408,16 @@ static int update_cpumask(struct cpuset *cs, 
->> struct cpuset *trialcs,
->>            */
->>           invalidate = true;
->>           rcu_read_lock();
->> -        cpuset_for_each_child(cp, css, parent)
->> +        cpuset_for_each_child(cp, css, parent) {
->> +            struct cpumask *xcpus = fetch_xcpus(trialcs);
->> +
->>               if (is_partition_valid(cp) &&
->> -                cpumask_intersects(trialcs->effective_xcpus, 
->> cp->effective_xcpus)) {
->> +                cpumask_intersects(xcpus, cp->effective_xcpus)) {
->>                   rcu_read_unlock();
->>                   update_parent_effective_cpumask(cp, 
->> partcmd_invalidate, NULL, &tmp);
->>                   rcu_read_lock();
->>               }
->> +        }
->>           rcu_read_unlock();
->>           retval = 0;
->>       }
->> @@ -2405,18 +2425,24 @@ static int update_cpumask(struct cpuset *cs, 
->> struct cpuset *trialcs,
->>       if (retval < 0)
->>           goto out_free;
->>   -    if (is_partition_valid(cs)) {
->> +    if (is_partition_valid(cs) ||
->> +       (is_partition_invalid(cs) && !invalidate)) {
->> +        struct cpumask *xcpus = trialcs->effective_xcpus;
->> +
->> +        if (cpumask_empty(xcpus) && is_partition_invalid(cs))
->> +            xcpus = trialcs->cpus_allowed;
->> +
->>           /*
->>            * Call remote_cpus_update() to handle valid remote partition
->>            */
->>           if (is_remote_partition(cs))
->> -            remote_cpus_update(cs, trialcs->effective_xcpus, &tmp);
->> +            remote_cpus_update(cs, xcpus, &tmp);
->>           else if (invalidate)
->>               update_parent_effective_cpumask(cs, partcmd_invalidate,
->>                               NULL, &tmp);
->>           else
->>               update_parent_effective_cpumask(cs, partcmd_update,
->> -                        trialcs->effective_xcpus, &tmp);
->> +                            xcpus, &tmp);
->>       } else if (!cpumask_empty(cs->exclusive_cpus)) {
->>           /*
->>            * Use trialcs->effective_cpus as a temp cpumask
->> @@ -2493,7 +2519,7 @@ static int update_exclusive_cpumask(struct 
->> cpuset *cs, struct cpuset *trialcs,
->>       if (retval)
->>           return retval;
->>   -    if (is_partition_valid(cs)) {
->> +    if (old_prs) {
->>           if (cpumask_empty(trialcs->effective_xcpus)) {
->>               invalidate = true;
->>               cs->prs_err = PERR_INVCPUS;
->> @@ -2927,19 +2953,10 @@ static int update_prstate(struct cpuset *cs, 
->> int new_prs)
->>           return 0;
->>         /*
->> -     * For a previously invalid partition root with valid partition 
->> root
->> -     * parent, treat it as if it is a "member". Otherwise, reject it as
->> -     * remote partition cannot currently self-recover from an invalid
->> -     * state.
->> +     * Treat a previously invalid partition root as if it is a 
->> "member".
->>        */
->> -    if (new_prs && is_prs_invalid(old_prs)) {
->> -        if (is_partition_valid(parent)) {
->> -            old_prs = PRS_MEMBER;
->> -        } else {
->> -            cs->partition_root_state = -new_prs;
->> -            return 0;
->> -        }
->> -    }
->> +    if (new_prs && is_prs_invalid(old_prs))
->> +        old_prs = PRS_MEMBER;
->>         if (alloc_cpumasks(NULL, &tmpmask))
->>           return -ENOMEM;
->> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh 
->> b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
->> index 0f4f4a57ae12..243c4c926964 100755
->> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
->> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
->> @@ -318,16 +318,18 @@ TEST_MATRIX=(
->
-> NIT (and not related to this patch):
-> I think the usage of X... is not documented in the test matrix, cf.
->
-> #  P<v> = set cpus.partition (0:member, 1:root, 2:isolated)
-> #  C<l> = add cpu-list
-> [...]
->
-Thanks for catching that. Will add the description in the new version.
-
--Longman
-
+> Thanks,
+> Pavan
