@@ -2,113 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B80CA7B65ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2017B65EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239798AbjJCJ5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
+        id S239819AbjJCJ6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231706AbjJCJ5w (ORCPT
+        with ESMTP id S239820AbjJCJ6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:57:52 -0400
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2060.outbound.protection.outlook.com [40.107.215.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D17291;
-        Tue,  3 Oct 2023 02:57:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hzKHhnOCCgDRCxePCiUbbAywgXAO5oxRZeW57rDffMubhmPEbVdz00+/etDJTqXGmV7tB1ZFECgpLlyTlGF0c1SlDhQonCl7iLwmhcl3kajWem/bMilAmiGCFbeTH07nuoiDY/DPzirDhQyLlp7qdo7nMhZVElMmrvlW+PO/+1HyvqDbSePK8TpayGnLsppyJzhGcpu6evgQb3CjpxlQ0HS+mKbIio6CDpPWW2Jg5mcbD040RlSrx6BwFutvYenwYVB1Jx5p24iHWJJE1a2fxCQUtDEfNjynHmWmCOWkMO+6HpjUwXHCYNno7ErxMo5CSGSlUZzYfGhem/1rBlUWJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=beMPptTS38oOm3/K2oivq24ZKbBZrRcEqCqyS691/w4=;
- b=Yvj7b5xxa1LCh2oJoUq0WskzsxIGgjz+FnHYWE2YyI/ymSdIIGx8xixXGArblpmx1VfD5eE3Ivlzx3phJFYh021DGgIVw/Ers7hg6KICzrYZ53XaahHH6z8k5mcfJSZ6ixQF/dN7Fw37IW7BKvXltTHkI1qmYgEAsmN6gs+DGPbQNK7wPHOGTkx7rA4EIPK7pVt6CNuVk+s0fLtZ7mVvVdrtEFmH6SVba7ZdJhe7c7u4+32GTigBvTZC2BWl4p8mInM7ZOjPKfYIvEELcfLdnAQui6Hl+btTxZ6S7r6weGd8ER6BF65SF5X+L8rFMToiPV42MsRUEThkZJ977fnwGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=moxa.com; dmarc=pass action=none header.from=moxa.com;
- dkim=pass header.d=moxa.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=moxa.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=beMPptTS38oOm3/K2oivq24ZKbBZrRcEqCqyS691/w4=;
- b=ID476V1nRe9MktTE1ySkOfNungMEJZdGUCBqyA7h4uxAcC+YJrO6sVgpAKwsW+n9xX5d6X1mElJNr/TTJvPyLuVFwdsHZC0JmnRsuTs8x2KuP/t4wpobJolgCGM89AtUF0Lqw0e2Qos7E8d2RrmwLdglLxoyfWVXQr+B8dj4Agg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=moxa.com;
-Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
- (2603:1096:301:115::14) by KL1PR01MB3810.apcprd01.prod.exchangelabs.com
- (2603:1096:820:40::12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.30; Tue, 3 Oct
- 2023 09:57:44 +0000
-Received: from PUZPR01MB5405.apcprd01.prod.exchangelabs.com
- ([fe80::3f1:6c0e:dec3:714b]) by PUZPR01MB5405.apcprd01.prod.exchangelabs.com
- ([fe80::3f1:6c0e:dec3:714b%5]) with mapi id 15.20.6838.024; Tue, 3 Oct 2023
- 09:57:44 +0000
-Date:   Tue, 3 Oct 2023 17:57:41 +0800
-From:   Crescent CY Hsieh <crescentcy.hsieh@moxa.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: Re: [PATCH 4/4] tty: serial: 8250: Add support for MOXA PCIe boards
- to switch interface between RS422/RS485
-Message-ID: <ZRvllYZS3ks+dOYc@moxa-ThinkCentre-M90t>
-References: <20231002015702.30509-1-crescentcy.hsieh@moxa.com>
- <20231002015702.30509-5-crescentcy.hsieh@moxa.com>
- <92aed0d9-791f-4708-8a73-4c78457a710e@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <92aed0d9-791f-4708-8a73-4c78457a710e@kernel.org>
-X-ClientProxiedBy: PS2PR01CA0056.apcprd01.prod.exchangelabs.com
- (2603:1096:300:57::20) To PUZPR01MB5405.apcprd01.prod.exchangelabs.com
- (2603:1096:301:115::14)
+        Tue, 3 Oct 2023 05:58:03 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 195E8BB;
+        Tue,  3 Oct 2023 02:57:59 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-502e7d66c1eso849270e87.1;
+        Tue, 03 Oct 2023 02:57:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696327077; x=1696931877; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=itn+jp9DqMJguXGxeI/EyyIrxZjnVISE01BS8qN3dyg=;
+        b=HWEHy5W0JGmUi2jdakt+ia773lejEEEq1G5f5AojpRkhbWaGapHZs18Dfg5yxOZGuq
+         f8qWxhhVbkeN0Or44NfLrt+wujR6MDsukW2/T9OuhCA9bkbNgDnBkS6ueEsnSfUzWhr+
+         dOQDkMlkpg2Pb/QyCeIpsimF54/PlcBPtbMbyTmmhNONV8Ia3MSvE0j5aH74qtH5iHYZ
+         g/zWAY+J7hwc9AdatDVLVoVgM/sZgaAGliNNkkZqtGhobOr75lIV3MKSfqy7uZdriqSv
+         WW7m6GfYfMNCtBbtnwkY/FKQx4G5iRqVzTGo8v/PVa39HpEPbYnbKNL2cznuAeExLgrH
+         sI6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696327077; x=1696931877;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=itn+jp9DqMJguXGxeI/EyyIrxZjnVISE01BS8qN3dyg=;
+        b=D+cAGrj67+lrxklQ3e1VftJZCr5O4ELXqI9EtcSXw+B5W+6cFYUS3GtFvPnfq76tT8
+         QuHTcQiII3U2cX2DwFE4qhUQVUJNDOrnbsGTT3+FcmN8iiHfMg6liUFpdEYSinLgRvsO
+         V9DVRmBaJa0QHKPc1gmT3my9aAHouoEKZI6/Oemv2iH9+2u2/G8ZqUTo2XNfk2nNyaVa
+         jdRAkQ9IRmYhsgkteV+NHLr4zt9Bg50IrKpg8M9/DGMvYeEzozVmNvZrJfC7/aGb2bEX
+         LqipksDKNWVInGoipifWB1MRCoEbdXdQbDxLsjjSo1fcOlfeYXcvI9jEFDxWV06fte2x
+         K/Jg==
+X-Gm-Message-State: AOJu0YyDBHjSofhS86xCQOfgicKblymXmjFNdDN4tLmT105jJij5Dwqo
+        6Ye43JjmIQCxKFQxafm2kXA=
+X-Google-Smtp-Source: AGHT+IFdijcQl/2mpTmHsUb2wvWwGJhb4kCp3u9fmLvo3Rh8+5MRyVRQrMwl8/qM5UlckIlYrfDaFw==
+X-Received: by 2002:a05:6512:4819:b0:505:6ede:20b0 with SMTP id eo25-20020a056512481900b005056ede20b0mr8846121lfb.58.1696327076936;
+        Tue, 03 Oct 2023 02:57:56 -0700 (PDT)
+Received: from dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi (dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi. [2001:14ba:16f8:1500::7])
+        by smtp.gmail.com with ESMTPSA id l19-20020a19c213000000b005042ae2baf8sm132270lfc.258.2023.10.03.02.57.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 02:57:55 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 12:57:47 +0300
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+To:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v6] tools: iio: iio_generic_buffer ensure alignment
+Message-ID: <ZRvlm4ktNLu+qmlf@dc78bmyyyyyyyyyyyyydt-3.rev.dnainternet.fi>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PUZPR01MB5405:EE_|KL1PR01MB3810:EE_
-X-MS-Office365-Filtering-Correlation-Id: 662543b1-7342-4a31-1d51-08dbc3f7308f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tvz5edIMviohXxToNeRKkhGe/CTmyMd/Ox3UdRd5mHSMZw+ZRCtgrbST1tq3+tHTH44bV8KWJzOBGa8F5HW7SkhhkKJZDDaCti5MTBWsQPDs+KyU08vo4+9s75hTBoYvFtj4TVRN/ZgiBuDCNX/axXA8ANa9eNOfEmwiwol76J+NCjE5rKQgdk0ItFSOvnoSd0IpjPuu/K9xrQfNPP0ZON007uaCml4tP4M1amfdBwGXnqgMAaCmvupv16iOX3Auaaqeli7GOblH+m20MqNfDdA+nX048yZan8fmCEbkP8wSEEh2tvn3gwBytT6C3VQHd8Geu7lpR/sxAy/hBRTgE2pZmNRFuPFEgP/7ZJFFKJ21rsGf5UNI9UQSj2rkXM5vFTFUnmrM65uho+YzJdagR8HtZik6SDn+L6qgqPvZB6MLXGLUIv+s1OjcvGUKJa6psMWbFc8rBAUTIxeAgnFPgM2oLWQ6HBdJYsZbdboGm6LbxnB+qzEZQOakJAaNbfvrO7EigZPCpTbbh9Lko7vU2PGWTw0o+eqr05X5aJqyW8hbi925bUs1IuiRr2BkTFte9scQx4oVRVX6LXTgJODJzuvEkk9xUN2tA7GtRiFREKwnTLD1k2OO77A/H9ErcQMlGRUiBSm3pOW+M75incbFxQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZPR01MB5405.apcprd01.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(346002)(366004)(376002)(396003)(136003)(39860400002)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(2906002)(6916009)(9686003)(6512007)(66476007)(52116002)(6506007)(38350700002)(38100700002)(33716001)(478600001)(66946007)(86362001)(6486002)(26005)(66556008)(316002)(4326008)(5660300002)(41300700001)(8676002)(8936002)(6666004)(67856001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NxuYp3/G8kPHdtoDE/IlXUMWAXYNPUAlnKGzM5FqlXFoFY5l81Ct9/j8rcn5?=
- =?us-ascii?Q?xgifl6V+NC87kL0mCjSMpwXWw0oUzGlMnUR7FShyc31OrS1LXvEQqC49mKT1?=
- =?us-ascii?Q?WTrlyiT20hCiR5sR2O85Sy++3X+2Fnt/A+YdKNIS0bfxYeQhAh4o0lfJaj/P?=
- =?us-ascii?Q?zL2pm2amnGNH5x52ekjzXmrwE4ljW4n2b4upMZJLN8+7+u/elTglWnd9DKm/?=
- =?us-ascii?Q?JR9W3XtXGuE8C7dr5zSL70EfuR/psFcecvqVILbX+koSZTAYs/iRyLusp0Yu?=
- =?us-ascii?Q?RFweRF1NrpCpxVV+gL9bqkwndj8ioLg830YYWANODHOGkm4/Kf7A73dWcFt7?=
- =?us-ascii?Q?5OwpuwCjA96WhWM3pA1ncvaz/7KLrJEOaA91n5EjvL6FNF2sjgZcIE18pmI/?=
- =?us-ascii?Q?rPsbAMxLhxX6eROjQv2vDDDUL3f9rJPupqZrvH4IU6Bz8NWzbmzyFxD+hUzR?=
- =?us-ascii?Q?Ds3J7yyrBWevS36MDBNq4Ze+0CUa2+CLyU5sW+VvRG+FdV4+8taRtd2vAIBL?=
- =?us-ascii?Q?WNugi8Je54hMlyEmHP3cuV45RABK2nFBwcQ0CJRvoJG1aZBQg2gid2s3uQk4?=
- =?us-ascii?Q?TqpmCIDFgUlm3aRg7MUithbwDsfXt2Lm7w1E5orAm3TG/FKMTDp/GB5ZkObe?=
- =?us-ascii?Q?Xx3v7N7JXqkWHA48X8DUf2bq0Pl4X3MLgpJcrCYT+tnDyzt4DI9ATYOCM9BF?=
- =?us-ascii?Q?BTeNKVJo59S9npHmMzXWtuaXgKdwTkGnJmSy065T123CteXHu/rTTw8to51G?=
- =?us-ascii?Q?No5m9rPXKKmhL38vv0YnD9hfk0CmnMkD5kcLhKz3gENZvreukx5hHX4NsJID?=
- =?us-ascii?Q?l2VHKH0GcG/LkKOKDOEL92aj1q/3zbC4fTukMnwQtHBtdbS2xRU0fnt54kAg?=
- =?us-ascii?Q?UE7L+By8HMsuDcz5aVLXRk5XW/q0MOwzvqTMoJrgMPYD5KZKV7uiOrWhOJAY?=
- =?us-ascii?Q?eHpbqBYYPlUUp0BvmI5VSq70VGLQoaRa5fVRbZvep7uL4fWNc041rv2q4Y4R?=
- =?us-ascii?Q?UncGXss3RsI2WHP13fsf946USJvjzD0HYBXsoYlBlqlUo4zkmVM+3ycxBLHQ?=
- =?us-ascii?Q?lS/hakbu/yaLNqs/nSkf0jfGnv6HgnkBacnNje525mH1pBrh45FXmCldQkpB?=
- =?us-ascii?Q?Bs5GhgiTIzeQfLElQx6MISrBfbjdjPBEO/zN1yefch8sL2hp2gm8tL/6QisY?=
- =?us-ascii?Q?hmK4z1rWu5YAaRAQO3JeJ0Ijng32dc+f2DGHbiWfbcJT1/qznW9aBxZjvysy?=
- =?us-ascii?Q?GQILwLE7Q4WAibfqlzWv3Mf2xYYoSHZrZlQOxSRPcLMfk8dWt7gshz9gvj1V?=
- =?us-ascii?Q?VibycsmfxItIFMGm/msdTlc17BAE15JjJyDo+1ofhFelCGVM7vA+Vzaue+sh?=
- =?us-ascii?Q?K4yEJbPeqsudNEWegVf7hVUtU1LEx3GCDjl4XJa8unHxAVk4iqiH3mJX/uCr?=
- =?us-ascii?Q?a5eQ9DSDSLJixgfVJukmw+HzHKIK+iKuqkhBRBMyS/yJlhjxplh0NTXmRR7U?=
- =?us-ascii?Q?lFo12rBvroQEA1C8WufOlu1MMJU1wUsq1RNxreTzTUiFYOxNX1SAQvSd+Olb?=
- =?us-ascii?Q?l3WE3tMdwBMFNs7AVmLWhlDRBw9Csf7UsmaZ0w8pE6iwl1xCa2uVY96gSRp4?=
- =?us-ascii?Q?9g=3D=3D?=
-X-OriginatorOrg: moxa.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 662543b1-7342-4a31-1d51-08dbc3f7308f
-X-MS-Exchange-CrossTenant-AuthSource: PUZPR01MB5405.apcprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 09:57:44.3603
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5571c7d4-286b-47f6-9dd5-0aa688773c8e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: t5rpATJnBX8uYzbYkuzPVAf8KQeA83u2ztJVS46C5XmGQ4RTJdCywG/s3twt38KqR4qjxl5xnaaVwq9Fa4PXgvSJiBVWNQHebhKfYhTUncQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR01MB3810
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="X2pRPnCTlVZaKbsj"
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -116,44 +71,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023 at 09:19:26AM +0200, Jiri Slaby wrote:
-> On 02. 10. 23, 3:57, Crescent CY Hsieh wrote:
-> > MOXA PCIe boards have 4 serial interfaces and don't require additional
-> > stuff to switch between interfaces:
-> > 
-> > - RS232
-> > - RS422
-> > - RS485_2W (half-duplex)
-> > - RS485_4W (full-duplex)
-> > 
-> > By using ioctl command "TIOCRS485", it can switch between default
-> > interface and RS485 if supported.
-> > 
-> > That means, for RS422/RS485 board, it can switch between RS422 and
-> > RS485 by setting the flags within struct serial_rs485.
-> > 
-> > However, for the RS232/RS422/RS485 board, it can only switch between
-> > RS232 and RS485, there's no flag for switching interface into RS422.
-> > 
-> > This patch adds a flag call "SER_RS422_ENALBED" in serial.h and modifies
-> 
-> Hopefully not SER_RS422_ENALBED.
 
-What if I use an existing flag within struct serial_rs485 to represent
-RS422 as a workaround solution?
+--X2pRPnCTlVZaKbsj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> > @@ -1299,7 +1299,7 @@ static int uart_get_icount(struct tty_struct *tty,
-> >   #define SER_RS485_LEGACY_FLAGS	(SER_RS485_ENABLED | SER_RS485_RTS_ON_SEND | \
-> >   				 SER_RS485_RTS_AFTER_SEND | SER_RS485_RX_DURING_TX | \
-> > -				 SER_RS485_TERMINATE_BUS)
-> > +				 SER_RS485_TERMINATE_BUS | SER_RS422_ENALBED)
-> 
-> So have you tested this at all?
+The iio_generic_buffer can return garbage values when the total size of
+scan data is not a multiple of the largest element in the scan. This can be
+demonstrated by reading a scan, consisting, for example of one 4-byte and
+one 2-byte element, where the 4-byte element is first in the buffer.
 
-I have tested it by switching the serial interface using TIOCSRS485
-ioctl command, but it seems that I send the wrong patch which mistyping
-SER_RS422_ENABLED.
+The IIO generic buffer code does not take into account the last two
+padding bytes that are needed to ensure that the 4-byte data for next
+scan is correctly aligned.
+
+Add the padding bytes required to align the next sample with the scan size.
+
+Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+Fixes: e58537ccce73 ("staging: iio: update example application.")
 
 ---
-Sincerely,
-Crescent CY Hsieh
+Revision history
+v5 =3D> v6:
+ - fix typo pointed by Andy (wan't =3D> want).
+v4 =3D> v5:
+ - drop unnecessary comment.
+ - drop all other patches as those were already applied.
+ - add Fixes-tag.
+v3 =3D> v4:
+ - drop extra print and TODO coment
+ - add comment clarifying alignment sizes
+---
+ tools/iio/iio_generic_buffer.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/tools/iio/iio_generic_buffer.c b/tools/iio/iio_generic_buffer.c
+index 44bbf80f0cfd..0d0a7a19d6f9 100644
+--- a/tools/iio/iio_generic_buffer.c
++++ b/tools/iio/iio_generic_buffer.c
+@@ -54,9 +54,12 @@ enum autochan {
+ static unsigned int size_from_channelarray(struct iio_channel_info *channe=
+ls, int num_channels)
+ {
+ 	unsigned int bytes =3D 0;
+-	int i =3D 0;
++	int i =3D 0, max =3D 0;
++	unsigned int misalignment;
+=20
+ 	while (i < num_channels) {
++		if (channels[i].bytes > max)
++			max =3D channels[i].bytes;
+ 		if (bytes % channels[i].bytes =3D=3D 0)
+ 			channels[i].location =3D bytes;
+ 		else
+@@ -66,6 +69,14 @@ static unsigned int size_from_channelarray(struct iio_ch=
+annel_info *channels, in
+ 		bytes =3D channels[i].location + channels[i].bytes;
+ 		i++;
+ 	}
++	/*
++	 * We want the data in next sample to also be properly aligned so
++	 * we'll add padding at the end if needed. Adding padding only
++	 * works for channel data which size is 2^n bytes.
++	 */
++	misalignment =3D bytes % max;
++	if (misalignment)
++		bytes +=3D max - misalignment;
+=20
+ 	return bytes;
+ }
+
+base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
+--=20
+2.41.0
+
+
+--=20
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =3D]=20
+
+--X2pRPnCTlVZaKbsj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmUb5ZsACgkQeFA3/03a
+ocW5wggAlOggIxqFVoJD+8TnfOgo9flg0eq3Cj9dq8lTa1fKH3emYtXpdHkoRS3S
+pd8ZuCSFOmQ9r4ijAd4B2488fdtjf+XJPnStVO8eRDKAwgih4o+ri0p05HJzC56l
+Ih4fujrRzl1oDtdIJOaGISYTELPF52uvkd7Yw6O6IubgWloZYQ9jzXEQ8ZCFsvMR
+Q/SwRomSBroNAUtJwSWthAAteXPZ8lPFxcFUjg84sMKIqR6G9xyx0QioijnCDDwM
+eRDzEbKTDGFojVpFYz7ReSl5/YyICM+gHCo5ldueGi2jX86ngrh5rfYEW85qxLG6
+w/nqWWm3dmqbRV4313ZfqE16iFkfiA==
+=EdzQ
+-----END PGP SIGNATURE-----
+
+--X2pRPnCTlVZaKbsj--
