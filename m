@@ -2,116 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A48007B6ADD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E84F7B6AE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:49:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236927AbjJCNsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46276 "EHLO
+        id S237542AbjJCNtV convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 09:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232260AbjJCNs2 (ORCPT
+        with ESMTP id S236921AbjJCNtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:48:28 -0400
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A4CDAF;
-        Tue,  3 Oct 2023 06:48:25 -0700 (PDT)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-d865854ef96so971475276.2;
-        Tue, 03 Oct 2023 06:48:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696340904; x=1696945704; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FTL7t9w9ALMJLgtOyBmqJM7HLzstsLdcFcnthxBVdFE=;
-        b=bAn4CxUMUbprdEghgaA5GBeV1+ZB2iIKMnzCAQk7bVsMwX81jpFS2oz7AiFWk7G2ny
-         GDS5LQZHlep0e5zUNOSfTyjpZpAfMV7G+Zl7SFmTu+dVkuFT3IQMKvfeA0wPZmFBwH5/
-         IpMwxucq5janyNIcCeCp8JZ2sbJBk555X/ie8Mr3uhVYyF1P0veIOzjRQsh0Wc/9cZaF
-         eIuUa7mh9EamzQs1jYWMIzDJ6ngq1dSnbVZg2SCVUzEwyrv3u7x7FgymUyaQnCfVSCwm
-         pruO22s1DZ4gZODfw27LLHuBHmcmyU2FZhm6seXjzm4YFZNm1Yy76I4L6oumaqxWGcRW
-         OdNA==
+        Tue, 3 Oct 2023 09:49:19 -0400
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18064A6;
+        Tue,  3 Oct 2023 06:49:16 -0700 (PDT)
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3ae450158ffso44739b6e.0;
+        Tue, 03 Oct 2023 06:49:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696340904; x=1696945704;
+        d=1e100.net; s=20230601; t=1696340955; x=1696945755;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=FTL7t9w9ALMJLgtOyBmqJM7HLzstsLdcFcnthxBVdFE=;
-        b=SBjwnzv8g8AN2OBP5EeQ/E4pEhG9qRxfpuwA4H+oyMVwr85gGlhVCniDQNhon4FM3o
-         +B5rRXIqsw9GJWji5wRxcFd0+0PIO4t/1wSnq4CEnJ5T+IGpBP1dYRQ6UBVi4Qr7pIcR
-         RgnhOqYgg5mE9GroYgwPTFLEo294MHLhtx65ckWdcrIvPcnH7MaUqHs99/5mk1Rul6kI
-         AY+JSSpcW5TLyIcp6oeDBoaKrj+fiKRcMZgPgiawYs5EOAVpVN9NUOeMtWHv/YIZgTUT
-         1sZX2040+OAIF4Y+hxZP8U/Uz4cFjJh3bfv1wvNwnoRpcZPx1Dnep6S7OYFjRpwxwI5W
-         jxnQ==
-X-Gm-Message-State: AOJu0YysWh+ZnGqNJbUeNvpgBUw1AgzGGS1Ijn4zgCu290GzNtWkiJet
-        jLl6I9WsOgdQb5ea6kddR+oicO1L/dKbEJroA0U=
-X-Google-Smtp-Source: AGHT+IH4ma5RxQp4wl/uNIM1+Hq/uOfBTpO86gPXHq6xU0DsT1rEl0VRIRrNH1HflEn5hqN/SG5ufMing2WZBeL9Eqc=
-X-Received: by 2002:a5b:a:0:b0:d85:af36:4b6f with SMTP id a10-20020a5b000a000000b00d85af364b6fmr12897775ybp.21.1696340904293;
- Tue, 03 Oct 2023 06:48:24 -0700 (PDT)
+        bh=5HaeYswf3/CGddqJhCBbnH7fsDO0Zj7YhkCJafH4Z5Q=;
+        b=lrh14wsw4LF8hx4g81Ut4SsvmZ+Hayl4eUPM1MdhVjh+XYTNKXeXql3wvYz1gB0syk
+         b76IZT/qznJt55/wRiI+zZ2TxpsUvvy1JydSVQMmNnW+ugLUs7wqx/WYexCXwrsBz17I
+         5WjMF7Nvy5FS6hns29NzjBMj5Xr9JFVdZt0BePTfmry1W/0OoUS6u1PBThFAeCBBk35E
+         AOmKSEeGTFToZ6QSk46lRVqRqswoPFY4bFn98sj4sEKTFZ9OKqN+TZZmqa0pTDbvegh+
+         dBVxXXiRu7RutN442OM////nCYnCvLSGbGkvMEupV2f4rOplE9itWyt72V4AXqY9LXT9
+         MjIw==
+X-Gm-Message-State: AOJu0YxCF1wnsMBtbQSuivU67yQTMPFp5x30AX8WaoiAwdg5ZYfe7580
+        enixfi6wU8jgd5Vbn0vZsDgJ8AFgE1ljOoIMdGk=
+X-Google-Smtp-Source: AGHT+IEH85kmyJa9HAMrZrBhLb+hu6BEJBQsEQKkqQlycUOa14TnqczEsbO3YL2DskXZh/nfKcCZOU7E+aePI4/vrNM=
+X-Received: by 2002:a05:6808:1a86:b0:3a9:efde:a022 with SMTP id
+ bm6-20020a0568081a8600b003a9efdea022mr12874601oib.5.1696340955330; Tue, 03
+ Oct 2023 06:49:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230930050033.41174-1-wedsonaf@gmail.com> <20230930050033.41174-6-wedsonaf@gmail.com>
- <20231002112858.GK13697@twin.jikos.cz> <20231002113752.GL13697@twin.jikos.cz>
-In-Reply-To: <20231002113752.GL13697@twin.jikos.cz>
-From:   Wedson Almeida Filho <wedsonaf@gmail.com>
-Date:   Tue, 3 Oct 2023 10:48:14 -0300
-Message-ID: <CANeycqpE1R=6f_9GZKTx+D4LBdkc496wcXrHOTHAKcdkssMi9Q@mail.gmail.com>
-Subject: Re: [PATCH 05/29] btrfs: move btrfs_xattr_handlers to .rodata
-To:     dsterba@suse.cz
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <20231002135352.2603096-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231002135352.2603096-1-andriy.shevchenko@linux.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 3 Oct 2023 15:49:04 +0200
+Message-ID: <CAJZ5v0jrKP1wWJ=GO8OCkPsjYzn=4DwbP3xeqfdCJ25TmQkWGg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] PCI: ACPI: Switch to use acpi_evaluate_dsm_typed()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-acpi@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Oct 2023 at 08:44, David Sterba <dsterba@suse.cz> wrote:
+On Mon, Oct 2, 2023 at 3:54 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> On Mon, Oct 02, 2023 at 01:28:58PM +0200, David Sterba wrote:
-> > On Sat, Sep 30, 2023 at 02:00:09AM -0300, Wedson Almeida Filho wrote:
-> > > From: Wedson Almeida Filho <walmeida@microsoft.com>
-> > >
-> > > This makes it harder for accidental or malicious changes to
-> > > btrfs_xattr_handlers at runtime.
-> > >
-> > > Cc: Chris Mason <clm@fb.com>
-> > > Cc: Josef Bacik <josef@toxicpanda.com>
-> > > Cc: David Sterba <dsterba@suse.com>
-> > > Cc: linux-btrfs@vger.kernel.org
-> > > Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
-> >
-> > With slightly updated changelog added to misc-next, thanks.
+> The acpi_evaluate_dsm_typed() provides a way to check the type of the
+> object evaluated by _DSM call. Use it instead of open coded variant.
 >
-> Removed again. I did not notice first that this is part of a larger
-> series, please also CC the [PATCH 0/N] patch.
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Sorry for the confusion, I will CC you there too.
+Acked-by: Rafael J. Wysocki <rafael@kernel.org>
 
-> There's a warning:
+> ---
+>  drivers/pci/pci-acpi.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
 >
-> fs/btrfs/super.c: In function =E2=80=98btrfs_fill_super=E2=80=99:
-> fs/btrfs/super.c:1107:21: warning: assignment discards =E2=80=98const=E2=
-=80=99 qualifier from pointer target type [-Wdiscarded-qualifiers]
->  1107 |         sb->s_xattr =3D btrfs_xattr_handlers;
->       |                     ^
+> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
+> index a05350a4e49c..cf108259aef6 100644
+> --- a/drivers/pci/pci-acpi.c
+> +++ b/drivers/pci/pci-acpi.c
+> @@ -1215,12 +1215,12 @@ void acpi_pci_add_bus(struct pci_bus *bus)
+>         if (!pci_is_root_bus(bus))
+>                 return;
 >
-> but the patch changing the type is present in the series.
+> -       obj = acpi_evaluate_dsm(ACPI_HANDLE(bus->bridge), &pci_acpi_dsm_guid, 3,
+> -                               DSM_PCI_POWER_ON_RESET_DELAY, NULL);
+> +       obj = acpi_evaluate_dsm_typed(ACPI_HANDLE(bus->bridge), &pci_acpi_dsm_guid, 3,
+> +                                     DSM_PCI_POWER_ON_RESET_DELAY, NULL, ACPI_TYPE_INTEGER);
+>         if (!obj)
+>                 return;
 >
-> Please update the changelog of btrfs patch with:
+> -       if (obj->type == ACPI_TYPE_INTEGER && obj->integer.value == 1) {
+> +       if (obj->integer.value == 1) {
+>                 bridge = pci_find_host_bridge(bus);
+>                 bridge->ignore_reset_delay = 1;
+>         }
+> @@ -1376,12 +1376,13 @@ static void pci_acpi_optimize_delay(struct pci_dev *pdev,
+>         if (bridge->ignore_reset_delay)
+>                 pdev->d3cold_delay = 0;
 >
->     Add const specifier also to the pointed array members of
->     btrfs_xattr_handlers.  This moves the whole structure to the .rodata
->     section which makes it harder for accidental or malicious changes to
->     btrfs_xattr_handlers at runtime.
-
-Will do. Thanks!
-
-> or use it for others patches too.
+> -       obj = acpi_evaluate_dsm(handle, &pci_acpi_dsm_guid, 3,
+> -                               DSM_PCI_DEVICE_READINESS_DURATIONS, NULL);
+> +       obj = acpi_evaluate_dsm_typed(handle, &pci_acpi_dsm_guid, 3,
+> +                                     DSM_PCI_DEVICE_READINESS_DURATIONS, NULL,
+> +                                     ACPI_TYPE_PACKAGE);
+>         if (!obj)
+>                 return;
+>
+> -       if (obj->type == ACPI_TYPE_PACKAGE && obj->package.count == 5) {
+> +       if (obj->package.count == 5) {
+>                 elements = obj->package.elements;
+>                 if (elements[0].type == ACPI_TYPE_INTEGER) {
+>                         value = (int)elements[0].integer.value / 1000;
+> --
+> 2.40.0.1.gaa8946217a0b
+>
