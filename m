@@ -2,48 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 702367B6F43
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55DE57B6F46
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbjJCRIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 13:08:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
+        id S231866AbjJCRIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 13:08:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbjJCRIi (ORCPT
+        with ESMTP id S231150AbjJCRIk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 13:08:38 -0400
+        Tue, 3 Oct 2023 13:08:40 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAC2A7;
-        Tue,  3 Oct 2023 10:08:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A67FCC433C8;
-        Tue,  3 Oct 2023 17:08:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3DA5B0
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 10:08:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DA139C433CB;
+        Tue,  3 Oct 2023 17:08:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696352915;
-        bh=z0khdQB11BoA0tQ40lKmz5sxH1m9xC78cFe/yLn2g6o=;
+        s=k20201202; t=1696352917;
+        bh=c2Amx6bwFllppZWhw8zB9Zq4+W/JCoESVGF4gZggaYM=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=oIucdHjiAoMeu9S2B2ofb7H1+u6bLJgvxIzwxoJhO5ggZBy5WKoRWI6T/dVPA55vU
-         x8abIexv0M0heossk7yTWtHBnA4FXmaLLqsN/ypGorLlRpzY/2oIhdHjnnYE9ZA2Lb
-         csq7Di/OPv8lTrB5UVU91m3/6IZZAm3RFPP/8yZz2ayqOCntxWpkcrnlkxbe1QrnFb
-         PF2LCKBuCD2tEvmvRi6YpVntehrK9uC1+TOjXNPaSerqQfzDcfDD7YC2uMLnZufN2D
-         6kbBR+Q67GVa9Ca7sv3l6UWKsCgY+/LRZC1iE3aHXM11qu5OXJDU5kJoAEfOUJKDWJ
-         I20U96sourupg==
+        b=njLVv3nX1o4MOD24uGsN7Q7lYhGER1gt6o5JaKCzoD2RF+azLcdEq3jJe/a0bo+DS
+         GwjuQWcBBMntcj4AqIbunDSINJ+FcHshd9CAUddVntBYT9GD4bVaqE0QRNzm4zSEkz
+         GcCVWVgMmw2V4A9dUm+5u7AnVzRnQ1b+cXiroCAW6Vl5vcdY2ljb/6rWsWhNku1PJK
+         2ETgSSCrmT8zIGz+6dJ9aBpkB7HuIvsncZ+mjS54I5ANomltyMGVdPx1qm800sGRNn
+         QTCHPIgZ73ZMzNqm6iHgBJdTnJmAo/hFK+orPDoJEWigTWDPv38Gh0kP8HGeednneS
+         z19ntSi8Kapug==
 From:   Mark Brown <broonie@kernel.org>
-To:     Weidong Wang <wangweidong.a@awinic.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Luca Weiss <luca.weiss@fairphone.com>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-In-Reply-To: <20231002-aw88261-reset-v2-0-837cb1e7b95c@fairphone.com>
-References: <20231002-aw88261-reset-v2-0-837cb1e7b95c@fairphone.com>
-Subject: Re: [PATCH v2 0/2] Remove reset GPIO for AW88261
-Message-Id: <169635291227.42044.6654746210996061480.b4-ty@kernel.org>
-Date:   Tue, 03 Oct 2023 18:08:32 +0100
+To:     lgirdwood@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        Bragatheswaran Manickavel <bragathemanick0908@gmail.com>
+Cc:     alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20230930165050.7793-1-bragathemanick0908@gmail.com>
+References: <20230930165050.7793-1-bragathemanick0908@gmail.com>
+Subject: Re: [PATCH v2] ASoC: dt-bindings: rt5616: Convert to dtschema
+Message-Id: <169635291560.42044.12417015204070109267.b4-ty@kernel.org>
+Date:   Tue, 03 Oct 2023 18:08:35 +0100
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -58,9 +52,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 02 Oct 2023 16:00:10 +0200, Luca Weiss wrote:
-> The AW88261 chip doesn't have a reset gpio, so remove it from the
-> bindings and from the driver.
+On Sat, 30 Sep 2023 22:20:50 +0530, Bragatheswaran Manickavel wrote:
+> Convert the rt5616 audio CODEC bindings to DT schema
 > 
 > 
 
@@ -70,10 +63,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: awinic,aw88395: Remove reset-gpios from AW88261
-      commit: c7b94e8614e35f1919b51c23fe590884149ae341
-[2/2] ASoC: codecs: aw88261: Remove non-existing reset gpio
-      commit: 4eed047b76fa8f56af478ca7e6d56ca7e5330cf2
+[1/1] ASoC: dt-bindings: rt5616: Convert to dtschema
+      commit: 943bcc742ec4d7da4d26477f2188940ecad76569
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
