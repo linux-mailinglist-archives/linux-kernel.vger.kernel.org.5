@@ -2,288 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0F027B6A55
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E1FB7B6A5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 15:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231891AbjJCNVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 09:21:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
+        id S234458AbjJCNW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 09:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236917AbjJCNVs (ORCPT
+        with ESMTP id S232629AbjJCNWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 09:21:48 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE65EA6;
-        Tue,  3 Oct 2023 06:21:44 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7a52a27fe03so476704241.0;
-        Tue, 03 Oct 2023 06:21:44 -0700 (PDT)
+        Tue, 3 Oct 2023 09:22:25 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22DABF
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 06:22:21 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-406618d080eso9301995e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 06:22:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696339304; x=1696944104; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fi+RGHHOhtPVleGMysrvUidZQaNCF9b1qikITyD52OI=;
-        b=RiIzlXhy/aXvCuN1po1cof2c0w/w8Yu8bsM/yc/ZDjHLN8LxOEoKA/N3+3AOKT1S8k
-         OQS6yYzyoPE3aqk2IQ5msLPT6MiCRSyZvHXJCb0i807rvgEWP5EVZHheCQD/b/93FUG2
-         +d0laSdR3jHu9ybnLddYYOww6K/jyn/Gt+ImVdqOnMkP5fMW8OidwQuG8d3X36cXlu7x
-         60Un2NWRyJSh3CVXZT/q7aQod92x7YH9WHF/nXHnG3YL/8oSGDdNve31NljJcUPwltzZ
-         kLauPDyg5v2f7gnox/eBntyM5kQigeuE/eZFvUm4Ub4XsWHAdC4syb5ATcn5oq0tZjfC
-         BJMA==
+        d=linaro.org; s=google; t=1696339340; x=1696944140; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BPhEMScslRMaYaqRO+dwG2HnFAyJ6EQmjoVhDMsvm2g=;
+        b=IAokKng1wNC58ZiZHAgQASpvPtYUAEa3YSukbCQf9EuZ1aG4cuBTMjvSFHvSbSJR2s
+         4mJw2VrQ6sJ7CSHNmAhtz5emzTHeBFZIb5b4A/Rgjd41adA9cQu1d7G/N/GChKvtY20K
+         gfYxTtRKj0Nq1dn2ZPRg7SIiuZvBcVF2YyeUIgMsfeJpKgBycPKMDAh032aPqzEuTUCZ
+         iDZtUPpa/2j5/QCsuWNwpCWQXZcMFvJMGbQ5i8BuO/fcJcAN6iRIDd09UbxtnNsFI3ol
+         ZKRjtPhA4HLz4QRXoGl7LNV3qx+LDfq/S/vh3t4Cu89CnW3RY63siyByEGqSdtaWjpKa
+         hOtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696339304; x=1696944104;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fi+RGHHOhtPVleGMysrvUidZQaNCF9b1qikITyD52OI=;
-        b=LTSZudwjJUTYYLf872Xts4ELu1IbKJIiDwbg1y8toUzRQz5wmHHJ+7XLSAP0FZ3s5x
-         lrrmDtePKjWiAHJbgzyIQ70pFRkSvC0iScP2PQCZO7Wog7YbJ/kDwiANrjgqMtsWMr02
-         UMghJISwoHtB+vqM56ndoWUD3Ps5FdqAaCbeC2lhDhbueMcjyMbqZL2jvxYCBuHDHJH9
-         4fEhOkAzBP/bELcCGaGRok4AijUSHhGGPe3P037nLf37YwUSk2TzGlmDsMJX3KsinrnY
-         vk41mezFy8BzcmZ1Y7qggSzvhA6NGIu8lSYg45Qj7MFTLO2EMFxnmsOETY7ETgFTreN5
-         Xm/g==
-X-Gm-Message-State: AOJu0YwCKoB0QaC6wgzO4MsHM0GZRQ9qrDFw0waUVIipih2b3NBM/w/s
-        GeTXLGazdO+sPIxFh488BH1hGxej76HWnG1cxuw=
-X-Google-Smtp-Source: AGHT+IGtRYR/OptxXTgIRsdUOd0zstJf0gkrw5xb2PgwdX/i/CZMacGoxdqMQvEhxaQdXT9c/oMmcN9fdAlZtMzKH7U=
-X-Received: by 2002:a67:ec87:0:b0:452:6d8f:7454 with SMTP id
- h7-20020a67ec87000000b004526d8f7454mr11742094vsp.15.1696339303806; Tue, 03
- Oct 2023 06:21:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696339340; x=1696944140;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=BPhEMScslRMaYaqRO+dwG2HnFAyJ6EQmjoVhDMsvm2g=;
+        b=mbLLiEB3GqX8luBCpWL6WMCuz1/K86ZqYEX9sdtJU1fJ+yrembj3z0lNp661UXQcbB
+         CUshoArVx2f47gKsh65TiKU/5M4Rj+QeuIUOi+WiUA70I7jF3MVFvW3InaHpPIx/CcUV
+         Rg7Ef41aFQtakBxVC5u915lyvRK+t1BsIY1xrx2ImOTRfjIU6A5K4SmPHGmNr45Fv3iZ
+         vb9mFxGLI8BhB4CYPOoVnexRxISb0xkwdzj5psHupBvtdsLvi90IdKEMUBkdpDmpWbmv
+         OOsdf48UizHHjDZOU7IoQrzznxiX3ycRzDDGNxIIlwyTl59vcm1VumRfmbBbcUmfZ8cM
+         i+3w==
+X-Gm-Message-State: AOJu0Yy7OTXdqySBUMEaLAxtrVqswg2GyhpGlh89SmCuTeMXR5N0M+sT
+        OkPoYbk/Cx/ex+Q0nZ1EoFlRvg==
+X-Google-Smtp-Source: AGHT+IFDM9mm4RExiIDQOdgnZFNqOULSOor4UvfTWPqFV+FOp96KsWwjv9wciLPT3qCL81igyWfz8g==
+X-Received: by 2002:adf:eed2:0:b0:31f:fedd:83ad with SMTP id a18-20020adfeed2000000b0031ffedd83admr11897768wrp.4.1696339340083;
+        Tue, 03 Oct 2023 06:22:20 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:e31a:fe1c:e925:9858? ([2a01:e0a:982:cbb0:e31a:fe1c:e925:9858])
+        by smtp.gmail.com with ESMTPSA id f8-20020adfdb48000000b0031ff89af0e4sm1568213wrj.99.2023.10.03.06.22.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Oct 2023 06:22:19 -0700 (PDT)
+Message-ID: <bd3bc4bc-b684-4bbd-82cf-c59797ba21cf@linaro.org>
+Date:   Tue, 3 Oct 2023 15:22:19 +0200
 MIME-Version: 1.0
-References: <20231002143441.545-4-aladyshev22@gmail.com> <202310030640.tYeSJjeI-lkp@intel.com>
-In-Reply-To: <202310030640.tYeSJjeI-lkp@intel.com>
-From:   Konstantin Aladyshev <aladyshev22@gmail.com>
-Date:   Tue, 3 Oct 2023 16:21:32 +0300
-Message-ID: <CACSj6VXZ5V7akgibJcZYxqUy3zFKWA_N_5ua7gzXoEHWRBkkkg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] mctp: Add MCTP-over-KCS transport binding
-To:     kernel test robot <lkp@intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, minyard@acm.org, joel@jms.id.au,
-        andrew@aj.id.au, avifishman70@gmail.com, tmaimon77@gmail.com,
-        tali.perry1@gmail.com, venture@google.com, yuenn@google.com,
-        benjaminfair@google.com, jk@codeconstruct.com.au,
-        matt@codeconstruct.com.au, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] drm/bridge: ti-sn65dsi86: Associate DSI device lifetime
+ with auxiliary device
+Content-Language: en-US, fr
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        dri-devel@lists.freedesktop.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Maxime Ripard <maxime@cerno.tech>
+References: <20231002235407.769399-1-swboyd@chromium.org>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20231002235407.769399-1-swboyd@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops, sorry about that.
-I've introduced this new warning when I've refactored my code to use
-'dev_err_probe'.
-I've sent the v3 series to correct the issue, I hope now everything is clea=
-r.
-I haven't figured out how to run clang in my yocto environment where I
-develop code, but the
-```
-make W=3D1 C=3D1 drivers/net/mctp/mctp-kcs.o
-```
-runs without any issues now.
+On 03/10/2023 01:54, Stephen Boyd wrote:
+> The kernel produces a warning splat and the DSI device fails to register
+> in this driver if the i2c driver probes, populates child auxiliary
+> devices, and then somewhere in ti_sn_bridge_probe() a function call
+> returns -EPROBE_DEFER. When the auxiliary driver probe defers, the dsi
+> device created by devm_mipi_dsi_device_register_full() is left
+> registered because the devm managed device used to manage the lifetime
+> of the DSI device is the parent i2c device, not the auxiliary device
+> that is being probed.
+> 
+> Associate the DSI device created and managed by this driver to the
+> lifetime of the auxiliary device, not the i2c device, so that the DSI
+> device is removed when the auxiliary driver unbinds. Similarly change
+> the device pointer used for dev_err_probe() so the deferred probe errors
+> are associated with the auxiliary device instead of the parent i2c
+> device so we can narrow down future problems faster.
+> 
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Maxime Ripard <maxime@cerno.tech>
+> Fixes: c3b75d4734cb ("drm/bridge: sn65dsi86: Register and attach our DSI device at probe")
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>   drivers/gpu/drm/bridge/ti-sn65dsi86.c | 14 +++++++-------
+>   1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index f448b903e190..84148a79414b 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -692,7 +692,7 @@ static struct ti_sn65dsi86 *bridge_to_ti_sn65dsi86(struct drm_bridge *bridge)
+>   	return container_of(bridge, struct ti_sn65dsi86, bridge);
+>   }
+>   
+> -static int ti_sn_attach_host(struct ti_sn65dsi86 *pdata)
+> +static int ti_sn_attach_host(struct auxiliary_device *adev, struct ti_sn65dsi86 *pdata)
+>   {
+>   	int val;
+>   	struct mipi_dsi_host *host;
+> @@ -707,7 +707,7 @@ static int ti_sn_attach_host(struct ti_sn65dsi86 *pdata)
+>   	if (!host)
+>   		return -EPROBE_DEFER;
+>   
+> -	dsi = devm_mipi_dsi_device_register_full(dev, host, &info);
+> +	dsi = devm_mipi_dsi_device_register_full(&adev->dev, host, &info);
+>   	if (IS_ERR(dsi))
+>   		return PTR_ERR(dsi);
+>   
+> @@ -725,7 +725,7 @@ static int ti_sn_attach_host(struct ti_sn65dsi86 *pdata)
+>   
+>   	pdata->dsi = dsi;
+>   
+> -	return devm_mipi_dsi_attach(dev, dsi);
+> +	return devm_mipi_dsi_attach(&adev->dev, dsi);
+>   }
+>   
+>   static int ti_sn_bridge_attach(struct drm_bridge *bridge,
+> @@ -1298,9 +1298,9 @@ static int ti_sn_bridge_probe(struct auxiliary_device *adev,
+>   	struct device_node *np = pdata->dev->of_node;
+>   	int ret;
+>   
+> -	pdata->next_bridge = devm_drm_of_get_bridge(pdata->dev, np, 1, 0);
+> +	pdata->next_bridge = devm_drm_of_get_bridge(&adev->dev, np, 1, 0);
+>   	if (IS_ERR(pdata->next_bridge))
+> -		return dev_err_probe(pdata->dev, PTR_ERR(pdata->next_bridge),
+> +		return dev_err_probe(&adev->dev, PTR_ERR(pdata->next_bridge),
+>   				     "failed to create panel bridge\n");
+>   
+>   	ti_sn_bridge_parse_lanes(pdata, np);
+> @@ -1319,9 +1319,9 @@ static int ti_sn_bridge_probe(struct auxiliary_device *adev,
+>   
+>   	drm_bridge_add(&pdata->bridge);
+>   
+> -	ret = ti_sn_attach_host(pdata);
+> +	ret = ti_sn_attach_host(adev, pdata);
+>   	if (ret) {
+> -		dev_err_probe(pdata->dev, ret, "failed to attach dsi host\n");
+> +		dev_err_probe(&adev->dev, ret, "failed to attach dsi host\n");
+>   		goto err_remove_bridge;
+>   	}
+>   
+> 
+> base-commit: 0bb80ecc33a8fb5a682236443c1e740d5c917d1d
 
-Best regards,
-Konstantin Aladyshev
+This looks reasonable
 
-On Tue, Oct 3, 2023 at 2:05=E2=80=AFAM kernel test robot <lkp@intel.com> wr=
-ote:
->
-> Hi Konstantin,
->
-> kernel test robot noticed the following build warnings:
->
-> [auto build test WARNING on cminyard-ipmi/for-next]
-> [also build test WARNING on linus/master v6.6-rc4 next-20230929]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->
-> url:    https://github.com/intel-lab-lkp/linux/commits/Konstantin-Aladysh=
-ev/ipmi-Move-KCS-headers-to-common-include-folder/20231002-223632
-> base:   https://github.com/cminyard/linux-ipmi for-next
-> patch link:    https://lore.kernel.org/r/20231002143441.545-4-aladyshev22=
-%40gmail.com
-> patch subject: [PATCH v2 3/3] mctp: Add MCTP-over-KCS transport binding
-> config: sh-allyesconfig (https://download.01.org/0day-ci/archive/20231003=
-/202310030640.tYeSJjeI-lkp@intel.com/config)
-> compiler: sh4-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
-ve/20231003/202310030640.tYeSJjeI-lkp@intel.com/reproduce)
->
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202310030640.tYeSJjeI-lkp=
-@intel.com/
->
-> All warnings (new ones prefixed by >>):
->
->    drivers/net/mctp/mctp-kcs.c: In function 'kcs_bmc_mctp_add_device':
-> >> drivers/net/mctp/mctp-kcs.c:494:31: warning: passing argument 2 of 'de=
-v_err_probe' makes integer from pointer without a cast [-Wint-conversion]
->      494 |                               "alloc_netdev failed for KCS cha=
-nnel %d\n",
->          |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~
->          |                               |
->          |                               char *
->    In file included from include/linux/device.h:15,
->                     from include/linux/acpi.h:14,
->                     from include/linux/i2c.h:13,
->                     from drivers/net/mctp/mctp-kcs.c:16:
->    include/linux/dev_printk.h:277:64: note: expected 'int' but argument i=
-s of type 'char *'
->      277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int=
- err, const char *fmt, ...);
->          |                                                            ~~~=
-~^~~
-> >> drivers/net/mctp/mctp-kcs.c:495:38: warning: passing argument 3 of 'de=
-v_err_probe' makes pointer from integer without a cast [-Wint-conversion]
->      495 |                               kcs_bmc->channel);
->          |                               ~~~~~~~^~~~~~~~~
->          |                                      |
->          |                                      u32 {aka unsigned int}
->    include/linux/dev_printk.h:277:81: note: expected 'const char *' but a=
-rgument is of type 'u32' {aka 'unsigned int'}
->      277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int=
- err, const char *fmt, ...);
->          |                                                               =
-      ~~~~~~~~~~~~^~~
->    drivers/net/mctp/mctp-kcs.c:507:25: warning: passing argument 2 of 'de=
-v_err_probe' makes integer from pointer without a cast [-Wint-conversion]
->      507 |                         "failed to allocate data_in buffer for=
- KCS channel %d\n",
->          |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~~~~~~~~
->          |                         |
->          |                         char *
->    include/linux/dev_printk.h:277:64: note: expected 'int' but argument i=
-s of type 'char *'
->      277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int=
- err, const char *fmt, ...);
->          |                                                            ~~~=
-~^~~
->    drivers/net/mctp/mctp-kcs.c:508:32: warning: passing argument 3 of 'de=
-v_err_probe' makes pointer from integer without a cast [-Wint-conversion]
->      508 |                         kcs_bmc->channel);
->          |                         ~~~~~~~^~~~~~~~~
->          |                                |
->          |                                u32 {aka unsigned int}
->    include/linux/dev_printk.h:277:81: note: expected 'const char *' but a=
-rgument is of type 'u32' {aka 'unsigned int'}
->      277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int=
- err, const char *fmt, ...);
->          |                                                               =
-      ~~~~~~~~~~~~^~~
->    drivers/net/mctp/mctp-kcs.c:516:25: warning: passing argument 2 of 'de=
-v_err_probe' makes integer from pointer without a cast [-Wint-conversion]
->      516 |                         "failed to allocate data_out buffer fo=
-r KCS channel %d\n",
->          |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
-~~~~~~~~~~~~~~~~~~~
->          |                         |
->          |                         char *
->    include/linux/dev_printk.h:277:64: note: expected 'int' but argument i=
-s of type 'char *'
->      277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int=
- err, const char *fmt, ...);
->          |                                                            ~~~=
-~^~~
->    drivers/net/mctp/mctp-kcs.c:517:32: warning: passing argument 3 of 'de=
-v_err_probe' makes pointer from integer without a cast [-Wint-conversion]
->      517 |                         kcs_bmc->channel);
->          |                         ~~~~~~~^~~~~~~~~
->          |                                |
->          |                                u32 {aka unsigned int}
->    include/linux/dev_printk.h:277:81: note: expected 'const char *' but a=
-rgument is of type 'u32' {aka 'unsigned int'}
->      277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int=
- err, const char *fmt, ...);
->          |                                                               =
-      ~~~~~~~~~~~~^~~
->
->
-> vim +/dev_err_probe +494 drivers/net/mctp/mctp-kcs.c
->
->    481
->    482  static int kcs_bmc_mctp_add_device(struct kcs_bmc_device *kcs_bmc=
-)
->    483  {
->    484          struct mctp_kcs *mkcs;
->    485          struct net_device *ndev;
->    486          char name[32];
->    487          int rc;
->    488
->    489          snprintf(name, sizeof(name), "mctpkcs%d", kcs_bmc->channe=
-l);
->    490
->    491          ndev =3D alloc_netdev(sizeof(*mkcs), name, NET_NAME_ENUM,=
- mctp_kcs_setup);
->    492          if (!ndev) {
->    493                  dev_err_probe(kcs_bmc->dev,
->  > 494                                "alloc_netdev failed for KCS channe=
-l %d\n",
->  > 495                                kcs_bmc->channel);
->    496                  return -ENOMEM;
->    497          }
->    498
->    499          mkcs =3D netdev_priv(ndev);
->    500          mkcs->netdev =3D ndev;
->    501          mkcs->client.dev =3D kcs_bmc;
->    502          mkcs->client.ops =3D &kcs_bmc_mctp_client_ops;
->    503          mkcs->data_in =3D devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUFS=
-IZ, GFP_KERNEL);
->    504          if (!mkcs->data_in) {
->    505                  dev_err_probe(
->    506                          kcs_bmc->dev,
->    507                          "failed to allocate data_in buffer for KC=
-S channel %d\n",
->    508                          kcs_bmc->channel);
->    509                  rc =3D -ENOMEM;
->    510                  goto free_netdev;
->    511          }
->    512          mkcs->data_out =3D devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUF=
-SIZ, GFP_KERNEL);
->    513          if (!mkcs->data_out) {
->    514                  dev_err_probe(
->    515                          kcs_bmc->dev,
->    516                          "failed to allocate data_out buffer for K=
-CS channel %d\n",
->    517                          kcs_bmc->channel);
->    518                  rc =3D -ENOMEM;
->    519                  goto free_netdev;
->    520          }
->    521
->    522          INIT_WORK(&mkcs->rx_work, mctp_kcs_rx_work);
->    523
->    524          rc =3D register_netdev(ndev);
->    525          if (rc)
->    526                  goto free_netdev;
->    527
->    528          spin_lock_irq(&kcs_bmc_mctp_instances_lock);
->    529          list_add(&mkcs->entry, &kcs_bmc_mctp_instances);
->    530          spin_unlock_irq(&kcs_bmc_mctp_instances_lock);
->    531
->    532          dev_info(kcs_bmc->dev, "Add MCTP client for the KCS chann=
-el %d",
->    533                   kcs_bmc->channel);
->    534          return 0;
->    535
->    536  free_netdev:
->    537          free_netdev(ndev);
->    538
->    539          return rc;
->    540  }
->    541
->
-> --
-> 0-DAY CI Kernel Test Service
-> https://github.com/intel/lkp-tests/wiki
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
