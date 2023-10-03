@@ -2,146 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7272C7B7423
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37F237B7426
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbjJCWgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 18:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
+        id S230448AbjJCWhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 18:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229802AbjJCWgg (ORCPT
+        with ESMTP id S229802AbjJCWhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 18:36:36 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73ABDAF
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 15:36:32 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50348c54439so1037e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 15:36:32 -0700 (PDT)
+        Tue, 3 Oct 2023 18:37:13 -0400
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D92AF
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 15:37:08 -0700 (PDT)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-59f1dff5298so18269027b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 15:37:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696372591; x=1696977391; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EG7kDtdkJVrJR5n87G+tHxj9vqVqM2ibNV7n3CHBcaM=;
-        b=1Lx9A2j4pHQYDICxtXgVq5dUcE3TV44XTOQLdSgauFrBc8ngQOnAAXneU0i61/akv4
-         qjaThIbGJZxT/PHcclWs3toMOAW5yi1DPXNAgK4uDnCgLKQ+jKMwOu1yfIKShOTAodtM
-         GbHhRjtimkt/CBlcST9V9pj9bOetTNHiFN00RIKbLyyQpRBVUDLGHCP4VM9C2M1rc6Wv
-         kbFP2BQFn+oiQG+WwVfoOfBxPccw1dfpG726AujbZmWpVRyAStaXfbN50akZSsN9MoQa
-         LkuS1CQ3v2aq0KRPtva0psATj2wbuCuIYk1nvVpu+rynygSIr3T9aq3SlYCSAK6Fz5Sv
-         XeDg==
+        d=linaro.org; s=google; t=1696372627; x=1696977427; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mhXZzKglen275AV7+nTrfy9Xu4hK4Ax70vTxTdz4r00=;
+        b=g6UEZFONtexO4tyiAAHQf3Ro+fZmuNiUxKVAzV2gJ1lIQob/L1o/EStGvbqstKY/CS
+         Gr6LvriBoZlxZtmSrbOk2LuKgyR+8wxuW0exntXQXGJme1vZTsE5R20czuFtIcwotuZh
+         YVfkUV+Vb8EettVtDIae7QEyAm3nzyK+WPyQBPPgcMPH+bcUt/LqrdilHXMXvAD80R50
+         PNRJ4QcUrh9NWlTTwAECsgwbo491V63cSkd/Z9zdqX4hNc06mxR2m+Zu4B6LILhr4Ttc
+         Mi5jEOPwud9nlJI9pVjX3aPk7GJaPrfiRnSb83jHQT4rDTJe+TRxfVm4xJLkR9izLQga
+         h+kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696372591; x=1696977391;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EG7kDtdkJVrJR5n87G+tHxj9vqVqM2ibNV7n3CHBcaM=;
-        b=jDyLlUycriHYXDXb9lz2Or1OWxaRaKeWRjOfHP+fD1X1ugCr7dNOSs1NdtL2rtdKjE
-         eFGFoHBs1EfcMyOa7Bvm+yDvBJJ81xphh8WxcfZx/r+NqMptlJRFH2f3q2mIcIjsfmb6
-         m8YjrP4+lhgeOgxQ94zlDqHuL4lOd1Os86L9czikz1g62LiPP01lrxadKVnHqvLiZv6B
-         VVfdOleMbe4mIh/wIN2n+hCz9UdvACJ0E+XhTSORklSI3uhZ/gRtQcn05WGmdxgXoOSe
-         vNqsey1edPif0LhTgK3evlBM99oo2q4HqeltBUlXBpMwu+gwdFSIatLAVB+i0CJoPbS0
-         vczw==
-X-Gm-Message-State: AOJu0Yz1BsL+JmwwGFVqxhInW5Q8LDNRlQTYGskhx7Ep5p1KEL9GE5QG
-        2WXtswoOi9N5BshVZLrLr6/xLRCxiD8NodYQkf9vAw==
-X-Google-Smtp-Source: AGHT+IFxJAgpmYBIrObePPnqrkL5nsL/Q9T1EPNqbCSH2+9ataU9BP/aaTfJKcSQjylmnubwEGV3gueH2rN/mrZWSog=
-X-Received: by 2002:ac2:4e6f:0:b0:505:715f:d36b with SMTP id
- y15-20020ac24e6f000000b00505715fd36bmr7786lfs.5.1696372590536; Tue, 03 Oct
- 2023 15:36:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1696372627; x=1696977427;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mhXZzKglen275AV7+nTrfy9Xu4hK4Ax70vTxTdz4r00=;
+        b=Z+gNY7N4yrXTOmWfdg98WaF8fBSo0bW7TxrKLKBBSc7QVwX40PhK5KjArIQlfb/0S0
+         5/JtnVwED1sB0xPQ6Bp0f0xgwjLT5X1FRHhHI9kH65STMIEO6Hsx1/Rq6ZAezckfXfGP
+         WzI56eauTUqtWw4rW2CPESyU60N+gNMm48e9wqQMIy1QPn53agh3p8Iw60UdIKWWkFxk
+         88enREUxXKX9evU7OHReBVpej4UlfwFJasIL67PBHTrZaA90buVigR7HYqHa4avyNzzy
+         SKsC33+mM7g0b/worIlk4WUdHIB9AoHEf1gBU/vRfRgdLNaciqTzvFiAjYRiFN5YZrab
+         AoGA==
+X-Gm-Message-State: AOJu0YwaUcjsU9olCLJmv6FUPnQVX0zKP8hjh5sAaLm57XetGPa8lO+9
+        CSqxgZ6W9HG93/B0N49/yigo7IITG/pv+pKQsQEAGA==
+X-Google-Smtp-Source: AGHT+IHKE8CakXmJM5EpmVVBLoZmy3WNidud/OH2OXyo0wSEgbC3+1v2ZVtx2ntkOIyYF6Wqvwlm/UNz78qBNpx+FaA=
+X-Received: by 2002:a0d:f245:0:b0:595:89b0:6b41 with SMTP id
+ b66-20020a0df245000000b0059589b06b41mr913290ywf.38.1696372627531; Tue, 03 Oct
+ 2023 15:37:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230916040915.1075620-1-irogers@google.com> <CAL715WJxmMbXkZSE3p_+ODGxabgrXREsBo9aFu9G9=qkYZeH9A@mail.gmail.com>
- <CAP-5=fUjNiDv=KQ7t8jqfOfOt5i8HGvt8Vv1hn2-hLxX_Kqucg@mail.gmail.com>
- <CAL715W+GQuCJm-1SEsNN2qnHghNL1SrzwH9Km5K8UxubEFfYVw@mail.gmail.com> <CAM9d7cgKWi0fafwTxSrKLrVZxcwnhwMGz=oNkAsNdOjDwF6pEA@mail.gmail.com>
-In-Reply-To: <CAM9d7cgKWi0fafwTxSrKLrVZxcwnhwMGz=oNkAsNdOjDwF6pEA@mail.gmail.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 3 Oct 2023 15:36:19 -0700
-Message-ID: <CAP-5=fWXXi7Y=6Q0k8oLOZmYon+vvg-k4dNUSex_ijcL8ti9sQ@mail.gmail.com>
-Subject: Re: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Mingwei Zhang <mizhang@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Stephane Eranian <eranian@google.com>
+References: <1695848028-18023-1-git-send-email-quic_khsieh@quicinc.com>
+ <1695848028-18023-8-git-send-email-quic_khsieh@quicinc.com>
+ <CAA8EJpor3WEYmN=hQJQPFyjZGdr4j8F-XAB=2BDVRFCTNioEiA@mail.gmail.com>
+ <e72ae247-459d-9f23-0583-ce6da1a30336@quicinc.com> <CAA8EJppGg4+Rrf+1HBYYgvFtGWU2xRTGK6tP6xMefFsv-vyEiQ@mail.gmail.com>
+ <65740ce1-9645-cbae-3d5e-503c5f2ee4e8@quicinc.com>
+In-Reply-To: <65740ce1-9645-cbae-3d5e-503c5f2ee4e8@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 4 Oct 2023 01:36:56 +0300
+Message-ID: <CAA8EJprp_yx0zEBtrUwxXooTDDYWnsU2++VOz=3AgV8zDbMvWg@mail.gmail.com>
+Subject: Re: [PATCH v4 7/8] drm/msm/dp: add pm_runtime_force_suspend()/resume()
+To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
+        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
+        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
+        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
+        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 3, 2023 at 1:08=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
+On Wed, 4 Oct 2023 at 01:12, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
 >
-> Hello,
 >
-> On Wed, Sep 20, 2023 at 10:05=E2=80=AFPM Mingwei Zhang <mizhang@google.co=
-m> wrote:
+> On 10/3/2023 10:53 AM, Dmitry Baryshkov wrote:
+> > On Tue, 3 Oct 2023 at 19:44, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+> >>
+> >> On 9/27/2023 3:00 PM, Dmitry Baryshkov wrote:
+> >>> On Wed, 27 Sept 2023 at 23:54, Kuogee Hsieh <quic_khsieh@quicinc.com> wrote:
+> >>>> After incorporated pm_runtime framework into eDP/DP driver, the
+> >>> incorporating
+> >>>
+> >>>
+> >>>> original dp_pm_suspend() to handle power off both DP phy and
+> >>>> controller during suspend and dp_pm_resume() to handle power on
+> >>>> both DP phy and controller during resume are not necessary since
+> >>>> those function are replaced by dp_pm_runtime_suspend() and
+> >>>> dp_pm_runtime_resume() through pm runtime framework.
+> >>>> Therefore add pm framework provides functions,
+> >>>> pm_runtime_force_suspend()/resume() to complete incorporating pm
+> >>>> runtime framework into DP driver.
+> >>>>
+> >>>> Changes in v4:
+> >>>> -- drop both dp_pm_prepare() and dp_pm_compete() from this change
+> >>>> -- delete ST_SUSPENDED state
+> >>>> -- rewording commit text to add more details regrading the purpose
+> >>>>      of this change
+> >>>>
+> >>>> Changes in v3:
+> >>>> -- replace dp_pm_suspend() with pm_runtime_force_suspend()
+> >>>> -- replace dp_pm_resume() with pm_runtime_force_resume()
+> >>>>
+> >>>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> >>>> ---
+> >>>>    drivers/gpu/drm/msm/dp/dp_display.c | 113 ++----------------------------------
+> >>>>    1 file changed, 5 insertions(+), 108 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> >>>> index 9158a2c..711d262 100644
+> >>>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> >>>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> >>>> @@ -49,7 +49,6 @@ enum {
+> >>>>           ST_CONNECTED,
+> >>>>           ST_DISCONNECT_PENDING,
+> >>>>           ST_DISPLAY_OFF,
+> >>>> -       ST_SUSPENDED,
+> >>>>    };
+> >>>>
+> >>>>    enum {
+> >>>> @@ -560,7 +559,7 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+> >>>>           drm_dbg_dp(dp->drm_dev, "Before, type=%d hpd_state=%d\n",
+> >>>>                           dp->dp_display.connector_type, state);
+> >>>>
+> >>>> -       if (state == ST_DISPLAY_OFF || state == ST_SUSPENDED) {
+> >>>> +       if (state == ST_DISPLAY_OFF) {
+> >>>>                   mutex_unlock(&dp->event_mutex);
+> >>>>                   return 0;
+> >>>>           }
+> >>>> @@ -674,7 +673,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+> >>>>           drm_dbg_dp(dp->drm_dev, "Before, type=%d hpd_state=%d\n",
+> >>>>                           dp->dp_display.connector_type, state);
+> >>>>
+> >>>> -       if (state == ST_DISPLAY_OFF || state == ST_SUSPENDED) {
+> >>>> +       if (state == ST_DISPLAY_OFF) {
+> >>>>                   mutex_unlock(&dp->event_mutex);
+> >>>>                   return 0;
+> >>>>           }
+> >>>> @@ -1321,110 +1320,10 @@ static int dp_pm_runtime_resume(struct device *dev)
+> >>>>           return 0;
+> >>>>    }
+> >>>>
+> >>>> -static int dp_pm_resume(struct device *dev)
+> >>>> -{
+> >>>> -       struct platform_device *pdev = to_platform_device(dev);
+> >>>> -       struct msm_dp *dp_display = platform_get_drvdata(pdev);
+> >>>> -       struct dp_display_private *dp;
+> >>>> -       int sink_count = 0;
+> >>>> -
+> >>>> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
+> >>>> -
+> >>>> -       mutex_lock(&dp->event_mutex);
+> >>>> -
+> >>>> -       drm_dbg_dp(dp->drm_dev,
+> >>>> -               "Before, type=%d core_inited=%d phy_inited=%d power_on=%d\n",
+> >>>> -               dp->dp_display.connector_type, dp->core_initialized,
+> >>>> -               dp->phy_initialized, dp_display->power_on);
+> >>>> -
+> >>>> -       /* start from disconnected state */
+> >>>> -       dp->hpd_state = ST_DISCONNECTED;
+> >>>> -
+> >>>> -       /* turn on dp ctrl/phy */
+> >>>> -       dp_display_host_init(dp);
+> >>>> -
+> >>>> -       if (dp_display->is_edp)
+> >>>> -               dp_catalog_ctrl_hpd_enable(dp->catalog);
+> >>>> -
+> >>>> -       if (dp_catalog_link_is_connected(dp->catalog)) {
+> >>>> -               /*
+> >>>> -                * set sink to normal operation mode -- D0
+> >>>> -                * before dpcd read
+> >>>> -                */
+> >>>> -               dp_display_host_phy_init(dp);
+> >>>> -               dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+> >>>> -               sink_count = drm_dp_read_sink_count(dp->aux);
+> >>>> -               if (sink_count < 0)
+> >>>> -                       sink_count = 0;
+> >>>> -
+> >>>> -               dp_display_host_phy_exit(dp);
+> >>>> -       }
+> >>>> -
+> >>>> -       dp->link->sink_count = sink_count;
+> >>>> -       /*
+> >>>> -        * can not declared display is connected unless
+> >>>> -        * HDMI cable is plugged in and sink_count of
+> >>>> -        * dongle become 1
+> >>>> -        * also only signal audio when disconnected
+> >>>> -        */
+> >>>> -       if (dp->link->sink_count) {
+> >>>> -               dp->dp_display.link_ready = true;
+> >>>> -       } else {
+> >>>> -               dp->dp_display.link_ready = false;
+> >>>> -               dp_display_handle_plugged_change(dp_display, false);
+> >>>> -       }
+> >>>> -
+> >>>> -       drm_dbg_dp(dp->drm_dev,
+> >>>> -               "After, type=%d sink=%d conn=%d core_init=%d phy_init=%d power=%d\n",
+> >>>> -               dp->dp_display.connector_type, dp->link->sink_count,
+> >>>> -               dp->dp_display.link_ready, dp->core_initialized,
+> >>>> -               dp->phy_initialized, dp_display->power_on);
+> >>>> -
+> >>>> -       mutex_unlock(&dp->event_mutex);
+> >>>> -
+> >>>> -       return 0;
+> >>>> -}
+> >>>> -
+> >>>> -static int dp_pm_suspend(struct device *dev)
+> >>>> -{
+> >>>> -       struct platform_device *pdev = to_platform_device(dev);
+> >>>> -       struct msm_dp *dp_display = platform_get_drvdata(pdev);
+> >>>> -       struct dp_display_private *dp;
+> >>>> -
+> >>>> -       dp = container_of(dp_display, struct dp_display_private, dp_display);
+> >>>> -
+> >>>> -       mutex_lock(&dp->event_mutex);
+> >>>> -
+> >>>> -       drm_dbg_dp(dp->drm_dev,
+> >>>> -               "Before, type=%d core_inited=%d  phy_inited=%d power_on=%d\n",
+> >>>> -               dp->dp_display.connector_type, dp->core_initialized,
+> >>>> -               dp->phy_initialized, dp_display->power_on);
+> >>>> -
+> >>>> -       /* mainlink enabled */
+> >>>> -       if (dp_power_clk_status(dp->power, DP_CTRL_PM))
+> >>>> -               dp_ctrl_off_link_stream(dp->ctrl);
+> >>>> -
+> >>>> -       dp_display_host_phy_exit(dp);
+> >>> I was under the impression that dp_pm_runtime_suspend / _resume
+> >>> functions perform phy init/exit only in eDP cases. Can we really drop
+> >>> the main suspend/resume functions?
+> >> yes on eDP case since it is embedded.
+> > Let me ask the same question in a different way:
 > >
-> > On Mon, Sep 18, 2023 at 3:43=E2=80=AFPM Ian Rogers <irogers@google.com>=
- wrote:
-> > >
-> > > On Sat, Sep 16, 2023 at 5:46=E2=80=AFPM Mingwei Zhang <mizhang@google=
-.com> wrote:
-> > > > Thank you very much for the change. I have one quick question about
-> > > > the PMU unthrottling logic. When I am looking into the function
-> > > > perf_adjust_freq_unthr_context(), I see the loop with PMU stop and
-> > > > start in each iteration. Is there a good way to avoid this PMU rese=
-t
-> > > > operation while quickly figuring out the event in frequency mode?
-> > >
-> > > Agreed. I think before the pmu_disable could be avoided for this cond=
-ition:
-> > > ```
-> > > if (event->hw.interrupts !=3D MAX_INTERRUPTS &&
-> > >     (!event->attr.freq || !event->attr.sample_freq))
-> > >         continue;
-> > > ```
-> > > Fixing up the event stop/start looks harder.
-> > >
+> > dp_pm_suspend() / dp_pm_resume() functions contain several calls to DP
+> > functions. Why can we drop them now? Maybe they had to be dropped in
+> > one of the previous patches, when you have added proper runtime PM
+> > support?
 > >
-> > Right, I think putting the check early before pmu_disable() is already
-> > a great optimization. The only concern I initially had was whether
-> > event->hw.interrupts can be accessed before we disable the pmu. But
-> > after checking this field in other locations, I don't see any problem
-> > at all.
+> > Could you please confirm that after each patch the DP driver is
+> > working, that there are no hidden dependencies between patches?
 >
-> The event->hw.interrupts would be increased in the NMI handler
-> so there is a race between the check and the NMI.  That's why
-> I think it checks that after disabling the PMU.
+> patch #5 ==>  drm/msm/dp: incorporate pm_runtime framework into DP driver
 >
-> But I think we can skip non-sampling events for sure.  Then it
-> would be better to set attr.sample_period =3D 0 rather than attr.freq.
+> patch #6 ==> drm/msm/dp: delete EV_HPD_INIT_SETUP
 >
->     if (!is_sampling_event(event))
->         continue;
+> patch #7 ==>  drm/msm/dp: add pm_runtime_force_suspend()/resume() <==
+> both dp_pm_suspend() and dp_pm_resume() are dropped here
 >
->     perf_pmu_disable(event->pmu);
->     ...
 >
-> Thanks,
-> Namhyung
+> Patch #5 is this patch and dp_pm_suspend() and dp_pm_resume() still kept.
+>
+> patch #7 drop both dp_pm_suspend() and dp_pm_resume().
 
-With the PMU disabled, isn't there still a risk of an interrupt still
-being in flight? In other words the disable doesn't prevent a race and
-we'll catch this on the next timer call to
-perf_adjust_freq_unthr_context. I think we can also improve the code
-by just disabling a PMU once, we can take advantage of the
-perf_event_pmu_context and disable that PMU, iterate its events and
-then re-enable the PMU - i.e. no need for an enable and disable per
-event. I'll put a patch together.
+This makes me wonder if squashing #5 and #7 would have resulted in a
+cleaner and easier to understand patch. This way we'd be able to
+observer code moved from suspend/resume to runtime_suspend /
+runtime_resume
 
-Thanks,
-Ian
+>
+> In order to keep every patch work for  suspend/resume test, I drop
+> dp_pm_susend() and dp_pm_resuem() at patch #7.
+>
+> yes, i confirm each patch DP driver is working.
+
+Ack, thank you.
+
+>
+>
+> >
+> >> for external DP case, there are two steps
+> >>
+> >> step 1: enable DP controller's  hpd block and start waiting for hpd
+> >> interrupts at dp_display_hpd_enable()
+> The step number I mentioned here is for hpd_internal == true case.
+> > Step 1 should be optional. DP should be functional even if the
+> > .hpd_enable was not called. Have you tested this usecase?
+>
+> yes, for hpd_internal == false, step #1 is not required.
+>
+> however I do not have device to test it.
+
+You have. Just add a dp-connector with hpd-gpios to any of your
+DP-enabled devices and change the pinctrl for hpd pin to use the gpio
+function instead of HPD.
+
+>
+> But i think it should work since  pm_runtime_resume_and_get() and
+> pm_runtime_put_sync() to dp_hpd_plug_handle() and dp_hpd_unplug_handle()
+> respectively.
+
+Ack.
+
+
+> >> step 2:  at plugin interrupts,  dp_display_host_phy_init()
+> >>
+> >> step 3: at unplug interrupt: dp_bridge_atomic_post_disable()
+> >> dp_display_host_phy_exi()
+> >>
+> >> at runtime, there is loop between step 2 and step 3
+> >>
+> >> step  4: disable DP controller's  hpd block
+> >>
+> >>>> -
+> >>>> -       /* host_init will be called at pm_resume */
+> >>>> -       dp_display_host_deinit(dp);
+> >>>> -
+> >>>> -       dp->hpd_state = ST_SUSPENDED;
+> >>>> -
+> >>>> -       drm_dbg_dp(dp->drm_dev,
+> >>>> -               "After, type=%d core_inited=%d phy_inited=%d power_on=%d\n",
+> >>>> -               dp->dp_display.connector_type, dp->core_initialized,
+> >>>> -               dp->phy_initialized, dp_display->power_on);
+> >>>> -
+> >>>> -       mutex_unlock(&dp->event_mutex);
+> >>>> -
+> >>>> -       return 0;
+> >>>> -}
+> >>>> -
+> >>>>    static const struct dev_pm_ops dp_pm_ops = {
+> >>>>           SET_RUNTIME_PM_OPS(dp_pm_runtime_suspend, dp_pm_runtime_resume, NULL)
+> >>>> -       .suspend = dp_pm_suspend,
+> >>>> -       .resume =  dp_pm_resume,
+> >>>> +       SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+> >>>> +                                pm_runtime_force_resume)
+> >>>>    };
+> >>>>
+> >>>>    static struct platform_driver dp_display_driver = {
+> >>>> @@ -1658,9 +1557,6 @@ void dp_bridge_atomic_post_disable(struct drm_bridge *drm_bridge,
+> >>>>
+> >>>>           dp_display = container_of(dp, struct dp_display_private, dp_display);
+> >>>>
+> >>>> -       if (dp->is_edp)
+> >>>> -               dp_hpd_unplug_handle(dp_display, 0);
+> >>> Why?
+> >> dp_hpd_unplug_handle() does not tear down phy.
+> >>
+> >> Therefore eDP does not need to call unplug handle.
+> > I don't fully understand your argument here. Could you please
+> > describe, why this function call was necessary beforehand and what is
+> > being changed now, so that it becomes unnecessary?
+>
+> dp_hpd_unplug_handle() is not necessary for eDP from very beginning
+> since dp_bridge_atomic_enable() do it all (tear down link and phy).
+
+Excuse me? Where does dp_bridge_atomic_enable() tear down the link?
+
+>
+> I think it was added long time ago mistakenly  just like to be
+> compatible with external DP since external DP always have
+> dp_hpd_unplug_handle() called from irq_handle().
+>
+> i can restore it back if you insist it.
+
+I insist on having clean documented patches. If function call was not
+necessary beforehand, please drop it in the separate patch with proper
+description of why and what.
+
+>
+>
+> >>
+> >>
+> >>>> -
+> >>>>           mutex_lock(&dp_display->event_mutex);
+> >>>>
+> >>>>           state = dp_display->hpd_state;
+> >>>> @@ -1748,6 +1644,7 @@ void dp_bridge_hpd_disable(struct drm_bridge *bridge)
+> >>>>           dp_catalog_ctrl_hpd_disable(dp->catalog);
+> >>>>
+> >>>>           dp_display->internal_hpd = false;
+> >>>> +       dp->hpd_state = ST_DISCONNECTED;
+> >>> Why? We have only disabled sending of the HPD events. The dongle might
+> >>> still be connected.
+> >> dp_bridge_hpd_disable() disable dp controller hpd block (no more hpd
+> >> interrupt will be received).
+> >>
+> >> dp_bridge_hpd_disable() should happen after DP main link had been teared
+> >> down already.
+> > No, this assumption is incorrect. hpd_disable can happen at any point
+> > during runtime.
+> > It merely disables HPD interrupt generation, it has nothing to do with
+> > the DP block being enabled or not.
+> >
+> >> Therefore hpd_state need to be in default state so that next plugin
+> >> handle will be start with correct state.
+> >>
+> >>
+> >>>>           pm_runtime_mark_last_busy(&dp->pdev->dev);
+> >>>>           pm_runtime_put_autosuspend(&dp->pdev->dev);
+> >>>> --
+> >>>> 2.7.4
+> >>>>
+> >>> --
+> >>> With best wishes
+> >>>
+> >>> Dmitry
+> >
+> >
+
+
+
+-- 
+With best wishes
+Dmitry
