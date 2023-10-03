@@ -2,72 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BF2A7B7163
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181AA7B7167
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240856AbjJCS5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 14:57:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42290 "EHLO
+        id S240783AbjJCS7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 14:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232106AbjJCS5j (ORCPT
+        with ESMTP id S231376AbjJCS7x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:57:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22959B
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 11:57:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696359456; x=1727895456;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=2RmLHXlDrvpms2MO/iCl0m6YdD9Afj1b4iuJowttADI=;
-  b=RMt24Z2satFHFN/hr7GO/jCd5AAgWoPDruZse2W1xA1ZLPEBczb12FXC
-   dDXEYIBGZEWyM440k6lsLR22h6zv3Seqm3ejhLNPTyzVDGDIEmPiNzSvr
-   38c8/MjKJpaG+q55n77dfH4bp0CIvoqrSgvURAwjEL1ecl/nuEIkxz7R3
-   +iCgK0KkeQ17A0WGh9gvA9P/OIjoQ3lXcfRO7oRi93C4begs4Dv3JGhHR
-   8255SVFJnWEeKkgVAOTrfB2ukRmM7u6A3Zr71OooNkrROTNQRqbqLG4Se
-   l9uSNrMRtvK5DgVN1wnyTqjRco5gWtwuZ4kaDR1H6GhWx5mP3eyNl98ME
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="1549143"
-X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
-   d="scan'208";a="1549143"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 11:57:35 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="816808372"
-X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
-   d="scan'208";a="816808372"
-Received: from fhoeg-mobl1.ger.corp.intel.com (HELO [10.249.254.234]) ([10.249.254.234])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 11:57:31 -0700
-Message-ID: <b01f77e2-a885-af0e-ef9b-265e93b2dee0@linux.intel.com>
-Date:   Tue, 3 Oct 2023 20:57:29 +0200
+        Tue, 3 Oct 2023 14:59:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD12D9B
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 11:59:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696359542;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g84yvdOkOfK8ImlsVuUfAihWEZ37t2ndqXqg7w/OTXc=;
+        b=ZK+CmrSjGG5uerob61NUChbBYzAdeGgEuZFOpE/29CwjWNPxGEHtHHpb7CiBTZ3Sy7/NQS
+        Z6/s/LB8NCkkX5L+hdBafoJYDala58urqHsbYQjZ9RhMTMwD7wCKJuOO81jkbst3/gyL98
+        CnTtVaV9FHUI1U06hERTZyw2A+hKu+0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-543-MbqZBjz4Ox6XpqSJvysezw-1; Tue, 03 Oct 2023 14:59:00 -0400
+X-MC-Unique: MbqZBjz4Ox6XpqSJvysezw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 200AB101A5C5;
+        Tue,  3 Oct 2023 18:59:00 +0000 (UTC)
+Received: from [10.22.10.176] (unknown [10.22.10.176])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D1F62156701;
+        Tue,  3 Oct 2023 18:58:59 +0000 (UTC)
+Message-ID: <320f6e2e-c0ae-3cbd-bc43-d2eabcd70cc4@redhat.com>
+Date:   Tue, 3 Oct 2023 14:58:58 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH drm-misc-next v5 4/6] drm/gpuvm: track/lock/validate
- external/evicted objects
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3] sched/core: Use empty mask to reset cpumasks in
+ sched_setaffinity()
 Content-Language: en-US
-To:     Danilo Krummrich <dakr@redhat.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
-        sarah.walker@imgtec.com, donald.robson@imgtec.com,
-        christian.koenig@amd.com, faith@gfxstrand.net,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20230928191624.13703-1-dakr@redhat.com>
- <20230928191624.13703-5-dakr@redhat.com>
- <e4e68970-c7c9-55e2-9483-01252f38c956@linux.intel.com>
- <20231003120554.547090bc@collabora.com>
- <f551ee9059e52d46343f5fa997b7d9f8ab6654d9.camel@linux.intel.com>
- <20231003162143.490e3ef0@collabora.com> <ZRxHcwYUbp5/fS+v@pollux>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>
-In-Reply-To: <ZRxHcwYUbp5/fS+v@pollux>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
+        Brent Rowsell <browsell@redhat.com>,
+        Peter Hunt <pehunt@redhat.com>
+References: <20230804023218.75544-1-longman@redhat.com>
+ <20231003100602.GF27267@noisy.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20231003100602.GF27267@noisy.programming.kicks-ass.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -75,85 +75,35 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 10/3/23 18:55, Danilo Krummrich wrote:
-> It seems like we're mostly aligned on this series, except for the key
-> controversy we're discussing for a few versions now: locking of the internal
-> lists. Hence, let's just re-iterate the options we have to get this out of the
-> way.
+On 10/3/23 06:06, Peter Zijlstra wrote:
+> On Thu, Aug 03, 2023 at 10:32:18PM -0400, Waiman Long wrote:
+>> Since commit 8f9ea86fdf99 ("sched: Always preserve the user requested
+>> cpumask"), user provided CPU affinity via sched_setaffinity(2) is
+>> perserved even if the task is being moved to a different cpuset. However,
+>> that affinity is also being inherited by any subsequently created child
+>> processes which may not want or be aware of that affinity.
+>>
+>> One way to solve this problem is to provide a way to back off from
+>> that user provided CPU affinity.  This patch implements such a scheme
+>> by using an empty cpumask to signal a reset of the cpumasks to the
+>> default as allowed by the current cpuset.
+> So I still don't like this much, the normal state is all bits set:
 >
-> (1) The spinlock dance. This basically works for every use case, updating the VA
->      space from the IOCTL, from the fence signaling path or anywhere else.
->      However, it has the downside of requiring spin_lock() / spin_unlock() for
->      *each* list element when locking all external objects and validating all
->      evicted objects. Typically, the amount of extobjs and evicted objects
->      shouldn't be excessive, but there might be exceptions, e.g. Xe.
+>    $ grep allowed /proc/self/status
+>    Cpus_allowed:   ff,ffffffff
 >
-> (2) The dma-resv lock dance. This is convinient for drivers updating the VA
->      space from a VM_BIND ioctl() and is especially efficient if such drivers
->      have a huge amount of external and/or evicted objects to manage. However,
->      the downsides are that it requires a few tricks in drivers updating the VA
->      space from the fence signaling path (e.g. job_run()). Design wise, I'm still
->      skeptical that it is a good idea to protect internal data structures with
->      external locks in a way that it's not clear to callers that a certain
->      function would access one of those resources and hence needs protection.
->      E.g. it is counter intuitive that drm_gpuvm_bo_put() would require both the
->      dma-resv lock of the corresponding object and the VM's dma-resv lock held.
->      (Additionally, there were some concerns from amdgpu regarding flexibility in
->      terms of using GPUVM for non-VM_BIND uAPIs and compute, however, AFAICS
->      those discussions did not complete and to me it's still unclear why it
->      wouldn't work.)
->
-> (3) Simply use an internal mutex per list. This adds a tiny (IMHO negligible)
->      overhead for drivers updating the VA space from a VM_BIND ioctl(), namely
->      a *single* mutex_lock()/mutex_unlock() when locking all external objects
->      and validating all evicted objects. And it still requires some tricks for
->      drivers updating the VA space from the fence signaling path. However, it's
->      as simple as it can be and hence way less error prone as well as
->      self-contained and hence easy to use. Additionally, it's flexible in a way
->      that we don't have any expections on drivers to already hold certain locks
->      that the driver in some situation might not be able to acquire in the first
->      place.
->
-> (4) Arbitrary combinations of the above. For instance, the current V5 implements
->      both (1) and (2) (as either one or the other). But also (1) and (3) (as in
->      (1) additionally to (3)) would be an option, where a driver could opt-in for
->      the spinlock dance in case it updates the VA space from the fence signaling
->      path.
->
-> I also considered a few other options as well, however, they don't seem to be
-> flexible enough. For instance, as by now we could use SRCU for the external
-> object list. However, this falls apart once a driver wants to remove and re-add
-> extobjs for the same VM_BO instance. (For the same reason it wouldn't work for
-> evicted objects.)
->
-> Personally, after seeing the weird implications of (1), (2) and a combination of
-> both, I tend to go with (3). Optionally, with an opt-in for (1). The reason for
-> the latter is that with (3) the weirdness of (1) by its own mostly disappears.
->
-> Please let me know what you think, and, of course, other ideas than the
-> mentioned ones above are still welcome.
->
-> - Danilo
->
-Here are the locking principles Daniel put together and Dave once called 
-out for us to be applying when reviewing DRM code. These were prompted 
-by very fragile and hard to understand locking patterns in the i915 
-driver and I think the xe vm_bind locking design was made with these in 
-mind, (not sure exactly who wrote what, though so can't say for sure).
+> The all clear bitmask just feels weird for this.
 
-https://blog.ffwll.ch/2022/07/locking-engineering.html
-https://blog.ffwll.ch/2022/08/locking-hierarchy.html
+The main reason for using an empty bitmask is the presence of the 
+CPU_ZERO() macro that can produce this empty cpumask. It is certainly 
+possible to use an all set bitmask for reset purpose. The only problem 
+is it is more complicated to generate such a bitmask as there is no 
+existing CPU* macros that can be used.
 
-At least to me, this motivates using the resv design unless we strictly 
-need lower level locks that are taken in the eviction paths or userptr 
-invalidation paths, but doesn't rule out spinlocks or lock dropping 
-tricks where these are really necessary. But pretty much rules out RCU / 
-SRCU from what I can tell.
+Another possible alternative is to use a cpusetsize of 0 to indicate a 
+reset as long as it doesn't cause problem with existing code. Will that 
+be acceptable?
 
-It also calls for documenting how individual members of structs are 
-protected when ever possible.
-
-Thanks,
-Thomas
-
+Cheers,
+Longman
 
