@@ -2,35 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5D67B64DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9795D7B64E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:00:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231432AbjJCI7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 04:59:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45280 "EHLO
+        id S239305AbjJCJAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231136AbjJCI7o (ORCPT
+        with ESMTP id S231360AbjJCJAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 04:59:44 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 352AFAF
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 01:59:40 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2061CC15;
-        Tue,  3 Oct 2023 02:00:18 -0700 (PDT)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1A99E3F5A1;
-        Tue,  3 Oct 2023 01:59:38 -0700 (PDT)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Sudeep Holla <sudeep.holla@arm.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] firmware: arm_ffa: Assign the missing IDR allocation ID to the FFA device
-Date:   Tue,  3 Oct 2023 09:59:32 +0100
-Message-ID: <20231003085932.3553985-1-sudeep.holla@arm.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 3 Oct 2023 05:00:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE85CAF;
+        Tue,  3 Oct 2023 02:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696323604; x=1727859604;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wdsojALH/g94kOE3J1YReNKHhGVsyHpHEXJJtTbH4/k=;
+  b=WKb/5jw+NYyzQbj+m+UnNjPnTEQT229MVgcqSbt+oszQ4Me2lwiv34th
+   KLxa7ctkOpz8LPeW6dwapHnFTtFjG581m3n1EqSRlp5BngwglpfKkSnxN
+   ie7Qtvvxwyga7GQ+Jj76jXnvnXfcs2On+LsVF1iDT1vaMajru/oKkZLiy
+   4wz5NuLl69xJctcwFGAkr5YmA4htjQDIWNyezC5FLl1zaj1BBeD2NNiQe
+   HlYF/6sbswQJj0gnv47d0S2D6p6ZAy1JVR8meSFLIFr5qMmGYSIXTg+FD
+   5XTu5rurBYxGSh+rk67QODI7WSMItdAAdyVZwozP9RkYzCJ/7izz/h6ew
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="449314948"
+X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
+   d="scan'208";a="449314948"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 02:00:04 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="1081934039"
+X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
+   d="scan'208";a="1081934039"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 02:00:02 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC1)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qnbG3-00000002RJS-1y5f;
+        Tue, 03 Oct 2023 11:59:59 +0300
+Date:   Tue, 3 Oct 2023 11:59:59 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Raag Jadav <raag.jadav@intel.com>
+Cc:     linus.walleij@linaro.org, mika.westerberg@linux.intel.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
+Subject: Re: [PATCH v1 2/2] pinctrl: lynxpoint: drop runtime PM support
+Message-ID: <ZRvYDwbxPQOWGTvU@smile.fi.intel.com>
+References: <20231003081519.27524-1-raag.jadav@intel.com>
+ <20231003081519.27524-2-raag.jadav@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003081519.27524-2-raag.jadav@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -38,34 +67,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 19b8766459c4 ("firmware: arm_ffa: Fix FFA device names for logical
-partitions") added an ID to the FFA device using ida_alloc() and append
-the same to "arm-ffa" to make up a unique device name. However it missed
-to stash the id value in ffa_dev to help freeing the ID later when the
-device is destroyed.
+On Tue, Oct 03, 2023 at 01:45:19PM +0530, Raag Jadav wrote:
+> Since Lynxpoint pinctrl device is not attached to acpi_lpss_pm_domain,
+> runtime PM serves no purpose here. Drop it and switch to pm_sleep_ptr()
+> as now we only have resume handle in place.
+> 
+> No functional impact.
 
-Due to the missing/unassigned ID in FFA device, we get the following
-warning when the FF-A device is unregistered. Fix the same by actually
-assigning the ID in the FFA device this time for real.
+Pushed to my review and testing queue, thanks!
 
-Fixes: 19b8766459c4 ("firmware: arm_ffa: Fix FFA device names for logical partitions")
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
----
- drivers/firmware/arm_ffa/bus.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/firmware/arm_ffa/bus.c b/drivers/firmware/arm_ffa/bus.c
-index 2b8bfcd010f5..7865438b3696 100644
---- a/drivers/firmware/arm_ffa/bus.c
-+++ b/drivers/firmware/arm_ffa/bus.c
-@@ -193,6 +193,7 @@ struct ffa_device *ffa_device_register(const uuid_t *uuid, int vm_id,
- 	dev->release = ffa_release_device;
- 	dev_set_name(&ffa_dev->dev, "arm-ffa-%d", id);
- 
-+	ffa_dev->id = id;
- 	ffa_dev->vm_id = vm_id;
- 	ffa_dev->ops = ops;
- 	uuid_copy(&ffa_dev->uuid, uuid);
 -- 
-2.42.0
+With Best Regards,
+Andy Shevchenko
+
 
