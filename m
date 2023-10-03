@@ -2,124 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 925FE7B6F74
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D61267B6F7E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240480AbjJCRS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 13:18:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
+        id S240670AbjJCRSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 13:18:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230119AbjJCRS2 (ORCPT
+        with ESMTP id S240636AbjJCRSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 13:18:28 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99778AC;
-        Tue,  3 Oct 2023 10:18:25 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9ad8a822508so218814766b.0;
-        Tue, 03 Oct 2023 10:18:25 -0700 (PDT)
+        Tue, 3 Oct 2023 13:18:47 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBB0A6
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 10:18:44 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c3d8fb23d9so9162055ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 10:18:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696353504; x=1696958304; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2DR69r77jNGqyCUFfEWX0oQOxCdNx+7+uV9QErXJGao=;
-        b=Fe9lIc4J5J0xqbXfjTsvNfqDgEGLiyua1aI3XdTAkPnn860g2Kc4NkdZ3MFb9NO5S6
-         tvUcLsONCJfKnXifSVPyjtUwzknvD/Igf4/zgvW9XNVwuxVIU6QXidFBfCpH25yttmOU
-         GQj7O4R4QVtZL4HMo3BDsoFAzQTwFtPzkOi8mSqDzQQ63tZp5IYgMZozRU5BiciQlvT9
-         sIUWtX2EbWKUpUSUBmd82gRSP+lYzgyy7Ja5Dcn4d2vN6tUx/ijGBBpfhoof0d0nn9HF
-         7ZovfESe5hPWhngCudpFWTtRhwTheYVdeSOgoEiFfALibiNiNLHJgMReq+maWVCoQMMX
-         dOZA==
+        d=linaro.org; s=google; t=1696353523; x=1696958323; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=p/Pj0lt9hCfSD4N+KqQXF0RTWOozDuEYDrepCdOvld8=;
+        b=kpk5HC/oCLKUVaodxUDfdM4+4pIjDfj8Bql8cJSi9Fkijs93WRso3dgIfSrSvHioZt
+         d9jkUtljkYhygUvfkBvLFElA2W7/YirZEx5wIaPT5MZEGvjHnkAPz/fhaD1ZPLLS0V8L
+         7e+pdTt+Kfcr5gAmq1mmP72F/Pdjk4wcTdbnuAnfq+UIjM8LKAMt4eIqyiT1sXtmO4pk
+         dO26p+R3E9L+16Su1xGa/QrJPRwgq5XQcyB5FIM8AxB3hA8RTmKNvc2OF3/a2OZjaDH7
+         W79FXJzEkUzSkm4Cw1argB1GwUIlicz9XuyDrSe4HeSYHbckOeszdBbMtbPf9LjHY1aP
+         RIBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696353504; x=1696958304;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
+        d=1e100.net; s=20230601; t=1696353523; x=1696958323;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2DR69r77jNGqyCUFfEWX0oQOxCdNx+7+uV9QErXJGao=;
-        b=nnoHi+5daz7yGynr/Tjb+zvZ1E639qUCpi2Z4pcKJ5N+vtYjnuGBqeYyYFHSN6QzBS
-         ktiEF0jZCctaUV4KTqlxthPNVajbg9ambcNpMoWbCNCRWhXNXs/jObMW1l+Bku6vhiWY
-         2Gq6luZcihbPpy6EXwvYwbQwvQRP0SdDohCZFv8W/EHjaPPeAI/uQjhXGSX2xttYEsHc
-         uJrC3+4qSJWEfveRDrWND21JgN81QY3SJcWVf7aFTygEwUF3qrV2JzWZRTOVg0Bqq+DW
-         SELeoKq1rgP24t4klV93qq8qcwpqTV0OE4077WxonUZkUpXsjW+q5vx1/71gDKJ5zhJf
-         ufXA==
-X-Gm-Message-State: AOJu0YyvSWr+UhGo5Geyob70Vs6NodvudT491EO/O+B4CJw9otEtYZi3
-        Gnl5K1GuXaS7DgFc00krJaf4e9cc4no=
-X-Google-Smtp-Source: AGHT+IEou8/vKABLVNviTnGbjABbqCX+m/ZAMPy7dXtGW1mdrYeT+Bq4axlJudGszRfIknYaY9BrBg==
-X-Received: by 2002:a17:906:7383:b0:9ae:5aa5:ee6c with SMTP id f3-20020a170906738300b009ae5aa5ee6cmr15060319ejl.12.1696353503426;
-        Tue, 03 Oct 2023 10:18:23 -0700 (PDT)
-Received: from [192.168.1.103] ([178.176.78.48])
-        by smtp.gmail.com with ESMTPSA id k13-20020a05651c060d00b002bcb89e92dcsm315647lje.6.2023.10.03.10.18.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 10:18:22 -0700 (PDT)
-Subject: Re: [PATCH 1/4] pata_parport: fix pata_parport_devchk
-To:     Ondrej Zary <linux@zary.sk>, Sergey Shtylyov <s.shtylyov@omp.ru>
-Cc:     Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Christoph Hellwig <hch@lst.de>, Tim Waugh <tim@cyberelk.net>,
-        linux-parport@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230930191511.24994-1-linux@zary.sk>
- <20230930191511.24994-2-linux@zary.sk>
- <d040b3f7-4222-a027-34d0-5cf62aa63605@omp.ru>
- <202310031907.45632.linux@zary.sk>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <a3b4dc62-20f7-4900-b9db-87edc9131063@gmail.com>
-Date:   Tue, 3 Oct 2023 20:18:21 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        bh=p/Pj0lt9hCfSD4N+KqQXF0RTWOozDuEYDrepCdOvld8=;
+        b=uR82LzckMxgx6Bh1UmW8+NEG6nxslCUeTBT0u0f9x1O1wVBxAzs23mgjne5WtDTiUf
+         g0R7RyQe3t1+PcO55nWTp+g3CQT2WWGL1FeEbUcdEQ+DZM6jv+HmH4P667sTo77vGT2h
+         EVR1R7UoW4zv6Bxu9AToLbU123VvNIriwlgiTQWuiJ4YH9CwNirB7fSiYitHCTKwO9I1
+         rkRClqlgnAdpzKSvPm5XS75sl5txu6omfPyB9no3fySLmhRVrzTxk8JqQOIp3MfsDRah
+         t0SNRW5lA+AboLFUEIi53HEsu7Zu+RPmpUErHRh5eDB1/udlm/ofFdM72dIDVyyEm4yo
+         xGJA==
+X-Gm-Message-State: AOJu0Yz4Mv+DlnKtEdu0bsp20rD9Hj3iWdv2HxAtQe4+dQtpo82J1Cba
+        kcwCjdLw9ZNmw6HV+sXNEIGtNfdWW91xYU0yeAY=
+X-Google-Smtp-Source: AGHT+IF58FaGoQFqY9KeEFCKEPSiO70wCn4vIXbxjOXbc+BnUiGWSpchqcrEqXsw1PsbGYXu+jFjlA==
+X-Received: by 2002:a17:902:f807:b0:1c7:495c:87f7 with SMTP id ix7-20020a170902f80700b001c7495c87f7mr209978plb.22.1696353523640;
+        Tue, 03 Oct 2023 10:18:43 -0700 (PDT)
+Received: from rayden (h-46-59-78-111.A175.priv.bahnhof.se. [46.59.78.111])
+        by smtp.gmail.com with ESMTPSA id q3-20020a170902788300b001ae0a4b1d3fsm1849620pll.153.2023.10.03.10.18.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 10:18:43 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 19:18:35 +0200
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     arm@kernel.org, soc@kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        op-tee@lists.trustedfirmware.org
+Subject: [GIT PULL] AMDTEE fix for v6.6
+Message-ID: <20231003171835.GA669924@rayden>
 MIME-Version: 1.0
-In-Reply-To: <202310031907.45632.linux@zary.sk>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/3/23 8:07 PM, Ondrej Zary wrote:
-[...]
+Hello arm-soc maintainers,
 
->>> There's a 'x' missing in 0x55 in pata_parport_devchk(), causing the
->>> detection to always fail. Fix it.
->>>
->>> Signed-off-by: Ondrej Zary <linux@zary.sk>
->>
->>    I think we need a Fixes: tag here...
->>
->>> ---
->>>  drivers/ata/pata_parport/pata_parport.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/ata/pata_parport/pata_parport.c b/drivers/ata/pata_parport/pata_parport.c
->>> index 1af64d435d3c..258d189f42e5 100644
->>> --- a/drivers/ata/pata_parport/pata_parport.c
->>> +++ b/drivers/ata/pata_parport/pata_parport.c
->>> @@ -64,7 +64,7 @@ static bool pata_parport_devchk(struct ata_port *ap, unsigned int device)
->>>  	pi->proto->write_regr(pi, 0, ATA_REG_NSECT, 0xaa);
->>>  	pi->proto->write_regr(pi, 0, ATA_REG_LBAL, 0x55);
->>>  
->>> -	pi->proto->write_regr(pi, 0, ATA_REG_NSECT, 055);
->>> +	pi->proto->write_regr(pi, 0, ATA_REG_NSECT, 0x55);
->>
->>    Oh, Gawd! How did this ever work?! :-/
->>    This bug seems to predate the Big PARIDE move...
-> 
-> This code was not present in PARIDE - it's my bug.
+Please pull this small AMDTEE driver fix addressing a possible
+user-after-free vulnerability.
 
-   Yes, I finally figured -- hence the Fixes: tag I suggested later....
+Note that this isn't a usual Arm driver update. This targets AMD instead,
+but is part of the TEE subsystem.
 
-> The function is a clone of ata_devchk() without direct port access.
+Thanks,
+Jens
 
-   The libata's taskfile methods suck big time -- I even used to have
-the plans to clean this stuff up at some point...
+The following changes since commit 2dde18cd1d8fac735875f2e4987f11817cc0bc2c:
 
-> It's called only from softreset so nobody notices the breakage until something goes wrong. The CD-865 drive needs a reset to start working.
+  Linux 6.5 (2023-08-27 14:49:51 -0700)
 
-   I thought the SRST reset is used at the initial detection phase as well...
+are available in the Git repository at:
 
-MBR, Sergey
+  https://git.linaro.org/people/jens.wiklander/linux-tee.git/ tags/amdtee-fix-for-v6.6
+
+for you to fetch changes up to f4384b3e54ea813868bb81a861bf5b2406e15d8f:
+
+  tee: amdtee: fix use-after-free vulnerability in amdtee_close_session (2023-10-03 19:13:53 +0200)
+
+----------------------------------------------------------------
+AMDTEE fix possible use-after-free
+
+----------------------------------------------------------------
+Rijo Thomas (1):
+      tee: amdtee: fix use-after-free vulnerability in amdtee_close_session
+
+ drivers/tee/amdtee/core.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
