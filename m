@@ -2,87 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E807B6955
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:47:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C867B695E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbjJCMrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 08:47:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46506 "EHLO
+        id S231908AbjJCMsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 08:48:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjJCMrT (ORCPT
+        with ESMTP id S231478AbjJCMsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 08:47:19 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2637891;
-        Tue,  3 Oct 2023 05:47:14 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id CFEBA100007;
-        Tue,  3 Oct 2023 15:47:10 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru CFEBA100007
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1696337230;
-        bh=/WnGfwCh7HXbbHZcZiPkpNdYkHbP4G9AgWQIHB0A3+s=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=UmO/eb65HGSvpvMFWZkoWnvqwcCh3Hvm4r47Lb6Nh47/fA7JSjHhbhA8t1AoGR7fM
-         prWhv66oQDpC7UN2sxmlB2bWVlWVf3t3J1QUUjZNhR+vtsm9VT+eqSJchsOsqVdUAF
-         bWXsjuxKNEMnxHpeW9y/QntlC+sFiGFJzOU9BCK+oJGsKaVmU5GSGPmc6XwzVofv7U
-         qYNv6FGPOjBfEIpPJV8PPJRsvR5/F9lD7yNU270H48HlR/7Kjt86RVVLeGmTS5+hWo
-         L6aqbgHQ0+LkordfcGAtqLX9/PYj7p0unplRElE7UJw6WUmIY61aU0tbXYslsd0pfH
-         838Yf0epIxZ7A==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Tue,  3 Oct 2023 15:47:09 +0300 (MSK)
-Received: from [192.168.1.127] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 3 Oct 2023 15:47:08 +0300
-Message-ID: <8ef7ff71-08e1-b0af-483d-e7cf3cc5efea@sberdevices.ru>
-Date:   Tue, 3 Oct 2023 15:47:23 +0300
+        Tue, 3 Oct 2023 08:48:05 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A820B8
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 05:48:01 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-774105e8c37so65301385a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 05:48:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696337280; x=1696942080; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=YZe9z/CDJkweGhxZy3F+7e7AP42NZQg1sBDsRc6xWLw=;
+        b=PeRLYOLioqfPAPyhLsjGm3+fHcCyHikDzkDViI+Rdq+SbLRi/yze7XyjZc95a9uN77
+         YN1HbMAWxHWMPoaRL/GFvagOUIEwUEnzRv4S5RQz58PqcXShypPksshtOxnOrvWvg7Hm
+         CGTEyB8jpw0NY7dr73p/avmPyGHDFZUYbkEpedVaCnjjHCEDBx1eFwQ8e2sY0mdjwo7F
+         79Yurn8rvgb5bJ3PKQZcoxXinziOy/LH57awDKyc+1b8frx7JawX1I+o69MF7b2wMnMq
+         nGeYnpY2hu3JsSONOtmhe1lfZjsgb2r6R3LQrwLjUxC0GR1RutNB+cpWLdbYmGVE+al0
+         A0OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696337280; x=1696942080;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YZe9z/CDJkweGhxZy3F+7e7AP42NZQg1sBDsRc6xWLw=;
+        b=LSLuAq1V5d7cyL83FR7hY7VGdBszgibrlcwb2qs+AEQM1oYsSQ7sv57cEwklxFdFQ2
+         1oiFcBz7dAp2iZfgBdRvylnlY7jCOzm/t8bU94gaePQSsmNDlsKu+m9aRcmVevmMsnVF
+         MmYvKbqLc0H4nd1ZC4iMW2v0JdgSZn3fosCnmQfMsoidFSDcf9XkXGFC05/l/aJ2XL+j
+         OQpDraaRNJzJV/TxEobjCDOJUOy5EwIXB/sIuvdfskUw59Lzmp2MyIl+rGu38b6pOgSR
+         bLcf+rOv3Ul/YFUz5LHKt86DBgvOATSjQT3ulSPBq6ZHnQ84Ov21/lHC8yhn+bkm2gxM
+         QVKw==
+X-Gm-Message-State: AOJu0Yx7xrwkN3lPqvGm0JkVZGzUYt3xi3IKMbibBcGiwDL4cn4CoFxt
+        YC/f48o3a3fuP0+otwHnY1EMZkinCm3KDbMHaR11NQ==
+X-Google-Smtp-Source: AGHT+IGdg5KfMiaxwpI9vdrZwCI62gGbA1qcJqHvAfDGqDxEQ2JSHryTMBO/72MMo9L0zK8WyPrlSIxRkNMNwCJdjzY=
+X-Received: by 2002:a0c:e493:0:b0:656:347b:ea75 with SMTP id
+ n19-20020a0ce493000000b00656347bea75mr13564335qvl.24.1696337280208; Tue, 03
+ Oct 2023 05:48:00 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 2/2] iio: adc: meson: improve error logging at probe
- stage
-Content-Language: en-US
-To:     Jonathan Cameron <jic23@kernel.org>
-CC:     <lars@metafoo.de>, <neil.armstrong@linaro.org>,
-        <khilman@baylibre.com>, <jbrunet@baylibre.com>,
-        <martin.blumenstingl@googlemail.com>, <nuno.sa@analog.com>,
-        <linux-iio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-amlogic@lists.infradead.org>, <kernel@sberdevices.ru>
-References: <20230721102413.255726-1-gnstark@sberdevices.ru>
- <20230721102413.255726-3-gnstark@sberdevices.ru>
- <ZLphZzO20QW+t1m/@smile.fi.intel.com> <20230722181559.02c8362c@jic23-huawei>
-From:   George Stark <gnstark@sberdevices.ru>
-In-Reply-To: <20230722181559.02c8362c@jic23-huawei>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 180317 [Oct 03 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: gnstark@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 535 535 da804c0ea8918f802fc60e7a20ba49783d957ba2, {Tracking_smtp_not_equal_from}, {Tracking_arrow_text}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/10/03 10:12:00 #22029534
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-12-seanjc@google.com>
+In-Reply-To: <20230914015531.1419405-12-seanjc@google.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Tue, 3 Oct 2023 13:47:23 +0100
+Message-ID: <CA+EHjTzSUXx8P9gWmUERg4owxH6r6yNPm1_RL-BzS_2CNPtRKw@mail.gmail.com>
+Subject: Re: [RFC PATCH v12 11/33] KVM: Introduce per-page memory attributes
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,35 +102,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jonathan
+Hi,
 
-It seems like you haven't had time for this patch yet. Should I fix it 
-myself or just be more patient?
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index d2d913acf0df..f8642ff2eb9d 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1227,6 +1227,7 @@ struct kvm_ppc_resize_hpt {
+>  #define KVM_CAP_ARM_EAGER_SPLIT_CHUNK_SIZE 228
+>  #define KVM_CAP_ARM_SUPPORTED_BLOCK_SIZES 229
+>  #define KVM_CAP_USER_MEMORY2 230
+> +#define KVM_CAP_MEMORY_ATTRIBUTES 231
+>
+>  #ifdef KVM_CAP_IRQ_ROUTING
+>
+> @@ -2293,4 +2294,17 @@ struct kvm_s390_zpci_op {
+>  /* flags for kvm_s390_zpci_op->u.reg_aen.flags */
+>  #define KVM_S390_ZPCIOP_REGAEN_HOST    (1 << 0)
+>
+> +/* Available with KVM_CAP_MEMORY_ATTRIBUTES */
+> +#define KVM_GET_SUPPORTED_MEMORY_ATTRIBUTES    _IOR(KVMIO,  0xd2, __u64)
+> +#define KVM_SET_MEMORY_ATTRIBUTES              _IOW(KVMIO,  0xd3, struct kvm_memory_attributes)
+> +
+> +struct kvm_memory_attributes {
+> +       __u64 address;
+> +       __u64 size;
+> +       __u64 attributes;
+> +       __u64 flags;
+> +};
+> +
+> +#define KVM_MEMORY_ATTRIBUTE_PRIVATE           (1ULL << 3)
+> +
 
-On 7/22/23 20:15, Jonathan Cameron wrote:
-> On Fri, 21 Jul 2023 13:43:51 +0300
-> Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> 
->> On Fri, Jul 21, 2023 at 01:23:09PM +0300, George Stark wrote:
->>> Add log messages for errors that may occur at probe stage
->>
->> the probe
-> 
-> British English - excellent ! :) (I argue this one far too often in
-> specification committees :)
-> 
-> 
->>
->> stage.
->>
-> 
-> I can tidy this up, but the patch will be a while anyway given the fix
-> needs to work it's way into the upstream for my togreg branch (and I need
-> to have send a pull request for togreg as well).
-> 
-> Jonathan
-> 
+In pKVM, we don't want to allow setting (or clearing) of
+PRIVATE/SHARED attributes from userspace. However, we'd like to use
+the attributes xarray to track the sharing state of guest pages at the
+host kernel.
 
--- 
-Best regards
-George
+Moreover, we'd rather the default guest page state be PRIVATE, and
+only specify which pages are shared. All pKVM guest pages start off as
+private, and the majority will remain so.
+
+I'm not sure if this is the best way to do this: One idea would be to
+move the definition of KVM_MEMORY_ATTRIBUTE_PRIVATE to
+arch/*/include/asm/kvm_host.h, which is where
+kvm_arch_supported_attributes() lives as well. This would allow
+different architectures to specify their own attributes (i.e., instead
+we'd have a KVM_MEMORY_ATTRIBUTE_SHARED for pKVM). This wouldn't help
+in terms of preventing userspace from clearing attributes (i.e.,
+setting a 0 attribute) though.
+
+The other thing, which we need for pKVM anyway, is to make
+kvm_vm_set_mem_attributes() global, so that it can be called from
+outside of kvm_main.c (already have a local patch for this that
+declares it in kvm_host.h), and not gate this function by
+KVM_GENERIC_MEMORY_ATTRIBUTES. This would let pKVM select only
+KVM_PRIVATE_MEM (as opposed to KVM_GENERIC_PRIVATE_MEM, which selects
+KVM_GENERIC_MEMORY_ATTRIBUTES), preventing userspace from setting
+these attributes, while allowing pKVM to call
+kvm_vm_set_mem_attributes().
+
+What do you think?
+
+Thanks,
+/fuad
