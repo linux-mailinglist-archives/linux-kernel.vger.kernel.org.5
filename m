@@ -2,50 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 162567B5E85
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 03:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1151E7B5E88
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 03:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238925AbjJCBSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 21:18:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46612 "EHLO
+        id S238968AbjJCBT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 21:19:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238922AbjJCBSk (ORCPT
+        with ESMTP id S238922AbjJCBT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 21:18:40 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C33F2B8
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 18:18:37 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0339C433C7;
-        Tue,  3 Oct 2023 01:18:35 +0000 (UTC)
-Date:   Mon, 2 Oct 2023 21:19:36 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        linux-kernel@vger.kernel.org,
-        Michael Jeanson <mjeanson@efficios.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [RFC PATCH v3 1/5] tracing: Introduce faultable tracepoints
- (v3)
-Message-ID: <20231002211936.5948253e@gandalf.local.home>
-In-Reply-To: <97c559c9-51cf-415c-8b0b-39eba47b8898@paulmck-laptop>
-References: <20231002202531.3160-1-mathieu.desnoyers@efficios.com>
-        <20231002202531.3160-2-mathieu.desnoyers@efficios.com>
-        <20231002191023.6175294d@gandalf.local.home>
-        <97c559c9-51cf-415c-8b0b-39eba47b8898@paulmck-laptop>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Mon, 2 Oct 2023 21:19:56 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DA3FBF;
+        Mon,  2 Oct 2023 18:19:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1696295987;
+        bh=8FPUqQ2tGHzRi6jvQYSkQAbQgwzDG1edMbYV+4jhFQQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qU0eHRV8g20jDk45yHEWbe4WsHY1Y5I9xvqwoCa3qpUTv5dbppC4QFZlrUBGd9soC
+         Mc7z/LsLtYIyyX0zNMOM/T2Kq+cFg0D1OQ5Sm1vf1oG8WFj4fD51tRmI5z8CQVW7aZ
+         GBLSH7raB2W08fK8ZSK16mcucV8yR1HZCKrrDTBHqguR0LbooAuxGe0KfNp8KwEpYp
+         mYwGVDMFhzvmb3rDT1/NtK9Q8BKsY6CCSQWifsL2Mwk5Fv6YrbCJk+GKMAC8gv68Vt
+         oZkRPyIk8RZzquvA8IQgW2ClcYgoaV/WHzoG3uCCAtNi94+3Z2wLm1iORUAzkopoCS
+         0mH64mRMGhJNA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4S00Nf5ZGyz4xPf;
+        Tue,  3 Oct 2023 12:19:46 +1100 (AEDT)
+Date:   Tue, 3 Oct 2023 12:19:45 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the bluetooth tree
+Message-ID: <20231003121945.3f5b6a07@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS
+Content-Type: multipart/signed; boundary="Sig_/1qfh..isupAFvsP_MnhTPqJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,73 +55,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2 Oct 2023 17:14:39 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
+--Sig_/1qfh..isupAFvsP_MnhTPqJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> On Mon, Oct 02, 2023 at 07:10:23PM -0400, Steven Rostedt wrote:
-> > On Mon,  2 Oct 2023 16:25:27 -0400
-> > Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
-> >   
-> > > @@ -202,8 +198,12 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
-> > >  		if (WARN_ON_ONCE(RCUIDLE_COND(rcuidle)))		\
-> > >  			return;						\
-> > >  									\
-> > > -		/* keep srcu and sched-rcu usage consistent */		\
-> > > -		preempt_disable_notrace();				\
-> > > +		if (mayfault) {						\
-> > > +			rcu_read_lock_trace();				\  
-> > 
-> > I thought rcu_trace was for the case that a task can not voluntarily call
-> > schedule. If this tracepoint tries to read user space memory that isn't
-> > paged in, and faults, can't the faulting logic call schedule and break this
-> > requirement?  
-> 
-> Well, additional new uses of rcu_read_lock_trace() do bear close scrutiny,
-> but RCU Tasks Trace readers are permitted to block for page faults.
-> The BPF folks already use it for this purpose, so this should be OK.
-> (If for some unknown-to-me reason it isn't, I am sure that Alexei,
-> who is on CC, will not suffer in silence.)
-> 
-> One way of thinking of RCU Tasks Trace is as a form of SRCU with
-> lightweight readers.  Except that, unlike SRCU, there is only one global
-> RCU Tasks Trace.  This means that all RCU Tasks Trace users need to keep
-> each other informed, because one users' unruly readers will affect all
-> RCU Tasks Trace users.
-> 
-> But given that the BPF folks already have page faults in RCU Tasks Trace
-> readers, this one should be OK.
+Hi all,
 
-Then I think we should update the documentation.
+The following commits are also in the net tree as different commits
+(but the same patches):
 
-From: Documentation/RCU/checklist.rst:
+  0ef9e5c1af4c ("Bluetooth: ISO: Fix handling of listen for unicast")
+  190b32220f99 ("Bluetooth: btusb: add shutdown function for QCA6174")
+  2eb5e4369bc4 ("Bluetooth: Avoid redundant authentication")
+  8ee19a4f17bc ("Bluetooth: hci_core: Fix build warnings")
+  9f0fcb5aa550 ("Bluetooth: Fix hci_link_tx_to RCU lock usage")
+  b78e04e5f353 ("Bluetooth: Delete unused hci_req_prepare_suspend() declara=
+tion")
+  c0c64dc267e4 ("Bluetooth: hci_codec: Fix leaking content of local_codecs")
+  da10fc7a9dc3 ("Bluetooth: hci_sync: Fix handling of HCI_QUIRK_STRICT_DUPL=
+ICATE_FILTER")
 
-        If the updater uses call_rcu_tasks() or synchronize_rcu_tasks(),
-        then the readers must refrain from executing voluntary
-        context switches, that is, from blocking.  If the updater uses
-        call_rcu_tasks_trace() or synchronize_rcu_tasks_trace(), then
-        the corresponding readers must use rcu_read_lock_trace() and
-        rcu_read_unlock_trace().  If an updater uses call_rcu_tasks_rude()
-        or synchronize_rcu_tasks_rude(), then the corresponding readers
-        must use anything that disables preemption, for example,
-        preempt_disable() and preempt_enable().
+--=20
+Cheers,
+Stephen Rothwell
 
-Because it's all one paragraph it's a bit confusing to know what uses what.
-Perhaps it should be broken up a bit more?
+--Sig_/1qfh..isupAFvsP_MnhTPqJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-        If the updater uses call_rcu_tasks() or synchronize_rcu_tasks(),
-        then the readers must refrain from executing voluntary
-        context switches, that is, from blocking.
+-----BEGIN PGP SIGNATURE-----
 
-        If the updater uses call_rcu_tasks_trace() or
-        synchronize_rcu_tasks_trace(), then the corresponding readers must
-        use rcu_read_lock_trace() and rcu_read_unlock_trace().
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmUbbDEACgkQAVBC80lX
+0GxxBQf+MOoeUJlVz+LXnquZtn5h5+KRuI3S0BcRp03KTU6ryhfZiMc9qiXFazHO
+rPvTdVca0SYpBgv8KtUMWvm8iyxH/MjXUQdDyjP7aMuLKl8gRvLxhAymokLkbFBw
+iQoslGiTNfa/n6LUw58+LogR2/4vlihM8c4wvASpk85eQUeyv708CB+ZNi7o2KuO
+7g9sB3IGFwMZPGP2jy9y2ejWWuSA4mZ8rKkuMFj+oi4Ie+z/+MaeK3ALvlFa1aOE
+9VfhcbKk4ozPVuyf/KL7AkGHP8UjRQQZCjpSD+GaguuE9knxvC5f250oH4QohOgm
+dtgjDRbInUx/bQcJWT2Ag/HdVy965g==
+=FckR
+-----END PGP SIGNATURE-----
 
-        If an updater uses call_rcu_tasks_rude() or synchronize_rcu_tasks_rude(),
-        then the corresponding readers must use anything that disables
-        preemption, for example, preempt_disable() and preempt_enable().
-
-That way it is clear what uses what, as I read the original paragraph a
-couple of times and could have sworn that rcu_read_lock_trace() required
-tasks to not block.
-
--- Steve
+--Sig_/1qfh..isupAFvsP_MnhTPqJ--
