@@ -2,110 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C7477B71D8
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A750D7B71D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:35:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240951AbjJCTfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 15:35:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34730 "EHLO
+        id S240918AbjJCTfw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 15:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240863AbjJCTfN (ORCPT
+        with ESMTP id S240785AbjJCTfu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 15:35:13 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2991AC;
-        Tue,  3 Oct 2023 12:35:09 -0700 (PDT)
-Date:   Tue, 03 Oct 2023 19:35:07 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1696361708;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/l4G+biN+V3AM4d7wOYKSw2LMeg2qO6SavzJZSqjzOc=;
-        b=pOYlLhoG3yOIEGlhKrP/cXxn+jbWhrTNtddqhdRG/Ccu08QNydZvyBbe6eQ/xZ0dXpdwye
-        69QGYRnZar+SrSH7w+sW/ilwm6X3CfSmWGSV7OBoXqIks5TQY6R/nNxaAF5/O5zPWfgIk+
-        DWZLhamYb7NIUdj1IYGTG4wJB4QTL3GfbUtAcrtEJEooUJbyAVeCDHxdJXFHZ9kS91613e
-        m6JSZEXMWwJ/PjLiAUlOz7+xFTdtQp53I09nHp32g8G3YKkbf7ACiE5QnEA556mCR02Unn
-        jKOXaJb7YKQu9Uboy3ucMgOkBWyECZavd9bPNKqz5Cdi/653NVoud4V7egQuYQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1696361708;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/l4G+biN+V3AM4d7wOYKSw2LMeg2qO6SavzJZSqjzOc=;
-        b=iwxgdqwXmwRZMhqOvLV5/m+Z7d8RfAF/+gCKn5O7ie8eOr3HOQeNjDJmpwICNV3xntfF5t
-        E0W5pASVG3fYhXAg==
-From:   "tip-bot2 for Yu Liao" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/headers: Remove duplicate header inclusions
-Cc:     Yu Liao <liaoyu15@huawei.com>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230802021501.2511569-1-liaoyu15@huawei.com>
-References: <20230802021501.2511569-1-liaoyu15@huawei.com>
+        Tue, 3 Oct 2023 15:35:50 -0400
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF7D93
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 12:35:47 -0700 (PDT)
+Received: from imladris.home.surriel.com ([10.0.13.28] helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1qnlAz-0000RR-1g;
+        Tue, 03 Oct 2023 15:35:25 -0400
+Message-ID: <8d19b6d092b7b5d9b1d0829e0d99c9915db3ed61.camel@surriel.com>
+Subject: Re: [PATCH 2/3] hugetlbfs: close race between MADV_DONTNEED and
+ page fault
+From:   Rik van Riel <riel@surriel.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@meta.com,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        muchun.song@linux.dev, leit@meta.com, willy@infradead.org
+Date:   Tue, 03 Oct 2023 15:35:25 -0400
+In-Reply-To: <20231002043958.GB11194@monkey>
+References: <20231001005659.2185316-1-riel@surriel.com>
+         <20231001005659.2185316-3-riel@surriel.com> <20231002043958.GB11194@monkey>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Message-ID: <169636170770.3135.292145012976825156.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Sender: riel@surriel.com
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On Sun, 2023-10-01 at 21:39 -0700, Mike Kravetz wrote:
+> 
+> Something is not right here.  I have not looked closely at the patch,
+> but running libhugetlbfs test suite hits this NULL deref in misalign
+> (2M: 32).
 
-Commit-ID:     d4d6596b43868a1e05fe5b047e73c3aff96444c6
-Gitweb:        https://git.kernel.org/tip/d4d6596b43868a1e05fe5b047e73c3aff96444c6
-Author:        Yu Liao <liaoyu15@huawei.com>
-AuthorDate:    Wed, 02 Aug 2023 10:15:01 +08:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 03 Oct 2023 21:27:55 +02:00
+Hi Mike,
 
-sched/headers: Remove duplicate header inclusions
+fixing the null dereference was easy, but I continued running
+into a test case failure with linkhuge_rw. After tweaking the
+code in my patches quite a few times, I finally ran out of
+ideas and tried it on a tree without my patches.
 
-<linux/psi.h> and "autogroup.h" are included twice, remove the duplicate header
-inclusion.
+I still see the test failure on upstream
+2cf0f7156238 ("Merge tag 'nfs-for-6.6-2' of git://git.linux-
+nfs.org/projects/anna/linux-nfs")
 
-Signed-off-by: Yu Liao <liaoyu15@huawei.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20230802021501.2511569-1-liaoyu15@huawei.com
----
- kernel/sched/build_utility.c | 1 -
- kernel/sched/core.c          | 1 -
- 2 files changed, 2 deletions(-)
+This is with a modern glibc, and the __morecore assignments
+in libhugetlbfs/morecore.c commented out.
 
-diff --git a/kernel/sched/build_utility.c b/kernel/sched/build_utility.c
-index 99bdd96..80a3df4 100644
---- a/kernel/sched/build_utility.c
-+++ b/kernel/sched/build_utility.c
-@@ -34,7 +34,6 @@
- #include <linux/nospec.h>
- #include <linux/proc_fs.h>
- #include <linux/psi.h>
--#include <linux/psi.h>
- #include <linux/ptrace_api.h>
- #include <linux/sched_clock.h>
- #include <linux/security.h>
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 324980e..27aff98 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -85,7 +85,6 @@
- 
- #include "sched.h"
- #include "stats.h"
--#include "autogroup.h"
- 
- #include "autogroup.h"
- #include "pelt.h"
+
+HUGETLB_ELFMAP=R HUGETLB_SHARE=1 linkhuge_rw (2M: 32):	Pool state:
+(('hugepages-2048kB', (('free_hugepages', 1), ('resv_hugepages', 0),
+('surplus_hugepages', 0), ('nr_hugepages_mempolicy', 1),
+('nr_hugepages', 1), ('nr_overcommit_hugepages', 0))),)
+Hugepage pool state not preserved!
+BEFORE: (('hugepages-2048kB', (('free_hugepages', 1),
+('resv_hugepages', 0), ('surplus_hugepages', 0),
+('nr_hugepages_mempolicy', 1), ('nr_hugepages', 1),
+('nr_overcommit_hugepages', 0))),)
+AFTER: (('hugepages-2048kB', (('free_hugepages', 0), ('resv_hugepages',
+0), ('surplus_hugepages', 0), ('nr_hugepages_mempolicy', 1),
+('nr_hugepages', 1), ('nr_overcommit_hugepages', 0))),)
+
+
+It may take a little while to figure this one out. I did some
+bpftracing, but don't have a real smoking gun yet. The trace
+certainly shows the last user of the leaked huge page going
+into __unmap_hugepage_range.
+
+-- 
+All Rights Reversed.
