@@ -2,144 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5062F7B687C
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA3E7B687E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231961AbjJCMGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 08:06:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41198 "EHLO
+        id S232040AbjJCMG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 08:06:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231820AbjJCMGi (ORCPT
+        with ESMTP id S232017AbjJCMG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 08:06:38 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1474FA6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 05:06:35 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-694f75deb1aso1351260b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 05:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696334794; x=1696939594; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hwYCNU2JZaLLl9Ps7GVMhkLCnR8JZe+7cPMI6Q7rxvc=;
-        b=batUF946epPup3tGYITRABkPduQICqLk5R79i/BYiitHHgTtMaYYCiqVXEWe3yOTHU
-         vsk9b7LRuyXH4JM6FtPum82Vx0OqKdSBxsNHOLQk+SOIpp5m8qq8moYWvMl7Bxx5sp9N
-         jLl/1CdVW6DbCGWM+t09fwJH48RpZwPT5kHI4Pn9bjirFbsuldJ5zRJdpI+NCBUB8roF
-         32MdPUuqwlHQzbbsyS7jXL8nFQV5p0nTGJx6my7jI00D5rUubiZcsfLlOB7uDfGeJaiC
-         JhKyr+G3gzmtBuxWidBJUvw+FsNIKEHy4pb0gDIrJydV5s6xXryml7wFsUHoGPuUhYNn
-         nSyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696334794; x=1696939594;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hwYCNU2JZaLLl9Ps7GVMhkLCnR8JZe+7cPMI6Q7rxvc=;
-        b=Pbs5x7ZLg5CqqtnJLWFMusH/6CVdkiHsHq36Xs7W6D15NAhQlaUrxaMb8THMWFBwhQ
-         ejhBQHv7+EBK6RxLtpFZ4QAZWUOmmoUJW8H6Iiu9jam/C0N3vWKatq7ErjkFHmc+FpJG
-         aFtU6CtIItFQr+mTvMOYuKLyfps6II+e7zClB4SagRILaXj8xbMZyArGm19YUHhV3M6g
-         yK2z1Q/xqfVpHvSoTt2wFOU9HS/+6WZ/KAOhAQdhGhStunKNr6KsQK+qcuIQLsbFik6S
-         urhQxeO1sXKm6aS4dZV0/PatgxEQGLr0hRnalcFZxt0zPNrIiralGApa8P1BtBO1oUDd
-         y6rA==
-X-Gm-Message-State: AOJu0Yx3NdomBaKXrtD+UCqkX2716hkgXrA5P9XtT96P5Gi9QrEB2sFf
-        JWgYffGP5v5y8S4esvUfcWJi8g==
-X-Google-Smtp-Source: AGHT+IHS1xOSvzdyYLOjvKWMH2lCFxTdX89Sw9iGAFSNDCYZeYz4cntR3XmriIxwyMd6Ini5TkSYcg==
-X-Received: by 2002:a05:6a00:1141:b0:693:479f:bd1c with SMTP id b1-20020a056a00114100b00693479fbd1cmr3690291pfm.1.1696334794394;
-        Tue, 03 Oct 2023 05:06:34 -0700 (PDT)
-Received: from [192.168.1.24] ([223.178.210.23])
-        by smtp.gmail.com with ESMTPSA id u18-20020aa78492000000b00692b2a63cccsm1189575pfn.210.2023.10.03.05.06.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 05:06:33 -0700 (PDT)
-Message-ID: <5427bc3d-1e14-781a-53a2-f702774715f4@linaro.org>
-Date:   Tue, 3 Oct 2023 17:36:27 +0530
+        Tue, 3 Oct 2023 08:06:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8DAA9;
+        Tue,  3 Oct 2023 05:06:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696334812; x=1727870812;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=TjniIZhzKzC35iBW82KnmeoLWBQCp+HfnnP4c9zFzAQ=;
+  b=NDXhjRBm5KN4eh3IQf4g8OL2rNrv+uU6a/F2s1sXAiKCkqghsOo5AeXj
+   lRAQyxYOrqPSgGCDcEVSJy3oR8+SN6VB2OXZiPo4bhBqJ5NaRv003R2bA
+   SUygzhf2XlnBiASh6WqYdZtnQs5d3qhuhwfn2N/1XBx6uePJOhmjKiOwd
+   9wGPwdi0gIf+A0csv5kHBUiSOKG7o/Lr26WQBM/wM/SeZAoal4MxX9IpH
+   3DPHxfQ/07ksCJB8vhjSqD3P16kiv6Jx+hET/U1ykTF0ngBcKycXIrihr
+   TjAR48IMULJeeUIBgEOKeOM4CzSITXGg+ZOI4RLJ8o+mAL8z18TSBQCzh
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="380135669"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="380135669"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 05:06:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="821234279"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="821234279"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga004.fm.intel.com with ESMTP; 03 Oct 2023 05:06:50 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 92E1718A0; Tue,  3 Oct 2023 15:06:49 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] pinctrl: core: Remove unneeded {} around one line conditional body
+Date:   Tue,  3 Oct 2023 15:06:48 +0300
+Message-Id: <20231003120648.2838047-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: Linux 6.6-rc3 (DEBUG_VIRTUAL is unhappy on x86)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        David Kaplan <David.Kaplan@amd.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
-        x86@kernel.org
-References: <CAHk-=wjrZgxjHZuXwrGeFnng_whUmtToCWE5GQ+HORhGSeiX8g@mail.gmail.com>
- <ZRhKq6e5nF/4ZIV1@fedora>
- <CAB=+i9QiJ=BXkQuCFJTh3dMXrkKQvVA2EM51Mj6SsDMimWQ71g@mail.gmail.com>
- <CAHk-=whosoBSLAWzSGUZ8s=UwAVG9rsQ9OVPvw97S2RRFGfk2A@mail.gmail.com>
-Content-Language: en-US
-From:   Sumit Garg <sumit.garg@linaro.org>
-In-Reply-To: <CAHk-=whosoBSLAWzSGUZ8s=UwAVG9rsQ9OVPvw97S2RRFGfk2A@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The one line conditional body doesn't require {} surrounding it.
+Remove unneeded {}.
 
-On 10/2/23 02:18, Linus Torvalds wrote:
-> On Sun, 1 Oct 2023 at 07:17, Hyeonggon Yoo <42.hyeyoo@gmail.com> wrote:
->>>> Peter Zijlstra (1):
->>>>        x86,static_call: Fix static-call vs return-thunk
->>> Hello, the commit above caused a crash on x86 kernel with
->>> CONFIG_DEBUG_VIRTUAL=y.
->> OK, I looked into this a little bit, and it turns out that the problematic
->> address here is from cleanup_trusted() in
->> security/keys/trusted-keys/trusted_core.c.
->> (and it's builtin due to CONFIG_TRUSTED_KEYS=y)
->>
->> The function is marked as __exit, so it does not fall within the
->> 'core kernel text address range,' which is between _stext and _etext
->> (or between _sinittext and _einittext). and thus __text_poke() thinks that
->> it's vmalloc/module area.
->>
->> I think __text_poke() should be taught that functions marked as __exit
->> also belong to kernel code just like __init.
-> I think your patch is fine (well, whitespace-damaged, but conceptually good).
->
-> But I also wonder about that
->
->          static_call_cond(trusted_key_exit)();
->
-> in cleanup_trusted(). It seems all kinds of pointless to use static
-> calls for something that is done *once*. That's not an optimization,
-> that's honestly just _stupid_. It costs more to do the rewriting that
-> it does to just do the one dynamic indirect call.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/pinctrl/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-That's true, there isn't any real performance benefit here. It is 
-something which I mentioned when I was asked to incorporate it here [1]. 
-However, on the flip side I think there are security benefits here. We 
-wouldn't like any indirect branch speculation attack to leak the trusted 
-key material contents here.
+diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+index e2f7519bef04..5a15583bf4ae 100644
+--- a/drivers/pinctrl/core.c
++++ b/drivers/pinctrl/core.c
+@@ -445,9 +445,9 @@ struct pinctrl_dev *pinctrl_find_and_add_gpio_range(const char *devname,
+ 	 * it has not probed yet, so the driver trying to register this
+ 	 * range need to defer probing.
+ 	 */
+-	if (!pctldev) {
++	if (!pctldev)
+ 		return ERR_PTR(-EPROBE_DEFER);
+-	}
++
+ 	pinctrl_add_gpio_range(pctldev, range);
+ 
+ 	return pctldev;
+-- 
+2.40.0.1.gaa8946217a0b
 
-[1] 
-https://patchwork.kernel.org/project/keyrings/patch/1602065268-26017-2-git-send-email-sumit.garg@linaro.org/#23683269
-
--Sumit
-
->
-> Side note: the same is true of the init-time call, which does
->
->                  static_call_update(trusted_key_init,
->                                     trusted_key_sources[i].ops->init);
->                  ...
->                  ret = static_call(trusted_key_init)();
->
-> which again is a *lot* more expensive than just doing the indirect
-> function call.
->
-> So while I don't think your patch is wrong, I do think that the cause
-> here is plain silly code, and that trusted key code simply should not
-> do the crazy thing it does (and that causes silly problems).
->
->                 Linus
->
