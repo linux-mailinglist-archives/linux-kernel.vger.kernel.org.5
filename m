@@ -2,119 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CC207B7161
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BF2A7B7163
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240851AbjJCS5X convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 14:57:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54632 "EHLO
+        id S240856AbjJCS5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 14:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231376AbjJCS5V (ORCPT
+        with ESMTP id S232106AbjJCS5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:57:21 -0400
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1706A7;
-        Tue,  3 Oct 2023 11:57:18 -0700 (PDT)
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-57bf04841ccso247500eaf.0;
-        Tue, 03 Oct 2023 11:57:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696359438; x=1696964238;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Ox0Selfc/25SDV9Q5jkJTLaDuAWtxvahlx8boOX57z8=;
-        b=YcnTAg8kuFhLnBSF/ajXTqCijE7q1lPIPyXXhorWXBCKq6hBBPWl1AlmQCIoYycB/o
-         S2ysuRlP8u3epd7msNJ5onE8LNLU/3DBUdN4iZOVgaFL+hwHFncqFDYxDWmpbjTe+Xz8
-         R3JJpHxiAb02T7KT13kjoLrQkLW6O3zc6RQkV9zGIHlaQocwa9+TBsYwy8RYm3aZ9Dsd
-         2DkRYAQ0QulEWKxrIjX3CQARwGnNWiflhtsXwLOZ5SQggNYrdOzPMD5pRxjH9rWgRyuU
-         UWHh31XHMlqIcXDZP1NPCdOhb9cRfFVF1F8pweDF7Pfwfn8LiVlFYNs9iJPmv7n2of1t
-         42kA==
-X-Gm-Message-State: AOJu0YxvhHicb8Mnqtyd8wetB0b1uh3N2kN1grCNB7hIkEfv8jK5n+n4
-        H147wtUe7a4fsjxag4oYX4FjIzYRX5kgyeWJ+WU=
-X-Google-Smtp-Source: AGHT+IFc770QxCiRdEXoSuA4LwACsS/D4asXOGsel4is2Y9vaiEzom8WVcKBQ+RnwVSORl2YT/uuqD89QXrny6x10vA=
-X-Received: by 2002:a4a:ee90:0:b0:57b:94b7:c6ba with SMTP id
- dk16-20020a4aee90000000b0057b94b7c6bamr278994oob.0.1696359438232; Tue, 03 Oct
- 2023 11:57:18 -0700 (PDT)
+        Tue, 3 Oct 2023 14:57:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C22959B
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 11:57:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696359456; x=1727895456;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=2RmLHXlDrvpms2MO/iCl0m6YdD9Afj1b4iuJowttADI=;
+  b=RMt24Z2satFHFN/hr7GO/jCd5AAgWoPDruZse2W1xA1ZLPEBczb12FXC
+   dDXEYIBGZEWyM440k6lsLR22h6zv3Seqm3ejhLNPTyzVDGDIEmPiNzSvr
+   38c8/MjKJpaG+q55n77dfH4bp0CIvoqrSgvURAwjEL1ecl/nuEIkxz7R3
+   +iCgK0KkeQ17A0WGh9gvA9P/OIjoQ3lXcfRO7oRi93C4begs4Dv3JGhHR
+   8255SVFJnWEeKkgVAOTrfB2ukRmM7u6A3Zr71OooNkrROTNQRqbqLG4Se
+   l9uSNrMRtvK5DgVN1wnyTqjRco5gWtwuZ4kaDR1H6GhWx5mP3eyNl98ME
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="1549143"
+X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
+   d="scan'208";a="1549143"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 11:57:35 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="816808372"
+X-IronPort-AV: E=Sophos;i="6.03,198,1694761200"; 
+   d="scan'208";a="816808372"
+Received: from fhoeg-mobl1.ger.corp.intel.com (HELO [10.249.254.234]) ([10.249.254.234])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 11:57:31 -0700
+Message-ID: <b01f77e2-a885-af0e-ef9b-265e93b2dee0@linux.intel.com>
+Date:   Tue, 3 Oct 2023 20:57:29 +0200
 MIME-Version: 1.0
-References: <20230928221344.44289-1-bergh.jonathan@gmail.com>
-In-Reply-To: <20230928221344.44289-1-bergh.jonathan@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 3 Oct 2023 20:57:06 +0200
-Message-ID: <CAJZ5v0i2h875LC6pxUcusJqPULKyQtTK3e_Fjz7RAM=mBN+bBw@mail.gmail.com>
-Subject: Re: [PATCH] drivers: acpi: Fix formatting issues where braces should
- be on newlines
-To:     Jonathan Bergh <bergh.jonathan@gmail.com>
-Cc:     lenb@kernel.org, rui.zhang@intel.com, linux-acpi@vger.kernel.org,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH drm-misc-next v5 4/6] drm/gpuvm: track/lock/validate
+ external/evicted objects
+Content-Language: en-US
+To:     Danilo Krummrich <dakr@redhat.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
+        sarah.walker@imgtec.com, donald.robson@imgtec.com,
+        christian.koenig@amd.com, faith@gfxstrand.net,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230928191624.13703-1-dakr@redhat.com>
+ <20230928191624.13703-5-dakr@redhat.com>
+ <e4e68970-c7c9-55e2-9483-01252f38c956@linux.intel.com>
+ <20231003120554.547090bc@collabora.com>
+ <f551ee9059e52d46343f5fa997b7d9f8ab6654d9.camel@linux.intel.com>
+ <20231003162143.490e3ef0@collabora.com> <ZRxHcwYUbp5/fS+v@pollux>
+From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
+        <thomas.hellstrom@linux.intel.com>
+In-Reply-To: <ZRxHcwYUbp5/fS+v@pollux>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 29, 2023 at 12:31 AM Jonathan Bergh
-<bergh.jonathan@gmail.com> wrote:
->
-> Fix the following formatting issues in thermal.c:
->  * braces following function declarations should be on a new line
->  * add single line between function declarations
->
-> Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
-> ---
->  drivers/acpi/thermal.c | 15 +++++++++++----
->  1 file changed, 11 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
-> index 312730f8272e..dea5f8a51f87 100644
-> --- a/drivers/acpi/thermal.c
-> +++ b/drivers/acpi/thermal.c
-> @@ -1046,7 +1046,8 @@ static struct acpi_driver acpi_thermal_driver = {
->         .drv.pm = &acpi_thermal_pm,
->  };
->
-> -static int thermal_act(const struct dmi_system_id *d) {
-> +static int thermal_act(const struct dmi_system_id *d)
-> +{
->         if (act == 0) {
->                 pr_notice("%s detected: disabling all active thermal trip points\n",
->                           d->ident);
-> @@ -1054,13 +1055,17 @@ static int thermal_act(const struct dmi_system_id *d) {
->         }
->         return 0;
->  }
-> -static int thermal_nocrt(const struct dmi_system_id *d) {
-> +
-> +static int thermal_nocrt(const struct dmi_system_id *d)
-> +{
->         pr_notice("%s detected: disabling all critical thermal trip point actions.\n",
->                   d->ident);
->         crt = -1;
->         return 0;
->  }
-> -static int thermal_tzp(const struct dmi_system_id *d) {
-> +
-> +static int thermal_tzp(const struct dmi_system_id *d)
-> +{
->         if (tzp == 0) {
->                 pr_notice("%s detected: enabling thermal zone polling\n",
->                           d->ident);
-> @@ -1068,7 +1073,9 @@ static int thermal_tzp(const struct dmi_system_id *d) {
->         }
->         return 0;
->  }
-> -static int thermal_psv(const struct dmi_system_id *d) {
-> +
-> +static int thermal_psv(const struct dmi_system_id *d)
-> +{
->         if (psv == 0) {
->                 pr_notice("%s detected: disabling all passive thermal trip points\n",
->                           d->ident);
-> --
 
-Applied as 6.7 material (with edited subject and changelog), thanks!
+On 10/3/23 18:55, Danilo Krummrich wrote:
+> It seems like we're mostly aligned on this series, except for the key
+> controversy we're discussing for a few versions now: locking of the internal
+> lists. Hence, let's just re-iterate the options we have to get this out of the
+> way.
+>
+> (1) The spinlock dance. This basically works for every use case, updating the VA
+>      space from the IOCTL, from the fence signaling path or anywhere else.
+>      However, it has the downside of requiring spin_lock() / spin_unlock() for
+>      *each* list element when locking all external objects and validating all
+>      evicted objects. Typically, the amount of extobjs and evicted objects
+>      shouldn't be excessive, but there might be exceptions, e.g. Xe.
+>
+> (2) The dma-resv lock dance. This is convinient for drivers updating the VA
+>      space from a VM_BIND ioctl() and is especially efficient if such drivers
+>      have a huge amount of external and/or evicted objects to manage. However,
+>      the downsides are that it requires a few tricks in drivers updating the VA
+>      space from the fence signaling path (e.g. job_run()). Design wise, I'm still
+>      skeptical that it is a good idea to protect internal data structures with
+>      external locks in a way that it's not clear to callers that a certain
+>      function would access one of those resources and hence needs protection.
+>      E.g. it is counter intuitive that drm_gpuvm_bo_put() would require both the
+>      dma-resv lock of the corresponding object and the VM's dma-resv lock held.
+>      (Additionally, there were some concerns from amdgpu regarding flexibility in
+>      terms of using GPUVM for non-VM_BIND uAPIs and compute, however, AFAICS
+>      those discussions did not complete and to me it's still unclear why it
+>      wouldn't work.)
+>
+> (3) Simply use an internal mutex per list. This adds a tiny (IMHO negligible)
+>      overhead for drivers updating the VA space from a VM_BIND ioctl(), namely
+>      a *single* mutex_lock()/mutex_unlock() when locking all external objects
+>      and validating all evicted objects. And it still requires some tricks for
+>      drivers updating the VA space from the fence signaling path. However, it's
+>      as simple as it can be and hence way less error prone as well as
+>      self-contained and hence easy to use. Additionally, it's flexible in a way
+>      that we don't have any expections on drivers to already hold certain locks
+>      that the driver in some situation might not be able to acquire in the first
+>      place.
+>
+> (4) Arbitrary combinations of the above. For instance, the current V5 implements
+>      both (1) and (2) (as either one or the other). But also (1) and (3) (as in
+>      (1) additionally to (3)) would be an option, where a driver could opt-in for
+>      the spinlock dance in case it updates the VA space from the fence signaling
+>      path.
+>
+> I also considered a few other options as well, however, they don't seem to be
+> flexible enough. For instance, as by now we could use SRCU for the external
+> object list. However, this falls apart once a driver wants to remove and re-add
+> extobjs for the same VM_BO instance. (For the same reason it wouldn't work for
+> evicted objects.)
+>
+> Personally, after seeing the weird implications of (1), (2) and a combination of
+> both, I tend to go with (3). Optionally, with an opt-in for (1). The reason for
+> the latter is that with (3) the weirdness of (1) by its own mostly disappears.
+>
+> Please let me know what you think, and, of course, other ideas than the
+> mentioned ones above are still welcome.
+>
+> - Danilo
+>
+Here are the locking principles Daniel put together and Dave once called 
+out for us to be applying when reviewing DRM code. These were prompted 
+by very fragile and hard to understand locking patterns in the i915 
+driver and I think the xe vm_bind locking design was made with these in 
+mind, (not sure exactly who wrote what, though so can't say for sure).
+
+https://blog.ffwll.ch/2022/07/locking-engineering.html
+https://blog.ffwll.ch/2022/08/locking-hierarchy.html
+
+At least to me, this motivates using the resv design unless we strictly 
+need lower level locks that are taken in the eviction paths or userptr 
+invalidation paths, but doesn't rule out spinlocks or lock dropping 
+tricks where these are really necessary. But pretty much rules out RCU / 
+SRCU from what I can tell.
+
+It also calls for documenting how individual members of structs are 
+protected when ever possible.
+
+Thanks,
+Thomas
+
+
