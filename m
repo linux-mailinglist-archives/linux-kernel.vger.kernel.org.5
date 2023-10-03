@@ -2,52 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D77FE7B6F2F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3527B6F34
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232286AbjJCRA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 13:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
+        id S240675AbjJCRCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 13:02:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231620AbjJCRAZ (ORCPT
+        with ESMTP id S240671AbjJCRCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 13:00:25 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A66195;
-        Tue,  3 Oct 2023 10:00:21 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 3AF4C6E2;
-        Tue,  3 Oct 2023 17:00:21 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 3AF4C6E2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1696352421; bh=90J31QEv8FGbWrRzoVwWZcTEzbXsi3Oh57o8nNW1+jU=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Jv8wpMpY8gVh2mxKuopxJuPeE2oQ+5goX2MIa+p5pyooDgBitxunGJNmev59New5c
-         X1dUpnyswLMSeqG1tYa5ubuQrWBX4xfGOfxGeYk8rBE62UIZGYUMMXM4Rod4PHhdSL
-         yBzjtYL/zAoJCiDDia9BRgqDcm2D5gG15bYH2ixnbRGWeIplTynIFvGDotZMgQfm5F
-         oj6MVXdCt5fyGlcmFrIlbaDvMmbr+gqLiQAY5NjLvzSoDdOEeaQiEJpSBzl0wjuECe
-         rFHKA9AlXox3/bf0237lwnitDSge9UuZmQXN1+H8CJAd+sC/hBe6qSpv2l+R6T+AnY
-         yxaYoq1/b4KZA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 0/2] Add support for inlined documentation for kunit and
- kselftests
-In-Reply-To: <cover.1693550658.git.mchehab@kernel.org>
-References: <cover.1693550658.git.mchehab@kernel.org>
-Date:   Tue, 03 Oct 2023 11:00:20 -0600
-Message-ID: <87pm1vd4kb.fsf@meer.lwn.net>
+        Tue, 3 Oct 2023 13:02:11 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA2895
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 10:02:08 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6673D5C0333;
+        Tue,  3 Oct 2023 13:02:07 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 03 Oct 2023 13:02:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1696352527; x=1696438927; bh=Xj
+        dGRjhPL+NgQbb0Fq8+LNYwiDlMZC0hbW4ulM6CgK4=; b=PqaGf9PvXgBcYBdsfT
+        CVLSD5SyMlTUthkuxTXYgjssGHMwGqHpoq5lW91MSvaXCO6xIX8toOzs0usNehRS
+        jVsl+wwSgpTHI+715b4vj9doR/wg8uNKmi6OzYMeB/K6zKr/35K8mBPxx/9E+Z8i
+        LTYMMZb9v9R6OxMs9wMb+sgmUCBY8FYRJznRRemxGNoyVmuXNKE5IOOmAa7j/dgk
+        QvVrC7CAjW1S4dmGP6GZ05mcxuKUNDAz+lHKPZ1kh+igz9XZyDuKirLvuzhtEiCc
+        qVg1wUdadRkkdJJwXzXRtO1XMCGggR63ewJIkfQ7KltZeO1gcXtiyQ0Gq3m9DLY6
+        qwjQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1696352527; x=1696438927; bh=XjdGRjhPL+NgQ
+        bb0Fq8+LNYwiDlMZC0hbW4ulM6CgK4=; b=bO7uNqDo/nuzsn69/n1i8DRAlZHQc
+        ROsQ4w257Uc4pbjchQSlZkODoCUOHYlaPIgQuRaCyuWwYTwVKHY+a71VIbxLyzey
+        HpbmFL2AsObsJEk1NdP+DPSp+EXmeYcQGgxUGcFEtE44PQkNrXkVpSZyY3FPUb2L
+        OqR7/2lchX4xqlf5A5Ui0SVnpwkjk9cTUVMqIJ4rHC4Vqe2d6ZrThz4rGNY82G4S
+        mxbJPGNBhLDOR4PbxJIo8TZLbWbZQI+hhrZj2w5bjK7tYlEOdb12DxF4WUXpl66G
+        pyUF/V27F9Y6oF7YG60pOeE9zuPXpK6kz7pAQXx8IfjtM9OlShupHdbxw==
+X-ME-Sender: <xms:D0kcZRauXhqshYL5WBvf4QOOaahkQcqo15itWd9q-zqdQau3dgZrgw>
+    <xme:D0kcZYb_9SJGxWloNMTL_MuoTHocdbG5MYoC3sqvZkeMHgC8fu5ZiI8tRtSR4q3BX
+    p52nk82FGDsTC20zkM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeejgddujecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
+    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
+    hnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:D0kcZT-IOKEmvzURn1S2tnxlzXjm1mykY9XeRAo8jkpA93nwj3i2aA>
+    <xmx:D0kcZfoIcvC3EiMOrl86ZFYSavva7mOTNT9_WfNeAmpOHBaPTRflTg>
+    <xmx:D0kcZcoyWiN86zHKZVRrVNLuj7SWgWmLoeosXmbSAlaHu6k-5Vi70Q>
+    <xmx:D0kcZT0PKR5Uzh4ZDcyNl5cecv4DqXtdkb2S_W4u5vyXWHYstzieAA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 04B78B60089; Tue,  3 Oct 2023 13:02:07 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-958-g1b1b911df8-fm-20230927.002-g1b1b911d
 MIME-Version: 1.0
+Message-Id: <f8d621c8-f5eb-4ba6-ab25-d3f782562abd@app.fastmail.com>
+In-Reply-To: <325de88f-1237-4910-aa2a-97707bedae26@app.fastmail.com>
+References: <20231003144857.752952-1-gregory.price@memverge.com>
+ <20231003094912.08cf57998135446ef475dd19@linux-foundation.org>
+ <325de88f-1237-4910-aa2a-97707bedae26@app.fastmail.com>
+Date:   Tue, 03 Oct 2023 19:01:45 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Andrew Morton" <akpm@linux-foundation.org>,
+        "Gregory Price" <gourry.memverge@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        "Gregory Price" <gregory.price@memverge.com>
+Subject: Re: [PATCH] mm/migrate: fix do_pages_move for compat pointers
 Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,37 +87,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mauro Carvalho Chehab <mchehab@kernel.org> writes:
-
-> This is a follow-up of the discussions taken here:
+On Tue, Oct 3, 2023, at 18:57, Arnd Bergmann wrote:
+> On Tue, Oct 3, 2023, at 18:49, Andrew Morton wrote:
+>> On Tue,  3 Oct 2023 10:48:56 -0400 Gregory Price 
+>> <gourry.memverge@gmail.com> wrote:
+>>
+>>> do_pages_move does not handle compat pointers for the page list.
+>>> correctly.  Add in_compat_syscall check and appropriate get_user
+>>> fetch when iterating the page list.
+>>
+>> What are the userspace visible effects of this change?
 >
->    https://lore.kernel.org/linux-doc/20230704132812.02ba97ba@maurocar-mobl2/T/#t
->
-> I sent a previous version as RFC. This is basically what we had there, with some
-> improvements at test_list.py.
->
-> It adds a new extension that allows documenting tests using the same tool we're
-> using for DRM unit tests at IGT GPU tools: https://gitlab.freedesktop.org/drm/igt-gpu-tools.
->
-> While kernel-doc has provided documentation for in-lined functions/struct comments,
-> it was not meant to document tests.
->
-> Tests need to be grouped by the test functions. It should also be possible to produce
-> other outputs from the documentation, to integrate it with test suites. For instance, 
-> Internally at Intel, we use the comments to generate DOT files hierarchically grouped
-> per feature categories.
->
-> This is meant to be an initial series to start documenting kunit.
+> It makes the syscall in compat mode (32-bit userspace, 64-bit kernel)
+> work the same way as the native 32-bit syscall again, restoring the
+> behavior before my broken commit 5b1b561ba73c ("mm: simplify
+> compat_sys_move_pages").
 
-I've played with this a bit...a couple of quick impressions:
+More specifically, my patch moved the parsing of the 'pages'
+array from the main entry point into do_pages_stat(), which left
+the syscall working correctly for the 'stat' operation (nodes = NULL),
+while the 'move' operation (nodes != NULL) is now missing
+the conversion and interprets 'pages' as an array of 64-bit
+pointers instead of the intended 32-bit userspace pointers.
 
-- That's quite a chunk of Python code to be adding.  I've not yet had
-  the chance to read it through properly, will hopefully be able to do
-  so soon.  A bit more commenting would not have gone amiss here...
-
-- I kind of think that this should go under dev-tools rather than being
-  a new top-level directory.  Is there a reason not to put it there?
-
-Thanks,
-
-jon
+     Arnd
