@@ -2,72 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 274B27B6CEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:20:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117D07B6CF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231550AbjJCPUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 11:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37070 "EHLO
+        id S231604AbjJCPUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 11:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbjJCPUF (ORCPT
+        with ESMTP id S230511AbjJCPUQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 11:20:05 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858DDAF
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:20:02 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d849df4f1ffso1141061276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 08:20:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696346401; x=1696951201; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=J9n7qJH5dKjKjDWMds6U5WZJV1JGy3FQs/DoOpcjJEw=;
-        b=fFQF0jkbn7DKjchBzN3FTOYcPOY0MEy2MpkeqN1hl95gciUl3nP29yReXqmjM0xKl8
-         yFabwr1lo6ypLc5uKzWmbEjLU5UvL1b4eC3l9TNefvY0tAU1LObsLm7/JhCNRaUBNipA
-         hvvIR8gah8NeOytW20Lgd/jLDtjbAq/AbhvyLi53TrCkkrxtoD9HWNWv5TzUzJwWXt1k
-         YpsQGB7Gb3D61onie4hmRWwL88gH7gy1T0w6xHkzI3bHdIz5hw61RdOP36H+W2zrUjsn
-         v0elWjdY3Ltt9dVcUSblFJqXetUxzn7dPeIj0YLAYaGAmkPFapsZRwSdRwcl3vsmyju6
-         1Tmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696346401; x=1696951201;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J9n7qJH5dKjKjDWMds6U5WZJV1JGy3FQs/DoOpcjJEw=;
-        b=kzJXtfupfxSvLpol3U0LdZjn+nISR4wjTEmh2V/wY1f5Zyq4xhf6QhkjjQLDBCox9o
-         sQXFa23hiy7Uajth4/lPYvTtRAQMZ7oChpXcrLxBVPk05SFsUclGzdKwfbsEZaIy6gwy
-         ENFoyRvflOoddJ7lZ31lH1GJyOEOtinynnBIyfOoqQHsQ++XhVsAVCRN3nQVKzxEFMYU
-         MZBG5Cww0Ku49JUtxjLzXarwCsC8VVHjWdhPnj4ncdP2aHIiyZ9VV6LKMlgERSO6c5Rl
-         cFy0wLkUKMcOmL/zk1EOryFCr4yl2TGzYe5zOygML++gtecFw/DGRD+wiSKb1uawVxRd
-         4/JQ==
-X-Gm-Message-State: AOJu0YydfkS+TZqJdChZg2B2jz2oPlMfG7mxP6BHPGjVrX7OrelJo+4X
-        gOxE/SEfoai7F0JatcCjjXZ8avxehahq/SANt6zSxQ==
-X-Google-Smtp-Source: AGHT+IHylk+ABoXP1gkWE01a+0EpIeQSeiPnSh4yQB5nw6TcBeX1Cvei99wpL6PTinUs/7vO4T3ns4RM4Rw5j2VOiwE=
-X-Received: by 2002:a25:86cf:0:b0:d62:9b77:a41a with SMTP id
- y15-20020a2586cf000000b00d629b77a41amr13626504ybm.31.1696346401567; Tue, 03
- Oct 2023 08:20:01 -0700 (PDT)
+        Tue, 3 Oct 2023 11:20:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4BEBB0
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:20:12 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B73DC433CC;
+        Tue,  3 Oct 2023 15:20:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696346412;
+        bh=B9aRfdqIE7RbWkkETKISrpJ4KaIc5r01R4PIwvSQEV0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e07kazDDDZwmEg3SFgO/ITwOA07wD2ap4EuBIRXPMNkfm1GV/nMnb5rTKXxBNP/mJ
+         nkLOGuAiWdtN1ENiwrUG8p9+zuMKqw7zg9zOfHOIkYLTXtO/rbHgwAleExAAmVqxFA
+         GYfWcu/WYyZDgpZ9YrlyqVItJI3sQTwM4W8Kc9Gts5WVy2mGyhL+uiAmdpwijTZT1i
+         sTJHdoLePLaq0jmiGdxG1QOm+dF4ZvFr+ZKpVh9A79uh2W0cXX7a2c4856E0A5DyML
+         N1T27ClljF1bnFI4m126mNJ5PWzEt5YUr5Zm6CvAr9jjCvY1HiaqJUmGXFusca5wmn
+         aghr7kQvFTjcg==
+Date:   Tue, 3 Oct 2023 17:20:07 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Robert Marko <robimarko@gmail.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Christian Marangi <ansuelsmth@gmail.com>
+Subject: Re: [RFC PATCH net-next] net: phy: aquantia: add firmware load
+ support
+Message-ID: <ZRwxJwtAsU/z76+5@kernel.org>
+References: <20230930104008.234831-1-robimarko@gmail.com>
 MIME-Version: 1.0
-References: <20231003120846.28626-1-quic_nsekar@quicinc.com> <20231003120846.28626-5-quic_nsekar@quicinc.com>
-In-Reply-To: <20231003120846.28626-5-quic_nsekar@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 3 Oct 2023 18:19:50 +0300
-Message-ID: <CAA8EJpqbBRGEQ7ZFsngwivkovycOt97SU1Pge7JEHhCs+aQe=Q@mail.gmail.com>
-Subject: Re: [PATCH 4/6] PCI: qcom: Add support for IPQ5018
-To:     Nitheesh Sekar <quic_nsekar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, vkoul@kernel.org, kishon@kernel.org,
-        mani@kernel.org, p.zabel@pengutronix.de, quic_srichara@quicinc.com,
-        quic_varada@quicinc.com, quic_ipkumar@quicinc.com,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-phy@lists.infradead.org,
-        Anusha Rao <quic_anusha@quicinc.com>,
-        Devi Priya <quic_devipriy@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230930104008.234831-1-robimarko@gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,94 +52,194 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 3 Oct 2023 at 15:10, Nitheesh Sekar <quic_nsekar@quicinc.com> wrote:
->
-> Added a new compatible 'qcom,pcie-ipq5018' and modified
-> get_resources of 'ops 2_9_0' to get the clocks from the
-> device-tree.
->
-> Co-developed-by: Anusha Rao <quic_anusha@quicinc.com>
-> Signed-off-by: Anusha Rao <quic_anusha@quicinc.com>
-> Co-developed-by: Devi Priya <quic_devipriy@quicinc.com>
-> Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
-> Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 22 ++++++++--------------
->  1 file changed, 8 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index e2f29404c84e..bb0717190920 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -197,10 +197,10 @@ struct qcom_pcie_resources_2_7_0 {
->         struct reset_control *rst;
->  };
->
-> -#define QCOM_PCIE_2_9_0_MAX_CLOCKS             5
->  struct qcom_pcie_resources_2_9_0 {
-> -       struct clk_bulk_data clks[QCOM_PCIE_2_9_0_MAX_CLOCKS];
-> +       struct clk_bulk_data *clks;
->         struct reset_control *rst;
-> +       int num_clks;
->  };
->
->  union qcom_pcie_resources {
-> @@ -1048,17 +1048,10 @@ static int qcom_pcie_get_resources_2_9_0(struct qcom_pcie *pcie)
->         struct qcom_pcie_resources_2_9_0 *res = &pcie->res.v2_9_0;
->         struct dw_pcie *pci = pcie->pci;
->         struct device *dev = pci->dev;
-> -       int ret;
->
-> -       res->clks[0].id = "iface";
-> -       res->clks[1].id = "axi_m";
-> -       res->clks[2].id = "axi_s";
-> -       res->clks[3].id = "axi_bridge";
-> -       res->clks[4].id = "rchng";
-> -
-> -       ret = devm_clk_bulk_get(dev, ARRAY_SIZE(res->clks), res->clks);
+On Sat, Sep 30, 2023 at 12:39:44PM +0200, Robert Marko wrote:
+> Aquantia PHY-s require firmware to be loaded before they start operating.
+> It can be automatically loaded in case when there is a SPI-NOR connected
+> to Aquantia PHY-s or can be loaded from the host via MDIO.
+> 
+> This patch adds support for loading the firmware via MDIO as in most cases
+> there is no SPI-NOR being used to save on cost.
+> Firmware loading code itself is ported from mainline U-boot with cleanups.
+> 
+> The firmware has mixed values both in big and little endian.
+> PHY core itself is big-endian but it expects values to be in little-endian.
+> The firmware is little-endian but CRC-16 value for it is stored at the end
+> of firmware in big-endian.
+> 
+> It seems the PHY does the conversion internally from firmware that is
+> little-endian to the PHY that is big-endian on using the mailbox
+> but mailbox returns a big-endian CRC-16 to verify the written data
+> integrity.
+> 
+> Co-developed-by: Christian Marangi <ansuelsmth@gmail.com>
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Signed-off-by: Robert Marko <robimarko@gmail.com>
 
-Changing this to devm_clk_bulk_get_optional would be easier and will
-follow the design of the driver.
+...
 
-> -       if (ret < 0)
-> -               return ret;
-> +       res->num_clks = devm_clk_bulk_get_all(dev, &res->clks);
-> +       if (res->num_clks < 0)
-> +               return res->num_clks;
->
->         res->rst = devm_reset_control_array_get_exclusive(dev);
->         if (IS_ERR(res->rst))
-> @@ -1071,7 +1064,7 @@ static void qcom_pcie_deinit_2_9_0(struct qcom_pcie *pcie)
->  {
->         struct qcom_pcie_resources_2_9_0 *res = &pcie->res.v2_9_0;
->
-> -       clk_bulk_disable_unprepare(ARRAY_SIZE(res->clks), res->clks);
-> +       clk_bulk_disable_unprepare(res->num_clks, res->clks);
+> diff --git a/drivers/net/phy/aquantia_main.c b/drivers/net/phy/aquantia_main.c
+
+...
+
+> @@ -677,6 +735,142 @@ static int aqr107_wait_processor_intensive_op(struct phy_device *phydev)
+>  	return 0;
 >  }
->
->  static int qcom_pcie_init_2_9_0(struct qcom_pcie *pcie)
-> @@ -1100,7 +1093,7 @@ static int qcom_pcie_init_2_9_0(struct qcom_pcie *pcie)
->
->         usleep_range(2000, 2500);
->
-> -       return clk_bulk_prepare_enable(ARRAY_SIZE(res->clks), res->clks);
-> +       return clk_bulk_prepare_enable(res->num_clks, res->clks);
->  }
->
->  static int qcom_pcie_post_init_2_9_0(struct qcom_pcie *pcie)
-> @@ -1605,6 +1598,7 @@ static const struct of_device_id qcom_pcie_match[] = {
->         { .compatible = "qcom,pcie-apq8064", .data = &cfg_2_1_0 },
->         { .compatible = "qcom,pcie-apq8084", .data = &cfg_1_0_0 },
->         { .compatible = "qcom,pcie-ipq4019", .data = &cfg_2_4_0 },
-> +       { .compatible = "qcom,pcie-ipq5018", .data = &cfg_2_9_0 },
->         { .compatible = "qcom,pcie-ipq6018", .data = &cfg_2_9_0 },
->         { .compatible = "qcom,pcie-ipq8064", .data = &cfg_2_1_0 },
->         { .compatible = "qcom,pcie-ipq8064-v2", .data = &cfg_2_1_0 },
-> --
-> 2.17.1
->
+>  
+> +/* load data into the phy's memory */
+> +static int aquantia_load_memory(struct phy_device *phydev, u32 addr,
+> +				const u8 *data, size_t len)
+> +{
+> +	u16 crc = 0, up_crc;
+> +	size_t pos;
+> +
+> +	/* PHY expect addr in LE */
+> +	addr = cpu_to_le32(addr);
+
+Hi Christian and Robert,
 
 
--- 
-With best wishes
-Dmitry
+The type of addr us u32, but here it is assigned a __le32 value.
+
+As flagged by Sparse.
+
+> +
+> +	phy_write_mmd(phydev, MDIO_MMD_VEND1,
+> +		      VEND1_GLOBAL_MAILBOX_INTERFACE1,
+> +		      VEND1_GLOBAL_MAILBOX_INTERFACE1_CRC_RESET);
+> +	phy_write_mmd(phydev, MDIO_MMD_VEND1,
+> +		      VEND1_GLOBAL_MAILBOX_INTERFACE3,
+> +		      VEND1_GLOBAL_MAILBOX_INTERFACE3_MSW_ADDR(addr));
+> +	phy_write_mmd(phydev, MDIO_MMD_VEND1,
+> +		      VEND1_GLOBAL_MAILBOX_INTERFACE4,
+> +		      VEND1_GLOBAL_MAILBOX_INTERFACE4_LSW_ADDR(addr));
+> +
+> +	for (pos = 0; pos < len; pos += min(sizeof(u32), len - pos)) {
+> +		u32 word = 0;
+> +
+> +		memcpy(&word, data + pos, min(sizeof(u32), len - pos));
+> +
+> +		phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE5,
+> +			      VEND1_GLOBAL_MAILBOX_INTERFACE5_MSW_DATA(word));
+> +		phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE6,
+> +			      VEND1_GLOBAL_MAILBOX_INTERFACE6_LSW_DATA(word));
+> +
+> +		phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE1,
+> +			      VEND1_GLOBAL_MAILBOX_INTERFACE1_EXECUTE |
+> +			      VEND1_GLOBAL_MAILBOX_INTERFACE1_WRITE);
+> +
+> +		/* calculate CRC as we load data to the mailbox.
+> +		 * We convert word to big-endiang as PHY is BE and ailbox will
+> +		 * return a BE crc.
+> +		 */
+> +		word = cpu_to_be32(word);
+> +		crc = crc_ccitt_false(crc, (u8 *)&word, sizeof(word));
+> +	}
+> +
+> +	up_crc = phy_read_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_MAILBOX_INTERFACE2);
+> +	if (crc != up_crc) {
+> +		phydev_err(phydev, "CRC mismatch: calculated 0x%04x PHY 0x%04x\n",
+> +			   crc, up_crc);
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int aqr_fw_boot(struct phy_device *phydev, const u8 *data, size_t size)
+> +{
+> +	const struct aqr_fw_header *header;
+> +	u32 iram_offset = 0, iram_size = 0;
+> +	u32 dram_offset = 0, dram_size = 0;
+> +	char version[VERSION_STRING_SIZE];
+> +	u16 calculated_crc, read_crc;
+> +	u32 primary_offset = 0;
+> +	int ret;
+> +
+> +	/* extract saved crc at the end of the fw */
+> +	memcpy(&read_crc, data + size - 2, sizeof(read_crc));
+> +	/* crc is saved in big-endian as PHY is BE */
+> +	read_crc = be16_to_cpu(read_crc);
+
+The type of read_crc is u16.
+But be16_to_cpu expects a __be16 argument.
+
+As flagged by Sparse.
+
+
+> +	calculated_crc = crc_ccitt_false(0, data, size - 2);
+> +	if (read_crc != calculated_crc) {
+> +		phydev_err(phydev, "bad firmware CRC: file 0x%04x calculated 0x%04x\n",
+> +			   read_crc, calculated_crc);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Get the primary offset to extract DRAM and IRAM sections. */
+> +	memcpy(&primary_offset, data + PRIMARY_OFFSET_OFFSET, sizeof(u16));
+> +	primary_offset = PRIMARY_OFFSET(le32_to_cpu(primary_offset));
+
+Similarly here.
+
+> +
+> +	/* Find the DRAM and IRAM sections within the firmware file. */
+> +	header = (struct aqr_fw_header *)(data + primary_offset + HEADER_OFFSET);
+> +	memcpy(&iram_offset, &header->iram_offset, sizeof(u8) * 3);
+> +	memcpy(&iram_size, &header->iram_size, sizeof(u8) * 3);
+> +	memcpy(&dram_offset, &header->dram_offset, sizeof(u8) * 3);
+> +	memcpy(&dram_size, &header->dram_size, sizeof(u8) * 3);
+> +
+> +	/* offset are in LE and values needs to be converted to cpu endian */
+> +	iram_offset = le32_to_cpu(iram_offset);
+> +	iram_size = le32_to_cpu(iram_size);
+> +	dram_offset = le32_to_cpu(dram_offset);
+> +	dram_size = le32_to_cpu(dram_size);
+
+And here (x4).
+
+> +
+> +	/* Increment the offset with the primary offset. */
+> +	iram_offset += primary_offset;
+> +	dram_offset += primary_offset;
+> +
+> +	phydev_dbg(phydev, "primary %d IRAM offset=%d size=%d DRAM offset=%d size=%d\n",
+> +		   primary_offset, iram_offset, iram_size, dram_offset, dram_size);
+> +
+> +	strscpy(version, (char *)data + dram_offset + VERSION_STRING_OFFSET,
+> +		VERSION_STRING_SIZE);
+> +	phydev_info(phydev, "loading firmware version '%s'\n", version);
+> +
+> +	/* stall the microcprocessor */
+> +	phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_CONTROL2,
+> +		      VEND1_GLOBAL_CONTROL2_UP_RUN_STALL | VEND1_GLOBAL_CONTROL2_UP_RUN_STALL_OVD);
+> +
+> +	phydev_dbg(phydev, "loading DRAM 0x%08x from offset=%d size=%d\n",
+> +		   DRAM_BASE_ADDR, dram_offset, dram_size);
+> +	ret = aquantia_load_memory(phydev, DRAM_BASE_ADDR, data + dram_offset,
+> +				   dram_size);
+> +	if (ret)
+> +		return ret;
+> +
+> +	phydev_dbg(phydev, "loading IRAM 0x%08x from offset=%d size=%d\n",
+> +		   IRAM_BASE_ADDR, iram_offset, iram_size);
+> +	ret = aquantia_load_memory(phydev, IRAM_BASE_ADDR, data + iram_offset,
+> +				   iram_size);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* make sure soft reset and low power mode are clear */
+> +	phy_clear_bits_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_SC,
+> +			   VEND1_GLOBAL_SC_SOFT_RESET | VEND1_GLOBAL_SC_LOW_POWER);
+> +
+> +	/* Release the microprocessor. UP_RESET must be held for 100 usec. */
+> +	phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_CONTROL2,
+> +		      VEND1_GLOBAL_CONTROL2_UP_RUN_STALL |
+> +		      VEND1_GLOBAL_CONTROL2_UP_RUN_STALL_OVD |
+> +		      VEND1_GLOBAL_CONTROL2_UP_RUN_STALL_RST);
+> +	usleep_range(UP_RESET_SLEEP, UP_RESET_SLEEP * 2);
+> +
+> +	phy_write_mmd(phydev, MDIO_MMD_VEND1, VEND1_GLOBAL_CONTROL2,
+> +		      VEND1_GLOBAL_CONTROL2_UP_RUN_STALL_OVD);
+> +
+> +	return 0;
+> +}
+
+...
