@@ -2,188 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C55957B64D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 406EC7B64DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 10:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbjJCI6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 04:58:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40000 "EHLO
+        id S239293AbjJCI7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 04:59:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230247AbjJCI6y (ORCPT
+        with ESMTP id S239315AbjJCI7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 04:58:54 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A20AB
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 01:58:51 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-45281e0b1cbso361776137.0
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 01:58:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696323530; x=1696928330; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=E9grnBhGYN4tR3F3kBytOzLLS9fG/VwUgoWRG+MN0q8=;
-        b=mlfE1G9UP/AxOktBZJT5eErItR/jDkslCgpZfJpEmVJrtfmR+FU+n+RxCk4eG3o1ZI
-         FSkygiLsdmTQ0JAs3iPnKtMLoGQEK4Q9+a0JHdyNbpHF5IAvkSXC/Q9X9Cr2o5SXAihi
-         4HSNOqCK16uogqmp1SnJ1cFlQRfunOXSVY43eMrvVpuE9HnulxaPd2YMO6WKtINU9EYV
-         EXTl/yaWUR81UDeFqsWN0MbGCb//3lFiuco9dyYBCF87nY36lgtsMJ49HqYqWjZFcxr2
-         3PKlvq5TzyoJS6H+iVW6EPKl+KOh/UmCIXUzL9W7/G2CXghptvtlSvR/JVpf9Hn2Yk+l
-         dFbw==
+        Tue, 3 Oct 2023 04:59:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F4F4EB
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 01:59:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1696323540;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v3nmu3krFFKLD3v68LyglQg7qgblXckqiH4dxOfI2bk=;
+        b=ZJitK2gpuSMO1DzNomlqTwmOncpzu1kwo2I5zbe+tRzV05X+CyZSCRpDRUTYuFkIgnOfP/
+        32JYDIdYCZyNN+xAB1CbAAu1jZrj4oFWluD0OBHrs55helDzdNwycn2NlKAaFPsEKL1tTc
+        noo3Xwd0MwOQBCw6hPQLD7q32xx7sEg=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-693-iUJWnKshN2KCtgRyUTlcfA-1; Tue, 03 Oct 2023 04:58:59 -0400
+X-MC-Unique: iUJWnKshN2KCtgRyUTlcfA-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9ae56805c41so17130966b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 01:58:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696323530; x=1696928330;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=E9grnBhGYN4tR3F3kBytOzLLS9fG/VwUgoWRG+MN0q8=;
-        b=KhOJan8dSnCgyhjshbN+owz5RX7wAcyz/gkhenul8nyzAy3DvZ3K9SD5PNePc612gg
-         5fOTtW5RmpHU3avbzLvPXh+ZARekvCE+g/kxdZMRZU6mKfmPEFG3GAVoVD9C/gzFj64m
-         fklX0kiZWGewGuyAsMcRpul+icMpTgAIr5du882uvxnvFXvwOwVUaSsCcqcsII+Af2M2
-         aT0VzdpcxH0nvk4S4Nqb1dG8sOXc7t9bdZ1FcicFaJ/E3gxeut5coJxi1B15quq7iIvs
-         7bF60++H/H8ApkhCKhdKpKlr950+pIXhHMZSV+7i/iIwy6Jg8rGh8JiOcx7CkuGW6h9R
-         mwNA==
-X-Gm-Message-State: AOJu0Yw2aaMnJjgBDF7hJwb4e5C9J/7W8pWsclcu5yjVjLDh4yakVAGH
-        RkaN3xEZ6ydsdGAQdx5vfIgXSitK70XZYFWbxQ/Jkw==
-X-Google-Smtp-Source: AGHT+IEYqBcuujG8F8yRDX0mMz4fUo5Zqz+FnZMiLO+cfJoEKOTmOKZqVO6LlvB9IX90o4lBKbnpAWh2fFaPLAbLtl0=
-X-Received: by 2002:a05:6102:34c8:b0:44e:d6c3:51d6 with SMTP id
- a8-20020a05610234c800b0044ed6c351d6mr12516312vst.14.1696323530367; Tue, 03
- Oct 2023 01:58:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230911094443.14040-1-brgl@bgdev.pl> <cd4df23c-cc02-6723-e36d-34ca03409e6e@nvidia.com>
- <CAMRc=MeWXapho1bsX9Si5uSx7MWVhpT2cqrv5S+qPo51Ko=Vtg@mail.gmail.com> <7766de61-a046-3e17-1322-28bd7f1e61da@nvidia.com>
-In-Reply-To: <7766de61-a046-3e17-1322-28bd7f1e61da@nvidia.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 3 Oct 2023 10:58:39 +0200
-Message-ID: <CAMRc=Mfbt0iUbM42zR0ZrBWgbQkctQm3LxwiFFP5dXNuQC-EqA@mail.gmail.com>
-Subject: Re: [PATCH] hte: tegra194: improve the GPIO-related comment
-To:     Dipen Patel <dipenp@nvidia.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        timestamp@lists.linux.dev, linux-tegra@vger.kernel.org,
+        d=1e100.net; s=20230601; t=1696323537; x=1696928337;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=v3nmu3krFFKLD3v68LyglQg7qgblXckqiH4dxOfI2bk=;
+        b=PkP5Dc0564ESqjO3erokvBYI6ndz79fwzwlTDjXbNkRIgVhG5Eh+1bSxRHpU5Utrw7
+         ho/nOIXzae3hML3KsjpDGTg4PkKXzEFcL0sUpONp1YaKHNFMH9t4KQ84+gGEH7CFgwF4
+         D2EuwEYObgdDPHL+Qbl8TOXmS1oo6TCiW1AFvAp1RNOa88TgUasu7TYxvGELl+QN+HUM
+         I7bTVjLnpi1TlZ8kupyS8jPuqE5JSroI6QfD0XaWInqd/DPRSnkxfZg42kPVbBvyERMg
+         zkHTSOblo2d9AxTcBQW65bAhOzQZc/Gt6KnUb0Z12+Arv/zD0NzNcgcrh17E488ZHbI0
+         6LnQ==
+X-Gm-Message-State: AOJu0YwzPvL9Ju05hx1WHA+TgXSeYJknV4KgD2uJKBGkJjb2B5H/rX4U
+        eY3Fsmn4CENPi/kIpJ5LJnUqt9A22FVo78kYzyQT4BgoHIAKLhjlRFui7Up0lRKt1Fh3wQpE2Y4
+        wxfHfbv+Bn5AfOt7/4j0lXq2K6uNrxxMI
+X-Received: by 2002:a17:906:104e:b0:9b2:bf2d:6b66 with SMTP id j14-20020a170906104e00b009b2bf2d6b66mr11343752ejj.7.1696323537100;
+        Tue, 03 Oct 2023 01:58:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGOGHxezddx/k9c/xd7a1xIrTtNSX3Kw69ebXCBRbveikheH+aXxzB2h+sVJviiUN7DHVvROw==
+X-Received: by 2002:a17:906:104e:b0:9b2:bf2d:6b66 with SMTP id j14-20020a170906104e00b009b2bf2d6b66mr11343741ejj.7.1696323536738;
+        Tue, 03 Oct 2023 01:58:56 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-232-193.dyn.eolo.it. [146.241.232.193])
+        by smtp.gmail.com with ESMTPSA id si13-20020a170906cecd00b009ad850d4760sm690402ejb.219.2023.10.03.01.58.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 01:58:56 -0700 (PDT)
+Message-ID: <3666c3b4628d6d82ccff593d051706db3896e5af.camel@redhat.com>
+Subject: Re: [PATCH] tipc: Fix uninit-value access in
+ tipc_nl_node_reset_link_stats()
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Shigeru Yoshida <syoshida@redhat.com>, jmaloy@redhat.com,
+        ying.xue@windriver.com
+Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
         linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>
+        syzbot+5138ca807af9d2b42574@syzkaller.appspotmail.com
+Date:   Tue, 03 Oct 2023 10:58:54 +0200
+In-Reply-To: <20230924060325.3779150-1-syoshida@redhat.com>
+References: <20230924060325.3779150-1-syoshida@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 6:27=E2=80=AFPM Dipen Patel <dipenp@nvidia.com> wrot=
-e:
->
-> On 10/2/23 1:33 AM, Bartosz Golaszewski wrote:
-> > On Fri, Sep 29, 2023 at 11:38=E2=80=AFPM Dipen Patel <dipenp@nvidia.com=
-> wrote:
-> >>
-> >> On 9/11/23 2:44 AM, Bartosz Golaszewski wrote:
-> >>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >>>
-> >>> Using any of the GPIO interfaces using the global numberspace is
-> >>> deprecated. Make it clear in the comment.
-> >>>
-> >>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >>> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> >>> ---
-> >>> This was part of a wider series but since this is independent, I'm se=
-nding
-> >>> it separately.
-> >>>
-> >>>  drivers/hte/hte-tegra194.c | 13 ++++++++-----
-> >>>  1 file changed, 8 insertions(+), 5 deletions(-)
-> >>>
-> >>> diff --git a/drivers/hte/hte-tegra194.c b/drivers/hte/hte-tegra194.c
-> >>> index 6fe6897047ac..9fd3c00ff695 100644
-> >>> --- a/drivers/hte/hte-tegra194.c
-> >>> +++ b/drivers/hte/hte-tegra194.c
-> >>> @@ -407,12 +407,15 @@ static int tegra_hte_line_xlate(struct hte_chip=
- *gc,
-> >>>               return -EINVAL;
-> >>>
-> >>>       /*
-> >>> +      * GPIO consumers can access GPIOs in two ways:
-> >>>        *
-> >>> -      * There are two paths GPIO consumers can take as follows:
-> >>> -      * 1) The consumer (gpiolib-cdev for example) which uses GPIO g=
-lobal
-> >>> -      * number which gets assigned run time.
-> >>> -      * 2) The consumer passing GPIO from the DT which is assigned
-> >>> -      * statically for example by using TEGRA194_AON_GPIO gpio DT bi=
-nding.
-> >>> +      * 1) Using the global GPIO numberspace.
-> >>> +      *
-> >>> +      * This is the old, now DEPRECATED method and should not be use=
-d in
-> >>> +      * new code. TODO: Check if tegra is even concerned by this.
-> >> This use case is to do namespace mapping from gpio subsystem to hte. F=
-ew doubts:
-> >> 1. What does deprecate mean here? Does gpio subsys not use global spac=
-e anymore?
-> >
-> > It does but we don't want to expose this to external users in any way
-> > anymore (and haven't to for years). This is what deprecated means.
-> > Users should deal with opaque GPIO descriptors not global GPIO
-> > numberspace.
-> >
-> >> 2. If yes, what GPIO number is set when it comes from gpiolib-cdev, as=
- based on that I may have to
-> >> reflect in the mapping, tegra194_aon_gpio_map for example.
-> >
-> > Why DO you have to use a GPIO number though? If HTE needs just a
-> > number from some HTE numberspace (which in itself may be unnecessary)
-> > then why not just keep a local IDA for it? Do you have to know the
-> > GPIOs internal numbering scheme to make it work?
->
+On Sun, 2023-09-24 at 15:03 +0900, Shigeru Yoshida wrote:
+> syzbot reported the following uninit-value access issue:
+>=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+> BUG: KMSAN: uninit-value in strlen lib/string.c:418 [inline]
+> BUG: KMSAN: uninit-value in strstr+0xb8/0x2f0 lib/string.c:756
+>  strlen lib/string.c:418 [inline]
+>  strstr+0xb8/0x2f0 lib/string.c:756
+>  tipc_nl_node_reset_link_stats+0x3ea/0xb50 net/tipc/node.c:2595
+>  genl_family_rcv_msg_doit net/netlink/genetlink.c:971 [inline]
+>  genl_family_rcv_msg net/netlink/genetlink.c:1051 [inline]
+>  genl_rcv_msg+0x11ec/0x1290 net/netlink/genetlink.c:1066
+>  netlink_rcv_skb+0x371/0x650 net/netlink/af_netlink.c:2545
+>  genl_rcv+0x40/0x60 net/netlink/genetlink.c:1075
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+>  netlink_unicast+0xf47/0x1250 net/netlink/af_netlink.c:1368
+>  netlink_sendmsg+0x1238/0x13d0 net/netlink/af_netlink.c:1910
+>  sock_sendmsg_nosec net/socket.c:730 [inline]
+>  sock_sendmsg net/socket.c:753 [inline]
+>  ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2541
+>  ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2595
+>  __sys_sendmsg net/socket.c:2624 [inline]
+>  __do_sys_sendmsg net/socket.c:2633 [inline]
+>  __se_sys_sendmsg net/socket.c:2631 [inline]
+>  __x64_sys_sendmsg+0x307/0x490 net/socket.c:2631
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>=20
+> Uninit was created at:
+>  slab_post_alloc_hook+0x12f/0xb70 mm/slab.h:767
+>  slab_alloc_node mm/slub.c:3478 [inline]
+>  kmem_cache_alloc_node+0x577/0xa80 mm/slub.c:3523
+>  kmalloc_reserve+0x13d/0x4a0 net/core/skbuff.c:559
+>  __alloc_skb+0x318/0x740 net/core/skbuff.c:650
+>  alloc_skb include/linux/skbuff.h:1286 [inline]
+>  netlink_alloc_large_skb net/netlink/af_netlink.c:1214 [inline]
+>  netlink_sendmsg+0xb34/0x13d0 net/netlink/af_netlink.c:1885
+>  sock_sendmsg_nosec net/socket.c:730 [inline]
+>  sock_sendmsg net/socket.c:753 [inline]
+>  ____sys_sendmsg+0x9c2/0xd60 net/socket.c:2541
+>  ___sys_sendmsg+0x28d/0x3c0 net/socket.c:2595
+>  __sys_sendmsg net/socket.c:2624 [inline]
+>  __do_sys_sendmsg net/socket.c:2633 [inline]
+>  __se_sys_sendmsg net/socket.c:2631 [inline]
+>  __x64_sys_sendmsg+0x307/0x490 net/socket.c:2631
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
+>=20
+> Link names must be null-terminated strings. If a link name which is not
+> null-terminated is passed through netlink, strstr() and similar functions
+> can cause buffer overrun. This causes the above issue.
+>=20
+> This patch fixes this issue by returning -EINVAL if a non-null-terminated
+> link name is passed.
+>=20
+> Fixes: ae36342b50a9 ("tipc: add link stat reset to new netlink api")
+> Reported-and-tested-by: syzbot+5138ca807af9d2b42574@syzkaller.appspotmail=
+.com
+> Closes: https://syzkaller.appspot.com/bug?extid=3D5138ca807af9d2b42574
+> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
+> ---
+>  net/tipc/node.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+>=20
+> diff --git a/net/tipc/node.c b/net/tipc/node.c
+> index 3105abe97bb9..f167bdafc034 100644
+> --- a/net/tipc/node.c
+> +++ b/net/tipc/node.c
+> @@ -2586,6 +2586,10 @@ int tipc_nl_node_reset_link_stats(struct sk_buff *=
+skb, struct genl_info *info)
+> =20
+>  	link_name =3D nla_data(attrs[TIPC_NLA_LINK_NAME]);
+> =20
+> +	if (link_name[strnlen(link_name,
+> +			      nla_len(attrs[TIPC_NLA_LINK_NAME]))] !=3D '\0')
+> +		return -EINVAL;
 
-Dipen,
+I have the same comment as for the other tipc patch, please use
+nla_strscpy instead, thanks!
 
-Please set your mailer to wrap lines around at 80 characters as is
-customary on the mailing list.
+Paolo
 
-> humm, overall, I just need to know which GPIO it is, for example, GPIO co=
-ntroller X Port A GPIO number 3
-> to do proper mapping.
-> Continuing from above example, the hte driver gets:
-> - GPIO Controller X from DT node
-> - the rest details in current code gets it from [1] and [2]
->
-> If there is alternate method exists, I would like to explore. I think IDA=
- will not help in this case as ID assigned
-> does not hold meaning in this context.
->
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
-ee/drivers/gpio/gpiolib-cdev.c?h=3Dv6.6-rc3#n760
-
-Here: any reason why we have to translate the desc to the global GPIO
-numberspace? Can we just pass the descriptor pointer directly to the
-HTE subsystem?
-
-> [2] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
-ee/drivers/hte/hte-tegra194.c?h=3Dv6.6-rc3#n421
-
-I still don't understand why you need to know the GPIO base? I'm not
-quite sure what the role of line_id is in this driver. Is it only to
-index the array?
-
-Please bear with me, I don't know this subsystem very well.
-
-Bart
-
->
-> >
-> > Bart
-> >
-> >>> +      *
-> >>> +      * 2) Using GPIO descriptors that can be assigned to consumer d=
-evices
-> >>> +      * using device-tree, ACPI or lookup tables.
-> >>>        *
-> >>>        * The code below addresses both the consumer use cases and map=
-s into
-> >>>        * HTE/GTE namespace.
-> >>
->
