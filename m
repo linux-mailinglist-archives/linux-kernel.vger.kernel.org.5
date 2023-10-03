@@ -2,130 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F6BE7B6B9B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:30:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1B57B6B9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240098AbjJCOas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54098 "EHLO
+        id S240131AbjJCObe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234771AbjJCOaq (ORCPT
+        with ESMTP id S240092AbjJCOb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 10:30:46 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BDA0B8;
-        Tue,  3 Oct 2023 07:30:43 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-57b9193b1aeso2216056eaf.0;
-        Tue, 03 Oct 2023 07:30:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696343442; x=1696948242; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZstzgmbCrRGGMKdRCSRnIclBiZWzyYp4laelZbLL3yw=;
-        b=Ph/T9/4yYUXKOJVumOuHLwic5jQOO4mgokwvs6bENkgEMQPTVwpnvJCYb6t308pTa2
-         EMVs+S+ppfTi2dc8YukIpWQgXlZfZTn6fh/RjYolmqKexSZ2wrBIcBnc23oVVptFQFfp
-         u4PBsGVFpvrFlwFQWErzVQ8d3QbWIiqjogX/R1fdGBLfoLgudN7MmWpwYe6L2km/S/I7
-         Xr+Mqf/46SA1UZCHXImwXYQ5n+I3tkdB0O/LuO0ZB28bRPX+9+5fc07GdgLg9GeXpmkM
-         o8N7nskYFXEGjwNDwt56et5k0onh7xeHijGqXQU/LMZba1PbodkwN/OJzo26q/7dju3V
-         ArWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696343442; x=1696948242;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZstzgmbCrRGGMKdRCSRnIclBiZWzyYp4laelZbLL3yw=;
-        b=E/eJgvepXtYUiP8XHs+p2q72p8s6FzQa8D1fmV7MDNdSQFxxDojsI+3keWZR+rlHOl
-         Pc2zbQO4WuZqMepMtI2n0jprB1WYouc4TkgfLJ9LumjzF2CjxOPiKDFIJE8oDdpqlng0
-         hl5JRpn0dFyTyq2KajjUmecJZO57wqphL5lemjxtq2vBRf0UN9kqApaOosB5h2UtXRTs
-         rsLcuG+mHHf34bRODE+KAc2zcMPVLJUhnY9Kw7RJBUDZmWB31MdLyaJvnXJH1yDKEslA
-         8Te2thZT5431oajz3Q4mTujg8GTyNrthOX5vqJ9LoECC2wHYhSW0tYpzm5H6WplDB2Xf
-         byWQ==
-X-Gm-Message-State: AOJu0YwKvenBQGSYrE3PPy7RBJJf3HlMuDs1Mp2iyGXCujrreKULKvRZ
-        W/M/Bt+oWvp4CcnYl/M3aY2nP3sYDGS78f316cA=
-X-Google-Smtp-Source: AGHT+IGevci/5HJowvgG2jQWYPBEjrm3GBqGe2+WKPqkm8/eoWfupkx7ZuH4Uq1Sh1zAE91zKHa+9sENOnJ9wfnMrIU=
-X-Received: by 2002:a05:6870:91d2:b0:1c8:c9ca:7092 with SMTP id
- c18-20020a05687091d200b001c8c9ca7092mr1476751oaf.11.1696343442442; Tue, 03
- Oct 2023 07:30:42 -0700 (PDT)
+        Tue, 3 Oct 2023 10:31:28 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30E9B9E;
+        Tue,  3 Oct 2023 07:31:25 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 393E2Fux010357;
+        Tue, 3 Oct 2023 14:31:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=c2Cp9OddIEL1kWONxLBIDhUo5rcQSS3r5qyCIgC8rKg=;
+ b=Hm5neSyzLcG86uBS5KlELSXNOpwinWo4Q3ku88MHWxF0NVQKVfrE52L0Vu/Pswa5wA8T
+ XJHrt9utbnYV6+JCx0GpRhsa/jBdU2AJxrjPllQRf9CtGmLWEOh918z6UPaLFwO9kK5a
+ 3dZqCHIE25qaqqqsG5rif47mVpzcV7aUF9KbnzE3zxoECVl2Rk6Y0M/meNWDb6fZ3Qv+
+ /8DILrKue6JbKPwh1hF2hNg+7jh/qcE6Wh6ODOoHPNJRCw71AC+D4Z44wr3nzX1CfR18
+ 7CB0goxhuLibmKSmv314+lO+XHWnhdOsJB5pXp3QmxPS8O1c7qnMTfrZ2HFoGgj+rtw7 3w== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3tg77esj54-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Oct 2023 14:31:02 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 393EV0jw024246
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 3 Oct 2023 14:31:00 GMT
+Received: from [10.216.32.208] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Tue, 3 Oct
+ 2023 07:30:50 -0700
+Message-ID: <9addc1e2-0101-4068-9e0f-857a5a88ef90@quicinc.com>
+Date:   Tue, 3 Oct 2023 20:00:45 +0530
 MIME-Version: 1.0
-References: <20230930050033.41174-1-wedsonaf@gmail.com> <20230930050033.41174-7-wedsonaf@gmail.com>
-In-Reply-To: <20230930050033.41174-7-wedsonaf@gmail.com>
-From:   Ilya Dryomov <idryomov@gmail.com>
-Date:   Tue, 3 Oct 2023 16:30:29 +0200
-Message-ID: <CAOi1vP_ew49EJZwasWQ3rhOs_ZUhnSVCWOSwVemV3f5yPdva5A@mail.gmail.com>
-Subject: Re: [PATCH 06/29] ceph: move ceph_xattr_handlers to .rodata
-To:     Wedson Almeida Filho <wedsonaf@gmail.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wedson Almeida Filho <walmeida@microsoft.com>,
-        Xiubo Li <xiubli@redhat.com>, Jeff Layton <jlayton@kernel.org>,
-        ceph-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/8] dt-bindings: usb: dwc3: Add clocks on Qualcomm
+ IPQ5332
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <p.zabel@pengutronix.de>,
+        <geert+renesas@glider.be>, <arnd@arndb.de>,
+        <neil.armstrong@linaro.org>, <nfraprado@collabora.com>,
+        <u-kumar1@ti.com>, <peng.fan@nxp.com>, <quic_wcheng@quicinc.com>,
+        <quic_varada@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <quic_kathirav@quicinc.com>, <quic_nsekar@quicinc.com>,
+        <quic_srichara@quicinc.com>
+References: <20230929084209.3033093-1-quic_ipkumar@quicinc.com>
+ <20230929084209.3033093-5-quic_ipkumar@quicinc.com>
+ <c0abfa16-92f3-41e6-afb2-e542131ae67b@linaro.org>
+From:   Praveenkumar I <quic_ipkumar@quicinc.com>
+In-Reply-To: <c0abfa16-92f3-41e6-afb2-e542131ae67b@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: zyLHtK8CyW2RL-zvwKDi8PzaBwsna2VW
+X-Proofpoint-GUID: zyLHtK8CyW2RL-zvwKDi8PzaBwsna2VW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-10-03_11,2023-10-02_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 impostorscore=0
+ mlxscore=0 bulkscore=0 clxscore=1015 malwarescore=0 suspectscore=0
+ spamscore=0 priorityscore=1501 mlxlogscore=822 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2309180000 definitions=main-2310030106
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 30, 2023 at 7:01=E2=80=AFAM Wedson Almeida Filho <wedsonaf@gmai=
-l.com> wrote:
->
-> From: Wedson Almeida Filho <walmeida@microsoft.com>
->
-> This makes it harder for accidental or malicious changes to
-> ceph_xattr_handlers at runtime.
->
-> Cc: Xiubo Li <xiubli@redhat.com>
-> Cc: Ilya Dryomov <idryomov@gmail.com>
-> Cc: Jeff Layton <jlayton@kernel.org>
-> Cc: ceph-devel@vger.kernel.org
-> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
-> ---
->  fs/ceph/super.h | 2 +-
->  fs/ceph/xattr.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
-> index 3bfddf34d488..b40be1a0f778 100644
-> --- a/fs/ceph/super.h
-> +++ b/fs/ceph/super.h
-> @@ -1089,7 +1089,7 @@ ssize_t __ceph_getxattr(struct inode *, const char =
-*, void *, size_t);
->  extern ssize_t ceph_listxattr(struct dentry *, char *, size_t);
->  extern struct ceph_buffer *__ceph_build_xattrs_blob(struct ceph_inode_in=
-fo *ci);
->  extern void __ceph_destroy_xattrs(struct ceph_inode_info *ci);
-> -extern const struct xattr_handler *ceph_xattr_handlers[];
-> +extern const struct xattr_handler * const ceph_xattr_handlers[];
->
->  struct ceph_acl_sec_ctx {
->  #ifdef CONFIG_CEPH_FS_POSIX_ACL
-> diff --git a/fs/ceph/xattr.c b/fs/ceph/xattr.c
-> index 806183959c47..0350d7465bbb 100644
-> --- a/fs/ceph/xattr.c
-> +++ b/fs/ceph/xattr.c
-> @@ -1416,7 +1416,7 @@ void ceph_release_acl_sec_ctx(struct ceph_acl_sec_c=
-tx *as_ctx)
->   * List of handlers for synthetic system.* attributes. Other
->   * attributes are handled directly.
->   */
-> -const struct xattr_handler *ceph_xattr_handlers[] =3D {
-> +const struct xattr_handler * const ceph_xattr_handlers[] =3D {
->         &ceph_other_xattr_handler,
->         NULL,
->  };
-> --
-> 2.34.1
->
 
-Acked-by: Ilya Dryomov <idryomov@gmail.com>
 
+On 9/30/2023 10:53 PM, Dmitry Baryshkov wrote:
+> On 29/09/2023 11:42, Praveenkumar I wrote:
+>> Add aux and lfps clocks in Qualcomm IPQ5332. These clocks are required
+>> for USB Super-Speed support.
+>>
+>> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+>> ---
+>>   .../devicetree/bindings/usb/qcom,dwc3.yaml    | 20 ++++++++++++++++++-
+>>   1 file changed, 19 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml 
+>> b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>> index 67591057f234..18af2887b984 100644
+>> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>> @@ -149,6 +149,25 @@ allOf:
+>>               - const: sleep
+>>               - const: mock_utmi
+>>   +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - qcom,ipq5332-dwc3
+>> +    then:
+>> +      properties:
+>> +        clocks:
+>> +          maxItems: 6
+>> +        clock-names:
+>> +          items:
+>> +            - const: core
+>> +            - const: iface
+>> +            - const: sleep
+>> +            - const: mock_utmi
+>> +            - const: aux
+>> +            - const: lfps
+>
+> Could you please also describe the lfps clock in the top-level clocks 
+> entry?
+Sure, will add.
+>
+>> +
+>>     - if:
+>>         properties:
+>>           compatible:
+>> @@ -238,7 +257,6 @@ allOf:
+>>           compatible:
+>>             contains:
+>>               enum:
+>> -              - qcom,ipq5332-dwc3
+>>                 - qcom,msm8994-dwc3
+>>                 - qcom,qcs404-dwc3
+>>       then:
+>
+--
 Thanks,
-
-                Ilya
+Praveenkumar
