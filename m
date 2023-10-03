@@ -2,76 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2FB7B607B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 07:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E207B6086
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 07:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbjJCFoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 01:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
+        id S230140AbjJCFu6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 01:50:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbjJCFox (ORCPT
+        with ESMTP id S229920AbjJCFu4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 01:44:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60FDBB3;
-        Mon,  2 Oct 2023 22:44:51 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29246C433C7;
-        Tue,  3 Oct 2023 05:44:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696311890;
-        bh=TaZguEXQKjSyHnAA74xfdT5k4Fyw6T4I2L535UsMZOQ=;
-        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-        b=Oh8mIWoYdcBvLrHp+irD9zsUljjwD3BOI5QjL/ZqAV6DWIHPKSRsG0CWXO3492MrJ
-         WwR5pZBA5YgtC/KfkEF8sIqz1I3K0IUlEyLmVNaf40Y8DrhCrbDEFG4oaXgdic4DGg
-         dxPK83/RQWn5CrN+/HVyKDpXQH7tkXaK3LoCOzm2A20eENtKr+6SaWMirT1wRXpw5+
-         whladzHvzb4Qb+eaE+YzLiBLCzg7gDV8UdMbg7Dxc0Vq1M/ku8id4II+QEKo9WPOvS
-         dL0yg7YJ4Do9t/MBPiV+IJEIrrWRTGU9ooSmKIYCVzqTVPVx+VR2J4n0OiQkBa9rpy
-         p1F7oVYVdttdg==
-From:   Kalle Valo <kvalo@kernel.org>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     enc0der <enc0der@gmail.com>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Wireless <linux-wireless@vger.kernel.org>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Linux USB <linux-usb@vger.kernel.org>,
-        Linux RCU <rcu@vger.kernel.org>,
-        Stanislaw Gruszka <stf_xl@wp.pl>,
-        Helmut Schaa <helmut.schaa@googlemail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Hayes Wang <hayeswang@realtek.com>,
-        Simon Horman <horms@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Andrew Gaul <gaul@gaul.org>,
-        =?utf-8?Q?Bj?= =?utf-8?Q?=C3=B8rn?= Mork <bjorn@mork.no>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: rt8000usb driver issue (maybe interaction with other drivers)
-References: <CAEXpi5Rd6Y4umKOWRsCjX0kit=W5ZrVhn=MuRkyvJPwmjjDVnA@mail.gmail.com>
-        <ZRj_ovMi-Xbb8i-D@debian.me>
-        <CAEXpi5RiLbma5cb-ctEvvb7LGRn78VTOh5HDmreC2hYgtBEQog@mail.gmail.com>
-        <3d246a72-2755-484f-8274-0c61fc185592@gmail.com>
-Date:   Tue, 03 Oct 2023 08:47:00 +0300
-In-Reply-To: <3d246a72-2755-484f-8274-0c61fc185592@gmail.com> (Bagas Sanjaya's
-        message of "Sun, 1 Oct 2023 12:53:22 +0700")
-Message-ID: <878r8ki7fv.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Tue, 3 Oct 2023 01:50:56 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E609B8
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 22:50:53 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bf3f59905so80744466b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 22:50:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696312252; x=1696917052; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7sWvUIyND0HCDU8OZGMQLwzLFIpQw7QMWwwvBYPky4c=;
+        b=kyRW2dBv5Dk8hsOphlGDKwhsLOKGHfYBETgvTG7ZdLzZ8X9eCRfch9zLc6gb8qyRLI
+         ZZaqMi7eItSWCpzzt75eU7u71RtYBYf5xvWOOY+IBfNywAqtzVV7FS7ldrODwsbFldBN
+         GvA31RmwooXYCtTjGyt4UyXN4NmhwITDlN3+z9B5IZiP2E23MPCQW5ExebTIq0IPObg4
+         ipetdvRlNMSHK35ZdwyUPgca/R3Qo2Gr8jSspl+5lJGp1N6t5fOhvx/T+mTeFG173xrD
+         s2/hTo6IYFFJqP21aITiwW5LaOVfft8UHl9NS4nOv+4Bnu03mRyknv7ehjWZdeVNdHH/
+         PYaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696312252; x=1696917052;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7sWvUIyND0HCDU8OZGMQLwzLFIpQw7QMWwwvBYPky4c=;
+        b=TDC9ytZJEJXdE9x7J/3u/nNSSHwK6O8yybHklyvsiYWTrnguGt1XqeefdSrO1n2G0q
+         yhd9X61t8BUg7Dn13r2sphqZROCciVJ8Q0dRYvuRUvbe1Os4NWNY0jfposYQwoFZWn1a
+         +5dtBq6yHP5hvLRn4dl2YNjDjh1btkBANTyY35sFK/w5qB4K0X/RtBuyqwp42Daz7ISB
+         OdMdCwmwmO6gaAlMx6FqPv2qO8Z2gWREL7S8xf1GqG4EiWOkB7oYx7i6s3R5loiJ9+wN
+         lwr4wnoqtP48TuWbz8QY7CSYGmy9gsC3tbsPHZxuPHnWEqWa4WLb7D2vKTkDYgLM+jRe
+         m+pA==
+X-Gm-Message-State: AOJu0YyBbxgGOlj0nkvEKTcbRJOYRvsJXQcMABeJ3NX7ewH+W9odInWT
+        QBZ/QscQd6CJAmkaC8LRfPA=
+X-Google-Smtp-Source: AGHT+IEJpzQKuJnMxwVfMYNj0wbtWnCHpVww0VaY8cLi4FAsB17jAMdiN90/mks0QrfBECy50a/5wA==
+X-Received: by 2002:a17:907:1dcc:b0:9ae:406c:3425 with SMTP id og12-20020a1709071dcc00b009ae406c3425mr13112083ejc.0.1696312251468;
+        Mon, 02 Oct 2023 22:50:51 -0700 (PDT)
+Received: from localhost.localdomain ([95.43.220.235])
+        by smtp.gmail.com with ESMTPSA id kj6-20020a170907764600b009ad88839665sm441309ejc.70.2023.10.02.22.50.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Oct 2023 22:50:51 -0700 (PDT)
+From:   Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+To:     daniel.lezcano@linaro.org, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org
+Cc:     tony@atomide.com, sean@mess.org,
+        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+Subject: [PATCH] drivers/clocksource/timer-ti-dm: Don't call clk_get_rate() in stop function
+Date:   Tue,  3 Oct 2023 08:50:20 +0300
+Message-Id: <1696312220-11550-1-git-send-email-ivo.g.dimitrov.75@gmail.com>
+X-Mailer: git-send-email 1.9.1
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,26 +67,107 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bagas Sanjaya <bagasdotme@gmail.com> writes:
+clk_get_rate() might sleep, and that prevents dm-timer based PWM from being
+used from atomic context.
 
->> These are the drivers being loaded:
->> 
->> rt2800usb              36864  0
->> rt2x00usb              24576  1 rt2800usb
->> rt2800lib             122880  1 rt2800usb
->> rt2x00lib              77824  3 rt2800usb,rt2x00usb,rt2800lib
->> mac80211              811008  3 rt2x00lib,rt2x00usb,rt2800lib
->> cfg80211              724992  2 rt2x00lib,mac80211
->> 
->
-> I don't see rt2800usb module in the mainline kernel. Is it out-of-tree?
-> (no wonder why it taints your kernel)
+Fix that by getting fclk rate in probe() and using a notifier in case rate
+changes.
 
-I'm guessing it's this driver:
+Fixes: af04aa856e93 ("ARM: OMAP: Move dmtimer driver out of plat-omap to drivers under clocksource")
+Signed-off-by: Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>
+---
+ drivers/clocksource/timer-ti-dm.c | 36 ++++++++++++++++++++++++++++--------
+ 1 file changed, 28 insertions(+), 8 deletions(-)
 
-drivers/net/wireless/ralink/rt2x00/Makefile:obj-$(CONFIG_RT2800USB)                     += rt2800usb.o
-
+diff --git a/drivers/clocksource/timer-ti-dm.c b/drivers/clocksource/timer-ti-dm.c
+index 09ab29c..5f60f6b 100644
+--- a/drivers/clocksource/timer-ti-dm.c
++++ b/drivers/clocksource/timer-ti-dm.c
+@@ -140,6 +140,8 @@ struct dmtimer {
+ 	struct platform_device *pdev;
+ 	struct list_head node;
+ 	struct notifier_block nb;
++	struct notifier_block fclk_nb;
++	unsigned long fclk_rate;
+ };
+ 
+ static u32 omap_reserved_systimers;
+@@ -253,8 +255,7 @@ static inline void __omap_dm_timer_enable_posted(struct dmtimer *timer)
+ 	timer->posted = OMAP_TIMER_POSTED;
+ }
+ 
+-static inline void __omap_dm_timer_stop(struct dmtimer *timer,
+-					unsigned long rate)
++static inline void __omap_dm_timer_stop(struct dmtimer *timer)
+ {
+ 	u32 l;
+ 
+@@ -269,7 +270,7 @@ static inline void __omap_dm_timer_stop(struct dmtimer *timer,
+ 		 * Wait for functional clock period x 3.5 to make sure that
+ 		 * timer is stopped
+ 		 */
+-		udelay(3500000 / rate + 1);
++		udelay(3500000 / timer->fclk_rate + 1);
+ #endif
+ 	}
+ 
+@@ -348,6 +349,21 @@ static int omap_timer_context_notifier(struct notifier_block *nb,
+ 	return NOTIFY_OK;
+ }
+ 
++static int omap_timer_fclk_notifier(struct notifier_block *nb,
++				    unsigned long event, void *data)
++{
++	struct clk_notifier_data *clk_data = data;
++	struct dmtimer *timer = container_of(nb, struct dmtimer, fclk_nb);
++
++	switch (event) {
++	case POST_RATE_CHANGE:
++		timer->fclk_rate = clk_data->new_rate;
++		return NOTIFY_OK;
++	default:
++		return NOTIFY_DONE;
++	}
++}
++
+ static int omap_dm_timer_reset(struct dmtimer *timer)
+ {
+ 	u32 l, timeout = 100000;
+@@ -754,7 +770,6 @@ static int omap_dm_timer_stop(struct omap_dm_timer *cookie)
+ {
+ 	struct dmtimer *timer;
+ 	struct device *dev;
+-	unsigned long rate = 0;
+ 
+ 	timer = to_dmtimer(cookie);
+ 	if (unlikely(!timer))
+@@ -762,10 +777,7 @@ static int omap_dm_timer_stop(struct omap_dm_timer *cookie)
+ 
+ 	dev = &timer->pdev->dev;
+ 
+-	if (!timer->omap1)
+-		rate = clk_get_rate(timer->fclk);
+-
+-	__omap_dm_timer_stop(timer, rate);
++	__omap_dm_timer_stop(timer);
+ 
+ 	pm_runtime_put_sync(dev);
+ 
+@@ -1124,6 +1136,14 @@ static int omap_dm_timer_probe(struct platform_device *pdev)
+ 		timer->fclk = devm_clk_get(dev, "fck");
+ 		if (IS_ERR(timer->fclk))
+ 			return PTR_ERR(timer->fclk);
++
++		timer->fclk_nb.notifier_call = omap_timer_fclk_notifier;
++		ret = devm_clk_notifier_register(dev, timer->fclk,
++						 &timer->fclk_nb);
++		if (ret)
++			return ret;
++
++		timer->fclk_rate = clk_get_rate(timer->fclk);
+ 	} else {
+ 		timer->fclk = ERR_PTR(-ENODEV);
+ 	}
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
+1.9.1
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
