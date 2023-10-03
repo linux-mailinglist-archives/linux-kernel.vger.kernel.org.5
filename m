@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF4887B6B61
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2527B6B62
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:24:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239926AbjJCOYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
+        id S239958AbjJCOYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:24:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239944AbjJCOYC (ORCPT
+        with ESMTP id S240001AbjJCOYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 10:24:02 -0400
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D2CC4
+        Tue, 3 Oct 2023 10:24:03 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4EEC9
         for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:23:58 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7118940E019B;
-        Tue,  3 Oct 2023 14:23:56 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 9shXMrv2E7ba; Tue,  3 Oct 2023 14:23:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1696343034; bh=/7dHtqiGx9BuaO6bL2PIdZTGhAuYsFEOmU9lf5AfsO8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZtsLD6wLOFhfOxfn2IIz2OjTLi8UaKzyKJA8kWLX0mS24sf7MJCOcIZ3pgXq9V3ii
-         3upxjQ2dOEUVK1MRlxdOr+zpKY8sIe92l1BDrVPleAXoIt/dU3pZPN0GwZj3wWKTM6
-         nEhzTSI7RlbQI5mnVY8F9MNlTr3sGPJXm3I32jOeHJjP4MzJqhnuh9X1E420YBwiZj
-         DQ7Yl7JjHQEqfc9q1wtXthZgYvFbBjLGSAf+WgWWp6gzBQPNzRa3EdJwaVy3YGjjD6
-         vXdlmoSU9V3Zl546/mWzanS4hM6/XgMHcV0XvlG2WMg4ngs2WpuKwtf4rf1YhvSwoy
-         HnGJCovl0L03j7vVqO/xwvSnTkT2++X7Tmq2GzocH/HXxXIbg9voJpB5wK6p5J2cp3
-         Yr/5cBxHpHwVLOk+L3NgFDlnZxtpTyErP8aWq3V7H1zVJgPF8+hjUnHdbSSYv/y8uH
-         hRIe7a4q14GUBTkOuMQbxA/ZOOvx7nBBrkfdi2vforIuv/zGhL1/GZkfx0zQdD4TIH
-         /LAu6xl3RsrejwfctFS38TUjOiGEelvudPYd5bI5kFQQTCiDbssdG37EcxQ7E8BF8e
-         2U/FRyt3kpiHzA7DoIVzeXR0nMhDSvGiw802Fwd84RUCs7rkMlB3kHPAsoLEG1vPMY
-         UytRhkAKdLw0QLu3eFrOFH4Y=
-Received: from zn.tnic (pd953036a.dip0.t-ipconnect.de [217.83.3.106])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 785C740E0198;
-        Tue,  3 Oct 2023 14:23:48 +0000 (UTC)
-Date:   Tue, 3 Oct 2023 16:23:47 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Nikolay Borisov <nik.borisov@suse.com>
-Subject: Re: [patch V3 12/30] x86/microcode/intel: Reuse
- intel_cpu_collect_info()
-Message-ID: <20231003142347.GAZRwj83xsi80gW0OS@fat_crate.local>
-References: <20230912065249.695681286@linutronix.de>
- <20230912065501.530637507@linutronix.de>
- <20230921104220.GHZQweDKyaJmkYdt4f@fat_crate.local>
- <87zg1afs23.ffs@tglx>
- <20231003141439.GAZRwhz63IqTB+uNOM@fat_crate.local>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696343038; x=1727879038;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=A61WT88VnkzMQHVjtx4hwP9zSYAWPhVnWpEue6pcglA=;
+  b=dKo/UiqQlR+Ha/6wY6wUbHdcV4K5R8GL1rOP9nAeTBMHP/vWlG2GP/de
+   O0Ix4bxjKVlHwO1SYgGDHNf8V/C3nSVfgbidwqDG/fzrlpfMOs/wyf9tX
+   dPdjQiEb3I9q7090twWHXiRr+aBqiHH1p216fsOC32H1UzmXejlR0c9Mw
+   8N+Qbq2y4UsF074Zn1zWYDA441SpJrOG9U7gHw67hx2XOg4XgVTfBGFsD
+   FtF8X8hDG82Q/rMa1zrf526/y+Rew0Z5flR4qbLlsg39eDiVythTI7+it
+   7y7QyPyx0rYWklelObqsNn3Ag4Q2EVd1SZkZV3+q9C5qT+xsu5h96eAeq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="469163465"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="469163465"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 07:23:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="866893090"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="866893090"
+Received: from ddiaz-mobl4.amr.corp.intel.com (HELO [10.209.57.36]) ([10.209.57.36])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 07:23:56 -0700
+Message-ID: <f972d59c-40dd-2a68-ff13-a2658513a25b@intel.com>
+Date:   Tue, 3 Oct 2023 07:23:56 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231003141439.GAZRwhz63IqTB+uNOM@fat_crate.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] x86_64: test that userspace stack is in fact NX
+Content-Language: en-US
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+References: <4b78a714-5ac3-4783-8256-1dda4673db01@p183>
+ <1d5223b8-0275-619d-db1c-e2aaaddb173e@intel.com>
+ <d468d13c-6c4b-4d8d-8e2d-e4314b4bb1a7@p183>
+From:   Dave Hansen <dave.hansen@intel.com>
+In-Reply-To: <d468d13c-6c4b-4d8d-8e2d-e4314b4bb1a7@p183>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 04:14:39PM +0200, Borislav Petkov wrote:
-> On Mon, Sep 25, 2023 at 12:47:16PM +0200, Thomas Gleixner wrote:
-> > Eew. That's a function exposed to code outside of microcode and just
-> > grows that unused argument for no value and you obviously forgot to
-> > fixup the extern callsite :)
+On 10/3/23 06:00, Alexey Dobriyan wrote:
+> On Mon, Oct 02, 2023 at 07:23:10AM -0700, Dave Hansen wrote:
+>> Basically, could you spend a moment in the changelog to talk about:
+>>
+>> 1. 32-bit kernels on NX hardware
+>> and
+>> 2. 64-bit kernels on non-NX hardware
 > 
-> It's used on AMD. Adding the below to the pile.
+> Sure. My logic whas that i386 is dead arch, but this test is easy to
+> port to i386, only 2 simple functions.
 
-And now that I look at it again, exposing that "unused" arg is uglier
-than having the local wrapper in the loader code. Yeah, lemme zap that.
+I honestly don't feel strongly about it one way or the other.  But
+whatever we do, let's explain it, please.
 
--- 
-Regards/Gruss,
-    Boris.
+> I don't want to parse /proc/cpuinfo. If someone knows they're shipping
+> NX-incapable hardware, just let them disable the test.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+Other than clearcpuid=nx, I don't _think_ we have any way to clear the
+X86_FEATURE_NX bit right now.  That should mean that you can use regular
+old CPUID to see if the booted kernel supports NX.  Perhaps something
+like what:
+
+	tools/testing/selftests/x86/amx.c
+
+does with CPUID_LEAF1_ECX_XSAVE_MASK.  That should be quite a bit easier
+than parsing /proc/cpuinfo.
+
+If someone does use clearcpuid, then I think it's perfectly reasonable
+to fail the selftest.
