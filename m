@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0E17B6D84
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FC57B6D88
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 17:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbjJCP5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 11:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35928 "EHLO
+        id S232097AbjJCP5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 11:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbjJCP5N (ORCPT
+        with ESMTP id S231983AbjJCP5V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 11:57:13 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2928A9;
-        Tue,  3 Oct 2023 08:57:09 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bffc55af02so12369121fa.2;
-        Tue, 03 Oct 2023 08:57:09 -0700 (PDT)
+        Tue, 3 Oct 2023 11:57:21 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EE50A7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 08:57:16 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9ae75ece209so196961966b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 08:57:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1696348628; x=1696953428; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=3z8xey7888ReZ3hOd59GeN1rUxRivvGJ0nZ5YMOr8kY=;
-        b=DmRUVYDHBvolfE18U3baN1cilY2O5MN9jX/sWaqIOmgkCE+A7xJeD3ld3rqJZDN5v0
-         mM5OIXEvlZ7cdy1XvQ+O7F7Z8unMDJGaqnXu6MaJoNroVS9ZNbCFfA8NgHpvgxdb5Pfa
-         rBeL7K+EUaaQsJamV3ZBaD8zPSfQLi9bDuygo9LJxHcenp1afOpHl8jX+wGvcJRiUOA2
-         Z4zoFrT/5h5r476yuOKey9brNJ3OyY/jwkIjUrPcarknsBeixwEnRjED3Os6SXPtj1Bl
-         W2msaBGOkbg9Ii1HLmljShxvHoIizncXMEEYmruv+SRmp5EHIp1IeZoo0KZ8LV24VOBc
-         oH+g==
+        d=linaro.org; s=google; t=1696348635; x=1696953435; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=umZ+8oKDYfik3oT0i9Ef96i8g6lg2rgWnjuQEEXA5OA=;
+        b=Tp4LPHbeK/QU8dPsAEEC3MHuSqwJ/fiTrDHLB8rIz12KdqEjlt+hDPspjOW8q20knU
+         oukz2q6uVkypXsvF702PtXhdPDzuGDVFD69lNjOUXhpk9KzuOi4b/NB4p1Gws3fWbMFL
+         DNMEgHKAwA4YiCdTxt8V69g9O9eKDL+0y/IzwqEad6uxhi0LT0XUrrVqC0phg4w8znAO
+         Ky43OpYKhQJMyUETIVJGQrO0YvKY5gVU7JBa+74TqGG7xc1Z9FVReJNr8+DTYH/U5+OV
+         Jf/WyhlBDic466FNbg0VWrLj8dePTZKDDd3ve1SYEyOhICSj5kivvO7IzbxJGToTXPLb
+         9IFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696348628; x=1696953428;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3z8xey7888ReZ3hOd59GeN1rUxRivvGJ0nZ5YMOr8kY=;
-        b=Q1jR/hVvDceTikxSybLu0rNDCryi9tpDXOXUpx0I0oIrStbKEs3OUIq2fqacpF4yQB
-         7MycE3FYFtOGdMHgOTiTFF67w0wQMCnV2buShDO7bLB3xLOOojVcEuQCdtRgjePzs2OX
-         KLZMmBuMc95BLfgj6m8Ge7JaZumdRUMVCn4dN2FZ0C9b1SuVkkM/LCkrAbZELrajRKu+
-         BP6n9Kw58OqFDbjqeGGUP3Xe7IyLKbEek9saim3a+mpN4oR6+J0vais2EG8tCW9o1tte
-         IbQ9kA+M4x4OIarDdjC8AbLlVjv+T/NTxPP+Z9WVW1DM7nLDHljpwlt4XG2SAXB//o3N
-         SqCw==
-X-Gm-Message-State: AOJu0YwybH0X5T77VDGcIjn+DPIUGaxUaswBjtIj+ECqdVr8+AdS0JVy
-        JWKFkibo8ChKPn5z4jmDAJBpnOGkbAU=
-X-Google-Smtp-Source: AGHT+IHlWoh3zMtziDQkY+4SnrzOvIP06BmKFTuJ/fLEXqtaBT7Vx/+xohz55kjr70aCTFa3bfkN7g==
-X-Received: by 2002:a2e:bc03:0:b0:2c2:a557:e947 with SMTP id b3-20020a2ebc03000000b002c2a557e947mr7640644ljf.1.1696348627772;
-        Tue, 03 Oct 2023 08:57:07 -0700 (PDT)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id o17-20020a2e90d1000000b002bcd94f9714sm285215ljg.126.2023.10.03.08.57.06
+        d=1e100.net; s=20230601; t=1696348635; x=1696953435;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=umZ+8oKDYfik3oT0i9Ef96i8g6lg2rgWnjuQEEXA5OA=;
+        b=PjXXjHdjzkf9NY9uwv8826QOztJ5PSEHuHTvDzyRlGGGxQzvFl2JjBmWr8R/1rwahg
+         nBrNGHMIhcxbb/yqs4cIw+JKLqQiGJ+TciAsK6qzRMA5H20l+aICiSLCxkqv8TMpHXeW
+         y7K3ZBKb0wJlyVncw4kIHZ2MebGWjkTDN26Wwb0AaRBH5cShHXqrrnN/XBOSo+CMi0pG
+         NsD3EndzszAwbcmXsbaHesbxBuz9wFev6HiR3zQZ2HRSt2QOe0fTR+Uswrh7q+CM7/hn
+         s9GKcAJOi1ExVrRUzcaZG9yDo16YkO6GvegXQxVJScW6j45wY8M7Q1OxgpHMIzn46f3j
+         scAw==
+X-Gm-Message-State: AOJu0Yz0+UWSo2YNww0Dvcjl3oz7+7KUVinI1jiKmQ3Dyx5LRhvQgGfm
+        hxCfUEDoqXLniQqqnTctF9hGkg==
+X-Google-Smtp-Source: AGHT+IHdJHFnpnjzifSM5/sGMF/eTk/Jh1MeVpKW1pBhyHkKe/pZiH+yTfo51m2c9cQjrpdYVAyiRQ==
+X-Received: by 2002:a17:906:13:b0:9ae:588e:142 with SMTP id 19-20020a170906001300b009ae588e0142mr14014095eja.67.1696348634904;
+        Tue, 03 Oct 2023 08:57:14 -0700 (PDT)
+Received: from krzk-bin.. (5-157-101-10.dyn.eolo.it. [5.157.101.10])
+        by smtp.gmail.com with ESMTPSA id w25-20020a170906481900b0099bc2d1429csm1288088ejq.72.2023.10.03.08.57.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Oct 2023 08:57:07 -0700 (PDT)
-Date:   Tue, 3 Oct 2023 18:57:04 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     =?utf-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-Cc:     Cai Huoqing <cai.huoqing@linux.dev>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Herve Codina <herve.codina@bootlin.com>
-Subject: Re: [PATCH v2 4/5] dmaengine: dw-edma: HDMA: Add sync read before
- starting the DMA transfer in remote setup
-Message-ID: <lq7imquio2e2y4heczk27nsiutzng43cyz2sgmxa7azn3d3tnu@6hnvyzkuzhxv>
-References: <m6mxnmppc7hybs2tz57anoxq6afu2x63tigjya2eooaninpe4h@ayupt4qauq7v>
- <20231003121542.3139696-1-kory.maincent@bootlin.com>
- <2yh3lus7qqhvewva6dr4p2g7azbgov4ls57xvzefbrw24h2t7m@cbx26pwj73zn>
- <20231003173432.18480fa1@kmaincent-XPS-13-7390>
+        Tue, 03 Oct 2023 08:57:14 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Banajit Goswami <bgoswami@quicinc.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 0/2] ASoC: codecs: fix widget name comparisons
+Date:   Tue,  3 Oct 2023 17:57:08 +0200
+Message-Id: <20231003155710.821315-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231003173432.18480fa1@kmaincent-XPS-13-7390>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 03, 2023 at 05:34:32PM +0200, Köry Maincent wrote:
-> On Tue, 3 Oct 2023 18:20:23 +0300
-> Serge Semin <fancer.lancer@gmail.com> wrote:
-> 
-> > On Tue, Oct 03, 2023 at 02:15:42PM +0200, Köry Maincent wrote:
-> > > From: Kory Maincent <kory.maincent@bootlin.com>
-> > > 
-> > > The Linked list element and pointer are not stored in the same memory as
-> > > the HDMA controller register. If the doorbell register is toggled before
-> > > the full write of the linked list a race condition error can appears.
-> > > In remote setup we can only use a readl to the memory to assured the full
-> > > write has occurred.
-> > > 
-> > > Fixes: e74c39573d35 ("dmaengine: dw-edma: Add support for native HDMA")
-> > > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-> > > ---
-> > > 
-> > > Changes in v2:
-> > > - Move the sync read in a function.
-> > > - Add commments  
-> > 
-> > Note you need to resubmit the entire series if any of its part has
-> > changed. So please add these patches to your patchset (in place of the
-> > 4/5 and 5/5 patches I commented) and resend it as v3.
-> 
-> Alright.
-> Should I wait for Cai's response for patch 1/5 before sending v3. He seems to
-> never having woken up in our discussions.
+Hi,
 
-Ok. Let's wait for Cai for sometime. We are in the middle of the
-dev-cycle anyway so no reason to rush.
+Some codec drivers compare widget names with strcmp, ignoring the component
+name prefix.  If prefix is used, the comparisons start failing.
+Add a helper to fix the issue.
 
--Serge(y)
+If the approach looks good, I will fix other codec drivers.
+
+Best regards,
+Krzysztof
+
+Krzysztof Kozlowski (2):
+  ASoC: soc-dapm: Add helper for comparing widget name
+  ASoC: codecs: wsa-macro: handle component name prefix
+
+ include/sound/soc-dapm.h           |  1 +
+ sound/soc/codecs/lpass-wsa-macro.c |  4 ++--
+ sound/soc/soc-component.c          |  1 +
+ sound/soc/soc-dapm.c               | 12 ++++++++++++
+ 4 files changed, 16 insertions(+), 2 deletions(-)
+
+-- 
+2.34.1
 
