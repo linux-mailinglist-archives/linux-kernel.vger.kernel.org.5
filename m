@@ -2,169 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 442217B7084
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555FF7B7089
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 20:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240714AbjJCSHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 14:07:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45664 "EHLO
+        id S231636AbjJCSHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 14:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbjJCSHE (ORCPT
+        with ESMTP id S232007AbjJCSHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 14:07:04 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 037A083;
-        Tue,  3 Oct 2023 11:07:01 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 393EHIeR001164;
-        Tue, 3 Oct 2023 11:07:01 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-id : mime-version; s=s2048-2021-q4;
- bh=CAB6CXWAe473mqtgnI7HUHMbQd7O9jl4Q4NCiDL2p9U=;
- b=Nq6IxKZYFEto4M9BTlhNNfcq21ysvx6zTl7vRE09N3Xd4YPatIPWzysGN4FyoyaGhAUL
- lrB73ckNlceLGS7haJbxQyN9BR6W/+K3v+sECLJYLZPctx7Ulf7sYhsphP1jigZsvfJo
- JxecKKz5fwQjYiy1Y1hVDYHBBUy6yv+3I+bCBCyhnZbh6jw4Il7lgOPnsXnPlZOUpFMT
- BEk//mxh5yVNOmJodxyowZ9k0oRqu/nvFbJNXphO+ay4lv8vdX10bQx4D1F9OVjNR8Aq
- 24SU+JCnAyvkfirsTiE4i42rOqnF/xBv+1eF7DO9Ahzcz3wLqb/yU4Nu/egIZZrK7Nqt 7Q== 
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2103.outbound.protection.outlook.com [104.47.70.103])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3tg7cq2780-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Oct 2023 11:07:00 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GA++DKdx0wwAlkgJPgZbY5jC7a+oGSXiYp9KrwRL2d9XaFIIXQhDkienJ3tC78OulieUl/w0BF1TZ5X4I5eYO97Ahhk4HTlyE8N4zKEpfwLV+w3naANXJm3E6VPQNKBw18LstUdTSc2eCCJr/43btoU9GrUvnAdEbHgaqdu8pe3ihgGxjr19EqID1svbQFmAK6hckmqo8IwRfEyAdlu/4632V1G5FOzspxXJHkvZVIM0cbqWxJFSFVM/WYpogsCbUqsboILL87NnAib3YpLypyMkmj/IW5eVBqJBOss/aQfhmNSSvKapY0dmeXAY5Ri6nmnW1bPzbxm9FsOv2xDlxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CAB6CXWAe473mqtgnI7HUHMbQd7O9jl4Q4NCiDL2p9U=;
- b=kfHX1Io1OyJ5hOz8aUV4gFOULdp5oF0FoTQzNWdHoxdkMG7PK1YZwDeqhV7qUEKRzr8Ybxj4b0BhEYk1EZLjnWYrOsRCdKO8Lww7vzvrorpR6J83qiBKq9NOQcQLePVmwmx5uUlOGm1zYP6x7sDSOdZtWBprDvPttFnqV5iWYAe1oatJRnP4W7V/u6BKd6eQLoYDG7sJqps7VrFXZ8HLzpfFCifpZbRyR5U5UpyXPp2Cp8/Q5fbtNPQig7uzEkyIe3U4ghSm4f3DsThTCDaHjLk9zM6oiZqJKjxuzwc3BzuyhmB6Q6Q4GNxRGb8umuZbDqQ8lhnWBkDNKveOrF5cGA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com (2603:10b6:806:1dc::10)
- by SJ0PR15MB4741.namprd15.prod.outlook.com (2603:10b6:a03:37a::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.27; Tue, 3 Oct
- 2023 18:06:55 +0000
-Received: from SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::e0e7:7606:7fef:f9de]) by SA1PR15MB5109.namprd15.prod.outlook.com
- ([fe80::e0e7:7606:7fef:f9de%5]) with mapi id 15.20.6838.033; Tue, 3 Oct 2023
- 18:06:55 +0000
-From:   Song Liu <songliubraving@meta.com>
-To:     David Vernet <void@manifault.com>
-CC:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "martin.lau@linux.dev" <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@meta.com>,
-        "himadrispandya@gmail.com" <himadrispandya@gmail.com>,
-        "julia.lawall@inria.fr" <julia.lawall@inria.fr>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add ability to pin bpf timer to calling
- CPU
-Thread-Topic: [PATCH bpf-next 1/2] bpf: Add ability to pin bpf timer to
- calling CPU
-Thread-Index: AQHZ9YrG6rN4k0wE80SYLdmAMGheD7A4XaeA
-Date:   Tue, 3 Oct 2023 18:06:55 +0000
-Message-ID: <F23E4B79-8FEB-4398-8C12-EAEACDE4AE1B@fb.com>
-References: <20231002234708.331192-1-void@manifault.com>
-In-Reply-To: <20231002234708.331192-1-void@manifault.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3731.700.6)
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR15MB5109:EE_|SJ0PR15MB4741:EE_
-x-ms-office365-filtering-correlation-id: 35d84d3d-8664-45aa-38b3-08dbc43b8785
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ZE9D2F7oSGMa0Q2pnxosiOorWOxjb8W3NMbzzuYOLxIvu7scIQSucB/kQzx/Dj0ODG9nZZCSYSvo+BX0wLUcmS0KPPjcHVtdehNWr4ShmudRzgnWXuP+LY4igilxVU8f4JCsfFJbopBSXhDu3SoXJUQy7ed9ENEiqGzNJYv3Nr4L/RCyTQ1g7GWzSSgVwu8lXENJA8/vEAvxi4qEWTArtytptumHaSXCu2h5ZbWg/MlF34Si0gUV7W+iiLi9t1hNxgz8oJm7ju8+oKDghXysFrWRxJzSOo8d7IWiPODSGsCp9jiHdRb5LGBsBl7UNIyU7uFsKhH0xr8aXvvA1nyk1P6T2I0hzZCTV0Ax+obJBJq740LMGrte6KyZCakl+mHjGvdDgSyVPbiX2Qm0jDAYmhwtLrq4lgQyaWm4MVPdi8mmqdXw4Zqu0Ftaq3QfOe430p/CS0oMOozmhNX4255LKdxfYNEGpPXK6x4ZSsylSJST8zGHWKFcLlj5lMQ+p5f0QQ7zrQ0wL0BC+YXXaDOzo/f3/7wZY3O7EXHWTVExKqJ7w4RY/qPSbzgFd2Hk+p3lSXOOvmBKq4MazEGnJN7mSMsO/GTICP7GSRnb0kPwBKQOWMAjJgdnEjNxFm8SYLJb
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR15MB5109.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(346002)(396003)(376002)(136003)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(6512007)(53546011)(6506007)(4326008)(71200400001)(8676002)(83380400001)(2906002)(76116006)(7416002)(54906003)(8936002)(6916009)(66476007)(91956017)(66946007)(5660300002)(41300700001)(66556008)(66446008)(64756008)(4744005)(316002)(9686003)(122000001)(38070700005)(86362001)(38100700002)(33656002)(36756003)(478600001)(6486002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?DYuwjUlErTMz8jGCRl50dVpa+OArzFbrMjf/RG4zVy3x0HaAfyFE9NjecxTb?=
- =?us-ascii?Q?fK7tTrZZN8Rsz+NSk3V/n00DPBbqhD/uzdhH3AQ/dicJ9mncQpH0fK6P+r+u?=
- =?us-ascii?Q?TWybIclZ+OycEoRTPkuheGbX0AVkd7FOLJUNEOgA5ZmaR8EB4X7xfJplcfQV?=
- =?us-ascii?Q?LiUrbNua4k5DzGzCSQnnYMRKgus0qXRk+jj5zsBxOBsvg1YgRs+NBFJBd2Nu?=
- =?us-ascii?Q?OWsG+NhuIpv6EgSq7XcBGriE1zvVSTL4PmoVlAqm50xqg9oWYXnyEfhk9cOD?=
- =?us-ascii?Q?7n02+eoydIr8d6IgpWNtVf6wA9oO8x/ekmwbAgxf7oPgILzo4POFtrxwVKZo?=
- =?us-ascii?Q?FOQT1J1UdCO3YFESJHFkuBj2dEW7ebhEZK4PmQjJ3asA9CMauNLqdtEZPfyK?=
- =?us-ascii?Q?ISlhy49VAC7zBh0sa59vE8YabTjlfIw+lH6iPsp5NnFuPQhicQ6FMDK5DNbT?=
- =?us-ascii?Q?1+eMW0pgeCnWFAevCMDgg04abJ9Ln1KO0gkBQ/3W7pZnNDqO9bBJhfoTKp5Z?=
- =?us-ascii?Q?NWviwUBYOTCkZbQd4b9yk8Kc8ouqkujymjaw9jiEC7c1Ls30VbYXr/dJDX5M?=
- =?us-ascii?Q?rOiLtMCHPrLB88uJpj61pmtxpWV8LWnCB6yIZt0JHJA3YnUoecMXCIJRlqoA?=
- =?us-ascii?Q?eSEH1/qVS6bAO4yURskCgBw80K7WsZUEMowtIkjUwlIoOklyv60FUuQGqw6a?=
- =?us-ascii?Q?yHtWZ9dm0HtfTSSQaBfWZSOzE3AyDObvKghYs0oRr/D/2ozf3nFJdj+XMz++?=
- =?us-ascii?Q?BdVWZLKv5RvS3Vrtvk2lGyHmJ111tgHp/T/FjUjqnO5KjIztWltmF/8HN80B?=
- =?us-ascii?Q?ezPfs4V1OjVA4seDRpzWv/4FB8LiTQoe33lsL15PVIXh8VykUDyyZg7HMAIv?=
- =?us-ascii?Q?OjSpNSYNtibxup43nlzLoiALmICfgoonDWFCuMbSEZgduc0G0JmzWFAtI9Lx?=
- =?us-ascii?Q?+PAf82eU7ouJqLzh+SHkEaKMwc5XbKnmzfArmtFrz4gzvEveiMMcRhqxnfg3?=
- =?us-ascii?Q?KOwSZ/Ls04I8w2LN8SCb4I3xXFmVOF4ibdlzdQDYDyAjRngwLwmXLHXpPtFX?=
- =?us-ascii?Q?ik2ixHWadDmMSWD2OTN0j/NuIyo5qhqir2hx2qj+IbKq9JXpyAQDhKEpBiSr?=
- =?us-ascii?Q?duYDL5XCO6VrzpNgsoOzna9JagJ0TyFEkvVptoPLTsVA2UQWU6YaMAyExZBF?=
- =?us-ascii?Q?/HDvRsa5RNlH3X/GKvs18jx6/K9lKXZpjIhZsJpNaqAJXYDtmxfNq5FFlNKI?=
- =?us-ascii?Q?uc3zTOdE7WAuW0q/SA82GgtfGbJ/jKQalkijDLiWFoyD4m66q3sj7SxZWFfa?=
- =?us-ascii?Q?qI60cyk4oTnyCIO6E0KwiMCvxYR7aEYooerY+K+K85AdbWPfSQln9e55UqsD?=
- =?us-ascii?Q?5hs6GK3bU9A9jFr2JGeFK2jmaHKezSdbH8TAlqwRDZb/kEHHte5QeF1Dbz+C?=
- =?us-ascii?Q?lZUrHaBRteGGBKqwudc/V3WT6ACLtAZhzYqjGvaSokV+XQe6YjXpuBU07WeN?=
- =?us-ascii?Q?GsLP98EnJC23T3dce0TEYzaI+0Ay9CU3b2v3kgk6SNeza+1MYn5koWbxG3Yp?=
- =?us-ascii?Q?KewqZ43ouzgRWIHMEICjx/jzy+alIulSKjiiLgFG62Lk4u78wiI9fYJ9duLg?=
- =?us-ascii?Q?/WvwygKFoHD6mD7+WGa9LhE=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <128AE3AC51166048AA3AD04DED4FFB35@namprd15.prod.outlook.com>
+        Tue, 3 Oct 2023 14:07:21 -0400
+Received: from mail-ua1-x930.google.com (mail-ua1-x930.google.com [IPv6:2607:f8b0:4864:20::930])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1940AB
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 11:07:17 -0700 (PDT)
+Received: by mail-ua1-x930.google.com with SMTP id a1e0cc1a2514c-7b07719089aso59432241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 11:07:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1696356436; x=1696961236; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=spqZVsBujegTMECRyErnNVqu+/Sb3b314/OUAZHjeek=;
+        b=S0R+pnOK5D5AHGC51EnkOmGydLkV7ElJBHaetocfQZWI6FdebpC2kFaOT5/4Zivqny
+         Hnu/InqUnv7uFLNzQbN9YupouYK9GATO2B3gKmgwdTwExB7is/+0mQc4yBb2u7D/h0v3
+         KxhyQybrIKHjB7dfNXLlh026HdpB1erha7xX19dHsqMv3ReUIOKbfussr63inWDxfAI9
+         R0UavBpL7o7MLwST2AzRJ9E7x/dNezb6EyqMnui5KlElIROLQ3zAOYz9yDjigVBz16RQ
+         lCc1m/CbkyUcI3U773HR5aGpdEEQrDSOKHwkQsEAIq2hLerw9Hdbt5Imw+fYQnuYQFd1
+         yZpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696356436; x=1696961236;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=spqZVsBujegTMECRyErnNVqu+/Sb3b314/OUAZHjeek=;
+        b=Mgat5b9KBlJczJmJVgXYmRsG/ygvoDxtk+Xh4HXED9irbcIpDroM1nmbA/yZFFkfcd
+         tpnqTOo4upDy+XnfSFyZHxODbscXJ9N6Fn2wJ/99j/bVH7m9AmfSkkhQY7b3yRsYhQk1
+         tbJ+ttLaepX9rVq6CQR7alTIjVNsVYoVrtq3bcBAJK6Iy3+23glfRi7/A2m6z3p9NJXg
+         QSgeF38H76I/0a/oXk3x+gc2c3Y6Bs/FX589h7Ywu0wFKmgAKgVZwJ+D7mRQesQf0pcW
+         lsVfIFKNf/IaAU6aSJzMAMg9chVrdSRd3JcNC9/QAfhZGf7J4FjHol0S5hMjNfyAe1lt
+         R3RQ==
+X-Gm-Message-State: AOJu0YzdEMOagDk8cIPPK+Gm8naV+7Oz7dg+QlVdvArzd9JDBLYblLbF
+        lfawwoILKtBKsdWBkNg7VmnfU3o/dNNPk+dqBX718w==
+X-Google-Smtp-Source: AGHT+IG79PPCrg9tom2aZQSDFTD1Yxtt7fGsILxaaoCGIUlTKy1HoGYcVOia05h8Sk+cKuel02Ymb8+vijQg9771EcA=
+X-Received: by 2002:a1f:dd02:0:b0:496:187e:b33f with SMTP id
+ u2-20020a1fdd02000000b00496187eb33fmr5035vkg.3.1696356436696; Tue, 03 Oct
+ 2023 11:07:16 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR15MB5109.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35d84d3d-8664-45aa-38b3-08dbc43b8785
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Oct 2023 18:06:55.8817
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UXiHKNZ9jSZ26uInTEMptQSIS8JDan5hmG3SX9RDSp2dVxCoAoniQ1ucopTZ/lXgjljHbKW5/PYmFN1quGpfSw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4741
-X-Proofpoint-GUID: gIiypiz8ih5v73dRDk58TJsfy8fdXKVe
-X-Proofpoint-ORIG-GUID: gIiypiz8ih5v73dRDk58TJsfy8fdXKVe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-03_15,2023-10-02_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231003145114.21637-1-brgl@bgdev.pl> <20231003145114.21637-5-brgl@bgdev.pl>
+ <ZRwtEG1DamMLZC/3@sol> <CAHp75VdSDart2b+_d6_9E204JYa2zyFKdh_Pey6Wb4MZ-Z-L0Q@mail.gmail.com>
+ <ZRwyG80u6nIf7PGU@sol>
+In-Reply-To: <ZRwyG80u6nIf7PGU@sol>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 3 Oct 2023 20:07:05 +0200
+Message-ID: <CAMRc=McbWU+bPph7f6treqNmqJvakj8nLzNEJPjgb8tbG_pWxQ@mail.gmail.com>
+Subject: Re: [PATCH 04/36] gpio: cdev: use pinctrl_gpio_can_use_line_new()
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Oct 3, 2023 at 5:24=E2=80=AFPM Kent Gibson <warthog618@gmail.com> w=
+rote:
+>
+> On Tue, Oct 03, 2023 at 06:17:27PM +0300, Andy Shevchenko wrote:
+> > On Tue, Oct 3, 2023 at 6:02=E2=80=AFPM Kent Gibson <warthog618@gmail.co=
+m> wrote:
+> > > On Tue, Oct 03, 2023 at 04:50:42PM +0200, Bartosz Golaszewski wrote:
+> >
+> > ...
+> >
+> > > I agree with the change in principle, just not comfortable with the n=
+aming.
+> >
+> > +1 here. I proposed some names, have you seen my comment(s)?
+> >
+>
+> I have now - any of those work for me.
+> Whichever is consistent with what we are using for gpiochip functions in
+> gpiolib would make most sense to me.
+>
 
+Does it really matter? It's not here to stay, it's temporary and
+exists only until the whole series is applied - which given that it's
+limited to gpio and pinctrl, shouldn't take more than one release
+cycle.
 
-> On Oct 2, 2023, at 4:47 PM, David Vernet <void@manifault.com> wrote:
-> 
-> BPF supports creating high resolution timers using bpf_timer_* helper
-> functions. Currently, only the BPF_F_TIMER_ABS flag is supported, which
-> specifies that the timeout should be interpreted as absolute time. It
-> would also be useful to be able to pin that timer to a core. For
-> example, if you wanted to make a subset of cores run without timer
-> interrupts, and only have the timer be invoked on a single core.
-> 
-> This patch adds support for this with a new BPF_F_TIMER_CPU_PIN flag.
-> When specified, the HRTIMER_MODE_PINNED flag is passed to
-> hrtimer_start(). A subsequent patch will update selftests to validate.
-> 
-> Signed-off-by: David Vernet <void@manifault.com>
+There are plenty of examples of this naming convention for temporary
+symbols - there's even an ongoing effort to replace all .remove()
+callbacks with .remove_new() which will then be changed back to
+.remove() treewide.
 
-Acked-by: Song Liu <song@kernel.org>
-
-
-
+Bart
