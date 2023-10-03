@@ -2,142 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A3B7B696F
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9009A7B6979
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 14:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbjJCMvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 08:51:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        id S231522AbjJCMxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 08:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjJCMvV (ORCPT
+        with ESMTP id S229689AbjJCMxU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 08:51:21 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED6D91;
-        Tue,  3 Oct 2023 05:51:15 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 1C85687102;
-        Tue,  3 Oct 2023 14:51:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1696337473;
-        bh=aaprkLAz8M28X4vHEFfK4xuZcsmFV8/uA9susaQBpHI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gUy6gV7Jf2LmC+75CGPiHiNeLdQZqdbjOXHDGCWy2IVIny+rTbN0fjqN1FO5z4Mgh
-         AnuxgZrU5yy8FI4edE5i46BvziysCcF3FhxL3BqaSe4Q0ggW2GHUDbFmY6zKMJh3ja
-         juiXSzXboZewVRIKjTZKxkRwjcDGyoTTTewijkPqkzbyIV6rrjafLgeiQvncpjTuti
-         a5fCeLJJvMocllC96iDPP9A6oITP10g/Chr6b4YrJrvf0ozPoHVOSuSzGJS0J5t0U1
-         ayAYjXGp0k4svj0ufq53k5UxWinq4/Ed8mX8C4PXGzubg4uYkV3AXxKAqG+j/nKOlH
-         cpc789T6qLz2Q==
-Date:   Tue, 3 Oct 2023 14:51:06 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
-        davem@davemloft.net, Oleksij Rempel <o.rempel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 net-next 0/5] net: dsa: hsr: Enable HSR HW offloading
- for KSZ9477
-Message-ID: <20231003145106.3cd5a19f@wsk>
-In-Reply-To: <20231003104410.dhngn3vvdfdcurga@skbuf>
-References: <20230922133108.2090612-1-lukma@denx.de>
-        <20230926225401.bganxwmtrgkiz2di@skbuf>
-        <20230928124127.379115e6@wsk>
-        <20231003095832.4bec4c72@wsk>
-        <20231003104410.dhngn3vvdfdcurga@skbuf>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 3 Oct 2023 08:53:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0B393;
+        Tue,  3 Oct 2023 05:53:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696337597; x=1727873597;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=702HqFQNmxV7YgGeTBn23DHTxJX9WZ3IGA7eOFHSmOU=;
+  b=e0Yh7WBJccq8BOxpZEoWmfK1Vss/q3LeWjmDTWkOqdafmJZgbRQ+5q7U
+   JzKhvc2hTeXyy1OC7icU4LUn8S7ufr7kAA5OLeOLeBn7oWzXi50qxscYO
+   h7azswMnSdiB/sqsa+maVH1Ju29VjtjaCAxTVQ7KMewZr+QJggHeSVqp8
+   zmtQTuk6gCtrgLRHIWmDEFzTIqkomgCS6tYReC6KYU+jZ05Gqx+uqdhNx
+   GfpHrkONq3QwLfkQcybIGzWwMorUDygSGwY1Bv6Z7aNR755VC49aZ+aCU
+   MAEYOSnga0oUJ1a5sVJBl0olDaBKAIVx8GSXWNu6jr/l/sOGGuZWTrIo6
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="447022284"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="447022284"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 05:53:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="998005890"
+X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
+   d="scan'208";a="998005890"
+Received: from bmihaile-mobl1.ger.corp.intel.com (HELO localhost) ([10.251.222.64])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 05:53:08 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        bcm-kernel-feedback-list@broadcom.com, jonathan.derrick@linux.dev,
+        kw@linux.com, linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-renesas-soc@vger.kernel.org,
+        lpieralisi@kernel.org, marek.vasut+renesas@gmail.com,
+        minghuan.Lian@nxp.com, mingkai.hu@nxp.com,
+        m.karthikeyan@mobiveil.co.in, nirmal.patel@linux.intel.com,
+        rjui@broadcom.com, robh@kernel.org, roy.zang@nxp.com,
+        sbranden@broadcom.com, yoshihiro.shimoda.uh@renesas.com,
+        Zhiqiang.Hou@nxp.com
+Cc:     linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 0/3] PCI: PCI_HEADER_TYPE bugfix & cleanups
+Date:   Tue,  3 Oct 2023 15:52:57 +0300
+Message-Id: <20231003125300.5541-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DeKx4JaPtFZ3VK4fxaRFAgh";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/DeKx4JaPtFZ3VK4fxaRFAgh
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+One bugfix and cleanups for PCI_HEADER_TYPE_* literals.
 
-Hi Vladimir,
+This series only covers what's within drivers/pci/. I'd have patches
+for other subsystems too but I decided to wait with them until
+PCI_HEADER_TYPE_MFD is in Linus' tree (to keep the series receipient
+count reasonable, the rest can IMO go through the subsystem specific
+trees once the define is there).
 
-> On Tue, Oct 03, 2023 at 09:58:32AM +0200, Lukasz Majewski wrote:
-> > I'm a bit puzzled with this patch series - will it be pulled
-> > directly to net-next [1] or is there any other (KSZ maintainer's?)
-> > tree to which it will be first pulled and then PR will be send to
-> > net-next?
-> >=20
-> > Thanks in advance for the clarification.
-> >=20
-> > Links:
-> >=20
-> > [1] -
-> > https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/log/
-> > =20
->=20
-> No, there's no other tree than net-next. I see your patch was marked
-> as "Changes requested", let me see if I can transition it back to
-> "Under review" so that it gains the netdev maintainers' attention
-> again:
->=20
-> https://patchwork.kernel.org/project/netdevbpf/cover/20230922133108.20906=
-12-1-lukma@denx.de/
->=20
-> pw-bot: under-review
+Ilpo Järvinen (3):
+  PCI: vmd: Correct PCI Header Type Register's MFD bit check
+  PCI: Add PCI_HEADER_TYPE_MFD pci_regs.h
+  PCI: Use PCI_HEADER_TYPE_* instead of literals
 
-Thanks!
+ drivers/pci/controller/dwc/pci-layerscape.c   |  2 +-
+ .../controller/mobiveil/pcie-mobiveil-host.c  |  2 +-
+ drivers/pci/controller/pcie-iproc.c           |  2 +-
+ drivers/pci/controller/pcie-rcar-ep.c         |  2 +-
+ drivers/pci/controller/pcie-rcar-host.c       |  2 +-
+ drivers/pci/controller/vmd.c                  |  5 ++---
+ drivers/pci/hotplug/cpqphp_ctrl.c             |  6 ++---
+ drivers/pci/hotplug/cpqphp_pci.c              | 22 +++++++++----------
+ drivers/pci/hotplug/ibmphp.h                  |  5 +++--
+ drivers/pci/hotplug/ibmphp_pci.c              |  2 +-
+ drivers/pci/pci.c                             |  2 +-
+ drivers/pci/quirks.c                          |  6 ++---
+ include/uapi/linux/pci_regs.h                 |  1 +
+ 13 files changed, 30 insertions(+), 29 deletions(-)
 
-I've just noticed that there is a WARNING:
-https://patchwork.kernel.org/project/netdevbpf/patch/20230922133108.2090612=
--6-lukma@denx.de/
+-- 
+2.30.2
 
-but then on the newest kernel checkpatch.pl is silent:
-./scripts/checkpatch.pl
-0005-net-dsa-microchip-Enable-HSR-offloading-for-KSZ9477.patch total: 0
-errors, 0 warnings, 0 checks, 277 lines checked
-
-0005-net-dsa-microchip-Enable-HSR-offloading-for-KSZ9477.patch has no
-obvious style problems and is ready for submission.
-
-Does the checkpatch for patchwork differs in any way from mainline?
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/DeKx4JaPtFZ3VK4fxaRFAgh
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmUcDjoACgkQAR8vZIA0
-zr383Qf/UDs6iZwqUh3JPM8lRrI19Hze1fJ2qEnCAinjhHYz5KFN2kpzFsOJvYN9
-ESkNWN2mYJe55GyWs/BiV7vwGmtDR5PjcBvXSu/h8MkOnaJndK7ArvhscyssqyWv
-M4jFjLRAA7UKAS83gkm4ANa9aIs0MM3Q8dqg0akJq/QZFNYko7WyDLvZYBTe9psE
-+jsmzqTvRkqDFr4YwY0yflCdRO8ykYCdXsfgJaPz8uEQ5B271OpVhJMYNuJjpjh6
-dL+8baMb1sqDF6OvkWq/pUl5DhY3c0SICRMPJGOoZBqf6HUO/6753e3rhq4U7dC7
-9C2tMT/sYG31cCwhTLWXG06n3IERDw==
-=E0iA
------END PGP SIGNATURE-----
-
---Sig_/DeKx4JaPtFZ3VK4fxaRFAgh--
