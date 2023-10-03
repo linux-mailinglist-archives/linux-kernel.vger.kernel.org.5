@@ -2,66 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E05D77B7421
-	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7272C7B7423
+	for <lists+linux-kernel@lfdr.de>; Wed,  4 Oct 2023 00:36:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbjJCWfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 18:35:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37086 "EHLO
+        id S230376AbjJCWgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 18:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230098AbjJCWfO (ORCPT
+        with ESMTP id S229802AbjJCWgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 18:35:14 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62FF7B7
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 15:35:09 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9b2a3fd5764so259257466b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 15:35:09 -0700 (PDT)
+        Tue, 3 Oct 2023 18:36:36 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73ABDAF
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 15:36:32 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50348c54439so1037e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 15:36:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696372508; x=1696977308; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1696372591; x=1696977391; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=It7Xi0oiD+rM83TcJHmcj911Rk0KwZSdh5qD12BcX2k=;
-        b=OwTDMkdDhx4AcJ5v2PF48k5IeFyXS0QQTqWYCrdXl4uUB2BsFQeDbs00rJZ/7x8SPk
-         5De0FQ1wHsCxVbiUQtze83KK/zqsdBQrcehqHoFD4kRzQoHI9NpJwEOXNVSZ9y9oGe7r
-         JoAK+EKmXEiCmv/i/2l8r1bPrAxcIu3nwbd6OZGNI7Sq1xF8QlSq6gwbKZKFxbRTi/LN
-         UXUGhFBN6O4yHCDSnbtbFzax9tzdoJY2ze8VaU3xLJXPWSa3fN3KIBW8o+xGL97aUg3i
-         CsQ7oRBaghLz78/RsEGhQHfmjDvsf7f82pscZUHSMMoetvlh10bcoBXS0hN3+BXr1KvH
-         gPfA==
+        bh=EG7kDtdkJVrJR5n87G+tHxj9vqVqM2ibNV7n3CHBcaM=;
+        b=1Lx9A2j4pHQYDICxtXgVq5dUcE3TV44XTOQLdSgauFrBc8ngQOnAAXneU0i61/akv4
+         qjaThIbGJZxT/PHcclWs3toMOAW5yi1DPXNAgK4uDnCgLKQ+jKMwOu1yfIKShOTAodtM
+         GbHhRjtimkt/CBlcST9V9pj9bOetTNHiFN00RIKbLyyQpRBVUDLGHCP4VM9C2M1rc6Wv
+         kbFP2BQFn+oiQG+WwVfoOfBxPccw1dfpG726AujbZmWpVRyAStaXfbN50akZSsN9MoQa
+         LkuS1CQ3v2aq0KRPtva0psATj2wbuCuIYk1nvVpu+rynygSIr3T9aq3SlYCSAK6Fz5Sv
+         XeDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696372508; x=1696977308;
+        d=1e100.net; s=20230601; t=1696372591; x=1696977391;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=It7Xi0oiD+rM83TcJHmcj911Rk0KwZSdh5qD12BcX2k=;
-        b=qo9kSmaoTFza7+xuvRxshS2ZmpVTtfiTG/vt2egNqEqNIe3VizxIWzv2kE20IX8au+
-         qdKZdl6PZiL/FTh7G/X4xtg0OZa53Pvg2XlvFIAOZpeQ2P7buH8skaxECfhQavN/b3OI
-         Zg/3bW/3JjaqjpGD8GibYWUB+bwyitrL0tHQCNwDqMzmT/N3S+hI9TBHLTqyh7WHQqsI
-         NBaDv6SppneR/j7s9KKDFHGgtksj+VJ7396r1+iiqVuywGxRWyFPpCEmlQNcwNBGbNMz
-         hbl/z0H1Na30U0BWh32twlI2XwJnWRUUopn2NW1ZoAABcQoMvQhyhKIPjAzr6GoFrBsX
-         nqRQ==
-X-Gm-Message-State: AOJu0Yzd8ph5g0XXHZ+EJiuxPhkOn+Ac4aRKku0wuEuD4sNtLEQy4YQA
-        LJn6wiDtSN1OzIbfDZ0hI5aoYoB0UNTncJjNRb3sTw==
-X-Google-Smtp-Source: AGHT+IHBY9DipGSWqL52LM/MHQoLGvY1Km3Touj8d7gcQ7WH3o0AQ6vExMuZKH7wROcqEwJcnojm86N5ig2Ram4x/34=
-X-Received: by 2002:a17:907:b1a:b0:9b6:5a86:2926 with SMTP id
- h26-20020a1709070b1a00b009b65a862926mr419738ejl.62.1696372507814; Tue, 03 Oct
- 2023 15:35:07 -0700 (PDT)
+        bh=EG7kDtdkJVrJR5n87G+tHxj9vqVqM2ibNV7n3CHBcaM=;
+        b=jDyLlUycriHYXDXb9lz2Or1OWxaRaKeWRjOfHP+fD1X1ugCr7dNOSs1NdtL2rtdKjE
+         eFGFoHBs1EfcMyOa7Bvm+yDvBJJ81xphh8WxcfZx/r+NqMptlJRFH2f3q2mIcIjsfmb6
+         m8YjrP4+lhgeOgxQ94zlDqHuL4lOd1Os86L9czikz1g62LiPP01lrxadKVnHqvLiZv6B
+         VVfdOleMbe4mIh/wIN2n+hCz9UdvACJ0E+XhTSORklSI3uhZ/gRtQcn05WGmdxgXoOSe
+         vNqsey1edPif0LhTgK3evlBM99oo2q4HqeltBUlXBpMwu+gwdFSIatLAVB+i0CJoPbS0
+         vczw==
+X-Gm-Message-State: AOJu0Yz1BsL+JmwwGFVqxhInW5Q8LDNRlQTYGskhx7Ep5p1KEL9GE5QG
+        2WXtswoOi9N5BshVZLrLr6/xLRCxiD8NodYQkf9vAw==
+X-Google-Smtp-Source: AGHT+IFxJAgpmYBIrObePPnqrkL5nsL/Q9T1EPNqbCSH2+9ataU9BP/aaTfJKcSQjylmnubwEGV3gueH2rN/mrZWSog=
+X-Received: by 2002:ac2:4e6f:0:b0:505:715f:d36b with SMTP id
+ y15-20020ac24e6f000000b00505715fd36bmr7786lfs.5.1696372590536; Tue, 03 Oct
+ 2023 15:36:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230908-kselftest-09-08-v2-0-0def978a4c1b@google.com>
- <CAFhGd8pEv32zp4RDsj_jeBjzP5hcsf4dP4Knueiw_UM8ZsqcKw@mail.gmail.com> <lhb7u2lg7fv2wx3kzrboftqcdtmbjvbzz7zssfn5mho72hcrvj@i53fzzis7b4q>
-In-Reply-To: <lhb7u2lg7fv2wx3kzrboftqcdtmbjvbzz7zssfn5mho72hcrvj@i53fzzis7b4q>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Tue, 3 Oct 2023 15:34:54 -0700
-Message-ID: <CAFhGd8pTDfgQ+uTTQpMUnyfwbTgf_Hi7hv0ZQP4Vao_fqEvB5A@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] selftests/hid: fix building for older kernels
-To:     Benjamin Tissoires <bentiss@kernel.org>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        linux-input@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+References: <20230916040915.1075620-1-irogers@google.com> <CAL715WJxmMbXkZSE3p_+ODGxabgrXREsBo9aFu9G9=qkYZeH9A@mail.gmail.com>
+ <CAP-5=fUjNiDv=KQ7t8jqfOfOt5i8HGvt8Vv1hn2-hLxX_Kqucg@mail.gmail.com>
+ <CAL715W+GQuCJm-1SEsNN2qnHghNL1SrzwH9Km5K8UxubEFfYVw@mail.gmail.com> <CAM9d7cgKWi0fafwTxSrKLrVZxcwnhwMGz=oNkAsNdOjDwF6pEA@mail.gmail.com>
+In-Reply-To: <CAM9d7cgKWi0fafwTxSrKLrVZxcwnhwMGz=oNkAsNdOjDwF6pEA@mail.gmail.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 3 Oct 2023 15:36:19 -0700
+Message-ID: <CAP-5=fWXXi7Y=6Q0k8oLOZmYon+vvg-k4dNUSex_ijcL8ti9sQ@mail.gmail.com>
+Subject: Re: [PATCH v1] perf evlist: Avoid frequency mode for the dummy event
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Mingwei Zhang <mizhang@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yang Jihong <yangjihong1@huawei.com>,
+        Stephane Eranian <eranian@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -75,178 +82,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 2, 2023 at 7:48=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.o=
-rg> wrote:
+On Tue, Oct 3, 2023 at 1:08=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
 >
-> On Sep 26 2023, Justin Stitt wrote:
-> > Hey all,
+> Hello,
+>
+> On Wed, Sep 20, 2023 at 10:05=E2=80=AFPM Mingwei Zhang <mizhang@google.co=
+m> wrote:
 > >
-> > Gentle ping on this patch. Looking to get this patch and [1] slated
-> > for 6.7 wherein we can start getting cleaner kselftests builds.
-> >
-> > I do not think I am able to successfully run the hid/bpf selftests due
-> > to my kernel version being too low (and an inability to upgrade it as
-> > I'm on a corp rolling release). I'd appreciate some insight on how to
-> > get the tests running or if someone could actually build+run the tests
-> > with this patch applied.
->
-> I wanted to apply this series today, but it failed my own CI now with
-> the enums being already defined:
-> https://gitlab.freedesktop.org/bentiss/hid/-/jobs/49754306
->
-> I'll probably squash the following patch in 1/3, would you mind giving
-> it a test?
-
-Works for me with this incantation:
-$ make LLVM=3D1 -j128 ARCH=3Dx86_64 mrproper headers && make LLVM=3D1 -j128
-ARCH=3Dx86_64 -C tools/testing/selftests TARGETS=3Dhid
-...
----> BINARY   hid_bpf
-
-Although, the tests expectedly fail.
-
-Looks good to me.
-
->
-> ---
-> From 37feca6c0e84705ad65e621643206c287b63bb0a Mon Sep 17 00:00:00 2001
-> From: Benjamin Tissoires <bentiss@kernel.org>
-> Date: Mon, 2 Oct 2023 15:37:18 +0200
-> Subject: [PATCH] fix selftests/hid: ensure we can compile the tests on ke=
-rnels
->  pre-6.3
->
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
-> ---
->  .../selftests/hid/progs/hid_bpf_helpers.h     | 30 ++++++++++++++++++-
->  1 file changed, 29 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h b/tools/=
-testing/selftests/hid/progs/hid_bpf_helpers.h
-> index ab3b18ba48c4..feed5a991e05 100644
-> --- a/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> +++ b/tools/testing/selftests/hid/progs/hid_bpf_helpers.h
-> @@ -5,16 +5,44 @@
->  #ifndef __HID_BPF_HELPERS_H
->  #define __HID_BPF_HELPERS_H
->
-> -/* "undefine" structs in vmlinux.h, because we "override" them below */
-> +/* "undefine" structs and enums in vmlinux.h, because we "override" them=
- below */
->  #define hid_bpf_ctx hid_bpf_ctx___not_used
->  #define hid_report_type hid_report_type___not_used
->  #define hid_class_request hid_class_request___not_used
->  #define hid_bpf_attach_flags hid_bpf_attach_flags___not_used
-> +#define HID_INPUT_REPORT         HID_INPUT_REPORT___not_used
-> +#define HID_OUTPUT_REPORT        HID_OUTPUT_REPORT___not_used
-> +#define HID_FEATURE_REPORT       HID_FEATURE_REPORT___not_used
-> +#define HID_REPORT_TYPES         HID_REPORT_TYPES___not_used
-> +#define HID_REQ_GET_REPORT       HID_REQ_GET_REPORT___not_used
-> +#define HID_REQ_GET_IDLE         HID_REQ_GET_IDLE___not_used
-> +#define HID_REQ_GET_PROTOCOL     HID_REQ_GET_PROTOCOL___not_used
-> +#define HID_REQ_SET_REPORT       HID_REQ_SET_REPORT___not_used
-> +#define HID_REQ_SET_IDLE         HID_REQ_SET_IDLE___not_used
-> +#define HID_REQ_SET_PROTOCOL     HID_REQ_SET_PROTOCOL___not_used
-> +#define HID_BPF_FLAG_NONE        HID_BPF_FLAG_NONE___not_used
-> +#define HID_BPF_FLAG_INSERT_HEAD HID_BPF_FLAG_INSERT_HEAD=C2=B7___not_us=
-ed
-> +#define HID_BPF_FLAG_MAX         HID_BPF_FLAG_MAX___not_used
-> +
->  #include "vmlinux.h"
-> +
->  #undef hid_bpf_ctx
->  #undef hid_report_type
->  #undef hid_class_request
->  #undef hid_bpf_attach_flags
-> +#undef HID_INPUT_REPORT
-> +#undef HID_OUTPUT_REPORT
-> +#undef HID_FEATURE_REPORT
-> +#undef HID_REPORT_TYPES
-> +#undef HID_REQ_GET_REPORT
-> +#undef HID_REQ_GET_IDLE
-> +#undef HID_REQ_GET_PROTOCOL
-> +#undef HID_REQ_SET_REPORT
-> +#undef HID_REQ_SET_IDLE
-> +#undef HID_REQ_SET_PROTOCOL
-> +#undef HID_BPF_FLAG_NONE
-> +#undef HID_BPF_FLAG_INSERT_HEAD
-> +#undef HID_BPF_FLAG_MAX
->
->  #include <bpf/bpf_helpers.h>
->  #include <bpf/bpf_tracing.h>
-> --
-> 2.41.0
-> ---
->
-> Cheers,
-> Benjamin
->
-> >
-> > On Sat, Sep 9, 2023 at 7:22=E2=80=AFAM Justin Stitt <justinstitt@google=
+> > On Mon, Sep 18, 2023 at 3:43=E2=80=AFPM Ian Rogers <irogers@google.com>=
+ wrote:
+> > >
+> > > On Sat, Sep 16, 2023 at 5:46=E2=80=AFPM Mingwei Zhang <mizhang@google=
 .com> wrote:
+> > > > Thank you very much for the change. I have one quick question about
+> > > > the PMU unthrottling logic. When I am looking into the function
+> > > > perf_adjust_freq_unthr_context(), I see the loop with PMU stop and
+> > > > start in each iteration. Is there a good way to avoid this PMU rese=
+t
+> > > > operation while quickly figuring out the event in frequency mode?
 > > >
-> > > Hi, I am sending this series on behalf of myself and Benjamin Tissoir=
-es. There
-> > > existed an initial n=3D3 patch series which was later expanded to n=
-=3D4 and
-> > > is now back to n=3D3 with some fixes added in and rebased against
-> > > mainline.
-> > >
-> > > This patch series aims to ensure that the hid/bpf selftests can be bu=
-ilt
-> > > without errors.
-> > >
-> > > Here's Benjamin's initial cover letter for context:
-> > > |  These fixes have been triggered by [0]:
-> > > |  basically, if you do not recompile the kernel first, and are
-> > > |  running on an old kernel, vmlinux.h doesn't have the required
-> > > |  symbols and the compilation fails.
-> > > |
-> > > |  The tests will fail if you run them on that very same machine,
-> > > |  of course, but the binary should compile.
-> > > |
-> > > |  And while I was sorting out why it was failing, I realized I
-> > > |  could do a couple of improvements on the Makefile.
-> > > |
-> > > |  [0] https://lore.kernel.org/linux-input/56ba8125-2c6f-a9c9-d498-0c=
-a1c153dcb2@redhat.com/T/#t
-> > >
-> > > Changes from v1 -> v2:
-> > > - roll Justin's fix into patch 1/3
-> > > - add __attribute__((preserve_access_index)) (thanks Eduard)
-> > > - rebased onto mainline (2dde18cd1d8fac735875f2e4987f11817cc0bc2c)
-> > > - Link to v1: https://lore.kernel.org/all/20230825-wip-selftests-v1-0=
--c862769020a8@kernel.org/
-> > >
-> > > Link: https://github.com/ClangBuiltLinux/linux/issues/1698
-> > > Link: https://github.com/ClangBuiltLinux/continuous-integration2/issu=
-es/61
-> > > ---
-> > > Benjamin Tissoires (3):
-> > >       selftests/hid: ensure we can compile the tests on kernels pre-6=
-.3
-> > >       selftests/hid: do not manually call headers_install
-> > >       selftests/hid: force using our compiled libbpf headers
-> > >
-> > >  tools/testing/selftests/hid/Makefile               | 10 ++---
-> > >  tools/testing/selftests/hid/progs/hid.c            |  3 --
-> > >  .../testing/selftests/hid/progs/hid_bpf_helpers.h  | 49 ++++++++++++=
-++++++++++
-> > >  3 files changed, 53 insertions(+), 9 deletions(-)
-> > > ---
-> > > base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-> > > change-id: 20230908-kselftest-09-08-56d7f4a8d5c4
-> > >
-> > > Best regards,
-> > > --
-> > > Justin Stitt <justinstitt@google.com>
+> > > Agreed. I think before the pmu_disable could be avoided for this cond=
+ition:
+> > > ```
+> > > if (event->hw.interrupts !=3D MAX_INTERRUPTS &&
+> > >     (!event->attr.freq || !event->attr.sample_freq))
+> > >         continue;
+> > > ```
+> > > Fixing up the event stop/start looks harder.
 > > >
 > >
-> > [1]: https://lore.kernel.org/all/20230912-kselftest-param_test-c-v1-1-8=
-0a6cffc7374@google.com/
-> >
-> > Thanks
-> > Justin
+> > Right, I think putting the check early before pmu_disable() is already
+> > a great optimization. The only concern I initially had was whether
+> > event->hw.interrupts can be accessed before we disable the pmu. But
+> > after checking this field in other locations, I don't see any problem
+> > at all.
+>
+> The event->hw.interrupts would be increased in the NMI handler
+> so there is a race between the check and the NMI.  That's why
+> I think it checks that after disabling the PMU.
+>
+> But I think we can skip non-sampling events for sure.  Then it
+> would be better to set attr.sample_period =3D 0 rather than attr.freq.
+>
+>     if (!is_sampling_event(event))
+>         continue;
+>
+>     perf_pmu_disable(event->pmu);
+>     ...
+>
+> Thanks,
+> Namhyung
 
-Thanks
-Justin
+With the PMU disabled, isn't there still a risk of an interrupt still
+being in flight? In other words the disable doesn't prevent a race and
+we'll catch this on the next timer call to
+perf_adjust_freq_unthr_context. I think we can also improve the code
+by just disabling a PMU once, we can take advantage of the
+perf_event_pmu_context and disable that PMU, iterate its events and
+then re-enable the PMU - i.e. no need for an enable and disable per
+event. I'll put a patch together.
+
+Thanks,
+Ian
