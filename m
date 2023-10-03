@@ -2,554 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57EC67B609B
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 07:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AF57B60A0
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 08:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239154AbjJCF5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 01:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40452 "EHLO
+        id S230179AbjJCGEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 02:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239144AbjJCF5r (ORCPT
+        with ESMTP id S229547AbjJCGEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 01:57:47 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84F4CE;
-        Mon,  2 Oct 2023 22:57:43 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3934fQLq020094;
-        Tue, 3 Oct 2023 05:57:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=5iPArt1aOAWxrybylHH3ktGgetR+9NNz3LSfZM4ojhg=;
- b=mAcIcLM8HsXZ3YE0RPZvrTUD0j4O+8BvznWf3BUC3CUgava0C+25I1VDuSqkeBKNV1s4
- ZR00J4PmIH0oQq27QS7qdi8T/g5l5hmXXcJ6w5Rxi9UeO2mSJXicyf5/CzzI1FSeioaL
- 6qiOETJmHN0ei6QkBWwMXWuPJrpyNMHRnocuas8vIWZQ12OK02vuStyXape5b/ptS5fW
- l5bRiJgrad+daRoQzjWJUiVmDRF7qY9k2nDnz+F7QEybqmynyCiSbel/5Mse00fcW81T
- 1GRJ+4F+Qe9SPpEy5y2BI7RUb/eQoQLpNw8HOzckqiqx+T6rEEzI9nkcPYD+sRNYdoyw CQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3teb0sd7g9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 03 Oct 2023 05:57:39 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3935vcW4020352
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 3 Oct 2023 05:57:38 GMT
-Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Mon, 2 Oct 2023 22:57:34 -0700
-From:   Komal Bajaj <quic_kbajaj@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <luca.weiss@fairphone.com>,
-        Komal Bajaj <quic_kbajaj@quicinc.com>
-Subject: [PATCH v2 2/2] arm64: dts: qcom: qcm6490: Add qcm6490 dts file
-Date:   Tue, 3 Oct 2023 11:26:55 +0530
-Message-ID: <20231003055655.30994-3-quic_kbajaj@quicinc.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231003055655.30994-1-quic_kbajaj@quicinc.com>
-References: <20231003055655.30994-1-quic_kbajaj@quicinc.com>
+        Tue, 3 Oct 2023 02:04:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72ADEB7;
+        Mon,  2 Oct 2023 23:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1696313048; x=1727849048;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=PQoOxp5uH3JSr9lFmLJ6gLBj5jlaiqqD/shujUnKOuk=;
+  b=UO3Zdm59gSfZd8IvXl/V5XfUTw3NI3liOg5laozSSd3O3zgE4WNTB54I
+   b1675aK3XJ/I77cuRzGrItnjn2qViTLgD1PumswoONzv3mSzJD3USP1L/
+   dc+CH2o2G/gS1PrFdmXMvOGdcrBm4DID3/eMkWb8UJ4ksC9J5G8ss0kzb
+   48ghB3G/19kFzHy0C803tdJzf1A88GvugX7yGfUEPWyLFkldkpMtHaSaW
+   1NYmLKRGfw2D5uhoZBJ+jaCeVrb6qX8K+yQiA7cPIwE0mPRZWfw5hatv5
+   MpKaHY25t2xwX0T4ixSny2lNE/kwgFMrd81n9PcCg41FC30b+6qWXx6NH
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="469074427"
+X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
+   d="scan'208";a="469074427"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Oct 2023 23:03:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10851"; a="924525370"
+X-IronPort-AV: E=Sophos;i="6.03,196,1694761200"; 
+   d="scan'208";a="924525370"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orsmga005.jf.intel.com with SMTP; 02 Oct 2023 23:03:43 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 03 Oct 2023 09:03:42 +0300
+Date:   Tue, 3 Oct 2023 09:03:42 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Abdel Alkuor <alkuor@gmail.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
+        robh+dt@kernel.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>
+Subject: Re: [PATCH v9 06/14] USB: typec: tps6598x: Clear dead battery flag
+Message-ID: <ZRuuvj3r1kBqc+EI@kuha.fi.intel.com>
+References: <20231001081134.37101-1-alkuor@gmail.com>
+ <20231001081134.37101-7-alkuor@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: fDkpFWUXFatQGZWHk2kd8Y1hoQrql-2z
-X-Proofpoint-ORIG-GUID: fDkpFWUXFatQGZWHk2kd8Y1hoQrql-2z
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.980,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-10-03_03,2023-10-02_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- impostorscore=0 bulkscore=0 suspectscore=0 adultscore=0 mlxscore=0
- clxscore=1015 phishscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2309180000 definitions=main-2310030047
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231001081134.37101-7-alkuor@gmail.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add qcm6490 devicetree file for QCM6490 SoC and QCM6490 IDP
-platform. QCM6490 is derived from SC7280 meant for various
-form factor including IoT.
+On Sun, Oct 01, 2023 at 04:11:26AM -0400, Abdel Alkuor wrote:
+> From: Abdel Alkuor <abdelalkuor@geotab.com>
+> 
+> Dead battery flag must be cleared after switching tps25750 to APP mode
+> so the PD controller becomes fully functional.
+> 
+> Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
 
-Supported features are, as of now:
-* Debug UART
-* eMMC
-* USB
+I'm sorry I noticed these so late, but this one really feels like it
+should be part of the patch 4/14. Is there some reason why you do this
+separately?
 
-Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
----
- arch/arm64/boot/dts/qcom/Makefile        |   1 +
- arch/arm64/boot/dts/qcom/qcm6490-idp.dts | 335 +++++++++++++++++++++++
- arch/arm64/boot/dts/qcom/qcm6490.dtsi    |  94 +++++++
- 3 files changed, 430 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/qcm6490-idp.dts
- create mode 100644 arch/arm64/boot/dts/qcom/qcm6490.dtsi
+> ---
+> Changes in v9:
+>   - No changes
+> Changes in v8:
+>   - No changes
+> Changes in v7:
+>   - Add driver name to commit subject
+> Changes in v6:
+>   - No changes
+> Changes in v5:
+>   - Incorporating tps25750 into tps6598x driver
+> 
+>  drivers/usb/typec/tipd/core.c     | 16 ++++++++++++++++
+>  drivers/usb/typec/tipd/tps6598x.h |  1 +
+>  2 files changed, 17 insertions(+)
+> 
+> diff --git a/drivers/usb/typec/tipd/core.c b/drivers/usb/typec/tipd/core.c
+> index 21b0ea2c9627..2598433a69cf 100644
+> --- a/drivers/usb/typec/tipd/core.c
+> +++ b/drivers/usb/typec/tipd/core.c
+> @@ -946,6 +946,22 @@ static int tps25750_apply_patch(struct tps6598x *tps)
+>  
+>  	} while (ret != TPS_MODE_APP);
+>  
+> +	/*
+> +	 * The dead battery flag may be triggered when the controller
+> +	 * port is connected to a device that can source power and
+> +	 * attempts to power up both the controller and the board it is on.
+> +	 * To restore controller functionality, it is necessary to clear
+> +	 * this flag
+> +	 */
+> +	if (status & TPS_BOOT_STATUS_DEAD_BATTERY_FLAG) {
+> +		ret = tps6598x_exec_cmd(tps, "DBfg", 0, NULL, 0, NULL);
+> +		if (ret) {
+> +			dev_err(tps->dev,
+> +				"failed to clear dead battery %d\n", ret);
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index 73c3be0f8872..3a2d9dbaacce 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -82,6 +82,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-sony-xperia-yoshino-maple.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-sony-xperia-yoshino-poplar.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-xiaomi-sagit.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qcm6490-fairphone-fp5.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= qcm6490-idp.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-1000.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qcs404-evb-4000.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= qdu1000-idp.dtb
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490-idp.dts b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-new file mode 100644
-index 000000000000..ab9fa9197fe3
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/qcm6490-idp.dts
-@@ -0,0 +1,335 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+/dts-v1/;
-+
-+#include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
-+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
-+#include "qcm6490.dtsi"
-+#include "pm7325.dtsi"
-+#include "pm8350c.dtsi"
-+#include "pmk8350.dtsi"
-+
-+/ {
-+	model = "Qualcomm Technologies, Inc. QCM6490 IDP";
-+	compatible = "qcom,qcm6490-idp", "qcom,qcm6490";
-+
-+	aliases {
-+		serial0 = &uart5;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+};
-+
-+&apps_rsc {
-+	regulators-0 {
-+		compatible = "qcom,pm7325-rpmh-regulators";
-+		qcom,pmic-id = "b";
-+
-+		vreg_s1b_1p8: smps1 {
-+			regulator-min-microvolt = <1856000>;
-+			regulator-max-microvolt = <2040000>;
-+		};
-+
-+		vreg_s7b_0p9: smps7 {
-+			regulator-min-microvolt = <535000>;
-+			regulator-max-microvolt = <1120000>;
-+		};
-+
-+		vreg_s8b_1p2: smps8 {
-+			regulator-min-microvolt = <1256000>;
-+			regulator-max-microvolt = <1500000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_RET>;
-+		};
-+
-+		vreg_l1b_0p8: ldo1 {
-+			regulator-min-microvolt = <825000>;
-+			regulator-max-microvolt = <925000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l2b_3p0: ldo2 {
-+			regulator-min-microvolt = <2700000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6b_1p2: ldo6 {
-+			regulator-min-microvolt = <1140000>;
-+			regulator-max-microvolt = <1260000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7b_2p9: ldo7 {
-+			regulator-min-microvolt = <2960000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l8b_0p9: ldo8 {
-+			regulator-min-microvolt = <870000>;
-+			regulator-max-microvolt = <970000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l9b_1p2: ldo9 {
-+			regulator-min-microvolt = <1080000>;
-+			regulator-max-microvolt = <1304000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l11b_1p7: ldo11 {
-+			regulator-min-microvolt = <1504000>;
-+			regulator-max-microvolt = <2000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l12b_0p8: ldo12 {
-+			regulator-min-microvolt = <751000>;
-+			regulator-max-microvolt = <824000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l13b_0p8: ldo13 {
-+			regulator-min-microvolt = <530000>;
-+			regulator-max-microvolt = <824000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l14b_1p2: ldo14 {
-+			regulator-min-microvolt = <1080000>;
-+			regulator-max-microvolt = <1304000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l15b_0p8: ldo15 {
-+			regulator-min-microvolt = <765000>;
-+			regulator-max-microvolt = <1020000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l16b_1p2: ldo16 {
-+			regulator-min-microvolt = <1100000>;
-+			regulator-max-microvolt = <1300000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l17b_1p8: ldo17 {
-+			regulator-min-microvolt = <1700000>;
-+			regulator-max-microvolt = <1900000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l18b_1p8: ldo18 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l19b_1p8: ldo19 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+	};
-+
-+	regulators-1 {
-+		compatible = "qcom,pm8350c-rpmh-regulators";
-+		qcom,pmic-id = "c";
-+
-+		vreg_s1c_2p2: smps1 {
-+			regulator-min-microvolt = <2190000>;
-+			regulator-max-microvolt = <2210000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_s9c_1p0: smps9 {
-+			regulator-min-microvolt = <1010000>;
-+			regulator-max-microvolt = <1170000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l1c_1p8: ldo1 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1980000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l2c_1p8: ldo2 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <1980000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l3c_3p0: ldo3 {
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <3540000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l4c_1p8: ldo4 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l5c_1p8: ldo5 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <3300000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l6c_2p9: ldo6 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <2950000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l7c_3p0: ldo7 {
-+			regulator-min-microvolt = <3000000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l8c_1p8: ldo8 {
-+			regulator-min-microvolt = <1620000>;
-+			regulator-max-microvolt = <2000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l9c_2p9: ldo9 {
-+			regulator-min-microvolt = <2960000>;
-+			regulator-max-microvolt = <2960000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l10c_0p8: ldo10 {
-+			regulator-min-microvolt = <720000>;
-+			regulator-max-microvolt = <1050000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l11c_2p8: ldo11 {
-+			regulator-min-microvolt = <2800000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l12c_1p8: ldo12 {
-+			regulator-min-microvolt = <1650000>;
-+			regulator-max-microvolt = <2000000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_l13c_3p0: ldo13 {
-+			regulator-min-microvolt = <2700000>;
-+			regulator-max-microvolt = <3544000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-+		};
-+
-+		vreg_bob: bob {
-+			regulator-min-microvolt = <3008000>;
-+			regulator-max-microvolt = <3960000>;
-+		};
-+	};
-+};
-+
-+&gpi_dma0 {
-+	status = "okay";
-+};
-+
-+&gpi_dma1 {
-+	status = "okay";
-+};
-+
-+&qupv3_id_0 {
-+	status = "okay";
-+};
-+
-+&qupv3_id_1 {
-+	status = "okay";
-+};
-+
-+&sdhc_1 {
-+	non-removable;
-+	no-sd;
-+	no-sdio;
-+
-+	vmmc-supply = <&vreg_l7b_2p9>;
-+	vqmmc-supply = <&vreg_l19b_1p8>;
-+
-+	status = "okay";
-+};
-+
-+&uart5 {
-+	compatible = "qcom,geni-debug-uart";
-+	status = "okay";
-+};
-+
-+&usb_1 {
-+	status = "okay";
-+};
-+
-+&usb_1_dwc3 {
-+	dr_mode = "peripheral";
-+};
-+
-+&usb_1_hsphy {
-+	vdda-pll-supply = <&vreg_l10c_0p8>;
-+	vdda33-supply = <&vreg_l2b_3p0>;
-+	vdda18-supply = <&vreg_l1c_1p8>;
-+	qcom,hs-rise-fall-time-bp = <0>;
-+	qcom,squelch-detector-bp = <(-2090)>;
-+	qcom,hs-disconnect-bp = <1743>;
-+	qcom,hs-amplitude-bp = <1780>;
-+	qcom,hs-crossover-voltage-microvolt = <(-31000)>;
-+	qcom,hs-output-impedance-micro-ohms = <2600000>;
-+
-+	status = "okay";
-+};
-+
-+&usb_1_qmpphy {
-+	vdda-phy-supply = <&vreg_l6b_1p2>;
-+	vdda-pll-supply = <&vreg_l1b_0p8>;
-+
-+	status = "okay";
-+};
-+
-+/* PINCTRL - additions to nodes defined in sc7280.dtsi */
-+
-+&pm8350c_pwm {
-+	status = "okay";
-+};
-+
-+&qup_uart5_tx {
-+	drive-strength = <2>;
-+	bias-disable;
-+};
-+
-+&qup_uart5_rx {
-+	drive-strength = <2>;
-+	bias-pull-up;
-+};
-+
-+&sdc1_clk {
-+	bias-disable;
-+	drive-strength = <16>;
-+};
-+
-+&sdc1_cmd {
-+	bias-pull-up;
-+	drive-strength = <10>;
-+};
-+
-+&sdc1_data {
-+	bias-pull-up;
-+	drive-strength = <10>;
-+};
-+
-+&sdc1_rclk {
-+	bias-pull-down;
-+};
-diff --git a/arch/arm64/boot/dts/qcom/qcm6490.dtsi b/arch/arm64/boot/dts/qcom/qcm6490.dtsi
-new file mode 100644
-index 000000000000..b93270cae9ae
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/qcm6490.dtsi
-@@ -0,0 +1,94 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2023 Qualcomm Innovation Center, Inc. All rights reserved.
-+ */
-+
-+#include "sc7280.dtsi"
-+
-+/*
-+ * Delete unused sc7280 memory nodes and define the memory regions
-+ * required by qcm6490
-+ */
-+/delete-node/ &rmtfs_mem;
-+/delete-node/ &wlan_ce_mem;
-+
-+/{
-+	reserved-memory {
-+		cdsp_secure_heap_mem: cdsp-secure-heap@81800000 {
-+			reg = <0x0 0x81800000 0x0 0x1e00000>;
-+			no-map;
-+		};
-+
-+		camera_mem: camera@84300000 {
-+			reg = <0x0 0x84300000 0x0 0x500000>;
-+			no-map;
-+		};
-+
-+		wpss_mem: wpss@0x84800000 {
-+			reg = <0x0 0x84800000 0x0 0x1900000>;
-+			no-map;
-+		};
-+
-+		adsp_mem: adsp@86100000 {
-+			reg = <0x0 0x86100000 0x0 0x2800000>;
-+			no-map;
-+		};
-+
-+		cdsp_mem: cdsp@88900000 {
-+			reg = <0x0 0x88900000 0x0 0x1e00000>;
-+			no-map;
-+		};
-+
-+		cvp_mem: cvp@8ac00000 {
-+			reg = <0x0 0x8ac00000 0x0 0x500000>;
-+			no-map;
-+		};
-+
-+		ipa_gsi_mem: ipa-gsi@8b110000 {
-+			reg = <0x0 0x8b110000 0x0 0xa000>;
-+			no-map;
-+		};
-+
-+		gpu_microcode_mem: gpu-microcode@8b11a000 {
-+			reg = <0x0 0x8b11a000 0x0 0x2000>;
-+			no-map;
-+		};
-+
-+		mpss_mem: mpss@8b800000 {
-+			reg = <0x0 0x8b800000 0x0 0xf600000>;
-+			no-map;
-+		};
-+
-+		tz_stat_mem: tz-stat@c0000000 {
-+			reg = <0x0 0xc0000000 0x0 0x100000>;
-+			no-map;
-+		};
-+
-+		tags_mem: tags@c0100000 {
-+			reg = <0x0 0xc0100000 0x0 0x1200000>;
-+			no-map;
-+		};
-+
-+		qtee_mem: qtee@c1300000 {
-+			reg = <0x0 0xc1300000 0x0 0x500000>;
-+			no-map;
-+		};
-+
-+		trusted_apps_mem: trusted_apps@c1800000 {
-+			reg = <0x0 0xc1800000 0x0 0x3900000>;
-+			no-map;
-+		};
-+	};
-+};
-+
-+&video_mem {
-+	reg = <0x0 0x8a700000 0x0 0x500000>;
-+};
-+
-+&wifi {
-+	memory-region = <&wlan_fw_mem>;
-+};
-+
-+&xbl_mem {
-+	reg = <0x0 0x80700000 0x0 0x100000>;
-+};
---
-2.42.0
+One line is enough.
 
+> +			return ret;
+> +		}
+> +	}
+> +
+>  	dev_info(tps->dev, "controller switched to \"APP\" mode\n");
+>  
+>  	return 0;
+> diff --git a/drivers/usb/typec/tipd/tps6598x.h b/drivers/usb/typec/tipd/tps6598x.h
+> index a80d0929f3ee..c000170f4547 100644
+> --- a/drivers/usb/typec/tipd/tps6598x.h
+> +++ b/drivers/usb/typec/tipd/tps6598x.h
+> @@ -200,6 +200,7 @@
+>  #define TPS_DATA_STATUS_DP_SPEC_PIN_ASSIGNMENT_B    (BIT(2) | BIT(1))
+>  
+>  /* BOOT STATUS REG*/
+> +#define TPS_BOOT_STATUS_DEAD_BATTERY_FLAG	BIT(2)
+>  #define TPS_BOOT_STATUS_I2C_EEPROM_PRESENT	BIT(3)
+>  
+>  #endif /* __TPS6598X_H__ */
+> -- 
+> 2.34.1
+
+Br,
+
+-- 
+heikki
