@@ -2,357 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 957577B7067
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906FD7B706E
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 19:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240710AbjJCR4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 13:56:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40178 "EHLO
+        id S240735AbjJCR63 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 13:58:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232089AbjJCR4P (ORCPT
+        with ESMTP id S240690AbjJCR62 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 13:56:15 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA40AB
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 10:56:11 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5041d6d8b10so1509646e87.2
-        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 10:56:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696355769; x=1696960569; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1JZhuE5j+iZE4J9mPwY5TV04FryZBb7bk3P/vsKpdYA=;
-        b=JqESwYSCRBsKPPFZNXtCG3UikO4hnJ813CauROOXybOgwXt4qhQKyZ/nrlQyaMsVWD
-         1sAp7K8OPZoof5+zj4F/kKcug52s3vnksxfiluCSsMwx21Wm5H/Vt5A1Ev5PVdyy73Fg
-         ZSKj5XCYlAYJ7GptUJptZ7X9MVnQf2bkm3x62oNCGlJB8y8+rtoDnt1JqFT4gBfSmh5X
-         9NY91QRUj3bcFH359mM3RyYuZeygiYznCF0kSwxr3VnHK826ESxTjNewb7D79/Esplwn
-         F45s/wCTqe8sQgnazVVZCzyLzbpL6CJKqT8SFMqIw6j/tb/hq0dxS1C9+GC3mpc5txV/
-         1Ffw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696355769; x=1696960569;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1JZhuE5j+iZE4J9mPwY5TV04FryZBb7bk3P/vsKpdYA=;
-        b=WM2rAEUs2q6YYB7I/eaDDawb3GkTM32EzvjHxNB8P7Wqbv3IYSFxzMfkTUOxrsSO8U
-         9V13zNhPH4FG9Do2eP6bcY5OXWSZkmXACCtcweA4iEUA9jXwwl+yrWr8wuhCpIa4zRO7
-         i2dYACAsoy4eeTM+nbQ5w/u7JKeKkqMcjakd6eLILbsMIgiQ/Vq+3ZqHklnEK7nex0vP
-         27vc6SqmahFE7WIlrtsINNxqREB1JaH4YKkRBG+stIiPJotDIxPlLsAD1IXjQynsSGNo
-         1KsEAkcVLs8tXq4Oo7TOnmNbe1lqTMqcJp6YuU6QW2S/pK62yul/1vMM60LgdtAu1jx2
-         ClFA==
-X-Gm-Message-State: AOJu0Yyh2LXPOCQDM2v5mOe48kTe8bfT1A06qmvwf/vrHBf5E73bHv52
-        c6IGAE1UN33IqPZPhUnZ0NuDYA==
-X-Google-Smtp-Source: AGHT+IFNBTJc3E8wqGittkfs0CjrrMkLQqlQpI0ZdIa1dknPPv1CsHI/nQqXOnxcOdxURhyhB6xk1g==
-X-Received: by 2002:a19:9103:0:b0:500:a0a3:80ff with SMTP id t3-20020a199103000000b00500a0a380ffmr11195126lfd.58.1696355769477;
-        Tue, 03 Oct 2023 10:56:09 -0700 (PDT)
-Received: from [10.10.15.130] ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id c14-20020ac2530e000000b005057184ae62sm273632lfh.96.2023.10.03.10.56.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Oct 2023 10:56:09 -0700 (PDT)
-Message-ID: <e7576c3b-82d2-4902-a19c-af2878ef7dbd@linaro.org>
-Date:   Tue, 3 Oct 2023 20:56:08 +0300
+        Tue, 3 Oct 2023 13:58:28 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2071.outbound.protection.outlook.com [40.107.237.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97FF3A6;
+        Tue,  3 Oct 2023 10:58:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ngmmfHgbdjNCDI3Hk/Yd9DoTr3ZaC73rGaMU4n260Xl3wAKklH4U2dY0Z5nlV0h086KeJhvOKOuojPrpS/smlyvAlXf2yHyzENvb48aglULDzwNLWZdXIDZwuIcYU9XP8Ya9zsordRNKWrh8Q8wTdu9T5fD3Tr4IGRQzWlxlzA/qi1IPz1SBz6EI2GaOIYklJa7bGtfe59AvNzqBxgpTIb2Exqcc7kOfKtPG+jbnIFaqeY+43mtpz4pGQFINlmJOebTEdqM8jGHxgtsBkTIz24RjQBuSX+bYXgiYxU1bjyMhIt02oZLNf+AfuOGAq4RL1JqdRyHgCNLGld9i/tdP/Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+czx7X/JUK7vjfiuJrF6CjADJVnyrInu6F/zpc5mZPQ=;
+ b=ONwa8a0seFpU+03tOtxqUepaJP2HhJCgzbzx3FMcPRjjmRLG4jyI6v82odgtg2gLw/lWB51ijKQMu4QE2rgfwcJV0l8czkEa4HcPA+4Wes6jy7o2QhsqZan/6vNcHwrYDl3yx96lB/eTmnRk9P9SkM+947jcwYliMPtxLVoprQtEa9Yly7pknhsc6bBedJnXIbgoodwOymKINSGQgPXdFHYmKfugE1mTswvLG1oq8WdgpQxYpFDRXg5h2TpRGVvZCkoRohVo1WSg2+lEThbPvmUjFJ1kmZXUtaSyFzzrT3bN4rbvwI+w7DuOMUsVQaM/YllyMvu9ZFFPcDPay2mZCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+czx7X/JUK7vjfiuJrF6CjADJVnyrInu6F/zpc5mZPQ=;
+ b=NAmIzY27Wf43zRFy91uxURizmdGYG0V1wW0GhYTTNMjtQdFbg5Q6JDLBGN0vA4viNtLcp6kK7SQiBbEor1hp47tJZAUENPEJ77Tx9l+cd71T6+yfNROsrWiAMRXsKM8nvJAvluwQS7fT0tTT3D/hO6DvW8gBRFByTeQgzjforN0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by SA1PR17MB5139.namprd17.prod.outlook.com (2603:10b6:806:1c2::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.27; Tue, 3 Oct
+ 2023 17:58:20 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::5565:d559:61b0:e2df]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::5565:d559:61b0:e2df%6]) with mapi id 15.20.6813.027; Tue, 3 Oct 2023
+ 17:58:20 +0000
+Date:   Tue, 3 Oct 2023 13:58:12 -0400
+From:   Gregory Price <gregory.price@memverge.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Gregory Price <gourry.memverge@gmail.com>,
+        linux-mm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-cxl@vger.kernel.org, luto@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, arnd@arndb.de, akpm@linux-foundation.org,
+        x86@kernel.org
+Subject: Re: [RFC v2 4/5] mm/migrate: Create move_phys_pages syscall
+Message-ID: <ZRxWNFBdCAe9KIwj@memverge.com>
+References: <20230919230909.530174-1-gregory.price@memverge.com>
+ <20230919230909.530174-5-gregory.price@memverge.com>
+ <20231002150746.00007516@Huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231002150746.00007516@Huawei.com>
+X-ClientProxiedBy: BY5PR13CA0015.namprd13.prod.outlook.com
+ (2603:10b6:a03:180::28) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 8/8] drm/msm/dp: move of_dp_aux_populate_bus() to eDP
- probe()
-Content-Language: en-GB
-To:     Kuogee Hsieh <quic_khsieh@quicinc.com>
-Cc:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
-        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
-        agross@kernel.org, andersson@kernel.org, quic_abhinavk@quicinc.com,
-        quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
-        marijn.suijten@somainline.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1695848028-18023-1-git-send-email-quic_khsieh@quicinc.com>
- <1695848028-18023-9-git-send-email-quic_khsieh@quicinc.com>
- <CAA8EJprfjt7w+3YJAieBabuMso=-obRXss7-9Jrif23WmOJw5w@mail.gmail.com>
- <2d8d4354-6dbb-e810-6efb-ca6b31f71b45@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <2d8d4354-6dbb-e810-6efb-ca6b31f71b45@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|SA1PR17MB5139:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2c5b887f-507d-45fc-be2a-08dbc43a5437
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Ga+aIiLikx1I79diPTUvvwjQ6EwL3DBCqi8E0XtQxsyKg7+cNc9Bu5qFGqcOaYHYJUZroOAIrkfTcuSxYyyMVmpWKHMzlzvzvDd6mXBdDAyJm9JWPzXjex0OTtFuBhvq8hXf/BSF/QeBEOsgHbrvlwxZlv5wNEfZ16JacBdxj/3/zgbIJIsVyakE9jWMpWQQcHkfAf+zifcb9QuYoMUJ181QUSneQHDgoXTr5pGfR9vFRUS5oTF0WZJzloTWeEpnQq5hOJlD1KcAK/+now/gfS0i4/ezQK47As/DgjZbCW92W2VLTP2+wGscp32LIcGNi4xC3R5VN+S1YoqDN2zBo5pp+y/gSp+sowmrhmRAqpTWGvZXlZOx5/CztE02Y6DaXBcVRIGlpufiQU31tNsNUMUp5sFqVqYHH1LF0yU1Ae4/gBfnPT4ho+qbOUFG2pcv2D2v+b66Xo74+kXwyBiQ7s6XM9WMYkWc0GkKPsmPKy8oSBkyaH0hxBIUC2eXZs20YkMoEQUU2BFDkMbqHSdsCztZaj5Ev7O6+gsFXYPKEyLRa69ElVMcQ1VuTzVr5FRu
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39840400004)(136003)(346002)(396003)(366004)(230922051799003)(186009)(64100799003)(1800799009)(451199024)(6666004)(6512007)(6506007)(6486002)(478600001)(38100700002)(86362001)(2906002)(6916009)(83380400001)(2616005)(26005)(36756003)(8676002)(66946007)(66476007)(66556008)(4326008)(44832011)(5660300002)(7416002)(316002)(41300700001)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?6mscAyz5jzEA3eaFFW/pEbNgmUrYaRjcH1/ea3e+fAymoW04vjnNpo4zW4Jb?=
+ =?us-ascii?Q?Wo7BKAUyftZNo5jD+Qq+jK4zts7GRkPsd3ttZ2LhsytZwmUYDR5rWeQbndzu?=
+ =?us-ascii?Q?C2D1n9tyMy9Nmj2Ww7ogVFLsNT8p4X3lFQBg/kfWpA6wjmNhziOLj/yIpFbc?=
+ =?us-ascii?Q?Advyvb4kT6y2E7VdLmx8lGqXr0Sx4jdpEKYxoKtQXxY/7jiEBsK1/XP9Lay1?=
+ =?us-ascii?Q?n8bfFEnwGpWqPyrL1F7y5lCcwrsrCIFt56qwv3OiVGNczuc9H6P46ql9S4rb?=
+ =?us-ascii?Q?Gz0JNEQYTWtpzvVfSlQamsR7QaFQeL/EVaSCWQN7/2HoEx0XjEWkVe2qwwPL?=
+ =?us-ascii?Q?5g/2gJQlln87bw99I/pX9YzTRAvRKCizHInn4XC34LCQ+eu5QAuQAH8qq3L+?=
+ =?us-ascii?Q?6vywDlWd6JKU5e6y5Z7qTlLfzh/sYenQGJ0Q0axsHqKM6RKnfhPf3DNKnI32?=
+ =?us-ascii?Q?8DLUotGwiar5s37kwREHKKutR4Jt4K1aewXtrBiLX4QYXnubG3T/r1Vu97Qw?=
+ =?us-ascii?Q?rCIFEdBgPNa5Ed470p2ugXWjK2tWNG3t4lFtU4yhPCB909/1PPRPZQC26d07?=
+ =?us-ascii?Q?zLcVIdx9ooYC5ZLQlcge+thNc+RJmq0FsuHo1+Bz8uMa3DRoTIfdhXJt9LJB?=
+ =?us-ascii?Q?zjerR3Ja0l7Z/vO4vYDIYNAFHCe91oZ+4oLk+3cKGr/7kFK8axLqbM5uu8CK?=
+ =?us-ascii?Q?afyVy2Fgvi0UHk+vftV1HOc/qYYs1BNUuYu40Wnujk6ycCxRN3cZjxHMbvAw?=
+ =?us-ascii?Q?jEzzgxTYs6ySEsyn9pXO79lZgw/0mQyZ6cOPsV4IborviBwa9TFkKKbr7PWs?=
+ =?us-ascii?Q?hQJr6iLXT3KZFz3fSBEKszd+QktwL/zWvINzSUc7QVKixamF0UyFR5J2N08K?=
+ =?us-ascii?Q?JsY4JMsqbT/zjAf7oPwTAKaMy1278QGyw10O60q6FxYrt69yB192cc5R31bd?=
+ =?us-ascii?Q?0o3BCslbqbn1+Ae/qxfx7vxbW77saCVbBNWEF62Q207CxcU/N4t9pfEIo0Ai?=
+ =?us-ascii?Q?x0+AG1xtWHWv8vG4sP9olcyEZe6fF+LaRwNaf8U3nd9Re8BdPhSag6Z1qp+u?=
+ =?us-ascii?Q?DZrnx6viZ7P0Wr6KUcUqlImTJHI97GOfvFA9L3KJHOop9qFvgCbLEhnq3Ska?=
+ =?us-ascii?Q?0HTrLOzyvQsbGrPUtfLiGgcUMBiakdn7a9GQcglLaLRd8FnDGha0DhFOoMqz?=
+ =?us-ascii?Q?ukSxD2U3SghGBl0tKxFdLD55zddWDq85kMwkoyk3wZKI05XgPiF1RZhWCiL8?=
+ =?us-ascii?Q?TPvwJUBubsyKYE92FqcaC6L3xLA3I9IV6OPyY+L0gXgOkk08sFvFWeYpRC2i?=
+ =?us-ascii?Q?crqAbtSurXIJXa4o4UsFs7zWXMKd2yEz0JgJkLTLGi3YVuIzfVpNvCffxe6s?=
+ =?us-ascii?Q?UYzLzHqJa1JHjvn6dadXu91M9qljhqi6BQJAmez9Odff4SXgSaM9/RUAc/4c?=
+ =?us-ascii?Q?yy2mvs5jYozhl+ZQ+CQDpiIupNsNknmQpRDspRRczUnWJ9Oqk+8xfBGBSx6C?=
+ =?us-ascii?Q?xltg22zUfu9ck/0sWC4ijARaspY1ivtPBfJFDpKLbhApqM2bazijnM34wyCW?=
+ =?us-ascii?Q?Qmt8IRA0KSpMFEjpJLGEfWgHwPxe97TTh4KPMl0oh34rtYta8Hx3IsDRmcW9?=
+ =?us-ascii?Q?oA=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c5b887f-507d-45fc-be2a-08dbc43a5437
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 17:58:20.5766
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: JnG6TzgTqLblkbecGnC6eEIKY4u0M0sdsKtPCAOPR47eUjJo2+BAGgqtGIPCD9/UOVsmXlBxrsjBy6zEQZ8lERvUU2i6FBKYeyvml2TdfVg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR17MB5139
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/10/2023 20:25, Kuogee Hsieh wrote:
+On Mon, Oct 02, 2023 at 03:07:46PM +0100, Jonathan Cameron wrote:
+> On Tue, 19 Sep 2023 19:09:07 -0400
+> Gregory Price <gourry.memverge@gmail.com> wrote:
 > 
-> On 9/27/2023 2:57 PM, Dmitry Baryshkov wrote:
->> On Wed, 27 Sept 2023 at 23:54, Kuogee Hsieh <quic_khsieh@quicinc.com> 
->> wrote:
->>> Currently eDP population is done at msm_dp_modeset_init() which happen
->>> at binding time. Move eDP population to be done at display probe time
->>> so that probe deferral cases can be handled effectively.
->>> wait_for_hpd_asserted callback is added during drm_dp_aux_init()
->>> to ensure eDP's HPD is up before proceeding eDP population.
->>>
->>> Changes in v4:
->>> -- delete duplicate initialize code to dp_aux before 
->>> drm_dp_aux_register()
->>> -- delete of_get_child_by_name(dev->of_node, "aux-bus") and inline 
->>> the function
->>> -- not initialize rc = 0
->>>
->>> Changes in v3:
->>> -- add done_probing callback into devm_of_dp_aux_populate_bus()
->>>
->>> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
->>> ---
->>>   drivers/gpu/drm/msm/dp/dp_aux.c     | 34 ++++++++++++++----
->>>   drivers/gpu/drm/msm/dp/dp_display.c | 69 
->>> ++++++++++++++++++-------------------
->>>   2 files changed, 60 insertions(+), 43 deletions(-)
->>>
->>> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c 
->>> b/drivers/gpu/drm/msm/dp/dp_aux.c
->>> index 22eb774..425b5c5 100644
->>> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
->>> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
->>> @@ -480,7 +480,6 @@ void dp_aux_deinit(struct drm_dp_aux *dp_aux)
->>>
->>>   int dp_aux_register(struct drm_dp_aux *dp_aux)
->>>   {
->>> -       struct dp_aux_private *aux;
->>>          int ret;
->>>
->>>          if (!dp_aux) {
->>> @@ -488,12 +487,7 @@ int dp_aux_register(struct drm_dp_aux *dp_aux)
->>>                  return -EINVAL;
->>>          }
->>>
->>> -       aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
->>> -
->>> -       aux->dp_aux.name = "dpu_dp_aux";
->>> -       aux->dp_aux.dev = aux->dev;
->>> -       aux->dp_aux.transfer = dp_aux_transfer;
->>> -       ret = drm_dp_aux_register(&aux->dp_aux);
->>> +       ret = drm_dp_aux_register(dp_aux);
->>>          if (ret) {
->>>                  DRM_ERROR("%s: failed to register drm aux: %d\n", 
->>> __func__,
->>>                                  ret);
->>> @@ -508,6 +502,21 @@ void dp_aux_unregister(struct drm_dp_aux *dp_aux)
->>>          drm_dp_aux_unregister(dp_aux);
->>>   }
->>>
->>> +static int dp_wait_hpd_asserted(struct drm_dp_aux *dp_aux,
->>> +                                unsigned long wait_us)
->>> +{
->>> +       int ret;
->>> +       struct dp_aux_private *aux;
->>> +
->>> +       aux = container_of(dp_aux, struct dp_aux_private, dp_aux);
->>> +
->>> +       pm_runtime_get_sync(aux->dev);
->>> +       ret = dp_catalog_aux_wait_for_hpd_connect_state(aux->catalog);
->>> +       pm_runtime_put_sync(aux->dev);
->> Ok, so here you have used put_sync instead of autosuspend. Can we have
->> some uniformity? (I'd prefer to see put_sync or just put everywhere)
+> > @@ -2181,6 +2290,10 @@ static int do_pages_move(struct mm_struct *mm, nodemask_t task_nodes,
+> >  	int start, i;
+> >  	int err = 0, err1;
+> >  
+> > +	/* This should never occur in regular operation */
+> > +	if (!mm && nodes_weight(task_nodes) > 0)
 > 
+> You document below that task_nodes isn't used if !mm but it is used
+> to indicate this condition...
 > 
-> my point is,
-> 
-> since display is user interface,
-> 
-> if there has any inputs before timer expire then there is no reason to 
-> execute  pm_runtime_suspend().
-> 
-> otherwise pm_runtime_suspend() should be executed.
-> 
-> Therefore I used autosuspend  at aux_transfer() an 
-> ddp_bridge_atomic_post_disable().
-> 
-> here is not related to user interface so that i use put_sysn() directly.
-> 
-> is my point make sense?
-> 
->   or should I drop all autosuspend and replace them with put_sync()?
 
-This was my question from the beginning: what was the reason for using 
-autosuspend? Did it bring any sensible improvement in the disable & 
-reenable path?
+good point, and in fact the code below does ignore the contents of
+nodes_weight if mm is null, so i can just drop this check.
 
+> > +set_status:
+> > +		*status = err;
 > 
+> Given you update it unconditionally this seems to wipe out earlier
+> potential errors with the nid.
 > 
->>
->>> +
->>> +       return ret;
->>> +}
->>> +
->>>   struct drm_dp_aux *dp_aux_get(struct device *dev, struct dp_catalog 
->>> *catalog,
->>>                                bool is_edp)
->>>   {
->>> @@ -531,6 +540,17 @@ struct drm_dp_aux *dp_aux_get(struct device 
->>> *dev, struct dp_catalog *catalog,
->>>          aux->catalog = catalog;
->>>          aux->retry_cnt = 0;
->>>
->>> +       /*
->>> +        * Use the drm_dp_aux_init() to use the aux adapter
->>> +        * before registering aux with the DRM device so that
->>> +        * msm edp panel can be detected by generic_dep_panel_probe().
->> eDP, AUX, generic_edp_panel_probe().
->>
->>> +        */
->>> +       aux->dp_aux.name = "dpu_dp_aux";
->>> +       aux->dp_aux.dev = dev;
->>> +       aux->dp_aux.transfer = dp_aux_transfer;
->>> +       aux->dp_aux.wait_hpd_asserted = dp_wait_hpd_asserted;
->>> +       drm_dp_aux_init(&aux->dp_aux);
->>> +
->>>          return &aux->dp_aux;
->>>   }
->>>
->>> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c 
->>> b/drivers/gpu/drm/msm/dp/dp_display.c
->>> index 711d262..9a2b403 100644
->>> --- a/drivers/gpu/drm/msm/dp/dp_display.c
->>> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
->>> @@ -1203,6 +1203,28 @@ static const struct msm_dp_desc 
->>> *dp_display_get_desc(struct platform_device *pde
->>>          return NULL;
->>>   }
->>>
->>> +static int dp_auxbus_done_probe(struct drm_dp_aux *aux)
->>> +{
->>> +       int rc;
->>> +
->>> +       rc = component_add(aux->dev, &dp_display_comp_ops);
->>> +       if (rc)
->>> +               DRM_ERROR("eDP component add failed, rc=%d\n", rc);
->> drop.
->>
->>> +
->>> +       return rc;
->>> +}
->>> +
->>> +static inline int dp_display_auxbus_population(struct 
->>> dp_display_private *dp)
->> It's not `population`. It is just `populate`.
->>
->> Also please inline this function.
->>
->>
->>> +{
->>> +       int ret;
->>> +
->>> +       ret = devm_of_dp_aux_populate_bus(dp->aux, 
->>> dp_auxbus_done_probe);
->>> +       if (ret == -ENODEV)
->>> +               DRM_ERROR("aux-bus not found\n");
->>> +
->>> +       return ret;
->>> +}
->>> +
->>>   static int dp_display_probe(struct platform_device *pdev)
->>>   {
->>>          int rc = 0;
->>> @@ -1271,10 +1293,16 @@ static int dp_display_probe(struct 
->>> platform_device *pdev)
->>>          if (rc)
->>>                  return rc;
->>>
->>> -       rc = component_add(&pdev->dev, &dp_display_comp_ops);
->>> -       if (rc) {
->>> -               DRM_ERROR("component add failed, rc=%d\n", rc);
->>> -               dp_display_deinit_sub_modules(dp);
->>> +       if (dp->dp_display.is_edp) {
->>> +               rc = dp_display_auxbus_population(dp);
->>> +               if (rc)
->>> +                       DRM_ERROR("eDP auxbus population failed, 
->>> rc=%d\n", rc);
->>> +       } else {
->>> +               rc = component_add(&pdev->dev, &dp_display_comp_ops);
->>> +               if (rc) {
->>> +                       DRM_ERROR("component add failed, rc=%d\n", rc);
->>> +                       dp_display_deinit_sub_modules(dp);
->>> +               }
->>>          }
->>>
->>>          return rc;
->>> @@ -1285,8 +1313,6 @@ static int dp_display_remove(struct 
->>> platform_device *pdev)
->>>          struct dp_display_private *dp = 
->>> dev_get_dp_display_private(&pdev->dev);
->>>
->>>          component_del(&pdev->dev, &dp_display_comp_ops);
->>> -       dp_display_deinit_sub_modules(dp);
->>> -
->>>          platform_set_drvdata(pdev, NULL);
->>>
->>>          dp_display_deinit_sub_modules(dp);
->>> @@ -1385,29 +1411,8 @@ static int dp_display_get_next_bridge(struct 
->>> msm_dp *dp)
->>>   {
->>>          int rc;
->>>          struct dp_display_private *dp_priv;
->>> -       struct device_node *aux_bus;
->>> -       struct device *dev;
->>>
->>>          dp_priv = container_of(dp, struct dp_display_private, 
->>> dp_display);
->>> -       dev = &dp_priv->pdev->dev;
->>> -       aux_bus = of_get_child_by_name(dev->of_node, "aux-bus");
->>> -
->>> -       if (aux_bus && dp->is_edp) {
->>> -               /*
->>> -                * The code below assumes that the panel will finish 
->>> probing
->>> -                * by the time devm_of_dp_aux_populate_ep_devices() 
->>> returns.
->>> -                * This isn't a great assumption since it will fail 
->>> if the
->>> -                * panel driver is probed asynchronously but is the 
->>> best we
->>> -                * can do without a bigger driver reorganization.
->>> -                */
->>> -               rc = of_dp_aux_populate_bus(dp_priv->aux, NULL);
->>> -               of_node_put(aux_bus);
->>> -               if (rc)
->>> -                       goto error;
->>> -       } else if (dp->is_edp) {
->>> -               DRM_ERROR("eDP aux_bus not found\n");
->>> -               return -ENODEV;
->>> -       }
->>>
->>>          /*
->>>           * External bridges are mandatory for eDP interfaces: one 
->>> has to
->>> @@ -1420,17 +1425,9 @@ static int dp_display_get_next_bridge(struct 
->>> msm_dp *dp)
->>>          if (!dp->is_edp && rc == -ENODEV)
->>>                  return 0;
->>>
->>> -       if (!rc) {
->>> +       if (!rc)
->>>                  dp->next_bridge = dp_priv->parser->next_bridge;
->>> -               return 0;
->>> -       }
->>>
->>> -error:
->>> -       if (dp->is_edp) {
->>> -               of_dp_aux_depopulate_bus(dp_priv->aux);
->>> -               dp_display_host_phy_exit(dp_priv);
->>> -               dp_display_host_deinit(dp_priv);
->>> -       }
->>>          return rc;
->>>   }
->>>
->>> -- 
->>> 2.7.4
->>>
->>
+> > +
+> > +		pages++;
+> > +		status++;
+> > +	}
+> > +}
+> 
 
--- 
-With best wishes
-Dmitry
+status is a list, the status++ increments the list pointer.
 
+> > +	/*
+> > +	 * When the mm argument to do_pages_move is null, the task_nodes
+> > +	 * argument is ignored, so pass in an empty nodemask as a dummy.
+> 
+> If ignored, why bother clearing it?  Looks like you are using it as
+> as signal rather than ignoring it. So not sure this comment is correct.
+> 
+> > +	 */
+> > +	nodes_clear(dummy_nodes);
+
+I'm a bit of a stickler around uninitialized memory, seemed better to
+ensure the nodelist was empty to force errors associated with an empty
+nodelist should future updates break do_pages_move to remove the
+ignoring mechanism.
+
+That said, I updated the function such that it does actually ignore it,
+but I'll leave the here since there's no harm in clearing the nodemask
+and leads to more predictable behavior.
+
+Unless there is particularly strong feelings about this, then i'm fine
+to remove it.
