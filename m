@@ -2,125 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99AF87B6791
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 193D67B6794
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 13:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240035AbjJCLOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 07:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
+        id S240013AbjJCLPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 07:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240089AbjJCLOh (ORCPT
+        with ESMTP id S239846AbjJCLPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 07:14:37 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB45193;
-        Tue,  3 Oct 2023 04:14:13 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 290616607330;
-        Tue,  3 Oct 2023 12:13:57 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1696331638;
-        bh=hIZCBWOdq56nnFmuMw8Yfx0EaOSNWmye+u5MsaxkvMk=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=LGlEBYbuY63Hchodh7bTyq5hzODdZChQ/OdstXwzcxqLmt0ucGXdNpEzV6TIUZf9u
-         ki6CZXIR1uAvPAV50mM5Ooqd6A5rjlLWqUpkF99k10n7UFrbrbfftrVibulI8qzVh3
-         sEaz3sAGneEL9Ck3aSHOvAtnyxtfxc1WNPFwYR+EwrFrw6XJO4DHjxsWyyPfVPICQq
-         DNuG1kZd1iMzb/FfdOQ/Oq7jHxVhT5bBLtlg7S1inH814KXZpfSFbHIuNMSAb9ZPGj
-         bagR0BpDdi3FErFpd8gsvAflzNo8bOATDPl1xL5Sa+zFIxawFJjwDlVA1FE9Olm1Ea
-         j8HZFvL/FDw9g==
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Date:   Tue, 03 Oct 2023 13:13:47 +0200
-Subject: [PATCH 5/5] arm64: dts: mediatek: mt8195: Set DSU PMU status to
- fail
+        Tue, 3 Oct 2023 07:15:14 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2308ECC;
+        Tue,  3 Oct 2023 04:14:53 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53447d0241eso1331316a12.3;
+        Tue, 03 Oct 2023 04:14:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696331691; x=1696936491; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+YKfyhGWK50EYX6P6nsymBrzK3PdYjAuHWlw+828dds=;
+        b=mRYoWCwb8IY9fI3q38Zl1kHtvDP2PDYj37b6kUemdrmMOOsF4T/AUiLmKiGty+Htu4
+         u/vjVmHPaJbi+DF/X0N6yQOf4sqPgZBTdspCXSRGLH9qHpw8tabfl0S1XKPiWTC8wq7H
+         qZDc3st7oDb3YMK0d2iE3qFndr98ryfeMX+/knRk61HnL0iGR42ajZEzuBKaoTXhCVNN
+         euoRHtrQaWll/dvDevn0zaLNgsvnwug8rE1PI99yyr6uKG9CTklvU+IVoB7qFsfOntUO
+         c996wjxL6mvx7HT/b8ZQUd7GdO/SFXl/UA91f+BFN+cUxJlkaygyna8LgEwKGfVeqG7Z
+         hz7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696331691; x=1696936491;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+YKfyhGWK50EYX6P6nsymBrzK3PdYjAuHWlw+828dds=;
+        b=GnNT8tiDq9fH9Q7i0Li04KIauvDB7iXXSdylNfmn2y0h7iunkJ0Nn60n4DOocomvYo
+         b3JNrd6hGCVNUlrC3xNqJ6G4mZiKHvFRrgoGLLBx/hTt5z4/6mSDgx3OIJQFjrschKB1
+         je7ncnSz2SyoN0UQXH8wOzxoK/Ffmdf/tlXgjRMn0Dq73V1z7hRcMJzyOGAEHxMW3cAq
+         TYd+osufO8NVkugysy/0x0XszIRw26nlxQYfI97CQl4HxjKISdjDDBQTY67n6fNJKwRn
+         JSv+ohoAs8UMEx36hXS4Bvdg6JzowWpGEpqAbq5rsDEfI5jOxFZcC3VDh6q97mb7i2D+
+         /sXQ==
+X-Gm-Message-State: AOJu0Yy6BNPTpe4qjTYQs+SlYCFDwKIwsaKKmoxzFlYGS0pf6+xD/QfQ
+        JVMSlI+w87sn8H/muy1WyRXw13NP97U4pcOAAb4=
+X-Google-Smtp-Source: AGHT+IFNmgPgmDX35YnDAkO8uZYBiO9rLldccZAMLi6NZh7xwDZfCJTSRNlCKb2bNRHCmCMwStHxFg==
+X-Received: by 2002:a17:906:1cd:b0:9ae:5492:640 with SMTP id 13-20020a17090601cd00b009ae54920640mr11178573ejj.32.1696331691204;
+        Tue, 03 Oct 2023 04:14:51 -0700 (PDT)
+Received: from primary ([213.139.52.198])
+        by smtp.gmail.com with ESMTPSA id y22-20020a170906449600b0098e2969ed44sm881828ejo.45.2023.10.03.04.14.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 04:14:50 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 07:14:47 -0400
+From:   Abdel Alkuor <alkuor@gmail.com>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, bryan.odonoghue@linaro.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ryan.eleceng@gmail.com,
+        robh+dt@kernel.org, conor+dt@kernel.org,
+        devicetree@vger.kernel.org, Abdel Alkuor <abdelalkuor@geotab.com>
+Subject: Re: [PATCH v9 07/14] USB: typec: tps6598x: Apply patch again after
+ power resume
+Message-ID: <ZRv3pz6E5Jc48VxL@primary>
+References: <20231001081134.37101-1-alkuor@gmail.com>
+ <20231001081134.37101-8-alkuor@gmail.com>
+ <ZRuy1NqA/VfWbBWn@kuha.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20231003-mediatek-fixes-v6-7-v1-5-dad7cd62a8ff@collabora.com>
-References: <20231003-mediatek-fixes-v6-7-v1-0-dad7cd62a8ff@collabora.com>
-In-Reply-To: <20231003-mediatek-fixes-v6-7-v1-0-dad7cd62a8ff@collabora.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Miles Chen <miles.chen@mediatek.com>,
-        Macpaul Lin <macpaul.lin@mediatek.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Sam Shih <sam.shih@mediatek.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Jieyy Yang <jieyy.yang@mediatek.com>,
-        Tinghan Shen <tinghan.shen@mediatek.com>,
-        Seiya Wang <seiya.wang@mediatek.com>, soc@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-        <nfraprado@collabora.com>
-X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1870;
- i=angelogioacchino.delregno@collabora.com; h=from:subject:message-id;
- bh=IZfn1ZaZiDCR69psn2/IYKM29jkr+w6U1WIz4R61yqQ=;
- b=owGbwMvMwCU2y4zl/NrpLRWMp9WSGFKlv+eXcT7jOS70uXRLdu9Lf9VuMcYHfR8OFWz/mDznn9/H
- wxrHOkpZGMS4GGTFFFnU79ZkP1+zkvFI+9kSmDmsTCBDGLg4BWAircaMDG84zh3bGHmkhNlz+4uQz8
- 9XxLzluLWr5p1g6leLrrNtlUIMf6VOWSr9EV1fsM48WLKz8PiyZ61Nrz+t6FxjOOVwolS1JTsA
-X-Developer-Key: i=angelogioacchino.delregno@collabora.com; a=openpgp;
- fpr=57152E620CAF29C5DBE574766833ABB5BEBAF7B7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZRuy1NqA/VfWbBWn@kuha.fi.intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Nícolas F. R. A. Prado" <nfraprado@collabora.com>
+On Tue, Oct 03, 2023 at 09:21:08AM +0300, Heikki Krogerus wrote:
+> On Sun, Oct 01, 2023 at 04:11:27AM -0400, Abdel Alkuor wrote:
+> > From: Abdel Alkuor <abdelalkuor@geotab.com>
+> > 
+> > TPS25750 PD controller might be powered off externally at power suspend,
+> > after resuming PD controller power back, apply the patch again.
+> > 
+> > Signed-off-by: Abdel Alkuor <abdelalkuor@geotab.com>
+> 
+> This one looks also like something that should be part of the patch 4.
+> 
+> My concern is that with these separated features you are creating points
+> into the kernel git tree where TPS25750 is enabled, but it's not fully
+> functional, or even broken in scenarious like this (suspend/resume).
+> You can't do that unless you have some really good reason.
+> 
+> Since all of these add only a bit of code each, I think it would be
+> better to just merge these into the initial patch that enabled
+> TPS25750 - so I belive patch 4/14.
+>
+Makes a lot of sense. I will add part of full tps25750 support patch
+> -- 
+> heikki
 
-The DSU PMU allows monitoring performance events in the DSU cluster,
-which is done by configuring and reading back values from the DSU PMU
-system registers. However, for write-access to be allowed by ELs lower
-than EL3, the EL3 firmware needs to update the setting on the ACTLR3_EL3
-register, as it is disallowed by default.
-
-That configuration is not done on the firmware used by the MT8195 SoC,
-as a consequence, booting a MT8195-based machine like
-mt8195-cherry-tomato-r2 with CONFIG_ARM_DSU_PMU enabled hangs the kernel
-just as it writes to the CLUSTERPMOVSCLR_EL1 register, since the
-instruction faults to EL3, and BL31 apparently just re-runs the
-instruction over and over.
-
-Mark the DSU PMU node in the Devicetree with status "fail", as the
-machine doesn't have a suitable firmware to make use of it from the
-kernel, and allowing its driver to probe would hang the kernel.
-
-Fixes: 37f2582883be ("arm64: dts: Add mediatek SoC mt8195 and evaluation board")
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Link: https://lore.kernel.org/r/20230720200753.322133-1-nfraprado@collabora.com
----
- arch/arm64/boot/dts/mediatek/mt8195.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-index 4dbbf8fdab75..43011bc41da7 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-@@ -313,6 +313,7 @@ dsu-pmu {
- 		interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH 0>;
- 		cpus = <&cpu0>, <&cpu1>, <&cpu2>, <&cpu3>,
- 		       <&cpu4>, <&cpu5>, <&cpu6>, <&cpu7>;
-+		status = "fail";
- 	};
- 
- 	dmic_codec: dmic-codec {
-
--- 
-2.42.0
-
+Thanks,
+Abdel
