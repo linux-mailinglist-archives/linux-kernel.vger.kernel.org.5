@@ -2,105 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC197B6DFD
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 485EF7B6DFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 18:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240273AbjJCQFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 12:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58520 "EHLO
+        id S240262AbjJCQGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 12:06:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232066AbjJCQFx (ORCPT
+        with ESMTP id S240225AbjJCQGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 12:05:53 -0400
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B817A9;
-        Tue,  3 Oct 2023 09:05:50 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 922B1381;
-        Tue,  3 Oct 2023 16:05:49 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 922B1381
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1696349149; bh=FJ0ABpqZ404qDATR9ZjzfiRpFdQTFHY4H48kFkpDdqE=;
-        h=From:To:Subject:In-Reply-To:References:Date:From;
-        b=ByBmQehZ9ZDltSjH06Xz6yT1qgZkCx/jKFQq5vGQMNYnUNAsWw5VRiHo0PzccGksa
-         gqlixKWWEgNhp6Y5PHM0QnX8YDksC0utj3gRWXz7g24l5PqHLfDgZqX1bgpuQjlTd/
-         0eAlHSE25aHwkynWubyn7prY+ca8QdG0XmJEXgCE5hVajN3um9Jk3zfan25A4Svpqm
-         e6bckqM5chLcb6+taKdlZEhJgBgiFn1No0MF6iM38yUXkNKfuKtdbd4GWNnuTS/+dC
-         hPSI6U9PcqlFTty4GZa5eG+hfY0iUEGivaGcfpmBY2ezucGrZ5aDp10a6JQXeFMVL0
-         pgpGyDfqQB/2g==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Costa Shulyupin <costa.shul@redhat.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Linas Vepstas <linasvepstas@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        "Manoj N. Kumar" <manoj@linux.ibm.com>,
-        "Matthew R. Ochs" <mrochs@linux.ibm.com>,
-        Uma Krishnan <ukrishn@linux.ibm.com>,
-        Qiang Zhao <qiang.zhao@nxp.com>, Li Yang <leoyang.li@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Costa Shulyupin <costa.shul@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        Nicholas Miehlbradt <nicholas@linux.ibm.com>,
-        Benjamin Gray <bgray@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Rohan McLure <rmclure@linux.ibm.com>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        Sathvika Vasireddy <sv@linux.ibm.com>,
-        Laurent Dufour <laurent.dufour@fr.ibm.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Brian King <brking@linux.vnet.ibm.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-scsi@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH] docs: move powerpc under arch
-In-Reply-To: <20230826165737.2101199-1-costa.shul@redhat.com>
-References: <169052340516.4355.10339828466636149348@legolas.ozlabs.org>
- <20230826165737.2101199-1-costa.shul@redhat.com>
-Date:   Tue, 03 Oct 2023 10:05:48 -0600
-Message-ID: <87cyxvelnn.fsf@meer.lwn.net>
+        Tue, 3 Oct 2023 12:06:48 -0400
+Received: from out-205.mta0.migadu.com (out-205.mta0.migadu.com [91.218.175.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3605AA6
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 09:06:44 -0700 (PDT)
+Date:   Tue, 3 Oct 2023 09:06:26 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1696349202;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tRheB7dETWf8f4OAiyndFdU2UVxXlXBvd7C4CoDG3TU=;
+        b=HGW90tkxTBjygi4RoJR32zHjjtfg8fkKEkDJxZqeuBobY/HHNGCENMNy1rysNoGjI+5qco
+        KV33S9OqA2Gu5B1LimooAIORHHK5wXzZLkX7/UH+SBxULBvecb4YNTpQKI0RYu7EpKWXeh
+        Lew/eGx9aHP4rQiu5KVyV48Vu0mjUlg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH rfc 2/5] mm: kmem: add direct objcg pointer to task_struct
+Message-ID: <ZRw8AvDt2wrDlKhG@P9FQF9L96D.corp.robot.car>
+References: <20230927150832.335132-1-roman.gushchin@linux.dev>
+ <20230927150832.335132-3-roman.gushchin@linux.dev>
+ <20231002201254.GA8435@cmpxchg.org>
+ <ZRs-RKsOhtO3eclx@P9FQF9L96D>
+ <20231003142255.GE17012@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231003142255.GE17012@cmpxchg.org>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Costa Shulyupin <costa.shul@redhat.com> writes:
+On Tue, Oct 03, 2023 at 10:22:55AM -0400, Johannes Weiner wrote:
+> On Mon, Oct 02, 2023 at 03:03:48PM -0700, Roman Gushchin wrote:
+> > On Mon, Oct 02, 2023 at 04:12:54PM -0400, Johannes Weiner wrote:
+> > > On Wed, Sep 27, 2023 at 08:08:29AM -0700, Roman Gushchin wrote:
+> > > > @@ -3001,6 +3001,47 @@ static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
+> > > >  	return objcg;
+> > > >  }
+> > > >  
+> > > > +static DEFINE_SPINLOCK(current_objcg_lock);
+> > > > +
+> > > > +static struct obj_cgroup *current_objcg_update(struct obj_cgroup *old)
+> > > > +{
+> > > > +	struct mem_cgroup *memcg;
+> > > > +	struct obj_cgroup *objcg;
+> > > > +	unsigned long flags;
+> > > > +
+> > > > +	old = current_objcg_clear_update_flag(old);
+> > > > +	if (old)
+> > > > +		obj_cgroup_put(old);
+> > > > +
+> > > > +	spin_lock_irqsave(&current_objcg_lock, flags);
+> > > > +	rcu_read_lock();
+> > > > +	memcg = mem_cgroup_from_task(current);
+> > > > +	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
+> > > > +		objcg = rcu_dereference(memcg->objcg);
+> > > > +		if (objcg && obj_cgroup_tryget(objcg))
+> > > > +			break;
+> > > > +		objcg = NULL;
+> > > > +	}
+> > > > +	rcu_read_unlock();
+> > > 
+> > > Can this tryget() actually fail when this is called on the current
+> > > task during fork() and attach()? A cgroup cannot be offlined while
+> > > there is a task in it.
+> > 
+> > Highly theoretically it can if it races against a migration of the current
+> > task to another memcg and the previous memcg is getting offlined.
+> 
+> Ah right, if this runs between css_set_move_task() and ->attach(). The
+> cache would be briefly updated to a parent in the old hierarchy, but
+> then quickly reset from the ->attach().
 
-> and fix all in-tree references.
->
-> Architecture-specific documentation is being moved into Documentation/arch/
-> as a way of cleaning up the top-level documentation directory and making
-> the docs hierarchy more closely match the source hierarchy.
->
-> Signed-off-by: Costa Shulyupin <costa.shul@redhat.com>
+Even simpler:
+	rcu_read_lock();
+	memcg = mem_cgroup_from_task(current);
+---------
+	Here the task can be moved to another memcg and the previous one
+	can be offlined, making objcg fully detached.
+---------
+	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
+		objcg = rcu_dereference(memcg->objcg);
+		if (objcg && obj_cgroup_tryget(objcg))
+---------
+	Objcg can be NULL here or it can be not NULL, but loose the last reference
+	between the objcg check and obj_cgroup_tryget().
+---------
+			break;
+		objcg = NULL;
+	}
+	rcu_read_unlock();
 
-So this patch appears to have not been picked up, and to have received
-no comments.  I'll happily carry it in docs-next, but it would be nice
-to have an ack from the powerpc folks...?
+> 
+> Can you please add a comment along these lines?
 
-Thanks,
+Sure, will do.
 
-jon
+> 
+> > I actually might make sense to apply the same approach for memcgs as well
+> > (saving a lazily-updating memcg pointer on task_struct). Then it will be
+> > possible to ditch this "for" loop. But I need some time to master the code
+> > and run benchmarks. Idk if it will make enough difference to justify the change.
+> 
+> Yeah the memcg pointer is slightly less attractive from an
+> optimization POV because it already is a pretty direct pointer from
+> task through the cset array.
+> 
+> If you still want to look into it from a simplification POV that
+> sounds reasonable, but IMO it would be fine with a comment.
+
+I'll come back with some numbers, hard to speculate without it. In this case
+the majority of savings came from not bumping and decreasing a percpu objcg
+refcounter on the slab allocation path - that was quite surprising to me.
+
+> 
+> > > > @@ -6345,6 +6393,22 @@ static void mem_cgroup_move_task(void)
+> > > >  		mem_cgroup_clear_mc();
+> > > >  	}
+> > > >  }
+> > > > +
+> > > > +#ifdef CONFIG_MEMCG_KMEM
+> > > > +static void mem_cgroup_fork(struct task_struct *task)
+> > > > +{
+> > > > +	task->objcg = (struct obj_cgroup *)0x1;
+> > > 
+> > > dup_task_struct() will copy this pointer from the old task. Would it
+> > > be possible to bump the refcount here instead? That would save quite a
+> > > bit of work during fork().
+> > 
+> > Yeah, it should be possible. It won't save a lot, but I agree it makes
+> > sense. I'll take a look and will prepare a separate patch for this.
+> 
+> I guess the hairiest part would be synchronizing against a migration
+> because all these cgroup core callbacks are unlocked.
+
+Yep.
+
+> 
+> Would it make sense to add ->fork_locked() and ->attach_locked()
+> callbacks that are dispatched under the css_set_lock? Then this could
+> be a simple if (p && !(p & 0x1)) obj_cgroup_get(), which would
+> certainly be nice to workloads where fork() is hot, with little
+> downside otherwise.
+
+Maybe, but then the question is if it really worth it. In the final version
+the update path doesn't need a spinlock, so it's quite cheap and happens
+once on the first allocation, so Idk if it's worth it at all, but I'll take
+a look.
+
+I think the bigger question I have here (and probably worth a lsfmmbpf/plumbers
+discussion) - what if we introduce a cgroup mount (or even Kconfig) option to
+prohibit moving tasks between cgroups and rely solely on fork to enter the right
+cgroup (a-la namespaces). I start thinking that this is the right path long-term,
+things will be not only more reliable, but we also can ditch a lot of
+synchronization and get better performance. Obviously not a small project.
+
+Thanks!
