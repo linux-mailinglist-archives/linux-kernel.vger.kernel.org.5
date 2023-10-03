@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 996587B6B44
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DAB7B6B46
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 16:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239160AbjJCOVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 10:21:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40706 "EHLO
+        id S239530AbjJCOVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 10:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232536AbjJCOVb (ORCPT
+        with ESMTP id S239048AbjJCOVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 10:21:31 -0400
+        Tue, 3 Oct 2023 10:21:32 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389CDA3
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:21:28 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29017AB
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:21:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696342888; x=1727878888;
+  t=1696342889; x=1727878889;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=nH6/xElzhCRroKyKoQcnlrqGQ0XvxKY1U2fGl3KnTzo=;
-  b=WmT8enK10Hll+hywdge9KRDcCKA7s593O2cduwicx8SyfrtbHfJUeOAm
-   sCvPLTL5+JcLaFd8tVl2q6JViHE0LFhtryBz+zAjQSKlUh6hwnCKN3xXq
-   dLxuRIP5LbnRyIEk2UpzBucBkWP0tJHZ1dBBdpyd7RL3ju67ygPxJ5Nas
-   TyEiS5DzOBykVpYCFM9/AhIcokV2b5f8UJRjac8UMxLGIYL0WwEGfWEa1
-   iWFhNZU9yO2Ce7z/UUGotTWVwchmF5lNt5eQWzYLdz5D+Cpibm5y/8qTH
-   RfIRZILKtg8b5yzkXhmmNKUMkVR/mF0laoEiHrzoByUdER1/nXxPFH/uE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="469163013"
+  bh=jyChkOm5+0E4fBJW+xbiyHU6ardeklxm2J2AA01Zy/M=;
+  b=RVZmicK9g9VpEGyX8ATS8RIsZxLUlg7bDbZ7nlDc668RUJO04K3fArMB
+   BOAfHCZJdhbcCPw+0O1j49dTydWVIr30eQeusH1b9lUimzCZ0K9dG3FKB
+   JxX4gcBG/6jeIMN/VZE+T4+6CH1zE9N4A6UWkDWmIFVzJarDoYd6AuwoH
+   qb5MDaE21dTMutRwzEU8NU2PIEgKjkC33NyIuPm+BIKJPUBKBv9lucyjU
+   siTM+nhcCq6uWi+oIaDzD9nUbLrG1lWbdWrWw3DQxUYJhvdplndzs0YWH
+   PsAtwExOIiAGHoBRtvY3vNTaMn7aXGcGD9qFuwFMSV7hU7v/6wuNRKGWa
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="469163015"
 X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="469163013"
+   d="scan'208";a="469163015"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
   by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Oct 2023 07:21:27 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="866892441"
+X-IronPort-AV: E=McAfee;i="6600,9927,10852"; a="866892442"
 X-IronPort-AV: E=Sophos;i="6.03,197,1694761200"; 
-   d="scan'208";a="866892441"
+   d="scan'208";a="866892442"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga002.fm.intel.com with ESMTP; 03 Oct 2023 07:21:26 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 4785E18A0; Tue,  3 Oct 2023 17:21:25 +0300 (EEST)
+        id 569D818DE; Tue,  3 Oct 2023 17:21:25 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 2/4] driver core: platform: Refactor error path in a couple places
-Date:   Tue,  3 Oct 2023 17:21:20 +0300
-Message-Id: <20231003142122.3072824-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 3/4] driver core: platform: Use temporary variable in platform_device_add()
+Date:   Tue,  3 Oct 2023 17:21:21 +0300
+Message-Id: <20231003142122.3072824-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20231003142122.3072824-1-andriy.shevchenko@linux.intel.com>
 References: <20231003142122.3072824-1-andriy.shevchenko@linux.intel.com>
@@ -63,67 +63,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The usual pattern is to bail out on the error case. Besides that
-one of the labels is redundant as we may return directly. Refactor
-platform_device_add() and platform_dma_configure() accordingly.
+With the temporary variable for the struct device pointer the code
+looks better and slightly easier to read and parse by human being.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/base/platform.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ drivers/base/platform.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
 diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index d81f05c4fccd..2b8645911d51 100644
+index 2b8645911d51..55891c11dd03 100644
 --- a/drivers/base/platform.c
 +++ b/drivers/base/platform.c
-@@ -678,7 +678,7 @@ int platform_device_add(struct platform_device *pdev)
- 		 */
- 		ret = ida_alloc(&platform_devid_ida, GFP_KERNEL);
- 		if (ret < 0)
--			goto err_out;
-+			return ret;
+@@ -655,20 +655,21 @@ EXPORT_SYMBOL_GPL(platform_device_add_data);
+  */
+ int platform_device_add(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	u32 i;
+ 	int ret;
+ 
+-	if (!pdev->dev.parent)
+-		pdev->dev.parent = &platform_bus;
++	if (!dev->parent)
++		dev->parent = &platform_bus;
+ 
+-	pdev->dev.bus = &platform_bus_type;
++	dev->bus = &platform_bus_type;
+ 
+ 	switch (pdev->id) {
+ 	default:
+-		dev_set_name(&pdev->dev, "%s.%d", pdev->name,  pdev->id);
++		dev_set_name(dev, "%s.%d", pdev->name,  pdev->id);
+ 		break;
+ 	case PLATFORM_DEVID_NONE:
+-		dev_set_name(&pdev->dev, "%s", pdev->name);
++		dev_set_name(dev, "%s", pdev->name);
+ 		break;
+ 	case PLATFORM_DEVID_AUTO:
+ 		/*
+@@ -681,7 +682,7 @@ int platform_device_add(struct platform_device *pdev)
+ 			return ret;
  		pdev->id = ret;
  		pdev->id_auto = true;
- 		dev_set_name(&pdev->dev, "%s.%d.auto", pdev->name, pdev->id);
-@@ -712,8 +712,10 @@ int platform_device_add(struct platform_device *pdev)
- 		 dev_name(&pdev->dev), dev_name(pdev->dev.parent));
- 
- 	ret = device_add(&pdev->dev);
--	if (ret == 0)
--		return ret;
-+	if (ret)
-+		goto failed;
-+
-+	return 0;
- 
-  failed:
- 	if (pdev->id_auto) {
-@@ -727,7 +729,6 @@ int platform_device_add(struct platform_device *pdev)
- 			release_resource(r);
+-		dev_set_name(&pdev->dev, "%s.%d.auto", pdev->name, pdev->id);
++		dev_set_name(dev, "%s.%d.auto", pdev->name, pdev->id);
+ 		break;
  	}
  
-- err_out:
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(platform_device_add);
-@@ -1453,12 +1454,12 @@ static int platform_dma_configure(struct device *dev)
- 		attr = acpi_get_dma_attr(to_acpi_device_node(dev->fwnode));
- 		ret = acpi_dma_configure(dev, attr);
+@@ -689,7 +690,7 @@ int platform_device_add(struct platform_device *pdev)
+ 		struct resource *p, *r = &pdev->resource[i];
+ 
+ 		if (r->name == NULL)
+-			r->name = dev_name(&pdev->dev);
++			r->name = dev_name(dev);
+ 
+ 		p = r->parent;
+ 		if (!p) {
+@@ -702,16 +703,16 @@ int platform_device_add(struct platform_device *pdev)
+ 		if (p) {
+ 			ret = insert_resource(p, r);
+ 			if (ret) {
+-				dev_err(&pdev->dev, "failed to claim resource %d: %pR\n", i, r);
++				dev_err(dev, "failed to claim resource %d: %pR\n", i, r);
+ 				goto failed;
+ 			}
+ 		}
  	}
-+	if (ret || drv->driver_managed_dma)
-+		return ret;
  
--	if (!ret && !drv->driver_managed_dma) {
--		ret = iommu_device_use_default_domain(dev);
--		if (ret)
--			arch_teardown_dma_ops(dev);
--	}
-+	ret = iommu_device_use_default_domain(dev);
-+	if (ret)
-+		arch_teardown_dma_ops(dev);
+-	pr_debug("Registering platform device '%s'. Parent at %s\n",
+-		 dev_name(&pdev->dev), dev_name(pdev->dev.parent));
++	pr_debug("Registering platform device '%s'. Parent at %s\n", dev_name(dev),
++		 dev_name(dev->parent));
  
- 	return ret;
- }
+-	ret = device_add(&pdev->dev);
++	ret = device_add(dev);
+ 	if (ret)
+ 		goto failed;
+ 
 -- 
 2.40.0.1.gaa8946217a0b
 
