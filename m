@@ -2,372 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BDB57B5EC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 03:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2E97B5EC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 03:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239003AbjJCBnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 2 Oct 2023 21:43:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38432 "EHLO
+        id S229975AbjJCBqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 2 Oct 2023 21:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238973AbjJCBnD (ORCPT
+        with ESMTP id S229848AbjJCBqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 2 Oct 2023 21:43:03 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE6BBD
-        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 18:42:59 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59f2c7a4f24so7242287b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 02 Oct 2023 18:42:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1696297379; x=1696902179; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fD3Xa8/vhFMIhH4RbdgiQUOLcrn+ryvbOzbRIeJeNfY=;
-        b=tQdRESmWduGQE85CErokYGNSLnnvkK7SUGyEwjQtRp54HoX/3g7LVF1Gnark88iakh
-         xfZnouYSHhuAJEOdcyXuZNmtYRf9+LMAyg8AgKtOfRm7IEUJxj/3+PwsltQ/EDATq8kt
-         RDYyhoDf0OqANdJX/677jJtUCxRQdWoRg02d7KmxQNPvrCxFCC5hzdUTQ4h1ZlDr77FL
-         zP4+ON796Ds9ldkKE/dG9ZjCMsplI4WqpIBSY5Kit3suZI/t/4MlJb/o00PiYk8AjKaX
-         KvFmP6Zs2onmEkyWygkxlTbIy13kkFPHYjUB3R9OQBGhLAuyKtewm4loq+lRCxTWWEDR
-         2UvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696297379; x=1696902179;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=fD3Xa8/vhFMIhH4RbdgiQUOLcrn+ryvbOzbRIeJeNfY=;
-        b=xP4YoJ3Ym2Bjt+uBpbJ/mAom0hP38TBGSYn0f6xmKMOuNlkBRPbHow6KqNYe63/sa/
-         HNuuYkX36vESEbJjDrP9i47JMLbS8I0SGZ+FjwGIeVNbUKG/7qayERMfx8mr+v4W1owQ
-         oJNHUSwoBmjWwS9QTHNI/2GwtYGpQvCVYqdJLT/9xe/br/HZKUB1fwKBXuARYQUfUev3
-         gaghA018SD5ORUPcmJtT38g5rxd/UG4S0FO9d8OYCEe0hQ/Pt3VfKUPjszklAMGxOzD5
-         VbKm0z4lW+Z3gvhun2iW5J/U7UzMG8PERGWZrs/0nFgq3KOGqbSE+X36AxMsxPiHUmli
-         p1ug==
-X-Gm-Message-State: AOJu0YzitpuS0PBghRM6K1C9FQcJb2RPTuxINctPv3PeQdhFqb2z+wlK
-        ERfEslPmYC8Rj80HqY0jkonnSSWjFuw=
-X-Google-Smtp-Source: AGHT+IHBWTaJik82WBgvMqCFwbjJHa4GFzJZkgqGHbEG/l2KauJ16tH+FN+XncRJjiRf+QJz8JKbMW9q5as=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:136b:b0:d81:4107:7a1 with SMTP id
- bt11-20020a056902136b00b00d81410707a1mr209690ybb.2.1696297378712; Mon, 02 Oct
- 2023 18:42:58 -0700 (PDT)
-Date:   Mon, 2 Oct 2023 18:42:57 -0700
-In-Reply-To: <CAF7b7mrf-y9DNdsreOAedGJueOThnYE=ascFd4=rvW0Z4rhTQg@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-8-seanjc@google.com>
- <117db856-9aec-e91c-b1d4-db2b90ae563d@intel.com> <ZQ3AmLO2SYv3DszH@google.com>
- <CAF7b7mrf-y9DNdsreOAedGJueOThnYE=ascFd4=rvW0Z4rhTQg@mail.gmail.com>
-Message-ID: <ZRtxoaJdVF1C2Mvy@google.com>
-Subject: Re: [RFC PATCH v12 07/33] KVM: Add KVM_EXIT_MEMORY_FAULT exit to
- report faults to userspace
-From:   Sean Christopherson <seanjc@google.com>
-To:     Anish Moorthy <amoorthy@google.com>
-Cc:     Xiaoyao Li <xiaoyao.li@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>, kvm@vger.kernel.org,
-        kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+        Mon, 2 Oct 2023 21:46:01 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2070.outbound.protection.outlook.com [40.107.223.70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAAEC4
+        for <linux-kernel@vger.kernel.org>; Mon,  2 Oct 2023 18:45:58 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Lxj3Y76lHPX4sFaqdq/HcMNV6oeJMwbhpuLWEoCoJQJFGPn8Xd7IApJxERC0SeLkOAiOyELd3dSQyhE9yLW9FWeGW+yDjN1+UuSa37GzjItDWkGXBwd/GeCW/nk+3UIButjvUeCunNicea/x/QAkTsb0jX9wYUHgkEc8fMLstS24DXU5HMLXfloPJDHVPYSrUZvPxcRwI8RzJi/zKuzu+8I8VMtDAkcJOsRndkiKA8lER1YIX2LmaE6J4YrTGspnIn2UgD7Dw5uIOBf/BvOgiicEViB+LlD813PHt5WyVuM4ipnKGjbyJU9abIuTJnivSJvL8VepJ4DfUc271v3cEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4xpdpYOxpx5bVJy/OQ9EjGkL0EwCSkOVPpa59UlV1Dk=;
+ b=U/GkcSeuF9OGrj3T/VLNiv3MTShM3lAHTIxJJW4O6jj7YbQ9z5V8ii0FPxkY+eiCr33+gQqo4+K3taIQyxKv4q+/f8syyYCa7VeW/nHD/j9115RT+dx05mwNJkxPnCuNRqPwfsS3WpHuWsIZAqzOmr/8JPoXdqIqyXduqTSiZ6HIGEVl5xln3f9Q/NxrT46p63mA51bWPi3CrcuDiQd2ufeG6sRabksFF2IcBvXK24ioFJyVhkOxfiVYzlkVbSmyc2+ZKr/UyVa36WcaJbqouyrF24thwXPotwu1SeKfCoLLi364eAuArPgO7ksa6r8ckjJtLzsRH+5Qa3xNlXTpjg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4xpdpYOxpx5bVJy/OQ9EjGkL0EwCSkOVPpa59UlV1Dk=;
+ b=SphHUFmg1u8efQB57y50bJ+Tznm9VNPFjWAWebRXyMXnM4IHmsrwiN+uTKZIDG3aeqHMAQnC7DQz6jpMcT/Y75ewQmbuCiKQL/6aQFP2tX7EqZknEXiJwe3kGvYes1/0GQMekJnPWPxWxNBSlYOb8K7kMJ7GmPUph+xFpyEHAnY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from LV3PR12MB9213.namprd12.prod.outlook.com (2603:10b6:408:1a6::20)
+ by CH3PR12MB8582.namprd12.prod.outlook.com (2603:10b6:610:163::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6838.31; Tue, 3 Oct
+ 2023 01:45:56 +0000
+Received: from LV3PR12MB9213.namprd12.prod.outlook.com
+ ([fe80::36b5:a641:237e:26aa]) by LV3PR12MB9213.namprd12.prod.outlook.com
+ ([fe80::36b5:a641:237e:26aa%7]) with mapi id 15.20.6838.024; Tue, 3 Oct 2023
+ 01:45:56 +0000
+Message-ID: <6917dfcb-651b-45a0-9dc7-c42f765dea02@amd.com>
+Date:   Tue, 3 Oct 2023 12:45:48 +1100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH kernel v2] x86/compressed/64: reduce #VC nesting for
+ intercepted CPUID for SEV-SNP guest
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20230926040526.957240-1-aik@amd.com>
+ <20230930071759.GAZRfLpz38AAITSZzW@fat_crate.local>
+ <e009f70e-32fc-404a-8560-f059b8999895@amd.com>
+ <20231001095322.GAZRlBkle6JC2rfM6u@fat_crate.local>
+From:   Alexey Kardashevskiy <aik@amd.com>
+In-Reply-To: <20231001095322.GAZRlBkle6JC2rfM6u@fat_crate.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SN6PR04CA0099.namprd04.prod.outlook.com
+ (2603:10b6:805:f2::40) To LV3PR12MB9213.namprd12.prod.outlook.com
+ (2603:10b6:408:1a6::20)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR12MB9213:EE_|CH3PR12MB8582:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1f179d81-a959-4403-a037-08dbc3b27c56
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: W7GLcK3SkmB5WngukdC8ovgfABWssSAXq7p66Sn3v91w+7IWlD5J5+jhDjqfGM6PmwdzmM5Fi32kfGEF0c5H8tZXgOXFA8D+FEzLaIQkIBGGHBMHmxAy8cArOiXAxRaGFne7x+WO0sNJDHDmkKFp0mnmjuorRPqYzrH1GK5srrv64YD7MpFh6qcEC01sEVkJ45FxPfCg7iXOaFsQcc1fTmBD+78M+IH4T9giJ9DK+Dd/McPVp8VGVwQRCEQ0V2+KnqhjGa3gocbh5bvfDgh85QjOxtKsUgI+RaU+SWs1SWot9Sa6CiUnhrAhAP+Q6Lz5i6WNl9CPmOJlZEuT+ZicLi+ZHfQHdFGnQwrslIeHCB736li90hRP0a66z3PVx6atNHkZlSdE34IkTITTRRrrE7WoXWABOEBcaAxRAWI1pT5dHVcMWem+BFoNxSvGgp8zN2j2grHPcBrXVZ07rLZDzkUFRntM7/hfAcqqfCGrk/Q5KRF93aGE6BIKtA3OsvPWHlP+sBMdCSFmkRJPgsHGPpFnWrnn8bz9NvPUSJ/TjpctKprJkNS2TfnaljMJ4qCi3HdiMzRu9WznlIadTgPt8H2rNqEXk/3jn2WOjUGqAfs2VNVdcRiAWWxoV3+/NBQW
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR12MB9213.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(39860400002)(376002)(396003)(346002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(6506007)(6666004)(6486002)(53546011)(966005)(478600001)(83380400001)(2616005)(26005)(6512007)(2906002)(41300700001)(66556008)(6916009)(316002)(54906003)(5660300002)(66946007)(8676002)(8936002)(4326008)(66476007)(36756003)(31696002)(38100700002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K2xkOWlkMEtrNEM0OHk4OVpJbWo1ejNuV0drMnkveFpSZmszVHB5djJ0VWFZ?=
+ =?utf-8?B?am5uWGJQZ2poUzNVYnZiVHZsTUp4Kzd6cVhHNG1wYThZcVBVQjdmLy9KS2d1?=
+ =?utf-8?B?enNGaFNNK2pmUkFYVzl1U1RNR1N5UGVGb3RVTG9mWmw4dzJ3U0Qwd1NySjAz?=
+ =?utf-8?B?dmFJcTZqYnkvYWNVRVVkN1EzWWQzbnRud0Q4eFRMOWcxVzk3a0tvS2gxRkpq?=
+ =?utf-8?B?cjlVdG4ydktPNGtoc3cwcmxscmxkTkh5OHhqZC9LcGJrMThyL2RVbmgzYzE4?=
+ =?utf-8?B?c21QNTRieFNmdEJVY3Y5bW1HNFdpWElRUzIrWnBOV2JENVZwY1hjMVA4Uk8z?=
+ =?utf-8?B?N1hsNmhSUWRkSEZWVGRLU0pOcms5U2lXdFphZ3RIb25SeWIwcEh6c0dweWZD?=
+ =?utf-8?B?dEhJMHdjTHBha3k2YnRrLytJYWVQMlNWeVc0RkVxRG5QbkFna0ZOM2Vpc1dj?=
+ =?utf-8?B?RXJIL1VYdjFYMGpqUXNtcFlpOXpSaWdOeHkyV0ZwVVVBajJjYkFtRHlaQUNl?=
+ =?utf-8?B?VThTSTY5cXFWSU13ampacitrSFN5aElpT08zMVMrdlBuY0VKM0RGU2Q0Z0dE?=
+ =?utf-8?B?RHFpM2d3SUxNWFVoWWt6MStNN3Q0MUx3Q0xUSWI2b1lNejFUUGdJOG05TGFJ?=
+ =?utf-8?B?cDdCemRveDdicUlqdVFJL0pseEVYazJJcHRUMjJCSUJHZHBUQ3ZxOXluMFdT?=
+ =?utf-8?B?ZXJzVTlOYmx0MGhSUFNDamFycExPK0pDY2xIZVYvWXBWU0VkSWZibElBYTZu?=
+ =?utf-8?B?WS9DbjVVemVGOXlidHdxckdER3ltUGdSd1VJdm8xaEtBSUdrek41TXZSMmNB?=
+ =?utf-8?B?TVpheWVid1dlM3picXd3dTk4OTBxQXkzS2JSQUxUOTFsMVlEc2xrUTRIcXMr?=
+ =?utf-8?B?QWw3L3lNUVRZcGdCc3A0Nm5xdDJHUkl0UVhQSjVmR0c4azZWRVJpdGhCZnFh?=
+ =?utf-8?B?N2ZTZDZCK2RIak1VNDh1cjdFM1BrU0d3aThGdEdUVWRXNFkzNU5LWEoxT2g5?=
+ =?utf-8?B?RVUyeWhxUElMVzJRUGYydzk3Vi9RazBDUlVFUDl5dFhVMkhOZVo1MmlNbFYv?=
+ =?utf-8?B?eTQwMWNFQnFoWSt3Zlpwbkg2TnI1Z0hGR1Y0VHVrTmpOeHA3VnlvTmFHMW5y?=
+ =?utf-8?B?Z01aM3YybTFsZlBqR0pUUm1VRm9Da093K2NTcHJST1FQZmQyQlUvenliZzh2?=
+ =?utf-8?B?ZkphLzZncGxMbE1FeUNodHFCendCbHUwVjhkcDB3ZTNZaFgrNC9Fc0FIblYv?=
+ =?utf-8?B?TjRNMzM5Y2xLMkQrdnBaNU9iMmNhRksySG9mRlVzeVREOHFDaGZWNmI2QTdv?=
+ =?utf-8?B?UjZUNnYrL2FFSUlOYVJrTUhHajRDY2lyV25KU3pFMGhibjFnZnVzUmEzRDlO?=
+ =?utf-8?B?SVZPci93djl0TlFvei9vSXRsMXU4RUgrZ1ppZmx2Wll2c0NSVkRJZVEzVFBu?=
+ =?utf-8?B?aFVYQWlCWWpsYkJyTzJxVDZUVnlYUW1HSGZjMG1RY21WUndSY3BGZjhlWnZ0?=
+ =?utf-8?B?MDB4RlRaOSt4dDlVaFA4dEZSOERsaTVORHl3OWw3MEN1blY2TVozTWMrOWlH?=
+ =?utf-8?B?c2tPQjV1eDlDdllYOHVKWWpxTzFxUW9oVDZLRGdnWkFwQ3ZGVDZkS0ZUZFFh?=
+ =?utf-8?B?K1daNXdCSDN2VFhqSjE4UUM4TzBraVBsd1ZBenY5MjBMN3RUNjRDbUV6WDIv?=
+ =?utf-8?B?Tlg5dlVuTGZSNDVPcE1KTlhsc08vejU4c0k1Y0Z3SGx4OVdSUDl0RlhBaUtU?=
+ =?utf-8?B?eSswMi9uR2xTTit4VUhvT3F6NXh2L3Y4cElRUVhLZHdOa1pvNVNneGNwVzBS?=
+ =?utf-8?B?bndlNXk3WVh2WjNScVY2TEwxTHNTT3NwN3cva0pNL1RnbjZMN0gzSE16SjQx?=
+ =?utf-8?B?YVEzekp3eTB0QkF4UGhDKzBib2YzL2JTWVVGMGkrbnMrLzM4ZXhOWWZQYjlZ?=
+ =?utf-8?B?eUs1V2ZIS2ZXSGFvSWgrbW9wZlFFNU1RRWFYNWFBVmJ4cjlrUURuV2xhOUov?=
+ =?utf-8?B?NUEza3loZSsweEZSakFIVDMwYUt1Um5WZGYxaFQ2NFhPb3hUMGxSUmZGYUda?=
+ =?utf-8?B?d1ZPSTUrdDNRL3lpeStTRG9KZnhtUk44eU02K2dTTEhmQlRnTnBZNk9sQmlv?=
+ =?utf-8?Q?zxVyMHbrgzb+QxuHMK8NQSHOf?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f179d81-a959-4403-a037-08dbc3b27c56
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR12MB9213.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Oct 2023 01:45:56.2148
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +R/BB2VIpHvy7VyzQTRA0ASMo6AeOXWWivD5ezdJivbVA8PM0KqUB5kytGLFlu8ieaEUYjtrVgShBzVybYPqqg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8582
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 02, 2023, Anish Moorthy wrote:
-> On Fri, Sep 22, 2023 at 9:28=E2=80=AFAM Sean Christopherson <seanjc@googl=
-e.com> wrote:
-> >
-> > > So when exit reason is KVM_EXIT_MEMORY_FAULT, how can we tell which f=
-ield in
-> > > the first union is valid?
-> >
-> > /facepalm
-> >
-> > At one point, I believe we had discussed a second exit reason field?  B=
-ut yeah,
-> > as is, there's no way for userspace to glean anything useful from the f=
-irst union.
->=20
-> Oh, was this an objective? When I was pushing for the second union
-> this I was just trying to make sure all the efault annotations
-> wouldn't clobber *other* exits. But yeah, I don't/didn't see a
-> meaningful way to have valid information in both structs.
 
-Clobbering other exits means KVM is already broken, because simply accessin=
-g memory
-in guest context after initiating an exit is a KVM bug as it would violate =
-ordering
-and maybe causality.   E.g. the only reason the preemption case (see below)=
- isn't
-completely buggy is specifically because it's host paravirt behavior.
+On 1/10/23 20:53, Borislav Petkov wrote:
+> On Sun, Oct 01, 2023 at 08:40:30PM +1100, Alexey Kardashevskiy wrote:
+>> Ingo says different, who wins? :)
+> 
+> I do: a function gives you type checking - a macro doesn't.
 
-In other words, ignoring preemption for the moment, not clobbering other ex=
-its isn't
-useful because whatever buggy KVM behavior caused the clobbering already ha=
-ppened,
-i.e. the VM is already in trouble either way.  The only realistic options a=
-re to fix
-the KVM bugs, or to effectively take an errata and say "don't do that" (lik=
-e we've
-done for the silly PUSHD to MMIO case).
+The macro is a wrapper for the sev_es_ghcb_hv_call() function with type 
+checking.
 
-> > The more I think about this, the more I think it's a fool's errand.  Ev=
-en if KVM
-> > provides the exit_reason history, userspace can't act on the previous, =
-unfulfilled
-> > exit without *knowing* that it's safe/correct to process the previous e=
-xit.  I
-> > don't see how that's remotely possible.
-> >
-> > Practically speaking, there is one known instance of this in KVM, and i=
-t's a
-> > rather riduclous edge case that has existed "forever".  I'm very strong=
-ly inclined
-> > to do nothing special, and simply treat clobbering an exit that userspa=
-ce actually
-> > cares about like any other KVM bug.
-> >
-> > > When exit reason is not KVM_EXIT_MEMORY_FAULT, how can we know the in=
-fo in
-> > > the second union run.memory is valid without a run.memory.valid field=
-?
-> >
-> > Anish's series adds a flag in kvm_run.flags to track whether or not mem=
-ory_fault
-> > has been filled.  The idea is that KVM would clear the flag early in KV=
-M_RUN, and
-> > then set the flag when memory_fault is first filled.
-> >
-> >         /* KVM_CAP_MEMORY_FAULT_INFO flag for kvm_run.flags */
-> >         #define KVM_RUN_MEMORY_FAULT_FILLED (1 << 8)
-> >
-> > I didn't propose that flag here because clobbering memory_fault from th=
-e page
-> > fault path would be a flagrant KVM bug.
-> >
-> > Honestly, I'm becoming more and more skeptical that separating memory_f=
-ault is
-> > worthwhile, or even desirable.  Similar to memory_fault clobbering some=
-thing else,
-> > userspace can only take action if memory_fault is clobbered if userspac=
-e somehow
-> > knows that it's safe/correct to do so.
-> >
-> > Even if KVM exits "immediately" after initially filling memory_fault, t=
-he fact
-> > that KVM is exiting for a different reason (or a different memory fault=
-) means
-> > that KVM did *something* between filling memory_fault and actually exit=
-ing.  And
-> > it's completely impossible for usersepace to know what that "something"=
- was.
->=20
-> Are you describing a scenario in which memory_fault is (initially)
-> filled, then something else happens to fill memory_fault (thus
-> clobbering it), then KVM_RUN exits? I'm confused by the tension
-> between the "KVM exits 'immediately'" and "KVM did *something* between
-> filling memory_fault and actually existing" statements here.
+>>> Then, it should be defined only in sev-shared.c for now.
+>>
+>> sev-shared.c makes me sad. Including .c is not ... nice,
+> 
+> There's a point in doing things this way.
+> 
+>> I would avoid adding stuff to it at any cost.
+> 
+> Care to give a technical argument why or is it just general sadness?
+> Because I don't care about non-technical sentiments.
 
-Yes, I'm describing a hypothetical scenario.  Immediately was in quotes bec=
-ause
-even if KVM returns from the *current* function straightaway, it's possible=
- that
-control is deep in a call stack, i.e. KVM may "immediately" try to exit fro=
-m the
-current function's perspective, but in reality it may take a while to actua=
-lly
-get out to userspace.
+No it is not technical, it is my ignorance :)
 
-> > > E.g. in the splat from selftests[1], KVM reacts to a failure during R=
-eal Mode
-> > event injection by synthesizing a triple fault
-> >
-> >         ret =3D emulate_int_real(ctxt, irq);
-> >
-> >         if (ret !=3D X86EMUL_CONTINUE) {
-> >                 kvm_make_request(KVM_REQ_TRIPLE_FAULT, vcpu);
-> >
-> > There are multiple KVM bugs at play: read_emulate() and write_emulate()=
- incorrectly
-> > assume *all* failures should be treated like MMIO, and conversely ->rea=
-d_std() and
-> > ->write_std() don't handle *any* failures as MMIO.
-> >
-> > Circling back to my "capturing the history is pointless" assertion, by =
-the time
-> > userspace gets an exit, the vCPU is already in shutdown, and KVM has cl=
-obbered
-> > memory_fault something like five times.  There is zero chance userspace=
- can do
-> > anything but shed a tear for the VM and move on.
-> >
-> > The whole "let's annotate all memory faults" idea came from my desire t=
-o push KVM
-> > towards a future where all -EFAULT exits are annotated[2].  I still thi=
-nk we should
-> > point KVM in that general direction, i.e. implement something that _can=
-_ provide
-> > 100% "coverage" in the future, even though we don't expect to get there=
- anytime soon.
-> >
-> > I bring that up because neither private memory nor userfault-on-missing=
- needs to
-> > annotate anything other than -EFAULT during guest page faults.  I.e. al=
-l of this
-> > paranoia about clobbering memory_fault isn't actually buying us anythin=
-g other
-> > than noise and complexity.  The cases we need to work _today_ are perfe=
-ctly fine,
-> > and _if_ some future use cases needs all/more paths to be 100% accurate=
-, then the
-> > right thing to do is to make whatever changes are necessary for KVM to =
-be 100%
-> > accurate.
-> >
-> > In other words, trying to gracefully handle memory_fault clobbering is =
-pointless.
-> > KVM either needs to guarantee there's no clobbering (guest page fault p=
-aths) or
-> > treat the annotation as best effort and informational-only (everything =
-else at
-> > this time).  Future features may grow the set of paths that needs stron=
-g guarantees,
-> > but that just means fixing more paths and treating any violation of the=
- contract
-> > like any other KVM bug.
->=20
-> Ok, so if we're restricting the exit to just the places it's totally
-> accurate (page-fault paths) then, IIUC,
->=20
-> - There's no reason to attach it to EFAULT, ie it becomes a "normal" exit
+For example why inat.c/insn.c are included and not linked? Cannot linux 
+compile arch/x86/lib/ files twice into two different .o, for compressed 
+and running kernels? Is not more logical place for sev-shared.c in 
+arch/x86/lib/sev.c?
 
-No, I still want at least partial line of sight to being able to provide us=
-eful
-information to userspace on EFAULT.  Making KVM_EXIT_MEMORY_FAULT a "normal=
-" exit
-pretty much squashes any hope of that.
+>>> Furthermore, it should not be called "rdmsr" or so but something like
+>>>
+>>> ghcb_prot_read_msr()
+>>>
+>>> or so to denote that it is using the GHCB protocol to read the MSR. I'm
+>>> sure it'll gain more users with time.
+>>
+>> What is "prot" going to signify?
+> 
+> "... or so to denote that it is using the GHCB protocol..."
+> 					       ^^^^^^^^
+> 
+> it is right there.
 
-> - I should go drop the patches annotating kvm_vcpu_read/write_page
-> from my series
+Ah right. I am used (after some grepping - not just me) to "prot" == 
+"protected", "protocol" would be "proto". imho not needed here but alright.
 
-Hold up on that.  I'd prefer to keep them as there's still value in giving =
-userspace
-debug information.  All I'm proposing is that we would firmly state in the
-documentation that those paths must be treated as informational-only.
 
-The whole kvm_steal_time_set_preempted() mess does give me pause though.  T=
-hat
-helper isn't actually problematic, but only because it uses copy_to_user_no=
-fault()
-directly :-/
+>> And what about Tom's "x86/sev: Fix SNP CPUID requests to the hypervisor",
+>> are you taking that one or I have to repost this one and the Tom's patch?
+> 
+> Yes, use this branch:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/bp/bp.git/log/?h=tip-x86-urgent
 
-But that doesn't necessarily mean we need to abandon the entire idea, e.g. =
-it
-might not be a terrible idea to explicitly differentiate accesses to guest =
-memory
-for paravirt stuff, from accesses to guest memory on behalf of the guest.
 
-Anyways, don't do anything just yet.
+Oh cool, thanks!
 
-> - The helper function [a] for filling the memory_fault field
-> (downgraded back into the current union) can drop the "has the field
-> already been filled?" check/WARN.
 
-That would need to be dropped regardless because it's user-triggered (sadly=
-).
+> Thx.
+> 
 
-> - [KVM_CAP_USERFAULT_ON_MISSING] The memslot flag check [b] needs to
-> be moved back from __gfn_to_pfn_memslot() into
-> user_mem_abort()/kvm_handle_error_pfn() since the slot flag-triggered
-> fast-gup failures *have* to result in the memory fault exits, and we
-> only want to do those in the two SLAT-failure paths (for now).
+-- 
+Alexey
 
-I'll look at this more closely when I review your series (slowly, slowly ge=
-tting
-there).  There's no right or wrong answer here, it's more a question of wha=
-t's the
-easiest to maintain.
 
-> [a] https://lore.kernel.org/all/20230908222905.1321305-5-amoorthy@google.=
-com/
-> [b] https://lore.kernel.org/all/20230908222905.1321305-11-amoorthy@google=
-.com/
->=20
-> > And if we stop being unnecessarily paranoid, KVM_RUN_MEMORY_FAULT_FILLE=
-D can also
-> > go away.  The flag came about in part because *unconditionally* sanitiz=
-ing
-> > kvm_run.exit_reason at the start of KVM_RUN would break KVM's ABI, as u=
-serspace
-> > may rely on the exit_reason being preserved when calling back into KVM =
-to complete
-> > userspace I/O (or MMIO)[3].  But the goal is purely to avoid exiting wi=
-th stale
-> > memory_fault information, not to sanitize every other existing exit_rea=
-son, and
-> > that can be achieved by simply making the reset conditional.
-> >
-> > ...
-> >
-> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > index 96fc609459e3..d78e97b527e5 100644
-> > --- a/virt/kvm/kvm_main.c
-> > +++ b/virt/kvm/kvm_main.c
-> > @@ -4450,6 +4450,16 @@ static long kvm_vcpu_ioctl(struct file *filp,
-> >                                 synchronize_rcu();
-> >                         put_pid(oldpid);
-> >                 }
-> > +
-> > +               /*
-> > +                * Reset the exit reason if the previous userspace exit=
- was due
-> > +                * to a memory fault.  Not all -EFAULT exits are annota=
-ted, and
-> > +                * so leaving exit_reason set to KVM_EXIT_MEMORY_FAULT =
-could
-> > +                * result in feeding userspace stale information.
-> > +                */
-> > +               if (vcpu->run->exit_reason =3D=3D KVM_EXIT_MEMORY_FAULT=
-)
-> > +                       vcpu->run->exit_reason =3D KVM_EXIT_UNKNOWN
-> > +
-> >                 r =3D kvm_arch_vcpu_ioctl_run(vcpu);
->=20
-> Under my reading of the earlier block I'm not sure why we need to keep
-> this around. The original idea behind a canary of this type was to
-> avoid stomping on non-memory-fault exits in cases where something
-> caused an (ignored) annotated memory fault before the exit could be
-> completed. But if the annotations are going to be restricted in
-> general to just the page fault paths, then we can just eliminate the
-> sentinel check (and just this block) entirely, right?
-
-This isn't a canary, it's to ensure KVM doesn't feed userspace garbage.  As=
- above,
-I'm not saying we throw away all of the code for the "optional" paths, I'm =
-saying
-that we only commit to 100% accuracy for the paths that the two use cases n=
-eed to
-work, i.e. the page fault handlers.
