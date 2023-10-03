@@ -2,56 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE127B6284
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B427B628F
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 09:35:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbjJCHcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 03:32:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
+        id S231496AbjJCHf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 03:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230323AbjJCHch (ORCPT
+        with ESMTP id S231447AbjJCHfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 03:32:37 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C8B3CA9
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 00:32:34 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C668DC15;
-        Tue,  3 Oct 2023 00:33:12 -0700 (PDT)
-Received: from [10.57.66.79] (unknown [10.57.66.79])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4E17F3F59C;
-        Tue,  3 Oct 2023 00:32:31 -0700 (PDT)
-Message-ID: <0fb0840f-02f0-4103-a6be-eeb4fcc16f8f@arm.com>
-Date:   Tue, 3 Oct 2023 08:32:29 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 7/9] arm64/mm: Override arch_wants_pte_order()
-Content-Language: en-GB
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <20230929114421.3761121-8-ryan.roberts@arm.com> <ZRrgEPwuFnCry3+/@arm.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZRrgEPwuFnCry3+/@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Tue, 3 Oct 2023 03:35:24 -0400
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57C1CAC
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 00:35:16 -0700 (PDT)
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com [209.85.160.200])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 96F1C421D3
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 07:35:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1696318514;
+        bh=C2LI02pllk3xNmgu5C2lERlc5CopHtR66RkR1No21/8=;
+        h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=WZHy5W31k7H8DVZ0g/qGehYiBcBB7bxXRs1cPaIpLfdFrEwWz778Pa+YUtCfN8oZQ
+         Byb9iHjpOdP8WOcadbUhWQsNhkNKpPfDnkwspAXcwD/tAGOtZG0Zmx5rIJIUTXbjtK
+         Xt+ku8/urMjp9n+/HfvqSMYKogT4UZ+Uw7yv9TmIfJDDU6xXbUyvLzDsukS+G4TMvW
+         fwOp4IN0VKLmZeDpqQUdxUmKGT2nynQoGc6pOgB+GwcO6P2ElXDm9g3vsHqrOAJfV0
+         eS7/xsoU1nc+M/kUyucvK75lKcAsyx0Y3lCoPduI1E9XQDEQFqQe52cMuuFN4vNMfK
+         fHSC2RZWyR77Q==
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-419754aaa41so6668051cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 00:35:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696318512; x=1696923312;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C2LI02pllk3xNmgu5C2lERlc5CopHtR66RkR1No21/8=;
+        b=YxNfmITPdEmyH4goaY88Cp0VzAnloGQJeVDv6u/ydjmgEk/WC+f6O54RYgDJUvDB6x
+         7T5w2w/ai+Hzd0MA1IeuuHFn4GuSANkxo2Q1n/xVbQGAif/Xslwj2xzqAOsLFd9z8WWV
+         vKArFA/9C6MqPkLLNkIy4XLD5rpykSkLNcXgyRJNFDYrpExv9ZFa+/bmOCWfBNWVJacW
+         0+XbbFhGANgMEzLgEmyYExBjS72YG1S4Q/J2Wz1Gu3oXbAmiTYI8w6SoyccqrVfyQjL6
+         9FkHVw6Kbs9s2IMk/KK/1XMUJjUREB7iwVI4VtnRmQMgdai0VnIyuSOBliX6PvFh9SKE
+         YsxQ==
+X-Gm-Message-State: AOJu0Yz4ozrBACDTvnADXVjk0FnJ5d4HPitonTG8Ck2o+e/2e/OU5M39
+        6nAjGG6EZ0iWXn8llt2p1jx0KYJiSAaiOfLEykbbaTL2Mya7g1lKrvxe6L36/0NQJa3+fwCBH4U
+        dmgK8saZCdjipxTk7aYVMgy9MOBgFz20R266KDqlX3c7zTQGt+h5raWkjyQ==
+X-Received: by 2002:ac8:5a10:0:b0:417:b269:4689 with SMTP id n16-20020ac85a10000000b00417b2694689mr16769915qta.53.1696318511713;
+        Tue, 03 Oct 2023 00:35:11 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IECydVO6IXDIfn2oX2lhW4fKbeswzVXSFt7PoPPot50XJyzkTu2tv2vXbEDYVXHWTsdZBKJZZQAwniqa+LzXBc=
+X-Received: by 2002:ac8:5a10:0:b0:417:b269:4689 with SMTP id
+ n16-20020ac85a10000000b00417b2694689mr16769899qta.53.1696318511438; Tue, 03
+ Oct 2023 00:35:11 -0700 (PDT)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 3 Oct 2023 00:35:10 -0700
+From:   Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <20231003042215.142678-4-shravan.chippa@microchip.com>
+References: <20231003042215.142678-1-shravan.chippa@microchip.com> <20231003042215.142678-4-shravan.chippa@microchip.com>
+Mime-Version: 1.0
+Date:   Tue, 3 Oct 2023 00:35:10 -0700
+Message-ID: <CAJM55Z8+UtVwFRxOKPcNKmitzkZQ9tyecG46dhTZqiYZgw903Q@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] dmaengine: sf-pdma: add mpfs-pdma compatible name
+To:     shravan chippa <shravan.chippa@microchip.com>,
+        green.wan@sifive.com, vkoul@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, conor+dt@kernel.org
+Cc:     dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nagasuresh.relli@microchip.com, praveen.kumar@microchip.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,53 +81,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/10/2023 16:21, Catalin Marinas wrote:
-> On Fri, Sep 29, 2023 at 12:44:18PM +0100, Ryan Roberts wrote:
->> Define an arch-specific override of arch_wants_pte_order() so that when
->> anon_orders=recommend is set, large folios will be allocated for
->> anonymous memory with an order that is compatible with arm64's HPA uarch
->> feature.
->>
->> Reviewed-by: Yu Zhao <yuzhao@google.com>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> 
-> Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-> 
->> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->> index 7f7d9b1df4e5..e3d2449dec5c 100644
->> --- a/arch/arm64/include/asm/pgtable.h
->> +++ b/arch/arm64/include/asm/pgtable.h
->> @@ -1110,6 +1110,16 @@ extern pte_t ptep_modify_prot_start(struct vm_area_struct *vma,
->>  extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
->>  				    unsigned long addr, pte_t *ptep,
->>  				    pte_t old_pte, pte_t new_pte);
->> +
->> +#define arch_wants_pte_order arch_wants_pte_order
->> +static inline int arch_wants_pte_order(void)
->> +{
->> +	/*
->> +	 * Many arm64 CPUs support hardware page aggregation (HPA), which can
->> +	 * coalesce 4 contiguous pages into a single TLB entry.
->> +	 */
->> +	return 2;
->> +}
-> 
-> I haven't followed the discussions on previous revisions of this series
-> but I wonder why not return a bitmap from arch_wants_pte_order(). For
-> arm64 we may want an order 6 at some point (contiguous ptes) with a
-> fallback to order 2 as the next best.
-> 
+shravan chippa wrote:
+> From: Shravan Chippa <shravan.chippa@microchip.com>
+>
+> Sifive platform dma does not allow out-of-order transfers,
+> Add a PolarFire SoC specific compatible and code to support
+> for out-of-order dma transfers
+>
+> Signed-off-by: Shravan Chippa <shravan.chippa@microchip.com>
+> ---
+>  drivers/dma/sf-pdma/sf-pdma.c | 27 ++++++++++++++++++++++++---
+>  drivers/dma/sf-pdma/sf-pdma.h |  6 ++++++
+>  2 files changed, 30 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/dma/sf-pdma/sf-pdma.c b/drivers/dma/sf-pdma/sf-pdma.c
+> index 06a0912a12a1..a9ff319d4ca3 100644
+> --- a/drivers/dma/sf-pdma/sf-pdma.c
+> +++ b/drivers/dma/sf-pdma/sf-pdma.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/dma-mapping.h>
+>  #include <linux/of.h>
+>  #include <linux/of_dma.h>
+> +#include <linux/of_device.h>
+>  #include <linux/slab.h>
+>
+>  #include "sf-pdma.h"
+> @@ -66,7 +67,7 @@ static struct sf_pdma_desc *sf_pdma_alloc_desc(struct sf_pdma_chan *chan)
+>  static void sf_pdma_fill_desc(struct sf_pdma_desc *desc,
+>  			      u64 dst, u64 src, u64 size)
+>  {
+> -	desc->xfer_type = PDMA_FULL_SPEED;
+> +	desc->xfer_type =  desc->chan->pdma->transfer_type;
 
-This sounds like good idea to me - I'll implement it, assuming there is a next
-rev. (Or in the unlikely event that this is the only pending change, I'd rather
-defer it to when we actually need it with the contpte series).
+Two spaces.
 
-This is just a hangover from the "MVP" approach that I was persuing in v5, where
-we didn't want to configure too many orders for fear of fragmentation. But in v6
-I've introduced UABI to configure the set of orders, and this function feeds
-into the special "recommend" set. So I think it is appropriate that this API
-allows expression of multiple orders as you suggest.
+>  	desc->xfer_size = size;
+>  	desc->dst_addr = dst;
+>  	desc->src_addr = src;
+> @@ -520,6 +521,7 @@ static struct dma_chan *sf_pdma_of_xlate(struct of_phandle_args *dma_spec,
+>
+>  static int sf_pdma_probe(struct platform_device *pdev)
+>  {
+> +	const struct sf_pdma_driver_platdata *ddata;
+>  	struct sf_pdma *pdma;
+>  	int ret, n_chans;
+>  	const enum dma_slave_buswidth widths =
+> @@ -545,6 +547,14 @@ static int sf_pdma_probe(struct platform_device *pdev)
+>
+>  	pdma->n_chans = n_chans;
+>
+> +	pdma->transfer_type = PDMA_FULL_SPEED;
+> +
+> +	ddata  = of_device_get_match_data(&pdev->dev);
+> +	if (ddata) {
+> +		if (ddata->quirks & NO_STRICT_ORDERING)
+> +			pdma->transfer_type &= ~(NO_STRICT_ORDERING);
+> +	}
+> +
 
-Side note: I don't think order-6 is ever a contpte size? Its order-4 for 4K,
-order-7 for 16k and order-5 for 64k.
+The commit message says "Sifive platform dma does not allow out-of-order
+transfers" so you want strict ordering by default and then allow
+out-of-order transfers if the match data allows it, right?
 
+But here bit 3 is set by default and cleared if the quirk is set, so it looks
+like bit 3 actually means "strict ordering" and not "no strict ordering" as
+you've named it.
+
+The confusion here probably stems using the same define for the quirk and the
+xfer_type. Unless I'm mistaken above I'd find something like this a lot easier
+to read:
+
+sf_pdma.h:
+#define PDMA_FULL_SPEED		0xFF000000
+#define PDMA_STRICT_ORDERING	BIT(3)
+
+sf_pdma.c:
+#define PDMA_QUIRK_NO_STRICT_ORDERING	BIT(0)
+
+dma->transfer_type = PDMA_FULL_SPEED | PDMA_STRICT_ORDERING;
+...
+if (ddata->quirks & PDMA_QUIRK_NO_STRICT_ORDERING)
+	pdma->transfer_type &= ~PDMA_STRICT_ORDERING;
+
+>  	pdma->membase = devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(pdma->membase))
+>  		return PTR_ERR(pdma->membase);
+> @@ -632,11 +642,22 @@ static int sf_pdma_remove(struct platform_device *pdev)
+>  	return 0;
+>  }
+>
+> +static const struct sf_pdma_driver_platdata mpfs_pdma = {
+> +	.quirks = NO_STRICT_ORDERING,
+> +};
+> +
+>  static const struct of_device_id sf_pdma_dt_ids[] = {
+> -	{ .compatible = "sifive,fu540-c000-pdma" },
+> -	{ .compatible = "sifive,pdma0" },
+> +	{
+> +		.compatible = "sifive,fu540-c000-pdma",
+> +	}, {
+> +		.compatible = "sifive,pdma0",
+> +	}, {
+> +		.compatible = "microchip,mpfs-pdma",
+> +		.data	    = &mpfs_pdma,
+> +	},
+>  	{},
+>  };
+> +
+>  MODULE_DEVICE_TABLE(of, sf_pdma_dt_ids);
+>
+>  static struct platform_driver sf_pdma_driver = {
+> diff --git a/drivers/dma/sf-pdma/sf-pdma.h b/drivers/dma/sf-pdma/sf-pdma.h
+> index 5c398a83b491..3b16db4daa0b 100644
+> --- a/drivers/dma/sf-pdma/sf-pdma.h
+> +++ b/drivers/dma/sf-pdma/sf-pdma.h
+> @@ -49,6 +49,7 @@
+>
+>  /* Transfer Type */
+>  #define PDMA_FULL_SPEED					0xFF000008
+> +#define NO_STRICT_ORDERING				BIT(3)
+>
+>  /* Error Recovery */
+>  #define MAX_RETRY					1
+> @@ -112,8 +113,13 @@ struct sf_pdma {
+>  	struct dma_device       dma_dev;
+>  	void __iomem            *membase;
+>  	void __iomem            *mappedbase;
+> +	u32			transfer_type;
+>  	u32			n_chans;
+>  	struct sf_pdma_chan	chans[];
+>  };
+>
+> +struct sf_pdma_driver_platdata {
+> +	u32 quirks;
+> +};
+> +
+>  #endif /* _SF_PDMA_H */
+> --
+> 2.34.1
