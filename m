@@ -2,79 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9357B65E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 699F57B65E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 11:51:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239786AbjJCJu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 3 Oct 2023 05:50:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39146 "EHLO
+        id S239812AbjJCJv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 05:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239789AbjJCJu1 (ORCPT
+        with ESMTP id S239778AbjJCJvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 05:50:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0AB9A6
-        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:50:24 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3D36CC433C7;
-        Tue,  3 Oct 2023 09:50:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696326624;
-        bh=XiFGqaj5iaBiPzlCZL8MSPSaOR/Bu9GxFKivnqk5qO8=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kDy8qhfcGGw7HlEs0ya5ZWH8ScaIk0A65wtXDSCJfquGwZA/XDTU4A2x6lsqGWqG8
-         bufwfMLKGyxJUkMNxMNhOx+FmM7uIdlk3jZabjBQ7GvSiKz5S2KNv4zhwcCmfn7fhT
-         SjMq/pKBwo/YikgblH8Z6j/WjDRA+ZC9oX8/1BScWxWd0QkJ0Di+gTmLEkfXwaRoBE
-         4FMdOZe8aIhCM1wwTve4/9PrIxMmo/pkRoxaCFBynazx5ERKYzLue+VTPSu6X0CgiF
-         MKZIl/F7FnGk6UAY2xmMAo4aWbYsIJuAfK96s/pmstQaInJ/x/5EYePzlAu1Q/TvR/
-         35vBkWOS/oZUQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1C7D4E270EF;
-        Tue,  3 Oct 2023 09:50:24 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 3 Oct 2023 05:51:55 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04C00B7
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 02:51:52 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9adca291f99so118338466b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 02:51:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1696326710; x=1696931510; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ExSvwMAkpOvCS+jThDBzs2R/QjDRrK01zUKhilKpRF4=;
+        b=XEw3HhNHigbD3keIjjMPS8opmu7n2BeZ3N4q9+FIi5qrcSrwmORbn519xBAbrvRmnE
+         9CAfj7bbkcPZijB+j+BJMwATaBcqnHUiD2V8cd+YE4XB3sa8buOp9O6mSz1LiGNLCcc5
+         EKXG8VFX0LVFT+vFjMIHRrUuQwb/SJHngI8oP4ZNsncWXjSyrd4XRXIw14Chw1C560GM
+         QLuk1+E2zcYpCioII0/xt+AvUI/lJM7cw5C9iy4+OB5ba5es3BdxsnIA314NNGmbBzaI
+         djqrev9UL5px+dnqUl9Xq8cf7ZFMi8Wmm9lm/GcQ4F3N19THtdSxnoOuMH9Z6yqxuMdA
+         iDeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696326710; x=1696931510;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ExSvwMAkpOvCS+jThDBzs2R/QjDRrK01zUKhilKpRF4=;
+        b=ExWaGpGDS56avDjvCJeivki0SdzYYapbk4qZL0881+V3yKtb7uPJflvxASEO955TMI
+         FNnDLjtKR8F4cFrxu3k/JUAcxpnoJJLXNE9s6jGFs14S3C5nPM+vz6shjxnDWkkFpGP2
+         GugJYFaYgwnkuOYH1OfY67qOr0K3XkqPTcUJyC3kaCK4mwBZghrEjNYUIl82A1wEkOpS
+         nygsCmfUpI7ZKeB4wp0Ec83Jb90/8yq7HFFdy+uBANhPyKTFAWuWyS7TxzIuSsH+VRZz
+         0SSVokUbzy/vIbx55GvBOONtLIDmGQhsHNmdAdOTA/kVuSeecjWn+ZiiM3db+iMtpTOU
+         TMkQ==
+X-Gm-Message-State: AOJu0YyQXm+1oeb+Q5uBRgF/svxqB2QM84gitTIjmRSpW55h71Zdt0NO
+        qW20Yl9+oJnzNEhZ3wtJX/0=
+X-Google-Smtp-Source: AGHT+IGviB5WZFpDrLrzHq50Ge3Yf7yqPB7z8RWNRKpq8DzFLFcEjRwI9CHTSlchBaF+09tqFOguQg==
+X-Received: by 2002:a17:907:7787:b0:9b6:aac1:6fa5 with SMTP id ky7-20020a170907778700b009b6aac16fa5mr783641ejc.55.1696326710375;
+        Tue, 03 Oct 2023 02:51:50 -0700 (PDT)
+Received: from gmail.com (1F2EF530.nat.pool.telekom.hu. [31.46.245.48])
+        by smtp.gmail.com with ESMTPSA id rn4-20020a170906d92400b009934b1eb577sm784393ejb.77.2023.10.03.02.51.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Oct 2023 02:51:49 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Tue, 3 Oct 2023 11:51:47 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Yajun Deng <yajun.deng@linux.dev>
+Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v4] sched/rt: move back to RT_GROUP_SCHED and rename it
+ child
+Message-ID: <ZRvkM1lxsTrHb2Ox@gmail.com>
+References: <20230803050317.2240948-1-yajun.deng@linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: phy: amd: Support the Altima AMI101L
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <169632662410.31348.9736191366632838999.git-patchwork-notify@kernel.org>
-Date:   Tue, 03 Oct 2023 09:50:24 +0000
-References: <20230924-ac101l-phy-v1-1-5e6349e28aa4@linaro.org>
-In-Reply-To: <20230924-ac101l-phy-v1-1-5e6349e28aa4@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230803050317.2240948-1-yajun.deng@linux.dev>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
+* Yajun Deng <yajun.deng@linux.dev> wrote:
 
-On Sun, 24 Sep 2023 10:19:02 +0200 you wrote:
-> The Altima AC101L is obviously compatible with the AMD PHY,
-> as seen by reading the datasheet.
+> The member back in struct sched_rt_entity only related to RT_GROUP_SCHED,
+> it should not place out of RT_GROUP_SCHED, move back to RT_GROUP_SCHED
+> and rename it child.
 > 
-> Datasheet: https://docs.broadcom.com/doc/AC101L-DS05-405-RDS.pdf
+> Init child when parent isn't NULL in init_tg_rt_entry().
 > 
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> Introduce for_each_sched_rt_entity_reverse() to iterate rt_se from
+> top to down.
 > 
-> [...]
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202308031034.4369b15b-oliver.sang@intel.com
 
-Here is the summary with links:
-  - [net-next] net: phy: amd: Support the Altima AMI101L
-    https://git.kernel.org/netdev/net-next/c/32030345297e
+Yeah, so I agree with these changes, but could you please split up this 
+patch into 3 separate patches:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+   sched/rt: Move sched_rt_entity::back to under the CONFIG_RT_GROUP_SCHED block
+   sched/rt: Rename sched_rt_entity::back to sched_rt_entity::child
+   sched/rt: Introduce for_each_sched_rt_entity_reverse() & use it
 
+Thanks,
 
+	Ingo
