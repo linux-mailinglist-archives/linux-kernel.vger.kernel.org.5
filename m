@@ -2,80 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C1B7B71F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B87B7B71FA
+	for <lists+linux-kernel@lfdr.de>; Tue,  3 Oct 2023 21:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240964AbjJCTpg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 3 Oct 2023 15:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35754 "EHLO
+        id S240986AbjJCTqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 3 Oct 2023 15:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230502AbjJCTpe (ORCPT
+        with ESMTP id S240955AbjJCTqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 3 Oct 2023 15:45:34 -0400
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C37E9E;
-        Tue,  3 Oct 2023 12:45:30 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 4C38C6340DF3;
-        Tue,  3 Oct 2023 21:45:28 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 3ulYD1wGVKZI; Tue,  3 Oct 2023 21:45:28 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id EA3E26340E0F;
-        Tue,  3 Oct 2023 21:45:27 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id mJfZ--EnOnn8; Tue,  3 Oct 2023 21:45:27 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id C40526340DF3;
-        Tue,  3 Oct 2023 21:45:27 +0200 (CEST)
-Date:   Tue, 3 Oct 2023 21:45:27 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <226381209.31782.1696362327615.JavaMail.zimbra@nod.at>
-In-Reply-To: <df8cfc16a0047c1041a8f8d0069c6312bb83da0d.1691717480.git.daniel@makrotopia.org>
-References: <cover.1691717480.git.daniel@makrotopia.org> <df8cfc16a0047c1041a8f8d0069c6312bb83da0d.1691717480.git.daniel@makrotopia.org>
-Subject: Re: [PATCH v4 5/8] mtd: ubi: attach MTD partition from device-tree
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: attach MTD partition from device-tree
-Thread-Index: kqr0xqm+jR+lBv0FwDpbk9UYfLM3MQ==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 3 Oct 2023 15:46:01 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04C92AF
+        for <linux-kernel@vger.kernel.org>; Tue,  3 Oct 2023 12:45:55 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5a22029070bso21262737b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 03 Oct 2023 12:45:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1696362354; x=1696967154; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=viodXw7fUNfO/LRa8b1+fBrUho8mNoQloTZPtSZSDRw=;
+        b=3iw7OeSMlok5fWAsQ3kzXk8gjk93xJV/CYmLAXoVpXCpl6Nr0CJPYZl3n74zJFa69I
+         4WfG4atV7WTdsAOpuzpKucANzacVek9OBJmRVsYf26ynV47+qf3KzcHkJqinzIiIQj4z
+         KaILlLwxqf4eDiuW3/rfAC0fw+1dBvhkkyShs3u56z7P0Ow4bhn/iB+WRbXkfucn8M5Y
+         IM0pK8tKn9qX1REtLsHwaT1KNinPNrwJqiJhsmuJltnCAQgosFVxZg/ftxQRAJq/mmuD
+         l1L8EkNOnn9TZ8Y/5InYgByLZNJGTr1cCP/yFyk+7Gza19XG0jqvqReUNKUZIesgGPlf
+         07wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696362354; x=1696967154;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=viodXw7fUNfO/LRa8b1+fBrUho8mNoQloTZPtSZSDRw=;
+        b=NdDbSNNfo1qmEdfIGQ9ZBOU9F5vQV0nEikksTIr7e0VgFuepQ5+IPVp3tulSyRA1IS
+         zUPQ81yF7saGjXAnkCEda0ugFurppeeVz9uQuuoE1y6Q3nJULbF84cczPzOP2VjsaqhS
+         pFaW05Zi8i3TqM4SmMqM2mIqL7rFidfvkmgIDDv+5l0wAixgcjRN0Sh+kyVFFZdnhvLs
+         mBzoSuZJWmleBjQVJlQa+VZ6xzcEkPJ2GsDpHOLAGpIxTBU1ZsvIFh6Z6mNMc8DQTkMA
+         FWsHudbLgvSWF6Ya/6/nzvluh9sFfniFrnFkZi7mXx4f7oF22io0SrzWx3ghYl7BfGo9
+         fc+w==
+X-Gm-Message-State: AOJu0Yz/vBveGKkqxxKyf7MFDBoe85l9CI2cA1WjDTnbK0br4HwIhvEo
+        CGOPqogjsXzR1C5ITd88ull/Upfmze+A2vb8P23k
+X-Google-Smtp-Source: AGHT+IE1qDM9+kU7Ss8mySYaAf902Q/5KzDumW0lXdocj5baqcxCFc8Tn3xnpSAJmfEEpIjlChC5Hmp+tjwfE2JiWuwX
+X-Received: from axel.svl.corp.google.com ([2620:15c:2a3:200:6577:b8c1:dd2d:1c93])
+ (user=axelrasmussen job=sendgmr) by 2002:a25:c785:0:b0:d85:b46f:4375 with
+ SMTP id w127-20020a25c785000000b00d85b46f4375mr3284ybe.6.1696362354244; Tue,
+ 03 Oct 2023 12:45:54 -0700 (PDT)
+Date:   Tue,  3 Oct 2023 12:45:42 -0700
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.609.gbb76f46606-goog
+Message-ID: <20231003194547.2237424-1-axelrasmussen@google.com>
+Subject: [PATCH v2 0/5] userfaultfd man page updates
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Alejandro Colomar <alx@kernel.org>, Peter Xu <peterx@redhat.com>
+Cc:     linux-man@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Axel Rasmussen <axelrasmussen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ Ursprüngliche Mail -----
-> diff --git a/drivers/mtd/ubi/block.c b/drivers/mtd/ubi/block.c
-> index e0618bbde3613..99b5f502c9dbc 100644
-> --- a/drivers/mtd/ubi/block.c
-> +++ b/drivers/mtd/ubi/block.c
-> @@ -470,7 +470,7 @@ int ubiblock_remove(struct ubi_volume_info *vi, bool force)
-> 	}
-> 
-> 	/* Found a device, let's lock it so we can check if it's busy */
-> -	mutex_lock(&dev->dev_mutex);
-> +	mutex_lock_nested(&dev->dev_mutex, SINGLE_DEPTH_NESTING);
+This series includes only the remaining patches not applied from v1, with
+review comments addressed. This series is based on the "contrib" branch.
 
-The usage of mutex_lock_nested() in this patch looks fishy.
-Can you please elaborate a bit more why all these mutexes can be taken twice?
-(Any why not more often).
+Changelog:
 
-Thanks,
-//richard
+v1->v2:
+ - In patch 1 (patch 5 in v1), change "after" to "since" for consistency and to
+   be clear that we mean 4.11+ (inclusive).
+ - In patch 2 (patch 7 in v1), reorder error codes alphabetically (EINVAL then
+   EPERM).
+ - In patch 3 (patch 8 in v1), resolve conflicts with earlier review comments.
+
+Original cover letter:
+
+Various updates for userfaultfd man pages. To summarize the changes:
+
+- Correctly / fully describe the two-step feature support handshake process.
+- Describe new UFFDIO_POISON ioctl.
+- Other small improvements (missing ioctls, error codes, etc).
+
+Axel Rasmussen (5):
+  ioctl_userfaultfd.2: describe two-step feature handshake
+  ioctl_userfaultfd.2: correct and update UFFDIO_API ioctl error codes
+  ioctl_userfaultfd.2: clarify the state of the uffdio_api structure on
+    error
+  ioctl_userfaultfd.2: fix / update UFFDIO_REGISTER error code list
+  ioctl_userfaultfd.2: document new UFFDIO_POISON ioctl
+
+ man2/ioctl_userfaultfd.2 | 226 +++++++++++++++++++++++++++++++--------
+ 1 file changed, 181 insertions(+), 45 deletions(-)
+
+--
+2.42.0.609.gbb76f46606-goog
+
